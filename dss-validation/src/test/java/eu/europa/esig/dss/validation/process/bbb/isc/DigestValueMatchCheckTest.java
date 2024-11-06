@@ -20,12 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.isc;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlISC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
@@ -42,11 +36,16 @@ import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.isc.checks.DigestValueMatchCheck;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class DigestValueMatchCheckTest extends AbstractTestCheck {
 
 	@Test
-	void digestValueMatchCheckTest() throws Exception {
+	void digestValueMatchCheckTest() {
 		XmlCertificateRef xmlCertificateRef = new XmlCertificateRef();
 		xmlCertificateRef.setOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
 		
@@ -84,7 +83,7 @@ class DigestValueMatchCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	void digestValueNotMatchCheckTest() throws Exception {
+	void digestValueNotMatchCheckTest() {
 		XmlCertificateRef xmlCertificateRef = new XmlCertificateRef();
 		xmlCertificateRef.setOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
 		

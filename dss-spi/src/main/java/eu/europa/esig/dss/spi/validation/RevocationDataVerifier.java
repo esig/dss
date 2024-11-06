@@ -48,7 +48,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -87,7 +87,7 @@ public class RevocationDataVerifier {
                 DigestAlgorithm.SHA224, DigestAlgorithm.SHA256, DigestAlgorithm.SHA384, DigestAlgorithm.SHA512,
                 DigestAlgorithm.SHA3_256, DigestAlgorithm.SHA3_384, DigestAlgorithm.SHA3_512);
 
-        DEFAULT_ENCRYPTION_ALGORITHMS_KEY_LENGTH_MAP = new HashMap<>();
+        DEFAULT_ENCRYPTION_ALGORITHMS_KEY_LENGTH_MAP = new EnumMap<>(EncryptionAlgorithm.class);
         DEFAULT_ENCRYPTION_ALGORITHMS_KEY_LENGTH_MAP.put(EncryptionAlgorithm.DSA, 2048);
         DEFAULT_ENCRYPTION_ALGORITHMS_KEY_LENGTH_MAP.put(EncryptionAlgorithm.RSA, 1900);
         DEFAULT_ENCRYPTION_ALGORITHMS_KEY_LENGTH_MAP.put(EncryptionAlgorithm.RSASSA_PSS, 1900);

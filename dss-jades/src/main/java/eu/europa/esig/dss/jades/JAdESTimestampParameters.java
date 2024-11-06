@@ -23,6 +23,8 @@ package eu.europa.esig.dss.jades;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.TimestampParameters;
 
+import java.util.Objects;
+
 /**
  * The parameters to create a JAdES timestamp
  */
@@ -67,6 +69,30 @@ public class JAdESTimestampParameters extends TimestampParameters {
 	public void setCanonicalizationMethod(String canonicalizationMethod) {
 		throw new UnsupportedOperationException("Canonicalization is not supported in the current version.");
 		// TODO : this.canonicalizationMethod = canonicalizationMethod;
+	}
+
+	@Override
+	public String toString() {
+		return "JAdESTimestampParameters [" +
+				"canonicalizationMethod='" + canonicalizationMethod + '\'' +
+				"] " + super.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+
+		JAdESTimestampParameters that = (JAdESTimestampParameters) o;
+		return Objects.equals(canonicalizationMethod, that.canonicalizationMethod);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + Objects.hashCode(canonicalizationMethod);
+		return result;
 	}
 
 }

@@ -138,9 +138,11 @@ public class PdfCompositeDssDictCRLSource extends OfflineCRLSource {
     /**
      * This method returns a set of {@code CertificateToken}s with the given PDF object id
      *
-     * @param objectId {@link Long} PDF id of the object to be extracted
+     * @param objectId {@link PdfObjectKey} PDF id of the object to be extracted
      * @return set of {@link CRLBinary}s
+     * @deprecated since DSS 6.2. To be removed.
      */
+    @Deprecated
     protected Set<CRLBinary> getCRLBinariesByObjectId(PdfObjectKey objectId) {
         return crlBinaryByIdMap.get(objectId);
     }

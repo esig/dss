@@ -768,7 +768,7 @@ public abstract class AbstractUtilsTest {
 	}
 
 	@Test
-	void clearDirectoryNotFound() throws FileNotFoundException {
+	void clearDirectoryNotFound() {
 		assertThrows(FileNotFoundException.class, () -> Utils.cleanDirectory(new File("wrong")));
 	}
 

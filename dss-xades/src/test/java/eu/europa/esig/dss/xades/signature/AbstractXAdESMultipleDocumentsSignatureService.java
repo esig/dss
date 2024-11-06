@@ -60,6 +60,7 @@ public abstract class AbstractXAdESMultipleDocumentsSignatureService extends Abs
 		return SignatureLevel.XAdES_BASELINE_LTA.equals(signatureLevel) || SignatureLevel.XAdES_A.equals(signatureLevel);
 	}
 
+	@Override
 	protected boolean documentPresent(DSSDocument original, List<DSSDocument> retrievedDocuments) {
 		boolean found = false;
 		boolean toBeCanonicalized = MimeTypeEnum.XML.equals(original.getMimeType()) || MimeTypeEnum.HTML.equals(original.getMimeType());

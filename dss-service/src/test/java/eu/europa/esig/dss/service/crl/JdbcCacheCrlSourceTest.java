@@ -67,7 +67,7 @@ class JdbcCacheCrlSourceTest extends OnlineSourceTest {
 	}
 
 	@Test
-	void test() throws Exception {
+	void test() {
 		CRLToken revocationToken;
 
 		DataLoader dataLoader = new CommonsDataLoader();
@@ -131,7 +131,7 @@ class JdbcCacheCrlSourceTest extends OnlineSourceTest {
 	}
 	
 	@Test
-	void testExpired() throws SQLException {
+	void testExpired() {
 		CRLToken revocationToken;
 
 		CertificateToken certificateToken = DSSUtils.loadCertificate(new File("src/test/resources/ec.europa.eu.crt"));

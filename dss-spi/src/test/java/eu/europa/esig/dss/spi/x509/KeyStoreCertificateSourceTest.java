@@ -131,7 +131,7 @@ class KeyStoreCertificateSourceTest {
 	}
 
 	@Test
-	void wrongFile() throws IOException {
+	void wrongFile() {
 		File wrongFile = new File("src/test/resources/keystore.p13");
 		assertThrows(IOException.class,
 				() -> new KeyStoreCertificateSource(wrongFile, KEYSTORE_TYPE, KEYSTORE_PASSWORD));

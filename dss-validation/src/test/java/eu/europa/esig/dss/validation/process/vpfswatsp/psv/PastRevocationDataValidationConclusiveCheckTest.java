@@ -39,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class PastRevocationDataValidationConclusiveCheckTest extends AbstractTestCheck {
 
     @Test
-    void validTest() throws Exception {
+    void validTest() {
         XmlConclusion xmlConclusion = new XmlConclusion();
         xmlConclusion.setIndication(Indication.PASSED);
 
@@ -57,7 +57,7 @@ class PastRevocationDataValidationConclusiveCheckTest extends AbstractTestCheck 
     }
 
     @Test
-    void invalidTest() throws Exception {
+    void invalidTest() {
         XmlConclusion xmlConclusion = new XmlConclusion();
         xmlConclusion.setIndication(Indication.INDETERMINATE);
         xmlConclusion.setSubIndication(SubIndication.REVOCATION_OUT_OF_BOUNDS_NO_POE);

@@ -42,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ValidationTimeAtCertificateValidityRangeCheckTest extends AbstractTestCheck {
 
     @Test
-    void validTest() throws Exception {
+    void validTest() {
         XmlXCV xmlXCV = new XmlXCV();
         XmlConclusion xmlConclusion = new XmlConclusion();
         xmlConclusion.setIndication(Indication.PASSED);
@@ -62,7 +62,7 @@ class ValidationTimeAtCertificateValidityRangeCheckTest extends AbstractTestChec
     }
 
     @Test
-    void invalidTest() throws Exception {
+    void invalidTest() {
         XmlXCV xmlXCV = new XmlXCV();
         XmlConclusion xmlConclusion = new XmlConclusion();
         xmlConclusion.setIndication(Indication.INDETERMINATE);
@@ -83,7 +83,7 @@ class ValidationTimeAtCertificateValidityRangeCheckTest extends AbstractTestChec
     }
 
     @Test
-    void invalidNotRevokedTest() throws Exception {
+    void invalidNotRevokedTest() {
         XmlXCV xmlXCV = new XmlXCV();
         XmlConclusion xmlConclusion = new XmlConclusion();
         xmlConclusion.setIndication(Indication.INDETERMINATE);
@@ -104,7 +104,7 @@ class ValidationTimeAtCertificateValidityRangeCheckTest extends AbstractTestChec
     }
 
     @Test
-    void certRevokedTest() throws Exception {
+    void certRevokedTest() {
         XmlXCV xmlXCV = new XmlXCV();
         XmlConclusion xmlConclusion = new XmlConclusion();
         xmlConclusion.setIndication(Indication.INDETERMINATE);

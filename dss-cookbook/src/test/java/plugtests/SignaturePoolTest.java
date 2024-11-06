@@ -162,7 +162,7 @@ class SignaturePoolTest extends AbstractDocumentTestValidation {
 		}
 	}
 
-	private static Stream<Arguments> data() throws IOException {
+	private static Stream<Arguments> data() {
 
 		// -Dsignature.pool.folder=...
 
@@ -366,6 +366,7 @@ class SignaturePoolTest extends AbstractDocumentTestValidation {
 		// skip
 	}
 
+	@Override
 	protected void checkCertificates(DiagnosticData diagnosticData) {
 		for (CertificateWrapper certificateWrapper : diagnosticData.getUsedCertificates()) {
 			assertNotNull(certificateWrapper);

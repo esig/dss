@@ -20,23 +20,22 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
+import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 import org.junit.jupiter.api.Test;
 
-import eu.europa.esig.dss.cades.validation.CAdESSignature;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class CAdESSignatureTest {
 
 	@Test
-	void initNull() throws CMSException {
+	void initNull() {
 		assertThrows(NullPointerException.class, () -> new CAdESSignature(null, null));
 	}
 
 	@Test
-	void initEmptyByteArray() throws CMSException {
+	void initEmptyByteArray() {
 		assertThrows(CMSException.class, () -> new CAdESSignature(new CMSSignedData(new byte[] {}), null));
 	}
 

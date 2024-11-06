@@ -75,7 +75,7 @@ public abstract class AbstractXAdESConsecutiveExtension<SP extends AbstractSigna
 	}
 	
 	@Test
-	public void test() throws Exception {
+	public void test() {
 		
 		DSSDocument originalDocument = getOriginalDocument();
 		

@@ -115,6 +115,7 @@ class XmlEvidenceRecordNoHashTreeInvalidDigestValidationTest extends AbstractEvi
         }
     }
 
+    @Override
     protected void checkEvidenceRecordDigestMatchers(DiagnosticData diagnosticData) {
         List<EvidenceRecordWrapper> evidenceRecords = diagnosticData.getEvidenceRecords();
         assertEquals(1, Utils.collectionSize(evidenceRecords));
@@ -130,6 +131,7 @@ class XmlEvidenceRecordNoHashTreeInvalidDigestValidationTest extends AbstractEvi
         assertTrue(digestMatcher.isDataIntact());
     }
 
+    @Override
     protected void checkTimestamp(DiagnosticData diagnosticData, TimestampWrapper timestampWrapper) {
         assertNotNull(timestampWrapper.getProductionTime());
         assertTrue(timestampWrapper.isMessageImprintDataFound());

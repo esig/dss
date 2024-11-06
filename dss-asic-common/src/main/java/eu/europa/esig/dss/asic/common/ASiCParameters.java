@@ -118,33 +118,32 @@ public class ASiCParameters implements Serializable {
 
 	@Override
 	public String toString() {
-		return "ASiCParameters{" +
+		return "ASiCParameters [" +
 				"zipComment=" + zipComment +
 				", mimeType='" + mimeType + '\'' +
 				", containerType=" + containerType +
 				", signatureFileName='" + signatureFileName + '\'' +
-				'}';
+				']';
 	}
 
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
-		if (!(o instanceof ASiCParameters)) return false;
+		if (o == null || getClass() != o.getClass()) return false;
 
 		ASiCParameters that = (ASiCParameters) o;
-
-		if (zipComment != that.zipComment) return false;
-		if (!Objects.equals(mimeType, that.mimeType)) return false;
-		if (containerType != that.containerType) return false;
-		return Objects.equals(signatureFileName, that.signatureFileName);
+		return zipComment == that.zipComment
+				&& Objects.equals(mimeType, that.mimeType)
+				&& containerType == that.containerType
+				&& Objects.equals(signatureFileName, that.signatureFileName);
 	}
 
 	@Override
 	public int hashCode() {
-		int result = (zipComment ? 1 : 0);
-		result = 31 * result + (mimeType != null ? mimeType.hashCode() : 0);
-		result = 31 * result + (containerType != null ? containerType.hashCode() : 0);
-		result = 31 * result + (signatureFileName != null ? signatureFileName.hashCode() : 0);
+		int result = Boolean.hashCode(zipComment);
+		result = 31 * result + Objects.hashCode(mimeType);
+		result = 31 * result + Objects.hashCode(containerType);
+		result = 31 * result + Objects.hashCode(signatureFileName);
 		return result;
 	}
 

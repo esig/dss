@@ -20,15 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.sub;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.Calendar;
-import java.util.List;
-
-import jakarta.xml.bind.DatatypeConverter;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
@@ -42,6 +33,13 @@ import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateNotRevokedCheck;
+import jakarta.xml.bind.DatatypeConverter;
+import org.junit.jupiter.api.Test;
+
+import java.util.Calendar;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class CertificateRevokedCheckTest extends AbstractTestCheck {
 
@@ -49,7 +47,7 @@ class CertificateRevokedCheckTest extends AbstractTestCheck {
 	private static final Calendar CAL2 = DatatypeConverter.parseDate("2018-01-01");
 
 	@Test
-	void certificateRevokedCheck() throws Exception {
+	void certificateRevokedCheck() {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
@@ -70,7 +68,7 @@ class CertificateRevokedCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	void failedCertificateRevokedCheck() throws Exception {
+	void failedCertificateRevokedCheck() {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 

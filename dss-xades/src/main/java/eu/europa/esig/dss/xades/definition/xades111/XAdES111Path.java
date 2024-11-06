@@ -20,12 +20,10 @@
  */
 package eu.europa.esig.dss.xades.definition.xades111;
 
-import eu.europa.esig.dss.jaxb.common.XSDAbstractUtils;
 import eu.europa.esig.dss.xades.definition.XAdESNamespace;
 import eu.europa.esig.dss.xades.definition.XAdESPath;
 import eu.europa.esig.dss.xml.common.definition.AbstractPath;
 import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
-import eu.europa.esig.xades.XAdES111Utils;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
 

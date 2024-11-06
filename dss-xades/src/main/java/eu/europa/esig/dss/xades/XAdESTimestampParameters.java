@@ -25,6 +25,8 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.TimestampParameters;
 import eu.europa.esig.dss.utils.Utils;
 
+import java.util.Objects;
+
 /**
  * Parameters for a XAdES timestamp creation
  */
@@ -83,32 +85,27 @@ public class XAdESTimestampParameters extends TimestampParameters {
 	}
 
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = (prime * result) + ((canonicalizationMethod == null) ? 0 : canonicalizationMethod.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (!super.equals(obj)) {
-			return false;
-		}
-		XAdESTimestampParameters other = (XAdESTimestampParameters) obj;
-		if (canonicalizationMethod == null) {
-			if (other.canonicalizationMethod != null) {
-				return false;
-			}
-		} else if (!canonicalizationMethod.equals(other.canonicalizationMethod)) {
-			return false;
-		}
-		return true;
-	}
-
-	@Override
 	public String toString() {
-		return "TimestampParameters {digestAlgorithm=" + digestAlgorithm.getName() + ", canonicalizationMethod=" + canonicalizationMethod + "}";
+		return "XAdESTimestampParameters [" +
+				"canonicalizationMethod='" + canonicalizationMethod + '\'' +
+				"] " + super.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+
+		XAdESTimestampParameters that = (XAdESTimestampParameters) o;
+		return Objects.equals(canonicalizationMethod, that.canonicalizationMethod);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + Objects.hashCode(canonicalizationMethod);
+		return result;
 	}
 
 }

@@ -20,12 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.sav;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
@@ -37,11 +31,16 @@ import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.ClaimedRolesCheck;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ClaimedRolesCheckTest extends AbstractTestCheck {
 
 	@Test
-	void claimedRolesCheck() throws Exception {
+	void claimedRolesCheck() {
 		XmlSignerRole xmlSignerRole = new XmlSignerRole();
 		xmlSignerRole.setRole("Claimed_Role");
 		xmlSignerRole.setCategory(EndorsementType.CLAIMED);
@@ -63,7 +62,7 @@ class ClaimedRolesCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	void notClaimedRolesCheck() throws Exception {
+	void notClaimedRolesCheck() {
 		XmlSignerRole xmlSignerRole = new XmlSignerRole();
 		xmlSignerRole.setRole("Unclaimed_Role");
 		xmlSignerRole.setCategory(EndorsementType.CLAIMED);

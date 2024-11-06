@@ -115,7 +115,7 @@ class XAdESLevelBEnvelopedWithReferenceTest extends AbstractXAdESTestSignature {
 			xPath.setNamespaceContext(new Name());
 			Node node = (Node) xPath.evaluate("root/data[@id='data1']", doc, XPathConstants.NODE);
 
-			byte c14nBytes[] = XMLCanonicalizer.createInstance("http://www.w3.org/2001/10/xml-exc-c14n#").canonicalize(node);
+			byte[] c14nBytes = XMLCanonicalizer.createInstance("http://www.w3.org/2001/10/xml-exc-c14n#").canonicalize(node);
 
 			assertEquals("AdGdZ+/VQVVvC9yzL4Yj8iRK33cQBiRW2UpKGMswdZQ=",
 					Base64.getEncoder().encodeToString(MessageDigest.getInstance("SHA-256").digest(c14nBytes)));

@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class PDFAComplianceCheckTest extends AbstractTestCheck {
 
     @Test
-    void valid() throws Exception {
+    void valid() {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
@@ -50,7 +50,7 @@ class PDFAComplianceCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    void invalid() throws Exception {
+    void invalid() {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 

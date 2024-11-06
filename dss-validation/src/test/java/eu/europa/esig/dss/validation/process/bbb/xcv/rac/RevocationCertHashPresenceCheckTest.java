@@ -20,12 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.rac;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRAC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
@@ -35,11 +29,16 @@ import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationCertHashPresenceCheck;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class RevocationCertHashPresenceCheckTest extends AbstractTestCheck {
 
 	@Test
-	void revocationCertHashPresenceCheck() throws Exception {
+	void revocationCertHashPresenceCheck() {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 		
@@ -57,7 +56,7 @@ class RevocationCertHashPresenceCheckTest extends AbstractTestCheck {
 	}
 	
 	@Test
-	void failRevocationCertHashPresenceCheck() throws Exception {
+	void failRevocationCertHashPresenceCheck() {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 		

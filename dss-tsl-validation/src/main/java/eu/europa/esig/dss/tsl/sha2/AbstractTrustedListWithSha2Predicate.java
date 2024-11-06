@@ -62,16 +62,6 @@ public abstract class AbstractTrustedListWithSha2Predicate implements Predicate<
     }
 
     /**
-     * This method evaluates whether the sha2 digest match the original document
-     *
-     * @param documentWithSha2 {@link DocumentWithSha2} containing the original document and downloaded sha2 document
-     * @return TRUE if the sha2 corresponding to the document match the digest of the cached content and
-     *         no refresh is required, FALSE otherwise (if refresh is required for any reason)
-     */
-    @Override
-    public abstract boolean test(DocumentWithSha2 documentWithSha2);
-
-    /**
      * This method computes {@code Digest} on the given {@code DSSDocument}'s content
      *
      * @param document {@link DSSDocument} to compute digest on

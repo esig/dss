@@ -39,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class CertificateValidityRangeCheckTest extends AbstractTestCheck {
 
 	@Test
-	void certificateExpirationCheck() throws Exception {
+	void certificateExpirationCheck() {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
@@ -60,7 +60,7 @@ class CertificateValidityRangeCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	void failedCertificateExpirationCheck() throws Exception {
+	void failedCertificateExpirationCheck() {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 

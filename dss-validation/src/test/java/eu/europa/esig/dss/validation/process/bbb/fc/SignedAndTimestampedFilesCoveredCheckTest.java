@@ -20,7 +20,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class SignedAndTimestampedFilesCoveredCheckTest extends AbstractTestCheck {
+class SignedAndTimestampedFilesCoveredCheckTest extends AbstractTestCheck {
 
     @Test
     void asicsOneTstValidTest() {

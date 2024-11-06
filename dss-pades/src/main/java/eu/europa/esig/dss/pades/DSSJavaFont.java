@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.pades;
 
 import java.awt.Font;
+import java.util.Objects;
 
 /**
  * Represent the JAVA implementation of the DSSFont
@@ -95,6 +96,20 @@ public class DSSJavaFont extends AbstractDSSFont {
 	public void setSize(float size) {
 		super.setSize(size);
 		this.javaFont = javaFont.deriveFont(size);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		DSSJavaFont that = (DSSJavaFont) o;
+		return Objects.equals(javaFont, that.javaFont);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(javaFont);
 	}
 
 }

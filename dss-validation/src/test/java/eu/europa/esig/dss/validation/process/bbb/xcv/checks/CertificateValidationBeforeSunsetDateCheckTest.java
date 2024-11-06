@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class CertificateValidationBeforeSunsetDateCheckTest extends AbstractTestCheck {
 
     @Test
-    void certificateExpirationCheck() throws Exception {
+    void certificateExpirationCheck() {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
@@ -42,7 +42,7 @@ class CertificateValidationBeforeSunsetDateCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    void failedCertificateExpirationCheck() throws Exception {
+    void failedCertificateExpirationCheck() {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
@@ -65,7 +65,7 @@ class CertificateValidationBeforeSunsetDateCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    void noSunsetDateTrustedCheck() throws Exception {
+    void noSunsetDateTrustedCheck() {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
@@ -85,7 +85,7 @@ class CertificateValidationBeforeSunsetDateCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    void noSunsetDateNotTrustedCheck() throws Exception {
+    void noSunsetDateNotTrustedCheck() {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 

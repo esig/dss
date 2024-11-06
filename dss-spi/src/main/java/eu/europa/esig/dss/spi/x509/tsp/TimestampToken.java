@@ -968,7 +968,7 @@ public class TimestampToken extends Token {
 			}
 			indentStr += "\t";
 			if (messageImprintIntact != null) {
-				if (messageImprintIntact) {
+				if (Boolean.TRUE.equals(messageImprintIntact)) {
 					out.append(indentStr).append("Timestamp MATCHES the signed data.").append('\n');
 				} else {
 					out.append(indentStr).append("Timestamp DOES NOT MATCH the signed data.").append('\n');

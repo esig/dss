@@ -35,8 +35,6 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-
 class ServerSignTest extends CookbookTools {
 
     @Test
@@ -86,11 +84,11 @@ class ServerSignTest extends CookbookTools {
 
     }
 
-    public SignatureValue serverSignDigest(Digest digest) throws IOException {
+    public SignatureValue serverSignDigest(Digest digest) {
         return getToken().signDigest(digest, getPrivateKeyEntry());
     }
 
-    public SignatureValue serverSign(ToBeSigned toBeSigned, DigestAlgorithm digestAlgorithm) throws IOException {
+    public SignatureValue serverSign(ToBeSigned toBeSigned, DigestAlgorithm digestAlgorithm) {
         return getToken().sign(toBeSigned, digestAlgorithm, getPrivateKeyEntry());
     }
 

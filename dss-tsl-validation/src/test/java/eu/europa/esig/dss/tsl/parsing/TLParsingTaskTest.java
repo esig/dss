@@ -23,13 +23,13 @@ package eu.europa.esig.dss.tsl.parsing;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.model.timedependent.TimeDependentValues;
 import eu.europa.esig.dss.model.tsl.ConditionForQualifiers;
 import eu.europa.esig.dss.model.tsl.TrustService;
 import eu.europa.esig.dss.model.tsl.TrustServiceProvider;
 import eu.europa.esig.dss.model.tsl.TrustServiceStatusAndInformationExtensions;
-import eu.europa.esig.dss.model.timedependent.TimeDependentValues;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.tsl.function.TrustServicePredicate;
 import eu.europa.esig.dss.tsl.function.TrustServiceProviderPredicate;
 import eu.europa.esig.dss.tsl.source.TLSource;
@@ -39,7 +39,6 @@ import eu.europa.esig.trustedlist.jaxb.tsl.TSPType;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -66,7 +65,7 @@ class TLParsingTaskTest {
 	private static DSSDocument LOTL_NOT_PARSEABLE;
 
 	@BeforeAll
-	static void init() throws IOException {
+	static void init() {
 		DE_TL = new FileDocument("src/test/resources/de-tl.xml");
 		FR_TL = new FileDocument("src/test/resources/fr.xml");
 		IE_TL = new FileDocument("src/test/resources/ie-tl.xml");
@@ -242,7 +241,7 @@ class TLParsingTaskTest {
 	}
 
 	@Test
-	void countCertificatesDE() throws Exception {
+	void countCertificatesDE() {
 		TLParsingTask task = new TLParsingTask(DE_TL, new TLSource());
 		TLParsingResult result = task.get();
 

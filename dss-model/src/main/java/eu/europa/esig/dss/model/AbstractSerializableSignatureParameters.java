@@ -352,23 +352,6 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 	}
 
 	@Override
-	public int hashCode() {
-		int result = Boolean.hashCode(checkCertificateRevocation);
-		result = 31 * result + Boolean.hashCode(generateTBSWithoutCertificate);
-		result = 31 * result + Objects.hashCode(signatureLevel);
-		result = 31 * result + Objects.hashCode(signaturePackaging);
-		result = 31 * result + Objects.hashCode(signatureAlgorithm);
-		result = 31 * result + Objects.hashCode(encryptionAlgorithm);
-		result = 31 * result + Objects.hashCode(digestAlgorithm);
-		result = 31 * result + Objects.hashCode(referenceDigestAlgorithm);
-		result = 31 * result + Objects.hashCode(bLevelParams);
-		result = 31 * result + Objects.hashCode(contentTimestampParameters);
-		result = 31 * result + Objects.hashCode(signatureTimestampParameters);
-		result = 31 * result + Objects.hashCode(archiveTimestampParameters);
-		return result;
-	}
-
-	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
@@ -386,6 +369,23 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 				&& Objects.equals(contentTimestampParameters, that.contentTimestampParameters)
 				&& Objects.equals(signatureTimestampParameters, that.signatureTimestampParameters)
 				&& Objects.equals(archiveTimestampParameters, that.archiveTimestampParameters);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = Boolean.hashCode(checkCertificateRevocation);
+		result = 31 * result + Boolean.hashCode(generateTBSWithoutCertificate);
+		result = 31 * result + Objects.hashCode(signatureLevel);
+		result = 31 * result + Objects.hashCode(signaturePackaging);
+		result = 31 * result + Objects.hashCode(signatureAlgorithm);
+		result = 31 * result + Objects.hashCode(encryptionAlgorithm);
+		result = 31 * result + Objects.hashCode(digestAlgorithm);
+		result = 31 * result + Objects.hashCode(referenceDigestAlgorithm);
+		result = 31 * result + Objects.hashCode(bLevelParams);
+		result = 31 * result + Objects.hashCode(contentTimestampParameters);
+		result = 31 * result + Objects.hashCode(signatureTimestampParameters);
+		result = 31 * result + Objects.hashCode(archiveTimestampParameters);
+		return result;
 	}
 
 }

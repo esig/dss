@@ -20,14 +20,6 @@
  */
 package eu.europa.esig.dss.xades.validation.revocation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
@@ -41,10 +33,18 @@ import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.validation.AbstractXAdESTestValidation;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class XAdESRevocationSourceHUTest extends AbstractXAdESTestValidation {
 	
@@ -85,7 +85,7 @@ class XAdESRevocationSourceHUTest extends AbstractXAdESTestValidation {
 			assertNotNull(revocation.foundCertificates());
 			assertTrue(Utils.isCollectionNotEmpty(revocation.foundCertificates().getRelatedCertificates()));
 			assertTrue(Utils.isCollectionNotEmpty(revocation.foundCertificates().getRelatedCertificateRefs()));
-			assertTrue(Utils.isCollectionEmpty(revocation.foundCertificates().getOrphanCertificates()));;
+			assertTrue(Utils.isCollectionEmpty(revocation.foundCertificates().getOrphanCertificates()));
 			assertTrue(Utils.isCollectionEmpty(revocation.foundCertificates().getOrphanCertificateRefs()));
 			
 			assertEquals(1, revocation.foundCertificates().getRelatedCertificates().size());

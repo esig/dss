@@ -42,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class CertificateIssuedToLegalPersonCheckTest extends AbstractTestCheck {
 
 	@Test
-	void certificateIssuedToLegalPersonWithPolicyIdentifierCheck() throws Exception {
+	void certificateIssuedToLegalPersonWithPolicyIdentifierCheck() {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
@@ -65,7 +65,7 @@ class CertificateIssuedToLegalPersonCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	void failedCertificateIssuedToLegalPersonWithPolicyIdentifierCheck() throws Exception {
+	void failedCertificateIssuedToLegalPersonWithPolicyIdentifierCheck() {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 

@@ -176,4 +176,23 @@ public class DSSFileFont extends AbstractDSSFont {
 		return embedFontSubset;
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		DSSFileFont that = (DSSFileFont) o;
+		return embedFontSubset == that.embedFontSubset
+				&& Objects.equals(fileFont, that.fileFont)
+				&& Objects.equals(javaFont, that.javaFont);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = Objects.hashCode(fileFont);
+		result = 31 * result + Objects.hashCode(javaFont);
+		result = 31 * result + Boolean.hashCode(embedFontSubset);
+		return result;
+	}
+
 }

@@ -23,6 +23,8 @@ package eu.europa.esig.dss.cades;
 import eu.europa.esig.dss.signature.AbstractSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
 
+import java.util.Objects;
+
 /**
  * Defines SignatureParameters to deal with CAdES signature creation/extension
  */
@@ -225,6 +227,45 @@ public class CAdESSignatureParameters extends AbstractSignatureParameters<CAdEST
 			archiveTimestampParameters = new CAdESTimestampParameters();
 		}
 		return archiveTimestampParameters;
+	}
+
+	@Override
+	public String toString() {
+		return "CAdESSignatureParameters [" +
+				"en319122=" + en319122 +
+				", contentHintsType='" + contentHintsType + '\'' +
+				", contentHintsDescription='" + contentHintsDescription + '\'' +
+				", contentIdentifierPrefix='" + contentIdentifierPrefix + '\'' +
+				", contentIdentifierSuffix='" + contentIdentifierSuffix + '\'' +
+				", parallelSignature=" + parallelSignature +
+				"] " + super.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+
+		CAdESSignatureParameters that = (CAdESSignatureParameters) o;
+		return en319122 == that.en319122
+				&& parallelSignature == that.parallelSignature
+				&& Objects.equals(contentHintsType, that.contentHintsType)
+				&& Objects.equals(contentHintsDescription, that.contentHintsDescription)
+				&& Objects.equals(contentIdentifierPrefix, that.contentIdentifierPrefix)
+				&& Objects.equals(contentIdentifierSuffix, that.contentIdentifierSuffix);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + Boolean.hashCode(en319122);
+		result = 31 * result + Objects.hashCode(contentHintsType);
+		result = 31 * result + Objects.hashCode(contentHintsDescription);
+		result = 31 * result + Objects.hashCode(contentIdentifierPrefix);
+		result = 31 * result + Objects.hashCode(contentIdentifierSuffix);
+		result = 31 * result + Boolean.hashCode(parallelSignature);
+		return result;
 	}
 
 }

@@ -35,6 +35,7 @@ class Asn1EvidenceRecordUncommonChainRenewalValidationTest extends AbstractAsn1E
     	return new FileDocument("src/test/resources/LKSG_4.ers");
     }
 
+    @Override
     protected List<DSSDocument> getDetachedContents() {
         DigestDocument digestDocument = new DigestDocument();
         digestDocument.setName("LKSG_4.pdf");
@@ -54,4 +55,5 @@ class Asn1EvidenceRecordUncommonChainRenewalValidationTest extends AbstractAsn1E
         // ArchiveTimeStamp covers also two additional data objects
         return false;
     }
+
 }

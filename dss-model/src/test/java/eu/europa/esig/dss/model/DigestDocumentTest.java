@@ -24,7 +24,6 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
 import java.util.Base64;
@@ -77,7 +76,7 @@ class DigestDocumentTest {
 	}
 
 	@Test
-	void testSave() throws IOException {
+	void testSave() {
 		String base64EncodeDigest = "aaa";
 		DigestDocument doc = new DigestDocument(DigestAlgorithm.SHA1, base64EncodeDigest);
 		Exception exception = assertThrows(UnsupportedOperationException.class, () -> doc.save("target/test"));
@@ -85,7 +84,7 @@ class DigestDocumentTest {
 	}
 
 	@Test
-	void defaultConstructorTest() throws IOException, NoSuchAlgorithmException {
+	void defaultConstructorTest() throws NoSuchAlgorithmException {
 		Security.addProvider(new BouncyCastleProvider());
 		byte[] stringToEncode = "aaa".getBytes();
 		DigestDocument doc = new DigestDocument();

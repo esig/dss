@@ -20,12 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.sav;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
@@ -43,11 +37,16 @@ import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SigningCertificateReferencesValidityCheck;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SigningCertificateReferencesValidityCheckTest extends AbstractTestCheck {
 
 	@Test
-	void signingCertificateReferenceCheckTest() throws Exception {
+	void signingCertificateReferenceCheckTest() {
 		XmlSignature sig = new XmlSignature();
 		sig.setFoundCertificates(new XmlFoundCertificates());
 		
@@ -79,7 +78,7 @@ class SigningCertificateReferencesValidityCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	void failedSigningCertificateReferenceCheckTest() throws Exception {
+	void failedSigningCertificateReferenceCheckTest() {
 		XmlSignature sig = new XmlSignature();
 		sig.setFoundCertificates(new XmlFoundCertificates());
 		
@@ -111,7 +110,7 @@ class SigningCertificateReferencesValidityCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	void additionalReferenceSigningCertificateReferenceCheckTest() throws Exception {
+	void additionalReferenceSigningCertificateReferenceCheckTest() {
 		XmlSignature sig = new XmlSignature();
 		sig.setFoundCertificates(new XmlFoundCertificates());
 		
@@ -146,7 +145,7 @@ class SigningCertificateReferencesValidityCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	void additionalCertificateSigningCertificateReferenceCheckTest() throws Exception {
+	void additionalCertificateSigningCertificateReferenceCheckTest() {
 		XmlSignature sig = new XmlSignature();
 		sig.setFoundCertificates(new XmlFoundCertificates());
 		
@@ -179,7 +178,7 @@ class SigningCertificateReferencesValidityCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	void signingCertificateReferenceWithOrphanCheckTest() throws Exception {
+	void signingCertificateReferenceWithOrphanCheckTest() {
 		XmlSignature sig = new XmlSignature();
 		sig.setFoundCertificates(new XmlFoundCertificates());
 		

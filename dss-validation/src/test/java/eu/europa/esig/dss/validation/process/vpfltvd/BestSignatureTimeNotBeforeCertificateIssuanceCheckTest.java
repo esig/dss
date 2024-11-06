@@ -44,7 +44,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 class BestSignatureTimeNotBeforeCertificateIssuanceCheckTest extends AbstractTestCheck {
 
 	@Test
-	void validTest() throws Exception {
+	void validTest() {
 		
 		Date bestSignatureTime = new Date();
 		
@@ -70,32 +70,7 @@ class BestSignatureTimeNotBeforeCertificateIssuanceCheckTest extends AbstractTes
 	}
 
 	@Test
-	void validWithCustomIndicationTest() throws Exception {
-		
-		Date bestSignatureTime = new Date();
-		
-		XmlCertificate xmlCertificate = new XmlCertificate();
-		long nowMil = bestSignatureTime.getTime();
-		xmlCertificate.setNotBefore(new Date(nowMil - 43200000)); // 12 hours ago
-
-		LevelConstraint constraint = new LevelConstraint();
-		constraint.setLevel(Level.FAIL);
-		
-		XmlPSV result = new XmlPSV();
-		BestSignatureTimeNotBeforeCertificateIssuanceCheck<XmlPSV> bstnbcic = new BestSignatureTimeNotBeforeCertificateIssuanceCheck<>(
-				i18nProvider, result, bestSignatureTime, new CertificateWrapper(xmlCertificate), constraint);
-		bstnbcic.execute();
-
-		List<XmlConstraint> constraints = result.getConstraint();
-		assertEquals(1, constraints.size());
-		assertEquals(XmlStatus.OK, constraints.get(0).getStatus());
-		
-		XmlConclusion conclusion = result.getConclusion();
-		assertNull(conclusion);
-	}
-
-	@Test
-	void invalidTest() throws Exception {
+	void invalidTest() {
 		
 		Date bestSignatureTime = new Date();
 		

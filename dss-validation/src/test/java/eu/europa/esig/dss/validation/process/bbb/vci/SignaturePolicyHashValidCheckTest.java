@@ -40,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class SignaturePolicyHashValidCheckTest extends AbstractTestCheck {
 
 	@Test
-	void signaturePolicyHashValidCheck() throws Exception {
+	void signaturePolicyHashValidCheck() {
 		XmlPolicy xmlPolicy = new XmlPolicy();
 		XmlPolicyDigestAlgoAndValue xmlPolicyDigestAlgoAndValue = new XmlPolicyDigestAlgoAndValue();
 		xmlPolicyDigestAlgoAndValue.setMatch(true);
@@ -63,7 +63,7 @@ class SignaturePolicyHashValidCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	void invalidHashCheck() throws Exception {
+	void invalidHashCheck() {
 		XmlPolicy xmlPolicy = new XmlPolicy();
 		XmlPolicyDigestAlgoAndValue xmlPolicyDigestAlgoAndValue = new XmlPolicyDigestAlgoAndValue();
 		xmlPolicyDigestAlgoAndValue.setMatch(false);

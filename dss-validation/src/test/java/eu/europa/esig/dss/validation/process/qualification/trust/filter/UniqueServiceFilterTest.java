@@ -41,8 +41,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class UniqueServiceFilterTest {
 
-	private final static Date BEFORE_EIDAS_DATE = DatatypeConverter.parseDateTime("2014-07-01T00:00:00-00:00").getTime();
-	private final static Date AFTER_EIDAS_DATE = DatatypeConverter.parseDateTime("2017-07-01T00:00:00-00:00").getTime();
+	private static final Date BEFORE_EIDAS_DATE = DatatypeConverter.parseDateTime("2014-07-01T00:00:00-00:00").getTime();
+	private static final Date AFTER_EIDAS_DATE = DatatypeConverter.parseDateTime("2017-07-01T00:00:00-00:00").getTime();
 
 	@Test
 	void testCanConcludeOneTrustService() {

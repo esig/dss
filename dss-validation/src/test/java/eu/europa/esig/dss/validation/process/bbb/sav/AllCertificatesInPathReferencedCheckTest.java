@@ -44,7 +44,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class AllCertificatesInPathReferencedCheckTest extends AbstractTestCheck {
 
 	@Test
-	void certificatePathCheckTest() throws Exception {
+	void certificatePathCheckTest() {
 		XmlSignature sig = new XmlSignature();
 		sig.setFoundCertificates(new XmlFoundCertificates());
 		
@@ -76,7 +76,7 @@ class AllCertificatesInPathReferencedCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	void failedCertificatePathCheckTest() throws Exception {
+	void failedCertificatePathCheckTest() {
 		XmlSignature sig = new XmlSignature();
 		sig.setFoundCertificates(new XmlFoundCertificates());
 		
@@ -108,7 +108,7 @@ class AllCertificatesInPathReferencedCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	void additionalReferenceCertificatePathCheckTest() throws Exception {
+	void additionalReferenceCertificatePathCheckTest() {
 		XmlSignature sig = new XmlSignature();
 		sig.setFoundCertificates(new XmlFoundCertificates());
 		
@@ -143,7 +143,7 @@ class AllCertificatesInPathReferencedCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	void additionalCertificateCertificatePathCheckTest() throws Exception {
+	void additionalCertificateCertificatePathCheckTest() {
 		XmlSignature sig = new XmlSignature();
 		sig.setFoundCertificates(new XmlFoundCertificates());
 		
@@ -176,7 +176,7 @@ class AllCertificatesInPathReferencedCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	void oneReferenceTest() throws Exception {
+	void oneReferenceTest() {
 		XmlSignature sig = new XmlSignature();
 		sig.setFoundCertificates(new XmlFoundCertificates());
 

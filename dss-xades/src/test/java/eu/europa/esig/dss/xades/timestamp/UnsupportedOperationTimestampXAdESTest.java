@@ -28,7 +28,6 @@ import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -37,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class UnsupportedOperationTimestampXAdESTest extends PKIFactoryAccess {
 
 	@Test
-	void unsupportedOperationException() throws IOException {
+	void unsupportedOperationException() {
 		XAdESService service = new XAdESService(getOfflineCertificateVerifier());
 		service.setTspSource(getAlternateGoodTsa());
 

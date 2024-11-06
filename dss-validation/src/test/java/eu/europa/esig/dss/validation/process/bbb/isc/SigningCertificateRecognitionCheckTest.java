@@ -20,12 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.isc;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlISC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
@@ -37,11 +31,16 @@ import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.isc.checks.SigningCertificateRecognitionCheck;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SigningCertificateRecognitionCheckTest extends AbstractTestCheck {
 
 	@Test
-	void signingCertificateRecognitionCheck() throws Exception {
+	void signingCertificateRecognitionCheck() {
 		XmlSigningCertificate xsc = new XmlSigningCertificate();
 		XmlCertificate xCert = new XmlCertificate();
 		xCert.setId("C-79513A7C5EFA8B43C0042CAAA132226FFD959EA9AA9B9331A5BF3F6383381DBC");
@@ -66,7 +65,7 @@ class SigningCertificateRecognitionCheckTest extends AbstractTestCheck {
 	}
 	
 	@Test
-	void signingCertificateNotRecognizedCheck() throws Exception {
+	void signingCertificateNotRecognizedCheck() {
 		XmlSignature sig = new XmlSignature();
 
 		LevelConstraint constraint = new LevelConstraint();
@@ -85,7 +84,7 @@ class SigningCertificateRecognitionCheckTest extends AbstractTestCheck {
 	}
 	
 	@Test
-	void publicKeyCheck() throws Exception {
+	void publicKeyCheck() {
 		XmlSignature sig = new XmlSignature();
 		
 		XmlSigningCertificate xmlSigningCertificate = new XmlSigningCertificate();

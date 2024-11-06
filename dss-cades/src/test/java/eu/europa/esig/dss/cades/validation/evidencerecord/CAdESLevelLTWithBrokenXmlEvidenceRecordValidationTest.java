@@ -187,6 +187,7 @@ class CAdESLevelLTWithBrokenXmlEvidenceRecordValidationTest extends AbstractCAdE
         }
     }
 
+    @Override
     protected void verifySimpleReport(SimpleReport simpleReport) {
         for (String sigId : simpleReport.getSignatureIdList()) {
             List<XmlEvidenceRecord> signatureEvidenceRecords = simpleReport.getSignatureEvidenceRecords(sigId);

@@ -56,7 +56,7 @@ class PdfByteRangeDocumentTest {
     }
 
     @Test
-    void contentComparisonTest() throws IOException {
+    void contentComparisonTest() {
         PdfByteRangeDocument pdfRevisionDocument = new PdfByteRangeDocument(pdfDocument, byteRange);
         assertEquals("tlP+GBlImCLCAZGWWWTLmiHtZVVTqHeiRq+ddk5hV+M=", Utils.toBase64(pdfRevisionDocument.getDigestValue(DigestAlgorithm.SHA256)));
     }

@@ -389,4 +389,55 @@ public class JAdESSignatureParameters extends AbstractSignatureParameters<JAdEST
 		this.base64UrlEncodedEtsiUComponents = base64UrlEncodedEtsiUComponents;
 	}
 
+	@Override
+	public String toString() {
+		return "JAdESSignatureParameters [" +
+				"includeCertificateChain=" + includeCertificateChain +
+				", includeSignatureType=" + includeSignatureType +
+				", includeKeyIdentifier=" + includeKeyIdentifier +
+				", x509Url='" + x509Url + '\'' +
+				", base64UrlEncodedPayload=" + base64UrlEncodedPayload +
+				", base64UrlEncodedEtsiUComponents=" + base64UrlEncodedEtsiUComponents +
+				", signingCertificateDigestMethod=" + signingCertificateDigestMethod +
+				", jwsSerializationType=" + jwsSerializationType +
+				", sigDMechanism=" + sigDMechanism +
+				", jadesSigningTimeType=" + jadesSigningTimeType +
+				"] " + super.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+
+		JAdESSignatureParameters that = (JAdESSignatureParameters) o;
+		return includeCertificateChain == that.includeCertificateChain
+				&& includeSignatureType == that.includeSignatureType
+				&& includeKeyIdentifier == that.includeKeyIdentifier
+				&& base64UrlEncodedPayload == that.base64UrlEncodedPayload
+				&& base64UrlEncodedEtsiUComponents == that.base64UrlEncodedEtsiUComponents
+				&& Objects.equals(x509Url, that.x509Url)
+				&& signingCertificateDigestMethod == that.signingCertificateDigestMethod
+				&& jwsSerializationType == that.jwsSerializationType
+				&& sigDMechanism == that.sigDMechanism
+				&& jadesSigningTimeType == that.jadesSigningTimeType;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + Boolean.hashCode(includeCertificateChain);
+		result = 31 * result + Boolean.hashCode(includeSignatureType);
+		result = 31 * result + Boolean.hashCode(includeKeyIdentifier);
+		result = 31 * result + Objects.hashCode(x509Url);
+		result = 31 * result + Boolean.hashCode(base64UrlEncodedPayload);
+		result = 31 * result + Boolean.hashCode(base64UrlEncodedEtsiUComponents);
+		result = 31 * result + Objects.hashCode(signingCertificateDigestMethod);
+		result = 31 * result + Objects.hashCode(jwsSerializationType);
+		result = 31 * result + Objects.hashCode(sigDMechanism);
+		result = 31 * result + Objects.hashCode(jadesSigningTimeType);
+		return result;
+	}
+
 }

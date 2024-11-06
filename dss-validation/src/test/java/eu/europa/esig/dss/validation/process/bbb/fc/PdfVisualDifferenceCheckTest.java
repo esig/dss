@@ -95,7 +95,7 @@ class PdfVisualDifferenceCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	void multipleFailure() throws Exception {
+	void multipleFailure() {
 		XmlPDFRevision pdfRevision = new XmlPDFRevision();
 		XmlModificationDetection xmlModificationDetection = new XmlModificationDetection();
 		xmlModificationDetection.getAnnotationOverlap().add(getXmlModification(1));

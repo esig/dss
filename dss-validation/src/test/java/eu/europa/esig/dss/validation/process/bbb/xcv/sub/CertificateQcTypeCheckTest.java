@@ -42,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class CertificateQcTypeCheckTest extends AbstractTestCheck {
 
     @Test
-    void validTest() throws Exception {
+    void validTest() {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
         xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
@@ -69,7 +69,7 @@ class CertificateQcTypeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    void multipleAllowedValuesTest() throws Exception {
+    void multipleAllowedValuesTest() {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
         xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
@@ -97,7 +97,7 @@ class CertificateQcTypeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    void oidTest() throws Exception {
+    void oidTest() {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
         xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
@@ -124,7 +124,7 @@ class CertificateQcTypeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    void invalidTest() throws Exception {
+    void invalidTest() {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
         xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
@@ -151,7 +151,7 @@ class CertificateQcTypeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    void qcTypeNotPresentTest() throws Exception {
+    void qcTypeNotPresentTest() {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
         xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
@@ -173,7 +173,7 @@ class CertificateQcTypeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    void qcStatementsNotPresentTest() throws Exception {
+    void qcStatementsNotPresentTest() {
         MultiValuesConstraint constraint = new MultiValuesConstraint();
         constraint.setLevel(Level.FAIL);
         constraint.getId().add("qc-type-esign");

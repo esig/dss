@@ -294,6 +294,7 @@ public abstract class AbstractXAdESTestSignature extends AbstractPkiFactoryTestD
 		}
 	}
 
+	@Override
 	protected boolean documentPresent(DSSDocument original, List<DSSDocument> retrievedDocuments) {
 		boolean found = false;
 		boolean toBeCanonicalized = MimeTypeEnum.XML.equals(original.getMimeType()) || MimeTypeEnum.HTML.equals(original.getMimeType());

@@ -20,19 +20,18 @@
  */
 package eu.europa.esig.dss.policy;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import jakarta.xml.bind.JAXBException;
+import org.junit.jupiter.api.Test;
+import org.xml.sax.SAXException;
 
 import java.io.IOException;
 
-import jakarta.xml.bind.JAXBException;
-
-import org.junit.jupiter.api.Test;
-import org.xml.sax.SAXException;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class ValidationPolicyXmlDefinerTest {
 
 	@Test
-	void getJAXBContext() throws SAXException, JAXBException {
+	void getJAXBContext() throws JAXBException {
 		assertNotNull(ValidationPolicyXmlDefiner.getJAXBContext());
 		assertNotNull(ValidationPolicyXmlDefiner.getJAXBContext());
 	}

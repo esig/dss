@@ -84,6 +84,7 @@ public class PAdESLevelBWithAsn1EvidenceRecordValidationTest extends AbstractPAd
         assertTrue(timestampWrapper.isSignatureValid());
     }
 
+    @Override
     protected void checkEvidenceRecordTimestampedReferences(DiagnosticData diagnosticData) {
         List<SignatureWrapper> signatures = diagnosticData.getSignatures();
         assertEquals(1, signatures.size());

@@ -26,6 +26,7 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.resources.DSSResourcesHandler;
 import eu.europa.esig.dss.signature.resources.DSSResourcesHandlerBuilder;
+import eu.europa.esig.dss.signature.resources.InMemoryResourcesHandlerBuilder;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.utils.Utils;
@@ -56,6 +57,9 @@ import java.util.zip.ZipOutputStream;
 public class SecureContainerHandler implements ZipContainerHandler {
 
 	private static final Logger LOG = LoggerFactory.getLogger(SecureContainerHandler.class);
+
+	/** The mimetype filename */
+	public static final String MIMETYPE = "mimetype";
 
 	/**
 	 * Minimum file size to be analyzed on zip bombing
@@ -99,10 +103,10 @@ public class SecureContainerHandler implements ZipContainerHandler {
 	 * The builder to be used to create a new {@code DSSResourcesHandler} for each internal call,
 	 * defining a way working with internal resources (e.g. in memory or by using temporary files).
 	 * The resources are used on a document creation
-	 *
+	 * <p>
 	 * Default : {@code eu.europa.esig.dss.signature.resources.InMemoryResourcesHandler}, working with data in memory
 	 */
-	private DSSResourcesHandlerBuilder resourcesHandlerBuilder = ASiCUtils.DEFAULT_RESOURCES_HANDLER_BUILDER;
+	private DSSResourcesHandlerBuilder resourcesHandlerBuilder = new InMemoryResourcesHandlerBuilder();
 
 	/**
 	 * Default constructor instantiating handler with default configuration
@@ -381,7 +385,7 @@ public class SecureContainerHandler implements ZipContainerHandler {
 	}
 
 	private void ensureCompressionMethod(ZipEntry zipEntry, DSSDocument content) {
-		if (ASiCUtils.isMimetype(zipEntry.getName())) {
+		if (MIMETYPE.equals(zipEntry.getName())) {
 			/*
 			 * EN 319 162-1 "A.1 The mimetype file":
 			 * "mimetype" shall not be compressed (i.e. compression method in its ZIP header at offset 8 shall be set to zero);

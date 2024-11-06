@@ -35,6 +35,7 @@ import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -470,6 +471,7 @@ class DSS1686ExecutorTest extends AbstractProcessExecutorTest {
             assertTrue(basicTstAcceptableCheckFound);
             if (passedTst) {
                 assertTrue(basicTstConclusiveCheckFound);
+                assertFalse(pastTstAcceptableCheckFound);
                 assertTrue(digestAlgoTstCheckFound);
                 assertTrue(messageImprintTstCheckFound);
             }

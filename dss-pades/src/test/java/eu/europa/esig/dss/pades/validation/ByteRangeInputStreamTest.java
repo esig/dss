@@ -67,7 +67,7 @@ class ByteRangeInputStreamTest {
     @Test
     void emptyByteRangeTest() throws IOException {
         String str = "0123456789abcdefghijklmnopqrstuvwxyz";
-        ByteRange byteRange = new ByteRange(new int[] { 0, 0, 0, 0 });
+        ByteRange byteRange = new ByteRange(new int[] { 0, 0, 100, 0 });
         try (InputStream is = new ByteArrayInputStream(str.getBytes());
              ByteRangeInputStream bris = new ByteRangeInputStream(is, byteRange)) {
             byte[] result = Utils.toByteArray(bris);

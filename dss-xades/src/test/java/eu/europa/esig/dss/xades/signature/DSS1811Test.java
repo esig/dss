@@ -39,7 +39,6 @@ import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -52,7 +51,7 @@ class DSS1811Test extends PKIFactoryAccess {
 	private static final DigestAlgorithm USED_DIGEST = DigestAlgorithm.SHA512;
 
 	@Test
-	void testWithCompleteDocument() throws IOException {
+	void testWithCompleteDocument() {
 		XAdESService service = getService();
 		XAdESSignatureParameters params = getParams();
 		DSSDocument completeDocument = getCompleteDocument();
@@ -72,7 +71,7 @@ class DSS1811Test extends PKIFactoryAccess {
 	}
 
 	@Test
-	void testWithCompleteDocumentNoName() throws IOException {
+	void testWithCompleteDocumentNoName() {
 		XAdESService service = getService();
 		XAdESSignatureParameters params = getParams();
 		DSSDocument completeDocumentNoName = getCompleteDocumentNoName();

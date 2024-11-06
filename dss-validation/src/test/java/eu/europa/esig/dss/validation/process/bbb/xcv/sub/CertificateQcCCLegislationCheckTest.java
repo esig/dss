@@ -41,7 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class CertificateQcCCLegislationCheckTest extends AbstractTestCheck {
 
     @Test
-    void euQualifiedCertificateTest() throws Exception {
+    void euQualifiedCertificateTest() {
         MultiValuesConstraint constraint = new MultiValuesConstraint();
         constraint.setLevel(Level.FAIL);
 
@@ -62,7 +62,7 @@ class CertificateQcCCLegislationCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    void euNotQualifiedCertificateTest() throws Exception {
+    void euNotQualifiedCertificateTest() {
         MultiValuesConstraint constraint = new MultiValuesConstraint();
         constraint.setLevel(Level.FAIL);
 
@@ -84,7 +84,7 @@ class CertificateQcCCLegislationCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    void nonEUQualifiedCertificateTest() throws Exception {
+    void nonEUQualifiedCertificateTest() {
         MultiValuesConstraint constraint = new MultiValuesConstraint();
         constraint.getId().add("CR");
         constraint.setLevel(Level.FAIL);
@@ -107,7 +107,7 @@ class CertificateQcCCLegislationCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    void nonEUNotQualifiedCertificateTest() throws Exception {
+    void nonEUNotQualifiedCertificateTest() {
         MultiValuesConstraint constraint = new MultiValuesConstraint();
         constraint.getId().add("CR");
         constraint.setLevel(Level.FAIL);
@@ -130,7 +130,7 @@ class CertificateQcCCLegislationCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    void nonEUAcceptAllCertificateTest() throws Exception {
+    void nonEUAcceptAllCertificateTest() {
         MultiValuesConstraint constraint = new MultiValuesConstraint();
         constraint.getId().add("*");
         constraint.setLevel(Level.FAIL);
@@ -153,7 +153,7 @@ class CertificateQcCCLegislationCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    void nonEUMultiValuesTest() throws Exception {
+    void nonEUMultiValuesTest() {
         MultiValuesConstraint constraint = new MultiValuesConstraint();
         constraint.getId().addAll(Arrays.asList("AU", "BR", "CR", "US"));
         constraint.setLevel(Level.FAIL);
@@ -176,7 +176,7 @@ class CertificateQcCCLegislationCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    void nonEUMixedOrderTest() throws Exception {
+    void nonEUMixedOrderTest() {
         MultiValuesConstraint constraint = new MultiValuesConstraint();
         constraint.getId().addAll(Arrays.asList("AU", "BR", "CR", "US"));
         constraint.setLevel(Level.FAIL);
@@ -199,7 +199,7 @@ class CertificateQcCCLegislationCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    void nonEUMixedOrderFailTest() throws Exception {
+    void nonEUMixedOrderFailTest() {
         MultiValuesConstraint constraint = new MultiValuesConstraint();
         constraint.getId().addAll(Arrays.asList("AU", "US"));
         constraint.setLevel(Level.FAIL);

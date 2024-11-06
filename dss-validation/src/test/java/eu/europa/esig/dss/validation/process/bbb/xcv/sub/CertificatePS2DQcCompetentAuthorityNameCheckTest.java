@@ -41,7 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class CertificatePS2DQcCompetentAuthorityNameCheckTest extends AbstractTestCheck {
 
     @Test
-    void validTest() throws Exception {
+    void validTest() {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
         xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
@@ -67,7 +67,7 @@ class CertificatePS2DQcCompetentAuthorityNameCheckTest extends AbstractTestCheck
     }
 
     @Test
-    void multipleValuesTest() throws Exception {
+    void multipleValuesTest() {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
         xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
@@ -94,7 +94,7 @@ class CertificatePS2DQcCompetentAuthorityNameCheckTest extends AbstractTestCheck
     }
 
     @Test
-    void invalidTest() throws Exception {
+    void invalidTest() {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
         xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
@@ -120,7 +120,7 @@ class CertificatePS2DQcCompetentAuthorityNameCheckTest extends AbstractTestCheck
     }
 
     @Test
-    void qcPS2DNotPresentTest() throws Exception {
+    void qcPS2DNotPresentTest() {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
         xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
@@ -142,7 +142,7 @@ class CertificatePS2DQcCompetentAuthorityNameCheckTest extends AbstractTestCheck
     }
 
     @Test
-    void qcStatementsNotPresentTest() throws Exception {
+    void qcStatementsNotPresentTest() {
         MultiValuesConstraint constraint = new MultiValuesConstraint();
         constraint.setLevel(Level.FAIL);
         constraint.getId().add("CSSF");

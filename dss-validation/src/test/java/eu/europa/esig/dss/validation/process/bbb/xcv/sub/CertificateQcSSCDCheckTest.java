@@ -43,7 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class CertificateQcSSCDCheckTest extends AbstractTestCheck {
 
     @Test
-    void validTest() throws Exception {
+    void validTest() {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
         xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
@@ -68,7 +68,7 @@ class CertificateQcSSCDCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    void invalidTest() throws Exception {
+    void invalidTest() {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
         xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
@@ -93,7 +93,7 @@ class CertificateQcSSCDCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    void certificateSupportedByQSCDCheck() throws Exception {
+    void certificateSupportedByQSCDCheck() {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
@@ -116,7 +116,7 @@ class CertificateQcSSCDCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    void qcComplianceNotPresentTest() throws Exception {
+    void qcComplianceNotPresentTest() {
         XmlQcStatements xmlQcStatements = new XmlQcStatements();
         xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
 
@@ -137,7 +137,7 @@ class CertificateQcSSCDCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    void qcStatementsNotPresentTest() throws Exception {
+    void qcStatementsNotPresentTest() {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 

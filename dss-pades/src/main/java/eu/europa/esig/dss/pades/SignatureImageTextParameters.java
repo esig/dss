@@ -303,10 +303,48 @@ public class SignatureImageTextParameters implements Serializable {
 
 	@Override
 	public String toString() {
-		return "SignatureImageTextParameters [signerTextPosition=" + signerTextPosition
-				+ ", signerTextVerticalAlignment=" + signerTextVerticalAlignment + ", signerTextHorizontalAlignment="
-				+ signerTextHorizontalAlignment + ", text=" + text + ", padding=" + padding
-				+ ", textColor=" + textColor + ", backgroundColor=" + backgroundColor + "]";
+		return "SignatureImageTextParameters [" +
+				"signerTextPosition=" + signerTextPosition +
+				", signerTextVerticalAlignment=" + signerTextVerticalAlignment +
+				", signerTextHorizontalAlignment=" + signerTextHorizontalAlignment +
+				", text='" + text + '\'' +
+				", dssFont=" + dssFont +
+				", textWrapping=" + textWrapping +
+				", padding=" + padding +
+				", textColor=" + textColor +
+				", backgroundColor=" + backgroundColor +
+				']';
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		SignatureImageTextParameters that = (SignatureImageTextParameters) o;
+		return Float.compare(padding, that.padding) == 0
+				&& signerTextPosition == that.signerTextPosition
+				&& signerTextVerticalAlignment == that.signerTextVerticalAlignment
+				&& signerTextHorizontalAlignment == that.signerTextHorizontalAlignment
+				&& Objects.equals(text, that.text)
+				&& Objects.equals(dssFont, that.dssFont)
+				&& textWrapping == that.textWrapping
+				&& Objects.equals(textColor, that.textColor)
+				&& Objects.equals(backgroundColor, that.backgroundColor);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = Objects.hashCode(signerTextPosition);
+		result = 31 * result + Objects.hashCode(signerTextVerticalAlignment);
+		result = 31 * result + Objects.hashCode(signerTextHorizontalAlignment);
+		result = 31 * result + Objects.hashCode(text);
+		result = 31 * result + Objects.hashCode(dssFont);
+		result = 31 * result + Objects.hashCode(textWrapping);
+		result = 31 * result + Float.hashCode(padding);
+		result = 31 * result + Objects.hashCode(textColor);
+		result = 31 * result + Objects.hashCode(backgroundColor);
+		return result;
 	}
 
 }

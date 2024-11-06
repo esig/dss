@@ -83,6 +83,7 @@ public class PAdESLevelLTAWithOrphanRefsWithXmlEvidenceRecordValidationTest exte
         assertEquals(5, evidenceRecordWrapper.getCoveredSignedData().size());
     }
 
+    @Override
     protected void checkOrphanTokens(DiagnosticData diagnosticData) {
         assertEquals(3, Utils.collectionSize(diagnosticData.getAllOrphanCertificateObjects()));
         assertEquals(0, Utils.collectionSize(diagnosticData.getAllOrphanCertificateReferences()));

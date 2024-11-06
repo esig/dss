@@ -107,6 +107,7 @@ public abstract class AbstractJAdESTestValidation extends AbstractDocumentTestVa
 		}
 	}
 
+	@Override
 	protected void validateETSIDataObjectFormatType(SADataObjectFormatType dataObjectFormat) {
 		super.validateETSIDataObjectFormatType(dataObjectFormat);
 

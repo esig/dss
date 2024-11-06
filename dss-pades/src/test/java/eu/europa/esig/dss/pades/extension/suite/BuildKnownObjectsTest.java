@@ -41,7 +41,6 @@ import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -51,19 +50,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class BuildKnownObjectsTest extends PKIFactoryAccess {
 
-	/**
+	/*
 	 * Duplicate streams
-	 * 
 	 * CRLs: 27 = 21
-	 * 
 	 * 28 = 22
-	 * 
 	 * Certificates: 20=26
-	 * 
-	 * @throws IOException
 	 */
 	@Test
-	void buildKnownObjects() throws IOException {
+	void buildKnownObjects() {
 
 		DSSDocument dssDocument = new InMemoryDocument(
 				getClass().getResourceAsStream("/validation/dss-1696/Test.signed_Certipost-2048-SHA512.extended.pdf"));

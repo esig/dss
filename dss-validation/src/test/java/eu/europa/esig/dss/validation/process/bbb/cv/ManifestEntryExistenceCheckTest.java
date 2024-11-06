@@ -39,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ManifestEntryExistenceCheckTest extends AbstractTestCheck {
 
 	@Test
-	void valid() throws Exception {
+	void valid() {
 		XmlDigestMatcher manifest = new XmlDigestMatcher();
 		manifest.setType(DigestMatcherType.MANIFEST);
 		
@@ -66,7 +66,7 @@ class ManifestEntryExistenceCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	void notFound() throws Exception {
+	void notFound() {
 		XmlDigestMatcher manifest = new XmlDigestMatcher();
 		manifest.setType(DigestMatcherType.MANIFEST);
 
@@ -93,7 +93,7 @@ class ManifestEntryExistenceCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	void invalid() throws Exception {
+	void invalid() {
 		XmlDigestMatcher manifest = new XmlDigestMatcher();
 		manifest.setType(DigestMatcherType.MANIFEST);
 		

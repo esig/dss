@@ -34,7 +34,6 @@ import eu.europa.esig.dss.test.PKIFactoryAccess;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -51,7 +50,7 @@ public class PDFAWithFontSubsetTest extends AbstractPDFATestSignature {
     private DSSDocument documentToSign;
 
     @BeforeEach
-    void init() throws Exception {
+    void init() {
         documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/not_signed_pdfa.pdf"));
 
         signatureParameters = new PAdESSignatureParameters();
@@ -81,7 +80,7 @@ public class PDFAWithFontSubsetTest extends AbstractPDFATestSignature {
     }
 
     @Test
-    void embedFontTest() throws IOException {
+    void embedFontTest() {
         font.setEmbedFontSubset(false);
 
         DSSDocument signedDocument = sign();
@@ -91,7 +90,7 @@ public class PDFAWithFontSubsetTest extends AbstractPDFATestSignature {
     }
 
     @Test
-    void embedSubsetTest() throws IOException {
+    void embedSubsetTest() {
         font.setEmbedFontSubset(true);
 
         DSSDocument signedDocument = sign();

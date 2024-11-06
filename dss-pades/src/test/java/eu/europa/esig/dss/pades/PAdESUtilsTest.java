@@ -40,7 +40,6 @@ import org.bouncycastle.cms.CMSSignedData;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -191,7 +190,7 @@ public abstract class PAdESUtilsTest {
     }
 
     @Test
-    void getSignatureValueTest() throws IOException  {
+    void getSignatureValueTest()  {
         DSSDocument document = new InMemoryDocument(getClass().getResourceAsStream("/validation/PAdES-LT.pdf"));
         ByteRange byteRange = new ByteRange(new int[]{0, 92856, 111802, 50376});
 

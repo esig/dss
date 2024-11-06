@@ -34,6 +34,7 @@ class Asn1EvidenceRecordNoHashTree3RenewValidationTest extends AbstractAsn1Evide
     	return new FileDocument("src/test/resources/1_3_Renew_Unsorted.er");
     }
 
+    @Override
     protected List<DSSDocument> getDetachedContents() {
         return Collections.singletonList(new InMemoryDocument("123456".getBytes()));
     }

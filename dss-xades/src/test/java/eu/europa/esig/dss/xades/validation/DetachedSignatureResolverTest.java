@@ -48,7 +48,7 @@ class DetachedSignatureResolverTest {
 	}
 
 	@Test
-	void nullAttribute() throws ResourceResolverException {
+	void nullAttribute() {
 		Exception exception = assertThrows(ResourceResolverException.class, () -> {
 			DetachedSignatureResolver resolver = new DetachedSignatureResolver(Collections.emptyList(), DigestAlgorithm.SHA256);
 
@@ -65,7 +65,7 @@ class DetachedSignatureResolverTest {
 	}
 
 	@Test
-	void nullListAndNullAttribute() throws ResourceResolverException {
+	void nullListAndNullAttribute() {
 		Exception exception = assertThrows(ResourceResolverException.class, () -> {
 			DetachedSignatureResolver resolver = new DetachedSignatureResolver(null, DigestAlgorithm.SHA256);
 
@@ -95,7 +95,7 @@ class DetachedSignatureResolverTest {
 	}
 
 	@Test
-	void nullAttributeTwoDocs() throws ResourceResolverException {
+	void nullAttributeTwoDocs() {
 		Exception exception = assertThrows(ResourceResolverException.class, () -> {
 			DetachedSignatureResolver resolver = new DetachedSignatureResolver(
 					Arrays.asList(new InMemoryDocument(new byte[] { 1, 2, 3 }), new InMemoryDocument(new byte[] { 2, 3 })), DigestAlgorithm.SHA256);
@@ -112,7 +112,7 @@ class DetachedSignatureResolverTest {
 	}
 
 	@Test
-	void emptyAttribute() throws ResourceResolverException {
+	void emptyAttribute() {
 		Exception exception = assertThrows(ResourceResolverException.class, () -> {
 			DetachedSignatureResolver resolver = new DetachedSignatureResolver(Collections.emptyList(), DigestAlgorithm.SHA256);
 
@@ -141,7 +141,7 @@ class DetachedSignatureResolverTest {
 	}
 
 	@Test
-	void documentNameWithEmptyList() throws ResourceResolverException {
+	void documentNameWithEmptyList() {
 		Exception exception = assertThrows(ResourceResolverException.class, () -> {
 			DetachedSignatureResolver resolver = new DetachedSignatureResolver(Collections.emptyList(), DigestAlgorithm.SHA256);
 
@@ -159,7 +159,7 @@ class DetachedSignatureResolverTest {
 	}
 
 	@Test
-	void engineCanResolveURIWithWrongDocumentNameInList() throws ResourceResolverException {
+	void engineCanResolveURIWithWrongDocumentNameInList() {
 		Exception exception = assertThrows(ResourceResolverException.class, () -> {
 			DetachedSignatureResolver resolver = new DetachedSignatureResolver(
 					Arrays.asList(new InMemoryDocument(new byte[] { 1, 2, 3 }, "toto.xml", MimeTypeEnum.XML)),

@@ -20,13 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.vpfltvd;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.Date;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessLongTermData;
@@ -36,11 +29,17 @@ import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.BestSignatureTimeBeforeCertificateExpirationCheck;
+import org.junit.jupiter.api.Test;
+
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class BestSignatureTimeBeforeCertificateExpirationCheckTest extends AbstractTestCheck {
 
 	@Test
-	void validTest() throws Exception {
+	void validTest() {
 		
 		Date bestSignatureTime = new Date();
 		
@@ -63,7 +62,7 @@ class BestSignatureTimeBeforeCertificateExpirationCheckTest extends AbstractTest
 	}
 
 	@Test
-	void invalidTest() throws Exception {
+	void invalidTest() {
 		
 		Date bestSignatureTime = new Date();
 		

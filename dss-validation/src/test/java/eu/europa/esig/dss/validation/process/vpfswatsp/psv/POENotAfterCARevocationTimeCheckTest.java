@@ -50,7 +50,7 @@ class POENotAfterCARevocationTimeCheckTest extends AbstractTestCheck {
     private static final String REVOC_TWO_ID = "R-2";
 
     @Test
-    void validCheck() throws Exception {
+    void validCheck() {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
@@ -96,7 +96,7 @@ class POENotAfterCARevocationTimeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    void onlyOneRevocPOECheck() throws Exception {
+    void onlyOneRevocPOECheck() {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
@@ -137,7 +137,7 @@ class POENotAfterCARevocationTimeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    void anotherRevocPoeCheck() throws Exception {
+    void anotherRevocPoeCheck() {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
@@ -178,7 +178,7 @@ class POENotAfterCARevocationTimeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    void invalidTstTimeCheck() throws Exception {
+    void invalidTstTimeCheck() {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 

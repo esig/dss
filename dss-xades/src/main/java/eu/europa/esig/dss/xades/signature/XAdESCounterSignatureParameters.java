@@ -20,11 +20,11 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
 import eu.europa.esig.dss.model.SerializableCounterSignatureParameters;
 import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
 
 import java.util.Objects;
 
@@ -96,30 +96,28 @@ public class XAdESCounterSignatureParameters extends XAdESSignatureParameters im
 
 	@Override
 	public String toString() {
-		return "XAdESCounterSignatureParameters{" +
+		return "XAdESCounterSignatureParameters [" +
 				"signatureIdToCounterSign='" + signatureIdToCounterSign + '\'' +
 				", counterSignatureCanonicalizationMethod='" + counterSignatureCanonicalizationMethod + '\'' +
-				"} " + super.toString();
+				"] " + super.toString();
 	}
 
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
-		if (!(o instanceof XAdESCounterSignatureParameters)) return false;
+		if (o == null || getClass() != o.getClass()) return false;
 		if (!super.equals(o)) return false;
 
 		XAdESCounterSignatureParameters that = (XAdESCounterSignatureParameters) o;
-
-		if (!Objects.equals(signatureIdToCounterSign, that.signatureIdToCounterSign))
-			return false;
-		return Objects.equals(counterSignatureCanonicalizationMethod, that.counterSignatureCanonicalizationMethod);
+		return Objects.equals(signatureIdToCounterSign, that.signatureIdToCounterSign)
+				&& Objects.equals(counterSignatureCanonicalizationMethod, that.counterSignatureCanonicalizationMethod);
 	}
 
 	@Override
 	public int hashCode() {
 		int result = super.hashCode();
-		result = 31 * result + (signatureIdToCounterSign != null ? signatureIdToCounterSign.hashCode() : 0);
-		result = 31 * result + (counterSignatureCanonicalizationMethod != null ? counterSignatureCanonicalizationMethod.hashCode() : 0);
+		result = 31 * result + Objects.hashCode(signatureIdToCounterSign);
+		result = 31 * result + Objects.hashCode(counterSignatureCanonicalizationMethod);
 		return result;
 	}
 

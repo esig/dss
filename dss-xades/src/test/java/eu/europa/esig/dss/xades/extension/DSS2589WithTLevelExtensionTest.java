@@ -49,7 +49,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DSS2589WithTLevelExtensionTest extends AbstractXAdESTestSignature {
 
-    private final static DSSDocument ORIGINAL_DOC = new FileDocument("src/test/resources/sample.xml");
+    private static final DSSDocument ORIGINAL_DOC = new FileDocument("src/test/resources/sample.xml");
 
     private Calendar calendar;
 

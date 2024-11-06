@@ -43,6 +43,7 @@ class XAdESBaselineTTest extends XAdESBaselineBTest {
 	/**
 	 * Checks UnsignedSignatureProperties present for T/LT/LTA levels
 	 */
+	@Override
 	protected void checkUnsignedProperties() throws XPathExpressionException {
 		super.checkUnsignedProperties();
 

@@ -42,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class FormatCheckingResultCheckTest extends AbstractTestCheck {
 
     @Test
-    void validTest() throws Exception {
+    void validTest() {
         XmlFC xmlFC = new XmlFC();
         XmlConclusion xmlConclusion = new XmlConclusion();
         xmlConclusion.setIndication(Indication.PASSED);
@@ -62,7 +62,7 @@ class FormatCheckingResultCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    void invalidTest() throws Exception {
+    void invalidTest() {
         XmlFC xmlFC = new XmlFC();
         XmlConclusion xmlConclusion = new XmlConclusion();
         xmlConclusion.setIndication(Indication.FAILED);

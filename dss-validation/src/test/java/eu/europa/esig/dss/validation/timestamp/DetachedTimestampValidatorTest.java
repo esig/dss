@@ -65,7 +65,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class DetachedTimestampValidatorTest {
 
     @Test
-    void testWithAttached() throws Exception {
+    void testWithAttached() {
         DSSDocument timestamp = new FileDocument("src/test/resources/d-trust.tsr");
         DSSDocument timestampedContent = new InMemoryDocument("Test123".getBytes());
 
@@ -89,7 +89,7 @@ class DetachedTimestampValidatorTest {
     }
 
     @Test
-    void sdv1() throws Exception {
+    void sdv1() {
         DSSDocument timestamp = new FileDocument("src/test/resources/d-trust.tsr");
         DSSDocument timestampedContent = new InMemoryDocument("Test123".getBytes());
 
@@ -101,7 +101,7 @@ class DetachedTimestampValidatorTest {
     }
 
     @Test
-    void sdv2() throws Exception {
+    void sdv2() {
         DSSDocument timestamp = new FileDocument("src/test/resources/d-trust.tsr");
         DSSDocument timestampedContent = new InMemoryDocument("Test123".getBytes());
 
@@ -113,7 +113,7 @@ class DetachedTimestampValidatorTest {
     }
 
     @Test
-    void sdvNoFile() throws Exception {
+    void sdvNoFile() {
         DSSDocument timestamp = new FileDocument("src/test/resources/d-trust.tsr");
 
         DetachedTimestampValidator validator = new DetachedTimestampValidator(timestamp);
@@ -156,7 +156,7 @@ class DetachedTimestampValidatorTest {
     }
 
     @Test
-    void detachedNoFile() throws Exception {
+    void detachedNoFile() {
         DSSDocument timestamp = new FileDocument("src/test/resources/d-trust.tsr");
 
         DetachedTimestampValidator validator = new DetachedTimestampValidator(timestamp);
@@ -297,7 +297,7 @@ class DetachedTimestampValidatorTest {
     }
 
     @Test
-    void tstWithTwoCertRefsTest() throws Exception {
+    void tstWithTwoCertRefsTest() {
         DSSDocument tst = new FileDocument("src/test/resources/tst-two-refs.tst");
 
         CertificateToken caCert = DSSUtils.loadCertificateFromBase64EncodedString("MIIFzzCCA7egAwIBAgIUQPj3irDjZBBWkcjZ4Cz4wcZACkYwDQYJKoZIhvcNAQENBQAwbzELMAkGA1UEBhMCUEwxHTAbBgNVBAoMFE5hcm9kb3d5IEJhbmsgUG9sc2tpMSYwJAYDVQQDDB1OYXJvZG93ZSBDZW50cnVtIENlcnR5ZmlrYWNqaTEZMBcGA1UEYQwQVkFUUEwtNTI1MDAwODE5ODAeFw0xNjEyMDkwODUyNDFaFw0zOTEyMDkyMzU5NTlaMG8xCzAJBgNVBAYTAlBMMR0wGwYDVQQKDBROYXJvZG93eSBCYW5rIFBvbHNraTEmMCQGA1UEAwwdTmFyb2Rvd2UgQ2VudHJ1bSBDZXJ0eWZpa2FjamkxGTAXBgNVBGEMEFZBVFBMLTUyNTAwMDgxOTgwggIiMA0GCSqGSIb3DQEBAQUAA4ICDwAwggIKAoICAQDuyaDrULBW0PLYMfDwG1cZ6qWlTCzhb+vffSNd6AvF/4uTwCpNNcbHH3WHst1FD1ZygGBFyWjb6QpGwW58JSd+6+UuvsVTzYSilhrd4afmNGyKg945e4z1vY91bzivNPQ+LcXPMFx+GLcncrYzyQLsK5fqNOuVQDXPhrFG3o4gDxhUWsHjpBKWvFwIn1VzNcP17/MML5pYAnOGnlNQpjqexbzSEsDF3b1mTi50kkfHD/NN4zSaJMJGvsFjaIFhakEuLA6GeI7OO+do3oh5U8osUYOznbB1BtC3NGAE9NU1JeSHQH3speUX8iH70UjNdhyf96HY/ZDMRJF4bfWLdBCxCAmWJEYADbciUxus6TUjrjEzKSceMEmjg2OrDMUISSmsH44Usx6S367WmGVpsuMh39X0GQRLz+ntwqJi1yvRttcdrhrNo7jOEG2RElm113+GDo1mmtMB6TrKU42kEQsR1yH7FAO0/zsvnnVjUtFEHH45SQWS43fuZXO1ioS0SFNO/7wKZS+cYOzzGlMvv+eW6jVYouXupM/Fa5+vkhYnw6v/LTWIYylw9XbZXpgf+aSa8ZWiaTKfHhEHFmhVPjqUF4bkACVUknu+5UZKUTE1+69PgpEe0uhyzJ/zQIwZ6+MHpzDx2cfi6qU2sKGS8M99upjMm7GQ4LqHlG/lYrterwIDAQABo2MwYTAOBgNVHQ8BAf8EBAMCAQYwDwYDVR0TAQH/BAUwAwEB/zAfBgNVHSMEGDAWgBQps8jE36OH+GYFElj9Riq4mA15hzAdBgNVHQ4EFgQUKbPIxN+jh/hmBRJY/UYquJgNeYcwDQYJKoZIhvcNAQENBQADggIBAK+GzchsHQruy9sCZ2QDtF6kveZT5JVfpfJ7AspwVR3+VrH50aiGlSid4va1EBHWxD1uw7t3FMYvlvU/KAk+TA5+0GSrJFalO5nYNma9dYcgiD8tBQdB3tOU27wTrSD0VXsolXnRYNerNyeo5TWzqcy5InfZAT95XtmTE9mel1cu4yYwdT1/+m0ws9YZLdvaDK9tIJzkOn4CFTCvMUcGMOg1ncE1X07LH26ibsiVzgbVBoK6Qe+O4w533pTta9rOoudOqL44F/+YPSSfBNvRD49OpQNYsf2umgS2WTskwcSEM/gJoelE0Avp4c1rz0/6VQsX+JNOnHadKZQl1GUrUxEAiAy4A5hpz6qyTNtuDSc3tdbjaddLr7jESAaU3Zbi/s+vDeYqgO5jsR6RX1iyBpUTdciTnZOGSyRE5ek2g6IERpmnhP4bKL2ylJK+OchYFL/HFPFiAuRXBhiv5o8AOQGvWVY8bCvzliI869ISw4kdpmxnyx9GKxcuTTmvr3TMIbEpCuG+vCsmjvl+JtP/bGWSNjSpzxO4NEABnAjMBI4m+SGQy2wxJ3dEONZvjk1ph0bYE/cQRlgoxAlk8JuGt0XTw03Ar2EklhN8IeBk8e6KDeKxSNX60z3XTChCgTPj+ErwdNzX8tcRo5FrQ68VwTF27+pYYAEfAs2hqHZ2KHW0");
@@ -327,7 +327,7 @@ class DetachedTimestampValidatorTest {
         assertEquals(2, timestampWrapper.foundCertificates().getRelatedCertificateRefsByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size());
     }
 
-    private void validate(Reports reports) throws Exception {
+    private void validate(Reports reports) {
         assertNotNull(reports);
 
         DiagnosticData diagnosticData = reports.getDiagnosticData();

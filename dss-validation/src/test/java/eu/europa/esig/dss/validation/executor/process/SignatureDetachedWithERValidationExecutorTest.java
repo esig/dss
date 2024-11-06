@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class SignatureDetachedWithERValidationExecutorTest extends AbstractProcessExecutorTest {
+class SignatureDetachedWithERValidationExecutorTest extends AbstractProcessExecutorTest {
 
     @Test
     void testAllFilesCovered() throws Exception {

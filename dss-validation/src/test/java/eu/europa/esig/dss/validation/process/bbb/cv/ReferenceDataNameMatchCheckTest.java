@@ -38,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ReferenceDataNameMatchCheckTest extends AbstractTestCheck {
 
     @Test
-    void referenceDataIntactCheck() throws Exception {
+    void referenceDataIntactCheck() {
         XmlDigestMatcher digestMatcher = new XmlDigestMatcher();
         digestMatcher.setDataIntact(true);
         digestMatcher.setType(DigestMatcherType.MESSAGE_DIGEST);
@@ -58,7 +58,7 @@ class ReferenceDataNameMatchCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    void referenceDataNotIntactCheck() throws Exception {
+    void referenceDataNotIntactCheck() {
         XmlDigestMatcher digestMatcher = new XmlDigestMatcher();
         digestMatcher.setDataIntact(false);
         digestMatcher.setType(DigestMatcherType.MESSAGE_DIGEST);

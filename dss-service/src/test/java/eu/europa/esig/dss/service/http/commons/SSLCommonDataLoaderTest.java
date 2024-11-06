@@ -30,9 +30,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
-import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.util.List;
 
@@ -95,7 +93,7 @@ class SSLCommonDataLoaderTest {
 	}
 
 	@Test
-	void testTrustStore() throws GeneralSecurityException, IOException {
+	void testTrustStore() {
 		CommonsDataLoader dataLoader = new CommonsDataLoader();
 		dataLoader.setSslTruststore(correctKeyStore);
 		dataLoader.setSslTruststoreType(KS_TYPE);
@@ -108,7 +106,7 @@ class SSLCommonDataLoaderTest {
 
 	@Test
 	// TODO check root cause SSLHandshakeException
-	void testWrongTrustStore() throws GeneralSecurityException, IOException {
+	void testWrongTrustStore() {
 		CommonsDataLoader dataLoader = new CommonsDataLoader();
 		dataLoader.setSslTruststore(wrongKeyStore);
 		dataLoader.setSslTruststoreType(KS_TYPE);

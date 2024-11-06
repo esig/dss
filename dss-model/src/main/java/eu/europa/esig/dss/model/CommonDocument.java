@@ -29,7 +29,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.EnumMap;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * This class implements the default methods.
@@ -128,6 +131,37 @@ public abstract class CommonDocument implements DSSDocument {
 	public String toString() {
 		final String mimeTypeString = (mimeType == null) ? "" : mimeType.getMimeTypeString();
 		return "Name: " + name + " / MimeType: " + mimeTypeString;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		CommonDocument that = (CommonDocument) o;
+		if (digestMap != null && !digestMap.isEmpty()) {
+			Map.Entry<DigestAlgorithm, byte[]> e = digestMap.entrySet().iterator().next();
+			if (!Arrays.equals(e.getValue(), that.getDigestValue(e.getKey()))) {
+				return false;
+			}
+		} else if (that.digestMap != null && !that.digestMap.isEmpty()) {
+			Map.Entry<DigestAlgorithm, byte[]> e = that.digestMap.entrySet().iterator().next();
+			if (!Arrays.equals(e.getValue(), getDigestValue(e.getKey()))) {
+				return false;
+			}
+		} else if (!Arrays.equals(getDigestValue(DigestAlgorithm.SHA1), that.getDigestValue(DigestAlgorithm.SHA1))) {
+			return false;
+		}
+		return Objects.equals(mimeType, that.mimeType)
+				&& Objects.equals(name, that.name);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = Objects.hashCode(digestMap);
+		result = 31 * result + Objects.hashCode(mimeType);
+		result = 31 * result + Objects.hashCode(name);
+		return result;
 	}
 
 }

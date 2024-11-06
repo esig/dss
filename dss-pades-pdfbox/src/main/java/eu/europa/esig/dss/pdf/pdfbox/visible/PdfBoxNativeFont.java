@@ -25,6 +25,7 @@ import eu.europa.esig.dss.pades.DSSNativeFont;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 
 import java.awt.Font;
+import java.util.Objects;
 
 /**
  * The PDFBox native implementation of a Font
@@ -53,6 +54,20 @@ public class PdfBoxNativeFont extends AbstractDSSFont implements DSSNativeFont<P
 	@Override
 	public Font getJavaFont() {
 		throw new UnsupportedOperationException("PdfBoxNativeFont.class can be used only with PdfBoxNativeObjectFactory!");
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		PdfBoxNativeFont that = (PdfBoxNativeFont) o;
+		return Objects.equals(pdFont, that.pdFont);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(pdFont);
 	}
 
 }

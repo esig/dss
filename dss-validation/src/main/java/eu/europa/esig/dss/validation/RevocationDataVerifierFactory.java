@@ -52,7 +52,7 @@ import java.util.Set;
  */
 public class RevocationDataVerifierFactory {
 
-    private static final Logger LOG = LoggerFactory.getLogger(RevocationDataVerifier.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RevocationDataVerifierFactory.class);
 
     /** Validation policy to load RevocationDataVerifier from */
     private final ValidationPolicy validationPolicy;

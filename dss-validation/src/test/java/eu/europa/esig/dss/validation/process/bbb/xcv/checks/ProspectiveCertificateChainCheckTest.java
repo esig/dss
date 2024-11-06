@@ -19,7 +19,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ProspectiveCertificateChainCheckTest extends AbstractTestCheck {
+class ProspectiveCertificateChainCheckTest extends AbstractTestCheck {
 
     @Test
     void certTrustedTest() {

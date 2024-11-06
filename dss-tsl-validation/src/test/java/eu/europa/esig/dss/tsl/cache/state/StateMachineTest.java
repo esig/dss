@@ -38,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class StateMachineTest {
 
 	@Test
-	void testEmpty() throws Exception {
+	void testEmpty() {
 		CachedEntry<MockCachedResult> cachedEntry = new CachedEntry<>();
 		Date emptyStateDate = cachedEntry.getLastStateTransitionTime();
 		assertNotNull(emptyStateDate);

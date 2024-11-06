@@ -120,6 +120,7 @@ class Asn1EvidenceRecordNoneValidRefValidationValidationTest extends AbstractAsn
         assertEquals(0, evidenceRecordScopes.size());
     }
 
+    @Override
     protected void checkEvidenceRecordTimestampedReferences(DiagnosticData diagnosticData) {
         List<EvidenceRecordWrapper> evidenceRecords = diagnosticData.getEvidenceRecords();
         for (EvidenceRecordWrapper evidenceRecord : evidenceRecords) {
@@ -131,6 +132,7 @@ class Asn1EvidenceRecordNoneValidRefValidationValidationTest extends AbstractAsn
         }
     }
 
+    @Override
     protected void checkTimestamp(DiagnosticData diagnosticData, TimestampWrapper timestampWrapper) {
         assertNotNull(timestampWrapper.getProductionTime());
         assertTrue(timestampWrapper.isMessageImprintDataFound());

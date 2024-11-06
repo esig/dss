@@ -61,7 +61,7 @@ public class TrustAnchorVerifierFactory {
     private void instantiateUseSunsetDate(TrustAnchorVerifier trustAnchorVerifier, ValidationPolicy validationPolicy) {
         boolean useSunsetDate = false;
         if (validationPolicy.getSignatureConstraints() != null) {
-            useSunsetDate = useSunsetDate || getUseSunsetDate(validationPolicy.getSignatureConstraints().getBasicSignatureConstraints());
+            useSunsetDate = getUseSunsetDate(validationPolicy.getSignatureConstraints().getBasicSignatureConstraints());
         }
         if (validationPolicy.getCounterSignatureConstraints() != null) {
             useSunsetDate = useSunsetDate || getUseSunsetDate(validationPolicy.getCounterSignatureConstraints().getBasicSignatureConstraints());

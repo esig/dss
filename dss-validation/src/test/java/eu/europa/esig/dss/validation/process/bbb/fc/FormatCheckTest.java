@@ -20,12 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.fc;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
@@ -36,11 +30,16 @@ import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.FormatCheck;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class FormatCheckTest extends AbstractTestCheck {
 
 	@Test
-	void validFormat() throws Exception {
+	void validFormat() {
 		XmlSignature sig = new XmlSignature();
 		sig.setSignatureFormat(SignatureLevel.CAdES_BASELINE_B);
 
@@ -58,7 +57,7 @@ class FormatCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	void unknownFormat() throws Exception {
+	void unknownFormat() {
 		XmlSignature sig = new XmlSignature();
 		sig.setSignatureFormat(SignatureLevel.UNKNOWN);
 

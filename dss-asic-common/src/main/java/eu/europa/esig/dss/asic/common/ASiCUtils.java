@@ -30,8 +30,6 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.ManifestEntry;
 import eu.europa.esig.dss.model.ManifestFile;
-import eu.europa.esig.dss.signature.resources.DSSResourcesHandlerBuilder;
-import eu.europa.esig.dss.signature.resources.InMemoryResourcesHandlerBuilder;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.utils.Utils;
@@ -154,13 +152,10 @@ public final class ASiCUtils {
 	public static final byte[] ZIP_PREFIX = new byte[] {'P','K'};
 
 	/** The zip comment identifier in the end of ZIP archive */
-	private static final byte[] MAGIC_DIR = {0x50, 0x4b, 0x05, 0x06};
+	private static final byte[] MAGIC_DIR = { 0x50, 0x4b, 0x05, 0x06 };
 
 	/** The maximum number of bytes to be read in a file to extract a zip comment */
 	private static final int MAX_TO_READ = 0xFFFF + 2 + MAGIC_DIR.length;
-
-	/** The default resources handler builder to be used across the code */
-	public static final DSSResourcesHandlerBuilder DEFAULT_RESOURCES_HANDLER_BUILDER = new InMemoryResourcesHandlerBuilder();
 
 	/**
 	 * Singleton

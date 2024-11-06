@@ -24,6 +24,7 @@ import eu.europa.esig.dss.enumerations.VisualSignatureRotation;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Parameters which allow to create a new signature field in a PDF document
@@ -198,8 +199,42 @@ public class SignatureFieldParameters implements Serializable {
 
 	@Override
 	public String toString() {
-		return "SignatureFieldParameters [name=" + fieldId + ", page=" + page + ", originX=" + originX + ", originY="
-				+ originY + ", width=" + width + ", height=" + height + ", rotation=" + rotation + "]";
+		return "SignatureFieldParameters [" +
+				"fieldId='" + fieldId + '\'' +
+				", page=" + page +
+				", originX=" + originX +
+				", originY=" + originY +
+				", width=" + width +
+				", height=" + height +
+				", rotation=" + rotation +
+				']';
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		SignatureFieldParameters that = (SignatureFieldParameters) o;
+		return page == that.page
+				&& Float.compare(originX, that.originX) == 0
+				&& Float.compare(originY, that.originY) == 0
+				&& Float.compare(width, that.width) == 0
+				&& Float.compare(height, that.height) == 0
+				&& Objects.equals(fieldId, that.fieldId)
+				&& rotation == that.rotation;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = Objects.hashCode(fieldId);
+		result = 31 * result + page;
+		result = 31 * result + Float.hashCode(originX);
+		result = 31 * result + Float.hashCode(originY);
+		result = 31 * result + Float.hashCode(width);
+		result = 31 * result + Float.hashCode(height);
+		result = 31 * result + Objects.hashCode(rotation);
+		return result;
 	}
 
 }

@@ -45,6 +45,7 @@ class DSS2506Test extends AbstractXAdESTestValidation {
         return new FileDocument("src/test/resources/validation/dss-2506.xml");
     }
 
+    @Override
     protected void checkOrphanTokens(DiagnosticData diagnosticData) {
         // orphan data must not be added into the signature
         assertTrue(Utils.isCollectionEmpty(diagnosticData.getAllOrphanCertificateObjects()));
@@ -53,6 +54,7 @@ class DSS2506Test extends AbstractXAdESTestValidation {
         assertTrue(Utils.isCollectionEmpty(diagnosticData.getAllOrphanRevocationReferences()));
     }
 
+    @Override
     protected void checkBLevelValid(DiagnosticData diagnosticData) {
         SignatureWrapper signatureWrapper = diagnosticData.getSignatures().iterator().next();
         List<XmlDigestMatcher> digestMatchers = signatureWrapper.getDigestMatchers();
@@ -63,6 +65,7 @@ class DSS2506Test extends AbstractXAdESTestValidation {
         assertFalse(diagnosticData.isBLevelTechnicallyValid(signatureWrapper.getId()));
     }
 
+    @Override
     protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
         SignatureWrapper signatureWrapper = diagnosticData.getSignatures().iterator().next();
         assertFalse(signatureWrapper.isSigningCertificateIdentified());
@@ -81,6 +84,7 @@ class DSS2506Test extends AbstractXAdESTestValidation {
         assertFalse(orphan.isIssuerSerialMatch());
     }
 
+    @Override
     protected void validateSignerInformation(SignerInformationType signerInformation) {
         assertNull(signerInformation);
     }

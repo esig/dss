@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class CertificateTypeAtSigningTimeCheckTest extends AbstractTestCheck {
 
     @Test
-    void qCertForESigTest() throws Exception {
+    void qCertForESigTest() {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
@@ -51,7 +51,7 @@ class CertificateTypeAtSigningTimeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    void certForESealTest() throws Exception {
+    void certForESealTest() {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
@@ -66,7 +66,7 @@ class CertificateTypeAtSigningTimeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    void naTest() throws Exception {
+    void naTest() {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 

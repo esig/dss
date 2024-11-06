@@ -20,12 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.fc;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
@@ -37,11 +31,16 @@ import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.ReferencesNotAmbiguousCheck;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ReferencesNotAmbiguousCheckTest extends AbstractTestCheck {
 
 	@Test
-	void valid() throws Exception {
+	void valid() {
 		XmlSignature sig = new XmlSignature();
 
 		XmlDigestMatcher xmlDigestMatcher = new XmlDigestMatcher();
@@ -64,7 +63,7 @@ class ReferencesNotAmbiguousCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	void fail() throws Exception {
+	void fail() {
 		XmlSignature sig = new XmlSignature();
 
 		XmlDigestMatcher xmlDigestMatcher = new XmlDigestMatcher();

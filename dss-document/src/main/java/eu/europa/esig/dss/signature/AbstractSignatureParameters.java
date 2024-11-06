@@ -30,9 +30,11 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Parameters for a Signature creation/extension
@@ -242,6 +244,45 @@ public abstract class AbstractSignatureParameters<TP extends SerializableTimesta
 	 */
 	public void reinit() {
 		context = null;
+	}
+
+	@Override
+	public String toString() {
+		return "AbstractSignatureParameters [" +
+				"context=" + context +
+				", detachedContents=" + detachedContents +
+				", signingCertificate=" + signingCertificate +
+				", signedData=" + Arrays.toString(signedData) +
+				", certificateChain=" + certificateChain +
+				", contentTimestamps=" + contentTimestamps +
+				"] " + super.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+
+		AbstractSignatureParameters<?> that = (AbstractSignatureParameters<?>) o;
+		return Objects.equals(context, that.context)
+				&& Objects.equals(detachedContents, that.detachedContents)
+				&& Objects.equals(signingCertificate, that.signingCertificate)
+				&& Arrays.equals(signedData, that.signedData)
+				&& Objects.equals(certificateChain, that.certificateChain)
+				&& Objects.equals(contentTimestamps, that.contentTimestamps);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + Objects.hashCode(context);
+		result = 31 * result + Objects.hashCode(detachedContents);
+		result = 31 * result + Objects.hashCode(signingCertificate);
+		result = 31 * result + Arrays.hashCode(signedData);
+		result = 31 * result + Objects.hashCode(certificateChain);
+		result = 31 * result + Objects.hashCode(contentTimestamps);
+		return result;
 	}
 
 }

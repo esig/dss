@@ -42,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class CryptographicVerificationResultCheckTest extends AbstractTestCheck {
 
     @Test
-    void validTest() throws Exception {
+    void validTest() {
         XmlCV xmlCV = new XmlCV();
         XmlConclusion xmlConclusion = new XmlConclusion();
         xmlConclusion.setIndication(Indication.PASSED);
@@ -62,7 +62,7 @@ class CryptographicVerificationResultCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    void invalidTest() throws Exception {
+    void invalidTest() {
         XmlCV xmlCV = new XmlCV();
         XmlConclusion xmlConclusion = new XmlConclusion();
         xmlConclusion.setIndication(Indication.FAILED);

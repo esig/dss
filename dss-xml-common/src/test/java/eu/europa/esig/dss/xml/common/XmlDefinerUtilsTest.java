@@ -21,11 +21,9 @@
 package eu.europa.esig.dss.xml.common;
 
 import org.junit.jupiter.api.Test;
-import org.xml.sax.SAXException;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.validation.SchemaFactory;
 
@@ -36,12 +34,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class XmlDefinerUtilsTest {
 
 	@Test
-	void getSecureSchemaFactory() throws SAXException {
+	void getSecureSchemaFactory() {
 		assertNotNull(XmlDefinerUtils.getInstance().getSecureSchemaFactory());
 	}
 
 	@Test
-	void getSecureTransformerFactory() throws TransformerConfigurationException {
+	void getSecureTransformerFactory() {
 		assertNotNull(XmlDefinerUtils.getInstance().getSecureTransformerFactory());
 	}
 
@@ -51,7 +49,7 @@ class XmlDefinerUtilsTest {
 	}
 
 	@Test
-	void mockSecureSchemaFactoryBuilderTest() throws SAXException {
+	void mockSecureSchemaFactoryBuilderTest() {
 		MockSchemaFactoryBuilder schemaFactoryBuilder = new MockSchemaFactoryBuilder();
 
 		SchemaFactory secureSchemaFactory = XmlDefinerUtils.getInstance().getSecureSchemaFactory();

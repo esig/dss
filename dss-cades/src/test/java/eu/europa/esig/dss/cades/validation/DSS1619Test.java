@@ -50,7 +50,7 @@ class DSS1619Test extends AbstractCAdESTestValidation {
 		int archiveTimestampCounter = 0;
 		int timestampsWithArchiveTypeCounter = 0;
 		int timestampV2Counter = 0;
-		for (TimestampWrapper timestamp : timestampList) {;
+		for (TimestampWrapper timestamp : timestampList) {
 			if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestamp.getType())) {
 				archiveTimestampCounter++;
 				assertNotNull(timestamp.getArchiveTimestampType());

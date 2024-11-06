@@ -1,7 +1,7 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ *
  * This file is part of the "DSS - Digital Signature Services" project.
  * 
  * This library is free software; you can redistribute it and/or
@@ -69,34 +69,24 @@ public abstract class TimestampParameters implements SerializableTimestampParame
 	}
 
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = (prime * result) + ((digestAlgorithm == null) ? 0 : digestAlgorithm.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		TimestampParameters other = (TimestampParameters) obj;
-		if (digestAlgorithm != other.digestAlgorithm) {
-			return false;
-		}
-		return true;
-	}
-
-	@Override
 	public String toString() {
-		return "TimestampParameters {digestAlgorithm=" + digestAlgorithm.getName() + "}";
+		return "TimestampParameters [" +
+				"digestAlgorithm=" + digestAlgorithm +
+				']';
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		TimestampParameters that = (TimestampParameters) o;
+		return digestAlgorithm == that.digestAlgorithm;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(digestAlgorithm);
 	}
 
 }

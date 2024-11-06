@@ -42,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class TimestampMessageImprintCheckTest extends AbstractTestCheck {
 
     @Test
-    void validTest() throws Exception {
+    void validTest() {
         XmlTimestamp xmlTimestamp = new XmlTimestamp();
         xmlTimestamp.setType(TimestampType.CONTENT_TIMESTAMP);
         xmlTimestamp.setProductionTime(new Date());
@@ -67,7 +67,7 @@ class TimestampMessageImprintCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    void failedTest() throws Exception {
+    void failedTest() {
         XmlTimestamp xmlTimestamp = new XmlTimestamp();
         xmlTimestamp.setType(TimestampType.CONTENT_TIMESTAMP);
         xmlTimestamp.setProductionTime(new Date());

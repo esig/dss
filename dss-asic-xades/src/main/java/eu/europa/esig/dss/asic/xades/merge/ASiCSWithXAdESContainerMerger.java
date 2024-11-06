@@ -173,14 +173,6 @@ public class ASiCSWithXAdESContainerMerger extends AbstractASiCWithXAdESContaine
         return result;
     }
 
-    private Set<String> getEvidenceRecordDocumentNameSet() {
-        Set<String> result = new HashSet<>();
-        for (ASiCContent asicContent : asicContents) {
-            result.addAll(DSSUtils.getDocumentNames(asicContent.getEvidenceRecordDocuments()));
-        }
-        return result;
-    }
-
     @Override
     protected void ensureSignaturesAllowMerge() {
         if (Arrays.stream(asicContents).filter(asicContent ->

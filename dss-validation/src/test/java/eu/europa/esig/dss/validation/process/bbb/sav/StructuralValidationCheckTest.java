@@ -20,12 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.sav;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
@@ -36,11 +30,16 @@ import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.StructuralValidationCheck;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class StructuralValidationCheckTest extends AbstractTestCheck {
 
 	@Test
-	void structuralValidationCheck() throws Exception {
+	void structuralValidationCheck() {
 		XmlStructuralValidation xsv = new XmlStructuralValidation();
 		xsv.setValid(true);
 
@@ -60,7 +59,7 @@ class StructuralValidationCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	void failedStructuralValidationCheck() throws Exception {
+	void failedStructuralValidationCheck() {
 		XmlStructuralValidation xsv = new XmlStructuralValidation();
 		xsv.setValid(false);
 
@@ -80,7 +79,7 @@ class StructuralValidationCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	void emptyStructuralValidationCheck() throws Exception {
+	void emptyStructuralValidationCheck() {
 		XmlSignature sig = new XmlSignature();
 
 		LevelConstraint constraint = new LevelConstraint();

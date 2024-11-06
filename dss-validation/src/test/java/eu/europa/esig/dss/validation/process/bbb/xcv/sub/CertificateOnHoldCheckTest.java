@@ -46,7 +46,7 @@ class CertificateOnHoldCheckTest extends AbstractTestCheck {
 	private static final Calendar CAL2 = DatatypeConverter.parseDate("2018-01-01");
 
 	@Test
-	void certificateOnHoldCheck() throws Exception {
+	void certificateOnHoldCheck() {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
@@ -65,7 +65,7 @@ class CertificateOnHoldCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	void failedCertificateOnHoldCheck() throws Exception {
+	void failedCertificateOnHoldCheck() {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 

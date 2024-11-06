@@ -100,7 +100,7 @@ class FileCacheDataLoaderTest {
 	}
 
 	@Test
-	void testNotNetworkProtocol() throws IOException {
+	void testNotNetworkProtocol() {
 		FileCacheDataLoader specificDataLoader = new FileCacheDataLoader();
 		specificDataLoader.setDataLoader(new MemoryDataLoader(new HashMap<>()));
 		specificDataLoader.setFileCacheDirectory(cacheDirectory);

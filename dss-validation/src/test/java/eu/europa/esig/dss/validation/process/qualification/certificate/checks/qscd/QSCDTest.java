@@ -55,9 +55,9 @@ class QSCDTest {
 
 	private static final String UNKNOWN_OID = "0.0.0";
 
-	public final static Date PRE_EIDAS_DATE = DatatypeConverter.parseDateTime("2015-07-01T00:00:00.000Z").getTime();
+	public static final Date PRE_EIDAS_DATE = DatatypeConverter.parseDateTime("2015-07-01T00:00:00.000Z").getTime();
 
-	public final static Date POST_EIDAS_DATE = DatatypeConverter.parseDateTime("2016-07-01T00:00:00.000Z").getTime();
+	public static final Date POST_EIDAS_DATE = DatatypeConverter.parseDateTime("2016-07-01T00:00:00.000Z").getTime();
 
 	private static final QSCDStrategy QSCDTrue = new QSCDStrategy() {
 

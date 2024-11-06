@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ASiCConsequentlyCoveredFilesTest extends AbstractProcessExecutorTest {
+class ASiCConsequentlyCoveredFilesTest extends AbstractProcessExecutorTest {
 
     @Test
     void testAllFilesCovered() throws Exception {

@@ -24,12 +24,11 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.signature.PAdESService;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -48,7 +47,7 @@ class ITextSignatureFieldTest extends PKIFactoryAccess {
     }
 
     @Test
-    void testAddSignatureField() throws IOException {
+    void testAddSignatureField() {
         DSSDocument document = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
         assertTrue(Utils.isCollectionEmpty(padesService.getAvailableSignatureFields(document)));
 
@@ -79,7 +78,7 @@ class ITextSignatureFieldTest extends PKIFactoryAccess {
     }
 
     @Test
-    void testAddSignatureFieldPageNotFound() throws IOException {
+    void testAddSignatureFieldPageNotFound() {
         DSSDocument document = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
         assertTrue(Utils.isCollectionEmpty(padesService.getAvailableSignatureFields(document)));
 

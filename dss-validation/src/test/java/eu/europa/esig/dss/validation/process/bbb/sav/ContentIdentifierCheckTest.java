@@ -20,12 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.sav;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
@@ -35,11 +29,16 @@ import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.ValueConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.ContentIdentifierCheck;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ContentIdentifierCheckTest extends AbstractTestCheck {
 
 	@Test
-	void contentIdentifierCheck() throws Exception {
+	void contentIdentifierCheck() {
 		XmlSignature sig = new XmlSignature();
 		sig.setContentIdentifier("Valid_Value");
 
@@ -57,7 +56,7 @@ class ContentIdentifierCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	void failedContentIdentifierCheck() throws Exception {
+	void failedContentIdentifierCheck() {
 		XmlSignature sig = new XmlSignature();
 		sig.setContentIdentifier("Invalid_Value");
 

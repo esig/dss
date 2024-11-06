@@ -93,6 +93,7 @@ public abstract class AbstractASiCWithCAdESTestSignature
         checkManifests(asicContent.getAllManifestDocuments());
     }
 
+    @Override
     protected void checkExtractedContent(ASiCContent asicContent) {
         assertNotNull(asicContent);
         assertTrue(Utils.isCollectionNotEmpty(asicContent.getSignatureDocuments()));

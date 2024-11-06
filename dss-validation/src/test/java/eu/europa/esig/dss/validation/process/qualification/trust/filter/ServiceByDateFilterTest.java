@@ -20,24 +20,22 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.trust.filter;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
+import eu.europa.esig.dss.utils.Utils;
+import jakarta.xml.bind.DatatypeConverter;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Date;
 
-import jakarta.xml.bind.DatatypeConverter;
-
-import org.junit.jupiter.api.Test;
-
-import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
-import eu.europa.esig.dss.utils.Utils;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ServiceByDateFilterTest {
 
-	private final static Date DATE1 = DatatypeConverter.parseDateTime("2015-07-01T00:00:00-00:00").getTime();
-	private final static Date DATE2 = DatatypeConverter.parseDateTime("2016-07-01T00:00:00-00:00").getTime();
-	private final static Date DATE3 = DatatypeConverter.parseDateTime("2017-07-01T00:00:00-00:00").getTime();
+	private static final Date DATE1 = DatatypeConverter.parseDateTime("2015-07-01T00:00:00-00:00").getTime();
+	private static final Date DATE2 = DatatypeConverter.parseDateTime("2016-07-01T00:00:00-00:00").getTime();
+	private static final Date DATE3 = DatatypeConverter.parseDateTime("2017-07-01T00:00:00-00:00").getTime();
 
 	@Test
 	void noCAQC() {

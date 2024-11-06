@@ -206,6 +206,7 @@ public abstract class AbstractCAdESWithEvidenceRecordTestValidation extends Abst
 
     protected abstract int getNumberOfExpectedEvidenceScopes();
 
+    @Override
     protected void verifySimpleReport(SimpleReport simpleReport) {
         super.verifySimpleReport(simpleReport);
 

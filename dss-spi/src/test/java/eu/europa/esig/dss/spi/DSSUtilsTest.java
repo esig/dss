@@ -48,7 +48,6 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.Security;
 import java.security.Signature;
@@ -425,7 +424,7 @@ class DSSUtilsTest {
 	}
 
 	@Test
-	void loadEdDSACert() throws NoSuchAlgorithmException, IOException {
+	void loadEdDSACert() throws IOException {
 
 		// RFC 8410
 
@@ -574,7 +573,7 @@ class DSSUtilsTest {
 				SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.SHA256));
 	}
 
-	private void assertECSignatureValid(byte[] originalBinaries, SignatureAlgorithm currentAlgorithm) throws Exception {
+	private void assertECSignatureValid(byte[] originalBinaries, SignatureAlgorithm currentAlgorithm) {
 		SignatureValue signatureValue = new SignatureValue();
 		signatureValue.setAlgorithm(currentAlgorithm);
 		signatureValue.setValue(originalBinaries);

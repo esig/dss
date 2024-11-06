@@ -41,7 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class CertificatePolicyIdsCheckTest extends AbstractTestCheck {
 
 	@Test
-	void certificatePolicyIdsCheck() throws Exception {
+	void certificatePolicyIdsCheck() {
 		XmlCertificatePolicies certificatePolicies = new XmlCertificatePolicies();
 		certificatePolicies.setOID(CertificateExtensionEnum.CERTIFICATE_POLICIES.getOid());
 		XmlCertificatePolicy oid = new XmlCertificatePolicy();
@@ -65,7 +65,7 @@ class CertificatePolicyIdsCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	void failedCertificatePolicyIdsCheck() throws Exception {
+	void failedCertificatePolicyIdsCheck() {
 		XmlCertificatePolicies certificatePolicies = new XmlCertificatePolicies();
 		certificatePolicies.setOID(CertificateExtensionEnum.CERTIFICATE_POLICIES.getOid());
 		XmlCertificatePolicy oid = new XmlCertificatePolicy();

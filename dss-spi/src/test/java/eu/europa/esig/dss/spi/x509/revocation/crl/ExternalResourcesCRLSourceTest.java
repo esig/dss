@@ -71,7 +71,7 @@ class ExternalResourcesCRLSourceTest {
 	}
 
 	@Test
-	void testDSSDocuments() throws IOException {
+	void testDSSDocuments() {
 		DSSDocument crl1 = new FileDocument("src/test/resources/crl/LTRCA.crl");
 		DSSDocument crl2 = new FileDocument("src/test/resources/crl/LTGRCA.crl");
 		ExternalResourcesCRLSource source = new ExternalResourcesCRLSource(crl1, crl2);

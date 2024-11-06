@@ -109,7 +109,7 @@ class TLValidationJobTest {
 	private static CertificateToken skCertificate;
 	
 	@BeforeAll
-	static void initBeforeAll() throws IOException {
+	static void initBeforeAll() {
 		urlMap = new HashMap<>();
 		
 		cacheDirectory = new File("target/cache");

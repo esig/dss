@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TrustServiceQualifiersKnownConsistencyTest extends AbstractTrustServiceConsistencyTest {
 
-    private final static TrustServiceCondition condition = new TrustServiceQualifiersKnownConsistency();
+    private static final TrustServiceCondition condition = new TrustServiceQualifiersKnownConsistency();
 
     @Test
     void testQCWithSSCD() {

@@ -2270,7 +2270,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlGeneralSubtree xmlGeneralSubtree = new XmlGeneralSubtree();
         xmlGeneralSubtree.setType(GeneralNameType.DIRECTORY_NAME);
-        xmlGeneralSubtree.setValue("C=US,O=Test Certificates,OU=permittedSubtree1");
+        xmlGeneralSubtree.setValue("O=Test Certificates,OU=permittedSubtree1");
         nameConstraints.getPermittedSubtrees().add(xmlGeneralSubtree);
         rootCertificate.getCertificateExtensions().add(nameConstraints);
 

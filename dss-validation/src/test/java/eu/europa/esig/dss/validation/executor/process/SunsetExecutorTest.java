@@ -55,7 +55,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class SunsetExecutorTest extends AbstractProcessExecutorTest {
+class SunsetExecutorTest extends AbstractProcessExecutorTest {
 
     @Test
     void validTest() throws Exception {

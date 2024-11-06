@@ -48,7 +48,7 @@ class POEExistsAtOrBeforeControlTimeCheckTest extends AbstractTestCheck {
     private static final String CERT_ID = "C-1";
 
     @Test
-    void validCheck() throws Exception {
+    void validCheck() {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
@@ -85,7 +85,7 @@ class POEExistsAtOrBeforeControlTimeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    void porAtControlTimeCheck() throws Exception {
+    void porAtControlTimeCheck() {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
@@ -122,7 +122,7 @@ class POEExistsAtOrBeforeControlTimeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    void poeAfterCheck() throws Exception {
+    void poeAfterCheck() {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
@@ -159,7 +159,7 @@ class POEExistsAtOrBeforeControlTimeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    void noPoeCheck() throws Exception {
+    void noPoeCheck() {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
@@ -196,7 +196,7 @@ class POEExistsAtOrBeforeControlTimeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    void invalidTstCheck() throws Exception {
+    void invalidTstCheck() {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 

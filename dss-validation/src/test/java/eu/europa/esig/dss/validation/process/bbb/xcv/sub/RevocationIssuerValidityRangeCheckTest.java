@@ -41,7 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class RevocationIssuerValidityRangeCheckTest extends AbstractTestCheck {
 
     @Test
-    void validCheck() throws Exception {
+    void validCheck() {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
@@ -69,7 +69,7 @@ class RevocationIssuerValidityRangeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    void failCheck() throws Exception {
+    void failCheck() {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 

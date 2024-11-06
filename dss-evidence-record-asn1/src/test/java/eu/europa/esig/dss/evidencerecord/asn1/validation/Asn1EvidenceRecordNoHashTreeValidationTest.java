@@ -34,6 +34,7 @@ class Asn1EvidenceRecordNoHashTreeValidationTest extends AbstractAsn1EvidenceRec
     	return new FileDocument("src/test/resources/1_0_Initial.er");
     }
 
+    @Override
     protected List<DSSDocument> getDetachedContents() {
         return Collections.singletonList(new InMemoryDocument("123456".getBytes()));
     }

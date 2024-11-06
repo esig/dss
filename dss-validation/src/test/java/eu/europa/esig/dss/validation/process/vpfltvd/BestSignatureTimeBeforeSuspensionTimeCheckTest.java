@@ -45,7 +45,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 class BestSignatureTimeBeforeSuspensionTimeCheckTest extends AbstractTestCheck {
 
     @Test
-    void validTest() throws Exception {
+    void validTest() {
 
         Date bestSignatureTime = new Date();
 
@@ -73,7 +73,7 @@ class BestSignatureTimeBeforeSuspensionTimeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    void invalidTest() throws Exception {
+    void invalidTest() {
 
         Date bestSignatureTime = new Date();
 
@@ -103,7 +103,7 @@ class BestSignatureTimeBeforeSuspensionTimeCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    void sameTimeTest() throws Exception {
+    void sameTimeTest() {
 
         Date bestSignatureTime = new Date();
 

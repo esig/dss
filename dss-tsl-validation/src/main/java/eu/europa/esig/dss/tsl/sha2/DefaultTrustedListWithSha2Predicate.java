@@ -61,6 +61,13 @@ public class DefaultTrustedListWithSha2Predicate extends AbstractTrustedListWith
         this.cacheExpirationTime = cacheExpirationTime;
     }
 
+    /**
+     * This method evaluates whether the sha2 digest match the original document
+     *
+     * @param documentWithSha2 {@link DocumentWithSha2} containing the original document and downloaded sha2 document
+     * @return TRUE if the sha2 corresponding to the document match the digest of the cached content and
+     *         no refresh is required, FALSE otherwise (if refresh is required for any reason)
+     */
     @Override
     public boolean test(DocumentWithSha2 documentWithSha2) {
         Objects.requireNonNull(documentWithSha2, "Document shall be provided!");

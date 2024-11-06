@@ -39,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class RevocationDataFreshCheckWithNullConstraintTest extends AbstractTestCheck {
 
 	@Test
-	void revocationDataCheckWithNullConstraint() throws Exception {
+	void revocationDataCheckWithNullConstraint() {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
@@ -63,7 +63,7 @@ class RevocationDataFreshCheckWithNullConstraintTest extends AbstractTestCheck {
 	}
 
 	@Test
-	void revocationDataProductionTimeAfterControlTimeCheckWithNullConstraint() throws Exception {
+	void revocationDataProductionTimeAfterControlTimeCheckWithNullConstraint() {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
@@ -87,7 +87,7 @@ class RevocationDataFreshCheckWithNullConstraintTest extends AbstractTestCheck {
 	}
 
 	@Test
-	void failedRevocationDataFreshCheckWithNullConstraint() throws Exception {
+	void failedRevocationDataFreshCheckWithNullConstraint() {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 

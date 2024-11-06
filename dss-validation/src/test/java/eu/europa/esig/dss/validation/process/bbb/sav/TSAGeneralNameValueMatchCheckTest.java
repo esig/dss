@@ -39,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class TSAGeneralNameValueMatchCheckTest extends AbstractTestCheck {
 
     @Test
-    void valid() throws Exception {
+    void valid() {
         XmlTimestamp timestamp = new XmlTimestamp();
 
         XmlTSAGeneralName xmlTSAGeneralName = new XmlTSAGeneralName();
@@ -62,7 +62,7 @@ class TSAGeneralNameValueMatchCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    void orderDoNotMatch() throws Exception {
+    void orderDoNotMatch() {
         XmlTimestamp timestamp = new XmlTimestamp();
 
         XmlTSAGeneralName xmlTSAGeneralName = new XmlTSAGeneralName();
@@ -85,7 +85,7 @@ class TSAGeneralNameValueMatchCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    void invalid() throws Exception {
+    void invalid() {
         XmlTimestamp timestamp = new XmlTimestamp();
 
         XmlTSAGeneralName xmlTSAGeneralName = new XmlTSAGeneralName();

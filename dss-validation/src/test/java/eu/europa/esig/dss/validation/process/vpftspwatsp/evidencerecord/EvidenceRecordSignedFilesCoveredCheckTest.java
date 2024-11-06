@@ -19,7 +19,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class EvidenceRecordSignedFilesCoveredCheckTest extends AbstractTestCheck {
+class EvidenceRecordSignedFilesCoveredCheckTest extends AbstractTestCheck {
 
     @Test
     void validTest() {

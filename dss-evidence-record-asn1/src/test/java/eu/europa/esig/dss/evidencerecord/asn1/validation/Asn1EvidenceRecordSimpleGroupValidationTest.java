@@ -81,6 +81,7 @@ class Asn1EvidenceRecordSimpleGroupValidationTest extends AbstractAsn1EvidenceRe
         assertEquals(0, orphanDataObjectsCounter);
     }
 
+    @Override
     protected void checkTimestamp(DiagnosticData diagnosticData, TimestampWrapper timestampWrapper) {
         assertNotNull(timestampWrapper.getProductionTime());
         assertTrue(timestampWrapper.isMessageImprintDataFound());

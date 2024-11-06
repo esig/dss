@@ -205,6 +205,7 @@ public abstract class AbstractASiCWithEvidenceRecordTestValidation extends Abstr
         }
     }
 
+    @Override
     protected void verifySimpleReport(SimpleReport simpleReport) {
         assertNotNull(simpleReport);
 

@@ -29,9 +29,9 @@ import java.util.List;
 
 public abstract class AbstractTrustServiceConsistencyTest {
 
-    protected final static Date PRE_EIDAS_DATE = DatatypeConverter.parseDateTime("2015-07-01T00:00:00.000Z").getTime();
+    protected static final Date PRE_EIDAS_DATE = DatatypeConverter.parseDateTime("2015-07-01T00:00:00.000Z").getTime();
 
-    protected final static Date POST_EIDAS_DATE = DatatypeConverter.parseDateTime("2016-07-01T00:00:00.000Z").getTime();
+    protected static final Date POST_EIDAS_DATE = DatatypeConverter.parseDateTime("2016-07-01T00:00:00.000Z").getTime();
 
     protected List<XmlQualifier> getXmlQualifierList(String... uris) {
         List<XmlQualifier> qualifierList = new ArrayList<>();

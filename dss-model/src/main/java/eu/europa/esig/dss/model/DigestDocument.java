@@ -255,4 +255,16 @@ public class DigestDocument extends CommonDocument {
 		throw new UnsupportedOperationException("Not possible with Digest document");
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		DigestDocument that = (DigestDocument) o;
+		return Objects.equals(digestMap, that.digestMap)
+				&& Objects.equals(mimeType, that.mimeType)
+				&& Objects.equals(name, that.name);
+
+	}
+
 }

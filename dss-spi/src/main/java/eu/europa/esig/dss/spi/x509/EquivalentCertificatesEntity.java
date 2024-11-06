@@ -40,7 +40,7 @@ class EquivalentCertificatesEntity implements CertificateSourceEntity {
 	
 	private static final long serialVersionUID = -8670353777128605464L;
 
-	private static final Logger LOG = LoggerFactory.getLogger(CertificateSourceEntity.class);
+	private static final Logger LOG = LoggerFactory.getLogger(EquivalentCertificatesEntity.class);
 
 	/**
 	 * Unique Id for all certificates (SHA-256 of the common public key) 

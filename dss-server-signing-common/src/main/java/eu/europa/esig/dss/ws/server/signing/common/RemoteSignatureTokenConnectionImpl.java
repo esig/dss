@@ -36,8 +36,6 @@ import eu.europa.esig.dss.ws.dto.RemoteCertificate;
 import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
 import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
 import eu.europa.esig.dss.ws.server.signing.dto.RemoteKeyEntry;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,8 +44,6 @@ import java.util.List;
  * Default implementation of a remote signing service
  */
 public class RemoteSignatureTokenConnectionImpl implements RemoteSignatureTokenConnection {
-
-	private static final Logger LOG = LoggerFactory.getLogger(RemoteSignatureTokenConnectionImpl.class);
 
 	/** The KeyStore token connection */
 	private AbstractKeyStoreTokenConnection token;

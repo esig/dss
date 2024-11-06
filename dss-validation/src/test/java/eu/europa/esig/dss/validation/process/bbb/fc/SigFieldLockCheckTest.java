@@ -77,7 +77,7 @@ class SigFieldLockCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    void allFieldsLockedFail() {;
+    void allFieldsLockedFail() {
         XmlPDFRevision pdfRevision = new XmlPDFRevision();
 
         XmlPDFSignatureField signatureField = new XmlPDFSignatureField();

@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.test;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -208,7 +207,7 @@ public class UnmarshallingTester {
 		}
 
 		@Override
-		public XmlTimestampedObject deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+		public XmlTimestampedObject deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
 			ObjectMapper mapper = (ObjectMapper) jp.getCodec();
 			ObjectNode root = mapper.readTree(jp);
 			JsonNode categoryNode = root.get("Category");

@@ -20,13 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.sav;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.Date;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
@@ -36,11 +29,17 @@ import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SigningTimeCheck;
+import org.junit.jupiter.api.Test;
+
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SigningTimeCheckTest extends AbstractTestCheck {
 
 	@Test
-	void signingTimeCheckTest() throws Exception {
+	void signingTimeCheckTest() {
 		XmlSignature sig = new XmlSignature();
 		sig.setClaimedSigningTime(new Date());
 
@@ -57,7 +56,7 @@ class SigningTimeCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	void failedSigningTimeCheckTest() throws Exception {
+	void failedSigningTimeCheckTest() {
 		XmlSignature sig = new XmlSignature();
 
 		LevelConstraint constraint = new LevelConstraint();

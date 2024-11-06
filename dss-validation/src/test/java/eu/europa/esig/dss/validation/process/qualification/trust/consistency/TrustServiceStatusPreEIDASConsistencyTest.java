@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TrustServiceStatusPreEIDASConsistencyTest extends AbstractTrustServiceConsistencyTest {
 
-    private final static TrustServiceCondition condition = new TrustServiceStatusPreEIDASConsistency();
+    private static final TrustServiceCondition condition = new TrustServiceStatusPreEIDASConsistency();
 
     @Test
     void testAccreditedPreEidas() {

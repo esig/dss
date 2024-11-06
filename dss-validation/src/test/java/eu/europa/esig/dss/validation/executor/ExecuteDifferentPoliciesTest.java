@@ -69,7 +69,7 @@ class ExecuteDifferentPoliciesTest {
 
 	@ParameterizedTest(name = "Execution {index} : {0} + {1}")
 	@MethodSource("data")
-	void noError(XmlDiagnosticData diagnosticData, ValidationPolicy policy) throws Exception {
+	void noError(XmlDiagnosticData diagnosticData, ValidationPolicy policy) {
 		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
 		executor.setValidationPolicy(policy);

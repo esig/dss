@@ -105,6 +105,7 @@ public class PAdESOverwrittenDSSDictTest extends AbstractPAdESTestValidation {
         assertEquals(1, signatureWithoutVriCounter);
     }
 
+    @Override
     protected void checkOrphanTokens(DiagnosticData diagnosticData) {
         assertEquals(3, Utils.collectionSize(diagnosticData.getAllOrphanCertificateObjects()));
         assertEquals(0, Utils.collectionSize(diagnosticData.getAllOrphanCertificateReferences()));

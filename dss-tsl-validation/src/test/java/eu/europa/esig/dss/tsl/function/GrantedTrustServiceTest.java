@@ -20,20 +20,19 @@
  */
 package eu.europa.esig.dss.tsl.function;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.trustedlist.jaxb.tsl.ServiceHistoryInstanceType;
 import eu.europa.esig.trustedlist.jaxb.tsl.ServiceHistoryType;
 import eu.europa.esig.trustedlist.jaxb.tsl.TSPServiceInformationType;
 import eu.europa.esig.trustedlist.jaxb.tsl.TSPServiceType;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class GrantedTrustServiceTest {
 
     @Test
-    void test() throws Exception {
+    void test() {
         TSPServiceType tspService = new TSPServiceType();
         TSPServiceInformationType informationType = new TSPServiceInformationType();
         GrantedTrustService selector = new GrantedTrustService();

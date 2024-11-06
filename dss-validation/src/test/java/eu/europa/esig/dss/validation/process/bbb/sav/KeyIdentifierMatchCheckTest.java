@@ -44,7 +44,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class KeyIdentifierMatchCheckTest extends AbstractTestCheck {
 
     @Test
-    void validTest() throws Exception {
+    void validTest() {
         XmlCertificateRef xmlCertificateRef = new XmlCertificateRef();
         xmlCertificateRef.setOrigin(CertificateRefOrigin.KEY_IDENTIFIER);
 
@@ -76,7 +76,7 @@ class KeyIdentifierMatchCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    void invalidTest() throws Exception {
+    void invalidTest() {
         XmlCertificateRef xmlCertificateRef = new XmlCertificateRef();
         xmlCertificateRef.setOrigin(CertificateRefOrigin.KEY_IDENTIFIER);
 
@@ -108,7 +108,7 @@ class KeyIdentifierMatchCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    void issuerSerialNotDefinedTest() throws Exception {
+    void issuerSerialNotDefinedTest() {
         XmlCertificateRef xmlCertificateRef = new XmlCertificateRef();
         xmlCertificateRef.setOrigin(CertificateRefOrigin.KEY_IDENTIFIER);
 

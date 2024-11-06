@@ -110,6 +110,7 @@ public class ASiCEvidenceRecordDigestBuilder extends ZipContentEvidenceRecordDig
      * @param dataObjectDigestBuilderFactory {@link DataObjectDigestBuilderFactory}
      * @return this {@link ASiCEvidenceRecordDigestBuilder}
      */
+    @Override
     public ASiCEvidenceRecordDigestBuilder setDataObjectDigestBuilderFactory(DataObjectDigestBuilderFactory dataObjectDigestBuilderFactory) {
         super.setDataObjectDigestBuilderFactory(dataObjectDigestBuilderFactory);
         return this;

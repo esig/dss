@@ -23,6 +23,8 @@ package eu.europa.esig.dss.jades.signature;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.model.SerializableCounterSignatureParameters;
 
+import java.util.Objects;
+
 /**
  * Parameters to create a JAdES counter-signature
  *
@@ -51,6 +53,30 @@ public class JAdESCounterSignatureParameters extends JAdESSignatureParameters im
 	@Override
 	public void setSignatureIdToCounterSign(String signatureId) {
 		this.signatureIdToCounterSign = signatureId;
+	}
+
+	@Override
+	public String toString() {
+		return "JAdESCounterSignatureParameters [" +
+				"signatureIdToCounterSign='" + signatureIdToCounterSign + '\'' +
+				"] " + super.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+
+		JAdESCounterSignatureParameters that = (JAdESCounterSignatureParameters) o;
+		return Objects.equals(signatureIdToCounterSign, that.signatureIdToCounterSign);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + Objects.hashCode(signatureIdToCounterSign);
+		return result;
 	}
 
 }

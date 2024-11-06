@@ -25,6 +25,7 @@ import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * Defines TimestampParameters to deal with ASiC with CAdES timestamp creation
@@ -84,6 +85,33 @@ public class ASiCWithCAdESTimestampParameters extends CAdESTimestampParameters i
 	 */
 	public void setZipCreationDate(Date zipCreationDate) {
 		this.zipCreationDate = zipCreationDate;
+	}
+
+	@Override
+	public String toString() {
+		return "ASiCWithCAdESTimestampParameters [" +
+				"zipCreationDate=" + zipCreationDate +
+				", asicParams=" + asicParams +
+				"] " + super.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+
+		ASiCWithCAdESTimestampParameters that = (ASiCWithCAdESTimestampParameters) o;
+		return Objects.equals(zipCreationDate, that.zipCreationDate)
+				&& Objects.equals(asicParams, that.asicParams);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + Objects.hashCode(zipCreationDate);
+		result = 31 * result + Objects.hashCode(asicParams);
+		return result;
 	}
 
 }

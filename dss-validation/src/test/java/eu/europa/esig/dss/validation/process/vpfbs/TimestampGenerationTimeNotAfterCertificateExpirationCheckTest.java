@@ -40,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class TimestampGenerationTimeNotAfterCertificateExpirationCheckTest extends AbstractTestCheck {
 
     @Test
-    void validTest() throws Exception {
+    void validTest() {
         Date certNotAfter = new Date();
 
         Calendar calendar = Calendar.getInstance();
@@ -64,7 +64,7 @@ class TimestampGenerationTimeNotAfterCertificateExpirationCheckTest extends Abst
     }
 
     @Test
-    void invalidTest() throws Exception {
+    void invalidTest() {
         Date certNotAfter = new Date();
 
         Calendar calendar = Calendar.getInstance();

@@ -42,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class IdentificationOfSigningCertificateResultCheckTest extends AbstractTestCheck {
 
     @Test
-    void validTest() throws Exception {
+    void validTest() {
         XmlISC xmlISC = new XmlISC();
         XmlConclusion xmlConclusion = new XmlConclusion();
         xmlConclusion.setIndication(Indication.PASSED);
@@ -62,7 +62,7 @@ class IdentificationOfSigningCertificateResultCheckTest extends AbstractTestChec
     }
 
     @Test
-    void invalidTest() throws Exception {
+    void invalidTest() {
         XmlISC xmlISC = new XmlISC();
         XmlConclusion xmlConclusion = new XmlConclusion();
         xmlConclusion.setIndication(Indication.INDETERMINATE);

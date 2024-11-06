@@ -75,7 +75,7 @@ class DTDInjectionTest extends AbstractXAdESTestValidation {
 				new File("src/test/resources/validation/xades-with-dtd-injection.xml"));
 		Exception exception = assertThrows(IllegalInputException.class,
 				() -> SignedDocumentValidator.fromDocument(fileDocument));
-		assertTrue(exception.getMessage().contains("An XML file is expected : Unable to parse content (XML expected)"));;
+		assertTrue(exception.getMessage().contains("An XML file is expected : Unable to parse content (XML expected)"));
 	}
 
 }

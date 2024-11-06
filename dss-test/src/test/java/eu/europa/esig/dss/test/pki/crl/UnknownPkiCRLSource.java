@@ -39,6 +39,7 @@ public class UnknownPkiCRLSource extends PKICRLSource {
         super(certEntityRepository);
     }
 
+    @Override
     protected void addRevocationsToCRL(X509v2CRLBuilder builder, Map<CertEntity, CertEntityRevocation> revocationList) {
         revocationList.forEach((key, value) -> {
             X509CertificateHolder entry = DSSASN1Utils.getX509CertificateHolder(key.getCertificateToken());

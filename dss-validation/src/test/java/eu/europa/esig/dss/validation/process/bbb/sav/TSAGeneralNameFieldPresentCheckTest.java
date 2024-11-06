@@ -39,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class TSAGeneralNameFieldPresentCheckTest extends AbstractTestCheck {
 
     @Test
-    void valid() throws Exception {
+    void valid() {
         XmlTimestamp timestamp = new XmlTimestamp();
 
         XmlTSAGeneralName xmlTSAGeneralName = new XmlTSAGeneralName();
@@ -60,7 +60,7 @@ class TSAGeneralNameFieldPresentCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    void invalid() throws Exception {
+    void invalid() {
         XmlTimestamp timestamp = new XmlTimestamp();
 
         LevelConstraint constraint = new LevelConstraint();

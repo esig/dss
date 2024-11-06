@@ -50,7 +50,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ASiCSWithXAdESMultiFilesValidationTest extends AbstractASiCWithXAdESTestValidation {
 
-	private final static List<DSSDocument> EXPECTED_MULTIFILES = Arrays.asList(
+	private static final List<DSSDocument> EXPECTED_MULTIFILES = Arrays.asList(
 			new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT),
 			new InMemoryDocument("Bye World !".getBytes(), "test2.text", MimeTypeEnum.TEXT));
 

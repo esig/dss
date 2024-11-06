@@ -23,6 +23,8 @@ package eu.europa.esig.dss.asic.xades;
 import eu.europa.esig.dss.asic.common.ASiCParameters;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
+import java.util.Objects;
+
 /**
  * Defines SignatureParameters to deal with ASiC with XAdES signature creation/extension
  */
@@ -33,7 +35,7 @@ public class ASiCWithXAdESSignatureParameters extends XAdESSignatureParameters {
 	/**
 	 * The object representing the parameters related to ASiC from of the signature.
 	 */
-	private ASiCParameters asicParams = new ASiCParameters();
+	private final ASiCParameters asicParams = new ASiCParameters();
 
 	/**
 	 * Default constructor instantiating object with default ASiCParameters
@@ -49,6 +51,30 @@ public class ASiCWithXAdESSignatureParameters extends XAdESSignatureParameters {
 	 */
 	public ASiCParameters aSiC() {
 		return asicParams;
+	}
+
+	@Override
+	public String toString() {
+		return "ASiCWithXAdESSignatureParameters [" +
+				"asicParams=" + asicParams +
+				"] " + super.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+
+		ASiCWithXAdESSignatureParameters that = (ASiCWithXAdESSignatureParameters) o;
+		return Objects.equals(asicParams, that.asicParams);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + Objects.hashCode(asicParams);
+		return result;
 	}
 
 }

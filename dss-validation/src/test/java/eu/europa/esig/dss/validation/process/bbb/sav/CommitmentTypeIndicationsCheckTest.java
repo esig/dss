@@ -20,13 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.sav;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
@@ -37,11 +30,17 @@ import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CommitmentTypeIndicationsCheck;
+import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class CommitmentTypeIndicationsCheckTest extends AbstractTestCheck {
 
 	@Test
-	void commitmentTypeIndicationsCheck() throws Exception {
+	void commitmentTypeIndicationsCheck() {
 		List<XmlCommitmentTypeIndication> commitmentTypeIndications = new ArrayList<>();
 		XmlCommitmentTypeIndication commitmentTypeIndication1 = new XmlCommitmentTypeIndication();
 		commitmentTypeIndication1.setIdentifier("1");
@@ -70,7 +69,7 @@ class CommitmentTypeIndicationsCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	void failedCommitmentTypeIndicationsCheck() throws Exception {
+	void failedCommitmentTypeIndicationsCheck() {
 		List<XmlCommitmentTypeIndication> commitmentTypeIndications = new ArrayList<>();
 		XmlCommitmentTypeIndication commitmentTypeIndication1 = new XmlCommitmentTypeIndication();
 		commitmentTypeIndication1.setIdentifier("1");
@@ -99,7 +98,7 @@ class CommitmentTypeIndicationsCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	void emptyListCommitmentTypeIndicationsCheck() throws Exception {
+	void emptyListCommitmentTypeIndicationsCheck() {
 		XmlSignature sig = new XmlSignature();
 
 		MultiValuesConstraint constraint = new MultiValuesConstraint();

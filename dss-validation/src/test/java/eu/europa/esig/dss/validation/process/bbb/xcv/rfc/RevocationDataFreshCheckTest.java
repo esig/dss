@@ -40,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class RevocationDataFreshCheckTest extends AbstractTestCheck {
 
 	@Test
-	void revocationDataFreshCheck() throws Exception {
+	void revocationDataFreshCheck() {
 		TimeConstraint tc = new TimeConstraint();
 		tc.setUnit(TimeUnit.DAYS);
 		tc.setValue(1);
@@ -61,7 +61,7 @@ class RevocationDataFreshCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	void failedRevocationDataFreshCheck() throws Exception {
+	void failedRevocationDataFreshCheck() {
 		TimeConstraint tc = new TimeConstraint();
 		tc.setUnit(TimeUnit.DAYS);
 		tc.setValue(1);
@@ -82,7 +82,7 @@ class RevocationDataFreshCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	void failedRevocationWithFreshProductionTimeDataFreshCheck() throws Exception {
+	void failedRevocationWithFreshProductionTimeDataFreshCheck() {
 		TimeConstraint tc = new TimeConstraint();
 		tc.setUnit(TimeUnit.DAYS);
 		tc.setValue(1);

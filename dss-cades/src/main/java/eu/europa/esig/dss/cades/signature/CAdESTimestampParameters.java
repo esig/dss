@@ -45,4 +45,9 @@ public class CAdESTimestampParameters extends TimestampParameters {
 		super(digestAlgorithm);
 	}
 
+	@Override
+	public String toString() {
+		return "CAdESTimestampParameters " + super.toString();
+	}
+
 }

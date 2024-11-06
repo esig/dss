@@ -111,6 +111,7 @@ class XmlEvidenceRecordTwoLevelsInvalidDigestValidationTest extends AbstractEvid
         }
     }
 
+    @Override
     protected void checkEvidenceRecordDigestMatchers(DiagnosticData diagnosticData) {
         List<EvidenceRecordWrapper> evidenceRecords = diagnosticData.getEvidenceRecords();
         assertEquals(1, Utils.collectionSize(evidenceRecords));

@@ -44,7 +44,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class CertificatePolicyQualifiedIdsCheckTest extends AbstractTestCheck {
 
 	@Test
-	void certificateQualifiedCheckWithCertificate() throws Exception {
+	void certificateQualifiedCheckWithCertificate() {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
@@ -67,7 +67,7 @@ class CertificatePolicyQualifiedIdsCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	void certificateQualifiedCheckWithSSCD() throws Exception {
+	void certificateQualifiedCheckWithSSCD() {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
@@ -90,7 +90,7 @@ class CertificatePolicyQualifiedIdsCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	void certificateAnotherIdCheck() throws Exception {
+	void certificateAnotherIdCheck() {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
@@ -113,7 +113,7 @@ class CertificatePolicyQualifiedIdsCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	void certificateQualifiedCheckWithQCStatement() throws Exception {
+	void certificateQualifiedCheckWithQCStatement() {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
@@ -137,7 +137,7 @@ class CertificatePolicyQualifiedIdsCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	void failedCertificateQualifiedCheck() throws Exception {
+	void failedCertificateQualifiedCheck() {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 

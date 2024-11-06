@@ -43,7 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class CertificatePolicySupportedByQSCDIdsCheckTest extends AbstractTestCheck {
 
 	@Test
-	void certificateSupportedByQSCDCheck() throws Exception {
+	void certificateSupportedByQSCDCheck() {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
@@ -66,7 +66,7 @@ class CertificatePolicySupportedByQSCDIdsCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	void failedCertificateSupportedByQSCDCheck() throws Exception {
+	void failedCertificateSupportedByQSCDCheck() {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
@@ -90,7 +90,7 @@ class CertificatePolicySupportedByQSCDIdsCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	void certificateWithQcSSCDCheck() throws Exception {
+	void certificateWithQcSSCDCheck() {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 

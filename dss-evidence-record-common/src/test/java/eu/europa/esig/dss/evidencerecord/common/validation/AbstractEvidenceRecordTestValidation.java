@@ -153,6 +153,7 @@ public abstract class AbstractEvidenceRecordTestValidation extends AbstractDocum
         return true;
     }
 
+    @Override
     protected void verifySimpleReport(SimpleReport simpleReport) {
         assertNotNull(simpleReport);
 

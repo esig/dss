@@ -20,13 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.xcv.rfc;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.Date;
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
@@ -36,11 +29,17 @@ import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.NextUpdateCheck;
+import org.junit.jupiter.api.Test;
+
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class NextUpdateCheckTest extends AbstractTestCheck {
 
 	@Test
-	void nextUpdateCheck() throws Exception {
+	void nextUpdateCheck() {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 
@@ -56,7 +55,7 @@ class NextUpdateCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	void failedNextUpdateCheck() throws Exception {
+	void failedNextUpdateCheck() {
 		LevelConstraint constraint = new LevelConstraint();
 		constraint.setLevel(Level.FAIL);
 

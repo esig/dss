@@ -20,12 +20,6 @@
  */
 package eu.europa.esig.dss.validation.process.bbb.cv;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
@@ -37,11 +31,16 @@ import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.SignatureIntactCheck;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SignatureIntactCheckTest extends AbstractTestCheck {
 
 	@Test
-	void signatureIntactCheck() throws Exception {
+	void signatureIntactCheck() {
 		XmlBasicSignature basicsig = new XmlBasicSignature();
 		basicsig.setSignatureIntact(true);
 
@@ -61,7 +60,7 @@ class SignatureIntactCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	void signatureNotIntactCheck() throws Exception {
+	void signatureNotIntactCheck() {
 		XmlBasicSignature basicsig = new XmlBasicSignature();
 		basicsig.setSignatureIntact(false);
 

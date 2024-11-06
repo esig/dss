@@ -48,7 +48,7 @@ class POEExistsWithinCertificateValidityRangeCheckTest extends AbstractTestCheck
     private static final String CERT_ID = "C-1";
 
     @Test
-    void validCheck() throws Exception {
+    void validCheck() {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
@@ -87,7 +87,7 @@ class POEExistsWithinCertificateValidityRangeCheckTest extends AbstractTestCheck
     }
 
     @Test
-    void invalidTstCheck() throws Exception {
+    void invalidTstCheck() {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
@@ -126,7 +126,7 @@ class POEExistsWithinCertificateValidityRangeCheckTest extends AbstractTestCheck
     }
 
     @Test
-    void invalidRangeCheck() throws Exception {
+    void invalidRangeCheck() {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 

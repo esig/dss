@@ -31,6 +31,7 @@ public class PAdESBESNoCertificatesValidationTest extends AbstractPAdESTestValid
         assertFalse(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
     }
 
+    @Override
     protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
         SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
         assertFalse(signatureWrapper.isSigningCertificateIdentified());
@@ -38,6 +39,7 @@ public class PAdESBESNoCertificatesValidationTest extends AbstractPAdESTestValid
         assertTrue(signatureWrapper.isSigningCertificateReferenceUnique());
     }
 
+    @Override
     protected void validateSignerInformation(SignerInformationType signerInformation) {
         assertNull(signerInformation);
     }

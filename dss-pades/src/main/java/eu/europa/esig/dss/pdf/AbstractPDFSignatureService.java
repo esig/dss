@@ -726,7 +726,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	}
 
 	private boolean containsDSSRevisions(List<PdfRevision> revisions) {
-		return revisions.stream().anyMatch(r -> r instanceof PdfDocDssRevision);
+		return revisions.stream().anyMatch(PdfDocDssRevision.class::isInstance);
 	}
 
 	/**
@@ -787,7 +787,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 * @return TRUE if the extracted signed content is complete and consistent to the ByteRange, FALSE otherwise
 	 */
 	private boolean isSignedContentComplete(ByteRange byteRange, DSSDocument signedContent) {
-		long expectedSignedContentLength = (byteRange.getFirstPartEnd() - byteRange.getFirstPartStart()) + byteRange.getSecondPartEnd();
+		int expectedSignedContentLength = (byteRange.getFirstPartEnd() - byteRange.getFirstPartStart()) + byteRange.getSecondPartEnd();
 		long signedContentLength = DSSUtils.getFileByteSize(signedContent);
 		if (expectedSignedContentLength != signedContentLength) {
 			LOG.warn("The length of the extracted signed content '{}' does not correspond to the content length " +

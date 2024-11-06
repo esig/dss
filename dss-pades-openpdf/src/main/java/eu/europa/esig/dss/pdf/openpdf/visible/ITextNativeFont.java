@@ -26,6 +26,7 @@ import eu.europa.esig.dss.pades.AbstractDSSFont;
 import eu.europa.esig.dss.pades.DSSNativeFont;
 
 import java.awt.Font;
+import java.util.Objects;
 
 /**
  * The IText (OpenPDF) native font
@@ -55,6 +56,20 @@ public class ITextNativeFont extends AbstractDSSFont implements DSSNativeFont<Ba
 	public Font getJavaFont() {
 		DefaultFontMapper fontMapper = new DefaultFontMapper();
 		return fontMapper.pdfToAwt(baseFont, (int)size);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		ITextNativeFont that = (ITextNativeFont) o;
+		return Objects.equals(baseFont, that.baseFont);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(baseFont);
 	}
 
 }

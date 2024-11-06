@@ -20,22 +20,21 @@
  */
 package eu.europa.esig.dss.simplecertificatereport;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.io.IOException;
-
 import jakarta.xml.bind.JAXBException;
-import javax.xml.transform.Templates;
-import javax.xml.transform.TransformerConfigurationException;
-
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
+
+import javax.xml.transform.Templates;
+import javax.xml.transform.TransformerConfigurationException;
+import java.io.IOException;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
 class SimpleCertificateReportXmlDefinerTest {
 
 	@Test
-	void getJAXBContext() throws SAXException, JAXBException {
+	void getJAXBContext() throws JAXBException {
 		assertNotNull(SimpleCertificateReportXmlDefiner.getJAXBContext());
 		assertNotNull(SimpleCertificateReportXmlDefiner.getJAXBContext());
 	}

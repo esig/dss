@@ -39,7 +39,6 @@ import eu.europa.esig.dss.xades.reference.XPath2FilterEnvelopedSignatureTransfor
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -51,7 +50,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class XAdESXPath2FilterDoubleSignatureTest extends PKIFactoryAccess {
 
 	@Test
-	void test() throws IOException {
+	void test() {
 
 		DSSDocument toBeSigned = new FileDocument(new File("src/test/resources/sample.xml"));
 

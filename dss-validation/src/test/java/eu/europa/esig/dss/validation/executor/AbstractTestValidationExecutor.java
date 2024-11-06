@@ -82,7 +82,7 @@ public abstract class AbstractTestValidationExecutor {
 		return ValidationPolicyFacade.newFacade().unmarshall(file);
 	}
 
-	protected void checkReports(Reports reports) throws Exception {
+	protected void checkReports(Reports reports) {
 		assertNotNull(reports);
 		assertNotNull(reports.getDiagnosticData());
 		assertNotNull(reports.getDiagnosticDataJaxb());

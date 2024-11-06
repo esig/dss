@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ProspectiveCertificateChainAtValidationTimeCheckTest extends AbstractTestCheck {
 
     @Test
-    void certificateExpirationCheck() throws Exception {
+    void certificateExpirationCheck() {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
@@ -44,7 +44,7 @@ class ProspectiveCertificateChainAtValidationTimeCheckTest extends AbstractTestC
     }
 
     @Test
-    void failedCertificateExpirationCheck() throws Exception {
+    void failedCertificateExpirationCheck() {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
@@ -67,7 +67,7 @@ class ProspectiveCertificateChainAtValidationTimeCheckTest extends AbstractTestC
     }
 
     @Test
-    void noSunsetDateTrustedCheck() throws Exception {
+    void noSunsetDateTrustedCheck() {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
@@ -87,7 +87,7 @@ class ProspectiveCertificateChainAtValidationTimeCheckTest extends AbstractTestC
     }
 
     @Test
-    void noSunsetDateNotTrustedCheck() throws Exception {
+    void noSunsetDateNotTrustedCheck() {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
@@ -104,7 +104,7 @@ class ProspectiveCertificateChainAtValidationTimeCheckTest extends AbstractTestC
     }
 
     @Test
-    void certChainTrustedCheck() throws Exception {
+    void certChainTrustedCheck() {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
@@ -133,7 +133,7 @@ class ProspectiveCertificateChainAtValidationTimeCheckTest extends AbstractTestC
     }
 
     @Test
-    void certChainExpiredCheck() throws Exception {
+    void certChainExpiredCheck() {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
@@ -162,7 +162,7 @@ class ProspectiveCertificateChainAtValidationTimeCheckTest extends AbstractTestC
     }
 
     @Test
-    void certChainNotTrustedCheck() throws Exception {
+    void certChainNotTrustedCheck() {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 

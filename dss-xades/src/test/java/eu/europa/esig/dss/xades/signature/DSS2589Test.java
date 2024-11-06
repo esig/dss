@@ -47,7 +47,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DSS2589Test extends AbstractXAdESTestSignature {
 
-    private final static DSSDocument ORIGINAL_DOC = new FileDocument("src/test/resources/sample.xml");
+    private static final DSSDocument ORIGINAL_DOC = new FileDocument("src/test/resources/sample.xml");
 
     private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
     private XAdESSignatureParameters signatureParameters;

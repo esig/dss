@@ -89,8 +89,7 @@ class MaxSizeInputStreamTest {
              MaxSizeInputStream maxSizeInputStream = new MaxSizeInputStream(is, 1000000, HTTP_URL_TO_LOAD);
              ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             final byte[] buffer = new byte[2048];
-            int count;
-            while ((count = maxSizeInputStream.read(buffer, 0, buffer.length)) > 0) {
+            while (maxSizeInputStream.read(buffer, 0, buffer.length) > 0) {
                 baos.write(buffer);
             }
             result = baos.toByteArray();
@@ -107,8 +106,7 @@ class MaxSizeInputStreamTest {
              MaxSizeInputStream maxSizeInputStream = new MaxSizeInputStream(is, 10, HTTP_URL_TO_LOAD);
              ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             final byte[] buffer = new byte[2048];
-            int count;
-            while ((count = maxSizeInputStream.read(buffer, 0, buffer.length)) > 0) {
+            while (maxSizeInputStream.read(buffer, 0, buffer.length) > 0) {
                 baos.write(buffer);
             }
         } catch (IOException e) {

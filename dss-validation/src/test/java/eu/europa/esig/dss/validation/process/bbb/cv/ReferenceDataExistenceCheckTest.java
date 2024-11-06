@@ -38,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ReferenceDataExistenceCheckTest extends AbstractTestCheck {
 
 	@Test
-	void referenceDataExistenceCheck() throws Exception {
+	void referenceDataExistenceCheck() {
 		XmlDigestMatcher digestMatcher = new XmlDigestMatcher();
 		digestMatcher.setDataFound(true);
 		digestMatcher.setType(DigestMatcherType.MESSAGE_DIGEST);
@@ -57,7 +57,7 @@ class ReferenceDataExistenceCheckTest extends AbstractTestCheck {
 	}
 
 	@Test
-	void referenceDataNotExistenceCheck() throws Exception {
+	void referenceDataNotExistenceCheck() {
 		XmlDigestMatcher digestMatcher = new XmlDigestMatcher();
 		digestMatcher.setDataFound(false);
 		digestMatcher.setType(DigestMatcherType.MESSAGE_DIGEST);

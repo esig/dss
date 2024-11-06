@@ -39,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ManifestEntryGroupCheckTest extends AbstractTestCheck {
 
     @Test
-    void valid() throws Exception {
+    void valid() {
         XmlDigestMatcher manifest = new XmlDigestMatcher();
         manifest.setType(DigestMatcherType.MANIFEST);
         manifest.setDataFound(true);
@@ -67,7 +67,7 @@ class ManifestEntryGroupCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    void invalid() throws Exception {
+    void invalid() {
         XmlDigestMatcher manifest = new XmlDigestMatcher();
         manifest.setType(DigestMatcherType.MANIFEST);
         manifest.setDataFound(true);
@@ -95,7 +95,7 @@ class ManifestEntryGroupCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    void otherDocs() throws Exception {
+    void otherDocs() {
         XmlDigestMatcher manifest = new XmlDigestMatcher();
         manifest.setType(DigestMatcherType.MANIFEST);
         manifest.setDataFound(true);

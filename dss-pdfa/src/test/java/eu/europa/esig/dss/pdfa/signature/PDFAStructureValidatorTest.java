@@ -18,9 +18,11 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.pdfa;
+package eu.europa.esig.dss.pdfa.signature;
 
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.pdfa.PDFAStructureValidator;
+import eu.europa.esig.dss.pdfa.PDFAValidationResult;
 import eu.europa.esig.dss.utils.Utils;
 import org.junit.jupiter.api.Test;
 
