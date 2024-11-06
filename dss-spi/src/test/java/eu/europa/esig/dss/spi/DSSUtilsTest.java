@@ -389,12 +389,14 @@ class DSSUtilsTest {
 		assertEquals("ხელმოწერა", DSSUtils.removeControlCharacters("ხელმოწერა"));
 		assertEquals("", DSSUtils.removeControlCharacters("\n"));
 		assertEquals("", DSSUtils.removeControlCharacters("\r\n"));
+		assertEquals("\uFFFF", DSSUtils.removeControlCharacters("\uFFFF"));
 		assertEquals("http://xadessrv.plugtests.net/capso/ocsp?ca=RotCAOK", DSSUtils.removeControlCharacters(
 				new String(Utils.fromBase64("aHR0cDovL3hhZGVzc3J2LnBsdWd0ZXN0cy5uZXQvY2Fwc28vb2NzcD9jYT1SAG90Q0FPSw=="))));
 	}
 
 	@Test
 	void replaceAllNonAlphanumericCharactersTest() {
+		assertNull(DSSUtils.replaceAllNonAlphanumericCharacters(null, "-"));
 		assertEquals("-", DSSUtils.replaceAllNonAlphanumericCharacters(" ", "-"));
 		assertEquals("Nowina-Solutions", DSSUtils.replaceAllNonAlphanumericCharacters("Nowina Solutions", "-"));
 		assertEquals("Новина", DSSUtils.replaceAllNonAlphanumericCharacters("Новина", "?"));
@@ -403,7 +405,23 @@ class DSSUtilsTest {
 		assertEquals("?", DSSUtils.replaceAllNonAlphanumericCharacters("\n", "?"));
 		assertEquals("?", DSSUtils.replaceAllNonAlphanumericCharacters("\r\n", "?"));
 		assertEquals("?", DSSUtils.replaceAllNonAlphanumericCharacters("---____   ??? !!!!", "?"));
-		assertNull(DSSUtils.replaceAllNonAlphanumericCharacters(null, "-"));
+		assertEquals("?", DSSUtils.replaceAllNonAlphanumericCharacters("\uFFFF", "?"));
+	}
+
+	@Test
+	void replaceInvalidXmlCharactersTest() {
+		assertNull(DSSUtils.replaceInvalidXmlCharacters(null, "-"));
+		assertEquals(" ", DSSUtils.replaceInvalidXmlCharacters(" ", "-"));
+		assertEquals("Nowina Solutions", DSSUtils.replaceInvalidXmlCharacters("Nowina Solutions", "-"));
+		assertEquals("Новина", DSSUtils.replaceInvalidXmlCharacters("Новина", "?"));
+		assertEquals("πτλς", DSSUtils.replaceInvalidXmlCharacters("πτλς", "?"));
+		assertEquals("ხელმოწერა", DSSUtils.replaceInvalidXmlCharacters("ხელმოწერა", "?"));
+		assertEquals("\n", DSSUtils.replaceInvalidXmlCharacters("\n", "?"));
+		assertEquals("\r\n", DSSUtils.replaceInvalidXmlCharacters("\r\n", "?"));
+		assertEquals("---____   ??? !!!!", DSSUtils.replaceInvalidXmlCharacters("---____   ??? !!!!", "?"));
+		assertEquals("?", DSSUtils.replaceInvalidXmlCharacters("\uFFFF", "?"));
+		assertEquals("http://xadessrv.plugtests.net/capso/ocsp?ca=R?otCAOK", DSSUtils.replaceInvalidXmlCharacters(
+				new String(Utils.fromBase64("aHR0cDovL3hhZGVzc3J2LnBsdWd0ZXN0cy5uZXQvY2Fwc28vb2NzcD9jYT1SAG90Q0FPSw==")), "?"));
 	}
 
 	@Test

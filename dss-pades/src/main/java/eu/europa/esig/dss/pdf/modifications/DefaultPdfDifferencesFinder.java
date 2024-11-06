@@ -24,6 +24,7 @@ import eu.europa.esig.dss.pdf.AnnotationBox;
 import eu.europa.esig.dss.pdf.PdfAnnotation;
 import eu.europa.esig.dss.pdf.PdfDocumentReader;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -171,8 +172,15 @@ public class DefaultPdfDifferencesFinder implements PdfDifferencesFinder {
                 }
 
             } catch (IOException e) {
-                LOG.warn("Unable to get visual differences for a page number : {}. Reason : {}",
-                        pageNumber, e.getMessage(), e);
+                // PdfBox 3 returns actual characters, which may cause a build to fail when the output is being embedded in XML.
+                // Therefore, we need to clean the output, when applicable.
+                String errorMessage = "Unable to get visual differences for a page number : {}. Reason : {}";
+                String exceptionString = DSSUtils.replaceInvalidXmlCharacters(e.getMessage(), "?");
+                if (LOG.isDebugEnabled()) {
+                    LOG.warn(errorMessage, pageNumber, exceptionString, e);
+                } else {
+                    LOG.warn(errorMessage, pageNumber, exceptionString);
+                }
             }
         }
         return visualDifferences;

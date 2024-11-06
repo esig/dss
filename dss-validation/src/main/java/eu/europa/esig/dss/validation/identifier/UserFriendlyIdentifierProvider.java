@@ -77,6 +77,9 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
     /** String to be used to replace non-alphanumeric characters in a certificate's common name */
     private static final String NAME_REPLACEMENT = "-";
 
+    /** String to be used to replace invalid XML characters */
+    private static final String UNSUPPORTED_CHARACTER = "?";
+
     /** To be used to define an issuer name */
     private static final String ISSUER = "ISSUER-";
 
@@ -598,6 +601,7 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
 
     private String getUserFriendlyString(String str) {
         str = DSSUtils.removeControlCharacters(str);
+        str = DSSUtils.replaceInvalidXmlCharacters(str, UNSUPPORTED_CHARACTER);
         str = DSSUtils.replaceAllNonAlphanumericCharacters(str, NAME_REPLACEMENT);
         return trim(str, NAME_REPLACEMENT);
     }

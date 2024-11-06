@@ -1132,6 +1132,20 @@ public final class DSSUtils {
 	}
 
 	/**
+	 * Replaces all invalid XML characters in the {@code str} by the {@code replacement}
+	 *
+	 * @param str {@link String} to replace invalid XML characters in
+	 * @param replacement {@link String} to be used as a replacement
+	 * @return {@link String}
+	 */
+	public static String replaceInvalidXmlCharacters(String str, String replacement) {
+		if (str != null) {
+			return str.replaceAll("[^\\u0009\\u000A\\u000D\\u0020-\\uD7FF\\uE000-\\uFFFD\\x{10000}-\\x{10FFFF}]", replacement);
+		}
+		return null;
+	}
+
+	/**
 	 * Checks if the given id is a URN representation of OID according to IETF RFC 3061
 	 * 
 	 * @param id {@link String} to check
