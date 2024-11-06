@@ -24,6 +24,7 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.trustedlist.jaxb.tsl.NonEmptyMultiLangURIType;
 
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.Objects;
 
@@ -42,7 +43,7 @@ public class OfficialJournalSchemeInformationURI implements LOTLSigningCertifica
 	 * @param officialJournalURL {@link String} OJ URL
 	 */
 	public OfficialJournalSchemeInformationURI(String officialJournalURL) {
-		Objects.requireNonNull(officialJournalURL);
+		Objects.requireNonNull(officialJournalURL, "Official Journal URL cannot be null!");
 		this.officialJournalURL = officialJournalURL;
 	}
 
@@ -56,9 +57,9 @@ public class OfficialJournalSchemeInformationURI implements LOTLSigningCertifica
 
 	private String getOJDomain() {
 		try {
-			URL uri = new URL(officialJournalURL);
+			URL uri = URI.create(officialJournalURL).toURL();
 			return uri.getHost();
-		} catch (MalformedURLException e) {
+		} catch (MalformedURLException | IllegalArgumentException e) {
 			throw new DSSException("Incorrect format of Official Journal URL [" + officialJournalURL + "] is provided", e);
 		}
 	}

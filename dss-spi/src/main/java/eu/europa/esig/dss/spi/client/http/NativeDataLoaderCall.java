@@ -26,7 +26,7 @@ import eu.europa.esig.dss.utils.Utils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URL;
+import java.net.URI;
 import java.net.URLConnection;
 import java.util.concurrent.Callable;
 
@@ -131,7 +131,7 @@ public class NativeDataLoaderCall implements Callable<byte[]> {
 	 * @throws IOException if IOException occurred
 	 */
 	protected URLConnection createConnection() throws IOException {
-		return new URL(url).openConnection();
+		return URI.create(url).toURL().openConnection();
 	}
 
 }

@@ -878,8 +878,8 @@ public class CommonsDataLoader implements DataLoader {
 
 	private URL getURL(String urlString) {
 		try {
-			return new URL(urlString);
-		} catch (MalformedURLException e) {
+			return URI.create(urlString).toURL();
+		} catch (MalformedURLException | IllegalArgumentException e) {
 			throw new DSSExternalResourceException("Unable to create URL instance", e);
 		}
 	}

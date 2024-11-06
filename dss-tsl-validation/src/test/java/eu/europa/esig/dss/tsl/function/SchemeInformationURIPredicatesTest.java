@@ -72,7 +72,6 @@ class SchemeInformationURIPredicatesTest {
 
 	@Test
 	void oj() {
-
 		String currentPivotOjUrl = "http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.C_.2016.233.01.0001.01.ENG";
 
 		List<String> list = SCHEME_INFORMATION_URI_LIST_TYPE.getURI().stream().filter(new OfficialJournalSchemeInformationURI(currentPivotOjUrl))
@@ -86,10 +85,12 @@ class SchemeInformationURIPredicatesTest {
 		assertEquals(1, list.size());
 		assertEquals(currentPivotOjUrl, list.get(0));
 
-		assertThrows(DSSException.class, () -> SCHEME_INFORMATION_URI_LIST_TYPE.getURI().stream()
+		Exception exception = assertThrows(DSSException.class, () -> SCHEME_INFORMATION_URI_LIST_TYPE.getURI().stream()
 				.filter(new OfficialJournalSchemeInformationURI("blabla")).collect(Collectors.toList()));
-		assertThrows(NullPointerException.class, () -> new OfficialJournalSchemeInformationURI(null));
+		assertEquals("Incorrect format of Official Journal URL [blabla] is provided", exception.getMessage());
 
+		exception = assertThrows(NullPointerException.class, () -> new OfficialJournalSchemeInformationURI(null));
+		assertEquals("Official Journal URL cannot be null!", exception.getMessage());
 	}
 
 }

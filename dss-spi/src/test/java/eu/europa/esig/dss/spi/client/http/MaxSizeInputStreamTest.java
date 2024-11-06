@@ -29,7 +29,7 @@ import org.junit.jupiter.api.Test;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
+import java.net.URI;
 import java.net.URLConnection;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -44,7 +44,7 @@ class MaxSizeInputStreamTest {
 
     @BeforeEach
     void init() throws Exception {
-        urlConnection = new URL(HTTP_URL_TO_LOAD).openConnection();;
+        urlConnection = URI.create(HTTP_URL_TO_LOAD).toURL().openConnection();
         urlConnection.setDoInput(true);
     }
 
