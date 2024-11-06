@@ -21,9 +21,7 @@
 package eu.europa.esig.dss.pdf;
 
 /**
- * Represents the PDF document loading setting.
- * NOTE: The setting is applicable only when an instance of {@code eu.europa.esig.dss.model.FileDocument}
- * is provided to the signature creation or validation.
+ * Represents the PDF document loading setting on signature creation or validation.
  *
  */
 public class PdfMemoryUsageSetting {

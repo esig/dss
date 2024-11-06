@@ -55,7 +55,6 @@ import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSObject;
 import org.apache.pdfbox.cos.COSStream;
 import org.apache.pdfbox.io.MemoryUsageSetting;
-import org.apache.pdfbox.io.RandomAccessRead;
 import org.apache.pdfbox.io.RandomAccessReadBuffer;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
@@ -88,9 +87,6 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 
 	/** The PDFBox implementation of the document */
 	private final PDDocument pdDocument;
-
-	/** File reader */
-	private RandomAccessRead randomAccessRead;
 
 	/** The PDF document */
 	private DSSDocument dssDocument;
@@ -155,8 +151,8 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 
 			} else {
 				try (InputStream is = dssDocument.openStream()) {
-					this.randomAccessRead = new RandomAccessReadBuffer(is);
-					this.pdDocument = Loader.loadPDF(randomAccessRead, passwordProtection, memoryUsageSetting.streamCache);
+					// NOTE: RandomAccessReadBuffer is closed on PDDocument.close()
+					this.pdDocument = Loader.loadPDF(new RandomAccessReadBuffer(is), passwordProtection, memoryUsageSetting.streamCache);
 				}
 			}
 
@@ -282,9 +278,6 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 	@Override
 	public void close() throws IOException {
 		pdDocument.close();
-		if (randomAccessRead != null) {
-			randomAccessRead.close();
-		}
 	}
 
 	@Override

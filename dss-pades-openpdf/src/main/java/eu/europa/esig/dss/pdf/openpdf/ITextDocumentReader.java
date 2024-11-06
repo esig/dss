@@ -153,6 +153,7 @@ public class ITextDocumentReader implements PdfDocumentReader {
 				// This condition uses a MappedByteBuffer to process the file in memory
 				return new PdfReader(filenameSource, passwordProtection);
 			case FILE:
+				// NOTE: RandomAccessFileOrArray is closed on PdfReader.close()
 				return new PdfReader(new RandomAccessFileOrArray(filenameSource, false, true), passwordProtection);
 			default:
 				throw new IllegalArgumentException(String.format("The PdfMemoryUsageSetting mode '%s' is not " +
