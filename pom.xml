@@ -47,7 +47,7 @@
 		<logback-classic.version>1.3.14</logback-classic.version> <!-- Version 1.4+ supports only Java 11+ -->
 		<commons-logging.version>1.3.4</commons-logging.version>  <!-- Force version to resolve conflict between dependencies -->
 
-		<bouncycastle.version>1.78.1</bouncycastle.version>
+		<bouncycastle.version>1.79</bouncycastle.version>
 		<xmlsec.version>3.0.4</xmlsec.version>
 		<jose4j.version>0.9.6</jose4j.version>
 		<pdfbox.version>3.0.3</pdfbox.version>
