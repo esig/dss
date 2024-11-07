@@ -22,6 +22,7 @@ package eu.europa.esig.dss.pades;
 
 import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.enumerations.PdfLockAction;
+import eu.europa.esig.dss.pdf.PdfMemoryUsageSetting;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -69,6 +70,9 @@ public final class PAdESUtils {
 
 	/** The default resources handler builder to be used across the code */
 	public static final InMemoryResourcesHandlerBuilder DEFAULT_RESOURCES_HANDLER_BUILDER = new InMemoryResourcesHandlerBuilder();
+
+	/** The default PDF memory usage setting to be used on a PDF document reading */
+	public static final PdfMemoryUsageSetting DEFAULT_PDF_MEMORY_USAGE_SETTING = PdfMemoryUsageSetting.memoryFull();
 
 	/** The starting bytes of a PDF document */
 	private static final byte[] PDF_PREAMBLE = new byte[]{ '%', 'P', 'D', 'F', '-' };

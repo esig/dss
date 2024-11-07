@@ -270,10 +270,11 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 
 	@Override
 	protected DSSMessageDigest computeDigest(final DSSDocument toSignDocument, final PAdESCommonParameters parameters) {
-		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
-			 OutputStream os = resourcesHandler.createOutputStream();
-			 ITextDocumentReader documentReader = new ITextDocumentReader(
-					 toSignDocument, getPasswordBytes(parameters.getPasswordProtection())) ) {
+		try (
+				DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
+				OutputStream os = resourcesHandler.createOutputStream();
+				ITextDocumentReader documentReader = new ITextDocumentReader(toSignDocument, getPasswordBytes(parameters.getPasswordProtection()), pdfMemoryUsageSetting)
+			) {
 
 			final SignatureFieldParameters fieldParameters = parameters.getImageParameters().getFieldParameters();
 			checkPdfPermissions(documentReader, fieldParameters);
@@ -307,10 +308,11 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	@Override
 	protected DSSDocument signDocument(final DSSDocument toSignDocument, final byte[] cmsSignedData,
 							final PAdESCommonParameters parameters) {
-		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
-			 OutputStream os = resourcesHandler.createOutputStream();
-			 ITextDocumentReader documentReader = new ITextDocumentReader(
-					 toSignDocument, getPasswordBytes(parameters.getPasswordProtection())) ) {
+		try (
+				DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
+				OutputStream os = resourcesHandler.createOutputStream();
+				ITextDocumentReader documentReader = new ITextDocumentReader(toSignDocument, getPasswordBytes(parameters.getPasswordProtection()), pdfMemoryUsageSetting)
+			) {
 
 			final SignatureFieldParameters fieldParameters = parameters.getImageParameters().getFieldParameters();
 			checkPdfPermissions(documentReader, fieldParameters);
@@ -347,9 +349,9 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 										char[] pwd, boolean includeVRIDict) {
 		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
 			 OutputStream os = resourcesHandler.createOutputStream();
-			 InputStream is = document.openStream();
-			 PdfReader reader = new PdfReader(is, getPasswordBytes(pwd));
-			 ITextDocumentReader documentReader = new ITextDocumentReader(reader)) {
+			 
+			 ITextDocumentReader documentReader = new ITextDocumentReader(document, getPasswordBytes(pwd), pdfMemoryUsageSetting);
+             PdfReader reader = documentReader.getPdfReader()) {
 
 			PdfStamper stp = new PdfStamper(reader, os, '\0', true);
 			PdfWriter writer = stp.getWriter();
@@ -544,9 +546,11 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 	@Override
 	public DSSDocument addNewSignatureField(final DSSDocument document, final SignatureFieldParameters parameters,
 											final char[] pwd) {
-		try (DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
-			 OutputStream os = resourcesHandler.createOutputStream();
-			 ITextDocumentReader documentReader = new ITextDocumentReader(document, getPasswordBytes(pwd))) {
+		try (
+				DSSResourcesHandler resourcesHandler = instantiateResourcesHandler();
+				OutputStream os = resourcesHandler.createOutputStream();
+				ITextDocumentReader documentReader = new ITextDocumentReader(document, getPasswordBytes(pwd), pdfMemoryUsageSetting)
+			) {
 			checkPdfPermissions(documentReader, parameters);
 
 			final PdfReader reader = documentReader.getPdfReader();
@@ -603,7 +607,7 @@ public class ITextPDFSignatureService extends AbstractPDFSignatureService {
 
 	@Override
 	protected PdfDocumentReader loadPdfDocumentReader(DSSDocument dssDocument, char[] passwordProtection) throws IOException {
-		return new ITextDocumentReader(dssDocument, getPasswordBytes(passwordProtection));
+		return new ITextDocumentReader(dssDocument, getPasswordBytes(passwordProtection), pdfMemoryUsageSetting);
 	}
 
 	@Override

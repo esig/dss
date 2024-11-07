@@ -279,7 +279,6 @@ public abstract class AbstractTestCRLUtils extends AbstractCRLParserTestUtils {
 		}
 	}
 
-	// @Ignore
 	@Test
 	public void testHugeCRL() throws Exception {
 		try (InputStream is = AbstractTestCRLUtils.class.getResourceAsStream("/esteid2011.crl");
