@@ -44,7 +44,6 @@ import org.bouncycastle.asn1.DERSet;
 import org.bouncycastle.asn1.DERTaggedObject;
 import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
-import org.bouncycastle.asn1.cms.ContentInfo;
 import org.bouncycastle.asn1.cms.SignedData;
 import org.bouncycastle.asn1.cms.SignerIdentifier;
 import org.bouncycastle.asn1.cms.SignerInfo;
@@ -529,9 +528,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	 * @return cmsSignedData.getSignedContentTypeOID() as DER encoded
 	 */
 	private byte[] getEncodedContentType(final CMSSignedData cmsSignedData) {
-		final ContentInfo contentInfo = cmsSignedData.toASN1Structure();
-		final SignedData signedData = SignedData.getInstance(contentInfo.getContent());
-		return DSSASN1Utils.getDEREncoded(signedData.getEncapContentInfo().getContentType());
+		return DSSASN1Utils.getDEREncoded(CMSUtils.getEncapsulatedContentType(cmsSignedData));
 	}
 
 	/**

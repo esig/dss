@@ -49,6 +49,8 @@ import org.bouncycastle.asn1.DLSet;
 import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.cms.Attributes;
+import org.bouncycastle.asn1.cms.ContentInfo;
+import org.bouncycastle.asn1.cms.SignedData;
 import org.bouncycastle.asn1.ess.ESSCertID;
 import org.bouncycastle.asn1.ess.ESSCertIDv2;
 import org.bouncycastle.asn1.ess.SigningCertificate;
@@ -819,6 +821,18 @@ public final class CMSUtils {
 			return new CMSSignedData(asn1Primitive.getEncoded());
 		}
 		return null;
+	}
+
+	/**
+	 * Gets the SignedData.encapContentInfo.eContentType identifier value
+	 *
+	 * @param cmsSignedData {@link CMSSignedData}
+	 * @return {@link ASN1ObjectIdentifier} cmsSignedData.getSignedContentTypeOID()
+	 */
+	public static ASN1ObjectIdentifier getEncapsulatedContentType(final CMSSignedData cmsSignedData) {
+		final ContentInfo contentInfo = cmsSignedData.toASN1Structure();
+		final SignedData signedData = SignedData.getInstance(contentInfo.getContent());
+		return signedData.getEncapContentInfo().getContentType();
 	}
 
 	/**

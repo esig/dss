@@ -938,7 +938,8 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			cmsSignedDataParser = new CMSSignedDataParser(new PrecomputedDigestCalculatorProvider((DigestDocument) dssDocument), cmsSignedData.getEncoded());
 		} else {
 			try (InputStream inputStream = dssDocument.openStream()) {
-				final CMSTypedStream signedContent = new CMSTypedStream(inputStream);
+				ASN1ObjectIdentifier encapsulatedContentType = CMSUtils.getEncapsulatedContentType(cmsSignedData);
+				final CMSTypedStream signedContent = new CMSTypedStream(encapsulatedContentType, inputStream);
 				cmsSignedDataParser = new CMSSignedDataParser(new BcDigestCalculatorProvider(), signedContent, cmsSignedData.getEncoded());
 				cmsSignedDataParser.getSignedContent().drain(); // Closes the stream
 			}
