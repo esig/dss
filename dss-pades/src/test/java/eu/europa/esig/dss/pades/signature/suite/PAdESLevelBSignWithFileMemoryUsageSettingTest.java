@@ -22,6 +22,7 @@ package eu.europa.esig.dss.pades.signature.suite;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
@@ -37,10 +38,12 @@ import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -49,6 +52,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -67,7 +71,7 @@ public class PAdESLevelBSignWithFileMemoryUsageSettingTest extends AbstractPAdES
 
 	@BeforeEach
 	void init() throws Exception {
-		documentToSign = new FileDocument(new File(PAdESLevelBSignWithFileMemoryUsageSettingTest.class.getClassLoader().getResource("./big_file.pdf").toURI()));
+		documentToSign = getFileDocument();
 
 		signatureParameters = new PAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());
@@ -76,6 +80,28 @@ public class PAdESLevelBSignWithFileMemoryUsageSettingTest extends AbstractPAdES
 
 		service = new PAdESService(getCompleteCertificateVerifier());
 		service.setTspSource(getAlternateGoodTsa());
+	}
+
+	private FileDocument getFileDocument() {
+		File originalDoc = new File("target/original-" + UUID.randomUUID() + ".pdf");
+		try (FileOutputStream fos = new FileOutputStream(originalDoc);
+			 InputStream is = PAdESLevelBSignWithFileMemoryUsageSettingTest.class.getResourceAsStream("/big_file.pdf")) {
+			Utils.copy(is, fos);
+		} catch (IOException e) {
+			throw new DSSException("Unable to create the original document", e);
+		}
+		return new FileDocument(originalDoc);
+	}
+
+	@Test
+	@Override
+	public void signAndVerify() {
+		super.signAndVerify();
+
+		File file = ((FileDocument) documentToSign).getFile();
+		assertTrue(file.exists());
+		assertTrue(file.delete());
+		assertFalse(file.exists());
 	}
 
 	@Override
