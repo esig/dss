@@ -473,6 +473,9 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 		assertEquals(certificateSource.getTimeStampValidationDataCertValues().size(),
 				foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA).size() +
 						foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA).size());
+		assertEquals(certificateSource.getAnyValidationDataCertValues().size(),
+				foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.ANY_VALIDATION_DATA).size() +
+						foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.ANY_VALIDATION_DATA).size());
 		assertEquals(certificateSource.getAttrAuthoritiesCertValues().size(),
 				foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES).size() +
 						foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES).size());
@@ -514,6 +517,9 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 		assertEquals(revocationSource.getTimestampValidationDataBinaries().size(),
 				foundRevocations.getRelatedRevocationsByTypeAndOrigin(revocationType, RevocationOrigin.TIMESTAMP_VALIDATION_DATA).size() +
 				foundRevocations.getOrphanRevocationsByTypeAndOrigin(revocationType, RevocationOrigin.TIMESTAMP_VALIDATION_DATA).size());
+		assertEquals(revocationSource.getAnyValidationDataBinaries().size(),
+				foundRevocations.getRelatedRevocationsByTypeAndOrigin(revocationType, RevocationOrigin.ANY_VALIDATION_DATA).size() +
+						foundRevocations.getOrphanRevocationsByTypeAndOrigin(revocationType, RevocationOrigin.ANY_VALIDATION_DATA).size());
 		assertEquals(revocationSource.getDSSDictionaryBinaries().size(),
 				foundRevocations.getRelatedRevocationsByTypeAndOrigin(revocationType, RevocationOrigin.DSS_DICTIONARY).size() +
 				foundRevocations.getOrphanRevocationsByTypeAndOrigin(revocationType, RevocationOrigin.DSS_DICTIONARY).size());

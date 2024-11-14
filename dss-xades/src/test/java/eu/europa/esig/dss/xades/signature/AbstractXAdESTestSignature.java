@@ -235,6 +235,8 @@ public abstract class AbstractXAdESTestSignature extends AbstractPkiFactoryTestD
 					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES).size());
 			assertEquals(certificateSource.getTimeStampValidationDataCertValues().size(),
 					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA).size());
+			assertEquals(certificateSource.getAnyValidationDataCertValues().size(),
+					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.ANY_VALIDATION_DATA).size());
 			assertEquals(certificateSource.getAttrAuthoritiesCertValues().size(),
 					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES).size());
 			assertEquals(0, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.SIGNED_DATA).size()

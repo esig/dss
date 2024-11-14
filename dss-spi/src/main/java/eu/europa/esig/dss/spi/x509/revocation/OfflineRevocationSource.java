@@ -313,6 +313,26 @@ public abstract class OfflineRevocationSource<R extends Revocation> implements R
 
 	/**
 	 * Retrieves the list of all {@code EncapsulatedRevocationTokenIdentifier}s
+	 * present in 'AnyValidationData' element
+	 *
+	 * @return list of {@code EncapsulatedRevocationTokenIdentifier}s
+	 */
+	public List<EncapsulatedRevocationTokenIdentifier<R>> getAnyValidationDataBinaries() {
+		return getBinariesByOrigin(RevocationOrigin.ANY_VALIDATION_DATA);
+	}
+
+	/**
+	 * Retrieves the list of all {@code RevocationToken}s present in
+	 * 'AnyValidationData' element
+	 *
+	 * @return list of {@code RevocationToken}s
+	 */
+	public List<RevocationToken<R>> getAnyValidationDataTokens() {
+		return getTokensByOrigin(RevocationOrigin.ANY_VALIDATION_DATA);
+	}
+
+	/**
+	 * Retrieves the list of all {@code EncapsulatedRevocationTokenIdentifier}s
 	 * present in 'DSS' dictionary
 	 * 
 	 * NOTE: Applicable only for PAdES revocation source

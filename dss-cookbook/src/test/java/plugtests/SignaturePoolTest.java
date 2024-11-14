@@ -421,6 +421,9 @@ class SignaturePoolTest extends AbstractDocumentTestValidation {
 			assertEquals(new HashSet<>(certificateSource.getTimeStampValidationDataCertValues()).size(),
 					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA).size() + 
 					foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA).size());
+			assertEquals(new HashSet<>(certificateSource.getAnyValidationDataCertValues()).size(),
+					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.ANY_VALIDATION_DATA).size() +
+							foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.ANY_VALIDATION_DATA).size());
 			assertEquals(new HashSet<>(certificateSource.getAttrAuthoritiesCertValues()).size(),
 					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES).size() +
 					foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES).size());
@@ -466,6 +469,9 @@ class SignaturePoolTest extends AbstractDocumentTestValidation {
 				assertEquals(new HashSet<>(certificateSource.getTimeStampValidationDataCertValues()).size(), 
 						foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA).size() + 
 						foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA).size());
+				assertEquals(new HashSet<>(certificateSource.getAnyValidationDataCertValues()).size(),
+						foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.ANY_VALIDATION_DATA).size() +
+								foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.ANY_VALIDATION_DATA).size());
 				assertEquals(new HashSet<>(certificateSource.getAttrAuthoritiesCertValues()).size(), 
 						foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES).size() +
 						foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES).size());

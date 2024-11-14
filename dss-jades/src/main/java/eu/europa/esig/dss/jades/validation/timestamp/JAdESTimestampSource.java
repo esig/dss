@@ -170,6 +170,18 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 	}
 
 	@Override
+	protected boolean isAnyValidationData(JAdESAttribute unsignedAttribute) {
+		// not supported
+		return false;
+	}
+
+	@Override
+	protected boolean isValidationDataReferences(JAdESAttribute unsignedAttribute) {
+		// not supported
+		return false;
+	}
+
+	@Override
 	protected boolean isCounterSignature(JAdESAttribute unsignedAttribute) {
 		return JAdESHeaderParameterNames.C_SIG.equals(unsignedAttribute.getHeaderName());
 	}

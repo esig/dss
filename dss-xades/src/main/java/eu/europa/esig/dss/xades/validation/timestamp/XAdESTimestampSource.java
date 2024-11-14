@@ -275,6 +275,18 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 	}
 
 	@Override
+	protected boolean isAnyValidationData(XAdESAttribute unsignedAttribute) {
+		// not supported
+		return false;
+	}
+
+	@Override
+	protected boolean isValidationDataReferences(XAdESAttribute unsignedAttribute) {
+		// not supported
+		return false;
+	}
+
+	@Override
 	protected boolean isCounterSignature(XAdESAttribute unsignedAttribute) {
 		return XAdES132Element.COUNTER_SIGNATURE.isSameTagName(unsignedAttribute.getName());
 	}

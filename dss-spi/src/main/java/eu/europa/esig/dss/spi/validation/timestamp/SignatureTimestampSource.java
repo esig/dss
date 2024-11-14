@@ -499,6 +499,16 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
                 addReferences(unsignedPropertiesReferences, timestampValidationData);
                 continue;
 
+            } else if (isAnyValidationData(unsignedAttribute)) {
+                List<TimestampedReference> validationData = getValidationData(unsignedAttribute);
+                addReferences(unsignedPropertiesReferences, validationData);
+                continue;
+
+            } else if (isValidationDataReferences(unsignedAttribute)) {
+                List<TimestampedReference> validationDataReferences = getValidationDataReferences(unsignedAttribute);
+                addReferences(unsignedPropertiesReferences, validationDataReferences);
+                continue;
+
             } else if (isCounterSignature(unsignedAttribute)) {
                 List<AdvancedSignature> counterSignatures = getCounterSignatures(unsignedAttribute);
                 List<TimestampedReference> counterSignatureReferences = getCounterSignaturesReferences(counterSignatures);
@@ -699,10 +709,27 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
      * "timestamp-validation-data" element
      *
      * @param unsignedAttribute {@link SA} to process
-     * @return TRUE if the {@code unsignedAttribute} is a TimeStamp Validation Data,
-     * FALSE otherwise
+     * @return TRUE if the {@code unsignedAttribute} is a TimeStamp Validation Data, FALSE otherwise
      */
     protected abstract boolean isTimeStampValidationData(SA unsignedAttribute);
+
+    /**
+     * Determines if the given {@code unsignedAttribute} is an instance of
+     * "any-validation-data" element
+     *
+     * @param unsignedAttribute {@link SA} to process
+     * @return TRUE if the {@code unsignedAttribute} is a Validation Data, FALSE otherwise
+     */
+    protected abstract boolean isAnyValidationData(SA unsignedAttribute);
+
+    /**
+     * Determines if the given {@code unsignedAttribute} is an instance of
+     * "references" element
+     *
+     * @param unsignedAttribute {@link SA} to process
+     * @return TRUE if the {@code unsignedAttribute} is a Validation Data References, FALSE otherwise
+     */
+    protected abstract boolean isValidationDataReferences(SA unsignedAttribute);
 
     /**
      * Determines if the given {@code unsignedAttribute} is an instance of
@@ -1007,11 +1034,38 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
      * @return list of {@link TimestampedReference}s
      */
     protected List<TimestampedReference> getTimestampValidationData(SA unsignedAttribute) {
+        return getValidationData(unsignedAttribute);
+    }
+
+    /**
+     * Returns a list of {@link TimestampedReference}s encapsulated to the "validation-data" {@code unsignedAttribute}
+     *
+     * @param unsignedAttribute {@link SA} to get timestamped references from
+     * @return list of {@link TimestampedReference}s
+     */
+    protected List<TimestampedReference> getValidationData(SA unsignedAttribute) {
         final List<TimestampedReference> timestampedReferences = new ArrayList<>();
         addReferences(timestampedReferences, createReferencesForIdentifiers(
                 getEncapsulatedCertificateIdentifiers(unsignedAttribute), TimestampedObjectType.CERTIFICATE));
         addReferences(timestampedReferences, createReferencesForCRLBinaries(getEncapsulatedCRLIdentifiers(unsignedAttribute)));
         addReferences(timestampedReferences, createReferencesForOCSPBinaries(getEncapsulatedOCSPIdentifiers(unsignedAttribute), certificateSource));
+        return timestampedReferences;
+    }
+
+    /**
+     * Returns a list of {@link TimestampedReference}s encapsulated to the "validation-data-references" {@code unsignedAttribute}
+     *
+     * @param unsignedAttribute {@link SA} to get timestamped references from
+     * @return list of {@link TimestampedReference}s
+     */
+    protected List<TimestampedReference> getValidationDataReferences(SA unsignedAttribute) {
+        final List<TimestampedReference> timestampedReferences = new ArrayList<>();
+        addReferences(timestampedReferences, createReferencesForCertificateRefs(
+                getCertificateRefs(unsignedAttribute), signature.getCertificateSource(), certificateSource));
+        addReferences(timestampedReferences, createReferencesForCRLRefs(
+                getCRLRefs(unsignedAttribute), signature.getCRLSource(), crlSource));
+        addReferences(timestampedReferences, createReferencesForOCSPRefs(
+                getOCSPRefs(unsignedAttribute), signature.getOCSPSource(), certificateSource, ocspSource));
         return timestampedReferences;
     }
 

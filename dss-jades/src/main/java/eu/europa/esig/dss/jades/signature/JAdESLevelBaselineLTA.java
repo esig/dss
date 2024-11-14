@@ -166,7 +166,7 @@ public class JAdESLevelBaselineLTA extends JAdESLevelBaselineLT {
 		if (Utils.isCollectionNotEmpty(detachedContents)) {
 			for (DSSDocument detachedDocument : detachedContents) {
 				if (detachedDocument instanceof DigestDocument) {
-					throw new IllegalArgumentException("JAdES-LTA with All data Timestamp requires complete binaries of signed documents! "
+					throw new IllegalArgumentException("JAdES-LTA requires complete binaries of signed documents! "
 							+ "Extension with a DigestDocument is not possible.");
 				}
 			}

@@ -44,9 +44,14 @@ public enum RevocationOrigin {
 
 	/**
 	 * The revocation data was embedded in the signature 'TimeStampValidationData'
-	 * attribute (used in XAdES)
+	 * attribute
 	 */
 	TIMESTAMP_VALIDATION_DATA,
+
+	/**
+	 * The revocation data was embedded in the signature 'AnyValidationData' attribute
+	 */
+	ANY_VALIDATION_DATA,
 
 	/**
 	 * The revocation data was embedded to the contents of DSS PDF dictionary (used

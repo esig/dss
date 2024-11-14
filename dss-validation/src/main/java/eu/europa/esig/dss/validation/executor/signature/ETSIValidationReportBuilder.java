@@ -1154,6 +1154,14 @@ public class ETSIValidationReportBuilder {
 		for (OrphanCertificateTokenWrapper orphanCertificate : foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES)) {
 			validationObjectTypes.add(getOrphanCertificateValidationObject(orphanCertificate));
 		}
+		// TODO : temporary handling for AnyValidationData -> embed in CertificateValues
+		for (CertificateWrapper certificateWrapper : foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.ANY_VALIDATION_DATA)) {
+			validationObjectTypes.add(getCertificateValidationObject(certificateWrapper));
+		}
+		for (OrphanCertificateTokenWrapper orphanCertificate : foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.ANY_VALIDATION_DATA)) {
+			validationObjectTypes.add(getOrphanCertificateValidationObject(orphanCertificate));
+		}
+
 		if (Utils.isCollectionNotEmpty(validationObjectTypes)) {
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
 					.add(objectFactory.createSignatureAttributesTypeCertificateValues(buildAttributeObjectList(validationObjectTypes)));
@@ -1345,6 +1353,13 @@ public class ETSIValidationReportBuilder {
 			validationObjects.add(getRevocationValidationObject(revocationWrapper));
 		}
 		for (OrphanRevocationTokenWrapper orphanRevocation : foundRevocations.getOrphanRevocationsByOrigin(RevocationOrigin.REVOCATION_VALUES)) {
+			validationObjects.add(getOrphanRevocationValidationObject(orphanRevocation));
+		}
+		// TODO : temporary handling for AnyValidationData -> embed in RevocationValues
+		for (RevocationWrapper revocationWrapper : foundRevocations.getRelatedRevocationsByOrigin(RevocationOrigin.ANY_VALIDATION_DATA)) {
+			validationObjects.add(getRevocationValidationObject(revocationWrapper));
+		}
+		for (OrphanRevocationTokenWrapper orphanRevocation : foundRevocations.getOrphanRevocationsByOrigin(RevocationOrigin.ANY_VALIDATION_DATA)) {
 			validationObjects.add(getOrphanRevocationValidationObject(orphanRevocation));
 		}
 		if (Utils.isCollectionNotEmpty(validationObjects)) {
