@@ -76,9 +76,9 @@ class ASiCSXAdESCreateContainerFromDigestDocumentsTest extends AbstractASiCSXAdE
 
         ToBeSigned dataToSign = service.getDataToSign(digestDocument, signatureParameters);
         byte[] dtbsr = DSSUtils.digest(signatureParameters.getDigestAlgorithm(), dataToSign.getBytes());
-        byte[] rsaDtbsr = DSSUtils.encodeRSADigest(signatureParameters.getDigestAlgorithm(), dtbsr);
 
-        SignatureValue signatureValue = getToken().signDigest(new Digest(signatureParameters.getDigestAlgorithm(), rsaDtbsr), signatureParameters.getSignatureAlgorithm(), getPrivateKeyEntry());
+        SignatureValue signatureValue = getToken().signDigest(new Digest(signatureParameters.getDigestAlgorithm(), dtbsr),
+                signatureParameters.getSignatureAlgorithm(), getPrivateKeyEntry());
         DSSDocument signedDocument = service.signDocument(digestDocument, signatureParameters, signatureValue);
 
         ASiCContent asicContent = new ASiCWithXAdESASiCContentBuilder().build(

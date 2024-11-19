@@ -121,10 +121,8 @@ class SignEd25519Test {
 
             DigestAlgorithm digestAlgo = DigestAlgorithm.SHA512;
 
-            // Important step with RSA without PSS
             final byte[] digestBinaries = DSSUtils.digest(digestAlgo, toBeSigned.getBytes());
-            final byte[] encodedDigest = DSSUtils.encodeRSADigest(digestAlgo, digestBinaries);
-            Digest digest = new Digest(digestAlgo, encodedDigest);
+            Digest digest = new Digest(digestAlgo, digestBinaries);
 
             Exception exception = assertThrows(UnsupportedOperationException.class, () -> signatureToken.signDigest(digest, entry));
             assertEquals("The SignatureAlgorithm for digest signing is not found for the given configuration " +

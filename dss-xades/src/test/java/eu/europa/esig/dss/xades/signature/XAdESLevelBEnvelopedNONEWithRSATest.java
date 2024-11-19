@@ -20,16 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Stream;
-
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
@@ -45,6 +35,15 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
 
 @Tag("slow")
 class XAdESLevelBEnvelopedNONEWithRSATest extends AbstractXAdESTestSignature {
@@ -91,8 +90,7 @@ class XAdESLevelBEnvelopedNONEWithRSATest extends AbstractXAdESTestSignature {
 
 		// Compute the digest before the signature + encode (specific RSA without PSS)
 		byte[] originalDigest = DSSUtils.digest(signatureParameters.getDigestAlgorithm(), dataToSign.getBytes());
-		Digest digest = new Digest(signatureParameters.getDigestAlgorithm(),
-				DSSUtils.encodeRSADigest(signatureParameters.getDigestAlgorithm(), originalDigest));
+		Digest digest = new Digest(signatureParameters.getDigestAlgorithm(), originalDigest);
 
 		SignatureValue signatureValue = getToken().signDigest(digest, getPrivateKeyEntry());
 		return service.signDocument(documentToSign, signatureParameters, signatureValue);

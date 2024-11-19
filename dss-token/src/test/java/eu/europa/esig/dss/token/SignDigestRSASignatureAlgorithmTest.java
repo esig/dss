@@ -102,9 +102,7 @@ class SignDigestRSASignatureAlgorithmTest {
 
             final DigestAlgorithm digestAlgorithm = signatureAlgorithm.getDigestAlgorithm();
             final byte[] digestBinaries = DSSUtils.digest(digestAlgorithm, toBeSigned.getBytes());
-            // Important step with RSA without PSS
-            final byte[] encodedDigest = DSSUtils.encodeRSADigest(digestAlgorithm, digestBinaries);
-            Digest digest = new Digest(digestAlgorithm, encodedDigest);
+            Digest digest = new Digest(digestAlgorithm, digestBinaries);
 
             SignatureValue signDigestValue = signatureToken.signDigest(digest, signatureAlgorithm, entry);
             assertNotNull(signDigestValue.getAlgorithm());

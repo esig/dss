@@ -467,7 +467,11 @@ public final class DSSUtils {
 	 * @param digest
 	 *                        the digest value
 	 * @return DER encoded binaries of the related digest info
+	 * @deprecated since DSS 6.2. The RSA-encoding has been automated on digest signing.
+	 *             Please use {@code SignatureTokenConnection#signDigest} method directly, without pre-processing.
+	 *             If required, the method {@code DigestInfoEncoder#encode} can be used as an alternative.
 	 */
+	@Deprecated
 	public static byte[] encodeRSADigest(final DigestAlgorithm digestAlgorithm, final byte[] digest) {
 		try {
 			AlgorithmIdentifier algId = new AlgorithmIdentifier(new ASN1ObjectIdentifier(digestAlgorithm.getOid()), DERNull.INSTANCE);

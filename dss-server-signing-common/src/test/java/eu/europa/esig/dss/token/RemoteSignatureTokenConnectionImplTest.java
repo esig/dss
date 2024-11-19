@@ -152,9 +152,8 @@ class RemoteSignatureTokenConnectionImplTest {
 		RemoteKeyEntry remoteKeyEntry = keys.get(0);
 		byte[] toBeSigned = {1, 2, 3, 4, 5};
 		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA256, toBeSigned);
-		byte[] encodedDigest = DSSUtils.encodeRSADigest(DigestAlgorithm.SHA256, digest);
-		System.out.println(Base64.getEncoder().encodeToString(encodedDigest));
-		DigestDTO digestDTO = new DigestDTO(DigestAlgorithm.SHA256, encodedDigest);
+		System.out.println(Base64.getEncoder().encodeToString(digest));
+		DigestDTO digestDTO = new DigestDTO(DigestAlgorithm.SHA256, digest);
 		SignatureValueDTO signatureValue = exposedToken.signDigest(digestDTO, remoteKeyEntry.getAlias());
 		assertNotNull(signatureValue);
 		assertNotNull(signatureValue.getValue());
@@ -196,8 +195,7 @@ class RemoteSignatureTokenConnectionImplTest {
 		RemoteKeyEntry remoteKeyEntry = keys.get(0);
 		byte[] toBeSigned = {1, 2, 3, 4, 5};
 		byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA256, toBeSigned);
-		byte[] encodedDigest = DSSUtils.encodeRSADigest(DigestAlgorithm.SHA256, digest);
-		DigestDTO digestDTO = new DigestDTO(DigestAlgorithm.SHA256, encodedDigest);
+		DigestDTO digestDTO = new DigestDTO(DigestAlgorithm.SHA256, digest);
 		SignatureValueDTO signatureValue = exposedToken.signDigest(
 				digestDTO, SignatureAlgorithm.RSA_SHA256, remoteKeyEntry.getAlias());
 		assertNotNull(signatureValue);

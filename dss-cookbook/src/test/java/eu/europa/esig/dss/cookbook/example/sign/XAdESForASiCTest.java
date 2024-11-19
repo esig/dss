@@ -41,7 +41,10 @@ import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import java.io.File;
 import java.util.Collections;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class XAdESForASiCTest extends CookbookTools {
 
@@ -125,6 +128,8 @@ public class XAdESForASiCTest extends CookbookTools {
             signedDocument.save("target/signed.xml");
 
             testFinalDocument(signedDocument);
+
+            assertTrue(new File("target/signed.xml").delete());
         }
     }
 

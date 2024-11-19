@@ -20,16 +20,6 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Stream;
-
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -41,6 +31,15 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Stream;
 
 @Tag("slow")
 class CAdESLevelBNONEWithRSATest extends AbstractCAdESTestSignature {
@@ -115,8 +114,7 @@ class CAdESLevelBNONEWithRSATest extends AbstractCAdESTestSignature {
 
 		// Compute the digest before the signature + encode (specific RSA without PSS)
 		byte[] originalDigest = DSSUtils.digest(signatureParameters.getDigestAlgorithm(), dataToSign.getBytes());
-		Digest digest = new Digest(signatureParameters.getDigestAlgorithm(),
-				DSSUtils.encodeRSADigest(signatureParameters.getDigestAlgorithm(), originalDigest));
+		Digest digest = new Digest(signatureParameters.getDigestAlgorithm(), originalDigest);
 
 		SignatureValue signatureValue = getToken().signDigest(digest, getPrivateKeyEntry());
 		return service.signDocument(documentToSign, signatureParameters, signatureValue);

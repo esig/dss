@@ -75,13 +75,11 @@ class ServerSignRsaTest extends CookbookTools {
             // import eu.europa.esig.dss.spi.DSSUtils;
 
             // Compute the hash of ToBeSigned data to send to the remote server
+            // NOTE: no need to encode digest to RSA. The encoding is done automatically in the #signDigest method
             byte[] toBeSignedDigest = getToBeSignedDigest(parameters, toSignDocument);
 
-            // Encode digest to ASN.1 DigestInfo format for a private key signing in Java
-            byte[] encodeRSADigest = DSSUtils.encodeRSADigest(parameters.getDigestAlgorithm(), toBeSignedDigest);
-
-            // Create SignatureValue in Java usign the encoded digest value
-            Digest digest = new Digest(parameters.getDigestAlgorithm(), encodeRSADigest);
+            // Create SignatureValue in Java using the encoded digest value
+            Digest digest = new Digest(parameters.getDigestAlgorithm(), toBeSignedDigest);
             SignatureValue signatureValue = signingToken.signDigest(digest, privateKey);
             // end::demo[]
 

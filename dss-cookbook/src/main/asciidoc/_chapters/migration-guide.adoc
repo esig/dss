@@ -98,6 +98,31 @@ BufferedImage screenshotTwo = PdfBoxScreenshotBuilder.fromDocument(docTwo, passw
 DSSDocument subtractionImage = PdfBoxUtils.generateSubtractionImage(screenshotOne, screenshotTwo);
 ----
 
+|Digest encoding for RSA signature             a|
+[source,java]
+----
+import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.token.SignatureTokenConnection;
+
+SignatureTokenConnection token = ...
+byte[] digestValue = ...
+byte[] encodedDigest = DSSUtils.encodeRSADigest(DigestAlgorithm.SHA256, digestValue));
+Digest digest = new Digest(DigestAlgorithm.SHA256, encodedDigest);
+SignatureValue signatureValue = token.signDigest(digest, SignatureAlgorithm.RSA_SHA256, getPrivateKeyEntry());
+----
+                                                                     a|
+[source,java]
+----
+import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.token.SignatureTokenConnection;
+
+SignatureTokenConnection token = ...
+byte[] digestValue = ...
+Digest digest = new Digest(DigestAlgorithm.SHA256, digestValue);
+SignatureValue signatureValue = token.signDigest(digest, SignatureAlgorithm.RSA_SHA256, getPrivateKeyEntry());
+----
+
 |===
 
 [cols="2,5,5"]

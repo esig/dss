@@ -27,6 +27,7 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
+import eu.europa.esig.dss.token.digest.DigestInfoEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,10 +67,7 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 
 		final String javaSignatureAlgorithm = signatureAlgorithm.getJCEId();
 		final byte[] bytes = toBeSigned.getBytes();
-		AlgorithmParameterSpec param = null;
-		if (EncryptionAlgorithm.RSASSA_PSS == signatureAlgorithm.getEncryptionAlgorithm()) {
-			param = createPSSParam(signatureAlgorithm.getDigestAlgorithm());
-		}
+		AlgorithmParameterSpec param = initParameters(signatureAlgorithm, signatureAlgorithm.getDigestAlgorithm());
 
 		try {
 			final byte[] signatureValue = sign(bytes, javaSignatureAlgorithm, param, keyEntry);
@@ -95,12 +93,10 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 		assertConfigurationValid(digest, signatureAlgorithm, keyEntry);
 
 		final String javaSignatureAlgorithm = getRawSignatureAlgorithm(signatureAlgorithm.getEncryptionAlgorithm()).getJCEId();
-		final byte[] digestedBytes = digest.getValue();
-		AlgorithmParameterSpec param = null;
-		if (EncryptionAlgorithm.RSASSA_PSS == signatureAlgorithm.getEncryptionAlgorithm()) {
-			param = createPSSParam(digest.getAlgorithm());
-		}
+		digest = ensureDigestUniform(signatureAlgorithm, digest);
 
+		final byte[] digestedBytes = digest.getValue();
+		AlgorithmParameterSpec param = initParameters(signatureAlgorithm, digest.getAlgorithm());
 		try {
 			final byte[] signatureValue = sign(digestedBytes, javaSignatureAlgorithm, param, keyEntry);
 			SignatureValue value = new SignatureValue();
@@ -110,6 +106,37 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 		} catch (Exception e) {
 			throw new DSSException(String.format("Unable to sign digest : %s", e.getMessage()), e);
 		}
+	}
+
+	/**
+	 * This method ensures the digest value is provided in the correct format for signing according
+	 * to the given {@code signatureAlgorithm}
+	 * NOTE: When RSA (without PSS) is used, the digest value shall be ASN.1 DigestInfo encoded before signing
+	 *
+	 * @param signatureAlgorithm {@link SignatureAlgorithm} to be used on signing
+	 * @param digest {@link Digest} to verify
+	 * @return {@link Digest} containing an encoded digest value, when needed
+	 */
+	protected Digest ensureDigestUniform(SignatureAlgorithm signatureAlgorithm, Digest digest) {
+		if (EncryptionAlgorithm.RSA == signatureAlgorithm.getEncryptionAlgorithm() && !DigestInfoEncoder.isEncoded(digest.getValue())) {
+			byte[] encodedDigest = DigestInfoEncoder.encode(digest.getAlgorithm().getOid(), digest.getValue());
+			digest = new Digest(digest.getAlgorithm(), encodedDigest);
+		}
+		return digest;
+	}
+
+	/**
+	 * This method instantiates signature parameters, when applicable
+	 *
+	 * @param signatureAlgorithm {@link SignatureAlgorithm} used on signing
+	 * @param digestAlgorithm {@link DigestAlgorithm} used to compute the digest value
+	 * @return {@link AlgorithmParameterSpec}
+	 */
+	protected AlgorithmParameterSpec initParameters(SignatureAlgorithm signatureAlgorithm, DigestAlgorithm digestAlgorithm) {
+		if (EncryptionAlgorithm.RSASSA_PSS == signatureAlgorithm.getEncryptionAlgorithm()) {
+			return createPSSParam(digestAlgorithm);
+		}
+		return null;
 	}
 
 	private byte[] sign(final byte[] bytes, final String javaSignatureAlgorithm, final AlgorithmParameterSpec param,
