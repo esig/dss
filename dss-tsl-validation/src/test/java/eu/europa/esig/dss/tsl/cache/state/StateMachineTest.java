@@ -111,7 +111,11 @@ class StateMachineTest {
 		assertEquals(CacheStateEnum.TO_BE_DELETED, cachedEntry.getCurrentState());
 		assertThrows(IllegalStateException.class, () -> cachedEntry.sync());
 		assertThrows(IllegalStateException.class, () -> cachedEntry.toBeDeleted());
-		assertThrows(IllegalStateException.class, () -> cachedEntry.expire());
+
+		cachedEntry.expire();
+
+		cachedEntry.toBeDeleted();
+		cachedEntry.update(new MockCachedResult(7));
 	}
 
 	@Test

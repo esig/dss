@@ -115,8 +115,21 @@ public enum CacheStateEnum implements CacheState {
 
 	/**
 	 * The cache content needs to be deleted
+	 * NOTE: URL may become available again if not cleaned!
 	 */
-	TO_BE_DELETED;
+	TO_BE_DELETED {
+
+		@Override
+		public void desync(CacheContext cacheContext) {
+			cacheContext.state(DESYNCHRONIZED);
+		}
+
+		@Override
+		public void refreshNeeded(CacheContext cacheContext) {
+			cacheContext.state(REFRESH_NEEDED);
+		}
+
+	};
 
 	private static final String NOT_ALLOWED_TRANSITION = "Transition from '%s' to '%s' is not allowed";
 

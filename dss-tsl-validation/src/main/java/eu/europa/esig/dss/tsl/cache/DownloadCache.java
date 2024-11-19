@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.tsl.cache;
 
+import eu.europa.esig.dss.tsl.cache.state.CacheStateEnum;
 import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,6 +51,11 @@ public class DownloadCache extends AbstractCache<XmlDownloadResult> {
 	 */
 	public boolean isUpToDate(CacheKey cacheKey, XmlDownloadResult downloadedResult) {
 		LOG.trace("Extracting cached file for the key [{}]...", cacheKey);
+		if (isToBeDeleted(cacheKey)) {
+			LOG.warn("Update requested for a {} entry with the key [{}]! Force update.", CacheStateEnum.TO_BE_DELETED, cacheKey);
+			return false;
+		}
+
 		CachedEntry<XmlDownloadResult> cachedFileEntry = get(cacheKey);
 		if (!cachedFileEntry.isEmpty()) {
 			XmlDownloadResult cachedResult = cachedFileEntry.getCachedResult();
