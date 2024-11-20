@@ -57,6 +57,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class TLParsingTaskTest {
 
 	private static DSSDocument DE_TL;
+	private static DSSDocument FI_V6_TL;
 	private static DSSDocument FR_TL;
 	private static DSSDocument IE_TL;
 	private static DSSDocument SK_TL;
@@ -68,6 +69,7 @@ public class TLParsingTaskTest {
 	@BeforeAll
 	public static void init() throws IOException {
 		DE_TL = new FileDocument("src/test/resources/de-tl.xml");
+		FI_V6_TL = new FileDocument("src/test/resources/fi-v6.xml");
 		FR_TL = new FileDocument("src/test/resources/fr.xml");
 		IE_TL = new FileDocument("src/test/resources/ie-tl.xml");
 		SK_TL = new FileDocument("src/test/resources/sk-tl.xml");
@@ -134,7 +136,29 @@ public class TLParsingTaskTest {
 	}
 
 	@Test
-	public void testLOTL() {
+	void testFIv6() {
+		TLParsingTask task = new TLParsingTask(FI_V6_TL, new TLSource());
+		TLParsingResult result = task.get();
+		assertNotNull(result);
+		assertEquals(6, result.getVersion());
+		assertEquals(49, result.getSequenceNumber());
+		assertNotNull(result.getIssueDate());
+		assertNotNull(result.getNextUpdateDate());
+		assertEquals("FI", result.getTerritory());
+		assertNotNull(result.getDistributionPoints());
+
+		List<TrustServiceProvider> trustServiceProviders = result.getTrustServiceProviders();
+		assertNotNull(trustServiceProviders);
+		assertEquals(1, trustServiceProviders.size());
+
+		checkTSPs(trustServiceProviders);
+
+		TrustServiceProvider nsa = trustServiceProviders.get(0);
+		assertEquals(19, nsa.getServices().size());
+	}
+
+	@Test
+	void testLOTL() {
 		TLParsingTask task = new TLParsingTask(LOTL, new TLSource());
 		TLParsingResult result = task.get();
 		assertNotNull(result);

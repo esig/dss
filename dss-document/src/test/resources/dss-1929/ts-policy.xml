@@ -366,6 +366,9 @@
 		<TLFreshness Unit="HOURS" Value="6" Level="WARN"/>
 		<TLNotExpired Level="WARN"/>
 		<TLWellSigned Level="WARN"/>
-		<TLVersion value="5" Level="FAIL"/>
+		<TLVersion Level="FAIL">
+			<Id>5</Id>
+			<Id>6</Id>
+		</TLVersion>
 	</eIDAS>
 </ConstraintsParameters>
