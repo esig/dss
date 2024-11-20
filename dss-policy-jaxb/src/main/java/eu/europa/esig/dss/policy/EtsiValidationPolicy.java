@@ -1528,7 +1528,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public ValueConstraint getTLVersionConstraint() {
+	public MultiValuesConstraint getTLVersionConstraint() {
 		EIDAS eIDASConstraints = getEIDASConstraints();
 		if (eIDASConstraints != null) {
 			return eIDASConstraints.getTLVersion();
