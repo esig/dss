@@ -26,11 +26,9 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.ValueConstraint;
-import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
+import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
 import eu.europa.esig.dss.validation.process.qualification.EIDASUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 
@@ -38,18 +36,13 @@ import java.util.Date;
  * Checks whether the version of the Trusted List is acceptable
  *
  */
-public class TLVersionCheck extends ChainItem<XmlTLAnalysis> {
-
-	private static final Logger LOG = LoggerFactory.getLogger(TLVersionCheck.class);
+public class TLVersionCheck extends AbstractMultiValuesCheckItem<XmlTLAnalysis> {
 
 	/** Trusted List to check */
 	private final XmlTrustedList currentTL;
 
 	/** Validation time */
 	private final Date currentTime;
-
-	/** Constraint defining the acceptable version number */
-	private final ValueConstraint constraint;
 
 	/**
 	 * Default constructor
@@ -58,33 +51,26 @@ public class TLVersionCheck extends ChainItem<XmlTLAnalysis> {
 	 * @param result {@link XmlTLAnalysis}
 	 * @param currentTl {@link XmlTrustedList}
 	 * @param currentTime {@link Date}
-	 * @param constraint {@link ValueConstraint}
+	 * @param constraint {@link MultiValuesConstraint}
 	 */
 	public TLVersionCheck(I18nProvider i18nProvider, XmlTLAnalysis result, XmlTrustedList currentTl, Date currentTime,
-						  ValueConstraint constraint) {
+						  MultiValuesConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.currentTL = currentTl;
 		this.currentTime = currentTime;
-		this.constraint = constraint;
 	}
 
 	@Override
 	protected boolean process() {
-
 		if (!EIDASUtils.isPostGracePeriod(currentTime)) {
 			return true;
 		}
-
-		String expectedVersionString = constraint.getValue();
-		int version = 5; // default eIDAS
-		try {
-			version = Integer.parseInt(expectedVersionString);
-		} catch (NumberFormatException e) {
-			LOG.warn("Unable to parse TLVersion constraint : '{}'", expectedVersionString);
-		}
-
 		Integer tlVersion = currentTL.getVersion();
-		return (tlVersion != null) && (tlVersion == version);
+		if (tlVersion == null) {
+			// invalid
+			return false;
+		}
+		return processValueCheck(Integer.toString(tlVersion));
 	}
 
 	@Override

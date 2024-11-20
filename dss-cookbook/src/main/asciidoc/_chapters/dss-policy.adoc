@@ -2715,14 +2715,17 @@ Default: `WARN`
 
 * `TLVersion` - this constraint checks whether the "version" attribute of the Trusted List corresponds to the defined value. If the version of the Trusted List matches the expected value, the check will fail.
 
-Default: `WARN` (`5`)
+Default: `FAIL` (`5` and `6`)
 
 [source,xml,indent=0]
-.Example of TLVersion usage (with WARN validation level)
+.Example of TLVersion usage (with FAIL validation level)
 ----
 <eIDAS>
     ...
-    <TLVersion Level="FAIL" value="5" />
+    <TLVersion Level="FAIL">
+        <Id>5</Id>
+        <Id>6</Id>
+    </TLVersion>
     ...
 </eIDAS>
 ----

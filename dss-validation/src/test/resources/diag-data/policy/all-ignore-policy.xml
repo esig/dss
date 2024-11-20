@@ -610,6 +610,9 @@
 		<TLFreshness Level="IGNORE" Unit="HOURS" Value="6" />
 		<TLNotExpired Level="IGNORE" />
 		<TLWellSigned Level="IGNORE" />
-		<TLVersion Level="IGNORE" value="5" />
+		<TLVersion Level="IGNORE">
+			<Id>5</Id>
+			<Id>6</Id>
+		</TLVersion>
 	</eIDAS>
 </ConstraintsParameters>

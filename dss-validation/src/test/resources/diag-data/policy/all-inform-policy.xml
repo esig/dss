@@ -610,6 +610,9 @@
 		<TLFreshness Level="INFORM" Unit="HOURS" Value="6" />
 		<TLNotExpired Level="INFORM" />
 		<TLWellSigned Level="INFORM" />
-		<TLVersion Level="INFORM" value="5" />
+		<TLVersion Level="INFORM">
+			<Id>5</Id>
+			<Id>6</Id>
+		</TLVersion>
 	</eIDAS>
 </ConstraintsParameters>

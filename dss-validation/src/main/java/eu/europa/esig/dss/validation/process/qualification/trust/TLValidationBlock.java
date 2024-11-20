@@ -26,8 +26,8 @@ import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.policy.jaxb.TimeConstraint;
-import eu.europa.esig.dss.policy.jaxb.ValueConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
@@ -118,7 +118,7 @@ public class TLValidationBlock extends Chain<XmlTLAnalysis> {
 	}
 
 	private ChainItem<XmlTLAnalysis> tlVersion() {
-		ValueConstraint constraint = policy.getTLVersionConstraint();
+		MultiValuesConstraint constraint = policy.getTLVersionConstraint();
 		return new TLVersionCheck(i18nProvider, result, currentTL, currentTime, constraint);
 	}
 

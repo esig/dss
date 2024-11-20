@@ -80,6 +80,26 @@ Not present
 </EvidenceRecord>
 ----
 
+|TL Version     a|[source,xml]
+----
+<eIDAS>
+    ...
+    <TLVersion Level="FAIL" value="5" />
+    ...
+</eIDAS>
+----
+                                                                     a|[source,xml]
+----
+<eIDAS>
+    ...
+    <TLVersion Level="FAIL">
+        <Id>5</Id>
+        <Id>6</Id>
+    </TLVersion>
+    ...
+</eIDAS>
+----
+
 |===
 
 [cols="2,5,5"]
