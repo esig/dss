@@ -59,7 +59,7 @@
 				<configuration>
 					<schemaDirectory>src/main/resources/xsd</schemaDirectory>
 					<schemaIncludes>
-<!-- 					<schemaInclude>ts_119612v020201_201601xsd.xsd</schemaInclude> -->
+<!-- 					<schemaInclude>ts_119612v020301_xsd.xsd</schemaInclude> -->
 <!-- 					<schemaInclude>ts_119612v020101_sie_xsd.xsd</schemaInclude>-->
 						<schemaInclude>ts_119612v020101_additionaltypes_xsd.xsd</schemaInclude>
 						<schemaInclude>mra/mra_schema_v2.xsd</schemaInclude>
