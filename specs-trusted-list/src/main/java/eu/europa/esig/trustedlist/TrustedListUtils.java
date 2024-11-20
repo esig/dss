@@ -20,12 +20,12 @@
  */
 package eu.europa.esig.trustedlist;
 
-import eu.europa.esig.trustedlist.jaxb.tsl.ObjectFactory;
-import eu.europa.esig.xades.XAdESUtils;
 import eu.europa.esig.dss.jaxb.common.XSDAbstractUtils;
-
+import eu.europa.esig.trustedlist.jaxb.tsl.ObjectFactory;
+import eu.europa.esig.xades.XAdES319132Utils;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
+
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import java.util.List;
@@ -39,7 +39,7 @@ public final class TrustedListUtils extends XSDAbstractUtils {
 	public static final ObjectFactory OBJECT_FACTORY = new ObjectFactory();
 
 	/** The Trusted List XSD schema location */
-	public static final String TRUSTED_LIST_SCHEMA_LOCATION = "/xsd/ts_119612v020101_xsd.xsd";
+	public static final String TRUSTED_LIST_SCHEMA_LOCATION = "/xsd/ts_119612v020301_xsd.xsd";
 	public static final String TRUSTED_LIST_SIE_SCHEMA_LOCATION = "/xsd/ts_119612v020101_sie_xsd.xsd";
 	public static final String TRUSTED_LIST_ADDITIONALTYPES_SCHEMA_LOCATION = "/xsd/ts_119612v020101_additionaltypes_xsd.xsd";
 
@@ -82,7 +82,7 @@ public final class TrustedListUtils extends XSDAbstractUtils {
 
 	@Override
 	public List<Source> getXSDSources() {
-		List<Source> xsdSources = XAdESUtils.getInstance().getXSDSources();
+		List<Source> xsdSources = XAdES319132Utils.getInstance().getXSDSources();
 		xsdSources.add(new StreamSource(TrustedListUtils.class.getResourceAsStream(TRUSTED_LIST_SCHEMA_LOCATION)));
 		xsdSources.add(new StreamSource(TrustedListUtils.class.getResourceAsStream(TRUSTED_LIST_SIE_SCHEMA_LOCATION)));
 		xsdSources.add(new StreamSource(TrustedListUtils.class.getResourceAsStream(TRUSTED_LIST_ADDITIONALTYPES_SCHEMA_LOCATION)));

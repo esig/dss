@@ -49,6 +49,16 @@ class TrustedListFacadeTest {
 	}
 
 	@Test
+	void testTLv5() throws JAXBException, XMLStreamException, IOException, SAXException {
+		marshallUnmarshall(new File("src/test/resources/tlv5.xml"));
+	}
+
+	@Test
+	void testTLv6() throws JAXBException, XMLStreamException, IOException, SAXException {
+		marshallUnmarshall(new File("src/test/resources/tlv6.xml"));
+	}
+
+	@Test
 	void testLOTL() throws JAXBException, XMLStreamException, IOException, SAXException {
 		marshallUnmarshall(new File("src/test/resources/lotl.xml"));
 	}
