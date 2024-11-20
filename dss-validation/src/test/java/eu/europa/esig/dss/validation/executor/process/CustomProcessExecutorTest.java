@@ -2705,6 +2705,10 @@ class CustomProcessExecutorTest extends AbstractProcessExecutorTest {
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 		assertEquals(SignatureQualification.UNKNOWN, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
+		assertFalse(checkMessageValuePresence(simpleReport.getQualificationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.QUAL_VALID_TRUSTED_LIST_PRESENT_ANS)));
+		assertFalse(checkMessageValuePresence(simpleReport.getQualificationErrors(simpleReport.getFirstSignatureId()),
+				i18nProvider.getMessage(MessageTag.QUAL_TL_VERSION_ANS)));
 		// no qualifiers
 		
 		ValidationReportType etsiValidationReport = reports.getEtsiValidationReportJaxb();

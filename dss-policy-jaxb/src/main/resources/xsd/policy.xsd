@@ -1081,9 +1081,9 @@
 					<xsd:documentation>Checks if the signature of the Trusted List is valid</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="TLVersion" type="ValueConstraint" minOccurs="0">
+			<xsd:element name="TLVersion" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Checks if the version (TSLVersionIdentifier) of the Trusted List is equals to the given value</xsd:documentation>
+					<xsd:documentation>Checks if the version (TSLVersionIdentifier) of the Trusted List is equals to one of the given values</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 		</xsd:sequence>

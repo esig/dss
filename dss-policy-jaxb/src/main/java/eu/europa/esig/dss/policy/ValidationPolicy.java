@@ -1507,10 +1507,10 @@ public interface ValidationPolicy {
 	/**
 	 * Returns TLVersion constraint if present in the policy, null otherwise
 	 *
-	 * @return {@code ValueConstraint} if TLVersion element is present
-	 *                                 in the constraint file, null otherwise.
+	 * @return {@code MultiValuesConstraint} if TLVersion element is present
+	 *                                       in the constraint file, null otherwise.
 	 */
-	ValueConstraint getTLVersionConstraint();
+	MultiValuesConstraint getTLVersionConstraint();
 
 	/**
 	 * Returns the used validation model (default is SHELL). Alternatives are CHAIN
