@@ -29,6 +29,7 @@ import eu.europa.esig.dss.tsl.function.OfficialJournalSchemeInformationURI;
 import eu.europa.esig.dss.tsl.function.TLPredicateFactory;
 import eu.europa.esig.dss.tsl.function.XMLOtherTSLPointer;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
+import eu.europa.esig.dss.utils.Utils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -101,6 +102,8 @@ public class LOTLParsingTaskTest {
 
 		assertNotNull(result.getDistributionPoints());
 		assertEquals(1, result.getDistributionPoints().size());
+
+		assertTrue(Utils.isCollectionEmpty(result.getStructureValidation()));
 	}
 
 	@Test
@@ -124,6 +127,8 @@ public class LOTLParsingTaskTest {
 
 		assertNotNull(result.getDistributionPoints());
 		assertEquals(1, result.getDistributionPoints().size());
+
+		assertTrue(Utils.isCollectionEmpty(result.getStructureValidation()));
 	}
 
 	private void checkOtherPointers(List<OtherTSLPointer> lotlPointers) {
