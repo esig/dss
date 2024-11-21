@@ -36,6 +36,7 @@ import java.math.BigInteger;
 import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 
@@ -154,6 +155,19 @@ public abstract class AbstractParsingTask<T extends AbstractParsingResult> imple
 			result.setDistributionPoints(Collections.unmodifiableList(distributionPoints.getURI()));
 		} else {
 			result.setDistributionPoints(Collections.emptyList());
+		}
+	}
+
+	/**
+	 * Verifies the structure conformity of the Trusted List corresponding to its schema version
+	 *
+	 * @param result {@link AbstractParsingResult}
+	 * @param tlVersion {@link Integer} TL version to verify against
+	 */
+	protected void verifyTLVersionConformity(AbstractParsingResult result, Integer tlVersion) {
+		List<String> structureValidationResult = new TLConformityValidator(document, tlVersion).validate();
+		if (Utils.isCollectionNotEmpty(structureValidationResult)) {
+			result.setStructureValidation(structureValidationResult);
 		}
 	}
 

@@ -68,7 +68,10 @@ public class LOTLParsingTask extends AbstractParsingTask<LOTLParsingResult> {
 	public LOTLParsingResult get() {
 		LOTLParsingResult result = new LOTLParsingResult();
 		TrustStatusListType jaxbObject = getJAXBObject();
+
 		parseSchemeInformation(result, jaxbObject.getSchemeInformation());
+		verifyTLVersionConformity(result, result.getVersion());
+
 		return result;
 	}
 

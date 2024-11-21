@@ -64,14 +64,13 @@ public class TLParsingTask extends AbstractParsingTask<TLParsingResult> {
 
 		parseSchemeInformation(result, jaxbObject.getSchemeInformation());
 		parseTrustServiceProviderList(result, jaxbObject.getTrustServiceProviderList());
+		verifyTLVersionConformity(result, result.getVersion());
 
 		return result;
 	}
 
 	private void parseSchemeInformation(TLParsingResult result, TSLSchemeInformationType schemeInformation) {
-
 		commonParseSchemeInformation(result, schemeInformation);
-
 	}
 
 	private void parseTrustServiceProviderList(TLParsingResult result, TrustServiceProviderListType trustServiceProviderList) {
