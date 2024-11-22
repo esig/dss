@@ -25,6 +25,7 @@ import eu.europa.esig.dss.tsl.cache.CacheKey;
 import eu.europa.esig.trustedlist.jaxb.tsl.TSPServiceType;
 import eu.europa.esig.trustedlist.jaxb.tsl.TSPType;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 
@@ -56,6 +57,11 @@ public class TLSource {
 	 * Default : all trust services are selected
 	 */
 	private Predicate<TSPServiceType> trustServicePredicate;
+
+	/**
+	 * List of TL Versions accepted for the current TLSource. When defined, an error is returned on structure validation.
+	 */
+	private List<Integer> tlVersions;
 	
 	/**
 	 * The cached CacheKey value (the key is computed from url parameter)
@@ -141,6 +147,26 @@ public class TLSource {
 	 */
 	public void setTrustServicePredicate(Predicate<TSPServiceType> trustServicePredicate) {
 		this.trustServicePredicate = trustServicePredicate;
+	}
+
+	/**
+	 * Gets a list of TL versions to be accepted for the current TL/LOTL source
+	 *
+	 * @return a list of {@link Integer}s representing acceptable XML TL versions
+	 */
+	public List<Integer> getTLVersions() {
+		return tlVersions;
+	}
+
+	/**
+	 * Sets a list of acceptable XML Trusted List versions.
+	 * When defined, an error message to be returned on structural validation.
+	 * If not defined, no structural validation is performed.
+	 *
+	 * @param tlVersions a list of {@link Integer}s representing a supported TL versions to be validated
+	 */
+	public void setTLVersions(List<Integer> tlVersions) {
+		this.tlVersions = tlVersions;
 	}
 
 	/**

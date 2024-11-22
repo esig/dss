@@ -82,6 +82,7 @@ public class TLSourceBuilder {
 		tlSource.setCertificateSource(getCertificateSource(otherTSLPointerDTO.getSdiCertificates()));
 		tlSource.setTrustServiceProviderPredicate(lotlSource.getTrustServiceProviderPredicate());
 		tlSource.setTrustServicePredicate(lotlSource.getTrustServicePredicate());
+		tlSource.setTLVersions(lotlSource.getTLVersions());
 		return tlSource;
 	}
 

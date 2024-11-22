@@ -140,6 +140,6 @@ public interface ParsingInfoRecord extends InfoRecord {
 	 *
 	 * @return a list of {@link String} structure validation messages, empty list if the structure validation succeeded
 	 */
-	List<String> getStructureValidation();
+	List<String> getStructureValidationMessages();
 	
 }

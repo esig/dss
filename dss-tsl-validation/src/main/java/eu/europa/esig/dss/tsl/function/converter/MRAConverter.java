@@ -59,8 +59,7 @@ public class MRAConverter implements Function<MutualRecognitionAgreementInformat
 		result.setPointedContractingPartyLegislation(t.getPointedContractingPartyLegislation());
 		List<MutableTimeDependentValues<ServiceEquivalence>> serviceEquivalences = new ArrayList<>();
 
-		List<TrustServiceEquivalenceInformationType> trustServiceEquivalenceInformations = t
-				.getTrustServiceEquivalenceInformation();
+		List<TrustServiceEquivalenceInformationType> trustServiceEquivalenceInformations = t.getTrustServiceEquivalenceInformation();
 		for (TrustServiceEquivalenceInformationType trustServiceEquivalenceInformationType : trustServiceEquivalenceInformations) {
 			serviceEquivalences.add(converter.apply(trustServiceEquivalenceInformationType));
 		}
