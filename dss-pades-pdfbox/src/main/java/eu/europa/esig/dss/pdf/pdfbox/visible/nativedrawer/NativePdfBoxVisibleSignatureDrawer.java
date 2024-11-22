@@ -145,7 +145,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 			PDPage originalPage = document.getPage(pageNumber);
 			SignatureFieldDimensionAndPosition dimensionAndPosition = buildSignatureFieldBox();
 			// create a new page
-			PDPage page = new PDPage(originalPage.getMediaBox());
+			PDPage page = new PDPage(originalPage.getCropBox()); // alisdev - kvuli prevodum do PDF kde se vyuziva cropbox
 			doc.addPage(page);
 			PDAcroForm acroForm = new PDAcroForm(doc);
 			doc.getDocumentCatalog().setAcroForm(acroForm);
@@ -398,7 +398,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 	 * @return {@link PDRectangle}
 	 */
 	private PDRectangle getPdRectangle(SignatureFieldDimensionAndPosition dimensionAndPosition, PDPage page) {
-		PDRectangle pageRect = page.getMediaBox();
+		PDRectangle pageRect = page.getCropBox(); // alisdev - kvuli prevodum do PDF kde se vyuziva cropbox
 		PDRectangle pdRectangle = new PDRectangle();
 		pdRectangle.setLowerLeftX(dimensionAndPosition.getBoxX());
 		// because PDF starts to count from bottom

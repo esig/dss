@@ -94,7 +94,7 @@ public abstract class AbstractPdfBoxSignatureDrawer implements PdfBoxSignatureDr
 	 */
 	public SignatureFieldDimensionAndPosition buildSignatureFieldBox() {
 		PDPage originalPage = document.getPage(parameters.getFieldParameters().getPage() - ImageUtils.DEFAULT_FIRST_PAGE);
-		PDRectangle mediaBox = originalPage.getMediaBox();
+		PDRectangle mediaBox = originalPage.getCropBox(); // alisdev - kvuli prevodum do PDF kde se vyuziva cropbox
 		AnnotationBox pageBox = new AnnotationBox(mediaBox.getLowerLeftX(), mediaBox.getLowerLeftY(),
 				mediaBox.getUpperRightX(), mediaBox.getUpperRightY());
 		return new SignatureFieldDimensionAndPositionBuilder(parameters, getDSSFontMetrics(), pageBox,

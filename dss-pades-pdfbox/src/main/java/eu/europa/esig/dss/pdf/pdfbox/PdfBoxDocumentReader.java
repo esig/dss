@@ -245,7 +245,7 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 	@Override
 	public AnnotationBox getPageBox(int page) {
 		PDPage pdPage = getPDPage(page);
-		PDRectangle mediaBox = pdPage.getMediaBox();
+		PDRectangle mediaBox = pdPage.getCropBox(); // alisdev - kvuli prevodum do PDF kde se vyuziva cropbox
 		return new AnnotationBox(mediaBox.getLowerLeftX(), mediaBox.getLowerLeftY(), mediaBox.getUpperRightX(),
 				mediaBox.getUpperRightY());
 	}
