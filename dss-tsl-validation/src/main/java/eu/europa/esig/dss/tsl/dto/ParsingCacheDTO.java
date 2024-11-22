@@ -74,7 +74,7 @@ public class ParsingCacheDTO extends AbstractCacheDTO implements ParsingInfoReco
 	private String signingCertificateAnnouncementUrl;
 
 	/** A list of error messages occurred during a structure validation */
-	protected List<String> structureValidation;
+	protected List<String> structureValidationMessages;
 
 	/**
 	 * Default constructor
@@ -291,17 +291,17 @@ public class ParsingCacheDTO extends AbstractCacheDTO implements ParsingInfoReco
 	}
 
 	@Override
-	public List<String> getStructureValidation() {
-		return structureValidation;
+	public List<String> getStructureValidationMessages() {
+		return structureValidationMessages;
 	}
 
 	/**
 	 * Sets the structure validation error messages
 	 *
-	 * @param structureValidation a list of {@link String} error messages when occurred on the structure validation
+	 * @param structureValidationMessages a list of {@link String} error messages when occurred on the structure validation
 	 */
-	public void setStructureValidation(List<String> structureValidation) {
-		this.structureValidation = structureValidation;
+	public void setStructureValidationMessages(List<String> structureValidationMessages) {
+		this.structureValidationMessages = structureValidationMessages;
 	}
 
 }
