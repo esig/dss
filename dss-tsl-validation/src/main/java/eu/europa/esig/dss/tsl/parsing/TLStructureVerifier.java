@@ -22,14 +22,16 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
- * This class verified conformity of a TL to the defined TLVersion
+ * This class verifies conformity of a TL to the defined TLVersion.
+ * NOTE: The class currently handles validation of only V5 and V6 Trusted List versions.
  *
  */
-public class TLConformityValidator {
+public class TLStructureVerifier {
 
-    private static final Logger LOG = LoggerFactory.getLogger(TLConformityValidator.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TLStructureVerifier.class);
 
     /** Identifier used for a TL version 5 */
     private static final Integer TL_V5_IDENTIFIER = 5;
@@ -37,57 +39,90 @@ public class TLConformityValidator {
     /** Identifier used for a TL version 6 */
     private static final Integer TL_V6_IDENTIFIER = 6;
 
-    /** The TL XML document */
-    private final DSSDocument document;
-
-    /** Target version of the Trusted List to validate conformity to */
-    private final Integer tlVersion;
+    /** List of acceptable TL versions */
+    private List<Integer> acceptedTLVersions;
 
     /**
-     * Default constructor
-     *
-     * @param document {@link DSSDocument} XML TL document, to be verified
-     * @param tlVersion {@link Integer} the version of the Trusted List to validate {@code document} against
+     * Default constructor.
+     * Accepts TL V5 and TL V6
      */
-    public TLConformityValidator(final DSSDocument document, final Integer tlVersion) {
-        this.document = document;
-        this.tlVersion = tlVersion;
+    public TLStructureVerifier() {
+        // empty
+    }
+
+    /**
+     * Sets a list of acceptable TL version.
+     * When defined, an error message will be produces for Trusted Lists with a different version.
+     *
+     * @param acceptedTLVersions a list of {@link Integer}s, containing acceptable TL versions
+     * @return this {@link TLStructureVerifier}
+     */
+    public TLStructureVerifier setAcceptedTLVersions(List<Integer> acceptedTLVersions) {
+        this.acceptedTLVersions = acceptedTLVersions;
+        return this;
     }
 
     /**
      * This method validates the Trusted List's conformity to the specified TLVersion
      *
+     * @param document {@link DSSDocument} XML Trusted List to be validated
+     * @param tlVersion {@link Integer} the version of the Trusted List to validate {@code document} against
      * @return a list of {@link String}s indicating errors occurred during the conformity evaluation
      */
-    public List<String> validate() {
-        final List<String> errors = new ArrayList<>();
-
+    public List<String> validate(final DSSDocument document, final Integer tlVersion) {
+        Objects.requireNonNull(document, "Document to be validated cannot be null!");
         if (tlVersion == null) {
-            errors.add("No TLVersion has been found!");
-            return errors;
+            return Collections.singletonList("No TLVersion has been found!");
         }
 
-        if (TL_V5_IDENTIFIER.equals(tlVersion)) {
-            List<String> xsdValidationErrors = validateAgainstXSD(TrustedList211Utils.getInstance());
-            if (Utils.isCollectionNotEmpty(xsdValidationErrors)) {
-                errors.addAll(xsdValidationErrors);
-            }
+        if (Utils.isCollectionEmpty(acceptedTLVersions)) {
+            LOG.debug("No acceptable TL Versions have been defined. The structural validation is skipped.");
+            return Collections.emptyList();
+        }
 
+        final List<String> errors = new ArrayList<>();
+
+        if (!acceptedTLVersions.contains(tlVersion)) {
+            errors.add(String.format("The TL Version '%s' is not acceptable!", tlVersion));
+
+        } else if (TL_V5_IDENTIFIER.equals(tlVersion)) {
+            errors.addAll(validateTrustedListV5(document));
         } else if (TL_V6_IDENTIFIER.equals(tlVersion)) {
-            // XSD validation is not performed, as JAXB is used to marshall against the TLv6 XSD
-            List<String> v2ConformityErrors = verifyV2ElementsPresence(true);
-            if (Utils.isCollectionNotEmpty(v2ConformityErrors)) {
-                errors.addAll(v2ConformityErrors);
-            }
-
-        } else {
-            LOG.warn("Not supported TLVersion '{}'. Conformity validation has been skipped.", tlVersion);
+            errors.addAll(validateTrustedListV6(document));
         }
 
         return errors;
     }
 
-    private List<String> validateAgainstXSD(XSDAbstractUtils xsdUtils) {
+    /**
+     * This method validates the Trusted List XML document against the TL V5 definition
+     *
+     * @param document {@link DSSDocument} containing a Trusted List to be validated
+     * @return a list of {@link String}s
+     */
+    protected List<String> validateTrustedListV5(DSSDocument document) {
+        List<String> xsdValidationErrors = validateAgainstXSD(document, TrustedList211Utils.getInstance());
+        if (Utils.isCollectionNotEmpty(xsdValidationErrors)) {
+            return xsdValidationErrors;
+        }
+        return Collections.emptyList();
+    }
+
+    /**
+     * This method validates the Trusted List XML document against the TL V6 definition
+     *
+     * @param document {@link DSSDocument} containing a Trusted List to be validated
+     * @return a list of {@link String}s
+     */
+    protected List<String> validateTrustedListV6(DSSDocument document) {
+        List<String> v2ConformityErrors = verifyV2ElementsPresence(document, true);
+        if (Utils.isCollectionNotEmpty(v2ConformityErrors)) {
+            return v2ConformityErrors;
+        }
+        return Collections.emptyList();
+    }
+
+    private List<String> validateAgainstXSD(DSSDocument document, XSDAbstractUtils xsdUtils) {
         try (InputStream is = document.openStream()) {
             return xsdUtils.validateAgainstXSD(new StreamSource(is));
         } catch (IOException e) {
@@ -96,7 +131,7 @@ public class TLConformityValidator {
         }
     }
 
-    private List<String> verifyV2ElementsPresence(boolean v2Expected) {
+    private List<String> verifyV2ElementsPresence(DSSDocument document, boolean v2Expected) {
         // NOTE: manual parsing is used for performance reasons
         Document documentDom = DomUtils.buildDOM(document);
         Element documentElement = documentDom.getDocumentElement();
