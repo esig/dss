@@ -163,11 +163,15 @@ public abstract class AbstractParsingTask<T extends AbstractParsingResult> imple
 	 *
 	 * @param result {@link AbstractParsingResult}
 	 * @param tlVersion {@link Integer} TL version to verify against
+	 * @param tlVersions a list of {@link Integer}s representing a list of TL versions to be supported and validated
 	 */
-	protected void verifyTLVersionConformity(AbstractParsingResult result, Integer tlVersion) {
-		List<String> structureValidationResult = new TLConformityValidator(document, tlVersion).validate();
-		if (Utils.isCollectionNotEmpty(structureValidationResult)) {
-			result.setStructureValidation(structureValidationResult);
+	protected void verifyTLVersionConformity(AbstractParsingResult result, Integer tlVersion, List<Integer> tlVersions) {
+		if (Utils.isCollectionNotEmpty(tlVersions)) {
+			List<String> structureValidationMessagesResult = new TLStructureVerifier()
+					.setAcceptedTLVersions(tlVersions).validate(document, tlVersion);
+			if (Utils.isCollectionNotEmpty(structureValidationMessagesResult)) {
+				result.setStructureValidationMessages(structureValidationMessagesResult);
+			}
 		}
 	}
 
