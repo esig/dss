@@ -37,9 +37,9 @@ import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.xades.TrustedListSignatureParametersBuilder;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
+import eu.europa.esig.dss.xades.tsl.TrustedListV5SignatureParametersBuilder;
 import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.trustedlist.TrustedListUtils;
@@ -66,18 +66,27 @@ class SignTrustedListTest extends CookbookTools {
             // import eu.europa.esig.dss.model.x509.CertificateToken;
             // import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
             // import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
-            // import eu.europa.esig.dss.xades.TrustedListSignatureParametersBuilder;
             // import eu.europa.esig.dss.xades.XAdESSignatureParameters;
             // import eu.europa.esig.dss.xades.signature.XAdESService;
+            // import eu.europa.esig.dss.xades.tsl.TrustedListV5SignatureParametersBuilder;
 
             DSSDocument trustedList = new FileDocument("src/main/resources/trusted-list.xml");
 
             DSSPrivateKeyEntry privateKeyEntry = signingToken.getKeys().get(0);
             CertificateToken signingCertificate = privateKeyEntry.getCertificate();
 
-            // This class creates the appropriated XAdESSignatureParameters object to sign a trusted list.
-            // It handles the configuration complexity and creates a ready-to-be-used XAdESSignatureParameters with a correct configuration.
-            TrustedListSignatureParametersBuilder builder = new TrustedListSignatureParametersBuilder(signingCertificate, trustedList);
+            // This class creates the appropriated XAdESSignatureParameters object
+            // to sign an XML Trusted List of version 5.
+            // It handles the configuration complexity and creates a ready-to-be-used
+            // XAdESSignatureParameters with a correct configuration.
+            // NOTE: for signing of an XML Trusted List of version 6, please use
+            //       TrustedListV6SignatureParametersBuilder class
+            TrustedListV5SignatureParametersBuilder builder = new TrustedListV5SignatureParametersBuilder(signingCertificate, trustedList);
+
+            // To verify the XML Trusted List has a valid structure, please use the method below
+            builder.assertConfigurationIsValid();
+
+            // Build the parameters for XML Trusted List signing
             XAdESSignatureParameters parameters = builder.build();
 
             XAdESService service = new XAdESService(new CommonCertificateVerifier());

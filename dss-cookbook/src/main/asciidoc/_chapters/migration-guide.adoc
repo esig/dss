@@ -123,6 +123,27 @@ Digest digest = new Digest(DigestAlgorithm.SHA256, digestValue);
 SignatureValue signatureValue = token.signDigest(digest, SignatureAlgorithm.RSA_SHA256, getPrivateKeyEntry());
 ----
 
+|XML Trusted List signing             a|
+[source,java]
+----
+import eu.europa.esig.dss.xades.TrustedListSignatureParametersBuilder;
+import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+
+TrustedListSignatureParametersBuilder builder = new TrustedListSignatureParametersBuilder(signingCertificate, xmlTrustedList);
+XAdESSignatureParameters parameters = builder.build();
+...
+----
+                                                                     a|
+[source,java]
+----
+import eu.europa.esig.dss.xades.tsl.TrustedListV5SignatureParametersBuilder;
+import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+
+TrustedListV5SignatureParametersBuilder builder = new TrustedListV5SignatureParametersBuilder(signingCertificate, xmlTrustedList);
+XAdESSignatureParameters parameters = builder.build();
+...
+----
+
 |===
 
 [cols="2,5,5"]

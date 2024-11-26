@@ -26,7 +26,7 @@ import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xml.utils.DomUtils;
-import eu.europa.esig.trustedlist.definition.TrustedListNamespace;
+import eu.europa.esig.dss.xades.definition.tsl.TrustedListNamespace;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;

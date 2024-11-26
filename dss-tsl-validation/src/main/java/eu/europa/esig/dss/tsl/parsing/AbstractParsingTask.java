@@ -24,6 +24,7 @@ import eu.europa.esig.dss.enumerations.TSLType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.xades.tsl.TLStructureVerifier;
 import eu.europa.esig.trustedlist.TrustedListFacade;
 import eu.europa.esig.trustedlist.jaxb.tsl.NextUpdateType;
 import eu.europa.esig.trustedlist.jaxb.tsl.NonEmptyURIListType;

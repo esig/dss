@@ -18,22 +18,22 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.xades.signature;
+package eu.europa.esig.dss.xades.tsl;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.xades.TrustedListSignatureParametersBuilder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class TrustedListSignatureParametersBuilderEnforcedEncryptionAlgoTest extends TrustedListSignatureParametersBuilderTest {
+class TrustedListV5SignatureParametersBuilderEnforcedEncryptionAlgoTest extends TrustedListV5SignatureParametersBuilderTest {
 
     @Override
-    protected TrustedListSignatureParametersBuilder getSignatureParametersBuilder() {
+    protected TrustedListV5SignatureParametersBuilder getSignatureParametersBuilder() {
         return super.getSignatureParametersBuilder()
                 .setEncryptionAlgorithm(EncryptionAlgorithm.EDDSA)
                 .setDigestAlgorithm(DigestAlgorithm.SHA512);
@@ -54,7 +54,7 @@ class TrustedListSignatureParametersBuilderEnforcedEncryptionAlgoTest extends Tr
 
     @Override
     protected String getSigningAlias() {
-        return ED25519_GOOD_USER;
+        return PKIFactoryAccess.ED25519_GOOD_USER;
     }
 
 }

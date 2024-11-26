@@ -136,7 +136,8 @@ class LOTLParsingTaskTest {
 		assertNotNull(result.getDistributionPoints());
 		assertEquals(1, result.getDistributionPoints().size());
 
-		assertTrue(Utils.isCollectionEmpty(result.getStructureValidationMessages()));
+		assertFalse(Utils.isCollectionEmpty(result.getStructureValidationMessages()));
+		assertTrue(result.getStructureValidationMessages().stream().anyMatch(r -> r.contains("No ds:Signature element is present!")));
 	}
 
 	private void checkOtherPointers(List<OtherTSLPointer> lotlPointers) {

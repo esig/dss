@@ -3,11 +3,13 @@ package eu.europa.esig.dss.tsl.parsing;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.xades.tsl.TLStructureVerifier;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TLStructureVerifierTest {
@@ -40,6 +42,17 @@ class TLStructureVerifierTest {
 
         tlStructureVerifier = new TLStructureVerifier();
         result = tlStructureVerifier.setAcceptedTLVersions(DEFAULT_ACCEPTED_TL_VERSION).validate(tlDocument, 6);
+        assertFalse(result.stream().anyMatch(r -> r.contains("The ds:Signature element shall not be present for XML Trusted List signing!")));
+        assertTrue(result.stream().anyMatch(r -> r.contains("SigningCertificate")));
+
+        tlStructureVerifier = new TLStructureVerifier();
+        result = tlStructureVerifier.setAcceptedTLVersions(DEFAULT_ACCEPTED_TL_VERSION).setSigningMode(true).validate(tlDocument, 6);
+        assertTrue(result.stream().anyMatch(r -> r.contains("The ds:Signature element shall not be present for XML Trusted List signing!")));
+        assertFalse(result.stream().anyMatch(r -> r.contains("SigningCertificate")));
+
+        tlStructureVerifier = new TLStructureVerifier();
+        result = tlStructureVerifier.setAcceptedTLVersions(DEFAULT_ACCEPTED_TL_VERSION).setSigningMode(false).validate(tlDocument, 6);
+        assertFalse(result.stream().anyMatch(r -> r.contains("The ds:Signature element shall not be present for XML Trusted List signing!")));
         assertTrue(result.stream().anyMatch(r -> r.contains("SigningCertificate")));
 
         tlStructureVerifier = new TLStructureVerifier();
@@ -65,6 +78,17 @@ class TLStructureVerifierTest {
 
         tlStructureVerifier = new TLStructureVerifier();
         result = tlStructureVerifier.setAcceptedTLVersions(DEFAULT_ACCEPTED_TL_VERSION).validate(tlDocument, 6);
+        assertFalse(result.stream().anyMatch(r -> r.contains("The ds:Signature element shall not be present for XML Trusted List signing!")));
+        assertTrue(result.stream().anyMatch(r -> r.contains("SigningCertificate")));
+
+        tlStructureVerifier = new TLStructureVerifier();
+        result = tlStructureVerifier.setAcceptedTLVersions(DEFAULT_ACCEPTED_TL_VERSION).setSigningMode(true).validate(tlDocument, 6);
+        assertTrue(result.stream().anyMatch(r -> r.contains("The ds:Signature element shall not be present for XML Trusted List signing!")));
+        assertFalse(result.stream().anyMatch(r -> r.contains("SigningCertificate")));
+
+        tlStructureVerifier = new TLStructureVerifier();
+        result = tlStructureVerifier.setAcceptedTLVersions(DEFAULT_ACCEPTED_TL_VERSION).setSigningMode(false).validate(tlDocument, 6);
+        assertFalse(result.stream().anyMatch(r -> r.contains("The ds:Signature element shall not be present for XML Trusted List signing!")));
         assertTrue(result.stream().anyMatch(r -> r.contains("SigningCertificate")));
 
         tlStructureVerifier = new TLStructureVerifier();
@@ -98,6 +122,7 @@ class TLStructureVerifierTest {
 
         tlStructureVerifier = new TLStructureVerifier();
         result = tlStructureVerifier.setAcceptedTLVersions(DEFAULT_ACCEPTED_TL_VERSION).validate(tlDocument, 5);
+        assertTrue(result.stream().anyMatch(r -> r.contains("ServiceSupplyPoint")));
         assertTrue(result.stream().anyMatch(r -> r.contains("SigningCertificateV2")));
 
         tlStructureVerifier = new TLStructureVerifier();

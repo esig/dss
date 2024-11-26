@@ -67,6 +67,11 @@ public class RemoteTrustedListSignatureParameters implements Serializable {
     private DigestAlgorithm referenceDigestAlgorithm;
 
     /**
+     * The TLVersion to be signed
+     */
+    private Integer tlVersion;
+
+    /**
      * Default constructor instantiating object with null values
      */
     public RemoteTrustedListSignatureParameters() {
@@ -181,6 +186,25 @@ public class RemoteTrustedListSignatureParameters implements Serializable {
      */
     public void setReferenceDigestAlgorithm(DigestAlgorithm referenceDigestAlgorithm) {
         this.referenceDigestAlgorithm = referenceDigestAlgorithm;
+    }
+
+    /**
+     * Gets the XML Trusted List Version identifier to be signed
+     *
+     * @return {@link Integer}
+     */
+    public Integer getTlVersion() {
+        return tlVersion;
+    }
+
+    /**
+     * Sets the XML Trusted List Version identifier to be signed.
+     * This ensures the created signature corresponds to the requirements of the XML Trusted List version.
+     *
+     * @param tlVersion the target XML Trusted List version
+     */
+    public void setTlVersion(int tlVersion) {
+        this.tlVersion = tlVersion;
     }
 
 }

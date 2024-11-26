@@ -20,89 +20,46 @@
  */
 package eu.europa.esig.dss.xades;
 
-import eu.europa.esig.dss.signature.AbstractSignatureParametersBuilder;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.BLevelParameters;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
-import eu.europa.esig.dss.xades.reference.DSSReference;
-import eu.europa.esig.dss.xades.reference.DSSTransform;
-import eu.europa.esig.dss.xades.reference.EnvelopedSignatureTransform;
-
-import javax.xml.crypto.dsig.CanonicalizationMethod;
-import java.util.ArrayList;
-import java.util.List;
+import eu.europa.esig.dss.xades.tsl.TrustedListV5SignatureParametersBuilder;
 
 /**
  * Creates Signature parameters for a Trusted List creation
- * 
+ * <p>
  * NOTE: the same instance of SignatureParameters shall be used on calls
  * {@code DocumentSignatureService.getDataToSign(...)} and {@code DocumentSignatureService.signDocument(...)}
  *
+ * @deprecated since DSS 6.2. Please use {@code TrustedListV5SignatureParametersBuilder} or
+ *             {@code TrustedListV6SignatureParametersBuilder} instead.
  */
-public class TrustedListSignatureParametersBuilder extends AbstractSignatureParametersBuilder<XAdESSignatureParameters> {
-	
-	/**
-	 * The EXCLUSIVE canonicalization shall be used
-	 * See TS 119 612 "B.1 The Signature element"
-	 */
-	private static final String DEFAULT_CANONICALIZATION = CanonicalizationMethod.EXCLUSIVE;
-
-	/** The default prefix for an enveloped signature reference id */
-	private static final String DEFAULT_REFERENCE_PREFIX = "ref-enveloped-signature";
-	
-	/**
-	 * The XML Trusted List document
-	 */
-	private final DSSDocument tlXmlDocument;
-	
-	/**
-	 * The Enveloped reference Id to use
-	 */
-	private String referenceId;
-	
-	/**
-	 * The DigestAlgorithm to be used for an Enveloped reference
-	 */
-	private DigestAlgorithm referenceDigestAlgorithm = DigestAlgorithm.SHA512;
+@Deprecated
+public class TrustedListSignatureParametersBuilder extends TrustedListV5SignatureParametersBuilder {
 	
 	/**
 	 * The constructor to build Signature Parameters for a Trusted List signing with respect to ETSI TS 119 612
 	 * 
 	 * @param signingCertificate {@link CertificateToken} to be used for a signature creation
 	 * @param tlXmlDocument {@link DSSDocument} Trusted List XML document to be signed
+	 * @deprecated since DSS 6.2. Please use instead
+	 *             {@code new TrustedListV5SignatureParametersBuilder(signingCertificate, tlXmlDocument)}
 	 */
+	@Deprecated
 	public TrustedListSignatureParametersBuilder(CertificateToken signingCertificate, DSSDocument tlXmlDocument) {
-		super(signingCertificate);
-		this.tlXmlDocument = tlXmlDocument;
+		super(signingCertificate, tlXmlDocument);
 	}
 
-	/**
-	 * Sets an Enveloped Reference Id to use
-	 *
-	 * Default: "ref-enveloped-signature"
-	 * 
-	 * @param referenceId {@link String} reference Id
-	 * @return this builder
-	 */
+	@Override
 	public TrustedListSignatureParametersBuilder setReferenceId(String referenceId) {
-		this.referenceId = referenceId;
-		return this;
+		return (TrustedListSignatureParametersBuilder) super.setReferenceId(referenceId);
 	}
 
-	/**
-	 * Sets an Enveloped Reference {@code DigestAlgorithm} to use
-	 * 
-	 * @param digestAlgorithm {@link DigestAlgorithm} to be used
-	 * @return this builder
-	 */
+	@Override
 	public TrustedListSignatureParametersBuilder setReferenceDigestAlgorithm(DigestAlgorithm digestAlgorithm) {
-		this.referenceDigestAlgorithm = digestAlgorithm;
-		return this;
+		return (TrustedListSignatureParametersBuilder) super.setReferenceDigestAlgorithm(digestAlgorithm);
 	}
 
 	@Override
@@ -118,47 +75,6 @@ public class TrustedListSignatureParametersBuilder extends AbstractSignaturePara
 	@Override
 	public TrustedListSignatureParametersBuilder setBLevelParams(BLevelParameters bLevelParams) {
 		return (TrustedListSignatureParametersBuilder) super.setBLevelParams(bLevelParams);
-	}
-
-	@Override
-	protected XAdESSignatureParameters initParameters() {
-		return new XAdESSignatureParameters();
-	}
-	
-	@Override
-	public XAdESSignatureParameters build() {
-		final XAdESSignatureParameters signatureParameters = super.build();
-
-		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
-		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
-		signatureParameters.setEn319132(false);
-		
-		final List<DSSReference> references = new ArrayList<>();
-
-		DSSReference dssReference = new DSSReference();
-		if (referenceId != null) {
-			dssReference.setId(referenceId);
-		} else {
-			dssReference.setId(DEFAULT_REFERENCE_PREFIX);
-		}
-		dssReference.setUri("");
-		dssReference.setContents(tlXmlDocument);
-		dssReference.setDigestMethodAlgorithm(referenceDigestAlgorithm);
-
-		final List<DSSTransform> transforms = new ArrayList<>();
-
-		EnvelopedSignatureTransform signatureTransform = new EnvelopedSignatureTransform();
-		transforms.add(signatureTransform);
-
-		CanonicalizationTransform dssTransform = new CanonicalizationTransform(DEFAULT_CANONICALIZATION);
-		transforms.add(dssTransform);
-
-		dssReference.setTransforms(transforms);
-		references.add(dssReference);
-
-		signatureParameters.setReferences(references);
-		
-		return signatureParameters;
 	}
 
 }
