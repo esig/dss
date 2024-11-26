@@ -30,10 +30,14 @@ import eu.europa.esig.dss.ws.converter.RemoteDocumentConverter;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
 import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
+import eu.europa.esig.dss.ws.dto.exception.DSSRemoteServiceException;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteTrustedListSignatureParameters;
-import eu.europa.esig.dss.xades.TrustedListSignatureParametersBuilder;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
+import eu.europa.esig.dss.xades.tsl.AbstractTrustedListSignatureParametersBuilder;
+import eu.europa.esig.dss.xades.tsl.TrustedListV5SignatureParametersBuilder;
+import eu.europa.esig.dss.xades.tsl.TrustedListV6SignatureParametersBuilder;
+import eu.europa.esig.dss.xades.tsl.XAdESTrustedListUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -107,7 +111,19 @@ public class RemoteTrustedListSignatureServiceImpl extends AbstractRemoteSignatu
 
     private XAdESSignatureParameters createParameters(DSSDocument tlDocument, RemoteTrustedListSignatureParameters parameters) {
         CertificateToken certificateToken = RemoteCertificateConverter.toCertificateToken(parameters.getSigningCertificate());
-        TrustedListSignatureParametersBuilder tlParametersBuilder = new TrustedListSignatureParametersBuilder(certificateToken, tlDocument);
+        AbstractTrustedListSignatureParametersBuilder tlParametersBuilder;
+        if (parameters.getTlVersion() == null) {
+            LOG.warn("Please provide a signatureParameters.tlVersion parameter! The XML Trusted List V5 is set by default.");
+            tlParametersBuilder = new TrustedListV5SignatureParametersBuilder(certificateToken, tlDocument);
+        } else if (XAdESTrustedListUtils.TL_V5_IDENTIFIER.equals(parameters.getTlVersion())) {
+            tlParametersBuilder = new TrustedListV5SignatureParametersBuilder(certificateToken, tlDocument);
+        } else if (XAdESTrustedListUtils.TL_V6_IDENTIFIER.equals(parameters.getTlVersion())) {
+            tlParametersBuilder = new TrustedListV6SignatureParametersBuilder(certificateToken, tlDocument);
+        } else {
+            throw new DSSRemoteServiceException(String.format("Unsupported TLVersionIdentifier '%s'!", parameters.getTlVersion()));
+        }
+
+        tlParametersBuilder.assertConfigurationIsValid();
 
         if (parameters.getEncryptionAlgorithm() != null) {
             tlParametersBuilder.setEncryptionAlgorithm(parameters.getEncryptionAlgorithm());

@@ -322,10 +322,17 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/mra/ThirdC
 
 === Signing a trusted list
 
-The standard ETSI TS 119 612 (cf. <<R11>>) specifies in its annex B the XML structure and the format of the signature (XAdES, enveloped signature, transformation, canonicalization, etc.). With the class `TrustedListSignatureParametersBuilder`, DSS is able to pre-configure the signature parameters to comply with the specifications and simplify the signature creation.
+The standard ETSI TS 119 612 (cf. <<R11>>) specifies in its annex B the XML structure and the format of the signature (XAdES, enveloped signature, transformation, canonicalization, etc.).
+
+To simplify the configuration for creation of conformant XML Trusted List signatures, DSS provides two classes:
+
+* `TrustedListV5SignatureParametersBuilder` - builds signature parameters for signing of an XML Trusted List version 5. This class creates a digital signature conformant to ETSI TS 119 612 V2.1.1 standard (with `xades:SigningCertificate` signed property, identifying the signing-certificate).
+* `TrustedListV6SignatureParametersBuilder` - builds signature parameters for signing of an XML Trusted List version 6. This class creates a digital signature conformant to ETSI EN 319 132-1 (cf. <<R01>>) (with `xades:SigningCertificateV2` signed property, identifying the signing-certificate).
+
+Example below demonstrates a signature creation with the `TrustedListV5SignatureParametersBuilder` class for XML Trusted List version 5:
 
 [source,java,indent=0]
-.Sign a Trusted List with the TrustedListSignatureParametersBuilder
+.Sign a Trusted List with the TrustedListV5SignatureParametersBuilder
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignTrustedListTest.java[tags=demo]
 ----

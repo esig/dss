@@ -18,24 +18,25 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.xades.signature;
+package eu.europa.esig.dss.xades.tsl;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
-import eu.europa.esig.dss.xades.TrustedListSignatureParametersBuilder;
+import eu.europa.esig.dss.test.PKIFactoryAccess;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class TrustedListSignatureParametersBuilderWithMGFAndSHA512Test extends TrustedListSignatureParametersBuilderTest {
+class TrustedListV5SignatureParametersBuilderEnforcedEncryptionAlgoTest extends TrustedListV5SignatureParametersBuilderTest {
 
     @Override
-    protected TrustedListSignatureParametersBuilder getSignatureParametersBuilder() {
+    protected TrustedListV5SignatureParametersBuilder getSignatureParametersBuilder() {
         return super.getSignatureParametersBuilder()
-                .setDigestAlgorithm(DigestAlgorithm.SHA512)
-                .setEncryptionAlgorithm(EncryptionAlgorithm.RSASSA_PSS);
+                .setEncryptionAlgorithm(EncryptionAlgorithm.EDDSA)
+                .setDigestAlgorithm(DigestAlgorithm.SHA512);
     }
 
     @Override
@@ -43,8 +44,17 @@ class TrustedListSignatureParametersBuilderWithMGFAndSHA512Test extends TrustedL
         super.checkBLevelValid(diagnosticData);
 
         SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-        SignatureAlgorithm signatureAlgorithm = signature.getSignatureAlgorithm();
-        assertEquals(SignatureAlgorithm.RSA_SSA_PSS_SHA512_MGF1, signatureAlgorithm);
+        assertEquals(SignatureAlgorithm.ED25519, signature.getSignatureAlgorithm());
+    }
+
+    @Override
+    protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
+        // skip
+    }
+
+    @Override
+    protected String getSigningAlias() {
+        return PKIFactoryAccess.ED25519_GOOD_USER;
     }
 
 }
