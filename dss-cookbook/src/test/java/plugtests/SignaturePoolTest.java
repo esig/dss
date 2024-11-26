@@ -135,6 +135,8 @@ class SignaturePoolTest extends AbstractDocumentTestValidation {
 		lotlSource.setUrl("https://ec.europa.eu/tools/lotl/eu-lotl.xml");
 		lotlSource.setCertificateSource(ojContentKeyStore());
 		lotlSource.setPivotSupport(true);
+		lotlSource.setTLVersions(Arrays.asList(5, 6));
+
 		tlValidationJob.setListOfTrustedListSources(lotlSource);
 		
 		FileCacheDataLoader fileCacheDataLoader = new FileCacheDataLoader();

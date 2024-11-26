@@ -45,6 +45,7 @@ import eu.europa.esig.dss.xades.signature.XAdESService;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.util.Arrays;
 
 /**
  * How to sign with XAdES-BASELINE-LT
@@ -115,6 +116,7 @@ class SignXmlXadesLTTest extends CookbookTools {
 			lotlSource.setUrl("https://ec.europa.eu/tools/lotl/eu-lotl.xml");
 			lotlSource.setCertificateSource(keyStoreCertificateSource);
 			lotlSource.setPivotSupport(true);
+			lotlSource.setTLVersions(Arrays.asList(5, 6));
 
 			TrustedListsCertificateSource tslCertificateSource = new TrustedListsCertificateSource();
 			
