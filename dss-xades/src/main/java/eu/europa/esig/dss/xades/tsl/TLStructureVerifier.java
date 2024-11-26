@@ -1,14 +1,16 @@
-package eu.europa.esig.dss.tsl.parsing;
+package eu.europa.esig.dss.xades.tsl;
 
 import eu.europa.esig.dss.jaxb.common.XSDAbstractUtils;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.xades.definition.XAdESElement;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
 import eu.europa.esig.dss.xml.common.definition.DSSElement;
-import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.trustedlist.TrustedList211Utils;
+import eu.europa.esig.trustedlist.TrustedListUtils;
+import eu.europa.esig.trustedlist.definition.TrustedListNamespace;
+import eu.europa.esig.xades.definition.XAdESElement;
+import eu.europa.esig.xades.definition.xades132.XAdES132Element;
+import eu.europa.esig.xmldsig.definition.XMLDSigElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -16,9 +18,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import javax.xml.transform.stream.StreamSource;
-import java.io.IOException;
-import java.io.InputStream;
+import javax.xml.transform.dom.DOMSource;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -33,14 +33,17 @@ public class TLStructureVerifier {
 
     private static final Logger LOG = LoggerFactory.getLogger(TLStructureVerifier.class);
 
-    /** Identifier used for a TL version 5 */
-    private static final Integer TL_V5_IDENTIFIER = 5;
-
-    /** Identifier used for a TL version 6 */
-    private static final Integer TL_V6_IDENTIFIER = 6;
+    private final static String TRUSTED_LIST_PARENT_ELEMENT = "TrustServiceStatusList";
 
     /** List of acceptable TL versions */
     private List<Integer> acceptedTLVersions;
+
+    /** Defines whether the current validation of the XML Trusted List is performed for signing */
+    private boolean signingMode;
+
+    static {
+        DomUtils.registerNamespace(TrustedListNamespace.NS);
+    }
 
     /**
      * Default constructor.
@@ -63,13 +66,39 @@ public class TLStructureVerifier {
     }
 
     /**
+     * Sets whether the current operation is the XML Trusted List signing.
+     * If enabled, verifies that no ds:Signature element is present within the XML Trusted List.
+     * Otherwise, verifies presence and validity of the ds:Signature element.
+     * Default : FALSE (verifies that the signature is not present)
+     *
+     * @param signingMode whether the validation is performed for the XML Trusted List signing
+     * @return this {@link TLStructureVerifier}
+     */
+    public TLStructureVerifier setSigningMode(boolean signingMode) {
+        this.signingMode = signingMode;
+        return this;
+    }
+
+    /**
      * This method validates the Trusted List's conformity to the specified TLVersion
      *
-     * @param document {@link DSSDocument} XML Trusted List to be validated
+     * @param dssDocument {@link DSSDocument} XML Trusted List to be validated
      * @param tlVersion {@link Integer} the version of the Trusted List to validate {@code document} against
      * @return a list of {@link String}s indicating errors occurred during the conformity evaluation
      */
-    public List<String> validate(final DSSDocument document, final Integer tlVersion) {
+    public List<String> validate(final DSSDocument dssDocument, final Integer tlVersion) {
+        Objects.requireNonNull(dssDocument, "Document to be validated cannot be null!");
+        return validate(DomUtils.buildDOM(dssDocument), tlVersion);
+    }
+
+    /**
+     * This method validates the Trusted List's conformity to the specified TLVersion
+     *
+     * @param document {@link Document} XML Trusted List to be validated
+     * @param tlVersion {@link Integer} the version of the Trusted List to validate {@code document} against
+     * @return a list of {@link String}s indicating errors occurred during the conformity evaluation
+     */
+    public List<String> validate(final Document document, final Integer tlVersion) {
         Objects.requireNonNull(document, "Document to be validated cannot be null!");
         if (tlVersion == null) {
             return Collections.singletonList("No TLVersion has been found!");
@@ -81,13 +110,14 @@ public class TLStructureVerifier {
         }
 
         final List<String> errors = new ArrayList<>();
+        errors.addAll(validateNamespace(document));
 
         if (!acceptedTLVersions.contains(tlVersion)) {
             errors.add(String.format("The TL Version '%s' is not acceptable!", tlVersion));
 
-        } else if (TL_V5_IDENTIFIER.equals(tlVersion)) {
+        } else if (XAdESTrustedListUtils.TL_V5_IDENTIFIER.equals(tlVersion)) {
             errors.addAll(validateTrustedListV5(document));
-        } else if (TL_V6_IDENTIFIER.equals(tlVersion)) {
+        } else if (XAdESTrustedListUtils.TL_V6_IDENTIFIER.equals(tlVersion)) {
             errors.addAll(validateTrustedListV6(document));
         }
 
@@ -97,49 +127,84 @@ public class TLStructureVerifier {
     /**
      * This method validates the Trusted List XML document against the TL V5 definition
      *
-     * @param document {@link DSSDocument} containing a Trusted List to be validated
+     * @param document {@link Document} containing a Trusted List to be validated
      * @return a list of {@link String}s
      */
-    protected List<String> validateTrustedListV5(DSSDocument document) {
+    protected List<String> validateTrustedListV5(Document document) {
+        final List<String> errors = new ArrayList<>();
         List<String> xsdValidationErrors = validateAgainstXSD(document, TrustedList211Utils.getInstance());
         if (Utils.isCollectionNotEmpty(xsdValidationErrors)) {
-            return xsdValidationErrors;
+            errors.addAll(xsdValidationErrors);
         }
-        return Collections.emptyList();
+        Element signatureElement = getSignatureElement(document);
+        errors.addAll(verifySignatureElementPresence(signatureElement));
+        return errors;
     }
 
     /**
      * This method validates the Trusted List XML document against the TL V6 definition
      *
-     * @param document {@link DSSDocument} containing a Trusted List to be validated
+     * @param document {@link Document} containing a Trusted List to be validated
      * @return a list of {@link String}s
      */
-    protected List<String> validateTrustedListV6(DSSDocument document) {
-        List<String> v2ConformityErrors = verifyV2ElementsPresence(document, true);
+    protected List<String> validateTrustedListV6(Document document) {
+        final List<String> errors = new ArrayList<>();
+        List<String> xsdValidationErrors = validateAgainstXSD(document, TrustedListUtils.getInstance());
+        if (Utils.isCollectionNotEmpty(xsdValidationErrors)) {
+            errors.addAll(xsdValidationErrors);
+        }
+
+        Element signatureElement = getSignatureElement(document);
+        errors.addAll(verifySignatureElementPresence(signatureElement));
+
+        List<String> v2ConformityErrors = validateSignatureElement(signatureElement, true);
         if (Utils.isCollectionNotEmpty(v2ConformityErrors)) {
-            return v2ConformityErrors;
+            errors.addAll(v2ConformityErrors);
+        }
+        return errors;
+    }
+
+    private List<String> validateAgainstXSD(Document document, XSDAbstractUtils xsdUtils) {
+        return xsdUtils.validateAgainstXSD(new DOMSource(document));
+    }
+
+    private List<String> validateNamespace(Document documentDom) {
+        Element documentElement = documentDom.getDocumentElement();
+        if (!TRUSTED_LIST_PARENT_ELEMENT.equals(documentElement.getLocalName()) ||
+                !TrustedListNamespace.NS.getUri().equals(documentElement.getNamespaceURI())) {
+            return Collections.singletonList(String.format("The root of XML Trusted List shall be %s:%s element!",
+                    TrustedListNamespace.NS.getPrefix(), TRUSTED_LIST_PARENT_ELEMENT));
         }
         return Collections.emptyList();
     }
 
-    private List<String> validateAgainstXSD(DSSDocument document, XSDAbstractUtils xsdUtils) {
-        try (InputStream is = document.openStream()) {
-            return xsdUtils.validateAgainstXSD(new StreamSource(is));
-        } catch (IOException e) {
-            LOG.warn("Unable to read document on XSD validation : {}", e.getMessage(), e);
-            return Collections.singletonList(String.format("Unable to verify XSD : %s", e.getMessage()));
-        }
+    private Element getSignatureElement(Document documentDom) {
+        Element documentElement = documentDom.getDocumentElement();
+        return getChildElement(documentElement, XMLDSigElement.SIGNATURE);
     }
 
-    private List<String> verifyV2ElementsPresence(DSSDocument document, boolean v2Expected) {
-        // NOTE: manual parsing is used for performance reasons
-        Document documentDom = DomUtils.buildDOM(document);
-        Element documentElement = documentDom.getDocumentElement();
+    private List<String> verifySignatureElementPresence(Element dsSignature) {
+        if (signingMode) {
+            if (dsSignature != null) {
+                return Collections.singletonList("The ds:Signature element shall not be present for XML Trusted List signing!");
+            }
+            // no ds:Signature is expected on signing
 
-        Element dsSignature = getChildElement(documentElement, XMLDSigElement.SIGNATURE);
-        if (dsSignature == null) {
-            return Collections.singletonList("No ds:Signature element is present!");
+        } else {
+            if (dsSignature == null) {
+                return Collections.singletonList("No ds:Signature element is present!");
+            }
         }
+
+        return Collections.emptyList();
+    }
+
+    private List<String> validateSignatureElement(Element dsSignature, boolean v2Expected) {
+        if (dsSignature == null || signingMode) {
+            return Collections.emptyList();
+        }
+
+        // NOTE: manual parsing is used for performance reasons
         List<Element> objects = getChildElements(dsSignature, XMLDSigElement.OBJECT);
         if (Utils.isCollectionEmpty(objects)) {
             return Collections.singletonList("No ds:Object elements are present!");

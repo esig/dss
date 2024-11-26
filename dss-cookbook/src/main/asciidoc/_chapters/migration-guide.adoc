@@ -14,6 +14,33 @@ For changes within Diagnostic Data XSD please refer <<DiagnosticDataChanges>>.
 For changes within XML Signature Policy please refer <<ValidationPolicyChanges>>.
 
 [cols="2,5,5"]
+.Code changes from version 5.13 to 5.13.1
+|===
+|Title                               |v5.13                            |v5.13.1
+|XML Trusted List signing             a|
+[source,java]
+----
+import eu.europa.esig.dss.xades.TrustedListSignatureParametersBuilder;
+import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+
+TrustedListSignatureParametersBuilder builder = new TrustedListSignatureParametersBuilder(signingCertificate, xmlTrustedList);
+XAdESSignatureParameters parameters = builder.build();
+...
+----
+                                                                     a|
+[source,java]
+----
+import eu.europa.esig.dss.xades.tsl.TrustedListV5SignatureParametersBuilder;
+import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+
+TrustedListV5SignatureParametersBuilder builder = new TrustedListV5SignatureParametersBuilder(signingCertificate, xmlTrustedList);
+XAdESSignatureParameters parameters = builder.build();
+...
+----
+
+|===
+
+[cols="2,5,5"]
 .Code changes from version 5.12 to 5.13
 |===
 |Title                               |v5.12                            |v5.13
