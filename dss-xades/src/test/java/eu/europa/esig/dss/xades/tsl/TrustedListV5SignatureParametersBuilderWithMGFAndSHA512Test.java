@@ -18,36 +18,32 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.xades.signature;
+package eu.europa.esig.dss.xades.tsl;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.xades.TrustedListSignatureParametersBuilder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TrustedListSignatureParametersBuilderEnforcedEncryptionAlgoTest extends TrustedListSignatureParametersBuilderTest {
+class TrustedListV5SignatureParametersBuilderWithMGFAndSHA512Test extends TrustedListV5SignatureParametersBuilderTest {
 
     @Override
-    protected TrustedListSignatureParametersBuilder getSignatureParametersBuilder() {
+    protected TrustedListV5SignatureParametersBuilder getSignatureParametersBuilder() {
         return super.getSignatureParametersBuilder()
-                .setEncryptionAlgorithm(EncryptionAlgorithm.EDDSA)
-                .setDigestAlgorithm(DigestAlgorithm.SHA512);
+                .setDigestAlgorithm(DigestAlgorithm.SHA512)
+                .setMaskGenerationFunction(MaskGenerationFunction.MGF1);
     }
 
     @Override
     protected void checkBLevelValid(DiagnosticData diagnosticData) {
-        SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-        assertEquals(SignatureAlgorithm.ED25519, signature.getSignatureAlgorithm());
-    }
+        super.checkBLevelValid(diagnosticData);
 
-    @Override
-    protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
-        // skip
+        SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+        SignatureAlgorithm signatureAlgorithm = signature.getSignatureAlgorithm();
+        assertEquals(SignatureAlgorithm.RSA_SSA_PSS_SHA512_MGF1, signatureAlgorithm);
     }
 
 }

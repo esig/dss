@@ -61,9 +61,9 @@ import eu.europa.esig.dss.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.xades.TrustedListSignatureParametersBuilder;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
+import eu.europa.esig.dss.xades.tsl.TrustedListV5SignatureParametersBuilder;
 import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.trustedlist.enums.Assert;
@@ -178,7 +178,7 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
         DSSDocument tlToSign = new InMemoryDocument(DomUtils.serializeNode(tlDocument));
 
         XAdESService service = new XAdESService(getOfflineCertificateVerifier());
-        XAdESSignatureParameters signatureParameters = new TrustedListSignatureParametersBuilder(getSigningCert(), tlToSign).build();
+        XAdESSignatureParameters signatureParameters = new TrustedListV5SignatureParametersBuilder(getSigningCert(), tlToSign).build();
         ToBeSigned dataToSign = service.getDataToSign(tlToSign, signatureParameters);
         SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
         DSSDocument signedTL = service.signDocument(tlToSign, signatureParameters, signatureValue);
@@ -213,7 +213,7 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
         DSSDocument lotlToSign = new InMemoryDocument(DomUtils.serializeNode(lotlDocument));
 
         XAdESService service = new XAdESService(getOfflineCertificateVerifier());
-        XAdESSignatureParameters signatureParameters = new TrustedListSignatureParametersBuilder(getSigningCert(), lotlToSign).build();
+        XAdESSignatureParameters signatureParameters = new TrustedListV5SignatureParametersBuilder(getSigningCert(), lotlToSign).build();
         ToBeSigned dataToSign = service.getDataToSign(lotlToSign, signatureParameters);
         SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
         DSSDocument signedLOTL = service.signDocument(lotlToSign, signatureParameters, signatureValue);

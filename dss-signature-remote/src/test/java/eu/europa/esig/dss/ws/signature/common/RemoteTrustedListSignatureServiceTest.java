@@ -32,6 +32,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.ws.converter.DTOConverter;
 import eu.europa.esig.dss.ws.converter.RemoteCertificateConverter;
 import eu.europa.esig.dss.ws.dto.RemoteCertificate;
@@ -49,6 +50,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RemoteTrustedListSignatureServiceTest extends AbstractRemoteSignatureServiceTest {
@@ -74,6 +76,7 @@ public class RemoteTrustedListSignatureServiceTest extends AbstractRemoteSignatu
 
         RemoteTrustedListSignatureParameters tlSignatureParameters = new RemoteTrustedListSignatureParameters();
         tlSignatureParameters.setSigningCertificate(signingCertificate);
+        tlSignatureParameters.setTlVersion(5);
 
         ToBeSignedDTO dataToSign = tlSigningService.getDataToSign(toSignDocument, tlSignatureParameters);
         assertNotNull(dataToSign);
@@ -98,6 +101,7 @@ public class RemoteTrustedListSignatureServiceTest extends AbstractRemoteSignatu
         parameters.setSigningCertificate(signingCertificate);
         parameters.setReferenceId("lotl");
         parameters.setReferenceDigestAlgorithm(DigestAlgorithm.SHA512);
+        parameters.setTlVersion(5);
 
         RemoteBLevelParameters bLevelParams = new RemoteBLevelParameters();
         bLevelParams.setSigningDate(signingTime);
@@ -139,6 +143,7 @@ public class RemoteTrustedListSignatureServiceTest extends AbstractRemoteSignatu
         parameters.setSigningCertificate(signingCertificate);
         parameters.setReferenceId("lotl");
         parameters.setReferenceDigestAlgorithm(DigestAlgorithm.SHA256);
+        parameters.setTlVersion(5);
 
         parameters.setEncryptionAlgorithm(EncryptionAlgorithm.RSA);
         parameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
@@ -171,6 +176,36 @@ public class RemoteTrustedListSignatureServiceTest extends AbstractRemoteSignatu
             }
         }
         assertTrue(lotlRefFound);
+    }
+
+    @Test
+    void testTLV6() {
+        DSSDocument lotlToSign = new FileDocument(new File("src/test/resources/trusted-list-v6.xml"));
+        RemoteDocument toSignDocument = new RemoteDocument(DSSUtils.toByteArray(lotlToSign), lotlToSign.getName());
+
+        RemoteCertificate signingCertificate = RemoteCertificateConverter.toRemoteCertificate(getSigningCert());
+
+        RemoteTrustedListSignatureParameters tlSignatureParameters = new RemoteTrustedListSignatureParameters();
+        tlSignatureParameters.setSigningCertificate(signingCertificate);
+        tlSignatureParameters.setTlVersion(5);
+
+        Exception exception = assertThrows(IllegalInputException.class, () -> tlSigningService.getDataToSign(toSignDocument, tlSignatureParameters));
+        assertEquals("XML Trusted List failed the validation : TSL Version '6' found in the XML Trusted List " +
+                "does not correspond to the target version defined by the builder '5'! " +
+                "Please modify the document or change to the appropriate builder.", exception.getMessage());
+
+        tlSignatureParameters.setTlVersion(6);
+
+        ToBeSignedDTO dataToSign = tlSigningService.getDataToSign(toSignDocument, tlSignatureParameters);
+        assertNotNull(dataToSign);
+
+        SignatureValue signatureValue = getToken().sign(DTOConverter.toToBeSigned(dataToSign), DigestAlgorithm.SHA512, getPrivateKeyEntry());
+        RemoteDocument signedDocument = tlSigningService.signDocument(toSignDocument, tlSignatureParameters,
+                new SignatureValueDTO(signatureValue.getAlgorithm(), signatureValue.getValue()));
+        assertNotNull(signedDocument);
+
+        DSSDocument iMD = new InMemoryDocument(signedDocument.getBytes());
+        validate(iMD, null);
     }
 
 }

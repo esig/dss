@@ -18,9 +18,8 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.xades.signature;
+package eu.europa.esig.dss.xades.tsl;
 
-import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
@@ -29,9 +28,11 @@ import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.xades.TrustedListSignatureParametersBuilder;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import eu.europa.esig.dss.xades.signature.AbstractXAdESTestSignature;
+import eu.europa.esig.dss.xades.signature.XAdESService;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -45,7 +46,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class TrustedListSignatureParametersBuilderTest extends AbstractXAdESTestSignature {
+class TrustedListV5SignatureParametersBuilderTest extends AbstractXAdESTestSignature {
 	
 	private static final String REFERENCE_ID = "dss-tl-id-1";
 	private static final DigestAlgorithm REFERENCE_DIGEST_ALGORITHM = DigestAlgorithm.SHA512;
@@ -55,19 +56,25 @@ public class TrustedListSignatureParametersBuilderTest extends AbstractXAdESTest
 	private DSSDocument documentToSign;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() {
 		documentToSign = new FileDocument(new File("src/test/resources/eu-lotl-no-sig.xml"));
 		service = new XAdESService(getOfflineCertificateVerifier());
-		
-		signatureParameters = getSignatureParametersBuilder().build();
 	}
 
-	protected TrustedListSignatureParametersBuilder getSignatureParametersBuilder() {
-		return new TrustedListSignatureParametersBuilder(getSigningCert(), documentToSign)
+	@Override
+	protected DSSDocument sign() {
+		TrustedListV5SignatureParametersBuilder signatureParametersBuilder = getSignatureParametersBuilder();
+		signatureParametersBuilder.assertConfigurationIsValid();
+		signatureParameters = signatureParametersBuilder.build();
+		return super.sign();
+	}
+
+	protected TrustedListV5SignatureParametersBuilder getSignatureParametersBuilder() {
+		return new TrustedListV5SignatureParametersBuilder(getSigningCert(), documentToSign)
 				.setReferenceId(REFERENCE_ID)
 				.setReferenceDigestAlgorithm(REFERENCE_DIGEST_ALGORITHM);
 	}
-	
+
 	@Override
 	protected String getCanonicalizationMethod() {
 		return CanonicalizationMethod.EXCLUSIVE;
