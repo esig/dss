@@ -175,6 +175,24 @@ Below you may find an example of `TrustServicePredicate` configuration:
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidationJobSnippets.java[tags=trust-service-predicate]
 ----
 
+==== Trusted List version
+
+Since versions `5.13.1`/`6.0.1`/`6.1.1`/`6.2` DSS provides a possibility to perform a verification of the XML Trusted List structure, in order to establish conformance to the used Trusted List version. When set, the parameter allows filtering out unsupported versions of XML Trusted Lists, as well as to verifying the conformance of supported Trusted List versions to their definition.
+
+NOTE: The structure validation is independent of the XML validation against the latest ETSI TS 119 612 (cf. <<R11>>) XSD schema and includes additional verification process, according to the XML Trusted List's version definition.
+
+By default, no structure validation is enforced, but it is recommended to force the supported version(s), in order to avoid unexpected cases. In the time of writing of the current document, the supported XML Trusted Lists versions are `5` and `6`.
+
+When the value is set and an error is encountered during the validation, the error message will be propagated to a `ParsingInfoRecord` of the concerned `LOTLInfo`/`TLInfo` object within a `TLValidationJobSummary`.
+
+NOTE: When the value is set within a `LOTLSource` object, the parameter will be applied for all extracted Trusted Lists as well.
+
+[source,java,indent=0]
+.Examples of Trusted List supported versions configuration
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidationJobSnippets.java[tags=tl-version]
+----
+
 ==== Executor Service
 
 An Executor Service allows you to customize a way of the program execution on your Java machine, by configuring a number of possible threads to be running, await time and so on.
