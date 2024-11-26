@@ -374,6 +374,17 @@ public class TLValidationJobSnippets {
 		// end::predicates[]
 	}
 
+	public void tlVersion() {
+		// tag::tl-version[]
+		// import eu.europa.esig.dss.tsl.source.TLSource;
+
+		TLSource tlSource = new TLSource();
+		// This parameter defines the supported Trusted List versions (other Trusted List versions
+		// or invalid Trusted List structure will result to a parsing error)
+		tlSource.setTLVersions(Arrays.asList(5, 6));
+		// end::tl-version[]
+	}
+
 	private void executorService() {
 		// tag::executor-service[]
 		// import eu.europa.esig.dss.tsl.job.TLValidationJob;
@@ -559,6 +570,12 @@ public class TLValidationJobSnippets {
 		// Input : implementation of TrustAnchorPeriodPredicate interface.
 		// Default : none (all trust services valid for indefinite period)
 		lotlSource.setTrustAnchorValidityPredicate(new GrantedOrRecognizedAtNationalLevelTrustAnchorPeriodPredicate());
+
+		// Optional : enables validation of the XML Trusted List against its version's specification.
+		// When not set, the validator will accept any Trusted List version, with no structure validation to be performed.
+		// When set, the structural validation will be triggered against the XML Trusted List's version specification.
+		// If a Trusted List of another version is provided, an error will be returned within the Parsing task.
+		lotlSource.setTLVersions(Arrays.asList(5, 6));
 
 		tlValidationJob.setListOfTrustedListSources(lotlSource);
 		// end::european-lotl-source[]
