@@ -29,6 +29,8 @@ import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
  */
 public enum XAdES141Element implements DSSElement {
 
+	ANY_VALIDATION_DATA("AnyValidationData"),
+
 	ARCHIVE_TIMESTAMP("ArchiveTimeStamp"),
 
 	ATTRIBUTE_CERTIFICATE_REFS_V2("AttributeCertificateRefsV2"),

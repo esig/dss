@@ -328,6 +328,19 @@ public class XAdES132Path extends AbstractPath implements XAdESPath {
 	}
 
 	@Override
+	public String getEncapsulatedAnyValidationDataCertValuesPath() {
+		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.UNSIGNED_PROPERTIES,
+				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES141Element.ANY_VALIDATION_DATA, XAdES132Element.CERTIFICATE_VALUES,
+				XAdES132Element.ENCAPSULATED_X509_CERTIFICATE);
+	}
+
+	@Override
+	public String getAnyValidationDataRevocationValuesPath() {
+		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.UNSIGNED_PROPERTIES,
+				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES141Element.ANY_VALIDATION_DATA, XAdES132Element.REVOCATION_VALUES);
+	}
+
+	@Override
 	public String getSignatureTimestampPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.UNSIGNED_PROPERTIES,
 				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES132Element.SIGNATURE_TIMESTAMP);

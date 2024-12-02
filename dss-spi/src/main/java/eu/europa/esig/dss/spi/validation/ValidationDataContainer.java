@@ -174,9 +174,99 @@ public class ValidationDataContainer {
      *
      * @param signature {@link AdvancedSignature} to extract validation data for
      * @return {@link ValidationData}
+     * @deprecated since DSS 6.2. Please use {@code #getAllValidationDataForSignatureForInclusion} method instead.
      */
+    @Deprecated
     public ValidationData getCompleteValidationDataForSignature(final AdvancedSignature signature) {
         ValidationData validationDataForInclusion = getAllValidationDataForSignature(signature);
+
+        validationDataForInclusion.excludeCertificateTokens(signature.getCertificateSource().getCertificates());
+        validationDataForInclusion.excludeCRLTokens(signature.getCRLSource().getAllRevocationBinaries());
+        validationDataForInclusion.excludeOCSPTokens(signature.getOCSPSource().getAllRevocationBinaries());
+
+        return validationDataForInclusion;
+    }
+
+    /**
+     * Returns a complete validation data for a signature, including the data for incorporated timestamps
+     * and/or counter-signatures, but excluding the tokens already incorporated within the signature
+     *
+     * @param signature {@link AdvancedSignature} to extract validation data for
+     * @return {@link ValidationData}
+     */
+    public ValidationData getAllValidationDataForSignatureForInclusion(final AdvancedSignature signature) {
+        ValidationData validationDataForInclusion = getAllValidationDataForSignature(signature);
+
+        validationDataForInclusion.excludeCertificateTokens(signature.getCertificateSource().getCertificates());
+        validationDataForInclusion.excludeCRLTokens(signature.getCRLSource().getAllRevocationBinaries());
+        validationDataForInclusion.excludeOCSPTokens(signature.getOCSPSource().getAllRevocationBinaries());
+
+        return validationDataForInclusion;
+    }
+
+    /**
+     * Returns all validation data for the signature, including the data for incorporated counter-signatures
+     *
+     * @param signature {@link AdvancedSignature} to extract validation data for
+     * @return {@link ValidationData}
+     */
+    public ValidationData getValidationDataForSignatureAndCounterSignatures(final AdvancedSignature signature) {
+        ValidationData validationDataForInclusion = new ValidationData();
+
+        ValidationData signatureValidationData = getValidationData(signature);
+        validationDataForInclusion.addValidationData(signatureValidationData);
+
+        for (AdvancedSignature counterSignature : signature.getCounterSignatures()) {
+            ValidationData counterSignatureValidationData = getValidationData(counterSignature);
+            validationDataForInclusion.addValidationData(counterSignatureValidationData);
+        }
+
+        return validationDataForInclusion;
+    }
+
+    /**
+     * Returns all validation data for a signature, including the data for incorporated counter-signatures,
+     * but excluding the tokens already incorporated within the signature
+     *
+     * @param signature {@link AdvancedSignature} to extract validation data for
+     * @return {@link ValidationData}
+     */
+    public ValidationData getValidationDataForSignatureForInclusion(final AdvancedSignature signature) {
+        ValidationData validationDataForInclusion = getValidationDataForSignatureAndCounterSignatures(signature);
+
+        validationDataForInclusion.excludeCertificateTokens(signature.getCertificateSource().getCertificates());
+        validationDataForInclusion.excludeCRLTokens(signature.getCRLSource().getAllRevocationBinaries());
+        validationDataForInclusion.excludeOCSPTokens(signature.getOCSPSource().getAllRevocationBinaries());
+
+        return validationDataForInclusion;
+    }
+
+    /**
+     * Returns all validation data for the timestamps incorporated within the signature.
+     *
+     * @param signature {@link AdvancedSignature} to extract validation data for
+     * @return {@link ValidationData}
+     */
+    public ValidationData getValidationDataForSignatureTimestamps(final AdvancedSignature signature) {
+        ValidationData validationDataForInclusion = new ValidationData();
+
+        for (TimestampToken timestampToken : signature.getAllTimestamps()) {
+            ValidationData timestampValidationData = getValidationData(timestampToken);
+            validationDataForInclusion.addValidationData(timestampValidationData);
+        }
+
+        return validationDataForInclusion;
+    }
+
+    /**
+     * Returns all validation data for the timestamps incorporated within the signature,
+     * but excluding the tokens already incorporated within the signature
+     *
+     * @param signature {@link AdvancedSignature} to extract validation data for
+     * @return {@link ValidationData}
+     */
+    public ValidationData getValidationDataForSignatureTimestampsForInclusion(final AdvancedSignature signature) {
+        ValidationData validationDataForInclusion = getValidationDataForSignatureTimestamps(signature);
 
         validationDataForInclusion.excludeCertificateTokens(signature.getCertificateSource().getCertificates());
         validationDataForInclusion.excludeCRLTokens(signature.getCRLSource().getAllRevocationBinaries());

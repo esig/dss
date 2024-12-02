@@ -1,23 +1,3 @@
-/**
- * DSS - Digital Signature Services
- * Copyright (C) 2015 European Commission, provided under the CEF programme
- * <p>
- * This file is part of the "DSS - Digital Signature Services" project.
- * <p>
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- * <p>
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- * <p>
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- */
 package eu.europa.esig.dss.xades.signature;
 
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
@@ -30,6 +10,7 @@ import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.enumerations.ValidationDataContainerType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignatureValue;
@@ -63,11 +44,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-/**
- * See DSS-1806
- */
 @Tag("slow")
-class XAdESCrossCertificationDoubleLTATest extends PKIFactoryAccess {
+public class XAdESCrossCertificationDoubleLTAOldValDataTest extends PKIFactoryAccess {
 
     @RepeatedTest(10)
     void test() throws Exception {
@@ -80,6 +58,7 @@ class XAdESCrossCertificationDoubleLTATest extends PKIFactoryAccess {
         signatureParameters.setCertificateChain(getCertificateChain());
         signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
         signatureParameters.setSignaturePackaging(SignaturePackaging.DETACHED);
+        signatureParameters.setValidationDataContainerType(ValidationDataContainerType.CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA);
 
         CertificateToken crossCertificate = getCertificateByPrimaryKey(2002, "external-ca");
 
@@ -145,6 +124,8 @@ class XAdESCrossCertificationDoubleLTATest extends PKIFactoryAccess {
         XAdESSignatureParameters extendParameters = new XAdESSignatureParameters();
         extendParameters.setDetachedContents(Collections.singletonList(documentToSign));
         extendParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
+        extendParameters.setValidationDataContainerType(ValidationDataContainerType.CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA);
+
         DSSDocument doubleLTADoc = service.extendDocument(signedDocument, extendParameters);
         // doubleLTADoc.save("target/doubleLTA.xml");
 
@@ -164,7 +145,7 @@ class XAdESCrossCertificationDoubleLTATest extends PKIFactoryAccess {
         assertEquals(relatedRevocationsFirstLTA.size(), relatedRevocationsSecondLTA.size());
 
         Collection<RelatedCertificateWrapper> tstValidationDataCerts = signature.foundCertificates().getRelatedCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA);
-        assertFalse(Utils.isCollectionEmpty(tstValidationDataCerts));
+        assertTrue(Utils.isCollectionEmpty(tstValidationDataCerts));
 
         Collection<RelatedRevocationWrapper> tstValidationDataRevocations = signature.foundRevocations().getRelatedRevocationsByOrigin(RevocationOrigin.TIMESTAMP_VALIDATION_DATA);
         assertTrue(Utils.isCollectionEmpty(tstValidationDataRevocations));
@@ -179,7 +160,7 @@ class XAdESCrossCertificationDoubleLTATest extends PKIFactoryAccess {
         assertNotNull(document);
 
         Element timeStampValidationDataElement = DomUtils.getElement(document, new XPathExpressionBuilder().all().element(XAdES141Element.TIMESTAMP_VALIDATION_DATA).build());
-        assertNotNull(timeStampValidationDataElement);
+        assertNull(timeStampValidationDataElement);
 
         Element anyValidationDataElement = DomUtils.getElement(document, new XPathExpressionBuilder().all().element(XAdES141Element.ANY_VALIDATION_DATA).build());
         assertNull(anyValidationDataElement);

@@ -69,6 +69,7 @@ public class XAdESCRLSource extends OfflineCRLSource {
 		collectValues(xadesPaths.getRevocationValuesPath(), RevocationOrigin.REVOCATION_VALUES);
 		collectValues(xadesPaths.getAttributeRevocationValuesPath(), RevocationOrigin.ATTRIBUTE_REVOCATION_VALUES);
 		collectValues(xadesPaths.getTimeStampValidationDataRevocationValuesPath(), RevocationOrigin.TIMESTAMP_VALIDATION_DATA);
+		collectValues(xadesPaths.getAnyValidationDataRevocationValuesPath(), RevocationOrigin.ANY_VALIDATION_DATA);
 
 		// references
 		collectRefs(xadesPaths.getCompleteRevocationRefsPath(), RevocationRefOrigin.COMPLETE_REVOCATION_REFS);

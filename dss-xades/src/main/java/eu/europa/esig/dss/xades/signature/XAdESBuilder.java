@@ -85,6 +85,12 @@ public abstract class XAdESBuilder {
 	/** Id-prefix for EncapsulatedTimeStamp element */
 	protected static final String ENCAPSULATED_TIMESTAMP_PREFIX = "ets-";
 
+	/** Id-prefix for TimeStampValidationData element */
+	protected static final String TST_VD_PREFIX = "tsvd-";
+
+	/** Id-prefix for AnyValidationData element */
+	protected static final String ANY_VD_PREFIX = "avd-";
+
 	/**
 	 * This variable holds the {@code XAdESPaths} which contains all constants and
 	 * queries needed to cope with the default signature schema.

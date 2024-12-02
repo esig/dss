@@ -207,20 +207,24 @@ public abstract class AbstractXAdESRequirementChecks extends AbstractXAdESTestSi
 
 	/**
 	 * CertificateValues shall be present in LT/LTA
+	 *
+	 * @return whether the CertificateValues element is present
 	 */
-	protected void checkCertificateValuesPresent() throws XPathExpressionException {
+	protected boolean checkCertificateValuesPresent() throws XPathExpressionException {
 		XPathExpression exp = xpath.compile("//xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades:CertificateValues");
 		Node node = (Node) exp.evaluate(document, XPathConstants.NODE);
-		assertNotNull(node);
+		return node != null;
 	}
 
 	/**
 	 * RevocationValues shall be present in LT/LTA
+	 *
+	 * @return whether the RevocationValues element is present
 	 */
-	protected void checkRevocationValuesPresent() throws XPathExpressionException {
+	protected boolean checkRevocationValuesPresent() throws XPathExpressionException {
 		XPathExpression exp = xpath.compile("//xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades:RevocationValues");
 		Node node = (Node) exp.evaluate(document, XPathConstants.NODE);
-		assertNotNull(node);
+		return node != null;
 	}
 
 	/**
@@ -230,6 +234,28 @@ public abstract class AbstractXAdESRequirementChecks extends AbstractXAdESTestSi
 		XPathExpression exp = xpath.compile("//xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades141:ArchiveTimeStamp");
 		Node node = (Node) exp.evaluate(document, XPathConstants.NODE);
 		assertNotNull(node);
+	}
+
+	/**
+	 * TimeStampValidationData may be present in LT/LTA
+	 *
+	 * @return whether the TimeStampValidationData element is present
+	 */
+	protected boolean checkTimeStampValidationDataPresent() throws XPathExpressionException {
+		XPathExpression exp = xpath.compile("//xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades141:TimeStampValidationData");
+		Node node = (Node) exp.evaluate(document, XPathConstants.NODE);
+		return node != null;
+	}
+
+	/**
+	 * AnyValidationData may be present in LT/LTA
+	 *
+	 * @return whether the AnyValidationData element is present
+	 */
+	protected boolean checkAnyValidationDataPresent() throws XPathExpressionException {
+		XPathExpression exp = xpath.compile("//xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades141:AnyValidationData");
+		Node node = (Node) exp.evaluate(document, XPathConstants.NODE);
+		return node != null;
 	}
 
 	/**

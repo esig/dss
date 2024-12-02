@@ -25,6 +25,7 @@ import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.enumerations.ValidationDataContainerType;
 
 import java.util.Objects;
 
@@ -85,6 +86,13 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 	 * The object representing the parameters related to B- level.
 	 */
 	private BLevelParameters bLevelParams = new BLevelParameters();
+
+	/**
+	 * Defines the validation data encapsulation mechanism on -LT and -LTA level augmentation
+	 * Default: CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_AND_ANY_VALIDATION_DATA
+	 */
+	private ValidationDataContainerType validationDataContainerType =
+			ValidationDataContainerType.CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_AND_ANY_VALIDATION_DATA;
 
 	/**
 	 * The object representing the parameters related to the content timestamp (Baseline-B)
@@ -274,6 +282,32 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 	public void setBLevelParams(BLevelParameters bLevelParams) {
 		Objects.requireNonNull(bLevelParams, "bLevelParams cannot be null!");
 		this.bLevelParams = bLevelParams;
+	}
+
+	/**
+	 * Gets the validation data encapsulation mechanism to be used on -LT and -LTA level augmentation
+	 *
+	 * @return {@link ValidationDataContainerType}
+	 */
+	public ValidationDataContainerType getValidationDataContainerType() {
+		return validationDataContainerType;
+	}
+
+	/**
+	 * Sets the validation data encapsulation mechanism to be used on -LT and -LTA level augmentation
+	 * <p>
+	 * Default: CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_AND_ANY_VALIDATION_DATA (the validation
+	 *          data for a signature's certificate chain to be included within CertificateValues and RevocationValues
+	 *          elements on LT-level augmentation, and within AnyValidationData element on LTA-level augmentation.
+	 *          The validation data for all present timestamps will be included within TimeStampValidationData element.)
+	 * <p>
+	 * NOTE: Applicable only for XAdES and JAdES signatures.
+	 *
+	 * @param validationDataContainerType {@link ValidationDataContainerType}
+	 */
+	public void setValidationDataContainerType(ValidationDataContainerType validationDataContainerType) {
+		Objects.requireNonNull(validationDataContainerType, "ValidationDataContainerType cannot be null!");
+		this.validationDataContainerType = validationDataContainerType;
 	}
 
 	/**
