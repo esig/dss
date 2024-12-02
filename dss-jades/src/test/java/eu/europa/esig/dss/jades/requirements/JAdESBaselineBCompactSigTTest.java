@@ -20,9 +20,11 @@
  */
 package eu.europa.esig.dss.jades.requirements;
 
+import eu.europa.esig.dss.alert.SilentOnStatusAlert;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESSigningTimeType;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -55,6 +57,13 @@ class JAdESBaselineBCompactSigTTest extends JAdESBaselineBCompactTest {
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
         Date date = sdf.parse(sigT);
         assertNotNull(date);
+    }
+
+    @Override
+    protected CertificateVerifier getCompleteCertificateVerifier() {
+        CertificateVerifier certificateVerifier = super.getCompleteCertificateVerifier();
+        certificateVerifier.setAlertOnNotYetValidCertificate(new SilentOnStatusAlert());
+        return certificateVerifier;
     }
 
 }
