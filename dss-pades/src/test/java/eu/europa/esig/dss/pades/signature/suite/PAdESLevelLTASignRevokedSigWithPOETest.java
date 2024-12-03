@@ -79,7 +79,7 @@ public class PAdESLevelLTASignRevokedSigWithPOETest extends AbstractPAdESTestVal
 
         Calendar calendar = Calendar.getInstance();
         calendar.set(2024, Calendar.JANUARY, 1);
-        service.setTspSource(getGoodTsaByTime(calendar.getTime()));
+        service.setTspSource(getKeyStoreTSPSourceByNameAndTime(SELF_SIGNED_LONG_TSA, calendar.getTime()));
     }
 
     private CertificateSource getTrustedCertSource() {
