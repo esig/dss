@@ -171,8 +171,7 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 
 	@Override
 	protected boolean isAnyValidationData(JAdESAttribute unsignedAttribute) {
-		// not supported
-		return false;
+		return JAdESHeaderParameterNames.ANY_VAL_DATA.equals(unsignedAttribute.getHeaderName());
 	}
 
 	@Override
@@ -282,6 +281,11 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 			if (Utils.isMapNotEmpty(tstVd)) {
 				xVals = DSSJsonUtils.getAsList(tstVd, JAdESHeaderParameterNames.X_VALS);
 			}
+		} else if (isAnyValidationData(unsignedAttribute)) {
+			Map<?, ?> anyVD = DSSJsonUtils.toMap(unsignedAttribute.getValue(), JAdESHeaderParameterNames.ANY_VAL_DATA);
+			if (Utils.isMapNotEmpty(anyVD)) {
+				xVals = DSSJsonUtils.getAsList(anyVD, JAdESHeaderParameterNames.X_VALS);
+			}
 		} else {
 			xVals = DSSJsonUtils.toList(unsignedAttribute.getValue(), JAdESHeaderParameterNames.X_VALS);
 		}
@@ -327,9 +331,14 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 	protected List<CRLBinary> getEncapsulatedCRLIdentifiers(JAdESAttribute unsignedAttribute) {
 		Map<?, ?> rVals = null;
 		if (isTimeStampValidationData(unsignedAttribute)) {
-			Map<?, ?> tstVd = DSSJsonUtils.toMap(unsignedAttribute.getValue(), JAdESHeaderParameterNames.R_VALS);
+			Map<?, ?> tstVd = DSSJsonUtils.toMap(unsignedAttribute.getValue(), JAdESHeaderParameterNames.TST_VD);
 			if (Utils.isMapNotEmpty(tstVd)) {
 				rVals = DSSJsonUtils.getAsMap(tstVd, JAdESHeaderParameterNames.R_VALS);
+			}
+		} else if (isAnyValidationData(unsignedAttribute)) {
+			Map<?, ?> anyVD = DSSJsonUtils.toMap(unsignedAttribute.getValue(), JAdESHeaderParameterNames.ANY_VAL_DATA);
+			if (Utils.isMapNotEmpty(anyVD)) {
+				rVals = DSSJsonUtils.getAsMap(anyVD, JAdESHeaderParameterNames.R_VALS);
 			}
 		} else {
 			rVals = DSSJsonUtils.toMap(unsignedAttribute.getValue(), JAdESHeaderParameterNames.R_VALS);
@@ -373,9 +382,14 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 	protected List<OCSPResponseBinary> getEncapsulatedOCSPIdentifiers(JAdESAttribute unsignedAttribute) {
 		Map<?, ?> rVals = null;
 		if (isTimeStampValidationData(unsignedAttribute)) {
-			Map<?, ?> tstVd = DSSJsonUtils.toMap(unsignedAttribute.getValue(), JAdESHeaderParameterNames.R_VALS);
+			Map<?, ?> tstVd = DSSJsonUtils.toMap(unsignedAttribute.getValue(), JAdESHeaderParameterNames.TST_VD);
 			if (Utils.isMapNotEmpty(tstVd)) {
 				rVals = DSSJsonUtils.getAsMap(tstVd, JAdESHeaderParameterNames.R_VALS);
+			}
+		} else if (isAnyValidationData(unsignedAttribute)) {
+			Map<?, ?> anyVD = DSSJsonUtils.toMap(unsignedAttribute.getValue(), JAdESHeaderParameterNames.ANY_VAL_DATA);
+			if (Utils.isMapNotEmpty(anyVD)) {
+				rVals = DSSJsonUtils.getAsMap(anyVD, JAdESHeaderParameterNames.R_VALS);
 			}
 		} else {
 			rVals = DSSJsonUtils.toMap(unsignedAttribute.getValue(), JAdESHeaderParameterNames.R_VALS);

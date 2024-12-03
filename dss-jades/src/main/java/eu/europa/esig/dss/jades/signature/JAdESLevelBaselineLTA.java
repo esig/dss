@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.jades.signature;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.spi.exception.IllegalInputException;
+import eu.europa.esig.dss.enumerations.ValidationDataContainerType;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
@@ -33,20 +33,16 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.TimestampBinary;
-import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.signature.SignatureRequirementsChecker;
-import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
-import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.validation.ValidationData;
 import eu.europa.esig.dss.spi.validation.ValidationDataContainer;
-import org.jose4j.json.internal.json_simple.JSONArray;
+import eu.europa.esig.dss.utils.Utils;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Creates an LTA-level of a JAdES signature
@@ -92,44 +88,100 @@ public class JAdESLevelBaselineLTA extends JAdESLevelBaselineLT {
 			JAdESEtsiUHeader etsiUHeader = jadesSignature.getEtsiUHeader();
 
 			if (jadesSignature.hasLTAProfile() && addTimestampValidationData) {
-				removeLastTimestampValidationData(jadesSignature, etsiUHeader);
+				removeLastTimestampAndAnyValidationData(jadesSignature, etsiUHeader);
 
-				final ValidationData validationDataForInclusion = validationDataContainer.getCompleteValidationDataForSignature(signature);
-				if (!validationDataForInclusion.isEmpty()) {
-					JsonObject tstVd = getTstVd(validationDataForInclusion);
-					etsiUHeader.addComponent(JAdESHeaderParameterNames.TST_VD, tstVd, params.isBase64UrlEncodedEtsiUComponents());
-				}
+				ValidationData includedValidationData = incorporateValidationDataForTimestamps(validationDataContainer, signature, etsiUHeader, params);
+				incorporateAnyValidationData(validationDataContainer, signature, etsiUHeader, params, includedValidationData);
 			}
 
-			TimestampBinary timestampBinary = getArchiveTimestamp(jadesSignature, params);
-			JsonObject arcTst = DSSJsonUtils.getTstContainer(Collections.singletonList(timestampBinary),
-					params.getArchiveTimestampParameters().getCanonicalizationMethod());
-			etsiUHeader.addComponent(JAdESHeaderParameterNames.ARC_TST, arcTst,
-					params.isBase64UrlEncodedEtsiUComponents());
+			incorporateArcTst(jadesSignature, etsiUHeader, params);
 		}
 	}
 
-	private void removeLastTimestampValidationData(JAdESSignature jadesSignature, JAdESEtsiUHeader etsiUHeader) {
-		etsiUHeader.removeLastComponent(JAdESHeaderParameterNames.TST_VD);
-		jadesSignature.resetCertificateSource();
-		jadesSignature.resetRevocationSources();
+	/**
+	 * Incorporates the validation data for the signature timestamps validation,
+	 * according to the chosen validation data encapsulation mechanism
+	 *
+	 * @param validationDataContainer {@link ValidationDataContainer}
+	 * @param signature {@link AdvancedSignature}
+	 * @param etsiUHeader {@link JAdESEtsiUHeader}
+	 * @param signatureParameters {@link JAdESSignatureParameters}
+	 * @return {@link ValidationData} incorporated validation data
+	 */
+	private ValidationData incorporateValidationDataForTimestamps(ValidationDataContainer validationDataContainer,
+																  AdvancedSignature signature, JAdESEtsiUHeader etsiUHeader,
+																  JAdESSignatureParameters signatureParameters) {
+		ValidationData validationData;
+		ValidationDataContainerType validationDataContainerType = signatureParameters.getValidationDataContainerType();
+		switch (validationDataContainerType) {
+			case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA:
+				validationData = validationDataContainer.getAllValidationDataForSignatureForInclusion(signature);
+				incorporateTstValidationData(etsiUHeader, validationData, signatureParameters.isBase64UrlEncodedEtsiUComponents());
+				break;
+			case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_AND_ANY_VALIDATION_DATA:
+				validationData = validationDataContainer.getValidationDataForSignatureTimestampsForInclusion(signature);
+				incorporateTstValidationData(etsiUHeader, validationData, signatureParameters.isBase64UrlEncodedEtsiUComponents());
+				break;
+
+			case CERTIFICATE_REVOCATION_VALUES_AND_ANY_VALIDATION_DATA:
+			case ANY_VALIDATION_DATA_ONLY:
+				validationData = new ValidationData();
+				break;
+
+			default:
+				throw new UnsupportedOperationException(String.format(
+						"The ValidationDataContainerType '%s' is not supported!", validationDataContainerType));
+		}
+		return validationData;
 	}
 
-	private JsonObject getTstVd(final ValidationData validationDataForInclusion) {
-		Set<CertificateToken> certificateTokens = validationDataForInclusion.getCertificateTokens();
-		Set<CRLToken> crlTokens = validationDataForInclusion.getCrlTokens();
-		Set<OCSPToken> ocspTokens = validationDataForInclusion.getOcspTokens();
-		
-		JsonObject tstVd = new JsonObject();
-		if (Utils.isCollectionNotEmpty(certificateTokens)) {
-			JSONArray xVals = getXVals(certificateTokens);
-			tstVd.put(JAdESHeaderParameterNames.X_VALS, xVals);
+	/**
+	 * Incorporates the validation data for the signature validation,
+	 * according to the chosen validation data encapsulation mechanism
+	 *
+	 * @param validationDataContainer {@link ValidationDataContainer}
+	 * @param signature {@link AdvancedSignature}
+	 * @param etsiUHeader {@link JAdESEtsiUHeader}
+	 * @param signatureParameters {@link JAdESSignatureParameters}
+	 * @param validationDataToExclude {@link ValidationData} to be excluded from incorporation to avoid duplicates
+	 */
+	private void incorporateAnyValidationData(ValidationDataContainer validationDataContainer,
+											  AdvancedSignature signature, JAdESEtsiUHeader etsiUHeader, JAdESSignatureParameters signatureParameters,
+											  ValidationData validationDataToExclude) {
+		ValidationData validationData;
+		ValidationDataContainerType validationDataContainerType = signatureParameters.getValidationDataContainerType();
+		switch (validationDataContainerType) {
+			case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_AND_ANY_VALIDATION_DATA:
+				validationData = validationDataContainer.getValidationDataForSignatureForInclusion(signature);
+				validationData.excludeValidationData(validationDataToExclude);
+				incorporateAnyValidationData(etsiUHeader, validationData, signatureParameters.isBase64UrlEncodedEtsiUComponents());
+				break;
+
+			case CERTIFICATE_REVOCATION_VALUES_AND_ANY_VALIDATION_DATA:
+			case ANY_VALIDATION_DATA_ONLY:
+				validationData = validationDataContainer.getAllValidationDataForSignatureForInclusion(signature);
+				validationData.excludeValidationData(validationDataToExclude);
+				incorporateAnyValidationData(etsiUHeader, validationData, signatureParameters.isBase64UrlEncodedEtsiUComponents());
+				// skip
+				break;
+
+			case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA:
+				// skip
+				break;
+
+			default:
+				throw new UnsupportedOperationException(String.format(
+						"The ValidationDataContainerType '%s' is not supported!", validationDataContainerType));
 		}
-		if (Utils.isCollectionNotEmpty(crlTokens) || Utils.isCollectionNotEmpty(ocspTokens)) {
-			JsonObject rVals = getRVals(crlTokens, ocspTokens);
-			tstVd.put(JAdESHeaderParameterNames.R_VALS, rVals);
-		}
-		return tstVd;
+	}
+
+	private void incorporateArcTst(JAdESSignature signature, JAdESEtsiUHeader etsiUHeader,
+								   JAdESSignatureParameters signatureParameters) {
+		TimestampBinary timestampBinary = getArchiveTimestamp(signature, signatureParameters);
+		JsonObject arcTst = DSSJsonUtils.getTstContainer(Collections.singletonList(timestampBinary),
+				signatureParameters.getArchiveTimestampParameters().getCanonicalizationMethod());
+		etsiUHeader.addComponent(JAdESHeaderParameterNames.ARC_TST, arcTst,
+				signatureParameters.isBase64UrlEncodedEtsiUComponents());
 	}
 	
 	private TimestampBinary getArchiveTimestamp(JAdESSignature jadesSignature, JAdESSignatureParameters params) {

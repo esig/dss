@@ -204,6 +204,7 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 			extractCertificateValues(attribute);
 			extractAttrAuthoritiesCertValues(attribute);
 			extractTimestampValidationData(attribute);
+			extractAnyValidationData(attribute);
 
 			extractCompleteCertificateRefs(attribute);
 			extractAttributeCertificateRefs(attribute);
@@ -225,11 +226,19 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 	}
 
 	private void extractTimestampValidationData(JAdESAttribute attribute) {
-		if (JAdESHeaderParameterNames.TST_VD.equals(attribute.getHeaderName())) {
-			Map<?,?> tstVd = DSSJsonUtils.toMap(attribute.getValue(), JAdESHeaderParameterNames.TST_VD);
+		extractValidationData(attribute, JAdESHeaderParameterNames.TST_VD, CertificateOrigin.TIMESTAMP_VALIDATION_DATA);
+	}
+
+	private void extractAnyValidationData(JAdESAttribute attribute) {
+		extractValidationData(attribute, JAdESHeaderParameterNames.ANY_VAL_DATA, CertificateOrigin.ANY_VALIDATION_DATA);
+	}
+
+	private void extractValidationData(JAdESAttribute attribute, String headerName, CertificateOrigin origin) {
+		if (headerName.equals(attribute.getHeaderName())) {
+			Map<?,?> tstVd = DSSJsonUtils.toMap(attribute.getValue(), headerName);
 			List<?> xVals = DSSJsonUtils.getAsList(tstVd, JAdESHeaderParameterNames.X_VALS);
 			if (Utils.isCollectionNotEmpty(xVals)) {
-				extractCertificateValues(xVals, CertificateOrigin.TIMESTAMP_VALIDATION_DATA);
+				extractCertificateValues(xVals, origin);
 			}
 		}
 	}

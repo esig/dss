@@ -28,6 +28,7 @@ import eu.europa.esig.dss.spi.validation.SignatureProperties;
 import org.jose4j.json.internal.json_simple.JSONArray;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
@@ -120,25 +121,29 @@ public class JAdESEtsiUHeader implements SignatureProperties<EtsiUComponent> {
 	 * Removes the last 'etsiU' item if the name matches to the given {@code headerName}
 	 *
 	 * @param headerName of the 'etsiU' entry to remove
+	 * @return boolean value whether the component has been removed
 	 */
-	public void removeLastComponent(String headerName) {
+	public boolean removeLastComponent(String... headerName) {
 		List<Object> etsiU = getEtsiUToEdit();
 		if (Utils.isCollectionNotEmpty(etsiU)) {
 			ListIterator<Object> iterator = getBackwardIterator(etsiU);
-			removeLastIfMatches(iterator, headerName);
+			return removeLastIfMatches(iterator, headerName);
 		}
+		return false;
 	}
 
 	private ListIterator<Object> getBackwardIterator(List<Object> etsiU) {
 		return etsiU.listIterator(etsiU.size());
 	}
 
-	private void removeLastIfMatches(ListIterator<?> iterator, String headerName) {
+	private boolean removeLastIfMatches(ListIterator<?> iterator, String... headerName) {
 		Object object = iterator.previous();
 		Map<String, Object> etsiUComponent = DSSJsonUtils.parseEtsiUComponent(object);
-		if (etsiUComponent != null && etsiUComponent.containsKey(headerName)) {
+		if (etsiUComponent != null && Arrays.stream(headerName).anyMatch(etsiUComponent::containsKey)) {
 			iterator.remove();
+			return true;
 		}
+		return false;
 	}
 
 	/**

@@ -20,14 +20,14 @@
  */
 package eu.europa.esig.dss.jades.requirements;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
+import eu.europa.esig.dss.enumerations.JWSSerializationType;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 
 import java.util.List;
 import java.util.Map;
 
-import eu.europa.esig.dss.enumerations.JWSSerializationType;
-import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.jades.JAdESSignatureParameters;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class JAdESBaselineTSerialiazationTest extends AbstractJAdESSerializationSignatureRequirementsCheck {
 
@@ -59,8 +59,20 @@ class JAdESBaselineTSerialiazationTest extends AbstractJAdESSerializationSignatu
 	
 	@Override
 	protected void checkArchiveTimestamp(Map<?, ?> unprotectedHeaderMap) {
-		List<?> arcTst = (List<?>) getEtsiUElement(unprotectedHeaderMap, "arcTst");
+		Map<?, ?> arcTst = (Map<?, ?>) getEtsiUElement(unprotectedHeaderMap, "arcTst");
 		assertNull(arcTst);
+	}
+
+	@Override
+	protected void checkTstValidationData(Map<?, ?> unprotectedHeaderMap) {
+		Map<?, ?> tstVD = (Map<?, ?>) getEtsiUElement(unprotectedHeaderMap, "tstVD");
+		assertNull(tstVD);
+	}
+
+	@Override
+	protected void checkAnyValidationData(Map<?, ?> unprotectedHeaderMap) {
+		Map<?, ?> anyVD = (Map<?, ?>) getEtsiUElement(unprotectedHeaderMap, "anyValData");
+		assertNull(anyVD);
 	}
 
 }

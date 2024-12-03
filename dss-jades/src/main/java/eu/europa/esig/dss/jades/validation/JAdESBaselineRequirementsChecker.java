@@ -282,12 +282,27 @@ public class JAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
 
     @Override
     protected boolean containsLTLevelCertificates() {
+        return containsCertificateValues() || containsTstOrAnyValDataCertificates();
+    }
+
+    private boolean containsCertificateValues() {
         JAdESEtsiUHeader etsiUHeader = signature.getEtsiUHeader();
-        if (DSSJsonUtils.getUnsignedPropertiesWithHeaderName(etsiUHeader, JAdESHeaderParameterNames.X_VALS).size() +
-                DSSJsonUtils.getUnsignedPropertiesWithHeaderName(etsiUHeader, JAdESHeaderParameterNames.AX_VALS).size() == 0) {
-            return false;
+        return DSSJsonUtils.getUnsignedPropertiesWithHeaderName(etsiUHeader, JAdESHeaderParameterNames.X_VALS).size() +
+                DSSJsonUtils.getUnsignedPropertiesWithHeaderName(etsiUHeader, JAdESHeaderParameterNames.AX_VALS).size() != 0;
+    }
+
+    private boolean containsTstOrAnyValDataCertificates() {
+        List<EtsiUComponent> validationDataHeaders = new ArrayList<>();
+        JAdESEtsiUHeader etsiUHeader = signature.getEtsiUHeader();
+        validationDataHeaders.addAll(DSSJsonUtils.getUnsignedPropertiesWithHeaderName(etsiUHeader, JAdESHeaderParameterNames.TST_VD));
+        validationDataHeaders.addAll(DSSJsonUtils.getUnsignedPropertiesWithHeaderName(etsiUHeader, JAdESHeaderParameterNames.ANY_VAL_DATA));
+        for (EtsiUComponent etsiUComponent : validationDataHeaders) {
+            Map<?, ?> valDataMap = (Map<?, ?>) etsiUComponent.getValue();
+            if (valDataMap.get(JAdESHeaderParameterNames.X_VALS) != null) {
+                return true;
+            }
         }
-        return true;
+        return false;
     }
 
     @Override

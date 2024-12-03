@@ -500,7 +500,7 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
                 continue;
 
             } else if (isAnyValidationData(unsignedAttribute)) {
-                List<TimestampedReference> validationData = getValidationData(unsignedAttribute);
+                List<TimestampedReference> validationData = getAnyValidationData(unsignedAttribute);
                 addReferences(unsignedPropertiesReferences, validationData);
                 continue;
 
@@ -1034,7 +1034,7 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
      * @return list of {@link TimestampedReference}s
      */
     protected List<TimestampedReference> getTimestampValidationData(SA unsignedAttribute) {
-        return getValidationData(unsignedAttribute);
+        return getAnyValidationData(unsignedAttribute);
     }
 
     /**
@@ -1043,7 +1043,7 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
      * @param unsignedAttribute {@link SA} to get timestamped references from
      * @return list of {@link TimestampedReference}s
      */
-    protected List<TimestampedReference> getValidationData(SA unsignedAttribute) {
+    protected List<TimestampedReference> getAnyValidationData(SA unsignedAttribute) {
         final List<TimestampedReference> timestampedReferences = new ArrayList<>();
         addReferences(timestampedReferences, createReferencesForIdentifiers(
                 getEncapsulatedCertificateIdentifiers(unsignedAttribute), TimestampedObjectType.CERTIFICATE));
