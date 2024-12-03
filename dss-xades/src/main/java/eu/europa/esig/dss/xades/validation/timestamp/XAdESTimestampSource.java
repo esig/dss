@@ -276,8 +276,7 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 
 	@Override
 	protected boolean isAnyValidationData(XAdESAttribute unsignedAttribute) {
-		// not supported
-		return false;
+		return XAdES141Element.ANY_VALIDATION_DATA.isSameTagName(unsignedAttribute.getName());
 	}
 
 	@Override
@@ -497,8 +496,8 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 	@Override
 	protected List<Identifier> getEncapsulatedCertificateIdentifiers(XAdESAttribute unsignedAttribute) {
 		List<Identifier> certificateIdentifiers = new ArrayList<>();
-		String xPathString = isTimeStampValidationData(unsignedAttribute) ? xadesPaths.getCurrentCertificateValuesEncapsulatedCertificate()
-				: xadesPaths.getCurrentEncapsulatedCertificate();
+		String xPathString = isTimeStampValidationData(unsignedAttribute) || isAnyValidationData(unsignedAttribute) ?
+				xadesPaths.getCurrentCertificateValuesEncapsulatedCertificate() : xadesPaths.getCurrentEncapsulatedCertificate();
 		NodeList encapsulatedNodes = unsignedAttribute.getNodeList(xPathString);
 		for (int ii = 0; ii < encapsulatedNodes.getLength(); ii++) {
 			try {
@@ -521,7 +520,7 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 	@Override
 	protected List<CRLBinary> getEncapsulatedCRLIdentifiers(XAdESAttribute unsignedAttribute) {
 		List<CRLBinary> crlIdentifiers = new ArrayList<>();
-		String xPathString = isTimeStampValidationData(unsignedAttribute) ? 
+		String xPathString = isTimeStampValidationData(unsignedAttribute) || isAnyValidationData(unsignedAttribute) ?
 				xadesPaths.getCurrentRevocationValuesEncapsulatedCRLValue() : xadesPaths.getCurrentEncapsulatedCRLValue();
 		NodeList encapsulatedNodes = unsignedAttribute.getNodeList(xPathString);
 		for (int ii = 0; ii < encapsulatedNodes.getLength(); ii++) {
@@ -544,7 +543,7 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 	@Override
 	protected List<OCSPResponseBinary> getEncapsulatedOCSPIdentifiers(XAdESAttribute unsignedAttribute) {
 		List<OCSPResponseBinary> ocspIdentifiers = new ArrayList<>();
-		String xPathString = isTimeStampValidationData(unsignedAttribute) ? 
+		String xPathString = isTimeStampValidationData(unsignedAttribute) || isAnyValidationData(unsignedAttribute) ?
 				xadesPaths.getCurrentRevocationValuesEncapsulatedOCSPValue() : xadesPaths.getCurrentEncapsulatedOCSPValue();
 		NodeList encapsulatedNodes = unsignedAttribute.getNodeList(xPathString);
 		for (int ii = 0; ii < encapsulatedNodes.getLength(); ii++) {

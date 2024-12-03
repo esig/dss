@@ -26,11 +26,17 @@ import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,6 +47,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -102,27 +109,42 @@ class XAdESDoubleLTAWithValDataContainerTypesTest extends PKIFactoryAccess {
 
         // signedDocument.save("target/signed.xml");
 
-        service.setTspSource(getGoodTsaCrossCertification());
+        checkOnSigned(signedDocument, 0, validationDataTypeOnSigning);
 
         XAdESSignatureParameters extendParameters = new XAdESSignatureParameters();
+        extendParameters.setDetachedContents(Collections.singletonList(documentToSign));
+        extendParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
+        extendParameters.setValidationDataContainerType(validationDataTypeOnExtension);
+
+        DSSDocument ltUpdatedDocument = service.extendDocument(signedDocument, extendParameters);
+        checkOnSigned(ltUpdatedDocument, 0, validationDataTypeOnExtension);
+
+        tspTime = Calendar.getInstance();
+        tspTime.add(Calendar.MINUTE, 1);
+        service.setTspSource(getKeyStoreTSPSourceByNameAndTime(GOOD_TSA_CROSS_CERTIF, tspTime.getTime()));
+
+        extendParameters = new XAdESSignatureParameters();
         extendParameters.setDetachedContents(Collections.singletonList(documentToSign));
         extendParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
         extendParameters.setValidationDataContainerType(validationDataTypeOnExtension);
 
         DSSDocument extendedDocument = service.extendDocument(signedDocument, extendParameters);
 
+        checkOnSigned(extendedDocument, 1, validationDataTypeOnExtension);
         awaitOneSecond();
 
         DSSDocument doubleLTADoc = service.extendDocument(extendedDocument, extendParameters);
 
-        doubleLTADoc.save("target/doubleLTA.xml");
+        // doubleLTADoc.save("target/doubleLTA.xml");
+
+        checkOnSigned(doubleLTADoc, 2, validationDataTypeOnExtension);
 
         validator = SignedDocumentValidator.fromDocument(doubleLTADoc);
         validator.setCertificateVerifier(getOfflineCertificateVerifier());
         validator.setDetachedContents(Collections.singletonList(documentToSign));
         reports = validator.validateDocument();
 
-        reports.print();
+        // reports.print();
 
         simpleReport = reports.getSimpleReport();
         assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
@@ -145,6 +167,43 @@ class XAdESDoubleLTAWithValDataContainerTypesTest extends PKIFactoryAccess {
             }
         }
         assertEquals(2, archiveTimestampCounter);
+
+        assertEquals(3, diagnosticData.getTimestampList().size());
+        TimestampWrapper signatureTst = diagnosticData.getTimestampList().get(0);
+        TimestampWrapper firstArchiveTst = diagnosticData.getTimestampList().get(1);
+        TimestampWrapper secondArchiveTst = diagnosticData.getTimestampList().get(2);
+
+        SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+
+        List<TimestampWrapper> timestampedTimestamps = secondArchiveTst.getTimestampedTimestamps();
+        assertEquals(2, timestampedTimestamps.size());
+        assertEquals(signatureTst.getId(), timestampedTimestamps.get(0).getId());
+        assertEquals(firstArchiveTst.getId(), timestampedTimestamps.get(1).getId());
+
+        List<CertificateWrapper> timestampedCertificates = secondArchiveTst.getTimestampedCertificates();
+        List<String> timestampedCertIds = timestampedCertificates.stream().map(CertificateWrapper::getId).collect(Collectors.toList());
+        for (CertificateWrapper certificateWrapper : signature.foundCertificates().getRelatedCertificates()) {
+            assertTrue(timestampedCertIds.contains(certificateWrapper.getId()));
+        }
+        for (CertificateWrapper certificateWrapper : signatureTst.foundCertificates().getRelatedCertificates()) {
+            assertTrue(timestampedCertIds.contains(certificateWrapper.getId()));
+        }
+        for (CertificateWrapper certificateWrapper : firstArchiveTst.foundCertificates().getRelatedCertificates()) {
+            assertTrue(timestampedCertIds.contains(certificateWrapper.getId()));
+        }
+
+        assertEquals(0, firstArchiveTst.foundRevocations().getRelatedRevocationData().size());
+        List<RelatedRevocationWrapper> timestampValidationDataRevocations = signature
+                .foundRevocations().getRelatedRevocationData();
+        assertTrue(Utils.isCollectionNotEmpty(timestampValidationDataRevocations));
+
+        List<RevocationWrapper> timestampedRevocations = secondArchiveTst.getTimestampedRevocations();
+        assertEquals(timestampValidationDataRevocations.size(), timestampedRevocations.size());
+
+        List<String> timestampedRevocationIds = timestampedRevocations.stream().map(RevocationWrapper::getId).collect(Collectors.toList());
+        for (RevocationWrapper revocationWrapper : timestampValidationDataRevocations) {
+            assertTrue(timestampedRevocationIds.contains(revocationWrapper.getId()));
+        }
     }
 
     @Override
@@ -154,6 +213,109 @@ class XAdESDoubleLTAWithValDataContainerTypesTest extends PKIFactoryAccess {
         certificateVerifier.setCrlSource(pkiCRLSource());
         certificateVerifier.setOcspSource(pkiDelegatedOCSPSource());
         return certificateVerifier;
+    }
+
+    private void checkOnSigned(DSSDocument document, int expectedArcTsts, ValidationDataContainerType validationDataContainerType) {
+        assertTrue(DomUtils.isDOM(document));
+
+        Document documentDom = DomUtils.buildDOM(document);
+        NodeList signaturesList = DSSXMLUtils.getAllSignaturesExceptCounterSignatures(documentDom);
+        assertEquals(1, signaturesList.getLength());
+
+        XAdES132Path paths = new XAdES132Path();
+
+        Node signature = signaturesList.item(0);
+
+        int certificateValuesCounter = 0;
+        int revocationValuesCounter = 0;
+        int archiveTimeStampCounter = 0;
+        int timeStampValidationDataCounter = 0;
+        int anyValidationDataCounter = 0;
+
+        NodeList certificateValuesList = DomUtils.getNodeList(signature, paths.getCertificateValuesPath());
+        if (certificateValuesList != null && certificateValuesList.getLength() > 0) {
+            certificateValuesCounter = certificateValuesList.getLength();
+        }
+        NodeList revocationValuesList = DomUtils.getNodeList(signature, paths.getRevocationValuesPath());
+        if (revocationValuesList != null && revocationValuesList.getLength() > 0) {
+            revocationValuesCounter = revocationValuesList.getLength();
+        }
+        NodeList archiveTstList = DomUtils.getNodeList(signature, paths.getArchiveTimestampPath());
+        if (archiveTstList != null && archiveTstList.getLength() > 0) {
+            archiveTimeStampCounter = archiveTstList.getLength();
+        }
+        NodeList tstVDList = DomUtils.getNodeList(signature, paths.getTimestampValidationDataPath());
+        if (tstVDList != null && tstVDList.getLength() > 0) {
+            timeStampValidationDataCounter = tstVDList.getLength();
+        }
+        NodeList anyVDList = DomUtils.getNodeList(signature, paths.getAnyValidationDataRevocationValuesPath());
+        if (anyVDList != null && anyVDList.getLength() > 0) {
+            anyValidationDataCounter = anyVDList.getLength();
+        }
+
+        assertEquals(getExpectedXValsNumber(validationDataContainerType), certificateValuesCounter);
+        assertEquals(getExpectedRValsNumber(validationDataContainerType), revocationValuesCounter);
+        assertEquals(expectedArcTsts, archiveTimeStampCounter);
+        assertEquals(getExpectedTstVDNumber(validationDataContainerType, expectedArcTsts), timeStampValidationDataCounter);
+        assertEquals(getExpectedAnyVDNumber(validationDataContainerType, expectedArcTsts), anyValidationDataCounter);
+    }
+
+    private int getExpectedXValsNumber(ValidationDataContainerType validationDataContainerType) {
+        switch (validationDataContainerType) {
+            case CERTIFICATE_REVOCATION_VALUES_AND_ANY_VALIDATION_DATA:
+            case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA:
+            case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_AND_ANY_VALIDATION_DATA:
+                return 1;
+            case ANY_VALIDATION_DATA_ONLY:
+                return 0;
+            default:
+                fail(String.format("Not supported type %s", validationDataContainerType));
+                return -1;
+        }
+    }
+
+    private int getExpectedRValsNumber(ValidationDataContainerType validationDataContainerType) {
+        switch (validationDataContainerType) {
+            case CERTIFICATE_REVOCATION_VALUES_AND_ANY_VALIDATION_DATA:
+            case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA:
+            case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_AND_ANY_VALIDATION_DATA:
+                return 1;
+            case ANY_VALIDATION_DATA_ONLY:
+                return 0;
+            default:
+                fail(String.format("Not supported type %s", validationDataContainerType));
+                return -1;
+        }
+    }
+
+    private int getExpectedTstVDNumber(ValidationDataContainerType validationDataContainerType, int expectedArcTsts) {
+        switch (validationDataContainerType) {
+            case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA:
+                return expectedArcTsts > 0 ? expectedArcTsts - 1 : 0;
+            case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_AND_ANY_VALIDATION_DATA:
+                return expectedArcTsts > 0 ? expectedArcTsts : 1;
+            case CERTIFICATE_REVOCATION_VALUES_AND_ANY_VALIDATION_DATA:
+            case ANY_VALIDATION_DATA_ONLY:
+                return 0;
+            default:
+                fail(String.format("Not supported type %s", validationDataContainerType));
+                return -1;
+        }
+    }
+
+    private int getExpectedAnyVDNumber(ValidationDataContainerType validationDataContainerType, int expectedArcTsts) {
+        switch (validationDataContainerType) {
+            case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA:
+                return 0;
+            case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_AND_ANY_VALIDATION_DATA:
+                return expectedArcTsts > 0 ? expectedArcTsts - 1 : 0;
+            case CERTIFICATE_REVOCATION_VALUES_AND_ANY_VALIDATION_DATA:
+            case ANY_VALIDATION_DATA_ONLY:
+                return expectedArcTsts > 0 ? expectedArcTsts : 1;
+            default:
+                fail(String.format("Not supported type %s", validationDataContainerType));
+                return -1;
+        }
     }
 
     private void assertContainsAllRevocationData(DiagnosticData diagnosticData) {

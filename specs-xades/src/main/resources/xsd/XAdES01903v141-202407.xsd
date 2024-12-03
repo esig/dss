@@ -58,7 +58,7 @@
 	<xsd:element name="RenewedDigestsV2" type="RenewedDigestsV2Type"/>
 	<xsd:complexType name="RenewedDigestsV2Type">
 		<xsd:sequence>
-		   <xsd:element ref="ds:canonicalizationMethod"/>
+		   <xsd:element ref="ds:CanonicalizationMethod"/>
 			<xsd:element ref="ds:DigestMethod"/>
 			<xsd:element name="RecomputedDigestValue" type="RecomputedDigestValueV2Type" maxOccurs="unbounded"/>
 		</xsd:sequence>

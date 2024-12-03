@@ -20,20 +20,6 @@
  */
 package eu.europa.esig.dss.xades.extension;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
-import java.util.Set;
-
-import org.junit.jupiter.api.Test;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import eu.europa.esig.dss.xml.utils.DomUtils;
-import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
@@ -56,6 +42,19 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.definition.XAdESPath;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
 import eu.europa.esig.dss.xades.signature.XAdESService;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import org.junit.jupiter.api.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import java.util.List;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ExtendWithLastTimestampValidationDataTest extends PKIFactoryAccess {
 
@@ -97,7 +96,7 @@ class ExtendWithLastTimestampValidationDataTest extends PKIFactoryAccess {
 		unsignedSignatureProperties.removeChild(lastArchveTST);
 		
 		NodeList timestampValidationData = DomUtils.getNodeList(extendedDocDom, "//xades141:TimeStampValidationData");
-		assertEquals(1, timestampValidationData.getLength());
+		assertEquals(2, timestampValidationData.getLength());
 		
 		DSSDocument ltaWithTSValidationData = DomUtils.createDssDocumentFromDomDocument(extendedDocDom, "LTAWithTimeStampValidationData.xml");
 		// ltaWithTSValidationData.save("target/" + ltaWithTSValidationData.getName());
@@ -164,7 +163,7 @@ class ExtendWithLastTimestampValidationDataTest extends PKIFactoryAccess {
 
 		Document newExtendedDocDom = DomUtils.buildDOM(newExtendedDocument);
 		timestampValidationData = DomUtils.getNodeList(newExtendedDocDom, "//xades141:TimeStampValidationData");
-		assertEquals(1, timestampValidationData.getLength());
+		assertEquals(2, timestampValidationData.getLength());
 		
 	}
 

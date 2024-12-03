@@ -10,7 +10,7 @@ import javax.xml.xpath.XPathExpressionException;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESBaselineLTSigValDataTest extends XAdESBaselineTTest {
+class XAdESBaselineLTSigValDataTest extends XAdESBaselineTTest {
 
     @BeforeEach
     @Override

@@ -481,43 +481,6 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 		return intent;
 	}
 
-	/**
-	 * This method returns the last timestamp validation data for an archive
-	 * timestamp.
-	 *
-	 * @return {@link Element} xades141:TimestampValidationData
-	 */
-	private Element getLastTimestampValidationData() {
-		return getLastElementIfPresent(XAdES141Element.TIMESTAMP_VALIDATION_DATA);
-	}
-
-	/**
-	 * This method removes the last AnyValidationData element.
-	 *
-	 * @return indent of the last {@code AnyValidationData} xml element, if present
-	 */
-	protected String removeLastAnyValidationData() {
-		final Element toRemove = getLastAnyValidationData();
-		if (toRemove != null) {
-			/* Certificate and revocation sources need to be reset because of
-			 * the removing of timeStampValidationData element */
-			xadesSignature.resetCertificateSource();
-			xadesSignature.resetRevocationSources();
-
-			return removeNode(toRemove);
-		}
-		return null;
-	}
-
-	/**
-	 * This method returns the last AnyValidationData element, if applicable.
-	 *
-	 * @return {@link Element} xades141:AnyValidationData
-	 */
-	private Element getLastAnyValidationData() {
-		return getLastElementIfPresent(XAdES141Element.ANY_VALIDATION_DATA);
-	}
-
 	private Element getLastElementIfPresent(DSSElement... xadesElements) {
 		final NodeList nodeList = DomUtils.getNodeList(xadesSignature.getSignatureElement(), xadesPath.getUnsignedSignaturePropertiesPath() + "/*");
 		if (nodeList.getLength() > 0) {

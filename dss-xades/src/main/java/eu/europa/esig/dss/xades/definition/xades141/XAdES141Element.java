@@ -38,12 +38,18 @@ public enum XAdES141Element implements DSSElement {
 	CERT_REFS("CertRefs"),
 
 	COMPLETE_CERTIFICATE_REFS_V2("CompleteCertificateRefsV2"),
+
+	NEW_SDO_DIGEST_VALUE("NewSDODigestValue"),
+
+	ORIGINAL_REF_DIGEST("OriginalRefDigest"),
 	
 	RECOMPUTED_DIGEST_VALUE("RecomputedDigestValue"),
 
 	REFS_ONLY_TIMESTAMP_V2("RefsOnlyTimeStampV2"),
 
 	RENEWED_DIGESTS("RenewedDigests"),
+
+	RENEWED_DIGESTS_V2("RenewedDigestsV2"),
 
 	SIG_AND_REFS_TIMESTAMP_V2("SigAndRefsTimeStampV2"),
 

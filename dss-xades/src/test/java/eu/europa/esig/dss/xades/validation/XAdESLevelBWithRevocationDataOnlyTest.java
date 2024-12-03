@@ -142,7 +142,7 @@ class XAdESLevelBWithRevocationDataOnlyTest extends AbstractXAdESTestValidation 
 		assertEquals(2, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.KEY_INFO).size());
 		assertEquals(1, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES).size());
 		// certificate for the removed timestamp
-		assertEquals(1, foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES).size());
+		assertEquals(1, foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA).size());
 	}
 
 	@Override
