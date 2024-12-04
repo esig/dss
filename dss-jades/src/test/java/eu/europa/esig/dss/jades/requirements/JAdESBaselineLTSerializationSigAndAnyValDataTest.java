@@ -2,7 +2,7 @@ package eu.europa.esig.dss.jades.requirements;
 
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.enumerations.ValidationDataContainerType;
+import eu.europa.esig.dss.enumerations.ValidationDataEncapsulationStrategy;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 
 import java.util.List;
@@ -17,7 +17,7 @@ class JAdESBaselineLTSerializationSigAndAnyValDataTest extends AbstractJAdESSeri
         JAdESSignatureParameters signatureParameters = super.getSignatureParameters();
         signatureParameters.setJwsSerializationType(JWSSerializationType.JSON_SERIALIZATION);
         signatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_LT);
-        signatureParameters.setValidationDataContainerType(ValidationDataContainerType.CERTIFICATE_REVOCATION_VALUES_AND_ANY_VALIDATION_DATA);
+        signatureParameters.setValidationDataEncapsulationStrategy(ValidationDataEncapsulationStrategy.CERTIFICATE_REVOCATION_VALUES_AND_ANY_VALIDATION_DATA);
         return signatureParameters;
     }
 

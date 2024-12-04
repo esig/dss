@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.xades.signature;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.enumerations.ValidationDataContainerType;
+import eu.europa.esig.dss.enumerations.ValidationDataEncapsulationStrategy;
 import eu.europa.esig.dss.signature.SignatureRequirementsChecker;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
@@ -109,9 +109,10 @@ public class XAdESLevelBaselineLTA extends XAdESLevelBaselineLT {
 	private ValidationData incorporateValidationDataForTimestamps(ValidationDataContainer validationDataContainer,
 														AdvancedSignature signature, String indent) {
         ValidationData validationData;
-		ValidationDataContainerType validationDataContainerType = getValidationDataContainerType();
-		switch (validationDataContainerType) {
+		ValidationDataEncapsulationStrategy validationDataEncapsulationStrategy = getValidationDataEncapsulationStrategy();
+		switch (validationDataEncapsulationStrategy) {
 			case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA:
+			case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_LT_SEPARATED:
                 validationData = validationDataContainer.getAllValidationDataForSignatureForInclusion(signature);
 				incorporateTimestampValidationData(validationData, indent);
 				break;
@@ -127,7 +128,7 @@ public class XAdESLevelBaselineLTA extends XAdESLevelBaselineLT {
 
 			default:
 				throw new UnsupportedOperationException(String.format(
-						"The ValidationDataContainerType '%s' is not supported!", validationDataContainerType));
+						"The ValidationDataEncapsulationStrategy '%s' is not supported!", validationDataEncapsulationStrategy));
 		}
         return validationData;
 	}
@@ -144,8 +145,8 @@ public class XAdESLevelBaselineLTA extends XAdESLevelBaselineLT {
 	private void incorporateAnyValidationData(ValidationDataContainer validationDataContainer,
 												AdvancedSignature signature, String indent, ValidationData validationDataToExclude) {
         ValidationData validationData;
-		ValidationDataContainerType validationDataContainerType = getValidationDataContainerType();
-		switch (validationDataContainerType) {
+		ValidationDataEncapsulationStrategy validationDataEncapsulationStrategy = getValidationDataEncapsulationStrategy();
+		switch (validationDataEncapsulationStrategy) {
 			case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_AND_ANY_VALIDATION_DATA:
                 validationData = validationDataContainer.getValidationDataForSignatureForInclusion(signature);
                 validationData.excludeValidationData(validationDataToExclude);
@@ -161,12 +162,13 @@ public class XAdESLevelBaselineLTA extends XAdESLevelBaselineLT {
 				break;
 
 			case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA:
+			case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_LT_SEPARATED:
 				// skip
 				break;
 
 			default:
 				throw new UnsupportedOperationException(String.format(
-						"The ValidationDataContainerType '%s' is not supported!", validationDataContainerType));
+						"The ValidationDataEncapsulationStrategy '%s' is not supported!", validationDataEncapsulationStrategy));
 		}
 	}
 

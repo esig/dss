@@ -15,7 +15,7 @@ import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
-import eu.europa.esig.dss.enumerations.ValidationDataContainerType;
+import eu.europa.esig.dss.enumerations.ValidationDataEncapsulationStrategy;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JWSConstants;
@@ -60,9 +60,9 @@ class JAdESDoubleLTAWithValDataContainerTypesTest extends AbstractJAdESTestValid
 
     private static Stream<Arguments> data() {
         List<Arguments> args = new ArrayList<>();
-        for (int i = 0; i < ValidationDataContainerType.values().length; i++) {
-            for (int h = 0; h < ValidationDataContainerType.values().length; h++) {
-                args.add(Arguments.of(ValidationDataContainerType.values()[i], ValidationDataContainerType.values()[h]));
+        for (int i = 0; i < ValidationDataEncapsulationStrategy.values().length; i++) {
+            for (int h = 0; h < ValidationDataEncapsulationStrategy.values().length; h++) {
+                args.add(Arguments.of(ValidationDataEncapsulationStrategy.values()[i], ValidationDataEncapsulationStrategy.values()[h]));
             }
         }
         return args.stream();
@@ -70,7 +70,7 @@ class JAdESDoubleLTAWithValDataContainerTypesTest extends AbstractJAdESTestValid
 
     @ParameterizedTest(name = "JAdES DoubleLTA {index} : {0} - {1}")
     @MethodSource("data")
-    void test(ValidationDataContainerType validationDataTypeOnSigning, ValidationDataContainerType validationDataTypeOnExtension) throws IOException {
+    void test(ValidationDataEncapsulationStrategy validationDataTypeOnSigning, ValidationDataEncapsulationStrategy validationDataTypeOnExtension) throws IOException {
         DSSDocument documentToSign = new FileDocument("src/test/resources/sample.json");
 
         JAdESSignatureParameters signatureParameters = new JAdESSignatureParameters();
@@ -81,7 +81,7 @@ class JAdESDoubleLTAWithValDataContainerTypesTest extends AbstractJAdESTestValid
         signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
         signatureParameters.setJwsSerializationType(JWSSerializationType.FLATTENED_JSON_SERIALIZATION);
 
-        signatureParameters.setValidationDataContainerType(validationDataTypeOnSigning);
+        signatureParameters.setValidationDataEncapsulationStrategy(validationDataTypeOnSigning);
 
         JAdESService service = new JAdESService(getCompleteCertificateVerifier());
 
@@ -118,7 +118,7 @@ class JAdESDoubleLTAWithValDataContainerTypesTest extends AbstractJAdESTestValid
         JAdESSignatureParameters extendParameters = new JAdESSignatureParameters();
         extendParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_LT);
         extendParameters.setJwsSerializationType(JWSSerializationType.FLATTENED_JSON_SERIALIZATION);
-        extendParameters.setValidationDataContainerType(validationDataTypeOnExtension);
+        extendParameters.setValidationDataEncapsulationStrategy(validationDataTypeOnExtension);
 
         DSSDocument ltUpdatedDocument = service.extendDocument(signedDocument, extendParameters);
         checkOnSigned(ltUpdatedDocument, 0, validationDataTypeOnExtension);
@@ -130,7 +130,7 @@ class JAdESDoubleLTAWithValDataContainerTypesTest extends AbstractJAdESTestValid
         extendParameters = new JAdESSignatureParameters();
         extendParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_LTA);
         extendParameters.setJwsSerializationType(JWSSerializationType.FLATTENED_JSON_SERIALIZATION);
-        extendParameters.setValidationDataContainerType(validationDataTypeOnExtension);
+        extendParameters.setValidationDataEncapsulationStrategy(validationDataTypeOnExtension);
 
         DSSDocument extendedDocument = service.extendDocument(signedDocument, extendParameters);
 
@@ -214,7 +214,7 @@ class JAdESDoubleLTAWithValDataContainerTypesTest extends AbstractJAdESTestValid
     }
 
     @SuppressWarnings("unchecked")
-    private void checkOnSigned(DSSDocument document, int expectedArcTsts, ValidationDataContainerType validationDataContainerType) {
+    private void checkOnSigned(DSSDocument document, int expectedArcTsts, ValidationDataEncapsulationStrategy validationDataEncapsulationStrategy) {
         assertTrue(DSSJsonUtils.isJsonDocument(document));
         try {
             byte[] binaries = DSSUtils.toByteArray(document);
@@ -274,63 +274,67 @@ class JAdESDoubleLTAWithValDataContainerTypesTest extends AbstractJAdESTestValid
                 }
             }
 
-            assertEquals(getExpectedXValsNumber(validationDataContainerType), xValsCounter);
-            assertEquals(getExpectedRValsNumber(validationDataContainerType), rValsCounter);
+            assertEquals(getExpectedXValsNumber(validationDataEncapsulationStrategy), xValsCounter);
+            assertEquals(getExpectedRValsNumber(validationDataEncapsulationStrategy), rValsCounter);
             assertEquals(expectedArcTsts, arcTstCounter);
-            assertEquals(getExpectedTstVDNumber(validationDataContainerType, expectedArcTsts), tstVdCounter);
-            assertEquals(getExpectedAnyVDNumber(validationDataContainerType, expectedArcTsts), anyVdCounter);
+            assertEquals(getExpectedTstVDNumber(validationDataEncapsulationStrategy, expectedArcTsts), tstVdCounter);
+            assertEquals(getExpectedAnyValDataNumber(validationDataEncapsulationStrategy, expectedArcTsts), anyVdCounter);
 
         } catch (JoseException e) {
             fail("Unable to parse the signed file : " + e.getMessage());
         }
     }
 
-    private int getExpectedXValsNumber(ValidationDataContainerType validationDataContainerType) {
-        switch (validationDataContainerType) {
+    private int getExpectedXValsNumber(ValidationDataEncapsulationStrategy validationDataEncapsulationStrategy) {
+        switch (validationDataEncapsulationStrategy) {
             case CERTIFICATE_REVOCATION_VALUES_AND_ANY_VALIDATION_DATA:
             case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA:
+            case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_LT_SEPARATED:
             case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_AND_ANY_VALIDATION_DATA:
                 return 1;
             case ANY_VALIDATION_DATA_ONLY:
                 return 0;
             default:
-                fail(String.format("Not supported type %s", validationDataContainerType));
+                fail(String.format("Not supported type %s", validationDataEncapsulationStrategy));
                 return -1;
         }
     }
 
-    private int getExpectedRValsNumber(ValidationDataContainerType validationDataContainerType) {
-        switch (validationDataContainerType) {
+    private int getExpectedRValsNumber(ValidationDataEncapsulationStrategy validationDataEncapsulationStrategy) {
+        switch (validationDataEncapsulationStrategy) {
             case CERTIFICATE_REVOCATION_VALUES_AND_ANY_VALIDATION_DATA:
             case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA:
+            case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_LT_SEPARATED:
             case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_AND_ANY_VALIDATION_DATA:
                 return 1;
             case ANY_VALIDATION_DATA_ONLY:
                 return 0;
             default:
-                fail(String.format("Not supported type %s", validationDataContainerType));
+                fail(String.format("Not supported type %s", validationDataEncapsulationStrategy));
                 return -1;
         }
     }
 
-    private int getExpectedTstVDNumber(ValidationDataContainerType validationDataContainerType, int expectedArcTsts) {
-        switch (validationDataContainerType) {
+    private int getExpectedTstVDNumber(ValidationDataEncapsulationStrategy validationDataEncapsulationStrategy, int expectedArcTsts) {
+        switch (validationDataEncapsulationStrategy) {
             case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA:
                 return expectedArcTsts > 0 ? expectedArcTsts - 1 : 0;
+            case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_LT_SEPARATED:
             case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_AND_ANY_VALIDATION_DATA:
                 return expectedArcTsts > 0 ? expectedArcTsts : 1;
             case CERTIFICATE_REVOCATION_VALUES_AND_ANY_VALIDATION_DATA:
             case ANY_VALIDATION_DATA_ONLY:
                 return 0;
             default:
-                fail(String.format("Not supported type %s", validationDataContainerType));
+                fail(String.format("Not supported type %s", validationDataEncapsulationStrategy));
                 return -1;
         }
     }
 
-    private int getExpectedAnyVDNumber(ValidationDataContainerType validationDataContainerType, int expectedArcTsts) {
-        switch (validationDataContainerType) {
+    private int getExpectedAnyValDataNumber(ValidationDataEncapsulationStrategy validationDataEncapsulationStrategy, int expectedArcTsts) {
+        switch (validationDataEncapsulationStrategy) {
             case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA:
+            case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_LT_SEPARATED:
                 return 0;
             case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_AND_ANY_VALIDATION_DATA:
                 return expectedArcTsts > 0 ? expectedArcTsts - 1 : 0;
@@ -338,7 +342,7 @@ class JAdESDoubleLTAWithValDataContainerTypesTest extends AbstractJAdESTestValid
             case ANY_VALIDATION_DATA_ONLY:
                 return expectedArcTsts > 0 ? expectedArcTsts : 1;
             default:
-                fail(String.format("Not supported type %s", validationDataContainerType));
+                fail(String.format("Not supported type %s", validationDataEncapsulationStrategy));
                 return -1;
         }
     }
@@ -364,12 +368,13 @@ class JAdESDoubleLTAWithValDataContainerTypesTest extends AbstractJAdESTestValid
         }
     }
 
-    private void checkValidationDataOriginsOnSignature(DiagnosticData diagnosticData, ValidationDataContainerType validationDataContainerType) {
-        switch (validationDataContainerType) {
+    private void checkValidationDataOriginsOnSignature(DiagnosticData diagnosticData, ValidationDataEncapsulationStrategy validationDataEncapsulationStrategy) {
+        switch (validationDataEncapsulationStrategy) {
             case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA:
                 assertContainsCertificatesOfOrigin(diagnosticData, CertificateOrigin.KEY_INFO, CertificateOrigin.CERTIFICATE_VALUES);
                 assertContainsRevocationOfOrigin(diagnosticData, RevocationOrigin.REVOCATION_VALUES);
                 break;
+            case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_LT_SEPARATED:
             case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_AND_ANY_VALIDATION_DATA:
                 assertContainsCertificatesOfOrigin(diagnosticData, CertificateOrigin.KEY_INFO, CertificateOrigin.CERTIFICATE_VALUES, CertificateOrigin.TIMESTAMP_VALIDATION_DATA);
                 assertContainsRevocationOfOrigin(diagnosticData, RevocationOrigin.REVOCATION_VALUES, RevocationOrigin.TIMESTAMP_VALIDATION_DATA);
@@ -383,13 +388,14 @@ class JAdESDoubleLTAWithValDataContainerTypesTest extends AbstractJAdESTestValid
                 assertContainsRevocationOfOrigin(diagnosticData, RevocationOrigin.ANY_VALIDATION_DATA);
                 break;
             default:
-                fail(String.format("Not supported type %s", validationDataContainerType));
+                fail(String.format("Not supported type %s", validationDataEncapsulationStrategy));
         }
     }
 
-    private void checkValidationDataOriginsOnExtension(DiagnosticData diagnosticData, ValidationDataContainerType validationDataContainerType) {
-        switch (validationDataContainerType) {
+    private void checkValidationDataOriginsOnExtension(DiagnosticData diagnosticData, ValidationDataEncapsulationStrategy validationDataEncapsulationStrategy) {
+        switch (validationDataEncapsulationStrategy) {
             case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA:
+            case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_LT_SEPARATED:
                 assertContainsCertificatesOfOrigin(diagnosticData, CertificateOrigin.KEY_INFO, CertificateOrigin.CERTIFICATE_VALUES, CertificateOrigin.TIMESTAMP_VALIDATION_DATA);
                 assertContainsRevocationOfOrigin(diagnosticData, RevocationOrigin.REVOCATION_VALUES, RevocationOrigin.TIMESTAMP_VALIDATION_DATA);
                 break;
@@ -406,7 +412,7 @@ class JAdESDoubleLTAWithValDataContainerTypesTest extends AbstractJAdESTestValid
                 assertContainsRevocationOfOrigin(diagnosticData, RevocationOrigin.ANY_VALIDATION_DATA);
                 break;
             default:
-                fail(String.format("Not supported type %s", validationDataContainerType));
+                fail(String.format("Not supported type %s", validationDataEncapsulationStrategy));
         }
     }
 

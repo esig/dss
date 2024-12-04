@@ -25,7 +25,7 @@ import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
-import eu.europa.esig.dss.enumerations.ValidationDataContainerType;
+import eu.europa.esig.dss.enumerations.ValidationDataEncapsulationStrategy;
 
 import java.util.Objects;
 
@@ -91,8 +91,8 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 	 * Defines the validation data encapsulation mechanism on -LT and -LTA level augmentation
 	 * Default: CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_AND_ANY_VALIDATION_DATA
 	 */
-	private ValidationDataContainerType validationDataContainerType =
-			ValidationDataContainerType.CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_AND_ANY_VALIDATION_DATA;
+	private ValidationDataEncapsulationStrategy validationDataEncapsulationStrategy =
+			ValidationDataEncapsulationStrategy.CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_AND_ANY_VALIDATION_DATA;
 
 	/**
 	 * The object representing the parameters related to the content timestamp (Baseline-B)
@@ -287,10 +287,10 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 	/**
 	 * Gets the validation data encapsulation mechanism to be used on -LT and -LTA level augmentation
 	 *
-	 * @return {@link ValidationDataContainerType}
+	 * @return {@link ValidationDataEncapsulationStrategy}
 	 */
-	public ValidationDataContainerType getValidationDataContainerType() {
-		return validationDataContainerType;
+	public ValidationDataEncapsulationStrategy getValidationDataEncapsulationStrategy() {
+		return validationDataEncapsulationStrategy;
 	}
 
 	/**
@@ -303,11 +303,11 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 	 * <p>
 	 * NOTE: Applicable only for XAdES and JAdES signatures.
 	 *
-	 * @param validationDataContainerType {@link ValidationDataContainerType}
+	 * @param validationDataEncapsulationStrategy {@link ValidationDataEncapsulationStrategy}
 	 */
-	public void setValidationDataContainerType(ValidationDataContainerType validationDataContainerType) {
-		Objects.requireNonNull(validationDataContainerType, "ValidationDataContainerType cannot be null!");
-		this.validationDataContainerType = validationDataContainerType;
+	public void setValidationDataEncapsulationStrategy(ValidationDataEncapsulationStrategy validationDataEncapsulationStrategy) {
+		Objects.requireNonNull(validationDataEncapsulationStrategy, "ValidationDataEncapsulationStrategy cannot be null!");
+		this.validationDataEncapsulationStrategy = validationDataEncapsulationStrategy;
 	}
 
 	/**

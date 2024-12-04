@@ -1,7 +1,7 @@
 package eu.europa.esig.dss.xades.requirements;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.enumerations.ValidationDataContainerType;
+import eu.europa.esig.dss.enumerations.ValidationDataEncapsulationStrategy;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -22,7 +22,7 @@ class XAdESBaselineLTAnyValDataTest extends XAdESBaselineTTest {
     @Override
     protected XAdESSignatureParameters getSignatureParameters() {
         XAdESSignatureParameters signatureParameters = super.getSignatureParameters();
-        signatureParameters.setValidationDataContainerType(ValidationDataContainerType.ANY_VALIDATION_DATA_ONLY);
+        signatureParameters.setValidationDataEncapsulationStrategy(ValidationDataEncapsulationStrategy.ANY_VALIDATION_DATA_ONLY);
         return signatureParameters;
     }
 

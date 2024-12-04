@@ -1,7 +1,7 @@
 package eu.europa.esig.dss.xades.requirements;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.enumerations.ValidationDataContainerType;
+import eu.europa.esig.dss.enumerations.ValidationDataEncapsulationStrategy;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -10,7 +10,7 @@ import javax.xml.xpath.XPathExpressionException;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class XAdESBaselineLTSigValDataTest extends XAdESBaselineTTest {
+class XAdESBaselineLTSigAndTstValDataLtSeparatedTest extends XAdESBaselineTTest {
 
     @BeforeEach
     @Override
@@ -22,7 +22,7 @@ class XAdESBaselineLTSigValDataTest extends XAdESBaselineTTest {
     @Override
     protected XAdESSignatureParameters getSignatureParameters() {
         XAdESSignatureParameters signatureParameters = super.getSignatureParameters();
-        signatureParameters.setValidationDataContainerType(ValidationDataContainerType.CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA);
+        signatureParameters.setValidationDataEncapsulationStrategy(ValidationDataEncapsulationStrategy.CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_LT_SEPARATED);
         return signatureParameters;
     }
 
@@ -35,7 +35,7 @@ class XAdESBaselineLTSigValDataTest extends XAdESBaselineTTest {
 
         assertTrue(checkCertificateValuesPresent());
         assertTrue(checkRevocationValuesPresent());
-        assertFalse(checkTimeStampValidationDataPresent());
+        assertTrue(checkTimeStampValidationDataPresent());
         assertFalse(checkAnyValidationDataPresent());
     }
 

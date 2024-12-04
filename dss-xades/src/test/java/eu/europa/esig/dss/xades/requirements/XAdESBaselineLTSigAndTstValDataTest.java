@@ -10,7 +10,7 @@ import javax.xml.xpath.XPathExpressionException;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class XAdESBaselineLTSigAndAnyValDataTest extends XAdESBaselineTTest {
+class XAdESBaselineLTSigAndTstValDataTest extends XAdESBaselineTTest {
 
     @BeforeEach
     @Override
@@ -22,7 +22,7 @@ class XAdESBaselineLTSigAndAnyValDataTest extends XAdESBaselineTTest {
     @Override
     protected XAdESSignatureParameters getSignatureParameters() {
         XAdESSignatureParameters signatureParameters = super.getSignatureParameters();
-        signatureParameters.setValidationDataEncapsulationStrategy(ValidationDataEncapsulationStrategy.CERTIFICATE_REVOCATION_VALUES_AND_ANY_VALIDATION_DATA);
+        signatureParameters.setValidationDataEncapsulationStrategy(ValidationDataEncapsulationStrategy.CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA);
         return signatureParameters;
     }
 
@@ -36,7 +36,7 @@ class XAdESBaselineLTSigAndAnyValDataTest extends XAdESBaselineTTest {
         assertTrue(checkCertificateValuesPresent());
         assertTrue(checkRevocationValuesPresent());
         assertFalse(checkTimeStampValidationDataPresent());
-        assertTrue(checkAnyValidationDataPresent());
+        assertFalse(checkAnyValidationDataPresent());
     }
 
 }

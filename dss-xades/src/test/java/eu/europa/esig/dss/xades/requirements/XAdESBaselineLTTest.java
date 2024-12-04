@@ -42,7 +42,7 @@ class XAdESBaselineLTTest extends XAdESBaselineTTest {
 	protected XAdESSignatureParameters getSignatureParameters() {
 		XAdESSignatureParameters signatureParameters = super.getSignatureParameters();
 		// Default processing
-		// signatureParameters.setValidationDataContainerType(ValidationDataContainerType.CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_AND_ANY_VALIDATION_DATA);
+		// signatureParameters.setValidationDataEncapsulationStrategy(ValidationDataEncapsulationStrategy.CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_AND_ANY_VALIDATION_DATA);
 		return signatureParameters;
 	}
 

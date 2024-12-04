@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.xades;
 
-import eu.europa.esig.dss.enumerations.ValidationDataContainerType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.signature.AbstractSignatureParameters;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;

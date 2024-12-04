@@ -15,7 +15,7 @@ import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.TimestampType;
-import eu.europa.esig.dss.enumerations.ValidationDataContainerType;
+import eu.europa.esig.dss.enumerations.ValidationDataEncapsulationStrategy;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignatureValue;
@@ -59,9 +59,9 @@ class XAdESDoubleLTAWithValDataContainerTypesTest extends PKIFactoryAccess {
 
     private static Stream<Arguments> data() {
         List<Arguments> args = new ArrayList<>();
-        for (int i = 0; i < ValidationDataContainerType.values().length; i++) {
-            for (int h = 0; h < ValidationDataContainerType.values().length; h++) {
-                args.add(Arguments.of(ValidationDataContainerType.values()[i], ValidationDataContainerType.values()[h]));
+        for (int i = 0; i < ValidationDataEncapsulationStrategy.values().length; i++) {
+            for (int h = 0; h < ValidationDataEncapsulationStrategy.values().length; h++) {
+                args.add(Arguments.of(ValidationDataEncapsulationStrategy.values()[i], ValidationDataEncapsulationStrategy.values()[h]));
             }
         }
         return args.stream();
@@ -69,7 +69,7 @@ class XAdESDoubleLTAWithValDataContainerTypesTest extends PKIFactoryAccess {
 
     @ParameterizedTest(name = "XAdES DoubleLTA {index} : {0} - {1}")
     @MethodSource("data")
-    void test(ValidationDataContainerType validationDataTypeOnSigning, ValidationDataContainerType validationDataTypeOnExtension) throws IOException {
+    void test(ValidationDataEncapsulationStrategy validationDataTypeOnSigning, ValidationDataEncapsulationStrategy validationDataTypeOnExtension) throws IOException {
         DSSDocument documentToSign = new FileDocument("src/test/resources/sample.xml");
 
         XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
@@ -79,7 +79,7 @@ class XAdESDoubleLTAWithValDataContainerTypesTest extends PKIFactoryAccess {
         signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
         signatureParameters.setSignaturePackaging(SignaturePackaging.DETACHED);
 
-        signatureParameters.setValidationDataContainerType(validationDataTypeOnSigning);
+        signatureParameters.setValidationDataEncapsulationStrategy(validationDataTypeOnSigning);
 
         XAdESService service = new XAdESService(getCompleteCertificateVerifier());
 
@@ -114,7 +114,7 @@ class XAdESDoubleLTAWithValDataContainerTypesTest extends PKIFactoryAccess {
         XAdESSignatureParameters extendParameters = new XAdESSignatureParameters();
         extendParameters.setDetachedContents(Collections.singletonList(documentToSign));
         extendParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
-        extendParameters.setValidationDataContainerType(validationDataTypeOnExtension);
+        extendParameters.setValidationDataEncapsulationStrategy(validationDataTypeOnExtension);
 
         DSSDocument ltUpdatedDocument = service.extendDocument(signedDocument, extendParameters);
         checkOnSigned(ltUpdatedDocument, 0, validationDataTypeOnExtension);
@@ -126,7 +126,7 @@ class XAdESDoubleLTAWithValDataContainerTypesTest extends PKIFactoryAccess {
         extendParameters = new XAdESSignatureParameters();
         extendParameters.setDetachedContents(Collections.singletonList(documentToSign));
         extendParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
-        extendParameters.setValidationDataContainerType(validationDataTypeOnExtension);
+        extendParameters.setValidationDataEncapsulationStrategy(validationDataTypeOnExtension);
 
         DSSDocument extendedDocument = service.extendDocument(signedDocument, extendParameters);
 
@@ -215,7 +215,7 @@ class XAdESDoubleLTAWithValDataContainerTypesTest extends PKIFactoryAccess {
         return certificateVerifier;
     }
 
-    private void checkOnSigned(DSSDocument document, int expectedArcTsts, ValidationDataContainerType validationDataContainerType) {
+    private void checkOnSigned(DSSDocument document, int expectedArcTsts, ValidationDataEncapsulationStrategy validationDataEncapsulationStrategy) {
         assertTrue(DomUtils.isDOM(document));
 
         Document documentDom = DomUtils.buildDOM(document);
@@ -253,59 +253,63 @@ class XAdESDoubleLTAWithValDataContainerTypesTest extends PKIFactoryAccess {
             anyValidationDataCounter = anyVDList.getLength();
         }
 
-        assertEquals(getExpectedXValsNumber(validationDataContainerType), certificateValuesCounter);
-        assertEquals(getExpectedRValsNumber(validationDataContainerType), revocationValuesCounter);
+        assertEquals(getExpectedCertificateValuesNumber(validationDataEncapsulationStrategy), certificateValuesCounter);
+        assertEquals(getExpectedRevocationValuesNumber(validationDataEncapsulationStrategy), revocationValuesCounter);
         assertEquals(expectedArcTsts, archiveTimeStampCounter);
-        assertEquals(getExpectedTstVDNumber(validationDataContainerType, expectedArcTsts), timeStampValidationDataCounter);
-        assertEquals(getExpectedAnyVDNumber(validationDataContainerType, expectedArcTsts), anyValidationDataCounter);
+        assertEquals(getExpectedTimeStampValidationDataNumber(validationDataEncapsulationStrategy, expectedArcTsts), timeStampValidationDataCounter);
+        assertEquals(getExpectedAnyValidationDataNumber(validationDataEncapsulationStrategy, expectedArcTsts), anyValidationDataCounter);
     }
 
-    private int getExpectedXValsNumber(ValidationDataContainerType validationDataContainerType) {
-        switch (validationDataContainerType) {
+    private int getExpectedCertificateValuesNumber(ValidationDataEncapsulationStrategy validationDataEncapsulationStrategy) {
+        switch (validationDataEncapsulationStrategy) {
             case CERTIFICATE_REVOCATION_VALUES_AND_ANY_VALIDATION_DATA:
             case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA:
+            case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_LT_SEPARATED:
             case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_AND_ANY_VALIDATION_DATA:
                 return 1;
             case ANY_VALIDATION_DATA_ONLY:
                 return 0;
             default:
-                fail(String.format("Not supported type %s", validationDataContainerType));
+                fail(String.format("Not supported type %s", validationDataEncapsulationStrategy));
                 return -1;
         }
     }
 
-    private int getExpectedRValsNumber(ValidationDataContainerType validationDataContainerType) {
-        switch (validationDataContainerType) {
+    private int getExpectedRevocationValuesNumber(ValidationDataEncapsulationStrategy validationDataEncapsulationStrategy) {
+        switch (validationDataEncapsulationStrategy) {
             case CERTIFICATE_REVOCATION_VALUES_AND_ANY_VALIDATION_DATA:
             case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA:
+            case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_LT_SEPARATED:
             case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_AND_ANY_VALIDATION_DATA:
                 return 1;
             case ANY_VALIDATION_DATA_ONLY:
                 return 0;
             default:
-                fail(String.format("Not supported type %s", validationDataContainerType));
+                fail(String.format("Not supported type %s", validationDataEncapsulationStrategy));
                 return -1;
         }
     }
 
-    private int getExpectedTstVDNumber(ValidationDataContainerType validationDataContainerType, int expectedArcTsts) {
-        switch (validationDataContainerType) {
+    private int getExpectedTimeStampValidationDataNumber(ValidationDataEncapsulationStrategy validationDataEncapsulationStrategy, int expectedArcTsts) {
+        switch (validationDataEncapsulationStrategy) {
             case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA:
                 return expectedArcTsts > 0 ? expectedArcTsts - 1 : 0;
+            case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_LT_SEPARATED:
             case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_AND_ANY_VALIDATION_DATA:
                 return expectedArcTsts > 0 ? expectedArcTsts : 1;
             case CERTIFICATE_REVOCATION_VALUES_AND_ANY_VALIDATION_DATA:
             case ANY_VALIDATION_DATA_ONLY:
                 return 0;
             default:
-                fail(String.format("Not supported type %s", validationDataContainerType));
+                fail(String.format("Not supported type %s", validationDataEncapsulationStrategy));
                 return -1;
         }
     }
 
-    private int getExpectedAnyVDNumber(ValidationDataContainerType validationDataContainerType, int expectedArcTsts) {
-        switch (validationDataContainerType) {
+    private int getExpectedAnyValidationDataNumber(ValidationDataEncapsulationStrategy validationDataEncapsulationStrategy, int expectedArcTsts) {
+        switch (validationDataEncapsulationStrategy) {
             case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA:
+            case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_LT_SEPARATED:
                 return 0;
             case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_AND_ANY_VALIDATION_DATA:
                 return expectedArcTsts > 0 ? expectedArcTsts - 1 : 0;
@@ -313,7 +317,7 @@ class XAdESDoubleLTAWithValDataContainerTypesTest extends PKIFactoryAccess {
             case ANY_VALIDATION_DATA_ONLY:
                 return expectedArcTsts > 0 ? expectedArcTsts : 1;
             default:
-                fail(String.format("Not supported type %s", validationDataContainerType));
+                fail(String.format("Not supported type %s", validationDataEncapsulationStrategy));
                 return -1;
         }
     }
@@ -339,12 +343,13 @@ class XAdESDoubleLTAWithValDataContainerTypesTest extends PKIFactoryAccess {
         }
     }
 
-    private void checkValidationDataOriginsOnSignature(DiagnosticData diagnosticData, ValidationDataContainerType validationDataContainerType) {
-        switch (validationDataContainerType) {
+    private void checkValidationDataOriginsOnSignature(DiagnosticData diagnosticData, ValidationDataEncapsulationStrategy validationDataEncapsulationStrategy) {
+        switch (validationDataEncapsulationStrategy) {
             case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA:
                 assertContainsCertificatesOfOrigin(diagnosticData, CertificateOrigin.KEY_INFO, CertificateOrigin.CERTIFICATE_VALUES);
                 assertContainsRevocationOfOrigin(diagnosticData, RevocationOrigin.REVOCATION_VALUES);
                 break;
+            case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_LT_SEPARATED:
             case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_AND_ANY_VALIDATION_DATA:
                 assertContainsCertificatesOfOrigin(diagnosticData, CertificateOrigin.KEY_INFO, CertificateOrigin.CERTIFICATE_VALUES, CertificateOrigin.TIMESTAMP_VALIDATION_DATA);
                 assertContainsRevocationOfOrigin(diagnosticData, RevocationOrigin.REVOCATION_VALUES, RevocationOrigin.TIMESTAMP_VALIDATION_DATA);
@@ -358,13 +363,14 @@ class XAdESDoubleLTAWithValDataContainerTypesTest extends PKIFactoryAccess {
                 assertContainsRevocationOfOrigin(diagnosticData, RevocationOrigin.ANY_VALIDATION_DATA);
                 break;
             default:
-                fail(String.format("Not supported type %s", validationDataContainerType));
+                fail(String.format("Not supported type %s", validationDataEncapsulationStrategy));
         }
     }
 
-    private void checkValidationDataOriginsOnExtension(DiagnosticData diagnosticData, ValidationDataContainerType validationDataContainerType) {
-        switch (validationDataContainerType) {
+    private void checkValidationDataOriginsOnExtension(DiagnosticData diagnosticData, ValidationDataEncapsulationStrategy validationDataEncapsulationStrategy) {
+        switch (validationDataEncapsulationStrategy) {
             case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA:
+            case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_LT_SEPARATED:
                 assertContainsCertificatesOfOrigin(diagnosticData, CertificateOrigin.KEY_INFO, CertificateOrigin.CERTIFICATE_VALUES, CertificateOrigin.TIMESTAMP_VALIDATION_DATA);
                 assertContainsRevocationOfOrigin(diagnosticData, RevocationOrigin.REVOCATION_VALUES, RevocationOrigin.TIMESTAMP_VALIDATION_DATA);
                 break;
@@ -381,7 +387,7 @@ class XAdESDoubleLTAWithValDataContainerTypesTest extends PKIFactoryAccess {
                 assertContainsRevocationOfOrigin(diagnosticData, RevocationOrigin.ANY_VALIDATION_DATA);
                 break;
             default:
-                fail(String.format("Not supported type %s", validationDataContainerType));
+                fail(String.format("Not supported type %s", validationDataEncapsulationStrategy));
         }
     }
 

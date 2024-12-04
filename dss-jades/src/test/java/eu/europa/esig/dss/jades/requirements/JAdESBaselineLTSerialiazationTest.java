@@ -37,7 +37,7 @@ class JAdESBaselineLTSerialiazationTest extends AbstractJAdESSerializationSignat
 		signatureParameters.setJwsSerializationType(JWSSerializationType.JSON_SERIALIZATION);
 		signatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_LT);
 		// Default processing
-		// signatureParameters.setValidationDataContainerType(ValidationDataContainerType.CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_AND_ANY_VALIDATION_DATA);
+		// signatureParameters.setValidationDataEncapsulationStrategy(ValidationDataEncapsulationStrategy.CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_AND_ANY_VALIDATION_DATA);
 		return signatureParameters;
 	}
 	

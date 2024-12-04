@@ -10,7 +10,7 @@ import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
-import eu.europa.esig.dss.enumerations.ValidationDataContainerType;
+import eu.europa.esig.dss.enumerations.ValidationDataEncapsulationStrategy;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignatureValue;
@@ -58,7 +58,7 @@ public class XAdESCrossCertificationDoubleLTAOldValDataTest extends PKIFactoryAc
         signatureParameters.setCertificateChain(getCertificateChain());
         signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
         signatureParameters.setSignaturePackaging(SignaturePackaging.DETACHED);
-        signatureParameters.setValidationDataContainerType(ValidationDataContainerType.CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA);
+        signatureParameters.setValidationDataEncapsulationStrategy(ValidationDataEncapsulationStrategy.CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA);
 
         CertificateToken crossCertificate = getCertificateByPrimaryKey(2002, "external-ca");
 
@@ -124,7 +124,7 @@ public class XAdESCrossCertificationDoubleLTAOldValDataTest extends PKIFactoryAc
         XAdESSignatureParameters extendParameters = new XAdESSignatureParameters();
         extendParameters.setDetachedContents(Collections.singletonList(documentToSign));
         extendParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
-        extendParameters.setValidationDataContainerType(ValidationDataContainerType.CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA);
+        extendParameters.setValidationDataEncapsulationStrategy(ValidationDataEncapsulationStrategy.CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA);
 
         DSSDocument doubleLTADoc = service.extendDocument(signedDocument, extendParameters);
         // doubleLTADoc.save("target/doubleLTA.xml");

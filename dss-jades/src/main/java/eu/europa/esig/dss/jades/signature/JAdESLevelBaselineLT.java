@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.jades.signature;
 
-import eu.europa.esig.dss.enumerations.ValidationDataContainerType;
+import eu.europa.esig.dss.enumerations.ValidationDataEncapsulationStrategy;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JsonObject;
@@ -150,13 +150,14 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 																 AdvancedSignature signature, JAdESEtsiUHeader etsiUHeader,
 																 JAdESSignatureParameters signatureParameters) {
 		ValidationData validationDataForInclusion;
-		ValidationDataContainerType validationDataContainerType = signatureParameters.getValidationDataContainerType();
-		switch (validationDataContainerType) {
+		ValidationDataEncapsulationStrategy validationDataEncapsulationStrategy = signatureParameters.getValidationDataEncapsulationStrategy();
+		switch (validationDataEncapsulationStrategy) {
 			case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA:
 			case ANY_VALIDATION_DATA_ONLY:
 				validationDataForInclusion = validationDataContainer.getAllValidationDataForSignatureForInclusion(signature);
 				break;
 
+			case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_LT_SEPARATED:
 			case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_AND_ANY_VALIDATION_DATA:
 			case CERTIFICATE_REVOCATION_VALUES_AND_ANY_VALIDATION_DATA:
 				validationDataForInclusion = validationDataContainer.getValidationDataForSignatureForInclusion(signature);
@@ -164,15 +165,16 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 
 			default:
 				throw new UnsupportedOperationException(String.format(
-						"The ValidationDataContainerType '%s' is not supported!", validationDataContainerType));
+						"The ValidationDataEncapsulationStrategy '%s' is not supported!", validationDataEncapsulationStrategy));
 		}
 
 		Set<CertificateToken> certificateValuesToAdd = validationDataForInclusion.getCertificateTokens();
 		Set<CRLToken> crlsToAdd = validationDataForInclusion.getCrlTokens();
 		Set<OCSPToken> ocspsToAdd = validationDataForInclusion.getOcspTokens();
 
-		switch (validationDataContainerType) {
+		switch (validationDataEncapsulationStrategy) {
 			case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA:
+			case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_LT_SEPARATED:
 			case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_AND_ANY_VALIDATION_DATA:
 			case CERTIFICATE_REVOCATION_VALUES_AND_ANY_VALIDATION_DATA:
 				incorporateXVals(etsiUHeader, certificateValuesToAdd, signatureParameters.isBase64UrlEncodedEtsiUComponents());
@@ -185,7 +187,7 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 
 			default:
 				throw new UnsupportedOperationException(String.format(
-						"The ValidationDataContainerType '%s' is not supported!", validationDataContainerType));
+						"The ValidationDataEncapsulationStrategy '%s' is not supported!", validationDataEncapsulationStrategy));
 		}
 		return validationDataForInclusion;
 	}
@@ -204,8 +206,9 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 			AdvancedSignature signature, JAdESEtsiUHeader etsiUHeader, JAdESSignatureParameters signatureParameters,
 			ValidationData validationDataToExclude) {
 		ValidationData validationData;
-		ValidationDataContainerType validationDataContainerType = signatureParameters.getValidationDataContainerType();
-		switch (validationDataContainerType) {
+		ValidationDataEncapsulationStrategy validationDataEncapsulationStrategy = signatureParameters.getValidationDataEncapsulationStrategy();
+		switch (validationDataEncapsulationStrategy) {
+			case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_LT_SEPARATED:
 			case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_AND_ANY_VALIDATION_DATA:
 				validationData = validationDataContainer.getValidationDataForSignatureTimestampsForInclusion(signature);
 				validationData.excludeValidationData(validationDataToExclude);
@@ -225,7 +228,7 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 
 			default:
 				throw new UnsupportedOperationException(String.format(
-						"The ValidationDataContainerType '%s' is not supported!", validationDataContainerType));
+						"The ValidationDataEncapsulationStrategy '%s' is not supported!", validationDataEncapsulationStrategy));
 		}
 	}
 
