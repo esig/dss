@@ -196,4 +196,16 @@ class SignPdfPadesBTest extends CookbookTools {
 			assertTrue(Utils.isCollectionNotEmpty(errorMessages));
 		}
 	}
+
+	void padesVRISnippet() {
+		PAdESSignatureParameters signatureParameters = new PAdESSignatureParameters();
+
+		// tag::padesVri[]
+		// Defines whether the "/VRI" PDF dictionary shall be included on LT-level signature
+		// augmentation.
+		// Default: FALSE (the "/VRI" dictionary is not included)
+		signatureParameters.setIncludeVRIDictionary(true);
+		// end::padesVri[]
+	}
+
 }

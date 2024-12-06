@@ -114,7 +114,7 @@ public class CAdESLevelBaselineLT extends CAdESLevelBaselineT {
 				final SignerInformation signerInformation = cadesSignature.getSignerInformation();
 				SignerInformation newSignerInformation = signerInformation;
 				if (signaturesToExtend.contains(cadesSignature)) {
-					ValidationData validationData = validationDataContainer.getCompleteValidationDataForSignature(cadesSignature);
+					ValidationData validationData = validationDataContainer.getAllValidationDataForSignatureForInclusion(cadesSignature);
 					newSignerInformation = extendSignerInformation(signerInformation, validationData);
 				}
 				newSignerInformationList.add(newSignerInformation);

@@ -144,6 +144,38 @@ XAdESSignatureParameters parameters = builder.build();
 ...
 ----
 
+a|Additional signature validation data is included within `AnyValidationData` element (XAdES, JAdES) after LTA-level             a|
+[source,java]
+----
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.signature.XAdESService;
+
+XAdESService service = new XAdESService(certificateVerifier);
+XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
+signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
+...
+DSSDocument extendedDocument = service.extendDocument(signedDocument, signatureParameters);
+----
+                                                                     a|
+To get back to previous behavior (no `AnyValidationData` is used):
+[source,java]
+----
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.ValidationDataEncapsulationStrategy;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.signature.XAdESService;
+
+XAdESService service = new XAdESService(certificateVerifier);
+XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
+signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
+signatureParameters.setValidationDataEncapsulationStrategy(ValidationDataEncapsulationStrategy.CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA);
+...
+DSSDocument extendedDocument = service.extendDocument(signedDocument, signatureParameters);
+----
+
 |===
 
 [cols="2,5,5"]
