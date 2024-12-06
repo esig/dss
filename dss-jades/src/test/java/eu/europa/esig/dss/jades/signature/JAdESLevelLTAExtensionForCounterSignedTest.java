@@ -23,6 +23,7 @@ package eu.europa.esig.dss.jades.signature;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
+import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
@@ -31,15 +32,16 @@ import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.TimestampType;
-import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.validation.AbstractJAdESTestValidation;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
-import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.api.BeforeEach;
@@ -71,9 +73,6 @@ class JAdESLevelLTAExtensionForCounterSignedTest extends AbstractJAdESTestValida
 	void init() {
 		documentToSign = new FileDocument(new File("src/test/resources/sample.json"));
 		
-		service = new JAdESService(getCompleteCertificateVerifier());
-		service.setTspSource(getGoodTsa());
-		
 		signingAlias = SELF_SIGNED_USER;
 		
 		signatureParameters = new JAdESSignatureParameters();
@@ -92,6 +91,8 @@ class JAdESLevelLTAExtensionForCounterSignedTest extends AbstractJAdESTestValida
 		counterSignatureParameters.setCertificateChain(getCertificateChain());
 		counterSignatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_B);
 		counterSignatureParameters.setJwsSerializationType(JWSSerializationType.FLATTENED_JSON_SERIALIZATION);
+
+		service = new JAdESService(getOfflineCertificateVerifier());
 	}
 	
 	@Test
@@ -126,6 +127,9 @@ class JAdESLevelLTAExtensionForCounterSignedTest extends AbstractJAdESTestValida
 		signatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_LTA);
 		signatureParameters.setJwsSerializationType(JWSSerializationType.JSON_SERIALIZATION);
 
+		service = new JAdESService(getCompleteCertificateVerifier());
+		service.setTspSource(getGoodTsa());
+
 		DSSDocument ltaJAdES = service.extendDocument(counterSignedSignature, signatureParameters);
 		
 		// ltaJAdES.save("target/ltaJAdES.json");
@@ -152,12 +156,17 @@ class JAdESLevelLTAExtensionForCounterSignedTest extends AbstractJAdESTestValida
 		Exception exception = assertThrows(IllegalInputException.class, () -> service.getDataToBeCounterSigned(ltaJAdES, counterSignatureParameters));
 		assertEquals(String.format("Unable to counter sign a signature with Id '%s'. "
 				+ "The signature is timestamped by a master signature!", counterSignature.getId()), exception.getMessage());
-		
+
 		FoundCertificatesProxy foundCertificates = signatureWrapper.foundCertificates();
 		List<String> certificateValuesIds = foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES)
 				.stream().map(CertificateWrapper::getId).collect(Collectors.toList());
+		assertEquals(2, certificateValuesIds.size());
+		List<RelatedCertificateWrapper> counterSignatureCerts = counterSignature.foundCertificates().getRelatedCertificates();
+		assertEquals(2, counterSignatureCerts.size());
+		assertEquals(3, counterSignature.getCertificateChain().size());
 		for (CertificateWrapper certificateWrapper : counterSignature.getCertificateChain()) {
-			assertTrue(certificateValuesIds.contains(certificateWrapper.getId()));
+			assertTrue(counterSignatureCerts.stream().map(CertificateWrapper::getId).collect(Collectors.toList())
+					.contains(certificateWrapper.getId()) || certificateValuesIds.contains(certificateWrapper.getId()));
 		}
 		
 		assertTrue(Utils.isCollectionNotEmpty(signatureWrapper.foundRevocations().getRelatedRevocationsByOrigin(RevocationOrigin.REVOCATION_VALUES)));
@@ -179,6 +188,14 @@ class JAdESLevelLTAExtensionForCounterSignedTest extends AbstractJAdESTestValida
 		
 		assertEquals(2, mainSignature.getCounterSignatures().size());
 		assertEquals(counterSignatureId, mainSignature.getCounterSignatures().get(0).getId());
+	}
+
+	@Override
+	protected CertificateVerifier getCompleteCertificateVerifier() {
+		CertificateVerifier certificateVerifier = super.getCompleteCertificateVerifier();
+		certificateVerifier.setCrlSource(pkiCRLSource());
+		certificateVerifier.setOcspSource(pkiDelegatedOCSPSource());
+		return certificateVerifier;
 	}
 	
 	@Override

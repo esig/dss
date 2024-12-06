@@ -1,25 +1,26 @@
-package eu.europa.esig.dss.xades.signature;
+package eu.europa.esig.dss.jades.signature;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.ValidationDataEncapsulationStrategy;
+import eu.europa.esig.dss.jades.JAdESSignatureParameters;
+import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.pki.x509.revocation.crl.PKICRLSource;
-import eu.europa.esig.dss.pki.x509.revocation.ocsp.PKIDelegatedOCSPSource;
+import eu.europa.esig.dss.model.identifier.TokenIdentifierProvider;
 import eu.europa.esig.dss.signature.CounterSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import eu.europa.esig.dss.validation.identifier.UserFriendlyIdentifierProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -37,18 +38,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 @Tag("slow")
-class XAdESLevelLTACounterSignatureLevelTExtensionTest extends AbstractXAdESCounterSignatureTest {
+class JAdESLevelLTACounterSignatureLevelLTExtensionTest extends AbstractJAdESCounterSignatureTest {
 
-    private XAdESService service;
+    private JAdESService service;
     private DSSDocument signedDocument;
 
     private Date signingDate;
 
     private String signingAlias;
 
-    private XAdESSignatureParameters signatureParameters;
-    private XAdESCounterSignatureParameters counterSignatureParameters;
-    private XAdESSignatureParameters extensionParameters;
+    private JAdESSignatureParameters signatureParameters;
+    private JAdESCounterSignatureParameters counterSignatureParameters;
+    private JAdESSignatureParameters extensionParameters;
 
     private ValidationDataEncapsulationStrategy vdStrategy;
 
@@ -62,43 +63,50 @@ class XAdESLevelLTACounterSignatureLevelTExtensionTest extends AbstractXAdESCoun
 
     @BeforeEach
     void init() throws Exception {
-        signedDocument = new FileDocument(new File("src/test/resources/sample.xml"));
-        signingDate = new Date();
-
         signingAlias = RSASSA_PSS_GOOD_USER;
 
-        signatureParameters = new XAdESSignatureParameters();
+        signedDocument = new FileDocument(new File("src/test/resources/sample.json"));
+        signingDate = new Date();
+
+        signatureParameters = new JAdESSignatureParameters();
         signatureParameters.bLevel().setSigningDate(signingDate);
         signatureParameters.setSigningCertificate(getSigningCert());
         signatureParameters.setCertificateChain(getCertificateChain());
-        signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
-        signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
+        signatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_LTA);
+        signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
+        signatureParameters.setJwsSerializationType(JWSSerializationType.FLATTENED_JSON_SERIALIZATION);
         signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 
         signingAlias = RSA_SHA3_USER;
 
-        counterSignatureParameters = new XAdESCounterSignatureParameters();
+        counterSignatureParameters = new JAdESCounterSignatureParameters();
         counterSignatureParameters.bLevel().setSigningDate(signingDate);
         counterSignatureParameters.setSigningCertificate(getSigningCert());
         counterSignatureParameters.setCertificateChain(getCertificateChain());
-        counterSignatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
+        counterSignatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_LT);
+        counterSignatureParameters.setJwsSerializationType(JWSSerializationType.FLATTENED_JSON_SERIALIZATION);
         counterSignatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 
-        extensionParameters = new XAdESSignatureParameters();
-        extensionParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
+        extensionParameters = new JAdESSignatureParameters();
+        extensionParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_LTA);
+        extensionParameters.setJwsSerializationType(JWSSerializationType.FLATTENED_JSON_SERIALIZATION);
 
         // init certVerifier and revocation sources after PKI creation
-        service = new XAdESService(getCompleteCertificateVerifier());
-        service.setTspSource(getGoodTsa());
+        service = new JAdESService(getCompleteCertificateVerifier());
+
+        // ensure revocation data is after best-signature-time
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.SECOND, -1);
+        service.setTspSource(getGoodTsaByTime(calendar.getTime()));
     }
 
     @Override
-    protected XAdESSignatureParameters getSignatureParameters() {
+    protected JAdESSignatureParameters getSignatureParameters() {
         return signatureParameters;
     }
 
     @Override
-    protected XAdESCounterSignatureParameters getCounterSignatureParameters() {
+    protected JAdESCounterSignatureParameters getCounterSignatureParameters() {
         return counterSignatureParameters;
     }
 
@@ -110,18 +118,20 @@ class XAdESLevelLTACounterSignatureLevelTExtensionTest extends AbstractXAdESCoun
 
     @Override
     protected DSSDocument counterSign(DSSDocument signatureDocument, String signatureId) {
-        service.setTspSource(getGoodTsaCrossCertification());
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.SECOND, -1);
+
         signingAlias = RSA_SHA3_USER;
+        service.setTspSource(getKeyStoreTSPSourceByNameAndTime(GOOD_TSA_CROSS_CERTIF, calendar.getTime()));
         DSSDocument counterSigned = super.counterSign(signatureDocument, signatureId);
 
         awaitOneSecond();
 
-        service = new XAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsa());
         DSSDocument extendedDocument = service.extendDocument(counterSigned, extensionParameters);
 
         signingAlias = RSASSA_PSS_GOOD_USER;
-        signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
+        signatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_LTA);
 
         return extendedDocument;
     }
@@ -135,34 +145,16 @@ class XAdESLevelLTACounterSignatureLevelTExtensionTest extends AbstractXAdESCoun
     }
 
     @Override
-    protected PKICRLSource pkiCRLSource() {
-        PKICRLSource crlSource = super.pkiCRLSource();
-        // set thisUpdate in the past to force the revocation data update on LTA extension
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MINUTE, -1);
-        crlSource.setThisUpdate(calendar.getTime());
-        return crlSource;
-    }
-
-    @Override
-    protected PKIDelegatedOCSPSource pkiDelegatedOCSPSource() {
-        PKIDelegatedOCSPSource ocspSource = super.pkiDelegatedOCSPSource();
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MINUTE, -1);
-        ocspSource.setThisUpdate(calendar.getTime());
-        return ocspSource;
-    }
-
-    @Override
     public void signAndVerify() {
         // skip
     }
 
-    @ParameterizedTest(name = "XAdES Level LTA with Counter Signature Extension {index} : {0}")
+    @ParameterizedTest(name = "JAdES Level LTA with Counter Signature Extension {index} : {0}")
     @MethodSource("data")
     void test(ValidationDataEncapsulationStrategy validationDataEncapsulationStrategy) {
         vdStrategy = validationDataEncapsulationStrategy;
         signatureParameters.setValidationDataEncapsulationStrategy(vdStrategy);
+        counterSignatureParameters.setValidationDataEncapsulationStrategy(vdStrategy);
         extensionParameters.setValidationDataEncapsulationStrategy(vdStrategy);
         super.signAndVerify();
     }
@@ -189,32 +181,33 @@ class XAdESLevelLTACounterSignatureLevelTExtensionTest extends AbstractXAdESCoun
 
     @Override
     protected void checkCertificateValuesEncapsulation(DiagnosticData diagnosticData) {
+        // Test that no data is duplicated from counter-signature
         SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
         switch (vdStrategy) {
             case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA:
                 assertEquals(5, signature.foundCertificates().getRelatedCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES).size());
-                assertEquals(7, signature.foundCertificates().getRelatedCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA).size());
+                assertEquals(0, signature.foundCertificates().getRelatedCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA).size());
                 assertEquals(0, signature.foundCertificates().getRelatedCertificatesByOrigin(CertificateOrigin.ANY_VALIDATION_DATA).size());
                 break;
             case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_LT_SEPARATED:
                 assertEquals(3, signature.foundCertificates().getRelatedCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES).size());
-                assertEquals(9, signature.foundCertificates().getRelatedCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA).size());
+                assertEquals(2, signature.foundCertificates().getRelatedCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA).size());
                 assertEquals(0, signature.foundCertificates().getRelatedCertificatesByOrigin(CertificateOrigin.ANY_VALIDATION_DATA).size());
                 break;
             case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_AND_ANY_VALIDATION_DATA:
                 assertEquals(3, signature.foundCertificates().getRelatedCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES).size());
                 assertEquals(2, signature.foundCertificates().getRelatedCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA).size());
-                assertEquals(7, signature.foundCertificates().getRelatedCertificatesByOrigin(CertificateOrigin.ANY_VALIDATION_DATA).size());
+                assertEquals(0, signature.foundCertificates().getRelatedCertificatesByOrigin(CertificateOrigin.ANY_VALIDATION_DATA).size());
                 break;
             case CERTIFICATE_REVOCATION_VALUES_AND_ANY_VALIDATION_DATA:
                 assertEquals(3, signature.foundCertificates().getRelatedCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES).size());
                 assertEquals(0, signature.foundCertificates().getRelatedCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA).size());
-                assertEquals(9, signature.foundCertificates().getRelatedCertificatesByOrigin(CertificateOrigin.ANY_VALIDATION_DATA).size());
+                assertEquals(2, signature.foundCertificates().getRelatedCertificatesByOrigin(CertificateOrigin.ANY_VALIDATION_DATA).size());
                 break;
             case ANY_VALIDATION_DATA_ONLY:
                 assertEquals(0, signature.foundCertificates().getRelatedCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES).size());
                 assertEquals(0, signature.foundCertificates().getRelatedCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA).size());
-                assertEquals(12, signature.foundCertificates().getRelatedCertificatesByOrigin(CertificateOrigin.ANY_VALIDATION_DATA).size());
+                assertEquals(5, signature.foundCertificates().getRelatedCertificatesByOrigin(CertificateOrigin.ANY_VALIDATION_DATA).size());
                 break;
             default:
                 fail(String.format("The strategy '%s' is not supported!", vdStrategy));
@@ -227,32 +220,37 @@ class XAdESLevelLTACounterSignatureLevelTExtensionTest extends AbstractXAdESCoun
         switch (vdStrategy) {
             case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA:
                 assertEquals(2, signature.foundRevocations().getRelatedRevocationsByOrigin(RevocationOrigin.REVOCATION_VALUES).size());
-                assertEquals(4, signature.foundRevocations().getRelatedRevocationsByOrigin(RevocationOrigin.TIMESTAMP_VALIDATION_DATA).size());
+                assertEquals(2, signature.foundRevocations().getRelatedRevocationsByOrigin(RevocationOrigin.TIMESTAMP_VALIDATION_DATA).size()); // tst only updated values
                 assertEquals(0, signature.foundRevocations().getRelatedRevocationsByOrigin(RevocationOrigin.ANY_VALIDATION_DATA).size());
                 break;
             case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_LT_SEPARATED:
                 assertEquals(1, signature.foundRevocations().getRelatedRevocationsByOrigin(RevocationOrigin.REVOCATION_VALUES).size());
-                assertEquals(5, signature.foundRevocations().getRelatedRevocationsByOrigin(RevocationOrigin.TIMESTAMP_VALIDATION_DATA).size());
+                assertEquals(3, signature.foundRevocations().getRelatedRevocationsByOrigin(RevocationOrigin.TIMESTAMP_VALIDATION_DATA).size());
                 assertEquals(0, signature.foundRevocations().getRelatedRevocationsByOrigin(RevocationOrigin.ANY_VALIDATION_DATA).size());
                 break;
             case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_AND_ANY_VALIDATION_DATA:
                 assertEquals(1, signature.foundRevocations().getRelatedRevocationsByOrigin(RevocationOrigin.REVOCATION_VALUES).size());
                 assertEquals(2, signature.foundRevocations().getRelatedRevocationsByOrigin(RevocationOrigin.TIMESTAMP_VALIDATION_DATA).size());
-                assertEquals(3, signature.foundRevocations().getRelatedRevocationsByOrigin(RevocationOrigin.ANY_VALIDATION_DATA).size());
+                assertEquals(1, signature.foundRevocations().getRelatedRevocationsByOrigin(RevocationOrigin.ANY_VALIDATION_DATA).size()); // CRL for counter-sig updated
                 break;
             case CERTIFICATE_REVOCATION_VALUES_AND_ANY_VALIDATION_DATA:
                 assertEquals(1, signature.foundRevocations().getRelatedRevocationsByOrigin(RevocationOrigin.REVOCATION_VALUES).size());
                 assertEquals(0, signature.foundRevocations().getRelatedRevocationsByOrigin(RevocationOrigin.TIMESTAMP_VALIDATION_DATA).size());
-                assertEquals(5, signature.foundRevocations().getRelatedRevocationsByOrigin(RevocationOrigin.ANY_VALIDATION_DATA).size());
+                assertEquals(3, signature.foundRevocations().getRelatedRevocationsByOrigin(RevocationOrigin.ANY_VALIDATION_DATA).size());
                 break;
             case ANY_VALIDATION_DATA_ONLY:
                 assertEquals(0, signature.foundRevocations().getRelatedRevocationsByOrigin(RevocationOrigin.REVOCATION_VALUES).size());
                 assertEquals(0, signature.foundRevocations().getRelatedRevocationsByOrigin(RevocationOrigin.TIMESTAMP_VALIDATION_DATA).size());
-                assertEquals(6, signature.foundRevocations().getRelatedRevocationsByOrigin(RevocationOrigin.ANY_VALIDATION_DATA).size());
+                assertEquals(4, signature.foundRevocations().getRelatedRevocationsByOrigin(RevocationOrigin.ANY_VALIDATION_DATA).size());
                 break;
             default:
                 fail(String.format("The strategy '%s' is not supported!", vdStrategy));
         }
+    }
+
+    @Override
+    protected TokenIdentifierProvider getTokenIdentifierProvider() {
+        return new UserFriendlyIdentifierProvider();
     }
 
     @Override
@@ -276,12 +274,12 @@ class XAdESLevelLTACounterSignatureLevelTExtensionTest extends AbstractXAdESCoun
     }
 
     @Override
-    protected DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> getService() {
+    protected DocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> getService() {
         return service;
     }
 
     @Override
-    protected CounterSignatureService<XAdESCounterSignatureParameters> getCounterSignatureService() {
+    protected CounterSignatureService<JAdESCounterSignatureParameters> getCounterSignatureService() {
         return service;
     }
 

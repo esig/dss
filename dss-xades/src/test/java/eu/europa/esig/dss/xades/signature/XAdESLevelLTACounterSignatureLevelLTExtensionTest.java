@@ -145,7 +145,7 @@ class XAdESLevelLTACounterSignatureLevelLTExtensionTest extends AbstractXAdESCou
         // skip
     }
 
-    @ParameterizedTest(name = "XAdES Level LT with Counter Signature Extension {index} : {0}")
+    @ParameterizedTest(name = "XAdES Level LTA with Counter Signature Extension {index} : {0}")
     @MethodSource("data")
     void test(ValidationDataEncapsulationStrategy validationDataEncapsulationStrategy) {
         vdStrategy = validationDataEncapsulationStrategy;

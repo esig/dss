@@ -154,6 +154,8 @@ public class JAdESLevelBaselineLTA extends JAdESLevelBaselineLT {
 		switch (validationDataEncapsulationStrategy) {
 			case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_AND_ANY_VALIDATION_DATA:
 				validationData = validationDataContainer.getValidationDataForSignatureForInclusion(signature);
+				validationData.addValidationData(validationDataContainer.getValidationDataForCounterSignaturesForInclusion(signature));
+				validationData.addValidationData(validationDataContainer.getValidationDataForCounterSignatureTimestampsForInclusion(signature));
 				validationData.excludeValidationData(validationDataToExclude);
 				incorporateAnyValidationData(etsiUHeader, validationData, signatureParameters.isBase64UrlEncodedEtsiUComponents());
 				break;

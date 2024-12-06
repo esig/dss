@@ -1,13 +1,16 @@
-package eu.europa.esig.dss.xades.signature;
+package eu.europa.esig.dss.jades.signature;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.ValidationDataEncapsulationStrategy;
+import eu.europa.esig.dss.jades.JAdESSignatureParameters;
+import eu.europa.esig.dss.jades.JAdESTimestampParameters;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.pki.x509.revocation.crl.PKICRLSource;
@@ -18,8 +21,6 @@ import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -37,18 +38,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 @Tag("slow")
-class XAdESLevelLTACounterSignatureLevelTExtensionTest extends AbstractXAdESCounterSignatureTest {
+class JAdESLevelLTACounterSignatureLevelTExtensionTest extends AbstractJAdESCounterSignatureTest {
 
-    private XAdESService service;
+    private JAdESService service;
     private DSSDocument signedDocument;
 
     private Date signingDate;
 
     private String signingAlias;
 
-    private XAdESSignatureParameters signatureParameters;
-    private XAdESCounterSignatureParameters counterSignatureParameters;
-    private XAdESSignatureParameters extensionParameters;
+    private JAdESSignatureParameters signatureParameters;
+    private JAdESCounterSignatureParameters counterSignatureParameters;
+    private JAdESSignatureParameters extensionParameters;
 
     private ValidationDataEncapsulationStrategy vdStrategy;
 
@@ -62,43 +63,46 @@ class XAdESLevelLTACounterSignatureLevelTExtensionTest extends AbstractXAdESCoun
 
     @BeforeEach
     void init() throws Exception {
-        signedDocument = new FileDocument(new File("src/test/resources/sample.xml"));
+        signedDocument = new FileDocument(new File("src/test/resources/sample.json"));
         signingDate = new Date();
 
         signingAlias = RSASSA_PSS_GOOD_USER;
 
-        signatureParameters = new XAdESSignatureParameters();
+        signatureParameters = new JAdESSignatureParameters();
         signatureParameters.bLevel().setSigningDate(signingDate);
         signatureParameters.setSigningCertificate(getSigningCert());
         signatureParameters.setCertificateChain(getCertificateChain());
-        signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
-        signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
+        signatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_LTA);
+        signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
+        signatureParameters.setJwsSerializationType(JWSSerializationType.FLATTENED_JSON_SERIALIZATION);
         signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 
         signingAlias = RSA_SHA3_USER;
 
-        counterSignatureParameters = new XAdESCounterSignatureParameters();
+        counterSignatureParameters = new JAdESCounterSignatureParameters();
         counterSignatureParameters.bLevel().setSigningDate(signingDate);
         counterSignatureParameters.setSigningCertificate(getSigningCert());
         counterSignatureParameters.setCertificateChain(getCertificateChain());
-        counterSignatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
+        counterSignatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_T);
+        counterSignatureParameters.setJwsSerializationType(JWSSerializationType.FLATTENED_JSON_SERIALIZATION);
         counterSignatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 
-        extensionParameters = new XAdESSignatureParameters();
-        extensionParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
+        extensionParameters = new JAdESSignatureParameters();
+        extensionParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_LTA);
+        extensionParameters.setJwsSerializationType(JWSSerializationType.FLATTENED_JSON_SERIALIZATION);
 
         // init certVerifier and revocation sources after PKI creation
-        service = new XAdESService(getCompleteCertificateVerifier());
+        service = new JAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsa());
     }
 
     @Override
-    protected XAdESSignatureParameters getSignatureParameters() {
+    protected JAdESSignatureParameters getSignatureParameters() {
         return signatureParameters;
     }
 
     @Override
-    protected XAdESCounterSignatureParameters getCounterSignatureParameters() {
+    protected JAdESCounterSignatureParameters getCounterSignatureParameters() {
         return counterSignatureParameters;
     }
 
@@ -116,12 +120,12 @@ class XAdESLevelLTACounterSignatureLevelTExtensionTest extends AbstractXAdESCoun
 
         awaitOneSecond();
 
-        service = new XAdESService(getCompleteCertificateVerifier());
+        service = new JAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsa());
         DSSDocument extendedDocument = service.extendDocument(counterSigned, extensionParameters);
 
         signingAlias = RSASSA_PSS_GOOD_USER;
-        signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
+        signatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_LTA);
 
         return extendedDocument;
     }
@@ -158,7 +162,7 @@ class XAdESLevelLTACounterSignatureLevelTExtensionTest extends AbstractXAdESCoun
         // skip
     }
 
-    @ParameterizedTest(name = "XAdES Level LTA with Counter Signature Extension {index} : {0}")
+    @ParameterizedTest(name = "JAdES Level LTA with Counter Signature Extension {index} : {0}")
     @MethodSource("data")
     void test(ValidationDataEncapsulationStrategy validationDataEncapsulationStrategy) {
         vdStrategy = validationDataEncapsulationStrategy;
@@ -276,12 +280,12 @@ class XAdESLevelLTACounterSignatureLevelTExtensionTest extends AbstractXAdESCoun
     }
 
     @Override
-    protected DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> getService() {
+    protected DocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> getService() {
         return service;
     }
 
     @Override
-    protected CounterSignatureService<XAdESCounterSignatureParameters> getCounterSignatureService() {
+    protected CounterSignatureService<JAdESCounterSignatureParameters> getCounterSignatureService() {
         return service;
     }
 
