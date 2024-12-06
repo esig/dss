@@ -44,7 +44,7 @@ public class EIDASRulesExecutorTest extends AbstractProcessExecutorTest {
         executor.setCurrentTime(diagnosticData.getValidationDate());
 
         Reports reports = executor.execute();
-        reports.print();
+        // reports.print();
         SimpleReport simpleReport = reports.getSimpleReport();
         assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
         assertEquals(SignatureQualification.NA, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
@@ -77,7 +77,7 @@ public class EIDASRulesExecutorTest extends AbstractProcessExecutorTest {
         executor.setCurrentTime(diagnosticData.getValidationDate());
 
         Reports reports = executor.execute();
-        reports.print();
+        // reports.print();
         SimpleReport simpleReport = reports.getSimpleReport();
         assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
         assertEquals(SignatureQualification.UNKNOWN, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
