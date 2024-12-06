@@ -244,6 +244,7 @@ class ASiCsExtensionWithXAdESInvalidLevelsTest extends AbstractASiCWithXAdESTest
         certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new SilentOnStatusAlert());
 
         DSSDocument extendedSignature = extendSignature(signedDocument);
+        finalSignatureLevel = SignatureLevel.XAdES_XL;
         reports = verify(extendedSignature);
         assertEquals(3, reports.getDiagnosticData().getTimestampList().size());
 
@@ -302,6 +303,8 @@ class ASiCsExtensionWithXAdESInvalidLevelsTest extends AbstractASiCWithXAdESTest
         certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new SilentOnStatusAlert());
 
         DSSDocument extendedSignature = extendSignature(signedDocument);
+
+        finalSignatureLevel = SignatureLevel.XAdES_A;
         reports = verify(extendedSignature);
         assertEquals(4, reports.getDiagnosticData().getTimestampList().size());
 
