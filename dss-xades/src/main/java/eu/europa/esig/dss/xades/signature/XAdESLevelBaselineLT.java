@@ -153,6 +153,7 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
 			case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_AND_ANY_VALIDATION_DATA:
 			case CERTIFICATE_REVOCATION_VALUES_AND_ANY_VALIDATION_DATA:
 				validationDataForInclusion = validationDataContainer.getValidationDataForSignatureForInclusion(signature);
+				validationDataForInclusion.addValidationData(validationDataContainer.getValidationDataForCounterSignaturesForInclusion(signature));
 				break;
 
 			default:
@@ -199,14 +200,27 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
 		ValidationDataEncapsulationStrategy validationDataEncapsulationStrategy = getValidationDataEncapsulationStrategy();
 		switch (validationDataEncapsulationStrategy) {
 			case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_LT_SEPARATED:
-			case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_AND_ANY_VALIDATION_DATA:
 				validationData = validationDataContainer.getValidationDataForSignatureTimestampsForInclusion(signature);
+				validationData.addValidationData(validationDataContainer.getValidationDataForCounterSignatureTimestampsForInclusion(signature));
 				validationData.excludeValidationData(validationDataToExclude);
 				incorporateTimestampValidationData(validationData, indent);
 				break;
 
+			case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_AND_ANY_VALIDATION_DATA:
+				validationData = validationDataContainer.getValidationDataForSignatureTimestampsForInclusion(signature);
+				validationData.excludeValidationData(validationDataToExclude);
+				incorporateTimestampValidationData(validationData, indent);
+
+				// incorporate validation data for counter-signature timestamps within AnyValidationData element
+				ValidationData counterSigTstValidationData = validationDataContainer.getValidationDataForCounterSignatureTimestampsForInclusion(signature);
+				counterSigTstValidationData.excludeValidationData(validationData);
+				counterSigTstValidationData.excludeValidationData(validationDataToExclude);
+				incorporateAnyValidationData(counterSigTstValidationData, indent);
+				break;
+
 			case CERTIFICATE_REVOCATION_VALUES_AND_ANY_VALIDATION_DATA:
 				validationData = validationDataContainer.getValidationDataForSignatureTimestampsForInclusion(signature);
+				validationData.addValidationData(validationDataContainer.getValidationDataForCounterSignatureTimestampsForInclusion(signature));
 				validationData.excludeValidationData(validationDataToExclude);
 				incorporateAnyValidationData(validationData, indent);
 				break;

@@ -378,6 +378,10 @@ public abstract class DefaultDocumentAnalyzer implements DocumentAnalyzer {
             for (AdvancedSignature counterSignature : signature.getCounterSignatures()) {
                 ValidationData counterSignatureValidationData = validationContext.getValidationData(counterSignature);
                 validationDataContainer.addValidationData(counterSignature, counterSignatureValidationData);
+                for (TimestampToken timestampToken : counterSignature.getAllTimestamps()) {
+                    ValidationData timestampValidationData = validationContext.getValidationData(timestampToken);
+                    validationDataContainer.addValidationData(timestampToken, timestampValidationData);
+                }
             }
         }
         for (TimestampToken detachedTimestamp : detachedTimestamps) {

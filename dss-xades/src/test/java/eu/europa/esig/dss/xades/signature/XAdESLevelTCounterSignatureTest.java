@@ -89,7 +89,17 @@ class XAdESLevelTCounterSignatureTest extends AbstractXAdESCounterSignatureTest 
 	protected void checkNumberOfSignatures(DiagnosticData diagnosticData) {
 		assertEquals(3, diagnosticData.getSignatures().size());
 	}
-	
+
+	@Override
+	protected void checkCertificateValuesEncapsulation(DiagnosticData diagnosticData) {
+		// skip (defined in the original signature file)
+	}
+
+	@Override
+	protected void checkRevocationDataEncapsulation(DiagnosticData diagnosticData) {
+		// skip (defined in the original signature file)
+	}
+
 	@Override
 	protected void checkSigningDate(DiagnosticData diagnosticData) {
 		// do nothing

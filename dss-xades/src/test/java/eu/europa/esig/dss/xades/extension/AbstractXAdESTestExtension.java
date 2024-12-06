@@ -27,6 +27,7 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -195,6 +196,32 @@ public abstract class AbstractXAdESTestExtension extends AbstractTestExtension<X
 				}
 			}
 		}
+	}
+
+	@Override
+	protected void checkCertificateValuesEncapsulation(DiagnosticData diagnosticData) {
+		SignatureLevel signatureFormat = getFinalSignatureLevel();
+		if (getSignatureParameters().isEn319132() &&
+				(SignatureLevel.XAdES_BASELINE_B == signatureFormat ||
+						SignatureLevel.XAdES_BASELINE_T == signatureFormat ||
+						SignatureLevel.XAdES_BASELINE_LT == signatureFormat ||
+						SignatureLevel.XAdES_BASELINE_LTA == signatureFormat)) {
+			super.checkCertificateValuesEncapsulation(diagnosticData);
+		}
+		// skip for not BASELINE profiles
+	}
+
+	@Override
+	protected void checkRevocationDataEncapsulation(DiagnosticData diagnosticData) {
+		SignatureLevel signatureFormat = getSignatureParameters().getSignatureLevel();
+		if (getSignatureParameters().isEn319132() &&
+				(SignatureLevel.XAdES_BASELINE_B == signatureFormat ||
+						SignatureLevel.XAdES_BASELINE_T == signatureFormat ||
+						SignatureLevel.XAdES_BASELINE_LT == signatureFormat ||
+						SignatureLevel.XAdES_BASELINE_LTA == signatureFormat)) {
+			super.checkRevocationDataEncapsulation(diagnosticData);
+		}
+		// skip for not BASELINE profiles
 	}
 
 	@Override
