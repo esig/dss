@@ -431,6 +431,10 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
         xmlAlgorithms.put("http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256", ECDSA_SHA256);
         xmlAlgorithms.put("http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha384", ECDSA_SHA384);
         xmlAlgorithms.put("http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512", ECDSA_SHA512);
+        xmlAlgorithms.put("http://www.w3.org/2021/04/xmldsig-more#ecdsa-sha3-224", ECDSA_SHA3_224);
+        xmlAlgorithms.put("http://www.w3.org/2021/04/xmldsig-more#ecdsa-sha3-256", ECDSA_SHA3_256);
+        xmlAlgorithms.put("http://www.w3.org/2021/04/xmldsig-more#ecdsa-sha3-384", ECDSA_SHA3_384);
+        xmlAlgorithms.put("http://www.w3.org/2021/04/xmldsig-more#ecdsa-sha3-512", ECDSA_SHA3_512);
         xmlAlgorithms.put("http://www.w3.org/2007/05/xmldsig-more#ecdsa-ripemd160", ECDSA_RIPEMD160);
 
         xmlAlgorithms.put("http://www.w3.org/2021/04/xmldsig-more#eddsa-ed25519", ED25519);
@@ -945,9 +949,9 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
 
     /**
      * Returns the URI of the signature algorithm generated from its OID:
-     *
+     * <p>
      * Ex.: OID = 1.2.4.5.6.8 becomes URI = urn:oid:1.2.4.5.6.8
-     *
+     * <p>
      * Note: see RFC 3061 "A URN Namespace of Object Identifiers"
      *
      * @return URI based on the algorithm's OID
