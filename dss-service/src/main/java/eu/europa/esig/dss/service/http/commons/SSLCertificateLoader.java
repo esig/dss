@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.service.http.commons;
 
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.Protocol;
@@ -28,13 +27,8 @@ import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
 import eu.europa.esig.dss.utils.Utils;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
-import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
 import org.apache.hc.core5.http.ClassicHttpResponse;
-import org.apache.hc.core5.http.EntityDetails;
-import org.apache.hc.core5.http.HttpException;
 import org.apache.hc.core5.http.HttpHost;
-import org.apache.hc.core5.http.HttpResponse;
-import org.apache.hc.core5.http.HttpResponseInterceptor;
 import org.apache.hc.core5.http.io.HttpClientResponseHandler;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.protocol.HttpContext;
@@ -60,9 +54,6 @@ public class SSLCertificateLoader implements Serializable {
 	private static final long serialVersionUID = -2560386894555266018L;
 
 	private static final Logger LOG = LoggerFactory.getLogger(SSLCertificateLoader.class);
-
-	/** The attribute containing a certificate chain */
-	private static final String PEER_CERTIFICATES = "PEER_CERTIFICATES";
     
     /** A proxied CommonsDataLoader to be used */
     private CommonsDataLoader commonsDataLoader;
@@ -83,7 +74,12 @@ public class SSLCertificateLoader implements Serializable {
 		this.commonsDataLoader = commonsDataLoader;
 	}
 
-	private CommonsDataLoader getCommonsDataLoader() {
+	/**
+	 * Gets the {@code CommonsDataLoader} implementation
+	 *
+	 * @return {@link CommonsDataLoader}
+	 */
+	protected CommonsDataLoader getCommonsDataLoader() {
 		if (commonsDataLoader == null) {
 			commonsDataLoader = new CommonsDataLoader();
 		}
@@ -106,14 +102,20 @@ public class SSLCertificateLoader implements Serializable {
 				"DSS framework supports only HTTP(S) certificate extraction. Obtained URL : '%s'", urlString));
     }
 
-    private Certificate[] httpGetCertificates(final String url) throws DSSException {
+	/**
+	 * This method gets the certificates obtained from a TLS/SSL connection
+	 *
+	 * @param url {@link String} URL address to connect to
+	 * @return an array of {@link Certificate}s
+	 */
+    protected Certificate[] httpGetCertificates(final String url) {
     	HttpGet httpRequest = null;
 		CloseableHttpClient client = null;
 		
 		final CommonsDataLoader dataLoader = getCommonsDataLoader();
 		try {
 			httpRequest = dataLoader.getHttpRequest(url);
-			client = getHttpClient(url);
+			client = dataLoader.getHttpClient(url);
 
 			final HttpHost targetHost = dataLoader.getHttpHost(httpRequest);
 			final HttpContext localContext = dataLoader.getHttpContext(targetHost);
@@ -130,8 +132,15 @@ public class SSLCertificateLoader implements Serializable {
 			dataLoader.closeQuietly(httpRequest, client);
 		}
     }
-    
-    private List<CertificateToken> toCertificateTokens(Certificate[] certificates) {
+
+	/**
+	 * This method converts an array of {@code java.security.cert.Certificate}s to
+	 * a list of {@code eu.europa.esig.dss.model.x509.CertificateToken}s
+	 *
+	 * @param certificates an array of {@code Certificate} to convert
+	 * @return a list of {@link CertificateToken}s
+	 */
+	protected List<CertificateToken> toCertificateTokens(Certificate[] certificates) {
     	List<CertificateToken> certificateTokens = new ArrayList<>();
     	for (Certificate certificate : certificates) {
     		try {
@@ -143,44 +152,37 @@ public class SSLCertificateLoader implements Serializable {
     	}
     	return certificateTokens;
     }
-    
-    private Certificate[] readCertificates(HttpContext context) {
-    	Object attribute = context.getAttribute(PEER_CERTIFICATES);
-    	if (attribute instanceof Certificate[]) {
-    		return (Certificate[]) attribute;
-    	}
+
+	/**
+	 * This method reads the TSL/SSL connection details from the {@code HttpContext} and
+	 * returns an array of {@code Certificate}, when applicable.
+	 * WARN: the {@code context} shall be an instance of {@code HttpCoreContext}.
+	 *
+	 * @param context {@code HttpContext} to read
+	 * @return an array of {@link Certificate}s
+	 * @throws IOException if an exception occurs on HttpContext reading
+	 */
+    protected Certificate[] readCertificates(HttpContext context) throws IOException {
+		if (context instanceof HttpCoreContext) {
+			HttpCoreContext httpCoreContext = (HttpCoreContext) context;
+			SSLSession sslSession = httpCoreContext.getSSLSession();
+			if (sslSession != null) {
+				return sslSession.getPeerCertificates();
+			}
+		} else {
+			throw new IllegalStateException("HttpContext shall be an instance of class type 'HttpCoreContext'!");
+		}
     	return new Certificate[] {};
     }
-    
-    private synchronized CloseableHttpClient getHttpClient(final String url) {
-		HttpClientBuilder httpClientBuilder = getCommonsDataLoader().getHttpClientBuilder(url);
-		httpClientBuilder.addResponseInterceptorLast(getHttpResponseInterceptor());
-		return httpClientBuilder.build();
-	}
-	
-	private HttpResponseInterceptor getHttpResponseInterceptor() {
-		return new HttpResponseInterceptor() {
-
-			@Override
-			public void process(HttpResponse httpResponse, EntityDetails entityDetails, HttpContext httpContext) throws IOException {
-				SSLSession sslSession = (SSLSession) httpContext.getAttribute(HttpCoreContext.SSL_SESSION);
-				if (sslSession != null) {
-					Certificate[] certificates = sslSession.getPeerCertificates();
-					httpContext.setAttribute(PEER_CERTIFICATES, certificates);
-				}
-			}
-
-		};
-	}
 
 	/**
 	 * This class consumes the {@code ClassicHttpResponse} but does not process or return any content.
 	 * It is used to quickly process a response without a need to extract any data.
 	 */
-	private static class NoSenseHttpClientResponseHandler implements HttpClientResponseHandler<byte[]> {
+	protected static class NoSenseHttpClientResponseHandler implements HttpClientResponseHandler<byte[]> {
 
 		@Override
-		public byte[] handleResponse(ClassicHttpResponse classicHttpResponse) throws HttpException, IOException {
+		public byte[] handleResponse(ClassicHttpResponse classicHttpResponse) {
 			if (classicHttpResponse != null) {
 				EntityUtils.consumeQuietly(classicHttpResponse.getEntity());
 				Utils.closeQuietly(classicHttpResponse);
