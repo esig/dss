@@ -42,6 +42,7 @@ import eu.europa.esig.dss.pades.validation.suite.DSS2513LTTest;
 import eu.europa.esig.dss.pades.validation.suite.DSS2513Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS2601Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS2821Test;
+import eu.europa.esig.dss.pades.validation.suite.DSS3111DSSTest;
 import eu.europa.esig.dss.pades.validation.suite.DSS3111Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS3226StrictNumberComparisonTest;
 import eu.europa.esig.dss.pades.validation.suite.DSS3226Test;
@@ -143,7 +144,7 @@ import org.junit.platform.suite.api.Suite;
 		PAdESWithEnvelopingCMSTest.class, PAdESWithEnvelopingEmptyContentCMSTest.class, DSS2601Test.class, PAdESWithEofCRTest.class,
 		PdfPkcs7SubFilterValidAndInvalidTest.class, PAdESWithUnsupportedSignatureAlgorithmTest.class, DSS2821Test.class,
 		PAdESWithVRITimeStampTest.class, PAdESWithVRITimeTest.class, PAdESWithSpoofingAttackTest.class, PAdESSpoofingAttackReplacementTest.class,
-		PAdESEndEntityCertIssuedByNotCACertTest.class, DSS3111Test.class, PAdESLevelLTWithXmlEvidenceRecordValidationTest.class,
+		PAdESEndEntityCertIssuedByNotCACertTest.class, DSS3111Test.class, DSS3111DSSTest.class, PAdESLevelLTWithXmlEvidenceRecordValidationTest.class,
 		PAdESLevelTWithDuplicatedSigTstTest.class, PAdESLevelTWithDuplicatedDocTstTest.class, PAdESLevelLTAWithCopiedDocTstTest.class,
 		PAdESTwoSigWithCopiedTstTest.class, PAdESTimestampedExistingFieldsTest.class, DSS3226Test.class, DSS3226StrictNumberComparisonTest.class,
 		PAdESLevelBWithAsn1EvidenceRecordValidationTest.class, PAdESWithDetachedTstWithAsn1EvidenceRecordValidationTest.class, DSS3239Test.class,
