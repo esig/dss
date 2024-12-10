@@ -101,7 +101,7 @@ public class XAdESLevelXL extends XAdESLevelX {
 
 			Element levelXUnsignedProperties = (Element) unsignedSignaturePropertiesDom.cloneNode(true);
 
-			final ValidationData validationDataForInclusion = validationDataContainer.getCompleteValidationDataForSignature(signature);
+			final ValidationData validationDataForInclusion = validationDataContainer.getAllValidationDataForSignatureForInclusion(signature);
 
 			Set<CertificateToken> certificateValuesToAdd = validationDataForInclusion.getCertificateTokens();
 			Set<CRLToken> crlsToAdd = validationDataForInclusion.getCrlTokens();

@@ -110,7 +110,8 @@ class JAdESTripleLTATest extends AbstractJAdESTestValidation {
         List<Object> unsignedProperties = (List<Object>) unprotected.get(JAdESHeaderParameterNames.ETSI_U);
 
         int arcTstCounter = 0;
-        int tstVDCounter = 0;
+        int tstVDNoRevCounter = 0;
+        int tstVDWithRevCounter = 0;
 
         for (Object property : unsignedProperties) {
             Map<?, ?> map = DSSJsonUtils.parseEtsiUComponent(property);
@@ -122,15 +123,19 @@ class JAdESTripleLTATest extends AbstractJAdESTestValidation {
             if (tstVD != null) {
                 List<?> xVals = (List<?>) tstVD.get(JAdESHeaderParameterNames.X_VALS);
                 assertTrue(Utils.isCollectionNotEmpty(xVals));
-                Map<?, ?> rVals = (Map<?, ?>) tstVD.get(JAdESHeaderParameterNames.R_VALS);
-                assertTrue(Utils.isMapNotEmpty(rVals));
 
-                ++tstVDCounter;
+                Map<?, ?> rVals = (Map<?, ?>) tstVD.get(JAdESHeaderParameterNames.R_VALS);
+                if (Utils.isMapEmpty(rVals)) {
+                    ++tstVDNoRevCounter;
+                } else {
+                    ++tstVDWithRevCounter;
+                }
             }
         }
 
         assertEquals(3, arcTstCounter);
-        assertEquals(2, tstVDCounter);
+        assertEquals(1, tstVDNoRevCounter);
+        assertEquals(2, tstVDWithRevCounter);
     }
 
     @Override

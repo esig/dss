@@ -20,14 +20,14 @@
  */
 package eu.europa.esig.dss.jades.requirements;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
+import eu.europa.esig.dss.enumerations.JWSSerializationType;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 
 import java.util.List;
 import java.util.Map;
 
-import eu.europa.esig.dss.enumerations.JWSSerializationType;
-import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.jades.JAdESSignatureParameters;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class JAdESBaselineLTSerialiazationTest extends AbstractJAdESSerializationSignatureRequirementsCheck {
 
@@ -36,6 +36,8 @@ class JAdESBaselineLTSerialiazationTest extends AbstractJAdESSerializationSignat
 		JAdESSignatureParameters signatureParameters = super.getSignatureParameters();
 		signatureParameters.setJwsSerializationType(JWSSerializationType.JSON_SERIALIZATION);
 		signatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_LT);
+		// Default processing
+		// signatureParameters.setValidationDataEncapsulationStrategy(ValidationDataEncapsulationStrategy.CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_AND_ANY_VALIDATION_DATA);
 		return signatureParameters;
 	}
 	
@@ -43,6 +45,12 @@ class JAdESBaselineLTSerialiazationTest extends AbstractJAdESSerializationSignat
 	protected void checkArchiveTimestamp(Map<?, ?> unprotectedHeaderMap) {
 		List<?> arcTst = (List<?>) getEtsiUElement(unprotectedHeaderMap, "arcTst");
 		assertNull(arcTst);
+	}
+
+	@Override
+	protected void checkAnyValidationData(Map<?, ?> unprotectedHeaderMap) {
+		Map<?, ?> anyVD = (Map<?, ?>) getEtsiUElement(unprotectedHeaderMap, "anyValData");
+		assertNull(anyVD);
 	}
 
 }

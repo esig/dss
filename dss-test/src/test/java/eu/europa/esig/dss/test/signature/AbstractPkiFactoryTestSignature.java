@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.test.signature;
 
-import eu.europa.esig.dss.signature.AbstractSignatureParameters;
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -32,11 +31,13 @@ import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
 import eu.europa.esig.dss.diagnostic.RelatedRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCommitmentTypeIndication;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerData;
+import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.CommitmentType;
@@ -45,6 +46,7 @@ import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.EndorsementType;
 import eu.europa.esig.dss.enumerations.MimeType;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
+import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
@@ -61,12 +63,13 @@ import eu.europa.esig.dss.model.SignerLocation;
 import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.model.UserNotice;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.signature.AbstractSignatureParameters;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.test.AbstractPkiFactoryTestValidation;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.validationreport.jaxb.SACommitmentTypeIndicationType;
 import eu.europa.esig.validationreport.jaxb.SAOneSignerRoleType;
@@ -213,6 +216,71 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 	}
 
 	@Override
+	protected void checkCertificates(DiagnosticData diagnosticData) {
+		super.checkCertificates(diagnosticData);
+		checkCertificateValuesEncapsulation(diagnosticData);
+	}
+
+	protected void checkCertificateValuesEncapsulation(DiagnosticData diagnosticData) {
+		// Signature certificate chain validation
+		for (SignatureWrapper signature : diagnosticData.getSignatures()) {
+			List<RelatedCertificateWrapper> certificateValues = signature.foundCertificates().getRelatedCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES);
+			if (Utils.isCollectionNotEmpty(certificateValues)) {
+				List<String> signatureCertificateIds = populateWithRevocationCertificatesRecursively(new ArrayList<>(), signature.getCertificateChain());
+				for (SignatureWrapper counterSignature : diagnosticData.getAllCounterSignaturesForMasterSignature(signature)) {
+					populateWithRevocationCertificatesRecursively(signatureCertificateIds, counterSignature.getCertificateChain());
+					for (TimestampWrapper timestamp : counterSignature.getTimestampList()) {
+						populateWithRevocationCertificatesRecursively(signatureCertificateIds, timestamp.getCertificateChain());
+					}
+				}
+				for (CertificateWrapper certificate : certificateValues) {
+					assertTrue(signatureCertificateIds.contains(certificate.getId()));
+				}
+			}
+			// Timestamp certificate chain validation
+			List<RelatedCertificateWrapper> tstValidationData = signature.foundCertificates().getRelatedCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA);
+			if (Utils.isCollectionNotEmpty(tstValidationData)) {
+				List<String> timestampCertificateIds = new ArrayList<>();
+				for (TimestampWrapper timestamp : signature.getTimestampList()) {
+					populateWithRevocationCertificatesRecursively(timestampCertificateIds, timestamp.getCertificateChain());
+				}
+				for (CertificateWrapper certificate : tstValidationData) {
+					assertTrue(timestampCertificateIds.contains(certificate.getId()));
+				}
+			}
+			// Any validation data validation
+			List<RelatedCertificateWrapper> anyValidationData = signature.foundCertificates().getRelatedCertificatesByOrigin(CertificateOrigin.ANY_VALIDATION_DATA);
+			if (Utils.isCollectionNotEmpty(anyValidationData)) {
+				List<String> certificateIds = populateWithRevocationCertificatesRecursively(new ArrayList<>(), signature.getCertificateChain());
+				for (TimestampWrapper timestamp : signature.getTimestampList()) {
+					populateWithRevocationCertificatesRecursively(certificateIds, timestamp.getCertificateChain());
+				}
+				for (SignatureWrapper counterSignature : diagnosticData.getAllCounterSignaturesForMasterSignature(signature)) {
+					populateWithRevocationCertificatesRecursively(certificateIds, counterSignature.getCertificateChain());
+					for (TimestampWrapper timestamp : counterSignature.getTimestampList()) {
+						populateWithRevocationCertificatesRecursively(certificateIds, timestamp.getCertificateChain());
+					}
+				}
+				for (CertificateWrapper certificate : anyValidationData) {
+					assertTrue(certificateIds.contains(certificate.getId()));
+				}
+			}
+		}
+	}
+
+	protected List<String> populateWithRevocationCertificatesRecursively(List<String> certIdList, List<CertificateWrapper> certChain) {
+		for (CertificateWrapper certificateWrapper : certChain) {
+			if (!certIdList.contains(certificateWrapper.getId())) {
+				certIdList.add(certificateWrapper.getId());
+				for (RevocationWrapper revocationWrapper : certificateWrapper.getCertificateRevocationData()) {
+					populateWithRevocationCertificatesRecursively(certIdList, revocationWrapper.getCertificateChain());
+				}
+			}
+		}
+		return certIdList;
+	}
+
+	@Override
 	protected void checkSigningDate(DiagnosticData diagnosticData) {
 		super.checkSigningDate(diagnosticData);
 		
@@ -230,7 +298,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 		
 		List<String> timestampIdList = diagnosticData.getTimestampIdList(diagnosticData.getFirstSignatureId());
 		int nbContentTimestamps = 0;
-		if ((timestampIdList != null) && (timestampIdList.size() > 0)) {
+		if (Utils.isCollectionNotEmpty(timestampIdList)) {
 			for (String timestampId : timestampIdList) {
 				TimestampType timestampType = diagnosticData.getTimestampType(timestampId);
 				switch (timestampType) {
@@ -491,6 +559,76 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 				assertTrue(signingCertFound);
 			}
 		}
+		checkRevocationDataEncapsulation(diagnosticData);
+	}
+
+	protected void checkRevocationDataEncapsulation(DiagnosticData diagnosticData) {
+		for (SignatureWrapper signature : diagnosticData.getSignatures()) {
+			List<RelatedRevocationWrapper> sigRevocationWrappers = signature.foundRevocations().getRelatedRevocationsByOrigin(RevocationOrigin.REVOCATION_VALUES);
+			if (Utils.isCollectionNotEmpty(sigRevocationWrappers)) {
+				List<String> revIdList = new ArrayList<>();
+				for (CertificateWrapper certificateWrapper : signature.getCertificateChain()) {
+					populateWithRevocationDataRecursively(revIdList, certificateWrapper.getCertificateRevocationData());
+				}
+				for (SignatureWrapper counterSignature : diagnosticData.getAllCounterSignaturesForMasterSignature(signature)) {
+					for (CertificateWrapper certificateWrapper : counterSignature.getCertificateChain()) {
+						populateWithRevocationDataRecursively(revIdList, certificateWrapper.getCertificateRevocationData());
+					}
+				}
+				for (RevocationWrapper revocation : sigRevocationWrappers) {
+					assertTrue(revIdList.contains(revocation.getId()));
+				}
+			}
+			List<RelatedRevocationWrapper> tstRevocationWrappers = signature.foundRevocations().getRelatedRevocationsByOrigin(RevocationOrigin.TIMESTAMP_VALIDATION_DATA);
+			if (Utils.isCollectionNotEmpty(tstRevocationWrappers)) {
+				List<String> revIdList = new ArrayList<>();
+				for (TimestampWrapper timestampWrapper : signature.getTimestampList()) {
+					for (CertificateWrapper certificateWrapper : timestampWrapper.getCertificateChain()) {
+						populateWithRevocationDataRecursively(revIdList, certificateWrapper.getCertificateRevocationData());
+					}
+				}
+				for (RevocationWrapper revocation : tstRevocationWrappers) {
+					assertTrue(revIdList.contains(revocation.getId()));
+				}
+			}
+			List<RelatedRevocationWrapper> anyValidationData = signature.foundRevocations().getRelatedRevocationsByOrigin(RevocationOrigin.ANY_VALIDATION_DATA);
+			if (Utils.isCollectionNotEmpty(anyValidationData)) {
+				List<String> revIdList = new ArrayList<>();
+				for (CertificateWrapper certificateWrapper : signature.getCertificateChain()) {
+					populateWithRevocationDataRecursively(revIdList, certificateWrapper.getCertificateRevocationData());
+				}
+				for (TimestampWrapper timestampWrapper : signature.getTimestampList()) {
+					for (CertificateWrapper certificateWrapper : timestampWrapper.getCertificateChain()) {
+						populateWithRevocationDataRecursively(revIdList, certificateWrapper.getCertificateRevocationData());
+					}
+				}
+				for (SignatureWrapper counterSignature : diagnosticData.getAllCounterSignaturesForMasterSignature(signature)) {
+					for (CertificateWrapper certificateWrapper : counterSignature.getCertificateChain()) {
+						populateWithRevocationDataRecursively(revIdList, certificateWrapper.getCertificateRevocationData());
+					}
+					for (TimestampWrapper timestamp : counterSignature.getTimestampList()) {
+						for (CertificateWrapper certificateWrapper : timestamp.getCertificateChain()) {
+							populateWithRevocationDataRecursively(revIdList, certificateWrapper.getCertificateRevocationData());
+						}
+					}
+				}
+				for (RevocationWrapper revocation : anyValidationData) {
+					assertTrue(revIdList.contains(revocation.getId()));
+				}
+			}
+		}
+	}
+
+	private List<String> populateWithRevocationDataRecursively(List<String> revIdList, List<? extends RevocationWrapper> revocationData) {
+		for (RevocationWrapper revocationWrapper : revocationData) {
+			if (!revIdList.contains(revocationWrapper.getId())) {
+				revIdList.add(revocationWrapper.getId());
+				for (CertificateWrapper certificateWrapper : revocationWrapper.getCertificateChain()) {
+					populateWithRevocationDataRecursively(revIdList, certificateWrapper.getCertificateRevocationData());
+				}
+			}
+		}
+		return revIdList;
 	}
 
 	@Override

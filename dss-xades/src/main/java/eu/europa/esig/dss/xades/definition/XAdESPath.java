@@ -361,6 +361,20 @@ public interface XAdESPath extends Serializable {
 	String getTimeStampValidationDataRevocationValuesPath();
 
 	/**
+	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades141:AnyValidationData/xades:CertificateValues/xades:EncapsulatedX509Certificate"
+	 *
+	 * @return {@link String} path
+	 */
+	String getEncapsulatedAnyValidationDataCertValuesPath();
+
+	/**
+	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades141:AnyValidationData/xades:RevocationValues"
+	 *
+	 * @return {@link String} path
+	 */
+	String getAnyValidationDataRevocationValuesPath();
+
+	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades:SignatureTimeStamp"
 	 *
 	 * @return {@link String} path

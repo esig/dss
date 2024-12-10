@@ -34,6 +34,7 @@ import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
+import eu.europa.esig.dss.enumerations.ValidationDataEncapsulationStrategy;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JWSConstants;
@@ -75,6 +76,7 @@ class JAdESDoubleLTATest extends AbstractJAdESTestValidation {
         signatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_LT);
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 		signatureParameters.setJwsSerializationType(JWSSerializationType.FLATTENED_JSON_SERIALIZATION);
+		signatureParameters.setValidationDataEncapsulationStrategy(ValidationDataEncapsulationStrategy.CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA);
 
         JAdESService service = new JAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsa());
@@ -92,6 +94,7 @@ class JAdESDoubleLTATest extends AbstractJAdESTestValidation {
         JAdESSignatureParameters extendParameters = new JAdESSignatureParameters();
         extendParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_LTA);
         extendParameters.setJwsSerializationType(JWSSerializationType.FLATTENED_JSON_SERIALIZATION);
+		extendParameters.setValidationDataEncapsulationStrategy(ValidationDataEncapsulationStrategy.CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA);
         DSSDocument extendedDocument = service.extendDocument(signedDocument, extendParameters);
         
         checkOnSigned(extendedDocument, 1);

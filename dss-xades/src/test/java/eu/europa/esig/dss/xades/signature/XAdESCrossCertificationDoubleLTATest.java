@@ -35,24 +35,25 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
 import eu.europa.esig.dss.xml.common.definition.XPathExpressionBuilder;
 import eu.europa.esig.dss.xml.utils.DomUtils;
-import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
 import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.Tag;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -65,6 +66,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * See DSS-1806
  */
+@Tag("slow")
 class XAdESCrossCertificationDoubleLTATest extends PKIFactoryAccess {
 
     @RepeatedTest(10)
@@ -106,7 +108,7 @@ class XAdESCrossCertificationDoubleLTATest extends PKIFactoryAccess {
 
         SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedDocument);
         validator.setCertificateVerifier(customCertificateVerifier);
-        validator.setDetachedContents(Arrays.asList(documentToSign));
+        validator.setDetachedContents(Collections.singletonList(documentToSign));
         Reports reports = validator.validateDocument();
 
         DiagnosticData diagnosticData = reports.getDiagnosticData();
@@ -141,7 +143,7 @@ class XAdESCrossCertificationDoubleLTATest extends PKIFactoryAccess {
         service.setTspSource(getKeyStoreTSPSourceByNameAndTime(EE_GOOD_TSA, calendar.getTime()));
 
         XAdESSignatureParameters extendParameters = new XAdESSignatureParameters();
-        extendParameters.setDetachedContents(Arrays.asList(documentToSign));
+        extendParameters.setDetachedContents(Collections.singletonList(documentToSign));
         extendParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
         DSSDocument doubleLTADoc = service.extendDocument(signedDocument, extendParameters);
         // doubleLTADoc.save("target/doubleLTA.xml");
@@ -149,7 +151,7 @@ class XAdESCrossCertificationDoubleLTATest extends PKIFactoryAccess {
         validator = SignedDocumentValidator.fromDocument(doubleLTADoc);
 
         validator.setCertificateVerifier(getOfflineCertificateVerifier());
-        validator.setDetachedContents(Arrays.asList(documentToSign));
+        validator.setDetachedContents(Collections.singletonList(documentToSign));
         reports = validator.validateDocument();
 
         diagnosticData = reports.getDiagnosticData();
@@ -162,16 +164,25 @@ class XAdESCrossCertificationDoubleLTATest extends PKIFactoryAccess {
         assertEquals(relatedRevocationsFirstLTA.size(), relatedRevocationsSecondLTA.size());
 
         Collection<RelatedCertificateWrapper> tstValidationDataCerts = signature.foundCertificates().getRelatedCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA);
-        assertTrue(Utils.isCollectionEmpty(tstValidationDataCerts));
+        assertFalse(Utils.isCollectionEmpty(tstValidationDataCerts));
 
         Collection<RelatedRevocationWrapper> tstValidationDataRevocations = signature.foundRevocations().getRelatedRevocationsByOrigin(RevocationOrigin.TIMESTAMP_VALIDATION_DATA);
         assertTrue(Utils.isCollectionEmpty(tstValidationDataRevocations));
+
+        Collection<RelatedCertificateWrapper> anyValidationDataCerts = signature.foundCertificates().getRelatedCertificatesByOrigin(CertificateOrigin.ANY_VALIDATION_DATA);
+        assertTrue(Utils.isCollectionEmpty(anyValidationDataCerts));
+
+        Collection<RelatedRevocationWrapper> anyValidationDataRevocations = signature.foundRevocations().getRelatedRevocationsByOrigin(RevocationOrigin.ANY_VALIDATION_DATA);
+        assertTrue(Utils.isCollectionEmpty(anyValidationDataRevocations));
 
         Document document = DomUtils.buildDOM(doubleLTADoc);
         assertNotNull(document);
 
         Element timeStampValidationDataElement = DomUtils.getElement(document, new XPathExpressionBuilder().all().element(XAdES141Element.TIMESTAMP_VALIDATION_DATA).build());
-        assertNull(timeStampValidationDataElement);
+        assertNotNull(timeStampValidationDataElement);
+
+        Element anyValidationDataElement = DomUtils.getElement(document, new XPathExpressionBuilder().all().element(XAdES141Element.ANY_VALIDATION_DATA).build());
+        assertNull(anyValidationDataElement);
 
     }
 

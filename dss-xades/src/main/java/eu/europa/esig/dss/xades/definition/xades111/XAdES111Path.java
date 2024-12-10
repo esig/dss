@@ -308,6 +308,16 @@ public class XAdES111Path extends AbstractPath implements XAdESPath {
 	}
 
 	@Override
+	public String getEncapsulatedAnyValidationDataCertValuesPath() {
+		return null;
+	}
+
+	@Override
+	public String getAnyValidationDataRevocationValuesPath() {
+		return null;
+	}
+
+	@Override
 	public String getSignatureTimestampPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES111Element.QUALIFYING_PROPERTIES, XAdES111Element.UNSIGNED_PROPERTIES,
 				XAdES111Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES111Element.SIGNATURE_TIMESTAMP);

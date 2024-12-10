@@ -40,6 +40,9 @@ public enum CertificateOrigin {
 	/** Certificates extracted from TimeStampValidationData element */
 	TIMESTAMP_VALIDATION_DATA,
 
+	/** Certificates extracted from AnyValidationData element */
+	ANY_VALIDATION_DATA,
+
 	/** Certificates extracted from DSS dictionary, PAdES specific */
 	DSS_DICTIONARY,
 

@@ -20,22 +20,21 @@
  */
 package eu.europa.esig.dss.jades.signature;
 
+import eu.europa.esig.dss.enumerations.ValidationDataEncapsulationStrategy;
 import eu.europa.esig.dss.jades.JAdESHeaderParameterNames;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JsonObject;
 import eu.europa.esig.dss.jades.validation.JAdESEtsiUHeader;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.signature.SignatureRequirementsChecker;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.ValidationData;
+import eu.europa.esig.dss.spi.validation.ValidationDataContainer;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.spi.signature.AdvancedSignature;
-import eu.europa.esig.dss.spi.validation.CertificateVerifier;
-import eu.europa.esig.dss.model.signature.SignatureCryptographicVerification;
-import eu.europa.esig.dss.spi.validation.ValidationData;
-import eu.europa.esig.dss.spi.validation.ValidationDataContainer;
 import org.jose4j.json.internal.json_simple.JSONArray;
 import org.jose4j.json.internal.json_simple.JSONObject;
 import org.slf4j.Logger;
@@ -105,15 +104,10 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 
 			removeOldCertificateValues(jadesSignature, etsiUHeader);
 			removeOldRevocationValues(jadesSignature, etsiUHeader);
+			removeLastTimestampAndAnyValidationData(jadesSignature, etsiUHeader);
 
-			final ValidationData validationDataForInclusion = validationDataContainer.getCompleteValidationDataForSignature(signature);
-
-			Set<CertificateToken> certificateValuesToAdd = validationDataForInclusion.getCertificateTokens();
-			Set<CRLToken> crlsToAdd = validationDataForInclusion.getCrlTokens();
-			Set<OCSPToken> ocspsToAdd = validationDataForInclusion.getOcspTokens();
-
-			incorporateXVals(etsiUHeader, certificateValuesToAdd, params.isBase64UrlEncodedEtsiUComponents());
-			incorporateRVals(etsiUHeader, crlsToAdd, ocspsToAdd, params.isBase64UrlEncodedEtsiUComponents());
+			ValidationData includedValidationData = incorporateValidationDataForSignature(validationDataContainer, signature, etsiUHeader, params);
+			incorporateValidationDataForTimestamps(validationDataContainer, signature, etsiUHeader, params, includedValidationData);
 		}
 	}
 
@@ -125,6 +119,131 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 	private void removeOldRevocationValues(JAdESSignature jadesSignature, JAdESEtsiUHeader etsiUHeader) {
 		etsiUHeader.removeComponent(JAdESHeaderParameterNames.R_VALS);
 		jadesSignature.resetRevocationSources();
+	}
+
+	/**
+	 * This method removes the 'tstVd' and 'anyValData' header parameters appearing
+	 * in the end of the 'etsiU' unsigned property array.
+	 */
+	protected void removeLastTimestampAndAnyValidationData(JAdESSignature jadesSignature, JAdESEtsiUHeader etsiUHeader) {
+		boolean resetSources = false;
+		while (etsiUHeader.removeLastComponent(JAdESHeaderParameterNames.TST_VD, JAdESHeaderParameterNames.ANY_VAL_DATA)) {
+			resetSources = true;
+		}
+		if (resetSources) {
+			jadesSignature.resetCertificateSource();
+			jadesSignature.resetRevocationSources();
+		}
+	}
+
+	/**
+	 * Incorporates the validation data for the signature validation,
+	 * according to the chosen validation data encapsulation mechanism
+	 *
+	 * @param validationDataContainer {@link ValidationDataContainer}
+	 * @param signature {@link AdvancedSignature}
+	 * @param etsiUHeader {@link JAdESEtsiUHeader}
+	 * @param signatureParameters {@link JAdESSignatureParameters}
+	 * @return {@link ValidationData} incorporated validation data
+	 */
+	private ValidationData incorporateValidationDataForSignature(ValidationDataContainer validationDataContainer,
+																 AdvancedSignature signature, JAdESEtsiUHeader etsiUHeader,
+																 JAdESSignatureParameters signatureParameters) {
+		ValidationData validationDataForInclusion;
+		ValidationDataEncapsulationStrategy validationDataEncapsulationStrategy = signatureParameters.getValidationDataEncapsulationStrategy();
+		switch (validationDataEncapsulationStrategy) {
+			case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA:
+			case ANY_VALIDATION_DATA_ONLY:
+				validationDataForInclusion = validationDataContainer.getAllValidationDataForSignatureForInclusion(signature);
+				break;
+
+			case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_LT_SEPARATED:
+			case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_AND_ANY_VALIDATION_DATA:
+			case CERTIFICATE_REVOCATION_VALUES_AND_ANY_VALIDATION_DATA:
+				validationDataForInclusion = validationDataContainer.getValidationDataForSignatureForInclusion(signature);
+				validationDataForInclusion.addValidationData(validationDataContainer.getValidationDataForCounterSignaturesForInclusion(signature));
+				break;
+
+			default:
+				throw new UnsupportedOperationException(String.format(
+						"The ValidationDataEncapsulationStrategy '%s' is not supported!", validationDataEncapsulationStrategy));
+		}
+
+		Set<CertificateToken> certificateValuesToAdd = validationDataForInclusion.getCertificateTokens();
+		Set<CRLToken> crlsToAdd = validationDataForInclusion.getCrlTokens();
+		Set<OCSPToken> ocspsToAdd = validationDataForInclusion.getOcspTokens();
+
+		switch (validationDataEncapsulationStrategy) {
+			case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA:
+			case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_LT_SEPARATED:
+			case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_AND_ANY_VALIDATION_DATA:
+			case CERTIFICATE_REVOCATION_VALUES_AND_ANY_VALIDATION_DATA:
+				incorporateXVals(etsiUHeader, certificateValuesToAdd, signatureParameters.isBase64UrlEncodedEtsiUComponents());
+				incorporateRVals(etsiUHeader, crlsToAdd, ocspsToAdd, signatureParameters.isBase64UrlEncodedEtsiUComponents());
+				break;
+
+			case ANY_VALIDATION_DATA_ONLY:
+				incorporateAnyValidationData(etsiUHeader, validationDataForInclusion, signatureParameters.isBase64UrlEncodedEtsiUComponents());
+				break;
+
+			default:
+				throw new UnsupportedOperationException(String.format(
+						"The ValidationDataEncapsulationStrategy '%s' is not supported!", validationDataEncapsulationStrategy));
+		}
+		return validationDataForInclusion;
+	}
+
+	/**
+	 * Incorporates the validation data for the signature timestamps validation,
+	 * according to the chosen validation data encapsulation mechanism
+	 *
+	 * @param validationDataContainer {@link ValidationDataContainer}
+	 * @param signature {@link AdvancedSignature}
+	 * @param etsiUHeader {@link JAdESEtsiUHeader}
+	 * @param signatureParameters {@link JAdESSignatureParameters}
+	 * @param validationDataToExclude {@link ValidationData} to be excluded from incorporation to avoid duplicates
+	 */
+	private void incorporateValidationDataForTimestamps(ValidationDataContainer validationDataContainer,
+			AdvancedSignature signature, JAdESEtsiUHeader etsiUHeader, JAdESSignatureParameters signatureParameters,
+			ValidationData validationDataToExclude) {
+		ValidationData validationData;
+		ValidationDataEncapsulationStrategy validationDataEncapsulationStrategy = signatureParameters.getValidationDataEncapsulationStrategy();
+		switch (validationDataEncapsulationStrategy) {
+			case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_LT_SEPARATED:
+				validationData = validationDataContainer.getValidationDataForSignatureTimestampsForInclusion(signature);
+				validationData.addValidationData(validationDataContainer.getValidationDataForCounterSignatureTimestampsForInclusion(signature));
+				validationData.excludeValidationData(validationDataToExclude);
+				incorporateTstValidationData(etsiUHeader, validationData, signatureParameters.isBase64UrlEncodedEtsiUComponents());
+				break;
+
+			case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_AND_ANY_VALIDATION_DATA:
+				validationData = validationDataContainer.getValidationDataForSignatureTimestampsForInclusion(signature);
+				validationData.excludeValidationData(validationDataToExclude);
+				incorporateTstValidationData(etsiUHeader, validationData, signatureParameters.isBase64UrlEncodedEtsiUComponents());
+
+				// incorporate validation data for counter-signature timestamps within AnyValidationData element
+				ValidationData counterSigTstValidationData = validationDataContainer.getValidationDataForCounterSignatureTimestampsForInclusion(signature);
+				counterSigTstValidationData.excludeValidationData(validationData);
+				counterSigTstValidationData.excludeValidationData(validationDataToExclude);
+				incorporateAnyValidationData(etsiUHeader, counterSigTstValidationData, signatureParameters.isBase64UrlEncodedEtsiUComponents());
+				break;
+
+			case CERTIFICATE_REVOCATION_VALUES_AND_ANY_VALIDATION_DATA:
+				validationData = validationDataContainer.getValidationDataForSignatureTimestampsForInclusion(signature);
+				validationData.addValidationData(validationDataContainer.getValidationDataForCounterSignatureTimestampsForInclusion(signature));
+				validationData.excludeValidationData(validationDataToExclude);
+				incorporateAnyValidationData(etsiUHeader, validationData, signatureParameters.isBase64UrlEncodedEtsiUComponents());
+				break;
+
+			case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA:
+			case ANY_VALIDATION_DATA_ONLY:
+				// skip
+				break;
+
+			default:
+				throw new UnsupportedOperationException(String.format(
+						"The ValidationDataEncapsulationStrategy '%s' is not supported!", validationDataEncapsulationStrategy));
+		}
 	}
 
 	/**
@@ -223,23 +342,58 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 	}
 
 	/**
-	 * This method checks the signature integrity and throws a {@code DSSException} if the signature is broken.
+	 * This method incorporates the 'tstVD' dictionary in the signature
 	 *
-	 * @param jadesSignature {@link JAdESSignature} to verify
-	 * @param params {@link JAdESSignatureParameters} the used signature parameters
-	 * @throws DSSException in case of the cryptographic signature verification fails
+	 * @param etsiUHeader {@link JAdESEtsiUHeader} containing the unsigned properties list
+	 * @param validationDataForInclusion {@link ValidationData} to be included into the signature
+	 * @param base64UrlEncoded boolean value whether the etsiUHeader shall be base64url encoded or not
 	 */
-	protected void assertSignatureValid(JAdESSignature jadesSignature, JAdESSignatureParameters params) throws DSSException {
-		if (params.isGenerateTBSWithoutCertificate() && jadesSignature.getCertificateSource().getNumberOfCertificates() == 0) {
-			LOG.debug("Extension of a signature without TBS certificate. Signature validity is not checked.");
-			return;
-		}
+	protected void incorporateTstValidationData(JAdESEtsiUHeader etsiUHeader, ValidationData validationDataForInclusion, boolean base64UrlEncoded) {
+		incorporateValidationData(etsiUHeader, validationDataForInclusion, JAdESHeaderParameterNames.TST_VD, base64UrlEncoded);
+	}
 
-		final SignatureCryptographicVerification signatureCryptographicVerification = jadesSignature.getSignatureCryptographicVerification();
-		if (!signatureCryptographicVerification.isSignatureIntact()) {
-			final String errorMessage = signatureCryptographicVerification.getErrorMessage();
-			throw new DSSException("Cryptographic signature verification has failed" + (errorMessage.isEmpty() ? "." : (" / " + errorMessage)));
+	/**
+	 * This method incorporates the 'anyValData' dictionary in the signature
+	 *
+	 * @param etsiUHeader {@link JAdESEtsiUHeader} containing the unsigned properties list
+	 * @param validationDataForInclusion {@link ValidationData} to be included into the signature
+	 * @param base64UrlEncoded boolean value whether the etsiUHeader shall be base64url encoded or not
+	 */
+	protected void incorporateAnyValidationData(JAdESEtsiUHeader etsiUHeader, ValidationData validationDataForInclusion, boolean base64UrlEncoded) {
+		incorporateValidationData(etsiUHeader, validationDataForInclusion, JAdESHeaderParameterNames.ANY_VAL_DATA, base64UrlEncoded);
+	}
+
+	/**
+	 * This method incorporates the validation data container in the signature
+	 *
+	 * @param etsiUHeader {@link JAdESEtsiUHeader} containing the unsigned properties list
+	 * @param validationDataForInclusion {@link ValidationData} to be included into the signature
+	 * @param headerName {@link String} the name of the property to be incorporated
+	 * @param base64UrlEncoded boolean value whether the etsiUHeader shall be base64url encoded or not
+	 */
+	protected void incorporateValidationData(JAdESEtsiUHeader etsiUHeader, ValidationData validationDataForInclusion,
+											 String headerName, boolean base64UrlEncoded) {
+		if (!validationDataForInclusion.isEmpty()) {
+			JsonObject tstVd = getTstVd(validationDataForInclusion);
+			etsiUHeader.addComponent(headerName, tstVd, base64UrlEncoded);
 		}
+	}
+
+	private JsonObject getTstVd(final ValidationData validationDataForInclusion) {
+		Set<CertificateToken> certificateTokens = validationDataForInclusion.getCertificateTokens();
+		Set<CRLToken> crlTokens = validationDataForInclusion.getCrlTokens();
+		Set<OCSPToken> ocspTokens = validationDataForInclusion.getOcspTokens();
+
+		JsonObject tstVd = new JsonObject();
+		if (Utils.isCollectionNotEmpty(certificateTokens)) {
+			JSONArray xVals = getXVals(certificateTokens);
+			tstVd.put(JAdESHeaderParameterNames.X_VALS, xVals);
+		}
+		if (Utils.isCollectionNotEmpty(crlTokens) || Utils.isCollectionNotEmpty(ocspTokens)) {
+			JsonObject rVals = getRVals(crlTokens, ocspTokens);
+			tstVd.put(JAdESHeaderParameterNames.R_VALS, rVals);
+		}
+		return tstVd;
 	}
 
 	private List<AdvancedSignature> getExtendToLTLevelSignatures(List<AdvancedSignature> signatures, JAdESSignatureParameters parameters) {

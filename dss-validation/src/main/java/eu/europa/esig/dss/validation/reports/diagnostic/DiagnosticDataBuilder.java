@@ -1121,6 +1121,8 @@ public abstract class DiagnosticDataBuilder {
 					signatureCertificateSource.getAttrAuthoritiesCertValues(), certificateSource);
 			populateCertificateOriginMap(relatedCertificatesMap, CertificateOrigin.TIMESTAMP_VALIDATION_DATA,
 					signatureCertificateSource.getTimeStampValidationDataCertValues(), certificateSource);
+			populateCertificateOriginMap(relatedCertificatesMap, CertificateOrigin.ANY_VALIDATION_DATA,
+					signatureCertificateSource.getAnyValidationDataCertValues(), certificateSource);
 			populateCertificateOriginMap(relatedCertificatesMap, CertificateOrigin.DSS_DICTIONARY,
 					signatureCertificateSource.getDSSDictionaryCertValues(), certificateSource);
 			populateCertificateOriginMap(relatedCertificatesMap, CertificateOrigin.VRI_DICTIONARY,
@@ -1264,6 +1266,8 @@ public abstract class DiagnosticDataBuilder {
 					signatureCertificateSource.getAttrAuthoritiesCertValues(), certificateSource, signingCertificate);
 			populateOrphanCertificateOriginMap(orphanCertificatesMap, CertificateOrigin.TIMESTAMP_VALIDATION_DATA,
 					signatureCertificateSource.getTimeStampValidationDataCertValues(), certificateSource, signingCertificate);
+			populateOrphanCertificateOriginMap(orphanCertificatesMap, CertificateOrigin.ANY_VALIDATION_DATA,
+					signatureCertificateSource.getAnyValidationDataCertValues(), certificateSource, signingCertificate);
 			populateOrphanCertificateOriginMap(orphanCertificatesMap, CertificateOrigin.DSS_DICTIONARY,
 					signatureCertificateSource.getDSSDictionaryCertValues(), certificateSource, signingCertificate);
 			populateOrphanCertificateOriginMap(orphanCertificatesMap, CertificateOrigin.VRI_DICTIONARY,

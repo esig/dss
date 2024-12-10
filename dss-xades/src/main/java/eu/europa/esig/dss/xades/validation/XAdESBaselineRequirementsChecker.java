@@ -21,18 +21,18 @@
 package eu.europa.esig.dss.xades.validation;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.x509.ListCertificateSource;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.signature.BaselineRequirementsChecker;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.x509.ListCertificateSource;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureUtils;
-import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.xades.definition.XAdESNamespace;
 import eu.europa.esig.dss.xades.definition.XAdESPath;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.Manifest;
@@ -312,13 +312,22 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
 
     @Override
     protected boolean containsLTLevelCertificates() {
+        return containsCertificateValues() || containsTstOrAnyValDataCertificates();
+    }
+
+    private boolean containsCertificateValues() {
         Element signatureElement = signature.getSignatureElement();
         XAdESPath xadesPaths = signature.getXAdESPaths();
-        if (getNumberOfOccurrences(signatureElement, xadesPaths.getCertificateValuesPath()) +
-                getNumberOfOccurrences(signatureElement, xadesPaths.getAttrAuthoritiesCertValuesPath()) == 0) {
-            return false;
-        }
-        return true;
+        return getNumberOfOccurrences(signatureElement, xadesPaths.getCertificateValuesPath()) +
+                getNumberOfOccurrences(signatureElement, xadesPaths.getAttrAuthoritiesCertValuesPath()) != 0;
+    }
+
+    private boolean containsTstOrAnyValDataCertificates() {
+        Element signatureElement = signature.getSignatureElement();
+        XAdESPath xadesPaths = signature.getXAdESPaths();
+
+        return getNumberOfOccurrences(signatureElement, xadesPaths.getEncapsulatedTimeStampValidationDataCertValuesPath()) +
+                getNumberOfOccurrences(signatureElement, xadesPaths.getEncapsulatedAnyValidationDataCertValuesPath()) != 0;
     }
 
     @Override

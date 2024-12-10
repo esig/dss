@@ -88,7 +88,7 @@ class JAdESImpossibleExtensionTest extends PKIFactoryAccess {
 		extensionParameters.setJwsSerializationType(JWSSerializationType.JSON_SERIALIZATION);
 
 		Exception exception = assertThrows(IllegalArgumentException.class, () -> service.extendDocument(signedDocument, extensionParameters));
-		assertEquals("JAdES-LTA with All data Timestamp requires complete binaries of signed documents! "
+		assertEquals("JAdES-LTA requires complete binaries of signed documents! "
 				+ "Extension with a DigestDocument is not possible.", exception.getMessage());
 	}
 

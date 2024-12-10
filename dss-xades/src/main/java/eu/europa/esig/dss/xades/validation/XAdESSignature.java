@@ -796,7 +796,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * Gets xades:CompleteCertificateRefs or xades141:CompleteCertificateRefsV2 element
 	 *
 	 * @return {@link Element}
+	 * @deprecated since DSS 6.2. To be removed.
 	 */
+	@Deprecated
 	public Element getCompleteCertificateRefs() {
 		Element element = null;
 		String completeCertificateRefsPath = xadesPath.getCompleteCertificateRefsPath();
@@ -814,7 +816,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * Gets xades:CompleteRevocationRefs
 	 *
 	 * @return {@link Element}
+	 * @deprecated since DSS 6.2. To be removed.
 	 */
+	@Deprecated
 	public Element getCompleteRevocationRefs() {
 		return DomUtils.getElement(signatureElement, xadesPath.getCompleteRevocationRefsPath());
 	}
@@ -823,7 +827,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * Gets xades:SigAndRefsTimeStamp node list
 	 *
 	 * @return {@link NodeList}
+	 * @deprecated since DSS 6.2. To be removed.
 	 */
+	@Deprecated
 	public NodeList getSigAndRefsTimeStamp() {
 		NodeList nodeList = null;
 		String sigAndRefsTimestampPath = xadesPath.getSigAndRefsTimestampPath();
@@ -841,7 +847,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * Gets xades:RefsOnlyTimestamp node list
 	 *
 	 * @return {@link NodeList}
+	 * @deprecated since DSS 6.2. To be removed.
 	 */
+	@Deprecated
 	public NodeList getRefsOnlyTimestampTimeStamp() {
 		NodeList nodeList = null;
 		String refsOnlyTimestampPath = xadesPath.getRefsOnlyTimestampPath();
@@ -859,7 +867,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * Gets xades:CertificateValues element
 	 *
 	 * @return {@link Element}
+	 * @deprecated since DSS 6.2. To be removed.
 	 */
+	@Deprecated
 	public Element getCertificateValues() {
 		return DomUtils.getElement(signatureElement, xadesPath.getCertificateValuesPath());
 	}
@@ -868,7 +878,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * Gets xades:RevocationValues element
 	 *
 	 * @return {@link Element}
+	 * @deprecated since DSS 6.2. To be removed.
 	 */
+	@Deprecated
 	public Element getRevocationValues() {
 		return DomUtils.getElement(signatureElement, xadesPath.getRevocationValuesPath());
 	}
@@ -1438,7 +1450,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * timestamp.
 	 *
 	 * @return {@link Element} xades141:TimestampValidationData
+	 * @deprecated since DSS 6.2. To be removed.
 	 */
+	@Deprecated
 	public Element getLastTimestampValidationData() {
 		final NodeList nodeList = DomUtils.getNodeList(signatureElement, xadesPath.getUnsignedSignaturePropertiesPath() + "/*");
 		if (nodeList.getLength() > 0) {

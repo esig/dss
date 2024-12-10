@@ -235,6 +235,8 @@ public abstract class AbstractXAdESTestSignature extends AbstractPkiFactoryTestD
 					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES).size());
 			assertEquals(certificateSource.getTimeStampValidationDataCertValues().size(),
 					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA).size());
+			assertEquals(certificateSource.getAnyValidationDataCertValues().size(),
+					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.ANY_VALIDATION_DATA).size());
 			assertEquals(certificateSource.getAttrAuthoritiesCertValues().size(),
 					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES).size());
 			assertEquals(0, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.SIGNED_DATA).size()
@@ -331,6 +333,32 @@ public abstract class AbstractXAdESTestSignature extends AbstractPkiFactoryTestD
 		Document expected = DomUtils.buildDOM(signedAssertionOne);
 		Document extracted = DomUtils.buildDOM(signedAssertionTwo);
 		return expected.isEqualNode(extracted);
+	}
+
+	@Override
+	protected void checkCertificateValuesEncapsulation(DiagnosticData diagnosticData) {
+		SignatureLevel signatureFormat = getSignatureParameters().getSignatureLevel();
+		if (getSignatureParameters().isEn319132() &&
+				(SignatureLevel.XAdES_BASELINE_B == signatureFormat ||
+				SignatureLevel.XAdES_BASELINE_T == signatureFormat ||
+				SignatureLevel.XAdES_BASELINE_LT == signatureFormat ||
+				SignatureLevel.XAdES_BASELINE_LTA == signatureFormat)) {
+			super.checkCertificateValuesEncapsulation(diagnosticData);
+		}
+		// skip for not BASELINE profiles
+	}
+
+	@Override
+	protected void checkRevocationDataEncapsulation(DiagnosticData diagnosticData) {
+		SignatureLevel signatureFormat = getSignatureParameters().getSignatureLevel();
+		if (getSignatureParameters().isEn319132() &&
+				(SignatureLevel.XAdES_BASELINE_B == signatureFormat ||
+						SignatureLevel.XAdES_BASELINE_T == signatureFormat ||
+						SignatureLevel.XAdES_BASELINE_LT == signatureFormat ||
+						SignatureLevel.XAdES_BASELINE_LTA == signatureFormat)) {
+			super.checkRevocationDataEncapsulation(diagnosticData);
+		}
+		// skip for not BASELINE profiles
 	}
 
 }

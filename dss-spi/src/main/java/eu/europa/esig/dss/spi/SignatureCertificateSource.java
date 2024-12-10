@@ -93,12 +93,20 @@ public abstract class SignatureCertificateSource extends TokenCertificateSource 
 
 	/**
 	 * Retrieves the list of all certificates from the TimeStampValidationData
-	 * (XAdES)
 	 * 
 	 * @return the list of all certificates present in the TimeStampValidationData
 	 */
 	public List<CertificateToken> getTimeStampValidationDataCertValues() {
 		return getCertificateTokensByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA);
+	}
+
+	/**
+	 * Retrieves the list of all certificates from the AnyValidationData element
+	 *
+	 * @return the list of all certificates present in the AnyValidationData
+	 */
+	public List<CertificateToken> getAnyValidationDataCertValues() {
+		return getCertificateTokensByOrigin(CertificateOrigin.ANY_VALIDATION_DATA);
 	}
 
 	/**

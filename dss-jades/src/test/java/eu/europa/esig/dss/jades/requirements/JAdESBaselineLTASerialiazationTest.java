@@ -24,6 +24,10 @@ import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertNull;
+
 class JAdESBaselineLTASerialiazationTest extends AbstractJAdESSerializationSignatureRequirementsCheck {
 
 	@Override
@@ -32,6 +36,12 @@ class JAdESBaselineLTASerialiazationTest extends AbstractJAdESSerializationSigna
 		signatureParameters.setJwsSerializationType(JWSSerializationType.JSON_SERIALIZATION);
 		signatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_LTA);
 		return signatureParameters;
+	}
+
+	@Override
+	protected void checkAnyValidationData(Map<?, ?> unprotectedHeaderMap) {
+		Map<?, ?> anyVD = (Map<?, ?>) getEtsiUElement(unprotectedHeaderMap, "anyValData");
+		assertNull(anyVD);
 	}
 
 }

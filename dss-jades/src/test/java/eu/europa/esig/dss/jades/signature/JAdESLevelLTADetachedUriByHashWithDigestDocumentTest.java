@@ -80,7 +80,7 @@ class JAdESLevelLTADetachedUriByHashWithDigestDocumentTest extends AbstractJAdES
     @Override
     public void signAndVerify() {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> super.signAndVerify());
-        assertEquals("JAdES-LTA with All data Timestamp requires complete binaries of signed documents! " +
+        assertEquals("JAdES-LTA requires complete binaries of signed documents! " +
                 "Extension with a DigestDocument is not possible.", exception.getMessage());
     }
 

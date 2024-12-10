@@ -24,10 +24,9 @@ import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.model.identifier.EntityIdentifier;
+import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
-import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
-import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
@@ -202,6 +201,17 @@ public class ValidationData {
 	}
 
 	/**
+	 * Excludes {@code validationDataToExclude} from the current validation data set
+	 *
+	 * @param validationDataToExclude {@link ValidationData} to be excluded
+	 */
+	public void excludeValidationData(ValidationData validationDataToExclude) {
+		this.excludeCertificateTokens(validationDataToExclude.getCertificateTokens());
+		this.excludeCRLTokensCollection(validationDataToExclude.getCrlTokens());
+		this.excludeOCSPTokensCollection(validationDataToExclude.getOcspTokens());
+	}
+
+	/**
 	 * Removes all certificate token entries matching the provided collection
 	 *
 	 * @param certificateTokensToExclude a collection of {@link CertificateToken} to exclude
@@ -226,10 +236,21 @@ public class ValidationData {
 	 *
 	 * @param crlTokensToExclude a collection of {@link EncapsulatedRevocationTokenIdentifier} to exclude
 	 */
-	public void excludeCRLTokens(Collection<EncapsulatedRevocationTokenIdentifier<CRL>> crlTokensToExclude) {
+	public void excludeCRLTokens(Collection<? extends Identifier> crlTokensToExclude) {
 		if (Utils.isCollectionNotEmpty(crlTokensToExclude)) {
-			Set<String> tokenIdsToExclude = crlTokensToExclude.stream().map(c -> c.getDSSId().asXmlId()).collect(Collectors.toSet());
+			Set<String> tokenIdsToExclude = crlTokensToExclude.stream().map(Identifier::asXmlId).collect(Collectors.toSet());
 			crlTokens.removeIf(crlToken -> tokenIdsToExclude.contains(crlToken.getDSSIdAsString()));
+		}
+	}
+
+	/**
+	 * Removes all CRL token entries matching {@code crlTokensToExclude} from the current CRL data set
+	 *
+	 * @param crlTokensToExclude a collection of {@link CRLToken}s to exclude
+	 */
+	public void excludeCRLTokensCollection(Collection<CRLToken> crlTokensToExclude) {
+		if (Utils.isCollectionNotEmpty(crlTokensToExclude)) {
+			excludeCRLTokens(crlTokensToExclude.stream().map(Token::getDSSId).collect(Collectors.toSet()));
 		}
 	}
 
@@ -238,10 +259,21 @@ public class ValidationData {
 	 *
 	 * @param ocspTokensToExclude a collection of {@link EncapsulatedRevocationTokenIdentifier} to exclude
 	 */
-	public void excludeOCSPTokens(Collection<EncapsulatedRevocationTokenIdentifier<OCSP>> ocspTokensToExclude) {
+	public void excludeOCSPTokens(Collection<? extends Identifier> ocspTokensToExclude) {
 		if (Utils.isCollectionNotEmpty(ocspTokensToExclude)) {
-			Set<String> tokenIdsToExclude = ocspTokensToExclude.stream().map(c -> c.getDSSId().asXmlId()).collect(Collectors.toSet());
+			Set<String> tokenIdsToExclude = ocspTokensToExclude.stream().map(Identifier::asXmlId).collect(Collectors.toSet());
 			ocspTokens.removeIf(ocspToken -> tokenIdsToExclude.contains(ocspToken.getDSSIdAsString()));
+		}
+	}
+
+	/**
+	 * Removes all OCSP token entries matching {@code ocspTokensToExclude} from the current OCSP data set
+	 *
+	 * @param ocspTokensToExclude a collection of {@link OCSPToken}s to exclude
+	 */
+	public void excludeOCSPTokensCollection(Collection<OCSPToken> ocspTokensToExclude) {
+		if (Utils.isCollectionNotEmpty(ocspTokensToExclude)) {
+			excludeCRLTokens(ocspTokensToExclude.stream().map(Token::getDSSId).collect(Collectors.toSet()));
 		}
 	}
 

@@ -301,6 +301,16 @@ public class XAdES122Path extends AbstractPath implements XAdESPath {
 	}
 
 	@Override
+	public String getEncapsulatedAnyValidationDataCertValuesPath() {
+		return null;
+	}
+
+	@Override
+	public String getAnyValidationDataRevocationValuesPath() {
+		return null;
+	}
+
+	@Override
 	public String getSignatureTimestampPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES122Element.QUALIFYING_PROPERTIES, XAdES122Element.UNSIGNED_PROPERTIES,
 				XAdES122Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES122Element.SIGNATURE_TIMESTAMP);

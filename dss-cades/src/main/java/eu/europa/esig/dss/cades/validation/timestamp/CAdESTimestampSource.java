@@ -236,6 +236,18 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 	}
 
 	@Override
+	protected boolean isAnyValidationData(CAdESAttribute unsignedAttribute) {
+		// not applicable for CAdES
+		return false;
+	}
+
+	@Override
+	protected boolean isValidationDataReferences(CAdESAttribute unsignedAttribute) {
+		// not applicable for CAdES
+		return false;
+	}
+
+	@Override
 	protected boolean isCounterSignature(CAdESAttribute unsignedAttribute) {
 		return CMSAttributes.counterSignature.equals(unsignedAttribute.getASN1Oid());
 	}

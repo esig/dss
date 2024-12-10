@@ -45,8 +45,8 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.jose4j.json.JsonUtil;
@@ -171,7 +171,8 @@ class JAdESLevelLTAOverwriteTstVDTest extends AbstractJAdESTestValidation {
         List<Object> unsignedProperties = (List<Object>) unprotected.get(JAdESHeaderParameterNames.ETSI_U);
 
         int arcTstCounter = 0;
-        int tstVDCounter = 0;
+        int tstVDNoRevCounter = 0;
+        int tstVDWithRevCounter = 0;
 
         for (Object property : unsignedProperties) {
             Map<?, ?> map = DSSJsonUtils.parseEtsiUComponent(property);
@@ -184,14 +185,18 @@ class JAdESLevelLTAOverwriteTstVDTest extends AbstractJAdESTestValidation {
                 List<?> xVals = (List<?>) tstVD.get(JAdESHeaderParameterNames.X_VALS);
                 assertTrue(Utils.isCollectionNotEmpty(xVals));
                 Map<?, ?> rVals = (Map<?, ?>) tstVD.get(JAdESHeaderParameterNames.R_VALS);
-                assertTrue(Utils.isMapNotEmpty(rVals)); // added
+                if (Utils.isMapEmpty(rVals)) {
+                    ++tstVDNoRevCounter;
+                } else {
+                    ++tstVDWithRevCounter;
+                }
 
-                ++tstVDCounter;
             }
         }
 
         assertEquals(2, arcTstCounter);
-        assertEquals(1, tstVDCounter);
+        assertEquals(1, tstVDNoRevCounter);
+        assertEquals(1, tstVDWithRevCounter);
     }
 
     @Override

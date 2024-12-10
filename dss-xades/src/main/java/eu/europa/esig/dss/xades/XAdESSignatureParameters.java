@@ -81,7 +81,6 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 
 	/**
 	 * Defines if the signature shall be created according to ETSI EN 319 132
-	 *
 	 * Default: true
 	 */
 	private boolean en319132 = true;
@@ -171,7 +170,6 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	
 	/**
 	 * The {@code DigestAlgorithm} used to incorporate CompleteCertificateRefs/CompleteRevocationRefs on -C level
-	 *
 	 * Default: SHA512
 	 */
 	private DigestAlgorithm tokenReferencesDigestAlgorithm = DigestAlgorithm.SHA512;
@@ -427,7 +425,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 
 	/**
 	 * Sets if the signature shall be created according to ETSI EN 319 132
-	 *
+	 * <p>
 	 * Default: true
 	 *
 	 * @param en319132 if the signature shall be created according to ETSI EN 319 132
@@ -448,7 +446,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	/**
 	 * Sets if the signed content shall be incorporated as XML (used for ENVELOPING)
 	 * If false, incorporates the document content in its base64 encoded representation
-	 *
+	 * <p>
 	 * Default: false (base64 encoded binaries)
 	 *
 	 * @param embedXML if the signed content shall be incorporated as XML
@@ -486,7 +484,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 
 	/**
 	 * Sets if the {@code <ds:X509Data>} element shall be added
-	 *
+	 * <p>
 	 * Default: false
 	 *
 	 * @param addX509SubjectName if the X509Data element shall be added
@@ -524,7 +522,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 
 	/**
 	 * Sets if the signature shall be pretty-printed
-	 *
+	 * <p>
 	 * Default: false
 	 *
 	 * @param prettyPrint TRUE if to pretty-print the signature, FALSE otherwise
@@ -545,7 +543,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 
 	/**
 	 * Sets the XMLDSIG namespace
-	 *
+	 * <p>
 	 * Default: ds:http://www.w3.org/2000/09/xmldsig#
 	 *
 	 * @param xmldsigNamespace {@link DSSNamespace}
@@ -572,7 +570,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 
 	/**
 	 * Sets the XAdES namespace
-	 *
+	 * <p>
 	 * Default: xades:http://uri.etsi.org/01903/v1.3.2#
 	 *
 	 * @param xadesNamespace {@link DSSNamespace}
@@ -599,7 +597,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 
 	/**
 	 * Sets the XAdES 1.4.1 namespace
-	 *
+	 * <p>
 	 * Default: xades141:http://uri.etsi.org/01903/v1.4.1#
 	 *
 	 * @param xades141Namespace {@link DSSNamespace}
@@ -643,8 +641,8 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 
 	/**
 	 * Sets a {@code DigestAlgorithm} to create CompleteCertificateRefs/CompleteRevocationRefs for -C level
-	 *
-	 * Default : SHA512
+	 * <p>
+	 * Default: SHA512
 	 *
 	 * @param tokenReferencesDigestAlgorithm {@link DigestAlgorithm}
 	 */

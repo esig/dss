@@ -24,6 +24,7 @@ import eu.europa.esig.dss.cookbook.example.CookbookTools;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.enumerations.ValidationDataEncapsulationStrategy;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
@@ -152,6 +153,53 @@ class ExtendXAdESTest extends CookbookTools {
 		// end::demoLTAExtend[]
 
 		testFinalDocument(ltaLevelDocument);
+	}
+
+	void validationDataEncapsulationStrategy() {
+		XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
+		// tag::valDataStrategy[]
+		// import eu.europa.esig.dss.enumerations.ValidationDataEncapsulationStrategy;
+
+		// This constraint ensures the following behavior, used by Default:
+		// LT-level:  the validation data for the signature is added within CertificateValues and
+		//            RevocationValues elements, while validation data for embedded timestamps is
+		//            added within TimeStampValidationData element.
+		// LTA-level: the validation data for archival timestamp(s) and missed validation data
+		//            for other timestamps is added within TimeStampValidationData element.
+		//            Missed validation data for signature is added within AnyValidationData element.
+		signatureParameters.setValidationDataEncapsulationStrategy(ValidationDataEncapsulationStrategy.CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_AND_ANY_VALIDATION_DATA);
+
+		// This constraint ensures the following behavior:
+		// LT-level:  the validation data for the signature and available timestamps is added
+		//            within CertificateValues and RevocationValues elements.
+		// LTA-level: the validation data for archival timestamp(s) and missed validation data
+		//            for signature is added within TimeStampValidationData element.
+		// NOTE: This is a legacy behavior, used in DSS up to 6.1 version.
+		signatureParameters.setValidationDataEncapsulationStrategy(ValidationDataEncapsulationStrategy.CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA);
+
+		// This constraint ensures the following behavior:
+		// LT-level:  the validation data for the signature is added within CertificateValues and
+		//            RevocationValues elements, while validation data for embedded timestamps is
+		//            added within TimeStampValidationData element.
+		// LTA-level: the validation data for archival timestamp(s) and missed validation data
+		//            for signature is added within TimeStampValidationData element.
+		signatureParameters.setValidationDataEncapsulationStrategy(ValidationDataEncapsulationStrategy.CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_LT_SEPARATED);
+
+		// This constraint ensures the following behavior:
+		// LT-level:  the validation data for the signature is added within CertificateValues and
+		//            RevocationValues elements, while validation data for embedded timestamps is
+		//            added within AnyValidationData element.
+		// LTA-level: the validation data for archival timestamp(s) and missed validation data
+		//            for signature is added within AnyValidationData element.
+		signatureParameters.setValidationDataEncapsulationStrategy(ValidationDataEncapsulationStrategy.CERTIFICATE_REVOCATION_VALUES_AND_ANY_VALIDATION_DATA);
+
+		// This constraint ensures the following behavior:
+		// LT-level:  the validation data for the signature and available timestamps is added
+		//            within AnyValidationData element.
+		// LTA-level: the validation data for archival timestamp(s) and missed validation data
+		//            for signature is added within AnyValidationData element.
+		signatureParameters.setValidationDataEncapsulationStrategy(ValidationDataEncapsulationStrategy.ANY_VALIDATION_DATA_ONLY);
+		// end::valDataStrategy[]
 	}
 
 }

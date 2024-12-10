@@ -69,6 +69,7 @@ public class JAdESCRLSource extends OfflineCRLSource {
 			extractRevocationValues(attribute);
 			extractAttributeRevocationValues(attribute);
 			extractTimestampValidationData(attribute);
+			extractAnyValidationData(attribute);
 
 			extractCompleteRevocationRefs(attribute);
 			extractAttributeRevocationRefs(attribute);
@@ -90,12 +91,20 @@ public class JAdESCRLSource extends OfflineCRLSource {
 	}
 	
 	private void extractTimestampValidationData(JAdESAttribute attribute) {
-		if (JAdESHeaderParameterNames.TST_VD.equals(attribute.getHeaderName())) {
-			Map<?, ?> tstVd = DSSJsonUtils.toMap(attribute.getValue(), JAdESHeaderParameterNames.TST_VD);
+		extractValidationData(attribute, JAdESHeaderParameterNames.TST_VD, RevocationOrigin.TIMESTAMP_VALIDATION_DATA);
+	}
+
+	private void extractAnyValidationData(JAdESAttribute attribute) {
+		extractValidationData(attribute, JAdESHeaderParameterNames.ANY_VAL_DATA, RevocationOrigin.ANY_VALIDATION_DATA);
+	}
+
+	private void extractValidationData(JAdESAttribute attribute, String headerName, RevocationOrigin origin) {
+		if (headerName.equals(attribute.getHeaderName())) {
+			Map<?, ?> tstVd = DSSJsonUtils.toMap(attribute.getValue(), headerName);
 			if (Utils.isMapNotEmpty(tstVd)) {
 				Map<?, ?> rVals = DSSJsonUtils.getAsMap(tstVd, JAdESHeaderParameterNames.R_VALS);
 				if (Utils.isMapNotEmpty(rVals)) {
-					extractCRLValues(rVals, RevocationOrigin.TIMESTAMP_VALIDATION_DATA);
+					extractCRLValues(rVals, origin);
 				}
 			}
 		}
