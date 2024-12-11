@@ -39,14 +39,14 @@ public class CertificateToValidateDTO {
 	
 	/**
 	 * Allows to specify missing certificates in the chain.
-	 * 
+	 * <p>
 	 * OPTIONAL.
 	 */
 	private List<RemoteCertificate> certificateChain;
 	
 	/**
 	 * Allows to specify a validation time different from the current time.
-	 * 
+	 * <p>
 	 * OPTIONAL.
 	 */
 	private Date validationTime;

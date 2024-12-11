@@ -22,6 +22,7 @@ package eu.europa.esig.dss.ws.validation.common;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -36,8 +37,8 @@ import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.simplereport.jaxb.XmlEvidenceRecord;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.ws.converter.RemoteDocumentConverter;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
@@ -48,8 +49,9 @@ import jakarta.xml.bind.Unmarshaller;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -95,6 +97,23 @@ class RemoteDocumentValidationServiceTest {
 	}
 
 	@Test
+	void testWithValidationTimeAndOriginalFile(){
+		RemoteDocument signedFile = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/xades-detached.xml"));
+		RemoteDocument originalFile = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/sample.png"));
+
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(2016, Calendar.JANUARY, 31);
+		Date validationDate = calendar.getTime();
+
+		DataToValidateDTO dto = new DataToValidateDTO(signedFile, originalFile, validationDate, null);
+		WSReportsDTO result = validationService.validateDocument(dto);
+		validateReports(result);
+
+		XmlDiagnosticData diagnosticData = result.getDiagnosticData();
+		assertEquals(0, dto.getValidationTime().compareTo(diagnosticData.getValidationDate()));
+	}
+
+	@Test
 	void testWithNoPolicyAndDigestOriginalFile(){
 		RemoteDocument signedFile = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/xades-detached.xml"));
 		FileDocument fileDocument = new FileDocument("src/test/resources/sample.png");
@@ -116,6 +135,7 @@ class RemoteDocumentValidationServiceTest {
 		assertEquals("QES AdESQC TL based (Test WebServices)", result.getSimpleReport().getValidationPolicy().getPolicyName());
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	void testWithDefaultPolicyAndOriginalFile() throws Exception {
 		RemoteDocument signedFile = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/xades-detached.xml"));
@@ -138,6 +158,7 @@ class RemoteDocumentValidationServiceTest {
 		assertEquals("Default Policy", result.getSimpleReport().getValidationPolicy().getPolicyName());
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	void testWithOverwrittenDefaultPolicyAndOriginalFile() throws Exception {
 		RemoteDocument signedFile = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/xades-detached.xml"));
@@ -236,7 +257,7 @@ class RemoteDocumentValidationServiceTest {
 	void testGetOriginalFromDetachedSignature(){
 		RemoteDocument signedFile = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/xades-detached.xml"));
 		RemoteDocument originalDocument = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/sample.png"));
-		DataToValidateDTO dto = new DataToValidateDTO(signedFile, Arrays.asList(originalDocument), null);
+		DataToValidateDTO dto = new DataToValidateDTO(signedFile, Collections.singletonList(originalDocument), null);
 
 		List<RemoteDocument> result = validationService.getOriginalDocuments(dto);
 		assertNotNull(result);

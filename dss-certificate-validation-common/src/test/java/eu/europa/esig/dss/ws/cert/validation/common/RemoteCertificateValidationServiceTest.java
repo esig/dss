@@ -31,8 +31,9 @@ import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlChainItem;
 import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlSimpleCertificateReport;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
-import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
 import eu.europa.esig.dss.ws.cert.validation.dto.CertificateReportsDTO;
 import eu.europa.esig.dss.ws.cert.validation.dto.CertificateToValidateDTO;
@@ -46,8 +47,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -113,6 +114,7 @@ class RemoteCertificateValidationServiceTest {
 		assertEquals("QES AdESQC TL based (Test WebServices)", simpleCertificateReport.getValidationPolicy().getPolicyName());
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	void testWithDefaultValidationPolicy() throws Exception {
 		CertificateToValidateDTO certificateDTO = getCompleteCertificateToValidateDTO();
@@ -135,6 +137,7 @@ class RemoteCertificateValidationServiceTest {
 		assertEquals("Default Policy", simpleCertificateReport.getValidationPolicy().getPolicyName());
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	void testWithDefaultAndOverwrittenValidationPolicy() throws Exception {
 		CertificateToValidateDTO certificateDTO = getCompleteCertificateToValidateDTO();
@@ -173,10 +176,10 @@ class RemoteCertificateValidationServiceTest {
 		RemoteCertificate issuerCertificate = RemoteCertificateConverter.toRemoteCertificate(
 				DSSUtils.loadCertificate(new File("src/test/resources/good-ca.cer")));
 		Calendar calendar = Calendar.getInstance();
-		calendar.set(2018, 12, 31);
+		calendar.set(2018, Calendar.DECEMBER, 31);
 		Date validationDate = calendar.getTime();
 		validationDate.setTime((validationDate.getTime() / 1000) * 1000); // clean millis
-		return new CertificateToValidateDTO(remoteCertificate, Arrays.asList(issuerCertificate), validationDate,
+		return new CertificateToValidateDTO(remoteCertificate, Collections.singletonList(issuerCertificate), validationDate,
 				TokenExtractionStrategy.EXTRACT_CERTIFICATES_AND_REVOCATION_DATA);
 	}
 	
@@ -188,10 +191,10 @@ class RemoteCertificateValidationServiceTest {
 		XmlDiagnosticData diagnosticData = reportsDTO.getDiagnosticData();
 		List<XmlChainItem> chain = reportsDTO.getSimpleCertificateReport().getChain();
 		assertNotNull(chain);
-		assertTrue(chain.size() > 0);
+		assertTrue(Utils.isCollectionNotEmpty(chain));
 		List<XmlCertificate> usedCertificates = diagnosticData.getUsedCertificates();
 		assertNotNull(usedCertificates);
-		assertTrue(usedCertificates.size() > 0);
+		assertTrue(Utils.isCollectionNotEmpty(usedCertificates));
 		assertNotNull(diagnosticData.getValidationDate());
 		
 		CertificateReports certificateReports = new CertificateReports(reportsDTO.getDiagnosticData(), reportsDTO.getDetailedReport(), reportsDTO.getSimpleCertificateReport());

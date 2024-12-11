@@ -1047,6 +1047,7 @@
     "digestAlgorithm" : null,
     "name" : "sample.xml"
   } ],
+  "validationTime" : null,
   "policy" : null,
   "evidenceRecords" : null,
   "tokenExtractionStrategy" : "NONE",

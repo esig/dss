@@ -160,6 +160,9 @@ public class RemoteDocumentValidationService {
 	protected SignedDocumentValidator initValidator(DataToValidateDTO dataToValidate) {
 		DSSDocument signedDocument = RemoteDocumentConverter.toDSSDocument(dataToValidate.getSignedDocument());
 		SignedDocumentValidator signedDocValidator = SignedDocumentValidator.fromDocument(signedDocument);
+		if (dataToValidate.getValidationTime() != null) {
+			signedDocValidator.setValidationTime(dataToValidate.getValidationTime());
+		}
 		if (Utils.isCollectionNotEmpty(dataToValidate.getOriginalDocuments())) {
 			signedDocValidator.setDetachedContents(RemoteDocumentConverter.toDSSDocuments(dataToValidate.getOriginalDocuments()));
 		}
