@@ -19,10 +19,8 @@ $ curl 'http://localhost:8080/services/rest/signature/multiple-documents/signDoc
     "sigDMechanism" : null,
     "base64UrlEncodedPayload" : true,
     "base64UrlEncodedEtsiUComponents" : true,
-    "signatureAlgorithm" : null,
     "digestAlgorithm" : "SHA256",
     "encryptionAlgorithm" : null,
-    "maskGenerationFunction" : null,
     "referenceDigestAlgorithm" : null,
     "contentTimestamps" : null,
     "contentTimestampParameters" : {
@@ -40,13 +38,12 @@ $ curl 'http://localhost:8080/services/rest/signature/multiple-documents/signDoc
       "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#",
       "timestampContainerForm" : null
     },
-    "signWithExpiredCertificate" : false,
     "generateTBSWithoutCertificate" : false,
     "imageParameters" : null,
     "signatureIdToCounterSign" : null,
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1720186838888,
+      "signingDate" : 1733916760325,
       "claimedSignerRoles" : null,
       "signedAssertions" : null,
       "policyId" : null,
@@ -66,7 +63,7 @@ $ curl 'http://localhost:8080/services/rest/signature/multiple-documents/signDoc
   },
   "signatureValue" : {
     "algorithm" : "RSA_SHA256",
-    "value" : "FumgrNioKEo0nruc+LDUzXHvcUR1A0zzmE/mpEqeum65mMFAcCC+5Pa1hWyUsrsm7CQZEr8U40SWd+aH+WqykZxq9bFqVGud+QvUAS5s6nuhFPcLuxypQsp9n8dK3wH3VAjfLXNhOh90EhyQoEWC1CrzC5AiWMDM7oxbBoFvVFwCM/crJIvSD2CqhGRwoOJhnpVVVDqpOMmARjRz6QmeHNYsyaUao0j01g14LqTltM/4sYX8F+f4rfeokbdqjG6qQILmNCeXjTsLOfx5unAQCIzACbTvu2KCgoHVMGTitRySBLpkUHJwf7EFTL4p5cVcSsOt4osfDhNsl8Tc22ZCqA=="
+    "value" : "jQkserpAeXys7bzKNAZUDkZqnd1F0sXomA+7zQR2fHYXKJtlVOlchjoye2vRfBpfAzbsblExmDrkR2PaKjxQx25geJwSWSiSe+bAQvtmVO0SVQZJHaN8DfJa+9Sf3U2p81diCDqSxkRiPVskEICrGmf1poOIWce4XCenGzdiSLa57yOtET/fj3OAmcJSfE+TzQcuPwTRfxjmjecXCvn7gmDFXtRAe4b/Wbg/46TWWSVyprSzJV9f+ugPPILGYUSQ2S5SdbQYNjQRFU71dWKK3gkvXQF2CusTe0eTQKY5xJRQSNC6aGCD3bAG5WBw7lqIuQp6cYOrvsimPxDAL709iw=="
   },
   "toSignDocuments" : [ {
     "bytes" : "SGVsbG8=",

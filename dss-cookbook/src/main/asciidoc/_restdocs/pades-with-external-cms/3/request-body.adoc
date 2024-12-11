@@ -16,10 +16,8 @@
     "sigDMechanism" : null,
     "base64UrlEncodedPayload" : true,
     "base64UrlEncodedEtsiUComponents" : true,
-    "signatureAlgorithm" : null,
     "digestAlgorithm" : "SHA256",
     "encryptionAlgorithm" : null,
-    "maskGenerationFunction" : null,
     "referenceDigestAlgorithm" : null,
     "contentTimestamps" : null,
     "contentTimestampParameters" : {
@@ -37,7 +35,6 @@
       "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#",
       "timestampContainerForm" : null
     },
-    "signWithExpiredCertificate" : false,
     "generateTBSWithoutCertificate" : false,
     "imageParameters" : null,
     "signatureIdToCounterSign" : null,
@@ -63,11 +60,11 @@
   },
   "signatureValue" : {
     "algorithm" : "RSA_SHA256",
-    "value" : "rf6z3GOBZZyweIj+l51FUjlxvFc/QV7z1iDSbdSMQpgYyk24WmnUVgRxNroq5KZ1keEupLmO5vmPKoMRSNFsZ4//ynVhAt8rLuNHO/z9ZqL45/WtAxDhQQRJxBfzeXqvnAJt3LjFFff9qalrb1gaQmQMcpZifNWVx6g1XoU6JAlv5DFM1NocnjsCjlkM2bez22rIIKNuEGEGPzyboWLntYMf31UtL825r3NqNU+/aIDJrIjQefkdCBRMKin0IvLl2qafYyedEH5GmpX3BVfTncA3RWcl5l/EtV4R5u3nKPNzkGVQ5Gw8h9BULWxaafWIiLFC8xqPfEQ8KCFn6ZqR4A=="
+    "value" : "LBUkhL3jPIoKkKKBRc6gECWs/GpZ1x2C55epajvTL0Al6lMVmHHBS6cYKABiOcgnsutRtiRKKRyr+82QviNk0Wk648RjZ4Sw0CTbTsq2hDm6Cyer3LmRBX+oB+TqWz5TLSPy+QY5omMd+P/wORmvRwC6a7J+VF0h/fHN2hFOLN2I86BP7WOLHuQmAJITNnWD03ADHJ3pTVRrJgjEtyPVji8dS0emrFxz16ChGlDZ2Cf5k+geb2JBkOMG6PlXRABswcL+mIfsWIGO8kyrfCYnHhg/dTBXzNUAS3secTQ9fPQd2oJeQtyRunOfMk+8jwv0jfLdu3Q7vfQd/jZ6xtmz+Q=="
   },
   "messageDigest" : {
     "algorithm" : "SHA256",
-    "value" : "NG1EDrr2hbqtEgoqZCvxIgEsWJWyTGq7rwgVdk2UTew="
+    "value" : "xo8IzBNRoqGnNVNqa03b6QT14yVRKxL8Oisk7UoqHH8="
   }
 }
 ----
