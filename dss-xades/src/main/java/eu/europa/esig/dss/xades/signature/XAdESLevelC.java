@@ -162,9 +162,13 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 
 	private String removeOldCertificateRefs() {
 		String text = null;
-		final Element toRemove = xadesSignature.getCompleteCertificateRefs();
-		if (toRemove != null) {
-			text = removeNode(toRemove);
+		final Element certRefs = DomUtils.getElement(xadesSignature.getSignatureElement(), xadesPath.getCompleteCertificateRefsPath());
+		final Element certRefsV2 = DomUtils.getElement(xadesSignature.getSignatureElement(), xadesPath.getCompleteCertificateRefsV2Path());
+		if (certRefs != null || certRefsV2 != null) {
+			text = removeNode(certRefs);
+			if (text == null || certRefsV2 != null) {
+				text = removeNode(certRefsV2);
+			}
 			/* Because the element was removed, the certificate source needs to be reset */
 			xadesSignature.resetCertificateSource();
 		}
@@ -172,7 +176,7 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 	}
 
 	private void removeOldRevocationRefs() {
-		final Element toRemove = xadesSignature.getCompleteRevocationRefs();
+		final Element toRemove = DomUtils.getElement(xadesSignature.getSignatureElement(), xadesPath.getCompleteRevocationRefsPath());
 		if (toRemove != null) {
 			removeNode(toRemove);
 			/* Because the element was removed, the revocation sources need to be reset */

@@ -437,7 +437,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	 */
 	protected String removeOldCertificateValues() {
 		String text = null;
-		final Element toRemove = xadesSignature.getCertificateValues();
+		final Element toRemove = DomUtils.getElement(xadesSignature.getSignatureElement(), xadesPath.getCertificateValuesPath());
 		if (toRemove != null) {
 			text = removeNode(toRemove);
 			xadesSignature.resetCertificateSource();
@@ -449,7 +449,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	 * This method removes old revocation values from the unsigned signature properties element.
 	 */
 	protected void removeOldRevocationValues() {
-		final Element toRemove = xadesSignature.getRevocationValues();
+		final Element toRemove = DomUtils.getElement(xadesSignature.getSignatureElement(), xadesPath.getRevocationValuesPath());
 		if (toRemove != null) {
 			removeNode(toRemove);
 			xadesSignature.resetRevocationSources();
