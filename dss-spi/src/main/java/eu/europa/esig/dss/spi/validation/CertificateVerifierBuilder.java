@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.spi.validation;
 
-import eu.europa.esig.dss.alert.SilentOnStatusAlert;
-
 /**
  * Builds a copy of CertificateVerifier
  */
@@ -89,17 +87,17 @@ public class CertificateVerifierBuilder {
 			offlineCertificateVerifier.setTrustAnchorVerifier(getTrustAnchorVerifierOfflineCopy(certificateVerifier.getTrustAnchorVerifier()));
 		}
 		// disable alerting
-		offlineCertificateVerifier.setAlertOnInvalidSignature(new SilentOnStatusAlert());
-		offlineCertificateVerifier.setAlertOnInvalidTimestamp(new SilentOnStatusAlert());
-		offlineCertificateVerifier.setAlertOnMissingRevocationData(new SilentOnStatusAlert());
-		offlineCertificateVerifier.setAlertOnNoRevocationAfterBestSignatureTime(new SilentOnStatusAlert());
-		offlineCertificateVerifier.setAlertOnRevokedCertificate(new SilentOnStatusAlert());
-		offlineCertificateVerifier.setAlertOnUncoveredPOE(new SilentOnStatusAlert());
-		offlineCertificateVerifier.setAlertOnExpiredCertificate(new SilentOnStatusAlert());
-		offlineCertificateVerifier.setAlertOnNotYetValidCertificate(new SilentOnStatusAlert());
-		offlineCertificateVerifier.setAugmentationAlertOnSignatureWithoutCertificates(new SilentOnStatusAlert());
-		offlineCertificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new SilentOnStatusAlert());
-		offlineCertificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new SilentOnStatusAlert());
+		offlineCertificateVerifier.setAlertOnInvalidSignature(null);
+		offlineCertificateVerifier.setAlertOnInvalidTimestamp(null);
+		offlineCertificateVerifier.setAlertOnMissingRevocationData(null);
+		offlineCertificateVerifier.setAlertOnNoRevocationAfterBestSignatureTime(null);
+		offlineCertificateVerifier.setAlertOnRevokedCertificate(null);
+		offlineCertificateVerifier.setAlertOnUncoveredPOE(null);
+		offlineCertificateVerifier.setAlertOnExpiredCertificate(null);
+		offlineCertificateVerifier.setAlertOnNotYetValidCertificate(null);
+		offlineCertificateVerifier.setAugmentationAlertOnSignatureWithoutCertificates(null);
+		offlineCertificateVerifier.setAugmentationAlertOnHigherSignatureLevel(null);
+		offlineCertificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(null);
 		return offlineCertificateVerifier;
 	}
 

@@ -148,43 +148,48 @@ public interface ValidationContext {
 	void validate();
 
 	/**
-	 * This method allows to verify if all processed certificates have a revocation
-	 * data
-	 * 
-	 * Additionally, an alert can be handled
-	 * {@link CertificateVerifier#setAlertOnMissingRevocationData(eu.europa.esig.dss.alert.StatusAlert)}
-	 * 
+	 * This method returns if all processed certificates have a revocation data.
+	 * <p>
+	 * NOTE: Since DSS 6.2 the behavior of the method has changed, returning only the boolean validation result,
+	 * without alerts handling.
+	 * Please see {@link ValidationAlerter#assertAllRequiredRevocationDataPresent()} for handling
+	 * the check with custom alerts.
+	 *
 	 * @return true if all needed revocation data are present
 	 */
 	boolean checkAllRequiredRevocationDataPresent();
 
 	/**
-	 * This method allows to verify if all POE (timestamp tokens) are covered by a
-	 * revocation data
-	 * 
-	 * Additionally, an alert can be handled
-	 * {@link CertificateVerifier#setAlertOnUncoveredPOE(eu.europa.esig.dss.alert.StatusAlert)}
-	 * 
+	 * This method returns if all POE (timestamp tokens) are covered by a revocation data.
+	 * <p>
+	 * NOTE: Since DSS 6.2 the behavior of the method has changed, returning only the boolean validation result,
+	 * without alerts handling.
+	 * Please see {@link ValidationAlerter#assertAllPOECoveredByRevocationData()} for handling
+	 * the check with custom alerts.
+	 *
 	 * @return true if all timestamps are covered by a usable revocation data
 	 */
 	boolean checkAllPOECoveredByRevocationData();
 
 	/**
-	 * This method allows to verify if all processed timestamps are valid and
-	 * intact.
-	 * 
-	 * Additionally, an alert can be handled
-	 * {@link CertificateVerifier#setAlertOnInvalidTimestamp(eu.europa.esig.dss.alert.StatusAlert)}
-	 * 
+	 * This method returns if all processed timestamps are valid and intact.
+	 * <p>
+	 * NOTE: Since DSS 6.2 the behavior of the method has changed, returning only the boolean validation result,
+	 * without alerts handling.
+	 * Please see {@link ValidationAlerter#assertAllTimestampsValid()} for handling
+	 * the check with custom alerts.
+	 *
 	 * @return true if all timestamps are valid
 	 */
 	boolean checkAllTimestampsValid();
 
 	/**
-	 * This method allows to verify if the certificate is not revoked
-	 *
-	 * Additionally, an alert can be handled
-	 * {@link CertificateVerifier#setAlertOnRevokedCertificate(eu.europa.esig.dss.alert.StatusAlert)}
+	 * This method returns if the certificate is not revoked
+	 * <p>
+	 * NOTE: Since DSS 6.2 the behavior of the method has changed, returning only the boolean validation result,
+	 * without alerts handling.
+	 * Please see {@link ValidationAlerter#assertCertificateNotRevoked(CertificateToken)} for handling
+	 * the check with custom alerts.
 	 *
 	 * @param certificateToken {@code CertificateToken} certificate to be checked
 	 * @return true if all certificates are valid
@@ -192,21 +197,26 @@ public interface ValidationContext {
 	boolean checkCertificateNotRevoked(CertificateToken certificateToken);
 
 	/**
-	 * This method validates recursively whether none of the signature's certificate chain certificates are not revoked
+	 * This method returns whether none of the signature's certificate chain certificates are not revoked,
+	 * validating recursively.
 	 * <p>
-	 * Additionally, an alert can be handled
-	 * {@link CertificateVerifier#setAlertOnRevokedCertificate(eu.europa.esig.dss.alert.StatusAlert)}
+	 * NOTE: Since DSS 6.2 the behavior of the method has changed, returning only the boolean validation result,
+	 * without alerts handling.
+	 * Please see {@link ValidationAlerter#assertAllSignatureCertificatesNotRevoked} for handling
+	 * the check with custom alerts.
 	 *
 	 * @return true if all certificates are valid
 	 */
 	boolean checkAllSignatureCertificatesNotRevoked();
 
 	/**
-	 * This method verifies whether for all signature's certificate chain certificates there is a fresh revocation data,
-	 * after the earliest available timestamp token production time
+	 * This method returns whether for all signature's certificate chain certificates there is a fresh revocation data,
+	 * after the earliest available timestamp token production time.
 	 * <p>
-	 * Additionally, an alert can be handled
-	 * {@link CertificateVerifier#setAlertOnNoRevocationAfterBestSignatureTime(eu.europa.esig.dss.alert.StatusAlert)}
+	 * NOTE: Since DSS 6.2 the behavior of the method has changed, returning only the boolean validation result,
+	 * without alerts handling.
+	 * Please see {@link ValidationAlerter#assertAllSignatureCertificateHaveFreshRevocationData} for handling
+	 * the check with custom alerts.
 	 *
 	 * @return true if all signature certificates have an updated revocation data
 	 *         (after signature-time-stamp production time)
@@ -214,10 +224,12 @@ public interface ValidationContext {
 	boolean checkAllSignatureCertificateHaveFreshRevocationData();
 
 	/**
-	 * This method verifies whether all signatures added to the ValidationContext are not yet expired
-	 *
-	 * Additionally, an alert can be handled
-	 * {@link CertificateVerifier#setAlertOnExpiredCertificate(eu.europa.esig.dss.alert.StatusAlert)}
+	 * This method returns whether all signatures added to the ValidationContext are not yet expired
+	 * <p>
+	 * NOTE: Since DSS 6.2 the behavior of the method has changed, returning only the boolean validation result,
+	 * without alerts handling.
+	 * Please see {@link ValidationAlerter#assertAllSignaturesNotExpired} for handling
+	 * the check with custom alerts.
 	 *
 	 * @return true if the signing certificate or its POE(s) not yet expired, false otherwise
 	 */

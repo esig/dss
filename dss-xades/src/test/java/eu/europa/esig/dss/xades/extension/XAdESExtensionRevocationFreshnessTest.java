@@ -110,6 +110,24 @@ class XAdESExtensionRevocationFreshnessTest extends PKIFactoryAccess {
 		
 		validate(extendedDocument);
 	}
+
+	@Test
+	void skipCheckTest() {
+		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+
+		certificateVerifier.setAlertOnNoRevocationAfterBestSignatureTime(null);
+		certificateVerifier.setAlertOnUncoveredPOE(null);
+
+		XAdESService service = new XAdESService(certificateVerifier);
+		service.setTspSource(getAlternateGoodTsa());
+
+		DSSDocument signedDocument = sign(service, documentToSign);
+
+		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
+		DSSDocument extendedDocument = service.extendDocument(signedDocument, signatureParameters);
+
+		validate(extendedDocument);
+	}
 	
 	@Test
 	void throwExceptionOnNoRevocationAfterBestSignatureTimeTest() {

@@ -40,6 +40,7 @@ import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -51,7 +52,6 @@ class XAdESExtensionTToLTAWithInvalidMessageImprintTstTest extends AbstractXAdES
     @BeforeEach
     void init() throws Exception {
         certificateVerifier = getCompleteCertificateVerifier();
-        certificateVerifier.setAlertOnInvalidTimestamp(new SilentOnStatusAlert());
 
         service = new XAdESService(certificateVerifier);
         service.setTspSource(getGoodTsa());
@@ -76,10 +76,27 @@ class XAdESExtensionTToLTAWithInvalidMessageImprintTstTest extends AbstractXAdES
 
         Exception exception = assertThrows(AlertException.class, () -> super.extendSignature(signedDocument));
         assertTrue(exception.getMessage().contains(
+                "Broken timestamp(s) detected."));
+
+        certificateVerifier.setAlertOnInvalidTimestamp(new SilentOnStatusAlert());
+
+        exception = assertThrows(AlertException.class, () -> super.extendSignature(signedDocument));
+        assertTrue(exception.getMessage().contains(
+                "The signing certificate has expired and there is no POE during its validity range"));
+
+        certificateVerifier.setAlertOnInvalidTimestamp(null);
+
+        exception = assertThrows(AlertException.class, () -> super.extendSignature(signedDocument));
+        assertTrue(exception.getMessage().contains(
                 "The signing certificate has expired and there is no POE during its validity range"));
 
         certificateVerifier.setAlertOnExpiredCertificate(new SilentOnStatusAlert());
 
+        DSSDocument extendedSignature = super.extendSignature(signedDocument);
+        assertNotNull(extendedSignature);
+
+        certificateVerifier.setAlertOnExpiredCertificate(null);
+        
         return super.extendSignature(signedDocument);
     }
 
@@ -135,7 +152,6 @@ class XAdESExtensionTToLTAWithInvalidMessageImprintTstTest extends AbstractXAdES
         return EXPIRED_USER;
     }
 
-    @SuppressWarnings("serial")
     private class MockInvalidTspSource implements TSPSource {
 
         @Override

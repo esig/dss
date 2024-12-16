@@ -37,7 +37,6 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -94,14 +93,14 @@ class CertificateVerifierBuilderTest {
         assertNotNull(copy.getRevocationDataLoadingStrategyFactory()); // not relevant for offline validation
         assertFalse(copy.isRevocationFallback());
         assertFalse(copy.isCheckRevocationForUntrustedChains());
-        assertInstanceOf(SilentOnStatusAlert.class, copy.getAlertOnInvalidSignature());
-        assertInstanceOf(SilentOnStatusAlert.class, copy.getAlertOnInvalidTimestamp());
-        assertInstanceOf(SilentOnStatusAlert.class, copy.getAlertOnMissingRevocationData());
-        assertInstanceOf(SilentOnStatusAlert.class, copy.getAlertOnNoRevocationAfterBestSignatureTime());
-        assertInstanceOf(SilentOnStatusAlert.class, copy.getAlertOnRevokedCertificate());
-        assertInstanceOf(SilentOnStatusAlert.class, copy.getAlertOnUncoveredPOE());
-        assertInstanceOf(SilentOnStatusAlert.class, copy.getAlertOnExpiredCertificate());
-        assertInstanceOf(SilentOnStatusAlert.class, copy.getAlertOnNotYetValidCertificate());
+        assertNull(copy.getAlertOnInvalidSignature());
+        assertNull(copy.getAlertOnInvalidTimestamp());
+        assertNull(copy.getAlertOnMissingRevocationData());
+        assertNull(copy.getAlertOnNoRevocationAfterBestSignatureTime());
+        assertNull(copy.getAlertOnRevokedCertificate());
+        assertNull(copy.getAlertOnUncoveredPOE());
+        assertNull(copy.getAlertOnExpiredCertificate());
+        assertNull(copy.getAlertOnNotYetValidCertificate());
     }
 
     void assertTrustAnchorVerifierEquals(TrustAnchorVerifier trustAnchorVerifierOne, TrustAnchorVerifier trustAnchorVerifierTwo) {

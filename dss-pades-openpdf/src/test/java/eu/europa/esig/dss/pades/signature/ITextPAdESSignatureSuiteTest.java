@@ -71,6 +71,7 @@ import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBWithValidationDataTes
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelImpossibleLTAExceptionTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelImpossibleLTExceptionTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTAAndLevelTTest;
+import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTALoopSigningTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTANotTrustedTSPTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTASignDocumentWithXRefsTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTASignRevokedSigWithPOETest;
@@ -99,11 +100,11 @@ import eu.europa.esig.dss.pades.signature.suite.PAdESTwoSignersLTALevelTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESWithMGF1Test;
 import eu.europa.esig.dss.pades.signature.suite.PAdESWithPemEncodedCrlTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESWithSHA3Test;
+import eu.europa.esig.dss.pades.signature.suite.PDFNotAdESLevelBWithoutCertificatesTest;
 import eu.europa.esig.dss.pades.signature.suite.PDFNotAdESLevelLTAWithoutCertificatesTest;
 import eu.europa.esig.dss.pades.signature.suite.PDFNotAdESLevelLTWithoutCertificatesTest;
 import eu.europa.esig.dss.pades.signature.suite.PDFNotAdESLevelTWithoutCertificatesTest;
 import eu.europa.esig.dss.pades.signature.suite.PDFSignWithPermissionsTest;
-import eu.europa.esig.dss.pades.signature.suite.PDFNotAdESLevelBWithoutCertificatesTest;
 import eu.europa.esig.dss.pades.signature.suite.PDFTimestampFiltersTest;
 import eu.europa.esig.dss.pades.signature.suite.ProtectedDocumentsSignatureTest;
 import eu.europa.esig.dss.pades.signature.suite.TwoPAdESSignaturesMustHaveDifferentIdTest;
@@ -148,7 +149,8 @@ import org.junit.platform.suite.api.Suite;
 		PAdESLevelBWithContentTimestampCustomDigestAlgoTest.class, PAdESLevelBEncryptedDocumentTest.class,
 		PAdESLevelLTWithVRIDictTest.class, PAdESDoubleSignatureLTWithVRIAndLTTest.class,
 		PAdESDoubleSignatureLTAndLTWithVRITest.class, PAdESLevelBNonPdfDocumentTest.class, PAdESWithMGF1Test.class,
-		PAdESLevelBEnvelopedRSASSAPSSTest.class, PAdESLevelBEnvelopedNONEWithRSASSAPSSTest.class })
+		PAdESLevelBEnvelopedRSASSAPSSTest.class, PAdESLevelBEnvelopedNONEWithRSASSAPSSTest.class,
+		PAdESLevelLTALoopSigningTest.class })
 class ITextPAdESSignatureSuiteTest {
 
 }

@@ -385,7 +385,6 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 
 	@Override
 	public void setAlertOnInvalidSignature(StatusAlert alertOnInvalidSignature) {
-		Objects.requireNonNull(alertOnInvalidSignature);
 		this.alertOnInvalidSignature = alertOnInvalidSignature;
 	}
 
@@ -396,7 +395,6 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 
 	@Override
 	public void setAlertOnInvalidTimestamp(StatusAlert alertOnInvalidTimestamp) {
-		Objects.requireNonNull(alertOnInvalidTimestamp);
 		this.alertOnInvalidTimestamp = alertOnInvalidTimestamp;
 	}
 
@@ -407,7 +405,6 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 
 	@Override
 	public void setAlertOnMissingRevocationData(StatusAlert alertOnMissingRevocationData) {
-		Objects.requireNonNull(alertOnMissingRevocationData);
 		this.alertOnMissingRevocationData = alertOnMissingRevocationData;
 	}
 
@@ -418,7 +415,6 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 
 	@Override
 	public void setAlertOnUncoveredPOE(StatusAlert alertOnUncoveredPOE) {
-		Objects.requireNonNull(alertOnUncoveredPOE);
 		this.alertOnUncoveredPOE = alertOnUncoveredPOE;
 	}
 
@@ -429,7 +425,6 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 
 	@Override
 	public void setAlertOnRevokedCertificate(StatusAlert alertOnRevokedCertificate) {
-		Objects.requireNonNull(alertOnRevokedCertificate);
 		this.alertOnRevokedCertificate = alertOnRevokedCertificate;
 	}
 
@@ -440,7 +435,6 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 
 	@Override
 	public void setAlertOnNoRevocationAfterBestSignatureTime(StatusAlert alertOnNoRevocationAfterBestSignatureTime) {
-		Objects.requireNonNull(alertOnNoRevocationAfterBestSignatureTime);
 		this.alertOnNoRevocationAfterBestSignatureTime = alertOnNoRevocationAfterBestSignatureTime;
 	}
 
@@ -451,7 +445,6 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 
 	@Override
 	public void setAlertOnExpiredCertificate(StatusAlert alertOnExpiredCertificate) {
-		Objects.requireNonNull(alertOnExpiredCertificate);
 		this.alertOnExpiredCertificate = alertOnExpiredCertificate;
 	}
 
@@ -462,7 +455,6 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 
 	@Override
 	public void setAlertOnNotYetValidCertificate(StatusAlert alertOnNotYetValidCertificate) {
-		Objects.requireNonNull(alertOnNotYetValidCertificate);
 		this.alertOnNotYetValidCertificate = alertOnNotYetValidCertificate;
 	}
 
@@ -473,7 +465,6 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 
 	@Override
 	public void setAugmentationAlertOnHigherSignatureLevel(StatusAlert augmentationAlertOnHigherSignatureLevel) {
-		Objects.requireNonNull(augmentationAlertOnHigherSignatureLevel);
 		this.augmentationAlertOnHigherSignatureLevel = augmentationAlertOnHigherSignatureLevel;
 	}
 
@@ -484,7 +475,6 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 
 	@Override
 	public void setAugmentationAlertOnSignatureWithoutCertificates(StatusAlert augmentationAlertOnSignatureWithoutCertificates) {
-		Objects.requireNonNull(augmentationAlertOnSignatureWithoutCertificates);
 		this.augmentationAlertOnSignatureWithoutCertificates = augmentationAlertOnSignatureWithoutCertificates;
 	}
 
@@ -495,7 +485,6 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 
 	@Override
 	public void setAugmentationAlertOnSelfSignedCertificateChains(StatusAlert augmentationAlertOnSelfSignedCertificateChains) {
-		Objects.requireNonNull(augmentationAlertOnSelfSignedCertificateChains);
 		this.augmentationAlertOnSelfSignedCertificateChains = augmentationAlertOnSelfSignedCertificateChains;
 	}
 

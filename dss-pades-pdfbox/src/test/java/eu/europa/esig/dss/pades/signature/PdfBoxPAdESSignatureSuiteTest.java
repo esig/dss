@@ -71,6 +71,7 @@ import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBWithValidationDataTes
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelImpossibleLTAExceptionTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelImpossibleLTExceptionTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTAAndLevelTTest;
+import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTALoopSigningTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTANotTrustedTSPTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTASignDocumentWithXRefsTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTASignRevokedSigWithPOETest;
@@ -148,7 +149,8 @@ import org.junit.platform.suite.api.Suite;
 		PAdESLevelBWithContentTimestampCustomDigestAlgoTest.class, PAdESLevelBEncryptedDocumentTest.class,
 		PAdESLevelLTWithVRIDictTest.class, PAdESDoubleSignatureLTWithVRIAndLTTest.class,
 		PAdESDoubleSignatureLTAndLTWithVRITest.class, PAdESLevelBNonPdfDocumentTest.class, PAdESWithMGF1Test.class,
-		PAdESLevelBEnvelopedRSASSAPSSTest.class, PAdESLevelBEnvelopedNONEWithRSASSAPSSTest.class })
+		PAdESLevelBEnvelopedRSASSAPSSTest.class, PAdESLevelBEnvelopedNONEWithRSASSAPSSTest.class,
+		PAdESLevelLTALoopSigningTest.class })
 class PdfBoxPAdESSignatureSuiteTest {
 
 }

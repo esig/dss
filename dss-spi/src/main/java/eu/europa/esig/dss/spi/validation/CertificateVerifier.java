@@ -254,6 +254,7 @@ public interface CertificateVerifier {
 
 	/**
 	 * This method allows to change the behavior on invalid signature (T/LT/LTA augmentation).
+	 * NULL value provides a possibility to skip check execution.
 	 * Default : {@link ExceptionOnStatusAlert} - throw an exception.
 	 *
 	 * @param alertOnInvalidSignature defines a behaviour in case of invalid signature
@@ -270,6 +271,7 @@ public interface CertificateVerifier {
 	/**
 	 * This method allows to change the behavior on invalid timestamp (LT/LTA
 	 * augmentation).
+	 * NULL value provides a possibility to skip check execution.
 	 * Default : {@link ExceptionOnStatusAlert} - throw an exception.
 	 * 
 	 * @param alertOnInvalidTimestamp defines a behaviour in case of invalid
@@ -287,6 +289,7 @@ public interface CertificateVerifier {
 	/**
 	 * This method allows to change the behavior on missing revocation data (LT/LTA
 	 * augmentation).
+	 * NULL value provides a possibility to skip check execution.
 	 * Default : {@link ExceptionOnStatusAlert} - throw an exception.
 	 * 
 	 * @param alertOnMissingRevocationData defines a behaviour in case of missing
@@ -305,6 +308,7 @@ public interface CertificateVerifier {
 	/**
 	 * This method allows to change the behavior on revoked certificates (LT/LTA
 	 * augmentation).
+	 * NULL value provides a possibility to skip check execution.
 	 * Default : {@link ExceptionOnStatusAlert} - throw an exception.
 	 * 
 	 * @param alertOnRevokedCertificate defines a behaviour in case of revoked
@@ -322,6 +326,7 @@ public interface CertificateVerifier {
 	/**
 	 * This method allows to change the behavior on revocation data issued after a
 	 * control time.
+	 * NULL value provides a possibility to skip check execution.
 	 * Default : {@link LogOnStatusAlert} - log a warning.
 	 * 
 	 * @param alertOnNoRevocationAfterBestSignatureTime defines a behaviour in case
@@ -341,6 +346,7 @@ public interface CertificateVerifier {
 	
 	/**
 	 * This method allows to change the behavior on uncovered POE (timestamp).
+	 * NULL value provides a possibility to skip check execution.
 	 * Default : {@link LogOnStatusAlert} - log a warning.
 	 * 
 	 * @param alertOnUncoveredPOE defines a behaviour in case of uncovered POE
@@ -358,6 +364,7 @@ public interface CertificateVerifier {
 	 * This method allows to change a behavior on signature creation or augmentation with
 	 * an expired signing-certificate (notAfter is before the current time).
 	 * Validated the available POEs in case of existing signature augmentation.
+	 * NULL value provides a possibility to skip check execution.
 	 * Default : {@link ExceptionOnStatusAlert} - throw an exception.
 	 *
 	 * @param alertOnExpiredCertificate defines behavior in case of an expired signing-certificate
@@ -376,6 +383,7 @@ public interface CertificateVerifier {
 	/**
 	 * This method allows to change a behavior on signature creation with a not yet valid signing-certificate
 	 * (notBefore is after the current time)
+	 * NULL value provides a possibility to skip check execution.
 	 * Default : {@link ExceptionOnStatusAlert} - throw an exception.
 	 *
 	 * @param alertOnNotYetValidCertificate defines behavior in case of a not yet valid signing-certificate
@@ -392,6 +400,7 @@ public interface CertificateVerifier {
 	/**
 	 * This method allows to change the augmentation behaviour for a signature of a higher level or
 	 * a document containing a such signature.
+	 * NULL value provides a possibility to skip check execution.
 	 * Default : {@link ExceptionOnStatusAlert} - throw an exception.
 	 *
 	 * @param augmentationAlertOnHigherSignatureLevel defines augmentation behaviour for a signature of a higher level
@@ -411,6 +420,7 @@ public interface CertificateVerifier {
 	/**
 	 * This method allows to change the augmentation behaviour for a signature without certificates.
 	 * The alert is triggered when no certificate is defined within the signature.
+	 * NULL value provides a possibility to skip check execution.
 	 * Default : {@link ExceptionOnStatusAlert} - throw an exception.
 	 *
 	 * @param augmentationAlertOnSignatureWithoutCertificates defines augmentation behaviour for a signature
@@ -429,6 +439,7 @@ public interface CertificateVerifier {
 	 * This method allows to change the augmentation behaviour for a signature containing
 	 * only self-signed certificate chains.
 	 * The alert is triggered when all used certificates are self-signed.
+	 * NULL value provides a possibility to skip check execution.
 	 * Default : {@link ExceptionOnStatusAlert} - throw an exception.
 	 *
 	 * @param augmentationAlertOnSelfSignedCertificateChains defines augmentation behaviour for a signature containing

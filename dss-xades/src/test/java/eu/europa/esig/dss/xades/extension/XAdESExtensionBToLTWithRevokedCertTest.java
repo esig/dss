@@ -29,6 +29,7 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 import org.junit.jupiter.api.BeforeEach;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -73,8 +74,14 @@ class XAdESExtensionBToLTWithRevokedCertTest extends AbstractXAdESTestExtension 
 
         CertificateVerifier completeCertificateVerifier = getCompleteCertificateVerifier();
         completeCertificateVerifier.setAlertOnRevokedCertificate(new SilentOnStatusAlert());
+
         XAdESService xadesService = new XAdESService(completeCertificateVerifier);
         xadesService.setTspSource(getUsedTSPSourceAtExtensionTime());
+
+        DSSDocument extendedDocument = xadesService.extendDocument(signedDocument, getExtensionParameters());
+        assertNotNull(extendedDocument);
+
+        completeCertificateVerifier.setAlertOnRevokedCertificate(null);
         return xadesService.extendDocument(signedDocument, getExtensionParameters());
     }
 

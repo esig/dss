@@ -176,6 +176,48 @@ signatureParameters.setValidationDataEncapsulationStrategy(ValidationDataEncapsu
 DSSDocument extendedDocument = service.extendDocument(signedDocument, signatureParameters);
 ----
 
+a|Alert behavior in `SignatureValidationContext` checks              a|
+Only when `ValidationContext` is used directly.
+[source,java]
+----
+import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.SignatureValidationContext;
+import eu.europa.esig.dss.spi.validation.ValidationContext;
+
+CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+certificateVerifier.setAlertOnExpiredCertificate(new ExceptionOnStatusAlert());
+...
+ValidationContext validationContext = new SignatureValidationContext();
+validationContext.initialize(certificateVerifier);
+...
+validationContext.validate();
+
+boolean result = validationContext.checkAllSignaturesNotExpired(); // AlertException is thrown in case of FALSE
+----
+                                                                     a|[source,java]
+----
+import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.SignatureValidationContext;
+import eu.europa.esig.dss.spi.validation.ValidationContext;
+
+CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+certificateVerifier.setAlertOnExpiredCertificate(new ExceptionOnStatusAlert());
+...
+ValidationContext validationContext = new SignatureValidationContext();
+validationContext.initialize(certificateVerifier);
+...
+validationContext.validate();
+
+boolean result = validationContext.checkAllSignaturesNotExpired(); // no alert execution, only boolean is returned
+
+ValidationAlerter validationAlerter = new SignatureValidationAlerter(validationContext);
+validationAlerter.assertAllSignaturesNotExpired(); // AlertException is thrown in case of check failure
+----
+
 |===
 
 [cols="2,5,5"]

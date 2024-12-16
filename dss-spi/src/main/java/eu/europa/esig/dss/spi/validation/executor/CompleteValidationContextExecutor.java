@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.spi.validation.executor;
 
+import eu.europa.esig.dss.spi.validation.SignatureValidationAlerter;
+import eu.europa.esig.dss.spi.validation.SignatureValidationContext;
 import eu.europa.esig.dss.spi.validation.ValidationContext;
 
 import java.util.Objects;
@@ -43,19 +45,28 @@ public class CompleteValidationContextExecutor implements ValidationContextExecu
 
     @Override
     public void validate(ValidationContext validationContext) {
-        Objects.requireNonNull(validationContext, "ValidationContext cannot be null!");
+        assertValidationContextSupported(validationContext);
+        
         validationContext.validate();
         assertSignaturesValid(validationContext);
     }
 
     private void assertSignaturesValid(ValidationContext validationContext) {
-        validationContext.checkAllTimestampsValid();
-        validationContext.checkAllRequiredRevocationDataPresent();
-        validationContext.checkAllPOECoveredByRevocationData();
+        SignatureValidationAlerter validationAlerter = new SignatureValidationAlerter((SignatureValidationContext) validationContext);
+        validationAlerter.assertAllTimestampsValid();
+        validationAlerter.assertAllRequiredRevocationDataPresent();
+        validationAlerter.assertAllPOECoveredByRevocationData();
 
-        validationContext.checkAllSignaturesNotExpired();
-        validationContext.checkAllSignatureCertificatesNotRevoked();
-        validationContext.checkAllSignatureCertificateHaveFreshRevocationData();
+        validationAlerter.assertAllSignaturesNotExpired();
+        validationAlerter.assertAllSignatureCertificatesNotRevoked();
+        validationAlerter.assertAllSignatureCertificateHaveFreshRevocationData();
+    }
+    
+    private static void assertValidationContextSupported(ValidationContext validationContext) {
+        Objects.requireNonNull(validationContext, "ValidationContext cannot be null!");
+        if (!(validationContext instanceof SignatureValidationContext)) {
+            throw new UnsupportedOperationException("CompleteValidationContextExecutor supports only SignatureValidationContext class type!");
+        }
     }
 
 }

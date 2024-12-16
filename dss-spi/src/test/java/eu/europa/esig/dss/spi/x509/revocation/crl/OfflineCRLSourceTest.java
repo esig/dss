@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.spi.x509.revocation.crl;
 
-import eu.europa.esig.dss.crl.CRLUtils;
-import eu.europa.esig.dss.enumerations.RevocationOrigin;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
@@ -43,8 +43,7 @@ class OfflineCRLSourceTest {
 
 		CertificateToken certToValidate = DSSUtils.loadCertificateFromBase64EncodedString(certToValidateB64);
 
-		OfflineCRLSource crlSource = new MockCRLSource();
-		crlSource.addBinary(CRLUtils.buildCRLBinary(Utils.fromBase64(crlB64)), RevocationOrigin.EXTERNAL);
+		OfflineCRLSource crlSource = new ExternalResourcesCRLSource(new InMemoryDocument(Utils.fromBase64(crlB64)));
 		
 		assertEquals(0, crlSource.getRevocationTokens(certToValidate, certToValidate).size());
 		
@@ -59,13 +58,8 @@ class OfflineCRLSourceTest {
 
 	@Test
 	void npe() {
-		OfflineCRLSource mocrls = new MockCRLSource();
-		assertThrows(NullPointerException.class, () -> mocrls.getRevocationTokens(null, null));
-	}
-
-	@SuppressWarnings("serial")
-	private static class MockCRLSource extends OfflineCRLSource {
-
+		OfflineCRLSource crlSource = new ExternalResourcesCRLSource(new DSSDocument[0]);
+		assertThrows(NullPointerException.class, () -> crlSource.getRevocationTokens(null, null));
 	}
 
 }

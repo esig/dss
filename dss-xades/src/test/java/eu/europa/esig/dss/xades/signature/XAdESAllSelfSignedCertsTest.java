@@ -88,6 +88,11 @@ class XAdESAllSelfSignedCertsTest extends AbstractXAdESTestSignature {
 
 		DSSDocument signedDocument = sign();
 		assertNotNull(signedDocument);
+
+		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(null);
+
+		signedDocument = sign();
+		assertNotNull(signedDocument);
 	}
 
 	@Test
@@ -102,6 +107,11 @@ class XAdESAllSelfSignedCertsTest extends AbstractXAdESTestSignature {
 		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new SilentOnStatusAlert());
 
 		DSSDocument signedDocument = sign();
+		assertNotNull(signedDocument);
+
+		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(null);
+
+		signedDocument = sign();
 		assertNotNull(signedDocument);
 	}
 
@@ -118,6 +128,11 @@ class XAdESAllSelfSignedCertsTest extends AbstractXAdESTestSignature {
 
 		DSSDocument signedDocument = sign();
 		assertNotNull(signedDocument);
+
+		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(null);
+
+		signedDocument = sign();
+		assertNotNull(signedDocument);
 	}
 
 	@Test
@@ -132,6 +147,11 @@ class XAdESAllSelfSignedCertsTest extends AbstractXAdESTestSignature {
 		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new SilentOnStatusAlert());
 
 		DSSDocument signedDocument = sign();
+		assertNotNull(signedDocument);
+
+		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(null);
+
+		signedDocument = sign();
 		assertNotNull(signedDocument);
 	}
 
@@ -148,6 +168,11 @@ class XAdESAllSelfSignedCertsTest extends AbstractXAdESTestSignature {
 
 		DSSDocument signedDocument = sign();
 		assertNotNull(signedDocument);
+
+		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(null);
+
+		signedDocument = sign();
+		assertNotNull(signedDocument);
 	}
 
 	@Test
@@ -162,6 +187,11 @@ class XAdESAllSelfSignedCertsTest extends AbstractXAdESTestSignature {
 		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new SilentOnStatusAlert());
 
 		DSSDocument signedDocument = sign();
+		assertNotNull(signedDocument);
+
+		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(null);
+
+		signedDocument = sign();
 		assertNotNull(signedDocument);
 	}
 

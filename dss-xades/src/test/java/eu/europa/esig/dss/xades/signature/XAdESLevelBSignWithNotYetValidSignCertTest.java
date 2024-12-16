@@ -78,6 +78,11 @@ class XAdESLevelBSignWithNotYetValidSignCertTest extends AbstractXAdESTestSignat
 
         DSSDocument signedDocument = super.sign();
         assertNotNull(signedDocument);
+
+        certificateVerifier.setAlertOnNotYetValidCertificate(null);
+
+        signedDocument = super.sign();
+        assertNotNull(signedDocument);
         return signedDocument;
     }
 

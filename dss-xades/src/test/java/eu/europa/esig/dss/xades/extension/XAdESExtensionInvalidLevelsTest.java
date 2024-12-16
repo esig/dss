@@ -91,6 +91,12 @@ class XAdESExtensionInvalidLevelsTest extends AbstractXAdESTestExtension {
         reports = verify(extendedSignature);
         assertEquals(2, reports.getDiagnosticData().getTimestampList().size());
 
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(null);
+
+        extendedSignature = extendSignature(signedDocument);
+        reports = verify(extendedSignature);
+        assertEquals(2, reports.getDiagnosticData().getTimestampList().size());
+
         certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new ExceptionOnStatusAlert());
 
         finalSignatureLevel = SignatureLevel.XAdES_BASELINE_LT;
@@ -136,6 +142,12 @@ class XAdESExtensionInvalidLevelsTest extends AbstractXAdESTestExtension {
         reports = verify(extendedSignature);
         assertEquals(2, reports.getDiagnosticData().getTimestampList().size());
 
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(null);
+
+        extendedSignature = extendSignature(signedDocument);
+        reports = verify(extendedSignature);
+        assertEquals(2, reports.getDiagnosticData().getTimestampList().size());
+
         certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new ExceptionOnStatusAlert());
 
         finalSignatureLevel = SignatureLevel.XAdES_BASELINE_LTA;
@@ -165,6 +177,12 @@ class XAdESExtensionInvalidLevelsTest extends AbstractXAdESTestExtension {
         certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new SilentOnStatusAlert());
 
         DSSDocument extendedSignature = extendSignature(signedDocument);
+        reports = verify(extendedSignature);
+        assertEquals(2, reports.getDiagnosticData().getTimestampList().size());
+
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(null);
+
+        extendedSignature = extendSignature(signedDocument);
         reports = verify(extendedSignature);
         assertEquals(2, reports.getDiagnosticData().getTimestampList().size());
 
@@ -200,6 +218,12 @@ class XAdESExtensionInvalidLevelsTest extends AbstractXAdESTestExtension {
         reports = verify(extendedSignature);
         assertEquals(3, reports.getDiagnosticData().getTimestampList().size());
 
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(null);
+
+        extendedSignature = extendSignature(signedDocument);
+        reports = verify(extendedSignature);
+        assertEquals(3, reports.getDiagnosticData().getTimestampList().size());
+
         certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new ExceptionOnStatusAlert());
 
         finalSignatureLevel = SignatureLevel.XAdES_C;
@@ -208,6 +232,12 @@ class XAdESExtensionInvalidLevelsTest extends AbstractXAdESTestExtension {
         assertTrue(exception.getMessage().contains("The signature is already extended with a higher level."));
 
         certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new SilentOnStatusAlert());
+
+        extendedSignature = extendSignature(signedDocument);
+        reports = verify(extendedSignature);
+        assertEquals(2, reports.getDiagnosticData().getTimestampList().size());
+
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(null);
 
         extendedSignature = extendSignature(signedDocument);
         reports = verify(extendedSignature);
@@ -246,6 +276,14 @@ class XAdESExtensionInvalidLevelsTest extends AbstractXAdESTestExtension {
         reports = verify(extendedSignature);
         assertEquals(3, reports.getDiagnosticData().getTimestampList().size());
 
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(null);
+        finalSignatureLevel = SignatureLevel.XAdES_BASELINE_T;
+
+        extendedSignature = extendSignature(signedDocument);
+        finalSignatureLevel = SignatureLevel.XAdES_XL;
+        reports = verify(extendedSignature);
+        assertEquals(3, reports.getDiagnosticData().getTimestampList().size());
+
         certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new ExceptionOnStatusAlert());
 
         finalSignatureLevel = SignatureLevel.XAdES_C;
@@ -259,6 +297,12 @@ class XAdESExtensionInvalidLevelsTest extends AbstractXAdESTestExtension {
         reports = verify(extendedSignature);
         assertEquals(2, reports.getDiagnosticData().getTimestampList().size());
 
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(null);
+
+        extendedSignature = extendSignature(signedDocument);
+        reports = verify(extendedSignature);
+        assertEquals(2, reports.getDiagnosticData().getTimestampList().size());
+
         certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new ExceptionOnStatusAlert());
 
         finalSignatureLevel = SignatureLevel.XAdES_X;
@@ -267,6 +311,12 @@ class XAdESExtensionInvalidLevelsTest extends AbstractXAdESTestExtension {
         assertTrue(exception.getMessage().contains("The signature is already extended with a higher level."));
 
         certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new SilentOnStatusAlert());
+
+        extendedSignature = extendSignature(signedDocument);
+        reports = verify(extendedSignature);
+        assertEquals(3, reports.getDiagnosticData().getTimestampList().size());
+
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(null);
 
         extendedSignature = extendSignature(signedDocument);
         reports = verify(extendedSignature);
@@ -305,6 +355,13 @@ class XAdESExtensionInvalidLevelsTest extends AbstractXAdESTestExtension {
         reports = verify(extendedSignature);
         assertEquals(4, reports.getDiagnosticData().getTimestampList().size());
 
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(null);
+
+        extendedSignature = extendSignature(signedDocument);
+        finalSignatureLevel = SignatureLevel.XAdES_A;
+        reports = verify(extendedSignature);
+        assertEquals(4, reports.getDiagnosticData().getTimestampList().size());
+
         certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new ExceptionOnStatusAlert());
 
         finalSignatureLevel = SignatureLevel.XAdES_C;
@@ -313,6 +370,12 @@ class XAdESExtensionInvalidLevelsTest extends AbstractXAdESTestExtension {
         assertTrue(exception.getMessage().contains("The signature is already extended with a higher level."));
 
         certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new SilentOnStatusAlert());
+
+        extendedSignature = extendSignature(signedDocument);
+        reports = verify(extendedSignature);
+        assertEquals(3, reports.getDiagnosticData().getTimestampList().size());
+
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(null);
 
         extendedSignature = extendSignature(signedDocument);
         reports = verify(extendedSignature);
@@ -331,6 +394,12 @@ class XAdESExtensionInvalidLevelsTest extends AbstractXAdESTestExtension {
         reports = verify(extendedSignature);
         assertEquals(4, reports.getDiagnosticData().getTimestampList().size());
 
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(null);
+
+        extendedSignature = extendSignature(signedDocument);
+        reports = verify(extendedSignature);
+        assertEquals(4, reports.getDiagnosticData().getTimestampList().size());
+
         certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new ExceptionOnStatusAlert());
 
         finalSignatureLevel = SignatureLevel.XAdES_XL;
@@ -339,6 +408,12 @@ class XAdESExtensionInvalidLevelsTest extends AbstractXAdESTestExtension {
         assertTrue(exception.getMessage().contains("The signature is already extended with a higher level."));
 
         certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new SilentOnStatusAlert());
+
+        extendedSignature = extendSignature(signedDocument);
+        reports = verify(extendedSignature);
+        assertEquals(3, reports.getDiagnosticData().getTimestampList().size());
+
+        certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(null);
 
         extendedSignature = extendSignature(signedDocument);
         reports = verify(extendedSignature);
