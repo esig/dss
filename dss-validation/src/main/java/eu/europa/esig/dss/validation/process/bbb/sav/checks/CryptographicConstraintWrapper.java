@@ -246,27 +246,39 @@ public class CryptographicConstraintWrapper {
 		if (constraint != null) {
 			ListAlgo acceptableDigestAlgo = constraint.getAcceptableDigestAlgo();
 			if (acceptableDigestAlgo != null) {
-				List<String> reliableDigestAlgorithmNames = acceptableDigestAlgo.getAlgos().stream()
+				List<String> acceptableDigestAlgorithmNames = acceptableDigestAlgo.getAlgos().stream()
 						.map(Algo::getValue).collect(Collectors.toList());
 				AlgoExpirationDate algoExpirationDate = constraint.getAlgoExpirationDate();
-				if (algoExpirationDate != null) {
-					for (Algo algo : algoExpirationDate.getAlgos()) {
-						if (reliableDigestAlgorithmNames.contains(algo.getValue())) {
-							try {
-								final DigestAlgorithm digestAlgorithm = DigestAlgorithm.forName(algo.getValue());
-								Date expirationDate = getExpirationDate(digestAlgorithm);
-								if (digestAlgorithm != null && (expirationDate == null || !getExpirationDate(digestAlgorithm).before(validationTime))) {
-									reliableDigestAlgorithms.add(digestAlgorithm);
-								}
-							} catch (IllegalArgumentException e) {
-								LOG.warn("Unable to parse a DigestAlgorithm with name '{}'! Reason : {}", algo.getValue(), e.getMessage(), e);
-							}
-						}
+				for (String algorithmName : acceptableDigestAlgorithmNames) {
+					final DigestAlgorithm digestAlgorithm = toDigestAlgorithm(algorithmName);
+					if (isReliableDigestAlgorithm(digestAlgorithm, algoExpirationDate, validationTime)) {
+						reliableDigestAlgorithms.add(digestAlgorithm);
 					}
 				}
 			}
 		}
 		return reliableDigestAlgorithms;
+	}
+
+	private DigestAlgorithm toDigestAlgorithm(String algorithmName) {
+		try {
+			return DigestAlgorithm.forName(algorithmName);
+		} catch (IllegalArgumentException e) {
+			LOG.warn("Unable to parse a DigestAlgorithm with name '{}'! Reason : {}", algorithmName, e.getMessage(), e);
+			return null;
+		}
+	}
+
+	private boolean isReliableDigestAlgorithm(DigestAlgorithm digestAlgorithm, AlgoExpirationDate algoExpirationDates, Date validationTime) {
+		if (digestAlgorithm != null && algoExpirationDates != null) {
+			for (Algo algo : algoExpirationDates.getAlgos()) {
+				if (digestAlgorithm.getName().equals(algo.getValue())) {
+					Date expirationDate = getExpirationDate(digestAlgorithm);
+					return expirationDate == null || !getExpirationDate(digestAlgorithm).before(validationTime);
+				}
+			}
+		}
+		return true;
 	}
 
 	/**
@@ -281,30 +293,57 @@ public class CryptographicConstraintWrapper {
 		if (constraint != null) {
 			ListAlgo acceptableEncryptionAlgo = constraint.getAcceptableEncryptionAlgo();
 			if (acceptableEncryptionAlgo != null) {
-				List<String> reliableEncryptionAlgorithmNames = acceptableEncryptionAlgo.getAlgos().stream()
+				List<String> acceptableEncryptionAlgorithmNames = acceptableEncryptionAlgo.getAlgos().stream()
 						.map(Algo::getValue).collect(Collectors.toList());
 				AlgoExpirationDate algoExpirationDate = constraint.getAlgoExpirationDate();
-				if (algoExpirationDate != null) {
-					for (Algo algo : algoExpirationDate.getAlgos()) {
-						if (reliableEncryptionAlgorithmNames.contains(algo.getValue())) {
-							try {
-								final EncryptionAlgorithm encryptionAlgorithm = EncryptionAlgorithm.forName(algo.getValue());
-								if (encryptionAlgorithm != null && isEncryptionAlgorithmWithKeySizeReliable(encryptionAlgorithm, algo.getSize())
-										&& !getExpirationDate(encryptionAlgorithm, algo.getSize()).before(validationTime)) {
-									Integer minimalAcceptedKeySize = reliableEncryptionAlgorithms.get(encryptionAlgorithm);
-									if (minimalAcceptedKeySize == null || algo.getSize() < minimalAcceptedKeySize) {
-										reliableEncryptionAlgorithms.put(encryptionAlgorithm, algo.getSize());
-									}
-								}
-							} catch (IllegalArgumentException e) {
-								LOG.warn("Unable to parse a EncryptionAlgorithm with name '{}'! Reason : {}", algo.getValue(), e.getMessage(), e);
-							}
-						}
+				for (String algorithmName : acceptableEncryptionAlgorithmNames) {
+					final EncryptionAlgorithm encryptionAlgorithm = toEncryptionAlgorithm(algorithmName);
+					if (isReliableEncryptionAlgorithm(encryptionAlgorithm, algoExpirationDate, validationTime)) {
+						Integer minReliableKeySize = getMinReliableKeySize(encryptionAlgorithm, algoExpirationDate, validationTime);
+						reliableEncryptionAlgorithms.put(encryptionAlgorithm, minReliableKeySize);
 					}
 				}
 			}
 		}
 		return reliableEncryptionAlgorithms;
+	}
+
+	private EncryptionAlgorithm toEncryptionAlgorithm(String algorithmName) {
+		return EncryptionAlgorithm.forName(algorithmName);
+	}
+
+	private boolean isReliableEncryptionAlgorithm(EncryptionAlgorithm encryptionAlgorithm, AlgoExpirationDate algoExpirationDates, Date validationTime) {
+		boolean algoFound = false;
+		if (encryptionAlgorithm != null && algoExpirationDates != null) {
+			for (Algo algo : algoExpirationDates.getAlgos()) {
+				if (encryptionAlgorithm.getName().equals(algo.getValue())) {
+					Date expirationDate = getExpirationDate(encryptionAlgorithm, algo.getSize());
+					if (isEncryptionAlgorithmWithKeySizeReliable(encryptionAlgorithm, algo.getSize()) &&
+							(expirationDate == null || !expirationDate.before(validationTime))) {
+						return true;
+					}
+					algoFound = true;
+				}
+			}
+		}
+		return !algoFound;
+	}
+
+	private Integer getMinReliableKeySize(EncryptionAlgorithm encryptionAlgorithm, AlgoExpirationDate algoExpirationDates, Date validationTime) {
+		Integer minimalAcceptedKeySize = null;
+		if (encryptionAlgorithm != null && algoExpirationDates != null) {
+			for (Algo algo : algoExpirationDates.getAlgos()) {
+				if (encryptionAlgorithm.getName().equals(algo.getValue())) {
+					Date expirationDate = getExpirationDate(encryptionAlgorithm, algo.getSize());
+					if (isEncryptionAlgorithmWithKeySizeReliable(encryptionAlgorithm, algo.getSize()) &&
+							(expirationDate == null || !expirationDate.before(validationTime)) &&
+							(minimalAcceptedKeySize == null || algo.getSize() < minimalAcceptedKeySize)) {
+							minimalAcceptedKeySize = algo.getSize();
+					}
+				}
+			}
+		}
+		return minimalAcceptedKeySize;
 	}
 
 	private Algo getMatchingAlgo(ListAlgo listAlgo, EncryptionAlgorithm encryptionAlgorithm) {

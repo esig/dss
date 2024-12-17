@@ -180,6 +180,7 @@ class RevocationDataVerifierFactoryTest {
         assertTrue(revocationDataVerifier.isAcceptable(ocspToken));
 
         AlgoExpirationDate algoExpirationDate = cryptographic.getAlgoExpirationDate();
+        algoExpirationDate.getAlgos().clear();
         algoExpirationDate.setFormat("yyyy");
 
         algo.setDate("2025");

@@ -726,7 +726,7 @@ class EvidenceRecordAloneValidationTest extends AbstractTestValidationExecutor {
         AlgoExpirationDate algoExpirationDate = cryptographicConstraint.getAlgoExpirationDate();
         for (Algo algo : algoExpirationDate.getAlgos()) {
             if (DigestAlgorithm.SHA224.getName().equals(algo.getValue())) {
-                algo.setDate("2022");
+                algo.setDate("2022-01-01");
             }
         }
 
@@ -975,7 +975,7 @@ class EvidenceRecordAloneValidationTest extends AbstractTestValidationExecutor {
         AlgoExpirationDate algoExpirationDate = cryptographicConstraint.getAlgoExpirationDate();
         for (Algo algo : algoExpirationDate.getAlgos()) {
             if (DigestAlgorithm.SHA224.getName().equals(algo.getValue())) {
-                algo.setDate("2020");
+                algo.setDate("2020-01-01");
             }
         }
 

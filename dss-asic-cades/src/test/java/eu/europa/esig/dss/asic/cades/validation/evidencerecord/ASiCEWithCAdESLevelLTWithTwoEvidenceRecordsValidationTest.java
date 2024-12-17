@@ -160,7 +160,6 @@ class ASiCEWithCAdESLevelLTWithTwoEvidenceRecordsValidationTest extends Abstract
                 assertEquals(1, cryptoInformation.getValidationObjectId().getVOReference().size());
                 assertNotNull(DigestAlgorithm.forXML(cryptoInformation.getAlgorithm()));
                 assertTrue(cryptoInformation.isSecureAlgorithm());
-                assertNotNull(cryptoInformation.getNotAfter());
 
                 ++evidenceRecordCounter;
 

@@ -212,7 +212,7 @@ class CryptographicValidationExecutorTest extends AbstractProcessExecutorTest {
         List<Algo> algos = defaultPolicy.getCryptographic().getAlgoExpirationDate().getAlgos();
         for (Algo algo : algos) {
             if ("SHA1".equals(algo.getValue())) {
-                algo.setDate("2014");
+                algo.setDate("2014-01-01");
                 break;
             }
         }
@@ -227,12 +227,67 @@ class CryptographicValidationExecutorTest extends AbstractProcessExecutorTest {
         // current year returns a first day
         for (Algo algo : algos) {
             if ("SHA1".equals(algo.getValue())) {
-                algo.setDate("2013");
+                algo.setDate("2013-01-01");
                 break;
             }
         }
 
         executor.setValidationPolicy(defaultPolicy);
+        reports = executor.execute();
+        simpleReport = reports.getSimpleReport();
+        assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+        assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+
+        checkReports(reports);
+    }
+
+    @Test
+    void etsiTS119312V151UpdateTest() throws Exception {
+        XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/dss-1635-diag-data.xml"));
+        DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+        executor.setDiagnosticData(diagnosticData);
+        executor.setValidationPolicy(loadDefaultPolicy());
+        executor.setCurrentTime(diagnosticData.getValidationDate());
+
+        Reports reports = executor.execute();
+
+        SimpleReport simpleReport = reports.getSimpleReport();
+        assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+        assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+
+        // before ETSI TS 102 176-1 (Historical) V2.0.0 (expiration at 2009)
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2008, Calendar.JANUARY, 1);
+        diagnosticData.getUsedTimestamps().get(0).setProductionTime(calendar.getTime());
+
+        reports = executor.execute();
+        simpleReport = reports.getSimpleReport();
+        assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+        // before ETSI TS 119 312 V1.5.1 (expiration at 2012-08-01)
+        calendar = Calendar.getInstance();
+        calendar.set(2012, Calendar.JANUARY, 1);
+        diagnosticData.getUsedTimestamps().get(0).setProductionTime(calendar.getTime());
+
+        reports = executor.execute();
+        simpleReport = reports.getSimpleReport();
+        assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+        // at ETSI TS 119 312 V1.5.1 (expiration at 2012-08-01)
+        calendar = Calendar.getInstance();
+        calendar.set(2012, Calendar.AUGUST, 1);
+        diagnosticData.getUsedTimestamps().get(0).setProductionTime(calendar.getTime());
+
+        reports = executor.execute();
+        simpleReport = reports.getSimpleReport();
+        assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+        assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+
+        // after ETSI TS 119 312 V1.5.1 (expiration at 2012-08-01)
+        calendar = Calendar.getInstance();
+        calendar.set(2013, Calendar.JANUARY, 1);
+        diagnosticData.getUsedTimestamps().get(0).setProductionTime(calendar.getTime());
+
         reports = executor.execute();
         simpleReport = reports.getSimpleReport();
         assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
@@ -1174,6 +1229,89 @@ class CryptographicValidationExecutorTest extends AbstractProcessExecutorTest {
         }
         assertTrue(contentTstBasicValidationFound);
         assertFalse(checkAgainstContentTstFound);
+
+        checkReports(reports);
+    }
+
+    @Test
+    void xadesRsaPssFailureTest() throws Exception {
+        XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+                new File("src/test/resources/diag-data/valid-diag-data.xml"));
+        assertNotNull(diagnosticData);
+
+        XmlSignature xmlSignature = diagnosticData.getSignatures().get(0);
+        xmlSignature.getBasicSignature().setEncryptionAlgoUsedToSignThisToken(EncryptionAlgorithm.RSASSA_PSS);
+        xmlSignature.getBasicSignature().setKeyLengthUsedToSignThisToken("1872");
+
+        DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+        executor.setDiagnosticData(diagnosticData);
+        executor.setValidationPolicy(loadDefaultPolicy());
+        executor.setCurrentTime(diagnosticData.getValidationDate());
+
+        Reports reports = executor.execute();
+
+        SimpleReport simpleReport = reports.getSimpleReport();
+        assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+        assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+
+        DetailedReport detailedReport = reports.getDetailedReport();
+        XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+        assertEquals(Indication.INDETERMINATE, signatureBBB.getConclusion().getIndication());
+        assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, signatureBBB.getConclusion().getSubIndication());
+
+        checkReports(reports);
+    }
+
+    @Test
+    void xadesRsaPssLegacyValidTest() throws Exception {
+        XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+                new File("src/test/resources/diag-data/valid-diag-data.xml"));
+        assertNotNull(diagnosticData);
+
+        XmlSignature xmlSignature = diagnosticData.getSignatures().get(0);
+        xmlSignature.getBasicSignature().setEncryptionAlgoUsedToSignThisToken(EncryptionAlgorithm.RSASSA_PSS);
+        xmlSignature.getBasicSignature().setKeyLengthUsedToSignThisToken("2048");
+
+        DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+        executor.setDiagnosticData(diagnosticData);
+        executor.setValidationPolicy(loadDefaultPolicy());
+        executor.setCurrentTime(diagnosticData.getValidationDate());
+
+        Reports reports = executor.execute();
+
+        SimpleReport simpleReport = reports.getSimpleReport();
+        assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+        DetailedReport detailedReport = reports.getDetailedReport();
+        XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+        assertEquals(Indication.PASSED, signatureBBB.getConclusion().getIndication());
+
+        checkReports(reports);
+    }
+
+    @Test
+    void xadesRsaPssValidTest() throws Exception {
+        XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+                new File("src/test/resources/diag-data/valid-diag-data.xml"));
+        assertNotNull(diagnosticData);
+
+        XmlSignature xmlSignature = diagnosticData.getSignatures().get(0);
+        xmlSignature.getBasicSignature().setEncryptionAlgoUsedToSignThisToken(EncryptionAlgorithm.RSASSA_PSS);
+        xmlSignature.getBasicSignature().setKeyLengthUsedToSignThisToken("3072");
+
+        DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+        executor.setDiagnosticData(diagnosticData);
+        executor.setValidationPolicy(loadDefaultPolicy());
+        executor.setCurrentTime(diagnosticData.getValidationDate());
+
+        Reports reports = executor.execute();
+
+        SimpleReport simpleReport = reports.getSimpleReport();
+        assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+        DetailedReport detailedReport = reports.getDetailedReport();
+        XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+        assertEquals(Indication.PASSED, signatureBBB.getConclusion().getIndication());
 
         checkReports(reports);
     }
