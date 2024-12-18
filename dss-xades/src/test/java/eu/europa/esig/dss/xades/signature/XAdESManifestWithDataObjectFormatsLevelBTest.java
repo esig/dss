@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.xades.signature;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -61,6 +62,11 @@ class XAdESManifestWithDataObjectFormatsLevelBTest extends AbstractXAdESTestSign
 
         List<DSSReference> references = manifestBuilder.getManifestReferences();
         List<DSSDataObjectFormat> dataObjectFormatList = new DataObjectFormatBuilder().setReferences(references).build();
+        DSSDataObjectFormat manifestReferenceDataObject = new DSSDataObjectFormat();
+        manifestReferenceDataObject.setObjectReference("#r-" + signatureParameters.getDeterministicId() + "-1");
+        manifestReferenceDataObject.setMimeType(MimeTypeEnum.XML.getMimeTypeString());
+        manifestReferenceDataObject.setDescription("Manifest element");
+        dataObjectFormatList.add(manifestReferenceDataObject);
         signatureParameters.setDataObjectFormatList(dataObjectFormatList);
 
         service = new XAdESService(getOfflineCertificateVerifier());

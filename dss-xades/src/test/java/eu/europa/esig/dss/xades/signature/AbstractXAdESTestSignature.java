@@ -50,6 +50,8 @@ import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.dataobject.DSSDataObjectFormat;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigAttribute;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.validationreport.jaxb.SAMessageDigestType;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
@@ -92,7 +94,44 @@ public abstract class AbstractXAdESTestSignature extends AbstractPkiFactoryTestD
 
 		Document documentDOM = DomUtils.buildDOM(byteArray);
 		assertNotNull(documentDOM);
+		checkReferences(documentDOM);
 		checkDataObjectFormat(documentDOM);
+	}
+
+	protected void checkReferences(Document documentDOM) {
+		NodeList signatureNodeList = DSSXMLUtils.getAllSignaturesExceptCounterSignatures(documentDOM);
+		for (int i = 0; i < signatureNodeList.getLength(); i++) {
+			Element signatureElement = (Element) signatureNodeList.item(i);
+			NodeList referenceNodeList = DomUtils.getNodeList(signatureElement, XMLDSigPath.SIGNED_INFO_REFERENCE_PATH);
+			NodeList dataObjectFormatNodeList = DomUtils.getNodeList(signatureElement, new XAdES132Path().getDataObjectFormat());
+			for (int j = 0; j < referenceNodeList.getLength(); j++) {
+				Element reference = (Element) referenceNodeList.item(j);
+
+				String referenceType = reference.getAttribute(XMLDSigAttribute.TYPE.getAttributeName());
+				String referenceUri = reference.getAttribute(XMLDSigAttribute.URI.getAttributeName());
+				assertNotNull(referenceUri);
+
+				String referenceId = reference.getAttribute(XMLDSigAttribute.ID.getAttributeName());
+				assertNotNull(referenceId);
+
+				if ((DomUtils.startsFromHash(referenceUri) || DomUtils.isXPointerQuery(referenceUri)) &&
+						(new XAdES132Path().getSignedPropertiesUri().equals(referenceType) ||
+								new XAdES132Path().getCounterSignatureUri().equals(referenceType))) {
+					continue;
+				}
+
+				boolean relatedDataObjectFormatFound = false;
+				for (int k = 0; k < dataObjectFormatNodeList.getLength(); k++) {
+					Element dataObjectFormat = (Element) dataObjectFormatNodeList.item(k);
+					String objectReference = dataObjectFormat.getAttribute(XAdES132Attribute.OBJECT_REFERENCE.getAttributeName());
+					if (referenceId.equals(DomUtils.getId(objectReference))) {
+						relatedDataObjectFormatFound = true;
+						break;
+					}
+				}
+				assertTrue(relatedDataObjectFormatFound);
+			}
+		}
 	}
 
 	protected void checkDataObjectFormat(Document documentDOM) {

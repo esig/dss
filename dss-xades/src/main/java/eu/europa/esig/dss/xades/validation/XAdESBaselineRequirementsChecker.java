@@ -210,6 +210,7 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
                 continue;
             }
             ReferenceValidation referenceValidation = referenceStatus.getReferenceValidation();
+            // TODO : check whether other reference types should be checked (i.e. KeyInfo, Manifest, etc.)
             if ((DomUtils.startsFromHash(referenceValidation.getUri()) || DomUtils.isXPointerQuery(referenceValidation.getUri())) &&
                     (DigestMatcherType.SIGNED_PROPERTIES.equals(referenceValidation.getType()) ||
                     DigestMatcherType.COUNTER_SIGNATURE.equals(referenceValidation.getType()) ||

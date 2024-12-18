@@ -125,6 +125,11 @@ class XMLDSigEnvelopedTest extends AbstractXAdESTestSignature {
     }
 
     @Override
+    protected void checkReferences(Document documentDOM) {
+        // skip (XMLDSig)
+    }
+
+    @Override
     protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
         SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
         assertFalse(signature.isSigningCertificateIdentified());
