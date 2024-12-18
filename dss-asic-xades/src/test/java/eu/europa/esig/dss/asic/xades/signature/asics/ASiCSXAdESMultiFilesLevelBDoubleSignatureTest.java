@@ -37,9 +37,11 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.RepeatedTest;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -73,6 +75,12 @@ class ASiCSXAdESMultiFilesLevelBDoubleSignatureTest extends AbstractASiCSWithXAd
         signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
     }
 
+    @RepeatedTest(100)
+    @Override
+    public void signAndVerify() {
+        super.signAndVerify();
+    }
+
     @Override
     protected DSSDocument sign() {
         documentToSigns = ORIGINAL_DOCS;
@@ -80,8 +88,11 @@ class ASiCSXAdESMultiFilesLevelBDoubleSignatureTest extends AbstractASiCSWithXAd
         DSSDocument firstSignedDocument = super.sign();
         assertNotNull(firstSignedDocument);
 
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MILLISECOND, 1);
+
         signatureParameters = new ASiCWithXAdESSignatureParameters();
-        signatureParameters.bLevel().setSigningDate(new Date());
+        signatureParameters.bLevel().setSigningDate(calendar.getTime());
         signatureParameters.setSigningCertificate(getSigningCert());
         signatureParameters.setCertificateChain(getCertificateChain());
         signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
