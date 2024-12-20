@@ -256,13 +256,13 @@ public class CadesLevelBaselineLTATimestampExtractor {
 		final ASN1Sequence certHashes = CMSUtils.getCertificatesHashIndex(timestampHashIndex);
 		final List<DEROctetString> certHashesList = DSSASN1Utils.getDEROctetStrings(certHashes);
 
-		// Evaluate CMSSignedData.certificates
+		// Evaluate SignedData.certificates
 		List<CertificateToken> signedDataCertificates = signature.getCertificateSource().getSignedDataCertificates();
 		for (final CertificateToken certificateToken : signedDataCertificates) {
 			final byte[] digest = certificateToken.getDigest(hashIndexDigestAlgorithm);
 			final DEROctetString derOctetStringDigest = new DEROctetString(digest);
 			if (certHashesList.remove(derOctetStringDigest)) {
-				// attribute present in CMSSignedData.certificates and in timestamp's hash-table
+				// attribute present in SignedData.certificates and in timestamp's hash-table
 				LOG.debug("Cert {} present in timestamp", certificateToken.getAbbreviation());
 			} else {
 				LOG.debug("Cert {} not present in timestamp", certificateToken.getAbbreviation());
@@ -275,13 +275,13 @@ public class CadesLevelBaselineLTATimestampExtractor {
 				final byte[] digest = certificateToken.getDigest(hashIndexDigestAlgorithm);
 				final DEROctetString derOctetStringDigest = new DEROctetString(digest);
 				if (certHashesList.remove(derOctetStringDigest)) {
-					LOG.warn("ats-hash-index attribute contains certificate '{}' present outside CMSSignedData.certificates", certificateToken.getAbbreviation());
+					LOG.warn("ats-hash-index attribute contains certificate '{}' present outside SignedData.certificates", certificateToken.getAbbreviation());
 				}
 			}
 
 			if (certHashesList.isEmpty()) {
 				atsHashIndexStatus.addErrorMessage(
-						"ats-hash-index attribute contains certificates present outside of CMSSignedData.certificates.");
+						"ats-hash-index attribute contains certificates present outside of SignedData.certificates.");
 			} else {
 				LOG.warn("{} attribute(s) hash in Cert Hashes has not been found in document attributes: {}", certHashesList.size(), certHashesList);
 				atsHashIndexStatus.addErrorMessage(
@@ -370,7 +370,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 				final byte[] digest = crl.getDigestValue(hashIndexDigestAlgorithm);
 				final DEROctetString derOctetStringDigest = new DEROctetString(digest);
 				if (crlHashesList.remove(derOctetStringDigest)) {
-					LOG.warn("ats-hash-index attribute contains CRL '{}' present outside CMSSignedData.crls", crl.getDSSId().asXmlId());
+					LOG.warn("ats-hash-index attribute contains CRL '{}' present outside SignedData.crls", crl.getDSSId().asXmlId());
 				}
 			}
 
@@ -383,7 +383,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 					DEROctetString derOctetStringDigest = getOcspResponseDigest(
 							binary.getBasicOCSPRespContent(), objectIdentifier, hashIndexDigestAlgorithm);
 					if (crlHashesList.remove(derOctetStringDigest)) {
-						LOG.warn("ats-hash-index attribute contains OCSP '{}' present outside CMSSignedData.crls", ocsp.getDSSId().asXmlId());
+						LOG.warn("ats-hash-index attribute contains OCSP '{}' present outside SignedData.crls", ocsp.getDSSId().asXmlId());
 					}
 				} else {
 					// CMSObjectIdentifiers.id_ri_ocsp_response full binaries
@@ -391,14 +391,14 @@ public class CadesLevelBaselineLTATimestampExtractor {
 					DEROctetString derOctetStringDigest = getOcspResponseDigest(
 							binary.getBinaries(), objectIdentifier, hashIndexDigestAlgorithm);
 					if (crlHashesList.remove(derOctetStringDigest)) {
-						LOG.warn("ats-hash-index attribute contains OCSP '{}' present outside CMSSignedData.crls", ocsp.getDSSId().asXmlId());
+						LOG.warn("ats-hash-index attribute contains OCSP '{}' present outside SignedData.crls", ocsp.getDSSId().asXmlId());
 					}
 				}
 			}
 
 			if (crlHashesList.isEmpty()) {
 				atsHashIndexStatus.addErrorMessage(
-						"ats-hash-index attribute contains crls present outside of CMSSignedData.crls.");
+						"ats-hash-index attribute contains crls present outside of SignedData.crls.");
 			} else {
 				LOG.warn("{} attribute(s) hash in CRL Hashes has not been found in SignedData.crls: {}", crlHashesList.size(), crlHashesList);
 				atsHashIndexStatus.addErrorMessage(

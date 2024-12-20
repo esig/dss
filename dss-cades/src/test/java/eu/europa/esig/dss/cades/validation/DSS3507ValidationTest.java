@@ -58,7 +58,7 @@ class DSS3507ValidationTest extends AbstractCAdESTestValidation {
                 assertFalse(timestampWrapper.isAtsHashIndexValid());
                 assertFalse(Utils.isCollectionEmpty(timestampWrapper.getAtsHashIndexValidationMessages()));
                 assertTrue(timestampWrapper.getAtsHashIndexValidationMessages().contains(
-                        "ats-hash-index attribute contains certificates present outside of CMSSignedData.certificates."));
+                        "ats-hash-index attribute contains certificates present outside of SignedData.certificates."));
 
                 arcTstFound = true;
             }

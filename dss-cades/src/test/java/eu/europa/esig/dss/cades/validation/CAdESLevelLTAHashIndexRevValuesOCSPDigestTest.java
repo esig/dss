@@ -66,7 +66,7 @@ class CAdESLevelLTAHashIndexRevValuesOCSPDigestTest extends AbstractCAdESTestVal
                     assertFalse(timestampWrapper.isAtsHashIndexValid());
                     assertFalse(Utils.isCollectionEmpty(timestampWrapper.getAtsHashIndexValidationMessages()));
                     assertTrue(timestampWrapper.getAtsHashIndexValidationMessages().contains(
-                            "ats-hash-index attribute contains crls present outside of CMSSignedData.crls."));
+                            "ats-hash-index attribute contains crls present outside of SignedData.crls."));
 
                     arcTstV3Found = true;
                 }

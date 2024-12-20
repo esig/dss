@@ -837,7 +837,7 @@ public final class CMSUtils {
 	}
 
 	/**
-	 * This method returns encoded binaries used for OCSP token incorporation within a CMSSignedData.crls attribute
+	 * This method returns encoded binaries used for OCSP token incorporation within a SignedData.crls attribute
 	 *
 	 * @param binaries byte array containing OCSP token
 	 * @param objectIdentifier {@link ASN1ObjectIdentifier}

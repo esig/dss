@@ -76,7 +76,7 @@ public class CMSSignedDataBuilder {
 	private CertificateToken signingCertificate;
 
 	/**
-	 * The certificate hain to be incorporated within CMSSignedData.certificates field
+	 * The certificate hain to be incorporated within SignedData.certificates field
 	 */
 	private Collection<CertificateToken> certificateChain;
 
@@ -127,7 +127,7 @@ public class CMSSignedDataBuilder {
 	}
 
 	/**
-	 * Sets a collection of certificates to be incorporated within CMSSignedData.certificates field
+	 * Sets a collection of certificates to be incorporated within SignedData.certificates field
 	 *
 	 * @param certificateChain a collection of {@link CertificateToken}s
 	 * @return this {@link CMSSignedDataBuilder}
