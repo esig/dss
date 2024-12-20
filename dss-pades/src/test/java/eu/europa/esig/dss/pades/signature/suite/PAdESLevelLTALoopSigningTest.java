@@ -1,5 +1,7 @@
 package eu.europa.esig.dss.pades.signature.suite;
 
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -8,8 +10,11 @@ import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 // See DSS-3422. Manual testing
 @Tag("slow")
@@ -44,6 +49,8 @@ public class PAdESLevelLTALoopSigningTest extends AbstractPAdESTestSignature {
             documentToSign = signedDocument;
         }
 
+        awaitOneSecond(); // to update DSS dictionary
+
         signatureParameters.setSignatureLevel(SignatureLevel.PAdES_BASELINE_LT);
         signedDocument = super.sign();
 
@@ -54,8 +61,35 @@ public class PAdESLevelLTALoopSigningTest extends AbstractPAdESTestSignature {
     @Override
     protected CertificateVerifier getCompleteCertificateVerifier() {
         CertificateVerifier certificateVerifier = super.getCompleteCertificateVerifier();
+        certificateVerifier.setCrlSource(pkiCRLSource());
+        certificateVerifier.setOcspSource(pkiDelegatedOCSPSource());
         certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(null);
         return certificateVerifier;
+    }
+
+    @Override
+    protected void checkNumberOfSignatures(DiagnosticData diagnosticData) {
+        assertEquals(16, diagnosticData.getSignatures().size());
+    }
+
+    @Override
+    protected void checkSignatureLevel(DiagnosticData diagnosticData) {
+        int ltSignaturesCounter = 0;
+        int ltaSignaturesCounter = 0;
+        for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+            if (SignatureLevel.PAdES_BASELINE_LT.equals(signatureWrapper.getSignatureFormat())) {
+                ++ltSignaturesCounter;
+            } else if (SignatureLevel.PAdES_BASELINE_LTA.equals(signatureWrapper.getSignatureFormat())) {
+                ++ltaSignaturesCounter;
+            }
+        }
+        assertEquals(1, ltSignaturesCounter);
+        assertEquals(15, ltaSignaturesCounter);
+    }
+
+    @Override
+    protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
+        // skip
     }
 
     @Override
