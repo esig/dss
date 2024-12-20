@@ -100,6 +100,19 @@ Not present
 </eIDAS>
 ----
 
+|CAdES archive-time-stamp-v3 ats-hash-index validation     |
+----
+Not present
+----
+                                                                     a|[source,xml]
+----
+<Timestamp>
+    ...
+    <AtsHashIndex Level="WARN" />
+    ...
+</Timestamp>
+----
+
 |===
 
 [cols="2,5,5"]

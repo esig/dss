@@ -424,6 +424,11 @@
 					<xsd:documentation>Checks if a TSTInfo.tsa field's value and order matches the timestamp's issuer distinguishing name when present</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="AtsHashIndex" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if CAdES ats-hash-index(-v3) attribute of the archive-time-stamp-v3 is present and valid, conforming to the ETSI EN 319 122-1 definition</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="ContainerSignedAndTimestampedFilesCovered" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks whether all previously signed and/or time-asserted file objects are subsequently covered by the current timestamp in an ASiC container.</xsd:documentation>

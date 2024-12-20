@@ -113,6 +113,9 @@ public enum MessageTag {
 
 	BBB_FC_ISFP_ASTFORAMC,
 	BBB_FC_ISFP_ASTFORAMC_ANS,
+
+	BBB_FC_IAHIV,
+	BBB_FC_IAHIV_ANS,
 	
 	/* BBB -> CV */
 	BBB_CV_IRDOF,

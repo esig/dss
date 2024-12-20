@@ -1102,6 +1102,14 @@ public interface ValidationPolicy {
 	LevelConstraint getTimestampTSAGeneralNameOrderMatch();
 
 	/**
+	 * Returns timestamp AtsHashIndex constraint if present in the policy, null otherwise
+	 *
+	 * @return {@code LevelConstraint} if AtsHashIndex element is present
+	 *                                 in the constraint file, null otherwise.
+	 */
+	LevelConstraint getAtsHashIndexConstraint();
+
+	/**
 	 * Returns timestamp ContainerSignedAndTimestampedFilesCovered constraint if present in the policy, null otherwise
 	 *
 	 * @return {@code LevelConstraint} if ContainerSignedAndTimestampedFilesCovered element is present

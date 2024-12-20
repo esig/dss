@@ -23,12 +23,15 @@ package eu.europa.esig.dss.validation.process.bbb.fc;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.Context;
+import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.bbb.fc.checks.CAdESV3HashIndexCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.SignedAndTimestampedFilesCoveredCheck;
 
 /**
@@ -55,6 +58,13 @@ public class TimestampFormatChecking extends AbstractFormatChecking<TimestampWra
     protected void initChain() {
 
         ChainItem<XmlFC> item = firstItem;
+
+        // CAdES-V3 timestamp
+        if (TimestampType.ARCHIVE_TIMESTAMP == token.getType() && ArchiveTimestampType.CAdES_V3 == token.getArchiveTimestampType()) {
+
+            item = firstItem = cadesAtsV3HashIndex();
+
+        }
 
         // PAdES
         if (token.getPDFRevision() != null) {
@@ -94,6 +104,11 @@ public class TimestampFormatChecking extends AbstractFormatChecking<TimestampWra
 
         }
 
+    }
+
+    private ChainItem<XmlFC> cadesAtsV3HashIndex() {
+        LevelConstraint constraint = policy.getAtsHashIndexConstraint();
+        return new CAdESV3HashIndexCheck(i18nProvider, result, token, constraint);
     }
 
     private ChainItem<XmlFC> signedAndTimestampedFilesCovered() {

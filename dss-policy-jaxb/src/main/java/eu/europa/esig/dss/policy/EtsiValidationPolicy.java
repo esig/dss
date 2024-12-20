@@ -1327,6 +1327,15 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
+	public LevelConstraint getAtsHashIndexConstraint() {
+		TimestampConstraints timestampConstraints = getTimestampConstraints();
+		if (timestampConstraints != null) {
+			return timestampConstraints.getAtsHashIndex();
+		}
+		return null;
+	}
+
+	@Override
 	public LevelConstraint getTimestampContainerSignedAndTimestampedFilesCoveredConstraint() {
 		TimestampConstraints timestampConstraints = getTimestampConstraints();
 		if (timestampConstraints != null) {

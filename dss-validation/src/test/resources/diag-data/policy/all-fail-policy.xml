@@ -432,6 +432,7 @@
 			<IssuerSerialMatch Level="FAIL" />
 		</SignedAttributes>
 		<TSAGeneralNameContentMatch Level="FAIL" />
+		<AtsHashIndex Level="FAIL" />
 		<ContainerSignedAndTimestampedFilesCovered Level="FAIL" />
 	</Timestamp>
 	<Revocation>

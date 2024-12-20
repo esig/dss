@@ -432,6 +432,7 @@
 			<IssuerSerialMatch Level="WARN" />
 		</SignedAttributes>
 		<TSAGeneralNameContentMatch Level="WARN" />
+		<AtsHashIndex Level="WARN" />
 		<ContainerSignedAndTimestampedFilesCovered Level="WARN" />
 	</Timestamp>
 	<Revocation>

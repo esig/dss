@@ -432,6 +432,7 @@
 			<IssuerSerialMatch Level="IGNORE" />
 		</SignedAttributes>
 		<TSAGeneralNameContentMatch Level="IGNORE" />
+		<AtsHashIndex Level="IGNORE" />
 		<ContainerSignedAndTimestampedFilesCovered Level="IGNORE" />
 	</Timestamp>
 	<Revocation>

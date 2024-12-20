@@ -2287,6 +2287,20 @@ Default: not executed
 </Timestamp>
 ----
 
+* `AtsHashIndex` - this constraint checks if the ats-hash-index(-v3) attribute present within CAdES archive-time-stamp-v3 is valid according to the ETSI EN 319 122-1 (cf. <<R02>>) definition . If the ats-hash-index(-v3) attribute is not present or not valid for the corresponding CAdES archive-time-stamp-v3 unsigned property, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of AtsHashIndex usage (with WARN validation level)
+----
+<Timestamp>
+    ...
+    <AtsHashIndex Level="WARN" />
+    ...
+</Timestamp>
+----
+
 * `ContainerSignedAndTimestampedFilesCovered` - this constraint checks if all data files signed and/or time-asserted covered signatures or timestamps are protected by the container timestamp. If one of the data files signed and/or time-asserted by a covered signature or timestamp is not protected by the container timestamp, the check will fail.
 
 Default: `FAIL`
@@ -2881,7 +2895,7 @@ This table defines the correspondence between the enforced validation policy con
                                   |DocumentTimeStamp               |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
                                   |TLevelTimeStamp                 |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
                                   |LTALevelTimeStamp               |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
-.11+|TimestampConstraints         |TimestampDelay                  |TimeConstraint                    |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
+.12+|TimestampConstraints         |TimestampDelay                  |TimeConstraint                    |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
                                   |RevocationTimeAgainstBestSignatureTime   |LevelConstraint          |INDETERMINATE         |REVOKED_NO_POE +
                                                                                                                               REVOKED_CA_NO_POE
                                   |BestSignatureTimeBeforeExpirationDateOfSigningCertificate |LevelConstraint  |FAILED       |NOT_YET_VALID
@@ -2892,6 +2906,7 @@ This table defines the correspondence between the enforced validation policy con
                                   |TSAGeneralNamePresent           |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
                                   |TSAGeneralNameContentMatch      |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
                                   |TSAGeneralNameOrderMatch        |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
+                                  |AtsHashIndex                    |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |ContainerSignedAndTimestampedFilesCovered   |LevelConstraint       |FAILED                |FORMAT_FAILURE
 .6+|RevocationConstraints         |UnknownStatus                   |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |OCSPResponderIdMatch            |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
