@@ -22,11 +22,17 @@ package eu.europa.esig.dss.asic.cades.signature.asics;
 
 import eu.europa.esig.dss.asic.cades.signature.AbstractASiCWithCAdESMultipleDocumentsTestSignature;
 import eu.europa.esig.dss.asic.common.ASiCContent;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.enumerations.ArchiveTimestampHashIndexVersion;
+import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.MimeType;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
+import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -60,6 +66,20 @@ public abstract class AbstractASiCSWithCAdESMultipleDocumentsTestSignature exten
         assertFalse(Utils.isCollectionNotEmpty(asicContent.getArchiveManifestDocuments()));
         assertFalse(Utils.isCollectionNotEmpty(asicContent.getTimestampDocuments()));
         assertFalse(Utils.isCollectionNotEmpty(asicContent.getUnsupportedDocuments()));
+    }
+
+    @Override
+    protected void checkAtsHashTable(List<TimestampWrapper> allTimestamps) {
+        super.checkAtsHashTable(allTimestamps);
+
+        for (TimestampWrapper timestampWrapper : allTimestamps) {
+            if (TimestampType.ARCHIVE_TIMESTAMP == timestampWrapper.getType() &&
+                    ArchiveTimestampType.CAdES_V3 == timestampWrapper.getArchiveTimestampType()) {
+                assertEquals(ArchiveTimestampHashIndexVersion.ATS_HASH_INDEX_V3, timestampWrapper.getAtsHashIndexVersion());
+                assertTrue(timestampWrapper.isAtsHashIndexValid());
+                assertTrue(Utils.isCollectionEmpty(timestampWrapper.getAtsHashIndexValidationMessages()));
+            }
+        }
     }
 
 }

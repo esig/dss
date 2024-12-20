@@ -130,7 +130,7 @@ public class CAdESLevelBaselineLT extends CAdESLevelBaselineT {
 			 */
 			ValidationData allValidationData = validationDataContainer.getAllValidationData();
 			for (AdvancedSignature signature : signaturesToExtend) {
-				allValidationData.excludeCertificateTokens(signature.getCertificateSource().getCertificateValues());
+				allValidationData.excludeCertificateTokens(signature.getCertificateSource().getCertificates());
 				allValidationData.excludeCRLTokens(signature.getCRLSource().getAllRevocationBinaries());
 				allValidationData.excludeOCSPTokens(signature.getOCSPSource().getAllRevocationBinaries());
 			}

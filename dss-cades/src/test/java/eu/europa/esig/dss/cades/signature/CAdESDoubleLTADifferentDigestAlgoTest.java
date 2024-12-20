@@ -120,6 +120,11 @@ class CAdESDoubleLTADifferentDigestAlgoTest extends AbstractCAdESTestSignature {
     }
 
     @Override
+    protected void checkArchiveTimeStampV3(byte[] byteArray) {
+        // skip (digestAlgo change)
+    }
+
+    @Override
     protected DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> getService() {
         return service;
     }

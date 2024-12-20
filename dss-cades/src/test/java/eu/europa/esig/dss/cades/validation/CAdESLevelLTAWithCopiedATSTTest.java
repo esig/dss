@@ -22,6 +22,7 @@ package eu.europa.esig.dss.cades.validation;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -32,6 +33,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CAdESLevelLTAWithCopiedATSTTest extends AbstractCAdESTestValidation {
@@ -69,6 +71,12 @@ class CAdESLevelLTAWithCopiedATSTTest extends AbstractCAdESTestValidation {
                 assertFalse(timestampWrapper.isMessageImprintDataIntact());
                 assertTrue(timestampWrapper.isSignatureIntact());
                 assertFalse(timestampWrapper.isSignatureValid());
+
+                assertEquals(ArchiveTimestampType.CAdES_V3, timestampWrapper.getArchiveTimestampType());
+                assertNull(timestampWrapper.getAtsHashIndexVersion());
+                assertFalse(timestampWrapper.isAtsHashIndexValid());
+                assertTrue(timestampWrapper.getAtsHashIndexValidationMessages().contains("The ats-hash-index was not found or not supported."));
+
                 arcTstFound = true;
             }
         }

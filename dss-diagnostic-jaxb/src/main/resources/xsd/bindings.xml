@@ -193,6 +193,12 @@
 						 printMethod="eu.europa.esig.dss.jaxb.parsers.GeneralNameTypeParser.print" />
 	  </jaxb:bindings>
 
+	  <jaxb:bindings node="//xs:simpleType[@name='ArchiveTimestampHashIndexVersion']">
+		  <jaxb:javaType name="eu.europa.esig.dss.enumerations.ArchiveTimestampHashIndexVersion"
+						 parseMethod="eu.europa.esig.dss.jaxb.parsers.ArchiveTimestampHashIndexVersionParser.parse"
+						 printMethod="eu.europa.esig.dss.jaxb.parsers.ArchiveTimestampHashIndexVersionParser.print" />
+	  </jaxb:bindings>
+
   	<jaxb:bindings node="//xs:complexType[@name='FoundCertificates']//xs:element[@name='RelatedCertificate']">
 		<jaxb:property name="RelatedCertificates" />
 	</jaxb:bindings>

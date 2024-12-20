@@ -1036,6 +1036,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 			}
 
 			List<TimestampWrapper> allTimestamps = diagnosticData.getTimestampList();
+			checkAtsHashTable(allTimestamps);
 			checkNoDuplicateTimestamps(allTimestamps);
 			for (TimestampWrapper timestampWrapper : allTimestamps) {
 				if (!timestampWrapper.getType().isEvidenceRecordTimestamp()) {
@@ -1230,6 +1231,10 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 				assertTrue(orphanRevocIds.contains(revocation.getId()));
 			}
 		}
+	}
+
+	protected void checkAtsHashTable(List<TimestampWrapper> allTimestamps) {
+		// not applicable
 	}
 
 	protected void checkEvidenceRecords(DiagnosticData diagnosticData) {

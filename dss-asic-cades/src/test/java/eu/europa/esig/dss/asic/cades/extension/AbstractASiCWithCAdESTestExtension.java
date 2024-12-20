@@ -28,8 +28,12 @@ import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.validation.ASiCManifestParser;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlContainerInfo;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.ArchiveTimestampHashIndexVersion;
+import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
+import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
@@ -230,6 +234,20 @@ public abstract class AbstractASiCWithCAdESTestExtension extends AbstractTestExt
 				
 				assertNotNull(signatureIdentifier.getSignatureValue());
                 assertArrayEquals(signature.getSignatureValue(), signatureIdentifier.getSignatureValue().getValue());
+			}
+		}
+	}
+
+	@Override
+	protected void checkAtsHashTable(List<TimestampWrapper> allTimestamps) {
+		super.checkAtsHashTable(allTimestamps);
+
+		for (TimestampWrapper timestampWrapper : allTimestamps) {
+			if (TimestampType.ARCHIVE_TIMESTAMP == timestampWrapper.getType() &&
+					ArchiveTimestampType.CAdES_V3 == timestampWrapper.getArchiveTimestampType()) {
+				assertEquals(ArchiveTimestampHashIndexVersion.ATS_HASH_INDEX_V3, timestampWrapper.getAtsHashIndexVersion());
+				assertTrue(timestampWrapper.isAtsHashIndexValid());
+				assertTrue(Utils.isCollectionEmpty(timestampWrapper.getAtsHashIndexValidationMessages()));
 			}
 		}
 	}

@@ -181,14 +181,14 @@ public class TimestampToken extends Token {
 	/**
 	 * This attribute is used for XAdES timestamps. It indicates the canonicalization method
 	 * used for message-imprint computation.
-	 *
+	 * <p>
 	 * NOTE: Used for XAdES/JAdES only
 	 */
 	private String canonicalizationMethod;
 
 	/**
 	 * Identifies a TSA issued the timestamp token
-	 *
+	 * <p>
 	 * NOTE: Takes a value only for a successfully validated token
 	 */
 	private X500Principal tsaX500Principal;
@@ -197,6 +197,12 @@ public class TimestampToken extends Token {
 	 * Cached list of signing certificate candidates
 	 */
 	private CandidatesForSigningCertificate candidatesForSigningCertificate;
+
+	/**
+	 * Contains validation status of the ats-hash-index(-v3) attribute.
+	 * NOTE: applicable only for CMS archive-time-stamp-v3 timestamps.
+	 */
+	private ArchiveTimestampHashIndexStatus hashIndexStatus;
 
 	/**
 	 * Default constructor
@@ -348,7 +354,7 @@ public class TimestampToken extends Token {
 
 	/**
 	 * Indicated if the signature is intact and the message-imprint matches the computed message-imprint.
-	 *
+	 * <p>
 	 * NOTE: The method isSignedBy(CertificateToken) must be called before calling the method.
 	 *       See {@code TimestampToken.isSignatureIntact()} for more details
 	 *
@@ -982,9 +988,9 @@ public class TimestampToken extends Token {
 	}
 	
 	/**
-	 * Returns a list of found CertificateIdentifier in the SignerInformationStore
+	 * Returns a set of found CertificateIdentifier in the SignerInformationStore
 	 * 
-	 * @return a list of {@link SignerIdentifier}s
+	 * @return a set of {@link SignerIdentifier}s
 	 */
 	public Set<SignerIdentifier> getSignerInformationStoreInfos() {
 		return getCertificateSource().getAllCertificateIdentifiers();
@@ -1011,6 +1017,26 @@ public class TimestampToken extends Token {
 	public SignerInformation getSignerInformation() {
 		Collection<SignerInformation> signers = timeStamp.toCMSSignedData().getSignerInfos().getSigners(timeStamp.getSID());
 		return signers.iterator().next();
+	}
+
+	/**
+	 * Gets the validation status of the ats-hash-index(-v3) attribute, when applicable.
+	 * NOTE: supports only archive-time-stamp-v3 timestamp type
+	 *
+	 * @return {@link ArchiveTimestampHashIndexStatus} if validation ts-hash-index(-v3) attribute has been performed,
+	 *         NULL otherwise
+	 */
+	public ArchiveTimestampHashIndexStatus getAtsHashIndexStatus() {
+		return hashIndexStatus;
+	}
+
+	/**
+	 * Sets the validation status of the ats-hash-index(-v3) attribute, when applicable.
+	 *
+	 * @param hashIndexStatus {@link ArchiveTimestampHashIndexStatus}
+	 */
+	public void setAtsHashIndexStatus(ArchiveTimestampHashIndexStatus hashIndexStatus) {
+		this.hashIndexStatus = hashIndexStatus;
 	}
 
 	@Override

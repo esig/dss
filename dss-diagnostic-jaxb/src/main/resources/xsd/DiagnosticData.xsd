@@ -1199,6 +1199,7 @@
 					<xs:element name="TimestampFilename" type="xs:string" minOccurs="0" /> <!-- In case of detached timestamps -->
 					<xs:element name="ArchiveTimestampType" type="ArchiveTimestampType" minOccurs="0" />
 					<xs:element name="EvidenceRecordTimestampType" type="EvidenceRecordTimestampType" minOccurs="0" />
+					<xs:element name="ArchiveTimestampHashIndex" type="ArchiveTimestampHashIndex" minOccurs="0" />
 					<xs:element name="ProductionTime" type="xs:dateTime" />
 					<xs:element name="DigestMatcher" type="DigestMatcher" maxOccurs="unbounded" />
 					<xs:element name="BasicSignature" type="BasicSignature" />
@@ -1270,6 +1271,22 @@
 			<xs:enumeration value="ARCHIVE_TIMESTAMP" />
 			<xs:enumeration value="TIMESTAMP_RENEWAL_ARCHIVE_TIMESTAMP" />
 			<xs:enumeration value="HASH_TREE_RENEWAL_ARCHIVE_TIMESTAMP" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="ArchiveTimestampHashIndex">
+		<xs:complexContent>
+			<xs:extension base="StructuralValidation">
+				<xs:attribute name="version" type="ArchiveTimestampHashIndexVersion"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:simpleType name="ArchiveTimestampHashIndexVersion" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="ats-hash-index" />
+			<xs:enumeration value="ats-hash-index-v2" />
+			<xs:enumeration value="ats-hash-index-v3" />
 		</xs:restriction>
 	</xs:simpleType>
 	

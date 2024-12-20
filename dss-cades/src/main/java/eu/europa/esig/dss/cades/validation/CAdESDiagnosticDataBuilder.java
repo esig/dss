@@ -20,8 +20,13 @@
  */
 package eu.europa.esig.dss.cades.validation;
 
+import eu.europa.esig.dss.diagnostic.jaxb.XmlArchiveTimestampHashIndex;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.x509.tsp.ArchiveTimestampHashIndexStatus;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.reports.diagnostic.SignedDocumentDiagnosticDataBuilder;
 
 /**
@@ -46,6 +51,20 @@ public class CAdESDiagnosticDataBuilder extends SignedDocumentDiagnosticDataBuil
 		xmlSignature.setSignerInformationStore(
 				getXmlSignerInformationStore(cadesSignature.getSignerInformationStoreInfos()));
 		return xmlSignature;
+	}
+
+	@Override
+	protected XmlTimestamp buildDetachedXmlTimestamp(TimestampToken timestampToken) {
+		XmlTimestamp xmlTimestamp = super.buildDetachedXmlTimestamp(timestampToken);
+		ArchiveTimestampHashIndexStatus atsHashIndexStatus = timestampToken.getAtsHashIndexStatus();
+		if (atsHashIndexStatus != null) {
+			XmlArchiveTimestampHashIndex xmlAtsHashIndex = new XmlArchiveTimestampHashIndex();
+			xmlAtsHashIndex.setVersion(atsHashIndexStatus.getVersion());
+			xmlAtsHashIndex.setValid(Utils.isCollectionEmpty(atsHashIndexStatus.getErrorMessages()));
+			xmlAtsHashIndex.getMessages().addAll(atsHashIndexStatus.getErrorMessages());
+			xmlTimestamp.setArchiveTimestampHashIndex(xmlAtsHashIndex);
+		}
+		return xmlTimestamp;
 	}
 
 }

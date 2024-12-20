@@ -20,13 +20,17 @@
  */
 package eu.europa.esig.dss.cades.validation;
 
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.enumerations.ArchiveTimestampHashIndexVersion;
+import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
+import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.FileDocument;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
 
 class DSS1997Test extends AbstractCAdESTestValidation {
 
@@ -38,12 +42,48 @@ class DSS1997Test extends AbstractCAdESTestValidation {
 	@Override
 	protected void checkSignatureLevel(DiagnosticData diagnosticData) {
 		assertTrue(diagnosticData.isTLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
-		assertFalse(diagnosticData.isALevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
+		assertTrue(diagnosticData.isALevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
 	}
 	
 	@Override
 	protected void checkTimestamps(DiagnosticData diagnosticData) {
 		assertEquals(3, diagnosticData.getTimestampList().size());
+
+		boolean sigTstFound = false;
+		boolean valDataTstFound = false;
+		boolean arcTstFound = false;
+		for (TimestampWrapper timestampWrapper : diagnosticData.getTimestampList()) {
+			if (TimestampType.SIGNATURE_TIMESTAMP == timestampWrapper.getType()) {
+				assertTrue(timestampWrapper.isMessageImprintDataFound());
+				assertTrue(timestampWrapper.isMessageImprintDataIntact());
+				assertTrue(timestampWrapper.isSignatureIntact());
+				assertTrue(timestampWrapper.isSignatureValid());
+				sigTstFound = true;
+
+			} else if (TimestampType.VALIDATION_DATA_TIMESTAMP == timestampWrapper.getType()) {
+				assertTrue(timestampWrapper.isMessageImprintDataFound());
+				assertTrue(timestampWrapper.isMessageImprintDataIntact());
+				assertTrue(timestampWrapper.isSignatureIntact());
+				assertTrue(timestampWrapper.isSignatureValid());
+				valDataTstFound = true;
+
+			} if (TimestampType.ARCHIVE_TIMESTAMP == timestampWrapper.getType()) {
+				assertTrue(timestampWrapper.isMessageImprintDataFound());
+				assertTrue(timestampWrapper.isMessageImprintDataIntact());
+				assertTrue(timestampWrapper.isSignatureIntact());
+				assertTrue(timestampWrapper.isSignatureValid());
+
+				assertEquals(ArchiveTimestampType.CAdES_V3, timestampWrapper.getArchiveTimestampType());
+				assertEquals(ArchiveTimestampHashIndexVersion.ATS_HASH_INDEX, timestampWrapper.getAtsHashIndexVersion());
+				assertFalse(timestampWrapper.isAtsHashIndexValid());
+				assertTrue(timestampWrapper.getAtsHashIndexValidationMessages().contains(
+						"Some ats-hash-index attribute entries have not been found in unsignedAttrs."));
+				arcTstFound = true;
+			}
+		}
+		assertTrue(sigTstFound);
+		assertTrue(valDataTstFound);
+		assertTrue(arcTstFound);
 	}
 	
 }

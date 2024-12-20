@@ -24,9 +24,13 @@ import eu.europa.esig.dss.asic.cades.signature.AbstractASiCWithCAdESTestSignatur
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.ArchiveTimestampHashIndexVersion;
+import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.MimeType;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
+import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
@@ -37,6 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public abstract class AbstractASiCSCAdESTestSignature extends AbstractASiCWithCAdESTestSignature {
 
@@ -89,6 +94,20 @@ public abstract class AbstractASiCSCAdESTestSignature extends AbstractASiCWithCA
 				} else {
 					assertNull(signatureWrapper.getMimeType());
 				}
+			}
+		}
+	}
+
+	@Override
+	protected void checkAtsHashTable(List<TimestampWrapper> allTimestamps) {
+		super.checkAtsHashTable(allTimestamps);
+
+		for (TimestampWrapper timestampWrapper : allTimestamps) {
+			if (TimestampType.ARCHIVE_TIMESTAMP == timestampWrapper.getType() &&
+					ArchiveTimestampType.CAdES_V3 == timestampWrapper.getArchiveTimestampType()) {
+				assertEquals(ArchiveTimestampHashIndexVersion.ATS_HASH_INDEX_V3, timestampWrapper.getAtsHashIndexVersion());
+				assertTrue(timestampWrapper.isAtsHashIndexValid());
+				assertTrue(Utils.isCollectionEmpty(timestampWrapper.getAtsHashIndexValidationMessages()));
 			}
 		}
 	}

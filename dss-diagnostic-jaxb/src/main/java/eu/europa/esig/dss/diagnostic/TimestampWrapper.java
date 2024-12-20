@@ -38,6 +38,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
+import eu.europa.esig.dss.enumerations.ArchiveTimestampHashIndexVersion;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.EvidenceRecordTimestampType;
@@ -45,6 +46,7 @@ import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -173,6 +175,36 @@ public class TimestampWrapper extends AbstractSignatureWrapper {
 	 */
 	public EvidenceRecordTimestampType getEvidenceRecordTimestampType() {
 		return timestamp.getEvidenceRecordTimestampType();
+	}
+
+	/**
+	 * Gets the version of the ats-hash-index attribute, when present.
+	 * NOTE: applicable only for CAdES archive-time-stamp-v3
+	 *
+	 * @return {@link ArchiveTimestampHashIndexVersion}
+	 */
+	public ArchiveTimestampHashIndexVersion getAtsHashIndexVersion() {
+		return timestamp.getArchiveTimestampHashIndex() != null ? timestamp.getArchiveTimestampHashIndex().getVersion() : null;
+	}
+
+	/**
+	 * Returns whether the ats-hash-index(-v3) attribute is valid, when present (all hashes match)
+	 * NOTE: applicable only for CAdES archive-time-stamp-v3
+	 *
+	 * @return TRUE when the ats-hash-index(-v3) attribute is present and valid, FALSE otherwise
+	 */
+	public boolean isAtsHashIndexValid() {
+		return timestamp.getArchiveTimestampHashIndex() != null ? timestamp.getArchiveTimestampHashIndex().isValid() : false;
+	}
+
+	/**
+	 * Returns a list of error messages occurred in the result of ats-hash-index(-v3) attribute validation, if any
+	 * NOTE: applicable only for CAdES archive-time-stamp-v3
+	 *
+	 * @return a list of {@link String} validation messages
+	 */
+	public List<String> getAtsHashIndexValidationMessages() {
+		return timestamp.getArchiveTimestampHashIndex() != null ? timestamp.getArchiveTimestampHashIndex().getMessages() : Collections.emptyList();
 	}
 
 	/**

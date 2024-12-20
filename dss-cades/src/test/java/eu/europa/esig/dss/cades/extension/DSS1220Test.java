@@ -97,6 +97,19 @@ class DSS1220Test extends PKIFactoryAccess {
 		assertTrue(exception.getMessage().contains("is expired at signing time"));
 	}
 
+	// See DSS-3507
+	@Test
+	void brokenTNoSignCert() {
+		CAdESService service = new CAdESService(getOfflineCertificateVerifier());
+		service.setTspSource(getGoodTsa());
+
+		CAdESSignatureParameters parameters = new CAdESSignatureParameters();
+		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LT);
+
+		DSSDocument toExtendDocument = new FileDocument("src/test/resources/validation/cades-broken-sig-tst.p7m");
+		assertThrows(AlertException.class, () -> service.extendDocument(toExtendDocument, parameters));
+	}
+
 	@Override
 	protected String getSigningAlias() {
 		return null;

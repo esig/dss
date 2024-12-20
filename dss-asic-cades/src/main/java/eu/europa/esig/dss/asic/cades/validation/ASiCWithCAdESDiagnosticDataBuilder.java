@@ -22,8 +22,13 @@ package eu.europa.esig.dss.asic.cades.validation;
 
 import eu.europa.esig.dss.asic.common.validation.ASiCContainerDiagnosticDataBuilder;
 import eu.europa.esig.dss.cades.validation.CAdESDiagnosticDataBuilder;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlArchiveTimestampHashIndex;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.x509.tsp.ArchiveTimestampHashIndexStatus;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.utils.Utils;
 
 /**
  * The DiagnosticData builder for an ASiC with CAdES container
@@ -43,6 +48,20 @@ public class ASiCWithCAdESDiagnosticDataBuilder extends ASiCContainerDiagnosticD
 		cadesDiagnosticDataBuilder.tokenExtractionStrategy(tokenExtractionStrategy)
 				.tokenIdentifierProvider(identifierProvider);
 		return cadesDiagnosticDataBuilder.buildDetachedXmlSignature(signature);
+	}
+
+	@Override
+	protected XmlTimestamp buildDetachedXmlTimestamp(TimestampToken timestampToken) {
+		XmlTimestamp xmlTimestamp = super.buildDetachedXmlTimestamp(timestampToken);
+		ArchiveTimestampHashIndexStatus atsHashIndexStatus = timestampToken.getAtsHashIndexStatus();
+		if (atsHashIndexStatus != null) {
+			XmlArchiveTimestampHashIndex xmlAtsHashIndex = new XmlArchiveTimestampHashIndex();
+			xmlAtsHashIndex.setVersion(atsHashIndexStatus.getVersion());
+			xmlAtsHashIndex.setValid(Utils.isCollectionEmpty(atsHashIndexStatus.getErrorMessages()));
+			xmlAtsHashIndex.getMessages().addAll(atsHashIndexStatus.getErrorMessages());
+			xmlTimestamp.setArchiveTimestampHashIndex(xmlAtsHashIndex);
+		}
+		return xmlTimestamp;
 	}
 
 }

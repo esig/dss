@@ -50,6 +50,7 @@ import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.cms.Attributes;
 import org.bouncycastle.asn1.cms.ContentInfo;
+import org.bouncycastle.asn1.cms.OtherRevocationInfoFormat;
 import org.bouncycastle.asn1.cms.SignedData;
 import org.bouncycastle.asn1.ess.ESSCertID;
 import org.bouncycastle.asn1.ess.ESSCertIDv2;
@@ -833,6 +834,23 @@ public final class CMSUtils {
 		final ContentInfo contentInfo = cmsSignedData.toASN1Structure();
 		final SignedData signedData = SignedData.getInstance(contentInfo.getContent());
 		return signedData.getEncapContentInfo().getContentType();
+	}
+
+	/**
+	 * This method returns encoded binaries used for OCSP token incorporation within a CMSSignedData.crls attribute
+	 *
+	 * @param binaries byte array containing OCSP token
+	 * @param objectIdentifier {@link ASN1ObjectIdentifier}
+	 * @return encoded binaries
+	 */
+	public static byte[] getSignedDataEncodedOCSPResponse(byte[] binaries, ASN1ObjectIdentifier objectIdentifier) {
+		// Compute DERTaggedObject with the same algorithm how it was created
+		// See: org.bouncycastle.cms.CMSUtils getOthersFromStore()
+		OtherRevocationInfoFormat otherRevocationInfoFormat = new OtherRevocationInfoFormat(
+				objectIdentifier, DSSASN1Utils.toASN1Primitive(binaries));
+		// false value specifies an implicit encoding method
+		DERTaggedObject derTaggedObject = new DERTaggedObject(false, 1, otherRevocationInfoFormat);
+		return DSSASN1Utils.getDEREncoded(derTaggedObject);
 	}
 
 	/**
