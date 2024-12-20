@@ -297,7 +297,7 @@ public abstract class AbstractJWSUtils {
 	 * @return {@link JsonObject}
 	 */
 	public JsonObject parseJson(String json) {
-		return parseJson(json, null);
+		return parseJson(json, URI.create(""));
 	}
 
 	/**
@@ -319,7 +319,7 @@ public abstract class AbstractJWSUtils {
 	 * @return {@link JsonObject}
 	 */
 	public JsonObject parseJson(InputStream inputStream) {
-		return parseJson(inputStream, null);
+		return parseJson(inputStream, URI.create(""));
 	}
 
 	/**
@@ -356,7 +356,7 @@ public abstract class AbstractJWSUtils {
 	 */
 	public Schema loadSchema(String schemaJSON, Map<URI, String> definitions) {
 		ResourceSchemaClient schemaClient = new ResourceSchemaClient(definitions);
-		SchemaLoaderConfig schemaLoaderConfig = new SchemaLoaderConfig(schemaClient, "");
+		SchemaLoaderConfig schemaLoaderConfig = new SchemaLoaderConfig(schemaClient, URI.create(""));
 
 		IJsonValue parsed = schemaClient.getParsed(URI.create(schemaJSON));
 		return new SchemaLoader(parsed, schemaLoaderConfig).load();
