@@ -166,7 +166,7 @@ class RevocationDataVerifierFactoryTest {
         miniPublicKeySize.getAlgos().clear();
 
         revocationDataVerifier = new RevocationDataVerifierFactory(validationPolicy).create();
-        assertFalse(revocationDataVerifier.isAcceptable(ocspToken));
+        assertTrue(revocationDataVerifier.isAcceptable(ocspToken));
 
         algo.setSize(3000);
         miniPublicKeySize.getAlgos().add(algo);

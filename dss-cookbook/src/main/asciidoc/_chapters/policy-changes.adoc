@@ -113,6 +113,77 @@ Not present
 </Timestamp>
 ----
 
+|Cryptographic constraint minimum key sizes                          a|[source,xml]
+----
+<MiniPublicKeySize>
+    <Algo Size="1024">DSA</Algo>
+    <Algo Size="1024">RSA</Algo>
+    <Algo Size="1024">RSASSA-PSS</Algo>
+    <Algo Size="160">ECDSA</Algo>
+    <Algo Size="160">PLAIN-ECDSA</Algo>
+</MiniPublicKeySize>
+----
+                                                                     a|[source,xml]
+----
+<MiniPublicKeySize>
+    <Algo Size="1024">DSA</Algo>
+    <Algo Size="786">RSA</Algo>
+    <Algo Size="786">RSASSA-PSS</Algo>
+    <Algo Size="160">ECDSA</Algo>
+    <Algo Size="160">PLAIN-ECDSA</Algo>
+</MiniPublicKeySize>
+----
+
+|Cryptographic constraint expiration dates.
+
+NOTE: Limited number of algorithms is listed in the example.
+Please see more at <<defaultXmlPolicy>>.                             a|[source,xml]
+----
+<AlgoExpirationDate Level="FAIL" Format="yyyy" UpdateDate="2022" LevelAfterUpdate="WARN">
+    <Algo Date="2009">SHA1</Algo>
+    <Algo Date="2026">SHA224</Algo>
+    <Algo Date="2029">SHA256</Algo>
+    <Algo Date="2029">SHA384</Algo>
+    <Algo Date="2029">SHA512</Algo>
+    <Algo Date="2029">SHA3-256</Algo>
+    <Algo Date="2029">SHA3-384</Algo>
+    <Algo Date="2029">SHA3-512</Algo>
+    <Algo Date="2009" Size="1024">RSA</Algo>
+    <Algo Date="2016" Size="1536">RSA</Algo>
+    <Algo Date="2026" Size="1900">RSA</Algo>
+    <Algo Date="2029" Size="3000">RSA</Algo>
+    <Algo Date="2013" Size="160">ECDSA</Algo>
+    <Algo Date="2013" Size="192">ECDSA</Algo>
+    <Algo Date="2016" Size="224">ECDSA</Algo>
+    <Algo Date="2029" Size="256">ECDSA</Algo>
+    <Algo Date="2029" Size="384">ECDSA</Algo>
+    <Algo Date="2029" Size="512">ECDSA</Algo>
+</AlgoExpirationDate>
+----
+                                                                     a|[source,xml]
+----
+<AlgoExpirationDate Level="FAIL" Format="yyyy-MM-dd" UpdateDate="2025-01-01" LevelAfterUpdate="WARN">
+    <Algo Date="2012-08-01">SHA1</Algo>
+    <Algo Date="2029-01-01">SHA224</Algo>
+    <Algo>SHA256</Algo> <!-- R -->
+    <Algo>SHA384</Algo> <!-- R -->
+    <Algo>SHA512</Algo> <!-- R -->
+    <Algo>SHA3-256</Algo> <!-- R -->
+    <Algo>SHA3-384</Algo> <!-- R -->
+    <Algo>SHA3-512</Algo> <!-- R -->
+    <Algo Date="2010-08-01" Size="786">RSA</Algo>
+    <Algo Date="2019-10-01" Size="1024">RSA</Algo>
+    <Algo Date="2019-10-01" Size="1536">RSA</Algo>
+    <Algo Date="2029-01-01" Size="1900">RSA</Algo>
+    <Algo Date="2029-01-01" Size="3000">RSA</Algo>
+    <Algo Size="3000">RSASSA-PSS</Algo> <!-- R -->
+    <Algo Date="2012-08-01" Size="160">ECDSA</Algo>
+    <Algo Date="2012-08-01" Size="163">ECDSA</Algo>
+    <Algo Date="2021-10-01" Size="224">ECDSA</Algo>
+    <Algo Size="256">ECDSA</Algo> <!-- R -->
+</AlgoExpirationDate>
+----
+
 |===
 
 [cols="2,5,5"]

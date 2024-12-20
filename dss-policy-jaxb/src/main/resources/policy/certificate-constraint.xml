@@ -216,12 +216,12 @@
             <Algo Date="2004-08-01">MD5</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->
             <Algo Date="2012-08-01">SHA1</Algo> <!-- ETSI TS 119 312 v1.5.1 -->
             <Algo Date="2029-01-01">SHA224</Algo> <!-- ETSI TS 119 312 v1.5.1 -->
-            <!-- <Algo Date="2029-01-01">SHA256</Algo> --> <!-- ETSI TS 119 312 v1.5.1 --> <!-- R -->
-            <!-- <Algo Date="2029-01-01">SHA384</Algo> --> <!-- ETSI TS 119 312 v1.5.1 --> <!-- R -->
-            <!-- <Algo Date="2029-01-01">SHA512</Algo> --> <!-- ETSI TS 119 312 v1.5.1 --> <!-- R -->
-            <!-- <Algo Date="2029-01-01">SHA3-256</Algo> --> <!-- ETSI TS 119 312 v1.5.1 --> <!-- R -->
-            <!-- <Algo Date="2029-01-01">SHA3-384</Algo> --> <!-- ETSI TS 119 312 v1.5.1 --> <!-- R -->
-            <!-- <Algo Date="2029-01-01">SHA3-512</Algo> --> <!-- ETSI TS 119 312 v1.5.1 --> <!-- R -->
+            <Algo>SHA256</Algo> <!-- ETSI TS 119 312 v1.5.1 --> <!-- R -->
+            <Algo>SHA384</Algo> <!-- ETSI TS 119 312 v1.5.1 --> <!-- R -->
+            <Algo>SHA512</Algo> <!-- ETSI TS 119 312 v1.5.1 --> <!-- R -->
+            <Algo>SHA3-256</Algo> <!-- ETSI TS 119 312 v1.5.1 --> <!-- R -->
+            <Algo>SHA3-384</Algo> <!-- ETSI TS 119 312 v1.5.1 --> <!-- R -->
+            <Algo>SHA3-512</Algo> <!-- ETSI TS 119 312 v1.5.1 --> <!-- R -->
             <Algo Date="2014-08-01">RIPEMD160</Algo> <!-- ETSI TS 119 312 v1.5.1 -->
             <Algo Date="2020-12-01">WHIRLPOOL</Algo> <!-- ETSI TS 119 312 v1.5.1 -->
             <!-- end Digest algorithms -->

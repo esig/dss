@@ -89,7 +89,7 @@ class PublicKeySizeAcceptableCheckTest extends AbstractTestCheck {
     }
 
     @Test
-    void invalidAlgo() {
+    void notDefinedKeySize() {
         CryptographicConstraint cryptographicConstraint = new CryptographicConstraint();
         cryptographicConstraint.setLevel(Level.FAIL);
 
@@ -109,7 +109,7 @@ class PublicKeySizeAcceptableCheckTest extends AbstractTestCheck {
 
         List<XmlConstraint> constraints = result.getConstraint();
         assertEquals(1, constraints.size());
-        assertEquals(XmlStatus.NOT_OK, constraints.get(0).getStatus());
+        assertEquals(XmlStatus.OK, constraints.get(0).getStatus());
     }
 
     @Test

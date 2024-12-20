@@ -118,7 +118,7 @@ public class CryptographicConstraintWrapper {
 	public boolean isEncryptionAlgorithmWithKeySizeReliable(EncryptionAlgorithm encryptionAlgorithm, Integer keySize) {
 		if (encryptionAlgorithm != null && keySize != 0 && constraint != null) {
 			Integer size = getAlgoKeySizeFromConstraint(encryptionAlgorithm);
-            return size != null && size <= keySize;
+            return size == null || size <= keySize;
 		}
 		return false;
 	}
@@ -322,7 +322,7 @@ public class CryptographicConstraintWrapper {
 							(expirationDate == null || !expirationDate.before(validationTime))) {
 						return true;
 					}
-					algoFound = true;
+					algoFound = algoFound || algo.getDate() != null;
 				}
 			}
 		}
@@ -333,7 +333,7 @@ public class CryptographicConstraintWrapper {
 		Integer minimalAcceptedKeySize = null;
 		if (encryptionAlgorithm != null && algoExpirationDates != null) {
 			for (Algo algo : algoExpirationDates.getAlgos()) {
-				if (encryptionAlgorithm.getName().equals(algo.getValue())) {
+				if (encryptionAlgorithm.getName().equals(algo.getValue()) && (minimalAcceptedKeySize != null || algo.getDate() != null)) {
 					Date expirationDate = getExpirationDate(encryptionAlgorithm, algo.getSize());
 					if (isEncryptionAlgorithmWithKeySizeReliable(encryptionAlgorithm, algo.getSize()) &&
 							(expirationDate == null || !expirationDate.before(validationTime)) &&
@@ -342,6 +342,9 @@ public class CryptographicConstraintWrapper {
 					}
 				}
 			}
+		}
+		if (minimalAcceptedKeySize == null) {
+			minimalAcceptedKeySize = getAlgoKeySizeFromConstraint(encryptionAlgorithm);
 		}
 		return minimalAcceptedKeySize;
 	}

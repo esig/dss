@@ -848,8 +848,16 @@ class CustomCryptographicConstraintsTest extends AbstractCryptographicConstraint
 		acceptableEncryptionAlgos.getAlgos().add(createAlgo("RSA"));
 
 		simpleReport = createSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+		// too big
+		miniPublicKeySize.getAlgos().add(createAlgo("RSA", 4000));
+
+		simpleReport = createSimpleReport();
 		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 
+		miniPublicKeySize.getAlgos().clear();
+		miniPublicKeySize.getAlgos().add(createAlgo("DSA", 1024));
 		miniPublicKeySize.getAlgos().add(createAlgo("RSA", 1024));
 
 		simpleReport = createSimpleReport();
