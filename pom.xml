@@ -63,12 +63,12 @@
 		<jakarta.ws.rs-api.version>3.1.0</jakarta.ws.rs-api.version>
 		<jakarta.xml.ws-api.version>3.0.1</jakarta.xml.ws-api.version>
 
-		<junit.version>5.11.0</junit.version>
+		<junit.version>5.11.4</junit.version>
 
 		<awaitility.version>4.2.2</awaitility.version>
-		<mockito.version>5.13.0</mockito.version> <!-- Test use -->
+		<mockito.version>5.14.2</mockito.version> <!-- Test use -->
 		<h2database.version>2.3.232</h2database.version> <!-- Test use -->
-		<jackson.version>2.17.2</jackson.version>
+		<jackson.version>2.18.2</jackson.version>
 		<fop-core.version>2.10</fop-core.version>
 
 		<sonar.java.source>1.8</sonar.java.source>
@@ -383,17 +383,17 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
-					<version>3.5.0</version>
+					<version>3.5.2</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-javadoc-plugin</artifactId>
-					<version>3.10.0</version>
+					<version>3.11.2</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-site-plugin</artifactId>
-					<version>3.20.0</version>
+					<version>3.21.0</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -430,7 +430,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-project-info-reports-plugin</artifactId>
-					<version>3.7.0</version>
+					<version>3.8.0</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -1106,7 +1106,7 @@
 					<plugin>
 						<groupId>org.owasp</groupId>
 						<artifactId>dependency-check-maven</artifactId>
-						<version>10.0.4</version>
+						<version>11.1.1</version>
 						<configuration>
 							<failBuildOnCVSS>8</failBuildOnCVSS>
 						</configuration>
@@ -1200,7 +1200,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-gpg-plugin</artifactId>
-						<version>3.2.5</version>
+						<version>3.2.7</version>
 						<executions>
 							<execution>
 								<id>sign-artifacts</id>
