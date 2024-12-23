@@ -36,7 +36,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.EnumMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -181,7 +181,7 @@ class CryptographicConstraintWrapperTest {
         Calendar newDateCalendar = Calendar.getInstance();
         newDateCalendar.set(2025, Calendar.JANUARY, 1);
 
-        HashMap<EncryptionAlgorithm, Integer> expectedMap = new HashMap<>();
+        EnumMap<EncryptionAlgorithm, Integer> expectedMap = new EnumMap<>(EncryptionAlgorithm.class);
         expectedMap.put(EncryptionAlgorithm.RSA, null);
 
         assertEquals(expectedMap, wrapper.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(oldDateCalendar.getTime()));
@@ -218,7 +218,7 @@ class CryptographicConstraintWrapperTest {
         assertEquals(expectedMap, wrapper.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(oldDateCalendar.getTime()));
         assertEquals(expectedMap, wrapper.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(newDateCalendar.getTime()));
 
-        HashMap<EncryptionAlgorithm, Integer> ecdsaOnlyMap = new HashMap<>();
+        EnumMap<EncryptionAlgorithm, Integer> ecdsaOnlyMap = new EnumMap<>(EncryptionAlgorithm.class);
         ecdsaOnlyMap.put(EncryptionAlgorithm.ECDSA, null);
 
         algo.setDate("2020");
@@ -235,7 +235,7 @@ class CryptographicConstraintWrapperTest {
         biggerAlgo.setDate("2020");
         algoExpirationDate.getAlgos().add(biggerAlgo);
 
-        HashMap<EncryptionAlgorithm, Integer> rsa1900Map = new HashMap<>();
+        EnumMap<EncryptionAlgorithm, Integer> rsa1900Map = new EnumMap<>(EncryptionAlgorithm.class);
         rsa1900Map.put(EncryptionAlgorithm.RSA, 1900);
         rsa1900Map.put(EncryptionAlgorithm.ECDSA, null);
 
@@ -248,7 +248,7 @@ class CryptographicConstraintWrapperTest {
         biggerAlgo.setDate("2029");
         algoExpirationDate.getAlgos().add(biggerAlgo);
 
-        HashMap<EncryptionAlgorithm, Integer> rsa3000Map = new HashMap<>();
+        EnumMap<EncryptionAlgorithm, Integer> rsa3000Map = new EnumMap<>(EncryptionAlgorithm.class);
         rsa3000Map.put(EncryptionAlgorithm.RSA, 3000);
         rsa3000Map.put(EncryptionAlgorithm.ECDSA, null);
 
@@ -258,7 +258,7 @@ class CryptographicConstraintWrapperTest {
         minKeySize.getAlgos().clear();
         minKeySize.getAlgos().add(createAlgo(EncryptionAlgorithm.RSA, 4000));
 
-        HashMap<EncryptionAlgorithm, Integer> rsa4000Map = new HashMap<>();
+        EnumMap<EncryptionAlgorithm, Integer> rsa4000Map = new EnumMap<>(EncryptionAlgorithm.class);
         rsa4000Map.put(EncryptionAlgorithm.RSA, 4000);
         rsa4000Map.put(EncryptionAlgorithm.ECDSA, null);
 

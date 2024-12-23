@@ -95,6 +95,7 @@ class PolicySPURITest extends AbstractCAdESTestValidation {
 		private static final long serialVersionUID = -8743201861357700742L;
 		
 		public MockDataLoader() {
+			// empty
 		}
 
 		@Override

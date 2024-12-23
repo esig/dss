@@ -127,7 +127,7 @@ public abstract class AbstractCAdESRequirementChecks extends AbstractCAdESTestSi
      */
     protected void checkSignedDataCertificatesPresent(SignedData signedData) throws Exception {
         ASN1Set certificates = signedData.getCertificates();
-        logger.info("CERTIFICATES (" + certificates.size() + ") : " + certificates);
+        logger.info(String.format("CERTIFICATES (%s) : %s", certificates.size(), certificates));
         assertTrue(certificates.size() > 0);
 
         for (int i = 0; i < certificates.size(); i++) {
@@ -143,7 +143,7 @@ public abstract class AbstractCAdESRequirementChecks extends AbstractCAdESTestSi
      */
     protected void checkSignedDataRevocationDataPresent(SignedData signedData) throws Exception {
         ASN1Set crls = signedData.getCRLs();
-        logger.info("CRLs (" + crls.size() + ") : " + crls);
+        logger.info(String.format("CRLs (%s) : %s", crls.size(), crls));
         assertTrue(crls.size() > 1);
 
         boolean crlFound = false;

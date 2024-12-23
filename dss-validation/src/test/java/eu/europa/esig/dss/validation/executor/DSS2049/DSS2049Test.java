@@ -191,6 +191,7 @@ class DSS2049Test extends AbstractTestValidationExecutor {
 					assertFalse(Utils.isCollectionEmpty(simpleReport.getQualificationWarnings(simpleReport.getFirstSignatureId())));
 					assertFalse(Utils.isCollectionEmpty(simpleReport.getQualificationErrors(simpleReport.getFirstSignatureId())));
 				}
+				break;
 			default:
 				break;
 		}

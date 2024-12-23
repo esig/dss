@@ -124,6 +124,7 @@ class CAdESLevelBCounterSignatureWithECDSATokenTest extends AbstractCAdESCounter
 
     @Override
     public void signAndVerify() {
+        // skip
     }
 
     @Override

@@ -34,7 +34,7 @@ import java.math.BigInteger;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CreateTLSnippet {
+class CreateTLSnippet {
 
     @Test
     void createTrustedList() throws Exception {

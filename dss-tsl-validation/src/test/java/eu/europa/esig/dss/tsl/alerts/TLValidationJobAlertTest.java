@@ -70,9 +70,9 @@ class TLValidationJobAlertTest {
 	@TempDir
 	File cacheDirectory;
 
-	private DSSDocument CZ = new FileDocument("src/test/resources/lotlCache/CZ.xml");
-	private DSSDocument CZ_BROKEN_SIG = new FileDocument("src/test/resources/lotlCache/CZ_broken-sig.xml");
-	private DSSDocument CZ_NOT_PARSABLE = new FileDocument("src/test/resources/lotlCache/CZ_not-compliant.xml");
+	private static final DSSDocument CZ = new FileDocument("src/test/resources/lotlCache/CZ.xml");
+	private static final DSSDocument CZ_BROKEN_SIG = new FileDocument("src/test/resources/lotlCache/CZ_broken-sig.xml");
+	private static final DSSDocument CZ_NOT_PARSABLE = new FileDocument("src/test/resources/lotlCache/CZ_not-compliant.xml");
 
 	private static final DSSDocument LOTL = new FileDocument("src/test/resources/lotlCache/tl_pivot_247_mp.xml");
 	private static final String LOTL_URL = "https://ec.europa.eu/tools/lotl/eu-lotl.xml";

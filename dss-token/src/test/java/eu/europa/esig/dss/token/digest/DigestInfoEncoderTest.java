@@ -65,7 +65,8 @@ class DigestInfoEncoderTest {
     void testEncodeInvalidDigestAlgorithm() {
         byte[] digest = new byte[0];
         Exception exception = assertThrows(DSSException.class, () -> DigestInfoEncoder.encode("", digest));
-        assertEquals("An error occurred on DigestInfo encoding : For input string: \"\"", exception.getMessage());
+        assertEquals("An error occurred on DigestInfo encoding : The given string '' does not represent a valid OID! " +
+                "OID have two or more parts separated by a dot.", exception.getMessage());
     }
 
     @Test

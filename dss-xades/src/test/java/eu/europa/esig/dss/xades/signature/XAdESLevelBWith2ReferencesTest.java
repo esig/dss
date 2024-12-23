@@ -49,11 +49,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class XAdESLevelBWith2ReferencesTest extends PKIFactoryAccess {
 
-	private static String FILE1 = "src/test/resources/sample.xml";
-	private static String FILE2 = "src/test/resources/sampleISO.xml";
+	private static final String FILE1 = "src/test/resources/sample.xml";
+	private static final String FILE2 = "src/test/resources/sampleISO.xml";
 
 	@Test
-	void test1() throws Exception {
+	void test1() {
 		List<DSSReference> refs = new ArrayList<>();
 		DSSDocument doc1 = new FileDocument(FILE1);
 		DSSDocument doc2 = new FileDocument(FILE2);
@@ -113,7 +113,7 @@ class XAdESLevelBWith2ReferencesTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	void multiDocsEnveloping() throws Exception {
+	void multiDocsEnveloping() {
 		List<DSSDocument> docs = new ArrayList<>();
 		docs.add(new FileDocument(FILE1));
 		docs.add(new FileDocument(FILE2));
@@ -148,7 +148,7 @@ class XAdESLevelBWith2ReferencesTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	void multiDocsDetached() throws Exception {
+	void multiDocsDetached() {
 		List<DSSDocument> docs = new ArrayList<>();
 		docs.add(new FileDocument(FILE1));
 		docs.add(new FileDocument(FILE2));
@@ -184,7 +184,7 @@ class XAdESLevelBWith2ReferencesTest extends PKIFactoryAccess {
 	}
 
 	@Test
-	void test2() throws Exception {
+	void test2() {
 		DSSDocument doc1 = new FileDocument(FILE1);
 
 		XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();

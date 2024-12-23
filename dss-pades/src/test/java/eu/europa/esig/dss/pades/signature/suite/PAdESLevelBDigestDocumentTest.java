@@ -43,7 +43,7 @@ public class PAdESLevelBDigestDocumentTest extends PKIFactoryAccess {
     private PAdESSignatureParameters signatureParameters;
     private DSSDocument documentToSign;
 
-    private final DSSDocument ORIGINAL_DOCUMENT = new InMemoryDocument("Hello World !".getBytes(), "test.text");
+    private static final DSSDocument ORIGINAL_DOCUMENT = new InMemoryDocument("Hello World !".getBytes(), "test.text");
 
     @BeforeEach
     void init() throws Exception {

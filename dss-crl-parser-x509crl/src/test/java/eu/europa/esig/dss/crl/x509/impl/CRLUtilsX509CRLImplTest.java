@@ -30,7 +30,8 @@ class CRLUtilsX509CRLImplTest extends AbstractTestCRLUtils {
 	@Test
 	@Override
 	@Disabled("memory crash")
-	public void testHugeCRL() throws Exception {
+	public void testHugeCRL() {
+		// empty
 	}
 
 }

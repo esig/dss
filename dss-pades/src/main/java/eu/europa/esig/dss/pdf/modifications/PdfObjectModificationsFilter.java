@@ -38,7 +38,7 @@ import java.util.List;
  */
 public class PdfObjectModificationsFilter {
 
-    private final Logger LOG = LoggerFactory.getLogger(PdfObjectModificationsFilter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PdfObjectModificationsFilter.class);
 
     /**
      * Default constructor

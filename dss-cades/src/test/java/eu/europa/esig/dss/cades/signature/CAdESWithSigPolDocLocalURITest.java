@@ -176,8 +176,8 @@ class CAdESWithSigPolDocLocalURITest extends AbstractCAdESTestSignature {
         super.checkAdvancedSignatures(signatures);
         assertEquals(1, signatures.size());
 
-        CAdESSignature CAdESSignature = (CAdESSignature) signatures.get(0);
-        SignaturePolicyStore extractedSPS = CAdESSignature.getSignaturePolicyStore();
+        CAdESSignature cadesSignature = (CAdESSignature) signatures.get(0);
+        SignaturePolicyStore extractedSPS = cadesSignature.getSignaturePolicyStore();
         assertNotNull(extractedSPS);
         assertNotNull(extractedSPS.getSpDocSpecification());
         assertEquals(SIGNATURE_POLICY_ID, extractedSPS.getSpDocSpecification().getId());

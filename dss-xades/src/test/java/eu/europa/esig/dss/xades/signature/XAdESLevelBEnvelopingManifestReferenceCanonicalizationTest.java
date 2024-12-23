@@ -109,11 +109,12 @@ class XAdESLevelBEnvelopingManifestReferenceCanonicalizationTest extends Abstrac
 
     @Override
     public void signAndVerify() {
+        // skip
     }
 
     @Override
     protected List<DSSDocument> getDetachedContents() {
-        return Arrays.asList(documentToSign);
+        return Collections.singletonList(documentToSign);
     }
 
     @Override

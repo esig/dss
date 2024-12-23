@@ -40,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class PdfBoxScreenshotBuilderTest {
+class PdfBoxScreenshotBuilderTest {
     
     private final char[] correctProtectionPhrase = new char[] { ' ' };
     private final char[] wrongProtectionPhrase = new char[] { 'A', 'A', 'A', 'A' };

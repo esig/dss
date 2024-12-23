@@ -57,6 +57,7 @@ class ASiCEWithCAdESLevelLTWithEvidenceRecordNoSigCoveredValidationTest extends 
         return 2; // two docs covered
     }
 
+    @Override
     protected void checkEvidenceRecordTimestampedReferences(DiagnosticData diagnosticData) {
         List<EvidenceRecordWrapper> evidenceRecords = diagnosticData.getEvidenceRecords();
         assertEquals(1, evidenceRecords.size());
@@ -127,6 +128,7 @@ class ASiCEWithCAdESLevelLTWithEvidenceRecordNoSigCoveredValidationTest extends 
         }
     }
 
+    @Override
     protected void verifySimpleReport(SimpleReport simpleReport) {
         List<String> signatureIdList = simpleReport.getSignatureIdList();
         assertEquals(1, signatureIdList.size());

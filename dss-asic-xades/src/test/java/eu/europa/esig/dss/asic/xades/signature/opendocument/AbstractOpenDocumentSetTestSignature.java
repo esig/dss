@@ -64,6 +64,7 @@ public abstract class AbstractOpenDocumentSetTestSignature extends AbstractOpenD
 
     @Override
     public void signAndVerify() {
+        // skip
     }
 
 }

@@ -157,7 +157,7 @@ class ASiCECAdESLevelLTAExtensionForCounterSignedTest extends AbstractASiCWithCA
 		
 		FoundCertificatesProxy foundCertificates = signatureWrapper.foundCertificates();
 		List<String> certificateValuesIds = foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.SIGNED_DATA)
-				.stream().map(c -> c.getId()).collect(Collectors.toList());
+				.stream().map(CertificateWrapper::getId).collect(Collectors.toList());
 		for (CertificateWrapper certificateWrapper : counterSignature.getCertificateChain()) {
 			assertTrue(certificateValuesIds.contains(certificateWrapper.getId()));
 		}
@@ -204,18 +204,18 @@ class ASiCECAdESLevelLTAExtensionForCounterSignedTest extends AbstractASiCWithCA
 		for (TimestampWrapper timestampWrapper : timestampList) {
 			if (TimestampType.SIGNATURE_TIMESTAMP.equals(timestampWrapper.getType())) {
 				assertEquals(1, timestampWrapper.getTimestampedSignatures().size());
-				assertFalse(timestampWrapper.getTimestampedSignatures().stream().map(s -> s.getId()).collect(Collectors.toList())
+				assertFalse(timestampWrapper.getTimestampedSignatures().stream().map(SignatureWrapper::getId).collect(Collectors.toList())
 						.contains(counterSignature.getId()));
-				assertFalse(timestampWrapper.getTimestampedCertificates().stream().map(c -> c.getId()).collect(Collectors.toList())
+				assertFalse(timestampWrapper.getTimestampedCertificates().stream().map(CertificateWrapper::getId).collect(Collectors.toList())
 						.contains(counterSignature.getSigningCertificate().getId()));
 				sigTstFound = true;
 				
 			} else if (TimestampType.CONTAINER_TIMESTAMP.equals(timestampWrapper.getType())) {
 				assertEquals(ArchiveTimestampType.CAdES_DETACHED, timestampWrapper.getArchiveTimestampType());
 				assertEquals(2, timestampWrapper.getTimestampedSignatures().size());
-				assertTrue(timestampWrapper.getTimestampedSignatures().stream().map(s -> s.getId()).collect(Collectors.toList())
+				assertTrue(timestampWrapper.getTimestampedSignatures().stream().map(SignatureWrapper::getId).collect(Collectors.toList())
 						.contains(counterSignature.getId()));
-				assertTrue(timestampWrapper.getTimestampedCertificates().stream().map(c -> c.getId()).collect(Collectors.toList())
+				assertTrue(timestampWrapper.getTimestampedCertificates().stream().map(CertificateWrapper::getId).collect(Collectors.toList())
 						.contains(counterSignature.getSigningCertificate().getId()));
 				arcTstFound = true;
 				

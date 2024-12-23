@@ -131,8 +131,8 @@ class JAdESSignaturePolicyStoreForSignatureByIdTest extends AbstractJAdESTestSig
         boolean signatureWithPolStoreFound = false;
         boolean signatureWithoutPolStoreFound = false;
         for (AdvancedSignature signature : signatures) {
-            JAdESSignature JAdESSignature = (JAdESSignature) signature;
-            SignaturePolicyStore extractedSPS = JAdESSignature.getSignaturePolicyStore();
+            JAdESSignature jadesSignature = (JAdESSignature) signature;
+            SignaturePolicyStore extractedSPS = jadesSignature.getSignaturePolicyStore();
             if (extractedSPS != null) {
                 assertNotNull(extractedSPS.getSpDocSpecification());
                 assertEquals(SIGNATURE_POLICY_ID, extractedSPS.getSpDocSpecification().getId());

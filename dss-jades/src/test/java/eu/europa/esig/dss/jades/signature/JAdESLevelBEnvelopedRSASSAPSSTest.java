@@ -98,6 +98,7 @@ class JAdESLevelBEnvelopedRSASSAPSSTest extends AbstractJAdESTestSignature {
 
     @Override
     public void signAndVerify() {
+        // skip
     }
 
     @Override

@@ -50,7 +50,7 @@ import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
-public class Snippets {
+class Snippets {
 
 	@SuppressWarnings({ "null" })
 	public void demo() {

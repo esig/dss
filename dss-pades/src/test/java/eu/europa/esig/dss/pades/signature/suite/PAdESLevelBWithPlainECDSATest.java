@@ -102,6 +102,7 @@ public class PAdESLevelBWithPlainECDSATest extends AbstractPAdESTestSignature {
 
     @Override
     public void signAndVerify() {
+        // skip
     }
 
     @Override

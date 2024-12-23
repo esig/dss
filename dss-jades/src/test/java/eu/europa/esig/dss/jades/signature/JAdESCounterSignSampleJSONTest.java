@@ -75,6 +75,7 @@ class JAdESCounterSignSampleJSONTest extends AbstractJAdESCounterSignatureTest {
 
     @Override
     public void signAndVerify() {
+        // skip
     }
 
     @Override

@@ -120,6 +120,7 @@ class ASiCEWithCAdESLevelLTWithEvidenceRecordsUnsignedEntriesValidationTest exte
         }
     }
 
+    @Override
     protected void checkEvidenceRecordDigestMatchers(DiagnosticData diagnosticData) {
         List<EvidenceRecordWrapper> evidenceRecords = diagnosticData.getEvidenceRecords();
         EvidenceRecordWrapper evidenceRecord = evidenceRecords.get(0);
@@ -273,6 +274,7 @@ class ASiCEWithCAdESLevelLTWithEvidenceRecordsUnsignedEntriesValidationTest exte
         }
     }
 
+    @Override
     protected void verifySimpleReport(SimpleReport simpleReport) {
         for (String sigId : simpleReport.getSignatureIdList()) {
             List<XmlEvidenceRecord> signatureEvidenceRecords = simpleReport.getSignatureEvidenceRecords(sigId);

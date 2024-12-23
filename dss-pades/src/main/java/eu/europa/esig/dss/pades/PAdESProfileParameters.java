@@ -23,6 +23,8 @@ package eu.europa.esig.dss.pades;
 import eu.europa.esig.dss.signature.ProfileParameters;
 import eu.europa.esig.dss.pdf.PdfSignatureCache;
 
+import java.util.Objects;
+
 /**
  * This class is used to accelerate signature creation process for PAdES.
  * The cache is set within {@code PAdESService.getDataToSign(...)} method and
@@ -64,6 +66,30 @@ public class PAdESProfileParameters extends ProfileParameters {
      */
     public void setPdfToBeSignedCache(PdfSignatureCache pdfToBeSignedCache) {
         this.pdfToBeSignedCache = pdfToBeSignedCache;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        PAdESProfileParameters that = (PAdESProfileParameters) o;
+        return Objects.equals(pdfToBeSignedCache, that.pdfToBeSignedCache);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + Objects.hashCode(pdfToBeSignedCache);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "PAdESProfileParameters [" +
+                "pdfToBeSignedCache=" + pdfToBeSignedCache +
+                "] " + super.toString();
     }
 
 }

@@ -56,7 +56,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class XmlNonAdESExtensionBToLTAWithExpiredUserTest extends AbstractXAdESTestExtension {
 
-    private final DSSNamespace xmldsigNamespace = XMLDSigNamespace.NS;
+    private static final DSSNamespace xmldsigNamespace = XMLDSigNamespace.NS;
 
     private CertificateVerifier certificateVerifier;
     private XAdESService service;

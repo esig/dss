@@ -42,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class XAdESCounterSignSignaturesConsequentlyTest extends AbstractXAdESCounterSignatureTest {
 
-    private final DSSDocument ORIGINAL_DOCUMENT = new FileDocument(new File("src/test/resources/sample.xml"));
+    private static final DSSDocument ORIGINAL_DOCUMENT = new FileDocument(new File("src/test/resources/sample.xml"));
 
     private XAdESService service;
     private Date signingDate;

@@ -180,8 +180,8 @@ class JAdESWithSigPolDocLocalURITest extends AbstractJAdESTestSignature {
     protected void checkAdvancedSignatures(List<AdvancedSignature> signatures) {
         assertEquals(1, signatures.size());
 
-        JAdESSignature JAdESSignature = (JAdESSignature) signatures.get(0);
-        SignaturePolicyStore extractedSPS = JAdESSignature.getSignaturePolicyStore();
+        JAdESSignature jadesSignature = (JAdESSignature) signatures.get(0);
+        SignaturePolicyStore extractedSPS = jadesSignature.getSignaturePolicyStore();
         assertNotNull(extractedSPS);
         assertNotNull(extractedSPS.getSpDocSpecification());
         assertEquals(SIGNATURE_POLICY_ID, extractedSPS.getSpDocSpecification().getId());

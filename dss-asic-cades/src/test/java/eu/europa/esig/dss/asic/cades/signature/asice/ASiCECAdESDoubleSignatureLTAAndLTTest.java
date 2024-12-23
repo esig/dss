@@ -43,7 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ASiCECAdESDoubleSignatureLTAAndLTTest extends AbstractASiCECAdESTestSignature {
 
-    private final DSSDocument ORIGINAL_DOC = new InMemoryDocument("Hello World !".getBytes(), "test.txt", MimeTypeEnum.TEXT);
+    private static final DSSDocument ORIGINAL_DOC = new InMemoryDocument("Hello World !".getBytes(), "test.txt", MimeTypeEnum.TEXT);
 
     private CertificateVerifier certificateVerifier;
     private ASiCWithCAdESService service;

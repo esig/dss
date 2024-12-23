@@ -42,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class CAdESCounterSignSignaturesConsequentlyTest extends AbstractCAdESCounterSignatureTest {
 
-    private final DSSDocument ORIGINAL_DOCUMENT = new InMemoryDocument("Hello World!".getBytes());
+    private static final DSSDocument ORIGINAL_DOCUMENT = new InMemoryDocument("Hello World!".getBytes());
 
     private CAdESService service;
     private Date signingDate;

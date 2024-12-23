@@ -46,7 +46,7 @@ import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESForASiCTest extends CookbookTools {
+class XAdESForASiCTest extends CookbookTools {
 
     @Test
     void signXAdESBaselineB() throws Exception {

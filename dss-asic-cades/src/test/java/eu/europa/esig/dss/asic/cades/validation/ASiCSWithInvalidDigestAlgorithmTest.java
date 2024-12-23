@@ -47,6 +47,7 @@ class ASiCSWithInvalidDigestAlgorithmTest extends AbstractASiCWithCAdESTestValid
         return new FileDocument("src/test/resources/validation/cades-invalid-digest-algo.asics");
     }
 
+    @Override
     protected void checkBLevelValid(DiagnosticData diagnosticData) {
         for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
             List<XmlDigestMatcher> digestMatchers = signatureWrapper.getDigestMatchers();

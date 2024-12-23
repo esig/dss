@@ -41,7 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class EIDASRulesExecutorTest extends AbstractProcessExecutorTest {
+class EIDASRulesExecutorTest extends AbstractProcessExecutorTest {
 
     @Test
     void testTLWrongVersion() throws Exception {

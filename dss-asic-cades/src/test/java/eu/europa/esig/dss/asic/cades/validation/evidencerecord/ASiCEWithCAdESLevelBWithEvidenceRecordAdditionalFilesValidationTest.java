@@ -113,6 +113,7 @@ class ASiCEWithCAdESLevelBWithEvidenceRecordAdditionalFilesValidationTest extend
         assertEquals(2, invalidRefsCounter);
     }
 
+    @Override
     protected void checkEvidenceRecordTimestampedReferences(DiagnosticData diagnosticData) {
         List<SignatureWrapper> signatures = diagnosticData.getSignatures();
 

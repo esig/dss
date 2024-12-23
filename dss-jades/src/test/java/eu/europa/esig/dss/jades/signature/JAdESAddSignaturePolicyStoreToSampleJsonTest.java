@@ -72,6 +72,7 @@ class JAdESAddSignaturePolicyStoreToSampleJsonTest extends AbstractJAdESTestSign
 
     @Override
     public void signAndVerify() {
+        // skip
     }
 
     @Override

@@ -126,8 +126,8 @@ class CAdESSignaturePolicyStoreForSignatureByIdTest extends AbstractCAdESTestSig
         boolean signatureWithPolStoreFound = false;
         boolean signatureWithoutPolStoreFound = false;
         for (AdvancedSignature signature : signatures) {
-            CAdESSignature CAdESSignature = (CAdESSignature) signature;
-            SignaturePolicyStore extractedSPS = CAdESSignature.getSignaturePolicyStore();
+            CAdESSignature cadesSignature = (CAdESSignature) signature;
+            SignaturePolicyStore extractedSPS = cadesSignature.getSignaturePolicyStore();
             if (extractedSPS != null) {
                 assertNotNull(extractedSPS.getSpDocSpecification());
                 assertEquals(SIGNATURE_POLICY_ID, extractedSPS.getSpDocSpecification().getId());

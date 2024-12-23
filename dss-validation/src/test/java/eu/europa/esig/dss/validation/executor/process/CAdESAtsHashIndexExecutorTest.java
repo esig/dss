@@ -51,7 +51,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CAdESAtsHashIndexExecutorTest extends AbstractProcessExecutorTest {
+class CAdESAtsHashIndexExecutorTest extends AbstractProcessExecutorTest {
 
     @Test
     void atsHashIndexFailValidTest() throws Exception {

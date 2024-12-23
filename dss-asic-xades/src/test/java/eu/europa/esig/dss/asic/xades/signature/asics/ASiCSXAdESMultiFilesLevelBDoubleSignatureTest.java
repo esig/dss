@@ -37,7 +37,6 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.RepeatedTest;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -73,12 +72,6 @@ class ASiCSXAdESMultiFilesLevelBDoubleSignatureTest extends AbstractASiCSWithXAd
         signatureParameters.setCertificateChain(getCertificateChain());
         signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
         signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
-    }
-
-    @RepeatedTest(100)
-    @Override
-    public void signAndVerify() {
-        super.signAndVerify();
     }
 
     @Override

@@ -73,9 +73,9 @@ public class PAdESExtensionBToLTWithRevokedCertTest extends AbstractPAdESTestExt
 
         CertificateVerifier completeCertificateVerifier = getCompleteCertificateVerifier();
         completeCertificateVerifier.setAlertOnRevokedCertificate(new SilentOnStatusAlert());
-        PAdESService PAdESService = new PAdESService(completeCertificateVerifier);
-        PAdESService.setTspSource(getUsedTSPSourceAtExtensionTime());
-        return PAdESService.extendDocument(signedDocument, getExtensionParameters());
+        PAdESService padesService = new PAdESService(completeCertificateVerifier);
+        padesService.setTspSource(getUsedTSPSourceAtExtensionTime());
+        return padesService.extendDocument(signedDocument, getExtensionParameters());
     }
 
     @Override

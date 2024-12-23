@@ -147,6 +147,7 @@ class CAdESExtensionCToLTATest extends AbstractCAdESTestExtension {
         assertEquals(timestamps.size() == 2 ? 0 : 1, archiveTimestampV3Counter);
     }
 
+    @Override
     protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
         SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
         assertTrue(signature.isSigningCertificateIdentified());

@@ -140,6 +140,7 @@ class ASiCEWithCAdESEvidenceRecordDataNotFoundValidationTest extends AbstractASi
         assertEquals(1, invalidRefsCounter);
     }
 
+    @Override
     protected void verifySimpleReport(SimpleReport simpleReport) {
         assertNotNull(simpleReport);
 

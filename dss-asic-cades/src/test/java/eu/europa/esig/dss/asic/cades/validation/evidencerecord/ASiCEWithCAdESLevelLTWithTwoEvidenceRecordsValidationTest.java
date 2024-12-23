@@ -58,6 +58,7 @@ class ASiCEWithCAdESLevelLTWithTwoEvidenceRecordsValidationTest extends Abstract
         return new FileDocument("src/test/resources/validation/evidencerecord/cades-lt-with-two-ers-multi-files.sce");
     }
 
+    @Override
     protected void verifySimpleReport(SimpleReport simpleReport) {
         for (String sigId : simpleReport.getSignatureIdList()) {
             List<XmlEvidenceRecord> signatureEvidenceRecords = simpleReport.getSignatureEvidenceRecords(sigId);

@@ -106,6 +106,7 @@ class XAdESLevelBWithPlainECDSATokenTest extends AbstractXAdESTestSignature {
 
     @Override
     public void signAndVerify() {
+        // skip
     }
 
     @Override

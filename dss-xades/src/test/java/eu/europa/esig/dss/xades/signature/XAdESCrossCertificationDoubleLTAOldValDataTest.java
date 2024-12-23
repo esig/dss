@@ -65,7 +65,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("slow")
-public class XAdESCrossCertificationDoubleLTAOldValDataTest extends PKIFactoryAccess {
+class XAdESCrossCertificationDoubleLTAOldValDataTest extends PKIFactoryAccess {
 
     @RepeatedTest(10)
     void test() throws Exception {

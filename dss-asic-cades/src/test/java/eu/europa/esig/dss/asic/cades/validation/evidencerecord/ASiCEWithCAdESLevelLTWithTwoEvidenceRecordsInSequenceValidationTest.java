@@ -129,6 +129,7 @@ class ASiCEWithCAdESLevelLTWithTwoEvidenceRecordsInSequenceValidationTest extend
         assertTrue(secondErFound);
     }
 
+    @Override
     protected void verifySimpleReport(SimpleReport simpleReport) {
         Set<String> evidenceRecordIds = new HashSet<>();
         for (String sigId : simpleReport.getSignatureIdList()) {

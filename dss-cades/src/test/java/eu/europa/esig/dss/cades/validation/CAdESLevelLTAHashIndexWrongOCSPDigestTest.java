@@ -97,6 +97,7 @@ class CAdESLevelLTAHashIndexWrongOCSPDigestTest extends AbstractCAdESTestValidat
         assertTrue(arcTstV3Found);
     }
 
+    @Override
     protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
         SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
         assertTrue(signature.isSigningCertificateIdentified());

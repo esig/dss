@@ -33,7 +33,7 @@ public class ASiCContentDocumentFilterFactory {
     /**
      * Default constructor
      */
-    public ASiCContentDocumentFilterFactory() {
+    private ASiCContentDocumentFilterFactory() {
         // empty
     }
 

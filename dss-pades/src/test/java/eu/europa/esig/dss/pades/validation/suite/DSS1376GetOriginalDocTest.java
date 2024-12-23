@@ -39,12 +39,12 @@ public class DSS1376GetOriginalDocTest extends AbstractPAdESTestValidation {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DSS1376GetOriginalDocTest.class);
 
-	private DSSDocument rev_n = new InMemoryDocument(getClass().getResourceAsStream("/validation/dss-1376/DSS1376-rev_n.pdf"));
-	private DSSDocument rev_n_1 = new InMemoryDocument(getClass().getResourceAsStream("/validation/dss-1376/DSS1376-rev_n-1.pdf"));
+	private final DSSDocument revN = new InMemoryDocument(getClass().getResourceAsStream("/validation/dss-1376/DSS1376-rev_n.pdf"));
+	private final DSSDocument revN1 = new InMemoryDocument(getClass().getResourceAsStream("/validation/dss-1376/DSS1376-rev_n-1.pdf"));
 
 	@Override
 	protected DSSDocument getSignedDocument() {
-		return rev_n;
+		return revN;
 	}
 	
 	@Override
@@ -64,7 +64,7 @@ public class DSS1376GetOriginalDocTest extends AbstractPAdESTestValidation {
 		assertEquals(1, originalDocuments.size());
 		DSSDocument retrievedDoc = originalDocuments.get(0);
 		LOG.debug("{} : {}", retrievedDoc.getName(), Utils.toBase64(retrievedDoc.getDigestValue(DigestAlgorithm.SHA256)));
-		assertArrayEquals(rev_n_1.getDigestValue(DigestAlgorithm.SHA256), retrievedDoc.getDigestValue(DigestAlgorithm.SHA256));
+		assertArrayEquals(revN1.getDigestValue(DigestAlgorithm.SHA256), retrievedDoc.getDigestValue(DigestAlgorithm.SHA256));
 
 		AdvancedSignature secondSig = signatures.get(0);
 

@@ -73,9 +73,9 @@ class JAdESExtensionBToLTWithRevokedCertTest extends AbstractJAdESTestExtension 
 
         CertificateVerifier completeCertificateVerifier = getCompleteCertificateVerifier();
         completeCertificateVerifier.setAlertOnRevokedCertificate(new SilentOnStatusAlert());
-        JAdESService JAdESService = new JAdESService(completeCertificateVerifier);
-        JAdESService.setTspSource(getUsedTSPSourceAtExtensionTime());
-        return JAdESService.extendDocument(signedDocument, getExtensionParameters());
+        JAdESService jadesService = new JAdESService(completeCertificateVerifier);
+        jadesService.setTspSource(getUsedTSPSourceAtExtensionTime());
+        return jadesService.extendDocument(signedDocument, getExtensionParameters());
     }
 
     @Override

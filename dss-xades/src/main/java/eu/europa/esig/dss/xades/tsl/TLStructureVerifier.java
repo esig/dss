@@ -53,7 +53,7 @@ public class TLStructureVerifier {
 
     private static final Logger LOG = LoggerFactory.getLogger(TLStructureVerifier.class);
 
-    private final static String TRUSTED_LIST_PARENT_ELEMENT = "TrustServiceStatusList";
+    private static final String TRUSTED_LIST_PARENT_ELEMENT = "TrustServiceStatusList";
 
     /** List of acceptable TL versions */
     private List<Integer> acceptedTLVersions;

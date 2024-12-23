@@ -49,8 +49,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class DSS2049DoubleTLTest extends AbstractTestValidationExecutor {
 	
-	private static final String czId = "TL-57FCA8BD35213403F3B984949365A5B03DB909F620AFE49D66A1470F964C551F";
-	private static final String skId = "TL-E9B06DA147E169206B0CC37F5202CC878097444EF14D52EA2042871139986DAC";
+	private static final String CZ_ID = "TL-57FCA8BD35213403F3B984949365A5B03DB909F620AFE49D66A1470F964C551F";
+	private static final String SK_ID = "TL-E9B06DA147E169206B0CC37F5202CC878097444EF14D52EA2042871139986DAC";
 
 	@Test
 	void test() throws Exception {
@@ -178,9 +178,9 @@ class DSS2049DoubleTLTest extends AbstractTestValidationExecutor {
 			} else if (MessageTag.QUAL_TRUSTED_LIST_ACCEPT.name().equals(constraint.getName().getKey())) {
 				++tlsProcessed;
 				if (XmlStatus.OK.equals(constraint.getStatus())) {
-					if (czId.equals(constraint.getId())) {
+					if (CZ_ID.equals(constraint.getId())) {
 						isCZTLValid = true;
-					} else if (skId.equals(constraint.getId())) {
+					} else if (SK_ID.equals(constraint.getId())) {
 						isSKTLValid = true;
 					}
 				}

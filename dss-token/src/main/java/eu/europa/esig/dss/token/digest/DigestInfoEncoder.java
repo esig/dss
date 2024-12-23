@@ -103,6 +103,10 @@ public class DigestInfoEncoder {
 
     private static byte[] encodeOid(String oid) {
         String[] parts = oid.split("\\.");
+        if (parts.length < 2) {
+            throw new IllegalArgumentException(String.format("The given string '%s' does not represent a valid OID! " +
+                    "OID have two or more parts separated by a dot.", oid));
+        }
 
         int byteLength = -1;
         for (String part : parts) {

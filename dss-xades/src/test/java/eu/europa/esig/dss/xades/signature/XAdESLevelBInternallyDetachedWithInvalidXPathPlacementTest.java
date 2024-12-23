@@ -50,7 +50,7 @@ class XAdESLevelBInternallyDetachedWithInvalidXPathPlacementTest extends Abstrac
 
     private static final String CONTAINER_NODE_NAME = "signature-container";
 
-    private final String XPATH = "//*[local-name() = 'ElementNotExists']";
+    private static final String XPATH = "//*[local-name() = 'ElementNotExists']";
 
     private XAdESService service;
     private DSSDocument documentToSign;

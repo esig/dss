@@ -106,6 +106,7 @@ class CAdESLevelBNONEWithRSATest extends AbstractCAdESTestSignature {
 
 	@Override
 	public void signAndVerify() {
+		// skip
 	}
 
 	@Override

@@ -44,7 +44,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ASiCEXAdESCounterSignSignaturesConsequentlyTest extends AbstractASiCXAdESCounterSignatureTest {
 
-    private final DSSDocument ORIGINAL_DOCUMENT = new FileDocument("src/test/resources/signable/test.txt");
+    private static final DSSDocument ORIGINAL_DOCUMENT = new FileDocument("src/test/resources/signable/test.txt");
 
     private ASiCWithXAdESService service;
     private Date signingDate;

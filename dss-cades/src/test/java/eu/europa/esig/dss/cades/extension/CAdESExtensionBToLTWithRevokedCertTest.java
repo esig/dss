@@ -73,9 +73,9 @@ class CAdESExtensionBToLTWithRevokedCertTest extends AbstractCAdESTestExtension 
 
         CertificateVerifier completeCertificateVerifier = getCompleteCertificateVerifier();
         completeCertificateVerifier.setAlertOnRevokedCertificate(new SilentOnStatusAlert());
-        CAdESService CAdESService = new CAdESService(completeCertificateVerifier);
-        CAdESService.setTspSource(getUsedTSPSourceAtExtensionTime());
-        return CAdESService.extendDocument(signedDocument, getExtensionParameters());
+        CAdESService cadesService = new CAdESService(completeCertificateVerifier);
+        cadesService.setTspSource(getUsedTSPSourceAtExtensionTime());
+        return cadesService.extendDocument(signedDocument, getExtensionParameters());
     }
 
     @Override
