@@ -81,6 +81,11 @@ public class DownloadCacheDTO extends AbstractCacheDTO implements DownloadInfoRe
 		return document;
 	}
 
+	/**
+	 * Sets the downloaded document
+	 *
+	 * @param document {@link DSSDocument}
+	 */
 	public void setDocument(DSSDocument document) {
 		this.document = document;
 	}

@@ -124,6 +124,9 @@ public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
 	/**
 	 * This method removes the 'tstVd' and 'anyValData' header parameters appearing
 	 * in the end of the 'etsiU' unsigned property array.
+	 *
+	 * @param jadesSignature {@link JAdESSignature}
+	 * @param etsiUHeader {@link JAdESEtsiUHeader}
 	 */
 	protected void removeLastTimestampAndAnyValidationData(JAdESSignature jadesSignature, JAdESEtsiUHeader etsiUHeader) {
 		boolean resetSources = false;

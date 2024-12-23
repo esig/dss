@@ -181,6 +181,13 @@ public class SSLCertificateLoader implements Serializable {
 	 */
 	protected static class NoSenseHttpClientResponseHandler implements HttpClientResponseHandler<byte[]> {
 
+		/**
+		 * Default constructor
+		 */
+		protected NoSenseHttpClientResponseHandler() {
+			// empty
+		}
+
 		@Override
 		public byte[] handleResponse(ClassicHttpResponse classicHttpResponse) {
 			if (classicHttpResponse != null) {

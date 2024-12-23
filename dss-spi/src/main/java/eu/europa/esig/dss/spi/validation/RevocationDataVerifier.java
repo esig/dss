@@ -419,9 +419,11 @@ public class RevocationDataVerifier {
     }
 
     /**
-     * This method verifies the validity of the given {@code RevocationToken} using the embedded issuer certificate token
+     * This method verifies the validity of the given {@code RevocationToken} at the given {@code controlTime}
+     * using the embedded issuer certificate token
      *
      * @param revocationToken {@link RevocationToken}
+     * @param controlTime {@link Date}
      * @return TRUE if the revocation data is acceptable to continue the validation process, FALSE otherwise
      */
     public boolean isAcceptable(RevocationToken<?> revocationToken, Date controlTime) {

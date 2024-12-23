@@ -37,6 +37,7 @@ import java.util.List;
 /**
  * This class checks whether all files signed by the covered signatures or timestamped by covered timestamps
  * are covered by the current timestamp as well
+ * @param <T> {@code XmlConstraintsConclusion}
  *
  */
 public abstract class AbstractSignedAndTimestampedFilesCoveredCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {

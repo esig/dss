@@ -117,6 +117,7 @@ public class ITextDocumentReader implements PdfDocumentReader {
 	 * 
 	 * @param dssDocument {@link DSSDocument} to read
 	 * @param passwordProtection binaries of a password to open a protected document
+	 * @param pdfMemoryUsageSetting {@link PdfMemoryUsageSetting}
 	 * @throws IOException if an exception occurs
 	 * @throws InvalidPasswordException if the password is not provided or invalid for a protected document
 	 */

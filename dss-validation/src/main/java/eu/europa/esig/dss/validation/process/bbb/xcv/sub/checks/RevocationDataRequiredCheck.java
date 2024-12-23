@@ -57,6 +57,8 @@ public class RevocationDataRequiredCheck<T extends XmlConstraintsConclusion> ext
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlConstraintsConclusion}
      * @param certificate {@link CertificateWrapper}
+     * @param currentTime {@link Date}
+     * @param certificateSunsetDateConstraint {@link LevelConstraint}
      * @param constraint {@link LevelConstraint}
      */
     public RevocationDataRequiredCheck(I18nProvider i18nProvider, T result, CertificateWrapper certificate,

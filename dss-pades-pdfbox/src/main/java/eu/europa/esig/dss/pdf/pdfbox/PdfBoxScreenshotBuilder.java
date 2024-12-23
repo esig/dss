@@ -145,6 +145,7 @@ public class PdfBoxScreenshotBuilder {
      * NOTE: This is a temporary method to ensure a smooth migration. Please do not use it.
      *
      * @param page a page number to generate screenshot for (page order starts from 1)
+     * @param dssResourcesHandler {@link DSSResourcesHandler}
      * @return {@link DSSDocument} PNG screenshot
      * @deprecated since DSS 6.2. This is a temporary method to ensure smooth migration.
      */

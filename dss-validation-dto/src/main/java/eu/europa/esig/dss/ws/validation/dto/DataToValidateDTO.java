@@ -142,6 +142,7 @@ public class DataToValidateDTO {
 	 *
 	 * @param signedDocument {@link RemoteDocument} to validate
 	 * @param originalDocuments list of {@link RemoteDocument} detached documents
+	 * @param validationTime {@link Date} time to validate the document at
 	 * @param policy {@link RemoteDocument} validation policy
 	 * @param evidenceRecords list of {@link RemoteDocument} detached evidence records
 	 */
