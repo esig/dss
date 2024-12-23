@@ -254,6 +254,16 @@ class CryptographicConstraintWrapperTest {
 
         assertEquals(rsa1900Map, wrapper.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(oldDateCalendar.getTime()));
         assertEquals(rsa3000Map, wrapper.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(newDateCalendar.getTime()));
+
+        minKeySize.getAlgos().clear();
+        minKeySize.getAlgos().add(createAlgo(EncryptionAlgorithm.RSA, 4000));
+
+        HashMap<EncryptionAlgorithm, Integer> rsa4000Map = new HashMap<>();
+        rsa4000Map.put(EncryptionAlgorithm.RSA, 4000);
+        rsa4000Map.put(EncryptionAlgorithm.ECDSA, null);
+
+        assertEquals(rsa4000Map, wrapper.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(oldDateCalendar.getTime()));
+        assertEquals(rsa4000Map, wrapper.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(newDateCalendar.getTime()));
     }
 
     @Test
