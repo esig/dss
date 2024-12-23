@@ -24,6 +24,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.ws.converter.DTOConverter;
 import eu.europa.esig.dss.ws.converter.RemoteCertificateConverter;
 import eu.europa.esig.dss.ws.converter.RemoteDocumentConverter;
@@ -115,12 +116,18 @@ public class RemoteTrustedListSignatureServiceImpl extends AbstractRemoteSignatu
         if (parameters.getTlVersion() == null) {
             LOG.warn("Please provide a signatureParameters.tlVersion parameter! The XML Trusted List V5 is set by default.");
             tlParametersBuilder = new TrustedListV5SignatureParametersBuilder(certificateToken, tlDocument);
-        } else if (XAdESTrustedListUtils.TL_V5_IDENTIFIER.equals(parameters.getTlVersion())) {
-            tlParametersBuilder = new TrustedListV5SignatureParametersBuilder(certificateToken, tlDocument);
-        } else if (XAdESTrustedListUtils.TL_V6_IDENTIFIER.equals(parameters.getTlVersion())) {
-            tlParametersBuilder = new TrustedListV6SignatureParametersBuilder(certificateToken, tlDocument);
+        } else if (!isValidTlVersion(parameters.getTlVersion())) {
+            throw new DSSRemoteServiceException(String.format("The TlVersion parameter shall be represented " +
+                    "by a valid integer! Obtained value '%s'.", parameters.getTlVersion()));
         } else {
-            throw new DSSRemoteServiceException(String.format("Unsupported TLVersionIdentifier '%s'!", parameters.getTlVersion()));
+            final Integer tlVersion = Integer.valueOf(parameters.getTlVersion());
+            if (XAdESTrustedListUtils.TL_V5_IDENTIFIER.equals(tlVersion)) {
+                tlParametersBuilder = new TrustedListV5SignatureParametersBuilder(certificateToken, tlDocument);
+            } else if (XAdESTrustedListUtils.TL_V6_IDENTIFIER.equals(tlVersion)) {
+                tlParametersBuilder = new TrustedListV6SignatureParametersBuilder(certificateToken, tlDocument);
+            } else {
+                throw new DSSRemoteServiceException(String.format("Unsupported TLVersionIdentifier '%s'!", parameters.getTlVersion()));
+            }
         }
 
         tlParametersBuilder.assertConfigurationIsValid();
@@ -142,6 +149,17 @@ public class RemoteTrustedListSignatureServiceImpl extends AbstractRemoteSignatu
         }
 
         return tlParametersBuilder.build();
+    }
+
+    private boolean isValidTlVersion(String tlVersion) {
+        if (Utils.isStringDigits(tlVersion)) {
+            try {
+                return Integer.valueOf(tlVersion) != null;
+            } catch (NumberFormatException e) {
+                // silence
+            }
+        }
+        return false;
     }
 
 }

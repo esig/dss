@@ -70,7 +70,7 @@ public class RemoteTrustedListSignatureParameters implements Serializable {
     /**
      * The TLVersion to be signed
      */
-    private Integer tlVersion;
+    private String tlVersion;
 
     /**
      * Default constructor instantiating object with null values
@@ -224,19 +224,20 @@ public class RemoteTrustedListSignatureParameters implements Serializable {
     /**
      * Gets the XML Trusted List Version identifier to be signed
      *
-     * @return {@link Integer}
+     * @return {@link String}
      */
-    public Integer getTlVersion() {
+    public String getTlVersion() {
         return tlVersion;
     }
 
     /**
      * Sets the XML Trusted List Version identifier to be signed.
      * This ensures the created signature corresponds to the requirements of the XML Trusted List version.
+     * NOTE: The value shall be an integer.
      *
-     * @param tlVersion the target XML Trusted List version
+     * @param tlVersion {@link String} the target XML Trusted List version integer
      */
-    public void setTlVersion(int tlVersion) {
+    public void setTlVersion(String tlVersion) {
         this.tlVersion = tlVersion;
     }
 
