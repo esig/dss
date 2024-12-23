@@ -251,11 +251,11 @@ In order to build a bundle for JDK 17 (minimum requirement), the following profi
 mvn clean install -P java17
 ----
 
-DSS webapp version with Java 22 can be created with a command below:
+DSS webapp version with Java 23 can be created with a command below:
 
-.Maven command to create a JDK 22 bundle
+.Maven command to create a JDK 23 bundle
 ----
-mvn clean install -P java22
+mvn clean install -P java23
 ----
 
 ====== Integration tests
