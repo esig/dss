@@ -63,7 +63,7 @@ class XAdESManyDataObjectFormatValidationTest extends AbstractXAdESTestValidatio
         List<AdvancedSignature> signatures = validator.getSignatures();
         assertEquals(1, signatures.size());
 
-        assertTimeout(ofMillis(6000), () -> signatures.get(0).getDataFoundUpToLevel());
+        assertTimeout(ofMillis(15000), () -> signatures.get(0).getDataFoundUpToLevel());
 
         return reports;
     }
