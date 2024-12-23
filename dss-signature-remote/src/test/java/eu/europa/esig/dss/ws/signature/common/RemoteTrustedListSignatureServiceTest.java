@@ -39,6 +39,7 @@ import eu.europa.esig.dss.ws.dto.RemoteCertificate;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
 import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
+import eu.europa.esig.dss.ws.dto.exception.DSSRemoteServiceException;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteBLevelParameters;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteTrustedListSignatureParameters;
 import org.junit.jupiter.api.BeforeEach;
@@ -76,7 +77,7 @@ public class RemoteTrustedListSignatureServiceTest extends AbstractRemoteSignatu
 
         RemoteTrustedListSignatureParameters tlSignatureParameters = new RemoteTrustedListSignatureParameters();
         tlSignatureParameters.setSigningCertificate(signingCertificate);
-        tlSignatureParameters.setTlVersion(5);
+        tlSignatureParameters.setTlVersion("5");
 
         ToBeSignedDTO dataToSign = tlSigningService.getDataToSign(toSignDocument, tlSignatureParameters);
         assertNotNull(dataToSign);
@@ -101,7 +102,7 @@ public class RemoteTrustedListSignatureServiceTest extends AbstractRemoteSignatu
         parameters.setSigningCertificate(signingCertificate);
         parameters.setReferenceId("lotl");
         parameters.setReferenceDigestAlgorithm(DigestAlgorithm.SHA512);
-        parameters.setTlVersion(5);
+        parameters.setTlVersion("5");
 
         RemoteBLevelParameters bLevelParams = new RemoteBLevelParameters();
         bLevelParams.setSigningDate(signingTime);
@@ -143,7 +144,7 @@ public class RemoteTrustedListSignatureServiceTest extends AbstractRemoteSignatu
         parameters.setSigningCertificate(signingCertificate);
         parameters.setReferenceId("lotl");
         parameters.setReferenceDigestAlgorithm(DigestAlgorithm.SHA256);
-        parameters.setTlVersion(5);
+        parameters.setTlVersion("5");
 
         parameters.setEncryptionAlgorithm(EncryptionAlgorithm.RSA);
         parameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
@@ -187,14 +188,14 @@ public class RemoteTrustedListSignatureServiceTest extends AbstractRemoteSignatu
 
         RemoteTrustedListSignatureParameters tlSignatureParameters = new RemoteTrustedListSignatureParameters();
         tlSignatureParameters.setSigningCertificate(signingCertificate);
-        tlSignatureParameters.setTlVersion(5);
+        tlSignatureParameters.setTlVersion("5");
 
         Exception exception = assertThrows(IllegalInputException.class, () -> tlSigningService.getDataToSign(toSignDocument, tlSignatureParameters));
         assertEquals("XML Trusted List failed the validation : TSL Version '6' found in the XML Trusted List " +
                 "does not correspond to the target version defined by the builder '5'! " +
                 "Please modify the document or change to the appropriate builder.", exception.getMessage());
 
-        tlSignatureParameters.setTlVersion(6);
+        tlSignatureParameters.setTlVersion("6");
 
         ToBeSignedDTO dataToSign = tlSigningService.getDataToSign(toSignDocument, tlSignatureParameters);
         assertNotNull(dataToSign);
@@ -206,6 +207,31 @@ public class RemoteTrustedListSignatureServiceTest extends AbstractRemoteSignatu
 
         DSSDocument iMD = new InMemoryDocument(signedDocument.getBytes());
         validate(iMD, null);
+    }
+
+    @Test
+    void testInvalidTlVersion() {
+        DSSDocument lotlToSign = new FileDocument(new File("src/test/resources/eu-lotl-no-sig.xml"));
+        RemoteDocument toSignDocument = new RemoteDocument(DSSUtils.toByteArray(lotlToSign), lotlToSign.getName());
+
+        RemoteCertificate signingCertificate = RemoteCertificateConverter.toRemoteCertificate(getSigningCert());
+
+        RemoteTrustedListSignatureParameters tlSignatureParameters = new RemoteTrustedListSignatureParameters();
+        tlSignatureParameters.setSigningCertificate(signingCertificate);
+        tlSignatureParameters.setTlVersion("five");
+
+        Exception exception = assertThrows(DSSRemoteServiceException.class, () -> tlSigningService.getDataToSign(toSignDocument, tlSignatureParameters));
+        assertEquals("The TlVersion parameter shall be represented by a valid integer! Obtained value 'five'.", exception.getMessage());
+
+        tlSignatureParameters.setTlVersion("1234564878912356489481548465141568464");
+
+        exception = assertThrows(DSSRemoteServiceException.class, () -> tlSigningService.getDataToSign(toSignDocument, tlSignatureParameters));
+        assertEquals("The TlVersion parameter shall be represented by a valid integer! Obtained value '1234564878912356489481548465141568464'.", exception.getMessage());
+
+        tlSignatureParameters.setTlVersion("7");
+
+        exception = assertThrows(DSSRemoteServiceException.class, () -> tlSigningService.getDataToSign(toSignDocument, tlSignatureParameters));
+        assertEquals("Unsupported TLVersionIdentifier '7'!", exception.getMessage());
     }
 
 }
