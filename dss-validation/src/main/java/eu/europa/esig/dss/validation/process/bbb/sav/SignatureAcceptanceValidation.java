@@ -182,7 +182,11 @@ public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<
 		// content-timestamp
 		for (TimestampWrapper contentTimestamp : token.getContentTimestamps()) {
 
-			item = item.setNextItem(contentTimestampBasicValidation(contentTimestamp));
+			XmlBasicBuildingBlocks contentTimestampBBB = bbbs.get(contentTimestamp.getId());
+			if (contentTimestampBBB != null) {
+				// NOTE: if TIMESTAMP validation level has been reached
+				item = item.setNextItem(contentTimestampBasicValidation(contentTimestamp, contentTimestampBBB.getConclusion()));
+			}
 
 			item = item.setNextItem(contentTimestampMessageImprint(contentTimestamp));
 
@@ -270,9 +274,8 @@ public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<
 		return new ContentTimeStampCheck(i18nProvider, result, token, constraint);
 	}
 
-	private ChainItem<XmlSAV> contentTimestampBasicValidation(final TimestampWrapper timestamp) {
-		XmlBasicBuildingBlocks contentTimestampBBB = bbbs.get(timestamp.getId());
-		return new ContentTimestampBasicValidationCheck(i18nProvider, result, timestamp, contentTimestampBBB.getConclusion(),
+	private ChainItem<XmlSAV> contentTimestampBasicValidation(final TimestampWrapper timestamp, XmlConclusion xmlConclusion) {
+		return new ContentTimestampBasicValidationCheck(i18nProvider, result, timestamp, xmlConclusion,
 				getTimestampBasicValidationConstraintLevel());
 	}
 
