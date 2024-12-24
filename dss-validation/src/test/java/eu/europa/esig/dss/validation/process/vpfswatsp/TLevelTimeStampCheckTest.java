@@ -85,7 +85,7 @@ class TLevelTimeStampCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlValidationProcessArchivalData result = new XmlValidationProcessArchivalData();
-        TLevelTimeStampCheck tltsc = new TLevelTimeStampCheck(i18nProvider, result, new SignatureWrapper(xmlSignature),
+        TLevelTimeStampCheck<XmlValidationProcessArchivalData> tltsc = new TLevelTimeStampCheck<>(i18nProvider, result, new SignatureWrapper(xmlSignature),
                 bbbs, Collections.singleton(xmlTimestamp), constraint);
         tltsc.execute();
 
@@ -127,7 +127,7 @@ class TLevelTimeStampCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlValidationProcessArchivalData result = new XmlValidationProcessArchivalData();
-        TLevelTimeStampCheck tltsc = new TLevelTimeStampCheck(i18nProvider, result, new SignatureWrapper(xmlSignature),
+        TLevelTimeStampCheck<XmlValidationProcessArchivalData> tltsc = new TLevelTimeStampCheck<>(i18nProvider, result, new SignatureWrapper(xmlSignature),
                 bbbs, Collections.singleton(xmlTimestamp), constraint);
         tltsc.execute();
 
@@ -191,7 +191,7 @@ class TLevelTimeStampCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlValidationProcessArchivalData result = new XmlValidationProcessArchivalData();
-        TLevelTimeStampCheck tltsc = new TLevelTimeStampCheck(i18nProvider, result, new SignatureWrapper(xmlSignature),
+        TLevelTimeStampCheck<XmlValidationProcessArchivalData> tltsc = new TLevelTimeStampCheck<>(i18nProvider, result, new SignatureWrapper(xmlSignature),
                 bbbs, Arrays.asList(xmlTimestamp, xmlTimestampTwo), constraint);
         tltsc.execute();
 
@@ -255,7 +255,7 @@ class TLevelTimeStampCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlValidationProcessArchivalData result = new XmlValidationProcessArchivalData();
-        TLevelTimeStampCheck tltsc = new TLevelTimeStampCheck(i18nProvider, result, new SignatureWrapper(xmlSignature),
+        TLevelTimeStampCheck<XmlValidationProcessArchivalData> tltsc = new TLevelTimeStampCheck<>(i18nProvider, result, new SignatureWrapper(xmlSignature),
                 bbbs, Arrays.asList(xmlTimestamp, xmlTimestampTwo), constraint);
         tltsc.execute();
 
@@ -303,7 +303,7 @@ class TLevelTimeStampCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlValidationProcessArchivalData result = new XmlValidationProcessArchivalData();
-        TLevelTimeStampCheck tltsc = new TLevelTimeStampCheck(i18nProvider, result, new SignatureWrapper(xmlSignature),
+        TLevelTimeStampCheck<XmlValidationProcessArchivalData> tltsc = new TLevelTimeStampCheck<>(i18nProvider, result, new SignatureWrapper(xmlSignature),
                 bbbs, Collections.singleton(xmlTimestamp), constraint);
         tltsc.execute();
 
@@ -351,7 +351,7 @@ class TLevelTimeStampCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlValidationProcessArchivalData result = new XmlValidationProcessArchivalData();
-        TLevelTimeStampCheck tltsc = new TLevelTimeStampCheck(i18nProvider, result, new SignatureWrapper(xmlSignature),
+        TLevelTimeStampCheck<XmlValidationProcessArchivalData> tltsc = new TLevelTimeStampCheck<>(i18nProvider, result, new SignatureWrapper(xmlSignature),
                 bbbs, Collections.singleton(xmlTimestamp), constraint);
         tltsc.execute();
 
@@ -392,7 +392,7 @@ class TLevelTimeStampCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlValidationProcessArchivalData result = new XmlValidationProcessArchivalData();
-        TLevelTimeStampCheck tltsc = new TLevelTimeStampCheck(i18nProvider, result, new SignatureWrapper(xmlSignature),
+        TLevelTimeStampCheck<XmlValidationProcessArchivalData> tltsc = new TLevelTimeStampCheck<>(i18nProvider, result, new SignatureWrapper(xmlSignature),
                 bbbs, Collections.singleton(xmlTimestamp), constraint);
         tltsc.execute();
 
@@ -434,7 +434,7 @@ class TLevelTimeStampCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlValidationProcessArchivalData result = new XmlValidationProcessArchivalData();
-        TLevelTimeStampCheck tltsc = new TLevelTimeStampCheck(i18nProvider, result, new SignatureWrapper(xmlSignature),
+        TLevelTimeStampCheck<XmlValidationProcessArchivalData> tltsc = new TLevelTimeStampCheck<>(i18nProvider, result, new SignatureWrapper(xmlSignature),
                 bbbs, Collections.singleton(xmlTimestamp), constraint);
         tltsc.execute();
 

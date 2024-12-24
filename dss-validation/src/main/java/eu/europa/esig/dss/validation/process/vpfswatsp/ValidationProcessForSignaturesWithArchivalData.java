@@ -410,12 +410,12 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 
 	private ChainItem<XmlValidationProcessArchivalData> tLevelTimeStamp() {
 		LevelConstraint constraint = policy.getTLevelTimeStampConstraint(context);
-		return new TLevelTimeStampCheck(i18nProvider, result, signature, bbbs, xmlTimestamps, constraint);
+		return new TLevelTimeStampCheck<>(i18nProvider, result, signature, bbbs, xmlTimestamps, constraint);
 	}
 
 	private ChainItem<XmlValidationProcessArchivalData> ltaLevelTimeStamp() {
 		LevelConstraint constraint = policy.getLTALevelTimeStampConstraint(context);
-		return new LTALevelTimeStampCheck(i18nProvider, result, signature, bbbs, xmlTimestamps, constraint);
+		return new LTALevelTimeStampCheck<>(i18nProvider, result, signature, bbbs, xmlTimestamps, constraint);
 	}
 
 	private ChainItem<XmlValidationProcessArchivalData> timestampDelay(Date bestSignatureTime) {

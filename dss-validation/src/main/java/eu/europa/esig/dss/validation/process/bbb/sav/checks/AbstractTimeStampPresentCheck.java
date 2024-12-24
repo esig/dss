@@ -21,9 +21,9 @@
 package eu.europa.esig.dss.validation.process.bbb.sav.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlPSV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalData;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicTimestamp;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -38,8 +38,10 @@ import java.util.Map;
 
 /**
  * This an abstract class performing analysis if a valid timestamp from the given set is present
+ *
+ * @param <T> {@code XmlConstraintsConclusion}
  */
-public abstract class AbstractTimeStampPresentCheck extends ChainItem<XmlValidationProcessArchivalData> {
+public abstract class AbstractTimeStampPresentCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
     /** Map of BasicBuildingBlocks */
     private final Map<String, XmlBasicBuildingBlocks> bbbs;
@@ -51,12 +53,12 @@ public abstract class AbstractTimeStampPresentCheck extends ChainItem<XmlValidat
      * Default constructor
      *
      * @param i18nProvider {@link I18nProvider}
-     * @param result {@link XmlValidationProcessArchivalData}
+     * @param result {@link XmlConstraintsConclusion}
      * @param bbbs map between token ids and corresponding {@code XmlBasicBuildingBlocks}
      * @param xmlTimestamps a collection of {@link XmlTimestamp}s
      * @param constraint {@link LevelConstraint}
      */
-    protected AbstractTimeStampPresentCheck(I18nProvider i18nProvider, XmlValidationProcessArchivalData result,
+    protected AbstractTimeStampPresentCheck(I18nProvider i18nProvider, T result,
                                          Map<String, XmlBasicBuildingBlocks> bbbs, Collection<XmlTimestamp> xmlTimestamps,
                                          LevelConstraint constraint) {
         super(i18nProvider, result, constraint);

@@ -57,14 +57,16 @@ import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.sav.SignatureAcceptanceValidation;
-import eu.europa.esig.dss.validation.process.bbb.sav.cc.DigestMatcherListCryptographicChainBuilder;
 import eu.europa.esig.dss.validation.process.bbb.sav.cc.CertificateChainCryptographicCheck;
-import eu.europa.esig.dss.validation.process.bbb.sav.cc.TokenCertificateChainCryptographicChecker;
+import eu.europa.esig.dss.validation.process.bbb.sav.cc.DigestMatcherListCryptographicChainBuilder;
 import eu.europa.esig.dss.validation.process.bbb.sav.cc.TokenCertificateChainCryptographicCheck;
+import eu.europa.esig.dss.validation.process.bbb.sav.cc.TokenCertificateChainCryptographicChecker;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheckWithId;
+import eu.europa.esig.dss.validation.process.bbb.sav.checks.LTALevelTimeStampCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SignatureAcceptanceValidationResultCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SigningCertificateDigestAlgorithmCheck;
+import eu.europa.esig.dss.validation.process.bbb.sav.checks.TLevelTimeStampCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.crs.CertificateRevocationSelector;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.RevocationFreshnessChecker;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.RevocationDataAvailableCheck;
@@ -253,6 +255,15 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 					 *
 					 * If PASSED is returned and if the returned generation time is before best-signature-time,
 					 * the process shall set best-signature-time to this date and shall try the next token.
+					 *
+					 * In all other cases:
+					 *
+					 * - If no specific constraints mandating the validity of the attribute are specified in the validation
+					 *   constraints, the process shall remove the time-stamp token from the set of signature time-stamp
+					 *   tokens and shall try the next token.
+					 *
+					 * - Otherwise, the process shall return the indication/sub-indication and associated explanations
+					 *   returned from the Time-stamp token validation process.
 					 */
 					XmlValidationProcessBasicTimestamp timestampValidationProcess = getTimestampValidationProcess(timestampWrapper.getId());
 					if (timestampValidationProcess != null) {
@@ -273,6 +284,15 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 				}
 
 			}
+
+		}
+
+		// If no LTA material, perform *-level timestamp validation
+		if (!ValidationProcessUtils.isLongTermAvailabilityAndIntegrityMaterialPresent(currentSignature)) {
+
+			item = item.setNextItem(tLevelTimeStamp(currentContext));
+
+			item = item.setNextItem(ltaLevelTimeStamp(currentContext));
 
 		}
 
@@ -505,7 +525,26 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	private ChainItem<XmlValidationProcessLongTermData> timestampBasicSignatureValidation(
 			TimestampWrapper timestampWrapper, XmlValidationProcessBasicTimestamp timestampValidationResult) {
 		return new BasicTimestampValidationWithIdCheck<>(i18nProvider, result, timestampWrapper,
-				timestampValidationResult, getWarnLevelConstraint());
+				timestampValidationResult, getTimestampBasicValidationConstraintLevel());
+	}
+
+	private ChainItem<XmlValidationProcessLongTermData> tLevelTimeStamp(Context context) {
+		LevelConstraint constraint = policy.getTLevelTimeStampConstraint(context);
+		return new TLevelTimeStampCheck<>(i18nProvider, result, currentSignature, bbbs, xmlTimestamps, constraint);
+	}
+
+	private ChainItem<XmlValidationProcessLongTermData> ltaLevelTimeStamp(Context context) {
+		LevelConstraint constraint = policy.getLTALevelTimeStampConstraint(context);
+		return new LTALevelTimeStampCheck<>(i18nProvider, result, currentSignature, bbbs, xmlTimestamps, constraint);
+	}
+
+	private LevelConstraint getTimestampBasicValidationConstraintLevel() {
+		LevelConstraint constraint = policy.getTimestampValidConstraint();
+		// continue if LTA is present
+		if (constraint == null || ValidationProcessUtils.isLongTermAvailabilityAndIntegrityMaterialPresent(currentSignature)) {
+			constraint = getWarnLevelConstraint();
+		}
+		return constraint;
 	}
 	
 	private ChainItem<XmlValidationProcessLongTermData> revocationIsFresh(ChainItem<XmlValidationProcessLongTermData> item, 
