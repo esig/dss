@@ -218,6 +218,7 @@
         <EvidenceRecord Id="EVIDENCE-RECORD_good-tsa_20230905-0858">
             <DocumentName>evidence-record-5b5edd31-344d-4d66-8e95-79f9acaab566.xml</DocumentName>
             <Type>XML Evidence Record</Type>
+            <Origin>EXTERNAL</Origin>
             <StructuralValidation valid="true"/>
             <DigestMatchers>
                 <DigestMatcher type="EVIDENCE_RECORD_ARCHIVE_OBJECT" documentName="Signature-X-LT-5b5edd31-344d-4d66-8e95-79f9acaab566.xml">
@@ -269,6 +270,7 @@
         <EvidenceRecord Id="EVIDENCE-RECORD_UNKNOWN-SIGNER_20230905-0858">
             <DocumentName>evidence-record-5b5edd31-344d-4d66-8e95-79f9acaab566-broken.xml</DocumentName>
             <Type>XML Evidence Record</Type>
+            <Origin>EXTERNAL</Origin>
             <StructuralValidation valid="true"/>
             <DigestMatchers>
                 <DigestMatcher type="EVIDENCE_RECORD_ARCHIVE_OBJECT" documentName="Signature-X-LT-5b5edd31-344d-4d66-8e95-79f9acaab566.xml">

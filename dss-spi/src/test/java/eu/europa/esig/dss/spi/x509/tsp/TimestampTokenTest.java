@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -71,7 +71,7 @@ class TimestampTokenTest {
 	private static final String TIMESTAMPED_DATA_B64 = "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPGFzaWM6QVNpQ0FyY2hpdmVNYW5pZmVzdCB4bWxuczphc2ljPSJodHRwOi8vdXJpLmV0c2kub3JnLzAyOTE4L3YxLjIuMSMiPgoJPGFzaWM6U2lnUmVmZXJlbmNlIFVSST0iTUVUQS1JTkYvYXJjaGl2ZV90aW1lc3RhbXAudHN0IiBNaW1lVHlwZT0iYXBwbGljYXRpb24vdm5kLmV0c2kudGltZXN0YW1wLXRva2VuIi8+Cgk8YXNpYzpEYXRhT2JqZWN0UmVmZXJlbmNlIFVSST0iTUVUQS1JTkYvc2lnbmF0dXJlLnA3cyIgTWltZVR5cGU9ImFwcGxpY2F0aW9uL3gtcGtjczctc2lnbmF0dXJlIj4KCQk8ZHM6RGlnZXN0TWV0aG9kIHhtbG5zOmRzPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwLzA5L3htbGRzaWcjIiBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvMDQveG1sZW5jI3NoYTI1NiIvPgoJCTxkczpEaWdlc3RWYWx1ZSB4bWxuczpkcz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC8wOS94bWxkc2lnIyI+M1Flb3M4V01ZWHU1L3E2RzFIdjVnMDVnamtYS2VjSzBVQUxNU2UrZWVJbz08L2RzOkRpZ2VzdFZhbHVlPgoJPC9hc2ljOkRhdGFPYmplY3RSZWZlcmVuY2U+Cgk8YXNpYzpEYXRhT2JqZWN0UmVmZXJlbmNlIFVSST0idG9CZVNpZ25lZC50eHQiIE1pbWVUeXBlPSJ0ZXh0L3BsYWluIj4KCQk8ZHM6RGlnZXN0TWV0aG9kIHhtbG5zOmRzPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwLzA5L3htbGRzaWcjIiBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvMDQveG1sZW5jI3NoYTI1NiIvPgoJCTxkczpEaWdlc3RWYWx1ZSB4bWxuczpkcz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC8wOS94bWxkc2lnIyI+SkpadDQxTnQ4VnNZYWhQK1h0aTRyUjN2QkRrVWZSZDZncXVJdGw2UjVPcz08L2RzOkRpZ2VzdFZhbHVlPgoJPC9hc2ljOkRhdGFPYmplY3RSZWZlcmVuY2U+Cgk8YXNpYzpEYXRhT2JqZWN0UmVmZXJlbmNlIFVSST0idG9CZVNpZ25lZC5wZGYiIE1pbWVUeXBlPSJhcHBsaWNhdGlvbi9wZGYiPgoJCTxkczpEaWdlc3RNZXRob2QgeG1sbnM6ZHM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvMDkveG1sZHNpZyMiIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8wNC94bWxlbmMjc2hhMjU2Ii8+CgkJPGRzOkRpZ2VzdFZhbHVlIHhtbG5zOmRzPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwLzA5L3htbGRzaWcjIj5JT0lxQ0phWjJXUDF2V0t6VFZsc3Rzeno0RTVod0xhVVBEUnRVVE9YZU5jPTwvZHM6RGlnZXN0VmFsdWU+Cgk8L2FzaWM6RGF0YU9iamVjdFJlZmVyZW5jZT4KCTxhc2ljOkRhdGFPYmplY3RSZWZlcmVuY2UgVVJJPSJNRVRBLUlORi9BU2lDTWFuaWZlc3RfMS54bWwiIE1pbWVUeXBlPSJ0ZXh0L3htbCI+CgkJPGRzOkRpZ2VzdE1ldGhvZCB4bWxuczpkcz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC8wOS94bWxkc2lnIyIgQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGVuYyNzaGEyNTYiLz4KCQk8ZHM6RGlnZXN0VmFsdWUgeG1sbnM6ZHM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvMDkveG1sZHNpZyMiPmc1ZFloNjFFdkhWdGNCUHMyRG1YZmhYN1lubGxaZzAxMnBid3lkVFR5N2c9PC9kczpEaWdlc3RWYWx1ZT4KCTwvYXNpYzpEYXRhT2JqZWN0UmVmZXJlbmNlPgo8L2FzaWM6QVNpQ0FyY2hpdmVNYW5pZmVzdD4K";
 
 	@Test
-	void incorrectTimestamp() throws Exception {
+	void incorrectTimestamp() {
 		Exception exception = assertThrows(CMSException.class, () -> new TimestampToken(new byte[] { 1, 2, 3 }, TimestampType.ARCHIVE_TIMESTAMP));
 		assertEquals("IOException reading content.", exception.getMessage());
 	}

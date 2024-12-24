@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -156,6 +156,28 @@ public enum TrustServiceStatus {
 	public static boolean isAcceptableStatusAfterEIDAS(String uri) {
 		TrustServiceStatus tss = fromUri(uri);
 		return tss != null && tss.isPostEidas() && tss.isValid();
+	}
+
+	/**
+	 * Gets whether the given {@code status} is set by national law after eIDAS
+	 *
+	 * @param uri {@link String} identifying the trust service status
+	 * @return TRUE if the status is set by national law after eIDAS, FALSE otherwise
+	 */
+	public static boolean isSetByNationalLawAfterEIDAS(String uri) {
+		TrustServiceStatus tss = fromUri(uri);
+		return TrustServiceStatus.SET_BY_NATIONAL_LAW == tss;
+	}
+
+	/**
+	 * Gets whether the given {@code status} is recognized at national level after eIDAS
+	 *
+	 * @param uri {@link String} identifying the trust service status
+	 * @return TRUE if the status is recognized at national level after eIDAS, FALSE otherwise
+	 */
+	public static boolean isRecognizedAtNationalLevelAfterEIDAS(String uri) {
+		TrustServiceStatus tss = fromUri(uri);
+		return TrustServiceStatus.RECONIZED_AT_NATIONAL_LEVEL == tss;
 	}
 
 	/**

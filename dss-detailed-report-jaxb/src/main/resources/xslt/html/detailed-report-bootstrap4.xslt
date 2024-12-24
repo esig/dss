@@ -591,26 +591,19 @@
 
 					<div>
 						<xsl:attribute name="class">constraint-tooltip float-right p-0 p-sm-2</xsl:attribute>
-						<xsl:choose>
-							<xsl:when test="@TrustAnchor = 'true'">
-								<i>
-									<xsl:attribute name="class">constraint-tooltip fa fa-certificate ml-2</xsl:attribute>
-									<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
-									<xsl:attribute name="data-placement">top</xsl:attribute>
-									<xsl:attribute name="title">Trust Anchor</xsl:attribute>
-								</i>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:call-template name="badge-conclusion">
-									<xsl:with-param name="Conclusion" select="dss:Conclusion" />
-									<xsl:with-param name="AdditionalClass" select="' float-right ml-2'" />
-								</xsl:call-template>
-							</xsl:otherwise>
-						</xsl:choose>
+
+						<xsl:if test="@TrustAnchor = 'true'">
+							<i>
+								<xsl:attribute name="class">constraint-tooltip fa fa-certificate float-right ml-2</xsl:attribute>
+								<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
+								<xsl:attribute name="data-placement">top</xsl:attribute>
+								<xsl:attribute name="title">Trust Anchor</xsl:attribute>
+							</i>
+						</xsl:if>
 
 						<xsl:if test="@SelfSigned = 'true'">
 							<i>
-								<xsl:attribute name="class">constraint-tooltip fa fa-user-circle ml-2</xsl:attribute>
+								<xsl:attribute name="class">constraint-tooltip fa fa-user-circle float-right ml-2</xsl:attribute>
 								<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
 								<xsl:attribute name="data-placement">top</xsl:attribute>
 								<xsl:attribute name="title">Self-signed</xsl:attribute>
@@ -619,7 +612,7 @@
 
 						<xsl:if test="dss:CrossCertificate">
 							<i>
-								<xsl:attribute name="class">constraint-tooltip fa fa-link ml-2</xsl:attribute>
+								<xsl:attribute name="class">constraint-tooltip fa fa-link float-right ml-2</xsl:attribute>
 								<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
 								<xsl:attribute name="data-placement">top</xsl:attribute>
 								<xsl:attribute name="title">Cross-Certification: <xsl:value-of select="dss:CrossCertificate"/></xsl:attribute>
@@ -628,12 +621,17 @@
 
 						<xsl:if test="dss:EquivalentCertificate">
 							<i>
-								<xsl:attribute name="class">constraint-tooltip fa fa-refresh ml-2</xsl:attribute>
+								<xsl:attribute name="class">constraint-tooltip fa fa-refresh float-right ml-2</xsl:attribute>
 								<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
 								<xsl:attribute name="data-placement">top</xsl:attribute>
 								<xsl:attribute name="title">Equivalent certification: <xsl:value-of select="dss:EquivalentCertificate"/></xsl:attribute>
 							</i>
 						</xsl:if>
+
+						<xsl:call-template name="badge-conclusion">
+							<xsl:with-param name="Conclusion" select="dss:Conclusion" />
+							<xsl:with-param name="AdditionalClass" select="' float-right ml-2'" />
+						</xsl:call-template>
 					</div>
 
 					<div>
@@ -690,7 +688,7 @@
 
 		        </div>
 		        
-		       	<xsl:if test="name() != 'SubXCV' or @TrustAnchor != 'true'">
+		       	<xsl:if test="name() != 'SubXCV' or dss:Constraint">
 		    		<div>
 		    			<xsl:attribute name="class">card-body p-2 p-sm-3 collapse show</xsl:attribute>
 			        	<xsl:attribute name="id"><xsl:value-of select="concat('collapse-', name(..), '-', $currentId)"/></xsl:attribute>
@@ -716,8 +714,11 @@
 						<xsl:variable name="BlockType" select="@BlockType"/>
 						<a>
 							<xsl:choose>
-								<xsl:when test="$BlockType='SUB_XCV'">
+								<xsl:when test="$BlockType='SUB_XCV' or $BlockType='SUB_XCV_TA'">
 									<xsl:attribute name="href">#SubXCV-<xsl:value-of select="concat(@Id, '-', ../../@Id)"/></xsl:attribute>
+								</xsl:when>
+								<xsl:when test="$BlockType='RAC_SUB_XCV' and name(..)='SubXCV'">
+									<xsl:attribute name="href">#SubXCV-<xsl:value-of select="concat(@Id, '-', ../../../@Id)"/></xsl:attribute>
 								</xsl:when>
 								<xsl:when test="$BlockType='CRS' and name(..)='SubXCV'">
 									<xsl:attribute name="href">#CRS-<xsl:value-of select="concat(@Id, '-', ../@Id, '-', ../../../@Id)"/></xsl:attribute>
@@ -727,6 +728,9 @@
 								</xsl:when>
 								<xsl:when test="$BlockType='CRS' and name(..)='VTS'">
 									<xsl:attribute name="href">#CRS-<xsl:value-of select="concat(@Id, '-', ../@Id, '-', ../../../@Id)"/></xsl:attribute>
+								</xsl:when>
+								<xsl:when test="$BlockType='LTV_SUB_XCV' and name(..)='ValidationProcessLongTermData'">
+									<xsl:attribute name="href">#SubXCV-<xsl:value-of select="concat(@Id, '-', ../../@Id)"/></xsl:attribute>
 								</xsl:when>
 								<xsl:when test="$BlockType='CRS' and name(..)='ValidationProcessLongTermData'">
 									<xsl:attribute name="href">#CRS-<xsl:value-of select="concat(@Id, '-', ../../@Id)"/></xsl:attribute>
@@ -745,6 +749,9 @@
 								</xsl:when>
 								<xsl:when test="$BlockType='RAC' and name(..)='PSV_CRS'">
 									<xsl:attribute name="href">#RAC-<xsl:value-of select="concat(@Id, '-', ../@Id, '-', ../../@Id)"/></xsl:attribute>
+								</xsl:when>
+								<xsl:when test="$BlockType='RAC_SUB_XCV' and name(..)='RAC'">
+									<xsl:attribute name="href">#SubXCV-<xsl:value-of select="concat(@Id, '-', ../@Id)"/></xsl:attribute>
 								</xsl:when>
 								<xsl:when test="$BlockType='RFC'">
 									<xsl:attribute name="href">#RFC-<xsl:value-of select="concat(@Id, '-', ../@Id, '-', ../../../@Id)"/></xsl:attribute>

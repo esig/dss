@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -26,6 +26,7 @@ import eu.europa.esig.dss.asic.xades.validation.AbstractASiCWithXAdESTestValidat
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
+import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
@@ -39,6 +40,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -71,10 +73,7 @@ class ASiCSXAdESLevelLTAExtensionForCounterSignedTest extends AbstractASiCWithXA
 	@BeforeEach
 	void init() {
 		documentToSign = new InMemoryDocument("Hello World !".getBytes(), "test.text", MimeTypeEnum.TEXT);
-		
-		service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
-		service.setTspSource(getGoodTsa());
-		
+
 		signingAlias = SELF_SIGNED_USER;
 		
 		signatureParameters = new ASiCWithXAdESSignatureParameters();
@@ -91,6 +90,8 @@ class ASiCSXAdESLevelLTAExtensionForCounterSignedTest extends AbstractASiCWithXA
 		counterSignatureParameters.setSigningCertificate(getSigningCert());
 		counterSignatureParameters.setCertificateChain(getCertificateChain());
 		counterSignatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+
+		service = new ASiCWithXAdESService(getOfflineCertificateVerifier());
 	}
 	
 	@Test
@@ -126,6 +127,9 @@ class ASiCSXAdESLevelLTAExtensionForCounterSignedTest extends AbstractASiCWithXA
 		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
 		signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
 
+		service = new ASiCWithXAdESService(getCompleteCertificateVerifier());
+		service.setTspSource(getGoodTsa());
+
 		DSSDocument ltaXAdES = service.extendDocument(counterSignedSignature, signatureParameters);
 		
 		// ltaXAdES.save("target/ltaXAdES.xml");
@@ -154,12 +158,17 @@ class ASiCSXAdESLevelLTAExtensionForCounterSignedTest extends AbstractASiCWithXA
 		Exception exception = assertThrows(IllegalInputException.class, () -> service.getDataToBeCounterSigned(ltaXAdES, counterSignatureParameters));
 		assertEquals(String.format("Unable to counter sign a signature with Id '%s'. "
 				+ "The signature is timestamped by a master signature!", counterSignature.getId()), exception.getMessage());
-		
+
 		FoundCertificatesProxy foundCertificates = signatureWrapper.foundCertificates();
 		List<String> certificateValuesIds = foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES)
-				.stream().map(c -> c.getId()).collect(Collectors.toList());
+				.stream().map(CertificateWrapper::getId).collect(Collectors.toList());
+		assertEquals(2, certificateValuesIds.size());
+		List<RelatedCertificateWrapper> counterSignatureCerts = counterSignature.foundCertificates().getRelatedCertificates();
+		assertEquals(2, counterSignatureCerts.size());
+		assertEquals(3, counterSignature.getCertificateChain().size());
 		for (CertificateWrapper certificateWrapper : counterSignature.getCertificateChain()) {
-			assertTrue(certificateValuesIds.contains(certificateWrapper.getId()));
+			assertTrue(counterSignatureCerts.stream().map(CertificateWrapper::getId).collect(Collectors.toList())
+					.contains(certificateWrapper.getId()) || certificateValuesIds.contains(certificateWrapper.getId()));
 		}
 		
 		assertTrue(Utils.isCollectionNotEmpty(signatureWrapper.foundRevocations().getRelatedRevocationsByOrigin(RevocationOrigin.REVOCATION_VALUES)));
@@ -181,6 +190,14 @@ class ASiCSXAdESLevelLTAExtensionForCounterSignedTest extends AbstractASiCWithXA
 		
 		assertEquals(2, mainSignature.getCounterSignatures().size());
 		assertEquals(counterSignatureId, mainSignature.getCounterSignatures().get(0).getId());
+	}
+
+	@Override
+	protected CertificateVerifier getCompleteCertificateVerifier() {
+		CertificateVerifier certificateVerifier = super.getCompleteCertificateVerifier();
+		certificateVerifier.setCrlSource(pkiCRLSource());
+		certificateVerifier.setOcspSource(pkiDelegatedOCSPSource());
+		return certificateVerifier;
 	}
 	
 	@Override
@@ -213,17 +230,17 @@ class ASiCSXAdESLevelLTAExtensionForCounterSignedTest extends AbstractASiCWithXA
 		for (TimestampWrapper timestampWrapper : timestampList) {
 			if (TimestampType.SIGNATURE_TIMESTAMP.equals(timestampWrapper.getType())) {
 				assertEquals(1, timestampWrapper.getTimestampedSignatures().size());
-				assertFalse(timestampWrapper.getTimestampedSignatures().stream().map(s -> s.getId()).collect(Collectors.toList())
+				assertFalse(timestampWrapper.getTimestampedSignatures().stream().map(SignatureWrapper::getId).collect(Collectors.toList())
 						.contains(counterSignature.getId()));
-				assertFalse(timestampWrapper.getTimestampedCertificates().stream().map(c -> c.getId()).collect(Collectors.toList())
+				assertFalse(timestampWrapper.getTimestampedCertificates().stream().map(CertificateWrapper::getId).collect(Collectors.toList())
 						.contains(counterSignature.getSigningCertificate().getId()));
 				sigTstFound = true;
 				
 			} else if (TimestampType.ARCHIVE_TIMESTAMP.equals(timestampWrapper.getType())) {
 				assertEquals(2, timestampWrapper.getTimestampedSignatures().size());
-				assertTrue(timestampWrapper.getTimestampedSignatures().stream().map(s -> s.getId()).collect(Collectors.toList())
+				assertTrue(timestampWrapper.getTimestampedSignatures().stream().map(SignatureWrapper::getId).collect(Collectors.toList())
 						.contains(counterSignature.getId()));
-				assertTrue(timestampWrapper.getTimestampedCertificates().stream().map(c -> c.getId()).collect(Collectors.toList())
+				assertTrue(timestampWrapper.getTimestampedCertificates().stream().map(CertificateWrapper::getId).collect(Collectors.toList())
 						.contains(counterSignature.getSigningCertificate().getId()));
 				arcTstFound = true;
 				

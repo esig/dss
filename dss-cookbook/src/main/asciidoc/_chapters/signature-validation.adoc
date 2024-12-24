@@ -178,6 +178,8 @@ This configuration shall be provided into both augmentation and validation proce
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/CertificateVerifierSnippet.java[tags=demo]
 ----
 
+NOTE: Since DSS 6.2, the execution of the alert checks can be skipped, by providing a `null` value in the corresponding alert setter.
+
 See section <<Alerts>> in the Annex for more information on alerts.
 
 [[validationPolicy]]

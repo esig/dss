@@ -3,7 +3,7 @@
 {
   "diagnosticData" : {
     "DocumentName" : null,
-    "ValidationDate" : "2024-07-05T13:40:42Z",
+    "ValidationDate" : "2024-12-11T11:32:46Z",
     "ContainerInfo" : null,
     "PDFAInfo" : null,
     "Signature" : null,
@@ -43,7 +43,8 @@
       "NotBefore" : "2017-06-08T11:26:01Z",
       "PublicKeySize" : 2048,
       "PublicKeyEncryptionAlgo" : "RSA",
-      "EntityKey" : "PK-3CFCA257859E202BCC83864D02B267B08A997C357AB98D923BBC63F00607C7B6",
+      "EntityKey" : "EK-8E405008DE2575922B15DDB85C8A6272655EB8EF7E9ECF8E51DC89EC302B801A",
+      "IssuerEntityKey" : null,
       "BasicSignature" : {
         "EncryptionAlgoUsedToSignThisToken" : "RSA",
         "KeyLengthUsedToSignThisToken" : "?",
@@ -53,7 +54,11 @@
       },
       "SigningCertificate" : null,
       "ChainItem" : [ ],
-      "Trusted" : false,
+      "Trusted" : {
+        "value" : false,
+        "startDate" : null,
+        "sunsetDate" : null
+      },
       "SelfSigned" : false,
       "certificateExtensions" : [ {
         "KeyUsages" : {
@@ -120,6 +125,8 @@
         "revocationReason" : null
       },
       "trustAnchor" : null,
+      "trustStartDate" : null,
+      "trustSunsetDate" : null,
       "Indication" : "INDETERMINATE",
       "SubIndication" : "NO_CERTIFICATE_CHAIN_FOUND",
       "X509ValidationDetails" : {
@@ -131,7 +138,7 @@
         "Info" : [ ]
       }
     } ],
-    "ValidationTime" : "2024-07-05T13:40:42Z"
+    "ValidationTime" : "2024-12-11T11:32:46Z"
   },
   "detailedReport" : {
     "signatureOrTimestampOrEvidenceRecord" : [ {

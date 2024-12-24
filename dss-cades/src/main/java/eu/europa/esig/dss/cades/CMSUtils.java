@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -49,6 +49,9 @@ import org.bouncycastle.asn1.DLSet;
 import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.cms.Attributes;
+import org.bouncycastle.asn1.cms.ContentInfo;
+import org.bouncycastle.asn1.cms.OtherRevocationInfoFormat;
+import org.bouncycastle.asn1.cms.SignedData;
 import org.bouncycastle.asn1.ess.ESSCertID;
 import org.bouncycastle.asn1.ess.ESSCertIDv2;
 import org.bouncycastle.asn1.ess.SigningCertificate;
@@ -427,16 +430,20 @@ public final class CMSUtils {
 	 * @return original {@link DSSDocument}
 	 */
 	public static DSSDocument getOriginalDocument(CMSSignedData cmsSignedData, List<DSSDocument> detachedDocuments) {
-		CMSTypedData signedContent = null;
-		if (cmsSignedData != null) {
-			signedContent = cmsSignedData.getSignedContent();
-		}
-		if (signedContent != null && !isDetachedSignature(cmsSignedData)) {
+		Objects.requireNonNull(cmsSignedData, "CMSSignedData shall be provided!");
+
+		final CMSTypedData signedContent = cmsSignedData.getSignedContent();
+		if (!isDetachedSignature(cmsSignedData)) {
+			if (signedContent == null) {
+				throw new DSSException("No signed content found within enveloping CMS signature!");
+			}
 			return new InMemoryDocument(CMSUtils.getSignedContent(signedContent));
+
 		} else if (Utils.collectionSize(detachedDocuments) == 1) {
 			return detachedDocuments.get(0);
+
 		} else {
-			throw new DSSException("Only enveloping and detached signatures are supported");
+			throw new DSSException("Detached content is not provided or cannot be identified (only one document shall be provided)!");
 		}
 	}
 
@@ -815,6 +822,35 @@ public final class CMSUtils {
 			return new CMSSignedData(asn1Primitive.getEncoded());
 		}
 		return null;
+	}
+
+	/**
+	 * Gets the SignedData.encapContentInfo.eContentType identifier value
+	 *
+	 * @param cmsSignedData {@link CMSSignedData}
+	 * @return {@link ASN1ObjectIdentifier} cmsSignedData.getSignedContentTypeOID()
+	 */
+	public static ASN1ObjectIdentifier getEncapsulatedContentType(final CMSSignedData cmsSignedData) {
+		final ContentInfo contentInfo = cmsSignedData.toASN1Structure();
+		final SignedData signedData = SignedData.getInstance(contentInfo.getContent());
+		return signedData.getEncapContentInfo().getContentType();
+	}
+
+	/**
+	 * This method returns encoded binaries used for OCSP token incorporation within a SignedData.crls attribute
+	 *
+	 * @param binaries byte array containing OCSP token
+	 * @param objectIdentifier {@link ASN1ObjectIdentifier}
+	 * @return encoded binaries
+	 */
+	public static byte[] getSignedDataEncodedOCSPResponse(byte[] binaries, ASN1ObjectIdentifier objectIdentifier) {
+		// Compute DERTaggedObject with the same algorithm how it was created
+		// See: org.bouncycastle.cms.CMSUtils getOthersFromStore()
+		OtherRevocationInfoFormat otherRevocationInfoFormat = new OtherRevocationInfoFormat(
+				objectIdentifier, DSSASN1Utils.toASN1Primitive(binaries));
+		// false value specifies an implicit encoding method
+		DERTaggedObject derTaggedObject = new DERTaggedObject(false, 1, otherRevocationInfoFormat);
+		return DSSASN1Utils.getDEREncoded(derTaggedObject);
 	}
 
 	/**

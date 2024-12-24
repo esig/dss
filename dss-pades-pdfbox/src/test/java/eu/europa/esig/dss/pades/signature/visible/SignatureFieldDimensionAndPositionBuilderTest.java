@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -29,6 +29,9 @@ import eu.europa.esig.dss.pdf.AnnotationBox;
 import eu.europa.esig.dss.pdf.pdfbox.visible.nativedrawer.PdfBoxDSSFontMetrics;
 import eu.europa.esig.dss.pdf.visible.SignatureFieldDimensionAndPosition;
 import eu.europa.esig.dss.pdf.visible.SignatureFieldDimensionAndPositionBuilder;
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.io.RandomAccessRead;
+import org.apache.pdfbox.io.RandomAccessReadBuffer;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
@@ -49,8 +52,9 @@ class SignatureFieldDimensionAndPositionBuilderTest {
         DSSDocument document = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
         DSSDocument image = new InMemoryDocument(getClass().getResourceAsStream("/signature-pen.png"));
 
-        try (InputStream is = document.openStream()) {
-            PDDocument pdDocument = PDDocument.load(is);
+        try (InputStream is = document.openStream();
+             RandomAccessRead rar = new RandomAccessReadBuffer(is);
+             PDDocument pdDocument = Loader.loadPDF(rar)) {
 
             SignatureImageParameters params = new SignatureImageParameters();
             // we pass null as the MIME type to make the test results repeatable

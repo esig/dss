@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.ws.server.signing.soap.client;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.ws.dto.DigestDTO;
 import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
@@ -81,29 +80,6 @@ public interface SoapSignatureTokenConnection extends Serializable {
 			@WebParam(name = "alias") String alias);
 
 	/**
-	 * This method signs the {@code toBeSigned} data with the digest
-	 * {@code digestAlgorithm}, the mask {@code mgf} and the given {@code alias}.
-	 * 
-	 * @param toBeSigned
-	 *                        The data that need to be signed
-	 * @param digestAlgorithm
-	 *                        The digest algorithm to be used before signing
-	 * @param mgf
-	 *                        the mask generation function
-	 * @param alias
-	 *                        The key alias to be used
-	 * @return The array of bytes representing the signature value
-	 * @deprecated since DSS 6.1. Please use {@code #sign(toBeSigned, signatureAlgorithm, alias)} method instead.
-	 *             Specify the use of mask generation function with a signature parameter,
-	 *             using RSA for none MGF or RSASSA-PSS for MGF1.
-	 */
-	@WebMethod(operationName = "signWithMask")
-	@WebResult(name = "response")
-	@Deprecated
-	SignatureValueDTO sign(@WebParam(name = "toBeSigned") ToBeSignedDTO toBeSigned, @WebParam(name = "digestAlgorithm") DigestAlgorithm digestAlgorithm,
-			@WebParam(name = "maskGenerationFunction") MaskGenerationFunction mgf, @WebParam(name = "alias") String alias);
-
-	/**
 	 * This method signs the {@code toBeSigned} data with the
 	 * {@code signatureAlgorithm} and the given {@code alias}.
 	 *
@@ -135,29 +111,6 @@ public interface SoapSignatureTokenConnection extends Serializable {
 	@WebMethod(operationName = "signDigest")
 	@WebResult(name = "response")
 	SignatureValueDTO signDigest(@WebParam(name = "digest") DigestDTO digest, @WebParam(name = "alias") String alias);
-
-	/**
-	 * 
-	 * This method signs the {@code digest} data with a mask {@code mgf} and the
-	 * given {@code alias}.
-	 * 
-	 * @param digest
-	 *               The digested data that need to be signed
-	 * @param mgf
-	 *               the mask generation function
-	 * @param alias
-	 *               The key alias to be used
-	 * @return the signature value representation with the used algorithm and the
-	 *         binary value
-	 * @deprecated since DSS 6.1. Please use {@code #signDigest(digest, signatureAlgorithm, alias)} method instead.
-	 *             Specify the use of mask generation function with a signature parameter,
-	 *             using RSA for none MGF or RSASSA-PSS for MGF1.
-	 */
-	@WebMethod(operationName = "signDigestWithMask")
-	@WebResult(name = "response")
-	@Deprecated
-	SignatureValueDTO signDigest(@WebParam(name = "digest") DigestDTO digest, @WebParam(name = "maskGenerationFunction") MaskGenerationFunction mgf,
-			@WebParam(name = "alias") String alias);
 
 	/**
 	 *

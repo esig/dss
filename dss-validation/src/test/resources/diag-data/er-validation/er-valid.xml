@@ -7,6 +7,7 @@
         <EvidenceRecord Id="ER-8173DCEF535A3282C0D0C62EE21F02EA55710747D9933501BEF7CB5B2276E22F">
             <DocumentName>er-data-group.xml</DocumentName>
             <Type>XML Evidence Record</Type>
+            <Origin>EXTERNAL</Origin>
             <StructuralValidation valid="true"/>
             <DigestMatchers>
                 <DigestMatcher type="EVIDENCE_RECORD_ARCHIVE_OBJECT" documentName="HELLO">
@@ -82,6 +83,7 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-665D00D2F75F7BA0CE773EADE0E7DFC58A6C5EDC662ED80D83E3899028C7610E</EntityKey>
+            <IssuerEntityKey key="true" subjectName="true">EK-ABCDE1234567890ABCDE1234567890ABCDE1234567890ABCDE1234567890ABCD</IssuerEntityKey>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -126,6 +128,7 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-BEF4DFD01F4319915780D0B49CF5827093D5131436E83A4AF048C9CEBD6C46D9</EntityKey>
+            <IssuerEntityKey key="true" subjectName="true">EK-ABCDE1234567890ABCDE1234567890ABCDE1234567890ABCDE1234567890ABCD</IssuerEntityKey>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -188,6 +191,7 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-BEF4DFD01F4319915780D0B49CF5827093D5131436E83A4AF048C9CEBD6C46D9</EntityKey>
+            <IssuerEntityKey key="true" subjectName="true">EK-ABCDE1234567890ABCDE1234567890ABCDE1234567890ABCDE1234567890ABCD</IssuerEntityKey>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>

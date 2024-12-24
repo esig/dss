@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -31,37 +31,33 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pades.validation.PAdESSignature;
 import eu.europa.esig.dss.pades.validation.PDFDocumentAnalyzer;
+import eu.europa.esig.dss.pades.validation.PdfObjectKey;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
-import eu.europa.esig.dss.spi.signature.AdvancedSignature;
-import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class BuildKnownObjectsTest extends PKIFactoryAccess {
 
-	/**
+	/*
 	 * Duplicate streams
-	 * 
 	 * CRLs: 27 = 21
-	 * 
 	 * 28 = 22
-	 * 
 	 * Certificates: 20=26
-	 * 
-	 * @throws IOException
 	 */
 	@Test
-	void buildKnownObjects() throws IOException {
+	void buildKnownObjects() {
 
 		DSSDocument dssDocument = new InMemoryDocument(
 				getClass().getResourceAsStream("/validation/dss-1696/Test.signed_Certipost-2048-SHA512.extended.pdf"));
@@ -112,17 +108,22 @@ public class BuildKnownObjectsTest extends PKIFactoryAccess {
 		PAdESSignature pades = (PAdESSignature) signatures.get(0);
 
 		dssDictionary = pades.getDssDictionary();
-		Map<Long, CRLBinary> crlMap = dssDictionary.getCRLs();
+		Map<PdfObjectKey, CRLBinary> crlMap = dssDictionary.getCRLs();
 		assertEquals(3, crlMap.size()); // we don't collect newer CRLS
+
 		// original duplicates must be referenced
-		assertNotNull(crlMap.get(21L));
-		assertNotNull(crlMap.get(22L));
-		assertNotNull(crlMap.get(29L));
+		assertContainsObjectWithKey(crlMap.keySet(), 21);
+		assertContainsObjectWithKey(crlMap.keySet(), 22);
+		assertContainsObjectWithKey(crlMap.keySet(), 29);
 
-		Map<Long, CertificateToken> certMap = dssDictionary.getCERTs();
-		assertNotNull(certMap.get(20L));
-		assertNotNull(certMap.get(30L));
+		Map<PdfObjectKey, CertificateToken> certMap = dssDictionary.getCERTs();
+		assertContainsObjectWithKey(certMap.keySet(), 20);
+		assertContainsObjectWithKey(certMap.keySet(), 30);
 
+	}
+
+	private void assertContainsObjectWithKey(Collection<PdfObjectKey> objectKeys, long objectNumber) {
+		assertTrue(objectKeys.stream().anyMatch(k -> objectNumber == k.getNumber()));
 	}
 
 	@Override

@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -23,6 +23,8 @@ package eu.europa.esig.dss.cades;
 import eu.europa.esig.dss.signature.AbstractSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
 
+import java.util.Objects;
+
 /**
  * Defines SignatureParameters to deal with CAdES signature creation/extension
  */
@@ -30,7 +32,7 @@ public class CAdESSignatureParameters extends AbstractSignatureParameters<CAdEST
 
 	private static final long serialVersionUID = 9035260907528290973L;
 
-	/** Defines if the signature shall be created according ti ETSI EN 319 122 */
+	/** Defines if the signature shall be created according to ETSI EN 319 122 */
 	private boolean en319122 = true;
 
 	/** Content Hints type */
@@ -44,6 +46,9 @@ public class CAdESSignatureParameters extends AbstractSignatureParameters<CAdEST
 
 	/** Content identifier suffix */
 	private String contentIdentifierSuffix;
+
+	/** Defines if a parallel signature should be created when a CMS signature is provided as a signed document */
+	private boolean parallelSignature = true;
 
 	/**
 	 * Default constructor instantiating object with null values
@@ -173,6 +178,33 @@ public class CAdESSignatureParameters extends AbstractSignatureParameters<CAdEST
 		this.contentIdentifierPrefix = contentIdentifierPrefix;
 	}
 
+	/**
+	 * Returns whether a parallel signature should be created when an original document is
+	 * represented by a CMSSignedData (i.e. another CMS signature document)
+	 *
+	 * @return whether a parallel signing is expected
+	 */
+	public boolean isParallelSignature() {
+		return parallelSignature;
+	}
+
+	/**
+	 * Sets whether a parallel signature should be created in case the provided documentToSign is represented
+	 * by a CMSSignedData (i.e. another CMS signature document).
+	 * When enabled, the created produced document will be build based on the original CMSSignedData content,
+	 * and the new signature will be included inside the CMSSignedData as a parallel signature, next to existing signatures.
+	 * When disabled, the new signature will cover the binaries of the original CMSSignedData,
+	 * as in case of a not-signed original document. This allows creation of nested CMS signatures.
+	 * When a non CMSSignedData document is provided, the parameter does not impact the processing.
+	 * Default : TRUE (creates a parallel signature, when applicable)
+	 *
+	 * @param parallelSignature whether a parallel signature should be created in case the provided documentToSign
+	 *                          is represented by a CMSSignedData
+	 */
+	public void setParallelSignature(boolean parallelSignature) {
+		this.parallelSignature = parallelSignature;
+	}
+
 	@Override
 	public CAdESTimestampParameters getContentTimestampParameters() {
 		if (contentTimestampParameters == null) {
@@ -195,6 +227,45 @@ public class CAdESSignatureParameters extends AbstractSignatureParameters<CAdEST
 			archiveTimestampParameters = new CAdESTimestampParameters();
 		}
 		return archiveTimestampParameters;
+	}
+
+	@Override
+	public String toString() {
+		return "CAdESSignatureParameters [" +
+				"en319122=" + en319122 +
+				", contentHintsType='" + contentHintsType + '\'' +
+				", contentHintsDescription='" + contentHintsDescription + '\'' +
+				", contentIdentifierPrefix='" + contentIdentifierPrefix + '\'' +
+				", contentIdentifierSuffix='" + contentIdentifierSuffix + '\'' +
+				", parallelSignature=" + parallelSignature +
+				"] " + super.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+
+		CAdESSignatureParameters that = (CAdESSignatureParameters) o;
+		return en319122 == that.en319122
+				&& parallelSignature == that.parallelSignature
+				&& Objects.equals(contentHintsType, that.contentHintsType)
+				&& Objects.equals(contentHintsDescription, that.contentHintsDescription)
+				&& Objects.equals(contentIdentifierPrefix, that.contentIdentifierPrefix)
+				&& Objects.equals(contentIdentifierSuffix, that.contentIdentifierSuffix);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + Boolean.hashCode(en319122);
+		result = 31 * result + Objects.hashCode(contentHintsType);
+		result = 31 * result + Objects.hashCode(contentHintsDescription);
+		result = 31 * result + Objects.hashCode(contentIdentifierPrefix);
+		result = 31 * result + Objects.hashCode(contentIdentifierSuffix);
+		result = 31 * result + Boolean.hashCode(parallelSignature);
+		return result;
 	}
 
 }

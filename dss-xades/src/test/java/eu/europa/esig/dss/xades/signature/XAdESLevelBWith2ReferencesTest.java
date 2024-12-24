@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -49,11 +49,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class XAdESLevelBWith2ReferencesTest extends PKIFactoryAccess {
 
-	private static String FILE1 = "src/test/resources/sample.xml";
-	private static String FILE2 = "src/test/resources/sampleISO.xml";
+	private static final String FILE1 = "src/test/resources/sample.xml";
+	private static final String FILE2 = "src/test/resources/sampleISO.xml";
 
 	@Test
-	void test1() throws Exception {
+	void test1() {
 		List<DSSReference> refs = new ArrayList<>();
 		DSSDocument doc1 = new FileDocument(FILE1);
 		DSSDocument doc2 = new FileDocument(FILE2);
@@ -107,13 +107,13 @@ class XAdESLevelBWith2ReferencesTest extends PKIFactoryAccess {
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertEquals(2, Utils.collectionSize(signatureWrapper.getSignatureScopes()));
 
-		List<String> signatureCertificateChain = diagnosticData.getSignatureCertificateChain(diagnosticData.getFirstSignatureId());
+		List<String> signatureCertificateChain = diagnosticData.getSignatureCertificateChainIds(diagnosticData.getFirstSignatureId());
 		assertEquals(getCertificateChain().length, signatureCertificateChain.size());
 		assertEquals(signatureParameters.getSignatureLevel(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
 	}
 
 	@Test
-	void multiDocsEnveloping() throws Exception {
+	void multiDocsEnveloping() {
 		List<DSSDocument> docs = new ArrayList<>();
 		docs.add(new FileDocument(FILE1));
 		docs.add(new FileDocument(FILE2));
@@ -142,13 +142,13 @@ class XAdESLevelBWith2ReferencesTest extends PKIFactoryAccess {
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertEquals(2, Utils.collectionSize(signatureWrapper.getSignatureScopes()));
 
-		List<String> signatureCertificateChain = diagnosticData.getSignatureCertificateChain(diagnosticData.getFirstSignatureId());
+		List<String> signatureCertificateChain = diagnosticData.getSignatureCertificateChainIds(diagnosticData.getFirstSignatureId());
 		assertEquals(getCertificateChain().length, signatureCertificateChain.size());
 		assertEquals(signatureParameters.getSignatureLevel(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
 	}
 
 	@Test
-	void multiDocsDetached() throws Exception {
+	void multiDocsDetached() {
 		List<DSSDocument> docs = new ArrayList<>();
 		docs.add(new FileDocument(FILE1));
 		docs.add(new FileDocument(FILE2));
@@ -178,13 +178,13 @@ class XAdESLevelBWith2ReferencesTest extends PKIFactoryAccess {
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertEquals(2, Utils.collectionSize(signatureWrapper.getSignatureScopes()));
 
-		List<String> signatureCertificateChain = diagnosticData.getSignatureCertificateChain(diagnosticData.getFirstSignatureId());
+		List<String> signatureCertificateChain = diagnosticData.getSignatureCertificateChainIds(diagnosticData.getFirstSignatureId());
 		assertEquals(getCertificateChain().length, signatureCertificateChain.size());
 		assertEquals(signatureParameters.getSignatureLevel(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
 	}
 
 	@Test
-	void test2() throws Exception {
+	void test2() {
 		DSSDocument doc1 = new FileDocument(FILE1);
 
 		XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
@@ -212,7 +212,7 @@ class XAdESLevelBWith2ReferencesTest extends PKIFactoryAccess {
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 		assertEquals(1, Utils.collectionSize(signatureWrapper.getSignatureScopes()));
 
-		List<String> signatureCertificateChain = diagnosticData.getSignatureCertificateChain(diagnosticData.getFirstSignatureId());
+		List<String> signatureCertificateChain = diagnosticData.getSignatureCertificateChainIds(diagnosticData.getFirstSignatureId());
 		assertEquals(getCertificateChain().length, signatureCertificateChain.size());
 		assertEquals(signatureParameters.getSignatureLevel(), diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
 	}

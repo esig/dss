@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -39,7 +39,6 @@ import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.CertificateStatus;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -231,24 +230,6 @@ public class DiagnosticData {
 	}
 
 	/**
-	 * This method returns the {@code MaskGenerationFunction} for the given signature.
-	 *
-	 * @param signatureId
-	 *            The identifier of the signature, for which the algorithm is sought.
-	 * @return The {@code MaskGenerationFunction} for the given signature
-	 * @deprecated since DSS 6.1. Please use {@code #getSignatureEncryptionAlgorithm} method to determine
-	 *             the mask generation function (i.e. RSA for none MGF, RSASSA-PSS for MGF1)
-	 */
-	@Deprecated
-	public MaskGenerationFunction getSignatureMaskGenerationFunction(String signatureId) {
-		EncryptionAlgorithm encryptionAlgorithm = getSignatureEncryptionAlgorithm(signatureId);
-		if (EncryptionAlgorithm.RSASSA_PSS == encryptionAlgorithm) {
-			return MaskGenerationFunction.MGF1;
-		}
-		return null;
-	}
-
-	/**
 	 * This method returns signing certificate dss id for the given signature.
 	 *
 	 * @param signatureId
@@ -281,8 +262,27 @@ public class DiagnosticData {
 	 * @param signatureId
 	 *            The identifier of the signature.
 	 * @return list of certificate's dss id for the given signature.
+	 * @deprecated since DSS 6.2. Please use {@code #getSignatureCertificateChainIds} method instead.
 	 */
+	@Deprecated
 	public List<String> getSignatureCertificateChain(final String signatureId) {
+	 	// TODO : return value is to be replaced with a List<CertificateWrapper>
+		SignatureWrapper signature = getSignatureByIdNullSafe(signatureId);
+		List<String> result = new ArrayList<>();
+		for (CertificateWrapper certWrapper : signature.getCertificateChain()) {
+			result.add(certWrapper.getId());
+		}
+		return result;
+	}
+
+	/**
+	 * This method returns the list of certificate identifiers in the chain of the main signature.
+	 *
+	 * @param signatureId
+	 *            The identifier of the signature.
+	 * @return list of certificate's dss id for the given signature.
+	 */
+	public List<String> getSignatureCertificateChainIds(final String signatureId) {
 		SignatureWrapper signature = getSignatureByIdNullSafe(signatureId);
 		List<String> result = new ArrayList<>();
 		for (CertificateWrapper certWrapper : signature.getCertificateChain()) {

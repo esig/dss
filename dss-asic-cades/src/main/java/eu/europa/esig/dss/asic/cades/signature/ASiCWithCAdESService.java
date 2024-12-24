@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -124,8 +124,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 				.build(asicContent, parameters);
 		assertSignaturePossible(asicContent.getTimestampDocuments(), parameters.aSiC());
 
-		CAdESSignatureParameters cadesParameters = getCAdESParameters(parameters);
-		cadesParameters.getContext().setDetachedContents(dataToSignHelper.getDetachedContents());
+		CAdESSignatureParameters cadesParameters = getCAdESParameters(parameters, dataToSignHelper);
 
 		DSSDocument toBeSigned = dataToSignHelper.getToBeSigned();
 		return getCAdESService().getDataToSign(toBeSigned, cadesParameters);
@@ -147,8 +146,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		ASiCParameters asicParameters = parameters.aSiC();
 		assertSignaturePossible(asicContent.getTimestampDocuments(), asicParameters);
 
-		CAdESSignatureParameters cadesParameters = getCAdESParameters(parameters);
-		cadesParameters.getContext().setDetachedContents(dataToSignHelper.getDetachedContents());
+		CAdESSignatureParameters cadesParameters = getCAdESParameters(parameters, dataToSignHelper);
 
 		// Archive Timestamp in case of ASiC-E is not embedded into the CAdES signature
 		boolean addASiCArchiveManifest = isAddASiCEArchiveManifest(parameters.getSignatureLevel(), parameters.aSiC().getContainerType());
@@ -317,6 +315,22 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		parameters.setSignaturePackaging(SignaturePackaging.DETACHED);
 		parameters.getContext().setDetachedContents(null);
 		return parameters;
+	}
+
+	/**
+	 * Returns {@code CAdESSignatureParameters} from the given {@code ASiCWithCAdESSignatureParameters} and {@code GetDataToSignASiCWithCAdESHelper}
+	 *
+	 * @param parameters {@link ASiCWithCAdESSignatureParameters}
+	 * @param dataToSignHelper {@link GetDataToSignASiCWithCAdESHelper}
+	 * @return {@link CAdESSignatureParameters}
+	 */
+	protected CAdESSignatureParameters getCAdESParameters(ASiCWithCAdESSignatureParameters parameters,
+														  GetDataToSignASiCWithCAdESHelper dataToSignHelper) {
+		CAdESSignatureParameters cadesParameters = getCAdESParameters(parameters);
+		cadesParameters.getContext().setDetachedContents(dataToSignHelper.getDetachedContents());
+		// no detached content is used in case of file signing
+		cadesParameters.setParallelSignature(Utils.isCollectionNotEmpty(dataToSignHelper.getDetachedContents()));
+		return cadesParameters;
 	}
 
 	private boolean isAddASiCEArchiveManifest(SignatureLevel signatureLevel, ASiCContainerType containerType) {

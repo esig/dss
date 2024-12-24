@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -73,7 +73,8 @@ public class TokenIssuerSelector {
                 }
             }
             if (Utils.isCollectionNotEmpty(candidates)) {
-                LOG.warn("No issuer found for the token creation date. The process continues with an issuer which has the same public key.");
+                LOG.warn("No matching issuer found for the token creation date. " +
+                        "The process continues with an issuer which has the same public key.");
                 return candidates.iterator().next();
             }
         }
@@ -117,10 +118,10 @@ public class TokenIssuerSelector {
                 if (issuerX500PrincipalHelper.equals(candidate.getSubject())) {
                     issuers.add(candidate);
                 } else {
-                    LOG.info("The issuer subject name and subject name does not match (more details in debug mode).");
+                    LOG.warn("The issuer subject name and subject name do not match (more details in debug mode).");
                     if (LOG.isDebugEnabled()) {
-                        LOG.info("CERT ISSUER    : {}", issuerX500PrincipalHelper.getCanonical());
-                        LOG.info("ISSUER SUBJECT : {}", candidate.getSubject().getCanonical());
+                        LOG.info("CERT ISSUER    : {}. Base64 : {}", issuerX500PrincipalHelper.getCanonical(), Utils.toBase64(issuerX500PrincipalHelper.getEncoded()));
+                        LOG.info("ISSUER SUBJECT : {}. Base64 : {}", candidate.getSubject().getCanonical(), Utils.toBase64(candidate.getSubject().getEncoded()));
                     }
                 }
             }

@@ -44,12 +44,12 @@ The simplest way to include DSS to your project is to use https://central.sonaty
     <dependency>
         <groupId>eu.europa.ec.joinup.sd-dss</groupId>
         <artifactId>dss-xades</artifactId>
-        <version>6.1</version>
+        <version>6.2.RC1</version>
     </dependency>
     <dependency>
         <groupId>eu.europa.ec.joinup.sd-dss</groupId>
         <artifactId>dss-validation</artifactId>
-        <version>6.1</version>
+        <version>6.2.RC1</version>
     </dependency>
     ...
 </dependencies>
@@ -94,7 +94,7 @@ The root `pom.xml` of `dss-bom` defines versions of all modules within DSS-libra
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
             <artifactId>dss-bom</artifactId>
-            <version>6.1</version>
+            <version>6.2.RC1</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
@@ -251,11 +251,11 @@ In order to build a bundle for JDK 17 (minimum requirement), the following profi
 mvn clean install -P java17
 ----
 
-DSS webapp version with Java 22 can be created with a command below:
+DSS webapp version with Java 23 can be created with a command below:
 
-.Maven command to create a JDK 22 bundle
+.Maven command to create a JDK 23 bundle
 ----
-mvn clean install -P java22
+mvn clean install -P java23
 ----
 
 ====== Integration tests

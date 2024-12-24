@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -76,6 +76,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -85,7 +86,7 @@ class CAdESLevelBTest extends AbstractCAdESTestSignature {
 
 	private static final String HELLO_WORLD = "Hello World";
 
-	private static Logger logger = LoggerFactory.getLogger(CAdESLevelBTest.class);
+	private static final Logger logger = LoggerFactory.getLogger(CAdESLevelBTest.class);
 
 	private DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> service;
 	private CAdESSignatureParameters signatureParameters;
@@ -137,7 +138,7 @@ class CAdESLevelBTest extends AbstractCAdESTestSignature {
 			CMSDocumentAnalyzer cmsDocumentAnalyzer = new CMSDocumentAnalyzer(new InMemoryDocument(byteArray));
 			List<AdvancedSignature> signatures = cmsDocumentAnalyzer.getSignatures();
 			assertEquals(1, signatures.size());
-			assertTrue(signatures.get(0) instanceof CAdESSignature);
+            assertInstanceOf(CAdESSignature.class, signatures.get(0));
 			
 			CAdESSignature signature = (CAdESSignature) signatures.get(0);
 			assertNotNull(signature.getCmsSignedData());
@@ -146,65 +147,65 @@ class CAdESLevelBTest extends AbstractCAdESTestSignature {
 			ASN1InputStream asn1sInput = new ASN1InputStream(byteArray);
 			ASN1Sequence asn1Seq = (ASN1Sequence) asn1sInput.readObject();
 
-			logger.info("SEQ : " + asn1Seq.toString());
+			logger.info(String.format("SEQ : %s", asn1Seq.toString()));
 
 			assertEquals(2, asn1Seq.size());
 
 			ASN1ObjectIdentifier oid = ASN1ObjectIdentifier.getInstance(asn1Seq.getObjectAt(0));
 			assertEquals(PKCSObjectIdentifiers.signedData, oid);
-			logger.info("OID : " + oid.toString());
+			logger.info(String.format("OID : %s", oid.toString()));
 
 			ASN1TaggedObject taggedObj = ASN1TaggedObject.getInstance(asn1Seq.getObjectAt(1));
 
-			logger.info("TAGGED OBJ : " + taggedObj.toString());
+			logger.info(String.format("TAGGED OBJ : %s", taggedObj.toString()));
 
 			ASN1Object object = taggedObj.getBaseObject();
-			logger.info("OBJ : " + object.toString());
+			logger.info(String.format("OBJ : %s", object.toString()));
 
 			SignedData signedData = SignedData.getInstance(object);
-			logger.info("SIGNED DATA : " + signedData.toString());
+			logger.info(String.format("SIGNED DATA : %s", signedData));
 
 			ASN1Set digestAlgorithms = signedData.getDigestAlgorithms();
-			logger.info("DIGEST ALGOS : " + digestAlgorithms.toString());
+			logger.info(String.format("DIGEST ALGOS : %s", digestAlgorithms.toString()));
 
 			ContentInfo encapContentInfo = signedData.getEncapContentInfo();
-			logger.info("ENCAPSULATED CONTENT INFO : " + encapContentInfo.getContentType() + " " + encapContentInfo.getContent());
+			logger.info(String.format("ENCAPSULATED CONTENT INFO : %s %s", encapContentInfo.getContentType(), encapContentInfo.getContent()));
 
 			ASN1Set certificates = signedData.getCertificates();
-			logger.info("CERTIFICATES (" + certificates.size() + ") : " + certificates);
+			logger.info(String.format("CERTIFICATES (%s) : %s", certificates.size(), certificates));
 
 			List<X509Certificate> foundCertificates = new ArrayList<>();
 			for (int i = 0; i < certificates.size(); i++) {
 				ASN1Sequence seqCertif = ASN1Sequence.getInstance(certificates.getObjectAt(i));
-				logger.info("SEQ cert " + i + " : " + seqCertif);
+				logger.info(String.format("SEQ cert %s : %s", i, seqCertif));
 
 				X509CertificateHolder certificateHolder = new X509CertificateHolder(seqCertif.getEncoded());
 				CertificateToken certificate = DSSASN1Utils.getCertificate(certificateHolder);
 				X509Certificate x509Certificate = certificate.getCertificate();
 				x509Certificate.checkValidity();
 
-				logger.info("Cert " + i + " : " + certificate);
+				logger.info(String.format("Cert %s : %s", i, certificate));
 
 				foundCertificates.add(x509Certificate);
 			}
 
 			ASN1Set crLs = signedData.getCRLs();
-			logger.info("CRLs : " + crLs);
+			logger.info(String.format("CRLs : %s", crLs));
 
 			ASN1Set signerInfosAsn1 = signedData.getSignerInfos();
-			logger.info("SIGNER INFO ASN1 : " + signerInfosAsn1.toString());
+			logger.info(String.format("SIGNER INFO ASN1 : %s", signerInfosAsn1.toString()));
 			assertEquals(1, signerInfosAsn1.size());
 
 			ASN1Sequence seqSignedInfo = ASN1Sequence.getInstance(signerInfosAsn1.getObjectAt(0));
 
 			SignerInfo signedInfo = SignerInfo.getInstance(seqSignedInfo);
-			logger.info("SIGNER INFO : " + signedInfo.toString());
+			logger.info(String.format("SIGNER INFO : %s", signedInfo.toString()));
 
 			SignerIdentifier sid = signedInfo.getSID();
-			logger.info("SIGNER IDENTIFIER : " + sid.getId());
+			logger.info(String.format("SIGNER IDENTIFIER : %s", sid.getId()));
 
 			IssuerAndSerialNumber issuerAndSerialNumber = IssuerAndSerialNumber.getInstance(signedInfo.getSID());
-			logger.info("ISSUER AND SN : " + issuerAndSerialNumber.toString());
+			logger.info(String.format("ISSUER AND SN : %s", issuerAndSerialNumber.toString()));
 
 			BigInteger serial = issuerAndSerialNumber.getSerialNumber().getValue();
 
@@ -218,15 +219,15 @@ class CAdESLevelBTest extends AbstractCAdESTestSignature {
 			assertNotNull(signerCertificate);
 
 			ASN1OctetString encryptedDigest = signedInfo.getEncryptedDigest();
-			logger.info("ENCRYPT DIGEST : " + encryptedDigest.toString());
+			logger.info(String.format("ENCRYPT DIGEST : %s", encryptedDigest.toString()));
 
 			ASN1Sequence seq = ASN1Sequence.getInstance(object);
 
 			ASN1Integer version = ASN1Integer.getInstance(seq.getObjectAt(0));
-			logger.info("VERSION : " + version.toString());
+			logger.info(String.format("VERSION : %s", version.toString()));
 
 			ASN1Set digestManualSet = ASN1Set.getInstance(seq.getObjectAt(1));
-			logger.info("DIGEST SET : " + digestManualSet.toString());
+			logger.info(String.format("DIGEST SET : %s", digestManualSet.toString()));
 			assertEquals(digestAlgorithms, digestManualSet);
 
 			ASN1Sequence seqDigest = ASN1Sequence.getInstance(digestManualSet.getObjectAt(0));
@@ -236,28 +237,28 @@ class CAdESLevelBTest extends AbstractCAdESTestSignature {
 			assertEquals(new ASN1ObjectIdentifier(DigestAlgorithm.SHA512.getOid()), oidDigestAlgo);
 
 			ASN1Sequence seqEncapsulatedInfo = ASN1Sequence.getInstance(seq.getObjectAt(2));
-			logger.info("ENCAPSULATED INFO : " + seqEncapsulatedInfo.toString());
+			logger.info(String.format("ENCAPSULATED INFO : %s", seqEncapsulatedInfo.toString()));
 
 			ASN1ObjectIdentifier oidContentType = ASN1ObjectIdentifier.getInstance(seqEncapsulatedInfo.getObjectAt(0));
-			logger.info("OID CONTENT TYPE : " + oidContentType.toString());
+			logger.info(String.format("OID CONTENT TYPE : %s", oidContentType.toString()));
 
 			ASN1TaggedObject taggedContent = ASN1TaggedObject.getInstance(seqEncapsulatedInfo.getObjectAt(1));
 
 			ASN1OctetString contentOctetString = ASN1OctetString.getInstance(taggedContent.getBaseObject());
 			String content = new String(contentOctetString.getOctets());
 			assertEquals(HELLO_WORLD, content);
-			logger.info("CONTENT : " + content);
+			logger.info(String.format("CONTENT : %s", content));
 
 			byte[] digest = DSSUtils.digest(DigestAlgorithm.SHA512, HELLO_WORLD.getBytes());
 			String encodeHexDigest = Hex.toHexString(digest);
-			logger.info("CONTENT DIGEST COMPUTED : " + encodeHexDigest);
+			logger.info(String.format("CONTENT DIGEST COMPUTED : %s", encodeHexDigest));
 
 			ASN1Set authenticatedAttributes = signedInfo.getAuthenticatedAttributes();
-			logger.info("AUTHENTICATED ATTRIBUTES : " + authenticatedAttributes.toString());
+			logger.info(String.format("AUTHENTICATED ATTRIBUTES : %s", authenticatedAttributes.toString()));
 
 			// ASN1Sequence seqAuthAttrib = ASN1Sequence.getInstance(authenticatedAttributes.getObjectAt(0));
 
-			logger.info("Nb Auth Attributes : " + authenticatedAttributes.size());
+			logger.info(String.format("Nb Auth Attributes : %s", authenticatedAttributes.size()));
 
 			String embeddedDigest = "";
 			for (int i = 0; i < authenticatedAttributes.size(); i++) {
@@ -275,7 +276,7 @@ class CAdESLevelBTest extends AbstractCAdESTestSignature {
 			ASN1OctetString encryptedInfoOctetString = signedInfo.getEncryptedDigest();
 			String signatureValue = Hex.toHexString(encryptedInfoOctetString.getOctets());
 
-			logger.info("SIGNATURE VALUE : " + signatureValue);
+			logger.info(String.format("SIGNATURE VALUE : %s", signatureValue));
 
 			Cipher cipher = Cipher.getInstance("RSA", "SunJCE");
 			cipher.init(Cipher.DECRYPT_MODE, signerCertificate);
@@ -284,20 +285,20 @@ class CAdESLevelBTest extends AbstractCAdESTestSignature {
 			ASN1InputStream inputDecrypted = new ASN1InputStream(decrypted);
 
 			ASN1Sequence seqDecrypt = (ASN1Sequence) inputDecrypted.readObject();
-			logger.info("Decrypted : " + seqDecrypt);
+			logger.info(String.format("Decrypted : %s", seqDecrypt));
 
 			DigestInfo digestInfo = new DigestInfo(seqDecrypt);
 			assertEquals(oidDigestAlgo, digestInfo.getAlgorithmId().getAlgorithm());
 
 			String decryptedDigestEncodeBase64 = Utils.toBase64(digestInfo.getDigest());
-			logger.info("Decrypted Base64 : " + decryptedDigestEncodeBase64);
+			logger.info(String.format("Decrypted Base64 : %s", decryptedDigestEncodeBase64));
 
 			byte[] encoded = signedInfo.getAuthenticatedAttributes().getEncoded();
 			MessageDigest messageDigest = MessageDigest.getInstance(DigestAlgorithm.SHA512.getName());
 			byte[] digestOfAuthenticatedAttributes = messageDigest.digest(encoded);
 
 			String computedDigestEncodeBase64 = Utils.toBase64(digestOfAuthenticatedAttributes);
-			logger.info("Computed Base64 : " + computedDigestEncodeBase64);
+			logger.info(String.format("Computed Base64 : %s", computedDigestEncodeBase64));
 
 			assertEquals(decryptedDigestEncodeBase64, computedDigestEncodeBase64);
 

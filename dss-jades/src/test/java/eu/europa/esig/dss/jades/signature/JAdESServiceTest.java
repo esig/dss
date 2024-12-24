@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -177,54 +177,54 @@ class JAdESServiceTest extends PKIFactoryAccess {
         JAdESSignatureParameters signatureParameters = new JAdESSignatureParameters();
 
         Exception exception = assertThrows(NullPointerException.class,
-                () -> sign((List<DSSDocument>) null, signatureParameters));
+                () -> signAndValidate((List<DSSDocument>) null, signatureParameters));
         assertEquals("toSignDocuments cannot be null!", exception.getMessage());
 
-        exception = assertThrows(NullPointerException.class, () -> sign(documentToSign, null));
+        final List<DSSDocument> documents = Arrays.asList(documentToSign1, documentToSign2);
+        exception = assertThrows(NullPointerException.class, () -> signAndValidate(documents, null));
         assertEquals("SignatureParameters cannot be null!", exception.getMessage());
 
-        final List<DSSDocument> documents = Arrays.asList(documentToSign1, documentToSign2);
-        exception = assertThrows(NullPointerException.class, () -> sign(documents, signatureParameters));
+        exception = assertThrows(NullPointerException.class, () -> signAndValidate(documents, signatureParameters));
         assertEquals("SignaturePackaging shall be defined!", exception.getMessage());
 
         signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-        exception = assertThrows(IllegalArgumentException.class, () -> sign(documents, signatureParameters));
+        exception = assertThrows(IllegalArgumentException.class, () -> signAndValidate(documents, signatureParameters));
         assertEquals("Not supported operation (only DETACHED are allowed for multiple document signing)!", exception.getMessage());
 
         signatureParameters.setSignaturePackaging(SignaturePackaging.DETACHED);
-        exception = assertThrows(IllegalArgumentException.class, () -> sign(documentToSign, signatureParameters));
+        exception = assertThrows(IllegalArgumentException.class, () -> signAndValidate(documents, signatureParameters));
         assertEquals("Signing Certificate is not defined! Set signing certificate or use method setGenerateTBSWithoutCertificate(true).", exception.getMessage());
 
         signatureParameters.setSigningCertificate(getSigningCert());
-        exception = assertThrows(NullPointerException.class, () -> sign(documents, signatureParameters));
+        exception = assertThrows(NullPointerException.class, () -> signAndValidate(documents, signatureParameters));
         assertEquals("SignatureLevel shall be defined!", exception.getMessage());
 
         signatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_B);
-        exception = assertThrows(IllegalArgumentException.class, () -> sign(documents, signatureParameters));
+        exception = assertThrows(IllegalArgumentException.class, () -> signAndValidate(documents, signatureParameters));
         assertEquals("The SigDMechanism is not defined for a detached signature! " +
                 "Please use JAdESSignatureParameters.setSigDMechanism(sigDMechanism) method.", exception.getMessage());
 
         signatureParameters.setSigDMechanism(SigDMechanism.OBJECT_ID_BY_URI);
-        exception = assertThrows(IllegalArgumentException.class, () -> sign(documents, signatureParameters));
+        exception = assertThrows(IllegalArgumentException.class, () -> signAndValidate(documents, signatureParameters));
         assertEquals("The signed document must have names for a detached JAdES signature!", exception.getMessage());
 
         documentToSign1.setName("doc");
         documentToSign2.setName("doc");
         final List<DSSDocument> docsWithName = Arrays.asList(documentToSign1, documentToSign2);
-        exception = assertThrows(IllegalArgumentException.class, () -> sign(docsWithName, signatureParameters));
+        exception = assertThrows(IllegalArgumentException.class, () -> signAndValidate(docsWithName, signatureParameters));
         assertEquals("The documents to be signed shall have different names! The name 'doc' appears multiple times.", exception.getMessage());
 
         documentToSign2.setName("anotherDoc");
         signatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_B);
 
-        DSSDocument signedDocument = sign(documentToSign, signatureParameters);
+        DSSDocument signedDocument = signAndValidate(documents, signatureParameters);
         assertNotNull(signedDocument);
     }
 
     private DSSDocument signAndValidate(List<DSSDocument> documentsToSign, JAdESSignatureParameters signatureParameters) {
         DSSDocument signedDocument = sign(documentsToSign, signatureParameters);
         assertNotNull(signedDocument);
-        validate(signedDocument);
+        validate(signedDocument, documentsToSign);
         return signedDocument;
     }
 
@@ -349,8 +349,14 @@ class JAdESServiceTest extends PKIFactoryAccess {
     }
 
     private void validate(DSSDocument documentToValidate) {
+        validate(documentToValidate, Collections.emptyList());
+    }
+
+    private void validate(DSSDocument documentToValidate, List<DSSDocument> detachedDocuments) {
         SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(documentToValidate);
         validator.setCertificateVerifier(getCompleteCertificateVerifier());
+        validator.setDetachedContents(detachedDocuments);
+
         Reports reports = validator.validateDocument();
         SimpleReport simpleReport = reports.getSimpleReport();
         assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));

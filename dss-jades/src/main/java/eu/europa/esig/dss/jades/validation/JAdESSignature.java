@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -24,7 +24,6 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.EndorsementType;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SigDMechanism;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
@@ -151,16 +150,6 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 			return null;
 		}
 		return signatureAlgorithm.getDigestAlgorithm();
-	}
-
-	@Override
-	@Deprecated
-	public MaskGenerationFunction getMaskGenerationFunction() {
-		EncryptionAlgorithm encryptionAlgorithm = getEncryptionAlgorithm();
-		if (EncryptionAlgorithm.RSASSA_PSS == encryptionAlgorithm) {
-			return MaskGenerationFunction.MGF1;
-		}
-		return null;
 	}
 
 	@Override
@@ -459,7 +448,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 				if (JAdESHeaderParameterNames.C_SIG.equals(etsiUComponent.getHeaderName())) {
 					JAdESSignature counterSignature = DSSJsonUtils.extractJAdESCounterSignature(etsiUComponent, this);
 					if (counterSignature != null) {
-						counterSignature.setSignatureFilename(getSignatureFilename());
+						counterSignature.setFilename(getFilename());
 						counterSignatures.add(counterSignature);
 					}
 				}

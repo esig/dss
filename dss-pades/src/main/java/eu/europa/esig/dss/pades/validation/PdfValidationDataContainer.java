@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -46,7 +46,7 @@ public class PdfValidationDataContainer extends ValidationDataContainer {
     private final Collection<PdfDocDssRevision> pdfDssRevisions;
 
     /** Cached map of known object references from a PDF */
-    private Map<String, Long> knownObjects;
+    private Map<String, PdfObjectKey> knownObjects;
 
     /**
      * Default constructor
@@ -63,15 +63,15 @@ public class PdfValidationDataContainer extends ValidationDataContainer {
      *
      * @return a map of token ids and their corresponding PDF references
      */
-    public Map<String, Long> getKnownObjectsMap() {
+    public Map<String, PdfObjectKey> getKnownObjectsMap() {
         if (knownObjects == null) {
             knownObjects = new HashMap<>();
 
             if (Utils.isCollectionNotEmpty(pdfDssRevisions)) {
                 for (PdfDocDssRevision dssRevision : pdfDssRevisions) {
                     PdfDssDictCertificateSource certificateSource = dssRevision.getCertificateSource();
-                    Map<Long, CertificateToken> storedCertificates = certificateSource.getCertificateMap();
-                    for (Map.Entry<Long, CertificateToken> certEntry : storedCertificates.entrySet()) {
+                    Map<PdfObjectKey, CertificateToken> storedCertificates = certificateSource.getCertificateMap();
+                    for (Map.Entry<PdfObjectKey, CertificateToken> certEntry : storedCertificates.entrySet()) {
                         String tokenKey = getTokenKey(certEntry.getValue());
                         if (!knownObjects.containsKey(tokenKey)) { // keeps the really first occurrence
                             knownObjects.put(tokenKey, certEntry.getKey());
@@ -79,8 +79,8 @@ public class PdfValidationDataContainer extends ValidationDataContainer {
                     }
 
                     PdfDssDictCRLSource crlSource = dssRevision.getCRLSource();
-                    Map<Long, CRLBinary> storedCrls = crlSource.getCrlMap();
-                    for (Map.Entry<Long, CRLBinary> crlEntry : storedCrls.entrySet()) {
+                    Map<PdfObjectKey, CRLBinary> storedCrls = crlSource.getCrlMap();
+                    for (Map.Entry<PdfObjectKey, CRLBinary> crlEntry : storedCrls.entrySet()) {
                         String tokenKey = crlEntry.getValue().asXmlId();
                         if (!knownObjects.containsKey(tokenKey)) { // keeps the really first occurrence
                             knownObjects.put(tokenKey, crlEntry.getKey());
@@ -88,8 +88,8 @@ public class PdfValidationDataContainer extends ValidationDataContainer {
                     }
 
                     PdfDssDictOCSPSource ocspSource = dssRevision.getOCSPSource();
-                    Map<Long, OCSPResponseBinary> storedOcspResps = ocspSource.getOcspMap();
-                    for (Map.Entry<Long, OCSPResponseBinary> ocspEntry : storedOcspResps.entrySet()) {
+                    Map<PdfObjectKey, OCSPResponseBinary> storedOcspResps = ocspSource.getOcspMap();
+                    for (Map.Entry<PdfObjectKey, OCSPResponseBinary> ocspEntry : storedOcspResps.entrySet()) {
                         OCSPResponseBinary ocspResponseBinary = ocspEntry.getValue();
                         String tokenKey = ocspResponseBinary.getDSSId().asXmlId();
                         if (!knownObjects.containsKey(tokenKey)) { // keeps the really first occurrence
@@ -109,7 +109,7 @@ public class PdfValidationDataContainer extends ValidationDataContainer {
      * @param token {@link Token}
      * @return the token reference identifier when present, null otherwise
      */
-    public Long getTokenReference(Token token) {
+    public PdfObjectKey getTokenReference(Token token) {
         String tokenKey = getTokenKey(token);
         return getKnownObjectsMap().get(tokenKey);
     }

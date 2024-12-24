@@ -71,6 +71,7 @@
         <EvidenceRecord Id="ER-B4E9C5503513D6BA37113BE39BD0CE57A5731D530DE545B92101319CC68E4567">
             <DocumentName>META-INF/evidencerecord.xml</DocumentName>
             <Type>XML Evidence Record</Type>
+            <Origin>CONTAINER</Origin>
             <StructuralValidation valid="true"/>
             <DigestMatchers>
                 <DigestMatcher type="EVIDENCE_RECORD_ARCHIVE_OBJECT" documentName="L_202400212CS.pdf">
@@ -407,6 +408,7 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-56174D3AD971A8944964B189811F3008493A6A90422E3C5804EC838D4F94F622</EntityKey>
+            <IssuerEntityKey key="true" subjectName="true">EK-ABCDE1234567890ABCDE1234567890ABCDE1234567890ABCDE1234567890ABCD</IssuerEntityKey>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>
@@ -460,6 +462,7 @@
             <PublicKeySize>2048</PublicKeySize>
             <PublicKeyEncryptionAlgo>RSA</PublicKeyEncryptionAlgo>
             <EntityKey>PK-7FA286D0E4FF47492EACA15FB74DAB5EA9908C82C0B142BA8986689998EA461F</EntityKey>
+            <IssuerEntityKey key="true" subjectName="true">EK-ABCDE1234567890ABCDE1234567890ABCDE1234567890ABCDE1234567890ABCD</IssuerEntityKey>
             <BasicSignature>
                 <EncryptionAlgoUsedToSignThisToken>RSA</EncryptionAlgoUsedToSignThisToken>
                 <KeyLengthUsedToSignThisToken>2048</KeyLengthUsedToSignThisToken>

@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -28,7 +28,6 @@ import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 
 import java.util.ArrayList;
@@ -122,9 +121,8 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 	public SignatureAlgorithm getSignatureAlgorithm() {
 		EncryptionAlgorithm encryptionAlgorithm = getEncryptionAlgorithm();
 		DigestAlgorithm digestAlgorithm = getDigestAlgorithm();
-		MaskGenerationFunction maskGenerationFunction = getMaskGenerationFunction();
-		if (encryptionAlgorithm != null && digestAlgorithm != null) { // MGF can be null
-			return SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm, maskGenerationFunction);
+		if (encryptionAlgorithm != null && digestAlgorithm != null) {
+			return SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm);
 		}
 		return null;
 	}
@@ -143,19 +141,6 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 		XmlBasicSignature basicSignature = getCurrentBasicSignature();
 		if (basicSignature != null) {
 			return basicSignature.getDigestAlgoUsedToSignThisToken();
-		}
-		return null;
-	}
-
-	@Override
-	@Deprecated
-	public MaskGenerationFunction getMaskGenerationFunction() {
-		XmlBasicSignature basicSignature = getCurrentBasicSignature();
-		if (basicSignature != null) {
-			EncryptionAlgorithm encryptionAlgorithm = basicSignature.getEncryptionAlgoUsedToSignThisToken();
-			if (EncryptionAlgorithm.RSASSA_PSS == encryptionAlgorithm) {
-				return MaskGenerationFunction.MGF1;
-			}
 		}
 		return null;
 	}
@@ -245,9 +230,7 @@ public abstract class AbstractTokenProxy implements TokenProxy {
 	public boolean isTrustedChain() {
 		List<CertificateWrapper> certificateChain = getCertificateChain();
 		for (CertificateWrapper certificate : certificateChain) {
-			List<CertificateSourceType> currentCertSources = certificate.getSources();
-			if (currentCertSources.contains(CertificateSourceType.TRUSTED_STORE) || 
-					currentCertSources.contains(CertificateSourceType.TRUSTED_LIST)) {
+			if (certificate.isTrusted()) {
 				return true;
 			}
 		}

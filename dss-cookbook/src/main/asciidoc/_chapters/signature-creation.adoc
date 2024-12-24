@@ -595,11 +595,17 @@ Unsigned attributes are not obligatory and can be added after the signature crea
                                                                 **#setSignatureTimestampParameters**                    |SignatureTimeStamp                   |signature-time-stamp                     |signature-time-stamp                                       |sigTst
 .2+|LT-Level     .2+|Unsigned attributes                       |_class *AdESSignatureParameters_ +
                                                                 **#setSignatureLevel(*AdES_BASELINE_LT)** +
-                                                                **#setSignatureLevel(XAdES_XL)**                        |CertificateValues +
-                                                                                                                         RevocationValues                     |SignedData.certificates +
+                                                                **#setValidationDataEncapsulationStrategy**             |_(conditional)_ +
+                                                                                                                         CertificateValues +
+                                                                                                                         RevocationValues +
+                                                                                                                         TimeStampValidationData +
+                                                                                                                         AnyValidationData                    |SignedData.certificates +
                                                                                                                                                                SignedData.crls                          |/DSS +
-                                                                                                                                                                                                         /VRI _(conditional)_                                       |xVals +
-                                                                                                                                                                                                                                                                     rVals
+                                                                                                                                                                                                         /VRI _(conditional)_                                       |_(conditional)_ +
+                                                                                                                                                                                                                                                                     xVals +
+                                                                                                                                                                                                                                                                     rVals +
+                                                                                                                                                                                                                                                                     tstVD +
+                                                                                                                                                                                                                                                                     anyValData
                                                                |_class PAdESSignatureParameters_ +
                                                                 **#setIncludeVRIDictionary**                            |/                                    |/                                        |/VRI                                                       |/
 |LTA-Level         |Unsigned attributes                        |_class *AdESSignatureParameters_ +

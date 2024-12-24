@@ -5,6 +5,6 @@ $ curl 'http://localhost:8080/services/rest/server-signing/sign-digest-with-sign
     -H 'Content-Type: application/json' \
     -d '{
   "algorithm" : "SHA256",
-  "value" : "MDEwDQYJYIZIAWUDBAIBBQAEIH+DsWV/8fxTuS3BgUih1l38LUsfo9Z3KErd0gASbZBp"
+  "value" : "f4OxZX/x/FO5LcGBSKHWXfwtSx+j1ncoSt3SABJtkGk="
 }'
 ----

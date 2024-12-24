@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -110,6 +110,12 @@ public enum MessageTag {
 	
 	BBB_FC_ISFP_ASICS,
 	BBB_FC_ISFP_ASICS_ANS,
+
+	BBB_FC_ISFP_ASTFORAMC,
+	BBB_FC_ISFP_ASTFORAMC_ANS,
+
+	BBB_FC_IAHIV,
+	BBB_FC_IAHIV_ANS,
 	
 	/* BBB -> CV */
 	BBB_CV_IRDOF,
@@ -122,6 +128,8 @@ public enum MessageTag {
 	BBB_CV_IMEOF_ANS,
 	BBB_CV_ER_IODOF,
 	BBB_CV_ER_IODOF_ANS,
+	BBB_CV_ER_HASSDOC,
+	BBB_CV_ER_HASSDOC_ANS,
 	BBB_CV_ER_DFHVLCDOG,
 	BBB_CV_ER_DFHVLCDOG_ANS,
 	BBB_CV_ER_ATSRF,
@@ -327,6 +335,8 @@ public enum MessageTag {
 	BBB_SAV_IUQPVDROTSP_ANS,
 	BBB_SAV_IUQPATSP,
 	BBB_SAV_IUQPATSP_ANS,
+	BBB_SAV_ICTVS,
+	BBB_SAV_ICTVS_ANS,
 	BBB_SAV_IDTSP,
 	BBB_SAV_IDTSP_ANS,
 	BBB_SAV_ITVS,
@@ -363,6 +373,7 @@ public enum MessageTag {
 
 	BBB_XCV_SUB,
 	BBB_XCV_SUB_ANS,
+	BBB_XCV_SUB_ANS_2,
 	BBB_XCV_RFC,
 	BBB_XCV_RFC_ANS,
 	BBB_XCV_RAC,
@@ -419,6 +430,10 @@ public enum MessageTag {
 	BBB_XCV_ICPDV_ANS,
 	BBB_XCV_ICPTV,
 	BBB_XCV_ICPTV_ANS,
+	BBB_XCV_ICNRAEV,
+	BBB_XCV_ICNRAEV_ANS,
+	BBB_XCV_IVTBCTSD,
+	BBB_XCV_IVTBCTSD_ANS,
 	BBB_XCV_ICTIVRSC,
 	BBB_XCV_ICTIVRSC_ANS,
 	BBB_XCV_ICTIVRCIRI,
@@ -447,6 +462,10 @@ public enum MessageTag {
 	BBB_XCV_ISCGEKU_ANS_CERT,
 	BBB_XCV_ICSI,
 	BBB_XCV_ICSI_ANS,
+	BBB_XCV_IOTAA,
+	BBB_XCV_IOTAA_ANS,
+	BBB_XCV_HPCCVVT,
+	BBB_XCV_HPCCVVT_ANS,
 	BBB_XCV_PSEUDO_USE,
 	BBB_XCV_PSEUDO_USE_ANS,
 	BBB_XCV_AIA_PRES,
@@ -511,6 +530,8 @@ public enum MessageTag {
 
 	PCV_IVTSC,
 	PCV_IVTSC_ANS,
+	PCV_ICCSVTSF,
+	PCV_ICCSVTSF_ANS,
 
 	PSV_IPCVA,
 	PSV_IPCVA_ANS,
@@ -522,6 +543,7 @@ public enum MessageTag {
 	PSV_IPTVC_ANS,
 	PSV_ITPOCOBCT,
 	PSV_ITPOSVAOBCT,
+	PSV_ITPOSVAOBCT_ANS,
 	PSV_ITPORDAOBCT,
 	PSV_ITPOOBCT_ANS,
 	PSV_ITPRISCNARTCAC,
@@ -530,6 +552,10 @@ public enum MessageTag {
 	PSV_ICRDIT_ANS,
 	PSV_IPCRIAIDBEDC,
 	PSV_IPCRIAIDBEDC_ANS,
+	PSV_ICTD,
+	PSV_ICTD_ANS,
+	PSV_ISDDTA,
+	PSV_ISDDTA_ANS,
 	PSV_HRDBIBCT,
 	PSV_HRDBIBCT_ANS,
 	PSV_DIURDSCHPVR,
@@ -722,11 +748,23 @@ public enum MessageTag {
 
 	CERTIFICATE_REVOCATION_NOT_FOUND,
 
+	CERTIFICATE_SUNSET_DATE,
+
+	CERTIFICATE_SUNSET_DATE_TRUST_ANCHOR,
+
+	CERTIFICATE_SUNSET_DATE_VALID,
+
 	CERTIFICATE_TYPE,
 
 	CERTIFICATE_VALIDITY,
 
 	CONTROL_TIME,
+
+	CONTROL_TIME_ALONE,
+
+	CONTROL_TIME_WITH_POE,
+
+	CONTROL_TIME_WITH_TRUST_ANCHOR,
 	
 	CRYPTOGRAPHIC_CHECK_FAILURE,
 
@@ -831,6 +869,8 @@ public enum MessageTag {
 	TRUSTED_SERVICE_TYPE,
 
 	TRUSTED_LIST,
+
+	VALIDATION_TIME,
 	
 	/* BasicBuildingBlocks titles */
 

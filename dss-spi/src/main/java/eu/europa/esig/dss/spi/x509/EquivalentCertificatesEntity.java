@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -32,16 +32,15 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * This class re-groups equivalent certificates.
- * 
- * All certificates for a given {@code CertificateSourceEntity} share the same
- * public key.
+ * This class re-groups equivalent certificates by a given property (e.g. a public key or entity key).
+ * All certificates for a given {@code CertificateSourceEntity} share (at least) the same public key.
+ *
  */
 class EquivalentCertificatesEntity implements CertificateSourceEntity {
 	
 	private static final long serialVersionUID = -8670353777128605464L;
 
-	private static final Logger LOG = LoggerFactory.getLogger(CertificateSourceEntity.class);
+	private static final Logger LOG = LoggerFactory.getLogger(EquivalentCertificatesEntity.class);
 
 	/**
 	 * Unique Id for all certificates (SHA-256 of the common public key) 
@@ -69,6 +68,11 @@ class EquivalentCertificatesEntity implements CertificateSourceEntity {
 		equivalentCertificates.add(initialCert);
 	}
 
+	/**
+	 * Adds a certificate token to the given list of equivalent certificates
+	 *
+	 * @param token {@link CertificateToken} to add
+	 */
 	void addEquivalentCertificate(CertificateToken token) {
 		if (!equivalentCertificates.contains(token)) {
 			LOG.trace("Certificate with same public key detected : {}", token.getAbbreviation());
@@ -84,6 +88,11 @@ class EquivalentCertificatesEntity implements CertificateSourceEntity {
 		}
 	}
 
+	/**
+	 * Removes a certificate token from the given list of equivalent certificates
+	 *
+	 * @param token {@link CertificateToken} to remove
+	 */
 	void removeEquivalentCertificate(CertificateToken token) {
 		if (equivalentCertificates.contains(token)) {
 			if (equivalentCertificates.size() == 1) {
@@ -96,10 +105,20 @@ class EquivalentCertificatesEntity implements CertificateSourceEntity {
 		}
 	}
 	
+	/**
+	 * Gets a Subject Key Identifier (SHA-1 of the common public key)
+	 *
+	 * @return byte array representing a SKI
+	 */
 	byte[] getSki() {
 		return ski;
 	}
 
+	/**
+	 * Gets a set of equivalent certificate tokens present within the current instance
+	 *
+	 * @return a set of {@link CertificateToken}s
+	 */
 	Set<CertificateToken> getEquivalentCertificates() {
 		return Collections.unmodifiableSet(equivalentCertificates);
 	}

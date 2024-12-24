@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -275,6 +275,17 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 	}
 
 	@Override
+	protected boolean isAnyValidationData(XAdESAttribute unsignedAttribute) {
+		return XAdES141Element.ANY_VALIDATION_DATA.isSameTagName(unsignedAttribute.getName());
+	}
+
+	@Override
+	protected boolean isValidationDataReferences(XAdESAttribute unsignedAttribute) {
+		// not supported
+		return false;
+	}
+
+	@Override
 	protected boolean isCounterSignature(XAdESAttribute unsignedAttribute) {
 		return XAdES132Element.COUNTER_SIGNATURE.isSameTagName(unsignedAttribute.getName());
 	}
@@ -485,8 +496,8 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 	@Override
 	protected List<Identifier> getEncapsulatedCertificateIdentifiers(XAdESAttribute unsignedAttribute) {
 		List<Identifier> certificateIdentifiers = new ArrayList<>();
-		String xPathString = isTimeStampValidationData(unsignedAttribute) ? xadesPaths.getCurrentCertificateValuesEncapsulatedCertificate()
-				: xadesPaths.getCurrentEncapsulatedCertificate();
+		String xPathString = isTimeStampValidationData(unsignedAttribute) || isAnyValidationData(unsignedAttribute) ?
+				xadesPaths.getCurrentCertificateValuesEncapsulatedCertificate() : xadesPaths.getCurrentEncapsulatedCertificate();
 		NodeList encapsulatedNodes = unsignedAttribute.getNodeList(xPathString);
 		for (int ii = 0; ii < encapsulatedNodes.getLength(); ii++) {
 			try {
@@ -509,7 +520,7 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 	@Override
 	protected List<CRLBinary> getEncapsulatedCRLIdentifiers(XAdESAttribute unsignedAttribute) {
 		List<CRLBinary> crlIdentifiers = new ArrayList<>();
-		String xPathString = isTimeStampValidationData(unsignedAttribute) ? 
+		String xPathString = isTimeStampValidationData(unsignedAttribute) || isAnyValidationData(unsignedAttribute) ?
 				xadesPaths.getCurrentRevocationValuesEncapsulatedCRLValue() : xadesPaths.getCurrentEncapsulatedCRLValue();
 		NodeList encapsulatedNodes = unsignedAttribute.getNodeList(xPathString);
 		for (int ii = 0; ii < encapsulatedNodes.getLength(); ii++) {
@@ -532,7 +543,7 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 	@Override
 	protected List<OCSPResponseBinary> getEncapsulatedOCSPIdentifiers(XAdESAttribute unsignedAttribute) {
 		List<OCSPResponseBinary> ocspIdentifiers = new ArrayList<>();
-		String xPathString = isTimeStampValidationData(unsignedAttribute) ? 
+		String xPathString = isTimeStampValidationData(unsignedAttribute) || isAnyValidationData(unsignedAttribute) ?
 				xadesPaths.getCurrentRevocationValuesEncapsulatedOCSPValue() : xadesPaths.getCurrentEncapsulatedOCSPValue();
 		NodeList encapsulatedNodes = unsignedAttribute.getNodeList(xPathString);
 		for (int ii = 0; ii < encapsulatedNodes.getLength(); ii++) {

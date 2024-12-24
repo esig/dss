@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -30,7 +30,6 @@ import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.policy.jaxb.EIDAS;
 import eu.europa.esig.dss.policy.jaxb.EvidenceRecordConstraints;
 import eu.europa.esig.dss.policy.jaxb.IntValueConstraint;
-import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.Model;
 import eu.europa.esig.dss.policy.jaxb.ModelConstraint;
@@ -571,6 +570,15 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
+	public LevelConstraint getCertificateNoRevAvailConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getNoRevAvail();
+		}
+		return null;
+	}
+
+	@Override
 	public MultiValuesConstraint getCertificateSupportedCriticalExtensionsConstraint(Context context, SubContext subContext) {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
@@ -724,6 +732,15 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
+	public LevelConstraint getCertificateSunsetDateConstraint(Context context, SubContext subContext) {
+		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
+		if (certificateConstraints != null) {
+			return certificateConstraints.getSunsetDate();
+		}
+		return null;
+	}
+
+	@Override
 	public LevelConstraint getProspectiveCertificateChainConstraint(Context context) {
 		BasicSignatureConstraints basicSignatureConstraints = getBasicSignatureConstraintsByContext(context);
 		if (basicSignatureConstraints != null) {
@@ -746,18 +763,6 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null && certificateConstraints.getRevocationDataSkip() != null) {
 			return certificateConstraints.getRevocationDataSkip();
-		}
-
-		// TODO : temporary handling since 6.1 to ensure smooth migration to DSS 6.2. To be removed in 6.2.
-		if (Context.REVOCATION == context && SubContext.SIGNING_CERT == subContext) {
-			LOG.warn("No RevocationDataSkip constraint is defined in the validation policy for Revocation/SigningCertificate element! " +
-					"Default behavior with ocsp-no-check is added to processing. Please set the constraint explicitly. To be required since DSS 6.2.");
-			CertificateValuesConstraint certificateValuesConstraint = new CertificateValuesConstraint();
-			certificateValuesConstraint.setLevel(Level.IGNORE);
-			MultiValuesConstraint certificateExtensionConstraints = new MultiValuesConstraint();
-			certificateExtensionConstraints.getId().add("1.3.6.1.5.5.7.48.1.5"); // ocsp-no-check
-			certificateValuesConstraint.setCertificateExtensions(certificateExtensionConstraints);
-			return certificateValuesConstraint;
 		}
 		return null;
 	}
@@ -1322,6 +1327,24 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
+	public LevelConstraint getAtsHashIndexConstraint() {
+		TimestampConstraints timestampConstraints = getTimestampConstraints();
+		if (timestampConstraints != null) {
+			return timestampConstraints.getAtsHashIndex();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getTimestampContainerSignedAndTimestampedFilesCoveredConstraint() {
+		TimestampConstraints timestampConstraints = getTimestampConstraints();
+		if (timestampConstraints != null) {
+			return timestampConstraints.getContainerSignedAndTimestampedFilesCovered();
+		}
+		return null;
+	}
+
+	@Override
 	public LevelConstraint getFullScopeConstraint() {
 		SignatureConstraints mainSignature = getSignatureConstraints();
 		if (mainSignature != null) {
@@ -1389,6 +1412,24 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		EvidenceRecordConstraints evidenceRecordConstraints = getEvidenceRecordConstraints();
 		if (evidenceRecordConstraints != null) {
 			return evidenceRecordConstraints.getDataObjectGroup();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getEvidenceRecordSignedFilesCoveredConstraint() {
+		EvidenceRecordConstraints evidenceRecordConstraints = getEvidenceRecordConstraints();
+		if (evidenceRecordConstraints != null) {
+			return evidenceRecordConstraints.getSignedFilesCovered();
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getEvidenceRecordContainerSignedAndTimestampedFilesCoveredConstraint() {
+		EvidenceRecordConstraints evidenceRecordConstraints = getEvidenceRecordConstraints();
+		if (evidenceRecordConstraints != null) {
+			return evidenceRecordConstraints.getContainerSignedAndTimestampedFilesCovered();
 		}
 		return null;
 	}
@@ -1648,7 +1689,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public ValueConstraint getTLVersionConstraint() {
+	public MultiValuesConstraint getTLVersionConstraint() {
 		EIDAS eIDASConstraints = getEIDASConstraints();
 		if (eIDASConstraints != null) {
 			return eIDASConstraints.getTLVersion();

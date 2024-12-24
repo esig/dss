@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -28,7 +28,9 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.pdf.PAdESConstants;
 import eu.europa.esig.dss.pdf.PdfSignatureCache;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.Objects;
 import java.util.TimeZone;
 
 /**
@@ -421,6 +423,66 @@ public class PAdESSignatureParameters extends CAdESSignatureParameters implement
 	@Override
 	public PdfSignatureCache getPdfSignatureCache() {
 		return getContext().getPdfToBeSignedCache();
+	}
+
+	@Override
+	public String toString() {
+		return "PAdESSignatureParameters [" +
+				"reason='" + reason + '\'' +
+				", contactInfo='" + contactInfo + '\'' +
+				", location='" + location + '\'' +
+				", signerName='" + signerName + '\'' +
+				", signatureSize=" + signatureSize +
+				", signatureFilter='" + signatureFilter + '\'' +
+				", signatureSubFilter='" + signatureSubFilter + '\'' +
+				", appName='" + appName + '\'' +
+				", signatureImageParameters=" + signatureImageParameters +
+				", permission=" + permission +
+				", passwordProtection=" + Arrays.toString(passwordProtection) +
+				", signingTimeZone=" + signingTimeZone +
+				", includeVRIDictionary=" + includeVRIDictionary +
+				"] " + super.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+
+		PAdESSignatureParameters that = (PAdESSignatureParameters) o;
+		return signatureSize == that.signatureSize
+				&& includeVRIDictionary == that.includeVRIDictionary
+				&& Objects.equals(reason, that.reason)
+				&& Objects.equals(contactInfo, that.contactInfo)
+				&& Objects.equals(location, that.location)
+				&& Objects.equals(signerName, that.signerName)
+				&& Objects.equals(signatureFilter, that.signatureFilter)
+				&& Objects.equals(signatureSubFilter, that.signatureSubFilter)
+				&& Objects.equals(appName, that.appName)
+				&& Objects.equals(signatureImageParameters, that.signatureImageParameters)
+				&& permission == that.permission
+				&& Arrays.equals(passwordProtection, that.passwordProtection)
+				&& Objects.equals(signingTimeZone, that.signingTimeZone);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + Objects.hashCode(reason);
+		result = 31 * result + Objects.hashCode(contactInfo);
+		result = 31 * result + Objects.hashCode(location);
+		result = 31 * result + Objects.hashCode(signerName);
+		result = 31 * result + signatureSize;
+		result = 31 * result + Objects.hashCode(signatureFilter);
+		result = 31 * result + Objects.hashCode(signatureSubFilter);
+		result = 31 * result + Objects.hashCode(appName);
+		result = 31 * result + Objects.hashCode(signatureImageParameters);
+		result = 31 * result + Objects.hashCode(permission);
+		result = 31 * result + Arrays.hashCode(passwordProtection);
+		result = 31 * result + Objects.hashCode(signingTimeZone);
+		result = 31 * result + Boolean.hashCode(includeVRIDictionary);
+		return result;
 	}
 
 }

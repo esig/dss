@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -25,6 +25,7 @@ import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.pades.PAdESUtils;
+import eu.europa.esig.dss.pades.validation.PdfObjectKey;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfVriDict;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
@@ -59,7 +60,7 @@ public class PdfDssDictOCSPSource extends OfflineOCSPSource {
     private final String relatedVRIDictionaryName;
 
     /** Cached OCSP Map */
-    private Map<Long, OCSPResponseBinary> ocspMap;
+    private Map<PdfObjectKey, OCSPResponseBinary> ocspMap;
 
     /**
      * Default constructor
@@ -92,7 +93,7 @@ public class PdfDssDictOCSPSource extends OfflineOCSPSource {
      *
      * @return a map of OCSP binaries with their object ids
      */
-    public Map<Long, OCSPResponseBinary> getOcspMap() {
+    public Map<PdfObjectKey, OCSPResponseBinary> getOcspMap() {
         if (ocspMap == null) {
             ocspMap = new HashMap<>();
             if (dssDictionary != null) {
@@ -144,9 +145,9 @@ public class PdfDssDictOCSPSource extends OfflineOCSPSource {
         return Collections.emptyList();
     }
 
-    private Set<Long> getKeySetFromVRIDictionaries() {
+    private Set<PdfObjectKey> getKeySetFromVRIDictionaries() {
         if (dssDictionary != null) {
-            Set<Long> result = new HashSet<>();
+            Set<PdfObjectKey> result = new HashSet<>();
             List<PdfVriDict> vris = PAdESUtils.getVRIsWithName(dssDictionary, relatedVRIDictionaryName);
             for (PdfVriDict vriDict : vris) {
                 result.addAll(vriDict.getOCSPs().keySet());
@@ -157,10 +158,10 @@ public class PdfDssDictOCSPSource extends OfflineOCSPSource {
     }
 
     private List<EncapsulatedRevocationTokenIdentifier<OCSP>> filterBinariesFromKeys(
-            Collection<EncapsulatedRevocationTokenIdentifier<OCSP>> ocspBinaries, Collection<Long> keySet) {
+            Collection<EncapsulatedRevocationTokenIdentifier<OCSP>> ocspBinaries, Collection<PdfObjectKey> keySet) {
         List<EncapsulatedRevocationTokenIdentifier<OCSP>> result = new ArrayList<>();
         for (EncapsulatedRevocationTokenIdentifier<OCSP> OCSPBinary : ocspBinaries) {
-            Set<Long> objectIds = compositeOCSPSource.getTokenBinaryObjectIds(OCSPBinary);
+            Set<PdfObjectKey> objectIds = compositeOCSPSource.getTokenBinaryObjectIds(OCSPBinary);
             if (Utils.containsAny(keySet, objectIds)) {
                 result.add(OCSPBinary);
             }
@@ -172,10 +173,10 @@ public class PdfDssDictOCSPSource extends OfflineOCSPSource {
         return filterTokensFromKeys(revocationTokens, getOcspMap().keySet());
     }
 
-    private List<RevocationToken<OCSP>> filterTokensFromKeys(Collection<RevocationToken<OCSP>> revocationTokens, Collection<Long> keySet) {
+    private List<RevocationToken<OCSP>> filterTokensFromKeys(Collection<RevocationToken<OCSP>> revocationTokens, Collection<PdfObjectKey> keySet) {
         List<RevocationToken<OCSP>> result = new ArrayList<>();
         for (RevocationToken<OCSP> OCSPToken : revocationTokens) {
-            Set<Long> objectIds = compositeOCSPSource.getRevocationTokenIds(OCSPToken);
+            Set<PdfObjectKey> objectIds = compositeOCSPSource.getRevocationTokenIds(OCSPToken);
             if (Utils.containsAny(keySet, objectIds)) {
                 result.add(OCSPToken);
             }
@@ -197,7 +198,7 @@ public class PdfDssDictOCSPSource extends OfflineOCSPSource {
 
     private Set<RevocationOrigin> getRevocationDataOrigins(EncapsulatedRevocationTokenIdentifier<OCSP> ocspBinary) {
         Set<RevocationOrigin> result = new HashSet<>();
-        Set<Long> tokenBinaryObjectIds = compositeOCSPSource.getTokenBinaryObjectIds(ocspBinary);
+        Set<PdfObjectKey> tokenBinaryObjectIds = compositeOCSPSource.getTokenBinaryObjectIds(ocspBinary);
         if (Utils.containsAny(dssDictionary.getOCSPs().keySet(), tokenBinaryObjectIds)) {
             result.add(RevocationOrigin.DSS_DICTIONARY);
         }
@@ -223,7 +224,7 @@ public class PdfDssDictOCSPSource extends OfflineOCSPSource {
 
     private Set<RevocationOrigin> getRevocationDataOrigins(RevocationToken<OCSP> ocspToken) {
         Set<RevocationOrigin> result = new HashSet<>();
-        Set<Long> tokenObjectIds = compositeOCSPSource.getRevocationTokenIds(ocspToken);
+        Set<PdfObjectKey> tokenObjectIds = compositeOCSPSource.getRevocationTokenIds(ocspToken);
         if (Utils.containsAny(dssDictionary.getOCSPs().keySet(), tokenObjectIds)) {
             result.add(RevocationOrigin.DSS_DICTIONARY);
         }

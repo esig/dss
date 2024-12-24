@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -22,6 +22,7 @@ package eu.europa.esig.dss.pades.validation.dss;
 
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.pades.validation.PdfObjectKey;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfVriDict;
 import eu.europa.esig.dss.spi.x509.TokenCertificateSource;
@@ -42,7 +43,7 @@ import java.util.Set;
 public class PdfCompositeDssDictCertificateSource extends TokenCertificateSource {
 
     /** Composite map of certificate tokens extracted from different /DSS revisions */
-    private final Map<Long, Set<CertificateToken>> certMap = new HashMap<>();
+    private final Map<PdfObjectKey, Set<CertificateToken>> certMap = new HashMap<>();
 
     /**
      * Default constructor instantiation an object with empty mpa of certificate token objects
@@ -73,7 +74,7 @@ public class PdfCompositeDssDictCertificateSource extends TokenCertificateSource
      */
     private List<CertificateToken> getDSSDictionaryCertValues(PdfDssDict dssDictionary) {
         if (dssDictionary != null) {
-            Map<Long, CertificateToken> dssCerts = dssDictionary.getCERTs();
+            Map<PdfObjectKey, CertificateToken> dssCerts = dssDictionary.getCERTs();
             populateObjectsMap(dssCerts);
             return new ArrayList<>(dssCerts.values());
         }
@@ -88,7 +89,7 @@ public class PdfCompositeDssDictCertificateSource extends TokenCertificateSource
      */
     private List<CertificateToken> getVRIDictionaryCertValues(PdfDssDict dssDictionary) {
         if (dssDictionary != null) {
-            Map<Long, CertificateToken> vriCerts = new HashMap<>();
+            Map<PdfObjectKey, CertificateToken> vriCerts = new HashMap<>();
             List<PdfVriDict> vris = dssDictionary.getVRIs();
             if (vris != null) {
                 for (PdfVriDict vri : vris) {
@@ -101,8 +102,8 @@ public class PdfCompositeDssDictCertificateSource extends TokenCertificateSource
         return Collections.emptyList();
     }
 
-    private void populateObjectsMap(Map<Long, CertificateToken> certificateTokenMap) {
-        for (Map.Entry<Long, CertificateToken> entry : certificateTokenMap.entrySet()) {
+    private void populateObjectsMap(Map<PdfObjectKey, CertificateToken> certificateTokenMap) {
+        for (Map.Entry<PdfObjectKey, CertificateToken> entry : certificateTokenMap.entrySet()) {
             Set<CertificateToken> certificateTokens = certMap.get(entry.getKey());
             if (certificateTokens == null) {
                 certificateTokens = new HashSet<>();
@@ -118,7 +119,7 @@ public class PdfCompositeDssDictCertificateSource extends TokenCertificateSource
      * @param objectId {@link Long} PDF id of the object to be extracted
      * @return set of {@link CertificateToken}s
      */
-    protected Set<CertificateToken> getCertificateTokensByObjectId(Long objectId) {
+    protected Set<CertificateToken> getCertificateTokensByObjectId(PdfObjectKey objectId) {
         return certMap.get(objectId);
     }
 

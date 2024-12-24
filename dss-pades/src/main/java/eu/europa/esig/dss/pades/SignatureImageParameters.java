@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -270,43 +270,47 @@ public class SignatureImageParameters implements Serializable {
 
 	@Override
 	public String toString() {
-		return "SignatureImageParameters [image=" + image + ", zoom=" + zoom
-				+ ", backgroundColor=" + backgroundColor + ", dpi=" + dpi
-				+ ", alignmentHorizontal=" + alignmentHorizontal + ", alignmentVertical=" + alignmentVertical
-				+ ", fieldParameters=" + getFieldParameters() + ", textParameters=" + getTextParameters() + "]";
+		return "SignatureImageParameters [" +
+				"image=" + image +
+				", fieldParameters=" + fieldParameters +
+				", zoom=" + zoom +
+				", backgroundColor=" + backgroundColor +
+				", dpi=" + dpi +
+				", alignmentHorizontal=" + alignmentHorizontal +
+				", alignmentVertical=" + alignmentVertical +
+				", imageScaling=" + imageScaling +
+				", textParameters=" + textParameters +
+				']';
 	}
-	
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
-		if (!(o instanceof SignatureImageParameters)) return false;
+		if (o == null || getClass() != o.getClass()) return false;
 
 		SignatureImageParameters that = (SignatureImageParameters) o;
-
-		if (zoom != that.zoom) return false;
-		if (!Objects.equals(image, that.image)) return false;
-		if (!Objects.equals(fieldParameters, that.fieldParameters))
-			return false;
-		if (!Objects.equals(backgroundColor, that.backgroundColor))
-			return false;
-		if (!Objects.equals(dpi, that.dpi)) return false;
-		if (alignmentHorizontal != that.alignmentHorizontal) return false;
-		if (alignmentVertical != that.alignmentVertical) return false;
-		if (imageScaling != that.imageScaling) return false;
-		return Objects.equals(textParameters, that.textParameters);
+		return zoom == that.zoom
+				&& Objects.equals(image, that.image)
+				&& Objects.equals(fieldParameters, that.fieldParameters)
+				&& Objects.equals(backgroundColor, that.backgroundColor)
+				&& Objects.equals(dpi, that.dpi)
+				&& alignmentHorizontal == that.alignmentHorizontal
+				&& alignmentVertical == that.alignmentVertical
+				&& imageScaling == that.imageScaling
+				&& Objects.equals(textParameters, that.textParameters);
 	}
 
 	@Override
 	public int hashCode() {
-		int result = image != null ? image.hashCode() : 0;
-		result = 31 * result + (fieldParameters != null ? fieldParameters.hashCode() : 0);
+		int result = Objects.hashCode(image);
+		result = 31 * result + Objects.hashCode(fieldParameters);
 		result = 31 * result + zoom;
-		result = 31 * result + (backgroundColor != null ? backgroundColor.hashCode() : 0);
-		result = 31 * result + (dpi != null ? dpi.hashCode() : 0);
-		result = 31 * result + (alignmentHorizontal != null ? alignmentHorizontal.hashCode() : 0);
-		result = 31 * result + (alignmentVertical != null ? alignmentVertical.hashCode() : 0);
-		result = 31 * result + (imageScaling != null ? imageScaling.hashCode() : 0);
-		result = 31 * result + (textParameters != null ? textParameters.hashCode() : 0);
+		result = 31 * result + Objects.hashCode(backgroundColor);
+		result = 31 * result + Objects.hashCode(dpi);
+		result = 31 * result + Objects.hashCode(alignmentHorizontal);
+		result = 31 * result + Objects.hashCode(alignmentVertical);
+		result = 31 * result + Objects.hashCode(imageScaling);
+		result = 31 * result + Objects.hashCode(textParameters);
 		return result;
 	}
 

@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -352,6 +352,16 @@ public interface ValidationPolicy {
 	LevelConstraint getCertificateNameConstraintsConstraint(Context context, SubContext subContext);
 
 	/**
+	 * Returns certificate NoRevAvail constraint
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code LevelConstraint} if NoRevAvail for a given context element is present in the constraint file,
+	 *         null otherwise.
+	 */
+	LevelConstraint getCertificateNoRevAvailConstraint(Context context, SubContext subContext);
+
+	/**
 	 * Returns certificate supported critical extensions constraint
 	 *
 	 * @param context {@link Context}
@@ -380,6 +390,16 @@ public interface ValidationPolicy {
 	 * 			in the constraint file, null otherwise.
 	 */
 	LevelConstraint getCertificateNotExpiredConstraint(Context context, SubContext subContext);
+
+	/**
+	 * Returns certificate's sunset date constraint
+	 *
+	 * @param context {@link Context}
+	 * @param subContext {@link SubContext}
+	 * @return {@code LevelConstraint} if SunsetDate constraint for a given certificate context is present
+	 * 			in the constraint file, null otherwise.
+	 */
+	LevelConstraint getCertificateSunsetDateConstraint(Context context, SubContext subContext);
 
 	/**
 	 * This constraint requests the presence of the trust anchor in the certificate chain.
@@ -1082,6 +1102,22 @@ public interface ValidationPolicy {
 	LevelConstraint getTimestampTSAGeneralNameOrderMatch();
 
 	/**
+	 * Returns timestamp AtsHashIndex constraint if present in the policy, null otherwise
+	 *
+	 * @return {@code LevelConstraint} if AtsHashIndex element is present
+	 *                                 in the constraint file, null otherwise.
+	 */
+	LevelConstraint getAtsHashIndexConstraint();
+
+	/**
+	 * Returns timestamp ContainerSignedAndTimestampedFilesCovered constraint if present in the policy, null otherwise
+	 *
+	 * @return {@code LevelConstraint} if ContainerSignedAndTimestampedFilesCovered element is present
+	 *                                 in the constraint file, null otherwise.
+	 */
+	LevelConstraint getTimestampContainerSignedAndTimestampedFilesCoveredConstraint();
+
+	/**
 	 * Returns RevocationTimeAgainstBestSignatureTime constraint if present in the policy, null otherwise
 	 *
 	 * @return {@code LevelConstraint} if RevocationTimeAgainstBestSignatureTime element is present
@@ -1124,6 +1160,22 @@ public interface ValidationPolicy {
 	 * @return {@code LevelConstraint} if DataObjectGroup element is present
 	 */
 	LevelConstraint getEvidenceRecordDataObjectGroupConstraint();
+
+	/**
+	 * Returns SignedFilesCovered constraint if present in the policy, null otherwise
+	 *
+	 * @return {@code LevelConstraint} if SignedFilesCovered element is present
+	 *                                 in the constraint file, null otherwise.
+	 */
+	LevelConstraint getEvidenceRecordSignedFilesCoveredConstraint();
+
+	/**
+	 * Returns evidence record ContainerSignedAndTimestampedFilesCovered constraint if present in the policy, null otherwise
+	 *
+	 * @return {@code LevelConstraint} if ContainerSignedAndTimestampedFilesCovered element is present
+	 *                                 in the constraint file, null otherwise.
+	 */
+	LevelConstraint getEvidenceRecordContainerSignedAndTimestampedFilesCoveredConstraint();
 
 	/**
 	 * Returns HashTreeRenewal constraint if present in the policy, null otherwise
@@ -1507,10 +1559,10 @@ public interface ValidationPolicy {
 	/**
 	 * Returns TLVersion constraint if present in the policy, null otherwise
 	 *
-	 * @return {@code ValueConstraint} if TLVersion element is present
-	 *                                 in the constraint file, null otherwise.
+	 * @return {@code MultiValuesConstraint} if TLVersion element is present
+	 *                                       in the constraint file, null otherwise.
 	 */
-	ValueConstraint getTLVersionConstraint();
+	MultiValuesConstraint getTLVersionConstraint();
 
 	/**
 	 * Returns the used validation model (default is SHELL). Alternatives are CHAIN

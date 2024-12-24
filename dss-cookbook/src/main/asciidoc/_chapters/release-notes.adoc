@@ -11,16 +11,44 @@
 |===
 |Version           |Release date             |Features
 
-|v6.1              |September 2024          a|Bug fixes :
+|v6.2.RC1          |December 2024           a|Main new features / improvements :
 
-                                            * Evidence record validation fixes;
-                                            * XAdES : reference name check fails for URL-encoded entries;
-                                            * JAdES : `iat` shall not contain fractions of seconds;
-                                            * ASiC-E signatures are not reported without linked manifest;
-                                            * CertificateValues/RevocationValues have invalid format in ETSI Validation Report;
-                                            * JAXBPKILoader : invalid behavior for multiple cross certificates.
+                                            * Trusted List v6 support (ETSI TS 119 612 v2.3.1, cf. <<R11>>);
+                                            * Support of trust anchors with sunset date (ETSI EN 319 102-1, cf. <<R09>>);
+                                            * PdfBox 3 upgrade;
+                                            * Memory configuration on PAdES creation (large files signing);
+                                            * Recognition of PAdES Extended Profiles (ETSI EN 319 142-2, cf. <<R03>>);
+                                            * `AnyValidationData` (XAdES) and `anyValData` (JAdES) unsigned properties support;
+                                            * ECDSA with SHA3 support for XAdES signatures;
+                                            * Nested CAdES creation;
+                                            * Configurable validation of `ats-hash-index(-v3)` attribute for CAdES `archive-time-stamp-v3`;
+                                            * Transitive validation of ASiCArchiveManifest references;
+                                            * Automatic RSA encoding on signing with SignatureTokenConnection;
+                                            * Enforced trust anchor definition per ETSI TS 119 615 (key + subject name);
+                                            * Support of `noRevAvail` (OID: 2.5.29.56) certificate extension;
+                                            * CertificateVerifier checks can be skipped (signing, augmentation);
+                                            * Cryptographic constraints update;
+                                            * Added validation time property on signature validation with REST/SOAP webServices;
+                                            * Dependencies update (BouncyCastle, xmlsec, FOP, HttpClient5, json-sKema, etc.);
+                                            * Java 23 support.
 
-|v6.1.RC1          |July 2024               a|Main new features / improvements :
+|v6.2.RC1          |December 2024           a|Bug fixes :
+
+                                            * Encapsulation of timestamp validation data within `CertificateValues`/`RevocationValues` unsigned properties;
+                                            * Encapsulation of signature validation data within `TimeStampValidationData` unsigned property;
+                                            * XAdESPath contain imports from jaxb related modules;
+                                            * `crlSign` key usage check enforced on augmentation for online CRLs;
+                                            * PAdES ByteRange is not checked when exceeding PDF's size;
+                                            * Slow XAdES validation with large amount of datafiles;
+                                            * XAdES `DataObjectFormat` misses reference to `KeyInfo` element;
+                                            * Failed validation of detached CMS signature when using not id-data content type;
+                                            * Inconsistent `ats-hash-index-v3` building for non Baseline or invalid CAdES structures;
+                                            * Invalid ASiC-S with CAdES creation, when CMS is provided as input;
+                                            * Deadlock in TLValidationJob on TL URL change when CacheCleaner is not used;
+                                            * DiagnosticData misses certificate references when custom TokeIdentifierProvider is used;
+                                            * CXF OpenAPI generates wrong JSON schema (webApplication).
+
+|v6.1              |September 2024          a|Main new features / improvements :
 
                                             * ASN.1 Evidence Records (RFC 4998) support;
                                             * Document digest generator for Evidence Record creation;
@@ -39,7 +67,7 @@
                                             * Dependencies update;
                                             * Java 22 support.
 
-|v6.1.RC1          |July 2024               a|Bug fixes :
+|v6.1              |September 2024          a|Bug fixes :
 
                                             * LTA timestamp does not impact best-signature-time;
                                             * Expired OCSP responder impacts signing-certificate validation;
@@ -54,7 +82,13 @@
                                             * DSS returns XAdES-BASELINE-* for a signature without signing-certificate in KeyInfo;
                                             * Cannot compile Transformer for Simple Report PDF when using Saxon-HE 12.4;
                                             * Validation fails when SigningCertificateDigestAlgorithm constraint level is higher than failed Cryptographic level;
-                                            * Dockerfile fix.
+                                            * Dockerfile fix;
+                                            * Evidence record validation fixes;
+                                            * XAdES : reference name check fails for URL-encoded entries;
+                                            * JAdES : `iat` shall not contain fractions of seconds;
+                                            * ASiC-E signatures are not reported without linked manifest;
+                                            * CertificateValues/RevocationValues have invalid format in ETSI Validation Report;
+                                            * JAXBPKILoader : invalid behavior for multiple cross certificates.
 
 |v6.0             |December 2023            a|Main new features / improvements :
 
@@ -395,14 +429,14 @@ _pass:[*] October 2015: Implementing Acts Art. 27 & 37 (eSig formats)_
 
 To upgrade version of DSS, locate to the `pom.xml` file of your project, search for the properties and then change the dss version in the corresponding field(s).
 
-The example below shows how to switch to DSS version `6.1` using <<BomModule>>:
+The example below shows how to switch to DSS version `6.2.RC1` using <<BomModule>>:
 
 [source,xml]
 .pom.xml
 ----
 <properties>
     ...
-    <dss.version>6.1</dss.version>
+    <dss.version>6.2.RC1</dss.version>
     ...
 </properties>
 

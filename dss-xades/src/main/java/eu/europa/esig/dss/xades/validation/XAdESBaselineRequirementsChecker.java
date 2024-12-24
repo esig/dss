@@ -1,49 +1,50 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package eu.europa.esig.dss.xades.validation;
 
+import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.model.ReferenceValidation;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.x509.ListCertificateSource;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.signature.BaselineRequirementsChecker;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.x509.ListCertificateSource;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureUtils;
-import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.xades.definition.XAdESNamespace;
 import eu.europa.esig.dss.xades.definition.XAdESPath;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import org.apache.xml.security.c14n.Canonicalizer;
-import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.signature.Manifest;
-import org.apache.xml.security.signature.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Performs checks according to EN 319 132-1 v1.1.1
@@ -53,6 +54,9 @@ import java.util.List;
 public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecker<XAdESSignature> {
 
     private static final Logger LOG = LoggerFactory.getLogger(XAdESBaselineRequirementsChecker.class);
+
+    /** Cached reference validation status map */
+    private Map<String, ReferenceValidationStatus> statusMap;
 
     /**
      * Default constructor
@@ -106,10 +110,11 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
             return false;
         }
         // DataObjectFormat (Cardinality >= 0)
+        Map<String, ReferenceValidationStatus> referenceStatusMap = getReferenceValidationStatusMap();
         NodeList dataObjectFormatList = getDataObjectFormatList(signatureElement, xadesPaths);
         for (int ii = 0; ii < dataObjectFormatList.getLength(); ii++) {
             Element dataObjectFormat = (Element) dataObjectFormatList.item(ii);
-            if (!isValidXAdESBaselineDataObjectFormat(dataObjectFormat, signature, xadesPaths)) {
+            if (!isValidXAdESBaselineDataObjectFormat(dataObjectFormat, signature, xadesPaths, referenceStatusMap)) {
                 return false;
             }
         }
@@ -200,32 +205,22 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
             }
         }
         // Additional requirement (k)
-        List<Reference> references = signature.getReferences();
-        for (Reference reference : references) {
-            if ((DomUtils.startsFromHash(reference.getURI()) || DomUtils.isXPointerQuery(reference.getURI())) &&
-                    (DSSXMLUtils.isSignedProperties(reference, xadesPaths) ||
-                    DSSXMLUtils.isCounterSignatureReferenceType(reference.getType()) ||
-                    DSSXMLUtils.isManifestReferenceType(reference.getType()) ||
-                    DSSXMLUtils.isKeyInfoReference(reference, signatureElement) ||
-                    DSSXMLUtils.isSignaturePropertiesReference(reference, signatureElement))) {
+        for (ReferenceValidationStatus referenceStatus : referenceStatusMap.values()) {
+            if (referenceStatus.isDataObjectFormatFound()) {
                 continue;
             }
-            String referenceId = reference.getId();
-            if (Utils.isStringNotEmpty(referenceId)) {
-                boolean correspondingDataObjectFormatFound = false;
-                for (int ii = 0; ii < dataObjectFormatList.getLength(); ii++) {
-                    Element dataObjectFormat = (Element) dataObjectFormatList.item(ii);
-                    String objectReference = dataObjectFormat.getAttribute(XAdES132Attribute.OBJECT_REFERENCE.getAttributeName());
-                    if (referenceId.equals(DomUtils.getId(objectReference))) {
-                        correspondingDataObjectFormatFound = true;
-                    }
-                }
-                if (!correspondingDataObjectFormatFound) {
-                    LOG.warn("DataObjectFormat shall be generated for each signed data " +
-                            "for XAdES-BASELINE-B signature (requirement (k))!");
-                    return false;
-                }
+            ReferenceValidation referenceValidation = referenceStatus.getReferenceValidation();
+            // TODO : check whether other reference types should be checked (i.e. KeyInfo, Manifest, etc.)
+            if ((DomUtils.startsFromHash(referenceValidation.getUri()) || DomUtils.isXPointerQuery(referenceValidation.getUri())) &&
+                    (DigestMatcherType.SIGNED_PROPERTIES.equals(referenceValidation.getType()) ||
+                    DigestMatcherType.COUNTER_SIGNATURE.equals(referenceValidation.getType()) ||
+                    DigestMatcherType.MANIFEST.equals(referenceValidation.getType()) ||
+                    DigestMatcherType.KEY_INFO.equals(referenceValidation.getType()) ||
+                    DigestMatcherType.SIGNATURE_PROPERTIES.equals(referenceValidation.getType()) )) {
+                continue;
             }
+            LOG.warn("DataObjectFormat shall be generated for each signed data for XAdES-BASELINE-B signature (requirement (k))!");
+            return false;
         }
         return true;
     }
@@ -312,13 +307,22 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
 
     @Override
     protected boolean containsLTLevelCertificates() {
+        return containsCertificateValues() || containsTstOrAnyValDataCertificates();
+    }
+
+    private boolean containsCertificateValues() {
         Element signatureElement = signature.getSignatureElement();
         XAdESPath xadesPaths = signature.getXAdESPaths();
-        if (getNumberOfOccurrences(signatureElement, xadesPaths.getCertificateValuesPath()) +
-                getNumberOfOccurrences(signatureElement, xadesPaths.getAttrAuthoritiesCertValuesPath()) == 0) {
-            return false;
-        }
-        return true;
+        return getNumberOfOccurrences(signatureElement, xadesPaths.getCertificateValuesPath()) +
+                getNumberOfOccurrences(signatureElement, xadesPaths.getAttrAuthoritiesCertValuesPath()) != 0;
+    }
+
+    private boolean containsTstOrAnyValDataCertificates() {
+        Element signatureElement = signature.getSignatureElement();
+        XAdESPath xadesPaths = signature.getXAdESPaths();
+
+        return getNumberOfOccurrences(signatureElement, xadesPaths.getEncapsulatedTimeStampValidationDataCertValuesPath()) +
+                getNumberOfOccurrences(signatureElement, xadesPaths.getEncapsulatedAnyValidationDataCertValuesPath()) != 0;
     }
 
     @Override
@@ -343,10 +347,11 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         }
         // CommitmentTypeIndication (Cardinality >= 0)
         // DataObjectFormat (Cardinality >= 0)
+        Map<String, ReferenceValidationStatus> referenceStatusMap = getReferenceValidationStatusMap();
         NodeList dataObjectFormatList = getDataObjectFormatList(signatureElement, xadesPaths);
         for (int ii = 0; ii < dataObjectFormatList.getLength(); ii++) {
             Element dataObjectFormat = (Element) dataObjectFormatList.item(ii);
-            if (!isValidXAdESDataObjectFormat(dataObjectFormat, signature, xadesPaths)) {
+            if (!isValidXAdESDataObjectFormat(dataObjectFormat, signature, xadesPaths, referenceStatusMap)) {
                 return false;
             }
         }
@@ -488,7 +493,8 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         return DomUtils.getNodeList(signatureElement, xadesPaths.getDataObjectFormat());
     }
 
-    private boolean isValidXAdESDataObjectFormat(Element dataObjectFormat, XAdESSignature signature, XAdESPath xadesPaths) {
+    private boolean isValidXAdESDataObjectFormat(Element dataObjectFormat, XAdESSignature signature, XAdESPath xadesPaths,
+                                                 Map<String, ReferenceValidationStatus> referenceStatusMap) {
         // 5.2.4 The DataObjectFormat qualifying property
         Element signatureElement = signature.getSignatureElement();
         // This qualifying property shall contain at least one of the following elements: Description, ObjectIdentifier and MimeType.
@@ -513,7 +519,7 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
             return false;
         }
         String id = DomUtils.getId(objectReference);
-        Reference matchingReference = getMatchingReference(id, signature.getReferences(), signatureElement);
+        ReferenceValidation matchingReference = getMatchingReference(id, referenceStatusMap);
         if (matchingReference == null) {
             LOG.warn("DataObjectFormat's ObjectReference attribute shall refer to a signed data object within the document!");
             return false;
@@ -530,58 +536,46 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         return true;
     }
 
-    private Reference getMatchingReference(String id, List<Reference> references, Element signatureElement) {
-        for (Reference reference : references) {
-            if (id.equals(reference.getId())) {
-                return reference;
-            }
-            if (reference.getURI() != null) {
-                Element manifestElement = DSSXMLUtils.getManifestById(signatureElement, DomUtils.getId(reference.getURI()));
-                if (manifestElement != null) {
-                    try {
-                        Manifest manifest = DSSXMLUtils.initManifest(manifestElement);
-                        List<Reference> manifestReferences = DSSXMLUtils.extractReferences(manifest);
-                        Reference matchingReference = getMatchingReference(id, manifestReferences, signatureElement);
-                        if (matchingReference != null) {
-                            return matchingReference;
-                        }
-                    } catch (XMLSecurityException e) {
-                        LOG.debug("Unable to instantiate the Manifest : {}", e.getMessage(), e);
-                    }
-                }
-            }
+    private ReferenceValidation getMatchingReference(String id, Map<String, ReferenceValidationStatus> referenceStatusMap) {
+        ReferenceValidationStatus referenceValidationStatus = referenceStatusMap.get(id);
+        if (referenceValidationStatus != null) {
+            referenceValidationStatus.setDataObjectFormatFound(true);
+            return referenceValidationStatus.getReferenceValidation();
         }
         return null;
     }
 
-    private boolean isDataObjectFormatValuesCompliant(Element dataObjectFormat, Reference reference, Element signatureElement, XAdESPath xadesPaths) {
-        Element dataObjectFormatMimeType = DomUtils.getElement(dataObjectFormat, xadesPaths.getCurrentMimeType());
-        if (dataObjectFormatMimeType != null) {
-            Element object = DSSXMLUtils.getObjectById(signatureElement, reference.getURI());
-            if (object != null) {
-                String objectMimeType = object.getAttribute(XMLDSigAttribute.MIME_TYPE.getAttributeName());
-                if (Utils.isStringNotEmpty(objectMimeType) && !objectMimeType.equals(dataObjectFormatMimeType.getTextContent())) {
-                    LOG.warn("DataObjectFormat's MimeType attribute shall have the same value as the corresponding signed ds:Object element, when present!");
-                    return false;
+    private boolean isDataObjectFormatValuesCompliant(Element dataObjectFormat, ReferenceValidation reference, Element signatureElement, XAdESPath xadesPaths) {
+        if (DomUtils.isElementReference(reference.getUri())) {
+            Element dataObjectFormatMimeType = DomUtils.getElement(dataObjectFormat, xadesPaths.getCurrentMimeType());
+            if (dataObjectFormatMimeType != null) {
+                Element object = DSSXMLUtils.getObjectById(signatureElement, reference.getUri());
+                if (object != null) {
+                    String objectMimeType = object.getAttribute(XMLDSigAttribute.MIME_TYPE.getAttributeName());
+                    if (Utils.isStringNotEmpty(objectMimeType) && !objectMimeType.equals(dataObjectFormatMimeType.getTextContent())) {
+                        LOG.warn("DataObjectFormat's MimeType attribute shall have the same value as the corresponding signed ds:Object element, when present!");
+                        return false;
+                    }
                 }
             }
-        }
-        Element dataObjectFormatEncoding = DomUtils.getElement(dataObjectFormat, xadesPaths.getCurrentEncoding());
-        if (dataObjectFormatEncoding != null) {
-            Element object = DSSXMLUtils.getObjectById(signatureElement, reference.getURI());
-            if (object != null) {
-                String objectEncoding = object.getAttribute(XMLDSigAttribute.ENCODING.getAttributeName());
-                if (Utils.isStringNotEmpty(objectEncoding) && !objectEncoding.equals(dataObjectFormatEncoding.getTextContent())) {
-                    LOG.warn("DataObjectFormat's Encoding attribute shall have the same value as the corresponding signed ds:Object element, when present!");
-                    return false;
+            Element dataObjectFormatEncoding = DomUtils.getElement(dataObjectFormat, xadesPaths.getCurrentEncoding());
+            if (dataObjectFormatEncoding != null) {
+                Element object = DSSXMLUtils.getObjectById(signatureElement, reference.getUri());
+                if (object != null) {
+                    String objectEncoding = object.getAttribute(XMLDSigAttribute.ENCODING.getAttributeName());
+                    if (Utils.isStringNotEmpty(objectEncoding) && !objectEncoding.equals(dataObjectFormatEncoding.getTextContent())) {
+                        LOG.warn("DataObjectFormat's Encoding attribute shall have the same value as the corresponding signed ds:Object element, when present!");
+                        return false;
+                    }
                 }
             }
         }
         return true;
     }
 
-    private boolean isValidXAdESBaselineDataObjectFormat(Element dataObjectFormat, XAdESSignature signature, XAdESPath xadesPaths) {
-        if (!isValidXAdESDataObjectFormat(dataObjectFormat, signature, xadesPaths)) {
+    private boolean isValidXAdESBaselineDataObjectFormat(Element dataObjectFormat, XAdESSignature signature, XAdESPath xadesPaths,
+                                                         Map<String, ReferenceValidationStatus> referenceStatusMap) {
+        if (!isValidXAdESDataObjectFormat(dataObjectFormat, signature, xadesPaths, referenceStatusMap)) {
             return false;
         }
         // DataObjectFormat/Description (Cardinality 0 or 1)
@@ -633,6 +627,82 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
             return false;
         }
         return DomUtils.isNotEmpty(xmlNode, xPathString);
+    }
+
+    private Map<String, ReferenceValidationStatus> getReferenceValidationStatusMap() {
+        if (statusMap == null) {
+            statusMap = new HashMap<>();
+            for (ReferenceValidation referenceValidation : signature.getReferenceValidations()) {
+                statusMap.put(referenceValidation.getId(), new ReferenceValidationStatus(referenceValidation));
+                if (Utils.isCollectionNotEmpty(referenceValidation.getDependentValidations())) {
+                    for (ReferenceValidation dependentReference : referenceValidation.getDependentValidations()) {
+                        statusMap.put(dependentReference.getId(), new ReferenceValidationStatus(dependentReference, true));
+                    }
+                }
+            }
+        }
+        return statusMap;
+    }
+
+    /**
+     * This is a helper class to evaluate {@code ReferenceValidation} status efficiently
+     *
+     */
+    private static final class ReferenceValidationStatus {
+
+        /** ReferenceValidation containing validation result of the signature ds:Reference element */
+        private final ReferenceValidation referenceValidation;
+
+        /** Whether the associated DataObjectFormat element has been found */
+        private boolean dataObjectFormatFound;
+
+        /**
+         * Default constructor
+         *
+         * @param referenceValidation {@link ReferenceValidation}
+         */
+        private ReferenceValidationStatus(ReferenceValidation referenceValidation) {
+            this(referenceValidation, false);
+        }
+
+        /**
+         * Constructor for a manifest entry (dependent reference validation)
+         *
+         * @param referenceValidation {@link ReferenceValidation}
+         * @param manifestEntry whether the reference is a dependent manifest entry reference
+         */
+        private ReferenceValidationStatus(ReferenceValidation referenceValidation, boolean manifestEntry) {
+            this.referenceValidation = referenceValidation;
+            this.dataObjectFormatFound = manifestEntry;
+        }
+
+        /**
+         * Gets the {@code ReferenceValidation}
+         *
+         * @return {@link ReferenceValidation}
+         */
+        public ReferenceValidation getReferenceValidation() {
+            return referenceValidation;
+        }
+
+        /**
+         * Whether the corresponding DataFormatObject has been found
+         *
+         * @return TRUE if the corresponding DataObjectFormat element has been found, FALSE otherwise
+         */
+        public boolean isDataObjectFormatFound() {
+            return dataObjectFormatFound;
+        }
+
+        /**
+         * Sets whether the corresponding DataFormatObject has been found
+         *
+         * @param dataObjectFormatFound whether the corresponding DataFormatObject has been found
+         */
+        public void setDataObjectFormatFound(boolean dataObjectFormatFound) {
+            this.dataObjectFormatFound = dataObjectFormatFound;
+        }
+
     }
 
 }

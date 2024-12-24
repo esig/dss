@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -499,6 +499,16 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
                 addReferences(unsignedPropertiesReferences, timestampValidationData);
                 continue;
 
+            } else if (isAnyValidationData(unsignedAttribute)) {
+                List<TimestampedReference> validationData = getAnyValidationData(unsignedAttribute);
+                addReferences(unsignedPropertiesReferences, validationData);
+                continue;
+
+            } else if (isValidationDataReferences(unsignedAttribute)) {
+                List<TimestampedReference> validationDataReferences = getValidationDataReferences(unsignedAttribute);
+                addReferences(unsignedPropertiesReferences, validationDataReferences);
+                continue;
+
             } else if (isCounterSignature(unsignedAttribute)) {
                 List<AdvancedSignature> counterSignatures = getCounterSignatures(unsignedAttribute);
                 List<TimestampedReference> counterSignatureReferences = getCounterSignaturesReferences(counterSignatures);
@@ -699,10 +709,27 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
      * "timestamp-validation-data" element
      *
      * @param unsignedAttribute {@link SA} to process
-     * @return TRUE if the {@code unsignedAttribute} is a TimeStamp Validation Data,
-     * FALSE otherwise
+     * @return TRUE if the {@code unsignedAttribute} is a TimeStamp Validation Data, FALSE otherwise
      */
     protected abstract boolean isTimeStampValidationData(SA unsignedAttribute);
+
+    /**
+     * Determines if the given {@code unsignedAttribute} is an instance of
+     * "any-validation-data" element
+     *
+     * @param unsignedAttribute {@link SA} to process
+     * @return TRUE if the {@code unsignedAttribute} is a Validation Data, FALSE otherwise
+     */
+    protected abstract boolean isAnyValidationData(SA unsignedAttribute);
+
+    /**
+     * Determines if the given {@code unsignedAttribute} is an instance of
+     * "references" element
+     *
+     * @param unsignedAttribute {@link SA} to process
+     * @return TRUE if the {@code unsignedAttribute} is a Validation Data References, FALSE otherwise
+     */
+    protected abstract boolean isValidationDataReferences(SA unsignedAttribute);
 
     /**
      * Determines if the given {@code unsignedAttribute} is an instance of
@@ -1007,11 +1034,38 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
      * @return list of {@link TimestampedReference}s
      */
     protected List<TimestampedReference> getTimestampValidationData(SA unsignedAttribute) {
+        return getAnyValidationData(unsignedAttribute);
+    }
+
+    /**
+     * Returns a list of {@link TimestampedReference}s encapsulated to the "validation-data" {@code unsignedAttribute}
+     *
+     * @param unsignedAttribute {@link SA} to get timestamped references from
+     * @return list of {@link TimestampedReference}s
+     */
+    protected List<TimestampedReference> getAnyValidationData(SA unsignedAttribute) {
         final List<TimestampedReference> timestampedReferences = new ArrayList<>();
         addReferences(timestampedReferences, createReferencesForIdentifiers(
                 getEncapsulatedCertificateIdentifiers(unsignedAttribute), TimestampedObjectType.CERTIFICATE));
         addReferences(timestampedReferences, createReferencesForCRLBinaries(getEncapsulatedCRLIdentifiers(unsignedAttribute)));
         addReferences(timestampedReferences, createReferencesForOCSPBinaries(getEncapsulatedOCSPIdentifiers(unsignedAttribute), certificateSource));
+        return timestampedReferences;
+    }
+
+    /**
+     * Returns a list of {@link TimestampedReference}s encapsulated to the "validation-data-references" {@code unsignedAttribute}
+     *
+     * @param unsignedAttribute {@link SA} to get timestamped references from
+     * @return list of {@link TimestampedReference}s
+     */
+    protected List<TimestampedReference> getValidationDataReferences(SA unsignedAttribute) {
+        final List<TimestampedReference> timestampedReferences = new ArrayList<>();
+        addReferences(timestampedReferences, createReferencesForCertificateRefs(
+                getCertificateRefs(unsignedAttribute), signature.getCertificateSource(), certificateSource));
+        addReferences(timestampedReferences, createReferencesForCRLRefs(
+                getCRLRefs(unsignedAttribute), signature.getCRLSource(), crlSource));
+        addReferences(timestampedReferences, createReferencesForOCSPRefs(
+                getOCSPRefs(unsignedAttribute), signature.getOCSPSource(), certificateSource, ocspSource));
         return timestampedReferences;
     }
 
@@ -1188,7 +1242,7 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
         List<TimestampToken> result = new ArrayList<>();
         for (TimestampToken timestampToken : getAllTimestamps()) {
             if (detachedTimestamps.contains(timestampToken) &&
-                    (manifestFile == null || !manifestFile.isDocumentCovered(timestampToken.getFileName()))) {
+                    (manifestFile == null || !manifestFile.isDocumentCovered(timestampToken.getFilename()))) {
                 // the detached timestamp is not covered, continue
                 continue;
             }

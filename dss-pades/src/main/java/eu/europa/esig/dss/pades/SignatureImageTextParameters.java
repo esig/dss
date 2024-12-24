@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -303,10 +303,48 @@ public class SignatureImageTextParameters implements Serializable {
 
 	@Override
 	public String toString() {
-		return "SignatureImageTextParameters [signerTextPosition=" + signerTextPosition
-				+ ", signerTextVerticalAlignment=" + signerTextVerticalAlignment + ", signerTextHorizontalAlignment="
-				+ signerTextHorizontalAlignment + ", text=" + text + ", padding=" + padding
-				+ ", textColor=" + textColor + ", backgroundColor=" + backgroundColor + "]";
+		return "SignatureImageTextParameters [" +
+				"signerTextPosition=" + signerTextPosition +
+				", signerTextVerticalAlignment=" + signerTextVerticalAlignment +
+				", signerTextHorizontalAlignment=" + signerTextHorizontalAlignment +
+				", text='" + text + '\'' +
+				", dssFont=" + dssFont +
+				", textWrapping=" + textWrapping +
+				", padding=" + padding +
+				", textColor=" + textColor +
+				", backgroundColor=" + backgroundColor +
+				']';
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		SignatureImageTextParameters that = (SignatureImageTextParameters) o;
+		return Float.compare(padding, that.padding) == 0
+				&& signerTextPosition == that.signerTextPosition
+				&& signerTextVerticalAlignment == that.signerTextVerticalAlignment
+				&& signerTextHorizontalAlignment == that.signerTextHorizontalAlignment
+				&& Objects.equals(text, that.text)
+				&& Objects.equals(dssFont, that.dssFont)
+				&& textWrapping == that.textWrapping
+				&& Objects.equals(textColor, that.textColor)
+				&& Objects.equals(backgroundColor, that.backgroundColor);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = Objects.hashCode(signerTextPosition);
+		result = 31 * result + Objects.hashCode(signerTextVerticalAlignment);
+		result = 31 * result + Objects.hashCode(signerTextHorizontalAlignment);
+		result = 31 * result + Objects.hashCode(text);
+		result = 31 * result + Objects.hashCode(dssFont);
+		result = 31 * result + Objects.hashCode(textWrapping);
+		result = 31 * result + Float.hashCode(padding);
+		result = 31 * result + Objects.hashCode(textColor);
+		result = 31 * result + Objects.hashCode(backgroundColor);
+		return result;
 	}
 
 }

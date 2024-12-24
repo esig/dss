@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -23,7 +23,6 @@ package eu.europa.esig.dss.spi.validation;
 import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
 import eu.europa.esig.dss.alert.LogOnStatusAlert;
 import eu.europa.esig.dss.alert.StatusAlert;
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
@@ -97,19 +96,15 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	private TimestampTokenVerifier timestampTokenVerifier;
 
 	/**
+	 * Verifies validity of trust anchors
+	 */
+	private TrustAnchorVerifier trustAnchorVerifier;
+
+	/**
 	 * The AIA source used to download a certificate's issuer by the AIA URI(s)
 	 * defining within a certificate.
 	 */
 	private AIASource aiaSource;
-
-	/**
-	 * This variable set the default Digest Algorithm what will be used for calculation
-	 * of digests for validation tokens and signed data
-	 * Default: SHA256
-	 * @deprecated since DSS 6.1. See {@code DocumentValidator#defaultDigestAlgorithm} instead
-	 */
-	@Deprecated
-	private DigestAlgorithm defaultDigestAlgorithm = DigestAlgorithm.SHA256;
 
 	/**
 	 * This variable set the behavior to follow in case of invalid signature
@@ -158,15 +153,6 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	 * Default : LogOnStatusAlert - log a warning message
 	 */
 	private StatusAlert alertOnUncoveredPOE = new LogOnStatusAlert(Level.WARN);
-
-	/**
-	 * This variable set the behavior to follow in case of an expired signature.
-	 *
-	 * Default : ExceptionOnStatusAlert - throw the exception
-	 * @deprecated since DSS 6.1. Please use {@code alertOnExpiredCertificate} instead.
-	 */
-	@Deprecated
-	private StatusAlert alertOnExpiredSignature = new ExceptionOnStatusAlert();
 
 	/**
 	 * Defines a behavior on signature creation with an expired signing-certificate
@@ -302,6 +288,16 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	}
 
 	@Override
+	public TrustAnchorVerifier getTrustAnchorVerifier() {
+		return trustAnchorVerifier;
+	}
+
+	@Override
+	public void setTrustAnchorVerifier(TrustAnchorVerifier trustAnchorVerifier) {
+		this.trustAnchorVerifier = trustAnchorVerifier;
+	}
+
+	@Override
 	public ListCertificateSource getTrustedCertSources() {
 		return trustedCertSources;
 	}
@@ -389,7 +385,6 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 
 	@Override
 	public void setAlertOnInvalidSignature(StatusAlert alertOnInvalidSignature) {
-		Objects.requireNonNull(alertOnInvalidSignature);
 		this.alertOnInvalidSignature = alertOnInvalidSignature;
 	}
 
@@ -400,7 +395,6 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 
 	@Override
 	public void setAlertOnInvalidTimestamp(StatusAlert alertOnInvalidTimestamp) {
-		Objects.requireNonNull(alertOnInvalidTimestamp);
 		this.alertOnInvalidTimestamp = alertOnInvalidTimestamp;
 	}
 
@@ -411,7 +405,6 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 
 	@Override
 	public void setAlertOnMissingRevocationData(StatusAlert alertOnMissingRevocationData) {
-		Objects.requireNonNull(alertOnMissingRevocationData);
 		this.alertOnMissingRevocationData = alertOnMissingRevocationData;
 	}
 
@@ -422,7 +415,6 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 
 	@Override
 	public void setAlertOnUncoveredPOE(StatusAlert alertOnUncoveredPOE) {
-		Objects.requireNonNull(alertOnUncoveredPOE);
 		this.alertOnUncoveredPOE = alertOnUncoveredPOE;
 	}
 
@@ -433,7 +425,6 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 
 	@Override
 	public void setAlertOnRevokedCertificate(StatusAlert alertOnRevokedCertificate) {
-		Objects.requireNonNull(alertOnRevokedCertificate);
 		this.alertOnRevokedCertificate = alertOnRevokedCertificate;
 	}
 
@@ -444,21 +435,7 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 
 	@Override
 	public void setAlertOnNoRevocationAfterBestSignatureTime(StatusAlert alertOnNoRevocationAfterBestSignatureTime) {
-		Objects.requireNonNull(alertOnNoRevocationAfterBestSignatureTime);
 		this.alertOnNoRevocationAfterBestSignatureTime = alertOnNoRevocationAfterBestSignatureTime;
-	}
-
-	@Override
-	@Deprecated
-	public StatusAlert getAlertOnExpiredSignature() {
-		return alertOnExpiredSignature;
-	}
-
-	@Override
-	@Deprecated
-	public void setAlertOnExpiredSignature(StatusAlert alertOnExpiredSignature) {
-		Objects.requireNonNull(alertOnExpiredSignature);
-		this.alertOnExpiredSignature = alertOnExpiredSignature;
 	}
 
 	@Override
@@ -468,7 +445,6 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 
 	@Override
 	public void setAlertOnExpiredCertificate(StatusAlert alertOnExpiredCertificate) {
-		Objects.requireNonNull(alertOnExpiredCertificate);
 		this.alertOnExpiredCertificate = alertOnExpiredCertificate;
 	}
 
@@ -479,7 +455,6 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 
 	@Override
 	public void setAlertOnNotYetValidCertificate(StatusAlert alertOnNotYetValidCertificate) {
-		Objects.requireNonNull(alertOnNotYetValidCertificate);
 		this.alertOnNotYetValidCertificate = alertOnNotYetValidCertificate;
 	}
 
@@ -490,7 +465,6 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 
 	@Override
 	public void setAugmentationAlertOnHigherSignatureLevel(StatusAlert augmentationAlertOnHigherSignatureLevel) {
-		Objects.requireNonNull(augmentationAlertOnHigherSignatureLevel);
 		this.augmentationAlertOnHigherSignatureLevel = augmentationAlertOnHigherSignatureLevel;
 	}
 
@@ -501,7 +475,6 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 
 	@Override
 	public void setAugmentationAlertOnSignatureWithoutCertificates(StatusAlert augmentationAlertOnSignatureWithoutCertificates) {
-		Objects.requireNonNull(augmentationAlertOnSignatureWithoutCertificates);
 		this.augmentationAlertOnSignatureWithoutCertificates = augmentationAlertOnSignatureWithoutCertificates;
 	}
 
@@ -512,7 +485,6 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 
 	@Override
 	public void setAugmentationAlertOnSelfSignedCertificateChains(StatusAlert augmentationAlertOnSelfSignedCertificateChains) {
-		Objects.requireNonNull(augmentationAlertOnSelfSignedCertificateChains);
 		this.augmentationAlertOnSelfSignedCertificateChains = augmentationAlertOnSelfSignedCertificateChains;
 	}
 
@@ -524,31 +496,6 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	@Override
 	public void setCheckRevocationForUntrustedChains(boolean checkRevocationForUntrustedChains) {
 		this.checkRevocationForUntrustedChains = checkRevocationForUntrustedChains;
-	}
-
-	@Override
-	@Deprecated
-	public boolean isExtractPOEFromUntrustedChains() {
-		return extractPOEFromUntrustedChains;
-	}
-
-	@Override
-	@Deprecated
-	public void setExtractPOEFromUntrustedChains(boolean extractPOEFromUntrustedChains) {
-		this.extractPOEFromUntrustedChains = extractPOEFromUntrustedChains;
-	}
-
-	@Override
-	@Deprecated
-	public void setDefaultDigestAlgorithm(DigestAlgorithm digestAlgorithm) {
-		Objects.requireNonNull(digestAlgorithm, "Default DigestAlgorithm cannot be nulL!");
-		this.defaultDigestAlgorithm = digestAlgorithm;
-	}
-	
-	@Override
-	@Deprecated
-	public DigestAlgorithm getDefaultDigestAlgorithm() {
-		return defaultDigestAlgorithm;
 	}
 
 }

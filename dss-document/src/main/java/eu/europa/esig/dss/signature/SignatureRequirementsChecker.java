@@ -1,35 +1,37 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package eu.europa.esig.dss.signature;
 
-import eu.europa.esig.dss.spi.exception.IllegalInputException;
+import eu.europa.esig.dss.model.signature.SignatureCryptographicVerification;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
-import eu.europa.esig.dss.model.signature.SignatureCryptographicVerification;
+import eu.europa.esig.dss.spi.validation.SignatureValidationAlerter;
 import eu.europa.esig.dss.spi.validation.SignatureValidationContext;
+import eu.europa.esig.dss.spi.validation.ValidationAlerter;
 import eu.europa.esig.dss.spi.validation.status.SignatureStatus;
 import eu.europa.esig.dss.spi.validation.status.TokenStatus;
+import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +43,7 @@ import java.util.stream.Collectors;
 
 /**
  * This class is used to verify if the signature can be created according to the provided requirements
- * in a signature parameters instance
+ * in a {@code CertificateVerifier} instance
  *
  */
 public class SignatureRequirementsChecker {
@@ -132,12 +134,11 @@ public class SignatureRequirementsChecker {
      * @param signing defines whether the validation is performed on signing or augmentation process
      */
     private void assertCertificatesAreYetValid(final Collection<CertificateToken> certificateTokens, boolean signing) {
-        if (Utils.isCollectionEmpty(certificateTokens)) {
+        if (certificateVerifier.getAlertOnNotYetValidCertificate() == null) {
+            LOG.trace("The verification of #certificatesAreYetValid has been skipped.");
             return;
         }
-        if (signatureParameters.isSignWithNotYetValidCertificate()) {
-            LOG.warn("Use of a deprecated parameter #signWithNotYetValidCertificate. " +
-                    "Please configure instead #alertOnNotYetValidCertificate within CertificateVerifier.");
+        if (Utils.isCollectionEmpty(certificateTokens)) {
             return;
         }
 
@@ -193,12 +194,11 @@ public class SignatureRequirementsChecker {
      * @param signing defines whether the validation is performed on signing or augmentation process
      */
     private void assertCertificatesAreNotExpired(final Collection<CertificateToken> certificateTokens, boolean signing) {
-        if (Utils.isCollectionEmpty(certificateTokens)) {
+        if (certificateVerifier.getAlertOnExpiredCertificate() == null) {
+            LOG.trace("The verification of #certificatesAreNotExpired has been skipped.");
             return;
         }
-        if (signatureParameters.isSignWithExpiredCertificate()) {
-            LOG.warn("Use of a deprecated parameter #signWithNotYetValidCertificate. " +
-                    "Please configure instead #alertOnExpiredCertificate within CertificateVerifier.");
+        if (Utils.isCollectionEmpty(certificateTokens)) {
             return;
         }
 
@@ -247,6 +247,10 @@ public class SignatureRequirementsChecker {
         if (!signatureParameters.isCheckCertificateRevocation()) {
             return;
         }
+        if (certificateVerifier.getAlertOnMissingRevocationData() == null && certificateVerifier.getAlertOnRevokedCertificate() == null) {
+            LOG.trace("The verification of #certificatesAreNotRevoked has been skipped.");
+            return;
+        }
 
         Date signingDate = signatureParameters.bLevel().getSigningDate();
         final SignatureValidationContext validationContext = new SignatureValidationContext(signingDate);
@@ -263,8 +267,9 @@ public class SignatureRequirementsChecker {
         }
         validationContext.validate();
 
-        validationContext.checkAllRequiredRevocationDataPresent();
-        validationContext.checkCertificateNotRevoked(certificateToken);
+        ValidationAlerter validationAlerter = new SignatureValidationAlerter(validationContext);
+        validationAlerter.assertAllRequiredRevocationDataPresent();
+        validationAlerter.assertCertificateNotRevoked(certificateToken);
     }
 
     /**
@@ -276,6 +281,10 @@ public class SignatureRequirementsChecker {
         if (!signatureParameters.isCheckCertificateRevocation()) {
             return;
         }
+        if (certificateVerifier.getAlertOnMissingRevocationData() == null && certificateVerifier.getAlertOnRevokedCertificate() == null) {
+            LOG.trace("The verification of #certificatesAreNotRevoked has been skipped.");
+            return;
+        }
 
         Date signingDate = signatureParameters.bLevel().getSigningDate();
         final SignatureValidationContext validationContext = new SignatureValidationContext(signingDate);
@@ -285,8 +294,9 @@ public class SignatureRequirementsChecker {
         }
         validationContext.validate();
 
-        validationContext.checkAllRequiredRevocationDataPresent();
-        validationContext.checkAllSignatureCertificatesNotRevoked();
+        ValidationAlerter validationAlerter = new SignatureValidationAlerter(validationContext);
+        validationAlerter.assertAllRequiredRevocationDataPresent();
+        validationAlerter.assertAllSignatureCertificatesNotRevoked();
     }
 
     /**
@@ -304,6 +314,11 @@ public class SignatureRequirementsChecker {
      * @param signatures a list of {@link AdvancedSignature}s
      */
     protected void assertTLevelIsHighest(List<AdvancedSignature> signatures) {
+        if (certificateVerifier.getAugmentationAlertOnHigherSignatureLevel() == null) {
+            LOG.trace("The verification of #tLevelIsHighest has been skipped.");
+            return;
+        }
+        
         SignatureStatus status = new SignatureStatus();
         for (AdvancedSignature signature : signatures) {
             checkTLevelIsHighest(signature, status);
@@ -352,6 +367,11 @@ public class SignatureRequirementsChecker {
      * @param signatures a list of {@link AdvancedSignature}s
      */
     protected void assertLTLevelIsHighest(List<AdvancedSignature> signatures) {
+        if (certificateVerifier.getAugmentationAlertOnHigherSignatureLevel() == null) {
+            LOG.trace("The verification of #ltLevelIsHighest has been skipped.");
+            return;
+        }
+        
         SignatureStatus status = new SignatureStatus();
         for (AdvancedSignature signature : signatures) {
             checkLTLevelIsHighest(signature, status);
@@ -420,6 +440,11 @@ public class SignatureRequirementsChecker {
     }
 
     private void assertCertificatePresent(List<AdvancedSignature> signatures, String targetLevel) {
+        if (certificateVerifier.getAugmentationAlertOnSignatureWithoutCertificates() == null) {
+            LOG.trace("The verification of #certificatePresent has been skipped.");
+            return;
+        }
+        
         SignatureStatus status = new SignatureStatus();
         for (AdvancedSignature signature : signatures) {
             if (signature.getCertificateSource().getNumberOfCertificates() == 0) {
@@ -433,6 +458,11 @@ public class SignatureRequirementsChecker {
     }
 
     private void assertCertificatesAreNotSelfSigned(List<AdvancedSignature> signatures, String targetLevel) {
+        if (certificateVerifier.getAugmentationAlertOnSelfSignedCertificateChains() == null) {
+            LOG.trace("The verification of #certificatesAreNotSelfSigned has been skipped.");
+            return;
+        }
+        
         SignatureStatus status = new SignatureStatus();
         for (AdvancedSignature signature : signatures) {
             if (signature.areAllSelfSignedCertificates()) {
@@ -460,6 +490,11 @@ public class SignatureRequirementsChecker {
      * @param signatures a list of {@link AdvancedSignature}s
      */
     protected void assertCLevelIsHighest(List<AdvancedSignature> signatures) {
+        if (certificateVerifier.getAugmentationAlertOnHigherSignatureLevel() == null) {
+            LOG.trace("The verification of #cLevelIsHighest has been skipped.");
+            return;
+        }
+        
         SignatureStatus status = new SignatureStatus();
         for (AdvancedSignature signature : signatures) {
             checkCLevelIsHighest(signature, status);
@@ -508,6 +543,11 @@ public class SignatureRequirementsChecker {
      * @param signatures a list of {@link AdvancedSignature}s
      */
     protected void assertXLevelIsHighest(List<AdvancedSignature> signatures) {
+        if (certificateVerifier.getAugmentationAlertOnHigherSignatureLevel() == null) {
+            LOG.trace("The verification of #xLevelIsHighest has been skipped.");
+            return;
+        }
+        
         SignatureStatus status = new SignatureStatus();
         for (AdvancedSignature signature : signatures) {
             checkXLevelIsHighest(signature, status);
@@ -555,6 +595,11 @@ public class SignatureRequirementsChecker {
      * @param signatures a list of {@link AdvancedSignature}s
      */
     protected void assertXLLevelIsHighest(List<AdvancedSignature> signatures) {
+        if (certificateVerifier.getAugmentationAlertOnHigherSignatureLevel() == null) {
+            LOG.trace("The verification of #xlLevelIsHighest has been skipped.");
+            return;
+        }
+        
         SignatureStatus status = new SignatureStatus();
         for (AdvancedSignature signature : signatures) {
             checkXLLevelIsHighest(signature, status);
@@ -593,6 +638,11 @@ public class SignatureRequirementsChecker {
      * @param signatures a collection of {@link AdvancedSignature}s
      */
     public void assertSignaturesValid(final Collection<AdvancedSignature> signatures) {
+        if (certificateVerifier.getAlertOnInvalidSignature() == null) {
+            LOG.trace("The verification of #signaturesValid has been skipped.");
+            return;
+        }
+        
         final List<AdvancedSignature> signaturesToValidate = signatures.stream()
                 .filter(s -> !isSignatureGeneratedWithoutCertificate(s)).collect(Collectors.toList());
         if (Utils.isCollectionEmpty(signaturesToValidate)) {

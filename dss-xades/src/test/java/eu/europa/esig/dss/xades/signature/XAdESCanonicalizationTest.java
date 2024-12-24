@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -30,14 +30,12 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
 import eu.europa.esig.dss.xml.common.definition.AbstractPath;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
-import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
-import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.Canonicalizer;
-import org.apache.xml.security.c14n.InvalidCanonicalizerException;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -208,7 +206,7 @@ class XAdESCanonicalizationTest extends AbstractXAdESTestSignature {
 		assertEquals(originalFileDigest, originalDigestBase64);
 	}
 
-	private void checkKeyInfo(Document doc) throws InvalidCanonicalizerException, CanonicalizationException {
+	private void checkKeyInfo(Document doc) {
 		// ------------------------------------ KEY INFO
 		// -----------------------------------------------------
 		// Key info extraction + Verification
@@ -280,8 +278,8 @@ class XAdESCanonicalizationTest extends AbstractXAdESTestSignature {
 		assertFalse(file.exists());
 	}
 
-	private NodeList getReferenceTransforms(Document doc, String URI) {
-		NodeList referenceTransform = DomUtils.getNodeList(doc, "//ds:Reference[@URI = '" + URI + "']/ds:Transforms/ds:Transform");
+	private NodeList getReferenceTransforms(Document doc, String uri) {
+		NodeList referenceTransform = DomUtils.getNodeList(doc, "//ds:Reference[@URI = '" + uri + "']/ds:Transforms/ds:Transform");
 		assertNotNull(referenceTransform);
 		return referenceTransform;
 	}
@@ -293,8 +291,8 @@ class XAdESCanonicalizationTest extends AbstractXAdESTestSignature {
 		return transform.getNodeValue();
 	}
 
-	private String getReferenceDigest(Document doc, String URI) {
-		Node referenceDigest = DomUtils.getNode(doc, "//ds:Reference[@URI = '" + URI + "']/ds:DigestValue");
+	private String getReferenceDigest(Document doc, String uri) {
+		Node referenceDigest = DomUtils.getNode(doc, "//ds:Reference[@URI = '" + uri + "']/ds:DigestValue");
 		assertNotNull(referenceDigest);
 		return referenceDigest.getTextContent();
 	}

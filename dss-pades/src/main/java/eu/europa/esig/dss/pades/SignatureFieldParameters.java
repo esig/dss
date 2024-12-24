@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -24,6 +24,7 @@ import eu.europa.esig.dss.enumerations.VisualSignatureRotation;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * Parameters which allow to create a new signature field in a PDF document
@@ -198,8 +199,42 @@ public class SignatureFieldParameters implements Serializable {
 
 	@Override
 	public String toString() {
-		return "SignatureFieldParameters [name=" + fieldId + ", page=" + page + ", originX=" + originX + ", originY="
-				+ originY + ", width=" + width + ", height=" + height + ", rotation=" + rotation + "]";
+		return "SignatureFieldParameters [" +
+				"fieldId='" + fieldId + '\'' +
+				", page=" + page +
+				", originX=" + originX +
+				", originY=" + originY +
+				", width=" + width +
+				", height=" + height +
+				", rotation=" + rotation +
+				']';
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		SignatureFieldParameters that = (SignatureFieldParameters) o;
+		return page == that.page
+				&& Float.compare(originX, that.originX) == 0
+				&& Float.compare(originY, that.originY) == 0
+				&& Float.compare(width, that.width) == 0
+				&& Float.compare(height, that.height) == 0
+				&& Objects.equals(fieldId, that.fieldId)
+				&& rotation == that.rotation;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = Objects.hashCode(fieldId);
+		result = 31 * result + page;
+		result = 31 * result + Float.hashCode(originX);
+		result = 31 * result + Float.hashCode(originY);
+		result = 31 * result + Float.hashCode(width);
+		result = 31 * result + Float.hashCode(height);
+		result = 31 * result + Objects.hashCode(rotation);
+		return result;
 	}
 
 }

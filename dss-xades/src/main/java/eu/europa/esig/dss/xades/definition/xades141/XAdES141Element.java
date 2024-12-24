@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -29,6 +29,8 @@ import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
  */
 public enum XAdES141Element implements DSSElement {
 
+	ANY_VALIDATION_DATA("AnyValidationData"),
+
 	ARCHIVE_TIMESTAMP("ArchiveTimeStamp"),
 
 	ATTRIBUTE_CERTIFICATE_REFS_V2("AttributeCertificateRefsV2"),
@@ -36,12 +38,18 @@ public enum XAdES141Element implements DSSElement {
 	CERT_REFS("CertRefs"),
 
 	COMPLETE_CERTIFICATE_REFS_V2("CompleteCertificateRefsV2"),
+
+	NEW_SDO_DIGEST_VALUE("NewSDODigestValue"),
+
+	ORIGINAL_REF_DIGEST("OriginalRefDigest"),
 	
 	RECOMPUTED_DIGEST_VALUE("RecomputedDigestValue"),
 
 	REFS_ONLY_TIMESTAMP_V2("RefsOnlyTimeStampV2"),
 
 	RENEWED_DIGESTS("RenewedDigests"),
+
+	RENEWED_DIGESTS_V2("RenewedDigestsV2"),
 
 	SIG_AND_REFS_TIMESTAMP_V2("SigAndRefsTimeStampV2"),
 

@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -42,6 +42,8 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.ManifestFile;
+import eu.europa.esig.dss.model.identifier.TokenIdentifierProvider;
+import eu.europa.esig.dss.model.x509.revocation.Revocation;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.spi.SignatureCertificateSource;
@@ -55,7 +57,9 @@ import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampTokenComparator;
 import eu.europa.esig.dss.test.validation.AbstractDocumentTestValidation;
+import eu.europa.esig.dss.tsl.function.GrantedOrRecognizedAtNationalLevelTrustAnchorPeriodPredicate;
 import eu.europa.esig.dss.tsl.job.TLValidationJob;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.sync.AcceptAllStrategy;
@@ -135,6 +139,9 @@ class SignaturePoolTest extends AbstractDocumentTestValidation {
 		lotlSource.setUrl("https://ec.europa.eu/tools/lotl/eu-lotl.xml");
 		lotlSource.setCertificateSource(ojContentKeyStore());
 		lotlSource.setPivotSupport(true);
+		lotlSource.setTrustAnchorValidityPredicate(new GrantedOrRecognizedAtNationalLevelTrustAnchorPeriodPredicate());
+		lotlSource.setTLVersions(Arrays.asList(5, 6));
+
 		tlValidationJob.setListOfTrustedListSources(lotlSource);
 		
 		FileCacheDataLoader fileCacheDataLoader = new FileCacheDataLoader();
@@ -157,7 +164,7 @@ class SignaturePoolTest extends AbstractDocumentTestValidation {
 		}
 	}
 
-	private static Stream<Arguments> data() throws IOException {
+	private static Stream<Arguments> data() {
 
 		// -Dsignature.pool.folder=...
 
@@ -362,9 +369,44 @@ class SignaturePoolTest extends AbstractDocumentTestValidation {
 	}
 
 	@Override
+	protected void checkCertificates(DiagnosticData diagnosticData) {
+		for (CertificateWrapper certificateWrapper : diagnosticData.getUsedCertificates()) {
+			assertNotNull(certificateWrapper);
+			assertNotNull(certificateWrapper.getId());
+			assertNotNull(certificateWrapper.getCertificateDN());
+			assertNotNull(certificateWrapper.getCertificateIssuerDN());
+			assertNotNull(certificateWrapper.getNotAfter());
+			assertNotNull(certificateWrapper.getNotBefore());
+			assertTrue(Utils.isCollectionNotEmpty(certificateWrapper.getSources()));
+			assertNotNull(certificateWrapper.getEntityKey());
+
+			if (certificateWrapper.getSigningCertificate() != null) {
+				assertNotNull(certificateWrapper.getEncryptionAlgorithm());
+				assertNotNull(certificateWrapper.getKeyLengthUsedToSignThisToken());
+				assertTrue(Utils.isStringDigits(certificateWrapper.getKeyLengthUsedToSignThisToken()));
+				assertNotNull(certificateWrapper.getDigestAlgorithm());
+				assertTrue(certificateWrapper.isSignatureIntact());
+				assertTrue(certificateWrapper.isSignatureValid());
+				assertNotNull(certificateWrapper.getIssuerEntityKey());
+			} else if (certificateWrapper.isSelfSigned()) {
+				assertNotNull(certificateWrapper.getEncryptionAlgorithm());
+				assertNotNull(certificateWrapper.getKeyLengthUsedToSignThisToken());
+				assertTrue(Utils.isStringDigits(certificateWrapper.getKeyLengthUsedToSignThisToken()));
+				assertNotNull(certificateWrapper.getDigestAlgorithm());
+				assertTrue(certificateWrapper.isSignatureIntact());
+				assertTrue(certificateWrapper.isSignatureValid());
+				assertNotNull(certificateWrapper.getIssuerEntityKey());
+			}
+		}
+	}
+
+	@Override
 	protected void verifySourcesAndDiagnosticData(List<AdvancedSignature> advancedSignatures, DiagnosticData diagnosticData) {
+        final TokenIdentifierProvider tokenIdentifierProvider = getTokenIdentifierProvider();
+
 		for (AdvancedSignature advancedSignature : advancedSignatures) {
-			SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(advancedSignature.getId());
+            SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(tokenIdentifierProvider.getIdAsString(advancedSignature));
+            assertNotNull(signatureWrapper);
 
 			SignatureCertificateSource certificateSource = advancedSignature.getCertificateSource();
 			FoundCertificatesProxy foundCertificates = signatureWrapper.foundCertificates();
@@ -379,6 +421,9 @@ class SignaturePoolTest extends AbstractDocumentTestValidation {
 			assertEquals(new HashSet<>(certificateSource.getTimeStampValidationDataCertValues()).size(),
 					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA).size() + 
 					foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA).size());
+			assertEquals(new HashSet<>(certificateSource.getAnyValidationDataCertValues()).size(),
+					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.ANY_VALIDATION_DATA).size() +
+							foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.ANY_VALIDATION_DATA).size());
 			assertEquals(new HashSet<>(certificateSource.getAttrAuthoritiesCertValues()).size(),
 					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES).size() +
 					foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES).size());
@@ -406,8 +451,10 @@ class SignaturePoolTest extends AbstractDocumentTestValidation {
 					getUniqueOrphanCertificateRefsAmount(foundCertificates, CertificateRefOrigin.COMPLETE_CERTIFICATE_REFS) );
 
 			List<TimestampToken> timestamps = advancedSignature.getAllTimestamps();
+            timestamps.sort(new TimestampTokenComparator()); // ensure the same order as in DD
 			for (TimestampToken timestampToken : timestamps) {
-				TimestampWrapper timestampWrapper = diagnosticData.getTimestampById(timestampToken.getDSSIdAsString());
+                TimestampWrapper timestampWrapper = diagnosticData.getTimestampById(tokenIdentifierProvider.getIdAsString(timestampToken));
+                assertNotNull(timestampWrapper);
 
 				certificateSource = timestampToken.getCertificateSource();
 				foundCertificates = timestampWrapper.foundCertificates();
@@ -416,12 +463,15 @@ class SignaturePoolTest extends AbstractDocumentTestValidation {
 				assertEquals(new HashSet<>(certificateSource.getKeyInfoCertificates()).size(), 
 						foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.KEY_INFO).size() + 
 						foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.KEY_INFO).size());
-				assertEquals(new HashSet<>(certificateSource.getCertificateValues()).size(), 
+				assertEquals(new HashSet<>(certificateSource.getCertificateValues()).size(),
 						foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES).size() + 
 						foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES).size());
 				assertEquals(new HashSet<>(certificateSource.getTimeStampValidationDataCertValues()).size(), 
 						foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA).size() + 
 						foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA).size());
+				assertEquals(new HashSet<>(certificateSource.getAnyValidationDataCertValues()).size(),
+						foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.ANY_VALIDATION_DATA).size() +
+								foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.ANY_VALIDATION_DATA).size());
 				assertEquals(new HashSet<>(certificateSource.getAttrAuthoritiesCertValues()).size(), 
 						foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES).size() +
 						foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES).size());
@@ -454,16 +504,32 @@ class SignaturePoolTest extends AbstractDocumentTestValidation {
 			for (RevocationToken<OCSP> revocationToken : allRevocationTokens) {
 				RevocationCertificateSource revocationCertificateSource = revocationToken.getCertificateSource();
 				if (revocationCertificateSource != null) {
-					RevocationWrapper revocationWrapper = diagnosticData.getRevocationById(revocationToken.getDSSIdAsString());
-					foundCertificates = revocationWrapper.foundCertificates();
+                    RevocationWrapper revocationWrapper = diagnosticData.getRevocationById(tokenIdentifierProvider.getIdAsString(revocationToken));
+                    assertNotNull(revocationWrapper);
 
-					assertEquals(revocationCertificateSource.getCertificates().size(), 
-							foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.BASIC_OCSP_RESP).size() + 
-							foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.BASIC_OCSP_RESP).size());
+                    if (!containsRevocationsWithSameId(allRevocationTokens, revocationToken)) {
+                        foundCertificates = revocationWrapper.foundCertificates();
+                        assertEquals(revocationCertificateSource.getCertificates().size(),
+                                foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.BASIC_OCSP_RESP).size() +
+                                        foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.BASIC_OCSP_RESP).size());
+                    }
 				}
 			}
 		}
 	}
+
+    private <T extends Revocation> boolean containsRevocationsWithSameId(Set<RevocationToken<T>> allRevocationTokens, RevocationToken<T> revocationToken) {
+        String revocationId = getTokenIdentifierProvider().getIdAsString(revocationToken);
+        Set<RevocationToken<?>> revocationSetCopy = new HashSet<>(allRevocationTokens);
+        revocationSetCopy.remove(revocationToken);
+        for (RevocationToken<?> token : revocationSetCopy) {
+            TokenIdentifierProvider tokenIdentifierProvider = getTokenIdentifierProvider();
+            if (revocationId.equals(tokenIdentifierProvider.getIdAsString(token))) {
+                return true;
+            }
+        }
+        return false;
+    }
 	
 	private long getUniqueRelatedCertificateRefsAmount(FoundCertificatesProxy foundCertificates, CertificateRefOrigin refOrigin) {
 		List<RelatedCertificateWrapper> certificates = foundCertificates.getRelatedCertificatesByRefOrigin(refOrigin);

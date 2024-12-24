@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.test;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -208,7 +207,7 @@ public class UnmarshallingTester {
 		}
 
 		@Override
-		public XmlTimestampedObject deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+		public XmlTimestampedObject deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException {
 			ObjectMapper mapper = (ObjectMapper) jp.getCodec();
 			ObjectNode root = mapper.readTree(jp);
 			JsonNode categoryNode = root.get("Category");
@@ -304,7 +303,6 @@ public class UnmarshallingTester {
 			assertEquals(unmarshalledSig.getSignatureInformationStore().size(), originalSignature.getSignatureInformationStore().size());
 			assertEquals(unmarshalledSig.getDigestAlgorithm(), originalSignature.getDigestAlgorithm());
 			assertEquals(unmarshalledSig.getEncryptionAlgorithm(), originalSignature.getEncryptionAlgorithm());
-			assertEquals(unmarshalledSig.getMaskGenerationFunction(), originalSignature.getMaskGenerationFunction());
 
 			compareUnmarshalledCertificates(original, unmarshalledSig.getCertificateChain());
 			compareUnmarshalledTimestamps(original, unmarshalledSig.getTimestampList());

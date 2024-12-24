@@ -15,6 +15,7 @@ $ curl 'http://localhost:8080/services/rest/validation/validateSignature' -i -X 
     "name" : "sample.xml"
   } ],
   "policy" : null,
+  "validationTime" : null,
   "evidenceRecords" : null,
   "tokenExtractionStrategy" : "NONE",
   "signatureId" : null

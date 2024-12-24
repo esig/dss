@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -123,7 +123,7 @@ class ASiCEWithCAdESContainerMergerTest extends AbstractPkiFactoryTestValidation
         reports = verify(mergedContainer);
         diagnosticData = reports.getDiagnosticData();
         assertEquals(2, diagnosticData.getSignatures().size());
-        assertEquals(diagnosticData.getSignatures().get(0).getSignatureFilename(), diagnosticData.getSignatures().get(1).getSignatureFilename());
+        assertEquals(diagnosticData.getSignatures().get(0).getFilename(), diagnosticData.getSignatures().get(1).getFilename());
     }
 
     @Test
@@ -415,8 +415,8 @@ class ASiCEWithCAdESContainerMergerTest extends AbstractPkiFactoryTestValidation
         reports = verify(mergedContainer);
         diagnosticData = reports.getDiagnosticData();
         assertEquals(3, diagnosticData.getSignatures().size());
-        assertEquals(diagnosticData.getSignatures().get(0).getSignatureFilename(), diagnosticData.getSignatures().get(1).getSignatureFilename());
-        assertEquals(diagnosticData.getSignatures().get(1).getSignatureFilename(), diagnosticData.getSignatures().get(2).getSignatureFilename());
+        assertEquals(diagnosticData.getSignatures().get(0).getFilename(), diagnosticData.getSignatures().get(1).getFilename());
+        assertEquals(diagnosticData.getSignatures().get(1).getFilename(), diagnosticData.getSignatures().get(2).getFilename());
 
         manifestFiles = diagnosticData.getContainerInfo().getManifestFiles();
         assertEquals(1, manifestFiles.size());
@@ -474,19 +474,19 @@ class ASiCEWithCAdESContainerMergerTest extends AbstractPkiFactoryTestValidation
         reports = verify(mergedContainer);
         diagnosticData = reports.getDiagnosticData();
         assertEquals(3, diagnosticData.getSignatures().size());
-        assertNotEquals(diagnosticData.getSignatures().get(0).getSignatureFilename(), diagnosticData.getSignatures().get(1).getSignatureFilename());
-        assertNotEquals(diagnosticData.getSignatures().get(1).getSignatureFilename(), diagnosticData.getSignatures().get(2).getSignatureFilename());
-        assertNotEquals(diagnosticData.getSignatures().get(0).getSignatureFilename(), diagnosticData.getSignatures().get(2).getSignatureFilename());
+        assertNotEquals(diagnosticData.getSignatures().get(0).getFilename(), diagnosticData.getSignatures().get(1).getFilename());
+        assertNotEquals(diagnosticData.getSignatures().get(1).getFilename(), diagnosticData.getSignatures().get(2).getFilename());
+        assertNotEquals(diagnosticData.getSignatures().get(0).getFilename(), diagnosticData.getSignatures().get(2).getFilename());
 
         boolean aaaNameFound = false;
         boolean bbbNameFound = false;
         boolean cccNameFound = false;
         for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
-            if ("META-INF/signatureAAA.p7s".equals(signatureWrapper.getSignatureFilename())) {
+            if ("META-INF/signatureAAA.p7s".equals(signatureWrapper.getFilename())) {
                 aaaNameFound = true;
-            } else if ("META-INF/signatureBBB.p7s".equals(signatureWrapper.getSignatureFilename())) {
+            } else if ("META-INF/signatureBBB.p7s".equals(signatureWrapper.getFilename())) {
                 bbbNameFound = true;
-            } else if ("META-INF/signatureCCC.p7s".equals(signatureWrapper.getSignatureFilename())) {
+            } else if ("META-INF/signatureCCC.p7s".equals(signatureWrapper.getFilename())) {
                 cccNameFound = true;
             }
         }

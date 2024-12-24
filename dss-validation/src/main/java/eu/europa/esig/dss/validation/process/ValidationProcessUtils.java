@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -42,6 +42,8 @@ import eu.europa.esig.dss.enumerations.ValidationTime;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.SubContext;
+import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 
@@ -105,7 +107,8 @@ public class ValidationProcessUtils {
 				|| SubIndication.OUT_OF_BOUNDS_NO_POE.equals(conclusion.getSubIndication())
 				|| SubIndication.OUT_OF_BOUNDS_NOT_REVOKED.equals(conclusion.getSubIndication())
 				|| SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(conclusion.getSubIndication())
-				|| SubIndication.REVOCATION_OUT_OF_BOUNDS_NO_POE.equals(conclusion.getSubIndication()))));
+				|| SubIndication.REVOCATION_OUT_OF_BOUNDS_NO_POE.equals(conclusion.getSubIndication())
+				|| SubIndication.NO_CERTIFICATE_CHAIN_FOUND_NO_POE.equals(conclusion.getSubIndication()))));
 	}
 
 	/**
@@ -122,7 +125,8 @@ public class ValidationProcessUtils {
 						|| SubIndication.OUT_OF_BOUNDS_NO_POE.equals(conclusion.getSubIndication())
 						|| SubIndication.OUT_OF_BOUNDS_NOT_REVOKED.equals(conclusion.getSubIndication())
 						|| SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(conclusion.getSubIndication())
-						|| SubIndication.REVOCATION_OUT_OF_BOUNDS_NO_POE.equals(conclusion.getSubIndication()))));
+						|| SubIndication.REVOCATION_OUT_OF_BOUNDS_NO_POE.equals(conclusion.getSubIndication())
+						|| SubIndication.NO_CERTIFICATE_CHAIN_FOUND_NO_POE.equals(conclusion.getSubIndication()))));
 	}
 
 	/**
@@ -140,6 +144,7 @@ public class ValidationProcessUtils {
 					|| SubIndication.OUT_OF_BOUNDS_NOT_REVOKED.equals(conclusion.getSubIndication())
 					|| SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(conclusion.getSubIndication())
 					|| SubIndication.REVOCATION_OUT_OF_BOUNDS_NO_POE.equals(conclusion.getSubIndication())
+					|| SubIndication.NO_CERTIFICATE_CHAIN_FOUND_NO_POE.equals(conclusion.getSubIndication())
 					|| SubIndication.SIG_CONSTRAINTS_FAILURE.equals(conclusion.getSubIndication())
 				    || SubIndication.TRY_LATER.equals(conclusion.getSubIndication()))));
 	}
@@ -182,14 +187,17 @@ public class ValidationProcessUtils {
 	 *
 	 * @param token {@link TokenProxy} used in the validation process
 	 * @param certificate {@link CertificateWrapper} to get acceptable revocation data for
+	 * @param currentTime {@link Date}
 	 * @param bbbs a map of {@link XmlBasicBuildingBlocks}
 	 * @param poe {@link POEExtraction}
+	 * @param revocationIssuerSunsetDateConstraint {@link LevelConstraint}
 	 * @return a list of {@link CertificateRevocationWrapper}s
 	 */
 	public static List<CertificateRevocationWrapper> getAcceptableRevocationDataForPSVIfExistOrReturnAll(
-			TokenProxy token, CertificateWrapper certificate, Map<String, XmlBasicBuildingBlocks> bbbs, POEExtraction poe) {
+			TokenProxy token, CertificateWrapper certificate, Date currentTime, Map<String, XmlBasicBuildingBlocks> bbbs,
+			POEExtraction poe, LevelConstraint revocationIssuerSunsetDateConstraint) {
 		List<CertificateRevocationWrapper> revocationWrappers =
-				filterRevocationDataForPastSignatureValidation(token, certificate, bbbs, poe);
+				filterRevocationDataForPastSignatureValidation(token, certificate, currentTime, bbbs, poe, revocationIssuerSunsetDateConstraint);
 		if (Utils.isCollectionNotEmpty(revocationWrappers)) {
 			return revocationWrappers;
 		} else {
@@ -202,12 +210,15 @@ public class ValidationProcessUtils {
 	 *
 	 * @param token {@link TokenProxy} used in the validation process
 	 * @param certificate {@link CertificateWrapper} to get acceptable revocation data for
+	 * @param currentTime {@link Date}
 	 * @param bbbs a map of {@link XmlBasicBuildingBlocks}
 	 * @param poe {@link POEExtraction}
+	 * @param revocationIssuerSunsetDateConstraint {@link LevelConstraint}
 	 * @return a list of {@link CertificateRevocationWrapper}s
 	 */
 	private static List<CertificateRevocationWrapper> filterRevocationDataForPastSignatureValidation(
-			TokenProxy token, CertificateWrapper certificate, Map<String, XmlBasicBuildingBlocks> bbbs, POEExtraction poe) {
+			TokenProxy token, CertificateWrapper certificate, Date currentTime, Map<String, XmlBasicBuildingBlocks> bbbs,
+			POEExtraction poe, LevelConstraint revocationIssuerSunsetDateConstraint) {
 		final List<CertificateRevocationWrapper> certificateRevocations = new ArrayList<>();
 
 		for (CertificateRevocationWrapper certificateRevocation : certificate.getCertificateRevocationData()) {
@@ -216,12 +227,32 @@ public class ValidationProcessUtils {
 
 			if (ValidationProcessUtils.isAllowedBasicRevocationDataValidation(revocationBBB.getConclusion())
 					&& ValidationProcessUtils.isRevocationDataAcceptable(bbbs.get(token.getId()), certificate, certificateRevocation)
-					&& revocationIssuer != null && (revocationIssuer.isTrusted() || poe.isPOEExistInRange(revocationIssuer.getId(),
-					revocationIssuer.getNotBefore(), revocationIssuer.getNotAfter()))) {
+					&& revocationIssuer != null && (isTrustAnchor(revocationIssuer, currentTime, revocationIssuerSunsetDateConstraint)
+						|| poe.isPOEExistInRange(revocationIssuer.getId(), revocationIssuer.getNotBefore(), revocationIssuer.getNotAfter()))) {
 				certificateRevocations.add(certificateRevocation);
 			}
 		}
 		return certificateRevocations;
+	}
+
+	/**
+	 * This method verifies whether the given {@code certificateWrapper} can be considered as a trust anchor
+	 * at the {@code currentTime}
+	 *
+	 * @param certificateWrapper {@link CertificateWrapper} trust anchor candidate
+	 * @param currentTime {@link Date} to verify certificate's sunset date, when applicable
+	 * @param certificateSunsetDateConstraint {@link LevelConstraint}
+	 * @return TRUE if the certificate is a trust anchor at the given time, FALSE otherwise
+	 */
+	public static boolean isTrustAnchor(CertificateWrapper certificateWrapper, Date currentTime,
+										LevelConstraint certificateSunsetDateConstraint) {
+		return certificateWrapper.isTrusted() &&
+				(certificateWrapper.getTrustSunsetDate() == null || currentTime.before(certificateWrapper.getTrustSunsetDate()) ||
+						!certificateSunsetDateCheckEnforced(certificateSunsetDateConstraint));
+	}
+
+	private static boolean certificateSunsetDateCheckEnforced(LevelConstraint constraint) {
+		return constraint != null && Level.FAIL == constraint.getLevel();
 	}
 
 	/**
@@ -631,6 +662,49 @@ public class ValidationProcessUtils {
 		} else {
 			return Utils.isCollectionEmpty(expectedValues);
 		}
+	}
+
+	/**
+	 * This method is used to return the current level with a max limit of the {@code maxLevel}
+	 *
+	 * @param constraint {@link LevelConstraint} to check
+	 * @param maxLevel {@link Level}
+	 * @return {@link LevelConstraint}
+	 */
+	public static LevelConstraint getConstraintOrMaxLevel(LevelConstraint constraint, Level maxLevel) {
+		if (constraint == null || maxLevel == null) {
+			return null;
+		}
+		final LevelConstraint newConstraint = new LevelConstraint();
+		Level level;
+		switch (constraint.getLevel()) {
+			case FAIL:
+				if (Level.FAIL == maxLevel) {
+					level = Level.FAIL;
+					break;
+				}
+			case WARN:
+				if (Level.WARN == maxLevel) {
+					level = Level.WARN;
+					break;
+				}
+			case INFORM:
+				if (Level.INFORM == maxLevel) {
+					level = Level.INFORM;
+					break;
+				}
+			case IGNORE:
+				if (Level.IGNORE == maxLevel) {
+					level = Level.IGNORE;
+					break;
+				}
+				level = constraint.getLevel();
+				break;
+			default:
+				throw new IllegalArgumentException(String.format("The support of Level '%s' is not implemented!", constraint.getLevel()));
+		}
+		newConstraint.setLevel(level);
+		return newConstraint;
 	}
 
 }

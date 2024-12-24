@@ -14,6 +14,213 @@ For changes within Diagnostic Data XSD please refer <<DiagnosticDataChanges>>.
 For changes within XML Signature Policy please refer <<ValidationPolicyChanges>>.
 
 [cols="2,5,5"]
+.Code changes from version 6.1 to 6.2
+|===
+|Title                               |v6.1                            |v6.2
+|Signature #getFilename             a|
+[source,java]
+----
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+
+AdvancedSignature signature = ...
+String filename = signature.getSignatureFilename();
+...
+
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+
+SignatureWrapper signatureWrapper = ...
+String filename = signatureWrapper.getSignatureFilename();
+----
+                                                                     a|
+[source,java]
+----
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+
+AdvancedSignature signature = ...
+String filename = signature.getFilename();
+...
+
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+
+SignatureWrapper signatureWrapper = ...
+String filename = signatureWrapper.getFilename();
+----
+
+|PdfBoxUtils#generateScreenshot             a|
+[source,java]
+----
+import eu.europa.esig.dss.pdf.pdfbox.PdfBoxUtils;
+import eu.europa.esig.dss.model.DSSDocument;
+
+DSSDocument screenshot = PdfBoxUtils.generateScreenshot(pdfDocument, page);
+...
+
+import eu.europa.esig.dss.pdf.pdfbox.PdfBoxUtils;
+import eu.europa.esig.dss.model.DSSDocument;
+
+BufferedImage screenshot = PdfBoxUtils.generateBufferedImageScreenshot(pdfDocument, password, page);
+----
+                                                                     a|
+[source,java]
+----
+import eu.europa.esig.dss.pdf.pdfbox.PdfBoxScreenshotBuilder;
+import eu.europa.esig.dss.model.DSSDocument;
+
+DSSDocument screenshot = PdfBoxScreenshotBuilder.fromDocument(pdfDocument).generateScreenshot(page);
+...
+
+import eu.europa.esig.dss.pdf.pdfbox.PdfBoxScreenshotBuilder;
+import eu.europa.esig.dss.model.DSSDocument;
+
+BufferedImage screenshot = PdfBoxScreenshotBuilder.fromDocument(pdfDocument, password).generateBufferedImageScreenshot(page);
+----
+
+|PdfBoxUtils#generateSubtractionImage             a|
+[source,java]
+----
+import eu.europa.esig.dss.pdf.pdfbox.PdfBoxUtils;
+import eu.europa.esig.dss.model.DSSDocument;
+
+DSSDocument subtractionImage = PdfBoxUtils.generateSubtractionImage(docOne, passwordOne, page, docTwo, passwordTwo, page,
+        tempFileResourcesHandlerBuilder.createResourcesHandler());
+----
+                                                                     a|
+[source,java]
+----
+import eu.europa.esig.dss.pdf.pdfbox.PdfBoxUtils;
+import eu.europa.esig.dss.pdf.pdfbox.PdfBoxScreenshotBuilder;
+import eu.europa.esig.dss.model.DSSDocument;
+
+BufferedImage screenshotOne = PdfBoxScreenshotBuilder.fromDocument(docOne, passwordOne)
+        .setDSSResourcesHandlerBuilder(tempFileResourcesHandlerBuilder).generateBufferedImageScreenshot(page);
+BufferedImage screenshotTwo = PdfBoxScreenshotBuilder.fromDocument(docTwo, passwordTwo)
+        .setDSSResourcesHandlerBuilder(tempFileResourcesHandlerBuilder).generateBufferedImageScreenshot(page);
+DSSDocument subtractionImage = PdfBoxUtils.generateSubtractionImage(screenshotOne, screenshotTwo);
+----
+
+|Digest encoding for RSA signature             a|
+[source,java]
+----
+import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.token.SignatureTokenConnection;
+
+SignatureTokenConnection token = ...
+byte[] digestValue = ...
+byte[] encodedDigest = DSSUtils.encodeRSADigest(DigestAlgorithm.SHA256, digestValue));
+Digest digest = new Digest(DigestAlgorithm.SHA256, encodedDigest);
+SignatureValue signatureValue = token.signDigest(digest, SignatureAlgorithm.RSA_SHA256, getPrivateKeyEntry());
+----
+                                                                     a|
+[source,java]
+----
+import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.token.SignatureTokenConnection;
+
+SignatureTokenConnection token = ...
+byte[] digestValue = ...
+Digest digest = new Digest(DigestAlgorithm.SHA256, digestValue);
+SignatureValue signatureValue = token.signDigest(digest, SignatureAlgorithm.RSA_SHA256, getPrivateKeyEntry());
+----
+
+|XML Trusted List signing             a|
+[source,java]
+----
+import eu.europa.esig.dss.xades.TrustedListSignatureParametersBuilder;
+import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+
+TrustedListSignatureParametersBuilder builder = new TrustedListSignatureParametersBuilder(signingCertificate, xmlTrustedList);
+XAdESSignatureParameters parameters = builder.build();
+...
+----
+                                                                     a|
+[source,java]
+----
+import eu.europa.esig.dss.xades.tsl.TrustedListV5SignatureParametersBuilder;
+import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+
+TrustedListV5SignatureParametersBuilder builder = new TrustedListV5SignatureParametersBuilder(signingCertificate, xmlTrustedList);
+XAdESSignatureParameters parameters = builder.build();
+...
+----
+
+a|Additional signature validation data is included within `AnyValidationData` element (XAdES, JAdES) after LTA-level             a|
+[source,java]
+----
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.signature.XAdESService;
+
+XAdESService service = new XAdESService(certificateVerifier);
+XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
+signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
+...
+DSSDocument extendedDocument = service.extendDocument(signedDocument, signatureParameters);
+----
+                                                                     a|
+To get back to previous behavior (no `AnyValidationData` is used):
+[source,java]
+----
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.ValidationDataEncapsulationStrategy;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.signature.XAdESService;
+
+XAdESService service = new XAdESService(certificateVerifier);
+XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
+signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
+signatureParameters.setValidationDataEncapsulationStrategy(ValidationDataEncapsulationStrategy.CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA);
+...
+DSSDocument extendedDocument = service.extendDocument(signedDocument, signatureParameters);
+----
+
+a|Alert behavior in `SignatureValidationContext` checks              a|
+Only when `ValidationContext` is used directly.
+[source,java]
+----
+import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.SignatureValidationContext;
+import eu.europa.esig.dss.spi.validation.ValidationContext;
+
+CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+certificateVerifier.setAlertOnExpiredCertificate(new ExceptionOnStatusAlert());
+...
+ValidationContext validationContext = new SignatureValidationContext();
+validationContext.initialize(certificateVerifier);
+...
+validationContext.validate();
+
+boolean result = validationContext.checkAllSignaturesNotExpired(); // AlertException is thrown in case of FALSE
+----
+                                                                     a|[source,java]
+----
+import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
+import eu.europa.esig.dss.spi.validation.SignatureValidationContext;
+import eu.europa.esig.dss.spi.validation.ValidationContext;
+
+CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+certificateVerifier.setAlertOnExpiredCertificate(new ExceptionOnStatusAlert());
+...
+ValidationContext validationContext = new SignatureValidationContext();
+validationContext.initialize(certificateVerifier);
+...
+validationContext.validate();
+
+boolean result = validationContext.checkAllSignaturesNotExpired(); // no alert execution, only boolean is returned
+
+ValidationAlerter validationAlerter = new SignatureValidationAlerter(validationContext);
+validationAlerter.assertAllSignaturesNotExpired(); // AlertException is thrown in case of check failure
+----
+
+|===
+
+[cols="2,5,5"]
 .Code changes from version 6.0 to 6.1
 |===
 |Title                               |v6.0                            |v6.1

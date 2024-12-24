@@ -87,7 +87,7 @@ NOTE: The use of online sources can significantly increase the execution time of
 
 In the previous code example, the `CommonsDataLoader` is used to provide the communication layer for various protocols (e.g. HTTP, HTTPS, LDAP, LDAPS). Each source that requires to go through the network to retrieve data needs to have this component set.
 
-==== To baseline LTA.
+==== To baseline LTA
 The `AdES-BASELINE-LTA` profile implements the signature class _Signature providing Long Term Availability and Integrity of Validation Material_ (cf. <<SignatureClasses>>). In practice, the augmentation to `BASELINE-LTA` level is made by adding timestamps and optionally additional validation data to protect all the validation data incorporated at `BASELINE-LT` level. For example, this augmentation should happen before one of the certificates arrives to its expiration date or when there is a risk of cryptographic obsolescence of the algorithms and parameters used.
 
 E.g. `XAdES-BASELINE-LTA` level adds the `ArchiveTimeStamp` element within the `UnsignedSignatureProperties` and may contain several `EncapsulatedTimeStamp` elements.
@@ -110,6 +110,47 @@ The time-stamping process may be repeated every time the protection used becomes
 This concept of `BASELINE-LTA` repetition is illustrated in the following schema.
 
 image::LTA-repetition.jpg[LTA repetition, width="100%", height="100%"]
+
+[[ValDataEncapsulationStrategy]]
+=== Validation data encapsulation
+
+DSS allows configuration of the algorithm and used signature properties for validation data encapsulation at LT- and LTA- levels augmentation for certain signature standards.
+
+==== Validation data for CAdES
+
+Validation data for CAdES signatures is being encapsulated within `SignedData.certificates` and `SignedData.crls` fields, as defined by ETSI EN 319 122-1 (cf. <<R02>>).
+
+[[ValDataXAdES]]
+==== Validation data for XAdES
+
+Since version `6.2` DSS provides a parameter allowing configuration of the unsigned signature property elements, to be used for validation data (certificate and revocation values) encapsulation, when required.
+
+The behavior can be configured with a `ValidationDataEncapsulationStrategy` enumeration provided as a parameter within `XAdESSignatureParameters` to be used on `XAdES-BASELINE-LT` or `XAdES-BASELINE-LTA` signature creation or augmentation, as defined below:
+
+[source,java,indent=0]
+.Validation data encapsulation strategy setting
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/ExtendXAdESTest.java[tags=valDataStrategy]
+----
+
+NOTE: The configuration of the validation data encapsulation behavior is applicable only for `XAdES-BASELINE-*` profiles according to ETSI EN 319 132-1 (cf. <<R01>>). The parameter configuration is ignored for extended ETSI EN 319 132-2 and legacy XAdES profiles.
+
+==== Validation data for JAdES
+
+Since version `6.2` DSS provides a parameter allowing configuration of the `etsiU` unsigned header entries, similarly to the <<ValDataXAdES>>. The `ValidationDataEncapsulationStrategy` constraint within `JAdESSignatureParameters` provides a choice between the `xVals`, `rVals`, `tstVd` and `anyValData` dictionaries, respectively for JAdES.
+
+==== Validation data for PAdES
+
+Validation data for PAdES signatures is embedded within `/DSS` dictionary, as defined by ETSI EN 319 142-1 (cf. <<R03>>).
+Optionally, DSS allows inclusion of the `/VRI` dictionary (cf. <<R03>>), as defined below:
+
+[source,java,indent=0]
+.PAdES /VRI dictionary addition
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignPdfPadesBTest.java[tags=padesVri]
+----
+
+NOTE: The `/VRI` dictionary should not be used for `PAdES-BASELINE-*` signatures, as defined by ETSI EN 319 142-1 (cf. <<R03>>).
 
 === Creating a baseline T signature
 

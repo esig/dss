@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -22,12 +22,12 @@ package eu.europa.esig.dss.token;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
+import eu.europa.esig.dss.token.digest.DigestInfoEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,30 +61,13 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 	}
 
 	@Override
-	@Deprecated
-	public SignatureValue sign(ToBeSigned toBeSigned, DigestAlgorithm digestAlgorithm, MaskGenerationFunction mgf,
-			DSSPrivateKeyEntry keyEntry) throws DSSException {
-		EncryptionAlgorithm encryptionAlgorithm = keyEntry.getEncryptionAlgorithm();
-		if (EncryptionAlgorithm.RSA == encryptionAlgorithm && MaskGenerationFunction.MGF1 == mgf) {
-			LOG.info("Usage of deprecated method with EncryptionAlgorithm '{}' and MaskGenerationFunction '{}'. " +
-							"The EncryptionAlgorithm is converted to '{}'", encryptionAlgorithm, mgf, EncryptionAlgorithm.RSASSA_PSS.getName());
-			encryptionAlgorithm = EncryptionAlgorithm.RSASSA_PSS;
-		}
-		SignatureAlgorithm signatureAlgorithm = getSignatureAlgorithm(encryptionAlgorithm, digestAlgorithm);
-		return sign(toBeSigned, signatureAlgorithm, keyEntry);
-	}
-
-	@Override
 	public SignatureValue sign(ToBeSigned toBeSigned, SignatureAlgorithm signatureAlgorithm, DSSPrivateKeyEntry keyEntry)
 			throws DSSException {
 		assertEncryptionAlgorithmValid(signatureAlgorithm, keyEntry);
 
 		final String javaSignatureAlgorithm = signatureAlgorithm.getJCEId();
 		final byte[] bytes = toBeSigned.getBytes();
-		AlgorithmParameterSpec param = null;
-		if (EncryptionAlgorithm.RSASSA_PSS == signatureAlgorithm.getEncryptionAlgorithm()) {
-			param = createPSSParam(signatureAlgorithm.getDigestAlgorithm());
-		}
+		AlgorithmParameterSpec param = initParameters(signatureAlgorithm, signatureAlgorithm.getDigestAlgorithm());
 
 		try {
 			final byte[] signatureValue = sign(bytes, javaSignatureAlgorithm, param, keyEntry);
@@ -105,31 +88,15 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 	}
 
 	@Override
-	@Deprecated
-	public SignatureValue signDigest(Digest digest, MaskGenerationFunction mgf, DSSPrivateKeyEntry keyEntry)
-			throws DSSException {
-		EncryptionAlgorithm encryptionAlgorithm = keyEntry.getEncryptionAlgorithm();
-		if (EncryptionAlgorithm.RSA == encryptionAlgorithm && MaskGenerationFunction.MGF1 == mgf) {
-			LOG.info("Usage of deprecated method with EncryptionAlgorithm '{}' and MaskGenerationFunction '{}'. " +
-					"The EncryptionAlgorithm is converted to '{}'", encryptionAlgorithm, mgf, EncryptionAlgorithm.RSASSA_PSS.getName());
-			encryptionAlgorithm = EncryptionAlgorithm.RSASSA_PSS;
-		}
-		final SignatureAlgorithm signatureAlgorithm = getRawSignatureAlgorithm(encryptionAlgorithm);
-		return signDigest(digest, signatureAlgorithm, keyEntry);
-	}
-
-	@Override
 	public SignatureValue signDigest(Digest digest, SignatureAlgorithm signatureAlgorithm, DSSPrivateKeyEntry keyEntry)
 			throws DSSException {
 		assertConfigurationValid(digest, signatureAlgorithm, keyEntry);
 
 		final String javaSignatureAlgorithm = getRawSignatureAlgorithm(signatureAlgorithm.getEncryptionAlgorithm()).getJCEId();
-		final byte[] digestedBytes = digest.getValue();
-		AlgorithmParameterSpec param = null;
-		if (EncryptionAlgorithm.RSASSA_PSS == signatureAlgorithm.getEncryptionAlgorithm()) {
-			param = createPSSParam(digest.getAlgorithm());
-		}
+		digest = ensureDigestUniform(signatureAlgorithm, digest);
 
+		final byte[] digestedBytes = digest.getValue();
+		AlgorithmParameterSpec param = initParameters(signatureAlgorithm, digest.getAlgorithm());
 		try {
 			final byte[] signatureValue = sign(digestedBytes, javaSignatureAlgorithm, param, keyEntry);
 			SignatureValue value = new SignatureValue();
@@ -139,6 +106,37 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 		} catch (Exception e) {
 			throw new DSSException(String.format("Unable to sign digest : %s", e.getMessage()), e);
 		}
+	}
+
+	/**
+	 * This method ensures the digest value is provided in the correct format for signing according
+	 * to the given {@code signatureAlgorithm}
+	 * NOTE: When RSA (without PSS) is used, the digest value shall be ASN.1 DigestInfo encoded before signing
+	 *
+	 * @param signatureAlgorithm {@link SignatureAlgorithm} to be used on signing
+	 * @param digest {@link Digest} to verify
+	 * @return {@link Digest} containing an encoded digest value, when needed
+	 */
+	protected Digest ensureDigestUniform(SignatureAlgorithm signatureAlgorithm, Digest digest) {
+		if (EncryptionAlgorithm.RSA == signatureAlgorithm.getEncryptionAlgorithm() && !DigestInfoEncoder.isEncoded(digest.getValue())) {
+			byte[] encodedDigest = DigestInfoEncoder.encode(digest.getAlgorithm().getOid(), digest.getValue());
+			digest = new Digest(digest.getAlgorithm(), encodedDigest);
+		}
+		return digest;
+	}
+
+	/**
+	 * This method instantiates signature parameters, when applicable
+	 *
+	 * @param signatureAlgorithm {@link SignatureAlgorithm} used on signing
+	 * @param digestAlgorithm {@link DigestAlgorithm} used to compute the digest value
+	 * @return {@link AlgorithmParameterSpec}
+	 */
+	protected AlgorithmParameterSpec initParameters(SignatureAlgorithm signatureAlgorithm, DigestAlgorithm digestAlgorithm) {
+		if (EncryptionAlgorithm.RSASSA_PSS == signatureAlgorithm.getEncryptionAlgorithm()) {
+			return createPSSParam(digestAlgorithm);
+		}
+		return null;
 	}
 
 	private byte[] sign(final byte[] bytes, final String javaSignatureAlgorithm, final AlgorithmParameterSpec param,

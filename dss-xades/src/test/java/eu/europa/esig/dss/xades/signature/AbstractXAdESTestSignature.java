@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -50,6 +50,8 @@ import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.dataobject.DSSDataObjectFormat;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigAttribute;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.validationreport.jaxb.SAMessageDigestType;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
@@ -92,7 +94,44 @@ public abstract class AbstractXAdESTestSignature extends AbstractPkiFactoryTestD
 
 		Document documentDOM = DomUtils.buildDOM(byteArray);
 		assertNotNull(documentDOM);
+		checkReferences(documentDOM);
 		checkDataObjectFormat(documentDOM);
+	}
+
+	protected void checkReferences(Document documentDOM) {
+		NodeList signatureNodeList = DSSXMLUtils.getAllSignaturesExceptCounterSignatures(documentDOM);
+		for (int i = 0; i < signatureNodeList.getLength(); i++) {
+			Element signatureElement = (Element) signatureNodeList.item(i);
+			NodeList referenceNodeList = DomUtils.getNodeList(signatureElement, XMLDSigPath.SIGNED_INFO_REFERENCE_PATH);
+			NodeList dataObjectFormatNodeList = DomUtils.getNodeList(signatureElement, new XAdES132Path().getDataObjectFormat());
+			for (int j = 0; j < referenceNodeList.getLength(); j++) {
+				Element reference = (Element) referenceNodeList.item(j);
+
+				String referenceType = reference.getAttribute(XMLDSigAttribute.TYPE.getAttributeName());
+				String referenceUri = reference.getAttribute(XMLDSigAttribute.URI.getAttributeName());
+				assertNotNull(referenceUri);
+
+				String referenceId = reference.getAttribute(XMLDSigAttribute.ID.getAttributeName());
+				assertNotNull(referenceId);
+
+				if ((DomUtils.startsFromHash(referenceUri) || DomUtils.isXPointerQuery(referenceUri)) &&
+						(new XAdES132Path().getSignedPropertiesUri().equals(referenceType) ||
+								new XAdES132Path().getCounterSignatureUri().equals(referenceType))) {
+					continue;
+				}
+
+				boolean relatedDataObjectFormatFound = false;
+				for (int k = 0; k < dataObjectFormatNodeList.getLength(); k++) {
+					Element dataObjectFormat = (Element) dataObjectFormatNodeList.item(k);
+					String objectReference = dataObjectFormat.getAttribute(XAdES132Attribute.OBJECT_REFERENCE.getAttributeName());
+					if (referenceId.equals(DomUtils.getId(objectReference))) {
+						relatedDataObjectFormatFound = true;
+						break;
+					}
+				}
+				assertTrue(relatedDataObjectFormatFound);
+			}
+		}
 	}
 
 	protected void checkDataObjectFormat(Document documentDOM) {
@@ -235,6 +274,8 @@ public abstract class AbstractXAdESTestSignature extends AbstractPkiFactoryTestD
 					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES).size());
 			assertEquals(certificateSource.getTimeStampValidationDataCertValues().size(),
 					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.TIMESTAMP_VALIDATION_DATA).size());
+			assertEquals(certificateSource.getAnyValidationDataCertValues().size(),
+					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.ANY_VALIDATION_DATA).size());
 			assertEquals(certificateSource.getAttrAuthoritiesCertValues().size(),
 					foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES).size());
 			assertEquals(0, foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.SIGNED_DATA).size()
@@ -294,6 +335,7 @@ public abstract class AbstractXAdESTestSignature extends AbstractPkiFactoryTestD
 		}
 	}
 
+	@Override
 	protected boolean documentPresent(DSSDocument original, List<DSSDocument> retrievedDocuments) {
 		boolean found = false;
 		boolean toBeCanonicalized = MimeTypeEnum.XML.equals(original.getMimeType()) || MimeTypeEnum.HTML.equals(original.getMimeType());
@@ -330,6 +372,32 @@ public abstract class AbstractXAdESTestSignature extends AbstractPkiFactoryTestD
 		Document expected = DomUtils.buildDOM(signedAssertionOne);
 		Document extracted = DomUtils.buildDOM(signedAssertionTwo);
 		return expected.isEqualNode(extracted);
+	}
+
+	@Override
+	protected void checkCertificateValuesEncapsulation(DiagnosticData diagnosticData) {
+		SignatureLevel signatureFormat = getSignatureParameters().getSignatureLevel();
+		if (getSignatureParameters().isEn319132() &&
+				(SignatureLevel.XAdES_BASELINE_B == signatureFormat ||
+				SignatureLevel.XAdES_BASELINE_T == signatureFormat ||
+				SignatureLevel.XAdES_BASELINE_LT == signatureFormat ||
+				SignatureLevel.XAdES_BASELINE_LTA == signatureFormat)) {
+			super.checkCertificateValuesEncapsulation(diagnosticData);
+		}
+		// skip for not BASELINE profiles
+	}
+
+	@Override
+	protected void checkRevocationDataEncapsulation(DiagnosticData diagnosticData) {
+		SignatureLevel signatureFormat = getSignatureParameters().getSignatureLevel();
+		if (getSignatureParameters().isEn319132() &&
+				(SignatureLevel.XAdES_BASELINE_B == signatureFormat ||
+						SignatureLevel.XAdES_BASELINE_T == signatureFormat ||
+						SignatureLevel.XAdES_BASELINE_LT == signatureFormat ||
+						SignatureLevel.XAdES_BASELINE_LTA == signatureFormat)) {
+			super.checkRevocationDataEncapsulation(diagnosticData);
+		}
+		// skip for not BASELINE profiles
 	}
 
 }

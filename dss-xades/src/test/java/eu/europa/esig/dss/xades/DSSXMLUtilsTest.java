@@ -1,49 +1,45 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package eu.europa.esig.dss.xades;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.IOException;
-import java.util.List;
-
-import javax.xml.transform.Source;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamSource;
-
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.xades.XAdES319132Utils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
-import eu.europa.esig.dss.xml.utils.DomUtils;
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.xades.XAdES319132Utils;
+import javax.xml.transform.Source;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamSource;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DSSXMLUtilsTest {
 
@@ -55,14 +51,14 @@ class DSSXMLUtilsTest {
 	}
 
 	@Test
-	void validateAgainstXSDWithExternalSourceMissing() throws SAXException, IOException {
+	void validateAgainstXSDWithExternalSourceMissing()  {
 		DSSDocument document = new FileDocument("src/test/resources/ASiCManifest.xml");
 		List<String> errorMessages = xadesUtils.validateAgainstXSD(getSource(document), new StreamSource[0]);
 		assertFalse(Utils.isCollectionEmpty(errorMessages));
 	}
 
 	@Test
-	void validateAgainstXSDWithExternalSourceOK() throws SAXException, IOException {
+	void validateAgainstXSDWithExternalSourceOK() {
 		StreamSource streamSource = new StreamSource(DSSXMLUtilsTest.class.getResourceAsStream("/ExternalXSDForAsic.xsd"));
 		DSSDocument document = new FileDocument("src/test/resources/ASiCManifest.xml");
 		List<String> errorMessages = xadesUtils.validateAgainstXSD(getSource(document), streamSource);

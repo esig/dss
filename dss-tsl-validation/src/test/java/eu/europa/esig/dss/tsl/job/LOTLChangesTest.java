@@ -1,29 +1,41 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package eu.europa.esig.dss.tsl.job;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.tsl.LOTLInfo;
+import eu.europa.esig.dss.model.tsl.TLInfo;
+import eu.europa.esig.dss.model.tsl.TLValidationJobSummary;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
+import eu.europa.esig.dss.tsl.cache.CacheCleaner;
+import eu.europa.esig.dss.tsl.source.LOTLSource;
+import eu.europa.esig.dss.tsl.sync.SynchronizationStrategy;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
 import java.util.Date;
@@ -31,23 +43,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
-import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.model.tsl.LOTLInfo;
-import eu.europa.esig.dss.model.tsl.TLInfo;
-import eu.europa.esig.dss.model.tsl.TLValidationJobSummary;
-import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
-import eu.europa.esig.dss.spi.x509.CertificateSource;
-import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
-import eu.europa.esig.dss.tsl.cache.CacheCleaner;
-import eu.europa.esig.dss.tsl.source.LOTLSource;
-import eu.europa.esig.dss.tsl.sync.SynchronizationStrategy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class LOTLChangesTest {
 
@@ -129,6 +128,126 @@ class LOTLChangesTest {
 		assertEquals(0, certificates.size());
 	}
 
+	@Test
+	void lotlReUploadTest() {
+		FileCacheDataLoader offlineFileLoader = getOfflineFileLoader(originalFiles());
+		offlineFileLoader.setCacheExpirationTime(0); // request every time
+
+		TLValidationJob job = new TLValidationJob();
+		job.setListOfTrustedListSources(getLOTLSource());
+		job.setOfflineDataLoader(offlineFileLoader);
+		TrustedListsCertificateSource trustedListCertificateSource = new TrustedListsCertificateSource();
+		job.setTrustedListCertificateSource(trustedListCertificateSource);
+
+		job.offlineRefresh();
+
+		TLValidationJobSummary summary = job.getSummary();
+		List<LOTLInfo> lotlInfos = summary.getLOTLInfos();
+		assertEquals(1, lotlInfos.size());
+		LOTLInfo lotlInfo = lotlInfos.get(0);
+		List<TLInfo> tlInfos = lotlInfo.getTLInfos();
+		assertEquals(31, tlInfos.size());
+
+		TLInfo france = getFrance(tlInfos);
+		assertNotNull(france);
+		assertTrue(france.getValidationCacheInfo().isValid());
+
+		job.setOnlineDataLoader(getOnlineFileLoader(refreshFiles()));
+
+		job.onlineRefresh();
+
+		summary = job.getSummary();
+		lotlInfos = summary.getLOTLInfos();
+		assertEquals(1, lotlInfos.size());
+		lotlInfo = lotlInfos.get(0);
+
+		tlInfos = lotlInfo.getTLInfos();
+		assertEquals(31, tlInfos.size()); // same TLs number after cleaner
+
+		job.offlineRefresh();
+
+		summary = job.getSummary();
+		lotlInfos = summary.getLOTLInfos();
+		assertEquals(1, lotlInfos.size());
+		lotlInfo = lotlInfos.get(0);
+
+		tlInfos = lotlInfo.getTLInfos();
+		assertEquals(31, tlInfos.size()); // same TLs number after cleaner
+
+		job.onlineRefresh();
+
+		summary = job.getSummary();
+		lotlInfos = summary.getLOTLInfos();
+		assertEquals(1, lotlInfos.size());
+		lotlInfo = lotlInfos.get(0);
+
+		tlInfos = lotlInfo.getTLInfos();
+		assertEquals(31, tlInfos.size()); // same TLs number after cleaner
+	}
+
+	@Test
+	void lotlReUploadWithCacheCleanerTest() {
+		FileCacheDataLoader offlineFileLoader = getOfflineFileLoader(originalFiles());
+		offlineFileLoader.setCacheExpirationTime(0); // request every time
+
+		TLValidationJob job = new TLValidationJob();
+		job.setListOfTrustedListSources(getLOTLSource());
+		job.setOfflineDataLoader(offlineFileLoader);
+		TrustedListsCertificateSource trustedListCertificateSource = new TrustedListsCertificateSource();
+		job.setTrustedListCertificateSource(trustedListCertificateSource);
+
+		CacheCleaner cacheCleaner = new CacheCleaner();
+		cacheCleaner.setCleanFileSystem(true);
+		cacheCleaner.setCleanMemory(true);
+		cacheCleaner.setDSSFileLoader(offlineFileLoader);
+		job.setCacheCleaner(cacheCleaner);
+
+		job.offlineRefresh();
+
+		TLValidationJobSummary summary = job.getSummary();
+		List<LOTLInfo> lotlInfos = summary.getLOTLInfos();
+		assertEquals(1, lotlInfos.size());
+		LOTLInfo lotlInfo = lotlInfos.get(0);
+		List<TLInfo> tlInfos = lotlInfo.getTLInfos();
+		assertEquals(31, tlInfos.size());
+
+		TLInfo france = getFrance(tlInfos);
+		assertNotNull(france);
+		assertTrue(france.getValidationCacheInfo().isValid());
+
+		job.setOnlineDataLoader(getOnlineFileLoader(refreshFiles()));
+
+		job.onlineRefresh();
+
+		summary = job.getSummary();
+		lotlInfos = summary.getLOTLInfos();
+		assertEquals(1, lotlInfos.size());
+		lotlInfo = lotlInfos.get(0);
+
+		tlInfos = lotlInfo.getTLInfos();
+		assertEquals(31, tlInfos.size()); // same TLs number after cleaner
+
+		job.offlineRefresh();
+
+		summary = job.getSummary();
+		lotlInfos = summary.getLOTLInfos();
+		assertEquals(1, lotlInfos.size());
+		lotlInfo = lotlInfos.get(0);
+
+		tlInfos = lotlInfo.getTLInfos();
+		assertEquals(31, tlInfos.size()); // same TLs number after cleaner
+
+		job.onlineRefresh();
+
+		summary = job.getSummary();
+		lotlInfos = summary.getLOTLInfos();
+		assertEquals(1, lotlInfos.size());
+		lotlInfo = lotlInfos.get(0);
+
+		tlInfos = lotlInfo.getTLInfos();
+		assertEquals(31, tlInfos.size()); // same TLs number after cleaner
+	}
+
 	private TLInfo getFrance(List<TLInfo> tlInfos) {
 		for (TLInfo tlInfo : tlInfos) {
 			if ("FR".equals(tlInfo.getParsingCacheInfo().getTerritory())) {
@@ -190,10 +309,10 @@ class LOTLChangesTest {
 		Map<String, DSSDocument> urlMap = new HashMap<>();
 		urlMap.put("EU", lotl250);
 
-		String siURL248 = "http://www.mju.gov.si/fileadmin/mju.gov.si/pageuploads/DID/Informacijska_druzba/eIDAS/SI_TL.xml";
+		String siURL250 = "http://www.tl.gov.si/SI_TL.xml";
 		DSSDocument siTL = new FileDocument("src/test/resources/lotlCache/SI.xml");
 
-		urlMap.put(siURL248, siTL);
+		urlMap.put(siURL250, siTL);
 
 		String frURL = "http://www.ssi.gouv.fr/eidas/TL-FR.xml";
 		DSSDocument frTL = new FileDocument("src/test/resources/lotlCache/FR_59.xml");

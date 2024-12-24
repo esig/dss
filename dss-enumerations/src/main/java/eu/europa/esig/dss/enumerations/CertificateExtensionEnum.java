@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -191,7 +191,14 @@ public enum CertificateExtensionEnum implements OidDescription {
      * id-pe-qcStatements OBJECT IDENTIFIER ::= { id-pe 3 }
      * QCStatements ::= SEQUENCE OF QCStatement
      */
-    QC_STATEMENTS("QCStatements", "1.3.6.1.5.5.7.1.3");
+    QC_STATEMENTS("QCStatements", "1.3.6.1.5.5.7.1.3"),
+
+    /**
+     * RFC 9608. 2. The noRevAvail Certificate Extension
+     * id-ce-noRevAvail OBJECT IDENTIFIER ::=  { id-ce 56 }
+     * noRevAvail EXTENSION ::= { SYNTAX NULL IDENTIFIED BY id-ce-noRevAvail }
+     */
+    NO_REVOCATION_AVAILABLE("noRevAvail", "2.5.29.56");
 
     private final String description;
     private final String oid;

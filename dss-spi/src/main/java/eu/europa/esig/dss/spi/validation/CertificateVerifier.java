@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -23,7 +23,6 @@ package eu.europa.esig.dss.spi.validation;
 import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
 import eu.europa.esig.dss.alert.LogOnStatusAlert;
 import eu.europa.esig.dss.alert.StatusAlert;
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
@@ -151,6 +150,28 @@ public interface CertificateVerifier {
 	void setTimestampTokenVerifier(final TimestampTokenVerifier timestampTokenVerifier);
 
 	/**
+	 * Returns a {@code TrustAnchorVerifier} associated with this verifier.
+	 *
+	 * @return {@link TrustAnchorVerifier}
+	 */
+	TrustAnchorVerifier getTrustAnchorVerifier();
+
+	/**
+	 * Sets {@code TrustAnchorVerifier} used to validate acceptance of
+	 * the trust anchors
+	 * <p>
+	 * NOTE: This object is not synchronized by default with the used XML Validation Policy.
+	 * 	     The trusted certificate source set within CertificateVerifier is synchronized automatically
+	 * 	     unless explicitly defined within TrustAnchorVerifier.
+	 *       Please configure the object yourself in case a customized behavior is expected for acceptance
+	 *       of trust anchors.
+	 *
+	 * @param trustAnchorVerifier
+	 *                    {@link TrustAnchorVerifier}
+	 */
+	void setTrustAnchorVerifier(final TrustAnchorVerifier trustAnchorVerifier);
+
+	/**
 	 * Returns the trusted certificate sources associated with this verifier. These
 	 * sources are used to identify the trusted anchors.
 	 *
@@ -232,26 +253,8 @@ public interface CertificateVerifier {
 	void setAIASource(final AIASource aiaSource);
 
 	/**
-	 * This method allows to change the Digest Algorithm that will be used for tokens' digest calculation
-	 * Default : {@code DigestAlgorithm.SHA256}
-	 *
-	 * @param digestAlgorithm {@link DigestAlgorithm} to use
-	 * @deprecated since DSS 6.1. Use {@code DocumentValidator#setDefaultDigestAlgorithm} method instead
-	 */
-	@Deprecated
-	void setDefaultDigestAlgorithm(DigestAlgorithm digestAlgorithm);
-	
-	/**
-	 * This method returns a default Digest Algorithm what will be used for digest calculation
-	 *
-	 * @return {@link DigestAlgorithm}
-	 * @deprecated since DSS 6.1
-	 */
-	@Deprecated
-	DigestAlgorithm getDefaultDigestAlgorithm();
-
-	/**
 	 * This method allows to change the behavior on invalid signature (T/LT/LTA augmentation).
+	 * NULL value provides a possibility to skip check execution.
 	 * Default : {@link ExceptionOnStatusAlert} - throw an exception.
 	 *
 	 * @param alertOnInvalidSignature defines a behaviour in case of invalid signature
@@ -268,6 +271,7 @@ public interface CertificateVerifier {
 	/**
 	 * This method allows to change the behavior on invalid timestamp (LT/LTA
 	 * augmentation).
+	 * NULL value provides a possibility to skip check execution.
 	 * Default : {@link ExceptionOnStatusAlert} - throw an exception.
 	 * 
 	 * @param alertOnInvalidTimestamp defines a behaviour in case of invalid
@@ -285,6 +289,7 @@ public interface CertificateVerifier {
 	/**
 	 * This method allows to change the behavior on missing revocation data (LT/LTA
 	 * augmentation).
+	 * NULL value provides a possibility to skip check execution.
 	 * Default : {@link ExceptionOnStatusAlert} - throw an exception.
 	 * 
 	 * @param alertOnMissingRevocationData defines a behaviour in case of missing
@@ -303,6 +308,7 @@ public interface CertificateVerifier {
 	/**
 	 * This method allows to change the behavior on revoked certificates (LT/LTA
 	 * augmentation).
+	 * NULL value provides a possibility to skip check execution.
 	 * Default : {@link ExceptionOnStatusAlert} - throw an exception.
 	 * 
 	 * @param alertOnRevokedCertificate defines a behaviour in case of revoked
@@ -320,6 +326,7 @@ public interface CertificateVerifier {
 	/**
 	 * This method allows to change the behavior on revocation data issued after a
 	 * control time.
+	 * NULL value provides a possibility to skip check execution.
 	 * Default : {@link LogOnStatusAlert} - log a warning.
 	 * 
 	 * @param alertOnNoRevocationAfterBestSignatureTime defines a behaviour in case
@@ -339,6 +346,7 @@ public interface CertificateVerifier {
 	
 	/**
 	 * This method allows to change the behavior on uncovered POE (timestamp).
+	 * NULL value provides a possibility to skip check execution.
 	 * Default : {@link LogOnStatusAlert} - log a warning.
 	 * 
 	 * @param alertOnUncoveredPOE defines a behaviour in case of uncovered POE
@@ -353,30 +361,10 @@ public interface CertificateVerifier {
 	StatusAlert getAlertOnUncoveredPOE();
 
 	/**
-	 * This method allows to change the behavior on expired signature during the signature augmentation process
-	 * (if the signing certificate or its POE(s) has been expired).
-	 * Default : {@link ExceptionOnStatusAlert} - throw an exception.
-	 *
-	 * @param alertOnUncoveredPOE defines a behaviour in case of an expired signature
-	 * @deprecated since DSS 6.1. Please use {@code #setAlertOnExpiredCertificate} instead
-	 */
-	@Deprecated
-	void setAlertOnExpiredSignature(StatusAlert alertOnUncoveredPOE);
-
-	/**
-	 * This method returns the defined execution behaviour on expired signature
-	 * (if the signing certificate or its POE(s) has been expired).
-	 *
-	 * @return {@link StatusAlert} to be processed in case of uncovered POE
-	 * @deprecated since DSS 6.1. Please use {@code #getAlertOnExpiredCertificate} instead
-	 */
-	@Deprecated
-	StatusAlert getAlertOnExpiredSignature();
-
-	/**
 	 * This method allows to change a behavior on signature creation or augmentation with
 	 * an expired signing-certificate (notAfter is before the current time).
 	 * Validated the available POEs in case of existing signature augmentation.
+	 * NULL value provides a possibility to skip check execution.
 	 * Default : {@link ExceptionOnStatusAlert} - throw an exception.
 	 *
 	 * @param alertOnExpiredCertificate defines behavior in case of an expired signing-certificate
@@ -395,6 +383,7 @@ public interface CertificateVerifier {
 	/**
 	 * This method allows to change a behavior on signature creation with a not yet valid signing-certificate
 	 * (notBefore is after the current time)
+	 * NULL value provides a possibility to skip check execution.
 	 * Default : {@link ExceptionOnStatusAlert} - throw an exception.
 	 *
 	 * @param alertOnNotYetValidCertificate defines behavior in case of a not yet valid signing-certificate
@@ -411,6 +400,7 @@ public interface CertificateVerifier {
 	/**
 	 * This method allows to change the augmentation behaviour for a signature of a higher level or
 	 * a document containing a such signature.
+	 * NULL value provides a possibility to skip check execution.
 	 * Default : {@link ExceptionOnStatusAlert} - throw an exception.
 	 *
 	 * @param augmentationAlertOnHigherSignatureLevel defines augmentation behaviour for a signature of a higher level
@@ -430,6 +420,7 @@ public interface CertificateVerifier {
 	/**
 	 * This method allows to change the augmentation behaviour for a signature without certificates.
 	 * The alert is triggered when no certificate is defined within the signature.
+	 * NULL value provides a possibility to skip check execution.
 	 * Default : {@link ExceptionOnStatusAlert} - throw an exception.
 	 *
 	 * @param augmentationAlertOnSignatureWithoutCertificates defines augmentation behaviour for a signature
@@ -448,6 +439,7 @@ public interface CertificateVerifier {
 	 * This method allows to change the augmentation behaviour for a signature containing
 	 * only self-signed certificate chains.
 	 * The alert is triggered when all used certificates are self-signed.
+	 * NULL value provides a possibility to skip check execution.
 	 * Default : {@link ExceptionOnStatusAlert} - throw an exception.
 	 *
 	 * @param augmentationAlertOnSelfSignedCertificateChains defines augmentation behaviour for a signature containing
@@ -482,36 +474,5 @@ public interface CertificateVerifier {
 	 *         chains
 	 */
 	boolean isCheckRevocationForUntrustedChains();
-
-	/**
-	 * This method allows enabling of POE extraction from timestamps coming
-	 * from untrusted certificate chains.
-	 * Default : FALSE (timestamps created with untrusted certificate chains are not considered as POE)
-	 *
-	 * @param enable
-	 *               true if POE extraction is allowed for timestamps from untrusted
-	 *               certificate chains
-	 * @deprecated since DSS 6.1. Please use {@code
-	 * 		TimestampTokenVerifier timestampTokenVerifier = TimestampTokenVerifier.createDefaultTimestampTokenVerifier();
-	 * 		timestampTokenVerifier.setAcceptUntrustedCertificateChains(true);
-	 * 	    certificateVerifier.setTimestampTokenVerifier(timestampTokenVerifier);
-	 * }
-	 */
-	@Deprecated
-	void setExtractPOEFromUntrustedChains(boolean enable);
-
-	/**
-	 * This method returns whether POEs should be extracted from timestamps coming from untrusted
-	 * certificate chains.
-	 *
-	 * @return true if POEs should be extracted from timestamp with untrusted
-	 *         certificate chains
-	 * @deprecated since DSS 6.1. Please use {@code
-	 * 		TimestampTokenVerifier timestampTokenVerifier = certificateVerifier.getTimestampTokenVerifier();
-	 * 		boolean extractPOEFromUntrustedChains = timestampTokenVerifier.getAcceptUntrustedCertificateChains();
-	 * }
-	 */
-	@Deprecated
-	boolean isExtractPOEFromUntrustedChains();
 
 }

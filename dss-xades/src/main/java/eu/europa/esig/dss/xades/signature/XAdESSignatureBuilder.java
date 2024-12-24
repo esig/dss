@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -23,12 +23,12 @@ package eu.europa.esig.dss.xades.signature;
 import eu.europa.esig.dss.enumerations.CommitmentType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.ObjectIdentifier;
 import eu.europa.esig.dss.enumerations.ObjectIdentifierQualifier;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.TimestampType;
-import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.CommitmentQualifier;
 import eu.europa.esig.dss.model.CommonCommitmentType;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -40,17 +40,19 @@ import eu.europa.esig.dss.model.UserNotice;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.x509.BaselineBCertificateSelector;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampInclude;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.DSSObject;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.SignatureBuilder;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.dataobject.DSSDataObjectFormat;
 import eu.europa.esig.dss.xades.dataobject.DataObjectFormatBuilder;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.ReferenceBuilder;
 import eu.europa.esig.dss.xades.reference.ReferenceIdProvider;
@@ -58,12 +60,11 @@ import eu.europa.esig.dss.xades.reference.ReferenceProcessor;
 import eu.europa.esig.dss.xades.reference.ReferenceVerifier;
 import eu.europa.esig.dss.xades.validation.XAdESAttributeIdentifier;
 import eu.europa.esig.dss.xml.common.definition.DSSElement;
-import eu.europa.esig.dss.xml.utils.DomUtils;
-import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
 import org.apache.xml.security.transforms.Transforms;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -131,6 +132,9 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 	protected Element signedDataObjectPropertiesDom;
 	/** Cached UnsignedSignatureProperties element */
 	protected Element unsignedSignaturePropertiesDom;
+
+	/** Id-prefix for Reference element */
+	protected static final String REFERENCE_PREFIX = "r-";
 
 	/** Id-prefix for KeyInfo element */
 	protected static final String KEYINFO_PREFIX = "keyInfo-";
@@ -778,7 +782,8 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		}
 		
 		final Element reference = DomUtils.createElementNS(documentDom, getXmldsigNamespace(), XMLDSigElement.REFERENCE);
-		signedInfoDom.appendChild(reference);		
+		signedInfoDom.appendChild(reference);
+		reference.setAttribute(XMLDSigAttribute.ID.getAttributeName(), REFERENCE_PREFIX + KEYINFO_PREFIX + deterministicId);
 		reference.setAttribute(XMLDSigAttribute.URI.getAttributeName(), DomUtils.toElementReference(KEYINFO_PREFIX + deterministicId));
 		
 		final Element transforms = DomUtils.createElementNS(documentDom, getXmldsigNamespace(), XMLDSigElement.TRANSFORMS);
@@ -1159,6 +1164,10 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		List<DSSDataObjectFormat> dataObjectFormats = params.getDataObjectFormatList();
 		if (dataObjectFormats == null) {
 			dataObjectFormats = new DataObjectFormatBuilder().setReferences(params.getReferences()).build();
+			if (params.isSignKeyInfo()) {
+				DSSDataObjectFormat keyInfoDataObjectFormat = getKeyInfoDataObjectFormat();
+				dataObjectFormats.add(keyInfoDataObjectFormat);
+			}
 		}
 		for (final DSSDataObjectFormat dataObjectFormat : dataObjectFormats) {
 			assertDataObjectFormatValid(dataObjectFormat);
@@ -1200,6 +1209,13 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 				dataObjectFormatDom.setAttribute(XAdES132Attribute.OBJECT_REFERENCE.getAttributeName(), dataObjectFormat.getObjectReference());
 			}
 		}
+	}
+
+	private DSSDataObjectFormat getKeyInfoDataObjectFormat() {
+		final DSSDataObjectFormat keyInfoDataObjectFormat = new DSSDataObjectFormat();
+		keyInfoDataObjectFormat.setObjectReference(DomUtils.toElementReference(REFERENCE_PREFIX + KEYINFO_PREFIX + deterministicId));
+		keyInfoDataObjectFormat.setMimeType(MimeTypeEnum.XML.getMimeTypeString());
+		return keyInfoDataObjectFormat;
 	}
 
 	/**

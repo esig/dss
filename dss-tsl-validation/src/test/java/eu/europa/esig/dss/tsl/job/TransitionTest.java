@@ -1,24 +1,48 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package eu.europa.esig.dss.tsl.job;
+
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.tsl.InfoRecord;
+import eu.europa.esig.dss.model.tsl.TLInfo;
+import eu.europa.esig.dss.model.tsl.TLValidationJobSummary;
+import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
+import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
+import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
+import eu.europa.esig.dss.tsl.cache.state.CacheStateEnum;
+import eu.europa.esig.dss.tsl.source.TLSource;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
+import java.io.File;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -28,43 +52,18 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.File;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
-import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
-import eu.europa.esig.dss.model.tsl.InfoRecord;
-import eu.europa.esig.dss.model.tsl.TLInfo;
-import eu.europa.esig.dss.model.tsl.TLValidationJobSummary;
-import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
-import eu.europa.esig.dss.spi.x509.CertificateSource;
-import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
-import eu.europa.esig.dss.tsl.cache.state.CacheStateEnum;
-import eu.europa.esig.dss.tsl.source.TLSource;
-
 class TransitionTest {
 
 	@TempDir
 	File cacheDirectory;
 
-	private DSSDocument CZ = new FileDocument("src/test/resources/lotlCache/CZ.xml");
-	private DSSDocument CZ_NULL = null;
-	private DSSDocument CZ_NO_XML = new FileDocument("src/test/resources/lotlCache/CZ.pdf");
-	private DSSDocument CZ_BROKEN_SIG = new FileDocument("src/test/resources/lotlCache/CZ_broken-sig.xml");
-	private DSSDocument CZ_NO_SIG = new FileDocument("src/test/resources/lotlCache/CZ_no-sig.xml");
-	private DSSDocument CZ_NOT_CONFORM = new FileDocument("src/test/resources/lotlCache/CZ_not-conform.xml");
-	private DSSDocument CZ_NOT_COMPLIANT = new FileDocument("src/test/resources/lotlCache/CZ_not-compliant.xml");
+	private static final DSSDocument CZ = new FileDocument("src/test/resources/lotlCache/CZ.xml");
+	private static final DSSDocument CZ_NULL = null;
+	private static final DSSDocument CZ_NO_XML = new FileDocument("src/test/resources/lotlCache/CZ.pdf");
+	private static final DSSDocument CZ_BROKEN_SIG = new FileDocument("src/test/resources/lotlCache/CZ_broken-sig.xml");
+	private static final DSSDocument CZ_NO_SIG = new FileDocument("src/test/resources/lotlCache/CZ_no-sig.xml");
+	private static final DSSDocument CZ_NOT_CONFORM = new FileDocument("src/test/resources/lotlCache/CZ_not-conform.xml");
+	private static final DSSDocument CZ_NOT_COMPLIANT = new FileDocument("src/test/resources/lotlCache/CZ_not-compliant.xml");
 
 	@Test
 	void nullDoc() {

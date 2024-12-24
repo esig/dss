@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -38,13 +38,16 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDistinguishedName;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlEncapsulationType;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlExtendedKeyUsages;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundCertificates;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlFreshestCRL;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlGeneralName;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlGeneralSubtree;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlIdPkixOcspNoCheck;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlInhibitAnyPolicy;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlIssuerEntityKey;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlIssuerSerial;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlKeyUsages;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlNameConstraints;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlNoRevAvail;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificateToken;
@@ -59,6 +62,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSubjectAlternativeNames;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSubjectKeyIdentifier;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustServiceProvider;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTrusted;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlValAssuredShortTermCertificate;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
@@ -76,6 +80,7 @@ import eu.europa.esig.dss.model.OidRepository;
 import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.model.identifier.OriginalIdentifierProvider;
 import eu.europa.esig.dss.model.identifier.TokenIdentifierProvider;
+import eu.europa.esig.dss.model.tsl.CertificateTrustTime;
 import eu.europa.esig.dss.model.tsl.DownloadInfoRecord;
 import eu.europa.esig.dss.model.tsl.LOTLInfo;
 import eu.europa.esig.dss.model.tsl.ParsingInfoRecord;
@@ -83,6 +88,7 @@ import eu.europa.esig.dss.model.tsl.TLInfo;
 import eu.europa.esig.dss.model.tsl.TLValidationJobSummary;
 import eu.europa.esig.dss.model.tsl.TrustProperties;
 import eu.europa.esig.dss.model.tsl.TrustPropertiesCertificateSource;
+import eu.europa.esig.dss.model.tsl.TrustedCertificateSourceWithTime;
 import eu.europa.esig.dss.model.tsl.ValidationInfoRecord;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.Token;
@@ -97,11 +103,13 @@ import eu.europa.esig.dss.model.x509.extension.CertificateExtensions;
 import eu.europa.esig.dss.model.x509.extension.CertificatePolicies;
 import eu.europa.esig.dss.model.x509.extension.CertificatePolicy;
 import eu.europa.esig.dss.model.x509.extension.ExtendedKeyUsages;
+import eu.europa.esig.dss.model.x509.extension.FreshestCRL;
 import eu.europa.esig.dss.model.x509.extension.GeneralName;
 import eu.europa.esig.dss.model.x509.extension.GeneralSubtree;
 import eu.europa.esig.dss.model.x509.extension.InhibitAnyPolicy;
 import eu.europa.esig.dss.model.x509.extension.KeyUsage;
 import eu.europa.esig.dss.model.x509.extension.NameConstraints;
+import eu.europa.esig.dss.model.x509.extension.NoRevAvail;
 import eu.europa.esig.dss.model.x509.extension.OCSPNoCheck;
 import eu.europa.esig.dss.model.x509.extension.PolicyConstraints;
 import eu.europa.esig.dss.model.x509.extension.SubjectAlternativeNames;
@@ -134,6 +142,7 @@ import org.slf4j.LoggerFactory;
 import javax.security.auth.x500.X500Principal;
 import java.security.PublicKey;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -367,6 +376,8 @@ public abstract class DiagnosticDataBuilder {
 				if (xmlCertificate.getSigningCertificate() == null) {
 					xmlCertificate.setSigningCertificate(getXmlSigningCertificate(certificateToken));
 					xmlCertificate.setCertificateChain(getXmlForCertificateChain(certificateToken));
+					xmlCertificate.setBasicSignature(getXmlBasicSignature(certificateToken));
+					xmlCertificate.setIssuerEntityKey(getXmlIssuerEntityKey(certificateToken));
 				}
 			}
 		}
@@ -404,7 +415,15 @@ public abstract class DiagnosticDataBuilder {
 						break;
 					}
 					processedTokens.add(currentCertificate);
-					currentCertificate = getIssuerCertificate(currentCertificate);
+
+					CertificateToken issuerCertificate = getIssuerCertificate(currentCertificate);
+					if (issuerCertificate != null && currentCertificate.getIssuerEntityKey() != null
+							&& currentCertificate.getIssuerEntityKey().equals(issuerCertificate.getEntityKey())) {
+						currentCertificate = issuerCertificate;
+					} else {
+						// avoid TrustProperties extraction for a not matching chain
+						currentCertificate = null;
+					}
 				}
 			}
 		}
@@ -757,7 +776,7 @@ public abstract class DiagnosticDataBuilder {
 		if (token != null) {
 			final List<XmlChainItem> certChainTokens = new ArrayList<>();
 
-			final Set<Token> processedTokens = new HashSet<>();
+			final List<Token> processedTokens = new ArrayList<>();
 			processedTokens.add(token);
 
 			CertificateToken issuerToken = getIssuerCertificate(token, certificateSource);
@@ -766,6 +785,7 @@ public abstract class DiagnosticDataBuilder {
 				if (xmlChainItem != null) {
 					certChainTokens.add(xmlChainItem);
 					if (issuerToken.isSelfSigned() || processedTokens.contains(issuerToken)) {
+						processedTokens.add(issuerToken);
 						break;
 					}
 					processedTokens.add(issuerToken);
@@ -776,20 +796,29 @@ public abstract class DiagnosticDataBuilder {
 				}
 			}
 
-			ensureCertificateChain(certChainTokens);
+			ensureCertificateChain(token, certChainTokens, processedTokens);
 			return certChainTokens;
 		}
 		return null;
 	}
 
-	private void ensureCertificateChain(List<XmlChainItem> certChain) {
+	private void ensureCertificateChain(final Token token, List<XmlChainItem> certChain, List<Token> processedTokens) {
 		if (Utils.isCollectionNotEmpty(certChain)) {
+			XmlCertificate certificate = xmlCertsMap.get(token.getDSSIdAsString());
+			if (certificate != null) {
+				certificate.setSigningCertificate(getXmlSigningCertificateFromXmlCertificate(certChain.get(0).getCertificate()));
+				certificate.setCertificateChain(getCertChainSinceIndex(certChain, 0));
+				certificate.setBasicSignature(getXmlBasicSignature(token));
+				certificate.setIssuerEntityKey(getXmlIssuerEntityKey(token));
+			}
 			for (int i = 0; i < certChain.size(); i++) {
 				XmlChainItem chainItem = certChain.get(i);
-				XmlCertificate certificate = chainItem.getCertificate();
-				if (certificate != null && certificate.getSigningCertificate() == null && i + 1 < certChain.size()) {
-					certificate.setSigningCertificate(getXmlSigningCertificateFromXmlCertificate(certChain.get(i + 1).getCertificate()));
-					certificate.setCertificateChain(getCertChainSinceIndex(certChain, i + 1));
+				XmlCertificate chainCertificate = chainItem.getCertificate();
+				if (chainCertificate != null && chainCertificate.getSigningCertificate() == null && i + 1 < certChain.size()) {
+					chainCertificate.setSigningCertificate(getXmlSigningCertificateFromXmlCertificate(certChain.get(i + 1).getCertificate()));
+					chainCertificate.setCertificateChain(getCertChainSinceIndex(certChain, i + 1));
+					chainCertificate.setBasicSignature(getXmlBasicSignature(processedTokens.get(i + 1)));
+					chainCertificate.setIssuerEntityKey(getXmlIssuerEntityKey(processedTokens.get(i + 1)));
 				}
 			}
 		}
@@ -835,7 +864,6 @@ public abstract class DiagnosticDataBuilder {
 							certChainTokens.add(chainItem);
 						}
 					}
-					ensureCertificateChain(certChainTokens);
 					return certChainTokens;
 				}
 			}
@@ -899,7 +927,13 @@ public abstract class DiagnosticDataBuilder {
 			}
 
 			if (issuer != null) {
+
 				issuer = getProcessedCertificateToken(issuer);
+
+				if (!signingCertificateMap.containsKey(token.getDSSIdAsString())) {
+					signingCertificateMap.put(token.getDSSIdAsString(), issuer);
+				}
+
 			}
 
 			return issuer;
@@ -1087,6 +1121,8 @@ public abstract class DiagnosticDataBuilder {
 					signatureCertificateSource.getAttrAuthoritiesCertValues(), certificateSource);
 			populateCertificateOriginMap(relatedCertificatesMap, CertificateOrigin.TIMESTAMP_VALIDATION_DATA,
 					signatureCertificateSource.getTimeStampValidationDataCertValues(), certificateSource);
+			populateCertificateOriginMap(relatedCertificatesMap, CertificateOrigin.ANY_VALIDATION_DATA,
+					signatureCertificateSource.getAnyValidationDataCertValues(), certificateSource);
 			populateCertificateOriginMap(relatedCertificatesMap, CertificateOrigin.DSS_DICTIONARY,
 					signatureCertificateSource.getDSSDictionaryCertValues(), certificateSource);
 			populateCertificateOriginMap(relatedCertificatesMap, CertificateOrigin.VRI_DICTIONARY,
@@ -1147,20 +1183,20 @@ public abstract class DiagnosticDataBuilder {
 	}
 
 	/**
-	 * Builds an {@code XmlRelatedCertificate} and populates the {@code relatesCertificates} list
+	 * Builds an {@code XmlRelatedCertificate} and populates the {@code relatedCertificates} list
 	 *
-	 * @param relatesCertificates a list of created earlier {@link XmlRelatedCertificate}
+	 * @param relatedCertificates a list of created earlier {@link XmlRelatedCertificate}
 	 * @param certificateSource {@link TokenCertificateSource}
 	 * @param cert {@link CertificateToken}
 	 * @param certificateRef {@link CertificateRef}
 	 */
-	protected void populateXmlRelatedCertificatesList(List<XmlRelatedCertificate> relatesCertificates,
+	protected void populateXmlRelatedCertificatesList(List<XmlRelatedCertificate> relatedCertificates,
 				TokenCertificateSource certificateSource, CertificateToken cert, CertificateRef certificateRef) {
-		XmlRelatedCertificate xrc = getXmlRelatedCertificateWithId(relatesCertificates, cert.getDSSIdAsString());
+		XmlRelatedCertificate xrc = getXmlRelatedCertificateWithId(relatedCertificates, identifierProvider.getIdAsString(cert));
 		if (xrc == null) {
 			xrc = new XmlRelatedCertificate();
 			xrc.setCertificate(xmlCertsMap.get(cert.getDSSIdAsString()));
-			relatesCertificates.add(xrc);
+			relatedCertificates.add(xrc);
 		}
 		for (CertificateRefOrigin refOrigin : certificateSource.getCertificateRefOrigins(certificateRef)) {
 			XmlCertificateRef xmlCertificateRef = getXmlCertificateRef(certificateRef, refOrigin);
@@ -1230,6 +1266,8 @@ public abstract class DiagnosticDataBuilder {
 					signatureCertificateSource.getAttrAuthoritiesCertValues(), certificateSource, signingCertificate);
 			populateOrphanCertificateOriginMap(orphanCertificatesMap, CertificateOrigin.TIMESTAMP_VALIDATION_DATA,
 					signatureCertificateSource.getTimeStampValidationDataCertValues(), certificateSource, signingCertificate);
+			populateOrphanCertificateOriginMap(orphanCertificatesMap, CertificateOrigin.ANY_VALIDATION_DATA,
+					signatureCertificateSource.getAnyValidationDataCertValues(), certificateSource, signingCertificate);
 			populateOrphanCertificateOriginMap(orphanCertificatesMap, CertificateOrigin.DSS_DICTIONARY,
 					signatureCertificateSource.getDSSDictionaryCertValues(), certificateSource, signingCertificate);
 			populateOrphanCertificateOriginMap(orphanCertificatesMap, CertificateOrigin.VRI_DICTIONARY,
@@ -1442,6 +1480,20 @@ public abstract class DiagnosticDataBuilder {
 		return xmlIssuerSerial;
 	}
 
+	private XmlIssuerEntityKey getXmlIssuerEntityKey(final Token token) {
+		final CertificateToken issuerCertificate = token.isSelfSigned() ? (CertificateToken) token : getIssuerCertificate(token);
+		if (issuerCertificate != null) {
+			final XmlIssuerEntityKey xmlIssuerEntityKey = new XmlIssuerEntityKey();
+			xmlIssuerEntityKey.setValue(token.getIssuerEntityKey().asXmlId());
+			PublicKey publicKeyOfSigner = token.isSelfSigned() ? issuerCertificate.getPublicKey() : token.getPublicKeyOfTheSigner();
+			xmlIssuerEntityKey.setKey(issuerCertificate.getPublicKey() != null && publicKeyOfSigner != null &&
+					Arrays.equals(publicKeyOfSigner.getEncoded(), issuerCertificate.getPublicKey().getEncoded()));
+			xmlIssuerEntityKey.setSubjectName(new X500PrincipalHelper(token.getIssuerX500Principal()).equals(issuerCertificate.getSubject()));
+			return xmlIssuerEntityKey;
+		}
+		return null;
+	}
+
 	/**
 	 * Gets {@code XmlBasicSignature} for a {@code Token}
 	 *
@@ -1511,12 +1563,11 @@ public abstract class DiagnosticDataBuilder {
 		xmlCert.setPublicKeySize(DSSPKUtils.getPublicKeySize(publicKey));
 		xmlCert.setPublicKeyEncryptionAlgo(EncryptionAlgorithm.forKey(publicKey));
 		xmlCert.setEntityKey(certToken.getEntityKey().asXmlId());
-		xmlCert.setBasicSignature(getXmlBasicSignature(certToken));
 
 		xmlCert.setCertificateExtensions(getXmlCertificateExtensions(certToken));
 
 		xmlCert.setSelfSigned(certToken.isSelfSigned());
-		xmlCert.setTrusted(allCertificateSources.isTrusted(certToken));
+		xmlCert.setTrusted(getXmlTrusted(certToken));
 
 		if (tokenExtractionStrategy.isCertificate()) {
 			xmlCert.setBase64Encoded(certToken.getEncoded());
@@ -1568,11 +1619,17 @@ public abstract class DiagnosticDataBuilder {
 		if (certificateExtensions.getCRLDistributionPoints() != null) {
 			xmlCertificateExtensions.add(getXmlCRLDistributionPoints(certificateExtensions.getCRLDistributionPoints()));
 		}
+		if (certificateExtensions.getFreshestCRL() != null) {
+			xmlCertificateExtensions.add(getXmlFreshestCRL(certificateExtensions.getFreshestCRL()));
+		}
 		if (certificateExtensions.getOcspNoCheck() != null) {
 			xmlCertificateExtensions.add(getXmlIdPkixOcspNoCheck(certificateExtensions.getOcspNoCheck()));
 		}
 		if (certificateExtensions.getValidityAssuredShortTerm() != null) {
 			xmlCertificateExtensions.add(getXmlValAssuredShortTermCertificate(certificateExtensions.getValidityAssuredShortTerm()));
+		}
+		if (certificateExtensions.getNoRevAvail() != null) {
+			xmlCertificateExtensions.add(getXmlNoRevAvail(certificateExtensions.getNoRevAvail()));
 		}
 		if (certificateExtensions.getQcStatements() != null) {
 			xmlCertificateExtensions.add(new XmlQcStatementsBuilder().build(certificateExtensions.getQcStatements()));
@@ -1706,6 +1763,13 @@ public abstract class DiagnosticDataBuilder {
 		return xmlCRLDistributionPoints;
 	}
 
+	private XmlCRLDistributionPoints getXmlFreshestCRL(FreshestCRL freshestCRL) {
+		final XmlFreshestCRL xmlFreshestCRL = new XmlFreshestCRL();
+		fillXmlCertificateExtension(xmlFreshestCRL, freshestCRL);
+		xmlFreshestCRL.getCrlUrl().addAll(getCleanedUrls(freshestCRL.getCrlUrls()));
+		return xmlFreshestCRL;
+	}
+
 	private XmlAuthorityKeyIdentifier getXmlAuthorityKeyIdentifier(AuthorityKeyIdentifier aki) {
 		final XmlAuthorityKeyIdentifier xmlAuthorityKeyIdentifier = new XmlAuthorityKeyIdentifier();
 		fillXmlCertificateExtension(xmlAuthorityKeyIdentifier, aki);
@@ -1743,6 +1807,13 @@ public abstract class DiagnosticDataBuilder {
 		return xmlValAssuredShortTermCertificate;
 	}
 
+	private XmlNoRevAvail getXmlNoRevAvail(NoRevAvail noRevAvail) {
+		final XmlNoRevAvail xmlNoRevAvail = new XmlNoRevAvail();
+		fillXmlCertificateExtension(xmlNoRevAvail, noRevAvail);
+		xmlNoRevAvail.setPresent(noRevAvail.isNoRevAvail());
+		return xmlNoRevAvail;
+	}
+
 	private List<XmlCertificateExtension> getXmlOtherCertificateExtensions(List<CertificateExtension> otherCertificateExtensions) {
 		List<XmlCertificateExtension> result = new ArrayList<>();
 		for (CertificateExtension certificateExtension : otherCertificateExtensions) {
@@ -1758,6 +1829,41 @@ public abstract class DiagnosticDataBuilder {
 		xmlCertificateExtension.setOID(certificateExtension.getOid());
 		xmlCertificateExtension.setDescription(certificateExtension.getDescription());
 		xmlCertificateExtension.setCritical(certificateExtension.isCritical());
+	}
+
+	private XmlTrusted getXmlTrusted(CertificateToken certificateToken) {
+		XmlTrusted xmlTrusted = new XmlTrusted();
+		if (allCertificateSources.isTrusted(certificateToken)) {
+			CertificateTrustTime certificateTrustTime = getCertificateTrustTime(certificateToken);
+			if (certificateTrustTime != null) {
+				xmlTrusted.setValue(certificateTrustTime.isTrusted());
+				xmlTrusted.setStartDate(certificateTrustTime.getStartDate());
+				xmlTrusted.setSunsetDate(certificateTrustTime.getEndDate());
+			} else {
+				xmlTrusted.setValue(true);
+			}
+		}
+		return xmlTrusted;
+	}
+
+	private CertificateTrustTime getCertificateTrustTime(CertificateToken certificateToken) {
+		CertificateTrustTime certificateTrustTime = null;
+		for (CertificateSource trustedSource : allCertificateSources.getSources()) {
+			if (trustedSource.isTrusted(certificateToken)) {
+				if (trustedSource instanceof TrustedCertificateSourceWithTime) {
+					TrustedCertificateSourceWithTime trustedSourceWithTime = (TrustedCertificateSourceWithTime) trustedSource;
+					CertificateTrustTime trustTime = trustedSourceWithTime.getTrustTime(certificateToken);
+					if (certificateTrustTime == null || !certificateTrustTime.isTrusted()) {
+						certificateTrustTime = trustTime;
+					} else if (trustTime != null && trustTime.isTrusted()) {
+						certificateTrustTime = certificateTrustTime.getJointTrustTime(trustTime.getStartDate(), trustTime.getEndDate());
+					}
+				} else {
+					certificateTrustTime = new CertificateTrustTime(true);
+				}
+			}
+		}
+		return certificateTrustTime;
 	}
 
 	private List<CertificateSourceType> getXmlCertificateSources(final CertificateToken token) {

@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -22,12 +22,10 @@ package eu.europa.esig.dss.model;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import eu.europa.esig.dss.enumerations.ValidationDataEncapsulationStrategy;
 
 import java.util.Objects;
 
@@ -38,26 +36,6 @@ import java.util.Objects;
  */
 @SuppressWarnings("serial")
 public abstract class AbstractSerializableSignatureParameters<TP extends SerializableTimestampParameters> implements SerializableSignatureParameters {
-
-	private static final Logger LOG = LoggerFactory.getLogger(AbstractSerializableSignatureParameters.class);
-
-	/**
-	 * This variable indicates if it is possible to sign with an expired certificate.
-	 *
-	 * Default : false
-	 * @deprecated since DSS 6.1. Please use {@code CertificateVerifier#alertOnExpiredCertificate} instead.
-	 */
-	@Deprecated
-	private boolean signWithExpiredCertificate = false;
-
-	/**
-	 * This variable indicates if it is possible to sign with a not yet valid certificate.
-	 *
-	 * Default : false
-	 * @deprecated since DSS 6.1. Please use {@code CertificateVerifier#alertOnNotYetValidCertificate} instead.
-	 */
-	@Deprecated
-	private boolean signWithNotYetValidCertificate = false;
 
 	/**
 	 * This variable indicates whether a signing certificate revocation shall be checked.
@@ -110,6 +88,13 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 	private BLevelParameters bLevelParams = new BLevelParameters();
 
 	/**
+	 * Defines the validation data encapsulation mechanism on -LT and -LTA level augmentation
+	 * Default: CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_AND_ANY_VALIDATION_DATA
+	 */
+	private ValidationDataEncapsulationStrategy validationDataEncapsulationStrategy =
+			ValidationDataEncapsulationStrategy.CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_AND_ANY_VALIDATION_DATA;
+
+	/**
 	 * The object representing the parameters related to the content timestamp (Baseline-B)
 	 */
 	protected TP contentTimestampParameters;
@@ -129,48 +114,6 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 	 */
 	protected AbstractSerializableSignatureParameters() {
 		// empty
-	}
-
-	@Override
-	@Deprecated
-	public boolean isSignWithExpiredCertificate() {
-		return signWithExpiredCertificate;
-	}
-
-	/**
-	 * Allows to change the default behavior regarding the use of an expired certificate
-	 * on signature creation or T-level extension.
-	 *
-	 * Default : false (forbid signing with an expired signing certificate)
-	 *
-	 * @param signWithExpiredCertificate
-	 *            true if signature with an expired certificate is allowed
-	 * @deprecated since DSS 6.1. Please use {@code CertificateVerifier.setSignatureAlertOnExpiredCertificate} method instead
-	 */
-	@Deprecated
-	public void setSignWithExpiredCertificate(boolean signWithExpiredCertificate) {
-		this.signWithExpiredCertificate = signWithExpiredCertificate;
-	}
-
-	@Override
-	@Deprecated
-	public boolean isSignWithNotYetValidCertificate() {
-		return signWithNotYetValidCertificate;
-	}
-
-	/**
-	 * Allows to change the default behavior regarding the use of a not yet valid certificate
-	 * on signature creation or T-level extension.
-	 *
-	 * Default : false (forbid signing with a not yet valid signing certificate)
-	 *
-	 * @param signWithNotYetValidCertificate
-	 *            true if signature with a not yet valid certificate is allowed
-	 * @deprecated since DSS 6.1. Please use {@code CertificateVerifier.getSignatureAlertOnNotYetValidCertificate} method instead
-	 */
-	@Deprecated
-	public void setSignWithNotYetValidCertificate(boolean signWithNotYetValidCertificate) {
-		this.signWithNotYetValidCertificate = signWithNotYetValidCertificate;
 	}
 
 	@Override
@@ -275,42 +218,6 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 		}
 	}
 
-	/**
-	 * Sets the mask generation function if used with the given SignatureAlgorithm
-	 *
-	 * @param maskGenerationFunction {@link MaskGenerationFunction}
-	 * @deprecated since DSS 6.1. Please use {@code #setEncryptionAlgorithm} method with
-	 *             value EncryptionAlgorithm.RSASSA_PSS in order to set MGF1, or
-	 *             value EncryptionAlgorithm.RSA to reset mask generation function
-	 */
-	@Deprecated
-	public void setMaskGenerationFunction(MaskGenerationFunction maskGenerationFunction) {
-		LOG.warn("Use of deprecated method #setMaskGenerationFunction! " +
-				"Please use #setEncryptionAlgorithm with EncryptionAlgorithm.RSASSA_PSS value to enable MGF1, " +
-				"or EncryptionAlgorithm.RSA to disable.");
-		if (MaskGenerationFunction.MGF1 == maskGenerationFunction && EncryptionAlgorithm.RSA == encryptionAlgorithm) {
-			LOG.info("MaskGenerationFunction '{}' has been provided. The EncryptionAlgorithm changed to '{}'.",
-					maskGenerationFunction, EncryptionAlgorithm.RSASSA_PSS);
-			setEncryptionAlgorithm(EncryptionAlgorithm.RSASSA_PSS);
-		} else if (maskGenerationFunction == null && EncryptionAlgorithm.RSASSA_PSS == encryptionAlgorithm) {
-			LOG.info("MaskGenerationFunction '{}' has been provided. The EncryptionAlgorithm changed to '{}'.",
-					maskGenerationFunction, EncryptionAlgorithm.RSA);
-			setEncryptionAlgorithm(EncryptionAlgorithm.RSA);
-		} else if (!EncryptionAlgorithm.RSA.isEquivalent(encryptionAlgorithm)) {
-			LOG.info("Not allowed combination of MaskGenerationFunction '{}' and EncryptionAlgorithm '{}'. The value is skipped.",
-					maskGenerationFunction, encryptionAlgorithm);
-		}
-	}
-
-	@Override
-	@Deprecated
-	public MaskGenerationFunction getMaskGenerationFunction() {
-		if (EncryptionAlgorithm.RSASSA_PSS == encryptionAlgorithm) {
-			return MaskGenerationFunction.MGF1;
-		}
-		return null;
-	}
-
 	@Override
 	public EncryptionAlgorithm getEncryptionAlgorithm() {
 		return encryptionAlgorithm;
@@ -378,6 +285,32 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 	}
 
 	/**
+	 * Gets the validation data encapsulation mechanism to be used on -LT and -LTA level augmentation
+	 *
+	 * @return {@link ValidationDataEncapsulationStrategy}
+	 */
+	public ValidationDataEncapsulationStrategy getValidationDataEncapsulationStrategy() {
+		return validationDataEncapsulationStrategy;
+	}
+
+	/**
+	 * Sets the validation data encapsulation mechanism to be used on -LT and -LTA level augmentation
+	 * <p>
+	 * Default: CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_AND_ANY_VALIDATION_DATA (the validation
+	 *          data for a signature's certificate chain to be included within CertificateValues and RevocationValues
+	 *          elements on LT-level augmentation, and within AnyValidationData element on LTA-level augmentation.
+	 *          The validation data for all present timestamps will be included within TimeStampValidationData element.)
+	 * <p>
+	 * NOTE: Applicable only for XAdES and JAdES signatures.
+	 *
+	 * @param validationDataEncapsulationStrategy {@link ValidationDataEncapsulationStrategy}
+	 */
+	public void setValidationDataEncapsulationStrategy(ValidationDataEncapsulationStrategy validationDataEncapsulationStrategy) {
+		Objects.requireNonNull(validationDataEncapsulationStrategy, "ValidationDataEncapsulationStrategy cannot be null!");
+		this.validationDataEncapsulationStrategy = validationDataEncapsulationStrategy;
+	}
+
+	/**
 	 * Get the parameters for content timestamp (Baseline-B)
 	 * 
 	 * @return the parameters to produce a content timestamp
@@ -437,9 +370,7 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 	@Override
 	public String toString() {
 		return "AbstractSerializableSignatureParameters [" +
-				"signWithExpiredCertificate=" + signWithExpiredCertificate +
-				", signWithNotYetValidCertificate=" + signWithNotYetValidCertificate +
-				", checkCertificateRevocation=" + checkCertificateRevocation +
+				"checkCertificateRevocation=" + checkCertificateRevocation +
 				", generateTBSWithoutCertificate=" + generateTBSWithoutCertificate +
 				", signatureLevel=" + signatureLevel +
 				", signaturePackaging=" + signaturePackaging +
@@ -455,10 +386,28 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 	}
 
 	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		AbstractSerializableSignatureParameters<?> that = (AbstractSerializableSignatureParameters<?>) o;
+		return checkCertificateRevocation == that.checkCertificateRevocation
+				&& generateTBSWithoutCertificate == that.generateTBSWithoutCertificate
+				&& signatureLevel == that.signatureLevel
+				&& signaturePackaging == that.signaturePackaging
+				&& signatureAlgorithm == that.signatureAlgorithm
+				&& encryptionAlgorithm == that.encryptionAlgorithm
+				&& digestAlgorithm == that.digestAlgorithm
+				&& referenceDigestAlgorithm == that.referenceDigestAlgorithm
+				&& Objects.equals(bLevelParams, that.bLevelParams)
+				&& Objects.equals(contentTimestampParameters, that.contentTimestampParameters)
+				&& Objects.equals(signatureTimestampParameters, that.signatureTimestampParameters)
+				&& Objects.equals(archiveTimestampParameters, that.archiveTimestampParameters);
+	}
+
+	@Override
 	public int hashCode() {
-		int result = Boolean.hashCode(signWithExpiredCertificate);
-		result = 31 * result + Boolean.hashCode(signWithNotYetValidCertificate);
-		result = 31 * result + Boolean.hashCode(checkCertificateRevocation);
+		int result = Boolean.hashCode(checkCertificateRevocation);
 		result = 31 * result + Boolean.hashCode(generateTBSWithoutCertificate);
 		result = 31 * result + Objects.hashCode(signatureLevel);
 		result = 31 * result + Objects.hashCode(signaturePackaging);
@@ -471,28 +420,6 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 		result = 31 * result + Objects.hashCode(signatureTimestampParameters);
 		result = 31 * result + Objects.hashCode(archiveTimestampParameters);
 		return result;
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-
-		AbstractSerializableSignatureParameters<?> that = (AbstractSerializableSignatureParameters<?>) o;
-		return signWithExpiredCertificate == that.signWithExpiredCertificate
-				&& signWithNotYetValidCertificate == that.signWithNotYetValidCertificate
-				&& checkCertificateRevocation == that.checkCertificateRevocation
-				&& generateTBSWithoutCertificate == that.generateTBSWithoutCertificate
-				&& signatureLevel == that.signatureLevel
-				&& signaturePackaging == that.signaturePackaging
-				&& signatureAlgorithm == that.signatureAlgorithm
-				&& encryptionAlgorithm == that.encryptionAlgorithm
-				&& digestAlgorithm == that.digestAlgorithm
-				&& referenceDigestAlgorithm == that.referenceDigestAlgorithm
-				&& Objects.equals(bLevelParams, that.bLevelParams)
-				&& Objects.equals(contentTimestampParameters, that.contentTimestampParameters)
-				&& Objects.equals(signatureTimestampParameters, that.signatureTimestampParameters)
-				&& Objects.equals(archiveTimestampParameters, that.archiveTimestampParameters);
 	}
 
 }

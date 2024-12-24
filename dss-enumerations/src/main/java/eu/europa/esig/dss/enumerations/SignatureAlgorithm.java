@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -431,6 +431,10 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
         xmlAlgorithms.put("http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256", ECDSA_SHA256);
         xmlAlgorithms.put("http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha384", ECDSA_SHA384);
         xmlAlgorithms.put("http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512", ECDSA_SHA512);
+        xmlAlgorithms.put("http://www.w3.org/2021/04/xmldsig-more#ecdsa-sha3-224", ECDSA_SHA3_224);
+        xmlAlgorithms.put("http://www.w3.org/2021/04/xmldsig-more#ecdsa-sha3-256", ECDSA_SHA3_256);
+        xmlAlgorithms.put("http://www.w3.org/2021/04/xmldsig-more#ecdsa-sha3-384", ECDSA_SHA3_384);
+        xmlAlgorithms.put("http://www.w3.org/2021/04/xmldsig-more#ecdsa-sha3-512", ECDSA_SHA3_512);
         xmlAlgorithms.put("http://www.w3.org/2007/05/xmldsig-more#ecdsa-ripemd160", ECDSA_RIPEMD160);
 
         xmlAlgorithms.put("http://www.w3.org/2021/04/xmldsig-more#eddsa-ed25519", ED25519);
@@ -895,26 +899,6 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
     }
 
     /**
-     * For given encryption algorithm and digest algorithm this function returns the signature algorithm.
-     *
-     * @param encryptionAlgorithm the encryption algorithm
-     * @param digestAlgorithm     the digest algorithm
-     * @param mgf                 the mask generation function
-     * @return the corresponding combination of both algorithms
-     * @deprecated since DSS 6.1. Please use {@code #getAlgorithm(encryptionAlgorithm, digestAlgorithm)} method instead.
-     *             Use {@code EncryptionAlgorithm.RSA} or {@code EncryptionAlgorithm.RSASSA_PSS} to differentiate between MGF use.
-     */
-    @Deprecated
-    public static SignatureAlgorithm getAlgorithm(final EncryptionAlgorithm encryptionAlgorithm, final DigestAlgorithm digestAlgorithm,
-                                                  final MaskGenerationFunction mgf) {
-        EncryptionAlgorithm targetEncryptionAlgorithm = encryptionAlgorithm;
-        if (EncryptionAlgorithm.RSA == encryptionAlgorithm && MaskGenerationFunction.MGF1 == mgf) {
-            targetEncryptionAlgorithm = EncryptionAlgorithm.RSASSA_PSS;
-        }
-        return getAlgorithm(targetEncryptionAlgorithm, digestAlgorithm);
-    }
-
-    /**
      * The default constructor.
      *
      * @param encryptionAlgorithm the encryption algorithm
@@ -944,21 +928,6 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
     }
 
     /**
-     * This method returns the mask generation function.
-     *
-     * @return the mask generation function
-     * @deprecated since DSS 6.1. Please use {@code #getEncryptionAlgorithm} in order to differentiate between 
-     *             MGF values (use RSA for none MGF, RSASSA_PSS for MGF1)
-     */
-    @Deprecated
-    public MaskGenerationFunction getMaskGenerationFunction() {
-        if (EncryptionAlgorithm.RSASSA_PSS == encryptionAlgo) {
-            return MaskGenerationFunction.MGF1;
-        }
-        return null;
-    }
-
-    /**
      * Returns the XML ID of the signature algorithm.
      *
      * @return the XML URI for the current signature algorithm.
@@ -980,9 +949,9 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
 
     /**
      * Returns the URI of the signature algorithm generated from its OID:
-     *
+     * <p>
      * Ex.: OID = 1.2.4.5.6.8 becomes URI = urn:oid:1.2.4.5.6.8
-     *
+     * <p>
      * Note: see RFC 3061 "A URN Namespace of Object Identifiers"
      *
      * @return URI based on the algorithm's OID

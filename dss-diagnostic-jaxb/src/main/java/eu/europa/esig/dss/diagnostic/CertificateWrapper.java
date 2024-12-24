@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -33,6 +33,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlExtendedKeyUsages;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlFreshestCRL;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlGeneralName;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlGeneralSubtree;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlIdPkixOcspNoCheck;
@@ -41,6 +42,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlKeyUsages;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlLangAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlMRATrustServiceMapping;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlNameConstraints;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlNoRevAvail;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOriginalThirdCountryQcStatementsMapping;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOriginalThirdCountryTrustServiceMapping;
@@ -112,7 +114,27 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	 * @return TRUE if the certificate is trusted, FALSE otherwise
 	 */
 	public boolean isTrusted() {
-		return certificate.isTrusted();
+		return certificate.getTrusted() != null && certificate.getTrusted().isValue();
+	}
+
+	/**
+	 * Returns a certificate's trust start date, when available. If null is returned and the certificate is trusted,
+	 * the certificate is considered indefinitely trusted.
+	 *
+	 * @return {@link Date} trust start date
+	 */
+	public Date getTrustStartDate() {
+		return certificate.getTrusted() != null ? certificate.getTrusted().getStartDate() : null;
+	}
+
+	/**
+	 * Returns a certificate's trust end date, when available. If null is returned and the certificate is trusted,
+	 * the certificate is considered indefinitely trusted.
+	 *
+	 * @return {@link Date} trust end date
+	 */
+	public Date getTrustSunsetDate() {
+		return certificate.getTrusted() != null ? certificate.getTrusted().getSunsetDate() : null;
 	}
 
 	/**
@@ -137,6 +159,8 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	 * Returns a certificate extension with the given {@code oid} when present
 	 *
 	 * @param oid {@link String} OID of the certificate extension
+	 * @param targetClass {@link Class} to return implementation of
+	 * @param <T> instance of {@link XmlCertificateExtension} corresponding to the {@code targetClass} parameter type
 	 * @return {@link XmlCertificateExtension} when present, NULL otherwise
 	 */
 	public <T extends XmlCertificateExtension> T getCertificateExtensionForOid(String oid, Class<T> targetClass) {
@@ -361,6 +385,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 		}
 		return false;
 	}
+
 	/**
 	 * Returns if the certificate contains id-etsi-ext-valassured-ST-certs extension,
 	 * as defined in ETSI EN 319 412-1 "5.2 Certificate Extensions regarding Validity Assured Certificate"
@@ -374,6 +399,21 @@ public class CertificateWrapper extends AbstractTokenProxy {
 
 	private XmlValAssuredShortTermCertificate getXmlValAssuredShortTermCertificate() {
 		return getCertificateExtensionForOid(CertificateExtensionEnum.VALIDITY_ASSURED_SHORT_TERM.getOid(), XmlValAssuredShortTermCertificate.class);
+	}
+
+	/**
+	 * Returns if the certificate contains noRevAvail extension,
+	 * as defined in RFC 9608 "No Revocation Available for X.509 Public Key Certificates"
+	 *
+	 * @return TRUE if the certificate contains no revocation available certificate extension, FALSE otherwise
+	 */
+	public boolean isNoRevAvail() {
+		XmlNoRevAvail noRevAvail = getXmlNoRevAvail();
+		return noRevAvail != null && noRevAvail.isPresent();
+	}
+
+	private XmlNoRevAvail getXmlNoRevAvail() {
+		return getCertificateExtensionForOid(CertificateExtensionEnum.NO_REVOCATION_AVAILABLE.getOid(), XmlNoRevAvail.class);
 	}
 
 	/**
@@ -409,12 +449,39 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	}
 
 	/**
-	 * Returns a string identifier of the certificate's public key
+	 * Returns a string identifier of the certificate's entity key
 	 *
-	 * @return {@link String} public key's identifier
+	 * @return {@link String} entity key's identifier
 	 */
 	public String getEntityKey() {
 		return certificate.getEntityKey();
+	}
+
+	/**
+	 * Returns a string identifier of the certificate's issuer entity key
+	 *
+	 * @return {@link String} issuer entity key's identifier
+	 */
+	public String getIssuerEntityKey() {
+		return certificate.getIssuerEntityKey() != null ? certificate.getIssuerEntityKey().getValue() : null;
+	}
+
+	/**
+	 * Checks whether the issuer's public key matches to the key used to sign this token
+	 *
+	 * @return TRUE if the issue's public key matches the key used to sign the current token
+	 */
+	public boolean isMatchingIssuerKey() {
+		return certificate.getIssuerEntityKey() != null && Boolean.TRUE.equals(certificate.getIssuerEntityKey().isKey());
+	}
+
+	/**
+	 * Checks whether the issuer's subject name matches to the key used to sign this token
+	 *
+	 * @return TRUE if the issue's subject name matches the key used to sign the current token
+	 */
+	public boolean isMatchingIssuerSubjectName() {
+		return certificate.getIssuerEntityKey() != null && Boolean.TRUE.equals(certificate.getIssuerEntityKey().isSubjectName());
 	}
 
 	/**
@@ -685,6 +752,23 @@ public class CertificateWrapper extends AbstractTokenProxy {
 
 	private XmlCRLDistributionPoints getXmlCRLDistributionPoints() {
 		return getCertificateExtensionForOid(CertificateExtensionEnum.CRL_DISTRIBUTION_POINTS.getOid(), XmlCRLDistributionPoints.class);
+	}
+
+	/**
+	 * Returns the Freshest CRL URLs
+	 *
+	 * @return a list of {@link String}s
+	 */
+	public List<String> getFreshestCRLUrls() {
+		XmlCRLDistributionPoints freshestCRL = getXmlFreshestCRL();
+		if (freshestCRL != null) {
+			return freshestCRL.getCrlUrl();
+		}
+		return Collections.emptyList();
+	}
+
+	private XmlFreshestCRL getXmlFreshestCRL() {
+		return getCertificateExtensionForOid(CertificateExtensionEnum.FRESHEST_CRL.getOid(), XmlFreshestCRL.class);
 	}
 
 	/**

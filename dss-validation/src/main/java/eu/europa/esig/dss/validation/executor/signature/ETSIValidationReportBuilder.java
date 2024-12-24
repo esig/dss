@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -64,7 +64,6 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerRole;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
-import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.MessageType;
@@ -140,8 +139,8 @@ import eu.europa.esig.validationreport.jaxb.ValidationTimeInfoType;
 import eu.europa.esig.xades.jaxb.xades132.DigestAlgAndValueType;
 import eu.europa.esig.xmldsig.jaxb.DigestMethodType;
 import eu.europa.esig.xmldsig.jaxb.SignatureValueType;
-
 import jakarta.xml.bind.JAXBElement;
+
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -959,10 +958,9 @@ public class ETSIValidationReportBuilder {
 			XmlChainItem currentChainItem = chainItem.get(i);
 			CertificateWrapper certificateWrapper = diagnosticData.getCertificateById(currentChainItem.getId());
 			VOReferenceType currentVORef = getVOReference(getCertificateValidationObject(certificateWrapper));
-			CertificateSourceType source = currentChainItem.getSource();
 
 			boolean isSigningCert = (i == 0);
-			boolean isTrustAnchor = isTrustAnchor(source);
+			boolean isTrustAnchor = certificateWrapper.isTrusted();
 
 			if (isSigningCert || isTrustAnchor) {
 				if (isSigningCert) {
@@ -983,10 +981,6 @@ public class ETSIValidationReportBuilder {
 
 		validationReportData.setCertificateChain(certificateChainType);
 		validationReportData.setTrustAnchor(trustAnchor);
-	}
-
-	private boolean isTrustAnchor(CertificateSourceType source) {
-		return CertificateSourceType.TRUSTED_LIST.equals(source) || CertificateSourceType.TRUSTED_STORE.equals(source);
 	}
 
 	private SignatureIdentifierType getSignatureIdentifier(SignatureWrapper sigWrapper) {
@@ -1160,6 +1154,14 @@ public class ETSIValidationReportBuilder {
 		for (OrphanCertificateTokenWrapper orphanCertificate : foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES)) {
 			validationObjectTypes.add(getOrphanCertificateValidationObject(orphanCertificate));
 		}
+		// TODO : temporary handling for AnyValidationData -> embed in CertificateValues
+		for (CertificateWrapper certificateWrapper : foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.ANY_VALIDATION_DATA)) {
+			validationObjectTypes.add(getCertificateValidationObject(certificateWrapper));
+		}
+		for (OrphanCertificateTokenWrapper orphanCertificate : foundCertificates.getOrphanCertificatesByOrigin(CertificateOrigin.ANY_VALIDATION_DATA)) {
+			validationObjectTypes.add(getOrphanCertificateValidationObject(orphanCertificate));
+		}
+
 		if (Utils.isCollectionNotEmpty(validationObjectTypes)) {
 			sigAttributes.getSigningTimeOrSigningCertificateOrDataObjectFormat()
 					.add(objectFactory.createSignatureAttributesTypeCertificateValues(buildAttributeObjectList(validationObjectTypes)));
@@ -1351,6 +1353,13 @@ public class ETSIValidationReportBuilder {
 			validationObjects.add(getRevocationValidationObject(revocationWrapper));
 		}
 		for (OrphanRevocationTokenWrapper orphanRevocation : foundRevocations.getOrphanRevocationsByOrigin(RevocationOrigin.REVOCATION_VALUES)) {
+			validationObjects.add(getOrphanRevocationValidationObject(orphanRevocation));
+		}
+		// TODO : temporary handling for AnyValidationData -> embed in RevocationValues
+		for (RevocationWrapper revocationWrapper : foundRevocations.getRelatedRevocationsByOrigin(RevocationOrigin.ANY_VALIDATION_DATA)) {
+			validationObjects.add(getRevocationValidationObject(revocationWrapper));
+		}
+		for (OrphanRevocationTokenWrapper orphanRevocation : foundRevocations.getOrphanRevocationsByOrigin(RevocationOrigin.ANY_VALIDATION_DATA)) {
 			validationObjects.add(getOrphanRevocationValidationObject(orphanRevocation));
 		}
 		if (Utils.isCollectionNotEmpty(validationObjects)) {

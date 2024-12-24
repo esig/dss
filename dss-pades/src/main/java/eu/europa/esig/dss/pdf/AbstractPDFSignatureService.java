@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -54,6 +54,7 @@ import eu.europa.esig.dss.pdf.visible.SignatureFieldBoxBuilder;
 import eu.europa.esig.dss.pdf.visible.VisualSignatureFieldAppearance;
 import eu.europa.esig.dss.signature.resources.DSSResourcesHandler;
 import eu.europa.esig.dss.signature.resources.DSSResourcesHandlerBuilder;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
@@ -114,6 +115,11 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 * Used to verify the signature field position placement validity
 	 */
 	protected PdfSignatureFieldPositionChecker pdfSignatureFieldPositionChecker = new PdfSignatureFieldPositionChecker();
+	
+	/**
+	 * Used to specify load mode of the PDF document
+	 */
+	protected PdfMemoryUsageSetting pdfMemoryUsageSetting = PAdESUtils.DEFAULT_PDF_MEMORY_USAGE_SETTING;
 
 	/**
 	 * Constructor for the PDFSignatureService
@@ -157,6 +163,12 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	public void setPdfSignatureFieldPositionChecker(PdfSignatureFieldPositionChecker pdfSignatureFieldPositionChecker) {
 		Objects.requireNonNull(pdfSignatureFieldPositionChecker, "PdfSignatureFieldPositionChecker cannot be null!");
 		this.pdfSignatureFieldPositionChecker = pdfSignatureFieldPositionChecker;
+	}
+	
+	@Override
+	public void setPdfMemoryUsageSetting(PdfMemoryUsageSetting pdfMemoryUsageSetting) {
+		Objects.requireNonNull(pdfMemoryUsageSetting, "PdfMemoryUsageSetting cannot be null!");
+		this.pdfMemoryUsageSetting = pdfMemoryUsageSetting;
 	}
 
 	/**
@@ -548,10 +560,15 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 					final boolean byteRangeValid = validateByteRange(byteRange, document, cms);
 					byteRange.setValid(byteRangeValid);
 
-					final DSSDocument signedContent;
-					if (byteRangeValid) {
+					DSSDocument signedContent = null;
+					if (byteRange.isValid()) {
 						signedContent = new PdfByteRangeDocument(document, byteRange);
-					} else {
+						if (!isSignedContentComplete(byteRange, signedContent)) {
+							byteRange.setValid(false);
+						}
+					}
+
+					if (!byteRange.isValid()) {
 						signedContent = InMemoryDocument.createEmptyDocument();
 						LOG.warn("The signature '{}' has an invalid /ByteRange! " +
 								"The validation will result to a broken signature.", fieldNames);
@@ -720,7 +737,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	}
 
 	private boolean containsDSSRevisions(List<PdfRevision> revisions) {
-		return revisions.stream().anyMatch(r -> r instanceof PdfDocDssRevision);
+		return revisions.stream().anyMatch(PdfDocDssRevision.class::isInstance);
 	}
 
 	/**
@@ -771,6 +788,24 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 					"does not match the signature present in /Contents field!", byteRange);
 		}
 		return match;
+	}
+
+	/**
+	 * This method verifies whether the extracted signed content corresponds to the byte range
+	 *
+	 * @param byteRange {@link ByteRange} of the signature
+	 * @param signedContent {@link DSSDocument} the corresponding extracted signed content
+	 * @return TRUE if the extracted signed content is complete and consistent to the ByteRange, FALSE otherwise
+	 */
+	private boolean isSignedContentComplete(ByteRange byteRange, DSSDocument signedContent) {
+		int expectedSignedContentLength = (byteRange.getFirstPartEnd() - byteRange.getFirstPartStart()) + byteRange.getSecondPartEnd();
+		long signedContentLength = DSSUtils.getFileByteSize(signedContent);
+		if (expectedSignedContentLength != signedContentLength) {
+			LOG.warn("The length of the extracted signed content '{}' does not correspond to the content length " +
+					"defined by the ByteRange {} : {}!", signedContentLength, byteRange, expectedSignedContentLength);
+			return false;
+		}
+		return true;
 	}
 
 	/**

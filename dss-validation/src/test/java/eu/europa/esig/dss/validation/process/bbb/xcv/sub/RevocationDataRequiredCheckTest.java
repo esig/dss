@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -29,6 +29,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateExtension;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicies;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlIdPkixOcspNoCheck;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTrusted;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlValAssuredShortTermCertificate;
 import eu.europa.esig.dss.policy.jaxb.CertificateValuesConstraint;
 import eu.europa.esig.dss.policy.jaxb.Level;
@@ -39,6 +40,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -48,13 +50,15 @@ class RevocationDataRequiredCheckTest extends AbstractTestCheck {
     @Test
     void trustedCertTest() {
         XmlCertificate xc = new XmlCertificate();
-        xc.setTrusted(true);
+        XmlTrusted xmlTrusted = new XmlTrusted();
+        xmlTrusted.setValue(true);
+        xc.setTrusted(xmlTrusted);
 
         CertificateValuesConstraint constraint = new CertificateValuesConstraint();
         constraint.setLevel(Level.FAIL);
 
         XmlSubXCV result = new XmlSubXCV();
-        RevocationDataRequiredCheck<?> rdsc = new RevocationDataRequiredCheck<>(i18nProvider, result, new CertificateWrapper(xc), constraint);
+        RevocationDataRequiredCheck<?> rdsc = new RevocationDataRequiredCheck<>(i18nProvider, result, new CertificateWrapper(xc), new Date(), null, constraint);
         rdsc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -71,7 +75,7 @@ class RevocationDataRequiredCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlSubXCV result = new XmlSubXCV();
-        RevocationDataRequiredCheck<?> rdsc = new RevocationDataRequiredCheck<>(i18nProvider, result, new CertificateWrapper(xc), constraint);
+        RevocationDataRequiredCheck<?> rdsc = new RevocationDataRequiredCheck<>(i18nProvider, result, new CertificateWrapper(xc), new Date(), null, constraint);
         rdsc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -94,7 +98,7 @@ class RevocationDataRequiredCheckTest extends AbstractTestCheck {
         constraint.setCertificateExtensions(certExtensionsConstraint);
 
         XmlSubXCV result = new XmlSubXCV();
-        RevocationDataRequiredCheck<?> rdsc = new RevocationDataRequiredCheck<>(i18nProvider, result, new CertificateWrapper(xc), constraint);
+        RevocationDataRequiredCheck<?> rdsc = new RevocationDataRequiredCheck<>(i18nProvider, result, new CertificateWrapper(xc), new Date(), null, constraint);
         rdsc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -117,7 +121,7 @@ class RevocationDataRequiredCheckTest extends AbstractTestCheck {
         constraint.setCertificateExtensions(certExtensionsConstraint);
 
         XmlSubXCV result = new XmlSubXCV();
-        RevocationDataRequiredCheck<?> rdsc = new RevocationDataRequiredCheck<>(i18nProvider, result, new CertificateWrapper(xc), constraint);
+        RevocationDataRequiredCheck<?> rdsc = new RevocationDataRequiredCheck<>(i18nProvider, result, new CertificateWrapper(xc), new Date(), null, constraint);
         rdsc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -140,7 +144,7 @@ class RevocationDataRequiredCheckTest extends AbstractTestCheck {
         constraint.setCertificateExtensions(certExtensionsConstraint);
 
         XmlSubXCV result = new XmlSubXCV();
-        RevocationDataRequiredCheck<?> rdsc = new RevocationDataRequiredCheck<>(i18nProvider, result, new CertificateWrapper(xc), constraint);
+        RevocationDataRequiredCheck<?> rdsc = new RevocationDataRequiredCheck<>(i18nProvider, result, new CertificateWrapper(xc), new Date(), null, constraint);
         rdsc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -163,7 +167,7 @@ class RevocationDataRequiredCheckTest extends AbstractTestCheck {
         constraint.setCertificateExtensions(certExtensionsConstraint);
 
         XmlSubXCV result = new XmlSubXCV();
-        RevocationDataRequiredCheck<?> rdsc = new RevocationDataRequiredCheck<>(i18nProvider, result, new CertificateWrapper(xc), constraint);
+        RevocationDataRequiredCheck<?> rdsc = new RevocationDataRequiredCheck<>(i18nProvider, result, new CertificateWrapper(xc), new Date(), null, constraint);
         rdsc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -191,7 +195,7 @@ class RevocationDataRequiredCheckTest extends AbstractTestCheck {
         constraint.setCertificatePolicies(certPoliciesConstraint);
 
         XmlSubXCV result = new XmlSubXCV();
-        RevocationDataRequiredCheck<?> rdsc = new RevocationDataRequiredCheck<>(i18nProvider, result, new CertificateWrapper(xc), constraint);
+        RevocationDataRequiredCheck<?> rdsc = new RevocationDataRequiredCheck<>(i18nProvider, result, new CertificateWrapper(xc), new Date(), null, constraint);
         rdsc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -219,7 +223,7 @@ class RevocationDataRequiredCheckTest extends AbstractTestCheck {
         constraint.setCertificatePolicies(certPoliciesConstraint);
 
         XmlSubXCV result = new XmlSubXCV();
-        RevocationDataRequiredCheck<?> rdsc = new RevocationDataRequiredCheck<>(i18nProvider, result, new CertificateWrapper(xc), constraint);
+        RevocationDataRequiredCheck<?> rdsc = new RevocationDataRequiredCheck<>(i18nProvider, result, new CertificateWrapper(xc), new Date(), null, constraint);
         rdsc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -258,7 +262,7 @@ class RevocationDataRequiredCheckTest extends AbstractTestCheck {
         constraint.setCertificatePolicies(certPoliciesConstraint);
 
         XmlSubXCV result = new XmlSubXCV();
-        RevocationDataRequiredCheck<?> rdsc = new RevocationDataRequiredCheck<>(i18nProvider, result, new CertificateWrapper(xc), constraint);
+        RevocationDataRequiredCheck<?> rdsc = new RevocationDataRequiredCheck<>(i18nProvider, result, new CertificateWrapper(xc), new Date(), null, constraint);
         rdsc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -286,7 +290,7 @@ class RevocationDataRequiredCheckTest extends AbstractTestCheck {
         constraint.setCertificatePolicies(certPoliciesConstraint);
 
         XmlSubXCV result = new XmlSubXCV();
-        RevocationDataRequiredCheck<?> rdsc = new RevocationDataRequiredCheck<>(i18nProvider, result, new CertificateWrapper(xc), constraint);
+        RevocationDataRequiredCheck<?> rdsc = new RevocationDataRequiredCheck<>(i18nProvider, result, new CertificateWrapper(xc), new Date(), null, constraint);
         rdsc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -318,7 +322,7 @@ class RevocationDataRequiredCheckTest extends AbstractTestCheck {
         constraint.setCertificatePolicies(certPoliciesConstraint);
 
         XmlSubXCV result = new XmlSubXCV();
-        RevocationDataRequiredCheck<?> rdsc = new RevocationDataRequiredCheck<>(i18nProvider, result, new CertificateWrapper(xc), constraint);
+        RevocationDataRequiredCheck<?> rdsc = new RevocationDataRequiredCheck<>(i18nProvider, result, new CertificateWrapper(xc), new Date(), null, constraint);
         rdsc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -354,7 +358,7 @@ class RevocationDataRequiredCheckTest extends AbstractTestCheck {
         constraint.setCertificatePolicies(certPoliciesConstraint);
 
         XmlSubXCV result = new XmlSubXCV();
-        RevocationDataRequiredCheck<?> rdsc = new RevocationDataRequiredCheck<>(i18nProvider, result, new CertificateWrapper(xc), constraint);
+        RevocationDataRequiredCheck<?> rdsc = new RevocationDataRequiredCheck<>(i18nProvider, result, new CertificateWrapper(xc), new Date(), null, constraint);
         rdsc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -390,7 +394,7 @@ class RevocationDataRequiredCheckTest extends AbstractTestCheck {
         constraint.setCertificatePolicies(certPoliciesConstraint);
 
         XmlSubXCV result = new XmlSubXCV();
-        RevocationDataRequiredCheck<?> rdsc = new RevocationDataRequiredCheck<>(i18nProvider, result, new CertificateWrapper(xc), constraint);
+        RevocationDataRequiredCheck<?> rdsc = new RevocationDataRequiredCheck<>(i18nProvider, result, new CertificateWrapper(xc), new Date(), null, constraint);
         rdsc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -401,7 +405,9 @@ class RevocationDataRequiredCheckTest extends AbstractTestCheck {
     @Test
     void allConstraintsAllInvalidTrustedTest() {
         XmlCertificate xc = new XmlCertificate();
-        xc.setTrusted(true);
+        XmlTrusted xmlTrusted = new XmlTrusted();
+        xmlTrusted.setValue(true);
+        xc.setTrusted(xmlTrusted);
 
         XmlCertificateExtension extensionOne = new XmlCertificateExtension();
         extensionOne.setOID("0.15.453.12");
@@ -427,7 +433,7 @@ class RevocationDataRequiredCheckTest extends AbstractTestCheck {
         constraint.setCertificatePolicies(certPoliciesConstraint);
 
         XmlSubXCV result = new XmlSubXCV();
-        RevocationDataRequiredCheck<?> rdsc = new RevocationDataRequiredCheck<>(i18nProvider, result, new CertificateWrapper(xc), constraint);
+        RevocationDataRequiredCheck<?> rdsc = new RevocationDataRequiredCheck<>(i18nProvider, result, new CertificateWrapper(xc), new Date(), null, constraint);
         rdsc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -464,7 +470,7 @@ class RevocationDataRequiredCheckTest extends AbstractTestCheck {
         constraint.setCertificatePolicies(certPoliciesConstraint);
 
         XmlSubXCV result = new XmlSubXCV();
-        RevocationDataRequiredCheck<?> rdsc = new RevocationDataRequiredCheck<>(i18nProvider, result, new CertificateWrapper(xc), constraint);
+        RevocationDataRequiredCheck<?> rdsc = new RevocationDataRequiredCheck<>(i18nProvider, result, new CertificateWrapper(xc), new Date(), null, constraint);
         rdsc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -480,7 +486,7 @@ class RevocationDataRequiredCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlSubXCV result = new XmlSubXCV();
-        RevocationDataRequiredCheck<?> rdsc = new RevocationDataRequiredCheck<>(i18nProvider, result, new CertificateWrapper(xc), constraint);
+        RevocationDataRequiredCheck<?> rdsc = new RevocationDataRequiredCheck<>(i18nProvider, result, new CertificateWrapper(xc), new Date(), null, constraint);
         rdsc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -500,7 +506,7 @@ class RevocationDataRequiredCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlSubXCV result = new XmlSubXCV();
-        RevocationDataRequiredCheck<?> rdsc = new RevocationDataRequiredCheck<>(i18nProvider, result, new CertificateWrapper(xc), constraint);
+        RevocationDataRequiredCheck<?> rdsc = new RevocationDataRequiredCheck<>(i18nProvider, result, new CertificateWrapper(xc), new Date(), null, constraint);
         rdsc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -523,7 +529,7 @@ class RevocationDataRequiredCheckTest extends AbstractTestCheck {
         constraint.setCertificateExtensions(certExtensionsConstraint);
 
         XmlSubXCV result = new XmlSubXCV();
-        RevocationDataRequiredCheck<?> rdsc = new RevocationDataRequiredCheck<>(i18nProvider, result, new CertificateWrapper(xc), constraint);
+        RevocationDataRequiredCheck<?> rdsc = new RevocationDataRequiredCheck<>(i18nProvider, result, new CertificateWrapper(xc), new Date(), null, constraint);
         rdsc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -542,7 +548,7 @@ class RevocationDataRequiredCheckTest extends AbstractTestCheck {
         constraint.setCertificateExtensions(certExtensionsConstraint);
 
         XmlSubXCV result = new XmlSubXCV();
-        RevocationDataRequiredCheck<?> rdsc = new RevocationDataRequiredCheck<>(i18nProvider, result, new CertificateWrapper(xc), constraint);
+        RevocationDataRequiredCheck<?> rdsc = new RevocationDataRequiredCheck<>(i18nProvider, result, new CertificateWrapper(xc), new Date(), null, constraint);
         rdsc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -570,7 +576,7 @@ class RevocationDataRequiredCheckTest extends AbstractTestCheck {
         constraint.setCertificatePolicies(certPoliciesConstraint);
 
         XmlSubXCV result = new XmlSubXCV();
-        RevocationDataRequiredCheck<?> rdsc = new RevocationDataRequiredCheck<>(i18nProvider, result, new CertificateWrapper(xc), constraint);
+        RevocationDataRequiredCheck<?> rdsc = new RevocationDataRequiredCheck<>(i18nProvider, result, new CertificateWrapper(xc), new Date(), null, constraint);
         rdsc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -589,7 +595,7 @@ class RevocationDataRequiredCheckTest extends AbstractTestCheck {
         constraint.setCertificatePolicies(certPoliciesConstraint);
 
         XmlSubXCV result = new XmlSubXCV();
-        RevocationDataRequiredCheck<?> rdsc = new RevocationDataRequiredCheck<>(i18nProvider, result, new CertificateWrapper(xc), constraint);
+        RevocationDataRequiredCheck<?> rdsc = new RevocationDataRequiredCheck<>(i18nProvider, result, new CertificateWrapper(xc), new Date(), null, constraint);
         rdsc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -621,7 +627,7 @@ class RevocationDataRequiredCheckTest extends AbstractTestCheck {
         constraint.setCertificatePolicies(certPoliciesConstraint);
 
         XmlSubXCV result = new XmlSubXCV();
-        RevocationDataRequiredCheck<?> rdsc = new RevocationDataRequiredCheck<>(i18nProvider, result, new CertificateWrapper(xc), constraint);
+        RevocationDataRequiredCheck<?> rdsc = new RevocationDataRequiredCheck<>(i18nProvider, result, new CertificateWrapper(xc), new Date(), null, constraint);
         rdsc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -649,7 +655,7 @@ class RevocationDataRequiredCheckTest extends AbstractTestCheck {
         constraint.setCertificatePolicies(certPoliciesConstraint);
 
         XmlSubXCV result = new XmlSubXCV();
-        RevocationDataRequiredCheck<?> rdsc = new RevocationDataRequiredCheck<>(i18nProvider, result, new CertificateWrapper(xc), constraint);
+        RevocationDataRequiredCheck<?> rdsc = new RevocationDataRequiredCheck<>(i18nProvider, result, new CertificateWrapper(xc), new Date(), null, constraint);
         rdsc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -685,7 +691,7 @@ class RevocationDataRequiredCheckTest extends AbstractTestCheck {
         constraint.setCertificatePolicies(certPoliciesConstraint);
 
         XmlSubXCV result = new XmlSubXCV();
-        RevocationDataRequiredCheck<?> rdsc = new RevocationDataRequiredCheck<>(i18nProvider, result, new CertificateWrapper(xc), constraint);
+        RevocationDataRequiredCheck<?> rdsc = new RevocationDataRequiredCheck<>(i18nProvider, result, new CertificateWrapper(xc), new Date(), null, constraint);
         rdsc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

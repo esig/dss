@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -42,20 +42,29 @@ import eu.europa.esig.dss.pades.validation.suite.DSS2513LTTest;
 import eu.europa.esig.dss.pades.validation.suite.DSS2513Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS2601Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS2821Test;
+import eu.europa.esig.dss.pades.validation.suite.DSS3111DSSTest;
 import eu.europa.esig.dss.pades.validation.suite.DSS3111Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS3226StrictNumberComparisonTest;
 import eu.europa.esig.dss.pades.validation.suite.DSS3226Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS3239Test;
 import eu.europa.esig.dss.pades.validation.suite.DSS3298Test;
+import eu.europa.esig.dss.pades.validation.suite.PAdESBESNoCertificatesValidationTest;
+import eu.europa.esig.dss.pades.validation.suite.PAdESBESValidationTest;
+import eu.europa.esig.dss.pades.validation.suite.PAdESBESWithSigPolicyIdentifierValidationTest;
+import eu.europa.esig.dss.pades.validation.suite.PAdESEPESValidationTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESEndEntityCertIssuedByNotCACertTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESEnvelopingOtherPdfTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESExtendedToTLevelTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESInfiniteLoopTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESInvalidDigestAlgorithmTest;
+import eu.europa.esig.dss.pades.validation.suite.PAdESLTVBasedOnEPESValidationTest;
+import eu.europa.esig.dss.pades.validation.suite.PAdESLTVValidationTest;
+import eu.europa.esig.dss.pades.validation.suite.PAdESLTVWithReasonValidationTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESLevelLTAWithCopiedDocTstTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESLevelTWithDuplicatedDocTstTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESLevelTWithDuplicatedSigTstTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESMultipleFieldSignatureReferenceTest;
+import eu.europa.esig.dss.pades.validation.suite.PAdESMultipleLTLevelSignaturesTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESMultiplePagesAnnotationsOverlapTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESOCSPSigningCertificateTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESOutOfByteRangeTest;
@@ -73,6 +82,7 @@ import eu.europa.esig.dss.pades.validation.suite.PAdESWithDssVriAndCertRefTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESWithEnvelopingCMSTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESWithEnvelopingEmptyContentCMSTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESWithEofCRTest;
+import eu.europa.esig.dss.pades.validation.suite.PAdESWithEofSignatureTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESWithOcspFromDssRevisionTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESWithOrphanOcspCertRefsTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESWithRemovedPagesTest;
@@ -80,6 +90,7 @@ import eu.europa.esig.dss.pades.validation.suite.PAdESWithSpoofingAttackTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESWithUnsupportedSignatureAlgorithmTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESWithVRITimeStampTest;
 import eu.europa.esig.dss.pades.validation.suite.PAdESWithVRITimeTest;
+import eu.europa.esig.dss.pades.validation.suite.PDFWithMultipleSignerInfoValidationTest;
 import eu.europa.esig.dss.pades.validation.suite.PadesWrongDigestAlgoTest;
 import eu.europa.esig.dss.pades.validation.suite.PdfPkcs7SubFilterValidAndInvalidTest;
 import eu.europa.esig.dss.pades.validation.suite.PdfPkcs7Test;
@@ -133,11 +144,14 @@ import org.junit.platform.suite.api.Suite;
 		PAdESWithEnvelopingCMSTest.class, PAdESWithEnvelopingEmptyContentCMSTest.class, DSS2601Test.class, PAdESWithEofCRTest.class,
 		PdfPkcs7SubFilterValidAndInvalidTest.class, PAdESWithUnsupportedSignatureAlgorithmTest.class, DSS2821Test.class,
 		PAdESWithVRITimeStampTest.class, PAdESWithVRITimeTest.class, PAdESWithSpoofingAttackTest.class, PAdESSpoofingAttackReplacementTest.class,
-		PAdESEndEntityCertIssuedByNotCACertTest.class, DSS3111Test.class, PAdESLevelLTWithXmlEvidenceRecordValidationTest.class,
+		PAdESEndEntityCertIssuedByNotCACertTest.class, DSS3111Test.class, DSS3111DSSTest.class, PAdESLevelLTWithXmlEvidenceRecordValidationTest.class,
 		PAdESLevelTWithDuplicatedSigTstTest.class, PAdESLevelTWithDuplicatedDocTstTest.class, PAdESLevelLTAWithCopiedDocTstTest.class,
 		PAdESTwoSigWithCopiedTstTest.class, PAdESTimestampedExistingFieldsTest.class, DSS3226Test.class, DSS3226StrictNumberComparisonTest.class,
 		PAdESLevelBWithAsn1EvidenceRecordValidationTest.class, PAdESWithDetachedTstWithAsn1EvidenceRecordValidationTest.class, DSS3239Test.class,
-		PAdESLevelLTAWithOrphanRefsWithXmlEvidenceRecordValidationTest.class, DSS3298Test.class })
+		PAdESLevelLTAWithOrphanRefsWithXmlEvidenceRecordValidationTest.class, DSS3298Test.class, PAdESBESValidationTest.class,
+		PAdESEPESValidationTest.class, PAdESBESNoCertificatesValidationTest.class, PAdESBESWithSigPolicyIdentifierValidationTest.class,
+		PAdESLTVValidationTest.class, PAdESLTVWithReasonValidationTest.class, PAdESLTVBasedOnEPESValidationTest.class,
+		PDFWithMultipleSignerInfoValidationTest.class, PAdESMultipleLTLevelSignaturesTest.class, PAdESWithEofSignatureTest.class })
 class ITextPAdESValidationSuiteTest {
 
 }

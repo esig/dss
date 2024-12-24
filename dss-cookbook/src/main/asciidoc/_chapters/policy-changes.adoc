@@ -10,6 +10,183 @@
 This chapter covers the changes occurred between different versions of DSS within <<validationPolicy>>.
 
 [cols="2,5,5"]
+.Policy changes from version 6.1 to 6.2
+|===
+|Title                                |v6.1                           |v6.2
+|NoRevAvail certificate extension     |
+----
+Not present
+----
+                                                                     a|[source,xml]
+----
+<SignatureConstraints>
+    ...
+    <BasicSignatureConstraints>
+        ...
+        <SigningCertificate>
+            ...
+            <RevocationDataSkip Level="INFORM">
+                <CertificateExtensions>
+                    ...
+                    <Id>2.5.29.56</Id> <!-- noRevAvail -->
+                </CertificateExtensions>
+            </RevocationDataSkip>
+            ...
+            <NoRevAvail Level="WARN" />
+            ...
+        </SigningCertificate>
+        <CACertificate>
+            ...
+            <ForbiddenExtensions Level="FAIL">
+                ...
+                <Id>2.5.29.56</Id> <!-- noRevAvail -->
+            </ForbiddenExtensions>
+            ...
+        </CACertificate>
+    </BasicSignatureConstraints>
+    ...
+</SignatureConstraints>
+----
+
+|ASiC timestamp and evidence record consequent coverage     |
+----
+Not present
+----
+                                                                     a|[source,xml]
+----
+<Timestamp>
+    ...
+	<ContainerSignedAndTimestampedFilesCovered Level="FAIL" />
+    ...
+</Timestamp>
+...
+<EvidenceRecord>
+    ...
+    <ContainerSignedAndTimestampedFilesCovered Level="WARN" />
+    ...
+</EvidenceRecord>
+----
+
+|Detached evidence record signed data coverage     |
+----
+Not present
+----
+                                                                     a|[source,xml]
+----
+<EvidenceRecord>
+    ...
+    <SignedFilesCovered Level="WARN" />
+    ...
+</EvidenceRecord>
+----
+
+|TL Version     a|[source,xml]
+----
+<eIDAS>
+    ...
+    <TLVersion Level="FAIL" value="5" />
+    ...
+</eIDAS>
+----
+                                                                     a|[source,xml]
+----
+<eIDAS>
+    ...
+    <TLVersion Level="FAIL">
+        <Id>5</Id>
+        <Id>6</Id>
+    </TLVersion>
+    ...
+</eIDAS>
+----
+
+|CAdES archive-time-stamp-v3 ats-hash-index validation     |
+----
+Not present
+----
+                                                                     a|[source,xml]
+----
+<Timestamp>
+    ...
+    <AtsHashIndex Level="WARN" />
+    ...
+</Timestamp>
+----
+
+|Cryptographic constraint minimum key sizes                          a|[source,xml]
+----
+<MiniPublicKeySize>
+    <Algo Size="1024">DSA</Algo>
+    <Algo Size="1024">RSA</Algo>
+    <Algo Size="1024">RSASSA-PSS</Algo>
+    <Algo Size="160">ECDSA</Algo>
+    <Algo Size="160">PLAIN-ECDSA</Algo>
+</MiniPublicKeySize>
+----
+                                                                     a|[source,xml]
+----
+<MiniPublicKeySize>
+    <Algo Size="1024">DSA</Algo>
+    <Algo Size="786">RSA</Algo>
+    <Algo Size="786">RSASSA-PSS</Algo>
+    <Algo Size="160">ECDSA</Algo>
+    <Algo Size="160">PLAIN-ECDSA</Algo>
+</MiniPublicKeySize>
+----
+
+|Cryptographic constraint expiration dates.
+
+NOTE: Limited number of algorithms is listed in the example.
+Please see more at <<defaultXmlPolicy>>.                             a|[source,xml]
+----
+<AlgoExpirationDate Level="FAIL" Format="yyyy" UpdateDate="2022" LevelAfterUpdate="WARN">
+    <Algo Date="2009">SHA1</Algo>
+    <Algo Date="2026">SHA224</Algo>
+    <Algo Date="2029">SHA256</Algo>
+    <Algo Date="2029">SHA384</Algo>
+    <Algo Date="2029">SHA512</Algo>
+    <Algo Date="2029">SHA3-256</Algo>
+    <Algo Date="2029">SHA3-384</Algo>
+    <Algo Date="2029">SHA3-512</Algo>
+    <Algo Date="2009" Size="1024">RSA</Algo>
+    <Algo Date="2016" Size="1536">RSA</Algo>
+    <Algo Date="2026" Size="1900">RSA</Algo>
+    <Algo Date="2029" Size="3000">RSA</Algo>
+    <Algo Date="2013" Size="160">ECDSA</Algo>
+    <Algo Date="2013" Size="192">ECDSA</Algo>
+    <Algo Date="2016" Size="224">ECDSA</Algo>
+    <Algo Date="2029" Size="256">ECDSA</Algo>
+    <Algo Date="2029" Size="384">ECDSA</Algo>
+    <Algo Date="2029" Size="512">ECDSA</Algo>
+</AlgoExpirationDate>
+----
+                                                                     a|[source,xml]
+----
+<AlgoExpirationDate Level="FAIL" Format="yyyy-MM-dd" UpdateDate="2025-01-01" LevelAfterUpdate="WARN">
+    <Algo Date="2012-08-01">SHA1</Algo>
+    <Algo Date="2029-01-01">SHA224</Algo>
+    <Algo>SHA256</Algo> <!-- R -->
+    <Algo>SHA384</Algo> <!-- R -->
+    <Algo>SHA512</Algo> <!-- R -->
+    <Algo>SHA3-256</Algo> <!-- R -->
+    <Algo>SHA3-384</Algo> <!-- R -->
+    <Algo>SHA3-512</Algo> <!-- R -->
+    <Algo Date="2010-08-01" Size="786">RSA</Algo>
+    <Algo Date="2019-10-01" Size="1024">RSA</Algo>
+    <Algo Date="2019-10-01" Size="1536">RSA</Algo>
+    <Algo Date="2029-01-01" Size="1900">RSA</Algo>
+    <Algo Date="2029-01-01" Size="3000">RSA</Algo>
+    <Algo Size="3000">RSASSA-PSS</Algo> <!-- R -->
+    <Algo Date="2012-08-01" Size="160">ECDSA</Algo>
+    <Algo Date="2012-08-01" Size="163">ECDSA</Algo>
+    <Algo Date="2021-10-01" Size="224">ECDSA</Algo>
+    <Algo Size="256">ECDSA</Algo> <!-- R -->
+</AlgoExpirationDate>
+----
+
+|===
+
+[cols="2,5,5"]
 .Policy changes from version 5.13/6.0 to 6.1
 |===
 |Title                                |v6.0                           |v6.1

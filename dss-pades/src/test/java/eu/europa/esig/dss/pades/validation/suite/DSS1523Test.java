@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -29,6 +29,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pades.validation.PDFDocumentAnalyzer;
+import eu.europa.esig.dss.pades.validation.PdfObjectKey;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.test.AbstractPkiFactoryTestValidation;
@@ -41,6 +42,7 @@ import eu.europa.esig.validationreport.jaxb.SASubFilterType;
 import eu.europa.esig.validationreport.jaxb.SAVRIType;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -67,17 +69,21 @@ public class DSS1523Test extends AbstractPkiFactoryTestValidation {
 		assertEquals(1, dssDictionaries.size());
 		PdfDssDict pdfDssDict = dssDictionaries.get(0);
 
-		Map<Long, CertificateToken> certificateMap = pdfDssDict.getCERTs();
+		Map<PdfObjectKey, CertificateToken> certificateMap = pdfDssDict.getCERTs();
 		assertEquals(1, certificateMap.size());
-		assertNotNull(certificateMap.get(20L));
+		assertContainsObjectWithKey(certificateMap.keySet(), 20);
 
-		Map<Long, OCSPResponseBinary> ocspMap = pdfDssDict.getOCSPs();
+		Map<PdfObjectKey, OCSPResponseBinary> ocspMap = pdfDssDict.getOCSPs();
 		assertEquals(1, ocspMap.size());
-		assertNotNull(ocspMap.get(22L));
+		assertContainsObjectWithKey(ocspMap.keySet(), 22);
 
-		Map<Long, CRLBinary> crlMap = pdfDssDict.getCRLs();
+		Map<PdfObjectKey, CRLBinary> crlMap = pdfDssDict.getCRLs();
 		assertEquals(1, crlMap.size());
-		assertNotNull(crlMap.get(21L));
+		assertContainsObjectWithKey(crlMap.keySet(), 21);
+	}
+
+	private void assertContainsObjectWithKey(Collection<PdfObjectKey> objectKeys, long objectNumber) {
+		assertTrue(objectKeys.stream().anyMatch(k -> objectNumber == k.getNumber()));
 	}
 	
 	@Override

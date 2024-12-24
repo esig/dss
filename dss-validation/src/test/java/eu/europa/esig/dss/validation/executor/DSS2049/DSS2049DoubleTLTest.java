@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -49,8 +49,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class DSS2049DoubleTLTest extends AbstractTestValidationExecutor {
 	
-	private static final String czId = "TL-57FCA8BD35213403F3B984949365A5B03DB909F620AFE49D66A1470F964C551F";
-	private static final String skId = "TL-E9B06DA147E169206B0CC37F5202CC878097444EF14D52EA2042871139986DAC";
+	private static final String CZ_ID = "TL-57FCA8BD35213403F3B984949365A5B03DB909F620AFE49D66A1470F964C551F";
+	private static final String SK_ID = "TL-E9B06DA147E169206B0CC37F5202CC878097444EF14D52EA2042871139986DAC";
 
 	@Test
 	void test() throws Exception {
@@ -178,9 +178,9 @@ class DSS2049DoubleTLTest extends AbstractTestValidationExecutor {
 			} else if (MessageTag.QUAL_TRUSTED_LIST_ACCEPT.name().equals(constraint.getName().getKey())) {
 				++tlsProcessed;
 				if (XmlStatus.OK.equals(constraint.getStatus())) {
-					if (czId.equals(constraint.getId())) {
+					if (CZ_ID.equals(constraint.getId())) {
 						isCZTLValid = true;
-					} else if (skId.equals(constraint.getId())) {
+					} else if (SK_ID.equals(constraint.getId())) {
 						isSKTLValid = true;
 					}
 				}

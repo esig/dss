@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -39,15 +39,5 @@ public interface DSSFileLoader extends Serializable {
 	 * @throws DSSException in case of DataLoader error
 	 */
 	DSSDocument getDocument(final String url) throws DSSException;
-	
-	/**
-	 * Removes the file from FileSystem with the given url
-	 *
-	 * @param url {@link String} url of the remote file location (the same what was used on file saving)
-	 * @return TRUE when file was successfully deleted, FALSE otherwise
-	 * @deprecated since DSS 6.1. Please use {@code DSSCacheFileLoader} interface instead
-	 */
-	@Deprecated
-	boolean remove(final String url);
 
 }

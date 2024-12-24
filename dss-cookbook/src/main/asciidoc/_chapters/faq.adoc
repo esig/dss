@@ -28,7 +28,19 @@ This chapter covers the most frequently asked questions and issues occurring in 
 </dependencies>
 ----
 
+|v6.2                      a|`SSLCertificateLoader` does not work with Spring-Boot `3.3.x` or before                a|Since version `6.2` DSS uses HttpClient5 of version `5.4.x` (or higher), bringing incompatible changes in the API used by the `SSLCertificateLoader` class. In case the support of the class is required, please upgrade to the latest version of Spring-Boot, starting from `3.4.0`.
+
 |v6.1                      a|#validate method is not available in the implementation of `DocumentValidator`         a|Please add a `dss-validation` module within dependencies list of your project. See instructions above.
+
+|v6.1 or before             a|Signature invalid after digest signing with RSA algorithm       a|When using Java for signing with a private key using RSA algorithm, it is required to manually encode the calculated digest to the DigestInfo ASN.1 format prior the encryption operation. To do this, you may use a `DSSUtils#encodeRSADigest` method from DSS:
+
+[source,java,indent=0]
+.Encode RSA digest for signing in Java
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/ServerSignRsaTest.java[tags=demo]
+----
+
+NOTE: Since DSS 6.2, the RSA digest encoding has been automated and additional processing is no longer required.
 
 |v5.13 and before          a|DSS does not work with Spring-Boot 3         a|DSS version `5.x` and before uses an old `javax.\*` namespace naming provided by Java specification API, while Spring-Boot 3 and new versions of some other libraries use the updated `jakarta.*` namespaces. DSS has been upgraded to Jakarta EE 9 and to new `jakarta.\*` namespaces starting from version `6.0`, which makes it compatible with Spring-Boot 3 and other Jakarta-based libraries. If you have a problem with using `javax.*` namespaces, please upgrade to DSS `6.0`.
 

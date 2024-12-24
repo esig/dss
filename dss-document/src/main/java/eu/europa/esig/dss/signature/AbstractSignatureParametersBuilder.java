@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -22,7 +22,6 @@ package eu.europa.esig.dss.signature;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.model.BLevelParameters;
 import eu.europa.esig.dss.model.SignatureParametersBuilder;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -109,24 +108,6 @@ public abstract class AbstractSignatureParametersBuilder<SP extends AbstractSign
 	 */
 	public AbstractSignatureParametersBuilder setDigestAlgorithm(DigestAlgorithm digestAlgorithm) {
 		this.digestAlgorithm = digestAlgorithm;
-		return this;
-	}
-
-	/**
-	 * Sets a mask generation function, when required
-	 *
-	 * @param maskGenerationFunction {@link MaskGenerationFunction}
-	 * @return this {@link AbstractSignatureParametersBuilder}
-	 * @deprecated since DSS 6.1. Please use {@code #setEncryptionAlgorithm} specifying correct algorithm
-	 *             (i.e. EncryptionAlgorithm.RSA for none MGF, EncryptionAlgorithm.RSASSA_PSS for MGF1)
-	 */
-	@Deprecated
-	public AbstractSignatureParametersBuilder setMaskGenerationFunction(MaskGenerationFunction maskGenerationFunction) {
-		if (EncryptionAlgorithm.RSASSA_PSS == encryptionAlgorithm && maskGenerationFunction == null) {
-			setEncryptionAlgorithm(EncryptionAlgorithm.RSA);
-		} else if (EncryptionAlgorithm.RSA == encryptionAlgorithm && MaskGenerationFunction.MGF1 == maskGenerationFunction) {
-			setEncryptionAlgorithm(EncryptionAlgorithm.RSASSA_PSS);
-		}
 		return this;
 	}
 

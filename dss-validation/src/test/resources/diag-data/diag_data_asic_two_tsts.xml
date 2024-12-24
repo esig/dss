@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <DocumentName>2xTST-1st-invalid-2nd-does-not-cover-datafile.asics</DocumentName>
+    <ValidationDate>2024-10-09T14:41:15Z</ValidationDate>
+    <ContainerInfo>
+        <ContainerType>ASiC-S</ContainerType>
+        <ZipComment>LIB DigiDoc4j</ZipComment>
+        <MimeTypeFilePresent>true</MimeTypeFilePresent>
+        <MimeTypeContent>application/vnd.etsi.asic-s+zip</MimeTypeContent>
+        <ManifestFiles>
+            <ManifestFile>
+                <Filename>META-INF/ASiCArchiveManifest.xml</Filename>
+                <SignatureFilename>META-INF/timestamp002.tst</SignatureFilename>
+                <Entries>
+                    <Entry>META-INF/timestamp.tst</Entry>
+                    <Entry>test.txt</Entry>
+                </Entries>
+            </ManifestFile>
+        </ManifestFiles>
+        <ContentFiles>
+            <ContentFile>test.txt</ContentFile>
+        </ContentFiles>
+    </ContainerInfo>
+    <Signatures/>
+    <EvidenceRecords/>
+    <UsedCertificates>
+        <Certificate Id="C-84E0293AC6DE1C3CD1B420A3C8453D279D2927503C326459583517D35D9AA645">
+            <SubjectDistinguishedName Format="CANONICAL">c=ee,o=sk id solutions as,2.5.4.97=#0c0e4e545245452d3130373437303133,cn=sk timestamping unit 2024e</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">C=EE,O=SK ID Solutions AS,2.5.4.97=#0c0e4e545245452d3130373437303133,CN=SK TIMESTAMPING UNIT 2024E</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">c=ee,o=sk id solutions as,2.5.4.97=#0c0e4e545245452d3130373437303133,cn=sk tsa ca 2023e</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">C=EE,O=SK ID Solutions AS,2.5.4.97=#0c0e4e545245452d3130373437303133,CN=SK TSA CA 2023E</IssuerDistinguishedName>
+            <SerialNumber>168860431470254928716508813509924923249</SerialNumber>
+            <CommonName>SK TIMESTAMPING UNIT 2024E</CommonName>
+            <CountryName>EE</CountryName>
+            <OrganizationIdentifier>NTREE-10747013</OrganizationIdentifier>
+            <OrganizationName>SK ID Solutions AS</OrganizationName>
+            <Sources>
+                <Source>TIMESTAMP</Source>
+                <Source>TRUSTED_LIST</Source>
+            </Sources>
+            <NotAfter>2030-04-01T11:31:57Z</NotAfter>
+            <NotBefore>2023-10-01T11:31:58Z</NotBefore>
+            <PublicKeySize>256</PublicKeySize>
+            <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-F98E39EF619D7EF8EC9090312FB14CF599E861F57BAF43FF00CEB80D5188E969</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>384</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-F3A6FC612A6912E3ED971F527AEC31EACCDEEB0483604772486D63B602E47DB6"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-F3A6FC612A6912E3ED971F527AEC31EACCDEEB0483604772486D63B602E47DB6"/>
+                <ChainItem Certificate="C-A272DE102A8038F7E100EACFB6DB1C930D3CB9F51D76B218DE3A4A433BCFD182"/>
+            </CertificateChain>
+            <Trusted>true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>WhjANM7Xt5nfCJDABH0Y83OWvc8=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>9OaU0Yk05JDg8jZ8mf+esV/FClM=</ski>
+                </SubjectKeyIdentifier>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="false">
+                    <certificatePolicy cpsUrl="https://www.skidsolutions.eu/en/repository/tsa/" Description="normalized-certificate-policy-sscd">0.4.0.2042.1.2</certificatePolicy>
+                </CertificatePolicies>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="true">
+                    <extendedKeyUsageOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsageOid>
+                </ExtendedKeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>https://c.sk.ee/SK_TSA_CA_2023E.der.crt</caIssuersUrl>
+                    <ocspUrl>http://ocsp.sk.ee/tsa</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://c.sk.ee/sk_tsa_ca_2023e.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-10E93A54A71196D0F9E03448439F9BD66FB9389420488565F23A8D2977034401" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="en">SK ID Solutions AS</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="en">SK ID Solutions AS</TSPTradeName>
+                        <TSPTradeName lang="en">AS Sertifitseerimiskeskus</TSPTradeName>
+                        <TSPTradeName lang="en">ESTEID</TSPTradeName>
+                        <TSPTradeName lang="en">SK</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>VATEE-100687640</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-84E0293AC6DE1C3CD1B420A3C8453D279D2927503C326459583517D35D9AA645">
+                            <ServiceNames>
+                                <ServiceName lang="en">SK Time-Stamping Authority for qualified electronic time stamps (SK-TSA 2024E)</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2023-11-07T22:00:18Z</StartDate>
+                            <CapturedQualifiers/>
+                            <AdditionalServiceInfoUris/>
+                            <ServiceSupplyPoints>
+                                <ServiceSupplyPoint>http://tsa.sk.ee/ecc</ServiceSupplyPoint>
+                            </ServiceSupplyPoints>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>hOApOsbeHDzRtCCjyEU9J50pJ1A8MmRZWDUX012apkU=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-A272DE102A8038F7E100EACFB6DB1C930D3CB9F51D76B218DE3A4A433BCFD182">
+            <SubjectDistinguishedName Format="CANONICAL">cn=sk id solutions root g1e,2.5.4.97=#0c0e4e545245452d3130373437303133,o=sk id solutions as,c=ee</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=SK ID Solutions ROOT G1E,2.5.4.97=#0c0e4e545245452d3130373437303133,O=SK ID Solutions AS,C=EE</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=sk id solutions root g1e,2.5.4.97=#0c0e4e545245452d3130373437303133,o=sk id solutions as,c=ee</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=SK ID Solutions ROOT G1E,2.5.4.97=#0c0e4e545245452d3130373437303133,O=SK ID Solutions AS,C=EE</IssuerDistinguishedName>
+            <SerialNumber>98895322248870836179419846507951716347</SerialNumber>
+            <CommonName>SK ID Solutions ROOT G1E</CommonName>
+            <CountryName>EE</CountryName>
+            <OrganizationIdentifier>NTREE-10747013</OrganizationIdentifier>
+            <OrganizationName>SK ID Solutions AS</OrganizationName>
+            <Sources>
+                <Source>TIMESTAMP</Source>
+            </Sources>
+            <NotAfter>2041-10-04T11:45:06Z</NotAfter>
+            <NotBefore>2021-10-04T11:45:06Z</NotBefore>
+            <PublicKeySize>521</PublicKeySize>
+            <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-83E5399BACCD672EDE2B0F8365678989C87B5EF0103C83C4EAAE92B7A07205F5</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>521</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>false</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>hnRPOus48rCn7u25hZudgwlFMWs=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>hnRPOus48rCn7u25hZudgwlFMWs=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="true" pathLenConstraint="2147483647" OID="2.5.29.19" critical="true"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+            </CertificateExtensions>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>onLeECqAOPfhAOrPttsckw08ufUddrIY3jpKQzvP0YI=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-F3A6FC612A6912E3ED971F527AEC31EACCDEEB0483604772486D63B602E47DB6">
+            <SubjectDistinguishedName Format="CANONICAL">c=ee,o=sk id solutions as,2.5.4.97=#0c0e4e545245452d3130373437303133,cn=sk tsa ca 2023e</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">C=EE,O=SK ID Solutions AS,2.5.4.97=#0c0e4e545245452d3130373437303133,CN=SK TSA CA 2023E</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=sk id solutions root g1e,2.5.4.97=#0c0e4e545245452d3130373437303133,o=sk id solutions as,c=ee</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=SK ID Solutions ROOT G1E,2.5.4.97=#0c0e4e545245452d3130373437303133,O=SK ID Solutions AS,C=EE</IssuerDistinguishedName>
+            <SerialNumber>471187598782060129183743634648728725172411744305</SerialNumber>
+            <CommonName>SK TSA CA 2023E</CommonName>
+            <CountryName>EE</CountryName>
+            <OrganizationIdentifier>NTREE-10747013</OrganizationIdentifier>
+            <OrganizationName>SK ID Solutions AS</OrganizationName>
+            <Sources>
+                <Source>TIMESTAMP</Source>
+            </Sources>
+            <NotAfter>2038-06-30T08:52:02Z</NotAfter>
+            <NotBefore>2023-07-04T08:52:03Z</NotBefore>
+            <PublicKeySize>384</PublicKeySize>
+            <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
+            <EntityKey>PK-78C71D7C8502EB111D1DAAB925A843F33BDB3064E1EC690D33FCA0222ABA5CF6</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>521</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA384</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-A272DE102A8038F7E100EACFB6DB1C930D3CB9F51D76B218DE3A4A433BCFD182"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-A272DE102A8038F7E100EACFB6DB1C930D3CB9F51D76B218DE3A4A433BCFD182"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>hnRPOus48rCn7u25hZudgwlFMWs=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>WhjANM7Xt5nfCJDABH0Y83OWvc8=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="true" pathLenConstraint="2147483647" OID="2.5.29.19" critical="true"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="false">
+                    <certificatePolicy cpsUrl="https://www.skidsolutions.eu/en/repository/tsa/" Description="certificatePolicies">2.5.29.32</certificatePolicy>
+                </CertificatePolicies>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://c.sk.ee/SK_ID_Solutions_ROOT_G1E.der.crt</caIssuersUrl>
+                    <ocspUrl>http://ocsp.sk.ee/CA</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://c.sk.ee/SK_ROOT_G1E.crl</crlUrl>
+                </CRLDistributionPoints>
+            </CertificateExtensions>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>86b8YSppEuPtlx9Seuwx6sze6wSDYEdySG1jtgLkfbY=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+    </UsedCertificates>
+    <UsedRevocations/>
+    <UsedTimestamps>
+        <Timestamp Type="CONTAINER_TIMESTAMP" Id="T-10C5911907093CE08A5BFC22DF4CBB4B16D5581B85EBD7E1E8EE495C1E68EEAE">
+            <TimestampFilename>META-INF/timestamp.tst</TimestampFilename>
+            <ProductionTime>2024-09-13T10:49:58Z</ProductionTime>
+            <DigestMatcher type="MESSAGE_IMPRINT" uri="META-INF/test.txt" documentName="META-INF/test.txt">
+                <DigestMethod>SHA512</DigestMethod>
+                <DigestValue>ArUdy3KIaYcpvccQiOBvcOIGHzQRJlI+v5GdVDIJryxj0eGcoZTMBQAUd0ioheXjQiivjGgtD111qTKZ6S/zvA==</DigestValue>
+                <DataFound>true</DataFound>
+                <DataIntact>true</DataIntact>
+            </DigestMatcher>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>256</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-84E0293AC6DE1C3CD1B420A3C8453D279D2927503C326459583517D35D9AA645"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-84E0293AC6DE1C3CD1B420A3C8453D279D2927503C326459583517D35D9AA645"/>
+                <ChainItem Certificate="C-F3A6FC612A6912E3ED971F527AEC31EACCDEEB0483604772486D63B602E47DB6"/>
+                <ChainItem Certificate="C-A272DE102A8038F7E100EACFB6DB1C930D3CB9F51D76B218DE3A4A433BCFD182"/>
+            </CertificateChain>
+            <SignerInformationStore>
+                <SignerInfo Current="true">
+                    <IssuerName>C=EE, O=SK ID Solutions AS, OID.2.5.4.97=NTREE-10747013, CN=SK TSA CA 2023E</IssuerName>
+                    <SerialNumber>168860431470254928716508813509924923249</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
+            <TSAGeneralName contentMatch="true" orderMatch="true">C=EE,O=SK ID Solutions AS,2.5.4.97=#0c0e4e545245452d3130373437303133,CN=SK TIMESTAMPING UNIT 2024E</TSAGeneralName>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-F3A6FC612A6912E3ED971F527AEC31EACCDEEB0483604772486D63B602E47DB6">
+                    <Origin>SIGNED_DATA</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-84E0293AC6DE1C3CD1B420A3C8453D279D2927503C326459583517D35D9AA645">
+                    <Origin>SIGNED_DATA</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <IssuerSerial match="true">MHUwYaRfMF0xGDAWBgNVBAMMD1NLIFRTQSBDQSAyMDIzRTEXMBUGA1UEYQwOTlRSRUUtMTA3NDcwMTMxGzAZBgNVBAoMElNLIElEIFNvbHV0aW9ucyBBUzELMAkGA1UEBhMCRUUCEH8JVg01zgYFxKogAaGup3E=</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>hOApOsbeHDzRtCCjyEU9J50pJ1A8MmRZWDUX012apkU=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-A272DE102A8038F7E100EACFB6DB1C930D3CB9F51D76B218DE3A4A433BCFD182">
+                    <Origin>SIGNED_DATA</Origin>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations/>
+            <FoundEvidenceRecords/>
+            <TimestampedObjects/>
+            <TimestampScopes/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>t0kjgc6Tgcgu3NZQRqyoNZdvCOs9QtC2WUIovj/xJjE=</DigestValue>
+            </DigestAlgoAndValue>
+        </Timestamp>
+        <Timestamp Type="CONTAINER_TIMESTAMP" Id="T-2E831157397ED81BC74BE417BB6C8EDE8693D318C53893B33C0A0E72B12D6898">
+            <TimestampFilename>META-INF/timestamp002.tst</TimestampFilename>
+            <ProductionTime>2024-09-13T11:20:02Z</ProductionTime>
+            <DigestMatcher type="MESSAGE_IMPRINT" documentName="META-INF/ASiCArchiveManifest.xml">
+                <DigestMethod>SHA512</DigestMethod>
+                <DigestValue>AtBGE0hrjQaqBFYVtOC+mnvenvEbMoQNS+WTzRPq2rjpY8lFMGHKXYfZD39Fso6JW0x+Lh9OqESEtt+3LI2KoA==</DigestValue>
+                <DataFound>true</DataFound>
+                <DataIntact>true</DataIntact>
+            </DigestMatcher>
+            <DigestMatcher type="MANIFEST_ENTRY" uri="META-INF/timestamp.tst" documentName="META-INF/timestamp.tst">
+                <DigestMethod>SHA512</DigestMethod>
+                <DigestValue>Wgc0vOrzq8IYxoC8/cYjc8EE4e1qqMC0HiqWVudCiripnNK4A8IHcYngEVwpBL4gwnZPAxzJVqhZ85FL8CbFZA==</DigestValue>
+                <DataFound>true</DataFound>
+                <DataIntact>true</DataIntact>
+            </DigestMatcher>
+            <DigestMatcher type="MANIFEST_ENTRY" uri="test.txt" documentName="test.txt">
+                <DigestMethod>SHA512</DigestMethod>
+                <DigestValue>ArUdy3KIaYcpvccQiOBvcOIGHzQRJlI+v5GdVDIJryxj0eGcoZTMBQAUd0ioheXjQiivjGgtD111qTKZ6S/zvA==</DigestValue>
+                <DataFound>true</DataFound>
+                <DataIntact>true</DataIntact>
+            </DigestMatcher>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>256</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA256</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-84E0293AC6DE1C3CD1B420A3C8453D279D2927503C326459583517D35D9AA645"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-84E0293AC6DE1C3CD1B420A3C8453D279D2927503C326459583517D35D9AA645"/>
+                <ChainItem Certificate="C-F3A6FC612A6912E3ED971F527AEC31EACCDEEB0483604772486D63B602E47DB6"/>
+                <ChainItem Certificate="C-A272DE102A8038F7E100EACFB6DB1C930D3CB9F51D76B218DE3A4A433BCFD182"/>
+            </CertificateChain>
+            <SignerInformationStore>
+                <SignerInfo Current="true">
+                    <IssuerName>C=EE, O=SK ID Solutions AS, OID.2.5.4.97=NTREE-10747013, CN=SK TSA CA 2023E</IssuerName>
+                    <SerialNumber>168860431470254928716508813509924923249</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
+            <TSAGeneralName contentMatch="true" orderMatch="true">C=EE,O=SK ID Solutions AS,2.5.4.97=#0c0e4e545245452d3130373437303133,CN=SK TIMESTAMPING UNIT 2024E</TSAGeneralName>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-84E0293AC6DE1C3CD1B420A3C8453D279D2927503C326459583517D35D9AA645">
+                    <Origin>SIGNED_DATA</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <IssuerSerial match="true">MHUwYaRfMF0xGDAWBgNVBAMMD1NLIFRTQSBDQSAyMDIzRTEXMBUGA1UEYQwOTlRSRUUtMTA3NDcwMTMxGzAZBgNVBAoMElNLIElEIFNvbHV0aW9ucyBBUzELMAkGA1UEBhMCRUUCEH8JVg01zgYFxKogAaGup3E=</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA256</DigestMethod>
+                            <DigestValue>hOApOsbeHDzRtCCjyEU9J50pJ1A8MmRZWDUX012apkU=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations/>
+            <FoundEvidenceRecords/>
+            <TimestampedObjects>
+                <TimestampedObject Token="D-F948DF1380AA1AB9A76AEAC98BB16459DC1CB5ABB6E698EDB0F2E7D2ED7D8C1A" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="T-10C5911907093CE08A5BFC22DF4CBB4B16D5581B85EBD7E1E8EE495C1E68EEAE" Category="TIMESTAMP"/>
+                <TimestampedObject Token="C-84E0293AC6DE1C3CD1B420A3C8453D279D2927503C326459583517D35D9AA645" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-A272DE102A8038F7E100EACFB6DB1C930D3CB9F51D76B218DE3A4A433BCFD182" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-F3A6FC612A6912E3ED971F527AEC31EACCDEEB0483604772486D63B602E47DB6" Category="CERTIFICATE"/>
+            </TimestampedObjects>
+            <TimestampScopes>
+                <TimestampScope SignerData="D-F948DF1380AA1AB9A76AEAC98BB16459DC1CB5ABB6E698EDB0F2E7D2ED7D8C1A">
+                    <Scope>FULL</Scope>
+                    <Name>META-INF/ASiCArchiveManifest.xml</Name>
+                    <Description>Manifest document</Description>
+                </TimestampScope>
+                <TimestampScope SignerData="D-E9CDA4A10A98A92E25874C673E67F79D6C3C4504078AA5DC41F282F387AE1184">
+                    <Scope>FULL</Scope>
+                    <Name>META-INF/timestamp.tst</Name>
+                    <Description>Full document</Description>
+                </TimestampScope>
+            </TimestampScopes>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>etoEtCpwcuvLvCWsfvMy3kjcBBQQxMgMtXfFqst3VHk=</DigestValue>
+            </DigestAlgoAndValue>
+        </Timestamp>
+    </UsedTimestamps>
+    <OriginalDocuments>
+        <SignerData Id="D-F948DF1380AA1AB9A76AEAC98BB16459DC1CB5ABB6E698EDB0F2E7D2ED7D8C1A">
+            <ReferencedName>META-INF/ASiCArchiveManifest.xml</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>mb/8piv/LUr1IeFqnPbrkkRUa+ldu/jQBy5XwzrcEPY=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Id="D-E9CDA4A10A98A92E25874C673E67F79D6C3C4504078AA5DC41F282F387AE1184">
+            <ReferencedName>META-INF/timestamp.tst</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>nVFvQo7And8Xftbb+WNbe5II5vST045mfNApq1foWXM=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
+    <TrustedLists>
+        <TrustedList Id="TL-10E93A54A71196D0F9E03448439F9BD66FB9389420488565F23A8D2977034401" parent="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+            <CountryCode>EE</CountryCode>
+            <Url>https://sr.riik.ee/tsl/estonian-tsl.xml</Url>
+            <TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric</TSLType>
+            <SequenceNumber>65</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2024-10-09T14:08:35Z</LastLoading>
+            <IssueDate>2024-06-12T02:00:10Z</IssueDate>
+            <NextUpdate>2024-12-12T03:00:10Z</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+        <TrustedList Id="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B" LOTL="true">
+            <CountryCode>EU</CountryCode>
+            <Url>https://ec.europa.eu/tools/lotl/eu-lotl.xml</Url>
+            <TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists</TSLType>
+            <SequenceNumber>346</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2024-10-09T14:08:35Z</LastLoading>
+            <IssueDate>2024-10-02T10:00:09Z</IssueDate>
+            <NextUpdate>2025-04-01T10:00:09Z</NextUpdate>
+            <WellSigned>true</WellSigned>
+        </TrustedList>
+    </TrustedLists>
+</DiagnosticData>

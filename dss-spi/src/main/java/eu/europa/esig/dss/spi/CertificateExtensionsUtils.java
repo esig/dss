@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -35,11 +35,13 @@ import eu.europa.esig.dss.model.x509.extension.CertificateExtensions;
 import eu.europa.esig.dss.model.x509.extension.CertificatePolicies;
 import eu.europa.esig.dss.model.x509.extension.CertificatePolicy;
 import eu.europa.esig.dss.model.x509.extension.ExtendedKeyUsages;
+import eu.europa.esig.dss.model.x509.extension.FreshestCRL;
 import eu.europa.esig.dss.model.x509.extension.GeneralName;
 import eu.europa.esig.dss.model.x509.extension.GeneralSubtree;
 import eu.europa.esig.dss.model.x509.extension.InhibitAnyPolicy;
 import eu.europa.esig.dss.model.x509.extension.KeyUsage;
 import eu.europa.esig.dss.model.x509.extension.NameConstraints;
+import eu.europa.esig.dss.model.x509.extension.NoRevAvail;
 import eu.europa.esig.dss.model.x509.extension.OCSPNoCheck;
 import eu.europa.esig.dss.model.x509.extension.PolicyConstraints;
 import eu.europa.esig.dss.model.x509.extension.QcStatements;
@@ -64,6 +66,7 @@ import org.bouncycastle.asn1.x509.AccessDescription;
 import org.bouncycastle.asn1.x509.CRLDistPoint;
 import org.bouncycastle.asn1.x509.DistributionPoint;
 import org.bouncycastle.asn1.x509.DistributionPointName;
+import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.GeneralNames;
 import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.bouncycastle.asn1.x509.PolicyInformation;
@@ -133,6 +136,8 @@ public class CertificateExtensionsUtils {
                     certificateExtensions.setPolicyConstraints(getPolicyConstraints(certificateToken));
                 } else if (isInhibitAnyPolicy(oid)) {
                     certificateExtensions.setInhibitAnyPolicy(getInhibitAnyPolicy(certificateToken));
+                } else if (isFreshestCRL(oid)) {
+                    certificateExtensions.setFreshestCRL(getFreshestCRL(certificateToken));
                 } else if (isKeyUsage(oid)) {
                     certificateExtensions.setKeyUsage(getKeyUsage(certificateToken));
                 } else if (isExtendedKeyUsage(oid)) {
@@ -145,6 +150,8 @@ public class CertificateExtensionsUtils {
                     certificateExtensions.setValidityAssuredShortTerm(getValAssuredSTCerts(certificateToken));
                 } else if (isQcStatements(oid)) {
                     certificateExtensions.setQcStatements(getQcStatements(certificateToken));
+                } else if (isNoRevocationAvailable(oid)) {
+                    certificateExtensions.setNoRevAvail(getNoRevAvail(certificateToken));
                 } else {
                     certificateExtensions.addOtherExtension(getOtherCertificateExtension(certificateToken, oid));
                 }
@@ -263,6 +270,16 @@ public class CertificateExtensionsUtils {
     }
 
     /**
+     * This method verifies whether {@code oid} corresponds to the Freshest CRL (a.k.a. Delta CRL) extension OID
+     *
+     * @param oid {@link String}
+     * @return TRUE if OID corresponds to the Freshest CRL extension OID, FALSE otherwise
+     */
+    public static boolean isFreshestCRL(String oid) {
+        return CertificateExtensionEnum.FRESHEST_CRL.getOid().equals(oid);
+    }
+
+    /**
      * This method verifies whether {@code oid} corresponds to the certificate policies extension OID
      *
      * @param oid {@link String}
@@ -300,6 +317,16 @@ public class CertificateExtensionsUtils {
      */
     public static boolean isQcStatements(String oid) {
         return CertificateExtensionEnum.QC_STATEMENTS.getOid().equals(oid);
+    }
+
+    /**
+     * This method verifies whether {@code oid} corresponds to the noRevAvail extension OID
+     *
+     * @param oid {@link String}
+     * @return TRUE if OID corresponds to the noRevAvail extension OID, FALSE otherwise
+     */
+    public static boolean isNoRevocationAvailable(String oid) {
+        return CertificateExtensionEnum.NO_REVOCATION_AVAILABLE.getOid().equals(oid);
     }
 
     /**
@@ -521,10 +548,18 @@ public class CertificateExtensionsUtils {
     public static CRLDistributionPoints getCRLDistributionPoints(CertificateToken certificateToken) {
         final byte[] crlDistributionPointsBytes = certificateToken.getCertificate().getExtensionValue(CertificateExtensionEnum.CRL_DISTRIBUTION_POINTS.getOid());
         if (crlDistributionPointsBytes != null) {
-            try {
-                final CRLDistributionPoints crlDistributionPoints = new CRLDistributionPoints();
-                crlDistributionPoints.setOctets(crlDistributionPointsBytes);
+            final CRLDistributionPoints crlDistributionPoints = new CRLDistributionPoints();
+            crlDistributionPoints.setOctets(crlDistributionPointsBytes);
+            crlDistributionPoints.setCrlUrls(getCRLDistributionPointsUrls(crlDistributionPointsBytes));
+            crlDistributionPoints.checkCritical(certificateToken);
+            return crlDistributionPoints;
+        }
+        return null;
+    }
 
+    private static List<String> getCRLDistributionPointsUrls(byte[] crlDistributionPointsBytes) {
+        if (crlDistributionPointsBytes != null) {
+            try {
                 final List<String> urls = new ArrayList<>();
                 final ASN1Sequence asn1Sequence = DSSASN1Utils.getAsn1SequenceFromDerOctetString(crlDistributionPointsBytes);
                 final CRLDistPoint distPoint = CRLDistPoint.getInstance(asn1Sequence);
@@ -546,15 +581,13 @@ public class CertificateExtensionsUtils {
                     }
                 }
 
-                crlDistributionPoints.setCrlUrls(urls);
-                crlDistributionPoints.checkCritical(certificateToken);
-                return crlDistributionPoints;
+                return urls;
 
             } catch (Exception e) {
                 LOG.warn("Unable to parse cRLDistributionPoints", e);
             }
         }
-        return null;
+        return Collections.emptyList();
     }
 
     private static String parseGn(org.bouncycastle.asn1.x509.GeneralName gn) {
@@ -770,6 +803,24 @@ public class CertificateExtensionsUtils {
     }
 
     /**
+     * Returns the Freshest CRL, when present
+     *
+     * @param certificateToken {@link CertificateToken}
+     * @return {@link FreshestCRL}
+     */
+    public static FreshestCRL getFreshestCRL(CertificateToken certificateToken) {
+        final byte[] freshestCrlBytes = certificateToken.getCertificate().getExtensionValue(CertificateExtensionEnum.FRESHEST_CRL.getOid());
+        if (freshestCrlBytes != null) {
+            final FreshestCRL freshestCRL = new FreshestCRL();
+            freshestCRL.setOctets(freshestCrlBytes);
+            freshestCRL.setCrlUrls(getCRLDistributionPointsUrls(freshestCrlBytes));
+            freshestCRL.checkCritical(certificateToken);
+            return freshestCRL;
+        }
+        return null;
+    }
+
+    /**
      * Returns the key usage, when present
      *
      * @param certificateToken {@link CertificateToken}
@@ -921,6 +972,24 @@ public class CertificateExtensionsUtils {
             LOG.debug("Exception when processing 'id_pkix_ocsp_no_check'", e);
         }
         return false;
+    }
+
+    /**
+     * Returns the noRevAvail extension value, when present
+     *
+     * @param certificateToken {@link CertificateToken}
+     * @return {@link NoRevAvail}
+     */
+    public static NoRevAvail getNoRevAvail(CertificateToken certificateToken) {
+        final byte[] extensionValue = certificateToken.getCertificate().getExtensionValue(Extension.noRevAvail.getId());
+        if (extensionValue != null) {
+            final NoRevAvail noRevAvail = new NoRevAvail();
+            noRevAvail.setOctets(extensionValue);
+            noRevAvail.setNoRevAvail(isNullIdentifiedValuePresent(extensionValue));
+            noRevAvail.checkCritical(certificateToken);
+            return noRevAvail;
+        }
+        return null;
     }
 
     /**

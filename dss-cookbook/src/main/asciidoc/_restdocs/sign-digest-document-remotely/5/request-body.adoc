@@ -18,10 +18,8 @@
     "sigDMechanism" : null,
     "base64UrlEncodedPayload" : true,
     "base64UrlEncodedEtsiUComponents" : true,
-    "signatureAlgorithm" : null,
     "digestAlgorithm" : "SHA256",
     "encryptionAlgorithm" : null,
-    "maskGenerationFunction" : null,
     "referenceDigestAlgorithm" : null,
     "contentTimestamps" : null,
     "contentTimestampParameters" : {
@@ -39,13 +37,12 @@
       "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#",
       "timestampContainerForm" : null
     },
-    "signWithExpiredCertificate" : false,
     "generateTBSWithoutCertificate" : false,
     "imageParameters" : null,
     "signatureIdToCounterSign" : null,
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1720186840975,
+      "signingDate" : 1733916763298,
       "claimedSignerRoles" : null,
       "signedAssertions" : null,
       "policyId" : null,
@@ -65,7 +62,7 @@
   },
   "signatureValue" : {
     "algorithm" : "RSA_SHA256",
-    "value" : "JXFYM5P8Qcfr5Nh+HHNjeu0rfnUJr7TuqzkgfxJVTt+IpH/zTcUs/3SeCr2KMSr1+8iR5e97YoLfLWtAS1VvjJ21jfS6pH6R7kdmuD9OADOaqLOXnt0GQXbrG8Y7wnzzEBne7rS24xlytvdiwj+nSPpeoNaZN3VvimB2+Zk1P9Xrgy3NUwYMGooOhwHRLi2e+styoHEYSot+2iqoe9cUbMVDe8tfLaBM8CA0ccYVsQIpCHdZ8/glrbG+BEHRjYcfCSMBN/eSeEMsCpyiiCZN7tmO1QXJt4iLUUK6YdWBg6E/9IVxUELsqMNVQ5MDznzBeJBH/BVVLdtzhtfE6jP3sQ=="
+    "value" : "qKC6Gqeen77pGP1ZFPha71jRZ2fFp42WuR/DVX5LPjZMLNaJk1vsl86vp/TXQXvNRDbwyI24MUHo0ppXo6DVf/WUCUPn0VfOvK+cumygSe/UdweDSjbpaK/jnmSl5QifbyQsoKJWTuF9cWp7L9YLz2UpcvJ5d7p1Z7NK0YElX1Onnzj6aZoCjBeQvhH/iUzARJZhHtroPyapB7hjJ7TMbKo1LaWBlTpNH4yrcGkMPlUdsHequfvFovUbSQnzGzOfjZp9/B7aw9itgX3wakQVjosq5fK43+LFZHctIZim4oQQTu+IyzPItqQUpLmwIH+kQbRLS5DcrVv8SeqX7zfr2A=="
   },
   "toSignDocument" : {
     "bytes" : "kcDHOZjwZhVfuDhuhCeCERRmYpTH4Jj4RmfVVi31Q9g=",

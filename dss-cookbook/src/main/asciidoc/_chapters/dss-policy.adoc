@@ -820,6 +820,22 @@ Default: `FAIL`
 </SigningCertificate>
 ----
 
+* `SunsetDate` - this constraint is used to check whether the trust anchor is not yet expired. If the trust anchor's sunset date (when defined) is before the control time, the check will fail.
+
+NOTE: The validity of trust anchors shall be extracted in order for the current constraint to apply. Please see <<TrustAnchorValidityPredicate>> for more information about trust anchor validity extraction from a Trusted List.
+
+Default: `FAIL`
+
+[source,xml,indent=0]
+.Example of SunsetDate usage (with FAIL validation level)
+----
+<SigningCertificate>
+    ...
+    <SunsetDate Level="FAIL" />
+    ...
+</SigningCertificate>
+----
+
 * `AuthorityInfoAccessPresent` - this constraint is used to check whether the certificate has AuthorityInfoAccess url(s) to extract CA issuers. If the certificate does not have AIA url, the check will fail.
 
 Default: `WARN`
@@ -1044,6 +1060,20 @@ NOTE: DSS supports processing of the name constraints that are imposed only on t
 <SigningCertificate>
     ...
     <NameConstraints Level="WARN" />
+    ...
+</SigningCertificate>
+----
+
+* `NoRevAvail` - this constraint is used to perform validation of certificate's conformance to the RFC 9608 standard (cf. <<R29>>), when `noRevAvail` (OID: 2.5.29.56) certificate extension is present. If the certificate having `noRevAvail` certificate extension does not satisfy the rules defined within RFC 9608, the check will fail.
+
+Default: `WARN`
+
+[source,xml,indent=0]
+.Example of NoRevAvail usage (with WARN validation level)
+----
+<SigningCertificate>
+    ...
+    <NoRevAvail Level="WARN" />
     ...
 </SigningCertificate>
 ----
@@ -2257,6 +2287,34 @@ Default: not executed
 </Timestamp>
 ----
 
+* `AtsHashIndex` - this constraint checks if the ats-hash-index(-v3) attribute present within CAdES archive-time-stamp-v3 is valid according to the ETSI EN 319 122-1 (cf. <<R02>>) definition . If the ats-hash-index(-v3) attribute is not present or not valid for the corresponding CAdES archive-time-stamp-v3 unsigned property, the check will fail.
+
+Default: not executed
+
+[source,xml,indent=0]
+.Example of AtsHashIndex usage (with WARN validation level)
+----
+<Timestamp>
+    ...
+    <AtsHashIndex Level="WARN" />
+    ...
+</Timestamp>
+----
+
+* `ContainerSignedAndTimestampedFilesCovered` - this constraint checks if all data files signed and/or time-asserted covered signatures or timestamps are protected by the container timestamp. If one of the data files signed and/or time-asserted by a covered signature or timestamp is not protected by the container timestamp, the check will fail.
+
+Default: `FAIL`
+
+[source,xml,indent=0]
+.Example of ContainerSignedAndTimestampedFilesCovered usage (with FAIL validation level)
+----
+<Timestamp>
+    ...
+    <ContainerSignedAndTimestampedFilesCovered Level="FAIL" />
+    ...
+</Timestamp>
+----
+
 ===== Revocation constraints
 
 The `<Revocation>` block defines rules for checking revocation data applicability rules (CRLs and OCSPs). The `<Revocation>` element shall be a child of `ConstraintsParameters`:
@@ -2413,6 +2471,34 @@ Default: `WARN`
     <DataObjectGroup Level="WARN" />
     ...
 </EvidenceRecord>
+----
+
+* `SignedFilesCovered` - this constraint checks if all data files signed by a covered signature are protected by the current evidence record. If one of the data files signed by a covered signature is not protected by the evidence record, the check will fail.
+
+Default: `WARN`
+
+[source,xml,indent=0]
+.Example of SignedFilesCovered usage (with WARN validation level)
+----
+<Timestamp>
+    ...
+    <SignedFilesCovered Level="WARN" />
+    ...
+</Timestamp>
+----
+
+* `ContainerSignedAndTimestampedFilesCovered` - this constraint checks if all data files signed and/or time-asserted covered signatures or timestamps are protected by the current evidence record. If one of the data files signed and/or time-asserted by a covered signature or timestamp is not protected by the evidence record, the check will fail.
+
+Default: `WARN`
+
+[source,xml,indent=0]
+.Example of ContainerSignedAndTimestampedFilesCovered usage (with WARN validation level)
+----
+<Timestamp>
+    ...
+    <ContainerSignedAndTimestampedFilesCovered Level="WARN" />
+    ...
+</Timestamp>
 ----
 
 * `HashTreeRenewal` - this constraint checks if the evidence record's time-stamp used to renew the hashtree (i.e. the time-stamp starting a new ArchiveTimeStampChain) covers all archive data objects covered by the initial archive time-stamp of the evidence record.
@@ -2643,14 +2729,17 @@ Default: `WARN`
 
 * `TLVersion` - this constraint checks whether the "version" attribute of the Trusted List corresponds to the defined value. If the version of the Trusted List matches the expected value, the check will fail.
 
-Default: `WARN` (`5`)
+Default: `FAIL` (`5` and `6`)
 
 [source,xml,indent=0]
-.Example of TLVersion usage (with WARN validation level)
+.Example of TLVersion usage (with FAIL validation level)
 ----
 <eIDAS>
     ...
-    <TLVersion Level="FAIL" value="5" />
+    <TLVersion Level="FAIL">
+        <Id>5</Id>
+        <Id>6</Id>
+    </TLVersion>
     ...
 </eIDAS>
 ----
@@ -2711,12 +2800,13 @@ This table defines the correspondence between the enforced validation policy con
                                   |TrustServiceStatus              |MultiValuesConstraint             |INDETERMINATE         |NO_CERTIFICATE_CHAIN_FOUND
                                   |SigningCertificate              |CertificateConstraints          2+|See CertificateConstraints
                                   |CACertificate                   |CertificateConstraints          2+|See CertificateConstraints
-.12+|CertificateConstraints       |Cryptographic                   |CryptographicConstraint         2+|See CryptographicConstraint
+.13+|CertificateConstraints       |Cryptographic                   |CryptographicConstraint         2+|See CryptographicConstraint
                                   |Recognition                     |LevelConstraint                   |INDETERMINATE         |NO_SIGNING_CERTIFICATE_FOUND
                                   |Signature                       |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                .2+|NotExpired                   .2+|LevelConstraint                   |INDETERMINATE         |OUT_OF_BOUNDS_NO_POE +
                                                                                                                               OUT_OF_BOUNDS_NOT_REVOKED
                                                                                                       |FAILED                |EXPIRED
+                                  |SunsetDate                      |LevelConstraint                   |INDETERMINATE         |NO_CERTIFICATE_CHAIN_FOUND_NO_POE
                                   |AuthorityInfoAccessPresent      |LevelConstraint                   |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |RevocationInfoAccessPresent     |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |RevocationDataAvailable         |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
@@ -2732,12 +2822,13 @@ This table defines the correspondence between the enforced validation policy con
                                   |ExtendedKeyUsage                |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |PolicyTree                      |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |NameConstraints                 |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
+                                  |NoRevAvail                      |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |SupportedCriticalExtensions     |MultiValuesConstraint             |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |ForbiddenExtensions             |MultiValuesConstraint             |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |Surname                         |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |GivenName                       |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-                                  |CommonName                      |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
-.12+|CertificateConstraints       |Pseudonym                       |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+.13+|CertificateConstraints       |CommonName                      |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
+                                  |Pseudonym                       |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |Title                           |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |Email                           |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
                                   |OrganizationIdentifier          |MultiValuesConstraint             |INDETERMINATE         |CHAIN_CONSTRAINTS_FAILURE
@@ -2804,7 +2895,7 @@ This table defines the correspondence between the enforced validation policy con
                                   |DocumentTimeStamp               |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
                                   |TLevelTimeStamp                 |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
                                   |LTALevelTimeStamp               |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
-.10+|TimestampConstraints         |TimestampDelay                  |TimeConstraint                    |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
+.12+|TimestampConstraints         |TimestampDelay                  |TimeConstraint                    |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
                                   |RevocationTimeAgainstBestSignatureTime   |LevelConstraint          |INDETERMINATE         |REVOKED_NO_POE +
                                                                                                                               REVOKED_CA_NO_POE
                                   |BestSignatureTimeBeforeExpirationDateOfSigningCertificate |LevelConstraint  |FAILED       |NOT_YET_VALID
@@ -2815,17 +2906,21 @@ This table defines the correspondence between the enforced validation policy con
                                   |TSAGeneralNamePresent           |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
                                   |TSAGeneralNameContentMatch      |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
                                   |TSAGeneralNameOrderMatch        |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
+                                  |AtsHashIndex                    |LevelConstraint                   |FAILED                |FORMAT_FAILURE
+                                  |ContainerSignedAndTimestampedFilesCovered   |LevelConstraint       |FAILED                |FORMAT_FAILURE
 .6+|RevocationConstraints         |UnknownStatus                   |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |OCSPResponderIdMatch            |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |OCSPCertHashPresent             |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |OCSPCertHashMatch               |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |SelfIssuedOCSP                  |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |BasicSignatureConstraints       |BasicSignatureConstraints       2+|See BasicSignatureConstraints
-.7+|EvidenceRecordConstraints     |EvidenceRecordValid             |LevelConstraint                   |Indication from ER or timestamp |SubIndication from ER or timestamp
+.9+|EvidenceRecordConstraints     |EvidenceRecordValid             |LevelConstraint                   |Indication from ER or timestamp |SubIndication from ER or timestamp
                                   |DataObjectExistence             |LevelConstraint                   |INDETERMINATE         |SIGNED_DATA_NOT_FOUND
                                   |DataObjectIntact                |LevelConstraint                   |FAILED                |HASH_FAILURE
                                   |DataObjectFound                 |LevelConstraint                   |INDETERMINATE         |SIGNED_DATA_NOT_FOUND
                                   |DataObjectGroup                 |LevelConstraint                   |INDETERMINATE         |SIGNED_DATA_NOT_FOUND
+                                  |SignedFilesCovered              |LevelConstraint                   |FAILED                |FORMAT_FAILURE
+                                  |ContainerSignedAndTimestampedFilesCovered   |LevelConstraint       |FAILED                |FORMAT_FAILURE
                                   |HashTreeRenewal                 |LevelConstraint                   |INDETERMINATE +
                                                                                                        FAILED                |SIGNED_DATA_NOT_FOUND +
                                                                                                                               HASH_FAILURE

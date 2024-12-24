@@ -1,25 +1,26 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package eu.europa.esig.dss.xades.signature;
 
+import eu.europa.esig.dss.enumerations.ValidationDataEncapsulationStrategy;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.signature.SignatureRequirementsChecker;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
@@ -101,19 +102,137 @@ public class XAdESLevelBaselineLT extends XAdESLevelBaselineT {
 
 			String indent = removeOldCertificateValues();
 			removeOldRevocationValues();
+			String anyDataIndent = removeLastTimestampAndAnyValidationData();
+			if (indent == null) {
+				indent = anyDataIndent;
+			}
 
 			Element levelTUnsignedProperties = (Element) unsignedSignaturePropertiesDom.cloneNode(true);
 
-			ValidationData validationDataForInclusion = validationDataContainer.getCompleteValidationDataForSignature(signature);
-
-			Set<CertificateToken> certificateValuesToAdd = validationDataForInclusion.getCertificateTokens();
-			Set<CRLToken> crlsToAdd = validationDataForInclusion.getCrlTokens();
-			Set<OCSPToken> ocspsToAdd = validationDataForInclusion.getOcspTokens();
-
-			incorporateCertificateValues(unsignedSignaturePropertiesDom, certificateValuesToAdd, indent);
-			incorporateRevocationValues(unsignedSignaturePropertiesDom, crlsToAdd, ocspsToAdd, indent);
+			ValidationData includedValidationData = incorporateValidationDataForSignature(validationDataContainer, signature, indent);
+			incorporateValidationDataForTimestamps(validationDataContainer, signature, indent, includedValidationData);
 
 			unsignedSignaturePropertiesDom = indentIfPrettyPrint(unsignedSignaturePropertiesDom, levelTUnsignedProperties);
+		}
+	}
+
+	/**
+	 * This method returns a {@code ValidationDataEncapsulationStrategy} to be used
+	 *
+	 * @return {@link ValidationDataEncapsulationStrategy}
+	 */
+	protected ValidationDataEncapsulationStrategy getValidationDataEncapsulationStrategy() {
+		if (params.isEn319132()) {
+			return params.getValidationDataEncapsulationStrategy();
+		} else {
+			// AnyValidationData is not supported in old XAdES definition
+			return ValidationDataEncapsulationStrategy.CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA;
+		}
+	}
+
+	/**
+	 * Incorporates the validation data for the signature validation,
+	 * according to the chosen validation data encapsulation mechanism
+	 *
+	 * @param validationDataContainer {@link ValidationDataContainer}
+	 * @param signature {@link AdvancedSignature}
+	 * @param indent {@link String}
+	 * @return {@link ValidationData} incorporated validation data
+	 */
+	private ValidationData incorporateValidationDataForSignature(ValidationDataContainer validationDataContainer,
+													   AdvancedSignature signature, String indent) {
+		ValidationData validationDataForInclusion;
+		ValidationDataEncapsulationStrategy validationDataEncapsulationStrategy = getValidationDataEncapsulationStrategy();
+		switch (validationDataEncapsulationStrategy) {
+			case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA:
+			case ANY_VALIDATION_DATA_ONLY:
+				validationDataForInclusion = validationDataContainer.getAllValidationDataForSignatureForInclusion(signature);
+				break;
+
+			case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_LT_SEPARATED:
+			case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_AND_ANY_VALIDATION_DATA:
+			case CERTIFICATE_REVOCATION_VALUES_AND_ANY_VALIDATION_DATA:
+				validationDataForInclusion = validationDataContainer.getValidationDataForSignatureForInclusion(signature);
+				validationDataForInclusion.addValidationData(validationDataContainer.getValidationDataForCounterSignaturesForInclusion(signature));
+				break;
+
+			default:
+				throw new UnsupportedOperationException(String.format(
+						"The ValidationDataEncapsulationStrategy '%s' is not supported!", validationDataEncapsulationStrategy));
+		}
+
+		Set<CertificateToken> certificateValuesToAdd = validationDataForInclusion.getCertificateTokens();
+		Set<CRLToken> crlsToAdd = validationDataForInclusion.getCrlTokens();
+		Set<OCSPToken> ocspsToAdd = validationDataForInclusion.getOcspTokens();
+
+		switch (validationDataEncapsulationStrategy) {
+			case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA:
+			case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_LT_SEPARATED:
+			case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_AND_ANY_VALIDATION_DATA:
+			case CERTIFICATE_REVOCATION_VALUES_AND_ANY_VALIDATION_DATA:
+				incorporateCertificateValues(unsignedSignaturePropertiesDom, certificateValuesToAdd, indent);
+				incorporateRevocationValues(unsignedSignaturePropertiesDom, crlsToAdd, ocspsToAdd, indent);
+				break;
+
+			case ANY_VALIDATION_DATA_ONLY:
+				incorporateAnyValidationData(validationDataForInclusion, indent);
+				break;
+
+			default:
+				throw new UnsupportedOperationException(String.format(
+						"The ValidationDataEncapsulationStrategy '%s' is not supported!", validationDataEncapsulationStrategy));
+		}
+		return validationDataForInclusion;
+	}
+
+	/**
+	 * Incorporates the validation data for the signature timestamps validation,
+	 * according to the chosen validation data encapsulation mechanism
+	 *
+	 * @param validationDataContainer {@link ValidationDataContainer}
+	 * @param signature {@link AdvancedSignature}
+	 * @param indent {@link String}
+	 * @param validationDataToExclude {@link ValidationData} to be excluded from incorporation to avoid duplicates
+	 */
+	private void incorporateValidationDataForTimestamps(ValidationDataContainer validationDataContainer,
+														AdvancedSignature signature, String indent, ValidationData validationDataToExclude) {
+		ValidationData validationData;
+		ValidationDataEncapsulationStrategy validationDataEncapsulationStrategy = getValidationDataEncapsulationStrategy();
+		switch (validationDataEncapsulationStrategy) {
+			case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_LT_SEPARATED:
+				validationData = validationDataContainer.getValidationDataForSignatureTimestampsForInclusion(signature);
+				validationData.addValidationData(validationDataContainer.getValidationDataForCounterSignatureTimestampsForInclusion(signature));
+				validationData.excludeValidationData(validationDataToExclude);
+				incorporateTimestampValidationData(validationData, indent);
+				break;
+
+			case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA_AND_ANY_VALIDATION_DATA:
+				validationData = validationDataContainer.getValidationDataForSignatureTimestampsForInclusion(signature);
+				validationData.excludeValidationData(validationDataToExclude);
+				incorporateTimestampValidationData(validationData, indent);
+
+				// incorporate validation data for counter-signature timestamps within AnyValidationData element
+				ValidationData counterSigTstValidationData = validationDataContainer.getValidationDataForCounterSignatureTimestampsForInclusion(signature);
+				counterSigTstValidationData.excludeValidationData(validationData);
+				counterSigTstValidationData.excludeValidationData(validationDataToExclude);
+				incorporateAnyValidationData(counterSigTstValidationData, indent);
+				break;
+
+			case CERTIFICATE_REVOCATION_VALUES_AND_ANY_VALIDATION_DATA:
+				validationData = validationDataContainer.getValidationDataForSignatureTimestampsForInclusion(signature);
+				validationData.addValidationData(validationDataContainer.getValidationDataForCounterSignatureTimestampsForInclusion(signature));
+				validationData.excludeValidationData(validationDataToExclude);
+				incorporateAnyValidationData(validationData, indent);
+				break;
+
+			case CERTIFICATE_REVOCATION_VALUES_AND_TIMESTAMP_VALIDATION_DATA:
+			case ANY_VALIDATION_DATA_ONLY:
+				// skip
+				break;
+
+			default:
+				throw new UnsupportedOperationException(String.format(
+						"The ValidationDataEncapsulationStrategy '%s' is not supported!", validationDataEncapsulationStrategy));
 		}
 	}
 

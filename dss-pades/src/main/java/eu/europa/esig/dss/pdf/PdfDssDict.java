@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -22,6 +22,7 @@ package eu.europa.esig.dss.pdf;
 
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.pades.validation.PdfObjectKey;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 
 import java.io.Serializable;
@@ -38,21 +39,21 @@ public interface PdfDssDict extends Serializable {
 	 * 
 	 * @return a map of identifiers and CRL binaries
 	 */
-	Map<Long, CRLBinary> getCRLs();
+	Map<PdfObjectKey, CRLBinary> getCRLs();
 
 	/**
 	 * Returns a map of unique identifiers and {@code OCSPResponseBinary}s
 	 * 
 	 * @return a map of identifiers and {@link eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary}s
 	 */
-	Map<Long, OCSPResponseBinary> getOCSPs();
+	Map<PdfObjectKey, OCSPResponseBinary> getOCSPs();
 
 	/**
 	 * Returns a map of unique identifiers and Certificate Tokens
 	 * 
 	 * @return a map of identifiers and {@link CertificateToken}s
 	 */
-	Map<Long, CertificateToken> getCERTs();
+	Map<PdfObjectKey, CertificateToken> getCERTs();
 
 	/**
 	 * Returns a list of VRI dictionaries

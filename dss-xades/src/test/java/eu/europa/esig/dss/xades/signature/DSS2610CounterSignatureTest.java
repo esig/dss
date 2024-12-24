@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -27,12 +27,14 @@ import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.service.crl.OnlineCRLSource;
+import eu.europa.esig.dss.pki.model.CertEntity;
+import eu.europa.esig.dss.pki.model.CertEntityRepository;
+import eu.europa.esig.dss.pki.x509.revocation.crl.PKICRLSource;
 import eu.europa.esig.dss.signature.CounterSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.simplereport.SimpleReport;
-import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
@@ -74,7 +76,7 @@ class DSS2610CounterSignatureTest extends AbstractXAdESCounterSignatureTest {
         service = new XAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsaByTime(signingDate));
 
-        mockOnlineCRLSource = new MockOnlineCRLSource();
+        mockOnlineCRLSource = new MockOnlineCRLSource(getCertEntityRepository());
     }
 
     @Override
@@ -110,8 +112,12 @@ class DSS2610CounterSignatureTest extends AbstractXAdESCounterSignatureTest {
         DSSDocument counterSigned = super.counterSign(signatureDocument, signatureId);
 
         XAdESSignatureParameters extensionParameters = new XAdESSignatureParameters();
+        extensionParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
+        DSSDocument ltSignature = service.extendDocument(counterSigned, extensionParameters);
+
+        service.setTspSource(getKeyStoreTSPSourceByNameAndTime(EE_GOOD_TSA, signingDate));
         extensionParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
-        return service.extendDocument(counterSigned, extensionParameters);
+        return service.extendDocument(ltSignature, extensionParameters);
     }
 
     @Override
@@ -128,9 +134,9 @@ class DSS2610CounterSignatureTest extends AbstractXAdESCounterSignatureTest {
 
     @Override
     protected Reports verify(DSSDocument signedDocument) {
-        Reports verify = super.verify(signedDocument);
+        Reports reports = super.verify(signedDocument);
         assertEquals(0, mockOnlineCRLSource.requestCounter);
-        return verify;
+        return reports;
     }
 
     @Override
@@ -178,9 +184,13 @@ class DSS2610CounterSignatureTest extends AbstractXAdESCounterSignatureTest {
         return signingAlias;
     }
 
-    private class MockOnlineCRLSource extends OnlineCRLSource {
+    private class MockOnlineCRLSource extends PKICRLSource {
 
         private int requestCounter = 0;
+
+        public MockOnlineCRLSource(CertEntityRepository<? extends CertEntity> certEntityRepository) {
+            super(certEntityRepository);
+        }
 
         @Override
         public CRLToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {

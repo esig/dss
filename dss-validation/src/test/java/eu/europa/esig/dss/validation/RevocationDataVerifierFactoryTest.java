@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -166,7 +166,7 @@ class RevocationDataVerifierFactoryTest {
         miniPublicKeySize.getAlgos().clear();
 
         revocationDataVerifier = new RevocationDataVerifierFactory(validationPolicy).create();
-        assertFalse(revocationDataVerifier.isAcceptable(ocspToken));
+        assertTrue(revocationDataVerifier.isAcceptable(ocspToken));
 
         algo.setSize(3000);
         miniPublicKeySize.getAlgos().add(algo);
@@ -180,6 +180,7 @@ class RevocationDataVerifierFactoryTest {
         assertTrue(revocationDataVerifier.isAcceptable(ocspToken));
 
         AlgoExpirationDate algoExpirationDate = cryptographic.getAlgoExpirationDate();
+        algoExpirationDate.getAlgos().clear();
         algoExpirationDate.setFormat("yyyy");
 
         algo.setDate("2025");
@@ -418,6 +419,45 @@ class RevocationDataVerifierFactoryTest {
         assertTrue(revocationDataVerifier.isRevocationDataFresh(crlToken, calendar.getTime(), Context.SIGNATURE));
         assertTrue(revocationDataVerifier.isRevocationDataFresh(crlToken, calendar.getTime(), Context.TIMESTAMP));
         assertTrue(revocationDataVerifier.isRevocationDataFresh(crlToken, calendar.getTime(), Context.REVOCATION));
+    }
+
+    @Test
+    void revocationAcceptCertificatesWithoutRevocationTest() throws Exception {
+        String certB64 = "MIIE1zCCAr+gAwIBAgIDTB3fMA0GCSqGSIb3DQEBCwUAME4xCzAJBgNVBAYTAkxVMRYwFAYDVQQKDA1MdXhUcnVzdCBTLkEuMScwJQYDVQQDDB5MdXhUcnVzdCBHbG9iYWwgUXVhbGlmaWVkIENBIDMwHhcNMjIwMjAyMTMzMTU0WhcNMjMwMjAyMTMzMTU0WjBeMQswCQYDVQQGEwJMVTEWMBQGA1UEChMNTHV4VHJ1c3QgUy5BLjETMBEGA1UECxMKUGtpIGVudGl0eTEiMCAGA1UEAxMZTHV4VHJ1c3QgUy5BLiBPQ1NQIFNlcnZlcjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALXRJgqc3YegdIDHbBKRUSU3HJ9BneUEOgro2UuEiL5LzGMmShHPxSwwGNgAPCIsQdFrEipDfXzEf82ZMbh58xB4wJy/aKo+RniImvqZMy7TctHfi5PrloMvV1rR3AUuMyod5jAr0DTrVwfVBKHWn2f+dvI5Utelye8vVtc40o3UFvcLmrm8/+kS14tsoUyC8ybv1u33CrZOeFdjmdkYZsvtQcdH5kU8KEWiQlkRze54pwbYpkU3YolCqVvng37QUIkkaLtKimt39akJE8v4eSmJdd7d+7XXiC4NGnKPj8KtaXtVVggqji5FHaOdTE22Sv6nQofcX2CNts7k3ge6QysCAwEAAaOBrTCBqjATBgNVHSUEDDAKBggrBgEFBQcDCTAfBgNVHSMEGDAWgBRjj8KLA7GrjthTR5Ydmah99qyodTA4BgNVHR8EMTAvMC2gK6AphidodHRwOi8vY3JsLmx1eHRydXN0Lmx1L0xUR1FDQTMtT0NTUC5jcmwwHQYDVR0OBBYEFAgSTQgLkHHOjcK2da1yHo5lnnaWMA4GA1UdDwEB/wQEAwIHgDAJBgNVHRMEAjAAMA0GCSqGSIb3DQEBCwUAA4ICAQCdN3AmbWYNy0ZfU038pnOYXVsQ8KnVWZUht73/VFu/kaBix9IWSFfQ5y+duae9MkByi/TQbXk6mFYfCFfr2I3GaYAhyxtuWoCQg84BeqIASX3cNVrCABn8GIEsPsFDuUXXLFZ5uIY/uPjACB3AclbM4O9COD7CFVZAXCl/+CcC9M68AnfSf6zBIYnBM3QZde35IVj0Y5ZRg5DnC2zsICkIqCbQDoDSBVTWkdH20tA9zMEgLgZSk9W1ablOmRdo5+3HmHQ4+CN7Xxd3aoprAqsdlLpL8/PupDQ6dTL1VxfycQQEUodztmW7hRqg5mp87P0X9sbNXNVJCEzaa6LZlQ04FnA7uVIEntmqlOubyGpcbziX9mLrrPHcfUqEShA4h7hJmQK5paLkK/YDFDs6uZpnyRLv+7dT5l3fu5KvEEe75ZKzPfF+fNg8Iu9ADpcFLyHuUPlEqRW4KTEfmJK/RVAnUVbqFG1nlLSbSj658lCoJtJ597GuNEJ5nipAxH4PM6dE9+P0xBWvOFs1+xnplRYVnx+ElITfzHLRJVchTCw1SOcPll+Ro4qA/4IslarWpE8V388B7KMmsfMS6sSmWpEAQxjvruabSAc/baIzTbqXQFAVXzJWuBeYto2URIl6+3XA+Bca8hOkNBNUvIcAevg6oL24x1oLvB0av+RG8Ly3wA==";
+        String caCertB64 = "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";
+
+        CertificateToken certificateToken = DSSUtils.loadCertificateFromBase64EncodedString(certB64);
+        CertificateToken caCertificate = DSSUtils.loadCertificateFromBase64EncodedString(caCertB64);
+
+        List<CertificateToken> certificateChain = Arrays.asList(certificateToken, caCertificate);
+
+        RevocationDataVerifier revocationDataVerifier = RevocationDataVerifier.createDefaultRevocationDataVerifier();
+        assertFalse(revocationDataVerifier.isCertificateChainValid(certificateChain, new Date(), Context.REVOCATION));
+        assertFalse(revocationDataVerifier.isCertificateChainValid(certificateChain, new Date(), Context.TIMESTAMP));
+
+        ValidationPolicy validationPolicy = ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
+        revocationDataVerifier = new RevocationDataVerifierFactory(validationPolicy).create();
+        assertFalse(revocationDataVerifier.isCertificateChainValid(certificateChain, new Date(), Context.REVOCATION));
+        assertFalse(revocationDataVerifier.isCertificateChainValid(certificateChain, new Date(), Context.TIMESTAMP));
+
+        validationPolicy.getRevocationConstraints().getBasicSignatureConstraints().getSigningCertificate().setRevocationDataAvailable(null);
+        validationPolicy.getRevocationConstraints().getBasicSignatureConstraints().getCACertificate().setRevocationDataAvailable(null);
+
+        revocationDataVerifier = new RevocationDataVerifierFactory(validationPolicy).create();
+        assertTrue(revocationDataVerifier.isCertificateChainValid(certificateChain, new Date(), Context.REVOCATION));
+        assertFalse(revocationDataVerifier.isCertificateChainValid(certificateChain, new Date(), Context.TIMESTAMP));
+
+        LevelConstraint levelConstraint = new LevelConstraint();
+        levelConstraint.setLevel(Level.FAIL);
+
+        validationPolicy.getRevocationConstraints().getBasicSignatureConstraints().getSigningCertificate().setRevocationDataAvailable(levelConstraint);
+        validationPolicy.getRevocationConstraints().getBasicSignatureConstraints().getCACertificate().setRevocationDataAvailable(levelConstraint);
+        validationPolicy.getTimestampConstraints().getBasicSignatureConstraints().getSigningCertificate().setRevocationDataAvailable(null);
+        validationPolicy.getTimestampConstraints().getBasicSignatureConstraints().getCACertificate().setRevocationDataAvailable(null);
+
+        revocationDataVerifier = new RevocationDataVerifierFactory(validationPolicy).create();
+        assertFalse(revocationDataVerifier.isCertificateChainValid(certificateChain, new Date(), Context.REVOCATION));
+        assertTrue(revocationDataVerifier.isCertificateChainValid(certificateChain, new Date(), Context.TIMESTAMP));
     }
 
 }

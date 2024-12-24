@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -29,6 +29,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
@@ -99,6 +100,23 @@ class XAdESLevelBDetachedTransformsTest extends PKIFactoryAccess {
 		Exception exception = assertThrows(IllegalArgumentException.class, () -> sign(document, signatureParameters));
 		assertEquals("Reference setting is not correct! Base64 transform is not compatible with DETACHED signature format.", exception.getMessage());
 	}
+
+	@Test
+	void specialCharTest() throws Exception {
+		DSSDocument dssDocument = new InMemoryDocument("Hello world".getBytes(), "hello+world&%/*.xml");
+		List<DSSReference> references = buildReferences(dssDocument);
+		XAdESSignatureParameters signatureParameters = getSignatureParameters(references);
+
+		DSSDocument signed = sign(dssDocument, signatureParameters);
+
+		DiagnosticData diagnosticData = validate(signed, signatureParameters, dssDocument);
+		List<SignerDataWrapper> originalDocuments = diagnosticData.getOriginalSignerDocuments();
+		assertEquals(1, originalDocuments.size());
+		SignerDataWrapper originalDoc = originalDocuments.get(0);
+
+		assertArrayEquals(dssDocument.getDigestValue(originalDoc.getDigestAlgoAndValue().getDigestMethod()),
+				originalDoc.getDigestAlgoAndValue().getDigestValue());
+	}
 	
 	private List<DSSReference> buildReferences(DSSDocument document, DSSTransform... transforms) {
 
@@ -150,6 +168,9 @@ class XAdESLevelBDetachedTransformsTest extends PKIFactoryAccess {
 		for (XmlDigestMatcher digestMatcher : signature.getDigestMatchers()) {
 			assertTrue(digestMatcher.isDataFound());
 			assertTrue(digestMatcher.isDataIntact());
+			if (digestMatcher.getDocumentName() != null) {
+				assertEquals(digestMatcher.getUri(), digestMatcher.getDocumentName());
+			}
 		}
 		return diagnosticData;
 	}

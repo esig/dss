@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -59,6 +59,9 @@ public class CertificateExtensions implements Serializable {
     /** RFC 5280: 4.2.1.14. Inhibit anyPolicy */
     private InhibitAnyPolicy inhibitAnyPolicy;
 
+    /** RFC 5280: 4.2.1.15. Freshest CRL (a.k.a. Delta CRL Distribution Point) */
+    private FreshestCRL freshestCRL;
+
     /** RFC 5280: 4.2.1.1. Authority Key Identifier */
     private AuthorityKeyIdentifier authorityKeyIdentifier;
 
@@ -73,6 +76,9 @@ public class CertificateExtensions implements Serializable {
 
     /** ETSI EN 319 412-1: 5.2.2 Validity Assured - Short Term */
     private ValidityAssuredShortTerm validityAssuredShortTerm;
+
+    /** RFC 9608: No Revocation Available for X.509 Public Key Certificates */
+    private NoRevAvail noRevAvail;
 
     /** ETSI EN 319 412-1/5: QCStatements */
     private QcStatements qcStatements;
@@ -262,6 +268,25 @@ public class CertificateExtensions implements Serializable {
     }
 
     /**
+     * Returns the FreshestCRL extension
+     *
+     * @return {@link FreshestCRL}
+     */
+    public FreshestCRL getFreshestCRL() {
+        return freshestCRL;
+    }
+
+    /**
+     * Sets the FreshestCRL extension
+     *
+     * @param freshestCRL {@link FreshestCRL}
+     */
+    public void setFreshestCRL(FreshestCRL freshestCRL) {
+        this.freshestCRL = freshestCRL;
+        addToAllExtensionsList(freshestCRL);
+    }
+
+    /**
      * Returns the authority key identifier
      *
      * @return {@link AuthorityKeyIdentifier}
@@ -354,6 +379,25 @@ public class CertificateExtensions implements Serializable {
     public void setValidityAssuredShortTerm(ValidityAssuredShortTerm validityAssuredShortTerm) {
         this.validityAssuredShortTerm = validityAssuredShortTerm;
         addToAllExtensionsList(validityAssuredShortTerm);
+    }
+
+    /**
+     * Returns the noRevAvail value
+     *
+     * @return {@link NoRevAvail}
+     */
+    public NoRevAvail getNoRevAvail() {
+        return noRevAvail;
+    }
+
+    /**
+     * Sets the noRevAvail value
+     *
+     * @param noRevAvail {@link NoRevAvail}
+     */
+    public void setNoRevAvail(NoRevAvail noRevAvail) {
+        this.noRevAvail = noRevAvail;
+        addToAllExtensionsList(noRevAvail);
     }
 
     /**

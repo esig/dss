@@ -91,6 +91,9 @@
                         <URI xml:lang="en">mailto:test@test.test</URI>
                     </ElectronicAddress>
                 </TSPAddress>
+                <TSPInformationURI>
+                    <URI xml:lang="en">http://tsp.information.uri/test</URI>
+                </TSPInformationURI>
             </TSPInformation>
             <TSPServices>
                 <TSPService>
@@ -101,17 +104,19 @@
                         </ServiceName>
                         <ServiceDigitalIdentity>
                             <DigitalId>
-<X509Certificate>MIIDYTCCAkmgAwIBAgIBAzANBgkqhkiG9w0BAQsFADBSMRMwEQYDVQQDDApTREktMjEuMS4xMRYwFAYDVQQKDA1UU1AtMjEuMSBOYW1lMRYwFAYDVQQLDA1DRVJUIEZPUiBURVNUMQswCQYDVQQGEwJMVTAeFw0xOTEyMTMwMDAwMDRaFw0yMTEyMTMwMDAwMDRaMFIxEzARBgNVBAMMClNESS0yMS4xLjExFjAUBgNVBAoMDVRTUC0yMS4xIE5hbWUxFjAUBgNVBAsMDUNFUlQgRk9SIFRFU1QxCzAJBgNVBAYTAkxVMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhCjqjranMuc++JkD2R1VXgswkZa175XaH5dgZXkqm9d096j9Ue0BcyJeD7xMT9UsgcKQ9+1iGaQkATckn2F4oJwKAbymZ/P41tpw2mlw19LxPLPsSVRW8/PcR8yRxA58yU2wxePwItDgRbT/Kv+kMuPXSXejs5eS6NBCOJHxicyXdx4UmUP+4QPvmjMYV8NyGiCq7CjPiGwjqZ0sGvMHFSYw6lQvz4PMRI1+z+Hz//aj+Cx3j+dIO5skGAG1yCXoJpDYGTUKv4Gg5KOQZNnhb4qcbbzkMOAojFP/RtAahteeuiwVwq0TYiftUbo2pD5HwRdj7+pLuPzlNzzaiM4pLQIDAQABo0IwQDAOBgNVHQ8BAf8EBAMCAQYwHQYDVR0OBBYEFJgSJBAUkK95fJzUmtIweTy9+FVCMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggEBAAfKhT2Yqbl8iwRHOIMQ+8ZATpdzSV4K/DH7pepJdq2awJsb/410flSOkUnmnSl9Gm5xpThGi/yMBZaCJRsLJKdDiSde/kT9couW7GaQBW8q85RjLZYL0KbFEhHFIkYpu5VCU16IoDLous8lCm0px22zUlUYwk9OoReXtfswbB6D5MOiOD8ikZ1cVG6E0cfOk8qfX4kDWOSXAgpeoB+NVIvdQatzhMkLKgAiMj9A3Vs2xsAVedpctlpQkYSr1hjbO7EvkZ7+pKuhVIlR36/BvkPWaB0l4s7ydNf+BroKxgEWHLvbXidxQyyb7umXW1/hZbhpjunHLp2aU+HwBeoKg2w=</X509Certificate>
-<X509SubjectName>C=XX,OU=CERT FOR TEST,O=TSP-21.1 Name,CN=SDI-21.1.1</X509SubjectName>
+                                <X509Certificate>MIIDVzCCAj+gAwIBAgIBAzANBgkqhkiG9w0BAQsFADBNMRMwEQYDVQQDDApTREktMjEuMS4xMRYwFAYDVQQKDA1UU1AtMjEuMSBOYW1lMREwDwYDVQQLDAhQS0ktVEVTVDELMAkGA1UEBhMCTFUwHhcNMjMxMTI0MDAwMDA5WhcNMjUxMTI0MDAwMDA5WjBNMRMwEQYDVQQDDApTREktMjEuMS4xMRYwFAYDVQQKDA1UU1AtMjEuMSBOYW1lMREwDwYDVQQLDAhQS0ktVEVTVDELMAkGA1UEBhMCTFUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCSnksNaD+JbStqyYndPNic1fdeCoGleWaKEbRAIyI6j0BtV3aJogORircdvrNmcCEGo1bcfwCf961z6xFuEXbUIxQC+t61XoEgOxpz+ouXh/ubYh44TFjqVqyFMyLJmi8N0SUmSz9AXDvjDnMsHSnvf40d/8MTtYBpk98fCznzfV1ZdrAwceh0gdi4YuubPOiyVvFw+MuffSrhMFcb501zpvOmxYk1zC/bOGv5xAGtbjgm53YyHFuYvEVd9k1LPIRw8SDLVFtT4Ai9Rw5b3EBWZiUD9mpkpBeJJn+WhGMWF98gPsMQDjT+cVcYz6LgsAkRGk5hxM6i2l2TUZD4p48HAgMBAAGjQjBAMA4GA1UdDwEB/wQEAwIBBjAdBgNVHQ4EFgQUAeJOgrUDDThalo3BdRvGRHCRMkkwDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAQEAQAiKBzNWMfRy8kIbvgoqRYLenkfA0tS5hzLXSs7G5C/cr5ShDHOzR4l0TGmbg/NP2WYLMfehBCi8teeLhD8lqVBAWpX1cFhhsSgnwhevO8D87hj8D1QIcUIdS6YnkGe5gwh2KpYw3lIFt5PGFS6eKRUDrXFW14MjaJhmG+BhRz6YowAnVMzkFQNF1yNAWbS+ZXaN36D3Qist5SsDie9yuU2/h9cEc8hOAVu7sIud1QihuLo2bWywjEgG8Z0Fy0/anfEgtVp5iz2SoEE6eQShWaYumuP+8eLxTspbK57hPzp93TxJdcOXyxUT2R9/lzG7wWnvncKQrYb9UJl1f2a6Lw==</X509Certificate>
+                            </DigitalId>
+                            <DigitalId>
+                                <X509SubjectName>C=LU,OU=PKI-TEST,O=TSP-21.1 Name,CN=SDI-21.1.1</X509SubjectName>
                             </DigitalId>
                         </ServiceDigitalIdentity>
                         <ServiceStatus>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</ServiceStatus>
                         <StatusStartingTime>2016-06-30T22:00:00Z</StatusStartingTime>
                         <ServiceInformationExtensions>
                             <Extension Critical="true">
-<AdditionalServiceInformation>
-    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
-</AdditionalServiceInformation>
+                                <AdditionalServiceInformation>
+                                    <URI xml:lang="en">http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</URI>
+                                </AdditionalServiceInformation>
                             </Extension>
                         </ServiceInformationExtensions>
                     </ServiceInformation>

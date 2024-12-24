@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -36,6 +36,7 @@ import eu.europa.esig.dss.xades.definition.XAdESNamespace;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigNamespace;
 import org.w3c.dom.Document;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -80,7 +81,6 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 
 	/**
 	 * Defines if the signature shall be created according to ETSI EN 319 132
-	 *
 	 * Default: true
 	 */
 	private boolean en319132 = true;
@@ -170,7 +170,6 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	
 	/**
 	 * The {@code DigestAlgorithm} used to incorporate CompleteCertificateRefs/CompleteRevocationRefs on -C level
-	 *
 	 * Default: SHA512
 	 */
 	private DigestAlgorithm tokenReferencesDigestAlgorithm = DigestAlgorithm.SHA512;
@@ -426,7 +425,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 
 	/**
 	 * Sets if the signature shall be created according to ETSI EN 319 132
-	 *
+	 * <p>
 	 * Default: true
 	 *
 	 * @param en319132 if the signature shall be created according to ETSI EN 319 132
@@ -447,7 +446,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	/**
 	 * Sets if the signed content shall be incorporated as XML (used for ENVELOPING)
 	 * If false, incorporates the document content in its base64 encoded representation
-	 *
+	 * <p>
 	 * Default: false (base64 encoded binaries)
 	 *
 	 * @param embedXML if the signed content shall be incorporated as XML
@@ -485,7 +484,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 
 	/**
 	 * Sets if the {@code <ds:X509Data>} element shall be added
-	 *
+	 * <p>
 	 * Default: false
 	 *
 	 * @param addX509SubjectName if the X509Data element shall be added
@@ -523,7 +522,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 
 	/**
 	 * Sets if the signature shall be pretty-printed
-	 *
+	 * <p>
 	 * Default: false
 	 *
 	 * @param prettyPrint TRUE if to pretty-print the signature, FALSE otherwise
@@ -544,7 +543,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 
 	/**
 	 * Sets the XMLDSIG namespace
-	 *
+	 * <p>
 	 * Default: ds:http://www.w3.org/2000/09/xmldsig#
 	 *
 	 * @param xmldsigNamespace {@link DSSNamespace}
@@ -571,7 +570,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 
 	/**
 	 * Sets the XAdES namespace
-	 *
+	 * <p>
 	 * Default: xades:http://uri.etsi.org/01903/v1.3.2#
 	 *
 	 * @param xadesNamespace {@link DSSNamespace}
@@ -598,7 +597,7 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 
 	/**
 	 * Sets the XAdES 1.4.1 namespace
-	 *
+	 * <p>
 	 * Default: xades141:http://uri.etsi.org/01903/v1.4.1#
 	 *
 	 * @param xades141Namespace {@link DSSNamespace}
@@ -642,8 +641,8 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 
 	/**
 	 * Sets a {@code DigestAlgorithm} to create CompleteCertificateRefs/CompleteRevocationRefs for -C level
-	 *
-	 * Default : SHA512
+	 * <p>
+	 * Default: SHA512
 	 *
 	 * @param tokenReferencesDigestAlgorithm {@link DigestAlgorithm}
 	 */
@@ -700,6 +699,90 @@ public class XAdESSignatureParameters extends AbstractSignatureParameters<XAdEST
 	public void reinit() {
 		super.reinit();
 		context = null;
+	}
+
+	@Override
+	public String toString() {
+		return "XAdESSignatureParameters [" +
+				"addX509SubjectName=" + addX509SubjectName +
+				", dssReferences=" + dssReferences +
+				", embedXML=" + embedXML +
+				", en319132=" + en319132 +
+				", keyInfoCanonicalizationMethod='" + keyInfoCanonicalizationMethod + '\'' +
+				", signedInfoCanonicalizationMethod='" + signedInfoCanonicalizationMethod + '\'' +
+				", signedPropertiesCanonicalizationMethod='" + signedPropertiesCanonicalizationMethod + '\'' +
+				", manifestSignature=" + manifestSignature +
+				", rootDocument=" + rootDocument +
+				", signedAdESObject=" + Arrays.toString(signedAdESObject) +
+				", signingCertificateDigestMethod=" + signingCertificateDigestMethod +
+				", signKeyInfo=" + signKeyInfo +
+				", xPathLocationString='" + xPathLocationString + '\'' +
+				", xPathElementPlacement=" + xPathElementPlacement +
+				", prettyPrint=" + prettyPrint +
+				", xmldsigNamespace=" + xmldsigNamespace +
+				", xadesNamespace=" + xadesNamespace +
+				", xades141Namespace=" + xades141Namespace +
+				", objects=" + objects +
+				", tokenReferencesDigestAlgorithm=" + tokenReferencesDigestAlgorithm +
+				", dataObjectFormatList=" + dataObjectFormatList +
+				"] " + super.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+
+		XAdESSignatureParameters that = (XAdESSignatureParameters) o;
+		return addX509SubjectName == that.addX509SubjectName
+				&& embedXML == that.embedXML
+				&& en319132 == that.en319132
+				&& manifestSignature == that.manifestSignature
+				&& signKeyInfo == that.signKeyInfo
+				&& prettyPrint == that.prettyPrint
+				&& Objects.equals(dssReferences, that.dssReferences)
+				&& Objects.equals(keyInfoCanonicalizationMethod, that.keyInfoCanonicalizationMethod)
+				&& Objects.equals(signedInfoCanonicalizationMethod, that.signedInfoCanonicalizationMethod)
+				&& Objects.equals(signedPropertiesCanonicalizationMethod, that.signedPropertiesCanonicalizationMethod)
+				&& Objects.equals(rootDocument, that.rootDocument)
+				&& Arrays.equals(signedAdESObject, that.signedAdESObject)
+				&& signingCertificateDigestMethod == that.signingCertificateDigestMethod
+				&& Objects.equals(xPathLocationString, that.xPathLocationString)
+				&& xPathElementPlacement == that.xPathElementPlacement
+				&& Objects.equals(xmldsigNamespace, that.xmldsigNamespace)
+				&& Objects.equals(xadesNamespace, that.xadesNamespace)
+				&& Objects.equals(xades141Namespace, that.xades141Namespace)
+				&& Objects.equals(objects, that.objects)
+				&& tokenReferencesDigestAlgorithm == that.tokenReferencesDigestAlgorithm
+				&& Objects.equals(dataObjectFormatList, that.dataObjectFormatList);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + Boolean.hashCode(addX509SubjectName);
+		result = 31 * result + Objects.hashCode(dssReferences);
+		result = 31 * result + Boolean.hashCode(embedXML);
+		result = 31 * result + Boolean.hashCode(en319132);
+		result = 31 * result + Objects.hashCode(keyInfoCanonicalizationMethod);
+		result = 31 * result + Objects.hashCode(signedInfoCanonicalizationMethod);
+		result = 31 * result + Objects.hashCode(signedPropertiesCanonicalizationMethod);
+		result = 31 * result + Boolean.hashCode(manifestSignature);
+		result = 31 * result + Objects.hashCode(rootDocument);
+		result = 31 * result + Arrays.hashCode(signedAdESObject);
+		result = 31 * result + Objects.hashCode(signingCertificateDigestMethod);
+		result = 31 * result + Boolean.hashCode(signKeyInfo);
+		result = 31 * result + Objects.hashCode(xPathLocationString);
+		result = 31 * result + Objects.hashCode(xPathElementPlacement);
+		result = 31 * result + Boolean.hashCode(prettyPrint);
+		result = 31 * result + Objects.hashCode(xmldsigNamespace);
+		result = 31 * result + Objects.hashCode(xadesNamespace);
+		result = 31 * result + Objects.hashCode(xades141Namespace);
+		result = 31 * result + Objects.hashCode(objects);
+		result = 31 * result + Objects.hashCode(tokenReferencesDigestAlgorithm);
+		result = 31 * result + Objects.hashCode(dataObjectFormatList);
+		return result;
 	}
 
 }

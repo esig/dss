@@ -26,6 +26,7 @@
 				<Recognition Level="FAIL" />
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
+				<SunsetDate Level="FAIL" />
 				<RevocationDataAvailable Level="FAIL" />
 				<RevocationDataTrusted Level="FAIL" />
 				<RevocationDataFreshness Level="FAIL" />
@@ -69,6 +70,7 @@
 			<CACertificate>
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
+				<SunsetDate Level="FAIL" />
 				<RevocationDataAvailable Level="FAIL" />
 				<RevocationDataTrusted Level="FAIL" />
 				<RevocationDataFreshness Level="FAIL" />
@@ -161,6 +163,7 @@
 				<Recognition Level="FAIL" />
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
+				<SunsetDate Level="FAIL" />
 				<RevocationDataAvailable Level="FAIL" />
 				<RevocationDataTrusted Level="FAIL" />
 				<RevocationDataFreshness Level="FAIL" />
@@ -193,6 +196,7 @@
 			<CACertificate>
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
+				<SunsetDate Level="FAIL" />
 				<RevocationDataAvailable Level="FAIL" />
 				<RevocationDataTrusted Level="FAIL" />
 				<RevocationDataFreshness Level="FAIL" />
@@ -252,6 +256,7 @@
 				<Recognition Level="FAIL" />
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
+				<SunsetDate Level="FAIL" />
 				<RevocationDataSkip Level="IGNORE">
 					<CertificateExtensions>
 						<Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
@@ -281,6 +286,7 @@
 			<CACertificate>
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
+				<SunsetDate Level="FAIL" />
 				<Cryptographic Level="FAIL">
 					<AcceptableEncryptionAlgo>
 						<Algo>RSA</Algo>

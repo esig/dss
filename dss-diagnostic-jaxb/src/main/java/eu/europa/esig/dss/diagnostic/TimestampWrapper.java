@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -38,6 +38,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
+import eu.europa.esig.dss.enumerations.ArchiveTimestampHashIndexVersion;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.EvidenceRecordTimestampType;
@@ -45,6 +46,7 @@ import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -176,6 +178,36 @@ public class TimestampWrapper extends AbstractSignatureWrapper {
 	}
 
 	/**
+	 * Gets the version of the ats-hash-index attribute, when present.
+	 * NOTE: applicable only for CAdES archive-time-stamp-v3
+	 *
+	 * @return {@link ArchiveTimestampHashIndexVersion}
+	 */
+	public ArchiveTimestampHashIndexVersion getAtsHashIndexVersion() {
+		return timestamp.getArchiveTimestampHashIndex() != null ? timestamp.getArchiveTimestampHashIndex().getVersion() : null;
+	}
+
+	/**
+	 * Returns whether the ats-hash-index(-v3) attribute is valid, when present (all hashes match)
+	 * NOTE: applicable only for CAdES archive-time-stamp-v3
+	 *
+	 * @return TRUE when the ats-hash-index(-v3) attribute is present and valid, FALSE otherwise
+	 */
+	public boolean isAtsHashIndexValid() {
+		return timestamp.getArchiveTimestampHashIndex() != null && timestamp.getArchiveTimestampHashIndex().isValid();
+	}
+
+	/**
+	 * Returns a list of error messages occurred in the result of ats-hash-index(-v3) attribute validation, if any
+	 * NOTE: applicable only for CAdES archive-time-stamp-v3
+	 *
+	 * @return a list of {@link String} validation messages
+	 */
+	public List<String> getAtsHashIndexValidationMessages() {
+		return timestamp.getArchiveTimestampHashIndex() != null ? timestamp.getArchiveTimestampHashIndex().getMessages() : Collections.emptyList();
+	}
+
+	/**
 	 * Returns the indicated production time of the timestamp
 	 *
 	 * @return {@link Date}
@@ -229,6 +261,7 @@ public class TimestampWrapper extends AbstractSignatureWrapper {
 	 *
 	 * @return {@link String} file name
 	 */
+	@Override
 	public String getFilename() {
 		return timestamp.getTimestampFilename();
 	}

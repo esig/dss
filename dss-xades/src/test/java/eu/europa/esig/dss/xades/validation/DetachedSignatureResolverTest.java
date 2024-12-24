@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -48,7 +48,7 @@ class DetachedSignatureResolverTest {
 	}
 
 	@Test
-	void nullAttribute() throws ResourceResolverException {
+	void nullAttribute() {
 		Exception exception = assertThrows(ResourceResolverException.class, () -> {
 			DetachedSignatureResolver resolver = new DetachedSignatureResolver(Collections.emptyList(), DigestAlgorithm.SHA256);
 
@@ -65,7 +65,7 @@ class DetachedSignatureResolverTest {
 	}
 
 	@Test
-	void nullListAndNullAttribute() throws ResourceResolverException {
+	void nullListAndNullAttribute() {
 		Exception exception = assertThrows(ResourceResolverException.class, () -> {
 			DetachedSignatureResolver resolver = new DetachedSignatureResolver(null, DigestAlgorithm.SHA256);
 
@@ -95,7 +95,7 @@ class DetachedSignatureResolverTest {
 	}
 
 	@Test
-	void nullAttributeTwoDocs() throws ResourceResolverException {
+	void nullAttributeTwoDocs() {
 		Exception exception = assertThrows(ResourceResolverException.class, () -> {
 			DetachedSignatureResolver resolver = new DetachedSignatureResolver(
 					Arrays.asList(new InMemoryDocument(new byte[] { 1, 2, 3 }), new InMemoryDocument(new byte[] { 2, 3 })), DigestAlgorithm.SHA256);
@@ -112,7 +112,7 @@ class DetachedSignatureResolverTest {
 	}
 
 	@Test
-	void emptyAttribute() throws ResourceResolverException {
+	void emptyAttribute() {
 		Exception exception = assertThrows(ResourceResolverException.class, () -> {
 			DetachedSignatureResolver resolver = new DetachedSignatureResolver(Collections.emptyList(), DigestAlgorithm.SHA256);
 
@@ -141,7 +141,7 @@ class DetachedSignatureResolverTest {
 	}
 
 	@Test
-	void documentNameWithEmptyList() throws ResourceResolverException {
+	void documentNameWithEmptyList() {
 		Exception exception = assertThrows(ResourceResolverException.class, () -> {
 			DetachedSignatureResolver resolver = new DetachedSignatureResolver(Collections.emptyList(), DigestAlgorithm.SHA256);
 
@@ -159,7 +159,7 @@ class DetachedSignatureResolverTest {
 	}
 
 	@Test
-	void engineCanResolveURIWithWrongDocumentNameInList() throws ResourceResolverException {
+	void engineCanResolveURIWithWrongDocumentNameInList() {
 		Exception exception = assertThrows(ResourceResolverException.class, () -> {
 			DetachedSignatureResolver resolver = new DetachedSignatureResolver(
 					Arrays.asList(new InMemoryDocument(new byte[] { 1, 2, 3 }, "toto.xml", MimeTypeEnum.XML)),

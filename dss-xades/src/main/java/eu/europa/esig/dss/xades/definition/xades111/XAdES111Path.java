@@ -1,31 +1,29 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package eu.europa.esig.dss.xades.definition.xades111;
 
-import eu.europa.esig.dss.jaxb.common.XSDAbstractUtils;
 import eu.europa.esig.dss.xades.definition.XAdESNamespace;
 import eu.europa.esig.dss.xades.definition.XAdESPath;
 import eu.europa.esig.dss.xml.common.definition.AbstractPath;
 import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
-import eu.europa.esig.xades.XAdES111Utils;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
 
@@ -306,6 +304,16 @@ public class XAdES111Path extends AbstractPath implements XAdESPath {
 
 	@Override
 	public String getTimeStampValidationDataRevocationValuesPath() {
+		return null;
+	}
+
+	@Override
+	public String getEncapsulatedAnyValidationDataCertValuesPath() {
+		return null;
+	}
+
+	@Override
+	public String getAnyValidationDataRevocationValuesPath() {
 		return null;
 	}
 
@@ -640,11 +648,6 @@ public class XAdES111Path extends AbstractPath implements XAdESPath {
 	@Override
 	public String getCurrentSigPolDocLocalURI() {
 		return null;
-	}
-
-	@Override
-	public XSDAbstractUtils getXSDUtils() {
-		return XAdES111Utils.getInstance();
 	}
 
 }

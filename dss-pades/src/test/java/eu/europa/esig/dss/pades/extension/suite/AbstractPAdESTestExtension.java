@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -34,6 +34,7 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pades.validation.PDFDocumentValidator;
+import eu.europa.esig.dss.pades.validation.PdfObjectKey;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
@@ -138,33 +139,33 @@ public abstract class AbstractPAdESTestExtension extends AbstractTestExtension<P
 		PDFDocumentValidator pdfValidator = (PDFDocumentValidator) validator;
 		List<PdfDssDict> dssDictionaries = pdfValidator.getDssDictionaries();
 		if (Utils.isCollectionNotEmpty(dssDictionaries) && dssDictionaries.size() > 1) {
-			Map<Long, CertificateToken> previousCertificateMap = null;
-			Map<Long, CRLBinary> previousCrlMap = null;
-			Map<Long, OCSPResponseBinary> previousOcspMap = null;
+			Map<PdfObjectKey, CertificateToken> previousCertificateMap = null;
+			Map<PdfObjectKey, CRLBinary> previousCrlMap = null;
+			Map<PdfObjectKey, OCSPResponseBinary> previousOcspMap = null;
 			
 			for (PdfDssDict dssDict : dssDictionaries) {
 				if (previousCertificateMap != null) {
-					Map<Long, CertificateToken> currentMap = dssDict.getCERTs();
+					Map<PdfObjectKey, CertificateToken> currentMap = dssDict.getCERTs();
 					assertFalse(currentMap.size() < previousCertificateMap.size());
-					for (Long key : previousCertificateMap.keySet()) {
+					for (PdfObjectKey key : previousCertificateMap.keySet()) {
 						assertEquals(previousCertificateMap.get(key), currentMap.get(key));
 					}
 				}
 				previousCertificateMap = dssDict.getCERTs();
 				
 				if (previousCrlMap != null) {
-					Map<Long, CRLBinary> currentMap = dssDict.getCRLs();
+					Map<PdfObjectKey, CRLBinary> currentMap = dssDict.getCRLs();
 					assertFalse(currentMap.size() < previousCrlMap.size());
-					for (Long key : previousCrlMap.keySet()) {
+					for (PdfObjectKey key : previousCrlMap.keySet()) {
 						assertEquals(previousCrlMap.get(key), currentMap.get(key));
 					}
 				}
 				previousCrlMap = dssDict.getCRLs();
 				
 				if (previousOcspMap != null) {
-					Map<Long, OCSPResponseBinary> currentMap = dssDict.getOCSPs();
+					Map<PdfObjectKey, OCSPResponseBinary> currentMap = dssDict.getOCSPs();
 					assertFalse(currentMap.size() < previousOcspMap.size());
-					for (Long key : previousOcspMap.keySet()) {
+					for (PdfObjectKey key : previousOcspMap.keySet()) {
 						assertEquals(previousOcspMap.get(key), currentMap.get(key));
 					}
 				}

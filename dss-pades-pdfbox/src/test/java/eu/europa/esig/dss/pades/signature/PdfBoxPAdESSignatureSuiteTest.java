@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -53,6 +53,7 @@ import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBLoopTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBNonPdfDocumentTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBNotEnoughSpaceForSignatureTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBOnlySigningCertTest;
+import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBSignWithFileMemoryUsageSettingTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBSignWithTempFileHandlerTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBWithAppNameTest;
@@ -70,6 +71,7 @@ import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBWithValidationDataTes
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelImpossibleLTAExceptionTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelImpossibleLTExceptionTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTAAndLevelTTest;
+import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTALoopSigningTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTANotTrustedTSPTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTASignDocumentWithXRefsTest;
 import eu.europa.esig.dss.pades.signature.suite.PAdESLevelLTASignRevokedSigWithPOETest;
@@ -110,34 +112,45 @@ import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
 @Suite
-@SelectClasses({ DigestStabilityTest.class, GetOriginalDocumentTest.class, PAdESDoubleSignatureTest.class, PAdESLevelBTest.class,
-		PAdESLevelBExternalSignatureTest.class, PAdESLevelBLoopTest.class, PAdESLevelBNotEnoughSpaceForSignatureTest.class,
-		PAdESLevelBOnlySigningCertTest.class, PAdESLevelBWithContentTimestampTest.class, PAdESLevelBWithDSATest.class,
-		PAdESLevelBWithECDSATest.class, PAdESLevelBWithSHA256andMGF1Test.class,	PAdESLevelImpossibleLTAExceptionTest.class,
-		PAdESLevelImpossibleLTExceptionTest.class, PAdESLevelLTTest.class, PAdESLevelLTATest.class, PAdESLevelLTWrongAIATest.class,
-		PAdESLevelTTest.class, PDFTimestampFiltersTest.class, TwoPAdESSignaturesMustHaveDifferentIdTest.class, PAdESLevelBHugeTest.class,
+@SelectClasses({ DigestStabilityTest.class, GetOriginalDocumentTest.class, PAdESDoubleSignatureTest.class,
+		PAdESLevelBTest.class, PAdESLevelBExternalSignatureTest.class, PAdESLevelBLoopTest.class,
+		PAdESLevelBNotEnoughSpaceForSignatureTest.class, PAdESLevelBOnlySigningCertTest.class,
+		PAdESLevelBWithContentTimestampTest.class, PAdESLevelBWithDSATest.class, PAdESLevelBWithECDSATest.class,
+		PAdESLevelBWithSHA256andMGF1Test.class, PAdESLevelImpossibleLTAExceptionTest.class,
+		PAdESLevelImpossibleLTExceptionTest.class, PAdESLevelLTTest.class, PAdESLevelLTATest.class,
+		PAdESLevelLTWrongAIATest.class, PAdESLevelTTest.class, PDFTimestampFiltersTest.class,
+		TwoPAdESSignaturesMustHaveDifferentIdTest.class, PAdESLevelBHugeTest.class,
 		InvisibleSignatureFieldSignTest.class, PAdESSpaceEOFTest.class, PAdESDoubleLTAValidationDataTest.class,
-		PAdESNoDuplicateValidationDataTest.class, PAdESWithMGF1Test.class, PAdESWithSHA3Test.class, PAdESLevelTWithSHA1MessageImprintTest.class,
-		PAdESAllSelfSignedCertsTest.class, PAdESServiceTest.class, CertificateConflictTest.class, ProtectedDocumentsSignatureTest.class,
-		PAdESTwoSignersLTALevelTest.class, PAdESWithPemEncodedCrlTest.class, PAdESSignatureParametersSerializationTest.class,
+		PAdESNoDuplicateValidationDataTest.class, PAdESWithMGF1Test.class, PAdESWithSHA3Test.class,
+		PAdESLevelTWithSHA1MessageImprintTest.class, PAdESAllSelfSignedCertsTest.class, PAdESServiceTest.class,
+		CertificateConflictTest.class, ProtectedDocumentsSignatureTest.class, PAdESTwoSignersLTALevelTest.class,
+		PAdESWithPemEncodedCrlTest.class, PAdESSignatureParametersSerializationTest.class,
 		PAdESSignedAssertionTest.class, PAdESLevelLTAAndLevelTTest.class, PAdESLevelTNotTrustedTSPTest.class,
-		PAdESLevelLTANotTrustedTSPTest.class, PAdESSignWithRevokedCertTest.class, PAdESLevelLTASignRevokedSigWithPOETest.class,
-		PAdESLevelBCustomTimeZoneTest.class, PAdESLevelLTCRLCounterTest.class, PAdESLevelBWithPlainECDSATest.class,
-        PAdESLevelBWithECDSATokenTest.class, PAdESLevelBWithPlainECDSATokenTest.class, PDFNotAdESLevelBWithoutCertificatesTest.class,
-		PDFNotAdESLevelTWithoutCertificatesTest.class, PDFNotAdESLevelLTWithoutCertificatesTest.class, PDFNotAdESLevelLTAWithoutCertificatesTest.class,
-		PAdESDoubleSignBAndExtendToLTATest.class, PDFSignWithPermissionsTest.class, PAdESNoChangesPermittedTest.class,
-		PAdESLevelBWithNoChangesPermittedTest.class, PAdESLevelBCertificationTest.class, PAdESDoubleSignatureLTAAndLTTest.class,
-		PAdESSignDocumentsConsequentlyTest.class, PAdESLevelBDigestDocumentTest.class, PAdESLevelBWithAppNameTest.class,
-		PAdESLevelBSignWithTempFileHandlerTest.class, PAdESSignWithAtomicMethodsTest.class, PAdESSignWithReInitParametersTest.class,
-		PAdESSignDocumentWithEmptySignatureTest.class, PAdESDoubleSignatureLTAndTTest.class, PAdESLevelLTASignDocumentWithXRefsTest.class,
-		PAdESLevelBWithValidationDataTest.class, PAdESLevelBWithValidationDataSameTstTrustAnchorTest.class,
-		PAdESLevelLTAWithSingleDocTstTest.class, PAdESLevelLTAWithSingleSelfSignedDocTstTest.class, PAdESExternalCMSSignatureBLevelTest.class,
-		PAdESExternalCMSSignatureTLevelTest.class, PAdESExternalCMSSignatureLTLevelTest.class, PAdESExternalCMSSignatureLTALevelTest.class,
-		PAdESExternalCMSSignatureTLevelDocTstTest.class, PAdESExternalCMSSignatureLTLevelDocTstTest.class,
-		PAdESExternalCMSSignatureLTALevelDocTstTest.class, PAdESExternalCMSSignatureServiceTest.class, CMSForPAdESGenerationServiceTest.class,
-		PAdESLevelBWithContentTimestampCustomDigestAlgoTest.class, PAdESLevelBEncryptedDocumentTest.class, PAdESLevelLTWithVRIDictTest.class,
-		PAdESDoubleSignatureLTWithVRIAndLTTest.class, PAdESDoubleSignatureLTAndLTWithVRITest.class, PAdESLevelBNonPdfDocumentTest.class,
-		PAdESWithMGF1Test.class, PAdESLevelBEnvelopedRSASSAPSSTest.class, PAdESLevelBEnvelopedNONEWithRSASSAPSSTest.class })
+		PAdESLevelLTANotTrustedTSPTest.class, PAdESSignWithRevokedCertTest.class,
+		PAdESLevelLTASignRevokedSigWithPOETest.class, PAdESLevelBCustomTimeZoneTest.class,
+		PAdESLevelLTCRLCounterTest.class, PAdESLevelBWithPlainECDSATest.class, PAdESLevelBWithECDSATokenTest.class,
+		PAdESLevelBWithPlainECDSATokenTest.class, PDFNotAdESLevelBWithoutCertificatesTest.class,
+		PDFNotAdESLevelTWithoutCertificatesTest.class, PDFNotAdESLevelLTWithoutCertificatesTest.class,
+		PDFNotAdESLevelLTAWithoutCertificatesTest.class, PAdESDoubleSignBAndExtendToLTATest.class,
+		PDFSignWithPermissionsTest.class, PAdESNoChangesPermittedTest.class,
+		PAdESLevelBWithNoChangesPermittedTest.class, PAdESLevelBCertificationTest.class,
+		PAdESDoubleSignatureLTAAndLTTest.class, PAdESSignDocumentsConsequentlyTest.class,
+		PAdESLevelBDigestDocumentTest.class, PAdESLevelBWithAppNameTest.class,
+		PAdESLevelBSignWithTempFileHandlerTest.class, PAdESLevelBSignWithFileMemoryUsageSettingTest.class,
+		PAdESSignWithAtomicMethodsTest.class, PAdESSignWithReInitParametersTest.class,
+		PAdESSignDocumentWithEmptySignatureTest.class, PAdESDoubleSignatureLTAndTTest.class,
+		PAdESLevelLTASignDocumentWithXRefsTest.class, PAdESLevelBWithValidationDataTest.class,
+		PAdESLevelBWithValidationDataSameTstTrustAnchorTest.class, PAdESLevelLTAWithSingleDocTstTest.class,
+		PAdESLevelLTAWithSingleSelfSignedDocTstTest.class, PAdESExternalCMSSignatureBLevelTest.class,
+		PAdESExternalCMSSignatureTLevelTest.class, PAdESExternalCMSSignatureLTLevelTest.class,
+		PAdESExternalCMSSignatureLTALevelTest.class, PAdESExternalCMSSignatureTLevelDocTstTest.class,
+		PAdESExternalCMSSignatureLTLevelDocTstTest.class, PAdESExternalCMSSignatureLTALevelDocTstTest.class,
+		PAdESExternalCMSSignatureServiceTest.class, CMSForPAdESGenerationServiceTest.class,
+		PAdESLevelBWithContentTimestampCustomDigestAlgoTest.class, PAdESLevelBEncryptedDocumentTest.class,
+		PAdESLevelLTWithVRIDictTest.class, PAdESDoubleSignatureLTWithVRIAndLTTest.class,
+		PAdESDoubleSignatureLTAndLTWithVRITest.class, PAdESLevelBNonPdfDocumentTest.class, PAdESWithMGF1Test.class,
+		PAdESLevelBEnvelopedRSASSAPSSTest.class, PAdESLevelBEnvelopedNONEWithRSASSAPSSTest.class,
+		PAdESLevelLTALoopSigningTest.class })
 class PdfBoxPAdESSignatureSuiteTest {
 
 }

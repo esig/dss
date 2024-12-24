@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -45,8 +45,8 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.jose4j.json.JsonUtil;
@@ -171,7 +171,8 @@ class JAdESLevelLTAOverwriteTstVDTest extends AbstractJAdESTestValidation {
         List<Object> unsignedProperties = (List<Object>) unprotected.get(JAdESHeaderParameterNames.ETSI_U);
 
         int arcTstCounter = 0;
-        int tstVDCounter = 0;
+        int tstVDNoRevCounter = 0;
+        int tstVDWithRevCounter = 0;
 
         for (Object property : unsignedProperties) {
             Map<?, ?> map = DSSJsonUtils.parseEtsiUComponent(property);
@@ -184,14 +185,18 @@ class JAdESLevelLTAOverwriteTstVDTest extends AbstractJAdESTestValidation {
                 List<?> xVals = (List<?>) tstVD.get(JAdESHeaderParameterNames.X_VALS);
                 assertTrue(Utils.isCollectionNotEmpty(xVals));
                 Map<?, ?> rVals = (Map<?, ?>) tstVD.get(JAdESHeaderParameterNames.R_VALS);
-                assertTrue(Utils.isMapNotEmpty(rVals)); // added
+                if (Utils.isMapEmpty(rVals)) {
+                    ++tstVDNoRevCounter;
+                } else {
+                    ++tstVDWithRevCounter;
+                }
 
-                ++tstVDCounter;
             }
         }
 
         assertEquals(2, arcTstCounter);
-        assertEquals(1, tstVDCounter);
+        assertEquals(1, tstVDNoRevCounter);
+        assertEquals(1, tstVDWithRevCounter);
     }
 
     @Override

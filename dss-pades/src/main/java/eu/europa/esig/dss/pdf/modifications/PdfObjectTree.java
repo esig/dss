@@ -1,24 +1,26 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package eu.europa.esig.dss.pdf.modifications;
+
+import eu.europa.esig.dss.pades.validation.PdfObjectKey;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +44,7 @@ public class PdfObjectTree {
     private List<String> keyChain;
 
     /** Processed references */
-    private List<Number> refChain;
+    private List<PdfObjectKey> refChain;
 
     /** Used to build a user-friendly string */
     private StringBuilder sb;
@@ -98,16 +100,16 @@ public class PdfObjectTree {
     }
 
     /**
-     * Adds a numeric reference number
+     * Adds a pdf object key
      *
-     * @param objectNumber {@link Number}
+     * @param objectKey {@link PdfObjectKey}
      */
-    public void addReference(Number objectNumber) {
-        refChain.add(objectNumber);
+    public void addReference(PdfObjectKey objectKey) {
+        refChain.add(objectKey);
         if (sb.length() != 0) {
             sb.append(SPACE);
         }
-        sb.append(objectNumber);
+        sb.append(objectKey.getNumber());
         sb.append(REFERENCE);
     }
 
@@ -152,11 +154,11 @@ public class PdfObjectTree {
     /**
      * Checks whether a reference to the given object by number has been already processed in this tree
      *
-     * @param objectNumber {@link Number} reference number to an object
+     * @param objectKey {@link PdfObjectKey} reference number to an object
      * @return TRUE if the reference has been already processed, FALSE otherwise
      */
-    public boolean isProcessedReference(Number objectNumber) {
-        return refChain.contains(objectNumber);
+    public boolean isProcessedReference(PdfObjectKey objectKey) {
+        return refChain.contains(objectKey);
     }
 
     @Override

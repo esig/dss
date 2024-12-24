@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -56,6 +56,7 @@ import eu.europa.esig.dss.validation.process.bbb.xcv.X509CertificateValidation;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -75,6 +76,9 @@ public class BasicBuildingBlocks {
 	/** The validation policy */
 	private final ValidationPolicy policy;
 
+	/** Map of baic building blocks */
+	private final Map<String, XmlBasicBuildingBlocks> bbbs;
+
 	/** The validation time */
 	private final Date currentTime;
 
@@ -88,15 +92,18 @@ public class BasicBuildingBlocks {
 	 * @param diagnosticData {@link DiagnosticData}
 	 * @param token {@link TokenProxy} to validate
 	 * @param currentTime {@link Date} validation time
+	 * @param bbbs a map of {@link XmlBasicBuildingBlocks}
 	 * @param policy {@link ValidationPolicy}
 	 * @param context {@link Context}
 	 */
-	public BasicBuildingBlocks(I18nProvider i18nProvider, DiagnosticData diagnosticData, TokenProxy token, 
-			Date currentTime, ValidationPolicy policy, Context context) {
+	public BasicBuildingBlocks(I18nProvider i18nProvider, DiagnosticData diagnosticData, TokenProxy token,
+							   Date currentTime, Map<String, XmlBasicBuildingBlocks> bbbs, ValidationPolicy policy,
+							   Context context) {
 		this.i18nProvider = i18nProvider;
 		this.diagnosticData = diagnosticData;
 		this.token = token;
 		this.currentTime = currentTime;
+		this.bbbs = bbbs;
 		this.policy = policy;
 		this.context = context;
 	}
@@ -305,7 +312,8 @@ public class BasicBuildingBlocks {
 	private XmlSAV executeSignatureAcceptanceValidation() {
 		AbstractAcceptanceValidation<?> aav = null;
 		if (Context.SIGNATURE.equals(context) || Context.COUNTER_SIGNATURE.equals(context)) {
-			aav = new SignatureAcceptanceValidation(i18nProvider, diagnosticData, currentTime, (SignatureWrapper) token, context, policy);
+			aav = new SignatureAcceptanceValidation(
+					i18nProvider, diagnosticData, currentTime, (SignatureWrapper) token, context, bbbs, policy);
 		} else if (Context.TIMESTAMP.equals(context)) {
 			aav = new TimestampAcceptanceValidation(i18nProvider, currentTime, (TimestampWrapper) token, policy);
 		} else if (Context.REVOCATION.equals(context)) {

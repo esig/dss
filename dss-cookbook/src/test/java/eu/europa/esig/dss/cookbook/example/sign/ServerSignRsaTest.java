@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -75,13 +75,11 @@ class ServerSignRsaTest extends CookbookTools {
             // import eu.europa.esig.dss.spi.DSSUtils;
 
             // Compute the hash of ToBeSigned data to send to the remote server
+            // NOTE: no need to encode digest to RSA. The encoding is done automatically in the #signDigest method
             byte[] toBeSignedDigest = getToBeSignedDigest(parameters, toSignDocument);
 
-            // Encode digest to ASN.1 DigestInfo format for a private key signing in Java
-            byte[] encodeRSADigest = DSSUtils.encodeRSADigest(parameters.getDigestAlgorithm(), toBeSignedDigest);
-
-            // Create SignatureValue in Java usign the encoded digest value
-            Digest digest = new Digest(parameters.getDigestAlgorithm(), encodeRSADigest);
+            // Create SignatureValue in Java using the encoded digest value
+            Digest digest = new Digest(parameters.getDigestAlgorithm(), toBeSignedDigest);
             SignatureValue signatureValue = signingToken.signDigest(digest, privateKey);
             // end::demo[]
 

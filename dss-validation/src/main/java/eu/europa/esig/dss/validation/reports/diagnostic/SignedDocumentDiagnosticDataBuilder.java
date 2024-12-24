@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -449,7 +449,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 			if (currentSignature != signature
 					&& (currentSignature.getId().equals(signature.getId()) ||
 					(currentSignature.getDAIdentifier() != null && currentSignature.getDAIdentifier().equals(signature.getDAIdentifier())
-							&& currentSignature.getSignatureFilename() != null && currentSignature.getSignatureFilename().equals(signature.getSignatureFilename())))) {
+							&& currentSignature.getFilename() != null && currentSignature.getFilename().equals(signature.getFilename())))) {
 				return true;
 			}
 		}
@@ -486,7 +486,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	 */
 	public XmlSignature buildDetachedXmlSignature(AdvancedSignature signature) {
 		XmlSignature xmlSignature = new XmlSignature();
-		xmlSignature.setSignatureFilename(removeSpecialCharsForXml(signature.getSignatureFilename()));
+		xmlSignature.setSignatureFilename(removeSpecialCharsForXml(signature.getFilename()));
 
 		xmlSignature.setId(identifierProvider.getIdAsString(signature));
 		xmlSignature.setDAIdentifier(signature.getDAIdentifier());
@@ -925,7 +925,8 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 
 		xmlEvidenceRecord.setId(identifierProvider.getIdAsString(evidenceRecord));
 		xmlEvidenceRecord.setDocumentName(evidenceRecord.getFilename());
-		xmlEvidenceRecord.setType(evidenceRecord.getReferenceRecordType());
+		xmlEvidenceRecord.setType(evidenceRecord.getEvidenceRecordType());
+		xmlEvidenceRecord.setOrigin(evidenceRecord.getOrigin());
 		xmlEvidenceRecord.setStructuralValidation(getXmlStructuralValidation(evidenceRecord));
 		xmlEvidenceRecord.setDigestMatchers(getXmlDigestMatchers(evidenceRecord));
 		xmlEvidenceRecord.setEvidenceRecordScopes(getXmlSignatureScopes(evidenceRecord.getEvidenceRecordScopes()));
@@ -1054,7 +1055,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		xmlTimestampToken.setEvidenceRecordTimestampType(timestampToken.getEvidenceRecordTimestampType());
 
 		xmlTimestampToken.setProductionTime(timestampToken.getGenerationTime());
-		xmlTimestampToken.setTimestampFilename(timestampToken.getFileName());
+		xmlTimestampToken.setTimestampFilename(timestampToken.getFilename());
 		xmlTimestampToken.getDigestMatchers().addAll(getXmlDigestMatchers(timestampToken));
 		xmlTimestampToken.setBasicSignature(getXmlBasicSignature(timestampToken));
 		xmlTimestampToken.setSignerInformationStore(

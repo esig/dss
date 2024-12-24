@@ -290,15 +290,26 @@
 														</xsl:otherwise>
 													</xsl:choose>
 												</span>
-												<xsl:if test="@trusted = 'true' and not(dss:TrustAnchors)">
-													<i>
-														<xsl:attribute name="class">fa fa-certificate ml-2</xsl:attribute>
-														<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
-														<xsl:attribute name="data-placement">right</xsl:attribute>
-														<xsl:attribute name="title">Trust anchor</xsl:attribute>
-													</i>
+												<xsl:if test="@trusted = 'true'">
+													<xsl:if test="not(dss:TrustAnchors)">
+														<i>
+															<xsl:attribute name="class">fa fa-certificate ml-2</xsl:attribute>
+															<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
+															<xsl:attribute name="data-placement">right</xsl:attribute>
+															<xsl:attribute name="title">Trust anchor</xsl:attribute>
+														</i>
+													</xsl:if>
+													<xsl:apply-templates select="dss:TrustAnchors"/>
+													<xsl:if test="@sunsetDate">
+														<i>
+															<xsl:attribute name="class">fa fa-clock-o mr-2</xsl:attribute>
+															<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
+															<xsl:attribute name="data-placement">right</xsl:attribute>
+															<xsl:attribute name="title">Sunset at <xsl:call-template name="formatdate"><xsl:with-param name="DateTimeStr" select="@sunsetDate"/></xsl:call-template></xsl:attribute>
+														</i>
+													</xsl:if>
 												</xsl:if>
-												<xsl:apply-templates select="dss:TrustAnchors"/>
+
 
 											</li>
 										</xsl:for-each>

@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -22,20 +22,22 @@ package eu.europa.esig.dss.cookbook.example.snippets;
 
 import eu.europa.esig.dss.alert.handler.AlertHandler;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
-import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
-import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.client.http.DSSCacheFileLoader;
-import eu.europa.esig.dss.spi.client.http.DataLoader;
-import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.model.tsl.DownloadInfoRecord;
 import eu.europa.esig.dss.model.tsl.LOTLInfo;
 import eu.europa.esig.dss.model.tsl.ParsingInfoRecord;
 import eu.europa.esig.dss.model.tsl.PivotInfo;
 import eu.europa.esig.dss.model.tsl.TLInfo;
 import eu.europa.esig.dss.model.tsl.TLValidationJobSummary;
-import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.model.tsl.ValidationInfoRecord;
+import eu.europa.esig.dss.service.http.commons.CommonsDataLoader;
+import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.client.http.DSSCacheFileLoader;
+import eu.europa.esig.dss.spi.client.http.DataLoader;
+import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
+import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
@@ -48,6 +50,8 @@ import eu.europa.esig.dss.tsl.alerts.detections.TLSignatureErrorDetection;
 import eu.europa.esig.dss.tsl.alerts.handlers.log.LogTLSignatureErrorAlertHandler;
 import eu.europa.esig.dss.tsl.cache.CacheCleaner;
 import eu.europa.esig.dss.tsl.function.EUTLOtherTSLPointer;
+import eu.europa.esig.dss.tsl.function.GrantedOrRecognizedAtNationalLevelTrustAnchorPeriodPredicate;
+import eu.europa.esig.dss.tsl.function.GrantedTrustAnchorPeriodPredicate;
 import eu.europa.esig.dss.tsl.function.GrantedTrustService;
 import eu.europa.esig.dss.tsl.function.NonEmptyTrustService;
 import eu.europa.esig.dss.tsl.function.OfficialJournalSchemeInformationURI;
@@ -64,8 +68,6 @@ import eu.europa.esig.dss.tsl.sync.AcceptAllStrategy;
 import eu.europa.esig.dss.tsl.sync.ExpirationAndSignatureCheckStrategy;
 import eu.europa.esig.dss.tsl.sync.SynchronizationStrategy;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.spi.validation.CertificateVerifier;
-import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.trustedlist.jaxb.tsl.InternationalNamesType;
 import eu.europa.esig.trustedlist.jaxb.tsl.MultiLangNormStringType;
 import eu.europa.esig.trustedlist.jaxb.tsl.TSPInformationType;
@@ -257,6 +259,17 @@ public class TLValidationJobSnippets {
 		// end::trust-service-predicate[]
 	}
 
+	public void trustAnchorValidityPredicate() {
+		// tag::trust-anchor-validity-predicate[]
+		// import eu.europa.esig.dss.tsl.source.TLSource;
+		// import eu.europa.esig.dss.tsl.function.GrantedTrustAnchorPeriodPredicate;
+
+		TLSource tlSource = new TLSource();
+		// This predicate filters acceptable history instances of a Trust Service to define a trust anchor validity period
+		tlSource.setTrustAnchorValidityPredicate(new GrantedTrustAnchorPeriodPredicate());
+		// end::trust-anchor-validity-predicate[]
+	}
+
 	public CacheCleaner cacheCleaner() {
 		// tag::cache-cleaner[]
 		// import eu.europa.esig.dss.tsl.cache.CacheCleaner;
@@ -359,6 +372,17 @@ public class TLValidationJobSnippets {
 		lotlSource.setTlPredicate(TLPredicateFactory.createEUTLCountryCodePredicate("DE", "RO"));
 		// end::predicate-country-5.11[]
 		// end::predicates[]
+	}
+
+	public void tlVersion() {
+		// tag::tl-version[]
+		// import eu.europa.esig.dss.tsl.source.TLSource;
+
+		TLSource tlSource = new TLSource();
+		// This parameter defines the supported Trusted List versions (other Trusted List versions
+		// or invalid Trusted List structure will result to a parsing error)
+		tlSource.setTLVersions(Arrays.asList(5, 6));
+		// end::tl-version[]
 	}
 
 	private void executorService() {
@@ -539,6 +563,19 @@ public class TLValidationJobSnippets {
 		// Input : implementation of TrustServiceProviderPredicate interface.
 		// Default : none (select all)
 		lotlSource.setTrustServiceProviderPredicate(new CryptologOnlyTrustServiceProvider());
+
+		// Optional : predicate to filter history instances of the trust service in order
+		// to extract SDI validity period.
+		// This parameter is applied on the related trusted lists fetched from the current LOTL
+		// Input : implementation of TrustAnchorPeriodPredicate interface.
+		// Default : none (all trust services valid for indefinite period)
+		lotlSource.setTrustAnchorValidityPredicate(new GrantedOrRecognizedAtNationalLevelTrustAnchorPeriodPredicate());
+
+		// Optional : enables validation of the XML Trusted List against its version's specification.
+		// When not set, the validator will accept any Trusted List version, with no structure validation to be performed.
+		// When set, the structural validation will be triggered against the XML Trusted List's version specification.
+		// If a Trusted List of another version is provided, an error will be returned within the Parsing task.
+		lotlSource.setTLVersions(Arrays.asList(5, 6));
 
 		tlValidationJob.setListOfTrustedListSources(lotlSource);
 		// end::european-lotl-source[]

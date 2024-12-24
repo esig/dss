@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -25,7 +25,9 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.Revocation;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * This class allows to handle a list {@code OfflineRevocationSource}
@@ -60,9 +62,13 @@ public class ListRevocationSource<R extends Revocation> implements MultipleRevoc
 	 * Adds the {@code revocationSource} to the list by keeping old values
 	 *
 	 * @param revocationSource {@link OfflineRevocationSource} to add
+	 * @return whether the revocationSource has been added successfully
 	 */
-	public void add(OfflineRevocationSource<R> revocationSource) {
-		sources.add(revocationSource);
+	public boolean add(OfflineRevocationSource<R> revocationSource) {
+		if (revocationSource != null && !sources.contains(revocationSource)) {
+			return sources.add(revocationSource);
+		}
+		return false;
 	}
 
 	/**
@@ -108,11 +114,11 @@ public class ListRevocationSource<R extends Revocation> implements MultipleRevoc
 
 	@Override
 	public List<RevocationToken<R>> getRevocationTokens(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
-		List<RevocationToken<R>> result = new ArrayList<>();
+		Set<RevocationToken<R>> allTokens = new HashSet<>();
 		for (OfflineRevocationSource<R> revocationSource : sources) {
-			result.addAll(revocationSource.getRevocationTokens(certificateToken, issuerCertificateToken));
+			allTokens.addAll(revocationSource.getRevocationTokens(certificateToken, issuerCertificateToken));
 		}
-		return result;
+		return new ArrayList<>(allTokens);
 	}
 
 	/**
@@ -121,11 +127,11 @@ public class ListRevocationSource<R extends Revocation> implements MultipleRevoc
 	 * @return a list of {@link EncapsulatedRevocationTokenIdentifier}s
 	 */
 	public List<EncapsulatedRevocationTokenIdentifier<R>> getAllRevocationBinaries() {
-		List<EncapsulatedRevocationTokenIdentifier<R>> result = new ArrayList<>();
+		Set<EncapsulatedRevocationTokenIdentifier<R>> allBinaries = new HashSet<>();
 		for (OfflineRevocationSource<R> revocationSource : sources) {
-			result.addAll(revocationSource.getAllRevocationBinaries());
+			allBinaries.addAll(revocationSource.getAllRevocationBinaries());
 		}
-		return result;
+		return new ArrayList<>(allBinaries);
 	}
 
 	/**
@@ -158,6 +164,15 @@ public class ListRevocationSource<R extends Revocation> implements MultipleRevoc
 			}
 		}
 		return true;
+	}
+
+	/**
+	 * This method returns the number of set {@link RevocationSource}s
+	 *
+	 * @return the number of found {@link RevocationSource}
+	 */
+	public int getNumberOfSources() {
+		return sources.size();
 	}
 
 }

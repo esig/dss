@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -24,7 +24,6 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.EndorsementType;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.ObjectIdentifierQualifier;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
@@ -38,9 +37,18 @@ import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.model.UserNotice;
 import eu.europa.esig.dss.model.scope.SignatureScope;
+import eu.europa.esig.dss.model.signature.CommitmentTypeIndication;
+import eu.europa.esig.dss.model.signature.SignatureCryptographicVerification;
+import eu.europa.esig.dss.model.signature.SignatureDigestReference;
+import eu.europa.esig.dss.model.signature.SignatureProductionPlace;
+import eu.europa.esig.dss.model.signature.SignerRole;
 import eu.europa.esig.dss.spi.DSSSecurityProvider;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.SignatureCertificateSource;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.DefaultAdvancedSignature;
+import eu.europa.esig.dss.spi.signature.identifier.SignatureIdentifierBuilder;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.spi.x509.CertificateValidity;
 import eu.europa.esig.dss.spi.x509.SignatureIntegrityValidator;
@@ -48,33 +56,24 @@ import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.spi.signature.AdvancedSignature;
-import eu.europa.esig.dss.spi.validation.CertificateVerifier;
-import eu.europa.esig.dss.model.signature.CommitmentTypeIndication;
-import eu.europa.esig.dss.spi.signature.DefaultAdvancedSignature;
-import eu.europa.esig.dss.model.signature.SignatureCryptographicVerification;
-import eu.europa.esig.dss.model.signature.SignatureDigestReference;
-import eu.europa.esig.dss.spi.signature.identifier.SignatureIdentifierBuilder;
-import eu.europa.esig.dss.model.signature.SignatureProductionPlace;
-import eu.europa.esig.dss.model.signature.SignerRole;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.EnforcedResolverFragment;
-import eu.europa.esig.dss.xades.reference.XAdESReferenceValidation;
-import eu.europa.esig.dss.xades.validation.scope.XAdESSignatureScopeFinder;
-import eu.europa.esig.dss.xades.validation.timestamp.XAdESTimestampSource;
-import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
-import eu.europa.esig.dss.xml.utils.DomUtils;
-import eu.europa.esig.dss.xml.utils.SantuarioInitializer;
-import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
 import eu.europa.esig.dss.xades.definition.XAdESNamespace;
 import eu.europa.esig.dss.xades.definition.XAdESPath;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
 import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
+import eu.europa.esig.dss.xades.reference.XAdESReferenceValidation;
+import eu.europa.esig.dss.xades.validation.scope.XAdESSignatureScopeFinder;
+import eu.europa.esig.dss.xades.validation.timestamp.XAdESTimestampSource;
+import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.SantuarioInitializer;
+import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
 import org.apache.xml.security.algorithms.JCEMapper;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.Reference;
@@ -90,7 +89,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
-import javax.xml.transform.dom.DOMSource;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -342,16 +340,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			return null;
 		}
 		return signatureAlgorithm.getDigestAlgorithm();
-	}
-
-	@Override
-	@Deprecated
-	public MaskGenerationFunction getMaskGenerationFunction() {
-		EncryptionAlgorithm encryptionAlgorithm = getEncryptionAlgorithm();
-		if (EncryptionAlgorithm.RSASSA_PSS == encryptionAlgorithm) {
-			return MaskGenerationFunction.MGF1;
-		}
-		return null;
 	}
 
 	@Override
@@ -808,7 +796,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * Gets xades:CompleteCertificateRefs or xades141:CompleteCertificateRefsV2 element
 	 *
 	 * @return {@link Element}
+	 * @deprecated since DSS 6.2. To be removed.
 	 */
+	@Deprecated
 	public Element getCompleteCertificateRefs() {
 		Element element = null;
 		String completeCertificateRefsPath = xadesPath.getCompleteCertificateRefsPath();
@@ -826,7 +816,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * Gets xades:CompleteRevocationRefs
 	 *
 	 * @return {@link Element}
+	 * @deprecated since DSS 6.2. To be removed.
 	 */
+	@Deprecated
 	public Element getCompleteRevocationRefs() {
 		return DomUtils.getElement(signatureElement, xadesPath.getCompleteRevocationRefsPath());
 	}
@@ -835,7 +827,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * Gets xades:SigAndRefsTimeStamp node list
 	 *
 	 * @return {@link NodeList}
+	 * @deprecated since DSS 6.2. To be removed.
 	 */
+	@Deprecated
 	public NodeList getSigAndRefsTimeStamp() {
 		NodeList nodeList = null;
 		String sigAndRefsTimestampPath = xadesPath.getSigAndRefsTimestampPath();
@@ -853,7 +847,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * Gets xades:RefsOnlyTimestamp node list
 	 *
 	 * @return {@link NodeList}
+	 * @deprecated since DSS 6.2. To be removed.
 	 */
+	@Deprecated
 	public NodeList getRefsOnlyTimestampTimeStamp() {
 		NodeList nodeList = null;
 		String refsOnlyTimestampPath = xadesPath.getRefsOnlyTimestampPath();
@@ -871,7 +867,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * Gets xades:CertificateValues element
 	 *
 	 * @return {@link Element}
+	 * @deprecated since DSS 6.2. To be removed.
 	 */
+	@Deprecated
 	public Element getCertificateValues() {
 		return DomUtils.getElement(signatureElement, xadesPath.getCertificateValuesPath());
 	}
@@ -880,7 +878,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * Gets xades:RevocationValues element
 	 *
 	 * @return {@link Element}
+	 * @deprecated since DSS 6.2. To be removed.
 	 */
+	@Deprecated
 	public Element getRevocationValues() {
 		return DomUtils.getElement(signatureElement, xadesPath.getRevocationValuesPath());
 	}
@@ -1435,7 +1435,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public List<String> validateStructure() {
-		return DSSXMLUtils.validateAgainstXSD(xadesPath.getXSDUtils(), new DOMSource(signatureElement));
+		final XAdESStructureValidator structureValidator = XAdESStructureValidatorFactory.getInstance().fromXAdESSignature(this);
+		structureValidator.validate();
+		return structureValidator.getValidationErrors();
 	}
 
 	@Override
@@ -1448,7 +1450,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * timestamp.
 	 *
 	 * @return {@link Element} xades141:TimestampValidationData
+	 * @deprecated since DSS 6.2. To be removed.
 	 */
+	@Deprecated
 	public Element getLastTimestampValidationData() {
 		final NodeList nodeList = DomUtils.getNodeList(signatureElement, xadesPath.getUnsignedSignaturePropertiesPath() + "/*");
 		if (nodeList.getLength() > 0) {

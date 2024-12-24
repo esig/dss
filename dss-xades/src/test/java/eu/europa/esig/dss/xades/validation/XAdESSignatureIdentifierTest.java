@@ -1,25 +1,26 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package eu.europa.esig.dss.xades.validation;
 
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -43,6 +44,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class XAdESSignatureIdentifierTest extends AbstractXAdESTestValidation {
 	
@@ -117,6 +119,49 @@ class XAdESSignatureIdentifierTest extends AbstractXAdESTestValidation {
 		assertNotNull(xmlSignatureScope.getSignerData().getDigestAlgoAndValue().getDigestValue());
 		assertNotNull(xmlSignatureScope.getTransformations());
 		assertEquals(1, xmlSignatureScope.getTransformations().size());
+	}
+
+	@Override
+	protected void checkCertificates(DiagnosticData diagnosticData) {
+		boolean signCertFound = false;
+		boolean caSelfSignedFound = false;
+		boolean caWronglySelfSignedFound = false;
+		for (CertificateWrapper certificateWrapper : diagnosticData.getUsedCertificates()) {
+			assertNotNull(certificateWrapper);
+			assertNotNull(certificateWrapper.getId());
+			assertNotNull(certificateWrapper.getCertificateDN());
+			assertNotNull(certificateWrapper.getCertificateIssuerDN());
+			assertNotNull(certificateWrapper.getNotAfter());
+			assertNotNull(certificateWrapper.getNotBefore());
+			assertTrue(Utils.isCollectionNotEmpty(certificateWrapper.getSources()));
+			assertNotNull(certificateWrapper.getEntityKey());
+
+			if (certificateWrapper.getSigningCertificate() != null) {
+				assertNotNull(certificateWrapper.getIssuerEntityKey());
+
+				if (!certificateWrapper.isSelfSigned()) {
+					if (certificateWrapper.getIssuerEntityKey().equals(certificateWrapper.getSigningCertificate().getEntityKey())) {
+						assertTrue(certificateWrapper.isMatchingIssuerKey());
+						assertTrue(certificateWrapper.isMatchingIssuerSubjectName());
+						signCertFound = true;
+					} else {
+						assertTrue(certificateWrapper.isMatchingIssuerKey());
+						assertFalse(certificateWrapper.isMatchingIssuerSubjectName());
+						caWronglySelfSignedFound = true;
+					}
+				}
+
+			} else if (certificateWrapper.isSelfSigned()) {
+				assertNotNull(certificateWrapper.getIssuerEntityKey());
+				assertEquals(certificateWrapper.getEntityKey(), certificateWrapper.getIssuerEntityKey());
+				assertTrue(certificateWrapper.isMatchingIssuerKey());
+				assertTrue(certificateWrapper.isMatchingIssuerSubjectName());
+				caSelfSignedFound = true;
+			}
+		}
+		assertTrue(signCertFound);
+		assertTrue(caSelfSignedFound);
+		assertTrue(caWronglySelfSignedFound);
 	}
 
 }

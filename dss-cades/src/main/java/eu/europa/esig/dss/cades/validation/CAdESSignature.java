@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -30,7 +30,6 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.EndorsementType;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -677,16 +676,6 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	@Override
-	@Deprecated
-	public MaskGenerationFunction getMaskGenerationFunction() {
-		EncryptionAlgorithm encryptionAlgorithm = getEncryptionAlgorithm();
-		if (EncryptionAlgorithm.RSASSA_PSS == encryptionAlgorithm) {
-			return MaskGenerationFunction.MGF1;
-		}
-		return null;
-	}
-
-	@Override
 	public SignatureAlgorithm getSignatureAlgorithm() {
 		return SignatureAlgorithm.getAlgorithm(getEncryptionAlgorithm(), getDigestAlgorithm());
 	}
@@ -806,7 +795,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		List<ReferenceValidation> manifestEntryValidations = new ArrayList<>();
 		if (manifestFile == null) {
 			if (LOG.isDebugEnabled()) {
-				LOG.debug("No related manifest file found for a signature with name [{}]", getSignatureFilename());
+				LOG.debug("No related manifest file found for a signature with name [{}]", getFilename());
 			}
 			return manifestEntryValidations;
 		}
@@ -949,7 +938,8 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			cmsSignedDataParser = new CMSSignedDataParser(new PrecomputedDigestCalculatorProvider((DigestDocument) dssDocument), cmsSignedData.getEncoded());
 		} else {
 			try (InputStream inputStream = dssDocument.openStream()) {
-				final CMSTypedStream signedContent = new CMSTypedStream(inputStream);
+				ASN1ObjectIdentifier encapsulatedContentType = CMSUtils.getEncapsulatedContentType(cmsSignedData);
+				final CMSTypedStream signedContent = new CMSTypedStream(encapsulatedContentType, inputStream);
 				cmsSignedDataParser = new CMSSignedDataParser(new BcDigestCalculatorProvider(), signedContent, cmsSignedData.getEncoded());
 				cmsSignedDataParser.getSignedContent().drain(); // Closes the stream
 			}
@@ -1097,7 +1087,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		counterSignatures = new ArrayList<>();
 		for (final SignerInformation counterSignerInformation : getCounterSignatureStore()) {
 			final CAdESSignature counterSignature = new CAdESSignature(cmsSignedData, counterSignerInformation);
-			counterSignature.setSignatureFilename(getSignatureFilename());
+			counterSignature.setFilename(getFilename());
 			counterSignature.setMasterSignature(this);
 			counterSignatures.add(counterSignature);
 		}

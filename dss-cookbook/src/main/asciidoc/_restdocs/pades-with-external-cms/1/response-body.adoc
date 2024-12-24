@@ -2,6 +2,6 @@
 ----
 {
   "algorithm" : "SHA256",
-  "value" : "NG1EDrr2hbqtEgoqZCvxIgEsWJWyTGq7rwgVdk2UTew="
+  "value" : "xo8IzBNRoqGnNVNqa03b6QT14yVRKxL8Oisk7UoqHH8="
 }
 ----

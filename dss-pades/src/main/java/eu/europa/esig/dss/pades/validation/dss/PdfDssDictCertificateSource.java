@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -23,6 +23,7 @@ package eu.europa.esig.dss.pades.validation.dss;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pades.PAdESUtils;
+import eu.europa.esig.dss.pades.validation.PdfObjectKey;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfVriDict;
 import eu.europa.esig.dss.spi.x509.TokenCertificateSource;
@@ -92,9 +93,9 @@ public class PdfDssDictCertificateSource extends TokenCertificateSource {
      *
      * @return a map of PDF object ids and corresponding certificate tokens
      */
-    public Map<Long, CertificateToken> getCertificateMap() {
+    public Map<PdfObjectKey, CertificateToken> getCertificateMap() {
         if (dssDictionary != null) {
-            Map<Long, CertificateToken> dssCerts = dssDictionary.getCERTs();
+            Map<PdfObjectKey, CertificateToken> dssCerts = dssDictionary.getCERTs();
             List<PdfVriDict> vriDicts = PAdESUtils.getVRIsWithName(dssDictionary, relatedVRIDictionaryName);
             for (PdfVriDict vriDict : vriDicts) {
                 dssCerts.putAll(vriDict.getCERTs());
@@ -123,7 +124,7 @@ public class PdfDssDictCertificateSource extends TokenCertificateSource {
      */
     public List<CertificateToken> getVRIDictionaryCertValues() {
         if (dssDictionary != null) {
-            Set<Long> certKeys = new HashSet<>();
+            Set<PdfObjectKey> certKeys = new HashSet<>();
             List<PdfVriDict> vris = PAdESUtils.getVRIsWithName(dssDictionary, relatedVRIDictionaryName);
             for (PdfVriDict vri : vris) {
                 certKeys.addAll(vri.getCERTs().keySet());
@@ -133,9 +134,9 @@ public class PdfDssDictCertificateSource extends TokenCertificateSource {
         return Collections.emptyList();
     }
 
-    private List<CertificateToken> getCertificatesByKeys(Collection<Long> objectIds) {
+    private List<CertificateToken> getCertificatesByKeys(Collection<PdfObjectKey> objectIds) {
         List<CertificateToken> certificateTokens = new ArrayList<>();
-        for (Long objectId : objectIds) {
+        for (PdfObjectKey objectId : objectIds) {
             certificateTokens.addAll(compositeCertificateSource.getCertificateTokensByObjectId(objectId));
         }
         return certificateTokens;

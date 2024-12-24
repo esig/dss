@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -22,7 +22,6 @@ package eu.europa.esig.dss.spi.validation;
 
 import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
 import eu.europa.esig.dss.alert.SilentOnStatusAlert;
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
@@ -48,7 +47,6 @@ class CertificateVerifierBuilderTest {
     void buildCompleteCopyTest() {
         CertificateVerifier certificateVerifier = initCertificateVerifier();
         CertificateVerifier copy = new CertificateVerifierBuilder(certificateVerifier).buildCompleteCopy();
-        assertEquals(certificateVerifier.getDefaultDigestAlgorithm(), copy.getDefaultDigestAlgorithm());
         assertEquals(certificateVerifier.getAIASource(), copy.getAIASource());
         assertEquals(certificateVerifier.getCrlSource(), copy.getCrlSource());
         assertEquals(certificateVerifier.getOcspSource(), copy.getOcspSource());
@@ -57,7 +55,7 @@ class CertificateVerifierBuilderTest {
         assertEquals(certificateVerifier.getRevocationDataVerifier(), copy.getRevocationDataVerifier());
         assertEquals(certificateVerifier.isCheckRevocationForUntrustedChains(), copy.isCheckRevocationForUntrustedChains());
         assertEquals(certificateVerifier.getTimestampTokenVerifier(), copy.getTimestampTokenVerifier());
-        assertEquals(certificateVerifier.isExtractPOEFromUntrustedChains(), copy.isExtractPOEFromUntrustedChains());
+        assertEquals(certificateVerifier.getTrustAnchorVerifier(), copy.getTrustAnchorVerifier());
         assertEquals(certificateVerifier.getAdjunctCertSources(), copy.getAdjunctCertSources());
         assertEquals(certificateVerifier.getTrustedCertSources(), copy.getTrustedCertSources());
         assertEquals(certificateVerifier.getAlertOnInvalidSignature(), copy.getAlertOnInvalidSignature());
@@ -66,7 +64,6 @@ class CertificateVerifierBuilderTest {
         assertEquals(certificateVerifier.getAlertOnNoRevocationAfterBestSignatureTime(), copy.getAlertOnNoRevocationAfterBestSignatureTime());
         assertEquals(certificateVerifier.getAlertOnRevokedCertificate(), copy.getAlertOnRevokedCertificate());
         assertEquals(certificateVerifier.getAlertOnUncoveredPOE(), copy.getAlertOnUncoveredPOE());
-        assertEquals(certificateVerifier.getAlertOnExpiredSignature(), copy.getAlertOnExpiredSignature());
         assertEquals(certificateVerifier.getAlertOnExpiredCertificate(), copy.getAlertOnExpiredCertificate());
         assertEquals(certificateVerifier.getAlertOnNotYetValidCertificate(), copy.getAlertOnNotYetValidCertificate());
     }
@@ -80,16 +77,14 @@ class CertificateVerifierBuilderTest {
         certificateVerifier.setAlertOnNoRevocationAfterBestSignatureTime(new ExceptionOnStatusAlert());
         certificateVerifier.setAlertOnRevokedCertificate(new ExceptionOnStatusAlert());
         certificateVerifier.setAlertOnUncoveredPOE(new ExceptionOnStatusAlert());
-        certificateVerifier.setAlertOnExpiredSignature(new ExceptionOnStatusAlert());
         certificateVerifier.setAlertOnExpiredCertificate(new ExceptionOnStatusAlert());
         certificateVerifier.setAlertOnNotYetValidCertificate(new ExceptionOnStatusAlert());
 
         CertificateVerifier copy = new CertificateVerifierBuilder(certificateVerifier).buildOfflineAndSilentCopy();
 
-        assertEquals(certificateVerifier.getDefaultDigestAlgorithm(), copy.getDefaultDigestAlgorithm());
         assertEquals(certificateVerifier.getRevocationDataVerifier(), copy.getRevocationDataVerifier());
-        assertEquals(certificateVerifier.isExtractPOEFromUntrustedChains(), copy.isExtractPOEFromUntrustedChains());
         assertEquals(certificateVerifier.getTimestampTokenVerifier(), copy.getTimestampTokenVerifier());
+        assertTrustAnchorVerifierEquals(certificateVerifier.getTrustAnchorVerifier(), copy.getTrustAnchorVerifier());
         assertEquals(certificateVerifier.getAdjunctCertSources(), copy.getAdjunctCertSources());
         assertEquals(certificateVerifier.getTrustedCertSources(), copy.getTrustedCertSources());
         assertNull(copy.getAIASource());
@@ -98,15 +93,21 @@ class CertificateVerifierBuilderTest {
         assertNotNull(copy.getRevocationDataLoadingStrategyFactory()); // not relevant for offline validation
         assertFalse(copy.isRevocationFallback());
         assertFalse(copy.isCheckRevocationForUntrustedChains());
-        assertTrue(copy.getAlertOnInvalidSignature() instanceof SilentOnStatusAlert);
-        assertTrue(copy.getAlertOnInvalidTimestamp() instanceof SilentOnStatusAlert);
-        assertTrue(copy.getAlertOnMissingRevocationData() instanceof SilentOnStatusAlert);
-        assertTrue(copy.getAlertOnNoRevocationAfterBestSignatureTime() instanceof SilentOnStatusAlert);
-        assertTrue(copy.getAlertOnRevokedCertificate() instanceof SilentOnStatusAlert);
-        assertTrue(copy.getAlertOnUncoveredPOE() instanceof SilentOnStatusAlert);
-        assertTrue(copy.getAlertOnExpiredSignature() instanceof SilentOnStatusAlert);
-        assertTrue(copy.getAlertOnExpiredCertificate() instanceof SilentOnStatusAlert);
-        assertTrue(copy.getAlertOnNotYetValidCertificate() instanceof SilentOnStatusAlert);
+        assertNull(copy.getAlertOnInvalidSignature());
+        assertNull(copy.getAlertOnInvalidTimestamp());
+        assertNull(copy.getAlertOnMissingRevocationData());
+        assertNull(copy.getAlertOnNoRevocationAfterBestSignatureTime());
+        assertNull(copy.getAlertOnRevokedCertificate());
+        assertNull(copy.getAlertOnUncoveredPOE());
+        assertNull(copy.getAlertOnExpiredCertificate());
+        assertNull(copy.getAlertOnNotYetValidCertificate());
+    }
+
+    void assertTrustAnchorVerifierEquals(TrustAnchorVerifier trustAnchorVerifierOne, TrustAnchorVerifier trustAnchorVerifierTwo) {
+        assertFalse(trustAnchorVerifierTwo.isUseSunsetDate());
+        assertEquals(trustAnchorVerifierOne.getTrustedCertificateSource(), trustAnchorVerifierTwo.getTrustedCertificateSource());
+        assertEquals(trustAnchorVerifierOne.isAcceptRevocationUntrustedCertificateChains(), trustAnchorVerifierTwo.isAcceptRevocationUntrustedCertificateChains());
+        assertEquals(trustAnchorVerifierOne.isAcceptTimestampUntrustedCertificateChains(), trustAnchorVerifierTwo.isAcceptTimestampUntrustedCertificateChains());
     }
 
     @Test
@@ -115,7 +116,6 @@ class CertificateVerifierBuilderTest {
         certificateVerifier.setRevocationFallback(false);
 
         CertificateVerifier copy = new CertificateVerifierBuilder(certificateVerifier).buildCompleteCopyForValidation();
-        assertEquals(certificateVerifier.getDefaultDigestAlgorithm(), copy.getDefaultDigestAlgorithm());
         assertEquals(certificateVerifier.getAIASource(), copy.getAIASource());
         assertEquals(certificateVerifier.getCrlSource(), copy.getCrlSource());
         assertEquals(certificateVerifier.getOcspSource(), copy.getOcspSource());
@@ -123,7 +123,7 @@ class CertificateVerifierBuilderTest {
         assertEquals(certificateVerifier.getRevocationDataVerifier(), copy.getRevocationDataVerifier());
         assertEquals(certificateVerifier.isCheckRevocationForUntrustedChains(), copy.isCheckRevocationForUntrustedChains());
         assertEquals(certificateVerifier.getTimestampTokenVerifier(), copy.getTimestampTokenVerifier());
-        assertEquals(certificateVerifier.isExtractPOEFromUntrustedChains(), copy.isExtractPOEFromUntrustedChains());
+        assertEquals(certificateVerifier.getTrustAnchorVerifier(), copy.getTrustAnchorVerifier());
         assertEquals(certificateVerifier.getAdjunctCertSources(), copy.getAdjunctCertSources());
         assertEquals(certificateVerifier.getTrustedCertSources(), copy.getTrustedCertSources());
         assertEquals(certificateVerifier.getAlertOnInvalidTimestamp(), copy.getAlertOnInvalidTimestamp());
@@ -131,13 +131,11 @@ class CertificateVerifierBuilderTest {
         assertEquals(certificateVerifier.getAlertOnNoRevocationAfterBestSignatureTime(), copy.getAlertOnNoRevocationAfterBestSignatureTime());
         assertEquals(certificateVerifier.getAlertOnRevokedCertificate(), copy.getAlertOnRevokedCertificate());
         assertEquals(certificateVerifier.getAlertOnUncoveredPOE(), copy.getAlertOnUncoveredPOE());
-        assertEquals(certificateVerifier.getAlertOnExpiredSignature(), copy.getAlertOnExpiredSignature());
         assertTrue(copy.isRevocationFallback());
     }
 
     private CertificateVerifier initCertificateVerifier() {
         CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
-        certificateVerifier.setDefaultDigestAlgorithm(DigestAlgorithm.SHA512);
         certificateVerifier.setAIASource(new DefaultAIASource());
         certificateVerifier.setCrlSource(new OfflineCRLSource() {
             private static final long serialVersionUID = 2488777601664014631L;
@@ -157,9 +155,9 @@ class CertificateVerifierBuilderTest {
         certificateVerifier.setRevocationDataLoadingStrategyFactory(new CRLFirstRevocationDataLoadingStrategyFactory());
         certificateVerifier.setRevocationDataVerifier(RevocationDataVerifier.createDefaultRevocationDataVerifier());
         certificateVerifier.setTimestampTokenVerifier(TimestampTokenVerifier.createDefaultTimestampTokenVerifier());
+        certificateVerifier.setTrustAnchorVerifier(TrustAnchorVerifier.createDefaultTrustAnchorVerifier());
         certificateVerifier.setRevocationFallback(true);
         certificateVerifier.setCheckRevocationForUntrustedChains(true);
-        certificateVerifier.setExtractPOEFromUntrustedChains(true);
         certificateVerifier.setAdjunctCertSources(new CommonCertificateSource());
         certificateVerifier.setTrustedCertSources(new CommonTrustedCertificateSource());
         certificateVerifier.setAlertOnInvalidTimestamp(new SilentOnStatusAlert());
@@ -167,7 +165,6 @@ class CertificateVerifierBuilderTest {
         certificateVerifier.setAlertOnNoRevocationAfterBestSignatureTime(new SilentOnStatusAlert());
         certificateVerifier.setAlertOnRevokedCertificate(new SilentOnStatusAlert());
         certificateVerifier.setAlertOnUncoveredPOE(new SilentOnStatusAlert());
-        certificateVerifier.setAlertOnExpiredSignature(new SilentOnStatusAlert());
 
         return certificateVerifier;
     }

@@ -418,12 +418,13 @@
 					<xs:element name="PublicKeySize" type="xs:int" />
 					<xs:element name="PublicKeyEncryptionAlgo" type="xs:string" />
 					<xs:element name="EntityKey" type="xs:string" />
+					<xs:element name="IssuerEntityKey" type="IssuerEntityKey" minOccurs="0" />
 
 					<xs:element name="BasicSignature" type="BasicSignature" />
 					<xs:element name="SigningCertificate" type="SigningCertificate" minOccurs="0" />
 					<xs:element name="CertificateChain" type="CertificateChain" minOccurs="0" />
 
-					<xs:element name="Trusted" type="xs:boolean" />
+					<xs:element name="Trusted" type="Trusted" />
 					<xs:element name="SelfSigned" type="xs:boolean" />
 
 					<xs:element name="CertificateExtensions" type="CertificateExtensions" minOccurs="0" />
@@ -453,6 +454,15 @@
 		</xs:complexContent>
 	</xs:complexType>
 
+	<xs:complexType name="Trusted">
+		<xs:simpleContent>
+			<xs:extension base="xs:boolean">
+				<xs:attribute name="startDate" type="xs:dateTime" use="optional" />
+				<xs:attribute name="sunsetDate" type="xs:dateTime" use="optional" />
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+
 	<xs:complexType name="CertificateExtensions">
 		<xs:sequence>
 			<xs:choice minOccurs="0" maxOccurs="unbounded">
@@ -465,11 +475,13 @@
 				<xs:element name="InhibitAnyPolicy" type="InhibitAnyPolicy" />
 				<xs:element name="NameConstraints" type="NameConstraints" />
 				<xs:element name="CRLDistributionPoints" type="CRLDistributionPoints" />
+				<xs:element name="FreshestCRL" type="FreshestCRL" />
 				<xs:element name="AuthorityKeyIdentifier" type="AuthorityKeyIdentifier" />
 				<xs:element name="SubjectKeyIdentifier" type="SubjectKeyIdentifier" />
 				<xs:element name="AuthorityInformationAccess" type="AuthorityInformationAccess" />
 				<xs:element name="IdPkixOcspNoCheck" type="IdPkixOcspNoCheck" />
 				<xs:element name="ValAssuredShortTermCertificate" type="ValAssuredShortTermCertificate" />
+				<xs:element name="NoRevAvail" type="NoRevAvail" />
 				<xs:element name="QcStatements" type="QcStatements" />
 				<xs:element name="OtherExtension" type="CertificateExtension" />
 			</xs:choice>
@@ -603,6 +615,12 @@
 		</xs:complexContent>
 	</xs:complexType>
 
+	<xs:complexType name="FreshestCRL">
+		<xs:complexContent>
+			<xs:extension base="CRLDistributionPoints" />
+		</xs:complexContent>
+	</xs:complexType>
+
 	<xs:complexType name="AuthorityInformationAccess">
 		<xs:complexContent>
 			<xs:extension base="CertificateExtension">
@@ -644,6 +662,14 @@
 	</xs:complexType>
 
 	<xs:complexType name="ValAssuredShortTermCertificate">
+		<xs:complexContent>
+			<xs:extension base="CertificateExtension">
+				<xs:attribute name="present" type="xs:boolean" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="NoRevAvail">
 		<xs:complexContent>
 			<xs:extension base="CertificateExtension">
 				<xs:attribute name="present" type="xs:boolean" />
@@ -837,6 +863,9 @@
 			<xs:enumeration value="CAdES-BASELINE-T" />
 			<xs:enumeration value="CAdES-BASELINE-B" />
 			<xs:enumeration value="PDF-NOT-ETSI" />
+			<xs:enumeration value="PAdES-BES" />
+			<xs:enumeration value="PAdES-EPES" />
+			<xs:enumeration value="PAdES-LTV" />
 			<xs:enumeration value="PAdES-BASELINE-LTA" />
 			<xs:enumeration value="PAdES-BASELINE-LT" />
 			<xs:enumeration value="PAdES-BASELINE-T" />
@@ -870,6 +899,15 @@
 			<xs:element name="Message" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
 		<xs:attribute name="valid" type="xs:boolean" />
+	</xs:complexType>
+
+	<xs:complexType name="IssuerEntityKey">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="key" type="xs:boolean" use="required" />
+				<xs:attribute name="subjectName" type="xs:boolean" use="required" />
+			</xs:extension>
+		</xs:simpleContent>
 	</xs:complexType>
 	
 	<xs:complexType name="BasicSignature">
@@ -1132,6 +1170,7 @@
 			<xs:enumeration value="CERTIFICATE_VALUES" />
 			<xs:enumeration value="ATTR_AUTHORITIES_CERT_VALUES" />
 			<xs:enumeration value="TIMESTAMP_VALIDATION_DATA" />
+			<xs:enumeration value="ANY_VALIDATION_DATA" />
 			<xs:enumeration value="DSS_DICTIONARY" />
 			<xs:enumeration value="VRI_DICTIONARY" />
 			<xs:enumeration value="BASIC_OCSP_RESP" />
@@ -1160,6 +1199,7 @@
 					<xs:element name="TimestampFilename" type="xs:string" minOccurs="0" /> <!-- In case of detached timestamps -->
 					<xs:element name="ArchiveTimestampType" type="ArchiveTimestampType" minOccurs="0" />
 					<xs:element name="EvidenceRecordTimestampType" type="EvidenceRecordTimestampType" minOccurs="0" />
+					<xs:element name="ArchiveTimestampHashIndex" type="ArchiveTimestampHashIndex" minOccurs="0" />
 					<xs:element name="ProductionTime" type="xs:dateTime" />
 					<xs:element name="DigestMatcher" type="DigestMatcher" maxOccurs="unbounded" />
 					<xs:element name="BasicSignature" type="BasicSignature" />
@@ -1231,6 +1271,22 @@
 			<xs:enumeration value="ARCHIVE_TIMESTAMP" />
 			<xs:enumeration value="TIMESTAMP_RENEWAL_ARCHIVE_TIMESTAMP" />
 			<xs:enumeration value="HASH_TREE_RENEWAL_ARCHIVE_TIMESTAMP" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="ArchiveTimestampHashIndex">
+		<xs:complexContent>
+			<xs:extension base="StructuralValidation">
+				<xs:attribute name="version" type="ArchiveTimestampHashIndexVersion"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:simpleType name="ArchiveTimestampHashIndexVersion" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="ats-hash-index" />
+			<xs:enumeration value="ats-hash-index-v2" />
+			<xs:enumeration value="ats-hash-index-v3" />
 		</xs:restriction>
 	</xs:simpleType>
 	
@@ -1374,6 +1430,7 @@
 			<xs:enumeration value="REVOCATION_VALUES" />
 			<xs:enumeration value="ATTRIBUTE_REVOCATION_VALUES" />
 			<xs:enumeration value="TIMESTAMP_VALIDATION_DATA" />
+			<xs:enumeration value="ANY_VALIDATION_DATA" />
 			<xs:enumeration value="DSS_DICTIONARY" />
 			<xs:enumeration value="VRI_DICTIONARY" />
 			<xs:enumeration value="ADBE_REVOCATION_INFO_ARCHIVAL" />
@@ -1462,7 +1519,8 @@
 			<xs:extension base="AbstractToken">
 				<xs:sequence>
 					<xs:element name="DocumentName" type="xs:string" minOccurs="0" />
-					<xs:element name="Type"	type="EvidenceRecordType" minOccurs="0" />
+					<xs:element name="Type" type="EvidenceRecordType" />
+					<xs:element name="Origin" type="EvidenceRecordOrigin" />
 					<xs:element name="StructuralValidation"	type="StructuralValidation" minOccurs="0" />
 					<xs:element name="DigestMatchers" type="DigestMatchers" />
 					<xs:element name="EvidenceRecordTimestamps" type="FoundTimestamps" />
@@ -1499,6 +1557,14 @@
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="XML Evidence Record" />
 			<xs:enumeration value="ASN.1 Evidence Record" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="EvidenceRecordOrigin" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="CONTAINER" />
+			<xs:enumeration value="EMBEDDED" />
+			<xs:enumeration value="EXTERNAL" />
 		</xs:restriction>
 	</xs:simpleType>
 	

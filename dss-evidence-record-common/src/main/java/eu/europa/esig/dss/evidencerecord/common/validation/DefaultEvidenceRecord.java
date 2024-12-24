@@ -1,25 +1,26 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package eu.europa.esig.dss.evidencerecord.common.validation;
 
+import eu.europa.esig.dss.enumerations.EvidenceRecordOrigin;
 import eu.europa.esig.dss.evidencerecord.common.validation.identifier.EvidenceRecordIdentifierBuilder;
 import eu.europa.esig.dss.evidencerecord.common.validation.timestamp.EvidenceRecordTimestampSource;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -52,6 +53,11 @@ public abstract class DefaultEvidenceRecord implements EvidenceRecord {
      * The name of the evidence record document
      */
     private String filename;
+
+    /**
+     * Origin of the evidence record
+     */
+    private EvidenceRecordOrigin origin;
 
     /**
      * Contains a list of documents time-stamped within a reduced HashTree
@@ -128,6 +134,20 @@ public abstract class DefaultEvidenceRecord implements EvidenceRecord {
      */
     public void setFilename(String filename) {
         this.filename = filename;
+    }
+
+    @Override
+    public EvidenceRecordOrigin getOrigin() {
+        return origin;
+    }
+
+    /**
+     * Sets the origin of the evidence record
+     *
+     * @param origin {@link EvidenceRecordOrigin}
+     */
+    public void setOrigin(EvidenceRecordOrigin origin) {
+        this.origin = origin;
     }
 
     @Override

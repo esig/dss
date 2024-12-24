@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -23,7 +23,6 @@ package eu.europa.esig.dss.diagnostic;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 
 import java.util.List;
@@ -75,16 +74,6 @@ public interface TokenProxy {
 	 * @return {@link EncryptionAlgorithm}
 	 */
 	EncryptionAlgorithm getEncryptionAlgorithm();
-
-	/**
-	 * Returns the MaskGenerationFunction if has been used on signature creation
-	 *
-	 * @return {@link MaskGenerationFunction}
-	 * @deprecated since DSS 6.1. Please use {@code #getEncryptionAlgorithm} method instead to differentiate
-	 *             between mask generation function use (i.e. RSA for none MGF, RSASSA-PSS for MGF1)
-	 */
-	@Deprecated
-	MaskGenerationFunction getMaskGenerationFunction();
 
 	/**
 	 * Returns the length of the private key used to create the signatureValue of the token

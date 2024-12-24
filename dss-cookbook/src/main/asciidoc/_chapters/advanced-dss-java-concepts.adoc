@@ -302,6 +302,22 @@ The class `XmlDefinerUtils` is a singleton, therefore all changes performed on t
 
 See section <<Alerts>> in chapter Annex for more information on alerts.
 
+[[PdfMemoryUsageSetting]]
+=== PDF Memory Usage Setting
+
+Since DSS `6.2` it is possible to configure the memory usage on PDF reading. The feature is useful on document signing or validation, when a smart memory usage is crucial, for instance when processing big PDF files.
+
+The configuration can be done using a `PdfMemoryUsageSetting` class, as shown below:
+
+[source,java,indent=0]
+.PdfMemoryUsageSetting configuration
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/PAdESWithIPdfObjFactoryConfiguration.java[tags=pdf-memory-usage-setting]
+----
+
+NOTE: `PdfMemoryUsageSetting` is only supported in methods within `PAdESService` and `PDFDocumentValidator`.
+
+
 [[DSSResourcesHandler]]
 === DSS Resources Handler
 
@@ -342,7 +358,6 @@ Since DSS `6.1` a `DSSResourcesHandler` may also be used for ASiC creation, allo
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignASiCEWithXAdESWithTempFileTest.java[tags=demo]
 ----
-
 
 [[zipUtils]]
 === ZIP Utils

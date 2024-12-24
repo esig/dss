@@ -1,25 +1,26 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package eu.europa.esig.dss.pdf.modifications;
 
+import eu.europa.esig.dss.pades.validation.PdfObjectKey;
 import eu.europa.esig.dss.pdf.PAdESConstants;
 import eu.europa.esig.dss.pdf.PdfArray;
 import eu.europa.esig.dss.pdf.PdfDict;
@@ -67,11 +68,11 @@ public class DefaultPdfObjectModificationsFinder implements PdfObjectModificatio
 
     /**
      * Sets the maximum objects verification deepness of enveloped objects to be compared.
-     *
+     * <p>
      * NOTE: In case of large PDFs, a too deep object nesting structure may lead to a StackOverflowError.
      *       This parameter is needed to prevent the Error.
      *       Please adjust the value in case you system may handle less or more recursion.
-     *
+     * <p>
      * Default: 500
      *
      * @param maximumObjectVerificationDeepness defining the maximum recursion deepness on objects analysis
@@ -144,31 +145,31 @@ public class DefaultPdfObjectModificationsFinder implements PdfObjectModificatio
         return getPdfObjectModificationsFilter().filter(objectModifications);
     }
 
-    private void compareDictsRecursively(Set<ObjectModification> modifications, Set<String> processedObjects,
-                                                PdfObjectTree objectTree, PdfDict signedDict, PdfDict finalDict) {
-        final String[] signedRevKeys = signedDict.list();
-        final String[] finalRevKeys = finalDict.list();
-        for (String key : signedRevKeys) {
+    private void compareDictsRecursively(Set<ObjectModification> modifications, Set<PdfObjectTreeReference> processedObjects,
+                                         PdfObjectTree objectTree, PdfDict signedDict, PdfDict finalDict) {
+        final String[] signedRevObjNames = signedDict.list();
+        final String[] finalRevObjNames = finalDict.list();
+        for (String objectName : signedRevObjNames) {
             final PdfObjectTree currentObjectTree = objectTree.copy();
-            Long objectNumber = signedDict.getObjectNumber(key);
-            if (!isProcessedReference(processedObjects, currentObjectTree, key, objectNumber)) {
-                currentObjectTree.addKey(key);
-                addProcessedReference(processedObjects, currentObjectTree, key, objectNumber);
-                compareObjectsRecursively(modifications, processedObjects, currentObjectTree, key,
-                        signedDict.getObject(key), finalDict.getObject(key));
+            PdfObjectKey objectKey = signedDict.getObjectKey(objectName);
+            if (!isProcessedReference(processedObjects, currentObjectTree, objectName, objectKey)) {
+                currentObjectTree.addKey(objectName);
+                addProcessedReference(processedObjects, currentObjectTree, objectName, objectKey);
+                compareObjectsRecursively(modifications, processedObjects, currentObjectTree, objectName,
+                        signedDict.getObject(objectName), finalDict.getObject(objectName));
             }
         }
 
-        List<String> signedRevKeyList = Arrays.asList(signedRevKeys);
-        for (String key : finalRevKeys) {
+        List<String> signedRevKeyList = Arrays.asList(signedRevObjNames);
+        for (String objectName : finalRevObjNames) {
             final PdfObjectTree currentObjectTree = objectTree.copy();
-            if (!signedRevKeyList.contains(key)) {
-                currentObjectTree.addKey(key);
-                PdfObject finalObject = finalDict.getObject(key);
+            if (!signedRevKeyList.contains(objectName)) {
+                currentObjectTree.addKey(objectName);
+                PdfObject finalObject = finalDict.getObject(objectName);
                 if (finalObject instanceof PdfDict || finalObject instanceof PdfArray) {
-                    Long objectNumber = finalDict.getObjectNumber(key);
-                    addProcessedReference(processedObjects, currentObjectTree, key, objectNumber);
-                    modifications.add(ObjectModification.create(currentObjectTree, finalDict.getObject(key)));
+                    PdfObjectKey objectKey = finalDict.getObjectKey(objectName);
+                    addProcessedReference(processedObjects, currentObjectTree, objectName, objectKey);
+                    modifications.add(ObjectModification.create(currentObjectTree, finalDict.getObject(objectName)));
                     if (LOG.isDebugEnabled()) {
                         LOG.debug("Added entry with key '{}'.", currentObjectTree);
                     }
@@ -184,8 +185,8 @@ public class DefaultPdfObjectModificationsFinder implements PdfObjectModificatio
         compareDictStreams(modifications, objectTree, signedDict, finalDict);
     }
 
-    private void compareObjectsRecursively(Set<ObjectModification> modifications, Set<String> processedObjects,
-                                                  PdfObjectTree objectTree, String key, PdfObject signedObject, PdfObject finalObject) {
+    private void compareObjectsRecursively(Set<ObjectModification> modifications, Set<PdfObjectTreeReference> processedObjects,
+                                           PdfObjectTree objectTree, String name, PdfObject signedObject, PdfObject finalObject) {
         if (maximumObjectVerificationDeepness < objectTree.getChainDeepness()) {
             String errorMessage = "Maximum objects verification deepness has been reached : {}. Chain of objects is skipped.";
             if (maximumObjectVerificationDeepness == 0) {
@@ -234,9 +235,9 @@ public class DefaultPdfObjectModificationsFinder implements PdfObjectModificatio
             } else if (signedObject instanceof PdfArray && finalObject instanceof PdfArray) {
                 PdfArray signedArray = (PdfArray) signedObject;
                 PdfArray finalArray = (PdfArray) finalObject;
-                compareArraysRecursively(modifications, processedObjects, objectTree, key,
+                compareArraysRecursively(modifications, processedObjects, objectTree, name,
                         signedArray, finalArray, true);
-                compareArraysRecursively(modifications, processedObjects, objectTree, key,
+                compareArraysRecursively(modifications, processedObjects, objectTree, name,
                         finalArray, signedArray, false);
 
             } else if (signedObject instanceof PdfSimpleObject && finalObject instanceof PdfSimpleObject) {
@@ -294,19 +295,19 @@ public class DefaultPdfObjectModificationsFinder implements PdfObjectModificatio
         }
     }
 
-    private void compareArraysRecursively(Set<ObjectModification> modifications, Set<String> processedObjects,
-                                                 PdfObjectTree objectTree, String key, PdfArray firstArray, PdfArray secondArray, boolean signedFirst) {
+    private void compareArraysRecursively(Set<ObjectModification> modifications, Set<PdfObjectTreeReference> processedObjects,
+                                          PdfObjectTree objectTree, String name, PdfArray firstArray, PdfArray secondArray, boolean signedFirst) {
         for (int i = 0; i < firstArray.size(); i++) {
             final PdfObjectTree currentObjectTree = objectTree.copy();
 
             PdfObject signedRevObject = firstArray.getObject(i);
             PdfObject finalRevObject = null;
 
-            Long objectNumber = firstArray.getObjectNumber(i);
-            if (objectNumber != null) {
+            PdfObjectKey objectKey = firstArray.getObjectKey(i);
+            if (objectKey != null) {
                 for (int j = 0; j < secondArray.size(); j++) {
-                    Long finalObjectNumber = secondArray.getObjectNumber(j);
-                    if (objectNumber.equals(finalObjectNumber)) {
+                    PdfObjectKey finalObjectKey = secondArray.getObjectKey(j);
+                    if (objectKey.equals(finalObjectKey)) {
                         finalRevObject = secondArray.getObject(j);
                     }
                 }
@@ -314,24 +315,24 @@ public class DefaultPdfObjectModificationsFinder implements PdfObjectModificatio
                 finalRevObject = secondArray.getObject(i);
             }
 
-            if (!isProcessedReference(processedObjects, currentObjectTree, key, objectNumber)) {
-                addProcessedReference(processedObjects, currentObjectTree, key, objectNumber);
-                compareObjectsRecursively(modifications, processedObjects, currentObjectTree, key,
+            if (!isProcessedReference(processedObjects, currentObjectTree, name, objectKey)) {
+                addProcessedReference(processedObjects, currentObjectTree, name, objectKey);
+                compareObjectsRecursively(modifications, processedObjects, currentObjectTree, name,
                         signedFirst ? signedRevObject : finalRevObject, signedFirst ? finalRevObject : signedRevObject);
             }
         }
     }
 
-    private boolean isProcessedReference(Set<String> processedObjects, PdfObjectTree objectTree,
-                                                String key, Number objectNumber) {
-        return processedObjects.contains(key + objectNumber) || objectTree.isProcessedReference(objectNumber);
+    private boolean isProcessedReference(Set<PdfObjectTreeReference> processedObjects, PdfObjectTree objectTree,
+                                         String name, PdfObjectKey objectKey) {
+        return processedObjects.contains(new PdfObjectTreeReference(name, objectKey)) || objectTree.isProcessedReference(objectKey);
     }
 
-    private void addProcessedReference(Set<String> processedObjects, PdfObjectTree objectTree,
-                                              String key, Number objectNumber) {
-        if (objectNumber != null) {
-            processedObjects.add(key + objectNumber);
-            objectTree.addReference(objectNumber);
+    private void addProcessedReference(Set<PdfObjectTreeReference> processedObjects, PdfObjectTree objectTree,
+                                       String name, PdfObjectKey objectKey) {
+        if (objectKey != null) {
+            processedObjects.add(new PdfObjectTreeReference(name, objectKey));
+            objectTree.addReference(objectKey);
         }
     }
 
@@ -386,6 +387,47 @@ public class DefaultPdfObjectModificationsFinder implements PdfObjectModificatio
             return stream;
         }
         return new ByteArrayInputStream(DSSUtils.EMPTY_BYTE_ARRAY);
+    }
+
+    /**
+     * Internal class representing a PDF Tree's reference
+     *
+     */
+    private static class PdfObjectTreeReference {
+
+        /** The name used to reference the PDF object */
+        private final String objectName;
+
+        /** The PDF object key */
+        private final PdfObjectKey objectKey;
+
+        /**
+         * Default constructor
+         *
+         * @param objectName {@link String} name of the PDF object
+         * @param objectKey {@link PdfObjectKey} unique PDF object identifier
+         */
+        private PdfObjectTreeReference(final String objectName, final PdfObjectKey objectKey) {
+            this.objectName = objectName;
+            this.objectKey = objectKey;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            PdfObjectTreeReference that = (PdfObjectTreeReference) o;
+            return Objects.equals(objectName, that.objectName) && Objects.equals(objectKey, that.objectKey);
+        }
+
+        @Override
+        public int hashCode() {
+            int result = Objects.hashCode(objectName);
+            result = 31 * result + Objects.hashCode(objectKey);
+            return result;
+        }
+
     }
 
 }

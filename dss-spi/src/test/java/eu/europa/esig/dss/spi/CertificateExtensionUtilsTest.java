@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -34,6 +34,7 @@ import eu.europa.esig.dss.model.x509.extension.GeneralName;
 import eu.europa.esig.dss.model.x509.extension.GeneralSubtree;
 import eu.europa.esig.dss.model.x509.extension.InhibitAnyPolicy;
 import eu.europa.esig.dss.model.x509.extension.NameConstraints;
+import eu.europa.esig.dss.model.x509.extension.NoRevAvail;
 import eu.europa.esig.dss.model.x509.extension.PolicyConstraints;
 import eu.europa.esig.dss.model.x509.extension.SubjectAlternativeNames;
 import eu.europa.esig.dss.model.x509.extension.SubjectKeyIdentifier;
@@ -502,6 +503,21 @@ class CertificateExtensionUtilsTest {
         subtree = nameConstraintsExt.getExcludedSubtrees().get(1);
         assertEquals(GeneralNameType.IP_ADDRESS, subtree.getGeneralNameType());
         assertEquals("#0000000000000000000000000000000000000000000000000000000000000000", subtree.getValue());
+    }
+
+    @Test
+    void noRevAvailTest() {
+        CertificateToken certificateToken = DSSUtils.loadCertificateFromBase64EncodedString("MIIDbzCCAlegAwIBAgIBZTANBgkqhkiG9w0BAQsFADBNMRAwDgYDVQQDDAdnb29kLWNhMRkwFwYDVQQKDBBOb3dpbmEgU29sdXRpb25zMREwDwYDVQQLDAhQS0ktVEVTVDELMAkGA1UEBhMCTFUwHhcNMjMwNzI5MDcyNDU0WhcNMjUwNzI5MDcyNDU0WjBAMRYwFAYDVQQDDA1uZXctZ29vZC11c2VyMRkwFwYDVQQKDBBOb3dpbmEgU29sdXRpb25zMQswCQYDVQQGEwJMVTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMIjMQH4OOGw5YcjEWlxpJbVnXrilX6dqwQntzybiW2VZw7evxvvDDPQ3w1YPB1Ombmldc/CU3iwp4IXJRVcmKqqXN66nYnm+ZNXbKS6bHWSCip/UItwFWEito2zji2EtlERqa3zu8uzgJK5ysrMr+vkidaCm5u0G+FpLTPIB1/9xirRED/qk1wT5DGIxMpHmS5r/5AfBOCZK81uqCQ0wnJnb4UMSlwyWcxTmOdAn1Y15mf5xqgoSWZRxDueVWbiCo3aFhelUR63EZ5R6YDIOEpurfWnJpfPlso3wqMNiUe4iEKNsuwRckfRPTC+qvxMd+VeYUFgQ3z4NYOIXtoyyYMCAwEAAaNnMGUwOQYIKwYBBQUHAQEELTArMCkGCCsGAQUFBzABhh1odHRwOi8vZHNzLm5vd2luYS5sdS9wa2kvb2NzcDAJBgNVHTgEAgUAMB0GA1UdDgQWBBSF+j+sm6FZa0TqltNRq6JcM9tutDANBgkqhkiG9w0BAQsFAAOCAQEArSXynLOuSpuk3GiYw6Jcsd7YhIGff4lNnjsB+HhmpEUAAmg2uTJ2Bq9z2hR128gdy8ji0Fo3c8UTDTyw4nzQO/NY85gcoAp2jc/9ZVZg89BujlBE+SkRI4FNKgyjp8VT3XLkaNYgCZB+yaiWoJyDPTyOKfv8ornkEzzfc5MTK15KbqHPTZJ8v5XbdnmevOs3iCgT81XLsjhhydtdJhikP8cB4hsGD41yrUy8L3J9Lzn9tegXhecnLLZv4lrEPEVMiVkzUYPiMXVhvKLguBLWPKoKGnA3D9BPcDueG3B+Bim5D+x+VN85jwYKwkrbvJnzHE+02ry/eetn0DOIjGKkzg==");
+        NoRevAvail noRevAvail = CertificateExtensionsUtils.getNoRevAvail(certificateToken);
+        assertNotNull(noRevAvail);
+        assertFalse(noRevAvail.isCritical());
+        assertTrue(noRevAvail.isNoRevAvail());
+
+        CertificateExtensions certificateExtensions = CertificateExtensionsUtils.getCertificateExtensions(certificateToken);
+        NoRevAvail noRevAvailExt = certificateExtensions.getNoRevAvail();
+        assertNotNull(noRevAvailExt);
+        assertFalse(noRevAvailExt.isCritical());
+        assertTrue(noRevAvailExt.isNoRevAvail());
     }
 
 }

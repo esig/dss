@@ -424,6 +424,16 @@
 					<xsd:documentation>Checks if a TSTInfo.tsa field's value and order matches the timestamp's issuer distinguishing name when present</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="AtsHashIndex" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if CAdES ats-hash-index(-v3) attribute of the archive-time-stamp-v3 is present and valid, conforming to the ETSI EN 319 122-1 definition</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="ContainerSignedAndTimestampedFilesCovered" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks whether all previously signed and/or time-asserted file objects are subsequently covered by the current timestamp in an ASiC container.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -500,6 +510,16 @@
 					<xsd:element name="DataObjectGroup" type="LevelConstraint" minOccurs="0">
 						<xsd:annotation>
 							<xsd:documentation>Checks that only the hash values of the provided data objects are present in the first hash value list</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="SignedFilesCovered" type="LevelConstraint" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>When an external evidence record applies to a signature, checks whether all signed documents are covered by the evidence record</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="ContainerSignedAndTimestampedFilesCovered" type="LevelConstraint" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>Checks whether all previously signed and/or time-asserted file objects are subsequently covered by the current evidence record in an ASiC container.</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
 					<xsd:element name="HashTreeRenewal" type="LevelConstraint" minOccurs="0">
@@ -695,6 +715,11 @@
 					<xsd:documentation>Checks if the validation time is in the validity range of the certificate</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="SunsetDate" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>If a sunset date is associated with the that trust anchor, checks whether the validation is before the certificate's trust sunset date.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="AuthorityInfoAccessPresent" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks the presence of the AIA (issuer) in the certificate</xsd:documentation>
@@ -768,6 +793,11 @@
 			<xsd:element name="NameConstraints" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Performs validation of the certificate distinguished and subject alternative names against the name constraints imposed by its certificate chain</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="NoRevAvail" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Performs validation of certificate's compliance to RFC 9608, when noRevAvail (OID: 2.5.29.56) certificate extension is present</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="SupportedCriticalExtensions" type="MultiValuesConstraint" minOccurs="0">
@@ -1081,9 +1111,9 @@
 					<xsd:documentation>Checks if the signature of the Trusted List is valid</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="TLVersion" type="ValueConstraint" minOccurs="0">
+			<xsd:element name="TLVersion" type="MultiValuesConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Checks if the version (TSLVersionIdentifier) of the Trusted List is equals to the given value</xsd:documentation>
+					<xsd:documentation>Checks if the version (TSLVersionIdentifier) of the Trusted List is equals to one of the given values</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 		</xsd:sequence>

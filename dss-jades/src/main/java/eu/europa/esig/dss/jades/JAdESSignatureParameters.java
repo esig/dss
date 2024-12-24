@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -387,6 +387,57 @@ public class JAdESSignatureParameters extends AbstractSignatureParameters<JAdEST
 	 */
 	public void setBase64UrlEncodedEtsiUComponents(boolean base64UrlEncodedEtsiUComponents) {
 		this.base64UrlEncodedEtsiUComponents = base64UrlEncodedEtsiUComponents;
+	}
+
+	@Override
+	public String toString() {
+		return "JAdESSignatureParameters [" +
+				"includeCertificateChain=" + includeCertificateChain +
+				", includeSignatureType=" + includeSignatureType +
+				", includeKeyIdentifier=" + includeKeyIdentifier +
+				", x509Url='" + x509Url + '\'' +
+				", base64UrlEncodedPayload=" + base64UrlEncodedPayload +
+				", base64UrlEncodedEtsiUComponents=" + base64UrlEncodedEtsiUComponents +
+				", signingCertificateDigestMethod=" + signingCertificateDigestMethod +
+				", jwsSerializationType=" + jwsSerializationType +
+				", sigDMechanism=" + sigDMechanism +
+				", jadesSigningTimeType=" + jadesSigningTimeType +
+				"] " + super.toString();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+
+		JAdESSignatureParameters that = (JAdESSignatureParameters) o;
+		return includeCertificateChain == that.includeCertificateChain
+				&& includeSignatureType == that.includeSignatureType
+				&& includeKeyIdentifier == that.includeKeyIdentifier
+				&& base64UrlEncodedPayload == that.base64UrlEncodedPayload
+				&& base64UrlEncodedEtsiUComponents == that.base64UrlEncodedEtsiUComponents
+				&& Objects.equals(x509Url, that.x509Url)
+				&& signingCertificateDigestMethod == that.signingCertificateDigestMethod
+				&& jwsSerializationType == that.jwsSerializationType
+				&& sigDMechanism == that.sigDMechanism
+				&& jadesSigningTimeType == that.jadesSigningTimeType;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + Boolean.hashCode(includeCertificateChain);
+		result = 31 * result + Boolean.hashCode(includeSignatureType);
+		result = 31 * result + Boolean.hashCode(includeKeyIdentifier);
+		result = 31 * result + Objects.hashCode(x509Url);
+		result = 31 * result + Boolean.hashCode(base64UrlEncodedPayload);
+		result = 31 * result + Boolean.hashCode(base64UrlEncodedEtsiUComponents);
+		result = 31 * result + Objects.hashCode(signingCertificateDigestMethod);
+		result = 31 * result + Objects.hashCode(jwsSerializationType);
+		result = 31 * result + Objects.hashCode(sigDMechanism);
+		result = 31 * result + Objects.hashCode(jadesSigningTimeType);
+		return result;
 	}
 
 }

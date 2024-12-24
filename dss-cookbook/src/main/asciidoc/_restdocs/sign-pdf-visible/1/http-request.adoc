@@ -4,7 +4,7 @@ POST /services/rest/signature/one-document/getDataToSign HTTP/1.1
 Accept: application/json, application/javascript, text/javascript, text/json
 Content-Type: application/json
 Host: localhost:8080
-Content-Length: 186794
+Content-Length: 186679
 
 {
   "parameters" : {
@@ -22,10 +22,8 @@ Content-Length: 186794
     "sigDMechanism" : null,
     "base64UrlEncodedPayload" : true,
     "base64UrlEncodedEtsiUComponents" : true,
-    "signatureAlgorithm" : null,
     "digestAlgorithm" : "SHA256",
     "encryptionAlgorithm" : null,
-    "maskGenerationFunction" : null,
     "referenceDigestAlgorithm" : null,
     "contentTimestamps" : null,
     "contentTimestampParameters" : {
@@ -43,7 +41,6 @@ Content-Length: 186794
       "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#",
       "timestampContainerForm" : null
     },
-    "signWithExpiredCertificate" : false,
     "generateTBSWithoutCertificate" : false,
     "imageParameters" : {
       "alignmentHorizontal" : null,
@@ -88,7 +85,7 @@ Content-Length: 186794
     "signatureIdToCounterSign" : null,
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1720186835693,
+      "signingDate" : 1733916755354,
       "claimedSignerRoles" : null,
       "signedAssertions" : null,
       "policyId" : null,

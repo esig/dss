@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -39,6 +39,10 @@ import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.SignatureCertificateSource;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.SignatureProperties;
+import eu.europa.esig.dss.spi.validation.timestamp.SignatureTimestampIdentifierBuilder;
+import eu.europa.esig.dss.spi.validation.timestamp.SignatureTimestampSource;
 import eu.europa.esig.dss.spi.x509.CMSCRLSource;
 import eu.europa.esig.dss.spi.x509.CMSCertificateSource;
 import eu.europa.esig.dss.spi.x509.CMSOCSPSource;
@@ -49,22 +53,16 @@ import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampSource;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.spi.signature.AdvancedSignature;
-import eu.europa.esig.dss.spi.validation.SignatureProperties;
-import eu.europa.esig.dss.spi.validation.timestamp.SignatureTimestampIdentifierBuilder;
-import eu.europa.esig.dss.spi.validation.timestamp.SignatureTimestampSource;
-import eu.europa.esig.dss.spi.x509.tsp.TimestampSource;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.ASN1Set;
 import org.bouncycastle.asn1.DEROctetString;
-import org.bouncycastle.asn1.DERTaggedObject;
 import org.bouncycastle.asn1.cms.CMSAttributes;
-import org.bouncycastle.asn1.cms.OtherRevocationInfoFormat;
 import org.bouncycastle.asn1.cms.SignerInfo;
 import org.bouncycastle.asn1.esf.CrlListID;
 import org.bouncycastle.asn1.esf.CrlOcspRef;
@@ -124,7 +122,7 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 
 	@Override
 	protected CAdESTimestampMessageDigestBuilder getTimestampMessageImprintDigestBuilder(DigestAlgorithm digestAlgorithm) {
-		return new CAdESTimestampMessageDigestBuilder(signature, certificateSource, digestAlgorithm);
+		return new CAdESTimestampMessageDigestBuilder(signature, digestAlgorithm);
 	}
 
 	@Override
@@ -231,6 +229,18 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 
 	@Override
 	protected boolean isTimeStampValidationData(CAdESAttribute unsignedAttribute) {
+		// not applicable for CAdES
+		return false;
+	}
+
+	@Override
+	protected boolean isAnyValidationData(CAdESAttribute unsignedAttribute) {
+		// not applicable for CAdES
+		return false;
+	}
+
+	@Override
+	protected boolean isValidationDataReferences(CAdESAttribute unsignedAttribute) {
 		// not applicable for CAdES
 		return false;
 	}
@@ -347,7 +357,7 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 	}
 
 	private List<CRLBinary> getSignedDataCRLBinaries(final List<DEROctetString> crlsHashList,
-																final DigestAlgorithm digestAlgorithm) {
+													 final DigestAlgorithm digestAlgorithm) {
 		List<CRLBinary> crlBinaries = new ArrayList<>();
 
 		OfflineCRLSource signatureCRLSource = signature.getCRLSource();
@@ -401,24 +411,23 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 	 */
 	private boolean isOCSPResponsePresent(OCSPResponseBinary binary, List<DEROctetString> crlsHashList,
 										  DigestAlgorithm digestAlgorithm) {
+		ASN1ObjectIdentifier objectIdentifier = binary.getAsn1ObjectIdentifier();
 		if (OCSPObjectIdentifiers.id_pkix_ocsp_basic.equals(binary.getAsn1ObjectIdentifier())) {
-			return isOCSPDigestValueMatch(binary.getBasicOCSPRespContent(), binary.getAsn1ObjectIdentifier(), crlsHashList, digestAlgorithm);
+			return isOCSPDigestValueMatch(binary.getBasicOCSPRespContent(), objectIdentifier, crlsHashList, digestAlgorithm);
 		} else  {
-			// CMSObjectIdentifiers.id_ri_ocsp_response case
-			return isOCSPDigestValueMatch(binary.getBinaries(), binary.getAsn1ObjectIdentifier(), crlsHashList, digestAlgorithm) ||
-					isOCSPDigestValueMatch(binary.getBasicOCSPRespContent(), binary.getAsn1ObjectIdentifier(), crlsHashList, digestAlgorithm);
+			// OCSPObjectIdentifiers.id_ri_ocsp_response case
+			if (objectIdentifier == null) {
+				objectIdentifier = OCSPObjectIdentifiers.id_pkix_ocsp_response;
+			}
+			return isOCSPDigestValueMatch(binary.getBinaries(), objectIdentifier, crlsHashList, digestAlgorithm) ||
+					isOCSPDigestValueMatch(binary.getBasicOCSPRespContent(), objectIdentifier, crlsHashList, digestAlgorithm);
 		}
 	}
 
 	private boolean isOCSPDigestValueMatch(byte[] binaries, ASN1ObjectIdentifier objectIdentifier,
 										   List<DEROctetString> crlsHashList, DigestAlgorithm digestAlgorithm) {
-		// Compute DERTaggedObject with the same algorithm how it was created
-		// See: org.bouncycastle.cms.CMSUtils getOthersFromStore()
-		OtherRevocationInfoFormat otherRevocationInfoFormat = new OtherRevocationInfoFormat(
-				objectIdentifier, DSSASN1Utils.toASN1Primitive(binaries));
-		// false value specifies an implicit encoding method
-		DERTaggedObject derTaggedObject = new DERTaggedObject(false, 1, otherRevocationInfoFormat);
-		return isDigestValuePresent(DSSUtils.digest(digestAlgorithm, DSSASN1Utils.getDEREncoded(derTaggedObject)), crlsHashList);
+		byte[] encoded = CMSUtils.getSignedDataEncodedOCSPResponse(binaries, objectIdentifier);
+		return isDigestValuePresent(DSSUtils.digest(digestAlgorithm, encoded), crlsHashList);
 	}
 	
 	private List<TimestampedReference> getUnsignedAttributesReferences(final ASN1Sequence unsignedAttrsHashIndex,

@@ -1,26 +1,24 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package eu.europa.esig.dss.spi.validation;
-
-import eu.europa.esig.dss.alert.SilentOnStatusAlert;
 
 /**
  * Builds a copy of CertificateVerifier
@@ -47,7 +45,6 @@ public class CertificateVerifierBuilder {
 	public CertificateVerifier buildCompleteCopy() {
 		CertificateVerifier copy = new CommonCertificateVerifier(true);
 		if (certificateVerifier != null) {
-			copy.setDefaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm());
 			copy.setAIASource(certificateVerifier.getAIASource());
 			copy.setCrlSource(certificateVerifier.getCrlSource());
 			copy.setOcspSource(certificateVerifier.getOcspSource());
@@ -55,8 +52,8 @@ public class CertificateVerifierBuilder {
 			copy.setRevocationFallback(certificateVerifier.isRevocationFallback());
 			copy.setRevocationDataVerifier(certificateVerifier.getRevocationDataVerifier());
 			copy.setTimestampTokenVerifier(certificateVerifier.getTimestampTokenVerifier());
+			copy.setTrustAnchorVerifier(certificateVerifier.getTrustAnchorVerifier());
 			copy.setCheckRevocationForUntrustedChains(certificateVerifier.isCheckRevocationForUntrustedChains());
-			copy.setExtractPOEFromUntrustedChains(certificateVerifier.isExtractPOEFromUntrustedChains());
 			copy.setAdjunctCertSources(certificateVerifier.getAdjunctCertSources());
 			copy.setTrustedCertSources(certificateVerifier.getTrustedCertSources());
 
@@ -66,7 +63,6 @@ public class CertificateVerifierBuilder {
 			copy.setAlertOnNoRevocationAfterBestSignatureTime(certificateVerifier.getAlertOnNoRevocationAfterBestSignatureTime());
 			copy.setAlertOnRevokedCertificate(certificateVerifier.getAlertOnRevokedCertificate());
 			copy.setAlertOnUncoveredPOE(certificateVerifier.getAlertOnUncoveredPOE());
-			copy.setAlertOnExpiredSignature(certificateVerifier.getAlertOnExpiredSignature());
 			copy.setAlertOnExpiredCertificate(certificateVerifier.getAlertOnExpiredCertificate());
 			copy.setAlertOnNotYetValidCertificate(certificateVerifier.getAlertOnNotYetValidCertificate());
 			copy.setAugmentationAlertOnSignatureWithoutCertificates(certificateVerifier.getAugmentationAlertOnSignatureWithoutCertificates());
@@ -84,27 +80,36 @@ public class CertificateVerifierBuilder {
 	public CertificateVerifier buildOfflineAndSilentCopy() {
 		CertificateVerifier offlineCertificateVerifier = new CommonCertificateVerifier(true);
 		if (certificateVerifier != null) {
-			offlineCertificateVerifier.setDefaultDigestAlgorithm(certificateVerifier.getDefaultDigestAlgorithm());
 			offlineCertificateVerifier.setAdjunctCertSources(certificateVerifier.getAdjunctCertSources());
 			offlineCertificateVerifier.setTrustedCertSources(certificateVerifier.getTrustedCertSources());
 			offlineCertificateVerifier.setRevocationDataVerifier(certificateVerifier.getRevocationDataVerifier());
 			offlineCertificateVerifier.setTimestampTokenVerifier(certificateVerifier.getTimestampTokenVerifier());
-			offlineCertificateVerifier.setExtractPOEFromUntrustedChains(certificateVerifier.isExtractPOEFromUntrustedChains());
+			offlineCertificateVerifier.setTrustAnchorVerifier(getTrustAnchorVerifierOfflineCopy(certificateVerifier.getTrustAnchorVerifier()));
 		}
 		// disable alerting
-		offlineCertificateVerifier.setAlertOnInvalidSignature(new SilentOnStatusAlert());
-		offlineCertificateVerifier.setAlertOnInvalidTimestamp(new SilentOnStatusAlert());
-		offlineCertificateVerifier.setAlertOnMissingRevocationData(new SilentOnStatusAlert());
-		offlineCertificateVerifier.setAlertOnNoRevocationAfterBestSignatureTime(new SilentOnStatusAlert());
-		offlineCertificateVerifier.setAlertOnRevokedCertificate(new SilentOnStatusAlert());
-		offlineCertificateVerifier.setAlertOnUncoveredPOE(new SilentOnStatusAlert());
-		offlineCertificateVerifier.setAlertOnExpiredSignature(new SilentOnStatusAlert());
-		offlineCertificateVerifier.setAlertOnExpiredCertificate(new SilentOnStatusAlert());
-		offlineCertificateVerifier.setAlertOnNotYetValidCertificate(new SilentOnStatusAlert());
-		offlineCertificateVerifier.setAugmentationAlertOnSignatureWithoutCertificates(new SilentOnStatusAlert());
-		offlineCertificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new SilentOnStatusAlert());
-		offlineCertificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new SilentOnStatusAlert());
+		offlineCertificateVerifier.setAlertOnInvalidSignature(null);
+		offlineCertificateVerifier.setAlertOnInvalidTimestamp(null);
+		offlineCertificateVerifier.setAlertOnMissingRevocationData(null);
+		offlineCertificateVerifier.setAlertOnNoRevocationAfterBestSignatureTime(null);
+		offlineCertificateVerifier.setAlertOnRevokedCertificate(null);
+		offlineCertificateVerifier.setAlertOnUncoveredPOE(null);
+		offlineCertificateVerifier.setAlertOnExpiredCertificate(null);
+		offlineCertificateVerifier.setAlertOnNotYetValidCertificate(null);
+		offlineCertificateVerifier.setAugmentationAlertOnSignatureWithoutCertificates(null);
+		offlineCertificateVerifier.setAugmentationAlertOnHigherSignatureLevel(null);
+		offlineCertificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(null);
 		return offlineCertificateVerifier;
+	}
+
+	private TrustAnchorVerifier getTrustAnchorVerifierOfflineCopy(TrustAnchorVerifier originalTrustAnchorVerifier) {
+		TrustAnchorVerifier trustAnchorVerifier = TrustAnchorVerifier.createEmptyTrustAnchorVerifier();
+		trustAnchorVerifier.setUseSunsetDate(false); // set to FALSE for offline processing
+		if (originalTrustAnchorVerifier != null) {
+			trustAnchorVerifier.setTrustedCertificateSource(originalTrustAnchorVerifier.getTrustedCertificateSource());
+			trustAnchorVerifier.setAcceptRevocationUntrustedCertificateChains(originalTrustAnchorVerifier.isAcceptRevocationUntrustedCertificateChains());
+			trustAnchorVerifier.setAcceptTimestampUntrustedCertificateChains(originalTrustAnchorVerifier.isAcceptTimestampUntrustedCertificateChains());
+		}
+		return trustAnchorVerifier;
 	}
 
 	/**

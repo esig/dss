@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -24,6 +24,7 @@ import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.EvidenceRecordOrigin;
 import eu.europa.esig.dss.enumerations.EvidenceRecordTypeEnum;
 import eu.europa.esig.dss.model.ContainerInfo;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -429,12 +430,13 @@ public abstract class AbstractASiCContainerAnalyzer extends DefaultDocumentAnaly
 				}
 			}
 
-			final EvidenceRecordAnalyzer evidenceRecordValidator = EvidenceRecordAnalyzerFactory.fromDocument(evidenceRecordDocument);
-			assertEvidenceRecordDocumentExtensionMatch(evidenceRecordDocument, evidenceRecordValidator.getEvidenceRecordType());
-			evidenceRecordValidator.setDetachedContents(detachedContents);
-			evidenceRecordValidator.setManifestFile(manifestFile);
-			evidenceRecordValidator.setCertificateVerifier(certificateVerifier);
-			return evidenceRecordValidator;
+			final EvidenceRecordAnalyzer evidenceRecordAnalyzer = EvidenceRecordAnalyzerFactory.fromDocument(evidenceRecordDocument);
+			assertEvidenceRecordDocumentExtensionMatch(evidenceRecordDocument, evidenceRecordAnalyzer.getEvidenceRecordType());
+			evidenceRecordAnalyzer.setDetachedContents(detachedContents);
+			evidenceRecordAnalyzer.setManifestFile(manifestFile);
+			evidenceRecordAnalyzer.setCertificateVerifier(certificateVerifier);
+			evidenceRecordAnalyzer.setEvidenceRecordOrigin(EvidenceRecordOrigin.CONTAINER);
+			return evidenceRecordAnalyzer;
 
 		} catch (Exception e) {
 			LOG.warn("Unable to load EvidenceRecordValidator for an evidence record document with name '{}' : {}",
@@ -474,7 +476,7 @@ public abstract class AbstractASiCContainerAnalyzer extends DefaultDocumentAnaly
 			// not embedded ER
 			return true;
 		}
-		return coversFile(evidenceRecordManifest, signature.getSignatureFilename());
+		return coversFile(evidenceRecordManifest, signature.getFilename());
 	}
 
 	private boolean coversEvidenceRecord(EvidenceRecord coveredEvidenceRecord, EvidenceRecord coveringEvidenceRecord) {

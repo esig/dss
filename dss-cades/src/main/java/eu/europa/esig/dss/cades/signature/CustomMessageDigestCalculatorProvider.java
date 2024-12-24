@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -61,24 +61,6 @@ public class CustomMessageDigestCalculatorProvider implements DigestCalculatorPr
 		Objects.requireNonNull(messageDigestValue, "Digest value shall be defined!");
 		this.messageDigestAlgo = messageDigestAlgo;
 		this.messageDigestValue = messageDigestValue;
-	}
-
-	/**
-	 * The default constructor to create an object with a message digest provided in a form of base64-encoded String
-	 *
-	 * @param messageDigestAlgo {@link DigestAlgorithm} that has been used to calculate the message-digest value
-	 * @param messageDigestValueBase64 {@link String} base64 encoded message-digest value
-	 * @deprecated since DSS 6.1. Please use instead
-	 * 			{@code new CustomMessageDigestCalculatorProvider(DigestAlgorithm messageDigestAlgo, byte[] messageDigestValue)}
-	 */
-	@Deprecated
-	public CustomMessageDigestCalculatorProvider(DigestAlgorithm messageDigestAlgo, String messageDigestValueBase64) {
-		Objects.requireNonNull(messageDigestValueBase64, "Digest value shall be defined!");
-		if (!Utils.isBase64Encoded(messageDigestValueBase64)) {
-			throw new IllegalArgumentException("Digest value shall be represented by a base64-encoded String!");
-		}
-		this.messageDigestAlgo = messageDigestAlgo;
-		this.messageDigestValue = Utils.fromBase64(messageDigestValueBase64);
 	}
 
 	@Override

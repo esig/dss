@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -52,6 +52,9 @@ public class CertificateValidityRangeCheck<T extends XmlConstraintsConclusion> e
 	/** Defines whether revocation data is required for the certificate */
 	private final boolean revocationDataRequired;
 
+	/** Defines whether the revocation data's issuer is trusted */
+	private final boolean revocationIssuerTrusted;
+
 	/**
 	 * Default constructor
 	 *
@@ -60,17 +63,19 @@ public class CertificateValidityRangeCheck<T extends XmlConstraintsConclusion> e
 	 * @param certificate {@link CertificateWrapper}
 	 * @param usedCertificateRevocation {@link CertificateRevocationWrapper}
 	 * @param revocationDataRequired whether a revocation data is required for the given certificate
+	 * @param revocationIssuerTrusted whether the revocation issuer is trusted, when applicable
 	 * @param currentTime {@link Date} validation time
 	 * @param constraint {@link LevelConstraint}
 	 */
 	public CertificateValidityRangeCheck(I18nProvider i18nProvider, T result, CertificateWrapper certificate,
 										 CertificateRevocationWrapper usedCertificateRevocation, boolean revocationDataRequired,
-										 Date currentTime, LevelConstraint constraint) {
+										 boolean revocationIssuerTrusted, Date currentTime, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.currentTime = currentTime;
 		this.certificate = certificate;
 		this.usedCertificateRevocation = usedCertificateRevocation;
 		this.revocationDataRequired = revocationDataRequired;
+		this.revocationIssuerTrusted = revocationIssuerTrusted;
 	}
 
 	@Override
@@ -79,15 +84,17 @@ public class CertificateValidityRangeCheck<T extends XmlConstraintsConclusion> e
 	}
 
 	private boolean isInValidityRange(CertificateWrapper certificateWrapper) {
-		Date notBefore = certificateWrapper.getNotBefore();
-		Date notAfter = certificateWrapper.getNotAfter();
-		return (notBefore != null && (currentTime.compareTo(notBefore) >= 0)) && (notAfter != null && (currentTime.compareTo(notAfter) <= 0));
+		if (certificateWrapper != null) {
+			Date notBefore = certificateWrapper.getNotBefore();
+			Date notAfter = certificateWrapper.getNotAfter();
+			return (notBefore != null && (currentTime.compareTo(notBefore) >= 0)) && (notAfter != null && (currentTime.compareTo(notAfter) <= 0));
+		}
+		return false;
 	}
 
 	private boolean isRevocationDataValid() {
-		CertificateWrapper revocationDataIssuer = usedCertificateRevocation.getSigningCertificate();
-		return revocationDataIssuer != null && (revocationDataIssuer.isTrusted() ||
-				isInValidityRange(usedCertificateRevocation.getSigningCertificate())); // other checks are performed before
+		// other checks are performed before
+		return revocationIssuerTrusted || isInValidityRange(usedCertificateRevocation.getSigningCertificate());
 	}
 
 	@Override

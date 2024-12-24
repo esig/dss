@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -28,6 +28,7 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DSSMessageDigest;
+import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSMessageDigestCalculator;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -67,6 +68,7 @@ import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signatureTi
 
 /**
  * Builds timestamped data binaries for a CAdES signature
+ *
  */
 public class CAdESTimestampMessageDigestBuilder implements TimestampMessageDigestBuilder {
 
@@ -94,22 +96,41 @@ public class CAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 	private TimestampToken timestampToken;
 
 	/**
-	 * The constructor to compute message-imprint for timestamps related to the {@code signature}
+	 * The constructor to compute message-imprint for timestamps related to the {@code signature},
+	 * to be used on timestamp creation.
 	 *
 	 * @param signature {@link CAdESSignature} to create timestamps for
-	 * @param certificateSource {@link ListCertificateSource} merged certificate source of the signature
 	 * @param digestAlgorithm {@link DigestAlgorithm} to be used for message-imprint digest computation
 	 */
 	public CAdESTimestampMessageDigestBuilder(final CAdESSignature signature,
-											  final ListCertificateSource certificateSource,
 											  final DigestAlgorithm digestAlgorithm) {
-		this(signature, certificateSource);
+		this(signature, signature.getCertificateSource().getSignedDataCertificates());
 		Objects.requireNonNull(digestAlgorithm, "DigestAlgorithm cannot be null!");
 		this.digestAlgorithm = digestAlgorithm;
 	}
 
 	/**
-	 * The constructor to compute message-imprint for timestamps related to the {@code signature}
+	 * The constructor to compute message-imprint for timestamps related to the {@code signature},
+	 * to be used on timestamp creation.
+	 *
+	 * @param signature {@link CAdESSignature} to create timestamps for
+	 * @param certificateSource {@link ListCertificateSource} merged certificate source of the signature
+	 * @param digestAlgorithm {@link DigestAlgorithm} to be used for message-imprint digest computation
+	 * @deprecated since DSS 6.2. Please use instead constructor
+	 * 			   {@code new CAdESTimestampMessageDigestBuilder(CAdESSignature signature, DigestAlgorithm digestAlgorithm}
+	 */
+	@Deprecated
+	public CAdESTimestampMessageDigestBuilder(final CAdESSignature signature,
+											  final ListCertificateSource certificateSource,
+											  final DigestAlgorithm digestAlgorithm) {
+		this(signature, certificateSource.getCertificates());
+		Objects.requireNonNull(digestAlgorithm, "DigestAlgorithm cannot be null!");
+		this.digestAlgorithm = digestAlgorithm;
+	}
+
+	/**
+	 * The constructor to compute message-imprint for timestamps related to the {@code signature}.
+	 * This constructor uses a provides {@code certificateSource} to validate the ats-v3-hash-table
 	 *
 	 * @param signature {@link CAdESSignature} containing timestamps
 	 * @param certificateSource {@link ListCertificateSource} merged certificate source of the signature
@@ -118,7 +139,7 @@ public class CAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 	public CAdESTimestampMessageDigestBuilder(final CAdESSignature signature,
 											  final ListCertificateSource certificateSource,
 											  final TimestampToken timestampToken) {
-		this(signature, certificateSource);
+		this(signature, certificateSource.getCertificates());
 		Objects.requireNonNull(timestampToken, "TimestampToken cannot be null!");
 		this.timestampToken = timestampToken;
 		this.digestAlgorithm = timestampToken.getDigestAlgorithm();
@@ -128,17 +149,16 @@ public class CAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 	 * The default constructor
 	 *
 	 * @param signature {@link CAdESSignature} containing timestamps
-	 * @param certificateSource {@link ListCertificateSource} merged certificate source of the signature
+	 * @param certificates a list of {@link CertificateToken}s to extract info for ats-v3-hash-table
 	 */
 	private CAdESTimestampMessageDigestBuilder(final CAdESSignature signature,
-											   final ListCertificateSource certificateSource) {
+											   final List<CertificateToken> certificates) {
 		Objects.requireNonNull(signature, "Signature cannot be null!");
-		Objects.requireNonNull(certificateSource, "ListCertificateSource cannot be null!");
+		Objects.requireNonNull(certificates, "List of CertificateToken's cannot be null!");
 		this.cmsSignedData = signature.getCmsSignedData();
 		this.signerInformation = signature.getSignerInformation();
 		this.detachedDocuments = signature.getDetachedContents();
-		this.timestampExtractor = new CadesLevelBaselineLTATimestampExtractor(
-				cmsSignedData, certificateSource.getCertificates());
+		this.timestampExtractor = new CadesLevelBaselineLTATimestampExtractor(signature);
 	}
 
 	@Override
@@ -226,7 +246,7 @@ public class CAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 		DSSMessageDigest messageDigest;
 		switch (archiveTimestampType) {
 		case CAdES_V2:
-			/**
+			/*
 			 * There is a difference between message imprint calculation in ETSI TS 101 733 version 1.8.3 and version 2.2.1.
 			 * So we first check the message imprint according to 2.2.1 version and then if it fails get the message imprint
 			 * data for the 1.8.3 version message imprint calculation. 
@@ -287,7 +307,7 @@ public class CAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 	 * (including and not including the tag and length octets of SET OF type) and to test
 	 * the value of the timestamp against both."
 	 * The includeUnsignedAttrsTagAndLength parameter decides whether the tag and length octets are included.
-	 * 
+	 * <p>
 	 * According to RFC 5652 it is possible to use DER or BER encoding for SignedData structure.
 	 * The exception is the signed attributes attribute and authenticated attributes which
 	 * have to be DER encoded. 
@@ -454,7 +474,7 @@ public class CAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 	/**
 	 * Copied from org.bouncycastle.asn1.cms.SignerInfo#toASN1Object() and
 	 * adapted to be able to use the custom unauthenticatedAttributes
-	 * 
+	 * <p>
 	 * There is a difference in ETSI TS 101 733 version 1.8.3 and version 2.2.1 in archive-timestamp-v2 hash calculation.
 	 * In the 1.8.3 version the calculation did not include the tag and the length octets of the unsigned attributes set.
 	 * The hash calculation is described in Annex K in both versions of ETSI TS 101 733.

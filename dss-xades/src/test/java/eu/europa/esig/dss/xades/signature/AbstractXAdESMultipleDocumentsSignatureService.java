@@ -1,25 +1,26 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package eu.europa.esig.dss.xades.signature;
 
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MimeType;
@@ -60,6 +61,7 @@ public abstract class AbstractXAdESMultipleDocumentsSignatureService extends Abs
 		return SignatureLevel.XAdES_BASELINE_LTA.equals(signatureLevel) || SignatureLevel.XAdES_A.equals(signatureLevel);
 	}
 
+	@Override
 	protected boolean documentPresent(DSSDocument original, List<DSSDocument> retrievedDocuments) {
 		boolean found = false;
 		boolean toBeCanonicalized = MimeTypeEnum.XML.equals(original.getMimeType()) || MimeTypeEnum.HTML.equals(original.getMimeType());
@@ -89,6 +91,32 @@ public abstract class AbstractXAdESMultipleDocumentsSignatureService extends Abs
 		}
 		// LOG.info("Bytes : {}", new String(byteArray));
 		return Utils.toBase64(DSSUtils.digest(DigestAlgorithm.SHA256, byteArray));
+	}
+
+	@Override
+	protected void checkCertificateValuesEncapsulation(DiagnosticData diagnosticData) {
+		SignatureLevel signatureFormat = getSignatureParameters().getSignatureLevel();
+		if (getSignatureParameters().isEn319132() &&
+				(SignatureLevel.XAdES_BASELINE_B == signatureFormat ||
+						SignatureLevel.XAdES_BASELINE_T == signatureFormat ||
+						SignatureLevel.XAdES_BASELINE_LT == signatureFormat ||
+						SignatureLevel.XAdES_BASELINE_LTA == signatureFormat)) {
+			super.checkCertificateValuesEncapsulation(diagnosticData);
+		}
+		// skip for not BASELINE profiles
+	}
+
+	@Override
+	protected void checkRevocationDataEncapsulation(DiagnosticData diagnosticData) {
+		SignatureLevel signatureFormat = getSignatureParameters().getSignatureLevel();
+		if (getSignatureParameters().isEn319132() &&
+				(SignatureLevel.XAdES_BASELINE_B == signatureFormat ||
+						SignatureLevel.XAdES_BASELINE_T == signatureFormat ||
+						SignatureLevel.XAdES_BASELINE_LT == signatureFormat ||
+						SignatureLevel.XAdES_BASELINE_LTA == signatureFormat)) {
+			super.checkRevocationDataEncapsulation(diagnosticData);
+		}
+		// skip for not BASELINE profiles
 	}
 
 	@Override

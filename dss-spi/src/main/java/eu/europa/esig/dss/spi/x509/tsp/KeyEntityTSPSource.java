@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -22,7 +22,6 @@ package eu.europa.esig.dss.spi.x509.tsp;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.enumerations.MaskGenerationFunction;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.TimestampBinary;
@@ -354,23 +353,6 @@ public class KeyEntityTSPSource implements TSPSource {
      */
     public void setEncryptionAlgorithm(EncryptionAlgorithm encryptionAlgorithm) {
         this.encryptionAlgorithm = encryptionAlgorithm;
-    }
-
-    /**
-     * Sets the mask generation function to be applied on a time-stamp signing.
-     * NOTE: the mask generation function should be compatible with the given encryption algorithm!
-     *
-     * @param maskGenerationFunction {@link MaskGenerationFunction}
-     * @deprecated since DSS 6.1. Please use {@code setEncryptionAlgorithm} method
-     *             to specify RSA (none MGF) or RSASSA-PSS (MGF1) algorithm
-     */
-    @Deprecated
-    public void setMaskGenerationFunction(MaskGenerationFunction maskGenerationFunction) {
-        if (EncryptionAlgorithm.RSASSA_PSS == encryptionAlgorithm && maskGenerationFunction == null) {
-            setEncryptionAlgorithm(EncryptionAlgorithm.RSA);
-        } else if (EncryptionAlgorithm.RSA == encryptionAlgorithm && MaskGenerationFunction.MGF1 == maskGenerationFunction) {
-            setEncryptionAlgorithm(EncryptionAlgorithm.RSASSA_PSS);
-        }
     }
 
     @Override

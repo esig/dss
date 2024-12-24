@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -170,6 +170,17 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 	}
 
 	@Override
+	protected boolean isAnyValidationData(JAdESAttribute unsignedAttribute) {
+		return JAdESHeaderParameterNames.ANY_VAL_DATA.equals(unsignedAttribute.getHeaderName());
+	}
+
+	@Override
+	protected boolean isValidationDataReferences(JAdESAttribute unsignedAttribute) {
+		// not supported
+		return false;
+	}
+
+	@Override
 	protected boolean isCounterSignature(JAdESAttribute unsignedAttribute) {
 		return JAdESHeaderParameterNames.C_SIG.equals(unsignedAttribute.getHeaderName());
 	}
@@ -270,6 +281,11 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 			if (Utils.isMapNotEmpty(tstVd)) {
 				xVals = DSSJsonUtils.getAsList(tstVd, JAdESHeaderParameterNames.X_VALS);
 			}
+		} else if (isAnyValidationData(unsignedAttribute)) {
+			Map<?, ?> anyVD = DSSJsonUtils.toMap(unsignedAttribute.getValue(), JAdESHeaderParameterNames.ANY_VAL_DATA);
+			if (Utils.isMapNotEmpty(anyVD)) {
+				xVals = DSSJsonUtils.getAsList(anyVD, JAdESHeaderParameterNames.X_VALS);
+			}
 		} else {
 			xVals = DSSJsonUtils.toList(unsignedAttribute.getValue(), JAdESHeaderParameterNames.X_VALS);
 		}
@@ -315,9 +331,14 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 	protected List<CRLBinary> getEncapsulatedCRLIdentifiers(JAdESAttribute unsignedAttribute) {
 		Map<?, ?> rVals = null;
 		if (isTimeStampValidationData(unsignedAttribute)) {
-			Map<?, ?> tstVd = DSSJsonUtils.toMap(unsignedAttribute.getValue(), JAdESHeaderParameterNames.R_VALS);
+			Map<?, ?> tstVd = DSSJsonUtils.toMap(unsignedAttribute.getValue(), JAdESHeaderParameterNames.TST_VD);
 			if (Utils.isMapNotEmpty(tstVd)) {
 				rVals = DSSJsonUtils.getAsMap(tstVd, JAdESHeaderParameterNames.R_VALS);
+			}
+		} else if (isAnyValidationData(unsignedAttribute)) {
+			Map<?, ?> anyVD = DSSJsonUtils.toMap(unsignedAttribute.getValue(), JAdESHeaderParameterNames.ANY_VAL_DATA);
+			if (Utils.isMapNotEmpty(anyVD)) {
+				rVals = DSSJsonUtils.getAsMap(anyVD, JAdESHeaderParameterNames.R_VALS);
 			}
 		} else {
 			rVals = DSSJsonUtils.toMap(unsignedAttribute.getValue(), JAdESHeaderParameterNames.R_VALS);
@@ -361,9 +382,14 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 	protected List<OCSPResponseBinary> getEncapsulatedOCSPIdentifiers(JAdESAttribute unsignedAttribute) {
 		Map<?, ?> rVals = null;
 		if (isTimeStampValidationData(unsignedAttribute)) {
-			Map<?, ?> tstVd = DSSJsonUtils.toMap(unsignedAttribute.getValue(), JAdESHeaderParameterNames.R_VALS);
+			Map<?, ?> tstVd = DSSJsonUtils.toMap(unsignedAttribute.getValue(), JAdESHeaderParameterNames.TST_VD);
 			if (Utils.isMapNotEmpty(tstVd)) {
 				rVals = DSSJsonUtils.getAsMap(tstVd, JAdESHeaderParameterNames.R_VALS);
+			}
+		} else if (isAnyValidationData(unsignedAttribute)) {
+			Map<?, ?> anyVD = DSSJsonUtils.toMap(unsignedAttribute.getValue(), JAdESHeaderParameterNames.ANY_VAL_DATA);
+			if (Utils.isMapNotEmpty(anyVD)) {
+				rVals = DSSJsonUtils.getAsMap(anyVD, JAdESHeaderParameterNames.R_VALS);
 			}
 		} else {
 			rVals = DSSJsonUtils.toMap(unsignedAttribute.getValue(), JAdESHeaderParameterNames.R_VALS);

@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -42,9 +42,10 @@ import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxDefaultObjectFactory;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxNativeObjectFactory;
-import eu.europa.esig.dss.pdf.pdfbox.PdfBoxUtils;
+import eu.europa.esig.dss.pdf.pdfbox.PdfBoxScreenshotBuilder;
 import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxNativeFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -138,10 +139,10 @@ class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualComparator {
 
 		DSSDocument previewNative = getService().previewPageWithVisualSignature(getDocumentToSign(), getSignatureParameters());
 		DSSDocument signatureFieldNative = getService().previewSignatureField(getDocumentToSign(), getSignatureParameters());
-
-		assertTrue(areImagesVisuallyEqual(previewNative, PdfBoxUtils.generateScreenshot(getDocumentToSign(), 1)));
+		
+		assertTrue(areImagesVisuallyEqual(previewNative, PdfBoxScreenshotBuilder.fromDocument(getDocumentToSign()).generateScreenshot(1)));
 		assertFalse(areImagesVisuallyEqual(previewNative, signatureFieldNative));
-		assertTrue(areImagesVisuallyEqual(previewNative, PdfBoxUtils.generateScreenshot(nativeDrawerPdf, 1)));
+		assertTrue(areImagesVisuallyEqual(previewNative, PdfBoxScreenshotBuilder.fromDocument(nativeDrawerPdf).generateScreenshot(1)));
 	}
 	
 	@Test
@@ -588,7 +589,7 @@ class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualComparator {
 		textParameters.setBackgroundColor(Color.YELLOW);
 		textParameters.setSignerTextHorizontalAlignment(SignerTextHorizontalAlignment.CENTER);
 		
-		textParameters.setFont(new PdfBoxNativeFont(PDType1Font.HELVETICA));
+		textParameters.setFont(new PdfBoxNativeFont(new PDType1Font(Standard14Fonts.FontName.HELVETICA)));
 		
 		signatureImageParameters.setTextParameters(textParameters);
 		signatureParameters.setImageParameters(signatureImageParameters);

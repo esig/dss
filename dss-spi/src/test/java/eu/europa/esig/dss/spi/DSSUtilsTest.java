@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -48,7 +48,6 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
 import java.security.Security;
 import java.security.Signature;
@@ -389,12 +388,14 @@ class DSSUtilsTest {
 		assertEquals("ხელმოწერა", DSSUtils.removeControlCharacters("ხელმოწერა"));
 		assertEquals("", DSSUtils.removeControlCharacters("\n"));
 		assertEquals("", DSSUtils.removeControlCharacters("\r\n"));
+		assertEquals("\uFFFF", DSSUtils.removeControlCharacters("\uFFFF"));
 		assertEquals("http://xadessrv.plugtests.net/capso/ocsp?ca=RotCAOK", DSSUtils.removeControlCharacters(
 				new String(Utils.fromBase64("aHR0cDovL3hhZGVzc3J2LnBsdWd0ZXN0cy5uZXQvY2Fwc28vb2NzcD9jYT1SAG90Q0FPSw=="))));
 	}
 
 	@Test
 	void replaceAllNonAlphanumericCharactersTest() {
+		assertNull(DSSUtils.replaceAllNonAlphanumericCharacters(null, "-"));
 		assertEquals("-", DSSUtils.replaceAllNonAlphanumericCharacters(" ", "-"));
 		assertEquals("Nowina-Solutions", DSSUtils.replaceAllNonAlphanumericCharacters("Nowina Solutions", "-"));
 		assertEquals("Новина", DSSUtils.replaceAllNonAlphanumericCharacters("Новина", "?"));
@@ -403,11 +404,27 @@ class DSSUtilsTest {
 		assertEquals("?", DSSUtils.replaceAllNonAlphanumericCharacters("\n", "?"));
 		assertEquals("?", DSSUtils.replaceAllNonAlphanumericCharacters("\r\n", "?"));
 		assertEquals("?", DSSUtils.replaceAllNonAlphanumericCharacters("---____   ??? !!!!", "?"));
-		assertNull(DSSUtils.replaceAllNonAlphanumericCharacters(null, "-"));
+		assertEquals("?", DSSUtils.replaceAllNonAlphanumericCharacters("\uFFFF", "?"));
 	}
 
 	@Test
-	void loadEdDSACert() throws NoSuchAlgorithmException, IOException {
+	void replaceInvalidXmlCharactersTest() {
+		assertNull(DSSUtils.replaceInvalidXmlCharacters(null, "-"));
+		assertEquals(" ", DSSUtils.replaceInvalidXmlCharacters(" ", "-"));
+		assertEquals("Nowina Solutions", DSSUtils.replaceInvalidXmlCharacters("Nowina Solutions", "-"));
+		assertEquals("Новина", DSSUtils.replaceInvalidXmlCharacters("Новина", "?"));
+		assertEquals("πτλς", DSSUtils.replaceInvalidXmlCharacters("πτλς", "?"));
+		assertEquals("ხელმოწერა", DSSUtils.replaceInvalidXmlCharacters("ხელმოწერა", "?"));
+		assertEquals("\n", DSSUtils.replaceInvalidXmlCharacters("\n", "?"));
+		assertEquals("\r\n", DSSUtils.replaceInvalidXmlCharacters("\r\n", "?"));
+		assertEquals("---____   ??? !!!!", DSSUtils.replaceInvalidXmlCharacters("---____   ??? !!!!", "?"));
+		assertEquals("?", DSSUtils.replaceInvalidXmlCharacters("\uFFFF", "?"));
+		assertEquals("http://xadessrv.plugtests.net/capso/ocsp?ca=R?otCAOK", DSSUtils.replaceInvalidXmlCharacters(
+				new String(Utils.fromBase64("aHR0cDovL3hhZGVzc3J2LnBsdWd0ZXN0cy5uZXQvY2Fwc28vb2NzcD9jYT1SAG90Q0FPSw==")), "?"));
+	}
+
+	@Test
+	void loadEdDSACert() throws IOException {
 
 		// RFC 8410
 
@@ -556,7 +573,7 @@ class DSSUtilsTest {
 				SignatureAlgorithm.getAlgorithm(EncryptionAlgorithm.PLAIN_ECDSA, DigestAlgorithm.SHA256));
 	}
 
-	private void assertECSignatureValid(byte[] originalBinaries, SignatureAlgorithm currentAlgorithm) throws Exception {
+	private void assertECSignatureValid(byte[] originalBinaries, SignatureAlgorithm currentAlgorithm) {
 		SignatureValue signatureValue = new SignatureValue();
 		signatureValue.setAlgorithm(currentAlgorithm);
 		signatureValue.setValue(originalBinaries);

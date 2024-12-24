@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -207,20 +207,24 @@ public abstract class AbstractXAdESRequirementChecks extends AbstractXAdESTestSi
 
 	/**
 	 * CertificateValues shall be present in LT/LTA
+	 *
+	 * @return whether the CertificateValues element is present
 	 */
-	protected void checkCertificateValuesPresent() throws XPathExpressionException {
+	protected boolean checkCertificateValuesPresent() throws XPathExpressionException {
 		XPathExpression exp = xpath.compile("//xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades:CertificateValues");
 		Node node = (Node) exp.evaluate(document, XPathConstants.NODE);
-		assertNotNull(node);
+		return node != null;
 	}
 
 	/**
 	 * RevocationValues shall be present in LT/LTA
+	 *
+	 * @return whether the RevocationValues element is present
 	 */
-	protected void checkRevocationValuesPresent() throws XPathExpressionException {
+	protected boolean checkRevocationValuesPresent() throws XPathExpressionException {
 		XPathExpression exp = xpath.compile("//xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades:RevocationValues");
 		Node node = (Node) exp.evaluate(document, XPathConstants.NODE);
-		assertNotNull(node);
+		return node != null;
 	}
 
 	/**
@@ -230,6 +234,28 @@ public abstract class AbstractXAdESRequirementChecks extends AbstractXAdESTestSi
 		XPathExpression exp = xpath.compile("//xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades141:ArchiveTimeStamp");
 		Node node = (Node) exp.evaluate(document, XPathConstants.NODE);
 		assertNotNull(node);
+	}
+
+	/**
+	 * TimeStampValidationData may be present in LT/LTA
+	 *
+	 * @return whether the TimeStampValidationData element is present
+	 */
+	protected boolean checkTimeStampValidationDataPresent() throws XPathExpressionException {
+		XPathExpression exp = xpath.compile("//xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades141:TimeStampValidationData");
+		Node node = (Node) exp.evaluate(document, XPathConstants.NODE);
+		return node != null;
+	}
+
+	/**
+	 * AnyValidationData may be present in LT/LTA
+	 *
+	 * @return whether the AnyValidationData element is present
+	 */
+	protected boolean checkAnyValidationDataPresent() throws XPathExpressionException {
+		XPathExpression exp = xpath.compile("//xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades141:AnyValidationData");
+		Node node = (Node) exp.evaluate(document, XPathConstants.NODE);
+		return node != null;
 	}
 
 	/**

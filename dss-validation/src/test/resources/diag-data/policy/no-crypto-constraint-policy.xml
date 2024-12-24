@@ -56,10 +56,12 @@
 				<Recognition Level="FAIL" />
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
+				<SunsetDate Level="FAIL" />
 				<AuthorityInfoAccessPresent Level="WARN" />
 				<RevocationDataSkip Level="INFORM">
 					<CertificateExtensions>
 						<Id>0.4.0.194121.2.1</Id> <!-- valassured-ST-certs -->
+						<Id>2.5.29.56</Id> <!-- noRevAvail -->
 					</CertificateExtensions>
 				</RevocationDataSkip>
 				<RevocationInfoAccessPresent Level="WARN" />
@@ -71,6 +73,7 @@
 				</KeyUsage>
 				<PolicyTree Level="WARN" />
 				<NameConstraints Level="WARN" />
+				<NoRevAvail Level="WARN" />
 				<ForbiddenExtensions Level="FAIL">
 					<Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
 				</ForbiddenExtensions>
@@ -89,6 +92,7 @@
 			<CACertificate>
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
+				<SunsetDate Level="FAIL" />
 				<RevocationDataAvailable Level="FAIL" />
 				<CRLNextUpdatePresent Level="WARN" />
 				<RevocationFreshness Level="IGNORE" Unit="SECONDS" Value="0"/>
@@ -147,10 +151,12 @@
 				<Recognition Level="FAIL" />
 				<Signature Level="FAIL" />
 				<NotExpired Level="FAIL" />
+				<SunsetDate Level="FAIL" />
 				<AuthorityInfoAccessPresent Level="WARN" />
 				<RevocationDataSkip Level="INFORM">
 					<CertificateExtensions>
 						<Id>0.4.0.194121.2.1</Id> <!-- valassured-ST-certs -->
+						<Id>2.5.29.56</Id> <!-- noRevAvail -->
 					</CertificateExtensions>
 				</RevocationDataSkip>
 				<RevocationInfoAccessPresent Level="WARN" />
@@ -162,6 +168,7 @@
 				</KeyUsage>
 				<PolicyTree Level="WARN" />
 				<NameConstraints Level="WARN" />
+				<NoRevAvail Level="WARN" />
 				<ForbiddenExtensions Level="FAIL">
 					<Id>1.3.6.1.5.5.7.48.1.5</Id> <!-- ocsp_noCheck -->
 				</ForbiddenExtensions>
@@ -300,6 +307,9 @@
 		<TLFreshness Level="WARN" Unit="HOURS" Value="6" />
 		<TLNotExpired Level="WARN" />
 		<TLWellSigned Level="WARN" />
-		<TLVersion Level="FAIL" value="5" />
+		<TLVersion Level="FAIL">
+			<Id>5</Id>
+			<Id>6</Id>
+		</TLVersion>
 	</eIDAS>
 </ConstraintsParameters>

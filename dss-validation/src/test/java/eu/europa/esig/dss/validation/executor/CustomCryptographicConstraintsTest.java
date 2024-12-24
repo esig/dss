@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -848,8 +848,16 @@ class CustomCryptographicConstraintsTest extends AbstractCryptographicConstraint
 		acceptableEncryptionAlgos.getAlgos().add(createAlgo("RSA"));
 
 		simpleReport = createSimpleReport();
+		assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+		// too big
+		miniPublicKeySize.getAlgos().add(createAlgo("RSA", 4000));
+
+		simpleReport = createSimpleReport();
 		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 
+		miniPublicKeySize.getAlgos().clear();
+		miniPublicKeySize.getAlgos().add(createAlgo("DSA", 1024));
 		miniPublicKeySize.getAlgos().add(createAlgo("RSA", 1024));
 
 		simpleReport = createSimpleReport();
@@ -941,12 +949,10 @@ class CustomCryptographicConstraintsTest extends AbstractCryptographicConstraint
 		checkTimestampErrorPresence(detailedReport, MessageTag.ASCCM_DAA_ANS, false);
 
 		result = defaultConstraintAcceptableEncryptionAlgorithmIsNotDefined(ALGORITHM_RSASSA_PSS, 0);
-		assertEquals(Indication.TOTAL_PASSED, result); // TODO : temp processing in 6.1 (accepts RSA)
+		assertEquals(Indication.INDETERMINATE, result);
 
 		result = defaultConstraintSetLevelForPreviousValidationPolicy(Level.WARN);
 		assertEquals(Indication.TOTAL_PASSED, result);
-		// TODO : temp handling (see above)
-		// checkWarningMessagePresence(i18nProvider.getMessage(MessageTag.ASCCM_EAA_ANS, EncryptionAlgorithm.RSASSA_PSS.getName(), MessageTag.ACCM_POS_SIG_SIG));
 
 		result = defaultConstraintAcceptableEncryptionAlgorithmIsNotDefined(ALGORITHM_DSA, 0); // some other algorithm is not defined
 		assertEquals(Indication.TOTAL_PASSED, result);

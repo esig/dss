@@ -352,6 +352,7 @@
 		<xs:complexContent>
 			<xs:extension base="ConstraintsConclusionWithControlTime">
 				<xs:sequence>
+					<xs:element name="TrustAnchor" type="xs:string" minOccurs="0" />
 					<xs:element name="CRS" type="CRS" minOccurs="0" maxOccurs="unbounded" />
 				</xs:sequence>
 			</xs:extension>
@@ -414,8 +415,10 @@
 			<xs:enumeration value="CRS" />
 			<xs:enumeration value="PSV_CRS" />
 			<xs:enumeration value="RAC" />
+			<xs:enumeration value="RAC_SUB_XCV" />
 			<xs:enumeration value="RFC" />
 			<xs:enumeration value="SUB_XCV" />
+			<xs:enumeration value="SUB_XCV_TA" />
 			<xs:enumeration value="REV_CC" />
 			<xs:enumeration value="ER" />
 			<xs:enumeration value="PSV" />
@@ -424,6 +427,7 @@
 			<xs:enumeration value="TST_PSV" />
 			<xs:enumeration value="TST" />
 			<xs:enumeration value="LTV" />
+			<xs:enumeration value="LTV_SUB_XCV" />
 			<xs:enumeration value="LTA" />
 			<xs:enumeration value="ER" />
 		</xs:restriction>
@@ -459,6 +463,7 @@
 			<xs:enumeration value="OUT_OF_BOUNDS_NOT_REVOKED" />
 			<xs:enumeration value="REVOCATION_OUT_OF_BOUNDS_NO_POE" />
 			<xs:enumeration value="NO_CERTIFICATE_CHAIN_FOUND" />
+			<xs:enumeration value="NO_CERTIFICATE_CHAIN_FOUND_NO_POE" />
 			<xs:enumeration value="TRY_LATER" />
 			<xs:enumeration value="REVOKED_NO_POE" />
 			<xs:enumeration value="REVOKED_CA_NO_POE" />

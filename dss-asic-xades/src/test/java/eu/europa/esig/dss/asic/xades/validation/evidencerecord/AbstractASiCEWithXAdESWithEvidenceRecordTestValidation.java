@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -21,6 +21,9 @@
 package eu.europa.esig.dss.asic.xades.validation.evidencerecord;
 
 import eu.europa.esig.dss.asic.xades.validation.AbstractASiCWithXAdESTestValidation;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.EvidenceRecordTimestampType;
@@ -67,6 +70,9 @@ public abstract class AbstractASiCEWithXAdESWithEvidenceRecordTestValidation ext
             for (ReferenceValidation referenceValidation : referenceValidationList) {
                 assertTrue(referenceValidation.isFound());
                 assertTrue(referenceValidation.isIntact());
+                if (referenceValidation.isFound()) {
+                    assertNotNull(referenceValidation.getDocumentName());
+                }
             }
 
             int tstCounter = 0;
@@ -109,6 +115,23 @@ public abstract class AbstractASiCEWithXAdESWithEvidenceRecordTestValidation ext
         }
     }
 
+    @Override
+    protected void checkEvidenceRecordDigestMatchers(DiagnosticData diagnosticData) {
+        super.checkEvidenceRecordDigestMatchers(diagnosticData);
+
+        for (EvidenceRecordWrapper evidenceRecord : diagnosticData.getEvidenceRecords()) {
+            assertTrue(Utils.isCollectionNotEmpty(evidenceRecord.getDigestMatchers()));
+            for (XmlDigestMatcher digestMatcher : evidenceRecord.getDigestMatchers()) {
+                assertTrue(digestMatcher.isDataFound());
+                assertTrue(digestMatcher.isDataIntact());
+                if (digestMatcher.isDataFound()) {
+                    assertNotNull(digestMatcher.getDocumentName());
+                }
+            }
+        }
+    }
+
+    @Override
     protected void verifySimpleReport(SimpleReport simpleReport) {
         super.verifySimpleReport(simpleReport);
 
@@ -208,7 +231,6 @@ public abstract class AbstractASiCEWithXAdESWithEvidenceRecordTestValidation ext
                 assertEquals(1, cryptoInformation.getValidationObjectId().getVOReference().size());
                 assertNotNull(DigestAlgorithm.forXML(cryptoInformation.getAlgorithm()));
                 assertTrue(cryptoInformation.isSecureAlgorithm());
-                assertNotNull(cryptoInformation.getNotAfter());
 
                 ValidationObjectRepresentationType validationObjectRepresentation = validationObjectType.getValidationObjectRepresentation();
                 assertNotNull(validationObjectRepresentation);

@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -57,14 +57,16 @@ import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.sav.SignatureAcceptanceValidation;
-import eu.europa.esig.dss.validation.process.bbb.sav.cc.DigestMatcherListCryptographicChainBuilder;
 import eu.europa.esig.dss.validation.process.bbb.sav.cc.CertificateChainCryptographicCheck;
-import eu.europa.esig.dss.validation.process.bbb.sav.cc.TokenCertificateChainCryptographicChecker;
+import eu.europa.esig.dss.validation.process.bbb.sav.cc.DigestMatcherListCryptographicChainBuilder;
 import eu.europa.esig.dss.validation.process.bbb.sav.cc.TokenCertificateChainCryptographicCheck;
+import eu.europa.esig.dss.validation.process.bbb.sav.cc.TokenCertificateChainCryptographicChecker;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheckWithId;
+import eu.europa.esig.dss.validation.process.bbb.sav.checks.LTALevelTimeStampCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SignatureAcceptanceValidationResultCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SigningCertificateDigestAlgorithmCheck;
+import eu.europa.esig.dss.validation.process.bbb.sav.checks.TLevelTimeStampCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.crs.CertificateRevocationSelector;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.RevocationFreshnessChecker;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.RevocationDataAvailableCheck;
@@ -193,12 +195,11 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		certificateRevocationMap = new LinkedHashMap<>();
 		
 		for (CertificateWrapper certificateWrapper : currentSignature.getCertificateChain()) {
-			if (certificateWrapper.isTrusted()) {
-				break;
-			}
-
 			SubContext subContext = currentSignature.getSigningCertificate().getId().equals(certificateWrapper.getId()) ?
 					SubContext.SIGNING_CERT : SubContext.CA_CERTIFICATE;
+			if (isTrustAnchor(certificateWrapper, bestSignatureTime.getTime(), currentContext, subContext)) {
+				break;
+			}
 
 			RevocationDataRequiredCheck<XmlValidationProcessLongTermData> revocationDataRequired =
 					revocationDataRequired(certificateWrapper, currentContext, subContext);
@@ -254,6 +255,15 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 					 *
 					 * If PASSED is returned and if the returned generation time is before best-signature-time,
 					 * the process shall set best-signature-time to this date and shall try the next token.
+					 *
+					 * In all other cases:
+					 *
+					 * - If no specific constraints mandating the validity of the attribute are specified in the validation
+					 *   constraints, the process shall remove the time-stamp token from the set of signature time-stamp
+					 *   tokens and shall try the next token.
+					 *
+					 * - Otherwise, the process shall return the indication/sub-indication and associated explanations
+					 *   returned from the Time-stamp token validation process.
 					 */
 					XmlValidationProcessBasicTimestamp timestampValidationProcess = getTimestampValidationProcess(timestampWrapper.getId());
 					if (timestampValidationProcess != null) {
@@ -274,6 +284,15 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 				}
 
 			}
+
+		}
+
+		// If no LTA material, perform *-level timestamp validation
+		if (!ValidationProcessUtils.isLongTermAvailabilityAndIntegrityMaterialPresent(currentSignature)) {
+
+			item = item.setNextItem(tLevelTimeStamp(currentContext));
+
+			item = item.setNextItem(ltaLevelTimeStamp(currentContext));
 
 		}
 
@@ -325,7 +344,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 
 				if (!Indication.PASSED.equals(bsConclusion.getIndication())) {
 
-					item = item.setNextItem(certificateKnownToBeNotRevoked(bsConclusion));
+					item = item.setNextItem(certificateKnownToBeNotRevoked(bsConclusion, bestSignatureTime.getTime()));
 
 					return;
 				}
@@ -483,7 +502,8 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	private RevocationDataRequiredCheck<XmlValidationProcessLongTermData> revocationDataRequired(CertificateWrapper certificate,
 																								 Context context, SubContext subContext) {
 		CertificateValuesConstraint constraint = policy.getRevocationDataSkipConstraint(context, subContext);
-		return new RevocationDataRequiredCheck<>(i18nProvider, result, certificate, constraint);
+		LevelConstraint sunsetDateConstraint = policy.getCertificateSunsetDateConstraint(context, subContext);
+		return new RevocationDataRequiredCheck<>(i18nProvider, result, certificate, currentDate, sunsetDateConstraint, constraint);
 	}
 
 	private ChainItem<XmlValidationProcessLongTermData> revocationDataPresent(
@@ -505,7 +525,26 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	private ChainItem<XmlValidationProcessLongTermData> timestampBasicSignatureValidation(
 			TimestampWrapper timestampWrapper, XmlValidationProcessBasicTimestamp timestampValidationResult) {
 		return new BasicTimestampValidationWithIdCheck<>(i18nProvider, result, timestampWrapper,
-				timestampValidationResult, getWarnLevelConstraint());
+				timestampValidationResult, getTimestampBasicValidationConstraintLevel());
+	}
+
+	private ChainItem<XmlValidationProcessLongTermData> tLevelTimeStamp(Context context) {
+		LevelConstraint constraint = policy.getTLevelTimeStampConstraint(context);
+		return new TLevelTimeStampCheck<>(i18nProvider, result, currentSignature, bbbs, xmlTimestamps, constraint);
+	}
+
+	private ChainItem<XmlValidationProcessLongTermData> ltaLevelTimeStamp(Context context) {
+		LevelConstraint constraint = policy.getLTALevelTimeStampConstraint(context);
+		return new LTALevelTimeStampCheck<>(i18nProvider, result, currentSignature, bbbs, xmlTimestamps, constraint);
+	}
+
+	private LevelConstraint getTimestampBasicValidationConstraintLevel() {
+		LevelConstraint constraint = policy.getTimestampValidConstraint();
+		// continue if LTA is present
+		if (constraint == null || ValidationProcessUtils.isLongTermAvailabilityAndIntegrityMaterialPresent(currentSignature)) {
+			constraint = getWarnLevelConstraint();
+		}
+		return constraint;
 	}
 	
 	private ChainItem<XmlValidationProcessLongTermData> revocationIsFresh(ChainItem<XmlValidationProcessLongTermData> item, 
@@ -590,11 +629,14 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 				bestSignatureTime, signingCertificate, getFailLevelConstraint());
 	}
 
-	private ChainItem<XmlValidationProcessLongTermData> certificateKnownToBeNotRevoked(XmlConclusion conclusion) {
+	private ChainItem<XmlValidationProcessLongTermData> certificateKnownToBeNotRevoked(XmlConclusion conclusion, Date bestSignatureTime) {
 		CertificateWrapper signingCertificate = currentSignature.getSigningCertificate();
 		CertificateRevocationWrapper revocationWrapper = certificateRevocationMap.get(signingCertificate);
+		LevelConstraint sunsetDateConstraint = policy.getCertificateSunsetDateConstraint(Context.REVOCATION, SubContext.SIGNING_CERT);
+		boolean isRevocationIssuerTrusted = revocationWrapper != null && revocationWrapper.getSigningCertificate() != null &&
+				ValidationProcessUtils.isTrustAnchor(revocationWrapper.getSigningCertificate(), bestSignatureTime, sunsetDateConstraint);
 		return new CertificateKnownToBeNotRevokedCheck<>(i18nProvider, result, signingCertificate, revocationWrapper,
-				currentDate, conclusion, getFailLevelConstraint());
+				isRevocationIssuerTrusted, currentDate, conclusion, getFailLevelConstraint());
 	}
 
 	private ChainItem<XmlValidationProcessLongTermData> bestSignatureTimeBeforeCertificateExpiration(Date bestSignatureTime) {
@@ -643,7 +685,8 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	}
 	
 	private ChainItem<XmlValidationProcessLongTermData> signatureIsAcceptable(Date bestSignatureTime, Context context) {
-		SignatureAcceptanceValidation sav = new SignatureAcceptanceValidation(i18nProvider, diagnosticData, bestSignatureTime, currentSignature, context, policy);
+		SignatureAcceptanceValidation sav = new SignatureAcceptanceValidation(
+				i18nProvider, diagnosticData, bestSignatureTime, currentSignature, context, bbbs, policy);
 		return new SignatureAcceptanceValidationResultCheck<>(i18nProvider, result, sav.execute(), getFailLevelConstraint());
 	}
 	
@@ -657,7 +700,8 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	 */
 	private ChainItem<XmlValidationProcessLongTermData> certificateChainReliableAtTime(
 			ChainItem<XmlValidationProcessLongTermData> item, TokenProxy token, Date validationTime, Context context) {
-		if (token.getSigningCertificate() == null || token.getSigningCertificate().isTrusted() || Utils.isCollectionEmpty(token.getCertificateChain())) {
+		if (token.getSigningCertificate() == null || isTrustAnchor(token.getSigningCertificate(), validationTime, context, SubContext.SIGNING_CERT)
+				|| Utils.isCollectionEmpty(token.getCertificateChain())) {
 			return item;
 		}
 
@@ -701,6 +745,11 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		return item;
 	}
 
+	private boolean isTrustAnchor(CertificateWrapper certificateWrapper, Date currentTime, Context context, SubContext subContext) {
+		LevelConstraint constraint = policy.getCertificateSunsetDateConstraint(context, subContext);
+		return ValidationProcessUtils.isTrustAnchor(certificateWrapper, currentTime, constraint);
+	}
+
 	private SubContext getSubContext(CertificateWrapper certificateWrapper) {
 		return currentSignature.getSigningCertificate().getId().equals(certificateWrapper.getId()) ?
 				SubContext.SIGNING_CERT : SubContext.CA_CERTIFICATE;
@@ -735,8 +784,8 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	
 	@Override
 	protected void collectMessages(XmlConclusion conclusion, XmlConstraint constraint) {
-		if (XmlBlockType.TST_BBB.equals(constraint.getBlockType())) {
-			// skip validation for TSTs
+		if (XmlBlockType.TST_BBB.equals(constraint.getBlockType()) && policy.getTimestampValidConstraint() == null) {
+			// skip validation messages for TSTs
 		} else {
 			super.collectMessages(conclusion, constraint);
 		}

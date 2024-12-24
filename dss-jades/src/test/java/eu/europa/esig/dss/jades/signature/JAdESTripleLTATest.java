@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -110,7 +110,8 @@ class JAdESTripleLTATest extends AbstractJAdESTestValidation {
         List<Object> unsignedProperties = (List<Object>) unprotected.get(JAdESHeaderParameterNames.ETSI_U);
 
         int arcTstCounter = 0;
-        int tstVDCounter = 0;
+        int tstVDNoRevCounter = 0;
+        int tstVDWithRevCounter = 0;
 
         for (Object property : unsignedProperties) {
             Map<?, ?> map = DSSJsonUtils.parseEtsiUComponent(property);
@@ -122,15 +123,19 @@ class JAdESTripleLTATest extends AbstractJAdESTestValidation {
             if (tstVD != null) {
                 List<?> xVals = (List<?>) tstVD.get(JAdESHeaderParameterNames.X_VALS);
                 assertTrue(Utils.isCollectionNotEmpty(xVals));
-                Map<?, ?> rVals = (Map<?, ?>) tstVD.get(JAdESHeaderParameterNames.R_VALS);
-                assertTrue(Utils.isMapNotEmpty(rVals));
 
-                ++tstVDCounter;
+                Map<?, ?> rVals = (Map<?, ?>) tstVD.get(JAdESHeaderParameterNames.R_VALS);
+                if (Utils.isMapEmpty(rVals)) {
+                    ++tstVDNoRevCounter;
+                } else {
+                    ++tstVDWithRevCounter;
+                }
             }
         }
 
         assertEquals(3, arcTstCounter);
-        assertEquals(2, tstVDCounter);
+        assertEquals(1, tstVDNoRevCounter);
+        assertEquals(2, tstVDWithRevCounter);
     }
 
     @Override

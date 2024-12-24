@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -28,8 +28,10 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.SubContext;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheckerResultCheck;
 
 import java.util.Date;
@@ -90,11 +92,11 @@ public class CertificateChainCryptographicChecker extends Chain<XmlCC> {
         ChainItem<XmlCC> item = null;
 
         for (CertificateWrapper certificate : certificateChain) {
-            if (certificate.isTrusted()) {
+            SubContext subContext = signingCertificate.getId().equals(certificate.getId()) ? SubContext.SIGNING_CERT : SubContext.CA_CERTIFICATE;
+            if (isTrustAnchor(certificate, subContext)) {
                 break;
             }
 
-            SubContext subContext = signingCertificate.getId().equals(certificate.getId()) ? SubContext.SIGNING_CERT : SubContext.CA_CERTIFICATE;
             CryptographicConstraint constraint = validationPolicy.getCertificateCryptographicConstraint(context, subContext);
 
             CryptographicChecker cc = new CryptographicChecker(i18nProvider, certificate, validationTime, position, constraint);
@@ -111,6 +113,11 @@ public class CertificateChainCryptographicChecker extends Chain<XmlCC> {
                 ccResult = xmlCC;
             }
         }
+    }
+
+    private boolean isTrustAnchor(CertificateWrapper certificateWrapper, SubContext subContext) {
+        LevelConstraint sunsetDateConstraint = validationPolicy.getCertificateSunsetDateConstraint(context, subContext);
+        return ValidationProcessUtils.isTrustAnchor(certificateWrapper, validationTime, sunsetDateConstraint);
     }
 
     private ChainItem<XmlCC> tokenUsedAlgorithmsAreSecureAtTime(Date validationDate, MessageTag position, XmlCC cc,

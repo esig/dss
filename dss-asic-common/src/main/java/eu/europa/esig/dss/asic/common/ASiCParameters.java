@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -118,33 +118,32 @@ public class ASiCParameters implements Serializable {
 
 	@Override
 	public String toString() {
-		return "ASiCParameters{" +
+		return "ASiCParameters [" +
 				"zipComment=" + zipComment +
 				", mimeType='" + mimeType + '\'' +
 				", containerType=" + containerType +
 				", signatureFileName='" + signatureFileName + '\'' +
-				'}';
+				']';
 	}
 
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
-		if (!(o instanceof ASiCParameters)) return false;
+		if (o == null || getClass() != o.getClass()) return false;
 
 		ASiCParameters that = (ASiCParameters) o;
-
-		if (zipComment != that.zipComment) return false;
-		if (!Objects.equals(mimeType, that.mimeType)) return false;
-		if (containerType != that.containerType) return false;
-		return Objects.equals(signatureFileName, that.signatureFileName);
+		return zipComment == that.zipComment
+				&& Objects.equals(mimeType, that.mimeType)
+				&& containerType == that.containerType
+				&& Objects.equals(signatureFileName, that.signatureFileName);
 	}
 
 	@Override
 	public int hashCode() {
-		int result = (zipComment ? 1 : 0);
-		result = 31 * result + (mimeType != null ? mimeType.hashCode() : 0);
-		result = 31 * result + (containerType != null ? containerType.hashCode() : 0);
-		result = 31 * result + (signatureFileName != null ? signatureFileName.hashCode() : 0);
+		int result = Boolean.hashCode(zipComment);
+		result = 31 * result + Objects.hashCode(mimeType);
+		result = 31 * result + Objects.hashCode(containerType);
+		result = 31 * result + Objects.hashCode(signatureFileName);
 		return result;
 	}
 

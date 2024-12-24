@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -28,9 +28,12 @@ import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxDefaultObjectFactory;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxDocumentReader;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxNativeObjectFactory;
-import eu.europa.esig.dss.pdf.pdfbox.PdfBoxUtils;
+import eu.europa.esig.dss.pdf.pdfbox.PdfBoxScreenshotBuilder;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.io.RandomAccessRead;
+import org.apache.pdfbox.io.RandomAccessReadBuffer;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageTree;
@@ -92,10 +95,10 @@ public abstract class AbstractTestVisualComparator extends PKIFactoryAccess {
 
 		DSSDocument previewNative = getService().previewPageWithVisualSignature(getDocumentToSign(), getSignatureParameters());
 		DSSDocument signatureFieldNative = getService().previewSignatureField(getDocumentToSign(), getSignatureParameters());
-
-		assertFalse(areImagesVisuallyEqual(previewNative, PdfBoxUtils.generateScreenshot(getDocumentToSign(), 1)));
+		
+		assertFalse(areImagesVisuallyEqual(previewNative, PdfBoxScreenshotBuilder.fromDocument(getDocumentToSign()).generateScreenshot(1)));
 		assertFalse(areImagesVisuallyEqual(previewNative, signatureFieldNative));
-		assertTrue(areImagesVisuallyEqual(previewNative, PdfBoxUtils.generateScreenshot(nativeDrawerPdf, 1)));
+		assertTrue(areImagesVisuallyEqual(previewNative, PdfBoxScreenshotBuilder.fromDocument(nativeDrawerPdf).generateScreenshot(1)));
 	}
 
 	protected boolean arePdfDocumentsVisuallyEqual(DSSDocument dssDoc1, DSSDocument dssDoc2) throws IOException {
@@ -103,8 +106,10 @@ public abstract class AbstractTestVisualComparator extends PKIFactoryAccess {
 	}
 
 	private BufferedImage getScreenshotWithDpi(DSSDocument dssDoc) throws IOException {
-		try (InputStream is = dssDoc.openStream(); PDDocument doc = PDDocument.load(is)) {
-			PDFRenderer renderer = new PDFRenderer(doc);
+		try (InputStream is = dssDoc.openStream();
+			 RandomAccessRead rar = new RandomAccessReadBuffer(is);
+			 PDDocument document = Loader.loadPDF(rar)) {
+			PDFRenderer renderer = new PDFRenderer(document);
 			return renderer.renderImageWithDPI(0, DPI);
 		}
 	}
@@ -174,9 +179,11 @@ public abstract class AbstractTestVisualComparator extends PKIFactoryAccess {
 	protected void compareVisualSimilarity(DSSDocument doc1, DSSDocument doc2, float similarityLevel)
 			throws IOException {
 		try (InputStream is1 = doc1.openStream();
-				InputStream is2 = doc2.openStream();
-				PDDocument pdDoc1 = PDDocument.load(is1);
-				PDDocument pdDoc2 = PDDocument.load(is2);) {
+			 InputStream is2 = doc2.openStream();
+			 RandomAccessRead rar1 = new RandomAccessReadBuffer(is1);
+			 PDDocument pdDoc1 = Loader.loadPDF(rar1);
+			 RandomAccessRead rar2 = new RandomAccessReadBuffer(is2);
+			 PDDocument pdDoc2 = Loader.loadPDF(rar2);) {
 			checkPdfSimilarity(pdDoc1, pdDoc2, similarityLevel);
 		}
 	}

@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -70,9 +70,9 @@ class TLValidationJobAlertTest {
 	@TempDir
 	File cacheDirectory;
 
-	private DSSDocument CZ = new FileDocument("src/test/resources/lotlCache/CZ.xml");
-	private DSSDocument CZ_BROKEN_SIG = new FileDocument("src/test/resources/lotlCache/CZ_broken-sig.xml");
-	private DSSDocument CZ_NOT_PARSABLE = new FileDocument("src/test/resources/lotlCache/CZ_not-compliant.xml");
+	private static final DSSDocument CZ = new FileDocument("src/test/resources/lotlCache/CZ.xml");
+	private static final DSSDocument CZ_BROKEN_SIG = new FileDocument("src/test/resources/lotlCache/CZ_broken-sig.xml");
+	private static final DSSDocument CZ_NOT_PARSABLE = new FileDocument("src/test/resources/lotlCache/CZ_not-compliant.xml");
 
 	private static final DSSDocument LOTL = new FileDocument("src/test/resources/lotlCache/tl_pivot_247_mp.xml");
 	private static final String LOTL_URL = "https://ec.europa.eu/tools/lotl/eu-lotl.xml";

@@ -1,19 +1,19 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -22,12 +22,14 @@ package eu.europa.esig.dss.spi.x509;
 
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.identifier.EntityIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
 
 import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -100,11 +102,13 @@ public class ListCertificateSource implements CertificateSource {
 	 * This method allows to add a certificate source to the list
 	 * 
 	 * @param certificateSource {@link CertificateSource}
+	 * @return whether the certificateSource has been added successfully
 	 */
-	public void add(CertificateSource certificateSource) {
-		if (certificateSource != null) {
-			sources.add(certificateSource);
+	public boolean add(CertificateSource certificateSource) {
+		if (certificateSource != null && !sources.contains(certificateSource)) {
+			return sources.add(certificateSource);
 		}
+		return false;
 	}
 
 	/**
@@ -190,6 +194,16 @@ public class ListCertificateSource implements CertificateSource {
 	}
 
 	@Override
+	public boolean isTrustedAtTime(CertificateToken certificateToken, Date controlTime) {
+		for (CertificateSource source : sources) {
+			if (source.isTrustedAtTime(certificateToken, controlTime)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	@Override
 	public boolean isKnown(CertificateToken certificateToken) {
 		for (CertificateSource source : sources) {
 			if (source.isKnown(certificateToken)) {
@@ -237,6 +251,15 @@ public class ListCertificateSource implements CertificateSource {
 			if (source.isKnown(certificateToken)) {
 				result.add(source.getCertificateSourceType());
 			}
+		}
+		return result;
+	}
+
+	@Override
+	public Set<CertificateToken> getByEntityKey(EntityIdentifier entityKey) {
+		Set<CertificateToken> result = new HashSet<>();
+		for (CertificateSource source : sources) {
+			result.addAll(source.getByEntityKey(entityKey));
 		}
 		return result;
 	}

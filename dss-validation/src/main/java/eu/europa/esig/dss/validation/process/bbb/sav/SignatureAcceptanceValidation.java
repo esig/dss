@@ -1,25 +1,29 @@
 /**
  * DSS - Digital Signature Services
  * Copyright (C) 2015 European Commission, provided under the CEF programme
- * 
+ * <p>
  * This file is part of the "DSS - Digital Signature Services" project.
- * 
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 package eu.europa.esig.dss.validation.process.bbb.sav;
 
+import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlBlockType;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -33,6 +37,7 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.policy.jaxb.ValueConstraint;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.ArchiveTimeStampCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CertifiedRolesCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.ClaimedRolesCheck;
@@ -40,6 +45,7 @@ import eu.europa.esig.dss.validation.process.bbb.sav.checks.CommitmentTypeIndica
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.ContentHintsCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.ContentIdentifierCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.ContentTimeStampCheck;
+import eu.europa.esig.dss.validation.process.bbb.sav.checks.ContentTimestampBasicValidationCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.ContentTypeCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CounterSignatureCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.DocumentTimeStampCheck;
@@ -55,6 +61,7 @@ import eu.europa.esig.dss.validation.process.bbb.sav.checks.ValidationDataTimeSt
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.TimestampMessageImprintWithIdCheck;
 
 import java.util.Date;
+import java.util.Map;
 
 /**
  * 5.2.8 Signature acceptance validation (SAV) This building block covers any
@@ -66,6 +73,9 @@ public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<
 	/** The Diagnostic Data */
 	private final DiagnosticData diagnosticData;
 
+	/** A map of BasicBuildingBlocks */
+	private final Map<String, XmlBasicBuildingBlocks> bbbs;
+
 	/**
 	 * Default constructor
 	 *
@@ -74,12 +84,15 @@ public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<
 	 * @param currentTime {@link Date} validation time
 	 * @param signature {@link SignatureWrapper}
 	 * @param context {@link Context}
+	 * @param bbbs a map of {@link XmlBasicBuildingBlocks}
 	 * @param validationPolicy {@link ValidationPolicy}
 	 */
 	public SignatureAcceptanceValidation(I18nProvider i18nProvider, DiagnosticData diagnosticData, Date currentTime,
-										 SignatureWrapper signature, Context context, ValidationPolicy validationPolicy) {
+										 SignatureWrapper signature, Context context,
+										 Map<String, XmlBasicBuildingBlocks> bbbs, ValidationPolicy validationPolicy) {
 		super(i18nProvider, signature, currentTime, context, validationPolicy);
 		this.diagnosticData = diagnosticData;
+		this.bbbs = bbbs;
 	}
     
 	@Override
@@ -166,9 +179,17 @@ public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<
 		// content-timestamp
 		item = item.setNextItem(contentTimeStamp());
 
-		// content-timestamp message-imprint
+		// content-timestamp
 		for (TimestampWrapper contentTimestamp : token.getContentTimestamps()) {
+
+			XmlBasicBuildingBlocks contentTimestampBBB = bbbs.get(contentTimestamp.getId());
+			if (contentTimestampBBB != null) {
+				// NOTE: if TIMESTAMP validation level has been reached
+				item = item.setNextItem(contentTimestampBasicValidation(contentTimestamp, contentTimestampBBB.getConclusion()));
+			}
+
 			item = item.setNextItem(contentTimestampMessageImprint(contentTimestamp));
+
 		}
 
 		// counter-signature
@@ -253,6 +274,11 @@ public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<
 		return new ContentTimeStampCheck(i18nProvider, result, token, constraint);
 	}
 
+	private ChainItem<XmlSAV> contentTimestampBasicValidation(final TimestampWrapper timestamp, XmlConclusion xmlConclusion) {
+		return new ContentTimestampBasicValidationCheck(i18nProvider, result, timestamp, xmlConclusion,
+				getTimestampBasicValidationConstraintLevel());
+	}
+
 	private ChainItem<XmlSAV> contentTimestampMessageImprint(TimestampWrapper contentTimestamp) {
 		LevelConstraint constraint = validationPolicy.getContentTimeStampMessageImprintConstraint(context);
 		return new TimestampMessageImprintWithIdCheck<>(i18nProvider, result, contentTimestamp, constraint);
@@ -296,6 +322,25 @@ public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<
 	private ChainItem<XmlSAV> documentTimeStamp() {
 		LevelConstraint constraint = validationPolicy.getDocumentTimeStampConstraint(context);
 		return new DocumentTimeStampCheck(i18nProvider, result, token, constraint);
+	}
+
+	private LevelConstraint getTimestampBasicValidationConstraintLevel() {
+		LevelConstraint constraint = validationPolicy.getTimestampValidConstraint();
+		// continue if LTA is present
+		if (constraint == null || ValidationProcessUtils.isLongTermAvailabilityAndIntegrityMaterialPresent(token)) {
+			constraint = getWarnLevelConstraint();
+		}
+		return constraint;
+	}
+
+	@Override
+	protected void collectMessages(XmlConclusion conclusion, XmlConstraint constraint) {
+		if (XmlBlockType.TST_BBB.equals(constraint.getBlockType()) &&
+				(validationPolicy.getTimestampValidConstraint() == null || ValidationProcessUtils.isLongTermAvailabilityAndIntegrityMaterialPresent(token))) {
+			// skip validation messages for content TSTs
+		} else {
+			super.collectMessages(conclusion, constraint);
+		}
 	}
 
 }
