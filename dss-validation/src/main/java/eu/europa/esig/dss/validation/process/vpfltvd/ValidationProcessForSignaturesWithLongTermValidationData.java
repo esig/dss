@@ -685,7 +685,8 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	}
 	
 	private ChainItem<XmlValidationProcessLongTermData> signatureIsAcceptable(Date bestSignatureTime, Context context) {
-		SignatureAcceptanceValidation sav = new SignatureAcceptanceValidation(i18nProvider, diagnosticData, bestSignatureTime, currentSignature, context, policy);
+		SignatureAcceptanceValidation sav = new SignatureAcceptanceValidation(
+				i18nProvider, diagnosticData, bestSignatureTime, currentSignature, context, bbbs, policy);
 		return new SignatureAcceptanceValidationResultCheck<>(i18nProvider, result, sav.execute(), getFailLevelConstraint());
 	}
 	
@@ -783,8 +784,8 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	
 	@Override
 	protected void collectMessages(XmlConclusion conclusion, XmlConstraint constraint) {
-		if (XmlBlockType.TST_BBB.equals(constraint.getBlockType())) {
-			// skip validation for TSTs
+		if (XmlBlockType.TST_BBB.equals(constraint.getBlockType()) && policy.getTimestampValidConstraint() == null) {
+			// skip validation messages for TSTs
 		} else {
 			super.collectMessages(conclusion, constraint);
 		}

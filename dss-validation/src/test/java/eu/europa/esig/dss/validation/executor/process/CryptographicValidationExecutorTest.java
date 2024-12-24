@@ -1153,6 +1153,8 @@ class CryptographicValidationExecutorTest extends AbstractProcessExecutorTest {
                 i18nProvider.getMessage(MessageTag.ASCCM_DAA_ANS, DigestAlgorithm.MD2, MessageTag.ACCM_POS_SIG_SIG)));
         assertFalse(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
                 i18nProvider.getMessage(MessageTag.BSV_ICTGTNACCET_ANS)));
+        assertFalse(checkMessageValuePresence(simpleReport.getAdESValidationWarnings(simpleReport.getFirstSignatureId()),
+                i18nProvider.getMessage(MessageTag.BBB_SAV_ICTVS_ANS)));
 
         eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp contentTst = simpleReport.getSignatureTimestamps(simpleReport.getFirstSignatureId()).get(0);
         assertEquals(Indication.INDETERMINATE, contentTst.getIndication());
@@ -1173,17 +1175,23 @@ class CryptographicValidationExecutorTest extends AbstractProcessExecutorTest {
         assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, signatureSAV.getConclusion().getSubIndication());
 
         boolean cryptoCheckFound = false;
+        boolean cntTstCheckFound = false;
         for (XmlConstraint constraint : signatureSAV.getConstraint()) {
             if (MessageTag.ACCM.getId().equals(constraint.getName().getKey())) {
                 assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
                 assertEquals(i18nProvider.getMessage(MessageTag.ASCCM_DAA_ANS, DigestAlgorithm.MD2, MessageTag.ACCM_POS_SIG_SIG),
                         constraint.getError().getValue());
                 cryptoCheckFound = true;
+            } else if (MessageTag.BBB_SAV_ICTVS.getId().equals(constraint.getName().getKey())) {
+                assertEquals(XmlStatus.WARNING, constraint.getStatus());
+                assertEquals(i18nProvider.getMessage(MessageTag.BBB_SAV_ICTVS_ANS), constraint.getWarning().getValue());
+                cntTstCheckFound = true;
             } else {
                 assertEquals(XmlStatus.OK, constraint.getStatus());
             }
         }
         assertTrue(cryptoCheckFound);
+        assertTrue(cntTstCheckFound);
 
         XmlBasicBuildingBlocks timestampBBB = detailedReport.getBasicBuildingBlockById(xmlTimestamp.getId());
         assertNotNull(timestampBBB);
