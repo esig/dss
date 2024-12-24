@@ -194,7 +194,7 @@ public class TimestampWrapper extends AbstractSignatureWrapper {
 	 * @return TRUE when the ats-hash-index(-v3) attribute is present and valid, FALSE otherwise
 	 */
 	public boolean isAtsHashIndexValid() {
-		return timestamp.getArchiveTimestampHashIndex() != null ? timestamp.getArchiveTimestampHashIndex().isValid() : false;
+		return timestamp.getArchiveTimestampHashIndex() != null && timestamp.getArchiveTimestampHashIndex().isValid();
 	}
 
 	/**
