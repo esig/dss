@@ -351,12 +351,16 @@ public class SignatureValidationContext implements ValidationContext {
 			// add all existing equivalent certificates for the validation
 			ListCertificateSource allCertificateSources = getAllCertificateSources();
 			for (CertificateToken certificateToken : certificateSourceToAdd.getCertificates()) {
-				final Set<CertificateToken> equivalentCertificates = allCertificateSources.getByEntityKey(certificateToken.getEntityKey());
-				for (CertificateToken equivalentCertificate : equivalentCertificates) {
-					if (!certificateToken.getDSSIdAsString().equals(equivalentCertificate.getDSSIdAsString())) {
-						addCertificateTokenForVerification(equivalentCertificate);
-					}
-				}
+				addEquivalentCertificates(certificateToken, allCertificateSources);
+			}
+		}
+	}
+
+	private void addEquivalentCertificates(CertificateToken certificateToken, CertificateSource certificateSource) {
+		final Set<CertificateToken> equivalentCertificates = certificateSource.getByEntityKey(certificateToken.getEntityKey());
+		for (CertificateToken equivalentCertificate : equivalentCertificates) {
+			if (!certificateToken.getDSSIdAsString().equals(equivalentCertificate.getDSSIdAsString())) {
+				addCertificateTokenForVerification(equivalentCertificate);
 			}
 		}
 	}
@@ -561,6 +565,11 @@ public class SignatureValidationContext implements ValidationContext {
 		// Return cached value
 		CertificateToken issuerCertificateToken = getIssuerFromProcessedCertificates(token);
 		if (issuerCertificateToken != null) {
+			// ensure equivalent certificates are processed
+			if (certificateSource != null) {
+				addEquivalentCertificates(issuerCertificateToken, certificateSource);
+			}
+
 			return issuerCertificateToken;
 		}
 
