@@ -128,8 +128,14 @@ public class ManifestValidator {
 
 		List<ReferenceValidation> referenceValidations = new ArrayList<>();
 		for (Reference reference : references) {
+			XAdESReferenceValidation refValidation = new XAdESReferenceValidation(reference);
+			refValidation.setType(DigestMatcherType.MANIFEST_ENTRY);
+
+			referenceValidations.add(refValidation);
+
 			try {
-				XAdESReferenceValidation refValidation = createReferenceValidation(reference);
+				refValidation.setDigest(DSSXMLUtils.getReferenceDigest(reference));
+				refValidation.setTransformationNames(getTransformNames(reference.getElement()));
 
 				boolean refFound = DSSXMLUtils.isAbleToDeReferenceContent(reference);
 				refValidation.setFound(refFound);
@@ -141,21 +147,12 @@ public class ManifestValidator {
 				if (refFound && !isDuplicated) {
 					refValidation.setIntact(reference.verify());
 				}
-				referenceValidations.add(refValidation);
 
 			} catch (Exception e) {
 				LOG.warn("Unable to verify reference with Id [{}] : {}", reference.getId(), e.getMessage(), e);
 			}
 		}
 		return referenceValidations;
-	}
-
-	private XAdESReferenceValidation createReferenceValidation(Reference reference) {
-		XAdESReferenceValidation refValidation = new XAdESReferenceValidation(reference);
-		refValidation.setType(DigestMatcherType.MANIFEST_ENTRY);
-		refValidation.setDigest(DSSXMLUtils.getReferenceDigest(reference));
-		refValidation.setTransformationNames(getTransformNames(reference.getElement()));
-		return refValidation;
 	}
 	
 	private List<String> getTransformNames(Element refNode) {
