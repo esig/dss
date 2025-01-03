@@ -872,7 +872,7 @@ public final class DSSXMLUtils {
 			try {
 				KeyInfo keyInfo = new KeyInfo(keyInfoElement, "");
 				return keyInfo.getPublicKey();
-			} catch (XMLSecurityException e) {
+			} catch (Exception e) {
 				LOG.warn("Unable to extract signing certificate's public key. Reason : {}", e.getMessage(), e);
 			}
 		}
