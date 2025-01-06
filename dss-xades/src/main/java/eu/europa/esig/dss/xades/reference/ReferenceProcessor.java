@@ -97,6 +97,11 @@ public class ReferenceProcessor {
 
     private Node dereferenceNode(DSSReference reference) {
         Document document = getDocumentToTransform(reference);
+        if (document == null) {
+            // not XML, return NULL node
+            return null;
+        }
+
         /*
          * 4.4.3.3 Same-Document URI-References
          *
@@ -109,7 +114,7 @@ public class ReferenceProcessor {
          * 4. if the URI has no fragment identifier or the fragment identifier is a shortname XPointer,
          *    then delete all comment nodes
          */
-        if (document != null && DSSXMLUtils.isSameDocumentReference(reference.getUri()) && !DomUtils.isXPointerQuery(reference.getUri())) {
+        if (DSSXMLUtils.isSameDocumentReference(reference.getUri()) && !DomUtils.isXPointerQuery(reference.getUri())) {
             document = DomUtils.excludeComments(document);
         }
         // extract the target Node after performing comments removal (otherwise the relation to parent nodes can be lost)
