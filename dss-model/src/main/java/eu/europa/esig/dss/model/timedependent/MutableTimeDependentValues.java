@@ -67,9 +67,11 @@ public class MutableTimeDependentValues<T extends TimeDependent> extends TimeDep
 		Objects.requireNonNull(x, "Cannot add null");
 		if (!list.isEmpty()) {
 			final Date endDate = x.getEndDate();
-			for (final T y : list) {
-				if (endDate.compareTo(y.getStartDate()) > 0) {
-					throw new IllegalArgumentException("Cannot add overlapping item");
+			if (endDate != null) {
+				for (final T y : list) {
+					if (y.getStartDate() != null && endDate.compareTo(y.getStartDate()) > 0) {
+						throw new IllegalArgumentException("Cannot add overlapping item");
+					}
 				}
 			}
 		}

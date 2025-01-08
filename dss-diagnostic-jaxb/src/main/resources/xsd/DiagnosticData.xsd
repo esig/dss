@@ -1631,9 +1631,9 @@
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
-			<xs:element name="ServiceType" type="xs:string" />
-			<xs:element name="Status" type="xs:string" />
-			<xs:element name="StartDate" type="xs:dateTime" />
+			<xs:element name="ServiceType" type="xs:string" minOccurs="0" />
+			<xs:element name="Status" type="xs:string" minOccurs="0" />
+			<xs:element name="StartDate" type="xs:dateTime" minOccurs="0" />
 			<xs:element name="EndDate" type="xs:dateTime" minOccurs="0" />
 
 			<xs:element name="CapturedQualifiers" type="CapturedQualifiers" minOccurs="0" />

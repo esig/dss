@@ -20,8 +20,13 @@
  */
 package eu.europa.esig.dss.tsl.validation;
 
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustService;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustServiceProvider;
 import eu.europa.esig.dss.enumerations.CertificateQualification;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -30,24 +35,33 @@ import eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.MemoryDataLoader;
 import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.tsl.job.TLValidationJob;
 import eu.europa.esig.dss.tsl.source.TLSource;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateValidator;
-import eu.europa.esig.dss.spi.validation.CertificateVerifier;
-import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SKCertificateTest {
 
     private static final DSSDocument TL_DOC = new FileDocument(new File("src/test/resources/sk-tl-sn-95.xml"));
+    private static final DSSDocument TL_DOC_ALTERED_TSP = new FileDocument(new File("src/test/resources/sk-tl-altered-tsp.xml"));
+    private static final DSSDocument TL_DOC_ALTERED_TRUST_SERVICE = new FileDocument(new File("src/test/resources/sk-tl-altered-trust-service.xml"));
+    private static final DSSDocument TL_DOC_ALTERED_TRUST_SERVICE_WITH_TIME = new FileDocument(new File("src/test/resources/sk-tl-altered-trust-service-with-time.xml"));
 
     private static final String SK_TL_URL = "sk-tl.xml";
 
@@ -75,6 +89,7 @@ class SKCertificateTest {
 
         FileCacheDataLoader fileCacheDataLoader = new FileCacheDataLoader();
         fileCacheDataLoader.setDataLoader(memoryDataLoader);
+        fileCacheDataLoader.setCacheExpirationTime(0);
         tlValidationJob.setOfflineDataLoader(fileCacheDataLoader);
 
         TrustedListsCertificateSource trustedCertificateSource = new TrustedListsCertificateSource();
@@ -94,6 +109,212 @@ class SKCertificateTest {
 
         assertEquals(Indication.PASSED, simpleReport.getCertificateIndication(CERTIFICATE.getDSSIdAsString()));
         assertEquals(CertificateQualification.CERT_FOR_UNKNOWN, simpleReport.getQualificationAtCertificateIssuance());
+
+        DiagnosticData diagnosticData = reports.getDiagnosticData();
+        assertNotNull(diagnosticData);
+
+        CertificateWrapper certificate = diagnosticData.getCertificateById(CERTIFICATE.getDSSIdAsString());
+        assertNotNull(certificate);
+
+        List<XmlTrustServiceProvider> trustServiceProviders = certificate.getTrustServiceProviders();
+        assertEquals(2, trustServiceProviders.size());
+
+        XmlTrustServiceProvider xmlTrustServiceProvider = trustServiceProviders.get(0);
+        assertTrue(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTSPNames()));
+        assertTrue(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTSPTradeNames()));
+        assertTrue(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTSPRegistrationIdentifiers()));
+        assertTrue(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTrustServices()));
+
+        List<XmlTrustService> trustServices = xmlTrustServiceProvider.getTrustServices();
+        assertEquals(2, trustServices.size());
+
+        XmlTrustService xmlTrustService = trustServices.get(0);
+        assertNotNull(xmlTrustService.getServiceType());
+        assertNotNull(xmlTrustService.getStatus());
+        assertNotNull(xmlTrustService.getStartDate());
+        assertTrue(Utils.isCollectionNotEmpty(xmlTrustService.getServiceNames()));
+        assertTrue(Utils.isCollectionNotEmpty(xmlTrustService.getServiceSupplyPoints()));
+    }
+
+    @Test
+    void skTLWithAlteredTSPTest() {
+        CommonCertificateSource certificateSource = new CommonCertificateSource();
+        certificateSource.addCertificate(TL_ISSUER);
+
+        TLValidationJob tlValidationJob = new TLValidationJob();
+
+        TLSource tlSource = new TLSource();
+        tlSource.setUrl(SK_TL_URL);
+        tlSource.setCertificateSource(certificateSource);
+        tlValidationJob.setTrustedListSources(tlSource);
+
+        Map<String, byte[]> tlMap = new HashMap<>();
+        tlMap.put(SK_TL_URL, DSSUtils.toByteArray(TL_DOC_ALTERED_TSP));
+        MemoryDataLoader memoryDataLoader = new MemoryDataLoader(tlMap);
+
+        FileCacheDataLoader fileCacheDataLoader = new FileCacheDataLoader();
+        fileCacheDataLoader.setDataLoader(memoryDataLoader);
+        fileCacheDataLoader.setCacheExpirationTime(0);
+        tlValidationJob.setOfflineDataLoader(fileCacheDataLoader);
+
+        TrustedListsCertificateSource trustedCertificateSource = new TrustedListsCertificateSource();
+        tlValidationJob.setTrustedListCertificateSource(trustedCertificateSource);
+
+        tlValidationJob.offlineRefresh();
+
+        assertEquals(214, trustedCertificateSource.getCertificates().size());
+
+        CertificateValidator certificateValidator = CertificateValidator.fromCertificate(CERTIFICATE);
+        CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+        certificateVerifier.setTrustedCertSources(trustedCertificateSource);
+        certificateValidator.setCertificateVerifier(certificateVerifier);
+
+        CertificateReports reports = certificateValidator.validate();
+        SimpleCertificateReport simpleReport = reports.getSimpleReport();
+
+        assertEquals(Indication.PASSED, simpleReport.getCertificateIndication(CERTIFICATE.getDSSIdAsString()));
+        assertEquals(CertificateQualification.CERT_FOR_UNKNOWN, simpleReport.getQualificationAtCertificateIssuance());
+
+        DiagnosticData diagnosticData = reports.getDiagnosticData();
+        assertNotNull(diagnosticData);
+
+        CertificateWrapper certificate = diagnosticData.getCertificateById(CERTIFICATE.getDSSIdAsString());
+        assertNotNull(certificate);
+
+        List<XmlTrustServiceProvider> trustServiceProviders = certificate.getTrustServiceProviders();
+        assertEquals(2, trustServiceProviders.size());
+
+        XmlTrustServiceProvider xmlTrustServiceProvider = trustServiceProviders.get(0);
+        assertFalse(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTSPNames()));
+        assertFalse(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTSPTradeNames()));
+        assertFalse(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTSPRegistrationIdentifiers()));
+        assertTrue(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTrustServices()));
+
+        List<XmlTrustService> trustServices = xmlTrustServiceProvider.getTrustServices();
+        assertEquals(2, trustServices.size());
+
+        XmlTrustService xmlTrustService = trustServices.get(0);
+        assertNotNull(xmlTrustService.getServiceType());
+        assertNotNull(xmlTrustService.getStatus());
+        assertNotNull(xmlTrustService.getStartDate());
+        assertTrue(Utils.isCollectionNotEmpty(xmlTrustService.getServiceNames()));
+        assertTrue(Utils.isCollectionNotEmpty(xmlTrustService.getServiceSupplyPoints()));
+    }
+
+    @Test
+    void skTLWithAlteredTrustServiceTest() {
+        CommonCertificateSource certificateSource = new CommonCertificateSource();
+        certificateSource.addCertificate(TL_ISSUER);
+
+        TLValidationJob tlValidationJob = new TLValidationJob();
+
+        TLSource tlSource = new TLSource();
+        tlSource.setUrl(SK_TL_URL);
+        tlSource.setCertificateSource(certificateSource);
+        tlValidationJob.setTrustedListSources(tlSource);
+
+        Map<String, byte[]> tlMap = new HashMap<>();
+        tlMap.put(SK_TL_URL, DSSUtils.toByteArray(TL_DOC_ALTERED_TRUST_SERVICE));
+        MemoryDataLoader memoryDataLoader = new MemoryDataLoader(tlMap);
+
+        FileCacheDataLoader fileCacheDataLoader = new FileCacheDataLoader();
+        fileCacheDataLoader.setDataLoader(memoryDataLoader);
+        fileCacheDataLoader.setCacheExpirationTime(0);
+        tlValidationJob.setOfflineDataLoader(fileCacheDataLoader);
+
+        TrustedListsCertificateSource trustedCertificateSource = new TrustedListsCertificateSource();
+        tlValidationJob.setTrustedListCertificateSource(trustedCertificateSource);
+
+        tlValidationJob.offlineRefresh();
+
+        assertEquals(213, trustedCertificateSource.getCertificates().size()); // removed TrustService
+
+        CertificateValidator certificateValidator = CertificateValidator.fromCertificate(CERTIFICATE);
+        CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+        certificateVerifier.setTrustedCertSources(trustedCertificateSource);
+        certificateValidator.setCertificateVerifier(certificateVerifier);
+
+        CertificateReports reports = certificateValidator.validate();
+        SimpleCertificateReport simpleReport = reports.getSimpleReport();
+
+        assertEquals(Indication.INDETERMINATE, simpleReport.getCertificateIndication(CERTIFICATE.getDSSIdAsString()));
+        assertEquals(SubIndication.CERTIFICATE_CHAIN_GENERAL_FAILURE, simpleReport.getCertificateSubIndication(CERTIFICATE.getDSSIdAsString()));
+        assertEquals(CertificateQualification.CERT_FOR_UNKNOWN, simpleReport.getQualificationAtCertificateIssuance());
+
+        DiagnosticData diagnosticData = reports.getDiagnosticData();
+        assertNotNull(diagnosticData);
+
+        CertificateWrapper certificate = diagnosticData.getCertificateById(CERTIFICATE.getDSSIdAsString());
+        assertNotNull(certificate);
+
+        List<XmlTrustServiceProvider> trustServiceProviders = certificate.getTrustServiceProviders();
+        assertEquals(1, trustServiceProviders.size());
+    }
+
+    @Test
+    void skTLWithAlteredTrustServiceWithTimeTest() {
+        CommonCertificateSource certificateSource = new CommonCertificateSource();
+        certificateSource.addCertificate(TL_ISSUER);
+
+        TLValidationJob tlValidationJob = new TLValidationJob();
+
+        TLSource tlSource = new TLSource();
+        tlSource.setUrl(SK_TL_URL);
+        tlSource.setCertificateSource(certificateSource);
+        tlValidationJob.setTrustedListSources(tlSource);
+
+        Map<String, byte[]> tlMap = new HashMap<>();
+        tlMap.put(SK_TL_URL, DSSUtils.toByteArray(TL_DOC_ALTERED_TRUST_SERVICE_WITH_TIME));
+        MemoryDataLoader memoryDataLoader = new MemoryDataLoader(tlMap);
+
+        FileCacheDataLoader fileCacheDataLoader = new FileCacheDataLoader();
+        fileCacheDataLoader.setDataLoader(memoryDataLoader);
+        fileCacheDataLoader.setCacheExpirationTime(0);
+        tlValidationJob.setOfflineDataLoader(fileCacheDataLoader);
+
+        TrustedListsCertificateSource trustedCertificateSource = new TrustedListsCertificateSource();
+        tlValidationJob.setTrustedListCertificateSource(trustedCertificateSource);
+
+        tlValidationJob.offlineRefresh();
+
+        assertEquals(214, trustedCertificateSource.getCertificates().size());
+
+        CertificateValidator certificateValidator = CertificateValidator.fromCertificate(CERTIFICATE);
+        CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+        certificateVerifier.setTrustedCertSources(trustedCertificateSource);
+        certificateValidator.setCertificateVerifier(certificateVerifier);
+
+        CertificateReports reports = certificateValidator.validate();
+        reports.print();
+        SimpleCertificateReport simpleReport = reports.getSimpleReport();
+
+        assertEquals(Indication.PASSED, simpleReport.getCertificateIndication(CERTIFICATE.getDSSIdAsString()));
+        assertEquals(CertificateQualification.CERT_FOR_UNKNOWN, simpleReport.getQualificationAtCertificateIssuance());
+
+        DiagnosticData diagnosticData = reports.getDiagnosticData();
+        assertNotNull(diagnosticData);
+
+        CertificateWrapper certificate = diagnosticData.getCertificateById(CERTIFICATE.getDSSIdAsString());
+        assertNotNull(certificate);
+
+        List<XmlTrustServiceProvider> trustServiceProviders = certificate.getTrustServiceProviders();
+        assertEquals(2, trustServiceProviders.size());
+
+        XmlTrustServiceProvider xmlTrustServiceProvider = trustServiceProviders.get(0);
+        assertTrue(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTSPNames()));
+        assertTrue(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTSPTradeNames()));
+        assertTrue(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTSPRegistrationIdentifiers()));
+        assertTrue(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTrustServices()));
+
+        List<XmlTrustService> trustServices = xmlTrustServiceProvider.getTrustServices();
+        assertEquals(2, trustServices.size());
+
+        XmlTrustService xmlTrustService = trustServices.get(0);
+        assertNull(xmlTrustService.getServiceType());
+        assertNull(xmlTrustService.getStatus());
+        assertNotNull(xmlTrustService.getStartDate());
+        assertFalse(Utils.isCollectionNotEmpty(xmlTrustService.getServiceNames()));
+        assertFalse(Utils.isCollectionNotEmpty(xmlTrustService.getServiceSupplyPoints()));
     }
 
 }

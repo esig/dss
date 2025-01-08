@@ -68,7 +68,7 @@ public abstract class AbstractParsingTask<T extends AbstractParsingResult> imple
 	 */
 	protected TrustStatusListType getJAXBObject() {
 		try (InputStream is = document.openStream()) {
-			return createTrustedListFacade().unmarshall(is);
+			return createTrustedListFacade().unmarshall(is, false); // lax processing, validate XSD after
 		} catch (Exception e) {
 			String message = "Unable to parse binaries. Reason : '%s'";
 			// get complete error message in case if the message string is not defined directly
@@ -95,13 +95,15 @@ public abstract class AbstractParsingTask<T extends AbstractParsingResult> imple
 	 * @param schemeInformation {@link TSLSchemeInformationType}
 	 */
 	protected void commonParseSchemeInformation(AbstractParsingResult result, TSLSchemeInformationType schemeInformation) {
-		extractTSLType(result, schemeInformation);
-		extractSequenceNumber(result, schemeInformation);
-		extractTerritory(result, schemeInformation);
-		extractVersion(result, schemeInformation);
-		extractIssueDate(result, schemeInformation);
-		extractNextUpdateDate(result, schemeInformation);
-		extractDistributionPoints(result, schemeInformation);
+		if (schemeInformation != null) {
+			extractTSLType(result, schemeInformation);
+			extractSequenceNumber(result, schemeInformation);
+			extractTerritory(result, schemeInformation);
+			extractVersion(result, schemeInformation);
+			extractIssueDate(result, schemeInformation);
+			extractNextUpdateDate(result, schemeInformation);
+			extractDistributionPoints(result, schemeInformation);
+		}
 	}
 	
 	private void extractTSLType(AbstractParsingResult result, TSLSchemeInformationType schemeInformation) {

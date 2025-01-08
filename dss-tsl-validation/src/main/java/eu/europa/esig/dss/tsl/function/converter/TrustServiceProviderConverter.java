@@ -37,6 +37,8 @@ import eu.europa.esig.trustedlist.jaxb.tsl.PostalAddressType;
 import eu.europa.esig.trustedlist.jaxb.tsl.TSPInformationType;
 import eu.europa.esig.trustedlist.jaxb.tsl.TSPServicesListType;
 import eu.europa.esig.trustedlist.jaxb.tsl.TSPType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,6 +53,8 @@ import java.util.stream.Collectors;
  *
  */
 public class TrustServiceProviderConverter implements Function<TSPType, TrustServiceProvider> {
+
+	private static final Logger LOG = LoggerFactory.getLogger(TrustServiceProviderConverter.class);
 
 	/** The country code */
 	private String territory;
@@ -84,23 +88,28 @@ public class TrustServiceProviderConverter implements Function<TSPType, TrustSer
 	}
 
 	private void extractTSPInfo(TrustServiceProviderBuilder tspBuilder, TSPInformationType tspInformation) {
-		tspBuilder.setTerritory(territory);
+		if (tspInformation != null) {
+			tspBuilder.setTerritory(territory);
 
-		InternationalNamesTypeConverter converter = new InternationalNamesTypeConverter();
-		tspBuilder.setNames(converter.apply(tspInformation.getTSPName()));
+			InternationalNamesTypeConverter converter = new InternationalNamesTypeConverter();
+			tspBuilder.setNames(converter.apply(tspInformation.getTSPName()));
 
-		converter = new InternationalNamesTypeConverter(new TradeNamePredicate()); // filter registration identifiers
-		tspBuilder.setTradeNames(converter.apply(tspInformation.getTSPTradeName()));
+			converter = new InternationalNamesTypeConverter(new TradeNamePredicate()); // filter registration identifiers
+			tspBuilder.setTradeNames(converter.apply(tspInformation.getTSPTradeName()));
 
-		tspBuilder.setRegistrationIdentifiers(extractRegistrationIdentifiers(tspInformation.getTSPTradeName()));
+			tspBuilder.setRegistrationIdentifiers(extractRegistrationIdentifiers(tspInformation.getTSPTradeName()));
 
-		AddressType tspAddress = tspInformation.getTSPAddress();
-		if (tspAddress != null) {
-			tspBuilder.setPostalAddresses(extractPostalAddress(tspAddress.getPostalAddresses()));
-			tspBuilder.setElectronicAddresses(extractElectronicAddress(tspAddress.getElectronicAddress()));
+			AddressType tspAddress = tspInformation.getTSPAddress();
+			if (tspAddress != null) {
+				tspBuilder.setPostalAddresses(extractPostalAddress(tspAddress.getPostalAddresses()));
+				tspBuilder.setElectronicAddresses(extractElectronicAddress(tspAddress.getElectronicAddress()));
+			}
+
+			tspBuilder.setInformation(extractInformationURI(tspInformation.getTSPInformationURI()));
+
+		} else {
+			LOG.warn("No mandatory TSPInformation element found in the TrustServiceProvider element!");
 		}
-
-		tspBuilder.setInformation(extractInformationURI(tspInformation.getTSPInformationURI()));
 	}
 
 	private List<String> extractRegistrationIdentifiers(InternationalNamesType internationalNamesType) {
