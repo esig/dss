@@ -1234,7 +1234,8 @@ public class SignatureValidationContext implements ValidationContext {
 
 				} else {
 					if (revocationToken.getNextUpdate() != null &&
-							(earliestNextUpdate == null || earliestNextUpdate.after(revocationToken.getNextUpdate()))) {
+							(earliestNextUpdate == null || earliestNextUpdate.after(revocationToken.getNextUpdate())) &&
+							currentTime.before(revocationToken.getNextUpdate())) {
 						earliestNextUpdate = revocationToken.getNextUpdate();
 					}
 				}
@@ -1262,7 +1263,9 @@ public class SignatureValidationContext implements ValidationContext {
 				}
 
 				if (status instanceof RevocationFreshnessStatus) {
-					if (Utils.isCollectionNotEmpty(relatedRevocationTokens) && earliestNextUpdate == null) {
+					if (Utils.isCollectionNotEmpty(relatedRevocationTokens) && noNextUpdateDefined(relatedRevocationTokens)
+							&& earliestNextUpdate == null) {
+						// Define next update based on Timestamp time, when no NextUpdate is defined
 						Date lowestPOETime = getLowestPOETime(certificateToken);
 						if (lowestPOETime != null) {
 							earliestNextUpdate = new Date(lowestPOETime.getTime() + 1000); // last usage + 1s
@@ -1274,6 +1277,10 @@ public class SignatureValidationContext implements ValidationContext {
 				}
 			}
 		}
+	}
+
+	private boolean noNextUpdateDefined(List<RevocationToken<?>> relatedRevocationTokens) {
+		return relatedRevocationTokens.stream().noneMatch(revocationToken -> revocationToken.getNextUpdate() != null);
 	}
 
 	@Override

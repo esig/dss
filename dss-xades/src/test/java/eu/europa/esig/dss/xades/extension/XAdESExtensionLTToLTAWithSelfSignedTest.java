@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.xades.extension;
 
-class XAdESExtensionLTtoLTAWithSelfSignedTest extends XAdESExtensionLTToLTATest {
+class XAdESExtensionLTToLTAWithSelfSignedTest extends XAdESExtensionLTToLTATest {
 
 	@Override
 	protected String getSigningAlias() {
