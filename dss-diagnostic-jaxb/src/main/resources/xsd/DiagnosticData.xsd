@@ -898,7 +898,7 @@
 		<xs:sequence>
 			<xs:element name="Message" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
-		<xs:attribute name="valid" type="xs:boolean" />
+		<xs:attribute name="valid" type="xs:boolean" use="required" />
 	</xs:complexType>
 
 	<xs:complexType name="IssuerEntityKey">
@@ -1579,6 +1579,7 @@
 			<xs:element name="IssueDate" type="xs:dateTime" minOccurs="0" />
 			<xs:element name="NextUpdate" type="xs:dateTime" minOccurs="0" />
 			<xs:element name="WellSigned" type="xs:boolean" />
+			<xs:element name="StructuralValidation"	type="StructuralValidation" minOccurs="0" />
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:ID" use="required" />
 		<xs:attribute name="LOTL" type="xs:boolean" default="false" use="optional" />

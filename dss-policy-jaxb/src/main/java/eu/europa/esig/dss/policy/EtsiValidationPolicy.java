@@ -1698,6 +1698,15 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
+	public LevelConstraint getTLStructureConstraint() {
+		EIDAS eIDASConstraints = getEIDASConstraints();
+		if (eIDASConstraints != null) {
+			return eIDASConstraints.getTLStructure();
+		}
+		return null;
+	}
+
+	@Override
 	public Model getValidationModel() {
 		Model currentModel = DEFAULT_VALIDATION_MODEL;
 		ModelConstraint modelConstraint = policy.getModel();

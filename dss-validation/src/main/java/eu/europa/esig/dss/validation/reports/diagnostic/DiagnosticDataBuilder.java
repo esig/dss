@@ -59,6 +59,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocationRef;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlStructuralValidation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSubjectAlternativeNames;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSubjectKeyIdentifier;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustServiceProvider;
@@ -593,6 +594,7 @@ public abstract class DiagnosticDataBuilder {
 				result.setNextUpdate(parsingCacheInfo.getNextUpdateDate());
 				result.setSequenceNumber(parsingCacheInfo.getSequenceNumber());
 				result.setVersion(parsingCacheInfo.getVersion());
+				result.setStructuralValidation(getXmlStructuralValidation(parsingCacheInfo.getStructureValidationMessages()));
 			}
 			DownloadInfoRecord downloadCacheInfo = tlInfo.getDownloadCacheInfo();
 			if (downloadCacheInfo != null) {
@@ -609,6 +611,21 @@ public abstract class DiagnosticDataBuilder {
 			xmlTrustedListsMap.put(id, result);
 		}
 		return result;
+	}
+
+	/**
+	 * Creates a {@code XmlStructuralValidation} for teh given list of {@code errorMessages}
+	 *
+	 * @param errorMessages a list of {@link String} error messages
+	 * @return {@link XmlStructuralValidation}
+	 */
+	protected XmlStructuralValidation getXmlStructuralValidation(List<String> errorMessages) {
+		final XmlStructuralValidation xmlStructuralValidation = new XmlStructuralValidation();
+		xmlStructuralValidation.setValid(Utils.isCollectionEmpty(errorMessages));
+		if (Utils.isCollectionNotEmpty(errorMessages)) {
+			xmlStructuralValidation.getMessages().addAll(errorMessages);
+		}
+		return xmlStructuralValidation;
 	}
 
 	/**

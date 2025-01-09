@@ -1535,7 +1535,7 @@ public interface ValidationPolicy {
 	/**
 	 * Returns TLFreshness constraint if present in the policy, null otherwise
 	 *
-	 * @return {@code TimeConstraint} if TLFreshness element is present
+	 * @return {@code LevelConstraint} if TLFreshness element is present
 	 *                                 in the constraint file, null otherwise.
 	 */
 	TimeConstraint getTLFreshnessConstraint();
@@ -1543,7 +1543,7 @@ public interface ValidationPolicy {
 	/**
 	 * Returns TLWellSigned constraint if present in the policy, null otherwise
 	 *
-	 * @return {@code TimeConstraint} if TLWellSigned element is present
+	 * @return {@code LevelConstraint} if TLWellSigned element is present
 	 *                                 in the constraint file, null otherwise.
 	 */
 	LevelConstraint getTLWellSignedConstraint();
@@ -1551,7 +1551,7 @@ public interface ValidationPolicy {
 	/**
 	 * Returns TLNotExpired constraint if present in the policy, null otherwise
 	 *
-	 * @return {@code TimeConstraint} if TLNotExpired element is present
+	 * @return {@code LevelConstraint} if TLNotExpired element is present
 	 *                                 in the constraint file, null otherwise.
 	 */
 	LevelConstraint getTLNotExpiredConstraint();
@@ -1563,6 +1563,14 @@ public interface ValidationPolicy {
 	 *                                       in the constraint file, null otherwise.
 	 */
 	MultiValuesConstraint getTLVersionConstraint();
+
+	/**
+	 * Returns TLStructure constraint if present in the policy, null otherwise
+	 *
+	 * @return {@code LevelConstraint} if TLStructure element is present
+	 *                                 in the constraint file, null otherwise.
+	 */
+	LevelConstraint getTLStructureConstraint();
 
 	/**
 	 * Returns the used validation model (default is SHELL). Alternatives are CHAIN

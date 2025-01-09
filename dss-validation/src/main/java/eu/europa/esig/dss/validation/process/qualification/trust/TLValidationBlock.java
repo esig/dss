@@ -34,6 +34,7 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.qualification.trust.checks.TLFreshnessCheck;
 import eu.europa.esig.dss.validation.process.qualification.trust.checks.TLMRACheck;
 import eu.europa.esig.dss.validation.process.qualification.trust.checks.TLNotExpiredCheck;
+import eu.europa.esig.dss.validation.process.qualification.trust.checks.TLStructureCheck;
 import eu.europa.esig.dss.validation.process.qualification.trust.checks.TLVersionCheck;
 import eu.europa.esig.dss.validation.process.qualification.trust.checks.TLWellSignedCheck;
 
@@ -95,6 +96,8 @@ public class TLValidationBlock extends Chain<XmlTLAnalysis> {
 
 		item = item.setNextItem(tlVersion());
 
+		item = item.setNextItem(tlStructure());
+
 		item = item.setNextItem(tlWellSigned());
 
 		if (currentTL.isMra() != null && currentTL.isMra()) {
@@ -120,6 +123,11 @@ public class TLValidationBlock extends Chain<XmlTLAnalysis> {
 	private ChainItem<XmlTLAnalysis> tlVersion() {
 		MultiValuesConstraint constraint = policy.getTLVersionConstraint();
 		return new TLVersionCheck(i18nProvider, result, currentTL, currentTime, constraint);
+	}
+
+	private ChainItem<XmlTLAnalysis> tlStructure() {
+		LevelConstraint constraint = policy.getTLStructureConstraint();
+		return new TLStructureCheck(i18nProvider, result, currentTL, constraint);
 	}
 
 	private ChainItem<XmlTLAnalysis> tlWellSigned() {

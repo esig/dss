@@ -10,6 +10,25 @@
 This chapter covers the changes occurred between different versions of DSS within <<validationPolicy>>.
 
 [cols="2,5,5"]
+.Policy changes from version 6.2 to 6.3
+|===
+|Title                                |v6.2                           |v6.3
+|XML Trusted List structure validation                          |
+----
+Not present
+----
+a|[source,xml]
+----
+<eIDAS>
+    ...
+    <TLStructure Level="WARN" />
+    ...
+</eIDAS>
+----
+
+|===
+
+[cols="2,5,5"]
 .Policy changes from version 6.1 to 6.2
 |===
 |Title                                |v6.1                           |v6.2
