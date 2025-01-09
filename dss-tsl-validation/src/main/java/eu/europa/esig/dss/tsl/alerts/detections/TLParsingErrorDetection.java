@@ -23,9 +23,10 @@ package eu.europa.esig.dss.tsl.alerts.detections;
 import eu.europa.esig.dss.alert.detector.AlertDetector;
 import eu.europa.esig.dss.model.tsl.ParsingInfoRecord;
 import eu.europa.esig.dss.model.tsl.TLInfo;
+import eu.europa.esig.dss.utils.Utils;
 
 /**
- * Detects an error on TL parsing
+ * Detects an error on TL parsing or structure validation
  */
 public class TLParsingErrorDetection implements AlertDetector<TLInfo> {
 
@@ -39,7 +40,7 @@ public class TLParsingErrorDetection implements AlertDetector<TLInfo> {
 	@Override
 	public boolean detect(TLInfo info) {
 		ParsingInfoRecord parsingCacheInfo = info.getParsingCacheInfo();
-		return parsingCacheInfo != null && parsingCacheInfo.isError();
+		return parsingCacheInfo != null && (parsingCacheInfo.isError() || Utils.isCollectionNotEmpty(parsingCacheInfo.getStructureValidationMessages()));
 	}
 	
 }

@@ -64,6 +64,7 @@ class TransitionTest {
 	private static final DSSDocument CZ_NO_SIG = new FileDocument("src/test/resources/lotlCache/CZ_no-sig.xml");
 	private static final DSSDocument CZ_NOT_CONFORM = new FileDocument("src/test/resources/lotlCache/CZ_not-conform.xml");
 	private static final DSSDocument CZ_NOT_COMPLIANT = new FileDocument("src/test/resources/lotlCache/CZ_not-compliant.xml");
+	private static final DSSDocument CZ_NOT_PARSABLE = new FileDocument("src/test/resources/lotlCache/eu-lotl_not-parsable.xml");
 
 	@Test
 	void nullDoc() {
@@ -235,7 +236,7 @@ class TransitionTest {
 
 		job.setOnlineDataLoader(getOnlineDataLoader(CZ_NOT_COMPLIANT, url));
 		job.onlineRefresh();
-		checkSummary(job.getSummary(), CacheStateEnum.SYNCHRONIZED, CacheStateEnum.ERROR, CacheStateEnum.SYNCHRONIZED);
+		checkSummary(job.getSummary(), CacheStateEnum.SYNCHRONIZED, CacheStateEnum.SYNCHRONIZED, CacheStateEnum.SYNCHRONIZED);
 
 		job.setOnlineDataLoader(getOnlineDataLoader(CZ, url));
 		job.onlineRefresh();
@@ -266,6 +267,28 @@ class TransitionTest {
 	}
 
 	@Test
+	void validToNonParsableDoc() {
+
+		String url = "valid-to-null-doc";
+
+		TLValidationJob job = new TLValidationJob();
+		job.setTrustedListCertificateSource(new TrustedListsCertificateSource());
+		job.setTrustedListSources(getTLSource(url));
+
+		job.setOnlineDataLoader(getOnlineDataLoader(CZ, url));
+		job.onlineRefresh();
+		checkSummary(job.getSummary(), CacheStateEnum.SYNCHRONIZED, CacheStateEnum.SYNCHRONIZED, CacheStateEnum.SYNCHRONIZED);
+
+		job.setOnlineDataLoader(getOnlineDataLoader(CZ_NOT_PARSABLE, url));
+		job.onlineRefresh();
+		checkSummary(job.getSummary(), CacheStateEnum.ERROR, CacheStateEnum.SYNCHRONIZED, CacheStateEnum.SYNCHRONIZED);
+
+		job.setOnlineDataLoader(getOnlineDataLoader(CZ, url));
+		job.onlineRefresh();
+		checkSummary(job.getSummary(), CacheStateEnum.SYNCHRONIZED, CacheStateEnum.SYNCHRONIZED, CacheStateEnum.SYNCHRONIZED);
+	}
+
+	@Test
 	void nullToNonCompliantAndThenValidDoc() {
 
 		String url = "null-to-valid-doc";
@@ -280,7 +303,7 @@ class TransitionTest {
 
 		job.setOnlineDataLoader(getOnlineDataLoader(CZ_NOT_COMPLIANT, url));
 		job.onlineRefresh();
-		checkSummary(job.getSummary(), CacheStateEnum.SYNCHRONIZED, CacheStateEnum.ERROR, CacheStateEnum.SYNCHRONIZED);
+		checkSummary(job.getSummary(), CacheStateEnum.SYNCHRONIZED, CacheStateEnum.SYNCHRONIZED, CacheStateEnum.SYNCHRONIZED);
 
 		job.setOnlineDataLoader(getOnlineDataLoader(CZ, url));
 		job.onlineRefresh();
@@ -326,7 +349,7 @@ class TransitionTest {
 
 		job.onlineRefresh();
 
-		checkSummary(job.getSummary(), CacheStateEnum.DESYNCHRONIZED, CacheStateEnum.ERROR, CacheStateEnum.DESYNCHRONIZED);
+		checkSummary(job.getSummary(), CacheStateEnum.DESYNCHRONIZED, CacheStateEnum.DESYNCHRONIZED, CacheStateEnum.DESYNCHRONIZED);
 	}
 
 	@Test

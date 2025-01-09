@@ -20,35 +20,37 @@
  */
 package eu.europa.esig.dss.tsl.job;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
-import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.model.tsl.DownloadInfoRecord;
 import eu.europa.esig.dss.model.tsl.LOTLInfo;
 import eu.europa.esig.dss.model.tsl.ParsingInfoRecord;
 import eu.europa.esig.dss.model.tsl.PivotInfo;
 import eu.europa.esig.dss.model.tsl.TLInfo;
 import eu.europa.esig.dss.model.tsl.TLValidationJobSummary;
-import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.model.tsl.ValidationInfoRecord;
+import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.source.TLSource;
+import eu.europa.esig.dss.utils.Utils;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class LOTLAndTLRefreshTest {
 
@@ -136,9 +138,12 @@ class LOTLAndTLRefreshTest {
 
 		parsingCacheInfo = tlInfo.getParsingCacheInfo();
 		assertNotNull(parsingCacheInfo);
-		assertTrue(parsingCacheInfo.isError());
-		assertNotNull(parsingCacheInfo.getExceptionMessage());
-		assertNotNull(parsingCacheInfo.getExceptionStackTrace());
+		assertFalse(parsingCacheInfo.isError());
+		assertNull(parsingCacheInfo.getExceptionMessage());
+		assertNull(parsingCacheInfo.getExceptionStackTrace());
+		assertTrue(parsingCacheInfo.isResultExist());
+		assertTrue(Utils.isCollectionNotEmpty(parsingCacheInfo.getStructureValidationMessages()));
+		assertTrue(parsingCacheInfo.getStructureValidationMessages().stream().anyMatch("The TL Version '3' is not acceptable!"::equals));
 
 		validationCacheInfo = tlInfo.getValidationCacheInfo();
 		assertNotNull(validationCacheInfo);
