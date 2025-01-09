@@ -610,5 +610,6 @@
 			<Id>5</Id>
 			<Id>6</Id>
 		</TLVersion>
+		<TLStructure Level="FAIL" />
 	</eIDAS>
 </ConstraintsParameters>
