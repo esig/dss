@@ -381,6 +381,7 @@ public class TLValidationJobSnippets {
 		TLSource tlSource = new TLSource();
 		// This parameter defines the supported Trusted List versions (other Trusted List versions
 		// or invalid Trusted List structure will result to a parsing error)
+		// Default: 5, 6 (verifies conformance of TLs versions 5 and 6, rejects other versions)
 		tlSource.setTLVersions(Arrays.asList(5, 6));
 		// end::tl-version[]
 	}
@@ -572,9 +573,13 @@ public class TLValidationJobSnippets {
 		lotlSource.setTrustAnchorValidityPredicate(new GrantedOrRecognizedAtNationalLevelTrustAnchorPeriodPredicate());
 
 		// Optional : enables validation of the XML Trusted List against its version's specification.
-		// When not set, the validator will accept any Trusted List version, with no structure validation to be performed.
-		// When set, the structural validation will be triggered against the XML Trusted List's version specification.
-		// If a Trusted List of another version is provided, an error will be returned within the Parsing task.
+		// When set, the structural validation will be triggered against the specified
+		// XML Trusted List version specification(s).
+		// When set to null, the validator will accept any Trusted List version, with no structure
+		// validation to be performed.
+		// If a Trusted List of another version is provided, an error will be returned within
+		// the Parsing task.
+		// Default: 5, 6 (verifies conformance of LOTL and TLs versions 5 and 6, rejects other versions)
 		lotlSource.setTLVersions(Arrays.asList(5, 6));
 
 		tlValidationJob.setListOfTrustedListSources(lotlSource);

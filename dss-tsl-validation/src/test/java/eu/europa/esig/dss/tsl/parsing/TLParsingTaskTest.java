@@ -44,6 +44,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -221,6 +222,7 @@ class TLParsingTaskTest {
 	@Test
 	void testFIv5InvalidXmlNoCheck() {
 		TLSource tlSource = new TLSource();
+		tlSource.setTLVersions(null); // skip validation
 		TLParsingTask task = new TLParsingTask(FI_V5_INVALID_XML_TL, tlSource);
 		TLParsingResult result = task.get();
 		assertNotNull(result);
@@ -466,6 +468,7 @@ class TLParsingTaskTest {
 	@Test
 	void testNoTlVersionLotl() {
 		LOTLSource lotlSource = new LOTLSource();
+		lotlSource.setTLVersions(Collections.emptyList()); // skip validation
 		TLParsingTask task = new TLParsingTask(LOTL_NO_TL_VERSION, lotlSource);
 		TLParsingResult result = task.get();
 		assertNotNull(result);
@@ -597,7 +600,8 @@ class TLParsingTaskTest {
 		assertNotNull(result.getNextUpdateDate());
 		assertEquals("DE", result.getTerritory());
 		assertFalse(Utils.isCollectionEmpty(result.getDistributionPoints()));
-		assertTrue(Utils.isCollectionEmpty(result.getStructureValidationMessages()));
+		assertFalse(Utils.isCollectionEmpty(result.getStructureValidationMessages()));
+		assertTrue(result.getStructureValidationMessages().stream().anyMatch(m -> m.equals("The TL Version '4' is not acceptable!")));
 
 		List<TrustServiceProvider> trustServiceProviders = result.getTrustServiceProviders();
 		assertNotNull(trustServiceProviders);

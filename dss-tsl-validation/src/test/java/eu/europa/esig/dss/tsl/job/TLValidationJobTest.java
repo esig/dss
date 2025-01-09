@@ -953,9 +953,12 @@ class TLValidationJobTest {
 		assertTrue(czTL.getDownloadCacheInfo().isResultExist());
 		assertNull(czTL.getDownloadCacheInfo().getExceptionMessage());
 		assertNull(czTL.getDownloadCacheInfo().getExceptionStackTrace());
-		assertFalse(czTL.getParsingCacheInfo().isResultExist());
-		assertNotNull(czTL.getParsingCacheInfo().getExceptionMessage());
-		assertNotNull(czTL.getParsingCacheInfo().getExceptionStackTrace());
+		assertTrue(czTL.getParsingCacheInfo().isResultExist());
+		assertFalse(czTL.getParsingCacheInfo().isError());
+		assertNull(czTL.getParsingCacheInfo().getExceptionMessage());
+		assertNull(czTL.getParsingCacheInfo().getExceptionStackTrace());
+		assertTrue(Utils.isCollectionNotEmpty(czTL.getParsingCacheInfo().getStructureValidationMessages()));
+		assertTrue(czTL.getParsingCacheInfo().getStructureValidationMessages().stream().anyMatch("No TLVersion has been found!"::equals));
 		assertTrue(czTL.getValidationCacheInfo().isResultExist());
 		assertNull(czTL.getValidationCacheInfo().getExceptionMessage());
 		assertNull(czTL.getValidationCacheInfo().getExceptionStackTrace());
@@ -982,9 +985,12 @@ class TLValidationJobTest {
 		assertTrue(czTL.getDownloadCacheInfo().isResultExist());
 		assertNull(czTL.getDownloadCacheInfo().getExceptionMessage());
 		assertNull(czTL.getDownloadCacheInfo().getExceptionStackTrace());
-		assertFalse(czTL.getParsingCacheInfo().isResultExist());
-		assertNotNull(czTL.getParsingCacheInfo().getExceptionMessage());
-		assertNotNull(czTL.getParsingCacheInfo().getExceptionStackTrace());
+		assertTrue(czTL.getParsingCacheInfo().isResultExist());
+		assertFalse(czTL.getParsingCacheInfo().isError());
+		assertNull(czTL.getParsingCacheInfo().getExceptionMessage());
+		assertNull(czTL.getParsingCacheInfo().getExceptionStackTrace());
+		assertTrue(Utils.isCollectionNotEmpty(czTL.getParsingCacheInfo().getStructureValidationMessages()));
+		assertTrue(czTL.getParsingCacheInfo().getStructureValidationMessages().stream().anyMatch(m -> m.contains("ds:Signature")));
 		assertFalse(czTL.getValidationCacheInfo().isResultExist());
 		assertNotNull(czTL.getValidationCacheInfo().getExceptionMessage());
 		assertEquals("Number of signatures must be equal to 1 (currently : 2)", czTL.getValidationCacheInfo().getExceptionMessage());
@@ -1095,14 +1101,17 @@ class TLValidationJobTest {
 		List<LOTLInfo> tlInfos = summary.getLOTLInfos();
 		LOTLInfo lotlInfo = tlInfos.get(0);
 		
-		assertEquals(0, lotlInfo.getTLInfos().size());
+		assertEquals(31, lotlInfo.getTLInfos().size());
 		
 		assertTrue(lotlInfo.getDownloadCacheInfo().isResultExist());
 		assertNull(lotlInfo.getDownloadCacheInfo().getExceptionMessage());
 		assertNull(lotlInfo.getDownloadCacheInfo().getExceptionStackTrace());
-		assertFalse(lotlInfo.getParsingCacheInfo().isResultExist());
-		assertNotNull(lotlInfo.getParsingCacheInfo().getExceptionMessage());
-		assertNotNull(lotlInfo.getParsingCacheInfo().getExceptionStackTrace());
+		assertTrue(lotlInfo.getParsingCacheInfo().isResultExist());
+		assertFalse(lotlInfo.getParsingCacheInfo().isError());
+		assertNull(lotlInfo.getParsingCacheInfo().getExceptionMessage());
+		assertNull(lotlInfo.getParsingCacheInfo().getExceptionStackTrace());
+		assertTrue(Utils.isCollectionNotEmpty(lotlInfo.getParsingCacheInfo().getStructureValidationMessages()));
+		assertTrue(lotlInfo.getParsingCacheInfo().getStructureValidationMessages().stream().anyMatch(m -> m.contains("SchemeOperatorAddress")));
 		assertTrue(lotlInfo.getValidationCacheInfo().isResultExist());
 		assertNull(lotlInfo.getValidationCacheInfo().getExceptionMessage());
 		assertNull(lotlInfo.getValidationCacheInfo().getExceptionStackTrace());
@@ -2041,8 +2050,10 @@ class TLValidationJobTest {
 		TLInfo peruvianTL = peruvianLOTL.getTLInfos().get(0);
 		assertTrue(peruvianTL.getDownloadCacheInfo().isResultExist());
 		assertFalse(peruvianTL.getDownloadCacheInfo().isError());
-		assertFalse(peruvianTL.getParsingCacheInfo().isResultExist());
-		assertTrue(peruvianTL.getParsingCacheInfo().isError());
+		assertTrue(peruvianTL.getParsingCacheInfo().isResultExist());
+		assertFalse(peruvianTL.getParsingCacheInfo().isError());
+		assertTrue(Utils.isCollectionNotEmpty(peruvianTL.getParsingCacheInfo().getStructureValidationMessages()));
+		assertTrue(peruvianTL.getParsingCacheInfo().getStructureValidationMessages().stream().anyMatch("The TL Version '3' is not acceptable!"::equals));
 		assertTrue(peruvianTL.getValidationCacheInfo().isResultExist());
 		assertFalse(peruvianTL.getValidationCacheInfo().isError());
 		// assertEquals(Indication.TOTAL_PASSED, peruvianTL.getValidationCacheInfo().getIndication());
