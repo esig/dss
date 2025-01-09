@@ -218,6 +218,26 @@ ValidationAlerter validationAlerter = new SignatureValidationAlerter(validationC
 validationAlerter.assertAllSignaturesNotExpired(); // AlertException is thrown in case of check failure
 ----
 
+a|XML Trusted List parsing validation              a|
+6.1 and before used a strict XSD validation, failing to load any XML Trusted List non-conformant to the XSD.
+                                                   a|
+Lax XSD validation is used by default, but additional validation may be enforced for the chosen XML Trusted List versions (warning is returned).
+[source,java]
+----
+import eu.europa.esig.dss.tsl.job.TLValidationJob;
+import eu.europa.esig.dss.tsl.source.LOTLSource;
+
+LOTLSource lotlSource = new LOTLSource();
+...
+// set supported versions, e.g. TL v5 and v6
+lotlSource.setTLVersions(Arrays.asList(5, 6));
+
+TLValidationJob validationJob = new TLValidationJob();
+...
+// provide to the TLValidationJob
+validationJob.setListOfTrustedListSources(lotlSource);
+----
+
 |===
 
 [cols="2,5,5"]

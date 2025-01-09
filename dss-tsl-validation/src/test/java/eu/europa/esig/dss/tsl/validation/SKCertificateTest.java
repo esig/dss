@@ -119,21 +119,26 @@ class SKCertificateTest {
         List<XmlTrustServiceProvider> trustServiceProviders = certificate.getTrustServiceProviders();
         assertEquals(2, trustServiceProviders.size());
 
-        XmlTrustServiceProvider xmlTrustServiceProvider = trustServiceProviders.get(0);
-        assertTrue(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTSPNames()));
-        assertTrue(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTSPTradeNames()));
-        assertTrue(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTSPRegistrationIdentifiers()));
-        assertTrue(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTrustServices()));
+        boolean tspWithTwoTrustServicesFound = false;
+        for (XmlTrustServiceProvider xmlTrustServiceProvider : trustServiceProviders) {
+            assertTrue(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTrustServices()));
+            if (xmlTrustServiceProvider.getTrustServices().size() == 2) {
+                assertTrue(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTSPNames()));
+                assertTrue(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTSPTradeNames()));
+                assertTrue(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTSPRegistrationIdentifiers()));
 
-        List<XmlTrustService> trustServices = xmlTrustServiceProvider.getTrustServices();
-        assertEquals(2, trustServices.size());
+                List<XmlTrustService> trustServices = xmlTrustServiceProvider.getTrustServices();
+                XmlTrustService xmlTrustService = trustServices.get(0);
+                assertNotNull(xmlTrustService.getServiceType());
+                assertNotNull(xmlTrustService.getStatus());
+                assertNotNull(xmlTrustService.getStartDate());
+                assertTrue(Utils.isCollectionNotEmpty(xmlTrustService.getServiceNames()));
+                assertTrue(Utils.isCollectionNotEmpty(xmlTrustService.getServiceSupplyPoints()));
 
-        XmlTrustService xmlTrustService = trustServices.get(0);
-        assertNotNull(xmlTrustService.getServiceType());
-        assertNotNull(xmlTrustService.getStatus());
-        assertNotNull(xmlTrustService.getStartDate());
-        assertTrue(Utils.isCollectionNotEmpty(xmlTrustService.getServiceNames()));
-        assertTrue(Utils.isCollectionNotEmpty(xmlTrustService.getServiceSupplyPoints()));
+                tspWithTwoTrustServicesFound = true;
+            }
+        }
+        assertTrue(tspWithTwoTrustServicesFound);
     }
 
     @Test
@@ -184,21 +189,26 @@ class SKCertificateTest {
         List<XmlTrustServiceProvider> trustServiceProviders = certificate.getTrustServiceProviders();
         assertEquals(2, trustServiceProviders.size());
 
-        XmlTrustServiceProvider xmlTrustServiceProvider = trustServiceProviders.get(0);
-        assertFalse(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTSPNames()));
-        assertFalse(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTSPTradeNames()));
-        assertFalse(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTSPRegistrationIdentifiers()));
-        assertTrue(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTrustServices()));
+        boolean tspWithTwoTrustServicesFound = false;
+        for (XmlTrustServiceProvider xmlTrustServiceProvider : trustServiceProviders) {
+            assertTrue(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTrustServices()));
+            if (xmlTrustServiceProvider.getTrustServices().size() == 2) {
+                assertFalse(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTSPNames()));
+                assertFalse(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTSPTradeNames()));
+                assertFalse(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTSPRegistrationIdentifiers()));
 
-        List<XmlTrustService> trustServices = xmlTrustServiceProvider.getTrustServices();
-        assertEquals(2, trustServices.size());
+                List<XmlTrustService> trustServices = xmlTrustServiceProvider.getTrustServices();
+                XmlTrustService xmlTrustService = trustServices.get(0);
+                assertNotNull(xmlTrustService.getServiceType());
+                assertNotNull(xmlTrustService.getStatus());
+                assertNotNull(xmlTrustService.getStartDate());
+                assertTrue(Utils.isCollectionNotEmpty(xmlTrustService.getServiceNames()));
+                assertTrue(Utils.isCollectionNotEmpty(xmlTrustService.getServiceSupplyPoints()));
 
-        XmlTrustService xmlTrustService = trustServices.get(0);
-        assertNotNull(xmlTrustService.getServiceType());
-        assertNotNull(xmlTrustService.getStatus());
-        assertNotNull(xmlTrustService.getStartDate());
-        assertTrue(Utils.isCollectionNotEmpty(xmlTrustService.getServiceNames()));
-        assertTrue(Utils.isCollectionNotEmpty(xmlTrustService.getServiceSupplyPoints()));
+                tspWithTwoTrustServicesFound = true;
+            }
+        }
+        assertTrue(tspWithTwoTrustServicesFound);
     }
 
     @Test
@@ -285,7 +295,6 @@ class SKCertificateTest {
         certificateValidator.setCertificateVerifier(certificateVerifier);
 
         CertificateReports reports = certificateValidator.validate();
-        reports.print();
         SimpleCertificateReport simpleReport = reports.getSimpleReport();
 
         assertEquals(Indication.PASSED, simpleReport.getCertificateIndication(CERTIFICATE.getDSSIdAsString()));
@@ -300,21 +309,26 @@ class SKCertificateTest {
         List<XmlTrustServiceProvider> trustServiceProviders = certificate.getTrustServiceProviders();
         assertEquals(2, trustServiceProviders.size());
 
-        XmlTrustServiceProvider xmlTrustServiceProvider = trustServiceProviders.get(0);
-        assertTrue(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTSPNames()));
-        assertTrue(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTSPTradeNames()));
-        assertTrue(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTSPRegistrationIdentifiers()));
-        assertTrue(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTrustServices()));
+        boolean tspWithTwoTrustServicesFound = false;
+        for (XmlTrustServiceProvider xmlTrustServiceProvider : trustServiceProviders) {
+            assertTrue(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTrustServices()));
+            if (xmlTrustServiceProvider.getTrustServices().size() == 2) {
+                assertTrue(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTSPNames()));
+                assertTrue(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTSPTradeNames()));
+                assertTrue(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTSPRegistrationIdentifiers()));
 
-        List<XmlTrustService> trustServices = xmlTrustServiceProvider.getTrustServices();
-        assertEquals(2, trustServices.size());
+                List<XmlTrustService> trustServices = xmlTrustServiceProvider.getTrustServices();
+                XmlTrustService xmlTrustService = trustServices.get(0);
+                assertNull(xmlTrustService.getServiceType());
+                assertNull(xmlTrustService.getStatus());
+                assertNotNull(xmlTrustService.getStartDate());
+                assertFalse(Utils.isCollectionNotEmpty(xmlTrustService.getServiceNames()));
+                assertFalse(Utils.isCollectionNotEmpty(xmlTrustService.getServiceSupplyPoints()));
 
-        XmlTrustService xmlTrustService = trustServices.get(0);
-        assertNull(xmlTrustService.getServiceType());
-        assertNull(xmlTrustService.getStatus());
-        assertNotNull(xmlTrustService.getStartDate());
-        assertFalse(Utils.isCollectionNotEmpty(xmlTrustService.getServiceNames()));
-        assertFalse(Utils.isCollectionNotEmpty(xmlTrustService.getServiceSupplyPoints()));
+                tspWithTwoTrustServicesFound = true;
+            }
+        }
+        assertTrue(tspWithTwoTrustServicesFound);
     }
 
 }
