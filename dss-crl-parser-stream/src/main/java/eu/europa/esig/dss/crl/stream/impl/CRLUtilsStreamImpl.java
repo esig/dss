@@ -24,6 +24,7 @@ import eu.europa.esig.dss.crl.AbstractCRLUtils;
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.crl.CRLValidity;
 import eu.europa.esig.dss.crl.ICRLUtils;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.KeyUsageBit;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -37,9 +38,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
-import java.security.GeneralSecurityException;
+import java.security.AlgorithmParameters;
+import java.security.NoSuchAlgorithmException;
 import java.security.Signature;
 import java.security.cert.X509CRLEntry;
+import java.security.spec.AlgorithmParameterSpec;
+import java.security.spec.InvalidParameterSpecException;
+import java.security.spec.PSSParameterSpec;
 
 /**
  * The DSS implementation of {@code ICRLUtils}
@@ -78,7 +83,8 @@ public class CRLUtilsStreamImpl extends AbstractCRLUtils implements ICRLUtils {
 			crlValidity.setIssuerX509PrincipalMatches(true);
 		}
 
-		checkSignatureValue(crlValidity, crlInfos.getSignatureValue(), signatureAlgorithm, getSignedData(crlValidity), issuerToken);
+		checkSignatureValue(crlValidity, crlInfos.getSignatureValue(), signatureAlgorithm,
+				crlInfos.getCertificateListSignatureAlgorithmParams(), getSignedData(crlValidity), issuerToken);
 		
 		return crlValidity;
 	}
@@ -106,9 +112,13 @@ public class CRLUtilsStreamImpl extends AbstractCRLUtils implements ICRLUtils {
 	}
 
 	private void checkSignatureValue(CRLValidity crlValidity, byte[] signatureValue, SignatureAlgorithm signatureAlgorithm,
-									 byte[] signedData, CertificateToken signer) {
+									 byte[] params, byte[] signedData, CertificateToken signer) {
 		try {
 			Signature signature = Signature.getInstance(signatureAlgorithm.getJCEId());
+			AlgorithmParameterSpec algoParamSpec = createAlgoParamSpec(signatureAlgorithm, params);
+			if (algoParamSpec != null) {
+				signature.setParameter(algoParamSpec);
+			}
 			signature.initVerify(signer.getPublicKey());
 			signature.update(signedData);
 			if (signature.verify(signatureValue)) {
@@ -126,7 +136,7 @@ public class CRLUtilsStreamImpl extends AbstractCRLUtils implements ICRLUtils {
 				crlValidity.setSignatureInvalidityReason("CRL Signature is not intact.");
 			}
 
-		} catch (GeneralSecurityException e) {
+		} catch (Exception e) {
 			String msg = String.format("CRL Signature cannot be validated : %s", e.getMessage());
 			if (LOG.isTraceEnabled()) {
 				LOG.trace(msg, e);
@@ -140,6 +150,21 @@ public class CRLUtilsStreamImpl extends AbstractCRLUtils implements ICRLUtils {
 			CRLParser parser = new CRLParser();
 			return parser.retrieveInfo(bis);
 		}
+	}
+
+	private AlgorithmParameterSpec createAlgoParamSpec(SignatureAlgorithm signatureAlgorithm, byte[] params)
+			throws NoSuchAlgorithmException, IOException, InvalidParameterSpecException {
+		if (params == null) {
+			return null;
+		}
+
+		AlgorithmParameters sigParams = AlgorithmParameters.getInstance(signatureAlgorithm.getJCEId());
+		sigParams.init(params);
+		if (EncryptionAlgorithm.RSASSA_PSS == signatureAlgorithm.getEncryptionAlgorithm()) {
+			return sigParams.getParameterSpec(PSSParameterSpec.class);
+		}
+		LOG.warn("Only RSASSA_PSS signature parameters are supported!");
+		return null;
 	}
 
 }
