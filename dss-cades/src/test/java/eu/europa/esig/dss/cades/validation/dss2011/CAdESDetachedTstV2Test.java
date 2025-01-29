@@ -39,7 +39,7 @@ class CAdESDetachedTstV2Test extends AbstractCAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {
-		return new FileDocument("src/test/resources/validation/dss-2011/cades-tstv2-detached.p7s");
+		return new InMemoryDocument(CAdESDetachedTstV2Test.class.getResourceAsStream("/validation/dss-2011/cades-tstv2-detached.p7s"));
 	}
 	
 	@Override

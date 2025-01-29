@@ -37,7 +37,7 @@ import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-class CMSNotAdESLevelBWithoutCertificatesTest extends AbstractCAdESTestSignature {
+public class CMSNotAdESLevelBWithoutCertificatesTest extends AbstractCAdESTestSignature {
 
     private DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> service;
     private CAdESSignatureParameters signatureParameters;

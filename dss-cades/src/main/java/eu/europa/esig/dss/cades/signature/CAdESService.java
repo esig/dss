@@ -21,6 +21,8 @@
 package eu.europa.esig.dss.cades.signature;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.cms.CMS;
+import eu.europa.esig.dss.cms.CMSUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -29,7 +31,6 @@ import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DigestDocument;
-import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.TimestampBinary;
@@ -40,12 +41,9 @@ import eu.europa.esig.dss.signature.SigningOperation;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
-import eu.europa.esig.dss.spi.x509.CMSSignedDataBuilder;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.cms.CMSException;
-import org.bouncycastle.cms.CMSSignedData;
-import org.bouncycastle.cms.CMSTypedData;
 import org.bouncycastle.cms.SignerInfoGenerator;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.tsp.TSPException;
@@ -53,8 +51,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -107,15 +105,15 @@ public class CAdESService extends
 		final SignatureAlgorithm signatureAlgorithm = parameters.getSignatureAlgorithm();
 		final CustomContentSigner customContentSigner = new CustomContentSigner(signatureAlgorithm.getJCEId());
 
-		final CMSSignedData originalCmsSignedData = getCmsSignedData(toSignDocument, parameters);
-		final DSSDocument contentToSign = getContentToSign(toSignDocument, parameters, originalCmsSignedData);
+		final CMS originalCms = getOriginalCMS(toSignDocument, parameters);
+		final DSSDocument contentToSign = getContentToSign(toSignDocument, parameters, originalCms);
 
 		final SignerInfoGenerator signerInfoGenerator = new CMSSignerInfoGeneratorBuilder()
 				.build(contentToSign, parameters, customContentSigner);
 
-		final CMSSignedDataBuilder cmsSignedDataBuilder = getCMSSignedDataBuilder(parameters)
-				.setOriginalCMSSignedData(originalCmsSignedData);
-		cmsSignedDataBuilder.createCMSSignedData(signerInfoGenerator, contentToSign);
+		final CMSBuilder cmsBuilder = getCMSBuilder(parameters).setOriginalCMS(originalCms);
+		CMS cms = cmsBuilder.createCMS(signerInfoGenerator, contentToSign);
+		CMSUtils.writeToDSSDocument(cms);
 
 		final byte[] bytes = customContentSigner.getOutputStream().toByteArray();
 		return new ToBeSigned(bytes);
@@ -134,30 +132,28 @@ public class CAdESService extends
 		signatureValue = ensureSignatureValue(signatureAlgorithm, signatureValue);
 
 		final CustomContentSigner customContentSigner = new CustomContentSigner(signatureAlgorithm.getJCEId(), signatureValue.getValue());
-		final CMSSignedData originalCmsSignedData = getCmsSignedData(toSignDocument, parameters);
-		if (originalCmsSignedData == null && SignaturePackaging.DETACHED.equals(packaging) && Utils.isCollectionEmpty(parameters.getDetachedContents())) {
-			parameters.getContext().setDetachedContents(Arrays.asList(toSignDocument));
+		final CMS originalCms = getOriginalCMS(toSignDocument, parameters);
+		if (originalCms == null && SignaturePackaging.DETACHED.equals(packaging) && Utils.isCollectionEmpty(parameters.getDetachedContents())) {
+			parameters.getContext().setDetachedContents(Collections.singletonList(toSignDocument));
 		}
-		final DSSDocument contentToSign = getContentToSign(toSignDocument, parameters, originalCmsSignedData);
+		final DSSDocument contentToSign = getContentToSign(toSignDocument, parameters, originalCms);
 
 		final SignerInfoGenerator signerInfoGenerator = new CMSSignerInfoGeneratorBuilder()
 				.setIncludeUnsignedAttributes(true)
 				.build(contentToSign, parameters, customContentSigner);
 
-		final CMSSignedData cmsSignedData = getCMSSignedDataBuilder(parameters)
-				.setOriginalCMSSignedData(originalCmsSignedData)
-				.createCMSSignedData(signerInfoGenerator, contentToSign);
-
-		DSSDocument signature = new CMSSignedDocument(cmsSignedData);
+		final CMSBuilder cmsBuilder = getCMSBuilder(parameters).setOriginalCMS(originalCms);
+		CMS cms = cmsBuilder.createCMS(signerInfoGenerator, contentToSign);
 
 		final SignatureLevel signatureLevel = parameters.getSignatureLevel();
 		if (!SignatureLevel.CAdES_BASELINE_B.equals(signatureLevel)) {
 			// Only the last signature will be extended
-			final SignerInformation newSignerInformation = getNewSignerInformation(originalCmsSignedData, cmsSignedData);
+			final SignerInformation newSignerInformation = getNewSignerInformation(originalCms, cms);
 			final CAdESSignatureExtension extension = getExtensionProfile(parameters);
-			CMSSignedData extendedCMSSignature = extension.extendCMSSignatures(cmsSignedData, newSignerInformation, parameters);
-			signature = new CMSSignedDocument(extendedCMSSignature);
+			cms = extension.extendCMSSignatures(cms, newSignerInformation, parameters);
 		}
+
+		DSSDocument signature = CMSUtils.writeToDSSDocument(cms);
 		signature.setName(getFinalFileName(toSignDocument, SigningOperation.SIGN,
 				parameters.getSignatureLevel(), parameters.getSignaturePackaging()));
 		parameters.reinit();
@@ -182,12 +178,12 @@ public class CAdESService extends
 	 *            document to sign
 	 * @param parameters
 	 *            set of the driving signing parameters
-	 * @param originalCmsSignedData
+	 * @param originalCms
 	 *            the signed data extracted from an existing signature or null
 	 * @return {@link DSSDocument} toSignData
 	 */
 	private DSSDocument getContentToSign(final DSSDocument toSignDocument, final CAdESSignatureParameters parameters,
-										 final CMSSignedData originalCmsSignedData) {
+										 final CMS originalCms) {
 		final List<DSSDocument> detachedContents = parameters.getDetachedContents();
 		if (Utils.isCollectionNotEmpty(detachedContents)) {
 			// * CAdES only can sign one document
@@ -195,10 +191,10 @@ public class CAdESService extends
 			// * ASiC-E -> ASiCManifest
 			return detachedContents.get(0);
 		} else {
-			if (originalCmsSignedData == null) {
+			if (originalCms == null) {
 				return toSignDocument;
 			} else {
-				return getSignedContent(originalCmsSignedData);
+				return getSignedContent(originalCms);
 			}
 		}
 	}
@@ -206,25 +202,23 @@ public class CAdESService extends
 	/**
 	 * This method returns the signed content of CMSSignedData.
 	 *
-	 * @param cmsSignedData
-	 *            the already signed {@code CMSSignedData}
+	 * @param cms
+	 *            the already signed {@code CMS}
 	 * @return the original toSignDocument or null
 	 */
-	private DSSDocument getSignedContent(final CMSSignedData cmsSignedData) {
-		if (cmsSignedData.isDetachedSignature()) {
+	private DSSDocument getSignedContent(final CMS cms) {
+		if (cms.isDetachedSignature()) {
 			throw new IllegalArgumentException("Detached content shall be provided on parallel signing of a detached signature! " +
 					"Please use cadesSignatureParameters#setDetachedContents method to provide original files.");
 		}
-		final CMSTypedData signedContent = cmsSignedData.getSignedContent();
-		final byte[] documentBytes = (byte[]) signedContent.getContent();
-		return new InMemoryDocument(documentBytes);
+		return cms.getSignedContent();
 	}
 	
-	private SignerInformation getNewSignerInformation(CMSSignedData originalSignedData, CMSSignedData cmsSignedData) {
-		Collection<SignerInformation> signers = cmsSignedData.getSignerInfos().getSigners();
-		if (originalSignedData != null) {
+	private SignerInformation getNewSignerInformation(CMS originalCMS, CMS newCMS) {
+		Collection<SignerInformation> signers = newCMS.getSignerInfos().getSigners();
+		if (originalCMS != null) {
 			for (SignerInformation signerInformation : signers) {
-				if (!containsSignerInfo(originalSignedData, signerInformation)) {
+				if (!containsSignerInfo(originalCMS, signerInformation)) {
 					return signerInformation;
 				}
 			}
@@ -233,8 +227,8 @@ public class CAdESService extends
 		return signers.iterator().next();
 	}
 	
-	private boolean containsSignerInfo(CMSSignedData signedData, SignerInformation signerInformationToFind) {
-		for (SignerInformation signerInformation : signedData.getSignerInfos()) {
+	private boolean containsSignerInfo(CMS cms, SignerInformation signerInformationToFind) {
+		for (SignerInformation signerInformation : cms.getSignerInfos()) {
 			if (signerInformationToFind.toASN1Structure() == signerInformation.toASN1Structure()) {
 				return true;
 			}
@@ -274,31 +268,31 @@ public class CAdESService extends
 	 *            set of driving signing parameters
 	 * @return the {@code CMSSignedData} if the dssDocument is an CMS signed message. Null otherwise.
 	 */
-	private CMSSignedData getCmsSignedData(final DSSDocument dssDocument, final CAdESSignatureParameters parameters) {
-		CMSSignedData cmsSignedData = null;
+	private CMS getOriginalCMS(final DSSDocument dssDocument, final CAdESSignatureParameters parameters) {
+		CMS cms = null;
 		if (parameters.isParallelSignature() && !(dssDocument instanceof DigestDocument)
 				&& DSSASN1Utils.isASN1SequenceTag(DSSUtils.readFirstByte(dssDocument))) {
 			try {
-				cmsSignedData = DSSUtils.toCMSSignedData(dssDocument);
+				cms = CMSUtils.parseToCMS(dssDocument);
 			} catch (Exception e) {
 				// not a parallel signature
 			}
-			if (cmsSignedData != null) {
-				assertSignaturePossible(cmsSignedData, parameters);
+			if (cms != null) {
+				assertSignaturePossible(cms, parameters);
 			}
 		}
-		return cmsSignedData;
+		return cms;
 	}
 
-	private void assertSignaturePossible(final CMSSignedData cmsSignedData, final CAdESSignatureParameters parameters) {
-		if (cmsSignedData.isDetachedSignature() != (SignaturePackaging.DETACHED == parameters.getSignaturePackaging())) {
+	private void assertSignaturePossible(final CMS cms, final CAdESSignatureParameters parameters) {
+		if (cms.isDetachedSignature() != (SignaturePackaging.DETACHED == parameters.getSignaturePackaging())) {
 			throw new IllegalArgumentException(String.format("Unable to create a parallel signature with packaging '%s'" +
 					" which is different than the one used in the original signature!", parameters.getSignaturePackaging()));
 		}
 	}
 
-	private CMSSignedDataBuilder getCMSSignedDataBuilder(CAdESSignatureParameters parameters) {
-		return new CMSSignedDataBuilder()
+	private CMSBuilder getCMSBuilder(CAdESSignatureParameters parameters) {
+		return new CMSBuilder()
 				.setSigningCertificate(parameters.getSigningCertificate())
 				.setCertificateChain(parameters.getCertificateChain())
 				.setGenerateWithoutCertificates(parameters.isGenerateTBSWithoutCertificate())
@@ -384,10 +378,10 @@ public class CAdESService extends
 		assertCounterSignaturePossible(parameters);
 		signatureValue = ensureSignatureValue(parameters.getSignatureAlgorithm(), signatureValue);
 
-		CMSSignedData originalCMSSignedData = DSSUtils.toCMSSignedData(signatureDocument);
+		CMS originalCMS = CMSUtils.parseToCMS(signatureDocument);
 		
 		CAdESCounterSignatureBuilder counterSignatureBuilder = new CAdESCounterSignatureBuilder(certificateVerifier);
-		CMSSignedDocument counterSigned = counterSignatureBuilder.addCounterSignature(originalCMSSignedData, parameters, signatureValue);
+		DSSDocument counterSigned = counterSignatureBuilder.addCounterSignature(originalCMS, parameters, signatureValue);
 		counterSigned.setName(getFinalFileName(signatureDocument, SigningOperation.COUNTER_SIGN, parameters.getSignatureLevel()));
 		counterSigned.setMimeType(signatureDocument.getMimeType());
 		

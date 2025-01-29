@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.cookbook.example.sign;
 
-import eu.europa.esig.dss.cades.signature.CMSSignedDocument;
+import eu.europa.esig.dss.cms.CMSSignedDocument;
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -89,7 +89,7 @@ class SignPdfWithExternalCmsTest extends CookbookTools {
         CertificateVerifier certificateVerifier = getOfflineCertificateVerifier();
 
         // tag::demo-cms-sign[]
-        // import eu.europa.esig.dss.cades.signature.CMSSignedDocument;
+        // import eu.europa.esig.dss.cms.CMSSignedDocument;
         // import eu.europa.esig.dss.enumerations.SignatureLevel;
         // import eu.europa.esig.dss.model.SignatureValue;
         // import eu.europa.esig.dss.model.ToBeSigned;

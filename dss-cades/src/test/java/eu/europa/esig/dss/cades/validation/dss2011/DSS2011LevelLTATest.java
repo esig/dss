@@ -31,7 +31,7 @@ import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.validationreport.jaxb.SignersDocumentType;
@@ -48,7 +48,7 @@ class DSS2011LevelLTATest extends AbstractCAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {
-		return new FileDocument("src/test/resources/validation/dss-2011/cades-lta-detached.pkcs7");
+		return new InMemoryDocument(DSS2011LevelLTATest.class.getResourceAsStream("/validation/dss-2011/cades-lta-detached.pkcs7"));
 	}
 	
 	@Override

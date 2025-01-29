@@ -418,7 +418,7 @@ boolean result = DSSASN1Utils.isArchiveTimeStampToken(attribute);
 a|
 [source,java]
 ----
-import eu.europa.esig.dss.cades.CMSUtils;
+import eu.europa.esig.dss.cades.CAdESUtils;
 
 List<ASN1ObjectIdentifier> oids = CMSUtils.getTimestampOids();
 boolean result = CMSUtils.isArchiveTimeStampToken(attribute);
@@ -863,19 +863,19 @@ List<SignatureScope> signatureScopes = advancedSignature.getSignatureScopes();
 
 |CMSSignedDataBuilder refactoring                               a|[source,java]
 ----
-import eu.europa.esig.dss.cades.CMSUtils;
-import eu.europa.esig.dss.cades.signature.CMSSignedDataBuilder;
+import eu.europa.esig.dss.cades.CAdESUtils;
+import eu.europa.esig.dss.cades.signature.CMSBuilder;
 import org.bouncycastle.cms.SignerInfoGeneratorBuilder;
 
-CMSSignedDataBuilder cmsSignedDataBuilder = new CMSSignedDataBuilder(certificateVerifier);
-SignerInfoGeneratorBuilder signerInfoGeneratorBuilder = cmsSignedDataBuilder.getSignerInfoGeneratorBuilder(dcp, parameters, true, contentToSign);
-CMSSignedDataGenerator cmsSignedDataGenerator = cmsSignedDataBuilder.createCMSSignedDataGenerator(parameters, customContentSigner, signerInfoGeneratorBuilder, originalCmsSignedData);
+CMSSignedDataBuilder cmsBuilder = new CMSSignedDataBuilder(certificateVerifier);
+SignerInfoGeneratorBuilder signerInfoGeneratorBuilder = cmsBuilder.getSignerInfoGeneratorBuilder(dcp, parameters, true, contentToSign);
+CMSSignedDataGenerator cmsSignedDataGenerator = cmsBuilder.createCMSSignedDataGenerator(parameters, customContentSigner, signerInfoGeneratorBuilder, originalCmsSignedData);
 CMSTypedData content = CMSUtils.getContentToBeSigned(contentToSign);
 CMSSignedData cmsSignedData = CMSUtils.generateCMSSignedData(cmsSignedDataGenerator, content, encapsulate);
 ----
                                                                 a|[source,java]
 ----
-import eu.europa.esig.dss.spi.x509.CMSSignedDataBuilder;
+import eu.europa.esig.dss.cades.signature.CMSBuilder;
 import org.bouncycastle.cms.SignerInfoGenerator;
 
 SignerInfoGenerator signerInfoGenerator = new CMSSignerInfoGeneratorBuilder().build(contentToSign, parameters, customContentSigner);

@@ -21,18 +21,18 @@
 package eu.europa.esig.dss.cades.validation;
 
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 
 /**
  * Unit test added to fix : https://esig-dss.atlassian.net/browse/DSS-768
  */
 class CAdESWithSpecialCharInFilenameTest extends AbstractCAdESTestValidation {
 
-	private static final String FILE_TO_TEST = "src/test/resources/validation/dss-768/FD1&FD2&FEA.pdf.p7m";
+	private static final String FILE_TO_TEST = "/validation/dss-768/FD1&FD2&FEA.pdf.p7m";
 
 	@Override
 	protected DSSDocument getSignedDocument() {
-		return new FileDocument(FILE_TO_TEST);
+		return new InMemoryDocument(CAdESNoKeInfoTrustedStoreTest.class.getResourceAsStream(FILE_TO_TEST), "FD1&FD2&FEA.pdf.p7m");
 	}
 	
 }

@@ -21,8 +21,8 @@
 package eu.europa.esig.dss.cades.validation;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
@@ -36,19 +36,20 @@ import java.io.OutputStream;
 
 /**
  * This class allows to provide digest values without original document
+ *
  */
 public class PrecomputedDigestCalculatorProvider implements DigestCalculatorProvider {
 
-	/** The signing DigestDocument */
-	private final DigestDocument digestDocument;
+	/** The DSSDocument to be signed */
+	private final DSSDocument digestDocument;
 
 	/**
 	 * The default constructor
 	 *
-	 * @param digestDocument {@link DigestDocument} to be signed
+	 * @param dssDocument {@link DSSDocument} to be signed
 	 */
-	public PrecomputedDigestCalculatorProvider(DigestDocument digestDocument) {
-		this.digestDocument = digestDocument;
+	public PrecomputedDigestCalculatorProvider(DSSDocument dssDocument) {
+		this.digestDocument = dssDocument;
 	}
 
 	@Override

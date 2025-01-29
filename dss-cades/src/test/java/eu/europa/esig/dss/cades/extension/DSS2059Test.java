@@ -33,17 +33,17 @@ import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.TimestampType;
-import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
-import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -66,7 +66,7 @@ class DSS2059Test extends AbstractCAdESTestExtension {
 
 	@BeforeEach
 	void init() {
-		document = new FileDocument("src/test/resources/validation/dss2059.p7s");
+		document = new InMemoryDocument(DSS2059Test.class.getResourceAsStream("/validation/dss2059.p7s"));
 
 		CertificateVerifier certificateVerifier = getOfflineCertificateVerifier();
 		certificateVerifier.setCheckRevocationForUntrustedChains(true);
@@ -118,7 +118,7 @@ class DSS2059Test extends AbstractCAdESTestExtension {
 		// see DSS-2172
 
 		SignaturePolicyStore signaturePolicyStore = new SignaturePolicyStore();
-		signaturePolicyStore.setSignaturePolicyContent(new FileDocument("src/test/resources/validation/signature-policy.der"));
+		signaturePolicyStore.setSignaturePolicyContent(new InMemoryDocument(DSS2059Test.class.getResourceAsStream("/validation/signature-policy.der")));
 		SpDocSpecification spDocSpec = new SpDocSpecification();
 		spDocSpec.setId("1.2.3.4.5.6");
 		signaturePolicyStore.setSpDocSpecification(spDocSpec);

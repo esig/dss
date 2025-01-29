@@ -29,6 +29,7 @@ import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.validation.ASiCManifestParser;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.cades.signature.CMSBuilder;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -39,7 +40,6 @@ import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.x509.CMSSignedDataBuilder;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
@@ -211,8 +211,8 @@ public class ASiCWithCAdESLevelBaselineLTA extends ASiCWithCAdESSignatureExtensi
 
     private DSSDocument extendTimestamp(DSSDocument archiveTimestamp, ValidationData validationDataForInclusion) {
         CMSSignedData cmsSignedData = DSSUtils.toCMSSignedData(archiveTimestamp);
-        CMSSignedDataBuilder cmsSignedDataBuilder = new CMSSignedDataBuilder().setOriginalCMSSignedData(cmsSignedData);
-        CMSSignedData extendedCMSSignedData = cmsSignedDataBuilder.extendCMSSignedData(
+        CMSBuilder cmsBuilder = new CMSBuilder().setOriginalCMS(cmsSignedData);
+        CMSSignedData extendedCMSSignedData = cmsBuilder.extendCMSSignedData(
                 validationDataForInclusion.getCertificateTokens(), validationDataForInclusion.getCrlTokens(),
                 validationDataForInclusion.getOcspTokens());
         return new InMemoryDocument(DSSASN1Utils.getEncoded(extendedCMSSignedData), archiveTimestamp.getName(), MimeTypeEnum.TST);

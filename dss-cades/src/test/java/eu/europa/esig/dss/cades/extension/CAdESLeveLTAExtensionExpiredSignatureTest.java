@@ -27,7 +27,7 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,7 +49,7 @@ class CAdESLeveLTAExtensionExpiredSignatureTest extends AbstractCAdESTestExtensi
 
     @BeforeEach
     void init() {
-        document = new FileDocument("src/test/resources/validation/Signature-C-CZ_SIX-1.p7m");
+        document = new InMemoryDocument(CAdESLeveLTAExtensionExpiredSignatureTest.class.getResourceAsStream("/validation/Signature-C-CZ_SIX-1.p7m"));
 
         certificateVerifier = getOfflineCertificateVerifier();
         certificateVerifier.setCheckRevocationForUntrustedChains(true);

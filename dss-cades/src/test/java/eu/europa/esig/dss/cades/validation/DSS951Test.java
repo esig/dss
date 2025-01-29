@@ -22,11 +22,11 @@ package eu.europa.esig.dss.cades.validation;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.validationreport.jaxb.SignersDocumentType;
 
@@ -38,7 +38,7 @@ class DSS951Test extends AbstractCAdESTestValidation {
 	
 	@Override
 	protected DSSDocument getSignedDocument() {
-		return new FileDocument("src/test/resources/validation/dss-951/NexU-CAdES-B-B-Detached-Sha512.p7m");
+		return new InMemoryDocument(DSS951Test.class.getResourceAsStream("/validation/dss-951/NexU-CAdES-B-B-Detached-Sha512.p7m"));
 	}
 	
 	@Override

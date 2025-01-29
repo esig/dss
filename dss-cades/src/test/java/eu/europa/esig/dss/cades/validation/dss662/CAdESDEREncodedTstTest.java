@@ -20,21 +20,21 @@
  */
 package eu.europa.esig.dss.cades.validation.dss662;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
-
 import eu.europa.esig.dss.cades.validation.AbstractCAdESTestValidation;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CAdESDEREncodedTstTest extends AbstractCAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {
-		return new FileDocument("src/test/resources/validation/Signature-C-DE_CRY-3.p7m");
+		return new InMemoryDocument(CAdESDEREncodedTstTest.class.getResourceAsStream("/validation/Signature-C-DE_CRY-3.p7m"));
 	}
 	
 	@Override

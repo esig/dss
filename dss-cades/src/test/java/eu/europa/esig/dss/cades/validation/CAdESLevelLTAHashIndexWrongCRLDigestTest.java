@@ -27,7 +27,7 @@ import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
 
 import java.util.Collections;
@@ -42,12 +42,12 @@ class CAdESLevelLTAHashIndexWrongCRLDigestTest extends AbstractCAdESTestValidati
 
     @Override
     protected DSSDocument getSignedDocument() {
-        return new FileDocument("src/test/resources/validation/cades-ats-v3-wrong-crl.p7s");
+        return new InMemoryDocument(CAdESLevelLTAHashIndexWrongCRLDigestTest.class.getResourceAsStream("/validation/cades-ats-v3-wrong-crl.p7s"));
     }
 
     @Override
     protected List<DSSDocument> getDetachedContents() {
-        return Collections.singletonList(new FileDocument("src/test/resources/validation/dss-1469/screenshot2.png"));
+        return Collections.singletonList(new InMemoryDocument(CAdESLevelLTAHashIndexWrongCRLDigestTest.class.getResourceAsStream("/validation/dss-1469/screenshot2.png")));
     }
 
     @Override

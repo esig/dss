@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.cades.signature;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
-import eu.europa.esig.dss.cades.CMSUtils;
+import eu.europa.esig.dss.cades.CAdESUtils;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
@@ -100,7 +100,7 @@ public class CMSSignerInfoGeneratorBuilder {
      */
     protected SignerInfoGeneratorBuilder getSignerInfoGeneratorBuilder(
             CAdESSignatureParameters parameters, DSSDocument contentToSign) {
-        final DigestCalculatorProvider dcp = CMSUtils.getDigestCalculatorProvider(
+        final DigestCalculatorProvider dcp = CAdESUtils.getDigestCalculatorProvider(
                 contentToSign, parameters.getReferenceDigestAlgorithm());
 
         final CAdESLevelBaselineB cadesProfile = new CAdESLevelBaselineB(contentToSign);
@@ -127,11 +127,11 @@ public class CMSSignerInfoGeneratorBuilder {
     protected SignerInfoGeneratorBuilder getSignerInfoGeneratorBuilder(
             DigestCalculatorProvider digestCalculatorProvider, AttributeTable signedAttributes, AttributeTable unsignedAttributes) {
 
-        if (CMSUtils.isEmpty(signedAttributes)) {
+        if (CAdESUtils.isEmpty(signedAttributes)) {
             signedAttributes = null;
         }
         final DefaultSignedAttributeTableGenerator signedAttributeGenerator = new DefaultSignedAttributeTableGenerator(signedAttributes);
-        if (CMSUtils.isEmpty(unsignedAttributes)) {
+        if (CAdESUtils.isEmpty(unsignedAttributes)) {
             unsignedAttributes = null;
         }
         final SimpleAttributeTableGenerator unsignedAttributeGenerator = new SimpleAttributeTableGenerator(unsignedAttributes);

@@ -32,6 +32,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -43,12 +44,12 @@ class CAdESDetachedValidationTest extends AbstractCAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {
-		return new FileDocument("src/test/resources/validation/dss-2011/cades-detached.pkcs7");
+		return new InMemoryDocument(CAdESDetachedValidationTest.class.getResourceAsStream("/validation/dss-2011/cades-detached.pkcs7"));
 	}
 	
 	@Override
 	protected List<DSSDocument> getDetachedContents() {
-		return Arrays.asList(new InMemoryDocument("Hello World".getBytes()));
+		return Collections.singletonList(new InMemoryDocument("Hello World".getBytes()));
 	}
 	
 	@Override

@@ -20,9 +20,10 @@
  */
 package eu.europa.esig.dss.pades.signature;
 
+import eu.europa.esig.dss.cades.signature.CMSBuilder;
 import eu.europa.esig.dss.signature.AbstractSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESLevelBaselineT;
-import eu.europa.esig.dss.cades.signature.CMSSignedDocument;
+import eu.europa.esig.dss.cms.CMSSignedDocument;
 import eu.europa.esig.dss.cades.signature.CustomContentSigner;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -36,7 +37,6 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.signature.SignatureRequirementsChecker;
 import eu.europa.esig.dss.signature.SignatureValueChecker;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.x509.CMSSignedDataBuilder;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import org.bouncycastle.cms.CMSSignedData;
@@ -127,8 +127,8 @@ public class ExternalCMSService {
         final SignerInfoGenerator signerInfoGenerator = new PAdESSignerInfoGeneratorBuilder(messageDigest)
                 .build(parameters, customContentSigner);
 
-        final CMSSignedDataBuilder cmsSignedDataBuilder = getCMSSignedDataBuilder(parameters);
-        cmsSignedDataBuilder.createCMSSignedData(signerInfoGenerator, new InMemoryDocument(messageDigest.getValue()));
+        final CMSBuilder cmsBuilder = getCMSSignedDataBuilder(parameters);
+        cmsBuilder.createCMS(signerInfoGenerator, new InMemoryDocument(messageDigest.getValue()));
 
         final byte[] dataToSign = customContentSigner.getOutputStream().toByteArray();
         return new ToBeSigned(dataToSign);
@@ -182,7 +182,7 @@ public class ExternalCMSService {
                 .build(parameters, customContentSigner);
 
         CMSSignedData cmsSignedData = getCMSSignedDataBuilder(parameters)
-                .createCMSSignedData(signerInfoGenerator, new InMemoryDocument(messageDigest.getValue()));
+                .createCMS(signerInfoGenerator, new InMemoryDocument(messageDigest.getValue()));
 
         if (!SignatureLevel.PAdES_BASELINE_B.equals(signatureLevel)) {
             Objects.requireNonNull(tspSource, "TSPSource shall be provided for T-level creation!");
@@ -240,8 +240,8 @@ public class ExternalCMSService {
         signatureRequirementsChecker.assertSigningCertificateIsValid(signingCertificate);
     }
 
-    private CMSSignedDataBuilder getCMSSignedDataBuilder(PAdESSignatureParameters parameters) {
-        return new CMSSignedDataBuilder()
+    private CMSBuilder getCMSSignedDataBuilder(PAdESSignatureParameters parameters) {
+        return new CMSBuilder()
                 .setSigningCertificate(parameters.getSigningCertificate())
                 .setCertificateChain(parameters.getCertificateChain())
                 .setGenerateWithoutCertificates(parameters.isGenerateTBSWithoutCertificate())

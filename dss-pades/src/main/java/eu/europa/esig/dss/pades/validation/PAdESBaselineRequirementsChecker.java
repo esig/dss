@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
-import eu.europa.esig.dss.cades.CMSUtils;
+import eu.europa.esig.dss.cades.CAdESUtils;
 import eu.europa.esig.dss.cades.validation.CAdESBaselineRequirementsChecker;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.SignatureForm;
@@ -220,7 +220,7 @@ public class PAdESBaselineRequirementsChecker extends CAdESBaselineRequirementsC
             return false;
         }
         PAdESSignature padesSignature = (PAdESSignature) signature;
-        CMSSignedData cmsSignedData = padesSignature.getCmsSignedData();
+        CMSSignedData cmsSignedData = padesSignature.getCMS();
         PdfSignatureDictionary pdfSignatureDictionary = padesSignature.getPdfSignatureDictionary();
         // PAdES Part 1 : a DER-encoded SignedData object as specified in ETSI EN 319 122-1 [2] shall be included
         if (cmsSignedData == null) {
@@ -234,7 +234,7 @@ public class PAdESBaselineRequirementsChecker extends CAdESBaselineRequirementsC
             return false;
         }
         // PAdES Part 1 : "No data shall be encapsulated in the PKCS#7 SignedData field
-        if (!padesSignature.getCmsSignedData().isDetachedSignature()) {
+        if (!padesSignature.getCMS().isDetachedSignature()) {
             LOG.warn("No data shall be encapsulated in the PKCS#7 SignedData field for PAdES-BES signature " +
                     "(PAdES Part 1, requirement (b))!");
             return false;
@@ -291,7 +291,7 @@ public class PAdESBaselineRequirementsChecker extends CAdESBaselineRequirementsC
         SignerInformation signerInformation = padesSignature.getSignerInformation();
         PdfSignatureDictionary pdfSignatureDictionary = padesSignature.getPdfSignatureDictionary();
         // signature-policy-identifier (Cardinality == 1)
-        if (Utils.arraySize(CMSUtils.getSignedAttributes(signerInformation, PKCSObjectIdentifiers.id_aa_ets_sigPolicyId)) == 0) {
+        if (Utils.arraySize(CAdESUtils.getSignedAttributes(signerInformation, PKCSObjectIdentifiers.id_aa_ets_sigPolicyId)) == 0) {
             LOG.debug("signature-policy-identifier attribute shall be present for PAdES-EPES signature (cardinality == 1)!");
             return false;
         }
@@ -517,20 +517,20 @@ public class PAdESBaselineRequirementsChecker extends CAdESBaselineRequirementsC
                 return false;
             }
             // No data shall be encapsulated in the CMS SignedData field.
-            if (!padesSignature.getCmsSignedData().isDetachedSignature()) {
+            if (!padesSignature.getCMS().isDetachedSignature()) {
                 LOG.warn("No data shall be encapsulated in the CMS SignedData field for PKCS#7 signature!");
                 return false;
             }
         }
         // SubFilter adbe.pkcs7.sha1
         if (PAdESConstants.SIGNATURE_PKCS7_SHA1_SUBFILTER.equals(pdfSignatureDictionary.getSubFilter())) {
-            CMSTypedData signedContent = padesSignature.getCmsSignedData().getSignedContent();
+            CMSTypedData signedContent = padesSignature.getCMS().getSignedContent();
             if (signedContent == null) {
                 LOG.warn("ContentInfo of type Data shall be encapsulated in the CMS SignedData field for " +
                         "PKCS#7 signature with SHA-1 SubFilter!");
                 return false;
             }
-            byte[] signedContentBytes = CMSUtils.getSignedContent(signedContent);
+            byte[] signedContentBytes = CAdESUtils.getSignedContent(signedContent);
             if (!DSSUtils.isSHA1Digest(Utils.toHex(signedContentBytes))) {
                 LOG.warn("The SHA-1 digest of the document’s byte range shall be encapsulated in the CMS " +
                         "SignedData field with ContentInfo of type Data for PKCS#7 signature with SHA-1 SubFilter!");

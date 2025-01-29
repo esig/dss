@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.cades.validation;
 
+import eu.europa.esig.dss.cms.CMS;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.bouncycastle.cms.CMSSignedData;
@@ -48,9 +49,21 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
      *
      * @param cmsSignedData
      *            pkcs7-signature(s)
+     * @deprecated since DSS 6.3. Please use {@code new CMSDocumentValidator(CMS cms)} constructor instead
      */
+    @Deprecated
     public CMSDocumentValidator(final CMSSignedData cmsSignedData) {
         super(new CMSDocumentAnalyzer(cmsSignedData));
+    }
+
+    /**
+     * The default constructor for {@code CMSDocumentValidator}.
+     *
+     * @param cms
+     *            {@link CMS} representing the pkcs7-signature(s)
+     */
+    public CMSDocumentValidator(final CMS cms) {
+        super(new CMSDocumentAnalyzer(cms));
     }
 
     /**
@@ -69,12 +82,12 @@ public class CMSDocumentValidator extends SignedDocumentValidator {
     }
 
     /**
-     * This method returns a CMSSignedData
+     * This method returns a CMS
      *
-     * @return {@link CMSSignedData}
+     * @return {@link CMS}
      */
-    public CMSSignedData getCmsSignedData() {
-        return getDocumentAnalyzer().getCmsSignedData();
+    public CMS getCmsSignedData() {
+        return getDocumentAnalyzer().getCMS();
     }
 
     @Override

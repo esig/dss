@@ -71,7 +71,7 @@ public class CAdESSignatureIdentifierBuilder extends AbstractSignatureIdentifier
 	protected Integer getSignaturePosition() {
 		CAdESSignature cadesSignature = (CAdESSignature) signature;
 		
-		return count(cadesSignature.getCmsSignedData().getSignerInfos().getSigners(), cadesSignature.getSignerInformation());
+		return count(cadesSignature.getCMS().getSignerInfos().getSigners(), cadesSignature.getSignerInformation());
 	}
 	
 	private Integer count(Collection<SignerInformation> signerInformationStore, SignerInformation currentSignerInformation) {

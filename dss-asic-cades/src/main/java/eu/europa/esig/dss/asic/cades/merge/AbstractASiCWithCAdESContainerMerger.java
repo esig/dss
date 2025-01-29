@@ -27,8 +27,8 @@ import eu.europa.esig.dss.asic.cades.validation.ASiCContainerWithCAdESAnalyzerFa
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.merge.DefaultContainerMerger;
-import eu.europa.esig.dss.cades.CMSUtils;
-import eu.europa.esig.dss.cades.signature.CMSSignedDocument;
+import eu.europa.esig.dss.cades.CAdESUtils;
+import eu.europa.esig.dss.cms.CMSSignedDocument;
 import eu.europa.esig.dss.cades.validation.CMSDocumentAnalyzer;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -143,7 +143,7 @@ public abstract class AbstractASiCWithCAdESContainerMerger extends DefaultContai
 
             List<AlgorithmIdentifier> digestAlgorithms = getDigestAlgorithms(cmsSignedDataList);
             for (AlgorithmIdentifier algorithmIdentifier : digestAlgorithms) {
-                mergedCmsSignedData = CMSUtils.addDigestAlgorithm(mergedCmsSignedData, algorithmIdentifier);
+                mergedCmsSignedData = CAdESUtils.addDigestAlgorithm(mergedCmsSignedData, algorithmIdentifier);
             }
 
             return new CMSSignedDocument(mergedCmsSignedData, getSignatureDocumentName(signatureDocuments));

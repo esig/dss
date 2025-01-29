@@ -52,7 +52,7 @@ public abstract class AbstractDSS818Test extends AbstractPAdESTestValidation {
 			try {
 				PAdESSignature pades = (PAdESSignature) advancedSignature;
 	
-				byte[] encoded = pades.getCmsSignedData().getEncoded();
+				byte[] encoded = pades.getCMS().getEncoded();
 	
 				checkSignedAttributesOrder(encoded);
 			} catch (Exception e) {

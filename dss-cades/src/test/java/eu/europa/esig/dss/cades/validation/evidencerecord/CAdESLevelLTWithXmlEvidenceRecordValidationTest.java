@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.cades.validation.evidencerecord;
 
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
@@ -33,12 +33,12 @@ class CAdESLevelLTWithXmlEvidenceRecordValidationTest extends AbstractCAdESWithE
 
     @Override
     protected DSSDocument getSignedDocument() {
-        return new FileDocument("src/test/resources/validation/evidence-record/Signature-C-LT-d233a2d9-a257-40dc-bcdb-bf4516b6d1da.p7m");
+        return new InMemoryDocument(CAdESLevelLTWithXmlEvidenceRecordValidationTest.class.getResourceAsStream("/validation/evidence-record/Signature-C-LT-d233a2d9-a257-40dc-bcdb-bf4516b6d1da.p7m"), "sig.p7m");
     }
 
     @Override
     protected List<DSSDocument> getDetachedEvidenceRecords() {
-        return Collections.singletonList(new FileDocument("src/test/resources/validation/evidence-record/evidence-record-d233a2d9-a257-40dc-bcdb-bf4516b6d1da.xml"));
+        return Collections.singletonList(new InMemoryDocument(CAdESLevelLTWithXmlEvidenceRecordValidationTest.class.getResourceAsStream("/validation/evidence-record/evidence-record-d233a2d9-a257-40dc-bcdb-bf4516b6d1da.xml"), "er.xml"));
     }
 
     @Override

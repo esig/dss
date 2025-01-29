@@ -29,7 +29,7 @@ import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.utils.Utils;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,7 +48,7 @@ class DSS3507ExtensionTest extends AbstractCAdESTestExtension {
 
     @BeforeEach
     void init() {
-        document = new FileDocument("src/test/resources/validation/cades-broken-sig-tst.p7m");
+        document = new InMemoryDocument(DSS3507ExtensionTest.class.getResourceAsStream("/validation/cades-broken-sig-tst.p7m"));
 
         CertificateVerifier certificateVerifier = getOfflineCertificateVerifier();
         certificateVerifier.setCheckRevocationForUntrustedChains(true);

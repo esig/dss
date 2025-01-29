@@ -45,6 +45,8 @@ import org.bouncycastle.asn1.x509.Certificate;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
+import org.bouncycastle.cms.SignerInformationStore;
+import org.bouncycastle.util.Store;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,8 +70,11 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CMSCertificateSource.class);
 
-	/** The CMSSignedData */
-	private final transient CMSSignedData cmsSignedData;
+	/** The signers present in a CMS */
+	private final transient SignerInformationStore signerInformations;
+
+	/** The certificates present within SignedData.certificates field */
+	private final transient Store<X509CertificateHolder> certificates;
 
 	/** The SignerInformation of the current signature */
 	private final transient SignerInformation currentSignerInformation;
@@ -81,11 +86,30 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 	 * @param cmsSignedData            {@link CMSSignedData}
 	 * @param currentSignerInformation the current {@link SignerInformation}
 	 *                                 extracted from cmsSignedData
+	 * @deprecated since DSS 6.3. Please use {@code new CMSCertificateSource(SignerInformationStore signerInformations,
+	 *             Store<X509CertificateHolder> certificates, SignerInformation currentSignerInformation} constructor instead
 	 */
+	@Deprecated
 	protected CMSCertificateSource(final CMSSignedData cmsSignedData, final SignerInformation currentSignerInformation) {
-		Objects.requireNonNull(cmsSignedData, "CMS SignedData is null, it must be provided!");
+		this(cmsSignedData.getSignerInfos(), cmsSignedData.getCertificates(), currentSignerInformation);
+	}
+
+	/**
+	 *
+	 * The constructor is used to instantiate a CMSCertificateSource. Allows to define a used signerInformation.
+	 *
+	 * @param signerInformations {@link SignerInformationStore} all signers from a CMS
+	 * @param certificates {@link Store} containing SignedData.certificates
+	 * @param currentSignerInformation {@link SignerInformation} current signer
+	 */
+	protected CMSCertificateSource(final SignerInformationStore signerInformations, Store<X509CertificateHolder> certificates,
+								   final SignerInformation currentSignerInformation) {
+		Objects.requireNonNull(signerInformations, "SignerInformationStore is null, it must be provided!");
+		Objects.requireNonNull(certificates, "Certificates is null, it must be provided!");
 		Objects.requireNonNull(currentSignerInformation, "currentSignerInformation is null, it must be provided!");
-		this.cmsSignedData = cmsSignedData;
+
+		this.signerInformations = signerInformations;
+		this.certificates = certificates;
 		this.currentSignerInformation = currentSignerInformation;
 
 		extractCertificateIdentifiers();
@@ -100,7 +124,7 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 	private void extractCertificateIdentifiers() {
 		SignerIdentifier currentSignerIdentifier = DSSASN1Utils.toSignerIdentifier(currentSignerInformation.getSID());
 		boolean found = false;
-		Collection<SignerInformation> signers = cmsSignedData.getSignerInfos().getSigners();
+		Collection<SignerInformation> signers = signerInformations.getSigners();
 		for (SignerInformation signerInformation : signers) {
 			SignerIdentifier signerIdentifier = DSSASN1Utils.toSignerIdentifier(signerInformation.getSID());
 			if (signerIdentifier.isEquivalent(currentSignerIdentifier)) {
@@ -118,7 +142,7 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 
 	private void extractSignedCertificates() {
 		try {
-			final Collection<X509CertificateHolder> x509CertificateHolders = cmsSignedData.getCertificates().getMatches(null);
+			final Collection<X509CertificateHolder> x509CertificateHolders = certificates.getMatches(null);
 			for (final X509CertificateHolder x509CertificateHolder : x509CertificateHolders) {
 				addCertificate(DSSASN1Utils.getCertificate(x509CertificateHolder), CertificateOrigin.SIGNED_DATA);
 			}

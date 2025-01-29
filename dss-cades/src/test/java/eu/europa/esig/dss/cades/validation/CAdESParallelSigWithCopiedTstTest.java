@@ -26,7 +26,7 @@ import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 
 import java.util.List;
 
@@ -38,7 +38,7 @@ class CAdESParallelSigWithCopiedTstTest extends AbstractCAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {
-        return new FileDocument("src/test/resources/validation/cades-two-sig-copied-tst.p7m");
+        return new InMemoryDocument(CAdESParallelSigWithCopiedTstTest.class.getResourceAsStream("/validation/cades-two-sig-copied-tst.p7m"));
     }
 
     @Override

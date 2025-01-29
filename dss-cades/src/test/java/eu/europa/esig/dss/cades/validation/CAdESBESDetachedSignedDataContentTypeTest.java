@@ -37,7 +37,7 @@ public class CAdESBESDetachedSignedDataContentTypeTest extends AbstractCAdESTest
 
     @Override
     protected DSSDocument getSignedDocument() {
-        return new FileDocument("src/test/resources/validation/cades-bes-signeddata-detached.p7s");
+        return new InMemoryDocument(CAdESBESDetachedSignedDataContentTypeTest.class.getResourceAsStream("/validation/cades-bes-signeddata-detached.p7s"));
     }
 
     @Override

@@ -22,13 +22,13 @@ package eu.europa.esig.dss.cades;
 
 import eu.europa.esig.dss.cades.signature.CustomMessageDigestCalculatorProvider;
 import eu.europa.esig.dss.cades.validation.PrecomputedDigestCalculatorProvider;
+import eu.europa.esig.dss.cms.CMS;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -101,9 +101,9 @@ import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signingCert
  * The utils for dealing with CMS and related objects
  *
  */
-public final class CMSUtils {
+public final class CAdESUtils {
 
-	private static final Logger LOG = LoggerFactory.getLogger(CMSUtils.class);
+	private static final Logger LOG = LoggerFactory.getLogger(CAdESUtils.class);
 
 	/** The default DigestAlgorithm for ArchiveTimestamp */
 	public static final DigestAlgorithm DEFAULT_ARCHIVE_TIMESTAMP_HASH_ALGO = DigestAlgorithm.SHA256;
@@ -130,7 +130,7 @@ public final class CMSUtils {
 	/**
 	 * Utils class
 	 */
-	private CMSUtils() {
+	private CAdESUtils() {
 		// empty
 	}
 
@@ -423,21 +423,21 @@ public final class CMSUtils {
 	}
 	
 	/**
-	 * Returns the original document from the provided {@code cmsSignedData}
+	 * Returns the original document from the provided {@code CMS}
 	 *
-	 * @param cmsSignedData {@link CMSSignedData} to get original document from
+	 * @param cms {@link CMS} to get original document from
 	 * @param detachedDocuments list of {@link DSSDocument}s
 	 * @return original {@link DSSDocument}
 	 */
-	public static DSSDocument getOriginalDocument(CMSSignedData cmsSignedData, List<DSSDocument> detachedDocuments) {
-		Objects.requireNonNull(cmsSignedData, "CMSSignedData shall be provided!");
+	public static DSSDocument getOriginalDocument(CMS cms, List<DSSDocument> detachedDocuments) {
+		Objects.requireNonNull(cms, "CMS shall be provided!");
 
-		final CMSTypedData signedContent = cmsSignedData.getSignedContent();
-		if (!isDetachedSignature(cmsSignedData)) {
+		final DSSDocument signedContent = cms.getSignedContent();
+		if (!cms.isDetachedSignature()) {
 			if (signedContent == null) {
 				throw new DSSException("No signed content found within enveloping CMS signature!");
 			}
-			return new InMemoryDocument(CMSUtils.getSignedContent(signedContent));
+			return signedContent;
 
 		} else if (Utils.collectionSize(detachedDocuments) == 1) {
 			return detachedDocuments.get(0);
@@ -543,7 +543,7 @@ public final class CMSUtils {
 		Attribute[] attributes = unsignedAttributes.toASN1Structure().getAttributes();
 		for (final Attribute attribute : attributes) {
 			if (isArchiveTimeStampToken(attribute)) {
-				TimeStampToken timeStampToken = CMSUtils.getTimeStampToken(attribute);
+				TimeStampToken timeStampToken = CAdESUtils.getTimeStampToken(attribute);
 				if (timeStampToken != null) {
 					timeStamps.add(timeStampToken);
 				}
@@ -822,6 +822,19 @@ public final class CMSUtils {
 			return new CMSSignedData(asn1Primitive.getEncoded());
 		}
 		return null;
+	}
+
+	/**
+	 * Gets encoded value of the {@code Attribute}
+	 *
+	 * @param attribute {@link Attribute} to get encoded binaries for
+	 * @return byte array
+	 * @throws IOException if an exception on data reading occurs
+	 */
+	public static byte[] getEncodedValue(Attribute attribute) throws IOException {
+		ASN1Encodable value = getAsn1Encodable(attribute);
+		ASN1Primitive asn1Primitive = value.toASN1Primitive();
+		return asn1Primitive.getEncoded();
 	}
 
 	/**

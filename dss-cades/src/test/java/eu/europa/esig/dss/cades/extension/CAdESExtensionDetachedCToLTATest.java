@@ -36,7 +36,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.utils.Utils;
 import org.junit.jupiter.api.BeforeEach;
@@ -53,13 +53,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class CAdESExtensionDetachedCToLTATest extends AbstractCAdESTestExtension {
 
     private DSSDocument document;
-    private FileDocument detachedDocument;
+    private DSSDocument detachedDocument;
     private CAdESService service;
 
     @BeforeEach
     void init() {
-        document = new FileDocument("src/test/resources/validation/dss-1469/cadesLTAwithATv2.sig");
-        detachedDocument = new FileDocument("src/test/resources/validation/dss-1469/screenshot2.png");
+        document = new InMemoryDocument(CAdESExtensionDetachedCToLTATest.class.getResourceAsStream("/validation/dss-1469/cadesLTAwithATv2.sig"));
+        detachedDocument = new InMemoryDocument(CAdESExtensionDetachedCToLTATest.class.getResourceAsStream("/validation/dss-1469/screenshot2.png"));
 
         CertificateVerifier certificateVerifier = getOfflineCertificateVerifier();
         certificateVerifier.setCheckRevocationForUntrustedChains(true);
@@ -72,8 +72,8 @@ class CAdESExtensionDetachedCToLTATest extends AbstractCAdESTestExtension {
     }
 
     @Override
-    protected FileDocument getOriginalDocument() {
-        return detachedDocument;
+    protected String getOriginalDocumentPath() {
+        return "/validation/dss-1469/screenshot2.png";
     }
 
     @Override

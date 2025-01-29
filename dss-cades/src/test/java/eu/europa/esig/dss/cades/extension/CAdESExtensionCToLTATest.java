@@ -30,11 +30,12 @@ import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampHashIndexVersion;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.utils.Utils;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,7 +55,7 @@ class CAdESExtensionCToLTATest extends AbstractCAdESTestExtension {
 
     @BeforeEach
     void init() {
-        document = new FileDocument("src/test/resources/validation/dss-916/test.txt.signed.qes.attached.p7s");
+        document = new InMemoryDocument(CAdESExtensionCToLTATest.class.getResourceAsStream("/validation/dss-916/test.txt.signed.qes.attached.p7s"), "attached.p7s", MimeTypeEnum.PKCS7);
 
         CertificateVerifier certificateVerifier = getOfflineCertificateVerifier();
         certificateVerifier.setCheckRevocationForUntrustedChains(true);

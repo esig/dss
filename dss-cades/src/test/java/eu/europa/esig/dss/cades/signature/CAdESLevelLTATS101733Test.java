@@ -28,7 +28,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import eu.europa.esig.dss.cades.CMSUtils;
+import eu.europa.esig.dss.cades.CAdESUtils;
 import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.cms.CMSSignedData;
@@ -101,7 +101,7 @@ class CAdESLevelLTATS101733Test extends PKIFactoryAccess {
 				assertEquals(1, attributes.length);
 				Attribute archiveTimestamp = attributes[0];
 				
-				TimeStampToken timeStampToken = CMSUtils.getTimeStampToken(archiveTimestamp);
+				TimeStampToken timeStampToken = CAdESUtils.getTimeStampToken(archiveTimestamp);
 				AttributeTable unsignedAttributes2 = timeStampToken.getUnsignedAttributes();
 				Attribute[] asn1Attributes = DSSASN1Utils.getAsn1Attributes(unsignedAttributes2, OID.id_aa_ATSHashIndex);
 				assertEquals(1, asn1Attributes.length);
