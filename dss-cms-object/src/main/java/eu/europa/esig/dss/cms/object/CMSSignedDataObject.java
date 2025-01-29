@@ -4,6 +4,7 @@ import eu.europa.esig.dss.cms.CMS;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.cms.CMSObjectIdentifiers;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
@@ -132,11 +133,7 @@ public class CMSSignedDataObject implements CMS {
 
     @Override
     public byte[] getEncoded() {
-        try {
-            return cmsSignedData.getEncoded();
-        } catch (IOException e) {
-            throw new DSSException(String.format("Unable to extract CMS binaries : %s", e.getMessage()), e);
-        }
+        return DSSASN1Utils.getDEREncoded(cmsSignedData);
     }
 
 }

@@ -49,6 +49,7 @@ import org.bouncycastle.asn1.DLSet;
 import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.cms.Attributes;
+import org.bouncycastle.asn1.cms.CMSObjectIdentifiers;
 import org.bouncycastle.asn1.cms.ContentInfo;
 import org.bouncycastle.asn1.cms.OtherRevocationInfoFormat;
 import org.bouncycastle.asn1.cms.SignedData;
@@ -56,8 +57,10 @@ import org.bouncycastle.asn1.ess.ESSCertID;
 import org.bouncycastle.asn1.ess.ESSCertIDv2;
 import org.bouncycastle.asn1.ess.SigningCertificate;
 import org.bouncycastle.asn1.ess.SigningCertificateV2;
+import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.IssuerSerial;
+import org.bouncycastle.cert.X509CRLHolder;
 import org.bouncycastle.cms.CMSAbsentContent;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSProcessableByteArray;
@@ -71,6 +74,9 @@ import org.bouncycastle.operator.DigestCalculatorProvider;
 import org.bouncycastle.operator.bc.BcDigestCalculatorProvider;
 import org.bouncycastle.tsp.TSPException;
 import org.bouncycastle.tsp.TimeStampToken;
+import org.bouncycastle.util.CollectionStore;
+import org.bouncycastle.util.Encodable;
+import org.bouncycastle.util.Store;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,8 +85,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Objects;
@@ -864,6 +872,25 @@ public final class CAdESUtils {
 		// false value specifies an implicit encoding method
 		DERTaggedObject derTaggedObject = new DERTaggedObject(false, 1, otherRevocationInfoFormat);
 		return DSSASN1Utils.getDEREncoded(derTaggedObject);
+	}
+
+	/**
+	 * Creates a new combined SignedData.crls store containing CRLs, OCSP responses and OCSP Basic responses
+	 *
+	 * @param crls {@link Store} containing CRLs
+	 * @param ocspResponses {@link Store} containing OCSP responses
+	 * @param ocspBasicResponses {@link Store} containing OCSP Basic responses
+	 * @return {@link Store}
+	 */
+	public static Store<Encodable> toCRLsStore(Store<X509CRLHolder> crls, Store<?> ocspResponses, Store<?> ocspBasicResponses) {
+		final Collection<Encodable> newCrlsStore = new HashSet<>(crls.getMatches(null));
+		for (Object ocsp : ocspResponses.getMatches(null)) {
+			newCrlsStore.add(new OtherRevocationInfoFormat(CMSObjectIdentifiers.id_ri_ocsp_response, (ASN1Encodable) ocsp));
+		}
+		for (Object ocsp : ocspBasicResponses.getMatches(null)) {
+			newCrlsStore.add(new OtherRevocationInfoFormat(OCSPObjectIdentifiers.id_pkix_ocsp_basic, (ASN1Encodable) ocsp));
+		}
+		return new CollectionStore<>(newCrlsStore);
 	}
 
 	/**

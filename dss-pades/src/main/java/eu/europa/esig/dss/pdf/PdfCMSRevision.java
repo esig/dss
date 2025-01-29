@@ -20,13 +20,13 @@
  */
 package eu.europa.esig.dss.pdf;
 
+import eu.europa.esig.dss.cms.CMS;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.pades.validation.ByteRange;
-import eu.europa.esig.dss.pdf.modifications.PdfModificationDetection;
 import eu.europa.esig.dss.pades.validation.PdfRevision;
 import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
 import eu.europa.esig.dss.pades.validation.PdfSignatureField;
-import org.bouncycastle.cms.CMSSignedData;
+import eu.europa.esig.dss.pdf.modifications.PdfModificationDetection;
 
 import java.util.Date;
 import java.util.List;
@@ -154,10 +154,10 @@ public abstract class PdfCMSRevision implements PdfRevision {
 	/**
 	 * Gets the CMSSignedData
 	 *
-	 * @return {@link CMSSignedData}
+	 * @return {@link CMS}
 	 */
-	public CMSSignedData getCMSSignedData() {
-		return signatureDictionary.getCMSSignedData();
+	public CMS getCMS() {
+		return signatureDictionary.getCMS();
 	}
 
 	@Override

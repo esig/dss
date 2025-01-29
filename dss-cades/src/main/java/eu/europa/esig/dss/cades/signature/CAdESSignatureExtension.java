@@ -217,40 +217,35 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 	protected ASN1Object getTimeStampAttributeValue(
 			final DSSMessageDigest timestampMessageDigest, final DigestAlgorithm timestampDigestAlgorithm,
 			final Attribute... attributesForTimestampToken) {
-		try {
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("Message to timestamp is {}", timestampMessageDigest);
-			}
-
-			final TimestampBinary timeStampToken = tspSource.getTimeStampResponse(timestampDigestAlgorithm, timestampMessageDigest.getValue());
-			CMS cms = CMSUtils.parseToCMS(timeStampToken.getBytes());
-
-			// TODO (27/08/2014): attributesForTimestampToken cannot be null: to be modified
-			if (attributesForTimestampToken != null) {
-				// timeStampToken contains one and only one signer
-				final SignerInformation signerInformation = cms.getSignerInfos().getSigners().iterator().next();
-				AttributeTable unsignedAttributes = CAdESUtils.getUnsignedAttributes(signerInformation);
-				for (final Attribute attributeToAdd : attributesForTimestampToken) {
-					final ASN1ObjectIdentifier attrType = attributeToAdd.getAttrType();
-					final ASN1Encodable objectAt = attributeToAdd.getAttrValues().getObjectAt(0);
-					unsignedAttributes = unsignedAttributes.add(attrType, objectAt);
-				}
-				// Unsigned attributes cannot be empty (RFC 5652 5.3)
-				if (unsignedAttributes.size() == 0) {
-					unsignedAttributes = null;
-				}
-				final SignerInformation newSignerInformation = SignerInformation.replaceUnsignedAttributes(signerInformation, unsignedAttributes);
-				final List<SignerInformation> signerInformationList = new ArrayList<>();
-				signerInformationList.add(newSignerInformation);
-				final SignerInformationStore newSignerStore = new SignerInformationStore(signerInformationList);
-				cms = CMSUtils.replaceSigners(cms, newSignerStore);
-			}
-			final byte[] newTimeStampTokenBytes = cms.getEncoded();
-			return DSSASN1Utils.toASN1Primitive(newTimeStampTokenBytes);
-
-		} catch (Exception e) {
-			throw new DSSException(String.format("Cannot obtain timestamp attribute value. Reason : %s", e.getMessage()), e);
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Message to timestamp is {}", timestampMessageDigest);
 		}
+
+		final TimestampBinary timeStampToken = tspSource.getTimeStampResponse(timestampDigestAlgorithm, timestampMessageDigest.getValue());
+		CMS cms = CMSUtils.parseToCMS(timeStampToken.getBytes());
+
+		// TODO (27/08/2014): attributesForTimestampToken cannot be null: to be modified
+		if (attributesForTimestampToken != null) {
+			// timeStampToken contains one and only one signer
+			final SignerInformation signerInformation = cms.getSignerInfos().getSigners().iterator().next();
+			AttributeTable unsignedAttributes = CAdESUtils.getUnsignedAttributes(signerInformation);
+			for (final Attribute attributeToAdd : attributesForTimestampToken) {
+				final ASN1ObjectIdentifier attrType = attributeToAdd.getAttrType();
+				final ASN1Encodable objectAt = attributeToAdd.getAttrValues().getObjectAt(0);
+				unsignedAttributes = unsignedAttributes.add(attrType, objectAt);
+			}
+			// Unsigned attributes cannot be empty (RFC 5652 5.3)
+			if (unsignedAttributes.size() == 0) {
+				unsignedAttributes = null;
+			}
+			final SignerInformation newSignerInformation = SignerInformation.replaceUnsignedAttributes(signerInformation, unsignedAttributes);
+			final List<SignerInformation> signerInformationList = new ArrayList<>();
+			signerInformationList.add(newSignerInformation);
+			final SignerInformationStore newSignerStore = new SignerInformationStore(signerInformationList);
+			cms = CMSUtils.replaceSigners(cms, newSignerStore);
+		}
+		final byte[] newTimeStampTokenBytes = cms.getEncoded();
+		return DSSASN1Utils.toASN1Primitive(newTimeStampTokenBytes);
 	}
 
 	private void assertCMSSignaturesValid(final CMS cmsSignedData, Collection<SignerInformation> signerInformationsToExtend, 

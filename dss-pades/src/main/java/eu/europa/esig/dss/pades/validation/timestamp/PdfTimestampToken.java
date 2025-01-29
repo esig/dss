@@ -55,7 +55,8 @@ public class PdfTimestampToken extends TimestampToken {
 	 */
 	public PdfTimestampToken(final PdfDocTimestampRevision pdfTimestampRevision)
 			throws TSPException, IOException, CMSException {
-		super(pdfTimestampRevision.getPdfSigDictInfo().getCMSSignedData(), TimestampType.DOCUMENT_TIMESTAMP, new ArrayList<>());
+		super(pdfTimestampRevision.getPdfSigDictInfo().getCMS().getEncoded(), TimestampType.DOCUMENT_TIMESTAMP, new ArrayList<>());
+		// TODO : refactor TimestampToken to init with CMS
 		this.pdfRevision = pdfTimestampRevision;
 	}
 

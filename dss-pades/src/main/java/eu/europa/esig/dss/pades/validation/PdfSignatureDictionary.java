@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.pades.validation;
 
+import eu.europa.esig.dss.cms.CMS;
 import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.pdf.SigFieldPermissions;
-import org.bouncycastle.cms.CMSSignedData;
 
 import java.util.Date;
 
@@ -89,11 +89,11 @@ public interface PdfSignatureDictionary {
 	String getSubFilter();
 
 	/**
-	 * Gets the CMSSignedData from /Contents
+	 * Gets the CMS from /Contents
 	 *
-	 * @return {@link CMSSignedData}
+	 * @return {@link CMS}
 	 */
-	CMSSignedData getCMSSignedData();
+	CMS getCMS();
 
 	/**
 	 * Gets /Contents binaries (CMSSignedData)

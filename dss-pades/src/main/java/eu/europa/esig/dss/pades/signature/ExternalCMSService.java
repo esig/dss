@@ -20,13 +20,14 @@
  */
 package eu.europa.esig.dss.pades.signature;
 
-import eu.europa.esig.dss.cades.signature.CMSBuilder;
-import eu.europa.esig.dss.signature.AbstractSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESLevelBaselineT;
-import eu.europa.esig.dss.cms.CMSSignedDocument;
+import eu.europa.esig.dss.cades.signature.CMSBuilder;
 import eu.europa.esig.dss.cades.signature.CustomContentSigner;
+import eu.europa.esig.dss.cms.CMS;
+import eu.europa.esig.dss.cms.CMSUtils;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -34,11 +35,12 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.signature.AbstractSignatureParameters;
 import eu.europa.esig.dss.signature.SignatureRequirementsChecker;
 import eu.europa.esig.dss.signature.SignatureValueChecker;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInfoGenerator;
 
@@ -135,7 +137,7 @@ public class ExternalCMSService {
     }
 
     /**
-     * This method is used to create a signed CMSSignedData to be used for incorporation within a PDF document
+     * This method is used to create a signed CMS to be used for incorporation within a PDF document
      * for a PAdES signature creation
      *
      * @param messageDigest {@link DSSMessageDigest}
@@ -144,31 +146,30 @@ public class ExternalCMSService {
      *                            containing configuration for CMS creation
      * @param signatureValue {@link SignatureValue}
      *                            representing private-key signing of the DTBS
-     * @return {@link CMSSignedDocument} representing a CMS signature suitable for PAdES signature creation
+     * @return {@link DSSDocument} representing a CMS signature suitable for PAdES signature creation
      */
-    public CMSSignedDocument signMessageDigest(DSSMessageDigest messageDigest, PAdESSignatureParameters parameters,
-                                               SignatureValue signatureValue) {
+    public DSSDocument signMessageDigest(DSSMessageDigest messageDigest, PAdESSignatureParameters parameters,
+                                         SignatureValue signatureValue) {
         Objects.requireNonNull(messageDigest, "messageDigest cannot be null!");
         Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
         Objects.requireNonNull(signatureValue, "SignatureValue cannot be null!");
         assertConfigurationValid(messageDigest, parameters);
 
-        final CMSSignedData cmsSignedData = buildCMSSignedData(messageDigest, parameters, signatureValue);
-
+        final CMS cms = buildCMS(messageDigest, parameters, signatureValue);
         parameters.reinit();
-        return new CMSSignedDocument(cmsSignedData);
+        return CMSUtils.writeToDSSDocument(cms);
     }
 
     /**
-     * This method builds a {@code CMSSignedData} without executing additional checks on provided configuration
+     * This method builds a {@code CMS} without executing additional checks on provided configuration
      *
      * @param messageDigest {@link DSSMessageDigest} representing digest of PDF ByteRange to be signed
      * @param parameters {@link PAdESSignatureParameters}
      * @param signatureValue {@link SignatureValue}
-     * @return {@link CMSSignedData}
+     * @return {@link CMS}
      */
-    protected CMSSignedData buildCMSSignedData(DSSMessageDigest messageDigest, PAdESSignatureParameters parameters,
-                                               SignatureValue signatureValue) {
+    protected CMS buildCMS(DSSMessageDigest messageDigest, PAdESSignatureParameters parameters,
+                           SignatureValue signatureValue) {
         final SignatureAlgorithm signatureAlgorithm = parameters.getSignatureAlgorithm();
         final SignatureLevel signatureLevel = parameters.getSignatureLevel();
         Objects.requireNonNull(signatureAlgorithm, "SignatureAlgorithm cannot be null!");
@@ -181,7 +182,7 @@ public class ExternalCMSService {
         final SignerInfoGenerator signerInfoGenerator = new PAdESSignerInfoGeneratorBuilder(messageDigest)
                 .build(parameters, customContentSigner);
 
-        CMSSignedData cmsSignedData = getCMSSignedDataBuilder(parameters)
+        CMS cms = getCMSSignedDataBuilder(parameters)
                 .createCMS(signerInfoGenerator, new InMemoryDocument(messageDigest.getValue()));
 
         if (!SignatureLevel.PAdES_BASELINE_B.equals(signatureLevel)) {
@@ -190,9 +191,9 @@ public class ExternalCMSService {
             parameters.getContext().setDetachedContents(Collections.singletonList(digestDocument));
 
             CAdESLevelBaselineT cadesLevelBaselineT = new CAdESLevelBaselineT(tspSource, certificateVerifier);
-            cmsSignedData = cadesLevelBaselineT.extendCMSSignatures(cmsSignedData, parameters);
+            cms = cadesLevelBaselineT.extendCMSSignatures(cms, parameters);
         }
-        return cmsSignedData;
+        return cms;
     }
 
     /**

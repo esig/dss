@@ -20,17 +20,17 @@
  */
 package eu.europa.esig.dss.pades.signature;
 
-import eu.europa.esig.dss.cms.CMSSignedDocument;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.suite.AbstractPAdESTestSignature;
-import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -91,8 +91,8 @@ public abstract class AbstractExternalCMSServiceTest extends AbstractPAdESTestSi
 
         // stateless
         cmsForPAdESGenerationService = new ExternalCMSService(getOfflineCertificateVerifier());
-        CMSSignedDocument cmsSignedDocument = cmsForPAdESGenerationService.signMessageDigest(messageDigest, signatureParameters, signatureValue);
-        return cmsSignedDocument.getBytes();
+        DSSDocument cmsSignedDocument = cmsForPAdESGenerationService.signMessageDigest(messageDigest, signatureParameters, signatureValue);
+        return DSSUtils.toByteArray(cmsSignedDocument);
     }
 
     @Override

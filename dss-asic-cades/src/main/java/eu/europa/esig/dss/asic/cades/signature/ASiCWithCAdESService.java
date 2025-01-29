@@ -20,11 +20,11 @@
  */
 package eu.europa.esig.dss.asic.cades.signature;
 
-import eu.europa.esig.dss.asic.cades.extract.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESFilenameFactory;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.cades.DefaultASiCWithCAdESFilenameFactory;
+import eu.europa.esig.dss.asic.cades.extract.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.timestamp.ASiCWithCAdESTimestampService;
 import eu.europa.esig.dss.asic.cades.validation.ASiCContainerWithCAdESAnalyzer;
 import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESUtils;
@@ -38,22 +38,21 @@ import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESCounterSignatureBuilder;
 import eu.europa.esig.dss.cades.signature.CAdESCounterSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESService;
-import eu.europa.esig.dss.cms.CMSSignedDocument;
+import eu.europa.esig.dss.cms.CMS;
+import eu.europa.esig.dss.cms.CMSUtils;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
-import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.signature.SigningOperation;
-import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
-import org.bouncycastle.cms.CMSSignedData;
+import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.cms.SignerInformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -415,12 +414,12 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		ASiCContent asicContent = counterSignatureHelper.getAsicContent();
 
 		DSSDocument signatureDocument = counterSignatureHelper.extractSignatureDocument(parameters.getSignatureIdToCounterSign());
-		CMSSignedData originalCMSSignedData = DSSUtils.toCMSSignedData(signatureDocument);
+		CMS originalCMS = CMSUtils.parseToCMS(signatureDocument);
 		
 		CAdESCounterSignatureBuilder counterSignatureBuilder = new CAdESCounterSignatureBuilder(certificateVerifier);
 		counterSignatureBuilder.setManifestFile(counterSignatureHelper.getManifestFile(signatureDocument.getName()));
 		
-		CMSSignedDocument counterSignedSignature = counterSignatureBuilder.addCounterSignature(originalCMSSignedData, parameters, signatureValue);
+		DSSDocument counterSignedSignature = counterSignatureBuilder.addCounterSignature(originalCMS, parameters, signatureValue);
 		counterSignedSignature.setName(signatureDocument.getName());
 		ASiCUtils.addOrReplaceDocument(asicContent.getSignatureDocuments(), counterSignedSignature);
 

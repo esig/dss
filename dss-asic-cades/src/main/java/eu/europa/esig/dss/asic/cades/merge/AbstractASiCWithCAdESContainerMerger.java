@@ -20,30 +20,25 @@
  */
 package eu.europa.esig.dss.asic.cades.merge;
 
-import eu.europa.esig.dss.asic.cades.extract.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESFilenameFactory;
 import eu.europa.esig.dss.asic.cades.DefaultASiCWithCAdESFilenameFactory;
+import eu.europa.esig.dss.asic.cades.extract.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.validation.ASiCContainerWithCAdESAnalyzerFactory;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.merge.DefaultContainerMerger;
 import eu.europa.esig.dss.cades.CAdESUtils;
-import eu.europa.esig.dss.cms.CMSSignedDocument;
 import eu.europa.esig.dss.cades.validation.CMSDocumentAnalyzer;
-import eu.europa.esig.dss.spi.exception.IllegalInputException;
+import eu.europa.esig.dss.cms.CMS;
+import eu.europa.esig.dss.cms.CMSUtils;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.utils.Utils;
-import org.bouncycastle.asn1.ASN1Encodable;
-import org.bouncycastle.asn1.ASN1ObjectIdentifier;
-import org.bouncycastle.asn1.cms.OtherRevocationInfoFormat;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.cert.X509AttributeCertificateHolder;
-import org.bouncycastle.cert.X509CRLHolder;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaCertStore;
-import org.bouncycastle.cms.CMSException;
-import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SignerInformationStore;
 import org.bouncycastle.util.CollectionStore;
@@ -55,9 +50,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-
-import static org.bouncycastle.asn1.cms.CMSObjectIdentifiers.id_ri_ocsp_response;
-import static org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers.id_pkix_ocsp_basic;
 
 /**
  * This class contains common code for ASiC with CAdES container merger classes.
@@ -129,50 +121,51 @@ public abstract class AbstractASiCWithCAdESContainerMerger extends DefaultContai
      */
     protected DSSDocument mergeCmsSignatures(List<DSSDocument> signatureDocuments) {
         try {
-            List<CMSSignedData> cmsSignedDataList = getCMSSignedDataList(signatureDocuments);
+            List<CMS> cmsList = getCMSList(signatureDocuments);
 
-            CMSSignedData originalCMSSignedData = cmsSignedDataList.iterator().next(); // getFirstCMSSignedData
+            CMS originalCMS = cmsList.iterator().next(); // getFirstCMS
 
-            SignerInformationStore signerInformationStore = getSignerInformationStore(cmsSignedDataList);
-            CMSSignedData mergedCmsSignedData = CMSSignedData.replaceSigners(originalCMSSignedData, signerInformationStore);
+            SignerInformationStore signerInformationStore = getSignerInformationStore(cmsList);
+            CMS mergedCmsSignedData = CMSUtils.replaceSigners(originalCMS, signerInformationStore);
 
-            JcaCertStore certificatesStore = getCertificatesStore(cmsSignedDataList);
-            Store<Encodable> certAttributeStore = getCertAttributeStore(cmsSignedDataList);
-            Store<Encodable> crlStore = getCRLStore(cmsSignedDataList);
-            mergedCmsSignedData = CMSSignedData.replaceCertificatesAndCRLs(mergedCmsSignedData, certificatesStore, certAttributeStore, crlStore);
+            Store<X509CertificateHolder> certificatesStore = getCertificatesStore(cmsList);
+            Store<X509AttributeCertificateHolder> certAttributeStore = getCertAttributeStore(cmsList);
+            Store<Encodable> crlStore = getCRLStore(cmsList);
+            mergedCmsSignedData = CMSUtils.replaceCertificatesAndCRLs(mergedCmsSignedData, certificatesStore, certAttributeStore, crlStore);
 
-            List<AlgorithmIdentifier> digestAlgorithms = getDigestAlgorithms(cmsSignedDataList);
-            for (AlgorithmIdentifier algorithmIdentifier : digestAlgorithms) {
-                mergedCmsSignedData = CAdESUtils.addDigestAlgorithm(mergedCmsSignedData, algorithmIdentifier);
-            }
+            List<AlgorithmIdentifier> digestAlgorithms = getDigestAlgorithms(cmsList);
+            mergedCmsSignedData = CMSUtils.populateDigestAlgorithmSet(mergedCmsSignedData, digestAlgorithms);
 
-            return new CMSSignedDocument(mergedCmsSignedData, getSignatureDocumentName(signatureDocuments));
+            final DSSDocument cmsDocument = CMSUtils.writeToDSSDocument(mergedCmsSignedData);
+            cmsDocument.setName(getSignatureDocumentName(signatureDocuments));
+            return cmsDocument;
 
-        } catch (CMSException | CertificateEncodingException e) {
+        } catch (CertificateEncodingException e) {
             throw new DSSException(String.format("Unable to merge ASiC-S with CAdES container. Reason : %s", e.getMessage()));
         }
     }
 
-    private List<CMSSignedData> getCMSSignedDataList(List<DSSDocument> signatureDocuments) {
-        List<CMSSignedData> signedDataList = new ArrayList<>();
+    private List<CMS> getCMSList(List<DSSDocument> signatureDocuments) {
+        List<CMS> signedDataList = new ArrayList<>();
         for (DSSDocument signatureDocument : signatureDocuments) {
             CMSDocumentAnalyzer documentValidator = new CMSDocumentAnalyzer(signatureDocument);
-            signedDataList.add(documentValidator.getCmsSignedData());
+            signedDataList.add(documentValidator.getCMS());
         }
         return signedDataList;
     }
 
-    private SignerInformationStore getSignerInformationStore(List<CMSSignedData> cmsSignedDataList) {
+    private SignerInformationStore getSignerInformationStore(List<CMS> cmsList) {
         List<SignerInformation> signerInformations = new ArrayList<>();
-        for (CMSSignedData signedData : cmsSignedDataList) {
+        for (CMS signedData : cmsList) {
             signerInformations.addAll(signedData.getSignerInfos().getSigners());
         }
         return new SignerInformationStore(signerInformations);
     }
 
-    private JcaCertStore getCertificatesStore(List<CMSSignedData> cmsSignedDataList) throws CertificateEncodingException {
+    @SuppressWarnings("unchecked")
+    private Store<X509CertificateHolder> getCertificatesStore(List<CMS> cmsList) throws CertificateEncodingException {
         List<X509CertificateHolder> result = new ArrayList<>();
-        for (CMSSignedData signedData : cmsSignedDataList) {
+        for (CMS signedData : cmsList) {
             final Collection<X509CertificateHolder> certificateHolders = signedData.getCertificates().getMatches(null);
             for (final X509CertificateHolder x509CertificateHolder : certificateHolders) {
                 if (!result.contains(x509CertificateHolder)) {
@@ -180,12 +173,12 @@ public abstract class AbstractASiCWithCAdESContainerMerger extends DefaultContai
                 }
             }
         }
-        return new JcaCertStore(result);
+        return (Store<X509CertificateHolder>) new JcaCertStore(result);
     }
 
-    private Store<Encodable> getCertAttributeStore(List<CMSSignedData> cmsSignedDataList) {
-        List<Encodable> result = new ArrayList<>();
-        for (CMSSignedData signedData : cmsSignedDataList) {
+    private Store<X509AttributeCertificateHolder> getCertAttributeStore(List<CMS> cmsList) {
+        List<X509AttributeCertificateHolder> result = new ArrayList<>();
+        for (CMS signedData : cmsList) {
             final Collection<X509AttributeCertificateHolder> attributeCertificateHolders = signedData.getAttributeCertificates().getMatches(null);
             for (final X509AttributeCertificateHolder x509AttributeCertificateHolder : attributeCertificateHolders) {
                 if (!result.contains(x509AttributeCertificateHolder)) {
@@ -196,40 +189,25 @@ public abstract class AbstractASiCWithCAdESContainerMerger extends DefaultContai
         return new CollectionStore<>(result);
     }
 
-    private Store<Encodable> getCRLStore(List<CMSSignedData> cmsSignedDataList) {
+    private Store<Encodable> getCRLStore(List<CMS> cmsList) {
         List<Encodable> result = new ArrayList<>();
-        for (CMSSignedData signedData : cmsSignedDataList) {
-            final Collection<X509CRLHolder> crlHolders = signedData.getCRLs().getMatches(null);
-            for (final X509CRLHolder x509CRLHolder : crlHolders) {
+        for (CMS cms : cmsList) {
+            Store<Encodable> crlsStore = CAdESUtils.toCRLsStore(cms.getCRLs(), cms.getOcspResponseStore(), cms.getOcspBasicStore());
+            final Collection<Encodable> crlHolders = crlsStore.getMatches(null);
+            for (final Encodable x509CRLHolder : crlHolders) {
                 if (!result.contains(x509CRLHolder)) {
                     result.add(x509CRLHolder);
                 }
             }
+
         }
-        result.addAll(getOtherRevocationInfoStore(cmsSignedDataList, id_pkix_ocsp_basic));
-        result.addAll(getOtherRevocationInfoStore(cmsSignedDataList, id_ri_ocsp_response));
         return new CollectionStore<>(result);
     }
 
-    @SuppressWarnings("unchecked")
-    private List<Encodable> getOtherRevocationInfoStore(List<CMSSignedData> cmsSignedDataList, ASN1ObjectIdentifier objectIdentifier) {
-        List<Encodable> result = new ArrayList<>();
-        for (CMSSignedData signedData : cmsSignedDataList) {
-            final Collection<ASN1Encodable> basicOcsps = signedData.getOtherRevocationInfo(objectIdentifier).getMatches(null);
-            for (final ASN1Encodable ocsp : basicOcsps) {
-                OtherRevocationInfoFormat otherRevocationInfo = new OtherRevocationInfoFormat(objectIdentifier, ocsp);
-                if (!result.contains(otherRevocationInfo)) {
-                    result.add(otherRevocationInfo);
-                }
-            }
-        }
-        return result;
-    }
-
-    private List<AlgorithmIdentifier> getDigestAlgorithms(List<CMSSignedData> cmsSignedDataList) {
+    private List<AlgorithmIdentifier> getDigestAlgorithms(List<CMS> cmsList) {
         List<AlgorithmIdentifier> result = new ArrayList<>();
-        for (CMSSignedData cmsSignedData : cmsSignedDataList) {
-            result.addAll(cmsSignedData.getDigestAlgorithmIDs());
+        for (CMS cms : cmsList) {
+            result.addAll(cms.getDigestAlgorithmIDs());
         }
         return result;
     }

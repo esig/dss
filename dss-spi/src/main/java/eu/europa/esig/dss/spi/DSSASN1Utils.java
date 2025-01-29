@@ -74,6 +74,7 @@ import org.bouncycastle.cert.ocsp.OCSPResp;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerId;
 import org.bouncycastle.cms.SignerInformation;
+import org.bouncycastle.cms.SignerInformationStore;
 import org.bouncycastle.crypto.signers.PlainDSAEncoding;
 import org.bouncycastle.crypto.signers.StandardDSAEncoding;
 import org.bouncycastle.tsp.TimeStampToken;
@@ -739,9 +740,22 @@ public final class DSSASN1Utils {
 	 * @param cms
 	 *            CMSSignedData
 	 * @return returns {@code SignerInformation}
+	 * @deprecated since DSS 6.3. Please use {@code #getFirstSignerInformation(cms.getSignerInfos())} method instead.
 	 */
+	@Deprecated
 	public static SignerInformation getFirstSignerInformation(final CMSSignedData cms) {
-		final Collection<SignerInformation> signers = cms.getSignerInfos().getSigners();
+		return getFirstSignerInformation(cms.getSignerInfos());
+	}
+
+	/**
+	 * Returns the first {@code SignerInformation} extracted from {@code SignerInformationStore}.
+	 *
+	 * @param signerInformationStore
+	 *            {@link SignerInformationStore}
+	 * @return returns {@code SignerInformation}
+	 */
+	public static SignerInformation getFirstSignerInformation(final SignerInformationStore signerInformationStore) {
+		final Collection<SignerInformation> signers = signerInformationStore.getSigners();
 		if (signers.size() > 1) {
 			LOG.warn("!!! The framework handles only one signer (SignerInformation) !!!");
 		}

@@ -97,14 +97,6 @@ public interface CMSGenerator {
     CMS generate();
 
     /**
-     * Replaces content of {@code originalCMS} with certificate and CRL values specified within the CMSGenerator
-     *
-     * @param originalCMS {@link CMS} to be extended
-     * @return {@link CMS} with the extended fields
-     */
-    CMS replaceCertificatesAndCRLs(CMS originalCMS);
-
-    /**
      * Loads the available {@code CMSGenerator} based on the loaded module in the classpath.
      * One of the 'dss-cades-cms' or 'dss-cades-cms-stream' shall be defined in the list of dependencies.
      *

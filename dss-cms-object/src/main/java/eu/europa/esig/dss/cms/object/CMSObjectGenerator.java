@@ -8,10 +8,6 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
-import org.bouncycastle.asn1.ASN1Encodable;
-import org.bouncycastle.asn1.cms.CMSObjectIdentifiers;
-import org.bouncycastle.asn1.cms.OtherRevocationInfoFormat;
-import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.bouncycastle.cms.CMSAbsentContent;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSProcessableByteArray;
@@ -19,12 +15,7 @@ import org.bouncycastle.cms.CMSProcessableFile;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.CMSSignedDataGenerator;
 import org.bouncycastle.cms.CMSTypedData;
-import org.bouncycastle.util.CollectionStore;
-import org.bouncycastle.util.Encodable;
-import org.bouncycastle.util.Store;
 
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.Objects;
 
 import static org.bouncycastle.asn1.cms.CMSObjectIdentifiers.id_ri_ocsp_response;
@@ -95,19 +86,6 @@ public class CMSObjectGenerator extends AbstractCMSGenerator {
             content = new CMSProcessableByteArray(DSSUtils.toByteArray(toSignData));
         }
         return content;
-    }
-
-    @Override
-    public CMS replaceCertificatesAndCRLs(CMS originalCMS) {
-        final Collection<Encodable> newCrlsStore = new HashSet<>(crls.getMatches(null));
-		for (Object ocsp : ocspResponsesStore.getMatches(null)) {
-			newCrlsStore.add(new OtherRevocationInfoFormat(CMSObjectIdentifiers.id_ri_ocsp_response, (ASN1Encodable) ocsp));
-		}
-		for (Object ocsp : ocspBasicStore.getMatches(null)) {
-			newCrlsStore.add(new OtherRevocationInfoFormat(OCSPObjectIdentifiers.id_pkix_ocsp_basic, (ASN1Encodable) ocsp));
-		}
-        Store<?> crlStore = new CollectionStore<>(newCrlsStore);
-        return CMSUtils.replaceCertificatesAndCRLs(originalCMS, certificateStore, attributeCertificates, crlStore);
     }
 
 }

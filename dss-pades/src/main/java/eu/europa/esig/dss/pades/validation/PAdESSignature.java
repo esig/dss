@@ -28,6 +28,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.scope.SignatureScope;
+import eu.europa.esig.dss.model.signature.SignatureDigestReference;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.pades.validation.dss.PdfVriDictSource;
@@ -38,19 +39,19 @@ import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfSignatureRevision;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.SignatureCertificateSource;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.identifier.SignatureIdentifierBuilder;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
+import eu.europa.esig.dss.spi.x509.revocation.ListRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.spi.signature.AdvancedSignature;
-import eu.europa.esig.dss.spi.x509.revocation.ListRevocationSource;
-import eu.europa.esig.dss.spi.SignatureCertificateSource;
-import eu.europa.esig.dss.spi.validation.CertificateVerifier;
-import eu.europa.esig.dss.model.signature.SignatureDigestReference;
-import eu.europa.esig.dss.spi.signature.identifier.SignatureIdentifierBuilder;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -59,6 +60,8 @@ import java.util.List;
  * Implementation of AdvancedSignature for PAdES
  */
 public class PAdESSignature extends CAdESSignature {
+
+	private static final Logger LOG = LoggerFactory.getLogger(PAdESSignature.class);
 
 	private static final long serialVersionUID = 3818555396958720967L;
 
@@ -89,10 +92,10 @@ public class PAdESSignature extends CAdESSignature {
 	 * 
 	 */
 	protected PAdESSignature(final PdfSignatureRevision pdfSignatureRevision, final List<PdfRevision> documentRevisions) {
-		super(pdfSignatureRevision.getCMSSignedData(), DSSASN1Utils.getFirstSignerInformation(pdfSignatureRevision.getCMSSignedData()));
+		super(pdfSignatureRevision.getCMS(), DSSASN1Utils.getFirstSignerInformation(pdfSignatureRevision.getCMS().getSignerInfos()));
 		this.pdfSignatureRevision = pdfSignatureRevision;
 		this.documentRevisions = documentRevisions;
-		this.detachedContents = Arrays.asList(pdfSignatureRevision.getSignedData());
+		this.detachedContents = Collections.singletonList(pdfSignatureRevision.getSignedData());
 	}
 
 	/**
