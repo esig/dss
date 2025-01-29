@@ -137,7 +137,7 @@ public class AllDataObjectsTimeStampBuilder {
 			 */
 			digestCalculator.update(binaries);
 		}
-		DSSMessageDigest messageDigest = digestCalculator.getMessageDigest();
+		DSSMessageDigest messageDigest = digestCalculator.getMessageDigest(digestAlgorithm);
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("Computed AllDataObjectsTimestampData data: {}", messageDigest);
 		}

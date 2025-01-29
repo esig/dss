@@ -647,7 +647,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 			LOG.debug("encodedAtsHashIndex={}", bytes != null ? Utils.toHex(bytes) : bytes);
 		}
 
-		return digestCalculator.getMessageDigest();
+		return digestCalculator.getMessageDigest(digestAlgorithm);
 	}
 
 	/**

@@ -184,7 +184,7 @@ public class CAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 			}
 			// Method is common to Type 1 and Type 2
 			writeTimestampX2MessageDigest(digestCalculator);
-			return digestCalculator.getMessageDigest();
+			return digestCalculator.getMessageDigest(digestAlgorithm);
 
 		} catch (Exception e) {
 			if (LOG.isDebugEnabled()) {
@@ -201,7 +201,7 @@ public class CAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 		try {
 			final DSSMessageDigestCalculator digestCalculator = new DSSMessageDigestCalculator(digestAlgorithm);
 			writeTimestampX2MessageDigest(digestCalculator);
-			return digestCalculator.getMessageDigest();
+			return digestCalculator.getMessageDigest(digestAlgorithm);
 
 		} catch (Exception e) {
 			if (LOG.isDebugEnabled()) {
@@ -338,7 +338,7 @@ public class CAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 
 			writeSignerInfoBytes(digestCalculator, includeUnsignedAttrsTagAndLength);
 
-			return digestCalculator.getMessageDigest();
+			return digestCalculator.getMessageDigest(digestAlgorithm);
 
 		} catch (Exception e) {
 			// When error in computing or in format the algorithm just continues.
