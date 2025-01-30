@@ -25,6 +25,7 @@ import eu.europa.esig.dss.cades.CAdESUtils;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.cades.validation.CMSDocumentAnalyzer;
 import eu.europa.esig.dss.cms.CMS;
+import eu.europa.esig.dss.cms.CMSUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.signature.SignatureRequirementsChecker;
@@ -101,7 +102,7 @@ public class CAdESLevelBaselineT extends CAdESSignatureExtension {
 													  CAdESSignatureParameters parameters) {
 		AttributeTable unsignedAttributes = CAdESUtils.getUnsignedAttributes(signerInformation);
 		unsignedAttributes = addSignatureTimestampAttribute(signerInformation, unsignedAttributes, parameters);
-		return SignerInformation.replaceUnsignedAttributes(signerInformation, unsignedAttributes);
+		return CMSUtils.replaceUnsignedAttributes(signerInformation, unsignedAttributes);
 	}
 
 	/**

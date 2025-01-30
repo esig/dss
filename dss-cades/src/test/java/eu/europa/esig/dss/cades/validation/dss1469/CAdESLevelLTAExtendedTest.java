@@ -34,8 +34,8 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.utils.Utils;
+import org.junit.jupiter.api.Tag;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -43,6 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Tag("atst-v2")
 class CAdESLevelLTAExtendedTest extends AbstractCAdESTestValidation {
 
 	@Override

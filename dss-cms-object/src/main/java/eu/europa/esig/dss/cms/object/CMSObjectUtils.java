@@ -5,7 +5,12 @@ import eu.europa.esig.dss.cms.CMS;
 import eu.europa.esig.dss.cms.ICMSUtils;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.DigestDocument;
+import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.signature.resources.DSSResourcesHandlerBuilder;
+import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1Set;
 import org.bouncycastle.asn1.BEROctetString;
 import org.bouncycastle.asn1.BERSequence;
@@ -13,38 +18,54 @@ import org.bouncycastle.asn1.BERSet;
 import org.bouncycastle.asn1.BERTaggedObject;
 import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.DERTaggedObject;
+import org.bouncycastle.asn1.cms.AttributeTable;
+import org.bouncycastle.asn1.cms.CMSObjectIdentifiers;
 import org.bouncycastle.asn1.cms.ContentInfo;
+import org.bouncycastle.asn1.cms.OtherRevocationInfoFormat;
 import org.bouncycastle.asn1.cms.SignedData;
+import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.cert.X509AttributeCertificateHolder;
+import org.bouncycastle.cert.X509CRLHolder;
 import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.cms.CMSAbsentContent;
 import org.bouncycastle.cms.CMSException;
+import org.bouncycastle.cms.CMSProcessableByteArray;
+import org.bouncycastle.cms.CMSProcessableFile;
 import org.bouncycastle.cms.CMSSignedData;
+import org.bouncycastle.cms.CMSTypedData;
+import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SignerInformationStore;
 import org.bouncycastle.tsp.TimeStampToken;
+import org.bouncycastle.util.CollectionStore;
+import org.bouncycastle.util.Encodable;
 import org.bouncycastle.util.Store;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Objects;
 
 /**
  * Implements {@code ICMSUtils} using a {@code eu.europa.esig.dss.cms.bc.CMSSignedDataWrapper} processing
  *
  */
-public class CMSSignedDataUtils implements ICMSUtils {
+public class CMSObjectUtils implements ICMSUtils {
+
+    /**
+     * Default constructor
+     */
+    public CMSObjectUtils() {
+        // empty
+    }
 
     @Override
     public CMS parseToCMS(DSSDocument document) {
         if (document instanceof CMSSignedDocument) {
             return new CMSSignedDataObject(((CMSSignedDocument) document).getCMSSignedData());
         }
-        return parseToCMS(document.openStream());
-    }
-
-    @Override
-    public CMS parseToCMS(InputStream inputStream) {
-        try (InputStream is = inputStream) {
+        try (InputStream is = document.openStream()) {
             CMSSignedData cmsSignedData = new CMSSignedData(is);
             return new CMSSignedDataObject(cmsSignedData);
         } catch (IOException | CMSException e) {
@@ -63,32 +84,56 @@ public class CMSSignedDataUtils implements ICMSUtils {
     }
 
     @Override
-    public DSSDocument writeToDSSDocument(CMS cms) {
-        CMSSignedDataObject cmsSignedDataObject = toCMSSignedDataBC(cms);
+    public DSSDocument writeToDSSDocument(CMS cms, DSSResourcesHandlerBuilder resourcesHandlerBuilder) {
+        // NOTE: the 'dss-cms-object' implementation does not require using of {@code resourcesHandlerBuilder}
+        CMSSignedDataObject cmsSignedDataObject = toCMSSignedDataObject(cms);
         return new CMSSignedDocument(cmsSignedDataObject.getCMSSignedData());
     }
 
     @Override
     public CMS replaceSigners(CMS cms, SignerInformationStore newSignerStore) {
-        CMSSignedDataObject cmsSignedDataObject = toCMSSignedDataBC(cms);
+        CMSSignedDataObject cmsSignedDataObject = toCMSSignedDataObject(cms);
         CMSSignedData cmsSignedData = CMSSignedData.replaceSigners(cmsSignedDataObject.getCMSSignedData(), newSignerStore);
         return new CMSSignedDataObject(cmsSignedData);
     }
 
     @Override
-    public CMS replaceCertificatesAndCRLs(CMS cms, Store<X509CertificateHolder> certificates, Store<X509AttributeCertificateHolder> attributeCertificates, Store<?> crls) {
-        CMSSignedDataObject cmsSignedDataObject = toCMSSignedDataBC(cms);
+    public CMS replaceCertificatesAndCRLs(CMS cms, Store<X509CertificateHolder> certificates,
+                                          Store<X509AttributeCertificateHolder> attributeCertificates,
+                                          Store<X509CRLHolder> crls, Store<?> ocspResponsesStore, Store<?> ocspBasicStore) {
+        CMSSignedDataObject cmsSignedDataObject = toCMSSignedDataObject(cms);
         try {
-            CMSSignedData cmsSignedData = CMSSignedData.replaceCertificatesAndCRLs(cmsSignedDataObject.getCMSSignedData(), certificates, attributeCertificates, crls);
+            Store<Encodable> newCRLStore = toCRLsStore(crls, ocspResponsesStore, ocspBasicStore);
+            CMSSignedData cmsSignedData = CMSSignedData.replaceCertificatesAndCRLs(cmsSignedDataObject.getCMSSignedData(),
+                    certificates, attributeCertificates, newCRLStore);
             return new CMSSignedDataObject(cmsSignedData);
         } catch (CMSException e) {
             throw new DSSException(String.format("Unable to replace content of CMS SignedData. Reason : %s", e.getMessage()), e);
         }
     }
 
+    /**
+     * Creates a new combined SignedData.crls store containing CRLs, OCSP responses and OCSP Basic responses
+     *
+     * @param crls {@link Store} containing CRLs
+     * @param ocspResponses {@link Store} containing OCSP responses
+     * @param ocspBasicResponses {@link Store} containing OCSP Basic responses
+     * @return {@link Store}
+     */
+    public static Store<Encodable> toCRLsStore(Store<X509CRLHolder> crls, Store<?> ocspResponses, Store<?> ocspBasicResponses) {
+        final Collection<Encodable> newCrlsStore = new HashSet<>(crls.getMatches(null));
+        for (Object ocsp : ocspResponses.getMatches(null)) {
+            newCrlsStore.add(new OtherRevocationInfoFormat(CMSObjectIdentifiers.id_ri_ocsp_response, (ASN1Encodable) ocsp));
+        }
+        for (Object ocsp : ocspBasicResponses.getMatches(null)) {
+            newCrlsStore.add(new OtherRevocationInfoFormat(OCSPObjectIdentifiers.id_pkix_ocsp_basic, (ASN1Encodable) ocsp));
+        }
+        return new CollectionStore<>(newCrlsStore);
+    }
+
     @Override
     public CMS populateDigestAlgorithmSet(CMS cms, Collection<AlgorithmIdentifier> digestAlgorithmsToAdd) {
-        CMSSignedDataObject cmsSignedDataObject = toCMSSignedDataBC(cms);
+        CMSSignedDataObject cmsSignedDataObject = toCMSSignedDataObject(cms);
         CMSSignedData cmsSignedData = cmsSignedDataObject.getCMSSignedData();
         for (AlgorithmIdentifier asn1ObjectIdentifier : digestAlgorithmsToAdd) {
             if (!cmsSignedData.getDigestAlgorithmIDs().contains(asn1ObjectIdentifier)) {
@@ -98,11 +143,11 @@ public class CMSSignedDataUtils implements ICMSUtils {
         return new CMSSignedDataObject(cmsSignedData);
     }
 
-    private static CMSSignedDataObject toCMSSignedDataBC(CMS cms) {
+    private static CMSSignedDataObject toCMSSignedDataObject(CMS cms) {
         if (cms instanceof CMSSignedDataObject) {
             return (CMSSignedDataObject) cms;
         }
-        throw new IllegalStateException("Only CMSSignedDataBC implementation is supported in 'dss-cades-cms' module!");
+        throw new IllegalStateException("Only CMSSignedDataObject implementation is supported in 'dss-cms-object' module!");
     }
 
     @Override
@@ -174,9 +219,36 @@ public class CMSSignedDataUtils implements ICMSUtils {
     }
 
     private SignedData getSignedData(CMS cms) {
-        CMSSignedDataObject cmsSignedDataObject = toCMSSignedDataBC(cms);
+        CMSSignedDataObject cmsSignedDataObject = toCMSSignedDataObject(cms);
         final ContentInfo contentInfo = cmsSignedDataObject.getCMSSignedData().toASN1Structure();
         return SignedData.getInstance(contentInfo.getContent());
+    }
+
+    @Override
+    public CMSTypedData toCMSEncapsulatedContent(DSSDocument document) {
+        Objects.requireNonNull(document, "Document to be signed is missing");
+        CMSTypedData content;
+        if (document instanceof DigestDocument) {
+            content = new CMSAbsentContent();
+        } else if (document instanceof FileDocument) {
+            FileDocument fileDocument = (FileDocument) document;
+            content = new CMSProcessableFile(fileDocument.getFile());
+        } else {
+            content = new CMSProcessableByteArray(DSSUtils.toByteArray(document));
+        }
+        return content;
+    }
+
+    @Override
+    public DSSResourcesHandlerBuilder getDSSResourcesHandlerBuilder(DSSResourcesHandlerBuilder dssResourcesHandlerBuilder) {
+        throw new UnsupportedOperationException("Usage of DSSResourcesHandlerBuilder is not supported within " +
+                "the 'dss-cms-object' module! Remove the setter to use in-memory processing, or switch to " +
+                "'dss-cms-stream' implementation.");
+    }
+
+    @Override
+    public SignerInformation replaceUnsignedAttributes(SignerInformation signerInformation, AttributeTable unsignedAttributes) {
+        return SignerInformation.replaceUnsignedAttributes(signerInformation, unsignedAttributes);
     }
 
 }

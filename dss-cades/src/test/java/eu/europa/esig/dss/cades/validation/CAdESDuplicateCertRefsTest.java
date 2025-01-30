@@ -31,6 +31,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.SignatureCertificateSource;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import org.junit.jupiter.api.Tag;
 
 import java.util.Collection;
 import java.util.List;
@@ -40,6 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Tag("atst-v2")
 class CAdESDuplicateCertRefsTest extends AbstractCAdESTestValidation {
 
 	@Override

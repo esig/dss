@@ -48,7 +48,7 @@ import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxSignatureDrawer;
 import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxSignatureDrawerFactory;
 import eu.europa.esig.dss.pdf.pdfbox.visible.nativedrawer.NativePdfBoxVisibleSignatureDrawer;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
-import eu.europa.esig.dss.signature.resources.DSSResourcesHandler;
+import eu.europa.esig.dss.spi.signature.resources.DSSResourcesHandler;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.validation.ValidationData;

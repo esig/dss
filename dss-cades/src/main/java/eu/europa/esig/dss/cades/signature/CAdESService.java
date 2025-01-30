@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.cades.signature;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.cades.CAdESUtils;
 import eu.europa.esig.dss.cms.CMS;
 import eu.europa.esig.dss.cms.CMSUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -40,6 +41,7 @@ import eu.europa.esig.dss.signature.CounterSignatureService;
 import eu.europa.esig.dss.signature.SigningOperation;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.signature.resources.DSSResourcesHandlerBuilder;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
@@ -68,6 +70,11 @@ public class CAdESService extends
 	private static final Logger LOG = LoggerFactory.getLogger(CAdESService.class);
 
 	/**
+	 * This object is used to create data container objects such as an OutputStream or a DSSDocument
+	 */
+	protected DSSResourcesHandlerBuilder resourcesHandlerBuilder = CAdESUtils.DEFAULT_RESOURCES_HANDLER_BUILDER;
+
+	/**
 	 * This is the constructor to create an instance of the {@code CAdESService}. A certificate verifier must be
 	 * provided.
 	 *
@@ -78,6 +85,17 @@ public class CAdESService extends
 	public CAdESService(final CertificateVerifier certificateVerifier) {
 		super(certificateVerifier);
 		LOG.debug("+ CAdESService created");
+	}
+
+	/**
+	 * This method sets a {@code DSSResourcesHandlerBuilder} to be used for operating with internal objects
+	 * during the signature creation procedure.
+	 * NOTE: The {@code DSSResourcesHandlerBuilder} is supported only within the 'dss-cms-stream' module!
+	 *
+	 * @param resourcesHandlerBuilder {@link DSSResourcesHandlerBuilder}
+	 */
+	public void setResourcesHandlerBuilder(DSSResourcesHandlerBuilder resourcesHandlerBuilder) {
+		this.resourcesHandlerBuilder = CMSUtils.getDSSResourcesHandlerBuilder(resourcesHandlerBuilder);
 	}
 
 	@Override
@@ -113,7 +131,7 @@ public class CAdESService extends
 
 		final CMSBuilder cmsBuilder = getCMSBuilder(parameters).setOriginalCMS(originalCms);
 		CMS cms = cmsBuilder.createCMS(signerInfoGenerator, contentToSign);
-		CMSUtils.writeToDSSDocument(cms);
+		CMSUtils.writeToDSSDocument(cms, resourcesHandlerBuilder);
 
 		final byte[] bytes = customContentSigner.getOutputStream().toByteArray();
 		return new ToBeSigned(bytes);
@@ -153,7 +171,7 @@ public class CAdESService extends
 			cms = extension.extendCMSSignatures(cms, newSignerInformation, parameters);
 		}
 
-		DSSDocument signature = CMSUtils.writeToDSSDocument(cms);
+		DSSDocument signature = CMSUtils.writeToDSSDocument(cms, resourcesHandlerBuilder);
 		signature.setName(getFinalFileName(toSignDocument, SigningOperation.SIGN,
 				parameters.getSignatureLevel(), parameters.getSignaturePackaging()));
 		parameters.reinit();
@@ -246,17 +264,23 @@ public class CAdESService extends
 	private CAdESSignatureExtension getExtensionProfile(final CAdESSignatureParameters parameters) {
 		final SignatureLevel signatureLevel = parameters.getSignatureLevel();
 		Objects.requireNonNull(signatureLevel, "SignatureLevel must be defined!");
+		CAdESSignatureExtension cadesSignatureExtension;
 		switch (signatureLevel) {
 			case CAdES_BASELINE_T:
-				return new CAdESLevelBaselineT(tspSource, certificateVerifier);
+				cadesSignatureExtension = new CAdESLevelBaselineT(tspSource, certificateVerifier);
+				break;
 			case CAdES_BASELINE_LT:
-				return new CAdESLevelBaselineLT(tspSource, certificateVerifier);
+				cadesSignatureExtension = new CAdESLevelBaselineLT(tspSource, certificateVerifier);
+				break;
 			case CAdES_BASELINE_LTA:
-				return new CAdESLevelBaselineLTA(tspSource, certificateVerifier);
+				cadesSignatureExtension = new CAdESLevelBaselineLTA(tspSource, certificateVerifier);
+				break;
 			default:
 				throw new UnsupportedOperationException(
 						String.format("Unsupported signature format '%s' for extension.", signatureLevel));
 		}
+		cadesSignatureExtension.setResourcesHandlerBuilder(resourcesHandlerBuilder);
+		return cadesSignatureExtension;
 	}
 
 	/**
@@ -329,10 +353,21 @@ public class CAdESService extends
 		Objects.requireNonNull(document, "The document cannot be null");
 		Objects.requireNonNull(signaturePolicyStore, "The signaturePolicyStore cannot be null");
 
-		CAdESSignaturePolicyStoreBuilder builder = new CAdESSignaturePolicyStoreBuilder();
+		final CAdESSignaturePolicyStoreBuilder builder = getCAdESSignaturePolicyStoreBuilder();
 		DSSDocument documentWithPolicyStore = builder.addSignaturePolicyStore(document, signaturePolicyStore);
 		documentWithPolicyStore.setName(getFinalFileName(document, SigningOperation.EXTEND, null));
 		return documentWithPolicyStore;
+	}
+
+	/**
+	 * Loads the relevant {@code CAdESSignaturePolicyStoreBuilder}
+	 *
+	 * @return {@link CAdESSignaturePolicyStoreBuilder}
+	 */
+	protected CAdESSignaturePolicyStoreBuilder getCAdESSignaturePolicyStoreBuilder() {
+		CAdESSignaturePolicyStoreBuilder builder = new CAdESSignaturePolicyStoreBuilder();
+		builder.setResourcesHandlerBuilder(resourcesHandlerBuilder);
+		return builder;
 	}
 
 	@Override
@@ -343,7 +378,7 @@ public class CAdESService extends
 		assertSigningCertificateValid(parameters);
 		assertCounterSignaturePossible(parameters);
 
-		final CAdESCounterSignatureBuilder counterSignatureBuilder = new CAdESCounterSignatureBuilder(certificateVerifier);
+		final CAdESCounterSignatureBuilder counterSignatureBuilder = getCAdESCounterSignatureBuilder();
 		final SignerInformation signerInfoToCounterSign = counterSignatureBuilder
 				.getSignerInformationToBeCounterSigned(signatureDocument, parameters);
 		
@@ -362,7 +397,7 @@ public class CAdESService extends
 		final SignatureAlgorithm signatureAlgorithm = parameters.getSignatureAlgorithm();
 		final CustomContentSigner customContentSigner = new CustomContentSigner(signatureAlgorithm.getJCEId());
 
-		final CAdESCounterSignatureBuilder counterSignatureBuilder = new CAdESCounterSignatureBuilder(certificateVerifier);
+		final CAdESCounterSignatureBuilder counterSignatureBuilder = getCAdESCounterSignatureBuilder();
 		counterSignatureBuilder.generateCounterSignature(signerInfoToCounterSign, parameters, customContentSigner);
 
 		return new ToBeSigned(customContentSigner.getOutputStream().toByteArray());
@@ -380,12 +415,23 @@ public class CAdESService extends
 
 		CMS originalCMS = CMSUtils.parseToCMS(signatureDocument);
 		
-		CAdESCounterSignatureBuilder counterSignatureBuilder = new CAdESCounterSignatureBuilder(certificateVerifier);
+		final CAdESCounterSignatureBuilder counterSignatureBuilder = getCAdESCounterSignatureBuilder();
 		DSSDocument counterSigned = counterSignatureBuilder.addCounterSignature(originalCMS, parameters, signatureValue);
 		counterSigned.setName(getFinalFileName(signatureDocument, SigningOperation.COUNTER_SIGN, parameters.getSignatureLevel()));
 		counterSigned.setMimeType(signatureDocument.getMimeType());
 		
 		return counterSigned;
+	}
+
+	/**
+	 * Loads the relevant {@code CAdESCounterSignatureBuilder}
+	 *
+	 * @return {@link CAdESCounterSignatureBuilder}
+	 */
+	protected CAdESCounterSignatureBuilder getCAdESCounterSignatureBuilder() {
+		CAdESCounterSignatureBuilder counterSignatureBuilder = new CAdESCounterSignatureBuilder(certificateVerifier);
+		counterSignatureBuilder.setResourcesHandlerBuilder(resourcesHandlerBuilder);
+		return counterSignatureBuilder;
 	}
 
 	private void assertCounterSignaturePossible(CAdESCounterSignatureParameters parameters) {

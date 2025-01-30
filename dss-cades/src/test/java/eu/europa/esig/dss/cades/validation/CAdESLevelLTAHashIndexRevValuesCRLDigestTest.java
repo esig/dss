@@ -29,6 +29,7 @@ import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
+import org.junit.jupiter.api.Tag;
 
 import java.util.Collections;
 import java.util.List;
@@ -38,6 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Tag("atst-v2")
 class CAdESLevelLTAHashIndexRevValuesCRLDigestTest extends AbstractCAdESTestValidation {
 
     @Override

@@ -35,6 +35,7 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.resources.DSSResourcesHandlerBuilder;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.x509.BaselineBCertificateSelector;
 import eu.europa.esig.dss.utils.Utils;
@@ -71,6 +72,9 @@ public class CAdESCounterSignatureBuilder {
 	/** A signature signed manifest. Used for ASiC */
 	private ManifestFile manifestFile;
 
+	/** This object is used to create data container objects such as an OutputStream or a DSSDocument */
+	protected DSSResourcesHandlerBuilder resourcesHandlerBuilder;
+
 	/**
 	 * The default constructor
 	 *
@@ -91,6 +95,16 @@ public class CAdESCounterSignatureBuilder {
 	}
 
 	/**
+	 * This method sets a {@code DSSResourcesHandlerBuilder} to be used for operating with internal objects
+	 * during the signature creation procedure.
+	 *
+	 * @param resourcesHandlerBuilder {@link DSSResourcesHandlerBuilder}
+	 */
+	public void setResourcesHandlerBuilder(DSSResourcesHandlerBuilder resourcesHandlerBuilder) {
+		this.resourcesHandlerBuilder = resourcesHandlerBuilder;
+	}
+
+	/**
 	 * Adds a counter signature the provided CMS
 	 * 
 	 * @param originalCMS {@link CMS} to add a counter signature into
@@ -107,7 +121,7 @@ public class CAdESCounterSignatureBuilder {
 		CMS updatedCMS = CMSUtils.replaceSigners(originalCMS, new SignerInformationStore(updatedSignerInfo));
 		updatedCMS = CMSUtils.populateDigestAlgorithmSet(updatedCMS, originalCMS.getDigestAlgorithmIDs());
 		updatedCMS = addNewCertificates(updatedCMS, parameters);
-		return CMSUtils.writeToDSSDocument(updatedCMS);
+		return CMSUtils.writeToDSSDocument(updatedCMS, resourcesHandlerBuilder);
 	}
 
 	private List<SignerInformation> getUpdatedSignerInformations(CMS originalCMS, SignerInformationStore signerInformationStore,
@@ -159,7 +173,7 @@ public class CAdESCounterSignatureBuilder {
 			}
 		}
 
-		return SignerInformation.replaceUnsignedAttributes(signerInformation, new AttributeTable(attrs));
+		return CMSUtils.replaceUnsignedAttributes(signerInformation, new AttributeTable(attrs));
 	}
 
 	private boolean isCounterSignatureAttribute(ASN1Encodable asn1Encodable) {

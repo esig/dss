@@ -34,6 +34,7 @@ import eu.europa.esig.dss.model.Policy;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.signature.resources.InMemoryResourcesHandlerBuilder;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.utils.Utils;
@@ -103,6 +104,7 @@ class CAdESSignaturePolicyStoreForSignatureByIdTest extends AbstractCAdESTestSig
         signaturePolicyStore.setSignaturePolicyContent(POLICY_CONTENT);
 
         CAdESSignaturePolicyStoreBuilder signaturePolicyStoreBuilder = new CAdESSignaturePolicyStoreBuilder();
+        signaturePolicyStoreBuilder.setResourcesHandlerBuilder(new InMemoryResourcesHandlerBuilder());
         DSSDocument signedDocumentWithSignaturePolicyStore = signaturePolicyStoreBuilder.addSignaturePolicyStore(
                 doubleSignedDocument, signaturePolicyStore, firstSigId);
         assertNotNull(signedDocumentWithSignaturePolicyStore);

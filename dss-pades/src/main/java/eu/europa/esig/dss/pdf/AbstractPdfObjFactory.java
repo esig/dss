@@ -22,7 +22,7 @@ package eu.europa.esig.dss.pdf;
 
 import eu.europa.esig.dss.pdf.modifications.PdfDifferencesFinder;
 import eu.europa.esig.dss.pdf.modifications.PdfObjectModificationsFinder;
-import eu.europa.esig.dss.signature.resources.DSSResourcesHandlerBuilder;
+import eu.europa.esig.dss.spi.signature.resources.DSSResourcesHandlerBuilder;
 
 /**
  * An abstract implementation of IPdfObjFactory allowing to set the configuration options

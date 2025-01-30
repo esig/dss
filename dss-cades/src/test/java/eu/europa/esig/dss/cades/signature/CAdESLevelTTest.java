@@ -23,7 +23,6 @@ package eu.europa.esig.dss.cades.signature;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.cms.CMS;
-import eu.europa.esig.dss.cms.CMSSignedDocument;
 import eu.europa.esig.dss.cms.CMSUtils;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
@@ -74,9 +73,7 @@ class CAdESLevelTTest extends AbstractCAdESTestSignature {
 
 	@Override
 	protected Reports verify(DSSDocument signedDocument) {
-		assertTrue(signedDocument instanceof CMSSignedDocument);
-		CMSSignedDocument cmsSignedDocument = (CMSSignedDocument) signedDocument;
-		CMS cms = CMSUtils.parseToCMS(cmsSignedDocument);
+		CMS cms = CMSUtils.parseToCMS(signedDocument);
 		Collection<SignerInformation> signers = cms.getSignerInfos().getSigners();
 		assertEquals(1, signers.size());
 		CAdESSignature cadesSignature = new CAdESSignature(cms, signers.iterator().next());

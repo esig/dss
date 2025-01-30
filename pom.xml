@@ -126,6 +126,7 @@
 		<module>dss-document</module>
 		<module>dss-cms</module>
 		<module>dss-cms-object</module>
+		<module>dss-cms-stream</module>
 		<module>dss-validation</module>
 		<module>dss-test</module>
 		<module>dss-xades</module>
@@ -589,6 +590,11 @@
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-cms-object</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-cms-stream</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

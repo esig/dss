@@ -37,6 +37,7 @@ import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.resources.DSSResourcesHandlerBuilder;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.validation.executor.CompleteValidationContextExecutor;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
@@ -71,6 +72,9 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 	/** The CertificateVerifier to use */
 	protected final CertificateVerifier certificateVerifier;
 
+	/** This object is used to create data container objects such as an OutputStream or a DSSDocument */
+	protected DSSResourcesHandlerBuilder resourcesHandlerBuilder;
+
 	/**
 	 * The default constructor
 	 * 
@@ -81,6 +85,16 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 		Objects.requireNonNull(tspSource, "Missing TSPSource");
 		this.tspSource = tspSource;
 		this.certificateVerifier = certificateVerifier;
+	}
+
+	/**
+	 * This method sets a {@code DSSResourcesHandlerBuilder} to be used for operating with internal objects
+	 * during the signature creation procedure.
+	 *
+	 * @param resourcesHandlerBuilder {@link DSSResourcesHandlerBuilder}
+	 */
+	public void setResourcesHandlerBuilder(DSSResourcesHandlerBuilder resourcesHandlerBuilder) {
+		this.resourcesHandlerBuilder = resourcesHandlerBuilder;
 	}
 
 	/**
@@ -97,7 +111,7 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 		LOG.trace("EXTEND SIGNATURES.");
 		final CMS cms = getCMS(signatureToExtend);
 		final CMS extendedCMS = extendCMSSignatures(cms, parameters);
-		return CMSUtils.writeToDSSDocument(extendedCMS);
+		return CMSUtils.writeToDSSDocument(extendedCMS, resourcesHandlerBuilder);
 	}
 
 	private CMS getCMS(DSSDocument document) {
@@ -107,51 +121,50 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 	/**
 	 * Extends a {@code CMS}
 	 * 
-	 * @param cmsSignedData {@link CMS} to extend
+	 * @param cms {@link CMS} to extend
 	 * @param parameters {@link CAdESSignatureParameters}
 	 * @return {@link CMS}
 	 */
-	public CMS extendCMSSignatures(CMS cmsSignedData, CAdESSignatureParameters parameters) {
-		return extendCMSSignatures(cmsSignedData, cmsSignedData.getSignerInfos().getSigners(), parameters);
+	public CMS extendCMSSignatures(CMS cms, CAdESSignatureParameters parameters) {
+		return extendCMSSignatures(cms, cms.getSignerInfos().getSigners(), parameters);
 	}
 
 	/**
 	 * Extends a {@code CMS} with a specified {@code SignerInformation}
 	 * NOTE: does not modify other {@code SignerInformation}s
 	 * 
-	 * @param cmsSignedData {@link CMS} to extend
+	 * @param cms {@link CMS} to extend
 	 * @param signerInformation {@link SignerInformation} to extend
 	 * @param parameters {@link CAdESSignatureParameters}
 	 * @return {@link CMS}
 	 */
-	public CMS extendCMSSignatures(CMS cmsSignedData, SignerInformation signerInformation, CAdESSignatureParameters parameters) {
-		return extendCMSSignatures(cmsSignedData, Collections.singletonList(signerInformation), parameters);
+	public CMS extendCMSSignatures(CMS cms, SignerInformation signerInformation, CAdESSignatureParameters parameters) {
+		return extendCMSSignatures(cms, Collections.singletonList(signerInformation), parameters);
 	}
 
 	/**
 	 * Loops on each signerInformation of the {@code cmsSignedData} and 
 	 * extends ones defined in the collection {@code signerInformationsToExtend}
 	 *
-	 * @param cmsSignedData {@link CMS}
+	 * @param cms {@link CMS}
 	 * @param signerInformationsToExtend a collection of {@link SignerInformation} to be extended
 	 * @param parameters {@link CAdESSignatureParameters} for the extension
 	 * @return {@link CMS} with extended signerInformations
 	 */
-	protected CMS extendCMSSignatures(CMS cmsSignedData,
-												Collection<SignerInformation> signerInformationsToExtend,
-												CAdESSignatureParameters parameters) {
+	protected CMS extendCMSSignatures(CMS cms, Collection<SignerInformation> signerInformationsToExtend,
+									  CAdESSignatureParameters parameters) {
 		LOG.info("EXTEND CMS SIGNATURES.");
-		assertCMSSignaturesValid(cmsSignedData, signerInformationsToExtend, parameters);
+		assertCMSSignaturesValid(cms, signerInformationsToExtend, parameters);
 
 		// extract signerInformations before pre-extension
-		Collection<SignerInformation> signerInformationCollection = cmsSignedData.getSignerInfos().getSigners();
+		Collection<SignerInformation> signerInformationCollection = cms.getSignerInfos().getSigners();
 		if (Utils.isCollectionEmpty(signerInformationCollection)) {
 			throw new IllegalInputException("Unable to extend the document! No signatures found.");
 		}
 
 		List<String> signatureIdsToExtend = new ArrayList<>();
 
-		CMSDocumentAnalyzer validator = getDocumentValidator(cmsSignedData, parameters);
+		CMSDocumentAnalyzer validator = getDocumentValidator(cms, parameters);
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		for (AdvancedSignature signature : signatures) {
 			CAdESSignature cadesSignature = (CAdESSignature) signature;
@@ -160,21 +173,20 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 			}
 		}
 
-		return extendCMSSignatures(cmsSignedData, parameters, signatureIdsToExtend);
+		return extendCMSSignatures(cms, parameters, signatureIdsToExtend);
 	}
 
 	/**
 	 * This method extends the signatures in the {@code cmsSignedData} with ids listed
 	 * within {@code signatureIdsToExtend}
 	 *
-	 * @param cmsSignedData {@link CMS} containing the signatures to be extended
+	 * @param cms {@link CMS} containing the signatures to be extended
 	 * @param parameters {@link CAdESSignatureParameters}
 	 * @param signatureIdsToExtend a list of {@link String} signature Ids to be extended
 	 * @return {@link CMS}
 	 */
-	protected abstract CMS extendCMSSignatures(CMS cmsSignedData,
-												CAdESSignatureParameters parameters,
-												List<String> signatureIdsToExtend);
+	protected abstract CMS extendCMSSignatures(CMS cms, CAdESSignatureParameters parameters,
+											   List<String> signatureIdsToExtend);
 
 	/**
 	 * This method replaces the signers within the provided {@code originalCMS}
@@ -193,14 +205,14 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 	 * Creates a CAdESSignature.
 	 * Note: recommended method to use.
 	 * 
-	 * @param cmsSignedData {@link CMS} of a signature to create
+	 * @param cms {@link CMS} of a signature to create
 	 * @param signerInformation {@link SignerInformation}
 	 * @param detachedContents a list of detached {@link DSSDocument}s
 	 * @return created {@link CAdESSignature}
 	 */
-	protected CAdESSignature newCAdESSignature(CMS cmsSignedData, SignerInformation signerInformation,
+	protected CAdESSignature newCAdESSignature(CMS cms, SignerInformation signerInformation,
 											   List<DSSDocument> detachedContents) {
-		final CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation);
+		final CAdESSignature cadesSignature = new CAdESSignature(cms, signerInformation);
 		cadesSignature.setDetachedContents(detachedContents);
 		cadesSignature.initBaselineRequirementsChecker(certificateVerifier);
 		return cadesSignature;
@@ -238,7 +250,7 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 			if (unsignedAttributes.size() == 0) {
 				unsignedAttributes = null;
 			}
-			final SignerInformation newSignerInformation = SignerInformation.replaceUnsignedAttributes(signerInformation, unsignedAttributes);
+			final SignerInformation newSignerInformation = CMSUtils.replaceUnsignedAttributes(signerInformation, unsignedAttributes);
 			final List<SignerInformation> signerInformationList = new ArrayList<>();
 			signerInformationList.add(newSignerInformation);
 			final SignerInformationStore newSignerStore = new SignerInformationStore(signerInformationList);
@@ -248,13 +260,13 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 		return DSSASN1Utils.toASN1Primitive(newTimeStampTokenBytes);
 	}
 
-	private void assertCMSSignaturesValid(final CMS cmsSignedData, Collection<SignerInformation> signerInformationsToExtend, 
-			CAdESSignatureParameters parameters) {
+	private void assertCMSSignaturesValid(final CMS cms, Collection<SignerInformation> signerInformationsToExtend,
+										  CAdESSignatureParameters parameters) {
 		if (!SignatureForm.PAdES.equals(parameters.getSignatureLevel().getSignatureForm())) {
-			Collection<SignerInformation> signerInformationCollection = cmsSignedData.getSignerInfos().getSigners();
+			Collection<SignerInformation> signerInformationCollection = cms.getSignerInfos().getSigners();
 			for (SignerInformation signerInformation : signerInformationCollection) {
 				if (signerInformationsToExtend.contains(signerInformation)) {
-					CAdESSignature cadesSignature = newCAdESSignature(cmsSignedData, signerInformation, parameters.getDetachedContents());
+					CAdESSignature cadesSignature = newCAdESSignature(cms, signerInformation, parameters.getDetachedContents());
 					assertSignatureValid(cadesSignature, parameters);
 				}
 			}
@@ -277,12 +289,12 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 	/**
 	 * This method returns a document validator for a {@code CMS}
 	 *
-	 * @param signedData {@link CMS} to get validation for
+	 * @param cms {@link CMS} to get validation for
 	 * @param parameters {@link CAdESSignatureParameters}
 	 * @return {@link CMSDocumentAnalyzer}
 	 */
-	protected CMSDocumentAnalyzer getDocumentValidator(CMS signedData, CAdESSignatureParameters parameters) {
-		CMSDocumentAnalyzer documentValidator = new CMSDocumentAnalyzer(signedData);
+	protected CMSDocumentAnalyzer getDocumentValidator(CMS cms, CAdESSignatureParameters parameters) {
+		CMSDocumentAnalyzer documentValidator = new CMSDocumentAnalyzer(cms);
 		documentValidator.setCertificateVerifier(certificateVerifier);
 		documentValidator.setDetachedContents(parameters.getDetachedContents());
 		documentValidator.setValidationContextExecutor(CompleteValidationContextExecutor.INSTANCE);

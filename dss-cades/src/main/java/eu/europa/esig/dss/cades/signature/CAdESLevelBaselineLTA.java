@@ -94,7 +94,7 @@ public class CAdESLevelBaselineLTA extends CAdESLevelBaselineLT {
 			if (signaturesToExtend.contains(cadesSignature)) {
 				AttributeTable unsignedAttributes = CAdESUtils.getUnsignedAttributes(signerInformation);
 				unsignedAttributes = addArchiveTimestampV3Attribute(cadesSignature, signerInformation, parameters, unsignedAttributes);
-				newSignerInformation = SignerInformation.replaceUnsignedAttributes(signerInformation, unsignedAttributes);
+				newSignerInformation = CMSUtils.replaceUnsignedAttributes(signerInformation, unsignedAttributes);
 
 				/*
 				 * Add a DigestAlgorithm used by an Archive TimeStamp to SignedData.digestAlgorithms set, when required.

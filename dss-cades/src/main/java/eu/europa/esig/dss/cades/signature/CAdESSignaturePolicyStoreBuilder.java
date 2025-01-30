@@ -36,6 +36,7 @@ import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.policy.DefaultSignaturePolicyValidatorLoader;
 import eu.europa.esig.dss.spi.policy.SignaturePolicyValidator;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.resources.DSSResourcesHandlerBuilder;
 import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Sequence;
@@ -59,11 +60,24 @@ public class CAdESSignaturePolicyStoreBuilder {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CAdESSignaturePolicyStoreBuilder.class);
 
+	/** This object is used to create data container objects such as an OutputStream or a DSSDocument */
+	protected DSSResourcesHandlerBuilder resourcesHandlerBuilder;
+
 	/**
 	 * Default constructor
 	 */
 	public CAdESSignaturePolicyStoreBuilder() {
 		// empty
+	}
+
+	/**
+	 * This method sets a {@code DSSResourcesHandlerBuilder} to be used for operating with internal objects
+	 * during the signature creation procedure.
+	 *
+	 * @param resourcesHandlerBuilder {@link DSSResourcesHandlerBuilder}
+	 */
+	public void setResourcesHandlerBuilder(DSSResourcesHandlerBuilder resourcesHandlerBuilder) {
+		this.resourcesHandlerBuilder = resourcesHandlerBuilder;
 	}
 
 	/**
@@ -79,7 +93,7 @@ public class CAdESSignaturePolicyStoreBuilder {
 		CMS originalCmsSignedData = CMSUtils.parseToCMS(signatureDocument);
 		CMS newCmsSignedData = extendCMS(originalCmsSignedData, signaturePolicyStore);
 		newCmsSignedData = CMSUtils.populateDigestAlgorithmSet(newCmsSignedData, originalCmsSignedData.getDigestAlgorithmIDs());
-		return CMSUtils.writeToDSSDocument(newCmsSignedData);
+		return CMSUtils.writeToDSSDocument(newCmsSignedData, resourcesHandlerBuilder);
 	}
 
 	/**
@@ -134,7 +148,7 @@ public class CAdESSignaturePolicyStoreBuilder {
 		CMS originalCmsSignedData = CMSUtils.parseToCMS(signatureDocument);
 		CMS newCmsSignedData = extendCMS(originalCmsSignedData, signaturePolicyStore, signatureId);
 		newCmsSignedData = CMSUtils.populateDigestAlgorithmSet(newCmsSignedData, originalCmsSignedData.getDigestAlgorithmIDs());
-		return CMSUtils.writeToDSSDocument(newCmsSignedData);
+		return CMSUtils.writeToDSSDocument(newCmsSignedData, resourcesHandlerBuilder);
 	}
 
 	/**
@@ -238,7 +252,7 @@ public class CAdESSignaturePolicyStoreBuilder {
 		AttributeTable unsignedAttributes = CAdESUtils.getUnsignedAttributes(signerInformation);
 		ASN1Sequence sigPolicyStore = getSignaturePolicyStore(signaturePolicyStore);
 		AttributeTable unsignedAttributesWithPolicyStore = unsignedAttributes.add(OID.id_aa_ets_sigPolicyStore, sigPolicyStore);
-		return SignerInformation.replaceUnsignedAttributes(signerInformation, unsignedAttributesWithPolicyStore);
+		return CMSUtils.replaceUnsignedAttributes(signerInformation, unsignedAttributesWithPolicyStore);
 	}
 
 	/**

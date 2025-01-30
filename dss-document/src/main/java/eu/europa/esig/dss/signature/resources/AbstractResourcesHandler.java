@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.signature.resources;
 
+import eu.europa.esig.dss.spi.signature.resources.DSSResourcesHandler;
+
 import java.io.IOException;
 import java.io.OutputStream;
 

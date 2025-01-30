@@ -35,10 +35,12 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.signature.AbstractSignatureParameters;
 import eu.europa.esig.dss.signature.SignatureRequirementsChecker;
 import eu.europa.esig.dss.signature.SignatureValueChecker;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.signature.resources.DSSResourcesHandlerBuilder;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import org.bouncycastle.cms.CMSSignedData;
@@ -74,6 +76,9 @@ public class ExternalCMSService {
     /** The TSPSource to use for timestamp requests */
     private TSPSource tspSource;
 
+    /** This object is used to write a created CMS into a defined implementation of an OutputStream or a DSSDocument */
+    protected DSSResourcesHandlerBuilder resourcesHandlerBuilder = PAdESUtils.DEFAULT_RESOURCES_HANDLER_BUILDER;
+
     /**
      * This is the default constructor for {@code PAdESCMSGeneratorService}.
      *
@@ -93,6 +98,17 @@ public class ExternalCMSService {
      */
     public void setTspSource(final TSPSource tspSource) {
         this.tspSource = tspSource;
+    }
+
+    /**
+     * This method sets a {@code DSSResourcesHandlerBuilder} to be used for operating with CMS object output containers
+     * during the signature creation procedure.
+     * NOTE: The {@code DSSResourcesHandlerBuilder} is supported only within the 'dss-cms-stream' module!
+     *
+     * @param resourcesHandlerBuilder {@link DSSResourcesHandlerBuilder}
+     */
+    public void setResourcesHandlerBuilder(DSSResourcesHandlerBuilder resourcesHandlerBuilder) {
+        this.resourcesHandlerBuilder = CMSUtils.getDSSResourcesHandlerBuilder(resourcesHandlerBuilder);
     }
 
     /**
@@ -157,7 +173,7 @@ public class ExternalCMSService {
 
         final CMS cms = buildCMS(messageDigest, parameters, signatureValue);
         parameters.reinit();
-        return CMSUtils.writeToDSSDocument(cms);
+        return CMSUtils.writeToDSSDocument(cms, resourcesHandlerBuilder);
     }
 
     /**

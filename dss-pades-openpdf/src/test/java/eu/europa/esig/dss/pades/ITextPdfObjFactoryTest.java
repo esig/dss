@@ -29,7 +29,7 @@ import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.pdf.modifications.PdfDifferencesFinder;
 import eu.europa.esig.dss.pdf.modifications.PdfObjectModificationsFinder;
 import eu.europa.esig.dss.pdf.openpdf.ITextDefaultPdfObjFactory;
-import eu.europa.esig.dss.signature.resources.DSSResourcesHandlerBuilder;
+import eu.europa.esig.dss.spi.signature.resources.DSSResourcesHandlerBuilder;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

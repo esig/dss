@@ -59,7 +59,7 @@ class CMSDocumentValidatorTest extends AbstractTestDocumentValidator {
 
 	@Test
 	void testCMSOnly() throws IOException {
-		CMS cms = CMSUtils.parseToCMS(FILE_DOCUMENT.openStream());
+		CMS cms = CMSUtils.parseToCMS(FILE_DOCUMENT);
 		CMSDocumentValidator validator = new CMSDocumentValidator(cms);
 		List<AdvancedSignature> signatures = validator.getSignatures();
 		assertTrue(Utils.isCollectionNotEmpty(signatures));

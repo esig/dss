@@ -35,6 +35,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampCertificateSource;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import org.junit.jupiter.api.Tag;
 
 import java.util.List;
 
@@ -43,6 +44,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Tag("atst-v2")
 class DSS1401Test extends AbstractCAdESTestValidation {
 
 	@Override

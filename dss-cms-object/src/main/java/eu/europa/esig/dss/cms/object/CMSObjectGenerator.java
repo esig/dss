@@ -3,20 +3,11 @@ package eu.europa.esig.dss.cms.object;
 import eu.europa.esig.dss.cms.AbstractCMSGenerator;
 import eu.europa.esig.dss.cms.CMS;
 import eu.europa.esig.dss.cms.CMSUtils;
-import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.DigestDocument;
-import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.spi.DSSUtils;
-import org.bouncycastle.cms.CMSAbsentContent;
 import org.bouncycastle.cms.CMSException;
-import org.bouncycastle.cms.CMSProcessableByteArray;
-import org.bouncycastle.cms.CMSProcessableFile;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.CMSSignedDataGenerator;
 import org.bouncycastle.cms.CMSTypedData;
-
-import java.util.Objects;
 
 import static org.bouncycastle.asn1.cms.CMSObjectIdentifiers.id_ri_ocsp_response;
 import static org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers.id_pkix_ocsp_basic;
@@ -58,7 +49,7 @@ public class CMSObjectGenerator extends AbstractCMSGenerator {
                 generator.addOtherRevocationInfo(id_ri_ocsp_response, ocspResponsesStore);
             }
 
-            CMSTypedData contentToBeSigned = getContentToBeSigned(toBeSignedDocument);
+            CMSTypedData contentToBeSigned = CMSUtils.toCMSEncapsulatedContent(toBeSignedDocument);
 
             CMSSignedData cmsSignedData = generator.generate(contentToBeSigned, encapsulate);
             return CMSUtils.populateDigestAlgorithmSet(new CMSSignedDataObject(cmsSignedData), digestAlgorithmIDs);
@@ -66,26 +57,6 @@ public class CMSObjectGenerator extends AbstractCMSGenerator {
         } catch (CMSException e) {
             throw new DSSException(String.format("Unable to build a CMSSignedData. Reason : %s", e.getMessage()), e);
         }
-    }
-
-    /**
-     * Returns the content to be signed
-     *
-     * @param toSignData {@link DSSDocument} to sign
-     * @return {@link CMSTypedData}
-     */
-    protected CMSTypedData getContentToBeSigned(final DSSDocument toSignData) {
-        Objects.requireNonNull(toSignData, "Document to be signed is missing");
-        CMSTypedData content;
-        if (toSignData instanceof DigestDocument) {
-            content = new CMSAbsentContent();
-        } else if (toSignData instanceof FileDocument) {
-            FileDocument fileDocument = (FileDocument) toSignData;
-            content = new CMSProcessableFile(fileDocument.getFile());
-        } else {
-            content = new CMSProcessableByteArray(DSSUtils.toByteArray(toSignData));
-        }
-        return content;
     }
 
 }

@@ -931,7 +931,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	 */
 	private SignerInformation recreateSignerInformation() throws CMSException, IOException {
 		final DSSDocument dssDocument = detachedContents.get(0); // only one element for CAdES Signature
-		DSSDocument cmsSignedDocument = CMSUtils.writeToDSSDocument(cms);
+		DSSDocument cmsSignedDocument = CMSUtils.writeToDSSDocument(cms, CAdESUtils.DEFAULT_RESOURCES_HANDLER_BUILDER);
 		try (InputStream is = cmsSignedDocument.openStream()) {
 			CMSSignedDataParser cmsSignedDataParser = new CMSSignedDataParser(new PrecomputedDigestCalculatorProvider(dssDocument), is);
 			return cmsSignedDataParser.getSignerInfos().get(getSignerId());

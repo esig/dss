@@ -1,14 +1,18 @@
 package eu.europa.esig.dss.cms;
 
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.spi.signature.resources.DSSResourcesHandlerBuilder;
+import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.cert.X509AttributeCertificateHolder;
+import org.bouncycastle.cert.X509CRLHolder;
 import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.cms.CMSTypedData;
+import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SignerInformationStore;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.bouncycastle.util.Store;
 
-import java.io.InputStream;
 import java.util.Collection;
 
 /**
@@ -26,14 +30,6 @@ public interface ICMSUtils {
     CMS parseToCMS(DSSDocument document);
 
     /**
-     * Parses the given {@code InputStream} to a {@code CMS} object
-     *
-     * @param inputStream {@link InputStream} to parse
-     * @return {@link CMS}
-     */
-    CMS parseToCMS(InputStream inputStream);
-
-    /**
      * Parses the given byte array to a {@code CMS} object
      *
      * @param binaries byte array to parse
@@ -43,11 +39,14 @@ public interface ICMSUtils {
 
     /**
      * Creates a {@code DSSDocument} from the given {@code CMS}
+     * This method uses a {@code resourcesHandlerBuilder} which defines the final document's implementation
+     * (e.g. in-memory document or a temporary document in a filesystem).
      *
      * @param cms {@link CMS} to create a document from
+     * @param resourcesHandlerBuilder {@link DSSResourcesHandlerBuilder}
      * @return {@link DSSDocument}
      */
-    DSSDocument writeToDSSDocument(CMS cms);
+    DSSDocument writeToDSSDocument(CMS cms, DSSResourcesHandlerBuilder resourcesHandlerBuilder);
 
     /**
      * Replaces the signers within {@code cms} with the {@code newSignerStore}
@@ -65,10 +64,13 @@ public interface ICMSUtils {
      * @param certificates {@link Store}
      * @param attributeCertificates {@link Store}
      * @param crls {@link Store}
+     * @param ocspResponsesStore {@link Store}
+     * @param ocspBasicStore {@link Store}
      * @return {@link CMS}
      */
     CMS replaceCertificatesAndCRLs(CMS cms, Store<X509CertificateHolder> certificates,
-                                   Store<X509AttributeCertificateHolder> attributeCertificates, Store<?> crls);
+                                   Store<X509AttributeCertificateHolder> attributeCertificates,
+                                   Store<X509CRLHolder> crls, Store<?> ocspResponsesStore, Store<?> ocspBasicStore);
 
     /**
      * Adds digest algorithms to {@code CMSSignedData}
@@ -113,5 +115,31 @@ public interface ICMSUtils {
      * @return binaries
      */
     byte[] getSignedDataCRLsEncoded(CMS cms);
+
+    /**
+     * Converts a {@code DSSDocument} to the corresponding {@code CMSTypedData} object type
+     *
+     * @param document {@link DSSDocument}
+     * @return {@link CMSTypedData}
+     */
+    CMSTypedData toCMSEncapsulatedContent(DSSDocument document);
+
+    /**
+     * This method is used to verify whether the provided {@code DSSResourcesHandlerBuilder} is supported by
+     * the current implementation. Returns the given value in case of success.
+     *
+     * @param dssResourcesHandlerBuilder {@link DSSResourcesHandlerBuilder}
+     * @return {@link DSSResourcesHandlerBuilder}
+     */
+    DSSResourcesHandlerBuilder getDSSResourcesHandlerBuilder(DSSResourcesHandlerBuilder dssResourcesHandlerBuilder);
+
+    /**
+     * This method replaces {@code unsignedAttributes} within the given {@code signerInformation}
+     *
+     * @param signerInformation {@link SignerInformation} to replace unsigned attributes table into
+     * @param unsignedAttributes {@link AttributeTable} containing the unsigned properties to be replaced with
+     * @return {@link SignerInformation} updated
+     */
+    SignerInformation replaceUnsignedAttributes(SignerInformation signerInformation, AttributeTable unsignedAttributes);
 
 }

@@ -26,8 +26,8 @@ import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import org.junit.jupiter.api.Tag;
 
 import java.util.Arrays;
 import java.util.List;
@@ -35,6 +35,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Tag("atst-v2")
 class CAdESDetachedTstV2Test extends AbstractCAdESTestValidation {
 
 	@Override

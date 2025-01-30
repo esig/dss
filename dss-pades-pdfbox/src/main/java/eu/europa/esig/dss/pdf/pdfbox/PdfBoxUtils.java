@@ -24,7 +24,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pdf.PdfMemoryUsageSetting;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
-import eu.europa.esig.dss.signature.resources.DSSResourcesHandler;
+import eu.europa.esig.dss.spi.signature.resources.DSSResourcesHandler;
 import org.apache.pdfbox.io.MemoryUsageSetting;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDResources;
@@ -95,7 +95,7 @@ public final class PdfBoxUtils {
 
 	/**
 	 * Generates a screenshot image of the specified page for the given PDF document using a provided
-	 * {@code eu.europa.esig.dss.signature.resources.DSSResourcesHandler}
+	 * {@code eu.europa.esig.dss.spi.signature.resources.DSSResourcesHandler}
 	 *
 	 * @param pdfDocument        {@link DSSDocument} to generate screenshot for
 	 * @param passwordProtection {@link String} a PDF password protection phrase
@@ -113,7 +113,7 @@ public final class PdfBoxUtils {
 
 	/**
 	 * Generates a screenshot image of the specified page for the given PDF document using a provided
-	 * {@code eu.europa.esig.dss.signature.resources.DSSResourcesHandler}
+	 * {@code eu.europa.esig.dss.spi.signature.resources.DSSResourcesHandler}
 	 *
 	 * @param pdfDocument         {@link DSSDocument} to generate screenshot for
 	 * @param passwordProtection  a PDF password protection phrase

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+        <artifactId>sd-dss</artifactId>
+        <version>6.3-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>dss-cms-stream</artifactId>
+    <name>DSS CMS Stream</name>
+    <description>DSS CMS implementation based on CMS stream reading.</description>
+
+    <properties>
+        <module-name>jpms_dss_cms_stream</module-name>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <artifactId>dss-cms</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <artifactId>dss-cades</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <artifactId>dss-cades</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <artifactId>dss-validation</artifactId>
+            <optional>true</optional>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <artifactId>dss-test</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <artifactId>dss-evidence-record-asn1</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <artifactId>dss-evidence-record-xml</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-suite-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>

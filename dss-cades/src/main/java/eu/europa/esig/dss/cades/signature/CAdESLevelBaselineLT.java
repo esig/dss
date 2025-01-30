@@ -145,7 +145,7 @@ public class CAdESLevelBaselineLT extends CAdESLevelBaselineT {
 	private SignerInformation extendSignerInformation(SignerInformation signerInformation, ValidationData validationData) {
 		AttributeTable unsignedAttributes = CAdESUtils.getUnsignedAttributes(signerInformation);
 		unsignedAttributes = addValidationData(unsignedAttributes, validationData);
-		return SignerInformation.replaceUnsignedAttributes(signerInformation, unsignedAttributes);
+		return CMSUtils.replaceUnsignedAttributes(signerInformation, unsignedAttributes);
 	}
 	
 	private AttributeTable addValidationData(AttributeTable unsignedAttributes, ValidationData validationData) {

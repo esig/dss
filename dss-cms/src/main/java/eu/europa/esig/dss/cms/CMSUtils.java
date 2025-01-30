@@ -1,14 +1,18 @@
 package eu.europa.esig.dss.cms;
 
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.spi.signature.resources.DSSResourcesHandlerBuilder;
+import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.cert.X509AttributeCertificateHolder;
+import org.bouncycastle.cert.X509CRLHolder;
 import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.cms.CMSTypedData;
+import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SignerInformationStore;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.bouncycastle.util.Store;
 
-import java.io.InputStream;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.ServiceLoader;
@@ -52,16 +56,6 @@ public final class CMSUtils {
     }
 
     /**
-     * Parses the given {@code InputStream} to a {@code CMS} object
-     *
-     * @param inputStream {@link InputStream} to parse
-     * @return {@link CMS}
-     */
-    public static CMS parseToCMS(InputStream inputStream) {
-        return impl.parseToCMS(inputStream);
-    }
-
-    /**
      * Parses the given byte array to a {@code CMS} object
      *
      * @param binaries byte array to parse
@@ -72,13 +66,16 @@ public final class CMSUtils {
     }
 
     /**
-     * Creates a {@code DSSDocument} from the given {@code CMS}
+     * Creates a {@code DSSDocument} from the given {@code CMS}.
+     * This method uses a {@code resourcesHandlerBuilder} which defines the final document's implementation
+     * (e.g. in-memory document or a temporary document in a filesystem).
      *
      * @param cms {@link CMS} to create a document from
+     * @param resourcesHandlerBuilder {@link DSSResourcesHandlerBuilder}
      * @return {@link DSSDocument}
      */
-    public static DSSDocument writeToDSSDocument(CMS cms) {
-        return impl.writeToDSSDocument(cms);
+    public static DSSDocument writeToDSSDocument(CMS cms, DSSResourcesHandlerBuilder resourcesHandlerBuilder) {
+        return impl.writeToDSSDocument(cms, resourcesHandlerBuilder);
     }
 
     /**
@@ -99,11 +96,14 @@ public final class CMSUtils {
      * @param certificates {@link Store}
      * @param attributeCertificates {@link Store}
      * @param crls {@link Store}
+     * @param ocspResponsesStore {@link Store}
+     * @param ocspBasicStore {@link Store}
      * @return {@link CMS}
      */
     public static CMS replaceCertificatesAndCRLs(CMS cms, Store<X509CertificateHolder> certificates,
-                                   Store<X509AttributeCertificateHolder> attributeCertificates, Store<?> crls) {
-        return impl.replaceCertificatesAndCRLs(cms, certificates, attributeCertificates, crls);
+                                                 Store<X509AttributeCertificateHolder> attributeCertificates,
+                                                 Store<X509CRLHolder> crls, Store<?> ocspResponsesStore, Store<?> ocspBasicStore) {
+        return impl.replaceCertificatesAndCRLs(cms, certificates, attributeCertificates, crls, ocspResponsesStore, ocspBasicStore);
     }
 
     /**
@@ -158,6 +158,38 @@ public final class CMSUtils {
      */
     public static byte[] getSignedDataCRLsEncoded(CMS cms) {
         return impl.getSignedDataCRLsEncoded(cms);
+    }
+
+    /**
+     * Converts a {@code DSSDocument} to the corresponding {@code CMSTypedData} object type
+     *
+     * @param document {@link DSSDocument}
+     * @return {@link CMSTypedData}
+     */
+    public static CMSTypedData toCMSEncapsulatedContent(DSSDocument document) {
+        return impl.toCMSEncapsulatedContent(document);
+    }
+
+    /**
+     * This method is used to verify whether the provided {@code DSSResourcesHandlerBuilder} is supported by
+     * the current implementation. Returns the given value in case of success.
+     *
+     * @param dssResourcesHandlerBuilder {@link DSSResourcesHandlerBuilder}
+     * @return {@link DSSResourcesHandlerBuilder}
+     */
+    public static DSSResourcesHandlerBuilder getDSSResourcesHandlerBuilder(DSSResourcesHandlerBuilder dssResourcesHandlerBuilder) {
+        return impl.getDSSResourcesHandlerBuilder(dssResourcesHandlerBuilder);
+    }
+
+    /**
+     * This method replaces {@code unsignedAttributes} within the given {@code signerInformation}
+     *
+     * @param signerInformation {@link SignerInformation} to replace unsigned attributes table into
+     * @param unsignedAttributes {@link AttributeTable} containing the unsigned properties to be replaced with
+     * @return {@link SignerInformation} updated
+     */
+    public static SignerInformation replaceUnsignedAttributes(SignerInformation signerInformation, AttributeTable unsignedAttributes) {
+        return impl.replaceUnsignedAttributes(signerInformation, unsignedAttributes);
     }
 
 }

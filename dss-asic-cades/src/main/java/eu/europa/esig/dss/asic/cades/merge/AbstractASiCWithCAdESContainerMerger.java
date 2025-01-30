@@ -34,15 +34,17 @@ import eu.europa.esig.dss.cms.CMSUtils;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.signature.resources.DSSResourcesHandlerBuilder;
 import eu.europa.esig.dss.utils.Utils;
+import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.cert.X509AttributeCertificateHolder;
+import org.bouncycastle.cert.X509CRLHolder;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaCertStore;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SignerInformationStore;
 import org.bouncycastle.util.CollectionStore;
-import org.bouncycastle.util.Encodable;
 import org.bouncycastle.util.Store;
 
 import java.security.cert.CertificateEncodingException;
@@ -61,6 +63,9 @@ public abstract class AbstractASiCWithCAdESContainerMerger extends DefaultContai
      * Defines rules for filename creation for new ZIP entries (e.g. signature files, etc.)
      */
     protected ASiCWithCAdESFilenameFactory asicFilenameFactory = new DefaultASiCWithCAdESFilenameFactory();
+
+    /** This object is used to write a created CMS into a defined implementation of an OutputStream or a DSSDocument */
+    protected DSSResourcesHandlerBuilder resourcesHandlerBuilder = CAdESUtils.DEFAULT_RESOURCES_HANDLER_BUILDER;
 
     /**
      * Empty constructor
@@ -98,6 +103,17 @@ public abstract class AbstractASiCWithCAdESContainerMerger extends DefaultContai
         this.asicFilenameFactory = asicFilenameFactory;
     }
 
+    /**
+     * This method sets a {@code DSSResourcesHandlerBuilder} to be used for operating with internal CMS objects
+     * during the signature creation procedure.
+     * NOTE: The {@code DSSResourcesHandlerBuilder} is supported only within the 'dss-cms-stream' module!
+     *
+     * @param resourcesHandlerBuilder {@link DSSResourcesHandlerBuilder}
+     */
+    public void setResourcesHandlerBuilder(DSSResourcesHandlerBuilder resourcesHandlerBuilder) {
+        this.resourcesHandlerBuilder = CMSUtils.getDSSResourcesHandlerBuilder(resourcesHandlerBuilder);
+    }
+
     @Override
     protected boolean isSupported(DSSDocument container) {
         return new ASiCContainerWithCAdESAnalyzerFactory().isSupported(container);
@@ -126,17 +142,20 @@ public abstract class AbstractASiCWithCAdESContainerMerger extends DefaultContai
             CMS originalCMS = cmsList.iterator().next(); // getFirstCMS
 
             SignerInformationStore signerInformationStore = getSignerInformationStore(cmsList);
-            CMS mergedCmsSignedData = CMSUtils.replaceSigners(originalCMS, signerInformationStore);
+            CMS mergedCMS = CMSUtils.replaceSigners(originalCMS, signerInformationStore);
 
             Store<X509CertificateHolder> certificatesStore = getCertificatesStore(cmsList);
             Store<X509AttributeCertificateHolder> certAttributeStore = getCertAttributeStore(cmsList);
-            Store<Encodable> crlStore = getCRLStore(cmsList);
-            mergedCmsSignedData = CMSUtils.replaceCertificatesAndCRLs(mergedCmsSignedData, certificatesStore, certAttributeStore, crlStore);
+            Store<X509CRLHolder> crlStore = getCRLStore(cmsList);
+            Store<ASN1Encodable> ocspResponesStore = getOCSPResponsesStore(cmsList);
+            Store<ASN1Encodable> ocspBasicStore = getOCSPBasicStore(cmsList);
+            mergedCMS = CMSUtils.replaceCertificatesAndCRLs(mergedCMS,
+                    certificatesStore, certAttributeStore, crlStore, ocspResponesStore, ocspBasicStore);
 
             List<AlgorithmIdentifier> digestAlgorithms = getDigestAlgorithms(cmsList);
-            mergedCmsSignedData = CMSUtils.populateDigestAlgorithmSet(mergedCmsSignedData, digestAlgorithms);
+            mergedCMS = CMSUtils.populateDigestAlgorithmSet(mergedCMS, digestAlgorithms);
 
-            final DSSDocument cmsDocument = CMSUtils.writeToDSSDocument(mergedCmsSignedData);
+            final DSSDocument cmsDocument = CMSUtils.writeToDSSDocument(mergedCMS, resourcesHandlerBuilder);
             cmsDocument.setName(getSignatureDocumentName(signatureDocuments));
             return cmsDocument;
 
@@ -189,17 +208,44 @@ public abstract class AbstractASiCWithCAdESContainerMerger extends DefaultContai
         return new CollectionStore<>(result);
     }
 
-    private Store<Encodable> getCRLStore(List<CMS> cmsList) {
-        List<Encodable> result = new ArrayList<>();
+    private Store<X509CRLHolder> getCRLStore(List<CMS> cmsList) {
+        List<X509CRLHolder> result = new ArrayList<>();
         for (CMS cms : cmsList) {
-            Store<Encodable> crlsStore = CAdESUtils.toCRLsStore(cms.getCRLs(), cms.getOcspResponseStore(), cms.getOcspBasicStore());
-            final Collection<Encodable> crlHolders = crlsStore.getMatches(null);
-            for (final Encodable x509CRLHolder : crlHolders) {
+            final Collection<X509CRLHolder> crlHolders = cms.getCRLs().getMatches(null);
+            for (final X509CRLHolder x509CRLHolder : crlHolders) {
                 if (!result.contains(x509CRLHolder)) {
                     result.add(x509CRLHolder);
                 }
             }
 
+        }
+        return new CollectionStore<>(result);
+    }
+
+    private Store<ASN1Encodable> getOCSPResponsesStore(List<CMS> cmsList) {
+        List<ASN1Encodable> result = new ArrayList<>();
+        for (CMS cms : cmsList) {
+            final Collection<?> basicOcsps = cms.getOcspResponseStore().getMatches(null);
+            for (final Object ocsp : basicOcsps) {
+                ASN1Encodable asn1EncodableOcsp = (ASN1Encodable) ocsp;
+                if (!result.contains(asn1EncodableOcsp)) {
+                    result.add(asn1EncodableOcsp);
+                }
+            }
+        }
+        return new CollectionStore<>(result);
+    }
+
+    private Store<ASN1Encodable> getOCSPBasicStore(List<CMS> cmsList) {
+        List<ASN1Encodable> result = new ArrayList<>();
+        for (CMS cms : cmsList) {
+            final Collection<?> basicOcsps = cms.getOcspBasicStore().getMatches(null);
+            for (final Object ocsp : basicOcsps) {
+                ASN1Encodable asn1EncodableOcsp = (ASN1Encodable) ocsp;
+                if (!result.contains(asn1EncodableOcsp)) {
+                    result.add(asn1EncodableOcsp);
+                }
+            }
         }
         return new CollectionStore<>(result);
     }

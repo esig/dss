@@ -28,8 +28,8 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import org.junit.jupiter.api.Tag;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -38,6 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Tag("atst-v2")
 class DSS916Test extends AbstractCAdESTestValidation {
 
 	@Override

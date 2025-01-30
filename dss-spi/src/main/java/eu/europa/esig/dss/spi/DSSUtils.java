@@ -38,14 +38,16 @@ import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.ASN1Encoding;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.DERNull;
+import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.DigestInfo;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
+import org.bouncycastle.cms.CMSSignedDataParser;
 import org.bouncycastle.crypto.digests.SHAKEDigest;
 import org.bouncycastle.crypto.io.DigestOutputStream;
 import org.bouncycastle.openssl.jcajce.JcaMiscPEMGenerator;
-import org.bouncycastle.tsp.TimeStampToken;
+import org.bouncycastle.operator.bc.BcDigestCalculatorProvider;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemReader;
 import org.bouncycastle.util.io.pem.PemWriter;
@@ -744,14 +746,13 @@ public final class DSSUtils {
 	 * @return true if the document is a timestamp
 	 */
 	public static boolean isTimestampToken(final DSSDocument document) {
-		TimeStampToken timeStampToken = null;
-		try {
-			CMSSignedData cmsSignedData = toCMSSignedData(document);
-			timeStampToken = new TimeStampToken(cmsSignedData);
+		try (InputStream is = document.openStream()) {
+			CMSSignedDataParser cmsSignedDataParser = new CMSSignedDataParser(new BcDigestCalculatorProvider(), is);
+			return PKCSObjectIdentifiers.id_ct_TSTInfo.getId().equals(cmsSignedDataParser.getSignedContentTypeOID());
 		} catch (Exception e) {
-			// ignore
+			// skip exception
+			return false;
 		}
-		return timeStampToken != null;
 	}
 
 	/**		

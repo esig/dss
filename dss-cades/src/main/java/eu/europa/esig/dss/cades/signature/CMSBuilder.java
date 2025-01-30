@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
-import eu.europa.esig.dss.cades.CAdESUtils;
 import eu.europa.esig.dss.cms.CMS;
 import eu.europa.esig.dss.cms.CMSGenerator;
 import eu.europa.esig.dss.cms.CMSUtils;
@@ -330,8 +329,8 @@ public class CMSBuilder {
 
 		Store otherRevocationInfoFormatStoreBasic = originalCMS.getOcspBasicStore();
 
-		Store<Encodable> newCRLsStore = CAdESUtils.toCRLsStore(crlsStore, otherRevocationInfoFormatStoreOcsp, otherRevocationInfoFormatStoreBasic);
-		return CMSUtils.replaceCertificatesAndCRLs(originalCMS, certificatesStore, attributeCertificatesStore, newCRLsStore);
+		return CMSUtils.replaceCertificatesAndCRLs(originalCMS, certificatesStore, attributeCertificatesStore,
+				crlsStore, otherRevocationInfoFormatStoreOcsp, otherRevocationInfoFormatStoreBasic);
 	}
 
 	/**

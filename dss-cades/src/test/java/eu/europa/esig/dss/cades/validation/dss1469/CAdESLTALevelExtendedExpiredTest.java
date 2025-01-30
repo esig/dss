@@ -38,6 +38,7 @@ import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import org.junit.jupiter.api.Tag;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +48,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Tag("atst-v2")
 class CAdESLTALevelExtendedExpiredTest extends AbstractCAdESTestValidation {
 
 	@Override
