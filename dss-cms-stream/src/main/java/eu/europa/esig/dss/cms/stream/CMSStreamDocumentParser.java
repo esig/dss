@@ -7,6 +7,7 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.DSSMessageDigestCalculator;
+import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.cms.CMSObjectIdentifiers;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
@@ -19,6 +20,8 @@ import org.bouncycastle.cms.CMSSignedDataParser;
 import org.bouncycastle.cms.CMSTypedStream;
 import org.bouncycastle.cms.SignerInformationStore;
 import org.bouncycastle.util.Store;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -31,6 +34,8 @@ import java.util.Set;
  * 
  */
 public class CMSStreamDocumentParser {
+
+    private static final Logger LOG = LoggerFactory.getLogger(CMSStreamDocumentParser.class);
 
     /**
      * Singleton
@@ -136,12 +141,18 @@ public class CMSStreamDocumentParser {
             cmsWrappedDocument.setSignedContentType(signedContentTypeOID);
 
             Set<DigestAlgorithm> digestAlgorithms = getDigestAlgorithms(digestAlgorithmIDs);
-            DSSMessageDigestCalculator dssMessageDigestCalculator = new DSSMessageDigestCalculator(digestAlgorithms);
-            dssMessageDigestCalculator.update(is);
+            if (Utils.isCollectionNotEmpty(digestAlgorithms)) {
+                DSSMessageDigestCalculator dssMessageDigestCalculator = new DSSMessageDigestCalculator(digestAlgorithms);
+                dssMessageDigestCalculator.update(is);
 
-            for (DigestAlgorithm digestAlgorithm : digestAlgorithms) {
-                DSSMessageDigest messageDigest = dssMessageDigestCalculator.getMessageDigest(digestAlgorithm);
-                cmsWrappedDocument.addDigest(messageDigest);
+                for (DigestAlgorithm digestAlgorithm : digestAlgorithms) {
+                    DSSMessageDigest messageDigest = dssMessageDigestCalculator.getMessageDigest(digestAlgorithm);
+                    cmsWrappedDocument.addDigest(messageDigest);
+                }
+
+            } else {
+                LOG.warn("No supported digest algorithms found. Stream signed content into void.");
+                is.readAllBytes();
             }
             return cmsWrappedDocument;
         }
@@ -150,8 +161,13 @@ public class CMSStreamDocumentParser {
     private static Set<DigestAlgorithm> getDigestAlgorithms(Set<AlgorithmIdentifier> digestAlgorithmIDs) {
         Set<DigestAlgorithm> result = new HashSet<>();
         for (AlgorithmIdentifier algorithmIdentifier : digestAlgorithmIDs) {
-            DigestAlgorithm digestAlgorithm = DigestAlgorithm.forOID(algorithmIdentifier.getAlgorithm().getId());
-            result.add(digestAlgorithm);
+            try {
+                DigestAlgorithm digestAlgorithm = DigestAlgorithm.forOID(algorithmIdentifier.getAlgorithm().getId());
+                result.add(digestAlgorithm);
+            } catch (Exception e) {
+                LOG.warn("Unable to retrieve digest value for an algorithm '{}'. Reason : {}",
+                        algorithmIdentifier.getAlgorithm().getId(), e.getMessage());
+            }
         }
         return result;
     }
