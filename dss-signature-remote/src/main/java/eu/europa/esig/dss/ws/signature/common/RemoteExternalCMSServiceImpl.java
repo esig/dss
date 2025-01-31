@@ -20,13 +20,13 @@
  */
 package eu.europa.esig.dss.ws.signature.common;
 
-import eu.europa.esig.dss.cms.CMSSignedDocument;
 import eu.europa.esig.dss.enumerations.SignatureForm;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.ExternalCMSService;
-import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.ws.converter.DTOConverter;
 import eu.europa.esig.dss.ws.converter.RemoteDocumentConverter;
 import eu.europa.esig.dss.ws.dto.DigestDTO;
@@ -98,7 +98,7 @@ public class RemoteExternalCMSServiceImpl extends AbstractRemoteSignatureService
         DSSMessageDigest messageDigest = toMessageDigest(messageDigestDTO);
         PAdESSignatureParameters padesParameters = (PAdESSignatureParameters) createParameters(parameters);
         SignatureValue signatureValue = DTOConverter.toSignatureValue(signatureValueDTO);
-        CMSSignedDocument cmsSignature = service.signMessageDigest(messageDigest, padesParameters, signatureValue);
+        DSSDocument cmsSignature = service.signMessageDigest(messageDigest, padesParameters, signatureValue);
 
         LOG.info("SignMessageDigest is finished");
         return RemoteDocumentConverter.toRemoteDocument(cmsSignature);

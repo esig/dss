@@ -25,6 +25,7 @@ import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.validation.ASiCManifestParser;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.cades.CAdESUtils;
 import eu.europa.esig.dss.cades.signature.CAdESService;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -148,7 +149,9 @@ public class ASiCWithCAdESSignatureExtension implements Serializable {
         if (cadesService == null) {
             cadesService = new CAdESService(certificateVerifier);
             cadesService.setTspSource(tspSource);
-            cadesService.setResourcesHandlerBuilder(resourcesHandlerBuilder);
+            if (CAdESUtils.DEFAULT_RESOURCES_HANDLER_BUILDER != resourcesHandlerBuilder) {
+                cadesService.setResourcesHandlerBuilder(resourcesHandlerBuilder);
+            }
         }
         return cadesService;
     }

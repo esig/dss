@@ -436,8 +436,8 @@ public final class CAdESUtils {
 	public static DSSDocument getOriginalDocument(CMS cms, List<DSSDocument> detachedDocuments) {
 		Objects.requireNonNull(cms, "CMS shall be provided!");
 
-		final DSSDocument signedContent = cms.getSignedContent();
 		if (!cms.isDetachedSignature()) {
+			final DSSDocument signedContent = cms.getSignedContent();
 			if (signedContent == null) {
 				throw new DSSException("No signed content found within enveloping CMS signature!");
 			}

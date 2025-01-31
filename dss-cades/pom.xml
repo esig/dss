@@ -24,8 +24,11 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
 					<excludes>
-						<exclude>eu/**/suite/*Test.java</exclude>
-						<exclude>eu/**/suite/**/*Test.java</exclude>
+						<exclude>eu/**/extension/**/*Test.java</exclude>
+						<exclude>eu/**/requirements/**/*Test.java</exclude>
+						<exclude>eu/**/signature/**/*Test.java</exclude>
+						<exclude>eu/**/timestamp/**/*Test.java</exclude>
+						<exclude>eu/**/validation/**/*Test.java</exclude>
 					</excludes>
 				</configuration>
 			</plugin>

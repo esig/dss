@@ -20,21 +20,20 @@
  */
 package eu.europa.esig.dss.cookbook.example.sign;
 
-import eu.europa.esig.dss.cms.CMSSignedDocument;
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.ExternalCMSService;
 import eu.europa.esig.dss.pades.signature.PAdESWithExternalCMSService;
-import eu.europa.esig.dss.model.DSSMessageDigest;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
-import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import org.junit.jupiter.api.Test;
 
 import java.util.Date;
@@ -85,7 +84,7 @@ class SignPdfWithExternalCmsTest extends CookbookTools {
         assertTrue(diagnosticData.isBLevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
     }
 
-    private CMSSignedDocument getExternalCMSSignature(DSSMessageDigest messageDigest) throws Exception {
+    private DSSDocument getExternalCMSSignature(DSSMessageDigest messageDigest) throws Exception {
         CertificateVerifier certificateVerifier = getOfflineCertificateVerifier();
 
         // tag::demo-cms-sign[]
@@ -116,7 +115,7 @@ class SignPdfWithExternalCmsTest extends CookbookTools {
         SignatureValue signatureValue = computeSignatureValue(dataToSign, signatureParameters.getDigestAlgorithm());
 
         // Create a CMS signature using the provided message-digest, signature parameters and the signature value
-        CMSSignedDocument cmsSignature = padesCMSGeneratorService.signMessageDigest(messageDigest, signatureParameters, signatureValue);
+        DSSDocument cmsSignature = padesCMSGeneratorService.signMessageDigest(messageDigest, signatureParameters, signatureValue);
         // end::demo-cms-sign[]
         assertNotNull(cmsSignature);
 

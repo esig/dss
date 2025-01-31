@@ -318,7 +318,9 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 	protected CAdESService getCAdESService() {
 		CAdESService cadesService = new CAdESService(certificateVerifier);
 		cadesService.setTspSource(tspSource);
-		cadesService.setResourcesHandlerBuilder(resourcesHandlerBuilder);
+		if (CAdESUtils.DEFAULT_RESOURCES_HANDLER_BUILDER != resourcesHandlerBuilder) {
+			cadesService.setResourcesHandlerBuilder(resourcesHandlerBuilder);
+		}
 		return cadesService;
 	}
 

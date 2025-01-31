@@ -59,5 +59,10 @@
 			<artifactId>dss-pades-pdfbox</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-cms-object</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 </project>

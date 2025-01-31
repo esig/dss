@@ -1036,6 +1036,25 @@ public final class DSSUtils {
 			throw new DSSException("Cannot read the InputStream!", e);
 		}
 	}
+
+	/**
+	 * Skips all available bytes from {@code InputStream} without storing the data
+	 *
+	 * @param inputStream {@link InputStream}
+	 */
+	public static void skipAll(InputStream inputStream) {
+		try {
+			long b;
+			while ((b = inputStream.available()) > 0) {
+				long skipped = inputStream.skip(b);
+				if (skipped == 0) {
+					break;
+				}
+			}
+		} catch (IOException e) {
+			throw new DSSException("Cannot read the InputStream!", e);
+		}
+	}
 	
 	/**
 	 * This method encodes a URI to be compliant with the RFC 3986 (see DSS-1475 for details)
