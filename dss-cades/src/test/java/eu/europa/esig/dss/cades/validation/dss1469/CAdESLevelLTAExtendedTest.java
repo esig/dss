@@ -43,7 +43,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@Tag("atst-v2")
 class CAdESLevelLTAExtendedTest extends AbstractCAdESTestValidation {
 
 	@Override

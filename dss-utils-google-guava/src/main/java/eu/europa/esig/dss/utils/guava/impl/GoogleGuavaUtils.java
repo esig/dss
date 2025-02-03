@@ -337,6 +337,11 @@ public class GoogleGuavaUtils implements IUtils {
 	}
 	
 	@Override
+	public OutputStream nullOutputStream() {
+		return ByteStreams.nullOutputStream();
+	}
+
+	@Override
 	public long getInputStreamSize(InputStream is) throws IOException {
 		return ByteStreams.exhaust(is);
 	}

@@ -51,6 +51,8 @@ import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.Objects;
 
@@ -312,91 +314,65 @@ public class CAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 	private DSSMessageDigest getArchiveTimestampDataV2(boolean includeUnsignedAttrsTagAndLength) throws DSSException {
 		try {
 			final DSSMessageDigestCalculator digestCalculator = new DSSMessageDigestCalculator(digestAlgorithm);
-			
-			byte[] bytes = getContentInfoBytes();
-			digestCalculator.update(bytes);
-			
-			if (cms.isDetachedSignature()) {
-				bytes = getOriginalDocumentBinaries();
-				if (bytes == null) {
-					LOG.warn("The detached content is not provided for a TimestampToken with Id '{}'. "
-							+ "Not possible to compute message imprint!", timestampToken.getDSSIdAsString());
-					return DSSMessageDigest.createEmptyDigest();
+
+			try (OutputStream nullOS = Utils.nullOutputStream();
+				 OutputStream dos = digestCalculator.getOutputStream(nullOS)) {
+
+				writeContentInfoBytes(dos);
+
+				if (cms.isDetachedSignature()) {
+					writeOriginalDocumentBinaries(dos);
 				}
-				digestCalculator.update(bytes);
-			}
-			
-			bytes = getCertificateDataBytes();
-			if (Utils.isArrayNotEmpty(bytes)) {
-				digestCalculator.update(bytes);
-			}
-			
-			bytes = getCRLDataBytes();
-			if (Utils.isArrayNotEmpty(bytes)) {
-				digestCalculator.update(bytes);
-			}
 
-			writeSignerInfoBytes(digestCalculator, includeUnsignedAttrsTagAndLength);
+				writeCertificateDataBytes(dos);
 
-			return digestCalculator.getMessageDigest(digestAlgorithm);
+				writeCRLDataBytes(dos);
+
+				writeSignerInfoBytes(dos, includeUnsignedAttrsTagAndLength);
+
+				return digestCalculator.getMessageDigest(digestAlgorithm);
+
+			}
 
 		} catch (Exception e) {
 			// When error in computing or in format the algorithm just continues.
-			LOG.warn("An error in computing of message-imprint for a TimestampToken with Id : {}. Reason : {}",
-					timestampToken.getDSSIdAsString(), e.getMessage(), e);
-			return null;
+			String errorMessage = "An error in computing of message-imprint for a TimestampToken with Id : %s. Reason : %s";
+			if (LOG.isDebugEnabled()) {
+				LOG.warn(String.format(errorMessage, timestampToken.getDSSIdAsString(), e.getMessage()), e);
+			} else {
+				LOG.warn(String.format(errorMessage, timestampToken.getDSSIdAsString(), e.getMessage()));
+			}
+			return DSSMessageDigest.createEmptyDigest();
 		}
 	}
 	
-	private byte[] getContentInfoBytes() {
-		byte[] contentInfoBytes = CMSUtils.getContentInfoEncoded(cms);
-		if (LOG.isTraceEnabled()) {
-			LOG.trace("Content Info: {}", DSSUtils.toHex(contentInfoBytes));
-		}
-		return contentInfoBytes;
+	private void writeContentInfoBytes(OutputStream os) throws IOException {
+		CMSUtils.writeContentInfoEncoded(cms, os);
 	}
 	
-	private byte[] getOriginalDocumentBinaries() {
+	private void writeOriginalDocumentBinaries(OutputStream os) throws IOException {
 		/*
 		 * Detached signatures have either no encapContentInfo in signedData, or it
 		 * exists but has no eContent
 		 */
 		DSSDocument originalDocument = getOriginalDocument();
 		if (originalDocument != null) {
-			return DSSUtils.toByteArray(getOriginalDocument());
-		}
-		return null;
-	}
-	
-	private byte[] getCertificateDataBytes() {
-		byte[] certificatesBytes = CMSUtils.getSignedDataCertificatesEncoded(cms);
-		if (certificatesBytes != null) {
-			if (LOG.isTraceEnabled()) {
-				LOG.trace("Certificates: {}", DSSUtils.toHex(certificatesBytes));
-			}
+			os.write(DSSUtils.toByteArray(originalDocument));
 		} else {
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("Certificates are not present in the SignedData.");
-			}
+			throw new DSSException(String.format("The detached content is not provided for a TimestampToken with Id '%s'. "
+					+ "Not possible to compute message imprint!", timestampToken.getDSSIdAsString()));
 		}
-		return certificatesBytes;
 	}
 	
-	private byte[] getCRLDataBytes() {
-		byte[] crlBytes = CMSUtils.getSignedDataCRLsEncoded(cms);
-		if (crlBytes != null) {
-			if (LOG.isTraceEnabled()) {
-				LOG.trace("CRLs: {}", DSSUtils.toHex(crlBytes));
-			}
-		} else {
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("CRLs are not present in the SignedData.");
-			}
-		}
-		return crlBytes;
+	private void writeCertificateDataBytes(OutputStream os) throws IOException {
+		CMSUtils.writeSignedDataCertificatesEncoded(cms, os);
 	}
 	
-	private void writeSignerInfoBytes(final DSSMessageDigestCalculator digestCalculator, boolean includeUnsignedAttrsTagAndLength) {
+	private void writeCRLDataBytes(OutputStream os) throws IOException {
+		CMSUtils.writeSignedDataCRLsEncoded(cms, os);
+	}
+	
+	private void writeSignerInfoBytes(final OutputStream os, boolean includeUnsignedAttrsTagAndLength) throws IOException {
 		final SignerInfo signerInfo = signerInformation.toASN1Structure();
 		final ASN1Set unauthenticatedAttributes = signerInfo.getUnauthenticatedAttributes();
 		final ASN1Sequence filteredUnauthenticatedAttributes = filterUnauthenticatedAttributes(unauthenticatedAttributes, timestampToken);
@@ -406,7 +382,7 @@ public class CAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 			if (LOG.isTraceEnabled()) {
 				LOG.trace("SignerInfoBytes: {}", DSSUtils.toHex(signerInfoBytes));
 			}
-			digestCalculator.update(signerInfoBytes);
+			os.write(signerInfoBytes);
 		}
 	}
 

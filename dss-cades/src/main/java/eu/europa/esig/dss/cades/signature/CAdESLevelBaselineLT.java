@@ -101,6 +101,7 @@ public class CAdESLevelBaselineLT extends CAdESLevelBaselineT {
 		 * versions of ETSI TS 101 733 [1], have already been added to the SignedData:
 		 */
 		if (includesATSv2(cms)) {
+			CMSUtils.assertATSv2AugmentationSupported();
 			/*
 			 * - If an ATSv2, or other earlier form of archive time-stamp or a long-term-validation attribute, is
 			 *   present in any SignerInfo of the root SignedData then the root SignedData.certificates and

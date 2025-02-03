@@ -396,6 +396,13 @@ public interface IUtils {
 	void write(byte[] content, OutputStream os) throws IOException;
 
 	/**
+	 * Opens an {@code OutputStream} that discards all bytes (written to nowhere)
+	 *
+	 * @return {@link OutputStream}
+	 */
+	OutputStream nullOutputStream();
+
+	/**
 	 * Gets the size of the InputStream content
 	 *
 	 * @param is {@link InputStream}

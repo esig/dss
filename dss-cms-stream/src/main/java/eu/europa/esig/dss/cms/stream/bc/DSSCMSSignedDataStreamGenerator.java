@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.cms.stream.bc;
 
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Integer;
@@ -33,6 +34,7 @@ import java.util.Set;
 
 /**
  * Extension of {@code CMSSignedDataStreamGenerator} in order to provide a custom digest algorithms set.
+ * NOTE: This class contains a number of copy-pasted methods from CMSSignedDataStreamGenerator.
  *
  */
 public class DSSCMSSignedDataStreamGenerator extends CMSSignedDataStreamGenerator {
@@ -252,24 +254,7 @@ public class DSSCMSSignedDataStreamGenerator extends CMSSignedDataStreamGenerato
 
     private static OutputStream getSafeOutputStream(OutputStream s)
     {
-        return s == null ? new OutputStream() {
-            public void write(byte[] buf)
-                    throws IOException
-            {
-                // do nothing
-            }
-
-            public void write(byte[] buf, int off, int len)
-                    throws IOException
-            {
-                // do nothing
-            }
-
-            public void write(int b) throws IOException
-            {
-                // do nothing
-            }
-        } : s;
+        return s == null ? Utils.nullOutputStream() : s;
     }
 
     private static OutputStream getSafeTeeOutputStream(OutputStream s1, OutputStream s2)
@@ -402,26 +387,6 @@ public class DSSCMSSignedDataStreamGenerator extends CMSSignedDataStreamGenerato
                 while (it.hasNext())
                 {
                     SignerInformation signer = (SignerInformation)it.next();
-
-                    // TODO Verify the content type and calculated digest match the precalculated SignerInfo
-//                    if (!signer.getContentType().equals(_contentOID))
-//                    {
-//                        // TODO The precalculated content type did not match - error?
-//                    }
-//
-//                    byte[] calculatedDigest = (byte[])_digests.get(signer.getDigestAlgOID());
-//                    if (calculatedDigest == null)
-//                    {
-//                        // TODO We can't confirm this digest because we didn't calculate it - error?
-//                    }
-//                    else
-//                    {
-//                        if (!Arrays.areEqual(signer.getContentDigest(), calculatedDigest))
-//                        {
-//                            // TODO The precalculated digest did not match - error?
-//                        }
-//                    }
-
                     signerInfos.add(signer.toASN1Structure());
                 }
             }

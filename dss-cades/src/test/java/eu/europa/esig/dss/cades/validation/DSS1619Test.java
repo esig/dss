@@ -34,7 +34,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@Tag("atst-v2")
 class DSS1619Test extends AbstractCAdESTestValidation {
 
 	@Override

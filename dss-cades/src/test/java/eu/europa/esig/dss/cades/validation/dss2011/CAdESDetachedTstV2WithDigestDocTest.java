@@ -37,7 +37,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@Tag("atst-v2")
 class CAdESDetachedTstV2WithDigestDocTest extends AbstractCAdESTestValidation {
 
 	@Override

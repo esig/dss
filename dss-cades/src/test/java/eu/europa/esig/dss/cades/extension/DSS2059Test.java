@@ -26,7 +26,9 @@ import eu.europa.esig.dss.cades.signature.CAdESService;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.OrphanTokenWrapper;
 import eu.europa.esig.dss.diagnostic.RelatedRevocationWrapper;
+import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
@@ -149,9 +151,9 @@ class DSS2059Test extends AbstractCAdESTestExtension {
 		assertTrue(revoked);
 
 		List<String> signatureRevocationIds = signature.foundRevocations().getRelatedRevocationData()
-				.stream().map(r -> r.getId()).collect(Collectors.toList());
+				.stream().map(RevocationWrapper::getId).collect(Collectors.toList());
 		signatureRevocationIds.addAll(signature.foundRevocations().getOrphanRevocationData()
-				.stream().map(r -> r.getId()).collect(Collectors.toList()));
+				.stream().map(OrphanTokenWrapper::getId).collect(Collectors.toList()));
 
 		for (TimestampWrapper timestampWrapper : diagnosticData.getTimestampList()) {
 			if (ArchiveTimestampType.CAdES_V2.equals(timestampWrapper.getArchiveTimestampType())) {

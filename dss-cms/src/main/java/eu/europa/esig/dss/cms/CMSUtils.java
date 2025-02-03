@@ -13,6 +13,8 @@ import org.bouncycastle.cms.SignerInformationStore;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.bouncycastle.util.Store;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.ServiceLoader;
@@ -128,36 +130,39 @@ public final class CMSUtils {
     }
 
     /**
-     * Gets the encoded binaries of the ContentInfo element.
+     * Writes the encoded binaries of the ContentInfo element to the given {@code OutputStream}
      * NOTE: This method is used for archive-time-stamp-v2 message-imprint computation.
      *
      * @param cms {@link CMS}
-     * @return binaries
+     * @param os {@link OutputStream}
+     * @throws IOException if an exception occurs on bytes writing
      */
-    public static byte[] getContentInfoEncoded(CMS cms) {
-        return impl.getContentInfoEncoded(cms);
+    public static void writeContentInfoEncoded(CMS cms, OutputStream os) throws IOException {
+        impl.writeContentInfoEncoded(cms, os);
     }
 
     /**
-     * Gets the encoded binaries of the SignedData.certificates field.
+     * Writes the encoded binaries of the SignedData.certificates field to the given {@code OutputStream}
      * NOTE: This method is used for archive-time-stamp-v2 message-imprint computation.
      *
      * @param cms {@link CMS}
-     * @return binaries
+     * @param os {@link OutputStream}
+     * @throws IOException if an exception occurs on bytes writing
      */
-    public static byte[] getSignedDataCertificatesEncoded(CMS cms) {
-        return impl.getSignedDataCertificatesEncoded(cms);
+    public static void writeSignedDataCertificatesEncoded(CMS cms, OutputStream os) throws IOException {
+        impl.writeSignedDataCertificatesEncoded(cms, os);
     }
 
     /**
-     * Gets the encoded binaries of the SignedData.crls field.
+     * Writes the encoded binaries of the SignedData.crls field to the given {@code OutputStream}
      * NOTE: This method is used for archive-time-stamp-v2 message-imprint computation.
      *
      * @param cms {@link CMS}
-     * @return binaries
+     * @param os {@link OutputStream}
+     * @throws IOException if an exception occurs on bytes writing
      */
-    public static byte[] getSignedDataCRLsEncoded(CMS cms) {
-        return impl.getSignedDataCRLsEncoded(cms);
+    public static void writeSignedDataCRLsEncoded(CMS cms, OutputStream os) throws IOException {
+        impl.writeSignedDataCRLsEncoded(cms, os);
     }
 
     /**
@@ -190,6 +195,14 @@ public final class CMSUtils {
      */
     public static SignerInformation replaceUnsignedAttributes(SignerInformation signerInformation, AttributeTable unsignedAttributes) {
         return impl.replaceUnsignedAttributes(signerInformation, unsignedAttributes);
+    }
+
+    /**
+     * This method returns whether the augmentation of signatures with an archive-time-stamp-v2 is supported by
+     * the current implementation
+     */
+    public static void assertATSv2AugmentationSupported() {
+        impl.assertATSv2AugmentationSupported();
     }
 
 }

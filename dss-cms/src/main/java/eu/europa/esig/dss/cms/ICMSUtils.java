@@ -13,6 +13,8 @@ import org.bouncycastle.cms.SignerInformationStore;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.bouncycastle.util.Store;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Collection;
 
 /**
@@ -90,31 +92,34 @@ public interface ICMSUtils {
     CMS toCMS(TimeStampToken timeStampToken);
 
     /**
-     * Gets the encoded binaries of the ContentInfo element.
+     * Writes the encoded binaries of the ContentInfo element to the given {@code OutputStream}
      * NOTE: This method is used for archive-time-stamp-v2 message-imprint computation.
      *
      * @param cms {@link CMS}
-     * @return binaries
+     * @param os {@link OutputStream}
+     * @throws IOException if an exception occurs on bytes writing
      */
-    byte[] getContentInfoEncoded(CMS cms);
+    void writeContentInfoEncoded(CMS cms, OutputStream os) throws IOException;
 
     /**
-     * Gets the encoded binaries of the SignedData.certificates field.
+     * Writes the encoded binaries of the SignedData.certificates field to the given {@code OutputStream}
      * NOTE: This method is used for archive-time-stamp-v2 message-imprint computation.
      *
      * @param cms {@link CMS}
-     * @return binaries
+     * @param os {@link OutputStream}
+     * @throws IOException if an exception occurs on bytes writing
      */
-    byte[] getSignedDataCertificatesEncoded(CMS cms);
+    void writeSignedDataCertificatesEncoded(CMS cms, OutputStream os) throws IOException;
 
     /**
-     * Gets the encoded binaries of the SignedData.crls field.
+     * Writes the encoded binaries of the SignedData.crls field to the given {@code OutputStream}
      * NOTE: This method is used for archive-time-stamp-v2 message-imprint computation.
      *
      * @param cms {@link CMS}
-     * @return binaries
+     * @param os {@link OutputStream}
+     * @throws IOException if an exception occurs on bytes writing
      */
-    byte[] getSignedDataCRLsEncoded(CMS cms);
+    void writeSignedDataCRLsEncoded(CMS cms, OutputStream os) throws IOException;
 
     /**
      * Converts a {@code DSSDocument} to the corresponding {@code CMSTypedData} object type
@@ -141,5 +146,11 @@ public interface ICMSUtils {
      * @return {@link SignerInformation} updated
      */
     SignerInformation replaceUnsignedAttributes(SignerInformation signerInformation, AttributeTable unsignedAttributes);
+
+    /**
+     * This method returns whether the augmentation of signatures with an archive-time-stamp-v2 is supported by
+     * the current implementation
+     */
+    void assertATSv2AugmentationSupported();
 
 }

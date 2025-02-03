@@ -40,9 +40,12 @@ import org.bouncycastle.tsp.TimeStampToken;
 import org.bouncycastle.util.CollectionStore;
 import org.bouncycastle.util.Encodable;
 import org.bouncycastle.util.Store;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
@@ -52,6 +55,8 @@ import java.util.Objects;
  *
  */
 public class CMSObjectUtils implements ICMSUtils {
+
+    private static final Logger LOG = LoggerFactory.getLogger(CMSObjectUtils.class);
 
     /**
      * Default constructor
@@ -156,7 +161,7 @@ public class CMSObjectUtils implements ICMSUtils {
     }
 
     @Override
-    public byte[] getContentInfoEncoded(CMS cms) {
+    public void writeContentInfoEncoded(CMS cms, OutputStream os) throws IOException {
         SignedData signedData = getSignedData(cms);
 
         final ContentInfo content = signedData.getEncapContentInfo();
@@ -166,14 +171,17 @@ public class CMSObjectUtils implements ICMSUtils {
         } else {
             contentInfoBytes = DSSASN1Utils.getDEREncoded(content);
         }
-        return contentInfoBytes;
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("ContentInfo: {}", DSSUtils.toHex(contentInfoBytes));
+        }
+        os.write(contentInfoBytes);
     }
 
     @Override
-    public byte[] getSignedDataCertificatesEncoded(CMS cms) {
+    public void writeSignedDataCertificatesEncoded(CMS cms, OutputStream os) throws IOException {
         SignedData signedData = getSignedData(cms);
 
-        byte[] certificatesBytes = null;
+        byte[] certificatesBytes;
 
         final ASN1Set certificates = signedData.getCertificates();
         if (certificates != null) {
@@ -191,16 +199,24 @@ public class CMSObjectUtils implements ICMSUtils {
             } catch (IOException e) {
                 throw new DSSException(String.format("An error occurred on reading SignedData.certificates field : %s", e.getMessage()), e);
             }
+			if (LOG.isTraceEnabled()) {
+                LOG.trace("Certificates: {}", DSSUtils.toHex(certificatesBytes));
+			}
+            os.write(certificatesBytes);
+
+        } else {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Certificates are not present in the SignedData.");
+            }
         }
 
-        return certificatesBytes;
     }
 
     @Override
-    public byte[] getSignedDataCRLsEncoded(CMS cms) {
+    public void writeSignedDataCRLsEncoded(CMS cms, OutputStream os) throws IOException {
         SignedData signedData = getSignedData(cms);
 
-        byte[] crlBytes = null;
+        byte[] crlBytes;
 
         final ASN1Set crLs = signedData.getCRLs();
         if (crLs != null) {
@@ -214,11 +230,25 @@ public class CMSObjectUtils implements ICMSUtils {
             } catch (IOException e) {
                 throw new DSSException(String.format("An error occurred on reading SignedData.crls field : %s", e.getMessage()), e);
             }
+            if (LOG.isTraceEnabled()) {
+                LOG.trace("CRLs: {}", DSSUtils.toHex(crlBytes));
+            }
+            os.write(crlBytes);
+
+        } else {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("CRLs are not present in the SignedData.");
+            }
         }
-        return crlBytes;
     }
 
-    private SignedData getSignedData(CMS cms) {
+    /**
+     * Gets SignedData element of the CMS
+     *
+     * @param cms {@link CMS}
+     * @return {@link SignedData}
+     */
+    public static SignedData getSignedData(CMS cms) {
         CMSSignedDataObject cmsSignedDataObject = toCMSSignedDataObject(cms);
         final ContentInfo contentInfo = cmsSignedDataObject.getCMSSignedData().toASN1Structure();
         return SignedData.getInstance(contentInfo.getContent());
@@ -249,6 +279,11 @@ public class CMSObjectUtils implements ICMSUtils {
     @Override
     public SignerInformation replaceUnsignedAttributes(SignerInformation signerInformation, AttributeTable unsignedAttributes) {
         return SignerInformation.replaceUnsignedAttributes(signerInformation, unsignedAttributes);
+    }
+
+    @Override
+    public void assertATSv2AugmentationSupported() {
+        // supported, do nothing
     }
 
 }

@@ -83,7 +83,7 @@ public class CMSStreamDocumentParser {
          *  signerInfos SignerInfos }
          */
 
-        CMSSignedDataStream cms = new CMSSignedDataStream();
+        CMSSignedDataStream cms = new CMSSignedDataStream(document);
 
         int version = cmsSignedDataParser.getVersion();
         cms.setVersion(version);

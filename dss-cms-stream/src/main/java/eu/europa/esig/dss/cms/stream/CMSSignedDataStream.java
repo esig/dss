@@ -3,6 +3,7 @@ package eu.europa.esig.dss.cms.stream;
 import eu.europa.esig.dss.cms.CMS;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
@@ -29,6 +30,9 @@ import java.util.Set;
  *
  */
 public class CMSSignedDataStream implements CMS {
+
+    /** Original document providing on parsing */
+    private DSSDocument cmsDocument;
 
     /** SignedData.version value */
     private int version;
@@ -64,10 +68,29 @@ public class CMSSignedDataStream implements CMS {
     private SignerInformationStore signerInfos;
 
     /**
-     * Default constructor
+     * Default constructor to create an empty instance on CMS creation
      */
     public CMSSignedDataStream() {
         // empty
+    }
+
+    /**
+     * This constructor is used to create an instance of {@code CMSSignedDataStream} on parsing of
+     * an existing CMS document
+     *
+     * @param cmsDocument {@link DSSDocument} original document provided on parsing
+     */
+    public CMSSignedDataStream(DSSDocument cmsDocument) {
+        this.cmsDocument = cmsDocument;
+    }
+
+    /**
+     * Gets the original CMS document used to create the CMS
+     *
+     * @return {@link DSSDocument}
+     */
+    public DSSDocument getCMSDocument() {
+        return cmsDocument;
     }
 
     @Override
