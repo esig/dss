@@ -239,7 +239,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		
 		final DSSMessageDigest messageDigest = computeDocumentDigest(toSignDocument, parameters);
 		final CMS cms = cmsForPAdESGenerationService.buildCMS(messageDigest, parameters, signatureValue);
-		return cms.getEncoded();
+		return cms.getDEREncoded();
 	}
 
 	@Override

@@ -100,6 +100,6 @@ public interface CMS {
      *
      * @return DER-encoded binaries
      */
-    byte[] getEncoded();
+    byte[] getDEREncoded();
 
 }

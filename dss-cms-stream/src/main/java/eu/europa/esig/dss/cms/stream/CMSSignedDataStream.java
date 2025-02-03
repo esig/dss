@@ -234,7 +234,14 @@ public class CMSSignedDataStream implements CMS {
     }
 
     @Override
-    public byte[] getEncoded() {
+    public byte[] getDEREncoded() {
+        /*
+         * Due to a limitation of CMSSignedDataStreamGenerator (see {@link https://github.com/bcgit/bc-java/issues/1482})
+         * we are not able to generate a DER-encoded content using streaming.
+         * Therefore, we need to post-process the output and DER-encode the data.
+         * NOTE: This method should not be used on an enveloping CMS signature creation,
+         * but only for detached CMS (such as PDF signature, timestamp token, etc.).
+         */
         final CMSStreamDocumentBuilder cmsStreamDocumentBuilder = new CMSStreamDocumentBuilder();
         CMSSignedDataStreamGenerator generator = cmsStreamDocumentBuilder.createCMSSignedDataStreamGenerator(this);
         CMSProcessable content = cmsStreamDocumentBuilder.getContentToBeSigned(this);
@@ -242,7 +249,8 @@ public class CMSSignedDataStream implements CMS {
             try (OutputStream gos = generator.open(getSignedContentType(), baos, !isDetachedSignature())) {
                 content.write(gos);
             }
-            return baos.toByteArray();
+            byte[] cmsSignedData = baos.toByteArray();
+            return DSSASN1Utils.getDEREncoded(cmsSignedData);
 
         } catch (CMSException | IOException e) {
             throw new DSSException("Unable to return CMS encoded", e);

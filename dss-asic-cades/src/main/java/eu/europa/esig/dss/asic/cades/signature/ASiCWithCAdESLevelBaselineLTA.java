@@ -216,9 +216,8 @@ public class ASiCWithCAdESLevelBaselineLTA extends ASiCWithCAdESSignatureExtensi
         CMS extendedCMS = cmsBuilder.extendCMSSignedData(
                 validationDataForInclusion.getCertificateTokens(), validationDataForInclusion.getCrlTokens(),
                 validationDataForInclusion.getOcspTokens());
-        return new InMemoryDocument(extendedCMS.getEncoded(), archiveTimestamp.getName(), MimeTypeEnum.TST);
+        return new InMemoryDocument(extendedCMS.getDEREncoded(), archiveTimestamp.getName(), MimeTypeEnum.TST);
     }
-
 
     private CAdESSignatureParameters getEmptyLTLevelSignatureParameters() {
         CAdESSignatureParameters parameters = new CAdESSignatureParameters();

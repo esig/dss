@@ -114,7 +114,7 @@ public abstract class AbstractPAdESWithExternalCMSServiceTest extends AbstractPA
 		signerInfoGenerator = padesCMSSignedDataBuilder.build(signatureParameters, customContentSigner);
 
 		CMS cms = cmsBuilder.createCMS(signerInfoGenerator, new InMemoryDocument(messageDigest.getValue()));
-		return cms.getEncoded();
+		return cms.getDEREncoded();
 	}
 
 	@Override

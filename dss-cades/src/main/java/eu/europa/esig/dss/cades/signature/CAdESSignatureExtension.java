@@ -256,7 +256,7 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 			final SignerInformationStore newSignerStore = new SignerInformationStore(signerInformationList);
 			cms = CMSUtils.replaceSigners(cms, newSignerStore);
 		}
-		final byte[] newTimeStampTokenBytes = cms.getEncoded();
+		final byte[] newTimeStampTokenBytes = cms.getDEREncoded();
 		return DSSASN1Utils.toASN1Primitive(newTimeStampTokenBytes);
 	}
 

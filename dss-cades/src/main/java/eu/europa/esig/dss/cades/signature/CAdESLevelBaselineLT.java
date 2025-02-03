@@ -188,8 +188,8 @@ public class CAdESLevelBaselineLT extends CAdESLevelBaselineT {
 				try {
 					// ContentInfo binaries have to be compared, therefore CMS creation is required
 					byte[] attributeValue = CAdESUtils.getEncodedValue(attribute);
-					if (Arrays.equals(attributeToReplace.getEncoded(), attributeValue)) {
-						ASN1Primitive asn1Primitive = DSSASN1Utils.toASN1Primitive(attributeToAdd.getEncoded());
+					if (Arrays.equals(attributeToReplace.getDEREncoded(), attributeValue)) {
+						ASN1Primitive asn1Primitive = DSSASN1Utils.toASN1Primitive(attributeToAdd.getDEREncoded());
 						newAttribute = new Attribute(attribute.getAttrType(), new DERSet(asn1Primitive));
 					}
 				} catch (Exception e) {
