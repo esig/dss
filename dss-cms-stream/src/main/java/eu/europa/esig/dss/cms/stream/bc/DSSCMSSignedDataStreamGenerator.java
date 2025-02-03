@@ -35,6 +35,8 @@ import java.util.Set;
 /**
  * Extension of {@code CMSSignedDataStreamGenerator} in order to provide a custom digest algorithms set.
  * NOTE: This class contains a number of copy-pasted methods from CMSSignedDataStreamGenerator.
+ * An issue {@link <a href="https://github.com/bcgit/bc-java/issues/1982">https://github.com/bcgit/bc-java/issues/1982</a>}
+ * has been created in order to provide digestAlgorithms to original {@code CMSSignedDataStreamGenerator}.
  *
  */
 public class DSSCMSSignedDataStreamGenerator extends CMSSignedDataStreamGenerator {

@@ -259,7 +259,8 @@ public class CMSSignedDataStream implements CMS {
     @Override
     public byte[] getDEREncoded() {
         /*
-         * Due to a limitation of CMSSignedDataStreamGenerator (see {@link https://github.com/bcgit/bc-java/issues/1482})
+         * Due to a limitation of CMSSignedDataStreamGenerator
+         * (see {@link <a href="https://github.com/bcgit/bc-java/issues/1482">https://github.com/bcgit/bc-java/issues/1482</a> })
          * we are not able to generate a DER-encoded content using streaming.
          * Therefore, we need to post-process the output and DER-encode the data.
          * NOTE: This method should not be used on an enveloping CMS signature creation,

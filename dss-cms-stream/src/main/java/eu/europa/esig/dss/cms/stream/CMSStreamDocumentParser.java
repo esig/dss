@@ -7,7 +7,6 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.DSSMessageDigestCalculator;
-import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.cms.CMSObjectIdentifiers;
@@ -153,7 +152,7 @@ public class CMSStreamDocumentParser {
 
             } else {
                 LOG.warn("No supported digest algorithms found. Stream signed content into void.");
-                DSSUtils.skipAll(is);
+                signedContent.drain();
             }
             return cmsWrappedDocument;
         }

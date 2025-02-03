@@ -664,34 +664,4 @@ class DSSUtilsTest {
 		assertFalse(DSSUtils.isEmpty(new FileDocument("src/test/resources/good-user.crt")));
 	}
 
-	@Test
-	void skipAll() throws IOException {
-		String content = "Hello world!";
-		try (InputStream is = new ByteArrayInputStream(content.getBytes())) {
-			DSSUtils.skipAll(is);
-			assertEquals(-1, is.read());
-		}
-		try (InputStream is = new ByteArrayInputStream(content.getBytes())) {
-			assertNotEquals(-1, is.read());
-			DSSUtils.skipAll(is);
-			assertEquals(-1, is.read());
-		}
-		try (InputStream is = new ByteArrayInputStream(content.getBytes())) {
-			int b;
-			while ((b = is.read()) != -1) {}
-			assertEquals(-1, b);
-			DSSUtils.skipAll(is);
-			assertEquals(-1, is.read());
-		}
-		try (InputStream is = new ByteArrayInputStream(new byte[]{})) {
-			DSSUtils.skipAll(is);
-			assertEquals(-1, is.read());
-		}
-		try (InputStream is = new ByteArrayInputStream(content.getBytes())) {
-			is.close();
-			DSSUtils.skipAll(is);
-		}
-		assertThrows(NullPointerException.class, () -> DSSUtils.skipAll(null));
-	}
-
 }
