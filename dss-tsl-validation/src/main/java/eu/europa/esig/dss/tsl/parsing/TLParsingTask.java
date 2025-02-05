@@ -21,6 +21,8 @@
 package eu.europa.esig.dss.tsl.parsing;
 
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.tsl.function.NonEmptyServiceInformation;
+import eu.europa.esig.dss.tsl.function.NonEmptyTSPInformation;
 import eu.europa.esig.dss.tsl.function.NonEmptyTrustService;
 import eu.europa.esig.dss.tsl.function.converter.TrustServiceProviderConverter;
 import eu.europa.esig.dss.tsl.source.TLSource;
@@ -87,28 +89,37 @@ public class TLParsingTask extends AbstractParsingTask<TLParsingResult> {
 
 		List<TSPType> filteredTSP = trustServiceProviders;
 
-		// 1. Filter the TSP with the predicate
+		// 1. Remove TSPs with invalid structure
+		filteredTSP = filteredTSP.stream().filter(new NonEmptyTSPInformation()).collect(Collectors.toList());
+
+		// 2. Filter the TSP with the predicate
 		if (tlSource.getTrustServiceProviderPredicate() != null) {
 			filteredTSP = filteredTSP.stream().filter(tlSource.getTrustServiceProviderPredicate()).collect(Collectors.toList());
 		}
 
-		// 2. Foreach TSP, filter the trust services with the predicate
-		if (tlSource.getTrustServicePredicate() != null) {
-			for (TSPType tspType : filteredTSP) {
-				TSPServicesListType tspServices = tspType.getTSPServices();
-				if (tspServices != null && Utils.isCollectionNotEmpty(tspServices.getTSPService())) {
-					List<TSPServiceType> filteredTrustServices = tspServices.getTSPService().stream().filter(tlSource.getTrustServicePredicate())
-							.collect(Collectors.toList());
-					TSPServicesListType newTspServices = new TSPServicesListType();
-					if (!filteredTrustServices.isEmpty()) {
-						newTspServices.getTSPService().addAll(filteredTrustServices);
-					}
-					tspType.setTSPServices(newTspServices);
+		// 3. Foreach TSP, remove invalid trust services
+		for (TSPType tspType : filteredTSP) {
+			TSPServicesListType tspServices = tspType.getTSPServices();
+			if (tspServices != null && Utils.isCollectionNotEmpty(tspServices.getTSPService())) {
+				List<TSPServiceType> filteredTrustServices = tspServices.getTSPService().stream()
+						.filter(new NonEmptyServiceInformation()).collect(Collectors.toList());
+
+				// 4. Filter the trust services with the predicate
+				if (tlSource.getTrustServicePredicate() != null) {
+					filteredTrustServices = filteredTrustServices.stream()
+							.filter(tlSource.getTrustServicePredicate()).collect(Collectors.toList());
 				}
+
+				TSPServicesListType newTspServices = new TSPServicesListType();
+				if (!filteredTrustServices.isEmpty()) {
+					newTspServices.getTSPService().addAll(filteredTrustServices);
+				}
+				tspType.setTSPServices(newTspServices);
 			}
 		}
 
-		// 3. Remove TSP with empty trust services
+		// 5. Remove TSPs with empty trust services
 		return filteredTSP.stream().filter(new NonEmptyTrustService()).collect(Collectors.toList());
 	}
+
 }

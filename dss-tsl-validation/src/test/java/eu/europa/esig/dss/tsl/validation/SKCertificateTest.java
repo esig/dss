@@ -20,8 +20,14 @@
  */
 package eu.europa.esig.dss.tsl.validation;
 
+import eu.europa.esig.dss.diagnostic.CertificateWrapper;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustService;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustServiceProvider;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList;
 import eu.europa.esig.dss.enumerations.CertificateQualification;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -30,24 +36,34 @@ import eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.MemoryDataLoader;
 import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.tsl.job.TLValidationJob;
 import eu.europa.esig.dss.tsl.source.TLSource;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateValidator;
-import eu.europa.esig.dss.spi.validation.CertificateVerifier;
-import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SKCertificateTest {
 
     private static final DSSDocument TL_DOC = new FileDocument(new File("src/test/resources/sk-tl-sn-95.xml"));
+    private static final DSSDocument TL_DOC_ALTERED_TSP = new FileDocument(new File("src/test/resources/sk-tl-altered-tsp.xml"));
+    private static final DSSDocument TL_DOC_ALTERED_TRUST_SERVICE = new FileDocument(new File("src/test/resources/sk-tl-altered-trust-service.xml"));
+    private static final DSSDocument TL_DOC_ALTERED_TRUST_SERVICE_WITH_TIME = new FileDocument(new File("src/test/resources/sk-tl-altered-trust-service-with-time.xml"));
 
     private static final String SK_TL_URL = "sk-tl.xml";
 
@@ -56,6 +72,8 @@ class SKCertificateTest {
 
     private static final CertificateToken CERTIFICATE = DSSUtils.loadCertificateFromBase64EncodedString(
             "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");
+
+    private static final List<Integer> ACCEPTED_TL_VERSIONS = Arrays.asList(5, 6);
 
     @Test
     void skTLTest() {
@@ -66,6 +84,7 @@ class SKCertificateTest {
 
         TLSource tlSource = new TLSource();
         tlSource.setUrl(SK_TL_URL);
+        tlSource.setTLVersions(ACCEPTED_TL_VERSIONS);
         tlSource.setCertificateSource(certificateSource);
         tlValidationJob.setTrustedListSources(tlSource);
 
@@ -75,6 +94,7 @@ class SKCertificateTest {
 
         FileCacheDataLoader fileCacheDataLoader = new FileCacheDataLoader();
         fileCacheDataLoader.setDataLoader(memoryDataLoader);
+        fileCacheDataLoader.setCacheExpirationTime(0);
         tlValidationJob.setOfflineDataLoader(fileCacheDataLoader);
 
         TrustedListsCertificateSource trustedCertificateSource = new TrustedListsCertificateSource();
@@ -94,6 +114,378 @@ class SKCertificateTest {
 
         assertEquals(Indication.PASSED, simpleReport.getCertificateIndication(CERTIFICATE.getDSSIdAsString()));
         assertEquals(CertificateQualification.CERT_FOR_UNKNOWN, simpleReport.getQualificationAtCertificateIssuance());
+
+        DiagnosticData diagnosticData = reports.getDiagnosticData();
+        assertNotNull(diagnosticData);
+
+        CertificateWrapper certificate = diagnosticData.getCertificateById(CERTIFICATE.getDSSIdAsString());
+        assertNotNull(certificate);
+
+        List<XmlTrustServiceProvider> trustServiceProviders = certificate.getTrustServiceProviders();
+        assertEquals(2, trustServiceProviders.size());
+
+        boolean tspWithTwoTrustServicesFound = false;
+        for (XmlTrustServiceProvider xmlTrustServiceProvider : trustServiceProviders) {
+            assertTrue(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTrustServices()));
+            if (xmlTrustServiceProvider.getTrustServices().size() == 2) {
+                assertTrue(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTSPNames()));
+                assertTrue(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTSPTradeNames()));
+                assertTrue(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTSPRegistrationIdentifiers()));
+
+                List<XmlTrustService> trustServices = xmlTrustServiceProvider.getTrustServices();
+                XmlTrustService xmlTrustService = trustServices.get(0);
+                assertNotNull(xmlTrustService.getServiceType());
+                assertNotNull(xmlTrustService.getStatus());
+                assertNotNull(xmlTrustService.getStartDate());
+                assertTrue(Utils.isCollectionNotEmpty(xmlTrustService.getServiceNames()));
+                assertTrue(Utils.isCollectionNotEmpty(xmlTrustService.getServiceSupplyPoints()));
+
+                tspWithTwoTrustServicesFound = true;
+            }
+        }
+        assertTrue(tspWithTwoTrustServicesFound);
+
+        List<XmlTrustedList> trustedLists = diagnosticData.getTrustedLists();
+        assertEquals(1, trustedLists.size());
+
+        XmlTrustedList skTrustedList = trustedLists.get(0);
+        assertNotNull(skTrustedList.getUrl());
+        assertNotNull(skTrustedList.getCountryCode());
+        assertNotNull(skTrustedList.getSequenceNumber());
+        assertNotNull(skTrustedList.getVersion());
+        assertNotNull(skTrustedList.getLastLoading());
+        assertNotNull(skTrustedList.getIssueDate());
+        assertNotNull(skTrustedList.getNextUpdate());
+        assertTrue(skTrustedList.isWellSigned());
+        assertNotNull(skTrustedList.getStructuralValidation());
+        assertTrue(skTrustedList.getStructuralValidation().isValid());
+        assertTrue(Utils.isCollectionEmpty(skTrustedList.getStructuralValidation().getMessages()));
+    }
+
+    @Test
+    void skTLWithAlteredTSPTest() {
+        CommonCertificateSource certificateSource = new CommonCertificateSource();
+        certificateSource.addCertificate(TL_ISSUER);
+
+        TLValidationJob tlValidationJob = new TLValidationJob();
+
+        TLSource tlSource = new TLSource();
+        tlSource.setUrl(SK_TL_URL);
+        tlSource.setTLVersions(ACCEPTED_TL_VERSIONS);
+        tlSource.setCertificateSource(certificateSource);
+        tlValidationJob.setTrustedListSources(tlSource);
+
+        Map<String, byte[]> tlMap = new HashMap<>();
+        tlMap.put(SK_TL_URL, DSSUtils.toByteArray(TL_DOC_ALTERED_TSP));
+        MemoryDataLoader memoryDataLoader = new MemoryDataLoader(tlMap);
+
+        FileCacheDataLoader fileCacheDataLoader = new FileCacheDataLoader();
+        fileCacheDataLoader.setDataLoader(memoryDataLoader);
+        fileCacheDataLoader.setCacheExpirationTime(0);
+        tlValidationJob.setOfflineDataLoader(fileCacheDataLoader);
+
+        TrustedListsCertificateSource trustedCertificateSource = new TrustedListsCertificateSource();
+        tlValidationJob.setTrustedListCertificateSource(trustedCertificateSource);
+
+        tlValidationJob.offlineRefresh();
+
+        assertEquals(214, trustedCertificateSource.getCertificates().size());
+
+        CertificateValidator certificateValidator = CertificateValidator.fromCertificate(CERTIFICATE);
+        CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+        certificateVerifier.setTrustedCertSources(trustedCertificateSource);
+        certificateValidator.setCertificateVerifier(certificateVerifier);
+
+        CertificateReports reports = certificateValidator.validate();
+        SimpleCertificateReport simpleReport = reports.getSimpleReport();
+
+        assertEquals(Indication.PASSED, simpleReport.getCertificateIndication(CERTIFICATE.getDSSIdAsString()));
+        assertEquals(CertificateQualification.CERT_FOR_UNKNOWN, simpleReport.getQualificationAtCertificateIssuance());
+
+        DiagnosticData diagnosticData = reports.getDiagnosticData();
+        assertNotNull(diagnosticData);
+
+        CertificateWrapper certificate = diagnosticData.getCertificateById(CERTIFICATE.getDSSIdAsString());
+        assertNotNull(certificate);
+
+        List<XmlTrustServiceProvider> trustServiceProviders = certificate.getTrustServiceProviders();
+        assertEquals(2, trustServiceProviders.size());
+
+        boolean tspWithTwoTrustServicesFound = false;
+        for (XmlTrustServiceProvider xmlTrustServiceProvider : trustServiceProviders) {
+            assertTrue(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTrustServices()));
+            if (xmlTrustServiceProvider.getTrustServices().size() == 2) {
+                assertFalse(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTSPNames()));
+                assertFalse(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTSPTradeNames()));
+                assertFalse(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTSPRegistrationIdentifiers()));
+
+                List<XmlTrustService> trustServices = xmlTrustServiceProvider.getTrustServices();
+                XmlTrustService xmlTrustService = trustServices.get(0);
+                assertNotNull(xmlTrustService.getServiceType());
+                assertNotNull(xmlTrustService.getStatus());
+                assertNotNull(xmlTrustService.getStartDate());
+                assertTrue(Utils.isCollectionNotEmpty(xmlTrustService.getServiceNames()));
+                assertTrue(Utils.isCollectionNotEmpty(xmlTrustService.getServiceSupplyPoints()));
+
+                tspWithTwoTrustServicesFound = true;
+            }
+        }
+        assertTrue(tspWithTwoTrustServicesFound);
+
+        List<XmlTrustedList> trustedLists = diagnosticData.getTrustedLists();
+        assertEquals(1, trustedLists.size());
+
+        XmlTrustedList skTrustedList = trustedLists.get(0);
+        assertNotNull(skTrustedList.getUrl());
+        assertNotNull(skTrustedList.getCountryCode());
+        assertNotNull(skTrustedList.getSequenceNumber());
+        assertNotNull(skTrustedList.getVersion());
+        assertNotNull(skTrustedList.getLastLoading());
+        assertNotNull(skTrustedList.getIssueDate());
+        assertNotNull(skTrustedList.getNextUpdate());
+        assertFalse(skTrustedList.isWellSigned());
+        assertNotNull(skTrustedList.getStructuralValidation());
+        assertFalse(skTrustedList.getStructuralValidation().isValid());
+        assertTrue(skTrustedList.getStructuralValidation().getMessages().stream().anyMatch(m -> m.contains("TSPInformation")));
+    }
+
+    @Test
+    void skTLWithAlteredTSPNoVersionCheckTest() {
+        CommonCertificateSource certificateSource = new CommonCertificateSource();
+        certificateSource.addCertificate(TL_ISSUER);
+
+        TLValidationJob tlValidationJob = new TLValidationJob();
+
+        TLSource tlSource = new TLSource();
+        tlSource.setUrl(SK_TL_URL);
+        tlSource.setCertificateSource(certificateSource);
+        tlValidationJob.setTrustedListSources(tlSource);
+
+        Map<String, byte[]> tlMap = new HashMap<>();
+        tlMap.put(SK_TL_URL, DSSUtils.toByteArray(TL_DOC_ALTERED_TSP));
+        MemoryDataLoader memoryDataLoader = new MemoryDataLoader(tlMap);
+
+        FileCacheDataLoader fileCacheDataLoader = new FileCacheDataLoader();
+        fileCacheDataLoader.setDataLoader(memoryDataLoader);
+        fileCacheDataLoader.setCacheExpirationTime(0);
+        tlValidationJob.setOfflineDataLoader(fileCacheDataLoader);
+
+        TrustedListsCertificateSource trustedCertificateSource = new TrustedListsCertificateSource();
+        tlValidationJob.setTrustedListCertificateSource(trustedCertificateSource);
+
+        tlValidationJob.offlineRefresh();
+
+        assertEquals(214, trustedCertificateSource.getCertificates().size());
+
+        CertificateValidator certificateValidator = CertificateValidator.fromCertificate(CERTIFICATE);
+        CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+        certificateVerifier.setTrustedCertSources(trustedCertificateSource);
+        certificateValidator.setCertificateVerifier(certificateVerifier);
+
+        CertificateReports reports = certificateValidator.validate();
+        SimpleCertificateReport simpleReport = reports.getSimpleReport();
+
+        assertEquals(Indication.PASSED, simpleReport.getCertificateIndication(CERTIFICATE.getDSSIdAsString()));
+        assertEquals(CertificateQualification.CERT_FOR_UNKNOWN, simpleReport.getQualificationAtCertificateIssuance());
+
+        DiagnosticData diagnosticData = reports.getDiagnosticData();
+        assertNotNull(diagnosticData);
+
+        CertificateWrapper certificate = diagnosticData.getCertificateById(CERTIFICATE.getDSSIdAsString());
+        assertNotNull(certificate);
+
+        List<XmlTrustServiceProvider> trustServiceProviders = certificate.getTrustServiceProviders();
+        assertEquals(2, trustServiceProviders.size());
+
+        boolean tspWithTwoTrustServicesFound = false;
+        for (XmlTrustServiceProvider xmlTrustServiceProvider : trustServiceProviders) {
+            assertTrue(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTrustServices()));
+            if (xmlTrustServiceProvider.getTrustServices().size() == 2) {
+                assertFalse(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTSPNames()));
+                assertFalse(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTSPTradeNames()));
+                assertFalse(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTSPRegistrationIdentifiers()));
+
+                List<XmlTrustService> trustServices = xmlTrustServiceProvider.getTrustServices();
+                XmlTrustService xmlTrustService = trustServices.get(0);
+                assertNotNull(xmlTrustService.getServiceType());
+                assertNotNull(xmlTrustService.getStatus());
+                assertNotNull(xmlTrustService.getStartDate());
+                assertTrue(Utils.isCollectionNotEmpty(xmlTrustService.getServiceNames()));
+                assertTrue(Utils.isCollectionNotEmpty(xmlTrustService.getServiceSupplyPoints()));
+
+                tspWithTwoTrustServicesFound = true;
+            }
+        }
+        assertTrue(tspWithTwoTrustServicesFound);
+
+        List<XmlTrustedList> trustedLists = diagnosticData.getTrustedLists();
+        assertEquals(1, trustedLists.size());
+
+        XmlTrustedList skTrustedList = trustedLists.get(0);
+        assertNotNull(skTrustedList.getUrl());
+        assertNotNull(skTrustedList.getCountryCode());
+        assertNotNull(skTrustedList.getSequenceNumber());
+        assertNotNull(skTrustedList.getVersion());
+        assertNotNull(skTrustedList.getLastLoading());
+        assertNotNull(skTrustedList.getIssueDate());
+        assertNotNull(skTrustedList.getNextUpdate());
+        assertFalse(skTrustedList.isWellSigned());
+        assertNotNull(skTrustedList.getStructuralValidation());
+        assertTrue(skTrustedList.getStructuralValidation().isValid());
+    }
+
+    @Test
+    void skTLWithAlteredTrustServiceTest() {
+        CommonCertificateSource certificateSource = new CommonCertificateSource();
+        certificateSource.addCertificate(TL_ISSUER);
+
+        TLValidationJob tlValidationJob = new TLValidationJob();
+
+        TLSource tlSource = new TLSource();
+        tlSource.setUrl(SK_TL_URL);
+        tlSource.setTLVersions(ACCEPTED_TL_VERSIONS);
+        tlSource.setCertificateSource(certificateSource);
+        tlValidationJob.setTrustedListSources(tlSource);
+
+        Map<String, byte[]> tlMap = new HashMap<>();
+        tlMap.put(SK_TL_URL, DSSUtils.toByteArray(TL_DOC_ALTERED_TRUST_SERVICE));
+        MemoryDataLoader memoryDataLoader = new MemoryDataLoader(tlMap);
+
+        FileCacheDataLoader fileCacheDataLoader = new FileCacheDataLoader();
+        fileCacheDataLoader.setDataLoader(memoryDataLoader);
+        fileCacheDataLoader.setCacheExpirationTime(0);
+        tlValidationJob.setOfflineDataLoader(fileCacheDataLoader);
+
+        TrustedListsCertificateSource trustedCertificateSource = new TrustedListsCertificateSource();
+        tlValidationJob.setTrustedListCertificateSource(trustedCertificateSource);
+
+        tlValidationJob.offlineRefresh();
+
+        assertEquals(213, trustedCertificateSource.getCertificates().size()); // removed TrustService
+
+        CertificateValidator certificateValidator = CertificateValidator.fromCertificate(CERTIFICATE);
+        CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+        certificateVerifier.setTrustedCertSources(trustedCertificateSource);
+        certificateValidator.setCertificateVerifier(certificateVerifier);
+
+        CertificateReports reports = certificateValidator.validate();
+        SimpleCertificateReport simpleReport = reports.getSimpleReport();
+
+        assertEquals(Indication.INDETERMINATE, simpleReport.getCertificateIndication(CERTIFICATE.getDSSIdAsString()));
+        assertEquals(SubIndication.CERTIFICATE_CHAIN_GENERAL_FAILURE, simpleReport.getCertificateSubIndication(CERTIFICATE.getDSSIdAsString()));
+        assertEquals(CertificateQualification.CERT_FOR_UNKNOWN, simpleReport.getQualificationAtCertificateIssuance());
+
+        DiagnosticData diagnosticData = reports.getDiagnosticData();
+        assertNotNull(diagnosticData);
+
+        CertificateWrapper certificate = diagnosticData.getCertificateById(CERTIFICATE.getDSSIdAsString());
+        assertNotNull(certificate);
+
+        List<XmlTrustServiceProvider> trustServiceProviders = certificate.getTrustServiceProviders();
+        assertEquals(1, trustServiceProviders.size());
+
+        List<XmlTrustedList> trustedLists = diagnosticData.getTrustedLists();
+        assertEquals(1, trustedLists.size());
+
+        XmlTrustedList skTrustedList = trustedLists.get(0);
+        assertNotNull(skTrustedList.getUrl());
+        assertNotNull(skTrustedList.getCountryCode());
+        assertNotNull(skTrustedList.getSequenceNumber());
+        assertNotNull(skTrustedList.getVersion());
+        assertNotNull(skTrustedList.getLastLoading());
+        assertNotNull(skTrustedList.getIssueDate());
+        assertNotNull(skTrustedList.getNextUpdate());
+        assertFalse(skTrustedList.isWellSigned());
+        assertNotNull(skTrustedList.getStructuralValidation());
+        assertFalse(skTrustedList.getStructuralValidation().isValid());
+        assertTrue(skTrustedList.getStructuralValidation().getMessages().stream().anyMatch(m -> m.contains("ServiceDigitalIdentity")));
+    }
+
+    @Test
+    void skTLWithAlteredTrustServiceWithTimeTest() {
+        CommonCertificateSource certificateSource = new CommonCertificateSource();
+        certificateSource.addCertificate(TL_ISSUER);
+
+        TLValidationJob tlValidationJob = new TLValidationJob();
+
+        TLSource tlSource = new TLSource();
+        tlSource.setUrl(SK_TL_URL);
+        tlSource.setTLVersions(ACCEPTED_TL_VERSIONS);
+        tlSource.setCertificateSource(certificateSource);
+        tlValidationJob.setTrustedListSources(tlSource);
+
+        Map<String, byte[]> tlMap = new HashMap<>();
+        tlMap.put(SK_TL_URL, DSSUtils.toByteArray(TL_DOC_ALTERED_TRUST_SERVICE_WITH_TIME));
+        MemoryDataLoader memoryDataLoader = new MemoryDataLoader(tlMap);
+
+        FileCacheDataLoader fileCacheDataLoader = new FileCacheDataLoader();
+        fileCacheDataLoader.setDataLoader(memoryDataLoader);
+        fileCacheDataLoader.setCacheExpirationTime(0);
+        tlValidationJob.setOfflineDataLoader(fileCacheDataLoader);
+
+        TrustedListsCertificateSource trustedCertificateSource = new TrustedListsCertificateSource();
+        tlValidationJob.setTrustedListCertificateSource(trustedCertificateSource);
+
+        tlValidationJob.offlineRefresh();
+
+        assertEquals(214, trustedCertificateSource.getCertificates().size());
+
+        CertificateValidator certificateValidator = CertificateValidator.fromCertificate(CERTIFICATE);
+        CertificateVerifier certificateVerifier = new CommonCertificateVerifier();
+        certificateVerifier.setTrustedCertSources(trustedCertificateSource);
+        certificateValidator.setCertificateVerifier(certificateVerifier);
+
+        CertificateReports reports = certificateValidator.validate();
+        SimpleCertificateReport simpleReport = reports.getSimpleReport();
+
+        assertEquals(Indication.PASSED, simpleReport.getCertificateIndication(CERTIFICATE.getDSSIdAsString()));
+        assertEquals(CertificateQualification.CERT_FOR_UNKNOWN, simpleReport.getQualificationAtCertificateIssuance());
+
+        DiagnosticData diagnosticData = reports.getDiagnosticData();
+        assertNotNull(diagnosticData);
+
+        CertificateWrapper certificate = diagnosticData.getCertificateById(CERTIFICATE.getDSSIdAsString());
+        assertNotNull(certificate);
+
+        List<XmlTrustServiceProvider> trustServiceProviders = certificate.getTrustServiceProviders();
+        assertEquals(2, trustServiceProviders.size());
+
+        boolean tspWithTwoTrustServicesFound = false;
+        for (XmlTrustServiceProvider xmlTrustServiceProvider : trustServiceProviders) {
+            assertTrue(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTrustServices()));
+            if (xmlTrustServiceProvider.getTrustServices().size() == 2) {
+                assertTrue(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTSPNames()));
+                assertTrue(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTSPTradeNames()));
+                assertTrue(Utils.isCollectionNotEmpty(xmlTrustServiceProvider.getTSPRegistrationIdentifiers()));
+
+                List<XmlTrustService> trustServices = xmlTrustServiceProvider.getTrustServices();
+                XmlTrustService xmlTrustService = trustServices.get(0);
+                assertNull(xmlTrustService.getServiceType());
+                assertNull(xmlTrustService.getStatus());
+                assertNotNull(xmlTrustService.getStartDate());
+                assertFalse(Utils.isCollectionNotEmpty(xmlTrustService.getServiceNames()));
+                assertFalse(Utils.isCollectionNotEmpty(xmlTrustService.getServiceSupplyPoints()));
+
+                tspWithTwoTrustServicesFound = true;
+            }
+        }
+        assertTrue(tspWithTwoTrustServicesFound);
+
+        List<XmlTrustedList> trustedLists = diagnosticData.getTrustedLists();
+        assertEquals(1, trustedLists.size());
+
+        XmlTrustedList skTrustedList = trustedLists.get(0);
+        assertNotNull(skTrustedList.getUrl());
+        assertNotNull(skTrustedList.getCountryCode());
+        assertNotNull(skTrustedList.getSequenceNumber());
+        assertNotNull(skTrustedList.getVersion());
+        assertNotNull(skTrustedList.getLastLoading());
+        assertNotNull(skTrustedList.getIssueDate());
+        assertNotNull(skTrustedList.getNextUpdate());
+        assertFalse(skTrustedList.isWellSigned());
+        assertNotNull(skTrustedList.getStructuralValidation());
+        assertFalse(skTrustedList.getStructuralValidation().isValid());
+        assertTrue(skTrustedList.getStructuralValidation().getMessages().stream().anyMatch(m -> m.contains("ServiceTypeIdentifier")));
     }
 
 }

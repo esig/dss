@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><TrustServiceStatusList xmlns="http://uri.etsi.org/02231/v2#" xmlns:ns2="http://www.w3.org/2000/09/xmldsig#" xmlns:ns3="http://uri.etsi.org/01903/v1.3.2#" xmlns:ns4="http://uri.etsi.org/02231/v2/additionaltypes#" xmlns:ns5="http://uri.etsi.org/TrstSvc/SvcInfoExt/eSigDir-1999-93-EC-TrustedList/#" xmlns:ns6="http://uri.etsi.org/01903/v1.4.1#" Id="ID0001" TSLTag="http://uri.etsi.org/19612/TSLTag">
     <SchemeInformation>
-        <TSLVersionIdentifier>5</TSLVersionIdentifier>
         <TSLSequenceNumber>248</TSLSequenceNumber>
         <TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists</TSLType>
         <SchemeOperatorName>
@@ -52,6 +51,7 @@
             <ElectronicAddress>
                 <URI xml:lang="en">mailto:EC-TL-Service@ec.europa.eu</URI>
                 <URI xml:lang="en">https://ec.europa.eu/digital-agenda/en/eu-trusted-lists-certification-service-providers</URI>
+            </ElectronicAddress>
         </SchemeOperatorAddress>
         <SchemeName>
             <Name xml:lang="en">EU:List containing the information notified by Member States pursuant to Article 4(1) and Article 4(2) of Commission Implementing Decision (EU) 2015/1505 of 8 September 2015 laying down technical specifications and formats relating to trusted lists pursuant to Article 22(5) of Regulation (EU) No 910/2014 of the European Parliament and of the Council on electronic identification and trust services for electronic transactions in the internal market, published by the Commission in accordance with Article 4(3) of Commission Implementing Decision (EU) 2015/1505.</Name>

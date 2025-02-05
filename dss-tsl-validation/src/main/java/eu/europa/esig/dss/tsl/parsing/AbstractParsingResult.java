@@ -35,10 +35,10 @@ public abstract class AbstractParsingResult implements CachedResult {
 	private TSLType tslType;
 
 	/** The LOTL/TL sequence number */
-	private int sequenceNumber;
+	private Integer sequenceNumber;
 
 	/** LOTL/TL version */
-	private int version;
+	private Integer version;
 
 	/** The country (territory) */
 	private String territory;
@@ -85,7 +85,7 @@ public abstract class AbstractParsingResult implements CachedResult {
 	 *
 	 * @return sequence number
 	 */
-	public int getSequenceNumber() {
+	public Integer getSequenceNumber() {
 		return sequenceNumber;
 	}
 
@@ -94,7 +94,7 @@ public abstract class AbstractParsingResult implements CachedResult {
 	 *
 	 * @param sequenceNumber sequence number
 	 */
-	public void setSequenceNumber(int sequenceNumber) {
+	public void setSequenceNumber(Integer sequenceNumber) {
 		this.sequenceNumber = sequenceNumber;
 	}
 
@@ -103,7 +103,7 @@ public abstract class AbstractParsingResult implements CachedResult {
 	 *
 	 * @return version
 	 */
-	public int getVersion() {
+	public Integer getVersion() {
 		return version;
 	}
 
@@ -112,7 +112,7 @@ public abstract class AbstractParsingResult implements CachedResult {
 	 *
 	 * @param version version
 	 */
-	public void setVersion(int version) {
+	public void setVersion(Integer version) {
 		this.version = version;
 	}
 

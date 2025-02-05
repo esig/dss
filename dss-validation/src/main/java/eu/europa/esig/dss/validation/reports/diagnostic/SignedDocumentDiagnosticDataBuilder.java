@@ -517,15 +517,6 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		return getXmlStructuralValidation(signature.getStructureValidationResult());
 	}
 
-	private XmlStructuralValidation getXmlStructuralValidation(List<String> errorMessages) {
-		final XmlStructuralValidation xmlStructuralValidation = new XmlStructuralValidation();
-		xmlStructuralValidation.setValid(Utils.isCollectionEmpty(errorMessages));
-		if (Utils.isCollectionNotEmpty(errorMessages)) {
-			xmlStructuralValidation.getMessages().addAll(errorMessages);
-		}
-		return xmlStructuralValidation;
-	}
-
 	private XmlSignatureProductionPlace getXmlSignatureProductionPlace(SignatureProductionPlace signatureProductionPlace) {
 		if (signatureProductionPlace != null) {
 			final XmlSignatureProductionPlace xmlSignatureProductionPlace = new XmlSignatureProductionPlace();

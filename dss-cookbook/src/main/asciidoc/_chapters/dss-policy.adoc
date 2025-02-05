@@ -2744,6 +2744,21 @@ Default: `FAIL` (`5` and `6`)
 </eIDAS>
 ----
 
+* `TLStructure` - this constraint checks whether the structure of the Trusted List is valid according to
+the definition of the corresponding Trusted List verison and its XSD. If the Trusted List's structure is not valid, the check will fail.
+
+Default: `WARN`
+
+[source,xml,indent=0]
+.Example of TLStructure usage (with WARN validation level)
+----
+<eIDAS>
+    ...
+    <TLStructure Level="WARN" />
+    ...
+</eIDAS>
+----
+
 ==== Validation results correspondence table
 
 This table defines the correspondence between the enforced validation policy constraints and the final validation results in case the related check fails.
@@ -2933,7 +2948,8 @@ This table defines the correspondence between the enforced validation policy con
                                                                                                                               CRYPTO_CONSTRAINTS_FAILURE
                                   |AlgoExpirationDate              |AlgoExpirationDate                |INDETERMINATE         |CRYPTO_CONSTRAINTS_FAILURE_NO_POE +
                                                                                                                               CRYPTO_CONSTRAINTS_FAILURE
-.4+|eIDAS                         |TLFreshness                     |TimeConstraint                    |FAILED                |-
+.5+|eIDAS                         |TLFreshness                     |TimeConstraint                    |FAILED                |-
                                   |TLNotExpired                    |LevelConstraint                   |FAILED                |-
                                   |TLWellSigned                    |LevelConstraint                   |FAILED                |-
                                   |TLVersion                       |ValueConstraint                   |FAILED                |-
+                                  |TLStructure                     |LevelConstraint                   |FAILED                |-

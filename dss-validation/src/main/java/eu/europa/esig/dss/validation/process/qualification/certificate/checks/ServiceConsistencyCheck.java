@@ -27,6 +27,7 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.qualification.trust.consistency.TrustServiceChecker;
 
@@ -128,7 +129,7 @@ public class ServiceConsistencyCheck extends ChainItem<XmlValidationCertificateQ
 
 	@Override
 	protected String buildAdditionalInfo() {
-		if (trustService != null) {
+		if (trustService != null && Utils.isCollectionNotEmpty(trustService.getServiceNames())) {
 			return i18nProvider.getMessage(MessageTag.TRUST_SERVICE_NAME, trustService.getServiceNames().get(0));
 		}
 		return null;
