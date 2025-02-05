@@ -20,14 +20,14 @@
  */
 package eu.europa.esig.dss.service.http.commons;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import org.junit.jupiter.api.Test;
 
-class LdapUrlUtilsTest {
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class LdapURLUtilsTest {
 	
 	@Test
-	void test() {
+	void encodeTest() {
 		assertEquals("ldap://crl-source.hn/o=Hello", LdapURLUtils.encode("ldap://crl-source.hn/o=Hello"));
 	    assertEquals("ldap://crl-source.hn/o=#%20Hello", LdapURLUtils.encode("ldap://crl-source.hn/o=# Hello"));
 	    assertEquals("ldap://crl-source.hn/o=%20Hello", LdapURLUtils.encode("ldap://crl-source.hn/o= Hello"));
@@ -39,6 +39,17 @@ class LdapUrlUtilsTest {
 	    		LdapURLUtils.encode("ldap://ep.nbusr.sk/cn%3dKCA%20NBU%20SR%203,ou%3dSIBEP,o%3dNarodny%20bezpecnostny%20urad,l%3dBratislava,c%3dSK?certificateRevocationList"));
 	    assertEquals("ldap:///cn%3dKCA%20NBU%20SR%203,ou%3dSIBEP,o%3dNarodny%20bezpecnostny%20urad,l%3dBratislava,c%3dSK?certificateRevocationList", 
 	    		LdapURLUtils.encode("ldap:///cn%3dKCA%20NBU%20SR%203,ou%3dSIBEP,o%3dNarodny%20bezpecnostny%20urad,l%3dBratislava,c%3dSK?certificateRevocationList"));
+	}
+
+	@Test
+	void getHostTest() {
+		assertEquals("", LdapURLUtils.getHost(null));
+		assertEquals("", LdapURLUtils.getHost(""));
+		assertEquals("crl-source.hn", LdapURLUtils.getHost("ldap://crl-source.hn/o=Hello"));
+		assertEquals("crl-source.hn", LdapURLUtils.getHost("ldap://crl-source.hn:8080/o=Hello"));
+		assertEquals("www.crl-source.hn", LdapURLUtils.getHost("ldap://www.crl-source.hn/o=Hello"));
+		assertEquals("ep.nbusr.sk", LdapURLUtils.getHost("ldap://ep.nbusr.sk/cn%3dKCA%20NBU%20SR%203,ou%3dSIBEP,o%3dNarodny%20bezpecnostny%20urad,l%3dBratislava,c%3dSK?certificateRevocationList"));
+		assertEquals("", LdapURLUtils.getHost("ldap:///cn%3dKCA%20NBU%20SR%203,ou%3dSIBEP,o%3dNarodny%20bezpecnostny%20urad,l%3dBratislava,c%3dSK?certificateRevocationList"));
 	}
 
 }
