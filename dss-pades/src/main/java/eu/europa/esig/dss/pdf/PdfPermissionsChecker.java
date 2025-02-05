@@ -143,17 +143,37 @@ public class PdfPermissionsChecker {
         }
     }
 
-    private boolean isDocumentChangeForbidden(CertificationPermission certificationPermission) {
+    /**
+     * This method verifies and returns whether changes within a document are forbidden according to
+     * the defined {@code certificationPermission}
+     *
+     * @param certificationPermission {@link CertificationPermission} to check
+     * @return TRUE if changes are forbidden within the document, FALSE otherwise
+     */
+    protected boolean isDocumentChangeForbidden(CertificationPermission certificationPermission) {
         return CertificationPermission.NO_CHANGE_PERMITTED.equals(certificationPermission);
     }
 
-    private void alertOnForbiddenSignatureCreation(String message) {
+    /**
+     * Executes the {@code alertOnForbiddenSignatureCreation} with the given {@code message}
+     *
+     * @param message {@link String} containing an information about document permissions' failure
+     */
+    protected void alertOnForbiddenSignatureCreation(String message) {
         MessageStatus status = new MessageStatus();
         status.setMessage(String.format("The creation of new signatures is not permitted in the current document. Reason : %s", message));
         alertOnForbiddenSignatureCreation.alert(status);
     }
 
-    private boolean isSignatureFieldCreationForbidden(SigFieldPermissions sigFieldPermissions, String signatureFieldId) {
+    /**
+     * Checks and returns whether a signature field creation if forbidden according to the given configuration
+     * of the {@code signatureFieldId}
+     *
+     * @param sigFieldPermissions {@link SigFieldPermissions} permissions
+     * @param signatureFieldId {@link String} providing the permission configuration
+     * @return TRUE of a signature field cretion is forbidden according to the configuration, FALSE otherwise
+     */
+    protected boolean isSignatureFieldCreationForbidden(SigFieldPermissions sigFieldPermissions, String signatureFieldId) {
         switch (sigFieldPermissions.getAction()) {
             case ALL:
                 return true;
@@ -178,7 +198,7 @@ public class PdfPermissionsChecker {
                         String.format("The action value '%s' is not supported!", sigFieldPermissions.getAction()));
         }
         CertificationPermission certificationPermission = sigFieldPermissions.getCertificationPermission();
-        return CertificationPermission.NO_CHANGE_PERMITTED.equals(certificationPermission);
+        return isDocumentChangeForbidden(certificationPermission);
     }
 
 }
