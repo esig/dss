@@ -12,7 +12,7 @@
 
     <artifactId>dss-cms-stream</artifactId>
     <name>DSS CMS Stream</name>
-    <description>DSS CMS implementation based on CMS stream reading.</description>
+    <description>DSS CMS implementation based on CMS stream reading. This implementation is experimental with some limitations but offers better performances.</description>
 
     <properties>
         <module-name>jpms_dss_cms_stream</module-name>

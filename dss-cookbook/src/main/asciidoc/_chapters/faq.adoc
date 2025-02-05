@@ -121,6 +121,7 @@ Build the following modules using `mvn clean install` (without any profile):
 ** `dss-utils`;
 ** `dss-crl-parser`;
 ** `dss-test`;
+** `dss-cms`;
 ** `dss-pades`;
 ** `dss-asic-common` _(since DSS 5.8)._
 * DSS 5.10 and after:
