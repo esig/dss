@@ -99,7 +99,6 @@ import org.bouncycastle.asn1.x509.DisplayText;
 import org.bouncycastle.asn1.x509.NoticeReference;
 import org.bouncycastle.asn1.x509.RoleSyntax;
 import org.bouncycastle.cms.CMSException;
-import org.bouncycastle.cms.CMSSignedDataParser;
 import org.bouncycastle.cms.SignerId;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SignerInformationStore;
@@ -107,7 +106,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -931,11 +929,8 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	 */
 	private SignerInformation recreateSignerInformation() throws CMSException, IOException {
 		final DSSDocument dssDocument = detachedContents.get(0); // only one element for CAdES Signature
-		DSSDocument cmsSignedDocument = CMSUtils.writeToDSSDocument(cms, CAdESUtils.DEFAULT_RESOURCES_HANDLER_BUILDER);
-		try (InputStream is = cmsSignedDocument.openStream()) {
-			CMSSignedDataParser cmsSignedDataParser = new CMSSignedDataParser(new PrecomputedDigestCalculatorProvider(dssDocument), is);
-			return cmsSignedDataParser.getSignerInfos().get(getSignerId());
-		}
+		PrecomputedDigestCalculatorProvider digestCalculatorProvider = new PrecomputedDigestCalculatorProvider(dssDocument);
+		return CMSUtils.recomputeSignerInformation(cms, getSignerId(), digestCalculatorProvider, CAdESUtils.DEFAULT_RESOURCES_HANDLER_BUILDER);
 	}
 
 	/**

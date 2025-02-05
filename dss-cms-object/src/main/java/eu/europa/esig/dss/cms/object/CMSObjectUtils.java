@@ -1,7 +1,7 @@
 package eu.europa.esig.dss.cms.object;
 
-import eu.europa.esig.dss.cms.CMSSignedDocument;
 import eu.europa.esig.dss.cms.CMS;
+import eu.europa.esig.dss.cms.CMSSignedDocument;
 import eu.europa.esig.dss.cms.ICMSUtils;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -33,9 +33,12 @@ import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSProcessableByteArray;
 import org.bouncycastle.cms.CMSProcessableFile;
 import org.bouncycastle.cms.CMSSignedData;
+import org.bouncycastle.cms.CMSSignedDataParser;
 import org.bouncycastle.cms.CMSTypedData;
+import org.bouncycastle.cms.SignerId;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SignerInformationStore;
+import org.bouncycastle.operator.DigestCalculatorProvider;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.bouncycastle.util.CollectionStore;
 import org.bouncycastle.util.Encodable;
@@ -93,6 +96,13 @@ public class CMSObjectUtils implements ICMSUtils {
         // NOTE: the 'dss-cms-object' implementation does not require using of {@code resourcesHandlerBuilder}
         CMSSignedDataObject cmsSignedDataObject = toCMSSignedDataObject(cms);
         return new CMSSignedDocument(cmsSignedDataObject.getCMSSignedData());
+    }
+
+    @Override
+    public SignerInformation recomputeSignerInformation(CMS cms, SignerId signerId, DigestCalculatorProvider digestCalculatorProvider,
+                                                        DSSResourcesHandlerBuilder resourcesHandlerBuilder) throws CMSException {
+        CMSSignedDataParser cmsSignedDataParser = new CMSSignedDataParser(digestCalculatorProvider, cms.getDEREncoded());
+        return cmsSignedDataParser.getSignerInfos().get(signerId);
     }
 
     @Override

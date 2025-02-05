@@ -36,8 +36,10 @@ import org.bouncycastle.cms.CMSProcessableFile;
 import org.bouncycastle.cms.CMSTypedData;
 import org.bouncycastle.cms.CMSTypedStream;
 import org.bouncycastle.cms.PKCS7TypedStream;
+import org.bouncycastle.cms.SignerId;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SignerInformationStore;
+import org.bouncycastle.operator.DigestCalculatorProvider;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.bouncycastle.util.Store;
 
@@ -78,6 +80,15 @@ public class CMSStreamUtils implements ICMSUtils {
         return new CMSStreamDocumentBuilder()
                 .setResourcesHandlerBuilder(resourcesHandlerBuilder)
                 .createCMSSignedDocument(cms);
+    }
+
+    @Override
+    public SignerInformation recomputeSignerInformation(CMS cms, SignerId signerId, DigestCalculatorProvider digestCalculatorProvider,
+                                                        DSSResourcesHandlerBuilder resourcesHandlerBuilder) throws CMSException {
+        return new CMSStreamDocumentBuilder()
+                .setResourcesHandlerBuilder(resourcesHandlerBuilder)
+                .recreateSignerInformationStore(cms, digestCalculatorProvider)
+                .get(signerId);
     }
 
     @Override

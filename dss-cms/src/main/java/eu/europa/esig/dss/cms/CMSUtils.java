@@ -7,9 +7,12 @@ import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.cert.X509AttributeCertificateHolder;
 import org.bouncycastle.cert.X509CRLHolder;
 import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSTypedData;
+import org.bouncycastle.cms.SignerId;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SignerInformationStore;
+import org.bouncycastle.operator.DigestCalculatorProvider;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.bouncycastle.util.Store;
 
@@ -78,6 +81,23 @@ public final class CMSUtils {
      */
     public static DSSDocument writeToDSSDocument(CMS cms, DSSResourcesHandlerBuilder resourcesHandlerBuilder) {
         return impl.writeToDSSDocument(cms, resourcesHandlerBuilder);
+    }
+
+    /**
+     * This method re-created the {@code SignerInformation} with a given {@code signerId} from {@code CMS}
+     * by providing the {@code digestCalculatorProvider} to the validation.
+     * The returned {@code SignerInformation} contains validated digest according to the provided document.
+     *
+     * @param cms {@link CMS} containing a SignerInformation to be validated
+     * @param signerId {@link SignerId} to re-compute
+     * @param digestCalculatorProvider {@link DigestCalculatorProvider} containing digest of the original signed document
+     * @param resourcesHandlerBuilder {@link DSSResourcesHandlerBuilder}
+     * @return {@link SignerInformation}
+     * @throws CMSException if an exception occurs on SignerInformation re-creation
+     */
+    public static SignerInformation recomputeSignerInformation(CMS cms, SignerId signerId, DigestCalculatorProvider digestCalculatorProvider,
+                                                 DSSResourcesHandlerBuilder resourcesHandlerBuilder) throws CMSException {
+        return impl.recomputeSignerInformation(cms, signerId, digestCalculatorProvider, resourcesHandlerBuilder);
     }
 
     /**
