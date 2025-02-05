@@ -60,9 +60,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -648,7 +646,7 @@ public final class DSSUtils {
 		} else {
 			throw new FileNotFoundException("File '" + file + "' does not exist");
 		}
-		return new FileInputStream(file);
+		return Files.newInputStream(file.toPath());
 	}
 
 	/**
@@ -778,7 +776,7 @@ public final class DSSUtils {
 	 */
 	public static void saveToFile(final byte[] bytes, final File file) {
 		file.getParentFile().mkdirs();
-		try (InputStream is = new ByteArrayInputStream(bytes); OutputStream os = new FileOutputStream(file)) {
+		try (InputStream is = new ByteArrayInputStream(bytes); OutputStream os = Files.newOutputStream(file.toPath())) {
 			Utils.copy(is, os);
 		} catch (IOException e) {
 			throw new DSSException(String.format("Unable to save a file : %s", e.getMessage()), e);

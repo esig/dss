@@ -367,7 +367,7 @@ public final class DSSASN1Utils {
 
 	/**
 	 * This method computes the digest of an ASN1 signature policy (used in CAdES)
-	 *
+	 * <p>
 	 * TS 101 733 5.8.1 : If the signature policy is defined using ASN.1, then the hash is calculated on the value
 	 * without the outer type and length
 	 * fields, and the hashing algorithm shall be as specified in the field sigPolicyHash.
@@ -793,7 +793,9 @@ public final class DSSASN1Utils {
 	 *
 	 * @param certToken {@link CertificateToken}
 	 * @return a list of {@link String}s
+	 * @deprecated since DSS 6.3. See {@code CertificateExtensionUtils#getExtendedKeyUsage(CertificateToken)}
 	 */
+	@Deprecated
 	public static List<String> getExtendedKeyUsage(CertificateToken certToken) {
 		try {
 			return certToken.getCertificate().getExtendedKeyUsage();
@@ -949,7 +951,7 @@ public final class DSSASN1Utils {
 
 	/**
 	 * Converts the ANS.1 binary signature value to the concatenated (plain) R || S format if required
-	 * 
+	 * <p>
 	 * NOTE: used in XAdES and JAdES
 	 *
 	 * @param algorithm
@@ -969,7 +971,7 @@ public final class DSSASN1Utils {
 
 	/**
 	 * Converts an ASN.1 value to a concatenation string of R and S from ECDSA/DSA encryption algorithm
-	 *
+	 * <p>
 	 * The JAVA JCE ECDSA/DSA Signature algorithm creates ASN.1 encoded (r,s) value pairs.
 	 *
 	 * @param asn1SignatureValue

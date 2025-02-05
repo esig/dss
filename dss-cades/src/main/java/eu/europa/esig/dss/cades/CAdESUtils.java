@@ -146,7 +146,9 @@ public final class CAdESUtils {
 	 * @param content {@link CMSTypedData}
 	 * @param encapsulate true if the content should be encapsulated in the signature, false otherwise
 	 * @return {@link CMSSignedData}
+	 * @deprecated since DSS 6.3. To be removed.
 	 */
+	@Deprecated
 	public static CMSSignedData generateCMSSignedData(final CMSSignedDataGenerator generator,
 													  final CMSTypedData content, final boolean encapsulate) {
 		try {
@@ -162,7 +164,9 @@ public final class CAdESUtils {
 	 * @param cmsSignedDataGenerator {@link CMSSignedDataGenerator} to extend the CMS SignedData
 	 * @param signerInfoToSign {@link SignerInformation} to be counter-signed
 	 * @return {@link SignerInformationStore} with a counter signature
+	 * @deprecated since DSS 6.3. To be removed.
 	 */
+	@Deprecated
 	public static SignerInformationStore generateCounterSigners(CMSSignedDataGenerator cmsSignedDataGenerator,
 																SignerInformation signerInfoToSign) {
 		try {
@@ -178,10 +182,16 @@ public final class CAdESUtils {
 	 * @param generator {@link CMSSignedDataGenerator}
 	 * @param content {@link CMSProcessableByteArray} to sign
 	 * @return {@link CMSSignedData}
+	 * @deprecated since DSS 6.3. To be removed.
 	 */
+	@Deprecated
 	public static CMSSignedData generateDetachedCMSSignedData(final CMSSignedDataGenerator generator,
 															  final CMSProcessableByteArray content) {
-		return generateCMSSignedData(generator, content, false);
+		try {
+			return generator.generate(content, false);
+		} catch (CMSException e) {
+			throw new DSSException("Unable to generate the CMSSignedData", e);
+		}
 	}
 
 	/**
@@ -191,12 +201,14 @@ public final class CAdESUtils {
 	 * @param newCmsSignedData {@link CMSSignedData} to be extended with digest algorithms, if required
  	 * @param oldCmsSignedData {@link CMSSignedData} to copy digest algorithms set from
 	 * @return extended {@link CMSSignedData}
+	 * @deprecated since DSS 6.3. See {@code CMSUtils#populateDigestAlgorithmSet}
 	 */
+	@Deprecated
 	public static CMSSignedData populateDigestAlgorithmSet(CMSSignedData newCmsSignedData,
 														   CMSSignedData oldCmsSignedData) {
 		if (oldCmsSignedData != null) {
 			for (AlgorithmIdentifier algorithmIdentifier : oldCmsSignedData.getDigestAlgorithmIDs()) {
-				newCmsSignedData = addDigestAlgorithm(newCmsSignedData, algorithmIdentifier);
+				newCmsSignedData = CMSSignedData.addDigestAlgorithm(newCmsSignedData, algorithmIdentifier);
 			}
 		}
 		return newCmsSignedData;
@@ -205,13 +217,15 @@ public final class CAdESUtils {
 	/**
 	 * This method adds a DigestAlgorithm used by an Archive TimeStamp to
 	 * the SignedData.digestAlgorithms set, when required.
-	 *
+	 * <p>
 	 * See ETSI EN 319 122-1, ch. "5.5.3 The archive-time-stamp-v3 attribute"
 	 *
 	 * @param cmsSignedData {@link CMSSignedData} to extend
 	 * @param algorithmIdentifier {@link AlgorithmIdentifier} to add
 	 * @return {@link CMSSignedData}
+	 * @deprecated since DSS 6.3. See {@code CMSUtils#populateDigestAlgorithmSet}
 	 */
+	@Deprecated
 	public static CMSSignedData addDigestAlgorithm(CMSSignedData cmsSignedData, AlgorithmIdentifier algorithmIdentifier) {
 		return CMSSignedData.addDigestAlgorithm(cmsSignedData, algorithmIdentifier);
 	}
@@ -846,7 +860,9 @@ public final class CAdESUtils {
 	 *
 	 * @param cmsSignedData {@link CMSSignedData}
 	 * @return {@link ASN1ObjectIdentifier} cmsSignedData.getSignedContentTypeOID()
+	 * @deprecated since DSS 6.3. To be removed.
 	 */
+	@Deprecated
 	public static ASN1ObjectIdentifier getEncapsulatedContentType(final CMSSignedData cmsSignedData) {
 		final ContentInfo contentInfo = cmsSignedData.toASN1Structure();
 		final SignedData signedData = SignedData.getInstance(contentInfo.getContent());
