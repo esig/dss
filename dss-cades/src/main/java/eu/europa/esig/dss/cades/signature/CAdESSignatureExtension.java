@@ -241,8 +241,18 @@ abstract class CAdESSignatureExtension implements SignatureExtension<CAdESSignat
 				AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
 				for (final Attribute attributeToAdd : attributesForTimestampToken) {
 					final ASN1ObjectIdentifier attrType = attributeToAdd.getAttrType();
-					final ASN1Encodable objectAt = attributeToAdd.getAttrValues().getObjectAt(0);
-					unsignedAttributes = unsignedAttributes.add(attrType, objectAt);
+					if (attributeToAdd.getAttrValues().size() == 0) {
+						LOG.warn("No values found within an unsigned attribute. The attribute is skipped.");
+						continue;
+					} else if (attributeToAdd.getAttrValues().size() != 1) {
+						LOG.warn("More than one value found within a signature unsigned attribute. Only the first value will be preserved.");
+					}
+					final ASN1Encodable attrValue = attributeToAdd.getAttrValues().getObjectAt(0);
+					if (attrValue != null) {
+						unsignedAttributes = unsignedAttributes.add(attrType, attrValue);
+					} else {
+						throw new DSSException("Invalid encoding of an unsigned attribute found! Unable to extend. See more details in the logs.");
+					}
 				}
 				// Unsigned attributes cannot be empty (RFC 5652 5.3)
 				if (unsignedAttributes.size() == 0) {

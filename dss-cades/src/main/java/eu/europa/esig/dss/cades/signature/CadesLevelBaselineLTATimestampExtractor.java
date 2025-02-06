@@ -601,7 +601,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 			LOG.debug("encodedFields end");
 		}
 
-		bytes = DSSASN1Utils.getDEREncoded(atsHashIndexAttribute.getAttrValues().getObjectAt(0));
+		bytes = getAtsHashIndexAttributeEncoding(atsHashIndexAttribute);
 		digestCalculator.update(bytes);
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("encodedAtsHashIndex={}", bytes != null ? Utils.toHex(bytes) : bytes);
@@ -672,6 +672,16 @@ public class CadesLevelBaselineLTATimestampExtractor {
 		digestCalculator.update(bytes);
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("getSignedFields EncryptedDigest={}", Utils.toBase64(bytes));
+		}
+	}
+
+	private byte[] getAtsHashIndexAttributeEncoding(Attribute atsHashIndexAttribute) {
+		ASN1Encodable attrValue = DSSASN1Utils.getAsn1Encodable(atsHashIndexAttribute);
+		if (attrValue != null) {
+			return DSSASN1Utils.getDEREncoded(attrValue);
+		} else {
+			LOG.warn("Invalid ats-hash-table-index attribute encoding! The value is skipped.");
+			return DSSUtils.EMPTY_BYTE_ARRAY;
 		}
 	}
 

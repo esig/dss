@@ -365,6 +365,29 @@ public final class DSSASN1Utils {
 	}
 
 	/**
+	 * Returns {@code ASN1Encodable} of the {@code attribute}
+	 *
+	 * @param attribute {@link Attribute}
+	 * @return {@link ASN1Encodable}
+	 */
+	public static ASN1Encodable getAsn1Encodable(Attribute attribute) {
+		if (attribute == null) {
+			return null;
+		}
+		if (attribute.getAttrValues().size() == 1) {
+			return attribute.getAttrValues().getObjectAt(0);
+		} else {
+			if (LOG.isDebugEnabled()) {
+				LOG.warn("Only one value is allowed within attribute set! Found {} : {}.", attribute.getAttrValues().size(),
+						Utils.toHex(DSSASN1Utils.getDEREncoded(attribute)));
+			} else {
+				LOG.warn("Only one value is allowed within attribute set! Found {}.", attribute.getAttrValues().size());
+			}
+			return null;
+		}
+	}
+
+	/**
 	 * This method computes the digest of an ASN1 signature policy (used in CAdES)
 	 *
 	 * TS 101 733 5.8.1 : If the signature policy is defined using ASN.1, then the hash is calculated on the value

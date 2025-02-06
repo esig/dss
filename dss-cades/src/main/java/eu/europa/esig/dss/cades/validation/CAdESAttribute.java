@@ -22,6 +22,7 @@ package eu.europa.esig.dss.cades.validation;
 
 import eu.europa.esig.dss.cades.CMSUtils;
 import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.validation.SignatureAttribute;
 import eu.europa.esig.dss.spi.validation.identifier.SignatureAttributeIdentifier;
@@ -86,7 +87,7 @@ public class CAdESAttribute implements SignatureAttribute {
 	 * @return {@link ASN1Sequence} object
 	 */
 	public ASN1Encodable getASN1Object() {
-		return attribute.getAttrValues().getObjectAt(0);
+		return DSSASN1Utils.getAsn1Encodable(attribute);
 	}
 
 	/**

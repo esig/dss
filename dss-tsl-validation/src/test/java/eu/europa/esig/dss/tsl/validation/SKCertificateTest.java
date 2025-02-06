@@ -48,6 +48,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -258,6 +259,7 @@ class SKCertificateTest {
 
         TLSource tlSource = new TLSource();
         tlSource.setUrl(SK_TL_URL);
+        tlSource.setTLVersions(Collections.emptyList());
         tlSource.setCertificateSource(certificateSource);
         tlValidationJob.setTrustedListSources(tlSource);
 
@@ -331,7 +333,7 @@ class SKCertificateTest {
         assertNotNull(skTrustedList.getNextUpdate());
         assertFalse(skTrustedList.isWellSigned());
         assertNotNull(skTrustedList.getStructuralValidation());
-        assertTrue(skTrustedList.getStructuralValidation().isValid());
+        assertTrue(skTrustedList.getStructuralValidation().isValid()); // no check is performed
     }
 
     @Test

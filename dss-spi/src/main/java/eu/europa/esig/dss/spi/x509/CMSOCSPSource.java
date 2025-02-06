@@ -31,7 +31,6 @@ import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Sequence;
-import org.bouncycastle.asn1.ASN1Set;
 import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.cms.CMSObjectIdentifiers;
@@ -235,12 +234,11 @@ public abstract class CMSOCSPSource extends OfflineOCSPSource {
 			return;
 		}
 		for (Attribute attribute : attributes) {
-			final ASN1Set attrValues = attribute.getAttrValues();
-			if (attrValues.size() <= 0) {
+			final ASN1Encodable attrValue = DSSASN1Utils.getAsn1Encodable(attribute);
+			if (attrValue == null) {
 				return;
 			}
 
-			final ASN1Encodable attrValue = attrValues.getObjectAt(0);
 			final ASN1Sequence revocationRefs = (ASN1Sequence) attrValue;
 			for (int i = 0; i < revocationRefs.size(); i++) {
 				try {

@@ -672,11 +672,9 @@ public final class CMSUtils {
 			final Attribute[] attributes = DSSASN1Utils.getAsn1Attributes(timestampUnsignedAttributes, atsHashIndexVersionIdentifier);
 			if (Utils.arraySize(attributes) == 1) {
 				final Attribute atsHashIndexAttribute = attributes[0];
-				if (atsHashIndexAttribute != null) {
-					final ASN1Set attrValues = atsHashIndexAttribute.getAttrValues();
-					if (attrValues != null && attrValues.size() == 1) {
-						return (ASN1Sequence) attrValues.getObjectAt(0).toASN1Primitive();
-					}
+				ASN1Encodable attrValue = DSSASN1Utils.getAsn1Encodable(atsHashIndexAttribute);
+				if (attrValue != null) {
+					return (ASN1Sequence) attrValue.toASN1Primitive();
 				}
 			}
 		}
@@ -814,7 +812,7 @@ public final class CMSUtils {
 	 * @throws CMSException in case if the provided {@code attribute} cannot be converted to {@link CMSSignedData}
 	 */
 	public static CMSSignedData getCMSSignedData(Attribute attribute) throws CMSException, IOException {
-		ASN1Encodable value = getAsn1Encodable(attribute);
+		ASN1Encodable value = DSSASN1Utils.getAsn1Encodable(attribute);
 		if (value instanceof DEROctetString) {
 			LOG.warn("Illegal content for CMSSignedData (OID : {}) : OCTET STRING is not allowed !", attribute.getAttrType());
 		} else {
@@ -858,7 +856,9 @@ public final class CMSUtils {
 	 *
 	 * @param attribute {@link Attribute}
 	 * @return {@link ASN1Encodable}
+	 * @deprecated since DSS 6.3. See {@code DSSASN1Utils#getAsn1Encodable(Attribute)}
 	 */
+	@Deprecated
 	public static ASN1Encodable getAsn1Encodable(Attribute attribute) {
 		return attribute.getAttrValues().getObjectAt(0);
 	}

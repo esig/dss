@@ -220,7 +220,12 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			return null;
 		}
 
-		final ASN1Encodable attrValue = attribute.getAttrValues().getObjectAt(0);
+		final ASN1Encodable attrValue = DSSASN1Utils.getAsn1Encodable(attribute);
+		if (attrValue == null) {
+			LOG.warn("Invalid encoding for a signature policy identifier attribute. Skip processing.");
+			return null;
+		}
+		
 		if (attrValue instanceof DERNull) {
 			signaturePolicy = new SignaturePolicy();
 			return signaturePolicy;
@@ -315,8 +320,14 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		if (sigPolicyStore != null && sigPolicyStore.getAttrValues().size() > 0) {
 			SignaturePolicyStore signaturePolicyStore = new SignaturePolicyStore();
 			SpDocSpecification spDocSpecification = new SpDocSpecification();
+
+			final ASN1Encodable attrValue = DSSASN1Utils.getAsn1Encodable(sigPolicyStore);
+			if (attrValue == null) {
+				LOG.warn("Invalid encoding for a signature policy store attribute. Skip processing.");
+				return null;
+			}
 			
-			ASN1Sequence sequence = ASN1Sequence.getInstance(sigPolicyStore.getAttrValues().getObjectAt(0));
+			ASN1Sequence sequence = ASN1Sequence.getInstance(attrValue);
 			
 			if (sequence.size() == 2) {
 				ASN1Encodable spDocSpec = sequence.getObjectAt(0);
@@ -365,8 +376,13 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		if (attr == null) {
 			return null;
 		}
-		final ASN1Set attrValues = attr.getAttrValues();
-		final ASN1Encodable attrValue = attrValues.getObjectAt(0);
+		
+		final ASN1Encodable attrValue = DSSASN1Utils.getAsn1Encodable(attr);
+		if (attrValue == null) {
+			LOG.warn("Invalid encoding for a signing-time attribute. Skip processing.");
+			return null;
+		}
+
 		return CMSUtils.readSigningDate(attrValue);
 	}
 
@@ -386,10 +402,15 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			return null;
 		}
 
-		final ASN1Encodable asn1Encodable = signatureProductionPlaceAttr.getAttrValues().getObjectAt(0);
+		final ASN1Encodable attrValue = DSSASN1Utils.getAsn1Encodable(signatureProductionPlaceAttr);
+		if (attrValue == null) {
+			LOG.warn("Invalid encoding for a signer-location attribute. Skip processing.");
+			return null;
+		}
+
 		SignerLocation signerLocation = null;
 		try {
-			signerLocation = SignerLocation.getInstance(asn1Encodable);
+			signerLocation = SignerLocation.getInstance(attrValue);
 		} catch (Exception e) {
 			String errorMessage = "Unable to build a SignerLocation instance. Reason : {}";
 			if (LOG.isDebugEnabled()) {
@@ -559,18 +580,23 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		for (int ii = 0; ii < attributes.size(); ii++) {
 
 			final ASN1Encodable objectAt = attributes.getObjectAt(ii);
-			final org.bouncycastle.asn1.x509.Attribute attribute = org.bouncycastle.asn1.x509.Attribute.getInstance(objectAt);
-			final ASN1Set attrValues1 = attribute.getAttrValues();
-			ASN1Encodable firstItem = attrValues1.getObjectAt(0);
-			if (firstItem instanceof ASN1Sequence) {
-				ASN1Sequence sequence = (ASN1Sequence) firstItem;
+			final Attribute attribute = Attribute.getInstance(objectAt);
+
+			final ASN1Encodable attrValue = DSSASN1Utils.getAsn1Encodable(attribute);
+			if (attrValue == null) {
+				LOG.warn("Invalid encoding for a certified signer role attribute. Skip processing.");
+				return null;
+			}
+
+			if (attrValue instanceof ASN1Sequence) {
+				ASN1Sequence sequence = (ASN1Sequence) attrValue;
 				RoleSyntax roleSyntax = RoleSyntax.getInstance(sequence);
 				SignerRole certifiedRole = new SignerRole(roleSyntax.getRoleNameAsString(), EndorsementType.CERTIFIED);
 				certifiedRole.setNotBefore(DSSASN1Utils.toDate(attrCertValidityPeriod.getNotBeforeTime()));
 				certifiedRole.setNotAfter(DSSASN1Utils.toDate(attrCertValidityPeriod.getNotAfterTime()));
 				roles.add(certifiedRole);
 			} else {
-				LOG.warn("Unsupported type for RoleSyntax : {}", firstItem == null ? null : firstItem.getClass().getSimpleName());
+				LOG.warn("Unsupported type for RoleSyntax : {}", attrValue.getClass().getSimpleName());
 			}
 		}
 		return roles;
@@ -579,8 +605,11 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	private SignerAttribute getSignerAttributeV1() {
 		final Attribute idAaEtsSignerAttr = CMSUtils.getSignedAttribute(signerInformation, PKCSObjectIdentifiers.id_aa_ets_signerAttr);
 		if (idAaEtsSignerAttr != null) {
-			final ASN1Set attrValues = idAaEtsSignerAttr.getAttrValues();
-			final ASN1Encodable attrValue = attrValues.getObjectAt(0);
+			final ASN1Encodable attrValue = DSSASN1Utils.getAsn1Encodable(idAaEtsSignerAttr);
+			if (attrValue == null) {
+				LOG.warn("Invalid encoding for a signer-attribute attribute. Skip processing.");
+				return null;
+			}
 			try {
 				return SignerAttribute.getInstance(attrValue);
 			} catch (Exception e) {
@@ -598,8 +627,11 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	private SignerAttributeV2 getSignerAttributeV2() {
 		final Attribute idAaEtsSignerAttrV2 = CMSUtils.getSignedAttribute(signerInformation, OID.id_aa_ets_signerAttrV2);
 		if (idAaEtsSignerAttrV2 != null) {
-			final ASN1Set attrValues = idAaEtsSignerAttrV2.getAttrValues();
-			final ASN1Encodable attrValue = attrValues.getObjectAt(0);
+			final ASN1Encodable attrValue = DSSASN1Utils.getAsn1Encodable(idAaEtsSignerAttrV2);
+			if (attrValue == null) {
+				LOG.warn("Invalid encoding for a signer-attribute-v2 attribute. Skip processing.");
+				return null;
+			}
 			try {
 				return SignerAttributeV2.getInstance(attrValue);
 			} catch (Exception e) {
@@ -987,8 +1019,18 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		if (messageDigestAttribute == null) {
 			return null;
 		}
-		final ASN1OctetString asn1OctetString = (ASN1OctetString) messageDigestAttribute.getAttrValues().getObjectAt(0);
-		return asn1OctetString.getOctets();
+		final ASN1Encodable attrValue = DSSASN1Utils.getAsn1Encodable(messageDigestAttribute);
+		if (attrValue == null) {
+			LOG.warn("Invalid encoding for a message-digest attribute. Skip processing.");
+			return null;
+		}
+		if (attrValue instanceof ASN1OctetString) {
+			final ASN1OctetString asn1OctetString = (ASN1OctetString) attrValue;
+			return asn1OctetString.getOctets();
+		} else {
+			LOG.warn("Message-digest attribute shall be an instance of type ASN1OctetString. Found : {}", attrValue.getClass().getSimpleName());
+			return null;
+		}
 	}
 
 	@Override
@@ -997,8 +1039,18 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		if (contentTypeAttribute == null) {
 			return null;
 		}
-		final ASN1ObjectIdentifier oid = (ASN1ObjectIdentifier) contentTypeAttribute.getAttrValues().getObjectAt(0);
-		return oid.getId();
+		final ASN1Encodable attrValue = DSSASN1Utils.getAsn1Encodable(contentTypeAttribute);
+		if (attrValue == null) {
+			LOG.warn("Invalid encoding for a content-type attribute. Skip processing.");
+			return null;
+		}
+		if (attrValue instanceof ASN1ObjectIdentifier) {
+			final ASN1ObjectIdentifier oid = (ASN1ObjectIdentifier) attrValue;
+			return oid.getId();
+		} else {
+			LOG.warn("content-type attribute shall be an instance of type ASN1ObjectIdentifier. Found : {}", attrValue.getClass().getSimpleName());
+			return null;
+		}
 	}
 
 	@Override
@@ -1007,7 +1059,12 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		if (mimeTypeAttribute == null) {
 			return null;
 		}
-		return DSSASN1Utils.getString(mimeTypeAttribute.getAttrValues().getObjectAt(0));
+		final ASN1Encodable attrValue = DSSASN1Utils.getAsn1Encodable(mimeTypeAttribute);
+		if (attrValue == null) {
+			LOG.warn("Invalid encoding for a mime-type attribute. Skip processing.");
+			return null;
+		}
+		return DSSASN1Utils.getString(attrValue);
 	}
 
 	/**
@@ -1020,8 +1077,12 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		if (contentIdentifierAttribute == null) {
 			return null;
 		}
-		final ASN1Encodable asn1Encodable = contentIdentifierAttribute.getAttrValues().getObjectAt(0);
-		final ContentIdentifier contentIdentifier = ContentIdentifier.getInstance(asn1Encodable);
+		final ASN1Encodable attrValue = DSSASN1Utils.getAsn1Encodable(contentIdentifierAttribute);
+		if (attrValue == null) {
+			LOG.warn("Invalid encoding for a content-identifier attribute. Skip processing.");
+			return null;
+		}
+		final ContentIdentifier contentIdentifier = ContentIdentifier.getInstance(attrValue);
 		return DSSASN1Utils.toString(contentIdentifier.getValue());
 	}
 
@@ -1035,24 +1096,28 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		if (contentHintAttribute == null) {
 			return null;
 		}
-		final ASN1Encodable asn1Encodable = contentHintAttribute.getAttrValues().getObjectAt(0);
+		final ASN1Encodable attrValue = DSSASN1Utils.getAsn1Encodable(contentHintAttribute);
+		if (attrValue == null) {
+			LOG.warn("Invalid encoding for a content-hint attribute. Skip processing.");
+			return null;
+		}
+
 		String contentHint = null;
 		try {
-			final ContentHints contentHints = ContentHints.getInstance(asn1Encodable);
-			if (contentHints != null) {
-				// content-type is mandatory
-				contentHint = contentHints.getContentType().toString();
-				// content-description is optional
-				if (contentHints.getContentDescriptionUTF8() != null) {
-					contentHint += " [" + contentHints.getContentDescriptionUTF8().toString() + "]";
-				}
-			}
-		} catch (Exception e) {
+			final ContentHints contentHints = ContentHints.getInstance(attrValue);
+            // content-type is mandatory
+            contentHint = contentHints.getContentType().toString();
+            // content-description is optional
+            if (contentHints.getContentDescriptionUTF8() != null) {
+                contentHint += " [" + contentHints.getContentDescriptionUTF8().toString() + "]";
+            }
+
+        } catch (Exception e) {
 			String warningMessage = "Unable to parse ContentHints - [{}]. Reason : {}";
 			if (LOG.isDebugEnabled()) {
-				LOG.warn(warningMessage, Utils.toBase64(DSSASN1Utils.getDEREncoded(asn1Encodable)), e.getMessage(), e);
+				LOG.warn(warningMessage, Utils.toBase64(DSSASN1Utils.getDEREncoded(attrValue)), e.getMessage(), e);
 			} else {
-				LOG.warn(warningMessage, Utils.toBase64(DSSASN1Utils.getDEREncoded(asn1Encodable)), e.getMessage());
+				LOG.warn(warningMessage, Utils.toBase64(DSSASN1Utils.getDEREncoded(attrValue)), e.getMessage());
 			}
 		}
 

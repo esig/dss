@@ -228,15 +228,24 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 	}
 
 	private void extractCertificateValues(Attribute attribute) {
-		final ASN1Sequence seq = (ASN1Sequence) attribute.getAttrValues().getObjectAt(0);
-		for (int ii = 0; ii < seq.size(); ii++) {
-			try {
-				final Certificate cs = Certificate.getInstance(seq.getObjectAt(ii));
-				addCertificate(DSSUtils.loadCertificate(cs.getEncoded()), CertificateOrigin.CERTIFICATE_VALUES);
-			} catch (Exception e) {
-				LOG.warn("Unable to parse encapsulated certificate : {}", e.getMessage());
-			}
+		final ASN1Encodable attrValue = DSSASN1Utils.getAsn1Encodable(attribute);
+		if (attrValue == null) {
+			return;
 		}
+		if (attrValue instanceof ASN1Sequence) {
+			final ASN1Sequence seq = (ASN1Sequence) attrValue;
+			for (int ii = 0; ii < seq.size(); ii++) {
+				try {
+					final Certificate cs = Certificate.getInstance(seq.getObjectAt(ii));
+					addCertificate(DSSUtils.loadCertificate(cs.getEncoded()), CertificateOrigin.CERTIFICATE_VALUES);
+				} catch (Exception e) {
+					LOG.warn("Unable to parse encapsulated certificate : {}", e.getMessage());
+				}
+			}
+		} else {
+			LOG.warn("Certificate values shall be encoded as an ASN1Sequence. Found encoding : {}", attrValue.getClass().getSimpleName());
+		}
+
 	}
 
 	private void extractCertificateRefsFromUnsignedAttribute(ASN1ObjectIdentifier attributeOid, CertificateRefOrigin origin) {
@@ -245,15 +254,23 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 			Attribute[] attributes = DSSASN1Utils.getAsn1Attributes(unsignedAttributes, attributeOid);
 			if (Utils.isArrayNotEmpty(attributes)) {
 				for (Attribute attribute : attributes) {
-					final ASN1Sequence seq = (ASN1Sequence) attribute.getAttrValues().getObjectAt(0);
-					for (int ii = 0; ii < seq.size(); ii++) {
-						try {
-							OtherCertID otherCertId = OtherCertID.getInstance(seq.getObjectAt(ii));
-							CertificateRef certRef = DSSASN1Utils.getCertificateRef(otherCertId);
-							addCertificateRef(certRef, origin);
-						} catch (Exception e) {
-							LOG.warn("Unable to parse encapsulated OtherCertID : {}", e.getMessage());
+					final ASN1Encodable attrValue = DSSASN1Utils.getAsn1Encodable(attribute);
+					if (attrValue == null) {
+						continue;
+					}
+					if (attrValue instanceof ASN1Sequence) {
+						final ASN1Sequence seq = (ASN1Sequence) attrValue;
+						for (int ii = 0; ii < seq.size(); ii++) {
+							try {
+								OtherCertID otherCertId = OtherCertID.getInstance(seq.getObjectAt(ii));
+								CertificateRef certRef = DSSASN1Utils.getCertificateRef(otherCertId);
+								addCertificateRef(certRef, origin);
+							} catch (Exception e) {
+								LOG.warn("Unable to parse encapsulated OtherCertID : {}", e.getMessage());
+							}
 						}
+					} else {
+						LOG.warn("Certificate values shall be encoded as an ASN1Sequence. Found encoding : {}", attrValue.getClass().getSimpleName());
 					}
 				}
 			}
