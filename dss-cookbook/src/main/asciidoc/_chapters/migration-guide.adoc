@@ -57,6 +57,17 @@ For changes within XML Signature Policy please refer <<ValidationPolicyChanges>>
 </dependencies>
 ----
 
+|Old `CMSUtils` moved to `CAdESUtils`             a|
+[source,java]
+----
+import eu.europa.esig.dss.cades.CMSUtils;
+----
+                                                                     a|
+[source,java]
+----
+import eu.europa.esig.dss.cades.CAdESUtils;
+----
+
 |`CAdESSignatureExtension` and related classes             a|
 [source,java]
 ----

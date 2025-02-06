@@ -256,7 +256,9 @@ public final class CAdESUtils {
 	 * @param cmsTypedData
 	 *            {@code CMSTypedData} cannot be null
 	 * @return the signed content extracted from {@code CMSTypedData}
+	 * @deprecated since DSS 6.3. To be removed.
 	 */
+	@Deprecated
 	public static byte[] getSignedContent(final CMSTypedData cmsTypedData) {
 		if (cmsTypedData == null) {
 			throw new DSSException("CMSTypedData is null (should be a detached signature)");
@@ -435,7 +437,9 @@ public final class CAdESUtils {
 	 * Checks if the signature is detached
 	 * @param cmsSignedData {@link CMSSignedData}
 	 * @return TRUE if the signature is detached, FALSE otherwise
+	 * @deprecated since DSS 6.3. See {@code cmsSignedData.isDetachedSignature()}
 	 */
+	@Deprecated
 	public static boolean isDetachedSignature(CMSSignedData cmsSignedData) {
 		return cmsSignedData.isDetachedSignature();
 	}
@@ -470,7 +474,9 @@ public final class CAdESUtils {
 	 *
 	 * @param toSignData {@link DSSDocument} to sign
 	 * @return {@link CMSTypedData}
+	 * @deprecated since DSS 6.3. See {@code CMSUtils#toCMSEncapsulatedContent(DSSDocument document)}
 	 */
+	@Deprecated
 	public static CMSTypedData getContentToBeSigned(final DSSDocument toSignData) {
 		Objects.requireNonNull(toSignData, "Document to be signed is missing");
 		CMSTypedData content;
