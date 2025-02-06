@@ -162,36 +162,6 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 	}
 
 	/**
-	 * The PDFBox implementation of the Reader
-	 * 
-	 * @param binaries           a byte array of a PDF to read
-	 * @param passwordProtection {@link String} a password to open a protected
-	 *                           document
-	 * @throws IOException       if an exception occurs
-	 * @throws InvalidPasswordException if the password is not provided or
-	 *                           invalid for a protected document
-	 * @deprecated since DSS 6.2. To be removed.
-	 */
-	@Deprecated
-	public PdfBoxDocumentReader(byte[] binaries, String passwordProtection)
-			throws IOException, InvalidPasswordException {
-		Objects.requireNonNull(binaries, "The document binaries must be defined!");
-		this.dssDocument = new InMemoryDocument(binaries);
-		this.pdDocument = Loader.loadPDF(binaries, passwordProtection);
-	}
-
-	/**
-	 * The constructor to directly instantiate the {@code PdfBoxDocumentReader}
-	 * 
-	 * @param pdDocument {@link PDDocument}
-	 * @deprecated since DSS 6.2. To be removed.
-	 */
-	@Deprecated
-	public PdfBoxDocumentReader(final PDDocument pdDocument) {
-		this.pdDocument = pdDocument;
-	}
-
-	/**
 	 * Returns the current instance of {@code PDDocument}
 	 *
 	 * @return {@link PDDocument}

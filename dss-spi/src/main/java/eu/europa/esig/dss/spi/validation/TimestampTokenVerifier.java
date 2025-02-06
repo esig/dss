@@ -78,56 +78,6 @@ public class TimestampTokenVerifier {
     }
 
     /**
-     * Gets trusted certificate source, when present
-     *
-     * @return {@link CertificateSource}
-     * @deprecated since DSS 6.2. Please use {@code #getTrustAnchorVerifier#getTrustedCertificateSource} method instead
-     */
-    @Deprecated
-    public CertificateSource getTrustedCertificateSource() {
-        return getTrustAnchorVerifier().getTrustedCertificateSource();
-    }
-
-    /**
-     * Sets a trusted certificate source in order to accept trusted timestamp certificate chains.
-     * Note : This method is used internally during a {@code eu.europa.esig.dss.validation.SignatureValidationContext}
-     *        initialization, in order to provide the same trusted source as the one used within
-     *        a {@code eu.europa.esig.dss.validation.CertificateVerifier}.
-     *
-     * @param trustedCertificateSource {@link CertificateSource}
-     * @deprecated since DSS 6.2. Please provide trusted certificate source within
-     *             {@code TrustAnchorVerifier#setTrustedCertificateSource}, which can be set using
-     *             {@code #setTrustAnchorVerifier} method
-     */
-    @Deprecated
-    protected void setTrustedCertificateSource(CertificateSource trustedCertificateSource) {
-        TrustAnchorVerifier currentTrustAnchorVerifier = getTrustAnchorVerifier();
-        if (currentTrustAnchorVerifier == null) {
-            throw new NullPointerException("TrustAnchorVerifier is not defined! " +
-                    "Please set TrustAnchorVerifier in order to provide a trustedCertificateSource.");
-        }
-        currentTrustAnchorVerifier.setTrustedCertificateSource(trustedCertificateSource);
-    }
-
-    /**
-     * Sets whether only timestamp created with trusted certificate chains shall be considered as valid
-     * Default: TRUE (only timestamps created with trusted CAs are considered as valid, untrusted timestamps are ignored)
-     *
-     * @param acceptUntrustedCertificateChains whether only trusted timestamps are considered as valid
-     * @deprecated since DSS 6.2. Please provide constraint within {@code TrustAnchorVerifier#setTrustedCertificateSource},
-     *             which can be set using {@code #setAcceptTimestampUntrustedCertificateChains} method
-     */
-    @Deprecated
-    public void setAcceptUntrustedCertificateChains(boolean acceptUntrustedCertificateChains) {
-        TrustAnchorVerifier currentTrustAnchorVerifier = getTrustAnchorVerifier();
-        if (currentTrustAnchorVerifier == null) {
-            throw new NullPointerException("TrustAnchorVerifier is not defined! " +
-                    "Please set TrustAnchorVerifier in order to provide an acceptUntrustedCertificateChains constraint.");
-        }
-        currentTrustAnchorVerifier.setAcceptTimestampUntrustedCertificateChains(acceptUntrustedCertificateChains);
-    }
-
-    /**
      * Gets a trust anchor verifier.
      * This method is used internally within {@code eu.europa.esig.dss.validation.SignatureValidationContext}
      * to identify whether the configuration is already present and a {@code trustAnchorVerifier} should be set.
@@ -229,22 +179,6 @@ public class TimestampTokenVerifier {
     public boolean isAcceptable(TimestampToken timestampToken, List<CertificateToken> certificateChain, Date controlTime) {
         return isTrustedTimestampToken(timestampToken, certificateChain, controlTime) && isCryptographicallyValid(timestampToken)
                 && isCertificateChainValid(certificateChain, controlTime);
-    }
-
-    /**
-     * This method verifies whether the {@code timestampToken} is trusted to continue the process.
-     * The method expects the certificate chain of the timestamp to reach a {@code trustedCertificateSource} or
-     * to have {@code acceptOnlyTrustedCertificateChains} constraint to accept untrusted certificate chains as well.
-     *
-     * @param timestampToken {@link TimestampToken} to be validated
-     * @param certificateChain a list of {@link CertificateToken}s representing the certificate chain of the timestamp
-     * @return TRUE of the timestamp token is trusted, FALSE otherwise
-     * @deprecated since DSS 6.2. Please use {@code #isTrustedTimestampToken(timestampToken, certificateChain, controlTime)}
-     *             method instead
-     */
-    @Deprecated
-    protected boolean isTrustedTimestampToken(TimestampToken timestampToken, List<CertificateToken> certificateChain) {
-        return isTrustedTimestampToken(timestampToken, certificateChain, new Date());
     }
 
     /**

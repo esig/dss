@@ -217,38 +217,6 @@ public class RevocationDataVerifier {
     }
 
     /**
-     * Gets trusted certificate source, when present
-     *
-     * @return {@link CertificateSource}
-     * @deprecated since DSS 6.2. Please use {@code #getTrustAnchorVerifier#getTrustedCertificateSource} method instead
-     */
-    @Deprecated
-    public CertificateSource getTrustedCertificateSource() {
-        return getTrustAnchorVerifier().getTrustedCertificateSource();
-    }
-
-    /**
-     * Sets a trusted certificate source in order to accept trusted revocation data issuer certificates.
-     * Note : This method is used internally during a {@code eu.europa.esig.dss.validation.SignatureValidationContext}
-     *        initialization, in order to provide the same trusted source as the one used within
-     *        a {@code eu.europa.esig.dss.validation.CertificateVerifier}.
-     *
-     * @param trustedCertificateSource {@link CertificateSource}
-     * @deprecated since DSS 6.2. Please provide trusted certificate source within
-     *             {@code TrustAnchorVerifier#setTrustedCertificateSource}, which can be set using
-     *             {@code #setTrustAnchorVerifier} method
-     */
-    @Deprecated
-    protected void setTrustedCertificateSource(CertificateSource trustedCertificateSource) {
-        TrustAnchorVerifier currentTrustAnchorVerifier = getTrustAnchorVerifier();
-        if (currentTrustAnchorVerifier == null) {
-            throw new NullPointerException("TrustAnchorVerifier is not defined! " +
-                    "Please set TrustAnchorVerifier in order to provide a trustedCertificateSource.");
-        }
-        currentTrustAnchorVerifier.setTrustedCertificateSource(trustedCertificateSource);
-    }
-
-    /**
      * Gets a collection of processed revocations, when present.
      * This method is used internally during a {@code eu.europa.esig.dss.validation.SignatureValidationContext} execution,
      * to verify presence of the collection of processed revocation data

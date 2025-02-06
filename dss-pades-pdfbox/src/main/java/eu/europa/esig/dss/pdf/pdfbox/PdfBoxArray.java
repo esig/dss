@@ -138,16 +138,6 @@ class PdfBoxArray implements PdfArray {
 	}
 
 	@Override
-	@Deprecated
-	public Long getObjectNumber(int i) {
-		PdfBoxObjectKey objectKey = getObjectKey(i);
-		if (objectKey != null) {
-			return objectKey.getValue().getNumber();
-		}
-		return null;
-	}
-
-	@Override
 	public PdfBoxObjectKey getObjectKey(int i) {
 		COSBase val = wrapped.get(i);
 		if (val instanceof COSObject) {

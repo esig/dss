@@ -110,25 +110,6 @@ public class CAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 	}
 
 	/**
-	 * The constructor to compute message-imprint for timestamps related to the {@code signature},
-	 * to be used on timestamp creation.
-	 *
-	 * @param signature {@link CAdESSignature} to create timestamps for
-	 * @param certificateSource {@link ListCertificateSource} merged certificate source of the signature
-	 * @param digestAlgorithm {@link DigestAlgorithm} to be used for message-imprint digest computation
-	 * @deprecated since DSS 6.2. Please use instead constructor
-	 * 			   {@code new CAdESTimestampMessageDigestBuilder(CAdESSignature signature, DigestAlgorithm digestAlgorithm}
-	 */
-	@Deprecated
-	public CAdESTimestampMessageDigestBuilder(final CAdESSignature signature,
-											  final ListCertificateSource certificateSource,
-											  final DigestAlgorithm digestAlgorithm) {
-		this(signature, certificateSource.getCertificates());
-		Objects.requireNonNull(digestAlgorithm, "DigestAlgorithm cannot be null!");
-		this.digestAlgorithm = digestAlgorithm;
-	}
-
-	/**
 	 * The constructor to compute message-imprint for timestamps related to the {@code signature}.
 	 * This constructor uses a provides {@code certificateSource} to validate the ats-v3-hash-table
 	 *

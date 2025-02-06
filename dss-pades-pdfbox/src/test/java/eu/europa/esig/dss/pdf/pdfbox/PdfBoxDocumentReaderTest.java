@@ -55,16 +55,16 @@ class PdfBoxDocumentReaderTest extends PKIFactoryAccess {
 	}
 	
 	@Test
-	void testPdfBoxUtilsEmptyDocument() throws Exception {
+	void testPdfBoxUtilsEmptyDocument() {
 		assertThrows(IOException.class, () -> new PdfBoxDocumentReader(InMemoryDocument.createEmptyDocument()));
 	}
 	
 	@Test
-	void testPdfBoxUtilsNull() throws Exception {
-		Exception exception = assertThrows(NullPointerException.class, () -> new PdfBoxDocumentReader((DSSDocument)null));
+	void testPdfBoxUtilsNull() {
+		Exception exception = assertThrows(NullPointerException.class, () -> new PdfBoxDocumentReader(null));
 		assertEquals("The document must be defined!", exception.getMessage());
-		exception = assertThrows(NullPointerException.class, () -> new PdfBoxDocumentReader((byte[])null, null));
-		assertEquals("The document binaries must be defined!", exception.getMessage());
+		exception = assertThrows(NullPointerException.class, () -> new PdfBoxDocumentReader(null, null));
+		assertEquals("The document must be defined!", exception.getMessage());
 	}
 
 	@Test

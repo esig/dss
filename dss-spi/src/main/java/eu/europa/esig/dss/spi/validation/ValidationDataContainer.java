@@ -167,19 +167,6 @@ public class ValidationDataContainer {
      *
      * @param signature {@link AdvancedSignature} to extract validation data for
      * @return {@link ValidationData}
-     * @deprecated since DSS 6.2. Please use {@code #getAllValidationDataForSignatureForInclusion} method instead.
-     */
-    @Deprecated
-    public ValidationData getCompleteValidationDataForSignature(final AdvancedSignature signature) {
-        return getAllValidationDataForSignatureForInclusion(signature);
-    }
-
-    /**
-     * Returns a complete validation data for a signature, including the data for incorporated timestamps
-     * and/or counter-signatures, but excluding the tokens already incorporated within the signature
-     *
-     * @param signature {@link AdvancedSignature} to extract validation data for
-     * @return {@link ValidationData}
      */
     public ValidationData getAllValidationDataForSignatureForInclusion(final AdvancedSignature signature) {
         ValidationData validationDataForInclusion = new ValidationData();

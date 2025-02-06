@@ -47,17 +47,6 @@ public interface PdfArray extends PdfObject {
 	byte[] getStreamBytes(int i) throws IOException;
 
 	/**
-	 * Retrieves the Object Number for the position i
-	 * 
-	 * @param i
-	 *          the position
-	 * @return the object number
-	 * @deprecated since DSS 6.2. Please use {@code #getObjectKey} method instead
-	 */
-	@Deprecated
-	Long getObjectNumber(int i);
-
-	/**
 	 * Retrieves the Object key for the position i
 	 *
 	 * @param i

@@ -177,18 +177,6 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 
 	@Override
-	@Deprecated
-	public String getSignatureFilename() {
-		return getFilename();
-	}
-
-	@Override
-	@Deprecated
-	public void setSignatureFilename(String filename) {
-		setFilename(filename);
-	}
-
-	@Override
 	public String getFilename() {
 		return filename;
 	}

@@ -458,31 +458,6 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method wraps the digest value in a DigestInfo (combination of digest
-	 * algorithm and value). This encapsulation is required to operate NONEwithRSA
-	 * signatures.
-	 * 
-	 * @param digestAlgorithm
-	 *                        the used digest algorithm
-	 * @param digest
-	 *                        the digest value
-	 * @return DER encoded binaries of the related digest info
-	 * @deprecated since DSS 6.2. The RSA-encoding has been automated on digest signing.
-	 *             Please use {@code SignatureTokenConnection#signDigest} method directly, without pre-processing.
-	 *             If required, the method {@code DigestInfoEncoder#encode} can be used as an alternative.
-	 */
-	@Deprecated
-	public static byte[] encodeRSADigest(final DigestAlgorithm digestAlgorithm, final byte[] digest) {
-		try {
-			AlgorithmIdentifier algId = new AlgorithmIdentifier(new ASN1ObjectIdentifier(digestAlgorithm.getOid()), DERNull.INSTANCE);
-			DigestInfo digestInfo = new DigestInfo(algId, digest);
-			return digestInfo.getEncoded(ASN1Encoding.DER);
-		} catch (IOException e) {
-			throw new DSSException("Unable to encode digest", e);
-		}
-	}
-
-	/**
 	 * This method allows to digest the data in the {@code InputStream} with the given algorithm.
 	 *
 	 * @param digestAlgo
@@ -532,40 +507,6 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method returns an {@code InputStream} which needs to be closed, based on
-	 * {@code FileInputStream}.
-	 *
-	 * @param file
-	 *             {@code File} to read.
-	 * @return an {@code InputStream} materialized by a {@code FileInputStream}
-	 *         representing the contents of the file @ if an I/O error occurred
-	 * @deprecated since DSS 6.2. To be removed.
-	 */
-	@Deprecated
-	public static InputStream toInputStream(final File file) {
-		Objects.requireNonNull(file, "The file cannot be null");
-		try {
-			return openInputStream(file);
-		} catch (IOException e) {
-			throw new DSSException(String.format("Unable to read InputStream : %s", e.getMessage()), e);
-		}
-	}
-
-	/**
-	 * This method returns an {@code InputStream} which does not need to be closed, based on
-	 * {@code ByteArrayInputStream}.
-	 *
-	 * @param file
-	 *            {@code File} to read
-	 * @return {@code InputStream} based on {@code ByteArrayInputStream}
-	 * @deprecated since DSS 6.2. To be removed.
-	 */
-	@Deprecated
-	public static InputStream toByteArrayInputStream(final File file) {
-		return new ByteArrayInputStream(toByteArray(file));
-	}
-
-	/**
 	 * FROM: Apache
 	 * Reads the contents of a file into a byte array.
 	 * The file is always closed.
@@ -581,39 +522,6 @@ public final class DSSUtils {
 		} catch (Exception e) {
 			throw new DSSException(String.format("Unable to read content of file '%s'. Reason : %s",
 					file, e.getMessage()), e);
-		}
-	}
-
-	/**
-	 * This method create a new document from a sub-part of another document
-	 * 
-	 * @param origin
-	 *            the original document
-	 * @param start
-	 *            the start position to retrieve
-	 * @param end
-	 *            the end position to retrieve
-	 * @return a new DSSDocument
-	 * @deprecated since DSS 6.2. To be removed.
-	 */
-	@Deprecated
-	public static DSSDocument splitDocument(DSSDocument origin, int start, int end) {
-		try (InputStream is = origin.openStream();
-			 BufferedInputStream bis = new BufferedInputStream(is);
-			 ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-
-			int i = 0;
-			int r;
-			while ((r = bis.read()) != -1) {
-				if (i >= start && i <= end) {
-					baos.write(r);
-				}
-				i++;
-			}
-			baos.flush();
-			return new InMemoryDocument(baos.toByteArray());
-		} catch (Exception e) {
-			throw new DSSException("Unable to split document", e);
 		}
 	}
 
@@ -949,91 +857,6 @@ public final class DSSUtils {
 			LOG.warn("Unable to decode '{}' : {}", uri, e.getMessage(), e);
 		}
 		return uri;
-	}
-	
-	/**
-	 * Skip the defined {@code n} number of bytes from the {@code InputStream}
-	 * and validates success of the operation
-	 * @param is {@link InputStream} to skip bytes from
-	 * @param n {@code int} number bytes to skip
-	 * @return actual number of bytes have been skipped
-     * @exception IllegalStateException in case of {@code InputStream} reading error
-	 * @deprecated since DSS 6.2. To be removed.
-	 */
-	@Deprecated
-	public static long skipAvailableBytes(InputStream is, int n) throws IllegalStateException {
-		try {
-			long skipped = is.skip(n);
-			if (skipped != n) {
-				throw new IllegalStateException(String.format("The number of skipped bytes [%s] differs from the expected value [%s]! "
-						+ "The InputStream is too small, corrupted or not accessible!", skipped, n));
-			}
-			return skipped;
-		} catch (IOException e) {
-			throw new DSSException("Cannot read the InputStream!", e);
-		}
-	}
-
-	/**
-	 * Read the requested number of bytes from {@code DSSDocument} according to the
-	 * size of the provided {@code byte}[] buffer and validates success of the
-	 * operation
-	 * 
-	 * @param dssDocument
-	 *                    {@link DSSDocument} to read bytes from
-	 * @param b
-	 *                    {@code byte}[] buffer to fill
-	 * @return the total number of bytes read into buffer
-	 * @throws IllegalStateException
-	 *                               in case of {@code InputStream} reading error
-	 * @deprecated since DSS 6.2. To be removed.
-	 */
-	@Deprecated
-	public static long readAvailableBytes(DSSDocument dssDocument, byte[] b) throws IllegalStateException {
-		try (InputStream is = dssDocument.openStream()) {
-			return readAvailableBytes(is, b);
-		} catch (IOException e) {
-			throw new DSSException("Cannot read a sequence of bytes from the document.", e);
-		}
-	}
-	
-	/**
-	 * Read the requested number of bytes from {@code InputStream} according to the size of 
-	 * the provided {@code byte}[] buffer and validates success of the operation
-	 * @param is {@link InputStream} to read bytes from
-	 * @param b {@code byte}[] buffer to fill
-	 * @return the total number of bytes read into buffer
-	 * @throws IllegalStateException in case of {@code InputStream} reading error
-	 * @deprecated since DSS 6.2. To be removed.
-	 */
-	@Deprecated
-	public static long readAvailableBytes(InputStream is, byte[] b) throws IllegalStateException {
-		return readAvailableBytes(is, b, 0, b.length);
-	}
-	
-	/**
-	 * Read the requested number of bytes from {@code InputStream}
-	 * and validates success of the operation
-	 * @param is {@link InputStream} to read bytes from
-	 * @param b {@code byte}[] buffer to fill
-	 * @param off {@code int} offset in the destination array
-	 * @param len {@code int} number of bytes to read
-	 * @return the total number of bytes read into buffer
-	 * @throws IllegalStateException in case of {@code InputStream} reading error
-	 * @deprecated since DSS 6.2. To be removed.
-	 */
-	@Deprecated
-	public static long readAvailableBytes(InputStream is, byte[] b, int off, int len) throws IllegalStateException {
-		try {
-			long read = is.read(b, off, len);
-			if (read != len) {
-				throw new IllegalStateException(String.format("The number of read bytes [%s] differs from the expected value [%s]! "
-						+ "The InputStream is too small, corrupted or not accessible!", read, len));
-			}
-			return read;
-		} catch (IOException e) {
-			throw new DSSException("Cannot read the InputStream!", e);
-		}
 	}
 	
 	/**

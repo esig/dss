@@ -140,23 +140,6 @@ public class PdfBoxScreenshotBuilder {
     }
 
     /**
-     * Generates a screenshot image of the specified page for the given PDF document using
-     * the provided {@code dssResourcesHandler}.
-     * NOTE: This is a temporary method to ensure a smooth migration. Please do not use it.
-     *
-     * @param page a page number to generate screenshot for (page order starts from 1)
-     * @param dssResourcesHandler {@link DSSResourcesHandler}
-     * @return {@link DSSDocument} PNG screenshot
-     * @deprecated since DSS 6.2. This is a temporary method to ensure smooth migration.
-     */
-    @Deprecated
-    public DSSDocument generateScreenshot(int page, DSSResourcesHandler dssResourcesHandler) {
-        // to be removed
-        BufferedImage bufferedImage = generateBufferedImageScreenshot(page);
-        return ImageUtils.toDSSDocument(bufferedImage, dssResourcesHandler);
-    }
-
-    /**
      * The method generates a BufferedImage for the specified page of the document
      *
      * @param page a page number to generate screenshot for (page order starts from 1)

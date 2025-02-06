@@ -261,18 +261,11 @@ public class DiagnosticData {
 	 *
 	 * @param signatureId
 	 *            The identifier of the signature.
-	 * @return list of certificate's dss id for the given signature.
-	 * @deprecated since DSS 6.2. Please use {@code #getSignatureCertificateChainIds} method instead.
+	 * @return list of certificates representing a signature's certificate chain.
 	 */
-	@Deprecated
-	public List<String> getSignatureCertificateChain(final String signatureId) {
-	 	// TODO : return value is to be replaced with a List<CertificateWrapper>
+	public List<CertificateWrapper> getSignatureCertificateChain(final String signatureId) {
 		SignatureWrapper signature = getSignatureByIdNullSafe(signatureId);
-		List<String> result = new ArrayList<>();
-		for (CertificateWrapper certWrapper : signature.getCertificateChain()) {
-			result.add(certWrapper.getId());
-		}
-		return result;
+		return signature.getCertificateChain();
 	}
 
 	/**

@@ -142,16 +142,6 @@ public class SignatureWrapper extends AbstractSignatureWrapper {
 		return new FoundRevocationsProxy(signature.getFoundRevocations());
 	}
 
-	/**
-	 * Returns a signature filename
-	 *
-	 * @return {@link String}
-	 * @deprecated since DSS 6.2. Please use {@code #getFilename} method instead
-	 */
-	@Deprecated
-	public String getSignatureFilename() {
-		return getFilename();
-	}
 
 	/**
 	 * Gets name of the signature file, when applicable

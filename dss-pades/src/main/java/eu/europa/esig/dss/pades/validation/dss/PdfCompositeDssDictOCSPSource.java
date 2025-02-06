@@ -136,18 +136,6 @@ public class PdfCompositeDssDictOCSPSource extends OfflineOCSPSource {
     }
 
     /**
-     * This method returns a set of {@code CertificateToken}s with the given PDF object id
-     *
-     * @param objectId {@link PdfObjectKey} PDF id of the object to be extracted
-     * @return set of {@link OCSPResponseBinary}s
-     * @deprecated since DSS 6.2. To be removed.
-     */
-    @Deprecated
-    protected Set<OCSPResponseBinary> getOCSPBinariesByObjectId(PdfObjectKey objectId) {
-        return ocspBinaryByIdMap.get(objectId);
-    }
-
-    /**
      * Returns corresponding PDF object identifier for the extracted revocation token
      *
      * @param ocspToken {@link eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary} to get id for
