@@ -75,6 +75,7 @@ class SKCertificateTest {
 
         FileCacheDataLoader fileCacheDataLoader = new FileCacheDataLoader();
         fileCacheDataLoader.setDataLoader(memoryDataLoader);
+        fileCacheDataLoader.setCacheExpirationTime(0);
         tlValidationJob.setOfflineDataLoader(fileCacheDataLoader);
 
         TrustedListsCertificateSource trustedCertificateSource = new TrustedListsCertificateSource();
