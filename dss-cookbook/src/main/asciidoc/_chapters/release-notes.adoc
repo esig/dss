@@ -11,6 +11,19 @@
 |===
 |Version           |Release date             |Features
 
+|v6.2              |February 2025           a|Main new features / improvements :
+
+                                            * Dependencies upgrade (BouncyCastle, etc.);
+                                            * DSS Demonstrations : add property to skip ASN1ObjectIdentifier validation;
+
+Bug fixes :
+
+                                            * `dss-crl-parser-stream` invalidates some CRLs signed by RSASSA-PSS;
+                                            * XAdES validation fails in case of tempered `ds:KeyInfo` certificate;
+                                            * Misleading log warning on XAdES enveloping signature;
+                                            * `AlertOnNoRevocationAfterBestSignatureTime` returns NextUpdate before current time;
+                                            * Enforce TimeStamp level checks when no LTA material is present.
+
 |v6.2.RC1          |December 2024           a|Main new features / improvements :
 
                                             * Trusted List v6 support (ETSI TS 119 612 v2.3.1, cf. <<R11>>);
@@ -429,14 +442,14 @@ _pass:[*] October 2015: Implementing Acts Art. 27 & 37 (eSig formats)_
 
 To upgrade version of DSS, locate to the `pom.xml` file of your project, search for the properties and then change the dss version in the corresponding field(s).
 
-The example below shows how to switch to DSS version `6.2.RC1` using <<BomModule>>:
+The example below shows how to switch to DSS version `6.2` using <<BomModule>>:
 
 [source,xml]
 .pom.xml
 ----
 <properties>
     ...
-    <dss.version>6.2.RC1</dss.version>
+    <dss.version>6.2</dss.version>
     ...
 </properties>
 
