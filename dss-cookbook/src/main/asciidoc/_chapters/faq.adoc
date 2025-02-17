@@ -13,6 +13,17 @@ This chapter covers the most frequently asked questions and issues occurring in 
 |===
 |Version                    |Description                                   |Solution
 
+|v6.2                      a|`SSLCertificateLoader` does not work with Spring-Boot `3.3.x` or before                a|Since version `6.2` DSS uses HttpClient5 of version `5.4.x` (or higher), bringing incompatible changes in the API used by the `SSLCertificateLoader` class. In case the support of the class is required, please upgrade to the latest version of Spring-Boot, starting from `3.4.0`.
+
+|v6.1 and after             |CMS validation fails because of "invalid OID contents"       a|Starting from version `1.78` cryptographic library BouncyCastle enforces a secure validation of `ASN1ObjectIdentifier` objects, which makes validation of invalid signatures (or other tokens, such as CRL/OCSP responses) to fail with the exception "java.lang.IllegalArgumentException: invalid OID contents". In order to get back to the original behavior (no validation is performed), the following system property should be added before signature validation:
+
+[source,java,indent=0]
+----
+System.setProperty("org.bouncycastle.asn1.allow_wrong_oid_enc", "true");
+----
+
+The property is available since BouncyCastle `1.80`.
+
 |v6.1                      a|`DocumentValidator` or its implementation is not found         a|Since DSS `6.1` a new module `dss-validation` has been introduced. All validation related classes have been moved in the new module. In order to validate or extend a signature, the aforementioned module should be included within a `pom.xml` file of your project, as below:
 
 [source,xml]
@@ -27,8 +38,6 @@ This chapter covers the most frequently asked questions and issues occurring in 
     ...
 </dependencies>
 ----
-
-|v6.2                      a|`SSLCertificateLoader` does not work with Spring-Boot `3.3.x` or before                a|Since version `6.2` DSS uses HttpClient5 of version `5.4.x` (or higher), bringing incompatible changes in the API used by the `SSLCertificateLoader` class. In case the support of the class is required, please upgrade to the latest version of Spring-Boot, starting from `3.4.0`.
 
 |v6.1                      a|#validate method is not available in the implementation of `DocumentValidator`         a|Please add a `dss-validation` module within dependencies list of your project. See instructions above.
 
