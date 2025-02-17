@@ -22,7 +22,6 @@ package eu.europa.esig.dss.spi.validation;
 
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
