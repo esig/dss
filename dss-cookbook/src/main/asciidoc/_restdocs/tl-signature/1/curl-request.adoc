@@ -17,7 +17,7 @@ $ curl 'http://localhost:8080/services/rest/signature/trusted-list/getDataToSign
     "digestAlgorithm" : null,
     "referenceId" : "tl",
     "referenceDigestAlgorithm" : "SHA512",
-    "tlVersion" : 5,
+    "tlVersion" : "5",
     "blevelParameters" : {
       "trustAnchorBPPolicy" : true,
       "signingDate" : 1633219200000,

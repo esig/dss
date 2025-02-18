@@ -1,7 +1,0 @@
-[source,json,options="nowrap"]
-----
-{
-  "algorithm" : "RSA_SSA_PSS_SHA256_MGF1",
-  "value" : "oY4ey+1mvWuWH6qbvkMT0SB32lnvQfLgP518gXAffI3GwSJUv+oO/FJ20M1Vx2jl/EO7A7wgJKEPYme3C5AcKkRBSOcBkCoypa+CTX+BqwCJUehp5QuvYe8Eiw2+p0qySeE/AH9PqaLpQd7uENhB0v7kSTbrfxG+S33QCFV7/40wXPa31Tf996vKM55vC6pB6EzcC1HceWLUlrbiv/BlELXgdN9BtSClQpXTf3F3Oee/xFcAO8DSU0qJ7/NvkFcIOupSoBiEdRt2awmfmOGGCZSLbHEFEDOoUHvuNf5x07RN5Fw+bHa2yZ3jbY8Ow0M1DTr499j5tIGgJO2jtz9LrA=="
-}
-----

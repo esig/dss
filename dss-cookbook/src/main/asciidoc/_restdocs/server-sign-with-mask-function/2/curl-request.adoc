@@ -1,9 +1,0 @@
-[source,bash]
-----
-$ curl 'http://localhost:8080/services/rest/server-signing/sign/certificate/SHA256/MGF1' -i -X POST \
-    -H 'Accept: application/json, application/javascript, text/javascript, text/json' \
-    -H 'Content-Type: application/json' \
-    -d '{
-  "bytes" : "SGVsbG8gV29ybGQh"
-}'
-----
