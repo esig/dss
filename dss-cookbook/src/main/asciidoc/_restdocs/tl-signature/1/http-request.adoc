@@ -4,7 +4,7 @@ POST /services/rest/signature/trusted-list/getDataToSign HTTP/1.1
 Accept: application/json, application/javascript, text/javascript, text/json
 Content-Type: application/json
 Host: localhost:8080
-Content-Length: 14060
+Content-Length: 14062
 
 {
   "trustedList" : {
@@ -20,7 +20,7 @@ Content-Length: 14060
     "digestAlgorithm" : null,
     "referenceId" : "tl",
     "referenceDigestAlgorithm" : "SHA512",
-    "tlVersion" : 5,
+    "tlVersion" : "5",
     "blevelParameters" : {
       "trustAnchorBPPolicy" : true,
       "signingDate" : 1633219200000,
