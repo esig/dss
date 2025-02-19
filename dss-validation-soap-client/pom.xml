@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>6.2</version>
+		<version>6.2-SNAPSHOT</version>
 	</parent>
 	
 	<artifactId>dss-validation-soap-client</artifactId>
