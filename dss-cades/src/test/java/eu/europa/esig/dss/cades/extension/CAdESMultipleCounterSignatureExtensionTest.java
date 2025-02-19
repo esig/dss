@@ -28,12 +28,12 @@ import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
-import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -56,7 +56,7 @@ class CAdESMultipleCounterSignatureExtensionTest extends AbstractCAdESTestExtens
 	
 	@BeforeEach
 	void init() {
-		documentToExtend = new FileDocument("src/test/resources/validation/signedFile.pdf.p7s");
+		documentToExtend = new InMemoryDocument(CAdESMultipleCounterSignatureExtensionTest.class.getResourceAsStream("/validation/signedFile.pdf.p7s"));
 
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(documentToExtend);
 		CertificateToken signingCertificate = validator.getSignatures().get(0).getSigningCertificateToken();

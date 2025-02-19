@@ -26,8 +26,8 @@ import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import org.junit.jupiter.api.Tag;
 
 import java.util.Arrays;
 import java.util.List;
@@ -39,7 +39,7 @@ class CAdESDetachedTstV2Test extends AbstractCAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {
-		return new FileDocument("src/test/resources/validation/dss-2011/cades-tstv2-detached.p7s");
+		return new InMemoryDocument(CAdESDetachedTstV2Test.class.getResourceAsStream("/validation/dss-2011/cades-tstv2-detached.p7s"));
 	}
 	
 	@Override

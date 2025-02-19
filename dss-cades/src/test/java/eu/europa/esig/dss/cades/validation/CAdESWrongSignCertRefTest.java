@@ -27,7 +27,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.utils.Utils;
@@ -43,7 +43,7 @@ class CAdESWrongSignCertRefTest extends AbstractCAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {
-        return new FileDocument("src/test/resources/validation/cms-wrong-sign-cert-ref.p7m");
+        return new InMemoryDocument(CAdESWrongSignCertRefTest.class.getResourceAsStream("/validation/cms-wrong-sign-cert-ref.p7m"));
     }
 
     @Override

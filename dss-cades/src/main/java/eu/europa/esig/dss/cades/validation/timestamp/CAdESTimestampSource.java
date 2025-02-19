@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.cades.validation.timestamp;
 
-import eu.europa.esig.dss.cades.CMSUtils;
+import eu.europa.esig.dss.cades.CAdESUtils;
 import eu.europa.esig.dss.cades.validation.CAdESAttribute;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.cades.validation.CAdESSignedAttributes;
@@ -294,16 +294,16 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 		List<TimestampedReference> timestampedReferences = new ArrayList<>();
 		addReferences(timestampedReferences, getSignatureTimestampReferences());
 
-		final ASN1Sequence atsHashIndex = CMSUtils.getAtsHashIndex(timestampToken.getUnsignedAttributes());
+		final ASN1Sequence atsHashIndex = CAdESUtils.getAtsHashIndex(timestampToken.getUnsignedAttributes());
 		if (atsHashIndex != null) {
 			final DigestAlgorithm digestAlgorithm = getHashIndexDigestAlgorithm(atsHashIndex);
 
-			final ASN1Sequence certsHashIndex = CMSUtils.getCertificatesHashIndex(atsHashIndex);
-			final ASN1Sequence crlHashIndex = CMSUtils.getCRLHashIndex(atsHashIndex);
+			final ASN1Sequence certsHashIndex = CAdESUtils.getCertificatesHashIndex(atsHashIndex);
+			final ASN1Sequence crlHashIndex = CAdESUtils.getCRLHashIndex(atsHashIndex);
 			addReferences(timestampedReferences, getSignedDataCertificateReferences(certsHashIndex, digestAlgorithm));
 			addReferences(timestampedReferences, getSignedDataRevocationReferences(crlHashIndex, digestAlgorithm));
 
-			final ASN1Sequence unsignedAttrsHashIndex = CMSUtils.getUnsignedAttributesHashIndex(atsHashIndex);
+			final ASN1Sequence unsignedAttrsHashIndex = CAdESUtils.getUnsignedAttributesHashIndex(atsHashIndex);
 			addReferences(timestampedReferences,
 					getUnsignedAttributesReferences(unsignedAttrsHashIndex, digestAlgorithm, previousTimestamps));
 		}
@@ -426,7 +426,7 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 
 	private boolean isOCSPDigestValueMatch(byte[] binaries, ASN1ObjectIdentifier objectIdentifier,
 										   List<DEROctetString> crlsHashList, DigestAlgorithm digestAlgorithm) {
-		byte[] encoded = CMSUtils.getSignedDataEncodedOCSPResponse(binaries, objectIdentifier);
+		byte[] encoded = CAdESUtils.getSignedDataEncodedOCSPResponse(binaries, objectIdentifier);
 		return isDigestValuePresent(DSSUtils.digest(digestAlgorithm, encoded), crlsHashList);
 	}
 	
@@ -439,7 +439,7 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 		
 		final SignatureProperties<CAdESAttribute> unsignedSignatureProperties = getUnsignedSignatureProperties();
 		for (CAdESAttribute unsignedAttribute : unsignedSignatureProperties.getAttributes()) {
-			List<byte[]> octets = CMSUtils.getATSHashIndexV3OctetString(unsignedAttribute.getASN1Oid(),
+			List<byte[]> octets = CAdESUtils.getATSHashIndexV3OctetString(unsignedAttribute.getASN1Oid(),
 					unsignedAttribute.getAttrValues());
 			for (byte[] bytes : octets) {
 				final byte[] digest = DSSUtils.digest(digestAlgorithm, bytes);
@@ -524,7 +524,7 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 	private DigestAlgorithm getHashIndexDigestAlgorithm(ASN1Sequence atsHashIndex) {
 		AlgorithmIdentifier algorithmIdentifier = DSSASN1Utils.getAlgorithmIdentifier(atsHashIndex);
 		return algorithmIdentifier != null ? 
-				DigestAlgorithm.forOID(algorithmIdentifier.getAlgorithm().getId()) : CMSUtils.DEFAULT_ARCHIVE_TIMESTAMP_HASH_ALGO;
+				DigestAlgorithm.forOID(algorithmIdentifier.getAlgorithm().getId()) : CAdESUtils.DEFAULT_ARCHIVE_TIMESTAMP_HASH_ALGO;
 	}
 	
 	private boolean isDigestValuePresent(final byte[] digestValue, final List<DEROctetString> hashList) {

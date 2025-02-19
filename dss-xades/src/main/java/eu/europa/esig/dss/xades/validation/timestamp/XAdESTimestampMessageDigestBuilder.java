@@ -204,7 +204,7 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 					writeReferenceBytes(digestCalculator, reference, canonicalizationAlgorithm);
 				}
 			}
-			final DSSMessageDigest messageDigest = digestCalculator.getMessageDigest();
+			final DSSMessageDigest messageDigest = digestCalculator.getMessageDigest(digestAlgorithm);
 			if (LOG.isTraceEnabled()) {
 				LOG.trace(String.format("AllDataObjectsTimestampData message-imprint: %s", messageDigest));
 			}
@@ -242,7 +242,7 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 									"with URI '{}'!", include.getURI());
 				}
 			}
-			DSSMessageDigest messageDigest = digestCalculator.getMessageDigest();
+			DSSMessageDigest messageDigest = digestCalculator.getMessageDigest(digestAlgorithm);
 			if (LOG.isTraceEnabled()) {
 				LOG.trace(String.format("IndividualDataObjectsTimestampData message-imprint: %s", messageDigest));
 			}
@@ -317,7 +317,7 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 			final DSSMessageDigestCalculator digestCalculator = new DSSMessageDigestCalculator(digestAlgorithm);
 			digestCalculator.update(getCanonicalizedValue(XMLDSigPath.SIGNATURE_VALUE_PATH, canonicalizationAlgorithm));
 
-			final DSSMessageDigest messageDigest = digestCalculator.getMessageDigest();
+			final DSSMessageDigest messageDigest = digestCalculator.getMessageDigest(digestAlgorithm);
 			if (LOG.isTraceEnabled()) {
 				LOG.trace(String.format("Signature timestamp message-imprint: %s", messageDigest));
 			}
@@ -404,7 +404,7 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 				}
 			}
 
-			final DSSMessageDigest messageDigest = digestCalculator.getMessageDigest();
+			final DSSMessageDigest messageDigest = digestCalculator.getMessageDigest(digestAlgorithm);
 			if (LOG.isTraceEnabled()) {
 				LOG.trace(String.format("X1Timestamp (SigAndRefsTimeStamp) message-imprint: %s", messageDigest));
 			}
@@ -479,7 +479,7 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 				}
 			}
 
-			final DSSMessageDigest messageDigest = digestCalculator.getMessageDigest();
+			final DSSMessageDigest messageDigest = digestCalculator.getMessageDigest(digestAlgorithm);
 			if (LOG.isTraceEnabled()) {
 				LOG.trace(String.format("TimestampX2Data (RefsOnlyTimeStamp) message-imprint: %s", messageDigest));
 			}
@@ -564,7 +564,7 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 			final NodeList objects = getObjects();
 			writeObjectBytes(digestCalculator, objects, referenceURIs, canonicalizationAlgorithm);
 
-			DSSMessageDigest messageDigest = digestCalculator.getMessageDigest();
+			DSSMessageDigest messageDigest = digestCalculator.getMessageDigest(digestAlgorithm);
 			if (LOG.isTraceEnabled()) {
 				LOG.trace(String.format("ArchiveTimeStamp message-imprint: %s", messageDigest));
 			}

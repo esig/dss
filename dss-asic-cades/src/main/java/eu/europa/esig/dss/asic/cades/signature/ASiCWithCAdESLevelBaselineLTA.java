@@ -29,26 +29,27 @@ import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.validation.ASiCManifestParser;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.cades.signature.CMSBuilder;
+import eu.europa.esig.dss.cms.CMS;
+import eu.europa.esig.dss.cms.CMSUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.x509.CMSSignedDataBuilder;
-import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
-import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
-import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.validation.ValidationData;
 import eu.europa.esig.dss.spi.validation.ValidationDataContainer;
 import eu.europa.esig.dss.spi.validation.executor.CompleteValidationContextExecutor;
-import org.bouncycastle.cms.CMSSignedData;
+import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.utils.Utils;
 
 import java.util.List;
 
@@ -210,14 +211,13 @@ public class ASiCWithCAdESLevelBaselineLTA extends ASiCWithCAdESSignatureExtensi
     }
 
     private DSSDocument extendTimestamp(DSSDocument archiveTimestamp, ValidationData validationDataForInclusion) {
-        CMSSignedData cmsSignedData = DSSUtils.toCMSSignedData(archiveTimestamp);
-        CMSSignedDataBuilder cmsSignedDataBuilder = new CMSSignedDataBuilder().setOriginalCMSSignedData(cmsSignedData);
-        CMSSignedData extendedCMSSignedData = cmsSignedDataBuilder.extendCMSSignedData(
+        CMS timestampCMS = CMSUtils.parseToCMS(archiveTimestamp);
+        CMSBuilder cmsBuilder = new CMSBuilder().setOriginalCMS(timestampCMS);
+        CMS extendedCMS = cmsBuilder.extendCMSSignedData(
                 validationDataForInclusion.getCertificateTokens(), validationDataForInclusion.getCrlTokens(),
                 validationDataForInclusion.getOcspTokens());
-        return new InMemoryDocument(DSSASN1Utils.getEncoded(extendedCMSSignedData), archiveTimestamp.getName(), MimeTypeEnum.TST);
+        return new InMemoryDocument(extendedCMS.getDEREncoded(), archiveTimestamp.getName(), MimeTypeEnum.TST);
     }
-
 
     private CAdESSignatureParameters getEmptyLTLevelSignatureParameters() {
         CAdESSignatureParameters parameters = new CAdESSignatureParameters();

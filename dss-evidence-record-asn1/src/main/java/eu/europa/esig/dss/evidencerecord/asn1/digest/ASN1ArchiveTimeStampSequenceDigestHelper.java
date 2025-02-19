@@ -176,7 +176,7 @@ public class ASN1ArchiveTimeStampSequenceDigestHelper extends AbstractEvidenceRe
             digestCalculator.update(hashValue);
         }
         // 4. Calculate hash value
-        return digestCalculator.getMessageDigest();
+        return digestCalculator.getMessageDigest(digestAlgorithm);
     }
 
 }

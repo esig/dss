@@ -20,14 +20,6 @@
  */
 package eu.europa.esig.dss.cades.validation.dss1469;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Arrays;
-import java.util.List;
-
 import eu.europa.esig.dss.cades.validation.AbstractCAdESTestValidation;
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -38,18 +30,27 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import org.junit.jupiter.api.Tag;
+
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DSS1670Test extends AbstractCAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {
-		return new FileDocument("src/test/resources/validation/dss-1670/signatureExtendedTwoLTA.p7s");
+		return new InMemoryDocument(DSS1670Test.class.getResourceAsStream("/validation/dss-1670/signatureExtendedTwoLTA.p7s"));
 	}
 	
 	@Override
 	protected List<DSSDocument> getDetachedContents() {
-		return Arrays.asList(new FileDocument("src/test/resources/validation/dss-1670/screenshot.png"));
+		return Collections.singletonList(new InMemoryDocument(DSS1670Test.class.getResourceAsStream("/validation/dss-1670/screenshot.png")));
 	}
 	
 	@Override

@@ -35,12 +35,14 @@ import eu.europa.esig.dss.model.UserNotice;
 import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.utils.Utils;
+import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
+import org.bouncycastle.cms.CMSSignedDataParser;
 import org.bouncycastle.crypto.digests.SHAKEDigest;
 import org.bouncycastle.crypto.io.DigestOutputStream;
 import org.bouncycastle.openssl.jcajce.JcaMiscPEMGenerator;
-import org.bouncycastle.tsp.TimeStampToken;
+import org.bouncycastle.operator.bc.BcDigestCalculatorProvider;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemReader;
 import org.bouncycastle.util.io.pem.PemWriter;
@@ -52,9 +54,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -548,7 +548,7 @@ public final class DSSUtils {
 		} else {
 			throw new FileNotFoundException("File '" + file + "' does not exist");
 		}
-		return new FileInputStream(file);
+		return Files.newInputStream(file.toPath());
 	}
 
 	/**
@@ -646,14 +646,13 @@ public final class DSSUtils {
 	 * @return true if the document is a timestamp
 	 */
 	public static boolean isTimestampToken(final DSSDocument document) {
-		TimeStampToken timeStampToken = null;
-		try {
-			CMSSignedData cmsSignedData = toCMSSignedData(document);
-			timeStampToken = new TimeStampToken(cmsSignedData);
+		try (InputStream is = document.openStream()) {
+			CMSSignedDataParser cmsSignedDataParser = new CMSSignedDataParser(new BcDigestCalculatorProvider(), is);
+			return PKCSObjectIdentifiers.id_ct_TSTInfo.getId().equals(cmsSignedDataParser.getSignedContentTypeOID());
 		} catch (Exception e) {
-			// ignore
+			// skip exception
+			return false;
 		}
-		return timeStampToken != null;
 	}
 
 	/**		
@@ -679,7 +678,7 @@ public final class DSSUtils {
 	 */
 	public static void saveToFile(final byte[] bytes, final File file) {
 		file.getParentFile().mkdirs();
-		try (InputStream is = new ByteArrayInputStream(bytes); OutputStream os = new FileOutputStream(file)) {
+		try (InputStream is = new ByteArrayInputStream(bytes); OutputStream os = Files.newOutputStream(file.toPath())) {
 			Utils.copy(is, os);
 		} catch (IOException e) {
 			throw new DSSException(String.format("Unable to save a file : %s", e.getMessage()), e);

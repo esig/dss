@@ -575,7 +575,7 @@ public abstract class EvidenceRecordTimeStampSequenceVerifier {
             digestCalculator.update(hashValue);
         }
         // 4. Calculate hash value
-        return digestCalculator.getMessageDigest();
+        return digestCalculator.getMessageDigest(digestAlgorithm);
     }
 
 }

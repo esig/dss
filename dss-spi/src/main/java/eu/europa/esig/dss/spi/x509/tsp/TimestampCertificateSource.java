@@ -38,7 +38,8 @@ public class TimestampCertificateSource extends CMSCertificateSource {
 	 * @param timestampToken {@link TimeStampToken}
 	 */
 	public TimestampCertificateSource(final TimeStampToken timestampToken) {
-		super(timestampToken.toCMSSignedData(), DSSASN1Utils.getFirstSignerInformation(timestampToken.toCMSSignedData()));
+		super(timestampToken.toCMSSignedData().getSignerInfos(), timestampToken.getCertificates(),
+				DSSASN1Utils.getFirstSignerInformation(timestampToken.toCMSSignedData().getSignerInfos()));
 	}
 
 	@Override

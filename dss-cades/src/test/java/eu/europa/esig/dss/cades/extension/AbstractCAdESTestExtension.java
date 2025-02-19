@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.cades.extension;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
-import eu.europa.esig.dss.cades.CMSUtils;
+import eu.europa.esig.dss.cades.CAdESUtils;
 import eu.europa.esig.dss.cades.signature.CAdESService;
 import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -67,6 +67,7 @@ import org.bouncycastle.tsp.TimeStampToken;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
@@ -96,12 +97,24 @@ public abstract class AbstractCAdESTestExtension extends AbstractTestExtension<C
 	@Override
 	protected FileDocument getOriginalDocument() {
 		File originalDoc = new File("target/original-" + UUID.randomUUID().toString() + ".bin");
-		try (FileOutputStream fos = new FileOutputStream(originalDoc)) {
-			fos.write("Hello world!".getBytes());
-		} catch (IOException e) {
-			throw new DSSException("Unable to create the original document", e);
+		if (getOriginalDocumentPath() != null) {
+			try (FileOutputStream fos = new FileOutputStream(originalDoc); InputStream is = AbstractCAdESTestExtension.class.getResourceAsStream("/sample.pdf")) {
+				Utils.copy(is, fos);
+			} catch (IOException e) {
+				throw new DSSException("Unable to create the original document", e);
+			}
+		} else {
+			try (FileOutputStream fos = new FileOutputStream(originalDoc)) {
+				fos.write("Hello world!".getBytes());
+			} catch (IOException e) {
+				throw new DSSException("Unable to create the original document", e);
+			}
 		}
 		return new FileDocument(originalDoc);
+	}
+
+	protected String getOriginalDocumentPath() {
+		return null;
 	}
 	
 	@Override
@@ -155,7 +168,7 @@ public abstract class AbstractCAdESTestExtension extends AbstractTestExtension<C
 				boolean arcTstV3Found = false;
 				for (Attribute attribute : unsignedAttributes.toASN1Structure().getAttributes()) {
 					if (OID.id_aa_ets_archiveTimestampV3.equals(attribute.getAttrType())) {
-						TimeStampToken arcTstV3 = CMSUtils.getTimeStampToken(attribute);
+						TimeStampToken arcTstV3 = CAdESUtils.getTimeStampToken(attribute);
 						assertNotNull(arcTstV3);
 
 						AttributeTable tstV3UnsignedAttributes = arcTstV3.getUnsignedAttributes();
@@ -184,7 +197,7 @@ public abstract class AbstractCAdESTestExtension extends AbstractTestExtension<C
 						assertNotNull(digestAlgorithm);
 						assertEquals(getSignatureParameters().getArchiveTimestampParameters().getDigestAlgorithm(), digestAlgorithm);
 
-						ASN1Sequence certHashes = CMSUtils.getCertificatesHashIndex(atsHashIndexValue);
+						ASN1Sequence certHashes = CAdESUtils.getCertificatesHashIndex(atsHashIndexValue);
 						List<DEROctetString> certHashesList = DSSASN1Utils.getDEROctetStrings(certHashes);
 
 						Collection<X509CertificateHolder> certificates = cmsSignedData.getCertificates().getMatches(null);
@@ -201,7 +214,7 @@ public abstract class AbstractCAdESTestExtension extends AbstractTestExtension<C
 							fail("Some certificates have not been found in SignedData.certificates!");
 						}
 
-						ASN1Sequence crlHashIndex = CMSUtils.getCRLHashIndex(atsHashIndexValue);
+						ASN1Sequence crlHashIndex = CAdESUtils.getCRLHashIndex(atsHashIndexValue);
 						List<DEROctetString> crlHashesList = DSSASN1Utils.getDEROctetStrings(crlHashIndex);
 
 						final SignedData signedData = SignedData.getInstance(cmsSignedData.toASN1Structure().getContent());
@@ -226,7 +239,7 @@ public abstract class AbstractCAdESTestExtension extends AbstractTestExtension<C
 							fail("Some crls have not been found in SignedData.certificates!");
 						}
 
-						ASN1Sequence unsignedAttributesHashIndex = CMSUtils.getUnsignedAttributesHashIndex(atsHashIndexValue);
+						ASN1Sequence unsignedAttributesHashIndex = CAdESUtils.getUnsignedAttributesHashIndex(atsHashIndexValue);
 						List<DEROctetString> unsignedAttrsHashesList = DSSASN1Utils.getDEROctetStrings(unsignedAttributesHashIndex);
 
 						final ASN1EncodableVector asn1EncodableVector = unsignedAttributes.toASN1EncodableVector();
@@ -235,7 +248,7 @@ public abstract class AbstractCAdESTestExtension extends AbstractTestExtension<C
 							if (attribute == unsignedAttribute) {
 								continue; // skip current timestamp
 							}
-							List<byte[]> octetStringForAtsHashIndex = CMSUtils.getOctetStringForAtsHashIndex(unsignedAttribute, attrType);
+							List<byte[]> octetStringForAtsHashIndex = CAdESUtils.getOctetStringForAtsHashIndex(unsignedAttribute, attrType);
 							List<DEROctetString> attributeDerOctetStringHashes = octetStringForAtsHashIndex.stream()
 									.map(b -> new DEROctetString(DSSUtils.digest(digestAlgorithm, b))).collect(Collectors.toList());
 							for (DEROctetString derOctetStringDigest : attributeDerOctetStringHashes) {

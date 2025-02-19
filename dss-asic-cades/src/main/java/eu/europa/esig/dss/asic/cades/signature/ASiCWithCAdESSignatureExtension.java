@@ -25,12 +25,14 @@ import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.validation.ASiCManifestParser;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.cades.CAdESUtils;
 import eu.europa.esig.dss.cades.signature.CAdESService;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.spi.signature.resources.DSSResourcesHandlerBuilder;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 
@@ -58,6 +60,9 @@ public class ASiCWithCAdESSignatureExtension implements Serializable {
     /** The CAdESService to be used for a CAdES signature extension */
     private CAdESService cadesService;
 
+    /** This object is used to create data container objects such as an OutputStream or a DSSDocument */
+    protected DSSResourcesHandlerBuilder resourcesHandlerBuilder;
+
     /**
      * Default constructor
      *
@@ -67,6 +72,16 @@ public class ASiCWithCAdESSignatureExtension implements Serializable {
     public ASiCWithCAdESSignatureExtension(final CertificateVerifier certificateVerifier, final TSPSource tspSource) {
         this.certificateVerifier = certificateVerifier;
         this.tspSource = tspSource;
+    }
+
+    /**
+     * This method sets a {@code DSSResourcesHandlerBuilder} to be used for operating with internal objects
+     * during the signature creation procedure.
+     *
+     * @param resourcesHandlerBuilder {@link DSSResourcesHandlerBuilder}
+     */
+    public void setResourcesHandlerBuilder(DSSResourcesHandlerBuilder resourcesHandlerBuilder) {
+        this.resourcesHandlerBuilder = resourcesHandlerBuilder;
     }
 
     /**
@@ -134,6 +149,9 @@ public class ASiCWithCAdESSignatureExtension implements Serializable {
         if (cadesService == null) {
             cadesService = new CAdESService(certificateVerifier);
             cadesService.setTspSource(tspSource);
+            if (CAdESUtils.DEFAULT_RESOURCES_HANDLER_BUILDER != resourcesHandlerBuilder) {
+                cadesService.setResourcesHandlerBuilder(resourcesHandlerBuilder);
+            }
         }
         return cadesService;
     }

@@ -21,14 +21,17 @@
 package eu.europa.esig.dss.cades.validation;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.DigestDocument;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.operator.DigestCalculator;
 import org.bouncycastle.operator.DigestCalculatorProvider;
 import org.bouncycastle.operator.OperatorCreationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -36,26 +39,28 @@ import java.io.OutputStream;
 
 /**
  * This class allows to provide digest values without original document
+ *
  */
 public class PrecomputedDigestCalculatorProvider implements DigestCalculatorProvider {
 
-	/** The signing DigestDocument */
-	private final DigestDocument digestDocument;
+	private static final Logger LOG = LoggerFactory.getLogger(PrecomputedDigestCalculatorProvider.class);
+
+	/** The DSSDocument to be signed */
+	private final DSSDocument digestDocument;
 
 	/**
 	 * The default constructor
 	 *
-	 * @param digestDocument {@link DigestDocument} to be signed
+	 * @param dssDocument {@link DSSDocument} to be signed
 	 */
-	public PrecomputedDigestCalculatorProvider(DigestDocument digestDocument) {
-		this.digestDocument = digestDocument;
+	public PrecomputedDigestCalculatorProvider(DSSDocument dssDocument) {
+		this.digestDocument = dssDocument;
 	}
 
 	@Override
 	public DigestCalculator get(final AlgorithmIdentifier digestAlgorithmIdentifier) throws OperatorCreationException {
 
-		ASN1ObjectIdentifier algorithmOid = digestAlgorithmIdentifier.getAlgorithm();
-		final byte[] digestBase64 = digestDocument.getDigestValue(DigestAlgorithm.forOID(algorithmOid.getId()));
+		final byte[] digestBase64 = getDigestBase64(digestAlgorithmIdentifier);
 
 		return new DigestCalculator() {
 
@@ -81,6 +86,17 @@ public class PrecomputedDigestCalculatorProvider implements DigestCalculatorProv
 			}
 
 		};
+	}
+
+	private byte[] getDigestBase64(AlgorithmIdentifier digestAlgorithmIdentifier) {
+		try {
+			ASN1ObjectIdentifier algorithmOid = digestAlgorithmIdentifier.getAlgorithm();
+			return digestDocument.getDigestValue(DigestAlgorithm.forOID(algorithmOid.getId()));
+		} catch (Exception e) {
+			LOG.warn("Unable to retrieve digest value for an algorithm '{}'. Reason : {}",
+					digestAlgorithmIdentifier.getAlgorithm().getId(), e.getMessage());
+			return DSSUtils.EMPTY_BYTE_ARRAY;
+		}
 	}
 
 }

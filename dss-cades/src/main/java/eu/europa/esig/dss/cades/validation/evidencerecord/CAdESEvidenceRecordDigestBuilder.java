@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.cades.validation.evidencerecord;
 
+import eu.europa.esig.dss.cms.CMSUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -171,7 +172,7 @@ public class CAdESEvidenceRecordDigestBuilder extends AbstractSignatureEvidenceR
                 if (unsignedAttributes.size() == 0) {
                     unsignedAttributes = null;
                 }
-                signerInformation = SignerInformation.replaceUnsignedAttributes(signerInformation, unsignedAttributes);
+                signerInformation = CMSUtils.replaceUnsignedAttributes(signerInformation, unsignedAttributes);
                 signerWithERFound = true;
             }
             newSignerInformationList.add(signerInformation);

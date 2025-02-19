@@ -23,7 +23,7 @@ package eu.europa.esig.dss.cades.validation;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -32,7 +32,7 @@ class CAdESExtendedEPESWithSigPolStoreTest extends AbstractCAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {
-        return new FileDocument("src/test/resources/validation/cades-extended-epes-sig-pol-store.pkcs7");
+        return new InMemoryDocument(CAdESExtendedEPESWithSigPolStoreTest.class.getResourceAsStream("/validation/cades-extended-epes-sig-pol-store.pkcs7"));
     }
 
     @Override

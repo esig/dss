@@ -21,7 +21,9 @@
 package eu.europa.esig.dss.cades.signature;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
-import eu.europa.esig.dss.cades.CMSUtils;
+import eu.europa.esig.dss.cades.CAdESUtils;
+import eu.europa.esig.dss.cms.CMS;
+import eu.europa.esig.dss.cms.CMSUtils;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -80,12 +82,12 @@ class CAdESLevelBEnvelopingEmbeddedSigTest extends AbstractCAdESTestSignature {
         documentToSign = signed;
 
         DSSDocument doubleSigned = sign();
-        CMSSignedData doubleSignedCMS = DSSUtils.toCMSSignedData(doubleSigned);
+        CMS doubleSignedCMS = CMSUtils.parseToCMS(doubleSigned);
         assertTrue(doubleSignedCMS.isDetachedSignature());
 
         verify(doubleSigned);
 
-        DSSDocument secondSignedDocument = CMSUtils.getOriginalDocument(doubleSignedCMS, getDetachedContents());
+        DSSDocument secondSignedDocument = CAdESUtils.getOriginalDocument(doubleSignedCMS, getDetachedContents());
         signedCMS = DSSUtils.toCMSSignedData(secondSignedDocument);
         assertFalse(signedCMS.isDetachedSignature());
 
@@ -98,12 +100,12 @@ class CAdESLevelBEnvelopingEmbeddedSigTest extends AbstractCAdESTestSignature {
         documentToSign = signed;
 
         doubleSigned = sign();
-        doubleSignedCMS = DSSUtils.toCMSSignedData(doubleSigned);
+        doubleSignedCMS = CMSUtils.parseToCMS(doubleSigned);
         assertFalse(doubleSignedCMS.isDetachedSignature());
 
         verify(doubleSigned);
 
-        secondSignedDocument = CMSUtils.getOriginalDocument(doubleSignedCMS, getDetachedContents());
+        secondSignedDocument = CAdESUtils.getOriginalDocument(doubleSignedCMS, getDetachedContents());
         secondSignedDocument.setName("secondSignedDocument.p7m");
         signedCMS = DSSUtils.toCMSSignedData(secondSignedDocument);
         assertFalse(signedCMS.isDetachedSignature());

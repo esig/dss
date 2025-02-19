@@ -25,7 +25,7 @@ import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 
 import java.util.List;
@@ -38,7 +38,7 @@ class DSS1419Sha3512Sha3512RsaTest extends AbstractCAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {
-		return new FileDocument("src/test/resources/validation/dss-1419/CAdES-BpB-att-SHA3_512-SHA3_512withRSA.p7m");
+		return new InMemoryDocument(DSS1419Sha3512Sha3512RsaTest.class.getResourceAsStream("/validation/dss-1419/CAdES-BpB-att-SHA3_512-SHA3_512withRSA.p7m"));
 	}
 	
 	@Override

@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.cades.signature;
+package eu.europa.esig.dss.cms;
 
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.CommonDocument;
@@ -34,6 +34,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Objects;
 
+// TODO: move to dss-cms-object ?
 /**
  * A document composed by a CMSSignedData
  */

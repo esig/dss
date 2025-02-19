@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.cades.validation;
 
-import eu.europa.esig.dss.cades.CMSUtils;
+import eu.europa.esig.dss.cades.CAdESUtils;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.utils.Utils;
@@ -96,7 +96,7 @@ public class CAdESAttribute implements SignatureAttribute {
 	 * @return TRUE if the attribute is a timestamp, FALSE otherwise
 	 */
 	public boolean isTimeStampToken() {
-		return CMSUtils.getTimestampOids().contains(getASN1Oid());
+		return CAdESUtils.getTimestampOids().contains(getASN1Oid());
 	}
 
 	/**
@@ -106,7 +106,7 @@ public class CAdESAttribute implements SignatureAttribute {
 	 */
 	public TimestampType getTimestampTokenType() {
 		if (isTimeStampToken()) {
-			return CMSUtils.getTimestampTypeByOid(getASN1Oid());
+			return CAdESUtils.getTimestampTypeByOid(getASN1Oid());
 		}
 		return null;
 	}
@@ -119,7 +119,7 @@ public class CAdESAttribute implements SignatureAttribute {
 	public TimeStampToken toTimeStampToken() {
 		if (isTimeStampToken()) {
 			try {
-				return CMSUtils.getTimeStampToken(attribute);
+				return CAdESUtils.getTimeStampToken(attribute);
 			} catch (Exception e) {
 				LOG.warn("Unable to build a timestamp token from the attribute [{}] : {}", this, e.getMessage());
 			}

@@ -22,14 +22,15 @@ package eu.europa.esig.dss.cades;
 
 import eu.europa.esig.dss.cades.signature.CustomMessageDigestCalculatorProvider;
 import eu.europa.esig.dss.cades.validation.PrecomputedDigestCalculatorProvider;
+import eu.europa.esig.dss.cms.CMS;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.signature.resources.InMemoryResourcesHandlerBuilder;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.OID;
@@ -101,9 +102,9 @@ import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_signingCert
  * The utils for dealing with CMS and related objects
  *
  */
-public final class CMSUtils {
+public final class CAdESUtils {
 
-	private static final Logger LOG = LoggerFactory.getLogger(CMSUtils.class);
+	private static final Logger LOG = LoggerFactory.getLogger(CAdESUtils.class);
 
 	/** The default DigestAlgorithm for ArchiveTimestamp */
 	public static final DigestAlgorithm DEFAULT_ARCHIVE_TIMESTAMP_HASH_ALGO = DigestAlgorithm.SHA256;
@@ -113,6 +114,9 @@ public final class CMSUtils {
 
 	/** 01-01-2050 date, see RFC 3852 (month param is zero-based (i.e. 0 for January)) */
 	private static final Date JANUARY_2050 = DSSUtils.getUtcDate(2050, 0, 1);
+
+	/** The default resources handler builder to be used across the code */
+	public static final InMemoryResourcesHandlerBuilder DEFAULT_RESOURCES_HANDLER_BUILDER = new InMemoryResourcesHandlerBuilder();
 
 	/** Contains a list of all CAdES timestamp OIDs */
 	private static List<ASN1ObjectIdentifier> timestampOids;
@@ -130,7 +134,7 @@ public final class CMSUtils {
 	/**
 	 * Utils class
 	 */
-	private CMSUtils() {
+	private CAdESUtils() {
 		// empty
 	}
 
@@ -142,7 +146,9 @@ public final class CMSUtils {
 	 * @param content {@link CMSTypedData}
 	 * @param encapsulate true if the content should be encapsulated in the signature, false otherwise
 	 * @return {@link CMSSignedData}
+	 * @deprecated since DSS 6.3. To be removed.
 	 */
+	@Deprecated
 	public static CMSSignedData generateCMSSignedData(final CMSSignedDataGenerator generator,
 													  final CMSTypedData content, final boolean encapsulate) {
 		try {
@@ -158,7 +164,9 @@ public final class CMSUtils {
 	 * @param cmsSignedDataGenerator {@link CMSSignedDataGenerator} to extend the CMS SignedData
 	 * @param signerInfoToSign {@link SignerInformation} to be counter-signed
 	 * @return {@link SignerInformationStore} with a counter signature
+	 * @deprecated since DSS 6.3. To be removed.
 	 */
+	@Deprecated
 	public static SignerInformationStore generateCounterSigners(CMSSignedDataGenerator cmsSignedDataGenerator,
 																SignerInformation signerInfoToSign) {
 		try {
@@ -174,10 +182,16 @@ public final class CMSUtils {
 	 * @param generator {@link CMSSignedDataGenerator}
 	 * @param content {@link CMSProcessableByteArray} to sign
 	 * @return {@link CMSSignedData}
+	 * @deprecated since DSS 6.3. To be removed.
 	 */
+	@Deprecated
 	public static CMSSignedData generateDetachedCMSSignedData(final CMSSignedDataGenerator generator,
 															  final CMSProcessableByteArray content) {
-		return generateCMSSignedData(generator, content, false);
+		try {
+			return generator.generate(content, false);
+		} catch (CMSException e) {
+			throw new DSSException("Unable to generate the CMSSignedData", e);
+		}
 	}
 
 	/**
@@ -187,12 +201,14 @@ public final class CMSUtils {
 	 * @param newCmsSignedData {@link CMSSignedData} to be extended with digest algorithms, if required
  	 * @param oldCmsSignedData {@link CMSSignedData} to copy digest algorithms set from
 	 * @return extended {@link CMSSignedData}
+	 * @deprecated since DSS 6.3. See {@code CMSUtils#populateDigestAlgorithmSet}
 	 */
+	@Deprecated
 	public static CMSSignedData populateDigestAlgorithmSet(CMSSignedData newCmsSignedData,
 														   CMSSignedData oldCmsSignedData) {
 		if (oldCmsSignedData != null) {
 			for (AlgorithmIdentifier algorithmIdentifier : oldCmsSignedData.getDigestAlgorithmIDs()) {
-				newCmsSignedData = addDigestAlgorithm(newCmsSignedData, algorithmIdentifier);
+				newCmsSignedData = CMSSignedData.addDigestAlgorithm(newCmsSignedData, algorithmIdentifier);
 			}
 		}
 		return newCmsSignedData;
@@ -201,13 +217,15 @@ public final class CMSUtils {
 	/**
 	 * This method adds a DigestAlgorithm used by an Archive TimeStamp to
 	 * the SignedData.digestAlgorithms set, when required.
-	 *
+	 * <p>
 	 * See ETSI EN 319 122-1, ch. "5.5.3 The archive-time-stamp-v3 attribute"
 	 *
 	 * @param cmsSignedData {@link CMSSignedData} to extend
 	 * @param algorithmIdentifier {@link AlgorithmIdentifier} to add
 	 * @return {@link CMSSignedData}
+	 * @deprecated since DSS 6.3. See {@code CMSUtils#populateDigestAlgorithmSet}
 	 */
+	@Deprecated
 	public static CMSSignedData addDigestAlgorithm(CMSSignedData cmsSignedData, AlgorithmIdentifier algorithmIdentifier) {
 		return CMSSignedData.addDigestAlgorithm(cmsSignedData, algorithmIdentifier);
 	}
@@ -238,7 +256,9 @@ public final class CMSUtils {
 	 * @param cmsTypedData
 	 *            {@code CMSTypedData} cannot be null
 	 * @return the signed content extracted from {@code CMSTypedData}
+	 * @deprecated since DSS 6.3. To be removed.
 	 */
+	@Deprecated
 	public static byte[] getSignedContent(final CMSTypedData cmsTypedData) {
 		if (cmsTypedData == null) {
 			throw new DSSException("CMSTypedData is null (should be a detached signature)");
@@ -417,27 +437,29 @@ public final class CMSUtils {
 	 * Checks if the signature is detached
 	 * @param cmsSignedData {@link CMSSignedData}
 	 * @return TRUE if the signature is detached, FALSE otherwise
+	 * @deprecated since DSS 6.3. See {@code cmsSignedData.isDetachedSignature()}
 	 */
+	@Deprecated
 	public static boolean isDetachedSignature(CMSSignedData cmsSignedData) {
 		return cmsSignedData.isDetachedSignature();
 	}
 	
 	/**
-	 * Returns the original document from the provided {@code cmsSignedData}
+	 * Returns the original document from the provided {@code CMS}
 	 *
-	 * @param cmsSignedData {@link CMSSignedData} to get original document from
+	 * @param cms {@link CMS} to get original document from
 	 * @param detachedDocuments list of {@link DSSDocument}s
 	 * @return original {@link DSSDocument}
 	 */
-	public static DSSDocument getOriginalDocument(CMSSignedData cmsSignedData, List<DSSDocument> detachedDocuments) {
-		Objects.requireNonNull(cmsSignedData, "CMSSignedData shall be provided!");
+	public static DSSDocument getOriginalDocument(CMS cms, List<DSSDocument> detachedDocuments) {
+		Objects.requireNonNull(cms, "CMS shall be provided!");
 
-		final CMSTypedData signedContent = cmsSignedData.getSignedContent();
-		if (!isDetachedSignature(cmsSignedData)) {
+		if (!cms.isDetachedSignature()) {
+			final DSSDocument signedContent = cms.getSignedContent();
 			if (signedContent == null) {
 				throw new DSSException("No signed content found within enveloping CMS signature!");
 			}
-			return new InMemoryDocument(CMSUtils.getSignedContent(signedContent));
+			return signedContent;
 
 		} else if (Utils.collectionSize(detachedDocuments) == 1) {
 			return detachedDocuments.get(0);
@@ -452,7 +474,9 @@ public final class CMSUtils {
 	 *
 	 * @param toSignData {@link DSSDocument} to sign
 	 * @return {@link CMSTypedData}
+	 * @deprecated since DSS 6.3. See {@code CMSUtils#toCMSEncapsulatedContent(DSSDocument document)}
 	 */
+	@Deprecated
 	public static CMSTypedData getContentToBeSigned(final DSSDocument toSignData) {
 		Objects.requireNonNull(toSignData, "Document to be signed is missing");
 		CMSTypedData content;
@@ -543,7 +567,7 @@ public final class CMSUtils {
 		Attribute[] attributes = unsignedAttributes.toASN1Structure().getAttributes();
 		for (final Attribute attribute : attributes) {
 			if (isArchiveTimeStampToken(attribute)) {
-				TimeStampToken timeStampToken = CMSUtils.getTimeStampToken(attribute);
+				TimeStampToken timeStampToken = CAdESUtils.getTimeStampToken(attribute);
 				if (timeStampToken != null) {
 					timeStamps.add(timeStampToken);
 				}
@@ -798,7 +822,7 @@ public final class CMSUtils {
 				return new TimeStampToken(signedData);
 			}
 		} catch (IOException | CMSException | TSPException e) {
-			LOG.warn("The given TimeStampToken cannot be created! Reason: [{}]", e.getMessage());
+			LOG.warn("The given TimeStampToken cannot be created! Reason: [{}]", e.getMessage(), e);
 		}
 		return null;
 	}
@@ -823,11 +847,26 @@ public final class CMSUtils {
 	}
 
 	/**
+	 * Gets encoded value of the {@code Attribute}
+	 *
+	 * @param attribute {@link Attribute} to get encoded binaries for
+	 * @return byte array
+	 * @throws IOException if an exception on data reading occurs
+	 */
+	public static byte[] getEncodedValue(Attribute attribute) throws IOException {
+		ASN1Encodable value = getAsn1Encodable(attribute);
+		ASN1Primitive asn1Primitive = value.toASN1Primitive();
+		return asn1Primitive.getEncoded();
+	}
+
+	/**
 	 * Gets the SignedData.encapContentInfo.eContentType identifier value
 	 *
 	 * @param cmsSignedData {@link CMSSignedData}
 	 * @return {@link ASN1ObjectIdentifier} cmsSignedData.getSignedContentTypeOID()
+	 * @deprecated since DSS 6.3. To be removed.
 	 */
+	@Deprecated
 	public static ASN1ObjectIdentifier getEncapsulatedContentType(final CMSSignedData cmsSignedData) {
 		final ContentInfo contentInfo = cmsSignedData.toASN1Structure();
 		final SignedData signedData = SignedData.getInstance(contentInfo.getContent());

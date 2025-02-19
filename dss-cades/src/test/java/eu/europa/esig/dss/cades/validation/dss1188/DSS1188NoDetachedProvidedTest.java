@@ -24,7 +24,7 @@ import eu.europa.esig.dss.cades.validation.AbstractCAdESTestValidation;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.validationreport.jaxb.SignersDocumentType;
 
@@ -37,7 +37,7 @@ class DSS1188NoDetachedProvidedTest extends AbstractCAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {
-		return new FileDocument("src/test/resources/validation/dss-1188/Test.bin.sig");
+		return new InMemoryDocument(DSS1188NoDetachedProvidedTest.class.getResourceAsStream("/validation/dss-1188/Test.bin.sig"));
 	}
 	
 	@Override

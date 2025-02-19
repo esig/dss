@@ -23,7 +23,7 @@ package eu.europa.esig.dss.cades.validation;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.spi.policy.SignaturePolicyProvider;
 
@@ -34,7 +34,7 @@ class CAdESWithSPUserNoticeTest extends AbstractCAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {
-        return new FileDocument("src/test/resources/validation/Signature-C-B-B-8.p7m");
+        return new InMemoryDocument(CAdESWithSPUserNoticeTest.class.getResourceAsStream("/validation/Signature-C-B-B-8.p7m"));
     }
 
     @Override

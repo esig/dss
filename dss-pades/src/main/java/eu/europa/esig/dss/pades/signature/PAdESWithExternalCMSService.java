@@ -20,29 +20,31 @@
  */
 package eu.europa.esig.dss.pades.signature;
 
-import eu.europa.esig.dss.signature.FileNameBuilder;
 import eu.europa.esig.dss.cades.validation.CAdESAttribute;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.cades.validation.CAdESUnsignedAttributes;
+import eu.europa.esig.dss.cms.CMS;
+import eu.europa.esig.dss.cms.CMSUtils;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
-import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.model.DigestDocument;
+import eu.europa.esig.dss.model.signature.SignatureCryptographicVerification;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.validation.CMSForPAdESBaselineRequirementsChecker;
-import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.pdf.PDFSignatureService;
 import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
+import eu.europa.esig.dss.signature.FileNameBuilder;
 import eu.europa.esig.dss.signature.SigningOperation;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
-import eu.europa.esig.dss.model.signature.SignatureCryptographicVerification;
+import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SignerInformationStore;
@@ -264,28 +266,28 @@ public class PAdESWithExternalCMSService implements Serializable {
      * This method verifies if the {@code cms} is cryptographically valid
      *
      * @param messageDigest {@link DSSMessageDigest} computed on PDF's signature ByteRange
-     * @param cms {@link DSSDocument} representing an external CMSSignedData
+     * @param cmsDocument {@link DSSDocument} representing an external CMSSignedData
      * @return TRUE if the given CMSSignedData is valid, FALSE otherwise
      */
-    public boolean isValidCMSSignedData(DSSMessageDigest messageDigest, DSSDocument cms) {
+    public boolean isValidCMSSignedData(DSSMessageDigest messageDigest, DSSDocument cmsDocument) {
         Objects.requireNonNull(messageDigest, "messageDigest shall be provided!");
-        Objects.requireNonNull(cms, "CMSSignedDocument shall be provided!");
+        Objects.requireNonNull(cmsDocument, "cmsDocument shall be provided!");
 
-        CMSSignedData cmsSignedData;
+        CMS cms;
         try {
-            cmsSignedData = DSSUtils.toCMSSignedData(cms);
+            cms = CMSUtils.parseToCMS(cmsDocument);
         } catch (Exception e) {
             LOG.warn("Unable to decode the provided CMS document : {}", e.getMessage());
             return false;
         }
 
-        SignerInformationStore signerInfos = cmsSignedData.getSignerInfos();
+        SignerInformationStore signerInfos = cms.getSignerInfos();
         if (signerInfos.size() != 1) {
             LOG.warn("CMSSignedData shall contain one and only one SignerInformation for signature signing process!");
             return false;
         }
 
-        final CAdESSignature cadesSignature = toCAdESSignature(cmsSignedData, messageDigest);
+        final CAdESSignature cadesSignature = toCAdESSignature(cms, messageDigest);
         SignatureCryptographicVerification scv = cadesSignature.getSignatureCryptographicVerification();
         if (!scv.isSignatureValid()) {
             LOG.warn("CMSSignedData signature is not valid!");
@@ -298,29 +300,29 @@ public class PAdESWithExternalCMSService implements Serializable {
      * This method verifies if the given {@code cms} signature is compliant for PAdES format
      *
      * @param messageDigest {@link DSSMessageDigest} computed on PDF's signature ByteRange
-     * @param cms {@link DSSDocument} to be verified
+     * @param cmsDocument {@link DSSDocument} to be verified
      * @return TRUE if the CMS is compliant to PAdES specification, FALSE otherwise
      */
-    public boolean isValidPAdESBaselineCMSSignedData(DSSMessageDigest messageDigest, DSSDocument cms) {
+    public boolean isValidPAdESBaselineCMSSignedData(DSSMessageDigest messageDigest, DSSDocument cmsDocument) {
         Objects.requireNonNull(messageDigest, "messageDigest shall be provided!");
-        Objects.requireNonNull(cms, "CMSSignedDocument shall be provided!");
+        Objects.requireNonNull(cmsDocument, "cmsDocument shall be provided!");
 
-        CMSSignedData cmsSignedData;
+        CMS cms;
         try {
-            cmsSignedData = DSSUtils.toCMSSignedData(cms);
+            cms = CMSUtils.parseToCMS(cmsDocument);
         } catch (Exception e) {
             LOG.warn("Unable to decode the provided CMS document : {}", e.getMessage());
             return false;
         }
 
-        final CAdESSignature cadeSSignature = toCAdESSignature(cmsSignedData, messageDigest);
+        final CAdESSignature cadeSSignature = toCAdESSignature(cms, messageDigest);
         final CMSForPAdESBaselineRequirementsChecker cmsRequirementsChecker =
                 new CMSForPAdESBaselineRequirementsChecker(cadeSSignature);
         return cmsRequirementsChecker.isValidForPAdESBaselineBProfile();
     }
 
-    private CAdESSignature toCAdESSignature(CMSSignedData cmsSignedData, DSSMessageDigest messageDigest) {
-        CAdESSignature signature = new CAdESSignature(cmsSignedData, cmsSignedData.getSignerInfos().iterator().next());
+    private CAdESSignature toCAdESSignature(CMS cms, DSSMessageDigest messageDigest) {
+        CAdESSignature signature = new CAdESSignature(cms, DSSASN1Utils.getFirstSignerInformation(cms.getSignerInfos()));
         signature.setDetachedContents(Collections.singletonList(DSSUtils.toDigestDocument(messageDigest)));
         return signature;
     }

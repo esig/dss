@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.pades.signature;
 
+import eu.europa.esig.dss.cms.CMS;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
@@ -40,12 +41,10 @@ import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.signature.AbstractSignatureService;
 import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.signature.SigningOperation;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
-import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import org.bouncycastle.cms.CMSException;
-import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.tsp.TSPException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -239,8 +238,8 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		Objects.requireNonNull(signatureLevel, "SignatureLevel must be defined!");
 		
 		final DSSMessageDigest messageDigest = computeDocumentDigest(toSignDocument, parameters);
-		final CMSSignedData cmsSignedData = cmsForPAdESGenerationService.buildCMSSignedData(messageDigest, parameters, signatureValue);
-		return DSSASN1Utils.getDEREncoded(cmsSignedData);
+		final CMS cms = cmsForPAdESGenerationService.buildCMS(messageDigest, parameters, signatureValue);
+		return cms.getDEREncoded();
 	}
 
 	@Override

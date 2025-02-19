@@ -23,6 +23,8 @@ package eu.europa.esig.dss.cades.signature;
 import eu.europa.esig.dss.alert.SilentOnStatusAlert;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
+import eu.europa.esig.dss.cms.CMS;
+import eu.europa.esig.dss.cms.CMSUtils;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -38,7 +40,6 @@ import java.util.Collection;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CAdESLevelTWithGeneralizedTimeTest extends AbstractCAdESTestSignature {
 
@@ -65,11 +66,10 @@ class CAdESLevelTWithGeneralizedTimeTest extends AbstractCAdESTestSignature {
 
     @Override
     protected Reports verify(DSSDocument signedDocument) {
-        assertTrue(signedDocument instanceof CMSSignedDocument);
-        CMSSignedDocument cmsSignedDocument = (CMSSignedDocument) signedDocument;
-        Collection<SignerInformation> signers = cmsSignedDocument.getCMSSignedData().getSignerInfos().getSigners();
+        CMS cms = CMSUtils.parseToCMS(signedDocument);
+        Collection<SignerInformation> signers = cms.getSignerInfos().getSigners();
         assertEquals(1, signers.size());
-        CAdESSignature cadesSignature = new CAdESSignature(cmsSignedDocument.getCMSSignedData(), signers.iterator().next());
+        CAdESSignature cadesSignature = new CAdESSignature(cms, signers.iterator().next());
 
         assertNotNull(cadesSignature.getSigningTime());
         assertEquals(DSSUtils.formatDateToRFC(signatureParameters.bLevel().getSigningDate()), DSSUtils.formatDateToRFC(cadesSignature.getSigningTime()));

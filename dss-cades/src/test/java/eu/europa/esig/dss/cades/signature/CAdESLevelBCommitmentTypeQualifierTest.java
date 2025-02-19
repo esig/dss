@@ -23,6 +23,7 @@ package eu.europa.esig.dss.cades.signature;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.cades.validation.CMSDocumentAnalyzer;
+import eu.europa.esig.dss.cms.CMS;
 import eu.europa.esig.dss.enumerations.CommitmentTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -42,7 +43,6 @@ import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.esf.CommitmentTypeIndication;
 import org.bouncycastle.asn1.esf.CommitmentTypeQualifier;
-import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SignerInformationStore;
 import org.junit.jupiter.api.BeforeEach;
@@ -102,10 +102,10 @@ class CAdESLevelBCommitmentTypeQualifierTest extends AbstractCAdESTestSignature 
         assertTrue(signatures.get(0) instanceof CAdESSignature);
 
         CAdESSignature signature = (CAdESSignature) signatures.get(0);
-        CMSSignedData cmsSignedData = signature.getCmsSignedData();
-        assertNotNull(cmsSignedData);
+        CMS cms = signature.getCMS();
+        assertNotNull(cms);
 
-        SignerInformationStore signerInfos = cmsSignedData.getSignerInfos();
+        SignerInformationStore signerInfos = cms.getSignerInfos();
         assertEquals(1, signerInfos.size());
 
         SignerInformation signerInformation = signerInfos.getSigners().iterator().next();

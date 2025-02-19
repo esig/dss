@@ -41,7 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class CMSNotAdESLevelLTWithoutCertificatesTest extends AbstractCAdESTestSignature {
+public class CMSNotAdESLevelLTWithoutCertificatesTest extends AbstractCAdESTestSignature {
 
     private CertificateVerifier certificateVerifier;
     private DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> service;

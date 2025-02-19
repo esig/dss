@@ -488,7 +488,7 @@ public class XAdESEvidenceRecordDigestBuilder extends AbstractSignatureEvidenceR
             digestCalculator.update(hashValue);
         }
         // 4. Calculate hash value
-        DSSMessageDigest messageDigest = digestCalculator.getMessageDigest();
+        DSSMessageDigest messageDigest = digestCalculator.getMessageDigest(digestAlgorithm);
         if (LOG.isTraceEnabled()) {
             LOG.trace("4. Message-digest of concatenated string: {}", messageDigest.getHexValue());
         }

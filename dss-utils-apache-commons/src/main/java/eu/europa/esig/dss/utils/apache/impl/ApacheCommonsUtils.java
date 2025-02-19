@@ -29,6 +29,7 @@ import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.output.NullOutputStream;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -294,6 +295,11 @@ public class ApacheCommonsUtils implements IUtils {
 		IOUtils.write(content, os);
 	}
 	
+	@Override
+	public OutputStream nullOutputStream() {
+		return NullOutputStream.INSTANCE;
+	}
+
 	@Override
 	public long getInputStreamSize(InputStream is) throws IOException {
 		long byteCounter = 0;

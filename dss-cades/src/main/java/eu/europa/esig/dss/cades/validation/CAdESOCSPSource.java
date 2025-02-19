@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.cades.validation;
 
+import eu.europa.esig.dss.cms.CMS;
+import eu.europa.esig.dss.spi.x509.CMSOCSPSource;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.cms.CMSSignedData;
-
-import eu.europa.esig.dss.spi.x509.CMSOCSPSource;
 
 /**
  * The OCSP source for a CAdES signature
@@ -36,9 +36,22 @@ public class CAdESOCSPSource extends CMSOCSPSource {
 	 *
 	 * @param cmsSignedData {@link CMSSignedData} of the CAdES signature
 	 * @param unsignedAttributes {@link AttributeTable} the corresponding unsigned properties if present
+	 * @deprecated since DSS 6.3. Please use {@code new CAdESOCSPSource(CMS cms, AttributeTable unsignedAttributes)}
+	 * 	 *             constructor instead.
 	 */
+	@Deprecated
 	public CAdESOCSPSource(CMSSignedData cmsSignedData, AttributeTable unsignedAttributes) {
 		super(cmsSignedData, unsignedAttributes);
+	}
+
+	/**
+	 * Creates a CAdES OCSP source from a {@code CMS} and the related {@code unsignedAttributes} of the signer
+	 *
+	 * @param cms {@link CMS}
+	 * @param unsignedAttributes {@link AttributeTable}
+	 */
+	public CAdESOCSPSource(final CMS cms, final AttributeTable unsignedAttributes) {
+		super(cms.getOcspResponseStore(), cms.getOcspBasicStore(), unsignedAttributes);
 	}
 
 }

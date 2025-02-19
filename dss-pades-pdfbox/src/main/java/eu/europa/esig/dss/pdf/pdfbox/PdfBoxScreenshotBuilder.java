@@ -25,8 +25,8 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pdf.PdfMemoryUsageSetting;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
-import eu.europa.esig.dss.signature.resources.DSSResourcesHandler;
-import eu.europa.esig.dss.signature.resources.DSSResourcesHandlerBuilder;
+import eu.europa.esig.dss.spi.signature.resources.DSSResourcesHandler;
+import eu.europa.esig.dss.spi.signature.resources.DSSResourcesHandlerBuilder;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;

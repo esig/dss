@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.signature.resources;
 
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.spi.signature.resources.DSSResourcesHandlerBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -141,7 +141,7 @@ class CAdESLevelBTest extends AbstractCAdESTestSignature {
             assertInstanceOf(CAdESSignature.class, signatures.get(0));
 			
 			CAdESSignature signature = (CAdESSignature) signatures.get(0);
-			assertNotNull(signature.getCmsSignedData());
+			assertNotNull(signature.getCMS());
 			assertTrue(Utils.isArrayNotEmpty(signature.getMessageDigestValue()));
 
 			ASN1InputStream asn1sInput = new ASN1InputStream(byteArray);

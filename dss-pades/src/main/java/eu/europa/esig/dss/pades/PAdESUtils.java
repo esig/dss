@@ -40,8 +40,8 @@ import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfVriDict;
 import eu.europa.esig.dss.pdf.SigFieldPermissions;
-import eu.europa.esig.dss.signature.resources.DSSResourcesHandler;
-import eu.europa.esig.dss.signature.resources.DSSResourcesHandlerBuilder;
+import eu.europa.esig.dss.spi.signature.resources.DSSResourcesHandler;
+import eu.europa.esig.dss.spi.signature.resources.DSSResourcesHandlerBuilder;
 import eu.europa.esig.dss.signature.resources.InMemoryResourcesHandlerBuilder;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
@@ -68,6 +68,7 @@ public final class PAdESUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PAdESUtils.class);
 
+	// TODO : replace with CAdESUtils.DEFAULT_RESOURCES_HANDLER_BUILDER ?
 	/** The default resources handler builder to be used across the code */
 	public static final InMemoryResourcesHandlerBuilder DEFAULT_RESOURCES_HANDLER_BUILDER = new InMemoryResourcesHandlerBuilder();
 

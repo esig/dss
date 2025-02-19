@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.pdf;
 
+import eu.europa.esig.dss.cms.CMS;
+import eu.europa.esig.dss.cms.CMSUtils;
 import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pades.PAdESUtils;
@@ -29,8 +31,6 @@ import eu.europa.esig.dss.pdf.modifications.DefaultPdfObjectModificationsFinder;
 import eu.europa.esig.dss.pdf.modifications.ObjectModification;
 import eu.europa.esig.dss.pdf.modifications.PdfObjectModifications;
 import eu.europa.esig.dss.utils.Utils;
-import org.bouncycastle.cms.CMSException;
-import org.bouncycastle.cms.CMSSignedData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,8 +49,8 @@ public class PdfSigDictWrapper implements PdfSignatureDictionary {
 	/** The PDF dictionary */
 	private final PdfDict dictionary;
 
-	/** The CMSSignedData */
-	private final CMSSignedData cmsSignedData;
+	/** The CMS */
+	private final CMS cms;
 
 	/** The signed ByteRange */
 	private final ByteRange byteRange;
@@ -65,16 +65,12 @@ public class PdfSigDictWrapper implements PdfSignatureDictionary {
 	 */
 	public PdfSigDictWrapper(PdfDict dictionary) {
 		this.dictionary = dictionary;
-		this.cmsSignedData = buildCMSSignedData();
+		this.cms = buildCMS();
 		this.byteRange = buildByteRange();
 	}
 
-	private CMSSignedData buildCMSSignedData() {
-		try {
-			return new CMSSignedData(getContents());
-		} catch (CMSException e) {
-			throw new DSSException("Unable to build an instance of CMSSignedData", e);
-		}
+	private CMS buildCMS() {
+		return CMSUtils.parseToCMS(getContents());
 	}
 
 	private ByteRange buildByteRange() {
@@ -132,8 +128,8 @@ public class PdfSigDictWrapper implements PdfSignatureDictionary {
 	}
 
 	@Override
-	public CMSSignedData getCMSSignedData() {
-		return cmsSignedData;
+	public CMS getCMS() {
+		return cms;
 	}
 
 	@Override

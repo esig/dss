@@ -29,15 +29,15 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.Policy;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.signature.resources.InMemoryResourcesHandlerBuilder;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -55,7 +55,7 @@ class CAdESSignaturePolicyStoreForSignatureByIdTest extends AbstractCAdESTestSig
     private static final String HTTP_SPURI_TEST = "http://spuri.test";
     private static final String SIGNATURE_POLICY_ID = "1.2.3.4.5.6";
 
-    private static final DSSDocument POLICY_CONTENT = new FileDocument("src/test/resources/validation/signature-policy.der");
+    private static final DSSDocument POLICY_CONTENT = new InMemoryDocument(CAdESSignaturePolicyStoreForSignatureByIdTest.class.getResourceAsStream("/validation/signature-policy.der"));
 
     private CAdESService service;
     private CAdESSignatureParameters signatureParameters;
@@ -104,6 +104,7 @@ class CAdESSignaturePolicyStoreForSignatureByIdTest extends AbstractCAdESTestSig
         signaturePolicyStore.setSignaturePolicyContent(POLICY_CONTENT);
 
         CAdESSignaturePolicyStoreBuilder signaturePolicyStoreBuilder = new CAdESSignaturePolicyStoreBuilder();
+        signaturePolicyStoreBuilder.setResourcesHandlerBuilder(new InMemoryResourcesHandlerBuilder());
         DSSDocument signedDocumentWithSignaturePolicyStore = signaturePolicyStoreBuilder.addSignaturePolicyStore(
                 doubleSignedDocument, signaturePolicyStore, firstSigId);
         assertNotNull(signedDocumentWithSignaturePolicyStore);

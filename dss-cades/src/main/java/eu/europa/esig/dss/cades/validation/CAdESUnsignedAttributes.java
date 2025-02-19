@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.cades.validation;
 
-import eu.europa.esig.dss.cades.CMSUtils;
+import eu.europa.esig.dss.cades.CAdESUtils;
 import eu.europa.esig.dss.cades.TimeStampTokenProductionComparator;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
@@ -64,7 +64,7 @@ public class CAdESUnsignedAttributes extends CAdESSigProperties {
 	public List<CAdESAttribute> getAttributes() {
 		List<CAdESAttribute> attributes = super.getAttributes();
 		// Multiple timestamps need to be sorted in CAdES by their production date
-		return sortTimestamps(attributes, CMSUtils.getTimestampOids());
+		return sortTimestamps(attributes, CAdESUtils.getTimestampOids());
 	}
 	
 	private List<CAdESAttribute> sortTimestamps(List<CAdESAttribute> attributes, List<ASN1ObjectIdentifier> timestampOids) {

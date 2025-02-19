@@ -124,6 +124,9 @@
 		<module>dss-pki-factory</module>
 		<module>dss-pki-factory-jaxb</module>
 		<module>dss-document</module>
+		<module>dss-cms</module>
+		<module>dss-cms-object</module>
+		<module>dss-cms-stream</module>
 		<module>dss-validation</module>
 		<module>dss-test</module>
 		<module>dss-xades</module>
@@ -176,7 +179,7 @@
 
 		<module>dss-jacoco-coverage</module>
 		<module>dss-bom</module>
-    </modules>
+	</modules>
 
 	<build>
 		<plugins>
@@ -571,6 +574,27 @@
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-cades</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-cades</artifactId>
+				<type>test-jar</type>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-cms</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-cms-object</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-cms-stream</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

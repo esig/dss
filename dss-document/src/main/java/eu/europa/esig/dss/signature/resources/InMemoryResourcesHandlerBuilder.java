@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.signature.resources;
 
+import eu.europa.esig.dss.spi.signature.resources.DSSResourcesHandlerBuilder;
+
 /**
  * This class creates an {@code InMemoryResourcesHandler} to create in-memory objects
  *

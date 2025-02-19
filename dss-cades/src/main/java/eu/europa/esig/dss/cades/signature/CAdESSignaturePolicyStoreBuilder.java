@@ -20,28 +20,30 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
-import eu.europa.esig.dss.cades.CMSUtils;
+import eu.europa.esig.dss.cades.CAdESUtils;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.cades.validation.CMSDocumentAnalyzer;
-import eu.europa.esig.dss.spi.exception.IllegalInputException;
+import eu.europa.esig.dss.cms.CMS;
+import eu.europa.esig.dss.cms.CMSUtils;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
+import eu.europa.esig.dss.model.signature.SignaturePolicy;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.OID;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.spi.signature.AdvancedSignature;
-import eu.europa.esig.dss.model.signature.SignaturePolicy;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.policy.DefaultSignaturePolicyValidatorLoader;
 import eu.europa.esig.dss.spi.policy.SignaturePolicyValidator;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.resources.DSSResourcesHandlerBuilder;
+import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.DERIA5String;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.cms.AttributeTable;
-import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SignerInformationStore;
 import org.slf4j.Logger;
@@ -58,6 +60,9 @@ public class CAdESSignaturePolicyStoreBuilder {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CAdESSignaturePolicyStoreBuilder.class);
 
+	/** This object is used to create data container objects such as an OutputStream or a DSSDocument */
+	protected DSSResourcesHandlerBuilder resourcesHandlerBuilder;
+
 	/**
 	 * Default constructor
 	 */
@@ -66,33 +71,43 @@ public class CAdESSignaturePolicyStoreBuilder {
 	}
 
 	/**
+	 * This method sets a {@code DSSResourcesHandlerBuilder} to be used for operating with internal objects
+	 * during the signature creation procedure.
+	 *
+	 * @param resourcesHandlerBuilder {@link DSSResourcesHandlerBuilder}
+	 */
+	public void setResourcesHandlerBuilder(DSSResourcesHandlerBuilder resourcesHandlerBuilder) {
+		this.resourcesHandlerBuilder = resourcesHandlerBuilder;
+	}
+
+	/**
 	 * Extends all signatures within the given document, matching the provided policy in {@code SignaturePolicyStore}
 	 *
 	 * @param signatureDocument {@link DSSDocument} to extend
 	 * @param signaturePolicyStore {@link SignaturePolicyStore} to add
-	 * @return {@link CMSSignedData} with a SignaturePolicyStore
+	 * @return {@link CMS} with a SignaturePolicyStore
 	 */
 	public DSSDocument addSignaturePolicyStore(DSSDocument signatureDocument, SignaturePolicyStore signaturePolicyStore) {
 		Objects.requireNonNull(signatureDocument, "Signature document must be provided!");
 
-		CMSSignedData originalCmsSignedData = DSSUtils.toCMSSignedData(signatureDocument);
-		CMSSignedData newCmsSignedData = extendCMSSignedData(originalCmsSignedData, signaturePolicyStore);
-		newCmsSignedData = CMSUtils.populateDigestAlgorithmSet(newCmsSignedData, originalCmsSignedData);
-		return new CMSSignedDocument(newCmsSignedData);
+		CMS originalCmsSignedData = CMSUtils.parseToCMS(signatureDocument);
+		CMS newCmsSignedData = extendCMS(originalCmsSignedData, signaturePolicyStore);
+		newCmsSignedData = CMSUtils.populateDigestAlgorithmSet(newCmsSignedData, originalCmsSignedData.getDigestAlgorithmIDs());
+		return CMSUtils.writeToDSSDocument(newCmsSignedData, resourcesHandlerBuilder);
 	}
 
 	/**
-	 * Creates a new CMSSignedData with a SignaturePolicyStore for matching signatures
+	 * Creates a new CMS with a SignaturePolicyStore for matching signatures
 	 *
-	 * @param cmsSignedData {@link CMSSignedData} to extend
+	 * @param cms {@link CMS} to extend
 	 * @param signaturePolicyStore {@link SignaturePolicyStore} to add
-	 * @return {@link CMSSignedData} with a SignaturePolicyStore
+	 * @return {@link CMS} with a SignaturePolicyStore
 	 */
-	public CMSSignedData extendCMSSignedData(CMSSignedData cmsSignedData, SignaturePolicyStore signaturePolicyStore) {
-		Objects.requireNonNull(cmsSignedData, "CMSSignedData must be provided!");
+	public CMS extendCMS(CMS cms, SignaturePolicyStore signaturePolicyStore) {
+		Objects.requireNonNull(cms, "CMS must be provided!");
 		assertConfigurationValid(signaturePolicyStore);
 
-		CMSDocumentAnalyzer documentValidator = new CMSDocumentAnalyzer(cmsSignedData);
+		CMSDocumentAnalyzer documentValidator = new CMSDocumentAnalyzer(cms);
 		List<AdvancedSignature> signatures = documentValidator.getSignatures();
 
 		if (Utils.isCollectionEmpty(signatures)) {
@@ -114,7 +129,7 @@ public class CAdESSignaturePolicyStoreBuilder {
 			throw new IllegalInputException("The process did not find a signature to add SignaturePolicyStore!");
 		}
 		final SignerInformationStore newSignerStore = new SignerInformationStore(newSignerInformationList);
-		return CMSSignedData.replaceSigners(cmsSignedData, newSignerStore);
+		return CMSUtils.replaceSigners(cms, newSignerStore);
 	}
 
 	/**
@@ -130,26 +145,26 @@ public class CAdESSignaturePolicyStoreBuilder {
 											   String signatureId) {
 		Objects.requireNonNull(signatureDocument, "Signature document must be provided!");
 
-		CMSSignedData originalCmsSignedData = DSSUtils.toCMSSignedData(signatureDocument);
-		CMSSignedData newCmsSignedData = extendCMSSignedData(originalCmsSignedData, signaturePolicyStore, signatureId);
-		newCmsSignedData = CMSUtils.populateDigestAlgorithmSet(newCmsSignedData, originalCmsSignedData);
-		return new CMSSignedDocument(newCmsSignedData);
+		CMS originalCmsSignedData = CMSUtils.parseToCMS(signatureDocument);
+		CMS newCmsSignedData = extendCMS(originalCmsSignedData, signaturePolicyStore, signatureId);
+		newCmsSignedData = CMSUtils.populateDigestAlgorithmSet(newCmsSignedData, originalCmsSignedData.getDigestAlgorithmIDs());
+		return CMSUtils.writeToDSSDocument(newCmsSignedData, resourcesHandlerBuilder);
 	}
 
 	/**
-	 * Creates a new CMSSignedData with a SignaturePolicyStore for a signature with {@code signatureId}
+	 * Creates a new CMS with a SignaturePolicyStore for a signature with {@code signatureId}
 	 *
-	 * @param cmsSignedData {@link CMSSignedData} to extend
+	 * @param cms {@link CMS} to extend
 	 * @param signaturePolicyStore {@link SignaturePolicyStore} to add
 	 * @param signatureId {@link String} id of a signature to add signature policy store to
-	 * @return {@link CMSSignedData} with a SignaturePolicyStore
+	 * @return {@link CMS} with a SignaturePolicyStore
 	 */
-	public CMSSignedData extendCMSSignedData(CMSSignedData cmsSignedData, SignaturePolicyStore signaturePolicyStore,
+	public CMS extendCMS(CMS cms, SignaturePolicyStore signaturePolicyStore,
 											 String signatureId) {
-		Objects.requireNonNull(cmsSignedData, "CMSSignedData must be provided!");
+		Objects.requireNonNull(cms, "CMS must be provided!");
 		assertConfigurationValid(signaturePolicyStore);
 
-		CMSDocumentAnalyzer documentValidator = new CMSDocumentAnalyzer(cmsSignedData);
+		CMSDocumentAnalyzer documentValidator = new CMSDocumentAnalyzer(cms);
 		AdvancedSignature signature = documentValidator.getSignatureById(signatureId);
 		if (signature == null) {
 			throw new IllegalInputException(String.format("Unable to find a signature with Id : %s!", signatureId));
@@ -171,7 +186,7 @@ public class CAdESSignaturePolicyStoreBuilder {
 			}
 		}
 		final SignerInformationStore newSignerStore = new SignerInformationStore(newSignerInformationList);
-		return CMSSignedData.replaceSigners(cmsSignedData, newSignerStore);
+		return CMSUtils.replaceSigners(cms, newSignerStore);
 	}
 
 	/**
@@ -234,10 +249,10 @@ public class CAdESSignaturePolicyStoreBuilder {
 	}
 	
 	private SignerInformation addSignaturePolicyStore(SignerInformation signerInformation, SignaturePolicyStore signaturePolicyStore) {
-		AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
+		AttributeTable unsignedAttributes = CAdESUtils.getUnsignedAttributes(signerInformation);
 		ASN1Sequence sigPolicyStore = getSignaturePolicyStore(signaturePolicyStore);
 		AttributeTable unsignedAttributesWithPolicyStore = unsignedAttributes.add(OID.id_aa_ets_sigPolicyStore, sigPolicyStore);
-		return SignerInformation.replaceUnsignedAttributes(signerInformation, unsignedAttributesWithPolicyStore);
+		return CMSUtils.replaceUnsignedAttributes(signerInformation, unsignedAttributesWithPolicyStore);
 	}
 
 	/**
@@ -280,7 +295,7 @@ public class CAdESSignaturePolicyStoreBuilder {
 	}
 	
 	private void assertSignaturePolicyStoreExtensionPossible(SignerInformation signerInformation) {
-		if (CMSUtils.containsATSTv2(signerInformation)) {
+		if (CAdESUtils.containsATSTv2(signerInformation)) {
 			throw new IllegalInputException("Cannot add signature policy store to a CAdES containing an archiveTimestampV2");
 		}
 	}

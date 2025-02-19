@@ -20,8 +20,10 @@
  */
 package eu.europa.esig.dss.pades.signature;
 
-import eu.europa.esig.dss.cades.signature.CMSSignedDocument;
+import eu.europa.esig.dss.cades.signature.CMSBuilder;
 import eu.europa.esig.dss.cades.signature.CustomContentSigner;
+import eu.europa.esig.dss.cms.CMS;
+import eu.europa.esig.dss.cms.CMSSignedDocument;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -33,9 +35,7 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.suite.AbstractPAdESTestSignature;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.x509.CMSSignedDataBuilder;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInfoGenerator;
 import org.junit.jupiter.api.BeforeEach;
@@ -100,12 +100,12 @@ public abstract class AbstractPAdESWithExternalCMSServiceTest extends AbstractPA
 		CustomContentSigner customContentSigner = new CustomContentSigner(signatureAlgorithm.getJCEId());
 		SignerInfoGenerator signerInfoGenerator = padesCMSSignedDataBuilder.build(signatureParameters, customContentSigner);
 
-		CMSSignedDataBuilder cmsSignedDataBuilder = new CMSSignedDataBuilder()
+		CMSBuilder cmsBuilder = new CMSBuilder()
 				.setSigningCertificate(signatureParameters.getSigningCertificate())
 				.setCertificateChain(signatureParameters.getCertificateChain())
 				.setGenerateWithoutCertificates(signatureParameters.isGenerateTBSWithoutCertificate())
 				.setEncapsulate(false);
-		cmsSignedDataBuilder.createCMSSignedData(signerInfoGenerator, new InMemoryDocument(messageDigest.getValue()));
+		cmsBuilder.createCMS(signerInfoGenerator, new InMemoryDocument(messageDigest.getValue()));
 
 		SignatureValue signatureValue = getToken().sign(new ToBeSigned(customContentSigner.getOutputStream().toByteArray()),
 				signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
@@ -113,8 +113,8 @@ public abstract class AbstractPAdESWithExternalCMSServiceTest extends AbstractPA
 		customContentSigner = new CustomContentSigner(signatureAlgorithm.getJCEId(), signatureValue.getValue());
 		signerInfoGenerator = padesCMSSignedDataBuilder.build(signatureParameters, customContentSigner);
 
-		CMSSignedData cmsSignedData = cmsSignedDataBuilder.createCMSSignedData(signerInfoGenerator, new InMemoryDocument(messageDigest.getValue()));
-		return DSSASN1Utils.getDEREncoded(cmsSignedData);
+		CMS cms = cmsBuilder.createCMS(signerInfoGenerator, new InMemoryDocument(messageDigest.getValue()));
+		return cms.getDEREncoded();
 	}
 
 	@Override
