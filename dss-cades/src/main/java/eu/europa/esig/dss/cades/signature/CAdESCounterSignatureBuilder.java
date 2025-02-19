@@ -46,7 +46,6 @@ import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.cms.CMSAttributes;
 import org.bouncycastle.cms.CMSException;
-import org.bouncycastle.cms.CMSProcessableByteArray;
 import org.bouncycastle.cms.CMSSignedDataGenerator;
 import org.bouncycastle.cms.SignerInfoGenerator;
 import org.bouncycastle.cms.SignerInformation;
@@ -237,9 +236,7 @@ public class CAdESCounterSignatureBuilder {
 			// NOTE: use a simplified CMSSignedData generation to only create the required SignerInformationStore
 			CMSSignedDataGenerator cmsSignedDataGenerator = new CMSSignedDataGenerator();
 			cmsSignedDataGenerator.addSignerInfoGenerator(signerInfoGenerator);
-			return cmsSignedDataGenerator
-					.generate(new CMSProcessableByteArray(null, signerInformation.getSignature()), false)
-					.getSignerInfos();
+			return cmsSignedDataGenerator.generateCounterSigners(signerInformation);
 
 		} catch (CMSException e) {
 				throw new DSSException(String.format("Unable to generate counter-signature: %s", e.getMessage()), e);
