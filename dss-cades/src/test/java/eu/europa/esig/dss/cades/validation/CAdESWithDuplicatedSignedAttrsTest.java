@@ -6,7 +6,7 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DigestDocument;
-import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
 
 import java.util.Collections;
@@ -21,7 +21,7 @@ class CAdESWithDuplicatedSignedAttrsTest extends AbstractCAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {
-        return new FileDocument("src/test/resources/validation/cades-duplicated-signed-attrs.p7m");
+        return new InMemoryDocument(CAdESWithContentTimestampTest.class.getResourceAsStream("/validation/cades-duplicated-signed-attrs.p7m"));
     }
 
     @Override
