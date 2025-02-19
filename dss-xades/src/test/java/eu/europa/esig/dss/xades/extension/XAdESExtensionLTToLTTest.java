@@ -20,11 +20,18 @@
  */
 package eu.europa.esig.dss.xades.extension;
 
-class XAdESExtensionLTtoLTAWithSelfSignedTest extends XAdESExtensionLTToLTATest {
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 
-	@Override
-	protected String getSigningAlias() {
-		return SELF_SIGNED_USER;
-	}
+class XAdESExtensionLTToLTTest extends AbstractXAdESTestExtension {
+
+    @Override
+    protected SignatureLevel getOriginalSignatureLevel() {
+        return SignatureLevel.XAdES_BASELINE_LT;
+    }
+
+    @Override
+    protected SignatureLevel getFinalSignatureLevel() {
+        return SignatureLevel.XAdES_BASELINE_LT;
+    }
 
 }

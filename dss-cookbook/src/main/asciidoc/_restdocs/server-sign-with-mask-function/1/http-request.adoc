@@ -1,7 +1,0 @@
-[source,http,options="nowrap"]
-----
-GET /services/rest/server-signing/key/certificate HTTP/1.1
-Accept: application/json, application/javascript, text/javascript, text/json
-Host: localhost:8080
-
-----

@@ -186,15 +186,18 @@ class RevocationDataVerifierFactoryTest {
         algo.setDate("2025");
         algoExpirationDate.getAlgos().add(algo);
 
-        revocationDataVerifier = new RevocationDataVerifierFactory(validationPolicy).create();
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2024, Calendar.JANUARY, 1);
+
+        revocationDataVerifier = new RevocationDataVerifierFactory(validationPolicy).setValidationTime(calendar.getTime()).create();
         assertTrue(revocationDataVerifier.isAcceptable(ocspToken));
 
         algo.setDate("2015");
 
-        revocationDataVerifier = new RevocationDataVerifierFactory(validationPolicy).create();
+        revocationDataVerifier = new RevocationDataVerifierFactory(validationPolicy).setValidationTime(calendar.getTime()).create();
         assertFalse(revocationDataVerifier.isAcceptable(ocspToken));
 
-        Calendar calendar = Calendar.getInstance();
+        calendar = Calendar.getInstance();
         calendar.setTime(new Date());
         calendar.set(Calendar.YEAR, 2000);
 

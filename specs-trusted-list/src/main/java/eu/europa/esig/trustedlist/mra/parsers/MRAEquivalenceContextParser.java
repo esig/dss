@@ -24,6 +24,10 @@ import eu.europa.esig.dss.enumerations.MRAEquivalenceContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Parses a {@code MRAEquivalenceContext} object.
+ *
+ */
 public final class MRAEquivalenceContextParser {
 
 	private static final Logger LOG = LoggerFactory.getLogger(MRAEquivalenceContextParser.class);

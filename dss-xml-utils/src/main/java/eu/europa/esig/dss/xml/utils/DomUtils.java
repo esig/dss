@@ -615,7 +615,7 @@ public final class DomUtils {
 	 */
 	public static DSSDocument createDssDocumentFromDomDocument(Document document, String name) {
 		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-			DomUtils.writeDocumentTo(document, baos);
+			writeDocumentTo(document, baos);
 			return new InMemoryDocument(baos.toByteArray(), name, MimeTypeEnum.XML);
 		} catch (IOException e) {
 			throw new DSSException(String.format("Unable to create a DSSDocument from DOM document : %s", e.getMessage()), e);
@@ -645,7 +645,7 @@ public final class DomUtils {
 	 */
 	private static void serializeNode(Node node, Result result) {
 		try {
-			Transformer transformer = DomUtils.getSecureTransformer();
+			Transformer transformer = getSecureTransformer();
 			Document document;
 			if (Node.DOCUMENT_NODE == node.getNodeType()) {
 				document = (Document) node;
@@ -698,8 +698,8 @@ public final class DomUtils {
 	public static String getId(String uri) {
 		String id = uri;
 		if (startsFromHash(uri)) {
-			if (DomUtils.isXPointerQuery(uri)) {
-				String xpointerId = DomUtils.getXPointerId(uri);
+			if (isXPointerQuery(uri)) {
+				String xpointerId = getXPointerId(uri);
 				if (xpointerId != null) {
 					id = xpointerId;
 				}
@@ -720,7 +720,7 @@ public final class DomUtils {
 	 */
 	public static Element getElementById(Node node, String id) {
 		try {
-			return DomUtils.getElement(node, ".//*" + DomUtils.getXPathByIdAttribute(id));
+			return getElement(node, ".//*" + getXPathByIdAttribute(id));
 		} catch (Exception e) {
 			String errorMessage = "An exception occurred during an attempt to extract an element by its Id '{}' : {}";
 			if (LOG.isDebugEnabled()) {
