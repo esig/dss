@@ -34,7 +34,7 @@ import eu.europa.esig.dss.xades.tsl.TrustedListV5SignatureParametersBuilder;
  * NOTE: the same instance of SignatureParameters shall be used on calls
  * {@code DocumentSignatureService.getDataToSign(...)} and {@code DocumentSignatureService.signDocument(...)}
  *
- * @deprecated since DSS 6.1.1. Please use {@code TrustedListV5SignatureParametersBuilder} or
+ * @deprecated since DSS 6.1.1/6.2. Please use {@code TrustedListV5SignatureParametersBuilder} or
  *             {@code TrustedListV6SignatureParametersBuilder} instead.
  */
 @Deprecated
@@ -45,7 +45,7 @@ public class TrustedListSignatureParametersBuilder extends TrustedListV5Signatur
 	 * 
 	 * @param signingCertificate {@link CertificateToken} to be used for a signature creation
 	 * @param tlXmlDocument {@link DSSDocument} Trusted List XML document to be signed
-	 * @deprecated since DSS 6.2. Please use instead
+	 * @deprecated since DSS 6.1.1/6.2. Please use instead
 	 *             {@code new TrustedListV5SignatureParametersBuilder(signingCertificate, tlXmlDocument)}
 	 */
 	@Deprecated
