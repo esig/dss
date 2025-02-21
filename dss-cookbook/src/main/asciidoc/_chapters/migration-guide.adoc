@@ -28,12 +28,23 @@ XAdESSignatureParameters parameters = builder.build();
 ...
 ----
                                                                      a|
+For Trusted List v5:
 [source,java]
 ----
 import eu.europa.esig.dss.xades.tsl.TrustedListV5SignatureParametersBuilder;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 
 TrustedListV5SignatureParametersBuilder builder = new TrustedListV5SignatureParametersBuilder(signingCertificate, xmlTrustedList);
+XAdESSignatureParameters parameters = builder.build();
+...
+----
+For Trusted List v6:
+[source,java]
+----
+import eu.europa.esig.dss.xades.tsl.TrustedListV6SignatureParametersBuilder;
+import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+
+TrustedListV6SignatureParametersBuilder builder = new TrustedListV6SignatureParametersBuilder(signingCertificate, xmlTrustedList);
 XAdESSignatureParameters parameters = builder.build();
 ...
 ----
