@@ -14,7 +14,7 @@
 |v6.1.1            |February 2025           a|Main new features / improvements :
 
                                             * Trusted List v6 support (ETSI TS 119 612 v2.3.1, cf. <<R11>>);
-                                            * Updated vulnerable dependencies (FOP, logback);
+                                            * Updated dependencies (BouncyCastle, FOP, logback);
                                             * Fixed expired unit tests.
 
 |v6.1              |September 2024          a|Bug fixes :
