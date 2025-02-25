@@ -25,6 +25,7 @@ import eu.europa.esig.dss.cades.TimeStampTokenProductionComparator;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Set;
+import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.tsp.TimeStampToken;
 
@@ -39,6 +40,17 @@ import java.util.List;
 public class CAdESUnsignedAttributes extends CAdESSigProperties {
 
 	private static final long serialVersionUID = -2908905249481936152L;
+
+	/**
+	 * The default constructor
+	 *
+	 * @param attributeTable {@link AttributeTable} unsigned attributes table
+	 * @deprecated since DSS 6.0.1. Please use {@code new CAdESSigProperties(ASN1Set asn1Set)} instead
+	 */
+	@Deprecated
+	CAdESUnsignedAttributes(AttributeTable attributeTable) {
+		super(attributeTable);
+	}
 
 	/**
 	 * The default constructor

@@ -22,7 +22,9 @@ package eu.europa.esig.dss.cades.validation;
 
 import eu.europa.esig.dss.validation.SignatureProperties;
 import org.bouncycastle.asn1.ASN1Set;
+import org.bouncycastle.asn1.DERSet;
 import org.bouncycastle.asn1.cms.Attribute;
+import org.bouncycastle.asn1.cms.AttributeTable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +38,25 @@ public abstract class CAdESSigProperties implements SignatureProperties<CAdESAtt
 
 	/** The CMS attribute table set */
 	private final ASN1Set asn1Set;
+
+	/**
+	 * The default constructor
+	 *
+	 * @param attributeTable {@link AttributeTable}
+	 * @deprecated since DSS 6.0.1. Please use {@code new CAdESSigProperties(ASN1Set asn1Set)} instead
+	 */
+	@Deprecated
+	CAdESSigProperties(AttributeTable attributeTable) {
+		this.asn1Set = toASN1Set(attributeTable);
+	}
+
+	private static ASN1Set toASN1Set(AttributeTable attributeTable) {
+		// TODO : method to ease migration. To be removed.
+		if (attributeTable == null) {
+			return null;
+		}
+		return new DERSet(attributeTable.toASN1EncodableVector());
+	}
 
 	/**
 	 * The default constructor
