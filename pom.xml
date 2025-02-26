@@ -52,7 +52,7 @@
 		<pdfbox.version>2.0.30</pdfbox.version>
 		<openpdf.version>1.3.34</openpdf.version>
 		<httpclient5.version>5.3</httpclient5.version>
-		<verapdf.version>1.26.1</verapdf.version>
+		<verapdf.version>1.26.5</verapdf.version>
 
 		<jakarta.bind-api.version>3.0.1</jakarta.bind-api.version> <!-- Version 4 requires JDK 11+ -->
 		<jakarta.activation-api.version>2.1.2</jakarta.activation-api.version>
