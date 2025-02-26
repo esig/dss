@@ -11,6 +11,18 @@
 |===
 |Version           |Release date             |Features
 
+|v5.13.1           |February 2025           a|Main new features / improvements :
+
+                                            * Trusted List v6 support (ETSI TS 119 612 v2.3.1, cf. <<R11>>);
+                                            * Updated vulnerable dependencies (BouncyCastle, VeraPdf, FOP, logback);
+                                            * Fixed expired unit tests.
+
+Bug fixes :
+
+                                            * Possible memory leak during XAdES signature creation;
+                                            * CertificateValues/RevocationValues incorrect format in ETSI Validation Report.
+
+
 |v5.13             |December 2023           a|Bug fixes :
 
                                             * RFC 6283 XML Evidence Records (XMLERS) bug fixes;
@@ -343,14 +355,14 @@ _pass:[*] October 2015: Implementing Acts Art. 27 & 37 (eSig formats)_
 
 To upgrade version of DSS, locate to the `pom.xml` file of your project, search for the properties and then change the dss version in the corresponding field(s).
 
-The example below shows how to switch to DSS version `5.13` using <<BomModule>>:
+The example below shows how to switch to DSS version `5.13.1` using <<BomModule>>:
 
 [source,xml]
 .pom.xml
 ----
 <properties>
     ...
-    <dss.version>5.13</dss.version>
+    <dss.version>5.13.1</dss.version>
     ...
 </properties>
 

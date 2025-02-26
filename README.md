@@ -28,7 +28,7 @@ https://central.sonatype.com/search?q=eu.europa.ec.joinup.sd-dss
         &lt;dependency&gt;
             &lt;groupId&gt;eu.europa.ec.joinup.sd-dss&lt;/groupId&gt;
             &lt;artifactId&gt;dss-bom&lt;/artifactId&gt;
-            &lt;version&gt;5.13&lt;/version&gt;
+            &lt;version&gt;5.13.1&lt;/version&gt;
             &lt;type&gt;pom&lt;/type&gt;
             &lt;scope&gt;import&lt;/scope&gt;
         &lt;/dependency&gt;
