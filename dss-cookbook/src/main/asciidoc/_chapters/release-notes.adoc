@@ -62,6 +62,18 @@
                                             * Validation fails when SigningCertificateDigestAlgorithm constraint level is higher than failed Cryptographic level;
                                             * Dockerfile fix.
 
+|v6.0.1           |February 2025            a|Main new features / improvements :
+
+                                            * Trusted List v6 support (ETSI TS 119 612 v2.3.1, cf. <<R11>>);
+                                            * Updated vulnerable dependencies (BouncyCastle, FOP, logback);
+                                            * Fixed expired unit tests.
+
+Bug fixes :
+
+                                            * Possible memory leak during XAdES signature creation;
+                                            * CertificateValues/RevocationValues incorrect format in ETSI Validation Report.
+
+
 |v6.0             |December 2023            a|Main new features / improvements :
 
                                             * Transition from `javax.\*` to `jakarta.*` namespaces;
@@ -71,6 +83,17 @@
 Bug fixes :
 
                                             * KeyEntityTSPSource : add null safe processing.
+
+|v5.13.1          |February 2025            a|Main new features / improvements :
+
+                                            * Trusted List v6 support (ETSI TS 119 612 v2.3.1, cf. <<R11>>);
+                                            * Updated vulnerable dependencies (BouncyCastle, FOP, logback);
+                                            * Fixed expired unit tests.
+
+Bug fixes :
+
+                                            * Possible memory leak during XAdES signature creation;
+                                            * CertificateValues/RevocationValues incorrect format in ETSI Validation Report.
 
 |v5.13             |December 2023           a|Main new features / improvements :
 
