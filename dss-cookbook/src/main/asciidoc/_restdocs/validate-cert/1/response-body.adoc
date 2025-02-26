@@ -1,9 +1,9 @@
-[source,options="nowrap"]
+[source,json,options="nowrap"]
 ----
 {
   "diagnosticData" : {
     "DocumentName" : null,
-    "ValidationDate" : "2023-12-12T15:35:11Z",
+    "ValidationDate" : "2025-02-26T08:57:42Z",
     "ContainerInfo" : null,
     "PDFAInfo" : null,
     "Signature" : null,
@@ -131,7 +131,7 @@
         "Info" : [ ]
       }
     } ],
-    "ValidationTime" : "2023-12-12T15:35:11Z"
+    "ValidationTime" : "2025-02-26T08:57:42Z"
   },
   "detailedReport" : {
     "signatureOrTimestampOrEvidenceRecord" : [ {

@@ -1,7 +1,7 @@
-[source,options="nowrap"]
+[source,json,options="nowrap"]
 ----
 {
   "algorithm" : "RSA_SSA_PSS_SHA256_MGF1",
-  "value" : "e8D3nY6xR1439LFRqsRjEw/62HNDVCVNPF65x6aEfsEtFabSc+CIny0DmF4u/XXr5N04dDco3tno/rNal0/1UjZydyZO8SG22OKYshRqKhaKW/DPjsurTKBDDbUG5JDtZdYbjMVn1ASVduCUOYS8is3WPenTJt2s9xsNGGWtnxFDKgGBcBa/KAXhrf5epKG12NbmSrb8actrwja4Lg3i5IK0bdqquGKHIAXz2PvlA8bmCvH5ow3Ks4EQdYakKOi8BorlqOcyHduWhAvlpUpCmXGvSlepbgqfL2+IQHhv50CMqfqkODDqkXhIIKODhUkVY59m7NQwmSbl1wmVkNbNHw=="
+  "value" : "tgODudpmwz5D8Q4KgSqIcsdeaF4W626NwNOogXO5SZBfY4NQpGQArlnNdPkqFwR0kn1NklMn4m0G0aUtoxTNaEYuItidWx/RCy7LeFhSoTsg9486YPLxJ/Mg+9CVEZ2/nRLOYaOZ4cqs5TyW4fy8EDzd9a6Aoyw01rVkm8851gCtzBcDGXZQfH1CHSf/ipFcBDCPQ37C33PyqfkOsYOYOqDWt8e3hK4hDGEOfY1Upa0stB1EGfjNd6PWBqfHO0k0NbdH2Qc1KBw1EtIPC9LPgW15Wo79PRd+DEgAO9rUOmgcxAmtUr6+FVmpiYoHxdGzH+2E33HZHYQZlHN1jK2FLA=="
 }
 ----

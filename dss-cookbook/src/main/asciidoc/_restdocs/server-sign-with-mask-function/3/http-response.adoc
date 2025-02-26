@@ -1,9 +1,12 @@
 [source,http,options="nowrap"]
 ----
 HTTP/1.1 200 OK
-Date: Tue, 12 Dec 2023 15:35:07 GMT
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Date: Wed, 26 Feb 2025 08:57:41 GMT
 X-Content-Type-Options: nosniff
-X-XSS-Protection: 1; mode=block
+X-XSS-Protection: 0
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
@@ -18,6 +21,6 @@ Content-Length: 408
 
 {
   "algorithm" : "RSA_SSA_PSS_SHA256_MGF1",
-  "value" : "nFHHUPkkO1OKb8jDqNpnTsjIQmkjV6ZU+BM377gR0y3QEWD67agIrlVXw/0OtRoDpwWWdj3MzfEHT6mo1IgyEWvhQ8ZYTFm+c1zJPmg0ZwCYDvaMvW7bFpZP4nNytI6NdCmvU5XCw98HzlAbUycBQ6EroCFn4sH1px0GFQrYDyH/cAQ3h0lB/bMcPb9fi/IH8pMea/sc2/oN+ZrTJjMQEQ5EaIzWshDp6N5bBfQzVSkvGG4lmepuwSmKNqPD8gkY1HGb0dBKmzFOWEq0HCmhEMne2CZhVlC9xSb02ErWAMu+rKagw5VrsQFb8cN/4s8IUtvmbXl9HZZcZ9vJ31ugKg=="
+  "value" : "QT+JUI9hbrfkpsP8JCA4cgbTTwQMdjqkRfGysngA9RppoJfjsTEJfGEgze/QmfswhMu7VzcsQDoWOMRZeIX1Acz/Wb+DYi1JFdgoEnL4YC687Wlpkrpw19iDMllxM5tJABfBxcGqDi7KO1jVE4AExw4fquZZ0PaoSG5uJMeamp7yB+FzGXNDg2Yr1Zl0PKcjI/IfxdkvrfTNema006kVCnOCXSZ1Ii5Om8eQHAGg/v4JHi81pJ/6o5OeX0Ts7DyD0bGAAZosCOQMhkrH05orME2g+FRZG1HH+D69JKKFEibwuNVHupB5EKx9kf+5KodyzwhYd5oJsjzM/ApqC7zMcA=="
 }
 ----

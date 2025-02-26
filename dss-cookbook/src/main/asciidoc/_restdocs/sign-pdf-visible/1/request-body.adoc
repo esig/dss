@@ -1,4 +1,4 @@
-[source,options="nowrap"]
+[source,json,options="nowrap"]
 ----
 {
   "parameters" : {
@@ -80,7 +80,7 @@
     "signatureIdToCounterSign" : null,
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1702395262868,
+      "signingDate" : 1740560255079,
       "claimedSignerRoles" : null,
       "policyId" : null,
       "policyQualifier" : null,

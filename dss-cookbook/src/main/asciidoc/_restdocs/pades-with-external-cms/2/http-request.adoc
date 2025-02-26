@@ -2,7 +2,7 @@
 ----
 POST /services/rest/signature/external-cms/getDataToSign HTTP/1.1
 Accept: application/json, application/javascript, text/javascript, text/json
-Content-Type: application/json; charset=UTF-8
+Content-Type: application/json
 Host: localhost:8080
 Content-Length: 3132
 
@@ -66,7 +66,7 @@ Content-Length: 3132
   },
   "messageDigest" : {
     "algorithm" : "SHA256",
-    "value" : "x7Jt1Mo+nDags4083ToouLZlMPDHO6uV11DSNx7RcAY="
+    "value" : "TJz/9HEKc+CInDaGYkEXS/J3qTmlMvkl4tMXBmTRfWo="
   }
 }
 ----

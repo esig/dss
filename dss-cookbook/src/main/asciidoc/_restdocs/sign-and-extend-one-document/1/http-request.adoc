@@ -2,7 +2,7 @@
 ----
 POST /services/rest/signature/one-document/getDataToSign HTTP/1.1
 Accept: application/json, application/javascript, text/javascript, text/json
-Content-Type: application/json; charset=UTF-8
+Content-Type: application/json
 Host: localhost:8080
 Content-Length: 3139
 
@@ -47,7 +47,7 @@ Content-Length: 3139
     "signatureIdToCounterSign" : null,
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1702395291494,
+      "signingDate" : 1740560258886,
       "claimedSignerRoles" : null,
       "policyId" : null,
       "policyQualifier" : null,

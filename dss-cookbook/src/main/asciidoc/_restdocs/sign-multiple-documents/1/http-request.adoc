@@ -2,7 +2,7 @@
 ----
 POST /services/rest/signature/multiple-documents/getDataToSignMultiple HTTP/1.1
 Accept: application/json, application/javascript, text/javascript, text/json
-Content-Type: application/json; charset=UTF-8
+Content-Type: application/json
 Host: localhost:8080
 Content-Length: 3227
 
@@ -47,7 +47,7 @@ Content-Length: 3227
     "signatureIdToCounterSign" : null,
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1702395290121,
+      "signingDate" : 1740560258635,
       "claimedSignerRoles" : null,
       "policyId" : null,
       "policyQualifier" : null,

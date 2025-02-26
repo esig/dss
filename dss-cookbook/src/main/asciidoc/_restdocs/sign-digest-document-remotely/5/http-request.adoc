@@ -2,7 +2,7 @@
 ----
 POST /services/rest/signature/one-document/signDocument HTTP/1.1
 Accept: application/json, application/javascript, text/javascript, text/json
-Content-Type: application/json; charset=UTF-8
+Content-Type: application/json
 Host: localhost:8080
 Content-Length: 4644
 
@@ -49,7 +49,7 @@ Content-Length: 4644
     "signatureIdToCounterSign" : null,
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1702395304096,
+      "signingDate" : 1740560261025,
       "claimedSignerRoles" : null,
       "policyId" : null,
       "policyQualifier" : null,
@@ -68,7 +68,7 @@ Content-Length: 4644
   },
   "signatureValue" : {
     "algorithm" : "RSA_SHA256",
-    "value" : "pth+Bytbt0kTlqDHGR58aXh8X+9Tt/h2PC7Yr0gRbTDisd4gMbDKYgAS0x032jhpAhwQtXER91XYr+VsWQ1GCaxx9augEBeKkbVWq1+H5U25FlPRctoGGbXefvBQzVeyHbSS5XgNTh4wqu7g31qg+opZTMoEanNyrfoMItKboUJnqe2rs4jgs42Fqr6JdR8LFQd/RxKnhaFpdqkkj0Y783ctUbpQ3FOa8xxIKv632udCkrZ7FscXMKCZFKzdghXsTdeLvqsPaRNZ8DPRfMLelqIahOVbPwWCFq3aS5wNn+lG8ozN2QeQ5bEHRX5WZWojvyti4akK6y0DwaTJjH3a1g=="
+    "value" : "NlXUlmFsZj33/xdLNy9xuMBsYWiKpsDHiKV42YN5RBcYk8i3XiQ74ifJnEMgy1Bc+QreLIr5rpn8gWNH3df70dR3rjlkKmCjsQR26pwA/qFahmMoyt2SL5zPelf9ad6fum8mNsRtigv9he+C3usOsEjLyrbLeHH9bzwakBBwHCaCqDiogoBR9bEf65Qgh34qrGYd4UyzEGAYjRaegNRYl/H68diy9p+Wk4nOcikI2c/bv7N06dzJVzGr95BGZLPgo+EVq/5wYsZn+7HH/HKXgajj46rI+06hWW+dEreLBag0ri8ZQvxvDgw+ja0dkJpGU7ggHmroQwmFiXP+kgsKKg=="
   },
   "toSignDocument" : {
     "bytes" : "kcDHOZjwZhVfuDhuhCeCERRmYpTH4Jj4RmfVVi31Q9g=",

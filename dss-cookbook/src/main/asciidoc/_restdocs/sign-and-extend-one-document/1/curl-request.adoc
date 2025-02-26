@@ -2,7 +2,7 @@
 ----
 $ curl 'http://localhost:8080/services/rest/signature/one-document/getDataToSign' -i -X POST \
     -H 'Accept: application/json, application/javascript, text/javascript, text/json' \
-    -H 'Content-Type: application/json; charset=UTF-8' \
+    -H 'Content-Type: application/json' \
     -d '{
   "parameters" : {
     "signingCertificate" : {
@@ -44,7 +44,7 @@ $ curl 'http://localhost:8080/services/rest/signature/one-document/getDataToSign
     "signatureIdToCounterSign" : null,
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1702395291494,
+      "signingDate" : 1740560258886,
       "claimedSignerRoles" : null,
       "policyId" : null,
       "policyQualifier" : null,

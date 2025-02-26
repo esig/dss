@@ -2,7 +2,7 @@
 ----
 POST /services/rest/signature/external-cms/signMessageDigest HTTP/1.1
 Accept: application/json, application/javascript, text/javascript, text/json
-Content-Type: application/json; charset=UTF-8
+Content-Type: application/json
 Host: localhost:8080
 Content-Length: 3557
 
@@ -66,11 +66,11 @@ Content-Length: 3557
   },
   "signatureValue" : {
     "algorithm" : "RSA_SHA256",
-    "value" : "Ojy3UUEIggO+kwfetIvpGbCyzEQGkUz/CAmrRArBFlia7SVnHU88T/V1H+a63PtyhsRV/ONfVyxNBt3T3xjct1eZsc4hnddiuDwVeesS1aQmbavU0dLP+ElBQBUepqOX+UtbSN82Cy8wuoDUs1nTkidIBpOWk1K3eUinS4vR9AfM/UJuMhmbDfclgypcLaUAi514i+F0fk6pJKwyxA/pj7bNY/FO1hOUeWnsck9ebwlplUN70cXzT1hLjlGxMl7BTa6TweWJGzXu/+Q7UZX8K8EHXxtJfuhdiuncJTtJPblc8vUYPXbvsIlyNm0PkaV1xNTtX8eO42Ot4xwESSJEyA=="
+    "value" : "aDBERyNcAE6LUL3Zw0RQgoU8nYchfQcZ3Zpuad3iYBPhWrIl0Z/PeZx1z9ODe5xEMf7JgyISSWU7kCsRPQeMkm5xqfpoibsbgRg3tdNFmgXK1BO8THL0dqq9KuyB2mYF6kfXdDnJDKbx39eNlh3K+vJ2UoDK64joU09vnu1074I43344UBstBx3O8AAAwxldR7GG69cmrzEQB6Owpd/uG80qnR68at1KPCqwUAZURicz5DIuZqeK2aiL4aHHPVyeN9FWTceEM03YsNY08c5y5/s7MBYEsk4QZufOQxYkESiQlS/CVNDnicTEEnCkaScO/v81ZYlI9zBuSKed8pY5/g=="
   },
   "messageDigest" : {
     "algorithm" : "SHA256",
-    "value" : "x7Jt1Mo+nDags4083ToouLZlMPDHO6uV11DSNx7RcAY="
+    "value" : "TJz/9HEKc+CInDaGYkEXS/J3qTmlMvkl4tMXBmTRfWo="
   }
 }
 ----

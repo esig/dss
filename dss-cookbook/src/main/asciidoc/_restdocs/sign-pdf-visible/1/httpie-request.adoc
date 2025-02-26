@@ -80,7 +80,7 @@ $ echo '{
     "signatureIdToCounterSign" : null,
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1702395262868,
+      "signingDate" : 1740560255079,
       "claimedSignerRoles" : null,
       "policyId" : null,
       "policyQualifier" : null,
@@ -104,5 +104,5 @@ $ echo '{
   }
 }' | http POST 'http://localhost:8080/services/rest/signature/one-document/getDataToSign' \
     'Accept:application/json, application/javascript, text/javascript, text/json' \
-    'Content-Type:application/json; charset=UTF-8'
+    'Content-Type:application/json'
 ----

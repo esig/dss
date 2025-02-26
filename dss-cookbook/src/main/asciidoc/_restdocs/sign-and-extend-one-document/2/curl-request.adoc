@@ -2,7 +2,7 @@
 ----
 $ curl 'http://localhost:8080/services/rest/signature/one-document/signDocument' -i -X POST \
     -H 'Accept: application/json, application/javascript, text/javascript, text/json' \
-    -H 'Content-Type: application/json; charset=UTF-8' \
+    -H 'Content-Type: application/json' \
     -d '{
   "parameters" : {
     "signingCertificate" : {
@@ -44,7 +44,7 @@ $ curl 'http://localhost:8080/services/rest/signature/one-document/signDocument'
     "signatureIdToCounterSign" : null,
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1702395291494,
+      "signingDate" : 1740560258886,
       "claimedSignerRoles" : null,
       "policyId" : null,
       "policyQualifier" : null,
@@ -63,7 +63,7 @@ $ curl 'http://localhost:8080/services/rest/signature/one-document/signDocument'
   },
   "signatureValue" : {
     "algorithm" : "RSA_SHA256",
-    "value" : "jZxeRhexjk9losMB1SpbqFxB2Tgx9iOKjsAegK8LwnnhjFSZPQzoyudgj0hV5E653BC4zw93vl60t/kiMm831jdefnXlqba5itA8yF7xW0O53p9DaSttA8jVmZO6m9xUr6Rm19Ocy0QiUDKVa36Wn2xrnbnzkdoIwVy+q8316VJroxL81xr1D/n6WQ+UH54M3xMuPW8OXupGkaFHztFxsGosvQEblwFtFsZWXWYYkIVQjYD7dZQFUYRvZf/L8tpw98OopWwbdkxef8FTKZCGljh2DhmDAXLgfcBdwtc7Z5n5qO8OKqJxm8MewF/M441os1SBCNzeP3Tm+bIRDR+EOg=="
+    "value" : "W187Y868pr2zIqsiZ/Kq6PTc/L+VqCrDVTmigz0kyu3FsqCeRwIsD08hLS1ZoL7+8iODc/ZJU1nugNcslJLDxG4iX8Y0JgaT0r4CwxE1CZHDBb6yg6LX6qg1UJeSPlzdwU3ko/anf80yOaaaWriUMAPKKEibeEpLwAUDL2mbUDdMmbaf5z4+adziCtQ5M2FMefJ6W/5rAtf39bgjHKtpPsfmWDM5oDrNnGsMQccxE/xfu3kWCD2EOCqmAZvw2GkrF4nHyh5vXassCXfb0sz6Wu3/sPfSWKTbKkiwrBqWx+Dv0l+z+vOtaG2wyyEM4E15k3X5o8wQ0A/fpzLcP6MOIQ=="
   },
   "toSignDocument" : {
     "bytes" : "SGVsbG8=",

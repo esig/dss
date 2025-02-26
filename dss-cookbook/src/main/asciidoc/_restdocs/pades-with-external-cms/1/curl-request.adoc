@@ -2,7 +2,7 @@
 ----
 $ curl 'http://localhost:8080/services/rest/signature/pades-external-cms/getMessageDigest' -i -X POST \
     -H 'Accept: application/json, application/javascript, text/javascript, text/json' \
-    -H 'Content-Type: application/json; charset=UTF-8' \
+    -H 'Content-Type: application/json' \
     -d '{
   "parameters" : {
     "signingCertificate" : null,
@@ -42,7 +42,7 @@ $ curl 'http://localhost:8080/services/rest/signature/pades-external-cms/getMess
     "signatureIdToCounterSign" : null,
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1702395301780,
+      "signingDate" : 1740560260550,
       "claimedSignerRoles" : null,
       "policyId" : null,
       "policyQualifier" : null,
