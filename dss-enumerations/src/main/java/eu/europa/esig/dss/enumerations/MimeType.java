@@ -132,6 +132,11 @@ public interface MimeType extends Serializable {
         return extension;
     }
 
+    /**
+     * This method loads available {@code MimeTypeLoader}s using a ServiceLoader
+     *
+     * @return iterable of {@link MimeTypeLoader}
+     */
     static Iterable<MimeTypeLoader> mimeTypeLoaders() {
         return ServiceLoader.load(MimeTypeLoader.class);
     }

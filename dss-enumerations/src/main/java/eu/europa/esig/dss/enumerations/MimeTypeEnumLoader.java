@@ -26,6 +26,13 @@ package eu.europa.esig.dss.enumerations;
  */
 public class MimeTypeEnumLoader implements MimeTypeLoader {
 
+    /**
+     * Default constructor
+     */
+    public MimeTypeEnumLoader() {
+        // empty
+    }
+
     @Override
     public MimeType fromMimeTypeString(String mimeTypeString) {
         for (MimeTypeEnum mimeTypeEnum : MimeTypeEnum.values()) {
