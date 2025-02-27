@@ -2,7 +2,7 @@
 ----
 $ echo '{
   "algorithm" : "SHA256",
-  "value" : "MDEwDQYJYIZIAWUDBAIBBQAEIEitnl2Xtyc1CRRLuRt3kzKBzVxtFiss7Oq8ZugpaP6W"
+  "value" : "MDEwDQYJYIZIAWUDBAIBBQAEILr12I34b6LT1tzxTWjMs4RtuZgLWTYmtUV5tY63TsO3"
 }' | http POST 'http://localhost:8080/services/rest/server-signing/sign-digest/certificate' \
     'Accept:application/json, application/javascript, text/javascript, text/json' \
     'Content-Type:application/json; charset=UTF-8'

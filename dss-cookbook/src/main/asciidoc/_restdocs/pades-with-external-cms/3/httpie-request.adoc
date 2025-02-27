@@ -60,11 +60,11 @@ $ echo '{
   },
   "signatureValue" : {
     "algorithm" : "RSA_SHA256",
-    "value" : "Ojy3UUEIggO+kwfetIvpGbCyzEQGkUz/CAmrRArBFlia7SVnHU88T/V1H+a63PtyhsRV/ONfVyxNBt3T3xjct1eZsc4hnddiuDwVeesS1aQmbavU0dLP+ElBQBUepqOX+UtbSN82Cy8wuoDUs1nTkidIBpOWk1K3eUinS4vR9AfM/UJuMhmbDfclgypcLaUAi514i+F0fk6pJKwyxA/pj7bNY/FO1hOUeWnsck9ebwlplUN70cXzT1hLjlGxMl7BTa6TweWJGzXu/+Q7UZX8K8EHXxtJfuhdiuncJTtJPblc8vUYPXbvsIlyNm0PkaV1xNTtX8eO42Ot4xwESSJEyA=="
+    "value" : "I7TpZQhtr6T/Mcx4goBX4Rdk+Xn4jYmGj9H94vF6dqW/wVNrqwkDR4Uc34GL5y1mfc8QNqub3ejHTIjdlBsiu2928tQSt3ZTasnC3LRtxegTnekPlVtnMa6j5wWBRx6ieYYoyDhkiqk4LgxgSx49JxBN1Wn0Sh5BM+X4/U6sBZXciwB0zXU2Do3QpIHZohLW0a6o6b8CG0Je2UKlvLzuF/mimi6q3gA5RfcKqlhBMl37Fjcd4C9Mg+HGq2UC5x/v5GdvvEjDw/mMJSErkhrcnugIh/4MuCjU2kEhH4e9PHT9WC8l8gWQVsgbbzmg4UT1OFZPk7VHPO3oR9GHjJxXLg=="
   },
   "messageDigest" : {
     "algorithm" : "SHA256",
-    "value" : "x7Jt1Mo+nDags4083ToouLZlMPDHO6uV11DSNx7RcAY="
+    "value" : "PAFuPrYtRRVvSVlh5xg9kU7aYy0mTx0JcreR5Ch3Z4I="
   }
 }' | http POST 'http://localhost:8080/services/rest/signature/external-cms/signMessageDigest' \
     'Accept:application/json, application/javascript, text/javascript, text/json' \

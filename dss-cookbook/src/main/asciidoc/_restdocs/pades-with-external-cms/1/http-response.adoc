@@ -1,7 +1,7 @@
 [source,http,options="nowrap"]
 ----
 HTTP/1.1 200 OK
-Date: Tue, 12 Dec 2023 15:35:02 GMT
+Date: Thu, 27 Feb 2025 10:06:26 GMT
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
@@ -18,6 +18,6 @@ Content-Length: 91
 
 {
   "algorithm" : "SHA256",
-  "value" : "x7Jt1Mo+nDags4083ToouLZlMPDHO6uV11DSNx7RcAY="
+  "value" : "PAFuPrYtRRVvSVlh5xg9kU7aYy0mTx0JcreR5Ch3Z4I="
 }
 ----
