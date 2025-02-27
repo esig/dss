@@ -45,7 +45,7 @@ public class CAdESUnsignedAttributes extends CAdESSigProperties {
 	 * The default constructor
 	 *
 	 * @param attributeTable {@link AttributeTable} unsigned attributes table
-	 * @deprecated since DSS 6.0.1. Please use {@code new CAdESSigProperties(ASN1Set asn1Set)} instead
+	 * @deprecated since DSS 5.13.1/6.0.1. Please use {@code new CAdESSigProperties(ASN1Set asn1Set)} instead
 	 */
 	@Deprecated
 	CAdESUnsignedAttributes(AttributeTable attributeTable) {

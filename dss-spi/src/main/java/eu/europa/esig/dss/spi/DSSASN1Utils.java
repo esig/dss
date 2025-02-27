@@ -1107,7 +1107,7 @@ public final class DSSASN1Utils {
 	 * Returns a list of all CMS timestamp identifiers
 	 * 
 	 * @return a list of {@link ASN1ObjectIdentifier}s
-	 * @deprecated since DSS 6.0.1. Please use {@code CMSUtils#getTimestampOids} method instead
+	 * @deprecated since DSS 5.13.1/6.0.1. Please use {@code CMSUtils#getTimestampOids} method instead
 	 */
 	@Deprecated
 	public static List<ASN1ObjectIdentifier> getTimestampOids() {
@@ -1120,7 +1120,7 @@ public final class DSSASN1Utils {
 	 * @param attribute {@link Attribute} to check
 	 * @return true if the attribute represents an archive timestamp element, false
 	 *         otherwise
-	 * @deprecated since DSS 6.0.1. Please use {@code CMSUtils#isArchiveTimeStampToken} method instead
+	 * @deprecated since DSS 5.13.1/6.0.1. Please use {@code CMSUtils#isArchiveTimeStampToken} method instead
 	 */
 	@Deprecated
 	public static boolean isArchiveTimeStampToken(Attribute attribute) {
