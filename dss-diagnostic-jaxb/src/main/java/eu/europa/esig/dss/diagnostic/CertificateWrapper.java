@@ -137,6 +137,8 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	 * Returns a certificate extension with the given {@code oid} when present
 	 *
 	 * @param oid {@link String} OID of the certificate extension
+	 * @param targetClass {@link Class} to return implementation of
+	 * @param <T> instance of {@link XmlCertificateExtension} corresponding to the {@code targetClass} parameter type
 	 * @return {@link XmlCertificateExtension} when present, NULL otherwise
 	 */
 	public <T extends XmlCertificateExtension> T getCertificateExtensionForOid(String oid, Class<T> targetClass) {

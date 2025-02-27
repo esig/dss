@@ -39,6 +39,13 @@ public class XMLEvidenceRecordFacade extends AbstractJaxbFacade<EvidenceRecordTy
     private static final XMLEvidenceRecordUtils XMLER_UTILS = XMLEvidenceRecordUtils.getInstance();
 
     /**
+     * Default constructor
+     */
+    protected XMLEvidenceRecordFacade() {
+        // empty
+    }
+
+    /**
      * Creates a new facade
      *
      * @return {@link XMLEvidenceRecordFacade}
