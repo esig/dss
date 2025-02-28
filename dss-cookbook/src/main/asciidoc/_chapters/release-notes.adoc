@@ -14,7 +14,7 @@
 |v6.1.1            |February 2025           a|Main new features / improvements :
 
                                             * Trusted List v6 support (ETSI TS 119 612 v2.3.1, cf. <<R11>>);
-                                            * Updated dependencies (BouncyCastle, FOP, logback);
+                                            * Updated dependencies (BouncyCastle, VeraPdf, FOP, logback);
                                             * Fixed expired unit tests.
 
 |v6.1              |September 2024          a|Bug fixes :
@@ -65,7 +65,7 @@
 |v6.0.1           |February 2025            a|Main new features / improvements :
 
                                             * Trusted List v6 support (ETSI TS 119 612 v2.3.1, cf. <<R11>>);
-                                            * Updated vulnerable dependencies (BouncyCastle, FOP, logback);
+                                            * Updated vulnerable dependencies (BouncyCastle, VeraPdf, FOP, logback);
                                             * Fixed expired unit tests.
 
 Bug fixes :
@@ -87,7 +87,7 @@ Bug fixes :
 |v5.13.1          |February 2025            a|Main new features / improvements :
 
                                             * Trusted List v6 support (ETSI TS 119 612 v2.3.1, cf. <<R11>>);
-                                            * Updated vulnerable dependencies (BouncyCastle, FOP, logback);
+                                            * Updated vulnerable dependencies (BouncyCastle, VeraPdf, FOP, logback);
                                             * Fixed expired unit tests.
 
 Bug fixes :
