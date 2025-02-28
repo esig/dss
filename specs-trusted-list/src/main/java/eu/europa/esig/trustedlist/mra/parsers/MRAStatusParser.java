@@ -24,6 +24,10 @@ import eu.europa.esig.dss.enumerations.MRAStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Parses a {@code MRAStatus} object.
+ *
+ */
 public final class MRAStatusParser {
 
 	private static final Logger LOG = LoggerFactory.getLogger(MRAStatusParser.class);
