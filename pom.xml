@@ -5,7 +5,7 @@
 
 	<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 	<artifactId>sd-dss</artifactId>
-	<version>5.13-SNAPSHOT</version>
+	<version>5.13.1</version>
 	<packaging>pom</packaging>
 
 	<name>Digital Signature Services</name>
@@ -449,7 +449,7 @@
 		<url>https://ec.europa.eu/digital-building-blocks/code/scm/esig/dss.git</url>
 		<connection>scm:git:https://ec.europa.eu/digital-building-blocks/code/scm/esig/dss.git</connection>
 		<developerConnection>scm:git:https://ec.europa.eu/digital-building-blocks/code/scm/esig/dss.git</developerConnection>
-		<tag>5.13</tag>
+		<tag>5.13.1</tag>
 	</scm>
 
 	<dependencyManagement>
