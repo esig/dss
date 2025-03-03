@@ -11,7 +11,7 @@
 |===
 |Version           |Release date             |Features
 
-|v6.1.1            |February 2025           a|Main new features / improvements :
+|v6.1.1            |March 2025              a|Main new features / improvements :
 
                                             * Trusted List v6 support (ETSI TS 119 612 v2.3.1, cf. <<R11>>);
                                             * Updated dependencies (BouncyCastle, VeraPdf, FOP, logback);
@@ -62,7 +62,7 @@
                                             * Validation fails when SigningCertificateDigestAlgorithm constraint level is higher than failed Cryptographic level;
                                             * Dockerfile fix.
 
-|v6.0.1           |February 2025            a|Main new features / improvements :
+|v6.0.1           |March 2025               a|Main new features / improvements :
 
                                             * Trusted List v6 support (ETSI TS 119 612 v2.3.1, cf. <<R11>>);
                                             * Updated vulnerable dependencies (BouncyCastle, VeraPdf, FOP, logback);
@@ -84,7 +84,7 @@ Bug fixes :
 
                                             * KeyEntityTSPSource : add null safe processing.
 
-|v5.13.1          |February 2025            a|Main new features / improvements :
+|v5.13.1          |March 2025               a|Main new features / improvements :
 
                                             * Trusted List v6 support (ETSI TS 119 612 v2.3.1, cf. <<R11>>);
                                             * Updated vulnerable dependencies (BouncyCastle, VeraPdf, FOP, logback);
