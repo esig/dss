@@ -31,9 +31,8 @@ import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.test.pki.crl.UnknownPkiCRLSource;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import org.junit.jupiter.api.BeforeEach;
@@ -60,17 +59,17 @@ class XAdESWithNotAcceptableOCSPTest extends AbstractXAdESTestSignature {
 	void init() throws Exception {
 		documentToSign = new FileDocument("src/test/resources/sample.xml");
 
-		service = new XAdESService(getCompleteCertificateVerifier());
-		service.setTspSource(getSelfSignedTsa());
-
 		signingAlias = OCSP_SKIP_USER_WITH_CRL;
 		initSignatureParameters();
+
+		service = new XAdESService(getCompleteCertificateVerifier());
+		service.setTspSource(getSelfSignedTsa());
 	}
+
 	@Override
 	protected CertificateVerifier getCompleteCertificateVerifier() {
 		CertificateVerifier certificateVerifier = super.getCompleteCertificateVerifier();
-		certificateVerifier.setOcspSource(null);
-		certificateVerifier.setCrlSource(new UnknownPkiCRLSource(getCertEntityRepository()));
+		certificateVerifier.setOcspSource(pkiDelegatedOCSPSource());
 		return certificateVerifier;
 	}
 
