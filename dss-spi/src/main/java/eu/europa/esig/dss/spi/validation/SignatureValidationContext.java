@@ -252,9 +252,7 @@ public class SignatureValidationContext implements ValidationContext {
 		if (revocationDataVerifier.getTrustAnchorVerifier() == null) {
 			revocationDataVerifier.setTrustAnchorVerifier(getTrustAnchorVerifier());
 		}
-		if (revocationDataVerifier.getProcessedRevocations() == null) {
-			revocationDataVerifier.setProcessedRevocations(processedRevocations);
-		}
+		revocationDataVerifier.setValidationContext(this);
 		return revocationDataVerifier;
 	}
 
@@ -462,9 +460,7 @@ public class SignatureValidationContext implements ValidationContext {
 		}
 		final List<RevocationToken<?>> revocationTokens = new ArrayList<>(processedRevocations);
 		for (RevocationToken<?> revocationToken : revocationTokens) {
-			Boolean processed = tokensToProcess.get(revocationToken);
-			if (!Boolean.TRUE.equals(processed)) {
-				tokensToProcess.put(revocationToken, true);
+			if (!isYetVerified(revocationToken)) {
 				return revocationToken;
 			}
 		}
@@ -477,34 +473,37 @@ public class SignatureValidationContext implements ValidationContext {
 	 * @return token to verify or null
 	 */
 	private TimestampToken getNotYetVerifiedTimestamp() {
-		synchronized (tokensToProcess) {
-			if (Utils.isCollectionEmpty(processedTimestamps)) {
-				return null;
-			}
-			final List<TimestampToken> sortedTimestampTokens = new ArrayList<>(processedTimestamps);
-			sortedTimestampTokens.sort(new TimestampTokenComparator());
-			Collections.reverse(sortedTimestampTokens); // start processing from the freshest timestamp
-			for (TimestampToken timestampToken : sortedTimestampTokens) {
-				Boolean processed = tokensToProcess.get(timestampToken);
-				if (!Boolean.TRUE.equals(processed)) {
-					tokensToProcess.put(timestampToken, true);
-					return timestampToken;
-				}
-			}
+		if (Utils.isCollectionEmpty(processedTimestamps)) {
 			return null;
 		}
+		final List<TimestampToken> sortedTimestampTokens = new ArrayList<>(processedTimestamps);
+		sortedTimestampTokens.sort(new TimestampTokenComparator());
+		Collections.reverse(sortedTimestampTokens); // start processing from the freshest timestamp
+		for (TimestampToken timestampToken : sortedTimestampTokens) {
+			if (!isYetVerified(timestampToken)) {
+				return timestampToken;
+			}
+		}
+		return null;
 	}
 
 	private Token getNotYetVerifiedTokenFromChain(List<Token> certChain) {
-		synchronized (tokensToProcess) {
-			for (Token token : certChain) {
-				Boolean processed = tokensToProcess.get(token);
-				if (!Boolean.TRUE.equals(processed)) {
-					tokensToProcess.put(token, true);
-					return token;
-				}
+		for (Token token : certChain) {
+			if (!isYetVerified(token)) {
+				return token;
 			}
-			return null;
+		}
+		return null;
+	}
+
+	private boolean isYetVerified(Token token) {
+		synchronized (tokensToProcess) {
+			Boolean processed = tokensToProcess.get(token);
+			if (!Boolean.TRUE.equals(processed)) {
+				tokensToProcess.put(token, true);
+				return false;
+			}
+			return true;
 		}
 	}
 	
@@ -1002,7 +1001,14 @@ public class SignatureValidationContext implements ValidationContext {
 			}
 		}
 		if (token instanceof CertificateToken) {
-			getRevocationData((CertificateToken) token, certChain);
+			findRevocationData((CertificateToken) token, certChain);
+		}
+	}
+
+	private void validateTokenIfNeeded(Token token) {
+		addTokenForVerification(token); // ensure the token is added to the validation context
+		if (!isYetVerified(token)) {
+			validateToken(token);
 		}
 	}
 
@@ -1015,7 +1021,7 @@ public class SignatureValidationContext implements ValidationContext {
 	 * @param certChain the complete chain
 	 * @return a set of found {@link RevocationToken}s
 	 */
-	private Set<RevocationToken<?>> getRevocationData(final CertificateToken certToken, List<Token> certChain) {
+	private Set<RevocationToken<?>> findRevocationData(final CertificateToken certToken, List<Token> certChain) {
 
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("Checking revocation data for : {}", certToken.getDSSIdAsString());
@@ -1080,6 +1086,18 @@ public class SignatureValidationContext implements ValidationContext {
 		}
 
 		return revocations;
+	}
+
+	@Override
+	public List<RevocationToken<?>> getRevocationData(CertificateToken certificateToken) {
+		validateTokenIfNeeded(certificateToken);
+		List<RevocationToken<?>> result = new ArrayList<>();
+		for (RevocationToken<?> revocationToken : processedRevocations) {
+			if (Utils.areStringsEqual(certificateToken.getDSSIdAsString(), revocationToken.getRelatedCertificateId())) {
+				result.add(revocationToken);
+			}
+		}
+		return result;
 	}
 
 	private <T extends Token> boolean containsTrustAnchor(List<T> certChain) {
@@ -1427,13 +1445,7 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	private List<RevocationToken<?>> getRelatedRevocationTokens(CertificateToken certificateToken) {
-		List<RevocationToken<?>> result = new ArrayList<>();
-		for (RevocationToken<?> revocationToken : processedRevocations) {
-			if (Utils.areStringsEqual(certificateToken.getDSSIdAsString(), revocationToken.getRelatedCertificateId())) {
-				result.add(revocationToken);
-			}
-		}
-		return result;
+		return getRevocationData(certificateToken);
 	}
 
 	private boolean isRevocationDataRefreshNeeded(CertificateToken certToken, Collection<RevocationToken<?>> revocations) {

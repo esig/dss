@@ -42,6 +42,8 @@ import java.math.BigInteger;
 import java.security.PublicKey;
 import java.security.cert.CRLReason;
 import java.security.cert.X509CRLEntry;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -141,6 +143,12 @@ public class CRLToken extends RevocationToken<CRL> {
 	public RevocationCertificateSource getCertificateSource() {
 		// not supported
 		return null;
+	}
+
+	@Override
+	public List<CertificateToken> getCertificates() {
+		// not supported
+		return Collections.emptyList();
 	}
 
 	/**

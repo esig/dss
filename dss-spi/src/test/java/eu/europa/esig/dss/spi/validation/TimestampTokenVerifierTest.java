@@ -190,7 +190,10 @@ class TimestampTokenVerifierTest {
         timestampTokenVerifier.setRevocationDataVerifier(RevocationDataVerifier.createDefaultRevocationDataVerifier());
         assertFalse(timestampTokenVerifier.isAcceptable(timestampToken, certificateChain));
 
-        revocationDataVerifier.setProcessedRevocations(Collections.singletonList(crlToken));
+        SignatureValidationContext validationContext = new SignatureValidationContext();
+        validationContext.addRevocationTokenForVerification(crlToken);
+        revocationDataVerifier.setValidationContext(validationContext);
+
         timestampTokenVerifier.setRevocationDataVerifier(revocationDataVerifier);
         assertTrue(timestampTokenVerifier.isAcceptable(timestampToken, certificateChain));
 

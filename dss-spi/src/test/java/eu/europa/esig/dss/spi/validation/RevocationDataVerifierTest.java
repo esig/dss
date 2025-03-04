@@ -509,7 +509,9 @@ class RevocationDataVerifierTest {
 
         assertFalse(revocationDataVerifier.isCertificateChainValid(certificateChain, new Date(), Context.REVOCATION));
 
-        revocationDataVerifier.setProcessedRevocations(Collections.singletonList(ocspToken));
+        SignatureValidationContext validationContext = new SignatureValidationContext();
+        validationContext.addRevocationTokenForVerification(ocspToken);
+        revocationDataVerifier.setValidationContext(validationContext);
 
         assertFalse(revocationDataVerifier.isCertificateChainValid(certificateChain, new Date(), Context.REVOCATION));
 

@@ -26,13 +26,14 @@ import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
+import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.spi.x509.revocation.ListRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
-import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -319,5 +320,14 @@ public interface ValidationContext {
 	 * @return {@link ValidationData}
 	 */
 	ValidationData getValidationData(final TimestampToken timestampToken);
+
+	/**
+	 * Returns revocation data for the given {@code certificateToken}, whether extracted from a signature file
+	 * or obtained online.
+	 *
+	 * @param certificateToken {@link CertificateToken} to retrieve revocation data for
+	 * @return a list of {@link RevocationToken}s
+	 */
+	List<RevocationToken<?>> getRevocationData(CertificateToken certificateToken);
 
 }
