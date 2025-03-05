@@ -500,9 +500,12 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 			conclusion.getWarnings().addAll(validationProcessLongTermData.getConclusion().getWarnings());
 			conclusion.getInfos().addAll(validationProcessLongTermData.getConclusion().getInfos());
 		}
-		if (psvResult != null && !isValid(psvResult)
-				&& psvResult.getConclusion().getSubIndication() != validationProcessLongTermData.getConclusion().getSubIndication()) {
-			conclusion.getErrors().addAll(psvResult.getConclusion().getErrors());
+		if (psvResult != null) {
+			if (!isValid(psvResult) && psvResult.getConclusion().getSubIndication() != validationProcessLongTermData.getConclusion().getSubIndication()) {
+				conclusion.getErrors().addAll(psvResult.getConclusion().getErrors());
+			}
+			conclusion.getWarnings().addAll(psvResult.getConclusion().getWarnings());
+			conclusion.getInfos().addAll(psvResult.getConclusion().getInfos());
 		}
 	}
 

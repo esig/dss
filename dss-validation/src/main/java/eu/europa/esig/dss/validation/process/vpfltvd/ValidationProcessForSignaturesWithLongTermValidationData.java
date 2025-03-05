@@ -51,6 +51,7 @@ import eu.europa.esig.dss.policy.SubContext;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.CertificateValuesConstraint;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
+import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
@@ -78,6 +79,7 @@ import eu.europa.esig.dss.validation.process.vpfltvd.checks.BestSignatureTimeBef
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.BestSignatureTimeBeforeSuspensionTimeCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.BestSignatureTimeNotBeforeCertificateIssuanceCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.CertificateKnownToBeNotRevokedCheck;
+import eu.europa.esig.dss.validation.process.vpfltvd.checks.CertificateKnownToBeNotRevokedEnforceFailCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.RevocationDateAfterBestSignatureTimeCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.SigningTimeAttributePresentCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.TimestampCoherenceOrderCheck;
@@ -344,7 +346,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 
 				if (!Indication.PASSED.equals(bsConclusion.getIndication())) {
 
-					item = item.setNextItem(certificateKnownToBeNotRevoked(bsConclusion, bestSignatureTime.getTime()));
+					item = item.setNextItem(certificateKnownToBeNotRevokedFail(bsConclusion, bestSignatureTime.getTime()));
 
 					return;
 				}
@@ -392,6 +394,10 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 			item = item.setNextItem(bestSignatureTimeNotBeforeCertificateIssuance(bestSignatureTime.getTime()));
 			
 			item = item.setNextItem(bestSignatureTimeBeforeCertificateExpiration(bestSignatureTime.getTime()));
+
+			if (revocationDataRequired(currentSignature.getSigningCertificate(), currentContext, SubContext.SIGNING_CERT).process()) {
+				item = item.setNextItem(certificateKnownToBeNotRevokedWarn(bsConclusion, bestSignatureTime.getTime(), currentContext));
+			}
 			
 		}
 
@@ -629,14 +635,28 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 				bestSignatureTime, signingCertificate, getFailLevelConstraint());
 	}
 
-	private ChainItem<XmlValidationProcessLongTermData> certificateKnownToBeNotRevoked(XmlConclusion conclusion, Date bestSignatureTime) {
+	private ChainItem<XmlValidationProcessLongTermData> certificateKnownToBeNotRevokedFail(XmlConclusion bsConclusion, Date bestSignatureTime) {
 		CertificateWrapper signingCertificate = currentSignature.getSigningCertificate();
 		CertificateRevocationWrapper revocationWrapper = certificateRevocationMap.get(signingCertificate);
+		boolean isRevocationIssuerTrusted = isRevocationIssuerTrusted(revocationWrapper, bestSignatureTime);
+		return new CertificateKnownToBeNotRevokedEnforceFailCheck(i18nProvider, result, signingCertificate, revocationWrapper,
+				isRevocationIssuerTrusted, currentDate, bsConclusion, getFailLevelConstraint());
+	}
+
+	private boolean isRevocationIssuerTrusted(RevocationWrapper revocationWrapper, Date bestSignatureTime) {
 		LevelConstraint sunsetDateConstraint = policy.getCertificateSunsetDateConstraint(Context.REVOCATION, SubContext.SIGNING_CERT);
-		boolean isRevocationIssuerTrusted = revocationWrapper != null && revocationWrapper.getSigningCertificate() != null &&
+		return revocationWrapper != null && revocationWrapper.getSigningCertificate() != null &&
 				ValidationProcessUtils.isTrustAnchor(revocationWrapper.getSigningCertificate(), bestSignatureTime, sunsetDateConstraint);
+	}
+
+	private ChainItem<XmlValidationProcessLongTermData> certificateKnownToBeNotRevokedWarn(XmlConclusion bsConclusion, Date bestSignatureTime, Context context) {
+		CertificateWrapper signingCertificate = currentSignature.getSigningCertificate();
+		CertificateRevocationWrapper revocationWrapper = certificateRevocationMap.get(signingCertificate);
+		boolean isRevocationIssuerTrusted = isRevocationIssuerTrusted(revocationWrapper, bestSignatureTime);
+		LevelConstraint constraint = ValidationProcessUtils.getConstraintOrMaxLevel(
+				policy.getRevocationIssuerNotExpiredConstraint(context, SubContext.SIGNING_CERT), Level.WARN);
 		return new CertificateKnownToBeNotRevokedCheck<>(i18nProvider, result, signingCertificate, revocationWrapper,
-				isRevocationIssuerTrusted, currentDate, conclusion, getFailLevelConstraint());
+				isRevocationIssuerTrusted, currentDate, bsConclusion, constraint);
 	}
 
 	private ChainItem<XmlValidationProcessLongTermData> bestSignatureTimeBeforeCertificateExpiration(Date bestSignatureTime) {

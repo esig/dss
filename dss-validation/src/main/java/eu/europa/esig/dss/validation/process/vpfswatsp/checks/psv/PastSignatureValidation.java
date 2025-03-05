@@ -42,6 +42,7 @@ import eu.europa.esig.dss.policy.SubContext;
 import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.CertificateValuesConstraint;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
+import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
@@ -408,7 +409,9 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 	}
 
 	private ChainItem<XmlPSV> pastRevocationDataValidationConclusive(XmlConclusion currentConclusion) {
-		return new PastRevocationDataValidationConclusiveCheck(i18nProvider, result, currentConclusion, getFailLevelConstraint());
+		LevelConstraint constraint = ValidationProcessUtils.getConstraintOrMaxLevel(
+				policy.getRevocationIssuerNotExpiredConstraint(context, SubContext.SIGNING_CERT), Level.FAIL);
+		return new PastRevocationDataValidationConclusiveCheck(i18nProvider, result, currentConclusion, constraint);
 	}
 
 	private ChainItem<XmlPSV> bestSignatureTimeNotBeforeCertificateIssuance(Date bestSignatureTime, CertificateWrapper signingCertificate) {
@@ -560,6 +563,8 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 	protected void collectMessages(XmlConclusion conclusion, XmlConstraint constraint) {
 		if (XmlBlockType.PCV == constraint.getBlockType()) {
 			// skip PCV POE message extraction
+		} else if (XmlBlockType.PSV_CRS == constraint.getBlockType()) {
+			// skip acceptable revocation message extraction
 		} else {
 			super.collectMessages(conclusion, constraint);
 		}

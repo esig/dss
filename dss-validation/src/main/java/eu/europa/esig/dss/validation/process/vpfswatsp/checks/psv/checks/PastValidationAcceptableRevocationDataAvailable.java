@@ -81,7 +81,7 @@ public class PastValidationAcceptableRevocationDataAvailable<T extends XmlConstr
 
     @Override
     protected SubIndication getFailedSubIndicationForConclusion() {
-        return SubIndication.TRY_LATER;
+        return SubIndication.CERTIFICATE_CHAIN_GENERAL_FAILURE;
     }
 
     @Override

@@ -137,8 +137,7 @@ public class PastSignatureValidationCertificateRevocationSelector extends LongTe
     }
 
     private ChainItem<XmlCRS> poeForRevocationDataIssuerExists(CertificateWrapper revocationIssuer) {
-        return new POEExistsWithinCertificateValidityRangeCheck<>(i18nProvider, result, revocationIssuer, poe,
-                getWarnLevelConstraint());
+        return new POEExistsWithinCertificateValidityRangeCheck<>(i18nProvider, result, revocationIssuer, poe, getWarnLevelConstraint());
     }
 
     @Override

@@ -24,9 +24,11 @@ import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlPSV;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlSignature;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlVTS;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessLongTermData;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
 import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCRLDistributionPoints;
@@ -148,6 +150,21 @@ class RevocationSkipExecutorTest extends AbstractProcessExecutorTest {
 
         XmlVTS vts = signatureBBB.getVTS();
         assertNull(vts);
+
+        XmlSignature xmlSignature = detailedReport.getXmlSignatureById(detailedReport.getFirstSignatureId());
+        assertNotNull(xmlSignature);
+
+        XmlValidationProcessLongTermData validationProcessLongTermData = xmlSignature.getValidationProcessLongTermData();
+        assertNotNull(validationProcessLongTermData);
+
+        boolean revocationCheckFound = false;
+        for (XmlConstraint xmlConstraint : validationProcessLongTermData.getConstraint()) {
+            if (MessageTag.LTV_ISCKNR.getId().equals(xmlConstraint.getName().getKey())) {
+                revocationCheckFound = true;
+                break;
+            }
+        }
+        assertFalse(revocationCheckFound);
 
         checkReports(reports);
     }

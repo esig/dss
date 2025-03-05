@@ -445,6 +445,7 @@ class DSS2805ExecutorTest extends AbstractProcessExecutorTest {
                 assertEquals(XmlStatus.OK, constraint.getStatus());
                 bstNotBeforeCertIssuanceCheckFound = true;
             } else if (MessageTag.LTV_ISCKNR.getId().equals(constraint.getName().getKey())) {
+                assertEquals(XmlStatus.OK, constraint.getStatus());
                 certKnownToBeNotRevokedCheckFound = true;
             } else if (MessageTag.TSV_IBSTBCEC.getId().equals(constraint.getName().getKey())) {
                 assertEquals(XmlStatus.OK, constraint.getStatus());
@@ -456,7 +457,7 @@ class DSS2805ExecutorTest extends AbstractProcessExecutorTest {
             }
         }
         assertTrue(bstNotBeforeCertIssuanceCheckFound);
-        assertFalse(certKnownToBeNotRevokedCheckFound);
+        assertTrue(certKnownToBeNotRevokedCheckFound);
         assertTrue(bstNotAfterCertValidityCheckFound);
 
         XmlValidationProcessArchivalData validationProcessArchivalData = xmlSignature.getValidationProcessArchivalData();

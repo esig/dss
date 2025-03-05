@@ -55,6 +55,9 @@ public class CertificateValidityRangeCheck<T extends XmlConstraintsConclusion> e
 	/** Defines whether the revocation data's issuer is trusted */
 	private final boolean revocationIssuerTrusted;
 
+	/** Defines whether the validation is enforced for the revocation data issuer */
+	private final boolean revocationIssuerCheckEnforced;
+
 	/**
 	 * Default constructor
 	 *
@@ -64,18 +67,21 @@ public class CertificateValidityRangeCheck<T extends XmlConstraintsConclusion> e
 	 * @param usedCertificateRevocation {@link CertificateRevocationWrapper}
 	 * @param revocationDataRequired whether a revocation data is required for the given certificate
 	 * @param revocationIssuerTrusted whether the revocation issuer is trusted, when applicable
+	 * @param revocationIssuerCheckEnforced whether the validation is enforced for the revocation data issuer
 	 * @param currentTime {@link Date} validation time
 	 * @param constraint {@link LevelConstraint}
 	 */
 	public CertificateValidityRangeCheck(I18nProvider i18nProvider, T result, CertificateWrapper certificate,
 										 CertificateRevocationWrapper usedCertificateRevocation, boolean revocationDataRequired,
-										 boolean revocationIssuerTrusted, Date currentTime, LevelConstraint constraint) {
+										 boolean revocationIssuerTrusted, boolean revocationIssuerCheckEnforced,
+										 Date currentTime, LevelConstraint constraint) {
 		super(i18nProvider, result, constraint);
 		this.currentTime = currentTime;
 		this.certificate = certificate;
 		this.usedCertificateRevocation = usedCertificateRevocation;
 		this.revocationDataRequired = revocationDataRequired;
 		this.revocationIssuerTrusted = revocationIssuerTrusted;
+		this.revocationIssuerCheckEnforced = revocationIssuerCheckEnforced;
 	}
 
 	@Override
@@ -94,7 +100,7 @@ public class CertificateValidityRangeCheck<T extends XmlConstraintsConclusion> e
 
 	private boolean isRevocationDataValid() {
 		// other checks are performed before
-		return revocationIssuerTrusted || isInValidityRange(usedCertificateRevocation.getSigningCertificate());
+		return revocationIssuerTrusted || !revocationIssuerCheckEnforced || isInValidityRange(usedCertificateRevocation.getSigningCertificate());
 	}
 
 	@Override

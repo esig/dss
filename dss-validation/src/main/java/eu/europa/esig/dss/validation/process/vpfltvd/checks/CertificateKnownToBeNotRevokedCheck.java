@@ -55,7 +55,7 @@ public class CertificateKnownToBeNotRevokedCheck<T extends XmlConstraintsConclus
     /**
      * Defines whether a revocation data issuer is trusted
      */
-    private boolean isRevocationDataIssuerTrusted;
+    private final boolean isRevocationDataIssuerTrusted;
 
     /**
      * Validation time
@@ -93,7 +93,12 @@ public class CertificateKnownToBeNotRevokedCheck<T extends XmlConstraintsConclus
 
     @Override
     protected boolean process() {
-        return false;
+        return isKnownToBeNotRevoked();
+    }
+
+    private boolean isKnownToBeNotRevoked() {
+        return revocationData != null && !revocationData.isRevoked() && revocationData.getSigningCertificate() != null
+                && isRevocationIssuerValid(revocationData.getSigningCertificate());
     }
 
     private boolean isInValidityRange(CertificateWrapper certificateWrapper) {
@@ -108,8 +113,7 @@ public class CertificateKnownToBeNotRevokedCheck<T extends XmlConstraintsConclus
 
     @Override
     protected String buildAdditionalInfo() {
-        if (revocationData != null && !revocationData.isRevoked() && revocationData.getSigningCertificate() != null
-                    && !isRevocationIssuerValid(revocationData.getSigningCertificate())) {
+        if (revocationData != null && revocationData.getSigningCertificate() != null && !isKnownToBeNotRevoked()) {
             CertificateWrapper revocationIssuer = revocationData.getSigningCertificate();
             String notBeforeStr = revocationIssuer.getNotBefore() == null ? " ? " : ValidationProcessUtils.getFormattedDate(revocationIssuer.getNotBefore());
             String notAfterStr = revocationIssuer.getNotAfter() == null ? " ? " : ValidationProcessUtils.getFormattedDate(revocationIssuer.getNotAfter());
@@ -137,8 +141,7 @@ public class CertificateKnownToBeNotRevokedCheck<T extends XmlConstraintsConclus
 
     @Override
     protected MessageTag getErrorMessageTag() {
-        if (revocationData != null && !revocationData.isRevoked() && revocationData.getSigningCertificate() != null
-                && !isRevocationIssuerValid(revocationData.getSigningCertificate())) {
+        if (!isKnownToBeNotRevoked()) {
             return MessageTag.LTV_ISCKNR_ANS1;
         }
         return MessageTag.LTV_ISCKNR_ANS0;

@@ -376,8 +376,14 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 		LevelConstraint constraint = validationPolicy.getCertificateNotExpiredConstraint(context, subContext);
 		boolean isRevocationIssuerTrusted = usedCertificateRevocation != null && usedCertificateRevocation.getSigningCertificate() != null
 				&& isTrustAnchor(usedCertificateRevocation.getSigningCertificate(), Context.REVOCATION, SubContext.SIGNING_CERT);
+		boolean revocationIssuerCheckEnforced = revocationIssuerCheckEnforced(context, subContext);
 		return new CertificateValidityRangeCheck<>(i18nProvider, result, certificate, usedCertificateRevocation,
-				revocationDataRequired, isRevocationIssuerTrusted, validationTime, constraint);
+				revocationDataRequired, isRevocationIssuerTrusted, revocationIssuerCheckEnforced, validationTime, constraint);
+	}
+
+	private boolean revocationIssuerCheckEnforced(Context context, SubContext subContext) {
+		LevelConstraint constraint = validationPolicy.getRevocationIssuerNotExpiredConstraint(context, subContext);
+		return constraint != null && Level.FAIL == constraint.getLevel();
 	}
 
 	private ChainItem<XmlSubXCV> revocationDataIssuerTrusted(CertificateWrapper revocationIssuer) {

@@ -4597,7 +4597,7 @@ class SunsetExecutorTest extends AbstractProcessExecutorTest {
                 XmlCRS psvcrs = timestampBBB.getPSVCRS();
                 assertNotNull(psvcrs);
                 assertEquals(Indication.INDETERMINATE, psvcrs.getConclusion().getIndication());
-                assertEquals(SubIndication.TRY_LATER, psvcrs.getConclusion().getSubIndication());
+                assertEquals(SubIndication.CERTIFICATE_CHAIN_GENERAL_FAILURE, psvcrs.getConclusion().getSubIndication());
 
                 XmlPCV pcv = timestampBBB.getPCV();
                 assertNotNull(pcv);
