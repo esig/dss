@@ -35,6 +35,7 @@ import eu.europa.esig.dss.spi.CertificateExtensionsUtils;
 import eu.europa.esig.dss.spi.DSSPKUtils;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.OID;
+import eu.europa.esig.dss.spi.x509.CertificateReorderer;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
@@ -897,12 +898,40 @@ public class RevocationDataVerifier {
         List<RevocationToken<?>> revocationData = getRelatedRevocationTokens(certificateToken);
         if (Utils.isCollectionNotEmpty(revocationData)) {
             for (RevocationToken<?> revocationToken : revocationData) {
-                if (isAcceptable(revocationToken, controlTime) && checkCertificateNotRevoked(revocationToken, controlTime)) {
+                if (!isSelfIssuedRevocation(certificateToken, revocationToken) && isAcceptable(revocationToken, controlTime)
+                        && checkCertificateNotRevoked(revocationToken, controlTime)) {
                     return true;
                 }
             }
         }
         LOG.warn("The certificate '{}' is not known to be not revoked!", certificateToken.getDSSIdAsString());
+        return false;
+    }
+
+    /**
+     * Verifies whether the verified certificate does not occur in the revocation's issuer certificate chain
+     *
+     * @param certificateToken {@link CertificateToken} to be verified
+     * @param revocationData {@link RevocationToken}
+     * @return TRUE if the certificate occurs in the revocation's certificate chain, FALSE otherwise
+     */
+    protected boolean isSelfIssuedRevocation(CertificateToken certificateToken, RevocationToken<?> revocationData) {
+        if (certificateToken.equals(revocationData.getIssuerCertificateToken())) {
+            LOG.warn("Revocation data '{}' has been issued by the concerned certificate '{}'!",
+                    revocationData.getDSSIdAsString(), certificateToken.getDSSIdAsString());
+            return true;
+        }
+
+        // verify certificate occurrence within the chain
+        if (Utils.isCollectionNotEmpty(revocationData.getCertificates())) {
+            List<CertificateToken> certificateChain = new CertificateReorderer(
+                    revocationData.getIssuerCertificateToken(), revocationData.getCertificates()).getOrderedCertificates();
+            if (certificateChain.contains(certificateToken)) {
+                LOG.warn("The concerned certificate '{}' found at the revocation '{}' certificate chain!",
+                        certificateToken.getDSSIdAsString(), revocationData.getDSSIdAsString());
+                return true;
+            }
+        }
         return false;
     }
 
