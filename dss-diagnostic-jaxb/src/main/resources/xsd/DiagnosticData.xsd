@@ -690,7 +690,7 @@
 					<xs:element name="QcCClegislation" type="QcCClegislation" minOccurs="0" />
 					<xs:element name="SemanticsIdentifier" type="OID" minOccurs="0" />
 					<xs:element name="PSD2QcInfo" type="PSD2QcInfo" minOccurs="0" />
-					<xs:element name="OtherOIDs" type="OIDs" minOccurs="0" />
+					<xs:element name="OtherOIDs" type="OtherOIDs" minOccurs="0" />
 					<xs:element name="MRACertificateMapping" type="MRACertificateMapping" minOccurs="0" />
 				</xs:sequence>
 				<xs:attribute name="enactedMRA" type="xs:boolean" use="optional" />
@@ -718,7 +718,7 @@
 			<xs:element name="QcSSCD" type="QcSSCD" minOccurs="0" />
 			<xs:element name="QcTypes" type="QcTypes" minOccurs="0" />
 			<xs:element name="QcCClegislation" type="QcCClegislation" minOccurs="0" />
-			<xs:element name="OtherOIDs" type="OIDs" minOccurs="0" />
+			<xs:element name="OtherOIDs" type="OtherOIDs" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>
 
@@ -756,9 +756,9 @@
 		</xs:simpleContent>
 	</xs:complexType>
 
-	<xs:complexType name="OIDs">
+	<xs:complexType name="OtherOIDs">
 		<xs:sequence>
-			<xs:element name="OID" type="OID" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="OtherOID" type="OID" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>
 	

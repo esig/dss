@@ -318,6 +318,11 @@
             <jaxb:baseType name="eu.europa.esig.dss.diagnostic.jaxb.XmlSignerData" />
         </jaxb:property>
     </jaxb:bindings>
+	<jaxb:bindings node="//xs:complexType[@name='SignerData']//xs:attribute[@name='Parent']">
+	    <jaxb:property>
+		    <jaxb:baseType name="eu.europa.esig.dss.diagnostic.jaxb.XmlSignerData" />
+	    </jaxb:property>
+	</jaxb:bindings>
 
     <jaxb:bindings node="//xs:complexType[@name='TimestampedObject']//xs:attribute[@name='Token']">
         <jaxb:property>

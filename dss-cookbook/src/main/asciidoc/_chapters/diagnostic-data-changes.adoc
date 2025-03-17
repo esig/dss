@@ -10,6 +10,31 @@
 This chapter covers the changes occurred between different versions of DSS within Diagnostic Data XSD.
 
 [cols="2,5,5"]
+.Diagnostic Data changes from version 6.2 to 6.3
+|===
+|Title                                |v6.2                           |v6.3
+|Other QcStatement OIDs              a|[source,xml]
+----
+<QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false">
+    ...
+    <OtherOIDs>
+        <OID>0.1.52.45.32</OID>
+    </OtherOIDs>
+</QcStatements>
+----
+                                                                      a|[source,xml]
+----
+<QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false">
+    ...
+    <OtherOIDs>
+        <OtherOID>0.1.52.45.32</OtherOID>
+    </OtherOIDs>
+</QcStatements>
+----
+
+|===
+
+[cols="2,5,5"]
 .Diagnostic Data changes from version 6.1 to 6.2
 |===
 |Title                                |v6.1                           |v6.2
