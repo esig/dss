@@ -33,6 +33,7 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import org.junit.jupiter.api.BeforeEach;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -66,8 +67,11 @@ class ASiCEXAdESDoubleSignAndExtendToLTATest extends AbstractASiCEXAdESTestSigna
         DSSDocument firstSignedDocument = super.sign();
         assertNotNull(firstSignedDocument);
 
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.SECOND, 1);
+
         signatureParameters = new ASiCWithXAdESSignatureParameters();
-        signatureParameters.bLevel().setSigningDate(new Date());
+        signatureParameters.bLevel().setSigningDate(calendar.getTime());
         signatureParameters.setSigningCertificate(getSigningCert());
         signatureParameters.setCertificateChain(getCertificateChain());
         signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);

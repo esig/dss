@@ -41,6 +41,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -75,8 +76,11 @@ class ASiCEXAdESLevelBDoubleSignatureTest extends AbstractASiCEXAdESTestSignatur
         DSSDocument firstSignedDocument = super.sign();
         assertNotNull(firstSignedDocument);
 
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.SECOND, 1);
+
         signatureParameters = new ASiCWithXAdESSignatureParameters();
-        signatureParameters.bLevel().setSigningDate(new Date());
+        signatureParameters.bLevel().setSigningDate(calendar.getTime());
         signatureParameters.setSigningCertificate(getSigningCert());
         signatureParameters.setCertificateChain(getCertificateChain());
         signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
