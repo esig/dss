@@ -57,7 +57,6 @@ class PdfBoxArray implements PdfArray {
 
 	/**
 	 * The document
-	 *
 	 * NOTE for developers: Retain this reference ! PDDocument must not be garbage collected
 	 */
 	private final PDDocument document;
@@ -73,7 +72,6 @@ class PdfBoxArray implements PdfArray {
 	public PdfBoxArray(final PDDocument document) {
 		this(new COSArray(), document);
 	}
-
 
 	/**
 	 * Default constructor
@@ -116,18 +114,14 @@ class PdfBoxArray implements PdfArray {
 
 	@Override
 	public byte[] getStreamBytes(int i) throws IOException {
-		COSBase val = wrapped.get(i);
+		COSBase val = wrapped.getObject(i);
 		return toBytes(val);
 	}
 
 	private byte[] toBytes(COSBase val) throws IOException {
 		COSStream cosStream = null;
-		if (val instanceof COSObject) {
-			COSObject o = (COSObject) val;
-			final COSBase object = o.getObject();
-			if (object instanceof COSStream) {
-				cosStream = (COSStream) object;
-			}
+		if (val instanceof COSStream) {
+			cosStream = (COSStream) val;
 		}
 		if (cosStream == null) {
 			throw new DSSException("Cannot find value for " + val + " of class " + val.getClass());
@@ -148,13 +142,11 @@ class PdfBoxArray implements PdfArray {
 
 	@Override
 	public Number getNumber(int i) {
-		COSBase val = wrapped.get(i);
-		if (val != null) {
-			if (val instanceof COSInteger) {
-				return ((COSInteger) val).longValue();
-			} else if (val instanceof COSNumber) {
-				return ((COSNumber) val).floatValue();
-			}
+		COSBase val = wrapped.getObject(i);
+		if (val instanceof COSInteger) {
+			return ((COSInteger) val).longValue();
+		} else if (val instanceof COSNumber) {
+			return ((COSNumber) val).floatValue();
 		}
 		return null;
 	}
@@ -167,12 +159,9 @@ class PdfBoxArray implements PdfArray {
 	@Override
 	public PdfDict getAsDict(int i) {
 		COSDictionary cosDictionary = null;
-		COSBase cosBaseObject = wrapped.get(i);
+		COSBase cosBaseObject = wrapped.getObject(i);
 		if (cosBaseObject instanceof COSDictionary) {
 			cosDictionary = (COSDictionary) cosBaseObject;
-		} else if (cosBaseObject instanceof COSObject) {
-			COSObject cosObject = (COSObject) cosBaseObject;
-			cosDictionary = (COSDictionary) cosObject.getObject();
 		}
 		if (cosDictionary != null) {
 			return new PdfBoxDict(cosDictionary, document, this);
