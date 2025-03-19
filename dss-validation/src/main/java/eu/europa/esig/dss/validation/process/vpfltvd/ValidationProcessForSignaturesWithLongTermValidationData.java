@@ -33,7 +33,6 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlSignature;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessLongTermData;
-import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -60,13 +59,13 @@ import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.sav.SignatureAcceptanceValidation;
 import eu.europa.esig.dss.validation.process.bbb.sav.cc.CertificateChainCryptographicCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.cc.DigestMatcherListCryptographicChainBuilder;
+import eu.europa.esig.dss.validation.process.bbb.sav.cc.SigningCertificateRefDigestAlgorithmCheckChainBuilder;
 import eu.europa.esig.dss.validation.process.bbb.sav.cc.TokenCertificateChainCryptographicCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.cc.TokenCertificateChainCryptographicChecker;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheckWithId;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.LTALevelTimeStampCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SignatureAcceptanceValidationResultCheck;
-import eu.europa.esig.dss.validation.process.bbb.sav.checks.SigningCertificateDigestAlgorithmCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.TLevelTimeStampCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.crs.CertificateRevocationSelector;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.RevocationFreshnessChecker;
@@ -374,10 +373,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 							bestSignatureTime.getTime(), signatureConstraint);
 			item = digestMatcherCCBuilder.build(item);
 
-			for (CertificateRefWrapper certificateRef : currentSignature.getSigningCertificateReferences()) {
-				item = item.setNextItem(signCertRefIsSecureAtPoeTime(certificateRef, bestSignatureTime.getTime(), currentContext));
-			}
-			
+			item = signCertRefIsSecureAtBST(item, bestSignatureTime.getTime(), currentContext);
 		}
 
 		/*
@@ -687,21 +683,18 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		return new CryptographicCheckWithId<>(i18nProvider, result, currentToken, position, validationDate, constraint);
 	}
 
-	private ChainItem<XmlValidationProcessLongTermData> signCertRefIsSecureAtPoeTime(
-			CertificateRefWrapper signCertReference, Date validationDate, Context context) {
-		SubContext subContext;
-		if (currentSignature.getSigningCertificate() != null &&
-				currentSignature.getSigningCertificate().getId().equals(signCertReference.getCertificateId())) {
-			subContext = SubContext.SIGNING_CERT;
-		} else {
-			subContext = SubContext.CA_CERTIFICATE;
-		}
-
-		CryptographicConstraint cryptographicConstraint = policy.getCertificateCryptographicConstraint(context, subContext);
-
-		LevelConstraint constraint = policy.getSigningCertificateDigestAlgorithmConstraint(context);
-		return new SigningCertificateDigestAlgorithmCheck<>(i18nProvider, signCertReference, result, validationDate,
-				cryptographicConstraint, constraint);
+	/**
+	 * This method verifies the validity of the used cryptographic constraints for signed-attributes
+	 *
+	 * @param item {@link ChainItem} the last initialized chain item to be processed
+	 * @param validationTime {@link Date} best-signature-time
+	 * @param context {@link Context}
+	 * @return {@link ChainItem}
+	 */
+	private ChainItem<XmlValidationProcessLongTermData> signCertRefIsSecureAtBST(
+			ChainItem<XmlValidationProcessLongTermData> item, Date validationTime, Context context) {
+		return new SigningCertificateRefDigestAlgorithmCheckChainBuilder<>(
+				i18nProvider, result, validationTime, currentSignature, context, policy).build(item);
 	}
 	
 	private ChainItem<XmlValidationProcessLongTermData> signatureIsAcceptable(Date bestSignatureTime, Context context) {

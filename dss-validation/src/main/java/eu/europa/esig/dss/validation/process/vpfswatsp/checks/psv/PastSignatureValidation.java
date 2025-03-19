@@ -28,7 +28,6 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlPCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlPSV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
-import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
@@ -49,8 +48,8 @@ import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.sav.cc.DigestMatcherListCryptographicChainBuilder;
+import eu.europa.esig.dss.validation.process.bbb.sav.cc.SigningCertificateRefDigestAlgorithmCheckChainBuilder;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
-import eu.europa.esig.dss.validation.process.bbb.sav.checks.SigningCertificateDigestAlgorithmCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.RevocationFreshnessChecker;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationDataRequiredCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationFreshnessCheckerResultCheck;
@@ -333,9 +332,7 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 				item = digestMatcherCCBuilder.build(item);
 			}
 
-			for (CertificateRefWrapper certificateRef : token.getSigningCertificateReferences()) {
-				item = item.setNextItem(signCertRefIsSecureAtPoeTime(certificateRef, lowestPoeTime, context));
-			}
+			item = signCertRefIsSecureAtPoeTime(item, lowestPoeTime, context);
 
 			// check the certificate chain and its revocation data
 			item = certificateChainReliableAtPoeTime(item, signingCertificateRevocations, context);
@@ -430,21 +427,17 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 		return new CryptographicCheck<>(i18nProvider, result, currentToken,  position, validationDate, constraint);
 	}
 
-	private ChainItem<XmlPSV> signCertRefIsSecureAtPoeTime(
-			CertificateRefWrapper signCertReference, Date validationDate, Context context) {
-		SubContext subContext;
-		if (token.getSigningCertificate() != null &&
-				token.getSigningCertificate().getId().equals(signCertReference.getCertificateId())) {
-			subContext = SubContext.SIGNING_CERT;
-		} else {
-			subContext = SubContext.CA_CERTIFICATE;
-		}
-
-		CryptographicConstraint cryptographicConstraint = policy.getCertificateCryptographicConstraint(context, subContext);
-
-		LevelConstraint constraint = policy.getSigningCertificateDigestAlgorithmConstraint(context);
-		return new SigningCertificateDigestAlgorithmCheck<>(i18nProvider, signCertReference, result, validationDate,
-				cryptographicConstraint, constraint);
+	/**
+	 * This method verifies the validity of the used cryptographic constraints for signed-attributes
+	 *
+	 * @param item {@link ChainItem} the last initialized chain item to be processed
+	 * @param validationTime {@link Date} best-signature-time
+	 * @param context {@link Context}
+	 * @return {@link ChainItem}
+	 */
+	private ChainItem<XmlPSV> signCertRefIsSecureAtPoeTime(ChainItem<XmlPSV> item, Date validationTime, Context context) {
+		return new SigningCertificateRefDigestAlgorithmCheckChainBuilder<>(
+				i18nProvider, result, validationTime, token, context, policy).build(item);
 	}
 	
 	private ChainItem<XmlPSV> certificateChainReliableAtPoeTime(ChainItem<XmlPSV> item,
