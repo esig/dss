@@ -1,0 +1,85 @@
+package eu.europa.esig.dss.asic.xades;
+
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
+import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+class ASiCWithXAdESFormatDetectorTest {
+
+    @Test
+    void isSupportedZip() {
+        final ASiCWithXAdESFormatDetector asicDetector = new ASiCWithXAdESFormatDetector();
+
+        byte[] wrongBytes = new byte[] { 1, 2 };
+        assertFalse(asicDetector.isSupportedZip(new InMemoryDocument(wrongBytes)));
+        assertFalse(asicDetector.isSupportedZip(new InMemoryDocument(wrongBytes, "test", MimeTypeEnum.PDF)));
+        assertFalse(asicDetector.isSupportedZip(new InMemoryDocument(wrongBytes, "test")));
+        assertFalse(asicDetector.isSupportedZip(new InMemoryDocument(wrongBytes, "test", MimeTypeEnum.XML)));
+        assertFalse(asicDetector.isSupportedZip(new InMemoryDocument(wrongBytes, "test.xml")));
+
+        assertTrue(asicDetector.isSupportedZip(new FileDocument("src/test/resources/validation/onefile-ok.asice")));
+        assertTrue(asicDetector.isSupportedZip(new FileDocument("src/test/resources/validation/onefile-ok.asics")));
+        assertTrue(asicDetector.isSupportedZip(new FileDocument("src/test/resources/validation/multifiles-ok.asice")));
+        assertTrue(asicDetector.isSupportedZip(new FileDocument("src/test/resources/validation/multifiles-ok.asics")));
+        assertTrue(asicDetector.isSupportedZip(new FileDocument("src/test/resources/validation/libreoffice.ods")));
+        assertTrue(asicDetector.isSupportedZip(new FileDocument("src/test/resources/validation/libreoffice.odt")));
+        assertTrue(asicDetector.isSupportedZip(new FileDocument("src/test/resources/validation/open-document-signed.odt")));
+        assertTrue(asicDetector.isSupportedZip(new FileDocument("src/test/resources/validation/open-document-resigned.odt")));
+        assertTrue(asicDetector.isSupportedZip(new FileDocument("src/test/resources/validation/evidencerecord/xades-lt-with-er.sce")));
+        assertTrue(asicDetector.isSupportedZip(new FileDocument("src/test/resources/validation/evidencerecord/xades-lta-with-er-hashtree.scs")));
+        assertTrue(asicDetector.isSupportedZip(new FileDocument("src/test/resources/validation/evidencerecord/xades-lta-with-er-hashtree.sce")));
+        assertTrue(asicDetector.isSupportedZip(new FileDocument("src/test/resources/validation/evidencerecord/er-one-file.scs")));
+        assertTrue(asicDetector.isSupportedZip(new FileDocument("src/test/resources/validation/evidencerecord/er-multi-files.sce")));
+        assertTrue(asicDetector.isSupportedZip(new FileDocument("src/test/resources/signable/asic_xades.zip")));
+        assertTrue(asicDetector.isSupportedZip(new FileDocument("src/test/resources/signable/test.zip")));
+        assertTrue(asicDetector.isSupportedZip(new FileDocument("src/test/resources/signable/empty.zip")));
+        assertTrue(asicDetector.isSupportedZip(new FileDocument("src/test/resources/ASiCEWith2Signatures.bdoc")));
+
+        assertFalse(asicDetector.isSupportedZip(new FileDocument("src/test/resources/bdoc-spec21.pdf")));
+        assertFalse(asicDetector.isSupportedZip(new FileDocument("src/test/resources/manifest-sample.xml")));
+        assertFalse(asicDetector.isSupportedZip(new FileDocument("src/test/resources/signable/test.txt")));
+        assertFalse(asicDetector.isSupportedZip(new FileDocument("src/test/resources/signable/asic_cades.zip")));
+        assertFalse(asicDetector.isSupportedZip(new FileDocument("src/test/resources/signable/asic_cades_er.sce")));
+    }
+
+    @Test
+    void isSupportedASiC() {
+        final ASiCWithXAdESFormatDetector asicDetector = new ASiCWithXAdESFormatDetector();
+
+        byte[] wrongBytes = new byte[] { 1, 2 };
+        assertFalse(asicDetector.isSupportedASiC(new InMemoryDocument(wrongBytes)));
+        assertFalse(asicDetector.isSupportedASiC(new InMemoryDocument(wrongBytes, "test", MimeTypeEnum.PDF)));
+        assertFalse(asicDetector.isSupportedASiC(new InMemoryDocument(wrongBytes, "test")));
+        assertFalse(asicDetector.isSupportedASiC(new InMemoryDocument(wrongBytes, "test", MimeTypeEnum.XML)));
+        assertFalse(asicDetector.isSupportedASiC(new InMemoryDocument(wrongBytes, "test.xml")));
+
+        assertTrue(asicDetector.isSupportedASiC(new FileDocument("src/test/resources/validation/onefile-ok.asice")));
+        assertTrue(asicDetector.isSupportedASiC(new FileDocument("src/test/resources/validation/onefile-ok.asics")));
+        assertTrue(asicDetector.isSupportedASiC(new FileDocument("src/test/resources/validation/multifiles-ok.asice")));
+        assertTrue(asicDetector.isSupportedASiC(new FileDocument("src/test/resources/validation/multifiles-ok.asics")));
+        assertTrue(asicDetector.isSupportedASiC(new FileDocument("src/test/resources/validation/libreoffice.ods")));
+        assertTrue(asicDetector.isSupportedASiC(new FileDocument("src/test/resources/validation/libreoffice.odt")));
+        assertTrue(asicDetector.isSupportedASiC(new FileDocument("src/test/resources/validation/open-document-signed.odt")));
+        assertTrue(asicDetector.isSupportedASiC(new FileDocument("src/test/resources/validation/open-document-resigned.odt")));
+        assertTrue(asicDetector.isSupportedASiC(new FileDocument("src/test/resources/validation/evidencerecord/xades-lt-with-er.sce")));
+        assertTrue(asicDetector.isSupportedASiC(new FileDocument("src/test/resources/validation/evidencerecord/xades-lta-with-er-hashtree.scs")));
+        assertTrue(asicDetector.isSupportedASiC(new FileDocument("src/test/resources/validation/evidencerecord/xades-lta-with-er-hashtree.sce")));
+        assertTrue(asicDetector.isSupportedASiC(new FileDocument("src/test/resources/validation/evidencerecord/er-one-file.scs")));
+        assertTrue(asicDetector.isSupportedASiC(new FileDocument("src/test/resources/validation/evidencerecord/er-multi-files.sce")));
+        assertTrue(asicDetector.isSupportedASiC(new FileDocument("src/test/resources/signable/asic_xades.zip")));
+        assertFalse(asicDetector.isSupportedASiC(new FileDocument("src/test/resources/signable/test.zip")));
+        assertFalse(asicDetector.isSupportedASiC(new FileDocument("src/test/resources/signable/empty.zip")));
+        assertTrue(asicDetector.isSupportedASiC(new FileDocument("src/test/resources/ASiCEWith2Signatures.bdoc")));
+
+        assertFalse(asicDetector.isSupportedASiC(new FileDocument("src/test/resources/bdoc-spec21.pdf")));
+        assertFalse(asicDetector.isSupportedASiC(new FileDocument("src/test/resources/manifest-sample.xml")));
+        assertFalse(asicDetector.isSupportedASiC(new FileDocument("src/test/resources/signable/test.txt")));
+        assertFalse(asicDetector.isSupportedASiC(new FileDocument("src/test/resources/signable/asic_cades.zip")));
+        assertFalse(asicDetector.isSupportedASiC(new FileDocument("src/test/resources/signable/asic_cades_er.sce")));
+    }
+    
+}

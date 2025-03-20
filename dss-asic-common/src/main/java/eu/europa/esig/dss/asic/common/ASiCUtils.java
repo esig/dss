@@ -330,10 +330,25 @@ public final class ASiCUtils {
 		}
 		return isASiCE(asicParameters) ? MimeTypeEnum.ASICE : MimeTypeEnum.ASICS;
 	}
+
+	/**
+	 * Checks if the list of filenames contains a document within the /META-INF folder
+	 *
+	 * @param filenames a list of file names
+	 * @return TRUE if the list of filename contains a file within the /META-INF folder,
+	 *         FALSE otherwise
+	 */
+	public static boolean filesContainMetaInfFolder(List<String> filenames) {
+		for (String filename : filenames) {
+			if (filename.startsWith(META_INF_FOLDER)) {
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	/**
-	 * Checks if the list of filenames contains a signature with the expected
-	 * {@code extension}
+	 * Checks if the list of filenames contains a signature with the expected {@code extension}
 	 * 
 	 * @param filenames a list of file names
 	 * @param extension {@link String} signature file extension to find
@@ -443,6 +458,20 @@ public final class ASiCUtils {
 		} catch (IOException e) {
 			throw new IllegalInputException("Unable to read the 2 first bytes", e);
 		}
+	}
+
+	/**
+	 * This method verifies whether the given {@code document} represents an ASiC container
+	 *
+	 * @param document {@link DSSDocument} to verify
+	 * @return TRUE if the document is an ASiC container, FALSE otherwise
+	 */
+	public static boolean isASiC(DSSDocument document) {
+		if (isZip(document)) {
+			List<String> filenames = ZipUtils.getInstance().extractEntryNames(document);
+			return filesContainMetaInfFolder(filenames);
+		}
+		return false;
 	}
 
 	/**

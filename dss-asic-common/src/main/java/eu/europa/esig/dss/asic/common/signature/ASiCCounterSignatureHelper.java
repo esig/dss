@@ -83,7 +83,7 @@ public abstract class ASiCCounterSignatureHelper {
 	 * @return {@link DSSDocument} signature document containing a signature to be counter signed with a defined id
 	 */
 	public DSSDocument extractSignatureDocument(String signatureId) {
-		if (!ASiCUtils.isZip(asicContainer)) {
+		if (!ASiCUtils.isASiC(asicContainer)) {
 			throw new IllegalInputException("The provided file shall be an ASiC container with signatures inside!");
 		}
 		List<DSSDocument> signatureDocuments = asicContent.getSignatureDocuments();

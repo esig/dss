@@ -59,7 +59,7 @@ public abstract class AbstractASiCContentBuilder {
     public ASiCContent build(List<DSSDocument> documents, ASiCContainerType asicContainerType) {
         if (Utils.isCollectionNotEmpty(documents) && documents.size() == 1) {
             DSSDocument archiveDocument = documents.get(0);
-            if (ASiCUtils.isZip(archiveDocument) && isAcceptableContainerFormat(archiveDocument)) {
+            if (ASiCUtils.isASiC(archiveDocument) && isAcceptableContainerFormat(archiveDocument)) {
                 return fromZipArchive(archiveDocument, asicContainerType);
             }
         }

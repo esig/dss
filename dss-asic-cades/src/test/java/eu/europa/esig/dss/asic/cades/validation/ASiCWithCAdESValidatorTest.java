@@ -56,8 +56,8 @@ class ASiCWithCAdESValidatorTest extends AbstractTestDocumentValidator {
 		assertTrue(validator.isSupported(new FileDocument("src/test/resources/validation/evidencerecord/er-one-file.asics")));
 		assertTrue(validator.isSupported(new FileDocument("src/test/resources/validation/evidencerecord/er-multi-files.asice")));
 		assertTrue(validator.isSupported(new FileDocument("src/test/resources/signable/asic_cades.zip")));
-		assertTrue(validator.isSupported(new FileDocument("src/test/resources/signable/test.zip")));
-		assertTrue(validator.isSupported(new FileDocument("src/test/resources/signable/empty.zip")));
+		assertFalse(validator.isSupported(new FileDocument("src/test/resources/signable/test.zip")));
+		assertFalse(validator.isSupported(new FileDocument("src/test/resources/signable/empty.zip")));
 
 		assertFalse(validator.isSupported(new FileDocument("src/test/resources/signature-policy.der")));
 		assertFalse(validator.isSupported(new FileDocument("src/test/resources/signable/test.txt")));

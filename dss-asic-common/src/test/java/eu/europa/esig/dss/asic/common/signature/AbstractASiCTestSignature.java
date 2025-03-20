@@ -49,7 +49,7 @@ public abstract class AbstractASiCTestSignature<SP extends SerializableSignature
 		super.onDocumentSigned(byteArray);
 
 		DSSDocument zipDocument = new InMemoryDocument(byteArray);
-		assertTrue(ASiCUtils.isZip(zipDocument));
+		assertTrue(ASiCUtils.isASiC(zipDocument));
 		ASiCTestUtils.verifyZipContainer(zipDocument);
 
 		ASiCContent asicContent = getContainerExtractor(zipDocument).extract();
@@ -89,8 +89,8 @@ public abstract class AbstractASiCTestSignature<SP extends SerializableSignature
 			List<DSSDocument> originalDocuments = getOriginalDocuments();
 			for (DSSDocument original : originalDocuments) {
 				boolean found = false;
-				if (ASiCContainerType.ASiC_S.equals(diagnosticData.getContainerType()) && originalDocuments.size() == 1 &&
-						ASiCUtils.isZip(original)) {
+				if (ASiCContainerType.ASiC_S.equals(diagnosticData.getContainerType()) && originalDocuments.size() == 1
+						&& ASiCUtils.isZip(original)) {
 					List<DSSDocument> archiveDocuments = ZipUtils.getInstance().extractContainerContent(original);
 					if (Utils.isCollectionNotEmpty(archiveDocuments)) {
 						found = true;

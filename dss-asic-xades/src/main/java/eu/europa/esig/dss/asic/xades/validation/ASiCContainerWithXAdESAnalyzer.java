@@ -22,18 +22,17 @@ package eu.europa.esig.dss.asic.xades.validation;
 
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
-import eu.europa.esig.dss.asic.common.ZipUtils;
 import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.validation.ASiCManifestParser;
 import eu.europa.esig.dss.asic.common.validation.ASiCManifestValidator;
 import eu.europa.esig.dss.asic.common.validation.AbstractASiCContainerAnalyzer;
+import eu.europa.esig.dss.asic.xades.ASiCWithXAdESFormatDetector;
 import eu.europa.esig.dss.asic.xades.OpenDocumentSupportUtils;
 import eu.europa.esig.dss.asic.xades.extract.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.ASiCManifestTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.ManifestFile;
-import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.validation.analyzer.DocumentAnalyzer;
 import eu.europa.esig.dss.utils.Utils;
@@ -78,20 +77,12 @@ public class ASiCContainerWithXAdESAnalyzer extends AbstractASiCContainerAnalyze
 
 	@Override
 	public boolean isSupported(DSSDocument dssDocument) {
-		if (ASiCUtils.isZip(dssDocument)) {
-			List<String> filenames = ZipUtils.getInstance().extractEntryNames(dssDocument);
-			if (ASiCUtils.isASiCWithXAdES(filenames)) {
-				return true;
-			}
-			return !ASiCUtils.isASiCWithCAdES(filenames);
-		}
-		return false;
+		return new ASiCWithXAdESFormatDetector().isSupportedASiC(dssDocument);
 	}
 
 	@Override
 	public boolean isSupported(ASiCContent asicContent) {
-		List<String> entryNames = DSSUtils.getDocumentNames(asicContent.getAllDocuments());
-		return !ASiCUtils.isASiCWithCAdES(entryNames);
+		return new ASiCWithXAdESFormatDetector().isSupportedASiC(asicContent);
 	}
 
 	@Override

@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.asic.cades.merge;
 
+import eu.europa.esig.dss.asic.cades.ASiCWithCAdESFormatDetector;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESFilenameFactory;
 import eu.europa.esig.dss.asic.cades.DefaultASiCWithCAdESFilenameFactory;
 import eu.europa.esig.dss.asic.cades.extract.ASiCWithCAdESContainerExtractor;
-import eu.europa.esig.dss.asic.cades.validation.ASiCContainerWithCAdESAnalyzerFactory;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.merge.DefaultContainerMerger;
@@ -116,12 +116,12 @@ public abstract class AbstractASiCWithCAdESContainerMerger extends DefaultContai
 
     @Override
     protected boolean isSupported(DSSDocument container) {
-        return new ASiCContainerWithCAdESAnalyzerFactory().isSupported(container);
+        return new ASiCWithCAdESFormatDetector().isSupportedZip(container);
     }
 
     @Override
     protected boolean isSupported(ASiCContent asicContent) {
-        return new ASiCContainerWithCAdESAnalyzerFactory().isSupported(asicContent);
+        return new ASiCWithCAdESFormatDetector().isSupportedZip(asicContent);
     }
 
     @Override

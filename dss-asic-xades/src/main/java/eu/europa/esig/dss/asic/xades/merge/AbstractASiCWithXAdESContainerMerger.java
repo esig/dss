@@ -23,10 +23,10 @@ package eu.europa.esig.dss.asic.xades.merge;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.merge.DefaultContainerMerger;
+import eu.europa.esig.dss.asic.xades.ASiCWithXAdESFormatDetector;
 import eu.europa.esig.dss.asic.xades.extract.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESFilenameFactory;
 import eu.europa.esig.dss.asic.xades.signature.DefaultASiCWithXAdESFilenameFactory;
-import eu.europa.esig.dss.asic.xades.validation.ASiCContainerWithXAdESAnalyzerFactory;
 import eu.europa.esig.dss.model.DSSDocument;
 
 import java.util.Objects;
@@ -80,12 +80,12 @@ public abstract class AbstractASiCWithXAdESContainerMerger extends DefaultContai
 
     @Override
     protected boolean isSupported(DSSDocument container) {
-        return new ASiCContainerWithXAdESAnalyzerFactory().isSupported(container);
+        return new ASiCWithXAdESFormatDetector().isSupportedZip(container);
     }
 
     @Override
     protected boolean isSupported(ASiCContent asicContent) {
-        return new ASiCContainerWithXAdESAnalyzerFactory().isSupported(asicContent);
+        return new ASiCWithXAdESFormatDetector().isSupportedZip(asicContent);
     }
 
     @Override

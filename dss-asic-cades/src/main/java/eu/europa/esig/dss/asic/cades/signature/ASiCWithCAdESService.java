@@ -294,8 +294,8 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 	}
 
 	private void assertExtensionSupported(DSSDocument toExtendDocument) {
-		if (!ASiCUtils.isZip(toExtendDocument)) {
-			throw new IllegalInputException("Unsupported file type");
+		if (!ASiCUtils.isASiC(toExtendDocument)) {
+			throw new IllegalInputException("The provided file is not ASiC document!");
 		}
 	}
 

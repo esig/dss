@@ -43,7 +43,7 @@ public abstract class AbstractASiCMultipleDocumentsTestSignature<SP extends Seri
 		super.onDocumentSigned(byteArray);
 
 		DSSDocument zipDocument = new InMemoryDocument(byteArray);
-		assertTrue(ASiCUtils.isZip(zipDocument));
+		assertTrue(ASiCUtils.isASiC(zipDocument));
 		ASiCTestUtils.verifyZipContainer(zipDocument);
 
 		ASiCContent asicContent = getContainerExtractor(zipDocument).extract();
