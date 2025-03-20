@@ -30,7 +30,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class PAdESExtendedToTLevelTest extends AbstractPAdESTestValidation {
+class PAdESExtendedToTLevelTest extends AbstractPAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

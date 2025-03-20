@@ -32,7 +32,7 @@ import org.junit.jupiter.api.BeforeEach;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PAdESLevelBWithAppNameTest extends AbstractPAdESTestSignature {
+class PAdESLevelBWithAppNameTest extends AbstractPAdESTestSignature {
 
     private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;
     private PAdESSignatureParameters signatureParameters;

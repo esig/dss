@@ -41,7 +41,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 @Tag("slow")
-public class PAdESLevelBLoopTest extends AbstractPAdESTestSignature {
+class PAdESLevelBLoopTest extends AbstractPAdESTestSignature {
 
 	private static Stream<Arguments> data() throws IOException {
 		// We use this file because File.listFiles() doesn't work from another jar

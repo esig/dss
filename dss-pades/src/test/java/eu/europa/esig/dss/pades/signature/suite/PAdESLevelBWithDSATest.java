@@ -36,7 +36,7 @@ import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class PAdESLevelBWithDSATest extends AbstractPAdESTestSignature {
+class PAdESLevelBWithDSATest extends AbstractPAdESTestSignature {
 
 	private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;
 	private PAdESSignatureParameters signatureParameters;

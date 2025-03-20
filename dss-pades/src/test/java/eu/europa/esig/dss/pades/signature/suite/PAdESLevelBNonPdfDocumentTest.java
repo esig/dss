@@ -36,7 +36,7 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class PAdESLevelBNonPdfDocumentTest extends PKIFactoryAccess {
+class PAdESLevelBNonPdfDocumentTest extends PKIFactoryAccess {
 
     private PAdESService service;
     private PAdESSignatureParameters signatureParameters;

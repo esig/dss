@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PAdESExtensionBToLTWithRevokedCertificateTest extends AbstractPAdESTestExtension {
+class PAdESExtensionBToLTWithRevokedCertificateTest extends AbstractPAdESTestExtension {
 
     @Override
     protected SignatureLevel getOriginalSignatureLevel() {

@@ -52,7 +52,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PAdESFiveSignaturesDocTest extends AbstractPAdESTestValidation {
+class PAdESFiveSignaturesDocTest extends AbstractPAdESTestValidation {
 	
 	private static byte[] previousSignatureSignerDocumentDigest = null;
 

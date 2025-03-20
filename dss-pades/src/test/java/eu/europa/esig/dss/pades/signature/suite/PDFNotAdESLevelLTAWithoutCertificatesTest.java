@@ -43,7 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PDFNotAdESLevelLTAWithoutCertificatesTest extends AbstractPAdESTestSignature {
+class PDFNotAdESLevelLTAWithoutCertificatesTest extends AbstractPAdESTestSignature {
 
     private CertificateVerifier certificateVerifier;
     private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;

@@ -40,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PAdESAllSelfSignedCertsTest extends PKIFactoryAccess {
+class PAdESAllSelfSignedCertsTest extends PKIFactoryAccess {
 	
 	private DSSDocument documentToSign;
 	private PAdESSignatureParameters parameters;

@@ -43,7 +43,7 @@ import java.util.TimeZone;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PAdESLevelBCustomTimeZoneTest extends AbstractPAdESTestSignature {
+class PAdESLevelBCustomTimeZoneTest extends AbstractPAdESTestSignature {
 
     private static final TimeZone DEFAULT_TIME_ZONE = TimeZone.getDefault();
 

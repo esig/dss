@@ -20,16 +20,6 @@
  */
 package eu.europa.esig.dss.pades.signature.visible.suite;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.awt.Color;
-import java.awt.Font;
-import java.io.IOException;
-import java.util.Date;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -45,6 +35,15 @@ import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.awt.Color;
+import java.awt.Font;
+import java.io.IOException;
+import java.util.Date;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PAdESVisibleSignatureWithJavaFontTest extends PKIFactoryAccess {
 

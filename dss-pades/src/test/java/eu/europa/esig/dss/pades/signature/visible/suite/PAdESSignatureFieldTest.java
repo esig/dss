@@ -63,7 +63,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PAdESSignatureFieldTest extends PKIFactoryAccess {
+class PAdESSignatureFieldTest extends PKIFactoryAccess {
 
 	private PAdESService service;
 	private PAdESSignatureParameters signatureParameters;

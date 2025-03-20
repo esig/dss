@@ -33,7 +33,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 
-public class PAdESSameBorderAnnotationsTest extends AbstractPAdESTestValidation {
+class PAdESSameBorderAnnotationsTest extends AbstractPAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

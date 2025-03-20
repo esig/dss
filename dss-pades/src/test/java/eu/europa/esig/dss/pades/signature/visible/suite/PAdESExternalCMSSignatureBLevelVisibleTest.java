@@ -42,7 +42,7 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PAdESExternalCMSSignatureBLevelVisibleTest extends AbstractPAdESTestSignature {
+class PAdESExternalCMSSignatureBLevelVisibleTest extends AbstractPAdESTestSignature {
 
     private PAdESSignatureParameters signatureParameters;
     private Date signingTime;

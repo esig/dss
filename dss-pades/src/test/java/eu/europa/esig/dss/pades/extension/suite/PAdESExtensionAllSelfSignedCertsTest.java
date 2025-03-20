@@ -37,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PAdESExtensionAllSelfSignedCertsTest extends AbstractPAdESTestExtension {
+class PAdESExtensionAllSelfSignedCertsTest extends AbstractPAdESTestExtension {
 
 	private SignatureLevel originalSignatureLevel;
 	private SignatureLevel finalSignatureLevel;

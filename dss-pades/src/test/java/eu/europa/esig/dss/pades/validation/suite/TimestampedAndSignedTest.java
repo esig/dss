@@ -33,7 +33,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 // See DSS-2294
-public class TimestampedAndSignedTest extends AbstractPAdESTestValidation {
+class TimestampedAndSignedTest extends AbstractPAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

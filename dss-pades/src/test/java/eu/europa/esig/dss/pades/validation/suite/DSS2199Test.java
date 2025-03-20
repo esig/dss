@@ -34,7 +34,7 @@ import org.junit.jupiter.api.BeforeEach;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class DSS2199Test extends AbstractPAdESTestValidation {
+class DSS2199Test extends AbstractPAdESTestValidation {
 	
 	private CertificateVerifier certificateVerifier;
 	

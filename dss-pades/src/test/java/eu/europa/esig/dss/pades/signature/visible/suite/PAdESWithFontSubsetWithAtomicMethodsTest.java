@@ -44,7 +44,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PAdESWithFontSubsetWithAtomicMethodsTest extends AbstractPAdESTestSignature {
+class PAdESWithFontSubsetWithAtomicMethodsTest extends AbstractPAdESTestSignature {
 
     private static final String FONT_NAME = "PTSerif-Regular";
 

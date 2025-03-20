@@ -41,7 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PAdESExtensionBToTDocWithVRITest extends AbstractPAdESTestValidation {
+class PAdESExtensionBToTDocWithVRITest extends AbstractPAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

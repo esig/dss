@@ -30,7 +30,7 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import org.junit.jupiter.api.BeforeEach;
 
 // See DSS-2570
-public class PAdESLevelLTASignDocumentWithXRefsTest extends AbstractPAdESTestSignature {
+class PAdESLevelLTASignDocumentWithXRefsTest extends AbstractPAdESTestSignature {
 
     private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;
     private PAdESSignatureParameters signatureParameters;

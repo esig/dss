@@ -49,7 +49,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PDFTimestampingTest extends PKIFactoryAccess {
+class PDFTimestampingTest extends PKIFactoryAccess {
 	
 	@Test
 	void test() {

@@ -46,7 +46,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PAdESExternalCMSSignatureTLevelDocTstTest extends AbstractPAdESTestSignature {
+class PAdESExternalCMSSignatureTLevelDocTstTest extends AbstractPAdESTestSignature {
 
     private PAdESSignatureParameters signatureParameters;
     private Date signingTime;

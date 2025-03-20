@@ -43,7 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PAdESTimestampWithOrphanRefsTest extends AbstractPAdESTestValidation {
+class PAdESTimestampWithOrphanRefsTest extends AbstractPAdESTestValidation {
 
 	private static DSSDocument document;
 

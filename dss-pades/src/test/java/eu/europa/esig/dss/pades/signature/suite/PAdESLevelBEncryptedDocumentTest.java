@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 // NOTE: encryption type is not supported in OpenPdf. See: {@link https://github.com/LibrePDF/OpenPDF/issues/375}
-public class PAdESLevelBEncryptedDocumentTest extends AbstractPAdESTestSignature {
+class PAdESLevelBEncryptedDocumentTest extends AbstractPAdESTestSignature {
 
     private PAdESService service;
     private PAdESSignatureParameters signatureParameters;

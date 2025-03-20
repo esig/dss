@@ -34,7 +34,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class PAdESRevocationOriginTest extends AbstractPAdESTestValidation {
+class PAdESRevocationOriginTest extends AbstractPAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

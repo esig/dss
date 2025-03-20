@@ -41,7 +41,7 @@ import java.awt.Color;
 import java.io.IOException;
 import java.util.Date;
 
-public class PAdESExistingSignatureFieldTest extends AbstractPAdESTestSignature {
+class PAdESExistingSignatureFieldTest extends AbstractPAdESTestSignature {
 
     private final DSSDocument RED_CROSS_IMAGE = new InMemoryDocument(
             getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeTypeEnum.JPEG);

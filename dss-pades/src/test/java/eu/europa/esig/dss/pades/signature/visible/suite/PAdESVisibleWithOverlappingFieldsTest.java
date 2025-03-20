@@ -53,7 +53,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PAdESVisibleWithOverlappingFieldsTest extends AbstractPAdESTestSignature {
+class PAdESVisibleWithOverlappingFieldsTest extends AbstractPAdESTestSignature {
 
 	private PAdESService service;
 	private PAdESSignatureParameters signatureParameters;

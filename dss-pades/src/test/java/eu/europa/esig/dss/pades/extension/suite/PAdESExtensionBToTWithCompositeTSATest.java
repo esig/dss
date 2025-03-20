@@ -23,7 +23,7 @@ package eu.europa.esig.dss.pades.extension.suite;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 
-public class PAdESExtensionBToTWithCompositeTSATest extends AbstractPAdESTestExtension {
+class PAdESExtensionBToTWithCompositeTSATest extends AbstractPAdESTestExtension {
 
 	@Override
 	protected TSPSource getUsedTSPSourceAtSignatureTime() {

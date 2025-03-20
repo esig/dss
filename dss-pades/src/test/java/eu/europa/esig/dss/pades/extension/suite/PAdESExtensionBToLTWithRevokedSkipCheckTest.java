@@ -25,7 +25,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 
-public class PAdESExtensionBToLTWithRevokedSkipCheckTest extends AbstractPAdESTestExtension {
+class PAdESExtensionBToLTWithRevokedSkipCheckTest extends AbstractPAdESTestExtension {
 
     @Override
     protected SignatureLevel getOriginalSignatureLevel() {

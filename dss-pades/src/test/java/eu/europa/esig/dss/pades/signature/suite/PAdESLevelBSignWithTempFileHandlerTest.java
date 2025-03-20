@@ -55,7 +55,7 @@ import static org.junit.jupiter.api.Assertions.fail;
  * This unit test evaluates the memory consumption when using a {@code TempFileResourcesFactory} implementation.
  *
  */
-public class PAdESLevelBSignWithTempFileHandlerTest extends AbstractPAdESTestSignature {
+class PAdESLevelBSignWithTempFileHandlerTest extends AbstractPAdESTestSignature {
 
     private static final Logger LOG = LoggerFactory.getLogger(PAdESLevelBSignWithTempFileHandlerTest.class);
 

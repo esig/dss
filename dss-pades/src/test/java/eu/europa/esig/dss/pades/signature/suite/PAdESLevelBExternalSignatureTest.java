@@ -53,7 +53,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * NOTE: This test is kept for retro-compatibility.
  * For creation of PAdES with external CMS see {@code PAdESExternalCMSSignatureBLevelTest}.
  */
-public class PAdESLevelBExternalSignatureTest extends AbstractPAdESTestSignature {
+class PAdESLevelBExternalSignatureTest extends AbstractPAdESTestSignature {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PAdESLevelBExternalSignatureTest.class);
 	private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;

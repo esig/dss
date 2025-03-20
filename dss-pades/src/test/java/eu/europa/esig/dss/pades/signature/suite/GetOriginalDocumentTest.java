@@ -48,7 +48,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class GetOriginalDocumentTest extends PKIFactoryAccess {
+class GetOriginalDocumentTest extends PKIFactoryAccess {
 
 	private static final Logger LOG = LoggerFactory.getLogger(GetOriginalDocumentTest.class);
 

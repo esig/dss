@@ -55,7 +55,7 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PAdESVisibleSignatureTest extends PKIFactoryAccess {
+class PAdESVisibleSignatureTest extends PKIFactoryAccess {
 
 	private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;
 	private PAdESSignatureParameters signatureParameters;

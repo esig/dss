@@ -43,7 +43,7 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PAdESVisibleZoomRotationTest extends AbstractPAdESTestSignature {
+class PAdESVisibleZoomRotationTest extends AbstractPAdESTestSignature {
 
 	private final DSSDocument RED_CROSS_IMAGE = new InMemoryDocument(
 			getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeTypeEnum.JPEG);

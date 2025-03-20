@@ -42,7 +42,7 @@ import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PAdESVisibleSigOutsidePageTest extends AbstractPAdESTestSignature {
+class PAdESVisibleSigOutsidePageTest extends AbstractPAdESTestSignature {
 
     private PAdESService service;
     private PAdESSignatureParameters signatureParameters;

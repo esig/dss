@@ -45,7 +45,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PAdESTwoSignersLTALevelTest extends PKIFactoryAccess {
+class PAdESTwoSignersLTALevelTest extends PKIFactoryAccess {
 	
 	private String signingAlias = GOOD_USER;
 

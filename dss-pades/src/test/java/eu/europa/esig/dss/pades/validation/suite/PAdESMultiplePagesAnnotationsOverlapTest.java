@@ -27,7 +27,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PAdESMultiplePagesAnnotationsOverlapTest extends AbstractPAdESTestValidation {
+class PAdESMultiplePagesAnnotationsOverlapTest extends AbstractPAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

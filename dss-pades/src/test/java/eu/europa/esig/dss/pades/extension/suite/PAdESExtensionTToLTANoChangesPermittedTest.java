@@ -24,7 +24,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 
-public class PAdESExtensionTToLTANoChangesPermittedTest extends AbstractPAdESTestExtension {
+class PAdESExtensionTToLTANoChangesPermittedTest extends AbstractPAdESTestExtension {
 
     @Override
     protected PAdESSignatureParameters getSignatureParameters() {

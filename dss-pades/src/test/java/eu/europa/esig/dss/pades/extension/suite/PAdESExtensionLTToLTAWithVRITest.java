@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PAdESExtensionLTToLTAWithVRITest extends PAdESExtensionLTToLTATest {
+class PAdESExtensionLTToLTAWithVRITest extends PAdESExtensionLTToLTATest {
 
     @Override
     protected PAdESSignatureParameters getSignatureParameters() {

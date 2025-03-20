@@ -45,7 +45,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  *
  */
 @Tag("slow")
-public class PAdESAddNewFieldRotatedDocumentTest extends AbstractPAdESTestValidation {
+class PAdESAddNewFieldRotatedDocumentTest extends AbstractPAdESTestValidation {
 
     protected PAdESService service;
     private SignatureFieldParameters fieldParameters;

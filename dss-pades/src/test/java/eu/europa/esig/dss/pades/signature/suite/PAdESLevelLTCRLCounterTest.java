@@ -42,7 +42,7 @@ import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class PAdESLevelLTCRLCounterTest extends AbstractPAdESTestSignature {
+class PAdESLevelLTCRLCounterTest extends AbstractPAdESTestSignature {
 
     private DSSDocument originalDocument;
 

@@ -42,7 +42,7 @@ import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class PAdESSignatureParametersSerializationTest extends AbstractPAdESTestSignature {
+class PAdESSignatureParametersSerializationTest extends AbstractPAdESTestSignature {
 
 	private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;
 	private PAdESSignatureParameters signatureParameters;

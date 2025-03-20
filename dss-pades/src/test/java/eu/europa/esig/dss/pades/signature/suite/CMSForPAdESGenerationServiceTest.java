@@ -51,7 +51,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CMSForPAdESGenerationServiceTest extends PKIFactoryAccess {
+class CMSForPAdESGenerationServiceTest extends PKIFactoryAccess {
 
     @Test
     void test() {

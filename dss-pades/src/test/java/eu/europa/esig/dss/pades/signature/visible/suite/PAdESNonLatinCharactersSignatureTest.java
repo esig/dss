@@ -39,7 +39,7 @@ import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pades.signature.suite.AbstractPAdESTestSignature;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 
-public class PAdESNonLatinCharactersSignatureTest extends AbstractPAdESTestSignature {
+class PAdESNonLatinCharactersSignatureTest extends AbstractPAdESTestSignature {
 
 	private PAdESService padesService;
 	private PAdESSignatureParameters signatureParameters;

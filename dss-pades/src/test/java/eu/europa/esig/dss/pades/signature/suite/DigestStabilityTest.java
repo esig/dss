@@ -44,11 +44,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 /**
- * This public class checks if the getDataToSign result is equals when passing the same
+ * This class checks if the getDataToSign result is equals when passing the same
  * parameters
  *
  */
-public class DigestStabilityTest extends PKIFactoryAccess {
+class DigestStabilityTest extends PKIFactoryAccess {
 
 	private DSSPrivateKeyEntry privateKeyEntry;
 

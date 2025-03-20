@@ -30,7 +30,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /* See DSS-1895 */
-public class PAdESMultipleFieldSignatureReferenceTest extends AbstractPAdESTestValidation {
+class PAdESMultipleFieldSignatureReferenceTest extends AbstractPAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

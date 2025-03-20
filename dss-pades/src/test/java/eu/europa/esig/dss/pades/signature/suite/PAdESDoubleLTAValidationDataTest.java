@@ -49,7 +49,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
+class PAdESDoubleLTAValidationDataTest extends PKIFactoryAccess {
 	
 	@Test
 	void test() throws Exception {

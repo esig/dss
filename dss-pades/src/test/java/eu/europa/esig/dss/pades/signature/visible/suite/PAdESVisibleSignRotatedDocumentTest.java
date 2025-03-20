@@ -50,7 +50,7 @@ import java.util.stream.Stream;
  *
  */
 @Tag("slow")
-public class PAdESVisibleSignRotatedDocumentTest extends AbstractPAdESTestSignature {
+class PAdESVisibleSignRotatedDocumentTest extends AbstractPAdESTestSignature {
 
     protected PAdESService service;
     private PAdESSignatureParameters signatureParameters;

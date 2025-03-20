@@ -36,7 +36,7 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 
-public class PAdESSignatureDigestReferenceTest extends AbstractPAdESTestValidation {
+class PAdESSignatureDigestReferenceTest extends AbstractPAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

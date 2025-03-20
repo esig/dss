@@ -47,7 +47,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ArchiveTimestampCoverageTest extends AbstractPAdESTestValidation {
+class ArchiveTimestampCoverageTest extends AbstractPAdESTestValidation {
 
 	/**
 	 * Duplicate streams

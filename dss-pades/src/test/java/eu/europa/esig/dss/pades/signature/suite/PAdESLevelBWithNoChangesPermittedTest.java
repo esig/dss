@@ -41,7 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class PAdESLevelBWithNoChangesPermittedTest extends AbstractPAdESTestSignature {
+class PAdESLevelBWithNoChangesPermittedTest extends AbstractPAdESTestSignature {
 
     private DSSDocument originalDocument;
 
