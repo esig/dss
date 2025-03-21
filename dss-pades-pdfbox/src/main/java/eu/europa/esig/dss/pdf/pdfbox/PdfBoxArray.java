@@ -153,7 +153,11 @@ class PdfBoxArray implements PdfArray {
 
 	@Override
 	public String getString(int i) {
-		return wrapped.getString(i);
+		COSBase val = wrapped.getObject(i);
+		if (val instanceof COSString) {
+			return ((COSString) val).getString();
+		}
+		return null;
 	}
 
 	@Override

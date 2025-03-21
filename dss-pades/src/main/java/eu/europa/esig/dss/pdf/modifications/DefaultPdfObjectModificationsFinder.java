@@ -241,56 +241,92 @@ public class DefaultPdfObjectModificationsFinder implements PdfObjectModificatio
                         finalArray, signedArray, false);
 
             } else if (signedObject instanceof PdfSimpleObject && finalObject instanceof PdfSimpleObject) {
-                Object signedObjectValue = signedObject.getValue();
-                Object finalObjectValue = finalObject.getValue();
-                if (signedObjectValue instanceof String && finalObjectValue instanceof String) {
-                    if (!signedObjectValue.equals(finalObjectValue)) {
-                        modifications.add(ObjectModification.modify(objectTree, signedObject, finalObject));
-                        if (LOG.isDebugEnabled()) {
-                            LOG.debug("Object changed with key '{}'.", objectTree);
-                        }
-                    }
+                PdfSimpleObject signedSimpleObject = (PdfSimpleObject) signedObject;
+                PdfSimpleObject finalSimpleObject = (PdfSimpleObject) finalObject;
+                compareSimpleObjects(modifications, objectTree, signedSimpleObject, finalSimpleObject);
 
-                } else if (signedObjectValue instanceof Number && finalObjectValue instanceof Number) {
-                    if (!signedObjectValue.equals(finalObjectValue)) {
-                        if (!laxNumericComparison) {
-                            modifications.add(ObjectModification.modify(objectTree, signedObject, finalObject));
-                            if (LOG.isDebugEnabled()) {
-                                LOG.debug("Object changed with key '{}'.", objectTree);
-                            }
-
-                        } else if (((Number) signedObjectValue).floatValue() != ((Number) finalObjectValue).floatValue()) {
-                            modifications.add(ObjectModification.modify(objectTree, signedObject, finalObject));
-                            if (LOG.isDebugEnabled()) {
-                                LOG.debug("Object changed with key '{}'.", objectTree);
-                            }
-
-                        } else {
-                            if (LOG.isDebugEnabled()) {
-                                LOG.debug("Number object with key changed type '{}'. " +
-                                        "Set #setLaxNumericComparison(false) to return a warning.", objectTree);
-                            }
-                        }
-                    }
-
-                } else if (signedObjectValue instanceof Boolean && finalObjectValue instanceof Boolean) {
-                    if (!signedObjectValue.equals(finalObjectValue)) {
-                        modifications.add(ObjectModification.modify(objectTree, signedObject, finalObject));
-                        if (LOG.isDebugEnabled()) {
-                            LOG.debug("Object changed with key '{}'.", objectTree);
-                        }
-                    }
-
-                } else {
-                    modifications.add(ObjectModification.modify(objectTree, signedObject, finalObject));
-                    LOG.warn("Unsupported objects found with key '{}' of types '{}' and '{}'",
+            } else if (signedObject.getClass() != finalObject.getClass()) {
+                modifications.add(ObjectModification.modify(objectTree, signedObject, finalObject));
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Object with key name '{}' of type '{}' has been modified to type '{}'.",
                             objectTree, signedObject.getClass(), finalObject.getClass());
                 }
 
             } else {
                 modifications.add(ObjectModification.modify(objectTree, signedObject, finalObject));
-                LOG.warn("Unsupported objects found with key '{}' of types '{}' and '{}'",
-                        objectTree, signedObject.getClass(), finalObject.getClass());
+                LOG.warn("Unsupported comparison of objects of type '{}' with key name '{}'",
+                        signedObject.getClass(), objectTree);
+            }
+        }
+    }
+
+    private void compareSimpleObjects(Set<ObjectModification> modifications, PdfObjectTree objectTree,
+                                      PdfSimpleObject signedObject, PdfSimpleObject finalObject) {
+        Object signedObjectValue = signedObject.getValue();
+        Object finalObjectValue = finalObject.getValue();
+        if (signedObjectValue == null && finalObjectValue != null) {
+            modifications.add(ObjectModification.modify(objectTree, null, finalObject));
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Added object value with key '{}'.", objectTree);
+            }
+
+        } else if (signedObjectValue != null && finalObjectValue == null) {
+            modifications.add(ObjectModification.modify(objectTree, signedObject, null));
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Deleted object value with key '{}'.", objectTree);
+            }
+
+        } else if (signedObjectValue != null && finalObjectValue != null) {
+
+            if (signedObjectValue instanceof String && finalObjectValue instanceof String) {
+                if (!signedObjectValue.equals(finalObjectValue)) {
+                    modifications.add(ObjectModification.modify(objectTree, signedObject, finalObject));
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("Object changed with key '{}'.", objectTree);
+                    }
+                }
+
+            } else if (signedObjectValue instanceof Number && finalObjectValue instanceof Number) {
+                if (!signedObjectValue.equals(finalObjectValue)) {
+                    if (!laxNumericComparison) {
+                        modifications.add(ObjectModification.modify(objectTree, signedObject, finalObject));
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("Object changed with key '{}'.", objectTree);
+                        }
+
+                    } else if (((Number) signedObjectValue).floatValue() != ((Number) finalObjectValue).floatValue()) {
+                        modifications.add(ObjectModification.modify(objectTree, signedObject, finalObject));
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("Object changed with key '{}'.", objectTree);
+                        }
+
+                    } else {
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("Number object with key changed type '{}'. " +
+                                    "Set #setLaxNumericComparison(false) to return a warning.", objectTree);
+                        }
+                    }
+                }
+
+            } else if (signedObjectValue instanceof Boolean && finalObjectValue instanceof Boolean) {
+                if (!signedObjectValue.equals(finalObjectValue)) {
+                    modifications.add(ObjectModification.modify(objectTree, signedObject, finalObject));
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug("Object changed with key '{}'.", objectTree);
+                    }
+                }
+
+            } else if (signedObject.getClass() != finalObject.getClass()) {
+                modifications.add(ObjectModification.modify(objectTree, signedObject, finalObject));
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Object with key name '{}' of type '{}' has been modified to type '{}'.",
+                            objectTree, signedObject.getClass(), finalObject.getClass());
+                }
+
+            } else {
+                modifications.add(ObjectModification.modify(objectTree, signedObject, finalObject));
+                LOG.warn("Unsupported comparison of objects of type '{}' with key name '{}'",
+                        signedObject.getClass(), objectTree);
             }
         }
     }
