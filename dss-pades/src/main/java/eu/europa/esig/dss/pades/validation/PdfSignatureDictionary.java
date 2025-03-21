@@ -40,7 +40,7 @@ public interface PdfSignatureDictionary {
 	ByteRange getByteRange();
 
 	/**
-	 * Gets name of the signed
+	 * Gets name of the signer
 	 *
 	 * @return {@link String}
 	 */

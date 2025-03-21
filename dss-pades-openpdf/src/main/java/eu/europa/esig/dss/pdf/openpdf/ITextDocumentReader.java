@@ -55,6 +55,7 @@ import eu.europa.esig.dss.pdf.PdfDocumentReader;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfMemoryUsageSetting;
 import eu.europa.esig.dss.pdf.PdfSigDictWrapper;
+import eu.europa.esig.dss.pdf.PdfSigDictWrapperFactory;
 import eu.europa.esig.dss.pdf.SingleDssDict;
 import eu.europa.esig.dss.pdf.visible.ImageRotationUtils;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -230,7 +231,7 @@ public class ITextDocumentReader implements PdfDocumentReader {
 				if (signature == null) {
 					try {
 						PdfDict dictionary = new ITextPdfDict(pdfField.getAsDict(PdfName.V));
-						signature = new PdfSigDictWrapper(dictionary);
+						signature = new PdfSigDictWrapperFactory(dictionary).create();
 					} catch (Exception e) {
 						LOG.warn("Unable to create a PdfSignatureDictionary for field with name '{}'", name, e);
 						continue;

@@ -21,10 +21,7 @@
 package eu.europa.esig.dss.pdf;
 
 import eu.europa.esig.dss.cms.CMS;
-import eu.europa.esig.dss.cms.CMSUtils;
 import eu.europa.esig.dss.enumerations.CertificationPermission;
-import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.validation.ByteRange;
 import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
 import eu.europa.esig.dss.pdf.modifications.DefaultPdfObjectModificationsFinder;
@@ -34,7 +31,6 @@ import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,99 +42,216 @@ public class PdfSigDictWrapper implements PdfSignatureDictionary {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PdfSigDictWrapper.class);
 
-	/** The PDF dictionary */
-	private final PdfDict dictionary;
+	/** The original PDF dictionary */
+	private PdfDict dictionary;
 
-	/** The CMS */
-	private final CMS cms;
+	/** Name of the signer */
+	private String signerName;
 
-	/** The signed ByteRange */
-	private final ByteRange byteRange;
+	/** Contact info of the signer */
+	private String contactInfo;
+
+	/** Reason of signing */
+	private String reason;
+
+	/** Location of signing */
+	private String location;
+
+	/** The datetime of signing */
+	private Date signingDate;
+
+	/** The type of the dictionary */
+	private String type;
+
+	/** Value of the /Filter parameter */
+	private String filter;
+
+	/** Value of the /SubFilter parameter */
+	private String subFilter;
+
+	/** Value of the /Contents signature parameter */
+	private byte[] contents;
+
+	/** Value of the /ByteRange parameter */
+	private ByteRange byteRange;
+
+	/** Value of the /DocMDP parameter */
+	private CertificationPermission docMDP;
+
+	/** Value of the /FieldMDP parameter */
+	private SigFieldPermissions fieldMDP;
+
+	/** CMS signature value */
+	private CMS cms;
 
 	/** Identifies whether the signature dictionary is consistent between revisions */
 	private boolean consistent;
 
 	/**
 	 * Default constructor
+	 */
+	protected PdfSigDictWrapper() {
+		// empty
+	}
+
+	/**
+	 * Default constructor
+	 *
+	 * @param dictionary {@link PdfDict}
+	 * @deprecated since DSS 6.3. Please use {@code new PdfSigDictWrapperFactory(sigFieldDictionary)#create} instead
+	 */
+	@Deprecated
+	public PdfSigDictWrapper(PdfDict dictionary) {
+		PdfSigDictWrapper wrapper = new PdfSigDictWrapperFactory(dictionary).create();
+		this.dictionary = wrapper.dictionary;
+		this.signerName = wrapper.signerName;
+		this.contactInfo = wrapper.contactInfo;
+		this.reason = wrapper.reason;
+		this.location = wrapper.location;
+		this.signingDate = wrapper.signingDate;
+		this.type = wrapper.type;
+		this.filter = wrapper.filter;
+		this.subFilter = wrapper.subFilter;
+		this.contents = wrapper.contents;
+		this.byteRange = wrapper.byteRange;
+		this.docMDP = wrapper.docMDP;
+		this.fieldMDP = wrapper.fieldMDP;
+		this.cms = wrapper.cms;
+	}
+
+	/**
+	 * Sets the signature field dictionary
 	 *
 	 * @param dictionary {@link PdfDict}
 	 */
-	public PdfSigDictWrapper(PdfDict dictionary) {
+	protected void setDictionary(PdfDict dictionary) {
 		this.dictionary = dictionary;
-		this.cms = buildCMS();
-		this.byteRange = buildByteRange();
-	}
-
-	private CMS buildCMS() {
-		return CMSUtils.parseToCMS(getContents());
-	}
-
-	private ByteRange buildByteRange() {
-		PdfArray byteRangeArray = dictionary.getAsArray(PAdESConstants.BYTE_RANGE_NAME);
-		if (byteRangeArray == null) {
-			throw new DSSException(String.format("Unable to retrieve the '%s' field value.", PAdESConstants.BYTE_RANGE_NAME));
-		}
-
-		int arraySize = byteRangeArray.size();
-		int[] result = new int[arraySize];
-		for (int i = 0; i < arraySize; i++) {
-			result[i] = byteRangeArray.getNumber(i).intValue();
-		}
-		return new ByteRange(result);
 	}
 
 	@Override
 	public String getSignerName() {
-		return dictionary.getStringValue(PAdESConstants.NAME_NAME);
+		return signerName;
+	}
+
+	/**
+	 * Sets the name of the signer
+	 *
+	 * @param signerName {@link String}
+	 */
+	protected void setSignerName(String signerName) {
+		this.signerName = signerName;
 	}
 
 	@Override
 	public String getContactInfo() {
-		return dictionary.getStringValue(PAdESConstants.CONTACT_INFO_NAME);
+		return contactInfo;
+	}
+
+	/**
+	 * Sets the contact info
+	 *
+	 * @param contactInfo {@link String}
+	 */
+	protected void setContactInfo(String contactInfo) {
+		this.contactInfo = contactInfo;
 	}
 
 	@Override
 	public String getReason() {
-		return dictionary.getStringValue(PAdESConstants.REASON_NAME);
+		return reason;
+	}
+
+	/**
+	 * Sets the signing reason
+	 *
+	 * @param reason {@link String}
+	 */
+	protected void setReason(String reason) {
+		this.reason = reason;
 	}
 
 	@Override
 	public String getLocation() {
-		return dictionary.getStringValue(PAdESConstants.LOCATION_NAME);
+		return location;
+	}
+
+	/**
+	 * Sets the signer location
+	 *
+	 * @param location {@link String}
+	 */
+	protected void setLocation(String location) {
+		this.location = location;
 	}
 
 	@Override
 	public Date getSigningDate() {
-		return dictionary.getDateValue(PAdESConstants.SIGNING_DATE_NAME);
+		return signingDate;
+	}
+
+	/**
+	 * Sets the date of signing
+	 *
+	 * @param signingDate {@link Date}
+	 */
+	protected void setSigningDate(Date signingDate) {
+		this.signingDate = signingDate;
 	}
 
 	@Override
 	public String getType() {
-		return dictionary.getNameValue(PAdESConstants.TYPE_NAME);
+		return type;
+	}
+
+	/**
+	 * Sets the type of the dictionary
+	 *
+	 * @param type {@link String}
+	 */
+	protected void setType(String type) {
+		this.type = type;
 	}
 
 	@Override
 	public String getFilter() {
-		return dictionary.getNameValue(PAdESConstants.FILTER_NAME);
+		return filter;
+	}
+
+	/**
+	 * Sets the /Filter value
+	 *
+	 * @param filter {@link String}
+	 */
+	protected void setFilter(String filter) {
+		this.filter = filter;
 	}
 
 	@Override
 	public String getSubFilter() {
-		return dictionary.getNameValue(PAdESConstants.SUB_FILTER_NAME);
+		return subFilter;
 	}
 
-	@Override
-	public CMS getCMS() {
-		return cms;
+	/**
+	 * Sets the /SubFilter value
+	 *
+	 * @param subFilter {@link String}
+	 */
+	protected void setSubFilter(String subFilter) {
+		this.subFilter = subFilter;
 	}
 
 	@Override
 	public byte[] getContents() {
-		try {
-			return dictionary.getBinariesValue(PAdESConstants.CONTENTS_NAME);
-		} catch (IOException e) {
-			throw new DSSException("Unable to retrieve the signature content", e);
-		}
+		return contents;
+	}
+
+	/**
+	 * Sets the /Contents signature value
+	 *
+	 * @param contents byte array
+	 */
+	protected void setContents(byte[] contents) {
+		this.contents = contents;
 	}
 
 	@Override
@@ -146,62 +259,55 @@ public class PdfSigDictWrapper implements PdfSignatureDictionary {
 		return byteRange;
 	}
 
+	/**
+	 * Sets the /ByteRange value
+	 *
+	 * @param byteRange {@link ByteRange}
+	 */
+	protected void setByteRange(ByteRange byteRange) {
+		this.byteRange = byteRange;
+	}
+
 	@Override
 	public CertificationPermission getDocMDP() {
-		PdfArray referenceArray = dictionary.getAsArray(PAdESConstants.REFERENCE_NAME);
-		if (referenceArray != null) {
-			for (int i = 0; i < referenceArray.size(); i++) {
-				PdfDict sigRef = referenceArray.getAsDict(i);
-				if (PAdESConstants.DOC_MDP_NAME.equals(sigRef.getNameValue(PAdESConstants.TRANSFORM_METHOD_NAME))) {
-					PdfDict transformParams = sigRef.getAsDict(PAdESConstants.TRANSFORM_PARAMS_NAME);
-					if (transformParams == null) {
-						LOG.warn("No '{}' dictionary found. Unable to perform a '{}' entry validation!",
-								PAdESConstants.TRANSFORM_PARAMS_NAME, PAdESConstants.DOC_MDP_NAME);
-						continue;
-					}
-					Number permissions = transformParams.getNumberValue(PAdESConstants.PERMISSIONS_NAME);
-					if (permissions == null) {
-						LOG.warn("No '{}' parameter found. Unable to perform a '{}' entry validation!",
-								PAdESConstants.PERMISSIONS_NAME, PAdESConstants.DOC_MDP_NAME);
-						continue;
-					}
-					return CertificationPermission.fromCode(permissions.intValue());
-				}
-			}
-		}
-		return null;
+		return docMDP;
+	}
+
+	/**
+	 * Sets the /DocMPD dictionary value
+	 *
+	 * @param docMDP {@link CertificationPermission}
+	 */
+	protected void setDocMDP(CertificationPermission docMDP) {
+		this.docMDP = docMDP;
 	}
 
 	@Override
 	public SigFieldPermissions getFieldMDP() {
-		PdfArray referenceArray = dictionary.getAsArray(PAdESConstants.REFERENCE_NAME);
-		if (referenceArray != null) {
-			for (int i = 0; i < referenceArray.size(); i++) {
-				PdfDict sigRef = referenceArray.getAsDict(i);
-				if (PAdESConstants.FIELD_MDP_NAME.equals(sigRef.getNameValue(PAdESConstants.TRANSFORM_METHOD_NAME))) {
-					PdfDict dataDict = sigRef.getAsDict(PAdESConstants.DATA_NAME);
-					if (dataDict == null) {
-						LOG.warn("No '{}' dictionary found. Unable to perform a '{}' entry validation!",
-								PAdESConstants.DATA_NAME, PAdESConstants.FIELD_MDP_NAME);
-						continue;
-					}
-					String dataDictType = dataDict.getNameValue(PAdESConstants.TYPE_NAME);
-					if (!PAdESConstants.CATALOG_NAME.equals(dataDictType)) {
-						LOG.warn("Unsupported type of '{}' dictionary found : '{}'. The '{}' validation skipped.",
-								PAdESConstants.DATA_NAME, dataDictType, PAdESConstants.FIELD_MDP_NAME);
-						continue;
-					}
-					PdfDict transformParams = sigRef.getAsDict(PAdESConstants.TRANSFORM_PARAMS_NAME);
-					if (transformParams == null) {
-						LOG.warn("No '{}' dictionary found. Unable to perform a '{}' entry validation!",
-								PAdESConstants.TRANSFORM_PARAMS_NAME, PAdESConstants.FIELD_MDP_NAME);
-						continue;
-					}
-					return PAdESUtils.extractPermissionsDictionary(transformParams);
-				}
-			}
-		}
-		return null;
+		return fieldMDP;
+	}
+
+	/**
+	 * Sets the /FieldMDP dictionary value
+	 *
+	 * @param fieldMDP {@link SigFieldPermissions}
+	 */
+	protected void setFieldMDP(SigFieldPermissions fieldMDP) {
+		this.fieldMDP = fieldMDP;
+	}
+
+	@Override
+	public CMS getCMS() {
+		return cms;
+	}
+
+	/**
+	 * Sets the CMS value read from /Contents
+	 *
+	 * @param cms {@link CMS}
+	 */
+	protected void setCMS(CMS cms) {
+		this.cms = cms;
 	}
 
 	@Override
