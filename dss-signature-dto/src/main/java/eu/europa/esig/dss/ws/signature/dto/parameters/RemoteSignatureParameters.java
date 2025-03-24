@@ -84,7 +84,8 @@ public class RemoteSignatureParameters implements Serializable {
 	 * This variable defines whether enveloped content shall be embedded into a signature
 	 * in its clear XML representation (only for XAdES)
 	 */
-	private boolean embedXML;
+	// ALISDEV - defaultne cheme embedovat v XML
+	private boolean embedXML = true;
 
 	/**
 	 * This variable defines whether an XML Manifest is being signed (only for XAdES)
