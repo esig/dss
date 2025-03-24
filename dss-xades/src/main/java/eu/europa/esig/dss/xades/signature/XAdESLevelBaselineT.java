@@ -577,9 +577,20 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 			LOG.debug("Timestamp generation: {} / {} / {}", timestampDigestAlgorithm.getName(), timestampC14nMethod,
 					Utils.toBase64(messageDigest.getValue()));
 		}
-		final TimestampBinary timeStampToken = tspSource.getTimeStampResponse(timestampDigestAlgorithm, messageDigest.getValue());
-		final String base64EncodedTimeStampToken = Utils.toBase64(DSSASN1Utils.getDEREncoded(timeStampToken));
-		
+
+		// ALISDEV - originalni kod
+		//final TimestampBinary timeStampToken = tspSource.getTimeStampResponse(timestampDigestAlgorithm, messageDigest.getValue());
+		//final String base64EncodedTimeStampToken = Utils.toBase64(DSSASN1Utils.getDEREncoded(timeStampToken));
+
+		// BEGIN ALISDEV uprava prebirani casoveho rezitka z KEO4
+		byte[] encoded = params.getSignatureTimestampParameters().getEncodedTimeStampToken();
+		if (encoded == null) {
+			TimestampBinary timeStampToken = tspSource.getTimeStampResponse(timestampDigestAlgorithm, messageDigest.getValue());
+			encoded = timeStampToken.getBytes();
+		}
+		final String base64EncodedTimeStampToken = Utils.toBase64(DSSASN1Utils.getDEREncoded(encoded));
+		// END ALISDEV
+
 		if (XAdESNamespace.XADES_122.isSameUri(getXadesNamespace().getUri())) {
 			incorporateXAdES122Include(timeStampDom);
 		}
