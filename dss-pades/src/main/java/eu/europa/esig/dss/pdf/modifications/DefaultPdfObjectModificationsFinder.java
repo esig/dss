@@ -392,6 +392,12 @@ public class DefaultPdfObjectModificationsFinder implements PdfObjectModificatio
                     LOG.debug("A stream has been removed '{}'.", currentObjectTree);
                 }
 
+        } else if (signedStreamSize != finalStreamSize) {
+            modifications.add(ObjectModification.modify(currentObjectTree, signedDict, finalDict));
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("A stream has been modified '{}'.", currentObjectTree);
+            }
+
         } else if (signedStreamSize > -1 && finalStreamSize > -1) {
             try (InputStream signedStream = getRawInputStreamSecurely(signedDict);
                  InputStream finalStream = getRawInputStreamSecurely(finalDict)) {

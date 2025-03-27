@@ -118,6 +118,8 @@ public final class PAdESConstants {
 	public static final String FONT_NAME = "Font";
 	/** 'ITXT' (iText identifier) */
 	public static final String ITEXT_NAME = "ITXT";
+	/** 'Kids' */
+	public static final String KIDS_NAME = "Kids";
 	/** 'Length' */
 	public static final String LENGTH_NAME = "Length";
 	/** 'Location' */

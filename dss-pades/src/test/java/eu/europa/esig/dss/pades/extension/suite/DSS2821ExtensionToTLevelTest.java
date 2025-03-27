@@ -74,7 +74,7 @@ class DSS2821ExtensionToTLevelTest extends AbstractPAdESTestValidation {
         assertTrue(detachedTst.arePdfObjectModificationsDetected());
         assertTrue(Utils.isCollectionNotEmpty(detachedTst.getPdfExtensionChanges()));
         assertTrue(Utils.isCollectionNotEmpty(detachedTst.getPdfSignatureOrFormFillChanges()));
-        assertTrue(Utils.isCollectionNotEmpty(detachedTst.getPdfAnnotationChanges()));
+        assertFalse(Utils.isCollectionNotEmpty(detachedTst.getPdfAnnotationChanges()));
         assertTrue(Utils.isCollectionNotEmpty(detachedTst.getPdfUndefinedChanges()));
 
         TimestampWrapper docTst = diagnosticData.getTimestampList().get(1);
