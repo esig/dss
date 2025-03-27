@@ -90,8 +90,8 @@ class CryptographicValidationExecutorTest extends AbstractProcessExecutorTest {
         SimpleReport simpleReport = reports.getSimpleReport();
         assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 
-        assertNull(simpleReport.getSignatureExtensionPeriodMin(simpleReport.getFirstSignatureId()));
-        assertNotNull(simpleReport.getSignatureExtensionPeriodMax(simpleReport.getFirstSignatureId()));
+        assertNull(simpleReport.getExtensionPeriodMin(simpleReport.getFirstSignatureId()));
+        assertNotNull(simpleReport.getExtensionPeriodMax(simpleReport.getFirstSignatureId()));
 
         assertEquals(SignatureQualification.QESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
 

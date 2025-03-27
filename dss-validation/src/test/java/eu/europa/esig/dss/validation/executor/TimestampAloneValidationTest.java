@@ -48,6 +48,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -80,6 +81,10 @@ class TimestampAloneValidationTest extends AbstractTestValidationExecutor {
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(TimestampQualification.QTSA, simpleReport.getTimestampQualification(simpleReport.getFirstTimestampId()));
 
+		assertNull(simpleReport.getExtensionPeriodMin(simpleReport.getFirstTimestampId()));
+		assertEquals(diagnosticData.getUsedTimestamps().get(0).getSigningCertificate().getCertificate().getNotAfter(),
+				simpleReport.getExtensionPeriodMax(simpleReport.getFirstTimestampId()));
+
 		DetailedReport detailedReport = reports.getDetailedReport();
 		assertEquals(TimestampQualification.QTSA, detailedReport.getTimestampQualificationAtTstGenerationTime(detailedReport.getFirstTimestampId()));
 		assertEquals(TimestampQualification.QTSA, detailedReport.getTimestampQualificationAtBestPoeTime(detailedReport.getFirstTimestampId()));
@@ -100,6 +105,9 @@ class TimestampAloneValidationTest extends AbstractTestValidationExecutor {
 
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(TimestampQualification.TSA, simpleReport.getTimestampQualification(simpleReport.getFirstTimestampId()));
+
+		assertNull(simpleReport.getExtensionPeriodMin(simpleReport.getFirstTimestampId()));
+		assertNull(simpleReport.getExtensionPeriodMax(simpleReport.getFirstTimestampId()));
 
 		DetailedReport detailedReport = reports.getDetailedReport();
 		assertEquals(TimestampQualification.TSA, detailedReport.getTimestampQualificationAtTstGenerationTime(detailedReport.getFirstTimestampId()));
@@ -185,6 +193,16 @@ class TimestampAloneValidationTest extends AbstractTestValidationExecutor {
 
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(TimestampQualification.NA, simpleReport.getTimestampQualification(simpleReport.getFirstTimestampId()));
+
+		for (String sigId : simpleReport.getSignatureIdList()) {
+			assertNull(simpleReport.getExtensionPeriodMin(sigId));
+			assertNull(simpleReport.getExtensionPeriodMax(sigId));
+		}
+		for (String tstId : simpleReport.getTimestampIdList()) {
+			assertNull(simpleReport.getExtensionPeriodMin(tstId));
+			assertEquals(reports.getDiagnosticData().getTimestampById(tstId).getSigningCertificate().getNotAfter(),
+					simpleReport.getExtensionPeriodMax(tstId));
+		}
 
 		DetailedReport detailedReport = reports.getDetailedReport();
 		assertEquals(2, detailedReport.getSignatures().size());
@@ -404,6 +422,17 @@ class TimestampAloneValidationTest extends AbstractTestValidationExecutor {
 		assertEquals(Indication.PASSED, simpleReport.getIndication(timestampIdList.get(1)));
 		assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationErrors(timestampIdList.get(1))));
 		assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationWarnings(timestampIdList.get(1))));
+
+		assertNull(simpleReport.getExtensionPeriodMin(simpleReport.getTimestampIdList().get(0)));
+		assertEquals(diagnosticData.getUsedTimestamps().get(1).getSigningCertificate().getCertificate().getNotAfter(),
+				simpleReport.getExtensionPeriodMax(simpleReport.getTimestampIdList().get(0)));
+
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(diagnosticData.getValidationDate());
+		calendar.add(Calendar.SECOND, 1);
+		assertEquals(calendar.getTime(), simpleReport.getExtensionPeriodMin(simpleReport.getTimestampIdList().get(1)));
+		assertEquals(diagnosticData.getUsedTimestamps().get(1).getSigningCertificate().getCertificate().getNotAfter(),
+				simpleReport.getExtensionPeriodMax(simpleReport.getTimestampIdList().get(1)));
 
 		DetailedReport detailedReport = reports.getDetailedReport();
 		assertEquals(0, detailedReport.getSignatures().size());

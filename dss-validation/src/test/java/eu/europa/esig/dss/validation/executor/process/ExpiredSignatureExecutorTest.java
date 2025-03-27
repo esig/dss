@@ -63,8 +63,8 @@ class ExpiredSignatureExecutorTest extends AbstractProcessExecutorTest {
         assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
         assertEquals(SubIndication.OUT_OF_BOUNDS_NOT_REVOKED, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
 
-        assertNull(simpleReport.getSignatureExtensionPeriodMin(simpleReport.getFirstSignatureId()));
-        assertNull(simpleReport.getSignatureExtensionPeriodMax(simpleReport.getFirstSignatureId()));
+        assertNull(simpleReport.getExtensionPeriodMin(simpleReport.getFirstSignatureId()));
+        assertNull(simpleReport.getExtensionPeriodMax(simpleReport.getFirstSignatureId()));
 
         DetailedReport detailedReport = reports.getDetailedReport();
         assertEquals(Indication.INDETERMINATE, detailedReport.getBasicValidationIndication(simpleReport.getFirstSignatureId()));

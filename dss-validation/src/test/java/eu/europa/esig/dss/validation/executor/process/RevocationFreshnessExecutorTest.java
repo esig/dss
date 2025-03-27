@@ -248,14 +248,14 @@ class RevocationFreshnessExecutorTest extends AbstractProcessExecutorTest {
         assertEquals(1, revocations.size());
 
         assertEquals(revocations.get(0).getRevocation().getNextUpdate(),
-                simpleReport.getSignatureExtensionPeriodMin(simpleReport.getFirstSignatureId()));
+                simpleReport.getExtensionPeriodMin(simpleReport.getFirstSignatureId()));
 
         List<XmlTimestamp> usedTimestamps = diagnosticData.getUsedTimestamps();
         assertEquals(1, usedTimestamps.size());
         XmlTimestamp xmlTimestamp = usedTimestamps.get(0);
 
         assertEquals(xmlTimestamp.getSigningCertificate().getCertificate().getNotAfter(),
-                simpleReport.getSignatureExtensionPeriodMax(simpleReport.getFirstSignatureId()));
+                simpleReport.getExtensionPeriodMax(simpleReport.getFirstSignatureId()));
 
         checkReports(reports);
     }
@@ -310,10 +310,10 @@ class RevocationFreshnessExecutorTest extends AbstractProcessExecutorTest {
         }
         assertNotNull(firstUpdateTime);
 
-        assertEquals(firstUpdateTime, simpleReport.getSignatureExtensionPeriodMin(simpleReport.getFirstSignatureId()));
+        assertEquals(firstUpdateTime, simpleReport.getExtensionPeriodMin(simpleReport.getFirstSignatureId()));
 
         assertEquals(xmlTimestamp.getSigningCertificate().getCertificate().getNotAfter(),
-                simpleReport.getSignatureExtensionPeriodMax(simpleReport.getFirstSignatureId()));
+                simpleReport.getExtensionPeriodMax(simpleReport.getFirstSignatureId()));
 
         checkReports(reports);
     }
@@ -365,10 +365,10 @@ class RevocationFreshnessExecutorTest extends AbstractProcessExecutorTest {
         }
         assertNotNull(firstUpdateTime);
 
-        assertEquals(firstUpdateTime, simpleReport.getSignatureExtensionPeriodMin(simpleReport.getFirstSignatureId()));
+        assertEquals(firstUpdateTime, simpleReport.getExtensionPeriodMin(simpleReport.getFirstSignatureId()));
 
         assertEquals(xmlTimestamp.getSigningCertificate().getCertificate().getNotAfter(),
-                simpleReport.getSignatureExtensionPeriodMax(simpleReport.getFirstSignatureId()));
+                simpleReport.getExtensionPeriodMax(simpleReport.getFirstSignatureId()));
 
         checkReports(reports);
     }
@@ -403,10 +403,10 @@ class RevocationFreshnessExecutorTest extends AbstractProcessExecutorTest {
         assertEquals(1, revocations.size());
 
         assertEquals(revocations.get(0).getRevocation().getNextUpdate(),
-                simpleReport.getSignatureExtensionPeriodMin(simpleReport.getFirstSignatureId()));
+                simpleReport.getExtensionPeriodMin(simpleReport.getFirstSignatureId()));
 
         assertEquals(signingCertificate.getCertificate().getNotAfter(),
-                simpleReport.getSignatureExtensionPeriodMax(simpleReport.getFirstSignatureId()));
+                simpleReport.getExtensionPeriodMax(simpleReport.getFirstSignatureId()));
 
         checkReports(reports);
     }
@@ -443,10 +443,10 @@ class RevocationFreshnessExecutorTest extends AbstractProcessExecutorTest {
         assertEquals(1, revocations.size());
 
         assertEquals(revocations.get(0).getRevocation().getNextUpdate(),
-                simpleReport.getSignatureExtensionPeriodMin(simpleReport.getFirstSignatureId()));
+                simpleReport.getExtensionPeriodMin(simpleReport.getFirstSignatureId()));
 
         assertEquals(xmlTimestamp.getSigningCertificate().getCertificate().getNotAfter(),
-                simpleReport.getSignatureExtensionPeriodMax(simpleReport.getFirstSignatureId()));
+                simpleReport.getExtensionPeriodMax(simpleReport.getFirstSignatureId()));
 
         checkReports(reports);
     }
@@ -483,9 +483,9 @@ class RevocationFreshnessExecutorTest extends AbstractProcessExecutorTest {
 
         SimpleReport simpleReport = reports.getSimpleReport();
 
-        assertNull(simpleReport.getSignatureExtensionPeriodMin(simpleReport.getFirstSignatureId()));
+        assertNull(simpleReport.getExtensionPeriodMin(simpleReport.getFirstSignatureId()));
         assertEquals(xmlTimestamp.getSigningCertificate().getCertificate().getNotAfter(),
-                simpleReport.getSignatureExtensionPeriodMax(simpleReport.getFirstSignatureId()));
+                simpleReport.getExtensionPeriodMax(simpleReport.getFirstSignatureId()));
 
         checkReports(reports);
     }

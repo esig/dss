@@ -329,9 +329,27 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/SignedDocu
 [[SimpleReport]]
 ==== Simple report
 
-The result of the validation process is based on complex algorithm and rules. The purpose of this report is to make as simple as possible the information while keeping the most important elements. Thus the end user can, at a glance, have a synthetic view of the validation. To build this report the framework uses some simple rules and the detailed report as input.
+The result of the validation process is based on complex algorithm and rules. The purpose of this report is to make as simple as possible the information while keeping the most important elements. Thus, the end user can, at a glance, have a synthetic view of the validation. To build this report the framework uses some simple rules and the detailed report as input.
 
 A sample of the simple validation report can be found https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_samples/simple-report-example.xml[here].
+
+[[MinAndMaxAugmentationDates]]
+===== Minimum and maximum signature augmentation dates
+
+As a part of the final validation result, the Simple Report contains two useful dates indicating a possible extension period applicable for a signature or a token, namely:
+
+- `extensionPeriodMin` - Date indicates when an augmentation of a signature or a token becomes possible, ensuring the revocation freshness. The returned `Date` corresponds to the latest value across all `nextUpdate` fields of the token's revocation data required for the signature or token validation. When all revocation data, supplied to the validation process, is acceptable and considered fresh, or no revocation data is required for validation of the related certificate chain(s), a `NULL` value is returned.
+- `extensionPeriodMax` - Date indicates the latest time when it is possible to augment a signature or a token. This constraint is built based on the signing certificate's and applicable timestamps' validity periods, but does not take into account a probability of a certificate's revocation or expiration of cryptographic constraints. Please note that a signature or a token may expire earlier due to external factors.
+
+NOTE: The `extensionPeriodMin` and `extensionPeriodMax` values are returned only for valid or temporary invalid signatures, timestamps and evidence records (i.e. such as having a `TOTAL_PASSED`, `PASSED` or `INDETERMINATE/TRY_LATER` indications). In all other cases, the `NULL` indication is returned.
+
+Example of minimum and maximum augmentation dates usage is provided below:
+
+[source,java,indent=0]
+.Minimum and maximum signature augmentation dates
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/SignedDocumentValidatorTest.java[tags=demo-simple-report-min-and-max-dates]
+----
 
 [[DetailedReport]]
 ==== Detailed report

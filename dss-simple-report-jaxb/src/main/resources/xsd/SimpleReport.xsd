@@ -64,6 +64,9 @@
 			<xs:element name="SubIndication" type="SubIndication" minOccurs="0" />
 			<xs:element name="AdESValidationDetails" type="Details" minOccurs="0" />
 			<xs:element name="QualificationDetails" type="Details" minOccurs="0" />
+
+			<xs:element name="ExtensionPeriodMin" type="xs:dateTime" minOccurs="0" />
+			<xs:element name="ExtensionPeriodMax" type="xs:dateTime" minOccurs="0" />
 		</xs:sequence>
 		<xs:attribute name="Id" type="xs:string" use="required" /> <!-- Must be a String type in order to avoid conflict with DetailedReport in REST/SOAP webServices -->
 	</xs:complexType>
@@ -99,9 +102,6 @@
 				<xs:attribute name="CounterSignature" type="xs:boolean" use="optional" />
 				<xs:attribute name="ParentId" type="xs:string" use="optional" />
 				<xs:attribute name="SignatureFormat" type="SignatureFormat" use="required" />
-				
-				<xs:attribute name="ExtensionPeriodMin" type="xs:dateTime" use="optional" />
-				<xs:attribute name="ExtensionPeriodMax" type="xs:dateTime" use="optional" />
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>

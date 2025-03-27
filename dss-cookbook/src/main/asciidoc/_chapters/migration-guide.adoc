@@ -91,6 +91,26 @@ CMS cms = ...
 cms = cadesExtension.extendCMSSignatures(cms, signatureParameters);
 ----
 
+|Min and Max signature extension times             a|
+[source,java]
+----
+import eu.europa.esig.dss.simplereport.SimpleReport;
+import java.util.Date;
+
+SimpleReport simpleReport = reports.getSimpleReport();
+Date extensionPeriodMin = simpleReport.getSignatureExtensionPeriodMin(signatureId);
+Date extensionPeriodMax = simpleReport.getSignatureExtensionPeriodMax(signatureId);
+----
+                                                                     a|[source,java]
+----
+import eu.europa.esig.dss.simplereport.SimpleReport;
+import java.util.Date;
+
+SimpleReport simpleReport = reports.getSimpleReport();
+Date extensionPeriodMin = simpleReport.getExtensionPeriodMin(signatureId);
+Date extensionPeriodMax = simpleReport.getExtensionPeriodMax(signatureId);
+----
+
 |===
 
 [cols="2,5,5"]

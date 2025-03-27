@@ -401,6 +401,45 @@
 						</dd>
 					</dl>
 				</xsl:if>
+
+				<!-- Ignore embedded timestamps -->
+				<xsl:if test="not($nodeName = 'Timestamp') or (count(ancestor::*/dss:Signature) = 0 and count(ancestor::*/dss:EvidenceRecord) = 0)">
+					<dl>
+						<xsl:attribute name="class">row mb-0</xsl:attribute>
+						<dt>
+							<xsl:attribute name="class">col-sm-3</xsl:attribute>
+							Maximum validity time:
+						</dt>
+						<dd>
+							<xsl:attribute name="class">col-sm-9</xsl:attribute>
+
+							<xsl:choose>
+								<xsl:when test="dss:ExtensionPeriodMax">
+									<xsl:call-template name="formatdate">
+										<xsl:with-param name="DateTimeStr" select="dss:ExtensionPeriodMax"/>
+									</xsl:call-template>
+
+									<i>
+										<xsl:attribute name="class">fa fa-info-circle text-info ml-2</xsl:attribute>
+										<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
+										<xsl:attribute name="data-placement">right</xsl:attribute>
+										<xsl:attribute name="title">Indicates the maximum validity period before expiration, subject to external factors</xsl:attribute>
+									</i>
+								</xsl:when>
+								<xsl:otherwise>
+									N/A
+
+									<i>
+										<xsl:attribute name="class">fa fa-info-circle text-info ml-2</xsl:attribute>
+										<xsl:attribute name="data-toggle">tooltip</xsl:attribute>
+										<xsl:attribute name="data-placement">right</xsl:attribute>
+										<xsl:attribute name="title">Not applicable</xsl:attribute>
+									</i>
+								</xsl:otherwise>
+							</xsl:choose>
+						</dd>
+					</dl>
+				</xsl:if>
 		        
 				<xsl:if test="$nodeName = 'Signature'">
 			        <dl>
