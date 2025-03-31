@@ -47,7 +47,7 @@ class ReferenceDataIntactCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlCV result = new XmlCV();
-		ReferenceDataIntactCheck rdic = new ReferenceDataIntactCheck(i18nProvider, result, digestMatcher, constraint);
+		ReferenceDataIntactCheck<XmlCV> rdic = new ReferenceDataIntactCheck<>(i18nProvider, result, digestMatcher, constraint);
 		rdic.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -65,7 +65,7 @@ class ReferenceDataIntactCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlCV result = new XmlCV();
-		ReferenceDataIntactCheck rdic = new ReferenceDataIntactCheck(i18nProvider, result, digestMatcher, constraint);
+		ReferenceDataIntactCheck<XmlCV> rdic = new ReferenceDataIntactCheck<>(i18nProvider, result, digestMatcher, constraint);
 		rdic.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

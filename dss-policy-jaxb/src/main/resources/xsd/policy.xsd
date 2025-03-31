@@ -449,6 +449,31 @@
 							<xsd:documentation>Checks the returned status is not unknown</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
+					<xsd:element name="ThisUpdatePresent" type="LevelConstraint" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>Checks whether thisUpdate field is defined within the revocation data</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="RevocationIssuerKnown" type="LevelConstraint" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>Checks whether the revocation issuer certificate can be identified</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="RevocationIssuerValidAtProductionTime" type="LevelConstraint" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>Checks whether the revocation issuer has been valid during the production time of the revocation data (i.e. at producedAt time)</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="RevocationAfterCertificateIssuance" type="LevelConstraint" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>Checks whether the thisUpdate date of the revocation information is after the verifying certificate's notBefore date</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="RevocationHasInformationAboutCertificate" type="LevelConstraint" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>Checks whether the revocation issuer has information about the certificate. The condition applies when: either certificate is still valid; or the revocation contains expiredCertsOnCRL (CRL) or archiveCutOff (OCSP), or Trust Service defines a expiredCertsRevocationInfo, with a value before certificate's expiration; or the cert-hash matches (OCSP).</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
 					<xsd:element name="OCSPResponderIdMatch" type="LevelConstraint" minOccurs="0">
 						<xsd:annotation>
 							<xsd:documentation>Checks if an OCSP response's ResponderId matches the certificate used to sign the response</xsd:documentation>

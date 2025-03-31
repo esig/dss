@@ -122,9 +122,9 @@ class DSS2338ExecutorTest extends AbstractProcessExecutorTest {
 
         boolean consistencyCheckFound = false;
         for (XmlConstraint constraint : xmlRAC.getConstraint()) {
-            if (MessageTag.BBB_XCV_IRDC.getId().equals(constraint.getName().getKey())) {
+            if (MessageTag.BBB_XCV_REVOC_ISSUER_VALID_AT_PROD.getId().equals(constraint.getName().getKey())) {
                 assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
-                assertEquals(MessageTag.BBB_XCV_IRDC_ANS.getId(), constraint.getError().getKey());
+                assertEquals(MessageTag.BBB_XCV_REVOC_ISSUER_VALID_AT_PROD_ANS.getId(), constraint.getError().getKey());
                 assertEquals(i18nProvider.getMessage(MessageTag.REVOCATION_PRODUCED_AT_OUT_OF_BOUNDS,
                                 ValidationProcessUtils.getFormattedDate(revocationWrapper.getProductionDate()),
                                 ValidationProcessUtils.getFormattedDate(revocationWrapper.getSigningCertificate().getNotBefore()),
@@ -205,9 +205,9 @@ class DSS2338ExecutorTest extends AbstractProcessExecutorTest {
 
         boolean consistencyCheckFound = false;
         for (XmlConstraint constraint : xmlRAC.getConstraint()) {
-            if (MessageTag.BBB_XCV_IRDC.getId().equals(constraint.getName().getKey())) {
+            if (MessageTag.BBB_XCV_REVOC_ISSUER_VALID_AT_PROD.getId().equals(constraint.getName().getKey())) {
                 assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
-                assertEquals(MessageTag.BBB_XCV_IRDC_ANS.getId(), constraint.getError().getKey());
+                assertEquals(MessageTag.BBB_XCV_REVOC_ISSUER_VALID_AT_PROD_ANS.getId(), constraint.getError().getKey());
                 assertEquals(i18nProvider.getMessage(MessageTag.REVOCATION_PRODUCED_AT_OUT_OF_BOUNDS,
                                 ValidationProcessUtils.getFormattedDate(revocationWrapper.getProductionDate()),
                                 ValidationProcessUtils.getFormattedDate(revocationWrapper.getSigningCertificate().getNotBefore()),

@@ -30,6 +30,7 @@ import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.policy.jaxb.EIDAS;
 import eu.europa.esig.dss.policy.jaxb.EvidenceRecordConstraints;
 import eu.europa.esig.dss.policy.jaxb.IntValueConstraint;
+import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.Model;
 import eu.europa.esig.dss.policy.jaxb.ModelConstraint;
@@ -794,6 +795,91 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		return null;
 	}
 	
+	@Override
+	public LevelConstraint getThisUpdatePresentConstraint() {
+		RevocationConstraints revocationConstraints = getRevocationConstraints();
+		if (revocationConstraints != null) {
+			LevelConstraint constraint = revocationConstraints.getThisUpdatePresent();
+			if (constraint == null) {
+				// TODO : temporary handling since 6.3 to ensure smooth migration to DSS 6.4. To be removed in 6.4.
+				constraint = new LevelConstraint();
+				constraint.setLevel(Level.FAIL);
+				LOG.warn("No ThisUpdatePresent constraint is defined in the validation policy for Revocation element! " +
+						"Default behavior with FAIL level is added to processing. Please set the constraint explicitly. To be required since DSS 6.4.");
+			}
+			return constraint;
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getRevocationIssuerKnownConstraint() {
+		RevocationConstraints revocationConstraints = getRevocationConstraints();
+		if (revocationConstraints != null) {
+			LevelConstraint constraint = revocationConstraints.getRevocationIssuerKnown();
+			if (constraint == null) {
+				// TODO : temporary handling since 6.3 to ensure smooth migration to DSS 6.4. To be removed in 6.4.
+				constraint = new LevelConstraint();
+				constraint.setLevel(Level.FAIL);
+				LOG.warn("No RevocationIssuerKnown constraint is defined in the validation policy for Revocation element! " +
+						"Default behavior with FAIL level is added to processing. Please set the constraint explicitly. To be required since DSS 6.4.");
+			}
+			return constraint;
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getRevocationIssuerValidAtProductionTimeConstraint() {
+		RevocationConstraints revocationConstraints = getRevocationConstraints();
+		if (revocationConstraints != null) {
+			LevelConstraint constraint = revocationConstraints.getRevocationIssuerValidAtProductionTime();
+			if (constraint == null) {
+				// TODO : temporary handling since 6.3 to ensure smooth migration to DSS 6.4. To be removed in 6.4.
+				constraint = new LevelConstraint();
+				constraint.setLevel(Level.FAIL);
+				LOG.warn("No RevocationIssuerValidAtProductionTime constraint is defined in the validation policy for Revocation element! " +
+						"Default behavior with FAIL level is added to processing. Please set the constraint explicitly. To be required since DSS 6.4.");
+			}
+			return constraint;
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getRevocationAfterCertificateIssuanceConstraint() {
+		RevocationConstraints revocationConstraints = getRevocationConstraints();
+		if (revocationConstraints != null) {
+			LevelConstraint constraint = revocationConstraints.getRevocationAfterCertificateIssuance();
+			if (constraint == null) {
+				// TODO : temporary handling since 6.3 to ensure smooth migration to DSS 6.4. To be removed in 6.4.
+				constraint = new LevelConstraint();
+				constraint.setLevel(Level.FAIL);
+				LOG.warn("No RevocationIssuerKnowsCertificate constraint is defined in the validation policy for Revocation element! " +
+						"Default behavior with FAIL level is added to processing. Please set the constraint explicitly. To be required since DSS 6.4.");
+			}
+			return constraint;
+		}
+		return null;
+	}
+
+	@Override
+	public LevelConstraint getRevocationHasInformationAboutCertificateConstraint() {
+		RevocationConstraints revocationConstraints = getRevocationConstraints();
+		if (revocationConstraints != null) {
+			LevelConstraint constraint = revocationConstraints.getRevocationHasInformationAboutCertificate();
+			if (constraint == null) {
+				// TODO : temporary handling since 6.3 to ensure smooth migration to DSS 6.4. To be removed in 6.4.
+				constraint = new LevelConstraint();
+				constraint.setLevel(Level.FAIL);
+				LOG.warn("No RevocationIssuerHasInformationAboutCertificate constraint is defined in the validation policy for Revocation element! " +
+						"Default behavior with FAIL level is added to processing. Please set the constraint explicitly. To be required since DSS 6.4.");
+			}
+			return constraint;
+		}
+		return null;
+	}
+
 	@Override
 	public LevelConstraint getOCSPResponseResponderIdMatchConstraint() {
 		RevocationConstraints revocationConstraints = getRevocationConstraints();

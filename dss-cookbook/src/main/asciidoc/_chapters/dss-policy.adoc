@@ -2345,6 +2345,78 @@ Default: `FAIL`
 </Revocation>
 ----
 
+* `ThisUpdatePresent` - this constraint checks whether the `thisUpdate` field is present within the revocation data. If the `thisUpdate` field is missed from the revocation data's structure, the check will fail.
+
+Default: `FAIL`
+
+[source,xml,indent=0]
+.Example of ThisUpdatePresent usage (with FAIL validation level)
+----
+<Revocation>
+    ...
+    <ThisUpdatePresent Level="FAIL" />
+    ...
+</Revocation>
+----
+
+* `RevocationIssuerKnown` - this constraint checks whether the signing certificate of the revocation data has been identified. If no signing certificate has been found for the revocation data, the check will fail.
+
+Default: `FAIL`
+
+[source,xml,indent=0]
+.Example of RevocationIssuerKnown usage (with FAIL validation level)
+----
+<Revocation>
+    ...
+    <RevocationIssuerKnown Level="FAIL" />
+    ...
+</Revocation>
+----
+
+* `RevocationIssuerValidAtProductionTime` - this constraint checks whether the signing certificate of the revocation data has been valid at the revocation data's production time. If the revocation data's production time is outside the revocation data issuer's validity range, the check will fail.
+
+NOTE: The check is executed only for OCSP responses.
+
+Default: `FAIL`
+
+[source,xml,indent=0]
+.Example of RevocationIssuerValidAtProductionTime usage (with FAIL validation level)
+----
+<Revocation>
+    ...
+    <RevocationIssuerValidAtProductionTime Level="FAIL" />
+    ...
+</Revocation>
+----
+
+* `RevocationAfterCertificateIssuance` - this constraint checks whether the revocation data has been issued at or after the concerned certificate's issuance time (`notBefore`). If the revocation data has been issued before the issuance time of the concerned certificate, the check will fail.
+
+Default: `FAIL`
+
+[source,xml,indent=0]
+.Example of RevocationAfterCertificateIssuance usage (with FAIL validation level)
+----
+<Revocation>
+    ...
+    <RevocationAfterCertificateIssuance Level="FAIL" />
+    ...
+</Revocation>
+----
+
+* `RevocationHasInformationAboutCertificate` - this constraint checks whether the revocation data issuer contains the revocation status of the concerned certificate. This is always TRUE for still valid certificates, but variable for expired certificates. In order to satisfy condition for expired certificates, one of the `expiredCertsOnCRL` (for a CRL), `archiveCutOff` (for an OCSP response) or `expiredCertsRevocationInfo` (for a Trusted List) shall be present and be at or before expiration time of the concerned certificate, or `certHash` extension shall be present and its value shall match to the hash of the concerned certificate (more information is available in the Common PKI v2.0 specification, cf. <<R26>>). If the revocation data has been issued after the expiration time of the concerned certificate and none of the aforementioned conditions satisfy, the check will fail.
+
+Default: `FAIL`
+
+[source,xml,indent=0]
+.Example of RevocationHasInformationAboutCertificate usage (with FAIL validation level)
+----
+<Revocation>
+    ...
+    <RevocationHasInformationAboutCertificate Level="FAIL" />
+    ...
+</Revocation>
+----
+
 * `OCSPResponderIdMatch` - this constraint checks whether the ResponderId field of OCSP response matches the certificate used to sign this OCSP response. If the ResponderId does not match the certificate, the check will fail.
 
 Default: `FAIL` (executed for OCSP only)
@@ -2923,7 +2995,12 @@ This table defines the correspondence between the enforced validation policy con
                                   |TSAGeneralNameOrderMatch        |LevelConstraint                   |INDETERMINATE         |SIG_CONSTRAINTS_FAILURE
                                   |AtsHashIndex                    |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |ContainerSignedAndTimestampedFilesCovered   |LevelConstraint       |FAILED                |FORMAT_FAILURE
-.6+|RevocationConstraints         |UnknownStatus                   |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
+.11+|RevocationConstraints        |UnknownStatus                   |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
+                                  |ThisUpdatePresent               |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
+                                  |RevocationIssuerKnown           |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
+                                  |RevocationIssuerValidAtProductionTime     |LevelConstraint         |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
+                                  |RevocationAfterCertificateIssuance        |LevelConstraint         |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
+                                  |RevocationHasInformationAboutCertificate  |LevelConstraint         |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |OCSPResponderIdMatch            |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |OCSPCertHashPresent             |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE
                                   |OCSPCertHashMatch               |LevelConstraint                   |INDETERMINATE         |CERTIFICATE_CHAIN_GENERAL_FAILURE

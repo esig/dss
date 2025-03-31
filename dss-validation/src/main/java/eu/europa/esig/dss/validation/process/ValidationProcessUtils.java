@@ -352,9 +352,12 @@ public class ValidationProcessUtils {
 	 * @return {@link String} formatted date
 	 */
 	public static String getFormattedDate(Date date) {
-		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
-		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-		return sdf.format(date);
+		if (date != null) {
+			SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+			sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+			return sdf.format(date);
+		}
+		return null;
 	}
 	
 	/**

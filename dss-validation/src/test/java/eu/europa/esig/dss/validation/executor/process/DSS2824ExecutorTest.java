@@ -94,7 +94,7 @@ class DSS2824ExecutorTest extends AbstractProcessExecutorTest {
         XmlRAC xmlRAC = racs.get(0);
         boolean consistencyCheckFound = false;
         for (XmlConstraint constraint : xmlRAC.getConstraint()) {
-            if (MessageTag.BBB_XCV_IRDC.getId().equals(constraint.getName().getKey())) {
+            if (MessageTag.BBB_XCV_REVOC_HAS_CERT_INFO.getId().equals(constraint.getName().getKey())) {
                 assertEquals(i18nProvider.getMessage(MessageTag.REVOCATION_CONSISTENT_OCSP,
                         ValidationProcessUtils.getFormattedDate(certificateRevocation.getThisUpdate()),
                         ValidationProcessUtils.getFormattedDate(certificateRevocation.getArchiveCutOff()),
@@ -152,7 +152,7 @@ class DSS2824ExecutorTest extends AbstractProcessExecutorTest {
         XmlRAC xmlRAC = racs.get(0);
         boolean consistencyCheckFound = false;
         for (XmlConstraint constraint : xmlRAC.getConstraint()) {
-            if (MessageTag.BBB_XCV_IRDC.getId().equals(constraint.getName().getKey())) {
+            if (MessageTag.BBB_XCV_REVOC_HAS_CERT_INFO.getId().equals(constraint.getName().getKey())) {
                 assertEquals(i18nProvider.getMessage(MessageTag.REVOCATION_CONSISTENT,
                         ValidationProcessUtils.getFormattedDate(certificateRevocation.getThisUpdate()),
                         ValidationProcessUtils.getFormattedDate(signingCertificate.getNotBefore()),

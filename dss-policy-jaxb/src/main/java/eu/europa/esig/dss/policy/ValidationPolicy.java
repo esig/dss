@@ -428,6 +428,41 @@ public interface ValidationPolicy {
 	LevelConstraint getUnknownStatusConstraint();
 
 	/**
+	 * The method returns ThisUpdatePresent constraint
+	 *
+	 * @return {@link LevelConstraint}
+	 */
+	LevelConstraint getThisUpdatePresentConstraint();
+
+	/**
+	 * The method returns RevocationIssuerKnown constraint
+	 *
+	 * @return {@link LevelConstraint}
+	 */
+	LevelConstraint getRevocationIssuerKnownConstraint();
+
+	/**
+	 * The method returns RevocationIssuerValidAtProductionTime constraint
+	 *
+	 * @return {@link LevelConstraint}
+	 */
+	LevelConstraint getRevocationIssuerValidAtProductionTimeConstraint();
+
+	/**
+	 * The method returns RevocationIssuerKnowsCertificate constraint
+	 *
+	 * @return {@link LevelConstraint}
+	 */
+	LevelConstraint getRevocationAfterCertificateIssuanceConstraint();
+
+	/**
+	 * The method returns RevocationIssuerHasInformationAboutCertificate constraint
+	 *
+	 * @return {@link LevelConstraint}
+	 */
+	LevelConstraint getRevocationHasInformationAboutCertificateConstraint();
+
+	/**
 	 * The method returns OCSPResponderIdMatch constraint
 	 *
 	 * @return {@link LevelConstraint}

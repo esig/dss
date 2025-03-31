@@ -362,9 +362,9 @@ class RevocationDataExecutorTest extends AbstractProcessExecutorTest {
         assertEquals(Indication.INDETERMINATE, conclusion.getIndication());
         assertTrue(Utils.isCollectionNotEmpty(conclusion.getErrors()));
         assertFalse(checkMessageValuePresence(convert(conclusion.getErrors()),
-                i18nProvider.getMessage(MessageTag.BBB_XCV_IRDC_ANS)));
+                i18nProvider.getMessage(MessageTag.BBB_XCV_REVOC_HAS_CERT_INFO_ANS)));
         assertFalse(checkMessageValuePresence(convert(conclusion.getWarnings()),
-                i18nProvider.getMessage(MessageTag.BBB_XCV_IRDC_ANS)));
+                i18nProvider.getMessage(MessageTag.BBB_XCV_REVOC_HAS_CERT_INFO_ANS)));
 
         boolean failedRacFound = false;
         XmlXCV xcv = bbb.getXCV();
@@ -372,7 +372,7 @@ class RevocationDataExecutorTest extends AbstractProcessExecutorTest {
             if (Indication.INDETERMINATE.equals(rac.getConclusion().getIndication())) {
                 assertFalse(failedRacFound);
                 assertTrue(checkMessageValuePresence(convert(rac.getConclusion().getErrors()),
-                        i18nProvider.getMessage(MessageTag.BBB_XCV_IRDC_ANS)));
+                        i18nProvider.getMessage(MessageTag.BBB_XCV_REVOC_HAS_CERT_INFO_ANS)));
                 failedRacFound = true;
             }
         }
@@ -381,9 +381,9 @@ class RevocationDataExecutorTest extends AbstractProcessExecutorTest {
         SimpleReport simpleReport = reports.getSimpleReport();
         assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
         assertFalse(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
-                i18nProvider.getMessage(MessageTag.BBB_XCV_IRDC_ANS)));
+                i18nProvider.getMessage(MessageTag.BBB_XCV_REVOC_HAS_CERT_INFO_ANS)));
         assertFalse(checkMessageValuePresence(simpleReport.getAdESValidationWarnings(simpleReport.getFirstSignatureId()),
-                i18nProvider.getMessage(MessageTag.BBB_XCV_IRDC_ANS)));
+                i18nProvider.getMessage(MessageTag.BBB_XCV_REVOC_HAS_CERT_INFO_ANS)));
     }
 
     @Test
@@ -534,10 +534,10 @@ class RevocationDataExecutorTest extends AbstractProcessExecutorTest {
 
         boolean consistencyCheckFound = false;
         for (XmlConstraint constraint : xmlRAC.getConstraint()) {
-            if (MessageTag.BBB_XCV_IRDC.getId().equals(constraint.getName().getKey())) {
+            if (MessageTag.BBB_XCV_REVOC_AFTER_CERT_NOT_BEFORE.getId().equals(constraint.getName().getKey())) {
                 assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
-                assertEquals(MessageTag.BBB_XCV_IRDC_ANS.getId(), constraint.getError().getKey());
-                assertEquals(i18nProvider.getMessage(MessageTag.REVOCATION_THIS_UPDATE_BEFORE,
+                assertEquals(MessageTag.BBB_XCV_REVOC_AFTER_CERT_NOT_BEFORE_ANS.getId(), constraint.getError().getKey());
+                assertEquals(i18nProvider.getMessage(MessageTag.REVOCATION_INFO,
                                 ValidationProcessUtils.getFormattedDate(revocationWrapper.getThisUpdate()),
                                 ValidationProcessUtils.getFormattedDate(caCertificate.getNotBefore()),
                                 ValidationProcessUtils.getFormattedDate(caCertificate.getNotAfter())),

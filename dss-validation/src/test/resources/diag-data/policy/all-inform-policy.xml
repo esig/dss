@@ -437,6 +437,11 @@
 	</Timestamp>
 	<Revocation>
 		<UnknownStatus Level="INFORM" />
+		<ThisUpdatePresent Level="INFORM" />
+		<RevocationIssuerKnown Level="INFORM" />
+		<RevocationIssuerValidAtProductionTime Level="INFORM" />
+		<RevocationAfterCertificateIssuance Level="INFORM" />
+		<RevocationHasInformationAboutCertificate Level="INFORM" />
 		<OCSPResponderIdMatch Level="INFORM" />
 		<SelfIssuedOCSP Level="INFORM" />
 		<BasicSignatureConstraints>

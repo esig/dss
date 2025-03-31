@@ -437,6 +437,11 @@
 	</Timestamp>
 	<Revocation>
         <UnknownStatus Level="FAIL" />
+		<ThisUpdatePresent Level="FAIL" />
+		<RevocationIssuerKnown Level="FAIL" />
+		<RevocationIssuerValidAtProductionTime Level="FAIL" />
+		<RevocationAfterCertificateIssuance Level="FAIL" />
+		<RevocationHasInformationAboutCertificate Level="FAIL" />
 		<OCSPResponderIdMatch Level="FAIL" />
         <SelfIssuedOCSP Level="FAIL" />
 		<BasicSignatureConstraints>

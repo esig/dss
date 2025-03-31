@@ -61,7 +61,7 @@ public class ProspectiveCertificateChainCheck<T extends XmlConstraintsConclusion
 
 	@Override
 	protected boolean process() {
-		return certificate.isTrusted() || certificate.isTrustedChain();
+		return certificate != null && (certificate.isTrusted() || certificate.isTrustedChain());
 	}
 
 	@Override

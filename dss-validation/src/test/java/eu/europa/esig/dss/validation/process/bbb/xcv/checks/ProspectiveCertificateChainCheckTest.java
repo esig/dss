@@ -231,4 +231,19 @@ class ProspectiveCertificateChainCheckTest extends AbstractTestCheck {
         assertEquals(XmlStatus.NOT_OK, constraints.get(0).getStatus());
     }
 
+    @Test
+    void noCertTest() {
+        LevelConstraint constraint = new LevelConstraint();
+        constraint.setLevel(Level.FAIL);
+
+        XmlXCV result = new XmlXCV();
+        ProspectiveCertificateChainCheck<XmlXCV> pccc = new ProspectiveCertificateChainCheck<>(i18nProvider, result,
+                null, Context.CERTIFICATE, constraint);
+        pccc.execute();
+
+        List<XmlConstraint> constraints = result.getConstraint();
+        assertEquals(1, constraints.size());
+        assertEquals(XmlStatus.NOT_OK, constraints.get(0).getStatus());
+    }
+
 }
