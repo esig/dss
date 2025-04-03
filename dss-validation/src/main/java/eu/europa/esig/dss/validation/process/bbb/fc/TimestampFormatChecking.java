@@ -27,8 +27,8 @@ import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.i18n.I18nProvider;
-import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.CAdESV3HashIndexCheck;
@@ -107,12 +107,12 @@ public class TimestampFormatChecking extends AbstractFormatChecking<TimestampWra
     }
 
     private ChainItem<XmlFC> cadesAtsV3HashIndex() {
-        LevelConstraint constraint = policy.getAtsHashIndexConstraint();
+        LevelRule constraint = policy.getAtsHashIndexConstraint();
         return new CAdESV3HashIndexCheck(i18nProvider, result, token, constraint);
     }
 
     private ChainItem<XmlFC> signedAndTimestampedFilesCovered() {
-        LevelConstraint constraint = policy.getTimestampContainerSignedAndTimestampedFilesCoveredConstraint();
+        LevelRule constraint = policy.getTimestampContainerSignedAndTimestampedFilesCoveredConstraint();
         return new SignedAndTimestampedFilesCoveredCheck(i18nProvider, result, diagnosticData.getContainerInfo(), token, constraint);
     }
 

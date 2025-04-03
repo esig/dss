@@ -5,7 +5,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTLAnalysis;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlStructuralValidation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import org.junit.jupiter.api.Test;
@@ -28,7 +29,7 @@ class TLStructureCheckTest extends AbstractTestCheck {
         xmlTrustedList.setStructuralValidation(xmlStructuralValidation);
 
         XmlTLAnalysis result = new XmlTLAnalysis();
-        TLStructureCheck tlsc = new TLStructureCheck(i18nProvider, result, xmlTrustedList, constraint);
+        TLStructureCheck tlsc = new TLStructureCheck(i18nProvider, result, xmlTrustedList, new LevelConstraintWrapper(constraint));
         tlsc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -48,7 +49,7 @@ class TLStructureCheckTest extends AbstractTestCheck {
         xmlTrustedList.setStructuralValidation(xmlStructuralValidation);
 
         XmlTLAnalysis result = new XmlTLAnalysis();
-        TLStructureCheck tlsc = new TLStructureCheck(i18nProvider, result, xmlTrustedList, constraint);
+        TLStructureCheck tlsc = new TLStructureCheck(i18nProvider, result, xmlTrustedList, new LevelConstraintWrapper(constraint));
         tlsc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -69,7 +70,7 @@ class TLStructureCheckTest extends AbstractTestCheck {
         xmlTrustedList.setStructuralValidation(xmlStructuralValidation);
 
         XmlTLAnalysis result = new XmlTLAnalysis();
-        TLStructureCheck tlsc = new TLStructureCheck(i18nProvider, result, xmlTrustedList, constraint);
+        TLStructureCheck tlsc = new TLStructureCheck(i18nProvider, result, xmlTrustedList, new LevelConstraintWrapper(constraint));
         tlsc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -90,7 +91,7 @@ class TLStructureCheckTest extends AbstractTestCheck {
         xmlTrustedList.setStructuralValidation(xmlStructuralValidation);
 
         XmlTLAnalysis result = new XmlTLAnalysis();
-        TLStructureCheck tlsc = new TLStructureCheck(i18nProvider, result, xmlTrustedList, constraint);
+        TLStructureCheck tlsc = new TLStructureCheck(i18nProvider, result, xmlTrustedList, new LevelConstraintWrapper(constraint));
         tlsc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -109,7 +110,7 @@ class TLStructureCheckTest extends AbstractTestCheck {
         xmlTrustedList.setStructuralValidation(xmlStructuralValidation);
 
         XmlTLAnalysis result = new XmlTLAnalysis();
-        TLStructureCheck tlsc = new TLStructureCheck(i18nProvider, result, xmlTrustedList, constraint);
+        TLStructureCheck tlsc = new TLStructureCheck(i18nProvider, result, xmlTrustedList, new LevelConstraintWrapper(constraint));
         tlsc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -125,7 +126,7 @@ class TLStructureCheckTest extends AbstractTestCheck {
         XmlTrustedList xmlTrustedList = new XmlTrustedList();
 
         XmlTLAnalysis result = new XmlTLAnalysis();
-        TLStructureCheck tlsc = new TLStructureCheck(i18nProvider, result, xmlTrustedList, constraint);
+        TLStructureCheck tlsc = new TLStructureCheck(i18nProvider, result, xmlTrustedList, new LevelConstraintWrapper(constraint));
         tlsc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

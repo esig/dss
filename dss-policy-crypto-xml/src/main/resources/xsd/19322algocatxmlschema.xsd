@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema elementFormDefault="qualified" targetNamespace="http://uri.etsi.org/19322/v1.1.1#" xmlns="http://uri.etsi.org/19322/v1.1.1#" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    
+    <xs:element name="MoreDetails" type="ExtensionType"/>
+    
+    <xs:complexType mixed="true" name="ExtensionType">
+        <xs:sequence>
+			<xs:element name="AlgorithmUsage" type="xs:anyURI" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="Recommendation" minOccurs="0" maxOccurs="1">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="R"/>
+						<xs:enumeration value="L"/>
+					</xs:restriction>
+				</xs:simpleType>
+            </xs:element>
+            <xs:sequence maxOccurs="unbounded" minOccurs="0">
+                <xs:any namespace="##other" processContents="lax"/>
+            </xs:sequence>
+        </xs:sequence>
+        <xs:anyAttribute namespace="##any"/>
+    </xs:complexType>
+</xs:schema> 

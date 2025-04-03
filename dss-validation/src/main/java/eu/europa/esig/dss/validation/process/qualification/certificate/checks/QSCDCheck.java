@@ -22,13 +22,13 @@ package eu.europa.esig.dss.validation.process.qualification.certificate.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationCertificateQualification;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.QSCDStatus;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.ValidationTime;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
-import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.enumerations.QSCDStatus;
+import eu.europa.esig.dss.model.policy.LevelRule;
+import eu.europa.esig.dss.validation.process.ChainItem;
 
 /**
  * Checks whether the certificate was for QSCD at validation time
@@ -49,10 +49,10 @@ public class QSCDCheck extends ChainItem<XmlValidationCertificateQualification> 
 	 * @param result {@link XmlValidationCertificateQualification}
 	 * @param qscdStatus {@link QSCDStatus}
 	 * @param validationTime {@link ValidationTime}
-	 * @param constraint {@link LevelConstraint}
+	 * @param constraint {@link LevelRule}
 	 */
 	public QSCDCheck(I18nProvider i18nProvider, XmlValidationCertificateQualification result, QSCDStatus qscdStatus, 
-			ValidationTime validationTime, LevelConstraint constraint) {
+			ValidationTime validationTime, LevelRule constraint) {
 		super(i18nProvider, result, constraint);
 
 		this.qscdStatus = qscdStatus;

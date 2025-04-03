@@ -28,8 +28,9 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlEvidenceRecord;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.evidencerecord.checks.EvidenceRecordSignedFilesCoveredCheck;
@@ -67,7 +68,7 @@ class EvidenceRecordSignedFilesCoveredCheckTest extends AbstractTestCheck {
 
         XmlValidationProcessEvidenceRecord result = new XmlValidationProcessEvidenceRecord();
         EvidenceRecordSignedFilesCoveredCheck ersfcc = new EvidenceRecordSignedFilesCoveredCheck(
-                i18nProvider, result, new EvidenceRecordWrapper(xmlEvidenceRecord), constraint);
+                i18nProvider, result, new EvidenceRecordWrapper(xmlEvidenceRecord), new LevelConstraintWrapper(constraint));
         ersfcc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -100,7 +101,7 @@ class EvidenceRecordSignedFilesCoveredCheckTest extends AbstractTestCheck {
 
         XmlValidationProcessEvidenceRecord result = new XmlValidationProcessEvidenceRecord();
         EvidenceRecordSignedFilesCoveredCheck ersfcc = new EvidenceRecordSignedFilesCoveredCheck(
-                i18nProvider, result, new EvidenceRecordWrapper(xmlEvidenceRecord), constraint);
+                i18nProvider, result, new EvidenceRecordWrapper(xmlEvidenceRecord), new LevelConstraintWrapper(constraint));
         ersfcc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -137,7 +138,7 @@ class EvidenceRecordSignedFilesCoveredCheckTest extends AbstractTestCheck {
 
         XmlValidationProcessEvidenceRecord result = new XmlValidationProcessEvidenceRecord();
         EvidenceRecordSignedFilesCoveredCheck ersfcc = new EvidenceRecordSignedFilesCoveredCheck(
-                i18nProvider, result, new EvidenceRecordWrapper(xmlEvidenceRecord), constraint);
+                i18nProvider, result, new EvidenceRecordWrapper(xmlEvidenceRecord), new LevelConstraintWrapper(constraint));
         ersfcc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -170,7 +171,7 @@ class EvidenceRecordSignedFilesCoveredCheckTest extends AbstractTestCheck {
 
         XmlValidationProcessEvidenceRecord result = new XmlValidationProcessEvidenceRecord();
         EvidenceRecordSignedFilesCoveredCheck ersfcc = new EvidenceRecordSignedFilesCoveredCheck(
-                i18nProvider, result, new EvidenceRecordWrapper(xmlEvidenceRecord), constraint);
+                i18nProvider, result, new EvidenceRecordWrapper(xmlEvidenceRecord), new LevelConstraintWrapper(constraint));
         ersfcc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -207,7 +208,7 @@ class EvidenceRecordSignedFilesCoveredCheckTest extends AbstractTestCheck {
 
         XmlValidationProcessEvidenceRecord result = new XmlValidationProcessEvidenceRecord();
         EvidenceRecordSignedFilesCoveredCheck ersfcc = new EvidenceRecordSignedFilesCoveredCheck(
-                i18nProvider, result, new EvidenceRecordWrapper(xmlEvidenceRecord), constraint);
+                i18nProvider, result, new EvidenceRecordWrapper(xmlEvidenceRecord), new LevelConstraintWrapper(constraint));
         ersfcc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

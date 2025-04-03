@@ -23,12 +23,12 @@ package eu.europa.esig.dss.validation.process.bbb.sav.cc;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCC;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.enumerations.Context;
+import eu.europa.esig.dss.enumerations.SubContext;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.SubContext;
-import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.CryptographicRules;
+import eu.europa.esig.dss.model.policy.LevelRule;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
@@ -97,7 +97,7 @@ public class CertificateChainCryptographicChecker extends Chain<XmlCC> {
                 break;
             }
 
-            CryptographicConstraint constraint = validationPolicy.getCertificateCryptographicConstraint(context, subContext);
+            CryptographicRules constraint = validationPolicy.getCertificateCryptographicConstraint(context, subContext);
 
             CryptographicChecker cc = new CryptographicChecker(i18nProvider, certificate, validationTime, position, constraint);
             XmlCC xmlCC = cc.execute();
@@ -116,12 +116,12 @@ public class CertificateChainCryptographicChecker extends Chain<XmlCC> {
     }
 
     private boolean isTrustAnchor(CertificateWrapper certificateWrapper, SubContext subContext) {
-        LevelConstraint sunsetDateConstraint = validationPolicy.getCertificateSunsetDateConstraint(context, subContext);
+        LevelRule sunsetDateConstraint = validationPolicy.getCertificateSunsetDateConstraint(context, subContext);
         return ValidationProcessUtils.isTrustAnchor(certificateWrapper, validationTime, sunsetDateConstraint);
     }
 
     private ChainItem<XmlCC> tokenUsedAlgorithmsAreSecureAtTime(Date validationDate, MessageTag position, XmlCC cc,
-                                                                CryptographicConstraint constraint) {
+                                                                CryptographicRules constraint) {
         return new CryptographicCheckerResultCheck<>(i18nProvider, result, validationDate, position, cc, constraint);
     }
 

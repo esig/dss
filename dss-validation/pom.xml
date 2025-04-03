@@ -20,6 +20,7 @@
 			<artifactId>dss-spi</artifactId>
 		</dependency>
 
+		<!-- TODO : to be moved to test scope -->
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-policy-jaxb</artifactId>

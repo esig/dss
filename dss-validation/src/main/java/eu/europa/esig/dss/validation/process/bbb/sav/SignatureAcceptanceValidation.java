@@ -32,10 +32,10 @@ import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
-import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
-import eu.europa.esig.dss.policy.jaxb.ValueConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
+import eu.europa.esig.dss.model.policy.MultiValuesRule;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
+import eu.europa.esig.dss.model.policy.ValueRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.ArchiveTimeStampCheck;
@@ -220,57 +220,57 @@ public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<
 	}
 
 	private ChainItem<XmlSAV> structuralValidation() {
-		LevelConstraint constraint = validationPolicy.getStructuralValidationConstraint(context);
+		LevelRule constraint = validationPolicy.getStructuralValidationConstraint(context);
 		return new StructuralValidationCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> keyIdentifierPresent() {
-		LevelConstraint constraint = validationPolicy.getKeyIdentifierPresent(context);
+		LevelRule constraint = validationPolicy.getKeyIdentifierPresent(context);
 		return new KeyIdentifierPresentCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> keyIdentifierMatch() {
-		LevelConstraint constraint = validationPolicy.getKeyIdentifierMatch(context);
+		LevelRule constraint = validationPolicy.getKeyIdentifierMatch(context);
 		return new KeyIdentifierMatchCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> signingTime() {
-		LevelConstraint constraint = validationPolicy.getSigningTimeConstraint(context);
+		LevelRule constraint = validationPolicy.getSigningDurationRule(context);
 		return new SigningTimeCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> contentType() {
-		ValueConstraint constraint = validationPolicy.getContentTypeConstraint(context);
+		ValueRule constraint = validationPolicy.getContentTypeConstraint(context);
 		return new ContentTypeCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> contentHints() {
-		ValueConstraint constraint = validationPolicy.getContentHintsConstraint(context);
+		ValueRule constraint = validationPolicy.getContentHintsConstraint(context);
 		return new ContentHintsCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> contentIdentifier() {
-		ValueConstraint constraint = validationPolicy.getContentIdentifierConstraint(context);
+		ValueRule constraint = validationPolicy.getContentIdentifierConstraint(context);
 		return new ContentIdentifierCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> messageDigestOrSignedProperties() {
-		LevelConstraint constraint = validationPolicy.getMessageDigestOrSignedPropertiesConstraint(context);
+		LevelRule constraint = validationPolicy.getMessageDigestOrSignedPropertiesConstraint(context);
 		return new MessageDigestOrSignedPropertiesCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> commitmentTypeIndications() {
-		MultiValuesConstraint constraint = validationPolicy.getCommitmentTypeIndicationConstraint(context);
+		MultiValuesRule constraint = validationPolicy.getCommitmentTypeIndicationConstraint(context);
 		return new CommitmentTypeIndicationsCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> signerLocation() {
-		LevelConstraint constraint = validationPolicy.getSignerLocationConstraint(context);
+		LevelRule constraint = validationPolicy.getSignerLocationConstraint(context);
 		return new SignerLocationCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> contentTimeStamp() {
-		LevelConstraint constraint = validationPolicy.getContentTimeStampConstraint(context);
+		LevelRule constraint = validationPolicy.getContentTimeStampConstraint(context);
 		return new ContentTimeStampCheck(i18nProvider, result, token, constraint);
 	}
 
@@ -280,55 +280,55 @@ public class SignatureAcceptanceValidation extends AbstractAcceptanceValidation<
 	}
 
 	private ChainItem<XmlSAV> contentTimestampMessageImprint(TimestampWrapper contentTimestamp) {
-		LevelConstraint constraint = validationPolicy.getContentTimeStampMessageImprintConstraint(context);
+		LevelRule constraint = validationPolicy.getContentTimeStampMessageImprintConstraint(context);
 		return new TimestampMessageImprintWithIdCheck<>(i18nProvider, result, contentTimestamp, constraint);
 	}
 
 	private ChainItem<XmlSAV> claimedRoles() {
-		MultiValuesConstraint constraint = validationPolicy.getClaimedRoleConstraint(context);
+		MultiValuesRule constraint = validationPolicy.getClaimedRoleConstraint(context);
 		return new ClaimedRolesCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> certifiedRoles() {
-		MultiValuesConstraint constraint = validationPolicy.getCertifiedRolesConstraint(context);
+		MultiValuesRule constraint = validationPolicy.getCertifiedRolesConstraint(context);
 		return new CertifiedRolesCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> counterSignature() {
-		LevelConstraint constraint = validationPolicy.getCounterSignatureConstraint(context);
+		LevelRule constraint = validationPolicy.getCounterSignatureConstraint(context);
 		return new CounterSignatureCheck(i18nProvider, result, diagnosticData, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> signatureTimeStamp() {
-		LevelConstraint constraint = validationPolicy.getSignatureTimeStampConstraint(context);
+		LevelRule constraint = validationPolicy.getSignatureTimeStampConstraint(context);
 		return new SignatureTimeStampCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> validationDataTimeStamp() {
-		LevelConstraint constraint = validationPolicy.getValidationDataTimeStampConstraint(context);
+		LevelRule constraint = validationPolicy.getValidationDataTimeStampConstraint(context);
 		return new ValidationDataTimeStampCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> validationDataRefsOnlyTimeStamp() {
-		LevelConstraint constraint = validationPolicy.getValidationDataRefsOnlyTimeStampConstraint(context);
+		LevelRule constraint = validationPolicy.getValidationDataRefsOnlyTimeStampConstraint(context);
 		return new ValidationDataRefsOnlyTimeStampCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> archiveTimeStamp() {
-		LevelConstraint constraint = validationPolicy.getArchiveTimeStampConstraint(context);
+		LevelRule constraint = validationPolicy.getArchiveTimeStampConstraint(context);
 		return new ArchiveTimeStampCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> documentTimeStamp() {
-		LevelConstraint constraint = validationPolicy.getDocumentTimeStampConstraint(context);
+		LevelRule constraint = validationPolicy.getDocumentTimeStampConstraint(context);
 		return new DocumentTimeStampCheck(i18nProvider, result, token, constraint);
 	}
 
-	private LevelConstraint getTimestampBasicValidationConstraintLevel() {
-		LevelConstraint constraint = validationPolicy.getTimestampValidConstraint();
+	private LevelRule getTimestampBasicValidationConstraintLevel() {
+		LevelRule constraint = validationPolicy.getTimestampValidConstraint();
 		// continue if LTA is present
 		if (constraint == null || ValidationProcessUtils.isLongTermAvailabilityAndIntegrityMaterialPresent(token)) {
-			constraint = getWarnLevelConstraint();
+			constraint = getWarnLevelRule();
 		}
 		return constraint;
 	}

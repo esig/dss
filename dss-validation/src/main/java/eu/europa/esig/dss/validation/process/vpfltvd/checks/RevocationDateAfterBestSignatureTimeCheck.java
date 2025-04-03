@@ -23,11 +23,11 @@ package eu.europa.esig.dss.validation.process.vpfltvd.checks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessLongTermData;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SubContext;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.SubContext;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
@@ -54,12 +54,12 @@ public class RevocationDateAfterBestSignatureTimeCheck extends ChainItem<XmlVali
 	 * @param result {@link XmlValidationProcessLongTermData}
 	 * @param certificateRevocation {@link CertificateRevocationWrapper}
 	 * @param bestSignatureTime {@link Date}
-	 * @param constraint {@link LevelConstraint}
+	 * @param constraint {@link LevelRule}
 	 * @param subContext {@link SubContext}
 	 */
 	public RevocationDateAfterBestSignatureTimeCheck(I18nProvider i18nProvider, XmlValidationProcessLongTermData result,
 													 CertificateRevocationWrapper certificateRevocation,
-													 Date bestSignatureTime, LevelConstraint constraint,
+													 Date bestSignatureTime, LevelRule constraint,
 													 SubContext subContext) {
 		super(i18nProvider, result, constraint);
 

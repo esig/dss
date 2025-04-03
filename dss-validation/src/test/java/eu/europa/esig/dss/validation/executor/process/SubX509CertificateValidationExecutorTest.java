@@ -25,11 +25,11 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.jaxb.object.Message;
-import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.policy.jaxb.SignatureConstraints;
 import eu.europa.esig.dss.simplereport.SimpleReport;
@@ -59,7 +59,7 @@ class SubX509CertificateValidationExecutorTest extends AbstractProcessExecutorTe
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
 
-        ValidationPolicy defaultPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy defaultPolicy = loadDefaultPolicy();
         MultiValuesConstraint multiValuesConstraint = new MultiValuesConstraint();
         multiValuesConstraint.getId().add("Freeman");
         multiValuesConstraint.setLevel(Level.FAIL);
@@ -88,7 +88,7 @@ class SubX509CertificateValidationExecutorTest extends AbstractProcessExecutorTe
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
 
-        ValidationPolicy defaultPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy defaultPolicy = loadDefaultPolicy();
         MultiValuesConstraint multiValuesConstraint = new MultiValuesConstraint();
         multiValuesConstraint.getId().add("Di Caprio");
         multiValuesConstraint.setLevel(Level.FAIL);
@@ -122,7 +122,7 @@ class SubX509CertificateValidationExecutorTest extends AbstractProcessExecutorTe
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
 
-        ValidationPolicy defaultPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy defaultPolicy = loadDefaultPolicy();
         MultiValuesConstraint multiValuesConstraint = new MultiValuesConstraint();
         multiValuesConstraint.getId().add("Alice");
         multiValuesConstraint.setLevel(Level.FAIL);
@@ -151,7 +151,7 @@ class SubX509CertificateValidationExecutorTest extends AbstractProcessExecutorTe
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
 
-        ValidationPolicy defaultPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy defaultPolicy = loadDefaultPolicy();
         MultiValuesConstraint multiValuesConstraint = new MultiValuesConstraint();
         multiValuesConstraint.getId().add("Bob");
         multiValuesConstraint.setLevel(Level.FAIL);
@@ -185,7 +185,7 @@ class SubX509CertificateValidationExecutorTest extends AbstractProcessExecutorTe
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
 
-        ValidationPolicy defaultPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy defaultPolicy = loadDefaultPolicy();
         MultiValuesConstraint multiValuesConstraint = new MultiValuesConstraint();
         multiValuesConstraint.getId().add("TestName");
         multiValuesConstraint.setLevel(Level.FAIL);
@@ -214,7 +214,7 @@ class SubX509CertificateValidationExecutorTest extends AbstractProcessExecutorTe
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
 
-        ValidationPolicy defaultPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy defaultPolicy = loadDefaultPolicy();
         MultiValuesConstraint multiValuesConstraint = new MultiValuesConstraint();
         multiValuesConstraint.getId().add("ProdName");
         multiValuesConstraint.setLevel(Level.FAIL);
@@ -248,7 +248,7 @@ class SubX509CertificateValidationExecutorTest extends AbstractProcessExecutorTe
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
 
-        ValidationPolicy defaultPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy defaultPolicy = loadDefaultPolicy();
         MultiValuesConstraint multiValuesConstraint = new MultiValuesConstraint();
         multiValuesConstraint.getId().add("Pseudonym");
         multiValuesConstraint.setLevel(Level.FAIL);
@@ -277,7 +277,7 @@ class SubX509CertificateValidationExecutorTest extends AbstractProcessExecutorTe
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
 
-        ValidationPolicy defaultPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy defaultPolicy = loadDefaultPolicy();
         MultiValuesConstraint multiValuesConstraint = new MultiValuesConstraint();
         multiValuesConstraint.getId().add("Anonymous");
         multiValuesConstraint.setLevel(Level.FAIL);
@@ -311,7 +311,7 @@ class SubX509CertificateValidationExecutorTest extends AbstractProcessExecutorTe
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
 
-        ValidationPolicy defaultPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy defaultPolicy = loadDefaultPolicy();
         MultiValuesConstraint multiValuesConstraint = new MultiValuesConstraint();
         multiValuesConstraint.getId().add("CEO");
         multiValuesConstraint.setLevel(Level.FAIL);
@@ -340,7 +340,7 @@ class SubX509CertificateValidationExecutorTest extends AbstractProcessExecutorTe
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
 
-        ValidationPolicy defaultPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy defaultPolicy = loadDefaultPolicy();
         MultiValuesConstraint multiValuesConstraint = new MultiValuesConstraint();
         multiValuesConstraint.getId().add("CFO");
         multiValuesConstraint.setLevel(Level.FAIL);
@@ -374,7 +374,7 @@ class SubX509CertificateValidationExecutorTest extends AbstractProcessExecutorTe
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
 
-        ValidationPolicy defaultPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy defaultPolicy = loadDefaultPolicy();
         MultiValuesConstraint multiValuesConstraint = new MultiValuesConstraint();
         multiValuesConstraint.getId().add("valid@email.com");
         multiValuesConstraint.setLevel(Level.FAIL);
@@ -403,7 +403,7 @@ class SubX509CertificateValidationExecutorTest extends AbstractProcessExecutorTe
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
 
-        ValidationPolicy defaultPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy defaultPolicy = loadDefaultPolicy();
         MultiValuesConstraint multiValuesConstraint = new MultiValuesConstraint();
         multiValuesConstraint.getId().add("valid@email.com");
         multiValuesConstraint.setLevel(Level.FAIL);
@@ -433,7 +433,7 @@ class SubX509CertificateValidationExecutorTest extends AbstractProcessExecutorTe
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
 
-        ValidationPolicy defaultPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy defaultPolicy = loadDefaultPolicy();
         MultiValuesConstraint multiValuesConstraint = new MultiValuesConstraint();
         multiValuesConstraint.getId().add("LU");
         multiValuesConstraint.setLevel(Level.FAIL);
@@ -458,7 +458,7 @@ class SubX509CertificateValidationExecutorTest extends AbstractProcessExecutorTe
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
 
-        ValidationPolicy defaultPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy defaultPolicy = loadDefaultPolicy();
         MultiValuesConstraint multiValuesConstraint = new MultiValuesConstraint();
         multiValuesConstraint.getId().add("FR");
         multiValuesConstraint.setLevel(Level.FAIL);
@@ -492,7 +492,7 @@ class SubX509CertificateValidationExecutorTest extends AbstractProcessExecutorTe
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
 
-        ValidationPolicy defaultPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy defaultPolicy = loadDefaultPolicy();
         MultiValuesConstraint multiValuesConstraint = new MultiValuesConstraint();
         multiValuesConstraint.getId().add("Kehlen");
         multiValuesConstraint.setLevel(Level.FAIL);
@@ -521,7 +521,7 @@ class SubX509CertificateValidationExecutorTest extends AbstractProcessExecutorTe
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
 
-        ValidationPolicy defaultPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy defaultPolicy = loadDefaultPolicy();
         MultiValuesConstraint multiValuesConstraint = new MultiValuesConstraint();
         multiValuesConstraint.getId().add("Strassen");
         multiValuesConstraint.setLevel(Level.FAIL);
@@ -555,7 +555,7 @@ class SubX509CertificateValidationExecutorTest extends AbstractProcessExecutorTe
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
 
-        ValidationPolicy defaultPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy defaultPolicy = loadDefaultPolicy();
         MultiValuesConstraint multiValuesConstraint = new MultiValuesConstraint();
         multiValuesConstraint.getId().add("Kehlen");
         multiValuesConstraint.setLevel(Level.FAIL);
@@ -584,7 +584,7 @@ class SubX509CertificateValidationExecutorTest extends AbstractProcessExecutorTe
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
 
-        ValidationPolicy defaultPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy defaultPolicy = loadDefaultPolicy();
         MultiValuesConstraint multiValuesConstraint = new MultiValuesConstraint();
         multiValuesConstraint.getId().add("Strassen");
         multiValuesConstraint.setLevel(Level.FAIL);
@@ -618,7 +618,7 @@ class SubX509CertificateValidationExecutorTest extends AbstractProcessExecutorTe
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
 
-        ValidationPolicy defaultPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy defaultPolicy = loadDefaultPolicy();
         MultiValuesConstraint multiValuesConstraint = new MultiValuesConstraint();
         multiValuesConstraint.getId().add("1215452");
         multiValuesConstraint.setLevel(Level.FAIL);
@@ -647,7 +647,7 @@ class SubX509CertificateValidationExecutorTest extends AbstractProcessExecutorTe
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
 
-        ValidationPolicy defaultPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy defaultPolicy = loadDefaultPolicy();
         MultiValuesConstraint multiValuesConstraint = new MultiValuesConstraint();
         multiValuesConstraint.getId().add("5215351");
         multiValuesConstraint.setLevel(Level.FAIL);
@@ -681,7 +681,7 @@ class SubX509CertificateValidationExecutorTest extends AbstractProcessExecutorTe
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
 
-        ValidationPolicy defaultPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy defaultPolicy = loadDefaultPolicy();
         MultiValuesConstraint multiValuesConstraint = new MultiValuesConstraint();
         multiValuesConstraint.getId().add("Org Unit 1");
         multiValuesConstraint.setLevel(Level.FAIL);
@@ -710,7 +710,7 @@ class SubX509CertificateValidationExecutorTest extends AbstractProcessExecutorTe
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
 
-        ValidationPolicy defaultPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy defaultPolicy = loadDefaultPolicy();
         MultiValuesConstraint multiValuesConstraint = new MultiValuesConstraint();
         multiValuesConstraint.getId().add("Org Unit 2");
         multiValuesConstraint.setLevel(Level.FAIL);
@@ -744,7 +744,7 @@ class SubX509CertificateValidationExecutorTest extends AbstractProcessExecutorTe
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
 
-        ValidationPolicy defaultPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy defaultPolicy = loadDefaultPolicy();
         MultiValuesConstraint multiValuesConstraint = new MultiValuesConstraint();
         multiValuesConstraint.getId().add("Nowina Solutions");
         multiValuesConstraint.setLevel(Level.FAIL);
@@ -773,7 +773,7 @@ class SubX509CertificateValidationExecutorTest extends AbstractProcessExecutorTe
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
 
-        ValidationPolicy defaultPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy defaultPolicy = loadDefaultPolicy();
         MultiValuesConstraint multiValuesConstraint = new MultiValuesConstraint();
         multiValuesConstraint.getId().add("Oldwina Solutions");
         multiValuesConstraint.setLevel(Level.FAIL);

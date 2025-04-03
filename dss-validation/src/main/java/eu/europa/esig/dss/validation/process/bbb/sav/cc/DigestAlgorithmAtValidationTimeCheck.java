@@ -23,10 +23,11 @@ package eu.europa.esig.dss.validation.process.bbb.sav.cc;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.Level;
-import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicConstraintWrapper;
+import eu.europa.esig.dss.model.policy.CryptographicRules;
+import eu.europa.esig.dss.validation.CryptographicRulesUtils;
 
 import java.util.Date;
 
@@ -41,8 +42,8 @@ public class DigestAlgorithmAtValidationTimeCheck extends AbstractCryptographicC
 	/** The validation date */
 	private final Date validationDate;
 
-	/** The constraint */
-	private final CryptographicConstraintWrapper constraintWrapper;
+	/** The cryptographic rules */
+	private final CryptographicRules cryptographicRules;
 
 	/**
 	 * Default constructor
@@ -52,29 +53,29 @@ public class DigestAlgorithmAtValidationTimeCheck extends AbstractCryptographicC
 	 * @param validationDate {@link Date}
 	 * @param result {@link XmlCC}
 	 * @param position {@link MessageTag}
-	 * @param constraintWrapper {@link CryptographicConstraintWrapper}
+	 * @param cryptographicRules {@link CryptographicRules}
 	 */
 	protected DigestAlgorithmAtValidationTimeCheck(I18nProvider i18nProvider, DigestAlgorithm digestAlgo,
 												   Date validationDate, XmlCC result, MessageTag position,
-												   CryptographicConstraintWrapper constraintWrapper) {
-		super(i18nProvider, result, position, constraintWrapper.getAlgoExpirationDateLevel());
+												   CryptographicRules cryptographicRules) {
+		super(i18nProvider, result, position, cryptographicRules.getAlgoExpirationDateLevel());
 		this.digestAlgo = digestAlgo;
 		this.validationDate = validationDate;
-		this.constraintWrapper = constraintWrapper;
+		this.cryptographicRules = cryptographicRules;
 	}
 
 	@Override
 	protected boolean process() {
-		Date expirationDate = constraintWrapper.getExpirationDate(digestAlgo);
+		Date expirationDate = CryptographicRulesUtils.getExpirationDate(cryptographicRules, digestAlgo);
 		return expirationDate == null || !expirationDate.before(validationDate);
 	}
 	
 	@Override
 	protected Level getLevel() {
-		Date algoExpirationDate = constraintWrapper.getExpirationDate(digestAlgo);
-		Date cryptographicSuiteUpdateDate = constraintWrapper.getCryptographicSuiteUpdateDate();
+		Date algoExpirationDate = CryptographicRulesUtils.getExpirationDate(cryptographicRules, digestAlgo);
+		Date cryptographicSuiteUpdateDate = cryptographicRules.getCryptographicSuiteUpdateDate();
 		if (algoExpirationDate != null && cryptographicSuiteUpdateDate != null && cryptographicSuiteUpdateDate.before(algoExpirationDate)) {
-			return constraintWrapper.getAlgoExpirationDateAfterUpdateLevel();
+			return cryptographicRules.getAlgoExpirationDateAfterUpdateLevel();
 		}
 		return super.getLevel();
 	}

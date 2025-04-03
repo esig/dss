@@ -29,7 +29,7 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
 /**
@@ -48,9 +48,9 @@ public class CAdESV3HashIndexCheck extends ChainItem<XmlFC> {
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlFC}
      * @param timestamp {@link TimestampWrapper}
-     * @param constraint {@link LevelConstraint}
+     * @param constraint {@link LevelRule}
      */
-    public CAdESV3HashIndexCheck(I18nProvider i18nProvider, XmlFC result, TimestampWrapper timestamp, LevelConstraint constraint) {
+    public CAdESV3HashIndexCheck(I18nProvider i18nProvider, XmlFC result, TimestampWrapper timestamp, LevelRule constraint) {
         super(i18nProvider, result, constraint);
         this.timestamp = timestamp;
     }

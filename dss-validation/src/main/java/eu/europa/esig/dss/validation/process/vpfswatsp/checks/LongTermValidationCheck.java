@@ -28,7 +28,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
@@ -55,10 +55,10 @@ public class LongTermValidationCheck extends ChainItem<XmlValidationProcessArchi
 	 * @param i18nProvider {@link I18nProvider}
 	 * @param result {@link XmlValidationProcessArchivalData}
 	 * @param longTermValidationResult {@link XmlConstraintsConclusion}
-	 * @param constraint {@link LevelConstraint}
+	 * @param constraint {@link LevelRule}
 	 */
 	public LongTermValidationCheck(I18nProvider i18nProvider, XmlValidationProcessArchivalData result, 
-			XmlConstraintsConclusion longTermValidationResult, LevelConstraint constraint) {
+			XmlConstraintsConclusion longTermValidationResult, LevelRule constraint) {
 		super(i18nProvider, result, constraint);
 		this.longTermValidationResult = longTermValidationResult;
 	}

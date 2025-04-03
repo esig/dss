@@ -34,6 +34,20 @@ public final class RuleUtils {
 	}
 
 	/**
+	 * Converts the {@code TimeConstraint} to the corresponding long time value in milliseconds
+	 *
+	 * @param timeConstraint {@link TimeConstraint}
+	 * @return long time value in milliseconds
+	 */
+	public static long convertDuration(TimeConstraint timeConstraint) {
+		if (timeConstraint != null) {
+			return convertDuration(timeConstraint.getUnit(),
+					eu.europa.esig.dss.policy.jaxb.TimeUnit.MILLISECONDS, timeConstraint.getValue());
+		}
+		return Long.MAX_VALUE;
+	}
+
+	/**
 	 * Converts the given {@code value} to the corresponding long value
 	 *
 	 * @param fromJaxb {@code eu.europa.esig.dss.policy.jaxb.TimeUnit} of the value
@@ -46,20 +60,6 @@ public final class RuleUtils {
 		TimeUnit from = TimeUnit.valueOf(fromJaxb.name());
 		TimeUnit to = TimeUnit.valueOf(toJaxb.name());
 		return to.convert(value, from);
-	}
-
-	/**
-	 * Converts the {@code TimeConstraint} to the corresponding long time value in milliseconds
-	 *
-	 * @param timeConstraint {@link TimeConstraint}
-	 * @return long time value in milliseconds
-	 */
-	public static long convertDuration(TimeConstraint timeConstraint) {
-		if (timeConstraint != null) {
-			return convertDuration(timeConstraint.getUnit(),
-					eu.europa.esig.dss.policy.jaxb.TimeUnit.MILLISECONDS, timeConstraint.getValue());
-		}
-		return Long.MAX_VALUE;
 	}
 
 }

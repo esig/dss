@@ -23,7 +23,9 @@ package eu.europa.esig.dss.validation.process.bbb.fc;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
+import eu.europa.esig.dss.policy.MultiValuesConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
@@ -46,7 +48,7 @@ class ZipCommentTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlFC result = new XmlFC();
-		ZipCommentPresentCheck fc = new ZipCommentPresentCheck(i18nProvider, result, zipComment, constraint);
+		ZipCommentPresentCheck fc = new ZipCommentPresentCheck(i18nProvider, result, zipComment, new LevelConstraintWrapper(constraint));
 		fc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -58,7 +60,7 @@ class ZipCommentTest extends AbstractTestCheck {
 		MultiValuesConstraint multiValue = new MultiValuesConstraint();
 		multiValue.setLevel(Level.FAIL);
 
-		AcceptableZipCommentCheck acceptable = new AcceptableZipCommentCheck(i18nProvider, result, zipComment, multiValue);
+		AcceptableZipCommentCheck acceptable = new AcceptableZipCommentCheck(i18nProvider, result, zipComment, new MultiValuesConstraintWrapper(multiValue));
 		acceptable.execute();
 
 		constraints = result.getConstraint();
@@ -71,7 +73,7 @@ class ZipCommentTest extends AbstractTestCheck {
 		multiValue.setLevel(Level.FAIL);
 		multiValue.getId().add("*");
 
-		acceptable = new AcceptableZipCommentCheck(i18nProvider, result, zipComment, multiValue);
+		acceptable = new AcceptableZipCommentCheck(i18nProvider, result, zipComment, new MultiValuesConstraintWrapper(multiValue));
 		acceptable.execute();
 
 		constraints = result.getConstraint();
@@ -87,7 +89,7 @@ class ZipCommentTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlFC result = new XmlFC();
-		ZipCommentPresentCheck fc = new ZipCommentPresentCheck(i18nProvider, result, zipComment, constraint);
+		ZipCommentPresentCheck fc = new ZipCommentPresentCheck(i18nProvider, result, zipComment, new LevelConstraintWrapper(constraint));
 		fc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -99,7 +101,7 @@ class ZipCommentTest extends AbstractTestCheck {
 		MultiValuesConstraint multiValue = new MultiValuesConstraint();
 		multiValue.setLevel(Level.FAIL);
 
-		AcceptableZipCommentCheck acceptable = new AcceptableZipCommentCheck(i18nProvider, result, zipComment, multiValue);
+		AcceptableZipCommentCheck acceptable = new AcceptableZipCommentCheck(i18nProvider, result, zipComment, new MultiValuesConstraintWrapper(multiValue));
 		acceptable.execute();
 
 		constraints = result.getConstraint();
@@ -112,7 +114,7 @@ class ZipCommentTest extends AbstractTestCheck {
 		multiValue.setLevel(Level.FAIL);
 		multiValue.getId().add("*");
 
-		acceptable = new AcceptableZipCommentCheck(i18nProvider, result, zipComment, multiValue);
+		acceptable = new AcceptableZipCommentCheck(i18nProvider, result, zipComment, new MultiValuesConstraintWrapper(multiValue));
 		acceptable.execute();
 
 		constraints = result.getConstraint();
@@ -125,7 +127,7 @@ class ZipCommentTest extends AbstractTestCheck {
 		multiValue.setLevel(Level.FAIL);
 		multiValue.getId().add("ko");
 
-		acceptable = new AcceptableZipCommentCheck(i18nProvider, result, zipComment, multiValue);
+		acceptable = new AcceptableZipCommentCheck(i18nProvider, result, zipComment, new MultiValuesConstraintWrapper(multiValue));
 		acceptable.execute();
 
 		constraints = result.getConstraint();
@@ -138,7 +140,7 @@ class ZipCommentTest extends AbstractTestCheck {
 		multiValue.setLevel(Level.FAIL);
 		multiValue.getId().add("ok");
 
-		acceptable = new AcceptableZipCommentCheck(i18nProvider, result, zipComment, multiValue);
+		acceptable = new AcceptableZipCommentCheck(i18nProvider, result, zipComment, new MultiValuesConstraintWrapper(multiValue));
 		acceptable.execute();
 
 		constraints = result.getConstraint();

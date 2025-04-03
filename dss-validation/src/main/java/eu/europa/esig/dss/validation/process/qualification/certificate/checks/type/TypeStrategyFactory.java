@@ -22,8 +22,8 @@ package eu.europa.esig.dss.validation.process.qualification.certificate.checks.t
 
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
-import eu.europa.esig.dss.validation.process.qualification.EIDASUtils;
 import eu.europa.esig.dss.enumerations.CertificateQualifiedStatus;
+import eu.europa.esig.dss.validation.process.qualification.EIDASUtils;
 
 /**
  * Creates a {@code TypeStrategy}

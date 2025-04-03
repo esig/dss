@@ -29,11 +29,11 @@ import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.EIDAS;
-import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.validation.executor.AbstractTestValidationExecutor;
@@ -136,7 +136,7 @@ class DSS2049DoubleTLTest extends AbstractTestValidationExecutor {
 		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
 		
-		ValidationPolicy defaultPolicy = loadDefaultPolicy();
+		EtsiValidationPolicy defaultPolicy = loadDefaultPolicy();
 		EIDAS eidasConstraints = defaultPolicy.getEIDASConstraints();
 		LevelConstraint levelConstraint = new LevelConstraint();
 		levelConstraint.setLevel(tlWellSignedlLevel);

@@ -27,7 +27,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
@@ -57,12 +57,12 @@ public class MessageImprintDigestAlgorithmValidationCheck<T extends XmlConstrain
      * @param timestamp {@link TimestampWrapper}
      * @param davResult {@link XmlSAV}
      * @param currentTime {@link Date}
-     * @param constraint {@link LevelConstraint}
+     * @param constraint {@link LevelRule}
      */
     public MessageImprintDigestAlgorithmValidationCheck(I18nProvider i18nProvider, T result,
                                                   TimestampWrapper timestamp,
                                                   XmlSAV davResult, Date currentTime,
-                                                  LevelConstraint constraint) {
+                                                  LevelRule constraint) {
         super(i18nProvider, result, constraint);
         this.timestamp = timestamp;
         this.davResult = davResult;

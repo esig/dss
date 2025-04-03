@@ -27,7 +27,8 @@ import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
 import eu.europa.esig.dss.enumerations.CertificateStatus;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationDataKnownCheck;
@@ -50,7 +51,7 @@ class RevocationDataKnownCheckTest extends AbstractTestCheck {
 		
 		XmlRAC result = new XmlRAC();
 		RevocationDataKnownCheck rdkc = new RevocationDataKnownCheck(i18nProvider, result, 
-				new CertificateRevocationWrapper(xmlCertificateRevocation), constraint);
+				new CertificateRevocationWrapper(xmlCertificateRevocation), new LevelConstraintWrapper(constraint));
 		rdkc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -69,7 +70,7 @@ class RevocationDataKnownCheckTest extends AbstractTestCheck {
 		
 		XmlRAC result = new XmlRAC();
 		RevocationDataKnownCheck rdkc = new RevocationDataKnownCheck(i18nProvider, result, 
-				new CertificateRevocationWrapper(xmlCertificateRevocation), constraint);
+				new CertificateRevocationWrapper(xmlCertificateRevocation), new LevelConstraintWrapper(constraint));
 		rdkc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -88,7 +89,7 @@ class RevocationDataKnownCheckTest extends AbstractTestCheck {
 		
 		XmlRAC result = new XmlRAC();
 		RevocationDataKnownCheck rdkc = new RevocationDataKnownCheck(i18nProvider, result, 
-				new CertificateRevocationWrapper(xmlCertificateRevocation), constraint);
+				new CertificateRevocationWrapper(xmlCertificateRevocation), new LevelConstraintWrapper(constraint));
 		rdkc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

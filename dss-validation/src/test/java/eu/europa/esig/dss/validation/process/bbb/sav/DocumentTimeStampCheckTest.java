@@ -27,8 +27,9 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.TimestampType;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.ValueConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.DocumentTimeStampCheck;
@@ -55,7 +56,7 @@ class DocumentTimeStampCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlSAV result = new XmlSAV();
-        DocumentTimeStampCheck dtsc = new DocumentTimeStampCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
+        DocumentTimeStampCheck dtsc = new DocumentTimeStampCheck(i18nProvider, result, new SignatureWrapper(sig), new LevelConstraintWrapper(constraint));
         dtsc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -76,7 +77,7 @@ class DocumentTimeStampCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlSAV result = new XmlSAV();
-        DocumentTimeStampCheck dtsc = new DocumentTimeStampCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
+        DocumentTimeStampCheck dtsc = new DocumentTimeStampCheck(i18nProvider, result, new SignatureWrapper(sig), new LevelConstraintWrapper(constraint));
         dtsc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -104,7 +105,7 @@ class DocumentTimeStampCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlSAV result = new XmlSAV();
-        DocumentTimeStampCheck dtsc = new DocumentTimeStampCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
+        DocumentTimeStampCheck dtsc = new DocumentTimeStampCheck(i18nProvider, result, new SignatureWrapper(sig), new LevelConstraintWrapper(constraint));
         dtsc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -120,7 +121,7 @@ class DocumentTimeStampCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlSAV result = new XmlSAV();
-        DocumentTimeStampCheck dtsc = new DocumentTimeStampCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
+        DocumentTimeStampCheck dtsc = new DocumentTimeStampCheck(i18nProvider, result, new SignatureWrapper(sig), new LevelConstraintWrapper(constraint));
         dtsc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

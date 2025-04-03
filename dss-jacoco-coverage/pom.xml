@@ -361,6 +361,10 @@
 		</dependency>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-policy-crypto-xml</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-detailed-report-jaxb</artifactId>
 		</dependency>
 		<dependency>

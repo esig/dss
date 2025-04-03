@@ -30,12 +30,12 @@ import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlContainerInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.jaxb.object.Message;
-import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.ContainerConstraints;
-import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.simplereport.SimpleReport;
@@ -84,7 +84,7 @@ class ASICValidationExecutorTest extends AbstractProcessExecutorTest {
         XmlContainerInfo containerInfo = diagnosticData.getContainerInfo();
         containerInfo.getContentFiles().add("bye.world");
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         ContainerConstraints containerConstraints = validationPolicy.getContainerConstraints();
 
         LevelConstraint levelConstraint = new LevelConstraint();
@@ -206,7 +206,7 @@ class ASICValidationExecutorTest extends AbstractProcessExecutorTest {
                 new File("src/test/resources/diag-data/diag_data_open_document.xml"));
         assertNotNull(xmlDiagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         ContainerConstraints containerConstraints = validationPolicy.getContainerConstraints();
 
         MultiValuesConstraint multiValuesConstraint = new MultiValuesConstraint();
@@ -239,7 +239,7 @@ class ASICValidationExecutorTest extends AbstractProcessExecutorTest {
         containerInfo.setMimeTypeFilePresent(false);
         containerInfo.setMimeTypeContent(null);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         ContainerConstraints containerConstraints = validationPolicy.getContainerConstraints();
 
         LevelConstraint levelConstraint = new LevelConstraint();
@@ -275,7 +275,7 @@ class ASICValidationExecutorTest extends AbstractProcessExecutorTest {
         containerInfo.setMimeTypeFilePresent(false);
         containerInfo.setMimeTypeContent(null);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         ContainerConstraints containerConstraints = validationPolicy.getContainerConstraints();
 
         LevelConstraint levelConstraint = new LevelConstraint();
@@ -314,7 +314,7 @@ class ASICValidationExecutorTest extends AbstractProcessExecutorTest {
         containerInfo.setMimeTypeFilePresent(true);
         containerInfo.setMimeTypeContent("test-content");
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         ContainerConstraints containerConstraints = validationPolicy.getContainerConstraints();
 
         LevelConstraint levelConstraint = new LevelConstraint();
@@ -352,7 +352,7 @@ class ASICValidationExecutorTest extends AbstractProcessExecutorTest {
         XmlContainerInfo containerInfo = diagnosticData.getContainerInfo();
         containerInfo.setZipComment(null);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         ContainerConstraints containerConstraints = validationPolicy.getContainerConstraints();
 
         LevelConstraint levelConstraint = new LevelConstraint();
@@ -387,7 +387,7 @@ class ASICValidationExecutorTest extends AbstractProcessExecutorTest {
         XmlContainerInfo containerInfo = diagnosticData.getContainerInfo();
         containerInfo.setZipComment(null);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         ContainerConstraints containerConstraints = validationPolicy.getContainerConstraints();
 
         LevelConstraint levelConstraint = new LevelConstraint();
@@ -425,7 +425,7 @@ class ASICValidationExecutorTest extends AbstractProcessExecutorTest {
         XmlContainerInfo containerInfo = diagnosticData.getContainerInfo();
         containerInfo.setZipComment("test-comment");
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         ContainerConstraints containerConstraints = validationPolicy.getContainerConstraints();
 
         LevelConstraint levelConstraint = new LevelConstraint();

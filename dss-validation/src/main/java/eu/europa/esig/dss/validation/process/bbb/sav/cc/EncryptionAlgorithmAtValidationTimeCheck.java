@@ -23,10 +23,11 @@ package eu.europa.esig.dss.validation.process.bbb.sav.cc;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.Level;
-import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicConstraintWrapper;
+import eu.europa.esig.dss.model.policy.CryptographicRules;
+import eu.europa.esig.dss.validation.CryptographicRulesUtils;
 
 import java.util.Date;
 
@@ -44,8 +45,8 @@ public class EncryptionAlgorithmAtValidationTimeCheck extends AbstractCryptograp
 	/** Validation time */
 	private final Date validationDate;
 
-	/** The constraint */
-	private final CryptographicConstraintWrapper constraintWrapper;
+	/** The cryptographic rules */
+	private final CryptographicRules cryptographicRules;
 
 	/**
 	 * Default constructor
@@ -56,30 +57,30 @@ public class EncryptionAlgorithmAtValidationTimeCheck extends AbstractCryptograp
 	 * @param validationDate {@link Date}
 	 * @param result {@link XmlCC}
 	 * @param position {@link MessageTag}
-	 * @param constraintWrapper {@link CryptographicConstraintWrapper}
+	 * @param cryptographicRules {@link CryptographicRules}
 	 */
 	protected EncryptionAlgorithmAtValidationTimeCheck(I18nProvider i18nProvider, EncryptionAlgorithm encryptionAlgo,
 													   String keyLength, Date validationDate, XmlCC result,
-													   MessageTag position, CryptographicConstraintWrapper constraintWrapper) {
-		super(i18nProvider, result, position, constraintWrapper.getAlgoExpirationDateLevel());
+													   MessageTag position, CryptographicRules cryptographicRules) {
+		super(i18nProvider, result, position, cryptographicRules.getAlgoExpirationDateLevel());
 		this.encryptionAlgo = encryptionAlgo;
 		this.keyLength = keyLength;
 		this.validationDate = validationDate;
-		this.constraintWrapper = constraintWrapper;
+		this.cryptographicRules = cryptographicRules;
 	}
 
 	@Override
 	protected boolean process() {
-		Date expirationDate = constraintWrapper.getExpirationDate(encryptionAlgo, keyLength);
+		Date expirationDate = CryptographicRulesUtils.getExpirationDate(cryptographicRules, encryptionAlgo, keyLength);
 		return expirationDate == null || !expirationDate.before(validationDate);
 	}
 
 	@Override
 	protected Level getLevel() {
-		Date algoExpirationDate = constraintWrapper.getExpirationDate(encryptionAlgo, keyLength);
-		Date cryptographicSuiteUpdateDate = constraintWrapper.getCryptographicSuiteUpdateDate();
+		Date algoExpirationDate = CryptographicRulesUtils.getExpirationDate(cryptographicRules, encryptionAlgo, keyLength);
+		Date cryptographicSuiteUpdateDate = cryptographicRules.getCryptographicSuiteUpdateDate();
 		if (algoExpirationDate != null && cryptographicSuiteUpdateDate != null && cryptographicSuiteUpdateDate.before(algoExpirationDate)) {
-			return constraintWrapper.getAlgoExpirationDateAfterUpdateLevel();
+			return cryptographicRules.getAlgoExpirationDateAfterUpdateLevel();
 		}
 		return super.getLevel();
 	}
@@ -90,7 +91,7 @@ public class EncryptionAlgorithmAtValidationTimeCheck extends AbstractCryptograp
 	}
 	
 	@Override
-		protected XmlMessage buildErrorMessage() {
+	protected XmlMessage buildErrorMessage() {
 		return buildXmlMessage(MessageTag.ASCCM_AR_ANS_AKSNR, getName(encryptionAlgo), keyLength, position);
 	}
 

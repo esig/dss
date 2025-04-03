@@ -31,7 +31,8 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlInhibitAnyPolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPolicyConstraints;
 import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificatePolicyTreeCheck;
@@ -76,7 +77,7 @@ class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlSubXCV result = new XmlSubXCV();
-        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), constraint);
+        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         ptc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -115,7 +116,7 @@ class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlSubXCV result = new XmlSubXCV();
-        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), constraint);
+        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         ptc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -160,7 +161,7 @@ class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlSubXCV result = new XmlSubXCV();
-        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), constraint);
+        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         ptc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -200,7 +201,7 @@ class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlSubXCV result = new XmlSubXCV();
-        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), constraint);
+        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         ptc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -245,7 +246,7 @@ class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlSubXCV result = new XmlSubXCV();
-        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), constraint);
+        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         ptc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -285,7 +286,7 @@ class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlSubXCV result = new XmlSubXCV();
-        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), constraint);
+        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         ptc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -330,7 +331,7 @@ class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlSubXCV result = new XmlSubXCV();
-        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), constraint);
+        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         ptc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -369,7 +370,7 @@ class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlSubXCV result = new XmlSubXCV();
-        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), constraint);
+        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         ptc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -419,7 +420,7 @@ class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlSubXCV result = new XmlSubXCV();
-        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), constraint);
+        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         ptc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -471,7 +472,7 @@ class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlSubXCV result = new XmlSubXCV();
-        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), constraint);
+        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         ptc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -526,7 +527,7 @@ class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlSubXCV result = new XmlSubXCV();
-        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), constraint);
+        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         ptc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -581,7 +582,7 @@ class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlSubXCV result = new XmlSubXCV();
-        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), constraint);
+        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         ptc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -638,7 +639,7 @@ class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlSubXCV result = new XmlSubXCV();
-        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), constraint);
+        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         ptc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -676,7 +677,7 @@ class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlSubXCV result = new XmlSubXCV();
-        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), constraint);
+        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         ptc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -714,7 +715,7 @@ class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlSubXCV result = new XmlSubXCV();
-        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), constraint);
+        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         ptc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -757,7 +758,7 @@ class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlSubXCV result = new XmlSubXCV();
-        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), constraint);
+        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         ptc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -807,7 +808,7 @@ class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlSubXCV result = new XmlSubXCV();
-        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), constraint);
+        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         ptc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -864,7 +865,7 @@ class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlSubXCV result = new XmlSubXCV();
-        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), constraint);
+        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         ptc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -916,7 +917,7 @@ class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlSubXCV result = new XmlSubXCV();
-        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), constraint);
+        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         ptc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -973,7 +974,7 @@ class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlSubXCV result = new XmlSubXCV();
-        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), constraint);
+        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         ptc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -1030,7 +1031,7 @@ class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlSubXCV result = new XmlSubXCV();
-        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), constraint);
+        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         ptc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -1087,7 +1088,7 @@ class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlSubXCV result = new XmlSubXCV();
-        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), constraint);
+        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         ptc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -1148,7 +1149,7 @@ class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlSubXCV result = new XmlSubXCV();
-        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), constraint);
+        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         ptc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -1209,7 +1210,7 @@ class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlSubXCV result = new XmlSubXCV();
-        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), constraint);
+        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         ptc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -1270,7 +1271,7 @@ class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlSubXCV result = new XmlSubXCV();
-        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), constraint);
+        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         ptc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -1331,7 +1332,7 @@ class CertificatePolicyTreeCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlSubXCV result = new XmlSubXCV();
-        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), constraint);
+        CertificatePolicyTreeCheck ptc = new CertificatePolicyTreeCheck(i18nProvider, result, new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         ptc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

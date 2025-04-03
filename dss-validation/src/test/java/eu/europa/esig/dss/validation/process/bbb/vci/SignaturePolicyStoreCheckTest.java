@@ -26,7 +26,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlVCI;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignaturePolicyStore;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.vci.checks.SignaturePolicyStoreCheck;
@@ -50,7 +51,7 @@ class SignaturePolicyStoreCheckTest extends AbstractTestCheck {
 
 		XmlVCI result = new XmlVCI();
 		SignaturePolicyStoreCheck spsc = new SignaturePolicyStoreCheck(i18nProvider, result, new SignatureWrapper(sig),
-				constraint);
+				new LevelConstraintWrapper(constraint));
 		spsc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -67,7 +68,7 @@ class SignaturePolicyStoreCheckTest extends AbstractTestCheck {
 
 		XmlVCI result = new XmlVCI();
 		SignaturePolicyStoreCheck spsc = new SignaturePolicyStoreCheck(i18nProvider, result, new SignatureWrapper(sig),
-				constraint);
+				new LevelConstraintWrapper(constraint));
 		spsc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

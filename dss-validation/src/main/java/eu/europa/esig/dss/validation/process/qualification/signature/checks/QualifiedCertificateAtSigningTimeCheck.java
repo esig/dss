@@ -24,10 +24,10 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationSignatureQualificatio
 import eu.europa.esig.dss.enumerations.CertificateQualification;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
-import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
+import eu.europa.esig.dss.model.policy.LevelRule;
+import eu.europa.esig.dss.validation.process.ChainItem;
 
 /**
  * Checks whether the certificate is qualified at signing time
@@ -44,10 +44,10 @@ public class QualifiedCertificateAtSigningTimeCheck extends ChainItem<XmlValidat
 	 * @param i18nProvider {@link I18nProvider}
 	 * @param result {@link XmlValidationSignatureQualification}
 	 * @param qualificationAtSigningTime {@link CertificateQualification}
-	 * @param constraint {@link LevelConstraint}
+	 * @param constraint {@link LevelRule}
 	 */
 	public QualifiedCertificateAtSigningTimeCheck(I18nProvider i18nProvider, XmlValidationSignatureQualification result, 
-			CertificateQualification qualificationAtSigningTime, LevelConstraint constraint) {
+			CertificateQualification qualificationAtSigningTime, LevelRule constraint) {
 		super(i18nProvider, result, constraint);
 
 		this.qualificationAtSigningTime = qualificationAtSigningTime;

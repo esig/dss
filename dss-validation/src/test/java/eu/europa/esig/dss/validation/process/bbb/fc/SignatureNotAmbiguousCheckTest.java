@@ -25,7 +25,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.SignatureNotAmbiguousCheck;
@@ -47,7 +48,7 @@ class SignatureNotAmbiguousCheckTest extends AbstractTestCheck {
 
 		XmlFC result = new XmlFC();
 		SignatureNotAmbiguousCheck snac = new SignatureNotAmbiguousCheck(i18nProvider, result,
-				new SignatureWrapper(sig), constraint);
+				new SignatureWrapper(sig), new LevelConstraintWrapper(constraint));
 		snac.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -65,7 +66,7 @@ class SignatureNotAmbiguousCheckTest extends AbstractTestCheck {
 
 		XmlFC result = new XmlFC();
 		SignatureNotAmbiguousCheck snac = new SignatureNotAmbiguousCheck(i18nProvider, result,
-				new SignatureWrapper(sig), constraint);
+				new SignatureWrapper(sig), new LevelConstraintWrapper(constraint));
 		snac.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

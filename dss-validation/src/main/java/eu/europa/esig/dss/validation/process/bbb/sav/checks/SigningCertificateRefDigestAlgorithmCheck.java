@@ -30,14 +30,14 @@ import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.enumerations.SubContext;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.SubContext;
-import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
-import eu.europa.esig.dss.policy.jaxb.Level;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.CryptographicRules;
+import eu.europa.esig.dss.model.policy.LevelRule;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
@@ -75,7 +75,7 @@ public class SigningCertificateRefDigestAlgorithmCheck<T extends XmlConstraintsC
     private final ValidationPolicy validationPolicy;
 
     /** Defines the check level */
-    private final LevelConstraint constraint;
+    private final LevelRule constraint;
 
     /** The final validation result */
     private XmlCC cryptographicValidationResult;
@@ -91,11 +91,11 @@ public class SigningCertificateRefDigestAlgorithmCheck<T extends XmlConstraintsC
      * @param context {@link Context}
      * @param subContext {@link SubContext}
      * @param validationPolicy {@link ValidationPolicy}
-     * @param constraint {@link LevelConstraint}
+     * @param constraint {@link LevelRule}
      */
     public SigningCertificateRefDigestAlgorithmCheck(I18nProvider i18nProvider, T result, Date validationDate,
             List<CertificateRefWrapper> certificateRefs, String certificateId, Context context, SubContext subContext,
-            ValidationPolicy validationPolicy, LevelConstraint constraint) {
+            ValidationPolicy validationPolicy, LevelRule constraint) {
         super(i18nProvider, result, constraint, certificateId);
         this.certificateRefs = certificateRefs;
         this.certificateId = certificateId;
@@ -143,7 +143,7 @@ public class SigningCertificateRefDigestAlgorithmCheck<T extends XmlConstraintsC
     }
 
     private XmlCC getSigningCertificateDigestCryptographicCheckResult(CertificateRefWrapper certificateRef) {
-        CryptographicConstraint certificateConstraint = validationPolicy.getCertificateCryptographicConstraint(context, subContext);
+        CryptographicRules certificateConstraint = validationPolicy.getCertificateCryptographicConstraint(context, subContext);
         DigestCryptographicChecker dac = new DigestCryptographicChecker(i18nProvider, certificateRef.getDigestMethod(),
                 validationDate, MessageTag.ACCM_POS_SIG_CERT_REF, certificateConstraint);
         return dac.execute();

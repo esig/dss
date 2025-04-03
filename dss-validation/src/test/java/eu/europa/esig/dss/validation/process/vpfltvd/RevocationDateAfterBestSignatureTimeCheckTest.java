@@ -28,9 +28,10 @@ import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.enumerations.SubContext;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.policy.SubContext;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.RevocationDateAfterBestSignatureTimeCheck;
@@ -61,7 +62,7 @@ class RevocationDateAfterBestSignatureTimeCheckTest extends AbstractTestCheck {
         XmlValidationProcessLongTermData result = new XmlValidationProcessLongTermData();
         RevocationDateAfterBestSignatureTimeCheck rdabstc = new RevocationDateAfterBestSignatureTimeCheck(
                 i18nProvider, result, new CertificateRevocationWrapper(xmlCertificateRevocation), bestSignatureTime,
-                constraint, SubContext.SIGNING_CERT);
+                new LevelConstraintWrapper(constraint), SubContext.SIGNING_CERT);
         rdabstc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -89,7 +90,7 @@ class RevocationDateAfterBestSignatureTimeCheckTest extends AbstractTestCheck {
         XmlValidationProcessLongTermData result = new XmlValidationProcessLongTermData();
         RevocationDateAfterBestSignatureTimeCheck rdabstc = new RevocationDateAfterBestSignatureTimeCheck(
                 i18nProvider, result, new CertificateRevocationWrapper(xmlCertificateRevocation), bestSignatureTime,
-                constraint, SubContext.SIGNING_CERT);
+                new LevelConstraintWrapper(constraint), SubContext.SIGNING_CERT);
         rdabstc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -119,7 +120,7 @@ class RevocationDateAfterBestSignatureTimeCheckTest extends AbstractTestCheck {
         XmlValidationProcessLongTermData result = new XmlValidationProcessLongTermData();
         RevocationDateAfterBestSignatureTimeCheck rdabstc = new RevocationDateAfterBestSignatureTimeCheck(
                 i18nProvider, result, new CertificateRevocationWrapper(xmlCertificateRevocation), bestSignatureTime,
-                constraint, SubContext.CA_CERTIFICATE);
+                new LevelConstraintWrapper(constraint), SubContext.CA_CERTIFICATE);
         rdabstc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -149,7 +150,7 @@ class RevocationDateAfterBestSignatureTimeCheckTest extends AbstractTestCheck {
         XmlValidationProcessLongTermData result = new XmlValidationProcessLongTermData();
         RevocationDateAfterBestSignatureTimeCheck rdabstc = new RevocationDateAfterBestSignatureTimeCheck(
                 i18nProvider, result, new CertificateRevocationWrapper(xmlCertificateRevocation), bestSignatureTime,
-                constraint, SubContext.SIGNING_CERT);
+                new LevelConstraintWrapper(constraint), SubContext.SIGNING_CERT);
         rdabstc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

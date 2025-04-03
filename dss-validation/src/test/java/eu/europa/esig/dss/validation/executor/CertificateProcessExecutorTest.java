@@ -41,16 +41,16 @@ import eu.europa.esig.dss.enumerations.CertificateType;
 import eu.europa.esig.dss.enumerations.ExtendedKeyUsage;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.KeyUsageBit;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.ValidationTime;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.policy.jaxb.CertificateConstraints;
 import eu.europa.esig.dss.policy.jaxb.EIDAS;
-import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport;
@@ -294,12 +294,12 @@ class CertificateProcessExecutorTest extends AbstractTestValidationExecutor {
 		executor.setCertificateId(certificateId);
 		executor.setDiagnosticData(diagnosticData);
 		
-		ValidationPolicy defaultPolicy = loadDefaultPolicy();
-		EIDAS eidasConstraints = defaultPolicy.getEIDASConstraints();
+		EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
+		EIDAS eidasConstraints = validationPolicy.getEIDASConstraints();
 		LevelConstraint levelConstraint = new LevelConstraint();
 		levelConstraint.setLevel(Level.FAIL);
 		eidasConstraints.setTLWellSigned(levelConstraint);
-		executor.setValidationPolicy(defaultPolicy);
+		executor.setValidationPolicy(validationPolicy);
 		
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 
@@ -609,7 +609,7 @@ class CertificateProcessExecutorTest extends AbstractTestValidationExecutor {
 
 		String certId = "C-2D118BBC9E0B98D6AD07BB9D44CFC424467B8E2D83A2E04661E9A620DAA062FC";
 
-		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
 
 		MultiValuesConstraint multiValuesConstraint = new MultiValuesConstraint();
 		multiValuesConstraint.getId().add(KeyUsageBit.KEY_CERT_SIGN.getValue());
@@ -666,7 +666,7 @@ class CertificateProcessExecutorTest extends AbstractTestValidationExecutor {
 
 		String certId = "C-2D118BBC9E0B98D6AD07BB9D44CFC424467B8E2D83A2E04661E9A620DAA062FC";
 
-		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
 
 		MultiValuesConstraint multiValuesConstraint = new MultiValuesConstraint();
 		multiValuesConstraint.getId().add(KeyUsageBit.DIGITAL_SIGNATURE.getValue());
@@ -765,7 +765,7 @@ class CertificateProcessExecutorTest extends AbstractTestValidationExecutor {
 		DefaultCertificateProcessExecutor executor = new DefaultCertificateProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
 
-		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
 		CertificateConstraints certificateConstraints = validationPolicy.getSignatureConstraints()
 				.getBasicSignatureConstraints().getSigningCertificate();
 
@@ -815,7 +815,7 @@ class CertificateProcessExecutorTest extends AbstractTestValidationExecutor {
 		DefaultCertificateProcessExecutor executor = new DefaultCertificateProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
 
-		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
 		CertificateConstraints certificateConstraints = validationPolicy.getSignatureConstraints()
 				.getBasicSignatureConstraints().getSigningCertificate();
 
@@ -847,7 +847,7 @@ class CertificateProcessExecutorTest extends AbstractTestValidationExecutor {
 		DefaultCertificateProcessExecutor executor = new DefaultCertificateProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
 
-		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
 		CertificateConstraints certificateConstraints = validationPolicy.getSignatureConstraints()
 				.getBasicSignatureConstraints().getSigningCertificate();
 
@@ -956,7 +956,7 @@ class CertificateProcessExecutorTest extends AbstractTestValidationExecutor {
 		DefaultCertificateProcessExecutor executor = new DefaultCertificateProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
 
-		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
 		LevelConstraint levelConstraint = new LevelConstraint();
 		levelConstraint.setLevel(Level.INFORM);
 		validationPolicy.getSignatureConstraints().getBasicSignatureConstraints().setProspectiveCertificateChain(levelConstraint);
@@ -989,7 +989,7 @@ class CertificateProcessExecutorTest extends AbstractTestValidationExecutor {
 		DefaultCertificateProcessExecutor executor = new DefaultCertificateProcessExecutor();
 		executor.setDiagnosticData(diagnosticData);
 
-		ValidationPolicy validationPolicy = loadDefaultPolicy();
+		EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
 		LevelConstraint levelConstraint = new LevelConstraint();
 		levelConstraint.setLevel(Level.INFORM);
 		validationPolicy.getSignatureConstraints().getBasicSignatureConstraints().setProspectiveCertificateChain(levelConstraint);
@@ -1147,8 +1147,8 @@ class CertificateProcessExecutorTest extends AbstractTestValidationExecutor {
 	}
 	
 	@Override
-	protected ValidationPolicy loadDefaultPolicy() throws Exception {
-		return ValidationPolicyFacade.newFacade().getCertificateValidationPolicy();
+	protected EtsiValidationPolicy loadDefaultPolicy() throws Exception {
+		return (EtsiValidationPolicy) ValidationPolicyFacade.newFacade().getCertificateValidationPolicy();
 	}
 
 }

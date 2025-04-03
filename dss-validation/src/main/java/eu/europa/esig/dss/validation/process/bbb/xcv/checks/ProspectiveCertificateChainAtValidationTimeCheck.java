@@ -23,11 +23,11 @@ package eu.europa.esig.dss.validation.process.bbb.xcv.checks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.Level;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
@@ -53,10 +53,10 @@ public class ProspectiveCertificateChainAtValidationTimeCheck extends ChainItem<
      * @param result the result
      * @param certificate {@link CertificateWrapper}
      * @param controlTime {@link Date}
-     * @param constraint {@link LevelConstraint}
+     * @param constraint {@link LevelRule}
      */
     public ProspectiveCertificateChainAtValidationTimeCheck(I18nProvider i18nProvider, XmlXCV result,
-                                                      CertificateWrapper certificate, Date controlTime, LevelConstraint constraint) {
+                                                      CertificateWrapper certificate, Date controlTime, LevelRule constraint) {
         super(i18nProvider, result, constraint);
         this.certificate = certificate;
         this.controlTime = controlTime;
@@ -65,11 +65,11 @@ public class ProspectiveCertificateChainAtValidationTimeCheck extends ChainItem<
     @Override
     protected boolean process() {
         // FAIL level constraint is used to fail the check
-        if (ValidationProcessUtils.isTrustAnchor(certificate, controlTime, getFailLevelConstraint())) {
+        if (ValidationProcessUtils.isTrustAnchor(certificate, controlTime, getFailLevelRule())) {
             return true;
         }
         for (CertificateWrapper caCertificate : certificate.getCertificateChain()) {
-            if (ValidationProcessUtils.isTrustAnchor(caCertificate, controlTime, getFailLevelConstraint())) {
+            if (ValidationProcessUtils.isTrustAnchor(caCertificate, controlTime, getFailLevelRule())) {
                 return true;
             }
         }
@@ -96,10 +96,8 @@ public class ProspectiveCertificateChainAtValidationTimeCheck extends ChainItem<
         return SubIndication.NO_CERTIFICATE_CHAIN_FOUND_NO_POE;
     }
 
-    private LevelConstraint getFailLevelConstraint() {
-        LevelConstraint constraint = new LevelConstraint();
-        constraint.setLevel(Level.FAIL);
-        return constraint;
+    private LevelRule getFailLevelRule() {
+        return ValidationProcessUtils.getLevelRule(Level.FAIL);
     }
 
     @Override

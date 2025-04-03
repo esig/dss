@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.policy;
 
 import eu.europa.esig.dss.jaxb.common.AbstractJaxbFacade;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
 import org.xml.sax.SAXException;
 

@@ -23,8 +23,7 @@ package eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.i18n.I18nProvider;
-import eu.europa.esig.dss.policy.RuleUtils;
-import eu.europa.esig.dss.policy.jaxb.TimeConstraint;
+import eu.europa.esig.dss.model.policy.DurationRule;
 
 import java.util.Date;
 
@@ -34,7 +33,7 @@ import java.util.Date;
 public class RevocationDataFreshCheck extends AbstractRevocationFreshCheck {
 
 	/** Defines max freshness */
-	private final TimeConstraint timeConstraint;
+	private final DurationRule durationRule;
 
 	/**
 	 * Default constructor
@@ -43,12 +42,12 @@ public class RevocationDataFreshCheck extends AbstractRevocationFreshCheck {
 	 * @param result {@link XmlRFC}
 	 * @param revocationData {@link RevocationWrapper}
 	 * @param validationDate {@link Date}
-	 * @param constraint {@link TimeConstraint}
+	 * @param constraint {@link DurationRule}
 	 */
 	public RevocationDataFreshCheck(I18nProvider i18nProvider, XmlRFC result, RevocationWrapper revocationData,
-									Date validationDate, TimeConstraint constraint) {
+									Date validationDate, DurationRule constraint) {
 		super(i18nProvider, result, revocationData, validationDate, constraint);
-		this.timeConstraint = constraint;
+		this.durationRule = constraint;
 	}
 
 	@Override
@@ -61,7 +60,7 @@ public class RevocationDataFreshCheck extends AbstractRevocationFreshCheck {
 
 	@Override
 	protected long getMaxFreshness() {
-		return RuleUtils.convertDuration(timeConstraint);
+		return durationRule.getDuration();
 	}
 
 }

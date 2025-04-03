@@ -20,20 +20,21 @@
  */
 package eu.europa.esig.dss.policy;
 
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.enumerations.ValidationModel;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.Algo;
 import eu.europa.esig.dss.policy.jaxb.CertificateConstraints;
 import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
-import eu.europa.esig.dss.policy.jaxb.Level;
-import eu.europa.esig.dss.policy.jaxb.Model;
 import eu.europa.esig.dss.policy.jaxb.ModelConstraint;
 import eu.europa.esig.dss.policy.jaxb.RevocationConstraints;
 import eu.europa.esig.dss.policy.jaxb.TimeConstraint;
 import eu.europa.esig.dss.policy.jaxb.TimeUnit;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.UnmarshalException;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
-import jakarta.xml.bind.JAXBException;
-import jakarta.xml.bind.UnmarshalException;
 import javax.xml.stream.XMLStreamException;
 import java.io.File;
 import java.io.IOException;
@@ -69,7 +70,7 @@ class ValidationPolicyFacadeTest {
 				.unmarshall(new File("src/test/resources/constraint.xml"));
 
 		ModelConstraint mc = new ModelConstraint();
-		mc.setValue(Model.SHELL);
+		mc.setValue(ValidationModel.SHELL);
 		constraintsParameters.setModel(mc);
 
 		String marshall = ValidationPolicyFacade.newFacade().marshall(constraintsParameters);

@@ -22,7 +22,7 @@ package eu.europa.esig.dss.ws.cert.validation.common;
 
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;

@@ -30,10 +30,10 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.SignatureConstraints;
 import eu.europa.esig.dss.simplereport.SimpleReport;
@@ -57,7 +57,7 @@ class SignaturePolicyStoreValidationExecutorTest extends AbstractProcessExecutor
                 new File("src/test/resources/diag-data/diag_data_signature_policy_store.xml"));
         assertNotNull(diagnosticData);
 
-        ValidationPolicy policy = loadDefaultPolicy();
+        EtsiValidationPolicy policy = loadDefaultPolicy();
         SignatureConstraints signatureConstraints = policy.getSignatureConstraints();
         LevelConstraint levelConstraint = new LevelConstraint();
         levelConstraint.setLevel(Level.FAIL);
@@ -86,7 +86,7 @@ class SignaturePolicyStoreValidationExecutorTest extends AbstractProcessExecutor
         XmlSignature xmlSignature = diagnosticData.getSignatures().get(0);
         xmlSignature.setSignaturePolicyStore(null);
 
-        ValidationPolicy policy = loadDefaultPolicy();
+        EtsiValidationPolicy policy = loadDefaultPolicy();
         SignatureConstraints signatureConstraints = policy.getSignatureConstraints();
         LevelConstraint levelConstraint = new LevelConstraint();
         levelConstraint.setLevel(Level.FAIL);
@@ -132,7 +132,7 @@ class SignaturePolicyStoreValidationExecutorTest extends AbstractProcessExecutor
         XmlPolicy xmlPolicy = diagnosticData.getSignatures().get(0).getPolicy();
         xmlPolicy.setIdentified(false);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint levelConstraint = new LevelConstraint();
         levelConstraint.setLevel(Level.FAIL);
         validationPolicy.getSignatureConstraints().setPolicyAvailable(levelConstraint);
@@ -190,7 +190,7 @@ class SignaturePolicyStoreValidationExecutorTest extends AbstractProcessExecutor
         XmlPolicy xmlPolicy = diagnosticData.getSignatures().get(0).getPolicy();
         xmlPolicy.setIdentified(false);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint levelConstraint = new LevelConstraint();
         levelConstraint.setLevel(Level.INFORM);
         validationPolicy.getSignatureConstraints().setPolicyAvailable(levelConstraint);

@@ -25,7 +25,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlContainerInfo;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.SignedFilesPresentCheck;
@@ -49,7 +50,7 @@ class SignedFilesPresentCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlFC result = new XmlFC();
-		SignedFilesPresentCheck sfpc = new SignedFilesPresentCheck(i18nProvider, result, xmlContainerInfo, constraint);
+		SignedFilesPresentCheck sfpc = new SignedFilesPresentCheck(i18nProvider, result, xmlContainerInfo, new LevelConstraintWrapper(constraint));
 		sfpc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -66,7 +67,7 @@ class SignedFilesPresentCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlFC result = new XmlFC();
-		SignedFilesPresentCheck sfpc = new SignedFilesPresentCheck(i18nProvider, result, xmlContainerInfo, constraint);
+		SignedFilesPresentCheck sfpc = new SignedFilesPresentCheck(i18nProvider, result, xmlContainerInfo, new LevelConstraintWrapper(constraint));
 		sfpc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -84,7 +85,7 @@ class SignedFilesPresentCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlFC result = new XmlFC();
-		SignedFilesPresentCheck sfpc = new SignedFilesPresentCheck(i18nProvider, result, xmlContainerInfo, constraint);
+		SignedFilesPresentCheck sfpc = new SignedFilesPresentCheck(i18nProvider, result, xmlContainerInfo, new LevelConstraintWrapper(constraint));
 		sfpc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -102,7 +103,7 @@ class SignedFilesPresentCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlFC result = new XmlFC();
-		SignedFilesPresentCheck sfpc = new SignedFilesPresentCheck(i18nProvider, result, xmlContainerInfo, constraint);
+		SignedFilesPresentCheck sfpc = new SignedFilesPresentCheck(i18nProvider, result, xmlContainerInfo, new LevelConstraintWrapper(constraint));
 		sfpc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -120,7 +121,7 @@ class SignedFilesPresentCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlFC result = new XmlFC();
-		SignedFilesPresentCheck sfpc = new SignedFilesPresentCheck(i18nProvider, result, xmlContainerInfo, constraint);
+		SignedFilesPresentCheck sfpc = new SignedFilesPresentCheck(i18nProvider, result, xmlContainerInfo, new LevelConstraintWrapper(constraint));
 		sfpc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -138,7 +139,7 @@ class SignedFilesPresentCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlFC result = new XmlFC();
-		SignedFilesPresentCheck sfpc = new SignedFilesPresentCheck(i18nProvider, result, xmlContainerInfo, constraint);
+		SignedFilesPresentCheck sfpc = new SignedFilesPresentCheck(i18nProvider, result, xmlContainerInfo, new LevelConstraintWrapper(constraint));
 		sfpc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -156,7 +157,7 @@ class SignedFilesPresentCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlFC result = new XmlFC();
-		SignedFilesPresentCheck sfpc = new SignedFilesPresentCheck(i18nProvider, result, xmlContainerInfo, constraint);
+		SignedFilesPresentCheck sfpc = new SignedFilesPresentCheck(i18nProvider, result, xmlContainerInfo, new LevelConstraintWrapper(constraint));
 		sfpc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -174,7 +175,7 @@ class SignedFilesPresentCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlFC result = new XmlFC();
-		SignedFilesPresentCheck sfpc = new SignedFilesPresentCheck(i18nProvider, result, xmlContainerInfo, constraint);
+		SignedFilesPresentCheck sfpc = new SignedFilesPresentCheck(i18nProvider, result, xmlContainerInfo, new LevelConstraintWrapper(constraint));
 		sfpc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -191,7 +192,7 @@ class SignedFilesPresentCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlFC result = new XmlFC();
-		SignedFilesPresentCheck sfpc = new SignedFilesPresentCheck(i18nProvider, result, xmlContainerInfo, constraint);
+		SignedFilesPresentCheck sfpc = new SignedFilesPresentCheck(i18nProvider, result, xmlContainerInfo, new LevelConstraintWrapper(constraint));
 		sfpc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -209,7 +210,7 @@ class SignedFilesPresentCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlFC result = new XmlFC();
-		SignedFilesPresentCheck sfpc = new SignedFilesPresentCheck(i18nProvider, result, xmlContainerInfo, constraint);
+		SignedFilesPresentCheck sfpc = new SignedFilesPresentCheck(i18nProvider, result, xmlContainerInfo, new LevelConstraintWrapper(constraint));
 		sfpc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

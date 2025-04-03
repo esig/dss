@@ -16,11 +16,11 @@ import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp;
@@ -53,7 +53,7 @@ class DSS3575ExecutorTest extends AbstractProcessExecutorTest {
         XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/diag_data_sha1_sign_cert.xml"));
         assertNotNull(diagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
 
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
@@ -150,7 +150,7 @@ class DSS3575ExecutorTest extends AbstractProcessExecutorTest {
             }
         }
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
 
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
@@ -258,7 +258,7 @@ class DSS3575ExecutorTest extends AbstractProcessExecutorTest {
             foundCertificates.getRelatedCertificates().add(xmlRelatedCertificate);
         }
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
 
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
@@ -366,7 +366,7 @@ class DSS3575ExecutorTest extends AbstractProcessExecutorTest {
             foundCertificates.getRelatedCertificates().add(xmlRelatedCertificate);
         }
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
 
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);

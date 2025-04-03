@@ -1089,7 +1089,7 @@
 						<xsd:documentation>Date of the last update of cryptographic suites (matching the Format)</xsd:documentation>
 					</xsd:annotation>
 				</xsd:attribute>
-				<xsd:attribute name="LevelAfterUpdate" type="level" use="optional">
+				<xsd:attribute name="LevelAfterUpdate" type="Level" use="optional">
 					<xsd:annotation>
 						<xsd:documentation>Defines a level of the check for cryptographic constraints expiring after the defined UpdateDate value</xsd:documentation>
 					</xsd:annotation>
@@ -1153,7 +1153,7 @@
 		<xsd:annotation>
 			<xsd:documentation>Boolean check : follows the specified level behavior in case of failure</xsd:documentation>
 		</xsd:annotation>
-		<xsd:attribute name="Level" type="level">
+		<xsd:attribute name="Level" type="Level">
 			<xsd:annotation>
 				<xsd:documentation>The level of criticality</xsd:documentation>
 			</xsd:annotation>
@@ -1221,7 +1221,7 @@
   		</xsd:complexContent>
 	</xsd:complexType>
 	
-	<xsd:simpleType name="level">
+	<xsd:simpleType name="Level">
 		<xsd:annotation>
 			<xsd:documentation>Defined levels for a validation step</xsd:documentation>
 		</xsd:annotation>

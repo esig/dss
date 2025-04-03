@@ -32,10 +32,10 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampHashIndexVersion;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.utils.Utils;
@@ -69,7 +69,7 @@ class CAdESAtsHashIndexExecutorTest extends AbstractProcessExecutorTest {
         xmlArchiveTimestampHashIndex.setValid(true);
         archiveTst.setArchiveTimestampHashIndex(xmlArchiveTimestampHashIndex);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
         validationPolicy.getTimestampConstraints().setAtsHashIndex(constraint);
@@ -140,7 +140,7 @@ class CAdESAtsHashIndexExecutorTest extends AbstractProcessExecutorTest {
         xmlArchiveTimestampHashIndex.setValid(false);
         archiveTst.setArchiveTimestampHashIndex(xmlArchiveTimestampHashIndex);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
         validationPolicy.getTimestampConstraints().setAtsHashIndex(constraint);
@@ -225,7 +225,7 @@ class CAdESAtsHashIndexExecutorTest extends AbstractProcessExecutorTest {
         xmlArchiveTimestampHashIndex.setValid(true);
         archiveTst.setArchiveTimestampHashIndex(xmlArchiveTimestampHashIndex);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.WARN);
         validationPolicy.getTimestampConstraints().setAtsHashIndex(constraint);
@@ -296,7 +296,7 @@ class CAdESAtsHashIndexExecutorTest extends AbstractProcessExecutorTest {
         xmlArchiveTimestampHashIndex.setValid(false);
         archiveTst.setArchiveTimestampHashIndex(xmlArchiveTimestampHashIndex);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.WARN);
         validationPolicy.getTimestampConstraints().setAtsHashIndex(constraint);
@@ -383,7 +383,7 @@ class CAdESAtsHashIndexExecutorTest extends AbstractProcessExecutorTest {
         xmlArchiveTimestampHashIndex.setValid(false);
         archiveTst.setArchiveTimestampHashIndex(xmlArchiveTimestampHashIndex);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         validationPolicy.getTimestampConstraints().setAtsHashIndex(null);
 
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();

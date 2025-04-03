@@ -31,7 +31,8 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlQcCompliance;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
 import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
 import eu.europa.esig.dss.enumerations.CertificatePolicy;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateQcComplianceCheck;
@@ -60,7 +61,7 @@ class CertificateQcComplianceCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcComplianceCheck cqccc = new CertificateQcComplianceCheck(i18nProvider, result,
-                new CertificateWrapper(xc), constraint);
+                new CertificateWrapper(xc), new LevelConstraintWrapper(constraint));
         cqccc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -85,7 +86,7 @@ class CertificateQcComplianceCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcComplianceCheck cqccc = new CertificateQcComplianceCheck(i18nProvider, result,
-                new CertificateWrapper(xc), constraint);
+                new CertificateWrapper(xc), new LevelConstraintWrapper(constraint));
         cqccc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -108,7 +109,7 @@ class CertificateQcComplianceCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcComplianceCheck cqccc = new CertificateQcComplianceCheck(i18nProvider, result,
-                new CertificateWrapper(xc), constraint);
+                new CertificateWrapper(xc), new LevelConstraintWrapper(constraint));
         cqccc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -129,7 +130,7 @@ class CertificateQcComplianceCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcComplianceCheck cqccc = new CertificateQcComplianceCheck(i18nProvider, result,
-                new CertificateWrapper(xc), constraint);
+                new CertificateWrapper(xc), new LevelConstraintWrapper(constraint));
         cqccc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -146,7 +147,7 @@ class CertificateQcComplianceCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcComplianceCheck cqccc = new CertificateQcComplianceCheck(i18nProvider, result,
-                new CertificateWrapper(xc), constraint);
+                new CertificateWrapper(xc), new LevelConstraintWrapper(constraint));
         cqccc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

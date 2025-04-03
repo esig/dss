@@ -26,11 +26,11 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.enumerations.CertificateQualification;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.enumerations.ValidationModel;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.EtsiValidationPolicy;
-import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
-import eu.europa.esig.dss.policy.jaxb.Model;
 import eu.europa.esig.dss.policy.jaxb.ModelConstraint;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
@@ -61,39 +61,39 @@ class ModelCustomValidationTest extends ModelAbstractValidation {
 	static final Stream<Arguments> data() throws Exception {
 		final List<Arguments> data = new ArrayList<>();
 		
-		data.add( Arguments.of( new TestCase( TestData.DATA_2, Model.SHELL, sdf.parse("22-05-2016"), CertificateQualification.NA, "ind:" + Indication.TOTAL_PASSED ) ) );
-		data.add( Arguments.of( new TestCase( TestData.DATA_2, Model.SHELL, sdf.parse("18-11-2017"), CertificateQualification.NA, "ind:" + Indication.INDETERMINATE, "sub:" + SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE ) ) );
-		data.add( Arguments.of( new TestCase( TestData.DATA_2, Model.SHELL, sdf.parse("18-11-2020"), CertificateQualification.NA, "ind:" + Indication.INDETERMINATE, "sub:" + SubIndication.TRY_LATER ) ) ); // Revoc not fresh
-		data.add( Arguments.of( new TestCase( TestData.DATA_2, Model.SHELL, sdf.parse("01-05-2016"), CertificateQualification.NA, "ind:" + Indication.TOTAL_FAILED,  "sub:" + SubIndication.NOT_YET_VALID ) ) );
+		data.add( Arguments.of( new TestCase( TestData.DATA_2, ValidationModel.SHELL, sdf.parse("22-05-2016"), CertificateQualification.NA, "ind:" + Indication.TOTAL_PASSED ) ) );
+		data.add( Arguments.of( new TestCase( TestData.DATA_2, ValidationModel.SHELL, sdf.parse("18-11-2017"), CertificateQualification.NA, "ind:" + Indication.INDETERMINATE, "sub:" + SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE ) ) );
+		data.add( Arguments.of( new TestCase( TestData.DATA_2, ValidationModel.SHELL, sdf.parse("18-11-2020"), CertificateQualification.NA, "ind:" + Indication.INDETERMINATE, "sub:" + SubIndication.TRY_LATER ) ) ); // Revoc not fresh
+		data.add( Arguments.of( new TestCase( TestData.DATA_2, ValidationModel.SHELL, sdf.parse("01-05-2016"), CertificateQualification.NA, "ind:" + Indication.TOTAL_FAILED,  "sub:" + SubIndication.NOT_YET_VALID ) ) );
 
-		data.add( Arguments.of( new TestCase( TestData.DATA_2, Model.CHAIN, sdf.parse("22-05-2016"), CertificateQualification.NA, "ind:" + Indication.TOTAL_PASSED ) ) );
-		data.add( Arguments.of( new TestCase( TestData.DATA_2, Model.CHAIN, sdf.parse("18-11-2017"), CertificateQualification.NA, "ind:" + Indication.INDETERMINATE, "sub:" + SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE ) ) );
-		data.add( Arguments.of( new TestCase( TestData.DATA_2, Model.CHAIN, sdf.parse("18-11-2020"), CertificateQualification.NA, "ind:" + Indication.INDETERMINATE, "sub:" +  SubIndication.TRY_LATER ) ) ); // Revoc not fresh
-		data.add( Arguments.of( new TestCase( TestData.DATA_2, Model.CHAIN, sdf.parse("01-05-2016"), CertificateQualification.NA, "ind:" + Indication.TOTAL_FAILED,  "sub:" + SubIndication.NOT_YET_VALID ) ) );
+		data.add( Arguments.of( new TestCase( TestData.DATA_2, ValidationModel.CHAIN, sdf.parse("22-05-2016"), CertificateQualification.NA, "ind:" + Indication.TOTAL_PASSED ) ) );
+		data.add( Arguments.of( new TestCase( TestData.DATA_2, ValidationModel.CHAIN, sdf.parse("18-11-2017"), CertificateQualification.NA, "ind:" + Indication.INDETERMINATE, "sub:" + SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE ) ) );
+		data.add( Arguments.of( new TestCase( TestData.DATA_2, ValidationModel.CHAIN, sdf.parse("18-11-2020"), CertificateQualification.NA, "ind:" + Indication.INDETERMINATE, "sub:" +  SubIndication.TRY_LATER ) ) ); // Revoc not fresh
+		data.add( Arguments.of( new TestCase( TestData.DATA_2, ValidationModel.CHAIN, sdf.parse("01-05-2016"), CertificateQualification.NA, "ind:" + Indication.TOTAL_FAILED,  "sub:" + SubIndication.NOT_YET_VALID ) ) );
 		
-		data.add( Arguments.of( new TestCase( TestData.DATA_2, Model.HYBRID, sdf.parse("22-05-2016"), CertificateQualification.NA, "ind:" + Indication.TOTAL_PASSED ) ) );
-		data.add( Arguments.of( new TestCase( TestData.DATA_2, Model.HYBRID, sdf.parse("18-11-2017"), CertificateQualification.NA, "ind:" + Indication.INDETERMINATE, "sub:" + SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE ) ) );
-		data.add( Arguments.of( new TestCase( TestData.DATA_2, Model.HYBRID, sdf.parse("18-11-2020"), CertificateQualification.NA, "ind:" + Indication.INDETERMINATE, "sub:" +  SubIndication.TRY_LATER ) ) ); // Revoc not fresh
-		data.add( Arguments.of( new TestCase( TestData.DATA_2, Model.HYBRID, sdf.parse("01-05-2016"), CertificateQualification.NA, "ind:" + Indication.TOTAL_FAILED,  "sub:" + SubIndication.NOT_YET_VALID ) ) );
+		data.add( Arguments.of( new TestCase( TestData.DATA_2, ValidationModel.HYBRID, sdf.parse("22-05-2016"), CertificateQualification.NA, "ind:" + Indication.TOTAL_PASSED ) ) );
+		data.add( Arguments.of( new TestCase( TestData.DATA_2, ValidationModel.HYBRID, sdf.parse("18-11-2017"), CertificateQualification.NA, "ind:" + Indication.INDETERMINATE, "sub:" + SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE ) ) );
+		data.add( Arguments.of( new TestCase( TestData.DATA_2, ValidationModel.HYBRID, sdf.parse("18-11-2020"), CertificateQualification.NA, "ind:" + Indication.INDETERMINATE, "sub:" +  SubIndication.TRY_LATER ) ) ); // Revoc not fresh
+		data.add( Arguments.of( new TestCase( TestData.DATA_2, ValidationModel.HYBRID, sdf.parse("01-05-2016"), CertificateQualification.NA, "ind:" + Indication.TOTAL_FAILED,  "sub:" + SubIndication.NOT_YET_VALID ) ) );
 		
 		
-		data.add( Arguments.of( new TestCase( TestData.DATA_3, Model.SHELL, sdf.parse("22-05-2017"), CertificateQualification.CERT_FOR_ESIG, "ind:" + Indication.INDETERMINATE, "sub:" + SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE ) ) );
-		data.add( Arguments.of( new TestCase( TestData.DATA_3, Model.SHELL, sdf.parse("18-11-2017"), CertificateQualification.CERT_FOR_ESIG, "ind:" + Indication.INDETERMINATE, "sub:" + SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE ) ) );
-		data.add( Arguments.of( new TestCase( TestData.DATA_3, Model.SHELL, sdf.parse("01-05-2016"), CertificateQualification.CERT_FOR_ESIG, "ind:" + Indication.TOTAL_FAILED,  "sub:" + SubIndication.NOT_YET_VALID ) ) );
-		data.add( Arguments.of( new TestCase( TestData.DATA_3, Model.SHELL, sdf.parse("18-11-2029"), CertificateQualification.CERT_FOR_ESIG, "ind:" + Indication.INDETERMINATE, "sub:" + SubIndication.TRY_LATER ) ) );
-		data.add( Arguments.of( new TestCase( TestData.DATA_3, Model.SHELL, sdf.parse("01-01-2017"), CertificateQualification.CERT_FOR_ESIG, "ind:" + Indication.TOTAL_FAILED,  "sub:" + SubIndication.NOT_YET_VALID ) ) );
+		data.add( Arguments.of( new TestCase( TestData.DATA_3, ValidationModel.SHELL, sdf.parse("22-05-2017"), CertificateQualification.CERT_FOR_ESIG, "ind:" + Indication.INDETERMINATE, "sub:" + SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE ) ) );
+		data.add( Arguments.of( new TestCase( TestData.DATA_3, ValidationModel.SHELL, sdf.parse("18-11-2017"), CertificateQualification.CERT_FOR_ESIG, "ind:" + Indication.INDETERMINATE, "sub:" + SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE ) ) );
+		data.add( Arguments.of( new TestCase( TestData.DATA_3, ValidationModel.SHELL, sdf.parse("01-05-2016"), CertificateQualification.CERT_FOR_ESIG, "ind:" + Indication.TOTAL_FAILED,  "sub:" + SubIndication.NOT_YET_VALID ) ) );
+		data.add( Arguments.of( new TestCase( TestData.DATA_3, ValidationModel.SHELL, sdf.parse("18-11-2029"), CertificateQualification.CERT_FOR_ESIG, "ind:" + Indication.INDETERMINATE, "sub:" + SubIndication.TRY_LATER ) ) );
+		data.add( Arguments.of( new TestCase( TestData.DATA_3, ValidationModel.SHELL, sdf.parse("01-01-2017"), CertificateQualification.CERT_FOR_ESIG, "ind:" + Indication.TOTAL_FAILED,  "sub:" + SubIndication.NOT_YET_VALID ) ) );
 
-		data.add( Arguments.of( new TestCase( TestData.DATA_3, Model.CHAIN, sdf.parse("22-05-2017"), CertificateQualification.CERT_FOR_ESIG, "ind:" + Indication.INDETERMINATE, "sub:" + SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE ) ) );
-		data.add( Arguments.of( new TestCase( TestData.DATA_3, Model.CHAIN, sdf.parse("18-11-2017"), CertificateQualification.CERT_FOR_ESIG, "ind:" + Indication.INDETERMINATE, "sub:" + SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE ) ) );
-		data.add( Arguments.of( new TestCase( TestData.DATA_3, Model.CHAIN, sdf.parse("01-05-2016"), CertificateQualification.CERT_FOR_ESIG, "ind:" + Indication.TOTAL_FAILED,  "sub:" + SubIndication.NOT_YET_VALID ) ) );
-		data.add( Arguments.of( new TestCase( TestData.DATA_3, Model.CHAIN, sdf.parse("18-11-2029"), CertificateQualification.CERT_FOR_ESIG, "ind:" + Indication.INDETERMINATE, "sub:" + SubIndication.TRY_LATER ) ) );
-		data.add( Arguments.of( new TestCase( TestData.DATA_3, Model.CHAIN, sdf.parse("01-01-2017"), CertificateQualification.CERT_FOR_ESIG, "ind:" + Indication.TOTAL_FAILED,  "sub:" + SubIndication.NOT_YET_VALID ) ) );
+		data.add( Arguments.of( new TestCase( TestData.DATA_3, ValidationModel.CHAIN, sdf.parse("22-05-2017"), CertificateQualification.CERT_FOR_ESIG, "ind:" + Indication.INDETERMINATE, "sub:" + SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE ) ) );
+		data.add( Arguments.of( new TestCase( TestData.DATA_3, ValidationModel.CHAIN, sdf.parse("18-11-2017"), CertificateQualification.CERT_FOR_ESIG, "ind:" + Indication.INDETERMINATE, "sub:" + SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE ) ) );
+		data.add( Arguments.of( new TestCase( TestData.DATA_3, ValidationModel.CHAIN, sdf.parse("01-05-2016"), CertificateQualification.CERT_FOR_ESIG, "ind:" + Indication.TOTAL_FAILED,  "sub:" + SubIndication.NOT_YET_VALID ) ) );
+		data.add( Arguments.of( new TestCase( TestData.DATA_3, ValidationModel.CHAIN, sdf.parse("18-11-2029"), CertificateQualification.CERT_FOR_ESIG, "ind:" + Indication.INDETERMINATE, "sub:" + SubIndication.TRY_LATER ) ) );
+		data.add( Arguments.of( new TestCase( TestData.DATA_3, ValidationModel.CHAIN, sdf.parse("01-01-2017"), CertificateQualification.CERT_FOR_ESIG, "ind:" + Indication.TOTAL_FAILED,  "sub:" + SubIndication.NOT_YET_VALID ) ) );
 		
-		data.add( Arguments.of( new TestCase( TestData.DATA_3, Model.HYBRID, sdf.parse("22-05-2017"), CertificateQualification.CERT_FOR_ESIG, "ind:" + Indication.INDETERMINATE, "sub:" + SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE ) ) );
-		data.add( Arguments.of( new TestCase( TestData.DATA_3, Model.HYBRID, sdf.parse("18-11-2017"), CertificateQualification.CERT_FOR_ESIG, "ind:" + Indication.INDETERMINATE, "sub:" + SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE ) ) );
-		data.add( Arguments.of( new TestCase( TestData.DATA_3, Model.HYBRID, sdf.parse("01-05-2016"), CertificateQualification.CERT_FOR_ESIG, "ind:" + Indication.TOTAL_FAILED,  "sub:" + SubIndication.NOT_YET_VALID ) ) );
-		data.add( Arguments.of( new TestCase( TestData.DATA_3, Model.HYBRID, sdf.parse("18-11-2029"), CertificateQualification.CERT_FOR_ESIG, "ind:" + Indication.INDETERMINATE, "sub:" + SubIndication.TRY_LATER ) ) );
-		data.add( Arguments.of( new TestCase( TestData.DATA_3, Model.HYBRID, sdf.parse("01-01-2017"), CertificateQualification.CERT_FOR_ESIG, "ind:" + Indication.TOTAL_FAILED,  "sub:" + SubIndication.NOT_YET_VALID ) ) );
+		data.add( Arguments.of( new TestCase( TestData.DATA_3, ValidationModel.HYBRID, sdf.parse("22-05-2017"), CertificateQualification.CERT_FOR_ESIG, "ind:" + Indication.INDETERMINATE, "sub:" + SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE ) ) );
+		data.add( Arguments.of( new TestCase( TestData.DATA_3, ValidationModel.HYBRID, sdf.parse("18-11-2017"), CertificateQualification.CERT_FOR_ESIG, "ind:" + Indication.INDETERMINATE, "sub:" + SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE ) ) );
+		data.add( Arguments.of( new TestCase( TestData.DATA_3, ValidationModel.HYBRID, sdf.parse("01-05-2016"), CertificateQualification.CERT_FOR_ESIG, "ind:" + Indication.TOTAL_FAILED,  "sub:" + SubIndication.NOT_YET_VALID ) ) );
+		data.add( Arguments.of( new TestCase( TestData.DATA_3, ValidationModel.HYBRID, sdf.parse("18-11-2029"), CertificateQualification.CERT_FOR_ESIG, "ind:" + Indication.INDETERMINATE, "sub:" + SubIndication.TRY_LATER ) ) );
+		data.add( Arguments.of( new TestCase( TestData.DATA_3, ValidationModel.HYBRID, sdf.parse("01-01-2017"), CertificateQualification.CERT_FOR_ESIG, "ind:" + Indication.TOTAL_FAILED,  "sub:" + SubIndication.NOT_YET_VALID ) ) );
 
 		return data.stream();
 	}

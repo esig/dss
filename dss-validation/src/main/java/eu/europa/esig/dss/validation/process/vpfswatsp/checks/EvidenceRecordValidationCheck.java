@@ -28,7 +28,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
@@ -52,10 +52,10 @@ public class EvidenceRecordValidationCheck<T extends XmlConstraintsConclusion> e
      * @param result {@link T}
      * @param evidenceRecord {@link EvidenceRecordWrapper}
      * @param erValidationResult {@link XmlValidationProcessEvidenceRecord}
-     * @param constraint {@link LevelConstraint}
+     * @param constraint {@link LevelRule}
      */
     public EvidenceRecordValidationCheck(I18nProvider i18nProvider, T result, EvidenceRecordWrapper evidenceRecord,
-                                         XmlValidationProcessEvidenceRecord erValidationResult, LevelConstraint constraint) {
+                                         XmlValidationProcessEvidenceRecord erValidationResult, LevelRule constraint) {
         super(i18nProvider, result, constraint, evidenceRecord.getId());
         this.evidenceRecord = evidenceRecord;
         this.erValidationResult = erValidationResult;

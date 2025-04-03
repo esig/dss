@@ -30,8 +30,9 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
 import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.ExtendedKeyUsage;
-import eu.europa.esig.dss.policy.SubContext;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.enumerations.SubContext;
+import eu.europa.esig.dss.policy.MultiValuesConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.ExtendedKeyUsageCheck;
@@ -60,7 +61,7 @@ class ExtendedKeyUsageCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         ExtendedKeyUsageCheck ekuc = new ExtendedKeyUsageCheck(i18nProvider, result, new CertificateWrapper(xc),
-                Context.TIMESTAMP, SubContext.SIGNING_CERT, constraint);
+                Context.TIMESTAMP, SubContext.SIGNING_CERT, new MultiValuesConstraintWrapper(constraint));
         ekuc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -85,7 +86,7 @@ class ExtendedKeyUsageCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         ExtendedKeyUsageCheck ekuc = new ExtendedKeyUsageCheck(i18nProvider, result, new CertificateWrapper(xc),
-                Context.TIMESTAMP, SubContext.SIGNING_CERT, constraint);
+                Context.TIMESTAMP, SubContext.SIGNING_CERT, new MultiValuesConstraintWrapper(constraint));
         ekuc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -115,7 +116,7 @@ class ExtendedKeyUsageCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         ExtendedKeyUsageCheck ekuc = new ExtendedKeyUsageCheck(i18nProvider, result, new CertificateWrapper(xc),
-                Context.REVOCATION, SubContext.SIGNING_CERT, constraint);
+                Context.REVOCATION, SubContext.SIGNING_CERT, new MultiValuesConstraintWrapper(constraint));
         ekuc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

@@ -25,7 +25,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SigningTimeCheck;
@@ -47,7 +48,7 @@ class SigningTimeCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlSAV result = new XmlSAV();
-		SigningTimeCheck stc = new SigningTimeCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
+		SigningTimeCheck stc = new SigningTimeCheck(i18nProvider, result, new SignatureWrapper(sig), new LevelConstraintWrapper(constraint));
 		stc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -63,7 +64,7 @@ class SigningTimeCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlSAV result = new XmlSAV();
-		SigningTimeCheck stc = new SigningTimeCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
+		SigningTimeCheck stc = new SigningTimeCheck(i18nProvider, result, new SignatureWrapper(sig), new LevelConstraintWrapper(constraint));
 		stc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

@@ -215,19 +215,19 @@ public class TimestampQualificationBlock extends Chain<XmlValidationTimestampQua
 	}
 
 	private ChainItem<XmlValidationTimestampQualification> isTrustedListReachedForCertificateChain(CertificateWrapper signingCertificate) {
-		return new TrustedListReachedForCertificateChainCheck<>(i18nProvider, result, signingCertificate, getFailLevelConstraint());
+		return new TrustedListReachedForCertificateChainCheck<>(i18nProvider, result, signingCertificate, getFailLevelRule());
 	}
 
 	private AcceptableListOfTrustedListsCheck<XmlValidationTimestampQualification> isAcceptableLOTL(XmlTLAnalysis xmlLOTLAnalysis) {
-		return new AcceptableListOfTrustedListsCheck<>(i18nProvider, result, xmlLOTLAnalysis, getWarnLevelConstraint());
+		return new AcceptableListOfTrustedListsCheck<>(i18nProvider, result, xmlLOTLAnalysis, getWarnLevelRule());
 	}
 
 	private AcceptableTrustedListCheck<XmlValidationTimestampQualification> isAcceptableTL(XmlTLAnalysis xmlTLAnalysis) {
-		return new AcceptableTrustedListCheck<>(i18nProvider, result, xmlTLAnalysis, getWarnLevelConstraint());
+		return new AcceptableTrustedListCheck<>(i18nProvider, result, xmlTLAnalysis, getWarnLevelRule());
 	}
 
 	private ChainItem<XmlValidationTimestampQualification> isAcceptableTLPresent(Set<String> acceptableUrls) {
-		return new AcceptableTrustedListPresenceCheck<>(i18nProvider, result, acceptableUrls, getFailLevelConstraint());
+		return new AcceptableTrustedListPresenceCheck<>(i18nProvider, result, acceptableUrls, getFailLevelRule());
 	}
 
 }

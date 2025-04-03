@@ -25,7 +25,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlCRS;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlPSV;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateRevocationSelectorResultCheck;
 
@@ -41,10 +41,10 @@ public class PastSignatureValidationCertificateRevocationSelectorResultCheck ext
      * @param i18nProvider {@link I18nProvider}
      * @param result       the result
      * @param crsResult    {@link XmlCRS}
-     * @param constraint   {@link LevelConstraint}
+     * @param constraint   {@link LevelRule}
      */
     public PastSignatureValidationCertificateRevocationSelectorResultCheck(
-            I18nProvider i18nProvider, XmlPSV result, XmlCRS crsResult, LevelConstraint constraint) {
+            I18nProvider i18nProvider, XmlPSV result, XmlCRS crsResult, LevelRule constraint) {
         super(i18nProvider, result, crsResult, constraint);
     }
 

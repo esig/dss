@@ -26,7 +26,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 
 /**
  * Checks if the past signature validation result is acceptable
@@ -40,10 +40,10 @@ public class PastSignatureValidationCheck extends AbstractPastTokenValidationChe
 	 * @param result {@link XmlValidationProcessArchivalData}
 	 * @param signature {@link SignatureWrapper}
 	 * @param xmlPSV {@link XmlPSV}
-	 * @param constraint {@link LevelConstraint}
+	 * @param constraint {@link LevelRule}
 	 */
 	public PastSignatureValidationCheck(I18nProvider i18nProvider, XmlValidationProcessArchivalData result,
-										SignatureWrapper signature, XmlPSV xmlPSV, LevelConstraint constraint) {
+										SignatureWrapper signature, XmlPSV xmlPSV, LevelRule constraint) {
 		super(i18nProvider, result, signature, xmlPSV, constraint);
 	}
 

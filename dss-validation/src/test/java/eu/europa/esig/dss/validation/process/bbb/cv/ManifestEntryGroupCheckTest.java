@@ -25,7 +25,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.ManifestEntryGroupCheck;
@@ -58,7 +59,7 @@ class ManifestEntryGroupCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlCV result = new XmlCV();
-        ManifestEntryGroupCheck megc = new ManifestEntryGroupCheck(i18nProvider, result, digestMatchers, constraint);
+        ManifestEntryGroupCheck megc = new ManifestEntryGroupCheck(i18nProvider, result, digestMatchers, new LevelConstraintWrapper(constraint));
         megc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -86,7 +87,7 @@ class ManifestEntryGroupCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlCV result = new XmlCV();
-        ManifestEntryGroupCheck megc = new ManifestEntryGroupCheck(i18nProvider, result, digestMatchers, constraint);
+        ManifestEntryGroupCheck megc = new ManifestEntryGroupCheck(i18nProvider, result, digestMatchers, new LevelConstraintWrapper(constraint));
         megc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -114,7 +115,7 @@ class ManifestEntryGroupCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlCV result = new XmlCV();
-        ManifestEntryGroupCheck megc = new ManifestEntryGroupCheck(i18nProvider, result, digestMatchers, constraint);
+        ManifestEntryGroupCheck megc = new ManifestEntryGroupCheck(i18nProvider, result, digestMatchers, new LevelConstraintWrapper(constraint));
         megc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

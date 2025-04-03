@@ -27,7 +27,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
@@ -46,10 +46,10 @@ public class SuccessfulValidationTimeSlidingFoundCheck extends ChainItem<XmlPCV>
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlPCV}
      * @param vts {@link XmlVTS}
-     * @param constraint {@link LevelConstraint}
+     * @param constraint {@link LevelRule}
      */
     public SuccessfulValidationTimeSlidingFoundCheck(I18nProvider i18nProvider, XmlPCV result, XmlVTS vts,
-                                                     LevelConstraint constraint) {
+                                                     LevelRule constraint) {
         super(i18nProvider, result, constraint);
         this.vts = vts;
     }

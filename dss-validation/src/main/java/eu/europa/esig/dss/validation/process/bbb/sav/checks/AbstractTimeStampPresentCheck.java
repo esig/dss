@@ -29,7 +29,7 @@ import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
@@ -56,11 +56,11 @@ public abstract class AbstractTimeStampPresentCheck<T extends XmlConstraintsConc
      * @param result {@link XmlConstraintsConclusion}
      * @param bbbs map between token ids and corresponding {@code XmlBasicBuildingBlocks}
      * @param xmlTimestamps a collection of {@link XmlTimestamp}s
-     * @param constraint {@link LevelConstraint}
+     * @param constraint {@link LevelRule}
      */
     protected AbstractTimeStampPresentCheck(I18nProvider i18nProvider, T result,
                                          Map<String, XmlBasicBuildingBlocks> bbbs, Collection<XmlTimestamp> xmlTimestamps,
-                                         LevelConstraint constraint) {
+                                         LevelRule constraint) {
         super(i18nProvider, result, constraint);
         this.bbbs = bbbs;
         this.xmlTimestamps = xmlTimestamps;

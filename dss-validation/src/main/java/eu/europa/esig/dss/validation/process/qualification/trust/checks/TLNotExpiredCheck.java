@@ -26,7 +26,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
 import java.util.Date;
@@ -50,10 +50,10 @@ public class TLNotExpiredCheck extends ChainItem<XmlTLAnalysis> {
 	 * @param result {@link XmlTLAnalysis}
 	 * @param currentTL {@link XmlTrustedList}
 	 * @param currentTime {@link Date}
-	 * @param constraint {@link LevelConstraint}
+	 * @param constraint {@link LevelRule}
 	 */
 	public TLNotExpiredCheck(I18nProvider i18nProvider, XmlTLAnalysis result, XmlTrustedList currentTL,
-							 Date currentTime, LevelConstraint constraint) {
+							 Date currentTime, LevelRule constraint) {
 		super(i18nProvider, result, constraint);
 		this.currentTL = currentTL;
 		this.currentTime = currentTime;

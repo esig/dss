@@ -105,6 +105,7 @@
 		<module>specs-jws</module>
 		<module>specs-jades</module>
 		<module>dss-policy-jaxb</module>
+		<module>dss-policy-crypto-xml</module>
 		<module>dss-diagnostic-jaxb</module>
 		<module>dss-detailed-report-jaxb</module>
 		<module>dss-simple-report-jaxb</module>
@@ -179,7 +180,7 @@
 
 		<module>dss-jacoco-coverage</module>
 		<module>dss-bom</module>
-	</modules>
+    </modules>
 
 	<build>
 		<plugins>
@@ -864,6 +865,11 @@
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-policy-jaxb</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-policy-crypto-xml</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

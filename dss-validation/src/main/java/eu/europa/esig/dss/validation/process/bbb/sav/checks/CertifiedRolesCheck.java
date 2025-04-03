@@ -26,7 +26,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
+import eu.europa.esig.dss.model.policy.MultiValuesRule;
 import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
 
 import java.util.List;
@@ -45,10 +45,10 @@ public class CertifiedRolesCheck extends AbstractMultiValuesCheckItem<XmlSAV> {
 	 * @param i18nProvider {@link I18nProvider}
 	 * @param result {@link XmlSAV}
 	 * @param signature {@link SignatureWrapper}
-	 * @param constraint {@link MultiValuesConstraint}
+	 * @param constraint {@link MultiValuesRule}
 	 */
 	public CertifiedRolesCheck(I18nProvider i18nProvider, XmlSAV result, SignatureWrapper signature,
-							   MultiValuesConstraint constraint) {
+							   MultiValuesRule constraint) {
 		super(i18nProvider, result, constraint);
 		this.signature = signature;
 	}

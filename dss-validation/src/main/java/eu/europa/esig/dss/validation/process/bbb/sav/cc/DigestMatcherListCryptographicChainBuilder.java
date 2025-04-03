@@ -29,7 +29,7 @@ import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
+import eu.europa.esig.dss.model.policy.CryptographicRules;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
@@ -65,7 +65,7 @@ public class DigestMatcherListCryptographicChainBuilder<T extends XmlConstraints
     private final Date validationTime;
 
     /** The used cryptographic constraints */
-    private final CryptographicConstraint constraint;
+    private final CryptographicRules constraint;
 
     /** Cached XmlCC */
     private XmlCC concernedCC;
@@ -80,11 +80,11 @@ public class DigestMatcherListCryptographicChainBuilder<T extends XmlConstraints
      * @param result {@link XmlConstraintsConclusion}
      * @param digestMatchers a list of {@link XmlDigestMatcher}s to be validated
      * @param validationTime {@link Date} the validation time
-     * @param constraint {@link CryptographicConstraint}
+     * @param constraint {@link CryptographicRules}
      */
     public DigestMatcherListCryptographicChainBuilder(final I18nProvider i18nProvider, final T result,
                                                       final List<XmlDigestMatcher> digestMatchers, final Date validationTime,
-                                                      final CryptographicConstraint constraint) {
+                                                      final CryptographicRules constraint) {
        this.i18nProvider = i18nProvider;
        this.result = result;
        this.digestMatchers = digestMatchers;
@@ -164,7 +164,7 @@ public class DigestMatcherListCryptographicChainBuilder<T extends XmlConstraints
     }
 
     private ChainItem<T> digestAlgorithmCheckResult(List<XmlDigestMatcher> digestMatchers, XmlCC ccResult,
-                                                    CryptographicConstraint constraint) {
+                                                    CryptographicRules constraint) {
         MessageTag position = ValidationProcessUtils.getDigestMatcherCryptoPosition(digestMatchers);
         return new DigestMatcherCryptographicCheckerResultCheck<>(i18nProvider, result, validationTime, position,
                 getReferenceNames(digestMatchers), ccResult, constraint);

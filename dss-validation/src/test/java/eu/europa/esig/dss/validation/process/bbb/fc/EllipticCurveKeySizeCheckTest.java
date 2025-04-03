@@ -28,7 +28,8 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlBasicSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.EllipticCurveKeySizeCheck;
@@ -55,7 +56,7 @@ class EllipticCurveKeySizeCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        EllipticCurveKeySizeCheck ecksc = new EllipticCurveKeySizeCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), constraint);
+        EllipticCurveKeySizeCheck ecksc = new EllipticCurveKeySizeCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), new LevelConstraintWrapper(constraint));
         ecksc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -78,7 +79,7 @@ class EllipticCurveKeySizeCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        EllipticCurveKeySizeCheck ecksc = new EllipticCurveKeySizeCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), constraint);
+        EllipticCurveKeySizeCheck ecksc = new EllipticCurveKeySizeCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), new LevelConstraintWrapper(constraint));
         ecksc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -101,7 +102,7 @@ class EllipticCurveKeySizeCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        EllipticCurveKeySizeCheck ecksc = new EllipticCurveKeySizeCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), constraint);
+        EllipticCurveKeySizeCheck ecksc = new EllipticCurveKeySizeCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), new LevelConstraintWrapper(constraint));
         ecksc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -123,7 +124,7 @@ class EllipticCurveKeySizeCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        EllipticCurveKeySizeCheck ecksc = new EllipticCurveKeySizeCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), constraint);
+        EllipticCurveKeySizeCheck ecksc = new EllipticCurveKeySizeCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), new LevelConstraintWrapper(constraint));
         ecksc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -145,7 +146,7 @@ class EllipticCurveKeySizeCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        EllipticCurveKeySizeCheck ecksc = new EllipticCurveKeySizeCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), constraint);
+        EllipticCurveKeySizeCheck ecksc = new EllipticCurveKeySizeCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), new LevelConstraintWrapper(constraint));
         ecksc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -167,7 +168,7 @@ class EllipticCurveKeySizeCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        EllipticCurveKeySizeCheck ecksc = new EllipticCurveKeySizeCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), constraint);
+        EllipticCurveKeySizeCheck ecksc = new EllipticCurveKeySizeCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), new LevelConstraintWrapper(constraint));
         ecksc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -190,7 +191,7 @@ class EllipticCurveKeySizeCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        EllipticCurveKeySizeCheck ecksc = new EllipticCurveKeySizeCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), constraint);
+        EllipticCurveKeySizeCheck ecksc = new EllipticCurveKeySizeCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), new LevelConstraintWrapper(constraint));
         ecksc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

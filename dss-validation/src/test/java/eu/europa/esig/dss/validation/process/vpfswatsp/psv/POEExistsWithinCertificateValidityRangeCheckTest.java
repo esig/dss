@@ -30,8 +30,9 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
@@ -77,8 +78,8 @@ class POEExistsWithinCertificateValidityRangeCheckTest extends AbstractTestCheck
         poeExtraction.extractPOE(new TimestampWrapper(xmlTimestamp));
 
         XmlPSV result = new XmlPSV();
-        POEExistsWithinCertificateValidityRangeCheck pecvrc = new POEExistsWithinCertificateValidityRangeCheck(i18nProvider, result,
-                new CertificateWrapper(xmlCertificate), poeExtraction, constraint);
+        POEExistsWithinCertificateValidityRangeCheck<XmlPSV> pecvrc = new POEExistsWithinCertificateValidityRangeCheck<>(i18nProvider, result,
+                new CertificateWrapper(xmlCertificate), poeExtraction, new LevelConstraintWrapper(constraint));
         pecvrc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -116,8 +117,8 @@ class POEExistsWithinCertificateValidityRangeCheckTest extends AbstractTestCheck
         poeExtraction.extractPOE(new TimestampWrapper(xmlTimestamp));
 
         XmlPSV result = new XmlPSV();
-        POEExistsWithinCertificateValidityRangeCheck pecvrc = new POEExistsWithinCertificateValidityRangeCheck(i18nProvider, result,
-                new CertificateWrapper(xmlCertificate), poeExtraction, constraint);
+        POEExistsWithinCertificateValidityRangeCheck<XmlPSV> pecvrc = new POEExistsWithinCertificateValidityRangeCheck<>(i18nProvider, result,
+                new CertificateWrapper(xmlCertificate), poeExtraction, new LevelConstraintWrapper(constraint));
         pecvrc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -155,8 +156,8 @@ class POEExistsWithinCertificateValidityRangeCheckTest extends AbstractTestCheck
         poeExtraction.extractPOE(new TimestampWrapper(xmlTimestamp));
 
         XmlPSV result = new XmlPSV();
-        POEExistsWithinCertificateValidityRangeCheck pecvrc = new POEExistsWithinCertificateValidityRangeCheck(i18nProvider, result,
-                new CertificateWrapper(xmlCertificate), poeExtraction, constraint);
+        POEExistsWithinCertificateValidityRangeCheck<XmlPSV> pecvrc = new POEExistsWithinCertificateValidityRangeCheck<>(i18nProvider, result,
+                new CertificateWrapper(xmlCertificate), poeExtraction, new LevelConstraintWrapper(constraint));
         pecvrc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

@@ -23,7 +23,7 @@ package eu.europa.esig.dss.validation.executor;
 import eu.europa.esig.dss.enumerations.CertificateQualification;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.policy.jaxb.Model;
+import eu.europa.esig.dss.enumerations.ValidationModel;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -103,7 +103,7 @@ public class ModelAbstractValidation {
 	 */
 	public static class TestCase {
 		private final TestData testData;
-		private final Model model;
+		private final ValidationModel model;
 		private final Date validationDate;
 		private final CertificateQualification qualification;
 		private final Map<String, Object> certResults;
@@ -122,7 +122,7 @@ public class ModelAbstractValidation {
 		 * @param expectedCertResults
 		 *            the expected Indication per involved certificate
 		 */
-		protected TestCase(final TestData testData, final Model model, final Date validationDate,
+		protected TestCase(final TestData testData, final ValidationModel model, final Date validationDate,
 				CertificateQualification qualification, final String... expectedCertResults) {
 			this.testData = testData;
 			this.model = model;
@@ -146,7 +146,7 @@ public class ModelAbstractValidation {
 			return validationDate;
 		}
 
-		public final Model getModel() {
+		public final ValidationModel getModel() {
 			return model;
 		}
 

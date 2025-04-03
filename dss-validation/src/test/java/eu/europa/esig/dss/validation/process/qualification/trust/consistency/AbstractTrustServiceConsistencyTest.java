@@ -21,8 +21,8 @@
 package eu.europa.esig.dss.validation.process.qualification.trust.consistency;
 
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQualifier;
-
 import jakarta.xml.bind.DatatypeConverter;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

@@ -28,8 +28,9 @@ import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.BestSignatureTimeBeforeSuspensionTimeCheck;
@@ -60,7 +61,7 @@ class BestSignatureTimeBeforeSuspensionTimeCheckTest extends AbstractTestCheck {
         XmlValidationProcessLongTermData result = new XmlValidationProcessLongTermData();
         BestSignatureTimeBeforeSuspensionTimeCheck bstbstc = new BestSignatureTimeBeforeSuspensionTimeCheck(
                 i18nProvider, result, new CertificateRevocationWrapper(xmlCertificateRevocation), bestSignatureTime,
-                constraint);
+                new LevelConstraintWrapper(constraint));
         bstbstc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -88,7 +89,7 @@ class BestSignatureTimeBeforeSuspensionTimeCheckTest extends AbstractTestCheck {
         XmlValidationProcessLongTermData result = new XmlValidationProcessLongTermData();
         BestSignatureTimeBeforeSuspensionTimeCheck bstbstc = new BestSignatureTimeBeforeSuspensionTimeCheck(
                 i18nProvider, result, new CertificateRevocationWrapper(xmlCertificateRevocation), bestSignatureTime,
-                constraint);
+                new LevelConstraintWrapper(constraint));
         bstbstc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -118,7 +119,7 @@ class BestSignatureTimeBeforeSuspensionTimeCheckTest extends AbstractTestCheck {
         XmlValidationProcessLongTermData result = new XmlValidationProcessLongTermData();
         BestSignatureTimeBeforeSuspensionTimeCheck bstbstc = new BestSignatureTimeBeforeSuspensionTimeCheck(
                 i18nProvider, result, new CertificateRevocationWrapper(xmlCertificateRevocation), bestSignatureTime,
-                constraint);
+                new LevelConstraintWrapper(constraint));
         bstbstc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

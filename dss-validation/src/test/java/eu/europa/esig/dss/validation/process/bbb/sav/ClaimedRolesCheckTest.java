@@ -27,7 +27,8 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerRole;
 import eu.europa.esig.dss.enumerations.EndorsementType;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.MultiValuesConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.ClaimedRolesCheck;
@@ -53,7 +54,7 @@ class ClaimedRolesCheckTest extends AbstractTestCheck {
 		constraint.getId().add("Claimed_Role");
 
 		XmlSAV result = new XmlSAV();
-		ClaimedRolesCheck crc = new ClaimedRolesCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
+		ClaimedRolesCheck crc = new ClaimedRolesCheck(i18nProvider, result, new SignatureWrapper(sig), new MultiValuesConstraintWrapper(constraint));
 		crc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -75,7 +76,7 @@ class ClaimedRolesCheckTest extends AbstractTestCheck {
 		constraint.getId().add("Claimed_Role");
 
 		XmlSAV result = new XmlSAV();
-		ClaimedRolesCheck crc = new ClaimedRolesCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
+		ClaimedRolesCheck crc = new ClaimedRolesCheck(i18nProvider, result, new SignatureWrapper(sig), new MultiValuesConstraintWrapper(constraint));
 		crc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

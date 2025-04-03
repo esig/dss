@@ -25,7 +25,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicConstraintWrapper;
+import eu.europa.esig.dss.model.policy.CryptographicRules;
+import eu.europa.esig.dss.validation.CryptographicRulesUtils;
 
 /**
  * Check if public key size is acceptable
@@ -38,8 +39,8 @@ public class PublicKeySizeAcceptableCheck extends AbstractCryptographicCheck {
 	/** Used public key length */
 	private final String keyLength;
 
-	/** The constraint */
-	private final CryptographicConstraintWrapper constraintWrapper;
+	/** The cryptographic rules */
+	private final CryptographicRules cryptographicRules;
 
 	/**
 	 * Default constructor
@@ -49,19 +50,19 @@ public class PublicKeySizeAcceptableCheck extends AbstractCryptographicCheck {
 	 * @param keyLength {@link String}
 	 * @param result {@link XmlCC}
 	 * @param position {@link MessageTag}
-	 * @param constraintWrapper {@link CryptographicConstraintWrapper}
+	 * @param cryptographicRules {@link CryptographicRules}
 	 */
 	protected PublicKeySizeAcceptableCheck(I18nProvider i18nProvider, EncryptionAlgorithm encryptionAlgo, String keyLength,
-			XmlCC result, MessageTag position, CryptographicConstraintWrapper constraintWrapper) {
-		super(i18nProvider, result, position, constraintWrapper.getMiniPublicKeySizeLevel());
+			XmlCC result, MessageTag position, CryptographicRules cryptographicRules) {
+		super(i18nProvider, result, position, cryptographicRules.getMiniPublicKeySizeLevel());
 		this.encryptionAlgo = encryptionAlgo;
 		this.keyLength = keyLength;
-		this.constraintWrapper = constraintWrapper;
+		this.cryptographicRules = cryptographicRules;
 	}
 
 	@Override
 	protected boolean process() {
-		return constraintWrapper.isEncryptionAlgorithmWithKeySizeReliable(encryptionAlgo, keyLength);
+		return CryptographicRulesUtils.isEncryptionAlgorithmWithKeySizeReliable(cryptographicRules, encryptionAlgo, keyLength);
 	}
 	
 	@Override

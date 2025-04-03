@@ -7,7 +7,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import org.slf4j.Logger;
@@ -39,10 +39,10 @@ public class RevocationHasInformationAboutCertificateCheck extends ChainItem<Xml
      * @param result {@link XmlRAC}
      * @param certificate {@link CertificateWrapper}
      * @param revocationData {@link RevocationWrapper}
-     * @param constraint {@link LevelConstraint}
+     * @param constraint {@link LevelRule}
      */
     public RevocationHasInformationAboutCertificateCheck(I18nProvider i18nProvider, XmlRAC result, CertificateWrapper certificate,
-                                                         RevocationWrapper revocationData, LevelConstraint constraint) {
+                                                         RevocationWrapper revocationData, LevelRule constraint) {
         super(i18nProvider, result, constraint);
         this.certificate = certificate;
         this.revocationData = revocationData;

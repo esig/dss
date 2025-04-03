@@ -28,7 +28,8 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcEuLimitValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
 import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.ValueConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.ValueConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateQcEuLimitValueCurrencyCheck;
@@ -58,7 +59,7 @@ class CertificateQcEuLimitValueCurrencyCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcEuLimitValueCurrencyCheck cqctlcc = new CertificateQcEuLimitValueCurrencyCheck(
-                i18nProvider, result, new CertificateWrapper(xc), constraint);
+                i18nProvider, result, new CertificateWrapper(xc), new ValueConstraintWrapper(constraint));
         cqctlcc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -84,7 +85,7 @@ class CertificateQcEuLimitValueCurrencyCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcEuLimitValueCurrencyCheck cqctlcc = new CertificateQcEuLimitValueCurrencyCheck(
-                i18nProvider, result, new CertificateWrapper(xc), constraint);
+                i18nProvider, result, new CertificateWrapper(xc), new ValueConstraintWrapper(constraint));
         cqctlcc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -106,7 +107,7 @@ class CertificateQcEuLimitValueCurrencyCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcEuLimitValueCurrencyCheck cqctlcc = new CertificateQcEuLimitValueCurrencyCheck(
-                i18nProvider, result, new CertificateWrapper(xc), constraint);
+                i18nProvider, result, new CertificateWrapper(xc), new ValueConstraintWrapper(constraint));
         cqctlcc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -124,7 +125,7 @@ class CertificateQcEuLimitValueCurrencyCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcEuLimitValueCurrencyCheck cqctlcc = new CertificateQcEuLimitValueCurrencyCheck(
-                i18nProvider, result, new CertificateWrapper(xc), constraint);
+                i18nProvider, result, new CertificateWrapper(xc), new ValueConstraintWrapper(constraint));
         cqctlcc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

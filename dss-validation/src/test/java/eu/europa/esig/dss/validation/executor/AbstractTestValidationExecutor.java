@@ -46,7 +46,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.jaxb.object.Message;
-import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
 import eu.europa.esig.dss.simplereport.SimpleReportFacade;
@@ -70,12 +70,12 @@ public abstract class AbstractTestValidationExecutor {
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractTestValidationExecutor.class);
 	
-	protected ValidationPolicy loadPolicy(String policyConstraintFile) throws Exception {
-		return ValidationPolicyFacade.newFacade().getValidationPolicy(new File(policyConstraintFile));
+	protected EtsiValidationPolicy loadPolicy(String policyConstraintFile) throws Exception {
+		return (EtsiValidationPolicy) ValidationPolicyFacade.newFacade().getValidationPolicy(new File(policyConstraintFile));
 	}
 
-	protected ValidationPolicy loadDefaultPolicy() throws Exception {
-		return ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
+	protected EtsiValidationPolicy loadDefaultPolicy() throws Exception {
+		return (EtsiValidationPolicy) ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
 	}
 	
 	protected ConstraintsParameters getConstraintsParameters(File file) throws Exception {

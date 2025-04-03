@@ -31,7 +31,8 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlFreshestCRL;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlNoRevAvail;
 import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.NoRevAvailCheck;
@@ -56,7 +57,7 @@ class NoRevAvailCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlSubXCV result = new XmlSubXCV();
-        NoRevAvailCheck nrac = new NoRevAvailCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
+        NoRevAvailCheck nrac = new NoRevAvailCheck(i18nProvider, result, new CertificateWrapper(xc), new LevelConstraintWrapper(constraint));
         nrac.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -82,7 +83,7 @@ class NoRevAvailCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlSubXCV result = new XmlSubXCV();
-        NoRevAvailCheck nrac = new NoRevAvailCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
+        NoRevAvailCheck nrac = new NoRevAvailCheck(i18nProvider, result, new CertificateWrapper(xc), new LevelConstraintWrapper(constraint));
         nrac.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -109,7 +110,7 @@ class NoRevAvailCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlSubXCV result = new XmlSubXCV();
-        NoRevAvailCheck nrac = new NoRevAvailCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
+        NoRevAvailCheck nrac = new NoRevAvailCheck(i18nProvider, result, new CertificateWrapper(xc), new LevelConstraintWrapper(constraint));
         nrac.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -135,7 +136,7 @@ class NoRevAvailCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlSubXCV result = new XmlSubXCV();
-        NoRevAvailCheck nrac = new NoRevAvailCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
+        NoRevAvailCheck nrac = new NoRevAvailCheck(i18nProvider, result, new CertificateWrapper(xc), new LevelConstraintWrapper(constraint));
         nrac.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -161,7 +162,7 @@ class NoRevAvailCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlSubXCV result = new XmlSubXCV();
-        NoRevAvailCheck nrac = new NoRevAvailCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
+        NoRevAvailCheck nrac = new NoRevAvailCheck(i18nProvider, result, new CertificateWrapper(xc), new LevelConstraintWrapper(constraint));
         nrac.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -182,7 +183,7 @@ class NoRevAvailCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlSubXCV result = new XmlSubXCV();
-        NoRevAvailCheck nrac = new NoRevAvailCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
+        NoRevAvailCheck nrac = new NoRevAvailCheck(i18nProvider, result, new CertificateWrapper(xc), new LevelConstraintWrapper(constraint));
         nrac.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

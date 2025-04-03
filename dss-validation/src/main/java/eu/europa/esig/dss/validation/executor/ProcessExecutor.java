@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.validation.executor;
 
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
-import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.reports.AbstractReports;
 
 import java.util.Date;

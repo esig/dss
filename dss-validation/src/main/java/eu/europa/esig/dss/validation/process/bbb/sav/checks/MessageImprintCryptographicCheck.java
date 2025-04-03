@@ -24,7 +24,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
+import eu.europa.esig.dss.model.policy.CryptographicRules;
 
 import java.util.Date;
 
@@ -40,10 +40,10 @@ public class MessageImprintCryptographicCheck extends DigestMatcherCryptographic
 	 * @param digestAlgorithm {@link DigestAlgorithm}
 	 * @param result {@link XmlSAV}
 	 * @param validationDate {@link Date}
-	 * @param constraint {@link CryptographicConstraint}
+	 * @param constraint {@link CryptographicRules}
 	 */
 	public MessageImprintCryptographicCheck(I18nProvider i18nProvider, DigestAlgorithm digestAlgorithm, XmlSAV result,
-			Date validationDate, CryptographicConstraint constraint) {
+			Date validationDate, CryptographicRules constraint) {
 		super(i18nProvider, digestAlgorithm, result, validationDate, MessageTag.ACCM_POS_MESS_IMP, constraint);
 	}
 

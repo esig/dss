@@ -27,8 +27,9 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
 import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.IntValueConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.IntValueConstraint;
-import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateMinQcEuRetentionPeriodCheck;
 import org.junit.jupiter.api.Test;
@@ -54,7 +55,7 @@ class CertificateMinQcEuRetentionPeriodCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateMinQcEuRetentionPeriodCheck cmqcrpc = new CertificateMinQcEuRetentionPeriodCheck(
-                i18nProvider, result, new CertificateWrapper(xc), constraint);
+                i18nProvider, result, new CertificateWrapper(xc), new IntValueConstraintWrapper(constraint));
         cmqcrpc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -77,7 +78,7 @@ class CertificateMinQcEuRetentionPeriodCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateMinQcEuRetentionPeriodCheck cmqcrpc = new CertificateMinQcEuRetentionPeriodCheck(
-                i18nProvider, result, new CertificateWrapper(xc), constraint);
+                i18nProvider, result, new CertificateWrapper(xc), new IntValueConstraintWrapper(constraint));
         cmqcrpc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -100,7 +101,7 @@ class CertificateMinQcEuRetentionPeriodCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateMinQcEuRetentionPeriodCheck cmqcrpc = new CertificateMinQcEuRetentionPeriodCheck(
-                i18nProvider, result, new CertificateWrapper(xc), constraint);
+                i18nProvider, result, new CertificateWrapper(xc), new IntValueConstraintWrapper(constraint));
         cmqcrpc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -122,7 +123,7 @@ class CertificateMinQcEuRetentionPeriodCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateMinQcEuRetentionPeriodCheck cmqcrpc = new CertificateMinQcEuRetentionPeriodCheck(
-                i18nProvider, result, new CertificateWrapper(xc), constraint);
+                i18nProvider, result, new CertificateWrapper(xc), new IntValueConstraintWrapper(constraint));
         cmqcrpc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -140,7 +141,7 @@ class CertificateMinQcEuRetentionPeriodCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateMinQcEuRetentionPeriodCheck cmqcrpc = new CertificateMinQcEuRetentionPeriodCheck(
-                i18nProvider, result, new CertificateWrapper(xc), constraint);
+                i18nProvider, result, new CertificateWrapper(xc), new IntValueConstraintWrapper(constraint));
         cmqcrpc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

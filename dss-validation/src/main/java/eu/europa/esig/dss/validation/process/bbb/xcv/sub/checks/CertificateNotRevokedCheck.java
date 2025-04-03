@@ -24,11 +24,11 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.RevocationReason;
+import eu.europa.esig.dss.enumerations.SubContext;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.SubContext;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
@@ -55,12 +55,12 @@ public class CertificateNotRevokedCheck extends ChainItem<XmlSubXCV> {
 	 * @param result {@link XmlSubXCV}
 	 * @param certificateRevocation {@link CertificateRevocationWrapper}
 	 * @param currentTime {@link Date}
-	 * @param constraint {@link LevelConstraint}
+	 * @param constraint {@link LevelRule}
 	 * @param subContext {@link SubContext}
 	 */
 	public CertificateNotRevokedCheck(I18nProvider i18nProvider, XmlSubXCV result,
 									  CertificateRevocationWrapper certificateRevocation, Date currentTime,
-									  LevelConstraint constraint, SubContext subContext) {
+									  LevelRule constraint, SubContext subContext) {
 		super(i18nProvider, result, constraint);
 		this.certificateRevocation = certificateRevocation;
 		this.currentTime = currentTime;

@@ -28,7 +28,8 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlBasicConstraints;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
 import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.BasicConstraintsMaxPathLengthCheck;
@@ -66,7 +67,7 @@ class BasicConstraintsMaxPathLengthCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         BasicConstraintsMaxPathLengthCheck bcmaplc = new BasicConstraintsMaxPathLengthCheck(i18nProvider, result,
-                new CertificateWrapper(caCertificate), constraint);
+                new CertificateWrapper(caCertificate), new LevelConstraintWrapper(constraint));
         bcmaplc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -97,7 +98,7 @@ class BasicConstraintsMaxPathLengthCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         BasicConstraintsMaxPathLengthCheck bcmaplc = new BasicConstraintsMaxPathLengthCheck(i18nProvider, result,
-                new CertificateWrapper(caCertificate), constraint);
+                new CertificateWrapper(caCertificate), new LevelConstraintWrapper(constraint));
         bcmaplc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -130,7 +131,7 @@ class BasicConstraintsMaxPathLengthCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         BasicConstraintsMaxPathLengthCheck bcmaplc = new BasicConstraintsMaxPathLengthCheck(i18nProvider, result,
-                new CertificateWrapper(caCertificate), constraint);
+                new CertificateWrapper(caCertificate), new LevelConstraintWrapper(constraint));
         bcmaplc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -162,7 +163,7 @@ class BasicConstraintsMaxPathLengthCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         BasicConstraintsMaxPathLengthCheck bcmaplc = new BasicConstraintsMaxPathLengthCheck(i18nProvider, result,
-                new CertificateWrapper(caCertificate), constraint);
+                new CertificateWrapper(caCertificate), new LevelConstraintWrapper(constraint));
         bcmaplc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -202,7 +203,7 @@ class BasicConstraintsMaxPathLengthCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         BasicConstraintsMaxPathLengthCheck bcmaplc = new BasicConstraintsMaxPathLengthCheck(i18nProvider, result,
-                new CertificateWrapper(caCertificate), constraint);
+                new CertificateWrapper(caCertificate), new LevelConstraintWrapper(constraint));
         bcmaplc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -244,7 +245,7 @@ class BasicConstraintsMaxPathLengthCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         BasicConstraintsMaxPathLengthCheck bcmaplc = new BasicConstraintsMaxPathLengthCheck(i18nProvider, result,
-                new CertificateWrapper(caCertificate), constraint);
+                new CertificateWrapper(caCertificate), new LevelConstraintWrapper(constraint));
         bcmaplc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -285,7 +286,7 @@ class BasicConstraintsMaxPathLengthCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         BasicConstraintsMaxPathLengthCheck bcmaplc = new BasicConstraintsMaxPathLengthCheck(i18nProvider, result,
-                new CertificateWrapper(caCertificate), constraint);
+                new CertificateWrapper(caCertificate), new LevelConstraintWrapper(constraint));
         bcmaplc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -327,7 +328,7 @@ class BasicConstraintsMaxPathLengthCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         BasicConstraintsMaxPathLengthCheck bcmaplc = new BasicConstraintsMaxPathLengthCheck(i18nProvider, result,
-                new CertificateWrapper(caCertificate), constraint);
+                new CertificateWrapper(caCertificate), new LevelConstraintWrapper(constraint));
         bcmaplc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -369,7 +370,7 @@ class BasicConstraintsMaxPathLengthCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         BasicConstraintsMaxPathLengthCheck bcmaplc = new BasicConstraintsMaxPathLengthCheck(i18nProvider, result,
-                new CertificateWrapper(caCertificate), constraint);
+                new CertificateWrapper(caCertificate), new LevelConstraintWrapper(constraint));
         bcmaplc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -411,7 +412,7 @@ class BasicConstraintsMaxPathLengthCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         BasicConstraintsMaxPathLengthCheck bcmaplc = new BasicConstraintsMaxPathLengthCheck(i18nProvider, result,
-                new CertificateWrapper(caCertificate), constraint);
+                new CertificateWrapper(caCertificate), new LevelConstraintWrapper(constraint));
         bcmaplc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -428,7 +429,7 @@ class BasicConstraintsMaxPathLengthCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         BasicConstraintsMaxPathLengthCheck bcmaplc = new BasicConstraintsMaxPathLengthCheck(i18nProvider, result,
-                new CertificateWrapper(caCertificate), constraint);
+                new CertificateWrapper(caCertificate), new LevelConstraintWrapper(constraint));
         bcmaplc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -450,7 +451,7 @@ class BasicConstraintsMaxPathLengthCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         BasicConstraintsMaxPathLengthCheck bcmaplc = new BasicConstraintsMaxPathLengthCheck(i18nProvider, result,
-                new CertificateWrapper(caCertificate), constraint);
+                new CertificateWrapper(caCertificate), new LevelConstraintWrapper(constraint));
         bcmaplc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -468,7 +469,7 @@ class BasicConstraintsMaxPathLengthCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         BasicConstraintsMaxPathLengthCheck bcmaplc = new BasicConstraintsMaxPathLengthCheck(i18nProvider, result,
-                new CertificateWrapper(caCertificate), constraint);
+                new CertificateWrapper(caCertificate), new LevelConstraintWrapper(constraint));
         bcmaplc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -491,7 +492,7 @@ class BasicConstraintsMaxPathLengthCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         BasicConstraintsMaxPathLengthCheck bcmaplc = new BasicConstraintsMaxPathLengthCheck(i18nProvider, result,
-                new CertificateWrapper(caCertificate), constraint);
+                new CertificateWrapper(caCertificate), new LevelConstraintWrapper(constraint));
         bcmaplc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

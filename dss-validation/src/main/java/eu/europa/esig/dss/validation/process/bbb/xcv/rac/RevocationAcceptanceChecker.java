@@ -28,12 +28,12 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.RevocationType;
+import eu.europa.esig.dss.enumerations.SubContext;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.SubContext;
-import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.jaxb.CertificateValuesConstraint;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.CertificateApplicabilityRule;
+import eu.europa.esig.dss.model.policy.LevelRule;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
@@ -42,12 +42,12 @@ import eu.europa.esig.dss.validation.process.bbb.cv.checks.SignatureIntactCheck;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.SignatureIntactWithIdCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.checks.ProspectiveCertificateChainCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.crs.CertificateRevocationSelector;
+import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationAfterCertificateIssuanceCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationCertHashMatchCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationCertHashPresenceCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationDataKnownCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationHasInformationAboutCertificateCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationIssuerKnownCheck;
-import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationAfterCertificateIssuanceCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationIssuerRevocationDataAvailableCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationIssuerValidAtProductionTimeCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationResponderIdMatchCheck;
@@ -195,57 +195,57 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 	}
 
 	private ChainItem<XmlRAC> revocationResponderIdMatch() {
-		LevelConstraint constraint = policy.getOCSPResponseResponderIdMatchConstraint();
+		LevelRule constraint = policy.getOCSPResponseResponderIdMatchConstraint();
 		return new RevocationResponderIdMatchCheck(i18nProvider, result, revocationData, constraint);
 	}
 
 	private ChainItem<XmlRAC> revocationCertHashPresent() {
-		LevelConstraint constraint = policy.getOCSPResponseCertHashPresentConstraint();
+		LevelRule constraint = policy.getOCSPResponseCertHashPresentConstraint();
 		return new RevocationCertHashPresenceCheck(i18nProvider, result, revocationData, constraint);
 	}
 
 	private ChainItem<XmlRAC> revocationCertHashMatch() {
-		LevelConstraint constraint = policy.getOCSPResponseCertHashMatchConstraint();
+		LevelRule constraint = policy.getOCSPResponseCertHashMatchConstraint();
 		return new RevocationCertHashMatchCheck(i18nProvider, result, revocationData, constraint);
 	}
 
 	private ChainItem<XmlRAC> selfIssuedOcsp() {
-		LevelConstraint constraint = policy.getSelfIssuedOCSPConstraint();
+		LevelRule constraint = policy.getSelfIssuedOCSPConstraint();
 		return new SelfIssuedOCSPCheck(i18nProvider, result, certificate, revocationData, constraint);
 	}
 
 	private ChainItem<XmlRAC> thisUpdate() {
-		LevelConstraint constraint = policy.getThisUpdatePresentConstraint();
+		LevelRule constraint = policy.getThisUpdatePresentConstraint();
 		return new ThisUpdatePresenceCheck(i18nProvider, result, revocationData, constraint);
 	}
 	
 	private ChainItem<XmlRAC> issuerCertificateKnown() {
-		LevelConstraint constraint = policy.getRevocationIssuerKnownConstraint();
+		LevelRule constraint = policy.getRevocationIssuerKnownConstraint();
 		return new RevocationIssuerKnownCheck(i18nProvider, result, revocationData, constraint);
 	}
 
 	private ChainItem<XmlRAC> issuerValidAtProductionTime() {
-		LevelConstraint constraint = policy.getRevocationIssuerValidAtProductionTimeConstraint();
+		LevelRule constraint = policy.getRevocationIssuerValidAtProductionTimeConstraint();
 		return new RevocationIssuerValidAtProductionTimeCheck(i18nProvider, result, revocationData, constraint);
 	}
 
 	private ChainItem<XmlRAC> revocationAfterCertIssuance() {
-		LevelConstraint constraint = policy.getRevocationAfterCertificateIssuanceConstraint();
+		LevelRule constraint = policy.getRevocationAfterCertificateIssuanceConstraint();
 		return new RevocationAfterCertificateIssuanceCheck(i18nProvider, result, certificate, revocationData, constraint);
 	}
 
 	private ChainItem<XmlRAC> revocationHasInformationAboutCertificate() {
-		LevelConstraint constraint = policy.getRevocationHasInformationAboutCertificateConstraint();
+		LevelRule constraint = policy.getRevocationHasInformationAboutCertificateConstraint();
 		return new RevocationHasInformationAboutCertificateCheck(i18nProvider, result, certificate, revocationData, constraint);
 	}
 
 	private ChainItem<XmlRAC> revocationDataIntact() {
-		LevelConstraint constraint = policy.getSignatureIntactConstraint(Context.REVOCATION);
+		LevelRule constraint = policy.getSignatureIntactConstraint(Context.REVOCATION);
 		return new SignatureIntactCheck<>(i18nProvider, result, revocationData, Context.REVOCATION, constraint);
 	}
 
 	private ChainItem<XmlRAC> prospectiveCertificateChain(CertificateWrapper signingCertificate) {
-		LevelConstraint constraint = policy.getProspectiveCertificateChainConstraint(Context.REVOCATION);
+		LevelRule constraint = policy.getProspectiveCertificateChainConstraint(Context.REVOCATION);
 		return new ProspectiveCertificateChainCheck<>(i18nProvider, result, signingCertificate, Context.REVOCATION, constraint);
 	}
 	
@@ -256,32 +256,32 @@ public class RevocationAcceptanceChecker extends Chain<XmlRAC> {
 	}
 	
 	private ChainItem<XmlRAC> certificateIntact(CertificateWrapper certificate) {
-		LevelConstraint constraint = policy.getSignatureIntactConstraint(Context.CERTIFICATE);
+		LevelRule constraint = policy.getSignatureIntactConstraint(Context.CERTIFICATE);
 		return new SignatureIntactWithIdCheck<>(i18nProvider, result, certificate, Context.CERTIFICATE, constraint);
 	}
 
 	private ChainItem<XmlRAC> selfSigned(CertificateWrapper certificate) {
-		return new CertificateSelfSignedCheck<>(i18nProvider, result, certificate, getWarnLevelConstraint());
+		return new CertificateSelfSignedCheck<>(i18nProvider, result, certificate, getWarnLevelRule());
 	}
 	
 	private ChainItem<XmlRAC> revocationDataPresentForRevocationChain(CertificateWrapper certificate, SubContext subContext) {
-		LevelConstraint constraint = policy.getRevocationDataAvailableConstraint(Context.REVOCATION, subContext);
+		LevelRule constraint = policy.getRevocationDataAvailableConstraint(Context.REVOCATION, subContext);
 		return new RevocationIssuerRevocationDataAvailableCheck(i18nProvider, result, certificate, constraint);
 	}
 
 	private ChainItem<XmlRAC> checkCertificateRevocationSelectorResult(XmlCRS crsResult, SubContext subContext) {
-		LevelConstraint constraint = policy.getAcceptableRevocationDataFoundConstraint(Context.REVOCATION, subContext);
+		LevelRule constraint = policy.getAcceptableRevocationDataFoundConstraint(Context.REVOCATION, subContext);
 		return new CertificateRevocationSelectorResultCheck<>(i18nProvider, result, crsResult, constraint);
 	}
 
 	private RevocationDataRequiredCheck<XmlRAC> revocationDataRequired(CertificateWrapper certificate, SubContext subContext) {
-		CertificateValuesConstraint constraint = policy.getRevocationDataSkipConstraint(Context.REVOCATION, subContext);
-		LevelConstraint sunsetDateConstraint = policy.getCertificateSunsetDateConstraint(Context.REVOCATION, subContext);
+		CertificateApplicabilityRule constraint = policy.getRevocationDataSkipConstraint(Context.REVOCATION, subContext);
+		LevelRule sunsetDateConstraint = policy.getCertificateSunsetDateConstraint(Context.REVOCATION, subContext);
 		return new RevocationDataRequiredCheck<>(i18nProvider, result, certificate, controlTime, sunsetDateConstraint, constraint);
 	}
 
 	private boolean isTrustAnchor(CertificateWrapper certificateWrapper, SubContext subContext) {
-		LevelConstraint sunsetDateConstraint = policy.getCertificateSunsetDateConstraint(Context.REVOCATION, subContext);
+		LevelRule sunsetDateConstraint = policy.getCertificateSunsetDateConstraint(Context.REVOCATION, subContext);
 		return ValidationProcessUtils.isTrustAnchor(certificateWrapper, controlTime, sunsetDateConstraint);
 	}
 

@@ -27,7 +27,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
@@ -69,12 +69,12 @@ public class CertificateValidityRangeCheck<T extends XmlConstraintsConclusion> e
 	 * @param revocationIssuerTrusted whether the revocation issuer is trusted, when applicable
 	 * @param revocationIssuerCheckEnforced whether the validation is enforced for the revocation data issuer
 	 * @param currentTime {@link Date} validation time
-	 * @param constraint {@link LevelConstraint}
+	 * @param constraint {@link LevelRule}
 	 */
 	public CertificateValidityRangeCheck(I18nProvider i18nProvider, T result, CertificateWrapper certificate,
 										 CertificateRevocationWrapper usedCertificateRevocation, boolean revocationDataRequired,
 										 boolean revocationIssuerTrusted, boolean revocationIssuerCheckEnforced,
-										 Date currentTime, LevelConstraint constraint) {
+										 Date currentTime, LevelRule constraint) {
 		super(i18nProvider, result, constraint);
 		this.currentTime = currentTime;
 		this.certificate = certificate;

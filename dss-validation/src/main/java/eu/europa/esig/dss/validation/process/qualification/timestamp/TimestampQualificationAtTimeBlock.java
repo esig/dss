@@ -164,19 +164,19 @@ public class TimestampQualificationAtTimeBlock extends Chain<XmlValidationTimest
     }
 
     private ChainItem<XmlValidationTimestampQualificationAtTime> hasMraEnactedTrustService(List<TrustServiceWrapper> services) {
-        return new RelatedToMraEnactedTrustServiceCheck<>(i18nProvider, result, services, getFailLevelConstraint());
+        return new RelatedToMraEnactedTrustServiceCheck<>(i18nProvider, result, services, getFailLevelRule());
     }
 
     private ChainItem<XmlValidationTimestampQualificationAtTime> hasQTST(List<TrustServiceWrapper> services) {
-        return new QTSTCheck<>(i18nProvider, result, services, getFailLevelConstraint());
+        return new QTSTCheck<>(i18nProvider, result, services, getFailLevelRule());
     }
 
     private ChainItem<XmlValidationTimestampQualificationAtTime> hasGrantedStatus(List<TrustServiceWrapper> services) {
-        return new GrantedStatusCheck<>(i18nProvider, result, services, getFailLevelConstraint());
+        return new GrantedStatusCheck<>(i18nProvider, result, services, getFailLevelRule());
     }
 
     private ChainItem<XmlValidationTimestampQualificationAtTime> hasGrantedStatusAtDate(List<TrustServiceWrapper> services) {
-        return new GrantedStatusAtTimeCheck<>(i18nProvider, result, services, validationTime, getFailLevelConstraint());
+        return new GrantedStatusAtTimeCheck<>(i18nProvider, result, services, validationTime, getFailLevelRule());
     }
 
     private boolean isMRAEnactedForTrustedList(List<TrustServiceWrapper> trustServices) {

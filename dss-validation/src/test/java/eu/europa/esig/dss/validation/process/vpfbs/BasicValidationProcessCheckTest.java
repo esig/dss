@@ -27,8 +27,9 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicSignature
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.vpfbs.checks.BasicValidationProcessCheck;
@@ -52,7 +53,7 @@ class BasicValidationProcessCheckTest extends AbstractTestCheck {
 
         XmlValidationProcessBasicSignature result = new XmlValidationProcessBasicSignature();
         BasicValidationProcessCheck bvpc = new BasicValidationProcessCheck<>(i18nProvider, result, xmlConclusion,
-                new SignatureWrapper(xmlSignature), constraint);
+                new SignatureWrapper(xmlSignature), new LevelConstraintWrapper(constraint));
         bvpc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -73,7 +74,7 @@ class BasicValidationProcessCheckTest extends AbstractTestCheck {
 
         XmlValidationProcessBasicSignature result = new XmlValidationProcessBasicSignature();
         BasicValidationProcessCheck bvpc = new BasicValidationProcessCheck<>(i18nProvider, result, xmlConclusion,
-                new SignatureWrapper(xmlSignature), constraint);
+                new SignatureWrapper(xmlSignature), new LevelConstraintWrapper(constraint));
         bvpc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

@@ -7,11 +7,11 @@ import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SubContext;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.SubContext;
-import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SigningCertificateRefDigestAlgorithmCheck;
 
@@ -118,7 +118,7 @@ public class SigningCertificateRefDigestAlgorithmCheckChainBuilder<T extends Xml
 
     private SigningCertificateRefDigestAlgorithmCheck<T> signingCertificateRefDigestAlgoCheckResult(
             List<CertificateRefWrapper> signCertRefs, String certificateId, SubContext subContext) {
-        LevelConstraint constraint = validationPolicy.getSigningCertificateDigestAlgorithmConstraint(context);
+        LevelRule constraint = validationPolicy.getSigningCertificateDigestAlgorithmConstraint(context);
         return new SigningCertificateRefDigestAlgorithmCheck<>(i18nProvider, result, validationDate,
                 signCertRefs, certificateId, context, subContext, validationPolicy, constraint);
     }

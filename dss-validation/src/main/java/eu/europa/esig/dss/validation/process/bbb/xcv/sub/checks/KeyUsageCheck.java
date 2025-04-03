@@ -26,11 +26,11 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.KeyUsageBit;
+import eu.europa.esig.dss.enumerations.SubContext;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.SubContext;
-import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
+import eu.europa.esig.dss.model.policy.MultiValuesRule;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
 
@@ -60,10 +60,10 @@ public class KeyUsageCheck extends AbstractMultiValuesCheckItem<XmlSubXCV> {
 	 * @param certificate {@link CertificateWrapper}
 	 * @param context {@link Context}
 	 * @param subContext {@link SubContext}
-	 * @param constraint {@link MultiValuesConstraint}
+	 * @param constraint {@link MultiValuesRule}
 	 */
 	public KeyUsageCheck(I18nProvider i18nProvider, XmlSubXCV result, CertificateWrapper certificate,
-						 Context context, SubContext subContext, MultiValuesConstraint constraint) {
+						 Context context, SubContext subContext, MultiValuesRule constraint) {
 		super(i18nProvider, result, constraint);
 		this.certificate = certificate;
 		this.context = context;

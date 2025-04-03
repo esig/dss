@@ -27,7 +27,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
@@ -50,10 +50,10 @@ public class ManifestEntryGroupCheck extends ChainItem<XmlCV> {
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlCV}
      * @param digestMatchers a list of {@link XmlDigestMatcher}s
-     * @param constraint {@link LevelConstraint}
+     * @param constraint {@link LevelRule}
      */
     public ManifestEntryGroupCheck(I18nProvider i18nProvider, XmlCV result, List<XmlDigestMatcher> digestMatchers,
-                                   LevelConstraint constraint) {
+                                   LevelRule constraint) {
         super(i18nProvider, result, constraint);
         this.digestMatchers = digestMatchers;
     }

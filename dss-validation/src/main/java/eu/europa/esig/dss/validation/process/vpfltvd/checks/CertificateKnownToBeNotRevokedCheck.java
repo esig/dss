@@ -28,7 +28,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
@@ -77,12 +77,12 @@ public class CertificateKnownToBeNotRevokedCheck<T extends XmlConstraintsConclus
      * @param isRevocationDataIssuerTrusted whether the revocation issuer is trusted
      * @param currentTime {@link Date}
      * @param bsConclusion {@link XmlConclusion}
-     * @param constraint {@link LevelConstraint}
+     * @param constraint {@link LevelRule}
      */
     public CertificateKnownToBeNotRevokedCheck(I18nProvider i18nProvider, T result,
                                                CertificateWrapper certificate, CertificateRevocationWrapper revocationData,
                                                boolean isRevocationDataIssuerTrusted, Date currentTime, XmlConclusion bsConclusion,
-                                               LevelConstraint constraint) {
+                                               LevelRule constraint) {
         super(i18nProvider, result, constraint);
         this.certificate = certificate;
         this.revocationData = revocationData;

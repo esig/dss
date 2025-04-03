@@ -75,6 +75,10 @@
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-jaxb-parsers</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-model</artifactId>
+		</dependency>
 		
 		<dependency>
 		    <groupId>org.junit.platform</groupId>

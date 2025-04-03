@@ -42,10 +42,10 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.enumerations.ValidationModel;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
-import eu.europa.esig.dss.policy.jaxb.Model;
 import eu.europa.esig.dss.policy.jaxb.ModelConstraint;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.utils.Utils;
@@ -414,7 +414,7 @@ class RevokedCertificateValidationExecutorTest extends AbstractProcessExecutorTe
 
         ConstraintsParameters constraintsParameters = getConstraintsParameters(new File("src/test/resources/diag-data/policy/default-only-constraint-policy.xml"));
         ModelConstraint modelConstraint = new ModelConstraint();
-        modelConstraint.setValue(Model.SHELL);
+        modelConstraint.setValue(ValidationModel.SHELL);
         constraintsParameters.setModel(modelConstraint);
 
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
@@ -475,7 +475,7 @@ class RevokedCertificateValidationExecutorTest extends AbstractProcessExecutorTe
 
         ConstraintsParameters constraintsParameters = getConstraintsParameters(new File("src/test/resources/diag-data/policy/default-only-constraint-policy.xml"));
         ModelConstraint modelConstraint = new ModelConstraint();
-        modelConstraint.setValue(Model.CHAIN);
+        modelConstraint.setValue(ValidationModel.CHAIN);
         constraintsParameters.setModel(modelConstraint);
 
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
@@ -497,7 +497,7 @@ class RevokedCertificateValidationExecutorTest extends AbstractProcessExecutorTe
 
         ConstraintsParameters constraintsParameters = getConstraintsParameters(new File("src/test/resources/diag-data/policy/default-only-constraint-policy.xml"));
         ModelConstraint modelConstraint = new ModelConstraint();
-        modelConstraint.setValue(Model.HYBRID);
+        modelConstraint.setValue(ValidationModel.HYBRID);
         constraintsParameters.setModel(modelConstraint);
 
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();

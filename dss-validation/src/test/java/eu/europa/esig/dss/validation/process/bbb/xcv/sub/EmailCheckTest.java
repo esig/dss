@@ -25,7 +25,9 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
+import eu.europa.esig.dss.policy.MultiValuesConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.EmailCheck;
@@ -47,7 +49,7 @@ class EmailCheckTest extends AbstractTestCheck {
         xc.setEmail("valid@email.com");
 
         XmlSubXCV result = new XmlSubXCV();
-        EmailCheck ec = new EmailCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
+        EmailCheck ec = new EmailCheck(i18nProvider, result, new CertificateWrapper(xc), new MultiValuesConstraintWrapper(constraint));
         ec.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -65,7 +67,7 @@ class EmailCheckTest extends AbstractTestCheck {
         xc.setEmail("invalid@email.com");
 
         XmlSubXCV result = new XmlSubXCV();
-        EmailCheck ec = new EmailCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
+        EmailCheck ec = new EmailCheck(i18nProvider, result, new CertificateWrapper(xc), new MultiValuesConstraintWrapper(constraint));
         ec.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

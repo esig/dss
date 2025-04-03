@@ -22,7 +22,7 @@ package eu.europa.esig.dss.validation.process.bbb;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.i18n.I18nProvider;
-import eu.europa.esig.dss.policy.jaxb.ValueConstraint;
+import eu.europa.esig.dss.model.policy.ValueRule;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
@@ -37,16 +37,16 @@ public abstract class AbstractValueCheckItem<T extends XmlConstraintsConclusion>
 	private static final String ALL_VALUE = "*";
 
 	/** Value constraint */
-	private final ValueConstraint constraint;
+	private final ValueRule constraint;
 
 	/**
 	 * Default constructor
 	 *
 	 * @param i18nProvider {@link I18nProvider}
 	 * @param result the result
-	 * @param constraint {@link ValueConstraint}
+	 * @param constraint {@link ValueRule}
 	 */
-	protected AbstractValueCheckItem(I18nProvider i18nProvider, T result, ValueConstraint constraint) {
+	protected AbstractValueCheckItem(I18nProvider i18nProvider, T result, ValueRule constraint) {
 		super(i18nProvider, result, constraint);
 		this.constraint = constraint;
 	}

@@ -32,12 +32,12 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTSAGeneralName;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.jaxb.object.Message;
-import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.TimestampConstraints;
 import eu.europa.esig.dss.simplereport.SimpleReport;
@@ -164,7 +164,7 @@ class TimestampValidationExecutorTest extends AbstractProcessExecutorTest {
         XmlTimestamp xmlContentTimestamp = xmlDiagnosticData.getUsedTimestamps().get(0);
         xmlContentTimestamp.getDigestMatchers().get(0).setDataIntact(false);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint levelConstraint = new LevelConstraint();
         levelConstraint.setLevel(Level.FAIL);
         validationPolicy.getSignatureConstraints().getSignedAttributes().setContentTimeStampMessageImprint(levelConstraint);
@@ -278,7 +278,7 @@ class TimestampValidationExecutorTest extends AbstractProcessExecutorTest {
                 new File("src/test/resources/diag-data/dss-2155.xml"));
         assertNotNull(xmlDiagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         TimestampConstraints timestampConstraints = validationPolicy.getTimestampConstraints();
 
         LevelConstraint levelConstraint = new LevelConstraint();
@@ -319,7 +319,7 @@ class TimestampValidationExecutorTest extends AbstractProcessExecutorTest {
         XmlTSAGeneralName tsaGeneralName = xmlTimestamp.getTSAGeneralName();
         tsaGeneralName.setContentMatch(false);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         TimestampConstraints timestampConstraints = validationPolicy.getTimestampConstraints();
 
         LevelConstraint levelConstraint = new LevelConstraint();
@@ -359,7 +359,7 @@ class TimestampValidationExecutorTest extends AbstractProcessExecutorTest {
         XmlTimestamp xmlTimestamp = xmlDiagnosticData.getUsedTimestamps().get(0);
         xmlTimestamp.setTSAGeneralName(null);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         TimestampConstraints timestampConstraints = validationPolicy.getTimestampConstraints();
 
         LevelConstraint levelConstraint = new LevelConstraint();
@@ -399,7 +399,7 @@ class TimestampValidationExecutorTest extends AbstractProcessExecutorTest {
         XmlTimestamp xmlTimestamp = xmlDiagnosticData.getUsedTimestamps().get(0);
         xmlTimestamp.setTSAGeneralName(null);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         TimestampConstraints timestampConstraints = validationPolicy.getTimestampConstraints();
 
         LevelConstraint levelConstraint = new LevelConstraint();
@@ -430,7 +430,7 @@ class TimestampValidationExecutorTest extends AbstractProcessExecutorTest {
                 new File("src/test/resources/diag-data/universign.xml"));
         assertNotNull(diagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         validationPolicy.getTimestampConstraints().getTimestampDelay().setLevel(Level.FAIL);
 
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
@@ -493,7 +493,7 @@ class TimestampValidationExecutorTest extends AbstractProcessExecutorTest {
                 new File("src/test/resources/diag-data/valid-diag-data-lta.xml"));
         assertNotNull(xmlDiagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
 
         LevelConstraint levelConstraint = new LevelConstraint();
         levelConstraint.setLevel(Level.FAIL);
@@ -574,7 +574,7 @@ class TimestampValidationExecutorTest extends AbstractProcessExecutorTest {
                 new File("src/test/resources/diag-data/valid-diag-data-lta.xml"));
         assertNotNull(xmlDiagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
 
         LevelConstraint levelConstraint = new LevelConstraint();
         levelConstraint.setLevel(Level.FAIL);
@@ -655,7 +655,7 @@ class TimestampValidationExecutorTest extends AbstractProcessExecutorTest {
                 new File("src/test/resources/diag-data/valid-diag-data-lta.xml"));
         assertNotNull(xmlDiagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
 
         LevelConstraint levelConstraint = new LevelConstraint();
         levelConstraint.setLevel(Level.FAIL);
@@ -736,7 +736,7 @@ class TimestampValidationExecutorTest extends AbstractProcessExecutorTest {
                 new File("src/test/resources/diag-data/valid-diag-data-lta.xml"));
         assertNotNull(xmlDiagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
 
         LevelConstraint levelConstraint = new LevelConstraint();
         levelConstraint.setLevel(Level.FAIL);
@@ -817,7 +817,7 @@ class TimestampValidationExecutorTest extends AbstractProcessExecutorTest {
                 new File("src/test/resources/diag-data/diag_data_pades_lta_mod_tst.xml"));
         assertNotNull(xmlDiagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
 
         LevelConstraint levelConstraint = new LevelConstraint();
         levelConstraint.setLevel(Level.FAIL);

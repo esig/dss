@@ -22,12 +22,12 @@ package eu.europa.esig.dss.validation.executor.process;
 
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSignature;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.EtsiValidationPolicy;
-import eu.europa.esig.dss.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
-import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.validation.executor.AbstractTestValidationExecutor;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.api.BeforeAll;
@@ -71,7 +71,7 @@ public abstract class AbstractProcessExecutorTest extends AbstractTestValidation
 
     protected ValidationPolicy loadPolicyCryptoWarn() throws Exception {
         EtsiValidationPolicy defaultPolicy = (EtsiValidationPolicy) ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
-        CryptographicConstraint cryptographicConstraint = defaultPolicy.getDefaultCryptographicConstraint();
+        CryptographicConstraint cryptographicConstraint = defaultPolicy.getCryptographic();
         cryptographicConstraint.setLevel(Level.WARN);
         cryptographicConstraint.getAlgoExpirationDate().setLevel(Level.WARN);
         return defaultPolicy;

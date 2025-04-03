@@ -21,8 +21,8 @@
 package eu.europa.esig.dss.validation.process.qualification.certificate.checks.qscd;
 
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
-import eu.europa.esig.dss.validation.process.CertificatePolicyIdentifiers;
 import eu.europa.esig.dss.enumerations.QSCDStatus;
+import eu.europa.esig.dss.validation.process.CertificatePolicyIdentifiers;
 
 /**
  * Returns QSCD status for a certificate before eIDAS

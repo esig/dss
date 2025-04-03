@@ -44,12 +44,12 @@ import eu.europa.esig.dss.enumerations.CertificatePolicy;
 import eu.europa.esig.dss.enumerations.ExtendedKeyUsage;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.KeyUsageBit;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.jaxb.object.Message;
-import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.CertificateConstraints;
-import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.policy.jaxb.SignatureConstraints;
@@ -79,7 +79,7 @@ class RFC5280ValidationExecutorTest extends AbstractProcessExecutorTest {
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
 
-        ValidationPolicy defaultPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy defaultPolicy = loadDefaultPolicy();
         LevelConstraint levelConstraint = new LevelConstraint();
         levelConstraint.setLevel(Level.FAIL);
         SignatureConstraints signatureConstraints = defaultPolicy.getSignatureConstraints();
@@ -111,7 +111,7 @@ class RFC5280ValidationExecutorTest extends AbstractProcessExecutorTest {
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
 
-        ValidationPolicy defaultPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy defaultPolicy = loadDefaultPolicy();
         LevelConstraint levelConstraint = new LevelConstraint();
         levelConstraint.setLevel(Level.FAIL);
         SignatureConstraints signatureConstraints = defaultPolicy.getSignatureConstraints();
@@ -146,7 +146,7 @@ class RFC5280ValidationExecutorTest extends AbstractProcessExecutorTest {
         xmlCertificatePolicies.getCertificatePolicy().add(oid);
         signingCertificate.getCertificateExtensions().add(xmlCertificatePolicies);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         CertificateConstraints certificateConstraints = validationPolicy.getSignatureConstraints()
                 .getBasicSignatureConstraints().getSigningCertificate();
 
@@ -218,7 +218,7 @@ class RFC5280ValidationExecutorTest extends AbstractProcessExecutorTest {
         xmlCertificatePolicies.getCertificatePolicy().add(oid);
         signingCertificate.getCertificateExtensions().add(xmlCertificatePolicies);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         CertificateConstraints certificateConstraints = validationPolicy.getSignatureConstraints()
                 .getBasicSignatureConstraints().getSigningCertificate();
 
@@ -260,7 +260,7 @@ class RFC5280ValidationExecutorTest extends AbstractProcessExecutorTest {
         xmlCertificatePolicies.getCertificatePolicy().add(oid);
         signingCertificate.getCertificateExtensions().add(xmlCertificatePolicies);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         CertificateConstraints certificateConstraints = validationPolicy.getSignatureConstraints()
                 .getBasicSignatureConstraints().getSigningCertificate();
 
@@ -293,7 +293,7 @@ class RFC5280ValidationExecutorTest extends AbstractProcessExecutorTest {
                 new File("src/test/resources/diag-data/valid-diag-data.xml"));
         assertNotNull(xmlDiagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
 
         MultiValuesConstraint multiValuesConstraint = new MultiValuesConstraint();
         multiValuesConstraint.getId().add(KeyUsageBit.NON_REPUDIATION.getValue());
@@ -344,7 +344,7 @@ class RFC5280ValidationExecutorTest extends AbstractProcessExecutorTest {
                 new File("src/test/resources/diag-data/valid-diag-data.xml"));
         assertNotNull(xmlDiagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
 
         MultiValuesConstraint multiValuesConstraint = new MultiValuesConstraint();
         multiValuesConstraint.getId().add(KeyUsageBit.DIGITAL_SIGNATURE.getValue());
@@ -409,7 +409,7 @@ class RFC5280ValidationExecutorTest extends AbstractProcessExecutorTest {
         CertificateWrapper certificateWrapper = new CertificateWrapper(caCertificate.getCertificate());
         certificateWrapper.getKeyUsages().clear();
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
 
         MultiValuesConstraint multiValuesConstraint = new MultiValuesConstraint();
         multiValuesConstraint.getId().add(KeyUsageBit.KEY_CERT_SIGN.getValue());
@@ -471,7 +471,7 @@ class RFC5280ValidationExecutorTest extends AbstractProcessExecutorTest {
 
         String timestampId = xmlDiagnosticData.getUsedTimestamps().get(0).getId();
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
 
         MultiValuesConstraint multiValuesConstraint = new MultiValuesConstraint();
         multiValuesConstraint.getId().add(ExtendedKeyUsage.TIMESTAMPING.getDescription());
@@ -528,7 +528,7 @@ class RFC5280ValidationExecutorTest extends AbstractProcessExecutorTest {
 
         String timestampId = xmlTimestamp.getId();
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
 
         MultiValuesConstraint multiValuesConstraint = new MultiValuesConstraint();
         multiValuesConstraint.getId().add(ExtendedKeyUsage.TIMESTAMPING.getDescription());
@@ -592,7 +592,7 @@ class RFC5280ValidationExecutorTest extends AbstractProcessExecutorTest {
         CertificateWrapper certificateWrapper = new CertificateWrapper(xmlTimestamp.getSigningCertificate().getCertificate());
         certificateWrapper.getExtendedKeyUsages().clear();
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         MultiValuesConstraint validationConstraint = new MultiValuesConstraint();
         validationConstraint.setLevel(Level.FAIL);
         validationConstraint.getId().add("timeStamping");
@@ -649,7 +649,7 @@ class RFC5280ValidationExecutorTest extends AbstractProcessExecutorTest {
                 new File("src/test/resources/diag-data/diag_data_fake_ca.xml"));
         assertNotNull(xmlDiagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
 
         LevelConstraint levelConstraint = new LevelConstraint();
         levelConstraint.setLevel(Level.FAIL);
@@ -708,7 +708,7 @@ class RFC5280ValidationExecutorTest extends AbstractProcessExecutorTest {
                 new File("src/test/resources/diag-data/diag_data_fake_ca.xml"));
         assertNotNull(xmlDiagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
 
         LevelConstraint levelConstraint = new LevelConstraint();
         levelConstraint.setLevel(Level.WARN);
@@ -786,7 +786,7 @@ class RFC5280ValidationExecutorTest extends AbstractProcessExecutorTest {
         ocspNoCheck.setPresent(true);
         xmlCertificate.getCertificateExtensions().add(ocspNoCheck);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
 
         MultiValuesConstraint levelConstraint = new MultiValuesConstraint();
         levelConstraint.setLevel(Level.FAIL);
@@ -852,7 +852,7 @@ class RFC5280ValidationExecutorTest extends AbstractProcessExecutorTest {
         ocspNoCheck.setPresent(true);
         xmlCertificate.getCertificateExtensions().add(ocspNoCheck);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
 
         MultiValuesConstraint levelConstraint = new MultiValuesConstraint();
         levelConstraint.setLevel(Level.WARN);
@@ -914,7 +914,7 @@ class RFC5280ValidationExecutorTest extends AbstractProcessExecutorTest {
         keyUsages.getKeyUsageBit().add(KeyUsageBit.NON_REPUDIATION);
         xmlCertificate.getCertificateExtensions().add(keyUsages);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
 
         MultiValuesConstraint levelConstraint = new MultiValuesConstraint();
         levelConstraint.setLevel(Level.FAIL);
@@ -973,7 +973,7 @@ class RFC5280ValidationExecutorTest extends AbstractProcessExecutorTest {
             }
         }
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
 
         MultiValuesConstraint levelConstraint = new MultiValuesConstraint();
         levelConstraint.setLevel(Level.FAIL);
@@ -1033,7 +1033,7 @@ class RFC5280ValidationExecutorTest extends AbstractProcessExecutorTest {
                 new File("src/test/resources/diag-data/diag_data_policy_constraints.xml"));
         assertNotNull(xmlDiagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
 
         LevelConstraint levelConstraint = new LevelConstraint();
         levelConstraint.setLevel(Level.FAIL);
@@ -1091,7 +1091,7 @@ class RFC5280ValidationExecutorTest extends AbstractProcessExecutorTest {
             }
         }
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
 
         LevelConstraint levelConstraint = new LevelConstraint();
         levelConstraint.setLevel(Level.FAIL);
@@ -1150,7 +1150,7 @@ class RFC5280ValidationExecutorTest extends AbstractProcessExecutorTest {
                 new File("src/test/resources/diag-data/diag_data_name_constraints.xml"));
         assertNotNull(xmlDiagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
 
         LevelConstraint levelConstraint = new LevelConstraint();
         levelConstraint.setLevel(Level.FAIL);
@@ -1206,7 +1206,7 @@ class RFC5280ValidationExecutorTest extends AbstractProcessExecutorTest {
         xmlDistinguishedName.setValue("C=SK,L=Bratislava,2.5.4.5=#534b2d353033343932130e4e54523837,OU=sep,O=Mini,CN=SR");
         xmlCertificate.getSubjectDistinguishedName().add(xmlDistinguishedName);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
 
         LevelConstraint levelConstraint = new LevelConstraint();
         levelConstraint.setLevel(Level.FAIL);
@@ -1273,7 +1273,7 @@ class RFC5280ValidationExecutorTest extends AbstractProcessExecutorTest {
             }
         }
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
 
         LevelConstraint levelConstraint = new LevelConstraint();
         levelConstraint.setLevel(Level.FAIL);
@@ -1335,7 +1335,7 @@ class RFC5280ValidationExecutorTest extends AbstractProcessExecutorTest {
         XmlCertificate certificate = diagnosticData.getSignatures().get(0).getSigningCertificate().getCertificate();
         certificate.getIssuerEntityKey().setSubjectName(false);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
         validationPolicy.getSignatureConstraints().getBasicSignatureConstraints()
@@ -1386,7 +1386,7 @@ class RFC5280ValidationExecutorTest extends AbstractProcessExecutorTest {
         XmlCertificate certificate = diagnosticData.getSignatures().get(0).getSigningCertificate().getCertificate();
         certificate.getIssuerEntityKey().setSubjectName(false);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.WARN);
         validationPolicy.getSignatureConstraints().getBasicSignatureConstraints()

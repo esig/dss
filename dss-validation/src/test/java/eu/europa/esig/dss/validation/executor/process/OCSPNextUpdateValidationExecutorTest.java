@@ -32,12 +32,12 @@ import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.BasicSignatureConstraints;
-import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
@@ -60,7 +60,7 @@ class OCSPNextUpdateValidationExecutorTest extends AbstractProcessExecutorTest {
                 new File("src/test/resources/diag-data/valid-diag-data.xml"));
         assertNotNull(xmlDiagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         BasicSignatureConstraints basicSigConstraints = validationPolicy.getSignatureConstraints().getBasicSignatureConstraints();
         basicSigConstraints.getSigningCertificate().setOCSPNextUpdatePresent(null);
         LevelConstraint levelConstraint = new LevelConstraint();
@@ -133,7 +133,7 @@ class OCSPNextUpdateValidationExecutorTest extends AbstractProcessExecutorTest {
                 new File("src/test/resources/diag-data/valid-diag-data.xml"));
         assertNotNull(xmlDiagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         BasicSignatureConstraints basicSigConstraints = validationPolicy.getSignatureConstraints().getBasicSignatureConstraints();
         LevelConstraint levelConstraint = new LevelConstraint();
         levelConstraint.setLevel(Level.FAIL);

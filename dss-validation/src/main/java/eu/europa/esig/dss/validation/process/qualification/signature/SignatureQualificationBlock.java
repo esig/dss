@@ -273,39 +273,39 @@ public class SignatureQualificationBlock extends Chain<XmlValidationSignatureQua
 	}
 
 	private ChainItem<XmlValidationSignatureQualification> isTrustedListReachedForCertificateChain(CertificateWrapper signingCertificate) {
-		return new TrustedListReachedForCertificateChainCheck<>(i18nProvider, result, signingCertificate, getFailLevelConstraint());
+		return new TrustedListReachedForCertificateChainCheck<>(i18nProvider, result, signingCertificate, getFailLevelRule());
 	}
 
 	private AcceptableListOfTrustedListsCheck<XmlValidationSignatureQualification> isAcceptableLOTL(XmlTLAnalysis xmlLOTLAnalysis) {
-		return new AcceptableListOfTrustedListsCheck<>(i18nProvider, result, xmlLOTLAnalysis, getWarnLevelConstraint());
+		return new AcceptableListOfTrustedListsCheck<>(i18nProvider, result, xmlLOTLAnalysis, getWarnLevelRule());
 	}
 
 	private AcceptableTrustedListCheck<XmlValidationSignatureQualification> isAcceptableTL(XmlTLAnalysis xmlTLAnalysis) {
-		return new AcceptableTrustedListCheck<>(i18nProvider, result, xmlTLAnalysis, getWarnLevelConstraint());
+		return new AcceptableTrustedListCheck<>(i18nProvider, result, xmlTLAnalysis, getWarnLevelRule());
 	}
 
 	private ChainItem<XmlValidationSignatureQualification> isAcceptableTLPresent(Set<String> acceptableUrls) {
-		return new AcceptableTrustedListPresenceCheck<>(i18nProvider, result, acceptableUrls, getFailLevelConstraint());
+		return new AcceptableTrustedListPresenceCheck<>(i18nProvider, result, acceptableUrls, getFailLevelRule());
 	}
 
 	private ChainItem<XmlValidationSignatureQualification> isAdES(XmlConclusion etsi319102Conclusion) {
-		return new AdESAcceptableCheck(i18nProvider, result, etsi319102Conclusion, getWarnLevelConstraint());
+		return new AdESAcceptableCheck(i18nProvider, result, etsi319102Conclusion, getWarnLevelRule());
 	}
 
 	private ChainItem<XmlValidationSignatureQualification> qualifiedCertificateAtSigningTime(CertificateQualification qualificationAtSigningTime) {
-		return new QualifiedCertificateAtSigningTimeCheck(i18nProvider, result, qualificationAtSigningTime, getWarnLevelConstraint());
+		return new QualifiedCertificateAtSigningTimeCheck(i18nProvider, result, qualificationAtSigningTime, getWarnLevelRule());
 	}
 
 	private ChainItem<XmlValidationSignatureQualification> certificateTypeAtSigningTime(CertificateQualification qualificationAtSigningTime) {
-		return new CertificateTypeAtSigningTimeCheck(i18nProvider, result, qualificationAtSigningTime, getWarnLevelConstraint());
+		return new CertificateTypeAtSigningTimeCheck(i18nProvider, result, qualificationAtSigningTime, getWarnLevelRule());
 	}
 
 	private ChainItem<XmlValidationSignatureQualification> qualifiedCertificateAtIssuance(CertificateQualification qualificationAtIssuance) {
-		return new QualifiedCertificateAtCertificateIssuanceCheck(i18nProvider, result, qualificationAtIssuance, getWarnLevelConstraint());
+		return new QualifiedCertificateAtCertificateIssuanceCheck(i18nProvider, result, qualificationAtIssuance, getWarnLevelRule());
 	}
 
 	private ChainItem<XmlValidationSignatureQualification> qscdAtSigningTime(CertificateQualification qualificationAtSigningTime) {
-		return new QSCDCertificateAtSigningTimeCheck(i18nProvider, result, qualificationAtSigningTime, getWarnLevelConstraint());
+		return new QSCDCertificateAtSigningTimeCheck(i18nProvider, result, qualificationAtSigningTime, getWarnLevelRule());
 	}
 
 }

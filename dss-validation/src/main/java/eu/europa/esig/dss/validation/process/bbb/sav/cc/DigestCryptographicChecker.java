@@ -24,7 +24,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlCC;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
+import eu.europa.esig.dss.model.policy.CryptographicRules;
+import eu.europa.esig.dss.validation.CryptographicRulesUtils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
 import java.util.Date;
@@ -41,10 +42,10 @@ public class DigestCryptographicChecker extends AbstractCryptographicChecker {
 	 * @param digestAlgorithm {@link DigestAlgorithm}
 	 * @param validationDate {@link Date}
 	 * @param position {@link MessageTag}
-	 * @param constraint {@link CryptographicConstraint}
+	 * @param constraint {@link CryptographicRules}
 	 */
 	public DigestCryptographicChecker(I18nProvider i18nProvider, DigestAlgorithm digestAlgorithm, Date validationDate,
-									  MessageTag position, CryptographicConstraint constraint) {
+									  MessageTag position, CryptographicRules constraint) {
 		super(i18nProvider, digestAlgorithm, validationDate, position, constraint);
 	}
 
@@ -61,11 +62,11 @@ public class DigestCryptographicChecker extends AbstractCryptographicChecker {
 
 	@Override
 	protected Date getNotAfter() {
-		if (constraintWrapper.isDigestAlgorithmReliable(digestAlgorithm) &&
-				(encryptionAlgorithm == null || (constraintWrapper.isEncryptionAlgorithmReliable(encryptionAlgorithm) &&
-						constraintWrapper.isEncryptionAlgorithmWithKeySizeReliable(encryptionAlgorithm, keyLengthUsedToSignThisToken)))) {
-			Date notAfter = constraintWrapper.getExpirationDate(digestAlgorithm);
-			Date expirationEncryption = constraintWrapper.getExpirationDate(encryptionAlgorithm, keyLengthUsedToSignThisToken);
+		if (CryptographicRulesUtils.isDigestAlgorithmReliable(cryptographicRules, digestAlgorithm) &&
+				(encryptionAlgorithm == null || (CryptographicRulesUtils.isEncryptionAlgorithmReliable(cryptographicRules, encryptionAlgorithm) &&
+						CryptographicRulesUtils.isEncryptionAlgorithmWithKeySizeReliable(cryptographicRules, encryptionAlgorithm, keyLengthUsedToSignThisToken)))) {
+			Date notAfter = CryptographicRulesUtils.getExpirationDate(cryptographicRules, digestAlgorithm);
+			Date expirationEncryption = CryptographicRulesUtils.getExpirationDate(cryptographicRules, encryptionAlgorithm, keyLengthUsedToSignThisToken);
 			if (notAfter == null || (expirationEncryption != null && expirationEncryption.before(notAfter))) {
 				notAfter = expirationEncryption;
 			}

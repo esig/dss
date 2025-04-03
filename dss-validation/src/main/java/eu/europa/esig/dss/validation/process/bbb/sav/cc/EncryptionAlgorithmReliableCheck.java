@@ -25,7 +25,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicConstraintWrapper;
+import eu.europa.esig.dss.model.policy.CryptographicRules;
+import eu.europa.esig.dss.validation.CryptographicRulesUtils;
 
 /**
  * Check if EncryptionAlgorithm is acceptable
@@ -35,8 +36,8 @@ public class EncryptionAlgorithmReliableCheck extends AbstractCryptographicCheck
 	/** The algorithm to check */
 	private final EncryptionAlgorithm encryptionAlgo;
 
-	/** The constraint */
-	private final CryptographicConstraintWrapper constraintWrapper;
+	/** The cryptographic rules */
+	private final CryptographicRules cryptographicRules;
 
 	/**
 	 * Default constructor
@@ -45,19 +46,19 @@ public class EncryptionAlgorithmReliableCheck extends AbstractCryptographicCheck
 	 * @param encryptionAlgo {@link EncryptionAlgorithm}
 	 * @param result {@link XmlCC}
 	 * @param position {@link MessageTag}
-	 * @param constraintWrapper {@link CryptographicConstraintWrapper}
+	 * @param cryptographicRules {@link CryptographicRules}
 	 */
 	protected EncryptionAlgorithmReliableCheck(I18nProvider i18nProvider, EncryptionAlgorithm encryptionAlgo,
 											   XmlCC result, MessageTag position,
-											   CryptographicConstraintWrapper constraintWrapper) {
-		super(i18nProvider, result, position, constraintWrapper.getAcceptableEncryptionAlgoLevel());
+											   CryptographicRules cryptographicRules) {
+		super(i18nProvider, result, position, cryptographicRules.getAcceptableEncryptionAlgoLevel());
 		this.encryptionAlgo = encryptionAlgo;
-		this.constraintWrapper = constraintWrapper;
+		this.cryptographicRules = cryptographicRules;
 	}
 
 	@Override
 	protected boolean process() {
-		return constraintWrapper.isEncryptionAlgorithmReliable(encryptionAlgo);
+		return CryptographicRulesUtils.isEncryptionAlgorithmReliable(cryptographicRules, encryptionAlgo);
 	}
 	
 	@Override

@@ -27,7 +27,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
 /**
@@ -46,10 +46,10 @@ public class TimestampMessageImprintCheck<T extends XmlConstraintsConclusion> ex
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlSAV}
      * @param timestamp {@link TimestampWrapper}
-     * @param constraint {@link LevelConstraint}
+     * @param constraint {@link LevelRule}
      */
     public TimestampMessageImprintCheck(I18nProvider i18nProvider, T result, TimestampWrapper timestamp,
-                                 LevelConstraint constraint) {
+                                 LevelRule constraint) {
         this(i18nProvider, result, timestamp, constraint, null);
     }
 
@@ -59,11 +59,11 @@ public class TimestampMessageImprintCheck<T extends XmlConstraintsConclusion> ex
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlSAV}
      * @param timestamp {@link TimestampWrapper}
-     * @param constraint {@link LevelConstraint}
+     * @param constraint {@link LevelRule}
      * @param bbbId {@link String} if of the corresponding basic building block
      */
     protected TimestampMessageImprintCheck(I18nProvider i18nProvider, T result, TimestampWrapper timestamp,
-                                        LevelConstraint constraint, String bbbId) {
+                                        LevelRule constraint, String bbbId) {
         super(i18nProvider, result, constraint, bbbId);
         this.timestamp = timestamp;
     }

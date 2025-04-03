@@ -27,7 +27,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateRevocationSelectorResultCheck;
 
@@ -54,10 +54,10 @@ public class SatisfyingRevocationDataExistsCheck<T extends XmlConstraintsConclus
 	 * @param crsResult {@link XmlCRS}
 	 * @param certificateWrapper {@link CertificateWrapper}
 	 * @param controlTime {@link Date}
-	 * @param constraint {@link LevelConstraint}
+	 * @param constraint {@link LevelRule}
 	 */
 	public SatisfyingRevocationDataExistsCheck(I18nProvider i18nProvider, T result, XmlCRS crsResult, CertificateWrapper certificateWrapper,
-											   Date controlTime, LevelConstraint constraint) {
+											   Date controlTime, LevelRule constraint) {
 		super(i18nProvider, result, crsResult, constraint);
 		this.certificateWrapper = certificateWrapper;
 		this.controlTime = controlTime;

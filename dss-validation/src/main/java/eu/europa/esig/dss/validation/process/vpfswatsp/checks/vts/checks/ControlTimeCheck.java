@@ -25,7 +25,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
@@ -46,9 +46,9 @@ public class ControlTimeCheck extends ChainItem<XmlVTS> {
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlVTS}
      * @param controlTime {@link Date}
-     * @param constraint {@link LevelConstraint}
+     * @param constraint {@link LevelRule}
      */
-    public ControlTimeCheck(I18nProvider i18nProvider, XmlVTS result, Date controlTime, LevelConstraint constraint) {
+    public ControlTimeCheck(I18nProvider i18nProvider, XmlVTS result, Date controlTime, LevelRule constraint) {
         super(i18nProvider, result, constraint);
         this.controlTime = controlTime;
     }

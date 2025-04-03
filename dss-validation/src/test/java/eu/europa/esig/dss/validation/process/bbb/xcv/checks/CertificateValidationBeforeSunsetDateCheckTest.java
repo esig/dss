@@ -26,7 +26,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrusted;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import org.junit.jupiter.api.Test;
@@ -53,7 +54,7 @@ class CertificateValidationBeforeSunsetDateCheckTest extends AbstractTestCheck {
 
         XmlXCV result = new XmlXCV();
         CertificateValidationBeforeSunsetDateCheck<XmlXCV> cec = new CertificateValidationBeforeSunsetDateCheck<>(
-                i18nProvider, result, new CertificateWrapper(xc), new Date(), constraint);
+                i18nProvider, result, new CertificateWrapper(xc), new Date(), new LevelConstraintWrapper(constraint));
         cec.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -76,7 +77,7 @@ class CertificateValidationBeforeSunsetDateCheckTest extends AbstractTestCheck {
 
         XmlXCV result = new XmlXCV();
         CertificateValidationBeforeSunsetDateCheck<XmlXCV> cec = new CertificateValidationBeforeSunsetDateCheck<>(
-                i18nProvider, result, new CertificateWrapper(xc), new Date(), constraint);
+                i18nProvider, result, new CertificateWrapper(xc), new Date(), new LevelConstraintWrapper(constraint));
         cec.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -96,7 +97,7 @@ class CertificateValidationBeforeSunsetDateCheckTest extends AbstractTestCheck {
 
         XmlXCV result = new XmlXCV();
         CertificateValidationBeforeSunsetDateCheck<XmlXCV> cec = new CertificateValidationBeforeSunsetDateCheck<>(
-                i18nProvider, result, new CertificateWrapper(xc), new Date(), constraint);
+                i18nProvider, result, new CertificateWrapper(xc), new Date(), new LevelConstraintWrapper(constraint));
         cec.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -113,7 +114,7 @@ class CertificateValidationBeforeSunsetDateCheckTest extends AbstractTestCheck {
 
         XmlXCV result = new XmlXCV();
         CertificateValidationBeforeSunsetDateCheck<XmlXCV> cec = new CertificateValidationBeforeSunsetDateCheck<>(
-                i18nProvider, result, new CertificateWrapper(xc), new Date(), constraint);
+                i18nProvider, result, new CertificateWrapper(xc), new Date(), new LevelConstraintWrapper(constraint));
         cec.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
