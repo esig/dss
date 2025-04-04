@@ -28,7 +28,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.model.policy.CryptographicRules;
+import eu.europa.esig.dss.model.policy.CryptographicSuite;
 import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.utils.Utils;
@@ -138,7 +138,7 @@ public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy>
 	 */
 	protected ChainItem<XmlSAV> cryptographic(ChainItem<XmlSAV> item) {
 		// The basic signature constraints validation
-		CryptographicRules constraint = validationPolicy.getSignatureCryptographicConstraint(context);
+		CryptographicSuite constraint = validationPolicy.getSignatureCryptographicConstraint(context);
 		MessageTag position = ValidationProcessUtils.getCryptoPosition(context);
 		
 		CryptographicChecker cc = new CryptographicChecker(i18nProvider, token, currentTime, position, constraint);
@@ -199,7 +199,7 @@ public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy>
 		return item;
 	}
 	
-	private ChainItem<XmlSAV> cryptographicCheckResult(XmlCC ccResult, MessageTag position, CryptographicRules constraint) {
+	private ChainItem<XmlSAV> cryptographicCheckResult(XmlCC ccResult, MessageTag position, CryptographicSuite constraint) {
 		return new CryptographicCheckerResultCheck<>(i18nProvider, result, currentTime, position, ccResult, constraint);
 	}
 

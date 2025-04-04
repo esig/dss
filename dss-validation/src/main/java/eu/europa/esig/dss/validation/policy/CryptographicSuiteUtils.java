@@ -1,8 +1,8 @@
-package eu.europa.esig.dss.validation;
+package eu.europa.esig.dss.validation.policy;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.model.policy.CryptographicRules;
+import eu.europa.esig.dss.model.policy.CryptographicSuite;
 import eu.europa.esig.dss.model.policy.EncryptionAlgorithmWithMinKeySize;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -16,45 +16,45 @@ import java.util.Set;
 import java.util.TreeMap;
 
 /**
- * This class contains supporting methods for processing CryptographicRules
+ * This class contains supporting methods for processing a {@code eu.europa.esig.dss.model.policy.CryptographicSuite}
  *
  */
-public final class CryptographicRulesUtils {
+public final class CryptographicSuiteUtils {
 
     /**
      * Singleton
      */
-    private CryptographicRulesUtils() {
+    private CryptographicSuiteUtils() {
         // empty
     }
 
     /**
      * Checks if the given {@link EncryptionAlgorithm} is reliable (acceptable)
      *
-     * @param cryptographicRules {@link CryptographicRules}
+     * @param cryptographicSuite {@link CryptographicSuite}
      * @param encryptionAlgorithm {@link EncryptionAlgorithm} to check
      * @return TRUE if the algorithm is reliable, FALSE otherwise
      */
-    public static boolean isEncryptionAlgorithmReliable(CryptographicRules cryptographicRules, EncryptionAlgorithm encryptionAlgorithm) {
-        if (cryptographicRules == null) {
+    public static boolean isEncryptionAlgorithmReliable(CryptographicSuite cryptographicSuite, EncryptionAlgorithm encryptionAlgorithm) {
+        if (cryptographicSuite == null) {
             return true;
         }
-        return encryptionAlgorithm != null && cryptographicRules.getAcceptableEncryptionAlgorithms().contains(encryptionAlgorithm);
+        return encryptionAlgorithm != null && cryptographicSuite.getAcceptableEncryptionAlgorithms().contains(encryptionAlgorithm);
     }
 
     /**
      * Checks if the given {@link DigestAlgorithm} is reliable (acceptable)
      *
-     * @param cryptographicRules {@link CryptographicRules}
+     * @param cryptographicSuite {@link CryptographicSuite}
      * @param digestAlgorithm {@link DigestAlgorithm} to check
      * @return TRUE if the algorithm is reliable, FALSE otherwise
      */
-    public static boolean isDigestAlgorithmReliable(CryptographicRules cryptographicRules, DigestAlgorithm digestAlgorithm) {
-        if (cryptographicRules == null) {
+    public static boolean isDigestAlgorithmReliable(CryptographicSuite cryptographicSuite, DigestAlgorithm digestAlgorithm) {
+        if (cryptographicSuite == null) {
             return true;
         }
         if (digestAlgorithm != null) {
-            for (DigestAlgorithm acceptableDigestAlgorithm : cryptographicRules.getAcceptableDigestAlgorithms()) {
+            for (DigestAlgorithm acceptableDigestAlgorithm : cryptographicSuite.getAcceptableDigestAlgorithms()) {
                 if (digestAlgorithm == acceptableDigestAlgorithm) {
                     return true;
                 }
@@ -66,33 +66,33 @@ public final class CryptographicRulesUtils {
     /**
      * Checks if the {code keyLength} for {@link EncryptionAlgorithm} is reliable (acceptable)
      *
-     * @param cryptographicRules {@link CryptographicRules}
+     * @param cryptographicSuite {@link CryptographicSuite}
      * @param encryptionAlgorithm {@link EncryptionAlgorithm} to check key length for
      * @param keyLength {@link String} the key length to be checked
      * @return TRUE if the key length for the algorithm is reliable, FALSE otherwise
      */
-    public static boolean isEncryptionAlgorithmWithKeySizeReliable(CryptographicRules cryptographicRules,
-                                                            EncryptionAlgorithm encryptionAlgorithm, String keyLength) {
+    public static boolean isEncryptionAlgorithmWithKeySizeReliable(CryptographicSuite cryptographicSuite,
+                                                                   EncryptionAlgorithm encryptionAlgorithm, String keyLength) {
         int keySize = parseKeySize(keyLength);
-        return isEncryptionAlgorithmWithKeySizeReliable(cryptographicRules, encryptionAlgorithm, keySize);
+        return isEncryptionAlgorithmWithKeySizeReliable(cryptographicSuite, encryptionAlgorithm, keySize);
     }
 
     /**
      * Checks if the {code keyLength} for {@link EncryptionAlgorithm} is reliable (acceptable)
      *
-     * @param cryptographicRules {@link CryptographicRules}
+     * @param cryptographicSuite {@link CryptographicSuite}
      * @param encryptionAlgorithm {@link EncryptionAlgorithm} to check key length for
      * @param keySize {@link Integer} the key length to be checked
      * @return TRUE if the key length for the algorithm is reliable, FALSE otherwise
      */
-    public static boolean isEncryptionAlgorithmWithKeySizeReliable(CryptographicRules cryptographicRules,
-                                                            EncryptionAlgorithm encryptionAlgorithm, Integer keySize) {
-        if (cryptographicRules == null) {
+    public static boolean isEncryptionAlgorithmWithKeySizeReliable(CryptographicSuite cryptographicSuite,
+                                                                   EncryptionAlgorithm encryptionAlgorithm, Integer keySize) {
+        if (cryptographicSuite == null) {
             return true;
         }
         boolean foundAlgorithm = false;
         if (encryptionAlgorithm != null && keySize != 0) {
-            for (EncryptionAlgorithmWithMinKeySize encryptionAlgorithmWithMinKeySize : cryptographicRules.getAcceptableEncryptionAlgorithmsWithMinKeySizes()) {
+            for (EncryptionAlgorithmWithMinKeySize encryptionAlgorithmWithMinKeySize : cryptographicSuite.getAcceptableEncryptionAlgorithmsWithMinKeySizes()) {
                 int minKeySize = encryptionAlgorithmWithMinKeySize.getMinKeySize();
                 if (encryptionAlgorithm == encryptionAlgorithmWithMinKeySize.getEncryptionAlgorithm()) {
                     foundAlgorithm = true;
@@ -113,32 +113,32 @@ public final class CryptographicRulesUtils {
      * Gets an expiration date for the encryption algorithm with name {@code algoToSearch} and {@code keyLength}.
      * Returns null if the expiration date is not defined for the algorithm.
      *
-     * @param cryptographicRules {@link CryptographicRules}
+     * @param cryptographicSuite {@link CryptographicSuite}
      * @param encryptionAlgorithm {@link EncryptionAlgorithm} to get expiration date for
      * @param keyLength {@link String} key length used to sign the token
      * @return {@link Date}
      */
-    public static Date getExpirationDate(CryptographicRules cryptographicRules,
-                                  EncryptionAlgorithm encryptionAlgorithm, String keyLength) {
+    public static Date getExpirationDate(CryptographicSuite cryptographicSuite,
+                                         EncryptionAlgorithm encryptionAlgorithm, String keyLength) {
         int keySize = parseKeySize(keyLength);
-        return getExpirationDate(cryptographicRules, encryptionAlgorithm, keySize);
+        return getExpirationDate(cryptographicSuite, encryptionAlgorithm, keySize);
     }
 
     /**
      * Gets an expiration date for the encryption algorithm with name {@code algoToSearch} and {@code keyLength}.
      * Returns null if the expiration date is not defined for the algorithm.
      *
-     * @param cryptographicRules {@link CryptographicRules}
+     * @param cryptographicSuite {@link CryptographicSuite}
      * @param encryptionAlgorithm {@link EncryptionAlgorithm} to get expiration date for
      * @param keySize {@link Integer} key length used to sign the token
      * @return {@link Date}
      */
-    public static Date getExpirationDate(CryptographicRules cryptographicRules,
-                                  EncryptionAlgorithm encryptionAlgorithm, Integer keySize) {
+    public static Date getExpirationDate(CryptographicSuite cryptographicSuite,
+                                         EncryptionAlgorithm encryptionAlgorithm, Integer keySize) {
         final TreeMap<Integer, Date> dates = new TreeMap<>();
 
         Map<EncryptionAlgorithmWithMinKeySize, Date> encryptionAlgorithmsWithExpirationDates =
-                cryptographicRules.getAcceptableEncryptionAlgorithmsWithExpirationDates();
+                cryptographicSuite.getAcceptableEncryptionAlgorithmsWithExpirationDates();
         for (EncryptionAlgorithmWithMinKeySize encryptionAlgorithmWithMinKeySize : encryptionAlgorithmsWithExpirationDates.keySet()) {
             if (encryptionAlgorithm == encryptionAlgorithmWithMinKeySize.getEncryptionAlgorithm()) {
                 Date expirationDate = encryptionAlgorithmsWithExpirationDates.get(encryptionAlgorithmWithMinKeySize);
@@ -146,7 +146,7 @@ public final class CryptographicRulesUtils {
             }
         }
 
-        for (EncryptionAlgorithmWithMinKeySize encryptionAlgorithmWithMinKeySize : cryptographicRules.getAcceptableEncryptionAlgorithmsWithMinKeySizes()) {
+        for (EncryptionAlgorithmWithMinKeySize encryptionAlgorithmWithMinKeySize : cryptographicSuite.getAcceptableEncryptionAlgorithmsWithMinKeySizes()) {
             if (encryptionAlgorithm == encryptionAlgorithmWithMinKeySize.getEncryptionAlgorithm()) {
                 Map.Entry<Integer, Date> floorEntry = dates.floorEntry(encryptionAlgorithmWithMinKeySize.getMinKeySize());
                 if (floorEntry == null) {
@@ -170,12 +170,12 @@ public final class CryptographicRulesUtils {
      * Gets an expiration date for the digest algorithm with name {@code digestAlgoToSearch}.
      * Returns null if the expiration date is not defined for the algorithm.
      *
-     * @param cryptographicRules {@link CryptographicRules}
+     * @param cryptographicSuite {@link CryptographicSuite}
      * @param digestAlgorithm {@link DigestAlgorithm} the algorithm to get expiration date for
      * @return {@link Date}
      */
-    public static Date getExpirationDate(CryptographicRules cryptographicRules, DigestAlgorithm digestAlgorithm) {
-        Map<DigestAlgorithm, Date> digestAlgorithmsWithExpirationDates = cryptographicRules.getAcceptableDigestAlgorithmsWithExpirationDates();
+    public static Date getExpirationDate(CryptographicSuite cryptographicSuite, DigestAlgorithm digestAlgorithm) {
+        Map<DigestAlgorithm, Date> digestAlgorithmsWithExpirationDates = cryptographicSuite.getAcceptableDigestAlgorithmsWithExpirationDates();
         return digestAlgorithmsWithExpirationDates.get(digestAlgorithm);
     }
 
@@ -183,15 +183,15 @@ public final class CryptographicRulesUtils {
      * This method returns a list of reliable {@code DigestAlgorithm} according to the current validation policy
      * at the given validation time
      *
-     * @param cryptographicRules {@link CryptographicRules}
+     * @param cryptographicSuite {@link CryptographicSuite}
      * @param validationTime {@link Date} to verify against
      * @return a list of {@link DigestAlgorithm}s
      */
-    public static List<DigestAlgorithm> getReliableDigestAlgorithmsAtTime(CryptographicRules cryptographicRules, Date validationTime) {
+    public static List<DigestAlgorithm> getReliableDigestAlgorithmsAtTime(CryptographicSuite cryptographicSuite, Date validationTime) {
         final List<DigestAlgorithm> reliableDigestAlgorithms = new ArrayList<>();
 
-        List<DigestAlgorithm> acceptableDigestAlgorithms = cryptographicRules.getAcceptableDigestAlgorithms();
-        Map<DigestAlgorithm, Date> digestAlgorithmsWithExpirationDates = cryptographicRules.getAcceptableDigestAlgorithmsWithExpirationDates();
+        List<DigestAlgorithm> acceptableDigestAlgorithms = cryptographicSuite.getAcceptableDigestAlgorithms();
+        Map<DigestAlgorithm, Date> digestAlgorithmsWithExpirationDates = cryptographicSuite.getAcceptableDigestAlgorithmsWithExpirationDates();
         for (DigestAlgorithm digestAlgorithm : digestAlgorithmsWithExpirationDates.keySet()) {
             if (acceptableDigestAlgorithms.contains(digestAlgorithm)) {
                 Date expirationDate = digestAlgorithmsWithExpirationDates.get(digestAlgorithm);
@@ -221,18 +221,18 @@ public final class CryptographicRulesUtils {
      * This method returns a map between reliable {@code EncryptionAlgorithm} according to the current validation policy
      * and their minimal accepted key length at the given time.
      *
-     * @param cryptographicRules {@link CryptographicRules}
+     * @param cryptographicSuite {@link CryptographicSuite}
      * @param validationTime {@link Date} to verify against
      * @return a list of {@link EncryptionAlgorithmWithMinKeySize}s
      */
     public static List<EncryptionAlgorithmWithMinKeySize> getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(
-            CryptographicRules cryptographicRules, Date validationTime) {
+            CryptographicSuite cryptographicSuite, Date validationTime) {
         final Map<EncryptionAlgorithm, Integer> reliableEncryptionAlgorithms = new EnumMap<>(EncryptionAlgorithm.class);
         Set<EncryptionAlgorithm> processedEncryptionAlgorithms = new HashSet<>();
 
-        List<EncryptionAlgorithm> acceptableEncryptionAlgorithms = cryptographicRules.getAcceptableEncryptionAlgorithms();
+        List<EncryptionAlgorithm> acceptableEncryptionAlgorithms = cryptographicSuite.getAcceptableEncryptionAlgorithms();
         Map<EncryptionAlgorithmWithMinKeySize, Date> encryptionAlgorithmsWithExpirationDates = 
-                cryptographicRules.getAcceptableEncryptionAlgorithmsWithExpirationDates();
+                cryptographicSuite.getAcceptableEncryptionAlgorithmsWithExpirationDates();
         for (EncryptionAlgorithmWithMinKeySize encryptionAlgorithmWithMinKeySize : encryptionAlgorithmsWithExpirationDates.keySet()) {
             EncryptionAlgorithm encryptionAlgorithm = encryptionAlgorithmWithMinKeySize.getEncryptionAlgorithm();
             int keySize = encryptionAlgorithmWithMinKeySize.getMinKeySize();
@@ -248,7 +248,7 @@ public final class CryptographicRulesUtils {
             processedEncryptionAlgorithms.add(encryptionAlgorithm);
         }
 
-        for (EncryptionAlgorithmWithMinKeySize encryptionAlgorithmWithMinKeySize : cryptographicRules.getAcceptableEncryptionAlgorithmsWithMinKeySizes()) {
+        for (EncryptionAlgorithmWithMinKeySize encryptionAlgorithmWithMinKeySize : cryptographicSuite.getAcceptableEncryptionAlgorithmsWithMinKeySizes()) {
             EncryptionAlgorithm encryptionAlgorithm = encryptionAlgorithmWithMinKeySize.getEncryptionAlgorithm();
             int keySize = encryptionAlgorithmWithMinKeySize.getMinKeySize();
             if (!processedEncryptionAlgorithms.contains(encryptionAlgorithm)) {

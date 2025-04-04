@@ -49,7 +49,7 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.model.policy.CertificateApplicabilityRule;
-import eu.europa.esig.dss.model.policy.CryptographicRules;
+import eu.europa.esig.dss.model.policy.CryptographicSuite;
 import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.utils.Utils;
@@ -362,7 +362,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		 */
 		if (isCryptoConstraintFailureNoPoe(bsConclusion)) {
 			
-			CryptographicRules signatureConstraint = policy.getSignatureCryptographicConstraint(currentContext);
+			CryptographicSuite signatureConstraint = policy.getSignatureCryptographicConstraint(currentContext);
 			
 			// check validity of Cryptographic Constraints for the Signature
 			item = item.setNextItem(tokenUsedAlgorithmsAreSecureAtTime(currentSignature, bestSignatureTime.getTime(),
@@ -674,12 +674,12 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 	}
 
 	private ChainItem<XmlValidationProcessLongTermData> tokenUsedAlgorithmsAreSecureAtTime(TokenProxy currentToken, Date validationDate,
-			MessageTag position, CryptographicRules constraint) {
+			MessageTag position, CryptographicSuite constraint) {
 		return new CryptographicCheck<>(i18nProvider, result, currentToken,  position, validationDate, constraint);
 	}
 
 	private ChainItem<XmlValidationProcessLongTermData> tokenUsedAlgorithmsAreSecureAtTimeWithId(TokenProxy currentToken, Date validationDate,
-																								 MessageTag position, CryptographicRules constraint) {
+																								 MessageTag position, CryptographicSuite constraint) {
 		return new CryptographicCheckWithId<>(i18nProvider, result, currentToken, position, validationDate, constraint);
 	}
 

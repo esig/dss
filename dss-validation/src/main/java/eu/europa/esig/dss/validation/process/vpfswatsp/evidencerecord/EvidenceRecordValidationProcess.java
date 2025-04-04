@@ -39,7 +39,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.model.policy.CryptographicRules;
+import eu.europa.esig.dss.model.policy.CryptographicSuite;
 import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.utils.Utils;
@@ -253,10 +253,10 @@ public class EvidenceRecordValidationProcess extends Chain<XmlValidationProcessE
 
         // Validate cryptographic constraints of DigestMatchers
         if (Utils.isCollectionNotEmpty(digestMatchers)) {
-            CryptographicRules cryptographicRules = policy.getEvidenceRecordCryptographicConstraint();
+            CryptographicSuite cryptographicSuite = policy.getEvidenceRecordCryptographicConstraint();
 
             DigestMatcherListCryptographicChainBuilder<XmlValidationProcessEvidenceRecord> digestMatcherCCBuilder =
-                    new DigestMatcherListCryptographicChainBuilder<>(i18nProvider, result, digestMatchers, lowestPOE.getTime(), cryptographicRules);
+                    new DigestMatcherListCryptographicChainBuilder<>(i18nProvider, result, digestMatchers, lowestPOE.getTime(), cryptographicSuite);
             item = digestMatcherCCBuilder.build(item);
 
             XmlCC failedCC = digestMatcherCCBuilder.getConcernedCC();

@@ -27,7 +27,7 @@ import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.SubContext;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.model.policy.CryptographicRules;
+import eu.europa.esig.dss.model.policy.CryptographicSuite;
 import eu.europa.esig.dss.model.policy.DurationRule;
 import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.model.policy.ValidationPolicy;
@@ -187,8 +187,8 @@ public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 	}
 
 	private ChainItem<XmlRFC> revocationCryptographic(RevocationWrapper revocationData) {
-		CryptographicRules cryptographicRules = policy.getSignatureCryptographicConstraint(Context.REVOCATION);
-		return new CryptographicCheck<>(i18nProvider, result, revocationData, REVOCATION_POSITION, validationDate, cryptographicRules);
+		CryptographicSuite cryptographicSuite = policy.getSignatureCryptographicConstraint(Context.REVOCATION);
+		return new CryptographicCheck<>(i18nProvider, result, revocationData, REVOCATION_POSITION, validationDate, cryptographicSuite);
 	}
 
 }

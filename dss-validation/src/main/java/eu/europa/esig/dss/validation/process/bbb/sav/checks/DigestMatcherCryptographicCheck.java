@@ -25,7 +25,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.model.policy.CryptographicRules;
+import eu.europa.esig.dss.model.policy.CryptographicSuite;
 import eu.europa.esig.dss.validation.process.bbb.sav.cc.DigestCryptographicChecker;
 
 import java.util.Date;
@@ -45,16 +45,16 @@ public class DigestMatcherCryptographicCheck<T extends XmlConstraintsConclusion>
 	 * @param result the result
 	 * @param validationDate {@link Date}
 	 * @param position {@link MessageTag}
-	 * @param constraint {@link CryptographicRules}
+	 * @param constraint {@link CryptographicSuite}
 	 */
 	public DigestMatcherCryptographicCheck(I18nProvider i18nProvider, DigestAlgorithm digestAlgorithm, T result,
-										   Date validationDate, MessageTag position, CryptographicRules constraint) {
+										   Date validationDate, MessageTag position, CryptographicSuite constraint) {
 		super(i18nProvider, result, validationDate, position, 
 				execute(i18nProvider, digestAlgorithm, validationDate, position, constraint), constraint);
 	}
 	
 	private static XmlCC execute(I18nProvider i18nProvider, DigestAlgorithm digestAlgorithm, Date validationDate,
-			MessageTag position, CryptographicRules constraint) {
+			MessageTag position, CryptographicSuite constraint) {
 		DigestCryptographicChecker dac = new DigestCryptographicChecker(i18nProvider, digestAlgorithm, validationDate, position, constraint);
 		return dac.execute();
 	}

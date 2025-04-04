@@ -59,8 +59,6 @@ class ExecuteDifferentPoliciesTest {
 				}
 
 				dataToRun.add(Arguments.of(diagnosticData, ValidationPolicyFacade.newFacade().getDefaultValidationPolicy() ));
-				dataToRun.add(Arguments.of(diagnosticData, ValidationPolicyFacade.newFacade().getCertificateValidationPolicy() ));
-				dataToRun.add(Arguments.of(diagnosticData, ValidationPolicyFacade.newFacade().getTrustedListValidationPolicy() ));
 
 			}
 		}

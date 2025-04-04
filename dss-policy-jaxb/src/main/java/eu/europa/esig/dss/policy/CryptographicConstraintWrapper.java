@@ -3,7 +3,7 @@ package eu.europa.esig.dss.policy;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.Level;
-import eu.europa.esig.dss.model.policy.CryptographicRules;
+import eu.europa.esig.dss.model.policy.CryptographicSuite;
 import eu.europa.esig.dss.model.policy.EncryptionAlgorithmWithMinKeySize;
 import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.policy.jaxb.Algo;
@@ -27,7 +27,7 @@ import java.util.Map;
  * into a {@code CryptographicConstraintWrapper}
  *
  */
-public class CryptographicConstraintWrapper extends LevelConstraintWrapper implements CryptographicRules {
+public class CryptographicConstraintWrapper extends LevelConstraintWrapper implements CryptographicSuite {
 
     private static final Logger LOG = LoggerFactory.getLogger(CryptographicConstraintWrapper.class);
 

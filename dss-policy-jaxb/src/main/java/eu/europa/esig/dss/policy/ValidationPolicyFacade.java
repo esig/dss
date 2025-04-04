@@ -102,7 +102,9 @@ public class ValidationPolicyFacade extends AbstractJaxbFacade<ConstraintsParame
 	 * @throws XMLStreamException if {@link XMLStreamException} occurs
 	 * @throws IOException if {@link IOException} occurs
 	 * @throws SAXException if {@link SAXException} occurs
+	 * @deprecated since DSS 6.3. To be removed. Please use {@code getValidationPolicy(String path)} method explicitly.
 	 */
+	@Deprecated
 	public ValidationPolicy getCertificateValidationPolicy() throws JAXBException, XMLStreamException, IOException, SAXException {
 		try (InputStream is = ValidationPolicyFacade.class.getResourceAsStream(CERTIFICATE_VALIDATION_POLICY_LOCATION)) {
 			return getValidationPolicy(is);
@@ -117,7 +119,9 @@ public class ValidationPolicyFacade extends AbstractJaxbFacade<ConstraintsParame
 	 * @throws XMLStreamException if {@link XMLStreamException} occurs
 	 * @throws IOException if {@link IOException} occurs
 	 * @throws SAXException if {@link SAXException} occurs
+	 * @deprecated since DSS 6.3. To be removed. Please use {@code getValidationPolicy(String path)} method explicitly.
 	 */
+	@Deprecated
 	public ValidationPolicy getTrustedListValidationPolicy() throws JAXBException, XMLStreamException, IOException, SAXException {
 		try (InputStream is = ValidationPolicyFacade.class.getResourceAsStream(TRUSTED_LIST_VALIDATION_POLICY_LOCATION)) {
 			return getValidationPolicy(is);

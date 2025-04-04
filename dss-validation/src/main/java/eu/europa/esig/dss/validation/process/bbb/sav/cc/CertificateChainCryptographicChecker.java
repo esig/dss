@@ -26,7 +26,7 @@ import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.SubContext;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.model.policy.CryptographicRules;
+import eu.europa.esig.dss.model.policy.CryptographicSuite;
 import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.process.Chain;
@@ -97,7 +97,7 @@ public class CertificateChainCryptographicChecker extends Chain<XmlCC> {
                 break;
             }
 
-            CryptographicRules constraint = validationPolicy.getCertificateCryptographicConstraint(context, subContext);
+            CryptographicSuite constraint = validationPolicy.getCertificateCryptographicConstraint(context, subContext);
 
             CryptographicChecker cc = new CryptographicChecker(i18nProvider, certificate, validationTime, position, constraint);
             XmlCC xmlCC = cc.execute();
@@ -121,7 +121,7 @@ public class CertificateChainCryptographicChecker extends Chain<XmlCC> {
     }
 
     private ChainItem<XmlCC> tokenUsedAlgorithmsAreSecureAtTime(Date validationDate, MessageTag position, XmlCC cc,
-                                                                CryptographicRules constraint) {
+                                                                CryptographicSuite constraint) {
         return new CryptographicCheckerResultCheck<>(i18nProvider, result, validationDate, position, cc, constraint);
     }
 

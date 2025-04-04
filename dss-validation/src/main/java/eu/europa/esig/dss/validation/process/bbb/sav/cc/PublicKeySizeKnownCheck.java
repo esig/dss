@@ -24,7 +24,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlCC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.model.policy.CryptographicRules;
+import eu.europa.esig.dss.model.policy.CryptographicSuite;
 import eu.europa.esig.dss.utils.Utils;
 
 /**
@@ -42,11 +42,11 @@ public class PublicKeySizeKnownCheck extends AbstractCryptographicCheck {
 	 * @param keySize {@link String}
 	 * @param result {@link XmlCC}
 	 * @param position {@link MessageTag}
-	 * @param cryptographicRules {@link CryptographicRules}
+	 * @param cryptographicSuite {@link CryptographicSuite}
 	 */
 	protected PublicKeySizeKnownCheck(I18nProvider i18nProvider, String keySize, XmlCC result, MessageTag position,
-									  CryptographicRules cryptographicRules) {
-		super(i18nProvider, result, position, cryptographicRules.getMiniPublicKeySizeLevel());
+									  CryptographicSuite cryptographicSuite) {
+		super(i18nProvider, result, position, cryptographicSuite.getMiniPublicKeySizeLevel());
 		this.keySize = keySize;
 	}
 

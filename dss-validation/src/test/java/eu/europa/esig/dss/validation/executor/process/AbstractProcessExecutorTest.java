@@ -40,6 +40,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public abstract class AbstractProcessExecutorTest extends AbstractTestValidationExecutor {
 
+    /** The path for a LOTL/TL validation policy */
+    private static final String TRUSTED_LIST_VALIDATION_POLICY_LOCATION = "/diag-data/policy/tsl-constraint.xml";
+
     protected static I18nProvider i18nProvider;
 
     @BeforeAll
@@ -58,7 +61,7 @@ public abstract class AbstractProcessExecutorTest extends AbstractTestValidation
     }
 
     protected ValidationPolicy loadTLPolicy() throws Exception {
-        return ValidationPolicyFacade.newFacade().getTrustedListValidationPolicy();
+        return ValidationPolicyFacade.newFacade().getValidationPolicy(TRUSTED_LIST_VALIDATION_POLICY_LOCATION);
     }
 
     protected ValidationPolicy loadPolicyNoRevoc() throws Exception {

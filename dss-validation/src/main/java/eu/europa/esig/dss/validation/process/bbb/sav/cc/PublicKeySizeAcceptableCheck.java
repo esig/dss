@@ -25,8 +25,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.model.policy.CryptographicRules;
-import eu.europa.esig.dss.validation.CryptographicRulesUtils;
+import eu.europa.esig.dss.model.policy.CryptographicSuite;
+import eu.europa.esig.dss.validation.policy.CryptographicSuiteUtils;
 
 /**
  * Check if public key size is acceptable
@@ -40,7 +40,7 @@ public class PublicKeySizeAcceptableCheck extends AbstractCryptographicCheck {
 	private final String keyLength;
 
 	/** The cryptographic rules */
-	private final CryptographicRules cryptographicRules;
+	private final CryptographicSuite cryptographicSuite;
 
 	/**
 	 * Default constructor
@@ -50,19 +50,19 @@ public class PublicKeySizeAcceptableCheck extends AbstractCryptographicCheck {
 	 * @param keyLength {@link String}
 	 * @param result {@link XmlCC}
 	 * @param position {@link MessageTag}
-	 * @param cryptographicRules {@link CryptographicRules}
+	 * @param cryptographicSuite {@link CryptographicSuite}
 	 */
 	protected PublicKeySizeAcceptableCheck(I18nProvider i18nProvider, EncryptionAlgorithm encryptionAlgo, String keyLength,
-			XmlCC result, MessageTag position, CryptographicRules cryptographicRules) {
-		super(i18nProvider, result, position, cryptographicRules.getMiniPublicKeySizeLevel());
+			XmlCC result, MessageTag position, CryptographicSuite cryptographicSuite) {
+		super(i18nProvider, result, position, cryptographicSuite.getMiniPublicKeySizeLevel());
 		this.encryptionAlgo = encryptionAlgo;
 		this.keyLength = keyLength;
-		this.cryptographicRules = cryptographicRules;
+		this.cryptographicSuite = cryptographicSuite;
 	}
 
 	@Override
 	protected boolean process() {
-		return CryptographicRulesUtils.isEncryptionAlgorithmWithKeySizeReliable(cryptographicRules, encryptionAlgo, keyLength);
+		return CryptographicSuiteUtils.isEncryptionAlgorithmWithKeySizeReliable(cryptographicSuite, encryptionAlgo, keyLength);
 	}
 	
 	@Override

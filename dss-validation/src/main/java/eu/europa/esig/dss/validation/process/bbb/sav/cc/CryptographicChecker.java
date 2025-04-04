@@ -24,7 +24,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlCC;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.model.policy.CryptographicRules;
+import eu.europa.esig.dss.model.policy.CryptographicSuite;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
 import java.util.Date;
@@ -41,12 +41,12 @@ public class CryptographicChecker extends AbstractCryptographicChecker {
 	 * @param token {@link TokenProxy} to validate
 	 * @param validationDate {@link Date}
 	 * @param position {@link MessageTag}
-	 * @param cryptographicRules {@link CryptographicRules}
+	 * @param cryptographicSuite {@link CryptographicSuite}
 	 */
 	public CryptographicChecker(I18nProvider i18nProvider, TokenProxy token, Date validationDate, MessageTag position,
-								CryptographicRules cryptographicRules) {
+								CryptographicSuite cryptographicSuite) {
 		super(i18nProvider, token.getEncryptionAlgorithm(), token.getDigestAlgorithm(),
-				token.getKeyLengthUsedToSignThisToken(), validationDate, position, cryptographicRules);
+				token.getKeyLengthUsedToSignThisToken(), validationDate, position, cryptographicSuite);
 	}
 
 	@Override

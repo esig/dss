@@ -27,7 +27,6 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.model.identifier.TokenIdentifierProvider;
 import eu.europa.esig.dss.model.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
 import eu.europa.esig.dss.spi.policy.SignaturePolicyProvider;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
@@ -252,16 +251,6 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	 * @return {@code Reports}: diagnostic data, detailed report and simple report
 	 */
 	Reports validateDocument(final InputStream policyDataStream);
-
-	/**
-	 * Validates the document and all its signatures. The {@code validationPolicyJaxb} contains the constraint file. If
-	 * null or empty the default file is used.
-	 *
-	 * @param validationPolicyJaxb
-	 *            {@code ConstraintsParameters}
-	 * @return {@link Reports}
-	 */
-	Reports validateDocument(final ConstraintsParameters validationPolicyJaxb);
 
 	/**
 	 * Validates the document and all its signatures. The {@code validationPolicy} contains the constraint file. If null

@@ -40,7 +40,7 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.model.policy.CertificateApplicabilityRule;
-import eu.europa.esig.dss.model.policy.CryptographicRules;
+import eu.europa.esig.dss.model.policy.CryptographicSuite;
 import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.utils.Utils;
@@ -318,17 +318,17 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 		 */
 		else if (Indication.INDETERMINATE.equals(currentConclusion.getIndication())
 				&& SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE.equals(currentConclusion.getSubIndication())) {
-			CryptographicRules cryptographicRules = policy.getSignatureCryptographicConstraint(context);
+			CryptographicSuite cryptographicSuite = policy.getSignatureCryptographicConstraint(context);
 			Date lowestPoeTime = getLowestPoeTime(token);
 
 			// check signature or timestamp itself
 			item = item.setNextItem(tokenUsedAlgorithmsAreSecureAtPoeTime(token, lowestPoeTime,
-					ValidationProcessUtils.getCryptoPosition(context), cryptographicRules));
+					ValidationProcessUtils.getCryptoPosition(context), cryptographicSuite));
 
 			if (Utils.isCollectionNotEmpty(token.getDigestMatchers())) {
 				DigestMatcherListCryptographicChainBuilder<XmlPSV> digestMatcherCCBuilder =
 						new DigestMatcherListCryptographicChainBuilder<>(i18nProvider, result, token.getDigestMatchers(),
-								lowestPoeTime, cryptographicRules);
+								lowestPoeTime, cryptographicSuite);
 				item = digestMatcherCCBuilder.build(item);
 			}
 
@@ -423,7 +423,7 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 	}
 
 	private CryptographicCheck<XmlPSV> tokenUsedAlgorithmsAreSecureAtPoeTime(
-			TokenProxy currentToken, Date validationDate, MessageTag position, CryptographicRules constraint) {
+			TokenProxy currentToken, Date validationDate, MessageTag position, CryptographicSuite constraint) {
 		return new CryptographicCheck<>(i18nProvider, result, currentToken,  position, validationDate, constraint);
 	}
 

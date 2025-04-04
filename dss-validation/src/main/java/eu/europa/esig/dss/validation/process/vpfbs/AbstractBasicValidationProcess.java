@@ -372,7 +372,7 @@ public abstract class AbstractBasicValidationProcess<T extends XmlConstraintsCon
 
                         if (isValid(timestampValidation)) {
 
-                            item = item.setNextItem(timestampNotAfterCryptographicRulessExpiration(
+                            item = item.setNextItem(timestampNotAfterCryptographicAlgorithmsExpiration(
                                     timestampWrapper, cryptographicValidation));
 
                         }
@@ -487,7 +487,7 @@ public abstract class AbstractBasicValidationProcess<T extends XmlConstraintsCon
         return new SignatureAcceptanceValidationResultCheck<>(i18nProvider, result, xmlSAV, token, getWarnLevelRule());
     }
 
-    private ChainItem<T> timestampNotAfterCryptographicRulessExpiration(
+    private ChainItem<T> timestampNotAfterCryptographicAlgorithmsExpiration(
             final TimestampWrapper timestamp, final XmlCryptographicValidation cryptographicValidation) {
         return new TimestampGenerationTimeNotAfterCryptographicConstraintsExpirationCheck<>(i18nProvider, result,
                 timestamp, cryptographicValidation, getFailLevelRule());

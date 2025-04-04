@@ -35,7 +35,7 @@ import eu.europa.esig.dss.enumerations.SubContext;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.model.policy.CryptographicRules;
+import eu.europa.esig.dss.model.policy.CryptographicSuite;
 import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.utils.Utils;
@@ -143,7 +143,7 @@ public class SigningCertificateRefDigestAlgorithmCheck<T extends XmlConstraintsC
     }
 
     private XmlCC getSigningCertificateDigestCryptographicCheckResult(CertificateRefWrapper certificateRef) {
-        CryptographicRules certificateConstraint = validationPolicy.getCertificateCryptographicConstraint(context, subContext);
+        CryptographicSuite certificateConstraint = validationPolicy.getCertificateCryptographicConstraint(context, subContext);
         DigestCryptographicChecker dac = new DigestCryptographicChecker(i18nProvider, certificateRef.getDigestMethod(),
                 validationDate, MessageTag.ACCM_POS_SIG_CERT_REF, certificateConstraint);
         return dac.execute();

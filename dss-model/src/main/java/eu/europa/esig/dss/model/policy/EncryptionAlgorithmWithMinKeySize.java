@@ -2,6 +2,7 @@ package eu.europa.esig.dss.model.policy;
 
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -9,7 +10,9 @@ import java.util.Objects;
  * its corresponding minimal allowed key size
  *
  */
-public class EncryptionAlgorithmWithMinKeySize {
+public class EncryptionAlgorithmWithMinKeySize implements Serializable {
+
+    private static final long serialVersionUID = -311662580001422950L;
 
     /** The Encryption algorithm */
     private final EncryptionAlgorithm encryptionAlgorithm;

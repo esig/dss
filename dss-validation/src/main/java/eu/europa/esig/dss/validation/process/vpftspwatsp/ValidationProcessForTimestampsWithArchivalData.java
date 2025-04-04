@@ -36,7 +36,7 @@ import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.model.policy.CryptographicRules;
+import eu.europa.esig.dss.model.policy.CryptographicSuite;
 import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.utils.Utils;
@@ -293,9 +293,9 @@ public class ValidationProcessForTimestampsWithArchivalData extends Chain<XmlVal
 
     private MessageImprintDigestAlgorithmValidation timestampDigestAlgorithmValidation(
             TimestampWrapper newestTimestamp, Date poeTime) {
-        CryptographicRules cryptographicRules = policy.getSignatureCryptographicConstraint(Context.TIMESTAMP);
+        CryptographicSuite cryptographicSuite = policy.getSignatureCryptographicConstraint(Context.TIMESTAMP);
         return new MessageImprintDigestAlgorithmValidation(i18nProvider, poeTime,
-                newestTimestamp.getMessageImprint().getDigestMethod(), cryptographicRules);
+                newestTimestamp.getMessageImprint().getDigestMethod(), cryptographicSuite);
     }
 
     private ChainItem<XmlValidationProcessArchivalDataTimestamp> pastTimestampValidation(TimestampWrapper timestamp, XmlPSV xmlPSV) {

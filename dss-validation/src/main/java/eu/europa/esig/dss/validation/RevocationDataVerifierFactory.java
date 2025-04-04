@@ -26,13 +26,14 @@ import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.SubContext;
 import eu.europa.esig.dss.model.policy.CertificateApplicabilityRule;
-import eu.europa.esig.dss.model.policy.CryptographicRules;
+import eu.europa.esig.dss.model.policy.CryptographicSuite;
 import eu.europa.esig.dss.model.policy.DurationRule;
 import eu.europa.esig.dss.model.policy.EncryptionAlgorithmWithMinKeySize;
 import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.model.policy.MultiValuesRule;
 import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.spi.validation.RevocationDataVerifier;
+import eu.europa.esig.dss.validation.policy.CryptographicSuiteUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -98,22 +99,22 @@ public class RevocationDataVerifierFactory {
      */
     public RevocationDataVerifier create() {
         final RevocationDataVerifier revocationDataVerifier = RevocationDataVerifier.createEmptyRevocationDataVerifier();
-        instantiateCryptographicRules(revocationDataVerifier);
+        instantiateCryptographicSuite(revocationDataVerifier);
         instantiateRevocationSkipConstraints(revocationDataVerifier);
         instantiateRevocationFreshnessConstraints(revocationDataVerifier);
         instantiateAcceptRevocationIssuersWithoutRevocationConstraint(revocationDataVerifier);
         return revocationDataVerifier;
     }
 
-    private void instantiateCryptographicRules(final RevocationDataVerifier revocationDataVerifier) {
+    private void instantiateCryptographicSuite(final RevocationDataVerifier revocationDataVerifier) {
         List<DigestAlgorithm> acceptableDigestAlgorithms;
         List<EncryptionAlgorithmWithMinKeySize> acceptableEncryptionAlgorithms;
 
-        final CryptographicRules cryptographicRules = getRevocationCryptographicRules(validationPolicy);
-        if (cryptographicRules != null && Level.FAIL.equals(cryptographicRules.getLevel())) {
+        final CryptographicSuite cryptographicSuite = getRevocationCryptographicSuite(validationPolicy);
+        if (cryptographicSuite != null && Level.FAIL.equals(cryptographicSuite.getLevel())) {
             Date currentTime = getValidationTime();
-            acceptableDigestAlgorithms = CryptographicRulesUtils.getReliableDigestAlgorithmsAtTime(cryptographicRules, currentTime);
-            acceptableEncryptionAlgorithms = CryptographicRulesUtils.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(cryptographicRules, currentTime);
+            acceptableDigestAlgorithms = CryptographicSuiteUtils.getReliableDigestAlgorithmsAtTime(cryptographicSuite, currentTime);
+            acceptableEncryptionAlgorithms = CryptographicSuiteUtils.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(cryptographicSuite, currentTime);
         } else {
             LOG.info("No enforced cryptographic constraints have been found in the provided validation policy. Accept all cryptographic algorithms.");
             acceptableDigestAlgorithms = Arrays.asList(DigestAlgorithm.values());
@@ -126,7 +127,7 @@ public class RevocationDataVerifierFactory {
         revocationDataVerifier.setAcceptableEncryptionAlgorithmKeyLength(toEncryptionAlgorithmWithKeySizesMap(acceptableEncryptionAlgorithms));
     }
 
-    private CryptographicRules getRevocationCryptographicRules(ValidationPolicy validationPolicy) {
+    private CryptographicSuite getRevocationCryptographicSuite(ValidationPolicy validationPolicy) {
         return validationPolicy.getSignatureCryptographicConstraint(Context.REVOCATION);
     }
 

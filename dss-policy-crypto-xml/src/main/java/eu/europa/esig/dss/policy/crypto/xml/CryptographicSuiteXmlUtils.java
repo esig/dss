@@ -14,7 +14,7 @@ import java.util.List;
  * ETSI TS 119 312/322 XML schema utils
  *
  */
-public class CryptographicSuitesXmlUtils extends XSDAbstractUtils {
+public class CryptographicSuiteXmlUtils extends XSDAbstractUtils {
 
     /** The object factory to use */
     public static final ObjectFactory OBJECT_FACTORY = new ObjectFactory();
@@ -26,7 +26,7 @@ public class CryptographicSuitesXmlUtils extends XSDAbstractUtils {
     private static final String CRYPTO_SUITES_ALGOCAT_SCHEMA_LOCATION = "/xsd/19322algocatxmlschema.xsd";
 
     /** Singleton */
-    private static CryptographicSuitesXmlUtils singleton;
+    private static CryptographicSuiteXmlUtils singleton;
 
     /** Cached JAXBContext */
     private static JAXBContext jc;
@@ -34,18 +34,18 @@ public class CryptographicSuitesXmlUtils extends XSDAbstractUtils {
     /**
      * Empty constructor
      */
-    private CryptographicSuitesXmlUtils() {
+    private CryptographicSuiteXmlUtils() {
         // empty
     }
 
     /**
      * Returns instance of {@code CryptographicSuitesXmlUtils}
      *
-     * @return {@link CryptographicSuitesXmlUtils}
+     * @return {@link CryptographicSuiteXmlUtils}
      */
-    public static CryptographicSuitesXmlUtils getInstance() {
+    public static CryptographicSuiteXmlUtils getInstance() {
         if (singleton == null) {
-            singleton = new CryptographicSuitesXmlUtils();
+            singleton = new CryptographicSuiteXmlUtils();
         }
         return singleton;
     }
@@ -67,8 +67,8 @@ public class CryptographicSuitesXmlUtils extends XSDAbstractUtils {
     @Override
     public List<Source> getXSDSources() {
         List<Source> xsdSources = XmlDSigUtils.getInstance().getXSDSources();
-        xsdSources.add(new StreamSource(CryptographicSuitesXmlUtils.class.getResourceAsStream(CRYPTO_SUITES_CATALOGUES_SCHEMA_LOCATION)));
-        xsdSources.add(new StreamSource(CryptographicSuitesXmlUtils.class.getResourceAsStream(CRYPTO_SUITES_ALGOCAT_SCHEMA_LOCATION)));
+        xsdSources.add(new StreamSource(CryptographicSuiteXmlUtils.class.getResourceAsStream(CRYPTO_SUITES_CATALOGUES_SCHEMA_LOCATION)));
+        xsdSources.add(new StreamSource(CryptographicSuiteXmlUtils.class.getResourceAsStream(CRYPTO_SUITES_ALGOCAT_SCHEMA_LOCATION)));
         return xsdSources;
     }
 

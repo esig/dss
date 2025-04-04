@@ -7,27 +7,27 @@ import org.xml.sax.SAXException;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-class CryptographicSuitesXmlUtilsTest {
+class CryptographicSuiteXmlUtilsTest {
 
-    private static CryptographicSuitesXmlUtils cryptographicSuitesXmlUtils;
+    private static CryptographicSuiteXmlUtils cryptographicSuiteXmlUtils;
 
     @BeforeAll
     static void init() {
-        cryptographicSuitesXmlUtils = CryptographicSuitesXmlUtils.getInstance();
+        cryptographicSuiteXmlUtils = CryptographicSuiteXmlUtils.getInstance();
     }
 
     @Test
     void getJAXBContext() throws JAXBException {
-        assertNotNull(cryptographicSuitesXmlUtils.getJAXBContext());
+        assertNotNull(cryptographicSuiteXmlUtils.getJAXBContext());
         // cached
-        assertNotNull(cryptographicSuitesXmlUtils.getJAXBContext());
+        assertNotNull(cryptographicSuiteXmlUtils.getJAXBContext());
     }
 
     @Test
     void getSchema() throws SAXException {
-        assertNotNull(cryptographicSuitesXmlUtils.getSchema());
+        assertNotNull(cryptographicSuiteXmlUtils.getSchema());
         // cached
-        assertNotNull(cryptographicSuitesXmlUtils.getSchema());
+        assertNotNull(cryptographicSuiteXmlUtils.getSchema());
     }
 
 }

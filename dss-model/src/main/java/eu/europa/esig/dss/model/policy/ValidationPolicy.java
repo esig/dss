@@ -233,20 +233,20 @@ public interface ValidationPolicy {
 	MultiValuesRule getCertifiedRolesConstraint(Context context);
 
 	/**
-	 * This method creates the {@code SignatureCryptographicRules} corresponding to the context parameter. If
+	 * This method creates the {@code CryptographicSuite} corresponding to the context parameter. If
 	 * AcceptableEncryptionAlgo is not present in
 	 * the constraint file the null is returned.
 	 *
 	 * @param context
 	 *            The context of the signature cryptographic constraints: MainSignature, Timestamp, Revocation
-	 * @return {@code SignatureCryptographicRules} if AcceptableEncryptionAlgo for a given context element is
+	 * @return {@code CryptographicSuite} if AcceptableEncryptionAlgo for a given context element is
 	 *         present in the constraint file, null
 	 *         otherwise.
 	 */
-	CryptographicRules getSignatureCryptographicConstraint(Context context);
+	CryptographicSuite getSignatureCryptographicConstraint(Context context);
 
 	/**
-	 * This method creates the {@code SignatureCryptographicRules} corresponding to the context parameter. If
+	 * This method creates the {@code CryptographicSuite} corresponding to the context parameter. If
 	 * AcceptableEncryptionAlgo is not present in
 	 * the constraint file the null is returned.
 	 *
@@ -255,18 +255,18 @@ public interface ValidationPolicy {
 	 * @param subContext
 	 *            the sub context of the signature cryptographic constraints: EMPTY (signature itself),
 	 *            SigningCertificate, CACertificate
-	 * @return {@code SignatureCryptographicRules} if AcceptableEncryptionAlgo for a given context element is
+	 * @return {@code CryptographicSuite} if AcceptableEncryptionAlgo for a given context element is
 	 *         present in the constraint file, null
 	 *         otherwise.
 	 */
-	CryptographicRules getCertificateCryptographicConstraint(Context context, SubContext subContext);
+	CryptographicSuite getCertificateCryptographicConstraint(Context context, SubContext subContext);
 
 	/**
 	 * This method returns cryptographic constraints for validation of Evidence Record
 	 *
-	 * @return {@link CryptographicRules}
+	 * @return {@link CryptographicSuite}
 	 */
-	CryptographicRules getEvidenceRecordCryptographicConstraint();
+	CryptographicSuite getEvidenceRecordCryptographicConstraint();
 
 	/**
 	 * Returns certificate CA constraint
@@ -1600,68 +1600,5 @@ public interface ValidationPolicy {
 	 * @return the validation model to be used
 	 */
 	ValidationModel getValidationModel();
-
-//	/**
-//	 * Returns the constraint used for Signature validation
-//	 *
-//	 * @return {@code SignatureConstraints}
-//	 */
-//	SignatureConstraints getSignatureConstraints();
-//
-//	/**
-//	 * Returns the constraint used for Counter Signature validation
-//	 *
-//	 * @return {@code SignatureConstraints}
-//	 */
-//	SignatureConstraints getCounterSignatureConstraints();
-//
-//	/**
-//	 * Returns the constraint used for Timestamp validation
-//	 *
-//	 * @return {@code TimestampConstraints}
-//	 */
-//	TimestampConstraints getTimestampConstraints();
-//
-//	/**
-//	 * Returns the constraint used for Revocation validation
-//	 *
-//	 * @return {@code RevocationConstraints}
-//	 */
-//	RevocationConstraints getRevocationConstraints();
-//
-//	/**
-//	 * Returns the constraint used for Evidence Record validation
-//	 *
-//	 * @return {@link EvidenceRecordConstraints}
-//	 */
-//	EvidenceRecordConstraints getEvidenceRecordConstraints();
-//
-//	/**
-//	 * Returns the constraint used for ASiC Container validation
-//	 *
-//	 * @return {@code ContainerConstraints}
-//	 */
-//	ContainerConstraints getContainerConstraints();
-//
-//	/**
-//	 * Returns the constraint used for ASiC Container validation
-//	 *
-//	 * @return {@code ContainerConstraints}
-//	 */
-//	PDFAConstraints getPDFAConstraints();
-//
-//	/**
-//	 * Returns the constraint used for qualification validation
-//	 *
-//	 * @return {@code EIDAS}
-//	 */
-//	EIDAS getEIDASConstraints();
-//
-//	/**
-//	 * Returns the common constraint used for cryptographic validation
-//	 *
-//	 * @return {@code CryptographicRules}
-//	 */
-//	CryptographicRules getCryptographic();
 
 }

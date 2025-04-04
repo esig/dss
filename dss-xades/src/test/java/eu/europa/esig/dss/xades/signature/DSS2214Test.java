@@ -24,6 +24,7 @@ import eu.europa.esig.dss.alert.SilentOnStatusAlert;
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -31,23 +32,18 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.policy.EtsiValidationPolicy;
-import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.policy.jaxb.BasicSignatureConstraints;
-import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
-import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.SignatureConstraints;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.policy.ValidationPolicyLoader;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 import org.junit.jupiter.api.BeforeEach;
-
-import jakarta.xml.bind.JAXBElement;
-import jakarta.xml.bind.Unmarshaller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -110,18 +106,14 @@ class DSS2214Test extends AbstractXAdESTestSignature {
 	@SuppressWarnings("unchecked")
 	private EtsiValidationPolicy getModifiedValidationPolicy() {
 		try {
-			Unmarshaller unmarshaller = ValidationPolicyFacade.newFacade().getUnmarshaller(true);
-			JAXBElement<ConstraintsParameters> unmarshal = (JAXBElement<ConstraintsParameters>) unmarshaller
-					.unmarshal(ValidationPolicyFacade.class.getResourceAsStream("/policy/constraint.xml"));
+			EtsiValidationPolicy validationPolicy = (EtsiValidationPolicy) ValidationPolicyLoader.fromDefaultValidationPolicy().create();
 
-			ConstraintsParameters constraints = unmarshal.getValue();
-
-			SignatureConstraints signatureConstraints = constraints.getSignatureConstraints();
+			SignatureConstraints signatureConstraints = validationPolicy.getSignatureConstraints();
 			BasicSignatureConstraints basicSignatureConstraints = signatureConstraints.getBasicSignatureConstraints();
 			basicSignatureConstraints.getSigningCertificate().getAcceptableRevocationDataFound().setLevel(Level.WARN);
 			basicSignatureConstraints.getCACertificate().getAcceptableRevocationDataFound().setLevel(Level.WARN);
 
-			return new EtsiValidationPolicy(constraints);
+			return validationPolicy;
 
 		} catch (Exception e) {
 			throw new DSSException("Unable to build a custom policy", e);

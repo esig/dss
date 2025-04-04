@@ -25,8 +25,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.model.policy.CryptographicRules;
-import eu.europa.esig.dss.validation.CryptographicRulesUtils;
+import eu.europa.esig.dss.model.policy.CryptographicSuite;
+import eu.europa.esig.dss.validation.policy.CryptographicSuiteUtils;
 
 /**
  * Check if EncryptionAlgorithm is acceptable
@@ -37,7 +37,7 @@ public class EncryptionAlgorithmReliableCheck extends AbstractCryptographicCheck
 	private final EncryptionAlgorithm encryptionAlgo;
 
 	/** The cryptographic rules */
-	private final CryptographicRules cryptographicRules;
+	private final CryptographicSuite cryptographicSuite;
 
 	/**
 	 * Default constructor
@@ -46,19 +46,19 @@ public class EncryptionAlgorithmReliableCheck extends AbstractCryptographicCheck
 	 * @param encryptionAlgo {@link EncryptionAlgorithm}
 	 * @param result {@link XmlCC}
 	 * @param position {@link MessageTag}
-	 * @param cryptographicRules {@link CryptographicRules}
+	 * @param cryptographicSuite {@link CryptographicSuite}
 	 */
 	protected EncryptionAlgorithmReliableCheck(I18nProvider i18nProvider, EncryptionAlgorithm encryptionAlgo,
 											   XmlCC result, MessageTag position,
-											   CryptographicRules cryptographicRules) {
-		super(i18nProvider, result, position, cryptographicRules.getAcceptableEncryptionAlgoLevel());
+											   CryptographicSuite cryptographicSuite) {
+		super(i18nProvider, result, position, cryptographicSuite.getAcceptableEncryptionAlgoLevel());
 		this.encryptionAlgo = encryptionAlgo;
-		this.cryptographicRules = cryptographicRules;
+		this.cryptographicSuite = cryptographicSuite;
 	}
 
 	@Override
 	protected boolean process() {
-		return CryptographicRulesUtils.isEncryptionAlgorithmReliable(cryptographicRules, encryptionAlgo);
+		return CryptographicSuiteUtils.isEncryptionAlgorithmReliable(cryptographicSuite, encryptionAlgo);
 	}
 	
 	@Override

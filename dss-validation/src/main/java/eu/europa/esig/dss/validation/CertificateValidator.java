@@ -23,12 +23,13 @@ package eu.europa.esig.dss.validation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
-import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.identifier.OriginalIdentifierProvider;
 import eu.europa.esig.dss.model.identifier.TokenIdentifierProvider;
 import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.validation.CertificateVerifierBuilder;
@@ -39,12 +40,14 @@ import eu.europa.esig.dss.spi.validation.executor.ValidationContextExecutor;
 import eu.europa.esig.dss.validation.executor.ProcessExecutorProvider;
 import eu.europa.esig.dss.validation.executor.certificate.CertificateProcessExecutor;
 import eu.europa.esig.dss.validation.executor.certificate.DefaultCertificateProcessExecutor;
+import eu.europa.esig.dss.validation.policy.ValidationPolicyLoader;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
 import eu.europa.esig.dss.validation.reports.diagnostic.CertificateDiagnosticDataBuilder;
 import eu.europa.esig.dss.validation.reports.diagnostic.DiagnosticDataBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.Locale;
@@ -56,6 +59,9 @@ import java.util.Objects;
 public class CertificateValidator implements ProcessExecutorProvider<CertificateProcessExecutor> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CertificateValidator.class);
+
+	/** The path for default certificate validation policy */
+	private static final String CERTIFICATE_VALIDATION_POLICY_LOCATION = "/policy/certificate-constraint.xml";
 
 	/** The certificateToken to be validated */
 	private final CertificateToken token;
@@ -198,13 +204,27 @@ public class CertificateValidator implements ProcessExecutorProvider<Certificate
 	 * @return {@link CertificateReports}
 	 */
 	public CertificateReports validate() {
-		ValidationPolicy defaultPolicy;
-		try {
-			defaultPolicy = ValidationPolicyFacade.newFacade().getCertificateValidationPolicy();
-		} catch (Exception e) {
-			throw new DSSException("Unable to load the default policy", e);
-		}
-		return validate(defaultPolicy);
+		return validate((DSSDocument) null);
+	}
+
+	/**
+	 * This method validates a certificate with the given validation policy file
+	 *
+	 * @param policyFilePath {@link String} representing a path to the XML Validation Policy in the filesystem
+	 * @return {@link CertificateReports}
+	 */
+	public CertificateReports validate(String policyFilePath) {
+		return validate(new File(policyFilePath));
+	}
+
+	/**
+	 * This method validates a certificate with the given validation policy {@code File}
+	 *
+	 * @param policyFile {@link File} representing the XML Validation Policy
+	 * @return {@link CertificateReports}
+	 */
+	public CertificateReports validate(File policyFile) {
+		return validate(new FileDocument(policyFile));
 	}
 
 	/**
@@ -214,19 +234,29 @@ public class CertificateValidator implements ProcessExecutorProvider<Certificate
 	 * @return {@link CertificateReports}
 	 */
 	public CertificateReports validate(InputStream policyDataStream) {
+		return validate(new InMemoryDocument(policyDataStream));
+	}
+
+	/**
+	 * This method validates a certificate with the given validation policy {@code DSSDocument}
+	 *
+	 * @param policyDocument {@link DSSDocument} representing the XML Validation Policy file
+	 * @return {@link CertificateReports}
+	 */
+	public CertificateReports validate(DSSDocument policyDocument) {
+		ValidationPolicy validationPolicy;
 		try {
-			if (policyDataStream == null) {
+			if (policyDocument == null) {
 				LOG.debug("No provided validation policy : use the default policy");
-				return validate();
-
+				validationPolicy = ValidationPolicyLoader.fromValidationPolicy(
+						CertificateValidator.class.getResourceAsStream(CERTIFICATE_VALIDATION_POLICY_LOCATION)).create();
 			} else {
-				ValidationPolicy validationPolicy = ValidationPolicyFacade.newFacade().getValidationPolicy(policyDataStream);
-				return validate(validationPolicy);
+				validationPolicy = ValidationPolicyLoader.fromValidationPolicy(policyDocument).create();
 			}
-
 		} catch (Exception e) {
 			throw new IllegalInputException("Unable to load the policy", e);
 		}
+		return validate(validationPolicy);
 	}
 
 	/**

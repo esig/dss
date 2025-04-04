@@ -48,7 +48,6 @@ import eu.europa.esig.dss.enumerations.ValidationTime;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.EtsiValidationPolicy;
-import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.policy.jaxb.CertificateConstraints;
 import eu.europa.esig.dss.policy.jaxb.EIDAS;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
@@ -59,6 +58,7 @@ import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlChainItem;
 import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlSimpleCertificateReport;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.executor.certificate.DefaultCertificateProcessExecutor;
+import eu.europa.esig.dss.validation.policy.ValidationPolicyLoader;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -80,6 +80,9 @@ import static org.junit.jupiter.api.Assertions.fail;
 class CertificateProcessExecutorTest extends AbstractTestValidationExecutor {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CertificateProcessExecutorTest.class);
+
+	/** The path for default certificate validation policy */
+	private static final String CERTIFICATE_VALIDATION_POLICY_LOCATION = "src/test/resources/diag-data/policy/certificate-constraint.xml";
 
 	private static I18nProvider i18nProvider;
 
@@ -1148,7 +1151,7 @@ class CertificateProcessExecutorTest extends AbstractTestValidationExecutor {
 	
 	@Override
 	protected EtsiValidationPolicy loadDefaultPolicy() throws Exception {
-		return (EtsiValidationPolicy) ValidationPolicyFacade.newFacade().getCertificateValidationPolicy();
+		return (EtsiValidationPolicy) ValidationPolicyLoader.fromValidationPolicy(CERTIFICATE_VALIDATION_POLICY_LOCATION).create();
 	}
 
 }

@@ -24,7 +24,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.model.policy.CryptographicRules;
+import eu.europa.esig.dss.model.policy.CryptographicSuite;
 
 import java.util.Date;
 
@@ -47,10 +47,10 @@ public class CryptographicCheckWithId<T extends XmlConstraintsConclusion> extend
      * @param token {@link TokenProxy}
      * @param position {@link MessageTag}
      * @param validationDate {@link Date}
-     * @param constraint {@link CryptographicRules}
+     * @param constraint {@link CryptographicSuite}
      */
     public CryptographicCheckWithId(I18nProvider i18nProvider, T result, TokenProxy token, MessageTag position,
-                                    Date validationDate, CryptographicRules constraint) {
+                                    Date validationDate, CryptographicSuite constraint) {
         super(i18nProvider, result, token, position, validationDate, constraint, token.getId());
         this.token = token;
     }

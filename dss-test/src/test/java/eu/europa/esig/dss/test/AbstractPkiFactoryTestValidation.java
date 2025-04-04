@@ -127,6 +127,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
+import eu.europa.esig.dss.validation.policy.ValidationPolicyLoader;
 import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.enums.ConstraintStatus;
@@ -273,7 +274,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 
 		ValidationPolicy defaultValidationPolicy = null;
 		try {
-			defaultValidationPolicy = ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
+			defaultValidationPolicy = ValidationPolicyLoader.fromDefaultValidationPolicy().create();
 		} catch (Exception e) {
 			fail("Unable to load the default validation policy", e);
 		}

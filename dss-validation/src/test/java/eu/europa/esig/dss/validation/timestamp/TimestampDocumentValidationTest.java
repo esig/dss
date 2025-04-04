@@ -29,8 +29,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.policy.ValidationPolicyFacade;
-import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.simplereport.SimpleReportFacade;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -40,10 +39,10 @@ import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.policy.ValidationPolicyLoader;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
@@ -92,10 +91,11 @@ class TimestampDocumentValidationTest {
 		DocumentValidator timestampValidator = SignedDocumentValidator.fromDocument(doc);
 		timestampValidator.setDetachedContents(Collections.singletonList(digestDocument));
 		timestampValidator.setCertificateVerifier(getOfflineCertificateVerifier());
-		ConstraintsParameters constraintsParameters = ValidationPolicyFacade.newFacade().unmarshall(new File("src/test/resources/dss-1929/ts-policy.xml"));
-		assertNotNull(constraintsParameters);
 
-		Reports reports = timestampValidator.validateDocument(constraintsParameters);
+		ValidationPolicy validationPolicy = ValidationPolicyLoader.fromValidationPolicy("src/test/resources/dss-1929/ts-policy.xml").create();
+		assertNotNull(validationPolicy);
+
+		Reports reports = timestampValidator.validateDocument(validationPolicy);
 
 //		reports.print();
 
@@ -114,7 +114,7 @@ class TimestampDocumentValidationTest {
 		assertTrue(uniqueTimestamp.isSignatureValid());
 
 		timestampValidator.setValidationLevel(ValidationLevel.BASIC_SIGNATURES);
-		assertThrows(IllegalArgumentException.class, () -> timestampValidator.validateDocument(constraintsParameters));
+		assertThrows(IllegalArgumentException.class, () -> timestampValidator.validateDocument(validationPolicy));
 	}
 
 	@Test
@@ -131,10 +131,11 @@ class TimestampDocumentValidationTest {
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(doc);
 		validator.setDetachedContents(Collections.singletonList(digestDocument));
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
-		ConstraintsParameters constraintsParameters = ValidationPolicyFacade.newFacade().unmarshall(new File("src/test/resources/dss-1929/ts-policy.xml"));
-		assertNotNull(constraintsParameters);
 
-		Reports reports = validator.validateDocument(constraintsParameters);
+		ValidationPolicy validationPolicy = ValidationPolicyLoader.fromValidationPolicy("src/test/resources/dss-1929/ts-policy.xml").create();
+		assertNotNull(validationPolicy);
+
+		Reports reports = validator.validateDocument(validationPolicy);
 
 //		reports.print();
 
@@ -153,7 +154,7 @@ class TimestampDocumentValidationTest {
 		assertTrue(uniqueTimestamp.isSignatureValid());
 
 		validator.setValidationLevel(ValidationLevel.BASIC_SIGNATURES);
-		assertThrows(IllegalArgumentException.class, () -> validator.validateDocument(constraintsParameters));
+		assertThrows(IllegalArgumentException.class, () -> validator.validateDocument(validationPolicy));
 	}
 
 	private void validate(Reports reports) throws Exception {

@@ -4,7 +4,7 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
-import eu.europa.esig.dss.model.policy.CryptographicRules;
+import eu.europa.esig.dss.model.policy.CryptographicSuite;
 import eu.europa.esig.dss.model.policy.EncryptionAlgorithmWithMinKeySize;
 import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.policy.crypto.xml.jaxb.AlgorithmIdentifierType;
@@ -28,9 +28,9 @@ import java.util.Map;
  * This class wraps an ETSI TS 119 312/322 XML cryptographic suite policy
  *
  */
-public class CryptographicRulesXmlWrapper implements CryptographicRules {
+public class CryptographicSuiteXmlWrapper implements CryptographicSuite {
 
-    private static final Logger LOG = LoggerFactory.getLogger(CryptographicRulesXmlWrapper.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CryptographicSuiteXmlWrapper.class);
 
     /** Key size parameter used by RSA algorithms */
     private static final String MODULES_LENGTH_PARAMETER = "moduluslength";
@@ -67,7 +67,7 @@ public class CryptographicRulesXmlWrapper implements CryptographicRules {
      *
      * @param securitySuitabilityPolicy {@link SecuritySuitabilityPolicyType}
      */
-    public CryptographicRulesXmlWrapper(final SecuritySuitabilityPolicyType securitySuitabilityPolicy) {
+    public CryptographicSuiteXmlWrapper(final SecuritySuitabilityPolicyType securitySuitabilityPolicy) {
         this.securitySuitabilityPolicy = securitySuitabilityPolicy;
     }
 

@@ -33,7 +33,7 @@ import eu.europa.esig.dss.enumerations.SubContext;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.model.policy.CertificateApplicabilityRule;
-import eu.europa.esig.dss.model.policy.CryptographicRules;
+import eu.europa.esig.dss.model.policy.CryptographicSuite;
 import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.model.policy.MultiValuesRule;
 import eu.europa.esig.dss.model.policy.NumericValueRule;
@@ -663,9 +663,9 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 
 	private ChainItem<XmlSubXCV> certificateCryptographic(CertificateWrapper certificate, Context context,
 														  SubContext subcontext, Date validationTime) {
-		CryptographicRules cryptographicRules = validationPolicy.getCertificateCryptographicConstraint(context, subcontext);
+		CryptographicSuite cryptographicSuite = validationPolicy.getCertificateCryptographicConstraint(context, subcontext);
 		MessageTag position = ValidationProcessUtils.getCertificateChainCryptoPosition(context);
-		return new CryptographicCheck<>(i18nProvider, result, certificate, position, validationTime, cryptographicRules);
+		return new CryptographicCheck<>(i18nProvider, result, certificate, position, validationTime, cryptographicSuite);
 	}
 
 	private boolean isTrustAnchorReached(CertificateWrapper certificateWrapper, SubContext subContext) {

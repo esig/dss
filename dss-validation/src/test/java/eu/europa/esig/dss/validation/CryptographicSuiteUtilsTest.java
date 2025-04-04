@@ -29,6 +29,7 @@ import eu.europa.esig.dss.policy.jaxb.Algo;
 import eu.europa.esig.dss.policy.jaxb.AlgoExpirationDate;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
 import eu.europa.esig.dss.policy.jaxb.ListAlgo;
+import eu.europa.esig.dss.validation.policy.CryptographicSuiteUtils;
 import org.junit.jupiter.api.Test;
 
 import java.text.ParseException;
@@ -46,7 +47,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-class CryptographicRulesUtilsTest {
+class CryptographicSuiteUtilsTest {
 
     @Test
     void isEncryptionAlgorithmReliableTest() {
@@ -57,15 +58,15 @@ class CryptographicRulesUtilsTest {
         cryptographicConstraint.setAcceptableEncryptionAlgo(listAlgo);
 
         CryptographicConstraintWrapper wrapper = new CryptographicConstraintWrapper(cryptographicConstraint);
-        assertTrue(CryptographicRulesUtils.isEncryptionAlgorithmReliable(wrapper, EncryptionAlgorithm.RSA));
-        assertFalse(CryptographicRulesUtils.isEncryptionAlgorithmReliable(wrapper, EncryptionAlgorithm.DSA));
+        assertTrue(CryptographicSuiteUtils.isEncryptionAlgorithmReliable(wrapper, EncryptionAlgorithm.RSA));
+        assertFalse(CryptographicSuiteUtils.isEncryptionAlgorithmReliable(wrapper, EncryptionAlgorithm.DSA));
 
         cryptographicConstraint.setAcceptableEncryptionAlgo(null);
         cryptographicConstraint.setAcceptableDigestAlgo(listAlgo);
 
         wrapper = new CryptographicConstraintWrapper(cryptographicConstraint);
-        assertFalse(CryptographicRulesUtils.isEncryptionAlgorithmReliable(wrapper, EncryptionAlgorithm.RSA));
-        assertFalse(CryptographicRulesUtils.isEncryptionAlgorithmReliable(wrapper, EncryptionAlgorithm.DSA));
+        assertFalse(CryptographicSuiteUtils.isEncryptionAlgorithmReliable(wrapper, EncryptionAlgorithm.RSA));
+        assertFalse(CryptographicSuiteUtils.isEncryptionAlgorithmReliable(wrapper, EncryptionAlgorithm.DSA));
     }
 
     @Test
@@ -77,15 +78,15 @@ class CryptographicRulesUtilsTest {
         cryptographicConstraint.setAcceptableDigestAlgo(listAlgo);
 
         CryptographicConstraintWrapper wrapper = new CryptographicConstraintWrapper(cryptographicConstraint);
-        assertTrue(CryptographicRulesUtils.isDigestAlgorithmReliable(wrapper, DigestAlgorithm.SHA256));
-        assertFalse(CryptographicRulesUtils.isDigestAlgorithmReliable(wrapper, DigestAlgorithm.SHA1));
+        assertTrue(CryptographicSuiteUtils.isDigestAlgorithmReliable(wrapper, DigestAlgorithm.SHA256));
+        assertFalse(CryptographicSuiteUtils.isDigestAlgorithmReliable(wrapper, DigestAlgorithm.SHA1));
 
         cryptographicConstraint.setAcceptableDigestAlgo(null);
         cryptographicConstraint.setAcceptableEncryptionAlgo(listAlgo);
 
         wrapper = new CryptographicConstraintWrapper(cryptographicConstraint);
-        assertFalse(CryptographicRulesUtils.isDigestAlgorithmReliable(wrapper, DigestAlgorithm.SHA256));
-        assertFalse(CryptographicRulesUtils.isDigestAlgorithmReliable(wrapper, DigestAlgorithm.SHA1));
+        assertFalse(CryptographicSuiteUtils.isDigestAlgorithmReliable(wrapper, DigestAlgorithm.SHA256));
+        assertFalse(CryptographicSuiteUtils.isDigestAlgorithmReliable(wrapper, DigestAlgorithm.SHA1));
     }
 
     @Test
@@ -97,22 +98,22 @@ class CryptographicRulesUtilsTest {
         cryptographicConstraint.setMiniPublicKeySize(listAlgo);
 
         CryptographicConstraintWrapper wrapper = new CryptographicConstraintWrapper(cryptographicConstraint);
-        assertTrue(CryptographicRulesUtils.isEncryptionAlgorithmWithKeySizeReliable(wrapper, EncryptionAlgorithm.RSA, 3072));
-        assertFalse(CryptographicRulesUtils.isEncryptionAlgorithmWithKeySizeReliable(wrapper, EncryptionAlgorithm.RSA, 2048));
+        assertTrue(CryptographicSuiteUtils.isEncryptionAlgorithmWithKeySizeReliable(wrapper, EncryptionAlgorithm.RSA, 3072));
+        assertFalse(CryptographicSuiteUtils.isEncryptionAlgorithmWithKeySizeReliable(wrapper, EncryptionAlgorithm.RSA, 2048));
 
         // not defined -> reliable
-        assertTrue(CryptographicRulesUtils.isEncryptionAlgorithmWithKeySizeReliable(wrapper, EncryptionAlgorithm.DSA, 3072));
-        assertTrue(CryptographicRulesUtils.isEncryptionAlgorithmWithKeySizeReliable(wrapper, EncryptionAlgorithm.DSA, 2048));
+        assertTrue(CryptographicSuiteUtils.isEncryptionAlgorithmWithKeySizeReliable(wrapper, EncryptionAlgorithm.DSA, 3072));
+        assertTrue(CryptographicSuiteUtils.isEncryptionAlgorithmWithKeySizeReliable(wrapper, EncryptionAlgorithm.DSA, 2048));
 
         listAlgo.getAlgos().add(createAlgo(EncryptionAlgorithm.DSA, 2000));
-        assertTrue(CryptographicRulesUtils.isEncryptionAlgorithmWithKeySizeReliable(wrapper, EncryptionAlgorithm.DSA, 3072));
-        assertTrue(CryptographicRulesUtils.isEncryptionAlgorithmWithKeySizeReliable(wrapper, EncryptionAlgorithm.DSA, 2048));
+        assertTrue(CryptographicSuiteUtils.isEncryptionAlgorithmWithKeySizeReliable(wrapper, EncryptionAlgorithm.DSA, 3072));
+        assertTrue(CryptographicSuiteUtils.isEncryptionAlgorithmWithKeySizeReliable(wrapper, EncryptionAlgorithm.DSA, 2048));
 
         listAlgo = new ListAlgo();
         listAlgo.getAlgos().add(createAlgo(EncryptionAlgorithm.DSA, 4000));
         cryptographicConstraint.setMiniPublicKeySize(listAlgo);
-        assertFalse(CryptographicRulesUtils.isEncryptionAlgorithmWithKeySizeReliable(wrapper, EncryptionAlgorithm.DSA, 3072));
-        assertFalse(CryptographicRulesUtils.isEncryptionAlgorithmWithKeySizeReliable(wrapper, EncryptionAlgorithm.DSA, 2048));
+        assertFalse(CryptographicSuiteUtils.isEncryptionAlgorithmWithKeySizeReliable(wrapper, EncryptionAlgorithm.DSA, 3072));
+        assertFalse(CryptographicSuiteUtils.isEncryptionAlgorithmWithKeySizeReliable(wrapper, EncryptionAlgorithm.DSA, 2048));
     }
 
     @Test
@@ -131,13 +132,13 @@ class CryptographicRulesUtilsTest {
         Calendar newDateCalendar = Calendar.getInstance();
         newDateCalendar.set(2025, Calendar.JANUARY, 1);
 
-        assertEquals(Collections.singletonList(DigestAlgorithm.SHA256), CryptographicRulesUtils.getReliableDigestAlgorithmsAtTime(wrapper, oldDateCalendar.getTime()));
-        assertEquals(Collections.singletonList(DigestAlgorithm.SHA256), CryptographicRulesUtils.getReliableDigestAlgorithmsAtTime(wrapper, newDateCalendar.getTime()));
+        assertEquals(Collections.singletonList(DigestAlgorithm.SHA256), CryptographicSuiteUtils.getReliableDigestAlgorithmsAtTime(wrapper, oldDateCalendar.getTime()));
+        assertEquals(Collections.singletonList(DigestAlgorithm.SHA256), CryptographicSuiteUtils.getReliableDigestAlgorithmsAtTime(wrapper, newDateCalendar.getTime()));
 
         listAlgo.getAlgos().add(createAlgo(DigestAlgorithm.SHA512));
 
-        assertEquals(Arrays.asList(DigestAlgorithm.SHA256, DigestAlgorithm.SHA512), CryptographicRulesUtils.getReliableDigestAlgorithmsAtTime(wrapper, oldDateCalendar.getTime()));
-        assertEquals(Arrays.asList(DigestAlgorithm.SHA256, DigestAlgorithm.SHA512), CryptographicRulesUtils.getReliableDigestAlgorithmsAtTime(wrapper, newDateCalendar.getTime()));
+        assertEquals(Arrays.asList(DigestAlgorithm.SHA256, DigestAlgorithm.SHA512), CryptographicSuiteUtils.getReliableDigestAlgorithmsAtTime(wrapper, oldDateCalendar.getTime()));
+        assertEquals(Arrays.asList(DigestAlgorithm.SHA256, DigestAlgorithm.SHA512), CryptographicSuiteUtils.getReliableDigestAlgorithmsAtTime(wrapper, newDateCalendar.getTime()));
 
         AlgoExpirationDate algoExpirationDate = new AlgoExpirationDate();
         algoExpirationDate.setLevel(Level.FAIL);
@@ -148,23 +149,23 @@ class CryptographicRulesUtilsTest {
         cryptographicConstraint.setAlgoExpirationDate(algoExpirationDate);
 
         // no expiration date
-        assertEquals(Arrays.asList(DigestAlgorithm.SHA256, DigestAlgorithm.SHA512), CryptographicRulesUtils.getReliableDigestAlgorithmsAtTime(wrapper, oldDateCalendar.getTime()));
-        assertEquals(Arrays.asList(DigestAlgorithm.SHA256, DigestAlgorithm.SHA512), CryptographicRulesUtils.getReliableDigestAlgorithmsAtTime(wrapper, newDateCalendar.getTime()));
+        assertEquals(Arrays.asList(DigestAlgorithm.SHA256, DigestAlgorithm.SHA512), CryptographicSuiteUtils.getReliableDigestAlgorithmsAtTime(wrapper, oldDateCalendar.getTime()));
+        assertEquals(Arrays.asList(DigestAlgorithm.SHA256, DigestAlgorithm.SHA512), CryptographicSuiteUtils.getReliableDigestAlgorithmsAtTime(wrapper, newDateCalendar.getTime()));
 
         algo.setDate("2029");
         // expiration in the future
-        assertEquals(Arrays.asList(DigestAlgorithm.SHA256, DigestAlgorithm.SHA512), CryptographicRulesUtils.getReliableDigestAlgorithmsAtTime(wrapper, oldDateCalendar.getTime()));
-        assertEquals(Arrays.asList(DigestAlgorithm.SHA256, DigestAlgorithm.SHA512), CryptographicRulesUtils.getReliableDigestAlgorithmsAtTime(wrapper, newDateCalendar.getTime()));
+        assertEquals(Arrays.asList(DigestAlgorithm.SHA256, DigestAlgorithm.SHA512), CryptographicSuiteUtils.getReliableDigestAlgorithmsAtTime(wrapper, oldDateCalendar.getTime()));
+        assertEquals(Arrays.asList(DigestAlgorithm.SHA256, DigestAlgorithm.SHA512), CryptographicSuiteUtils.getReliableDigestAlgorithmsAtTime(wrapper, newDateCalendar.getTime()));
 
         algo.setDate("2020");
         // expiration happened
-        assertEquals(Arrays.asList(DigestAlgorithm.SHA256, DigestAlgorithm.SHA512), CryptographicRulesUtils.getReliableDigestAlgorithmsAtTime(wrapper, oldDateCalendar.getTime()));
-        assertEquals(Collections.singletonList(DigestAlgorithm.SHA512), CryptographicRulesUtils.getReliableDigestAlgorithmsAtTime(wrapper, newDateCalendar.getTime()));
+        assertEquals(Arrays.asList(DigestAlgorithm.SHA256, DigestAlgorithm.SHA512), CryptographicSuiteUtils.getReliableDigestAlgorithmsAtTime(wrapper, oldDateCalendar.getTime()));
+        assertEquals(Collections.singletonList(DigestAlgorithm.SHA512), CryptographicSuiteUtils.getReliableDigestAlgorithmsAtTime(wrapper, newDateCalendar.getTime()));
 
         algo.setDate("2005");
         // old expiration
-        assertEquals(Collections.singletonList(DigestAlgorithm.SHA512), CryptographicRulesUtils.getReliableDigestAlgorithmsAtTime(wrapper, oldDateCalendar.getTime()));
-        assertEquals(Collections.singletonList(DigestAlgorithm.SHA512), CryptographicRulesUtils.getReliableDigestAlgorithmsAtTime(wrapper, newDateCalendar.getTime()));
+        assertEquals(Collections.singletonList(DigestAlgorithm.SHA512), CryptographicSuiteUtils.getReliableDigestAlgorithmsAtTime(wrapper, oldDateCalendar.getTime()));
+        assertEquals(Collections.singletonList(DigestAlgorithm.SHA512), CryptographicSuiteUtils.getReliableDigestAlgorithmsAtTime(wrapper, newDateCalendar.getTime()));
     }
 
     @Test
@@ -186,14 +187,14 @@ class CryptographicRulesUtilsTest {
         List<EncryptionAlgorithmWithMinKeySize> expectedList = new ArrayList<>();
         expectedList.add(new EncryptionAlgorithmWithMinKeySize(EncryptionAlgorithm.RSA, 0));
 
-        assertEquals(expectedList, CryptographicRulesUtils.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(wrapper, oldDateCalendar.getTime()));
-        assertEquals(expectedList, CryptographicRulesUtils.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(wrapper, newDateCalendar.getTime()));
+        assertEquals(expectedList, CryptographicSuiteUtils.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(wrapper, oldDateCalendar.getTime()));
+        assertEquals(expectedList, CryptographicSuiteUtils.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(wrapper, newDateCalendar.getTime()));
 
         listAlgo.getAlgos().add(createAlgo(EncryptionAlgorithm.ECDSA));
         expectedList.add(new EncryptionAlgorithmWithMinKeySize(EncryptionAlgorithm.ECDSA, 0));
 
-        assertEquals(expectedList, CryptographicRulesUtils.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(wrapper, oldDateCalendar.getTime()));
-        assertEquals(expectedList, CryptographicRulesUtils.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(wrapper, newDateCalendar.getTime()));
+        assertEquals(expectedList, CryptographicSuiteUtils.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(wrapper, oldDateCalendar.getTime()));
+        assertEquals(expectedList, CryptographicSuiteUtils.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(wrapper, newDateCalendar.getTime()));
 
         AlgoExpirationDate algoExpirationDate = new AlgoExpirationDate();
         algoExpirationDate.setLevel(Level.FAIL);
@@ -208,31 +209,31 @@ class CryptographicRulesUtilsTest {
         expectedList.add(new EncryptionAlgorithmWithMinKeySize(EncryptionAlgorithm.RSA, 1024));
         expectedList.add(new EncryptionAlgorithmWithMinKeySize(EncryptionAlgorithm.ECDSA, 0));
 
-        assertEquals(expectedList, CryptographicRulesUtils.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(wrapper, oldDateCalendar.getTime()));
-        assertEquals(expectedList, CryptographicRulesUtils.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(wrapper, newDateCalendar.getTime()));
+        assertEquals(expectedList, CryptographicSuiteUtils.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(wrapper, oldDateCalendar.getTime()));
+        assertEquals(expectedList, CryptographicSuiteUtils.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(wrapper, newDateCalendar.getTime()));
 
         ListAlgo minKeySize = new ListAlgo();
         minKeySize.setLevel(Level.FAIL);
         minKeySize.getAlgos().add(createAlgo(EncryptionAlgorithm.RSA, 1024));
         cryptographicConstraint.setMiniPublicKeySize(minKeySize);
 
-        assertEquals(expectedList, CryptographicRulesUtils.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(wrapper, oldDateCalendar.getTime()));
-        assertEquals(expectedList, CryptographicRulesUtils.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(wrapper, newDateCalendar.getTime()));
+        assertEquals(expectedList, CryptographicSuiteUtils.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(wrapper, oldDateCalendar.getTime()));
+        assertEquals(expectedList, CryptographicSuiteUtils.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(wrapper, newDateCalendar.getTime()));
 
         algo.setDate("2029");
-        assertEquals(expectedList, CryptographicRulesUtils.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(wrapper, oldDateCalendar.getTime()));
-        assertEquals(expectedList, CryptographicRulesUtils.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(wrapper, newDateCalendar.getTime()));
+        assertEquals(expectedList, CryptographicSuiteUtils.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(wrapper, oldDateCalendar.getTime()));
+        assertEquals(expectedList, CryptographicSuiteUtils.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(wrapper, newDateCalendar.getTime()));
 
         List<EncryptionAlgorithmWithMinKeySize> ecdsaOnlyList = new ArrayList<>();
         ecdsaOnlyList.add(new EncryptionAlgorithmWithMinKeySize(EncryptionAlgorithm.ECDSA, 0));
 
         algo.setDate("2020");
-        assertEquals(expectedList, CryptographicRulesUtils.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(wrapper, oldDateCalendar.getTime()));
-        assertEquals(ecdsaOnlyList, CryptographicRulesUtils.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(wrapper, newDateCalendar.getTime()));
+        assertEquals(expectedList, CryptographicSuiteUtils.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(wrapper, oldDateCalendar.getTime()));
+        assertEquals(ecdsaOnlyList, CryptographicSuiteUtils.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(wrapper, newDateCalendar.getTime()));
 
         algo.setDate("2005");
-        assertEquals(ecdsaOnlyList, CryptographicRulesUtils.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(wrapper, oldDateCalendar.getTime()));
-        assertEquals(ecdsaOnlyList, CryptographicRulesUtils.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(wrapper, newDateCalendar.getTime()));
+        assertEquals(ecdsaOnlyList, CryptographicSuiteUtils.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(wrapper, oldDateCalendar.getTime()));
+        assertEquals(ecdsaOnlyList, CryptographicSuiteUtils.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(wrapper, newDateCalendar.getTime()));
 
         Algo biggerAlgo = new Algo();
         biggerAlgo.setValue("RSA");
@@ -244,8 +245,8 @@ class CryptographicRulesUtilsTest {
         rsa1900List.add(new EncryptionAlgorithmWithMinKeySize(EncryptionAlgorithm.RSA, 1900));
         rsa1900List.add(new EncryptionAlgorithmWithMinKeySize(EncryptionAlgorithm.ECDSA, 0));
 
-        assertEquals(rsa1900List, CryptographicRulesUtils.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(wrapper, oldDateCalendar.getTime()));
-        assertEquals(ecdsaOnlyList, CryptographicRulesUtils.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(wrapper, newDateCalendar.getTime()));
+        assertEquals(rsa1900List, CryptographicSuiteUtils.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(wrapper, oldDateCalendar.getTime()));
+        assertEquals(ecdsaOnlyList, CryptographicSuiteUtils.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(wrapper, newDateCalendar.getTime()));
 
         biggerAlgo = new Algo();
         biggerAlgo.setValue("RSA");
@@ -257,8 +258,8 @@ class CryptographicRulesUtilsTest {
         rsa3000List.add(new EncryptionAlgorithmWithMinKeySize(EncryptionAlgorithm.RSA, 3000));
         rsa3000List.add(new EncryptionAlgorithmWithMinKeySize(EncryptionAlgorithm.ECDSA, 0));
 
-        assertEquals(rsa1900List, CryptographicRulesUtils.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(wrapper, oldDateCalendar.getTime()));
-        assertEquals(rsa3000List, CryptographicRulesUtils.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(wrapper, newDateCalendar.getTime()));
+        assertEquals(rsa1900List, CryptographicSuiteUtils.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(wrapper, oldDateCalendar.getTime()));
+        assertEquals(rsa3000List, CryptographicSuiteUtils.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(wrapper, newDateCalendar.getTime()));
 
         minKeySize.getAlgos().clear();
         minKeySize.getAlgos().add(createAlgo(EncryptionAlgorithm.RSA, 4000));
@@ -267,8 +268,8 @@ class CryptographicRulesUtilsTest {
         rsa4000List.add(new EncryptionAlgorithmWithMinKeySize(EncryptionAlgorithm.RSA, 4000));
         rsa4000List.add(new EncryptionAlgorithmWithMinKeySize(EncryptionAlgorithm.ECDSA, 0));
 
-        assertEquals(rsa4000List, CryptographicRulesUtils.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(wrapper, oldDateCalendar.getTime()));
-        assertEquals(rsa4000List, CryptographicRulesUtils.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(wrapper, newDateCalendar.getTime()));
+        assertEquals(rsa4000List, CryptographicSuiteUtils.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(wrapper, oldDateCalendar.getTime()));
+        assertEquals(rsa4000List, CryptographicSuiteUtils.getReliableEncryptionAlgorithmsWithMinimalKeyLengthAtTime(wrapper, newDateCalendar.getTime()));
     }
 
     @Test
@@ -284,14 +285,14 @@ class CryptographicRulesUtilsTest {
         CryptographicConstraintWrapper wrapper = new CryptographicConstraintWrapper(cryptographicConstraint);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy");
 
-        assertNull(CryptographicRulesUtils.getExpirationDate(wrapper, EncryptionAlgorithm.RSA, 1024));
-        assertEquals(getDate("2022", simpleDateFormat), CryptographicRulesUtils.getExpirationDate(wrapper, EncryptionAlgorithm.RSA, 2048));
-        assertEquals(getDate("2025", simpleDateFormat), CryptographicRulesUtils.getExpirationDate(wrapper, EncryptionAlgorithm.RSA, 3072));
-        assertEquals(getDate("2025", simpleDateFormat), CryptographicRulesUtils.getExpirationDate(wrapper, EncryptionAlgorithm.RSA, 4096));
-        assertNull(CryptographicRulesUtils.getExpirationDate(wrapper, EncryptionAlgorithm.DSA, 1024));
-        assertNull(CryptographicRulesUtils.getExpirationDate(wrapper, EncryptionAlgorithm.DSA, 2048));
-        assertNull(CryptographicRulesUtils.getExpirationDate(wrapper, EncryptionAlgorithm.DSA, 3072));
-        assertNull(CryptographicRulesUtils.getExpirationDate(wrapper, EncryptionAlgorithm.DSA, 4096));
+        assertNull(CryptographicSuiteUtils.getExpirationDate(wrapper, EncryptionAlgorithm.RSA, 1024));
+        assertEquals(getDate("2022", simpleDateFormat), CryptographicSuiteUtils.getExpirationDate(wrapper, EncryptionAlgorithm.RSA, 2048));
+        assertEquals(getDate("2025", simpleDateFormat), CryptographicSuiteUtils.getExpirationDate(wrapper, EncryptionAlgorithm.RSA, 3072));
+        assertEquals(getDate("2025", simpleDateFormat), CryptographicSuiteUtils.getExpirationDate(wrapper, EncryptionAlgorithm.RSA, 4096));
+        assertNull(CryptographicSuiteUtils.getExpirationDate(wrapper, EncryptionAlgorithm.DSA, 1024));
+        assertNull(CryptographicSuiteUtils.getExpirationDate(wrapper, EncryptionAlgorithm.DSA, 2048));
+        assertNull(CryptographicSuiteUtils.getExpirationDate(wrapper, EncryptionAlgorithm.DSA, 3072));
+        assertNull(CryptographicSuiteUtils.getExpirationDate(wrapper, EncryptionAlgorithm.DSA, 4096));
     }
 
     @Test
@@ -308,11 +309,11 @@ class CryptographicRulesUtilsTest {
         CryptographicConstraintWrapper wrapper = new CryptographicConstraintWrapper(cryptographicConstraint);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy");
 
-        assertNull(CryptographicRulesUtils.getExpirationDate(wrapper, DigestAlgorithm.MD5));
-        assertEquals(getDate("2022", simpleDateFormat), CryptographicRulesUtils.getExpirationDate(wrapper, DigestAlgorithm.SHA1));
-        assertEquals(getDate("2025", simpleDateFormat), CryptographicRulesUtils.getExpirationDate(wrapper, DigestAlgorithm.SHA256));
-        assertEquals(getDate("2028", simpleDateFormat), CryptographicRulesUtils.getExpirationDate(wrapper, DigestAlgorithm.SHA512));
-        assertNull(CryptographicRulesUtils.getExpirationDate(wrapper, DigestAlgorithm.SHA224));
+        assertNull(CryptographicSuiteUtils.getExpirationDate(wrapper, DigestAlgorithm.MD5));
+        assertEquals(getDate("2022", simpleDateFormat), CryptographicSuiteUtils.getExpirationDate(wrapper, DigestAlgorithm.SHA1));
+        assertEquals(getDate("2025", simpleDateFormat), CryptographicSuiteUtils.getExpirationDate(wrapper, DigestAlgorithm.SHA256));
+        assertEquals(getDate("2028", simpleDateFormat), CryptographicSuiteUtils.getExpirationDate(wrapper, DigestAlgorithm.SHA512));
+        assertNull(CryptographicSuiteUtils.getExpirationDate(wrapper, DigestAlgorithm.SHA224));
     }
 
     private Algo createAlgo(EncryptionAlgorithm encryptionAlgorithm) {

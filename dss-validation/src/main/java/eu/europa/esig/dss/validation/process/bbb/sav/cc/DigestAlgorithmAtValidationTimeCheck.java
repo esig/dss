@@ -26,8 +26,8 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.model.policy.CryptographicRules;
-import eu.europa.esig.dss.validation.CryptographicRulesUtils;
+import eu.europa.esig.dss.model.policy.CryptographicSuite;
+import eu.europa.esig.dss.validation.policy.CryptographicSuiteUtils;
 
 import java.util.Date;
 
@@ -43,7 +43,7 @@ public class DigestAlgorithmAtValidationTimeCheck extends AbstractCryptographicC
 	private final Date validationDate;
 
 	/** The cryptographic rules */
-	private final CryptographicRules cryptographicRules;
+	private final CryptographicSuite cryptographicSuite;
 
 	/**
 	 * Default constructor
@@ -53,29 +53,29 @@ public class DigestAlgorithmAtValidationTimeCheck extends AbstractCryptographicC
 	 * @param validationDate {@link Date}
 	 * @param result {@link XmlCC}
 	 * @param position {@link MessageTag}
-	 * @param cryptographicRules {@link CryptographicRules}
+	 * @param cryptographicSuite {@link CryptographicSuite}
 	 */
 	protected DigestAlgorithmAtValidationTimeCheck(I18nProvider i18nProvider, DigestAlgorithm digestAlgo,
 												   Date validationDate, XmlCC result, MessageTag position,
-												   CryptographicRules cryptographicRules) {
-		super(i18nProvider, result, position, cryptographicRules.getAlgoExpirationDateLevel());
+												   CryptographicSuite cryptographicSuite) {
+		super(i18nProvider, result, position, cryptographicSuite.getAlgoExpirationDateLevel());
 		this.digestAlgo = digestAlgo;
 		this.validationDate = validationDate;
-		this.cryptographicRules = cryptographicRules;
+		this.cryptographicSuite = cryptographicSuite;
 	}
 
 	@Override
 	protected boolean process() {
-		Date expirationDate = CryptographicRulesUtils.getExpirationDate(cryptographicRules, digestAlgo);
+		Date expirationDate = CryptographicSuiteUtils.getExpirationDate(cryptographicSuite, digestAlgo);
 		return expirationDate == null || !expirationDate.before(validationDate);
 	}
 	
 	@Override
 	protected Level getLevel() {
-		Date algoExpirationDate = CryptographicRulesUtils.getExpirationDate(cryptographicRules, digestAlgo);
-		Date cryptographicSuiteUpdateDate = cryptographicRules.getCryptographicSuiteUpdateDate();
+		Date algoExpirationDate = CryptographicSuiteUtils.getExpirationDate(cryptographicSuite, digestAlgo);
+		Date cryptographicSuiteUpdateDate = cryptographicSuite.getCryptographicSuiteUpdateDate();
 		if (algoExpirationDate != null && cryptographicSuiteUpdateDate != null && cryptographicSuiteUpdateDate.before(algoExpirationDate)) {
-			return cryptographicRules.getAlgoExpirationDateAfterUpdateLevel();
+			return cryptographicSuite.getAlgoExpirationDateAfterUpdateLevel();
 		}
 		return super.getLevel();
 	}

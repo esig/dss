@@ -25,7 +25,7 @@ import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.SubContext;
 import eu.europa.esig.dss.enumerations.ValidationModel;
 import eu.europa.esig.dss.model.policy.CertificateApplicabilityRule;
-import eu.europa.esig.dss.model.policy.CryptographicRules;
+import eu.europa.esig.dss.model.policy.CryptographicSuite;
 import eu.europa.esig.dss.model.policy.DurationRule;
 import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.model.policy.MultiValuesRule;
@@ -460,12 +460,12 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public CryptographicRules getSignatureCryptographicConstraint(Context context) {
+	public CryptographicSuite getSignatureCryptographicConstraint(Context context) {
 		BasicSignatureConstraints basicSignature = getBasicSignatureConstraintsByContext(context);
 		if (basicSignature != null) {
 			CryptographicConstraint sigCryptographic = basicSignature.getCryptographic();
-			initializeCryptographicRules(sigCryptographic, getCryptographic());
-			return toRule(sigCryptographic);
+			initializeCryptographicSuite(sigCryptographic, getCryptographic());
+			return toCryptographicSuite(sigCryptographic);
 		}
 		return new CryptographicConstraintWrapper();
 	}
@@ -474,19 +474,19 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		BasicSignatureConstraints basicSignature = getBasicSignatureConstraintsByContext(context);
 		if (basicSignature != null) {
 			CryptographicConstraint sigCryptographic = basicSignature.getCryptographic();
-			initializeCryptographicRules(sigCryptographic, getCryptographic());
+			initializeCryptographicSuite(sigCryptographic, getCryptographic());
 			return sigCryptographic;
 		}
 		return null;
 	}
 
 	@Override
-	public CryptographicRules getCertificateCryptographicConstraint(Context context, SubContext subContext) {
+	public CryptographicSuite getCertificateCryptographicConstraint(Context context, SubContext subContext) {
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
 		if (certificateConstraints != null) {
 			CryptographicConstraint certCryptographic = certificateConstraints.getCryptographic();
-			initializeCryptographicRules(certCryptographic, getSignatureCryptographic(context));
-			return toRule(certCryptographic);
+			initializeCryptographicSuite(certCryptographic, getSignatureCryptographic(context));
+			return toCryptographicSuite(certCryptographic);
 		}
 		return new CryptographicConstraintWrapper();
 	}
@@ -498,7 +498,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	 * @param cryptographicConstraint {@link CryptographicConstraint}
 	 * @param defaultConstraint {@link CryptographicConstraint}
 	 */
-	private void initializeCryptographicRules(CryptographicConstraint cryptographicConstraint, CryptographicConstraint defaultConstraint) {
+	private void initializeCryptographicSuite(CryptographicConstraint cryptographicConstraint, CryptographicConstraint defaultConstraint) {
 		if (defaultConstraint != null) {
 			if (cryptographicConstraint.getAcceptableDigestAlgo() == null) {
 				cryptographicConstraint.setAcceptableDigestAlgo(defaultConstraint.getAcceptableDigestAlgo());
@@ -1541,12 +1541,12 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public CryptographicRules getEvidenceRecordCryptographicConstraint() {
+	public CryptographicSuite getEvidenceRecordCryptographicConstraint() {
 		EvidenceRecordConstraints evidenceRecordConstraints = getEvidenceRecordConstraints();
 		if (evidenceRecordConstraints != null) {
 			CryptographicConstraint evidenceRecordCryptographic = evidenceRecordConstraints.getCryptographic();
-			initializeCryptographicRules(evidenceRecordCryptographic, getCryptographic());
-			return toRule(evidenceRecordCryptographic);
+			initializeCryptographicSuite(evidenceRecordCryptographic, getCryptographic());
+			return toCryptographicSuite(evidenceRecordCryptographic);
 		}
 		return new CryptographicConstraintWrapper();
 	}
@@ -1816,7 +1816,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	/**
 	 * Returns the constraint used for Signature validation
 	 *
-	 * @return toLevelRule({@link SignatureConstraints}
+	 * @return {@link SignatureConstraints}
 	 */
 	public SignatureConstraints getSignatureConstraints() {
 		return policy.getSignatureConstraints();
@@ -1825,7 +1825,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	/**
 	 * Returns the constraint used for Counter Signature validation
 	 *
-	 * @return toLevelRule({@link SignatureConstraints}
+	 * @return {@link SignatureConstraints}
 	 */
 	public SignatureConstraints getCounterSignatureConstraints() {
 		return policy.getCounterSignatureConstraints();
@@ -1834,7 +1834,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	/**
 	 * Returns the constraint used for Timestamp validation
 	 *
-	 * @return toLevelRule({@link TimestampConstraints}
+	 * @return {@link TimestampConstraints}
 	 */
 	public TimestampConstraints getTimestampConstraints() {
 		return policy.getTimestamp();
@@ -1843,7 +1843,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	/**
 	 * Returns the constraint used for Revocation validation
 	 *
-	 * @return toLevelRule({@code RevocationConstraints}
+	 * @return {@code RevocationConstraints}
 	 */
 	public RevocationConstraints getRevocationConstraints() {
 		return policy.getRevocation();
@@ -1852,7 +1852,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	/**
 	 * Returns the constraint used for Evidence Record validation
 	 *
-	 * @return toLevelRule({@code EvidenceRecordConstraints}
+	 * @return {@code EvidenceRecordConstraints}
 	 */
 	public EvidenceRecordConstraints getEvidenceRecordConstraints() {
 		return policy.getEvidenceRecord();
@@ -1861,7 +1861,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	/**
 	 * Returns the constraint used for ASiC Container validation
 	 *
-	 * @return toLevelRule({@code ContainerConstraints}
+	 * @return {@code ContainerConstraints}
 	 */
 	public ContainerConstraints getContainerConstraints() {
 		return policy.getContainerConstraints();
@@ -1870,7 +1870,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	/**
 	 * Returns the constraint used for ASiC Container validation
 	 *
-	 * @return toLevelRule({@code ContainerConstraints}
+	 * @return {@code ContainerConstraints}
 	 */
 	public PDFAConstraints getPDFAConstraints() {
 		return policy.getPDFAConstraints();
@@ -1879,7 +1879,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	/**
 	 * Returns the constraint used for qualification validation
 	 *
-	 * @return toLevelRule({@code EIDAS}
+	 * @return {@code EIDAS}
 	 */
 	public EIDAS getEIDASConstraints() {
 		return policy.getEIDAS();
@@ -1888,7 +1888,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	/**
 	 * Returns the common constraint used for cryptographic validation
 	 *
-	 * @return toLevelRule({@code CryptographicRules}
+	 * @return {@code CryptographicConstraint}
 	 */
 	public CryptographicConstraint getCryptographic() {
 		return policy.getCryptographic();
@@ -1936,7 +1936,7 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		return new CertificateValuesConstraintWrapper(constraint);
 	}
 
-	private CryptographicConstraintWrapper toRule(CryptographicConstraint constraint) {
+	private CryptographicConstraintWrapper toCryptographicSuite(CryptographicConstraint constraint) {
 		return new CryptographicConstraintWrapper(constraint);
 	}
 

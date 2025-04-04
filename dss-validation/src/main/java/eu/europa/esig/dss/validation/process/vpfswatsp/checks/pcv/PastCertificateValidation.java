@@ -32,7 +32,7 @@ import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.SubContext;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.model.policy.CryptographicRules;
+import eu.europa.esig.dss.model.policy.CryptographicSuite;
 import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.utils.Utils;
@@ -242,7 +242,7 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 	}
 
 	private ChainItem<XmlPCV> cryptographicCheck(XmlPCV result, CertificateWrapper certificate, Date validationTime, SubContext subContext) {
-		CryptographicRules constraint = policy.getCertificateCryptographicConstraint(context, subContext);
+		CryptographicSuite constraint = policy.getCertificateCryptographicConstraint(context, subContext);
 		MessageTag position = ValidationProcessUtils.getCertificateChainCryptoPosition(context);
 		
 		return new CryptographicCheck<>(i18nProvider, result, certificate, position, validationTime, constraint);

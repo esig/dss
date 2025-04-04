@@ -12,7 +12,7 @@ import java.util.Map;
  * Contains policy for validation of cryptographic suites used on the signature or certificates
  *
  */
-public interface CryptographicRules extends LevelRule {
+public interface CryptographicSuite extends LevelRule {
 
     /**
      * Gets a list of digest algorithms accepted by the validation policy

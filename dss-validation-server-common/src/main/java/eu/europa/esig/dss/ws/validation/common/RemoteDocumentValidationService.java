@@ -20,14 +20,13 @@
  */
 package eu.europa.esig.dss.ws.validation.common;
 
-import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.ValidationPolicyFacade;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.policy.ValidationPolicyLoader;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.ws.converter.RemoteDocumentConverter;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
@@ -37,7 +36,6 @@ import eu.europa.esig.dss.ws.validation.dto.WSReportsDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.List;
 
@@ -77,7 +75,7 @@ public class RemoteDocumentValidationService {
 	 */
 	public void setDefaultValidationPolicy(InputStream validationPolicy) {
 		try {
-			this.defaultValidationPolicy = ValidationPolicyFacade.newFacade().getValidationPolicy(validationPolicy);
+			this.defaultValidationPolicy = ValidationPolicyLoader.fromValidationPolicy(validationPolicy).create();
 		} catch (Exception e) {
 			throw new DSSRemoteServiceException(String.format("Unable to instantiate validation policy: %s", e.getMessage()), e);
 		}
@@ -144,11 +142,7 @@ public class RemoteDocumentValidationService {
 	}
 
 	private ValidationPolicy getValidationPolicy(RemoteDocument policy) {
-		try (ByteArrayInputStream bais = new ByteArrayInputStream(policy.getBytes())) {
-			return ValidationPolicyFacade.newFacade().getValidationPolicy(bais);
-		} catch (Exception e) {
-			throw new IllegalInputException(String.format("Unable to load the validation policy : %s", e.getMessage()), e);
-		}
+		return ValidationPolicyLoader.fromValidationPolicy(RemoteDocumentConverter.toDSSDocument(policy)).create();
 	}
 
 	/**

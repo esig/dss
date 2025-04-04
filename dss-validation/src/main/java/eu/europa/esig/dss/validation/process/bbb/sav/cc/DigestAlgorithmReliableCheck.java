@@ -25,8 +25,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.model.policy.CryptographicRules;
-import eu.europa.esig.dss.validation.CryptographicRulesUtils;
+import eu.europa.esig.dss.model.policy.CryptographicSuite;
+import eu.europa.esig.dss.validation.policy.CryptographicSuiteUtils;
 
 /**
  * Check if DigestAlgorithm is acceptable
@@ -37,7 +37,7 @@ public class DigestAlgorithmReliableCheck extends AbstractCryptographicCheck {
 	private final DigestAlgorithm digestAlgo;
 
 	/** The cryptographic rules */
-	private final CryptographicRules cryptographicRules;
+	private final CryptographicSuite cryptographicSuite;
 
 	/**
 	 * Default constructor
@@ -46,18 +46,18 @@ public class DigestAlgorithmReliableCheck extends AbstractCryptographicCheck {
 	 * @param digestAlgo {@link DigestAlgorithm}
 	 * @param result {@link XmlCC}
 	 * @param position {@link MessageTag}
-	 * @param cryptographicRules {@link CryptographicRules}
+	 * @param cryptographicSuite {@link CryptographicSuite}
 	 */
 	protected DigestAlgorithmReliableCheck(I18nProvider i18nProvider, DigestAlgorithm digestAlgo, XmlCC result,
-										   MessageTag position, CryptographicRules cryptographicRules) {
-		super(i18nProvider, result, position, cryptographicRules.getAcceptableDigestAlgoLevel());
+										   MessageTag position, CryptographicSuite cryptographicSuite) {
+		super(i18nProvider, result, position, cryptographicSuite.getAcceptableDigestAlgoLevel());
 		this.digestAlgo = digestAlgo;
-		this.cryptographicRules = cryptographicRules;
+		this.cryptographicSuite = cryptographicSuite;
 	}
 
 	@Override
 	protected boolean process() {
-		return CryptographicRulesUtils.isDigestAlgorithmReliable(cryptographicRules, digestAlgo);
+		return CryptographicSuiteUtils.isDigestAlgorithmReliable(cryptographicSuite, digestAlgo);
 	}
 	
 	@Override
