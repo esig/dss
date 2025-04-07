@@ -28,7 +28,7 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.policy.EtsiValidationPolicy;
-import eu.europa.esig.dss.policy.ValidationPolicyFacade;
+import eu.europa.esig.dss.policy.EtsiValidationPolicyFactory;
 import eu.europa.esig.dss.policy.jaxb.Algo;
 import eu.europa.esig.dss.policy.jaxb.AlgoExpirationDate;
 import eu.europa.esig.dss.policy.jaxb.CertificateConstraints;
@@ -73,14 +73,14 @@ class RevocationDataVerifierFactoryTest {
 
         RevocationToken<OCSP> ocspToken = revocationTokens.iterator().next();
 
-        EtsiValidationPolicy validationPolicy = (EtsiValidationPolicy) ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
+        EtsiValidationPolicy validationPolicy = (EtsiValidationPolicy) new EtsiValidationPolicyFactory().loadDefaultValidationPolicy();
         CryptographicConstraint cryptographic = validationPolicy.getCryptographic();
         cryptographic.setLevel(Level.IGNORE);
 
         RevocationDataVerifier revocationDataVerifier = new RevocationDataVerifierFactory(validationPolicy).create();
         assertTrue(revocationDataVerifier.isAcceptable(ocspToken));
 
-        validationPolicy = (EtsiValidationPolicy) ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
+        validationPolicy = (EtsiValidationPolicy) new EtsiValidationPolicyFactory().loadDefaultValidationPolicy();
         cryptographic = validationPolicy.getCryptographic();
         cryptographic.setLevel(Level.FAIL);
 
@@ -138,14 +138,14 @@ class RevocationDataVerifierFactoryTest {
 
         RevocationToken<OCSP> ocspToken = revocationTokens.iterator().next();
 
-        EtsiValidationPolicy validationPolicy = (EtsiValidationPolicy) ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
+        EtsiValidationPolicy validationPolicy = (EtsiValidationPolicy) new EtsiValidationPolicyFactory().loadDefaultValidationPolicy();
         CryptographicConstraint cryptographic = validationPolicy.getCryptographic();
         cryptographic.setLevel(Level.IGNORE);
 
         RevocationDataVerifier revocationDataVerifier = new RevocationDataVerifierFactory(validationPolicy).create();
         assertTrue(revocationDataVerifier.isAcceptable(ocspToken));
 
-        validationPolicy = (EtsiValidationPolicy) ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
+        validationPolicy = (EtsiValidationPolicy) new EtsiValidationPolicyFactory().loadDefaultValidationPolicy();
         cryptographic = validationPolicy.getCryptographic();
         cryptographic.setLevel(Level.FAIL);
 
@@ -218,7 +218,7 @@ class RevocationDataVerifierFactoryTest {
         CertificateToken shortTermCertificate = DSSUtils.loadCertificateFromBase64EncodedString(
                 "MIIDJjCCAg6gAwIBAgIIMMSTGSdLPxQwDQYJKoZIhvcNAQENBQAwKDEZMBcGA1UECgwQTm93aW5hIFNvbHV0aW9uczELMAkGA1UEBhMCTFUwHhcNMjEwNzAxMTAwMTI5WhcNMjEwNzAxMTAwNjI5WjA2MQwwCgYDVQQDDANBIGExGTAXBgNVBAoMEE5vd2luYSBTb2x1dGlvbnMxCzAJBgNVBAYTAkxVMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsW0yfJBqh9CtbfOtsZcEAEvzzfPusdhZNv0JSq8frKGMqJwTgjnkMJd9D3sEHUBJP0ryAmK9L5S+lWOGDhdYcE8K00k3hZSHyrOdRblB0SZhtXIgeGD7ESdTU9xPCf4Ze7xSI08zlk9NmTaj5Xqfyako8sxHAQapdXw8kfG0Ol6UhfMg7MjN8/wZrIVUYZzBQP3RFKHFQIms+pxfWxvETsynn/n2rOjuAsV0aTWGUAeWJRFJxKLSTrHQiQULVS1MHIIkdbQZxMA+Jn3dXwVdJLX/JRSvEOBqGRrvGQtYN2vNdrJlNHP0WGcSAddweWs7Ar+Pp7Qm/HEQF5+EOPUQDQIDAQABo0YwRDAOBgNVHQ8BAf8EBAMCBsAwIwYIKwYBBQUHAQMEFzAVMBMGBgQAjkYBBjAJBgcEAI5GAQYBMA0GBwQAi+xJAgEEAgUAMA0GCSqGSIb3DQEBDQUAA4IBAQBAYj8mdKsj/mMoM4HXL/w+xeK0iM55eGyBNprwxECoCH8ZCgVrVTb3eKttTXYrXjk3Yqpg3amkm7aV94iXJ0qLER/2C9lHLv6h1CoxYCdevAUSVOIzF0SJj54dxrwDQ7uTFXRe2etOg+hmEhj3OBpd/5vMfdIViYHtpPoCyZoQyGLztUt1k8/JvBe91UGAEnWx0nvokehkTgueq7dsTjBit4dlCmfmIzQUUWCgNpe1S1nEb0B/BCXaqPRhYx1//2T/5gR1lKe36HHp5rUURKT8NsS76lfxdor9Ag3mVmsw1NcVtDiFo0molO84+B53yqRP2wCU7MtfKfCX9CocgVNF");
 
-        EtsiValidationPolicy validationPolicy = (EtsiValidationPolicy) ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
+        EtsiValidationPolicy validationPolicy = (EtsiValidationPolicy) new EtsiValidationPolicyFactory().loadDefaultValidationPolicy();
         CertificateConstraints signingCertificate = validationPolicy.getSignatureConstraints()
                 .getBasicSignatureConstraints().getSigningCertificate();
 
@@ -264,7 +264,7 @@ class RevocationDataVerifierFactoryTest {
         RevocationDataVerifier revocationDataVerifier = RevocationDataVerifier.createDefaultRevocationDataVerifier();
         assertTrue(revocationDataVerifier.isRevocationDataSkip(ocspNoCheckCertificate));
 
-        EtsiValidationPolicy validationPolicy = (EtsiValidationPolicy) ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
+        EtsiValidationPolicy validationPolicy = (EtsiValidationPolicy) new EtsiValidationPolicyFactory().loadDefaultValidationPolicy();
         CertificateConstraints signingCertificate = validationPolicy.getRevocationConstraints()
                 .getBasicSignatureConstraints().getSigningCertificate();
 
@@ -303,7 +303,7 @@ class RevocationDataVerifierFactoryTest {
         RevocationDataVerifier revocationDataVerifier = RevocationDataVerifier.createDefaultRevocationDataVerifier();
         assertFalse(revocationDataVerifier.isRevocationDataSkip(certificateToken));
 
-        EtsiValidationPolicy validationPolicy = (EtsiValidationPolicy) ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
+        EtsiValidationPolicy validationPolicy = (EtsiValidationPolicy) new EtsiValidationPolicyFactory().loadDefaultValidationPolicy();
         CertificateConstraints signingCertificate = validationPolicy.getSignatureConstraints()
                 .getBasicSignatureConstraints().getSigningCertificate();
 
@@ -354,7 +354,7 @@ class RevocationDataVerifierFactoryTest {
         assertFalse(revocationDataVerifier.isRevocationDataFresh(crlToken, new Date(), Context.TIMESTAMP));
         assertFalse(revocationDataVerifier.isRevocationDataFresh(crlToken, new Date(), Context.REVOCATION));
 
-        EtsiValidationPolicy validationPolicy = (EtsiValidationPolicy) ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
+        EtsiValidationPolicy validationPolicy = (EtsiValidationPolicy) new EtsiValidationPolicyFactory().loadDefaultValidationPolicy();
         revocationDataVerifier = new RevocationDataVerifierFactory(validationPolicy).create();
         assertFalse(revocationDataVerifier.isRevocationDataFresh(crlToken, new Date(), Context.SIGNATURE));
         assertFalse(revocationDataVerifier.isRevocationDataFresh(crlToken, new Date(), Context.TIMESTAMP));
@@ -438,7 +438,7 @@ class RevocationDataVerifierFactoryTest {
         assertFalse(revocationDataVerifier.isCertificateChainValid(certificateChain, new Date(), Context.REVOCATION));
         assertFalse(revocationDataVerifier.isCertificateChainValid(certificateChain, new Date(), Context.TIMESTAMP));
 
-        EtsiValidationPolicy validationPolicy = (EtsiValidationPolicy) ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
+        EtsiValidationPolicy validationPolicy = (EtsiValidationPolicy) new EtsiValidationPolicyFactory().loadDefaultValidationPolicy();
         revocationDataVerifier = new RevocationDataVerifierFactory(validationPolicy).create();
         assertFalse(revocationDataVerifier.isCertificateChainValid(certificateChain, new Date(), Context.REVOCATION));
         assertFalse(revocationDataVerifier.isCertificateChainValid(certificateChain, new Date(), Context.TIMESTAMP));

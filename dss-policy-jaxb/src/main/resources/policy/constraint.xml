@@ -572,7 +572,7 @@
 			<Algo>RIPEMD160</Algo>
 			<Algo>WHIRLPOOL</Algo>
 		</AcceptableDigestAlgo>
-		<AlgoExpirationDate Level="FAIL" Format="yyyy-MM-dd" UpdateDate="2025-01-01" LevelAfterUpdate="WARN">
+		<AlgoExpirationDate Level="FAIL" Format="yyyy-MM-dd" UpdateDate="2024-10-13" LevelAfterUpdate="WARN">
 			<!-- Digest algorithms -->
 			<Algo Date="2004-08-01">MD5</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->
 			<Algo Date="2012-08-01">SHA1</Algo> <!-- ETSI TS 119 312 v1.5.1 -->

@@ -26,24 +26,17 @@ import java.util.ServiceLoader;
  */
 public class ValidationPolicyLoader {
 
-    /** Validation policy file, when provided */
-    private final DSSDocument validationPolicyDocument;
+    /** Validation policy document, when provided */
+    private final ValidationPolicy validationPolicy;
 
-    /** Map of cryptographic suite Files and their applicability scopes */
-    private final Map<DSSDocument, List<ContextAndSubContext>> cryptographicSuitesMap = new HashMap<>();
-
-    /**
-     * Empty constructor
-     */
-    protected ValidationPolicyLoader() {
-        this.validationPolicyDocument = null;
-    }
+    /** Map of cryptographic suite documents and their applicability scopes */
+    private final Map<CryptographicSuite, List<ContextAndSubContext>> cryptographicSuitesMap = new HashMap<>();
 
     /**
-     * Constructor to create a {@code ValidationPolicyFactory} using a custom validation policy file
+     * Constructor to create a {@code ValidationPolicyFactory} using a custom validation policy
      */
-    protected ValidationPolicyLoader(DSSDocument validationPolicyDocument) {
-        this.validationPolicyDocument = validationPolicyDocument;
+    protected ValidationPolicyLoader(ValidationPolicy validationPolicy) {
+        this.validationPolicy = validationPolicy;
     }
 
     /**
@@ -52,7 +45,7 @@ public class ValidationPolicyLoader {
      * @return {@link ValidationPolicyLoader}
      */
     public static ValidationPolicyLoader fromDefaultValidationPolicy() {
-        return new ValidationPolicyLoader();
+        return fromValidationPolicy(loadDefaultPolicy());
     }
 
     /**
@@ -62,7 +55,7 @@ public class ValidationPolicyLoader {
      * @return {@link ValidationPolicyLoader}
      */
     public static ValidationPolicyLoader fromValidationPolicy(DSSDocument validationPolicy) {
-        return new ValidationPolicyLoader(validationPolicy);
+        return fromValidationPolicy(loadPolicy(validationPolicy));
     }
 
     /**
@@ -72,7 +65,7 @@ public class ValidationPolicyLoader {
      * @return {@link ValidationPolicyLoader}
      */
     public static ValidationPolicyLoader fromValidationPolicy(InputStream validationPolicyStream) {
-        return new ValidationPolicyLoader(new InMemoryDocument(validationPolicyStream));
+        return fromValidationPolicy(new InMemoryDocument(validationPolicyStream));
     }
 
     /**
@@ -96,6 +89,16 @@ public class ValidationPolicyLoader {
     }
 
     /**
+     * Creates an instance of {@code ValidationPolicyFactory} from a custom validation policy
+     *
+     * @param validationPolicy {@link ValidationPolicy}
+     * @return {@link ValidationPolicyLoader}
+     */
+    public static ValidationPolicyLoader fromValidationPolicy(ValidationPolicy validationPolicy) {
+        return new ValidationPolicyLoader(validationPolicy);
+    }
+
+    /**
      * Sets a global cryptographic suite {@code DSSDocument}.
      * The suite will overwrite all cryptographic constraints defined in the original {@code ValidationPolicy} file.
      * It is also will be used when a cryptographic suite is not provided for a specific scope.
@@ -103,7 +106,7 @@ public class ValidationPolicyLoader {
      *
      * @param cryptographicSuite {@link DSSDocument}
      */
-    public void setGlobalCryptographicSuite(DSSDocument cryptographicSuite) {
+    public void setCryptographicSuite(DSSDocument cryptographicSuite) {
         setCryptographicSuiteForScope(cryptographicSuite, null);
     }
 
@@ -115,7 +118,7 @@ public class ValidationPolicyLoader {
      *
      * @param cryptographicSuiteIS {@link InputStream}
      */
-    public void setGlobalCryptographicSuite(InputStream cryptographicSuiteIS) {
+    public void setCryptographicSuite(InputStream cryptographicSuiteIS) {
         setCryptographicSuiteForScope(cryptographicSuiteIS, null);
     }
 
@@ -127,7 +130,7 @@ public class ValidationPolicyLoader {
      *
      * @param cryptographicSuiteFile {@link File}
      */
-    public void setGlobalCryptographicSuite(File cryptographicSuiteFile) {
+    public void setCryptographicSuite(File cryptographicSuiteFile) {
         setCryptographicSuiteForScope(cryptographicSuiteFile, null);
     }
 
@@ -139,8 +142,20 @@ public class ValidationPolicyLoader {
      *
      * @param cryptographicSuiteFilePath {@link String}
      */
-    public void setGlobalCryptographicSuite(String cryptographicSuiteFilePath) {
+    public void setCryptographicSuite(String cryptographicSuiteFilePath) {
         setCryptographicSuiteForScope(cryptographicSuiteFilePath, null);
+    }
+
+    /**
+     * Sets a global cryptographic suite.
+     * The suite will overwrite all cryptographic constraints defined in the original {@code ValidationPolicy} file.
+     * It is also will be used when a cryptographic suite is not provided for a specific scope.
+     * The method {@code #setCryptographicSuiteForScope} can be used to specify constraints for a specific scope.
+     *
+     * @param cryptographicSuite {@link CryptographicSuite}
+     */
+    public void setCryptographicSuite(CryptographicSuite cryptographicSuite) {
+        setCryptographicSuiteForScope(cryptographicSuite, null);
     }
 
     /**
@@ -188,6 +203,17 @@ public class ValidationPolicyLoader {
     }
 
     /**
+     * Sets a cryptographic suite for the given Context.
+     * The supported contexts are: SIGNATURE, COUNTER_SIGNATURE, TIMESTAMP, EVIDENCE_RECORD, REVOCATION.
+     * The cryptographic suite will be used only for the specific scope.
+     *
+     * @param cryptographicSuite {@link CryptographicSuite}
+     */
+    public void setCryptographicSuiteForScope(CryptographicSuite cryptographicSuite, Context context) {
+        setCryptographicSuiteForScope(cryptographicSuite, context, null);
+    }
+
+    /**
      * Sets a cryptographic suite {@code DSSDocument} for the given Context and SubContext.
      * The supported contexts are: SIGNATURE, COUNTER_SIGNATURE, TIMESTAMP, EVIDENCE_RECORD, REVOCATION.
      * The supported subContext are: SIGNING_CERT and CA_CERTIFICATE.
@@ -196,8 +222,7 @@ public class ValidationPolicyLoader {
      * @param cryptographicSuite {@link DSSDocument}
      */
     public void setCryptographicSuiteForScope(DSSDocument cryptographicSuite, Context context, SubContext subContext) {
-        cryptographicSuitesMap.computeIfAbsent(cryptographicSuite, k -> new ArrayList<>())
-                .add(new ContextAndSubContext(context, subContext));
+        setCryptographicSuiteForScope(loadCryptographicSuite(cryptographicSuite), context, subContext);
     }
 
     /**
@@ -237,34 +262,40 @@ public class ValidationPolicyLoader {
     }
 
     /**
+     * Sets a cryptographic suite for the given Context and SubContext.
+     * The supported contexts are: SIGNATURE, COUNTER_SIGNATURE, TIMESTAMP, EVIDENCE_RECORD, REVOCATION.
+     * The supported subContext are: SIGNING_CERT and CA_CERTIFICATE.
+     * The cryptographic suite will be used only for the specific scope.
+     *
+     * @param cryptographicSuite {@link CryptographicSuite}
+     */
+    public void setCryptographicSuiteForScope(CryptographicSuite cryptographicSuite, Context context, SubContext subContext) {
+        cryptographicSuitesMap.computeIfAbsent(cryptographicSuite, k -> new ArrayList<>())
+                .add(new ContextAndSubContext(context, subContext));
+    }
+
+    /**
      * Builds a {@code ValidationPolicy}
      *
      * @return {@link ValidationPolicy}
      */
     public ValidationPolicy create() {
-        ValidationPolicy validationPolicy;
-        if (validationPolicyDocument == null) {
-            validationPolicy = loadDefaultPolicy();
-        } else {
-            validationPolicy = loadPolicy(validationPolicyDocument);
+        if (Utils.isMapEmpty(cryptographicSuitesMap)) {
+            return validationPolicy;
         }
 
-        if (Utils.isMapNotEmpty(cryptographicSuitesMap)) {
-            for (DSSDocument cryptographicSuiteDocument : cryptographicSuitesMap.keySet()) {
-                ValidationPolicyWithCryptographicSuite validationPolicyWithCryptographicSuite =
-                        new ValidationPolicyWithCryptographicSuite(validationPolicy);
-                CryptographicSuite cryptographicSuite = loadCryptographicSuite(cryptographicSuiteDocument);
-                for (ContextAndSubContext scope : cryptographicSuitesMap.get(cryptographicSuiteDocument)) {
-                    if (scope == null) {
-                        validationPolicyWithCryptographicSuite.setCryptographicSuite(cryptographicSuite);
-                    } else {
-                        validationPolicyWithCryptographicSuite.setCryptographicSuite(cryptographicSuite, scope.getContext(), scope.getSubContext());
-                    }
+        ValidationPolicyWithCryptographicSuite validationPolicyWithCryptographicSuite =
+                new ValidationPolicyWithCryptographicSuite(validationPolicy);
+        for (CryptographicSuite cryptographicSuite : cryptographicSuitesMap.keySet()) {
+            for (ContextAndSubContext scope : cryptographicSuitesMap.get(cryptographicSuite)) {
+                if (scope == null) {
+                    validationPolicyWithCryptographicSuite.setCryptographicSuite(cryptographicSuite);
+                } else {
+                    validationPolicyWithCryptographicSuite.setCryptographicSuite(cryptographicSuite, scope.getContext(), scope.getSubContext());
                 }
-                validationPolicy = validationPolicyWithCryptographicSuite;
             }
         }
-        return validationPolicy;
+        return validationPolicyWithCryptographicSuite;
     }
 
     /**
@@ -272,7 +303,7 @@ public class ValidationPolicyLoader {
      *
      * @return {@link ValidationPolicy}
      */
-    protected ValidationPolicy loadDefaultPolicy() {
+    private static ValidationPolicy loadDefaultPolicy() {
         ServiceLoader<ValidationPolicyFactory> loader = ServiceLoader.load(ValidationPolicyFactory.class);
         Iterator<ValidationPolicyFactory> factoryOptions = loader.iterator();
 
@@ -290,7 +321,7 @@ public class ValidationPolicyLoader {
      * @param validationPolicyDocument {@link DSSDocument} representing the validation policy document
      * @return {@link ValidationPolicy}
      */
-    protected ValidationPolicy loadPolicy(DSSDocument validationPolicyDocument) {
+    private static ValidationPolicy loadPolicy(DSSDocument validationPolicyDocument) {
         ServiceLoader<ValidationPolicyFactory> loader = ServiceLoader.load(ValidationPolicyFactory.class);
         Iterator<ValidationPolicyFactory> factoryOptions = loader.iterator();
 
@@ -307,7 +338,13 @@ public class ValidationPolicyLoader {
                 "create your own implementation for a custom policy.");
     }
 
-    private CryptographicSuite loadCryptographicSuite(DSSDocument cryptographicSuiteDocument) {
+    /**
+     * Loads a cryptographic suite from the given {@code cryptographicSuiteDocument}
+     *
+     * @param cryptographicSuiteDocument {@link DSSDocument}
+     * @return {@link CryptographicSuite}
+     */
+    private static CryptographicSuite loadCryptographicSuite(DSSDocument cryptographicSuiteDocument) {
         ServiceLoader<CryptographicSuiteFactory> loader = ServiceLoader.load(CryptographicSuiteFactory.class);
         Iterator<CryptographicSuiteFactory> factoryOptions = loader.iterator();
 

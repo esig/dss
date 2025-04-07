@@ -88,7 +88,9 @@ public class ValidationPolicyFacade extends AbstractJaxbFacade<ConstraintsParame
 	 * @throws XMLStreamException if {@link XMLStreamException} occurs
 	 * @throws IOException if {@link IOException} occurs
 	 * @throws SAXException if {@link SAXException} occurs
+	 * @deprecated since DSS 6.3. To be removed. Please use {@code new EtsiValidationPolicyFactory#loadDefaultValidationPolicy} method.
 	 */
+	@Deprecated
 	public ValidationPolicy getDefaultValidationPolicy() throws JAXBException, XMLStreamException, IOException,
 			SAXException {
 		return loadDefault();

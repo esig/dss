@@ -23,10 +23,9 @@ package eu.europa.esig.dss.validation.executor;
 import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.model.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.EtsiValidationPolicy;
-import eu.europa.esig.dss.policy.ValidationPolicyFacade;
-import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
+import eu.europa.esig.dss.policy.EtsiValidationPolicyFactory;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
+import eu.europa.esig.dss.validation.policy.ValidationPolicyLoader;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -53,12 +52,12 @@ class ExecuteDifferentPoliciesTest {
 				XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(diagData);
 				for (File policyFile : policyFiles) {
 					if (policyFile.isFile()) {
-						ConstraintsParameters validationPolicy = ValidationPolicyFacade.newFacade().unmarshall(policyFile);
-						dataToRun.add(Arguments.of( diagnosticData, new EtsiValidationPolicy(validationPolicy) ));
+						ValidationPolicy validationPolicy = ValidationPolicyLoader.fromValidationPolicy(policyFile).create();
+						dataToRun.add(Arguments.of(diagnosticData, validationPolicy));
 					}
 				}
 
-				dataToRun.add(Arguments.of(diagnosticData, ValidationPolicyFacade.newFacade().getDefaultValidationPolicy() ));
+				dataToRun.add(Arguments.of(diagnosticData, new EtsiValidationPolicyFactory().loadDefaultValidationPolicy() ));
 
 			}
 		}

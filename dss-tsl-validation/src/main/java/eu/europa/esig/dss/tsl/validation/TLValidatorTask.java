@@ -135,7 +135,8 @@ public class TLValidatorTask implements Supplier<ValidationResult> {
 
 	private ValidationPolicy getTrustedListValidationPolicy() {
 		try {
-			return ValidationPolicyLoader.fromValidationPolicy(TRUSTED_LIST_VALIDATION_POLICY_LOCATION).create();
+			return ValidationPolicyLoader.fromValidationPolicy(
+					TLValidatorTask.class.getResourceAsStream(TRUSTED_LIST_VALIDATION_POLICY_LOCATION)).create();
 		} catch (Exception e) {
 			throw new DSSException("Unable to load the validation policy for trusted list", e);
 		}

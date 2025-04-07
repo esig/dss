@@ -16,10 +16,9 @@
     </properties>
 
     <dependencies>
-        <!-- TODO: Move ValidationPolicy to dss-model ? -->
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-            <artifactId>dss-policy-jaxb</artifactId>
+            <artifactId>dss-model</artifactId>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>

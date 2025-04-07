@@ -18,11 +18,12 @@ import org.slf4j.LoggerFactory;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * This class wraps an ETSI TS 119 312/322 XML cryptographic suite policy
@@ -114,14 +115,24 @@ public class CryptographicSuiteXmlWrapper implements CryptographicSuite {
 
     @Override
     public List<EncryptionAlgorithm> getAcceptableEncryptionAlgorithms() {
-        // TODO : implement
-        return Collections.emptyList();
+        return getAcceptableEncryptionAlgorithmsWithMinKeySizes().stream()
+                .map(EncryptionAlgorithmWithMinKeySize::getEncryptionAlgorithm).collect(Collectors.toList());
     }
 
     @Override
     public List<EncryptionAlgorithmWithMinKeySize> getAcceptableEncryptionAlgorithmsWithMinKeySizes() {
-        // TODO : implement
-        return Collections.emptyList();
+        Map<EncryptionAlgorithm, Integer> encryptionAlgorithmWithMinKeySizesMap = new HashMap<>();
+        for (EncryptionAlgorithmWithMinKeySize encryptionAlgorithmWithMinKeySize : getAcceptableEncryptionAlgorithmsWithExpirationDates().keySet()) {
+            EncryptionAlgorithm encryptionAlgorithm = encryptionAlgorithmWithMinKeySize.getEncryptionAlgorithm();
+            int keySize = encryptionAlgorithmWithMinKeySize.getMinKeySize();
+            Integer minKeySize = encryptionAlgorithmWithMinKeySizesMap.get(encryptionAlgorithm);
+            if (minKeySize == null || minKeySize > keySize) {
+                minKeySize = keySize;
+            }
+            encryptionAlgorithmWithMinKeySizesMap.put(encryptionAlgorithm, minKeySize);
+        }
+        return encryptionAlgorithmWithMinKeySizesMap.entrySet().stream()
+                .map(e -> new EncryptionAlgorithmWithMinKeySize(e.getKey(), e.getValue())).collect(Collectors.toList());
     }
 
     @Override
@@ -284,10 +295,10 @@ public class CryptographicSuiteXmlWrapper implements CryptographicSuite {
 
     private Integer getKeySize(EncryptionAlgorithm encryptionAlgorithm, List<ParameterType> parameters) {
         if (parameters == null || parameters.isEmpty()) {
-            return null;
+            return 0;
         }
 
-        Integer keySize = null;
+        Integer keySize = 0;
         for (ParameterType parameter : parameters) {
             if (parameter.getMax() != null) {
                 LOG.debug("The Max key length parameter is not supported. The value has been skipped.");

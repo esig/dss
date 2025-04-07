@@ -22,6 +22,8 @@ package eu.europa.esig.dss.policy;
 
 import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.ValidationModel;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.Algo;
 import eu.europa.esig.dss.policy.jaxb.CertificateConstraints;
@@ -89,6 +91,7 @@ class ValidationPolicyFacadeTest {
 		assertNotNull(constraintsParameters);
 	}
 
+	// TODO : test cases to be removed after DSS 6.3
 	@Test
 	void getDefaultValidationPolicy() throws JAXBException, XMLStreamException, IOException, SAXException {
 		assertNotNull(ValidationPolicyFacade.newFacade().getDefaultValidationPolicy());
@@ -159,6 +162,18 @@ class ValidationPolicyFacadeTest {
 	@Test
 	void marshallNull2() throws Exception {
 		assertThrows(NullPointerException.class, () -> facade.marshall(null, null));
+	}
+
+	@Test
+	void loopTest() throws JAXBException, XMLStreamException, IOException, SAXException {
+		for (int i = 0; i < 10000; i++) {
+			EtsiValidationPolicyFactory etsiValidationPolicyFactory = new EtsiValidationPolicyFactory();
+			DSSDocument document = new InMemoryDocument(ValidationPolicyFacadeTest.class.getResourceAsStream("/policy/constraint.xml"));
+			if (etsiValidationPolicyFactory.isSupported(document)) {
+				ValidationPolicy defaultValidationPolicy = etsiValidationPolicyFactory.loadValidationPolicy(document);
+				assertNotNull(defaultValidationPolicy);
+			}
+		}
 	}
 
 }

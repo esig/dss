@@ -2,6 +2,8 @@ package eu.europa.esig.dss.model.policy;
 
 import eu.europa.esig.dss.model.DSSDocument;
 
+import java.io.InputStream;
+
 /**
  * Interface containing methods to load a {@code eu.europa.esig.dss.model.policy.CryptographicSuite} object
  *
@@ -30,5 +32,13 @@ public interface CryptographicSuiteFactory {
      * @return {@link CryptographicSuite}
      */
     CryptographicSuite loadCryptographicSuite(DSSDocument cryptographicSuiteDocument);
+
+    /**
+     * Loads a cryptographic suite from a {@code InputStream} provided to the method
+     *
+     * @param cryptographicSuiteInputStream {@link InputStream}
+     * @return {@link CryptographicSuite}
+     */
+    CryptographicSuite loadCryptographicSuite(InputStream cryptographicSuiteInputStream);
 
 }

@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 /**
  * Wraps a {@code CryptographicConstraint} of the DSS JAXB validation policy implementation
@@ -33,6 +34,9 @@ public class CryptographicConstraintWrapper extends LevelConstraintWrapper imple
 
     /** The default date format */
     private static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd";
+
+    /** The default timezone (UTC) */
+    private static final TimeZone UTC = TimeZone.getTimeZone("UTC");
 
     /**
      * Constructor to create an empty instance of Cryptographic constraints
@@ -130,7 +134,9 @@ public class CryptographicConstraintWrapper extends LevelConstraintWrapper imple
     }
 
     private SimpleDateFormat getUsedDateFormat(AlgoExpirationDate expirations) {
-        return new SimpleDateFormat(expirations.getFormat() != null ? expirations.getFormat() : DEFAULT_DATE_FORMAT);
+        SimpleDateFormat sdf = new SimpleDateFormat(expirations.getFormat() != null ? expirations.getFormat() : DEFAULT_DATE_FORMAT);
+        sdf.setTimeZone(UTC);
+        return sdf;
     }
 
     private Date getDate(Algo algo, SimpleDateFormat format) {

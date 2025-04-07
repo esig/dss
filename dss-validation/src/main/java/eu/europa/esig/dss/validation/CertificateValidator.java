@@ -248,8 +248,7 @@ public class CertificateValidator implements ProcessExecutorProvider<Certificate
 		try {
 			if (policyDocument == null) {
 				LOG.debug("No provided validation policy : use the default policy");
-				validationPolicy = ValidationPolicyLoader.fromValidationPolicy(
-						CertificateValidator.class.getResourceAsStream(CERTIFICATE_VALIDATION_POLICY_LOCATION)).create();
+				validationPolicy = getDefaultCertificateValidationPolicy();
 			} else {
 				validationPolicy = ValidationPolicyLoader.fromValidationPolicy(policyDocument).create();
 			}
@@ -257,6 +256,16 @@ public class CertificateValidator implements ProcessExecutorProvider<Certificate
 			throw new IllegalInputException("Unable to load the policy", e);
 		}
 		return validate(validationPolicy);
+	}
+
+	/**
+	 * Gets a default validation policy for a certificate validation
+	 *
+	 * @return {@link ValidationPolicy}
+	 */
+	protected ValidationPolicy getDefaultCertificateValidationPolicy() {
+		return ValidationPolicyLoader.fromValidationPolicy(
+				CertificateValidator.class.getResourceAsStream(CERTIFICATE_VALIDATION_POLICY_LOCATION)).create();
 	}
 
 	/**

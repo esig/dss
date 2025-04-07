@@ -25,7 +25,7 @@ import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.model.tsl.CertificateTrustTime;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.policy.EtsiValidationPolicy;
-import eu.europa.esig.dss.policy.ValidationPolicyFacade;
+import eu.europa.esig.dss.policy.EtsiValidationPolicyFactory;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
@@ -82,7 +82,7 @@ class TrustAnchorVerifierFactoryTest {
         assertFalse(trustAnchorVerifier.isTrustedAtTime(caCertificate, futureDate));
         assertFalse(trustAnchorVerifier.isTrustedCertificateChain(certificateChain, futureDate));
 
-        EtsiValidationPolicy validationPolicy = (EtsiValidationPolicy) ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
+        EtsiValidationPolicy validationPolicy = (EtsiValidationPolicy) new EtsiValidationPolicyFactory().loadDefaultValidationPolicy();
         trustAnchorVerifier = new TrustAnchorVerifierFactory(validationPolicy).create();
         trustAnchorVerifier.setTrustedCertificateSource(trustedListsCertificateSource);
 
@@ -138,7 +138,7 @@ class TrustAnchorVerifierFactoryTest {
         assertFalse(trustAnchorVerifier.isTrustedAtTime(caCertificate, new Date()));
         assertFalse(trustAnchorVerifier.isTrustedCertificateChain(certificateChain, new Date()));
 
-        EtsiValidationPolicy validationPolicy = (EtsiValidationPolicy) ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
+        EtsiValidationPolicy validationPolicy = (EtsiValidationPolicy) new EtsiValidationPolicyFactory().loadDefaultValidationPolicy();
         trustAnchorVerifier = new TrustAnchorVerifierFactory(validationPolicy).create();
 
         assertFalse(trustAnchorVerifier.isTrustedAtTime(caCertificate, new Date()));

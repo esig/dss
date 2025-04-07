@@ -47,7 +47,7 @@ import eu.europa.esig.dss.enumerations.ValidationLevel;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.jaxb.object.Message;
 import eu.europa.esig.dss.policy.EtsiValidationPolicy;
-import eu.europa.esig.dss.policy.ValidationPolicyFacade;
+import eu.europa.esig.dss.policy.EtsiValidationPolicyFactory;
 import eu.europa.esig.dss.policy.jaxb.BasicSignatureConstraints;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.SignatureConstraints;
@@ -155,7 +155,7 @@ class PDFValidationExecutorTest extends AbstractProcessExecutorTest {
 
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
-        EtsiValidationPolicy defaultPolicy = (EtsiValidationPolicy) ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
+        EtsiValidationPolicy defaultPolicy = (EtsiValidationPolicy) new EtsiValidationPolicyFactory().loadDefaultValidationPolicy();
         BasicSignatureConstraints basicSignatureConstraints = defaultPolicy.getSignatureConstraints().getBasicSignatureConstraints();
         LevelConstraint signerInformationStore = basicSignatureConstraints.getSignerInformationStore();
         signerInformationStore.setLevel(Level.WARN);
@@ -179,7 +179,7 @@ class PDFValidationExecutorTest extends AbstractProcessExecutorTest {
 
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
-        EtsiValidationPolicy defaultPolicy = (EtsiValidationPolicy) ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
+        EtsiValidationPolicy defaultPolicy = (EtsiValidationPolicy) new EtsiValidationPolicyFactory().loadDefaultValidationPolicy();
         BasicSignatureConstraints basicSignatureConstraints = defaultPolicy.getSignatureConstraints().getBasicSignatureConstraints();
         LevelConstraint pdfAnnotationOverlap = basicSignatureConstraints.getPdfAnnotationOverlap();
         pdfAnnotationOverlap.setLevel(Level.FAIL);
@@ -206,7 +206,7 @@ class PDFValidationExecutorTest extends AbstractProcessExecutorTest {
 
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
-        EtsiValidationPolicy defaultPolicy = (EtsiValidationPolicy) ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
+        EtsiValidationPolicy defaultPolicy = (EtsiValidationPolicy) new EtsiValidationPolicyFactory().loadDefaultValidationPolicy();
         BasicSignatureConstraints basicSignatureConstraints = defaultPolicy.getSignatureConstraints().getBasicSignatureConstraints();
         LevelConstraint pdfAnnotationOverlap = basicSignatureConstraints.getPdfAnnotationOverlap();
         pdfAnnotationOverlap.setLevel(Level.WARN);
@@ -232,7 +232,7 @@ class PDFValidationExecutorTest extends AbstractProcessExecutorTest {
 
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
-        EtsiValidationPolicy defaultPolicy = (EtsiValidationPolicy) ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
+        EtsiValidationPolicy defaultPolicy = (EtsiValidationPolicy) new EtsiValidationPolicyFactory().loadDefaultValidationPolicy();
         BasicSignatureConstraints basicSignatureConstraints = defaultPolicy.getSignatureConstraints().getBasicSignatureConstraints();
         LevelConstraint pdfVisualDifference = basicSignatureConstraints.getPdfVisualDifference();
         pdfVisualDifference.setLevel(Level.FAIL);
@@ -259,7 +259,7 @@ class PDFValidationExecutorTest extends AbstractProcessExecutorTest {
 
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
-        EtsiValidationPolicy defaultPolicy = (EtsiValidationPolicy) ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
+        EtsiValidationPolicy defaultPolicy = (EtsiValidationPolicy) new EtsiValidationPolicyFactory().loadDefaultValidationPolicy();
         BasicSignatureConstraints basicSignatureConstraints = defaultPolicy.getSignatureConstraints().getBasicSignatureConstraints();
         LevelConstraint pdfVisualDifference = basicSignatureConstraints.getPdfVisualDifference();
         pdfVisualDifference.setLevel(Level.WARN);

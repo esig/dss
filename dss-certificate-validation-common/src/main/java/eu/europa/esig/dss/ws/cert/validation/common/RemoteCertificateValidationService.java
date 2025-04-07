@@ -20,27 +20,26 @@
  */
 package eu.europa.esig.dss.ws.cert.validation.common;
 
-import eu.europa.esig.dss.spi.exception.IllegalInputException;
-import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.ValidationPolicyFacade;
+import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifierBuilder;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateValidator;
-import eu.europa.esig.dss.spi.validation.CertificateVerifier;
-import eu.europa.esig.dss.spi.validation.CertificateVerifierBuilder;
+import eu.europa.esig.dss.validation.policy.ValidationPolicyLoader;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
 import eu.europa.esig.dss.ws.cert.validation.dto.CertificateReportsDTO;
 import eu.europa.esig.dss.ws.cert.validation.dto.CertificateToValidateDTO;
 import eu.europa.esig.dss.ws.converter.RemoteCertificateConverter;
+import eu.europa.esig.dss.ws.converter.RemoteDocumentConverter;
 import eu.europa.esig.dss.ws.dto.RemoteCertificate;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 import eu.europa.esig.dss.ws.dto.exception.DSSRemoteServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.List;
 
@@ -80,7 +79,7 @@ public class RemoteCertificateValidationService {
 	 */
 	public void setDefaultValidationPolicy(InputStream validationPolicy) {
 		try {
-			this.defaultValidationPolicy = ValidationPolicyFacade.newFacade().getValidationPolicy(validationPolicy);
+			this.defaultValidationPolicy = ValidationPolicyLoader.fromValidationPolicy(validationPolicy).create();
 		} catch (Exception e) {
 			throw new DSSRemoteServiceException(String.format("Unable to instantiate validation policy: %s", e.getMessage()), e);
 		}
@@ -124,11 +123,7 @@ public class RemoteCertificateValidationService {
 	}
 
 	private ValidationPolicy getValidationPolicy(RemoteDocument policy) {
-		try (ByteArrayInputStream bais = new ByteArrayInputStream(policy.getBytes())) {
-			return ValidationPolicyFacade.newFacade().getValidationPolicy(bais);
-		} catch (Exception e) {
-			throw new IllegalInputException(String.format("Unable to load the validation policy : %s", e.getMessage()), e);
-		}
+		return ValidationPolicyLoader.fromValidationPolicy(RemoteDocumentConverter.toDSSDocument(policy)).create();
 	}
 
 	/**

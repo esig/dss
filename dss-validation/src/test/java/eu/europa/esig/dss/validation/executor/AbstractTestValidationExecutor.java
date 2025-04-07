@@ -52,6 +52,7 @@ import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
 import eu.europa.esig.dss.simplereport.SimpleReportFacade;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.policy.ValidationPolicyLoader;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.ValidationReportFacade;
 import org.slf4j.Logger;
@@ -71,11 +72,11 @@ public abstract class AbstractTestValidationExecutor {
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractTestValidationExecutor.class);
 	
 	protected EtsiValidationPolicy loadPolicy(String policyConstraintFile) throws Exception {
-		return (EtsiValidationPolicy) ValidationPolicyFacade.newFacade().getValidationPolicy(new File(policyConstraintFile));
+		return (EtsiValidationPolicy) ValidationPolicyLoader.fromValidationPolicy(new File(policyConstraintFile)).create();
 	}
 
 	protected EtsiValidationPolicy loadDefaultPolicy() throws Exception {
-		return (EtsiValidationPolicy) ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
+		return (EtsiValidationPolicy) ValidationPolicyLoader.fromDefaultValidationPolicy().create();
 	}
 	
 	protected ConstraintsParameters getConstraintsParameters(File file) throws Exception {

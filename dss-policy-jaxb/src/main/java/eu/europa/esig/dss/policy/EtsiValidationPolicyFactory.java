@@ -17,6 +17,9 @@ import java.io.InputStream;
  */
 public class EtsiValidationPolicyFactory implements ValidationPolicyFactory {
 
+    /** The default validation policy path */
+    private static final String DEFAULT_VALIDATION_POLICY_LOCATION = "/policy/constraint.xml";
+
     /**
      * Default constructor
      */
@@ -37,7 +40,7 @@ public class EtsiValidationPolicyFactory implements ValidationPolicyFactory {
     @Override
     public ValidationPolicy loadDefaultValidationPolicy() {
         try {
-            return ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
+            return loadValidationPolicy(EtsiValidationPolicyFactory.class.getResourceAsStream(DEFAULT_VALIDATION_POLICY_LOCATION));
         } catch (Exception e) {
             throw new UnsupportedOperationException(
                     String.format("Unable to load the default policy document. Reason : %s", e.getMessage()), e);

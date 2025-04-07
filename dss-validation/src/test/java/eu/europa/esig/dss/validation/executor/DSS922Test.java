@@ -26,9 +26,9 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.policy.EtsiValidationPolicy;
-import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
+import eu.europa.esig.dss.validation.policy.ValidationPolicyLoader;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.api.Test;
 
@@ -76,7 +76,8 @@ class DSS922Test {
 	}
 
 	private EtsiValidationPolicy loadPolicy() throws Exception {
-		return (EtsiValidationPolicy) ValidationPolicyFacade.newFacade().getValidationPolicy(new File("src/test/resources/diag-data/policy/DSS-922-policy.xml"));
+		return (EtsiValidationPolicy) ValidationPolicyLoader.fromValidationPolicy(
+				new File("src/test/resources/diag-data/policy/DSS-922-policy.xml")).create();
 	}
 
 }
