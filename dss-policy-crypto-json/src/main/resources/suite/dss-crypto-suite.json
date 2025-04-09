@@ -8,7 +8,7 @@
          "Name":"European Telecommunications Standards Institute",
          "Address":"06921 Sophia Antipolis CEDEX"
       },
-      "PolicyIssueDate":"2024-10-13T00:00:00.000+01:00",
+      "PolicyIssueDate":"2024-10-13T00:00:00.000+00:00",
       "Usage":"Signature-related assessment of suitability of cryptographic mechanisms and suites",
       "Algorithm":[
          {

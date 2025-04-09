@@ -162,7 +162,7 @@ public abstract class JSONSchemaAbstractUtils {
     /**
      * This is a helper class to load a schema from resources by the given URI
      */
-    private class ResourceSchemaClient implements SchemaClient {
+    private static class ResourceSchemaClient implements SchemaClient {
 
         /** Map of schema URI identifiers and resources filename */
         private final Map<URI, String> resources;

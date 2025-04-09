@@ -132,6 +132,21 @@ public class JsonObjectWrapper {
     }
 
     /**
+     * Gets a value of the header {@code name} as a Date.
+     * If not present, or not able to convert, returns NULL.
+     *
+     * @param name {@link String} header name to get a value for
+     * @return {@link Date}
+     */
+    public Date getAsDateTime(String name) {
+        String dateStr = getAsString(name);
+        if (dateStr != null) {
+            return RFC3339DateUtils.getDateTime(dateStr);
+        }
+        return null;
+    }
+
+    /**
      * Gets a value of the header {@code name} as a List of Json objects.
      * If not present, or not able to convert, returns NULL.
      *

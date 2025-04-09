@@ -99,63 +99,97 @@ public class ValidationPolicyLoader {
     }
 
     /**
+     * Sets a default cryptographic suite for the given Context and SubContext.
+     * This method will load the first available cryptographic suite.
+     * DSS provides two modules with implementations, namely 'dss-policy-crypto-xml' and 'dss-policy-crypto-json'.
+     * The supported contexts are: SIGNATURE, COUNTER_SIGNATURE, TIMESTAMP, EVIDENCE_RECORD, REVOCATION.
+     * The supported subContext are: SIGNING_CERT and CA_CERTIFICATE.
+     * The cryptographic suite will be used only for the specific scope.
+     *
+     * @return {@link ValidationPolicyLoader}
+     */
+    public ValidationPolicyLoader withDefaultCryptographicSuiteForScope() {
+        return withDefaultCryptographicSuiteForScope(null);
+    }
+
+    /**
      * Sets a global cryptographic suite {@code DSSDocument}.
      * The suite will overwrite all cryptographic constraints defined in the original {@code ValidationPolicy} file.
      * It is also will be used when a cryptographic suite is not provided for a specific scope.
-     * The method {@code #setCryptographicSuiteForScope} can be used to specify constraints for a specific scope.
+     * The method {@code #withCryptographicSuiteForScope} can be used to specify constraints for a specific scope.
      *
      * @param cryptographicSuite {@link DSSDocument}
+     * @return {@link ValidationPolicyLoader}
      */
-    public void setCryptographicSuite(DSSDocument cryptographicSuite) {
-        setCryptographicSuiteForScope(cryptographicSuite, null);
+    public ValidationPolicyLoader withCryptographicSuite(DSSDocument cryptographicSuite) {
+        return withCryptographicSuiteForScope(cryptographicSuite, null);
     }
 
     /**
      * Sets a global cryptographic suite {@code InputStream}.
      * The suite will overwrite all cryptographic constraints defined in the original {@code ValidationPolicy} file.
      * It is also will be used when a cryptographic suite is not provided for a specific scope.
-     * The method {@code #setCryptographicSuiteForScope} can be used to specify constraints for a specific scope.
+     * The method {@code #withCryptographicSuiteForScope} can be used to specify constraints for a specific scope.
      *
      * @param cryptographicSuiteIS {@link InputStream}
+     * @return {@link ValidationPolicyLoader}
      */
-    public void setCryptographicSuite(InputStream cryptographicSuiteIS) {
-        setCryptographicSuiteForScope(cryptographicSuiteIS, null);
+    public ValidationPolicyLoader withCryptographicSuite(InputStream cryptographicSuiteIS) {
+        return withCryptographicSuiteForScope(cryptographicSuiteIS, null);
     }
 
     /**
      * Sets a global cryptographic suite {@code File}.
      * The suite will overwrite all cryptographic constraints defined in the original {@code ValidationPolicy} file.
      * It is also will be used when a cryptographic suite is not provided for a specific scope.
-     * The method {@code #setCryptographicSuiteForScope} can be used to specify constraints for a specific scope.
+     * The method {@code #withCryptographicSuiteForScope} can be used to specify constraints for a specific scope.
      *
      * @param cryptographicSuiteFile {@link File}
+     * @return {@link ValidationPolicyLoader}
      */
-    public void setCryptographicSuite(File cryptographicSuiteFile) {
-        setCryptographicSuiteForScope(cryptographicSuiteFile, null);
+    public ValidationPolicyLoader withCryptographicSuite(File cryptographicSuiteFile) {
+        return withCryptographicSuiteForScope(cryptographicSuiteFile, null);
     }
 
     /**
      * Sets a global cryptographic suite file.
      * The suite will overwrite all cryptographic constraints defined in the original {@code ValidationPolicy} file.
      * It is also will be used when a cryptographic suite is not provided for a specific scope.
-     * The method {@code #setCryptographicSuiteForScope} can be used to specify constraints for a specific scope.
+     * The method {@code #withCryptographicSuiteForScope} can be used to specify constraints for a specific scope.
      *
      * @param cryptographicSuiteFilePath {@link String}
+     * @return {@link ValidationPolicyLoader}
      */
-    public void setCryptographicSuite(String cryptographicSuiteFilePath) {
-        setCryptographicSuiteForScope(cryptographicSuiteFilePath, null);
+    public ValidationPolicyLoader withCryptographicSuite(String cryptographicSuiteFilePath) {
+        return withCryptographicSuiteForScope(cryptographicSuiteFilePath, null);
     }
 
     /**
      * Sets a global cryptographic suite.
      * The suite will overwrite all cryptographic constraints defined in the original {@code ValidationPolicy} file.
      * It is also will be used when a cryptographic suite is not provided for a specific scope.
-     * The method {@code #setCryptographicSuiteForScope} can be used to specify constraints for a specific scope.
+     * The method {@code #withCryptographicSuiteForScope} can be used to specify constraints for a specific scope.
      *
      * @param cryptographicSuite {@link CryptographicSuite}
+     * @return {@link ValidationPolicyLoader}
      */
-    public void setCryptographicSuite(CryptographicSuite cryptographicSuite) {
-        setCryptographicSuiteForScope(cryptographicSuite, null);
+    public ValidationPolicyLoader withCryptographicSuite(CryptographicSuite cryptographicSuite) {
+        return withCryptographicSuiteForScope(cryptographicSuite, null);
+    }
+
+    /**
+     * Sets a default cryptographic suite for the given Context and SubContext.
+     * This method will load the first available cryptographic suite.
+     * DSS provides two modules with implementations, namely 'dss-policy-crypto-xml' and 'dss-policy-crypto-json'.
+     * The supported contexts are: SIGNATURE, COUNTER_SIGNATURE, TIMESTAMP, EVIDENCE_RECORD, REVOCATION.
+     * The supported subContext are: SIGNING_CERT and CA_CERTIFICATE.
+     * The cryptographic suite will be used only for the specific scope.
+     *
+     * @param context {@link Context}
+     * @return {@link ValidationPolicyLoader}
+     */
+    public ValidationPolicyLoader withDefaultCryptographicSuiteForScope(Context context) {
+        return withDefaultCryptographicSuiteForScope(context, null);
     }
 
     /**
@@ -164,9 +198,11 @@ public class ValidationPolicyLoader {
      * The cryptographic suite will be used only for the specific scope.
      *
      * @param cryptographicSuite {@link DSSDocument}
+     * @param context {@link Context}
+     * @return {@link ValidationPolicyLoader}
      */
-    public void setCryptographicSuiteForScope(DSSDocument cryptographicSuite, Context context) {
-        setCryptographicSuiteForScope(cryptographicSuite, context, null);
+    public ValidationPolicyLoader withCryptographicSuiteForScope(DSSDocument cryptographicSuite, Context context) {
+        return withCryptographicSuiteForScope(cryptographicSuite, context, null);
     }
 
     /**
@@ -175,9 +211,11 @@ public class ValidationPolicyLoader {
      * The cryptographic suite will be used only for the specific scope.
      *
      * @param cryptographicSuiteIS {@link InputStream}
+     * @param context {@link Context}
+     * @return {@link ValidationPolicyLoader}
      */
-    public void setCryptographicSuiteForScope(InputStream cryptographicSuiteIS, Context context) {
-        setCryptographicSuiteForScope(cryptographicSuiteIS, context, null);
+    public ValidationPolicyLoader withCryptographicSuiteForScope(InputStream cryptographicSuiteIS, Context context) {
+        return withCryptographicSuiteForScope(cryptographicSuiteIS, context, null);
     }
 
     /**
@@ -186,9 +224,11 @@ public class ValidationPolicyLoader {
      * The cryptographic suite will be used only for the specific scope.
      *
      * @param cryptographicSuiteFile {@link File}
+     * @param context {@link Context}
+     * @return {@link ValidationPolicyLoader}
      */
-    public void setCryptographicSuiteForScope(File cryptographicSuiteFile, Context context) {
-        setCryptographicSuiteForScope(cryptographicSuiteFile, context, null);
+    public ValidationPolicyLoader withCryptographicSuiteForScope(File cryptographicSuiteFile, Context context) {
+        return withCryptographicSuiteForScope(cryptographicSuiteFile, context, null);
     }
 
     /**
@@ -197,9 +237,11 @@ public class ValidationPolicyLoader {
      * The cryptographic suite will be used only for the specific scope.
      *
      * @param cryptographicSuiteFilePath {@link File}
+     * @param context {@link Context}
+     * @return {@link ValidationPolicyLoader}
      */
-    public void setCryptographicSuiteForScope(String cryptographicSuiteFilePath, Context context) {
-        setCryptographicSuiteForScope(cryptographicSuiteFilePath, context, null);
+    public ValidationPolicyLoader withCryptographicSuiteForScope(String cryptographicSuiteFilePath, Context context) {
+        return withCryptographicSuiteForScope(cryptographicSuiteFilePath, context, null);
     }
 
     /**
@@ -208,9 +250,29 @@ public class ValidationPolicyLoader {
      * The cryptographic suite will be used only for the specific scope.
      *
      * @param cryptographicSuite {@link CryptographicSuite}
+     * @param context {@link Context}
+     * @return {@link ValidationPolicyLoader}
      */
-    public void setCryptographicSuiteForScope(CryptographicSuite cryptographicSuite, Context context) {
-        setCryptographicSuiteForScope(cryptographicSuite, context, null);
+    public ValidationPolicyLoader withCryptographicSuiteForScope(CryptographicSuite cryptographicSuite, Context context) {
+        return withCryptographicSuiteForScope(cryptographicSuite, context, null);
+    }
+
+    /**
+     * Sets a default cryptographic suite for the given Context and SubContext.
+     * This method will load the first available cryptographic suite.
+     * DSS provides two modules with implementations, namely 'dss-policy-crypto-xml' and 'dss-policy-crypto-json'.
+     * The supported contexts are: SIGNATURE, COUNTER_SIGNATURE, TIMESTAMP, EVIDENCE_RECORD, REVOCATION.
+     * The supported subContext are: SIGNING_CERT and CA_CERTIFICATE.
+     * The cryptographic suite will be used only for the specific scope.
+     *
+     * @param context {@link Context}
+     * @param subContext {@link SubContext}
+     * @return {@link ValidationPolicyLoader}
+     */
+    public ValidationPolicyLoader withDefaultCryptographicSuiteForScope(Context context, SubContext subContext) {
+        cryptographicSuitesMap.computeIfAbsent(loadDefaultCryptographicSuite(), k -> new ArrayList<>())
+                .add(new ContextAndSubContext(context, subContext));
+        return this;
     }
 
     /**
@@ -220,9 +282,12 @@ public class ValidationPolicyLoader {
      * The cryptographic suite will be used only for the specific scope.
      *
      * @param cryptographicSuite {@link DSSDocument}
+     * @param context {@link Context}
+     * @param subContext {@link SubContext}
+     * @return {@link ValidationPolicyLoader}
      */
-    public void setCryptographicSuiteForScope(DSSDocument cryptographicSuite, Context context, SubContext subContext) {
-        setCryptographicSuiteForScope(loadCryptographicSuite(cryptographicSuite), context, subContext);
+    public ValidationPolicyLoader withCryptographicSuiteForScope(DSSDocument cryptographicSuite, Context context, SubContext subContext) {
+        return withCryptographicSuiteForScope(loadCryptographicSuite(cryptographicSuite), context, subContext);
     }
 
     /**
@@ -232,9 +297,12 @@ public class ValidationPolicyLoader {
      * The cryptographic suite will be used only for the specific scope.
      *
      * @param cryptographicSuiteIS {@link InputStream}
+     * @param context {@link Context}
+     * @param subContext {@link SubContext}
+     * @return {@link ValidationPolicyLoader}
      */
-    public void setCryptographicSuiteForScope(InputStream cryptographicSuiteIS, Context context, SubContext subContext) {
-        setCryptographicSuiteForScope(new InMemoryDocument(cryptographicSuiteIS), context, subContext);
+    public ValidationPolicyLoader withCryptographicSuiteForScope(InputStream cryptographicSuiteIS, Context context, SubContext subContext) {
+        return withCryptographicSuiteForScope(new InMemoryDocument(cryptographicSuiteIS), context, subContext);
     }
 
     /**
@@ -244,9 +312,12 @@ public class ValidationPolicyLoader {
      * The cryptographic suite will be used only for the specific scope.
      *
      * @param cryptographicSuiteFile {@link File}
+     * @param context {@link Context}
+     * @param subContext {@link SubContext}
+     * @return {@link ValidationPolicyLoader}
      */
-    public void setCryptographicSuiteForScope(File cryptographicSuiteFile, Context context, SubContext subContext) {
-        setCryptographicSuiteForScope(new FileDocument(cryptographicSuiteFile), context, subContext);
+    public ValidationPolicyLoader withCryptographicSuiteForScope(File cryptographicSuiteFile, Context context, SubContext subContext) {
+        return withCryptographicSuiteForScope(new FileDocument(cryptographicSuiteFile), context, subContext);
     }
 
     /**
@@ -256,9 +327,12 @@ public class ValidationPolicyLoader {
      * The cryptographic suite will be used only for the specific scope.
      *
      * @param cryptographicSuiteFilePath {@link File}
+     * @param context {@link Context}
+     * @param subContext {@link SubContext}
+     * @return {@link ValidationPolicyLoader}
      */
-    public void setCryptographicSuiteForScope(String cryptographicSuiteFilePath, Context context, SubContext subContext) {
-        setCryptographicSuiteForScope(new File(cryptographicSuiteFilePath), context, subContext);
+    public ValidationPolicyLoader withCryptographicSuiteForScope(String cryptographicSuiteFilePath, Context context, SubContext subContext) {
+        return withCryptographicSuiteForScope(new File(cryptographicSuiteFilePath), context, subContext);
     }
 
     /**
@@ -268,10 +342,14 @@ public class ValidationPolicyLoader {
      * The cryptographic suite will be used only for the specific scope.
      *
      * @param cryptographicSuite {@link CryptographicSuite}
+     * @param context {@link Context}
+     * @param subContext {@link SubContext}
+     * @return {@link ValidationPolicyLoader}
      */
-    public void setCryptographicSuiteForScope(CryptographicSuite cryptographicSuite, Context context, SubContext subContext) {
+    public ValidationPolicyLoader withCryptographicSuiteForScope(CryptographicSuite cryptographicSuite, Context context, SubContext subContext) {
         cryptographicSuitesMap.computeIfAbsent(cryptographicSuite, k -> new ArrayList<>())
                 .add(new ContextAndSubContext(context, subContext));
+        return this;
     }
 
     /**
@@ -307,7 +385,7 @@ public class ValidationPolicyLoader {
         ServiceLoader<ValidationPolicyFactory> loader = ServiceLoader.load(ValidationPolicyFactory.class);
         Iterator<ValidationPolicyFactory> factoryOptions = loader.iterator();
 
-        while (factoryOptions.hasNext()) {
+        if (factoryOptions.hasNext()) {
             // Loads the first one
             return factoryOptions.next().loadDefaultValidationPolicy();
         }
@@ -331,11 +409,27 @@ public class ValidationPolicyLoader {
                     return factory.loadValidationPolicy(validationPolicyDocument);
                 }
             }
-            return factoryOptions.next().loadDefaultValidationPolicy();
         }
         throw new UnsupportedOperationException("No suitable ValidationPolicyFactory has been found! " +
                 "Please add 'dss-policy-jaxb' module to the classpath for a DSS XML Validation Policy or " +
                 "create your own implementation for a custom policy.");
+    }
+
+    /**
+     * Loads a default cryptographic suite
+     *
+     * @return {@link CryptographicSuite}
+     */
+    private static CryptographicSuite loadDefaultCryptographicSuite() {
+        ServiceLoader<CryptographicSuiteFactory> loader = ServiceLoader.load(CryptographicSuiteFactory.class);
+        Iterator<CryptographicSuiteFactory> factoryOptions = loader.iterator();
+
+        if (factoryOptions.hasNext()) {
+            // Loads the first one
+            return factoryOptions.next().loadDefaultCryptographicSuite();
+        }
+        throw new UnsupportedOperationException("No ValidationPolicyFactory has been found! " +
+                "Please add 'dss-policy-jaxb' module to the classpath or create your own implementation.");
     }
 
     /**

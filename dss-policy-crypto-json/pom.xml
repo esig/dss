@@ -23,6 +23,8 @@
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
             <artifactId>dss-json-common</artifactId>
+            <!-- TODO: replace with specs-jws if support of jws signed crypto suites to be added -->
+            <!-- <artifactId>specs-jws</artifactId> -->
         </dependency>
 
         <dependency>

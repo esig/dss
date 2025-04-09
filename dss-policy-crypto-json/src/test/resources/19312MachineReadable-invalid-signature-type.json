@@ -454,7 +454,7 @@
                   "Validity": {
                      "End":"2028-12-31"
                   },
-                  "Recommendation": "L"
+                  "Recommendation": "R"
                }
             ]
          },
@@ -647,6 +647,7 @@
             ]
          }
       ],
+      "Signature": 10,
       "version":"1",
       "lang":"en-GB",
       "id":"ETSI322JSON"

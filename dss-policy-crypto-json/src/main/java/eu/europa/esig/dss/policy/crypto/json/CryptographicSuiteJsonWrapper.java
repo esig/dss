@@ -230,7 +230,7 @@ public class CryptographicSuiteJsonWrapper extends Abstract19322CryptographicSui
 
     @Override
     public Date getCryptographicSuiteUpdateDate() {
-        return securitySuitabilityPolicy.getAsDate(CryptographicSuiteJsonConstraints.POLICY_ISSUE_DATE);
+        return securitySuitabilityPolicy.getAsDateTime(CryptographicSuiteJsonConstraints.POLICY_ISSUE_DATE);
     }
 
 }
