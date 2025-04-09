@@ -87,6 +87,11 @@
 			<artifactId>dss-policy-crypto-xml</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-policy-crypto-json</artifactId>
+			<scope>test</scope>
+		</dependency>
 
 		<!-- Choose your implementation -->
 <!-- 		<dependency> -->

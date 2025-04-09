@@ -24,6 +24,7 @@ import com.github.erosb.jsonsKema.JsonArray;
 import com.github.erosb.jsonsKema.JsonObject;
 import com.github.erosb.jsonsKema.JsonString;
 import com.github.erosb.jsonsKema.JsonValue;
+import eu.europa.esig.jws.JSONUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -39,17 +40,19 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class JAdESUtilsTest {
 	
+	private static JSONUtils jsonUtils;
 	private static JAdESUtils jadesUtils;
 	
 	@BeforeAll
 	static void init() {
+		jsonUtils = JSONUtils.getInstance();
 		jadesUtils = JAdESUtils.getInstance();
 	}
 	
 	@Test
 	void jsonFlattenedTest() {
 		InputStream is = JAdESUtilsTest.class.getResourceAsStream("/jades-lta.json");
-		JsonObject jws = jadesUtils.parseJson(is);
+		JsonObject jws = jsonUtils.parseJson(is);
 		
 		List<String> errors = jadesUtils.validateAgainstJWSSchema(jws);
 		assertTrue(errors.isEmpty());
@@ -60,7 +63,7 @@ class JAdESUtilsTest {
 	@Test
 	void jsonFlattenedInvalidTest() {
 		InputStream is = JAdESUtilsTest.class.getResourceAsStream("/jades-lta-invalid.json");
-		JsonObject jws = jadesUtils.parseJson(is);
+		JsonObject jws = jsonUtils.parseJson(is);
 		
 		List<String> errors = jadesUtils.validateAgainstJWSSchema(jws);
 		assertErrorFound(errors, "evilPayload");
@@ -87,7 +90,7 @@ class JAdESUtilsTest {
 	@Test
 	void jsonSerializationTest() {
 		InputStream is = JAdESUtilsTest.class.getResourceAsStream("/jades-with-sigPSt.json");
-		JsonObject jws = jadesUtils.parseJson(is);
+		JsonObject jws = jsonUtils.parseJson(is);
 
 		List<String> errors = jadesUtils.validateAgainstJWSSchema(jws);
 		assertTrue(errors.isEmpty());
@@ -102,7 +105,7 @@ class JAdESUtilsTest {
 	@Test
 	void jsonSerializationInvalidTest() {
 		InputStream is = JAdESUtilsTest.class.getResourceAsStream("/jades-with-sigPSt-invalid.json");
-		JsonObject jws = jadesUtils.parseJson(is);
+		JsonObject jws = jsonUtils.parseJson(is);
 
 		List<String> errors = jadesUtils.validateAgainstJWSSchema(jws);
 		assertErrorFound(errors, "signature");

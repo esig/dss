@@ -2,11 +2,9 @@ package eu.europa.esig.dss.policy.crypto.xml;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
-import eu.europa.esig.dss.model.policy.CryptographicSuite;
+import eu.europa.esig.dss.model.policy.Abstract19322CryptographicSuite;
 import eu.europa.esig.dss.model.policy.EncryptionAlgorithmWithMinKeySize;
-import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.policy.crypto.xml.jaxb.AlgorithmIdentifierType;
 import eu.europa.esig.dss.policy.crypto.xml.jaxb.AlgorithmType;
 import eu.europa.esig.dss.policy.crypto.xml.jaxb.EvaluationType;
@@ -17,51 +15,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.xml.datatype.XMLGregorianCalendar;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
 /**
  * This class wraps an ETSI TS 119 312/322 XML cryptographic suite policy
  *
  */
-public class CryptographicSuiteXmlWrapper implements CryptographicSuite {
+public class CryptographicSuiteXmlWrapper extends Abstract19322CryptographicSuite {
 
     private static final Logger LOG = LoggerFactory.getLogger(CryptographicSuiteXmlWrapper.class);
 
-    /** Key size parameter used by RSA algorithms */
-    private static final String MODULES_LENGTH_PARAMETER = "moduluslength";
-
-    /** P Length key size parameter used by DSA algorithms (supported) */
-    private static final String PLENGTH_PARAMETER = "plength";
-
-    /** Q Length key size parameter used by DSA algorithms (not supported) */
-    private static final String QLENGTH_PARAMETER = "qlength";
-
     /** Wrapped SecuritySuitabilityPolicyType */
     private final SecuritySuitabilityPolicyType securitySuitabilityPolicy;
-
-    /** Defines global execution level of the cryptographic rules */
-    private LevelRule globalLevel;
-
-    /** Defines execution level of the acceptability of encryption algorithms check */
-    private LevelRule acceptableEncryptionAlgorithmsLevel;
-
-    /** Defines execution level of the acceptability of the  encryption algorithms' key length check */
-    private LevelRule acceptableEncryptionAlgorithmsMinKeySizeLevel;
-
-    /** Defines execution level of the acceptability of digest algorithms check */
-    private LevelRule acceptableDigestAlgorithmsLevel;
-
-    /** Defines execution level of the algorithms expiration check */
-    private LevelRule algorithmsExpirationDateLevel;
-
-    /** Defines execution level of the algorithms expiration check with expiration occurred after the update of the criptographic suite */
-    private LevelRule algorithmsExpirationTimeAfterPolicyUpdateLevel;
 
     /**
      * Default constructor
@@ -69,70 +38,8 @@ public class CryptographicSuiteXmlWrapper implements CryptographicSuite {
      * @param securitySuitabilityPolicy {@link SecuritySuitabilityPolicyType}
      */
     public CryptographicSuiteXmlWrapper(final SecuritySuitabilityPolicyType securitySuitabilityPolicy) {
+        Objects.requireNonNull(securitySuitabilityPolicy, "securitySuitabilityPolicy cannot be null!");
         this.securitySuitabilityPolicy = securitySuitabilityPolicy;
-    }
-
-    /**
-     * Sets the global level of the cryptographic constraints.
-     * The value is used when the level is not defined for a specific check execution.
-     *
-     * @param level {@link LevelRule}
-     */
-    public void setLevel(LevelRule level) {
-        this.globalLevel = level;
-    }
-
-    /**
-     * Sets the execution level for the acceptable encryption algorithms check
-     *
-     * @param acceptableEncryptionAlgorithmsLevel {@link LevelRule}
-     */
-    public void setAcceptableEncryptionAlgorithmsLevel(LevelRule acceptableEncryptionAlgorithmsLevel) {
-        this.acceptableEncryptionAlgorithmsLevel = acceptableEncryptionAlgorithmsLevel;
-    }
-
-    // TODO : continue and maybe switch to Level instead ?
-    public void setAcceptableEncryptionAlgorithmsMinKeySizeLevel(LevelRule acceptableEncryptionAlgorithmsMinKeySizeLevel) {
-        this.acceptableEncryptionAlgorithmsMinKeySizeLevel = acceptableEncryptionAlgorithmsMinKeySizeLevel;
-    }
-
-    public void setAcceptableDigestAlgorithmsLevel(LevelRule acceptableDigestAlgorithmsLevel) {
-        this.acceptableDigestAlgorithmsLevel = acceptableDigestAlgorithmsLevel;
-    }
-
-    public void setAlgorithmsExpirationDateLevel(LevelRule algorithmsExpirationDateLevel) {
-        this.algorithmsExpirationDateLevel = algorithmsExpirationDateLevel;
-    }
-
-    public void setAlgorithmsExpirationTimeAfterPolicyUpdateLevel(LevelRule algorithmsExpirationTimeAfterPolicyUpdateLevel) {
-        this.algorithmsExpirationTimeAfterPolicyUpdateLevel = algorithmsExpirationTimeAfterPolicyUpdateLevel;
-    }
-
-    @Override
-    public List<DigestAlgorithm> getAcceptableDigestAlgorithms() {
-        return new ArrayList<>(getAcceptableDigestAlgorithmsWithExpirationDates().keySet());
-    }
-
-    @Override
-    public List<EncryptionAlgorithm> getAcceptableEncryptionAlgorithms() {
-        return getAcceptableEncryptionAlgorithmsWithMinKeySizes().stream()
-                .map(EncryptionAlgorithmWithMinKeySize::getEncryptionAlgorithm).collect(Collectors.toList());
-    }
-
-    @Override
-    public List<EncryptionAlgorithmWithMinKeySize> getAcceptableEncryptionAlgorithmsWithMinKeySizes() {
-        Map<EncryptionAlgorithm, Integer> encryptionAlgorithmWithMinKeySizesMap = new HashMap<>();
-        for (EncryptionAlgorithmWithMinKeySize encryptionAlgorithmWithMinKeySize : getAcceptableEncryptionAlgorithmsWithExpirationDates().keySet()) {
-            EncryptionAlgorithm encryptionAlgorithm = encryptionAlgorithmWithMinKeySize.getEncryptionAlgorithm();
-            int keySize = encryptionAlgorithmWithMinKeySize.getMinKeySize();
-            Integer minKeySize = encryptionAlgorithmWithMinKeySizesMap.get(encryptionAlgorithm);
-            if (minKeySize == null || minKeySize > keySize) {
-                minKeySize = keySize;
-            }
-            encryptionAlgorithmWithMinKeySizesMap.put(encryptionAlgorithm, minKeySize);
-        }
-        return encryptionAlgorithmWithMinKeySizesMap.entrySet().stream()
-                .map(e -> new EncryptionAlgorithmWithMinKeySize(e.getKey(), e.getValue())).collect(Collectors.toList());
     }
 
     @Override
@@ -338,40 +245,6 @@ public class CryptographicSuiteXmlWrapper implements CryptographicSuite {
             return policyIssueDate.toGregorianCalendar().getTime();
         }
         return null;
-    }
-
-    @Override
-    public Level getAlgoExpirationDateAfterUpdateLevel() {
-        return null;
-    }
-
-    @Override
-    public Level getLevel() {
-        return globalLevel != null ? globalLevel.getLevel() : null;
-    }
-
-    @Override
-    public LevelRule getAcceptableEncryptionAlgoLevel() {
-        return getLevel(acceptableEncryptionAlgorithmsLevel);
-    }
-
-    @Override
-    public LevelRule getMiniPublicKeySizeLevel() {
-        return getLevel(acceptableEncryptionAlgorithmsMinKeySizeLevel);
-    }
-
-    @Override
-    public LevelRule getAcceptableDigestAlgoLevel() {
-        return getLevel(acceptableDigestAlgorithmsLevel);
-    }
-
-    @Override
-    public LevelRule getAlgoExpirationDateLevel() {
-        return getLevel(algorithmsExpirationDateLevel);
-    }
-
-    private LevelRule getLevel(LevelRule level) {
-        return level != null ? level : globalLevel;
     }
 
 }

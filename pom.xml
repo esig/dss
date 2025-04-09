@@ -54,6 +54,7 @@
 		<openpdf.version>1.3.43</openpdf.version>
 		<verapdf.version>1.26.5</verapdf.version>
 		<httpclient5.version>5.4.2</httpclient5.version>
+		<json-sKema.version>0.20.0</json-sKema.version>
 
 		<jakarta.xml.bind-api.version>3.0.1</jakarta.xml.bind-api.version> <!-- Version 4 requires JDK 11+ -->
 		<jakarta.activation-api.version>2.1.3</jakarta.activation-api.version>
@@ -93,6 +94,7 @@
 		<module>dss-enumerations</module>
 		<module>dss-alert</module>
 		<module>dss-xml-common</module>
+		<module>dss-json-common</module>
 		<module>dss-jaxb-common</module>
 		<module>dss-jaxb-parsers</module>
 		<module>specs-xmldsig</module>
@@ -106,6 +108,7 @@
 		<module>specs-jades</module>
 		<module>dss-policy-jaxb</module>
 		<module>dss-policy-crypto-xml</module>
+		<module>dss-policy-crypto-json</module>
 		<module>dss-diagnostic-jaxb</module>
 		<module>dss-detailed-report-jaxb</module>
 		<module>dss-simple-report-jaxb</module>
@@ -522,6 +525,11 @@
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-json-common</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-crl-parser</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -874,6 +882,11 @@
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-policy-crypto-json</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-detailed-report-jaxb</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -1041,6 +1054,13 @@
 				<artifactId>jaxb-core</artifactId>
 				<version>${jaxb-runtime.version}</version>
 				<scope>runtime</scope>
+			</dependency>
+
+			<!-- JSON -->
+			<dependency>
+				<groupId>com.github.erosb</groupId>
+				<artifactId>json-sKema</artifactId>
+				<version>${json-sKema.version}</version>
 			</dependency>
 
 			<!-- REST/SOAP API -->

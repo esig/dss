@@ -40,6 +40,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -284,6 +285,7 @@ class CryptographicSuiteUtilsTest {
 
         CryptographicConstraintWrapper wrapper = new CryptographicConstraintWrapper(cryptographicConstraint);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy");
+        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         assertNull(CryptographicSuiteUtils.getExpirationDate(wrapper, EncryptionAlgorithm.RSA, 1024));
         assertEquals(getDate("2022", simpleDateFormat), CryptographicSuiteUtils.getExpirationDate(wrapper, EncryptionAlgorithm.RSA, 2048));
@@ -308,6 +310,7 @@ class CryptographicSuiteUtilsTest {
 
         CryptographicConstraintWrapper wrapper = new CryptographicConstraintWrapper(cryptographicConstraint);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy");
+        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         assertNull(CryptographicSuiteUtils.getExpirationDate(wrapper, DigestAlgorithm.MD5));
         assertEquals(getDate("2022", simpleDateFormat), CryptographicSuiteUtils.getExpirationDate(wrapper, DigestAlgorithm.SHA1));

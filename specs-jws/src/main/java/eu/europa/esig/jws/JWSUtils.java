@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.jws;
 
+import eu.europa.esig.json.JSONSchemaUtils;
+
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
@@ -62,8 +64,12 @@ public final class JWSUtils extends AbstractJWSUtils {
 	/** Map of used definition schemas */
 	private Map<URI, String> definitions;
 
+	/** Singleton instance */
 	private static JWSUtils singleton;
 
+	/**
+	 * Empty constructor
+	 */
 	private JWSUtils() {
 		// empty
 	}
@@ -118,7 +124,7 @@ public final class JWSUtils extends AbstractJWSUtils {
 	public Map<URI, String> getRFCDefinitions() {
 		if (definitions == null) {
 			definitions = new HashMap<>();
-			definitions.putAll(getJSONSchemaDefinitions());
+			definitions.putAll(JSONSchemaUtils.getInstance().getJSONSchemaDefinitions());
 			definitions.put(URI.create(RFC7515_SCHEMA_URI), RFC7515_SCHEMA_LOCATION);
 			definitions.put(URI.create(RFC7517_SCHEMA_URI), RFC7517_SCHEMA_LOCATION);
 			definitions.put(URI.create(JWS_SCHEMA_URI), JWS_SCHEMA_LOCATION);

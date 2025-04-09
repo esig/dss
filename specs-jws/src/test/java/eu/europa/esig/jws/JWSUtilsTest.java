@@ -38,17 +38,19 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class JWSUtilsTest {
 	
+	private static JSONUtils jsonUtils;
 	private static JWSUtils jwsUtils;
 	
 	@BeforeAll
 	static void init() {
+		jsonUtils = JSONUtils.getInstance();
 		jwsUtils = JWSUtils.getInstance();
 	}
 	
 	@Test
 	void jsonSerializationTest() {
 		InputStream is = JWSUtilsTest.class.getResourceAsStream("/jws-serialization.json");
-		JsonObject jws = jwsUtils.parseJson(is);
+		JsonObject jws = jsonUtils.parseJson(is);
 		
 		List<String> errors = jwsUtils.validateAgainstJWSSchema(jws);
 		assertTrue(errors.isEmpty(), errors.toString());
@@ -66,7 +68,7 @@ class JWSUtilsTest {
 	@Test
 	void jsonFlattenedTest() {
 		InputStream is = JWSUtilsTest.class.getResourceAsStream("/jws-flattened.json");
-		JsonObject jws = jwsUtils.parseJson(is);
+		JsonObject jws = jsonUtils.parseJson(is);
 		
 		List<String> errors = jwsUtils.validateAgainstJWSSchema(jws);
 		assertTrue(errors.isEmpty());

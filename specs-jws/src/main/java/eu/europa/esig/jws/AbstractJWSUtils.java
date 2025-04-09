@@ -20,40 +20,20 @@
  */
 package eu.europa.esig.jws;
 
-import com.github.erosb.jsonsKema.IJsonValue;
 import com.github.erosb.jsonsKema.JsonObject;
-import com.github.erosb.jsonsKema.JsonParser;
 import com.github.erosb.jsonsKema.JsonValue;
 import com.github.erosb.jsonsKema.Schema;
-import com.github.erosb.jsonsKema.SchemaClient;
-import com.github.erosb.jsonsKema.SchemaLoader;
-import com.github.erosb.jsonsKema.SchemaLoaderConfig;
-import com.github.erosb.jsonsKema.ValidationFailure;
-import com.github.erosb.jsonsKema.Validator;
-import org.jetbrains.annotations.NotNull;
+import eu.europa.esig.json.JSONSchemaUtils;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Abstract class for JWS signature validation against JSON schemas
  */
 public abstract class AbstractJWSUtils {
-
-	/** The JSON Draft 07 schema of definitions */
-	private static final String JSON_DRAFT_07_SCHEMA_LOCATION = "/schema/json-schema-draft-07.json";
-
-	/** The JSON Draft 07 schema name URI */
-	private static final String JSON_DRAFT_07_SCHEMA_URI = "http://json-schema.org/draft-07/schema#";
 	
 	/**
 	 * JSON Schema for a root JWS element validation
@@ -70,9 +50,6 @@ public abstract class AbstractJWSUtils {
 	 */
 	private Schema jwsUnprotectedHeaderSchema;
 
-	/** Map of used definition schemas */
-	private Map<URI, String> definitions;
-
 	/**
 	 * Default constructor instantiating the object with null values
 	 */
@@ -87,7 +64,7 @@ public abstract class AbstractJWSUtils {
 	 */
 	public Schema getJWSSchema() {
 		if (jwsSchema == null) {
-			jwsSchema = loadSchema(getJWSSchemaJSON(), getJWSSchemaDefinitions());
+			jwsSchema = JSONSchemaUtils.getInstance().loadSchema(getJWSSchemaJSON(), getJWSSchemaDefinitions());
 		}
 		return jwsSchema;
 	}
@@ -99,7 +76,7 @@ public abstract class AbstractJWSUtils {
 	 */
 	public Schema getJWSProtectedHeaderSchema() {
 		if (jwsProtectedHeaderSchema == null) {
-			jwsProtectedHeaderSchema = loadSchema(getJWSProtectedHeaderSchemaJSON(),
+			jwsProtectedHeaderSchema = JSONSchemaUtils.getInstance().loadSchema(getJWSProtectedHeaderSchemaJSON(),
 					getJWSProtectedHeaderSchemaDefinitions());
 		}
 		return jwsProtectedHeaderSchema;
@@ -112,7 +89,7 @@ public abstract class AbstractJWSUtils {
 	 */
 	public Schema getJWSUnprotectedHeaderSchema() {
 		if (jwsUnprotectedHeaderSchema == null) {
-			jwsUnprotectedHeaderSchema = loadSchema(getJWSUnprotectedHeaderSchemaJSON(),
+			jwsUnprotectedHeaderSchema = JSONSchemaUtils.getInstance().loadSchema(getJWSUnprotectedHeaderSchemaJSON(),
 					getJWSUnprotectedHeaderSchemaDefinitions());
 		}
 		return jwsUnprotectedHeaderSchema;
@@ -168,7 +145,7 @@ public abstract class AbstractJWSUtils {
 	 *         the validation process, empty list when validation succeeds
 	 */
 	public List<String> validateAgainstJWSSchema(InputStream is) {
-		return validateAgainstJWSSchema(parseJson(is));
+		return validateAgainstJWSSchema(JSONSchemaUtils.getInstance().parseJson(is));
 	}
 
 	/**
@@ -179,7 +156,7 @@ public abstract class AbstractJWSUtils {
 	 *         the validation process, empty list when validation succeeds
 	 */
 	public List<String> validateAgainstJWSSchema(String jsonString) {
-		return validateAgainstJWSSchema(parseJson(jsonString));
+		return validateAgainstJWSSchema(JSONSchemaUtils.getInstance().parseJson(jsonString));
 	}
 
 	/**
@@ -190,7 +167,7 @@ public abstract class AbstractJWSUtils {
 	 *         the validation process, empty list when validation succeeds
 	 */
 	public List<String> validateAgainstJWSSchema(JsonObject json) {
-		return validateAgainstSchema(json, getJWSSchema());
+		return JSONSchemaUtils.getInstance().validateAgainstSchema(json, getJWSSchema());
 	}
 	
 	/**
@@ -201,7 +178,7 @@ public abstract class AbstractJWSUtils {
 	 *         the validation process, empty list when validation succeeds
 	 */
 	public List<String> validateAgainstJWSProtectedHeaderSchema(InputStream is) {
-		return validateAgainstJWSProtectedHeaderSchema(parseJson(is));
+		return validateAgainstJWSProtectedHeaderSchema(JSONSchemaUtils.getInstance().parseJson(is));
 	}
 
 	/**
@@ -212,7 +189,7 @@ public abstract class AbstractJWSUtils {
 	 *         the validation process, empty list when validation succeeds
 	 */
 	public List<String> validateAgainstJWSProtectedHeaderSchema(String jsonString) {
-		return validateAgainstJWSProtectedHeaderSchema(parseJson(jsonString));
+		return validateAgainstJWSProtectedHeaderSchema(JSONSchemaUtils.getInstance().parseJson(jsonString));
 	}
 	
 	/**
@@ -223,7 +200,7 @@ public abstract class AbstractJWSUtils {
 	 *         the validation process, empty list when validation succeeds
 	 */
 	public List<String> validateAgainstJWSProtectedHeaderSchema(JsonObject json) {
-		return validateAgainstSchema(json, getJWSProtectedHeaderSchema());
+		return JSONSchemaUtils.getInstance().validateAgainstSchema(json, getJWSProtectedHeaderSchema());
 	}
 
 	/**
@@ -234,7 +211,7 @@ public abstract class AbstractJWSUtils {
 	 *         the validation process, empty list when validation succeeds
 	 */
 	public List<String> validateAgainstJWSUnprotectedHeaderSchema(InputStream is) {
-		return validateAgainstJWSUnprotectedHeaderSchema(parseJson(is));
+		return validateAgainstJWSUnprotectedHeaderSchema(JSONSchemaUtils.getInstance().parseJson(is));
 	}
 
 	/**
@@ -245,7 +222,7 @@ public abstract class AbstractJWSUtils {
 	 *         the validation process, empty list when validation succeeds
 	 */
 	public List<String> validateAgainstJWSUnprotectedHeaderSchema(String jsonString) {
-		return validateAgainstJWSUnprotectedHeaderSchema(parseJson(jsonString));
+		return validateAgainstJWSUnprotectedHeaderSchema(JSONSchemaUtils.getInstance().parseJson(jsonString));
 	}
 
 	/**
@@ -256,7 +233,7 @@ public abstract class AbstractJWSUtils {
 	 *         the validation process, empty list when validation succeeds
 	 */
 	public List<String> validateAgainstJWSUnprotectedHeaderSchema(JsonValue json) {
-		return validateAgainstSchema(json, getJWSUnprotectedHeaderSchema());
+		return JSONSchemaUtils.getInstance().validateAgainstSchema(json, getJWSUnprotectedHeaderSchema());
 	}
 	
 	/**
@@ -266,28 +243,22 @@ public abstract class AbstractJWSUtils {
 	 * @param schema {@link Schema} schema to validate against
 	 * @return a list of {@link String} messages containing errors occurred during
 	 *         the validation process, empty list when validation succeeds
+	 * @deprecated since DSS 6.3. Please use {@code JSONUtils.getInstance().validateAgainstSchema(json, schema)}
 	 */
+	@Deprecated
 	public List<String> validateAgainstSchema(JsonValue json, Schema schema) {
-		Validator validator = Validator.forSchema(schema);
-		ValidationFailure validationFailure = validator.validate(json);
-		if (validationFailure != null) {
-			Set<ValidationFailure> causes = validationFailure.getCauses();
-			return causes.stream().map(v -> new ValidationMessage(v).getMessage()).collect(Collectors.toList());
-		}
-		return Collections.emptyList();
+		return JSONSchemaUtils.getInstance().validateAgainstSchema(json, schema);
 	}
 
 	/**
 	 * Returns a list of RFC 7515 and RFC 7517 definitions
 	 *
 	 * @return a map of definitions
+	 * @deprecated since DSS 6.3. Please use {@code JSONUtils.getJSONSchemaDefinitions()}
 	 */
+	@Deprecated
 	public Map<URI, String> getJSONSchemaDefinitions() {
-		if (definitions == null) {
-			definitions = new HashMap<>();
-			definitions.put(URI.create(JSON_DRAFT_07_SCHEMA_URI), JSON_DRAFT_07_SCHEMA_LOCATION);
-		}
-		return definitions;
+		return JSONSchemaUtils.getInstance().getJSONSchemaDefinitions();
 	}
 
 	/**
@@ -295,9 +266,11 @@ public abstract class AbstractJWSUtils {
 	 * 
 	 * @param json {@link String} to parse
 	 * @return {@link JsonObject}
+	 * @deprecated since DSS 6.3. Please use {@code JSONUtils.getInstance().parseJson(json)}
 	 */
+	@Deprecated
 	public JsonObject parseJson(String json) {
-		return parseJson(json, URI.create(""));
+		return JSONSchemaUtils.getInstance().parseJson(json);
 	}
 
 	/**
@@ -307,9 +280,11 @@ public abstract class AbstractJWSUtils {
 	 * @param json {@link String} to parse
 	 * @param uri {@link URI} of the schema
 	 * @return {@link JsonObject}
+	 * @deprecated since DSS 6.3. Please use {@code JSONUtils.getInstance().parseJson(json, uri)}
 	 */
+	@Deprecated
 	public JsonObject parseJson(String json, URI uri) {
-		return (JsonObject) new JsonParser(json, uri).parse();
+		return JSONSchemaUtils.getInstance().parseJson(json, uri);
 	}
 
 	/**
@@ -317,9 +292,11 @@ public abstract class AbstractJWSUtils {
 	 * 
 	 * @param inputStream {@link InputStream} to parse
 	 * @return {@link JsonObject}
+	 * @deprecated since DSS 6.3. Please use {@code JSONUtils.getInstance().parseJson(inputStream)}
 	 */
+	@Deprecated
 	public JsonObject parseJson(InputStream inputStream) {
-		return parseJson(inputStream, URI.create(""));
+		return JSONSchemaUtils.getInstance().parseJson(inputStream);
 	}
 
 	/**
@@ -329,22 +306,11 @@ public abstract class AbstractJWSUtils {
 	 * @param inputStream {@link InputStream} to parse
 	 * @param uri {@link URI} of the schema
 	 * @return {@link JsonObject}
+	 * @deprecated since DSS 6.3. Please use {@code JSONUtils.getInstance().parseJson(inputStream, uri)}
 	 */
+	@Deprecated
 	public JsonObject parseJson(InputStream inputStream, URI uri) {
-		try (InputStream is = inputStream) {
-			return parseJson(toString(is), uri);
-		} catch (IOException e) {
-			throw new IllegalStateException("Unable to read a scheme InputStream!");
-		}
-	}
-
-	private String toString(InputStream is) throws IOException {
-		ByteArrayOutputStream result = new ByteArrayOutputStream();
-		byte[] buffer = new byte[1024];
-		for (int length; (length = is.read(buffer)) != -1; ) {
-			result.write(buffer, 0, length);
-		}
-		return result.toString(StandardCharsets.UTF_8.name());
+		return JSONSchemaUtils.getInstance().parseJson(inputStream, uri);
 	}
 	
 	/**
@@ -353,51 +319,11 @@ public abstract class AbstractJWSUtils {
 	 * @param schemaJSON {@link JsonObject} the schema object URI
 	 * @param definitions a map containing definitions and their reference names
 	 * @return {@link Schema}
+	 * @deprecated since DSS 6.3. Please use {@code JSONUtils.getInstance().loadSchema(schemaJSON, definitions)}
 	 */
+	@Deprecated
 	public Schema loadSchema(String schemaJSON, Map<URI, String> definitions) {
-		ResourceSchemaClient schemaClient = new ResourceSchemaClient(definitions);
-		SchemaLoaderConfig schemaLoaderConfig = new SchemaLoaderConfig(schemaClient, URI.create(""));
-
-		IJsonValue parsed = schemaClient.getParsed(URI.create(schemaJSON));
-		return new SchemaLoader(parsed, schemaLoaderConfig).load();
+		return JSONSchemaUtils.getInstance().loadSchema(schemaJSON, definitions);
 	}
 
-	/**
-	 * This is a helper class to load a schema from resources by the given URI
-	 */
-	private class ResourceSchemaClient implements SchemaClient {
-
-		/** Map of schema URI identifiers and resources filename */
-		private final Map<URI, String> resources;
-
-		/**
-		 * Default constructor
-		 *
-		 * @param resources a map between schema URI and resources filename
-		 */
-		ResourceSchemaClient(Map<URI, String> resources) {
-			this.resources = resources;
-		}
-
-		@NotNull
-		@Override
-		public InputStream get(@NotNull URI uri) {
-			String schema = resources.get(uri);
-			if (schema != null) {
-				InputStream is = AbstractJWSUtils.class.getResourceAsStream(schema);
-				if (is != null) {
-					return is;
-				}
-			}
-			throw new IllegalStateException(String.format("Unable to load a schema for URI : %s", uri));
-		}
-
-		@NotNull
-		@Override
-		public IJsonValue getParsed(@NotNull URI uri) {
-			return parseJson(get(uri), uri);
-		}
-
-	}
-	
 }

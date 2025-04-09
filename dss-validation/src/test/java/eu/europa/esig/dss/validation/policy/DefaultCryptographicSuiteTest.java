@@ -35,20 +35,24 @@ public class DefaultCryptographicSuiteTest {
 
         ServiceLoader<ValidationPolicyFactory> valPolicyLoader = ServiceLoader.load(ValidationPolicyFactory.class);
         Iterator<ValidationPolicyFactory> valPolicyOptions = valPolicyLoader.iterator();
-        if (valPolicyOptions.hasNext()) {
-            ValidationPolicy validationPolicy = valPolicyOptions.next().loadDefaultValidationPolicy();
+        while (valPolicyOptions.hasNext()) {
+            ValidationPolicyFactory factory = valPolicyOptions.next();
+            ValidationPolicy validationPolicy = factory.loadDefaultValidationPolicy();
             CryptographicSuite cryptographicSuite = validationPolicy.getSignatureCryptographicConstraint(Context.SIGNATURE);
             args.add(Arguments.of(cryptographicSuite));
         }
 
+        assertEquals(1, args.size());
+
         ServiceLoader<CryptographicSuiteFactory> cryptoSuiteLoader = ServiceLoader.load(CryptographicSuiteFactory.class);
         Iterator<CryptographicSuiteFactory> cryptoSuiteOptions = cryptoSuiteLoader.iterator();
-        if (cryptoSuiteOptions.hasNext()) {
-            CryptographicSuite cryptographicSuite = cryptoSuiteOptions.next().loadDefaultCryptographicSuite();
+        while (cryptoSuiteOptions.hasNext()) {
+            CryptographicSuiteFactory factory = cryptoSuiteOptions.next();
+            CryptographicSuite cryptographicSuite = factory.loadDefaultCryptographicSuite();
             args.add(Arguments.of(cryptographicSuite));
         }
 
-        assertEquals(2, args.size()); // ensure number
+        assertEquals(3, args.size()); // ensure number (+ xml and json crypto suites)
 
         return args.stream();
     }
@@ -201,6 +205,18 @@ public class DefaultCryptographicSuiteTest {
         expectedMap.put(new EncryptionAlgorithmWithMinKeySize(EncryptionAlgorithm.PLAIN_ECDSA, 256), null);
 
         assertEquals(expectedMap, new HashMap<>(encryptionAlgorithmsWithExpirationDates));
+    }
+
+    @ParameterizedTest(name = "Policy {index} : {0}")
+    @MethodSource("data")
+    void getCryptographicSuiteUpdateDateTest(CryptographicSuite cryptographicSuite) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
+        calendar.clear();
+
+        calendar.set(2024, Calendar.OCTOBER, 13);
+
+        assertEquals(calendar.getTime(), cryptographicSuite.getCryptographicSuiteUpdateDate());
     }
 
 }

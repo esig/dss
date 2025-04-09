@@ -8,7 +8,7 @@
     </parent>
 
     <artifactId>dss-policy-crypto-xml</artifactId>
-    <name>XML/JAXB Schema for machine-readable cryptographic algorithms, and cipher suites catalogues</name>
+    <name>XML/JAXB Schema for cryptographic suites</name>
     <description>Generated source from XSD for Cryptographic suites catalogue.</description>
 
     <properties>

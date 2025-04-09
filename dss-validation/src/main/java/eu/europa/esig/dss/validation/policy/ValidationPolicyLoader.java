@@ -307,7 +307,7 @@ public class ValidationPolicyLoader {
         ServiceLoader<ValidationPolicyFactory> loader = ServiceLoader.load(ValidationPolicyFactory.class);
         Iterator<ValidationPolicyFactory> factoryOptions = loader.iterator();
 
-        if (factoryOptions.hasNext()) {
+        while (factoryOptions.hasNext()) {
             // Loads the first one
             return factoryOptions.next().loadDefaultValidationPolicy();
         }
@@ -325,7 +325,7 @@ public class ValidationPolicyLoader {
         ServiceLoader<ValidationPolicyFactory> loader = ServiceLoader.load(ValidationPolicyFactory.class);
         Iterator<ValidationPolicyFactory> factoryOptions = loader.iterator();
 
-        if (factoryOptions.hasNext()) {
+        while (factoryOptions.hasNext()) {
             for (ValidationPolicyFactory factory : loader) {
                 if (factory.isSupported(validationPolicyDocument)) {
                     return factory.loadValidationPolicy(validationPolicyDocument);
@@ -348,7 +348,7 @@ public class ValidationPolicyLoader {
         ServiceLoader<CryptographicSuiteFactory> loader = ServiceLoader.load(CryptographicSuiteFactory.class);
         Iterator<CryptographicSuiteFactory> factoryOptions = loader.iterator();
 
-        if (factoryOptions.hasNext()) {
+        while (factoryOptions.hasNext()) {
             for (CryptographicSuiteFactory factory : loader) {
                 if (factory.isSupported(cryptographicSuiteDocument)) {
                     return factory.loadCryptographicSuite(cryptographicSuiteDocument);
