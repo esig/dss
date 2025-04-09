@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
  * This class contains util methods for parsing and validation of JSON documents
  *
  */
-public abstract class AbstractJSONUtils {
+public abstract class JSONSchemaAbstractUtils {
 
     /** The JSON Draft 07 schema of definitions */
     private static final String JSON_DRAFT_07_SCHEMA_LOCATION = "/schema/json-schema-draft-07.json";
@@ -32,13 +32,16 @@ public abstract class AbstractJSONUtils {
     /** The JSON Draft 07 schema name URI */
     private static final String JSON_DRAFT_07_SCHEMA_URI = "http://json-schema.org/draft-07/schema#";
 
+    /** JSON Schema validator */
+    private Validator validator;
+
     /** Map of used definition schemas */
     private Map<URI, String> definitions;
 
     /**
      * Empty constructor
      */
-    protected AbstractJSONUtils() {
+    protected JSONSchemaAbstractUtils() {
         // empty
     }
 
@@ -80,7 +83,35 @@ public abstract class AbstractJSONUtils {
      *
      * @return {@link Schema}
      */
-    protected abstract Schema getSchema();
+    protected Schema getSchema() {
+        return loadSchema(getSchemaURI(), getSchemaDefinitions());
+    }
+
+    /**
+     * Gets URI for the current schema
+     *
+     * @return {@link String}
+     */
+    public abstract String getSchemaURI();
+
+    /**
+     * Gets a list of schema definitions
+     *
+     * @return a map between schema URI's and their filesystem locations
+     */
+    public abstract Map<URI, String> getSchemaDefinitions();
+
+    /**
+     * Gets a validator for the given JSON schema
+     *
+     * @return {@link Validator}
+     */
+    protected Validator getValidator() {
+        if (validator == null) {
+            validator = Validator.forSchema(getSchema());
+        }
+        return validator;
+    }
 
     /**
      * Validates a {@code json} against the provided JSON {@code schema}
@@ -91,7 +122,7 @@ public abstract class AbstractJSONUtils {
      *         the validation process, empty list when validation succeeds
      */
     protected List<String> validateAgainstSchema(JsonValue json, Schema schema) {
-        Validator validator = Validator.forSchema(schema);
+        Validator validator = getValidator();
         ValidationFailure validationFailure = validator.validate(json);
         if (validationFailure != null) {
             Set<ValidationFailure> causes = validationFailure.getCauses();
@@ -105,7 +136,7 @@ public abstract class AbstractJSONUtils {
      *
      * @return a map of definitions
      */
-    protected Map<URI, String> getJSONSchemaDefinitions() {
+    public Map<URI, String> getJSONSchemaDefinitions() {
         if (definitions == null) {
             definitions = new HashMap<>();
             definitions.put(URI.create(JSON_DRAFT_07_SCHEMA_URI), JSON_DRAFT_07_SCHEMA_LOCATION);
@@ -150,7 +181,7 @@ public abstract class AbstractJSONUtils {
         public InputStream get(@NotNull URI uri) {
             String schema = resources.get(uri);
             if (schema != null) {
-                InputStream is = AbstractJSONUtils.class.getResourceAsStream(schema);
+                InputStream is = JSONSchemaAbstractUtils.class.getResourceAsStream(schema);
                 if (is != null) {
                     return is;
                 }
