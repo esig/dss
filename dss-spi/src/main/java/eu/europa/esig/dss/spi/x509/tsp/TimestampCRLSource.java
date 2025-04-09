@@ -30,8 +30,13 @@ import org.bouncycastle.tsp.TimeStampToken;
 @SuppressWarnings("serial")
 public class TimestampCRLSource extends CMSCRLSource {
 
+	/**
+	 * Default constructor
+	 *
+	 * @param timeStampToken {@link TimeStampToken}
+	 */
 	TimestampCRLSource(TimeStampToken timeStampToken) {
-		super(timeStampToken.toCMSSignedData(), timeStampToken.getUnsignedAttributes());
+		super(timeStampToken.toCMSSignedData().getCRLs(), timeStampToken.getUnsignedAttributes());
 	}
 
 }

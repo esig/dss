@@ -41,7 +41,7 @@ public class CAdESCRLSource extends CMSCRLSource {
 	 */
 	@Deprecated
 	public CAdESCRLSource(CMSSignedData cmsSignedData, AttributeTable unsignedAttributes) {
-		super(cmsSignedData, unsignedAttributes);
+		super(cmsSignedData.getCRLs(), unsignedAttributes);
 	}
 
 	/**

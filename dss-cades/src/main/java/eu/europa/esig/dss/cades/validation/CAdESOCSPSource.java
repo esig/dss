@@ -23,6 +23,8 @@ package eu.europa.esig.dss.cades.validation;
 import eu.europa.esig.dss.cms.CMS;
 import eu.europa.esig.dss.spi.x509.CMSOCSPSource;
 import org.bouncycastle.asn1.cms.AttributeTable;
+import org.bouncycastle.asn1.cms.CMSObjectIdentifiers;
+import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.bouncycastle.cms.CMSSignedData;
 
 /**
@@ -41,7 +43,8 @@ public class CAdESOCSPSource extends CMSOCSPSource {
 	 */
 	@Deprecated
 	public CAdESOCSPSource(CMSSignedData cmsSignedData, AttributeTable unsignedAttributes) {
-		super(cmsSignedData, unsignedAttributes);
+		super(cmsSignedData.getOtherRevocationInfo(CMSObjectIdentifiers.id_ri_ocsp_response),
+				cmsSignedData.getOtherRevocationInfo(OCSPObjectIdentifiers.id_pkix_ocsp_basic), unsignedAttributes);
 	}
 
 	/**
