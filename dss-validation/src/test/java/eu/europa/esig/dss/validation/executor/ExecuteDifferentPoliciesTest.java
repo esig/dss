@@ -22,8 +22,9 @@ package eu.europa.esig.dss.validation.executor;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
+import eu.europa.esig.dss.model.policy.CryptographicSuite;
+import eu.europa.esig.dss.model.policy.CryptographicSuiteFactory;
 import eu.europa.esig.dss.model.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.EtsiValidationPolicyFactory;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
 import eu.europa.esig.dss.validation.policy.ValidationPolicyLoader;
 import eu.europa.esig.dss.validation.reports.Reports;
@@ -34,31 +35,46 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.ServiceLoader;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 
 class ExecuteDifferentPoliciesTest {
 
 	static Stream<Arguments> data() throws Exception {
 		File folderPolicy = new File("src/test/resources/diag-data/policy");
-		File[] policyFiles = folderPolicy.listFiles();
 		File folderDiagnosticData = new File("src/test/resources/diag-data");
-		File[] diagDataFiles = folderDiagnosticData.listFiles();
 		Collection<Arguments> dataToRun = new ArrayList<>();
-		for (File diagData : diagDataFiles) {
+
+		List<ValidationPolicy> validationPolicies = new ArrayList<>();
+		List<CryptographicSuite> cryptographicSuites = new ArrayList<>();
+
+		validationPolicies.add(ValidationPolicyLoader.fromDefaultValidationPolicy().create());
+		for (File policyFile : folderPolicy.listFiles()) {
+			if (policyFile.isFile()) {
+				ValidationPolicy validationPolicy = ValidationPolicyLoader.fromValidationPolicy(policyFile).create();
+				validationPolicies.add(validationPolicy);
+			}
+		}
+
+		ServiceLoader<CryptographicSuiteFactory> loader = ServiceLoader.load(CryptographicSuiteFactory.class);
+        for (CryptographicSuiteFactory factory : loader) {
+            CryptographicSuite cryptographicSuite = factory.loadDefaultCryptographicSuite();
+            cryptographicSuites.add(cryptographicSuite);
+        }
+
+		for (File diagData : folderDiagnosticData.listFiles()) {
 			if (diagData.isFile()) {
 				XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(diagData);
-				for (File policyFile : policyFiles) {
-					if (policyFile.isFile()) {
-						ValidationPolicy validationPolicy = ValidationPolicyLoader.fromValidationPolicy(policyFile).create();
-						dataToRun.add(Arguments.of(diagnosticData, validationPolicy));
+				for (ValidationPolicy validationPolicy : validationPolicies) {
+					dataToRun.add(Arguments.of(diagnosticData, ValidationPolicyLoader.fromValidationPolicy(validationPolicy).create()));
+					for (CryptographicSuite cryptographicSuite : cryptographicSuites) {
+						dataToRun.add(Arguments.of(diagnosticData, ValidationPolicyLoader.fromValidationPolicy(validationPolicy)
+								.withCryptographicSuite(cryptographicSuite).create()));
 					}
 				}
-
-				dataToRun.add(Arguments.of(diagnosticData, new EtsiValidationPolicyFactory().loadDefaultValidationPolicy() ));
-
 			}
 		}
 		return dataToRun.stream();

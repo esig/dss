@@ -20,12 +20,24 @@ class CryptographicSuiteJsonFactoryTest {
         Iterator<CryptographicSuiteFactory> factoryOptions = loader.iterator();
 
         CryptographicSuite cryptographicSuite = null;
-        if (factoryOptions.hasNext()) {
-            for (CryptographicSuiteFactory factory : loader) {
-                if (factory.isSupported(cryptoSuite)) {
-                    cryptographicSuite = factory.loadCryptographicSuite(cryptoSuite);
-                }
+        while (factoryOptions.hasNext()) {
+            CryptographicSuiteFactory factory = factoryOptions.next();
+            if (factory.isSupported(cryptoSuite)) {
+                cryptographicSuite = factory.loadCryptographicSuite(cryptoSuite);
             }
+        }
+        assertNotNull(cryptographicSuite);
+    }
+
+    @Test
+    void serviceLoaderDefaultTest() {
+        ServiceLoader<CryptographicSuiteFactory> loader = ServiceLoader.load(CryptographicSuiteFactory.class);
+        Iterator<CryptographicSuiteFactory> factoryOptions = loader.iterator();
+
+        CryptographicSuite cryptographicSuite = null;
+        if (factoryOptions.hasNext()) {
+            CryptographicSuiteFactory factory = factoryOptions.next();
+            cryptographicSuite = factory.loadDefaultCryptographicSuite();
         }
         assertNotNull(cryptographicSuite);
     }

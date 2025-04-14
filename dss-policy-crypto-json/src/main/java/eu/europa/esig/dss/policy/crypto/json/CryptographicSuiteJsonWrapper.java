@@ -6,9 +6,11 @@ import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.policy.Abstract19322CryptographicSuite;
 import eu.europa.esig.dss.model.policy.EncryptionAlgorithmWithMinKeySize;
 import eu.europa.esig.json.JsonObjectWrapper;
+import eu.europa.esig.json.RFC3339DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -37,9 +39,18 @@ public class CryptographicSuiteJsonWrapper extends Abstract19322CryptographicSui
     }
 
     @Override
-    public Map<DigestAlgorithm, Date> getAcceptableDigestAlgorithmsWithExpirationDates() {
+    public String getPolicyName() {
+        JsonObjectWrapper policyName = securitySuitabilityPolicy.getAsObject(CryptographicSuiteJsonConstraints.POLICY_NAME);
+        if (policyName != null) {
+            return policyName.getAsString("Name");
+        }
+        return null;
+    }
+
+    @Override
+    protected Map<DigestAlgorithm, Date> buildAcceptableDigestAlgorithmsWithExpirationDates() {
         final Map<DigestAlgorithm, Date> digestAlgorithmsMap = new LinkedHashMap<>();
-        List<JsonObjectWrapper> algorithmList = securitySuitabilityPolicy.getAsList(CryptographicSuiteJsonConstraints.ALGORITHM);
+        List<JsonObjectWrapper> algorithmList = securitySuitabilityPolicy.getAsObjectList(CryptographicSuiteJsonConstraints.ALGORITHM);
         for (JsonObjectWrapper algorithm : algorithmList) {
             JsonObjectWrapper algorithmIdentifier = algorithm.getAsObject(CryptographicSuiteJsonConstraints.ALGORITHM_IDENTIFIER);
             DigestAlgorithm digestAlgorithm = getDigestAlgorithm(algorithmIdentifier);
@@ -47,9 +58,19 @@ public class CryptographicSuiteJsonWrapper extends Abstract19322CryptographicSui
                 continue;
             }
 
-            List<JsonObjectWrapper> evaluationList = algorithm.getAsList(CryptographicSuiteJsonConstraints.EVALUATION);
-            Date endDate = getDigestAlgorithmEndDate(evaluationList);
-            digestAlgorithmsMap.put(digestAlgorithm, endDate);
+            try {
+                List<JsonObjectWrapper> evaluationList = algorithm.getAsObjectList(CryptographicSuiteJsonConstraints.EVALUATION);
+                Date endDate = getDigestAlgorithmEndDate(evaluationList);
+                digestAlgorithmsMap.put(digestAlgorithm, endDate);
+
+            } catch (Exception e) {
+                String errorMessage = "An error occurred during processing of a digest algorithm '{}' entry : {}";
+                if (LOG.isDebugEnabled()) {
+                    LOG.warn(errorMessage, digestAlgorithm.getName(), e.getMessage(), e);
+                } else {
+                    LOG.warn(errorMessage, digestAlgorithm.getName(), e.getMessage());
+                }
+            }
 
         }
         return digestAlgorithmsMap;
@@ -105,9 +126,9 @@ public class CryptographicSuiteJsonWrapper extends Abstract19322CryptographicSui
     }
 
     @Override
-    public Map<EncryptionAlgorithmWithMinKeySize, Date> getAcceptableEncryptionAlgorithmsWithExpirationDates() {
+    protected Map<EncryptionAlgorithmWithMinKeySize, Date> buildAcceptableEncryptionAlgorithmsWithExpirationDates() {
         final Map<EncryptionAlgorithmWithMinKeySize, Date> encryptionAlgorithmsMap = new LinkedHashMap<>();
-        List<JsonObjectWrapper> algorithmList = securitySuitabilityPolicy.getAsList(CryptographicSuiteJsonConstraints.ALGORITHM);
+        List<JsonObjectWrapper> algorithmList = securitySuitabilityPolicy.getAsObjectList(CryptographicSuiteJsonConstraints.ALGORITHM);
         for (JsonObjectWrapper algorithm : algorithmList) {
             JsonObjectWrapper algorithmIdentifier = algorithm.getAsObject(CryptographicSuiteJsonConstraints.ALGORITHM_IDENTIFIER);
             EncryptionAlgorithm encryptionAlgorithm = getEncryptionAlgorithm(algorithmIdentifier);
@@ -115,11 +136,20 @@ public class CryptographicSuiteJsonWrapper extends Abstract19322CryptographicSui
                 continue;
             }
 
-            List<JsonObjectWrapper> evaluationList = algorithm.getAsList(CryptographicSuiteJsonConstraints.EVALUATION);
-            Map<Integer, Date> endDatesMap = getEncryptionAlgorithmKeySizeEndDates(encryptionAlgorithm, evaluationList);
-            for (Integer keySize : endDatesMap.keySet()) {
-                EncryptionAlgorithmWithMinKeySize encryptionAlgorithmWithMinKeySize = new EncryptionAlgorithmWithMinKeySize(encryptionAlgorithm, keySize);
-                encryptionAlgorithmsMap.put(encryptionAlgorithmWithMinKeySize, endDatesMap.get(keySize));
+            try {
+                List<JsonObjectWrapper> evaluationList = algorithm.getAsObjectList(CryptographicSuiteJsonConstraints.EVALUATION);
+                Map<Integer, Date> endDatesMap = getEncryptionAlgorithmKeySizeEndDates(encryptionAlgorithm, evaluationList);
+                for (Integer keySize : endDatesMap.keySet()) {
+                    EncryptionAlgorithmWithMinKeySize encryptionAlgorithmWithMinKeySize = new EncryptionAlgorithmWithMinKeySize(encryptionAlgorithm, keySize);
+                    encryptionAlgorithmsMap.put(encryptionAlgorithmWithMinKeySize, endDatesMap.get(keySize));
+                }
+            } catch (Exception e) {
+                String errorMessage = "An error occurred during processing of an encryption algorithm '{}' entry : {}";
+                if (LOG.isDebugEnabled()) {
+                    LOG.warn(errorMessage, encryptionAlgorithm.getName(), e.getMessage(), e);
+                } else {
+                    LOG.warn(errorMessage, encryptionAlgorithm.getName(), e.getMessage());
+                }
             }
         }
         return encryptionAlgorithmsMap;
@@ -159,11 +189,11 @@ public class CryptographicSuiteJsonWrapper extends Abstract19322CryptographicSui
 
     private Map<Integer, Date> getEncryptionAlgorithmKeySizeEndDates(EncryptionAlgorithm encryptionAlgorithm, List<JsonObjectWrapper> evaluations) {
         if (evaluations == null || evaluations.isEmpty()) {
-            return null;
+            return Collections.emptyMap();
         }
         final Map<Integer, Date> keySizeEndDates = new LinkedHashMap<>();
         for (JsonObjectWrapper evaluation : evaluations) {
-            List<JsonObjectWrapper> parameters = evaluation.getAsList(CryptographicSuiteJsonConstraints.PARAMETER);
+            List<JsonObjectWrapper> parameters = evaluation.getAsObjectList(CryptographicSuiteJsonConstraints.PARAMETER);
             Integer keySize = getKeySize(encryptionAlgorithm, parameters);
 
             JsonObjectWrapper validity = evaluation.getAsObject(CryptographicSuiteJsonConstraints.VALIDITY);
@@ -221,16 +251,27 @@ public class CryptographicSuiteJsonWrapper extends Abstract19322CryptographicSui
     }
 
     private Date getValidityEndDate(JsonObjectWrapper validity) {
-        Date startDate = validity.getAsDate(CryptographicSuiteJsonConstraints.START);
+        Date startDate = getAsDate(validity.getAsString(CryptographicSuiteJsonConstraints.START));
         if (startDate != null) {
             LOG.debug("The Start date is not supported. The values has been skipped.");
         }
-        return validity.getAsDate(CryptographicSuiteJsonConstraints.END);
+        return getAsDate(validity.getAsString(CryptographicSuiteJsonConstraints.END));
+    }
+
+    private Date getAsDate(String dateString) {
+        if (dateString != null) {
+            return RFC3339DateUtils.getDate(dateString);
+        }
+        return null;
     }
 
     @Override
     public Date getCryptographicSuiteUpdateDate() {
-        return securitySuitabilityPolicy.getAsDateTime(CryptographicSuiteJsonConstraints.POLICY_ISSUE_DATE);
+        String policyIssueDate = securitySuitabilityPolicy.getAsString(CryptographicSuiteJsonConstraints.POLICY_ISSUE_DATE);
+        if (policyIssueDate != null) {
+            return RFC3339DateUtils.getDateTime(policyIssueDate);
+        }
+        return null;
     }
 
 }

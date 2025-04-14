@@ -105,7 +105,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 	/**
 	 * The expected validation level
-	 *
+	 * <p>
 	 * Default: ValidationLevel.ARCHIVAL_DATA (the highest level)
 	 */
 	private ValidationLevel validationLevel = ValidationLevel.ARCHIVAL_DATA;
@@ -118,7 +118,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 	/**
 	 * Defines if the ETSI Validation report shall be produced
-	 *
+	 * <p>
 	 * Default: true
 	 */
 	private boolean enableEtsiValidationReport = true;
@@ -302,47 +302,22 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 	@Override
 	public Reports validateDocument(final URL validationPolicyURL) {
-		if (validationPolicyURL == null) {
-			return validateDocument((DSSDocument) null);
-		}
-		try (InputStream is = validationPolicyURL.openStream()) {
-			return validateDocument(is);
-		} catch (IOException e) {
-			throw new IllegalInputException(String.format("Unable to load policy with URL '%s'. Reason : %s",
-					validationPolicyURL, e.getMessage()), e);
-		}
+		return validateDocument(validationPolicyURL, null);
 	}
 
 	@Override
 	public Reports validateDocument(final String policyResourcePath) {
-		if (policyResourcePath == null) {
-			return validateDocument((DSSDocument) null);
-		}
-		return validateDocument(new File(policyResourcePath));
+		return validateDocument(policyResourcePath, null);
 	}
 
 	@Override
 	public Reports validateDocument(final File policyFile) {
-		if ((policyFile == null) || !policyFile.exists()) {
-			return validateDocument((InputStream) null);
-		}
-		return validateDocument(new FileDocument(policyFile));
+		return validateDocument(policyFile, null);
 	}
 
 	@Override
 	public Reports validateDocument(DSSDocument policyDocument) {
-		ValidationPolicy validationPolicy;
-		try {
-			if (policyDocument == null) {
-				LOG.debug("No provided validation policy : use the default policy");
-				validationPolicy = ValidationPolicyLoader.fromDefaultValidationPolicy().create();
-			} else {
-				validationPolicy = ValidationPolicyLoader.fromValidationPolicy(policyDocument).create();
-			}
-		} catch (Exception e) {
-			throw new IllegalInputException("Unable to load the policy", e);
-		}
-		return validateDocument(validationPolicy);
+		return validateDocument(policyDocument, null);
 	}
 
 	/**
@@ -354,7 +329,79 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 */
 	@Override
 	public Reports validateDocument(final InputStream policyDataStream) {
-		return validateDocument(new InMemoryDocument(policyDataStream));
+		return validateDocument(policyDataStream, null);
+	}
+
+	@Override
+	public Reports validateDocument(URL validationPolicyURL, URL cryptographicSuiteURL) {
+		try (InputStream validationPolicyIS = validationPolicyURL != null ? validationPolicyURL.openStream() : null ;
+			 InputStream cryptographicSuiteIS = cryptographicSuiteURL != null ? cryptographicSuiteURL.openStream() : null) {
+			return validateDocument(validationPolicyIS, cryptographicSuiteIS);
+		} catch (IOException e) {
+			throw new IllegalInputException(String.format(
+					"Unable to load policy with URL '%s' and cryptographic suite '%s'. Reason : %s",
+					validationPolicyURL, cryptographicSuiteURL, e.getMessage()), e);
+		}
+	}
+
+	@Override
+	public Reports validateDocument(String policyResourcePath, String cryptographicSuitePath) {
+		try (InputStream validationPolicyIS = policyResourcePath != null ? getClass().getResourceAsStream(policyResourcePath) : null ;
+			 InputStream cryptographicSuiteIS = cryptographicSuitePath != null ? getClass().getResourceAsStream(cryptographicSuitePath) : null) {
+			return validateDocument(validationPolicyIS, cryptographicSuiteIS);
+		} catch (IOException e) {
+			throw new IllegalInputException(String.format(
+					"Unable to load policy with URL '%s' and cryptographic suite '%s'. Reason : %s",
+					policyResourcePath, cryptographicSuitePath, e.getMessage()), e);
+		}
+	}
+
+	@Override
+	public Reports validateDocument(File policyFile, File cryptographicSuiteFile) {
+		DSSDocument policyDocument = policyFile != null ? new FileDocument(policyFile) : null;
+		DSSDocument cryptographicSuiteDocument = cryptographicSuiteFile != null ? new FileDocument(cryptographicSuiteFile) : null;
+		return validateDocument(policyDocument, cryptographicSuiteDocument);
+	}
+
+	@Override
+	public Reports validateDocument(DSSDocument policyDocument, DSSDocument cryptographicSuiteDocument) {
+		ValidationPolicy validationPolicy = loadValidationPolicy(policyDocument, cryptographicSuiteDocument);
+		return validateDocument(validationPolicy);
+	}
+
+	/**
+	 * This method loads a validation policy from the {@code policyDocument} and a {@code cryptographicSuiteDocument}.
+	 * When a document is not provided, a default policy or cryptographic suite is used, respectively.
+	 *
+	 * @param policyDocument {@link DSSDocument} containing the validation policy document
+	 * @param cryptographicSuiteDocument {@link DSSDocument} containing the cryptographic suite document
+	 * @return {@link ValidationPolicy}
+	 */
+	protected ValidationPolicy loadValidationPolicy(DSSDocument policyDocument, DSSDocument cryptographicSuiteDocument) {
+		try {
+			ValidationPolicyLoader validationPolicyLoader;
+			if (policyDocument == null) {
+				LOG.debug("No provided validation policy : use the default policy");
+				validationPolicyLoader = ValidationPolicyLoader.fromDefaultValidationPolicy();
+			} else {
+				validationPolicyLoader = ValidationPolicyLoader.fromValidationPolicy(policyDocument);
+			}
+			if (cryptographicSuiteDocument != null) {
+				validationPolicyLoader = validationPolicyLoader.withCryptographicSuite(cryptographicSuiteDocument);
+			}
+
+			return validationPolicyLoader.create();
+
+		} catch (Exception e) {
+			throw new IllegalInputException("Unable to load the policy", e);
+		}
+	}
+
+	@Override
+	public Reports validateDocument(InputStream policyDataStream, InputStream cryptographicSuiteStream) {
+		DSSDocument policyDocument = policyDataStream != null ? new InMemoryDocument(policyDataStream) : null;
+		DSSDocument cryptographicSuiteDocument = cryptographicSuiteStream != null ? new InMemoryDocument(cryptographicSuiteStream) : null;
+		return validateDocument(policyDocument, cryptographicSuiteDocument);
 	}
 
 	/**

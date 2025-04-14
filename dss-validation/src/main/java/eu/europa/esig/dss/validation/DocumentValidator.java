@@ -253,14 +253,138 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	Reports validateDocument(final InputStream policyDataStream);
 
 	/**
-	 * Validates the document and all its signatures. The {@code validationPolicy} contains the constraint file. If null
-	 * or empty the default file is used.
+	 * Validates the document and all its signatures. The {@code validationPolicy} contains the constraint file.
+	 * Please see {@code eu.europa.esig.dss.validation.policy.ValidationPolicyLoader}
+	 * for building a customizable validation policy.
+	 * If null or empty the default file is used.
 	 *
 	 * @param validationPolicy
 	 *            {@code ValidationPolicy}
 	 * @return {@link Reports}
 	 */
-	Reports validateDocument(final ValidationPolicy validationPolicy);
+	Reports validateDocument(ValidationPolicy validationPolicy);
+
+	/**
+	 * Validates the document and all its signatures, using the provided validation policy.
+	 * If cryptographic suite is set, the constraints from validation policy will be overwritten
+	 * by the constraints retrieved from the cryptographic suite.
+	 * When set, the cryptographic suite constraints are applied with the default behavior, using FAIL level.
+	 * For a customizable cryptographic suite and its applicability context,
+	 * please use {@code eu.europa.esig.dss.validation.policy.ValidationPolicyLoader}.
+	 * <p>
+	 * The format of validation policy should correspond to the DSS XML Validation policy
+	 * (please include 'dss-policy-jaxb' module in your classpath), unless a custom validation policy has been implemented.
+	 * The format of cryptographic suite should correspond to XML or JSON schema as defined in ETSI TS 119 322
+	 * (please include 'dss-policy-crypto-xml' or 'dss-policy-crypto-json' to the classpath), unless a custom
+	 * cryptographic suite has been implemented.
+	 * <p>
+	 * If the validation policy URL is set then the policy constraints
+	 * are retrieved from this location. If null or empty the default file is used.
+	 *
+	 * @param validationPolicyURL {@link URL} to the used validation policy file
+	 * @param cryptographicSuiteURL {@link URL} to the used cryptographic suite file
+	 * @return {@code Reports}: diagnostic data, detailed report and simple report
+	 */
+	Reports validateDocument(final URL validationPolicyURL, final URL cryptographicSuiteURL);
+
+	/**
+	 * Validates the document and all its signatures, using the provided validation policy.
+	 * If cryptographic suite is set, the constraints from validation policy will be overwritten
+	 * by the constraints retrieved from the cryptographic suite.
+	 * When set, the cryptographic suite constraints are applied with the default behavior, using FAIL level.
+	 * For a customizable cryptographic suite and its applicability context,
+	 * please use {@code eu.europa.esig.dss.validation.policy.ValidationPolicyLoader}.
+	 * <p>
+	 * The format of validation policy should correspond to the DSS XML Validation policy
+	 * (please include 'dss-policy-jaxb' module in your classpath), unless a custom validation policy has been implemented.
+	 * The format of cryptographic suite should correspond to XML or JSON schema as defined in ETSI TS 119 322
+	 * (please include 'dss-policy-crypto-xml' or 'dss-policy-crypto-json' to the classpath), unless a custom
+	 * cryptographic suite has been implemented.
+	 * <p>
+	 * The {@code policyResourcePath} and {@code cryptographicSuitePath} specify the constraint file.
+	 * If null or empty the default file is used.
+	 *
+	 * @param policyResourcePath
+	 *            {@link String} path to the validation policy file, located against
+	 *            the classpath (getClass().getResourceAsStream), and NOT the filesystem
+	 * @param cryptographicSuitePath
+	 *            {@link String} path to the cryptographic suite file, located against
+	 *            the classpath (getClass().getResourceAsStream), and NOT the filesystem
+	 * @return {@code Reports}: diagnostic data, detailed report and simple report
+	 */
+	Reports validateDocument(final String policyResourcePath, final String cryptographicSuitePath);
+
+	/**
+	 * Validates the document and all its signatures, using the provided validation policy.
+	 * If cryptographic suite is set, the constraints from validation policy will be overwritten
+	 * by the constraints retrieved from the cryptographic suite.
+	 * When set, the cryptographic suite constraints are applied with the default behavior, using FAIL level.
+	 * For a customizable cryptographic suite and its applicability context,
+	 * please use {@code eu.europa.esig.dss.validation.policy.ValidationPolicyLoader}.
+	 * <p>
+	 * The format of validation policy should correspond to the DSS XML Validation policy
+	 * (please include 'dss-policy-jaxb' module in your classpath), unless a custom validation policy has been implemented.
+	 * The format of cryptographic suite should correspond to XML or JSON schema as defined in ETSI TS 119 322
+	 * (please include 'dss-policy-crypto-xml' or 'dss-policy-crypto-json' to the classpath), unless a custom
+	 * cryptographic suite has been implemented.
+	 * <p>
+	 * The {@code File} parameters specify the constraint file. If null the default file is used.
+	 *
+	 * @param policyFile
+	 *            {@link File} containing the validation policy
+	 * @param cryptographicSuiteFile
+	 *            {@link File} containing the cryptographic suite
+	 * @return {@code Reports}: diagnostic data, detailed report and simple report
+	 */
+	Reports validateDocument(final File policyFile, final File cryptographicSuiteFile);
+
+	/**
+	 * Validates the document and all its signatures, using the provided validation policy.
+	 * If cryptographic suite is set, the constraints from validation policy will be overwritten
+	 * by the constraints retrieved from the cryptographic suite.
+	 * When set, the cryptographic suite constraints are applied with the default behavior, using FAIL level.
+	 * For a customizable cryptographic suite and its applicability context,
+	 * please use {@code eu.europa.esig.dss.validation.policy.ValidationPolicyLoader}.
+	 * <p>
+	 * The format of validation policy should correspond to the DSS XML Validation policy
+	 * (please include 'dss-policy-jaxb' module in your classpath), unless a custom validation policy has been implemented.
+	 * The format of cryptographic suite should correspond to XML or JSON schema as defined in ETSI TS 119 322
+	 * (please include 'dss-policy-crypto-xml' or 'dss-policy-crypto-json' to the classpath), unless a custom
+	 * cryptographic suite has been implemented.
+	 * <p>
+	 * The {@code DSSDocument} parameters contains the constraint files. If null the default file is used.
+	 *
+	 * @param policyDocument
+	 *            {@link DSSDocument} containing the validation policy
+	 * @param cryptographicSuiteDocument
+	 *            {@link DSSDocument} containing the cryptographic suite
+	 * @return {@code Reports}: diagnostic data, detailed report and simple report
+	 */
+	Reports validateDocument(final DSSDocument policyDocument, final DSSDocument cryptographicSuiteDocument);
+
+	/**
+	 * Validates the document and all its signatures, using the provided validation policy.
+	 * If cryptographic suite is set, the constraints from validation policy will be overwritten
+	 * by the constraints retrieved from the cryptographic suite.
+	 * When set, the cryptographic suite constraints are applied with the default behavior, using FAIL level.
+	 * For a customizable cryptographic suite and its applicability context,
+	 * please use {@code eu.europa.esig.dss.validation.policy.ValidationPolicyLoader}.
+	 * <p>
+	 * The format of validation policy should correspond to the DSS XML Validation policy
+	 * (please include 'dss-policy-jaxb' module in your classpath), unless a custom validation policy has been implemented.
+	 * The format of cryptographic suite should correspond to XML or JSON schema as defined in ETSI TS 119 322
+	 * (please include 'dss-policy-crypto-xml' or 'dss-policy-crypto-json' to the classpath), unless a custom
+	 * cryptographic suite has been implemented.
+	 * <p>
+	 * The {@code InputStream} parameters contains the constraint files. If null the default file is used.
+	 *
+	 * @param policyDataStream
+	 *            {@link InputStream} containing the validation policy
+	 * @param cryptographicSuiteStream
+	 *            {@link InputStream} containing the cryptographic suite
+	 * @return {@code Reports}: diagnostic data, detailed report and simple report
+	 */
+	Reports validateDocument(final InputStream policyDataStream, final InputStream cryptographicSuiteStream);
 
 	/**
 	 * This method returns the signed document(s) without their signature(s)

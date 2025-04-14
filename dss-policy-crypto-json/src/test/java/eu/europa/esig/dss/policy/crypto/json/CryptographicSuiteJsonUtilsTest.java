@@ -1,7 +1,7 @@
 package eu.europa.esig.dss.policy.crypto.json;
 
-import com.github.erosb.jsonsKema.JsonObject;
 import eu.europa.esig.json.JSONParser;
+import eu.europa.esig.json.JsonObjectWrapper;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -13,7 +13,7 @@ class CryptographicSuiteJsonUtilsTest {
 
     @Test
     void validTest() {
-        JsonObject jsonObject = new JSONParser().parse(
+        JsonObjectWrapper jsonObject = new JSONParser().parse(
                 CryptographicSuiteJsonUtilsTest.class.getResourceAsStream("/19312MachineReadable-fix.json"));
 
         List<String> errors = CryptographicSuiteJsonUtils.getInstance().validateAgainstSchema(jsonObject);
@@ -23,7 +23,7 @@ class CryptographicSuiteJsonUtilsTest {
     @Test
     void invalidTest() {
         // TODO : the original JSON schema fails validation
-        JsonObject jsonObject = new JSONParser().parse(
+        JsonObjectWrapper jsonObject = new JSONParser().parse(
                 CryptographicSuiteJsonUtilsTest.class.getResourceAsStream("/19312MachineReadable.json"));
         List<String> errors = CryptographicSuiteJsonUtils.getInstance().validateAgainstSchema(jsonObject);
         assertFalse(errors.isEmpty(), errors.toString());
@@ -31,7 +31,7 @@ class CryptographicSuiteJsonUtilsTest {
 
     @Test
     void signedCompactJWSTest() {
-        JsonObject jsonObject = new JSONParser().parse(
+        JsonObjectWrapper jsonObject = new JSONParser().parse(
                 CryptographicSuiteJsonUtilsTest.class.getResourceAsStream("/19312MachineReadable-signed-compact-jws.json"));
 
         List<String> errors = CryptographicSuiteJsonUtils.getInstance().validateAgainstSchema(jsonObject);
@@ -40,7 +40,7 @@ class CryptographicSuiteJsonUtilsTest {
 
     @Test
     void signedFlattenedJWSTest() {
-        JsonObject jsonObject = new JSONParser().parse(
+        JsonObjectWrapper jsonObject = new JSONParser().parse(
                 CryptographicSuiteJsonUtilsTest.class.getResourceAsStream("/19312MachineReadable-signed-flattened-jws.json"));
 
         List<String> errors = CryptographicSuiteJsonUtils.getInstance().validateAgainstSchema(jsonObject);
@@ -50,7 +50,7 @@ class CryptographicSuiteJsonUtilsTest {
     @Test
     void signedInvalidTypeTest() {
         // TODO : design choice is to allow any signature type, as not explicitly defined in the standard
-        JsonObject jsonObject = new JSONParser().parse(
+        JsonObjectWrapper jsonObject = new JSONParser().parse(
                 CryptographicSuiteJsonUtilsTest.class.getResourceAsStream("/19312MachineReadable-invalid-signature-type.json"));
 
         List<String> errors = CryptographicSuiteJsonUtils.getInstance().validateAgainstSchema(jsonObject);

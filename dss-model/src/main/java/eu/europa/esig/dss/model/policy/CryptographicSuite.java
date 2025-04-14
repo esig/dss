@@ -15,6 +15,13 @@ import java.util.Map;
 public interface CryptographicSuite extends LevelRule {
 
     /**
+     * Gets a cryptographic suite name
+     *
+     * @return {@link String}
+     */
+    String getPolicyName();
+
+    /**
      * Gets a list of digest algorithms accepted by the validation policy
      *
      * @return a list of {@link DigestAlgorithm}s
@@ -53,33 +60,33 @@ public interface CryptographicSuite extends LevelRule {
      * Returns a level constraint for AcceptableEncryptionAlgo constraint if present,
      * the global {@code getLevel} otherwise.
      *
-     * @return {@link LevelRule}
+     * @return {@link Level}
      */
-    LevelRule getAcceptableEncryptionAlgoLevel();
+    Level getAcceptableEncryptionAlgoLevel();
 
     /**
      * Returns a level constraint for MiniPublicKeySize constraint if present,
      * the global {@code getLevel} otherwise.
      *
-     * @return {@link LevelRule}
+     * @return {@link Level}
      */
-    LevelRule getMiniPublicKeySizeLevel();
+    Level getMiniPublicKeySizeLevel();
 
     /**
      * Returns a level constraint for AcceptableDigestAlgo constraint if present,
      * the global {@code getLevel} otherwise.
      *
-     * @return {@link LevelRule}
+     * @return {@link Level}
      */
-    LevelRule getAcceptableDigestAlgoLevel();
+    Level getAcceptableDigestAlgoLevel();
 
     /**
      * Returns a level constraint for AlgoExpirationDate constraint if present,
      * the global {@code getLevel} otherwise.
      *
-     * @return {@link LevelRule}
+     * @return {@link Level}
      */
-    LevelRule getAlgoExpirationDateLevel();
+    Level getAlgoExpirationDateLevel();
 
     /**
      * Returns a date of the update of the cryptographic suites within the validation policy

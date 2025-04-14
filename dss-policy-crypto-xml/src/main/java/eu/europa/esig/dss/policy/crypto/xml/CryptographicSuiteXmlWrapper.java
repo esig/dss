@@ -9,6 +9,7 @@ import eu.europa.esig.dss.policy.crypto.xml.jaxb.AlgorithmIdentifierType;
 import eu.europa.esig.dss.policy.crypto.xml.jaxb.AlgorithmType;
 import eu.europa.esig.dss.policy.crypto.xml.jaxb.EvaluationType;
 import eu.europa.esig.dss.policy.crypto.xml.jaxb.ParameterType;
+import eu.europa.esig.dss.policy.crypto.xml.jaxb.PolicyNameType;
 import eu.europa.esig.dss.policy.crypto.xml.jaxb.SecuritySuitabilityPolicyType;
 import eu.europa.esig.dss.policy.crypto.xml.jaxb.ValidityType;
 import org.slf4j.Logger;
@@ -43,7 +44,16 @@ public class CryptographicSuiteXmlWrapper extends Abstract19322CryptographicSuit
     }
 
     @Override
-    public Map<DigestAlgorithm, Date> getAcceptableDigestAlgorithmsWithExpirationDates() {
+    public String getPolicyName() {
+        PolicyNameType policyName = securitySuitabilityPolicy.getPolicyName();
+        if (policyName != null) {
+            return policyName.getName();
+        }
+        return null;
+    }
+
+    @Override
+    protected Map<DigestAlgorithm, Date> buildAcceptableDigestAlgorithmsWithExpirationDates() {
         final Map<DigestAlgorithm, Date> digestAlgorithmsMap = new LinkedHashMap<>();
         for (AlgorithmType algorithmType : securitySuitabilityPolicy.getAlgorithm()) {
             AlgorithmIdentifierType algorithmIdentifier = algorithmType.getAlgorithmIdentifier();
@@ -125,7 +135,7 @@ public class CryptographicSuiteXmlWrapper extends Abstract19322CryptographicSuit
     }
 
     @Override
-    public Map<EncryptionAlgorithmWithMinKeySize, Date> getAcceptableEncryptionAlgorithmsWithExpirationDates() {
+    protected Map<EncryptionAlgorithmWithMinKeySize, Date> buildAcceptableEncryptionAlgorithmsWithExpirationDates() {
         final Map<EncryptionAlgorithmWithMinKeySize, Date> encryptionAlgorithmsMap = new LinkedHashMap<>();
         for (AlgorithmType algorithmType : securitySuitabilityPolicy.getAlgorithm()) {
             AlgorithmIdentifierType algorithmIdentifier = algorithmType.getAlgorithmIdentifier();

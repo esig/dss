@@ -28,6 +28,7 @@ import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.model.policy.CryptographicSuite;
 import eu.europa.esig.dss.validation.policy.CryptographicSuiteUtils;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
 import java.util.Date;
 
@@ -62,7 +63,7 @@ public class EncryptionAlgorithmAtValidationTimeCheck extends AbstractCryptograp
 	protected EncryptionAlgorithmAtValidationTimeCheck(I18nProvider i18nProvider, EncryptionAlgorithm encryptionAlgo,
 													   String keyLength, Date validationDate, XmlCC result,
 													   MessageTag position, CryptographicSuite cryptographicSuite) {
-		super(i18nProvider, result, position, cryptographicSuite.getAlgoExpirationDateLevel());
+		super(i18nProvider, result, position, ValidationProcessUtils.getLevelRule(cryptographicSuite.getAlgoExpirationDateLevel()));
 		this.encryptionAlgo = encryptionAlgo;
 		this.keyLength = keyLength;
 		this.validationDate = validationDate;

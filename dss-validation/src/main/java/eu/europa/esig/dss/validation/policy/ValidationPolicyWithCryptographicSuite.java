@@ -16,6 +16,7 @@ import eu.europa.esig.dss.utils.Utils;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * This class wraps a provided {@code eu.europa.esig.dss.model.policy.ValidationPolicy} and
@@ -53,13 +54,29 @@ public class ValidationPolicyWithCryptographicSuite implements ValidationPolicy 
     }
 
     /**
-     * This method sets cryptographic suite for a specific {@code Context} or
-     * a combination of a {@code Context} and a {@code SubContext}.
+     * This method sets cryptographic suite for a specific {@code Context}.
      * The provided cryptographic suite will overwrite the current settings only for the defined applicability scope.
      *
      * @param cryptographicSuite {@link CryptographicSuite}
+     * @param context {@link Context} specific context to apply the cryptographic constraints for
+     */
+    public void setCryptographicSuite(CryptographicSuite cryptographicSuite, Context context) {
+        cryptographicSuitesMap.put(new ContextAndSubContext(context, null), cryptographicSuite);
+    }
+
+    /**
+     * This method sets cryptographic suite for a specific combination of a {@code Context} and a {@code SubContext}.
+     * The provided cryptographic suite will overwrite the current settings only for the defined applicability scope.
+     *
+     * @param cryptographicSuite {@link CryptographicSuite}
+     * @param context {@link Context} specific context to apply the cryptographic constraints for
+     * @param subContext {@link SubContext} of the selected {@code context}
      */
     public void setCryptographicSuite(CryptographicSuite cryptographicSuite, Context context, SubContext subContext) {
+        if (Context.EVIDENCE_RECORD == context && subContext != null) {
+            throw new IllegalArgumentException("Please use a NULL SubContext for the Context.EVIDENCE_RECORD or " +
+                    "use #setCryptographicSuite(cryptographicSuite, context) method.");
+        }
         cryptographicSuitesMap.put(new ContextAndSubContext(context, subContext), cryptographicSuite);
     }
 
@@ -957,6 +974,14 @@ public class ValidationPolicyWithCryptographicSuite implements ValidationPolicy 
     @Override
     public ValidationModel getValidationModel() {
         return validationPolicy.getValidationModel();
+    }
+
+    @Override
+    public String toString() {
+        return "ValidationPolicyWithCryptographicSuite [" +
+                "validationPolicyName=" + validationPolicy.getPolicyName() +
+                ", cryptographicSuitesNames=" + cryptographicSuitesMap.values().stream().map(CryptographicSuite::getPolicyName).collect(Collectors.toList()) +
+                ']';
     }
 
 }

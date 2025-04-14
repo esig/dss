@@ -8,9 +8,10 @@ import com.github.erosb.jsonsKema.JsonValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -73,6 +74,10 @@ public class JsonObjectWrapper {
      */
     public String getAsString(String name) {
         JsonValue jsonValue = jsonObject.get(name);
+        return toString(jsonValue);
+    }
+
+    private String toString(JsonValue jsonValue) {
         if (jsonValue == null) {
             // continue
 
@@ -86,7 +91,6 @@ public class JsonObjectWrapper {
                 LOG.warn("Unable to process an obtained item. The JSON String type is expected!");
             }
         }
-
         return null;
     }
 
@@ -117,51 +121,22 @@ public class JsonObjectWrapper {
     }
 
     /**
-     * Gets a value of the header {@code name} as a Date.
-     * If not present, or not able to convert, returns NULL.
-     *
-     * @param name {@link String} header name to get a value for
-     * @return {@link Date}
-     */
-    public Date getAsDate(String name) {
-        String dateStr = getAsString(name);
-        if (dateStr != null) {
-            return RFC3339DateUtils.getDate(dateStr);
-        }
-        return null;
-    }
-
-    /**
-     * Gets a value of the header {@code name} as a Date.
-     * If not present, or not able to convert, returns NULL.
-     *
-     * @param name {@link String} header name to get a value for
-     * @return {@link Date}
-     */
-    public Date getAsDateTime(String name) {
-        String dateStr = getAsString(name);
-        if (dateStr != null) {
-            return RFC3339DateUtils.getDateTime(dateStr);
-        }
-        return null;
-    }
-
-    /**
      * Gets a value of the header {@code name} as a List of Json objects.
-     * If not present, or not able to convert, returns NULL.
+     * If not present, or not able to convert, returns empty list.
      *
      * @param name {@link String} header name to get a value for
      * @return a list of {@link JsonObjectWrapper}s
      */
-    public List<JsonObjectWrapper> getAsList(String name) {
+    public List<JsonObjectWrapper> getAsObjectList(String name) {
         JsonValue jsonValue = jsonObject.get(name);
         if (jsonValue == null) {
             // continue
 
         } else if (jsonValue instanceof JsonArray) {
+            final List<JsonObjectWrapper> result = new ArrayList<>();
             List<JsonValue> elements = ((JsonArray) jsonValue).getElements();
             if (elements != null && !elements.isEmpty()) {
-                return elements.stream().map(this::toObject).collect(Collectors.toList());
+                return elements.stream().map(this::toObject).filter(Objects::nonNull).collect(Collectors.toList());
             }
 
         } else {
@@ -173,6 +148,55 @@ public class JsonObjectWrapper {
         }
 
         return Collections.emptyList();
+    }
+
+    /**
+     * Gets a value of the header {@code name} as a List of Strings.
+     * If not present, or not able to convert, returns empty list.
+     *
+     * @param name {@link String} header name to get a value for
+     * @return a list of {@link String}s
+     */
+    public List<String> getAsStringList(String name) {
+        JsonValue jsonValue = jsonObject.get(name);
+        if (jsonValue == null) {
+            // continue
+
+        } else if (jsonValue instanceof JsonArray) {
+            final List<JsonObjectWrapper> result = new ArrayList<>();
+            List<JsonValue> elements = ((JsonArray) jsonValue).getElements();
+            if (elements != null && !elements.isEmpty()) {
+                return elements.stream().map(this::toString).filter(Objects::nonNull).collect(Collectors.toList());
+            }
+
+        } else {
+            if (LOG.isDebugEnabled()) {
+                LOG.warn("Unable to process an obtained item with value : '{}'. The JSON Array type is expected!", jsonValue);
+            } else {
+                LOG.warn("Unable to process an obtained item. The JSON Array type is expected!");
+            }
+        }
+
+        return Collections.emptyList();
+    }
+
+    /**
+     * Returns whether the content of the current JSON object is empty or not
+     *
+     * @return TRUE if the JSON object does not contain any properties, FALSE otherwise
+     */
+    public boolean isEmpty() {
+        Map<JsonString, JsonValue> properties = jsonObject.getProperties();
+        return properties == null || properties.isEmpty();
+    }
+
+    /**
+     * Gets the wrapped JSON object
+     *
+     * @return {@link JsonObject}
+     */
+    protected JsonObject getJsonObject() {
+        return jsonObject;
     }
 
 }

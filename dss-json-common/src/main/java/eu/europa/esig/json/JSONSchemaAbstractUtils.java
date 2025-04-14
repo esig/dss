@@ -2,7 +2,6 @@ package eu.europa.esig.json;
 
 import com.github.erosb.jsonsKema.IJsonValue;
 import com.github.erosb.jsonsKema.JsonObject;
-import com.github.erosb.jsonsKema.JsonValue;
 import com.github.erosb.jsonsKema.Schema;
 import com.github.erosb.jsonsKema.SchemaClient;
 import com.github.erosb.jsonsKema.SchemaLoader;
@@ -70,12 +69,29 @@ public abstract class JSONSchemaAbstractUtils {
     /**
      * Validates a JSON against JWS Schema according to ETSI TS 119 322 JSON schema
      *
+     * @param jsonObjectWrapper {@link JsonObjectWrapper} representing a JSON to validate
+     * @return a list of {@link String} messages containing errors occurred during
+     *         the validation process, empty list when validation succeeds
+     */
+    public List<String> validateAgainstSchema(JsonObjectWrapper jsonObjectWrapper) {
+        return validateAgainstSchema(jsonObjectWrapper.getJsonObject());
+    }
+
+    /**
+     * Validates a JSON against JWS Schema according to ETSI TS 119 322 JSON schema
+     *
      * @param json {@link JsonObject} representing a JSON to validate
      * @return a list of {@link String} messages containing errors occurred during
      *         the validation process, empty list when validation succeeds
      */
     public List<String> validateAgainstSchema(JsonObject json) {
-        return validateAgainstSchema(json, getSchema());
+        Validator validator = getValidator();
+        ValidationFailure validationFailure = validator.validate(json);
+        if (validationFailure != null) {
+            Set<ValidationFailure> causes = validationFailure.getCauses();
+            return causes.stream().map(v -> new ValidationMessage(v).getMessage()).collect(Collectors.toList());
+        }
+        return Collections.emptyList();
     }
 
     /**
@@ -111,24 +127,6 @@ public abstract class JSONSchemaAbstractUtils {
             validator = Validator.forSchema(getSchema());
         }
         return validator;
-    }
-
-    /**
-     * Validates a {@code json} against the provided JSON {@code schema}
-     *
-     * @param json   {@link JsonValue} to be validated against a schema
-     * @param schema {@link Schema} schema to validate against
-     * @return a list of {@link String} messages containing errors occurred during
-     *         the validation process, empty list when validation succeeds
-     */
-    protected List<String> validateAgainstSchema(JsonValue json, Schema schema) {
-        Validator validator = getValidator();
-        ValidationFailure validationFailure = validator.validate(json);
-        if (validationFailure != null) {
-            Set<ValidationFailure> causes = validationFailure.getCauses();
-            return causes.stream().map(v -> new ValidationMessage(v).getMessage()).collect(Collectors.toList());
-        }
-        return Collections.emptyList();
     }
 
     /**
@@ -192,7 +190,7 @@ public abstract class JSONSchemaAbstractUtils {
         @NotNull
         @Override
         public IJsonValue getParsed(@NotNull URI uri) {
-            return new JSONParser().parse(get(uri), uri);
+            return new JSONParser().parse(get(uri), uri).getJsonObject();
         }
 
     }

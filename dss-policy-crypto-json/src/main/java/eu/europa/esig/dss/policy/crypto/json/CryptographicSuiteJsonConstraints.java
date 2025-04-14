@@ -39,6 +39,9 @@ public final class CryptographicSuiteJsonConstraints {
     /** Header name 'PolicyIssueDate' definition */
     public static final String POLICY_ISSUE_DATE = "PolicyIssueDate";
 
+    /** Header name 'PolicyName' definition */
+    public static final String POLICY_NAME = "PolicyName";
+
     /** SecuritySuitabilityPolicy */
     public static final String SECURITY_SUITABILITY_POLICY = "SecuritySuitabilityPolicy";
 

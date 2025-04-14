@@ -461,34 +461,34 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 
 	@Override
 	public CryptographicSuite getSignatureCryptographicConstraint(Context context) {
+		CryptographicConstraint sigCryptographic = new CryptographicConstraint();
 		BasicSignatureConstraints basicSignature = getBasicSignatureConstraintsByContext(context);
-		if (basicSignature != null) {
-			CryptographicConstraint sigCryptographic = basicSignature.getCryptographic();
-			initializeCryptographicSuite(sigCryptographic, getCryptographic());
-			return toCryptographicSuite(sigCryptographic);
+		if (basicSignature != null && basicSignature.getCryptographic() != null) {
+			sigCryptographic = basicSignature.getCryptographic();
 		}
-		return new CryptographicConstraintWrapper();
+		initializeCryptographicSuite(sigCryptographic, getCryptographic());
+		return toCryptographicSuite(sigCryptographic);
 	}
 
 	private CryptographicConstraint getSignatureCryptographic(Context context) {
+		CryptographicConstraint sigCryptographic = new CryptographicConstraint();
 		BasicSignatureConstraints basicSignature = getBasicSignatureConstraintsByContext(context);
-		if (basicSignature != null) {
-			CryptographicConstraint sigCryptographic = basicSignature.getCryptographic();
-			initializeCryptographicSuite(sigCryptographic, getCryptographic());
-			return sigCryptographic;
+		if (basicSignature != null && basicSignature.getCryptographic() != null) {
+			sigCryptographic = basicSignature.getCryptographic();
 		}
-		return null;
+		initializeCryptographicSuite(sigCryptographic, getCryptographic());
+		return sigCryptographic;
 	}
 
 	@Override
 	public CryptographicSuite getCertificateCryptographicConstraint(Context context, SubContext subContext) {
+		CryptographicConstraint certCryptographic = new CryptographicConstraint();
 		CertificateConstraints certificateConstraints = getCertificateConstraints(context, subContext);
-		if (certificateConstraints != null) {
-			CryptographicConstraint certCryptographic = certificateConstraints.getCryptographic();
-			initializeCryptographicSuite(certCryptographic, getSignatureCryptographic(context));
-			return toCryptographicSuite(certCryptographic);
+		if (certificateConstraints != null && certificateConstraints.getCryptographic() != null) {
+			certCryptographic = certificateConstraints.getCryptographic();
 		}
-		return new CryptographicConstraintWrapper();
+		initializeCryptographicSuite(certCryptographic, getSignatureCryptographic(context));
+		return toCryptographicSuite(certCryptographic);
 	}
 	
 	/**
@@ -1542,13 +1542,13 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 
 	@Override
 	public CryptographicSuite getEvidenceRecordCryptographicConstraint() {
+		CryptographicConstraint evidenceRecordCryptographic = new CryptographicConstraint();
 		EvidenceRecordConstraints evidenceRecordConstraints = getEvidenceRecordConstraints();
-		if (evidenceRecordConstraints != null) {
-			CryptographicConstraint evidenceRecordCryptographic = evidenceRecordConstraints.getCryptographic();
-			initializeCryptographicSuite(evidenceRecordCryptographic, getCryptographic());
-			return toCryptographicSuite(evidenceRecordCryptographic);
+		if (evidenceRecordConstraints != null && evidenceRecordConstraints.getCryptographic() != null) {
+			evidenceRecordCryptographic = evidenceRecordConstraints.getCryptographic();
 		}
-		return new CryptographicConstraintWrapper();
+		initializeCryptographicSuite(evidenceRecordCryptographic, getCryptographic());
+		return toCryptographicSuite(evidenceRecordCryptographic);
 	}
 
 	private CertificateConstraints getSigningCertificateByContext(Context context) {
@@ -1938,6 +1938,13 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 
 	private CryptographicConstraintWrapper toCryptographicSuite(CryptographicConstraint constraint) {
 		return new CryptographicConstraintWrapper(constraint);
+	}
+
+	@Override
+	public String toString() {
+		return "EtsiValidationPolicy [" +
+				"policyName=" + getPolicyName() +
+				']';
 	}
 
 }

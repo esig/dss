@@ -716,6 +716,9 @@ public class ValidationProcessUtils {
 	 * @return {@link LevelRule}
 	 */
 	public static LevelRule getLevelRule(Level level) {
+		if (level == null) {
+			return null;
+		}
 		return new LevelRule() {
 			@Override
 			public Level getLevel() {

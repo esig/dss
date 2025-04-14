@@ -20,18 +20,14 @@
  */
 package eu.europa.esig.jades;
 
-import com.github.erosb.jsonsKema.JsonArray;
-import com.github.erosb.jsonsKema.JsonObject;
-import com.github.erosb.jsonsKema.JsonString;
-import com.github.erosb.jsonsKema.JsonValue;
 import eu.europa.esig.json.JSONParser;
+import eu.europa.esig.json.JsonObjectWrapper;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.InputStream;
 import java.util.Base64;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -54,7 +50,7 @@ class JAdESUtilsTest {
 	@Test
 	void jsonFlattenedTest() {
 		InputStream is = JAdESUtilsTest.class.getResourceAsStream("/jades-lta.json");
-		JsonObject jws = new JSONParser().parse(is);
+		JsonObjectWrapper jws = new JSONParser().parse(is);
 		
 		List<String> errors = jadesUtils.validateAgainstSchema(jws);
 		assertTrue(errors.isEmpty());
@@ -65,24 +61,21 @@ class JAdESUtilsTest {
 	@Test
 	void jsonFlattenedInvalidTest() {
 		InputStream is = JAdESUtilsTest.class.getResourceAsStream("/jades-lta-invalid.json");
-		JsonObject jws = new JSONParser().parse(is);
+		JsonObjectWrapper jws = new JSONParser().parse(is);
 		
 		List<String> errors = jadesUtils.validateAgainstSchema(jws);
 		assertErrorFound(errors, "evilPayload");
 
-		JsonString protectedBase64 = (JsonString) jws.get("protected");
-		assertNotNull(protectedBase64);
-		assertNotNull(protectedBase64.getValue());
+		String protectedBase64String = jws.getAsString("protected");
+		assertNotNull(protectedBase64String);
 
-		String protectedBase64String = protectedBase64.getValue();
-		
 		byte[] decodedProtected = Base64.getDecoder().decode(protectedBase64String);
 		String protectedString = new String(decodedProtected);
 		
 		errors = jadesProtectedHeaderUtils.validateAgainstSchema(protectedString);
 		assertErrorFound(errors, "x5t");
 
-		JsonObject header = (JsonObject) jws.get("header");
+		JsonObjectWrapper header = jws.getAsObject("header");
 		assertNotNull(header);
 		
 		errors = jAdESUnprotectedHeaderUtils.validateAgainstSchema(header);
@@ -92,36 +85,33 @@ class JAdESUtilsTest {
 	@Test
 	void jsonSerializationTest() {
 		InputStream is = JAdESUtilsTest.class.getResourceAsStream("/jades-with-sigPSt.json");
-		JsonObject jws = new JSONParser().parse(is);
+		JsonObjectWrapper jws = new JSONParser().parse(is);
 
 		List<String> errors = jadesUtils.validateAgainstSchema(jws);
 		assertTrue(errors.isEmpty());
 
-		JsonArray jsonArray = (JsonArray) jws.get("signatures");
-		assertEquals(1, jsonArray.length());
+		List<JsonObjectWrapper> signatures = jws.getAsObjectList("signatures");
+		assertEquals(1, signatures.size());
 
-		JsonObject signature = (JsonObject) jsonArray.get(0);
+		JsonObjectWrapper signature = signatures.get(0);
 		validateSignature(signature);
 	}
 
 	@Test
 	void jsonSerializationInvalidTest() {
 		InputStream is = JAdESUtilsTest.class.getResourceAsStream("/jades-with-sigPSt-invalid.json");
-		JsonObject jws = new JSONParser().parse(is);
+		JsonObjectWrapper jws = new JSONParser().parse(is);
 
 		List<String> errors = jadesUtils.validateAgainstSchema(jws);
 		assertErrorFound(errors, "signature");
 
-		JsonArray jsonArray = (JsonArray) jws.get("signatures");
-		assertEquals(1, jsonArray.length());
+		List<JsonObjectWrapper> signatures = jws.getAsObjectList("signatures");
+		assertEquals(1, signatures.size());
 
-		JsonObject signature = (JsonObject) jsonArray.get(0);
+		JsonObjectWrapper signature = signatures.get(0);
 
-		JsonString protectedBase64 = (JsonString) signature.get("protected");
-		assertNotNull(protectedBase64);
-		assertNotNull(protectedBase64.getValue());
-
-		String protectedBase64String = protectedBase64.getValue();
+		String protectedBase64String = signature.getAsString("protected");
+		assertNotNull(protectedBase64String);
 
 		byte[] decodedProtected = Base64.getDecoder().decode(protectedBase64String);
 		String protectedString = new String(decodedProtected);
@@ -129,7 +119,7 @@ class JAdESUtilsTest {
 		errors = jadesProtectedHeaderUtils.validateAgainstSchema(protectedString);
 		assertErrorFound(errors, "hashAV");
 
-		JsonObject header = (JsonObject) signature.get("header");
+		JsonObjectWrapper header = signature.getAsObject("header");
 		assertNotNull(header);
 
 		errors = jAdESUnprotectedHeaderUtils.validateAgainstSchema(header);
@@ -137,12 +127,9 @@ class JAdESUtilsTest {
 		assertErrorFound(errors, "sigPSt");
 	}
 
-	private void validateSignature(JsonObject signature) {
-		JsonString protectedBase64 = (JsonString) signature.get("protected");
-		assertNotNull(protectedBase64);
-		assertNotNull(protectedBase64.getValue());
-
-		String protectedBase64String = protectedBase64.getValue();
+	private void validateSignature(JsonObjectWrapper signature) {
+		String protectedBase64String = signature.getAsString("protected");
+		assertNotNull(protectedBase64String);
 
 		byte[] decodedProtected = Base64.getDecoder().decode(protectedBase64String);
 		String protectedString = new String(decodedProtected);
@@ -150,12 +137,9 @@ class JAdESUtilsTest {
 		List<String> errors = jadesProtectedHeaderUtils.validateAgainstSchema(protectedString);
 		assertTrue(errors.isEmpty());
 
-		JsonObject header = (JsonObject) signature.get("header");
+		JsonObjectWrapper header = signature.getAsObject("header");
 		assertNotNull(header);
-
-		Map<JsonString, JsonValue> properties = header.getProperties();
-		assertNotNull(header.getProperties());
-		assertFalse(properties.isEmpty());
+		assertFalse(header.isEmpty());
 
 		errors = jAdESUnprotectedHeaderUtils.validateAgainstSchema(header);
 		assertTrue(errors.isEmpty());

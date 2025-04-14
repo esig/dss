@@ -27,6 +27,7 @@ import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.model.policy.CryptographicSuite;
 import eu.europa.esig.dss.validation.policy.CryptographicSuiteUtils;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
 /**
  * Check if DigestAlgorithm is acceptable
@@ -50,7 +51,7 @@ public class DigestAlgorithmReliableCheck extends AbstractCryptographicCheck {
 	 */
 	protected DigestAlgorithmReliableCheck(I18nProvider i18nProvider, DigestAlgorithm digestAlgo, XmlCC result,
 										   MessageTag position, CryptographicSuite cryptographicSuite) {
-		super(i18nProvider, result, position, cryptographicSuite.getAcceptableDigestAlgoLevel());
+		super(i18nProvider, result, position, ValidationProcessUtils.getLevelRule(cryptographicSuite.getAcceptableDigestAlgoLevel()));
 		this.digestAlgo = digestAlgo;
 		this.cryptographicSuite = cryptographicSuite;
 	}

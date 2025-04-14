@@ -1,6 +1,5 @@
 package eu.europa.esig.dss.policy.crypto.json;
 
-import com.github.erosb.jsonsKema.JsonObject;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.policy.CryptographicSuite;
 import eu.europa.esig.dss.model.policy.CryptographicSuiteFactory;
@@ -49,11 +48,11 @@ public class CryptographicSuiteJsonFactory implements CryptographicSuiteFactory 
     @Override
     public CryptographicSuite loadCryptographicSuite(InputStream cryptographicSuiteInputStream) {
         try (InputStream is = cryptographicSuiteInputStream) {
-            JsonObject jsonObject = new JSONParser().parse(is);
+            JsonObjectWrapper jsonObject = new JSONParser().parse(is);
             if (jsonObject == null) {
                 throw new IllegalStateException("Parsed JSON cannot be null!");
             }
-            JsonObjectWrapper securitySuitabilityPolicyType = new JsonObjectWrapper(jsonObject).getAsObject(
+            JsonObjectWrapper securitySuitabilityPolicyType = jsonObject.getAsObject(
                     CryptographicSuiteJsonConstraints.SECURITY_SUITABILITY_POLICY);
             if (securitySuitabilityPolicyType == null) {
                 throw new IllegalArgumentException(String.format("The root element of JSON shall be a JSON object of '%s' type!",
