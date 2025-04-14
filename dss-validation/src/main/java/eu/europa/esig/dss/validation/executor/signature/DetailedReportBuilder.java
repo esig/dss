@@ -106,7 +106,7 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 	 *
 	 * @return {@link XmlDetailedReport}
 	 */
-	XmlDetailedReport build() {
+	public XmlDetailedReport build() {
 		XmlDetailedReport detailedReport = init();
 		
 		detailedReport.setValidationTime(currentTime);
