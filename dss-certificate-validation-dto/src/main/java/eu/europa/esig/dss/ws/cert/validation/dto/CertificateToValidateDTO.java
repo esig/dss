@@ -53,12 +53,21 @@ public class CertificateToValidateDTO {
 
 	/**
 	 * The custom validation policy to use
+	 * <p>
+	 * OPTIONAL.
 	 */
 	private RemoteDocument policy;
+
+	/**
+	 * The custom cryptographic suite to use
+	 * <p>
+	 * OPTIONAL.
+	 */
+	private RemoteDocument cryptographicSuite;
 	
 	/**
 	 * Allows to specify the token extraction to follow
-	 * 
+	 * <p>
 	 * NONE by default
 	 */
 	private TokenExtractionStrategy tokenExtractionStrategy = TokenExtractionStrategy.NONE;
@@ -87,9 +96,7 @@ public class CertificateToValidateDTO {
 	 * @param validationTime {@link Date} the validation time
 	 */
 	public CertificateToValidateDTO(RemoteCertificate certificate, List<RemoteCertificate> certificateChain, Date validationTime) {
-		this.certificate = certificate;
-		this.certificateChain = certificateChain;
-		this.validationTime = validationTime;
+		this(certificate, certificateChain, validationTime, null);
 	}
 
 	/**
@@ -101,11 +108,8 @@ public class CertificateToValidateDTO {
 	 * @param tokenExtractionStrategy {@link TokenExtractionStrategy} for the DiagnosticData report
 	 */
 	public CertificateToValidateDTO(RemoteCertificate certificate, List<RemoteCertificate> certificateChain,
-									Date validationTime,  TokenExtractionStrategy tokenExtractionStrategy) {
-		this.certificate = certificate;
-		this.certificateChain = certificateChain;
-		this.validationTime = validationTime;
-		this.tokenExtractionStrategy = tokenExtractionStrategy;
+									Date validationTime, TokenExtractionStrategy tokenExtractionStrategy) {
+		this(certificate, certificateChain, validationTime, null, tokenExtractionStrategy);
 	}
 
 	/**
@@ -119,10 +123,27 @@ public class CertificateToValidateDTO {
 	 */
 	public CertificateToValidateDTO(RemoteCertificate certificate, List<RemoteCertificate> certificateChain,
 			Date validationTime, RemoteDocument policy, TokenExtractionStrategy tokenExtractionStrategy) {
+		this(certificate, certificateChain, validationTime, policy, null, tokenExtractionStrategy);
+	}
+
+	/**
+	 * The default constructor with a custom validation policy
+	 *
+	 * @param certificate {@link RemoteCertificate} to be validated
+	 * @param certificateChain a list of {@link RemoteCertificate}s representing the certificate chain
+	 * @param validationTime {@link Date} the validation time
+	 * @param policy {@link RemoteDocument}
+	 * @param cryptographicSuite {@link RemoteDocument} cryptographic suite
+	 * @param tokenExtractionStrategy {@link TokenExtractionStrategy} for the DiagnosticData report
+	 */
+	public CertificateToValidateDTO(RemoteCertificate certificate, List<RemoteCertificate> certificateChain,
+									Date validationTime, RemoteDocument policy, RemoteDocument cryptographicSuite,
+									TokenExtractionStrategy tokenExtractionStrategy) {
 		this.certificate = certificate;
 		this.certificateChain = certificateChain;
 		this.validationTime = validationTime;
 		this.policy = policy;
+		this.cryptographicSuite = cryptographicSuite;
 		this.tokenExtractionStrategy = tokenExtractionStrategy;
 	}
 
@@ -196,6 +217,24 @@ public class CertificateToValidateDTO {
 	 */
 	public void setPolicy(RemoteDocument policy) {
 		this.policy = policy;
+	}
+
+	/**
+	 * Gets a cryptographic suite document (to be applied globally)
+	 *
+	 * @return {@link RemoteDocument}
+	 */
+	public RemoteDocument getCryptographicSuite() {
+		return cryptographicSuite;
+	}
+
+	/**
+	 * Sets a cryptographic suite document (to be applied globally)
+	 *
+	 * @param cryptographicSuite {@link RemoteDocument}
+	 */
+	public void setCryptographicSuite(RemoteDocument cryptographicSuite) {
+		this.cryptographicSuite = cryptographicSuite;
 	}
 
 	/**

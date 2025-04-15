@@ -49,11 +49,13 @@ class CryptographicSuiteXmlWrapperTest {
                 Arrays.asList(new EvaluationDTO("2029-01-01"))));
 
         Set<DigestAlgorithm> expectedSet = new HashSet<>(Arrays.asList(DigestAlgorithm.SHA224));
+        cryptographicSuite = new CryptographicSuiteXmlWrapper(securitySuitabilityPolicyType);
         assertEquals(expectedSet, new HashSet<>(cryptographicSuite.getAcceptableDigestAlgorithms()));
 
         securitySuitabilityPolicyType.getAlgorithm().add(createDigestAlgorithmDefinition(DigestAlgorithm.SHA256, null));
         
         expectedSet = new HashSet<>(Arrays.asList(DigestAlgorithm.SHA224, DigestAlgorithm.SHA256));
+        cryptographicSuite = new CryptographicSuiteXmlWrapper(securitySuitabilityPolicyType);
         assertEquals(expectedSet, new HashSet<>(cryptographicSuite.getAcceptableDigestAlgorithms()));
 
         securitySuitabilityPolicyType.getAlgorithm().add(createDigestAlgorithmDefinition(DigestAlgorithm.SHA384, null));
@@ -61,6 +63,7 @@ class CryptographicSuiteXmlWrapperTest {
         securitySuitabilityPolicyType.getAlgorithm().add(createDigestAlgorithmDefinition(DigestAlgorithm.SHA3_256, null));
         securitySuitabilityPolicyType.getAlgorithm().add(createDigestAlgorithmDefinition(DigestAlgorithm.SHA3_384, null));
         securitySuitabilityPolicyType.getAlgorithm().add(createDigestAlgorithmDefinition(DigestAlgorithm.SHA3_512, null));
+        cryptographicSuite = new CryptographicSuiteXmlWrapper(securitySuitabilityPolicyType);
 
         expectedSet = new HashSet<>(Arrays.asList(
                 DigestAlgorithm.SHA224, DigestAlgorithm.SHA256, DigestAlgorithm.SHA384, DigestAlgorithm.SHA512,

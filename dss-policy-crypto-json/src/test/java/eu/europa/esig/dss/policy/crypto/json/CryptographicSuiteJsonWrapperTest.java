@@ -125,10 +125,10 @@ class CryptographicSuiteJsonWrapperTest {
     @Test
     void getAcceptableDigestAlgorithmsWithUnknownAlgorithmTest() {
         List<JsonValue> algorithmsList = new ArrayList<>();
-        JsonObject unknownAlgorithm = new JsonObject(Map.of(
-                new JsonString("Algorithm"), new JsonString("SHA999"),
-                new JsonString("ExpirationDate"), new JsonString("2030-12-31")
-        ));
+        HashMap<JsonString, JsonValue> algoMap = new HashMap<>();
+        algoMap.put(new JsonString("Algorithm"), new JsonString("SHA999"));
+        algoMap.put(new JsonString("ExpirationDate"), new JsonString("2030-12-31"));
+        JsonObject unknownAlgorithm = new JsonObject(algoMap);
         algorithmsList.add(unknownAlgorithm);
 
         JsonArray algorithmsArray = new JsonArray(algorithmsList);
@@ -196,10 +196,10 @@ class CryptographicSuiteJsonWrapperTest {
     @Test
     void getAcceptableEncryptionAlgorithmsUnknownAlgorithmIgnored() {
         List<JsonValue> algorithmsList = new ArrayList<>();
-        JsonObject unknownAlgorithm = new JsonObject(Map.of(
-                new JsonString("Algorithm"), new JsonString("UNKNOWN_ALGO"),
-                new JsonString("Evaluations"), new JsonArray(Collections.emptyList())
-        ));
+        HashMap<JsonString, JsonValue> algoMap = new HashMap<>();
+        algoMap.put(new JsonString("Algorithm"), new JsonString("UNKNOWN_ALGO"));
+        algoMap.put(new JsonString("Evaluations"), new JsonArray(Collections.emptyList()));
+        JsonObject unknownAlgorithm = new JsonObject(algoMap);
         algorithmsList.add(unknownAlgorithm);
 
         Map<JsonString, JsonValue> policyMap = new HashMap<>();
@@ -294,26 +294,25 @@ class CryptographicSuiteJsonWrapperTest {
 
     @Test
     void getAcceptableEncryptionAlgorithmsWithMinKeySizesMissingParameter() {
-        JsonObject badParam = new JsonObject(Map.of(
-                new JsonString("Type"), new JsonString("pLength")
-                // Missing actual value
-        ));
-        JsonObject algorithm = new JsonObject(Map.of(
-                new JsonString("Algorithm"), new JsonString("DSA"),
-                new JsonString("Evaluations"), new JsonArray(Arrays.asList(
-                        new JsonObject(Map.of(
-                                new JsonString("ExpirationDate"), new JsonString("2029-01-01"),
-                                new JsonString("Parameters"), new JsonArray(Collections.singletonList(badParam))
-                        ))
-                ))
-        ));
+        HashMap<JsonString, JsonValue> paramMap = new HashMap<>();
+        paramMap.put(new JsonString("Type"), new JsonString("pLength"));
+        // Missing actual value
+        JsonObject badParam = new JsonObject(paramMap);
+
+        HashMap<JsonString, JsonValue> algoMap = new HashMap<>();
+        algoMap.put(new JsonString("Algorithm"), new JsonString("DSA"));
+
+        HashMap<JsonString, JsonValue> evaluationMap = new HashMap<>();
+        evaluationMap.put(new JsonString("ExpirationDate"), new JsonString("2029-01-01"));
+        evaluationMap.put(new JsonString("Parameters"), new JsonArray(Collections.singletonList(badParam)));
+        algoMap.put(new JsonString("Evaluations"), new JsonArray(Arrays.asList(new JsonObject(evaluationMap))));
+
 
         Map<JsonString, JsonValue> policyMap = new HashMap<>();
-        policyMap.put(new JsonString("Algorithm"), new JsonArray(Collections.singletonList(algorithm)));
+        policyMap.put(new JsonString("Algorithm"), new JsonArray(Collections.singletonList(new JsonObject(algoMap))));
 
         CryptographicSuiteJsonWrapper cryptographicSuite = new CryptographicSuiteJsonWrapper(
-                new JsonObjectWrapper(new JsonObject(policyMap))
-        );
+                new JsonObjectWrapper(new JsonObject(policyMap)));
 
         List<EncryptionAlgorithmWithMinKeySize> result = cryptographicSuite.getAcceptableEncryptionAlgorithmsWithMinKeySizes();
         assertTrue(result.isEmpty(), "Malformed parameter should result in exclusion.");

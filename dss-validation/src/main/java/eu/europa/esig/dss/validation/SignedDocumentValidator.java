@@ -346,8 +346,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 	@Override
 	public Reports validateDocument(String policyResourcePath, String cryptographicSuitePath) {
-		try (InputStream validationPolicyIS = policyResourcePath != null ? getClass().getResourceAsStream(policyResourcePath) : null ;
-			 InputStream cryptographicSuiteIS = cryptographicSuitePath != null ? getClass().getResourceAsStream(cryptographicSuitePath) : null) {
+		try (InputStream validationPolicyIS = Utils.isStringNotEmpty(policyResourcePath) ? getClass().getResourceAsStream(policyResourcePath) : null ;
+			 InputStream cryptographicSuiteIS = Utils.isStringNotEmpty(cryptographicSuitePath) ? getClass().getResourceAsStream(cryptographicSuitePath) : null) {
 			return validateDocument(validationPolicyIS, cryptographicSuiteIS);
 		} catch (IOException e) {
 			throw new IllegalInputException(String.format(
@@ -358,8 +358,8 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 	@Override
 	public Reports validateDocument(File policyFile, File cryptographicSuiteFile) {
-		DSSDocument policyDocument = policyFile != null ? new FileDocument(policyFile) : null;
-		DSSDocument cryptographicSuiteDocument = cryptographicSuiteFile != null ? new FileDocument(cryptographicSuiteFile) : null;
+		DSSDocument policyDocument = policyFile != null && policyFile.exists() ? new FileDocument(policyFile) : null;
+		DSSDocument cryptographicSuiteDocument = cryptographicSuiteFile != null && cryptographicSuiteFile.exists() ? new FileDocument(cryptographicSuiteFile) : null;
 		return validateDocument(policyDocument, cryptographicSuiteDocument);
 	}
 

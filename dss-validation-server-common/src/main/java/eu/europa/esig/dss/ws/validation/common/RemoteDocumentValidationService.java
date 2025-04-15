@@ -74,11 +74,47 @@ public class RemoteDocumentValidationService {
 	 * @param validationPolicy {@link InputStream}
 	 */
 	public void setDefaultValidationPolicy(InputStream validationPolicy) {
+		setDefaultValidationPolicy(validationPolicy, null);
+	}
+
+	/**
+	 * Sets the validation policy with a custom cryptographic suite to be used by default,
+	 * when no policy provided within the request.
+	 * If cryptographic suite is set, the constraints from validation policy will be overwritten
+	 * by the constraints retrieved from the cryptographic suite.
+	 * When set, the cryptographic suite constraints are applied with the default behavior, using FAIL level.
+	 * For a customizable cryptographic suite and its applicability context,
+	 * please use {@code eu.europa.esig.dss.validation.policy.ValidationPolicyLoader}.
+	 * <p>
+	 * The format of validation policy should correspond to the DSS XML Validation policy
+	 * (please include 'dss-policy-jaxb' module in your classpath), unless a custom validation policy has been implemented.
+	 * The format of cryptographic suite should correspond to XML or JSON schema as defined in ETSI TS 119 322
+	 * (please include 'dss-policy-crypto-xml' or 'dss-policy-crypto-json' to the classpath), unless a custom
+	 * cryptographic suite has been implemented.
+	 * <p>
+	 * The {@code InputStream} parameters contains the constraint files. If null the default file is used.
+	 *
+	 * @param validationPolicy {@link InputStream}
+	 */
+	public void setDefaultValidationPolicy(InputStream validationPolicy, InputStream cryptographicSuite) {
+		ValidationPolicyLoader validationPolicyLoader;
 		try {
-			this.defaultValidationPolicy = ValidationPolicyLoader.fromValidationPolicy(validationPolicy).create();
+			if (validationPolicy != null) {
+				validationPolicyLoader = ValidationPolicyLoader.fromValidationPolicy(validationPolicy);
+			} else {
+				validationPolicyLoader = ValidationPolicyLoader.fromDefaultValidationPolicy();
+			}
 		} catch (Exception e) {
 			throw new DSSRemoteServiceException(String.format("Unable to instantiate validation policy: %s", e.getMessage()), e);
 		}
+		try {
+			if (cryptographicSuite != null) {
+				validationPolicyLoader = validationPolicyLoader.withCryptographicSuite(cryptographicSuite);
+			}
+		} catch (Exception e) {
+			throw new DSSRemoteServiceException(String.format("Unable to instantiate cryptographic suite: %s", e.getMessage()), e);
+		}
+		this.defaultValidationPolicy = validationPolicyLoader.create();
 	}
 
 	/**
@@ -101,14 +137,22 @@ public class RemoteDocumentValidationService {
 		SignedDocumentValidator validator = initValidator(dataToValidate);
 
 		Reports reports;
+		ValidationPolicyLoader validationPolicyLoader;
 		RemoteDocument policy = dataToValidate.getPolicy();
 		if (policy != null) {
-			reports = validator.validateDocument(getValidationPolicy(policy));
+			validationPolicyLoader = ValidationPolicyLoader.fromValidationPolicy(RemoteDocumentConverter.toDSSDocument(policy));
 		} else if (defaultValidationPolicy != null) {
-			reports = validator.validateDocument(defaultValidationPolicy);
+			validationPolicyLoader = ValidationPolicyLoader.fromValidationPolicy(defaultValidationPolicy);
 		} else {
-			reports = validator.validateDocument();
+			validationPolicyLoader = ValidationPolicyLoader.fromDefaultValidationPolicy();
 		}
+		RemoteDocument cryptographicSuite = dataToValidate.getCryptographicSuite();
+		if (cryptographicSuite != null) {
+			validationPolicyLoader.withCryptographicSuite(RemoteDocumentConverter.toDSSDocument(cryptographicSuite));
+		}
+
+		ValidationPolicy validationPolicy = validationPolicyLoader.create();
+		reports = validator.validateDocument(validationPolicy);
 
 		WSReportsDTO reportsDTO = new WSReportsDTO(reports.getDiagnosticDataJaxb(), reports.getSimpleReportJaxb(), 
 				reports.getDetailedReportJaxb(), reports.getEtsiValidationReportJaxb());
@@ -139,10 +183,6 @@ public class RemoteDocumentValidationService {
 		List<RemoteDocument> remoteDocuments = RemoteDocumentConverter.toRemoteDocuments(originalDocuments);
 		LOG.info("GetOriginalDocuments is finished");
 		return remoteDocuments;
-	}
-
-	private ValidationPolicy getValidationPolicy(RemoteDocument policy) {
-		return ValidationPolicyLoader.fromValidationPolicy(RemoteDocumentConverter.toDSSDocument(policy)).create();
 	}
 
 	/**

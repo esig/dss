@@ -82,7 +82,7 @@ class CertificateProcessExecutorTest extends AbstractTestValidationExecutor {
 	private static final Logger LOG = LoggerFactory.getLogger(CertificateProcessExecutorTest.class);
 
 	/** The path for default certificate validation policy */
-	private static final String CERTIFICATE_VALIDATION_POLICY_LOCATION = "src/test/resources/diag-data/policy/certificate-constraint.xml";
+	private static final String CERTIFICATE_VALIDATION_POLICY_LOCATION = "/diag-data/policy/certificate-constraint.xml";
 
 	private static I18nProvider i18nProvider;
 

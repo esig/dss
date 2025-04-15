@@ -92,7 +92,7 @@ class TimestampDocumentValidationTest {
 		timestampValidator.setDetachedContents(Collections.singletonList(digestDocument));
 		timestampValidator.setCertificateVerifier(getOfflineCertificateVerifier());
 
-		ValidationPolicy validationPolicy = ValidationPolicyLoader.fromValidationPolicy("src/test/resources/dss-1929/ts-policy.xml").create();
+		ValidationPolicy validationPolicy = ValidationPolicyLoader.fromValidationPolicy("/dss-1929/ts-policy.xml").create();
 		assertNotNull(validationPolicy);
 
 		Reports reports = timestampValidator.validateDocument(validationPolicy);
@@ -132,7 +132,7 @@ class TimestampDocumentValidationTest {
 		validator.setDetachedContents(Collections.singletonList(digestDocument));
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
 
-		ValidationPolicy validationPolicy = ValidationPolicyLoader.fromValidationPolicy("src/test/resources/dss-1929/ts-policy.xml").create();
+		ValidationPolicy validationPolicy = ValidationPolicyLoader.fromValidationPolicy("/dss-1929/ts-policy.xml").create();
 		assertNotNull(validationPolicy);
 
 		Reports reports = validator.validateDocument(validationPolicy);

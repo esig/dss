@@ -50,6 +50,9 @@ public class RemoteCertificateValidationService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(RemoteCertificateValidationService.class);
 
+	/** The path for default certificate validation policy */
+	private static final String CERTIFICATE_VALIDATION_POLICY_LOCATION = "/policy/certificate-constraint.xml";
+
 	/** The CertificateVerifier to use */
 	private CertificateVerifier verifier;
 
@@ -78,11 +81,47 @@ public class RemoteCertificateValidationService {
 	 * @param validationPolicy {@link InputStream}
 	 */
 	public void setDefaultValidationPolicy(InputStream validationPolicy) {
+		setDefaultValidationPolicy(validationPolicy, null);
+	}
+
+	/**
+	 * Sets the validation policy with a custom cryptographic suite to be used by default,
+	 * when no policy provided within the request.
+	 * If cryptographic suite is set, the constraints from validation policy will be overwritten
+	 * by the constraints retrieved from the cryptographic suite.
+	 * When set, the cryptographic suite constraints are applied with the default behavior, using FAIL level.
+	 * For a customizable cryptographic suite and its applicability context,
+	 * please use {@code eu.europa.esig.dss.validation.policy.ValidationPolicyLoader}.
+	 * <p>
+	 * The format of validation policy should correspond to the DSS XML Validation policy
+	 * (please include 'dss-policy-jaxb' module in your classpath), unless a custom validation policy has been implemented.
+	 * The format of cryptographic suite should correspond to XML or JSON schema as defined in ETSI TS 119 322
+	 * (please include 'dss-policy-crypto-xml' or 'dss-policy-crypto-json' to the classpath), unless a custom
+	 * cryptographic suite has been implemented.
+	 * <p>
+	 * The {@code InputStream} parameters contains the constraint files. If null the default file is used.
+	 *
+	 * @param validationPolicy {@link InputStream}
+	 */
+	public void setDefaultValidationPolicy(InputStream validationPolicy, InputStream cryptographicSuite) {
+		ValidationPolicyLoader validationPolicyLoader;
 		try {
-			this.defaultValidationPolicy = ValidationPolicyLoader.fromValidationPolicy(validationPolicy).create();
+			if (validationPolicy != null) {
+				validationPolicyLoader = ValidationPolicyLoader.fromValidationPolicy(validationPolicy);
+			} else {
+				validationPolicyLoader = fromDefaultCertificateValidationPolicyLoader();
+			}
 		} catch (Exception e) {
 			throw new DSSRemoteServiceException(String.format("Unable to instantiate validation policy: %s", e.getMessage()), e);
 		}
+		try {
+			if (cryptographicSuite != null) {
+				validationPolicyLoader = validationPolicyLoader.withCryptographicSuite(cryptographicSuite);
+			}
+		} catch (Exception e) {
+			throw new DSSRemoteServiceException(String.format("Unable to instantiate cryptographic suite: %s", e.getMessage()), e);
+		}
+		this.defaultValidationPolicy = validationPolicyLoader.create();
 	}
 
 	/**
@@ -106,24 +145,38 @@ public class RemoteCertificateValidationService {
 		CertificateValidator validator = initValidator(certificateToValidate);
 
 		CertificateReports reports;
+		ValidationPolicyLoader validationPolicyLoader;
 		RemoteDocument policy = certificateToValidate.getPolicy();
 		if (policy != null) {
-			reports = validator.validate(getValidationPolicy(policy));
+			validationPolicyLoader = ValidationPolicyLoader.fromValidationPolicy(RemoteDocumentConverter.toDSSDocument(policy));
 		} else if (defaultValidationPolicy != null) {
-			reports = validator.validate(defaultValidationPolicy);
+			validationPolicyLoader = ValidationPolicyLoader.fromValidationPolicy(defaultValidationPolicy);
 		} else {
-			reports = validator.validate();
+			validationPolicyLoader = fromDefaultCertificateValidationPolicyLoader();
+		}
+		RemoteDocument cryptographicSuite = certificateToValidate.getCryptographicSuite();
+		if (cryptographicSuite != null) {
+			validationPolicyLoader.withCryptographicSuite(RemoteDocumentConverter.toDSSDocument(cryptographicSuite));
 		}
 
-		CertificateReportsDTO certificateReportsDTO = new CertificateReportsDTO(reports.getDiagnosticDataJaxb(), 
+		ValidationPolicy validationPolicy = validationPolicyLoader.create();
+		reports = validator.validate(validationPolicy);
+
+		CertificateReportsDTO certificateReportsDTO = new CertificateReportsDTO(reports.getDiagnosticDataJaxb(),
 				reports.getSimpleReportJaxb(), reports.getDetailedReportJaxb());
 		LOG.info("ValidateCertificate is finished");
 		
 		return certificateReportsDTO;
 	}
 
-	private ValidationPolicy getValidationPolicy(RemoteDocument policy) {
-		return ValidationPolicyLoader.fromValidationPolicy(RemoteDocumentConverter.toDSSDocument(policy)).create();
+	/**
+	 * Gets a default validation policy loader for a certificate validation
+	 *
+	 * @return {@link ValidationPolicyLoader}
+	 */
+	protected ValidationPolicyLoader fromDefaultCertificateValidationPolicyLoader() {
+		return ValidationPolicyLoader.fromValidationPolicy(
+				CertificateValidator.class.getResourceAsStream(CERTIFICATE_VALIDATION_POLICY_LOCATION));
 	}
 
 	/**

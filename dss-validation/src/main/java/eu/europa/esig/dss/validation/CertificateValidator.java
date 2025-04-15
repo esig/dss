@@ -48,7 +48,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
@@ -208,64 +210,250 @@ public class CertificateValidator implements ProcessExecutorProvider<Certificate
 	}
 
 	/**
-	 * This method validates a certificate with the given validation policy file
+	 * Validates the certificate with the validation policy obtained from {@code validationPolicyURL}.
+	 * If null the default file is used.
 	 *
-	 * @param policyFilePath {@link String} representing a path to the XML Validation Policy in the filesystem
+	 * @param validationPolicyURL {@link URL}
 	 * @return {@link CertificateReports}
 	 */
-	public CertificateReports validate(String policyFilePath) {
-		return validate(new File(policyFilePath));
+	public CertificateReports validate(final URL validationPolicyURL) {
+		return validate(validationPolicyURL, null);
 	}
 
 	/**
-	 * This method validates a certificate with the given validation policy {@code File}
+	 * Validates the certificate with the validation policy obtained from {@code policyResourcePath}.
+	 * If null or empty the default file is used.
 	 *
-	 * @param policyFile {@link File} representing the XML Validation Policy
+	 * @param policyResourcePath
+	 *            is located against the classpath (getClass().getResourceAsStream), and NOT the filesystem
 	 * @return {@link CertificateReports}
 	 */
-	public CertificateReports validate(File policyFile) {
-		return validate(new FileDocument(policyFile));
+	public CertificateReports validate(final String policyResourcePath) {
+		return validate(policyResourcePath, null);
 	}
 
 	/**
-	 * This method validates a certificate with the given validation policy {@code InputStream}
+	 * Validates the certificate with the validation policy obtained from {@code policyFile}.
+	 * If null or file does not exist the default file is used.
 	 *
-	 * @param policyDataStream {@link InputStream} representing the XML Validation Policy file
+	 * @param policyFile
+	 *            contains the validation policy (xml) as {@code File}
 	 * @return {@link CertificateReports}
 	 */
-	public CertificateReports validate(InputStream policyDataStream) {
-		return validate(new InMemoryDocument(policyDataStream));
+	public CertificateReports validate(final File policyFile) {
+		return validate(policyFile, null);
 	}
 
 	/**
-	 * This method validates a certificate with the given validation policy {@code DSSDocument}
+	 * Validates the certificate with the validation policy obtained from {@code policyDocument}.
+	 * If null the default file is used.
 	 *
-	 * @param policyDocument {@link DSSDocument} representing the XML Validation Policy file
+	 * @param policyDocument
+	 *            contains the validation policy (xml) as {@code DSSDocument}
 	 * @return {@link CertificateReports}
 	 */
 	public CertificateReports validate(DSSDocument policyDocument) {
-		ValidationPolicy validationPolicy;
-		try {
-			if (policyDocument == null) {
-				LOG.debug("No provided validation policy : use the default policy");
-				validationPolicy = getDefaultCertificateValidationPolicy();
-			} else {
-				validationPolicy = ValidationPolicyLoader.fromValidationPolicy(policyDocument).create();
-			}
-		} catch (Exception e) {
-			throw new IllegalInputException("Unable to load the policy", e);
+		return validate(policyDocument, null);
+	}
+
+	/**
+	 * Validates the document and all its signatures. The policyDataStream contains
+	 * the constraint file. If null the default file is used.
+	 *
+	 * @param policyDataStream the {@code InputStream} with the validation policy
+	 * @return {@link CertificateReports}
+	 */
+	public CertificateReports validate(final InputStream policyDataStream) {
+		return validate(policyDataStream, null);
+	}
+
+	/**
+	 * Validates the certificate using the provided validation policy and a cryptographic suite.
+	 * If cryptographic suite is set, the constraints from validation policy will be overwritten
+	 * by the constraints retrieved from the cryptographic suite.
+	 * When set, the cryptographic suite constraints are applied with the default behavior, using FAIL level.
+	 * For a customizable cryptographic suite and its applicability context,
+	 * please use {@code eu.europa.esig.dss.validation.policy.ValidationPolicyLoader}.
+	 * <p>
+	 * The format of validation policy should correspond to the DSS XML Validation policy
+	 * (please include 'dss-policy-jaxb' module in your classpath), unless a custom validation policy has been implemented.
+	 * The format of cryptographic suite should correspond to XML or JSON schema as defined in ETSI TS 119 322
+	 * (please include 'dss-policy-crypto-xml' or 'dss-policy-crypto-json' to the classpath), unless a custom
+	 * cryptographic suite has been implemented.
+	 * <p>
+	 * If the validation policy URL is set then the policy constraints
+	 * are retrieved from this location. If null or empty the default file is used.
+	 *
+	 * @param validationPolicyURL {@link URL} to the used validation policy file
+	 * @param cryptographicSuiteURL {@link URL} to the used cryptographic suite file
+	 * @return {@link CertificateReports}
+	 */
+	public CertificateReports validate(URL validationPolicyURL, URL cryptographicSuiteURL) {
+		try (InputStream validationPolicyIS = validationPolicyURL != null ? validationPolicyURL.openStream() : null ;
+			 InputStream cryptographicSuiteIS = cryptographicSuiteURL != null ? cryptographicSuiteURL.openStream() : null) {
+			return validate(validationPolicyIS, cryptographicSuiteIS);
+		} catch (IOException e) {
+			throw new IllegalInputException(String.format(
+					"Unable to load policy with URL '%s' and cryptographic suite '%s'. Reason : %s",
+					validationPolicyURL, cryptographicSuiteURL, e.getMessage()), e);
 		}
+	}
+
+	/**
+	 * Validates the certificate using the provided validation policy and a cryptographic suite.
+	 * If cryptographic suite is set, the constraints from validation policy will be overwritten
+	 * by the constraints retrieved from the cryptographic suite.
+	 * When set, the cryptographic suite constraints are applied with the default behavior, using FAIL level.
+	 * For a customizable cryptographic suite and its applicability context,
+	 * please use {@code eu.europa.esig.dss.validation.policy.ValidationPolicyLoader}.
+	 * <p>
+	 * The format of validation policy should correspond to the DSS XML Validation policy
+	 * (please include 'dss-policy-jaxb' module in your classpath), unless a custom validation policy has been implemented.
+	 * The format of cryptographic suite should correspond to XML or JSON schema as defined in ETSI TS 119 322
+	 * (please include 'dss-policy-crypto-xml' or 'dss-policy-crypto-json' to the classpath), unless a custom
+	 * cryptographic suite has been implemented.
+	 * <p>
+	 * The {@code policyResourcePath} and {@code cryptographicSuitePath} specify the constraint file.
+	 * If null or empty the default file is used.
+	 *
+	 * @param policyResourcePath
+	 *            {@link String} path to the validation policy file, located against
+	 *            the classpath (getClass().getResourceAsStream), and NOT the filesystem
+	 * @param cryptographicSuitePath
+	 *            {@link String} path to the cryptographic suite file, located against
+	 *            the classpath (getClass().getResourceAsStream), and NOT the filesystem
+	 * @return {@link CertificateReports}
+	 */
+	public CertificateReports validate(String policyResourcePath, String cryptographicSuitePath) {
+		try (InputStream validationPolicyIS = policyResourcePath != null ? getClass().getResourceAsStream(policyResourcePath) : null ;
+			 InputStream cryptographicSuiteIS = cryptographicSuitePath != null ? getClass().getResourceAsStream(cryptographicSuitePath) : null) {
+			return validate(validationPolicyIS, cryptographicSuiteIS);
+		} catch (IOException e) {
+			throw new IllegalInputException(String.format(
+					"Unable to load policy with URL '%s' and cryptographic suite '%s'. Reason : %s",
+					policyResourcePath, cryptographicSuitePath, e.getMessage()), e);
+		}
+	}
+
+	/**
+	 * Validates the certificate using the provided validation policy and a cryptographic suite.
+	 * If cryptographic suite is set, the constraints from validation policy will be overwritten
+	 * by the constraints retrieved from the cryptographic suite.
+	 * When set, the cryptographic suite constraints are applied with the default behavior, using FAIL level.
+	 * For a customizable cryptographic suite and its applicability context,
+	 * please use {@code eu.europa.esig.dss.validation.policy.ValidationPolicyLoader}.
+	 * <p>
+	 * The format of validation policy should correspond to the DSS XML Validation policy
+	 * (please include 'dss-policy-jaxb' module in your classpath), unless a custom validation policy has been implemented.
+	 * The format of cryptographic suite should correspond to XML or JSON schema as defined in ETSI TS 119 322
+	 * (please include 'dss-policy-crypto-xml' or 'dss-policy-crypto-json' to the classpath), unless a custom
+	 * cryptographic suite has been implemented.
+	 * <p>
+	 * The {@code File} parameters specify the constraint file. If null the default file is used.
+	 *
+	 * @param policyFile
+	 *            {@link File} containing the validation policy
+	 * @param cryptographicSuiteFile
+	 *            {@link File} containing the cryptographic suite
+	 * @return {@link CertificateReports}
+	 */
+	public CertificateReports validate(File policyFile, File cryptographicSuiteFile) {
+		DSSDocument policyDocument = policyFile != null ? new FileDocument(policyFile) : null;
+		DSSDocument cryptographicSuiteDocument = cryptographicSuiteFile != null ? new FileDocument(cryptographicSuiteFile) : null;
+		return validate(policyDocument, cryptographicSuiteDocument);
+	}
+
+	/**
+	 * Validates the certificate using the provided validation policy and a cryptographic suite.
+	 * If cryptographic suite is set, the constraints from validation policy will be overwritten
+	 * by the constraints retrieved from the cryptographic suite.
+	 * When set, the cryptographic suite constraints are applied with the default behavior, using FAIL level.
+	 * For a customizable cryptographic suite and its applicability context,
+	 * please use {@code eu.europa.esig.dss.validation.policy.ValidationPolicyLoader}.
+	 * <p>
+	 * The format of validation policy should correspond to the DSS XML Validation policy
+	 * (please include 'dss-policy-jaxb' module in your classpath), unless a custom validation policy has been implemented.
+	 * The format of cryptographic suite should correspond to XML or JSON schema as defined in ETSI TS 119 322
+	 * (please include 'dss-policy-crypto-xml' or 'dss-policy-crypto-json' to the classpath), unless a custom
+	 * cryptographic suite has been implemented.
+	 * <p>
+	 * The {@code DSSDocument} parameters contains the constraint files. If null the default file is used.
+	 *
+	 * @param policyDocument
+	 *            {@link DSSDocument} containing the validation policy
+	 * @param cryptographicSuiteDocument
+	 *            {@link DSSDocument} containing the cryptographic suite
+	 * @return {@link CertificateReports}
+	 */
+	public CertificateReports validate(DSSDocument policyDocument, DSSDocument cryptographicSuiteDocument) {
+		ValidationPolicy validationPolicy = loadValidationPolicy(policyDocument, cryptographicSuiteDocument);
 		return validate(validationPolicy);
 	}
 
 	/**
-	 * Gets a default validation policy for a certificate validation
+	 * This method loads a validation policy from the {@code policyDocument} and a {@code cryptographicSuiteDocument}.
+	 * When a document is not provided, a default policy or cryptographic suite is used, respectively.
 	 *
+	 * @param policyDocument {@link DSSDocument} containing the validation policy document
+	 * @param cryptographicSuiteDocument {@link DSSDocument} containing the cryptographic suite document
 	 * @return {@link ValidationPolicy}
 	 */
-	protected ValidationPolicy getDefaultCertificateValidationPolicy() {
+	protected ValidationPolicy loadValidationPolicy(DSSDocument policyDocument, DSSDocument cryptographicSuiteDocument) {
+		try {
+			ValidationPolicyLoader validationPolicyLoader;
+			if (policyDocument == null) {
+				LOG.debug("No provided validation policy : use the default policy");
+				validationPolicyLoader = fromDefaultCertificateValidationPolicyLoader();
+			} else {
+				validationPolicyLoader = ValidationPolicyLoader.fromValidationPolicy(policyDocument);
+			}
+			if (cryptographicSuiteDocument != null) {
+				validationPolicyLoader = validationPolicyLoader.withCryptographicSuite(cryptographicSuiteDocument);
+			}
+
+			return validationPolicyLoader.create();
+
+		} catch (Exception e) {
+			throw new IllegalInputException("Unable to load the policy", e);
+		}
+	}
+
+	/**
+	 * Gets a default validation policy loader for a certificate validation
+	 *
+	 * @return {@link ValidationPolicyLoader}
+	 */
+	protected ValidationPolicyLoader fromDefaultCertificateValidationPolicyLoader() {
 		return ValidationPolicyLoader.fromValidationPolicy(
-				CertificateValidator.class.getResourceAsStream(CERTIFICATE_VALIDATION_POLICY_LOCATION)).create();
+				CertificateValidator.class.getResourceAsStream(CERTIFICATE_VALIDATION_POLICY_LOCATION));
+	}
+
+	/**
+	 * Validates the certificate using the provided validation policy and a cryptographic suite.
+	 * If cryptographic suite is set, the constraints from validation policy will be overwritten
+	 * by the constraints retrieved from the cryptographic suite.
+	 * When set, the cryptographic suite constraints are applied with the default behavior, using FAIL level.
+	 * For a customizable cryptographic suite and its applicability context,
+	 * please use {@code eu.europa.esig.dss.validation.policy.ValidationPolicyLoader}.
+	 * <p>
+	 * The format of validation policy should correspond to the DSS XML Validation policy
+	 * (please include 'dss-policy-jaxb' module in your classpath), unless a custom validation policy has been implemented.
+	 * The format of cryptographic suite should correspond to XML or JSON schema as defined in ETSI TS 119 322
+	 * (please include 'dss-policy-crypto-xml' or 'dss-policy-crypto-json' to the classpath), unless a custom
+	 * cryptographic suite has been implemented.
+	 * <p>
+	 * The {@code InputStream} parameters contains the constraint files. If null the default file is used.
+	 *
+	 * @param policyDataStream
+	 *            {@link InputStream} containing the validation policy
+	 * @param cryptographicSuiteStream
+	 *            {@link InputStream} containing the cryptographic suite
+	 * @return {@link CertificateReports}
+	 */
+	public CertificateReports validate(InputStream policyDataStream, InputStream cryptographicSuiteStream) {
+		DSSDocument policyDocument = policyDataStream != null ? new InMemoryDocument(policyDataStream) : null;
+		DSSDocument cryptographicSuiteDocument = cryptographicSuiteStream != null ? new InMemoryDocument(cryptographicSuiteStream) : null;
+		return validate(policyDocument, cryptographicSuiteDocument);
 	}
 
 	/**

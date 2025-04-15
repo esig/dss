@@ -204,8 +204,7 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 
 	/**
 	 * Validates the document and all its signatures. If the validation policy URL is set then the policy constraints
-	 * are retrieved from this location. If null or empty the
-	 * default file is used.
+	 * are retrieved from this location. If null the default file is used.
 	 *
 	 * @param validationPolicyURL {@link URL}
 	 * @return {@code Reports}: diagnostic data, detailed report and simple report
@@ -213,8 +212,8 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	Reports validateDocument(final URL validationPolicyURL);
 
 	/**
-	 * Validates the document and all its signatures. The policyResourcePath specifies the constraint file. If null or
-	 * empty the default file is used.
+	 * Validates the document and all its signatures. The policyResourcePath specifies the constraint file.
+	 * If null or empty the default file is used.
 	 *
 	 * @param policyResourcePath
 	 *            is located against the classpath (getClass().getResourceAsStream), and NOT the filesystem
@@ -223,8 +222,8 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	Reports validateDocument(final String policyResourcePath);
 
 	/**
-	 * Validates the document and all its signatures. The {@code File} parameter specifies the constraint file. If null
-	 * or empty the default file is used.
+	 * Validates the document and all its signatures. The {@code File} parameter specifies the constraint file.
+	 * If null or file does not exist the default file is used.
 	 *
 	 * @param policyFile
 	 *            contains the validation policy (xml) as {@code File}
@@ -233,8 +232,8 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	Reports validateDocument(final File policyFile);
 
 	/**
-	 * Validates the document and all its signatures. The policyDataStream contains the constraint file. If null or
-	 * empty the default file is used.
+	 * Validates the document and all its signatures. The policyDataStream contains the constraint file.
+	 * If null the default file is used.
 	 *
 	 * @param policyDocument
 	 *            contains the validation policy (xml) as {@code DSSDocument}
@@ -243,8 +242,8 @@ public interface DocumentValidator extends ProcessExecutorProvider<DocumentProce
 	Reports validateDocument(final DSSDocument policyDocument);
 
 	/**
-	 * Validates the document and all its signatures. The policyDataStream contains the constraint file. If null or
-	 * empty the default file is used.
+	 * Validates the document and all its signatures. The policyDataStream contains the constraint file.
+	 * If null the default file is used.
 	 *
 	 * @param policyDataStream
 	 *            contains the validation policy (xml) as {@code InputStream}
