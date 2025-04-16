@@ -13,6 +13,21 @@ This chapter covers the most frequently asked questions and issues occurring in 
 |===
 |Version                    |Description                                   |Solution
 
+|v6.3                      a|"No ValidationPolicyFactory has been found!" exception is returned on a validation.    a|Since version `6.3` DSS separates the JAXB validation policy implementation from the validation algorithm, making it more configurable. In order to enable the support of XML validation policy, please add the following module within a `pom.xml` file of you project, as below:
+
+[source,xml]
+.pom.xml
+----
+<dependencies>
+    ...
+    <dependency>
+        <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+        <artifactId>dss-policy-jaxb</artifactId>
+    </dependency>
+    ...
+</dependencies>
+----
+
 |v6.2                      a|`SSLCertificateLoader` does not work with Spring-Boot `3.3.x` or before                a|Since version `6.2` DSS uses HttpClient5 of version `5.4.x` (or higher), bringing incompatible changes in the API used by the `SSLCertificateLoader` class. In case the support of the class is required, please upgrade to the latest version of Spring-Boot, starting from `3.4.0`.
 
 |v6.1 and after             |CMS validation fails because of "invalid OID contents"       a|Starting from version `1.78` cryptographic library BouncyCastle enforces a secure validation of `ASN1ObjectIdentifier` objects, which makes validation of invalid signatures (or other tokens, such as CRL/OCSP responses) to fail with the exception "java.lang.IllegalArgumentException: invalid OID contents". In order to get back to the original behavior (no validation is performed), the following system property should be added before signature validation:
@@ -159,7 +174,7 @@ It is also possible to configure trusted certificate source automatically using 
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignXmlXadesLTTest.java[tags=certificate-verifier]
 ----
 
-|all versions              a|CRL issued before certificate's notBefore is ignored       a|According to RFC 5280 (cf. <<R24>>), a CRL shall contain a complete list of revoked unexpired certificates issued by a CA. Thus, it may not contain not yet issued certificates (i.e. with _notBefore_ date after the CRL's _thisUpdate_). Therefore such CRLs cannot be considered as a relevant source of revocation information for the corresponding certificate during the validation process. To resolve the issue, please use an OCSP response, if feaseble, or wait for a CRL update.
+|all versions              a|CRL issued before certificate's notBefore is ignored       a|According to RFC 5280 (cf. <<R25>>), a CRL shall contain a complete list of revoked unexpired certificates issued by a CA. Thus, it may not contain not yet issued certificates (i.e. with _notBefore_ date after the CRL's _thisUpdate_). Therefore such CRLs cannot be considered as a relevant source of revocation information for the corresponding certificate during the validation process. To resolve the issue, please use an OCSP response, if feaseble, or wait for a CRL update.
 
 |all versions              a|I receive error _"Unable to build a certificate chain until a trusted list"_ while signature is validated as `TOTAL_PASSED`     a|During the validation DSS performs two processes: AdES validation as per ETSI EN 319 102-1 (cf. <<R09>>) and qualification determination as per ETSI TS 119 615 (cf. <<R14>>). While `TOTAL_PASSED` indication is a final result of AdES validation process, the aforementioned error message is returned by a signature qualification determination process, meaning the corresponding Trusted List has not reached the trust anchor for the certificate chain. Please note, that the qualification can be determined only for signatures with trusted certificates coming from a Trusted List. To configure a trusted certificate source using a EU LOTL or an alternative Trusted List, please see <<tlValidationJob>> chapter for more details.
 

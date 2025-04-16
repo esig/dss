@@ -47,7 +47,7 @@ public class PublicKeySizeKnownCheck extends AbstractCryptographicCheck {
 	 */
 	protected PublicKeySizeKnownCheck(I18nProvider i18nProvider, String keySize, XmlCC result, MessageTag position,
 									  CryptographicSuite cryptographicSuite) {
-		super(i18nProvider, result, position, ValidationProcessUtils.getLevelRule(cryptographicSuite.getMiniPublicKeySizeLevel()));
+		super(i18nProvider, result, position, ValidationProcessUtils.getLevelRule(cryptographicSuite.getAcceptableEncryptionAlgorithmsMiniKeySizeLevel()));
 		this.keySize = keySize;
 	}
 

@@ -63,7 +63,7 @@ public class EncryptionAlgorithmAtValidationTimeCheck extends AbstractCryptograp
 	protected EncryptionAlgorithmAtValidationTimeCheck(I18nProvider i18nProvider, EncryptionAlgorithm encryptionAlgo,
 													   String keyLength, Date validationDate, XmlCC result,
 													   MessageTag position, CryptographicSuite cryptographicSuite) {
-		super(i18nProvider, result, position, ValidationProcessUtils.getLevelRule(cryptographicSuite.getAlgoExpirationDateLevel()));
+		super(i18nProvider, result, position, ValidationProcessUtils.getLevelRule(cryptographicSuite.getAlgorithmsExpirationDateLevel()));
 		this.encryptionAlgo = encryptionAlgo;
 		this.keyLength = keyLength;
 		this.validationDate = validationDate;
@@ -81,7 +81,7 @@ public class EncryptionAlgorithmAtValidationTimeCheck extends AbstractCryptograp
 		Date algoExpirationDate = CryptographicSuiteUtils.getExpirationDate(cryptographicSuite, encryptionAlgo, keyLength);
 		Date cryptographicSuiteUpdateDate = cryptographicSuite.getCryptographicSuiteUpdateDate();
 		if (algoExpirationDate != null && cryptographicSuiteUpdateDate != null && cryptographicSuiteUpdateDate.before(algoExpirationDate)) {
-			return cryptographicSuite.getAlgoExpirationDateAfterUpdateLevel();
+			return cryptographicSuite.getAlgorithmsExpirationDateAfterUpdateLevel();
 		}
 		return super.getLevel();
 	}

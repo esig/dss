@@ -59,7 +59,7 @@ public class DigestAlgorithmAtValidationTimeCheck extends AbstractCryptographicC
 	protected DigestAlgorithmAtValidationTimeCheck(I18nProvider i18nProvider, DigestAlgorithm digestAlgo,
 												   Date validationDate, XmlCC result, MessageTag position,
 												   CryptographicSuite cryptographicSuite) {
-		super(i18nProvider, result, position, ValidationProcessUtils.getLevelRule(cryptographicSuite.getAlgoExpirationDateLevel()));
+		super(i18nProvider, result, position, ValidationProcessUtils.getLevelRule(cryptographicSuite.getAlgorithmsExpirationDateLevel()));
 		this.digestAlgo = digestAlgo;
 		this.validationDate = validationDate;
 		this.cryptographicSuite = cryptographicSuite;
@@ -76,7 +76,7 @@ public class DigestAlgorithmAtValidationTimeCheck extends AbstractCryptographicC
 		Date algoExpirationDate = CryptographicSuiteUtils.getExpirationDate(cryptographicSuite, digestAlgo);
 		Date cryptographicSuiteUpdateDate = cryptographicSuite.getCryptographicSuiteUpdateDate();
 		if (algoExpirationDate != null && cryptographicSuiteUpdateDate != null && cryptographicSuiteUpdateDate.before(algoExpirationDate)) {
-			return cryptographicSuite.getAlgoExpirationDateAfterUpdateLevel();
+			return cryptographicSuite.getAlgorithmsExpirationDateAfterUpdateLevel();
 		}
 		return super.getLevel();
 	}

@@ -17,6 +17,39 @@ For changes within XML Signature Policy please refer <<ValidationPolicyChanges>>
 .Code changes from version 6.2 to 6.3
 |===
 |Title                               |v6.2                            |v6.3
+|Default validation process requires the `dss-policy-jaxb` module           a|
+[source,xml]
+.pom.xml
+----
+<dependencies>
+    ...
+    <dependency>
+        <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+        <artifactId>dss-validation</artifactId>
+    </dependency>
+    ...
+</dependencies>
+----
+                                                                     a|
+In order to benefit from default XML Validation Policy, please add the `dss-policy-jaxb` module:
+
+[source,xml]
+.pom.xml
+----
+<dependencies>
+    ...
+    <dependency>
+        <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+        <artifactId>dss-validation</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+        <artifactId>dss-policy-jaxb</artifactId>
+    </dependency>
+    ...
+</dependencies>
+----
+
 |CAdES/PAdES signature and validation (see <<dssCms>>)             a|
 [source,xml]
 .pom.xml
@@ -109,6 +142,16 @@ import java.util.Date;
 SimpleReport simpleReport = reports.getSimpleReport();
 Date extensionPeriodMin = simpleReport.getExtensionPeriodMin(signatureId);
 Date extensionPeriodMax = simpleReport.getExtensionPeriodMax(signatureId);
+----
+
+|ValidationPolicy package             a|
+[source,java]
+----
+import eu.europa.esig.dss.policy.ValidationPolicy;
+----
+                                                                     a|[source,java]
+----
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 ----
 
 |===

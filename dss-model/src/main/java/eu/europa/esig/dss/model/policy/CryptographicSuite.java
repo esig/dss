@@ -57,20 +57,11 @@ public interface CryptographicSuite extends LevelRule {
     Map<EncryptionAlgorithmWithMinKeySize, Date> getAcceptableEncryptionAlgorithmsWithExpirationDates();
 
     /**
-     * Returns a level constraint for AcceptableEncryptionAlgo constraint if present,
-     * the global {@code getLevel} otherwise.
+     * Sets the global execution level for the cryptographic suite constraints
      *
-     * @return {@link Level}
+     * @param level {@link Level}
      */
-    Level getAcceptableEncryptionAlgoLevel();
-
-    /**
-     * Returns a level constraint for MiniPublicKeySize constraint if present,
-     * the global {@code getLevel} otherwise.
-     *
-     * @return {@link Level}
-     */
-    Level getMiniPublicKeySizeLevel();
+    void setLevel(Level level);
 
     /**
      * Returns a level constraint for AcceptableDigestAlgo constraint if present,
@@ -78,7 +69,44 @@ public interface CryptographicSuite extends LevelRule {
      *
      * @return {@link Level}
      */
-    Level getAcceptableDigestAlgoLevel();
+    Level getAcceptableDigestAlgorithmsLevel();
+
+    /**
+     * Sets the execution level for the acceptable digest algorithms check
+     *
+     * @param acceptableDigestAlgorithmsLevel {@link Level}
+     */
+    void setAcceptableDigestAlgorithmsLevel(Level acceptableDigestAlgorithmsLevel);
+
+    /**
+     * Returns a level constraint for AcceptableEncryptionAlgo constraint if present,
+     * the global {@code getLevel} otherwise.
+     *
+     * @return {@link Level}
+     */
+    Level getAcceptableEncryptionAlgorithmsLevel();
+
+    /**
+     * Sets the execution level for the acceptable encryption algorithms check
+     *
+     * @param acceptableEncryptionAlgorithmsLevel {@link Level}
+     */
+    void setAcceptableEncryptionAlgorithmsLevel(Level acceptableEncryptionAlgorithmsLevel);
+
+    /**
+     * Returns a level constraint for MiniPublicKeySize constraint if present,
+     * the global {@code getLevel} otherwise.
+     *
+     * @return {@link Level}
+     */
+    Level getAcceptableEncryptionAlgorithmsMiniKeySizeLevel();
+
+    /**
+     * Sets the execution level for the acceptable minimum key sizes of encryption algorithms check
+     *
+     * @param acceptableEncryptionAlgorithmsMiniKeySizeLevel {@link Level}
+     */
+    void setAcceptableEncryptionAlgorithmsMiniKeySizeLevel(Level acceptableEncryptionAlgorithmsMiniKeySizeLevel);
 
     /**
      * Returns a level constraint for AlgoExpirationDate constraint if present,
@@ -86,7 +114,31 @@ public interface CryptographicSuite extends LevelRule {
      *
      * @return {@link Level}
      */
-    Level getAlgoExpirationDateLevel();
+    Level getAlgorithmsExpirationDateLevel();
+
+    /**
+     * Sets the execution level for checking algorithms expiration
+     *
+     * @param algorithmsExpirationDateLevel {@link Level}
+     */
+    void setAlgorithmsExpirationDateLevel(Level algorithmsExpirationDateLevel);
+
+    /**
+     * Returns a level constraint for AlgoExpirationDate constraint if present,
+     * the global {@code getLevel} otherwise.
+     *
+     * @return {@link Level}
+     */
+    Level getAlgorithmsExpirationDateAfterUpdateLevel();
+
+    /**
+     * Sets the execution level for checking algorithms expiration after the validation policy update
+     * Default : Level.WARN (warning message is returned in case of expiration of the used cryptographic constraints
+     *                       after the policy update date)
+     *
+     * @param algorithmsExpirationTimeAfterPolicyUpdateLevel {@link Level}
+     */
+    void setAlgorithmsExpirationTimeAfterPolicyUpdateLevel(Level algorithmsExpirationTimeAfterPolicyUpdateLevel);
 
     /**
      * Returns a date of the update of the cryptographic suites within the validation policy
@@ -94,13 +146,5 @@ public interface CryptographicSuite extends LevelRule {
      * @return {@link Date}
      */
     Date getCryptographicSuiteUpdateDate();
-
-    /**
-     * Returns a level constraint for AlgoExpirationDate constraint if present,
-     * the global {@code getLevel} otherwise.
-     *
-     * @return {@link Level}
-     */
-    Level getAlgoExpirationDateAfterUpdateLevel();
 
 }

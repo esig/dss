@@ -215,7 +215,14 @@ public class CryptographicConstraintWrapper extends LevelConstraintWrapper imple
     }
 
     @Override
-    public Level getAcceptableEncryptionAlgoLevel() {
+    public void setLevel(Level level) {
+        if (constraint != null) {
+            constraint.setLevel(level);
+        }
+    }
+
+    @Override
+    public Level getAcceptableEncryptionAlgorithmsLevel() {
         if (constraint != null) {
             return getCryptographicLevel(((CryptographicConstraint) constraint).getAcceptableEncryptionAlgo());
         }
@@ -223,7 +230,17 @@ public class CryptographicConstraintWrapper extends LevelConstraintWrapper imple
     }
 
     @Override
-    public Level getMiniPublicKeySizeLevel() {
+    public void setAcceptableEncryptionAlgorithmsLevel(Level acceptableEncryptionAlgorithmsLevel) {
+        if (constraint != null) {
+            ListAlgo acceptableEncryptionAlgo = ((CryptographicConstraint) constraint).getAcceptableEncryptionAlgo();
+            if (acceptableEncryptionAlgo != null) {
+                acceptableEncryptionAlgo.setLevel(acceptableEncryptionAlgorithmsLevel);
+            }
+        }
+    }
+
+    @Override
+    public Level getAcceptableEncryptionAlgorithmsMiniKeySizeLevel() {
         if (constraint != null) {
             return getCryptographicLevel(((CryptographicConstraint) constraint).getMiniPublicKeySize());
         }
@@ -231,7 +248,17 @@ public class CryptographicConstraintWrapper extends LevelConstraintWrapper imple
     }
 
     @Override
-    public Level getAcceptableDigestAlgoLevel() {
+    public void setAcceptableEncryptionAlgorithmsMiniKeySizeLevel(Level acceptableEncryptionAlgorithmsMiniKeySizeLevel) {
+        if (constraint != null) {
+            ListAlgo miniPublicKeySize = ((CryptographicConstraint) constraint).getMiniPublicKeySize();
+            if (miniPublicKeySize != null) {
+                miniPublicKeySize.setLevel(acceptableEncryptionAlgorithmsMiniKeySizeLevel);
+            }
+        }
+    }
+
+    @Override
+    public Level getAcceptableDigestAlgorithmsLevel() {
         if (constraint != null) {
             return getCryptographicLevel(((CryptographicConstraint) constraint).getAcceptableDigestAlgo());
         }
@@ -239,19 +266,53 @@ public class CryptographicConstraintWrapper extends LevelConstraintWrapper imple
     }
 
     @Override
-    public Level getAlgoExpirationDateLevel() {
+    public void setAcceptableDigestAlgorithmsLevel(Level acceptableDigestAlgorithmsLevel) {
+        if (constraint != null) {
+            ListAlgo acceptableDigestAlgo = ((CryptographicConstraint) constraint).getAcceptableDigestAlgo();
+            if (acceptableDigestAlgo != null) {
+                acceptableDigestAlgo.setLevel(acceptableDigestAlgorithmsLevel);
+            }
+        }
+    }
+
+    @Override
+    public Level getAlgorithmsExpirationDateLevel() {
         if (constraint != null) {
             return getCryptographicLevel(((CryptographicConstraint) constraint).getAlgoExpirationDate());
         }
         return null;
     }
 
-    private Level getCryptographicLevel(LevelConstraint cryptoConstraint) {
-        if (cryptoConstraint != null && cryptoConstraint.getLevel() != null) {
-            return cryptoConstraint.getLevel();
+    @Override
+    public void setAlgorithmsExpirationDateLevel(Level algorithmsExpirationDateLevel) {
+        if (constraint != null) {
+            AlgoExpirationDate algoExpirationDate = ((CryptographicConstraint) constraint).getAlgoExpirationDate();
+            if (algoExpirationDate != null) {
+                algoExpirationDate.setLevel(algorithmsExpirationDateLevel);
+            }
         }
-        // return global Level if target level is not present
-        return getLevel();
+    }
+
+    @Override
+    public Level getAlgorithmsExpirationDateAfterUpdateLevel() {
+        if (constraint != null) {
+            AlgoExpirationDate algoExpirationDate = ((CryptographicConstraint) constraint).getAlgoExpirationDate();
+            if (algoExpirationDate != null && algoExpirationDate.getLevelAfterUpdate() != null) {
+                return algoExpirationDate.getLevelAfterUpdate();
+            }
+            return getCryptographicLevel(algoExpirationDate);
+        }
+        return null;
+    }
+
+    @Override
+    public void setAlgorithmsExpirationTimeAfterPolicyUpdateLevel(Level algorithmsExpirationTimeAfterPolicyUpdateLevel) {
+        if (constraint != null) {
+            AlgoExpirationDate algoExpirationDate = ((CryptographicConstraint) constraint).getAlgoExpirationDate();
+            if (algoExpirationDate != null) {
+                algoExpirationDate.setLevelAfterUpdate(algorithmsExpirationTimeAfterPolicyUpdateLevel);
+            }
+        }
     }
 
     @Override
@@ -266,16 +327,12 @@ public class CryptographicConstraintWrapper extends LevelConstraintWrapper imple
         return null;
     }
 
-    @Override
-    public Level getAlgoExpirationDateAfterUpdateLevel() {
-        if (constraint != null) {
-            AlgoExpirationDate algoExpirationDate = ((CryptographicConstraint) constraint).getAlgoExpirationDate();
-            if (algoExpirationDate != null && algoExpirationDate.getLevelAfterUpdate() != null) {
-                return algoExpirationDate.getLevelAfterUpdate();
-            }
-            return getCryptographicLevel(algoExpirationDate);
+    private Level getCryptographicLevel(LevelConstraint cryptoConstraint) {
+        if (cryptoConstraint != null && cryptoConstraint.getLevel() != null) {
+            return cryptoConstraint.getLevel();
         }
-        return null;
+        // return global Level if target level is not present
+        return getLevel();
     }
 
 }

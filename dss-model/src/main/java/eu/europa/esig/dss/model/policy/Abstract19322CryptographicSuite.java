@@ -59,92 +59,64 @@ public abstract class Abstract19322CryptographicSuite implements CryptographicSu
     /** Cached list of acceptable encryption algorithms with their expiration dates */
     private Map<EncryptionAlgorithmWithMinKeySize, Date> acceptableEncryptionAlgorithmsWithExpirationDates;
 
-    /**
-     * Sets the global level of the cryptographic constraints.
-     * The value is used when the level is not defined for a specific check execution.
-     * Default : Level.FAIL (in case of a check failure, the validation process will be interrupted)
-     *
-     * @param level {@link Level}
-     */
-    public void setLevel(Level level) {
-        this.globalLevel = level;
-    }
-
-    /**
-     * Sets the execution level for the acceptable digest algorithms check
-     *
-     * @param acceptableDigestAlgorithmsLevel {@link Level}
-     */
-    public void setAcceptableDigestAlgorithmsLevel(Level acceptableDigestAlgorithmsLevel) {
-        this.acceptableDigestAlgorithmsLevel = acceptableDigestAlgorithmsLevel;
-    }
-
-    /**
-     * Sets the execution level for the acceptable encryption algorithms check
-     *
-     * @param acceptableEncryptionAlgorithmsLevel {@link Level}
-     */
-    public void setAcceptableEncryptionAlgorithmsLevel(Level acceptableEncryptionAlgorithmsLevel) {
-        this.acceptableEncryptionAlgorithmsLevel = acceptableEncryptionAlgorithmsLevel;
-    }
-
-    /**
-     * Sets the execution level for the acceptable minimum key sizes of encryption algorithms check
-     *
-     * @param acceptableEncryptionAlgorithmsMinKeySizeLevel {@link Level}
-     */
-    public void setAcceptableEncryptionAlgorithmsMinKeySizeLevel(Level acceptableEncryptionAlgorithmsMinKeySizeLevel) {
-        this.acceptableEncryptionAlgorithmsMinKeySizeLevel = acceptableEncryptionAlgorithmsMinKeySizeLevel;
-    }
-
-    /**
-     * Sets the execution level for checking algorithms expiration
-     * 
-     * @param algorithmsExpirationDateLevel {@link Level}
-     */
-    public void setAlgorithmsExpirationDateLevel(Level algorithmsExpirationDateLevel) {
-        this.algorithmsExpirationDateLevel = algorithmsExpirationDateLevel;
-    }
-
-    /**
-     * Sets the execution level for checking algorithms expiration after the validation policy update
-     * Default : Level.WARN (warning message is returned in case of expiration of the used cryptographic constraints 
-     *                       after the policy update date)
-     *
-     * @param algorithmsExpirationTimeAfterPolicyUpdateLevel {@link Level}
-     */
-    public void setAlgorithmsExpirationTimeAfterPolicyUpdateLevel(Level algorithmsExpirationTimeAfterPolicyUpdateLevel) {
-        this.algorithmsExpirationTimeAfterPolicyUpdateLevel = algorithmsExpirationTimeAfterPolicyUpdateLevel;
-    }
-
-    @Override
-    public Level getAlgoExpirationDateAfterUpdateLevel() {
-        return algorithmsExpirationTimeAfterPolicyUpdateLevel;
-    }
-
     @Override
     public Level getLevel() {
         return globalLevel;
     }
 
     @Override
-    public Level getAcceptableEncryptionAlgoLevel() {
-        return getLevel(acceptableEncryptionAlgorithmsLevel);
+    public void setLevel(Level level) {
+        this.globalLevel = level;
     }
 
     @Override
-    public Level getMiniPublicKeySizeLevel() {
-        return getLevel(acceptableEncryptionAlgorithmsMinKeySizeLevel);
-    }
-
-    @Override
-    public Level getAcceptableDigestAlgoLevel() {
+    public Level getAcceptableDigestAlgorithmsLevel() {
         return getLevel(acceptableDigestAlgorithmsLevel);
     }
 
     @Override
-    public Level getAlgoExpirationDateLevel() {
+    public void setAcceptableDigestAlgorithmsLevel(Level acceptableDigestAlgorithmsLevel) {
+        this.acceptableDigestAlgorithmsLevel = acceptableDigestAlgorithmsLevel;
+    }
+
+    @Override
+    public Level getAcceptableEncryptionAlgorithmsLevel() {
+        return getLevel(acceptableEncryptionAlgorithmsLevel);
+    }
+
+    @Override
+    public void setAcceptableEncryptionAlgorithmsLevel(Level acceptableEncryptionAlgorithmsLevel) {
+        this.acceptableEncryptionAlgorithmsLevel = acceptableEncryptionAlgorithmsLevel;
+    }
+
+    @Override
+    public Level getAcceptableEncryptionAlgorithmsMiniKeySizeLevel() {
+        return getLevel(acceptableEncryptionAlgorithmsMinKeySizeLevel);
+    }
+
+    @Override
+    public void setAcceptableEncryptionAlgorithmsMiniKeySizeLevel(Level acceptableEncryptionAlgorithmsMiniKeySizeLevel) {
+        this.acceptableEncryptionAlgorithmsMinKeySizeLevel = acceptableEncryptionAlgorithmsMiniKeySizeLevel;
+    }
+
+    @Override
+    public Level getAlgorithmsExpirationDateLevel() {
         return getLevel(algorithmsExpirationDateLevel);
+    }
+
+    @Override
+    public void setAlgorithmsExpirationDateLevel(Level algorithmsExpirationDateLevel) {
+        this.algorithmsExpirationDateLevel = algorithmsExpirationDateLevel;
+    }
+
+    @Override
+    public Level getAlgorithmsExpirationDateAfterUpdateLevel() {
+        return algorithmsExpirationTimeAfterPolicyUpdateLevel;
+    }
+
+    @Override
+    public void setAlgorithmsExpirationTimeAfterPolicyUpdateLevel(Level algorithmsExpirationTimeAfterPolicyUpdateLevel) {
+        this.algorithmsExpirationTimeAfterPolicyUpdateLevel = algorithmsExpirationTimeAfterPolicyUpdateLevel;
     }
 
     private Level getLevel(Level level) {

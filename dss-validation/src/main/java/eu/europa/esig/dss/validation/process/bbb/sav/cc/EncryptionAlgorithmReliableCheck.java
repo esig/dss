@@ -52,7 +52,7 @@ public class EncryptionAlgorithmReliableCheck extends AbstractCryptographicCheck
 	protected EncryptionAlgorithmReliableCheck(I18nProvider i18nProvider, EncryptionAlgorithm encryptionAlgo,
 											   XmlCC result, MessageTag position,
 											   CryptographicSuite cryptographicSuite) {
-		super(i18nProvider, result, position, ValidationProcessUtils.getLevelRule(cryptographicSuite.getAcceptableEncryptionAlgoLevel()));
+		super(i18nProvider, result, position, ValidationProcessUtils.getLevelRule(cryptographicSuite.getAcceptableEncryptionAlgorithmsLevel()));
 		this.encryptionAlgo = encryptionAlgo;
 		this.cryptographicSuite = cryptographicSuite;
 	}

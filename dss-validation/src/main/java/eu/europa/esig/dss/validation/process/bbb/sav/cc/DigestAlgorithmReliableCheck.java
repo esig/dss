@@ -51,7 +51,7 @@ public class DigestAlgorithmReliableCheck extends AbstractCryptographicCheck {
 	 */
 	protected DigestAlgorithmReliableCheck(I18nProvider i18nProvider, DigestAlgorithm digestAlgo, XmlCC result,
 										   MessageTag position, CryptographicSuite cryptographicSuite) {
-		super(i18nProvider, result, position, ValidationProcessUtils.getLevelRule(cryptographicSuite.getAcceptableDigestAlgoLevel()));
+		super(i18nProvider, result, position, ValidationProcessUtils.getLevelRule(cryptographicSuite.getAcceptableDigestAlgorithmsLevel()));
 		this.digestAlgo = digestAlgo;
 		this.cryptographicSuite = cryptographicSuite;
 	}

@@ -67,7 +67,7 @@ If your integration requires `dss-crl-parser`, you will need to choose your impl
 [[dssCms]]
 ==== DSS CMS
 
-Starting from the version `6.3`, DSS provides two implementations for handling of a Cryptographic Message Syntax (CMS) (RFC 5652, cf. <<R30>>) object. The modules define a logic on how the CMS signature objects are created, augmented and validated.
+Starting from the version `6.3`, DSS provides two implementations for handling of a Cryptographic Message Syntax (CMS) (RFC 5652, cf. <<R31>>) object. The modules define a logic on how the CMS signature objects are created, augmented and validated.
 
 The interfaces and common utility classes are present within the `dss-cms` module. The available implementations are:
 
@@ -174,6 +174,19 @@ eu.europa.esig.dss.cookbook.example.CustomMimeTypeLoader
 
 This will load firstly the created class (`CustomMimeTypeLoader.java`) and after other available implementations (i.e. `MimeTypeEnumLoader` with default mimetypes).
 
+[[ServiceLoaderPolicy]]
+==== Validation Policy and Cryptographic Suite
+
+Starting from version `6.3`, DSS uses a `ServiceLoader` to load a validation policy, as well as a cryptographic suite.
+
+For a validation policy, DSS provides a single implementation, containing the default AdES validation policy. To enable the support of the default validation policy implementation, the `dss-policy-jaxb` module should be added in the list of the dependencies of the project.
+
+A custom validation policy can be provided by implementing a `ValidationPolicyFactory` class and by setting a reference to the corresponding implementation class within a `/META-INF/services/eu.europa.esig.dss.model.policy.ValidationPolicyFactory` file in the resources folder.
+
+For a cryptographic suite, an implementation of a `CryptographicSuiteFactory` interface is required, with DSS providing two implementations in modules `dss-policy-crypto-xml` and `dss-policy-crypto-json` for XML and JSON cryptographic suite, respectively.
+
+The list of supported or custom implementations of a `CryptographicSuiteFactory` should be added within the `/META-INF/services/eu.europa.esig.dss.model.policy.CryptographicSuiteFactory` file in the resources folder.
+
 === Multithreading
 
 DSS can be used in multi-threaded environments but some points need to be considered like resources sharing and caching. All operations are stateless and this fact requires to be maintained. Some resources can be shared, others are proper to an operation.
@@ -198,6 +211,7 @@ See section <<CachingUseCases>> of the Annex for complete examples of caching re
 DSS provides the following JAXB modules with a harmonized structure :
 
 * `dss-policy-jaxb` - defines validation policy JAXB model;
+* `dss-policy-crypto-xml` - defines XML cryptographic suite JAXB model;
 * `dss-diagnostic-jaxb` - defines Diagnostic Data JAXB model;
 * `dss-detailed-report-jaxb` - defines Detailed Report JAXB model;
 * `dss-simple-report-jaxb` - defines Simple Report JAXB model;

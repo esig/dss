@@ -55,7 +55,7 @@ public class PublicKeySizeAcceptableCheck extends AbstractCryptographicCheck {
 	 */
 	protected PublicKeySizeAcceptableCheck(I18nProvider i18nProvider, EncryptionAlgorithm encryptionAlgo, String keyLength,
 			XmlCC result, MessageTag position, CryptographicSuite cryptographicSuite) {
-		super(i18nProvider, result, position, ValidationProcessUtils.getLevelRule(cryptographicSuite.getMiniPublicKeySizeLevel()));
+		super(i18nProvider, result, position, ValidationProcessUtils.getLevelRule(cryptographicSuite.getAcceptableEncryptionAlgorithmsMiniKeySizeLevel()));
 		this.encryptionAlgo = encryptionAlgo;
 		this.keyLength = keyLength;
 		this.cryptographicSuite = cryptographicSuite;
