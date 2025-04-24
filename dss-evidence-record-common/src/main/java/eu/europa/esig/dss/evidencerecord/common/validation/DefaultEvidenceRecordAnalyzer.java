@@ -27,6 +27,7 @@ import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.validation.analyzer.DefaultDocumentAnalyzer;
 import eu.europa.esig.dss.spi.validation.analyzer.evidencerecord.EvidenceRecordAnalyzer;
 import eu.europa.esig.dss.spi.validation.analyzer.evidencerecord.EvidenceRecordAnalyzerFactory;
+import eu.europa.esig.dss.spi.validation.evidencerecord.EmbeddedEvidenceRecordHelper;
 import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 
 import java.util.Collections;
@@ -44,6 +45,9 @@ public abstract class DefaultEvidenceRecordAnalyzer extends DefaultDocumentAnaly
 
     /** Origin of the evidence record */
     protected EvidenceRecordOrigin evidenceRecordOrigin = EvidenceRecordOrigin.EXTERNAL;
+
+    /** Helper used for processing of the embedded evidence record type */
+    protected EmbeddedEvidenceRecordHelper embeddedEvidenceRecordHelper;
 
     /**
      * Empty constructor
@@ -89,6 +93,11 @@ public abstract class DefaultEvidenceRecordAnalyzer extends DefaultDocumentAnaly
     @Override
     public void setEvidenceRecordOrigin(EvidenceRecordOrigin origin) {
         this.evidenceRecordOrigin = origin;
+    }
+
+    @Override
+    public void setEmbeddedEvidenceRecordHelper(EmbeddedEvidenceRecordHelper embeddedEvidenceRecordHelper) {
+        this.embeddedEvidenceRecordHelper = embeddedEvidenceRecordHelper;
     }
 
     /**

@@ -65,15 +65,6 @@ public class DSSMessageDigest extends Digest {
         return new DSSMessageDigest();
     }
 
-    /**
-     * Checks whether the object contains a value
-     *
-     * @return TRUE if the object is empty, FALSE otherwise
-     */
-    public boolean isEmpty() {
-        return getAlgorithm() == null || getValue() == null;
-    }
-
     @Override
     public String toString() {
         return "MessageDigest [" + super.toString() + "]";

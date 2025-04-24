@@ -328,6 +328,21 @@ public class SignatureWrapper extends AbstractSignatureWrapper {
 	}
 
 	/**
+	 * Returns a list of {@code EvidenceRecordWrapper}s embedded within the signature
+	 *
+	 * @return a list of {@code EvidenceRecordWrapper}s
+	 */
+	public List<EvidenceRecordWrapper> getEmbeddedEvidenceRecords() {
+		List<EvidenceRecordWrapper> embeddedEvidenceRecords = new ArrayList<>();
+		for (EvidenceRecordWrapper evidenceRecord : getEvidenceRecords()) {
+			if (evidenceRecord.isEmbedded()) {
+				embeddedEvidenceRecords.add(evidenceRecord);
+			}
+		}
+		return embeddedEvidenceRecords;
+	}
+
+	/**
 	 * Gets if the signature production place is claimed within the signature
 	 *
 	 * @return TRUE if the signature production place is present, FALSE otherwise
@@ -844,6 +859,16 @@ public class SignatureWrapper extends AbstractSignatureWrapper {
 			}
 		}
 		return result;
+	}
+
+	/**
+	 * Returns if there is the ERS-Level within the signature
+	 *
+	 * @return TRUE if there is the ERS-Level, FALSE otherwise
+	 */
+	public boolean isThereERSLevel() {
+		List<EvidenceRecordWrapper> embeddedEvidenceRecords = getEmbeddedEvidenceRecords();
+		return embeddedEvidenceRecords != null && !embeddedEvidenceRecords.isEmpty();
 	}
 
 	/**

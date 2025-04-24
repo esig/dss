@@ -83,6 +83,9 @@ public enum DigestMatcherType {
 	EVIDENCE_RECORD_ARCHIVE_TIME_STAMP,
 
 	/** Evidence record previous archive time-stamp sequence */
-	EVIDENCE_RECORD_ARCHIVE_TIME_STAMP_SEQUENCE
+	EVIDENCE_RECORD_ARCHIVE_TIME_STAMP_SEQUENCE,
+
+	/** Evidence record embedded in a signature */
+	EVIDENCE_RECORD_MASTER_SIGNATURE
 
 }

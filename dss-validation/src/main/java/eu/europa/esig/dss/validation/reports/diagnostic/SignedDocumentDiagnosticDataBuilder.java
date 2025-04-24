@@ -961,6 +961,15 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 			XmlSignature xmlSignature = xmlSignaturesMap.get(signature.getId());
 			xmlSignature.setFoundEvidenceRecords(getXmlSignatureEvidenceRecords(signature));
 		}
+		for (EvidenceRecord evidenceRecord : evidenceRecords) {
+			if (evidenceRecord.isEmbedded()) {
+				XmlEvidenceRecord xmlEvidenceRecord = xmlEvidenceRecordMap.get(evidenceRecord.getId());
+				xmlEvidenceRecord.setEmbedded(evidenceRecord.isEmbedded());
+
+				XmlSignature xmlSignature = xmlSignaturesMap.get(evidenceRecord.getMasterSignature().getId());
+				xmlEvidenceRecord.setParent(xmlSignature);
+			}
+		}
 	}
 
 	private List<XmlFoundEvidenceRecord> getXmlSignatureEvidenceRecords(AdvancedSignature signature) {

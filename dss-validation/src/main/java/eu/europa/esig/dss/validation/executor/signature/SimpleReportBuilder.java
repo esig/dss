@@ -652,6 +652,11 @@ public class SimpleReportBuilder {
 			}
 		}
 
+		if (evidenceRecordWrapper.isEmbedded()) {
+			xmlEvidenceRecord.setEmbedded(true);
+			xmlEvidenceRecord.setParentId(evidenceRecordWrapper.getParent().getId());
+		}
+
 		return xmlEvidenceRecord;
 	}
 

@@ -29,6 +29,7 @@ import eu.europa.esig.dss.spi.DSSMessageDigestCalculator;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.SignatureAttribute;
 import eu.europa.esig.dss.spi.validation.evidencerecord.AbstractSignatureEvidenceRecordDigestBuilder;
 import eu.europa.esig.dss.spi.validation.evidencerecord.ByteArrayComparator;
 import eu.europa.esig.dss.utils.Utils;
@@ -98,6 +99,20 @@ public class XAdESEvidenceRecordDigestBuilder extends AbstractSignatureEvidenceR
     }
 
     /**
+     * Constructor to instantiate XAdESEvidenceRecordDigestBuilder from a {@code signature}
+     * for the given {@code evidenceRecordAttribute}.
+     * This constructor is used on validation of existing evidence record.
+     *
+     * @param signature {@link AdvancedSignature} containing the incorporated evidence record
+     * @param evidenceRecordAttribute {@link SignatureAttribute} location of the evidence record
+     * @param digestAlgorithm {@link DigestAlgorithm} to be used
+     */
+    protected XAdESEvidenceRecordDigestBuilder(final AdvancedSignature signature, final SignatureAttribute evidenceRecordAttribute,
+                                               final DigestAlgorithm digestAlgorithm) {
+        super(signature, evidenceRecordAttribute, digestAlgorithm);
+    }
+
+    /**
      * Sets a list of detached documents covered by the signature
      *
      * @param detachedContent a list of detached {@link DSSDocument}s
@@ -128,31 +143,49 @@ public class XAdESEvidenceRecordDigestBuilder extends AbstractSignatureEvidenceR
 
     @Override
     public Digest build() {
-        final XMLDocumentAnalyzer documentAnalyzer = new XMLDocumentAnalyzer(signatureDocument);
-        documentAnalyzer.setDetachedContents(detachedContent);
+        final XAdESSignature xadesSignature = getXAdESSignature();
+        return getXmlSignatureMessageImprint(xadesSignature);
+    }
 
-        final List<AdvancedSignature> signatures = documentAnalyzer.getSignatures();
-        AdvancedSignature signature;
-        if (Utils.collectionSize(signatures) == 0) {
-            throw new IllegalInputException("The provided document does not contain any signature! " +
-                    "Unable to compute message-imprint for an integrated evidence-record.");
+    /**
+     * Returns a signature to compute evidence record's digest for
+     *
+     * @return {@link XAdESSignature}
+     */
+    protected XAdESSignature getXAdESSignature() {
+        if (signature != null) {
+            return (XAdESSignature) signature;
 
-        } else if (Utils.isStringNotEmpty(signatureId)) {
-            signature = documentAnalyzer.getSignatureById(signatureId);
-            if (signature == null) {
-                throw new IllegalArgumentException(
-                        String.format("No signature with Id '%s' found in the document!", signatureId));
+        } else if (signatureDocument != null) {
+            final XMLDocumentAnalyzer documentAnalyzer = new XMLDocumentAnalyzer(signatureDocument);
+            documentAnalyzer.setDetachedContents(detachedContent);
+
+            AdvancedSignature signature;
+            final List<AdvancedSignature> signatures = documentAnalyzer.getSignatures();
+            if (Utils.collectionSize(signatures) == 0) {
+                throw new IllegalInputException("The provided document does not contain any signature! " +
+                        "Unable to compute message-imprint for an integrated evidence-record.");
+
+            } else if (Utils.isStringNotEmpty(signatureId)) {
+                signature = documentAnalyzer.getSignatureById(signatureId);
+                if (signature == null) {
+                    throw new IllegalArgumentException(
+                            String.format("No signature with Id '%s' found in the document!", signatureId));
+                }
+
+            } else if (Utils.collectionSize(signatures) > 1) {
+                throw new IllegalInputException("The provided document contains multiple signatures! " +
+                        "Please use #setSignatureId method in order to provide the identifier.");
+
+            } else {
+                signature = signatures.get(0);
             }
 
-        } else if (Utils.collectionSize(signatures) > 1) {
-            throw new IllegalInputException("The provided document contains multiple signatures! " +
-                    "Please use #setSignatureId method in order to provide the identifier.");
+            return (XAdESSignature) signature;
 
         } else {
-            signature = signatures.get(0);
+            throw new IllegalStateException("Either DSSDocument containing the signature or AdvancedSignature shall be defined!");
         }
-
-        return getXmlSignatureMessageImprint((XAdESSignature) signature);
     }
 
     /**
@@ -232,9 +265,9 @@ public class XAdESEvidenceRecordDigestBuilder extends AbstractSignatureEvidenceR
             if (LOG.isTraceEnabled()) {
                 LOG.trace("Step 3): Processing of unsigned qualifying properties");
             }
-            final XAdESUnsignedSigProperties unsignedSignatureProperties = getUnsignedSignatureProperties(signature);
-            if (unsignedSignatureProperties != null) {
-                for (XAdESAttribute xadesAttribute : unsignedSignatureProperties.getAttributes()) {
+            List<XAdESAttribute> unsignedProperties = getUnsignedSignaturePropertiesList(signature);
+            if (Utils.isCollectionNotEmpty(unsignedProperties)) {
+                for (XAdESAttribute xadesAttribute : unsignedProperties) {
                     bytes = getCanonicalizedValue(xadesAttribute.getElement(), canonicalizationAlgorithm);
                     dataObjectsGroup.add(bytes);
                 }
@@ -342,39 +375,48 @@ public class XAdESEvidenceRecordDigestBuilder extends AbstractSignatureEvidenceR
         return null;
     }
 
-    private XAdESUnsignedSigProperties getUnsignedSignatureProperties(XAdESSignature signature) {
+    private List<XAdESAttribute> getUnsignedSignaturePropertiesList(XAdESSignature signature) {
         // NOTE : only direct incorporation is supported
         Element unsignedSignaturePropertiesDom = DomUtils.getElement(signature.getSignatureElement(), signature.getXAdESPaths().getUnsignedSignaturePropertiesPath());
         if (unsignedSignaturePropertiesDom == null) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug("No xades:UnsignedSignatureProperties is present to compute the message-imprint for an evidence-record");
             }
-            return null;
+            return Collections.emptyList();
         }
+        
+        XAdESUnsignedSigProperties unsignedSigProperties = new XAdESUnsignedSigProperties(unsignedSignaturePropertiesDom, signature.getXAdESPaths());
+        if (evidenceRecordAttribute != null) {
+            return getPrecedingAttributes(unsignedSigProperties, evidenceRecordAttribute);
+        }
+        
         if (parallelEvidenceRecord) {
-            NodeList unsignedSignatureProperties = unsignedSignaturePropertiesDom.getChildNodes();
-            Node lastSealingEvidenceRecordNode = getLastSealingEvidenceRecordNode(unsignedSignatureProperties);
-            if (lastSealingEvidenceRecordNode != null) {
-                // Execute in reverse order in order to change only last evidence-record, when applicable
-                boolean evidenceRecordNodeReached = false;
-                for (int i = 0; i < unsignedSignatureProperties.getLength(); i++) {
-                    Node childNode = unsignedSignatureProperties.item(i);
-                    if (evidenceRecordNodeReached || lastSealingEvidenceRecordNode == childNode) {
-                        unsignedSignaturePropertiesDom.removeChild(childNode);
-                        evidenceRecordNodeReached = true;
-                    }
-                }
+            XAdESAttribute erAttribute = getLastSealingEvidenceRecordAttribute(unsignedSigProperties);
+            if (erAttribute != null) {
+                return getPrecedingAttributes(unsignedSigProperties, erAttribute);
             }
         }
-        return new XAdESUnsignedSigProperties(unsignedSignaturePropertiesDom, signature.getXAdESPaths());
+        return unsignedSigProperties.getAttributes();
+    }
+    
+    private List<XAdESAttribute> getPrecedingAttributes(XAdESUnsignedSigProperties unsignedSigProperties, SignatureAttribute attribute) {
+        final List<XAdESAttribute> attributes = new ArrayList<>();
+        for (XAdESAttribute currentAttribute : unsignedSigProperties.getAttributes()) {
+            if (attribute.equals(currentAttribute)) {
+                break;
+            }
+            attributes.add(currentAttribute);
+        }
+        return attributes;
     }
 
-    private Node getLastSealingEvidenceRecordNode(NodeList unsignedSignatureProperties) {
+    private XAdESAttribute getLastSealingEvidenceRecordAttribute(XAdESUnsignedSigProperties unsignedSigProperties) {
         // Execute in reverse order in order to change only last evidence-record, when applicable
-        for (int i = unsignedSignatureProperties.getLength() - 1; i >= 0; i--) {
-            Node childNode = unsignedSignatureProperties.item(i);
-            if (XAdESEvidencerecordNamespaceElement.SEALING_EVIDENCE_RECORDS.isSameTagName(childNode.getLocalName())) {
-                return childNode;
+        List<XAdESAttribute> attributes = unsignedSigProperties.getAttributes();
+        for (int i = attributes.size() - 1; i >= 0; i--) {
+            XAdESAttribute attribute = attributes.get(i);
+            if (XAdESEvidencerecordNamespaceElement.SEALING_EVIDENCE_RECORDS.isSameTagName(attribute.getName())) {
+                return attribute;
             }
         }
         return null;
@@ -405,7 +447,7 @@ public class XAdESEvidenceRecordDigestBuilder extends AbstractSignatureEvidenceR
     }
 
     private void getManifestDataObjectsRecursively(XAdESSignature signature, Reference referenceToManifest,
-                                                           String canonicalizationAlgorithm, List<byte[]> dataObjectsGroup) throws XMLSecurityException {
+                                                   String canonicalizationAlgorithm, List<byte[]> dataObjectsGroup) throws XMLSecurityException {
         byte[] bytes;
         for (Reference manifestReference : getManifestReferences(signature, referenceToManifest)) {
             /*

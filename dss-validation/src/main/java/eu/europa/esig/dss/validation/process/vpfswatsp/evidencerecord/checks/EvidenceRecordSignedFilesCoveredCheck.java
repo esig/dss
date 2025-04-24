@@ -24,6 +24,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessEvidenceRecord
 import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
+import eu.europa.esig.dss.enumerations.EvidenceRecordOrigin;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
@@ -59,6 +60,11 @@ public class EvidenceRecordSignedFilesCoveredCheck extends ChainItem<XmlValidati
 
     @Override
     protected boolean process() {
+        if (EvidenceRecordOrigin.SIGNATURE == evidenceRecord.getOrigin()) {
+            // embedded signature covers all original documents
+            return true;
+        }
+
         List<SignatureWrapper> coveredSignatures = evidenceRecord.getCoveredSignatures();
         List<XmlDigestMatcher> evidenceRecordDigestMatchers = evidenceRecord.getDigestMatchers();
         if (Utils.isCollectionNotEmpty(coveredSignatures)) {

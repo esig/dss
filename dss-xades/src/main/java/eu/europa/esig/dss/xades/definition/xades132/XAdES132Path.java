@@ -23,6 +23,7 @@ package eu.europa.esig.dss.xades.definition.xades132;
 import eu.europa.esig.dss.xades.definition.XAdESNamespace;
 import eu.europa.esig.dss.xades.definition.XAdESPath;
 import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
+import eu.europa.esig.dss.xades.definition.xadesen.XAdESEvidencerecordNamespaceElement;
 import eu.europa.esig.dss.xml.common.definition.AbstractPath;
 import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
@@ -387,6 +388,13 @@ public class XAdES132Path extends AbstractPath implements XAdESPath {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES,
 				XAdES132Element.UNSIGNED_PROPERTIES, XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES,
 				XAdES141Element.SIGNATURE_POLICY_STORE);
+	}
+
+	@Override
+	public String getSealingEvidenceRecordsPath() {
+		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES,
+				XAdES132Element.UNSIGNED_PROPERTIES, XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES,
+				XAdESEvidencerecordNamespaceElement.SEALING_EVIDENCE_RECORDS);
 	}
 
 	// ------------------------------------------------

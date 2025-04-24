@@ -179,6 +179,28 @@ public class EvidenceRecordWrapper {
     }
 
     /**
+     * Gets whether the evidence record has been embedded into a signature (supported for XAdES and CAdES)
+     *
+     * @return TRUE if the evidence record is embedded, FALSE otherwise
+     */
+    public boolean isEmbedded() {
+        return evidenceRecord.isEmbedded() != null && evidenceRecord.isEmbedded();
+    }
+
+    /**
+     * Returns a master-signature in case of a counter-signature
+     *
+     * @return {@link SignatureWrapper}
+     */
+    public SignatureWrapper getParent() {
+        XmlSignature parent = evidenceRecord.getParent();
+        if (parent != null) {
+            return new SignatureWrapper(parent);
+        }
+        return null;
+    }
+
+    /**
      * Gets if a structural validation of the evidence record is valid
      *
      * @return TRUE if the structure of the evidence record is valid, FALSE otherwise

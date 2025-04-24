@@ -1310,6 +1310,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		baselineProfile = baselineProfile && hasTProfile();
 
 		if (baselineProfile && hasLTProfile()) {
+			if (hasERSProfile()) {
+				return SignatureLevel.XAdES_ERS;
+			}
 			if (hasLTAProfile()) {
 				return SignatureLevel.XAdES_BASELINE_LTA;
 			}
@@ -1317,6 +1320,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 		} else if (hasCProfile()) {
 			if (hasXLProfile()) {
+				if (hasERSProfile()) {
+					return SignatureLevel.XAdES_ERS;
+				}
 				if (hasAProfile()) {
 					return SignatureLevel.XAdES_A;
 				}
@@ -1330,6 +1336,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			return SignatureLevel.XAdES_C;
 
 		} else if (hasXLProfile()) {
+			if (hasERSProfile()) {
+				return SignatureLevel.XAdES_ERS;
+			}
 			if (hasAProfile()) {
 				return SignatureLevel.XAdES_A; // XAdES-E-A can be built on XAdES-E-T directly
 			}

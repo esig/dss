@@ -89,6 +89,13 @@
 		        	</span>
 				</xsl:if>
 
+				<xsl:if test="@Embedded = 'true'">
+					<span>
+						<xsl:attribute name="class">badge badge-info pull-right</xsl:attribute>
+						Embedded
+					</span>
+				</xsl:if>
+
 				<span>
 					<xsl:if test="$nodeName = 'Signature'">
 						Signature

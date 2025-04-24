@@ -20,15 +20,19 @@
  */
 package eu.europa.esig.dss.spi.x509.evidencerecord;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EvidenceRecordOrigin;
 import eu.europa.esig.dss.enumerations.EvidenceRecordTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.model.ReferenceValidation;
 import eu.europa.esig.dss.model.identifier.IdentifierBasedObject;
 import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.evidencerecord.EmbeddedEvidenceRecordHelper;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.TokenCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
@@ -162,6 +166,35 @@ public interface EvidenceRecord extends IdentifierBasedObject {
      * @param timestampedReferences a list of {@link TimestampedReference}s
      */
     void setTimestampedReferences(List<TimestampedReference> timestampedReferences);
+
+    /**
+     * Sets a helper for processing and validation of the embedded evidence record type
+     *
+     * @param embeddedEvidenceRecordHelper {@link EmbeddedEvidenceRecordHelper}
+     */
+    void setEmbeddedEvidenceRecordHelper(EmbeddedEvidenceRecordHelper embeddedEvidenceRecordHelper);
+
+    /**
+     * Returns whether the evidence record is embedded in a signature
+     *
+     * @return TRUE if the evidence record is embedded, FALSE otherwise
+     */
+    boolean isEmbedded();
+
+    /**
+     * Gets a master signature, enveloping the current evidence record
+     *
+     * @return {@link AdvancedSignature}
+     */
+    AdvancedSignature getMasterSignature();
+
+    /**
+     * Builds digest for the embedded evidence record for the given {@code DigestAlgorithm}
+     *
+     * @param digestAlgorithm {@link DigestAlgorithm}
+     * @return {@link Digest}
+     */
+    Digest getMasterSignatureDigest(DigestAlgorithm digestAlgorithm);
 
     /**
      * This method returns the DSS unique signature id. It allows to unambiguously identify each signature.

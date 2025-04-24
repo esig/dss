@@ -176,6 +176,16 @@ public abstract class BaselineRequirementsChecker<AS extends DefaultAdvancedSign
     }
 
     /**
+     * Checks if the signature has a corresponding *AdES-E-ERS profile
+     *
+     * @return TRUE if the signature has an *AdES-E-ERS profile, FALSE otherwise
+     */
+    public boolean hasExtendedERSProfile() {
+        // not implemented by default
+        return false;
+    }
+
+    /**
      * Checks whether signature timestamps have been created before expiration of the signing-certificate
      * used to create the signature
      *

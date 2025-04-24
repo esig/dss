@@ -430,6 +430,13 @@ public interface XAdESPath extends Serializable {
 	 */
 	String getSignaturePolicyStorePath();
 
+	/**
+	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xadesen:SealingEvidenceRecords"
+	 *
+	 * @return {@link String} path
+	 */
+	String getSealingEvidenceRecordsPath();
+
 	// ----------------
 
 	/**

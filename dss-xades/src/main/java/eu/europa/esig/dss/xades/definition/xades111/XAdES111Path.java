@@ -350,6 +350,11 @@ public class XAdES111Path extends AbstractPath implements XAdESPath {
 	}
 
 	@Override
+	public String getSealingEvidenceRecordsPath() {
+		return null;
+	}
+
+	@Override
 	public String getTimestampValidationDataPath() {
 		return null;
 	}

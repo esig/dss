@@ -20,24 +20,28 @@
  */
 package eu.europa.esig.dss.evidencerecord.common.validation;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EvidenceRecordOrigin;
 import eu.europa.esig.dss.evidencerecord.common.validation.identifier.EvidenceRecordIdentifierBuilder;
 import eu.europa.esig.dss.evidencerecord.common.validation.timestamp.EvidenceRecordTimestampSource;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.model.ReferenceValidation;
 import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.evidencerecord.EmbeddedEvidenceRecordHelper;
 import eu.europa.esig.dss.spi.x509.TokenCertificateSource;
+import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -84,7 +88,9 @@ public abstract class DefaultEvidenceRecord implements EvidenceRecord {
      */
     private OfflineOCSPSource ocspSource;
 
-    /** Cached instance of timestamp source */
+    /**
+     * Cached instance of timestamp source
+     */
     private EvidenceRecordTimestampSource<?> timestampSource;
 
     /**
@@ -112,7 +118,14 @@ public abstract class DefaultEvidenceRecord implements EvidenceRecord {
      */
     private List<TimestampedReference> timestampedReferences;
 
-    /** Cached identifier instance */
+    /**
+     * Helper used for processing of the embedded evidence record type
+     */
+    private EmbeddedEvidenceRecordHelper embeddedEvidenceRecordHelper;
+
+    /**
+     * Cached identifier instance
+     */
     private Identifier identifier;
 
     /**
@@ -310,6 +323,32 @@ public abstract class DefaultEvidenceRecord implements EvidenceRecord {
     @Override
     public void setEvidenceRecordScopes(List<SignatureScope> evidenceRecordScopes) {
         this.evidenceRecordScopes = evidenceRecordScopes;
+    }
+
+    @Override
+    public void setEmbeddedEvidenceRecordHelper(EmbeddedEvidenceRecordHelper embeddedEvidenceRecordHelper) {
+        this.embeddedEvidenceRecordHelper = embeddedEvidenceRecordHelper;
+    }
+
+    @Override
+    public boolean isEmbedded() {
+        return embeddedEvidenceRecordHelper != null;
+    }
+
+    @Override
+    public AdvancedSignature getMasterSignature() {
+        if (embeddedEvidenceRecordHelper != null) {
+            return embeddedEvidenceRecordHelper.getMasterSignature();
+        }
+        return null;
+    }
+
+    @Override
+    public Digest getMasterSignatureDigest(DigestAlgorithm digestAlgorithm) {
+        if (embeddedEvidenceRecordHelper != null) {
+            return embeddedEvidenceRecordHelper.getMasterSignatureDigest(digestAlgorithm);
+        }
+        return null;
     }
 
     @Override
