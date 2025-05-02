@@ -20,11 +20,10 @@
  */
 package eu.europa.esig.dss.spi.x509.evidencerecord;
 
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EvidenceRecordIncorporationType;
 import eu.europa.esig.dss.enumerations.EvidenceRecordOrigin;
 import eu.europa.esig.dss.enumerations.EvidenceRecordTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.model.ReferenceValidation;
 import eu.europa.esig.dss.model.identifier.IdentifierBasedObject;
@@ -189,12 +188,19 @@ public interface EvidenceRecord extends IdentifierBasedObject {
     AdvancedSignature getMasterSignature();
 
     /**
-     * Builds digest for the embedded evidence record for the given {@code DigestAlgorithm}
+     * Gets the type of the unsigned attribute used for incorporation of an evidence record within a signature
+     * NOTE: applicable only for embedded evidence records within CAdES
      *
-     * @param digestAlgorithm {@link DigestAlgorithm}
-     * @return {@link Digest}
+     * @return {@link EvidenceRecordIncorporationType}
      */
-    Digest getMasterSignatureDigest(DigestAlgorithm digestAlgorithm);
+    EvidenceRecordIncorporationType getIncorporationType();
+
+    /**
+     * Returns an {@code EmbeddedEvidenceRecordHelper} in case of an embedded evidence record
+     *
+     * @return {@link EmbeddedEvidenceRecordHelper}
+     */
+    EmbeddedEvidenceRecordHelper getEmbeddedEvidenceRecordHelper();
 
     /**
      * This method returns the DSS unique signature id. It allows to unambiguously identify each signature.

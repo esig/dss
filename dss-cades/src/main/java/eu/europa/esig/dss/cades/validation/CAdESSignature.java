@@ -1222,6 +1222,9 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 		baselineProfile = baselineProfile && hasTProfile();
 
 		if (baselineProfile && hasLTProfile()) {
+			if (hasERSProfile()) {
+				return SignatureLevel.CAdES_ERS;
+			}
 			if (hasLTAProfile()) {
 				return SignatureLevel.CAdES_BASELINE_LTA;
 			}
@@ -1229,6 +1232,9 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 
 		} else if (hasCProfile()) {
 			if (hasXLProfile()) {
+				if (hasERSProfile()) {
+					return SignatureLevel.CAdES_ERS;
+				}
 				if (hasAProfile()) {
 					return SignatureLevel.CAdES_A;
 				}
@@ -1242,6 +1248,9 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			return SignatureLevel.CAdES_C;
 
 		} else if (hasXLProfile()) {
+			if (hasERSProfile()) {
+				return SignatureLevel.CAdES_ERS;
+			}
 			if (hasAProfile()) {
 				return SignatureLevel.CAdES_A; // CAdES-E-A can be built on CAdES-E-T directly
 			}

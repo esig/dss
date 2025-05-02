@@ -23,9 +23,9 @@ package eu.europa.esig.dss.cades.validation;
 import eu.europa.esig.dss.cades.CAdESUtils;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.validation.SignatureAttribute;
 import eu.europa.esig.dss.spi.validation.identifier.SignatureAttributeIdentifier;
+import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Sequence;
@@ -34,6 +34,8 @@ import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Objects;
 
 /**
  * Represents a CAdES attribute, part of AttributeTable
@@ -129,6 +131,42 @@ public class CAdESAttribute implements SignatureAttribute {
 		return null;
 	}
 	
+	/**
+	 * Checks if the given CAdES attribute represents an evidence record
+	 *
+	 * @return TRUE if the attribute is an evidence record, FALSE otherwise
+	 */
+	public boolean isEvidenceRecord() {
+		return CAdESUtils.getEvidenceRecordOids().contains(getASN1Oid());
+	}
+
+	/**
+	 * Returns a EvidenceRecord if possible
+	 *
+	 * @return a {@link org.bouncycastle.asn1.tsp.EvidenceRecord} or null
+	 */
+	public org.bouncycastle.asn1.tsp.EvidenceRecord toEvidenceRecord() {
+		if (isEvidenceRecord()) {
+			try {
+				return org.bouncycastle.asn1.tsp.EvidenceRecord.getInstance(getASN1Object());
+			} catch (Exception e) {
+				LOG.warn("Unable to build an evidence record from the attribute [{}] : {}", this, e.getMessage());
+			}
+		} else {
+			LOG.warn("The given attribute [{}] is not an evidence record! Unable to build an EvidenceRecord.", this);
+		}
+		return null;
+	}
+
+	/**
+	 * Gets order of the CAdES Attribute from the original AttributeTable
+	 *
+	 * @return {@link Integer}
+	 */
+	protected Integer getOrder() {
+		return order;
+	}
+
 	@Override
 	public SignatureAttributeIdentifier getIdentifier() {
 		if (identifier == null) {
@@ -144,6 +182,21 @@ public class CAdESAttribute implements SignatureAttribute {
 			return asn1Oid.toString();
 		}
 		return Utils.EMPTY_STRING;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		CAdESAttribute that = (CAdESAttribute) o;
+
+		return Objects.equals(this.getIdentifier(), that.getIdentifier());
+	}
+
+	@Override
+	public int hashCode() {
+		return identifier != null ? identifier.hashCode() : 0;
 	}
 
 }

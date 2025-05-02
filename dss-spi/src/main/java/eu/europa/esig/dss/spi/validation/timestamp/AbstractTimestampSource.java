@@ -32,6 +32,7 @@ import eu.europa.esig.dss.spi.signature.DefaultAdvancedSignature;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
+import eu.europa.esig.dss.spi.x509.TokenCertificateSource;
 import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.spi.x509.revocation.ListRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
@@ -145,6 +146,55 @@ public abstract class AbstractTimestampSource {
 		addReferences(references, createReferencesForOCSPBinaries(timestampOCSPSource.getAllRevocationBinaries(), certificateSource));
 		addReferences(references, createReferencesForOCSPRefs(timestampOCSPSource.getAllRevocationReferences(),
 				timestampOCSPSource, certificateSource, ocspSource));
+
+		return references;
+	}
+
+	/**
+	 * Incorporates all references from the given {@code evidenceRecord}
+	 *
+	 * @param evidenceRecord {@link EvidenceRecord}
+	 * @param certificateSource {@link ListCertificateSource} merged certificate source
+	 * @param crlSource {@link ListRevocationSource} merged CRL source
+	 * @param ocspSource {@link ListRevocationSource} merged OCSP source
+	 * @return a list of {@link TimestampedReference}s
+	 */
+	protected List<TimestampedReference> getReferencesFromEvidenceRecord(EvidenceRecord evidenceRecord,
+			ListCertificateSource certificateSource, ListRevocationSource<CRL> crlSource, ListRevocationSource<OCSP> ocspSource) {
+		List<TimestampedReference> references = new ArrayList<>();
+		addReference(references, new TimestampedReference(evidenceRecord.getId(), TimestampedObjectType.EVIDENCE_RECORD));
+		addReferences(references, evidenceRecord.getTimestampedReferences());
+		addReferences(references, getEncapsulatedValuesFromEvidenceRecord(evidenceRecord, certificateSource, crlSource, ocspSource));
+		return references;
+	}
+
+	/**
+	 * Gets a list of all validation data embedded to the {@code evidenceRecord}
+	 *
+	 * @param evidenceRecord {@link EvidenceRecord} to extract embedded values from
+	 * @param certificateSource {@link ListCertificateSource} merged certificate source
+	 * @param crlSource {@link ListRevocationSource} merged CRL source
+	 * @param ocspSource {@link ListRevocationSource} merged OCSP source
+	 * @return list of {@link TimestampedReference}s
+	 */
+	protected List<TimestampedReference> getEncapsulatedValuesFromEvidenceRecord(EvidenceRecord evidenceRecord,
+			ListCertificateSource certificateSource, ListRevocationSource<CRL> crlSource, ListRevocationSource<OCSP> ocspSource) {
+		final List<TimestampedReference> references = new ArrayList<>();
+
+		final TokenCertificateSource erCertificateSource = evidenceRecord.getCertificateSource();
+		addReferences(references, createReferencesForCertificates(erCertificateSource.getCertificates()));
+		addReferences(references, createReferencesForCertificateRefs(erCertificateSource.getAllCertificateRefs(),
+				erCertificateSource, certificateSource));
+
+		final OfflineRevocationSource<CRL> erCRLSource = evidenceRecord.getCRLSource();
+		addReferences(references, createReferencesForCRLBinaries(erCRLSource.getAllRevocationBinaries()));
+		addReferences(references, createReferencesForCRLRefs(erCRLSource.getAllRevocationReferences(),
+				erCRLSource, crlSource));
+
+		final OfflineRevocationSource<OCSP> erOCSPSource = evidenceRecord.getOCSPSource();
+		addReferences(references, createReferencesForOCSPBinaries(erOCSPSource.getAllRevocationBinaries(), certificateSource));
+		addReferences(references, createReferencesForOCSPRefs(erOCSPSource.getAllRevocationReferences(),
+				erOCSPSource, certificateSource, ocspSource));
 
 		return references;
 	}

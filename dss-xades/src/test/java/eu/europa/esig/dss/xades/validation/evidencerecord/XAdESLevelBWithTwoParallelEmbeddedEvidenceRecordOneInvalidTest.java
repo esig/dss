@@ -89,6 +89,35 @@ class XAdESLevelBWithTwoParallelEmbeddedEvidenceRecordOneInvalidTest extends Abs
     }
 
     @Override
+    protected void checkEvidenceRecordScopes(DiagnosticData diagnosticData) {
+        int validErCounter = 0;
+        int invalidErCounter = 0;
+        for (EvidenceRecordWrapper evidenceRecordWrapper : diagnosticData.getEvidenceRecords()) {
+            if (Utils.isCollectionNotEmpty(evidenceRecordWrapper.getEvidenceRecordScopes())) {
+                int sigScopeCounter = 0;
+                int fileScopeCounter = 0;
+                for (XmlSignatureScope signatureScope : evidenceRecordWrapper.getEvidenceRecordScopes()) {
+                    if (SignatureScopeType.SIGNATURE == signatureScope.getScope()) {
+                        assertEquals(evidenceRecordWrapper.getParent().getId(), signatureScope.getName());
+                        ++sigScopeCounter;
+                    } else if (SignatureScopeType.FULL == signatureScope.getScope()) {
+                        assertNotNull(signatureScope.getName());
+                        ++fileScopeCounter;
+                    }
+                }
+                assertEquals(1, sigScopeCounter);
+                assertEquals(1, fileScopeCounter);
+
+                ++validErCounter;
+            } else {
+                ++invalidErCounter;
+            }
+        }
+        assertEquals(1, validErCounter);
+        assertEquals(1, invalidErCounter);
+    }
+
+    @Override
     protected void checkEvidenceRecordCoverage(DiagnosticData diagnosticData, SignatureWrapper signature) {
         int validErCounter = 0;
         int invalidErCounter = 0;
@@ -113,8 +142,8 @@ class XAdESLevelBWithTwoParallelEmbeddedEvidenceRecordOneInvalidTest extends Abs
                 }
             }
 
-            if (Utils.collectionSize(evidenceRecordScopes) == 1) {
-                assertTrue(sigScopeFound);
+            if (Utils.collectionSize(evidenceRecordScopes) == 0) {
+                assertFalse(sigScopeFound);
                 assertFalse(docScopeFound);
                 ++invalidErCounter;
             } else if (Utils.collectionSize(evidenceRecordScopes) == 2) {
@@ -145,8 +174,8 @@ class XAdESLevelBWithTwoParallelEmbeddedEvidenceRecordOneInvalidTest extends Abs
                 }
             }
 
-            if (Utils.collectionSize(timestampScopes) == 1) {
-                assertTrue(sigScopeFound);
+            if (Utils.collectionSize(timestampScopes) == 0) {
+                assertFalse(sigScopeFound);
                 assertFalse(docScopeFound);
                 ++invalidTstCounter;
             } else if (Utils.collectionSize(timestampScopes) == 2) {
@@ -196,6 +225,28 @@ class XAdESLevelBWithTwoParallelEmbeddedEvidenceRecordOneInvalidTest extends Abs
         assertFalse(Utils.isCollectionNotEmpty(evidenceRecord.getCoveredRevocations()));
         assertFalse(Utils.isCollectionNotEmpty(evidenceRecord.getCoveredTimestamps()));
         assertTrue(Utils.isCollectionNotEmpty(evidenceRecord.getCoveredSignedData()));
+    }
+
+    @Override
+    protected void checkEvidenceRecordTimestamps(DiagnosticData diagnosticData) {
+        boolean validERFound = false;
+        boolean invalidERFound = false;
+        for (EvidenceRecordWrapper evidenceRecordWrapper : diagnosticData.getEvidenceRecords()) {
+            for (TimestampWrapper timestampWrapper : evidenceRecordWrapper.getTimestampList()) {
+                assertTrue(timestampWrapper.isMessageImprintDataFound());
+                assertTrue(timestampWrapper.isMessageImprintDataIntact());
+                assertTrue(timestampWrapper.isSignatureIntact());
+                assertTrue(timestampWrapper.isSignatureValid());
+
+                if (Utils.isCollectionNotEmpty(timestampWrapper.getTimestampScopes())) {
+                    validERFound = true;
+                } else {
+                    invalidERFound = true;
+                }
+            }
+        }
+        assertTrue(validERFound);
+        assertTrue(invalidERFound);
     }
 
     @Override

@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.evidencerecord.common.validation;
 
+import eu.europa.esig.dss.enumerations.EvidenceRecordIncorporationType;
 import eu.europa.esig.dss.enumerations.EvidenceRecordOrigin;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.scope.SignatureScope;
@@ -45,6 +46,9 @@ public abstract class DefaultEvidenceRecordAnalyzer extends DefaultDocumentAnaly
 
     /** Origin of the evidence record */
     protected EvidenceRecordOrigin evidenceRecordOrigin = EvidenceRecordOrigin.EXTERNAL;
+
+    /** incorporation type */
+    protected EvidenceRecordIncorporationType evidenceRecordIncorporationType;
 
     /** Helper used for processing of the embedded evidence record type */
     protected EmbeddedEvidenceRecordHelper embeddedEvidenceRecordHelper;
@@ -93,6 +97,11 @@ public abstract class DefaultEvidenceRecordAnalyzer extends DefaultDocumentAnaly
     @Override
     public void setEvidenceRecordOrigin(EvidenceRecordOrigin origin) {
         this.evidenceRecordOrigin = origin;
+    }
+
+    @Override
+    public void setEvidenceRecordIncorporationType(EvidenceRecordIncorporationType evidenceRecordIncorporationType) {
+        this.evidenceRecordIncorporationType = evidenceRecordIncorporationType;
     }
 
     @Override

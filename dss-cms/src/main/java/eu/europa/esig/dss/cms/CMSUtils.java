@@ -150,6 +150,28 @@ public final class CMSUtils {
     }
 
     /**
+     * Gets encoding of the ContentInfo of CMS
+     *
+     * @param cms {@link CMS} to check
+     * @return {@link String} encoding, e.g. 'DER' or 'BER'
+     */
+    public static String getContentInfoEncoding(CMS cms) {
+        return impl.getContentInfoEncoding(cms);
+    }
+
+    /**
+     * Writes the encoded binaries of the SignedData.digestAlgorithms field to the given {@code OutputStream}
+     * NOTE: This method is used for evidence record hash computation
+     *
+     * @param cms {@link CMS}
+     * @param os {@link OutputStream}
+     * @throws IOException if an exception occurs on bytes writing
+     */
+    public static void writeSignedDataDigestAlgorithmsEncoded(CMS cms, OutputStream os) throws IOException {
+        impl.writeSignedDataDigestAlgorithmsEncoded(cms, os);
+    }
+
+    /**
      * Writes the encoded binaries of the ContentInfo element to the given {@code OutputStream}
      * NOTE: This method is used for archive-time-stamp-v2 message-imprint computation.
      *
@@ -183,6 +205,18 @@ public final class CMSUtils {
      */
     public static void writeSignedDataCRLsEncoded(CMS cms, OutputStream os) throws IOException {
         impl.writeSignedDataCRLsEncoded(cms, os);
+    }
+
+    /**
+     * Writes the encoded binaries of the SignedData.signerInfos field to the given {@code OutputStream}
+     * NOTE: This method is used for evidence record hash computation
+     *
+     * @param cms {@link CMS}
+     * @param os {@link OutputStream}
+     * @throws IOException if an exception occurs on bytes writing
+     */
+    public static void writeSignedDataSignerInfosEncoded(CMS cms, OutputStream os) throws IOException {
+        impl.writeSignedDataSignerInfosEncoded(cms, os);
     }
 
     /**

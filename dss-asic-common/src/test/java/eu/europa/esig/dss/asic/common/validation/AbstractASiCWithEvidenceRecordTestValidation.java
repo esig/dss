@@ -22,6 +22,7 @@ package eu.europa.esig.dss.asic.common.validation;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlContainerInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
@@ -43,11 +44,15 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
+import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
+import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 
 import java.util.Collections;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -206,6 +211,13 @@ public abstract class AbstractASiCWithEvidenceRecordTestValidation extends Abstr
     }
 
     @Override
+    protected void checkSignatureIdentifier(DiagnosticData diagnosticData) {
+        for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+            assertNotNull(signatureWrapper.getSignatureValue());
+        }
+    }
+
+    @Override
     protected void verifySimpleReport(SimpleReport simpleReport) {
         assertNotNull(simpleReport);
 
@@ -235,6 +247,24 @@ public abstract class AbstractASiCWithEvidenceRecordTestValidation extends Abstr
     @Override
     protected void verifyETSIValidationReport(ValidationReportType etsiValidationReportJaxb) {
         // TODO : implement ETSI VR support
+    }
+
+    @Override
+    protected void checkReportsSignatureIdentifier(Reports reports) {
+        DiagnosticData diagnosticData = reports.getDiagnosticData();
+        ValidationReportType etsiValidationReport = reports.getEtsiValidationReportJaxb();
+
+        if (Utils.isCollectionNotEmpty(diagnosticData.getSignatures())) {
+            for (SignatureValidationReportType signatureValidationReport : etsiValidationReport.getSignatureValidationReport()) {
+                SignatureWrapper signature = diagnosticData.getSignatureById(signatureValidationReport.getSignatureIdentifier().getId());
+
+                SignatureIdentifierType signatureIdentifier = signatureValidationReport.getSignatureIdentifier();
+                assertNotNull(signatureIdentifier);
+
+                assertNotNull(signatureIdentifier.getSignatureValue());
+                assertArrayEquals(signature.getSignatureValue(), signatureIdentifier.getSignatureValue().getValue());
+            }
+        }
     }
 
     protected boolean tstCoversOnlyCurrentHashTreeData() {

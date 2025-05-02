@@ -18,13 +18,11 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.evidencerecord.common.validation.scope;
+package eu.europa.esig.dss.spi.validation.scope;
 
 import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
-import eu.europa.esig.dss.spi.validation.scope.EvidenceRecordScopeFinder;
-import eu.europa.esig.dss.spi.validation.scope.TimestampScopeFinder;
 
 import java.util.Collections;
 import java.util.List;
@@ -46,7 +44,7 @@ public class EvidenceRecordTimestampScopeFinder extends EvidenceRecordScopeFinde
 
     @Override
     public List<SignatureScope> findTimestampScope(TimestampToken timestampToken) {
-        if (timestampToken.isMessageImprintDataIntact()) {
+        if (timestampToken.isMessageImprintDataIntact() && (!evidenceRecord.isEmbedded() || timestampToken.areReferenceValidationsValid())) {
             return evidenceRecord.getEvidenceRecordScopes();
         }
         return Collections.emptyList();

@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.spi.validation.analyzer.evidencerecord;
 
+import eu.europa.esig.dss.enumerations.EvidenceRecordIncorporationType;
 import eu.europa.esig.dss.enumerations.EvidenceRecordOrigin;
 import eu.europa.esig.dss.enumerations.EvidenceRecordTypeEnum;
 import eu.europa.esig.dss.spi.validation.analyzer.DocumentAnalyzer;
@@ -54,6 +55,14 @@ public interface EvidenceRecordAnalyzer extends DocumentAnalyzer {
      * @param origin {@link EvidenceRecordOrigin}
      */
     void setEvidenceRecordOrigin(EvidenceRecordOrigin origin);
+
+    /**
+     * Sets the incorporation type of the evidence record within a signature's unsigned attributes
+     * NOTE: only used for attached CAdES evidence records
+     *
+     * @param evidenceRecordIncorporationType {@link EvidenceRecordIncorporationType}
+     */
+    void setEvidenceRecordIncorporationType(EvidenceRecordIncorporationType evidenceRecordIncorporationType);
 
     /**
      * Sets a helper for processing and validation of the embedded evidence record type

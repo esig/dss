@@ -97,9 +97,10 @@ class XAdESLevelLTDetachedWithEmbeddedEvidenceRecordWrongDocProvidedTest extends
     @Override
     protected void checkEvidenceRecordDigestMatchers(DiagnosticData diagnosticData) {
         EvidenceRecordWrapper evidenceRecordWrapper = diagnosticData.getEvidenceRecords().get(0);
-        assertEquals(2, evidenceRecordWrapper.getDigestMatchers().size());
+        assertEquals(3, evidenceRecordWrapper.getDigestMatchers().size());
 
         int orphanRefCounter = 0;
+        int masterSigCounter = 0;
         for (XmlDigestMatcher digestMatcher : evidenceRecordWrapper.getDigestMatchers()) {
             if (DigestMatcherType.EVIDENCE_RECORD_ORPHAN_REFERENCE == digestMatcher.getType()) {
                 assertFalse(digestMatcher.isDataFound());
@@ -107,9 +108,16 @@ class XAdESLevelLTDetachedWithEmbeddedEvidenceRecordWrongDocProvidedTest extends
                 assertNotNull(digestMatcher.getDigestMethod());
                 assertNotNull(digestMatcher.getDigestValue());
                 ++orphanRefCounter;
+            } else if (DigestMatcherType.EVIDENCE_RECORD_MASTER_SIGNATURE == digestMatcher.getType()) {
+                assertFalse(digestMatcher.isDataFound());
+                assertFalse(digestMatcher.isDataIntact());
+                assertNull(digestMatcher.getDigestMethod());
+                assertNull(digestMatcher.getDigestValue());
+                ++masterSigCounter;
             }
         }
         assertEquals(2, orphanRefCounter);
+        assertEquals(1, masterSigCounter);
     }
 
     @Override

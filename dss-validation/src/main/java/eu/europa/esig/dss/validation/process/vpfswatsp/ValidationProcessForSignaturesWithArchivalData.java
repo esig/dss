@@ -160,6 +160,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		 * d) If all ERs have been validated, the process shall continue with step 2).
 		 * e) The process shall continue with step 1)a).
 		 */
+		// TODO : verify evidence records indirectly covering the signature ?
 		List<EvidenceRecordWrapper> evidenceRecords = signature.getEvidenceRecords();
 		if (Utils.isCollectionNotEmpty(evidenceRecords)) {
 			for (EvidenceRecordWrapper evidenceRecord : evidenceRecords) {

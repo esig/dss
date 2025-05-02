@@ -38,7 +38,6 @@ import org.bouncycastle.asn1.ASN1InputStream;
 import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1OctetString;
-import org.bouncycastle.asn1.ASN1OutputStream;
 import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.BERTags;
@@ -83,7 +82,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.security.auth.x500.X500Principal;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.PublicKey;
@@ -162,6 +160,18 @@ public final class DSSASN1Utils {
 	 */
 	public static byte[] getDEREncoded(ASN1Encodable asn1Encodable) {
 		return getEncoded(asn1Encodable, ASN1Encoding.DER);
+	}
+
+	/**
+	 * This method returns DL encoded ASN1 attribute. The {@code IOException} is
+	 * transformed in {@code DSSException}.
+	 *
+	 * @param asn1Encodable
+	 *            asn1Encodable to be DL encoded
+	 * @return array of bytes representing the DL encoded asn1Encodable
+	 */
+	public static byte[] getDLEncoded(ASN1Encodable asn1Encodable) {
+		return getEncoded(asn1Encodable, ASN1Encoding.DL);
 	}
 
 	/**
@@ -278,14 +288,7 @@ public final class DSSASN1Utils {
 	 * @return the DER encoded CMSSignedData
 	 */
 	public static byte[] getDEREncoded(final CMSSignedData data) {
-		try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-			final ASN1OutputStream asn1OutputStream = ASN1OutputStream.create(baos, ASN1Encoding.DER);
-			asn1OutputStream.writeObject(data.toASN1Structure());
-			asn1OutputStream.close();
-			return baos.toByteArray();
-		} catch (IOException e) {
-			throw new DSSException("Unable to encode to DER", e);
-		}
+		return getDEREncoded(data.toASN1Structure());
 	}
 
 	/**
@@ -311,6 +314,21 @@ public final class DSSASN1Utils {
 			return getDEREncoded(ASN1Primitive.fromByteArray(bytes));
 		} catch (IOException e) {
 			throw new DSSException("Unable to encode to DER", e);
+		}
+	}
+
+	/**
+	 * Returns the ASN.1 DL encoded representation of {@code byte} array.
+	 *
+	 * @param bytes
+	 *             the binary array to encode
+	 * @return the DL encoded bytes
+	 */
+	public static byte[] getDLEncoded(final byte[] bytes) {
+		try {
+			return getDLEncoded(ASN1Primitive.fromByteArray(bytes));
+		} catch (IOException e) {
+			throw new DSSException("Unable to encode to DL", e);
 		}
 	}
 

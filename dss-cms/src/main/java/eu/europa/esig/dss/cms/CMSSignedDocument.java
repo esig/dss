@@ -23,7 +23,6 @@ package eu.europa.esig.dss.cms;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.CommonDocument;
 import eu.europa.esig.dss.model.DSSException;
-import org.bouncycastle.asn1.ASN1Encoding;
 import org.bouncycastle.asn1.ASN1OutputStream;
 import org.bouncycastle.cms.CMSSignedData;
 
@@ -41,6 +40,9 @@ import java.util.Objects;
 public class CMSSignedDocument extends CommonDocument {
 
 	private static final long serialVersionUID = 1413370170096318058L;
+
+	/** Defines the original CMS encoding parameter */
+	private static final String ORIGINAL_ENCODING = "";
 
 	/**
 	 * The CMSSignedData representing the document
@@ -102,7 +104,7 @@ public class CMSSignedDocument extends CommonDocument {
 
 	@Override
 	public void writeTo(OutputStream stream) throws IOException {
-		final ASN1OutputStream asn1OutputStream = ASN1OutputStream.create(stream, ASN1Encoding.DER);
+		final ASN1OutputStream asn1OutputStream = ASN1OutputStream.create(stream, ORIGINAL_ENCODING);
 		asn1OutputStream.writeObject(signedData.toASN1Structure());
 	}
 

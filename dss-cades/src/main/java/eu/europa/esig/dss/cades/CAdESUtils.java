@@ -24,6 +24,7 @@ import eu.europa.esig.dss.cades.signature.CustomMessageDigestCalculatorProvider;
 import eu.europa.esig.dss.cades.validation.PrecomputedDigestCalculatorProvider;
 import eu.europa.esig.dss.cms.CMS;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EvidenceRecordIncorporationType;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -57,6 +58,9 @@ import org.bouncycastle.asn1.ess.ESSCertID;
 import org.bouncycastle.asn1.ess.ESSCertIDv2;
 import org.bouncycastle.asn1.ess.SigningCertificate;
 import org.bouncycastle.asn1.ess.SigningCertificateV2;
+import org.bouncycastle.asn1.tsp.ArchiveTimeStamp;
+import org.bouncycastle.asn1.tsp.ArchiveTimeStampChain;
+import org.bouncycastle.asn1.tsp.ArchiveTimeStampSequence;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.bouncycastle.cms.CMSAbsentContent;
@@ -89,6 +93,8 @@ import java.util.Objects;
 import static eu.europa.esig.dss.spi.OID.id_aa_ATSHashIndex;
 import static eu.europa.esig.dss.spi.OID.id_aa_ATSHashIndexV2;
 import static eu.europa.esig.dss.spi.OID.id_aa_ATSHashIndexV3;
+import static eu.europa.esig.dss.spi.OID.id_aa_er_external;
+import static eu.europa.esig.dss.spi.OID.id_aa_er_internal;
 import static eu.europa.esig.dss.spi.OID.id_aa_ets_archiveTimestampV2;
 import static eu.europa.esig.dss.spi.OID.id_aa_ets_archiveTimestampV3;
 import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.id_aa_ets_certCRLTimestamp;
@@ -121,6 +127,9 @@ public final class CAdESUtils {
 	/** Contains a list of all CAdES timestamp OIDs */
 	private static List<ASN1ObjectIdentifier> timestampOids;
 
+	/** Contains a list of all CAdES evidence record OIDs */
+	private static List<ASN1ObjectIdentifier> evidenceRecordOids;
+
 	static {
 		timestampOids = new ArrayList<>();
 		timestampOids.add(id_aa_ets_contentTimestamp);
@@ -129,6 +138,10 @@ public final class CAdESUtils {
 		timestampOids.add(id_aa_ets_certCRLTimestamp);
 		timestampOids.add(id_aa_ets_escTimeStamp);
 		timestampOids.add(id_aa_signatureTimeStampToken);
+
+		evidenceRecordOids = new ArrayList<>();
+		evidenceRecordOids.add(id_aa_er_internal);
+		evidenceRecordOids.add(id_aa_er_external);
 	}
 
 	/**
@@ -769,6 +782,68 @@ public final class CAdESUtils {
 			octets.add(Utils.concat(attrType, DSSASN1Utils.getDEREncoded(asn1Encodable)));
 		}
 		return octets;
+	}
+
+	/**
+	 * Returns a list of all CMS evidence record identifiers
+	 *
+	 * @return a list of {@link ASN1ObjectIdentifier}s
+	 */
+	public static List<ASN1ObjectIdentifier> getEvidenceRecordOids() {
+		return evidenceRecordOids;
+	}
+
+	/**
+	 * Gets the evidence record incorporation type based on the {@code unsignedAttributeOID}
+	 *
+	 * @param unsignedAttributeOID {@link ASN1ObjectIdentifier}
+	 * @return {@link EvidenceRecordIncorporationType}
+	 */
+	public static EvidenceRecordIncorporationType getEvidenceRecordIncorporationType(ASN1ObjectIdentifier unsignedAttributeOID) {
+		if (id_aa_er_internal.equals(unsignedAttributeOID)) {
+			return EvidenceRecordIncorporationType.INTERNAL_EVIDENCE_RECORD;
+		} else if (id_aa_er_external.equals(unsignedAttributeOID)) {
+			return EvidenceRecordIncorporationType.EXTERNAL_EVIDENCE_RECORD;
+		}
+		throw new UnsupportedOperationException(String.format("The unsigned attribute with OID '%s' is not supported " +
+				"for the evidence record incorporation!", unsignedAttributeOID.getId()));
+	}
+
+	/**
+	 * Gets a generation time of the evidence record as indicated by the first timestamp's generation time
+	 *
+	 * @param evidenceRecord {@link org.bouncycastle.asn1.tsp.EvidenceRecord} to get a generation time for
+	 * @return {@link Date} generation time
+	 */
+	public static Date getEvidenceRecordGenerationTime(org.bouncycastle.asn1.tsp.EvidenceRecord evidenceRecord) {
+		if (evidenceRecord != null) {
+			ArchiveTimeStampSequence archiveTimeStampSequence = evidenceRecord.getArchiveTimeStampSequence();
+			if (archiveTimeStampSequence != null) {
+				ArchiveTimeStampChain[] archiveTimeStampChains = archiveTimeStampSequence.getArchiveTimeStampChains();
+				if (Utils.isArrayNotEmpty(archiveTimeStampChains)) {
+					ArchiveTimeStamp[] archiveTimestamps = archiveTimeStampChains[0].getArchiveTimestamps();
+					if (Utils.isArrayNotEmpty(archiveTimestamps)) {
+						ContentInfo contentInfo = archiveTimestamps[0].getTimeStamp();
+						TimeStampToken timeStampToken = toTimeStampToken(contentInfo);
+						if (timeStampToken != null) {
+							return timeStampToken.getTimeStampInfo().getGenTime();
+						}
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	private static TimeStampToken toTimeStampToken(ContentInfo contentInfo) {
+		if (contentInfo != null) {
+            try {
+                return new TimeStampToken(contentInfo);
+            } catch (TSPException | IOException e) {
+                throw new DSSException(String.format("Unable to build a timestamp token : %s", e.getMessage()), e);
+            }
+        }
+		return null;
 	}
 
 	/**

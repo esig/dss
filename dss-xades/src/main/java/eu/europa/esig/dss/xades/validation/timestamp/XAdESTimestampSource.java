@@ -377,7 +377,7 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 		final List<EvidenceRecord> result = new ArrayList<>();
 		for (int ii = 0; ii < element.getChildNodes().getLength(); ii++) {
 			final Element encapsulatedEvidenceRecord = (Element) element.getChildNodes().item(ii);
-			EvidenceRecord evidenceRecord = createEvidenceRecord(signatureAttribute, encapsulatedEvidenceRecord);
+			EvidenceRecord evidenceRecord = createEvidenceRecord(signatureAttribute, encapsulatedEvidenceRecord, ii);
 			if (evidenceRecord != null) {
 				result.add(evidenceRecord);
 			}
@@ -385,15 +385,17 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 		return result;
 	}
 
-	private EvidenceRecord createEvidenceRecord(XAdESAttribute signatureAttribute, Element encapsulatedEvidenceRecord) {
+	private EvidenceRecord createEvidenceRecord(XAdESAttribute signatureAttribute, Element encapsulatedEvidenceRecord, int orderWithinAttribute) {
 		try {
 			DSSDocument erDocument = getEvidenceRecordDocument(encapsulatedEvidenceRecord);
 			EvidenceRecordAnalyzer evidenceRecordAnalyzer = EvidenceRecordAnalyzerFactory.fromDocument(erDocument);
 			evidenceRecordAnalyzer.setEvidenceRecordOrigin(EvidenceRecordOrigin.SIGNATURE);
 			evidenceRecordAnalyzer.setDetachedContents(signature.getDetachedContents());
 
-			XAdESEmbeddedEvidenceRecordHelper embeddedEvidenceRecordHelper = new XAdESEmbeddedEvidenceRecordHelper(signature, signatureAttribute);
+			final XAdESEmbeddedEvidenceRecordHelper embeddedEvidenceRecordHelper = new XAdESEmbeddedEvidenceRecordHelper(signature, signatureAttribute);
 			embeddedEvidenceRecordHelper.setDetachedContents(signature.getDetachedContents());
+			embeddedEvidenceRecordHelper.setOrderOfAttribute(getAttributeOrder(signatureAttribute));
+			embeddedEvidenceRecordHelper.setOrderWithinAttribute(orderWithinAttribute);
 			evidenceRecordAnalyzer.setEmbeddedEvidenceRecordHelper(embeddedEvidenceRecordHelper);
 
 			return evidenceRecordAnalyzer.getEvidenceRecord();

@@ -35,6 +35,8 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.DigestMatcherCryptographicCheckerResultCheck;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashSet;
@@ -73,6 +75,19 @@ public class DigestMatcherListCryptographicChainBuilder<T extends XmlConstraints
     /** Cached reference names */
     private List<String> concernedMaterial;
 
+    /** Contains a list of digest matcher types to be ignored in case of unknown digest algorithm */
+    private static List<DigestMatcherType> digestMatcherTypesToIgnore;
+
+    static {
+        digestMatcherTypesToIgnore = Arrays.asList(
+                DigestMatcherType.COUNTER_SIGNED_SIGNATURE_VALUE,
+                DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT,
+                DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_TIME_STAMP,
+                DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_TIME_STAMP_SEQUENCE,
+                DigestMatcherType.EVIDENCE_RECORD_MASTER_SIGNATURE
+        );
+    }
+
     /**
      * Default constructor
      *
@@ -104,11 +119,12 @@ public class DigestMatcherListCryptographicChainBuilder<T extends XmlConstraints
             return chainItem;
         }
 
-        final Set<DigestAlgorithm> usedDigestAlgorithms = getUsedDigestAlgorithms(digestMatchers);
-        final Set<MessageTag> usedPositions = getUsedPositions(digestMatchers);
+        List<XmlDigestMatcher> digestMatchersToProcess = getDigestMatchersToProcess(digestMatchers);
+        final Set<DigestAlgorithm> usedDigestAlgorithms = getUsedDigestAlgorithms(digestMatchersToProcess);
+        final Set<MessageTag> usedPositions = getUsedPositions(digestMatchersToProcess);
         for (DigestAlgorithm digestAlgorithm : usedDigestAlgorithms) {
             for (MessageTag position : usedPositions) {
-                List<XmlDigestMatcher> digestMatchersGroup = getDigestMatchersByAlgorithmAndPosition(digestMatchers, digestAlgorithm, position);
+                List<XmlDigestMatcher> digestMatchersGroup = getDigestMatchersByAlgorithmAndPosition(digestMatchersToProcess, digestAlgorithm, position);
                 if (Utils.isCollectionNotEmpty(digestMatchersGroup)) {
                     DigestCryptographicChecker dac = new DigestCryptographicChecker(
                             i18nProvider, digestAlgorithm, validationTime, position, constraint);
@@ -142,6 +158,25 @@ public class DigestMatcherListCryptographicChainBuilder<T extends XmlConstraints
      */
     public List<String> getConcernedMaterial() {
         return concernedMaterial;
+    }
+
+    /**
+     * This method omits digest matchers that were created for validation purposes but not originally are present in a signature
+     *
+     * @param digestMatchers a list of {@link XmlDigestMatcher}s
+     * @return a list of {@link XmlDigestMatcher}s
+     */
+    private List<XmlDigestMatcher> getDigestMatchersToProcess(List<XmlDigestMatcher> digestMatchers) {
+        final List<XmlDigestMatcher> result = new ArrayList<>();
+        for (XmlDigestMatcher digestMatcher : digestMatchers) {
+            if (digestMatcher.getDigestMethod() != null || !digestMatcherTypesToIgnore.contains(digestMatcher.getType())) {
+                result.add(digestMatcher);
+            }
+        }
+        if (Utils.isCollectionEmpty(result)) {
+            return digestMatchers; // return original values if no matching entries found
+        }
+        return result;
     }
 
     private Set<DigestAlgorithm> getUsedDigestAlgorithms(List<XmlDigestMatcher> digestMatchers) {

@@ -136,4 +136,9 @@ public class CMSSignedDataObject implements CMS {
         return DSSASN1Utils.getDEREncoded(cmsSignedData);
     }
 
+    @Override
+    public byte[] getEncoded() {
+        return DSSASN1Utils.getEncoded(cmsSignedData);
+    }
+
 }

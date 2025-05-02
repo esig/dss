@@ -35,6 +35,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlStructuralValidation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
+import eu.europa.esig.dss.enumerations.EvidenceRecordIncorporationType;
 import eu.europa.esig.dss.enumerations.EvidenceRecordOrigin;
 import eu.europa.esig.dss.enumerations.EvidenceRecordTypeEnum;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
@@ -198,6 +199,16 @@ public class EvidenceRecordWrapper {
             return new SignatureWrapper(parent);
         }
         return null;
+    }
+
+    /**
+     * Gets the incorporation of the evidence record within an embedding signature.
+     * NOTE: applicable only for attached evidence records in CAdES.
+     *
+     * @return {@link EvidenceRecordIncorporationType}
+     */
+    public EvidenceRecordIncorporationType getIncorporationType() {
+        return evidenceRecord.getIncorporationType();
     }
 
     /**

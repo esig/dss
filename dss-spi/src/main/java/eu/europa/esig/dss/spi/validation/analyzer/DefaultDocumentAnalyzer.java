@@ -697,13 +697,13 @@ public abstract class DefaultDocumentAnalyzer implements DocumentAnalyzer {
     }
 
     /**
-     * Gets an evidence record from a {@code evidenceRecordReader}
+     * Gets an evidence record from a {@code evidenceRecordAnalyzer}
      *
-     * @param evidenceRecordReader {@link EvidenceRecordAnalyzer}
+     * @param evidenceRecordAnalyzer {@link EvidenceRecordAnalyzer}
      * @return {@link EvidenceRecord}
      */
-    protected EvidenceRecord getEvidenceRecord(EvidenceRecordAnalyzer evidenceRecordReader) {
-        EvidenceRecord evidenceRecord = evidenceRecordReader.getEvidenceRecord();
+    protected EvidenceRecord getEvidenceRecord(EvidenceRecordAnalyzer evidenceRecordAnalyzer) {
+        EvidenceRecord evidenceRecord = evidenceRecordAnalyzer.getEvidenceRecord();
         if (evidenceRecord != null) {
             List<SignatureScope> evidenceRecordScopes = getEvidenceRecordScopes(evidenceRecord);
             evidenceRecord.setEvidenceRecordScopes(evidenceRecordScopes);

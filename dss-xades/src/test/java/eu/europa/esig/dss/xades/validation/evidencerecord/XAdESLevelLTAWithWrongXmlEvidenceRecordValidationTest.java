@@ -34,7 +34,6 @@ import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
@@ -107,16 +106,7 @@ class XAdESLevelLTAWithWrongXmlEvidenceRecordValidationTest extends AbstractXAdE
             assertEquals(1, invalidRedCount);
 
             List<XmlSignatureScope> evidenceRecordScopes = evidenceRecord.getEvidenceRecordScopes();
-            assertEquals(1, Utils.collectionSize(evidenceRecordScopes)); // Only signature document is referenced in the scopes
-
-            boolean sigNameFound = false;
-            for (XmlSignatureScope evidenceRecordScope : evidenceRecordScopes) {
-                assertEquals(SignatureScopeType.FULL, evidenceRecordScope.getScope());
-                if (signature.getFilename().equals(evidenceRecordScope.getName())) {
-                    sigNameFound = true;
-                }
-            }
-            assertTrue(sigNameFound);
+            assertEquals(0, Utils.collectionSize(evidenceRecordScopes)); // invalid hash
 
             boolean coversSignature = false;
             boolean coversSignedData = false;
@@ -160,16 +150,7 @@ class XAdESLevelLTAWithWrongXmlEvidenceRecordValidationTest extends AbstractXAdE
                 assertTrue(timestamp.isSignatureValid());
 
                 List<XmlSignatureScope> timestampScopes = timestamp.getTimestampScopes();
-                assertEquals(1, Utils.collectionSize(timestampScopes));
-
-                sigNameFound = false;
-                for (XmlSignatureScope tstScope : timestampScopes) {
-                    assertEquals(SignatureScopeType.FULL, tstScope.getScope());
-                    if (signature.getFilename().equals(tstScope.getName())) {
-                        sigNameFound = true;
-                    }
-                }
-                assertTrue(sigNameFound);
+                assertEquals(0, Utils.collectionSize(timestampScopes));
 
                 boolean coversEvidenceRecord = false;
                 coversSignature = false;
@@ -250,16 +231,7 @@ class XAdESLevelLTAWithWrongXmlEvidenceRecordValidationTest extends AbstractXAdE
             assertEquals(SubIndication.HASH_FAILURE, xmlEvidenceRecord.getSubIndication());
 
             List<eu.europa.esig.dss.simplereport.jaxb.XmlSignatureScope> evidenceRecordScopes = xmlEvidenceRecord.getEvidenceRecordScope();
-            assertEquals(1, Utils.collectionSize(evidenceRecordScopes));
-
-            boolean sigNameFound = false;
-            for (eu.europa.esig.dss.simplereport.jaxb.XmlSignatureScope evidenceRecordScope : evidenceRecordScopes) {
-                assertEquals(SignatureScopeType.FULL, evidenceRecordScope.getScope());
-                if (simpleReport.getDocumentFilename().equals(evidenceRecordScope.getName())) {
-                    sigNameFound = true;
-                }
-            }
-            assertTrue(sigNameFound);
+            assertEquals(0, Utils.collectionSize(evidenceRecordScopes));
 
             XmlTimestamps timestamps = xmlEvidenceRecord.getTimestamps();
             assertNotNull(timestamps);
@@ -269,16 +241,7 @@ class XAdESLevelLTAWithWrongXmlEvidenceRecordValidationTest extends AbstractXAdE
                 assertNotEquals(Indication.FAILED, xmlTimestamp.getIndication());
 
                 List<eu.europa.esig.dss.simplereport.jaxb.XmlSignatureScope> timestampScopes = xmlTimestamp.getTimestampScope();
-                assertEquals(1, Utils.collectionSize(timestampScopes));
-
-                sigNameFound = false;
-                for (eu.europa.esig.dss.simplereport.jaxb.XmlSignatureScope tstScope : timestampScopes) {
-                    assertEquals(SignatureScopeType.FULL, tstScope.getScope());
-                    if (simpleReport.getDocumentFilename().equals(tstScope.getName())) {
-                        sigNameFound = true;
-                    }
-                }
-                assertTrue(sigNameFound);
+                assertEquals(0, Utils.collectionSize(timestampScopes));
             }
         }
     }

@@ -1324,7 +1324,8 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 				DigestAlgorithm digestAlgorithm = null;
 				for (XmlDigestMatcher digestMatcher : digestMatchers) {
 					if (digestAlgorithm != null) {
-						assertEquals(digestAlgorithm, digestMatcher.getDigestMethod());
+						assertTrue(digestMatcher.getDigestMethod() == null ||
+								digestAlgorithm == digestMatcher.getDigestMethod());
 					} else {
 						digestAlgorithm = digestMatcher.getDigestMethod();
 					}
@@ -1377,7 +1378,9 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 					assertNotNull(evidenceRecord.getParent());
 					assertEquals(evidenceRecord.getParent().getId(), signatureScope.getName());
 					masterSignatureScopeFound = true;
-				} else if (SignatureScopeType.FULL != signatureScope.getScope()) {
+				} else if (SignatureScopeType.FULL != signatureScope.getScope() &&
+						SignatureScopeType.PARTIAL != signatureScope.getScope() &&
+						SignatureScopeType.ARCHIVED != signatureScope.getScope()) {
 					fail(String.format("Unsupported SignatureScopeType '%s'!", signatureScope.getScope()));
 				}
 				assertNotNull(signatureScope.getName());
@@ -1394,14 +1397,14 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 	}
 
 	protected void checkEvidenceRecordTimestampedReferences(DiagnosticData diagnosticData) {
-		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
-
 		List<EvidenceRecordWrapper> evidenceRecords = diagnosticData.getEvidenceRecords();
 		for (EvidenceRecordWrapper evidenceRecord : evidenceRecords) {
 			List<XmlTimestampedObject> coveredObjects = evidenceRecord.getCoveredObjects();
 			assertTrue(Utils.isCollectionNotEmpty(coveredObjects));
 
-			int expectedCoveredSignatures = evidenceRecord.isEmbedded() ? 1 : Utils.collectionSize(signatures);
+			int expectedCoveredSignatures = evidenceRecord.isEmbedded() ?
+					1 + diagnosticData.getAllCounterSignaturesForMasterSignature(evidenceRecord.getParent()).size() :
+					diagnosticData.getSignatures().size();
 			assertEquals(expectedCoveredSignatures, coveredObjects.stream()
 					.filter(r -> TimestampedObjectType.SIGNATURE == r.getCategory()).count());
 			assertTrue(Utils.isCollectionNotEmpty(coveredObjects.stream()

@@ -2,11 +2,17 @@ package eu.europa.esig.dss.xades.validation.evidencerecord;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerData;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.EvidenceRecordTypeEnum;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.simplereport.SimpleReport;
@@ -18,12 +24,14 @@ import eu.europa.esig.dss.utils.Utils;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 class XAdESLevelLTDetachedWithEmbeddedEvidenceRecordInvalidSigDigestTest extends AbstractXAdESWithEvidenceRecordTestValidation {
 
@@ -85,7 +93,57 @@ class XAdESLevelLTDetachedWithEmbeddedEvidenceRecordInvalidSigDigestTest extends
 
     @Override
     protected int getNumberOfExpectedEvidenceScopes() {
-        return 2;
+        return 1;
+    }
+
+    @Override
+    protected void checkEvidenceRecordScopes(DiagnosticData diagnosticData) {
+        EvidenceRecordWrapper evidenceRecord = diagnosticData.getEvidenceRecords().get(0);
+        List<XmlSignatureScope> evidenceRecordScopes = evidenceRecord.getEvidenceRecordScopes();
+        assertTrue(Utils.isCollectionNotEmpty(evidenceRecordScopes));
+
+        boolean masterSignatureScopeFound = false;
+        boolean fileScopeFound = false;
+        for (XmlSignatureScope signatureScope : evidenceRecordScopes) {
+            if (SignatureScopeType.SIGNATURE == signatureScope.getScope()) {
+                masterSignatureScopeFound = true;
+            } else if (SignatureScopeType.FULL == signatureScope.getScope()) {
+                assertNotNull(signatureScope.getName());
+                fileScopeFound = true;
+            } else if (SignatureScopeType.ARCHIVED != signatureScope.getScope()) {
+                fail(String.format("Unsupported SignatureScopeType '%s'!", signatureScope.getScope()));
+            }
+            assertNotNull(signatureScope.getName());
+            assertNotNull(signatureScope.getDescription());
+
+            XmlSignerData signerData = signatureScope.getSignerData();
+            assertNotNull(signerData);
+            assertNotNull(signerData.getDigestAlgoAndValue());
+            assertNotNull(signerData.getDigestAlgoAndValue().getDigestMethod());
+            assertNotNull(signerData.getDigestAlgoAndValue().getDigestValue());
+        }
+        assertFalse(masterSignatureScopeFound);
+        assertTrue(fileScopeFound);
+    }
+
+    @Override
+    protected void checkEvidenceRecordCoverage(DiagnosticData diagnosticData, SignatureWrapper signature) {
+        List<SignatureWrapper> signatures = diagnosticData.getSignatures();
+
+        List<EvidenceRecordWrapper> evidenceRecords = diagnosticData.getEvidenceRecords();
+        EvidenceRecordWrapper evidenceRecord = evidenceRecords.get(0);
+        List<XmlTimestampedObject> coveredObjects = evidenceRecord.getCoveredObjects();
+        assertTrue(Utils.isCollectionNotEmpty(coveredObjects));
+
+        assertEquals(Utils.collectionSize(signatures), coveredObjects.stream()
+                .filter(r -> TimestampedObjectType.SIGNATURE == r.getCategory()).count());
+        assertTrue(Utils.isCollectionNotEmpty(coveredObjects.stream()
+                .filter(r -> TimestampedObjectType.SIGNED_DATA == r.getCategory()).collect(Collectors.toList())));
+
+        assertTrue(Utils.isCollectionNotEmpty(evidenceRecord.getCoveredCertificates()));
+        assertTrue(Utils.isCollectionNotEmpty(evidenceRecord.getCoveredRevocations()));
+        assertTrue(Utils.isCollectionNotEmpty(evidenceRecord.getCoveredTimestamps()));
+        assertTrue(Utils.isCollectionNotEmpty(evidenceRecord.getCoveredSignedData()));
     }
 
     @Override
@@ -100,7 +158,7 @@ class XAdESLevelLTDetachedWithEmbeddedEvidenceRecordInvalidSigDigestTest extends
             XmlEvidenceRecord evidenceRecord = signatureEvidenceRecords.get(0);
             assertEquals(Indication.FAILED, evidenceRecord.getIndication());
             assertEquals(SubIndication.HASH_FAILURE, evidenceRecord.getSubIndication());
-            assertEquals(2, Utils.collectionSize(evidenceRecord.getEvidenceRecordScope()));
+            assertEquals(1, Utils.collectionSize(evidenceRecord.getEvidenceRecordScope()));
         }
         assertEquals(1, sigWithErCounter);
     }

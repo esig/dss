@@ -1524,6 +1524,7 @@
 					<xs:element name="DocumentName" type="xs:string" minOccurs="0" />
 					<xs:element name="Type" type="EvidenceRecordType" />
 					<xs:element name="Origin" type="EvidenceRecordOrigin" />
+					<xs:element name="IncorporationType" type="EvidenceRecordIncorporationType" minOccurs="0" />
 					<xs:element name="StructuralValidation"	type="StructuralValidation" minOccurs="0" />
 					<xs:element name="DigestMatchers" type="DigestMatchers" />
 					<xs:element name="EvidenceRecordTimestamps" type="FoundTimestamps" />
@@ -1570,6 +1571,13 @@
 			<xs:enumeration value="CONTAINER" />
 			<xs:enumeration value="SIGNATURE" />
 			<xs:enumeration value="EXTERNAL" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="EvidenceRecordIncorporationType" final="restriction">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="INTERNAL_EVIDENCE_RECORD" />
+			<xs:enumeration value="EXTERNAL_EVIDENCE_RECORD" />
 		</xs:restriction>
 	</xs:simpleType>
 	

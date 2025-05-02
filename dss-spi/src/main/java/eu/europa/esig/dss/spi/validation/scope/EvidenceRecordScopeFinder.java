@@ -58,20 +58,34 @@ public class EvidenceRecordScopeFinder extends AbstractSignatureScopeFinder {
      */
     public List<SignatureScope> findEvidenceRecordScope() {
         final List<SignatureScope> evidenceRecordScopes = new ArrayList<>(findEvidenceRecordScope(evidenceRecord.getReferenceValidation()));
-        if (evidenceRecord.isEmbedded() && signatureDigestValid(evidenceRecord)) {
-            for (SignatureScope signatureScope : evidenceRecord.getMasterSignature().getSignatureScopes()) {
-                if (!evidenceRecordScopes.contains(signatureScope)) {
-                    evidenceRecordScopes.add(signatureScope);
-                }
-            }
+        if (isSignatureEmbeddedAndValid(evidenceRecord)) {
+            enrichRecursively(evidenceRecordScopes, evidenceRecord.getMasterSignature().getSignatureScopes());
         }
         return evidenceRecordScopes;
     }
 
-    private boolean signatureDigestValid(EvidenceRecord evidenceRecord) {
-        for (ReferenceValidation referenceValidation : evidenceRecord.getReferenceValidation()) {
-            if (DigestMatcherType.EVIDENCE_RECORD_MASTER_SIGNATURE == referenceValidation.getType() && referenceValidation.isIntact()) {
-                return true;
+    private void enrichRecursively(List<SignatureScope> evidenceRecordScopes, List<SignatureScope> signatureScopes) {
+        for (SignatureScope signatureScope : signatureScopes) {
+            if (!evidenceRecordScopes.contains(signatureScope)) {
+                evidenceRecordScopes.add(signatureScope);
+            } else if (Utils.isCollectionNotEmpty(signatureScope.getChildren())) {
+                enrichRecursively(evidenceRecordScopes, signatureScope.getChildren());
+            }
+        }
+    }
+
+    /**
+     * Verifies whether the signature is embedded and covers the master signature
+     *
+     * @param evidenceRecord {@link EvidenceRecord}
+     * @return TRUE if the evidence record es embedded and valid, FALSE otherwise
+     */
+    protected boolean isSignatureEmbeddedAndValid(EvidenceRecord evidenceRecord) {
+        if (evidenceRecord.isEmbedded()) {
+            for (ReferenceValidation referenceValidation : evidenceRecord.getReferenceValidation()) {
+                if (DigestMatcherType.EVIDENCE_RECORD_MASTER_SIGNATURE == referenceValidation.getType() && referenceValidation.isIntact()) {
+                    return true;
+                }
             }
         }
         return false;
@@ -90,7 +104,7 @@ public class EvidenceRecordScopeFinder extends AbstractSignatureScopeFinder {
 
         List<DSSDocument> coveredDocuments = new ArrayList<>();
         for (ReferenceValidation referenceValidation : referenceValidations) {
-            if (referenceValidation.isFound()) {
+            if (referenceValidation.isIntact()) {
                 switch (referenceValidation.getType()) {
                     case EVIDENCE_RECORD_ARCHIVE_OBJECT:
                         DSSDocument detachedDocument;

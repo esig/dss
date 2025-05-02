@@ -82,6 +82,7 @@ public abstract class AbstractXAdESWithEvidenceRecordTestValidation extends Abst
             List<XmlSignatureScope> evidenceRecordScopes = evidenceRecord.getEvidenceRecordScopes();
             assertEquals(getNumberOfExpectedEvidenceScopes(), Utils.collectionSize(evidenceRecordScopes));
             checkEvidenceRecordType(evidenceRecord);
+            assertNull(evidenceRecord.getIncorporationType());
 
             boolean sigNameFound = false;
             for (XmlSignatureScope evidenceRecordScope : evidenceRecordScopes) {
@@ -134,7 +135,9 @@ public abstract class AbstractXAdESWithEvidenceRecordTestValidation extends Abst
                 }
             }
 
-            int expectedSignaturesCounter = evidenceRecord.isEmbedded() ? 1 : diagnosticData.getSignatures().size();
+            int expectedSignaturesCounter = evidenceRecord.isEmbedded() ?
+                    1 + diagnosticData.getAllCounterSignaturesForMasterSignature(evidenceRecord.getParent()).size() :
+                    diagnosticData.getSignatures().size();
             assertEquals(expectedSignaturesCounter,
                     coveredObjects.stream().filter(r -> TimestampedObjectType.SIGNATURE == r.getCategory()).count());
 
@@ -147,21 +150,25 @@ public abstract class AbstractXAdESWithEvidenceRecordTestValidation extends Abst
                 assertNotNull(timestamp.getEvidenceRecordTimestampType());
 
                 List<XmlSignatureScope> timestampScopes = timestamp.getTimestampScopes();
-                assertEquals(getNumberOfExpectedEvidenceScopes(), Utils.collectionSize(timestampScopes));
+                if (timestamp.isSignatureValid()) {
+                    assertEquals(getNumberOfExpectedEvidenceScopes(), Utils.collectionSize(timestampScopes));
 
-                sigNameFound = false;
-                for (XmlSignatureScope evidenceRecordScope : evidenceRecordScopes) {
-                    if (SignatureScopeType.SIGNATURE == evidenceRecordScope.getScope()) {
-                        if (signature.getId().equals(evidenceRecordScope.getName())) {
-                            sigNameFound = true;
-                        }
-                    } else if (SignatureScopeType.FULL == evidenceRecordScope.getScope()) {
-                        if (signature.getFilename().equals(evidenceRecordScope.getName())) {
-                            sigNameFound = true;
+                    sigNameFound = false;
+                    for (XmlSignatureScope evidenceRecordScope : evidenceRecordScopes) {
+                        if (SignatureScopeType.SIGNATURE == evidenceRecordScope.getScope()) {
+                            if (signature.getId().equals(evidenceRecordScope.getName())) {
+                                sigNameFound = true;
+                            }
+                        } else if (SignatureScopeType.FULL == evidenceRecordScope.getScope()) {
+                            if (signature.getFilename().equals(evidenceRecordScope.getName())) {
+                                sigNameFound = true;
+                            }
                         }
                     }
+                    assertTrue(sigNameFound);
+                } else {
+                    assertTrue(Utils.isCollectionEmpty(timestampScopes));
                 }
-                assertTrue(sigNameFound);
 
                 boolean coversEvidenceRecord = false;
                 coversSignature = false;
@@ -317,8 +324,10 @@ public abstract class AbstractXAdESWithEvidenceRecordTestValidation extends Abst
                 assertNotNull(validationObjectType.getObjectType());
                 POEType poeType = validationObjectType.getPOE();
                 assertNotNull(poeType);
-                assertNull(poeType.getPOEObject());
-                assertEquals(TypeOfProof.VALIDATION, poeType.getTypeOfProof());
+                if (Utils.isCollectionEmpty(getDetachedEvidenceRecords())) {
+                    assertNull(poeType.getPOEObject());
+                    assertEquals(TypeOfProof.VALIDATION, poeType.getTypeOfProof());
+                }
                 assertNotNull(poeType.getPOETime());
 
                 POEProvisioningType poeProvisioning = validationObjectType.getPOEProvisioning();

@@ -35,21 +35,16 @@ import java.util.List;
 
 /**
  * Builds an {@code eu.europa.esig.dss.model.identifier.Identifier}
- * for an {@code eu.europa.esig.dss.evidencerecord.common.validation.DefaultEvidenceRecord}
+ * for a {@code eu.europa.esig.dss.evidencerecord.common.validation.DefaultEvidenceRecord}
  *
  */
 public class EvidenceRecordIdentifierBuilder {
 
-    /** Evidence record to build identifier for */
-    private final DefaultEvidenceRecord evidenceRecord;
-
     /**
      * Default constructor
-     *
-     * @param evidenceRecord {@link DefaultEvidenceRecord}
      */
-    public EvidenceRecordIdentifierBuilder(DefaultEvidenceRecord evidenceRecord) {
-        this.evidenceRecord = evidenceRecord;
+    public EvidenceRecordIdentifierBuilder() {
+        // empty
     }
 
     /**
@@ -57,8 +52,8 @@ public class EvidenceRecordIdentifierBuilder {
      *
      * @return {@link EvidenceRecordIdentifier}
      */
-    public EvidenceRecordIdentifier build() {
-        return new EvidenceRecordIdentifier(buildBinaries());
+    public EvidenceRecordIdentifier build(DefaultEvidenceRecord evidenceRecord) {
+        return new EvidenceRecordIdentifier(buildBinaries(evidenceRecord));
     }
 
     /**
@@ -66,9 +61,9 @@ public class EvidenceRecordIdentifierBuilder {
      *
      * @return a byte array
      */
-    protected byte[] buildBinaries() {
+    protected byte[] buildBinaries(DefaultEvidenceRecord evidenceRecord) {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-            List<? extends DigestValueGroup> hashTree = getFirstReducedHashTree();
+            List<? extends DigestValueGroup> hashTree = getFirstReducedHashTree(evidenceRecord);
             if (Utils.isCollectionNotEmpty(hashTree)) {
                 for (DigestValueGroup digestValueGroup : hashTree) {
                     List<byte[]> digestValues = digestValueGroup.getDigestValues();
@@ -80,13 +75,17 @@ public class EvidenceRecordIdentifierBuilder {
                 }
             }
 
-            byte[] encodedTimestamp = getFirstEncodedTimestamp();
+            byte[] encodedTimestamp = getFirstEncodedTimestamp(evidenceRecord);
             if (encodedTimestamp != null) {
                 // first time-stamp identifies the signature
                 baos.write(encodedTimestamp);
             }
             if (Utils.isStringNotEmpty(evidenceRecord.getFilename())) {
                 baos.write(evidenceRecord.getFilename().getBytes());
+            }
+            String evidenceRecordPosition = getEvidenceRecordPosition();
+            if (Utils.isStringNotEmpty(evidenceRecordPosition)) {
+                baos.write(evidenceRecordPosition.getBytes());
             }
             return baos.toByteArray();
 
@@ -95,7 +94,7 @@ public class EvidenceRecordIdentifierBuilder {
         }
     }
 
-    private List<? extends DigestValueGroup> getFirstReducedHashTree() {
+    private List<? extends DigestValueGroup> getFirstReducedHashTree(DefaultEvidenceRecord evidenceRecord) {
         List<? extends ArchiveTimeStampChainObject> archiveTimeStampSequence = evidenceRecord.getArchiveTimeStampSequence();
         if (Utils.isCollectionNotEmpty(archiveTimeStampSequence)) {
             ArchiveTimeStampChainObject archiveTimeStampChainObject = archiveTimeStampSequence.get(0);
@@ -108,7 +107,7 @@ public class EvidenceRecordIdentifierBuilder {
         return Collections.emptyList();
     }
 
-    private byte[] getFirstEncodedTimestamp() {
+    private byte[] getFirstEncodedTimestamp(DefaultEvidenceRecord evidenceRecord) {
         // returns time-stamp binaries only in order to avoid recursion on time-stamp processing
         List<? extends ArchiveTimeStampChainObject> archiveTimeStampSequence = evidenceRecord.getArchiveTimeStampSequence();
         if (Utils.isCollectionNotEmpty(archiveTimeStampSequence)) {
@@ -122,6 +121,16 @@ public class EvidenceRecordIdentifierBuilder {
                 }
             }
         }
+        return null;
+    }
+
+    /**
+     * Gets a String uniquely identifying a position of the evidence record within a master signature
+     *
+     * @return {@link String}
+     */
+    protected String getEvidenceRecordPosition() {
+        // not supported by default
         return null;
     }
 

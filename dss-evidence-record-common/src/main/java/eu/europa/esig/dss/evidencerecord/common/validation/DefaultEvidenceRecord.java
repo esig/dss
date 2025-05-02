@@ -20,12 +20,12 @@
  */
 package eu.europa.esig.dss.evidencerecord.common.validation;
 
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EvidenceRecordIncorporationType;
 import eu.europa.esig.dss.enumerations.EvidenceRecordOrigin;
+import eu.europa.esig.dss.evidencerecord.common.validation.identifier.EmbeddedEvidenceRecordIdentifierBuilder;
 import eu.europa.esig.dss.evidencerecord.common.validation.identifier.EvidenceRecordIdentifierBuilder;
 import eu.europa.esig.dss.evidencerecord.common.validation.timestamp.EvidenceRecordTimestampSource;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.model.ReferenceValidation;
 import eu.europa.esig.dss.model.identifier.Identifier;
@@ -62,6 +62,11 @@ public abstract class DefaultEvidenceRecord implements EvidenceRecord {
      * Origin of the evidence record
      */
     private EvidenceRecordOrigin origin;
+
+    /**
+     * Incorporation type
+     */
+    private EvidenceRecordIncorporationType incorporationType;
 
     /**
      * Contains a list of documents time-stamped within a reduced HashTree
@@ -161,6 +166,20 @@ public abstract class DefaultEvidenceRecord implements EvidenceRecord {
      */
     public void setOrigin(EvidenceRecordOrigin origin) {
         this.origin = origin;
+    }
+
+    @Override
+    public EvidenceRecordIncorporationType getIncorporationType() {
+        return incorporationType;
+    }
+
+    /**
+     * Sets the incorporation type for embedded evidence records
+     *
+     * @param incorporationType {@link EvidenceRecordIncorporationType}
+     */
+    public void setIncorporationType(EvidenceRecordIncorporationType incorporationType) {
+        this.incorporationType = incorporationType;
     }
 
     @Override
@@ -344,11 +363,8 @@ public abstract class DefaultEvidenceRecord implements EvidenceRecord {
     }
 
     @Override
-    public Digest getMasterSignatureDigest(DigestAlgorithm digestAlgorithm) {
-        if (embeddedEvidenceRecordHelper != null) {
-            return embeddedEvidenceRecordHelper.getMasterSignatureDigest(digestAlgorithm);
-        }
-        return null;
+    public EmbeddedEvidenceRecordHelper getEmbeddedEvidenceRecordHelper() {
+        return embeddedEvidenceRecordHelper;
     }
 
     @Override
@@ -372,7 +388,11 @@ public abstract class DefaultEvidenceRecord implements EvidenceRecord {
     @Override
     public Identifier getDSSId() {
         if (identifier == null) {
-            identifier = new EvidenceRecordIdentifierBuilder(this).build();
+            if (embeddedEvidenceRecordHelper != null) {
+                identifier = new EmbeddedEvidenceRecordIdentifierBuilder(embeddedEvidenceRecordHelper).build(this);
+            } else {
+                identifier = new EvidenceRecordIdentifierBuilder().build(this);
+            }
         }
         return identifier;
     }

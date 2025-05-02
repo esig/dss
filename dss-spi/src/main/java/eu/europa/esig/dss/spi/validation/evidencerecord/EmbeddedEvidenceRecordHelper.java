@@ -3,6 +3,7 @@ package eu.europa.esig.dss.spi.validation.evidencerecord;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.SignatureAttribute;
 
 /**
  * This class contains utility methods required for a processing and validation of an embedded evidence record
@@ -18,11 +19,55 @@ public interface EmbeddedEvidenceRecordHelper {
     AdvancedSignature getMasterSignature();
 
     /**
-     * Builds digest for the embedded evidence record for the given {@code DigestAlgorithm}
+     * Gets the unsigned attribute property embedding the evidence record
+     *
+     * @return {@link SignatureAttribute}
+     */
+    SignatureAttribute getEvidenceRecordAttribute();
+
+    /**
+     * Gets position of the evidence record carrying attribute within the signature
+     *
+     * @return {@link Integer}
+     */
+    Integer getOrderOfAttribute();
+
+    /**
+     * Gets position of the evidence record within its carrying attribute
+     *
+     * @return {@link Integer}
+     */
+    Integer getOrderWithinAttribute();
+
+    /**
+     * Builds digest for the embedded evidence record for the given {@code DigestAlgorithm}.
+     * This method uses an existing coding of a signature for hash generation.
      *
      * @param digestAlgorithm {@link DigestAlgorithm}
      * @return {@link Digest}
      */
     Digest getMasterSignatureDigest(DigestAlgorithm digestAlgorithm);
+
+    /**
+     * Builds digest for the embedded evidence record for the given {@code DigestAlgorithm} using a specified encoding.
+     * The method can be called only for a CAdES signature implementation.
+     * NOTE: please use the method {@code #isEncodingSelectionSupported} to check whether the encoding choice is
+     *       supported by the current implementation.
+     *       Use {@code #getMasterSignatureDigest(digestAlgorithm)} method otherwise.
+     *
+     * @param digestAlgorithm {@link DigestAlgorithm}
+     * @param derEncoded whether the signature shall be DER-encoded
+     * @return {@link Digest}
+     */
+    Digest getMasterSignatureDigest(DigestAlgorithm digestAlgorithm, boolean derEncoded);
+
+    /**
+     * Gets whether the selection of a target encoding is supported by the current implementation.
+     * This method is used to resolve the interoperability issues between ETSI TS 119 122-3 and RFC 4998 embedded ERS,
+     * requiring hash computation in different ways.
+     *
+     * @return TRUE if the encoding selection is supported by the current implementation, FALSE otherwise
+     */
+    boolean isEncodingSelectionSupported();
 
 }

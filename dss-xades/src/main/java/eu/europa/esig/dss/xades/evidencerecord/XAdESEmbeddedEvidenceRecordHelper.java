@@ -17,9 +17,7 @@ import java.util.List;
  */
 public class XAdESEmbeddedEvidenceRecordHelper extends AbstractEmbeddedEvidenceRecordHelper {
 
-    /**
-     * List of detached documents provided to the validation
-     */
+    /** List of detached documents provided to the validation */
     private List<DSSDocument> detachedContents;
 
     /**
@@ -48,6 +46,17 @@ public class XAdESEmbeddedEvidenceRecordHelper extends AbstractEmbeddedEvidenceR
         XAdESEvidenceRecordDigestBuilder digestBuilder = new XAdESEvidenceRecordDigestBuilder(signature, evidenceRecordAttribute, digestAlgorithm);
         digestBuilder.setDetachedContent(detachedContents);
         return digestBuilder;
+    }
+
+    @Override
+    protected void setDEREncoding(SignatureEvidenceRecordDigestBuilder digestBuilder, boolean derEncoded) {
+        throw new UnsupportedOperationException(
+                "The #setEncoding method is not supported for a XAdES signature digest computation!");
+    }
+
+    @Override
+    public boolean isEncodingSelectionSupported() {
+        return false;
     }
 
 }

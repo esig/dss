@@ -110,6 +110,24 @@ public interface ICMSUtils {
     CMS toCMS(TimeStampToken timeStampToken);
 
     /**
+     * Gets encoding of the ContentInfo of CMS
+     *
+     * @param cms {@link CMS} to check
+     * @return {@link String} encoding, e.g. 'DER' or 'BER'
+     */
+    String getContentInfoEncoding(CMS cms);
+
+    /**
+     * Writes the encoded binaries of the SignedData.digestAlgorithms field to the given {@code OutputStream}
+     * NOTE: This method is used for evidence record hash computation
+     *
+     * @param cms {@link CMS}
+     * @param os {@link OutputStream}
+     * @throws IOException if an exception occurs on bytes writing
+     */
+    void writeSignedDataDigestAlgorithmsEncoded(CMS cms, OutputStream os) throws IOException;
+
+    /**
      * Writes the encoded binaries of the ContentInfo element to the given {@code OutputStream}
      * NOTE: This method is used for archive-time-stamp-v2 message-imprint computation.
      *
@@ -138,6 +156,16 @@ public interface ICMSUtils {
      * @throws IOException if an exception occurs on bytes writing
      */
     void writeSignedDataCRLsEncoded(CMS cms, OutputStream os) throws IOException;
+
+    /**
+     * Writes the encoded binaries of the SignedData.signerInfos field to the given {@code OutputStream}
+     * NOTE: This method is used for evidence record hash computation
+     *
+     * @param cms {@link CMS}
+     * @param os {@link OutputStream}
+     * @throws IOException if an exception occurs on bytes writing
+     */
+    void writeSignedDataSignerInfosEncoded(CMS cms, OutputStream os) throws IOException;
 
     /**
      * Converts a {@code DSSDocument} to the corresponding {@code CMSTypedData} object type

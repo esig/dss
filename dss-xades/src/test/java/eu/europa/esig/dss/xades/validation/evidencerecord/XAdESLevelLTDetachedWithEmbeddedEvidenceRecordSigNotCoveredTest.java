@@ -7,7 +7,6 @@ import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
-import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.EvidenceRecordTypeEnum;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -22,27 +21,12 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.validationreport.enums.ObjectType;
-import eu.europa.esig.validationreport.enums.TypeOfProof;
-import eu.europa.esig.validationreport.jaxb.CryptoInformationType;
-import eu.europa.esig.validationreport.jaxb.POEProvisioningType;
-import eu.europa.esig.validationreport.jaxb.POEType;
-import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
-import eu.europa.esig.validationreport.jaxb.ValidationObjectListType;
-import eu.europa.esig.validationreport.jaxb.ValidationObjectRepresentationType;
-import eu.europa.esig.validationreport.jaxb.ValidationObjectType;
-import eu.europa.esig.validationreport.jaxb.ValidationReportDataType;
-import eu.europa.esig.validationreport.jaxb.ValidationReportType;
-import eu.europa.esig.validationreport.jaxb.ValidationStatusType;
-import eu.europa.esig.xades.jaxb.xades132.DigestAlgAndValueType;
 
 import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -94,7 +78,7 @@ class XAdESLevelLTDetachedWithEmbeddedEvidenceRecordSigNotCoveredTest extends Ab
                 ++docRefCounter;
             } else if (DigestMatcherType.EVIDENCE_RECORD_MASTER_SIGNATURE == digestMatcher.getType()) {
                 assertNull(digestMatcher.getDocumentName());
-                assertFalse(digestMatcher.isDataFound());
+                assertTrue(digestMatcher.isDataFound());
                 assertFalse(digestMatcher.isDataIntact());
                 assertNull(digestMatcher.getDigestMethod());
                 assertNull(digestMatcher.getDigestValue());
@@ -200,89 +184,12 @@ class XAdESLevelLTDetachedWithEmbeddedEvidenceRecordSigNotCoveredTest extends Ab
             }
 
             XmlEvidenceRecord evidenceRecord = signatureEvidenceRecords.get(0);
-            assertEquals(Indication.INDETERMINATE, evidenceRecord.getIndication());
-            assertEquals(SubIndication.SIGNED_DATA_NOT_FOUND, evidenceRecord.getSubIndication());
+            assertEquals(Indication.FAILED, evidenceRecord.getIndication());
+            assertEquals(SubIndication.HASH_FAILURE, evidenceRecord.getSubIndication());
 
             assertEquals(1, Utils.collectionSize(evidenceRecord.getEvidenceRecordScope()));
         }
         assertEquals(1, sigWithErCounter);
-    }
-
-    @Override
-    protected void verifyETSIValidationReport(ValidationReportType etsiValidationReportJaxb) {
-        List<SignatureValidationReportType> signatureValidationReports = etsiValidationReportJaxb.getSignatureValidationReport();
-        assertTrue(Utils.isCollectionNotEmpty(signatureValidationReports));
-
-        SignatureValidationReportType signatureValidationReportType = signatureValidationReports.get(0);
-        assertNotEquals(Indication.NO_SIGNATURE_FOUND, signatureValidationReportType.getSignatureValidationStatus().getMainIndication());
-
-        ValidationObjectListType signatureValidationObjects = etsiValidationReportJaxb.getSignatureValidationObjects();
-        assertNotNull(signatureValidationObjects);
-
-        List<ValidationObjectType> validationObjects = signatureValidationObjects.getValidationObject();
-        assertTrue(Utils.isCollectionNotEmpty(validationObjects));
-
-        boolean evidenceRecordFound = false;
-        boolean tstFound = false;
-        for (ValidationObjectType validationObjectType : validationObjects) {
-            if (ObjectType.EVIDENCE_RECORD == validationObjectType.getObjectType()) {
-                assertNotNull(validationObjectType.getObjectType());
-                POEType poeType = validationObjectType.getPOE();
-                assertNotNull(poeType);
-                assertNull(poeType.getPOEObject());
-                assertEquals(TypeOfProof.VALIDATION, poeType.getTypeOfProof());
-                assertNotNull(poeType.getPOETime());
-
-                POEProvisioningType poeProvisioning = validationObjectType.getPOEProvisioning();
-                assertNotNull(poeProvisioning);
-                assertNotNull(poeProvisioning.getPOETime());
-                assertTrue(Utils.isCollectionNotEmpty(poeProvisioning.getValidationObject()));
-
-                SignatureValidationReportType validationReport = validationObjectType.getValidationReport();
-                assertNotNull(validationReport);
-
-                ValidationStatusType signatureValidationStatus = validationReport.getSignatureValidationStatus();
-                assertNotNull(signatureValidationStatus);
-                assertNotNull(signatureValidationStatus.getMainIndication());
-                if (Indication.PASSED != signatureValidationStatus.getMainIndication()) {
-                    assertTrue(Utils.isCollectionNotEmpty(signatureValidationStatus.getSubIndication()));
-                    assertNotNull(signatureValidationStatus.getSubIndication().get(0));
-                }
-
-                List<ValidationReportDataType> associatedValidationReportData = signatureValidationStatus.getAssociatedValidationReportData();
-                assertEquals(1, associatedValidationReportData.size());
-
-                ValidationReportDataType validationReportDataType = associatedValidationReportData.get(0);
-                CryptoInformationType cryptoInformation = validationReportDataType.getCryptoInformation();
-                assertNotNull(cryptoInformation);
-                assertEquals(1, cryptoInformation.getValidationObjectId().getVOReference().size());
-                assertEquals("urn:etsi:019102:algorithm:unidentified", cryptoInformation.getAlgorithm());
-                assertFalse(cryptoInformation.isSecureAlgorithm());
-
-                ValidationObjectRepresentationType validationObjectRepresentation = validationObjectType.getValidationObjectRepresentation();
-                assertNotNull(validationObjectRepresentation);
-
-                List<Object> directOrBase64OrDigestAlgAndValue = validationObjectRepresentation.getDirectOrBase64OrDigestAlgAndValue();
-                assertEquals(1, directOrBase64OrDigestAlgAndValue.size());
-
-                if (getTokenExtractionStrategy().isEvidenceRecord()) {
-                    assertInstanceOf(byte[].class, directOrBase64OrDigestAlgAndValue.get(0));
-                    assertNotNull(directOrBase64OrDigestAlgAndValue.get(0));
-                } else {
-                    assertInstanceOf(DigestAlgAndValueType.class, directOrBase64OrDigestAlgAndValue.get(0));
-                    DigestAlgAndValueType digestAlgAndValueType = (DigestAlgAndValueType) directOrBase64OrDigestAlgAndValue.get(0);
-                    assertNotNull(DigestAlgorithm.forXML(digestAlgAndValueType.getDigestMethod().getAlgorithm()));
-                    assertNotNull(digestAlgAndValueType.getDigestValue());
-                }
-
-                evidenceRecordFound = true;
-
-            } else if (ObjectType.TIMESTAMP == validationObjectType.getObjectType()) {
-                tstFound = true;
-            }
-        }
-        assertTrue(evidenceRecordFound);
-        assertTrue(tstFound);
     }
 
 }

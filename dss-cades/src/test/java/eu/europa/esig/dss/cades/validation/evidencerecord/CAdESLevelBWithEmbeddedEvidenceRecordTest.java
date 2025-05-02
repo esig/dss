@@ -20,43 +20,126 @@
  */
 package eu.europa.esig.dss.cades.validation.evidencerecord;
 
-import eu.europa.esig.dss.cades.validation.AbstractCAdESTestValidation;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
+import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.simplereport.SimpleReport;
+import eu.europa.esig.dss.simplereport.jaxb.XmlEvidenceRecord;
+import eu.europa.esig.dss.utils.Utils;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class CAdESLevelBWithEmbeddedEvidenceRecordTest extends AbstractCAdESTestValidation {
+class CAdESLevelBWithEmbeddedEvidenceRecordTest extends AbstractCAdESWithEvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {
-        return new InMemoryDocument(CAdESLevelBWithEmbeddedEvidenceRecordTest.class.getResourceAsStream("/validation/evidence-record/C-E-ERS-basic-der.p7m"));
+        return new InMemoryDocument(CAdESLevelBWithEmbeddedEvidenceRecordTest.class.getResourceAsStream("/validation/evidence-record/C-E-ERS-basic.p7m"));
     }
 
     @Override
-    protected void checkBLevelValid(DiagnosticData diagnosticData) {
-        SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+    protected void checkSignatureLevel(DiagnosticData diagnosticData) {
+        assertEquals(SignatureLevel.CAdES_BASELINE_B, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+    }
 
-        List<XmlDigestMatcher> digestMatchers = signatureWrapper.getDigestMatchers();
-        XmlDigestMatcher digestMatcher = digestMatchers.get(0);
-        assertTrue(digestMatcher.isDataFound());
-        assertTrue(digestMatcher.isDataIntact());
-        assertFalse(digestMatcher.isDuplicated());
+    @Override
+    protected int getNumberOfExpectedEvidenceScopes() {
+        return 2;
+    }
 
-        assertFalse(signatureWrapper.isSignatureIntact());
-        assertFalse(signatureWrapper.isSignatureValid());
-        assertFalse(diagnosticData.isBLevelTechnicallyValid(signatureWrapper.getId()));
+    @Override
+    protected void checkEvidenceRecordDigestMatchers(DiagnosticData diagnosticData) {
+        List<EvidenceRecordWrapper> evidenceRecords = diagnosticData.getEvidenceRecords();
+        assertEquals(1, evidenceRecords.size());
+
+        EvidenceRecordWrapper evidenceRecord = evidenceRecords.get(0);
+        assertEquals(2, evidenceRecord.getDigestMatchers().size());
+
+        int sigDMCounter = 0;
+        int orphanRefDMCounter = 0;
+        for (XmlDigestMatcher digestMatcher : evidenceRecord.getDigestMatchers()) {
+            assertNotNull(digestMatcher.getDigestMethod());
+            assertNotNull(digestMatcher.getDigestValue());
+            assertNull(digestMatcher.getDocumentName());
+            if (DigestMatcherType.EVIDENCE_RECORD_MASTER_SIGNATURE == digestMatcher.getType()) {
+                assertTrue(digestMatcher.isDataFound());
+                assertTrue(digestMatcher.isDataIntact());
+                ++sigDMCounter;
+            } else if (DigestMatcherType.EVIDENCE_RECORD_ORPHAN_REFERENCE == digestMatcher.getType()) {
+                assertFalse(digestMatcher.isDataFound());
+                assertFalse(digestMatcher.isDataIntact());
+                ++orphanRefDMCounter;
+            }
+        }
+        assertEquals(1, sigDMCounter);
+        assertEquals(1, orphanRefDMCounter);
+    }
+
+    @Override
+    protected void checkEvidenceRecordTimestampedReferences(DiagnosticData diagnosticData) {
+        List<SignatureWrapper> signatures = diagnosticData.getSignatures();
+
+        List<EvidenceRecordWrapper> evidenceRecords = diagnosticData.getEvidenceRecords();
+        EvidenceRecordWrapper evidenceRecord = evidenceRecords.get(0);
+        List<XmlTimestampedObject> coveredObjects = evidenceRecord.getCoveredObjects();
+        assertTrue(Utils.isCollectionNotEmpty(coveredObjects));
+
+        assertEquals(Utils.collectionSize(signatures), coveredObjects.stream()
+                .filter(r -> TimestampedObjectType.SIGNATURE == r.getCategory()).count());
+        assertTrue(Utils.isCollectionNotEmpty(coveredObjects.stream()
+                .filter(r -> TimestampedObjectType.SIGNED_DATA == r.getCategory()).collect(Collectors.toList())));
+
+        assertTrue(Utils.isCollectionNotEmpty(evidenceRecord.getCoveredCertificates()));
+        assertFalse(Utils.isCollectionNotEmpty(evidenceRecord.getCoveredRevocations()));
+        assertFalse(Utils.isCollectionNotEmpty(evidenceRecord.getCoveredTimestamps()));
+        assertTrue(Utils.isCollectionNotEmpty(evidenceRecord.getCoveredSignedData()));
+    }
+
+    @Override
+    protected void checkEvidenceRecordTimestamps(DiagnosticData diagnosticData) {
+        // duplicate signing-certificate ref
+        List<EvidenceRecordWrapper> evidenceRecords = diagnosticData.getEvidenceRecords();
+        assertEquals(1, evidenceRecords.get(0).getTimestampList().size());
+
+        for (TimestampWrapper timestampWrapper : evidenceRecords.get(0).getTimestampList()) {
+            assertTrue(timestampWrapper.isMessageImprintDataFound());
+            assertTrue(timestampWrapper.isMessageImprintDataIntact());
+            assertTrue(timestampWrapper.isSignatureIntact());
+            assertTrue(timestampWrapper.isSignatureValid());
+        }
     }
 
     @Override
     protected void checkOrphanTokens(DiagnosticData diagnosticData) {
         // skip
+    }
+
+    @Override
+    protected void verifySimpleReport(SimpleReport simpleReport) {
+        super.verifySimpleReport(simpleReport);
+
+        int sigWithErCounter = 0;
+        for (String sigId : simpleReport.getSignatureIdList()) {
+            List<XmlEvidenceRecord> signatureEvidenceRecords = simpleReport.getSignatureEvidenceRecords(sigId);
+            if (Utils.isCollectionNotEmpty(signatureEvidenceRecords)) {
+                ++sigWithErCounter;
+            }
+        }
+        assertEquals(1, sigWithErCounter);
     }
 
 }

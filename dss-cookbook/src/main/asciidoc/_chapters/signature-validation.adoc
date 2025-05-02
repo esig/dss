@@ -576,6 +576,7 @@ Please note, that as evidence records processing is a part of "5.6 Validation pr
 
 DSS is able to validate an evidence record as a material providing a signature's proof of existence (POE) in the following circumstances:
 
+* as an embedded evidence record within a XAdES or CAdES signature, conformant to ETSI TS 119 132-3 (cf. <<R01>>) and ETSI TS 119 122-3 (cf. <<R02>>), respectively (supported since DSS `6.3`);
 * as a detached evidence record applied on the whole document containing the signature(s) (the support is independent of the signature's type);
 * as an embedded evidence record within an ASiC container, conformant to the specification within ETSI EN 319 162-1 (cf. <<R04>>) standard. This includes support of ASiC-E and ASiC-S container types with XAdES or CAdES signatures.
 

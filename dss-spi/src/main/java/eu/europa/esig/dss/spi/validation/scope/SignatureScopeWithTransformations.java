@@ -25,7 +25,6 @@ import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.utils.Utils;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * The signature scope with the performed transforms
@@ -82,24 +81,6 @@ public abstract class SignatureScopeWithTransformations extends SignatureScope {
 		return "SignatureScopeWithTransformations{" +
 				"transformations=" + transformations +
 				"} " + super.toString();
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (!(o instanceof SignatureScopeWithTransformations)) return false;
-		if (!super.equals(o)) return false;
-
-		SignatureScopeWithTransformations that = (SignatureScopeWithTransformations) o;
-
-		return Objects.equals(transformations, that.transformations);
-	}
-
-	@Override
-	public int hashCode() {
-		int result = super.hashCode();
-		result = 31 * result + (transformations != null ? transformations.hashCode() : 0);
-		return result;
 	}
 
 }

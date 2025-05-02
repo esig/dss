@@ -26,7 +26,6 @@ import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
-import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -75,7 +74,7 @@ class CAdESEvidenceRecordDigestBuilderTest {
 
     @Test
     void cadesWithErTest() {
-        DSSDocument document = new InMemoryDocument(CAdESEvidenceRecordDigestBuilderTest.class.getResourceAsStream("/validation/evidence-record/C-E-ERS-basic-der.p7m"));
+        DSSDocument document = new InMemoryDocument(CAdESEvidenceRecordDigestBuilderTest.class.getResourceAsStream("/validation/evidence-record/C-E-ERS-basic-invalid-sig.p7m"));
 
         assertEquals("6F29495CC39F94044E13B94DC913EAF001C50A8710DEE14D1589BE5098ECE6E7C722AFA31EF0D6EB7FF21A9521DB0EF0153D657DECC60CDFD9B9A31A92F68535",
                 new CAdESEvidenceRecordDigestBuilder(document, DigestAlgorithm.SHA512).build().getHexValue());
@@ -116,12 +115,16 @@ class CAdESEvidenceRecordDigestBuilderTest {
         DSSDocument document = new InMemoryDocument(CAdESEvidenceRecordDigestBuilderTest.class.getResourceAsStream("/validation/evidence-record/C-B-B-basic.p7m"));
         DSSDocument detachedDoc = new InMemoryDocument("test 123".getBytes());
 
-        assertEquals("DF07A33A7C644C737CCC9EC1257C7C5EB1614918B19CE205737F9617AD923A05",
+        assertEquals("B71A2752585A75EC5E289E05C1517F8028A5D51ECEED1FE851F9E18B2EF9D165",
                 new CAdESEvidenceRecordDigestBuilder(document).setDetachedContent(null).build().getHexValue());
+        assertEquals("B71A2752585A75EC5E289E05C1517F8028A5D51ECEED1FE851F9E18B2EF9D165",
+                new CAdESEvidenceRecordDigestBuilder(document).setDetachedContent(null).setDEREncoded(false).build().getHexValue());
         assertEquals("DF07A33A7C644C737CCC9EC1257C7C5EB1614918B19CE205737F9617AD923A05",
-                new CAdESEvidenceRecordDigestBuilder(document).setDetachedContent(detachedDoc).build().getHexValue());
+                new CAdESEvidenceRecordDigestBuilder(document).setDetachedContent(null).setDEREncoded(true).build().getHexValue());
+        assertEquals("DF07A33A7C644C737CCC9EC1257C7C5EB1614918B19CE205737F9617AD923A05",
+                new CAdESEvidenceRecordDigestBuilder(document).setDetachedContent(detachedDoc).setDEREncoded(true).build().getHexValue());
 
-        List<Digest> digests = new CAdESEvidenceRecordDigestBuilder(document).setDetachedContent(detachedDoc).buildExternalEvidenceRecordDigest();
+        List<Digest> digests = new CAdESEvidenceRecordDigestBuilder(document).setDetachedContent(detachedDoc).setDEREncoded(true).buildExternalEvidenceRecordDigest();
         assertEquals(2, digests.size());
         assertEquals("DF07A33A7C644C737CCC9EC1257C7C5EB1614918B19CE205737F9617AD923A05", digests.get(0).getHexValue());
         assertEquals("F7EF53D21502321EAECB78BB405B7FF266253B4A27D89B9B8C4DA5847CDD1B9D", digests.get(1).getHexValue());
@@ -301,9 +304,7 @@ class CAdESEvidenceRecordDigestBuilderTest {
     @Test
     void notCmsTest() {
         DSSDocument document = new InMemoryDocument("test 123".getBytes());
-        Exception exception = assertThrows(DSSException.class,
-                () -> new CAdESEvidenceRecordDigestBuilder(document).build());
-        assertEquals("Not a valid CAdES file", exception.getMessage());
+        assertThrows(DSSException.class, () -> new CAdESEvidenceRecordDigestBuilder(document).build());
     }
 
 }

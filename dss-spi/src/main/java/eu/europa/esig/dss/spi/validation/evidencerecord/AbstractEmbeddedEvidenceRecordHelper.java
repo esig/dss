@@ -7,9 +7,6 @@ import eu.europa.esig.dss.spi.validation.SignatureAttribute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Abstract implementation of {@code InternalEvidenceRecordHelper} containing common implementation methods
  *
@@ -24,8 +21,11 @@ public abstract class AbstractEmbeddedEvidenceRecordHelper implements EmbeddedEv
     /** Unsigned signature attribute embedding the evidence record */
     protected final SignatureAttribute evidenceRecordAttribute;
 
-    /** Map between digest algorithms and computed signature digest */
-    private final Map<DigestAlgorithm, Digest> digestMap = new HashMap<>();
+    /** Position of the attribute within the signature */
+    private Integer orderOfAttribute;
+
+    /** Position of the current evidence record within the evidence record attribute */
+    private Integer orderWithinAttribute;
 
     /**
      * Default constructor
@@ -39,23 +39,60 @@ public abstract class AbstractEmbeddedEvidenceRecordHelper implements EmbeddedEv
         this.evidenceRecordAttribute = evidenceRecordAttribute;
     }
 
-    /**
-     * Gets the master signature embedding the evidence record
-     *
-     * @return {@link AdvancedSignature}
-     */
+    @Override
     public AdvancedSignature getMasterSignature() {
         return signature;
     }
 
     @Override
-    public Digest getMasterSignatureDigest(DigestAlgorithm digestAlgorithm) {
-        return digestMap.computeIfAbsent(digestAlgorithm, this::createDigestDocument);
+    public SignatureAttribute getEvidenceRecordAttribute() {
+        return evidenceRecordAttribute;
     }
 
-    private Digest createDigestDocument(DigestAlgorithm digestAlgorithm) {
+    @Override
+    public Integer getOrderOfAttribute() {
+        return orderOfAttribute;
+    }
+
+    /**
+     * Sets position of the evidence record carrying attribute within the signature
+     *
+     * @param orderOfAttribute position of the attribute
+     */
+    public void setOrderOfAttribute(Integer orderOfAttribute) {
+        this.orderOfAttribute = orderOfAttribute;
+    }
+
+    @Override
+    public Integer getOrderWithinAttribute() {
+        return orderWithinAttribute;
+    }
+
+    /**
+     * Sets position of the evidence record within its carrying attribute
+     *
+     * @param orderWithinAttribute position of the evidence record within the attribute
+     */
+    public void setOrderWithinAttribute(Integer orderWithinAttribute) {
+        this.orderWithinAttribute = orderWithinAttribute;
+    }
+
+    @Override
+    public Digest getMasterSignatureDigest(DigestAlgorithm digestAlgorithm) {
+        SignatureEvidenceRecordDigestBuilder digestBuilder = getDigestBuilder(signature, evidenceRecordAttribute, digestAlgorithm);
+        return buildDigest(digestBuilder);
+    }
+
+    @Override
+    public Digest getMasterSignatureDigest(DigestAlgorithm digestAlgorithm, boolean derEncoded) {
+        SignatureEvidenceRecordDigestBuilder digestBuilder = getDigestBuilder(signature, evidenceRecordAttribute, digestAlgorithm);
+        setDEREncoding(digestBuilder, derEncoded);
+        return buildDigest(digestBuilder);
+    }
+
+    private Digest buildDigest(SignatureEvidenceRecordDigestBuilder digestBuilder) {
         try {
-            return getDigestBuilder(signature, evidenceRecordAttribute, digestAlgorithm).build();
+            return digestBuilder.build();
 
         } catch (Exception e) {
             String errorMessage = "Unable to compute master signature digest for an evidence record. Reason : {}";
@@ -78,5 +115,14 @@ public abstract class AbstractEmbeddedEvidenceRecordHelper implements EmbeddedEv
      */
     protected abstract SignatureEvidenceRecordDigestBuilder getDigestBuilder(AdvancedSignature signature,
             SignatureAttribute evidenceRecordAttribute, DigestAlgorithm digestAlgorithm);
+
+    /**
+     * Sets the {@code encoding} to be used on the hash computation
+     * to the {@code SignatureEvidenceRecordDigestBuilder} whether applicable
+     *
+     * @param digestBuilder {@link SignatureEvidenceRecordDigestBuilder}
+     * @param derEncoded whether signature shall be DER encoded
+     */
+    protected abstract void setDEREncoding(SignatureEvidenceRecordDigestBuilder digestBuilder, boolean derEncoded);
 
 }
