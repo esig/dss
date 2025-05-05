@@ -20,10 +20,9 @@
  */
 package eu.europa.esig.dss.cades.validation;
 
-import eu.europa.esig.dss.cades.CAdESUtils;
+import eu.europa.esig.dss.cades.EvidenceRecordProductionComparator;
 import eu.europa.esig.dss.cades.TimeStampTokenProductionComparator;
 import eu.europa.esig.dss.enumerations.TimestampType;
-import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Set;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.tsp.TimeStampToken;
@@ -64,26 +63,17 @@ public class CAdESUnsignedAttributes extends CAdESSigProperties {
 	public List<CAdESAttribute> getAttributes() {
 		List<CAdESAttribute> attributes = super.getAttributes();
 		// Multiple timestamps need to be sorted in CAdES by their production date
-		return sortTimestamps(attributes, CAdESUtils.getTimestampOids());
+		return sortAttributes(attributes);
 	}
 	
-	private List<CAdESAttribute> sortTimestamps(List<CAdESAttribute> attributes, List<ASN1ObjectIdentifier> timestampOids) {
+	private List<CAdESAttribute> sortAttributes(List<CAdESAttribute> attributes) {
 		final CAdESAttributeTimeStampComparator comparator = new CAdESAttributeTimeStampComparator();
 		for (int ii = 0; ii < attributes.size() - 1; ii++) {
 			for (int jj = 0; jj < attributes.size() - ii - 1; jj++) {
 				CAdESAttribute cadesAttribute = attributes.get(jj);
-				// if the element is a timestamp
-				if (timestampOids.contains(cadesAttribute.getASN1Oid())) {
-					CAdESAttribute nextCAdESAttribute = attributes.get(jj + 1);
-					// swap if the next element is not a timestamp
-					if (!timestampOids.contains(nextCAdESAttribute.getASN1Oid())) {
-						Collections.swap(attributes, jj, jj + 1);
-					} else {
-						// swap if the current element was generated after the following timestamp attribute
-						if (comparator.compare(cadesAttribute, nextCAdESAttribute) > 0) {
-							Collections.swap(attributes, jj, jj + 1);
-						}
-					}
+				CAdESAttribute nextCAdESAttribute = attributes.get(jj + 1);
+				if (comparator.compare(cadesAttribute, nextCAdESAttribute) > 0) {
+					Collections.swap(attributes, jj, jj + 1);
 				}
 			}
 		}
@@ -96,11 +86,32 @@ public class CAdESUnsignedAttributes extends CAdESSigProperties {
 
 		@Override
 		public int compare(CAdESAttribute o1, CAdESAttribute o2) {
-			int result = compareByTimeStampToken(o1, o2);
+			int result = compareByType(o1, o2);
 			if (result == 0) {
-				result = compareByType(o1, o2);
+				result = compareByTimeStampToken(o1, o2);
+			}
+			if (result == 0) {
+				result = compareByTimestampType(o1, o2);
+			}
+			if (result == 0) {
+				result = compareByEvidenceRecord(o1, o2);
 			}
 			return result;
+		}
+
+		private int compareByType(CAdESAttribute attributeOne, CAdESAttribute attributeTwo) {
+			// Evidence records are always the last
+			// Timestamps are the last but before ERs
+			if (!attributeOne.isEvidenceRecord() && attributeTwo.isEvidenceRecord()) {
+				return -1;
+			} else if (attributeOne.isEvidenceRecord() && !attributeTwo.isEvidenceRecord()) {
+				return 1;
+			} else if (!attributeOne.isTimeStampToken() && attributeTwo.isTimeStampToken()) {
+				return -1;
+			} else if (attributeOne.isTimeStampToken() && !attributeTwo.isTimeStampToken()) {
+				return 1;
+			}
+			return 0;
 		}
 
 		private int compareByTimeStampToken(CAdESAttribute attributeOne, CAdESAttribute attributeTwo) {
@@ -113,11 +124,21 @@ public class CAdESUnsignedAttributes extends CAdESSigProperties {
 			return 0;
 		}
 
-		private int compareByType(CAdESAttribute attributeOne, CAdESAttribute attributeTwo) {
+		private int compareByTimestampType(CAdESAttribute attributeOne, CAdESAttribute attributeTwo) {
 			TimestampType timestampTypeOne = attributeOne.getTimestampTokenType();
 			TimestampType timestampTypeTwo = attributeTwo.getTimestampTokenType();
 			if (timestampTypeOne != null && timestampTypeTwo != null) {
 				return timestampTypeOne.compare(timestampTypeTwo);
+			}
+			return 0;
+		}
+
+		private int compareByEvidenceRecord(CAdESAttribute attributeOne, CAdESAttribute attributeTwo) {
+			org.bouncycastle.asn1.tsp.EvidenceRecord evidenceRecordOne = attributeOne.toEvidenceRecord();
+			org.bouncycastle.asn1.tsp.EvidenceRecord evidenceRecordTwo = attributeTwo.toEvidenceRecord();
+			if (evidenceRecordOne != null && evidenceRecordTwo != null) {
+				EvidenceRecordProductionComparator comparator = new EvidenceRecordProductionComparator();
+				return comparator.compare(evidenceRecordOne, evidenceRecordTwo);
 			}
 			return 0;
 		}

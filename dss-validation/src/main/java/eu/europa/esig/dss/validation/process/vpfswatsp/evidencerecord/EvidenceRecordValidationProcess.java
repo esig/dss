@@ -176,8 +176,9 @@ public class EvidenceRecordValidationProcess extends Chain<XmlValidationProcessE
             throw new IllegalStateException("Evidence record shall contain at least one DigestMatcher!");
         }
 
-        // Externally provided evidence records
-        if (EvidenceRecordOrigin.EXTERNAL == evidenceRecord.getOrigin() && Utils.isCollectionNotEmpty(evidenceRecord.getCoveredSignatures())) {
+        // Embedded or externally provided evidence records
+        if ((EvidenceRecordOrigin.SIGNATURE == evidenceRecord.getOrigin() || EvidenceRecordOrigin.EXTERNAL == evidenceRecord.getOrigin())
+                && Utils.isCollectionNotEmpty(evidenceRecord.getCoveredSignatures())) {
             item = item.setNextItem(signedFilesCoveredCheck());
         }
 

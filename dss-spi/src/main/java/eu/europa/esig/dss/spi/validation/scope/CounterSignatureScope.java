@@ -37,7 +37,7 @@ public class CounterSignatureScope extends SignatureScope {
     private static final long serialVersionUID = 8599151632129217473L;
 
     /** The counter-signed parent signature */
-    private AdvancedSignature masterSignature;
+    protected AdvancedSignature masterSignature;
 
     /**
      * Default constructor

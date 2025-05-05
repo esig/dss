@@ -34,7 +34,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Objects;
 
-// TODO: move to dss-cms-object ?
 /**
  * A document composed by a CMSSignedData
  */
@@ -100,9 +99,17 @@ public class CMSSignedDocument extends CommonDocument {
 		}
 	}
 
+	/**
+	 * This method writes a content of the CMS into an {@code OutputStream} using the DL coding
+	 *
+	 * @param stream
+	 *            the output stream where to write
+	 * @throws IOException if an error occurs on writing
+	 */
 	@Override
 	public void writeTo(OutputStream stream) throws IOException {
-		final ASN1OutputStream asn1OutputStream = ASN1OutputStream.create(stream, ASN1Encoding.DER);
+		// keep DL to ensure the original order of elements
+		final ASN1OutputStream asn1OutputStream = ASN1OutputStream.create(stream, ASN1Encoding.DL);
 		asn1OutputStream.writeObject(signedData.toASN1Structure());
 	}
 

@@ -102,4 +102,11 @@ public interface CMS {
      */
     byte[] getDEREncoded();
 
+    /**
+     * Gets encoded content of the CMS SignedData, keeping the original encoding.
+     *
+     * @return encoded binaries
+     */
+    byte[] getEncoded();
+
 }

@@ -64,7 +64,7 @@ class ASiCEWithXAdESLevelLTWithXmlEvidenceRecordWrongERRefValidationTest extends
 
     @Override
     protected int getNumberOfExpectedEvidenceScopes() {
-        return 4;
+        return 3;
     }
 
     @Override

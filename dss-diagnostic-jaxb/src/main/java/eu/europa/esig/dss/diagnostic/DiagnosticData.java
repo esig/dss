@@ -457,6 +457,18 @@ public class DiagnosticData {
 	}
 
 	/**
+	 * Indicates if there is an embedded evidence record.
+	 *
+	 * @param signatureId
+	 *            The identifier of the signature.
+	 * @return true if an embedded evidence record is present
+	 */
+	public boolean isThereERSLevel(final String signatureId) {
+		SignatureWrapper signatureWrapper = getSignatureByIdNullSafe(signatureId);
+		return signatureWrapper.isThereERSLevel();
+	}
+
+	/**
 	 * Returns a list of all Signer's documents used to create a signature
 	 *
 	 * NOTE: returns a first level documents only (e.g. a signed Manifest for XAdES, when applicable)

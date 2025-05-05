@@ -9,6 +9,8 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.signature.resources.DSSResourcesHandlerBuilder;
 import org.bouncycastle.asn1.ASN1Encodable;
+import org.bouncycastle.asn1.ASN1EncodableVector;
+import org.bouncycastle.asn1.ASN1Encoding;
 import org.bouncycastle.asn1.ASN1OctetStringParser;
 import org.bouncycastle.asn1.ASN1SequenceParser;
 import org.bouncycastle.asn1.ASN1Set;
@@ -21,6 +23,7 @@ import org.bouncycastle.asn1.BERTags;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.DERSequenceGenerator;
 import org.bouncycastle.asn1.DERSet;
+import org.bouncycastle.asn1.DLSet;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.cms.ContentInfoParser;
 import org.bouncycastle.asn1.cms.SignedDataParser;
@@ -93,7 +96,7 @@ public class CMSStreamUtils implements ICMSUtils {
 
     @Override
     public CMS replaceSigners(CMS cms, SignerInformationStore newSignerStore) {
-        CMSSignedDataStream cmsSignedDataStream = toCMSSignedDataStream(cms);
+        CMSSignedDataStream cmsSignedDataStream = createCopy(toCMSSignedDataStream(cms));
         cmsSignedDataStream.setSignerInfos(newSignerStore);
         return cmsSignedDataStream;
     }
@@ -120,6 +123,16 @@ public class CMSStreamUtils implements ICMSUtils {
         return cmsSignedDataStream;
     }
 
+    /**
+     * Creates a copy of the {@code CMS} object
+     *
+     * @param cms {@link CMS}
+     * @return {@link CMS}
+     */
+    public CMSSignedDataStream createCopy(CMS cms) {
+       return new CMSSignedDataStream(toCMSSignedDataStream(cms));
+    }
+
     @Override
     public CMS toCMS(TimeStampToken timeStampToken) {
         try {
@@ -130,9 +143,93 @@ public class CMSStreamUtils implements ICMSUtils {
     }
 
     @Override
-    public void writeContentInfoEncoded(CMS cms, OutputStream os) throws IOException {
+    public String getContentInfoEncoding(CMS cms) {
+        /*
+         * In this method we check for available data object to evaluate encoding of SignedData.
+         * It is expected that all content of SignedData uses the same encoding.
+         * We cannot evaluate directly on the parser, as BC uses package-private and/or deprecated classes.
+         * Therefore, we extract the data from SignedData.digestAlgorithms, as it is mandatory field and
+         * there is no possibility to encounter a large data like an encapsulated ContentInfo.
+         */
         DSSDocument cmsDocument = getCMSDocument(cms);
-        if (isBEREncodedContentInfo(cmsDocument)) {
+        try (InputStream is = cmsDocument.openStream()) {
+            ASN1StreamParser in = new ASN1StreamParser(is);
+            ASN1SequenceParser seqParser = (ASN1SequenceParser) in.readObject();
+
+            // TODO : BERSequenceParser is deprecated, we should avoid using it for now
+            // return seqParser instanceof BERSequenceParser;
+
+            ContentInfoParser contentInfoParser = new ContentInfoParser(seqParser);
+            SignedDataParser signedDataParser = SignedDataParser.getInstance(contentInfoParser.getContent(BERTags.SEQUENCE));
+
+            ASN1SetParser digestAlgorithms = signedDataParser.getDigestAlgorithms();
+            flush(digestAlgorithms);
+
+            ContentInfoParser encapContentInfo = signedDataParser.getEncapContentInfo();
+            flush(encapContentInfo);
+
+            ASN1SetParser certificatesParser = signedDataParser.getCertificates();
+            if (certificatesParser != null) {
+                if (certificatesParser.toASN1Primitive() instanceof BERSet) {
+                    return ASN1Encoding.BER;
+                } else if (certificatesParser.toASN1Primitive() instanceof DERSet) {
+                    return ASN1Encoding.DER;
+                } else if (certificatesParser.toASN1Primitive() instanceof DLSet) {
+                    return ASN1Encoding.DL;
+                } else {
+                    throw new UnsupportedOperationException(String.format("The ContentInfo encoding class '%s' is not supported!", 
+                            certificatesParser.toASN1Primitive().getClass().getName()));
+                }
+            }
+
+            throw new UnsupportedOperationException("No SignedData.certificates found! Unable to determine encoding of the SingedData.");
+
+        } catch (IOException e) {
+            throw new DSSException(String.format("Unable to read CMS document stream : %s", e.getMessage()), e);
+        }
+    }
+
+    /**
+     * Writes the encoded binaries of the SignedData.digestAlgorithms field to the given {@code OutputStream}
+     * NOTE: This method is used for evidence record hash computation
+     *
+     * @param cms {@link CMS}
+     * @param os {@link OutputStream}
+     * @throws IOException if an exception occurs on bytes writing
+     */
+    public void writeSignedDataDigestAlgorithmsEncoded(CMS cms, OutputStream os) throws IOException {
+        DSSDocument cmsDocument = getCMSDocument(cms);
+        // we need to preserve the original order, that is why we extract the original set of certificates
+        ASN1Set digestAlgorithms = getSignedDataDigestAlgorithms(cmsDocument);
+        if (digestAlgorithms == null) {
+            return;
+        }
+        digestAlgorithms.encodeTo(os);
+    }
+
+    private ASN1Set getSignedDataDigestAlgorithms(DSSDocument cmsDocument) {
+        // TODO : temp handling, try to cache the original set on parsing
+        try (InputStream is = cmsDocument.openStream()) {
+            ASN1StreamParser in = new ASN1StreamParser(is);
+            ASN1SequenceParser seqParser = (ASN1SequenceParser) in.readObject();
+
+            ContentInfoParser contentInfoParser = new ContentInfoParser(seqParser);
+            SignedDataParser signedDataParser = SignedDataParser.getInstance(contentInfoParser.getContent(BERTags.SEQUENCE));
+
+            ASN1SetParser digestAlgorithms = signedDataParser.getDigestAlgorithms();
+            if (digestAlgorithms != null) {
+                return ASN1Set.getInstance(digestAlgorithms.toASN1Primitive());
+            }
+            return null;
+
+        } catch (IOException e) {
+            throw new DSSException(String.format("Unable to read CMS document stream : %s", e.getMessage()), e);
+        }
+    }
+
+    @Override
+    public void writeContentInfoEncoded(CMS cms, OutputStream os) throws IOException {
+        if (isBEREncodedContentInfo(cms)) {
             BERSequenceGenerator sequenceGenerator = new BERSequenceGenerator(os);
             sequenceGenerator.addObject(cms.getSignedContentType());
             if (cms.getSignedContent() != null) {
@@ -161,40 +258,9 @@ public class CMSStreamUtils implements ICMSUtils {
         }
     }
 
-    private static boolean isBEREncodedContentInfo(DSSDocument cmsDocument) {
-        /*
-         * In this method we check for available data object to evaluate encoding of SignedData.
-         * It is expected that all content of SignedData uses the same encoding.
-         * We cannot evaluate directly on the parser, as BC uses package-private and/or deprecated classes.
-         * Therefore, we extract the data from SignedData.digestAlgorithms, as it is mandatory field and
-         * there is no possibility to encounter a large data like an encapsulated ContentInfo.
-         */
-        try (InputStream is = cmsDocument.openStream()) {
-            ASN1StreamParser in = new ASN1StreamParser(is);
-            ASN1SequenceParser seqParser = (ASN1SequenceParser) in.readObject();
-
-            // TODO : BERSequenceParser is deprecated, we should avoid using it for now
-            // return seqParser instanceof BERSequenceParser;
-
-            ContentInfoParser contentInfoParser = new ContentInfoParser(seqParser);
-            SignedDataParser signedDataParser = SignedDataParser.getInstance(contentInfoParser.getContent(BERTags.SEQUENCE));
-
-            ASN1SetParser digestAlgorithms = signedDataParser.getDigestAlgorithms();
-            flush(digestAlgorithms);
-
-            ContentInfoParser encapContentInfo = signedDataParser.getEncapContentInfo();
-            flush(encapContentInfo);
-
-            ASN1SetParser certificatesParser = signedDataParser.getCertificates();
-            if (certificatesParser != null) {
-                return certificatesParser.toASN1Primitive() instanceof BERSet;
-            }
-
-            throw new UnsupportedOperationException("No SignedData.certificates found! Unable to determine encoding of the SingedData.");
-
-        } catch (IOException e) {
-            throw new DSSException(String.format("Unable to read CMS document stream : %s", e.getMessage()), e);
-        }
+    private boolean isBEREncodedContentInfo(CMS cms) {
+        String contentInfoEncoding = getContentInfoEncoding(cms);
+        return ASN1Encoding.BER.equals(contentInfoEncoding);
     }
 
     @Override
@@ -221,7 +287,7 @@ public class CMSStreamUtils implements ICMSUtils {
         }
     }
 
-    private static ASN1Set getSignedDataCertificates(DSSDocument cmsDocument) {
+    private ASN1Set getSignedDataCertificates(DSSDocument cmsDocument) {
         // TODO : temp handling, try to cache the original set on parsing
         try (InputStream is = cmsDocument.openStream()) {
             ASN1StreamParser in = new ASN1StreamParser(is);
@@ -247,11 +313,13 @@ public class CMSStreamUtils implements ICMSUtils {
         }
     }
 
-    private static void flush(ASN1SetParser parser) throws IOException {
-        parser.toASN1Primitive();
+    private void flush(ASN1SetParser parser) throws IOException {
+        if (parser != null) {
+            parser.toASN1Primitive();
+        }
     }
 
-    private static void flush(ContentInfoParser encapContentInfo) throws IOException {
+    private void flush(ContentInfoParser encapContentInfo) throws IOException {
         ASN1Encodable contentParser = encapContentInfo.getContent(BERTags.OCTET_STRING);
         if (contentParser instanceof ASN1OctetStringParser) {
             ASN1OctetStringParser octs = (ASN1OctetStringParser) contentParser;
@@ -288,7 +356,7 @@ public class CMSStreamUtils implements ICMSUtils {
         }
     }
 
-    private static ASN1Set getSignedDataCRLs(DSSDocument cmsDocument) {
+    private ASN1Set getSignedDataCRLs(DSSDocument cmsDocument) {
         // TODO : temp handling, try to cache the original set on parsing
         try (InputStream is = cmsDocument.openStream()) {
             ASN1StreamParser in = new ASN1StreamParser(is);
@@ -317,7 +385,77 @@ public class CMSStreamUtils implements ICMSUtils {
         }
     }
 
-    private static CMSSignedDataStream toCMSSignedDataStream(CMS cms) {
+    /**
+     * Writes the encoded binaries of the SignedData.signerInfos field to the given {@code OutputStream}
+     * NOTE: This method is used for evidence record hash computation
+     *
+     * @param cms {@link CMS}
+     * @param os {@link OutputStream}
+     * @throws IOException if an exception occurs on bytes writing
+     */
+    public void writeSignedDataSignerInfosEncoded(CMS cms, OutputStream os) throws IOException {
+        DSSDocument cmsDocument = getCMSDocument(cms);
+        // we need to preserve the original order, that is why we extract the original set of certificates
+        ASN1Set signerInfos = getSignedDataSignerInfos(cmsDocument);
+        if (signerInfos == null) {
+            return;
+        }
+
+        ASN1EncodableVector signerInfosVector = new ASN1EncodableVector();
+        for (SignerInformation signerInformation : cms.getSignerInfos()) {
+            signerInfosVector.add(signerInformation.toASN1Structure());
+        }
+
+        if (signerInfos instanceof BERSet) {
+            BERSet berSet = new BERSet(signerInfosVector);
+            berSet.encodeTo(os);
+
+        } else if (signerInfos instanceof DLSet) {
+            DLSet dlSet = new DLSet(signerInfosVector);
+            dlSet.encodeTo(os);
+
+        } else if (signerInfos instanceof DERSet) {
+            DERSet derSet = new DERSet(signerInfosVector);
+            derSet.encodeTo(os);
+
+        } else {
+            throw new UnsupportedOperationException(
+                    String.format("Unsupported SignerInfos type : %s", signerInfos.getClass().getName()));
+        }
+    }
+
+    private ASN1Set getSignedDataSignerInfos(DSSDocument cmsDocument) {
+        try (InputStream is = cmsDocument.openStream()) {
+            ASN1StreamParser in = new ASN1StreamParser(is);
+            ASN1SequenceParser seqParser = (ASN1SequenceParser) in.readObject();
+
+            ContentInfoParser contentInfoParser = new ContentInfoParser(seqParser);
+            SignedDataParser signedDataParser = SignedDataParser.getInstance(contentInfoParser.getContent(BERTags.SEQUENCE));
+
+            ASN1SetParser digestAlgorithms = signedDataParser.getDigestAlgorithms();
+            flush(digestAlgorithms);
+
+            ContentInfoParser encapContentInfo = signedDataParser.getEncapContentInfo();
+            flush(encapContentInfo);
+
+            ASN1SetParser certificatesParser = signedDataParser.getCertificates();
+            flush(certificatesParser);
+
+            ASN1SetParser crlsParser = signedDataParser.getCrls();
+            flush(crlsParser);
+
+            ASN1SetParser signerInfos = signedDataParser.getSignerInfos();
+            if (signerInfos != null) {
+                return ASN1Set.getInstance(signerInfos.toASN1Primitive());
+            }
+            return null;
+
+        } catch (IOException e) {
+            throw new DSSException(String.format("Unable to read CMS document stream : %s", e.getMessage()), e);
+        }
+    }
+
+    private CMSSignedDataStream toCMSSignedDataStream(CMS cms) {
         if (cms instanceof CMSSignedDataStream) {
             return (CMSSignedDataStream) cms;
         }
@@ -366,7 +504,7 @@ public class CMSStreamUtils implements ICMSUtils {
         return new SignerInformation(signerInformation, extendedSignerInfo) {};
     }
 
-    private static DSSDocument getCMSDocument(CMS cms) {
+    private DSSDocument getCMSDocument(CMS cms) {
         CMSSignedDataStream cmsSignedDataStream = toCMSSignedDataStream(cms);
         DSSDocument cmsDocument = cmsSignedDataStream.getCMSDocument();
         if (cmsDocument == null) {

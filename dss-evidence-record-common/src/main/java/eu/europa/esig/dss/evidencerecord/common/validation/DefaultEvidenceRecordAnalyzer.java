@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.evidencerecord.common.validation;
 
+import eu.europa.esig.dss.enumerations.EvidenceRecordIncorporationType;
 import eu.europa.esig.dss.enumerations.EvidenceRecordOrigin;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.scope.SignatureScope;
@@ -27,6 +28,7 @@ import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.validation.analyzer.DefaultDocumentAnalyzer;
 import eu.europa.esig.dss.spi.validation.analyzer.evidencerecord.EvidenceRecordAnalyzer;
 import eu.europa.esig.dss.spi.validation.analyzer.evidencerecord.EvidenceRecordAnalyzerFactory;
+import eu.europa.esig.dss.spi.validation.evidencerecord.EmbeddedEvidenceRecordHelper;
 import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 
 import java.util.Collections;
@@ -44,6 +46,12 @@ public abstract class DefaultEvidenceRecordAnalyzer extends DefaultDocumentAnaly
 
     /** Origin of the evidence record */
     protected EvidenceRecordOrigin evidenceRecordOrigin = EvidenceRecordOrigin.EXTERNAL;
+
+    /** incorporation type */
+    protected EvidenceRecordIncorporationType evidenceRecordIncorporationType;
+
+    /** Helper used for processing of the embedded evidence record type */
+    protected EmbeddedEvidenceRecordHelper embeddedEvidenceRecordHelper;
 
     /**
      * Empty constructor
@@ -89,6 +97,16 @@ public abstract class DefaultEvidenceRecordAnalyzer extends DefaultDocumentAnaly
     @Override
     public void setEvidenceRecordOrigin(EvidenceRecordOrigin origin) {
         this.evidenceRecordOrigin = origin;
+    }
+
+    @Override
+    public void setEvidenceRecordIncorporationType(EvidenceRecordIncorporationType evidenceRecordIncorporationType) {
+        this.evidenceRecordIncorporationType = evidenceRecordIncorporationType;
+    }
+
+    @Override
+    public void setEmbeddedEvidenceRecordHelper(EmbeddedEvidenceRecordHelper embeddedEvidenceRecordHelper) {
+        this.embeddedEvidenceRecordHelper = embeddedEvidenceRecordHelper;
     }
 
     /**

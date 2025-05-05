@@ -79,13 +79,26 @@ class Asn1EvidenceRecordTstRenewalInvalidValidationTest extends AbstractAsn1Evid
                 assertEquals(0, Utils.collectionSize(refValidations));
                 validTstFound = true;
             } else {
-                assertEquals(4, Utils.collectionSize(refValidations));
+                assertEquals(5, Utils.collectionSize(refValidations));
+                int orphanRefCounter = 0;
+                int arcTstCounter = 0;
                 for (ReferenceValidation referenceValidation : refValidations) {
-                    assertEquals(DigestMatcherType.EVIDENCE_RECORD_ORPHAN_REFERENCE, referenceValidation.getType());
-                    assertNull(referenceValidation.getDocumentName());
-                    assertFalse(referenceValidation.isFound());
-                    assertFalse(referenceValidation.isIntact());
+                    if (DigestMatcherType.EVIDENCE_RECORD_ORPHAN_REFERENCE == referenceValidation.getType()) {
+                        assertNull(referenceValidation.getDocumentName());
+                        assertNotNull(referenceValidation.getDigest());
+                        assertFalse(referenceValidation.isFound());
+                        assertFalse(referenceValidation.isIntact());
+                        ++orphanRefCounter;
+                    } else if (DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_TIME_STAMP == referenceValidation.getType()) {
+                        assertNull(referenceValidation.getDocumentName());
+                        assertNull(referenceValidation.getDigest());
+                        assertTrue(referenceValidation.isFound());
+                        assertFalse(referenceValidation.isIntact());
+                        ++arcTstCounter;
+                    }
                 }
+                assertEquals(1, arcTstCounter);
+                assertEquals(4, orphanRefCounter);
                 invalidTstFound = true;
             }
         }
@@ -111,14 +124,20 @@ class Asn1EvidenceRecordTstRenewalInvalidValidationTest extends AbstractAsn1Evid
 
             } else {
                 List<XmlDigestMatcher> digestMatchers = timestampWrapper.getDigestMatchers();
-                assertEquals(5, digestMatchers.size());
+                assertEquals(6, digestMatchers.size());
                 int messageImprintCounter = 0;
+                int arcTstCounter = 0;
                 int archiveDataObjectCounter = 0;
                 for (XmlDigestMatcher digestMatcher : digestMatchers) {
                     if (DigestMatcherType.MESSAGE_IMPRINT.equals(digestMatcher.getType())) {
                         assertTrue(digestMatcher.isDataFound());
                         assertFalse(digestMatcher.isDataIntact());
                         ++messageImprintCounter;
+
+                    } else if (DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_TIME_STAMP.equals(digestMatcher.getType())) {
+                        assertTrue(digestMatcher.isDataFound());
+                        assertFalse(digestMatcher.isDataIntact());
+                        ++arcTstCounter;
 
                     } else if (DigestMatcherType.EVIDENCE_RECORD_ORPHAN_REFERENCE.equals(digestMatcher.getType())) {
                         assertFalse(digestMatcher.isDataFound());
@@ -127,6 +146,7 @@ class Asn1EvidenceRecordTstRenewalInvalidValidationTest extends AbstractAsn1Evid
                     }
                 }
                 assertEquals(1, messageImprintCounter);
+                assertEquals(1, arcTstCounter);
                 assertEquals(4, archiveDataObjectCounter);
                 invalidTstFound = true;
             }

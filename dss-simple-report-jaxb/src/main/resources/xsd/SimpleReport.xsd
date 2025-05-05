@@ -161,6 +161,8 @@
 					<xs:element name="EvidenceRecordScope" type="SignatureScope" minOccurs="0" maxOccurs="unbounded" />
 					<xs:element name="Timestamps" type="Timestamps" minOccurs="0" />
 				</xs:sequence>
+				<xs:attribute name="Embedded" type="xs:boolean" use="optional" />
+				<xs:attribute name="ParentId" type="xs:string" use="optional" />
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -288,6 +290,7 @@
 			<xs:enumeration value="XAdES-X" />
 			<xs:enumeration value="XAdES-XL" />
 			<xs:enumeration value="XAdES-A" />
+			<xs:enumeration value="XAdES-ERS" />
 			<xs:enumeration value="XAdES-BASELINE-LTA" />
 			<xs:enumeration value="XAdES-BASELINE-LT" />
 			<xs:enumeration value="XAdES-BASELINE-T" />
@@ -301,6 +304,7 @@
 			<xs:enumeration value="CAdES-X" />
 			<xs:enumeration value="CAdES-XL" />
 			<xs:enumeration value="CAdES-A" />
+			<xs:enumeration value="CAdES-ERS" />
 			<xs:enumeration value="CAdES-BASELINE-LTA" />
 			<xs:enumeration value="CAdES-BASELINE-LT" />
 			<xs:enumeration value="CAdES-BASELINE-T" />

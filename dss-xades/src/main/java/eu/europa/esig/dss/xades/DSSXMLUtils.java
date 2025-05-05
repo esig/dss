@@ -155,6 +155,7 @@ public final class DSSXMLUtils {
 		DomUtils.registerNamespace(XAdESNamespace.XADES_122);
 		DomUtils.registerNamespace(XAdESNamespace.XADES_132);
 		DomUtils.registerNamespace(XAdESNamespace.XADES_141);
+		DomUtils.registerNamespace(XAdESNamespace.XADES_EVIDENCERECORD_NAMESPACE);
 		// DO NOT register "xades"
 
 		DomUtils.registerNamespace(SAML_NAMESPACE);

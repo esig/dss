@@ -36,7 +36,7 @@ import java.util.List;
 public final class XAdES319132Utils extends XSDAbstractUtils {
 
 	/** The XAdES 1.3.2 XSD schema */
-	public static final String XADES_SCHEMA_LOCATION_EN_319_132 = "/xsd/XAdES01903v132-202407.xsd";
+	public static final String XADES_SCHEMA_LOCATION_EN_319_132 = "/xsd/XAdES01903v132-202407_lax.xsd";
 
 	/** The XAdES 1.4.1 XSD schema */
 	public static final String XADES_141_SCHEMA_LOCATION_EN_319_132 = "/xsd/XAdES01903v141-202407.xsd";

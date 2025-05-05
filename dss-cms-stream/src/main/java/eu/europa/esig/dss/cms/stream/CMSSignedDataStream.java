@@ -1,10 +1,15 @@
 package eu.europa.esig.dss.cms.stream;
 
 import eu.europa.esig.dss.cms.CMS;
+import eu.europa.esig.dss.cms.CMSUtils;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
+import org.bouncycastle.asn1.ASN1Encoding;
+import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.BERSequenceGenerator;
+import org.bouncycastle.asn1.cms.CMSObjectIdentifiers;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.cert.X509AttributeCertificateHolder;
@@ -22,6 +27,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -72,6 +78,26 @@ public class CMSSignedDataStream implements CMS {
      */
     public CMSSignedDataStream() {
         // empty
+    }
+
+    /**
+     * Constructor to create a copy of {@code cms}
+     *
+     * @param cms {@link CMSSignedDataStream}
+     */
+    public CMSSignedDataStream(CMSSignedDataStream cms) {
+        this.cmsDocument = cms.cmsDocument;
+        this.version = cms.version;
+        this.digestAlgorithmIDs = cms.digestAlgorithmIDs != null ? new HashSet<>(cms.digestAlgorithmIDs) : null;
+        this.isDetachedSignature = cms.isDetachedSignature;
+        this.signedContentType = cms.signedContentType;
+        this.signedContent = cms.signedContent;
+        this.certificates = cms.certificates != null ? new CollectionStore<>(cms.certificates.getMatches(null)) : null;
+        this.attributeCertificates = cms.attributeCertificates != null ? new CollectionStore<>(cms.attributeCertificates.getMatches(null)) : null;
+        this.crls = cms.crls != null ? new CollectionStore<>(cms.crls.getMatches(null)) : null;
+        this.ocspResponseStore = cms.ocspResponseStore != null ? new CollectionStore<>(cms.ocspResponseStore.getMatches(null)) : null;
+        this.ocspBasicStore = cms.ocspBasicStore != null ? new CollectionStore<>(cms.ocspBasicStore.getMatches(null)) : null;
+        this.signerInfos = cms.signerInfos != null ? new SignerInformationStore(cms.signerInfos.getSigners()) : null;
     }
 
     /**
@@ -277,6 +303,47 @@ public class CMSSignedDataStream implements CMS {
             return DSSASN1Utils.getDEREncoded(cmsSignedData);
 
         } catch (CMSException | IOException e) {
+            throw new DSSException("Unable to return CMS encoded", e);
+        }
+    }
+
+    @Override
+    public byte[] getEncoded() {
+        final String encoding = CMSUtils.getContentInfoEncoding(this);
+        if (!ASN1Encoding.DER.equals(encoding) && !ASN1Encoding.DL.equals(encoding) && !ASN1Encoding.BER.equals(encoding)) {
+            throw new UnsupportedOperationException(String.format("The encoding of type '%s' is not supported!", encoding));
+        }
+
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            // ContentInfo
+            BERSequenceGenerator sGen = new BERSequenceGenerator(baos);
+            sGen.addObject(CMSObjectIdentifiers.signedData);
+
+            // Signed Data
+            BERSequenceGenerator sigGen = new BERSequenceGenerator(sGen.getRawOutputStream(), 0, true);
+
+            // Version
+            sigGen.addObject(new ASN1Integer(version));
+
+            CMSUtils.writeSignedDataDigestAlgorithmsEncoded(this, sigGen.getRawOutputStream());
+            CMSUtils.writeContentInfoEncoded(this, sigGen.getRawOutputStream());
+            CMSUtils.writeSignedDataCertificatesEncoded(this, sigGen.getRawOutputStream());
+            CMSUtils.writeSignedDataCRLsEncoded(this, sigGen.getRawOutputStream());
+            CMSUtils.writeSignedDataSignerInfosEncoded(this, sigGen.getRawOutputStream());
+
+            sigGen.close();
+            sGen.close();
+
+            byte[] bytes = baos.toByteArray();
+            if (ASN1Encoding.DER.equals(encoding)) {
+                bytes = DSSASN1Utils.getDEREncoded(bytes);
+            } else if (ASN1Encoding.DL.equals(encoding)) {
+                bytes = DSSASN1Utils.getDLEncoded(bytes);
+            }
+            // otherwise keep BER
+            return bytes;
+
+        } catch (IOException e) {
             throw new DSSException("Unable to return CMS encoded", e);
         }
     }

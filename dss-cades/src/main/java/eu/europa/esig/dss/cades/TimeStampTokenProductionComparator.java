@@ -30,10 +30,10 @@ import java.util.Comparator;
 /**
  * The class used to compare production time of {@code TimeStampToken}s
  * Class checks the production time of timestamps and their covered data
- * 
+ * <p>
  * The method compare() returns 
  *     -1 if the {@code timeStampTokenOne} was created before {@code timeStampTokenTwo}
- *     0 if TimeStampTokens were created in the same
+ *     0 if TimeStampTokens were created at the same time
  *     1 if the {@code timeStampTokenOne} was created after {@code timeStampTokenTwo}
  *     
  */

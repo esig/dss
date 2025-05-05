@@ -29,7 +29,7 @@ import eu.europa.esig.dss.evidencerecord.common.validation.ArchiveTimeStampObjec
 import eu.europa.esig.dss.evidencerecord.common.validation.CryptographicInformation;
 import eu.europa.esig.dss.evidencerecord.common.validation.CryptographicInformationType;
 import eu.europa.esig.dss.evidencerecord.common.validation.DefaultEvidenceRecord;
-import eu.europa.esig.dss.evidencerecord.common.validation.scope.EvidenceRecordTimestampScopeFinder;
+import eu.europa.esig.dss.spi.validation.scope.EvidenceRecordTimestampScopeFinder;
 import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;

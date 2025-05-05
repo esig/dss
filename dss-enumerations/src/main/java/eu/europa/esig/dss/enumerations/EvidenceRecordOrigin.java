@@ -29,7 +29,7 @@ public enum EvidenceRecordOrigin {
     CONTAINER,
 
     /** Defines an evidence record embedded in electronic signature */
-    EMBEDDED,
+    SIGNATURE,
 
     /** An evidence record provided externally to the validation */
     EXTERNAL

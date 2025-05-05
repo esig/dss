@@ -127,6 +127,12 @@
 						 printMethod="eu.europa.esig.dss.jaxb.parsers.EvidenceRecordOriginParser.print" />
 	  </jaxb:bindings>
 
+	  <jaxb:bindings node="//xs:simpleType[@name='EvidenceRecordIncorporationType']">
+		  <jaxb:javaType name="eu.europa.esig.dss.enumerations.EvidenceRecordIncorporationType"
+						 parseMethod="eu.europa.esig.dss.jaxb.parsers.EvidenceRecordIncorporationTypeParser.parse"
+						 printMethod="eu.europa.esig.dss.jaxb.parsers.EvidenceRecordIncorporationTypeParser.print" />
+	  </jaxb:bindings>
+
   	<jaxb:bindings node="//xs:complexType[@name='BasicSignature']//xs:element[@name='EncryptionAlgoUsedToSignThisToken']">
 			<jaxb:javaType name="eu.europa.esig.dss.enumerations.EncryptionAlgorithm"
 				parseMethod="eu.europa.esig.dss.jaxb.parsers.EncryptionAlgorithmParser.parse"
@@ -323,6 +329,11 @@
 		    <jaxb:baseType name="eu.europa.esig.dss.diagnostic.jaxb.XmlSignerData" />
 	    </jaxb:property>
 	</jaxb:bindings>
+	  <jaxb:bindings node="//xs:complexType[@name='EvidenceRecord']//xs:attribute[@name='Parent']">
+		  <jaxb:property>
+			  <jaxb:baseType name="eu.europa.esig.dss.diagnostic.jaxb.XmlSignature" />
+		  </jaxb:property>
+	  </jaxb:bindings>
 
     <jaxb:bindings node="//xs:complexType[@name='TimestampedObject']//xs:attribute[@name='Token']">
         <jaxb:property>

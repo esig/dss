@@ -20,14 +20,13 @@
  */
 package eu.europa.esig.dss.xades.validation.scope;
 
-import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.identifier.TokenIdentifierProvider;
 import eu.europa.esig.dss.spi.validation.scope.SignatureScopeWithTransformations;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * This SignatureScope represents a Manifest entry document
@@ -74,24 +73,6 @@ public class ManifestEntrySignatureScope extends SignatureScopeWithTransformatio
 		return "ManifestEntrySignatureScope{" +
 				"manifestName='" + manifestName + '\'' +
 				"} " + super.toString();
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (!(o instanceof ManifestEntrySignatureScope)) return false;
-		if (!super.equals(o)) return false;
-
-		ManifestEntrySignatureScope that = (ManifestEntrySignatureScope) o;
-
-		return Objects.equals(manifestName, that.manifestName);
-	}
-
-	@Override
-	public int hashCode() {
-		int result = super.hashCode();
-		result = 31 * result + (manifestName != null ? manifestName.hashCode() : 0);
-		return result;
 	}
 
 }

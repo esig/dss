@@ -20,7 +20,9 @@
  */
 package eu.europa.esig.dss.evidencerecord.common.validation;
 
+import eu.europa.esig.dss.enumerations.EvidenceRecordIncorporationType;
 import eu.europa.esig.dss.enumerations.EvidenceRecordOrigin;
+import eu.europa.esig.dss.evidencerecord.common.validation.identifier.EmbeddedEvidenceRecordIdentifierBuilder;
 import eu.europa.esig.dss.evidencerecord.common.validation.identifier.EvidenceRecordIdentifierBuilder;
 import eu.europa.esig.dss.evidencerecord.common.validation.timestamp.EvidenceRecordTimestampSource;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -30,14 +32,16 @@ import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.evidencerecord.EmbeddedEvidenceRecordHelper;
 import eu.europa.esig.dss.spi.x509.TokenCertificateSource;
+import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,6 +62,11 @@ public abstract class DefaultEvidenceRecord implements EvidenceRecord {
      * Origin of the evidence record
      */
     private EvidenceRecordOrigin origin;
+
+    /**
+     * Incorporation type
+     */
+    private EvidenceRecordIncorporationType incorporationType;
 
     /**
      * Contains a list of documents time-stamped within a reduced HashTree
@@ -84,7 +93,9 @@ public abstract class DefaultEvidenceRecord implements EvidenceRecord {
      */
     private OfflineOCSPSource ocspSource;
 
-    /** Cached instance of timestamp source */
+    /**
+     * Cached instance of timestamp source
+     */
     private EvidenceRecordTimestampSource<?> timestampSource;
 
     /**
@@ -112,7 +123,14 @@ public abstract class DefaultEvidenceRecord implements EvidenceRecord {
      */
     private List<TimestampedReference> timestampedReferences;
 
-    /** Cached identifier instance */
+    /**
+     * Helper used for processing of the embedded evidence record type
+     */
+    private EmbeddedEvidenceRecordHelper embeddedEvidenceRecordHelper;
+
+    /**
+     * Cached identifier instance
+     */
     private Identifier identifier;
 
     /**
@@ -148,6 +166,20 @@ public abstract class DefaultEvidenceRecord implements EvidenceRecord {
      */
     public void setOrigin(EvidenceRecordOrigin origin) {
         this.origin = origin;
+    }
+
+    @Override
+    public EvidenceRecordIncorporationType getIncorporationType() {
+        return incorporationType;
+    }
+
+    /**
+     * Sets the incorporation type for embedded evidence records
+     *
+     * @param incorporationType {@link EvidenceRecordIncorporationType}
+     */
+    public void setIncorporationType(EvidenceRecordIncorporationType incorporationType) {
+        this.incorporationType = incorporationType;
     }
 
     @Override
@@ -313,6 +345,29 @@ public abstract class DefaultEvidenceRecord implements EvidenceRecord {
     }
 
     @Override
+    public void setEmbeddedEvidenceRecordHelper(EmbeddedEvidenceRecordHelper embeddedEvidenceRecordHelper) {
+        this.embeddedEvidenceRecordHelper = embeddedEvidenceRecordHelper;
+    }
+
+    @Override
+    public boolean isEmbedded() {
+        return embeddedEvidenceRecordHelper != null;
+    }
+
+    @Override
+    public AdvancedSignature getMasterSignature() {
+        if (embeddedEvidenceRecordHelper != null) {
+            return embeddedEvidenceRecordHelper.getMasterSignature();
+        }
+        return null;
+    }
+
+    @Override
+    public EmbeddedEvidenceRecordHelper getEmbeddedEvidenceRecordHelper() {
+        return embeddedEvidenceRecordHelper;
+    }
+
+    @Override
     public List<String> getStructureValidationResult() {
         if (Utils.isCollectionEmpty(structureValidationMessages)) {
             structureValidationMessages = validateStructure();
@@ -333,7 +388,11 @@ public abstract class DefaultEvidenceRecord implements EvidenceRecord {
     @Override
     public Identifier getDSSId() {
         if (identifier == null) {
-            identifier = new EvidenceRecordIdentifierBuilder(this).build();
+            if (embeddedEvidenceRecordHelper != null) {
+                identifier = new EmbeddedEvidenceRecordIdentifierBuilder(embeddedEvidenceRecordHelper).build(this);
+            } else {
+                identifier = new EvidenceRecordIdentifierBuilder().build(this);
+            }
         }
         return identifier;
     }

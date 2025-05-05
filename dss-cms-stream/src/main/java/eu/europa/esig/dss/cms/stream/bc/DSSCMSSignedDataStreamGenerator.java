@@ -359,13 +359,24 @@ public class DSSCMSSignedDataStreamGenerator extends CMSSignedDataStreamGenerato
             ASN1EncodableVector signerInfos = new ASN1EncodableVector();
 
             //
+            // add the precalculated SignerInfo objects
+            //
+            {
+                Iterator it = _signers.iterator();
+                while (it.hasNext())
+                {
+                    SignerInformation signer = (SignerInformation)it.next();
+                    signerInfos.add(signer.toASN1Structure());
+                }
+            }
+
+            //
             // add the generated SignerInfo objects
             //
 
             for (Iterator it = signerGens.iterator(); it.hasNext();)
             {
                 SignerInfoGenerator sigGen = (SignerInfoGenerator)it.next();
-
 
                 try
                 {
@@ -378,18 +389,6 @@ public class DSSCMSSignedDataStreamGenerator extends CMSSignedDataStreamGenerato
                 catch (CMSException e)
                 {
                     throw new DSSException("Exception generating signers: " + e.getMessage(), e);
-                }
-            }
-
-            //
-            // add the precalculated SignerInfo objects
-            //
-            {
-                Iterator it = _signers.iterator();
-                while (it.hasNext())
-                {
-                    SignerInformation signer = (SignerInformation)it.next();
-                    signerInfos.add(signer.toASN1Structure());
                 }
             }
 

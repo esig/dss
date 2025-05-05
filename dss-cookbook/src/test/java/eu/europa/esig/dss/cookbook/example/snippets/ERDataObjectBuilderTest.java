@@ -139,6 +139,15 @@ class ERDataObjectBuilderTest {
         // Default : FALSE (computes digest on the whole signature)
         cadesEvidenceRecordDigestBuilder.setParallelEvidenceRecord(true);
 
+        // Optional : Define whether the CMS shall be forced DER-encoded,
+        // as required by ETSI TS 119 122-3 v1.1.1.
+        // The requirement is not present in RFC 4998, thus both implementation may exist.
+        // When TRUE : DER-encodes the CMS signature before computing hash
+        // (aligned with ETSI TS 119 122-3 v1.1.1).
+        // When FALSE : computes hash on the original coding of CMS (aligned with RFC 4998).
+        // Default : FALSE (computes digest on the existing coding of CMS)
+        cadesEvidenceRecordDigestBuilder.setDEREncoded(true);
+
         // Use method #build to build signature digest for internal-evidence-record
         // incorporation
         Digest signatureDigest = cadesEvidenceRecordDigestBuilder.build();

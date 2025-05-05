@@ -823,7 +823,7 @@ public class TimestampToken extends Token {
 	 *
 	 * @return TRUE if all reference validations are valid, FALSE otherwise
 	 */
-	protected boolean areReferenceValidationsValid() {
+	public boolean areReferenceValidationsValid() {
 		if (Utils.isCollectionNotEmpty(referenceValidations)) {
 			for (ReferenceValidation referenceValidation : referenceValidations) {
 				if (DigestMatcherType.EVIDENCE_RECORD_ORPHAN_REFERENCE != referenceValidation.getType() &&

@@ -677,6 +677,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 			assertEquals(isBaselineT(signatureFormat), diagnosticData.isTLevelTechnicallyValid(signatureWrapper.getId()));
 			assertEquals(isBaselineLTA(signatureFormat), diagnosticData.isThereALevel(signatureWrapper.getId()));
 			assertEquals(isBaselineLTA(signatureFormat), diagnosticData.isALevelTechnicallyValid(signatureWrapper.getId()));
+			assertEquals(isLevelERS(signatureFormat), diagnosticData.isThereERSLevel(signatureWrapper.getId()));
 		}
 	}
 
@@ -714,7 +715,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 			case PAdES_BASELINE_LT:
 				return true;
 			default:
-				return isBaselineLTA(signatureLevel);
+				return isBaselineLTA(signatureLevel) || isLevelERS(signatureLevel);
 		}
 	}
 	
@@ -727,6 +728,16 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 			case JAdES_BASELINE_LTA:
 			case PAdES_BASELINE_LTA:
 			case PAdES_LTV:
+				return true;
+			default:
+				return false;
+		}
+	}
+
+	protected boolean isLevelERS(SignatureLevel signatureLevel) {
+		switch (signatureLevel) {
+			case XAdES_ERS:
+			case CAdES_ERS:
 				return true;
 			default:
 				return false;
@@ -1271,6 +1282,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 			List<XmlDigestMatcher> digestMatchers = evidenceRecord.getDigestMatchers();
 			assertTrue(Utils.isCollectionNotEmpty(digestMatchers));
 			DigestAlgorithm digestAlgorithm = null;
+			boolean masterSignatureFound = false;
 			for (XmlDigestMatcher digestMatcher : digestMatchers) {
 				assertNotNull(digestMatcher.getDigestMethod());
 				assertNotNull(digestMatcher.getDigestValue());
@@ -1280,7 +1292,11 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 					digestAlgorithm = digestMatcher.getDigestMethod();
 				}
 				if (allArchiveDataObjectsProvidedToValidation()) {
-					assertEquals(DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT, digestMatcher.getType());
+					if (DigestMatcherType.EVIDENCE_RECORD_MASTER_SIGNATURE == digestMatcher.getType()) {
+						masterSignatureFound = true;
+					} else if (DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT != digestMatcher.getType()) {
+						fail("EVIDENCE_RECORD_ARCHIVE_OBJECT DigestMatcherType is expected!");
+					}
 					assertTrue(digestMatcher.isDataFound());
 					assertTrue(digestMatcher.isDataIntact());
 				}
@@ -1288,6 +1304,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 					assertEquals(digestMatcher.getUri(), digestMatcher.getDocumentName());
 				}
 			}
+			assertEquals(EvidenceRecordOrigin.SIGNATURE == evidenceRecord.getOrigin(), masterSignatureFound);
 		}
 	}
 
@@ -1307,7 +1324,8 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 				DigestAlgorithm digestAlgorithm = null;
 				for (XmlDigestMatcher digestMatcher : digestMatchers) {
 					if (digestAlgorithm != null) {
-						assertEquals(digestAlgorithm, digestMatcher.getDigestMethod());
+						assertTrue(digestMatcher.getDigestMethod() == null ||
+								digestAlgorithm == digestMatcher.getDigestMethod());
 					} else {
 						digestAlgorithm = digestMatcher.getDigestMethod();
 					}
@@ -1353,8 +1371,18 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 		for (EvidenceRecordWrapper evidenceRecord : evidenceRecords) {
 			List<XmlSignatureScope> evidenceRecordScopes = evidenceRecord.getEvidenceRecordScopes();
 			assertTrue(Utils.isCollectionNotEmpty(evidenceRecordScopes));
+
+			boolean masterSignatureScopeFound = false;
 			for (XmlSignatureScope signatureScope : evidenceRecordScopes) {
-				assertEquals(SignatureScopeType.FULL, signatureScope.getScope());
+				if (SignatureScopeType.SIGNATURE == signatureScope.getScope()) {
+					assertNotNull(evidenceRecord.getParent());
+					assertEquals(evidenceRecord.getParent().getId(), signatureScope.getName());
+					masterSignatureScopeFound = true;
+				} else if (SignatureScopeType.FULL != signatureScope.getScope() &&
+						SignatureScopeType.PARTIAL != signatureScope.getScope() &&
+						SignatureScopeType.ARCHIVED != signatureScope.getScope()) {
+					fail(String.format("Unsupported SignatureScopeType '%s'!", signatureScope.getScope()));
+				}
 				assertNotNull(signatureScope.getName());
 				assertNotNull(signatureScope.getDescription());
 
@@ -1364,24 +1392,26 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 				assertNotNull(signerData.getDigestAlgoAndValue().getDigestMethod());
 				assertNotNull(signerData.getDigestAlgoAndValue().getDigestValue());
 			}
+			assertEquals(evidenceRecord.isEmbedded(), masterSignatureScopeFound);
 		}
 	}
 
 	protected void checkEvidenceRecordTimestampedReferences(DiagnosticData diagnosticData) {
-		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
-
 		List<EvidenceRecordWrapper> evidenceRecords = diagnosticData.getEvidenceRecords();
 		for (EvidenceRecordWrapper evidenceRecord : evidenceRecords) {
 			List<XmlTimestampedObject> coveredObjects = evidenceRecord.getCoveredObjects();
 			assertTrue(Utils.isCollectionNotEmpty(coveredObjects));
 
-			assertEquals(Utils.collectionSize(signatures), coveredObjects.stream()
+			int expectedCoveredSignatures = evidenceRecord.isEmbedded() ?
+					1 + diagnosticData.getAllCounterSignaturesForMasterSignature(evidenceRecord.getParent()).size() :
+					diagnosticData.getSignatures().size();
+			assertEquals(expectedCoveredSignatures, coveredObjects.stream()
 					.filter(r -> TimestampedObjectType.SIGNATURE == r.getCategory()).count());
 			assertTrue(Utils.isCollectionNotEmpty(coveredObjects.stream()
 					.filter(r -> TimestampedObjectType.SIGNED_DATA == r.getCategory()).collect(Collectors.toList())));
 
-			assertEquals(Utils.collectionSize(signatures), Utils.collectionSize(evidenceRecord.getCoveredSignatures()));
-			if (Utils.isCollectionNotEmpty(signatures)) {
+			assertEquals(expectedCoveredSignatures, Utils.collectionSize(evidenceRecord.getCoveredSignatures()));
+			if (expectedCoveredSignatures > 0) {
 				assertTrue(Utils.isCollectionNotEmpty(evidenceRecord.getCoveredCertificates()));
 				assertTrue(Utils.isCollectionNotEmpty(evidenceRecord.getCoveredRevocations()));
 				assertTrue(Utils.isCollectionNotEmpty(evidenceRecord.getCoveredTimestamps()));

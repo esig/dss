@@ -83,7 +83,7 @@ class ASiCEWithCAdESAsn1EvidenceRecordFullRenewalInvalidManifestValidationTest e
         assertEquals(1, notFoundArchiveObjectCounter);
 
         List<TimestampedReference> timestampedReferences = evidenceRecord.getTimestampedReferences();
-        assertTrue(Utils.isCollectionNotEmpty(timestampedReferences));
+        assertFalse(Utils.isCollectionNotEmpty(timestampedReferences));
 
         List<TimestampToken> timestamps = evidenceRecord.getTimestamps();
         assertEquals(3, Utils.collectionSize(timestamps));
@@ -207,7 +207,7 @@ class ASiCEWithCAdESAsn1EvidenceRecordFullRenewalInvalidManifestValidationTest e
             }
 
             List<XmlSignatureScope> timestampScopes = timestamp.getTimestampScopes();
-            assertTrue(Utils.isCollectionNotEmpty(timestampScopes));
+            assertFalse(Utils.isCollectionNotEmpty(timestampScopes));
 
             List<XmlTimestampedObject> timestampedObjects = timestamp.getTimestampedObjects();
             assertTrue(Utils.isCollectionNotEmpty(timestampedObjects));
@@ -215,6 +215,18 @@ class ASiCEWithCAdESAsn1EvidenceRecordFullRenewalInvalidManifestValidationTest e
         assertTrue(arcTstFound);
         assertTrue(tstRenewalFound);
         assertTrue(tstChainRenewalFound);
+    }
+
+    @Override
+    protected void checkEvidenceRecordScopes(DiagnosticData diagnosticData) {
+        EvidenceRecordWrapper evidenceRecord = diagnosticData.getEvidenceRecords().get(0);
+        assertFalse(Utils.isCollectionNotEmpty(evidenceRecord.getEvidenceRecordScopes()));
+    }
+
+    @Override
+    protected void checkEvidenceRecordTimestampedReferences(DiagnosticData diagnosticData) {
+        EvidenceRecordWrapper evidenceRecord = diagnosticData.getEvidenceRecords().get(0);
+        assertFalse(Utils.isCollectionNotEmpty(evidenceRecord.getCoveredObjects()));
     }
 
     @Override

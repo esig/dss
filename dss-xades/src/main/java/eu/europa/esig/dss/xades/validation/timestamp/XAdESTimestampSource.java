@@ -24,16 +24,26 @@ import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EvidenceRecordOrigin;
 import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DSSMessageDigest;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.ReferenceValidation;
 import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.SignatureProperties;
+import eu.europa.esig.dss.spi.validation.analyzer.evidencerecord.EvidenceRecordAnalyzer;
+import eu.europa.esig.dss.spi.validation.analyzer.evidencerecord.EvidenceRecordAnalyzerFactory;
+import eu.europa.esig.dss.spi.validation.timestamp.SignatureTimestampIdentifierBuilder;
+import eu.europa.esig.dss.spi.validation.timestamp.SignatureTimestampSource;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
+import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
@@ -41,13 +51,14 @@ import eu.europa.esig.dss.spi.x509.tsp.TimestampInclude;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.spi.signature.AdvancedSignature;
-import eu.europa.esig.dss.spi.validation.SignatureProperties;
-import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
-import eu.europa.esig.dss.spi.validation.timestamp.SignatureTimestampSource;
-import eu.europa.esig.dss.spi.validation.timestamp.SignatureTimestampIdentifierBuilder;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureUtils;
+import eu.europa.esig.dss.xades.definition.XAdESNamespace;
+import eu.europa.esig.dss.xades.definition.XAdESPath;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
+import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
+import eu.europa.esig.dss.xades.definition.xadesen.XAdESEvidencerecordNamespaceElement;
+import eu.europa.esig.dss.xades.evidencerecord.XAdESEmbeddedEvidenceRecordHelper;
 import eu.europa.esig.dss.xades.reference.XAdESReferenceValidation;
 import eu.europa.esig.dss.xades.validation.XAdESAttribute;
 import eu.europa.esig.dss.xades.validation.XAdESCertificateRefExtractionUtils;
@@ -56,11 +67,7 @@ import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import eu.europa.esig.dss.xades.validation.XAdESSignedDataObjectProperties;
 import eu.europa.esig.dss.xades.validation.XAdESUnsignedSigProperties;
 import eu.europa.esig.dss.xades.validation.scope.XAdESTimestampScopeFinder;
-import eu.europa.esig.dss.xades.definition.XAdESNamespace;
-import eu.europa.esig.dss.xades.definition.XAdESPath;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
-import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
-import eu.europa.esig.dss.xades.definition.xadesen.XAdESEvidencerecordNamespaceElement;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -361,10 +368,56 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 
 	@Override
 	protected List<EvidenceRecord> makeEvidenceRecords(XAdESAttribute signatureAttribute, List<TimestampedReference> references) {
-		if (signatureAttribute != null) {
-			LOG.warn("Embedded evidence records are not supported! The unsigned attribute is skipped.");
+		Element element = signatureAttribute.getElement();
+		if (element == null || element.getChildNodes().getLength() == 0) {
+			LOG.warn("The element containing evidence record(s) is empty!");
+			return Collections.emptyList();
 		}
-		return Collections.emptyList();
+
+		final List<EvidenceRecord> result = new ArrayList<>();
+		for (int ii = 0; ii < element.getChildNodes().getLength(); ii++) {
+			final Element encapsulatedEvidenceRecord = (Element) element.getChildNodes().item(ii);
+			EvidenceRecord evidenceRecord = createEvidenceRecord(signatureAttribute, encapsulatedEvidenceRecord, ii);
+			if (evidenceRecord != null) {
+				result.add(evidenceRecord);
+			}
+		}
+		return result;
+	}
+
+	private EvidenceRecord createEvidenceRecord(XAdESAttribute signatureAttribute, Element encapsulatedEvidenceRecord, int orderWithinAttribute) {
+		try {
+			DSSDocument erDocument = getEvidenceRecordDocument(encapsulatedEvidenceRecord);
+			EvidenceRecordAnalyzer evidenceRecordAnalyzer = EvidenceRecordAnalyzerFactory.fromDocument(erDocument);
+			evidenceRecordAnalyzer.setEvidenceRecordOrigin(EvidenceRecordOrigin.SIGNATURE);
+			evidenceRecordAnalyzer.setDetachedContents(signature.getDetachedContents());
+
+			final XAdESEmbeddedEvidenceRecordHelper embeddedEvidenceRecordHelper = new XAdESEmbeddedEvidenceRecordHelper(signature, signatureAttribute);
+			embeddedEvidenceRecordHelper.setDetachedContents(signature.getDetachedContents());
+			embeddedEvidenceRecordHelper.setOrderOfAttribute(getAttributeOrder(signatureAttribute));
+			embeddedEvidenceRecordHelper.setOrderWithinAttribute(orderWithinAttribute);
+			evidenceRecordAnalyzer.setEmbeddedEvidenceRecordHelper(embeddedEvidenceRecordHelper);
+
+			return evidenceRecordAnalyzer.getEvidenceRecord();
+
+		} catch (Exception e) {
+			LOG.warn("Unable to build an embedded evidence record. Reason : {}", e.getMessage(), e);
+			return null;
+		}
+	}
+
+	private DSSDocument getEvidenceRecordDocument(Element encapsulatedEvidenceRecord) {
+		if (XAdESEvidencerecordNamespaceElement.EVIDENCE_RECORD.isSameTagName(encapsulatedEvidenceRecord.getLocalName())) {
+			return new InMemoryDocument(DomUtils.serializeNode(encapsulatedEvidenceRecord));
+
+		} else if (XAdESEvidencerecordNamespaceElement.ASN1_EVIDENCE_RECORD.isSameTagName(encapsulatedEvidenceRecord.getLocalName())) {
+			String base64EncodedEvidenceRecord = encapsulatedEvidenceRecord.getTextContent();
+			if (Utils.isBase64Encoded(base64EncodedEvidenceRecord)) {
+				return new InMemoryDocument(Utils.fromBase64(base64EncodedEvidenceRecord));
+			}
+		}
+		throw new UnsupportedOperationException(String.format("The provided format of an evidence record within " +
+				"the '%s' element is not supported.", encapsulatedEvidenceRecord.getLocalName()));
 	}
 
 	@Override

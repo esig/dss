@@ -494,6 +494,36 @@ public class CAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         return true;
     }
 
+    @Override
+    public boolean hasExtendedERSProfile() {
+        // Validate for every signer, as in CMS an embedded ER covers all signatures
+        boolean signerERSFound = false;
+        for (SignerInformation signerInformation : signature.getCMS().getSignerInfos()) {
+            // internal-evidence-record
+            int internalERNumber = Utils.arraySize(CAdESUtils.getUnsignedAttributes(signerInformation, OID.id_aa_er_internal));
+            // external-evidence-record
+            int externalERNumber = Utils.arraySize(CAdESUtils.getUnsignedAttributes(signerInformation, OID.id_aa_er_external));
+            if (internalERNumber + externalERNumber == 0) {
+                LOG.debug("internal-evidence-records or external-evidence-records attribute shall be present for CAdES-ERS signature (cardinality >= 1)!");
+                continue;
+            }
+
+            if (signature.getCMS().isDetachedSignature()) {
+                if (internalERNumber > 0) {
+                    LOG.warn("In case a signature is detached, the external-evidence-records attribute shall be used (requirement (q))!");
+                    continue;
+                }
+            } else {
+                if (externalERNumber > 0) {
+                    LOG.warn("In case a signature is attached, the internal-evidence-records attribute shall be used (requirement (q))!");
+                    continue;
+                }
+            }
+            signerERSFound = true;
+        }
+        return signerERSFound;
+    }
+
     /**
      * Verifies whether the presence of content-type attribute is conformant to the given signature type
      *

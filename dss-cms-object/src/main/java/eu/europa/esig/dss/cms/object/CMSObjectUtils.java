@@ -11,12 +11,15 @@ import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.signature.resources.DSSResourcesHandlerBuilder;
 import org.bouncycastle.asn1.ASN1Encodable;
+import org.bouncycastle.asn1.ASN1EncodableVector;
+import org.bouncycastle.asn1.ASN1Encoding;
 import org.bouncycastle.asn1.ASN1Set;
 import org.bouncycastle.asn1.BEROctetString;
 import org.bouncycastle.asn1.BERSequence;
 import org.bouncycastle.asn1.BERSet;
 import org.bouncycastle.asn1.BERTaggedObject;
 import org.bouncycastle.asn1.DERSequence;
+import org.bouncycastle.asn1.DERSet;
 import org.bouncycastle.asn1.DERTaggedObject;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.cms.CMSObjectIdentifiers;
@@ -50,7 +53,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Objects;
 
 /**
@@ -136,7 +139,7 @@ public class CMSObjectUtils implements ICMSUtils {
      * @return {@link Store}
      */
     public static Store<Encodable> toCRLsStore(Store<X509CRLHolder> crls, Store<?> ocspResponses, Store<?> ocspBasicResponses) {
-        final Collection<Encodable> newCrlsStore = new HashSet<>(crls.getMatches(null));
+        final Collection<Encodable> newCrlsStore = new LinkedHashSet<>(crls.getMatches(null));
         for (Object ocsp : ocspResponses.getMatches(null)) {
             newCrlsStore.add(new OtherRevocationInfoFormat(CMSObjectIdentifiers.id_ri_ocsp_response, (ASN1Encodable) ocsp));
         }
@@ -168,6 +171,25 @@ public class CMSObjectUtils implements ICMSUtils {
     @Override
     public CMS toCMS(TimeStampToken timeStampToken) {
         return new CMSSignedDataObject(timeStampToken.toCMSSignedData());
+    }
+
+    @Override
+    public String getContentInfoEncoding(CMS cms) {
+        CMSSignedDataObject cmsSignedDataObject = toCMSSignedDataObject(cms);
+        final ContentInfo contentInfo = cmsSignedDataObject.getCMSSignedData().toASN1Structure();
+        if (contentInfo.isDefiniteLength()) {
+            return ASN1Encoding.DL;
+        } else {
+            return ASN1Encoding.BER;
+        }
+    }
+
+    @Override
+    public void writeSignedDataDigestAlgorithmsEncoded(CMS cms, OutputStream os) throws IOException {
+        SignedData signedData = getSignedData(cms);
+
+        ASN1Set digestAlgorithms = signedData.getDigestAlgorithms();
+        digestAlgorithms.encodeTo(os);
     }
 
     @Override
@@ -248,6 +270,41 @@ public class CMSObjectUtils implements ICMSUtils {
         } else {
             if (LOG.isDebugEnabled()) {
                 LOG.debug("CRLs are not present in the SignedData.");
+            }
+        }
+    }
+
+    @Override
+    public void writeSignedDataSignerInfosEncoded(CMS cms, OutputStream os) throws IOException {
+        SignedData signedData = getSignedData(cms);
+
+        byte[] signerInfosBytes;
+
+        SignerInformationStore signerInfos = cms.getSignerInfos();
+        if (signerInfos != null) {
+            try {
+                ASN1EncodableVector signerInfosVector = new ASN1EncodableVector();
+                for (SignerInformation signerInformation : cms.getSignerInfos()) {
+                    signerInfosVector.add(signerInformation.toASN1Structure());
+                }
+
+                if (signedData.getSignerInfos() instanceof BERSet) {
+                    signerInfosBytes = new BERSet(signerInfosVector).getEncoded();
+                } else {
+                    signerInfosBytes = new DERSet(signerInfosVector).getEncoded();
+                }
+
+            } catch (IOException e) {
+                throw new DSSException(String.format("An error occurred on reading SignedData.signerInfos field : %s", e.getMessage()), e);
+            }
+            if (LOG.isTraceEnabled()) {
+                LOG.trace("SignerInfos: {}", DSSUtils.toHex(signerInfosBytes));
+            }
+            os.write(signerInfosBytes);
+
+        } else {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("SignerInfos are not present in the SignedData.");
             }
         }
     }
