@@ -30,7 +30,8 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcSSCD;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
 import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateQcSSCDCheck;
@@ -59,7 +60,7 @@ class CertificateQcSSCDCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcSSCDCheck cqsscdc = new CertificateQcSSCDCheck(i18nProvider, result,
-                new CertificateWrapper(xc), constraint);
+                new CertificateWrapper(xc), new LevelConstraintWrapper(constraint));
         cqsscdc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -84,7 +85,7 @@ class CertificateQcSSCDCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcSSCDCheck cqsscdc = new CertificateQcSSCDCheck(i18nProvider, result,
-                new CertificateWrapper(xc), constraint);
+                new CertificateWrapper(xc), new LevelConstraintWrapper(constraint));
         cqsscdc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -107,7 +108,7 @@ class CertificateQcSSCDCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcSSCDCheck cqsscdc = new CertificateQcSSCDCheck(i18nProvider, result,
-                new CertificateWrapper(xc), constraint);
+                new CertificateWrapper(xc), new LevelConstraintWrapper(constraint));
         cqsscdc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -128,7 +129,7 @@ class CertificateQcSSCDCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcSSCDCheck cqsscdc = new CertificateQcSSCDCheck(i18nProvider, result,
-                new CertificateWrapper(xc), constraint);
+                new CertificateWrapper(xc), new LevelConstraintWrapper(constraint));
         cqsscdc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -145,7 +146,7 @@ class CertificateQcSSCDCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateQcSSCDCheck cqsscdc = new CertificateQcSSCDCheck(i18nProvider, result,
-                new CertificateWrapper(xc), constraint);
+                new CertificateWrapper(xc), new LevelConstraintWrapper(constraint));
         cqsscdc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

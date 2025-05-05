@@ -22,11 +22,6 @@
 
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-policy-jaxb</artifactId>
-		</dependency>
-	
-		<dependency>
-			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-diagnostic-jaxb</artifactId>
 		</dependency>
 		<dependency>
@@ -81,7 +76,23 @@
 		    <artifactId>junit-jupiter-params</artifactId>
 			<scope>test</scope>
 		</dependency>
-						
+
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-policy-jaxb</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-policy-crypto-xml</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-policy-crypto-json</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 		<!-- Choose your implementation -->
 <!-- 		<dependency> -->
 <!-- 			<groupId>eu.europa.ec.joinup.sd-dss</groupId> -->

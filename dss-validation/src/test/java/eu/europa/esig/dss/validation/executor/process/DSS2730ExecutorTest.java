@@ -37,13 +37,13 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.BasicSignatureConstraints;
 import eu.europa.esig.dss.policy.jaxb.CertificateConstraints;
-import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.policy.jaxb.TimeConstraint;
 import eu.europa.esig.dss.policy.jaxb.TimeUnit;
@@ -72,7 +72,7 @@ class DSS2730ExecutorTest extends AbstractProcessExecutorTest {
         String sigTstId = diagnosticData.getUsedTimestamps().get(0).getId();
         String arcTstId = diagnosticData.getUsedTimestamps().get(1).getId();
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         CertificateConstraints signingCertificateConstraints = validationPolicy
                 .getSignatureConstraints().getBasicSignatureConstraints().getSigningCertificate();
 
@@ -273,7 +273,7 @@ class DSS2730ExecutorTest extends AbstractProcessExecutorTest {
         String sigTstId = diagnosticData.getUsedTimestamps().get(0).getId();
         String arcTstId = diagnosticData.getUsedTimestamps().get(1).getId();
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         CertificateConstraints signingCertificateConstraints = validationPolicy
                 .getSignatureConstraints().getBasicSignatureConstraints().getSigningCertificate();
 
@@ -486,7 +486,7 @@ class DSS2730ExecutorTest extends AbstractProcessExecutorTest {
         String sigTstId = diagnosticData.getUsedTimestamps().get(0).getId();
         String arcTstId = diagnosticData.getUsedTimestamps().get(1).getId();
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         CertificateConstraints signingCertificateConstraints = validationPolicy
                 .getSignatureConstraints().getBasicSignatureConstraints().getSigningCertificate();
 
@@ -721,7 +721,7 @@ class DSS2730ExecutorTest extends AbstractProcessExecutorTest {
         String sigTstId = diagnosticData.getUsedTimestamps().get(0).getId();
         String arcTstId = diagnosticData.getUsedTimestamps().get(1).getId();
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         CertificateConstraints signingCertificateConstraints = validationPolicy
                 .getSignatureConstraints().getBasicSignatureConstraints().getSigningCertificate();
 
@@ -960,7 +960,7 @@ class DSS2730ExecutorTest extends AbstractProcessExecutorTest {
                 .getSigningCertificate().getCertificate().getRevocations().get(1);
         xmlCertificateRevocation.setReason(RevocationReason.CERTIFICATE_HOLD);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         CertificateConstraints signingCertificateConstraints = validationPolicy
                 .getSignatureConstraints().getBasicSignatureConstraints().getSigningCertificate();
 
@@ -1173,7 +1173,7 @@ class DSS2730ExecutorTest extends AbstractProcessExecutorTest {
         String sigTstId = diagnosticData.getUsedTimestamps().get(0).getId();
         String arcTstId = diagnosticData.getUsedTimestamps().get(1).getId();
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         CertificateConstraints signingCertificateConstraints = validationPolicy
                 .getSignatureConstraints().getBasicSignatureConstraints().getSigningCertificate();
 
@@ -1380,7 +1380,7 @@ class DSS2730ExecutorTest extends AbstractProcessExecutorTest {
         String sigTstId = diagnosticData.getUsedTimestamps().get(0).getId();
         String arcTstId = diagnosticData.getUsedTimestamps().get(1).getId();
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         CertificateConstraints signingCertificateConstraints = validationPolicy
                 .getSignatureConstraints().getBasicSignatureConstraints().getSigningCertificate();
 

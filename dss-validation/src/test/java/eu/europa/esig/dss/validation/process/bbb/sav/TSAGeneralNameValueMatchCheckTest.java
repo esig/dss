@@ -26,7 +26,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTSAGeneralName;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.TSAGeneralNameValueMatchCheck;
@@ -53,7 +54,7 @@ class TSAGeneralNameValueMatchCheckTest extends AbstractTestCheck {
 
         XmlSAV result = new XmlSAV();
         TSAGeneralNameValueMatchCheck tsavmc = new TSAGeneralNameValueMatchCheck(i18nProvider, result,
-                new TimestampWrapper(timestamp), constraint);
+                new TimestampWrapper(timestamp), new LevelConstraintWrapper(constraint));
         tsavmc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -76,7 +77,7 @@ class TSAGeneralNameValueMatchCheckTest extends AbstractTestCheck {
 
         XmlSAV result = new XmlSAV();
         TSAGeneralNameValueMatchCheck tsavmc = new TSAGeneralNameValueMatchCheck(i18nProvider, result,
-                new TimestampWrapper(timestamp), constraint);
+                new TimestampWrapper(timestamp), new LevelConstraintWrapper(constraint));
         tsavmc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -99,7 +100,7 @@ class TSAGeneralNameValueMatchCheckTest extends AbstractTestCheck {
 
         XmlSAV result = new XmlSAV();
         TSAGeneralNameValueMatchCheck tsavmc = new TSAGeneralNameValueMatchCheck(i18nProvider, result,
-                new TimestampWrapper(timestamp), constraint);
+                new TimestampWrapper(timestamp), new LevelConstraintWrapper(constraint));
         tsavmc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

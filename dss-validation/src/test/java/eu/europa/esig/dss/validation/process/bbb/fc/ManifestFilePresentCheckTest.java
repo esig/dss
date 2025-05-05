@@ -26,7 +26,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlContainerInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlManifestFile;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.ManifestFilePresentCheck;
@@ -49,7 +50,7 @@ class ManifestFilePresentCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        ManifestFilePresentCheck mfpc = new ManifestFilePresentCheck(i18nProvider, result, xmlContainerInfo, constraint);
+        ManifestFilePresentCheck mfpc = new ManifestFilePresentCheck(i18nProvider, result, xmlContainerInfo, new LevelConstraintWrapper(constraint));
         mfpc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -67,7 +68,7 @@ class ManifestFilePresentCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        ManifestFilePresentCheck mfpc = new ManifestFilePresentCheck(i18nProvider, result, xmlContainerInfo, constraint);
+        ManifestFilePresentCheck mfpc = new ManifestFilePresentCheck(i18nProvider, result, xmlContainerInfo, new LevelConstraintWrapper(constraint));
         mfpc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -85,7 +86,7 @@ class ManifestFilePresentCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        ManifestFilePresentCheck mfpc = new ManifestFilePresentCheck(i18nProvider, result, xmlContainerInfo, constraint);
+        ManifestFilePresentCheck mfpc = new ManifestFilePresentCheck(i18nProvider, result, xmlContainerInfo, new LevelConstraintWrapper(constraint));
         mfpc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -103,7 +104,7 @@ class ManifestFilePresentCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        ManifestFilePresentCheck mfpc = new ManifestFilePresentCheck(i18nProvider, result, xmlContainerInfo, constraint);
+        ManifestFilePresentCheck mfpc = new ManifestFilePresentCheck(i18nProvider, result, xmlContainerInfo, new LevelConstraintWrapper(constraint));
         mfpc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -121,7 +122,7 @@ class ManifestFilePresentCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        ManifestFilePresentCheck mfpc = new ManifestFilePresentCheck(i18nProvider, result, xmlContainerInfo, constraint);
+        ManifestFilePresentCheck mfpc = new ManifestFilePresentCheck(i18nProvider, result, xmlContainerInfo, new LevelConstraintWrapper(constraint));
         mfpc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -139,7 +140,7 @@ class ManifestFilePresentCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        ManifestFilePresentCheck mfpc = new ManifestFilePresentCheck(i18nProvider, result, xmlContainerInfo, constraint);
+        ManifestFilePresentCheck mfpc = new ManifestFilePresentCheck(i18nProvider, result, xmlContainerInfo, new LevelConstraintWrapper(constraint));
         mfpc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

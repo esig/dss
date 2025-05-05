@@ -111,7 +111,38 @@ class RemoteCertificateValidationServiceTest {
 		validateReports(reportsDTO);
 
 		XmlSimpleCertificateReport simpleCertificateReport = reportsDTO.getSimpleCertificateReport();
-		assertEquals("QES AdESQC TL based (Test WebServices)", simpleCertificateReport.getValidationPolicy().getPolicyName());
+		assertEquals("Certificate policy TL based (Test WebServices)", simpleCertificateReport.getValidationPolicy().getPolicyName());
+	}
+
+	@Test
+	void testWithValidationPolicyAndCryptoSuite() {
+		CertificateToValidateDTO certificateDTO = getCompleteCertificateToValidateDTO();
+
+		RemoteDocument policy = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/constraint.xml"));
+		certificateDTO.setPolicy(policy);
+
+		RemoteDocument cryptographicSuite = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/dss-crypto-suite.json"));
+		certificateDTO.setCryptographicSuite(cryptographicSuite);
+
+		CertificateReportsDTO reportsDTO = validationService.validateCertificate(certificateDTO);
+		validateReports(reportsDTO);
+
+		XmlSimpleCertificateReport simpleCertificateReport = reportsDTO.getSimpleCertificateReport();
+		assertEquals("Certificate policy TL based (Test WebServices)", simpleCertificateReport.getValidationPolicy().getPolicyName());
+	}
+
+	@Test
+	void testWithCryptoSuite() {
+		CertificateToValidateDTO certificateDTO = getCompleteCertificateToValidateDTO();
+
+		RemoteDocument cryptographicSuite = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/dss-crypto-suite.json"));
+		certificateDTO.setCryptographicSuite(cryptographicSuite);
+
+		CertificateReportsDTO reportsDTO = validationService.validateCertificate(certificateDTO);
+		validateReports(reportsDTO);
+
+		XmlSimpleCertificateReport simpleCertificateReport = reportsDTO.getSimpleCertificateReport();
+		assertEquals("Certificate policy TL based", simpleCertificateReport.getValidationPolicy().getPolicyName());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -137,6 +168,24 @@ class RemoteCertificateValidationServiceTest {
 		assertEquals("Default Policy", simpleCertificateReport.getValidationPolicy().getPolicyName());
 	}
 
+	@Test
+	void testWithDefaultValidationPolicyAndDefaultCryptoSuite() throws Exception {
+		CertificateToValidateDTO certificateDTO = getCompleteCertificateToValidateDTO();
+
+		RemoteCertificateValidationService validationService = new RemoteCertificateValidationService();
+		validationService.setVerifier(new CommonCertificateVerifier());
+		validationService.setDefaultValidationPolicy(
+				RemoteCertificateValidationServiceTest.class.getResourceAsStream("/constraint.xml"),
+				RemoteCertificateValidationServiceTest.class.getResourceAsStream("/dss-crypto-suite.json")
+		);
+
+		CertificateReportsDTO reportsDTO = validationService.validateCertificate(certificateDTO);
+		validateReports(reportsDTO);
+
+		XmlSimpleCertificateReport simpleCertificateReport = reportsDTO.getSimpleCertificateReport();
+		assertEquals("Certificate policy TL based (Test WebServices)", simpleCertificateReport.getValidationPolicy().getPolicyName());
+	}
+
 	@SuppressWarnings("unchecked")
 	@Test
 	void testWithDefaultAndOverwrittenValidationPolicy() throws Exception {
@@ -160,7 +209,7 @@ class RemoteCertificateValidationServiceTest {
 		validateReports(reportsDTO);
 
 		XmlSimpleCertificateReport simpleCertificateReport = reportsDTO.getSimpleCertificateReport();
-		assertEquals("QES AdESQC TL based (Test WebServices)", simpleCertificateReport.getValidationPolicy().getPolicyName());
+		assertEquals("Certificate policy TL based (Test WebServices)", simpleCertificateReport.getValidationPolicy().getPolicyName());
 	}
 
 	@Test

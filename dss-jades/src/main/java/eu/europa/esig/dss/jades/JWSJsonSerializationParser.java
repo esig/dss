@@ -163,7 +163,7 @@ public class JWSJsonSerializationParser {
 	}
 	
 	private List<String> validateJWSStructure(String jsonDocument) {
-		return JAdESUtils.getInstance().validateAgainstJWSSchema(jsonDocument);
+		return JAdESUtils.getInstance().validateAgainstSchema(jsonDocument);
 	}
 
 }

@@ -31,8 +31,9 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFLockDictionary;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFSignatureField;
 import eu.europa.esig.dss.enumerations.CertificationPermission;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.PdfLockAction;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.SigFieldLockCheck;
@@ -68,7 +69,7 @@ class SigFieldLockCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        SigFieldLockCheck sflc = new SigFieldLockCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
+        SigFieldLockCheck sflc = new SigFieldLockCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), new LevelConstraintWrapper(constraint));
         sflc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -101,7 +102,7 @@ class SigFieldLockCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        SigFieldLockCheck sflc = new SigFieldLockCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
+        SigFieldLockCheck sflc = new SigFieldLockCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), new LevelConstraintWrapper(constraint));
         sflc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -136,7 +137,7 @@ class SigFieldLockCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        SigFieldLockCheck sflc = new SigFieldLockCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
+        SigFieldLockCheck sflc = new SigFieldLockCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), new LevelConstraintWrapper(constraint));
         sflc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -175,7 +176,7 @@ class SigFieldLockCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        SigFieldLockCheck sflc = new SigFieldLockCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
+        SigFieldLockCheck sflc = new SigFieldLockCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), new LevelConstraintWrapper(constraint));
         sflc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -210,7 +211,7 @@ class SigFieldLockCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        SigFieldLockCheck sflc = new SigFieldLockCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
+        SigFieldLockCheck sflc = new SigFieldLockCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), new LevelConstraintWrapper(constraint));
         sflc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -249,7 +250,7 @@ class SigFieldLockCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        SigFieldLockCheck sflc = new SigFieldLockCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
+        SigFieldLockCheck sflc = new SigFieldLockCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), new LevelConstraintWrapper(constraint));
         sflc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -282,7 +283,7 @@ class SigFieldLockCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        SigFieldLockCheck sflc = new SigFieldLockCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
+        SigFieldLockCheck sflc = new SigFieldLockCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), new LevelConstraintWrapper(constraint));
         sflc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -315,7 +316,7 @@ class SigFieldLockCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        SigFieldLockCheck sflc = new SigFieldLockCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
+        SigFieldLockCheck sflc = new SigFieldLockCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), new LevelConstraintWrapper(constraint));
         sflc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -349,7 +350,7 @@ class SigFieldLockCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        SigFieldLockCheck sflc = new SigFieldLockCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
+        SigFieldLockCheck sflc = new SigFieldLockCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), new LevelConstraintWrapper(constraint));
         sflc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -384,7 +385,7 @@ class SigFieldLockCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        SigFieldLockCheck sflc = new SigFieldLockCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
+        SigFieldLockCheck sflc = new SigFieldLockCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), new LevelConstraintWrapper(constraint));
         sflc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -419,7 +420,7 @@ class SigFieldLockCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        SigFieldLockCheck sflc = new SigFieldLockCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
+        SigFieldLockCheck sflc = new SigFieldLockCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), new LevelConstraintWrapper(constraint));
         sflc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -455,7 +456,7 @@ class SigFieldLockCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        SigFieldLockCheck sflc = new SigFieldLockCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
+        SigFieldLockCheck sflc = new SigFieldLockCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), new LevelConstraintWrapper(constraint));
         sflc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

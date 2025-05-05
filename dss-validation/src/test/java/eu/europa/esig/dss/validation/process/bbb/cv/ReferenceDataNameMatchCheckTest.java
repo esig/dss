@@ -25,7 +25,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.ReferenceDataNameMatchCheck;
@@ -49,7 +50,7 @@ class ReferenceDataNameMatchCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlCV result = new XmlCV();
-        ReferenceDataNameMatchCheck<XmlCV> rdnmc = new ReferenceDataNameMatchCheck<>(i18nProvider, result, digestMatcher, constraint);
+        ReferenceDataNameMatchCheck<XmlCV> rdnmc = new ReferenceDataNameMatchCheck<>(i18nProvider, result, digestMatcher, new LevelConstraintWrapper(constraint));
         rdnmc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -69,7 +70,7 @@ class ReferenceDataNameMatchCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlCV result = new XmlCV();
-        ReferenceDataNameMatchCheck<XmlCV> rdnmc = new ReferenceDataNameMatchCheck<>(i18nProvider, result, digestMatcher, constraint);
+        ReferenceDataNameMatchCheck<XmlCV> rdnmc = new ReferenceDataNameMatchCheck<>(i18nProvider, result, digestMatcher, new LevelConstraintWrapper(constraint));
         rdnmc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

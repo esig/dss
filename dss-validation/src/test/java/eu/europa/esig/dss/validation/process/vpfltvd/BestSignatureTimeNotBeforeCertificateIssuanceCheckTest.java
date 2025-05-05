@@ -27,8 +27,9 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.BestSignatureTimeNotBeforeCertificateIssuanceCheck;
@@ -57,7 +58,7 @@ class BestSignatureTimeNotBeforeCertificateIssuanceCheckTest extends AbstractTes
 		
 		XmlPSV result = new XmlPSV();
 		BestSignatureTimeNotBeforeCertificateIssuanceCheck<XmlPSV> bstnbcic = new BestSignatureTimeNotBeforeCertificateIssuanceCheck<>(
-				i18nProvider, result, bestSignatureTime, new CertificateWrapper(xmlCertificate), constraint);
+				i18nProvider, result, bestSignatureTime, new CertificateWrapper(xmlCertificate), new LevelConstraintWrapper(constraint));
 		bstnbcic.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -83,7 +84,7 @@ class BestSignatureTimeNotBeforeCertificateIssuanceCheckTest extends AbstractTes
 		
 		XmlPSV result = new XmlPSV();
 		BestSignatureTimeNotBeforeCertificateIssuanceCheck<XmlPSV> bstnbcic = new BestSignatureTimeNotBeforeCertificateIssuanceCheck<>(
-				i18nProvider, result, bestSignatureTime, new CertificateWrapper(xmlCertificate), constraint);
+				i18nProvider, result, bestSignatureTime, new CertificateWrapper(xmlCertificate), new LevelConstraintWrapper(constraint));
 		bstnbcic.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

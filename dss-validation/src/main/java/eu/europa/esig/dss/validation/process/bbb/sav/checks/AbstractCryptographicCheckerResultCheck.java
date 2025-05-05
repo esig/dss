@@ -27,11 +27,11 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.Level;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
@@ -61,10 +61,10 @@ public abstract class AbstractCryptographicCheckerResultCheck<T extends XmlConst
 	 * @param result the result
 	 * @param position {@link MessageTag} cryptographic constrain position
 	 * @param ccResult {@link XmlCC}
-	 * @param constraint {@link LevelConstraint}
+	 * @param constraint {@link LevelRule}
 	 */
 	protected AbstractCryptographicCheckerResultCheck(I18nProvider i18nProvider, T result, MessageTag position,
-													  XmlCC ccResult, LevelConstraint constraint) {
+													  XmlCC ccResult, LevelRule constraint) {
 		this(i18nProvider, result, position, ccResult, constraint, null);
 	}
 
@@ -75,18 +75,18 @@ public abstract class AbstractCryptographicCheckerResultCheck<T extends XmlConst
 	 * @param result the result
 	 * @param position {@link MessageTag} cryptographic constrain position
 	 * @param ccResult {@link XmlCC}
-	 * @param constraint {@link LevelConstraint}
+	 * @param constraint {@link LevelRule}
 	 * @param tokenId {@link String} identifier of the corresponding token
 	 */
 	protected AbstractCryptographicCheckerResultCheck(I18nProvider i18nProvider, T result, MessageTag position,
-													  XmlCC ccResult, LevelConstraint constraint, String tokenId) {
+													  XmlCC ccResult, LevelRule constraint, String tokenId) {
 		super(i18nProvider, result, constraint, tokenId);
 		this.position = position;
 		this.ccResult = ccResult;
 		this.checkerResultMessage = extractXmlMessage(ccResult, constraint);
 	}
 	
-	private static XmlMessage extractXmlMessage(XmlCC ccResult, LevelConstraint constraint) {
+	private static XmlMessage extractXmlMessage(XmlCC ccResult, LevelRule constraint) {
 		XmlConclusion conclusion = ccResult.getConclusion();
 		if (conclusion != null && constraint != null && constraint.getLevel() != null) {
 			// Collects messages from all levels (required for generic crypto check)

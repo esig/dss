@@ -30,7 +30,8 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFSignatureDictionary;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.ByteRangeAllDocumentCheck;
@@ -76,7 +77,7 @@ class ByteRangeAllDocumentCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        ByteRangeAllDocumentCheck brcc = new ByteRangeAllDocumentCheck(i18nProvider, result, new DiagnosticData(xmlDiagnosticData), constraint);
+        ByteRangeAllDocumentCheck brcc = new ByteRangeAllDocumentCheck(i18nProvider, result, new DiagnosticData(xmlDiagnosticData), new LevelConstraintWrapper(constraint));
         brcc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -118,7 +119,7 @@ class ByteRangeAllDocumentCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        ByteRangeAllDocumentCheck brcc = new ByteRangeAllDocumentCheck(i18nProvider, result, new DiagnosticData(xmlDiagnosticData), constraint);
+        ByteRangeAllDocumentCheck brcc = new ByteRangeAllDocumentCheck(i18nProvider, result, new DiagnosticData(xmlDiagnosticData), new LevelConstraintWrapper(constraint));
         brcc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -160,7 +161,7 @@ class ByteRangeAllDocumentCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        ByteRangeAllDocumentCheck brcc = new ByteRangeAllDocumentCheck(i18nProvider, result, new DiagnosticData(xmlDiagnosticData), constraint);
+        ByteRangeAllDocumentCheck brcc = new ByteRangeAllDocumentCheck(i18nProvider, result, new DiagnosticData(xmlDiagnosticData), new LevelConstraintWrapper(constraint));
         brcc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -202,7 +203,7 @@ class ByteRangeAllDocumentCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        ByteRangeAllDocumentCheck brcc = new ByteRangeAllDocumentCheck(i18nProvider, result, new DiagnosticData(xmlDiagnosticData), constraint);
+        ByteRangeAllDocumentCheck brcc = new ByteRangeAllDocumentCheck(i18nProvider, result, new DiagnosticData(xmlDiagnosticData), new LevelConstraintWrapper(constraint));
         brcc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -234,7 +235,7 @@ class ByteRangeAllDocumentCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        ByteRangeAllDocumentCheck brcc = new ByteRangeAllDocumentCheck(i18nProvider, result, new DiagnosticData(xmlDiagnosticData), constraint);
+        ByteRangeAllDocumentCheck brcc = new ByteRangeAllDocumentCheck(i18nProvider, result, new DiagnosticData(xmlDiagnosticData), new LevelConstraintWrapper(constraint));
         brcc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

@@ -25,7 +25,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheckerResultCheck;
 
 import java.util.Date;
@@ -45,11 +45,11 @@ public class CertificateChainCryptographicCheck<T extends XmlConstraintsConclusi
      * @param validationDate {@link Date}
      * @param position {@link MessageTag}
      * @param ccResult {@link XmlCC}
-     * @param constraint {@link LevelConstraint}
+     * @param constraint {@link LevelRule}
      */
     public CertificateChainCryptographicCheck(final I18nProvider i18nProvider, final T result,
                                               final Date validationDate, final MessageTag position, final XmlCC ccResult,
-                                              final LevelConstraint constraint) {
+                                              final LevelRule constraint) {
         super(i18nProvider, result, validationDate, position, ccResult, constraint);
     }
 
@@ -62,11 +62,11 @@ public class CertificateChainCryptographicCheck<T extends XmlConstraintsConclusi
      * @param validationDate {@link Date}
      * @param position {@link MessageTag}
      * @param ccResult {@link XmlCC}
-     * @param constraint {@link LevelConstraint}
+     * @param constraint {@link LevelRule}
      */
     protected CertificateChainCryptographicCheck(I18nProvider i18nProvider, T result, TokenProxy token,
                                                  Date validationDate, MessageTag position, XmlCC ccResult,
-                                                 LevelConstraint constraint) {
+                                                 LevelRule constraint) {
         super(i18nProvider, result, validationDate, position, ccResult, constraint, token.getId());
     }
 

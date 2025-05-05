@@ -27,7 +27,8 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.ReferencesNotAmbiguousCheck;
@@ -54,7 +55,7 @@ class ReferencesNotAmbiguousCheckTest extends AbstractTestCheck {
 
 		XmlFC result = new XmlFC();
 		ReferencesNotAmbiguousCheck rnac = new ReferencesNotAmbiguousCheck(i18nProvider, result,
-				new SignatureWrapper(sig), constraint);
+				new SignatureWrapper(sig), new LevelConstraintWrapper(constraint));
 		rnac.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -77,7 +78,7 @@ class ReferencesNotAmbiguousCheckTest extends AbstractTestCheck {
 
 		XmlFC result = new XmlFC();
 		ReferencesNotAmbiguousCheck rnac = new ReferencesNotAmbiguousCheck(i18nProvider, result,
-				new SignatureWrapper(sig), constraint);
+				new SignatureWrapper(sig), new LevelConstraintWrapper(constraint));
 		rnac.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

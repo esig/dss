@@ -33,11 +33,11 @@ import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
@@ -66,7 +66,7 @@ class DSS2972ExecutorTest extends AbstractProcessExecutorTest {
         calendar.set(Calendar.YEAR, 2022);
         xmlDiagnosticData.setValidationDate(calendar.getTime());
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
 
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(xmlDiagnosticData);
@@ -168,7 +168,7 @@ class DSS2972ExecutorTest extends AbstractProcessExecutorTest {
         calendar.set(Calendar.YEAR, 2022);
         xmlDiagnosticData.setValidationDate(calendar.getTime());
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.WARN);
         validationPolicy.getTimestampConstraints().setTimestampValid(constraint);
@@ -289,7 +289,7 @@ class DSS2972ExecutorTest extends AbstractProcessExecutorTest {
 
         xmlDiagnosticData.getUsedTimestamps().get(0).getBasicSignature().setSignatureIntact(false);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
         validationPolicy.getTimestampConstraints().setTimestampValid(constraint);
@@ -362,7 +362,7 @@ class DSS2972ExecutorTest extends AbstractProcessExecutorTest {
                 new File("src/test/resources/diag-data/valid-diag-data-lta.xml"));
         assertNotNull(xmlDiagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
         validationPolicy.getSignatureConstraints().getUnsignedAttributes().setTLevelTimeStamp(constraint);
@@ -431,7 +431,7 @@ class DSS2972ExecutorTest extends AbstractProcessExecutorTest {
 
         xmlDiagnosticData.getUsedTimestamps().get(0).getBasicSignature().setSignatureIntact(false);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
         validationPolicy.getSignatureConstraints().getUnsignedAttributes().setTLevelTimeStamp(constraint);
@@ -529,7 +529,7 @@ class DSS2972ExecutorTest extends AbstractProcessExecutorTest {
                 new File("src/test/resources/diag-data/valid-diag-data-lta.xml"));
         assertNotNull(xmlDiagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
         validationPolicy.getSignatureConstraints().getUnsignedAttributes().setLTALevelTimeStamp(constraint);
@@ -599,7 +599,7 @@ class DSS2972ExecutorTest extends AbstractProcessExecutorTest {
 
         xmlDiagnosticData.getUsedTimestamps().get(1).getBasicSignature().setSignatureIntact(false);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
         validationPolicy.getSignatureConstraints().getUnsignedAttributes().setLTALevelTimeStamp(constraint);
@@ -696,7 +696,7 @@ class DSS2972ExecutorTest extends AbstractProcessExecutorTest {
                 new File("src/test/resources/diag-data/DSS-2049/dss2049-diag-data.xml"));
         assertNotNull(xmlDiagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
         validationPolicy.getSignatureConstraints().getUnsignedAttributes().setTLevelTimeStamp(constraint);
@@ -772,7 +772,7 @@ class DSS2972ExecutorTest extends AbstractProcessExecutorTest {
 
         xmlDiagnosticData.getUsedTimestamps().get(0).getBasicSignature().setSignatureIntact(false);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
         validationPolicy.getSignatureConstraints().getUnsignedAttributes().setTLevelTimeStamp(constraint);
@@ -851,7 +851,7 @@ class DSS2972ExecutorTest extends AbstractProcessExecutorTest {
                 new File("src/test/resources/diag-data/DSS-2049/dss2049-diag-data.xml"));
         assertNotNull(xmlDiagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
         validationPolicy.getSignatureConstraints().getUnsignedAttributes().setLTALevelTimeStamp(constraint);
@@ -927,7 +927,7 @@ class DSS2972ExecutorTest extends AbstractProcessExecutorTest {
                 new File("src/test/resources/diag-data/DSS-2049/dss2049-diag-data.xml"));
         assertNotNull(xmlDiagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
         validationPolicy.getTimestampConstraints().setTimestampValid(constraint);
@@ -992,7 +992,7 @@ class DSS2972ExecutorTest extends AbstractProcessExecutorTest {
 
         xmlDiagnosticData.getUsedTimestamps().get(0).getBasicSignature().setSignatureIntact(false);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
         validationPolicy.getTimestampConstraints().setTimestampValid(constraint);

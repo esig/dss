@@ -6,7 +6,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessLongTermData;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.i18n.I18nProvider;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 
 import java.util.Date;
 
@@ -27,11 +27,11 @@ public class CertificateKnownToBeNotRevokedEnforceFailCheck extends CertificateK
      * @param isRevocationDataIssuerTrusted whether the revocation issuer is trusted
      * @param currentTime                   {@link Date}
      * @param bsConclusion                  {@link XmlConclusion}
-     * @param constraint                    {@link LevelConstraint}
+     * @param constraint                    {@link LevelRule}
      */
     public CertificateKnownToBeNotRevokedEnforceFailCheck(I18nProvider i18nProvider,
             XmlValidationProcessLongTermData result, CertificateWrapper certificate, CertificateRevocationWrapper revocationData,
-            boolean isRevocationDataIssuerTrusted, Date currentTime, XmlConclusion bsConclusion, LevelConstraint constraint) {
+            boolean isRevocationDataIssuerTrusted, Date currentTime, XmlConclusion bsConclusion, LevelRule constraint) {
         super(i18nProvider, result, certificate, revocationData, isRevocationDataIssuerTrusted, currentTime, bsConclusion, constraint);
     }
 

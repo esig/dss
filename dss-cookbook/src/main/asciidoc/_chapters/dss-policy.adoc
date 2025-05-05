@@ -1064,7 +1064,7 @@ NOTE: DSS supports processing of the name constraints that are imposed only on t
 </SigningCertificate>
 ----
 
-* `NoRevAvail` - this constraint is used to perform validation of certificate's conformance to the RFC 9608 standard (cf. <<R29>>), when `noRevAvail` (OID: 2.5.29.56) certificate extension is present. If the certificate having `noRevAvail` certificate extension does not satisfy the rules defined within RFC 9608, the check will fail.
+* `NoRevAvail` - this constraint is used to perform validation of certificate's conformance to the RFC 9608 standard (cf. <<R30>>), when `noRevAvail` (OID: 2.5.29.56) certificate extension is present. If the certificate having `noRevAvail` certificate extension does not satisfy the rules defined within RFC 9608, the check will fail.
 
 Default: `WARN`
 
@@ -2403,7 +2403,7 @@ Default: `FAIL`
 </Revocation>
 ----
 
-* `RevocationHasInformationAboutCertificate` - this constraint checks whether the revocation data issuer contains the revocation status of the concerned certificate. This is always TRUE for still valid certificates, but variable for expired certificates. In order to satisfy condition for expired certificates, one of the `expiredCertsOnCRL` (for a CRL), `archiveCutOff` (for an OCSP response) or `expiredCertsRevocationInfo` (for a Trusted List) shall be present and be at or before expiration time of the concerned certificate, or `certHash` extension shall be present and its value shall match to the hash of the concerned certificate (more information is available in the Common PKI v2.0 specification, cf. <<R26>>). If the revocation data has been issued after the expiration time of the concerned certificate and none of the aforementioned conditions satisfy, the check will fail.
+* `RevocationHasInformationAboutCertificate` - this constraint checks whether the revocation data issuer contains the revocation status of the concerned certificate. This is always TRUE for still valid certificates, but variable for expired certificates. In order to satisfy condition for expired certificates, one of the `expiredCertsOnCRL` (for a CRL), `archiveCutOff` (for an OCSP response) or `expiredCertsRevocationInfo` (for a Trusted List) shall be present and be at or before expiration time of the concerned certificate, or `certHash` extension shall be present and its value shall match to the hash of the concerned certificate (more information is available in the Common PKI v2.0 specification, cf. <<R27>>). If the revocation data has been issued after the expiration time of the concerned certificate and none of the aforementioned conditions satisfy, the check will fail.
 
 Default: `FAIL`
 

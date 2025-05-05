@@ -29,7 +29,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
 import java.math.BigInteger;
@@ -54,10 +54,10 @@ public class ByteRangeCollisionCheck extends ChainItem<XmlFC> {
      * @param result {@link XmlFC}
      * @param signatureWrapper {@link AbstractSignatureWrapper}
      * @param diagnosticData {@link DiagnosticData}
-     * @param constraint {@link LevelConstraint}
+     * @param constraint {@link LevelRule}
      */
     public ByteRangeCollisionCheck(I18nProvider i18nProvider, XmlFC result, AbstractSignatureWrapper signatureWrapper,
-                                   DiagnosticData diagnosticData, LevelConstraint constraint) {
+                                   DiagnosticData diagnosticData, LevelRule constraint) {
         super(i18nProvider, result, constraint);
         this.currentSignature = signatureWrapper;
         this.diagnosticData = diagnosticData;

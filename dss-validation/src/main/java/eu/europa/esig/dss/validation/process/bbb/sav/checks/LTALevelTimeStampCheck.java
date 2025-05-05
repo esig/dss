@@ -27,7 +27,7 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 
 import java.util.Collection;
 import java.util.Map;
@@ -50,11 +50,11 @@ public class LTALevelTimeStampCheck<T extends XmlConstraintsConclusion> extends 
      * @param signature {@link SignatureWrapper}
      * @param bbbs map between token ids and corresponding {@code XmlBasicBuildingBlocks}
      * @param xmlTimestamps a collection of {@link XmlTimestamp}s
-     * @param constraint {@link LevelConstraint}
+     * @param constraint {@link LevelRule}
      */
     public LTALevelTimeStampCheck(I18nProvider i18nProvider, T result, SignatureWrapper signature,
                                 Map<String, XmlBasicBuildingBlocks> bbbs, Collection<XmlTimestamp> xmlTimestamps,
-                                LevelConstraint constraint) {
+                                LevelRule constraint) {
         super(i18nProvider, result, bbbs, xmlTimestamps, constraint);
         this.signature = signature;
     }

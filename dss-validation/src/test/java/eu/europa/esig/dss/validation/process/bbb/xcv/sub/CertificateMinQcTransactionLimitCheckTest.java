@@ -28,8 +28,9 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcEuLimitValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
 import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.IntValueConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.IntValueConstraint;
-import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateMinQcTransactionLimitCheck;
 import org.junit.jupiter.api.Test;
@@ -59,7 +60,7 @@ class CertificateMinQcTransactionLimitCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateMinQcTransactionLimitCheck cmqctlc = new CertificateMinQcTransactionLimitCheck(i18nProvider, result,
-                new CertificateWrapper(xc), constraint);
+                new CertificateWrapper(xc), new IntValueConstraintWrapper(constraint));
         cmqctlc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -86,7 +87,7 @@ class CertificateMinQcTransactionLimitCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateMinQcTransactionLimitCheck cmqctlc = new CertificateMinQcTransactionLimitCheck(i18nProvider, result,
-                new CertificateWrapper(xc), constraint);
+                new CertificateWrapper(xc), new IntValueConstraintWrapper(constraint));
         cmqctlc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -113,7 +114,7 @@ class CertificateMinQcTransactionLimitCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateMinQcTransactionLimitCheck cmqctlc = new CertificateMinQcTransactionLimitCheck(i18nProvider, result,
-                new CertificateWrapper(xc), constraint);
+                new CertificateWrapper(xc), new IntValueConstraintWrapper(constraint));
         cmqctlc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -135,7 +136,7 @@ class CertificateMinQcTransactionLimitCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateMinQcTransactionLimitCheck cmqctlc = new CertificateMinQcTransactionLimitCheck(i18nProvider, result,
-                new CertificateWrapper(xc), constraint);
+                new CertificateWrapper(xc), new IntValueConstraintWrapper(constraint));
         cmqctlc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -153,7 +154,7 @@ class CertificateMinQcTransactionLimitCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateMinQcTransactionLimitCheck cmqctlc = new CertificateMinQcTransactionLimitCheck(i18nProvider, result,
-                new CertificateWrapper(xc), constraint);
+                new CertificateWrapper(xc), new IntValueConstraintWrapper(constraint));
         cmqctlc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

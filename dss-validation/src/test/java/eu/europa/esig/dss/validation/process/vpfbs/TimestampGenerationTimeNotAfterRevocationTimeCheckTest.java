@@ -25,7 +25,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicSignature;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.vpfbs.checks.TimestampGenerationTimeNotAfterCertificateExpirationCheck;
@@ -56,7 +57,7 @@ class TimestampGenerationTimeNotAfterRevocationTimeCheckTest extends AbstractTes
 
         XmlValidationProcessBasicSignature result = new XmlValidationProcessBasicSignature();
         TimestampGenerationTimeNotAfterRevocationTimeCheck tgtnartc = new TimestampGenerationTimeNotAfterRevocationTimeCheck<>(
-                i18nProvider, result, new TimestampWrapper(xmlTimestamp), revocationTime, constraint);
+                i18nProvider, result, new TimestampWrapper(xmlTimestamp), revocationTime, new LevelConstraintWrapper(constraint));
         tgtnartc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -80,7 +81,7 @@ class TimestampGenerationTimeNotAfterRevocationTimeCheckTest extends AbstractTes
 
         XmlValidationProcessBasicSignature result = new XmlValidationProcessBasicSignature();
         TimestampGenerationTimeNotAfterCertificateExpirationCheck tgtnartc = new TimestampGenerationTimeNotAfterCertificateExpirationCheck<>(
-                i18nProvider, result, new TimestampWrapper(xmlTimestamp), revocationTime, constraint);
+                i18nProvider, result, new TimestampWrapper(xmlTimestamp), revocationTime, new LevelConstraintWrapper(constraint));
         tgtnartc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -100,7 +101,7 @@ class TimestampGenerationTimeNotAfterRevocationTimeCheckTest extends AbstractTes
 
         XmlValidationProcessBasicSignature result = new XmlValidationProcessBasicSignature();
         TimestampGenerationTimeNotAfterCertificateExpirationCheck tgtnartc = new TimestampGenerationTimeNotAfterCertificateExpirationCheck<>(
-                i18nProvider, result, new TimestampWrapper(xmlTimestamp), datetime, constraint);
+                i18nProvider, result, new TimestampWrapper(xmlTimestamp), datetime, new LevelConstraintWrapper(constraint));
         tgtnartc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -124,7 +125,7 @@ class TimestampGenerationTimeNotAfterRevocationTimeCheckTest extends AbstractTes
 
         XmlValidationProcessBasicSignature result = new XmlValidationProcessBasicSignature();
         TimestampGenerationTimeNotAfterCertificateExpirationCheck tgtnartc = new TimestampGenerationTimeNotAfterCertificateExpirationCheck<>(
-                i18nProvider, result, new TimestampWrapper(xmlTimestamp), revocationTime, constraint);
+                i18nProvider, result, new TimestampWrapper(xmlTimestamp), revocationTime, new LevelConstraintWrapper(constraint));
         tgtnartc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

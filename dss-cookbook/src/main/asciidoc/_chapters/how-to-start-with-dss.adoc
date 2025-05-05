@@ -309,7 +309,6 @@ specs-asic-manifest:: ETSI EN 319 162 schema for ASiCManifest.
 specs-saml-assertion:: OASIS schema for SAML Assertions.
 
 '''
-dss-policy-jaxb:: JAXB model of the validation policy.
 dss-diagnostic-jaxb:: JAXB model of the diagnostic data.
 dss-detailed-report-jaxb:: JAXB model of the detailed report.
 dss-simple-report-jaxb:: JAXB model of the simple report.
@@ -317,7 +316,8 @@ dss-simple-certificate-report-jaxb:: JAXB model of the simple report for certifi
 
 ===== JSON validation modules
 
-specs-jws:: JSON Schemas based on the RFC 7515 specifications (<<R21>>).
+dss-json-common:: Utils for working with JSON-based content.
+specs-jws:: JSON Schemas based on the RFC 7515 specifications (<<R22>>).
 specs-jades:: ETSI TS 119 182-1 JSON Schemas for JAdES (<<R05>>).
 
 ===== Utils modules
@@ -346,11 +346,17 @@ dss-document:: Common module to sign or extend a document.
 dss-validation:: Business logic for the signature and certificate validation (ETSI EN 319 102 / TS 119 615).
 dss-tsl-validation:: Module which allows loading / parsing / validating of LOTL and TSLs.
 
+===== Validation policy modules
+
+dss-policy-jaxb:: JAXB model for the XML validation policy (default policy).
+dss-policy-crypto-xml:: JAXB model for the XML Cryptographic Suite as per ETSI TS 119 322 (cf. <<R21>>).
+dss-policy-crypto-json:: Model for the JSON Cryptographic Suite as per ETSI TS 119 322 (cf. <<R21>>).
+
 ===== Signature format specific modules
 
 dss-xades:: Implementation of the XAdES signature, augmentation and validation.
 dss-cades:: Implementation of the CAdES signature, augmentation and validation.
-dss-cms:: Provides interfaces and utility methods for working with CMS objects (see RFC 5652, cf. <<R30>>).
+dss-cms:: Provides interfaces and utility methods for working with CMS objects (see RFC 5652, cf. <<R31>>).
 dss-cms-object:: Implementation of 'dss-cms' module, processing the data objects and files in memory.
 dss-cms-stream:: Implementation of 'dss-cms' module, processing the data objects and files using streaming.
 dss-jades:: Implementation of the JAdES signature, augmentation and validation.
@@ -365,8 +371,8 @@ dss-asic-xades:: Implementation of the ASiC-S and ASiC-E signature, augmentation
 ===== Evidence Record validation modules
 
 dss-evidence-record-common:: Common code and interfaces for validation of evidence records.
-dss-evidence-record-xml:: Code for validation of RFC 6283 XML Evidence Records (cf. <<R22>>).
-dss-evidence-record-asn1:: Code for validation of RFC 4998 Evidence Records (ASN.1 format) (cf. <<R23>>).
+dss-evidence-record-xml:: Code for validation of RFC 6283 XML Evidence Records (cf. <<R23>>).
+dss-evidence-record-asn1:: Code for validation of RFC 4998 Evidence Records (ASN.1 format) (cf. <<R24>>).
 
 ===== WebServices
 
@@ -434,6 +440,7 @@ DSS contains a bundle of JAXB-based modules, generating Java classes at runtime 
 * specs-asic-manifest;
 * specs-saml-assertion;
 * dss-policy-jaxb;
+* dss-policy-crypto-xml;
 * dss-diagnostic-jaxb;
 * dss-detailed-report-jaxb;
 * dss-simple-report-jaxb;

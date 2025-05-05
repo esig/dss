@@ -18,11 +18,9 @@
 	</properties>
 
 	<dependencies>
-		<!-- https://github.com/erosb/json-sKema -->
 		<dependency>
-			<groupId>com.github.erosb</groupId>
-			<artifactId>json-sKema</artifactId>
-			<version>0.20.0</version>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-json-common</artifactId>
 		</dependency>
         
 		<dependency>

@@ -20,14 +20,15 @@
  */
 package eu.europa.esig.dss.validation;
 
-import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.jaxb.BasicSignatureConstraints;
-import eu.europa.esig.dss.policy.jaxb.Level;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.enumerations.Context;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.enumerations.SubContext;
+import eu.europa.esig.dss.model.policy.LevelRule;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.spi.validation.TrustAnchorVerifier;
 
 /**
- * This class loads {@code TrustAnchorVerifier} from a provided {@code eu.europa.esig.dss.policy.ValidationPolicy}
+ * This class loads {@code TrustAnchorVerifier} from a provided {@code eu.europa.esig.dss.model.policy.ValidationPolicy}
  *
  */
 public class TrustAnchorVerifierFactory {
@@ -58,57 +59,34 @@ public class TrustAnchorVerifierFactory {
 
     private void instantiateAcceptUntrustedCertificateChains(TrustAnchorVerifier trustAnchorVerifier,
                                                              ValidationPolicy validationPolicy) {
-        if (validationPolicy.getRevocationConstraints() != null) {
-            boolean acceptUntrustedCertificateChains = getAcceptUntrustedCertificateChains(
-                    validationPolicy.getRevocationConstraints().getBasicSignatureConstraints());
-            trustAnchorVerifier.setAcceptRevocationUntrustedCertificateChains(acceptUntrustedCertificateChains);
-        }
-        if (validationPolicy.getTimestampConstraints() != null) {
-            boolean acceptUntrustedCertificateChains = getAcceptUntrustedCertificateChains(
-                    validationPolicy.getTimestampConstraints().getBasicSignatureConstraints());
-            trustAnchorVerifier.setAcceptTimestampUntrustedCertificateChains(acceptUntrustedCertificateChains);
-        }
+        boolean acceptUntrustedCertificateChains = getAcceptUntrustedCertificateChains(validationPolicy, Context.REVOCATION);
+        trustAnchorVerifier.setAcceptRevocationUntrustedCertificateChains(acceptUntrustedCertificateChains);
+
+        acceptUntrustedCertificateChains = getAcceptUntrustedCertificateChains(validationPolicy, Context.TIMESTAMP);
+        trustAnchorVerifier.setAcceptTimestampUntrustedCertificateChains(acceptUntrustedCertificateChains);
     }
 
-    private boolean getAcceptUntrustedCertificateChains(BasicSignatureConstraints basicSignatureConstraints) {
-        if (basicSignatureConstraints != null) {
-            LevelConstraint constraint = basicSignatureConstraints.getProspectiveCertificateChain();
-            return constraint == null || !Level.FAIL.equals(constraint.getLevel());
-        }
-        return true;
+    private boolean getAcceptUntrustedCertificateChains(ValidationPolicy validationPolicy, Context context) {
+        LevelRule constraint = validationPolicy.getProspectiveCertificateChainConstraint(context);
+        return constraint == null || !Level.FAIL.equals(constraint.getLevel());
     }
 
     private void instantiateUseSunsetDate(TrustAnchorVerifier trustAnchorVerifier, ValidationPolicy validationPolicy) {
-        boolean useSunsetDate = false;
-        if (validationPolicy.getSignatureConstraints() != null) {
-            useSunsetDate = getUseSunsetDate(validationPolicy.getSignatureConstraints().getBasicSignatureConstraints());
-        }
-        if (validationPolicy.getCounterSignatureConstraints() != null) {
-            useSunsetDate = useSunsetDate || getUseSunsetDate(validationPolicy.getCounterSignatureConstraints().getBasicSignatureConstraints());
-        }
-        if (validationPolicy.getTimestampConstraints() != null) {
-            useSunsetDate = useSunsetDate || getUseSunsetDate(validationPolicy.getTimestampConstraints().getBasicSignatureConstraints());
-        }
-        if (validationPolicy.getRevocationConstraints() != null) {
-            useSunsetDate = useSunsetDate || getUseSunsetDate(validationPolicy.getRevocationConstraints().getBasicSignatureConstraints());
-        }
+        boolean useSunsetDate = getUseSunsetDate(validationPolicy, Context.SIGNATURE);
+        useSunsetDate = useSunsetDate || getUseSunsetDate(validationPolicy, Context.COUNTER_SIGNATURE);
+        useSunsetDate = useSunsetDate || getUseSunsetDate(validationPolicy, Context.TIMESTAMP);
+        useSunsetDate = useSunsetDate || getUseSunsetDate(validationPolicy, Context.REVOCATION);
         trustAnchorVerifier.setUseSunsetDate(useSunsetDate);
     }
 
-    private boolean getUseSunsetDate(BasicSignatureConstraints basicSignatureConstraints) {
-        if (basicSignatureConstraints != null) {
-            if (basicSignatureConstraints.getSigningCertificate() != null) {
-                LevelConstraint constraint = basicSignatureConstraints.getSigningCertificate().getSunsetDate();
-                if (constraint != null && Level.FAIL.equals(constraint.getLevel())) {
-                    return true;
-                }
-            }
-            if (basicSignatureConstraints.getCACertificate() != null) {
-                LevelConstraint constraint = basicSignatureConstraints.getCACertificate().getSunsetDate();
-                if (constraint != null && Level.FAIL.equals(constraint.getLevel())) {
-                    return true;
-                }
-            }
+    private boolean getUseSunsetDate(ValidationPolicy validationPolicy, Context context) {
+        LevelRule constraint = validationPolicy.getCertificateSunsetDateConstraint(context, SubContext.SIGNING_CERT);
+        if (constraint != null && Level.FAIL.equals(constraint.getLevel())) {
+            return true;
+        }
+        constraint = validationPolicy.getCertificateSunsetDateConstraint(context, SubContext.CA_CERTIFICATE);
+        if (constraint != null && Level.FAIL.equals(constraint.getLevel())) {
+            return true;
         }
         return false;
     }

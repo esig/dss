@@ -43,8 +43,8 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
@@ -368,15 +368,15 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 	}
 
 	private ChainItem<XmlValidationProcessArchivalData> pastSignatureValidation(XmlPSV xmlPSV) {
-		return new PastSignatureValidationCheck(i18nProvider, result, signature, xmlPSV, getFailLevelConstraint());
+		return new PastSignatureValidationCheck(i18nProvider, result, signature, xmlPSV, getFailLevelRule());
 	}
 
 	private ChainItem<XmlValidationProcessArchivalData> longTermValidation() {
-		return new LongTermValidationCheck(i18nProvider, result, validationProcessLongTermData, getFailLevelConstraint());
+		return new LongTermValidationCheck(i18nProvider, result, validationProcessLongTermData, getFailLevelRule());
 	}
 
 	private ChainItem<XmlValidationProcessArchivalData> longTermAvailabilityAndIntegrityValidationMaterial() {
-		LevelConstraint constraint = isValid(validationProcessLongTermData) ? getInfoLevelConstraint() : getFailLevelConstraint();
+		LevelRule constraint = isValid(validationProcessLongTermData) ? getInfoLevelRule() : getFailLevelRule();
 		return new LongTermAvailabilityAndIntegrityValidationMaterialCheck(i18nProvider, result, signature, validationProcessLongTermData, constraint);
 	}
 
@@ -392,29 +392,29 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 				erValidationResult, getEvidenceRecordValidationConstraintLevel());
 	}
 
-	private LevelConstraint getTimestampValidationConstraintLevel() {
-		LevelConstraint constraint = policy.getTimestampValidConstraint();
+	private LevelRule getTimestampValidationConstraintLevel() {
+		LevelRule constraint = policy.getTimestampValidConstraint();
 		if (constraint == null) {
-			constraint = getWarnLevelConstraint();
+			constraint = getWarnLevelRule();
 		}
 		return constraint;
 	}
 
-	private LevelConstraint getEvidenceRecordValidationConstraintLevel() {
-		LevelConstraint constraint = policy.getEvidenceRecordValidConstraint();
+	private LevelRule getEvidenceRecordValidationConstraintLevel() {
+		LevelRule constraint = policy.getEvidenceRecordValidConstraint();
 		if (constraint == null) {
-			constraint = getWarnLevelConstraint();
+			constraint = getWarnLevelRule();
 		}
 		return constraint;
 	}
 
 	private ChainItem<XmlValidationProcessArchivalData> tLevelTimeStamp() {
-		LevelConstraint constraint = policy.getTLevelTimeStampConstraint(context);
+		LevelRule constraint = policy.getTLevelTimeStampConstraint(context);
 		return new TLevelTimeStampCheck<>(i18nProvider, result, signature, bbbs, xmlTimestamps, constraint);
 	}
 
 	private ChainItem<XmlValidationProcessArchivalData> ltaLevelTimeStamp() {
-		LevelConstraint constraint = policy.getLTALevelTimeStampConstraint(context);
+		LevelRule constraint = policy.getLTALevelTimeStampConstraint(context);
 		return new LTALevelTimeStampCheck<>(i18nProvider, result, signature, bbbs, xmlTimestamps, constraint);
 	}
 
@@ -426,7 +426,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 		SignatureAcceptanceValidation sav = new SignatureAcceptanceValidation(
 				i18nProvider, diagnosticData, bestSignatureTime, signature, context, bbbs, policy);
 		XmlSAV savResult = sav.execute();
-		return new SignatureAcceptanceValidationResultCheck<>(i18nProvider, result, savResult, getFailLevelConstraint());
+		return new SignatureAcceptanceValidationResultCheck<>(i18nProvider, result, savResult, getFailLevelRule());
 	}
 
 	private void enrichBBBWithPSVConclusion(XmlBasicBuildingBlocks bbb, XmlPSV psv) {

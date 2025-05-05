@@ -17,6 +17,18 @@
 			<jaxb:property name="Algos" />
 		</jaxb:bindings>
 
+		<jaxb:bindings node="//xs:simpleType[@name='Level']">
+			<jaxb:javaType name="eu.europa.esig.dss.enumerations.Level"
+						   parseMethod="eu.europa.esig.dss.jaxb.parsers.LevelParser.parse"
+						   printMethod="eu.europa.esig.dss.jaxb.parsers.LevelParser.print" />
+		</jaxb:bindings>
+
+		<jaxb:bindings node="//xs:simpleType[@name='Model']">
+			<jaxb:javaType name="eu.europa.esig.dss.enumerations.ValidationModel"
+						   parseMethod="eu.europa.esig.dss.jaxb.parsers.ValidationModelParser.parse"
+						   printMethod="eu.europa.esig.dss.jaxb.parsers.ValidationModelParser.print" />
+		</jaxb:bindings>
+
 	</jaxb:bindings>
 
 </jaxb:bindings>

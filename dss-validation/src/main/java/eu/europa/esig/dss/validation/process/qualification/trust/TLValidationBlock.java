@@ -24,10 +24,10 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlTLAnalysis;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
-import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
-import eu.europa.esig.dss.policy.jaxb.TimeConstraint;
+import eu.europa.esig.dss.model.policy.DurationRule;
+import eu.europa.esig.dss.model.policy.LevelRule;
+import eu.europa.esig.dss.model.policy.MultiValuesRule;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
@@ -111,32 +111,32 @@ public class TLValidationBlock extends Chain<XmlTLAnalysis> {
 	}
 
 	private ChainItem<XmlTLAnalysis> tlFreshness() {
-		TimeConstraint constraint = policy.getTLFreshnessConstraint();
+		DurationRule constraint = policy.getTLFreshnessConstraint();
 		return new TLFreshnessCheck(i18nProvider, result, currentTL, currentTime, constraint);
 	}
 
 	private ChainItem<XmlTLAnalysis> tlNotExpired() {
-		LevelConstraint constraint = policy.getTLNotExpiredConstraint();
+		LevelRule constraint = policy.getTLNotExpiredConstraint();
 		return new TLNotExpiredCheck(i18nProvider, result, currentTL, currentTime, constraint);
 	}
 
 	private ChainItem<XmlTLAnalysis> tlVersion() {
-		MultiValuesConstraint constraint = policy.getTLVersionConstraint();
+		MultiValuesRule constraint = policy.getTLVersionConstraint();
 		return new TLVersionCheck(i18nProvider, result, currentTL, currentTime, constraint);
 	}
 
 	private ChainItem<XmlTLAnalysis> tlStructure() {
-		LevelConstraint constraint = policy.getTLStructureConstraint();
+		LevelRule constraint = policy.getTLStructureConstraint();
 		return new TLStructureCheck(i18nProvider, result, currentTL, constraint);
 	}
 
 	private ChainItem<XmlTLAnalysis> tlWellSigned() {
-		LevelConstraint constraint = policy.getTLWellSignedConstraint();
+		LevelRule constraint = policy.getTLWellSignedConstraint();
 		return new TLWellSignedCheck(i18nProvider, result, currentTL, constraint);
 	}
 
 	private ChainItem<XmlTLAnalysis> tlMRAEnacted() {
-		return new TLMRACheck(i18nProvider, result, currentTL, getInfoLevelConstraint());
+		return new TLMRACheck(i18nProvider, result, currentTL, getInfoLevelRule());
 	}
 
 }

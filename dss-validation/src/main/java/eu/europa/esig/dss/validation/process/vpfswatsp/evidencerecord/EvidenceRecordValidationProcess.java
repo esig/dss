@@ -39,9 +39,9 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.CryptographicSuite;
+import eu.europa.esig.dss.model.policy.LevelRule;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
@@ -253,10 +253,10 @@ public class EvidenceRecordValidationProcess extends Chain<XmlValidationProcessE
 
         // Validate cryptographic constraints of DigestMatchers
         if (Utils.isCollectionNotEmpty(digestMatchers)) {
-            CryptographicConstraint cryptographicConstraint = policy.getEvidenceRecordCryptographicConstraint();
+            CryptographicSuite cryptographicSuite = policy.getEvidenceRecordCryptographicConstraint();
 
             DigestMatcherListCryptographicChainBuilder<XmlValidationProcessEvidenceRecord> digestMatcherCCBuilder =
-                    new DigestMatcherListCryptographicChainBuilder<>(i18nProvider, result, digestMatchers, lowestPOE.getTime(), cryptographicConstraint);
+                    new DigestMatcherListCryptographicChainBuilder<>(i18nProvider, result, digestMatchers, lowestPOE.getTime(), cryptographicSuite);
             item = digestMatcherCCBuilder.build(item);
 
             XmlCC failedCC = digestMatcherCCBuilder.getConcernedCC();
@@ -270,39 +270,39 @@ public class EvidenceRecordValidationProcess extends Chain<XmlValidationProcessE
     }
 
     private ChainItem<XmlValidationProcessEvidenceRecord> referenceDataFound(XmlDigestMatcher digestMatcher) {
-        LevelConstraint constraint = policy.getEvidenceRecordDataObjectExistenceConstraint();
+        LevelRule constraint = policy.getEvidenceRecordDataObjectExistenceConstraint();
         return new ReferenceDataExistenceCheck<>(i18nProvider, result, digestMatcher, constraint);
     }
 
     private ChainItem<XmlValidationProcessEvidenceRecord> referenceDataIntact(XmlDigestMatcher digestMatcher) {
-        LevelConstraint constraint = policy.getEvidenceRecordDataObjectIntactConstraint();
+        LevelRule constraint = policy.getEvidenceRecordDataObjectIntactConstraint();
         return new ReferenceDataIntactCheck<>(i18nProvider, result, digestMatcher, constraint);
     }
 
     private ChainItem<XmlValidationProcessEvidenceRecord> atLeastOneDataObjectFound(List<XmlDigestMatcher> digestMatchers) {
-        LevelConstraint constraint = policy.getEvidenceRecordDataObjectFoundConstraint();
+        LevelRule constraint = policy.getEvidenceRecordDataObjectFoundConstraint();
         return new AtLeastOneReferenceDataObjectFoundCheck<>(i18nProvider, result, digestMatchers, constraint);
     }
 
     private ChainItem<XmlValidationProcessEvidenceRecord> referenceDataGroup(List<XmlDigestMatcher> digestMatchers) {
-        LevelConstraint constraint = policy.getEvidenceRecordDataObjectGroupConstraint();
+        LevelRule constraint = policy.getEvidenceRecordDataObjectGroupConstraint();
         return new ReferenceDataGroupCheck<>(i18nProvider, result, digestMatchers, constraint);
     }
 
     private ChainItem<XmlValidationProcessEvidenceRecord> signedFilesCoveredCheck() {
-        LevelConstraint constraint = policy.getEvidenceRecordSignedFilesCoveredConstraint();
+        LevelRule constraint = policy.getEvidenceRecordSignedFilesCoveredConstraint();
         return new EvidenceRecordSignedFilesCoveredCheck(i18nProvider, result, evidenceRecord, constraint);
     }
 
     private ChainItem<XmlValidationProcessEvidenceRecord> signedAndTimestampedFilesCoveredCheck() {
-        LevelConstraint constraint = policy.getEvidenceRecordContainerSignedAndTimestampedFilesCoveredConstraint();
+        LevelRule constraint = policy.getEvidenceRecordContainerSignedAndTimestampedFilesCoveredConstraint();
         return new EvidenceRecordSignedAndTimestampedFilesCoveredCheck(i18nProvider, result, diagnosticData.getContainerInfo(), evidenceRecord, constraint);
     }
 
     private ChainItem<XmlValidationProcessEvidenceRecord> timestampValidationConclusive(
             TimestampWrapper timestampWrapper, XmlValidationProcessArchivalDataTimestamp timestampValidationResult) {
         return new TimestampValidationCheck<>(i18nProvider, result, timestampWrapper,
-                timestampValidationResult, getFailLevelConstraint());
+                timestampValidationResult, getFailLevelRule());
     }
 
     private XmlValidationProcessArchivalDataTimestamp getTimestampValidation(TimestampWrapper newestTimestamp) {

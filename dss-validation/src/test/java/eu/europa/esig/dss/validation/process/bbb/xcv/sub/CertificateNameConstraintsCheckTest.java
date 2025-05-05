@@ -33,7 +33,8 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlNameConstraints;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSubjectAlternativeNames;
 import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
 import eu.europa.esig.dss.enumerations.GeneralNameType;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateNameConstraintsCheck;
@@ -86,7 +87,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -134,7 +135,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -182,7 +183,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -229,7 +230,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -276,7 +277,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -323,7 +324,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -370,7 +371,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -425,7 +426,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -480,7 +481,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -535,7 +536,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -586,7 +587,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -637,7 +638,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -680,7 +681,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -722,7 +723,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -770,7 +771,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -818,7 +819,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -866,7 +867,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -913,7 +914,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -960,7 +961,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -1007,7 +1008,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -1054,7 +1055,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -1109,7 +1110,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -1164,7 +1165,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -1215,7 +1216,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -1266,7 +1267,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -1309,7 +1310,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -1352,7 +1353,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -1406,7 +1407,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -1460,7 +1461,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -1515,7 +1516,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -1570,7 +1571,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -1625,7 +1626,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -1680,7 +1681,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -1735,7 +1736,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -1790,7 +1791,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -1838,7 +1839,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -1886,7 +1887,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -1934,7 +1935,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -1982,7 +1983,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -2030,7 +2031,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -2078,7 +2079,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -2136,7 +2137,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -2194,7 +2195,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -2252,7 +2253,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -2299,7 +2300,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -2365,7 +2366,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -2431,7 +2432,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -2497,7 +2498,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -2563,7 +2564,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -2620,7 +2621,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -2677,7 +2678,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -2734,7 +2735,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -2791,7 +2792,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -2848,7 +2849,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -2905,7 +2906,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -2962,7 +2963,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -3019,7 +3020,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -3076,7 +3077,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -3133,7 +3134,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -3190,7 +3191,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -3247,7 +3248,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -3304,7 +3305,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -3361,7 +3362,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -3427,7 +3428,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -3493,7 +3494,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -3551,7 +3552,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -3609,7 +3610,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -3666,7 +3667,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -3723,7 +3724,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -3780,7 +3781,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -3837,7 +3838,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -3894,7 +3895,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -3951,7 +3952,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -4017,7 +4018,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -4083,7 +4084,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -4149,7 +4150,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -4215,7 +4216,7 @@ class CertificateNameConstraintsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateNameConstraintsCheck cncc = new CertificateNameConstraintsCheck(i18nProvider, result,
-                new CertificateWrapper(signCertificate), constraint);
+                new CertificateWrapper(signCertificate), new LevelConstraintWrapper(constraint));
         cncc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

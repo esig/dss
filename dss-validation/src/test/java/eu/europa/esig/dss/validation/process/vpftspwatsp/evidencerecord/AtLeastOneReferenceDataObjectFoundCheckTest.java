@@ -24,7 +24,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.AtLeastOneReferenceDataObjectFoundCheck;
@@ -55,7 +56,7 @@ class AtLeastOneReferenceDataObjectFoundCheckTest extends AbstractTestCheck {
 
         XmlCV result = new XmlCV();
         AtLeastOneReferenceDataObjectFoundCheck<XmlCV> alordofc =
-                new AtLeastOneReferenceDataObjectFoundCheck<>(i18nProvider, result, digestMatchers, constraint);
+                new AtLeastOneReferenceDataObjectFoundCheck<>(i18nProvider, result, digestMatchers, new LevelConstraintWrapper(constraint));
         alordofc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -80,7 +81,7 @@ class AtLeastOneReferenceDataObjectFoundCheckTest extends AbstractTestCheck {
 
         XmlCV result = new XmlCV();
         AtLeastOneReferenceDataObjectFoundCheck<XmlCV> alordofc =
-                new AtLeastOneReferenceDataObjectFoundCheck<>(i18nProvider, result, digestMatchers, constraint);
+                new AtLeastOneReferenceDataObjectFoundCheck<>(i18nProvider, result, digestMatchers, new LevelConstraintWrapper(constraint));
         alordofc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -105,7 +106,7 @@ class AtLeastOneReferenceDataObjectFoundCheckTest extends AbstractTestCheck {
 
         XmlCV result = new XmlCV();
         AtLeastOneReferenceDataObjectFoundCheck<XmlCV> alordofc =
-                new AtLeastOneReferenceDataObjectFoundCheck<>(i18nProvider, result, digestMatchers, constraint);
+                new AtLeastOneReferenceDataObjectFoundCheck<>(i18nProvider, result, digestMatchers, new LevelConstraintWrapper(constraint));
         alordofc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -120,7 +121,7 @@ class AtLeastOneReferenceDataObjectFoundCheckTest extends AbstractTestCheck {
 
         XmlCV result = new XmlCV();
         AtLeastOneReferenceDataObjectFoundCheck<XmlCV> alordofc =
-                new AtLeastOneReferenceDataObjectFoundCheck<>(i18nProvider, result, Collections.emptyList(), constraint);
+                new AtLeastOneReferenceDataObjectFoundCheck<>(i18nProvider, result, Collections.emptyList(), new LevelConstraintWrapper(constraint));
         alordofc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

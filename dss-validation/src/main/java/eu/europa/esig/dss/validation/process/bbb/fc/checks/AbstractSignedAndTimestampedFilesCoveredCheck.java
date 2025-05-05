@@ -27,7 +27,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
@@ -55,10 +55,10 @@ public abstract class AbstractSignedAndTimestampedFilesCoveredCheck<T extends Xm
      * @param result {@link XmlConstraintsConclusion}
      * @param containerInfo {@link XmlContainerInfo}
      * @param timestampFilename {@link String}
-     * @param constraint {@link LevelConstraint}
+     * @param constraint {@link LevelRule}
      */
     protected AbstractSignedAndTimestampedFilesCoveredCheck(I18nProvider i18nProvider, T result, XmlContainerInfo containerInfo,
-                                                            String timestampFilename, LevelConstraint constraint) {
+                                                            String timestampFilename, LevelRule constraint) {
         super(i18nProvider, result, constraint);
         this.containerInfo = containerInfo;
         this.timestampFilename = timestampFilename;

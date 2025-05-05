@@ -31,7 +31,8 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundCertificates;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRelatedCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.AllCertificatesInPathReferencedCheck;
@@ -67,7 +68,7 @@ class AllCertificatesInPathReferencedCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlSAV result = new XmlSAV();
-		AllCertificatesInPathReferencedCheck cpc = new AllCertificatesInPathReferencedCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
+		AllCertificatesInPathReferencedCheck cpc = new AllCertificatesInPathReferencedCheck(i18nProvider, result, new SignatureWrapper(sig), new LevelConstraintWrapper(constraint));
 		cpc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -99,7 +100,7 @@ class AllCertificatesInPathReferencedCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlSAV result = new XmlSAV();
-		AllCertificatesInPathReferencedCheck cpc = new AllCertificatesInPathReferencedCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
+		AllCertificatesInPathReferencedCheck cpc = new AllCertificatesInPathReferencedCheck(i18nProvider, result, new SignatureWrapper(sig), new LevelConstraintWrapper(constraint));
 		cpc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -134,7 +135,7 @@ class AllCertificatesInPathReferencedCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlSAV result = new XmlSAV();
-		AllCertificatesInPathReferencedCheck scrc = new AllCertificatesInPathReferencedCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
+		AllCertificatesInPathReferencedCheck scrc = new AllCertificatesInPathReferencedCheck(i18nProvider, result, new SignatureWrapper(sig), new LevelConstraintWrapper(constraint));
 		scrc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -167,7 +168,7 @@ class AllCertificatesInPathReferencedCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlSAV result = new XmlSAV();
-		AllCertificatesInPathReferencedCheck scrc = new AllCertificatesInPathReferencedCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
+		AllCertificatesInPathReferencedCheck scrc = new AllCertificatesInPathReferencedCheck(i18nProvider, result, new SignatureWrapper(sig), new LevelConstraintWrapper(constraint));
 		scrc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -194,7 +195,7 @@ class AllCertificatesInPathReferencedCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlSAV result = new XmlSAV();
-		AllCertificatesInPathReferencedCheck scrc = new AllCertificatesInPathReferencedCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
+		AllCertificatesInPathReferencedCheck scrc = new AllCertificatesInPathReferencedCheck(i18nProvider, result, new SignatureWrapper(sig), new LevelConstraintWrapper(constraint));
 		scrc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

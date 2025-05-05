@@ -26,7 +26,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlBasicSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSignatureValidCheck;
@@ -50,7 +51,7 @@ class CertificateSignatureValidCheckTest extends AbstractTestCheck {
 
 		XmlSubXCV result = new XmlSubXCV();
 		CertificateSignatureValidCheck<XmlSubXCV> csvc = new CertificateSignatureValidCheck<>(i18nProvider, result,
-				new CertificateWrapper(xc), constraint);
+				new CertificateWrapper(xc), new LevelConstraintWrapper(constraint));
 		csvc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -70,7 +71,7 @@ class CertificateSignatureValidCheckTest extends AbstractTestCheck {
 
 		XmlSubXCV result = new XmlSubXCV();
 		CertificateSignatureValidCheck<XmlSubXCV> csvc = new CertificateSignatureValidCheck<>(i18nProvider, result,
-				new CertificateWrapper(xc), constraint);
+				new CertificateWrapper(xc), new LevelConstraintWrapper(constraint));
 		csvc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

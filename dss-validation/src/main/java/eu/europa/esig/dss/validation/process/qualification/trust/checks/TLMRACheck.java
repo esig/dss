@@ -27,7 +27,7 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TSLTypeEnum;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
 /**
@@ -45,10 +45,10 @@ public class TLMRACheck extends ChainItem<XmlTLAnalysis> {
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlTLAnalysis}
      * @param currentTL {@link XmlTrustedList}
-     * @param constraint {@link LevelConstraint}
+     * @param constraint {@link LevelRule}
      */
     public TLMRACheck(I18nProvider i18nProvider, XmlTLAnalysis result, XmlTrustedList currentTL,
-                      LevelConstraint constraint) {
+                      LevelRule constraint) {
         super(i18nProvider, result, constraint);
         this.currentTL = currentTL;
     }

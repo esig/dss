@@ -27,7 +27,8 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateExtension;
 import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.MultiValuesConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateForbiddenExtensionsCheck;
@@ -57,7 +58,7 @@ class CertificateForbiddenExtensionsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateForbiddenExtensionsCheck cfec = new CertificateForbiddenExtensionsCheck(i18nProvider, result,
-                new CertificateWrapper(xc), constraint);
+                new CertificateWrapper(xc), new MultiValuesConstraintWrapper(constraint));
         cfec.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -83,7 +84,7 @@ class CertificateForbiddenExtensionsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateForbiddenExtensionsCheck cfec = new CertificateForbiddenExtensionsCheck(i18nProvider, result,
-                new CertificateWrapper(xc), constraint);
+                new CertificateWrapper(xc), new MultiValuesConstraintWrapper(constraint));
         cfec.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -101,7 +102,7 @@ class CertificateForbiddenExtensionsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateForbiddenExtensionsCheck cfec = new CertificateForbiddenExtensionsCheck(i18nProvider, result,
-                new CertificateWrapper(xc), constraint);
+                new CertificateWrapper(xc), new MultiValuesConstraintWrapper(constraint));
         cfec.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -126,7 +127,7 @@ class CertificateForbiddenExtensionsCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateForbiddenExtensionsCheck cfec = new CertificateForbiddenExtensionsCheck(i18nProvider, result,
-                new CertificateWrapper(xc), constraint);
+                new CertificateWrapper(xc), new MultiValuesConstraintWrapper(constraint));
         cfec.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

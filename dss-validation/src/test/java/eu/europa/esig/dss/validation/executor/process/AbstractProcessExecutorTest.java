@@ -22,13 +22,14 @@ package eu.europa.esig.dss.validation.executor.process;
 
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSignature;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.policy.EtsiValidationPolicy;
-import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.ValidationPolicyFacade;
+import eu.europa.esig.dss.policy.EtsiValidationPolicyFactory;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
-import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.validation.executor.AbstractTestValidationExecutor;
+import eu.europa.esig.dss.validation.policy.ValidationPolicyLoader;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.api.BeforeAll;
 
@@ -58,20 +59,20 @@ public abstract class AbstractProcessExecutorTest extends AbstractTestValidation
     }
 
     protected ValidationPolicy loadTLPolicy() throws Exception {
-        return ValidationPolicyFacade.newFacade().getTrustedListValidationPolicy();
+        return ValidationPolicyLoader.fromValidationPolicy(new File("src/test/resources/diag-data/policy/tsl-constraint.xml")).create();
     }
 
     protected ValidationPolicy loadPolicyNoRevoc() throws Exception {
-        return ValidationPolicyFacade.newFacade().getValidationPolicy(new File("src/test/resources/diag-data/policy/constraint-no-revoc.xml"));
+        return ValidationPolicyLoader.fromValidationPolicy(new File("src/test/resources/diag-data/policy/constraint-no-revoc.xml")).create();
     }
 
     protected ValidationPolicy loadPolicyRevocSha1OK() throws Exception {
-        return ValidationPolicyFacade.newFacade().getValidationPolicy(new File("src/test/resources/diag-data/policy/revocation-sha1-ok-policy.xml"));
+        return ValidationPolicyLoader.fromValidationPolicy(new File("src/test/resources/diag-data/policy/revocation-sha1-ok-policy.xml")).create();
     }
 
     protected ValidationPolicy loadPolicyCryptoWarn() throws Exception {
-        EtsiValidationPolicy defaultPolicy = (EtsiValidationPolicy) ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
-        CryptographicConstraint cryptographicConstraint = defaultPolicy.getDefaultCryptographicConstraint();
+        EtsiValidationPolicy defaultPolicy = (EtsiValidationPolicy) new EtsiValidationPolicyFactory().loadDefaultValidationPolicy();
+        CryptographicConstraint cryptographicConstraint = defaultPolicy.getCryptographic();
         cryptographicConstraint.setLevel(Level.WARN);
         cryptographicConstraint.getAlgoExpirationDate().setLevel(Level.WARN);
         return defaultPolicy;

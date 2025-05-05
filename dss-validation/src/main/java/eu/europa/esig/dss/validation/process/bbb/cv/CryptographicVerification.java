@@ -30,8 +30,8 @@ import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.EvidenceRecordTimestampType;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
@@ -213,42 +213,42 @@ public class CryptographicVerification extends Chain<XmlCV> {
 	}
 
 	private ChainItem<XmlCV> referenceDataFound(XmlDigestMatcher digestMatcher) {
-		LevelConstraint constraint = validationPolicy.getReferenceDataExistenceConstraint(context);
+		LevelRule constraint = validationPolicy.getReferenceDataExistenceConstraint(context);
 		return new ReferenceDataExistenceCheck<>(i18nProvider, result, digestMatcher, constraint);
 	}
 
 	private ChainItem<XmlCV> referenceDataIntact(XmlDigestMatcher digestMatcher) {
-		LevelConstraint constraint = validationPolicy.getReferenceDataIntactConstraint(context);
+		LevelRule constraint = validationPolicy.getReferenceDataIntactConstraint(context);
 		return new ReferenceDataIntactCheck<>(i18nProvider, result, digestMatcher, constraint);
 	}
 
 	private ChainItem<XmlCV> referenceDataNameCheck(XmlDigestMatcher digestMatcher) {
-		LevelConstraint constraint = validationPolicy.getReferenceDataNameMatchConstraint(context);
+		LevelRule constraint = validationPolicy.getReferenceDataNameMatchConstraint(context);
 		return new ReferenceDataNameMatchCheck<>(i18nProvider, result, digestMatcher, constraint);
 	}
 
 	private ChainItem<XmlCV> manifestEntryExistence(List<XmlDigestMatcher> digestMatchers) {
-		LevelConstraint constraint = validationPolicy.getManifestEntryObjectExistenceConstraint(context);
+		LevelRule constraint = validationPolicy.getManifestEntryObjectExistenceConstraint(context);
 		return new ManifestEntryExistenceCheck(i18nProvider, result, digestMatchers, constraint);
 	}
 
 	private ChainItem<XmlCV> manifestEntryGroup(List<XmlDigestMatcher> digestMatchers) {
-		LevelConstraint constraint = validationPolicy.getManifestEntryObjectGroupConstraint(context);
+		LevelRule constraint = validationPolicy.getManifestEntryObjectGroupConstraint(context);
 		return new ManifestEntryGroupCheck(i18nProvider, result, digestMatchers, constraint);
 	}
 
 	private ChainItem<XmlCV> manifestEntryIntact(XmlDigestMatcher digestMatcher) {
-		LevelConstraint constraint = validationPolicy.getManifestEntryObjectIntactConstraint(context);
+		LevelRule constraint = validationPolicy.getManifestEntryObjectIntactConstraint(context);
 		return new ReferenceDataIntactCheck<>(i18nProvider, result, digestMatcher, constraint);
 	}
 
 	private ChainItem<XmlCV> manifestEntryNameCheck(XmlDigestMatcher digestMatcher) {
-		LevelConstraint constraint = validationPolicy.getManifestEntryNameMatchConstraint(context);
+		LevelRule constraint = validationPolicy.getManifestEntryNameMatchConstraint(context);
 		return new ReferenceDataNameMatchCheck<>(i18nProvider, result, digestMatcher, constraint);
 	}
 
 	private ChainItem<XmlCV> signatureIntact() {
-		LevelConstraint constraint = validationPolicy.getSignatureIntactConstraint(context);
+		LevelRule constraint = validationPolicy.getSignatureIntactConstraint(context);
 		return new SignatureIntactCheck<>(i18nProvider, result, token, context, constraint);
 	}
 
@@ -262,7 +262,7 @@ public class CryptographicVerification extends Chain<XmlCV> {
 	}
 
 	private ChainItem<XmlCV> evidenceRecordHashTreeRenewalTimestamp() {
-		LevelConstraint constraint = validationPolicy.getEvidenceRecordHashTreeRenewalConstraint();
+		LevelRule constraint = validationPolicy.getEvidenceRecordHashTreeRenewalConstraint();
 		return new EvidenceRecordHashTreeRenewalTimestampCheck(i18nProvider, result, diagnosticData, (TimestampWrapper) token, constraint);
 	}
 

@@ -27,7 +27,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
 /**
@@ -50,10 +50,10 @@ public class FormatCheckingResultCheck<T extends XmlConstraintsConclusion> exten
      * @param result {@link XmlConstraintsConclusion}
      * @param xmlFC {@link XmlFC}
      * @param token {@link TokenProxy}
-     * @param constraint {@link LevelConstraint}
+     * @param constraint {@link LevelRule}
      */
     public FormatCheckingResultCheck(I18nProvider i18nProvider, T result,
-                                     XmlFC xmlFC, TokenProxy token, LevelConstraint constraint) {
+                                     XmlFC xmlFC, TokenProxy token, LevelRule constraint) {
         super(i18nProvider, result, constraint, token.getId() + FC_BLOCK_SUFFIX);
         this.xmlFC = xmlFC;
     }

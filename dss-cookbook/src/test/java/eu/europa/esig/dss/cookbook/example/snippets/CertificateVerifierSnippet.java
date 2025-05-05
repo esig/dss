@@ -24,8 +24,7 @@ import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
 import eu.europa.esig.dss.alert.LogOnStatusAlert;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.ValidationPolicyFacade;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.spi.OID;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
@@ -38,6 +37,7 @@ import eu.europa.esig.dss.spi.x509.aia.AIASource;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPSource;
 import eu.europa.esig.dss.validation.RevocationDataVerifierFactory;
+import eu.europa.esig.dss.validation.policy.ValidationPolicyLoader;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.slf4j.event.Level;
 
@@ -207,7 +207,7 @@ public class CertificateVerifierSnippet {
 
         // end::demo[]
 
-        final ValidationPolicy validationPolicy = ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
+        final ValidationPolicy validationPolicy = ValidationPolicyLoader.fromDefaultValidationPolicy().create();
         final Date validationTime = new Date();
 
         // tag::rev-data-verifier[]

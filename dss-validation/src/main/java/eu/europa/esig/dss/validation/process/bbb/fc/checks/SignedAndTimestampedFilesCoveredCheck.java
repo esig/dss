@@ -24,7 +24,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlContainerInfo;
 import eu.europa.esig.dss.i18n.I18nProvider;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 
 /**
  * This class checks whether all files signed by the covered signatures or timestamped by covered timestamps
@@ -40,10 +40,10 @@ public class SignedAndTimestampedFilesCoveredCheck extends AbstractSignedAndTime
      * @param result {@link XmlFC}
      * @param containerInfo {@link XmlContainerInfo}
      * @param timestampWrapper {@link TimestampWrapper}
-     * @param constraint {@link LevelConstraint}
+     * @param constraint {@link LevelRule}
      */
     public SignedAndTimestampedFilesCoveredCheck(I18nProvider i18nProvider, XmlFC result, XmlContainerInfo containerInfo,
-                                                 TimestampWrapper timestampWrapper, LevelConstraint constraint) {
+                                                 TimestampWrapper timestampWrapper, LevelRule constraint) {
         super(i18nProvider, result, containerInfo, timestampWrapper.getFilename(), constraint);
     }
 

@@ -28,13 +28,13 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSignaturePolicyStore;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlUserNotice;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
-import eu.europa.esig.dss.model.signature.SignaturePolicy;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.model.UserNotice;
+import eu.europa.esig.dss.model.signature.SignaturePolicy;
+import eu.europa.esig.dss.model.signature.SignaturePolicyValidationResult;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.model.signature.SignaturePolicyValidationResult;
 
 import java.util.Arrays;
 import java.util.List;

@@ -25,7 +25,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlRAC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationCertHashPresenceCheck;
@@ -47,7 +48,7 @@ class RevocationCertHashPresenceCheckTest extends AbstractTestCheck {
 		
 		XmlRAC result = new XmlRAC();
 		RevocationCertHashPresenceCheck rchpc = new RevocationCertHashPresenceCheck(i18nProvider, result, 
-				new RevocationWrapper(xmlRevocation), constraint);
+				new RevocationWrapper(xmlRevocation), new LevelConstraintWrapper(constraint));
 		rchpc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -65,7 +66,7 @@ class RevocationCertHashPresenceCheckTest extends AbstractTestCheck {
 		
 		XmlRAC result = new XmlRAC();
 		RevocationCertHashPresenceCheck rchpc = new RevocationCertHashPresenceCheck(i18nProvider, result, 
-				new RevocationWrapper(xmlRevocation), constraint);
+				new RevocationWrapper(xmlRevocation), new LevelConstraintWrapper(constraint));
 		rchpc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

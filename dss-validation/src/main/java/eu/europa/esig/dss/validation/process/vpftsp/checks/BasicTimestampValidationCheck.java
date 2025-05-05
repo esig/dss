@@ -29,7 +29,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
 /**
@@ -52,11 +52,11 @@ public class BasicTimestampValidationCheck<T extends XmlConstraintsConclusion> e
      * @param result {@link T}
      * @param timestamp {@link TimestampWrapper}
      * @param timestampValidationResult {@link XmlValidationProcessBasicTimestamp}
-     * @param constraint {@link LevelConstraint}
+     * @param constraint {@link LevelRule}
      */
     public BasicTimestampValidationCheck(I18nProvider i18nProvider, T result, TimestampWrapper timestamp,
                                          XmlValidationProcessBasicTimestamp timestampValidationResult,
-                                         LevelConstraint constraint) {
+                                         LevelRule constraint) {
         this(i18nProvider, result, timestamp, timestampValidationResult, constraint, null);
     }
 
@@ -67,12 +67,12 @@ public class BasicTimestampValidationCheck<T extends XmlConstraintsConclusion> e
      * @param result {@link XmlSAV}
      * @param timestamp {@link TimestampWrapper}
      * @param timestampValidationResult {@link XmlValidationProcessBasicTimestamp}
-     * @param constraint {@link LevelConstraint}
+     * @param constraint {@link LevelRule}
      * @param bbbId {@link String} id of the corresponding Basic Building Block
      */
     protected BasicTimestampValidationCheck(I18nProvider i18nProvider, T result, TimestampWrapper timestamp,
                                            XmlValidationProcessBasicTimestamp timestampValidationResult,
-                                           LevelConstraint constraint, String bbbId) {
+                                           LevelRule constraint, String bbbId) {
         super(i18nProvider, result, constraint, bbbId);
         this.timestamp = timestamp;
         this.timestampValidationResult = timestampValidationResult;

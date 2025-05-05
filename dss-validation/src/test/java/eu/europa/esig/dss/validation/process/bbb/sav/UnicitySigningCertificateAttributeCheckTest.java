@@ -32,7 +32,8 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificateToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRelatedCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.UnicitySigningCertificateAttributeCheck;
@@ -64,7 +65,7 @@ class UnicitySigningCertificateAttributeCheckTest extends AbstractTestCheck {
 
 		XmlSAV result = new XmlSAV();
 		UnicitySigningCertificateAttributeCheck uscac = new UnicitySigningCertificateAttributeCheck(i18nProvider, result,
-				new SignatureWrapper(sig), constraint);
+				new SignatureWrapper(sig), new LevelConstraintWrapper(constraint));
 		uscac.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -92,7 +93,7 @@ class UnicitySigningCertificateAttributeCheckTest extends AbstractTestCheck {
 
 		XmlSAV result = new XmlSAV();
 		UnicitySigningCertificateAttributeCheck uscac = new UnicitySigningCertificateAttributeCheck(i18nProvider, result,
-				new SignatureWrapper(sig), constraint);
+				new SignatureWrapper(sig), new LevelConstraintWrapper(constraint));
 		uscac.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -126,7 +127,7 @@ class UnicitySigningCertificateAttributeCheckTest extends AbstractTestCheck {
 
 		XmlSAV result = new XmlSAV();
 		UnicitySigningCertificateAttributeCheck uscac = new UnicitySigningCertificateAttributeCheck(i18nProvider, result,
-				new SignatureWrapper(sig), constraint);
+				new SignatureWrapper(sig), new LevelConstraintWrapper(constraint));
 		uscac.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

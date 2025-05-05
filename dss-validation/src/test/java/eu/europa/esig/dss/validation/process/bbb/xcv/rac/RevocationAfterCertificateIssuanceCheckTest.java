@@ -7,7 +7,8 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationAfterCertificateIssuanceCheck;
@@ -37,7 +38,7 @@ class RevocationAfterCertificateIssuanceCheckTest extends AbstractTestCheck {
 
         XmlRAC result = new XmlRAC();
         RevocationAfterCertificateIssuanceCheck rikcc = new RevocationAfterCertificateIssuanceCheck(i18nProvider, result,
-                new CertificateWrapper(xmlCertificate), new RevocationWrapper(xmlRevocation), constraint);
+                new CertificateWrapper(xmlCertificate), new RevocationWrapper(xmlRevocation), new LevelConstraintWrapper(constraint));
         rikcc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -61,7 +62,7 @@ class RevocationAfterCertificateIssuanceCheckTest extends AbstractTestCheck {
 
         XmlRAC result = new XmlRAC();
         RevocationAfterCertificateIssuanceCheck rikcc = new RevocationAfterCertificateIssuanceCheck(i18nProvider, result,
-                new CertificateWrapper(xmlCertificate), new RevocationWrapper(xmlRevocation), constraint);
+                new CertificateWrapper(xmlCertificate), new RevocationWrapper(xmlRevocation), new LevelConstraintWrapper(constraint));
         rikcc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -84,7 +85,7 @@ class RevocationAfterCertificateIssuanceCheckTest extends AbstractTestCheck {
 
         XmlRAC result = new XmlRAC();
         RevocationAfterCertificateIssuanceCheck rikcc = new RevocationAfterCertificateIssuanceCheck(i18nProvider, result,
-                new CertificateWrapper(xmlCertificate), new RevocationWrapper(xmlRevocation), constraint);
+                new CertificateWrapper(xmlCertificate), new RevocationWrapper(xmlRevocation), new LevelConstraintWrapper(constraint));
         rikcc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

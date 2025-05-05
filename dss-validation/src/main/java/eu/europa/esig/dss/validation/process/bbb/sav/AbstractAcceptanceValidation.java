@@ -28,9 +28,9 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.CryptographicSuite;
+import eu.europa.esig.dss.model.policy.LevelRule;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
@@ -95,7 +95,7 @@ public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy>
 	 * @return {@link ChainItem}
 	 */
 	protected ChainItem<XmlSAV> signingCertificateAttributePresent() {
-		LevelConstraint constraint = validationPolicy.getSigningCertificateAttributePresentConstraint(context);
+		LevelRule constraint = validationPolicy.getSigningCertificateAttributePresentConstraint(context);
 		return new SigningCertificateAttributePresentCheck(i18nProvider, result, token, constraint);
 	}
 
@@ -105,7 +105,7 @@ public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy>
 	 * @return {@link ChainItem}
 	 */
 	protected ChainItem<XmlSAV> unicitySigningCertificateAttribute() {
-		LevelConstraint constraint = validationPolicy.getUnicitySigningCertificateAttributeConstraint(context);
+		LevelRule constraint = validationPolicy.getUnicitySigningCertificateAttributeConstraint(context);
 		return new UnicitySigningCertificateAttributeCheck(i18nProvider, result, token, constraint);
 	}
 
@@ -115,7 +115,7 @@ public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy>
 	 * @return {@link ChainItem}
 	 */
 	protected ChainItem<XmlSAV> signingCertificateReferencesValidity() {
-		LevelConstraint constraint = validationPolicy.getSigningCertificateRefersCertificateChainConstraint(context);
+		LevelRule constraint = validationPolicy.getSigningCertificateRefersCertificateChainConstraint(context);
 		return new SigningCertificateReferencesValidityCheck(i18nProvider, result, token, constraint);
 	}
 
@@ -126,7 +126,7 @@ public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy>
 	 * @return {@link ChainItem}
 	 */
 	protected ChainItem<XmlSAV> allCertificatesInPathReferenced() {
-		LevelConstraint constraint = validationPolicy.getReferencesToAllCertificateChainPresentConstraint(context);
+		LevelRule constraint = validationPolicy.getReferencesToAllCertificateChainPresentConstraint(context);
 		return new AllCertificatesInPathReferencedCheck(i18nProvider, result, token, constraint);
 	}
 
@@ -138,7 +138,7 @@ public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy>
 	 */
 	protected ChainItem<XmlSAV> cryptographic(ChainItem<XmlSAV> item) {
 		// The basic signature constraints validation
-		CryptographicConstraint constraint = validationPolicy.getSignatureCryptographicConstraint(context);
+		CryptographicSuite constraint = validationPolicy.getSignatureCryptographicConstraint(context);
 		MessageTag position = ValidationProcessUtils.getCryptoPosition(context);
 		
 		CryptographicChecker cc = new CryptographicChecker(i18nProvider, token, currentTime, position, constraint);
@@ -199,7 +199,7 @@ public abstract class AbstractAcceptanceValidation<T extends AbstractTokenProxy>
 		return item;
 	}
 	
-	private ChainItem<XmlSAV> cryptographicCheckResult(XmlCC ccResult, MessageTag position, CryptographicConstraint constraint) {
+	private ChainItem<XmlSAV> cryptographicCheckResult(XmlCC ccResult, MessageTag position, CryptographicSuite constraint) {
 		return new CryptographicCheckerResultCheck<>(i18nProvider, result, currentTime, position, ccResult, constraint);
 	}
 

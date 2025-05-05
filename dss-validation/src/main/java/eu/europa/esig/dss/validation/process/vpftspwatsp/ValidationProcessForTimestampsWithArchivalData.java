@@ -36,9 +36,9 @@ import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.CryptographicSuite;
+import eu.europa.esig.dss.model.policy.LevelRule;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
@@ -259,7 +259,7 @@ public class ValidationProcessForTimestampsWithArchivalData extends Chain<XmlVal
 
     private ChainItem<XmlValidationProcessArchivalDataTimestamp> timestampBasicSignatureValidationAcceptable(
             XmlValidationProcessBasicTimestamp timestampValidationResult) {
-        return new AcceptableBasicTimestampValidationCheck<>(i18nProvider, result, timestampValidationResult, getFailLevelConstraint());
+        return new AcceptableBasicTimestampValidationCheck<>(i18nProvider, result, timestampValidationResult, getFailLevelRule());
     }
 
     private void enrichBBBWithPSVConclusion(XmlBasicBuildingBlocks bbb, XmlPSV psv) {
@@ -288,40 +288,40 @@ public class ValidationProcessForTimestampsWithArchivalData extends Chain<XmlVal
     private ChainItem<XmlValidationProcessArchivalDataTimestamp> timestampBasicSignatureValidationConclusive(
             TimestampWrapper timestampWrapper, XmlValidationProcessBasicTimestamp timestampValidationResult) {
         return new BasicTimestampValidationCheck<>(i18nProvider, result, timestampWrapper,
-                timestampValidationResult, getWarnLevelConstraint());
+                timestampValidationResult, getWarnLevelRule());
     }
 
     private MessageImprintDigestAlgorithmValidation timestampDigestAlgorithmValidation(
             TimestampWrapper newestTimestamp, Date poeTime) {
-        CryptographicConstraint cryptographicConstraint = policy.getSignatureCryptographicConstraint(Context.TIMESTAMP);
+        CryptographicSuite cryptographicSuite = policy.getSignatureCryptographicConstraint(Context.TIMESTAMP);
         return new MessageImprintDigestAlgorithmValidation(i18nProvider, poeTime,
-                newestTimestamp.getMessageImprint().getDigestMethod(), cryptographicConstraint);
+                newestTimestamp.getMessageImprint().getDigestMethod(), cryptographicSuite);
     }
 
     private ChainItem<XmlValidationProcessArchivalDataTimestamp> pastTimestampValidation(TimestampWrapper timestamp, XmlPSV xmlPSV) {
-        return new PastTimestampValidationCheck<>(i18nProvider, result, timestamp, xmlPSV, getFailLevelConstraint());
+        return new PastTimestampValidationCheck<>(i18nProvider, result, timestamp, xmlPSV, getFailLevelRule());
     }
 
     private ChainItem<XmlValidationProcessArchivalDataTimestamp> messageImprintDigestAlgorithm(
             TimestampWrapper timestampWrapper, XmlSAV davResult, Date poeTime) {
         return new MessageImprintDigestAlgorithmValidationCheck<>(i18nProvider, result, timestampWrapper,
-                davResult, poeTime, getWarnLevelConstraint());
+                davResult, poeTime, getWarnLevelRule());
     }
 
     private ChainItem<XmlValidationProcessArchivalDataTimestamp> timestampMessageImprint(TimestampWrapper timestampWrapper) {
-        return new TimestampMessageImprintCheck<>(i18nProvider, result, timestampWrapper, getWarnLevelConstraint());
+        return new TimestampMessageImprintCheck<>(i18nProvider, result, timestampWrapper, getWarnLevelRule());
     }
 
     private ChainItem<XmlValidationProcessArchivalDataTimestamp> timestampIsAcceptable(TimestampWrapper timestamp, Date lowestPOE) {
         TimestampAcceptanceValidation tav = new TimestampAcceptanceValidation(i18nProvider, lowestPOE, timestamp, policy);
         XmlSAV savResult = tav.execute();
-        return new TimestampAcceptanceValidationResultCheck<>(i18nProvider, result, savResult, getFailLevelConstraint());
+        return new TimestampAcceptanceValidationResultCheck<>(i18nProvider, result, savResult, getFailLevelRule());
     }
 
-    private LevelConstraint getEvidenceRecordValidationConstraintLevel() {
-        LevelConstraint constraint = policy.getEvidenceRecordValidConstraint();
+    private LevelRule getEvidenceRecordValidationConstraintLevel() {
+        LevelRule constraint = policy.getEvidenceRecordValidConstraint();
         if (constraint == null) {
-            constraint = getWarnLevelConstraint();
+            constraint = getWarnLevelRule();
         }
         return constraint;
     }

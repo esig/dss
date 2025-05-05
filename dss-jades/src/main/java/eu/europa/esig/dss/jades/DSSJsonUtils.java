@@ -42,7 +42,8 @@ import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.validation.analyzer.DocumentAnalyzer;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.jades.JAdESUtils;
+import eu.europa.esig.jades.JAdESProtectedHeaderUtils;
+import eu.europa.esig.jades.JAdESUnprotectedHeaderUtils;
 import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.jose4j.base64url.Base64Url;
 import org.jose4j.json.JsonUtil;
@@ -785,12 +786,12 @@ public class DSSJsonUtils {
 		List<String> errors = new ArrayList<>();
 		
 		String headerJson = jws.getHeaders().getFullHeaderAsJsonString();
-		errors.addAll(JAdESUtils.getInstance().validateAgainstJWSProtectedHeaderSchema(headerJson));
+		errors.addAll(JAdESProtectedHeaderUtils.getInstance().validateAgainstSchema(headerJson));
 		
 		Map<String, Object> unprotected = jws.getUnprotected();
 		if (Utils.isMapNotEmpty(unprotected)) {
 			String unprotectedJson = JsonUtil.toJson(unprotected);
-			errors.addAll(JAdESUtils.getInstance().validateAgainstJWSUnprotectedHeaderSchema(unprotectedJson));
+			errors.addAll(JAdESUnprotectedHeaderUtils.getInstance().validateAgainstSchema(unprotectedJson));
 
 			Object etsiU = unprotected.get(JAdESHeaderParameterNames.ETSI_U);
 			if (etsiU instanceof List<?>) {
@@ -798,7 +799,7 @@ public class DSSJsonUtils {
 				if (areAllBase64UrlComponents(etsiUComponents)) {
 					Map<String, Object> clearEtsiURepresentation = getClearEtsiURepresentation(unprotected);
 					String clearEtsiUJson = JsonUtil.toJson(clearEtsiURepresentation);
-					errors.addAll(JAdESUtils.getInstance().validateAgainstJWSUnprotectedHeaderSchema(clearEtsiUJson));
+					errors.addAll(JAdESUnprotectedHeaderUtils.getInstance().validateAgainstSchema(clearEtsiUJson));
 				}
 			}
 		}

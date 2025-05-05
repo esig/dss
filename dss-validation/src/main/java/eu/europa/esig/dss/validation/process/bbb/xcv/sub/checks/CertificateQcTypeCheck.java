@@ -27,7 +27,7 @@ import eu.europa.esig.dss.enumerations.QCType;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
+import eu.europa.esig.dss.model.policy.MultiValuesRule;
 import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
 
 import java.util.ArrayList;
@@ -47,10 +47,10 @@ public class CertificateQcTypeCheck extends AbstractMultiValuesCheckItem<XmlSubX
      * @param i18nProvider {@link I18nProvider}
      * @param result the result
      * @param certificate {@link CertificateWrapper}
-     * @param constraint {@link MultiValuesConstraint}
+     * @param constraint {@link MultiValuesRule}
      */
     public CertificateQcTypeCheck(I18nProvider i18nProvider, XmlSubXCV result, CertificateWrapper certificate,
-                                         MultiValuesConstraint constraint) {
+                                         MultiValuesRule constraint) {
         super(i18nProvider, result, constraint);
         this.certificate = certificate;
     }

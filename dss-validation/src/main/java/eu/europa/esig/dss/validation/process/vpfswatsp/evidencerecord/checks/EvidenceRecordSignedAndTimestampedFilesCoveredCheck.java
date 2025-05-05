@@ -24,7 +24,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessEvidenceRecord
 import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlContainerInfo;
 import eu.europa.esig.dss.i18n.I18nProvider;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.AbstractSignedAndTimestampedFilesCoveredCheck;
 
 /**
@@ -40,10 +40,10 @@ public class EvidenceRecordSignedAndTimestampedFilesCoveredCheck extends Abstrac
      * @param result {@link XmlValidationProcessEvidenceRecord}
      * @param containerInfo {@link XmlContainerInfo}
      * @param evidenceRecordWrapper {@link EvidenceRecordWrapper}
-     * @param constraint {@link LevelConstraint}
+     * @param constraint {@link LevelRule}
      */
     public EvidenceRecordSignedAndTimestampedFilesCoveredCheck(I18nProvider i18nProvider, XmlValidationProcessEvidenceRecord result,
-            XmlContainerInfo containerInfo, EvidenceRecordWrapper evidenceRecordWrapper, LevelConstraint constraint) {
+            XmlContainerInfo containerInfo, EvidenceRecordWrapper evidenceRecordWrapper, LevelRule constraint) {
         super(i18nProvider, result, containerInfo, evidenceRecordWrapper.getFilename(), constraint);
     }
 

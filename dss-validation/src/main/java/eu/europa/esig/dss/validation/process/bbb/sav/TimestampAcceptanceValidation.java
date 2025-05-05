@@ -25,8 +25,8 @@ import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.TSAGeneralNameFieldPresentCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.TSAGeneralNameOrderMatchCheck;
@@ -91,17 +91,17 @@ public class TimestampAcceptanceValidation extends AbstractAcceptanceValidation<
 	}
 
 	private ChainItem<XmlSAV> tsaGeneralNamePresent() {
-		LevelConstraint constraint = validationPolicy.getTimestampTSAGeneralNamePresent();
+		LevelRule constraint = validationPolicy.getTimestampTSAGeneralNamePresent();
 		return new TSAGeneralNameFieldPresentCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> tsaGeneralNameMatch() {
-		LevelConstraint constraint = validationPolicy.getTimestampTSAGeneralNameContentMatch();
+		LevelRule constraint = validationPolicy.getTimestampTSAGeneralNameContentMatch();
 		return new TSAGeneralNameValueMatchCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlSAV> tsaGeneralNameOrderMatch() {
-		LevelConstraint constraint = validationPolicy.getTimestampTSAGeneralNameOrderMatch();
+		LevelRule constraint = validationPolicy.getTimestampTSAGeneralNameOrderMatch();
 		return new TSAGeneralNameOrderMatchCheck(i18nProvider, result, token, constraint);
 	}
 

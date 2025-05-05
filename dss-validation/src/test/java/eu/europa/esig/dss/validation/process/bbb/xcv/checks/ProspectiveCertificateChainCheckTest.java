@@ -29,7 +29,8 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrusted;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.Context;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import org.junit.jupiter.api.Test;
@@ -53,7 +54,7 @@ class ProspectiveCertificateChainCheckTest extends AbstractTestCheck {
 
         XmlXCV result = new XmlXCV();
         ProspectiveCertificateChainCheck<XmlXCV> pccc = new ProspectiveCertificateChainCheck<>(i18nProvider, result,
-                new CertificateWrapper(xc), Context.CERTIFICATE, constraint);
+                new CertificateWrapper(xc), Context.CERTIFICATE, new LevelConstraintWrapper(constraint));
         pccc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -73,7 +74,7 @@ class ProspectiveCertificateChainCheckTest extends AbstractTestCheck {
 
         XmlXCV result = new XmlXCV();
         ProspectiveCertificateChainCheck<XmlXCV> pccc = new ProspectiveCertificateChainCheck<>(i18nProvider, result,
-                new CertificateWrapper(xc), Context.CERTIFICATE, constraint);
+                new CertificateWrapper(xc), Context.CERTIFICATE, new LevelConstraintWrapper(constraint));
         pccc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -94,7 +95,7 @@ class ProspectiveCertificateChainCheckTest extends AbstractTestCheck {
 
         XmlXCV result = new XmlXCV();
         ProspectiveCertificateChainCheck<XmlXCV> pccc = new ProspectiveCertificateChainCheck<>(i18nProvider, result,
-                new CertificateWrapper(xc), Context.CERTIFICATE, constraint);
+                new CertificateWrapper(xc), Context.CERTIFICATE, new LevelConstraintWrapper(constraint));
         pccc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -115,7 +116,7 @@ class ProspectiveCertificateChainCheckTest extends AbstractTestCheck {
 
         XmlXCV result = new XmlXCV();
         ProspectiveCertificateChainCheck<XmlXCV> pccc = new ProspectiveCertificateChainCheck<>(i18nProvider, result,
-                new CertificateWrapper(xc), Context.CERTIFICATE, constraint);
+                new CertificateWrapper(xc), Context.CERTIFICATE, new LevelConstraintWrapper(constraint));
         pccc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -142,7 +143,7 @@ class ProspectiveCertificateChainCheckTest extends AbstractTestCheck {
 
         XmlXCV result = new XmlXCV();
         ProspectiveCertificateChainCheck<XmlXCV> pccc = new ProspectiveCertificateChainCheck<>(i18nProvider, result,
-                new CertificateWrapper(xc), Context.CERTIFICATE, constraint);
+                new CertificateWrapper(xc), Context.CERTIFICATE, new LevelConstraintWrapper(constraint));
         pccc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -169,7 +170,7 @@ class ProspectiveCertificateChainCheckTest extends AbstractTestCheck {
 
         XmlXCV result = new XmlXCV();
         ProspectiveCertificateChainCheck<XmlXCV> pccc = new ProspectiveCertificateChainCheck<>(i18nProvider, result,
-                new CertificateWrapper(xc), Context.CERTIFICATE, constraint);
+                new CertificateWrapper(xc), Context.CERTIFICATE, new LevelConstraintWrapper(constraint));
         pccc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -196,7 +197,7 @@ class ProspectiveCertificateChainCheckTest extends AbstractTestCheck {
 
         XmlXCV result = new XmlXCV();
         ProspectiveCertificateChainCheck<XmlXCV> pccc = new ProspectiveCertificateChainCheck<>(i18nProvider, result,
-                new CertificateWrapper(xc), Context.CERTIFICATE, constraint);
+                new CertificateWrapper(xc), Context.CERTIFICATE, new LevelConstraintWrapper(constraint));
         pccc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -223,7 +224,7 @@ class ProspectiveCertificateChainCheckTest extends AbstractTestCheck {
 
         XmlXCV result = new XmlXCV();
         ProspectiveCertificateChainCheck<XmlXCV> pccc = new ProspectiveCertificateChainCheck<>(i18nProvider, result,
-                new CertificateWrapper(xc), Context.CERTIFICATE, constraint);
+                new CertificateWrapper(xc), Context.CERTIFICATE, new LevelConstraintWrapper(constraint));
         pccc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -238,7 +239,7 @@ class ProspectiveCertificateChainCheckTest extends AbstractTestCheck {
 
         XmlXCV result = new XmlXCV();
         ProspectiveCertificateChainCheck<XmlXCV> pccc = new ProspectiveCertificateChainCheck<>(i18nProvider, result,
-                null, Context.CERTIFICATE, constraint);
+                null, Context.CERTIFICATE, new LevelConstraintWrapper(constraint));
         pccc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

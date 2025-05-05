@@ -32,7 +32,8 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlRelatedCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.isc.checks.DigestValueMatchCheck;
@@ -74,7 +75,7 @@ class DigestValueMatchCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlISC result = new XmlISC();
-		DigestValueMatchCheck dvmc = new DigestValueMatchCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), constraint);
+		DigestValueMatchCheck dvmc = new DigestValueMatchCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), new LevelConstraintWrapper(constraint));
 		dvmc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -112,7 +113,7 @@ class DigestValueMatchCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlISC result = new XmlISC();
-		DigestValueMatchCheck dvmc = new DigestValueMatchCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), constraint);
+		DigestValueMatchCheck dvmc = new DigestValueMatchCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), new LevelConstraintWrapper(constraint));
 		dvmc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

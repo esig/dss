@@ -24,8 +24,9 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationCertificateQualification;
 import eu.europa.esig.dss.enumerations.CertificateType;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.ValidationTime;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import org.junit.jupiter.api.Test;
@@ -43,7 +44,7 @@ class CertificateTypeCheckTest extends AbstractTestCheck {
 
         XmlValidationCertificateQualification result = new XmlValidationCertificateQualification();
         CertificateTypeCheck ctc = new CertificateTypeCheck(i18nProvider, result, CertificateType.ESIGN,
-                ValidationTime.CERTIFICATE_ISSUANCE_TIME, constraint);
+                ValidationTime.CERTIFICATE_ISSUANCE_TIME, new LevelConstraintWrapper(constraint));
         ctc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -58,7 +59,7 @@ class CertificateTypeCheckTest extends AbstractTestCheck {
 
         XmlValidationCertificateQualification result = new XmlValidationCertificateQualification();
         CertificateTypeCheck ctc = new CertificateTypeCheck(i18nProvider, result, CertificateType.ESEAL,
-                ValidationTime.VALIDATION_TIME, constraint);
+                ValidationTime.VALIDATION_TIME, new LevelConstraintWrapper(constraint));
         ctc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -73,7 +74,7 @@ class CertificateTypeCheckTest extends AbstractTestCheck {
 
         XmlValidationCertificateQualification result = new XmlValidationCertificateQualification();
         CertificateTypeCheck ctc = new CertificateTypeCheck(i18nProvider, result, CertificateType.WSA,
-                ValidationTime.BEST_SIGNATURE_TIME, constraint);
+                ValidationTime.BEST_SIGNATURE_TIME, new LevelConstraintWrapper(constraint));
         ctc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -88,7 +89,7 @@ class CertificateTypeCheckTest extends AbstractTestCheck {
 
         XmlValidationCertificateQualification result = new XmlValidationCertificateQualification();
         CertificateTypeCheck ctc = new CertificateTypeCheck(i18nProvider, result, CertificateType.UNKNOWN,
-                ValidationTime.BEST_SIGNATURE_TIME, constraint);
+                ValidationTime.BEST_SIGNATURE_TIME, new LevelConstraintWrapper(constraint));
         ctc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

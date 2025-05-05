@@ -27,7 +27,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
@@ -55,11 +55,11 @@ public class PastCertificateValidationAcceptableCheck extends ChainItem<XmlPSV> 
 	 * @param tokenId {@link String}
 	 * @param currentIndication {@link Indication}
 	 * @param currentSubIndication {@link SubIndication}
-	 * @param constraint {@link LevelConstraint}
+	 * @param constraint {@link LevelRule}
 	 */
 	public PastCertificateValidationAcceptableCheck(I18nProvider i18nProvider, XmlPSV result, XmlPCV pcv, String tokenId,
 													Indication currentIndication, SubIndication currentSubIndication,
-													LevelConstraint constraint) {
+													LevelRule constraint) {
 		super(i18nProvider, result, constraint, tokenId);
 		this.pcv = pcv;
 		this.currentIndication = currentIndication;

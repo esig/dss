@@ -27,9 +27,10 @@ import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificateRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
 import eu.europa.esig.dss.enumerations.CertificateStatus;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.RevocationReason;
-import eu.europa.esig.dss.policy.SubContext;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.SubContext;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateNotRevokedCheck;
@@ -59,7 +60,7 @@ class CertificateRevokedCheckTest extends AbstractTestCheck {
 
 		XmlSubXCV result = new XmlSubXCV();
 		CertificateNotRevokedCheck cec = new CertificateNotRevokedCheck(i18nProvider, result, new CertificateRevocationWrapper(xcr), CAL2.getTime(),
-				constraint, SubContext.CA_CERTIFICATE);
+				new LevelConstraintWrapper(constraint), SubContext.CA_CERTIFICATE);
 		cec.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -81,7 +82,7 @@ class CertificateRevokedCheckTest extends AbstractTestCheck {
 
 		XmlSubXCV result = new XmlSubXCV();
 		CertificateNotRevokedCheck cec = new CertificateNotRevokedCheck(i18nProvider, result, new CertificateRevocationWrapper(xcr), CAL2.getTime(),
-				constraint, SubContext.CA_CERTIFICATE);
+				new LevelConstraintWrapper(constraint), SubContext.CA_CERTIFICATE);
 		cec.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

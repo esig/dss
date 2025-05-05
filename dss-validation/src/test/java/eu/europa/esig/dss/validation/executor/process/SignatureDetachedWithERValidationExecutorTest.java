@@ -28,10 +28,10 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessEvidenceRecord
 import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.simplereport.jaxb.XmlEvidenceRecord;
@@ -56,7 +56,7 @@ class SignatureDetachedWithERValidationExecutorTest extends AbstractProcessExecu
 
         String erId = diagnosticData.getEvidenceRecords().get(0).getId();
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
         validationPolicy.getEvidenceRecordConstraints().setSignedFilesCovered(constraint);
@@ -114,7 +114,7 @@ class SignatureDetachedWithERValidationExecutorTest extends AbstractProcessExecu
         er.getDigestMatchers().remove(1);
         String erId = er.getId();
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
         validationPolicy.getEvidenceRecordConstraints().setSignedFilesCovered(constraint);
@@ -185,7 +185,7 @@ class SignatureDetachedWithERValidationExecutorTest extends AbstractProcessExecu
         er.getDigestMatchers().remove(1);
         String erId = er.getId();
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.WARN);
         validationPolicy.getEvidenceRecordConstraints().setSignedFilesCovered(constraint);

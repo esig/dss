@@ -30,10 +30,10 @@ import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.SignatureConstraints;
 import eu.europa.esig.dss.policy.jaxb.SignedAttributesConstraints;
@@ -58,7 +58,7 @@ class DSS2025ExecutorTest extends AbstractProcessExecutorTest {
                 new File("src/test/resources/diag-data/DSS-2025/diag-sign-cert-tst-not-unique.xml"));
         assertNotNull(diagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.WARN);
         validationPolicy.getTimestampConstraints().getBasicSignatureConstraints()
@@ -90,7 +90,7 @@ class DSS2025ExecutorTest extends AbstractProcessExecutorTest {
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
 
-        ValidationPolicy defaultPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy defaultPolicy = loadDefaultPolicy();
         TimestampConstraints timestampConstraints = defaultPolicy.getTimestampConstraints();
         SignedAttributesConstraints signedAttributes = timestampConstraints.getSignedAttributes();
 
@@ -130,7 +130,7 @@ class DSS2025ExecutorTest extends AbstractProcessExecutorTest {
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
 
-        ValidationPolicy defaultPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy defaultPolicy = loadDefaultPolicy();
         LevelConstraint levelConstraint = new LevelConstraint();
         levelConstraint.setLevel(Level.FAIL);
         SignatureConstraints signatureConstraints = defaultPolicy.getSignatureConstraints();
@@ -164,7 +164,7 @@ class DSS2025ExecutorTest extends AbstractProcessExecutorTest {
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
 
-        ValidationPolicy defaultPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy defaultPolicy = loadDefaultPolicy();
         LevelConstraint levelConstraint = new LevelConstraint();
         levelConstraint.setLevel(Level.FAIL);
         SignatureConstraints signatureConstraints = defaultPolicy.getSignatureConstraints();
@@ -193,7 +193,7 @@ class DSS2025ExecutorTest extends AbstractProcessExecutorTest {
                 new File("src/test/resources/diag-data/DSS-2025/diag-sign-cert-another-cert.xml"));
         assertNotNull(diagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.WARN);
         validationPolicy.getTimestampConstraints().getBasicSignatureConstraints()
@@ -218,7 +218,7 @@ class DSS2025ExecutorTest extends AbstractProcessExecutorTest {
                 new File("src/test/resources/diag-data/DSS-2025/diag-sign-cert-tst-not-unique.xml"));
         assertNotNull(diagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
         validationPolicy.getTimestampConstraints().getBasicSignatureConstraints()

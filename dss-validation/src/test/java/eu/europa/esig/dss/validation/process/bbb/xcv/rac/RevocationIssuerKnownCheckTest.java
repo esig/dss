@@ -7,7 +7,8 @@ import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationIssuerKnownCheck;
@@ -34,7 +35,7 @@ class RevocationIssuerKnownCheckTest extends AbstractTestCheck {
 
         XmlRAC result = new XmlRAC();
         RevocationIssuerKnownCheck rikc = new RevocationIssuerKnownCheck(i18nProvider, result,
-                new RevocationWrapper(xmlRevocation), constraint);
+                new RevocationWrapper(xmlRevocation), new LevelConstraintWrapper(constraint));
         rikc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -51,7 +52,7 @@ class RevocationIssuerKnownCheckTest extends AbstractTestCheck {
 
         XmlRAC result = new XmlRAC();
         RevocationIssuerKnownCheck rikc = new RevocationIssuerKnownCheck(i18nProvider, result,
-                new RevocationWrapper(xmlRevocation), constraint);
+                new RevocationWrapper(xmlRevocation), new LevelConstraintWrapper(constraint));
         rikc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

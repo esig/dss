@@ -25,7 +25,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessLongTermData;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.BestSignatureTimeBeforeCertificateExpirationCheck;
@@ -51,8 +52,8 @@ class BestSignatureTimeBeforeCertificateExpirationCheckTest extends AbstractTest
 		constraint.setLevel(Level.FAIL);
 		
 		XmlValidationProcessLongTermData result = new XmlValidationProcessLongTermData();
-		BestSignatureTimeBeforeCertificateExpirationCheck bstbcec = new BestSignatureTimeBeforeCertificateExpirationCheck(
-				i18nProvider, result, bestSignatureTime, new CertificateWrapper(xmlCertificate), constraint);
+		BestSignatureTimeBeforeCertificateExpirationCheck<XmlValidationProcessLongTermData> bstbcec = new BestSignatureTimeBeforeCertificateExpirationCheck<>(
+				i18nProvider, result, bestSignatureTime, new CertificateWrapper(xmlCertificate), new LevelConstraintWrapper(constraint));
 		bstbcec.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -74,8 +75,8 @@ class BestSignatureTimeBeforeCertificateExpirationCheckTest extends AbstractTest
 		constraint.setLevel(Level.FAIL);
 		
 		XmlValidationProcessLongTermData result = new XmlValidationProcessLongTermData();
-		BestSignatureTimeBeforeCertificateExpirationCheck bstbcec = new BestSignatureTimeBeforeCertificateExpirationCheck(
-				i18nProvider, result, bestSignatureTime, new CertificateWrapper(xmlCertificate), constraint);
+		BestSignatureTimeBeforeCertificateExpirationCheck<XmlValidationProcessLongTermData> bstbcec = new BestSignatureTimeBeforeCertificateExpirationCheck<>(
+				i18nProvider, result, bestSignatureTime, new CertificateWrapper(xmlCertificate), new LevelConstraintWrapper(constraint));
 		bstbcec.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

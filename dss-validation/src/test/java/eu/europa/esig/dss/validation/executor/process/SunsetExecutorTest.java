@@ -49,13 +49,13 @@ import eu.europa.esig.dss.enumerations.CertificateQualification;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.CertificateStatus;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.ValidationTime;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.utils.Utils;
@@ -896,7 +896,7 @@ class SunsetExecutorTest extends AbstractProcessExecutorTest {
         List<XmlTimestamp> usedTimestamps = xmlDiagnosticData.getUsedTimestamps();
         usedTimestamps.remove(usedTimestamps.get(1));
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint levelConstraint = new LevelConstraint();
         levelConstraint.setLevel(Level.WARN);
         validationPolicy.getSignatureConstraints().getBasicSignatureConstraints().getCACertificate().setSunsetDate(levelConstraint);
@@ -1116,7 +1116,7 @@ class SunsetExecutorTest extends AbstractProcessExecutorTest {
         List<XmlTimestamp> usedTimestamps = xmlDiagnosticData.getUsedTimestamps();
         usedTimestamps.remove(usedTimestamps.get(1));
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint levelConstraint = new LevelConstraint();
         levelConstraint.setLevel(Level.INFORM);
         validationPolicy.getSignatureConstraints().getBasicSignatureConstraints().getCACertificate().setSunsetDate(levelConstraint);
@@ -1336,7 +1336,7 @@ class SunsetExecutorTest extends AbstractProcessExecutorTest {
         List<XmlTimestamp> usedTimestamps = xmlDiagnosticData.getUsedTimestamps();
         usedTimestamps.remove(usedTimestamps.get(1));
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint levelConstraint = new LevelConstraint();
         levelConstraint.setLevel(Level.IGNORE);
         validationPolicy.getSignatureConstraints().getBasicSignatureConstraints().getCACertificate().setSunsetDate(levelConstraint);
@@ -1557,7 +1557,7 @@ class SunsetExecutorTest extends AbstractProcessExecutorTest {
         List<XmlTimestamp> usedTimestamps = xmlDiagnosticData.getUsedTimestamps();
         usedTimestamps.remove(usedTimestamps.get(1));
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         validationPolicy.getSignatureConstraints().getBasicSignatureConstraints().getCACertificate().setSunsetDate(null);
 
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
@@ -1775,7 +1775,7 @@ class SunsetExecutorTest extends AbstractProcessExecutorTest {
         List<XmlTimestamp> usedTimestamps = xmlDiagnosticData.getUsedTimestamps();
         usedTimestamps.remove(usedTimestamps.get(1));
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.WARN);
         validationPolicy.getTimestampConstraints().getBasicSignatureConstraints().getCACertificate().setSunsetDate(constraint);
@@ -3803,7 +3803,7 @@ class SunsetExecutorTest extends AbstractProcessExecutorTest {
 
         xmlDiagnosticData.setValidationDate(validationTime);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.WARN);
         validationPolicy.getSignatureConstraints().getBasicSignatureConstraints().getSigningCertificate().setSunsetDate(constraint);
@@ -3935,7 +3935,7 @@ class SunsetExecutorTest extends AbstractProcessExecutorTest {
 
         xmlDiagnosticData.setValidationDate(validationTime);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.WARN);
         validationPolicy.getSignatureConstraints().getBasicSignatureConstraints().getCACertificate().setSunsetDate(constraint);

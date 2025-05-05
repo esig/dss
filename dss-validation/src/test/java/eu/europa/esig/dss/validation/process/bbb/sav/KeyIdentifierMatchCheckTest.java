@@ -31,7 +31,8 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlIssuerSerial;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRelatedCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.KeyIdentifierMatchCheck;
@@ -67,7 +68,7 @@ class KeyIdentifierMatchCheckTest extends AbstractTestCheck {
 
         XmlSAV result = new XmlSAV();
         KeyIdentifierMatchCheck kimc = new KeyIdentifierMatchCheck(
-                i18nProvider, result, new SignatureWrapper(sig), constraint);
+                i18nProvider, result, new SignatureWrapper(sig), new LevelConstraintWrapper(constraint));
         kimc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -99,7 +100,7 @@ class KeyIdentifierMatchCheckTest extends AbstractTestCheck {
 
         XmlSAV result = new XmlSAV();
         KeyIdentifierMatchCheck kimc = new KeyIdentifierMatchCheck(
-                i18nProvider, result, new SignatureWrapper(sig), constraint);
+                i18nProvider, result, new SignatureWrapper(sig), new LevelConstraintWrapper(constraint));
         kimc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -127,7 +128,7 @@ class KeyIdentifierMatchCheckTest extends AbstractTestCheck {
 
         XmlSAV result = new XmlSAV();
         KeyIdentifierMatchCheck kimc = new KeyIdentifierMatchCheck(
-                i18nProvider, result, new SignatureWrapper(sig), constraint);
+                i18nProvider, result, new SignatureWrapper(sig), new LevelConstraintWrapper(constraint));
         kimc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

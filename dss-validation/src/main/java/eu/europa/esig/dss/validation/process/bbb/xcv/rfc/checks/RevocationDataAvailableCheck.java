@@ -27,7 +27,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
 /**
@@ -46,10 +46,10 @@ public class RevocationDataAvailableCheck<T extends XmlConstraintsConclusion> ex
 	 * @param i18nProvider {@link I18nProvider}
 	 * @param result the result
 	 * @param certificate {@link CertificateWrapper}
-	 * @param constraint {@link LevelConstraint}
+	 * @param constraint {@link LevelRule}
 	 */
 	public RevocationDataAvailableCheck(I18nProvider i18nProvider, T result, CertificateWrapper certificate,
-										LevelConstraint constraint) {
+										LevelRule constraint) {
 		super(i18nProvider, result, constraint);
 		this.certificate = certificate;
 	}
@@ -60,11 +60,11 @@ public class RevocationDataAvailableCheck<T extends XmlConstraintsConclusion> ex
 	 * @param i18nProvider {@link I18nProvider}
 	 * @param result the result
 	 * @param certificate {@link CertificateWrapper}
-	 * @param constraint {@link LevelConstraint}
+	 * @param constraint {@link LevelRule}
 	 * @param tokenId {@link String} to be set for the given check
 	 */
 	public RevocationDataAvailableCheck(I18nProvider i18nProvider, T result, CertificateWrapper certificate,
-										LevelConstraint constraint, String tokenId) {
+										LevelRule constraint, String tokenId) {
 		super(i18nProvider, result, constraint, tokenId);
 		this.certificate = certificate;
 	}

@@ -1,0 +1,55 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+        <artifactId>sd-dss</artifactId>
+        <version>6.3-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>dss-policy-crypto-json</artifactId>
+    <name>JSON Schema for cryptographic suites</name>
+    <description>Generated source from JSON for Cryptographic suites catalogue.</description>
+
+    <properties>
+        <module-name>jpms_dss_policy_crypto_json</module-name>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <artifactId>dss-model</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <artifactId>dss-json-common</artifactId>
+            <!-- TODO: replace with specs-jws if support of jws signed crypto suites to be added -->
+            <!-- <artifactId>specs-jws</artifactId> -->
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-launcher</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>jdk19-plus</id>
+            <activation>
+                <jdk>[9,13)</jdk>
+            </activation>
+            <properties>
+                <!-- specs-xmldsig\target\generated-sources\xjc\eu\europa\esig\xmldsig\jaxb\package-info.java:8: error: unknown tag: jakarta.xml.bind.annotation.XmlSchema -->
+                <maven.javadoc.skip>true</maven.javadoc.skip>
+            </properties>
+        </profile>
+    </profiles>
+
+</project>

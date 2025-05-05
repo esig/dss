@@ -26,7 +26,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
+import eu.europa.esig.dss.model.policy.MultiValuesRule;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
 
@@ -39,7 +39,7 @@ public class CertificateQcCCLegislationCheck extends AbstractMultiValuesCheckIte
     private final CertificateWrapper certificate;
 
     /** The constraint */
-    private final MultiValuesConstraint constraint;
+    private final MultiValuesRule constraint;
 
     /**
      * Default constructor
@@ -47,10 +47,10 @@ public class CertificateQcCCLegislationCheck extends AbstractMultiValuesCheckIte
      * @param i18nProvider {@link I18nProvider}
      * @param result the result
      * @param certificate {@link CertificateWrapper}
-     * @param constraint {@link MultiValuesConstraint}
+     * @param constraint {@link MultiValuesRule}
      */
     public CertificateQcCCLegislationCheck(I18nProvider i18nProvider, XmlSubXCV result, CertificateWrapper certificate,
-                                     MultiValuesConstraint constraint) {
+                                     MultiValuesRule constraint) {
         super(i18nProvider, result, constraint);
         this.certificate = certificate;
         this.constraint = constraint;
@@ -68,7 +68,7 @@ public class CertificateQcCCLegislationCheck extends AbstractMultiValuesCheckIte
 
     @Override
     protected MessageTag getErrorMessageTag() {
-        if (Utils.isCollectionEmpty(constraint.getId())) {
+        if (Utils.isCollectionEmpty(constraint.getValues())) {
             /**
              * See EN 319 412-5 ch. 4.2.1
              *

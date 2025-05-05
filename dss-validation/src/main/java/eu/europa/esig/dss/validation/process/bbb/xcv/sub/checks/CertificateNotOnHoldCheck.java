@@ -27,7 +27,7 @@ import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
@@ -51,10 +51,10 @@ public class CertificateNotOnHoldCheck extends ChainItem<XmlSubXCV> {
 	 * @param result the result
 	 * @param certificateRevocation {@link CertificateRevocationWrapper}
 	 * @param currentTime {@link Date} validation time
-	 * @param constraint {@link LevelConstraint}
+	 * @param constraint {@link LevelRule}
 	 */
 	public CertificateNotOnHoldCheck(I18nProvider i18nProvider, XmlSubXCV result, CertificateRevocationWrapper certificateRevocation,
-									 Date currentTime, LevelConstraint constraint) {
+									 Date currentTime, LevelRule constraint) {
 		super(i18nProvider, result, constraint);
 		this.certificateRevocation = certificateRevocation;
 		this.currentTime = currentTime;

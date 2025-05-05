@@ -36,12 +36,12 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.CertificateConstraints;
 import eu.europa.esig.dss.policy.jaxb.CertificateValuesConstraint;
-import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.simplereport.SimpleReport;
@@ -66,7 +66,7 @@ class RevocationSkipExecutorTest extends AbstractProcessExecutorTest {
                 new File("src/test/resources/diag-data/diag_data_st_val_assured.xml"));
         assertNotNull(diagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         CertificateConstraints signingCertificate = validationPolicy.getSignatureConstraints()
                 .getBasicSignatureConstraints().getSigningCertificate();
 
@@ -175,7 +175,7 @@ class RevocationSkipExecutorTest extends AbstractProcessExecutorTest {
                 new File("src/test/resources/diag-data/diag_data_no_rev_avail.xml"));
         assertNotNull(diagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         CertificateConstraints signingCertificate = validationPolicy.getSignatureConstraints()
                 .getBasicSignatureConstraints().getSigningCertificate();
 
@@ -288,7 +288,7 @@ class RevocationSkipExecutorTest extends AbstractProcessExecutorTest {
         xmlCRLDistributionPoints.getCrlUrl().add("http://crl.distribution.point");
         xmlCertificate.getCertificateExtensions().add(xmlCRLDistributionPoints);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         CertificateConstraints signingCertificate = validationPolicy.getSignatureConstraints()
                 .getBasicSignatureConstraints().getSigningCertificate();
 
@@ -402,7 +402,7 @@ class RevocationSkipExecutorTest extends AbstractProcessExecutorTest {
                 new File("src/test/resources/diag-data/diag_data_st_val_assured.xml"));
         assertNotNull(diagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         CertificateConstraints signingCertificate = validationPolicy.getSignatureConstraints()
                 .getBasicSignatureConstraints().getSigningCertificate();
 
@@ -508,7 +508,7 @@ class RevocationSkipExecutorTest extends AbstractProcessExecutorTest {
                 new File("src/test/resources/diag-data/diag_data_st_val_assured.xml"));
         assertNotNull(diagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         CertificateConstraints signingCertificate = validationPolicy.getSignatureConstraints()
                 .getBasicSignatureConstraints().getSigningCertificate();
 
@@ -615,7 +615,7 @@ class RevocationSkipExecutorTest extends AbstractProcessExecutorTest {
                 new File("src/test/resources/diag-data/diag_data_st_val_assured.xml"));
         assertNotNull(diagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         CertificateConstraints signingCertificate = validationPolicy.getSignatureConstraints()
                 .getBasicSignatureConstraints().getSigningCertificate();
         signingCertificate.setRevocationDataSkip(new CertificateValuesConstraint());

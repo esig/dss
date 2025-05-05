@@ -25,7 +25,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.ReferenceDataGroupCheck;
@@ -54,7 +55,7 @@ class ReferenceDataGroupCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlCV result = new XmlCV();
-        ReferenceDataGroupCheck<XmlCV> rdgc = new ReferenceDataGroupCheck<>(i18nProvider, result, digestMatchers, constraint);
+        ReferenceDataGroupCheck<XmlCV> rdgc = new ReferenceDataGroupCheck<>(i18nProvider, result, digestMatchers, new LevelConstraintWrapper(constraint));
         rdgc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -78,7 +79,7 @@ class ReferenceDataGroupCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlCV result = new XmlCV();
-        ReferenceDataGroupCheck<XmlCV> rdgc = new ReferenceDataGroupCheck<>(i18nProvider, result, digestMatchers, constraint);
+        ReferenceDataGroupCheck<XmlCV> rdgc = new ReferenceDataGroupCheck<>(i18nProvider, result, digestMatchers, new LevelConstraintWrapper(constraint));
         rdgc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -102,7 +103,7 @@ class ReferenceDataGroupCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlCV result = new XmlCV();
-        ReferenceDataGroupCheck<XmlCV> rdgc = new ReferenceDataGroupCheck<>(i18nProvider, result, digestMatchers, constraint);
+        ReferenceDataGroupCheck<XmlCV> rdgc = new ReferenceDataGroupCheck<>(i18nProvider, result, digestMatchers, new LevelConstraintWrapper(constraint));
         rdgc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

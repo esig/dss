@@ -23,7 +23,8 @@ package eu.europa.esig.dss.validation.process.bbb.fc;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.MultiValuesConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.PDFAProfileCheck;
@@ -42,7 +43,7 @@ class PDFAProfileCheckTest extends AbstractTestCheck {
         constraint.getId().add("PDF/A-2U");
 
         XmlFC result = new XmlFC();
-        PDFAProfileCheck pdfapc = new PDFAProfileCheck(i18nProvider, result, "PDF/A-2U", constraint);
+        PDFAProfileCheck pdfapc = new PDFAProfileCheck(i18nProvider, result, "PDF/A-2U", new MultiValuesConstraintWrapper(constraint));
         pdfapc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -57,7 +58,7 @@ class PDFAProfileCheckTest extends AbstractTestCheck {
         constraint.getId().add("PDF/A-2U");
 
         XmlFC result = new XmlFC();
-        PDFAProfileCheck pdfapc = new PDFAProfileCheck(i18nProvider, result, "PDF/A-1B", constraint);
+        PDFAProfileCheck pdfapc = new PDFAProfileCheck(i18nProvider, result, "PDF/A-1B", new MultiValuesConstraintWrapper(constraint));
         pdfapc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

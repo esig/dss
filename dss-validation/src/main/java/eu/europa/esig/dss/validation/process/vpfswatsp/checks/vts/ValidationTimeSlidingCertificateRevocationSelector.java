@@ -31,7 +31,7 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.AcceptableRevocationDataAvailableCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.LongTermValidationCertificateRevocationSelector;
@@ -113,11 +113,11 @@ public class ValidationTimeSlidingCertificateRevocationSelector extends LongTerm
     }
 
     private ChainItem<XmlCRS> revocationIssuedBeforeControlTime(RevocationWrapper revocation, Date controlTime) {
-        return new RevocationIssuedBeforeControlTimeCheck<>(i18nProvider, result, revocation, controlTime, getWarnLevelConstraint());
+        return new RevocationIssuedBeforeControlTimeCheck<>(i18nProvider, result, revocation, controlTime, getWarnLevelRule());
     }
 
     private ChainItem<XmlCRS> poeExistsAtOrBeforeControlTime(TokenProxy token, TimestampedObjectType objectType, Date controlTime) {
-        return new POEExistsAtOrBeforeControlTimeCheck<>(i18nProvider, result, token, objectType, controlTime, poe, getWarnLevelConstraint());
+        return new POEExistsAtOrBeforeControlTimeCheck<>(i18nProvider, result, token, objectType, controlTime, poe, getWarnLevelRule());
     }
 
     @Override
@@ -127,7 +127,7 @@ public class ValidationTimeSlidingCertificateRevocationSelector extends LongTerm
          * If there is no such information, the building block shall return the indication INDETERMINATE with the
          * sub-indication NO_POE.
          */
-        return new AcceptableRevocationDataAvailableCheck<XmlCRS>(i18nProvider, result, getLatestAcceptableCertificateRevocation(), getFailLevelConstraint()) {
+        return new AcceptableRevocationDataAvailableCheck<XmlCRS>(i18nProvider, result, getLatestAcceptableCertificateRevocation(), getFailLevelRule()) {
 
             @Override
             protected Indication getFailedIndicationForConclusion() {

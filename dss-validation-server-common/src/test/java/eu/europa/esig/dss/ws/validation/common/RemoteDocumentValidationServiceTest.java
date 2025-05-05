@@ -135,6 +135,32 @@ class RemoteDocumentValidationServiceTest {
 		assertEquals("QES AdESQC TL based (Test WebServices)", result.getSimpleReport().getValidationPolicy().getPolicyName());
 	}
 
+	@Test
+	void testWithPolicyAndCryptoSuiteAndOriginalFile(){
+		RemoteDocument signedFile = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/xades-detached.xml"));
+		RemoteDocument originalFile = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/sample.png"));
+		RemoteDocument policy = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/constraint.xml"));
+		RemoteDocument cryptographicSuite = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/dss-crypto-suite.json"));
+		DataToValidateDTO dto = new DataToValidateDTO(signedFile, originalFile, policy, cryptographicSuite);
+		WSReportsDTO result = validationService.validateDocument(dto);
+		validateReports(result);
+		assertEquals("QES AdESQC TL based (Test WebServices)", result.getSimpleReport().getValidationPolicy().getPolicyName());
+	}
+
+	@Test
+	void testWithCryptoSuiteAndOriginalFile(){
+		RemoteDocument signedFile = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/xades-detached.xml"));
+		RemoteDocument originalFile = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/sample.png"));
+		RemoteDocument cryptographicSuite = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/dss-crypto-suite.json"));
+		DataToValidateDTO dto = new DataToValidateDTO();
+		dto.setSignedDocument(signedFile);
+		dto.setOriginalDocuments(Collections.singletonList(originalFile));
+		dto.setCryptographicSuite(cryptographicSuite);
+		WSReportsDTO result = validationService.validateDocument(dto);
+		validateReports(result);
+		assertEquals("QES AdESQC TL based", result.getSimpleReport().getValidationPolicy().getPolicyName());
+	}
+
 	@SuppressWarnings("unchecked")
 	@Test
 	void testWithDefaultPolicyAndOriginalFile() throws Exception {
@@ -156,6 +182,24 @@ class RemoteDocumentValidationServiceTest {
 		WSReportsDTO result = validationService.validateDocument(dto);
 		validateReports(result);
 		assertEquals("Default Policy", result.getSimpleReport().getValidationPolicy().getPolicyName());
+	}
+
+	@Test
+	void testWithDefaultPolicyAndDefaultCryptoSuiteOriginalFile() throws Exception {
+		RemoteDocument signedFile = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/xades-detached.xml"));
+		RemoteDocument originalFile = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/sample.png"));
+
+		RemoteDocumentValidationService validationService = new RemoteDocumentValidationService();
+		validationService.setVerifier(new CommonCertificateVerifier());
+		validationService.setDefaultValidationPolicy(
+				RemoteDocumentValidationServiceTest.class.getResourceAsStream("/constraint.xml"),
+				RemoteDocumentValidationServiceTest.class.getResourceAsStream("/dss-crypto-suite.json")
+		);
+
+		DataToValidateDTO dto = new DataToValidateDTO(signedFile, originalFile, null);
+		WSReportsDTO result = validationService.validateDocument(dto);
+		validateReports(result);
+		assertEquals("QES AdESQC TL based (Test WebServices)", result.getSimpleReport().getValidationPolicy().getPolicyName());
 	}
 
 	@SuppressWarnings("unchecked")

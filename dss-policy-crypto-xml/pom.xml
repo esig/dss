@@ -1,0 +1,139 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+        <artifactId>sd-dss</artifactId>
+        <version>6.3-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>dss-policy-crypto-xml</artifactId>
+    <name>XML/JAXB Schema for cryptographic suites</name>
+    <description>Generated source from XSD for Cryptographic suites catalogue.</description>
+
+    <properties>
+        <module-name>jpms_dss_policy_crypto_xml</module-name>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <artifactId>dss-model</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <artifactId>specs-xmldsig</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-launcher</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.jvnet.jaxb</groupId>
+                <artifactId>jaxb-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <schemaDirectory>src/main/resources/xsd</schemaDirectory>
+                            <schemaIncludes>
+                                <schemaInclude>rfc5698.xsd</schemaInclude>
+                                <schemaInclude>19322algocatxmlschema.xsd</schemaInclude>
+                            </schemaIncludes>
+                            <catalog>src/main/resources/xsd/catalog.cat</catalog>
+                            <bindingIncludes>
+                                <include>bindings.xml</include>
+                            </bindingIncludes>
+
+                            <extension>true</extension>
+                            <useDependenciesAsEpisodes>true</useDependenciesAsEpisodes>
+
+                            <strict>false</strict>
+                            <specVersion>3.0</specVersion>
+                            <episode>true</episode>
+                            <locale>en</locale>
+
+                            <disableXmlSecurity>false</disableXmlSecurity>
+                            <accessExternalSchema>file</accessExternalSchema>
+                            <accessExternalDTD>file</accessExternalDTD>
+                            <relativeCatalogResolution>true</relativeCatalogResolution>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.glassfish.jaxb</groupId>
+                        <artifactId>jaxb-runtime</artifactId>
+                        <version>3.0.2</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>remove-duplicate-sources</id>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <delete dir="${basedir}/target/generated-sources/xjc/eu/europa/esig/xmldsig/" />
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <!-- after generate-sources / process-sources -->
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.build.directory}/generated-sources/xjc/</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>jdk19-plus</id>
+            <activation>
+                <jdk>[9,13)</jdk>
+            </activation>
+            <properties>
+                <!-- specs-xmldsig\target\generated-sources\xjc\eu\europa\esig\xmldsig\jaxb\package-info.java:8: error: unknown tag: jakarta.xml.bind.annotation.XmlSchema -->
+                <maven.javadoc.skip>true</maven.javadoc.skip>
+            </properties>
+        </profile>
+    </profiles>
+
+</project>

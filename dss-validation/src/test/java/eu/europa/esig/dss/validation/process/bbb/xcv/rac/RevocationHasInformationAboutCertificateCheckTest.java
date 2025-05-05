@@ -10,8 +10,9 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustService;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustServiceProvider;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
@@ -46,7 +47,7 @@ class RevocationHasInformationAboutCertificateCheckTest extends AbstractTestChec
         XmlRAC result = new XmlRAC();
         RevocationHasInformationAboutCertificateCheck rihiacc =
                 new RevocationHasInformationAboutCertificateCheck(i18nProvider, result,
-                        new CertificateWrapper(xmlCertificate), new RevocationWrapper(xmlRevocation), constraint);
+                        new CertificateWrapper(xmlCertificate), new RevocationWrapper(xmlRevocation), new LevelConstraintWrapper(constraint));
         rihiacc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -80,7 +81,7 @@ class RevocationHasInformationAboutCertificateCheckTest extends AbstractTestChec
         XmlRAC result = new XmlRAC();
         RevocationHasInformationAboutCertificateCheck rihiacc =
                 new RevocationHasInformationAboutCertificateCheck(i18nProvider, result,
-                        new CertificateWrapper(xmlCertificate), new RevocationWrapper(xmlRevocation), constraint);
+                        new CertificateWrapper(xmlCertificate), new RevocationWrapper(xmlRevocation), new LevelConstraintWrapper(constraint));
         rihiacc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -113,7 +114,7 @@ class RevocationHasInformationAboutCertificateCheckTest extends AbstractTestChec
         XmlRAC result = new XmlRAC();
         RevocationHasInformationAboutCertificateCheck rihiacc =
                 new RevocationHasInformationAboutCertificateCheck(i18nProvider, result,
-                        new CertificateWrapper(xmlCertificate), new RevocationWrapper(xmlRevocation), constraint);
+                        new CertificateWrapper(xmlCertificate), new RevocationWrapper(xmlRevocation), new LevelConstraintWrapper(constraint));
         rihiacc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -150,7 +151,7 @@ class RevocationHasInformationAboutCertificateCheckTest extends AbstractTestChec
         XmlRAC result = new XmlRAC();
         RevocationHasInformationAboutCertificateCheck rihiacc =
                 new RevocationHasInformationAboutCertificateCheck(i18nProvider, result,
-                        new CertificateWrapper(xmlCertificate), new RevocationWrapper(xmlRevocation), constraint);
+                        new CertificateWrapper(xmlCertificate), new RevocationWrapper(xmlRevocation), new LevelConstraintWrapper(constraint));
         rihiacc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -188,7 +189,7 @@ class RevocationHasInformationAboutCertificateCheckTest extends AbstractTestChec
         XmlRAC result = new XmlRAC();
         RevocationHasInformationAboutCertificateCheck rihiacc =
                 new RevocationHasInformationAboutCertificateCheck(i18nProvider, result,
-                        new CertificateWrapper(xmlCertificate), new RevocationWrapper(xmlRevocation), constraint);
+                        new CertificateWrapper(xmlCertificate), new RevocationWrapper(xmlRevocation), new LevelConstraintWrapper(constraint));
         rihiacc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -225,7 +226,7 @@ class RevocationHasInformationAboutCertificateCheckTest extends AbstractTestChec
         XmlRAC result = new XmlRAC();
         RevocationHasInformationAboutCertificateCheck rihiacc =
                 new RevocationHasInformationAboutCertificateCheck(i18nProvider, result,
-                        new CertificateWrapper(xmlCertificate), new RevocationWrapper(xmlRevocation), constraint);
+                        new CertificateWrapper(xmlCertificate), new RevocationWrapper(xmlRevocation), new LevelConstraintWrapper(constraint));
         rihiacc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -262,7 +263,7 @@ class RevocationHasInformationAboutCertificateCheckTest extends AbstractTestChec
         XmlRAC result = new XmlRAC();
         RevocationHasInformationAboutCertificateCheck rihiacc =
                 new RevocationHasInformationAboutCertificateCheck(i18nProvider, result,
-                        new CertificateWrapper(xmlCertificate), new RevocationWrapper(xmlRevocation), constraint);
+                        new CertificateWrapper(xmlCertificate), new RevocationWrapper(xmlRevocation), new LevelConstraintWrapper(constraint));
         rihiacc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -299,7 +300,7 @@ class RevocationHasInformationAboutCertificateCheckTest extends AbstractTestChec
         XmlRAC result = new XmlRAC();
         RevocationHasInformationAboutCertificateCheck rihiacc =
                 new RevocationHasInformationAboutCertificateCheck(i18nProvider, result,
-                        new CertificateWrapper(xmlCertificate), new RevocationWrapper(xmlRevocation), constraint);
+                        new CertificateWrapper(xmlCertificate), new RevocationWrapper(xmlRevocation), new LevelConstraintWrapper(constraint));
         rihiacc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -337,7 +338,7 @@ class RevocationHasInformationAboutCertificateCheckTest extends AbstractTestChec
         XmlRAC result = new XmlRAC();
         RevocationHasInformationAboutCertificateCheck rihiacc =
                 new RevocationHasInformationAboutCertificateCheck(i18nProvider, result,
-                        new CertificateWrapper(xmlCertificate), new RevocationWrapper(xmlRevocation), constraint);
+                        new CertificateWrapper(xmlCertificate), new RevocationWrapper(xmlRevocation), new LevelConstraintWrapper(constraint));
         rihiacc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -374,7 +375,7 @@ class RevocationHasInformationAboutCertificateCheckTest extends AbstractTestChec
         XmlRAC result = new XmlRAC();
         RevocationHasInformationAboutCertificateCheck rihiacc =
                 new RevocationHasInformationAboutCertificateCheck(i18nProvider, result,
-                        new CertificateWrapper(xmlCertificate), new RevocationWrapper(xmlRevocation), constraint);
+                        new CertificateWrapper(xmlCertificate), new RevocationWrapper(xmlRevocation), new LevelConstraintWrapper(constraint));
         rihiacc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -411,7 +412,7 @@ class RevocationHasInformationAboutCertificateCheckTest extends AbstractTestChec
         XmlRAC result = new XmlRAC();
         RevocationHasInformationAboutCertificateCheck rihiacc =
                 new RevocationHasInformationAboutCertificateCheck(i18nProvider, result,
-                        new CertificateWrapper(xmlCertificate), new RevocationWrapper(xmlRevocation), constraint);
+                        new CertificateWrapper(xmlCertificate), new RevocationWrapper(xmlRevocation), new LevelConstraintWrapper(constraint));
         rihiacc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -460,7 +461,7 @@ class RevocationHasInformationAboutCertificateCheckTest extends AbstractTestChec
         XmlRAC result = new XmlRAC();
         RevocationHasInformationAboutCertificateCheck rihiacc =
                 new RevocationHasInformationAboutCertificateCheck(i18nProvider, result,
-                        new CertificateWrapper(xmlCertificate), new RevocationWrapper(xmlRevocation), constraint);
+                        new CertificateWrapper(xmlCertificate), new RevocationWrapper(xmlRevocation), new LevelConstraintWrapper(constraint));
         rihiacc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -510,7 +511,7 @@ class RevocationHasInformationAboutCertificateCheckTest extends AbstractTestChec
         XmlRAC result = new XmlRAC();
         RevocationHasInformationAboutCertificateCheck rihiacc =
                 new RevocationHasInformationAboutCertificateCheck(i18nProvider, result,
-                        new CertificateWrapper(xmlCertificate), new RevocationWrapper(xmlRevocation), constraint);
+                        new CertificateWrapper(xmlCertificate), new RevocationWrapper(xmlRevocation), new LevelConstraintWrapper(constraint));
         rihiacc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -559,7 +560,7 @@ class RevocationHasInformationAboutCertificateCheckTest extends AbstractTestChec
         XmlRAC result = new XmlRAC();
         RevocationHasInformationAboutCertificateCheck rihiacc =
                 new RevocationHasInformationAboutCertificateCheck(i18nProvider, result,
-                        new CertificateWrapper(xmlCertificate), new RevocationWrapper(xmlRevocation), constraint);
+                        new CertificateWrapper(xmlCertificate), new RevocationWrapper(xmlRevocation), new LevelConstraintWrapper(constraint));
         rihiacc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -608,7 +609,7 @@ class RevocationHasInformationAboutCertificateCheckTest extends AbstractTestChec
         XmlRAC result = new XmlRAC();
         RevocationHasInformationAboutCertificateCheck rihiacc =
                 new RevocationHasInformationAboutCertificateCheck(i18nProvider, result,
-                        new CertificateWrapper(xmlCertificate), new RevocationWrapper(xmlRevocation), constraint);
+                        new CertificateWrapper(xmlCertificate), new RevocationWrapper(xmlRevocation), new LevelConstraintWrapper(constraint));
         rihiacc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -660,7 +661,7 @@ class RevocationHasInformationAboutCertificateCheckTest extends AbstractTestChec
         XmlRAC result = new XmlRAC();
         RevocationHasInformationAboutCertificateCheck rihiacc =
                 new RevocationHasInformationAboutCertificateCheck(i18nProvider, result,
-                        new CertificateWrapper(xmlCertificate), new RevocationWrapper(xmlRevocation), constraint);
+                        new CertificateWrapper(xmlCertificate), new RevocationWrapper(xmlRevocation), new LevelConstraintWrapper(constraint));
         rihiacc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -713,7 +714,7 @@ class RevocationHasInformationAboutCertificateCheckTest extends AbstractTestChec
         XmlRAC result = new XmlRAC();
         RevocationHasInformationAboutCertificateCheck rihiacc =
                 new RevocationHasInformationAboutCertificateCheck(i18nProvider, result,
-                        new CertificateWrapper(xmlCertificate), new RevocationWrapper(xmlRevocation), constraint);
+                        new CertificateWrapper(xmlCertificate), new RevocationWrapper(xmlRevocation), new LevelConstraintWrapper(constraint));
         rihiacc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -766,7 +767,7 @@ class RevocationHasInformationAboutCertificateCheckTest extends AbstractTestChec
         XmlRAC result = new XmlRAC();
         RevocationHasInformationAboutCertificateCheck rihiacc =
                 new RevocationHasInformationAboutCertificateCheck(i18nProvider, result,
-                        new CertificateWrapper(xmlCertificate), new RevocationWrapper(xmlRevocation), constraint);
+                        new CertificateWrapper(xmlCertificate), new RevocationWrapper(xmlRevocation), new LevelConstraintWrapper(constraint));
         rihiacc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -818,7 +819,7 @@ class RevocationHasInformationAboutCertificateCheckTest extends AbstractTestChec
         XmlRAC result = new XmlRAC();
         RevocationHasInformationAboutCertificateCheck rihiacc =
                 new RevocationHasInformationAboutCertificateCheck(i18nProvider, result,
-                        new CertificateWrapper(xmlCertificate), new RevocationWrapper(xmlRevocation), constraint);
+                        new CertificateWrapper(xmlCertificate), new RevocationWrapper(xmlRevocation), new LevelConstraintWrapper(constraint));
         rihiacc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -871,7 +872,7 @@ class RevocationHasInformationAboutCertificateCheckTest extends AbstractTestChec
         XmlRAC result = new XmlRAC();
         RevocationHasInformationAboutCertificateCheck rihiacc =
                 new RevocationHasInformationAboutCertificateCheck(i18nProvider, result,
-                        new CertificateWrapper(xmlCertificate), new RevocationWrapper(xmlRevocation), constraint);
+                        new CertificateWrapper(xmlCertificate), new RevocationWrapper(xmlRevocation), new LevelConstraintWrapper(constraint));
         rihiacc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -924,7 +925,7 @@ class RevocationHasInformationAboutCertificateCheckTest extends AbstractTestChec
         XmlRAC result = new XmlRAC();
         RevocationHasInformationAboutCertificateCheck rihiacc =
                 new RevocationHasInformationAboutCertificateCheck(i18nProvider, result,
-                        new CertificateWrapper(xmlCertificate), new RevocationWrapper(xmlRevocation), constraint);
+                        new CertificateWrapper(xmlCertificate), new RevocationWrapper(xmlRevocation), new LevelConstraintWrapper(constraint));
         rihiacc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

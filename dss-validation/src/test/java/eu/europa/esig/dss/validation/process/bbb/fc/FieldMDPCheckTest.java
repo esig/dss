@@ -30,8 +30,9 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlObjectModifications;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFLockDictionary;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFSignatureDictionary;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.PdfLockAction;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.FieldMDPCheck;
@@ -67,7 +68,7 @@ class FieldMDPCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        FieldMDPCheck fmdpc = new FieldMDPCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
+        FieldMDPCheck fmdpc = new FieldMDPCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), new LevelConstraintWrapper(constraint));
         fmdpc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -100,7 +101,7 @@ class FieldMDPCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        FieldMDPCheck fmdpc = new FieldMDPCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
+        FieldMDPCheck fmdpc = new FieldMDPCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), new LevelConstraintWrapper(constraint));
         fmdpc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -135,7 +136,7 @@ class FieldMDPCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        FieldMDPCheck fmdpc = new FieldMDPCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
+        FieldMDPCheck fmdpc = new FieldMDPCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), new LevelConstraintWrapper(constraint));
         fmdpc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -174,7 +175,7 @@ class FieldMDPCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        FieldMDPCheck fmdpc = new FieldMDPCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
+        FieldMDPCheck fmdpc = new FieldMDPCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), new LevelConstraintWrapper(constraint));
         fmdpc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -209,7 +210,7 @@ class FieldMDPCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        FieldMDPCheck fmdpc = new FieldMDPCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
+        FieldMDPCheck fmdpc = new FieldMDPCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), new LevelConstraintWrapper(constraint));
         fmdpc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -248,7 +249,7 @@ class FieldMDPCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        FieldMDPCheck fmdpc = new FieldMDPCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
+        FieldMDPCheck fmdpc = new FieldMDPCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), new LevelConstraintWrapper(constraint));
         fmdpc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

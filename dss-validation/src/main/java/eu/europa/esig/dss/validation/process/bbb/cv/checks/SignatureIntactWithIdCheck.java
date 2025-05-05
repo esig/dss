@@ -25,7 +25,7 @@ import eu.europa.esig.dss.diagnostic.TokenProxy;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 
 /**
  * Checks if the signature is intact for the given token, with a difference
@@ -42,10 +42,10 @@ public class SignatureIntactWithIdCheck<T extends XmlConstraintsConclusion> exte
      * @param result       the result
      * @param token        {@link TokenProxy}
      * @param context      {@link Context}
-     * @param constraint   {@link LevelConstraint}
+     * @param constraint   {@link LevelRule}
      */
     public SignatureIntactWithIdCheck(I18nProvider i18nProvider, T result, TokenProxy token,
-                                      Context context, LevelConstraint constraint) {
+                                      Context context, LevelRule constraint) {
         super(i18nProvider, result, token, context, constraint);
     }
 

@@ -30,8 +30,9 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
@@ -76,7 +77,7 @@ class POEExistsAtOrBeforeControlTimeCheckTest extends AbstractTestCheck {
 
         XmlVTS result = new XmlVTS();
         POEExistsAtOrBeforeControlTimeCheck<XmlVTS> peabctc = new POEExistsAtOrBeforeControlTimeCheck<>(i18nProvider, result,
-                new CertificateWrapper(xmlCertificate), TimestampedObjectType.CERTIFICATE, controlTime, poeExtraction, constraint);
+                new CertificateWrapper(xmlCertificate), TimestampedObjectType.CERTIFICATE, controlTime, poeExtraction, new LevelConstraintWrapper(constraint));
         peabctc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -113,7 +114,7 @@ class POEExistsAtOrBeforeControlTimeCheckTest extends AbstractTestCheck {
 
         XmlVTS result = new XmlVTS();
         POEExistsAtOrBeforeControlTimeCheck<XmlVTS> peabctc = new POEExistsAtOrBeforeControlTimeCheck<>(i18nProvider, result,
-                new CertificateWrapper(xmlCertificate), TimestampedObjectType.CERTIFICATE, controlTime, poeExtraction, constraint);
+                new CertificateWrapper(xmlCertificate), TimestampedObjectType.CERTIFICATE, controlTime, poeExtraction, new LevelConstraintWrapper(constraint));
         peabctc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -150,7 +151,7 @@ class POEExistsAtOrBeforeControlTimeCheckTest extends AbstractTestCheck {
 
         XmlVTS result = new XmlVTS();
         POEExistsAtOrBeforeControlTimeCheck<XmlVTS> peabctc = new POEExistsAtOrBeforeControlTimeCheck<>(i18nProvider, result,
-                new CertificateWrapper(xmlCertificate), TimestampedObjectType.CERTIFICATE, controlTime, poeExtraction, constraint);
+                new CertificateWrapper(xmlCertificate), TimestampedObjectType.CERTIFICATE, controlTime, poeExtraction, new LevelConstraintWrapper(constraint));
         peabctc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -187,7 +188,7 @@ class POEExistsAtOrBeforeControlTimeCheckTest extends AbstractTestCheck {
 
         XmlVTS result = new XmlVTS();
         POEExistsAtOrBeforeControlTimeCheck<XmlVTS> peabctc = new POEExistsAtOrBeforeControlTimeCheck<>(i18nProvider, result,
-                new CertificateWrapper(xmlCertificate), TimestampedObjectType.CERTIFICATE, controlTime, poeExtraction, constraint);
+                new CertificateWrapper(xmlCertificate), TimestampedObjectType.CERTIFICATE, controlTime, poeExtraction, new LevelConstraintWrapper(constraint));
         peabctc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -224,7 +225,7 @@ class POEExistsAtOrBeforeControlTimeCheckTest extends AbstractTestCheck {
 
         XmlVTS result = new XmlVTS();
         POEExistsAtOrBeforeControlTimeCheck<XmlVTS> peabctc = new POEExistsAtOrBeforeControlTimeCheck<>(i18nProvider, result,
-                new CertificateWrapper(xmlCertificate), TimestampedObjectType.CERTIFICATE, controlTime, poeExtraction, constraint);
+                new CertificateWrapper(xmlCertificate), TimestampedObjectType.CERTIFICATE, controlTime, poeExtraction, new LevelConstraintWrapper(constraint));
         peabctc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

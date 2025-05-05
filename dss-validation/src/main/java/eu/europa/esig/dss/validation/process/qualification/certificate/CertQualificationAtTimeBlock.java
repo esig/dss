@@ -305,74 +305,74 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 	}
 
 	private ChainItem<XmlValidationCertificateQualification> hasMraEnactedTrustService(List<TrustServiceWrapper> trustServices) {
-		return new RelatedToMraEnactedTrustServiceCheck<>(i18nProvider, result, trustServices, getFailLevelConstraint());
+		return new RelatedToMraEnactedTrustServiceCheck<>(i18nProvider, result, trustServices, getFailLevelRule());
 	}
 
 	private ChainItem<XmlValidationCertificateQualification> mraCertificateEquivalenceApplied() {
-		return new MRACertificateEquivalenceApplied<>(i18nProvider, result, signingCertificate, getWarnLevelConstraint());
+		return new MRACertificateEquivalenceApplied<>(i18nProvider, result, signingCertificate, getWarnLevelRule());
 	}
 
 	private ChainItem<XmlValidationCertificateQualification> hasCaQc(List<TrustServiceWrapper> trustServices) {
-		return new CaQcCheck(i18nProvider, result, trustServices, getWarnLevelConstraint());
+		return new CaQcCheck(i18nProvider, result, trustServices, getWarnLevelRule());
 	}
 
 	private ChainItem<XmlValidationCertificateQualification> hasTrustServiceAtTime(List<TrustServiceWrapper> trustServices) {
-		return new TrustServiceAtTimeCheck(i18nProvider, result, trustServices, validationTime, getFailLevelConstraint());
+		return new TrustServiceAtTimeCheck(i18nProvider, result, trustServices, validationTime, getFailLevelRule());
 	}
 
 	private ChainItem<XmlValidationCertificateQualification> hasTrustServiceWithType(List<TrustServiceWrapper> trustServices) {
-		return new TrustServicesByCertificateTypeCheck(i18nProvider, result, trustServices, getFailLevelConstraint());
+		return new TrustServicesByCertificateTypeCheck(i18nProvider, result, trustServices, getFailLevelRule());
 	}
 
 	private ChainItem<XmlValidationCertificateQualification> isNoConflictDetected(Set<CertificateQualification> certificateQualificationsAtTime) {
-		return new IsNoQualificationConflictDetectedCheck(i18nProvider, result, certificateQualificationsAtTime, getFailLevelConstraint());
+		return new IsNoQualificationConflictDetectedCheck(i18nProvider, result, certificateQualificationsAtTime, getFailLevelRule());
 	}
 
 	private ChainItem<XmlValidationCertificateQualification> hasGrantedStatus(List<TrustServiceWrapper> trustServices) {
-		return new GrantedStatusCheck<>(i18nProvider, result, trustServices, getWarnLevelConstraint());
+		return new GrantedStatusCheck<>(i18nProvider, result, trustServices, getWarnLevelRule());
 	}
 
 	private ChainItem<XmlValidationCertificateQualification> hasCertificateTypeCoverage(
 			List<TrustServiceWrapper> trustServices) {
-		return new CertificateTypeCoverageCheck(i18nProvider, result, trustServices, getFailLevelConstraint());
+		return new CertificateTypeCoverageCheck(i18nProvider, result, trustServices, getFailLevelRule());
 	}
 
 	private ChainItem<XmlValidationCertificateQualification> hasConsistentByQCTrustService(
 			List<TrustServiceWrapper> trustServices) {
-		return new CertificateIssuedByConsistentByQCTrustServiceCheck(i18nProvider, result, trustServices, getFailLevelConstraint());
+		return new CertificateIssuedByConsistentByQCTrustServiceCheck(i18nProvider, result, trustServices, getFailLevelRule());
 	}
 
 	private ChainItem<XmlValidationCertificateQualification> hasConsistentByQSCDTrustService(
 			List<TrustServiceWrapper> trustServices) {
-		return new CertificateIssuedByConsistentByQSCDTrustServiceCheck(i18nProvider, result, trustServices, getFailLevelConstraint());
+		return new CertificateIssuedByConsistentByQSCDTrustServiceCheck(i18nProvider, result, trustServices, getFailLevelRule());
 	}
 
 	private ChainItem<XmlValidationCertificateQualification> isAbleToSelectOneTrustService(List<TrustServiceWrapper> trustServices) {
-		return new IsAbleToSelectOneTrustService(i18nProvider, result, trustServices, getFailLevelConstraint());
+		return new IsAbleToSelectOneTrustService(i18nProvider, result, trustServices, getFailLevelRule());
 	}
 
 	private ChainItem<XmlValidationCertificateQualification> serviceConsistency(TrustServiceWrapper selectedTrustService) {
-		return new ServiceConsistencyCheck(i18nProvider, result, selectedTrustService, getWarnLevelConstraint());
+		return new ServiceConsistencyCheck(i18nProvider, result, selectedTrustService, getWarnLevelRule());
 	}
 
 	private ChainItem<XmlValidationCertificateQualification> isTrustedCertificateMatchTrustService(TrustServiceWrapper selectedTrustService) {
-		return new TrustedCertificateMatchTrustServiceCheck(i18nProvider, result, selectedTrustService, getWarnLevelConstraint());
+		return new TrustedCertificateMatchTrustServiceCheck(i18nProvider, result, selectedTrustService, getWarnLevelRule());
 	}
 
 	private ChainItem<XmlValidationCertificateQualification> isValidCAQC(TrustServiceWrapper selectedTrustService) {
-		return new ValidCAQCCheck(i18nProvider, result, selectedTrustService, getFailLevelConstraint());
+		return new ValidCAQCCheck(i18nProvider, result, selectedTrustService, getFailLevelRule());
 	}
 
 	private ChainItem<XmlValidationCertificateQualification> isQualified(CertificateQualifiedStatus qualifiedStatus) {
-		return new QualifiedCheck(i18nProvider, result, qualifiedStatus, validationTime, getWarnLevelConstraint());
+		return new QualifiedCheck(i18nProvider, result, qualifiedStatus, validationTime, getWarnLevelRule());
 	}
 
 	private ChainItem<XmlValidationCertificateQualification> certificateType(CertificateType type) {
-		return new CertificateTypeCheck(i18nProvider, result, type, validationTime, getWarnLevelConstraint());
+		return new CertificateTypeCheck(i18nProvider, result, type, validationTime, getWarnLevelRule());
 	}
 
 	private ChainItem<XmlValidationCertificateQualification> isQscd(QSCDStatus qscdStatus) {
-		return new QSCDCheck(i18nProvider, result, qscdStatus, validationTime, getWarnLevelConstraint());
+		return new QSCDCheck(i18nProvider, result, qscdStatus, validationTime, getWarnLevelRule());
 	}
 
 	private boolean isMRAEnactedForTrustedList(List<TrustServiceWrapper> trustServices) {

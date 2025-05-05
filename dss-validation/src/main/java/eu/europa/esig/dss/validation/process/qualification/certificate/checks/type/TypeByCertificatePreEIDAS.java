@@ -21,8 +21,8 @@
 package eu.europa.esig.dss.validation.process.qualification.certificate.checks.type;
 
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
-import eu.europa.esig.dss.validation.process.CertificatePolicyIdentifiers;
 import eu.europa.esig.dss.enumerations.CertificateType;
+import eu.europa.esig.dss.validation.process.CertificatePolicyIdentifiers;
 
 /**
  * Gets certificate usage type before eIDAS

@@ -25,7 +25,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.MultiValuesConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.OrganizationIdentifierCheck;
@@ -47,7 +48,7 @@ class OrganizationIdentifierCheckTest extends AbstractTestCheck {
         xc.setOrganizationIdentifier("Valid_Org_Identifier");
 
         XmlSubXCV result = new XmlSubXCV();
-        OrganizationIdentifierCheck oic = new OrganizationIdentifierCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
+        OrganizationIdentifierCheck oic = new OrganizationIdentifierCheck(i18nProvider, result, new CertificateWrapper(xc), new MultiValuesConstraintWrapper(constraint));
         oic.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -65,7 +66,7 @@ class OrganizationIdentifierCheckTest extends AbstractTestCheck {
         xc.setOrganizationIdentifier("Invalid_Org_Identifier");
 
         XmlSubXCV result = new XmlSubXCV();
-        OrganizationIdentifierCheck oic = new OrganizationIdentifierCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
+        OrganizationIdentifierCheck oic = new OrganizationIdentifierCheck(i18nProvider, result, new CertificateWrapper(xc), new MultiValuesConstraintWrapper(constraint));
         oic.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

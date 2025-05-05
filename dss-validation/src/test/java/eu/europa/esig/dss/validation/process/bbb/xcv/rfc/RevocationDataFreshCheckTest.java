@@ -25,7 +25,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.TimeConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.TimeConstraint;
 import eu.europa.esig.dss.policy.jaxb.TimeUnit;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
@@ -52,7 +53,7 @@ class RevocationDataFreshCheckTest extends AbstractTestCheck {
 		xr.setThisUpdate(new Date(nowMil - 43200000)); // 12 hours ago
 
 		XmlRFC result = new XmlRFC();
-		RevocationDataFreshCheck rdec = new RevocationDataFreshCheck(i18nProvider, result, new RevocationWrapper(xr), now, tc);
+		RevocationDataFreshCheck rdec = new RevocationDataFreshCheck(i18nProvider, result, new RevocationWrapper(xr), now, new TimeConstraintWrapper(tc));
 		rdec.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -73,7 +74,7 @@ class RevocationDataFreshCheckTest extends AbstractTestCheck {
 		xr.setThisUpdate(new Date(nowMil - 172800000)); // 48 hours ago
 
 		XmlRFC result = new XmlRFC();
-		RevocationDataFreshCheck rdec = new RevocationDataFreshCheck(i18nProvider, result, new RevocationWrapper(xr), now, tc);
+		RevocationDataFreshCheck rdec = new RevocationDataFreshCheck(i18nProvider, result, new RevocationWrapper(xr), now, new TimeConstraintWrapper(tc));
 		rdec.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -95,7 +96,7 @@ class RevocationDataFreshCheckTest extends AbstractTestCheck {
 		xr.setProductionDate(new Date(nowMil - 43200000)); // 12 hours ago
 
 		XmlRFC result = new XmlRFC();
-		RevocationDataFreshCheck rdec = new RevocationDataFreshCheck(i18nProvider, result, new RevocationWrapper(xr), now, tc);
+		RevocationDataFreshCheck rdec = new RevocationDataFreshCheck(i18nProvider, result, new RevocationWrapper(xr), now, new TimeConstraintWrapper(tc));
 		rdec.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

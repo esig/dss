@@ -107,8 +107,7 @@ import eu.europa.esig.dss.model.signature.SignaturePolicy;
 import eu.europa.esig.dss.model.x509.revocation.Revocation;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
-import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.ValidationPolicyFacade;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.simplereport.SimpleReportFacade;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -127,6 +126,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.DocumentValidator;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
+import eu.europa.esig.dss.validation.policy.ValidationPolicyLoader;
 import eu.europa.esig.dss.validation.process.BasicBuildingBlockDefinition;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.enums.ConstraintStatus;
@@ -273,7 +273,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 
 		ValidationPolicy defaultValidationPolicy = null;
 		try {
-			defaultValidationPolicy = ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
+			defaultValidationPolicy = ValidationPolicyLoader.fromDefaultValidationPolicy().create();
 		} catch (Exception e) {
 			fail("Unable to load the default validation policy", e);
 		}

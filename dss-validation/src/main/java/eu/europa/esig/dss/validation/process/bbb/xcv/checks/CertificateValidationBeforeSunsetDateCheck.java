@@ -27,7 +27,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
@@ -53,10 +53,10 @@ public class CertificateValidationBeforeSunsetDateCheck<T extends XmlConstraints
      * @param result the result
      * @param certificate {@link CertificateWrapper}
      * @param controlTime {@link Date}
-     * @param constraint {@link LevelConstraint}
+     * @param constraint {@link LevelRule}
      */
     public CertificateValidationBeforeSunsetDateCheck(I18nProvider i18nProvider, T result,
-                                                      CertificateWrapper certificate, Date controlTime, LevelConstraint constraint) {
+                                                      CertificateWrapper certificate, Date controlTime, LevelRule constraint) {
         this(i18nProvider, result, certificate, controlTime, constraint, null);
 
     }
@@ -68,12 +68,12 @@ public class CertificateValidationBeforeSunsetDateCheck<T extends XmlConstraints
      * @param result the result
      * @param certificate {@link CertificateWrapper}
      * @param controlTime {@link Date}
-     * @param constraint {@link LevelConstraint}
+     * @param constraint {@link LevelRule}
      * @param certificateId {@link String} certificate identifier
      */
     protected CertificateValidationBeforeSunsetDateCheck(I18nProvider i18nProvider, T result,
                                                       CertificateWrapper certificate, Date controlTime,
-                                                      LevelConstraint constraint, String certificateId) {
+                                                      LevelRule constraint, String certificateId) {
         super(i18nProvider, result, constraint, certificateId);
         this.certificate = certificate;
         this.controlTime = controlTime;

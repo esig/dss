@@ -23,14 +23,14 @@ package eu.europa.esig.dss.validation.process.bbb.xcv.rfc;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.enumerations.Context;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.enumerations.SubContext;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.SubContext;
-import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
-import eu.europa.esig.dss.policy.jaxb.Level;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
-import eu.europa.esig.dss.policy.jaxb.TimeConstraint;
+import eu.europa.esig.dss.model.policy.CryptographicSuite;
+import eu.europa.esig.dss.model.policy.DurationRule;
+import eu.europa.esig.dss.model.policy.LevelRule;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicCheck;
@@ -123,7 +123,7 @@ public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 			 * nextUpdate time, the revocation status information will not be
 			 * considered fresh.
 			 */
-			TimeConstraint revocationFreshnessConstraint = policy.getRevocationFreshnessConstraint(context, subContext);
+			DurationRule revocationFreshnessConstraint = policy.getRevocationFreshnessConstraint(context, subContext);
 			if (revocationFreshnessConstraint == null || Level.IGNORE.equals(revocationFreshnessConstraint.getLevel())) {
 				switch (revocationData.getRevocationType()) {
 					case CRL:
@@ -154,16 +154,16 @@ public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 	}
 
 	private ChainItem<XmlRFC> crlNextUpdateCheck(RevocationWrapper revocationData) {
-		LevelConstraint constraint = policy.getCRLNextUpdatePresentConstraint(context, subContext);
+		LevelRule constraint = policy.getCRLNextUpdatePresentConstraint(context, subContext);
 		return new NextUpdateCheck(i18nProvider, result, revocationData, constraint);
 	}
 
 	private ChainItem<XmlRFC> ocspNextUpdateCheck(RevocationWrapper revocationData) {
-		LevelConstraint constraint = policy.getOCSPNextUpdatePresentConstraint(context, subContext);
+		LevelRule constraint = policy.getOCSPNextUpdatePresentConstraint(context, subContext);
 		return new NextUpdateCheck(i18nProvider, result, revocationData, constraint);
 	}
 
-	private ChainItem<XmlRFC> revocationDataFreshCheck(RevocationWrapper revocationData, TimeConstraint revocationFreshnessConstraint) {
+	private ChainItem<XmlRFC> revocationDataFreshCheck(RevocationWrapper revocationData, DurationRule revocationFreshnessConstraint) {
 		/*
 		 * The building block shall get the maximum accepted revocation
 		 * freshness from the X.509 validation constraints for the given
@@ -181,14 +181,14 @@ public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 		 * freshness.
 		 */
 		else {
-			LevelConstraint constraint = policy.getRevocationFreshnessNextUpdateConstraint(context, subContext);
+			LevelRule constraint = policy.getRevocationFreshnessNextUpdateConstraint(context, subContext);
 			return new RevocationDataFreshCheckWithNullConstraint(i18nProvider, result, revocationData, validationDate, constraint);
 		}
 	}
 
 	private ChainItem<XmlRFC> revocationCryptographic(RevocationWrapper revocationData) {
-		CryptographicConstraint cryptographicConstraint = policy.getSignatureCryptographicConstraint(Context.REVOCATION);
-		return new CryptographicCheck<>(i18nProvider, result, revocationData, REVOCATION_POSITION, validationDate, cryptographicConstraint);
+		CryptographicSuite cryptographicSuite = policy.getSignatureCryptographicConstraint(Context.REVOCATION);
+		return new CryptographicCheck<>(i18nProvider, result, revocationData, REVOCATION_POSITION, validationDate, cryptographicSuite);
 	}
 
 }

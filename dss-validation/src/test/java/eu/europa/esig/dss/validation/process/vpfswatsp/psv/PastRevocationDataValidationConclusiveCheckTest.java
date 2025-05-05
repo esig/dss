@@ -25,8 +25,9 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlPSV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.psv.checks.PastRevocationDataValidationConclusiveCheck;
@@ -48,7 +49,7 @@ class PastRevocationDataValidationConclusiveCheckTest extends AbstractTestCheck 
 
         XmlPSV result = new XmlPSV();
         PastRevocationDataValidationConclusiveCheck prdvcc = new PastRevocationDataValidationConclusiveCheck(
-                i18nProvider, result, xmlConclusion, constraint);
+                i18nProvider, result, xmlConclusion, new LevelConstraintWrapper(constraint));
         prdvcc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -67,7 +68,7 @@ class PastRevocationDataValidationConclusiveCheckTest extends AbstractTestCheck 
 
         XmlPSV result = new XmlPSV();
         PastRevocationDataValidationConclusiveCheck prdvcc = new PastRevocationDataValidationConclusiveCheck(
-                i18nProvider, result, xmlConclusion, constraint);
+                i18nProvider, result, xmlConclusion, new LevelConstraintWrapper(constraint));
         prdvcc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

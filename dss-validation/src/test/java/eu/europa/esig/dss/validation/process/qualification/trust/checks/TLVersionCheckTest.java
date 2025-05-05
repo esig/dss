@@ -24,7 +24,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTLAnalysis;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedList;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.MultiValuesConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import jakarta.xml.bind.DatatypeConverter;
@@ -51,7 +52,7 @@ class TLVersionCheckTest extends AbstractTestCheck {
         xmlTrustedList.setVersion(5);
 
         XmlTLAnalysis result = new XmlTLAnalysis();
-        TLVersionCheck tlvc = new TLVersionCheck(i18nProvider, result, xmlTrustedList, POST_GRACE_PERIOD_DATE, constraint);
+        TLVersionCheck tlvc = new TLVersionCheck(i18nProvider, result, xmlTrustedList, POST_GRACE_PERIOD_DATE, new MultiValuesConstraintWrapper(constraint));
         tlvc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -70,7 +71,7 @@ class TLVersionCheckTest extends AbstractTestCheck {
         xmlTrustedList.setVersion(6);
 
         XmlTLAnalysis result = new XmlTLAnalysis();
-        TLVersionCheck tlvc = new TLVersionCheck(i18nProvider, result, xmlTrustedList, POST_GRACE_PERIOD_DATE, constraint);
+        TLVersionCheck tlvc = new TLVersionCheck(i18nProvider, result, xmlTrustedList, POST_GRACE_PERIOD_DATE, new MultiValuesConstraintWrapper(constraint));
         tlvc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -88,7 +89,7 @@ class TLVersionCheckTest extends AbstractTestCheck {
         xmlTrustedList.setVersion(5);
 
         XmlTLAnalysis result = new XmlTLAnalysis();
-        TLVersionCheck tlvc = new TLVersionCheck(i18nProvider, result, xmlTrustedList, POST_GRACE_PERIOD_DATE, constraint);
+        TLVersionCheck tlvc = new TLVersionCheck(i18nProvider, result, xmlTrustedList, POST_GRACE_PERIOD_DATE, new MultiValuesConstraintWrapper(constraint));
         tlvc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -106,7 +107,7 @@ class TLVersionCheckTest extends AbstractTestCheck {
         xmlTrustedList.setVersion(5);
 
         XmlTLAnalysis result = new XmlTLAnalysis();
-        TLVersionCheck tlvc = new TLVersionCheck(i18nProvider, result, xmlTrustedList, PRE_GRACE_PERIOD_DATE, constraint);
+        TLVersionCheck tlvc = new TLVersionCheck(i18nProvider, result, xmlTrustedList, PRE_GRACE_PERIOD_DATE, new MultiValuesConstraintWrapper(constraint));
         tlvc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -124,7 +125,7 @@ class TLVersionCheckTest extends AbstractTestCheck {
         xmlTrustedList.setVersion(5);
 
         XmlTLAnalysis result = new XmlTLAnalysis();
-        TLVersionCheck tlvc = new TLVersionCheck(i18nProvider, result, xmlTrustedList, PRE_GRACE_PERIOD_DATE, constraint);
+        TLVersionCheck tlvc = new TLVersionCheck(i18nProvider, result, xmlTrustedList, PRE_GRACE_PERIOD_DATE, new MultiValuesConstraintWrapper(constraint));
         tlvc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -142,7 +143,7 @@ class TLVersionCheckTest extends AbstractTestCheck {
         xmlTrustedList.setVersion(5);
 
         XmlTLAnalysis result = new XmlTLAnalysis();
-        TLVersionCheck tlvc = new TLVersionCheck(i18nProvider, result, xmlTrustedList, POST_GRACE_PERIOD_DATE, constraint);
+        TLVersionCheck tlvc = new TLVersionCheck(i18nProvider, result, xmlTrustedList, POST_GRACE_PERIOD_DATE, new MultiValuesConstraintWrapper(constraint));
         tlvc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -159,7 +160,7 @@ class TLVersionCheckTest extends AbstractTestCheck {
         XmlTrustedList xmlTrustedList = new XmlTrustedList();
 
         XmlTLAnalysis result = new XmlTLAnalysis();
-        TLVersionCheck tlvc = new TLVersionCheck(i18nProvider, result, xmlTrustedList, POST_GRACE_PERIOD_DATE, constraint);
+        TLVersionCheck tlvc = new TLVersionCheck(i18nProvider, result, xmlTrustedList, POST_GRACE_PERIOD_DATE, new MultiValuesConstraintWrapper(constraint));
         tlvc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

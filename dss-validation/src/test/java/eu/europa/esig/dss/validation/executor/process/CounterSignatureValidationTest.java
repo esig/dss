@@ -31,12 +31,12 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.jaxb.object.Message;
-import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.policy.jaxb.SignatureConstraints;
@@ -118,7 +118,7 @@ class CounterSignatureValidationTest extends AbstractProcessExecutorTest {
         LevelConstraint levelConstraint = new LevelConstraint();
         levelConstraint.setLevel(Level.FAIL);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         SignatureConstraints signatureConstraints = validationPolicy.getSignatureConstraints();
         signatureConstraints.getSignedAttributes().setSignerLocation(levelConstraint);
 
@@ -154,7 +154,7 @@ class CounterSignatureValidationTest extends AbstractProcessExecutorTest {
         LevelConstraint levelConstraint = new LevelConstraint();
         levelConstraint.setLevel(Level.FAIL);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         SignatureConstraints signatureConstraints = validationPolicy.getCounterSignatureConstraints();
         signatureConstraints.getSignedAttributes().setContentTimeStamp(levelConstraint);
 
@@ -239,7 +239,7 @@ class CounterSignatureValidationTest extends AbstractProcessExecutorTest {
         }
         assertNotNull(counterSigId);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         SignatureConstraints counterSignatureConstraints = validationPolicy.getCounterSignatureConstraints();
         MultiValuesConstraint constraint = new MultiValuesConstraint();
         constraint.getId().add("XAdES-BASELINE-B");
@@ -278,7 +278,7 @@ class CounterSignatureValidationTest extends AbstractProcessExecutorTest {
         }
         assertNotNull(counterSigId);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         SignatureConstraints counterSignatureConstraints = validationPolicy.getCounterSignatureConstraints();
 
         MultiValuesConstraint constraint = new MultiValuesConstraint();

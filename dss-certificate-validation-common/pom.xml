@@ -29,6 +29,12 @@
 		</dependency>
 
 		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-test</artifactId>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 		    <groupId>org.junit.platform</groupId>
 		    <artifactId>junit-platform-launcher</artifactId>
 		    <scope>test</scope>

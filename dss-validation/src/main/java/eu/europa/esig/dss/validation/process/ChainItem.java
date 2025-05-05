@@ -27,11 +27,11 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.Level;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +43,7 @@ import java.util.Objects;
 /**
  * This class is an item of the {@code Chain} class.
  * That follows the design pattern "chain of responsibility".
- * Depending on the {@code Level} in {@code LevelConstraint} the Chain will continue/stop the current treatment. The
+ * Depending on the {@code Level} in {@code LevelRule} the Chain will continue/stop the current treatment. The
  * {@code ChainItem} is a validation
  * constraint which allows to collect information, warnings, errors,...
  * 
@@ -58,7 +58,7 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 	protected final I18nProvider i18nProvider;
 
 	/** Level constraint for the current chain item */
-	private final LevelConstraint constraint;
+	private final LevelRule constraint;
 
 	/** The next item to be executed if the following chainItem succeeds */
 	private ChainItem<T> nextItem;
@@ -77,10 +77,10 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 	 * @param result
 	 *            the {@code Chain} object parent of this object
 	 * @param constraint
-	 *            the {@code LevelConstraint} to follow to execute this ChainItem
+	 *            the {@code LevelRule} to follow to execute this ChainItem
 	 * 
 	 */
-	protected ChainItem(I18nProvider i18nProvider, T result, LevelConstraint constraint) {
+	protected ChainItem(I18nProvider i18nProvider, T result, LevelRule constraint) {
 		this(i18nProvider, result, constraint, null);
 	}
 
@@ -92,12 +92,12 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 	 * @param result
 	 *            the {@code Chain} object parent of this object
 	 * @param constraint
-	 *            the {@code LevelConstraint} to follow to execute this ChainItem
+	 *            the {@code LevelRule} to follow to execute this ChainItem
 	 * @param bbbId
 	 *            the {@code XmlBasicBuildingBlocks}'s id
 	 * 
 	 */
-	protected ChainItem(I18nProvider i18nProvider, T result, LevelConstraint constraint, String bbbId) {
+	protected ChainItem(I18nProvider i18nProvider, T result, LevelRule constraint, String bbbId) {
 		Objects.requireNonNull(i18nProvider, "i18nProvider must be defined!");
 		this.i18nProvider = i18nProvider;
 		this.result = result;

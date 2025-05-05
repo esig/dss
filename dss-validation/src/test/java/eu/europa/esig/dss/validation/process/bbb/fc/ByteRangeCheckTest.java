@@ -27,7 +27,8 @@ import eu.europa.esig.dss.diagnostic.PDFRevisionWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlByteRange;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFSignatureDictionary;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.ByteRangeCheck;
@@ -54,7 +55,7 @@ class ByteRangeCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        ByteRangeCheck brc = new ByteRangeCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
+        ByteRangeCheck brc = new ByteRangeCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), new LevelConstraintWrapper(constraint));
         brc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -77,7 +78,7 @@ class ByteRangeCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        ByteRangeCheck brc = new ByteRangeCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
+        ByteRangeCheck brc = new ByteRangeCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), new LevelConstraintWrapper(constraint));
         brc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -99,7 +100,7 @@ class ByteRangeCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        ByteRangeCheck brc = new ByteRangeCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
+        ByteRangeCheck brc = new ByteRangeCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), new LevelConstraintWrapper(constraint));
         brc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -118,7 +119,7 @@ class ByteRangeCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        ByteRangeCheck brc = new ByteRangeCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
+        ByteRangeCheck brc = new ByteRangeCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), new LevelConstraintWrapper(constraint));
         brc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

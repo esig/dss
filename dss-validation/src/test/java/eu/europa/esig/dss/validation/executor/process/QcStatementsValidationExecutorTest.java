@@ -33,12 +33,12 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRoleOfPSP;
 import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.CertificateConstraints;
 import eu.europa.esig.dss.policy.jaxb.IntValueConstraint;
-import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.policy.jaxb.ValueConstraint;
@@ -62,7 +62,7 @@ class QcStatementsValidationExecutorTest extends AbstractProcessExecutorTest {
                 new File("src/test/resources/diag-data/valid-diag-data.xml"));
         assertNotNull(xmlDiagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         CertificateConstraints certificateConstraints = validationPolicy.getSignatureConstraints()
                 .getBasicSignatureConstraints().getSigningCertificate();
         LevelConstraint levelConstraint = new LevelConstraint();
@@ -110,7 +110,7 @@ class QcStatementsValidationExecutorTest extends AbstractProcessExecutorTest {
         xmlQcStatements.setQcEuLimitValue(xmlQcEuLimitValue);
         signingCertificate.getCertificateExtensions().add(xmlQcStatements);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         CertificateConstraints certificateConstraints = validationPolicy.getSignatureConstraints()
                 .getBasicSignatureConstraints().getSigningCertificate();
         ValueConstraint constraint = new ValueConstraint();
@@ -153,7 +153,7 @@ class QcStatementsValidationExecutorTest extends AbstractProcessExecutorTest {
         xmlQcStatements.setQcEuLimitValue(xmlQCLimitValue);
         signingCertificate.getCertificateExtensions().add(xmlQcStatements);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         CertificateConstraints certificateConstraints = validationPolicy.getSignatureConstraints()
                 .getBasicSignatureConstraints().getSigningCertificate();
         IntValueConstraint constraint = new IntValueConstraint();
@@ -193,7 +193,7 @@ class QcStatementsValidationExecutorTest extends AbstractProcessExecutorTest {
         xmlQcStatements.setQcEuRetentionPeriod(3);
         signingCertificate.getCertificateExtensions().add(xmlQcStatements);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         CertificateConstraints certificateConstraints = validationPolicy.getSignatureConstraints()
                 .getBasicSignatureConstraints().getSigningCertificate();
         IntValueConstraint constraint = new IntValueConstraint();
@@ -235,7 +235,7 @@ class QcStatementsValidationExecutorTest extends AbstractProcessExecutorTest {
         xmlQcStatements.setQcSSCD(xmlQcSSCD);
         signingCertificate.getCertificateExtensions().add(xmlQcStatements);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         CertificateConstraints certificateConstraints = validationPolicy.getSignatureConstraints()
                 .getBasicSignatureConstraints().getSigningCertificate();
         LevelConstraint constraint = new LevelConstraint();
@@ -277,7 +277,7 @@ class QcStatementsValidationExecutorTest extends AbstractProcessExecutorTest {
         xmlQcStatements.getQcEuPDS().add(langAndValue);
         signingCertificate.getCertificateExtensions().add(xmlQcStatements);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         CertificateConstraints certificateConstraints = validationPolicy.getSignatureConstraints()
                 .getBasicSignatureConstraints().getSigningCertificate();
         MultiValuesConstraint constraint = new MultiValuesConstraint();
@@ -320,7 +320,7 @@ class QcStatementsValidationExecutorTest extends AbstractProcessExecutorTest {
         xmlQcStatements.setQcTypes(Arrays.asList(xmlOID));
         signingCertificate.getCertificateExtensions().add(xmlQcStatements);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         CertificateConstraints certificateConstraints = validationPolicy.getSignatureConstraints()
                 .getBasicSignatureConstraints().getSigningCertificate();
         MultiValuesConstraint constraint = new MultiValuesConstraint();
@@ -360,7 +360,7 @@ class QcStatementsValidationExecutorTest extends AbstractProcessExecutorTest {
         xmlQcStatements.setOID(CertificateExtensionEnum.QC_STATEMENTS.getOid());
         signingCertificate.getCertificateExtensions().add(xmlQcStatements);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         CertificateConstraints certificateConstraints = validationPolicy.getSignatureConstraints()
                 .getBasicSignatureConstraints().getSigningCertificate();
         MultiValuesConstraint constraint = new MultiValuesConstraint();
@@ -418,7 +418,7 @@ class QcStatementsValidationExecutorTest extends AbstractProcessExecutorTest {
         xmlQcStatements.setSemanticsIdentifier(xmlOID);
         signingCertificate.getCertificateExtensions().add(xmlQcStatements);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         CertificateConstraints certificateConstraints = validationPolicy.getSignatureConstraints()
                 .getBasicSignatureConstraints().getSigningCertificate();
         MultiValuesConstraint constraint = new MultiValuesConstraint();
@@ -462,7 +462,7 @@ class QcStatementsValidationExecutorTest extends AbstractProcessExecutorTest {
         xmlQcStatements.setSemanticsIdentifier(xmlOID);
         signingCertificate.getCertificateExtensions().add(xmlQcStatements);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         CertificateConstraints certificateConstraints = validationPolicy.getSignatureConstraints()
                 .getBasicSignatureConstraints().getSigningCertificate();
         MultiValuesConstraint constraint = new MultiValuesConstraint();
@@ -507,7 +507,7 @@ class QcStatementsValidationExecutorTest extends AbstractProcessExecutorTest {
         xmlQcStatements.setSemanticsIdentifier(xmlOID);
         signingCertificate.getCertificateExtensions().add(xmlQcStatements);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         CertificateConstraints certificateConstraints = validationPolicy.getSignatureConstraints()
                 .getBasicSignatureConstraints().getSigningCertificate();
         MultiValuesConstraint constraint = new MultiValuesConstraint();
@@ -552,7 +552,7 @@ class QcStatementsValidationExecutorTest extends AbstractProcessExecutorTest {
         xmlQcStatements.setSemanticsIdentifier(xmlOID);
         signingCertificate.getCertificateExtensions().add(xmlQcStatements);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         CertificateConstraints certificateConstraints = validationPolicy.getSignatureConstraints()
                 .getBasicSignatureConstraints().getSigningCertificate();
         MultiValuesConstraint constraint = new MultiValuesConstraint();
@@ -600,7 +600,7 @@ class QcStatementsValidationExecutorTest extends AbstractProcessExecutorTest {
         xmlQcStatements.setPSD2QcInfo(xmlPSD2Info);
         signingCertificate.getCertificateExtensions().add(xmlQcStatements);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         CertificateConstraints certificateConstraints = validationPolicy.getSignatureConstraints()
                 .getBasicSignatureConstraints().getSigningCertificate();
         MultiValuesConstraint constraint = new MultiValuesConstraint();
@@ -643,7 +643,7 @@ class QcStatementsValidationExecutorTest extends AbstractProcessExecutorTest {
         xmlQcStatements.setPSD2QcInfo(xmlPSD2Info);
         signingCertificate.getCertificateExtensions().add(xmlQcStatements);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         CertificateConstraints certificateConstraints = validationPolicy.getSignatureConstraints()
                 .getBasicSignatureConstraints().getSigningCertificate();
         MultiValuesConstraint constraint = new MultiValuesConstraint();
@@ -685,7 +685,7 @@ class QcStatementsValidationExecutorTest extends AbstractProcessExecutorTest {
         xmlQcStatements.setPSD2QcInfo(xmlPSD2Info);
         signingCertificate.getCertificateExtensions().add(xmlQcStatements);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         CertificateConstraints certificateConstraints = validationPolicy.getSignatureConstraints()
                 .getBasicSignatureConstraints().getSigningCertificate();
         MultiValuesConstraint constraint = new MultiValuesConstraint();

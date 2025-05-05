@@ -24,7 +24,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlCC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
 import java.util.Date;
@@ -47,10 +47,10 @@ public class DigestCryptographicCheckerResultCheck<T extends XmlConstraintsConcl
 	 * @param validationDate {@link Date}
 	 * @param position {@link MessageTag}
 	 * @param ccResult {@link XmlCC}
-	 * @param constraint {@link LevelConstraint}
+	 * @param constraint {@link LevelRule}
 	 */
 	public DigestCryptographicCheckerResultCheck(I18nProvider i18nProvider, T result, Date validationDate,
-												 MessageTag position, XmlCC ccResult, LevelConstraint constraint) {
+												 MessageTag position, XmlCC ccResult, LevelRule constraint) {
 		super(i18nProvider, result, position, ccResult, constraint);
 		this.validationDate = validationDate;
 	}

@@ -30,7 +30,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
@@ -65,11 +65,11 @@ public class LongTermAvailabilityAndIntegrityValidationMaterialCheck extends Cha
      * @param result {@link XmlValidationProcessArchivalData}
      * @param signature {@link SignatureWrapper} to be validated
      * @param longTermValidationResult {@link XmlConstraintsConclusion}
-     * @param constraint {@link LevelConstraint}
+     * @param constraint {@link LevelRule}
      */
     public LongTermAvailabilityAndIntegrityValidationMaterialCheck(I18nProvider i18nProvider,
             XmlValidationProcessArchivalData result, SignatureWrapper signature,
-            XmlConstraintsConclusion longTermValidationResult, LevelConstraint constraint) {
+            XmlConstraintsConclusion longTermValidationResult, LevelRule constraint) {
         super(i18nProvider, result, constraint);
         this.signature = signature;
         this.longTermValidationResult = longTermValidationResult;

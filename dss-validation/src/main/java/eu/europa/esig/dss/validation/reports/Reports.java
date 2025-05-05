@@ -27,9 +27,9 @@ import eu.europa.esig.dss.simplereport.SimpleReportFacade;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
 import eu.europa.esig.validationreport.ValidationReportFacade;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
+import jakarta.xml.bind.JAXBException;
 import org.xml.sax.SAXException;
 
-import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
 
 /**
