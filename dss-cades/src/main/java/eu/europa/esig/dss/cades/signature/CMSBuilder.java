@@ -49,6 +49,7 @@ import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -296,34 +297,28 @@ public class CMSBuilder {
 		}
 
 		Store<X509CertificateHolder> certificatesStore = originalCMS.getCertificates();
-		final Collection<X509CertificateHolder> newCertificateStore = new HashSet<>(certificatesStore.getMatches(null));
+		final Collection<X509CertificateHolder> newCertificateStore = new LinkedHashSet<>(certificatesStore.getMatches(null));
 		for (final CertificateToken certificateToken : certificateTokens) {
 			final X509CertificateHolder x509CertificateHolder = DSSASN1Utils.getX509CertificateHolder(certificateToken);
-			if (!newCertificateStore.contains(x509CertificateHolder)) {
-				newCertificateStore.add(x509CertificateHolder);
-			}
+			newCertificateStore.add(x509CertificateHolder);
 		}
 		certificatesStore = new CollectionStore<>(newCertificateStore);
 
 		Store attributeCertificatesStore = originalCMS.getAttributeCertificates();
 
 		Store<X509CRLHolder> crlsStore = originalCMS.getCRLs();
-		final Collection<Encodable> newCrlsStore = new HashSet<>(crlsStore.getMatches(null));
+		final Collection<Encodable> newCrlsStore = new LinkedHashSet<>(crlsStore.getMatches(null));
 		for (final CRLToken crlToken : crlTokens) {
 			final X509CRLHolder x509CRLHolder = getX509CrlHolder(crlToken);
-			if (!newCrlsStore.contains(x509CRLHolder)) {
-				newCrlsStore.add(x509CRLHolder);
-			}
+			newCrlsStore.add(x509CRLHolder);
 		}
 		crlsStore = new CollectionStore(newCrlsStore);
 
 		Store otherRevocationInfoFormatStoreOcsp = originalCMS.getOcspResponseStore();
-		final Collection<ASN1Primitive> newOtherRevocationInfoFormatStore = new HashSet<>(otherRevocationInfoFormatStoreOcsp.getMatches(null));
+		final Collection<ASN1Primitive> newOtherRevocationInfoFormatStore = new LinkedHashSet<>(otherRevocationInfoFormatStoreOcsp.getMatches(null));
 		for (final OCSPToken ocspToken : ocspTokens) {
 			ASN1Primitive ocspResponseASN1Primitive = DSSASN1Utils.toASN1Primitive(ocspToken.getEncoded());
-			if (!newOtherRevocationInfoFormatStore.contains(ocspResponseASN1Primitive)) {
-				newOtherRevocationInfoFormatStore.add(ocspResponseASN1Primitive);
-			}
+			newOtherRevocationInfoFormatStore.add(ocspResponseASN1Primitive);
 		}
 		otherRevocationInfoFormatStoreOcsp = new CollectionStore(newOtherRevocationInfoFormatStore);
 

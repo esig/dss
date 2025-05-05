@@ -18,7 +18,6 @@ import org.bouncycastle.asn1.BEROctetString;
 import org.bouncycastle.asn1.BERSequence;
 import org.bouncycastle.asn1.BERSet;
 import org.bouncycastle.asn1.BERTaggedObject;
-import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.DERSet;
 import org.bouncycastle.asn1.DERTaggedObject;
@@ -54,7 +53,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Objects;
 
 /**
@@ -140,7 +139,7 @@ public class CMSObjectUtils implements ICMSUtils {
      * @return {@link Store}
      */
     public static Store<Encodable> toCRLsStore(Store<X509CRLHolder> crls, Store<?> ocspResponses, Store<?> ocspBasicResponses) {
-        final Collection<Encodable> newCrlsStore = new HashSet<>(crls.getMatches(null));
+        final Collection<Encodable> newCrlsStore = new LinkedHashSet<>(crls.getMatches(null));
         for (Object ocsp : ocspResponses.getMatches(null)) {
             newCrlsStore.add(new OtherRevocationInfoFormat(CMSObjectIdentifiers.id_ri_ocsp_response, (ASN1Encodable) ocsp));
         }
@@ -176,15 +175,12 @@ public class CMSObjectUtils implements ICMSUtils {
 
     @Override
     public String getContentInfoEncoding(CMS cms) {
-        SignedData signedData = getSignedData(cms);
-        final ContentInfo content = signedData.getEncapContentInfo();
-        if (content.getContent() instanceof BEROctetString) {
-            return ASN1Encoding.BER;
-        } else if (content.getContent() instanceof DEROctetString) {
-            return ASN1Encoding.DER;
+        CMSSignedDataObject cmsSignedDataObject = toCMSSignedDataObject(cms);
+        final ContentInfo contentInfo = cmsSignedDataObject.getCMSSignedData().toASN1Structure();
+        if (contentInfo.isDefiniteLength()) {
+            return ASN1Encoding.DL;
         } else {
-            throw new UnsupportedOperationException(String.format("The ContentInfo encoding class '%s' is not supported!",
-                    content.getContent().getClass().getName()));
+            return ASN1Encoding.BER;
         }
     }
 

@@ -23,6 +23,7 @@ package eu.europa.esig.dss.cms;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.CommonDocument;
 import eu.europa.esig.dss.model.DSSException;
+import org.bouncycastle.asn1.ASN1Encoding;
 import org.bouncycastle.asn1.ASN1OutputStream;
 import org.bouncycastle.cms.CMSSignedData;
 
@@ -33,16 +34,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Objects;
 
-// TODO: move to dss-cms-object ?
 /**
  * A document composed by a CMSSignedData
  */
 public class CMSSignedDocument extends CommonDocument {
 
 	private static final long serialVersionUID = 1413370170096318058L;
-
-	/** Defines the original CMS encoding parameter */
-	private static final String ORIGINAL_ENCODING = "";
 
 	/**
 	 * The CMSSignedData representing the document
@@ -102,9 +99,17 @@ public class CMSSignedDocument extends CommonDocument {
 		}
 	}
 
+	/**
+	 * This method writes a content of the CMS into an {@code OutputStream} using the DL coding
+	 *
+	 * @param stream
+	 *            the output stream where to write
+	 * @throws IOException if an error occurs on writing
+	 */
 	@Override
 	public void writeTo(OutputStream stream) throws IOException {
-		final ASN1OutputStream asn1OutputStream = ASN1OutputStream.create(stream, ORIGINAL_ENCODING);
+		// keep DL to ensure the original order of elements
+		final ASN1OutputStream asn1OutputStream = ASN1OutputStream.create(stream, ASN1Encoding.DL);
 		asn1OutputStream.writeObject(signedData.toASN1Structure());
 	}
 

@@ -50,6 +50,7 @@ import org.bouncycastle.util.Store;
 import java.security.cert.CertificateEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 
@@ -183,68 +184,48 @@ public abstract class AbstractASiCWithCAdESContainerMerger extends DefaultContai
 
     @SuppressWarnings("unchecked")
     private Store<X509CertificateHolder> getCertificatesStore(List<CMS> cmsList) throws CertificateEncodingException {
-        List<X509CertificateHolder> result = new ArrayList<>();
+        final Collection<X509CertificateHolder> result = new LinkedHashSet<>();
         for (CMS signedData : cmsList) {
-            final Collection<X509CertificateHolder> certificateHolders = signedData.getCertificates().getMatches(null);
-            for (final X509CertificateHolder x509CertificateHolder : certificateHolders) {
-                if (!result.contains(x509CertificateHolder)) {
-                    result.add(x509CertificateHolder);
-                }
-            }
+            result.addAll(signedData.getCertificates().getMatches(null));
         }
         return (Store<X509CertificateHolder>) new JcaCertStore(result);
     }
 
     private Store<X509AttributeCertificateHolder> getCertAttributeStore(List<CMS> cmsList) {
-        List<X509AttributeCertificateHolder> result = new ArrayList<>();
+        final Collection<X509AttributeCertificateHolder> result = new LinkedHashSet<>();
         for (CMS signedData : cmsList) {
-            final Collection<X509AttributeCertificateHolder> attributeCertificateHolders = signedData.getAttributeCertificates().getMatches(null);
-            for (final X509AttributeCertificateHolder x509AttributeCertificateHolder : attributeCertificateHolders) {
-                if (!result.contains(x509AttributeCertificateHolder)) {
-                    result.add(x509AttributeCertificateHolder);
-                }
-            }
+            result.addAll(signedData.getAttributeCertificates().getMatches(null));
         }
         return new CollectionStore<>(result);
     }
 
     private Store<X509CRLHolder> getCRLStore(List<CMS> cmsList) {
-        List<X509CRLHolder> result = new ArrayList<>();
+        final Collection<X509CRLHolder> result = new LinkedHashSet<>();
         for (CMS cms : cmsList) {
-            final Collection<X509CRLHolder> crlHolders = cms.getCRLs().getMatches(null);
-            for (final X509CRLHolder x509CRLHolder : crlHolders) {
-                if (!result.contains(x509CRLHolder)) {
-                    result.add(x509CRLHolder);
-                }
-            }
-
+            result.addAll(cms.getCRLs().getMatches(null));
         }
         return new CollectionStore<>(result);
     }
 
     private Store<ASN1Encodable> getOCSPResponsesStore(List<CMS> cmsList) {
-        List<ASN1Encodable> result = new ArrayList<>();
+        final Collection<ASN1Encodable> result = new LinkedHashSet<>();
         for (CMS cms : cmsList) {
             final Collection<?> basicOcsps = cms.getOcspResponseStore().getMatches(null);
             for (final Object ocsp : basicOcsps) {
                 ASN1Encodable asn1EncodableOcsp = (ASN1Encodable) ocsp;
-                if (!result.contains(asn1EncodableOcsp)) {
-                    result.add(asn1EncodableOcsp);
-                }
+                result.add(asn1EncodableOcsp);
             }
         }
         return new CollectionStore<>(result);
     }
 
     private Store<ASN1Encodable> getOCSPBasicStore(List<CMS> cmsList) {
-        List<ASN1Encodable> result = new ArrayList<>();
+        final Collection<ASN1Encodable> result = new LinkedHashSet<>();
         for (CMS cms : cmsList) {
             final Collection<?> basicOcsps = cms.getOcspBasicStore().getMatches(null);
             for (final Object ocsp : basicOcsps) {
                 ASN1Encodable asn1EncodableOcsp = (ASN1Encodable) ocsp;
-                if (!result.contains(asn1EncodableOcsp)) {
-                    result.add(asn1EncodableOcsp);
-                }
+                result.add(asn1EncodableOcsp);
             }
         }
         return new CollectionStore<>(result);

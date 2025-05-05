@@ -32,6 +32,7 @@ import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.junit.jupiter.api.BeforeEach;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -49,13 +50,17 @@ class ASiCECAdESDoubleSignatureBAndLTATest extends AbstractASiCECAdESTestSignatu
 
     private String firstSignatureId;
 
+    private Date signingTime;
+
     @BeforeEach
     void init() throws Exception {
         service = new ASiCWithCAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsa());
 
+        signingTime = new Date();
+
         signatureParameters = new ASiCWithCAdESSignatureParameters();
-        signatureParameters.bLevel().setSigningDate(new Date());
+        signatureParameters.bLevel().setSigningDate(signingTime);
         signatureParameters.setSigningCertificate(getSigningCert());
         signatureParameters.setCertificateChain(getCertificateChain());
         signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
@@ -74,8 +79,12 @@ class ASiCECAdESDoubleSignatureBAndLTATest extends AbstractASiCECAdESTestSignatu
         assertEquals(1, signatures.size());
         firstSignatureId = signatures.get(0).getDSSId().asXmlId();
 
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(signingTime);
+        calendar.add(Calendar.SECOND, 1);
+
         signatureParameters = new ASiCWithCAdESSignatureParameters();
-        signatureParameters.bLevel().setSigningDate(new Date());
+        signatureParameters.bLevel().setSigningDate(calendar.getTime());
         signatureParameters.setSigningCertificate(getSigningCert());
         signatureParameters.setCertificateChain(getCertificateChain());
         signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
