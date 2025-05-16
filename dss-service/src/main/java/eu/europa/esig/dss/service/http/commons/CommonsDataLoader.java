@@ -841,8 +841,7 @@ public class CommonsDataLoader implements DataLoader {
 
 		urlString = LdapURLUtils.encode(urlString);
 
-		final Hashtable<String, String> env = new Hashtable<>();
-		env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
+		final Hashtable<String, String> env = initLdapContextEnvironment();
 		env.put(Context.PROVIDER_URL, urlString);
 
 		try {
@@ -874,6 +873,17 @@ public class CommonsDataLoader implements DataLoader {
 		} catch (Exception e) {
 			throw new DSSExternalResourceException(String.format("Cannot get data from URL [%s]. Reason : [%s]", urlString, e.getMessage()), e);
 		}
+	}
+
+	/**
+	 * Creates an LDAP Context environment
+	 *
+	 * @return {@link Hashtable} containing a list of properties for the LDAP environment
+	 */
+	protected Hashtable<String, String> initLdapContextEnvironment() {
+		final Hashtable<String, String> env = new Hashtable<>();
+		env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
+		return env;
 	}
 
 	/**
