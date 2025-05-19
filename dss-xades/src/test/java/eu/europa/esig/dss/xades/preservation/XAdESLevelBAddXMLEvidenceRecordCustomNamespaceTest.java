@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.xades.signature.evidencerecord;
+package eu.europa.esig.dss.xades.preservation;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.EvidenceRecordTypeEnum;
@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESLevelBAddXMLEvidenceRecordCustomNamespaceTest extends AbstractXAdESAddEvidenceRecordTest {
+class XAdESLevelBAddXMLEvidenceRecordCustomNamespaceTest extends AbstractXAdESAddEvidenceRecordTest {
 
     private DSSNamespace namespace;
 

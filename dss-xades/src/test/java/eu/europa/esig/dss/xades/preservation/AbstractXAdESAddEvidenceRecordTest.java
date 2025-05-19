@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.xades.signature.evidencerecord;
+package eu.europa.esig.dss.xades.preservation;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;

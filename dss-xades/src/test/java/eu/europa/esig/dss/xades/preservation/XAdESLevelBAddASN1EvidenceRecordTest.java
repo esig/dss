@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.xades.signature.evidencerecord;
+package eu.europa.esig.dss.xades.preservation;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.EvidenceRecordTypeEnum;
@@ -8,7 +8,7 @@ import eu.europa.esig.dss.model.FileDocument;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class XAdESLevelBAddASN1EvidenceRecordTest extends AbstractXAdESAddEvidenceRecordTest {
+class XAdESLevelBAddASN1EvidenceRecordTest extends AbstractXAdESAddEvidenceRecordTest {
 
     @Override
     protected DSSDocument getSignatureDocument() {

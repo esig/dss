@@ -1,6 +1,7 @@
 package eu.europa.esig.dss.xades.evidencerecord;
 
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.enumerations.EvidenceRecordTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.ReferenceValidation;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
@@ -16,13 +17,18 @@ import eu.europa.esig.dss.spi.validation.analyzer.evidencerecord.EvidenceRecordA
 import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.xades.XAdESSignatureUtils;
 import eu.europa.esig.dss.xades.definition.xadesen.XAdESEvidencerecordNamespaceElement;
 import eu.europa.esig.dss.xades.signature.ExtensionBuilder;
+import eu.europa.esig.dss.xades.validation.XAdESAttribute;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
+import eu.europa.esig.dss.xades.validation.XAdESUnsignedSigProperties;
 import eu.europa.esig.dss.xades.validation.XMLDocumentAnalyzer;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import java.util.List;
 import java.util.Objects;
@@ -111,11 +117,11 @@ public class EmbeddedEvidenceRecordBuilder extends ExtensionBuilder {
         ensureUnsignedProperties();
         ensureUnsignedSignatureProperties();
 
-        EvidenceRecord evidenceRecord = getEvidenceRecord(evidenceRecordDocument, xadesSignature, parameters.getDetachedContents());
-        assertEvidenceRecordValid(evidenceRecord, parameters);
+        XAdESAttribute unsignedAttribute = getUnsignedAttributeToEmbed(xadesSignature, parameters);
+        EvidenceRecord evidenceRecord = getEvidenceRecord(evidenceRecordDocument, xadesSignature, unsignedAttribute, parameters);
+        assertEvidenceRecordValid(evidenceRecord, unsignedAttribute, parameters);
 
-        Element sealingEvidenceRecordElement = DomUtils.addElement(documentDom, unsignedSignaturePropertiesDom,
-                parameters.getXadesERNamespace(), XAdESEvidencerecordNamespaceElement.SEALING_EVIDENCE_RECORDS);
+        Element sealingEvidenceRecordElement = getSealingEvidenceRecordElement(unsignedAttribute, parameters);
 
         switch (evidenceRecord.getEvidenceRecordType()) {
             case XML_EVIDENCE_RECORD:
@@ -135,12 +141,23 @@ public class EmbeddedEvidenceRecordBuilder extends ExtensionBuilder {
         return createXmlDocument();
     }
 
-    private EvidenceRecord getEvidenceRecord(DSSDocument evidenceRecordDocument, XAdESSignature signature, List<DSSDocument> detachedContents) {
+    private XAdESAttribute getUnsignedAttributeToEmbed(XAdESSignature signature, XAdESEvidenceRecordIncorporationParameters parameters) {
+        if (parameters.isParallelEvidenceRecord()) {
+            XAdESUnsignedSigProperties unsignedSigProperties = new XAdESUnsignedSigProperties(unsignedSignaturePropertiesDom, signature.getXAdESPaths());
+            return XAdESSignatureUtils.getLastSealingEvidenceRecordAttribute(unsignedSigProperties);
+        } else {
+            // new XAdESAttribute to be created
+            return null;
+        }
+    }
+
+    private EvidenceRecord getEvidenceRecord(DSSDocument evidenceRecordDocument, XAdESSignature signature,
+                                             XAdESAttribute unsignedAttribute, XAdESEvidenceRecordIncorporationParameters parameters) {
         try {
             EvidenceRecordAnalyzer evidenceRecordAnalyzer = EvidenceRecordAnalyzerFactory.fromDocument(evidenceRecordDocument);
 
-            final XAdESEmbeddedEvidenceRecordHelper embeddedEvidenceRecordHelper = new XAdESEmbeddedEvidenceRecordHelper(signature);
-            embeddedEvidenceRecordHelper.setDetachedContents(detachedContents);
+            final XAdESEmbeddedEvidenceRecordHelper embeddedEvidenceRecordHelper = new XAdESEmbeddedEvidenceRecordHelper(signature, unsignedAttribute);
+            embeddedEvidenceRecordHelper.setDetachedContents(parameters.getDetachedContents());
             evidenceRecordAnalyzer.setEmbeddedEvidenceRecordHelper(embeddedEvidenceRecordHelper);
 
             return evidenceRecordAnalyzer.getEvidenceRecord();
@@ -151,7 +168,11 @@ public class EmbeddedEvidenceRecordBuilder extends ExtensionBuilder {
         }
     }
 
-    private void assertEvidenceRecordValid(EvidenceRecord evidenceRecord, XAdESEvidenceRecordIncorporationParameters parameters) {
+    private void assertEvidenceRecordValid(EvidenceRecord evidenceRecord, XAdESAttribute unsignedAttribute,
+                                           XAdESEvidenceRecordIncorporationParameters parameters) {
+        if (unsignedAttribute != null) {
+            assertContainsOnlySameTypeEvidenceRecords(unsignedAttribute, evidenceRecord.getEvidenceRecordType());
+        }
         for (ReferenceValidation referenceValidation : evidenceRecord.getReferenceValidation()) {
             if (DigestMatcherType.EVIDENCE_RECORD_ORPHAN_REFERENCE != referenceValidation.getType() && !referenceValidation.isIntact()) {
                 if (Utils.isCollectionEmpty(parameters.getDetachedContents())) {
@@ -167,6 +188,41 @@ public class EmbeddedEvidenceRecordBuilder extends ExtensionBuilder {
         validateTimestamps(evidenceRecord);
     }
 
+    private void assertContainsOnlySameTypeEvidenceRecords(XAdESAttribute unsignedAttribute,
+                                                           EvidenceRecordTypeEnum evidenceRecordType) {
+        Element sealingEvidenceRecordElement = unsignedAttribute.getElement();
+
+        NodeList childNodes = sealingEvidenceRecordElement.getChildNodes();
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            Node childNode = childNodes.item(i);
+            if (Node.ELEMENT_NODE == childNode.getNodeType()) {
+                switch (evidenceRecordType) {
+                    case XML_EVIDENCE_RECORD:
+                        if (!XAdESEvidencerecordNamespaceElement.EVIDENCE_RECORD.isSameTagName(childNode.getLocalName())) {
+                            throw new IllegalInputException(
+                                    "The latest signature unsigned property contains evidence records other " +
+                                            "than ers:EvidenceRecordType type specified in IETF RFC 6283. " +
+                                            "The incorporation of different evidence record types within " +
+                                            "the same unsigned property is not supported.");
+                        }
+                        break;
+                    case ASN1_EVIDENCE_RECORD:
+                        if (!XAdESEvidencerecordNamespaceElement.ASN1_EVIDENCE_RECORD.isSameTagName(childNode.getLocalName())) {
+                            throw new IllegalInputException(
+                                    "The latest signature unsigned property contains evidence records other " +
+                                            "than EvidenceRecord type specified in IETF RFC 4998. " +
+                                            "The incorporation of different evidence record types within " +
+                                            "the same unsigned property is not supported.");
+                        }
+                        break;
+                    default:
+                        throw new UnsupportedOperationException(
+                                String.format("The evidence record type '%s' is not supported!", evidenceRecordType));
+                }
+            }
+        }
+    }
+
     private void validateTimestamps(EvidenceRecord evidenceRecord) {
         SignatureValidationContext validationContext = new SignatureValidationContext();
         validationContext.initialize(certificateVerifier);
@@ -180,6 +236,17 @@ public class EmbeddedEvidenceRecordBuilder extends ExtensionBuilder {
 
         SignatureValidationAlerter signatureValidationAlerter = new SignatureValidationAlerter(validationContext);
         signatureValidationAlerter.assertAllTimestampsValid();
+    }
+
+    private Element getSealingEvidenceRecordElement(XAdESAttribute unsignedAttribute, XAdESEvidenceRecordIncorporationParameters parameters) {
+        if (unsignedAttribute != null) {
+            // parallel evidence record
+            return unsignedAttribute.getElement();
+        } else {
+            // new evidence record unsigned property
+            return DomUtils.addElement(documentDom, unsignedSignaturePropertiesDom,
+                    parameters.getXadesERNamespace(), XAdESEvidencerecordNamespaceElement.SEALING_EVIDENCE_RECORDS);
+        }
     }
 
     private XMLDocumentAnalyzer initDocumentAnalyzer(DSSDocument signatureDocument, List<DSSDocument> detachedContents) {

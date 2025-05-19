@@ -1,7 +1,9 @@
 package eu.europa.esig.dss.cades.evidencerecord;
 
 import eu.europa.esig.dss.cades.CAdESUtils;
+import eu.europa.esig.dss.cades.validation.CAdESAttribute;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
+import eu.europa.esig.dss.cades.validation.CAdESUnsignedAttributes;
 import eu.europa.esig.dss.cades.validation.CMSDocumentAnalyzer;
 import eu.europa.esig.dss.cms.CMS;
 import eu.europa.esig.dss.cms.CMSUtils;
@@ -22,8 +24,12 @@ import eu.europa.esig.dss.spi.validation.analyzer.evidencerecord.EvidenceRecordA
 import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
+import org.bouncycastle.asn1.ASN1Encodable;
+import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Sequence;
+import org.bouncycastle.asn1.DERSet;
+import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SignerInformationStore;
@@ -71,16 +77,16 @@ public class CAdESEmbeddedEvidenceRecordBuilder {
         CAdESSignature signature = getCAdESSignature(documentAnalyzer, parameters.getSignatureId());
         assertSignatureExtensionPossible(signature, parameters);
 
-        EvidenceRecord evidenceRecord = getEvidenceRecord(evidenceRecordDocument, signature, parameters.getDetachedContents());
+        CAdESAttribute unsignedAttribute = getUnsignedAttributeToEmbed(signature, parameters);
+        EvidenceRecord evidenceRecord = getEvidenceRecord(evidenceRecordDocument, signature, unsignedAttribute, parameters.getDetachedContents());
         assertEvidenceRecordValid(evidenceRecord);
 
         final List<SignerInformation> newSignerInformationList = new ArrayList<>();
         for (AdvancedSignature currentSignature : documentAnalyzer.getSignatures()) {
             CAdESSignature cadesSignature = (CAdESSignature) currentSignature;
             if (signature.equals(cadesSignature)) {
-                SignerInformation newSignerInformation = addEvidenceRecordUnsignedProperty(cadesSignature, evidenceRecord);
+                SignerInformation newSignerInformation = addEvidenceRecordUnsignedProperty(cadesSignature, evidenceRecord, unsignedAttribute);
                 newSignerInformationList.add(newSignerInformation);
-
             } else {
                 newSignerInformationList.add(cadesSignature.getSignerInformation());
             }
@@ -119,11 +125,34 @@ public class CAdESEmbeddedEvidenceRecordBuilder {
         }
     }
 
-    private EvidenceRecord getEvidenceRecord(DSSDocument evidenceRecordDocument, CAdESSignature signature, List<DSSDocument> detachedContents) {
+    private CAdESAttribute getUnsignedAttributeToEmbed(CAdESSignature signature, CAdESEvidenceRecordIncorporationParameters parameters) {
+        if (parameters.isParallelEvidenceRecord()) {
+            CAdESUnsignedAttributes unsignedAttributes = CAdESUnsignedAttributes.build(signature.getSignerInformation());
+            if (unsignedAttributes.isExist()) {
+                List<CAdESAttribute> attributes = unsignedAttributes.getAttributes();
+                CAdESAttribute lastUnsignedAttribute = attributes.get(attributes.size() - 1);
+                if (lastUnsignedAttribute.isEvidenceRecord()) {
+                    ASN1ObjectIdentifier expectedEvidenceRecordAttributeType = getEvidenceRecordUnsignedPropertyOID(signature);
+                    if (!expectedEvidenceRecordAttributeType.equals(lastUnsignedAttribute.getASN1Oid())) {
+                        throw new IllegalInputException(String.format(
+                                "Unable to embed the parallel evidence record. Expected type '%s', obtained type '%s'.",
+                                lastUnsignedAttribute.getASN1Oid().getId(), expectedEvidenceRecordAttributeType.getId()));
+                    }
+                    return lastUnsignedAttribute;
+                }
+            }
+
+        }
+        // new CAdESAttribute to be created
+        return null;
+    }
+
+    private EvidenceRecord getEvidenceRecord(DSSDocument evidenceRecordDocument, CAdESSignature signature,
+                                             CAdESAttribute unsignedAttribute, List<DSSDocument> detachedContents) {
         try {
             EvidenceRecordAnalyzer evidenceRecordAnalyzer = EvidenceRecordAnalyzerFactory.fromDocument(evidenceRecordDocument);
 
-            final CAdESEmbeddedEvidenceRecordHelper embeddedEvidenceRecordHelper = new CAdESEmbeddedEvidenceRecordHelper(signature);
+            final CAdESEmbeddedEvidenceRecordHelper embeddedEvidenceRecordHelper = new CAdESEmbeddedEvidenceRecordHelper(signature, unsignedAttribute);
             if (Utils.isCollectionNotEmpty(detachedContents)) {
                 evidenceRecordAnalyzer.setEvidenceRecordIncorporationType(EvidenceRecordIncorporationType.EXTERNAL_EVIDENCE_RECORD);
                 embeddedEvidenceRecordHelper.setDetachedContents(detachedContents);
@@ -159,13 +188,47 @@ public class CAdESEmbeddedEvidenceRecordBuilder {
         return analyzer;
     }
 
-    private SignerInformation addEvidenceRecordUnsignedProperty(CAdESSignature signature, EvidenceRecord evidenceRecord) {
-        SignerInformation signerInformation = signature.getSignerInformation();
-        AttributeTable unsignedAttributes = CAdESUtils.getUnsignedAttributes(signerInformation);
-        ASN1Sequence asn1EvidenceRecord = getASN1EvidenceRecord(evidenceRecord);
+    private SignerInformation addEvidenceRecordUnsignedProperty(CAdESSignature signature, EvidenceRecord evidenceRecord,
+                                                                CAdESAttribute unsignedAttribute) {
         ASN1ObjectIdentifier attributeOID = getEvidenceRecordUnsignedPropertyOID(signature);
-        AttributeTable unsignedAttributesWithER = unsignedAttributes.add(attributeOID, asn1EvidenceRecord);
+        Attribute evidenceRecordAttribute = getEvidenceRecordAttribute(evidenceRecord, attributeOID, unsignedAttribute);
+
+        SignerInformation signerInformation = signature.getSignerInformation();
+        AttributeTable unsignedAttributesWithER = getUnsignedPropertiesTable(signerInformation, evidenceRecordAttribute, unsignedAttribute != null);
         return CMSUtils.replaceUnsignedAttributes(signerInformation, unsignedAttributesWithER);
+    }
+
+    private Attribute getEvidenceRecordAttribute(EvidenceRecord evidenceRecord, ASN1ObjectIdentifier attributeOID,
+                                                 CAdESAttribute unsignedAttribute) {
+        ASN1Sequence asn1EvidenceRecord = getASN1EvidenceRecord(evidenceRecord);
+        if (unsignedAttribute != null) {
+            // existing unsigned property
+            final ASN1EncodableVector asn1EncodableVector = new ASN1EncodableVector();
+            asn1EncodableVector.addAll(unsignedAttribute.getAttrValues().toArray());
+            asn1EncodableVector.add(asn1EvidenceRecord);
+            return new Attribute(attributeOID, new DERSet(asn1EncodableVector));
+
+        } else {
+            // new unsigned property
+            return new Attribute(attributeOID, new DERSet(asn1EvidenceRecord));
+        }
+    }
+
+    private AttributeTable getUnsignedPropertiesTable(SignerInformation signerInformation, Attribute evidenceRecordAttribute,
+                                                      boolean parallelER) {
+        AttributeTable unsignedAttributes = CAdESUtils.getUnsignedAttributes(signerInformation);
+        int originalAttributeTableLength = unsignedAttributes.size();
+        if (parallelER) {
+            --originalAttributeTableLength;
+        }
+
+        final ASN1EncodableVector asn1EncodableVector = new ASN1EncodableVector();
+        for (int i = 0; i < originalAttributeTableLength; i++) {
+            ASN1Encodable attribute = unsignedAttributes.toASN1EncodableVector().get(i);
+            asn1EncodableVector.add(attribute);
+        }
+        asn1EncodableVector.add(evidenceRecordAttribute);
+        return new AttributeTable(asn1EncodableVector);
     }
 
     private ASN1Sequence getASN1EvidenceRecord(EvidenceRecord evidenceRecord) {
@@ -211,12 +274,27 @@ public class CAdESEmbeddedEvidenceRecordBuilder {
 
     private void assertSignatureExtensionPossible(CAdESSignature signature, CAdESEvidenceRecordIncorporationParameters parameters) {
         CMSUtils.assertEvidenceRecordEmbeddingSupported();
+        assertNoEvidenceRecordsInOtherSignerInfos(signature);
 
         if (CAdESUtils.containsATSTv2(signature.getSignerInformation())) {
             throw new IllegalInputException("Cannot add evidence record to a CAdES containing an archiveTimestampV2");
         }
         if (signature.getCMS().isDetachedSignature() && Utils.collectionSize(parameters.getDetachedContents()) != 1) {
             throw new IllegalArgumentException("One and only one detached document is allowed for an embedded evidence record in CAdES!");
+        }
+    }
+
+    private void assertNoEvidenceRecordsInOtherSignerInfos(CAdESSignature signature) {
+        for (SignerInformation signerInfo : signature.getCMS().getSignerInfos()) {
+            if (signature.getSignerInformation() != signerInfo) {
+                AttributeTable unsignedAttributes = signerInfo.getUnsignedAttributes();
+                if (unsignedAttributes != null &&
+                        (unsignedAttributes.get(id_aa_er_internal) != null || unsignedAttributes.get(id_aa_er_external) != null)) {
+                    throw new IllegalInputException("At most one of the SignerInfo instances within " +
+                            "the SignedData instance shall contain evidence-records attributes! " +
+                            "Please abolish the operation or provide another signature Id.");
+                }
+            }
         }
     }
 

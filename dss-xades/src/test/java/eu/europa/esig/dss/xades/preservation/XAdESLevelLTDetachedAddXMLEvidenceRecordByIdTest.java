@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.xades.signature.evidencerecord;
+package eu.europa.esig.dss.xades.preservation;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;
@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESLevelLTDetachedAddXMLEvidenceRecordByIdTest extends AbstractXAdESAddEvidenceRecordTest {
+class XAdESLevelLTDetachedAddXMLEvidenceRecordByIdTest extends AbstractXAdESAddEvidenceRecordTest {
 
     private List<DSSDocument> detachedContents = null;
 

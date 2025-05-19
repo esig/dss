@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.xades.signature.evidencerecord;
+package eu.europa.esig.dss.xades.preservation;
 
 import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.enumerations.EvidenceRecordTypeEnum;
@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESLevelBAddXMLEvidenceRecordInvalidTimestampTest extends AbstractXAdESAddEvidenceRecordTest {
+class XAdESLevelBAddXMLEvidenceRecordChainRenewalInvalidDigestTest extends AbstractXAdESAddEvidenceRecordTest {
 
     @Override
     protected DSSDocument getSignatureDocument() {
@@ -18,7 +18,7 @@ public class XAdESLevelBAddXMLEvidenceRecordInvalidTimestampTest extends Abstrac
 
     @Override
     protected DSSDocument getEvidenceRecordDocument() {
-        return new FileDocument("src/test/resources/validation/evidence-record/incorporation/evidence-record-invalid-tst-X-B-B.xml");
+        return new FileDocument("src/test/resources/validation/evidence-record/incorporation/evidence-record-chain-renewal-invalid-digest-X-B-B.xml");
     }
 
     @Override

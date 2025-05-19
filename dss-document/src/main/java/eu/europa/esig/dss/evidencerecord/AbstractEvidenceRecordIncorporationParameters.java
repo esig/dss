@@ -21,6 +21,12 @@ public abstract class AbstractEvidenceRecordIncorporationParameters {
     private List<DSSDocument> detachedContents;
 
     /**
+     * Defines whether the new evidence-record shall be added to the last available evidence-record attribute,
+     * when present. Otherwise, the hash will be computed based on the whole document content (default behavior).
+     */
+    private boolean parallelEvidenceRecord;
+
+    /**
      * Default constructor
      */
     protected AbstractEvidenceRecordIncorporationParameters() {
@@ -63,6 +69,29 @@ public abstract class AbstractEvidenceRecordIncorporationParameters {
      */
     public void setDetachedContents(List<DSSDocument> detachedContents) {
         this.detachedContents = detachedContents;
+    }
+
+    /**
+     * Gets whether the evidence record should be incorporated within an existing (latest) evidence-record unsigned property,
+     * when available. Otherwise, a new evidence record attribute is to be created for incorporation of the evidence record.
+     *
+     * @return whether the evidence record should be included in the existing (latest) evidence-record unsigned property
+     */
+    public boolean isParallelEvidenceRecord() {
+        return parallelEvidenceRecord;
+    }
+
+    /**
+     * Sets whether the evidence record should be incorporated within an existing (latest) evidence-record unsigned property,
+     * when available. Otherwise, a new evidence record attribute is to be created for incorporation of the evidence record.
+     * <p>
+     * Default : FALSE (a new evidence record unsigned property is to be created)
+     *
+     * @param parallelEvidenceRecord whether the evidence record should be included in
+     *                               the existing (latest) evidence-record unsigned property
+     */
+    public void setParallelEvidenceRecord(boolean parallelEvidenceRecord) {
+        this.parallelEvidenceRecord = parallelEvidenceRecord;
     }
 
 }

@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.xades.signature.evidencerecord;
+package eu.europa.esig.dss.xades.preservation;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class XAdESLevelLTAddXMLEvidenceRecordByIdTest extends AbstractXAdESAddEvidenceRecordTest {
+class XAdESLevelLTAddXMLEvidenceRecordByIdTest extends AbstractXAdESAddEvidenceRecordTest {
 
     private String signatureId = null;
 

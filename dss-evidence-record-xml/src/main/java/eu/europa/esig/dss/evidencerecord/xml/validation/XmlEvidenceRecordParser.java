@@ -28,6 +28,7 @@ import eu.europa.esig.dss.evidencerecord.common.validation.CryptographicInformat
 import eu.europa.esig.dss.evidencerecord.common.validation.EvidenceRecordParser;
 import eu.europa.esig.dss.evidencerecord.common.validation.timestamp.EvidenceRecordTimestampIdentifierBuilder;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.validation.evidencerecord.EmbeddedEvidenceRecordHelper;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xml.utils.DomUtils;
@@ -57,6 +58,9 @@ public class XmlEvidenceRecordParser implements EvidenceRecordParser {
     /** The name of the file document containing the evidence record */
     private String filename;
 
+    /** Optional attribute used for processing of embedded evidence records */
+    private EmbeddedEvidenceRecordHelper embeddedEvidenceRecordHelper;
+
     /**
      * Default constructor
      *
@@ -74,6 +78,17 @@ public class XmlEvidenceRecordParser implements EvidenceRecordParser {
      */
     public XmlEvidenceRecordParser setFilename(String filename) {
         this.filename = filename;
+        return this;
+    }
+
+    /**
+     * Sets a helper for processing of embedded evidence records
+     *
+     * @param embeddedEvidenceRecordHelper {@link EmbeddedEvidenceRecordHelper}
+     * @return this {@link XmlEvidenceRecordParser}
+     */
+    public XmlEvidenceRecordParser setEmbeddedEvidenceRecordHelper(EmbeddedEvidenceRecordHelper embeddedEvidenceRecordHelper) {
+        this.embeddedEvidenceRecordHelper = embeddedEvidenceRecordHelper;
         return this;
     }
 
@@ -149,6 +164,11 @@ public class XmlEvidenceRecordParser implements EvidenceRecordParser {
                     .setArchiveTimeStampChainOrder(archiveTimeStampChainOrder)
                     .setArchiveTimeStampOrder(archieTimeStampOrder)
                     .setFilename(filename);
+            if (embeddedEvidenceRecordHelper != null) {
+                identifierBuilder = identifierBuilder
+                        .setEvidenceRecordAttributeOrder(embeddedEvidenceRecordHelper.getOrderOfAttribute())
+                        .setEvidenceRecordWithinAttributeOrder(embeddedEvidenceRecordHelper.getOrderWithinAttribute());
+            }
             return new TimestampToken(binaries, TimestampType.EVIDENCE_RECORD_TIMESTAMP, new ArrayList<>(), identifierBuilder);
         } catch (Exception e) {
             LOG.warn("Unable to create a time-stamp token. Reason : {}", e.getMessage(), e);

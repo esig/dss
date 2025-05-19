@@ -1,7 +1,6 @@
-package eu.europa.esig.dss.xades.signature.evidencerecord;
+package eu.europa.esig.dss.xades.preservation;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;
 import eu.europa.esig.dss.enumerations.EvidenceRecordTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -9,7 +8,7 @@ import eu.europa.esig.dss.model.FileDocument;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class XAdESLevelBAddXMLEvidenceRecordChainRenewalTest extends AbstractXAdESAddEvidenceRecordTest {
+class XAdESLevelBAddXMLEvidenceRecordTest extends AbstractXAdESAddEvidenceRecordTest {
 
     @Override
     protected DSSDocument getSignatureDocument() {
@@ -18,7 +17,7 @@ public class XAdESLevelBAddXMLEvidenceRecordChainRenewalTest extends AbstractXAd
 
     @Override
     protected DSSDocument getEvidenceRecordDocument() {
-        return new FileDocument("src/test/resources/validation/evidence-record/incorporation/evidence-record-chain-renewal-X-B-B.xml");
+        return new FileDocument("src/test/resources/validation/evidence-record/incorporation/evidence-record-X-B-B.xml");
     }
 
     @Override
@@ -29,14 +28,6 @@ public class XAdESLevelBAddXMLEvidenceRecordChainRenewalTest extends AbstractXAd
     @Override
     protected EvidenceRecordTypeEnum getEvidenceRecordType() {
         return EvidenceRecordTypeEnum.XML_EVIDENCE_RECORD;
-    }
-
-    @Override
-    protected void checkEvidenceRecordTimestamps(DiagnosticData diagnosticData) {
-        super.checkEvidenceRecordTimestamps(diagnosticData);
-
-        EvidenceRecordWrapper evidenceRecordWrapper = diagnosticData.getEvidenceRecords().get(0);
-        assertEquals(3, evidenceRecordWrapper.getTimestampList().size());
     }
 
 }
