@@ -84,7 +84,7 @@ public class ASN1EvidenceRecordAnalyzer extends DefaultEvidenceRecordAnalyzer {
         evidenceRecord.setOrigin(evidenceRecordOrigin);
         evidenceRecord.setIncorporationType(evidenceRecordIncorporationType);
         evidenceRecord.setManifestFile(manifestFile);
-        evidenceRecord.setDetachedContents(detachedContents);
+        evidenceRecord.setDetachedContents(getEvidenceRecordDetachedContents());
         evidenceRecord.setEmbeddedEvidenceRecordHelper(embeddedEvidenceRecordHelper);
         return evidenceRecord;
     }

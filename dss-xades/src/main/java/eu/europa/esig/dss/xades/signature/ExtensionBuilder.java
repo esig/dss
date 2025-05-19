@@ -20,9 +20,11 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import eu.europa.esig.dss.xades.validation.XMLDocumentAnalyzer;
 import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
@@ -263,6 +265,21 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 			}
 		}
 		return xadesNamespace;
+	}
+
+	/**
+	 * Initializes the document analyzer and other signature properties
+	 *
+	 * @param document {@link DSSDocument} containing a signature
+	 * @return {@link XMLDocumentAnalyzer}
+	 */
+	protected XMLDocumentAnalyzer initDocumentAnalyzer(DSSDocument document) {
+		params = new XAdESSignatureParameters();
+
+		documentAnalyzer = new XMLDocumentAnalyzer(document);
+		documentDom = documentAnalyzer.getRootElement();
+
+		return documentAnalyzer;
 	}
 	
 }

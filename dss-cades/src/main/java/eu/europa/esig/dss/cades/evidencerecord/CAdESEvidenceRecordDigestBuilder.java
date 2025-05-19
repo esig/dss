@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.cades.validation.evidencerecord;
+package eu.europa.esig.dss.cades.evidencerecord;
 
 import eu.europa.esig.dss.cades.validation.CAdESAttribute;
 import eu.europa.esig.dss.cades.validation.CAdESAttributeOrderComparator;
@@ -201,13 +201,11 @@ public class CAdESEvidenceRecordDigestBuilder extends AbstractSignatureEvidenceR
             if (signature == null || ((CAdESSignature) signature).getSignerInformation() == signerInformation) {
                 CAdESUnsignedAttributes unsignedAttributes = CAdESUnsignedAttributes.build(signerInformation);
 
-                CAdESAttribute targetEvidenceRecordAttribute;
+                CAdESAttribute targetEvidenceRecordAttribute = null;
                 if (parallelEvidenceRecord) {
                     targetEvidenceRecordAttribute = getLatestEvidenceRecordAttribute(unsignedAttributes);
                 } else if (evidenceRecordAttribute != null) {
                     targetEvidenceRecordAttribute = (CAdESAttribute) evidenceRecordAttribute;
-                } else {
-                    throw new IllegalStateException("Evidence record attribute cannot be null!");
                 }
 
                 if (targetEvidenceRecordAttribute != null) {

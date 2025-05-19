@@ -29,6 +29,7 @@
 						<exclude>eu/**/signature/**/*Test.java</exclude>
 						<exclude>eu/**/timestamp/**/*Test.java</exclude>
 						<exclude>eu/**/validation/**/*Test.java</exclude>
+						<exclude>eu/**/preservation/**/*Test.java</exclude>
 					</excludes>
 				</configuration>
 			</plugin>

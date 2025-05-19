@@ -117,7 +117,7 @@ public class XMLEvidenceRecordAnalyzer extends DefaultEvidenceRecordAnalyzer {
             evidenceRecord.setFilename(document.getName());
             evidenceRecord.setOrigin(evidenceRecordOrigin);
             evidenceRecord.setManifestFile(manifestFile);
-            evidenceRecord.setDetachedContents(detachedContents);
+            evidenceRecord.setDetachedContents(getEvidenceRecordDetachedContents());
             evidenceRecord.setEmbeddedEvidenceRecordHelper(embeddedEvidenceRecordHelper);
             return evidenceRecord;
         }

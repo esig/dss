@@ -69,6 +69,41 @@ class CertificateVerifierBuilderTest {
     }
 
     @Test
+    void buildOfflineCopyTest() {
+        CertificateVerifier certificateVerifier = initCertificateVerifier();
+        certificateVerifier.setAlertOnInvalidSignature(new ExceptionOnStatusAlert());
+        certificateVerifier.setAlertOnInvalidTimestamp(new ExceptionOnStatusAlert());
+        certificateVerifier.setAlertOnMissingRevocationData(new ExceptionOnStatusAlert());
+        certificateVerifier.setAlertOnNoRevocationAfterBestSignatureTime(new ExceptionOnStatusAlert());
+        certificateVerifier.setAlertOnRevokedCertificate(new ExceptionOnStatusAlert());
+        certificateVerifier.setAlertOnUncoveredPOE(new ExceptionOnStatusAlert());
+        certificateVerifier.setAlertOnExpiredCertificate(new ExceptionOnStatusAlert());
+        certificateVerifier.setAlertOnNotYetValidCertificate(new ExceptionOnStatusAlert());
+
+        CertificateVerifier copy = new CertificateVerifierBuilder(certificateVerifier).buildOfflineCopy();
+
+        assertEquals(certificateVerifier.getRevocationDataVerifier(), copy.getRevocationDataVerifier());
+        assertEquals(certificateVerifier.getTimestampTokenVerifier(), copy.getTimestampTokenVerifier());
+        assertTrustAnchorVerifierEquals(certificateVerifier.getTrustAnchorVerifier(), copy.getTrustAnchorVerifier());
+        assertEquals(certificateVerifier.getAdjunctCertSources(), copy.getAdjunctCertSources());
+        assertEquals(certificateVerifier.getTrustedCertSources(), copy.getTrustedCertSources());
+        assertNull(copy.getAIASource());
+        assertNull(copy.getCrlSource());
+        assertNull(copy.getOcspSource());
+        assertNotNull(copy.getRevocationDataLoadingStrategyFactory()); // not relevant for offline validation
+        assertFalse(copy.isRevocationFallback());
+        assertFalse(copy.isCheckRevocationForUntrustedChains());
+        assertEquals(certificateVerifier.getAlertOnInvalidSignature(), copy.getAlertOnInvalidSignature());
+        assertEquals(certificateVerifier.getAlertOnInvalidTimestamp(), copy.getAlertOnInvalidTimestamp());
+        assertEquals(certificateVerifier.getAlertOnMissingRevocationData(), copy.getAlertOnMissingRevocationData());
+        assertEquals(certificateVerifier.getAlertOnNoRevocationAfterBestSignatureTime(), copy.getAlertOnNoRevocationAfterBestSignatureTime());
+        assertEquals(certificateVerifier.getAlertOnRevokedCertificate(), copy.getAlertOnRevokedCertificate());
+        assertEquals(certificateVerifier.getAlertOnUncoveredPOE(), copy.getAlertOnUncoveredPOE());
+        assertEquals(certificateVerifier.getAlertOnExpiredCertificate(), copy.getAlertOnExpiredCertificate());
+        assertEquals(certificateVerifier.getAlertOnNotYetValidCertificate(), copy.getAlertOnNotYetValidCertificate());
+    }
+
+    @Test
     void buildOfflineAndSilentCopyTest() {
         CertificateVerifier certificateVerifier = initCertificateVerifier();
         certificateVerifier.setAlertOnInvalidSignature(new ExceptionOnStatusAlert());

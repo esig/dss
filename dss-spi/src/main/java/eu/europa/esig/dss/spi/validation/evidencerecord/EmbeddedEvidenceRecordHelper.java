@@ -1,9 +1,12 @@
 package eu.europa.esig.dss.spi.validation.evidencerecord;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.validation.SignatureAttribute;
+
+import java.util.List;
 
 /**
  * This class contains utility methods required for a processing and validation of an embedded evidence record
@@ -19,7 +22,8 @@ public interface EmbeddedEvidenceRecordHelper {
     AdvancedSignature getMasterSignature();
 
     /**
-     * Gets the unsigned attribute property embedding the evidence record
+     * Gets the unsigned attribute property embedding the evidence record.
+     * NOTE: can be null in case of a not yet embedded evidence record.
      *
      * @return {@link SignatureAttribute}
      */
@@ -27,6 +31,7 @@ public interface EmbeddedEvidenceRecordHelper {
 
     /**
      * Gets position of the evidence record carrying attribute within the signature
+     * NOTE: can be null in case of a not yet embedded evidence record.
      *
      * @return {@link Integer}
      */
@@ -34,10 +39,18 @@ public interface EmbeddedEvidenceRecordHelper {
 
     /**
      * Gets position of the evidence record within its carrying attribute
+     * NOTE: can be null in case of a not yet embedded evidence record.
      *
      * @return {@link Integer}
      */
     Integer getOrderWithinAttribute();
+
+    /**
+     * Gets a list of detached documents
+     *
+     * @return a list of {@link DSSDocument}s
+     */
+    List<DSSDocument> getDetachedContents();
 
     /**
      * Builds digest for the embedded evidence record for the given {@code DigestAlgorithm}.

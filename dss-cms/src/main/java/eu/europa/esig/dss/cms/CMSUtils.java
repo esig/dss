@@ -259,4 +259,12 @@ public final class CMSUtils {
         impl.assertATSv2AugmentationSupported();
     }
 
+    /**
+     * This method checks whether the embedding of existing Evidence Records within CMS
+     * is supported by the current implementation
+     */
+    public static void assertEvidenceRecordEmbeddingSupported() {
+        impl.assertEvidenceRecordEmbeddingSupported();
+    }
+
 }

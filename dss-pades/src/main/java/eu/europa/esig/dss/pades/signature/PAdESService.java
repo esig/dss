@@ -304,7 +304,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 	 * @return the pdf document with the new added signature field
 	 */
 	public DSSDocument addNewSignatureField(DSSDocument document, SignatureFieldParameters parameters) {
-		return addNewSignatureField(document, parameters, (char[]) null);
+		return addNewSignatureField(document, parameters, null);
 	}
 
 	/**

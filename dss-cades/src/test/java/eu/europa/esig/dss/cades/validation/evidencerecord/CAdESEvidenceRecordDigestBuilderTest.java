@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.cades.validation.evidencerecord;
 
+import eu.europa.esig.dss.cades.evidencerecord.CAdESEvidenceRecordDigestBuilder;
 import eu.europa.esig.dss.cms.CMSSignedDocument;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;

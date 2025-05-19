@@ -1,11 +1,14 @@
 package eu.europa.esig.dss.spi.validation.evidencerecord;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.validation.SignatureAttribute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 /**
  * Abstract implementation of {@code InternalEvidenceRecordHelper} containing common implementation methods
@@ -26,6 +29,18 @@ public abstract class AbstractEmbeddedEvidenceRecordHelper implements EmbeddedEv
 
     /** Position of the current evidence record within the evidence record attribute */
     private Integer orderWithinAttribute;
+
+    /** List of detached documents provided to the validation */
+    private List<DSSDocument> detachedContents;
+
+    /**
+     * Constructor for an evidence record applied for the whole signature content (not yet embedded)
+     *
+     * @param signature {@link AdvancedSignature}
+     */
+    protected AbstractEmbeddedEvidenceRecordHelper(final AdvancedSignature signature) {
+        this(signature, null);
+    }
 
     /**
      * Default constructor
@@ -75,6 +90,20 @@ public abstract class AbstractEmbeddedEvidenceRecordHelper implements EmbeddedEv
      */
     public void setOrderWithinAttribute(Integer orderWithinAttribute) {
         this.orderWithinAttribute = orderWithinAttribute;
+    }
+
+    @Override
+    public List<DSSDocument> getDetachedContents() {
+        return detachedContents;
+    }
+
+    /**
+     * Sets a list of documents used for validation of a detached signature
+     *
+     * @param detachedContents list of {@link DSSDocument}s
+     */
+    public void setDetachedContents(List<DSSDocument> detachedContents) {
+        this.detachedContents = detachedContents;
     }
 
     @Override

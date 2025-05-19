@@ -95,7 +95,6 @@ public abstract class AbstractSignatureEvidenceRecordDigestBuilder implements Si
     protected AbstractSignatureEvidenceRecordDigestBuilder(final AdvancedSignature signature, final SignatureAttribute evidenceRecordAttribute,
                                                            final DigestAlgorithm digestAlgorithm) {
         Objects.requireNonNull(signature, "Signature cannot be null!");
-        Objects.requireNonNull(evidenceRecordAttribute, "Evidence Record Attribute cannot be null!");
         Objects.requireNonNull(digestAlgorithm, "DigestAlgorithm cannot be null!");
         this.signature = signature;
         this.evidenceRecordAttribute = evidenceRecordAttribute;
