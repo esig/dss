@@ -35,11 +35,12 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 /**
- * The class contains methods for document extraction in order to create a counter signature
+ * The class contains methods for document extraction in order to expand the signature with additional elements
+ *
  */
-public abstract class ASiCCounterSignatureHelper {
+public abstract class ASiCSignatureExtensionHelper {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ASiCCounterSignatureHelper.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ASiCSignatureExtensionHelper.class);
 
 	/** The document representing an ASiC container */
 	protected final DSSDocument asicContainer;
@@ -52,7 +53,7 @@ public abstract class ASiCCounterSignatureHelper {
 	 *
 	 * @param asicContainer {@link DSSDocument} representing an ASiC container
 	 */
-	protected ASiCCounterSignatureHelper(DSSDocument asicContainer) {
+	protected ASiCSignatureExtensionHelper(DSSDocument asicContainer) {
 		this.asicContainer = asicContainer;
 		this.asicContent = extractAsicContent();
 	}
@@ -80,7 +81,7 @@ public abstract class ASiCCounterSignatureHelper {
 	 * Returns a file containing a signature with the given id
 	 * 
 	 * @param signatureId {@link String} id of a signature to extract a file with
-	 * @return {@link DSSDocument} signature document containing a signature to be counter signed with a defined id
+	 * @return {@link DSSDocument} signature document containing a signature to be extended with a defined id
 	 */
 	public DSSDocument extractSignatureDocument(String signatureId) {
 		if (!ASiCUtils.isASiC(asicContainer)) {
@@ -91,9 +92,23 @@ public abstract class ASiCCounterSignatureHelper {
 			throw new IllegalInputException("No signatures found to be extended!");
 		}
 
+		// single signature processing
+		if (Utils.collectionSize(signatureDocuments) == 1) {
+			DSSDocument signatureDocument = signatureDocuments.get(0);
+			if (containsSignatureWithId(signatureDocument, signatureId, true)) {
+				checkSignatureExtensionPossible(signatureDocument);
+				return signatureDocument;
+			}
+		}
+
+		// multiple signatures container processing
+		if (signatureId == null) {
+			throw new IllegalArgumentException("More than one signature found in a document! " +
+					"Please provide a signatureId within the parameters.");
+		}
 		for (DSSDocument signatureDocument : signatureDocuments) {
-			if (containsSignatureToBeCounterSigned(signatureDocument, signatureId)) {
-				checkCounterSignaturePossible(signatureDocument);
+			if (containsSignatureWithId(signatureDocument, signatureId, false)) {
+				checkSignatureExtensionPossible(signatureDocument);
 				return signatureDocument;
 			}
 		}
@@ -106,7 +121,7 @@ public abstract class ASiCCounterSignatureHelper {
 	 * @param signatureFilename {@link String} a signature filename
 	 * @return a list of {@link DSSDocument}s
 	 */
-	protected abstract List<DSSDocument> getDetachedDocuments(String signatureFilename);
+	public abstract List<DSSDocument> getDetachedDocuments(String signatureFilename);
 	
 	/**
 	 * Returns a related manifest file for a signature with the given filename
@@ -135,15 +150,18 @@ public abstract class ASiCCounterSignatureHelper {
 	 */
 	protected abstract DocumentAnalyzer getDocumentAnalyzer(DSSDocument signatureDocument);
 	
-	private boolean containsSignatureToBeCounterSigned(DSSDocument signatureDocument, String signatureId) {
+	private boolean containsSignatureWithId(DSSDocument signatureDocument, String signatureId, boolean acceptSingleSignature) {
 		try {
 			DocumentAnalyzer validator = getDocumentAnalyzer(signatureDocument);
 			validator.setDetachedContents(getDetachedDocuments(signatureDocument.getName()));
 			validator.setManifestFile(getManifestFile(signatureDocument.getName()));
 			
 			List<AdvancedSignature> signatures = validator.getSignatures();
+			if (acceptSingleSignature && Utils.collectionSize(signatures) == 1) {
+				return true;
+			}
 			for (AdvancedSignature signature : signatures) {
-				if (containsSignatureToBeCounterSigned(signature, signatureId)) {
+				if (containsSignatureWithId(signature, signatureId)) {
 					return true;
 				}
 			}
@@ -159,12 +177,12 @@ public abstract class ASiCCounterSignatureHelper {
 		return false;
 	}
 	
-	private boolean containsSignatureToBeCounterSigned(AdvancedSignature signature, String signatureId) {
+	private boolean containsSignatureWithId(AdvancedSignature signature, String signatureId) {
 		if (signatureId.equals(signature.getId()) || signatureId.equals(signature.getDAIdentifier())) {
 			return true;
 		}
 		for (AdvancedSignature counterSignature : signature.getCounterSignatures()) {
-			if (containsSignatureToBeCounterSigned(counterSignature, signatureId)) {
+			if (containsSignatureWithId(counterSignature, signatureId)) {
 				return true;
 			}
 		}
@@ -172,12 +190,12 @@ public abstract class ASiCCounterSignatureHelper {
 	}
 	
 	/**
-	 * This method verifies if a signatureDocument can be counter signed
+	 * This method verifies if a signatureDocument can be modified
 	 * Throws an exception when an extension is not possible
 	 * 
 	 * @param signatureDocument {@link DSSDocument} to verify
 	 */
-	protected void checkCounterSignaturePossible(DSSDocument signatureDocument) {
+	protected void checkSignatureExtensionPossible(DSSDocument signatureDocument) {
 		// do nothing by default
 	}
 

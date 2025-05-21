@@ -141,16 +141,16 @@ class ASiCECAdESCounterSignatureLevelLTATest extends AbstractASiCCAdESCounterSig
 	void counterSignLtaLevelTest() {
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
 		counterSignatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
-		Exception exception = assertThrows(IllegalInputException.class, () -> signAndVerify());
-		assertEquals("The counter signature is not possible! "
-				+ "Reason : a signature with a filename 'META-INF/signature001.p7s' is covered by another manifest.", exception.getMessage());
+		Exception exception = assertThrows(IllegalInputException.class, this::signAndVerify);
+		assertEquals("The modification of the signature is not possible! Reason : a signature " +
+				"with a filename 'META-INF/signature001.p7s' is covered by another manifest.", exception.getMessage());
 	}
 	
 	@Test
 	void tLevelCounterSignatureTest() {
 		signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LT);
 		counterSignatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_T);
-		Exception exception = assertThrows(UnsupportedOperationException.class, () -> signAndVerify());
+		Exception exception = assertThrows(UnsupportedOperationException.class, this::signAndVerify);
 		assertEquals("A counter signature with a level 'CAdES-BASELINE-T' is not supported! "
 				+ "Please, use CAdES-BASELINE-B", exception.getMessage());
 	}

@@ -11,6 +11,7 @@ import eu.europa.esig.dss.enumerations.EvidenceRecordIncorporationType;
 import eu.europa.esig.dss.enumerations.EvidenceRecordTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.model.ReferenceValidation;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
@@ -48,6 +49,9 @@ public class CAdESEmbeddedEvidenceRecordBuilder {
      */
     private final CertificateVerifier certificateVerifier;
 
+    /** A signature signed manifest. Used for ASiC */
+    private ManifestFile manifestFile;
+
     /**
      * Default constructor
      *
@@ -55,6 +59,16 @@ public class CAdESEmbeddedEvidenceRecordBuilder {
      */
     public CAdESEmbeddedEvidenceRecordBuilder(final CertificateVerifier certificateVerifier) {
         this.certificateVerifier = new CertificateVerifierBuilder(certificateVerifier).buildOfflineCopy();
+    }
+
+    /**
+     * Sets a signed manifest file
+     * NOTE: ASiC only
+     *
+     * @param manifestFile {@link ManifestFile}
+     */
+    public void setManifestFile(ManifestFile manifestFile) {
+        this.manifestFile = manifestFile;
     }
 
     /**
@@ -79,7 +93,7 @@ public class CAdESEmbeddedEvidenceRecordBuilder {
 
         CAdESAttribute unsignedAttribute = getUnsignedAttributeToEmbed(signature, parameters);
         EvidenceRecord evidenceRecord = getEvidenceRecord(evidenceRecordDocument, signature, unsignedAttribute, parameters.getDetachedContents());
-        assertEvidenceRecordValid(evidenceRecord);
+        assertEvidenceRecordValid(evidenceRecord, parameters);
 
         final List<SignerInformation> newSignerInformationList = new ArrayList<>();
         for (AdvancedSignature currentSignature : documentAnalyzer.getSignatures()) {
@@ -184,6 +198,7 @@ public class CAdESEmbeddedEvidenceRecordBuilder {
 
     private CMSDocumentAnalyzer initDocumentAnalyzer(DSSDocument signatureDocument, List<DSSDocument> detachedContents) {
         CMSDocumentAnalyzer analyzer = new CMSDocumentAnalyzer(signatureDocument);
+        analyzer.setManifestFile(manifestFile);
         analyzer.setDetachedContents(detachedContents);
         return analyzer;
     }
@@ -243,7 +258,7 @@ public class CAdESEmbeddedEvidenceRecordBuilder {
         }
     }
 
-    private void assertEvidenceRecordValid(EvidenceRecord evidenceRecord) {
+    private void assertEvidenceRecordValid(EvidenceRecord evidenceRecord, CAdESEvidenceRecordIncorporationParameters parameters) {
         if (EvidenceRecordTypeEnum.ASN1_EVIDENCE_RECORD != evidenceRecord.getEvidenceRecordType()) {
             throw new IllegalInputException(String.format("Only RFC 4998 ERS type of Evidence Records is allowed " +
                     "for CAdES signatures! Identified type of evidence record: '%s'", evidenceRecord.getEvidenceRecordType()));
@@ -255,9 +270,14 @@ public class CAdESEmbeddedEvidenceRecordBuilder {
                         throw new IllegalInputException("The digest covered by the evidence record do not correspond to " +
                                 "the digest computed on the signature!");
                     case EVIDENCE_RECORD_ARCHIVE_OBJECT:
-                        throw new IllegalInputException("The digest covered by the evidence record do not correspond to " +
-                                "the digest computed on the detached content! " +
-                                "Please use #setDetachedContent method to provide original documents.");
+                        if (Utils.isCollectionEmpty(parameters.getDetachedContents())) {
+                            throw new IllegalInputException("The digest covered by the evidence record do not correspond to " +
+                                    "the digest computed on the detached content! " +
+                                    "Please use #setDetachedContent method to provide original documents.");
+                        } else {
+                            throw new IllegalInputException("The digest covered by the evidence record do not correspond to " +
+                                    "the digest computed on the detached content!");
+                        }
                     case EVIDENCE_RECORD_ORPHAN_REFERENCE:
                         // acceptable status
                         break;

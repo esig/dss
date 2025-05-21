@@ -32,10 +32,12 @@ import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCParameters;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
-import eu.europa.esig.dss.asic.common.signature.ASiCCounterSignatureHelper;
+import eu.europa.esig.dss.asic.common.signature.ASiCSignatureExtensionHelper;
 import eu.europa.esig.dss.asic.common.signature.AbstractASiCSignatureService;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.CAdESUtils;
+import eu.europa.esig.dss.cades.evidencerecord.CAdESEmbeddedEvidenceRecordBuilder;
+import eu.europa.esig.dss.cades.evidencerecord.CAdESEvidenceRecordIncorporationParameters;
 import eu.europa.esig.dss.cades.signature.CAdESCounterSignatureBuilder;
 import eu.europa.esig.dss.cades.signature.CAdESCounterSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESService;
@@ -410,7 +412,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		assertSigningCertificateValid(parameters);
 		assertCounterSignatureParametersValid(parameters);
 
-		ASiCCounterSignatureHelper counterSignatureHelper = new ASiCWithCAdESCounterSignatureHelper(asicContainer);
+		ASiCSignatureExtensionHelper counterSignatureHelper = new ASiCWithCAdESSignatureExtensionHelper(asicContainer);
 		DSSDocument signatureDocument = counterSignatureHelper.extractSignatureDocument(parameters.getSignatureIdToCounterSign());
 
 		CAdESCounterSignatureBuilder counterSignatureBuilder = getCAdESCounterSignatureBuilder();
@@ -431,7 +433,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		Objects.requireNonNull(signatureValue, "signatureValue cannot be null!");
 		assertCounterSignatureParametersValid(parameters);
 		
-		ASiCCounterSignatureHelper counterSignatureHelper = new ASiCWithCAdESCounterSignatureHelper(asicContainer);
+		ASiCSignatureExtensionHelper counterSignatureHelper = new ASiCWithCAdESSignatureExtensionHelper(asicContainer);
 		ASiCContent asicContent = counterSignatureHelper.getAsicContent();
 
 		DSSDocument signatureDocument = counterSignatureHelper.extractSignatureDocument(parameters.getSignatureIdToCounterSign());
@@ -446,6 +448,38 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 
 		final DSSDocument resultArchive = buildASiCContainer(asicContent, parameters.bLevel().getSigningDate());
 		resultArchive.setName(getFinalDocumentName(asicContainer, SigningOperation.COUNTER_SIGN, parameters.getSignatureLevel(), asicContainer.getMimeType()));
+		return resultArchive;
+	}
+
+	/**
+	 * Incorporates the Evidence Record as an unsigned property into the CAdES Signature within the given ASiC container
+	 *
+	 * @param asicContainer          {@link DSSDocument} representing an ASiC container containing a CAdES Signature
+	 *                               to add the evidence record into
+	 * @param evidenceRecordDocument {@link DSSDocument} to add
+	 * @param parameters             {@link CAdESEvidenceRecordIncorporationParameters} providing configuration for
+	 *                               the evidence record incorporation
+	 * @return {@link DSSDocument} ASiC container containing a CAdESSignature with an incorporated evidence record
+	 */
+	public DSSDocument addSignatureEvidenceRecord(DSSDocument asicContainer, DSSDocument evidenceRecordDocument,
+												  CAdESEvidenceRecordIncorporationParameters parameters) {
+		Objects.requireNonNull(asicContainer, "The ASiC container cannot be null");
+		Objects.requireNonNull(evidenceRecordDocument, "The evidence record document cannot be null");
+
+		ASiCSignatureExtensionHelper asicContainerHelper = new ASiCWithCAdESSignatureExtensionHelper(asicContainer);
+		ASiCContent asicContent = asicContainerHelper.getAsicContent();
+
+		DSSDocument signatureDocument = asicContainerHelper.extractSignatureDocument(parameters.getSignatureId());
+		parameters.setDetachedContents(asicContainerHelper.getDetachedDocuments(signatureDocument.getName()));
+
+		CAdESEmbeddedEvidenceRecordBuilder builder = new CAdESEmbeddedEvidenceRecordBuilder(certificateVerifier);
+		builder.setManifestFile(asicContainerHelper.getManifestFile(signatureDocument.getName()));
+		DSSDocument signatureWithEvidenceRecord = builder.addEvidenceRecord(signatureDocument, evidenceRecordDocument, parameters);
+		signatureWithEvidenceRecord.setName(signatureDocument.getName());
+		ASiCUtils.addOrReplaceDocument(asicContent.getSignatureDocuments(), signatureWithEvidenceRecord);
+
+		final DSSDocument resultArchive = buildASiCContainer(asicContent);
+		resultArchive.setName(getFinalArchiveName(asicContainer, SigningOperation.ADD_EVIDENCE_RECORD, asicContainer.getMimeType()));
 		return resultArchive;
 	}
 

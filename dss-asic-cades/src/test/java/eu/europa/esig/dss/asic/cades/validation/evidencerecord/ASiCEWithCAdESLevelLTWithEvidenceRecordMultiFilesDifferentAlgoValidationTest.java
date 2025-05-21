@@ -22,6 +22,7 @@ package eu.europa.esig.dss.asic.cades.validation.evidencerecord;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
@@ -44,7 +45,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class ASiCEWithCAdESLevelLTWithEvidenceRecordMultiFilesDifferentAlgoValidationTest extends AbstractASiCEWithCAdESWithEvidenceRecordTestValidation {
+class ASiCEWithCAdESLevelLTWithEvidenceRecordMultiFilesDifferentAlgoValidationTest extends AbstractASiCWithCAdESWithEvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {
@@ -59,6 +60,13 @@ class ASiCEWithCAdESLevelLTWithEvidenceRecordMultiFilesDifferentAlgoValidationTe
     @Override
     protected boolean allArchiveDataObjectsProvidedToValidation() {
         return false;
+    }
+
+    @Override
+    protected void checkEvidenceRecordCoverage(DiagnosticData diagnosticData, SignatureWrapper signature) {
+        for (EvidenceRecordWrapper evidenceRecordWrapper : signature.getEvidenceRecords()) {
+            assertFalse(Utils.isCollectionNotEmpty(evidenceRecordWrapper.getEvidenceRecordScopes()));
+        }
     }
 
     @Override

@@ -110,6 +110,17 @@ public abstract class AbstractASiCSignatureService<SP extends SerializableSignat
 	protected abstract DefaultASiCContainerExtractor getArchiveExtractor(DSSDocument archive);
 
 	/**
+	 * Creates a ZIP-Archive by copying the provided documents to the new container using
+	 * the current time as ZIP creation time
+	 *
+	 * @param asicContent            {@link ASiCContent} to create a new ZIP archive from
+	 * @return {@link DSSDocument} the created ASiC Container
+	 */
+	protected DSSDocument buildASiCContainer(ASiCContent asicContent) {
+		return buildASiCContainer(asicContent, new Date());
+	}
+
+	/**
 	 * Creates a ZIP-Archive by copying the provided documents to the new container
 	 * 
 	 * @param asicContent            {@link ASiCContent} to create a new ZIP archive from

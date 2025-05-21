@@ -452,10 +452,10 @@ public class CAdESService extends
 		Objects.requireNonNull(evidenceRecordDocument, "The evidence record document cannot be null");
 
 		CAdESEmbeddedEvidenceRecordBuilder builder = new CAdESEmbeddedEvidenceRecordBuilder(certificateVerifier);
-		DSSDocument signatureWithPolicyStore = builder.addEvidenceRecord(signatureDocument, evidenceRecordDocument, parameters);
-		signatureWithPolicyStore.setName(getFinalFileName(signatureDocument, SigningOperation.ADD_EVIDENCE_RECORD));
-		signatureWithPolicyStore.setMimeType(signatureDocument.getMimeType());
-		return signatureWithPolicyStore;
+		DSSDocument signatureWithEvidenceRecord = builder.addEvidenceRecord(signatureDocument, evidenceRecordDocument, parameters);
+		signatureWithEvidenceRecord.setName(getFinalFileName(signatureDocument, SigningOperation.ADD_EVIDENCE_RECORD));
+		signatureWithEvidenceRecord.setMimeType(signatureDocument.getMimeType());
+		return signatureWithEvidenceRecord;
 	}
 
 	private void assertCounterSignaturePossible(CAdESCounterSignatureParameters parameters) {

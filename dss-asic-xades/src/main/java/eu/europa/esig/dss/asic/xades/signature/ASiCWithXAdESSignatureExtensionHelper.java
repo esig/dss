@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.asic.xades.signature;
 
 import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
-import eu.europa.esig.dss.asic.common.signature.ASiCCounterSignatureHelper;
+import eu.europa.esig.dss.asic.common.signature.ASiCSignatureExtensionHelper;
 import eu.europa.esig.dss.asic.xades.extract.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.validation.analyzer.DocumentAnalyzer;
@@ -32,14 +32,14 @@ import java.util.List;
 /**
  * The class contains useful methods for ASiC with XAdES counter signature creation
  */
-public class ASiCWithXAdESCounterSignatureHelper extends ASiCCounterSignatureHelper {
+public class ASiCWithXAdESSignatureExtensionHelper extends ASiCSignatureExtensionHelper {
 
 	/**
 	 * The default constructor
 	 *
 	 * @param asicContainer {@link DSSDocument} representing an ASiC with CAdES container
 	 */
-	protected ASiCWithXAdESCounterSignatureHelper(DSSDocument asicContainer) {
+	protected ASiCWithXAdESSignatureExtensionHelper(DSSDocument asicContainer) {
 		super(asicContainer);
 	}
 
@@ -54,7 +54,7 @@ public class ASiCWithXAdESCounterSignatureHelper extends ASiCCounterSignatureHel
 	}
 
 	@Override
-	protected List<DSSDocument> getDetachedDocuments(String signatureFilename) {
+	public List<DSSDocument> getDetachedDocuments(String signatureFilename) {
 		// return all found documents (any document can be signed)
 		return getAsicContent().getAllDocuments();
 	}

@@ -31,6 +31,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.ManifestEntry;
 import eu.europa.esig.dss.model.ManifestFile;
+import eu.europa.esig.dss.model.ReferenceValidation;
 import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
@@ -471,20 +472,23 @@ public abstract class AbstractASiCContainerAnalyzer extends DefaultDocumentAnaly
 
 	@Override
 	protected boolean coversSignature(AdvancedSignature signature, EvidenceRecord evidenceRecord) {
-		ManifestFile evidenceRecordManifest = evidenceRecord.getManifestFile();
-		if (evidenceRecordManifest == null) {
-			// not embedded ER
-			return true;
-		}
-		return coversFile(evidenceRecordManifest, signature.getFilename());
+		return coversFile(evidenceRecord, document.getName()) || coversFile(evidenceRecord, signature.getFilename());
 	}
 
 	private boolean coversEvidenceRecord(EvidenceRecord coveredEvidenceRecord, EvidenceRecord coveringEvidenceRecord) {
-		ManifestFile evidenceRecordManifest = coveringEvidenceRecord.getManifestFile();
-		if (evidenceRecordManifest == null) {
-			return false;
+		return coversFile(coveringEvidenceRecord, coveredEvidenceRecord.getFilename());
+	}
+
+	private boolean coversFile(EvidenceRecord evidenceRecord, String filename) {
+		for (ReferenceValidation referenceValidation : evidenceRecord.getReferenceValidation()) {
+			if (filename == null || filename.equals(referenceValidation.getDocumentName())) {
+				return true;
+			}
 		}
-		return coversFile(evidenceRecordManifest, coveredEvidenceRecord.getFilename());
+		if (evidenceRecord.getManifestFile() != null && coversFile(evidenceRecord.getManifestFile(), filename)) {
+			return true;
+		}
+		return false;
 	}
 
 	private boolean coversFile(ManifestFile manifestFile, String filename) {

@@ -1,21 +1,32 @@
 package eu.europa.esig.dss.cades.preservation;
 
 import eu.europa.esig.dss.cades.evidencerecord.CAdESEvidenceRecordIncorporationParameters;
+import eu.europa.esig.dss.cades.signature.CAdESService;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.EvidenceRecordIncorporationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DoubleCAdESLevelLTAddASN1EvidenceRecordTest extends AbstractCAdESAddEvidenceRecordTest {
 
     private String signatureId = null;
+
+    private int expectedEvidenceRecords = 1;
 
     @Override
     protected DSSDocument getSignatureDocument() {
@@ -35,8 +46,10 @@ class DoubleCAdESLevelLTAddASN1EvidenceRecordTest extends AbstractCAdESAddEviden
         int sigWithoutErCounter = 0;
         for (SignatureWrapper signature : diagnosticData.getSignatures()) {
             if (Utils.isCollectionNotEmpty(signature.getEvidenceRecords())) {
-                assertEquals(1, Utils.collectionSize(signature.getEvidenceRecords()));
-                assertEquals(signatureId, signature.getEvidenceRecords().get(0).getParent().getId());
+                assertEquals(expectedEvidenceRecords, Utils.collectionSize(signature.getEvidenceRecords()));
+                for (EvidenceRecordWrapper evidenceRecordWrapper : signature.getEvidenceRecords()) {
+                    assertEquals(signatureId, evidenceRecordWrapper.getParent().getId());
+                }
                 checkEvidenceRecordCoverage(diagnosticData, signature);
                 ++sigWithErCounter;
             } else {
@@ -45,6 +58,27 @@ class DoubleCAdESLevelLTAddASN1EvidenceRecordTest extends AbstractCAdESAddEviden
         }
         assertEquals(2, sigWithErCounter);
         assertEquals(0, sigWithoutErCounter);
+    }
+
+    @Override
+    protected void checkEvidenceRecordCoverage(DiagnosticData diagnosticData, SignatureWrapper signature) {
+        super.checkEvidenceRecordCoverage(diagnosticData, signature);
+
+        if (Utils.isCollectionNotEmpty(signature.getEvidenceRecords())) {
+            int erCoveringERCounter = 0;
+            int erNotCoveringERCounter = 0;
+            for (EvidenceRecordWrapper evidenceRecordWrapper : signature.getEvidenceRecords()) {
+                if (Utils.isCollectionNotEmpty(evidenceRecordWrapper.getCoveredEvidenceRecords())) {
+                    assertTrue(Utils.isCollectionNotEmpty(evidenceRecordWrapper.getCoveredTimestamps()));
+                    ++erCoveringERCounter;
+                } else {
+                    assertFalse(Utils.isCollectionNotEmpty(evidenceRecordWrapper.getCoveredTimestamps()));
+                    ++erNotCoveringERCounter;
+                }
+            }
+            assertEquals(expectedEvidenceRecords - 1, erCoveringERCounter);
+            assertEquals(1, erNotCoveringERCounter);
+        }
     }
 
     @Override
@@ -74,21 +108,50 @@ class DoubleCAdESLevelLTAddASN1EvidenceRecordTest extends AbstractCAdESAddEviden
     @Test
     @Override
     public void addERAndValidate() {
-        Exception exception = assertThrows(IllegalArgumentException.class, super::addERAndValidate);
+        CAdESService service = getService();
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () ->
+                service.addEvidenceRecord(getSignatureDocument(), getEvidenceRecordDocument(), getEvidenceRecordIncorporationParameters()));
         assertEquals(String.format("More than one signature found in a document with name '%s'! " +
                 "Please provide a signatureId within the parameters.", getSignatureDocument().getName()), exception.getMessage());
 
         signatureId = "not-existing";
-        exception = assertThrows(IllegalArgumentException.class, super::addERAndValidate);
+        exception = assertThrows(IllegalArgumentException.class, () ->
+                service.addEvidenceRecord(getSignatureDocument(), getEvidenceRecordDocument(), getEvidenceRecordIncorporationParameters()));
         assertEquals("Unable to find a signature with Id : not-existing!", exception.getMessage());
 
+        SignedDocumentValidator validator = getValidator(getSignatureDocument());
+        List<AdvancedSignature> signatures = validator.getSignatures();
+        assertEquals(2, signatures.size());
+
         // first signature
-        signatureId = "S-429C1BC7D41D6D1D107A10502400D4F2F47DA1D6C07FF8026C65B2D82B73BBFF";
-        super.addERAndValidate();
+        signatureId = signatures.get(0).getId();
+        DSSDocument signatureDocWithER = service.addEvidenceRecord(getSignatureDocument(), getEvidenceRecordDocument(), getEvidenceRecordIncorporationParameters());
+        verify(signatureDocWithER);
 
         // second signature
-        signatureId = "S-0F5EAFA56142DB2BBF7746C389AC4C9D2CDD9C32CEB28F86FB13A504F9EB7B6F";
-        super.addERAndValidate();
+        signatureId = signatures.get(1).getId();
+        DSSDocument signatureTwoWithER = service.addEvidenceRecord(getSignatureDocument(), getEvidenceRecordDocument(), getEvidenceRecordIncorporationParameters());
+        verify(signatureTwoWithER);
+
+        expectedEvidenceRecords = 2;
+
+        DSSDocument secondER = new InMemoryDocument(CAdESLevelLTAddASN1EvidenceRecordTest.class.getResourceAsStream(
+                "/validation/evidence-record/evidence-record-second-Double-C-B-B-basic.ers"));
+
+        // first signature
+        signatureId = signatures.get(0).getId();
+
+        exception = assertThrows(IllegalInputException.class, () ->
+                service.addEvidenceRecord(signatureTwoWithER, secondER, getEvidenceRecordIncorporationParameters()));
+        assertEquals("At most one of the SignerInfo instances within the SignedData instance shall contain " +
+                "evidence-records attributes! Please abolish the operation or provide another signature Id.", exception.getMessage());
+
+        // second signature
+        signatureId = signatures.get(1).getId();
+
+        DSSDocument signaturesDocWithTwoER = service.addEvidenceRecord(signatureTwoWithER, secondER, getEvidenceRecordIncorporationParameters());
+        verify(signaturesDocWithTwoER);
     }
 
 }

@@ -26,7 +26,7 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 
-class ASiCEWithXAdESLevelLTAEvidenceRecordNoHashTreeValidationTest extends AbstractASiCEWithXAdESWithEvidenceRecordTestValidation {
+class ASiCEWithXAdESLevelLTAEvidenceRecordNoHashTreeValidationTest extends AbstractASiCWithXAdESWithEvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

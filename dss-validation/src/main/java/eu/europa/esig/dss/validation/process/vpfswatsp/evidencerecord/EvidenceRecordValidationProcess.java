@@ -183,8 +183,7 @@ public class EvidenceRecordValidationProcess extends Chain<XmlValidationProcessE
         }
 
         // ASiC container evidence record
-        if (diagnosticData.isContainerInfoPresent() && EvidenceRecordOrigin.CONTAINER == evidenceRecord.getOrigin() &&
-                coversSignatureOrTimestampOrEvidenceRecord(evidenceRecord)) {
+        if (diagnosticData.isContainerInfoPresent() && coversSignatureOrTimestampOrEvidenceRecord(evidenceRecord)) {
             item = item.setNextItem(signedAndTimestampedFilesCoveredCheck());
         }
 

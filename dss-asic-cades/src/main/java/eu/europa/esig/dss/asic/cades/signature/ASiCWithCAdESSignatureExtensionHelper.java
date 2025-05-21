@@ -23,7 +23,7 @@ package eu.europa.esig.dss.asic.cades.signature;
 import eu.europa.esig.dss.asic.cades.extract.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESUtils;
 import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
-import eu.europa.esig.dss.asic.common.signature.ASiCCounterSignatureHelper;
+import eu.europa.esig.dss.asic.common.signature.ASiCSignatureExtensionHelper;
 import eu.europa.esig.dss.asic.common.validation.ASiCManifestParser;
 import eu.europa.esig.dss.cades.validation.CMSDocumentAnalyzer;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
@@ -37,14 +37,14 @@ import java.util.List;
 /**
  * The class contains useful methods for ASiC with CAdES counter signature creation
  */
-public class ASiCWithCAdESCounterSignatureHelper extends ASiCCounterSignatureHelper {
+public class ASiCWithCAdESSignatureExtensionHelper extends ASiCSignatureExtensionHelper {
 
 	/**
 	 * The default constructor
 	 *
 	 * @param asicContainer {@link DSSDocument} representing an ASiC with CAdES container
 	 */
-	protected ASiCWithCAdESCounterSignatureHelper(DSSDocument asicContainer) {
+	protected ASiCWithCAdESSignatureExtensionHelper(DSSDocument asicContainer) {
 		super(asicContainer);
 	}
 
@@ -59,7 +59,7 @@ public class ASiCWithCAdESCounterSignatureHelper extends ASiCCounterSignatureHel
 	}
 
 	@Override
-	protected List<DSSDocument> getDetachedDocuments(String signatureFilename) {
+	public List<DSSDocument> getDetachedDocuments(String signatureFilename) {
 		DSSDocument signedDocument = ASiCWithCAdESUtils.getSignedDocument(getAsicContent(), signatureFilename);
 		if (signedDocument != null) {
 			return Collections.singletonList(signedDocument);
@@ -78,11 +78,11 @@ public class ASiCWithCAdESCounterSignatureHelper extends ASiCCounterSignatureHel
 	}
 	
 	@Override
-	protected void checkCounterSignaturePossible(DSSDocument signatureDocument) {
-		super.checkCounterSignaturePossible(signatureDocument);
+	protected void checkSignatureExtensionPossible(DSSDocument signatureDocument) {
+		super.checkSignatureExtensionPossible(signatureDocument);
 		
 		if (ASiCWithCAdESUtils.isCoveredByManifest(getAsicContent().getAllManifestDocuments(), signatureDocument.getName())) {
-			throw new IllegalInputException(String.format("The counter signature is not possible! "
+			throw new IllegalInputException(String.format("The modification of the signature is not possible! "
 					+ "Reason : a signature with a filename '%s' is covered by another manifest.", signatureDocument.getName()));
 		}
 	}

@@ -49,9 +49,8 @@ class CAdESLevelBDetachedAddASN1EvidenceRecordTest extends AbstractCAdESAddEvide
 
         detachedContents = Collections.singletonList(new InMemoryDocument("Hello World!".getBytes()));
         exception = assertThrows(IllegalInputException.class, super::addERAndValidate);
-        assertEquals("The digest covered by the evidence record do not correspond to the digest computed on " +
-                        "the detached content! Please use #setDetachedContent method to provide original documents.",
-                exception.getMessage());
+        assertEquals("The digest covered by the evidence record do not correspond " +
+                        "to the digest computed on the detached content!", exception.getMessage());
 
         detachedContents = Collections.singletonList(new InMemoryDocument(
                 CAdESLevelBDetachedAddASN1EvidenceRecordTest.class.getResourceAsStream("/validation/evidence-record/sample.zip")));

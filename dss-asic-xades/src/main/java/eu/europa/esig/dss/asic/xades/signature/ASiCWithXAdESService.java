@@ -20,33 +20,34 @@
  */
 package eu.europa.esig.dss.asic.xades.signature;
 
-import eu.europa.esig.dss.asic.common.definition.ASiCManifestElement;
-import eu.europa.esig.dss.asic.common.definition.ASiCManifestNamespace;
-import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
+import eu.europa.esig.dss.asic.common.definition.ASiCManifestElement;
+import eu.europa.esig.dss.asic.common.definition.ASiCManifestNamespace;
 import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
-import eu.europa.esig.dss.asic.common.signature.ASiCCounterSignatureHelper;
+import eu.europa.esig.dss.asic.common.signature.ASiCSignatureExtensionHelper;
 import eu.europa.esig.dss.asic.common.signature.AbstractASiCSignatureService;
-import eu.europa.esig.dss.asic.xades.extract.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.OpenDocumentSupportUtils;
 import eu.europa.esig.dss.asic.xades.definition.ManifestNamespace;
+import eu.europa.esig.dss.asic.xades.extract.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
-import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.signature.SigningOperation;
-import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import eu.europa.esig.dss.xades.evidencerecord.XAdESEvidenceRecordIncorporationParameters;
 import eu.europa.esig.dss.xades.signature.XAdESCounterSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -311,7 +312,7 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 		assertCounterSignatureParametersValid(parameters);
 		
-		ASiCCounterSignatureHelper counterSignatureHelper = new ASiCWithXAdESCounterSignatureHelper(asicContainer);
+		ASiCSignatureExtensionHelper counterSignatureHelper = new ASiCWithXAdESSignatureExtensionHelper(asicContainer);
 		DSSDocument signatureDocument = counterSignatureHelper.extractSignatureDocument(parameters.getSignatureIdToCounterSign());
 		
 		XAdESService xadesService = getXAdESService();
@@ -326,7 +327,7 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 		Objects.requireNonNull(signatureValue, "signatureValue cannot be null!");
 		assertCounterSignatureParametersValid(parameters);
 		
-		ASiCCounterSignatureHelper counterSignatureHelper = new ASiCWithXAdESCounterSignatureHelper(asicContainer);
+		ASiCSignatureExtensionHelper counterSignatureHelper = new ASiCWithXAdESSignatureExtensionHelper(asicContainer);
 		ASiCContent asicContent = counterSignatureHelper.getAsicContent();
 
 		DSSDocument signatureDocument = counterSignatureHelper.extractSignatureDocument(parameters.getSignatureIdToCounterSign());
@@ -338,6 +339,37 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 
 		final DSSDocument resultArchive = buildASiCContainer(asicContent, parameters.bLevel().getSigningDate());
 		resultArchive.setName(getFinalDocumentName(asicContainer, SigningOperation.COUNTER_SIGN, parameters.getSignatureLevel(), asicContainer.getMimeType()));
+		return resultArchive;
+	}
+
+	/**
+	 * Incorporates the Evidence Record as an unsigned property into the XAdES Signature within the given ASiC container
+	 *
+	 * @param asicContainer          {@link DSSDocument} representing an ASiC container containing a XAdES Signature
+	 *                               to add the evidence record into
+	 * @param evidenceRecordDocument {@link DSSDocument} to add
+	 * @param parameters             {@link XAdESEvidenceRecordIncorporationParameters} providing configuration for
+	 *                               the evidence record incorporation
+	 * @return {@link DSSDocument} ASiC container containing a XAdESSignature with an incorporated evidence record
+	 */
+	public DSSDocument addSignatureEvidenceRecord(DSSDocument asicContainer, DSSDocument evidenceRecordDocument,
+												  XAdESEvidenceRecordIncorporationParameters parameters) {
+		Objects.requireNonNull(asicContainer, "The ASiC container cannot be null");
+		Objects.requireNonNull(evidenceRecordDocument, "The evidence record document cannot be null");
+
+		ASiCSignatureExtensionHelper asicContainerHelper = new ASiCWithXAdESSignatureExtensionHelper(asicContainer);
+		ASiCContent asicContent = asicContainerHelper.getAsicContent();
+
+		DSSDocument signatureDocument = asicContainerHelper.extractSignatureDocument(parameters.getSignatureId());
+		parameters.setDetachedContents(asicContainerHelper.getDetachedDocuments(signatureDocument.getName()));
+
+		XAdESService xadesService = getXAdESService();
+		DSSDocument signatureWithEvidenceRecord = xadesService.addEvidenceRecord(signatureDocument, evidenceRecordDocument, parameters);
+		signatureWithEvidenceRecord.setName(signatureDocument.getName());
+		ASiCUtils.addOrReplaceDocument(asicContent.getSignatureDocuments(), signatureWithEvidenceRecord);
+
+		final DSSDocument resultArchive = buildASiCContainer(asicContent);
+		resultArchive.setName(getFinalArchiveName(asicContainer, SigningOperation.ADD_EVIDENCE_RECORD, asicContainer.getMimeType()));
 		return resultArchive;
 	}
 

@@ -152,8 +152,8 @@ class ASiCECAdESLevelLTAExtensionForCounterSignedTest extends AbstractASiCWithCA
 		counterSignatureParameters.bLevel().setSigningDate(new Date());
 		counterSignatureParameters.setSignatureIdToCounterSign(counterSignatureId);
 		Exception exception = assertThrows(IllegalInputException.class, () -> service.getDataToBeCounterSigned(ltaCAdES, counterSignatureParameters));
-		assertEquals("The counter signature is not possible! Reason : " +
-					"a signature with a filename 'META-INF/signature001.p7s' is covered by another manifest.", exception.getMessage());
+		assertEquals("The modification of the signature is not possible! Reason : a signature " +
+				"with a filename 'META-INF/signature001.p7s' is covered by another manifest.", exception.getMessage());
 		
 		FoundCertificatesProxy foundCertificates = signatureWrapper.foundCertificates();
 		List<String> certificateValuesIds = foundCertificates.getRelatedCertificatesByOrigin(CertificateOrigin.SIGNED_DATA)
@@ -170,8 +170,8 @@ class ASiCECAdESLevelLTAExtensionForCounterSignedTest extends AbstractASiCWithCA
 		counterSignatureParameters.setSignatureIdToCounterSign(mainSignatureId);
 		
 		exception = assertThrows(IllegalInputException.class, () -> service.getDataToBeCounterSigned(ltaCAdES, counterSignatureParameters));
-		assertEquals("The counter signature is not possible! Reason : " +
-					"a signature with a filename 'META-INF/signature001.p7s' is covered by another manifest.", exception.getMessage());
+		assertEquals("The modification of the signature is not possible! Reason : a signature " +
+				"with a filename 'META-INF/signature001.p7s' is covered by another manifest.", exception.getMessage());
 	}
 	
 	@Override

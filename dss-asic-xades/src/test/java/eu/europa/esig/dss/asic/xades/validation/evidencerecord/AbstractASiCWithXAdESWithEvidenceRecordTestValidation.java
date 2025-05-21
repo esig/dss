@@ -23,12 +23,18 @@ package eu.europa.esig.dss.asic.xades.validation.evidencerecord;
 import eu.europa.esig.dss.asic.xades.validation.AbstractASiCWithXAdESTestValidation;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.EvidenceRecordTimestampType;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
+import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.ReferenceValidation;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.simplereport.jaxb.XmlEvidenceRecord;
@@ -52,6 +58,7 @@ import eu.europa.esig.validationreport.jaxb.ValidationStatusType;
 import eu.europa.esig.xades.jaxb.xades132.DigestAlgAndValueType;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -59,7 +66,184 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public abstract class AbstractASiCEWithXAdESWithEvidenceRecordTestValidation extends AbstractASiCWithXAdESTestValidation {
+public abstract class AbstractASiCWithXAdESWithEvidenceRecordTestValidation extends AbstractASiCWithXAdESTestValidation {
+
+    @Override
+    protected void checkEvidenceRecords(DiagnosticData diagnosticData) {
+        super.checkEvidenceRecords(diagnosticData);
+
+        for (SignatureWrapper signature : diagnosticData.getSignatures()) {
+            checkEvidenceRecordCoverage(diagnosticData, signature);
+        }
+    }
+
+    protected void checkEvidenceRecordCoverage(DiagnosticData diagnosticData, SignatureWrapper signature) {
+        List<EvidenceRecordWrapper> evidenceRecords = signature.getEvidenceRecords();
+        assertTrue(Utils.isCollectionNotEmpty(evidenceRecords));
+
+        for (EvidenceRecordWrapper evidenceRecord : evidenceRecords) {
+            List<XmlSignatureScope> evidenceRecordScopes = evidenceRecord.getEvidenceRecordScopes();
+            assertEquals(getNumberOfExpectedEvidenceScopes(), Utils.collectionSize(evidenceRecordScopes));
+            checkEvidenceRecordType(evidenceRecord);
+            assertNull(evidenceRecord.getIncorporationType());
+
+            boolean sigNameFound = false;
+            for (XmlSignatureScope evidenceRecordScope : evidenceRecordScopes) {
+                if (SignatureScopeType.SIGNATURE == evidenceRecordScope.getScope()) {
+                    if (signature.getId().equals(evidenceRecordScope.getName())) {
+                        sigNameFound = true;
+                    }
+                } else if (SignatureScopeType.FULL == evidenceRecordScope.getScope()) {
+                    if (signature.getFilename().equals(evidenceRecordScope.getName())) {
+                        sigNameFound = true;
+                    }
+                    if (signature.getId().equals(evidenceRecordScope.getName())) {
+                        sigNameFound = true;
+                    }
+                }
+            }
+            assertTrue(sigNameFound);
+
+            if (evidenceRecord.isEmbedded()) {
+                SignatureWrapper parentSignature = evidenceRecord.getParent();
+                List<XmlSignatureScope> signatureScopes = parentSignature.getSignatureScopes();
+                List<String> erScopesIds = evidenceRecordScopes.stream().map(s -> s.getSignerData().getId()).collect(Collectors.toList());
+                assertTrue(signatureScopes.stream().allMatch(s -> erScopesIds.contains(s.getSignerData().getId())));
+            }
+
+            boolean coversSignature = false;
+            boolean coversSignedData = false;
+            boolean coversCertificates = false;
+            boolean coversRevocationData = false;
+            boolean coversTimestamps = false;
+            List<XmlTimestampedObject> coveredObjects = evidenceRecord.getCoveredObjects();
+            assertTrue(Utils.isCollectionNotEmpty(coveredObjects));
+            for (XmlTimestampedObject reference : coveredObjects) {
+                if (TimestampedObjectType.SIGNATURE == reference.getCategory()) {
+                    coversSignature = true;
+                } else if (TimestampedObjectType.SIGNED_DATA == reference.getCategory()) {
+                    coversSignedData = true;
+                } else if (TimestampedObjectType.CERTIFICATE == reference.getCategory()) {
+                    coversCertificates = true;
+                } else if (TimestampedObjectType.REVOCATION == reference.getCategory()) {
+                    coversRevocationData = true;
+                } else if (TimestampedObjectType.TIMESTAMP == reference.getCategory()) {
+                    coversTimestamps = true;
+                }
+            }
+            assertTrue(coversSignature);
+            assertTrue(coversSignedData);
+            assertTrue(coversCertificates);
+            if (SignatureLevel.XAdES_BASELINE_B != signature.getSignatureFormat()) {
+                assertTrue(coversTimestamps);
+                if (SignatureLevel.XAdES_BASELINE_T != signature.getSignatureFormat()) {
+                    assertTrue(coversRevocationData);
+                }
+            }
+
+            int expectedSignaturesCounter = evidenceRecord.isEmbedded() ?
+                    1 + diagnosticData.getAllCounterSignaturesForMasterSignature(evidenceRecord.getParent()).size() :
+                    diagnosticData.getSignatures().size();
+            assertEquals(expectedSignaturesCounter,
+                    coveredObjects.stream().filter(r -> TimestampedObjectType.SIGNATURE == r.getCategory()).count());
+
+            int tstCounter = 0;
+
+            List<TimestampWrapper> timestamps = evidenceRecord.getTimestampList();
+            for (TimestampWrapper timestamp : timestamps) {
+                assertNotNull(timestamp.getType());
+                assertNotNull(timestamp.getArchiveTimestampType());
+                assertNotNull(timestamp.getEvidenceRecordTimestampType());
+
+                List<XmlSignatureScope> timestampScopes = timestamp.getTimestampScopes();
+                if (timestamp.isSignatureValid()) {
+                    assertEquals(getNumberOfExpectedEvidenceScopes(), Utils.collectionSize(timestampScopes));
+
+                    sigNameFound = false;
+                    for (XmlSignatureScope evidenceRecordScope : evidenceRecordScopes) {
+                        if (SignatureScopeType.SIGNATURE == evidenceRecordScope.getScope()) {
+                            if (signature.getId().equals(evidenceRecordScope.getName())) {
+                                sigNameFound = true;
+                            }
+                        } else if (SignatureScopeType.FULL == evidenceRecordScope.getScope()) {
+                            if (signature.getFilename().equals(evidenceRecordScope.getName())) {
+                                sigNameFound = true;
+                            }
+                        }
+                    }
+                    assertTrue(sigNameFound);
+                } else {
+                    assertTrue(Utils.isCollectionEmpty(timestampScopes));
+                }
+
+                boolean coversEvidenceRecord = false;
+                coversSignature = false;
+                coversSignedData = false;
+                coversCertificates = false;
+                coversRevocationData = false;
+                coversTimestamps = false;
+                List<XmlTimestampedObject> timestampedObjects = timestamp.getTimestampedObjects();
+                assertTrue(Utils.isCollectionNotEmpty(timestampedObjects));
+                for (XmlTimestampedObject reference : timestampedObjects) {
+                    if (TimestampedObjectType.SIGNATURE == reference.getCategory()) {
+                        coversSignature = true;
+                    } else if (TimestampedObjectType.SIGNED_DATA == reference.getCategory()) {
+                        coversSignedData = true;
+                    } else if (TimestampedObjectType.CERTIFICATE == reference.getCategory()) {
+                        coversCertificates = true;
+                    } else if (TimestampedObjectType.REVOCATION == reference.getCategory()) {
+                        coversRevocationData = true;
+                    } else if (TimestampedObjectType.TIMESTAMP == reference.getCategory()) {
+                        coversTimestamps = true;
+                    } else if (TimestampedObjectType.EVIDENCE_RECORD == reference.getCategory()) {
+                        coversEvidenceRecord = true;
+                    }
+                }
+
+                assertTrue(coversEvidenceRecord);
+                assertTrue(coversSignature);
+                assertTrue(coversSignedData);
+                assertTrue(coversCertificates);
+                if (SignatureLevel.XAdES_BASELINE_B != signature.getSignatureFormat()) {
+                    assertTrue(coversTimestamps);
+                    if (SignatureLevel.XAdES_BASELINE_T != signature.getSignatureFormat()) {
+                        assertTrue(coversRevocationData);
+                    }
+                }
+
+                assertEquals(expectedSignaturesCounter,
+                        timestampedObjects.stream().filter(r -> TimestampedObjectType.SIGNATURE == r.getCategory()).count());
+
+                if (tstCounter > 0) {
+                    List<XmlDigestMatcher> tstDigestMatcherList = timestamp.getDigestMatchers();
+                    assertTrue(Utils.isCollectionNotEmpty(tstDigestMatcherList));
+
+                    long digestMatcherCounter = tstDigestMatcherList.stream().filter(m -> DigestMatcherType.MESSAGE_IMPRINT != m.getType()).count();
+                    assertTrue(digestMatcherCounter > 0);
+
+                    boolean archiveTstDigestFound = false;
+                    boolean archiveTstSequenceDigestFound = false;
+                    for (XmlDigestMatcher digestMatcher : tstDigestMatcherList) {
+                        if (DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_TIME_STAMP.equals(digestMatcher.getType())) {
+                            archiveTstDigestFound = true;
+                        } else if (DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_TIME_STAMP_SEQUENCE.equals(digestMatcher.getType())) {
+                            archiveTstSequenceDigestFound = true;
+                        }
+                        assertTrue(digestMatcher.isDataFound());
+                        assertTrue(digestMatcher.isDataIntact());
+                    }
+
+                    assertEquals(EvidenceRecordTimestampType.TIMESTAMP_RENEWAL_ARCHIVE_TIMESTAMP == timestamp.getEvidenceRecordTimestampType(), archiveTstDigestFound);
+                    assertEquals(EvidenceRecordTimestampType.HASH_TREE_RENEWAL_ARCHIVE_TIMESTAMP == timestamp.getEvidenceRecordTimestampType(), archiveTstSequenceDigestFound);
+
+                } else {
+                    assertEquals(EvidenceRecordTimestampType.ARCHIVE_TIMESTAMP, timestamp.getEvidenceRecordTimestampType());
+                }
+
+                ++tstCounter;
+            }
+        }
+    }
 
     @Override
     protected void checkDetachedEvidenceRecords(List<EvidenceRecord> detachedEvidenceRecords) {
@@ -124,11 +308,15 @@ public abstract class AbstractASiCEWithXAdESWithEvidenceRecordTestValidation ext
             for (XmlDigestMatcher digestMatcher : evidenceRecord.getDigestMatchers()) {
                 assertTrue(digestMatcher.isDataFound());
                 assertTrue(digestMatcher.isDataIntact());
-                if (digestMatcher.isDataFound()) {
+                if (digestMatcher.isDataFound() && !evidenceRecord.isEmbedded()) {
                     assertNotNull(digestMatcher.getDocumentName());
                 }
             }
         }
+    }
+
+    protected void checkEvidenceRecordType(EvidenceRecordWrapper evidenceRecord) {
+        // not implemented
     }
 
     @Override
@@ -137,7 +325,6 @@ public abstract class AbstractASiCEWithXAdESWithEvidenceRecordTestValidation ext
 
         for (String sigId : simpleReport.getSignatureIdList()) {
             List<XmlEvidenceRecord> signatureEvidenceRecords = simpleReport.getSignatureEvidenceRecords(sigId);
-            assertTrue(Utils.isCollectionNotEmpty(signatureEvidenceRecords));
 
             for (XmlEvidenceRecord xmlEvidenceRecord : signatureEvidenceRecords) {
                 assertNotNull(xmlEvidenceRecord.getPOETime());
@@ -146,14 +333,22 @@ public abstract class AbstractASiCEWithXAdESWithEvidenceRecordTestValidation ext
                 List<eu.europa.esig.dss.simplereport.jaxb.XmlSignatureScope> evidenceRecordScopes = xmlEvidenceRecord.getEvidenceRecordScope();
                 assertEquals(getNumberOfExpectedEvidenceScopes(), Utils.collectionSize(evidenceRecordScopes));
 
-                boolean sigFileFound = false;
+                boolean sigNameFound = false;
                 for (eu.europa.esig.dss.simplereport.jaxb.XmlSignatureScope evidenceRecordScope : evidenceRecordScopes) {
-                    assertEquals(SignatureScopeType.FULL, evidenceRecordScope.getScope());
-                    if (simpleReport.getTokenFilename(sigId).equals(evidenceRecordScope.getName())) {
-                        sigFileFound = true;
+                    if (SignatureScopeType.SIGNATURE == evidenceRecordScope.getScope()) {
+                        if (xmlEvidenceRecord.getParentId().equals(evidenceRecordScope.getName())) {
+                            sigNameFound = true;
+                        }
+                    } else if (SignatureScopeType.FULL == evidenceRecordScope.getScope()) {
+                        if (simpleReport.getDocumentFilename().equals(evidenceRecordScope.getName())) {
+                            sigNameFound = true;
+                        }
+                        if (simpleReport.getTokenFilename(sigId).equals(evidenceRecordScope.getName())) {
+                            sigNameFound = true;
+                        }
                     }
                 }
-                assertTrue(sigFileFound);
+                assertTrue(sigNameFound);
 
                 XmlTimestamps timestamps = xmlEvidenceRecord.getTimestamps();
                 assertNotNull(timestamps);
@@ -165,14 +360,22 @@ public abstract class AbstractASiCEWithXAdESWithEvidenceRecordTestValidation ext
                     List<eu.europa.esig.dss.simplereport.jaxb.XmlSignatureScope> timestampScopes = xmlTimestamp.getTimestampScope();
                     assertEquals(getNumberOfExpectedEvidenceScopes(), Utils.collectionSize(timestampScopes));
 
-                    sigFileFound = false;
-                    for (eu.europa.esig.dss.simplereport.jaxb.XmlSignatureScope tstScope : timestampScopes) {
-                        assertEquals(SignatureScopeType.FULL, tstScope.getScope());
-                        if (simpleReport.getTokenFilename(sigId).equals(tstScope.getName())) {
-                            sigFileFound = true;
+                    sigNameFound = false;
+                    for (eu.europa.esig.dss.simplereport.jaxb.XmlSignatureScope evidenceRecordScope : evidenceRecordScopes) {
+                        if (SignatureScopeType.SIGNATURE == evidenceRecordScope.getScope()) {
+                            if (xmlEvidenceRecord.getParentId().equals(evidenceRecordScope.getName())) {
+                                sigNameFound = true;
+                            }
+                        } else if (SignatureScopeType.FULL == evidenceRecordScope.getScope()) {
+                            if (simpleReport.getDocumentFilename().equals(evidenceRecordScope.getName())) {
+                                sigNameFound = true;
+                            }
+                            if (simpleReport.getTokenFilename(sigId).equals(evidenceRecordScope.getName())) {
+                                sigNameFound = true;
+                            }
                         }
                     }
-                    assertTrue(sigFileFound);
+                    assertTrue(sigNameFound);
                 }
 
             }
