@@ -21,8 +21,11 @@
 package eu.europa.esig.dss.asic.xades.extract;
 
 import eu.europa.esig.dss.asic.common.ASiCUtils;
+import eu.europa.esig.dss.asic.common.ZipUtils;
 import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
 import eu.europa.esig.dss.model.DSSDocument;
+
+import java.util.List;
 
 /**
  * The class is used to extract the content (documents) embedded into an ASiC with XAdES container
@@ -39,6 +42,13 @@ public class ASiCWithXAdESContainerExtractor extends DefaultASiCContainerExtract
 	 */
 	public ASiCWithXAdESContainerExtractor(DSSDocument archive) {
 		super(archive);
+	}
+
+	@Override
+	public boolean isSupportedContainerFormat() {
+		List<String> filenames = ZipUtils.getInstance().extractEntryNames(asicContainer);
+		return ASiCUtils.isAsicFileContent(filenames) ||
+				(ASiCUtils.areFilesContainMimetype(filenames) && ASiCUtils.isContainerOpenDocument(asicContainer));
 	}
 
 	@Override

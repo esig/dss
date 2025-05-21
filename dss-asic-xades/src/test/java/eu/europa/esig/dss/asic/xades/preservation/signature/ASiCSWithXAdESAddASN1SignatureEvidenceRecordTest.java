@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.asic.xades.preservation;
+package eu.europa.esig.dss.asic.xades.preservation.signature;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;
@@ -14,16 +14,16 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class ASiCEWithXAdESAddASN1EvidenceRecordTest extends AbstractASiCWithXAdESAddEvidenceRecordTest {
+class ASiCSWithXAdESAddASN1SignatureEvidenceRecordTest extends AbstractASiCWithXAdESAddSignatureEvidenceRecordTest {
 
     @Override
     protected DSSDocument getSignatureDocument() {
-        return new FileDocument("src/test/resources/validation/onefile-ok.asice");
+        return new FileDocument("src/test/resources/validation/onefile-ok.asics");
     }
 
     @Override
     protected DSSDocument getEvidenceRecordDocument() {
-        return new FileDocument("src/test/resources/validation/evidencerecord/incorporation/evidence-record-onefile-ok.ers");
+        return new FileDocument("src/test/resources/validation/evidencerecord/incorporation/evidence-record-onefile-ok-s.ers");
     }
 
     @Override

@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.asic.xades.preservation;
+package eu.europa.esig.dss.asic.xades.preservation.signature;
 
 import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
 import eu.europa.esig.dss.asic.xades.validation.evidencerecord.AbstractASiCWithXAdESWithEvidenceRecordTestValidation;
@@ -10,12 +10,11 @@ import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.xades.evidencerecord.XAdESEvidenceRecordIncorporationParameters;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public abstract class AbstractASiCWithXAdESAddEvidenceRecordTest extends AbstractASiCWithXAdESWithEvidenceRecordTestValidation {
+public abstract class AbstractASiCWithXAdESAddSignatureEvidenceRecordTest extends AbstractASiCWithXAdESWithEvidenceRecordTestValidation {
 
     protected abstract DSSDocument getSignatureDocument();
 
@@ -34,13 +33,7 @@ public abstract class AbstractASiCWithXAdESAddEvidenceRecordTest extends Abstrac
     @Override
     protected DSSDocument getSignedDocument() {
         ASiCWithXAdESService service = getService();
-        DSSDocument dssDocument = service.addSignatureEvidenceRecord(getSignatureDocument(), getEvidenceRecordDocument(), getEvidenceRecordIncorporationParameters());
-        try {
-            dssDocument.save("target/" + dssDocument.getName());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return dssDocument;
+        return service.addSignatureEvidenceRecord(getSignatureDocument(), getEvidenceRecordDocument(), getEvidenceRecordIncorporationParameters());
     }
 
     @Override

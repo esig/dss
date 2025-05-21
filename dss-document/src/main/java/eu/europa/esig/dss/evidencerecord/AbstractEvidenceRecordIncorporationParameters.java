@@ -2,13 +2,16 @@ package eu.europa.esig.dss.evidencerecord;
 
 import eu.europa.esig.dss.model.DSSDocument;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Contains parameters used on Evidence Record incorporation within an existing signature
  *
  */
-public abstract class AbstractEvidenceRecordIncorporationParameters {
+public abstract class AbstractEvidenceRecordIncorporationParameters implements Serializable {
+
+    private static final long serialVersionUID = 8520066550031111847L;
 
     /**
      * Identifier of a signature to include the evidence record into

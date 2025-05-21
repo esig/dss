@@ -12,6 +12,8 @@ import java.util.Objects;
  */
 public class XAdESEvidenceRecordIncorporationParameters extends AbstractEvidenceRecordIncorporationParameters {
 
+    private static final long serialVersionUID = 5795224409129307896L;
+
     /**
      * XAdES 132-3 namespace definition for the evidence record element incorporation
      */

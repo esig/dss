@@ -24,6 +24,8 @@ import eu.europa.esig.dss.asic.cades.ASiCWithCAdESFilenameFactory;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.cades.DefaultASiCWithCAdESFilenameFactory;
+import eu.europa.esig.dss.asic.cades.evidencerecord.ASiCWithCAdESContainerEvidenceRecordParameters;
+import eu.europa.esig.dss.asic.cades.evidencerecord.ASiCWithCAdESContainerEvidenceRecordBuilder;
 import eu.europa.esig.dss.asic.cades.extract.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.timestamp.ASiCWithCAdESTimestampService;
 import eu.europa.esig.dss.asic.cades.validation.ASiCContainerWithCAdESAnalyzer;
@@ -62,6 +64,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -71,8 +74,8 @@ import java.util.Objects;
  *
  */
 @SuppressWarnings("serial")
-public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithCAdESSignatureParameters, ASiCWithCAdESTimestampParameters, 
-						CAdESCounterSignatureParameters> {
+public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithCAdESSignatureParameters,
+		ASiCWithCAdESTimestampParameters, CAdESCounterSignatureParameters> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ASiCWithCAdESService.class);
 
@@ -463,8 +466,9 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 	 */
 	public DSSDocument addSignatureEvidenceRecord(DSSDocument asicContainer, DSSDocument evidenceRecordDocument,
 												  CAdESEvidenceRecordIncorporationParameters parameters) {
-		Objects.requireNonNull(asicContainer, "The ASiC container cannot be null");
-		Objects.requireNonNull(evidenceRecordDocument, "The evidence record document cannot be null");
+		Objects.requireNonNull(asicContainer, "The ASiC container cannot be null!");
+		Objects.requireNonNull(evidenceRecordDocument, "The evidence record document cannot be null!");
+		Objects.requireNonNull(parameters, "Parameters cannot be null!");
 
 		ASiCSignatureExtensionHelper asicContainerHelper = new ASiCWithCAdESSignatureExtensionHelper(asicContainer);
 		ASiCContent asicContent = asicContainerHelper.getAsicContent();
@@ -481,6 +485,53 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		final DSSDocument resultArchive = buildASiCContainer(asicContent);
 		resultArchive.setName(getFinalArchiveName(asicContainer, SigningOperation.ADD_EVIDENCE_RECORD, asicContainer.getMimeType()));
 		return resultArchive;
+	}
+
+	/**
+	 * Creates a new ASiC container with the {@code evidenceRecordDocument} applied to the {@code document}.
+	 * <p>
+	 * If the provided original document is an existing ASiC container, then the {@code evidenceRecordDocument}
+	 * will be evaluated against the container files and places within the container.
+	 *
+	 * @param document               a list of {@link DSSDocument}s preserved by an evidence record
+	 * @param evidenceRecordDocument {@link DSSDocument} to add
+	 * @param parameters             {@link ASiCWithCAdESContainerEvidenceRecordParameters} providing configuration for
+	 *                               the evidence record incorporation
+	 * @return {@link DSSDocument} ASiC container containing the evidence record file document
+	 */
+	public DSSDocument addContainerEvidenceRecord(DSSDocument document, DSSDocument evidenceRecordDocument,
+												  ASiCWithCAdESContainerEvidenceRecordParameters parameters) {
+		Objects.requireNonNull(document, "Document cannot be null!");
+		return addContainerEvidenceRecord(Collections.singletonList(document), evidenceRecordDocument, parameters);
+	}
+
+	/**
+	 * Creates a new ASiC container with the {@code evidenceRecordDocument} applied to the {@code documents}.
+	 * This method creates a corresponding ASiC Manifest file applying to the evidence record,
+	 * if required by the container format, unless a specific Manifest file is provided within the parameters.
+	 * <p>
+	 * If the provided original document is an existing ASiC container, then the {@code evidenceRecordDocument}
+	 * will be evaluated against the container files and places within the container.
+	 *
+	 * @param documents              a list of {@link DSSDocument}s preserved by an evidence record
+	 * @param evidenceRecordDocument {@link DSSDocument} to add
+	 * @param parameters             {@link ASiCWithCAdESContainerEvidenceRecordParameters} providing configuration for
+	 *                               the evidence record incorporation
+	 * @return {@link DSSDocument} ASiC container containing the evidence record file document
+	 */
+	public DSSDocument addContainerEvidenceRecord(List<DSSDocument> documents, DSSDocument evidenceRecordDocument,
+												  ASiCWithCAdESContainerEvidenceRecordParameters parameters) {
+		Objects.requireNonNull(evidenceRecordDocument, "The evidence record document cannot be null!");
+		Objects.requireNonNull(parameters, "Parameters cannot be null!");
+		if (Utils.isCollectionEmpty(documents)) {
+			throw new IllegalArgumentException("List of documents cannot be empty!");
+		}
+
+		final ASiCContent asicContent = new ASiCWithCAdESContainerEvidenceRecordBuilder(
+				certificateVerifier, asicFilenameFactory).build(documents, evidenceRecordDocument, parameters);
+		final DSSDocument asicContainer = buildASiCContainer(asicContent);
+		asicContainer.setName(getFinalArchiveName(asicContainer, SigningOperation.ADD_EVIDENCE_RECORD, asicContainer.getMimeType()));
+		return asicContainer;
 	}
 
 	/**

@@ -8,6 +8,8 @@ import eu.europa.esig.dss.evidencerecord.AbstractEvidenceRecordIncorporationPara
  */
 public class CAdESEvidenceRecordIncorporationParameters extends AbstractEvidenceRecordIncorporationParameters {
 
+    private static final long serialVersionUID = 1984467012048065514L;
+
     /**
      * Default constructor
      */

@@ -54,7 +54,7 @@ public class ASiCContentDocumentFilterFactory {
      * @return {@link ASiCContentDocumentFilter}
      */
     public static ASiCContentDocumentFilter signedDocumentsOnlyFilter(String... excludedFilenames) {
-        final ASiCContentDocumentFilter asicContentDocumentFilter = emptyFilter();
+        final ASiCContentDocumentFilter asicContentDocumentFilter = new ASiCContentDocumentFilter();
         asicContentDocumentFilter.setSignedDocuments(true);
         if (Utils.isArrayNotEmpty(excludedFilenames)) {
             asicContentDocumentFilter.setExcludedFilenames(Arrays.asList(excludedFilenames));
@@ -71,7 +71,7 @@ public class ASiCContentDocumentFilterFactory {
      * @return {@link ASiCContentDocumentFilter}
      */
     public static ASiCContentDocumentFilter archiveDocumentsFilter(String... excludedFilenames) {
-        final ASiCContentDocumentFilter asicContentDocumentFilter = emptyFilter();
+        final ASiCContentDocumentFilter asicContentDocumentFilter = new ASiCContentDocumentFilter();
         asicContentDocumentFilter.setSignedDocuments(true);
         asicContentDocumentFilter.setSignatureDocuments(true);
         asicContentDocumentFilter.setTimestampDocuments(true);
@@ -92,7 +92,7 @@ public class ASiCContentDocumentFilterFactory {
      * @return {@link ASiCContentDocumentFilter}
      */
     public static ASiCContentDocumentFilter allSupportedDocumentsFilter(String... excludedFilenames) {
-        final ASiCContentDocumentFilter asicContentDocumentFilter = emptyFilter();
+        final ASiCContentDocumentFilter asicContentDocumentFilter = new ASiCContentDocumentFilter();
         asicContentDocumentFilter.setSignedDocuments(true);
         asicContentDocumentFilter.setSignatureDocuments(true);
         asicContentDocumentFilter.setTimestampDocuments(true);
@@ -115,7 +115,7 @@ public class ASiCContentDocumentFilterFactory {
      * @return {@link ASiCContentDocumentFilter}
      */
     public static ASiCContentDocumentFilter allDocumentsFilter(String... excludedFilenames) {
-        final ASiCContentDocumentFilter asicContentDocumentFilter = emptyFilter();
+        final ASiCContentDocumentFilter asicContentDocumentFilter = new ASiCContentDocumentFilter();
         asicContentDocumentFilter.setMimetypeDocument(true);
         asicContentDocumentFilter.setSignedDocuments(true);
         asicContentDocumentFilter.setSignatureDocuments(true);
@@ -127,6 +127,22 @@ public class ASiCContentDocumentFilterFactory {
         asicContentDocumentFilter.setUnsupportedDocuments(true);
         if (Utils.isArrayNotEmpty(excludedFilenames)) {
             asicContentDocumentFilter.setExcludedFilenames(Arrays.asList(excludedFilenames));
+        }
+        return asicContentDocumentFilter;
+    }
+
+    /**
+     * Creates an {@code ASiCContentDocumentFilter} returning all documents available,
+     * matching the array of {@code allowedFilenames}.
+     * Ignores all other documents.
+     *
+     * @param allowedFilenames an array of {@link String}s to be allowed
+     * @return {@link ASiCContentDocumentFilter}
+     */
+    public static ASiCContentDocumentFilter allowedFilenamesFilter(String... allowedFilenames) {
+        final ASiCContentDocumentFilter asicContentDocumentFilter = new ASiCContentDocumentFilter();
+        if (Utils.isArrayNotEmpty(allowedFilenames)) {
+            asicContentDocumentFilter.setIncludedFilenames(Arrays.asList(allowedFilenames));
         }
         return asicContentDocumentFilter;
     }

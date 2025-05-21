@@ -1,9 +1,7 @@
-package eu.europa.esig.dss.asic.xades.preservation;
+package eu.europa.esig.dss.asic.xades.preservation.signature;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
-import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.EvidenceRecordTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -13,24 +11,21 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.evidencerecord.XAdESEvidenceRecordIncorporationParameters;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class ASiCSWithDoubleXAdESAddASN1EvidenceRecordTest extends AbstractASiCWithXAdESAddEvidenceRecordTest {
+class ASiCEWithDoubleXAdESAddXMLSignatureEvidenceRecordTest extends AbstractASiCWithXAdESAddSignatureEvidenceRecordTest {
 
     private String signatureId = null;
 
     @Override
     protected DSSDocument getSignatureDocument() {
-        return new FileDocument("src/test/resources/validation/multifiles-ok.asics");
+        return new FileDocument("src/test/resources/validation/multifiles-ok.asice");
     }
 
     @Override
     protected DSSDocument getEvidenceRecordDocument() {
-        return new FileDocument("src/test/resources/validation/evidencerecord/incorporation/evidence-record-multifiles-s-ok.ers");
+        return new FileDocument("src/test/resources/validation/evidencerecord/incorporation/evidence-record-multifiles-ok.xml");
     }
 
     @Override
@@ -58,12 +53,12 @@ class ASiCSWithDoubleXAdESAddASN1EvidenceRecordTest extends AbstractASiCWithXAdE
 
     @Override
     protected EvidenceRecordTypeEnum getEvidenceRecordType() {
-        return EvidenceRecordTypeEnum.ASN1_EVIDENCE_RECORD;
+        return EvidenceRecordTypeEnum.XML_EVIDENCE_RECORD;
     }
 
     @Override
     protected int getNumberOfCoveredDocuments() {
-        return 3;
+        return 2;
     }
 
     @Override
@@ -85,30 +80,15 @@ class ASiCSWithDoubleXAdESAddASN1EvidenceRecordTest extends AbstractASiCWithXAdE
         assertEquals("A signature with id 'not-existing' has not been found!", exception.getMessage());
 
         // wrong signature
-        signatureId = "id-eef6990e2d0a7d354d7b3cadec31402a";
+        signatureId = "id-f2d402c33667a271607cec86295fbe09";
         exception = assertThrows(IllegalInputException.class, super::addERAndValidate);
         assertEquals("The digest covered by the evidence record do not correspond to the digest computed " +
                         "on the signature and/or detached content!",
                 exception.getMessage());
 
         // wrong signature
-        signatureId = "id-ab45cb0f04c9f70f278a9a5f355775ad";
+        signatureId = "id-27c5484f172975dd4233d5c3ff356396";
         super.addERAndValidate();
-    }
-
-    @Override
-    protected void checkEvidenceRecordTimestamps(DiagnosticData diagnosticData) {
-        List<EvidenceRecordWrapper> evidenceRecords = diagnosticData.getEvidenceRecords();
-        for (EvidenceRecordWrapper evidenceRecord : evidenceRecords) {
-            List<TimestampWrapper> timestamps = evidenceRecord.getTimestampList();
-            assertTrue(Utils.isCollectionNotEmpty(timestamps));
-            for (TimestampWrapper timestampWrapper : timestamps) {
-                assertTrue(timestampWrapper.isMessageImprintDataFound());
-                assertTrue(timestampWrapper.isMessageImprintDataIntact());
-                assertTrue(timestampWrapper.isSignatureIntact());
-                assertTrue(timestampWrapper.isSignatureValid());
-            }
-        }
     }
 
 }

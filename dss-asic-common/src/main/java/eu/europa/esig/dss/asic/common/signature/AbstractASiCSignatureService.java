@@ -22,11 +22,11 @@ package eu.europa.esig.dss.asic.common.signature;
 
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
-import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.ZipUtils;
+import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
+import eu.europa.esig.dss.enumerations.MimeType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DigestDocument;
-import eu.europa.esig.dss.enumerations.MimeType;
 import eu.europa.esig.dss.model.SerializableCounterSignatureParameters;
 import eu.europa.esig.dss.model.SerializableSignatureParameters;
 import eu.europa.esig.dss.model.SerializableTimestampParameters;
@@ -36,9 +36,9 @@ import eu.europa.esig.dss.signature.AbstractSignatureService;
 import eu.europa.esig.dss.signature.CounterSignatureService;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.signature.SigningOperation;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.utils.Utils;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -53,8 +53,8 @@ import java.util.Objects;
  * @param <CSP> implementation of counter-signature parameters corresponding to the supported signature format
  */
 public abstract class AbstractASiCSignatureService<SP extends SerializableSignatureParameters, TP extends SerializableTimestampParameters, 
-					CSP extends SerializableCounterSignatureParameters> extends AbstractSignatureService<SP, TP> 
-					implements MultipleDocumentsSignatureService<SP, TP>, CounterSignatureService<CSP> {
+					CSP extends SerializableCounterSignatureParameters>
+		extends AbstractSignatureService<SP, TP> implements MultipleDocumentsSignatureService<SP, TP>, CounterSignatureService<CSP> {
 
 	private static final long serialVersionUID = 243114076381526665L;
 

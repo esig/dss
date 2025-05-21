@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.spi.x509.evidencerecord;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EvidenceRecordIncorporationType;
 import eu.europa.esig.dss.enumerations.EvidenceRecordOrigin;
 import eu.europa.esig.dss.enumerations.EvidenceRecordTypeEnum;
@@ -122,6 +123,13 @@ public interface EvidenceRecord extends IdentifierBasedObject {
      * @param evidenceRecordScopes a list of {@link SignatureScope}s
      */
     void setEvidenceRecordScopes(List<SignatureScope> evidenceRecordScopes);
+
+    /**
+     * Gets a DigestAlgorithm used on the first data object group's digest computation
+     *
+     * @return {@link DigestAlgorithm}
+     */
+    DigestAlgorithm getOriginalDigestAlgorithm();
 
     /**
      * Returns a message if the structure validation fails

@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.evidencerecord.common.validation;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EvidenceRecordIncorporationType;
 import eu.europa.esig.dss.enumerations.EvidenceRecordOrigin;
 import eu.europa.esig.dss.evidencerecord.common.validation.identifier.EmbeddedEvidenceRecordIdentifierBuilder;
@@ -342,6 +343,11 @@ public abstract class DefaultEvidenceRecord implements EvidenceRecord {
     @Override
     public void setEvidenceRecordScopes(List<SignatureScope> evidenceRecordScopes) {
         this.evidenceRecordScopes = evidenceRecordScopes;
+    }
+
+    @Override
+    public DigestAlgorithm getOriginalDigestAlgorithm() {
+        return getArchiveTimeStampSequence().get(0).getDigestAlgorithm();
     }
 
     @Override

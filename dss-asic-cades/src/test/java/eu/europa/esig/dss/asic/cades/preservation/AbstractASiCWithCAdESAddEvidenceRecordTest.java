@@ -10,7 +10,6 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,13 +33,7 @@ public abstract class AbstractASiCWithCAdESAddEvidenceRecordTest extends Abstrac
     @Override
     protected DSSDocument getSignedDocument() {
         ASiCWithCAdESService service = getService();
-        DSSDocument dssDocument = service.addSignatureEvidenceRecord(getSignatureDocument(), getEvidenceRecordDocument(), getEvidenceRecordIncorporationParameters());
-        try {
-            dssDocument.save("target/" + dssDocument.getName());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return dssDocument;
+        return service.addSignatureEvidenceRecord(getSignatureDocument(), getEvidenceRecordDocument(), getEvidenceRecordIncorporationParameters());
     }
 
     @Override
