@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.asic.xades.preservation.container;
+package eu.europa.esig.dss.asic.cades.preservation.container;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;
@@ -17,7 +17,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class ASiCEWithXAdESAddContainerASN1EvidenceRecordTest extends AbstractASiCWithXAdESTestAddContainerEvidenceRecord {
+class ASiCSWithCAdESAddContainerASN1EvidenceRecordTest extends AbstractASiCWithCAdESTestAddContainerEvidenceRecord {
 
     @Override
     protected List<DSSDocument> getDocumentsToPreserve() {
@@ -31,7 +31,7 @@ class ASiCEWithXAdESAddContainerASN1EvidenceRecordTest extends AbstractASiCWithX
 
     @Override
     protected ASiCContainerType getASiCContainerType() {
-        return ASiCContainerType.ASiC_E;
+        return ASiCContainerType.ASiC_S;
     }
 
     @Override
@@ -42,6 +42,11 @@ class ASiCEWithXAdESAddContainerASN1EvidenceRecordTest extends AbstractASiCWithX
     @Override
     protected int getNumberOfExpectedEvidenceScopes() {
         return 1;
+    }
+
+    @Override
+    protected boolean allArchiveDataObjectsProvidedToValidation() {
+        return false;
     }
 
     @Override
@@ -75,11 +80,6 @@ class ASiCEWithXAdESAddContainerASN1EvidenceRecordTest extends AbstractASiCWithX
                 assertTrue(timestampWrapper.isSignatureValid());
             }
         }
-    }
-
-    @Override
-    protected boolean allArchiveDataObjectsProvidedToValidation() {
-        return false;
     }
 
 }

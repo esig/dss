@@ -1,14 +1,10 @@
-package eu.europa.esig.dss.asic.xades.preservation.container;
+package eu.europa.esig.dss.asic.cades.preservation.container;
 
 import eu.europa.esig.dss.asic.common.ZipUtils;
-import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;
-import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.EvidenceRecordTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.utils.Utils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -19,9 +15,8 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class ASiCSWithXAdESAddContainerASN1EvidenceRecordMultipleFilesTest extends AbstractASiCWithXAdESTestAddContainerEvidenceRecord {
+class ASiCSWithCAdESAddContainerXMLEvidenceRecordMultipleFilesTest extends AbstractASiCWithCAdESTestAddContainerEvidenceRecord {
 
     private static List<DSSDocument> originalDocuments;
 
@@ -33,7 +28,7 @@ class ASiCSWithXAdESAddContainerASN1EvidenceRecordMultipleFilesTest extends Abst
                 new FileDocument("src/test/resources/signable/empty.zip"),
                 new FileDocument("src/test/resources/signable/test.txt"),
                 new FileDocument("src/test/resources/signable/test.zip")
-                );
+        );
     }
 
     @Override
@@ -43,7 +38,7 @@ class ASiCSWithXAdESAddContainerASN1EvidenceRecordMultipleFilesTest extends Abst
 
     @Override
     protected DSSDocument getEvidenceRecordDocument() {
-        return new FileDocument("src/test/resources/validation/evidencerecord/incorporation/evidence-record-package-zip.ers");
+        return new FileDocument("src/test/resources/validation/evidencerecord/incorporation/evidence-record-package-zip.xml");
     }
 
     @Override
@@ -53,27 +48,12 @@ class ASiCSWithXAdESAddContainerASN1EvidenceRecordMultipleFilesTest extends Abst
 
     @Override
     protected EvidenceRecordTypeEnum getEvidenceRecordType() {
-        return EvidenceRecordTypeEnum.ASN1_EVIDENCE_RECORD;
+        return EvidenceRecordTypeEnum.XML_EVIDENCE_RECORD;
     }
 
     @Override
     protected int getNumberOfExpectedEvidenceScopes() {
         return 1;
-    }
-
-    @Override
-    protected void checkEvidenceRecordTimestamps(DiagnosticData diagnosticData) {
-        List<EvidenceRecordWrapper> evidenceRecords = diagnosticData.getEvidenceRecords();
-        for (EvidenceRecordWrapper evidenceRecord : evidenceRecords) {
-            List<TimestampWrapper> timestamps = evidenceRecord.getTimestampList();
-            assertTrue(Utils.isCollectionNotEmpty(timestamps));
-            for (TimestampWrapper timestampWrapper : timestamps) {
-                assertTrue(timestampWrapper.isMessageImprintDataFound());
-                assertTrue(timestampWrapper.isMessageImprintDataIntact());
-                assertTrue(timestampWrapper.isSignatureIntact());
-                assertTrue(timestampWrapper.isSignatureValid());
-            }
-        }
     }
 
     @Test

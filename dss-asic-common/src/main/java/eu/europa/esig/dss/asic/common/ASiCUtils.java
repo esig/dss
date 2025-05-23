@@ -421,7 +421,8 @@ public final class ASiCUtils {
 	public static boolean isAsicFileContent(List<String> filenames) {
 		return filesContainCorrectSignatureFileWithExtension(filenames, CADES_SIGNATURE_EXTENSION)
 				|| filesContainCorrectSignatureFileWithExtension(filenames, XML_EXTENSION)
-				|| filesContainTimestamps(filenames);
+				|| filesContainTimestamps(filenames)
+				|| filesContainEvidenceRecords(filenames);
 	}
 
 	/**

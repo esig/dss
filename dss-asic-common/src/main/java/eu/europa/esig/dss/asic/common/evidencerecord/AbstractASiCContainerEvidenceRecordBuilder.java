@@ -5,11 +5,14 @@ import eu.europa.esig.dss.asic.common.ASiCEvidenceRecordFilenameFactory;
 import eu.europa.esig.dss.asic.common.ASiCParameters;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.signature.AbstractASiCContentBuilder;
+import eu.europa.esig.dss.asic.common.validation.ASiCManifestParser;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.EvidenceRecordOrigin;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.ManifestEntry;
+import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.model.ReferenceValidation;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
@@ -32,10 +35,10 @@ import java.util.List;
 public abstract class AbstractASiCContainerEvidenceRecordBuilder {
 
     /** Used to verify the evidence record against the provided data */
-    private final CertificateVerifier certificateVerifier;
+    protected final CertificateVerifier certificateVerifier;
 
     /** Filename factory */
-    private final ASiCEvidenceRecordFilenameFactory asicFilenameFactory;
+    protected final ASiCEvidenceRecordFilenameFactory asicFilenameFactory;
 
     /**
      * Default constructor
@@ -62,7 +65,7 @@ public abstract class AbstractASiCContainerEvidenceRecordBuilder {
         assertASiCContentValid(asicContent, parameters);
 
         EvidenceRecord evidenceRecord = getEvidenceRecord(evidenceRecordDocument, asicContent);
-        assertEvidenceRecordValid(evidenceRecord);
+        assertEvidenceRecordValid(evidenceRecord, asicContent);
 
         List<DSSDocument> coveredDocuments = getDocumentsCoveredByEvidenceRecord(evidenceRecord, asicContent);
         assertSignedDataCovered(asicContent, coveredDocuments);
@@ -80,7 +83,14 @@ public abstract class AbstractASiCContainerEvidenceRecordBuilder {
         return ASiCUtils.ensureMimeTypeAndZipComment(asicContent, parameters);
     }
 
-    private ASiCContent initASiCContent(List<DSSDocument> documents, ASiCParameters parameters) {
+    /**
+     * This method initializes an {@code ASiCContent} from the given list of {@code documents}
+     *
+     * @param documents a list of {@link DSSDocument}s to create an ASiC container from
+     * @param parameters {@link ASiCParameters}
+     * @return {@link ASiCContent}
+     */
+    protected ASiCContent initASiCContent(List<DSSDocument> documents, ASiCParameters parameters) {
         return getASiCContentBuilder().build(documents, parameters.getContainerType());
     }
 
@@ -91,7 +101,14 @@ public abstract class AbstractASiCContainerEvidenceRecordBuilder {
      */
     protected abstract AbstractASiCContentBuilder getASiCContentBuilder();
 
-    private EvidenceRecord getEvidenceRecord(DSSDocument evidenceRecordDocument, ASiCContent asicContent) {
+    /**
+     * Creates an {@code EvidenceRecord} from a provided {@code evidenceRecordDocument}
+     *
+     * @param evidenceRecordDocument {@link DSSDocument} containing evidence record
+     * @param asicContent {@link ASiCContent}
+     * @return {@link EvidenceRecord}
+     */
+    protected EvidenceRecord getEvidenceRecord(DSSDocument evidenceRecordDocument, ASiCContent asicContent) {
         try {
             EvidenceRecordAnalyzer evidenceRecordAnalyzer = EvidenceRecordAnalyzerFactory.fromDocument(evidenceRecordDocument);
             evidenceRecordAnalyzer.setDetachedContents(asicContent.getAllDocuments());
@@ -116,8 +133,17 @@ public abstract class AbstractASiCContainerEvidenceRecordBuilder {
         return coveredDocuments;
     }
 
-    private DSSDocument buildEvidenceRecordManifest(ASiCContent asicContent, List<DSSDocument> coveredDocuments,
-                                                    DigestAlgorithm digestAlgorithm, String evidenceRecordFilename) {
+    /**
+     * Builds an ASiCEvidenceRecordManifest for the evidence record based on a list of {@code coveredDocuments} when required
+     *
+     * @param asicContent {@link ASiCContent}
+     * @param coveredDocuments a list of {@link DSSDocument}s
+     * @param digestAlgorithm {@link DigestAlgorithm}
+     * @param evidenceRecordFilename {@link String}
+     * @return {@link DSSDocument}
+     */
+    protected DSSDocument buildEvidenceRecordManifest(ASiCContent asicContent, List<DSSDocument> coveredDocuments,
+                                                      DigestAlgorithm digestAlgorithm, String evidenceRecordFilename) {
         if (ASiCContainerType.ASiC_E == asicContent.getContainerType()) {
             return new ASiCEvidenceRecordManifestBuilder(asicContent, digestAlgorithm, evidenceRecordFilename)
                     .setAsicContentDocumentFilter(ASiCContentDocumentFilterFactory.allowedFilenamesFilter(getDocumentNames(coveredDocuments)))
@@ -134,7 +160,14 @@ public abstract class AbstractASiCContainerEvidenceRecordBuilder {
         return DSSUtils.getDocumentNames(coveredDocuments).toArray(new String[0]);
     }
 
-    private void assertASiCContentValid(ASiCContent asicContent, ASiCParameters parameters) {
+    /**
+     * This method verifies whether the provided {@code ASiCContent} is valid and
+     * can be successfully protected by a new evidence record
+     *
+     * @param asicContent {@link ASiCContent} to verify
+     * @param parameters {@link ASiCParameters}
+     */
+    protected void assertASiCContentValid(ASiCContent asicContent, ASiCParameters parameters) {
         ASiCContainerType currentContainerType = asicContent.getContainerType();
 
         boolean asice = ASiCUtils.isASiCE(parameters);
@@ -148,6 +181,13 @@ public abstract class AbstractASiCContainerEvidenceRecordBuilder {
                                 "please create a 'package.zip' and provide it directly as a parameter. " +
                                 "Otherwise, please switch to the ASiC-E type.");
             }
+            if (Utils.isCollectionNotEmpty(asicContent.getSignatureDocuments()) ||
+                    Utils.isCollectionNotEmpty(asicContent.getTimestampDocuments()) ||
+                    Utils.isCollectionNotEmpty(asicContent.getEvidenceRecordDocuments())) {
+                throw new IllegalInputException(
+                        "Only one of the signature, timestamp or evidence record document types is allowed " +
+                                "within an ASiC-S container type!");
+            }
 
         } else {
             throw new UnsupportedOperationException(
@@ -156,16 +196,57 @@ public abstract class AbstractASiCContainerEvidenceRecordBuilder {
         }
     }
 
-    private void assertSignedDataCovered(ASiCContent asicContent, List<DSSDocument> coveredDocuments) {
-        for (DSSDocument signedDocument : asicContent.getSignedDocuments()) {
-            if (!coveredDocuments.contains(signedDocument)) {
+    /**
+     * This method verifies whether the original or signed documents are successfully covered by the evidence record
+     *
+     * @param asicContent {@link ASiCContent}
+     * @param coveredDocuments a list of {@link DSSDocument}s covered by the evidence record
+     */
+    protected void assertSignedDataCovered(ASiCContent asicContent, List<DSSDocument> coveredDocuments) {
+        final List<String> signedDocumentNames = DSSUtils.getDocumentNames(asicContent.getSignedDocuments());
+        final List<String> coveredDocumentNames = DSSUtils.getDocumentNames(coveredDocuments);
+
+        for (String signedDocumentFilename : signedDocumentNames) {
+            if (!coveredDocumentNames.contains(signedDocumentFilename)) {
                 throw new IllegalInputException(String.format("The original document with name '%s' is not covered " +
-                        "by the evidence record's data group!", signedDocument.getName()));
+                        "by the evidence record's data group!", signedDocumentFilename));
+            }
+        }
+
+        for (String documentName : coveredDocumentNames) {
+            DSSDocument linkedManifest = ASiCManifestParser.getLinkedManifest(asicContent.getAllManifestDocuments(), documentName);
+            assertManifestSignedDataCoveredRecursively(linkedManifest, coveredDocumentNames, asicContent);
+        }
+    }
+
+    private void assertManifestSignedDataCoveredRecursively(DSSDocument manifestDocument, List<String> coveredDocumentNames, ASiCContent asicContent) {
+        if (manifestDocument != null) {
+            if (!coveredDocumentNames.contains(manifestDocument.getName())) {
+                throw new IllegalInputException(String.format("Digest of a signed ASiC Manifest with name '%s' " +
+                        "has not been found in the evidence record's data group!", manifestDocument.getName()));
+            }
+            ManifestFile manifestFile = ASiCManifestParser.getManifestFile(manifestDocument);
+            if (manifestFile != null) {
+                for (ManifestEntry entry : manifestFile.getEntries()) {
+                    if (!coveredDocumentNames.contains(entry.getUri())) {
+                        throw new IllegalInputException(String.format("Digest for a document referenced from " +
+                                        "a covered ASiC Manifest with name '%s' has not been found in the evidence record's data group!",
+                                entry.getUri()));
+                    }
+                    DSSDocument linkedManifest = ASiCManifestParser.getLinkedManifest(asicContent.getAllManifestDocuments(), entry.getUri());
+                    assertManifestSignedDataCoveredRecursively(linkedManifest, coveredDocumentNames, asicContent);
+                }
             }
         }
     }
 
-    private void assertEvidenceRecordValid(EvidenceRecord evidenceRecord) {
+    /**
+     * This method verifies whether the provided {@code EvidenceRecord} and covers the original data files
+     *
+     * @param evidenceRecord {@link EvidenceRecord}
+     * @param asicContent {@link ASiCContent}
+     */
+    protected void assertEvidenceRecordValid(EvidenceRecord evidenceRecord, ASiCContent asicContent) {
         final String errorMessage = "The digest covered by the evidence record do not correspond to " +
                 "the digest computed on the provided content!";
         boolean signedDataFound = false;

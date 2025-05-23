@@ -66,6 +66,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -410,8 +411,6 @@ public abstract class AbstractASiCWithCAdESWithEvidenceRecordTestValidation exte
 
         for (SignatureWrapper signature : diagnosticData.getSignatures()) {
             List<EvidenceRecordWrapper> evidenceRecords = signature.getEvidenceRecords();
-            assertTrue(Utils.isCollectionNotEmpty(evidenceRecords));
-
             for (EvidenceRecordWrapper evidenceRecord : evidenceRecords) {
 
                 XmlManifestFile erManifest = null;
@@ -594,9 +593,6 @@ public abstract class AbstractASiCWithCAdESWithEvidenceRecordTestValidation exte
         List<SignatureValidationReportType> signatureValidationReports = etsiValidationReportJaxb.getSignatureValidationReport();
         assertTrue(Utils.isCollectionNotEmpty(signatureValidationReports));
 
-        SignatureValidationReportType signatureValidationReportType = signatureValidationReports.get(0);
-        assertNotEquals(Indication.NO_SIGNATURE_FOUND, signatureValidationReportType.getSignatureValidationStatus().getMainIndication());
-
         ValidationObjectListType signatureValidationObjects = etsiValidationReportJaxb.getSignatureValidationObjects();
         assertNotNull(signatureValidationObjects);
 
@@ -647,10 +643,10 @@ public abstract class AbstractASiCWithCAdESWithEvidenceRecordTestValidation exte
                 assertEquals(1, directOrBase64OrDigestAlgAndValue.size());
 
                 if (getTokenExtractionStrategy().isEvidenceRecord()) {
-                    assertTrue(directOrBase64OrDigestAlgAndValue.get(0) instanceof byte[]);
+                    assertInstanceOf(byte[].class, directOrBase64OrDigestAlgAndValue.get(0));
                     assertNotNull(directOrBase64OrDigestAlgAndValue.get(0));
                 } else {
-                    assertTrue(directOrBase64OrDigestAlgAndValue.get(0) instanceof DigestAlgAndValueType);
+                    assertInstanceOf(DigestAlgAndValueType.class, directOrBase64OrDigestAlgAndValue.get(0));
                     DigestAlgAndValueType digestAlgAndValueType = (DigestAlgAndValueType) directOrBase64OrDigestAlgAndValue.get(0);
                     assertNotNull(DigestAlgorithm.forXML(digestAlgAndValueType.getDigestMethod().getAlgorithm()));
                     assertNotNull(digestAlgAndValueType.getDigestValue());

@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.asic.xades.preservation.container;
+package eu.europa.esig.dss.asic.cades.preservation.container;
 
 import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
 import eu.europa.esig.dss.alert.LogOnStatusAlert;
@@ -6,7 +6,9 @@ import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.EvidenceRecordTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
@@ -25,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class ASiCSWithXAdESAddContainerXMLEvidenceRecordInvalidTstTest extends AbstractASiCWithXAdESTestAddContainerEvidenceRecord {
+class ASiCSWithCAdESAddContainerASN1EvidenceRecordInvalidTstTest extends AbstractASiCWithCAdESTestAddContainerEvidenceRecord {
 
     private CertificateVerifier certificateVerifier;
 
@@ -46,7 +48,7 @@ class ASiCSWithXAdESAddContainerXMLEvidenceRecordInvalidTstTest extends Abstract
 
     @Override
     protected DSSDocument getEvidenceRecordDocument() {
-        return new FileDocument("src/test/resources/validation/evidencerecord/incorporation/evidence-record-test-txt-invalid-tst.xml");
+        return new FileDocument("src/test/resources/validation/evidencerecord/incorporation/evidence-record-test-txt-invalid-tst.ers");
     }
 
     @Override
@@ -56,12 +58,17 @@ class ASiCSWithXAdESAddContainerXMLEvidenceRecordInvalidTstTest extends Abstract
 
     @Override
     protected EvidenceRecordTypeEnum getEvidenceRecordType() {
-        return EvidenceRecordTypeEnum.XML_EVIDENCE_RECORD;
+        return EvidenceRecordTypeEnum.ASN1_EVIDENCE_RECORD;
     }
 
     @Override
     protected int getNumberOfExpectedEvidenceScopes() {
         return 1;
+    }
+
+    @Override
+    protected boolean allArchiveDataObjectsProvidedToValidation() {
+        return false;
     }
 
     @Override
@@ -72,8 +79,26 @@ class ASiCSWithXAdESAddContainerXMLEvidenceRecordInvalidTstTest extends Abstract
 
         TimestampToken timestampToken = timestamps.get(0);
         assertTrue(timestampToken.isMessageImprintDataFound());
-        assertFalse(timestampToken.isMessageImprintDataIntact());
+        assertTrue(timestampToken.isMessageImprintDataIntact());
         assertFalse(timestampToken.isValid());
+    }
+
+    @Override
+    protected void checkEvidenceRecordDigestMatchers(DiagnosticData diagnosticData) {
+        List<EvidenceRecordWrapper> evidenceRecords = diagnosticData.getEvidenceRecords();
+        EvidenceRecordWrapper evidenceRecordWrapper = evidenceRecords.get(0);
+
+        int archiveDataObjectCounter = 0;
+        int orphanDataObjectCounter = 0;
+        for (XmlDigestMatcher digestMatcher : evidenceRecordWrapper.getDigestMatchers()) {
+            if (DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT == digestMatcher.getType()) {
+                ++archiveDataObjectCounter;
+            } else if (DigestMatcherType.EVIDENCE_RECORD_ORPHAN_REFERENCE == digestMatcher.getType()) {
+                ++orphanDataObjectCounter;
+            }
+        }
+        assertEquals(1, archiveDataObjectCounter);
+        assertEquals(1, orphanDataObjectCounter);
     }
 
     @Override
@@ -84,8 +109,8 @@ class ASiCSWithXAdESAddContainerXMLEvidenceRecordInvalidTstTest extends Abstract
             assertTrue(Utils.isCollectionNotEmpty(timestamps));
             for (TimestampWrapper timestampWrapper : timestamps) {
                 assertTrue(timestampWrapper.isMessageImprintDataFound());
-                assertFalse(timestampWrapper.isMessageImprintDataIntact());
-                assertTrue(timestampWrapper.isSignatureIntact());
+                assertTrue(timestampWrapper.isMessageImprintDataIntact());
+                assertFalse(timestampWrapper.isSignatureIntact());
                 assertFalse(timestampWrapper.isSignatureValid());
             }
         }

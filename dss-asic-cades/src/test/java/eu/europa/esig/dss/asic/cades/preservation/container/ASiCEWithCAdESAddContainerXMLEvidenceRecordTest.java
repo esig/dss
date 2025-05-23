@@ -1,22 +1,18 @@
-package eu.europa.esig.dss.asic.xades.preservation.container;
+package eu.europa.esig.dss.asic.cades.preservation.container;
 
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.EvidenceRecordTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-class ASiCEWithXAdESAddContainerXMLEvidenceRecordOnCAdESTest extends AbstractASiCWithXAdESTestAddContainerEvidenceRecord {
+class ASiCEWithCAdESAddContainerXMLEvidenceRecordTest extends AbstractASiCWithCAdESTestAddContainerEvidenceRecord {
 
     @Override
     protected List<DSSDocument> getDocumentsToPreserve() {
-        return Collections.singletonList(new FileDocument("src/test/resources/signable/asic_cades.zip"));
+        return Collections.singletonList(new FileDocument("src/test/resources/signable/test.txt"));
     }
 
     @Override
@@ -37,13 +33,6 @@ class ASiCEWithXAdESAddContainerXMLEvidenceRecordOnCAdESTest extends AbstractASi
     @Override
     protected int getNumberOfExpectedEvidenceScopes() {
         return 1;
-    }
-
-    @Test
-    @Override
-    public void addERAndValidate() {
-        Exception exception = assertThrows(UnsupportedOperationException.class, super::addERAndValidate);
-        assertEquals("Container type doesn't match! The same container type shall be chosen.", exception.getMessage());
     }
 
 }

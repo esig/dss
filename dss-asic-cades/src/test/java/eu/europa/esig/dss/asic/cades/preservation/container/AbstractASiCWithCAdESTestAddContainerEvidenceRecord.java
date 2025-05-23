@@ -1,8 +1,8 @@
-package eu.europa.esig.dss.asic.xades.preservation.container;
+package eu.europa.esig.dss.asic.cades.preservation.container;
 
-import eu.europa.esig.dss.asic.xades.evidencerecord.ASiCWithXAdESContainerEvidenceRecordParameters;
-import eu.europa.esig.dss.asic.xades.signature.ASiCWithXAdESService;
-import eu.europa.esig.dss.asic.xades.validation.evidencerecord.AbstractASiCWithXAdESWithEvidenceRecordTestValidation;
+import eu.europa.esig.dss.asic.cades.evidencerecord.ASiCWithCAdESContainerEvidenceRecordParameters;
+import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
+import eu.europa.esig.dss.asic.cades.validation.evidencerecord.AbstractASiCWithCAdESWithEvidenceRecordTestValidation;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlManifestFile;
@@ -14,41 +14,34 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.validationreport.jaxb.ValidationStatusType;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public abstract class AbstractASiCWithXAdESAddContainerEvidenceRecordTest extends AbstractASiCWithXAdESWithEvidenceRecordTestValidation {
+public abstract class AbstractASiCWithCAdESTestAddContainerEvidenceRecord extends AbstractASiCWithCAdESWithEvidenceRecordTestValidation {
 
     protected abstract List<DSSDocument> getDocumentsToPreserve();
 
     protected abstract DSSDocument getEvidenceRecordDocument();
 
-    protected ASiCWithXAdESContainerEvidenceRecordParameters getASiCContainerEvidenceRecordParameters() {
-        ASiCWithXAdESContainerEvidenceRecordParameters parameters = new ASiCWithXAdESContainerEvidenceRecordParameters();
+    protected ASiCWithCAdESContainerEvidenceRecordParameters getASiCContainerEvidenceRecordParameters() {
+        ASiCWithCAdESContainerEvidenceRecordParameters parameters = new ASiCWithCAdESContainerEvidenceRecordParameters();
         parameters.setContainerType(getASiCContainerType());
         return parameters;
     }
 
     protected abstract ASiCContainerType getASiCContainerType();
 
-    protected ASiCWithXAdESService getService() {
-        return new ASiCWithXAdESService(getOfflineCertificateVerifier());
+    protected ASiCWithCAdESService getService() {
+        return new ASiCWithCAdESService(getOfflineCertificateVerifier());
     }
 
     @Override
     protected DSSDocument getSignedDocument() {
-        ASiCWithXAdESService service = getService();
-        DSSDocument document = service.addContainerEvidenceRecord(getDocumentsToPreserve(), getEvidenceRecordDocument(), getASiCContainerEvidenceRecordParameters());
-        try {
-            document.save("target/" + document.getName());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return document;
+        ASiCWithCAdESService service = getService();
+        return service.addContainerEvidenceRecord(getDocumentsToPreserve(), getEvidenceRecordDocument(), getASiCContainerEvidenceRecordParameters());
     }
 
     @Override
@@ -84,12 +77,29 @@ public abstract class AbstractASiCWithXAdESAddContainerEvidenceRecordTest extend
 
     protected void checkEvidenceRecordFilename(DiagnosticData diagnosticData) {
         for (EvidenceRecordWrapper evidenceRecordWrapper : diagnosticData.getEvidenceRecords()) {
-            if (EvidenceRecordTypeEnum.XML_EVIDENCE_RECORD == evidenceRecordWrapper.getEvidenceRecordType()) {
-                assertEquals("META-INF/evidencerecord.xml", evidenceRecordWrapper.getFilename());
-            } else if (EvidenceRecordTypeEnum.ASN1_EVIDENCE_RECORD == evidenceRecordWrapper.getEvidenceRecordType()) {
-                assertEquals("META-INF/evidencerecord.ers", evidenceRecordWrapper.getFilename());
+            ASiCContainerType asicContainerType = getASiCContainerType();
+            if (ASiCContainerType.ASiC_S == asicContainerType) {
+                if (EvidenceRecordTypeEnum.XML_EVIDENCE_RECORD == evidenceRecordWrapper.getEvidenceRecordType()) {
+                    assertEquals("META-INF/evidencerecord.xml", evidenceRecordWrapper.getFilename());
+                } else if (EvidenceRecordTypeEnum.ASN1_EVIDENCE_RECORD == evidenceRecordWrapper.getEvidenceRecordType()) {
+                    assertEquals("META-INF/evidencerecord.ers", evidenceRecordWrapper.getFilename());
+                } else {
+                    fail(String.format("The evidence record type '%s' is not supported!", evidenceRecordWrapper.getEvidenceRecordType()));
+                }
+
+            } else if (ASiCContainerType.ASiC_E == asicContainerType){
+                assertTrue(evidenceRecordWrapper.getFilename().startsWith("META-INF/"));
+                assertTrue(evidenceRecordWrapper.getFilename().contains("evidencerecord"));
+                if (EvidenceRecordTypeEnum.XML_EVIDENCE_RECORD == evidenceRecordWrapper.getEvidenceRecordType()) {
+                    assertTrue(evidenceRecordWrapper.getFilename().endsWith(".xml"));
+                } else if (EvidenceRecordTypeEnum.ASN1_EVIDENCE_RECORD == evidenceRecordWrapper.getEvidenceRecordType()) {
+                    assertTrue(evidenceRecordWrapper.getFilename().endsWith(".ers"));
+                } else {
+                    fail(String.format("The evidence record type '%s' is not supported!", evidenceRecordWrapper.getEvidenceRecordType()));
+                }
+
             } else {
-                fail(String.format("The evidence record type '%s' is not supported!", evidenceRecordWrapper.getEvidenceRecordType()));
+                fail(String.format("The ASiC container type '%s' is not supported!", asicContainerType));
             }
         }
     }

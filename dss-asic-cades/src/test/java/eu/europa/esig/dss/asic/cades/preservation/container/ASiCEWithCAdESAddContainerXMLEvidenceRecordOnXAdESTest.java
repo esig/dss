@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.asic.xades.preservation.container;
+package eu.europa.esig.dss.asic.cades.preservation.container;
 
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.EvidenceRecordTypeEnum;
@@ -12,16 +12,16 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class ASiCEWithXAdESAddContainerXMLEvidenceRecordOnCAdESTest extends AbstractASiCWithXAdESTestAddContainerEvidenceRecord {
+class ASiCEWithCAdESAddContainerXMLEvidenceRecordOnXAdESTest extends AbstractASiCWithCAdESTestAddContainerEvidenceRecord {
 
     @Override
     protected List<DSSDocument> getDocumentsToPreserve() {
-        return Collections.singletonList(new FileDocument("src/test/resources/signable/asic_cades.zip"));
+        return Collections.singletonList(new FileDocument("src/test/resources/signable/asic_xades.zip"));
     }
 
     @Override
     protected DSSDocument getEvidenceRecordDocument() {
-        return new FileDocument("src/test/resources/validation/evidencerecord/incorporation/evidence-record-test-txt.xml");
+        return new FileDocument("src/test/resources/validation/evidencerecord/incorporation/evidence-record-test-txt.ers");
     }
 
     @Override
@@ -31,7 +31,7 @@ class ASiCEWithXAdESAddContainerXMLEvidenceRecordOnCAdESTest extends AbstractASi
 
     @Override
     protected EvidenceRecordTypeEnum getEvidenceRecordType() {
-        return EvidenceRecordTypeEnum.XML_EVIDENCE_RECORD;
+        return EvidenceRecordTypeEnum.ASN1_EVIDENCE_RECORD;
     }
 
     @Override

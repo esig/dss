@@ -13,7 +13,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class ASiCEWithXAdESLevelBAddContainerXMLEvidenceRecordSignatureOnlyTest extends AbstractASiCWithXAdESAddContainerEvidenceRecordTest {
+class ASiCEWithXAdESLevelBAddContainerXMLEvidenceRecordSignatureOnlyTest extends AbstractASiCWithXAdESTestAddContainerEvidenceRecord {
 
     @Override
     protected List<DSSDocument> getDocumentsToPreserve() {

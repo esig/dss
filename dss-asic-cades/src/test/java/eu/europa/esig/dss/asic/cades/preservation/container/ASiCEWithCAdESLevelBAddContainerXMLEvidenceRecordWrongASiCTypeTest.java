@@ -1,9 +1,10 @@
-package eu.europa.esig.dss.asic.xades.preservation.container;
+package eu.europa.esig.dss.asic.cades.preservation.container;
 
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.EvidenceRecordTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
@@ -12,7 +13,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class ASiCEWithXAdESAddContainerXMLEvidenceRecordOnCAdESTest extends AbstractASiCWithXAdESTestAddContainerEvidenceRecord {
+class ASiCEWithCAdESLevelBAddContainerXMLEvidenceRecordWrongASiCTypeTest extends AbstractASiCWithCAdESTestAddContainerEvidenceRecord {
 
     @Override
     protected List<DSSDocument> getDocumentsToPreserve() {
@@ -21,12 +22,12 @@ class ASiCEWithXAdESAddContainerXMLEvidenceRecordOnCAdESTest extends AbstractASi
 
     @Override
     protected DSSDocument getEvidenceRecordDocument() {
-        return new FileDocument("src/test/resources/validation/evidencerecord/incorporation/evidence-record-test-txt.xml");
+        return new FileDocument("src/test/resources/validation/evidencerecord/incorporation/evidence-record-asic_cades-signature-and-manifest-and-data.xml");
     }
 
     @Override
     protected ASiCContainerType getASiCContainerType() {
-        return ASiCContainerType.ASiC_E;
+        return ASiCContainerType.ASiC_S;
     }
 
     @Override
@@ -36,14 +37,14 @@ class ASiCEWithXAdESAddContainerXMLEvidenceRecordOnCAdESTest extends AbstractASi
 
     @Override
     protected int getNumberOfExpectedEvidenceScopes() {
-        return 1;
+        return 2;
     }
 
     @Test
     @Override
     public void addERAndValidate() {
-        Exception exception = assertThrows(UnsupportedOperationException.class, super::addERAndValidate);
-        assertEquals("Container type doesn't match! The same container type shall be chosen.", exception.getMessage());
+        Exception exception = assertThrows(IllegalInputException.class, super::addERAndValidate);
+        assertEquals("The provided container of type 'ASiC-E' does not correspond the expected format 'ASiC-S'!", exception.getMessage());
     }
 
 }

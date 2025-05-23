@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.asic.cades.preservation;
+package eu.europa.esig.dss.asic.cades.preservation.signature;
 
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
