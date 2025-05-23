@@ -43,6 +43,7 @@ import eu.europa.esig.dss.signature.CounterSignatureService;
 import eu.europa.esig.dss.signature.SigningOperation;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.signature.resources.DSSResourcesHandlerBuilder;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
@@ -314,6 +315,11 @@ public class CAdESService extends
 		if (cms.isDetachedSignature() != (SignaturePackaging.DETACHED == parameters.getSignaturePackaging())) {
 			throw new IllegalArgumentException(String.format("Unable to create a parallel signature with packaging '%s'" +
 					" which is different than the one used in the original signature!", parameters.getSignaturePackaging()));
+		}
+		for (SignerInformation signerInformation : cms.getSignerInfos()) {
+			if (CAdESUtils.containsEvidenceRecord(signerInformation)) {
+				throw new IllegalInputException("Signature is not possible due to the CMS containing an evidence record unsigned attribute.");
+			}
 		}
 	}
 

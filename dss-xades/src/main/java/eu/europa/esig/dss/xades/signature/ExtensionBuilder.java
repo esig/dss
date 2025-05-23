@@ -22,7 +22,9 @@ package eu.europa.esig.dss.xades.signature;
 
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
@@ -191,26 +193,6 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 			DSSXMLUtils.alignChildrenIndents(qualifyingPropertiesDom);
 		}
 	}
-
-	/**
-	 * Removes the given {@code nodeListToRemove} from its parent
-	 *
-	 * @param nodeListToRemove {@link NodeList} to remove
-	 * @return String of the next TEXT sibling of the first removed node with indent
-	 */
-	protected String removeNodes(NodeList nodeListToRemove) {
-		String text = null;
-		if (nodeListToRemove != null) {
-			for (int index = 0; index < nodeListToRemove.getLength(); index++) {
-				final Node item = nodeListToRemove.item(index);
-				String indent = removeNode(item);
-				if (text == null) {
-					text = indent;
-				}
-			}
-		}
-		return text;
-	}
 	
 	/**
 	 * Removes the given {@code nodeToRemove} from its parent
@@ -265,6 +247,16 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 			}
 		}
 		return xadesNamespace;
+	}
+
+	/**
+	 * This method verifies whether signature extension is possible as it does not contain evidence records
+	 */
+	protected void assertUnsignedPropertiesExtensionPossible(AdvancedSignature signature) {
+		if (Utils.isCollectionNotEmpty(signature.getEmbeddedEvidenceRecords())) {
+			throw new IllegalInputException("Signature extension is not possible. " +
+					"The signature already contains en embedded evidence record.");
+		}
 	}
 
 	/**

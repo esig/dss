@@ -306,14 +306,10 @@ public class CAdESEmbeddedEvidenceRecordBuilder {
 
     private void assertNoEvidenceRecordsInOtherSignerInfos(CAdESSignature signature) {
         for (SignerInformation signerInfo : signature.getCMS().getSignerInfos()) {
-            if (signature.getSignerInformation() != signerInfo) {
-                AttributeTable unsignedAttributes = signerInfo.getUnsignedAttributes();
-                if (unsignedAttributes != null &&
-                        (unsignedAttributes.get(id_aa_er_internal) != null || unsignedAttributes.get(id_aa_er_external) != null)) {
-                    throw new IllegalInputException("At most one of the SignerInfo instances within " +
-                            "the SignedData instance shall contain evidence-records attributes! " +
-                            "Please abolish the operation or provide another signature Id.");
-                }
+            if (signature.getSignerInformation() != signerInfo && CAdESUtils.containsEvidenceRecord(signerInfo)) {
+                throw new IllegalInputException("At most one of the SignerInfo instances within " +
+                        "the SignedData instance shall contain evidence-records attributes! " +
+                        "Please abolish the operation or provide another signature Id.");
             }
         }
     }

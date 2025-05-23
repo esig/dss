@@ -74,12 +74,11 @@ public class CAdESLevelBaselineT extends CAdESSignatureExtension {
 		}
 
 		final List<AdvancedSignature> signaturesToExtend = getExtendToTLevelSignatures(signatures, signatureIdsToExtend, parameters);
-
-		final SignatureRequirementsChecker signatureRequirementsChecker = getSignatureRequirementsChecker(parameters);
 		if (Utils.isCollectionEmpty(signaturesToExtend)) {
 			return cms;
 		}
 
+		final SignatureRequirementsChecker signatureRequirementsChecker = getSignatureRequirementsChecker(parameters);
 		signatureRequirementsChecker.assertExtendToTLevelPossible(signaturesToExtend);
 
 		signatureRequirementsChecker.assertSignaturesValid(signaturesToExtend);

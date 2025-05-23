@@ -122,6 +122,8 @@ public class SignaturePolicyStoreBuilder extends ExtensionBuilder {
 	 */
 	protected boolean addSignaturePolicyStoreIfDigestMatch(XAdESSignature xadesSignature, Document documentDom,
 														SignaturePolicyStore signaturePolicyStore) {
+		assertUnsignedPropertiesExtensionPossible(xadesSignature);
+
 		xadesSignature = initializeSignatureBuilder(xadesSignature);
 
 		ensureUnsignedProperties();

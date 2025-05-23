@@ -294,6 +294,9 @@ public class CAdESCounterSignatureBuilder {
 		if (CAdESUtils.containsATSTv2(signerInformation)) {
 			throw new IllegalInputException("Cannot add a counter signature to a CAdES containing an archiveTimestampV2");
 		}
+		if (CAdESUtils.containsEvidenceRecord(signerInformation)) {
+			throw new IllegalInputException("Cannot add a counter signature to a CMS containing an evidence record unsigned attribute.");
+		}
 	}
 
 }
