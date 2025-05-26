@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.asic.xades.signature;
 
+import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.signature.ASiCSignatureExtensionHelper;
 import eu.europa.esig.dss.asic.xades.extract.ASiCWithXAdESContainerExtractor;
@@ -43,8 +44,17 @@ public class ASiCWithXAdESSignatureExtensionHelper extends ASiCSignatureExtensio
 		super(asicContainer);
 	}
 
+	/**
+	 * Constructor to create a helper from a {@code ASiCContent}
+	 *
+	 * @param asicContent {@link ASiCContent}
+	 */
+	protected ASiCWithXAdESSignatureExtensionHelper(ASiCContent asicContent) {
+		super(asicContent);
+	}
+
 	@Override
-	protected DefaultASiCContainerExtractor getASiCContainerExtractor() {
+	protected DefaultASiCContainerExtractor getASiCContainerExtractor(DSSDocument asicContainer) {
 		return new ASiCWithXAdESContainerExtractor(asicContainer);
 	}
 

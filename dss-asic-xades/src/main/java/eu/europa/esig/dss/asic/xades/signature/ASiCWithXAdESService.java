@@ -165,10 +165,11 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 		Objects.requireNonNull(parameters, "Cannot extend the signature. SignatureParameters are not defined!");
 
 		assertExtensionSupported(toExtendDocument);
-		ASiCContent asicContent = extractCurrentArchive(toExtendDocument);
 
-		List<DSSDocument> signatureDocuments = asicContent.getSignatureDocuments();
-		assertValidSignaturesToExtendFound(signatureDocuments);
+		ASiCSignatureExtensionHelper extensionHelper = new ASiCWithXAdESSignatureExtensionHelper(toExtendDocument);
+		ASiCContent asicContent = extensionHelper.getAsicContent();
+
+		List<DSSDocument> signatureDocuments = extensionHelper.getSignatureDocuments();
 
 		boolean openDocument = ASiCUtils.isOpenDocument(asicContent.getMimeTypeDocument());
 		List<DSSDocument> detachedContents = getDetachedContents(asicContent, openDocument);
@@ -189,12 +190,6 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 	private void assertExtensionSupported(DSSDocument toExtendDocument) {
 		if (!ASiCUtils.isASiC(toExtendDocument)) {
 			throw new IllegalInputException("The provided file is not ASiC document!");
-		}
-	}
-
-	private void assertValidSignaturesToExtendFound(List<DSSDocument> signatureDocuments) {
-		if (Utils.isCollectionEmpty(signatureDocuments)) {
-			throw new IllegalInputException("No supported signature documents found! Unable to extend the container.");
 		}
 	}
 
@@ -291,12 +286,13 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 		Objects.requireNonNull(asicContainer, "The asicContainer cannot be null");
 		Objects.requireNonNull(signaturePolicyStore, "The signaturePolicyStore cannot be null");
 
-		ASiCContent asicContent = extractCurrentArchive(asicContainer);
+		ASiCSignatureExtensionHelper extensionHelper = new ASiCWithXAdESSignatureExtensionHelper(asicContainer);
+		ASiCContent asicContent = extensionHelper.getAsicContent();
 		assertAddSignaturePolicyStorePossible(asicContent);
 
 		XAdESService xadesService = getXAdESService();
 
-		List<DSSDocument> signatureDocuments = asicContent.getSignatureDocuments();
+		List<DSSDocument> signatureDocuments = extensionHelper.getSignatureDocuments();
 		for (DSSDocument signature : signatureDocuments) {
 			DSSDocument signatureWithPolicyStore = xadesService.addSignaturePolicyStore(signature, signaturePolicyStore);
 			signatureWithPolicyStore.setName(signature.getName());

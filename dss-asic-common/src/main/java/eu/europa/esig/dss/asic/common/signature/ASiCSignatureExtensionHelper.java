@@ -42,9 +42,6 @@ public abstract class ASiCSignatureExtensionHelper {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ASiCSignatureExtensionHelper.class);
 
-	/** The document representing an ASiC container */
-	protected final DSSDocument asicContainer;
-
 	/** Represents a cached instance of ASiC container extraction result */
 	private final ASiCContent asicContent;
 
@@ -54,17 +51,29 @@ public abstract class ASiCSignatureExtensionHelper {
 	 * @param asicContainer {@link DSSDocument} representing an ASiC container
 	 */
 	protected ASiCSignatureExtensionHelper(DSSDocument asicContainer) {
-		this.asicContainer = asicContainer;
-		this.asicContent = extractAsicContent();
+		this.asicContent = extractAsicContent(asicContainer);
+	}
+
+	/**
+	 * Constructor to create a helper from a {@code ASiCContent}
+	 *
+	 * @param asicContent {@link ASiCContent}
+	 */
+	protected ASiCSignatureExtensionHelper(ASiCContent asicContent) {
+		this.asicContent = asicContent;
 	}
 
 	/**
 	 * Extracts the ASiC container content (documents)
 	 *
+	 * @param asicContainer {@link DSSDocument} representing the ASiC container
 	 * @return {@link ASiCContent}
 	 */
-	private ASiCContent extractAsicContent() {
-		DefaultASiCContainerExtractor extractor = getASiCContainerExtractor();
+	private ASiCContent extractAsicContent(DSSDocument asicContainer) {
+		if (!ASiCUtils.isASiC(asicContainer)) {
+			throw new IllegalInputException("The provided file shall be an ASiC container with signatures inside!");
+		}
+		DefaultASiCContainerExtractor extractor = getASiCContainerExtractor(asicContainer);
 		return extractor.extract();
 	}
 
@@ -84,9 +93,6 @@ public abstract class ASiCSignatureExtensionHelper {
 	 * @return {@link DSSDocument} signature document containing a signature to be extended with a defined id
 	 */
 	public DSSDocument extractSignatureDocument(String signatureId) {
-		if (!ASiCUtils.isASiC(asicContainer)) {
-			throw new IllegalInputException("The provided file shall be an ASiC container with signatures inside!");
-		}
 		List<DSSDocument> signatureDocuments = asicContent.getSignatureDocuments();
 		if (Utils.isCollectionEmpty(signatureDocuments)) {
 			throw new IllegalInputException("No signatures found to be extended!");
@@ -114,6 +120,24 @@ public abstract class ASiCSignatureExtensionHelper {
 		}
 		throw new IllegalArgumentException(String.format("A signature with id '%s' has not been found!", signatureId));
 	}
+
+	/**
+	 * Gets a list of signature documents.
+	 * This method allows performs a validation of the signature file, whether its extension is possible.
+	 * Throws an {@code eu.europa.esig.dss.spi.exception.IllegalInputException} in case of invalid extension configuration.
+	 *
+	 * @return a list of {@link DSSDocument}s
+	 */
+	public List<DSSDocument> getSignatureDocuments() {
+		List<DSSDocument> signatureDocuments = asicContent.getSignatureDocuments();
+		if (Utils.isCollectionEmpty(signatureDocuments)) {
+			throw new IllegalInputException("No supported signature documents found! Unable to extend the container.");
+		}
+		for (DSSDocument signatureDocument : signatureDocuments) {
+			checkSignatureExtensionPossible(signatureDocument);
+		}
+		return signatureDocuments;
+	}
 	
 	/**
 	 * Returns a list if detached documents for a signature with a given filename
@@ -137,10 +161,11 @@ public abstract class ASiCSignatureExtensionHelper {
 	
 	/**
 	 * Gets an ASiC container extractor relative to the current implementation
-	 * 
+	 *
+	 * @param asicContainer {@link ASiCContent}
 	 * @return {@link DefaultASiCContainerExtractor}
 	 */
-	protected abstract DefaultASiCContainerExtractor getASiCContainerExtractor();
+	protected abstract DefaultASiCContainerExtractor getASiCContainerExtractor(DSSDocument asicContainer);
 
 	/**
 	 * Gets a Document Validator relative to the current implementation
@@ -195,8 +220,11 @@ public abstract class ASiCSignatureExtensionHelper {
 	 * 
 	 * @param signatureDocument {@link DSSDocument} to verify
 	 */
-	protected void checkSignatureExtensionPossible(DSSDocument signatureDocument) {
-		// do nothing by default
+	public void checkSignatureExtensionPossible(DSSDocument signatureDocument) {
+		if (ASiCUtils.isCoveredByManifest(getAsicContent().getAllManifestDocuments(), signatureDocument.getName())) {
+			throw new IllegalInputException(String.format("The modification of the signature is not possible! "
+					+ "Reason : a signature with a filename '%s' is covered by another manifest.", signatureDocument.getName()));
+		}
 	}
 
 }

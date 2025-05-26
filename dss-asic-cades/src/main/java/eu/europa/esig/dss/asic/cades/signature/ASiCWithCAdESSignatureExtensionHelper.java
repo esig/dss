@@ -22,11 +22,11 @@ package eu.europa.esig.dss.asic.cades.signature;
 
 import eu.europa.esig.dss.asic.cades.extract.ASiCWithCAdESContainerExtractor;
 import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESUtils;
+import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.signature.ASiCSignatureExtensionHelper;
 import eu.europa.esig.dss.asic.common.validation.ASiCManifestParser;
 import eu.europa.esig.dss.cades.validation.CMSDocumentAnalyzer;
-import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.spi.validation.analyzer.DocumentAnalyzer;
@@ -48,8 +48,17 @@ public class ASiCWithCAdESSignatureExtensionHelper extends ASiCSignatureExtensio
 		super(asicContainer);
 	}
 
+	/**
+	 * Constructor to create a helper from a {@code ASiCContent}
+	 *
+	 * @param asicContent {@link ASiCContent}
+	 */
+	protected ASiCWithCAdESSignatureExtensionHelper(ASiCContent asicContent) {
+		super(asicContent);
+	}
+
 	@Override
-	protected DefaultASiCContainerExtractor getASiCContainerExtractor() {
+	protected DefaultASiCContainerExtractor getASiCContainerExtractor(DSSDocument asicContainer) {
 		return new ASiCWithCAdESContainerExtractor(asicContainer);
 	}
 
@@ -75,16 +84,6 @@ public class ASiCWithCAdESSignatureExtensionHelper extends ASiCSignatureExtensio
 			return ASiCManifestParser.getManifestFile(signatureManifest);
 		}
 		return null;
-	}
-	
-	@Override
-	protected void checkSignatureExtensionPossible(DSSDocument signatureDocument) {
-		super.checkSignatureExtensionPossible(signatureDocument);
-		
-		if (ASiCWithCAdESUtils.isCoveredByManifest(getAsicContent().getAllManifestDocuments(), signatureDocument.getName())) {
-			throw new IllegalInputException(String.format("The modification of the signature is not possible! "
-					+ "Reason : a signature with a filename '%s' is covered by another manifest.", signatureDocument.getName()));
-		}
 	}
 
 }
