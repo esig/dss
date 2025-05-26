@@ -17,7 +17,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class ASiCEWithXAdESAddContainerASN1EvidenceRecordTest extends AbstractASiCWithXAdESTestAddContainerEvidenceRecord {
+public class ASiCEWithXAdESAddContainerASN1EvidenceRecordTest extends AbstractASiCWithXAdESTestAddContainerEvidenceRecord {
 
     @Override
     protected List<DSSDocument> getDocumentsToPreserve() {

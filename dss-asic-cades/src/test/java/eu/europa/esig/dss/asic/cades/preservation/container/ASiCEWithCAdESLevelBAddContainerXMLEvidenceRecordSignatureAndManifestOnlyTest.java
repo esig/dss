@@ -50,7 +50,7 @@ class ASiCEWithCAdESLevelBAddContainerXMLEvidenceRecordSignatureAndManifestOnlyT
     public void addERAndValidate() {
         Exception exception = assertThrows(IllegalInputException.class, super::addERAndValidate);
         assertEquals("The original document with name 'document.odt' is not covered by " +
-                "the evidence record's data group!", exception.getMessage());
+                "the evidence record!", exception.getMessage());
     }
 
 }

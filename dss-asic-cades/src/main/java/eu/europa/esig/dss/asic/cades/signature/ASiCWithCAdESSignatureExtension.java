@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.asic.cades.signature;
 
-import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESUtils;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.validation.ASiCManifestParser;
@@ -30,11 +29,11 @@ import eu.europa.esig.dss.cades.signature.CAdESService;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.signature.resources.DSSResourcesHandlerBuilder;
-import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -190,7 +189,7 @@ public class ASiCWithCAdESSignatureExtension implements Serializable {
      * @return TRUE if the signature is covered by an archive manifest, FALSE otherwise
      */
     protected boolean isCoveredByManifest(ASiCContent asicContent, DSSDocument signature) {
-        return ASiCWithCAdESUtils.isCoveredByManifest(asicContent.getAllManifestDocuments(), signature.getName());
+        return ASiCUtils.isCoveredByManifest(asicContent.getAllManifestDocuments(), signature.getName());
     }
 
 }

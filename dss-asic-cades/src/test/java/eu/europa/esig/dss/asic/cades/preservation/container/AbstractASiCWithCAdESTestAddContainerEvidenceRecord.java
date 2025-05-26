@@ -1,8 +1,8 @@
 package eu.europa.esig.dss.asic.cades.preservation.container;
 
-import eu.europa.esig.dss.asic.cades.evidencerecord.ASiCWithCAdESContainerEvidenceRecordParameters;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.asic.cades.validation.evidencerecord.AbstractASiCWithCAdESWithEvidenceRecordTestValidation;
+import eu.europa.esig.dss.asic.common.ASiCContainerEvidenceRecordParameters;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlManifestFile;
@@ -26,13 +26,18 @@ public abstract class AbstractASiCWithCAdESTestAddContainerEvidenceRecord extend
 
     protected abstract DSSDocument getEvidenceRecordDocument();
 
-    protected ASiCWithCAdESContainerEvidenceRecordParameters getASiCContainerEvidenceRecordParameters() {
-        ASiCWithCAdESContainerEvidenceRecordParameters parameters = new ASiCWithCAdESContainerEvidenceRecordParameters();
+    protected ASiCContainerEvidenceRecordParameters getASiCContainerEvidenceRecordParameters() {
+        ASiCContainerEvidenceRecordParameters parameters = new ASiCContainerEvidenceRecordParameters();
         parameters.setContainerType(getASiCContainerType());
+        parameters.setAsicEvidenceRecordManifest(getASiCEvidenceRecordManifest());
         return parameters;
     }
 
     protected abstract ASiCContainerType getASiCContainerType();
+
+    protected DSSDocument getASiCEvidenceRecordManifest() {
+        return null;
+    }
 
     protected ASiCWithCAdESService getService() {
         return new ASiCWithCAdESService(getOfflineCertificateVerifier());
@@ -123,8 +128,13 @@ public abstract class AbstractASiCWithCAdESTestAddContainerEvidenceRecord extend
             assertTrue(Utils.isCollectionNotEmpty(manifestFiles));
             for (XmlManifestFile xmlManifestFile : manifestFiles) {
                 if (xmlManifestFile.getSignatureFilename().contains("evidencerecord")) {
-                    assertTrue(xmlManifestFile.getFilename().startsWith("META-INF/ASiCEvidenceRecordManifest"));
-                    assertTrue(xmlManifestFile.getFilename().endsWith(".xml"));
+                    DSSDocument asicEvidenceRecordManifest = getASiCEvidenceRecordManifest();
+                    if (asicEvidenceRecordManifest != null && asicEvidenceRecordManifest.getName() != null) {
+                        assertEquals(asicEvidenceRecordManifest.getName(), xmlManifestFile.getFilename());
+                    } else {
+                        assertTrue(xmlManifestFile.getFilename().startsWith("META-INF/ASiCEvidenceRecordManifest"));
+                        assertTrue(xmlManifestFile.getFilename().endsWith(".xml"));
+                    }
                     assertEquals(getNumberOfExpectedEvidenceScopes(), xmlManifestFile.getEntries().size());
                 }
             }

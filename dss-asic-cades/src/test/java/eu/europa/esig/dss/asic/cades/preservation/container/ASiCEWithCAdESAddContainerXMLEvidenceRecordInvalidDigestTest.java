@@ -44,8 +44,8 @@ class ASiCEWithCAdESAddContainerXMLEvidenceRecordInvalidDigestTest extends Abstr
     @Override
     public void addERAndValidate() {
         Exception exception = assertThrows(IllegalInputException.class, super::addERAndValidate);
-        assertEquals("The digest covered by the evidence record do not correspond to " +
-                "the digest computed on the provided content!", exception.getMessage());
+        assertEquals("The digest of document 'test.txt' has not been found " +
+                "within the manifest file or/and evidence record!", exception.getMessage());
     }
 
 }

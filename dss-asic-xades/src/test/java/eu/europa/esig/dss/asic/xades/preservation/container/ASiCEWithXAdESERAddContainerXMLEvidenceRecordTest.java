@@ -17,7 +17,7 @@ class ASiCEWithXAdESERAddContainerXMLEvidenceRecordTest extends AbstractASiCWith
 
     @Override
     protected List<DSSDocument> getDocumentsToPreserve() {
-        return Collections.singletonList(new FileDocument("src/test/resources/signable/asic_xades_er.sce"));
+        return Collections.singletonList(new FileDocument("src/test/resources/validation/evidencerecord/xades-lt-with-er.sce"));
     }
 
     @Override

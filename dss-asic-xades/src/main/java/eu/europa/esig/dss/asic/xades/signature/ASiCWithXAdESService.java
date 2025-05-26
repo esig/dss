@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.asic.xades.signature;
 
+import eu.europa.esig.dss.asic.common.ASiCContainerEvidenceRecordParameters;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.definition.ASiCManifestElement;
@@ -31,7 +32,6 @@ import eu.europa.esig.dss.asic.xades.ASiCWithXAdESSignatureParameters;
 import eu.europa.esig.dss.asic.xades.OpenDocumentSupportUtils;
 import eu.europa.esig.dss.asic.xades.definition.ManifestNamespace;
 import eu.europa.esig.dss.asic.xades.evidencerecord.ASiCWithXAdESContainerEvidenceRecordBuilder;
-import eu.europa.esig.dss.asic.xades.evidencerecord.ASiCWithXAdESContainerEvidenceRecordParameters;
 import eu.europa.esig.dss.asic.xades.extract.ASiCWithXAdESContainerExtractor;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -372,38 +372,9 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 		return resultArchive;
 	}
 
-	/**
-	 * Creates a new ASiC container with the {@code evidenceRecordDocument} applied to the {@code document}.
-	 * <p>
-	 * If the provided original document is an existing ASiC container, then the {@code evidenceRecordDocument}
-	 * will be evaluated against the container files and places within the container.
-	 *
-	 * @param document               a list of {@link DSSDocument}s preserved by an evidence record
-	 * @param evidenceRecordDocument {@link DSSDocument} to add
-	 * @param parameters             {@link ASiCWithXAdESContainerEvidenceRecordParameters} providing configuration for
-	 *                               the evidence record incorporation
-	 * @return {@link DSSDocument} ASiC container containing the evidence record file document
-	 */
-	public DSSDocument addContainerEvidenceRecord(DSSDocument document, DSSDocument evidenceRecordDocument,
-												  ASiCWithXAdESContainerEvidenceRecordParameters parameters) {
-		Objects.requireNonNull(document, "Document cannot be null!");
-		return addContainerEvidenceRecord(Collections.singletonList(document), evidenceRecordDocument, parameters);
-	}
-
-	/**
-	 * Creates a new ASiC container with the {@code evidenceRecordDocument} applied to the {@code documents}.
-	 * <p>
-	 * If the provided original document is an existing ASiC container, then the {@code evidenceRecordDocument}
-	 * will be evaluated against the container files and places within the container.
-	 *
-	 * @param documents              a list of {@link DSSDocument}s preserved by an evidence record
-	 * @param evidenceRecordDocument {@link DSSDocument} to add
-	 * @param parameters             {@link ASiCWithXAdESContainerEvidenceRecordParameters} providing configuration for
-	 *                               the evidence record incorporation
-	 * @return {@link DSSDocument} ASiC container containing the evidence record file document
-	 */
+	@Override
 	public DSSDocument addContainerEvidenceRecord(List<DSSDocument> documents, DSSDocument evidenceRecordDocument,
-												  ASiCWithXAdESContainerEvidenceRecordParameters parameters) {
+												  ASiCContainerEvidenceRecordParameters parameters) {
 		Objects.requireNonNull(evidenceRecordDocument, "The evidence record document cannot be null!");
 		Objects.requireNonNull(parameters, "Parameters cannot be null!");
 		if (Utils.isCollectionEmpty(documents)) {

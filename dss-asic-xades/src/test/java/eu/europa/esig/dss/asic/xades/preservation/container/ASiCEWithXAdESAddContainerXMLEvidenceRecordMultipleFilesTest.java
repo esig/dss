@@ -9,7 +9,7 @@ import org.junit.jupiter.api.BeforeAll;
 import java.util.Arrays;
 import java.util.List;
 
-class ASiCEWithXAdESAddContainerXMLEvidenceRecordMultipleFilesTest extends AbstractASiCWithXAdESTestAddContainerEvidenceRecord {
+public class ASiCEWithXAdESAddContainerXMLEvidenceRecordMultipleFilesTest extends AbstractASiCWithXAdESTestAddContainerEvidenceRecord {
 
     private static List<DSSDocument> originalDocuments;
 

@@ -8,7 +8,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import java.util.Collections;
 import java.util.List;
 
-class ASiCEWithCAdESAddContainerXMLEvidenceRecordTest extends AbstractASiCWithCAdESTestAddContainerEvidenceRecord {
+public class ASiCEWithCAdESAddContainerXMLEvidenceRecordTest extends AbstractASiCWithCAdESTestAddContainerEvidenceRecord {
 
     @Override
     protected List<DSSDocument> getDocumentsToPreserve() {

@@ -50,7 +50,7 @@ class ASiCEWithCAdESLevelBAddContainerXMLEvidenceRecordSignatureAndDataOnlyTest 
     public void addERAndValidate() {
         Exception exception = assertThrows(IllegalInputException.class, super::addERAndValidate);
         assertEquals("Digest of a signed ASiC Manifest with name 'META-INF/ASiCManifest.xml' " +
-                "has not been found in the evidence record's data group!", exception.getMessage());
+                "has not been found in the evidence record's covered objects!", exception.getMessage());
     }
 
 }

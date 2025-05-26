@@ -16,7 +16,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class ASiCEWithCAdESAddContainerASN1EvidenceRecordMultipleFilesTest extends AbstractASiCWithCAdESTestAddContainerEvidenceRecord {
+public class ASiCEWithCAdESAddContainerASN1EvidenceRecordMultipleFilesTest extends AbstractASiCWithCAdESTestAddContainerEvidenceRecord {
 
     private static List<DSSDocument> originalDocuments;
 
