@@ -116,7 +116,7 @@ class XAdESLevelLTAddXMLEvidenceRecordByIdTest extends AbstractXAdESAddEvidenceR
                         "please use #setDetachedContent method to provide original documents.",
                 exception.getMessage());
 
-        // wrong signature
+        // corrent signature
         signatureId = "id-270f7c0b892f5ad2a1178a20b68d101a";
         super.addERAndValidate();
     }
