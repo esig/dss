@@ -107,16 +107,16 @@ class XAdESLevelBAddASN1ThenXMLEvidenceRecordTest extends AbstractXAdESAddEviden
     @Override
     protected DSSDocument getSignedDocument() {
         XAdESService service = getService();
-        DSSDocument oneERDoc = service.addEvidenceRecord(getSignatureDocument(), getEvidenceRecordDocument(), getEvidenceRecordIncorporationParameters());
+        DSSDocument oneERDoc = service.addSignatureEvidenceRecord(getSignatureDocument(), getEvidenceRecordDocument(), getEvidenceRecordIncorporationParameters());
 
         parallelER = false;
 
-        DSSDocument twoERDoc = service.addEvidenceRecord(oneERDoc, getSecondEvidenceRecordDocument(), getEvidenceRecordIncorporationParameters());
+        DSSDocument twoERDoc = service.addSignatureEvidenceRecord(oneERDoc, getSecondEvidenceRecordDocument(), getEvidenceRecordIncorporationParameters());
 
         parallelER = true;
 
         Exception exception = assertThrows(IllegalInputException.class, () ->
-                service.addEvidenceRecord(oneERDoc, getSecondEvidenceRecordDocument(), getEvidenceRecordIncorporationParameters()));
+                service.addSignatureEvidenceRecord(oneERDoc, getSecondEvidenceRecordDocument(), getEvidenceRecordIncorporationParameters()));
         assertEquals("The latest signature unsigned property contains evidence records other " +
                 "than ers:EvidenceRecordType type specified in IETF RFC 6283. The incorporation of different " +
                 "evidence record types within the same unsigned property is not supported.", exception.getMessage());

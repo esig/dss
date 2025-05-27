@@ -30,7 +30,7 @@ public abstract class AbstractXAdESAddEvidenceRecordTest extends AbstractXAdESWi
     @Override
     protected DSSDocument getSignedDocument() {
         XAdESService service = getService();
-        return service.addEvidenceRecord(getSignatureDocument(), getEvidenceRecordDocument(), getEvidenceRecordIncorporationParameters());
+        return service.addSignatureEvidenceRecord(getSignatureDocument(), getEvidenceRecordDocument(), getEvidenceRecordIncorporationParameters());
     }
 
     @Override

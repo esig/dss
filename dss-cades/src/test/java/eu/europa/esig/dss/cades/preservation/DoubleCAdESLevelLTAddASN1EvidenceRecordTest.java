@@ -111,13 +111,13 @@ class DoubleCAdESLevelLTAddASN1EvidenceRecordTest extends AbstractCAdESAddEviden
         CAdESService service = getService();
 
         Exception exception = assertThrows(IllegalArgumentException.class, () ->
-                service.addEvidenceRecord(getSignatureDocument(), getEvidenceRecordDocument(), getEvidenceRecordIncorporationParameters()));
+                service.addSignatureEvidenceRecord(getSignatureDocument(), getEvidenceRecordDocument(), getEvidenceRecordIncorporationParameters()));
         assertEquals(String.format("More than one signature found in a document with name '%s'! " +
                 "Please provide a signatureId within the parameters.", getSignatureDocument().getName()), exception.getMessage());
 
         signatureId = "not-existing";
         exception = assertThrows(IllegalArgumentException.class, () ->
-                service.addEvidenceRecord(getSignatureDocument(), getEvidenceRecordDocument(), getEvidenceRecordIncorporationParameters()));
+                service.addSignatureEvidenceRecord(getSignatureDocument(), getEvidenceRecordDocument(), getEvidenceRecordIncorporationParameters()));
         assertEquals("Unable to find a signature with Id : not-existing!", exception.getMessage());
 
         SignedDocumentValidator validator = getValidator(getSignatureDocument());
@@ -126,12 +126,12 @@ class DoubleCAdESLevelLTAddASN1EvidenceRecordTest extends AbstractCAdESAddEviden
 
         // first signature
         signatureId = signatures.get(0).getId();
-        DSSDocument signatureDocWithER = service.addEvidenceRecord(getSignatureDocument(), getEvidenceRecordDocument(), getEvidenceRecordIncorporationParameters());
+        DSSDocument signatureDocWithER = service.addSignatureEvidenceRecord(getSignatureDocument(), getEvidenceRecordDocument(), getEvidenceRecordIncorporationParameters());
         verify(signatureDocWithER);
 
         // second signature
         signatureId = signatures.get(1).getId();
-        DSSDocument signatureTwoWithER = service.addEvidenceRecord(getSignatureDocument(), getEvidenceRecordDocument(), getEvidenceRecordIncorporationParameters());
+        DSSDocument signatureTwoWithER = service.addSignatureEvidenceRecord(getSignatureDocument(), getEvidenceRecordDocument(), getEvidenceRecordIncorporationParameters());
         verify(signatureTwoWithER);
 
         expectedEvidenceRecords = 2;
@@ -143,14 +143,14 @@ class DoubleCAdESLevelLTAddASN1EvidenceRecordTest extends AbstractCAdESAddEviden
         signatureId = signatures.get(0).getId();
 
         exception = assertThrows(IllegalInputException.class, () ->
-                service.addEvidenceRecord(signatureTwoWithER, secondER, getEvidenceRecordIncorporationParameters()));
+                service.addSignatureEvidenceRecord(signatureTwoWithER, secondER, getEvidenceRecordIncorporationParameters()));
         assertEquals("At most one of the SignerInfo instances within the SignedData instance shall contain " +
                 "evidence-records attributes! Please abolish the operation or provide another signature Id.", exception.getMessage());
 
         // second signature
         signatureId = signatures.get(1).getId();
 
-        DSSDocument signaturesDocWithTwoER = service.addEvidenceRecord(signatureTwoWithER, secondER, getEvidenceRecordIncorporationParameters());
+        DSSDocument signaturesDocWithTwoER = service.addSignatureEvidenceRecord(signatureTwoWithER, secondER, getEvidenceRecordIncorporationParameters());
         verify(signaturesDocWithTwoER);
     }
 

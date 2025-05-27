@@ -120,18 +120,18 @@ class CAdESLevelBDetachedAddParallelASN1EvidenceRecordTest extends AbstractCAdES
     protected DSSDocument getSignedDocument() {
         CAdESService service = getService();
 
-        DSSDocument oneERDoc = service.addEvidenceRecord(getSignatureDocument(), getEvidenceRecordDocument(), getEvidenceRecordIncorporationParameters());
+        DSSDocument oneERDoc = service.addSignatureEvidenceRecord(getSignatureDocument(), getEvidenceRecordDocument(), getEvidenceRecordIncorporationParameters());
 
         parallelER = false;
 
         Exception exception = assertThrows(IllegalInputException.class, () ->
-                service.addEvidenceRecord(oneERDoc, getEvidenceRecordDocument(), getEvidenceRecordIncorporationParameters()));
+                service.addSignatureEvidenceRecord(oneERDoc, getEvidenceRecordDocument(), getEvidenceRecordIncorporationParameters()));
         assertEquals("The digest covered by the evidence record do not correspond to the digest computed on the signature!",
                 exception.getMessage());
 
         parallelER = true;
 
-        DSSDocument twoERDoc = service.addEvidenceRecord(oneERDoc, getEvidenceRecordDocument(), getEvidenceRecordIncorporationParameters());
+        DSSDocument twoERDoc = service.addSignatureEvidenceRecord(oneERDoc, getEvidenceRecordDocument(), getEvidenceRecordIncorporationParameters());
 
         return twoERDoc;
     }

@@ -452,8 +452,8 @@ public class CAdESService extends
 	 *                               the evidence record incorporation
 	 * @return {@link DSSDocument} CAdESSignature with an incorporated evidence record
 	 */
-	public DSSDocument addEvidenceRecord(DSSDocument signatureDocument, DSSDocument evidenceRecordDocument,
-										 CAdESEvidenceRecordIncorporationParameters parameters) {
+	public DSSDocument addSignatureEvidenceRecord(DSSDocument signatureDocument, DSSDocument evidenceRecordDocument,
+												  CAdESEvidenceRecordIncorporationParameters parameters) {
 		Objects.requireNonNull(signatureDocument, "The signature document cannot be null");
 		Objects.requireNonNull(evidenceRecordDocument, "The evidence record document cannot be null");
 

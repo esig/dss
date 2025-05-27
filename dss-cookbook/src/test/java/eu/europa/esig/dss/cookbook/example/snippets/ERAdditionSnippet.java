@@ -64,7 +64,7 @@ class ERAdditionSnippet {
         parameters.setXadesERNamespace(XAdESNamespace.XADES_EVIDENCERECORD_NAMESPACE);
 
         // Add the evidence record within a signature document using the configured parameters
-        DSSDocument signatureWithER = xadesService.addEvidenceRecord(signatureDocument, evidenceRecordDocument, parameters);
+        DSSDocument signatureWithER = xadesService.addSignatureEvidenceRecord(signatureDocument, evidenceRecordDocument, parameters);
         // end::add-er[]
 
         assertNotNull(signatureWithER);

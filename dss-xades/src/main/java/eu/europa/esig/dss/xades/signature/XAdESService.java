@@ -330,8 +330,8 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 	 *                               the evidence record incorporation
 	 * @return {@link DSSDocument} XAdESSignature with an incorporated evidence record
 	 */
-	public DSSDocument addEvidenceRecord(DSSDocument signatureDocument, DSSDocument evidenceRecordDocument,
-										 XAdESEvidenceRecordIncorporationParameters parameters) {
+	public DSSDocument addSignatureEvidenceRecord(DSSDocument signatureDocument, DSSDocument evidenceRecordDocument,
+												  XAdESEvidenceRecordIncorporationParameters parameters) {
 		Objects.requireNonNull(signatureDocument, "The signature document cannot be null");
 		Objects.requireNonNull(evidenceRecordDocument, "The evidence record document cannot be null");
 

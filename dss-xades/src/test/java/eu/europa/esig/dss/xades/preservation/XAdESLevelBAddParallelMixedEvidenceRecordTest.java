@@ -48,18 +48,18 @@ class XAdESLevelBAddParallelMixedEvidenceRecordTest extends AbstractXAdESAddEvid
     public void addERAndValidate() {
         XAdESService service = getService();
 
-        DSSDocument xmlERDoc = service.addEvidenceRecord(getSignatureDocument(), getXmlEvidenceRecordDocument(), getEvidenceRecordIncorporationParameters());
+        DSSDocument xmlERDoc = service.addSignatureEvidenceRecord(getSignatureDocument(), getXmlEvidenceRecordDocument(), getEvidenceRecordIncorporationParameters());
 
         Exception exception = assertThrows(IllegalInputException.class, () ->
-                service.addEvidenceRecord(xmlERDoc, getAsn1EvidenceRecordDocument(), getEvidenceRecordIncorporationParameters()));
+                service.addSignatureEvidenceRecord(xmlERDoc, getAsn1EvidenceRecordDocument(), getEvidenceRecordIncorporationParameters()));
         assertEquals("The latest signature unsigned property contains evidence records other " +
                 "than EvidenceRecord type specified in IETF RFC 4998. The incorporation of different evidence record " +
                 "types within the same unsigned property is not supported.", exception.getMessage());
 
-        DSSDocument asn1ERDoc = service.addEvidenceRecord(getSignatureDocument(), getAsn1EvidenceRecordDocument(), getEvidenceRecordIncorporationParameters());
+        DSSDocument asn1ERDoc = service.addSignatureEvidenceRecord(getSignatureDocument(), getAsn1EvidenceRecordDocument(), getEvidenceRecordIncorporationParameters());
 
         exception = assertThrows(IllegalInputException.class, () ->
-                service.addEvidenceRecord(asn1ERDoc, getXmlEvidenceRecordDocument(), getEvidenceRecordIncorporationParameters()));
+                service.addSignatureEvidenceRecord(asn1ERDoc, getXmlEvidenceRecordDocument(), getEvidenceRecordIncorporationParameters()));
         assertEquals("The latest signature unsigned property contains evidence records other " +
                 "than ers:EvidenceRecordType type specified in IETF RFC 6283. The incorporation of different evidence record " +
                 "types within the same unsigned property is not supported.", exception.getMessage());

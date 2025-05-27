@@ -363,7 +363,7 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 		parameters.setDetachedContents(asicContainerHelper.getDetachedDocuments(signatureDocument.getName()));
 
 		XAdESService xadesService = getXAdESService();
-		DSSDocument signatureWithEvidenceRecord = xadesService.addEvidenceRecord(signatureDocument, evidenceRecordDocument, parameters);
+		DSSDocument signatureWithEvidenceRecord = xadesService.addSignatureEvidenceRecord(signatureDocument, evidenceRecordDocument, parameters);
 		signatureWithEvidenceRecord.setName(signatureDocument.getName());
 		ASiCUtils.addOrReplaceDocument(asicContent.getSignatureDocuments(), signatureWithEvidenceRecord);
 

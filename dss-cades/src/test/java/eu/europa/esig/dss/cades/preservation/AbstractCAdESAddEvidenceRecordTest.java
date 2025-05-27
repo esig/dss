@@ -30,7 +30,7 @@ public abstract class AbstractCAdESAddEvidenceRecordTest extends AbstractCAdESWi
     @Override
     protected DSSDocument getSignedDocument() {
         CAdESService service = getService();
-        return service.addEvidenceRecord(getSignatureDocument(), getEvidenceRecordDocument(), getEvidenceRecordIncorporationParameters());
+        return service.addSignatureEvidenceRecord(getSignatureDocument(), getEvidenceRecordDocument(), getEvidenceRecordIncorporationParameters());
     }
 
     @Override

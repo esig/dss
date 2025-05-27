@@ -124,12 +124,12 @@ class CAdESLevelERSAddSecondASN1EvidenceRecordTest extends AbstractCAdESAddEvide
 
         parallelER = false;
 
-        DSSDocument twoERDoc = service.addEvidenceRecord(getSignatureDocument(), getEvidenceRecordDocument(), getEvidenceRecordIncorporationParameters());
+        DSSDocument twoERDoc = service.addSignatureEvidenceRecord(getSignatureDocument(), getEvidenceRecordDocument(), getEvidenceRecordIncorporationParameters());
 
         parallelER = true;
 
         Exception exception = assertThrows(IllegalInputException.class, () ->
-                service.addEvidenceRecord(getSignatureDocument(), getEvidenceRecordDocument(), getEvidenceRecordIncorporationParameters()));
+                service.addSignatureEvidenceRecord(getSignatureDocument(), getEvidenceRecordDocument(), getEvidenceRecordIncorporationParameters()));
         assertEquals("The digest covered by the evidence record do not correspond to the digest computed on the signature!", exception.getMessage());
 
         return twoERDoc;

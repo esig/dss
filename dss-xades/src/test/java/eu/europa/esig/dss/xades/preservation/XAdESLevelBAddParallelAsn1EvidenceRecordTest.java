@@ -90,19 +90,19 @@ class XAdESLevelBAddParallelAsn1EvidenceRecordTest extends AbstractXAdESAddEvide
     @Override
     protected DSSDocument getSignedDocument() {
         XAdESService service = getService();
-        DSSDocument oneERDoc = service.addEvidenceRecord(getSignatureDocument(), getEvidenceRecordDocument(), getEvidenceRecordIncorporationParameters());
+        DSSDocument oneERDoc = service.addSignatureEvidenceRecord(getSignatureDocument(), getEvidenceRecordDocument(), getEvidenceRecordIncorporationParameters());
 
         parallelER = false;
 
         Exception exception = assertThrows(IllegalInputException.class, () ->
-                service.addEvidenceRecord(oneERDoc, getSecondEvidenceRecordDocument(), getEvidenceRecordIncorporationParameters()));
+                service.addSignatureEvidenceRecord(oneERDoc, getSecondEvidenceRecordDocument(), getEvidenceRecordIncorporationParameters()));
         assertEquals("The digest covered by the evidence record do not correspond to the digest computed on " +
                 "the signature and/or detached content! In case of detached signature, please use #setDetachedContent method " +
                 "to provide original documents.", exception.getMessage());
 
         parallelER = true;
 
-        return service.addEvidenceRecord(oneERDoc, getSecondEvidenceRecordDocument(), getEvidenceRecordIncorporationParameters());
+        return service.addSignatureEvidenceRecord(oneERDoc, getSecondEvidenceRecordDocument(), getEvidenceRecordIncorporationParameters());
     }
 
 }
