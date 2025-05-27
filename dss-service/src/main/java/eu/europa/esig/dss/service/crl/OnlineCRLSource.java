@@ -128,8 +128,11 @@ public class OnlineCRLSource implements CRLSource, RevocationSourceAlternateUrls
 
 		final List<String> crlUrls = getCRLAccessURLs(certificateToken, alternativeUrls);
 		if (Utils.isCollectionEmpty(crlUrls)) {
-			throw new DSSExternalResourceException(String.format(
-					"No CRL location found for certificate with Id '%s'", certificateToken.getDSSIdAsString()));
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("No CRL location found for certificate with Id '{}'", certificateToken.getDSSIdAsString());
+			}
+			// Return NULL, please see DSS-3601, DSS-3607
+			return null;
 		}
 
 		int nbTries = crlUrls.size();

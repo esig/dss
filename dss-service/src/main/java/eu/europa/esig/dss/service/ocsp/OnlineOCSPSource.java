@@ -229,8 +229,11 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 
 		final List<String> ocspUrls = getOCSPAccessURLs(certificateToken, alternativeUrls);
 		if (Utils.isCollectionEmpty(ocspUrls)) {
-			throw new DSSExternalResourceException(String.format(
-					"No OCSP location found for certificate with Id '%s'", certificateToken.getDSSIdAsString()));
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("No OCSP location found for certificate with Id '{}'", certificateToken.getDSSIdAsString());
+			}
+			// Return NULL, please see DSS-3601, DSS-3607
+			return null;
 		}
 
 		byte[] nonce = null;

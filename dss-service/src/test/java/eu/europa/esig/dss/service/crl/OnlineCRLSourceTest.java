@@ -42,6 +42,7 @@ import java.util.Collections;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -89,11 +90,10 @@ class OnlineCRLSourceTest extends OnlineSourceTest {
 	
 	@Test
 	void getRevocationTokenTest() {
-		Exception exception = assertThrows(DSSExternalResourceException.class,
-				() -> onlineCRLSource.getRevocationToken(goodUser, goodCa));
-		assertEquals("No CRL location found for certificate with Id '" + goodUser.getDSSIdAsString() + "'", exception.getMessage());
+		CRLToken revocationToken = onlineCRLSource.getRevocationToken(goodUser, goodCa);
+		assertNull(revocationToken);
 		
-		CRLToken revocationToken = onlineCRLSource.getRevocationToken(goodCa, rootCa);
+		revocationToken = onlineCRLSource.getRevocationToken(goodCa, rootCa);
 		assertNotNull(revocationToken);
 		assertTrue(revocationToken.isValid());
 	}

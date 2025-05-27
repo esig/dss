@@ -101,7 +101,7 @@ public abstract class RevocationDataLoadingStrategy {
 	/**
 	 * Sets whether the fallback shall be enabled.
 	 * When set to TRUE, returns the first obtained token, even when it is not acceptable by the verifier.
-	 *
+	 * <p>
 	 * Default : FALSE - no fallback. If tokens fail the validation, NULL is returned.
 	 *
 	 * @param fallbackEnabled TRUE if the fallback shall be enabled, FALSE otherwise
@@ -136,7 +136,7 @@ public abstract class RevocationDataLoadingStrategy {
 
 	/**
 	 * Retrieves and verifies the obtained CRL token
-	 *
+	 * <p>
 	 * NOTE: returns only if a valid entry has been obtained!
 	 *
 	 * @param certificateToken {@link CertificateToken} to get CRL for
@@ -175,7 +175,7 @@ public abstract class RevocationDataLoadingStrategy {
 
 	/**
 	 * Retrieves and verifies the obtained OCSP token
-	 *
+	 * <p>
 	 * NOTE: returns only if a valid entry has been obtained!
 	 *
 	 * @param certificateToken {@link CertificateToken} to get OCSP for
