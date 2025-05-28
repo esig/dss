@@ -47,6 +47,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 class CommonsDataLoaderTest {
 
 	private static final String URL_TO_LOAD = "http://certs.eid.belgium.be/belgiumrs2.crt";
+	private static final String TIMEOUT_URL = "https://httpstat.us/200?sleep=1";
 
 	private CommonsDataLoader dataLoader;
 
@@ -157,15 +158,18 @@ class CommonsDataLoaderTest {
 
 	@Test
 	void timeoutTest() {
+		// no timeout
+		assertNotNull(dataLoader.get(TIMEOUT_URL));
+
 		dataLoader.setTimeoutConnection(1);
 		DSSExternalResourceException exception = assertThrows(DSSExternalResourceException.class,
-				() -> dataLoader.get(URL_TO_LOAD));
-		assertTrue(exception.getMessage().startsWith("Unable to process GET call for url [" + URL_TO_LOAD + "]"));
+				() -> dataLoader.get(TIMEOUT_URL));
+		assertTrue(exception.getMessage().startsWith("Unable to process GET call for url [" + TIMEOUT_URL + "]"));
 
 		dataLoader.setTimeoutConnection(60000);
 		dataLoader.setTimeoutResponse(1);
-		exception = assertThrows(DSSExternalResourceException.class, () -> dataLoader.get(URL_TO_LOAD));
-		assertTrue(exception.getMessage().startsWith("Unable to process GET call for url [" + URL_TO_LOAD + "]"));
+		exception = assertThrows(DSSExternalResourceException.class, () -> dataLoader.get(TIMEOUT_URL));
+		assertTrue(exception.getMessage().startsWith("Unable to process GET call for url [" + TIMEOUT_URL + "]"));
 	}
 
 	@Test

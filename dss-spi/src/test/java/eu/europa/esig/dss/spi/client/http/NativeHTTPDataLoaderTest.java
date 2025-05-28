@@ -41,6 +41,8 @@ class NativeHTTPDataLoaderTest {
 	private static final String HTTP_URL_TO_LOAD = "http://certs.eid.belgium.be/belgiumrs2.crt";
 	private static final String FILE_URL_TO_LOAD = "file:src/test/resources/belgiumrs2.crt";
 
+	private static final String TIMEOUT_URL = "https://httpstat.us/200?sleep=1";
+
 	@Test
 	void testHttpGet() {
 		NativeHTTPDataLoader dataLoader = new NativeHTTPDataLoader();
@@ -81,7 +83,7 @@ class NativeHTTPDataLoaderTest {
 		NativeHTTPDataLoader dataLoader = new NativeHTTPDataLoader();
 		dataLoader.setConnectTimeout(1);
 		// change URL, as a connection may be already established with the other one
-		assertThrows(DSSException.class, () -> dataLoader.get("http://dss.nowina.lu/", true));
+		assertThrows(DSSException.class, () -> dataLoader.get(TIMEOUT_URL, true));
 	}
 
 	@Test
