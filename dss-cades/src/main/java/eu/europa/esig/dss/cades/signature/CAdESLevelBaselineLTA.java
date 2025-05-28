@@ -29,6 +29,7 @@ import eu.europa.esig.dss.cms.CMSUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSMessageDigest;
+import eu.europa.esig.dss.signature.SignatureRequirementsChecker;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.OID;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
@@ -83,6 +84,9 @@ public class CAdESLevelBaselineLTA extends CAdESLevelBaselineLT {
 		if (Utils.isCollectionEmpty(signaturesToExtend)) {
 			return cms;
 		}
+
+		final SignatureRequirementsChecker signatureRequirementsChecker = getSignatureRequirementsChecker(parameters);
+		signatureRequirementsChecker.assertExtendToLTALevelPossible(signaturesToExtend);
 
 		// signature validity is checked within -LT augmentation
 

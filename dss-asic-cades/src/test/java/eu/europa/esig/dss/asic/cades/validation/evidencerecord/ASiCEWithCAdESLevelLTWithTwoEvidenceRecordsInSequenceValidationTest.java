@@ -60,7 +60,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class ASiCEWithCAdESLevelLTWithTwoEvidenceRecordsInSequenceValidationTest extends AbstractASiCEWithCAdESWithEvidenceRecordTestValidation {
+class ASiCEWithCAdESLevelLTWithTwoEvidenceRecordsInSequenceValidationTest extends AbstractASiCWithCAdESWithEvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {
@@ -272,7 +272,7 @@ class ASiCEWithCAdESLevelLTWithTwoEvidenceRecordsInSequenceValidationTest extend
 
     @Override
     protected int getNumberOfExpectedEvidenceScopes() {
-        return 0; // not used
+        return 4;
     }
 
 }

@@ -115,8 +115,8 @@ public class CAdESUnsignedAttributes extends CAdESSigProperties {
 		}
 
 		private int compareByTimeStampToken(CAdESAttribute attributeOne, CAdESAttribute attributeTwo) {
-			TimeStampToken current = attributeOne.toTimeStampToken();
-			TimeStampToken next = attributeTwo.toTimeStampToken();
+			TimeStampToken current = attributeOne.isTimeStampToken() ? attributeOne.toTimeStampToken() : null;
+			TimeStampToken next = attributeTwo.isTimeStampToken() ? attributeTwo.toTimeStampToken() : null;
 			if (current != null && next != null) {
 				TimeStampTokenProductionComparator comparator = new TimeStampTokenProductionComparator();
 				return comparator.compare(current, next);
@@ -134,8 +134,8 @@ public class CAdESUnsignedAttributes extends CAdESSigProperties {
 		}
 
 		private int compareByEvidenceRecord(CAdESAttribute attributeOne, CAdESAttribute attributeTwo) {
-			org.bouncycastle.asn1.tsp.EvidenceRecord evidenceRecordOne = attributeOne.toEvidenceRecord();
-			org.bouncycastle.asn1.tsp.EvidenceRecord evidenceRecordTwo = attributeTwo.toEvidenceRecord();
+			org.bouncycastle.asn1.tsp.EvidenceRecord evidenceRecordOne = attributeOne.isEvidenceRecord() ? attributeOne.toEvidenceRecord() : null;
+			org.bouncycastle.asn1.tsp.EvidenceRecord evidenceRecordTwo = attributeTwo.isEvidenceRecord() ? attributeTwo.toEvidenceRecord() : null;
 			if (evidenceRecordOne != null && evidenceRecordTwo != null) {
 				EvidenceRecordProductionComparator comparator = new EvidenceRecordProductionComparator();
 				return comparator.compare(evidenceRecordOne, evidenceRecordTwo);

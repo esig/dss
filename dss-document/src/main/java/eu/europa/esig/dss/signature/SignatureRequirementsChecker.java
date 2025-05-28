@@ -306,6 +306,7 @@ public class SignatureRequirementsChecker {
      */
     public void assertExtendToTLevelPossible(List<AdvancedSignature> signatures) {
         assertTLevelIsHighest(signatures);
+        assertHasNoEmbeddedEvidenceRecords(signatures);
     }
 
     /**
@@ -332,7 +333,7 @@ public class SignatureRequirementsChecker {
     /**
      * Verifies whether the {@code signature} has maximum B- or T-level
      *
-     * @param signature {@link AdvancedSignature} to be verifies
+     * @param signature {@link AdvancedSignature} to be verified
      * @param status {@link SignatureStatus} to fill in case of error
      */
     protected void checkTLevelIsHighest(AdvancedSignature signature, SignatureStatus status) {
@@ -359,6 +360,7 @@ public class SignatureRequirementsChecker {
      */
     public void assertExtendToLTLevelPossible(List<AdvancedSignature> signatures) {
         assertLTLevelIsHighest(signatures);
+        assertHasNoEmbeddedEvidenceRecords(signatures);
     }
 
     /**
@@ -385,7 +387,7 @@ public class SignatureRequirementsChecker {
     /**
      * Verifies whether the {@code signature} has maximum B-, T- or LT-level
      *
-     * @param signature {@link AdvancedSignature} to be verifies
+     * @param signature {@link AdvancedSignature} to be verified
      * @param status {@link SignatureStatus} to fill in case of error
      */
     protected void checkLTLevelIsHighest(AdvancedSignature signature, SignatureStatus status) {
@@ -482,6 +484,7 @@ public class SignatureRequirementsChecker {
      */
     public void assertExtendToCLevelPossible(List<AdvancedSignature> signatures) {
         assertCLevelIsHighest(signatures);
+        assertHasNoEmbeddedEvidenceRecords(signatures);
     }
 
     /**
@@ -508,7 +511,7 @@ public class SignatureRequirementsChecker {
     /**
      * Verifies whether the {@code signature} has maximum B-, T- or LT-level
      *
-     * @param signature {@link AdvancedSignature} to be verifies
+     * @param signature {@link AdvancedSignature} to be verified
      * @param status {@link SignatureStatus} to fill in case of error
      */
     protected void checkCLevelIsHighest(AdvancedSignature signature, SignatureStatus status) {
@@ -535,6 +538,7 @@ public class SignatureRequirementsChecker {
      */
     public void assertExtendToXLevelPossible(List<AdvancedSignature> signatures) {
         assertXLevelIsHighest(signatures);
+        assertHasNoEmbeddedEvidenceRecords(signatures);
     }
 
     /**
@@ -561,7 +565,7 @@ public class SignatureRequirementsChecker {
     /**
      * Verifies whether the {@code signature} has maximum B-, T- or LT-level
      *
-     * @param signature {@link AdvancedSignature} to be verifies
+     * @param signature {@link AdvancedSignature} to be verified
      * @param status {@link SignatureStatus} to fill in case of error
      */
     protected void checkXLevelIsHighest(AdvancedSignature signature, SignatureStatus status) {
@@ -587,6 +591,7 @@ public class SignatureRequirementsChecker {
      */
     public void assertExtendToXLLevelPossible(List<AdvancedSignature> signatures) {
         assertXLLevelIsHighest(signatures);
+        assertHasNoEmbeddedEvidenceRecords(signatures);
     }
 
     /**
@@ -613,7 +618,7 @@ public class SignatureRequirementsChecker {
     /**
      * Verifies whether the {@code signature} has maximum X-level
      *
-     * @param signature {@link AdvancedSignature} to be verifies
+     * @param signature {@link AdvancedSignature} to be verified
      * @param status {@link SignatureStatus} to fill in case of error
      */
     protected void checkXLLevelIsHighest(AdvancedSignature signature, SignatureStatus status) {
@@ -630,6 +635,58 @@ public class SignatureRequirementsChecker {
      */
     public boolean hasALevelOrHigher(AdvancedSignature signature) {
         return hasLTALevelOrHigher(signature);
+    }
+
+    /**
+     * Verifies whether extension of {@code signatures} to LTA-level is possible
+     *
+     * @param signatures a list of {@link AdvancedSignature}s
+     */
+    public void assertExtendToLTALevelPossible(List<AdvancedSignature> signatures) {
+        assertHasNoEmbeddedEvidenceRecords(signatures);
+    }
+
+    /**
+     * Checks whether across {@code signatures} the T-level is highest and T-level augmentation can be performed
+     *
+     * @param signatures a list of {@link AdvancedSignature}s
+     */
+    protected void assertHasNoEmbeddedEvidenceRecords(List<AdvancedSignature> signatures) {
+        if (certificateVerifier.getAugmentationAlertOnHigherSignatureLevel() == null) {
+            LOG.trace("The verification of #hasEmbeddedEvidenceRecords has been skipped.");
+            return;
+        }
+
+        SignatureStatus status = new SignatureStatus();
+        for (AdvancedSignature signature : signatures) {
+            checkHasEmbeddedEvidenceRecords(signature, status);
+        }
+        if (!status.isEmpty()) {
+            status.setMessage("Error on signature augmentation.");
+            certificateVerifier.getAugmentationAlertOnHigherSignatureLevel().alert(status);
+        }
+    }
+
+    /**
+     * Verifies whether the {@code signature} has an embedded evidence record
+     *
+     * @param signature {@link AdvancedSignature} to be verified
+     * @param status {@link SignatureStatus} to fill in case of error
+     */
+    protected void checkHasEmbeddedEvidenceRecords(AdvancedSignature signature, SignatureStatus status) {
+        if (hasEmbeddedEvidenceRecords(signature)) {
+            status.addRelatedTokenAndErrorMessage(signature, "The signature is preserved by an embedded evidence record.");
+        }
+    }
+
+    /**
+     * Checks if the signature has embedded evidence records
+     *
+     * @param signature {@link AdvancedSignature} to be validated
+     * @return TRUE if the signature has an embedded evidence record, FALSE otherwise
+     */
+    public boolean hasEmbeddedEvidenceRecords(AdvancedSignature signature) {
+        return Utils.isCollectionNotEmpty(signature.getEmbeddedEvidenceRecords());
     }
 
     /**

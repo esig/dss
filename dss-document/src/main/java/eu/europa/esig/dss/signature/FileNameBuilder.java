@@ -56,6 +56,9 @@ public class FileNameBuilder {
     /** Represents a document with added signature-policy-store suffix string */
     private static final String SIGNATURE_POLICY_STORE_SUFFIX = "-sig-policy-store";
 
+    /** Represents a document with added evidence-record suffix string */
+    private static final String EVIDENCE_RECORD_SUFFIX = "-preserved";
+
     /** Filename extension for an enveloping CMS signature */
     private static final String P7M_EXTENSION = "p7m";
 
@@ -183,6 +186,9 @@ public class FileNameBuilder {
                     break;
                 case ADD_SIG_POLICY_STORE:
                     finalName.append(SIGNATURE_POLICY_STORE_SUFFIX);
+                    break;
+                case ADD_EVIDENCE_RECORD:
+                    finalName.append(EVIDENCE_RECORD_SUFFIX);
                     break;
                 default:
                     throw new DSSException(String.format("The following operation '%s' is not supported!", signingOperation));

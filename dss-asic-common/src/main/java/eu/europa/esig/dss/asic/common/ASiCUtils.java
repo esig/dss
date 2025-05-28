@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.asic.common;
 
+import eu.europa.esig.dss.asic.common.validation.ASiCManifestParser;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.MimeType;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
@@ -421,7 +422,8 @@ public final class ASiCUtils {
 	public static boolean isAsicFileContent(List<String> filenames) {
 		return filesContainCorrectSignatureFileWithExtension(filenames, CADES_SIGNATURE_EXTENSION)
 				|| filesContainCorrectSignatureFileWithExtension(filenames, XML_EXTENSION)
-				|| filesContainTimestamps(filenames);
+				|| filesContainTimestamps(filenames)
+				|| filesContainEvidenceRecords(filenames);
 	}
 
 	/**
@@ -991,6 +993,29 @@ public final class ASiCUtils {
 			entries.add(entry);
 		}
 		return entries;
+	}
+
+	/**
+	 * Checks if a document (e.g. a signature) with the given filename is covered by a manifest
+	 *
+	 * @param manifestDocuments a list of manifest {@link DSSDocument}s extracted from the archive
+	 * @param filename {@link String} a filename of a document to check
+	 * @return TRUE if the document is covered by a manifest, FALSE otherwise
+	 */
+	public static boolean isCoveredByManifest(List<DSSDocument> manifestDocuments, String filename) {
+		if (Utils.isCollectionNotEmpty(manifestDocuments)) {
+			for (DSSDocument archiveManifest : manifestDocuments) {
+				ManifestFile manifestFile = ASiCManifestParser.getManifestFile(archiveManifest);
+				if (manifestFile != null) {
+					for (ManifestEntry entry : manifestFile.getEntries()) {
+						if (filename != null && filename.equals(entry.getUri())) {
+							return true;
+						}
+					}
+				}
+			}
+		}
+		return false;
 	}
 
 }

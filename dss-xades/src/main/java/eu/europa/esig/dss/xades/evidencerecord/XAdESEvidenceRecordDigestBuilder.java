@@ -34,8 +34,8 @@ import eu.europa.esig.dss.spi.validation.evidencerecord.AbstractSignatureEvidenc
 import eu.europa.esig.dss.spi.validation.evidencerecord.ByteArrayComparator;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.dss.xades.XAdESSignatureUtils;
 import eu.europa.esig.dss.xades.definition.XAdESPath;
-import eu.europa.esig.dss.xades.definition.xadesen.XAdESEvidencerecordNamespaceElement;
 import eu.europa.esig.dss.xades.reference.ReferenceOutputType;
 import eu.europa.esig.dss.xades.validation.XAdESAttribute;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
@@ -377,21 +377,19 @@ public class XAdESEvidenceRecordDigestBuilder extends AbstractSignatureEvidenceR
 
     private List<XAdESAttribute> getUnsignedSignaturePropertiesList(XAdESSignature signature) {
         // NOTE : only direct incorporation is supported
-        Element unsignedSignaturePropertiesDom = DomUtils.getElement(signature.getSignatureElement(), signature.getXAdESPaths().getUnsignedSignaturePropertiesPath());
-        if (unsignedSignaturePropertiesDom == null) {
+        XAdESUnsignedSigProperties unsignedSigProperties = XAdESUnsignedSigProperties.build(signature.getSignatureElement(), signature.getXAdESPaths());
+        if (!unsignedSigProperties.isExist()) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug("No xades:UnsignedSignatureProperties is present to compute the message-imprint for an evidence-record");
             }
             return Collections.emptyList();
         }
-        
-        XAdESUnsignedSigProperties unsignedSigProperties = new XAdESUnsignedSigProperties(unsignedSignaturePropertiesDom, signature.getXAdESPaths());
         if (evidenceRecordAttribute != null) {
             return getPrecedingAttributes(unsignedSigProperties, evidenceRecordAttribute);
         }
         
         if (parallelEvidenceRecord) {
-            XAdESAttribute erAttribute = getLastSealingEvidenceRecordAttribute(unsignedSigProperties);
+            XAdESAttribute erAttribute = XAdESSignatureUtils.getLastSealingEvidenceRecordAttribute(unsignedSigProperties);
             if (erAttribute != null) {
                 return getPrecedingAttributes(unsignedSigProperties, erAttribute);
             }
@@ -408,18 +406,6 @@ public class XAdESEvidenceRecordDigestBuilder extends AbstractSignatureEvidenceR
             attributes.add(currentAttribute);
         }
         return attributes;
-    }
-
-    private XAdESAttribute getLastSealingEvidenceRecordAttribute(XAdESUnsignedSigProperties unsignedSigProperties) {
-        // Execute in reverse order in order to change only last evidence-record, when applicable
-        List<XAdESAttribute> attributes = unsignedSigProperties.getAttributes();
-        for (int i = attributes.size() - 1; i >= 0; i--) {
-            XAdESAttribute attribute = attributes.get(i);
-            if (XAdESEvidencerecordNamespaceElement.SEALING_EVIDENCE_RECORDS.isSameTagName(attribute.getName())) {
-                return attribute;
-            }
-        }
-        return null;
     }
 
     private List<Node> getObjects(XAdESSignature signature) {

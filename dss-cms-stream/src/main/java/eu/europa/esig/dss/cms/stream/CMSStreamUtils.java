@@ -45,6 +45,8 @@ import org.bouncycastle.cms.SignerInformationStore;
 import org.bouncycastle.operator.DigestCalculatorProvider;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.bouncycastle.util.Store;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -59,6 +61,8 @@ import java.util.Set;
  *
  */
 public class CMSStreamUtils implements ICMSUtils {
+
+    private static final Logger LOG = LoggerFactory.getLogger(CMSStreamUtils.class);
 
     /**
      * Default constructor
@@ -518,6 +522,12 @@ public class CMSStreamUtils implements ICMSUtils {
     public void assertATSv2AugmentationSupported() {
         throw new UnsupportedOperationException("Augmentation of CMS signatures with archive-time-stamp-v2 is not " +
                 "supported by 'dss-cms-stream' implementation! Please switch to 'dss-cms-object' if support is required.");
+    }
+
+    @Override
+    public void assertEvidenceRecordEmbeddingSupported() {
+        throw new UnsupportedOperationException("Embedding of Evidence Record is not supported by the dss-cms-stream implementation! " +
+                "Please switch to 'dss-cms-object' if support is required.");
     }
 
 }

@@ -43,9 +43,11 @@ public interface ICMSUtils {
     CMS parseToCMS(byte[] binaries);
 
     /**
-     * Creates a {@code DSSDocument} from the given {@code CMS}
+     * Creates a {@code DSSDocument} from the given {@code CMS} using the implementation based coding.
      * This method uses a {@code resourcesHandlerBuilder} which defines the final document's implementation
      * (e.g. in-memory document or a temporary document in a filesystem).
+     * NOTE: When used, the dss-cms-object implementation stores document using a DL coding,
+     *       and dss-cms-stream stores documents using BER coding.
      *
      * @param cms {@link CMS} to create a document from
      * @param resourcesHandlerBuilder {@link DSSResourcesHandlerBuilder}
@@ -194,9 +196,15 @@ public interface ICMSUtils {
     SignerInformation replaceUnsignedAttributes(SignerInformation signerInformation, AttributeTable unsignedAttributes);
 
     /**
-     * This method returns whether the augmentation of signatures with an archive-time-stamp-v2 is supported by
+     * This method checks whether the augmentation of signatures with an archive-time-stamp-v2 is supported by
      * the current implementation
      */
     void assertATSv2AugmentationSupported();
+
+    /**
+     * This method checks whether the embedding of existing Evidence Records within CMS
+     * is supported by the current implementation
+     */
+    void assertEvidenceRecordEmbeddingSupported();
 
 }

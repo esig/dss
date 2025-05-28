@@ -43,10 +43,10 @@ import java.util.List;
 public abstract class AbstractSignedAndTimestampedFilesCoveredCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
     /** ASiC Container info */
-    private final XmlContainerInfo containerInfo;
+    protected final XmlContainerInfo containerInfo;
 
     /** Filename of the timestamp file to be verified */
-    private final String timestampFilename;
+    protected final String timestampFilename;
 
     /**
      * Default constructor
@@ -75,18 +75,25 @@ public abstract class AbstractSignedAndTimestampedFilesCoveredCheck<T extends Xm
     }
 
     private boolean checkManifestFilesCovered(XmlManifestFile timestampManifest) {
-        return checkManifestFilesCoveredRecursively(timestampManifest, timestampManifest);
+        return checkManifestFilesCoveredRecursively(timestampManifest.getEntries(), timestampManifest);
     }
 
-    private boolean checkManifestFilesCoveredRecursively(XmlManifestFile timestampManifest, XmlManifestFile currentManifestFile) {
-        if (currentManifestFile != null) {
-            for (String manifestEntry : currentManifestFile.getEntries()) {
-                if (!timestampManifest.getEntries().contains(manifestEntry)) {
+    /**
+     * This method verifies whether all entries in a {@code manifestFile} are covered by {@code coveredEntries} recursively
+     *
+     * @param coveredEntries a list of {@link String} entries covered by a timestamp or a manifest
+     * @param manifestFile {@link XmlManifestFile} to verify against
+     * @return TRUE if all manifest entries are covered recursively, FALSE otherwise
+     */
+    protected boolean checkManifestFilesCoveredRecursively(List<String> coveredEntries, XmlManifestFile manifestFile) {
+        if (manifestFile != null) {
+            for (String manifestEntry : manifestFile.getEntries()) {
+                if (!coveredEntries.contains(manifestEntry)) {
                     return false;
                 }
                 XmlManifestFile entryManifest = getCorrespondingManifestFile(manifestEntry);
                 if (entryManifest != null) {
-                    if (!checkManifestFilesCoveredRecursively(timestampManifest, entryManifest)) {
+                    if (!checkManifestFilesCoveredRecursively(coveredEntries, entryManifest)) {
                         return false;
                     }
                 }
@@ -100,10 +107,18 @@ public abstract class AbstractSignedAndTimestampedFilesCoveredCheck<T extends Xm
         return Utils.containsAny(timestampManifest.getEntries(), rootLevelFiles);
     }
 
-    private XmlManifestFile getCorrespondingManifestFile(String filename) {
-        for (XmlManifestFile manifestFile : containerInfo.getManifestFiles()) {
-            if (filename.equals(manifestFile.getSignatureFilename())) {
-                return manifestFile;
+    /**
+     * Gets an XmlManifestFile for the given {@code filename} document
+     *
+     * @param filename {@link String} to get an applicable XmlManifestFile for
+     * @return {@link XmlManifestFile} if found
+     */
+    protected XmlManifestFile getCorrespondingManifestFile(String filename) {
+        if (filename != null) {
+            for (XmlManifestFile manifestFile : containerInfo.getManifestFiles()) {
+                if (filename.equals(manifestFile.getSignatureFilename())) {
+                    return manifestFile;
+                }
             }
         }
         return null;

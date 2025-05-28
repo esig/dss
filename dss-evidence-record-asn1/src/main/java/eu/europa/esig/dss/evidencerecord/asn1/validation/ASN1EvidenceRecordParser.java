@@ -24,7 +24,9 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.evidencerecord.common.validation.ArchiveTimeStampObject;
 import eu.europa.esig.dss.evidencerecord.common.validation.EvidenceRecordParser;
+import eu.europa.esig.dss.evidencerecord.common.validation.timestamp.EvidenceRecordTimestampIdentifierBuilder;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.validation.evidencerecord.EmbeddedEvidenceRecordHelper;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import org.bouncycastle.asn1.cms.ContentInfo;
 import org.bouncycastle.asn1.tsp.ArchiveTimeStamp;
@@ -52,6 +54,12 @@ public class ASN1EvidenceRecordParser implements EvidenceRecordParser {
     /** The BouncyCastle evidence record object to be parsed */
     private final EvidenceRecord evidenceRecord;
 
+    /** The name of the file document containing the evidence record */
+    private String filename;
+
+    /** Optional attribute used for processing of embedded evidence records */
+    private EmbeddedEvidenceRecordHelper embeddedEvidenceRecordHelper;
+
     /**
      * Default constructor
      *
@@ -59,6 +67,28 @@ public class ASN1EvidenceRecordParser implements EvidenceRecordParser {
      */
     public ASN1EvidenceRecordParser(final EvidenceRecord evidenceRecord) {
         this.evidenceRecord = evidenceRecord;
+    }
+
+    /**
+     * Sets a filename of the document containing the evidence record
+     *
+     * @param filename {@link String}
+     * @return this {@link ASN1EvidenceRecordParser}
+     */
+    public ASN1EvidenceRecordParser setFilename(String filename) {
+        this.filename = filename;
+        return this;
+    }
+
+    /**
+     * Sets a helper for processing of embedded evidence records
+     *
+     * @param embeddedEvidenceRecordHelper {@link EmbeddedEvidenceRecordHelper}
+     * @return this {@link ASN1EvidenceRecordParser}
+     */
+    public ASN1EvidenceRecordParser setEmbeddedEvidenceRecordHelper(EmbeddedEvidenceRecordHelper embeddedEvidenceRecordHelper) {
+        this.embeddedEvidenceRecordHelper = embeddedEvidenceRecordHelper;
+        return this;
     }
 
     /**
@@ -87,7 +117,7 @@ public class ASN1EvidenceRecordParser implements EvidenceRecordParser {
     	ASN1ArchiveTimeStampChainObject archiveTimeStampChainObject = new ASN1ArchiveTimeStampChainObject();
         archiveTimeStampChainObject.setDigestAlgorithm(getDigestAlgorithm(archiveTimeStampChain));
         archiveTimeStampChainObject.setOrder(order);
-        archiveTimeStampChainObject.setArchiveTimeStamps(getASN1ArchiveTimeStamps(archiveTimeStampChain));
+        archiveTimeStampChainObject.setArchiveTimeStamps(getASN1ArchiveTimeStamps(archiveTimeStampChain, order));
         return archiveTimeStampChainObject;
     }
     
@@ -104,13 +134,13 @@ public class ASN1EvidenceRecordParser implements EvidenceRecordParser {
         return getDigestAlgorithm(archiveTimeStampChain.getArchiveTimestamps()[0]);
     }
 
-    private List<? extends ArchiveTimeStampObject> getASN1ArchiveTimeStamps(ArchiveTimeStampChain archiveTimeStampChain) {
+    private List<? extends ArchiveTimeStampObject> getASN1ArchiveTimeStamps(ArchiveTimeStampChain archiveTimeStampChain, int archiveTimeStampChainOrder) {
         final ArchiveTimeStamp[] archiveTimeStampList = archiveTimeStampChain.getArchiveTimestamps();
         if (archiveTimeStampList != null && archiveTimeStampList.length > 0) {
         	ASN1ArchiveTimeStampObject[] result = new ASN1ArchiveTimeStampObject[archiveTimeStampList.length];
             for (int i = 0; i < archiveTimeStampList.length; i++) {
                 final ArchiveTimeStamp archiveTimeStamp = archiveTimeStampList[i];
-                ASN1ArchiveTimeStampObject archiveTimeStampObject = getASN1ArchiveTimeStampObject(archiveTimeStamp, i+1);
+                ASN1ArchiveTimeStampObject archiveTimeStampObject = getASN1ArchiveTimeStampObject(archiveTimeStamp, archiveTimeStampChainOrder, i+1);
                 result[i] = archiveTimeStampObject;
             }
             return Arrays.asList(result);
@@ -118,12 +148,12 @@ public class ASN1EvidenceRecordParser implements EvidenceRecordParser {
         return Collections.emptyList();
     }
     
-    private ASN1ArchiveTimeStampObject getASN1ArchiveTimeStampObject(ArchiveTimeStamp archiveTimeStamp, int order) {
+    private ASN1ArchiveTimeStampObject getASN1ArchiveTimeStampObject(ArchiveTimeStamp archiveTimeStamp, int archiveTimeStampChainOrder, int archiveTimeStampOrder) {
     	ASN1ArchiveTimeStampObject archiveTimeStampObject = new ASN1ArchiveTimeStampObject();
         archiveTimeStampObject.setHashTree(getHashTree(archiveTimeStamp));
         archiveTimeStampObject.setDigestAlgorithm(getDigestAlgorithm(archiveTimeStamp));
-        archiveTimeStampObject.setTimestampToken(getTimestampToken(archiveTimeStamp));
-        archiveTimeStampObject.setOrder(order);
+        archiveTimeStampObject.setTimestampToken(getTimestampToken(archiveTimeStamp, archiveTimeStampChainOrder, archiveTimeStampOrder));
+        archiveTimeStampObject.setOrder(archiveTimeStampOrder);
         // cryptographic info not applicable for ANS.1
         return archiveTimeStampObject;
     }
@@ -141,13 +171,23 @@ public class ASN1EvidenceRecordParser implements EvidenceRecordParser {
         return DigestAlgorithm.forOID(algIdentifier.getAlgorithm().getId());
     }
     
-    private TimestampToken getTimestampToken(ArchiveTimeStamp archiveTimeStamp) {
+    private TimestampToken getTimestampToken(ArchiveTimeStamp archiveTimeStamp, int archiveTimeStampChainOrder, int archieTimeStampOrder) {
     	ContentInfo contentInfo = archiveTimeStamp.getTimeStamp();
         if (contentInfo == null) {
             throw new IllegalInputException("TimeStampToken shall be defined!");
         }
         try {
-            return new TimestampToken(contentInfo.getEncoded(), TimestampType.EVIDENCE_RECORD_TIMESTAMP);
+            byte[] timestampBinaries = contentInfo.getEncoded();
+            EvidenceRecordTimestampIdentifierBuilder identifierBuilder = new EvidenceRecordTimestampIdentifierBuilder(timestampBinaries)
+                    .setArchiveTimeStampChainOrder(archiveTimeStampChainOrder)
+                    .setArchiveTimeStampOrder(archieTimeStampOrder)
+                    .setFilename(filename);
+            if (embeddedEvidenceRecordHelper != null) {
+                identifierBuilder = identifierBuilder
+                        .setEvidenceRecordAttributeOrder(embeddedEvidenceRecordHelper.getOrderOfAttribute())
+                        .setEvidenceRecordWithinAttributeOrder(embeddedEvidenceRecordHelper.getOrderWithinAttribute());
+            }
+            return new TimestampToken(timestampBinaries, TimestampType.EVIDENCE_RECORD_TIMESTAMP, new ArrayList<>(), identifierBuilder);
         } catch (Exception e) {
             LOG.warn("Unable to create a time-stamp token. Reason : {}", e.getMessage(), e);
             return null;

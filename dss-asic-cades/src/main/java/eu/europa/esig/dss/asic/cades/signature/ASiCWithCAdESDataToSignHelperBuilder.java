@@ -25,13 +25,11 @@ import eu.europa.esig.dss.asic.cades.ASiCWithCAdESFilenameFactory;
 import eu.europa.esig.dss.asic.cades.signature.asice.DataToSignASiCEWithCAdESHelper;
 import eu.europa.esig.dss.asic.cades.signature.asics.DataToSignASiCSWithCAdESFromArchive;
 import eu.europa.esig.dss.asic.cades.signature.asics.DataToSignASiCSWithCAdESFromFiles;
-import eu.europa.esig.dss.asic.cades.signature.manifest.ASiCEWithCAdESManifestBuilder;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
-import eu.europa.esig.dss.asic.common.signature.AbstractASiCDataToSignHelperBuilder;
+import eu.europa.esig.dss.asic.common.AbstractASiCManifestBuilder;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.utils.Utils;
 
 import java.util.Collections;
 
@@ -39,12 +37,7 @@ import java.util.Collections;
  * Builds a relevant {@code GetDataToSignASiCWithCAdESHelper} for ASiC with CAdES dataToSign creation
  *
  */
-public abstract class ASiCWithCAdESDataToSignHelperBuilder extends AbstractASiCDataToSignHelperBuilder {
-
-	/**
-	 * Defines rules for filename creation for new manifest files.
-	 */
-	protected final ASiCWithCAdESFilenameFactory asicFilenameFactory;
+public abstract class ASiCWithCAdESDataToSignHelperBuilder extends AbstractASiCWithCAdESDataToSignHelperBuilder {
 
 	/**
 	 * Default constructor
@@ -52,7 +45,7 @@ public abstract class ASiCWithCAdESDataToSignHelperBuilder extends AbstractASiCD
 	 * @param asicFilenameFactory {@link ASiCWithCAdESFilenameFactory}
 	 */
 	protected ASiCWithCAdESDataToSignHelperBuilder(final ASiCWithCAdESFilenameFactory asicFilenameFactory) {
-		this.asicFilenameFactory = asicFilenameFactory;
+		super(asicFilenameFactory);
 	}
 
 	/**
@@ -64,31 +57,29 @@ public abstract class ASiCWithCAdESDataToSignHelperBuilder extends AbstractASiCD
 	 */
 	public GetDataToSignASiCWithCAdESHelper build(ASiCContent asicContent, ASiCWithCAdESCommonParameters parameters) {
 		asicContent = ASiCUtils.ensureMimeTypeAndZipComment(asicContent, parameters.aSiC());
-
-		if (Utils.isCollectionNotEmpty(asicContent.getSignatureDocuments())
-				|| Utils.isCollectionNotEmpty(asicContent.getTimestampDocuments())) {
-			ASiCContainerType currentContainerType = asicContent.getContainerType();
-
-			boolean asice = ASiCUtils.isASiCE(parameters.aSiC());
-			if (asice && ASiCContainerType.ASiC_E.equals(currentContainerType)) {
-				DSSDocument manifestDocument = createManifestDocument(asicContent, parameters);
-				return new DataToSignASiCEWithCAdESHelper(asicContent, manifestDocument);
-
-			} else if (!asice && ASiCContainerType.ASiC_S.equals(currentContainerType)) {
-				if (Utils.isCollectionNotEmpty(asicContent.getSignatureDocuments()) ||
-						Utils.isCollectionNotEmpty(asicContent.getTimestampDocuments())) {
-					return new DataToSignASiCSWithCAdESFromArchive(asicContent);
-				} else {
-					return new DataToSignASiCSWithCAdESFromFiles(asicContent);
-				}
-
-			} else {
-				throw new UnsupportedOperationException(
-						String.format("Original container type '%s' vs parameter : '%s'", currentContainerType,
-								parameters.aSiC().getContainerType()));
-			}
+		if (isASiCArchive(asicContent)) {
+			return fromArchive(asicContent, parameters);
+		} else {
+			return fromFiles(asicContent, parameters);
 		}
-		return fromFiles(asicContent, parameters);
+	}
+
+	private GetDataToSignASiCWithCAdESHelper fromArchive(ASiCContent asicContent, ASiCWithCAdESCommonParameters parameters) {
+		ASiCContainerType currentContainerType = asicContent.getContainerType();
+
+		boolean asice = ASiCUtils.isASiCE(parameters.aSiC());
+		if (asice && ASiCContainerType.ASiC_E.equals(currentContainerType)) {
+			DSSDocument manifestDocument = createManifestDocument(asicContent, parameters);
+			return new DataToSignASiCEWithCAdESHelper(asicContent, manifestDocument);
+
+		} else if (!asice && ASiCContainerType.ASiC_S.equals(currentContainerType)) {
+			return new DataToSignASiCSWithCAdESFromArchive(asicContent);
+
+		} else {
+			throw new UnsupportedOperationException(
+					String.format("Original container type '%s' vs parameter : '%s'", currentContainerType,
+							parameters.aSiC().getContainerType()));
+		}
 	}
 
 	private GetDataToSignASiCWithCAdESHelper fromFiles(ASiCContent asicContent, ASiCWithCAdESCommonParameters parameters) {
@@ -111,18 +102,13 @@ public abstract class ASiCWithCAdESDataToSignHelperBuilder extends AbstractASiCD
 	}
 
 	/**
-	 * This method returns a {@code ASiCEWithCAdESManifestBuilder} to be used for a signed/timestamped manifest creation
+	 * This method returns a {@code AbstractASiCManifestBuilder} to be used for a signed/timestamped manifest creation
 	 *
 	 * @param asicContent {@link ASiCContent}
 	 * @param parameters {@link ASiCWithCAdESCommonParameters}
-	 * @return {@link ASiCEWithCAdESManifestBuilder}
+	 * @return {@link AbstractASiCManifestBuilder}
 	 */
-	protected abstract ASiCEWithCAdESManifestBuilder getManifestBuilder(ASiCContent asicContent,
-																		ASiCWithCAdESCommonParameters parameters);
-
-	@Override
-	protected String getDataPackageName(ASiCContent asicContent) {
-		return asicFilenameFactory.getDataPackageFilename(asicContent);
-	}
+	protected abstract AbstractASiCManifestBuilder getManifestBuilder(ASiCContent asicContent,
+																	  ASiCWithCAdESCommonParameters parameters);
 
 }

@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.spi.signature.identifier.AbstractSignatureIdentifierBuilder;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.signature.identifier.AbstractSignatureIdentifierBuilder;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -34,9 +34,6 @@ import org.w3c.dom.NodeList;
 public class XAdESSignatureIdentifierBuilder extends AbstractSignatureIdentifierBuilder {
 
 	private static final long serialVersionUID = 6174322691822584700L;
-
-	/** The META-INF folder (used to determine a signature file position in an ASiC container) */
-	public static final String META_INF_FOLDER = "META-INF/";
 
 	/**
 	 * Default constructor
@@ -88,7 +85,7 @@ public class XAdESSignatureIdentifierBuilder extends AbstractSignatureIdentifier
 		if (Utils.isStringNotEmpty(signatureFilename) && signatureFilename.startsWith(META_INF_FOLDER)) {
 			return signatureFilename;
 		}
-		return super.getSignatureFilePosition();
+		return Utils.EMPTY_STRING;
 	}
 
 }

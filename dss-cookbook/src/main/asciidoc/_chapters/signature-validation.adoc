@@ -687,7 +687,7 @@ DSS provides support of RFC 6283 XML Evidence Records (cf. <<R23>>) and RFC 4998
 
 DSS performs cryptographic validation of the evidence record's hash tree, as well as processing of evidence record as a material for achieving a long-term preservation and availability as per ETSI EN 319 102-1 (cf. <<R09>>).
 
- One or both following modules should be included to the project in order to add support of evidence records on validation:
+One or both following modules should be included to the project in order to add support of evidence records on validation:
 
  * `dss-evidence-record-xml` - for validation of RFC 6283 XML Evidence Records;
  * `dss-evidence-record-asn1` - for validation of RFC 4998 Evidence Records.
@@ -780,6 +780,8 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/ERDataObje
 ----
 
 * `CAdESEvidenceRecordDigestBuilder` (part of `dss-cades` module) - creates digest for a CMS or CAdES signature to be protected by an embedded evidence-record. Can be used only for Evidence Record Syntax (cf. <<R24>>) evidence record implementation.
+
+WARNING: There is an inconsistency between RFC 4998 (cf. <<R24>>) and ETSI TS 119 122-3 v1.1.1 (cf. <<R02>>), with RFC 4998 requiring an embedded evidence record to be computed on a CMS using the original CMS coding, while ETSI TS 119 122-3 v1.1.1 requires to compute evidence records based on a `DER` encoded CMS. DSS addresses this inconsistency by validating evidence records created according to both definitions, whatever succeeds first.
 
 [source,java,indent=0]
 .Hash computation for a CAdES signature

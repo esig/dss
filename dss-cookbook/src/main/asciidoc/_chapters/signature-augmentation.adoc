@@ -191,3 +191,11 @@ NOTE: In order to simplify the signature augmentation process, the information a
 As each timestamp has its own validity range, it is important to preserve timestamp validity with another following `BASELINE-LTA` level, before expiration of the timestamp's certificate.
 
 NOTE: It can be beneficial to use timestamps from different TSAs approach in order to avoid signature validity expiration in case one of the timestamps becomes unexpectedly invalid by one or another reason (e.g. revocation of a timestamp's certificate).
+
+=== Signature preservation with Evidence Records
+
+As an alternative to signature and archive timestamps, document and/or signature preservation can also be done with a use of evidence records, providing a cost-efficient option to ensure a long-term validity of electronic signatures.
+
+DSS offers a possibility for addition of existing evidence records (either of RFC 6283 <<R23>> or RFC 4998 <<R24>> format) within a signature or an ASiC container. For more detail about the implementation, please see the <<evidenceRecordsAddition>> chapter in the Annex.
+
+NOTE: Creation of evidence records is out of scope of DSS and a third-party application should be used, whether a creation of evidence records is required.

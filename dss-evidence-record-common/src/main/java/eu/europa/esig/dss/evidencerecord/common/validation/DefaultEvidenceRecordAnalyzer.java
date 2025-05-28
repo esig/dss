@@ -30,6 +30,7 @@ import eu.europa.esig.dss.spi.validation.analyzer.evidencerecord.EvidenceRecordA
 import eu.europa.esig.dss.spi.validation.analyzer.evidencerecord.EvidenceRecordAnalyzerFactory;
 import eu.europa.esig.dss.spi.validation.evidencerecord.EmbeddedEvidenceRecordHelper;
 import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
+import eu.europa.esig.dss.utils.Utils;
 
 import java.util.Collections;
 import java.util.List;
@@ -107,6 +108,18 @@ public abstract class DefaultEvidenceRecordAnalyzer extends DefaultDocumentAnaly
     @Override
     public void setEmbeddedEvidenceRecordHelper(EmbeddedEvidenceRecordHelper embeddedEvidenceRecordHelper) {
         this.embeddedEvidenceRecordHelper = embeddedEvidenceRecordHelper;
+    }
+
+    /**
+     * Returns a list of detached documents for the evidence record
+     *
+     * @return a list of {@link DSSDocument}s
+     */
+    protected List<DSSDocument> getEvidenceRecordDetachedContents() {
+        if (embeddedEvidenceRecordHelper != null && Utils.isCollectionNotEmpty(embeddedEvidenceRecordHelper.getDetachedContents())) {
+            return embeddedEvidenceRecordHelper.getDetachedContents();
+        }
+        return detachedContents;
     }
 
     /**

@@ -496,7 +496,62 @@ NOTE: When using `SimpleASiCWithXAdESFilenameFactory` or `SimpleASiCWithCAdESFil
 Below you can find an example of a `SimpleASiCWithXAdESFilenameFactory` use within an `ASiCWithXAdESService` for a container signature creation with a custom filename:
 
 [source,java,indent=0]
-.SimpleASiCWithXAdESFilenameFactory use for a a custom signature filename
+.SimpleASiCWithXAdESFilenameFactory use for a custom signature filename
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignASiCWithSimpleFilenameFactoryTest.java[tags=demo]
 ----
+
+[[evidenceRecordsAddition]]
+=== Addition of Evidence Records
+
+Since version `6.3` DSS provides an option for addition of existing evidence records (either of RFC 6283 <<R23>> or RFC 4998 <<R24>> format) within a signature or an ASiC container.
+
+NOTE: The corresponding implementation supporting an evidence record of the given format shall be available in the classpath in order to benefit from the feature. Please see <<EvidenceRecords>> for more detail about the configuration.
+
+Please see below details of the implementation end-points for each.
+
+[[embeddingERWithinSignature]]
+==== Embedding of Evidence Records within a signature
+
+An existing evidence record can be embedded within a XAdES or CAdES signature, according to the rules defined in the ETSI TS 119 132-3 (cf. <<R01>>) and ETSI TS 119 122-3 (cf. <<R02>>), respectively.
+
+* For `XAdES`, an evidence record is computed on the signature content and may be added for any signature packaging, to be incorporated within a `xadesen:SealingEvidenceRecords` unsigned qualifying property. Both RFC 6283 <<R23>> and RFC 4998 <<R24>> evidence records are supported. After evidence record incorporation, the concerned electronic signature may be modified only by addition of a new evidence record, or renewal of an existing evidence record. Modification of other signatures within the same document is possible after.
+* For `CAdES`, an evidence record is computed on the whole CMS ContentInfo's content and either included within the `internal-evidence-records` unsigned attribute (for `ENVELOPING` signature packaging) or within the `external-evidence-records` unsigned attribute (for `DETACHED` signature packaging). Only RFC 4998 <<R23>> evidence records are supported. After the evidence record incorporation, the concerned electronic signature may be modified only by addition of a new evidence record, or renewal of an existing evidence record. Modification of other signatures is forbidden after.
+* For `ASiC` containers the same rules apply based on the used signature format, with the exception to signatures preserved by other signatures or timestamps with a use of an ASiC Manifest file. The modification of other signature files within the container is possible after.
+
+NOTE: In case of the `DETACHED` signature packaging, a detached content signed by the signature shall be provided within the parameters used for evidence record incorporation.
+
+Please see below an example of an end-point usage provided in `XAdESService` for incorporation of an existing evidence record within a `XAdES` signature (similar logic is to be applied for `CAdES` signatures):
+
+[source,java,indent=0]
+.Incorporate evidence record within existing signature
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/ERAdditionSnippet.java[tags=add-er]
+----
+
+The method will validate the evidence record against the signature and original documents (if applicable) and will create a corresponding unsigned attribute within the signature, whether the validation succeeds. The method does not modify the signature content, except the unsigned property used for the evidence record's incorporation.
+
+NOTE: It is advisable to compute an evidence record based on a signature of an `*AdES-BASELINE-LT` profile, in order to ensure the signature with an incorporated evidence record may be recognized as `XAdES-E-ERS` (ETSI TS 119 132-3, cf. <<R01>>) or `CAdES-E-ERS` (ETSI TS 119 122-3, cf. <<R02>>), respectively for XAdES and CAdES signatures. Other signature profiles with evidence records are not standardized and the support is not guaranteed.
+
+WARNING: Addition of evidence records within a CAdES signature is supported only with the `dss-cms-object` implementation, due to inability of `dss-cms-stream` to preserve the original CMS coding. Please refer to <<dssCms>> for more detail.
+
+==== Inclusion of Evidence Records within an ASiC container
+
+DSS provides a functionality for creation of new ASiC containers containing the evidence record and covered documents or incorporation of an evidence record within an existing ASiC container. As opposite to the <<embeddingERWithinSignature>>, a container evidence record may optionally cover either signed documents alone or also signature or timestamp files present in the ASiC container.
+
+WARNING: After incorporation of an evidence record within an ASiC container, augmentation or modification of the preserved signatures is forbidden.
+
+The functionality is supported for both ASiC with XAdES and ASiC with CAdES container formats, as defined in the ETSI EN 319 162-1 (cf. <<R04>>). Both RFC 6283 <<R23>> and RFC 4998 <<R24>> evidence records are supported.
+
+Please see an example of an evidence record incorporation within an ASiC container:
+
+[source,java,indent=0]
+.Incorporate evidence record within existing signature
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/ERAdditionSnippet.java[tags=er-to-asic]
+----
+
+When an original data object is provided (or a list of files) a new ASiC container will be created containing the evidence record.
+In case of an existing ASiC container, a copy of the container with the evidence record inside will be produced, provided the evidence record covers the original data objects (and optionally other files, e.g. signature or timestamp files).
+
+NOTE: For preservation of an electronic signature within an ASiC container with a separate evidence record file, the digest within the first data object group of the evidence record is computed on the whole document containing the signature, unlike the hash computation used for <<embeddingERWithinSignature>>.

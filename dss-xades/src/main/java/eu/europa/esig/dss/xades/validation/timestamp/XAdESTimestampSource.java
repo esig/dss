@@ -390,7 +390,6 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 			DSSDocument erDocument = getEvidenceRecordDocument(encapsulatedEvidenceRecord);
 			EvidenceRecordAnalyzer evidenceRecordAnalyzer = EvidenceRecordAnalyzerFactory.fromDocument(erDocument);
 			evidenceRecordAnalyzer.setEvidenceRecordOrigin(EvidenceRecordOrigin.SIGNATURE);
-			evidenceRecordAnalyzer.setDetachedContents(signature.getDetachedContents());
 
 			final XAdESEmbeddedEvidenceRecordHelper embeddedEvidenceRecordHelper = new XAdESEmbeddedEvidenceRecordHelper(signature, signatureAttribute);
 			embeddedEvidenceRecordHelper.setDetachedContents(signature.getDetachedContents());

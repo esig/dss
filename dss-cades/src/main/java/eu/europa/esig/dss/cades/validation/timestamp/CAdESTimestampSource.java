@@ -25,7 +25,7 @@ import eu.europa.esig.dss.cades.validation.CAdESAttribute;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.cades.validation.CAdESSignedAttributes;
 import eu.europa.esig.dss.cades.validation.CAdESUnsignedAttributes;
-import eu.europa.esig.dss.cades.validation.evidencerecord.CAdESEmbeddedEvidenceRecordHelper;
+import eu.europa.esig.dss.cades.evidencerecord.CAdESEmbeddedEvidenceRecordHelper;
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
@@ -305,10 +305,8 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 
 			final CAdESEmbeddedEvidenceRecordHelper embeddedEvidenceRecordHelper = new CAdESEmbeddedEvidenceRecordHelper(signature, unsignedAttribute);
 			if (EvidenceRecordIncorporationType.EXTERNAL_EVIDENCE_RECORD == incorporationType) {
-				// TODO : provide detached content in one place only ?
-				evidenceRecordAnalyzer.setDetachedContents(signature.getDetachedContents());
 				if (Utils.collectionSize(signature.getDetachedContents()) == 1) {
-					embeddedEvidenceRecordHelper.setDetachedDocument(signature.getDetachedContents().get(0));
+					embeddedEvidenceRecordHelper.setDetachedContents(signature.getDetachedContents());
 				} else {
 					LOG.warn("Detached document has not been provided to the validation of an external-evidence-record!");
 				}

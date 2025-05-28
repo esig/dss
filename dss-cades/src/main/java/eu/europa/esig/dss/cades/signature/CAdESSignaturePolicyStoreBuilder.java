@@ -61,7 +61,7 @@ public class CAdESSignaturePolicyStoreBuilder {
 	private static final Logger LOG = LoggerFactory.getLogger(CAdESSignaturePolicyStoreBuilder.class);
 
 	/** This object is used to create data container objects such as an OutputStream or a DSSDocument */
-	protected DSSResourcesHandlerBuilder resourcesHandlerBuilder;
+	private DSSResourcesHandlerBuilder resourcesHandlerBuilder;
 
 	/**
 	 * Default constructor
@@ -107,8 +107,8 @@ public class CAdESSignaturePolicyStoreBuilder {
 		Objects.requireNonNull(cms, "CMS must be provided!");
 		assertConfigurationValid(signaturePolicyStore);
 
-		CMSDocumentAnalyzer documentValidator = new CMSDocumentAnalyzer(cms);
-		List<AdvancedSignature> signatures = documentValidator.getSignatures();
+		CMSDocumentAnalyzer documentAnalyzer = new CMSDocumentAnalyzer(cms);
+		List<AdvancedSignature> signatures = documentAnalyzer.getSignatures();
 
 		if (Utils.isCollectionEmpty(signatures)) {
 			throw new IllegalInputException("Unable to extend the document! No signatures found.");
@@ -164,14 +164,14 @@ public class CAdESSignaturePolicyStoreBuilder {
 		Objects.requireNonNull(cms, "CMS must be provided!");
 		assertConfigurationValid(signaturePolicyStore);
 
-		CMSDocumentAnalyzer documentValidator = new CMSDocumentAnalyzer(cms);
-		AdvancedSignature signature = documentValidator.getSignatureById(signatureId);
+		CMSDocumentAnalyzer documentAnalyzer = new CMSDocumentAnalyzer(cms);
+		AdvancedSignature signature = documentAnalyzer.getSignatureById(signatureId);
 		if (signature == null) {
 			throw new IllegalInputException(String.format("Unable to find a signature with Id : %s!", signatureId));
 		}
 
 		final List<SignerInformation> newSignerInformationList = new ArrayList<>();
-		for (AdvancedSignature currentSignature : documentValidator.getSignatures()) {
+		for (AdvancedSignature currentSignature : documentAnalyzer.getSignatures()) {
 			CAdESSignature cadesSignature = (CAdESSignature) currentSignature;
 			if (signature.equals(cadesSignature)) {
 				SignerInformation newSignerInformation = addSignaturePolicyStoreIfDigestMatch(cadesSignature, signaturePolicyStore);
@@ -297,6 +297,9 @@ public class CAdESSignaturePolicyStoreBuilder {
 	private void assertSignaturePolicyStoreExtensionPossible(SignerInformation signerInformation) {
 		if (CAdESUtils.containsATSTv2(signerInformation)) {
 			throw new IllegalInputException("Cannot add signature policy store to a CAdES containing an archiveTimestampV2");
+		}
+		if (CAdESUtils.containsEvidenceRecord(signerInformation)) {
+			throw new IllegalInputException("Cannot add signature policy store to a CMS containing an evidence record unsigned attribute.");
 		}
 	}
 

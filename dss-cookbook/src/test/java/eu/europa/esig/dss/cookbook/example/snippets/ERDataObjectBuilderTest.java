@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.cookbook.example.snippets;
 
-import eu.europa.esig.dss.cades.validation.evidencerecord.CAdESEvidenceRecordDigestBuilder;
+import eu.europa.esig.dss.cades.evidencerecord.CAdESEvidenceRecordDigestBuilder;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.evidencerecord.asn1.digest.ASN1EvidenceRecordDataObjectDigestBuilder;
 import eu.europa.esig.dss.evidencerecord.asn1.digest.ASN1EvidenceRecordRenewalDigestBuilder;

@@ -181,6 +181,10 @@ public abstract class AbstractTimestampSource {
 			ListCertificateSource certificateSource, ListRevocationSource<CRL> crlSource, ListRevocationSource<OCSP> ocspSource) {
 		final List<TimestampedReference> references = new ArrayList<>();
 
+		for (TimestampToken timestampToken : evidenceRecord.getTimestamps()) {
+			addReferences(references, getReferencesFromTimestamp(timestampToken, certificateSource, crlSource, ocspSource));
+		}
+
 		final TokenCertificateSource erCertificateSource = evidenceRecord.getCertificateSource();
 		addReferences(references, createReferencesForCertificates(erCertificateSource.getCertificates()));
 		addReferences(references, createReferencesForCertificateRefs(erCertificateSource.getAllCertificateRefs(),

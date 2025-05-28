@@ -1,6 +1,5 @@
 package eu.europa.esig.dss.asic.xades.validation.evidencerecord;
 
-import eu.europa.esig.dss.asic.common.validation.AbstractASiCWithEvidenceRecordTestValidation;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
@@ -27,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class ASiCSWithXAdESLevelERSValidationTest extends AbstractASiCWithEvidenceRecordTestValidation {
+class ASiCSWithXAdESLevelERSValidationTest extends AbstractASiCWithXAdESWithEvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {
@@ -160,6 +159,11 @@ class ASiCSWithXAdESLevelERSValidationTest extends AbstractASiCWithEvidenceRecor
         assertEquals(1, masterSigCounter);
         assertEquals(1, packageCounter);
         assertEquals(2, archiveEntriesCounter);
+    }
+
+    @Override
+    protected int getNumberOfExpectedEvidenceScopes() {
+        return 4;
     }
 
 }

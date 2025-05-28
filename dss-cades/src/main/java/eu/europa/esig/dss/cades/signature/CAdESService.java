@@ -22,6 +22,8 @@ package eu.europa.esig.dss.cades.signature;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.CAdESUtils;
+import eu.europa.esig.dss.cades.evidencerecord.CAdESEmbeddedEvidenceRecordBuilder;
+import eu.europa.esig.dss.cades.evidencerecord.CAdESEvidenceRecordIncorporationParameters;
 import eu.europa.esig.dss.cms.CMS;
 import eu.europa.esig.dss.cms.CMSUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -41,6 +43,7 @@ import eu.europa.esig.dss.signature.CounterSignatureService;
 import eu.europa.esig.dss.signature.SigningOperation;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.signature.resources.DSSResourcesHandlerBuilder;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
@@ -313,6 +316,11 @@ public class CAdESService extends
 			throw new IllegalArgumentException(String.format("Unable to create a parallel signature with packaging '%s'" +
 					" which is different than the one used in the original signature!", parameters.getSignaturePackaging()));
 		}
+		for (SignerInformation signerInformation : cms.getSignerInfos()) {
+			if (CAdESUtils.containsEvidenceRecord(signerInformation)) {
+				throw new IllegalInputException("Signature is not possible due to the CMS containing an evidence record unsigned attribute.");
+			}
+		}
 	}
 
 	private CMSBuilder getCMSBuilder(CAdESSignatureParameters parameters) {
@@ -432,6 +440,28 @@ public class CAdESService extends
 		CAdESCounterSignatureBuilder counterSignatureBuilder = new CAdESCounterSignatureBuilder(certificateVerifier);
 		counterSignatureBuilder.setResourcesHandlerBuilder(resourcesHandlerBuilder);
 		return counterSignatureBuilder;
+	}
+
+	/**
+	 * Incorporates the Evidence Record as an unsigned property into the CAdES Signature
+	 *
+	 * @param signatureDocument      {@link DSSDocument} containing a CAdES Signature
+	 *                               to add the evidence record into
+	 * @param evidenceRecordDocument {@link DSSDocument} to add
+	 * @param parameters             {@link CAdESEvidenceRecordIncorporationParameters} providing configuration for
+	 *                               the evidence record incorporation
+	 * @return {@link DSSDocument} CAdESSignature with an incorporated evidence record
+	 */
+	public DSSDocument addSignatureEvidenceRecord(DSSDocument signatureDocument, DSSDocument evidenceRecordDocument,
+												  CAdESEvidenceRecordIncorporationParameters parameters) {
+		Objects.requireNonNull(signatureDocument, "The signature document cannot be null");
+		Objects.requireNonNull(evidenceRecordDocument, "The evidence record document cannot be null");
+
+		CAdESEmbeddedEvidenceRecordBuilder builder = new CAdESEmbeddedEvidenceRecordBuilder(certificateVerifier);
+		DSSDocument signatureWithEvidenceRecord = builder.addEvidenceRecord(signatureDocument, evidenceRecordDocument, parameters);
+		signatureWithEvidenceRecord.setName(getFinalFileName(signatureDocument, SigningOperation.ADD_EVIDENCE_RECORD));
+		signatureWithEvidenceRecord.setMimeType(signatureDocument.getMimeType());
+		return signatureWithEvidenceRecord;
 	}
 
 	private void assertCounterSignaturePossible(CAdESCounterSignatureParameters parameters) {

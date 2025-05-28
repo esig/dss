@@ -61,6 +61,8 @@ public class XAdESLevelBaselineLTA extends XAdESLevelBaselineLT {
 		super.extendSignatures(signatures);
 
 		final SignatureRequirementsChecker signatureRequirementsChecker = getSignatureRequirementsChecker();
+		signatureRequirementsChecker.assertExtendToLTALevelPossible(signatures);
+
 		signatureRequirementsChecker.assertSignaturesValid(signatures);
 
 		boolean addTimestampValidationData = false;

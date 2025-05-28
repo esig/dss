@@ -98,7 +98,7 @@ public class ASiCWithCAdESLevelBaselineLTA extends ASiCWithCAdESSignatureExtensi
 
     /**
      * Extends {@code asicContent} with an ArchiveManifest timestamp
-     *
+     * <p>
      * NOTE: This method is to be used for a direct timestamping with an ArchiveManifest,
      *       without in-depth signature attributes (the signature extension is still applied).
      *       Use {@code extend(ASiCContent, CAdESSignatureParameters)} method for a proper signature(s) extension
@@ -132,6 +132,9 @@ public class ASiCWithCAdESLevelBaselineLTA extends ASiCWithCAdESSignatureExtensi
         List<DSSDocument> timestampDocuments = asicContent.getTimestampDocuments();
         DSSDocument lastTimestamp = getLastTimestampDocument(lastManifestFile, timestampDocuments);
         if (lastTimestamp != null) {
+            boolean coveredByAnyManifest = isCoveredByAnyManifest(asicContent, lastTimestamp);
+            assertExtendTimestampPossible(coveredByAnyManifest);
+
             ASiCContainerWithCAdESAnalyzer validator = new ASiCContainerWithCAdESAnalyzer(asicContent);
             validator.setCertificateVerifier(certificateVerifier);
             validator.setValidationContextExecutor(CompleteValidationContextExecutor.INSTANCE);
@@ -234,7 +237,19 @@ public class ASiCWithCAdESLevelBaselineLTA extends ASiCWithCAdESSignatureExtensi
     protected void assertExtendSignaturePossible(CAdESSignatureParameters parameters, boolean coveredByManifest) {
         if (coveredByManifest) {
             throw new IllegalInputException(String.format(
-                    "Cannot extend signature to '%s'. The signature is already covered by an archive manifest.", parameters.getSignatureLevel()));
+                    "Cannot extend signature to '%s'. The signature is already covered by a manifest file.",
+                    SignatureLevel.CAdES_BASELINE_LTA));
+        }
+    }
+
+    /**
+     * Checks if the timestamp extension is possible
+     *
+     * @param coveredByManifest defines whether the timestamp document is covered by a manifest file
+     */
+    protected void assertExtendTimestampPossible(boolean coveredByManifest) {
+        if (coveredByManifest) {
+            throw new IllegalInputException("Cannot extend the last timestamp. The timestamp is already covered by a manifest file.");
         }
     }
 

@@ -89,7 +89,7 @@ For instance, the `dss-cms-object` implementation may be added as below within a
 
 ===== DSS CMS Object
 
-This module operates with the `org.bouncycastle.cms.CMSSignedData` object and provides a complete functionality for working with CMS or CAdES signatures. As `CMSSignedData` object loads the data in memory, the implementation limits the possible size of an original document and/or a CMS signature, and can cause `OutOfMemoryError`. The implementation creates CMS signatures in a `DER` encoded format and keeps the original encoding of a CMS on augmentation.
+This module operates with the `org.bouncycastle.cms.CMSSignedData` object and provides a complete functionality for working with CMS or CAdES signatures. As `CMSSignedData` object loads the data in memory, the implementation limits the possible size of an original document and/or a CMS signature, and can cause `OutOfMemoryError`. The implementation creates CMS signatures in a `DL` encoded format and keeps the original encoding of a CMS on augmentation.
 
 ===== DSS CMS Stream
 

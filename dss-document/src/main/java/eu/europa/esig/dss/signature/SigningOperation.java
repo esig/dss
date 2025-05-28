@@ -49,6 +49,11 @@ public enum SigningOperation {
 	/**
 	 * The signature policy store addition
 	 */
-	ADD_SIG_POLICY_STORE;
+	ADD_SIG_POLICY_STORE,
+
+	/**
+	 * The evidence record addition
+	 */
+	ADD_EVIDENCE_RECORD;
 
 }

@@ -38,6 +38,9 @@ public abstract class AbstractSignatureIdentifierBuilder implements SignatureIde
 
 	private static final long serialVersionUID = 5839378965317021595L;
 
+	/** The META-INF folder (used to determine a signature file position in an ASiC container) */
+	public static final String META_INF_FOLDER = "META-INF/";
+
 	/** The signature to build identifier for */
 	protected final AdvancedSignature signature;
 	
@@ -178,7 +181,7 @@ public abstract class AbstractSignatureIdentifierBuilder implements SignatureIde
 
 	/**
 	 * This method returns a position of a signature file
-	 *
+	 * <p>
 	 * NOTE: this method returns a signature filename for ASiC containers, empty string for others
 	 *
 	 * @return signature file position

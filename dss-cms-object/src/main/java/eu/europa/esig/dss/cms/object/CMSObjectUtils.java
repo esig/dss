@@ -353,4 +353,9 @@ public class CMSObjectUtils implements ICMSUtils {
         // supported, do nothing
     }
 
+    @Override
+    public void assertEvidenceRecordEmbeddingSupported() {
+        // supported, do nothing
+    }
+
 }

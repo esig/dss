@@ -1012,6 +1012,7 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
                                                              List<TimestampToken> previousTimestamps) {
         for (EvidenceRecord evidenceRecord : createdEvidenceRecords) {
             addReferences(evidenceRecord.getTimestampedReferences(), getArchiveTimestampReferences(previousTimestamps));
+            addReferences(evidenceRecord.getTimestampedReferences(), getEncapsulatedReferencesFromEvidenceRecords(embeddedEvidenceRecords));
             processEvidenceRecordTimestamps(evidenceRecord);
         }
     }

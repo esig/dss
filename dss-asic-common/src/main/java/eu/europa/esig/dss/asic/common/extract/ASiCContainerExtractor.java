@@ -36,4 +36,11 @@ public interface ASiCContainerExtractor {
      */
     ASiCContent extract();
 
+    /**
+     * Verifies whether the container format is supported by the current implementation
+     *
+     * @return TRUE if the container format is valid and supported, FALSE otherwise
+     */
+    boolean isSupportedContainerFormat();
+
 }

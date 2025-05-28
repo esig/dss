@@ -23,7 +23,7 @@ package eu.europa.esig.dss.asic.cades.validation.evidencerecord;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 
-class ASiCEWithCAdESLevelLTWithEvidenceRecordMultiFilesValidationTest extends AbstractASiCEWithCAdESWithEvidenceRecordTestValidation {
+class ASiCEWithCAdESLevelLTWithEvidenceRecordMultiFilesValidationTest extends AbstractASiCWithCAdESWithEvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

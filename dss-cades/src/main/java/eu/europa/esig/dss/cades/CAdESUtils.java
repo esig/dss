@@ -810,6 +810,20 @@ public final class CAdESUtils {
 	}
 
 	/**
+	 * Checks if the given signer contains an evidence record unsigned attribute
+	 *
+	 * @param signerInformation {@link SignerInformation}
+	 * @return TRUE if an evidence record attribute is present within unsigned attributes table, FALSE otherwise
+	 */
+	public static boolean containsEvidenceRecord(SignerInformation signerInformation) {
+		if (signerInformation != null && signerInformation.getUnsignedAttributes() != null) {
+			return signerInformation.getUnsignedAttributes().get(id_aa_er_internal) != null ||
+					signerInformation.getUnsignedAttributes().get(id_aa_er_external) != null;
+		}
+		return false;
+	}
+
+	/**
 	 * Gets a generation time of the evidence record as indicated by the first timestamp's generation time
 	 *
 	 * @param evidenceRecord {@link org.bouncycastle.asn1.tsp.EvidenceRecord} to get a generation time for

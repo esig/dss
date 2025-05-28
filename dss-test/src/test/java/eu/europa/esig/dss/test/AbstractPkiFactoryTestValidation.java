@@ -1291,12 +1291,14 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 				} else {
 					digestAlgorithm = digestMatcher.getDigestMethod();
 				}
+				boolean archiveObjectFound = false;
+				if (DigestMatcherType.EVIDENCE_RECORD_MASTER_SIGNATURE == digestMatcher.getType()) {
+					masterSignatureFound = true;
+				} else if (DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT == digestMatcher.getType()) {
+					archiveObjectFound = true;
+				}
 				if (allArchiveDataObjectsProvidedToValidation()) {
-					if (DigestMatcherType.EVIDENCE_RECORD_MASTER_SIGNATURE == digestMatcher.getType()) {
-						masterSignatureFound = true;
-					} else if (DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT != digestMatcher.getType()) {
-						fail("EVIDENCE_RECORD_ARCHIVE_OBJECT DigestMatcherType is expected!");
-					}
+					assertTrue(archiveObjectFound || masterSignatureFound, "EVIDENCE_RECORD_ARCHIVE_OBJECT DigestMatcherType is expected!");
 					assertTrue(digestMatcher.isDataFound());
 					assertTrue(digestMatcher.isDataIntact());
 				}

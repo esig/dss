@@ -49,11 +49,6 @@ public class ASiCParameters implements Serializable {
 	private ASiCContainerType containerType;
 
 	/**
-	 * This property allows to provide a specific signature file name in the case of an ASiC-E container.
-	 */
-	private String signatureFileName;
-
-	/**
 	 * Default constructor instantiating object with null values
 	 */
 	public ASiCParameters() {
@@ -122,7 +117,6 @@ public class ASiCParameters implements Serializable {
 				"zipComment=" + zipComment +
 				", mimeType='" + mimeType + '\'' +
 				", containerType=" + containerType +
-				", signatureFileName='" + signatureFileName + '\'' +
 				']';
 	}
 
@@ -134,8 +128,7 @@ public class ASiCParameters implements Serializable {
 		ASiCParameters that = (ASiCParameters) o;
 		return zipComment == that.zipComment
 				&& Objects.equals(mimeType, that.mimeType)
-				&& containerType == that.containerType
-				&& Objects.equals(signatureFileName, that.signatureFileName);
+				&& containerType == that.containerType;
 	}
 
 	@Override
@@ -143,7 +136,6 @@ public class ASiCParameters implements Serializable {
 		int result = Boolean.hashCode(zipComment);
 		result = 31 * result + Objects.hashCode(mimeType);
 		result = 31 * result + Objects.hashCode(containerType);
-		result = 31 * result + Objects.hashCode(signatureFileName);
 		return result;
 	}
 

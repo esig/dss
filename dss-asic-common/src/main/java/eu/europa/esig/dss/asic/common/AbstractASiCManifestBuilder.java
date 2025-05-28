@@ -150,7 +150,14 @@ public abstract class AbstractASiCManifestBuilder {
 		Objects.requireNonNull(documentFilter, "ASiCContentDocumentFilter cannot be null!");
 
 		for (DSSDocument document : documentFilter.filter(asicContent)) {
+			assertDocumentNameDefined(document);
 			addDataObjectReference(documentDom, asicManifestDom, document, digestAlgorithm);
+		}
+	}
+
+	private void assertDocumentNameDefined(DSSDocument document) {
+		if (document.getName() == null) {
+			throw new IllegalArgumentException("Document name shall be defined for an ASiC Manifest building!");
 		}
 	}
 
