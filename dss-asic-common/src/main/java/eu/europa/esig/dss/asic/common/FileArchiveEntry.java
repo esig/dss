@@ -124,4 +124,23 @@ public class FileArchiveEntry extends CommonDocument implements DSSZipEntryDocum
 
     }
 
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        if (!super.equals(object)) return false;
+
+        FileArchiveEntry that = (FileArchiveEntry) object;
+        return zipArchive.equals(that.zipArchive)
+                && dssZipEntry.equals(that.dssZipEntry);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + zipArchive.hashCode();
+        result = 31 * result + dssZipEntry.hashCode();
+        return result;
+    }
+
 }

@@ -28,7 +28,9 @@ import org.junit.jupiter.api.io.TempDir;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -36,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class FileDocumentTest {
+class FileDocumentTest extends AbstractTestDSSDocument {
 
 	@TempDir
 	static Path temporaryFolder;
@@ -69,6 +71,21 @@ class FileDocumentTest {
 		assertTrue(file.exists());
 		assertTrue(file.delete(), "Cannot delete the temporary file");
 		assertFalse(file.exists());
+	}
+
+	@Override
+	protected DSSDocument getPersistenceTestDocument() {
+		return new FileDocument("src/test/resources/AdobeCA.p7c");
+	}
+
+	@Override
+	protected List<DSSDocument> getPersistenceTestAlternativeDocuments() {
+		DSSDocument diffNameDoc = new FileDocument("src/test/resources/AdobeCA.p7c");
+		diffNameDoc.setName("diff name");
+		return Arrays.asList(
+				diffNameDoc,
+				new FileDocument("src/test/resources/D-TRUST_CA_3-1_2016.cer")
+		);
 	}
 
 }

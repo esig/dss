@@ -26,27 +26,31 @@ import java.util.Objects;
  */
 public class CMSSignedContentDocument extends CommonDocument {
 
+    private static final long serialVersionUID = -8708614358530368078L;
+
     /** Main CMS document to read content from */
     private final DSSDocument cmsDocument;
 
     /** Signed content type OID */
-    private ASN1ObjectIdentifier signedContentType;
+    private final ASN1ObjectIdentifier signedContentType;
 
     /**
-     * Default constructor
+     * Constructor with a null signed content type
      *
      * @param cmsDocument {@link DSSDocument} representing the CMS document
      */
     public CMSSignedContentDocument(final DSSDocument cmsDocument) {
-        this.cmsDocument = cmsDocument;
+        this(cmsDocument, null);
     }
 
     /**
-     * Sets signed content type OID
+     * Constructor with a provided signed content type
      *
+     * @param cmsDocument {@link DSSDocument} representing the CMS document
      * @param signedContentType {@link ASN1ObjectIdentifier}
      */
-    public void setSignedContentType(ASN1ObjectIdentifier signedContentType) {
+    public CMSSignedContentDocument(final DSSDocument cmsDocument, ASN1ObjectIdentifier signedContentType) {
+        this.cmsDocument = cmsDocument;
         this.signedContentType = signedContentType;
     }
 
@@ -143,20 +147,22 @@ public class CMSSignedContentDocument extends CommonDocument {
     }
 
     @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + Objects.hashCode(cmsDocument);
-        return result;
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
 
         CMSSignedContentDocument that = (CMSSignedContentDocument) o;
-        return Objects.equals(cmsDocument, that.cmsDocument);
+        return Objects.equals(cmsDocument, that.cmsDocument)
+                && Objects.equals(signedContentType, that.signedContentType);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + Objects.hashCode(cmsDocument);
+        result = 31 * result + Objects.hashCode(signedContentType);
+        return result;
     }
 
 }

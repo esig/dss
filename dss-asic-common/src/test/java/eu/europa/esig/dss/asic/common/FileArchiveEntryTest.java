@@ -20,7 +20,9 @@
  */
 package eu.europa.esig.dss.asic.common;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -30,14 +32,18 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -79,6 +85,39 @@ class FileArchiveEntryTest {
 
         assertTrue(zipArchiveFile.delete());
         assertFalse(zipArchiveFile.exists());
+    }
+
+    @Test
+    public void persistenceTest() {
+        final Set<DSSDocument> hashSet = new HashSet<>();
+
+        DSSDocument document = getPersistenceTestDocument();
+        hashSet.add(document);
+        assertTrue(hashSet.contains(document));
+
+        Digest digest = document.getDigest(DigestAlgorithm.SHA256);
+        assertNotNull(digest);
+
+        assertTrue(hashSet.contains(document));
+        assertTrue(hashSet.contains(getPersistenceTestDocument()));
+
+        for (DSSDocument altDocument : getPersistenceTestAlternativeDocuments()) {
+            assertFalse(hashSet.contains(altDocument), altDocument.toString());
+        }
+    }
+
+    private DSSDocument getPersistenceTestDocument() {
+        return new FileArchiveEntry(new FileDocument("src/test/resources/multifiles-ok.asice"), new ZipEntry("test.text"));
+    }
+
+    private List<DSSDocument> getPersistenceTestAlternativeDocuments() {
+        DSSDocument diffNameDoc = getPersistenceTestDocument();
+        diffNameDoc.setName("new name");
+        return Arrays.asList(
+                diffNameDoc,
+                new FileArchiveEntry(new FileDocument("src/test/resources/multifiles-ok.asice"), new ZipEntry("test2.text")),
+                new FileArchiveEntry(new FileDocument("src/test/resources/test.zip"), new ZipEntry("test.txt"))
+        );
     }
 
 }

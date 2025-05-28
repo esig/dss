@@ -113,4 +113,22 @@ public class CMSSignedDocument extends CommonDocument {
 		asn1OutputStream.writeObject(signedData.toASN1Structure());
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+
+		CMSSignedDocument that = (CMSSignedDocument) o;
+		if ((signedData == null || that.signedData == null) && signedData != that.signedData) return false;
+        return signedData == null || Objects.equals(signedData.toASN1Structure(), that.signedData.toASN1Structure());
+    }
+
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + Objects.hashCode(signedData.toASN1Structure());
+		return result;
+	}
+
 }

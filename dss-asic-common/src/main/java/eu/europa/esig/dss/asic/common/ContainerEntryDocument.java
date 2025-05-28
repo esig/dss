@@ -96,4 +96,23 @@ public class ContainerEntryDocument extends CommonDocument implements DSSZipEntr
         return zipEntry;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        ContainerEntryDocument that = (ContainerEntryDocument) o;
+        return content.equals(that.content)
+                && zipEntry.equals(that.zipEntry);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + content.hashCode();
+        result = 31 * result + zipEntry.hashCode();
+        return result;
+    }
+
 }

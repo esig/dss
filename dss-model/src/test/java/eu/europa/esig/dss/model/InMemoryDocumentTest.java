@@ -26,13 +26,16 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class InMemoryDocumentTest {
+class InMemoryDocumentTest extends AbstractTestDSSDocument {
 
 	@Test
 	void test() {
@@ -112,6 +115,20 @@ class InMemoryDocumentTest {
 	void testNullBytes() {
 		NullPointerException exception = assertThrows(NullPointerException.class, () -> new InMemoryDocument((byte[]) null));
 		assertEquals("Bytes cannot be null", exception.getMessage());
+	}
+
+	@Override
+	protected DSSDocument getPersistenceTestDocument() {
+		return new InMemoryDocument("Hello World!".getBytes(StandardCharsets.UTF_8), "helloworld.pdf");
+	}
+
+	@Override
+	protected List<DSSDocument> getPersistenceTestAlternativeDocuments() {
+		return Arrays.asList(
+				new InMemoryDocument("Hello World!".getBytes(StandardCharsets.UTF_8), "byeworld.pdf"),
+				new InMemoryDocument("Bye World!".getBytes(StandardCharsets.UTF_8), "helloworld.pdf"),
+				new InMemoryDocument("Hello World!".getBytes(StandardCharsets.UTF_8), "helloworld.pdf", MimeTypeEnum.TEXT)
+		);
 	}
 
 }

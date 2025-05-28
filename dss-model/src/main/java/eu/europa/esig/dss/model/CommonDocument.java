@@ -44,7 +44,7 @@ public abstract class CommonDocument implements DSSDocument {
 	/**
 	 * Cached map of DigestAlgorithms and the corresponding digests for the document
 	 */
-	protected EnumMap<DigestAlgorithm, byte[]> digestMap = new EnumMap<>(DigestAlgorithm.class);
+	protected EnumMap<DigestAlgorithm, byte[]> digestMap = new DigestAlgorithmMap();
 
 	/**
 	 * The MimeType of the document
@@ -139,29 +139,68 @@ public abstract class CommonDocument implements DSSDocument {
 		if (o == null || getClass() != o.getClass()) return false;
 
 		CommonDocument that = (CommonDocument) o;
-		if (digestMap != null && !digestMap.isEmpty()) {
-			Map.Entry<DigestAlgorithm, byte[]> e = digestMap.entrySet().iterator().next();
-			if (!Arrays.equals(e.getValue(), that.getDigestValue(e.getKey()))) {
-				return false;
-			}
-		} else if (that.digestMap != null && !that.digestMap.isEmpty()) {
-			Map.Entry<DigestAlgorithm, byte[]> e = that.digestMap.entrySet().iterator().next();
-			if (!Arrays.equals(e.getValue(), getDigestValue(e.getKey()))) {
-				return false;
-			}
-		} else if (!Arrays.equals(getDigestValue(DigestAlgorithm.SHA1), that.getDigestValue(DigestAlgorithm.SHA1))) {
-			return false;
-		}
 		return Objects.equals(mimeType, that.mimeType)
 				&& Objects.equals(name, that.name);
 	}
 
 	@Override
 	public int hashCode() {
-		int result = Objects.hashCode(digestMap);
-		result = 31 * result + Objects.hashCode(mimeType);
+		int result = Objects.hashCode(mimeType);
 		result = 31 * result + Objects.hashCode(name);
 		return result;
+	}
+
+	/**
+	 * This class is used for improved #equals and #hashCode method computation for the digest algorithm map
+	 *
+	 */
+	private static final class DigestAlgorithmMap extends EnumMap<DigestAlgorithm, byte[]> {
+
+		/**
+		 * Default constructor
+		 */
+		public DigestAlgorithmMap() {
+			super(DigestAlgorithm.class);
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o)
+				return true;
+			if (o instanceof DigestAlgorithmMap)
+				return equals((DigestAlgorithmMap) o);
+			return false;
+		}
+
+		private boolean equals(DigestAlgorithmMap o) {
+			if (this.size() != o.size()) {
+				return false;
+			}
+			for (DigestAlgorithm digestAlgorithm : this.keySet()) {
+				byte[] thisValue = this.get(digestAlgorithm);
+				byte[] oValue = o.get(digestAlgorithm);
+				if (!Arrays.equals(oValue, thisValue)) {
+					return false;
+				}
+			}
+			return true;
+		}
+
+		@Override
+		public int hashCode() {
+			int h = 0;
+			for (Map.Entry<DigestAlgorithm, byte[]> entry : this.entrySet()) {
+				if (null != entry) {
+					h += entryHashCode(entry);
+				}
+			}
+			return h;
+		}
+
+		private int entryHashCode(Entry<DigestAlgorithm,byte[]> entry) {
+			return (entry.getKey().hashCode() ^ Arrays.hashCode(entry.getValue()));
+		}
+
 	}
 
 }

@@ -137,8 +137,7 @@ public class CMSStreamDocumentParser {
 
         try (InputStream is = signedContent.getContentStream()) {
             // we do not know what DigestAlgorithm has been used on signing, thus we compute digests for all
-            CMSSignedContentDocument cmsWrappedDocument = new CMSSignedContentDocument(document);
-            cmsWrappedDocument.setSignedContentType(signedContentTypeOID);
+            CMSSignedContentDocument cmsWrappedDocument = new CMSSignedContentDocument(document, signedContentTypeOID);
 
             Set<DigestAlgorithm> digestAlgorithms = getDigestAlgorithms(digestAlgorithmIDs);
             if (Utils.isCollectionNotEmpty(digestAlgorithms)) {

@@ -22,6 +22,7 @@ package eu.europa.esig.dss.asic.common;
 
 import java.io.Serializable;
 import java.nio.file.attribute.FileTime;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Objects;
 import java.util.zip.ZipEntry;
@@ -46,7 +47,7 @@ public class DSSZipEntry implements Serializable {
 
     /**
      * The compression method to be used for the current document within a ZIP-container to be created
-     *
+     * <p>
      * Default : DEFLATED (8) - the entry will be compressed
      */
     private int compressionMethod = ZipEntry.DEFLATED;
@@ -279,7 +280,7 @@ public class DSSZipEntry implements Serializable {
 
     /**
      * Creates a new copy of {@code ZipEntry}.
-     *
+     * <p>
      * NOTE: some fields are not copied, as they can be changed during container creation
      *       (i.e. modification time, size, crc, etc.).
      *
@@ -320,6 +321,39 @@ public class DSSZipEntry implements Serializable {
      */
     private Date toDate(FileTime fileTime) {
         return new Date(fileTime.toMillis());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DSSZipEntry that = (DSSZipEntry) o;
+        return compressionMethod == that.compressionMethod
+                && size == that.size
+                && compressedSize == that.compressedSize
+                && crc == that.crc
+                && Objects.equals(name, that.name)
+                && Objects.equals(comment, that.comment)
+                && Objects.equals(creationTime, that.creationTime)
+                && Arrays.equals(extra, that.extra)
+                && Objects.equals(modificationTime, that.modificationTime)
+                && Objects.equals(lastAccessTime, that.lastAccessTime);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hashCode(name);
+        result = 31 * result + Objects.hashCode(comment);
+        result = 31 * result + compressionMethod;
+        result = 31 * result + Objects.hashCode(creationTime);
+        result = 31 * result + Arrays.hashCode(extra);
+        result = 31 * result + Objects.hashCode(modificationTime);
+        result = 31 * result + Objects.hashCode(lastAccessTime);
+        result = 31 * result + Long.hashCode(size);
+        result = 31 * result + Long.hashCode(compressedSize);
+        result = 31 * result + Long.hashCode(crc);
+        return result;
     }
 
 }
