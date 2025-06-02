@@ -27,7 +27,6 @@ import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.i18n.I18nProvider;
-import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.model.policy.MultiValuesRule;
 import eu.europa.esig.dss.model.policy.ValidationPolicy;
@@ -37,6 +36,8 @@ import eu.europa.esig.dss.validation.process.bbb.fc.checks.EllipticCurveKeySizeC
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.FormatCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.FullScopeCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.ReferencesNotAmbiguousCheck;
+import eu.europa.esig.dss.validation.process.bbb.fc.checks.SignatureFilenameAdherenceCheck;
+import eu.europa.esig.dss.validation.process.bbb.fc.checks.SignatureManifestFilenameAdherenceCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.SignatureNotAmbiguousCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.SignerInformationStoreCheck;
 
@@ -61,11 +62,6 @@ public class SignatureFormatChecking extends AbstractFormatChecking<SignatureWra
 	public SignatureFormatChecking(I18nProvider i18nProvider, DiagnosticData diagnosticData,
 								   SignatureWrapper signature, Context context, ValidationPolicy policy) {
 		super(i18nProvider, diagnosticData, signature, context, policy);
-	}
-	
-	@Override
-	protected MessageTag getTitle() {
-		return MessageTag.FORMAT_CHECKING;
 	}
 
 	@Override
@@ -142,6 +138,18 @@ public class SignatureFormatChecking extends AbstractFormatChecking<SignatureWra
 	private ChainItem<XmlFC> ellipticCurveKeySizeCheck() {
 		LevelRule constraint = policy.getEllipticCurveKeySizeConstraint(context);
 		return new EllipticCurveKeySizeCheck(i18nProvider, result, token, constraint);
+	}
+
+	@Override
+	protected ChainItem<XmlFC> filenameAdherenceCheck() {
+		LevelRule constraint = policy.getFilenameAdherenceConstraint();
+		return new SignatureFilenameAdherenceCheck(i18nProvider, result, diagnosticData, token, constraint);
+	}
+
+	@Override
+	protected ChainItem<XmlFC> manifestFilenameAdherenceCheck() {
+		LevelRule constraint = policy.getFilenameAdherenceConstraint();
+		return new SignatureManifestFilenameAdherenceCheck(i18nProvider, result, diagnosticData, token, constraint);
 	}
 
 	private ChainItem<XmlFC> allFilesSignedCheck() {

@@ -1514,6 +1514,13 @@ public interface ValidationPolicy {
 	LevelRule getSignedFilesPresentConstraint();
 
 	/**
+	 * Returns FilenameAdherence constraint if present in the policy, null otherwise
+	 *
+	 * @return {@code LevelRule} if FilenameAdherence element is present in the constraint file, null otherwise.
+	 */
+	LevelRule getFilenameAdherenceConstraint();
+
+	/**
 	 * Returns AllFilesSigned constraint if present in the policy, null otherwise
 	 *
 	 * @return {@code LevelRule} if AllFilesSigned element is present

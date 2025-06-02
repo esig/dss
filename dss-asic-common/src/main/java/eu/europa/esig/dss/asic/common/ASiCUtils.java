@@ -114,28 +114,28 @@ public final class ASiCUtils {
 	public static final String ASICE_METAINF_MANIFEST = META_INF_FOLDER + ASIC_XAdES_MANIFEST_FILENAME + XML_EXTENSION;
 
 	/** The default signature filename for ASiC-E with XAdES container */
-	public static final String ASICE_METAINF_XADES_SIGNATURE = ASiCUtils.META_INF_FOLDER + "signatures001.xml";
+	public static final String ASICE_METAINF_XADES_SIGNATURE = META_INF_FOLDER + "signatures001.xml";
 
 	/** The default signature filename for ASiC-E with CAdES container */
-	public static final String ASICE_METAINF_CADES_SIGNATURE = ASiCUtils.META_INF_FOLDER + "signature001.p7s";
+	public static final String ASICE_METAINF_CADES_SIGNATURE = META_INF_FOLDER + "signature001.p7s";
 
 	/** The default timestamp filename for ASiC-E with CAdES container */
-	public static final String ASICE_METAINF_CADES_TIMESTAMP = ASiCUtils.META_INF_FOLDER + "timestamp001.tst";
+	public static final String ASICE_METAINF_CADES_TIMESTAMP = META_INF_FOLDER + "timestamp001.tst";
 
 	/** The default ERS evidence record filename for ASiC-E with CAdES container */
-	public static final String ASICE_METAINF_CADES_EVIDENCE_RECORD_ASN1 = ASiCUtils.META_INF_FOLDER + "evidencerecord001.ers";
+	public static final String ASICE_METAINF_CADES_EVIDENCE_RECORD_ASN1 = META_INF_FOLDER + "evidencerecord001.ers";
 
 	/** The default XMLERS evidence record filename for ASiC-E with CAdES container */
-	public static final String ASICE_METAINF_CADES_EVIDENCE_RECORD_XML = ASiCUtils.META_INF_FOLDER + "evidencerecord001.xml";
+	public static final String ASICE_METAINF_CADES_EVIDENCE_RECORD_XML = META_INF_FOLDER + "evidencerecord001.xml";
 
 	/** The default ASIC manifest filename for ASiC-E with CAdES container */
-	public static final String ASICE_METAINF_CADES_MANIFEST = ASiCUtils.META_INF_FOLDER + "ASiCManifest001.xml";
+	public static final String ASICE_METAINF_CADES_MANIFEST = META_INF_FOLDER + "ASiCManifest001.xml";
 
 	/** The default ASIC archive manifest filename for ASiC-E with CAdES container */
-	public static final String ASICE_METAINF_CADES_ARCHIVE_MANIFEST = ASiCUtils.META_INF_FOLDER + "ASiCArchiveManifest001.xml";
+	public static final String ASICE_METAINF_CADES_ARCHIVE_MANIFEST = META_INF_FOLDER + "ASiCArchiveManifest001.xml";
 
 	/** The default ASIC evidence record manifest filename for ASiC-E container */
-	public static final String ASICE_METAINF_EVIDENCE_RECORD_MANIFEST = ASiCUtils.META_INF_FOLDER + "ASiCEvidenceRecordManifest001.xml";
+	public static final String ASICE_METAINF_EVIDENCE_RECORD_MANIFEST = META_INF_FOLDER + "ASiCEvidenceRecordManifest001.xml";
 
 	/** The ASiC-S with CAdES signature document name (META-INF/signature.p7s) */
 	public static final String SIGNATURE_P7S = META_INF_FOLDER + SIGNATURE_FILENAME + CADES_SIGNATURE_EXTENSION;

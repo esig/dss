@@ -21,8 +21,8 @@
 package eu.europa.esig.dss.validation.process.vpfswatsp.evidencerecord.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessEvidenceRecord;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlContainerInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlManifestFile;
 import eu.europa.esig.dss.i18n.I18nProvider;
@@ -48,13 +48,13 @@ public class EvidenceRecordSignedAndTimestampedFilesCoveredCheck extends Abstrac
      *
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlValidationProcessEvidenceRecord}
-     * @param containerInfo {@link XmlContainerInfo}
+     * @param diagnosticData {@link DiagnosticData}
      * @param evidenceRecordWrapper {@link EvidenceRecordWrapper}
      * @param constraint {@link LevelRule}
      */
     public EvidenceRecordSignedAndTimestampedFilesCoveredCheck(I18nProvider i18nProvider, XmlValidationProcessEvidenceRecord result,
-            XmlContainerInfo containerInfo, EvidenceRecordWrapper evidenceRecordWrapper, LevelRule constraint) {
-        super(i18nProvider, result, containerInfo, evidenceRecordWrapper.getFilename(), constraint);
+            DiagnosticData diagnosticData, EvidenceRecordWrapper evidenceRecordWrapper, LevelRule constraint) {
+        super(i18nProvider, result, diagnosticData, evidenceRecordWrapper.getFilename(), constraint);
 
         this.evidenceRecordWrapper = evidenceRecordWrapper;
     }
@@ -68,7 +68,7 @@ public class EvidenceRecordSignedAndTimestampedFilesCoveredCheck extends Abstrac
         List<String> coveredDocumentEntries = getCoveredDocumentEntries();
         if (Utils.isCollectionNotEmpty(coveredDocumentEntries)) {
             for (String coveredDocumentName : coveredDocumentEntries) {
-                XmlManifestFile manifestFile = getCorrespondingManifestFile(coveredDocumentName);
+                XmlManifestFile manifestFile = diagnosticData.getManifestFileForFilename(coveredDocumentName);
                 if (manifestFile != null) {
                     if (!checkManifestFilesCoveredRecursively(coveredDocumentEntries, manifestFile)) {
                         return false;

@@ -25,6 +25,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlContainerInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlEncapsulationType;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlEvidenceRecord;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlManifestFile;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificateToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanRevocationToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
@@ -1238,6 +1239,47 @@ public class DiagnosticData {
 	 */
 	public XmlContainerInfo getContainerInfo() {
 		return wrapped.getContainerInfo();
+	}
+
+	/**
+	 * Gets a list of all manifest files extracted from the ASiC container
+	 *
+	 * @return a list of {@link XmlManifestFile}s
+	 */
+	public List<XmlManifestFile> getManifestFiles() {
+		if (wrapped.getContainerInfo() != null) {
+			return wrapped.getContainerInfo().getManifestFiles();
+		}
+		return Collections.emptyList();
+	}
+
+	/**
+	 * Gets an XmlManifestFile for the given {@code filename} document
+	 *
+	 * @param filename {@link String} to get an applicable XmlManifestFile for
+	 * @return {@link XmlManifestFile} if found
+	 */
+	public XmlManifestFile getManifestFileForFilename(String filename) {
+		if (filename != null) {
+			for (XmlManifestFile manifestFile : getManifestFiles()) {
+				if (filename.equals(manifestFile.getSignatureFilename())) {
+					return manifestFile;
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Gets a list of all original signed document filenames
+	 *
+	 * @return a list of {@link String}s
+	 */
+	public List<String> getContainerContentFilenames() {
+		if (wrapped.getContainerInfo() != null) {
+			return wrapped.getContainerInfo().getContentFiles();
+		}
+		return Collections.emptyList();
 	}
 
 	/**

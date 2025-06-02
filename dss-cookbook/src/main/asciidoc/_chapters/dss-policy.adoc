@@ -137,6 +137,20 @@ Default: `FAIL`
 </ContainerConstraints>
 ----
 
+* `FilenameAdherence` - this constraint is used to check whether filenames of the embedded documents (such as signature or timestamp documents) correspond to the ASiC specification. If a filename of document is not conformant to the specification, the check will fail.
+
+Default: `FAIL`
+
+[source,xml,indent=0]
+.Example of FilenameAdherence usage (with WARN validation level)
+----
+<ContainerConstraints>
+    ...
+    <FilenameAdherence  Level="WARN" />
+    ...
+</ContainerConstraints>
+----
+
 * `AllFilesSigned` - this constraint is used to check whether all documents present on the root level of the ASiC container (for ASiC-S) or outside the /META-INF folder (for ASiC-E) are actually signed by the signature. If the container contains other documents not covered by the signature, the check will fail.
 
 Default: `WARN`
@@ -2839,13 +2853,14 @@ This table defines the correspondence between the enforced validation policy con
 [%header,cols="5*^.^1"]
 |===
    |Block                         |Constraint                      |Type                              |Indication            |SubIndication
-.8+|ContainerConstraints          |AcceptableContainerTypes        |MultiValuesConstraint             |FAILED                |FORMAT_FAILURE
+.9+|ContainerConstraints          |AcceptableContainerTypes        |MultiValuesConstraint             |FAILED                |FORMAT_FAILURE
                                   |ZipCommentPresent               |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |AcceptableZipComment            |MultiValuesConstraint             |FAILED                |FORMAT_FAILURE
                                   |MimeTypeFilePresent             |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |AcceptableMimeTypeFileContent   |MultiValuesConstraint             |FAILED                |FORMAT_FAILURE
                                   |ManifestFilePresent             |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |SignedFilesPresent              |LevelConstraint                   |FAILED                |FORMAT_FAILURE
+                                  |FilenameAdherence               |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |AllFilesSigned                  |LevelConstraint                   |FAILED                |FORMAT_FAILURE
 .2+|PDFAConstraints               |AcceptablePDFAProfiles          |MultiValuesConstraint             |FAILED                |FORMAT_FAILURE
                                   |PDFACompliant                   |LevelConstraint                   |FAILED                |FORMAT_FAILURE

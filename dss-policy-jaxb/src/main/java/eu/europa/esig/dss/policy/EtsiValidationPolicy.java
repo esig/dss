@@ -1709,15 +1709,6 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
-	public LevelRule getAllFilesSignedConstraint() {
-		ContainerConstraints containerConstraints = getContainerConstraints();
-		if (containerConstraints != null) {
-			return toLevelRule(containerConstraints.getAllFilesSigned());
-		}
-		return null;
-	}
-
-	@Override
 	public LevelRule getManifestFilePresentConstraint() {
 		ContainerConstraints containerConstraints = getContainerConstraints();
 		if (containerConstraints != null) {
@@ -1731,6 +1722,24 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		ContainerConstraints containerConstraints = getContainerConstraints();
 		if (containerConstraints != null) {
 			return toLevelRule(containerConstraints.getSignedFilesPresent());
+		}
+		return null;
+	}
+
+	@Override
+	public LevelRule getFilenameAdherenceConstraint() {
+		ContainerConstraints containerConstraints = getContainerConstraints();
+		if (containerConstraints != null) {
+			return toLevelRule(containerConstraints.getFilenameAdherence());
+		}
+		return null;
+	}
+	
+	@Override
+	public LevelRule getAllFilesSignedConstraint() {
+		ContainerConstraints containerConstraints = getContainerConstraints();
+		if (containerConstraints != null) {
+			return toLevelRule(containerConstraints.getAllFilesSigned());
 		}
 		return null;
 	}

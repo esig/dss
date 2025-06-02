@@ -119,6 +119,11 @@
 					<xsd:documentation>Checks if one or more signed files is present outside META-INF folder (ASiC-E) or only one file is present at root level (ASiC-S)</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="FilenameAdherence" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Verifies conformance of a document filename to the ASiC specification</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="AllFilesSigned" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks in all present files in the container are covered by the signature</xsd:documentation>

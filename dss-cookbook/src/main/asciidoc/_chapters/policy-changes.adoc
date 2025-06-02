@@ -44,6 +44,19 @@ a|[source,xml]
 </Revocation>
 ----
 
+|ASiC Filename Adherence               |
+----
+Not present
+----
+a|[source,xml]
+----
+<ContainerConstraints>
+    ...
+    <FilenameAdherence Level="WARN" />
+    ...
+</ContainerConstraints>
+----
+
 |===
 
 [cols="2,5,5"]

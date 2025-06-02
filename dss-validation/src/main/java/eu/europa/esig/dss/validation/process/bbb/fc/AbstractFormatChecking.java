@@ -215,6 +215,14 @@ public abstract class AbstractFormatChecking<S extends AbstractSignatureWrapper>
 
             item = item.setNextItem(signedFilesPresentCheck());
 
+            item = item.setNextItem(filenameAdherenceCheck());
+
+            if (manifestExistsForToken()) {
+
+                item = item.setNextItem(manifestFilenameAdherenceCheck());
+
+            }
+
         }
 
         return item;
@@ -301,6 +309,20 @@ public abstract class AbstractFormatChecking<S extends AbstractSignatureWrapper>
         return new ContainerTypeCheck(i18nProvider, result, diagnosticData.getContainerType(), constraint);
     }
 
+    /**
+     * Creates a filename adherence check for the given token type
+     *
+     * @return {@link ChainItem}
+     */
+    protected abstract ChainItem<XmlFC> filenameAdherenceCheck();
+
+    /**
+     * Creates a filename adherence check for the manifest file related to the given token
+     *
+     * @return {@link ChainItem}
+     */
+    protected abstract ChainItem<XmlFC> manifestFilenameAdherenceCheck();
+
     private ChainItem<XmlFC> zipCommentPresentCheck() {
         LevelRule constraint = policy.getZipCommentPresentConstraint();
         return new ZipCommentPresentCheck(i18nProvider, result, diagnosticData.getZipComment(), constraint);
@@ -330,5 +352,10 @@ public abstract class AbstractFormatChecking<S extends AbstractSignatureWrapper>
         LevelRule constraint = policy.getSignedFilesPresentConstraint();
         return new SignedFilesPresentCheck(i18nProvider, result, diagnosticData.getContainerInfo(), constraint);
     }
+
+    private boolean manifestExistsForToken() {
+        return diagnosticData.getManifestFileForFilename(token.getFilename()) != null;
+    }
+
 
 }

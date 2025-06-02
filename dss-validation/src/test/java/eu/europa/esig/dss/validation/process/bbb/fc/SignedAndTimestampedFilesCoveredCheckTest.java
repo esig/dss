@@ -23,8 +23,10 @@ package eu.europa.esig.dss.validation.process.bbb.fc;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlContainerInfo;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlManifestFile;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
@@ -45,7 +47,10 @@ class SignedAndTimestampedFilesCoveredCheckTest extends AbstractTestCheck {
 
     @Test
     void asicsOneTstValidTest() {
+        XmlDiagnosticData xmlDiagnosticData = new XmlDiagnosticData();
+
         XmlContainerInfo xmlContainerInfo = new XmlContainerInfo();
+        xmlDiagnosticData.setContainerInfo(xmlContainerInfo);
         xmlContainerInfo.setContainerType(ASiCContainerType.ASiC_S);
         xmlContainerInfo.setContentFiles(Collections.singletonList("package.zip"));
 
@@ -57,7 +62,7 @@ class SignedAndTimestampedFilesCoveredCheckTest extends AbstractTestCheck {
 
         XmlFC result = new XmlFC();
         SignedAndTimestampedFilesCoveredCheck stfcc = new SignedAndTimestampedFilesCoveredCheck(
-                i18nProvider, result, xmlContainerInfo, new TimestampWrapper(xmlTimestamp), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new DiagnosticData(xmlDiagnosticData), new TimestampWrapper(xmlTimestamp), new LevelConstraintWrapper(constraint));
         stfcc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -67,7 +72,10 @@ class SignedAndTimestampedFilesCoveredCheckTest extends AbstractTestCheck {
 
     @Test
     void asicsTwoTstValidTest() {
+        XmlDiagnosticData xmlDiagnosticData = new XmlDiagnosticData();
+
         XmlContainerInfo xmlContainerInfo = new XmlContainerInfo();
+        xmlDiagnosticData.setContainerInfo(xmlContainerInfo);
         xmlContainerInfo.setContainerType(ASiCContainerType.ASiC_S);
         xmlContainerInfo.setContentFiles(Collections.singletonList("package.zip"));
 
@@ -85,7 +93,7 @@ class SignedAndTimestampedFilesCoveredCheckTest extends AbstractTestCheck {
 
         XmlFC result = new XmlFC();
         SignedAndTimestampedFilesCoveredCheck stfcc = new SignedAndTimestampedFilesCoveredCheck(
-                i18nProvider, result, xmlContainerInfo, new TimestampWrapper(xmlTimestamp), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new DiagnosticData(xmlDiagnosticData), new TimestampWrapper(xmlTimestamp), new LevelConstraintWrapper(constraint));
         stfcc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -95,7 +103,10 @@ class SignedAndTimestampedFilesCoveredCheckTest extends AbstractTestCheck {
 
     @Test
     void asicsTwoTstInvalidTest() {
+        XmlDiagnosticData xmlDiagnosticData = new XmlDiagnosticData();
+
         XmlContainerInfo xmlContainerInfo = new XmlContainerInfo();
+        xmlDiagnosticData.setContainerInfo(xmlContainerInfo);
         xmlContainerInfo.setContainerType(ASiCContainerType.ASiC_S);
         xmlContainerInfo.setContentFiles(Collections.singletonList("package.zip"));
 
@@ -112,7 +123,7 @@ class SignedAndTimestampedFilesCoveredCheckTest extends AbstractTestCheck {
 
         XmlFC result = new XmlFC();
         SignedAndTimestampedFilesCoveredCheck stfcc = new SignedAndTimestampedFilesCoveredCheck(
-                i18nProvider, result, xmlContainerInfo, new TimestampWrapper(xmlTimestamp), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new DiagnosticData(xmlDiagnosticData), new TimestampWrapper(xmlTimestamp), new LevelConstraintWrapper(constraint));
         stfcc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -122,7 +133,10 @@ class SignedAndTimestampedFilesCoveredCheckTest extends AbstractTestCheck {
 
     @Test
     void asicsThreeTstValidTest() {
+        XmlDiagnosticData xmlDiagnosticData = new XmlDiagnosticData();
+
         XmlContainerInfo xmlContainerInfo = new XmlContainerInfo();
+        xmlDiagnosticData.setContainerInfo(xmlContainerInfo);
         xmlContainerInfo.setContainerType(ASiCContainerType.ASiC_S);
         xmlContainerInfo.setContentFiles(Collections.singletonList("package.zip"));
 
@@ -150,7 +164,7 @@ class SignedAndTimestampedFilesCoveredCheckTest extends AbstractTestCheck {
 
         XmlFC result = new XmlFC();
         SignedAndTimestampedFilesCoveredCheck stfcc = new SignedAndTimestampedFilesCoveredCheck(
-                i18nProvider, result, xmlContainerInfo, new TimestampWrapper(xmlTimestamp), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new DiagnosticData(xmlDiagnosticData), new TimestampWrapper(xmlTimestamp), new LevelConstraintWrapper(constraint));
         stfcc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -160,7 +174,10 @@ class SignedAndTimestampedFilesCoveredCheckTest extends AbstractTestCheck {
 
     @Test
     void asicsThreeTstInvalidTest() {
+        XmlDiagnosticData xmlDiagnosticData = new XmlDiagnosticData();
+
         XmlContainerInfo xmlContainerInfo = new XmlContainerInfo();
+        xmlDiagnosticData.setContainerInfo(xmlContainerInfo);
         xmlContainerInfo.setContainerType(ASiCContainerType.ASiC_S);
         xmlContainerInfo.setContentFiles(Collections.singletonList("package.zip"));
 
@@ -189,7 +206,7 @@ class SignedAndTimestampedFilesCoveredCheckTest extends AbstractTestCheck {
 
         XmlFC result = new XmlFC();
         SignedAndTimestampedFilesCoveredCheck stfcc = new SignedAndTimestampedFilesCoveredCheck(
-                i18nProvider, result, xmlContainerInfo, new TimestampWrapper(xmlTimestamp), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new DiagnosticData(xmlDiagnosticData), new TimestampWrapper(xmlTimestamp), new LevelConstraintWrapper(constraint));
         stfcc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -199,7 +216,10 @@ class SignedAndTimestampedFilesCoveredCheckTest extends AbstractTestCheck {
 
     @Test
     void asicsSigAndTstValidTest() {
+        XmlDiagnosticData xmlDiagnosticData = new XmlDiagnosticData();
+
         XmlContainerInfo xmlContainerInfo = new XmlContainerInfo();
+        xmlDiagnosticData.setContainerInfo(xmlContainerInfo);
         xmlContainerInfo.setContainerType(ASiCContainerType.ASiC_S);
         xmlContainerInfo.setContentFiles(Collections.singletonList("package.zip"));
 
@@ -217,7 +237,7 @@ class SignedAndTimestampedFilesCoveredCheckTest extends AbstractTestCheck {
 
         XmlFC result = new XmlFC();
         SignedAndTimestampedFilesCoveredCheck stfcc = new SignedAndTimestampedFilesCoveredCheck(
-                i18nProvider, result, xmlContainerInfo, new TimestampWrapper(xmlTimestamp), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new DiagnosticData(xmlDiagnosticData), new TimestampWrapper(xmlTimestamp), new LevelConstraintWrapper(constraint));
         stfcc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -227,7 +247,10 @@ class SignedAndTimestampedFilesCoveredCheckTest extends AbstractTestCheck {
 
     @Test
     void asicsSigAndTstInvalidTest() {
+        XmlDiagnosticData xmlDiagnosticData = new XmlDiagnosticData();
+
         XmlContainerInfo xmlContainerInfo = new XmlContainerInfo();
+        xmlDiagnosticData.setContainerInfo(xmlContainerInfo);
         xmlContainerInfo.setContainerType(ASiCContainerType.ASiC_S);
         xmlContainerInfo.setContentFiles(Collections.singletonList("package.zip"));
 
@@ -244,7 +267,7 @@ class SignedAndTimestampedFilesCoveredCheckTest extends AbstractTestCheck {
 
         XmlFC result = new XmlFC();
         SignedAndTimestampedFilesCoveredCheck stfcc = new SignedAndTimestampedFilesCoveredCheck(
-                i18nProvider, result, xmlContainerInfo, new TimestampWrapper(xmlTimestamp), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new DiagnosticData(xmlDiagnosticData), new TimestampWrapper(xmlTimestamp), new LevelConstraintWrapper(constraint));
         stfcc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -254,7 +277,10 @@ class SignedAndTimestampedFilesCoveredCheckTest extends AbstractTestCheck {
 
     @Test
     void asiceOneTstValidTest() {
+        XmlDiagnosticData xmlDiagnosticData = new XmlDiagnosticData();
+
         XmlContainerInfo xmlContainerInfo = new XmlContainerInfo();
+        xmlDiagnosticData.setContainerInfo(xmlContainerInfo);
         xmlContainerInfo.setContainerType(ASiCContainerType.ASiC_E);
         xmlContainerInfo.setContentFiles(Arrays.asList("test.txt", "image.png"));
 
@@ -272,7 +298,7 @@ class SignedAndTimestampedFilesCoveredCheckTest extends AbstractTestCheck {
 
         XmlFC result = new XmlFC();
         SignedAndTimestampedFilesCoveredCheck stfcc = new SignedAndTimestampedFilesCoveredCheck(
-                i18nProvider, result, xmlContainerInfo, new TimestampWrapper(xmlTimestamp), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new DiagnosticData(xmlDiagnosticData), new TimestampWrapper(xmlTimestamp), new LevelConstraintWrapper(constraint));
         stfcc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -282,7 +308,10 @@ class SignedAndTimestampedFilesCoveredCheckTest extends AbstractTestCheck {
 
     @Test
     void asiceOneTstInvalidTest() {
+        XmlDiagnosticData xmlDiagnosticData = new XmlDiagnosticData();
+
         XmlContainerInfo xmlContainerInfo = new XmlContainerInfo();
+        xmlDiagnosticData.setContainerInfo(xmlContainerInfo);
         xmlContainerInfo.setContainerType(ASiCContainerType.ASiC_E);
         xmlContainerInfo.setContentFiles(Arrays.asList("test.txt", "image.png", "dataset/alt.txt"));
 
@@ -300,7 +329,7 @@ class SignedAndTimestampedFilesCoveredCheckTest extends AbstractTestCheck {
 
         XmlFC result = new XmlFC();
         SignedAndTimestampedFilesCoveredCheck stfcc = new SignedAndTimestampedFilesCoveredCheck(
-                i18nProvider, result, xmlContainerInfo, new TimestampWrapper(xmlTimestamp), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new DiagnosticData(xmlDiagnosticData), new TimestampWrapper(xmlTimestamp), new LevelConstraintWrapper(constraint));
         stfcc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -310,7 +339,10 @@ class SignedAndTimestampedFilesCoveredCheckTest extends AbstractTestCheck {
 
     @Test
     void asiceTwoTstValidTest() {
+        XmlDiagnosticData xmlDiagnosticData = new XmlDiagnosticData();
+
         XmlContainerInfo xmlContainerInfo = new XmlContainerInfo();
+        xmlDiagnosticData.setContainerInfo(xmlContainerInfo);
         xmlContainerInfo.setContainerType(ASiCContainerType.ASiC_E);
         xmlContainerInfo.setContentFiles(Arrays.asList("test.txt", "image.png"));
 
@@ -338,7 +370,7 @@ class SignedAndTimestampedFilesCoveredCheckTest extends AbstractTestCheck {
 
         XmlFC result = new XmlFC();
         SignedAndTimestampedFilesCoveredCheck stfcc = new SignedAndTimestampedFilesCoveredCheck(
-                i18nProvider, result, xmlContainerInfo, new TimestampWrapper(xmlTimestamp), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new DiagnosticData(xmlDiagnosticData), new TimestampWrapper(xmlTimestamp), new LevelConstraintWrapper(constraint));
         stfcc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -348,7 +380,10 @@ class SignedAndTimestampedFilesCoveredCheckTest extends AbstractTestCheck {
 
     @Test
     void asiceTwoTstInvalidTest() {
+        XmlDiagnosticData xmlDiagnosticData = new XmlDiagnosticData();
+
         XmlContainerInfo xmlContainerInfo = new XmlContainerInfo();
+        xmlDiagnosticData.setContainerInfo(xmlContainerInfo);
         xmlContainerInfo.setContainerType(ASiCContainerType.ASiC_E);
         xmlContainerInfo.setContentFiles(Arrays.asList("test.txt", "image.png"));
 
@@ -375,7 +410,7 @@ class SignedAndTimestampedFilesCoveredCheckTest extends AbstractTestCheck {
 
         XmlFC result = new XmlFC();
         SignedAndTimestampedFilesCoveredCheck stfcc = new SignedAndTimestampedFilesCoveredCheck(
-                i18nProvider, result, xmlContainerInfo, new TimestampWrapper(xmlTimestamp), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new DiagnosticData(xmlDiagnosticData), new TimestampWrapper(xmlTimestamp), new LevelConstraintWrapper(constraint));
         stfcc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -385,7 +420,10 @@ class SignedAndTimestampedFilesCoveredCheckTest extends AbstractTestCheck {
 
     @Test
     void asiceTwoTstNoTstCoveredValidTest() {
+        XmlDiagnosticData xmlDiagnosticData = new XmlDiagnosticData();
+
         XmlContainerInfo xmlContainerInfo = new XmlContainerInfo();
+        xmlDiagnosticData.setContainerInfo(xmlContainerInfo);
         xmlContainerInfo.setContainerType(ASiCContainerType.ASiC_E);
         xmlContainerInfo.setContentFiles(Arrays.asList("test.txt", "image.png"));
 
@@ -410,7 +448,7 @@ class SignedAndTimestampedFilesCoveredCheckTest extends AbstractTestCheck {
 
         XmlFC result = new XmlFC();
         SignedAndTimestampedFilesCoveredCheck stfcc = new SignedAndTimestampedFilesCoveredCheck(
-                i18nProvider, result, xmlContainerInfo, new TimestampWrapper(xmlTimestamp), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new DiagnosticData(xmlDiagnosticData), new TimestampWrapper(xmlTimestamp), new LevelConstraintWrapper(constraint));
         stfcc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -420,7 +458,10 @@ class SignedAndTimestampedFilesCoveredCheckTest extends AbstractTestCheck {
 
     @Test
     void asiceSigAndTstValidTest() {
+        XmlDiagnosticData xmlDiagnosticData = new XmlDiagnosticData();
+
         XmlContainerInfo xmlContainerInfo = new XmlContainerInfo();
+        xmlDiagnosticData.setContainerInfo(xmlContainerInfo);
         xmlContainerInfo.setContainerType(ASiCContainerType.ASiC_E);
         xmlContainerInfo.setContentFiles(Arrays.asList("test.txt", "image.png"));
 
@@ -448,7 +489,7 @@ class SignedAndTimestampedFilesCoveredCheckTest extends AbstractTestCheck {
 
         XmlFC result = new XmlFC();
         SignedAndTimestampedFilesCoveredCheck stfcc = new SignedAndTimestampedFilesCoveredCheck(
-                i18nProvider, result, xmlContainerInfo, new TimestampWrapper(xmlTimestamp), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new DiagnosticData(xmlDiagnosticData), new TimestampWrapper(xmlTimestamp), new LevelConstraintWrapper(constraint));
         stfcc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -458,7 +499,10 @@ class SignedAndTimestampedFilesCoveredCheckTest extends AbstractTestCheck {
 
     @Test
     void asiceSigAndTstInvalidTest() {
+        XmlDiagnosticData xmlDiagnosticData = new XmlDiagnosticData();
+
         XmlContainerInfo xmlContainerInfo = new XmlContainerInfo();
+        xmlDiagnosticData.setContainerInfo(xmlContainerInfo);
         xmlContainerInfo.setContainerType(ASiCContainerType.ASiC_E);
         xmlContainerInfo.setContentFiles(Arrays.asList("test.txt", "image.png"));
 
@@ -484,7 +528,7 @@ class SignedAndTimestampedFilesCoveredCheckTest extends AbstractTestCheck {
 
         XmlFC result = new XmlFC();
         SignedAndTimestampedFilesCoveredCheck stfcc = new SignedAndTimestampedFilesCoveredCheck(
-                i18nProvider, result, xmlContainerInfo, new TimestampWrapper(xmlTimestamp), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new DiagnosticData(xmlDiagnosticData), new TimestampWrapper(xmlTimestamp), new LevelConstraintWrapper(constraint));
         stfcc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -494,7 +538,10 @@ class SignedAndTimestampedFilesCoveredCheckTest extends AbstractTestCheck {
 
     @Test
     void asiceThreeTstValidTest() {
+        XmlDiagnosticData xmlDiagnosticData = new XmlDiagnosticData();
+
         XmlContainerInfo xmlContainerInfo = new XmlContainerInfo();
+        xmlDiagnosticData.setContainerInfo(xmlContainerInfo);
         xmlContainerInfo.setContainerType(ASiCContainerType.ASiC_E);
         xmlContainerInfo.setContentFiles(Arrays.asList("test.txt", "image.png"));
 
@@ -532,7 +579,7 @@ class SignedAndTimestampedFilesCoveredCheckTest extends AbstractTestCheck {
 
         XmlFC result = new XmlFC();
         SignedAndTimestampedFilesCoveredCheck stfcc = new SignedAndTimestampedFilesCoveredCheck(
-                i18nProvider, result, xmlContainerInfo, new TimestampWrapper(xmlTimestamp), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new DiagnosticData(xmlDiagnosticData), new TimestampWrapper(xmlTimestamp), new LevelConstraintWrapper(constraint));
         stfcc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -542,7 +589,10 @@ class SignedAndTimestampedFilesCoveredCheckTest extends AbstractTestCheck {
 
     @Test
     void asiceThreeTstInvalidTest() {
+        XmlDiagnosticData xmlDiagnosticData = new XmlDiagnosticData();
+
         XmlContainerInfo xmlContainerInfo = new XmlContainerInfo();
+        xmlDiagnosticData.setContainerInfo(xmlContainerInfo);
         xmlContainerInfo.setContainerType(ASiCContainerType.ASiC_E);
         xmlContainerInfo.setContentFiles(Arrays.asList("test.txt", "image.png"));
 
@@ -579,7 +629,7 @@ class SignedAndTimestampedFilesCoveredCheckTest extends AbstractTestCheck {
 
         XmlFC result = new XmlFC();
         SignedAndTimestampedFilesCoveredCheck stfcc = new SignedAndTimestampedFilesCoveredCheck(
-                i18nProvider, result, xmlContainerInfo, new TimestampWrapper(xmlTimestamp), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new DiagnosticData(xmlDiagnosticData), new TimestampWrapper(xmlTimestamp), new LevelConstraintWrapper(constraint));
         stfcc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

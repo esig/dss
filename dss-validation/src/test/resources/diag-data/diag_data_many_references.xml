@@ -9,7 +9,7 @@
         <ManifestFiles>
             <ManifestFile>
                 <Filename>META-INF/manifest.xml</Filename>
-                <SignatureFilename>META-INF/signature.xml</SignatureFilename>
+                <SignatureFilename>META-INF/signatures.xml</SignatureFilename>
                 <Entries>
                     <Entry>L_202400212HU.pdf</Entry>
                     <Entry>L_202400212IT.pdf</Entry>
@@ -68,7 +68,7 @@
     <Signatures>
         <Signature Id="S-6F644E2878DCF424D95C98AD356EE3AC303A87F5C6FC33E6F4AFC5D02546988A">
             <DAIdentifier>id-c88d23ea47e1967716d7151b6e1cd72c</DAIdentifier>
-            <SignatureFilename>META-INF/signature.xml</SignatureFilename>
+            <SignatureFilename>META-INF/signatures.xml</SignatureFilename>
             <ClaimedSigningTime>2024-01-05T01:30:12Z</ClaimedSigningTime>
             <SignatureFormat>XAdES-BASELINE-T</SignatureFormat>
             <StructuralValidation valid="true"/>

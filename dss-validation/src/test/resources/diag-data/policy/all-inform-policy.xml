@@ -20,6 +20,7 @@
 		</AcceptableMimeTypeFileContent>
 		<ManifestFilePresent Level="INFORM" />
 		<SignedFilesPresent Level="INFORM" />
+		<FilenameAdherence Level="INFORM" />
 		<AllFilesSigned Level="INFORM" />
 	</ContainerConstraints>
 	<PDFAConstraints>

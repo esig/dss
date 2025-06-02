@@ -922,6 +922,11 @@ public class ValidationPolicyWithCryptographicSuite implements ValidationPolicy 
     }
 
     @Override
+    public LevelRule getFilenameAdherenceConstraint() {
+        return validationPolicy.getFilenameAdherenceConstraint();
+    }
+
+    @Override
     public LevelRule getAllFilesSignedConstraint() {
         return validationPolicy.getAllFilesSignedConstraint();
     }

@@ -33,6 +33,8 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.CAdESV3HashIndexCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.SignedAndTimestampedFilesCoveredCheck;
+import eu.europa.esig.dss.validation.process.bbb.fc.checks.TimestampFilenameAdherenceCheck;
+import eu.europa.esig.dss.validation.process.bbb.fc.checks.TimestampManifestFilenameAdherenceCheck;
 
 /**
  * This class performs "5.2.2 Format Checking" building block execution for a document or container timestamp
@@ -113,7 +115,19 @@ public class TimestampFormatChecking extends AbstractFormatChecking<TimestampWra
 
     private ChainItem<XmlFC> signedAndTimestampedFilesCovered() {
         LevelRule constraint = policy.getTimestampContainerSignedAndTimestampedFilesCoveredConstraint();
-        return new SignedAndTimestampedFilesCoveredCheck(i18nProvider, result, diagnosticData.getContainerInfo(), token, constraint);
+        return new SignedAndTimestampedFilesCoveredCheck(i18nProvider, result, diagnosticData, token, constraint);
+    }
+
+    @Override
+    protected ChainItem<XmlFC> filenameAdherenceCheck() {
+        LevelRule constraint = policy.getFilenameAdherenceConstraint();
+        return new TimestampFilenameAdherenceCheck(i18nProvider, result, diagnosticData, token, constraint);
+    }
+
+    @Override
+    protected ChainItem<XmlFC> manifestFilenameAdherenceCheck() {
+        LevelRule constraint = policy.getFilenameAdherenceConstraint();
+        return new TimestampManifestFilenameAdherenceCheck(i18nProvider, result, diagnosticData, token, constraint);
     }
 
     private boolean coversSignatureOrTimestampOrEvidenceRecord(TimestampWrapper timestamp) {

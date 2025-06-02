@@ -20,6 +20,7 @@
 		</AcceptableMimeTypeFileContent>
 		<ManifestFilePresent Level="FAIL" />
 		<SignedFilesPresent Level="FAIL" />
+		<FilenameAdherence Level="FAIL" />
 		<AllFilesSigned Level="FAIL" />
 	</ContainerConstraints>
 	<PDFAConstraints>

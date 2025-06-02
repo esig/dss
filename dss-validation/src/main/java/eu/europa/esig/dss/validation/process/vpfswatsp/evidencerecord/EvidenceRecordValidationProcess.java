@@ -296,7 +296,7 @@ public class EvidenceRecordValidationProcess extends Chain<XmlValidationProcessE
 
     private ChainItem<XmlValidationProcessEvidenceRecord> signedAndTimestampedFilesCoveredCheck() {
         LevelRule constraint = policy.getEvidenceRecordContainerSignedAndTimestampedFilesCoveredConstraint();
-        return new EvidenceRecordSignedAndTimestampedFilesCoveredCheck(i18nProvider, result, diagnosticData.getContainerInfo(), evidenceRecord, constraint);
+        return new EvidenceRecordSignedAndTimestampedFilesCoveredCheck(i18nProvider, result, diagnosticData, evidenceRecord, constraint);
     }
 
     private ChainItem<XmlValidationProcessEvidenceRecord> timestampValidationConclusive(

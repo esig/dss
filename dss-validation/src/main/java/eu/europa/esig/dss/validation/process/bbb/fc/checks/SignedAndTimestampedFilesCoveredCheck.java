@@ -21,8 +21,8 @@
 package eu.europa.esig.dss.validation.process.bbb.fc.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlContainerInfo;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.model.policy.LevelRule;
 
@@ -38,13 +38,13 @@ public class SignedAndTimestampedFilesCoveredCheck extends AbstractSignedAndTime
      *
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlFC}
-     * @param containerInfo {@link XmlContainerInfo}
+     * @param diagnosticData {@link DiagnosticData}
      * @param timestampWrapper {@link TimestampWrapper}
      * @param constraint {@link LevelRule}
      */
-    public SignedAndTimestampedFilesCoveredCheck(I18nProvider i18nProvider, XmlFC result, XmlContainerInfo containerInfo,
+    public SignedAndTimestampedFilesCoveredCheck(I18nProvider i18nProvider, XmlFC result, DiagnosticData diagnosticData,
                                                  TimestampWrapper timestampWrapper, LevelRule constraint) {
-        super(i18nProvider, result, containerInfo, timestampWrapper.getFilename(), constraint);
+        super(i18nProvider, result, diagnosticData, timestampWrapper.getFilename(), constraint);
     }
 
 }

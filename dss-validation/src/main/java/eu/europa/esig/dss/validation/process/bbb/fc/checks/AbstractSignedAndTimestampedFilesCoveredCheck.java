@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.validation.process.bbb.fc.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlContainerInfo;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlManifestFile;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -42,8 +42,8 @@ import java.util.List;
  */
 public abstract class AbstractSignedAndTimestampedFilesCoveredCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
-    /** ASiC Container info */
-    protected final XmlContainerInfo containerInfo;
+    /** Diagnostic data */
+    protected final DiagnosticData diagnosticData;
 
     /** Filename of the timestamp file to be verified */
     protected final String timestampFilename;
@@ -53,20 +53,20 @@ public abstract class AbstractSignedAndTimestampedFilesCoveredCheck<T extends Xm
      *
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlConstraintsConclusion}
-     * @param containerInfo {@link XmlContainerInfo}
+     * @param diagnosticData {@link DiagnosticData}
      * @param timestampFilename {@link String}
      * @param constraint {@link LevelRule}
      */
-    protected AbstractSignedAndTimestampedFilesCoveredCheck(I18nProvider i18nProvider, T result, XmlContainerInfo containerInfo,
+    protected AbstractSignedAndTimestampedFilesCoveredCheck(I18nProvider i18nProvider, T result, DiagnosticData diagnosticData,
                                                             String timestampFilename, LevelRule constraint) {
         super(i18nProvider, result, constraint);
-        this.containerInfo = containerInfo;
+        this.diagnosticData = diagnosticData;
         this.timestampFilename = timestampFilename;
     }
 
     @Override
     protected boolean process() {
-        XmlManifestFile manifestFile = getCorrespondingManifestFile(timestampFilename);
+        XmlManifestFile manifestFile = diagnosticData.getManifestFileForFilename(timestampFilename);
         if (manifestFile != null) {
             return checkManifestFilesCovered(manifestFile) && isAnyRootLevelDocumentCovered(manifestFile);
         }
@@ -91,7 +91,7 @@ public abstract class AbstractSignedAndTimestampedFilesCoveredCheck<T extends Xm
                 if (!coveredEntries.contains(manifestEntry)) {
                     return false;
                 }
-                XmlManifestFile entryManifest = getCorrespondingManifestFile(manifestEntry);
+                XmlManifestFile entryManifest = diagnosticData.getManifestFileForFilename(manifestEntry);
                 if (entryManifest != null) {
                     if (!checkManifestFilesCoveredRecursively(coveredEntries, entryManifest)) {
                         return false;
@@ -103,25 +103,8 @@ public abstract class AbstractSignedAndTimestampedFilesCoveredCheck<T extends Xm
     }
 
     private boolean isAnyRootLevelDocumentCovered(XmlManifestFile timestampManifest) {
-        List<String> rootLevelFiles = getRootLevelFiles(containerInfo.getContentFiles());
+        List<String> rootLevelFiles = getRootLevelFiles(diagnosticData.getContainerContentFilenames());
         return Utils.containsAny(timestampManifest.getEntries(), rootLevelFiles);
-    }
-
-    /**
-     * Gets an XmlManifestFile for the given {@code filename} document
-     *
-     * @param filename {@link String} to get an applicable XmlManifestFile for
-     * @return {@link XmlManifestFile} if found
-     */
-    protected XmlManifestFile getCorrespondingManifestFile(String filename) {
-        if (filename != null) {
-            for (XmlManifestFile manifestFile : containerInfo.getManifestFiles()) {
-                if (filename.equals(manifestFile.getSignatureFilename())) {
-                    return manifestFile;
-                }
-            }
-        }
-        return null;
     }
 
     private List<String> getRootLevelFiles(List<String> fileNames) {
