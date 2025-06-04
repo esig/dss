@@ -70,7 +70,7 @@ class DSS798Test extends PKIFactoryAccess {
 		parametersExtend.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
 
 		Exception exception = assertThrows(AlertException.class, () -> serviceExtend.extendDocument(signedDocument, parametersExtend));
-		assertTrue(exception.getMessage().contains("Error on signature augmentation."));
+		assertTrue(exception.getMessage().contains("Error on signature augmentation"));
 		assertTrue(exception.getMessage().contains("Cryptographic signature verification has failed / Best candidate validation failed"));
 	}
 

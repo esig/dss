@@ -59,7 +59,7 @@ class ASiCsExtensionWithXAdESWithEmbeddedERTest extends AbstractASiCWithXAdESTes
 
         finalSignatureLevel = SignatureLevel.XAdES_BASELINE_LTA;
         Exception exception = assertThrows(AlertException.class, () -> extendSignature(signedDocument));
-        assertTrue(exception.getMessage().contains("Error on signature augmentation."));
+        assertTrue(exception.getMessage().contains("Error on signature augmentation"));
         assertTrue(exception.getMessage().contains("The signature is preserved by an embedded evidence record."));
 
         certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new SilentOnStatusAlert());

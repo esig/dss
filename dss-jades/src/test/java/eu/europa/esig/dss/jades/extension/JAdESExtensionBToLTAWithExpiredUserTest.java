@@ -70,7 +70,7 @@ class JAdESExtensionBToLTAWithExpiredUserTest extends AbstractJAdESTestExtension
 
         Exception exception = assertThrows(AlertException.class, () -> service.extendDocument(signedDocument, getExtensionParameters()));
         assertTrue(exception.getMessage().contains("Error on signature augmentation"));
-        assertTrue(exception.getMessage().contains("is expired at signing time"));
+        assertTrue(exception.getMessage().contains("The signing certificate has expired"));
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(getSigningCert().getNotAfter());
@@ -81,7 +81,7 @@ class JAdESExtensionBToLTAWithExpiredUserTest extends AbstractJAdESTestExtension
 
         exception = assertThrows(AlertException.class, () -> service.extendDocument(signedDocument, getExtensionParameters()));
         assertTrue(exception.getMessage().contains("Error on signature augmentation"));
-        assertTrue(exception.getMessage().contains("is expired at signing time"));
+        assertTrue(exception.getMessage().contains("The signing certificate has expired"));
 
         certificateVerifier.setAlertOnExpiredCertificate(new SilentOnStatusAlert());
 

@@ -2,6 +2,7 @@ package eu.europa.esig.dss.xades.evidencerecord;
 
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.EvidenceRecordTypeEnum;
+import eu.europa.esig.dss.enumerations.SigningOperation;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.ReferenceValidation;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
@@ -235,6 +236,7 @@ public class EmbeddedEvidenceRecordBuilder extends ExtensionBuilder {
         validationContext.validate();
 
         SignatureValidationAlerter signatureValidationAlerter = new SignatureValidationAlerter(validationContext);
+        signatureValidationAlerter.setSigningOperation(SigningOperation.ADD_EVIDENCE_RECORD);
         signatureValidationAlerter.assertAllTimestampsValid();
     }
 

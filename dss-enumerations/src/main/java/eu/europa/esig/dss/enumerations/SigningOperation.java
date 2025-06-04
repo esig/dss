@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.signature;
+package eu.europa.esig.dss.enumerations;
 
 /**
  * Defines the performing signature operation
@@ -54,6 +54,6 @@ public enum SigningOperation {
 	/**
 	 * The evidence record addition
 	 */
-	ADD_EVIDENCE_RECORD;
+	ADD_EVIDENCE_RECORD
 
 }

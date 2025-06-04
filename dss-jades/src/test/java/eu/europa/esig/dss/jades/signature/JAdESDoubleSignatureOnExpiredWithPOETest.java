@@ -1,0 +1,143 @@
+package eu.europa.esig.dss.jades.signature;
+
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.enumerations.JWSSerializationType;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.jades.JAdESSignatureParameters;
+import eu.europa.esig.dss.jades.JAdESTimestampParameters;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.simplereport.SimpleReport;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.io.File;
+import java.util.Calendar;
+import java.util.Date;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class JAdESDoubleSignatureOnExpiredWithPOETest extends AbstractJAdESTestSignature {
+
+    private String signingAlias;
+    private DSSDocument originalDocument;
+
+    private DocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> service;
+    private JAdESSignatureParameters signatureParameters;
+    private DSSDocument documentToSign;
+
+    private Date signingTime;
+
+    @BeforeEach
+    void init() throws Exception {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MONTH, -2);
+        signingTime = calendar.getTime();
+
+        service = new JAdESService(getCompleteCertificateVerifier());
+        service.setTspSource(getGoodTsaByTime(signingTime));
+
+        originalDocument = new FileDocument(new File("src/test/resources/sample.json"));
+
+        signatureParameters = new JAdESSignatureParameters();
+        signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
+        signatureParameters.setJwsSerializationType(JWSSerializationType.JSON_SERIALIZATION);
+    }
+
+    @Override
+    protected DSSDocument sign() {
+        signingAlias = EXPIRED_USER;
+
+        signatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_T);
+        documentToSign = originalDocument;
+        DSSDocument signedDocument = super.sign();
+
+        documentToSign = signedDocument;
+
+        signingAlias = GOOD_USER;
+        signatureParameters.setSignatureLevel(SignatureLevel.JAdES_BASELINE_LTA);
+        service.setTspSource(getGoodTsa());
+        signingTime = new Date();
+
+        DSSDocument doubleSignedDocument = super.sign();
+
+        documentToSign = originalDocument;
+        signingAlias = EXPIRED_USER;
+        return doubleSignedDocument;
+    }
+
+    @Override
+    protected CertificateVerifier getCompleteCertificateVerifier() {
+        CertificateVerifier certificateVerifier = super.getCompleteCertificateVerifier();
+        certificateVerifier.setRevocationFallback(true);
+        return certificateVerifier;
+    }
+
+    @Override
+    protected void checkNumberOfSignatures(DiagnosticData diagnosticData) {
+        assertEquals(2, diagnosticData.getSignatures().size());
+    }
+
+    @Override
+    protected void checkSigningDate(DiagnosticData diagnosticData) {
+        // skip
+    }
+
+    @Override
+    protected void checkSignatureScopes(DiagnosticData diagnosticData) {
+        // skip
+    }
+
+    @Override
+    protected void checkSignatureLevel(DiagnosticData diagnosticData) {
+        int tLevelCounter = 0;
+        int ltaLevelCounter = 0;
+        for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+            if (SignatureLevel.JAdES_BASELINE_T == signatureWrapper.getSignatureFormat()) {
+                ++tLevelCounter;
+            } else if (SignatureLevel.JAdES_BASELINE_LTA == signatureWrapper.getSignatureFormat()) {
+                ++ltaLevelCounter;
+            }
+        }
+        assertEquals(1, tLevelCounter);
+        assertEquals(1, ltaLevelCounter);
+    }
+
+    @Override
+    protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
+        // skip
+    }
+
+    @Override
+    protected void verifySimpleReport(SimpleReport simpleReport) {
+        // skip
+    }
+
+    @Override
+    protected DSSDocument getDocumentToSign() {
+        return documentToSign;
+    }
+
+    @Override
+    protected DocumentSignatureService<JAdESSignatureParameters, JAdESTimestampParameters> getService() {
+        return service;
+    }
+
+    @Override
+    protected JAdESSignatureParameters getSignatureParameters() {
+        signatureParameters.bLevel().setSigningDate(signingTime);
+        signatureParameters.setSigningCertificate(getSigningCert());
+        signatureParameters.setCertificateChain(getCertificateChain());
+        return signatureParameters;
+    }
+
+    @Override
+    protected String getSigningAlias() {
+        return signingAlias;
+    }
+
+}

@@ -9,6 +9,7 @@ import eu.europa.esig.dss.cms.CMS;
 import eu.europa.esig.dss.cms.CMSUtils;
 import eu.europa.esig.dss.enumerations.EvidenceRecordIncorporationType;
 import eu.europa.esig.dss.enumerations.EvidenceRecordTypeEnum;
+import eu.europa.esig.dss.enumerations.SigningOperation;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.ManifestFile;
@@ -193,6 +194,7 @@ public class CAdESEmbeddedEvidenceRecordBuilder {
         validationContext.validate();
 
         SignatureValidationAlerter signatureValidationAlerter = new SignatureValidationAlerter(validationContext);
+        signatureValidationAlerter.setSigningOperation(SigningOperation.ADD_EVIDENCE_RECORD);
         signatureValidationAlerter.assertAllTimestampsValid();
     }
 

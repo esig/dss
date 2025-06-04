@@ -14,6 +14,7 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.EvidenceRecordOrigin;
 import eu.europa.esig.dss.enumerations.EvidenceRecordTypeEnum;
+import eu.europa.esig.dss.enumerations.SigningOperation;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.ManifestEntry;
 import eu.europa.esig.dss.model.ManifestFile;
@@ -427,6 +428,7 @@ public abstract class AbstractASiCContainerEvidenceRecordBuilder {
         validationContext.validate();
 
         SignatureValidationAlerter signatureValidationAlerter = new SignatureValidationAlerter(validationContext);
+        signatureValidationAlerter.setSigningOperation(SigningOperation.ADD_EVIDENCE_RECORD);
         signatureValidationAlerter.assertAllTimestampsValid();
     }
 

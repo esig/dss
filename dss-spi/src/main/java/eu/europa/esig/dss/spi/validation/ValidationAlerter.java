@@ -80,4 +80,30 @@ public interface ValidationAlerter {
      */
     void assertAllSignaturesNotExpired();
 
+    /**
+     * This method verifies whether the certificate token is not yet expired.
+     * The behavior of the method is configured with
+     * {@link CertificateVerifier#setAlertOnExpiredCertificate(eu.europa.esig.dss.alert.StatusAlert)}
+     *
+     * @param certificateToken {@link CertificateToken} to be validated
+     */
+    void assertCertificateNotExpired(CertificateToken certificateToken);
+
+    /**
+     * This method verifies whether all signatures added to the ValidationContext have been produced with
+     * yet valid certificates.
+     * The behavior of the method is configured with
+     * {@link CertificateVerifier#setAlertOnNotYetValidCertificate(eu.europa.esig.dss.alert.StatusAlert)}
+     */
+    void assertAllSignaturesAreYetValid();
+
+    /**
+     * This method verifies whether the certificate token is yet valid.
+     * The behavior of the method is configured with
+     * {@link CertificateVerifier#setAlertOnNotYetValidCertificate(eu.europa.esig.dss.alert.StatusAlert)}
+     *
+     * @param certificateToken {@link CertificateToken} to be validated
+     */
+    void assertCertificateIsYetValid(CertificateToken certificateToken);
+
 }

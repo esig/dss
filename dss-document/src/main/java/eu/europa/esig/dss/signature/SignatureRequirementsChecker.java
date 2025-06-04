@@ -20,25 +20,27 @@
  */
 package eu.europa.esig.dss.signature;
 
+import eu.europa.esig.dss.enumerations.SigningOperation;
 import eu.europa.esig.dss.model.signature.SignatureCryptographicVerification;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.validation.CertificateVerifierBuilder;
+import eu.europa.esig.dss.spi.validation.RevocationDataVerifier;
 import eu.europa.esig.dss.spi.validation.SignatureValidationAlerter;
 import eu.europa.esig.dss.spi.validation.SignatureValidationContext;
+import eu.europa.esig.dss.spi.validation.TimestampTokenVerifier;
 import eu.europa.esig.dss.spi.validation.ValidationAlerter;
 import eu.europa.esig.dss.spi.validation.status.SignatureStatus;
-import eu.europa.esig.dss.spi.validation.status.TokenStatus;
 import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -64,6 +66,9 @@ public class SignatureRequirementsChecker {
      */
     public SignatureRequirementsChecker(final CertificateVerifier certificateVerifier,
                                         final AbstractSignatureParameters<?> signatureParameters) {
+        Objects.requireNonNull(certificateVerifier, "CertificateVerifier cannot be null!");
+        Objects.requireNonNull(signatureParameters, "Signature parameters cannot be null!");
+
         this.certificateVerifier = certificateVerifier;
         this.signatureParameters = signatureParameters;
     }
@@ -75,18 +80,10 @@ public class SignatureRequirementsChecker {
      * @param certificateToken {@link CertificateToken}
      */
     public void assertSigningCertificateIsValid(final CertificateToken certificateToken) {
-        assertCertificatesAreYetValid(certificateToken);
-        assertSigningCertificateIsNotExpired(certificateToken);
-        assertCertificatesAreNotRevoked(certificateToken);
-    }
-
-    /**
-     * This method verifies a signing certificate of the given {@code signature}
-     *
-     * @param signature {@link AdvancedSignature} to verify
-     */
-    public void assertSigningCertificateIsValid(final AdvancedSignature signature) {
-        assertSigningCertificateIsValid(Collections.singletonList(signature));
+        final ValidationAlerter validationAlerter = initValidationAlerter(certificateToken);
+        assertCertificatesAreYetValid(validationAlerter, certificateToken);
+        assertCertificatesAreNotExpired(validationAlerter, certificateToken);
+        assertCertificatesAreNotRevoked(validationAlerter, certificateToken);
     }
 
     /**
@@ -101,149 +98,105 @@ public class SignatureRequirementsChecker {
             return;
         }
 
-        final List<CertificateToken> signingCertificates = signaturesToValidate.stream()
-                .map(AdvancedSignature::getSigningCertificateToken).collect(Collectors.toList());
-
-        assertCertificatesAreYetValid(signingCertificates, false);
-        assertCertificatesAreNotExpired(signingCertificates, false);
-        assertCertificatesAreNotRevoked(signatures);
+        final ValidationAlerter validationAlerter = initValidationAlerter(signatures);
+        assertCertificatesAreYetValid(validationAlerter);
+        assertCertificatesAreNotExpired(validationAlerter);
+        assertCertificatesAreNotRevoked(validationAlerter);
     }
 
     private boolean isSignatureGeneratedWithoutCertificate(final AdvancedSignature signature) {
-        if (signatureParameters.isGenerateTBSWithoutCertificate() && signature.getCertificateSource().getNumberOfCertificates() == 0) {
-            LOG.debug("Signature with Id '{}' has been generated without certificate. " +
-                            "Validity of the signing-certificate is not checked.", signature.getId());
+        if (isSigningCertificateIdentified(signature)) {
+            return false; // signing-certificate is identified
+
+        } else if (signatureParameters.isGenerateTBSWithoutCertificate()) {
+            LOG.debug("Signature with Id '{}' has been generated without certificate or signing-certificate has not been identified. " +
+                    "Validity of the signing-certificate is not checked.", signature.getId());
             return true;
+
+        } else {
+            throw new IllegalInputException("Signing-certificate token was not found! Unable to verify its validity. " +
+                    "Provide signing-certificate or use method #setGenerateTBSWithoutCertificate(true) for signature creation without signing-certificate.");
         }
-        return false;
+    }
+
+    private boolean isSigningCertificateIdentified(final AdvancedSignature signature) {
+        return signature.getCertificateSource().getNumberOfCertificates() != 0 && signature.getSigningCertificateToken() != null;
     }
 
     /**
-     * This method verifies whether the given {@code CertificateToken} is yet valid at the current time
+     * This method verifies whether the certificate tokens provided to the validation context are
+     * yet valid at the current time
      *
-     * @param certificateToken {@link CertificateToken}
+     * @param validationAlerter {@link ValidationAlerter}
      */
-    private void assertCertificatesAreYetValid(final CertificateToken certificateToken) {
-        assertCertificatesAreYetValid(Collections.singletonList(certificateToken), true);
+    private void assertCertificatesAreYetValid(final ValidationAlerter validationAlerter) {
+        assertCertificatesAreYetValid(validationAlerter, null);
     }
 
     /**
-     * This method verifies whether the given certificate tokens are yet valid at the current time
+     * This method verifies whether the certificate tokens provided to the validation context are
+     * yet valid at the current time
      *
-     * @param certificateTokens a collection of {@link CertificateToken}s
-     * @param signing defines whether the validation is performed on signing or augmentation process
+     * @param validationAlerter {@link ValidationAlerter}
+     * @param certificateToken {@link CertificateToken} to validate, or NULL for validation of the signatures
      */
-    private void assertCertificatesAreYetValid(final Collection<CertificateToken> certificateTokens, boolean signing) {
+    private void assertCertificatesAreYetValid(final ValidationAlerter validationAlerter, CertificateToken certificateToken) {
         if (certificateVerifier.getAlertOnNotYetValidCertificate() == null) {
             LOG.trace("The verification of #certificatesAreYetValid has been skipped.");
             return;
         }
-        if (Utils.isCollectionEmpty(certificateTokens)) {
-            return;
-        }
 
-        final TokenStatus status = new TokenStatus();
-        for (CertificateToken certificateToken : certificateTokens) {
-            checkCertificateNotYetValid(certificateToken, status);
+        if (certificateToken != null) {
+            validationAlerter.assertCertificateIsYetValid(certificateToken);
+        } else {
+            validationAlerter.assertAllSignaturesAreYetValid();
         }
-        if (!status.isEmpty()) {
-            if (signing) {
-                status.setMessage("Error on signature creation.");
-            } else {
-                status.setMessage("Error on signature augmentation.");
-            }
-            certificateVerifier.getAlertOnNotYetValidCertificate().alert(status);
-        }
-    }
-
-    private void checkCertificateNotYetValid(final CertificateToken certificateToken, final TokenStatus status) {
-        if (certificateToken == null) {
-            throw new IllegalInputException("Signing-certificate token was not found! Unable to verify its validity range. " +
-                    "Provide signing-certificate or use method #setGenerateTBSWithoutCertificate(true) for signature creation without signing-certificate.");
-        }
-
-        if (isCertificateNotYetValid(certificateToken)) {
-            final Date notBefore = certificateToken.getNotBefore();
-            final Date notAfter = certificateToken.getNotAfter();
-            final Date signingDate = signatureParameters.bLevel().getSigningDate();
-            status.addRelatedTokenAndErrorMessage(certificateToken, String.format(
-                    "The signing-certificate (notBefore : %s, notAfter : %s) is not yet valid at signing time %s!",
-                    DSSUtils.formatDateToRFC(notBefore), DSSUtils.formatDateToRFC(notAfter), DSSUtils.formatDateToRFC(signingDate)));
-        }
-    }
-
-    private boolean isCertificateNotYetValid(final CertificateToken certificateToken) {
-        final Date notBefore = certificateToken.getNotBefore();
-        final Date signingDate = signatureParameters.bLevel().getSigningDate();
-        return signingDate.before(notBefore);
     }
 
     /**
-     * This method verifies whether the given {@code CertificateToken} is not expired at the current time
+     * This method verifies whether the certificate tokens in the given validation context are yet valid at the current time
      *
-     * @param certificateToken {@link CertificateToken}
+     * @param validationAlerter {@link ValidationAlerter}
      */
-    private void assertSigningCertificateIsNotExpired(final CertificateToken certificateToken) {
-        assertCertificatesAreNotExpired(Collections.singletonList(certificateToken), true);
+    private void assertCertificatesAreNotExpired(final ValidationAlerter validationAlerter) {
+        assertCertificatesAreNotExpired(validationAlerter, null);
     }
 
     /**
-     * This method verifies whether the given certificate tokens are yet valid at the current time
+     * This method verifies whether the certificate tokens in the given validation context are yet valid at the current time
      *
-     * @param certificateTokens a collection of {@link CertificateToken}s
-     * @param signing defines whether the validation is performed on signing or augmentation process
+     * @param validationAlerter {@link ValidationAlerter}
+     * @param certificateToken {@link CertificateToken} to be validated or NULL in case of signature validation
      */
-    private void assertCertificatesAreNotExpired(final Collection<CertificateToken> certificateTokens, boolean signing) {
+    private void assertCertificatesAreNotExpired(final ValidationAlerter validationAlerter, CertificateToken certificateToken) {
         if (certificateVerifier.getAlertOnExpiredCertificate() == null) {
             LOG.trace("The verification of #certificatesAreNotExpired has been skipped.");
             return;
         }
-        if (Utils.isCollectionEmpty(certificateTokens)) {
-            return;
-        }
 
-        final TokenStatus status = new TokenStatus();
-        for (CertificateToken certificateToken : certificateTokens) {
-            checkCertificateExpired(certificateToken, status);
+        if (certificateToken != null) {
+            validationAlerter.assertCertificateNotExpired(certificateToken);
+        } else {
+            validationAlerter.assertAllSignaturesNotExpired();
         }
-        if (!status.isEmpty()) {
-            if (signing) {
-                status.setMessage("Error on signature creation.");
-            } else {
-                status.setMessage("Error on signature augmentation.");
-            }
-            certificateVerifier.getAlertOnExpiredCertificate().alert(status);
-        }
-    }
-
-    private void checkCertificateExpired(final CertificateToken certificateToken, final TokenStatus status) {
-        if (certificateToken == null) {
-            throw new IllegalInputException("Signing-certificate token was not found! Unable to verify its validity range. " +
-                    "Provide signing-certificate or use method #setGenerateTBSWithoutCertificate(true) for signature creation without signing-certificate.");
-        }
-
-        if (isCertificateExpired(certificateToken)) {
-            final Date notBefore = certificateToken.getNotBefore();
-            final Date notAfter = certificateToken.getNotAfter();
-            final Date signingDate = signatureParameters.bLevel().getSigningDate();
-            status.addRelatedTokenAndErrorMessage(certificateToken, String.format(
-                    "The signing-certificate (notBefore : %s, notAfter : %s) is expired at signing time %s!",
-                    DSSUtils.formatDateToRFC(notBefore), DSSUtils.formatDateToRFC(notAfter), DSSUtils.formatDateToRFC(signingDate)));
-        }
-    }
-
-    private boolean isCertificateExpired(final CertificateToken certificateToken) {
-        final Date notAfter = certificateToken.getNotAfter();
-        final Date signingDate = signatureParameters.bLevel().getSigningDate();
-        return signingDate.after(notAfter);
     }
 
     /**
-     * This method verifies whether the given {@code CertificateToken} is not revoked nor suspended at the current time
+     * Asserts no revoked certificates are present within the given validation context
      *
-     * @param certificateToken {@link CertificateToken}
+     * @param validationAlerter {@link ValidationAlerter}
      */
-    private void assertCertificatesAreNotRevoked(final CertificateToken certificateToken) {
+    private void assertCertificatesAreNotRevoked(final ValidationAlerter validationAlerter) {
+        assertCertificatesAreNotRevoked(validationAlerter, null);
+    }
+
+    /**
+     * Asserts no revoked certificates are present within the given validation context
+     *
+     * @param validationAlerter {@link ValidationAlerter}
+     * @param certificateToken {@link CertificateToken} to be validated, or NULL in case of signatures validation
+     */
+    private void assertCertificatesAreNotRevoked(final ValidationAlerter validationAlerter, CertificateToken certificateToken) {
         if (!signatureParameters.isCheckCertificateRevocation()) {
             return;
         }
@@ -252,51 +205,102 @@ public class SignatureRequirementsChecker {
             return;
         }
 
-        Date signingDate = signatureParameters.bLevel().getSigningDate();
-        final SignatureValidationContext validationContext = new SignatureValidationContext(signingDate);
-        validationContext.initialize(certificateVerifier);
+        validationAlerter.assertAllRequiredRevocationDataPresent();
+        if (certificateToken != null) {
+            validationAlerter.assertCertificateNotRevoked(certificateToken);
+        } else {
+            validationAlerter.assertAllSignatureCertificatesNotRevoked();
+        }
+    }
 
-        final List<CertificateToken> certificateChain = signatureParameters.getCertificateChain();
+    /**
+     * Initializes the validation alerter for certificate validation
+     *
+     * @param certificateToken {@link CertificateToken} representing the signing-certificate to be validated
+     * @return {@link ValidationAlerter}
+     */
+    protected ValidationAlerter initValidationAlerter(final CertificateToken certificateToken) {
+        final SignatureValidationContext validationContext = new SignatureValidationContext(signatureParameters.bLevel().getSigningDate());
+        validationContext.initialize(getCertificateVerifier());
+
+        List<CertificateToken> certificateChain = signatureParameters.getCertificateChain();
         if (Utils.isCollectionEmpty(certificateChain)) {
-            throw new NullPointerException("Certificate chain shall be provided for a revocation check! " +
-                    "Please use parameters.setCertificateChain(...) method to provide a certificate chain.");
+            if (signatureParameters.isCheckCertificateRevocation()) {
+                throw new NullPointerException("Certificate chain shall be provided for a revocation check! " +
+                        "Please use parameters.setCertificateChain(...) method to provide a certificate chain.");
+            }
+            certificateChain = Collections.emptyList();
         }
         validationContext.addCertificateTokenForVerification(certificateToken);
         for (CertificateToken certificate : certificateChain) {
             validationContext.addCertificateTokenForVerification(certificate);
         }
+
         validationContext.validate();
 
-        ValidationAlerter validationAlerter = new SignatureValidationAlerter(validationContext);
-        validationAlerter.assertAllRequiredRevocationDataPresent();
-        validationAlerter.assertCertificateNotRevoked(certificateToken);
+        SignatureValidationAlerter signatureValidationAlerter = new SignatureValidationAlerter(validationContext);
+        signatureValidationAlerter.setSigningOperation(SigningOperation.SIGN);
+        return signatureValidationAlerter;
     }
 
     /**
-     * This method verifies whether the given {@code AdvancedSignature}s do not contain revoked certificates
+     * Initializes the validation alerter for signature validation
      *
-     * @param signatures a collection of {@link AdvancedSignature}s
+     * @param signatures collection of {@code AdvancedSignature}s to be validated
+     * @return {@link ValidationAlerter}
      */
-    private void assertCertificatesAreNotRevoked(final Collection<AdvancedSignature> signatures) {
-        if (!signatureParameters.isCheckCertificateRevocation()) {
-            return;
-        }
-        if (certificateVerifier.getAlertOnMissingRevocationData() == null && certificateVerifier.getAlertOnRevokedCertificate() == null) {
-            LOG.trace("The verification of #certificatesAreNotRevoked has been skipped.");
-            return;
-        }
+    protected ValidationAlerter initValidationAlerter(final Collection<AdvancedSignature> signatures) {
+        final SignatureValidationContext validationContext = new SignatureValidationContext(signatureParameters.bLevel().getSigningDate());
+        validationContext.initialize(getCertificateVerifier());
 
-        Date signingDate = signatureParameters.bLevel().getSigningDate();
-        final SignatureValidationContext validationContext = new SignatureValidationContext(signingDate);
-        validationContext.initialize(certificateVerifier);
         for (AdvancedSignature signature : signatures) {
             validationContext.addSignatureForVerification(signature);
         }
+
         validationContext.validate();
 
-        ValidationAlerter validationAlerter = new SignatureValidationAlerter(validationContext);
-        validationAlerter.assertAllRequiredRevocationDataPresent();
-        validationAlerter.assertAllSignatureCertificatesNotRevoked();
+        SignatureValidationAlerter signatureValidationAlerter = new SignatureValidationAlerter(validationContext);
+        signatureValidationAlerter.setSigningOperation(SigningOperation.EXTEND);
+        return signatureValidationAlerter;
+    }
+
+    /**
+     * Gets CertificateVerifier to be used for validation context verification
+     *
+     * @return {@link CertificateVerifier}
+     */
+    protected CertificateVerifier getCertificateVerifier() {
+        if (signatureParameters.isCheckCertificateRevocation()) {
+            return certificateVerifier;
+        }
+
+        // skip revocation check
+        final CertificateVerifier offlineCertificateVerifier =
+                new CertificateVerifierBuilder(certificateVerifier).buildOfflineCopy();
+
+        RevocationDataVerifier acceptAllRevocationDataVerifier = createAcceptAllRevocationDataVerifier();
+        offlineCertificateVerifier.setRevocationDataVerifier(acceptAllRevocationDataVerifier);
+        TimestampTokenVerifier timestampTokenVerifier = offlineCertificateVerifier.getTimestampTokenVerifier();
+        if (timestampTokenVerifier == null) {
+            timestampTokenVerifier = TimestampTokenVerifier.createDefaultTimestampTokenVerifier();
+        }
+        timestampTokenVerifier.setRevocationDataVerifier(acceptAllRevocationDataVerifier);
+
+        return offlineCertificateVerifier;
+    }
+
+    /**
+     * This class is used to create a {@code RevocationDataVerifier} returning always
+     * a valid revocation status for a certificate.
+     * NOTE: This method is used internally for a silent revocation data processing check.
+     *
+     * @return {@link RevocationDataVerifier}
+     */
+    private RevocationDataVerifier createAcceptAllRevocationDataVerifier() {
+        final RevocationDataVerifier revocationDataVerifier = RevocationDataVerifier.createDefaultRevocationDataVerifier();
+        revocationDataVerifier.setAcceptRevocationCertificatesWithoutRevocation(true);
+        revocationDataVerifier.setAcceptTimestampCertificatesWithoutRevocation(true);
+        return revocationDataVerifier;
     }
 
     /**
@@ -662,7 +666,7 @@ public class SignatureRequirementsChecker {
             checkHasEmbeddedEvidenceRecords(signature, status);
         }
         if (!status.isEmpty()) {
-            status.setMessage("Error on signature augmentation.");
+            status.setMessage("Error on signature augmentation");
             certificateVerifier.getAugmentationAlertOnHigherSignatureLevel().alert(status);
         }
     }
@@ -716,7 +720,7 @@ public class SignatureRequirementsChecker {
             }
         }
         if (!status.isEmpty()) {
-            status.setMessage("Error on signature augmentation.");
+            status.setMessage("Error on signature augmentation");
             certificateVerifier.getAlertOnInvalidSignature().alert(status);
         }
     }

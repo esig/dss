@@ -80,7 +80,7 @@ class XAdESLevelLTSignWithExpiredSignCertTest extends AbstractXAdESTestSignature
     protected DSSDocument sign() {
         Exception exception = assertThrows(AlertException.class, () -> super.sign());
         assertTrue(exception.getMessage().contains("Error on signature creation"));
-        assertTrue(exception.getMessage().contains("is expired at signing time"));
+        assertTrue(exception.getMessage().contains("The signing certificate has expired"));
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(getSigningCert().getNotAfter());
@@ -91,7 +91,7 @@ class XAdESLevelLTSignWithExpiredSignCertTest extends AbstractXAdESTestSignature
 
         exception = assertThrows(AlertException.class, () -> super.sign());
         assertTrue(exception.getMessage().contains("Error on signature creation"));
-        assertTrue(exception.getMessage().contains("is expired at signing time"));
+        assertTrue(exception.getMessage().contains("The signing certificate has expired"));
 
         certificateVerifier.setAlertOnExpiredCertificate(new SilentOnStatusAlert());
 

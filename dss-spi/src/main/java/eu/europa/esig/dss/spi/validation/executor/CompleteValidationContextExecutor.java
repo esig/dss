@@ -57,6 +57,7 @@ public class CompleteValidationContextExecutor implements ValidationContextExecu
         validationAlerter.assertAllRequiredRevocationDataPresent();
         validationAlerter.assertAllPOECoveredByRevocationData();
 
+        validationAlerter.assertAllSignaturesAreYetValid();
         validationAlerter.assertAllSignaturesNotExpired();
         validationAlerter.assertAllSignatureCertificatesNotRevoked();
         validationAlerter.assertAllSignatureCertificateHaveFreshRevocationData();

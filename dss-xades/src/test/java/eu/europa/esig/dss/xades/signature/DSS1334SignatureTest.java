@@ -110,20 +110,20 @@ class DSS1334SignatureTest extends AbstractXAdESTestSignature {
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
 		parameters.setDetachedContents(Collections.singletonList(ORIGINAL_FILE));
 		Exception exception = assertThrows(AlertException.class, () -> service.extendDocument(doc, parameters));
-		assertTrue(exception.getMessage().contains("Error on signature augmentation."));
+		assertTrue(exception.getMessage().contains("Error on signature augmentation"));
 		assertTrue(exception.getMessage().contains("Cryptographic signature verification has failed / Signature verification failed against the best candidate."));
 
 		certificateVerifier.setAlertOnInvalidSignature(new SilentOnStatusAlert());
 
 		exception = assertThrows(AlertException.class, () -> service.extendDocument(doc, parameters));
-		assertTrue(exception.getMessage().contains("Error on signature augmentation."));
-		assertTrue(exception.getMessage().contains("is expired at signing time"));
+		assertTrue(exception.getMessage().contains("Error on signature augmentation"));
+		assertTrue(exception.getMessage().contains("The signing certificate has expired"));
 
 		certificateVerifier.setAlertOnInvalidSignature(null);
 
 		exception = assertThrows(AlertException.class, () -> service.extendDocument(doc, parameters));
-		assertTrue(exception.getMessage().contains("Error on signature augmentation."));
-		assertTrue(exception.getMessage().contains("is expired at signing time"));
+		assertTrue(exception.getMessage().contains("Error on signature augmentation"));
+		assertTrue(exception.getMessage().contains("The signing certificate has expired"));
 
 		certificateVerifier.setAlertOnExpiredCertificate(new SilentOnStatusAlert());
 

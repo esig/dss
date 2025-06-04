@@ -58,17 +58,17 @@ class CAdESExtensionWithEvidenceRecordTest extends AbstractCAdESTestExtension {
 
         finalSignatureLevel = SignatureLevel.CAdES_BASELINE_T;
         Exception exception = assertThrows(AlertException.class, () -> extendSignature(signedDocument));
-        assertTrue(exception.getMessage().contains("Error on signature augmentation."));
+        assertTrue(exception.getMessage().contains("Error on signature augmentation"));
         assertTrue(exception.getMessage().contains("The signature is preserved by an embedded evidence record."));
 
         finalSignatureLevel = SignatureLevel.CAdES_BASELINE_LT;
         exception = assertThrows(AlertException.class, () -> extendSignature(signedDocument));
-        assertTrue(exception.getMessage().contains("Error on signature augmentation."));
+        assertTrue(exception.getMessage().contains("Error on signature augmentation"));
         assertTrue(exception.getMessage().contains("The signature is preserved by an embedded evidence record."));
 
         finalSignatureLevel = SignatureLevel.CAdES_BASELINE_LTA;
         exception = assertThrows(AlertException.class, () -> extendSignature(signedDocument));
-        assertTrue(exception.getMessage().contains("Error on signature augmentation."));
+        assertTrue(exception.getMessage().contains("Error on signature augmentation"));
         assertTrue(exception.getMessage().contains("The signature is preserved by an embedded evidence record."));
 
         finalSignatureLevel = SignatureLevel.CAdES_BASELINE_T;
@@ -85,12 +85,12 @@ class CAdESExtensionWithEvidenceRecordTest extends AbstractCAdESTestExtension {
 
         finalSignatureLevel = SignatureLevel.CAdES_BASELINE_LT;
         exception = assertThrows(AlertException.class, () -> extendSignature(tLevelSignature));
-        assertTrue(exception.getMessage().contains("Error on signature augmentation."));
+        assertTrue(exception.getMessage().contains("Error on signature augmentation"));
         assertTrue(exception.getMessage().contains("The signature is preserved by an embedded evidence record."));
 
         finalSignatureLevel = SignatureLevel.CAdES_BASELINE_LTA;
         exception = assertThrows(AlertException.class, () -> extendSignature(tLevelSignature));
-        assertTrue(exception.getMessage().contains("Error on signature augmentation."));
+        assertTrue(exception.getMessage().contains("Error on signature augmentation"));
         assertTrue(exception.getMessage().contains("The signature is preserved by an embedded evidence record."));
 
         finalSignatureLevel = SignatureLevel.CAdES_BASELINE_LT;
@@ -107,7 +107,7 @@ class CAdESExtensionWithEvidenceRecordTest extends AbstractCAdESTestExtension {
 
         finalSignatureLevel = SignatureLevel.CAdES_BASELINE_LTA;
         exception = assertThrows(AlertException.class, () -> extendSignature(ltLevelSignature));
-        assertTrue(exception.getMessage().contains("Error on signature augmentation."));
+        assertTrue(exception.getMessage().contains("Error on signature augmentation"));
         assertTrue(exception.getMessage().contains("The signature is preserved by an embedded evidence record."));
 
         finalSignatureLevel = SignatureLevel.CAdES_BASELINE_LTA;
@@ -122,7 +122,7 @@ class CAdESExtensionWithEvidenceRecordTest extends AbstractCAdESTestExtension {
 
         certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new ExceptionOnStatusAlert());
         exception = assertThrows(AlertException.class, () -> extendSignature(ltaLevelSignature));
-        assertTrue(exception.getMessage().contains("Error on signature augmentation."));
+        assertTrue(exception.getMessage().contains("Error on signature augmentation"));
         assertTrue(exception.getMessage().contains("The signature is preserved by an embedded evidence record."));
 
         certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new SilentOnStatusAlert());
@@ -144,7 +144,7 @@ class CAdESExtensionWithEvidenceRecordTest extends AbstractCAdESTestExtension {
 
         finalSignatureLevel = SignatureLevel.CAdES_BASELINE_LTA;
         Exception exception = assertThrows(AlertException.class, () -> extendSignature(signedDocument));
-        assertTrue(exception.getMessage().contains("Error on signature augmentation."));
+        assertTrue(exception.getMessage().contains("Error on signature augmentation"));
         assertTrue(exception.getMessage().contains("The signature is preserved by an embedded evidence record."));
 
         certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new SilentOnStatusAlert());

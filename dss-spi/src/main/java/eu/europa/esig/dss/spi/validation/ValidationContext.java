@@ -237,6 +237,30 @@ public interface ValidationContext {
 	boolean checkAllSignaturesNotExpired();
 
 	/**
+	 * This method returns whether the certificate token is not yet expired
+	 *
+	 * @param certificateToken {@link CertificateToken} to be validated
+	 * @return true if the certificate or/and its POE(s) are not yet expired, false otherwise
+	 */
+	boolean checkCertificateNotExpired(CertificateToken certificateToken);
+
+	/**
+	 * This method returns whether all signatures added to the ValidationContext have been produced with
+	 * yet valid certificates at the time of signing
+	 *
+	 * @return true if the signing certificate or its POE(s) is yet valid, false otherwise
+	 */
+	boolean checkAllSignaturesAreYetValid();
+
+	/**
+	 * This method returns whether the certificate token is yet valid
+	 *
+	 * @param certificateToken {@link CertificateToken} to be validated
+	 * @return true if the certificate is yet valid, false otherwise
+	 */
+	boolean checkCertificateIsYetValid(CertificateToken certificateToken);
+
+	/**
 	 * Returns signatures added to the validation context
 	 *
 	 * @return a set of {@link AdvancedSignature}s

@@ -94,7 +94,7 @@ class DSS1220Test extends PKIFactoryAccess {
 		DSSDocument toExtendDocument = new InMemoryDocument(DSS1220Test.class.getResourceAsStream("/validation/dss-1220/CAdES-BpB_revoked_signingCertificate.p7m"));
 		Exception exception = assertThrows(AlertException.class, () -> service.extendDocument(toExtendDocument, parameters));
 		assertTrue(exception.getMessage().contains("Error on signature augmentation"));
-		assertTrue(exception.getMessage().contains("is expired at signing time"));
+		assertTrue(exception.getMessage().contains("The signing certificate has expired"));
 	}
 
 	// See DSS-3507

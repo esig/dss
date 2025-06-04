@@ -22,7 +22,7 @@ package eu.europa.esig.dss.jades.signature;
 
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.signature.SignatureExtension;
-import eu.europa.esig.dss.signature.SigningOperation;
+import eu.europa.esig.dss.enumerations.SigningOperation;
 
 /**
  * JAdES extension

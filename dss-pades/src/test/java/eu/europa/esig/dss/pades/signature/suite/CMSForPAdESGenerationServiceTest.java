@@ -96,7 +96,7 @@ class CMSForPAdESGenerationServiceTest extends PKIFactoryAccess {
         exception = assertThrows(AlertException.class, () ->
                 service.getDataToSign(messageDigest, parameters));
         assertTrue(exception.getMessage().contains("Error on signature creation"));
-        assertTrue(exception.getMessage().contains("is expired at signing time"));
+        assertTrue(exception.getMessage().contains("The signing certificate has expired"));
 
         parameters.setSigningCertificate(getSigningCert());
         exception = assertThrows(IllegalArgumentException.class, () ->

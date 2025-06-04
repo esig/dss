@@ -72,8 +72,8 @@ class ExtendXAdESBWithoutSignedDataObjectPropertiesToTTest extends PKIFactoryAcc
 		certificateVerifier.setAlertOnExpiredCertificate(new ExceptionOnStatusAlert());
 
 		Exception exception = assertThrows(AlertException.class, () -> service.extendDocument(toSignDocument, parameters));
-		assertTrue(exception.getMessage().contains("Error on signature augmentation."));
-		assertTrue(exception.getMessage().contains("is expired at signing time"));
+		assertTrue(exception.getMessage().contains("Error on signature augmentation"));
+		assertTrue(exception.getMessage().contains("The signing certificate has expired"));
 
 		certificateVerifier.setAlertOnExpiredCertificate(new SilentOnStatusAlert());
 

@@ -51,7 +51,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
-import eu.europa.esig.dss.signature.SigningOperation;
+import eu.europa.esig.dss.enumerations.SigningOperation;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.signature.resources.DSSResourcesHandlerBuilder;
@@ -185,10 +185,12 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		ASiCUtils.addOrReplaceDocument(asicContent.getSignatureDocuments(), signature);
 
 		if (addASiCArchiveManifest) {
-			final ASiCWithCAdESSignatureExtension extensionProfile = getLTALevelExtensionProfile();
-			asicContent = extensionProfile.extend(asicContent, parameters);
-
-			cadesParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
+			try {
+				final ASiCWithCAdESSignatureExtension extensionProfile = getLTALevelExtensionProfile();
+				asicContent = extensionProfile.extend(asicContent, parameters);
+			} finally {
+				cadesParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
+			}
 		}
 
 		final DSSDocument asicContainer = buildASiCContainer(asicContent, parameters.getZipCreationDate());
@@ -284,10 +286,12 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 			cadesParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LT);
 		}
 
-		asicContent = extensionProfile.extend(asicContent, parameters);
-
-		if (addASiCEArchiveManifest) {
-			cadesParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
+		try {
+			asicContent = extensionProfile.extend(asicContent, parameters);
+		} finally {
+			if (addASiCEArchiveManifest) {
+				cadesParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
+			}
 		}
 
 		final DSSDocument extensionResult = buildASiCContainer(asicContent, parameters.getZipCreationDate());

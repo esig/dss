@@ -1,0 +1,156 @@
+package eu.europa.esig.dss.cades.signature;
+
+import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerInfo;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.simplereport.SimpleReport;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class CAdESDoubleSignatureOnExpiredWithPOETest extends AbstractCAdESTestSignature {
+
+    private String signingAlias;
+    private DSSDocument originalDocument;
+
+    private DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> service;
+    private CAdESSignatureParameters signatureParameters;
+    private DSSDocument documentToSign;
+
+    private Date signingTime;
+
+    @BeforeEach
+    void init() throws Exception {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MONTH, -2);
+        signingTime = calendar.getTime();
+
+        service = new CAdESService(getCompleteCertificateVerifier());
+        service.setTspSource(getGoodTsaByTime(signingTime));
+
+        originalDocument = new InMemoryDocument("Hello World!".getBytes());
+
+        signatureParameters = new CAdESSignatureParameters();
+        signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
+    }
+
+    @Override
+    protected DSSDocument sign() {
+        signingAlias = EXPIRED_USER;
+
+        signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_T);
+        documentToSign = originalDocument;
+        DSSDocument signedDocument = super.sign();
+
+        documentToSign = signedDocument;
+
+        signingAlias = GOOD_USER;
+        signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
+        service.setTspSource(getGoodTsa());
+        signingTime = new Date();
+
+        DSSDocument doubleSignedDocument = super.sign();
+
+        documentToSign = originalDocument;
+        signingAlias = EXPIRED_USER;
+        return doubleSignedDocument;
+    }
+
+    @Override
+    protected CertificateVerifier getCompleteCertificateVerifier() {
+        CertificateVerifier certificateVerifier = super.getCompleteCertificateVerifier();
+        certificateVerifier.setRevocationFallback(true);
+        return certificateVerifier;
+    }
+
+    @Override
+    protected void checkNumberOfSignatures(DiagnosticData diagnosticData) {
+        assertEquals(2, diagnosticData.getSignatures().size());
+    }
+
+    @Override
+    protected void checkSigningDate(DiagnosticData diagnosticData) {
+        // skip
+    }
+
+    @Override
+    protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
+        // skip
+    }
+
+    @Override
+    protected void checkSignatureInformationStore(List<XmlSignerInfo> signatureInformationStore) {
+        // skip
+    }
+
+    @Override
+    protected void checkSignatureScopes(DiagnosticData diagnosticData) {
+        // skip
+    }
+
+    @Override
+    protected void checkArchiveTimeStampV3(byte[] byteArray) {
+        // skip
+    }
+
+    @Override
+    protected void checkSignatureLevel(DiagnosticData diagnosticData) {
+        int tLevelCounter = 0;
+        int ltaLevelCounter = 0;
+        for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+            if (SignatureLevel.CAdES_BASELINE_T == signatureWrapper.getSignatureFormat()) {
+                ++tLevelCounter;
+            } else if (SignatureLevel.CAdES_BASELINE_LTA == signatureWrapper.getSignatureFormat()) {
+                ++ltaLevelCounter;
+            }
+        }
+        assertEquals(1, tLevelCounter);
+        assertEquals(1, ltaLevelCounter);
+    }
+
+    @Override
+    protected void verifyOriginalDocuments(SignedDocumentValidator validator, DiagnosticData diagnosticData) {
+        // skip
+    }
+
+    @Override
+    protected void verifySimpleReport(SimpleReport simpleReport) {
+        // skip
+    }
+
+    @Override
+    protected DSSDocument getDocumentToSign() {
+        return documentToSign;
+    }
+
+    @Override
+    protected DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> getService() {
+        return service;
+    }
+
+    @Override
+    protected CAdESSignatureParameters getSignatureParameters() {
+        signatureParameters.bLevel().setSigningDate(signingTime);
+        signatureParameters.setSigningCertificate(getSigningCert());
+        signatureParameters.setCertificateChain(getCertificateChain());
+        return signatureParameters;
+    }
+
+    @Override
+    protected String getSigningAlias() {
+        return signingAlias;
+    }
+
+}

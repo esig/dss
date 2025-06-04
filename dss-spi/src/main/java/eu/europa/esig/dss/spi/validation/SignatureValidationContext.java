@@ -1685,10 +1685,29 @@ public class SignatureValidationContext implements ValidationContext {
 		return status;
 	}
 
+	@Override
+	public boolean checkCertificateNotExpired(CertificateToken certificateToken) {
+		return certificateNotExpired(certificateToken).isEmpty();
+	}
+
+	/**
+	 * Returns the status of the all signatures not expired check
+	 *
+	 * @return {@link SignatureStatus}
+	 */
+	protected TokenStatus certificateNotExpired(CertificateToken certificateToken) {
+		TokenStatus status = new TokenStatus();
+		checkCertificateNotExpired(certificateToken, status);
+		if (!status.isEmpty()) {
+			status.setMessage("Expired certificate found.");
+		}
+		return status;
+	}
+
 	private void checkSignatureNotExpired(AdvancedSignature signature, SignatureStatus status) {
 		CertificateToken signingCertificate = signature.getSigningCertificateToken();
 		if (signingCertificate != null) {
-			boolean signatureNotExpired = verifyCertificateTokenHasPOERecursively(signingCertificate, poeTimes.get(signature.getId()));
+			boolean signatureNotExpired = verifyCertificateTokenNotExpired(signingCertificate, poeTimes.get(signature.getId()));
 			if (!signatureNotExpired) {
 				status.addRelatedTokenAndErrorMessage(signature, String.format("The signing certificate has expired " +
 								"and there is no POE during its validity range : [%s - %s]!",
@@ -1698,10 +1717,20 @@ public class SignatureValidationContext implements ValidationContext {
 		}
 	}
 
-	private boolean verifyCertificateTokenHasPOERecursively(CertificateToken certificateToken, List<POE> poeTimeList) {
-		if (Utils.isCollectionNotEmpty(poeTimeList)) {
+	private void checkCertificateNotExpired(CertificateToken certificateToken, TokenStatus status) {
+		boolean certificateNotExpired = verifyCertificateTokenNotExpired(certificateToken, poeTimes.get(certificateToken.getDSSIdAsString()));
+		if (!certificateNotExpired) {
+			status.addRelatedTokenAndErrorMessage(certificateToken, String.format("The signing certificate has expired " +
+							"and there is no POE during its validity range : [%s - %s]!",
+					DSSUtils.formatDateToRFC(certificateToken.getNotBefore()),
+					DSSUtils.formatDateToRFC(certificateToken.getNotAfter())));
+		}
+	}
+
+	private boolean verifyCertificateTokenNotExpired(CertificateToken certificateToken, List<POE> poeTimeList) {
+		if (Utils.isCollectionNotEmpty(poeTimeList) && certificateToken.getNotAfter() != null) {
 			for (POE poeTime : poeTimeList) {
-				if (certificateToken.isValidOn(poeTime.getTime()) && verifyPOE(poeTime)) {
+				if (poeTime.getTime() != null && !poeTime.getTime().after(certificateToken.getNotAfter())) {
 					return true;
 				}
 			}
@@ -1709,18 +1738,78 @@ public class SignatureValidationContext implements ValidationContext {
 		return false;
 	}
 
-	private boolean verifyPOE(POE poe) {
-		TimestampToken timestampToken = poe.getTimestampToken();
-		if (timestampToken != null) {
-			// check if the timestamp is valid at validation time
-			CertificateToken issuerCertificateToken = getIssuer(timestampToken);
-			List<POE> timestampPOEs = poeTimes.get(timestampToken.getDSSIdAsString());
-			return issuerCertificateToken != null && timestampToken.isValid()
-					&& verifyCertificateTokenHasPOERecursively(issuerCertificateToken, timestampPOEs)
-					&& checkCertificateIsNotRevokedRecursively(issuerCertificateToken, timestampPOEs);
+	@Override
+	public boolean checkAllSignaturesAreYetValid() {
+		return allSignaturesAreYetValid().isEmpty();
+	}
+
+	/**
+	 * Returns the status of the all signatures are yet valid check
+	 *
+	 * @return {@link SignatureStatus}
+	 */
+	protected SignatureStatus allSignaturesAreYetValid() {
+		SignatureStatus status = new SignatureStatus();
+		for (AdvancedSignature signature : processedSignatures) {
+			checkSignatureIsYetValid(signature, status);
 		}
-		// POE is provided
-		return true;
+		if (!status.isEmpty()) {
+			status.setMessage("Not yet valid signature found.");
+		}
+		return status;
+	}
+
+	@Override
+	public boolean checkCertificateIsYetValid(CertificateToken certificateToken) {
+		return certificateNotExpired(certificateToken).isEmpty();
+	}
+
+	/**
+	 * Returns the status of the all signatures not expired check
+	 *
+	 * @return {@link SignatureStatus}
+	 */
+	protected TokenStatus certificateIsYetValid(CertificateToken certificateToken) {
+		TokenStatus status = new TokenStatus();
+		checkCertificateIsYetValid(certificateToken, status);
+		if (!status.isEmpty()) {
+			status.setMessage("Not yet valid certificate found.");
+		}
+		return status;
+	}
+
+	private void checkSignatureIsYetValid(AdvancedSignature signature, SignatureStatus status) {
+		CertificateToken signingCertificate = signature.getSigningCertificateToken();
+		if (signingCertificate != null) {
+			boolean signatureNotExpired = verifyCertificateTokenIsYetValid(signingCertificate, poeTimes.get(signature.getId()));
+			if (!signatureNotExpired) {
+				status.addRelatedTokenAndErrorMessage(signature, String.format(
+						"The signing certificate with validity range [%s - %s] is not yet valid at signing time!",
+						DSSUtils.formatDateToRFC(signingCertificate.getNotBefore()),
+						DSSUtils.formatDateToRFC(signingCertificate.getNotAfter())));
+			}
+		}
+	}
+
+	private void checkCertificateIsYetValid(CertificateToken certificateToken, TokenStatus status) {
+		boolean certificateNotExpired = verifyCertificateTokenIsYetValid(certificateToken, poeTimes.get(certificateToken.getDSSIdAsString()));
+		if (!certificateNotExpired) {
+			status.addRelatedTokenAndErrorMessage(certificateToken, String.format(
+					"The signing certificate with validity range [%s - %s] is not yet valid at signing time!",
+					DSSUtils.formatDateToRFC(certificateToken.getNotBefore()),
+					DSSUtils.formatDateToRFC(certificateToken.getNotAfter())));
+		}
+	}
+
+	private boolean verifyCertificateTokenIsYetValid(CertificateToken certificateToken, List<POE> poeTimeList) {
+		if (Utils.isCollectionNotEmpty(poeTimeList) && certificateToken.getNotAfter() != null) {
+			for (POE poeTime : poeTimeList) {
+				if (poeTime.getTime() != null && !poeTime.getTime().before(certificateToken.getNotBefore())) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	@Override
