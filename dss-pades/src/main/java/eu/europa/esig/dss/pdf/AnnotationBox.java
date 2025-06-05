@@ -131,9 +131,26 @@ public class AnnotationBox {
 	 * 
 	 * @param pageHeight the height of a page the annotation box will be created on
 	 * @return {@link AnnotationBox}
+	 * @deprecated since DSS 6.3. Please use {@code #toPdfPageCoordinates(AnnotationBox pageBox)} method instead.
 	 */
+	@Deprecated
 	public AnnotationBox toPdfPageCoordinates(float pageHeight) {
 		return new AnnotationBox(minX, pageHeight - maxY, maxX, pageHeight - minY);
+	}
+
+	/**
+	 * Creates a new {@code AnnotationBox} mirrored vertically relatively to the given {@code pageBox}
+	 * <p>
+	 * The basis for the method: in used pdf implementations the Y origin is bottom based,
+	 * while in DSS parameters is top-based.
+	 * This method also takes into account non-zero upper-left corner coordinates, when applicable.
+	 *
+	 * @param pageBox {@link AnnotationBox} representing the page's box the new field will be created on
+	 * @return {@link AnnotationBox}
+	 */
+	public AnnotationBox toPdfPageCoordinates(AnnotationBox pageBox) {
+		return new AnnotationBox(pageBox.getMinX() + minX, pageBox.getMaxY() - maxY,
+				pageBox.getMinX() + maxX, pageBox.getMaxY() - minY);
 	}
 
 	/**

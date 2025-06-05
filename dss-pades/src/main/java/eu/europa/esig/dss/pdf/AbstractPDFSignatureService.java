@@ -852,9 +852,6 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 													   SignatureFieldParameters fieldParameters) throws IOException {
 		AnnotationBox signatureFieldAnnotation = buildSignatureFieldBox(signatureDrawer);
 		if (signatureFieldAnnotation != null) {
-			AnnotationBox pageBox = documentReader.getPageBox(fieldParameters.getPage());
-			signatureFieldAnnotation = toPdfPageCoordinates(signatureFieldAnnotation, pageBox);
-
 			assertSignatureFieldPositionValid(documentReader, signatureFieldAnnotation, fieldParameters.getPage());
 		}
 		return signatureFieldAnnotation;
@@ -932,7 +929,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 * @return {@link AnnotationBox}
 	 */
 	protected AnnotationBox toPdfPageCoordinates(AnnotationBox fieldAnnotationBox, AnnotationBox pageBox) {
-		return fieldAnnotationBox.toPdfPageCoordinates(pageBox.getHeight());
+		return fieldAnnotationBox.toPdfPageCoordinates(pageBox);
 	}
 
 	@Override

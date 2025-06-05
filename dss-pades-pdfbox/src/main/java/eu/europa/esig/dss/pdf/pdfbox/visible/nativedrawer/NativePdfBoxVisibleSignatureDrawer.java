@@ -26,6 +26,7 @@ import eu.europa.esig.dss.pades.DSSFont;
 import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
+import eu.europa.esig.dss.pdf.AnnotationBox;
 import eu.europa.esig.dss.pdf.pdfbox.PdfBoxUtils;
 import eu.europa.esig.dss.pdf.pdfbox.visible.AbstractPdfBoxSignatureDrawer;
 import eu.europa.esig.dss.pdf.pdfbox.visible.PdfBoxNativeFont;
@@ -398,14 +399,13 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 	 * @return {@link PDRectangle}
 	 */
 	private PDRectangle getPdRectangle(SignatureFieldDimensionAndPosition dimensionAndPosition, PDPage page) {
-		PDRectangle pageRect = page.getMediaBox();
-		PDRectangle pdRectangle = new PDRectangle();
-		pdRectangle.setLowerLeftX(dimensionAndPosition.getBoxX());
-		// because PDF starts to count from bottom
-		pdRectangle.setLowerLeftY(
-				pageRect.getHeight() - dimensionAndPosition.getBoxY() - dimensionAndPosition.getBoxHeight());
-		pdRectangle.setUpperRightX(dimensionAndPosition.getBoxX() + dimensionAndPosition.getBoxWidth());
-		pdRectangle.setUpperRightY(pageRect.getHeight() - dimensionAndPosition.getBoxY());
+		AnnotationBox annotationBox = dimensionAndPosition.getAnnotationBox();
+
+		final PDRectangle pdRectangle = new PDRectangle();
+		pdRectangle.setLowerLeftX(annotationBox.getMinX());
+		pdRectangle.setLowerLeftY(annotationBox.getMinY());
+		pdRectangle.setUpperRightX(annotationBox.getMaxX());
+		pdRectangle.setUpperRightY(annotationBox.getMaxY());
 		return pdRectangle;
 	}
 

@@ -805,7 +805,7 @@ public class PdfBoxSignatureService extends AbstractPDFSignatureService {
 
 			if (newField != null) {
 				AnnotationBox fieldBox = newField.getAnnotationBox();
-				AnnotationBox box = fieldBox.toPdfPageCoordinates(pageBox.getHeight());
+				AnnotationBox box = fieldBox.toPdfPageCoordinates(pageBox);
 
 				BufferedImage page = reader.generateImageScreenshot(parameters.getImageParameters().getFieldParameters().getPage());
 				BufferedImage annotationRepresentation = page.getSubimage(

@@ -59,7 +59,7 @@ public class SignatureFieldDimensionAndPositionBuilder {
     /** The page's rotation value */
     private final int pageRotation;
 
-    /** The signature field rectangle */
+    /** The page rectangle */
     private AnnotationBox pageBox;
 
     /** The annotation box representing a target signature field dimensions when applicable */
@@ -105,7 +105,7 @@ public class SignatureFieldDimensionAndPositionBuilder {
     public SignatureFieldDimensionAndPosition build() {
         assertConfigurationValid();
         if (dimensionAndPosition == null) {
-            dimensionAndPosition = new SignatureFieldDimensionAndPosition();
+            dimensionAndPosition = new SignatureFieldDimensionAndPosition(pageBox);
             initDpi();
             initRotation();
             assignImageBoundaryBox();

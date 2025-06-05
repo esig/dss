@@ -104,7 +104,7 @@ public abstract class AbstractITextSignatureDrawer implements ITextSignatureDraw
 	protected AnnotationBox getPageAnnotationBox() {
 		int pageNumber = parameters.getFieldParameters().getPage();
 		Rectangle rectangle = reader.getPageSize(pageNumber);
-		return new AnnotationBox(0, 0, rectangle.getWidth(), rectangle.getHeight());
+		return new AnnotationBox(rectangle.getLeft(), rectangle.getBottom(), rectangle.getRight(), rectangle.getTop());
 	}
 
 	/**
@@ -123,8 +123,7 @@ public abstract class AbstractITextSignatureDrawer implements ITextSignatureDraw
 	 * @return {@link AnnotationBox}
 	 */
 	protected AnnotationBox toAnnotationBox(SignatureFieldDimensionAndPosition dimensionAndPosition) {
-		AnnotationBox annotationBox = dimensionAndPosition.getAnnotationBox();
-		return annotationBox.toPdfPageCoordinates(getPageAnnotationBox().getHeight());
+		return dimensionAndPosition.getAnnotationBox();
 	}
 
 	private AnnotationBox getSignatureFieldAnnotationBox() {
@@ -265,15 +264,39 @@ public abstract class AbstractITextSignatureDrawer implements ITextSignatureDraw
 
 	/**
 	 * As OpenPDF does not automatically rotate the provided signature field relatively to the page's rotation,
-	 * we need to rotate it manually
+	 * we need to rotate it manually.
+	 * NOTE: Use special processing to ensure correct non-zero coordinates handling
 	 *
 	 * @param annotationBox {@link AnnotationBox} to be rotated
 	 * @return {@link AnnotationBox}
 	 */
 	protected AnnotationBox getRotatedAnnotationRelativelyPageRotation(AnnotationBox annotationBox) {
-		AnnotationBox pageAnnotationBox = getPageAnnotationBox();
+		AnnotationBox pageBox = getPageAnnotationBox();
+
 		int pageRotation = getPageRotation();
-		return ImageRotationUtils.rotateRelativelyWrappingBox(annotationBox, pageAnnotationBox, pageRotation);
+		switch (pageRotation) {
+			case ImageRotationUtils.ANGLE_90:
+				return new AnnotationBox(annotationBox.getMinY(),
+						pageBox.getMaxX() - annotationBox.getMaxX(),
+						annotationBox.getMaxY(),
+						pageBox.getMaxX() - annotationBox.getMinX());
+			case ImageRotationUtils.ANGLE_180:
+				return new AnnotationBox(pageBox.getMaxX() - annotationBox.getMaxX(),
+						pageBox.getMaxY() - annotationBox.getMaxY(),
+						pageBox.getMaxX() - annotationBox.getMinX(),
+						pageBox.getMaxY() - annotationBox.getMinY());
+			case ImageRotationUtils.ANGLE_270:
+				return new AnnotationBox(pageBox.getMaxY() - annotationBox.getMaxY(),
+						annotationBox.getMinX(),
+						pageBox.getMaxY() - annotationBox.getMinY(),
+						annotationBox.getMaxX());
+			case ImageRotationUtils.ANGLE_0:
+			case ImageRotationUtils.ANGLE_360:
+				// do nothing
+				return annotationBox;
+			default:
+				throw new IllegalStateException(ImageRotationUtils.SUPPORTED_ANGLES_ERROR_MESSAGE);
+		}
 	}
 
 	/**

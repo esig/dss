@@ -99,18 +99,30 @@ class PAdESVisibleSignaturePositionTest extends AbstractTestVisualComparator {
 
 		signatureImage = new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/signature.png"));
 
-		signablePdfs.put("normal", new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/test.pdf")));
-		signablePdfs.put("90", new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/test_90.pdf")));
-		signablePdfs.put("180", new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/test_180.pdf")));
-		signablePdfs.put("270", new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/test_270.pdf")));
-		signablePdfs.put("-90", new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/test_-90.pdf")));
-		signablePdfs.put("-180", new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/test_-180.pdf")));
-		signablePdfs.put("-270", new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/test_-270.pdf")));
-		signablePdfs.put("minoltaScan", new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/sun.pdf"))); // scanner
+		signablePdfs.put("normal", new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/test.pdf"), "normal.pdf"));
+		signablePdfs.put("90", new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/test_90.pdf"), "90.pdf"));
+		signablePdfs.put("180", new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/test_180.pdf"), "180.pdf"));
+		signablePdfs.put("270", new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/test_270.pdf"), "270.pdf"));
+		signablePdfs.put("-90", new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/test_-90.pdf"), "-90.pdf"));
+		signablePdfs.put("-180", new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/test_-180.pdf"), "-180.pdf"));
+		signablePdfs.put("-270", new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/test_-270.pdf"), "-270.pdf"));
+		signablePdfs.put("minoltaScan", new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/sun.pdf"), "minoltaScan.pdf")); // scanner
 																															// type
-		signablePdfs.put("minoltaScan90", new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/sun_90.pdf"))); // scanner
+		signablePdfs.put("minoltaScan90", new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/sun_90.pdf"), "minoltaScan90.pdf")); // scanner
 																																// type
-		signablePdfs.put("rotate90", new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/rotate90-rotated.pdf")));
+		signablePdfs.put("rotate90", new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/rotate90-rotated.pdf"), "rotate90.pdf"));
+
+		signablePdfs.put("negative_coordinates", new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/coordinates/doc-negative-coordinates.pdf"), "negative_coordinates.pdf"));
+		signablePdfs.put("negative_coordinates_90", new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/coordinates/doc-negative-coordinates-rotate-90.pdf"), "negative_coordinates_90.pdf"));
+		signablePdfs.put("negative_coordinates_180", new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/coordinates/doc-negative-coordinates-rotate-180.pdf"), "negative_coordinates_180.pdf"));
+		signablePdfs.put("negative_coordinates_270", new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/coordinates/doc-negative-coordinates-rotate-270.pdf"), "negative_coordinates_270.pdf"));
+		signablePdfs.put("negative_coordinates_360", new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/coordinates/doc-negative-coordinates-rotate-360.pdf"), "negative_coordinates_360.pdf"));
+
+		signablePdfs.put("positive_coordinates", new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/coordinates/doc-positive-coordinates.pdf"), "positive_coordinates.pdf"));
+		signablePdfs.put("positive_coordinates_90", new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/coordinates/doc-positive-coordinates-rotate-90.pdf"), "positive_coordinates_90.pdf"));
+		signablePdfs.put("positive_coordinates_180", new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/coordinates/doc-positive-coordinates-rotate-180.pdf"), "positive_coordinates_180.pdf"));
+		signablePdfs.put("positive_coordinates_270", new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/coordinates/doc-positive-coordinates-rotate-270.pdf"), "positive_coordinates_270.pdf"));
+		signablePdfs.put("positive_coordinates_360", new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/coordinates/doc-positive-coordinates-rotate-360.pdf"), "positive_coordinates_360.pdf"));
 
 		similarityLimit = DEFAULT_SIMILARITY_LIMIT;
 	}
@@ -180,6 +192,70 @@ class PAdESVisibleSignaturePositionTest extends AbstractTestVisualComparator {
 		float sunSimilarity = checkImageSimilarity(pdfToBufferedImage(signablePdfs.get("minoltaScan").openStream()),
 				pdfToBufferedImage(signablePdfs.get("minoltaScan90").openStream()), CHECK_RESOLUTION) - 0.015f;
 		checkImageSimilarityPdf("minoltaScan90", "check_sun.pdf", sunSimilarity);
+
+		// Negative coordinates test
+		fieldParameters.setRotation(VisualSignatureRotation.NONE);
+		checkImageSimilarityPdf("negative_coordinates", "negative_coordinates_NONE.pdf");
+		checkImageSimilarityPdf("negative_coordinates_90", "negative_coordinates_90_NONE.pdf");
+		checkImageSimilarityPdf("negative_coordinates_180", "negative_coordinates_180_NONE.pdf");
+		checkImageSimilarityPdf("negative_coordinates_270", "negative_coordinates_270_NONE.pdf");
+		checkImageSimilarityPdf("negative_coordinates_360", "negative_coordinates_NONE.pdf");
+		fieldParameters.setRotation(VisualSignatureRotation.AUTOMATIC);
+		checkImageSimilarityPdf("negative_coordinates", "negative_coordinates_AUTOMATIC.pdf");
+		checkImageSimilarityPdf("negative_coordinates_90", "negative_coordinates_90_AUTOMATIC.pdf");
+		checkImageSimilarityPdf("negative_coordinates_180", "negative_coordinates_180_AUTOMATIC.pdf");
+		checkImageSimilarityPdf("negative_coordinates_270", "negative_coordinates_270_AUTOMATIC.pdf");
+		checkImageSimilarityPdf("negative_coordinates_360", "negative_coordinates_AUTOMATIC.pdf");
+		fieldParameters.setRotation(VisualSignatureRotation.ROTATE_90);
+		checkImageSimilarityPdf("negative_coordinates", "negative_coordinates_ROTATE_90.pdf");
+		checkImageSimilarityPdf("negative_coordinates_90", "negative_coordinates_90_ROTATE_90.pdf");
+		checkImageSimilarityPdf("negative_coordinates_180", "negative_coordinates_180_ROTATE_90.pdf");
+		checkImageSimilarityPdf("negative_coordinates_270", "negative_coordinates_270_ROTATE_90.pdf");
+		checkImageSimilarityPdf("negative_coordinates_360", "negative_coordinates_ROTATE_90.pdf");
+		fieldParameters.setRotation(VisualSignatureRotation.ROTATE_180);
+		checkImageSimilarityPdf("negative_coordinates", "negative_coordinates_ROTATE_180.pdf");
+		checkImageSimilarityPdf("negative_coordinates_90", "negative_coordinates_90_ROTATE_180.pdf");
+		checkImageSimilarityPdf("negative_coordinates_180", "negative_coordinates_180_ROTATE_180.pdf");
+		checkImageSimilarityPdf("negative_coordinates_270", "negative_coordinates_270_ROTATE_180.pdf");
+		checkImageSimilarityPdf("negative_coordinates_360", "negative_coordinates_ROTATE_180.pdf");
+		fieldParameters.setRotation(VisualSignatureRotation.ROTATE_270);
+		checkImageSimilarityPdf("negative_coordinates", "negative_coordinates_ROTATE_270.pdf");
+		checkImageSimilarityPdf("negative_coordinates_90", "negative_coordinates_90_ROTATE_270.pdf");
+		checkImageSimilarityPdf("negative_coordinates_180", "negative_coordinates_180_ROTATE_270.pdf");
+		checkImageSimilarityPdf("negative_coordinates_270", "negative_coordinates_270_ROTATE_270.pdf");
+		checkImageSimilarityPdf("negative_coordinates_360", "negative_coordinates_ROTATE_270.pdf");
+
+		// Positive coordinates test
+		fieldParameters.setRotation(VisualSignatureRotation.NONE);
+		checkImageSimilarityPdf("positive_coordinates", "positive_coordinates_NONE.pdf");
+		checkImageSimilarityPdf("positive_coordinates_90", "positive_coordinates_90_NONE.pdf");
+		checkImageSimilarityPdf("positive_coordinates_180", "positive_coordinates_180_NONE.pdf");
+		checkImageSimilarityPdf("positive_coordinates_270", "positive_coordinates_270_NONE.pdf");
+		checkImageSimilarityPdf("positive_coordinates_360", "positive_coordinates_NONE.pdf");
+		fieldParameters.setRotation(VisualSignatureRotation.AUTOMATIC);
+		checkImageSimilarityPdf("positive_coordinates", "positive_coordinates_AUTOMATIC.pdf");
+		checkImageSimilarityPdf("positive_coordinates_90", "positive_coordinates_90_AUTOMATIC.pdf");
+		checkImageSimilarityPdf("positive_coordinates_180", "positive_coordinates_180_AUTOMATIC.pdf");
+		checkImageSimilarityPdf("positive_coordinates_270", "positive_coordinates_270_AUTOMATIC.pdf");
+		checkImageSimilarityPdf("positive_coordinates_360", "positive_coordinates_AUTOMATIC.pdf");
+		fieldParameters.setRotation(VisualSignatureRotation.ROTATE_90);
+		checkImageSimilarityPdf("positive_coordinates", "positive_coordinates_ROTATE_90.pdf");
+		checkImageSimilarityPdf("positive_coordinates_90", "positive_coordinates_90_ROTATE_90.pdf");
+		checkImageSimilarityPdf("positive_coordinates_180", "positive_coordinates_180_ROTATE_90.pdf");
+		checkImageSimilarityPdf("positive_coordinates_270", "positive_coordinates_270_ROTATE_90.pdf");
+		checkImageSimilarityPdf("positive_coordinates_360", "positive_coordinates_ROTATE_90.pdf");
+		fieldParameters.setRotation(VisualSignatureRotation.ROTATE_180);
+		checkImageSimilarityPdf("positive_coordinates", "positive_coordinates_ROTATE_180.pdf");
+		checkImageSimilarityPdf("positive_coordinates_90", "positive_coordinates_90_ROTATE_180.pdf");
+		checkImageSimilarityPdf("positive_coordinates_180", "positive_coordinates_180_ROTATE_180.pdf");
+		checkImageSimilarityPdf("positive_coordinates_270", "positive_coordinates_270_ROTATE_180.pdf");
+		checkImageSimilarityPdf("positive_coordinates_360", "positive_coordinates_ROTATE_180.pdf");
+		fieldParameters.setRotation(VisualSignatureRotation.ROTATE_270);
+		checkImageSimilarityPdf("positive_coordinates", "positive_coordinates_ROTATE_270.pdf");
+		checkImageSimilarityPdf("positive_coordinates_90", "positive_coordinates_90_ROTATE_270.pdf");
+		checkImageSimilarityPdf("positive_coordinates_180", "positive_coordinates_180_ROTATE_270.pdf");
+		checkImageSimilarityPdf("positive_coordinates_270", "positive_coordinates_270_ROTATE_270.pdf");
+		checkImageSimilarityPdf("positive_coordinates_360", "positive_coordinates_ROTATE_270.pdf");
 	}
 	
 	@Test
@@ -222,6 +298,56 @@ class PAdESVisibleSignaturePositionTest extends AbstractTestVisualComparator {
 					signatureImageParameters.setAlignmentVertical(vertical);
 					String[] pdfs = new String[] { "normal", "90", "180", "270" };
 					for (String pdf : pdfs) {
+						documentToSign = signablePdfs.get(pdf);
+						drawAndCompareVisually();
+					}
+				}
+			}
+		}
+	}
+
+	@Test
+	@Disabled("for generation and manual testing")
+	void bigGeneratorNegativeCoordinatesTest() throws Exception {
+		SignatureImageParameters signatureImageParameters = createSignatureImageParameters();
+		similarityLimit = 0.981f;
+		for (VisualSignatureRotation rotation : VisualSignatureRotation.values()) {
+			for (VisualSignatureAlignmentHorizontal horizontal : VisualSignatureAlignmentHorizontal.values()) {
+				for (VisualSignatureAlignmentVertical vertical : VisualSignatureAlignmentVertical.values()) {
+					signatureImageParameters.getFieldParameters().setRotation(rotation);
+					signatureImageParameters.setAlignmentHorizontal(horizontal);
+					signatureImageParameters.setAlignmentVertical(vertical);
+					String[] pdfs = new String[] { 
+							"negative_coordinates", "negative_coordinates_90", "negative_coordinates_180", 
+							"negative_coordinates_270", "negative_coordinates_360" 
+					};
+					for (String pdf : pdfs) {
+						testName = pdf + "_" + rotation + "_" + horizontal + "_" + vertical;
+						documentToSign = signablePdfs.get(pdf);
+						drawAndCompareVisually();
+					}
+				}
+			}
+		}
+	}
+
+	@Test
+	@Disabled("for generation and manual testing")
+	void bigGeneratorPositiveCoordinatesTest() throws Exception {
+		SignatureImageParameters signatureImageParameters = createSignatureImageParameters();
+		similarityLimit = 0.981f;
+		for (VisualSignatureRotation rotation : VisualSignatureRotation.values()) {
+			for (VisualSignatureAlignmentHorizontal horizontal : VisualSignatureAlignmentHorizontal.values()) {
+				for (VisualSignatureAlignmentVertical vertical : VisualSignatureAlignmentVertical.values()) {
+					signatureImageParameters.getFieldParameters().setRotation(rotation);
+					signatureImageParameters.setAlignmentHorizontal(horizontal);
+					signatureImageParameters.setAlignmentVertical(vertical);
+					String[] pdfs = new String[] {
+							"positive_coordinates", "positive_coordinates_90", "positive_coordinates_180",
+							"positive_coordinates_270", "positive_coordinates_360"
+					};
+					for (String pdf : pdfs) {
+						testName = pdf + "_" + rotation + "_" + horizontal + "_" + vertical;
 						documentToSign = signablePdfs.get(pdf);
 						drawAndCompareVisually();
 					}

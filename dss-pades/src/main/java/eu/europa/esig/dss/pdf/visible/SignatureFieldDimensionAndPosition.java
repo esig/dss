@@ -30,6 +30,9 @@ public class SignatureFieldDimensionAndPosition implements VisualSignatureFieldA
 
 	private static final long serialVersionUID = 5513776649702929990L;
 
+	/** Represents a page box */
+	private final AnnotationBox pageBox;
+
 	/** Upper left X coordinate of the signature bounding box */
 	private float boxX = 0;
 	/** Upper left Y coordinate of the signature bounding box */
@@ -88,9 +91,11 @@ public class SignatureFieldDimensionAndPosition implements VisualSignatureFieldA
 
 	/**
 	 * Default constructor instantiating object with null parameters
+	 *
+	 * @param pageBox {@link AnnotationBox} page box
 	 */
-	public SignatureFieldDimensionAndPosition() {
-		// empty
+	public SignatureFieldDimensionAndPosition(final AnnotationBox pageBox) {
+		this.pageBox = pageBox;
 	}
 
 	/**
@@ -527,7 +532,8 @@ public class SignatureFieldDimensionAndPosition implements VisualSignatureFieldA
 
 	@Override
 	public AnnotationBox getAnnotationBox() {
-		return new AnnotationBox(boxX, boxY, boxX + boxWidth, boxY + boxHeight);
+		AnnotationBox annotationBox = new AnnotationBox(boxX, boxY, boxX + boxWidth, boxY + boxHeight);
+		return annotationBox.toPdfPageCoordinates(pageBox);
 	}
 	
 }

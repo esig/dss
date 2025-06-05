@@ -157,12 +157,12 @@ public abstract class AbstractTestVisualComparator extends PKIFactoryAccess {
 				for (int j = 0; j < page1.getAnnotations().size(); j++) {
 					PDRectangle rect1 = page1.getAnnotations().get(j).getRectangle();
 					PDRectangle rect2 = page2.getAnnotations().get(j).getRectangle();
-					// assert max 2% difference, due to different text size computation
+					// assert max 1% page difference, due to different text size computation
 					// NOTE: must be non-negative
-					assertEquals(rect1.getLowerLeftX(), rect2.getLowerLeftX(), Math.abs(rect1.getLowerLeftX()) / 50);
-					assertEquals(rect1.getLowerLeftY(), rect2.getLowerLeftY(), Math.abs(rect1.getLowerLeftY()) / 50);
-					assertEquals(rect1.getUpperRightX(), rect2.getUpperRightX(), Math.abs(rect1.getUpperRightX()) / 50);
-					assertEquals(rect1.getUpperRightY(), rect2.getUpperRightY(), Math.abs(rect1.getUpperRightY()) / 50);
+					assertEquals(rect1.getLowerLeftX(), rect2.getLowerLeftX(), Math.abs(page1.getMediaBox().getWidth()) / 100);
+					assertEquals(rect1.getLowerLeftY(), rect2.getLowerLeftY(), Math.abs(page1.getMediaBox().getHeight()) / 100);
+					assertEquals(rect1.getUpperRightX(), rect2.getUpperRightX(), Math.abs(page1.getMediaBox().getWidth()) / 100);
+					assertEquals(rect1.getUpperRightY(), rect2.getUpperRightY(), Math.abs(page1.getMediaBox().getHeight()) / 100);
 				}
 			}
 		}

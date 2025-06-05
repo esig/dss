@@ -93,12 +93,30 @@ public abstract class AbstractPdfBoxSignatureDrawer implements PdfBoxSignatureDr
 	 * @return {@link SignatureFieldDimensionAndPosition}
 	 */
 	public SignatureFieldDimensionAndPosition buildSignatureFieldBox() {
-		PDPage originalPage = document.getPage(parameters.getFieldParameters().getPage() - ImageUtils.DEFAULT_FIRST_PAGE);
-		PDRectangle mediaBox = originalPage.getMediaBox();
-		AnnotationBox pageBox = new AnnotationBox(mediaBox.getLowerLeftX(), mediaBox.getLowerLeftY(),
-				mediaBox.getUpperRightX(), mediaBox.getUpperRightY());
+		PDPage originalPage = getPage();
+		AnnotationBox pageBox = getPageAnnotationBox(originalPage);
 		return new SignatureFieldDimensionAndPositionBuilder(parameters, getDSSFontMetrics(), pageBox,
 				originalPage.getRotation()).setSignatureFieldAnnotationBox(getSignatureFieldAnnotationBox()).build();
+	}
+
+	/**
+	 * Gets the page to create a new signature field in
+	 *
+	 * @return {@link PDPage}
+	 */
+	protected PDPage getPage() {
+		return document.getPage(parameters.getFieldParameters().getPage() - ImageUtils.DEFAULT_FIRST_PAGE);
+	}
+
+	/**
+	 * Gets a page annotation box
+	 *
+	 * @return {@link AnnotationBox}
+	 */
+	protected AnnotationBox getPageAnnotationBox(PDPage pdPage) {
+		PDRectangle mediaBox = pdPage.getMediaBox();
+		return new AnnotationBox(mediaBox.getLowerLeftX(), mediaBox.getLowerLeftY(),
+				mediaBox.getUpperRightX(), mediaBox.getUpperRightY());
 	}
 
 	/**
