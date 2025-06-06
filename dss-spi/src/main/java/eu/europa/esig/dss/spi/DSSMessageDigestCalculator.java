@@ -181,7 +181,20 @@ public class DSSMessageDigestCalculator {
     }
 
     /**
-     * Gets OutputStream that can be used to calculate digest on the fly
+     * Gets OutputStream that can be used to calculate digest on the fly.
+     * This method will update the digest within the current instance of {@code DSSMessageDigestCalculator},
+     * when the returned {@code OutputStream} is being updated.
+     *
+     * @return {@link OutputStream}
+     */
+    public OutputStream getOutputStream() {
+        return getOutputStream(Utils.nullOutputStream());
+    }
+
+    /**
+     * Gets OutputStream that can be used to calculate digest on the fly.
+     * This method will write the binaries into the provided {@code outputStream} as well
+     * as will update the digest within the current instance of {@code DSSMessageDigestCalculator}
      *
      * @param outputStream to be embedded into
      * @return {@link OutputStream}
@@ -189,7 +202,8 @@ public class DSSMessageDigestCalculator {
     public OutputStream getOutputStream(OutputStream outputStream) {
         return new OutputStream() {
 
-            private OutputStream wrappedOS = outputStream;
+            /** Provided OutputStream */
+            private final OutputStream wrappedOS = outputStream;
 
             @Override
             public void write(int b) throws IOException {
@@ -208,6 +222,13 @@ public class DSSMessageDigestCalculator {
                 wrappedOS.write(b, off, len);
                 update(b, off, len);
             }
+
+            @Override
+            public void close() throws IOException {
+                wrappedOS.close();
+                super.close();
+            }
+
         };
     }
 

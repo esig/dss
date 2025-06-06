@@ -30,7 +30,9 @@ import org.w3c.dom.Node;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -159,18 +161,33 @@ public class XMLCanonicalizer {
 
     /**
      * This method canonicalizes the given {@code InputStream} using the defined canonicalization method.
-     * NOTE: closes the stream after reading.
+     * NOTE: closes the {@code inputStream} after reading.
      *
      * @param inputStream
      *            {@link InputStream} to canonicalize
      * @return array of canonicalized bytes
-     * @throws DSSException
-     *             if any error is encountered
      */
-    public byte[] canonicalize(InputStream inputStream) throws DSSException {
+    public byte[] canonicalize(InputStream inputStream) {
         try (InputStream is = inputStream) {
-            byte[] byteArray = Utils.toByteArray(is);
-            return canonicalize(byteArray);
+            return canonicalize(DomUtils.buildDOM(is));
+        } catch (IOException e) {
+            throw new DSSException("Error on InputStream processing", e);
+        }
+    }
+
+    /**
+     * This method canonicalizes the given {@code InputStream} using the defined canonicalization method and
+     * writes the result binaries into {@code outputStream}.
+     * NOTE: closes the {@code inputStream} after reading.
+     *
+     * @param inputStream
+     *            {@link InputStream} to canonicalize
+     * @param outputStream
+     *            {@link OutputStream} to write canonicalized bytes into
+     */
+    public void canonicalize(InputStream inputStream, OutputStream outputStream) {
+        try (InputStream is = inputStream) {
+            canonicalize(DomUtils.buildDOM(is), outputStream);
         } catch (Exception e) {
             throw new DSSException("Cannot canonicalize the InputStream", e);
         }
@@ -182,13 +199,28 @@ public class XMLCanonicalizer {
      * @param toCanonicalizeBytes
      *            array of bytes to canonicalize
      * @return array of canonicalized bytes
-     * @throws DSSException
-     *             if any error is encountered
      */
-    public byte[] canonicalize(byte[] toCanonicalizeBytes) throws DSSException {
+    public byte[] canonicalize(byte[] toCanonicalizeBytes) {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-            c14n.canonicalize(toCanonicalizeBytes, baos, true);
+            canonicalize(toCanonicalizeBytes, baos);
             return baos.toByteArray();
+        } catch (IOException e) {
+            throw new DSSException("Error on ByteArrayOutputStream processing", e);
+        }
+    }
+
+    /**
+     * This method canonicalizes the given array of bytes using the defined canonicalization method and
+     * writes the result binaries into {@code outputStream}.
+     *
+     * @param toCanonicalizeBytes
+     *            array of bytes to canonicalize
+     * @param outputStream
+     *            {@link OutputStream} to write canonicalized bytes into
+     */
+    public void canonicalize(byte[] toCanonicalizeBytes, final OutputStream outputStream) {
+        try {
+            c14n.canonicalize(toCanonicalizeBytes, outputStream, true);
         } catch (Exception e) {
             throw new DSSException("Cannot canonicalize the binaries", e);
         }
@@ -203,8 +235,25 @@ public class XMLCanonicalizer {
      */
     public byte[] canonicalize(final Node node) {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-            c14n.canonicalizeSubtree(node, baos);
+            canonicalize(node, baos);
             return baos.toByteArray();
+        } catch (IOException e) {
+            throw new DSSException("Error on ByteArrayOutputStream processing", e);
+        }
+    }
+
+    /**
+     * This method canonicalizes the given {@code Node} using the defined canonicalization method and
+     * writes the result binaries into {@code outputStream}.
+     *
+     * @param node
+     *            {@link Node} to canonicalize
+     * @param outputStream
+     *            {@link OutputStream} to write canonicalized bytes into
+     */
+    public void canonicalize(final Node node, final OutputStream outputStream) {
+        try {
+            c14n.canonicalizeSubtree(node, outputStream);
         } catch (Exception e) {
             throw new DSSException("Cannot canonicalize the subtree", e);
         }

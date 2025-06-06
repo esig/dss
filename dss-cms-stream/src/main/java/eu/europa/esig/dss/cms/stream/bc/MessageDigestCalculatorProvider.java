@@ -38,7 +38,7 @@ public class MessageDigestCalculatorProvider implements DigestCalculatorProvider
 
             public OutputStream getOutputStream() {
                 if (messageDigestCalculator != null) {
-                    return messageDigestCalculator.getOutputStream(Utils.nullOutputStream());
+                    return messageDigestCalculator.getOutputStream();
                 } else {
                     return Utils.nullOutputStream();
                 }

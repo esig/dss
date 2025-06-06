@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
-import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -30,10 +28,9 @@ import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.spi.DSSMessageDigestCalculator;
-import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
@@ -43,12 +40,16 @@ import eu.europa.esig.dss.xades.reference.ReferenceIdProvider;
 import eu.europa.esig.dss.xades.reference.ReferenceOutputType;
 import eu.europa.esig.dss.xades.reference.ReferenceProcessor;
 import eu.europa.esig.dss.xades.reference.ReferenceVerifier;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.tsp.TSPException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.List;
 
@@ -121,25 +122,30 @@ public class AllDataObjectsTimeStampBuilder {
 			 */
 			ReferenceProcessor referenceProcessor = new ReferenceProcessor(signatureParameters);
 			DSSDocument referenceContent = referenceProcessor.getReferenceOutput(reference);
-			byte[] binaries = DSSUtils.toByteArray(referenceContent);
-			/*
-			 * 2) if the result is a XML node set, canonicalize it as specified in clause 4.5; and
-			 */
-			if (ReferenceOutputType.NODE_SET.equals(DSSXMLUtils.getReferenceOutputType(reference)) && DomUtils.isDOM(binaries)) {
-				binaries = XMLCanonicalizer.createInstance(canonicalizationMethod).canonicalize(binaries);
+
+			InputStream referenceIs = null;
+			try {
+				/*
+				 * 2) if the result is a XML node set, canonicalize it as specified in clause 4.5; and
+				 * 3) concatenate the resulting octets to those resulting from previously processed ds:Reference elements in
+				 * ds:SignedInfo.
+				 */
+				if (ReferenceOutputType.NODE_SET.equals(DSSXMLUtils.getReferenceOutputType(reference)) && DomUtils.isDOM(referenceContent)) {
+					referenceIs = referenceContent.openStream();
+					writeDigestValueOnCanonicalizedInputStream(digestCalculator, referenceIs, canonicalizationMethod);
+				} else {
+					referenceIs = referenceContent.openStream();
+					digestCalculator.update(referenceIs);
+				}
+			} catch (IOException e) {
+				throw new DSSException("Cannot build an AllDataObjectsTimestamp : An error occurred on reference extraction", e);
+			} finally {
+				Utils.closeQuietly(referenceIs);
 			}
-			if (LOG.isTraceEnabled()) {
-				LOG.trace("Computed AllDataObjectsTimestampData reference bytes: {}", new String(binaries));
-			}
-			/*
-			 * 3) concatenate the resulting octets to those resulting from previously processed ds:Reference elements in
-			 * ds:SignedInfo.
-			 */
-			digestCalculator.update(binaries);
 		}
 		DSSMessageDigest messageDigest = digestCalculator.getMessageDigest(digestAlgorithm);
 		if (LOG.isTraceEnabled()) {
-			LOG.trace("Computed AllDataObjectsTimestampData data: {}", messageDigest);
+			LOG.trace("Computed AllDataObjectsTimestampData data digest: {}", messageDigest);
 		}
 
 		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithm, messageDigest.getValue());
@@ -149,6 +155,13 @@ public class AllDataObjectsTimeStampBuilder {
 			return token;
 		} catch (TSPException | IOException | CMSException e) {
 			throw new DSSException("Cannot build an AllDataObjectsTimestamp", e);
+		}
+	}
+
+	private void writeDigestValueOnCanonicalizedInputStream(DSSMessageDigestCalculator messageDigestCalculator,
+														 InputStream is, final String canonicalizationMethod) throws IOException {
+		try (OutputStream os = messageDigestCalculator.getOutputStream()) {
+			XMLCanonicalizer.createInstance(canonicalizationMethod).canonicalize(is, os);
 		}
 	}
 

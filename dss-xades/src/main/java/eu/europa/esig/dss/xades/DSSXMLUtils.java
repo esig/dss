@@ -21,6 +21,8 @@
 package eu.europa.esig.dss.xades;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.DSSMessageDigest;
+import eu.europa.esig.dss.spi.DSSMessageDigestCalculator;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.jaxb.common.XSDAbstractUtils;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -50,6 +52,7 @@ import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigNamespace;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
+import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
 import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.keys.KeyInfo;
@@ -75,11 +78,14 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -1367,6 +1373,83 @@ public final class DSSXMLUtils {
 				LOG.warn(errorMessage, reference.getId(), e.getMessage());
 			}
 			return null;
+		}
+	}
+
+	/**
+	 * This method computes digest on a canonicalized value of the {@code binaries} using the {@code digestAlgorithm}
+	 * and {@code canonicalizationAlgorithm}.
+	 * The digest is computed "on the fly" using stream functionality.
+	 *
+	 * @param binaries byte array to canonicalize and get digest for
+	 * @param digestAlgorithm {@link DigestAlgorithm}
+	 * @param canonicalizationAlgorithm {@link String}
+	 * @return {@link DSSMessageDigest}
+	 */
+	public static DSSMessageDigest getDigestOnCanonicalizedBytes(byte[] binaries, DigestAlgorithm digestAlgorithm, String canonicalizationAlgorithm) {
+		Objects.requireNonNull(binaries, "Binaries cannot be null!");
+		Objects.requireNonNull(digestAlgorithm, "DigestAlgorithm cannot be null!");
+		Objects.requireNonNull(canonicalizationAlgorithm, "Canonicalization algorithm cannot be null!");
+
+		final DSSMessageDigestCalculator messageDigestCalculator = new DSSMessageDigestCalculator(digestAlgorithm);
+		try (OutputStream os = messageDigestCalculator.getOutputStream()) {
+			XMLCanonicalizer.createInstance(canonicalizationAlgorithm).canonicalize(binaries, os);
+			return messageDigestCalculator.getMessageDigest(digestAlgorithm);
+
+		} catch (IOException e) {
+			throw new DSSException(String.format("Unable to canonicalize a node : %s", e.getMessage()), e);
+		}
+	}
+
+	/**
+	 * This method computes digest on a canonicalized value of the {@code Node} using the {@code digestAlgorithm}
+	 * and {@code canonicalizationAlgorithm}.
+	 * The digest is computed "on the fly" using stream functionality.
+	 *
+	 * @param node {@link Node} to canonicalize and get digest for
+	 * @param digestAlgorithm {@link DigestAlgorithm}
+	 * @param canonicalizationAlgorithm {@link String}
+	 * @return {@link DSSMessageDigest}
+	 */
+	public static DSSMessageDigest getDigestOnCanonicalizedNode(Node node, DigestAlgorithm digestAlgorithm, String canonicalizationAlgorithm) {
+		Objects.requireNonNull(node, "Node cannot be null!");
+		Objects.requireNonNull(digestAlgorithm, "DigestAlgorithm cannot be null!");
+		Objects.requireNonNull(canonicalizationAlgorithm, "Canonicalization algorithm cannot be null!");
+
+		final DSSMessageDigestCalculator messageDigestCalculator = new DSSMessageDigestCalculator(digestAlgorithm);
+		try (OutputStream os = messageDigestCalculator.getOutputStream()) {
+			XMLCanonicalizer.createInstance(canonicalizationAlgorithm).canonicalize(node, os);
+			return messageDigestCalculator.getMessageDigest(digestAlgorithm);
+
+		} catch (IOException e) {
+			throw new DSSException(String.format("Unable to canonicalize a node : %s", e.getMessage()), e);
+		}
+	}
+
+	/**
+	 * This method computes digest on a canonicalized value of the {@code InputStream} using the {@code digestAlgorithm}
+	 * and {@code canonicalizationAlgorithm}.
+	 * The digest is computed "on the fly" using stream functionality.
+	 * This method closes the {@code inputStream} after.
+	 *
+	 * @param inputStream {@link InputStream} to canonicalize and get digest for
+	 * @param digestAlgorithm {@link DigestAlgorithm}
+	 * @param canonicalizationAlgorithm {@link String}
+	 * @return {@link DSSMessageDigest}
+	 */
+	public static DSSMessageDigest getDigestOnCanonicalizedInputStream(InputStream inputStream, DigestAlgorithm digestAlgorithm,
+																	   String canonicalizationAlgorithm) {
+		Objects.requireNonNull(inputStream, "InputStream cannot be null!");
+		Objects.requireNonNull(digestAlgorithm, "DigestAlgorithm cannot be null!");
+		Objects.requireNonNull(canonicalizationAlgorithm, "Canonicalization algorithm cannot be null!");
+
+		final DSSMessageDigestCalculator messageDigestCalculator = new DSSMessageDigestCalculator(digestAlgorithm);
+		try (InputStream is = inputStream; OutputStream os = messageDigestCalculator.getOutputStream()) {
+			XMLCanonicalizer.createInstance(canonicalizationAlgorithm).canonicalize(is, os);
+			return messageDigestCalculator.getMessageDigest(digestAlgorithm);
+
+		} catch (IOException e) {
+			throw new DSSException(String.format("Unable to canonicalize a node : %s", e.getMessage()), e);
 		}
 	}
 

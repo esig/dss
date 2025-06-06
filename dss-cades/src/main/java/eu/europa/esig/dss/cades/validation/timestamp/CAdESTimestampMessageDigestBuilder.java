@@ -296,8 +296,7 @@ public class CAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 		try {
 			final DSSMessageDigestCalculator digestCalculator = new DSSMessageDigestCalculator(digestAlgorithm);
 
-			try (OutputStream nullOS = Utils.nullOutputStream();
-				 OutputStream dos = digestCalculator.getOutputStream(nullOS)) {
+			try (OutputStream dos = digestCalculator.getOutputStream()) {
 
 				writeContentInfoBytes(dos);
 

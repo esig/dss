@@ -26,12 +26,13 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.DSSMessageDigestCalculator;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * Generates digests for data objects to be protected by an IETF RFC 6283 XMLERS evidence-record
@@ -122,16 +123,21 @@ public class XMLEvidenceRecordDataObjectDigestBuilder extends AbstractDataObject
         }
         byte[] hashValue;
         if (DomUtils.isDOM(providedDocument)) {
-            try (InputStream is = providedDocument.openStream()) {
-                byte[] binaries = XMLCanonicalizer.createInstance(canonicalizationMethod).canonicalize(is);
-                hashValue = DSSUtils.digest(digestAlgorithm, binaries);
-            } catch (IOException e) {
-                throw new DSSException(String.format("Unable to read document with name '%s'! Reason : %s", providedDocument.getName(), e.getMessage()), e);
-            }
+            hashValue = getDigestValueOnCanonicalizedDocument(providedDocument);
         } else {
             hashValue = providedDocument.getDigestValue(digestAlgorithm);
         }
         return new Digest(digestAlgorithm, hashValue);
+    }
+
+    private byte[] getDigestValueOnCanonicalizedDocument(DSSDocument document) {
+        final DSSMessageDigestCalculator messageDigestCalculator = new DSSMessageDigestCalculator(digestAlgorithm);
+        try (InputStream is = document.openStream(); OutputStream os = messageDigestCalculator.getOutputStream()) {
+            XMLCanonicalizer.createInstance(canonicalizationMethod).canonicalize(is, os);
+            return messageDigestCalculator.getMessageDigest(digestAlgorithm).getValue();
+        } catch (IOException e) {
+            throw new DSSException(String.format("Unable to read document with name '%s'! Reason : %s", document.getName(), e.getMessage()), e);
+        }
     }
 
 }

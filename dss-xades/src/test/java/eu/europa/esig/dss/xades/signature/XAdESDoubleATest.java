@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -33,13 +32,14 @@ import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import java.io.File;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -64,7 +64,7 @@ public class XAdESDoubleATest extends AbstractXAdESTestSignature {
         signatureParameters.setEn319132(false);
 
         extendParameters = new XAdESSignatureParameters();
-        extendParameters.setDetachedContents(Arrays.asList(documentToSign));
+        extendParameters.setDetachedContents(Collections.singletonList(documentToSign));
         extendParameters.setSignatureLevel(SignatureLevel.XAdES_A);
 
         service = new XAdESService(getCompleteCertificateVerifier());
