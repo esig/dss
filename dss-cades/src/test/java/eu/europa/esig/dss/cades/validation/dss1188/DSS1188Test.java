@@ -26,7 +26,6 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 

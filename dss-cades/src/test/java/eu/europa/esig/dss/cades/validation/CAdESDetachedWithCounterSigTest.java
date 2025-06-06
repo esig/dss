@@ -32,7 +32,6 @@ import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampCertificateSource;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
