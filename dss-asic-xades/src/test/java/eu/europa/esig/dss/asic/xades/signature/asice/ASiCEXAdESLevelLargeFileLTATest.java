@@ -35,6 +35,7 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.signature.resources.TempFileResourcesHandlerBuilder;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -45,6 +46,7 @@ import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.Date;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -53,12 +55,13 @@ class ASiCEXAdESLevelLargeFileLTATest extends AbstractASiCEXAdESTestSignature {
 
 	private DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> service;
 	private ASiCWithXAdESSignatureParameters signatureParameters;
-	private DSSDocument documentToSign;
+	private FileDocument documentToSign;
+
+	private TempFileResourcesHandlerBuilder tempFileResourcesHandlerBuilder;
 
 	@BeforeEach
 	void init() throws Exception {
-
-		TempFileResourcesHandlerBuilder tempFileResourcesHandlerBuilder = new TempFileResourcesHandlerBuilder();
+		tempFileResourcesHandlerBuilder = new TempFileResourcesHandlerBuilder();
 		tempFileResourcesHandlerBuilder.setTempFileDirectory(new File("target"));
 
 		SecureContainerHandlerBuilder secureContainerHandlerBuilder = new SecureContainerHandlerBuilder()
@@ -78,7 +81,17 @@ class ASiCEXAdESLevelLargeFileLTATest extends AbstractASiCEXAdESTestSignature {
 		service.setTspSource(getGoodTsa());
 	}
 
-	private DSSDocument generateLargeFile() throws IOException {
+	@AfterEach
+	void clean() {
+		File file = documentToSign.getFile();
+		assertTrue(file.exists());
+		assertTrue(file.delete());
+		assertFalse(file.exists());
+
+		tempFileResourcesHandlerBuilder.clear();
+	}
+
+	private FileDocument generateLargeFile() throws IOException {
 		File file = new File("target/large-binary.bin");
 
 		long size = 0x00FFFFFF; // Integer.MAX_VALUE -1

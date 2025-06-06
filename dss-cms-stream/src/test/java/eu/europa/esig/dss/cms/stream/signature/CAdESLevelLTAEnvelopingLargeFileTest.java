@@ -14,6 +14,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.signature.resources.TempFileResourcesHandlerBuilder;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -23,14 +24,18 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.SecureRandom;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("slow")
 class CAdESLevelLTAEnvelopingLargeFileTest extends AbstractCAdESTestSignature {
 
     private CAdESService service;
     private CAdESSignatureParameters signatureParameters;
-    private DSSDocument documentToSign;
+    private FileDocument documentToSign;
+
+    private TempFileResourcesHandlerBuilder tempFileResourcesHandlerBuilder;
 
     @BeforeEach
     void init() throws Exception {
@@ -43,12 +48,25 @@ class CAdESLevelLTAEnvelopingLargeFileTest extends AbstractCAdESTestSignature {
         signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
         signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
 
+        tempFileResourcesHandlerBuilder = new TempFileResourcesHandlerBuilder();
+        tempFileResourcesHandlerBuilder.setTempFileDirectory(new File("target"));
+
         service = new CAdESService(getCompleteCertificateVerifier());
-        service.setResourcesHandlerBuilder(new TempFileResourcesHandlerBuilder());
+        service.setResourcesHandlerBuilder(tempFileResourcesHandlerBuilder);
         service.setTspSource(getGoodTsa());
     }
 
-    private DSSDocument generateLargeFile() throws IOException {
+    @AfterEach
+    void clean() {
+        File file = documentToSign.getFile();
+        assertTrue(file.exists());
+        assertTrue(file.delete());
+        assertFalse(file.exists());
+
+        tempFileResourcesHandlerBuilder.clear();
+    }
+
+    private FileDocument generateLargeFile() throws IOException {
         File file = new File("target/large-binary.bin");
 
         long size = 0x00FFFFFF; // Integer.MAX_VALUE -1

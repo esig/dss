@@ -876,7 +876,8 @@ class PAdESSignatureFieldTest extends PKIFactoryAccess {
 	@Test
 	void testWithTempFileResources() throws IOException {
 		IPdfObjFactory pdfObjFactory = new ServiceLoaderPdfObjFactory();
-		pdfObjFactory.setResourcesHandlerBuilder(new TempFileResourcesHandlerBuilder());
+		TempFileResourcesHandlerBuilder resourcesHandlerBuilder = new TempFileResourcesHandlerBuilder();
+		pdfObjFactory.setResourcesHandlerBuilder(resourcesHandlerBuilder);
 		service.setPdfObjFactory(pdfObjFactory);
 
 		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/EmptyPage.pdf"));
@@ -897,6 +898,8 @@ class PAdESSignatureFieldTest extends PKIFactoryAccess {
 		DSSDocument signed = signAndValidate(doc);
 		assertNotNull(signed);
 		assertTrue(signed instanceof FileDocument);
+
+		resourcesHandlerBuilder.clear();
 	}
 
 	// see DSS-3269

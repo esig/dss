@@ -44,6 +44,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -79,7 +81,7 @@ public abstract class PAdESUtilsTest {
 
         DSSDocument signedDocument = PAdESUtils.replaceSignature(documentToBeSigned,
                 DSSASN1Utils.getDEREncoded(Utils.fromHex(hexEncodedCMSSignedData)),tempFileResourcesHandlerBuilder);
-        assertTrue(signedDocument instanceof FileDocument);
+        FileDocument fileDocument = assertInstanceOf(FileDocument.class, signedDocument);
 
         PDFDocumentAnalyzer validator = new PDFDocumentAnalyzer(signedDocument);
         validator.setCertificateVerifier(new CommonCertificateVerifier());
@@ -92,6 +94,11 @@ public abstract class PAdESUtilsTest {
         AdvancedSignature signature = analyzer.getSignatures().get(0);
         assertTrue(signature.getSignatureCryptographicVerification().isSignatureIntact());
         assertTrue(signature.getSignatureCryptographicVerification().isSignatureValid());
+
+        File file = fileDocument.getFile();
+        assertTrue(file.exists());
+        assertTrue(file.delete());
+        assertFalse(file.exists());
     }
 
     @Test
