@@ -12,6 +12,7 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 /**
  * Verifies validity of the token's filename according to the ASiC's specification
  *
+ * @param <T> {@code AbstractSignatureWrapper} implementation (signature or timestamp)
  */
 public abstract class FilenameAdherenceCheck<T extends AbstractSignatureWrapper> extends ChainItem<XmlFC> {
 

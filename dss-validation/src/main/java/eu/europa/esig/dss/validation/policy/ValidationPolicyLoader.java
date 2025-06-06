@@ -45,6 +45,8 @@ public class ValidationPolicyLoader {
 
     /**
      * Constructor to create a {@code ValidationPolicyFactory} using a custom validation policy
+     *
+     * @param validationPolicy {@link ValidationPolicy} to use
      */
     protected ValidationPolicyLoader(ValidationPolicy validationPolicy) {
         this.validationPolicy = validationPolicy;

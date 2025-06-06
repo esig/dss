@@ -59,6 +59,13 @@ public abstract class Abstract19322CryptographicSuite implements CryptographicSu
     /** Cached list of acceptable encryption algorithms with their expiration dates */
     private Map<EncryptionAlgorithmWithMinKeySize, Date> acceptableEncryptionAlgorithmsWithExpirationDates;
 
+    /**
+     * Default constructor
+     */
+    protected Abstract19322CryptographicSuite() {
+        // empty
+    }
+
     @Override
     public Level getLevel() {
         return globalLevel;

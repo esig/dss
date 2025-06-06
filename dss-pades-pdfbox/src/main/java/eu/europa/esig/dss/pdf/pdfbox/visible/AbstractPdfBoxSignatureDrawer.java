@@ -111,6 +111,7 @@ public abstract class AbstractPdfBoxSignatureDrawer implements PdfBoxSignatureDr
 	/**
 	 * Gets a page annotation box
 	 *
+	 * @param pdPage {@link PDPage}
 	 * @return {@link AnnotationBox}
 	 */
 	protected AnnotationBox getPageAnnotationBox(PDPage pdPage) {

@@ -12,6 +12,10 @@ import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 
 import java.util.List;
 
+/**
+ * This class builds a list of covered scopes for a CAdES embedded Evidence Record
+ * 
+ */
 public class CAdESEvidenceRecordScopeFinder extends EvidenceRecordScopeFinder {
 
     /** Signature to cover */

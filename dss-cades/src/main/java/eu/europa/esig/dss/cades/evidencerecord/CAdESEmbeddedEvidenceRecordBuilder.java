@@ -43,6 +43,10 @@ import java.util.Objects;
 import static eu.europa.esig.dss.spi.OID.id_aa_er_external;
 import static eu.europa.esig.dss.spi.OID.id_aa_er_internal;
 
+/**
+ * This class is used to embed an existing ERS evidence record within a CAdES signature as an unsigned property
+ *
+ */
 public class CAdESEmbeddedEvidenceRecordBuilder {
 
     /**

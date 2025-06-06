@@ -102,6 +102,7 @@ public class RemoteCertificateValidationService {
 	 * The {@code InputStream} parameters contains the constraint files. If null the default file is used.
 	 *
 	 * @param validationPolicy {@link InputStream}
+	 * @param cryptographicSuite {@link InputStream}
 	 */
 	public void setDefaultValidationPolicy(InputStream validationPolicy, InputStream cryptographicSuite) {
 		ValidationPolicyLoader validationPolicyLoader;

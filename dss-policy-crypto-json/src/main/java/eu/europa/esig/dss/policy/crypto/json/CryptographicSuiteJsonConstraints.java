@@ -54,4 +54,11 @@ public final class CryptographicSuiteJsonConstraints {
     /** Header name 'Validity' definition */
     public static final String VALIDITY = "Validity";
 
+    /**
+     * Utils class
+     */
+    private CryptographicSuiteJsonConstraints() {
+        // empty
+    }
+
 }

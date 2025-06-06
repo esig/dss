@@ -48,8 +48,9 @@ public class EvidenceRecordIdentifierBuilder {
     }
 
     /**
-     * Builds an {@code EvidenceRecordIdentifier}
+     * Builds an {@code EvidenceRecordIdentifier} for the given {@code evidenceRecord}
      *
+     * @param evidenceRecord {@link DefaultEvidenceRecord} to build identifier for
      * @return {@link EvidenceRecordIdentifier}
      */
     public EvidenceRecordIdentifier build(DefaultEvidenceRecord evidenceRecord) {
@@ -59,6 +60,7 @@ public class EvidenceRecordIdentifierBuilder {
     /**
      * Builds unique binary data describing the signature object
      *
+     * @param evidenceRecord {@link DefaultEvidenceRecord} to build binaries for identifier on
      * @return a byte array
      */
     protected byte[] buildBinaries(DefaultEvidenceRecord evidenceRecord) {

@@ -110,6 +110,7 @@ public class EmbeddedEvidenceRecordBuilder extends ExtensionBuilder {
      * @param xadesSignature {@link XAdESSignature} signature to add {@link SignaturePolicyStore}
      * @param evidenceRecordDocument {@link DSSDocument} to be added
      * @param parameters {@link XAdESEvidenceRecordIncorporationParameters}
+     * @return {@link DSSDocument} representing a signature with the embedded evidence record
      */
     protected DSSDocument addEvidenceRecord(XAdESSignature xadesSignature, DSSDocument evidenceRecordDocument,
                                             XAdESEvidenceRecordIncorporationParameters parameters) {

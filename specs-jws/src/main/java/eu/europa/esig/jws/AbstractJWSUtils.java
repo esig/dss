@@ -45,6 +45,13 @@ public abstract class AbstractJWSUtils extends JSONSchemaAbstractUtils {
 	protected static final String RFC7517_SCHEMA_URI = "rfc7517.json";
 
 	/**
+	 * Default constructor
+	 */
+	protected AbstractJWSUtils() {
+		// empty
+	}
+
+	/**
 	 * Gets a map of RFC definitions
 	 *
 	 * @return a map between schema URI's and JSON schema file locations

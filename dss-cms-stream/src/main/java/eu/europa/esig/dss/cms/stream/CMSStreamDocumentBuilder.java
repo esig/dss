@@ -38,6 +38,13 @@ public class CMSStreamDocumentBuilder {
     private DSSResourcesHandlerBuilder resourcesHandlerBuilder;
 
     /**
+     * Default constructor
+     */
+    public CMSStreamDocumentBuilder() {
+        // empty
+    }
+
+    /**
      * This method sets a {@code DSSResourcesHandlerBuilder} to be used for operating with internal objects
      * during the signature creation procedure.
      *

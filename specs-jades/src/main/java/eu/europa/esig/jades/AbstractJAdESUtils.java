@@ -33,6 +33,13 @@ public abstract class AbstractJAdESUtils extends AbstractJWSUtils {
     /** The JAdES schema of definitions */
     protected static final String JAdES_SCHEMA_DEFINITIONS_LOCATION = "/schema/19182-jsonSchema.json";
 
+    /**
+     * Default constructor
+     */
+    protected AbstractJAdESUtils() {
+        // empty
+    }
+
     @Override
     public Map<URI, String> getRFCDefinitions() {
         final Map<URI, String> definitions = new HashMap<>();

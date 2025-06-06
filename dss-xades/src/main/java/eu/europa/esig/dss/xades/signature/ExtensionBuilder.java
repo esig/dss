@@ -251,6 +251,8 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 
 	/**
 	 * This method verifies whether signature extension is possible as it does not contain evidence records
+	 *
+	 * @param signature {@link AdvancedSignature}
 	 */
 	protected void assertUnsignedPropertiesExtensionPossible(AdvancedSignature signature) {
 		if (Utils.isCollectionNotEmpty(signature.getEmbeddedEvidenceRecords())) {

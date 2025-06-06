@@ -5,6 +5,10 @@ import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.signature.AbstractASiCDataToSignHelperBuilder;
 import eu.europa.esig.dss.utils.Utils;
 
+/**
+ * Contains common method for getDataToSign preparation for an ASiC with CAdES container signature
+ *
+ */
 public abstract class AbstractASiCWithCAdESDataToSignHelperBuilder extends AbstractASiCDataToSignHelperBuilder {
 
     /**

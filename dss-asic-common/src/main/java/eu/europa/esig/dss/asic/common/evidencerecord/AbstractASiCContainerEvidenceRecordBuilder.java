@@ -365,7 +365,8 @@ public abstract class AbstractASiCContainerEvidenceRecordBuilder {
     /**
      * This method verifies whether the provided {@code EvidenceRecord} and covers the original data files
      *
-     * @param evidenceRecord {@link EvidenceRecord}
+     * @param evidenceRecord {@link EvidenceRecord} to verify
+     * @param manifestFile {@link ManifestFile} associated with the evidence record
      */
     protected void assertEvidenceRecordValid(EvidenceRecord evidenceRecord, ManifestFile manifestFile) {
         if (manifestFile != null) {

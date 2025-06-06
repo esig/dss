@@ -1691,8 +1691,9 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	/**
-	 * Returns the status of the all signatures not expired check
+	 * Returns the status of certificate not expired check
 	 *
+	 * @param certificateToken {@link CertificateToken} to be verified
 	 * @return {@link SignatureStatus}
 	 */
 	protected TokenStatus certificateNotExpired(CertificateToken certificateToken) {
@@ -1765,8 +1766,9 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	/**
-	 * Returns the status of the all signatures not expired check
+	 * Returns the status of the certificate yet valid check
 	 *
+	 * @param certificateToken {@link CertificateToken} to be verified
 	 * @return {@link SignatureStatus}
 	 */
 	protected TokenStatus certificateIsYetValid(CertificateToken certificateToken) {
