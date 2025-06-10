@@ -8,6 +8,7 @@ $ echo '{
   },
   "originalDocuments" : null,
   "policy" : null,
+  "cryptographicSuite" : null,
   "validationTime" : null,
   "evidenceRecords" : null,
   "tokenExtractionStrategy" : "NONE",

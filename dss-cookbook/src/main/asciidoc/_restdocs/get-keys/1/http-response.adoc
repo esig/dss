@@ -1,7 +1,7 @@
 [source,http,options="nowrap"]
 ----
 HTTP/1.1 200 OK
-Date: Wed, 11 Dec 2024 11:32:45 GMT
+Date: Tue, 10 Jun 2025 13:23:35 GMT
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 0
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate

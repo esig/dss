@@ -12,6 +12,7 @@ $ echo '{
     "name" : "sample.xml"
   } ],
   "policy" : null,
+  "cryptographicSuite" : null,
   "validationTime" : null,
   "evidenceRecords" : null,
   "tokenExtractionStrategy" : "NONE",

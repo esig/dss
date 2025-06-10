@@ -4,7 +4,7 @@ POST /services/rest/validation/getOriginalDocuments HTTP/1.1
 Accept: application/json, application/javascript, text/javascript, text/json
 Content-Type: application/json
 Host: localhost:8080
-Content-Length: 9010
+Content-Length: 9042
 
 {
   "signedDocument" : {
@@ -14,6 +14,7 @@ Content-Length: 9010
   },
   "originalDocuments" : null,
   "policy" : null,
+  "cryptographicSuite" : null,
   "validationTime" : null,
   "evidenceRecords" : null,
   "tokenExtractionStrategy" : "NONE",
