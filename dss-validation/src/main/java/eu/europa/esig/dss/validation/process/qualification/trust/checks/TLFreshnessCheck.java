@@ -53,14 +53,14 @@ public class TLFreshnessCheck extends ChainItem<XmlTLAnalysis> {
 	 * @param result {@link XmlTLAnalysis}
 	 * @param currentTL {@link XmlTrustedList}
 	 * @param currentTime {@link Date}
-	 * @param DurationRule {@link DurationRule}
+	 * @param durationRule {@link DurationRule}
 	 */
 	public TLFreshnessCheck(I18nProvider i18nProvider, XmlTLAnalysis result, XmlTrustedList currentTL,
-							Date currentTime, DurationRule DurationRule) {
-		super(i18nProvider, result, DurationRule);
+							Date currentTime, DurationRule durationRule) {
+		super(i18nProvider, result, durationRule);
 		this.currentTL = currentTL;
 		this.currentTime = currentTime;
-		this.durationRule = DurationRule;
+		this.durationRule = durationRule;
 	}
 
 	@Override

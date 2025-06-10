@@ -80,7 +80,7 @@ class PAdESVisibleSigOutsidePageTest extends AbstractPAdESTestSignature {
         pdfObjectFactory.setPdfSignatureFieldPositionChecker(pdfSignatureFieldPositionChecker);
         service.setPdfObjFactory(pdfObjectFactory);
 
-        Exception exception = assertThrows(AlertException.class, () -> super.sign());
+        Exception exception = assertThrows(AlertException.class, super::sign);
         assertTrue(exception.getMessage().contains("The new signature field position is outside the page dimensions!"));
 
         pdfSignatureFieldPositionChecker.setAlertOnSignatureFieldOutsidePageDimensions(new LogOnStatusAlert());

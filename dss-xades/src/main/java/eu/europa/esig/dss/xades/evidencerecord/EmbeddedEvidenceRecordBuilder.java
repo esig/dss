@@ -61,17 +61,12 @@ import java.util.Objects;
 public class EmbeddedEvidenceRecordBuilder extends ExtensionBuilder {
 
     /**
-     * The CertificateVerifier to be used for timestamps validation
-     */
-    private final CertificateVerifier certificateVerifier;
-
-    /**
      * Default constructor
      *
      * @param certificateVerifier {@link CertificateVerifier} providing configuration for evidence record validation
      */
     public EmbeddedEvidenceRecordBuilder(final CertificateVerifier certificateVerifier) {
-        this.certificateVerifier = new CertificateVerifierBuilder(certificateVerifier).buildOfflineCopy();
+        super(new CertificateVerifierBuilder(certificateVerifier).buildOfflineCopy());
     }
 
     /**

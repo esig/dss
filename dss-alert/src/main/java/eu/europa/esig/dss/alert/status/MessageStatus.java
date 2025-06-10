@@ -59,7 +59,7 @@ public class MessageStatus implements Status {
 
     @Override
     public boolean isEmpty() {
-        return message == null || message.length() == 0;
+        return message == null || message.isEmpty();
     }
 
     @Override

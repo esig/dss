@@ -122,10 +122,10 @@ public class CMSStreamDocumentParser {
             cms.setSignedContent(readSignedContent(document, signedContent, cms.getSignedContentType(), digestAlgorithmIDs));
         }
 
-        Store<X509CertificateHolder> certificates = (Store<X509CertificateHolder>) cmsSignedDataParser.getCertificates();
+        Store<X509CertificateHolder> certificates = cmsSignedDataParser.getCertificates();
         cms.setCertificates(certificates);
 
-        Store<X509CRLHolder> crls = (Store<X509CRLHolder>) cmsSignedDataParser.getCRLs();
+        Store<X509CRLHolder> crls = cmsSignedDataParser.getCRLs();
         cms.setCRLs(crls);
 
         Store<X509AttributeCertificateHolder> attributeCertificates = cmsSignedDataParser.getAttributeCertificates();

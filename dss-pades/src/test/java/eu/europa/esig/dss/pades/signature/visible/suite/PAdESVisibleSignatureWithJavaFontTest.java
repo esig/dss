@@ -69,6 +69,7 @@ public class PAdESVisibleSignatureWithJavaFontTest extends PKIFactoryAccess {
 	 * Set a custom instance of {@link IPdfObjFactory}
 	 */
 	protected void setCustomFactory() {
+		// empty
 	}
 
 	@Test

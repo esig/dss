@@ -69,10 +69,8 @@ public class EvidenceRecordSignedAndTimestampedFilesCoveredCheck extends Abstrac
         if (Utils.isCollectionNotEmpty(coveredDocumentEntries)) {
             for (String coveredDocumentName : coveredDocumentEntries) {
                 XmlManifestFile manifestFile = diagnosticData.getManifestFileForFilename(coveredDocumentName);
-                if (manifestFile != null) {
-                    if (!checkManifestFilesCoveredRecursively(coveredDocumentEntries, manifestFile)) {
-                        return false;
-                    }
+                if (manifestFile != null && !checkManifestFilesCoveredRecursively(coveredDocumentEntries, manifestFile)) {
+                    return false;
                 }
             }
         }

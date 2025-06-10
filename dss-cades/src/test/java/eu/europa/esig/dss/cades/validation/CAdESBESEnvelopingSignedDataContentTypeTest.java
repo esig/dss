@@ -29,7 +29,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class CAdESBESEnvelopingSignedDataContentTypeTest extends AbstractCAdESTestValidation {
+class CAdESBESEnvelopingSignedDataContentTypeTest extends AbstractCAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

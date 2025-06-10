@@ -120,7 +120,9 @@ public class CMSSignedDocument extends CommonDocument {
 		if (!super.equals(o)) return false;
 
 		CMSSignedDocument that = (CMSSignedDocument) o;
-		if ((signedData == null || that.signedData == null) && signedData != that.signedData) return false;
+		if ((signedData == null || that.signedData == null) && signedData != that.signedData) {
+			return false;
+		}
         return signedData == null || Objects.equals(signedData.toASN1Structure(), that.signedData.toASN1Structure());
     }
 

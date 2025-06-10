@@ -52,7 +52,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ASiCEXAdESMultiFilesLevelBDoubleSignatureTest extends AbstractASiCEWithXAdESMultipleDocumentsTestSignature {
 
-    private final List<DSSDocument> ORIGINAL_DOCS = new ArrayList<>();
+    private static final List<DSSDocument> ORIGINAL_DOCS = new ArrayList<>();
 
     private ASiCWithXAdESService service;
     private ASiCWithXAdESSignatureParameters signatureParameters;

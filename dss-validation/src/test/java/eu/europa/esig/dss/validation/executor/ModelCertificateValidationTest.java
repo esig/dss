@@ -173,7 +173,7 @@ class ModelCertificateValidationTest extends ModelAbstractValidation {
 						}
 						buf.append(n.getValue());
 					}
-					str += buf.length() > 0 ? (str.length() > 0 ? "\n" : "") + "Warn:\n" + buf.toString() : str;
+					str += buf.length() > 0 ? (str.isEmpty() ? "" : "\n") + "Warn:\n" + buf : str;
 					
 					buf = new StringBuilder();
 					for (XmlMessage n : sub.getConclusion().getErrors()) {
@@ -182,7 +182,7 @@ class ModelCertificateValidationTest extends ModelAbstractValidation {
 						}
 						buf.append(n.getValue());
 					}
-					str += buf.length() > 0 ? (str.length() > 0 ? "\n" : "") + "Err :\n" + buf.toString() : str;
+					str += buf.length() > 0 ? (str.isEmpty() ? "" : "\n") + "Err :\n" + buf : str;
 					
 					if (!str.isEmpty()) {
 						messages.put(id, str);

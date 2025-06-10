@@ -355,10 +355,10 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 			candidates.setTheCertificateValidity(certificateValidity);
 
 		} else if (signingCertificateSource != null) {
-			List<CertificateToken> certificates = signingCertificateSource.getCertificates();
+			List<CertificateToken> allSignatureCertificates = signingCertificateSource.getCertificates();
 			LOG.debug("No signing certificate reference found. " +
-					"Resolve all {} certificates from the provided certificate source as signing candidates.", certificates.size());
-			for (CertificateToken certCandidate : certificates) {
+					"Resolve all {} certificates from the provided certificate source as signing candidates.", allSignatureCertificates.size());
+			for (CertificateToken certCandidate : allSignatureCertificates) {
 				candidates.add(new CertificateValidity(certCandidate));
 			}
 		}

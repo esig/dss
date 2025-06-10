@@ -150,7 +150,7 @@ public final class ASiCUtils {
 	public static final String EVIDENCE_RECORD_XML = META_INF_FOLDER + EVIDENCE_RECORD_FILENAME + XML_EXTENSION;
 
 	/** Identifies a first bytes of a zip archive document */
-	public static final byte[] ZIP_PREFIX = new byte[] {'P','K'};
+	private static final byte[] ZIP_PREFIX = new byte[] {'P','K'};
 
 	/** The zip comment identifier in the end of ZIP archive */
 	private static final byte[] MAGIC_DIR = { 0x50, 0x4b, 0x05, 0x06 };

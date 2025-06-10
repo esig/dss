@@ -81,7 +81,7 @@ class ASiCSXAdESAllSelfSignedCertsTest extends AbstractASiCSXAdESTestSignature {
 		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new ExceptionOnStatusAlert());
 
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
-		Exception exception = assertThrows(AlertException.class, () -> super.signAndVerify());
+		Exception exception = assertThrows(AlertException.class, super::signAndVerify);
 		assertTrue(exception.getMessage().contains("Error on signature augmentation to LT-level."));
 		assertTrue(exception.getMessage().contains("The signature contains only self-signed certificate chains."));
 
@@ -96,7 +96,7 @@ class ASiCSXAdESAllSelfSignedCertsTest extends AbstractASiCSXAdESTestSignature {
 		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new ExceptionOnStatusAlert());
 
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
-		Exception exception = assertThrows(AlertException.class, () -> super.signAndVerify());
+		Exception exception = assertThrows(AlertException.class, super::signAndVerify);
 		assertTrue(exception.getMessage().contains("Error on signature augmentation to LT-level."));
 		assertTrue(exception.getMessage().contains("The signature contains only self-signed certificate chains."));
 
@@ -111,7 +111,7 @@ class ASiCSXAdESAllSelfSignedCertsTest extends AbstractASiCSXAdESTestSignature {
 		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new ExceptionOnStatusAlert());
 
 		parameters.setSignatureLevel(SignatureLevel.XAdES_C);
-		Exception exception = assertThrows(AlertException.class, () -> super.signAndVerify());
+		Exception exception = assertThrows(AlertException.class, super::signAndVerify);
 		assertTrue(exception.getMessage().contains("Error on signature augmentation to C-level."));
 		assertTrue(exception.getMessage().contains("The signature contains only self-signed certificate chains."));
 
@@ -126,7 +126,7 @@ class ASiCSXAdESAllSelfSignedCertsTest extends AbstractASiCSXAdESTestSignature {
 		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new ExceptionOnStatusAlert());
 
 		parameters.setSignatureLevel(SignatureLevel.XAdES_X);
-		Exception exception = assertThrows(AlertException.class, () -> super.signAndVerify());
+		Exception exception = assertThrows(AlertException.class, super::signAndVerify);
 		assertTrue(exception.getMessage().contains("Error on signature augmentation to C-level."));
 		assertTrue(exception.getMessage().contains("The signature contains only self-signed certificate chains."));
 
@@ -141,7 +141,7 @@ class ASiCSXAdESAllSelfSignedCertsTest extends AbstractASiCSXAdESTestSignature {
 		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new ExceptionOnStatusAlert());
 
 		parameters.setSignatureLevel(SignatureLevel.XAdES_XL);
-		Exception exception = assertThrows(AlertException.class, () -> super.signAndVerify());
+		Exception exception = assertThrows(AlertException.class, super::signAndVerify);
 		assertTrue(exception.getMessage().contains("Error on signature augmentation to C-level."));
 		assertTrue(exception.getMessage().contains("The signature contains only self-signed certificate chains."));
 
@@ -156,7 +156,7 @@ class ASiCSXAdESAllSelfSignedCertsTest extends AbstractASiCSXAdESTestSignature {
 		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new ExceptionOnStatusAlert());
 
 		parameters.setSignatureLevel(SignatureLevel.XAdES_A);
-		Exception exception = assertThrows(AlertException.class, () -> super.signAndVerify());
+		Exception exception = assertThrows(AlertException.class, super::signAndVerify);
 		assertTrue(exception.getMessage().contains("Error on signature augmentation to C-level."));
 		assertTrue(exception.getMessage().contains("The signature contains only self-signed certificate chains."));
 

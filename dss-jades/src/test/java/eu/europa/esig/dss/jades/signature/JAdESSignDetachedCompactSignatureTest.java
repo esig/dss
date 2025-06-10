@@ -76,7 +76,7 @@ class JAdESSignDetachedCompactSignatureTest extends AbstractJAdESTestSignature {
         signatureParameters.setJwsSerializationType(JWSSerializationType.JSON_SERIALIZATION);
         documentToSign = signedDocument;
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> super.sign());
+        Exception exception = assertThrows(IllegalArgumentException.class, super::sign);
         assertEquals("The payload or detached content must be provided!", exception.getMessage());
 
         signatureParameters.setDetachedContents(getDetachedContents());

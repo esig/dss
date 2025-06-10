@@ -67,7 +67,7 @@ class PAdESNoChangesPermittedTest extends AbstractPAdESTestSignature {
         pdfObjectFactory.setPdfPermissionsChecker(pdfPermissionsChecker);
         service.setPdfObjFactory(pdfObjectFactory);
 
-        Exception exception = assertThrows(ProtectedDocumentException.class, () -> super.sign());
+        Exception exception = assertThrows(ProtectedDocumentException.class, super::sign);
         assertEquals("The creation of new signatures is not permitted in the current document." +
                 " Reason : DocMDP dictionary does not permit a new signature creation!", exception.getMessage());
 

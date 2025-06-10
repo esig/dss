@@ -43,13 +43,13 @@ class CMSSignedDocumentTest {
     private CMSSignedData cmsSignedData;
 
     @BeforeEach
-    public void init() {
+    void init() {
         DSSDocument cmsDocument = new FileDocument("src/test/resources/cades.p7m");
         cmsSignedData = DSSUtils.toCMSSignedData(cmsDocument);
     }
 
     @Test
-    public void persistenceTest() {
+    void persistenceTest() {
         final Set<DSSDocument> hashSet = new HashSet<>();
 
         DSSDocument document = getPersistenceTestDocument();

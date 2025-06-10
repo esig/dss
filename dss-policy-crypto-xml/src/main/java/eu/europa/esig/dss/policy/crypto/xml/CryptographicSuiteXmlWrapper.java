@@ -36,6 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.xml.datatype.XMLGregorianCalendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -165,9 +166,9 @@ public class CryptographicSuiteXmlWrapper extends Abstract19322CryptographicSuit
             }
 
             Map<Integer, Date> endDatesMap = getEncryptionAlgorithmKeySizeEndDates(encryptionAlgorithm, algorithmType.getEvaluation());
-            for (Integer keySize : endDatesMap.keySet()) {
-                EncryptionAlgorithmWithMinKeySize encryptionAlgorithmWithMinKeySize = new EncryptionAlgorithmWithMinKeySize(encryptionAlgorithm, keySize);
-                encryptionAlgorithmsMap.put(encryptionAlgorithmWithMinKeySize, endDatesMap.get(keySize));
+            for (Map.Entry<Integer, Date> entry : endDatesMap.entrySet()) {
+                EncryptionAlgorithmWithMinKeySize encryptionAlgorithmWithMinKeySize = new EncryptionAlgorithmWithMinKeySize(encryptionAlgorithm, entry.getKey());
+                encryptionAlgorithmsMap.put(encryptionAlgorithmWithMinKeySize, entry.getValue());
             }
 
         }
@@ -213,7 +214,7 @@ public class CryptographicSuiteXmlWrapper extends Abstract19322CryptographicSuit
 
     private Map<Integer, Date> getEncryptionAlgorithmKeySizeEndDates(EncryptionAlgorithm encryptionAlgorithm, List<EvaluationType> evaluations) {
         if (evaluations == null || evaluations.isEmpty()) {
-            return null;
+            return Collections.emptyMap();
         }
         final Map<Integer, Date> keySizeEndDates = new LinkedHashMap<>();
         for (EvaluationType evaluation : evaluations) {

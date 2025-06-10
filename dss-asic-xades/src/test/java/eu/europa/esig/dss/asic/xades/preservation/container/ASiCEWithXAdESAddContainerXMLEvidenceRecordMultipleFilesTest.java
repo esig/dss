@@ -34,7 +34,7 @@ public class ASiCEWithXAdESAddContainerXMLEvidenceRecordMultipleFilesTest extend
     private static List<DSSDocument> originalDocuments;
 
     @BeforeAll
-    public static void init() {
+    static void init() {
         originalDocuments = Arrays.asList(
                 new FileDocument("src/test/resources/signable/empty.zip"),
                 new FileDocument("src/test/resources/signable/test.txt"),

@@ -427,8 +427,9 @@ public class ValidationPolicyLoader {
 
         ValidationPolicyWithCryptographicSuite validationPolicyWithCryptographicSuite =
                 new ValidationPolicyWithCryptographicSuite(validationPolicy);
-        for (CryptographicSuite cryptographicSuite : cryptographicSuitesMap.keySet()) {
-            for (ContextAndSubContext scope : cryptographicSuitesMap.get(cryptographicSuite)) {
+        for (Map.Entry<CryptographicSuite, List<ContextAndSubContext>> entry : cryptographicSuitesMap.entrySet()) {
+            CryptographicSuite cryptographicSuite = entry.getKey();
+            for (ContextAndSubContext scope : entry.getValue()) {
                 if (scope == null) {
                     validationPolicyWithCryptographicSuite.setCryptographicSuite(cryptographicSuite);
                 } else {

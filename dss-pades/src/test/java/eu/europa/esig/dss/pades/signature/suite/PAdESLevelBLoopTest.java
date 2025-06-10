@@ -79,6 +79,7 @@ class PAdESLevelBLoopTest extends AbstractPAdESTestSignature {
 
 	@Override
 	public void signAndVerify() {
+		// skip global test
 	}
 
 	@Override

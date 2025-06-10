@@ -120,7 +120,7 @@ public interface MimeType extends Serializable {
      * @return the file extension or null
      */
     static String getFileExtension(final String fileName) {
-        if (fileName == null || fileName.trim().length() == 0) {
+        if (fileName == null || fileName.trim().isEmpty()) {
             return null;
         }
 

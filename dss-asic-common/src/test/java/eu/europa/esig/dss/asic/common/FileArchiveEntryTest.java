@@ -80,7 +80,7 @@ class FileArchiveEntryTest {
             entryInputStream.close();
 
             // ensure the stream is closed
-            assertThrows(IOException.class, () -> entryInputStream.read());
+            assertThrows(IOException.class, entryInputStream::read);
         }
 
         assertTrue(zipArchiveFile.delete());
@@ -88,7 +88,7 @@ class FileArchiveEntryTest {
     }
 
     @Test
-    public void persistenceTest() {
+    void persistenceTest() {
         final Set<DSSDocument> hashSet = new HashSet<>();
 
         DSSDocument document = getPersistenceTestDocument();

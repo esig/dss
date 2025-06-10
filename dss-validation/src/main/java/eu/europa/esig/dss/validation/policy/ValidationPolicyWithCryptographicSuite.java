@@ -240,21 +240,24 @@ public class ValidationPolicyWithCryptographicSuite implements ValidationPolicy 
     private CryptographicSuite getCryptographicSuite(Context context, SubContext subContext) {
         if (Utils.isMapNotEmpty(cryptographicSuitesMap)) {
             // check for Context + SubContext
-            for (ContextAndSubContext contextAndSubContext : cryptographicSuitesMap.keySet()) {
+            for (Map.Entry<ContextAndSubContext, CryptographicSuite> entry : cryptographicSuitesMap.entrySet()) {
+                ContextAndSubContext contextAndSubContext = entry.getKey();
                 if (context == contextAndSubContext.getContext() && subContext == contextAndSubContext.getSubContext()) {
-                    return cryptographicSuitesMap.get(contextAndSubContext);
+                    return entry.getValue();
                 }
             }
             // check for Context
-            for (ContextAndSubContext contextAndSubContext : cryptographicSuitesMap.keySet()) {
+            for (Map.Entry<ContextAndSubContext, CryptographicSuite> entry : cryptographicSuitesMap.entrySet()) {
+                ContextAndSubContext contextAndSubContext = entry.getKey();
                 if (context == contextAndSubContext.getContext() && contextAndSubContext.getSubContext() == null) {
-                    return cryptographicSuitesMap.get(contextAndSubContext);
+                    return entry.getValue();
                 }
             }
             // check for global
-            for (ContextAndSubContext contextAndSubContext : cryptographicSuitesMap.keySet()) {
+            for (Map.Entry<ContextAndSubContext, CryptographicSuite> entry : cryptographicSuitesMap.entrySet()) {
+                ContextAndSubContext contextAndSubContext = entry.getKey();
                 if (contextAndSubContext.getContext() == null && contextAndSubContext.getSubContext() == null) {
-                    return cryptographicSuitesMap.get(contextAndSubContext);
+                    return entry.getValue();
                 }
             }
         }

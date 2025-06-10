@@ -49,8 +49,6 @@ import eu.europa.esig.dss.spi.x509.revocation.crl.OfflineCRLSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.Date;
@@ -60,8 +58,6 @@ import java.util.List;
  * Implementation of AdvancedSignature for PAdES
  */
 public class PAdESSignature extends CAdESSignature {
-
-	private static final Logger LOG = LoggerFactory.getLogger(PAdESSignature.class);
 
 	private static final long serialVersionUID = 3818555396958720967L;
 

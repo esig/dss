@@ -41,7 +41,7 @@ class PAdESLevelBWithAppNameTest extends AbstractPAdESTestSignature {
     @BeforeEach
     void init() throws Exception {
 
-        documentToSign = new InMemoryDocument(PAdESLevelBTest.class.getResourceAsStream("/sample.pdf"));
+        documentToSign = new InMemoryDocument(PAdESLevelBWithAppNameTest.class.getResourceAsStream("/sample.pdf"));
 
         signatureParameters = new PAdESSignatureParameters();
         signatureParameters.setSigningCertificate(getSigningCert());

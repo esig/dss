@@ -157,7 +157,6 @@ public class TimestampQualificationAtTimeBlock extends Chain<XmlValidationTimest
 
     @Override
     protected void addAdditionalInfo() {
-        //setIndication();
         result.setTimestampQualification(tstQualif);
         result.setValidationTime(validationTime);
         result.setDateTime(date);

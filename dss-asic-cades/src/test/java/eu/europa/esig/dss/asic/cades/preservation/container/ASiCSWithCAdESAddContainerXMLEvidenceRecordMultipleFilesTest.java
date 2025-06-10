@@ -43,7 +43,7 @@ class ASiCSWithCAdESAddContainerXMLEvidenceRecordMultipleFilesTest extends Abstr
     private List<DSSDocument> documentsToPreserve;
 
     @BeforeAll
-    public static void init() {
+    static void init() {
         originalDocuments = Arrays.asList(
                 new FileDocument("src/test/resources/signable/empty.zip"),
                 new FileDocument("src/test/resources/signable/test.txt"),

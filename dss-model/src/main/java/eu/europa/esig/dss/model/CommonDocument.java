@@ -176,8 +176,9 @@ public abstract class CommonDocument implements DSSDocument {
 			if (this.size() != o.size()) {
 				return false;
 			}
-			for (DigestAlgorithm digestAlgorithm : this.keySet()) {
-				byte[] thisValue = this.get(digestAlgorithm);
+			for (Map.Entry<DigestAlgorithm, byte[]> entry : this.entrySet()) {
+				DigestAlgorithm digestAlgorithm = entry.getKey();
+				byte[] thisValue = entry.getValue();
 				byte[] oValue = o.get(digestAlgorithm);
 				if (!Arrays.equals(oValue, thisValue)) {
 					return false;

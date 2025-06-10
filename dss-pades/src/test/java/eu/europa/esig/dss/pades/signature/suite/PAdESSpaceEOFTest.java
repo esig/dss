@@ -39,7 +39,7 @@ class PAdESSpaceEOFTest extends AbstractPAdESTestSignature {
 	@BeforeEach
 	void init() {
 
-		documentToSign = new InMemoryDocument(PAdESLevelBTest.class.getResourceAsStream("/sample_end_space.pdf"), null, MimeTypeEnum.PDF);
+		documentToSign = new InMemoryDocument(PAdESSpaceEOFTest.class.getResourceAsStream("/sample_end_space.pdf"), null, MimeTypeEnum.PDF);
 
 		signatureParameters = new PAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());

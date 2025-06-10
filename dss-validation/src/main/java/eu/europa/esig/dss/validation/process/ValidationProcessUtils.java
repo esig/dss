@@ -721,12 +721,7 @@ public class ValidationProcessUtils {
 		if (level == null) {
 			return null;
 		}
-		return new LevelRule() {
-			@Override
-			public Level getLevel() {
-				return level;
-			}
-		};
+		return () -> level;
 	}
 
 }

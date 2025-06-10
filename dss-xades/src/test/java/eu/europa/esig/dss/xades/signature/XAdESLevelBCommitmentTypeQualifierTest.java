@@ -94,7 +94,7 @@ class XAdESLevelBCommitmentTypeQualifierTest extends AbstractXAdESTestSignature 
 
     @Override
     protected DSSDocument sign() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> super.sign());
+        Exception exception = assertThrows(IllegalArgumentException.class, super::sign);
         assertEquals("When using URI as object identifier in XAdES, " +
                 "a Qualifier shall not be present! See EN 319 132-1 for more details.", exception.getMessage());
 

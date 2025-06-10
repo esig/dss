@@ -64,6 +64,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -109,7 +110,7 @@ class CertificateValidatorTest {
 	void testCustomDate() throws Exception {
 		CertificateValidator cv = CertificateValidator.fromCertificate(DSSUtils.loadCertificate(new File("src/test/resources/certificates/CZ.cer")));
 		cv.setCertificateVerifier(new CommonCertificateVerifier());
-		GregorianCalendar gregorianCalendar = new GregorianCalendar(2019, 1, 1);
+		GregorianCalendar gregorianCalendar = new GregorianCalendar(2019, Calendar.JANUARY, 1);
 		cv.setValidationTime(gregorianCalendar.getTime());
 		CertificateReports certificateReports = cv.validate();
 		DiagnosticData diagnosticData = certificateReports.getDiagnosticData();
@@ -403,7 +404,7 @@ class CertificateValidatorTest {
 		assertEquals("The certificate is missing", exception.getMessage());
 
 		CertificateValidator certificateValidator = CertificateValidator.fromCertificate(DSSUtils.loadCertificate(new File("src/test/resources/certificates/CZ.cer")));
-		exception = assertThrows(NullPointerException.class, () -> certificateValidator.validate());
+		exception = assertThrows(NullPointerException.class, certificateValidator::validate);
 		assertEquals("CertificateVerifier is not defined", exception.getMessage());
 	}
 

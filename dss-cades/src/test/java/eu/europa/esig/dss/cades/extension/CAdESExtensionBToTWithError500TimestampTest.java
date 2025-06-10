@@ -48,7 +48,7 @@ class CAdESExtensionBToTWithError500TimestampTest extends AbstractCAdESTestExten
 	@Override
 	@Test
 	public void extendAndVerify() throws Exception {
-		assertThrows(DSSException.class, () -> super.extendAndVerify());
+		assertThrows(DSSException.class, super::extendAndVerify);
 	}
 
 }

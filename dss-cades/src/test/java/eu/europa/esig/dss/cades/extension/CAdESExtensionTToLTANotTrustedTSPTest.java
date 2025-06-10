@@ -65,7 +65,7 @@ class CAdESExtensionTToLTANotTrustedTSPTest extends AbstractCAdESTestExtension {
     @Test
     @Override
     public void extendAndVerify() throws Exception {
-        Exception exception = assertThrows(AlertException.class, () -> super.extendAndVerify());
+        Exception exception = assertThrows(AlertException.class, super::extendAndVerify);
         assertTrue(exception.getMessage().contains("Revocation data is missing for one or more certificate(s)."));
         assertTrue(exception.getMessage().contains("Revocation data is skipped for untrusted certificate chain!"));
     }

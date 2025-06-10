@@ -60,11 +60,10 @@ public class ASiCWithXAdESContainerEvidenceRecordBuilder extends AbstractASiCCon
     @Override
     protected void assertEvidenceRecordFilenameValid(String evidenceRecordFilename, EvidenceRecordTypeEnum evidenceRecordType, ASiCContent asicContent) {
         List<DSSDocument> evidenceRecordDocuments = asicContent.getEvidenceRecordDocuments();
-        if (Utils.isCollectionNotEmpty(evidenceRecordDocuments)) {
-            if (DSSUtils.getDocumentNames(evidenceRecordDocuments).contains(evidenceRecordFilename)) {
-                throw new IllegalInputException(String.format("The ASiC container already contains a file with name '%s'! " +
-                        "Addition of an evidence record of the same type is not allowed for ASiC with XAdES container.", evidenceRecordFilename));
-            }
+        if (Utils.isCollectionNotEmpty(evidenceRecordDocuments) &&
+                DSSUtils.getDocumentNames(evidenceRecordDocuments).contains(evidenceRecordFilename)) {
+            throw new IllegalInputException(String.format("The ASiC container already contains a file with name '%s'! " +
+                    "Addition of an evidence record of the same type is not allowed for ASiC with XAdES container.", evidenceRecordFilename));
         }
 
         if (EvidenceRecordTypeEnum.ASN1_EVIDENCE_RECORD == evidenceRecordType &&

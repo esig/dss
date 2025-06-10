@@ -42,6 +42,7 @@ import org.junit.jupiter.api.BeforeEach;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -76,9 +77,9 @@ class XAdESMultipleDocumentsWithReferencesTest extends AbstractXAdESMultipleDocu
 		reference1.setDigestMethodAlgorithm(DigestAlgorithm.SHA512);
 		reference1.setUri("#document-1");
 		reference1.setType(Reference.OBJECT_URI);
-		DSSTransform transform1_one = new XPath2FilterTransform("//e4", "subtract");
-		DSSTransform transform1_two = new CanonicalizationTransform(Transforms.TRANSFORM_C14N_WITH_COMMENTS);
-		reference1.setTransforms(Arrays.asList(transform1_one, transform1_two));
+		DSSTransform transform1One = new XPath2FilterTransform("//e4", "subtract");
+		DSSTransform transform1Two = new CanonicalizationTransform(Transforms.TRANSFORM_C14N_WITH_COMMENTS);
+		reference1.setTransforms(Arrays.asList(transform1One, transform1Two));
 		dssReferences.add(reference1);
 
 		DSSReference reference2 = new DSSReference();
@@ -87,15 +88,15 @@ class XAdESMultipleDocumentsWithReferencesTest extends AbstractXAdESMultipleDocu
 		reference2.setDigestMethodAlgorithm(DigestAlgorithm.SHA512);
 		reference2.setUri("#document-2");
 		reference2.setType(Reference.OBJECT_URI);
-		DSSTransform transform2_one = new XPath2FilterTransform("//*[@id='data1']", "intersect");
-		DSSTransform transform2_two = new CanonicalizationTransform(Transforms.TRANSFORM_C14N_EXCL_OMIT_COMMENTS);
-		reference2.setTransforms(Arrays.asList(transform2_one, transform2_two));
+		DSSTransform transform2One = new XPath2FilterTransform("//*[@id='data1']", "intersect");
+		DSSTransform transform2Two = new CanonicalizationTransform(Transforms.TRANSFORM_C14N_EXCL_OMIT_COMMENTS);
+		reference2.setTransforms(Arrays.asList(transform2One, transform2Two));
 		dssReferences.add(reference2);
 
 		signatureParameters.setReferences(dssReferences);
 		
 		TimestampToken contentTimestamp = service.getContentTimestamp(documentToSigns, signatureParameters);
-		signatureParameters.setContentTimestamps(Arrays.asList(contentTimestamp));
+		signatureParameters.setContentTimestamps(Collections.singletonList(contentTimestamp));
 	}
 	
 	@Override

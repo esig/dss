@@ -56,7 +56,7 @@ class DSS3592PAdESExpiredTstExtensionTest extends AbstractPAdESTestExtension {
     private CertificateVerifier certificateVerifier;
 
     @BeforeEach
-    public void init() {
+    void init() {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.MONTH, -2);
         signingTime = calendar.getTime();

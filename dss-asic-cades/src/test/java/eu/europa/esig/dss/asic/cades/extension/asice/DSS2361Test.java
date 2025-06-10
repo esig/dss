@@ -70,9 +70,7 @@ class DSS2361Test extends AbstractASiCWithCAdESTestValidation {
 
         ASiCWithCAdESSignatureParameters parameters = new ASiCWithCAdESSignatureParameters();
         parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
-        DSSDocument extendedDocument = service.extendDocument(dssDocument, parameters);
-
-        return extendedDocument;
+        return service.extendDocument(dssDocument, parameters);
     }
 
     @Override

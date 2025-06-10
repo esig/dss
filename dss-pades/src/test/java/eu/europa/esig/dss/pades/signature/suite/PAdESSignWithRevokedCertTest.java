@@ -50,7 +50,7 @@ class PAdESSignWithRevokedCertTest extends AbstractPAdESTestSignature {
 
     @BeforeEach
     void init() throws Exception {
-        documentToSign = new InMemoryDocument(PAdESLevelBTest.class.getResourceAsStream("/sample.pdf"));
+        documentToSign = new InMemoryDocument(PAdESSignWithRevokedCertTest.class.getResourceAsStream("/sample.pdf"));
         service = new PAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsa());
     }

@@ -39,6 +39,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -64,8 +65,8 @@ class ValidationPolicyLoaderTest {
         assertEquals(new HashSet<>(validationPolicy.getSignatureCryptographicConstraint(Context.SIGNATURE).getAcceptableDigestAlgorithms()),
                 new HashSet<>(validationPolicyWithCryptoSuite.getSignatureCryptographicConstraint(Context.SIGNATURE).getAcceptableDigestAlgorithms()));
 
-        assertEquals(new HashMap<>(validationPolicy.getSignatureCryptographicConstraint(Context.SIGNATURE).getAcceptableDigestAlgorithmsWithExpirationDates()),
-                new HashMap<>(validationPolicyWithCryptoSuite.getSignatureCryptographicConstraint(Context.SIGNATURE).getAcceptableDigestAlgorithmsWithExpirationDates()));
+        assertEquals(new EnumMap<>(validationPolicy.getSignatureCryptographicConstraint(Context.SIGNATURE).getAcceptableDigestAlgorithmsWithExpirationDates()),
+                new EnumMap<>(validationPolicyWithCryptoSuite.getSignatureCryptographicConstraint(Context.SIGNATURE).getAcceptableDigestAlgorithmsWithExpirationDates()));
 
         assertEquals(new HashSet<>(validationPolicy.getSignatureCryptographicConstraint(Context.SIGNATURE).getAcceptableEncryptionAlgorithms()),
                 new HashSet<>(validationPolicyWithCryptoSuite.getSignatureCryptographicConstraint(Context.SIGNATURE).getAcceptableEncryptionAlgorithms()));

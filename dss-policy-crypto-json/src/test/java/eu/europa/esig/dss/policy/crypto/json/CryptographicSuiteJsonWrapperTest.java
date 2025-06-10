@@ -40,6 +40,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -73,7 +74,7 @@ class CryptographicSuiteJsonWrapperTest {
         algorithmsList.add(createDigestAlgorithmDefinition(DigestAlgorithm.SHA224, "2029-01-01"));
 
         cryptographicSuite = new CryptographicSuiteJsonWrapper(new JsonObjectWrapper(jsonObject));
-        Set<DigestAlgorithm> expectedSet = new HashSet<>(Arrays.asList(DigestAlgorithm.SHA224));
+        Set<DigestAlgorithm> expectedSet = new HashSet<>(Collections.singletonList(DigestAlgorithm.SHA224));
         assertEquals(expectedSet, new HashSet<>(cryptographicSuite.getAcceptableDigestAlgorithms()));
 
         algorithmsList.add(createDigestAlgorithmDefinition(DigestAlgorithm.SHA256, null));
@@ -185,7 +186,7 @@ class CryptographicSuiteJsonWrapperTest {
         calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
         calendar.clear();
 
-        Map<DigestAlgorithm, Date> expectedMap = new HashMap<>();
+        Map<DigestAlgorithm, Date> expectedMap = new LinkedHashMap<>();
 
         calendar.set(2029, Calendar.JANUARY, 1);
         expectedMap.put(DigestAlgorithm.SHA224, calendar.getTime());
@@ -197,7 +198,7 @@ class CryptographicSuiteJsonWrapperTest {
         expectedMap.put(DigestAlgorithm.SHA3_384, null);
         expectedMap.put(DigestAlgorithm.SHA3_512, null);
 
-        assertEquals(expectedMap, new HashMap<>(digestAlgorithmsWithExpirationDates));
+        assertEquals(expectedMap, new LinkedHashMap<>(digestAlgorithmsWithExpirationDates));
     }
 
     @Test
@@ -248,24 +249,24 @@ class CryptographicSuiteJsonWrapperTest {
                         new ParameterType(250, QLENGTH)
                 )))
         ));
-        algorithmsList.add(createSignatureAlgorithmDefinition(SignatureAlgorithm.ECDSA_SHA224, Arrays.asList(
+        algorithmsList.add(createSignatureAlgorithmDefinition(SignatureAlgorithm.ECDSA_SHA224, Collections.singletonList(
                         new EvaluationType("2029-01-01", Collections.emptyList())
                 )
         ));
         algorithmsList.add(createSignatureAlgorithmDefinition(SignatureAlgorithm.ECDSA_SHA256, Collections.emptyList()));
         algorithmsList.add(createSignatureAlgorithmDefinition(SignatureAlgorithm.RSA_SHA224, Arrays.asList(
-                new EvaluationType("2029-01-01", Arrays.asList(
+                new EvaluationType("2029-01-01", Collections.singletonList(
                         new ParameterType(1900, MODULES_LENGTH)
                 )),
-                new EvaluationType("2029-01-01", Arrays.asList(
+                new EvaluationType("2029-01-01", Collections.singletonList(
                         new ParameterType(3000, MODULES_LENGTH)
                 )))
         ));
         algorithmsList.add(createEncryptionAlgorithmDefinition(EncryptionAlgorithm.RSASSA_PSS, Arrays.asList(
-                new EvaluationType("2029-01-01", Arrays.asList(
+                new EvaluationType("2029-01-01", Collections.singletonList(
                         new ParameterType(1900, MODULES_LENGTH)
                 )),
-                new EvaluationType("2029-01-01", Arrays.asList(
+                new EvaluationType("2029-01-01", Collections.singletonList(
                         new ParameterType(3000, MODULES_LENGTH)
                 )))
         ));
@@ -289,11 +290,11 @@ class CryptographicSuiteJsonWrapperTest {
         List<JsonValue> algorithmsList = new ArrayList<>();
 
         // Duplicate entries for same algorithm
-        algorithmsList.add(createEncryptionAlgorithmDefinition(EncryptionAlgorithm.DSA, Arrays.asList(
-                new EvaluationType("2029-01-01", Arrays.asList(new ParameterType(1024, PLENGTH)))
+        algorithmsList.add(createEncryptionAlgorithmDefinition(EncryptionAlgorithm.DSA, Collections.singletonList(
+                new EvaluationType("2029-01-01", Collections.singletonList(new ParameterType(1024, PLENGTH)))
         )));
-        algorithmsList.add(createEncryptionAlgorithmDefinition(EncryptionAlgorithm.DSA, Arrays.asList(
-                new EvaluationType(null, Arrays.asList(new ParameterType(2048, PLENGTH)))
+        algorithmsList.add(createEncryptionAlgorithmDefinition(EncryptionAlgorithm.DSA, Collections.singletonList(
+                new EvaluationType(null, Collections.singletonList(new ParameterType(2048, PLENGTH)))
         )));
 
         JsonArray algorithmsArray = new JsonArray(algorithmsList);
@@ -306,7 +307,7 @@ class CryptographicSuiteJsonWrapperTest {
 
         List<EncryptionAlgorithmWithMinKeySize> actual = cryptographicSuite.getAcceptableEncryptionAlgorithmsWithMinKeySizes();
 
-        Set<EncryptionAlgorithmWithMinKeySize> expected = new HashSet<>(Arrays.asList(
+        Set<EncryptionAlgorithmWithMinKeySize> expected = new HashSet<>(Collections.singletonList(
                 new EncryptionAlgorithmWithMinKeySize(EncryptionAlgorithm.DSA, 1024)));
 
         assertEquals(expected, new HashSet<>(actual));
@@ -325,7 +326,7 @@ class CryptographicSuiteJsonWrapperTest {
         HashMap<JsonString, JsonValue> evaluationMap = new HashMap<>();
         evaluationMap.put(new JsonString("ExpirationDate"), new JsonString("2029-01-01"));
         evaluationMap.put(new JsonString("Parameters"), new JsonArray(Collections.singletonList(badParam)));
-        algoMap.put(new JsonString("Evaluations"), new JsonArray(Arrays.asList(new JsonObject(evaluationMap))));
+        algoMap.put(new JsonString("Evaluations"), new JsonArray(Collections.singletonList(new JsonObject(evaluationMap))));
 
 
         Map<JsonString, JsonValue> policyMap = new HashMap<>();
@@ -353,24 +354,24 @@ class CryptographicSuiteJsonWrapperTest {
                         new ParameterType(250, QLENGTH)
                 )))
         ));
-        algorithmsList.add(createSignatureAlgorithmDefinition(SignatureAlgorithm.ECDSA_SHA224, Arrays.asList(
+        algorithmsList.add(createSignatureAlgorithmDefinition(SignatureAlgorithm.ECDSA_SHA224, Collections.singletonList(
                         new EvaluationType("2029-01-01", Collections.emptyList())
                 )
         ));
         algorithmsList.add(createSignatureAlgorithmDefinition(SignatureAlgorithm.ECDSA_SHA256, Collections.emptyList()));
         algorithmsList.add(createSignatureAlgorithmDefinition(SignatureAlgorithm.RSA_SHA224, Arrays.asList(
-                new EvaluationType("2029-01-01", Arrays.asList(
+                new EvaluationType("2029-01-01", Collections.singletonList(
                         new ParameterType(1900, MODULES_LENGTH)
                 )),
-                new EvaluationType("2029-01-01", Arrays.asList(
+                new EvaluationType("2029-01-01", Collections.singletonList(
                         new ParameterType(3000, MODULES_LENGTH)
                 )))
         ));
         algorithmsList.add(createEncryptionAlgorithmDefinition(EncryptionAlgorithm.RSASSA_PSS, Arrays.asList(
-                new EvaluationType("2029-01-01", Arrays.asList(
+                new EvaluationType("2029-01-01", Collections.singletonList(
                         new ParameterType(1900, MODULES_LENGTH)
                 )),
-                new EvaluationType("2029-01-01", Arrays.asList(
+                new EvaluationType("2029-01-01", Collections.singletonList(
                         new ParameterType(3000, MODULES_LENGTH)
                 )))
         ));
@@ -396,8 +397,8 @@ class CryptographicSuiteJsonWrapperTest {
         List<JsonValue> algorithmsList = new ArrayList<>();
 
         algorithmsList.add(createEncryptionAlgorithmDefinition(EncryptionAlgorithm.DSA, Arrays.asList(
-                new EvaluationType("invalid-date", Arrays.asList(new ParameterType(1024, PLENGTH))),
-                new EvaluationType("2035-12-31", Arrays.asList(new ParameterType(2048, PLENGTH)))
+                new EvaluationType("invalid-date", Collections.singletonList(new ParameterType(1024, PLENGTH))),
+                new EvaluationType("2035-12-31", Collections.singletonList(new ParameterType(2048, PLENGTH)))
         )));
 
         JsonArray algorithmsArray = new JsonArray(algorithmsList);
@@ -432,24 +433,24 @@ class CryptographicSuiteJsonWrapperTest {
                         new ParameterType(250, QLENGTH)
                 )))
         ));
-        algorithmsList.add(createSignatureAlgorithmDefinition(SignatureAlgorithm.ECDSA_SHA224, Arrays.asList(
+        algorithmsList.add(createSignatureAlgorithmDefinition(SignatureAlgorithm.ECDSA_SHA224, Collections.singletonList(
                         new EvaluationType("2029-01-01", Collections.emptyList())
                 )
         ));
         algorithmsList.add(createSignatureAlgorithmDefinition(SignatureAlgorithm.ECDSA_SHA256, Collections.emptyList()));
         algorithmsList.add(createSignatureAlgorithmDefinition(SignatureAlgorithm.RSA_SHA224, Arrays.asList(
-                new EvaluationType("2029-01-01", Arrays.asList(
+                new EvaluationType("2029-01-01", Collections.singletonList(
                         new ParameterType(1900, MODULES_LENGTH)
                 )),
-                new EvaluationType("2029-01-01", Arrays.asList(
+                new EvaluationType("2029-01-01", Collections.singletonList(
                         new ParameterType(3000, MODULES_LENGTH)
                 )))
         ));
         algorithmsList.add(createEncryptionAlgorithmDefinition(EncryptionAlgorithm.RSASSA_PSS, Arrays.asList(
-                new EvaluationType("2029-01-01", Arrays.asList(
+                new EvaluationType("2029-01-01", Collections.singletonList(
                         new ParameterType(1900, MODULES_LENGTH)
                 )),
-                new EvaluationType("2029-01-01", Arrays.asList(
+                new EvaluationType("2029-01-01", Collections.singletonList(
                         new ParameterType(3000, MODULES_LENGTH)
                 )))
         ));

@@ -97,7 +97,7 @@ class ASiCEWithCAdESLevelBContainerMergerDifferentMimetypeTest extends AbstractW
     @Test
     @Override
     public void createTwoContainersAndMerge() throws Exception {
-        Exception exception = assertThrows(UnsupportedOperationException.class, () -> super.createTwoContainersAndMerge());
+        Exception exception = assertThrows(UnsupportedOperationException.class, super::createTwoContainersAndMerge);
         assertEquals("Unable to merge containers. Containers contain different mimetype documents!", exception.getMessage());
     }
 

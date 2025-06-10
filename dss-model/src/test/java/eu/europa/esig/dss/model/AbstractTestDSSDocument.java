@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public abstract class AbstractTestDSSDocument {
 
     @Test
-    public void persistenceTest() {
+    void persistenceTest() {
         // See {@link <a href="https://ec.europa.eu/digital-building-blocks/tracker/browse/DSS-3595">DSS-3595</a>}
         final Set<DSSDocument> hashSet = new HashSet<>();
 

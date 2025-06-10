@@ -26,7 +26,7 @@ import eu.europa.esig.dss.enumerations.Level;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -171,7 +171,7 @@ public abstract class Abstract19322CryptographicSuite implements CryptographicSu
     @Override
     public List<EncryptionAlgorithmWithMinKeySize> getAcceptableEncryptionAlgorithmsWithMinKeySizes() {
         if (acceptableEncryptionAlgorithmsWithMinKeySizes == null) {
-            Map<EncryptionAlgorithm, Integer> encryptionAlgorithmWithMinKeySizesMap = new HashMap<>();
+            Map<EncryptionAlgorithm, Integer> encryptionAlgorithmWithMinKeySizesMap = new EnumMap<>(EncryptionAlgorithm.class);
             for (EncryptionAlgorithmWithMinKeySize encryptionAlgorithmWithMinKeySize : getAcceptableEncryptionAlgorithmsWithExpirationDates().keySet()) {
                 EncryptionAlgorithm encryptionAlgorithm = encryptionAlgorithmWithMinKeySize.getEncryptionAlgorithm();
                 int keySize = encryptionAlgorithmWithMinKeySize.getMinKeySize();

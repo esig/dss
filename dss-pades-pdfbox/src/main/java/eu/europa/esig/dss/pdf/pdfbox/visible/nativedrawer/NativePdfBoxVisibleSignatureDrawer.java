@@ -158,7 +158,7 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 			acroForm.getCOSObject().setDirect(true);
 			acroFormFields.add(signatureField);
 
-			PDRectangle rectangle = getPdRectangle(dimensionAndPosition, page);
+			PDRectangle rectangle = getPdRectangle(dimensionAndPosition);
 			widget.setRectangle(rectangle);
 
 			PDAppearanceDictionary appearance = PdfBoxUtils.createSignatureAppearanceDictionary(doc, rectangle);
@@ -395,10 +395,9 @@ public class NativePdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignatureD
 	 *
 	 * @param dimensionAndPosition {@link SignatureFieldDimensionAndPosition}
 	 *                             specifies widget size and position
-	 * @param page                 {@link PDPage} to place the widget on
 	 * @return {@link PDRectangle}
 	 */
-	private PDRectangle getPdRectangle(SignatureFieldDimensionAndPosition dimensionAndPosition, PDPage page) {
+	private PDRectangle getPdRectangle(SignatureFieldDimensionAndPosition dimensionAndPosition) {
 		AnnotationBox annotationBox = dimensionAndPosition.getAnnotationBox();
 
 		final PDRectangle pdRectangle = new PDRectangle();

@@ -107,7 +107,7 @@ public class EvidenceRecordWrapper {
      */
     public TimestampWrapper getFirstTimestamp() {
         List<TimestampWrapper> timestampList = getTimestampList();
-        if (timestampList != null && timestampList.size() > 0) {
+        if (timestampList != null && !timestampList.isEmpty()) {
             return timestampList.get(0);
         }
         return null;

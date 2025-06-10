@@ -71,14 +71,14 @@ class XAdESLevelLTSignWithExpiredSignCertTest extends AbstractXAdESTestSignature
 
     @Override
     protected CertificateVerifier getCompleteCertificateVerifier() {
-        CertificateVerifier certificateVerifier = super.getCompleteCertificateVerifier();
-        certificateVerifier.setRevocationFallback(true);
-        return certificateVerifier;
+        CertificateVerifier completeCertificateVerifier = super.getCompleteCertificateVerifier();
+        completeCertificateVerifier.setRevocationFallback(true);
+        return completeCertificateVerifier;
     }
 
     @Override
     protected DSSDocument sign() {
-        Exception exception = assertThrows(AlertException.class, () -> super.sign());
+        Exception exception = assertThrows(AlertException.class, super::sign);
         assertTrue(exception.getMessage().contains("Error on signature creation"));
         assertTrue(exception.getMessage().contains("The signing certificate has expired"));
 
@@ -89,7 +89,7 @@ class XAdESLevelLTSignWithExpiredSignCertTest extends AbstractXAdESTestSignature
 
         service.setTspSource(getGoodTsaByTime(tstTime));
 
-        exception = assertThrows(AlertException.class, () -> super.sign());
+        exception = assertThrows(AlertException.class, super::sign);
         assertTrue(exception.getMessage().contains("Error on signature creation"));
         assertTrue(exception.getMessage().contains("The signing certificate has expired"));
 

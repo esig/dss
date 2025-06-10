@@ -108,8 +108,9 @@ public class SigningCertificateRefDigestAlgorithmCheckChainBuilder<T extends Xml
         // This code ensures that at least one good digest algorithm is found for every defined signing certificate reference
         final Map<String, List<CertificateRefWrapper>> signCertRefsMap = new HashMap<>();
         signingCertificateReferences.forEach(r -> signCertRefsMap.computeIfAbsent(r.getCertificateId(), s -> new ArrayList<>()).add(r));
-        for (String certificateId : signCertRefsMap.keySet()) {
-            List<CertificateRefWrapper> certificateRefWrappers = signCertRefsMap.get(certificateId);
+        for (Map.Entry<String, List<CertificateRefWrapper>> entry : signCertRefsMap.entrySet()) {
+            String certificateId = entry.getKey();
+            List<CertificateRefWrapper> certificateRefWrappers = entry.getValue();
 
             SubContext subContext;
             if (signingCertificateReference != null && signingCertificateReference.getCertificateId().equals(certificateId)) {

@@ -55,7 +55,7 @@ class ASiCsExtensionWithCAdESLTToLTAWithFailTimestampTest extends AbstractASiCWi
 	@Override
 	@Test
 	public void extendAndVerify() throws Exception {
-		Exception exception = assertThrows(DSSExternalResourceException.class, () -> super.extendAndVerify());
+		Exception exception = assertThrows(DSSExternalResourceException.class, super::extendAndVerify);
 		assertEquals("No timestamp token has been retrieved (TSP Status : Error for testing / PKIFailureInfo: 0x40000000)", exception.getMessage());
 	}
 

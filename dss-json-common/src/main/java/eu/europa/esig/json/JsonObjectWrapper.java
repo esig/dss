@@ -28,7 +28,6 @@ import com.github.erosb.jsonsKema.JsonValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -153,7 +152,6 @@ public class JsonObjectWrapper {
             // continue
 
         } else if (jsonValue instanceof JsonArray) {
-            final List<JsonObjectWrapper> result = new ArrayList<>();
             List<JsonValue> elements = ((JsonArray) jsonValue).getElements();
             if (elements != null && !elements.isEmpty()) {
                 return elements.stream().map(this::toObject).filter(Objects::nonNull).collect(Collectors.toList());
@@ -183,7 +181,6 @@ public class JsonObjectWrapper {
             // continue
 
         } else if (jsonValue instanceof JsonArray) {
-            final List<JsonObjectWrapper> result = new ArrayList<>();
             List<JsonValue> elements = ((JsonArray) jsonValue).getElements();
             if (elements != null && !elements.isEmpty()) {
                 return elements.stream().map(this::toString).filter(Objects::nonNull).collect(Collectors.toList());

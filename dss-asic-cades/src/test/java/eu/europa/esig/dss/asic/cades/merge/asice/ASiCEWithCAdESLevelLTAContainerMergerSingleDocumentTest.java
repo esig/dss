@@ -72,7 +72,7 @@ class ASiCEWithCAdESLevelLTAContainerMergerSingleDocumentTest extends AbstractWi
     @Test
     @Override
     public void createTwoContainersAndMerge() throws Exception {
-        Exception exception = assertThrows(UnsupportedOperationException.class, () -> super.createTwoContainersAndMerge());
+        Exception exception = assertThrows(UnsupportedOperationException.class, super::createTwoContainersAndMerge);
         assertEquals("Unable to merge ASiC-E with CAdES containers. " +
                 "A signature with name 'META-INF/signature001.p7s' in a container is covered by a manifest!", exception.getMessage());
     }

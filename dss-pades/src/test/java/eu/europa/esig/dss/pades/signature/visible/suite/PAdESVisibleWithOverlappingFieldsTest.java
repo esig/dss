@@ -97,7 +97,7 @@ class PAdESVisibleWithOverlappingFieldsTest extends AbstractPAdESTestSignature {
 		
 		documentToSign = signed;
 
-		Exception exception = assertThrows(AlertException.class, () -> super.sign());
+		Exception exception = assertThrows(AlertException.class, super::sign);
 		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
 
 		pdfSignatureFieldPositionChecker.setAlertOnSignatureFieldOverlap(new LogOnStatusAlert());

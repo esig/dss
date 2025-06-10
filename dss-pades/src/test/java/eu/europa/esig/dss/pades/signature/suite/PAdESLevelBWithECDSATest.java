@@ -93,6 +93,7 @@ class PAdESLevelBWithECDSATest extends AbstractPAdESTestSignature {
 
 	@Override
 	public void signAndVerify() {
+		// skip global test
 	}
 
 	@Override

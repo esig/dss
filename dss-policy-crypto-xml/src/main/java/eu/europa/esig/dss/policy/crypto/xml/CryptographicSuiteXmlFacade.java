@@ -68,7 +68,7 @@ public class CryptographicSuiteXmlFacade extends AbstractJaxbFacade<SecuritySuit
 
     @Override
     protected JAXBElement<SecuritySuitabilityPolicyType> wrap(SecuritySuitabilityPolicyType jaxbObject) {
-        return CryptographicSuiteXmlUtils.getInstance().OBJECT_FACTORY.createSecuritySuitabilityPolicy(jaxbObject);
+        return CryptographicSuiteXmlUtils.OBJECT_FACTORY.createSecuritySuitabilityPolicy(jaxbObject);
     }
 
     /**

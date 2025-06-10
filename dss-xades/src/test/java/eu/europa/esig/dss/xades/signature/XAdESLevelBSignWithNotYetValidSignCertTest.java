@@ -63,13 +63,13 @@ class XAdESLevelBSignWithNotYetValidSignCertTest extends AbstractXAdESTestSignat
         certificateVerifier.setAlertOnNotYetValidCertificate(new ExceptionOnStatusAlert());
         certificateVerifier.setAlertOnExpiredCertificate(new ExceptionOnStatusAlert());
 
-        Exception exception = assertThrows(AlertException.class, () -> super.sign());
+        Exception exception = assertThrows(AlertException.class, super::sign);
         assertTrue(exception.getMessage().contains("Error on signature creation"));
         assertTrue(exception.getMessage().contains("is not yet valid at signing time"));
 
         certificateVerifier.setAlertOnExpiredCertificate(new SilentOnStatusAlert());
 
-        exception = assertThrows(AlertException.class, () -> super.sign());
+        exception = assertThrows(AlertException.class, super::sign);
         assertTrue(exception.getMessage().contains("Error on signature creation"));
         assertTrue(exception.getMessage().contains("is not yet valid at signing time"));
 

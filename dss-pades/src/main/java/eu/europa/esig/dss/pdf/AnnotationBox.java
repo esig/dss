@@ -22,11 +22,15 @@ package eu.europa.esig.dss.pdf;
 
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 
+import java.io.Serializable;
+
 /**
  * This class defines a PDF annotation dimension and position (note, shape, signature field, etc.)
  *
  */
-public class AnnotationBox {
+public class AnnotationBox implements Serializable {
+
+	private static final long serialVersionUID = -6074495201326993154L;
 
 	/** The lower left X coordinate */
 	private final float minX;

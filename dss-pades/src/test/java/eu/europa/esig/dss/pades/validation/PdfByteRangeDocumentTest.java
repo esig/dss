@@ -146,7 +146,7 @@ class PdfByteRangeDocumentTest {
     }
 
     @Test
-    public void persistenceTest() {
+    void persistenceTest() {
         final Set<DSSDocument> hashSet = new HashSet<>();
 
         DSSDocument document = getPersistenceTestDocument();

@@ -53,7 +53,7 @@ class PAdESLevelBCustomTimeZoneTest extends AbstractPAdESTestSignature {
 
     @BeforeEach
     void init() throws Exception {
-        documentToSign = new InMemoryDocument(PAdESLevelBTest.class.getResourceAsStream("/sample.pdf"));
+        documentToSign = new InMemoryDocument(PAdESLevelBCustomTimeZoneTest.class.getResourceAsStream("/sample.pdf"));
 
         signatureParameters = new PAdESSignatureParameters();
         signatureParameters.setSigningCertificate(getSigningCert());

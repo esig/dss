@@ -66,7 +66,7 @@ class ASiCSCAdESLevelBWithSignatureNameTest extends AbstractASiCSCAdESTestSignat
 		asicFilenameFactory.setSignatureFilename(SIGNATURE_FILENAME);
 		getService().setAsicFilenameFactory(asicFilenameFactory);
 
-		Exception exception = assertThrows(IllegalArgumentException.class, () -> super.sign());
+		Exception exception = assertThrows(IllegalArgumentException.class, super::sign);
 		assertEquals("A signature file within ASiC-S with CAdES container shall have name " +
 				"'META-INF/signature.p7s'!", exception.getMessage());
 

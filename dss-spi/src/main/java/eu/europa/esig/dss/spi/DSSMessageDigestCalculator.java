@@ -34,7 +34,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -72,7 +72,7 @@ public class DSSMessageDigestCalculator {
         if (Utils.isCollectionEmpty(digestAlgorithms)) {
             throw new IllegalArgumentException("DigestAlgorithms collection cannot be empty!");
         }
-        final Map<DigestAlgorithm, MessageDigest> messageDigestList = new HashMap<>();
+        final Map<DigestAlgorithm, MessageDigest> messageDigestList = new EnumMap<>(DigestAlgorithm.class);
         for (DigestAlgorithm digestAlgorithm : digestAlgorithms) {
             Objects.requireNonNull(digestAlgorithm, "DigestAlgorithm cannot be null!");
             messageDigestList.put(digestAlgorithm, toMessageDigest(digestAlgorithm));

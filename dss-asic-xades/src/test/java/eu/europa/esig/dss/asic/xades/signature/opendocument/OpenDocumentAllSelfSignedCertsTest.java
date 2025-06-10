@@ -104,7 +104,7 @@ class OpenDocumentAllSelfSignedCertsTest extends AbstractASiCSXAdESTestSignature
 		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new ExceptionOnStatusAlert());
 
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LT);
-		Exception exception = assertThrows(AlertException.class, () -> super.signAndVerify());
+		Exception exception = assertThrows(AlertException.class, super::signAndVerify);
 		assertTrue(exception.getMessage().contains("Error on signature augmentation to LT-level."));
 		assertTrue(exception.getMessage().contains("The signature contains only self-signed certificate chains."));
 
@@ -121,7 +121,7 @@ class OpenDocumentAllSelfSignedCertsTest extends AbstractASiCSXAdESTestSignature
 		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new ExceptionOnStatusAlert());
 
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_LTA);
-		Exception exception = assertThrows(AlertException.class, () -> super.signAndVerify());
+		Exception exception = assertThrows(AlertException.class, super::signAndVerify);
 		assertTrue(exception.getMessage().contains("Error on signature augmentation to LT-level."));
 		assertTrue(exception.getMessage().contains("The signature contains only self-signed certificate chains."));
 

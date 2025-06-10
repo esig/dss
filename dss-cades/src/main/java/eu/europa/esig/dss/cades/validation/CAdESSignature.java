@@ -756,7 +756,7 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 			signatureCryptographicVerification.setReferenceDataFound(referenceDataFound);
 			signatureCryptographicVerification.setReferenceDataIntact(referenceDataIntact);
 			
-		} catch (CMSException | IOException e) {
+		} catch (CMSException e) {
 			LOG.warn(e.getMessage(), e);
 			signatureCryptographicVerification.setErrorMessage(e.getMessage());
 		}
@@ -961,9 +961,8 @@ public class CAdESSignature extends DefaultAdvancedSignature {
 	 *
 	 * @return {@link SignerInformation}
 	 * @throws CMSException if CMS exception occurs
-	 * @throws IOException if IOException occurs
 	 */
-	private SignerInformation recreateSignerInformation() throws CMSException, IOException {
+	private SignerInformation recreateSignerInformation() throws CMSException {
 		final DSSDocument dssDocument = detachedContents.get(0); // only one element for CAdES Signature
 		PrecomputedDigestCalculatorProvider digestCalculatorProvider = new PrecomputedDigestCalculatorProvider(dssDocument);
 		return CMSUtils.recomputeSignerInformation(cms, getSignerId(), digestCalculatorProvider, CAdESUtils.DEFAULT_RESOURCES_HANDLER_BUILDER);

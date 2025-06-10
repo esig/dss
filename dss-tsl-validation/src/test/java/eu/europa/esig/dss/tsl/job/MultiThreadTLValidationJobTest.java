@@ -22,10 +22,10 @@ package eu.europa.esig.dss.tsl.job;
 
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.tsl.TLValidationJobSummary;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.model.tsl.TLValidationJobSummary;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.tsl.cache.CacheCleaner;
 import eu.europa.esig.dss.tsl.function.TrustServicePredicate;
@@ -39,7 +39,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -65,7 +64,7 @@ class MultiThreadTLValidationJobTest {
 	private static CertificateToken czSigningCertificate;
 	
 	@BeforeAll
-	static void init() throws IOException {
+	static void init() {
 		
 		Map<String, DSSDocument> urlMap = new HashMap<>();
 		urlMap.put(CZ_URL, new FileDocument("src/test/resources/lotlCache/CZ.xml"));

@@ -71,7 +71,7 @@ class XAdESLevelLTADetachedDigestDocumentTest extends AbstractXAdESTestSignature
     @Test
     @Override
     public void signAndVerify() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> super.signAndVerify());
+        Exception exception = assertThrows(IllegalArgumentException.class, super::signAndVerify);
         assertEquals("XAdES-LTA requires complete binaries of signed documents! " +
                 "Extension with a DigestDocument is not possible.", exception.getMessage());
     }

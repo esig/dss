@@ -105,7 +105,7 @@ class JAdESLevelBDetachedWithHttpHeadersMechanismTest extends AbstractJAdESMulti
 	
 	@Override
 	protected DSSDocument sign() {
-		Exception exception = assertThrows(IllegalArgumentException.class, () -> super.sign());
+		Exception exception = assertThrows(IllegalArgumentException.class, super::sign);
 		assertEquals("'http://uri.etsi.org/19182/HttpHeaders' SigD Mechanism can be used only with non-base64url encoded payload! "
 				+ "Set JAdESSignatureParameters.setBase64UrlEncodedPayload(false).", exception.getMessage());
 

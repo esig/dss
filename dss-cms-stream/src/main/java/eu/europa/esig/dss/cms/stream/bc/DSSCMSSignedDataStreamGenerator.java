@@ -99,7 +99,7 @@ public class DSSCMSSignedDataStreamGenerator extends CMSSignedDataStreamGenerato
 
         sigGen.addObject(calculateVersion(eContentType));
 
-        Set<AlgorithmIdentifier> digestAlgs = new HashSet<AlgorithmIdentifier>();
+        Set<AlgorithmIdentifier> digestAlgs = new HashSet<>();
 
         //
         // add the precalculated SignerInfo digest algorithms.
@@ -304,6 +304,10 @@ public class DSSCMSSignedDataStreamGenerator extends CMSSignedDataStreamGenerato
         return digestAlgorithms;
     }
 
+    /**
+     * This class represents a copy of a private protected class
+     * {@code CMSSignedDataStreamGenerator.CmsSignedDataOutputStream}
+     */
     private class DSSCmsSignedDataOutputStream
             extends OutputStream
     {
@@ -313,6 +317,15 @@ public class DSSCMSSignedDataStreamGenerator extends CMSSignedDataStreamGenerato
         private BERSequenceGenerator _sigGen;
         private BERSequenceGenerator _eiGen;
 
+        /**
+         * Default constructor
+         *
+         * @param out {@link OutputStream} to write in
+         * @param contentOID {@link ASN1ObjectIdentifier} of the signed content
+         * @param sGen {@link BERSequenceGenerator}
+         * @param sigGen {@link BERSequenceGenerator}
+         * @param eiGen {@link BERSequenceGenerator}
+         */
         public DSSCmsSignedDataOutputStream(
                 OutputStream         out,
                 ASN1ObjectIdentifier contentOID,
@@ -327,6 +340,7 @@ public class DSSCMSSignedDataStreamGenerator extends CMSSignedDataStreamGenerato
             _eiGen = eiGen;
         }
 
+        @Override
         public void write(
                 int b)
                 throws IOException
@@ -334,6 +348,7 @@ public class DSSCMSSignedDataStreamGenerator extends CMSSignedDataStreamGenerato
             _out.write(b);
         }
 
+        @Override
         public void write(
                 byte[] bytes,
                 int    off,
@@ -343,6 +358,7 @@ public class DSSCMSSignedDataStreamGenerator extends CMSSignedDataStreamGenerato
             _out.write(bytes, off, len);
         }
 
+        @Override
         public void write(
                 byte[] bytes)
                 throws IOException
@@ -350,6 +366,7 @@ public class DSSCMSSignedDataStreamGenerator extends CMSSignedDataStreamGenerato
             _out.write(bytes);
         }
 
+        @Override
         public void close()
                 throws IOException
         {

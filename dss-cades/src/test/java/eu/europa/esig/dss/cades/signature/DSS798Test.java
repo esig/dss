@@ -41,7 +41,7 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class DSS798Test extends PKIFactoryAccess {
+class DSS798Test extends PKIFactoryAccess {
 
 	@Test
 	void testExtendDetachedWithoutFile() throws Exception {

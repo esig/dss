@@ -103,7 +103,7 @@ class EuropeanLOTLSnippets {
 	private static final String OJ_URL = "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.C_.2019.276.01.0001.01.ENG";
 	
 	@Test
-	public void test() {
+	void test() {
 		CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
 		TLValidationJob job = job();
 		TrustedListsCertificateSource trustedListsCertificateSource = new TrustedListsCertificateSource();

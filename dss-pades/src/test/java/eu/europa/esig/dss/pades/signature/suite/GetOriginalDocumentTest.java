@@ -53,7 +53,7 @@ class GetOriginalDocumentTest extends PKIFactoryAccess {
 	private static final Logger LOG = LoggerFactory.getLogger(GetOriginalDocumentTest.class);
 
 	@Test
-	public final void getOriginalDocument() throws Exception {
+	final void getOriginalDocument() throws Exception {
 		DSSDocument document = new InMemoryDocument(GetOriginalDocumentTest.class.getResourceAsStream("/sample.pdf"), "sample.pdf", MimeTypeEnum.PDF);
 
 		PAdESSignatureParameters signatureParameters = new PAdESSignatureParameters();

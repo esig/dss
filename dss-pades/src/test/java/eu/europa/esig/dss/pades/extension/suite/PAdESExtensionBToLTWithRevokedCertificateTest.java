@@ -42,7 +42,7 @@ class PAdESExtensionBToLTWithRevokedCertificateTest extends AbstractPAdESTestExt
     @Override
     @Test
     public void extendAndVerify() throws Exception {
-        Exception exception = assertThrows(AlertException.class, () -> super.extendAndVerify());
+        Exception exception = assertThrows(AlertException.class, super::extendAndVerify);
         assertTrue(exception.getMessage().contains("Revoked/Suspended certificate(s) detected."));
     }
 

@@ -65,7 +65,7 @@ public abstract class AbstractCAdESRequirementChecks extends AbstractCAdESTestSi
     private CAdESSignatureParameters signatureParameters;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         documentToSign = new InMemoryDocument("Hello world".getBytes());
 
         service = new CAdESService(getCompleteCertificateVerifier());

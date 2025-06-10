@@ -92,9 +92,9 @@ class ASiCSXAdESDoubleSignatureOnExpiredNoPOETest extends AbstractASiCSXAdESTest
 
     @Override
     protected CertificateVerifier getCompleteCertificateVerifier() {
-        CertificateVerifier certificateVerifier = super.getCompleteCertificateVerifier();
-        certificateVerifier.setRevocationFallback(true);
-        return certificateVerifier;
+        CertificateVerifier completeCertificateVerifier = super.getCompleteCertificateVerifier();
+        completeCertificateVerifier.setRevocationFallback(true);
+        return completeCertificateVerifier;
     }
 
     @Override

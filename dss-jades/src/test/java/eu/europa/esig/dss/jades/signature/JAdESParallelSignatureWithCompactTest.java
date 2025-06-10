@@ -72,7 +72,7 @@ class JAdESParallelSignatureWithCompactTest extends AbstractJAdESTestSignature {
         signatureParameters.setJwsSerializationType(JWSSerializationType.COMPACT_SERIALIZATION);
 
         documentToSign = signedDocument;
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> super.sign());
+        Exception exception = assertThrows(IllegalArgumentException.class, super::sign);
         assertEquals("The 'COMPACT_SERIALIZATION' type is not supported for a parallel signing!",
                 exception.getMessage());
     }

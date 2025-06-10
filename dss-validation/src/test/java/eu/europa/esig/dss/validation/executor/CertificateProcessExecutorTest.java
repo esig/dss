@@ -595,12 +595,12 @@ class CertificateProcessExecutorTest extends AbstractTestValidationExecutor {
 		executor.setValidationPolicy(loadDefaultPolicy());
 		executor.setCurrentTime(diagnosticData.getValidationDate());
 		
-		Exception exception = assertThrows(NullPointerException.class, () -> executor.execute());
+		Exception exception = assertThrows(NullPointerException.class, executor::execute);
 		assertEquals("The certificate id is missing", exception.getMessage());
 		
 		executor.setCertificateId("certId");
 		
-		exception = assertThrows(IllegalArgumentException.class, () -> executor.execute());
+		exception = assertThrows(IllegalArgumentException.class, executor::execute);
 		assertEquals("The certificate with the given Id 'certId' has not been found in DiagnosticData", exception.getMessage());
 	}
 

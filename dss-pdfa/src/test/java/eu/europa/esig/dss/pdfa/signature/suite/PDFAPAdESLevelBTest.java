@@ -36,7 +36,7 @@ import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class PDFAPAdESLevelBTest extends AbstractPDFATestSignature {
+class PDFAPAdESLevelBTest extends AbstractPDFATestSignature {
 
 	private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;
 	private PAdESSignatureParameters signatureParameters;

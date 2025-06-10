@@ -47,7 +47,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class CounterSignaturesTest extends AbstractPkiFactoryTestValidation {
+class CounterSignaturesTest extends AbstractPkiFactoryTestValidation {
 
 	private String signingAlias;
 

@@ -92,10 +92,8 @@ public abstract class AbstractSignedAndTimestampedFilesCoveredCheck<T extends Xm
                     return false;
                 }
                 XmlManifestFile entryManifest = diagnosticData.getManifestFileForFilename(manifestEntry);
-                if (entryManifest != null) {
-                    if (!checkManifestFilesCoveredRecursively(coveredEntries, entryManifest)) {
-                        return false;
-                    }
+                if (entryManifest != null && !checkManifestFilesCoveredRecursively(coveredEntries, entryManifest)) {
+                    return false;
                 }
             }
         }

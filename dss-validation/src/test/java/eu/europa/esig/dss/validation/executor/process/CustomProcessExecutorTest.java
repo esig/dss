@@ -40,7 +40,7 @@ class CustomProcessExecutorTest extends AbstractProcessExecutorTest {
 		executor.setValidationPolicy(loadPolicyNoRevoc());
 		executor.setCurrentTime(new Date());
 
-		Exception exception = assertThrows(NullPointerException.class, () -> executor.execute());
+		Exception exception = assertThrows(NullPointerException.class, executor::execute);
 		assertEquals("The diagnostic data is missing", exception.getMessage());
 	}
 
@@ -54,7 +54,7 @@ class CustomProcessExecutorTest extends AbstractProcessExecutorTest {
 		executor.setValidationPolicy(null);
 		executor.setCurrentTime(new Date());
 
-		Exception exception = assertThrows(NullPointerException.class, () -> executor.execute());
+		Exception exception = assertThrows(NullPointerException.class, executor::execute);
 		assertEquals("The validation policy is missing", exception.getMessage());
 	}
 
@@ -67,7 +67,7 @@ class CustomProcessExecutorTest extends AbstractProcessExecutorTest {
 		executor.setDiagnosticData(diagnosticData);
 		executor.setValidationPolicy(loadPolicyNoRevoc());
 		executor.setCurrentTime(null);
-		Exception exception = assertThrows(NullPointerException.class, () -> executor.execute());
+		Exception exception = assertThrows(NullPointerException.class, executor::execute);
 		assertEquals("The current time is missing", exception.getMessage());
 	}
 
@@ -82,7 +82,7 @@ class CustomProcessExecutorTest extends AbstractProcessExecutorTest {
 		executor.setCurrentTime(new Date());
 		executor.setValidationLevel(null);
 
-		Exception exception = assertThrows(NullPointerException.class, () -> executor.execute());
+		Exception exception = assertThrows(NullPointerException.class, executor::execute);
 		assertEquals("The validation level is missing", exception.getMessage());
 	}
 

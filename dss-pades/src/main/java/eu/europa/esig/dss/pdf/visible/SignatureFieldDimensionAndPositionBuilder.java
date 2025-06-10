@@ -251,7 +251,8 @@ public class SignatureFieldDimensionAndPositionBuilder {
      * @return {@link AnnotationBox}
      */
     private AnnotationBox getSignatureFieldBoundaryBox() {
-        float width, height;
+        float width;
+        float height;
         if (signatureFieldAnnotationBox != null) {
             width = signatureFieldAnnotationBox.getWidth();
             height = signatureFieldAnnotationBox.getHeight();
@@ -419,7 +420,11 @@ public class SignatureFieldDimensionAndPositionBuilder {
                     break;
 
                 case ZOOM_AND_CENTER:
-                    float x, y, width, height;
+                    float x;
+                    float y;
+                    float width;
+                    float height;
+
                     float imageRatio = dimensionAndPosition.getImageWidth() / dimensionAndPosition.getImageHeight();
                     float boxRatio = dimensionAndPosition.getImageBoxWidth() / dimensionAndPosition.getImageBoxHeight();
                     if (imageRatio < boxRatio) {

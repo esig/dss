@@ -25,13 +25,16 @@ import eu.europa.esig.dss.pdf.PAdESConstants;
 import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.SigFieldPermissions;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
  * Object of this interface represents a PDF Signature field
  *
  */
-public class PdfSignatureField {
+public class PdfSignatureField implements Serializable {
+
+    private static final long serialVersionUID = 1391102373661984177L;
 
     /** Name of the  signature field */
     private final String fieldName;

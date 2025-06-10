@@ -1399,10 +1399,6 @@ public class SignatureValidationContext implements ValidationContext {
 		}
 	}
 
-	private boolean checkCertificateIsNotRevokedRecursively(CertificateToken certificateToken, List<POE> poeTimes) {
-		return checkCertificateIsNotRevokedRecursively(certificateToken, poeTimes, null);
-	}
-
 	private boolean checkCertificateIsNotRevokedRecursively(CertificateToken certificateToken, List<POE> poeTimes, TokenStatus status) {
 		Date lowestPOETime = getLowestPOETime(poeTimes);
 		if (isSelfSignedOrTrustedAtTime(certificateToken, lowestPOETime)) {

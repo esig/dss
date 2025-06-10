@@ -49,7 +49,7 @@ public class CryptographicSuiteXmlUtils extends XSDAbstractUtils {
     private static CryptographicSuiteXmlUtils singleton;
 
     /** Cached JAXBContext */
-    private static JAXBContext jc;
+    private JAXBContext jc;
 
     /**
      * Empty constructor

@@ -485,11 +485,8 @@ public abstract class AbstractASiCContainerAnalyzer extends DefaultDocumentAnaly
 				return true;
 			}
 		}
-		if (evidenceRecord.getManifestFile() != null && coversFile(evidenceRecord.getManifestFile(), filename)) {
-			return true;
-		}
-		return false;
-	}
+        return evidenceRecord.getManifestFile() != null && coversFile(evidenceRecord.getManifestFile(), filename);
+    }
 
 	private boolean coversFile(ManifestFile manifestFile, String filename) {
 		if (manifestFile != null) {

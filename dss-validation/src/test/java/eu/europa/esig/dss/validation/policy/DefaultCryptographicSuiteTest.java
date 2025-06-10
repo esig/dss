@@ -39,6 +39,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
@@ -100,7 +101,7 @@ public class DefaultCryptographicSuiteTest {
         calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
         calendar.clear();
 
-        Map<DigestAlgorithm, Date> expectedMap = new HashMap<>();
+        Map<DigestAlgorithm, Date> expectedMap = new LinkedHashMap<>();
 
         calendar.set(2004, Calendar.AUGUST, 1);
         expectedMap.put(DigestAlgorithm.MD5, calendar.getTime());
@@ -124,7 +125,7 @@ public class DefaultCryptographicSuiteTest {
         calendar.set(2020, Calendar.DECEMBER, 1);
         expectedMap.put(DigestAlgorithm.WHIRLPOOL, calendar.getTime());
 
-        assertEquals(expectedMap, new HashMap<>(digestAlgorithmsWithExpirationDates));
+        assertEquals(expectedMap, new LinkedHashMap<>(digestAlgorithmsWithExpirationDates));
     }
 
     @ParameterizedTest(name = "Policy {index} : {0}")

@@ -167,16 +167,16 @@ public class DigestMatcherListCryptographicChainBuilder<T extends XmlConstraints
      * @return a list of {@link XmlDigestMatcher}s
      */
     private List<XmlDigestMatcher> getDigestMatchersToProcess(List<XmlDigestMatcher> digestMatchers) {
-        final List<XmlDigestMatcher> result = new ArrayList<>();
+        final List<XmlDigestMatcher> digestMatchersToProcess = new ArrayList<>();
         for (XmlDigestMatcher digestMatcher : digestMatchers) {
             if (digestMatcher.getDigestMethod() != null || !digestMatcherTypesToIgnore.contains(digestMatcher.getType())) {
-                result.add(digestMatcher);
+                digestMatchersToProcess.add(digestMatcher);
             }
         }
-        if (Utils.isCollectionEmpty(result)) {
+        if (Utils.isCollectionEmpty(digestMatchersToProcess)) {
             return digestMatchers; // return original values if no matching entries found
         }
-        return result;
+        return digestMatchersToProcess;
     }
 
     private Set<DigestAlgorithm> getUsedDigestAlgorithms(List<XmlDigestMatcher> digestMatchers) {

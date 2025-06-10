@@ -222,8 +222,10 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 						item = item.setNextItem(checkSubXCVResult(subXCV));
 					}
 
-					lastDate = ValidationModel.HYBRID.equals(model) ? lastDate :
-							(ValidationModel.SHELL.equals(model) ? currentTime : certificate.getNotBefore());
+					if (ValidationModel.CHAIN.equals(model)) {
+						lastDate = certificate.getNotBefore();
+					}
+					// keep same time for SHELL and HYBRID
 
 					if (trustAnchor != null && trustAnchor == certificate) {
 						return;

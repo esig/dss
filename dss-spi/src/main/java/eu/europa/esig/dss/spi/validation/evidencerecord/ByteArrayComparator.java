@@ -27,7 +27,7 @@ import java.util.Comparator;
  * Used to compare two byte arrays.
  * Inspired by {@code <a href="https://github.com/bcgit/bc-java/blob/main/pkix/src/main/java/org/bouncycastle/tsp/ers/ByteArrayComparator.java">BC ByteArrayComparator implementation</a>}
  */
-public class ByteArrayComparator implements Comparator<byte[]>, Serializable {
+public final class ByteArrayComparator implements Comparator<byte[]>, Serializable {
 
     private static final long serialVersionUID = 100676696837205640L;
 

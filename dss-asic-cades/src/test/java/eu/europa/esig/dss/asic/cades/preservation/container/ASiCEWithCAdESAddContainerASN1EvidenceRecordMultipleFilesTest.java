@@ -41,7 +41,7 @@ public class ASiCEWithCAdESAddContainerASN1EvidenceRecordMultipleFilesTest exten
     private static List<DSSDocument> originalDocuments;
 
     @BeforeAll
-    public static void init() {
+    static void init() {
         originalDocuments = Arrays.asList(
                 new InMemoryDocument("Test 12345".getBytes()),
                 new InMemoryDocument("Test 67890".getBytes())

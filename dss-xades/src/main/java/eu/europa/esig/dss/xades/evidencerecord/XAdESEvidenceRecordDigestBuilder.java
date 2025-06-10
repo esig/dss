@@ -372,13 +372,13 @@ public class XAdESEvidenceRecordDigestBuilder extends AbstractSignatureEvidenceR
     }
 
     private byte[] getDigestValueOnCanonicalizedNode(final XAdESSignature signature, final String xPathString,
-                                                     final String canonicalizationAlgorithm) throws IOException {
+                                                     final String canonicalizationAlgorithm) {
         final Element element = DomUtils.getElement(signature.getSignatureElement(), xPathString);
         return getDigestValueOnCanonicalizedNode(element, canonicalizationAlgorithm);
     }
 
     private byte[] getDigestValueOnCanonicalizedNode(final Node node,
-                                                     final String canonicalizationAlgorithm) throws IOException {
+                                                     final String canonicalizationAlgorithm) {
         return DSSXMLUtils.getDigestOnCanonicalizedNode(node, digestAlgorithm, canonicalizationAlgorithm).getValue();
     }
 

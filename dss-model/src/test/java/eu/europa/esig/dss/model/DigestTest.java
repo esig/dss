@@ -91,7 +91,7 @@ class DigestTest {
 		Digest digest = new Digest();
 		assertNull(digest.getAlgorithm());
 		assertNull(digest.getValue());
-		assertThrows(NullPointerException.class, () -> digest.getHexValue());
+		assertThrows(NullPointerException.class, digest::getHexValue);
 		assertNotNull(digest.toString());
 	}
 

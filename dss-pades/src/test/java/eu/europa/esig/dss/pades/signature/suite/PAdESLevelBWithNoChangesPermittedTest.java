@@ -68,7 +68,7 @@ class PAdESLevelBWithNoChangesPermittedTest extends AbstractPAdESTestSignature {
         DSSDocument signedDocument = super.sign();
 
         documentToSign = signedDocument;
-        Exception exception = assertThrows(ProtectedDocumentException.class, () -> super.sign());
+        Exception exception = assertThrows(ProtectedDocumentException.class, super::sign);
         assertEquals("The creation of new signatures is not permitted in the current document. " +
                 "Reason : DocMDP dictionary does not permit a new signature creation!", exception.getMessage());
 

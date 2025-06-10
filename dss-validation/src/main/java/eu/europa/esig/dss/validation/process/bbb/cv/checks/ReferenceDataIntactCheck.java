@@ -119,11 +119,19 @@ public class ReferenceDataIntactCheck<T extends XmlConstraintsConclusion> extend
 				referenceName = MessageTag.TST_TYPE_REF_ER_ATST_SEQ;
 				break;
 			default:
-				referenceName = Utils.isStringNotBlank(digestMatcher.getId()) ? digestMatcher.getId() :
-						Utils.isStringNotBlank(digestMatcher.getUri()) ? digestMatcher.getUri() :
-								digestMatcher.getType().name();
+				referenceName = getReferenceName(digestMatcher);
 		}
 		return i18nProvider.getMessage(MessageTag.REFERENCE, referenceName);
+	}
+
+	private String getReferenceName(XmlDigestMatcher digestMatcher) {
+		if (Utils.isStringNotBlank(digestMatcher.getId())) {
+			return digestMatcher.getId();
+		} else if (Utils.isStringNotBlank(digestMatcher.getUri())) {
+			return digestMatcher.getUri();
+		} else {
+			return digestMatcher.getType().name();
+		}
 	}
 
 }

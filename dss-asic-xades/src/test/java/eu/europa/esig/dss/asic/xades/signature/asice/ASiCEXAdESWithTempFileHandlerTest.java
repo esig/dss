@@ -54,7 +54,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class ASiCEXAdESWithTempFileHandlerTest extends AbstractASiCEXAdESTestSignature {
+class ASiCEXAdESWithTempFileHandlerTest extends AbstractASiCEXAdESTestSignature {
 
     private static final Logger LOG = LoggerFactory.getLogger(ASiCEXAdESWithTempFileHandlerTest.class);
 

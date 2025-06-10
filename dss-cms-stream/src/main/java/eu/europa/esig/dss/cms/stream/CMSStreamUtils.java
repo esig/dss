@@ -65,8 +65,6 @@ import org.bouncycastle.cms.SignerInformationStore;
 import org.bouncycastle.operator.DigestCalculatorProvider;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.bouncycastle.util.Store;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -81,8 +79,6 @@ import java.util.Set;
  *
  */
 public class CMSStreamUtils implements ICMSUtils {
-
-    private static final Logger LOG = LoggerFactory.getLogger(CMSStreamUtils.class);
 
     /**
      * Default constructor
@@ -337,7 +333,7 @@ public class CMSStreamUtils implements ICMSUtils {
         }
     }
 
-    private void flush(ASN1SetParser parser) throws IOException {
+    private void flush(ASN1SetParser parser) {
         if (parser != null) {
             parser.toASN1Primitive();
         }

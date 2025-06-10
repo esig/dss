@@ -102,6 +102,7 @@ class JAdESLevelBWithECDSATest extends AbstractJAdESTestSignature {
 
 	@Override
 	public void signAndVerify() {
+		// skip global test
 	}
 
 	@Override

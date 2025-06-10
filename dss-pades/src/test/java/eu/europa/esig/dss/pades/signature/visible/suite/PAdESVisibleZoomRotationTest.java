@@ -140,7 +140,7 @@ class PAdESVisibleZoomRotationTest extends AbstractPAdESTestSignature {
 		imageParameters.setZoom(200);
 		signatureParameters.setImageParameters(imageParameters);
 
-		Exception exception = assertThrows(AlertException.class, () -> super.signAndVerify());
+		Exception exception = assertThrows(AlertException.class, super::signAndVerify);
 		assertTrue(exception.getMessage().contains("The new signature field position is outside the page dimensions!"));
 
 		fieldParameters.setHeight(200);

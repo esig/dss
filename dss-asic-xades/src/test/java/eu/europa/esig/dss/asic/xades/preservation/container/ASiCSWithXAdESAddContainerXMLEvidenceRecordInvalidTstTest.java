@@ -50,7 +50,7 @@ class ASiCSWithXAdESAddContainerXMLEvidenceRecordInvalidTstTest extends Abstract
     private CertificateVerifier certificateVerifier;
 
     @BeforeEach
-    public void init() {
+    void init() {
         certificateVerifier = super.getOfflineCertificateVerifier();
     }
 

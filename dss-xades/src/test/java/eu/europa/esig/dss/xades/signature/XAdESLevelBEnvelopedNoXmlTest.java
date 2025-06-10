@@ -65,7 +65,7 @@ class XAdESLevelBEnvelopedNoXmlTest extends AbstractXAdESTestSignature {
 	@Override
 	@Test
 	public void signAndVerify() {
-		Exception exception = assertThrows(IllegalInputException.class, () -> super.signAndVerify());
+		Exception exception = assertThrows(IllegalInputException.class, super::signAndVerify);
 		assertEquals("Enveloped signature cannot be created. Reason : the provided document is not XML!", exception.getMessage());
 	}
 

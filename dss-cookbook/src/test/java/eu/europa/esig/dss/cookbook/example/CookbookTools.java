@@ -26,17 +26,16 @@ import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -47,7 +46,7 @@ public class CookbookTools extends PKIFactoryAccess {
 	/**
 	 * The document to sign
 	 */
-	static protected DSSDocument toSignDocument;
+	protected static DSSDocument toSignDocument;
 
 	/**
 	 * This method sets the common parameters.
@@ -105,7 +104,7 @@ public class CookbookTools extends PKIFactoryAccess {
 	 * This method retrieves an instance of online PKCS12 keystore
 	 *
 	 */
-	protected SignatureTokenConnection getUserPkcs12Token() throws IOException {
+	protected SignatureTokenConnection getUserPkcs12Token() {
 		return getOnlinePKCS12Token();
 	}
 
@@ -113,7 +112,7 @@ public class CookbookTools extends PKIFactoryAccess {
 	 * This method retrieves an instance of PKCS12 keystore
 	 * 
 	 */
-	protected SignatureTokenConnection getPkcs12Token() throws IOException {
+	protected SignatureTokenConnection getPkcs12Token() {
 		return getToken();
 	}
 

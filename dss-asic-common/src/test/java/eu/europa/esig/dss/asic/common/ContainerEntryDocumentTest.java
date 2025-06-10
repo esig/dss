@@ -42,12 +42,12 @@ class ContainerEntryDocumentTest {
     private DSSDocument containerEntry;
 
     @BeforeEach
-    public void init() {
+    void init() {
         containerEntry = new InMemoryDocument("Hello world".getBytes(), "helloworld");
     }
 
     @Test
-    public void persistenceTest() {
+    void persistenceTest() {
         final Set<DSSDocument> hashSet = new HashSet<>();
 
         DSSDocument document = getPersistenceTestDocument();

@@ -54,7 +54,7 @@ class DSS3592ASiCeWithCAdESExtensionTest extends AbstractASiCWithCAdESTestExtens
     private SignatureLevel originalSignatureLevel;
 
     @BeforeEach
-    public void init() {
+    void init() {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.MONTH, -2);
         signingTime = calendar.getTime();
@@ -97,9 +97,9 @@ class DSS3592ASiCeWithCAdESExtensionTest extends AbstractASiCWithCAdESTestExtens
 
     @Override
     protected CertificateVerifier getCompleteCertificateVerifier() {
-        CertificateVerifier certificateVerifier = super.getCompleteCertificateVerifier();
-        certificateVerifier.setRevocationFallback(true);
-        return certificateVerifier;
+        CertificateVerifier completeCertificateVerifier = super.getCompleteCertificateVerifier();
+        completeCertificateVerifier.setRevocationFallback(true);
+        return completeCertificateVerifier;
     }
 
     @Override

@@ -24,7 +24,6 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -38,15 +37,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class DocumentWithSha2Test {
 
-    private DSSDocument containerEntry;
-
-    @BeforeEach
-    public void init() {
-        containerEntry = new InMemoryDocument("Hello world".getBytes(), "helloworld");
-    }
-
     @Test
-    public void persistenceTest() {
+    void persistenceTest() {
         final Set<DSSDocument> hashSet = new HashSet<>();
 
         DSSDocument document = getPersistenceTestDocument();

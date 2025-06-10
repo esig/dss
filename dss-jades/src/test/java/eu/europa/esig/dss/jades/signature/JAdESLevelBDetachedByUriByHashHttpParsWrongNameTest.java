@@ -43,7 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class JAdESLevelBDetachedByUriByHashHttpParsWrongNameTest extends AbstractJAdESMultipleDocumentSignatureTest {
+class JAdESLevelBDetachedByUriByHashHttpParsWrongNameTest extends AbstractJAdESMultipleDocumentSignatureTest {
 
     private static final String DOC_ONE_NAME = "https://nowina.lu/pub/JAdES/ObjectIdByURIHash-1.html";
     private static final String DOC_TWO_NAME = "https://nowina.lu/pub/JAdES/ObjectIdByURIHash-2.html";

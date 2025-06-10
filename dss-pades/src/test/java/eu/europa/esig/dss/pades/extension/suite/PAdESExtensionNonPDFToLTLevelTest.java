@@ -52,6 +52,7 @@ class PAdESExtensionNonPDFToLTLevelTest extends AbstractPAdESTestExtension {
 
     @Override
     public void extendAndVerify() throws Exception {
+        // skip
     }
 
 }

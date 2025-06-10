@@ -158,9 +158,7 @@ class CAdESLevelBBERAddParallelASN1EvidenceRecordTest extends AbstractCAdESAddEv
 
         parallelER = true;
 
-        DSSDocument twoERDoc = service.addSignatureEvidenceRecord(oneERDoc, getEvidenceRecordDocument(), getEvidenceRecordIncorporationParameters());
-
-        return twoERDoc;
+        return service.addSignatureEvidenceRecord(oneERDoc, getEvidenceRecordDocument(), getEvidenceRecordIncorporationParameters());
     }
 
 }

@@ -42,13 +42,13 @@ class CMSSignedContentDocumentTest {
     private DSSDocument cmsDocument;
 
     @BeforeEach
-    public void init() {
+    void init() {
         cmsDocument = new InMemoryDocument(
                 CMSSignedContentDocumentTest.class.getResourceAsStream("/validation/CAdESDoubleLTA.p7m"));
     }
 
     @Test
-    public void persistenceTest() {
+    void persistenceTest() {
         final Set<DSSDocument> hashSet = new HashSet<>();
 
         DSSDocument document = getPersistenceTestDocument();

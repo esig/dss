@@ -71,7 +71,7 @@ class ASiCSCAdESLevelBCustomPackageNameTest extends AbstractASiCSWithCAdESMultip
         filenameFactory.setDataPackageFilename("inner-container.TXT");
         getService().setAsicFilenameFactory(filenameFactory);
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> super.sign());
+        Exception exception = assertThrows(IllegalArgumentException.class, super::sign);
         assertEquals("A data package filename within ASiC container shall ends with '.zip'!",
                 exception.getMessage());
 

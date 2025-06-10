@@ -41,7 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class SignCAdESWithTempFileTest extends CookbookTools {
+class SignCAdESWithTempFileTest extends CookbookTools {
 
     @Test
     void signPAdESWithTempFile() throws Exception {

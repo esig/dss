@@ -64,7 +64,7 @@ class PAdESLevelLTANotTrustedTSPTest extends AbstractPAdESTestSignature {
     @Test
     @Override
     public void signAndVerify() {
-        Exception exception = assertThrows(AlertException.class, () -> super.signAndVerify());
+        Exception exception = assertThrows(AlertException.class, super::signAndVerify);
         assertTrue(exception.getMessage().contains("Revocation data is missing for one or more certificate(s)."));
         assertTrue(exception.getMessage().contains("Revocation data is skipped for untrusted certificate chain!"));
     }

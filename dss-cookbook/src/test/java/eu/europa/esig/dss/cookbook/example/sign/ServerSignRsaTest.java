@@ -43,7 +43,7 @@ class ServerSignRsaTest extends CookbookTools {
     private static CAdESService service;
 
     @BeforeEach
-    public void init() {
+    void init() {
         // Create common certificate verifier
         CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
         // Create signature service for signature creation

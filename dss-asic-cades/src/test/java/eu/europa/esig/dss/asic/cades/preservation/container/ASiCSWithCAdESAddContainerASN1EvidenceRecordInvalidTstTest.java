@@ -52,7 +52,7 @@ class ASiCSWithCAdESAddContainerASN1EvidenceRecordInvalidTstTest extends Abstrac
     private CertificateVerifier certificateVerifier;
 
     @BeforeEach
-    public void init() {
+    void init() {
         certificateVerifier = super.getOfflineCertificateVerifier();
     }
 

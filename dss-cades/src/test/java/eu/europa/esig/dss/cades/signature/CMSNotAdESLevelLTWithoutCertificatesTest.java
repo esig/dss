@@ -41,7 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CMSNotAdESLevelLTWithoutCertificatesTest extends AbstractCAdESTestSignature {
+class CMSNotAdESLevelLTWithoutCertificatesTest extends AbstractCAdESTestSignature {
 
     private CertificateVerifier certificateVerifier;
     private DocumentSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> service;
@@ -68,7 +68,7 @@ public class CMSNotAdESLevelLTWithoutCertificatesTest extends AbstractCAdESTestS
     public void signAndVerify() {
         certificateVerifier.setAugmentationAlertOnSignatureWithoutCertificates(new ExceptionOnStatusAlert());
 
-        Exception exception = assertThrows(AlertException.class, () -> super.signAndVerify());
+        Exception exception = assertThrows(AlertException.class, super::signAndVerify);
         assertTrue(exception.getMessage().contains("Error on signature augmentation to LT-level."));
         assertTrue(exception.getMessage().contains("The signature does not contain certificates."));
 

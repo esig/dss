@@ -46,6 +46,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.PublicKey;
@@ -68,6 +70,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 class DSSUtilsTest {
 
@@ -84,7 +87,7 @@ class DSSUtilsTest {
 	@Test
 	void formatDateTest() {
 		Calendar calendar = Calendar.getInstance(DSSUtils.UTC_TIMEZONE);
-		calendar.set(2021, 0, 01, 0, 0, 0);
+		calendar.set(2021, Calendar.JANUARY, 1, 0, 0, 0);
 		assertEquals("2021-01-01T00:00:00Z", DSSUtils.formatDateToRFC(calendar.getTime()));
 		assertEquals("2021-01-01T00:00:00Z", DSSUtils.formatDateWithCustomFormat(calendar.getTime(), DSSUtils.RFC3339_TIME_FORMAT));
 		assertEquals("2021-01-01T03:00:00Z", DSSUtils.formatDateWithCustomFormat(calendar.getTime(), DSSUtils.RFC3339_TIME_FORMAT, "GMT+3"));
@@ -98,7 +101,7 @@ class DSSUtilsTest {
 		assertEquals("2020-12-31 21:00", DSSUtils.formatDateWithCustomFormat(calendar.getTime(), customDateFormat, "GMT-3"));
 
 		calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT+3"));
-		calendar.set(2021, 0, 01, 0, 0, 0);
+		calendar.set(2021, Calendar.JANUARY, 1, 0, 0, 0);
 		assertEquals("2020-12-31T21:00:00Z", DSSUtils.formatDateToRFC(calendar.getTime()));
 		assertEquals("2020-12-31T21:00:00Z", DSSUtils.formatDateWithCustomFormat(calendar.getTime(), DSSUtils.RFC3339_TIME_FORMAT));
 		assertEquals("2021-01-01T00:00:00Z", DSSUtils.formatDateWithCustomFormat(calendar.getTime(), DSSUtils.RFC3339_TIME_FORMAT, "GMT+3"));
@@ -111,7 +114,7 @@ class DSSUtilsTest {
 		assertEquals("2020-12-31 18:00", DSSUtils.formatDateWithCustomFormat(calendar.getTime(), customDateFormat, "GMT-3"));
 
 		calendar = Calendar.getInstance();
-		calendar.set(2021, 0, 01, 0, 0, 0);
+		calendar.set(2021, Calendar.JANUARY, 1, 0, 0, 0);
 		assertEquals(DSSUtils.formatDateWithCustomFormat(calendar.getTime(), customDateFormat, Calendar.getInstance().getTimeZone()),
 				DSSUtils.formatDateWithCustomFormat(calendar.getTime(), customDateFormat, ""));
 		assertEquals(DSSUtils.formatDateWithCustomFormat(calendar.getTime(), customDateFormat, Calendar.getInstance().getTimeZone()),
@@ -159,20 +162,20 @@ class DSSUtilsTest {
 
 	@Test
 	void testLoadP7cPEM() throws DSSException, IOException {
-		Collection<CertificateToken> certs = DSSUtils.loadCertificateFromP7c(new FileInputStream("src/test/resources/certchain.p7c"));
+		Collection<CertificateToken> certs = DSSUtils.loadCertificateFromP7c(Files.newInputStream(Paths.get("src/test/resources/certchain.p7c")));
 		assertTrue(Utils.isCollectionNotEmpty(certs));
 		assertTrue(certs.size() > 1);
 	}
 
 	@Test
 	void testLoadP7cNotPEM() throws DSSException, IOException {
-		Collection<CertificateToken> certs = DSSUtils.loadCertificateFromP7c(new FileInputStream("src/test/resources/AdobeCA.p7c"));
+		Collection<CertificateToken> certs = DSSUtils.loadCertificateFromP7c(Files.newInputStream(Paths.get("src/test/resources/AdobeCA.p7c")));
 		assertTrue(Utils.isCollectionNotEmpty(certs));
 	}
 
 	@Test
 	void loadCertificate() throws Exception {
-		CertificateToken certificate = DSSUtils.loadCertificate(new FileInputStream("src/test/resources/belgiumrs2.crt"));
+		CertificateToken certificate = DSSUtils.loadCertificate(Files.newInputStream(Paths.get("src/test/resources/belgiumrs2.crt")));
 		assertNotNull(certificate);
 
 		FileInputStream fis = new FileInputStream("src/test/resources/belgiumrs2.crt");
@@ -182,7 +185,7 @@ class DSSUtilsTest {
 		CertificateToken certificate2 = DSSUtils.loadCertificate(byteArray);
 		assertNotNull(certificate2);
 
-		CertificateToken certificateNew = DSSUtils.loadCertificate(new FileInputStream("src/test/resources/belgiumrs2-new.crt"));
+		CertificateToken certificateNew = DSSUtils.loadCertificate(Files.newInputStream(Paths.get("src/test/resources/belgiumrs2-new.crt")));
 		assertNotNull(certificateNew);
 
 		FileInputStream fisNew = new FileInputStream("src/test/resources/belgiumrs2-new.crt");
@@ -203,7 +206,7 @@ class DSSUtilsTest {
 
 	@Test
 	void loadCertificateDoesNotThrowNullPointerExceptionWhenProvidedNonCertificateFile() throws IOException {
-		try (ByteArrayInputStream bais = new ByteArrayInputStream("test".getBytes("UTF-8"))) {
+		try (ByteArrayInputStream bais = new ByteArrayInputStream("test".getBytes(StandardCharsets.UTF_8))) {
 			assertThrows(DSSException.class, () -> DSSUtils.loadCertificate(bais));
 		}
 	}
@@ -284,7 +287,7 @@ class DSSUtilsTest {
 
 	@Test
 	void getMD5Digest() throws UnsupportedEncodingException {
-		assertEquals("3e25960a79dbc69b674cd4ec67a72c62", DSSUtils.getMD5Digest("Hello world".getBytes("UTF-8")));
+		assertEquals("3e25960a79dbc69b674cd4ec67a72c62", DSSUtils.getMD5Digest("Hello world".getBytes(StandardCharsets.UTF_8)));
 	}
 
 	@Test
@@ -322,6 +325,7 @@ class DSSUtilsTest {
 			cert.getCertificate().verify(publicKey);
 			signedWithItsPublicKey = true;
 		} catch (Exception e) {
+			fail(e);
 		}
 		assertTrue(signedWithItsPublicKey);
 		assertFalse(cert.isSelfIssued());
@@ -330,7 +334,7 @@ class DSSUtilsTest {
 
 	@Test
 	void printSecurityProviders() {
-		assertDoesNotThrow(() -> DSSUtils.printSecurityProviders());
+		assertDoesNotThrow(DSSUtils::printSecurityProviders);
 	}
 
 	@Test

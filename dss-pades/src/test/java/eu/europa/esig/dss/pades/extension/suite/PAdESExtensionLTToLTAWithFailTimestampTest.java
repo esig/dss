@@ -48,7 +48,7 @@ class PAdESExtensionLTToLTAWithFailTimestampTest extends AbstractPAdESTestExtens
 	@Override
 	@Test
 	public void extendAndVerify() throws Exception {
-		assertThrows(DSSException.class, () -> super.extendAndVerify());
+		assertThrows(DSSException.class, super::extendAndVerify);
 	}
 
 }

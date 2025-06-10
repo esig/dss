@@ -42,7 +42,7 @@ class PAdESLevelBEncryptedDocumentTest extends AbstractPAdESTestSignature {
 
     @BeforeEach
     void init() throws Exception {
-        documentToSign = new InMemoryDocument(PAdESLevelBTest.class.getResourceAsStream("/protected/restricted_fields.pdf"));
+        documentToSign = new InMemoryDocument(PAdESLevelBEncryptedDocumentTest.class.getResourceAsStream("/protected/restricted_fields.pdf"));
 
         signatureParameters = new PAdESSignatureParameters();
         signatureParameters.setSigningCertificate(getSigningCert());
@@ -54,7 +54,7 @@ class PAdESLevelBEncryptedDocumentTest extends AbstractPAdESTestSignature {
 
     @Override
     protected DSSDocument sign() {
-        Exception exception = assertThrows(ProtectedDocumentException.class, () -> super.sign());
+        Exception exception = assertThrows(ProtectedDocumentException.class, super::sign);
         assertEquals("The creation of new signatures is not permitted in the current document. " +
                         "Reason : PDF Permissions dictionary does not allow modification or creation interactive form fields, " +
                         "including signature fields when document is open with user-access!",

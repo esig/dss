@@ -31,7 +31,7 @@ import java.util.Objects;
  * with the alerts processing specified in CertificateVerifier
  *
  */
-public class CompleteValidationContextExecutor implements ValidationContextExecutor {
+public final class CompleteValidationContextExecutor implements ValidationContextExecutor {
 
     /** Singleton instance */
     public static final CompleteValidationContextExecutor INSTANCE = new CompleteValidationContextExecutor();

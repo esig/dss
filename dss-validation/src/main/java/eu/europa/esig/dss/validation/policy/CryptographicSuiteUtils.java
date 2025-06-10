@@ -159,10 +159,10 @@ public final class CryptographicSuiteUtils {
 
         Map<EncryptionAlgorithmWithMinKeySize, Date> encryptionAlgorithmsWithExpirationDates =
                 cryptographicSuite.getAcceptableEncryptionAlgorithmsWithExpirationDates();
-        for (EncryptionAlgorithmWithMinKeySize encryptionAlgorithmWithMinKeySize : encryptionAlgorithmsWithExpirationDates.keySet()) {
+        for (Map.Entry<EncryptionAlgorithmWithMinKeySize, Date> entry : encryptionAlgorithmsWithExpirationDates.entrySet()) {
+            EncryptionAlgorithmWithMinKeySize encryptionAlgorithmWithMinKeySize = entry.getKey();
             if (encryptionAlgorithm == encryptionAlgorithmWithMinKeySize.getEncryptionAlgorithm()) {
-                Date expirationDate = encryptionAlgorithmsWithExpirationDates.get(encryptionAlgorithmWithMinKeySize);
-                dates.put(encryptionAlgorithmWithMinKeySize.getMinKeySize(), expirationDate);
+                dates.put(encryptionAlgorithmWithMinKeySize.getMinKeySize(), entry.getValue());
             }
         }
 
@@ -212,9 +212,10 @@ public final class CryptographicSuiteUtils {
 
         List<DigestAlgorithm> acceptableDigestAlgorithms = cryptographicSuite.getAcceptableDigestAlgorithms();
         Map<DigestAlgorithm, Date> digestAlgorithmsWithExpirationDates = cryptographicSuite.getAcceptableDigestAlgorithmsWithExpirationDates();
-        for (DigestAlgorithm digestAlgorithm : digestAlgorithmsWithExpirationDates.keySet()) {
+        for (Map.Entry<DigestAlgorithm, Date> entry : digestAlgorithmsWithExpirationDates.entrySet()) {
+            DigestAlgorithm digestAlgorithm = entry.getKey();
             if (acceptableDigestAlgorithms.contains(digestAlgorithm)) {
-                Date expirationDate = digestAlgorithmsWithExpirationDates.get(digestAlgorithm);
+                Date expirationDate = entry.getValue();
                 if (isReliableAtTime(expirationDate, validationTime)) {
                     reliableDigestAlgorithms.add(digestAlgorithm);
                 }
@@ -253,13 +254,14 @@ public final class CryptographicSuiteUtils {
         List<EncryptionAlgorithm> acceptableEncryptionAlgorithms = cryptographicSuite.getAcceptableEncryptionAlgorithms();
         Map<EncryptionAlgorithmWithMinKeySize, Date> encryptionAlgorithmsWithExpirationDates = 
                 cryptographicSuite.getAcceptableEncryptionAlgorithmsWithExpirationDates();
-        for (EncryptionAlgorithmWithMinKeySize encryptionAlgorithmWithMinKeySize : encryptionAlgorithmsWithExpirationDates.keySet()) {
+        for (Map.Entry<EncryptionAlgorithmWithMinKeySize, Date> entry : encryptionAlgorithmsWithExpirationDates.entrySet()) {
+            EncryptionAlgorithmWithMinKeySize encryptionAlgorithmWithMinKeySize = entry.getKey();
             EncryptionAlgorithm encryptionAlgorithm = encryptionAlgorithmWithMinKeySize.getEncryptionAlgorithm();
             int keySize = encryptionAlgorithmWithMinKeySize.getMinKeySize();
             if (acceptableEncryptionAlgorithms.contains(encryptionAlgorithm)) {
                 Integer minKeySize = reliableEncryptionAlgorithms.get(encryptionAlgorithm);
                 if (minKeySize == null || minKeySize > keySize) {
-                    Date expirationDate = encryptionAlgorithmsWithExpirationDates.get(encryptionAlgorithmWithMinKeySize);
+                    Date expirationDate = entry.getValue();
                     if (isReliableAtTime(expirationDate, validationTime)) {
                         reliableEncryptionAlgorithms.put(encryptionAlgorithm, keySize);
                     }
@@ -290,8 +292,8 @@ public final class CryptographicSuiteUtils {
         }
 
         final List<EncryptionAlgorithmWithMinKeySize> result = new ArrayList<>();
-        for (EncryptionAlgorithm encryptionAlgorithm : reliableEncryptionAlgorithms.keySet()) {
-            result.add(new EncryptionAlgorithmWithMinKeySize(encryptionAlgorithm, reliableEncryptionAlgorithms.get(encryptionAlgorithm)));
+        for (Map.Entry<EncryptionAlgorithm, Integer> entry : reliableEncryptionAlgorithms.entrySet()) {
+            result.add(new EncryptionAlgorithmWithMinKeySize(entry.getKey(), entry.getValue()));
         }
         return result;
     }

@@ -29,8 +29,6 @@ import eu.europa.esig.dss.spi.validation.SignatureAttribute;
 import eu.europa.esig.dss.spi.validation.evidencerecord.AbstractEmbeddedEvidenceRecordHelper;
 import eu.europa.esig.dss.spi.validation.evidencerecord.SignatureEvidenceRecordDigestBuilder;
 import eu.europa.esig.dss.utils.Utils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -39,8 +37,6 @@ import java.util.List;
  *
  */
 public class CAdESEmbeddedEvidenceRecordHelper extends AbstractEmbeddedEvidenceRecordHelper {
-
-    private static final Logger LOG = LoggerFactory.getLogger(CAdESEmbeddedEvidenceRecordHelper.class);
 
     /**
      * Constructor for an evidence record applied for the whole signature content (not yet embedded)

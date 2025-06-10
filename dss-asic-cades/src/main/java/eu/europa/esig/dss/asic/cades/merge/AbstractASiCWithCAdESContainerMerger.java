@@ -188,7 +188,7 @@ public abstract class AbstractASiCWithCAdESContainerMerger extends DefaultContai
         for (CMS signedData : cmsList) {
             result.addAll(signedData.getCertificates().getMatches(null));
         }
-        return (Store<X509CertificateHolder>) new JcaCertStore(result);
+        return new JcaCertStore(result);
     }
 
     private Store<X509AttributeCertificateHolder> getCertAttributeStore(List<CMS> cmsList) {

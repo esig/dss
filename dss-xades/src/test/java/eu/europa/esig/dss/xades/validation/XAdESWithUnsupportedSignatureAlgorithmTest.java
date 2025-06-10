@@ -38,7 +38,7 @@ class XAdESWithUnsupportedSignatureAlgorithmTest extends AbstractXAdESTestValida
     @Test
     @Override
     public void validate() {
-        Exception exception = assertThrows(DSSException.class, () -> super.validate());
+        Exception exception = assertThrows(DSSException.class, super::validate);
         assertTrue(exception.getMessage().contains("Unable to initialize Santuario XMLSignature."));
     }
 

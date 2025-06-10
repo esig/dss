@@ -50,6 +50,13 @@ public final class RFC3339DateUtils {
     }
 
     /**
+     * Constructor
+     */
+    private RFC3339DateUtils() {
+        // singleton
+    }
+
+    /**
      * Parses a IETF RFC 3339 date String
      *
      * @param dateString {@link String} in the RFC 3339 format to parse

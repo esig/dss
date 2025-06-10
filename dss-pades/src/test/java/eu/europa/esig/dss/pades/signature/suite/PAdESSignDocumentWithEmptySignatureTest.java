@@ -38,7 +38,7 @@ class PAdESSignDocumentWithEmptySignatureTest extends AbstractPAdESTestSignature
     @BeforeEach
     void init() throws Exception {
 
-        documentToSign = new InMemoryDocument(PAdESLevelBTest.class.getResourceAsStream("/validation/pdf-with-empty-sig.pdf"));
+        documentToSign = new InMemoryDocument(PAdESSignDocumentWithEmptySignatureTest.class.getResourceAsStream("/validation/pdf-with-empty-sig.pdf"));
 
         signatureParameters = new PAdESSignatureParameters();
         signatureParameters.setSigningCertificate(getSigningCert());

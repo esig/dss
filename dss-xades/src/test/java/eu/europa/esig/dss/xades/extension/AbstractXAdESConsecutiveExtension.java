@@ -62,7 +62,7 @@ public abstract class AbstractXAdESConsecutiveExtension<SP extends AbstractSigna
 	protected abstract SignatureLevel getFourthSignSignatureLevel();
 	
 	@BeforeEach
-	public void init() {
+	void init() {
 		signatureLevel = SignatureLevel.XAdES_BASELINE_B;
 		
 		signatureParameters = new XAdESSignatureParameters();

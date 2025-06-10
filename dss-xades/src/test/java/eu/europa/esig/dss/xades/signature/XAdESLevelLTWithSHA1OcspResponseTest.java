@@ -79,7 +79,7 @@ class XAdESLevelLTWithSHA1OcspResponseTest extends AbstractXAdESTestSignature {
 
     @Override
     protected DSSDocument sign() {
-        Exception exception = assertThrows(AlertException.class, () -> super.sign());
+        Exception exception = assertThrows(AlertException.class, super::sign);
         assertTrue(exception.getMessage().contains("Revocation data is missing for one or more certificate(s)."));
 
         // accept SHA-1

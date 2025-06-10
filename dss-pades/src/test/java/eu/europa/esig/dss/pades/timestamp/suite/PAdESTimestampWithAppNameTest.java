@@ -26,12 +26,11 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
-import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBTest;
 import eu.europa.esig.dss.pdf.PAdESConstants;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.test.AbstractPkiFactoryTestValidation;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.validationreport.jaxb.ValidationStatusType;
 import org.junit.jupiter.api.Test;
 
@@ -43,13 +42,13 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PAdESTimestampWithAppNameTest extends AbstractPkiFactoryTestValidation {
+class PAdESTimestampWithAppNameTest extends AbstractPkiFactoryTestValidation {
 
     private static final String DSS_APP_NAME = "DSS";
 
     @Test
     void test() throws Exception {
-        DSSDocument documentToTimestamp = new InMemoryDocument(PAdESLevelBTest.class.getResourceAsStream("/sample.pdf"));
+        DSSDocument documentToTimestamp = new InMemoryDocument(PAdESTimestampWithAppNameTest.class.getResourceAsStream("/sample.pdf"));
 
         PAdESService service = new PAdESService(getOfflineCertificateVerifier());
         service.setTspSource(getGoodTsa());

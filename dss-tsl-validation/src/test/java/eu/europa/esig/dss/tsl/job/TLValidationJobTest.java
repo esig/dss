@@ -853,9 +853,7 @@ class TLValidationJobTest {
 	@Test
 	void lotlValidationSummaryExtractionTimeoutTest() {
 		TLValidationJob validationJob = getLOTLValidationJob();
-		assertTimeout(ofMillis(50), () -> {
-			validationJob.getSummary();
-		});
+		assertTimeout(ofMillis(50), validationJob::getSummary);
 	}
 	
 	@Test
