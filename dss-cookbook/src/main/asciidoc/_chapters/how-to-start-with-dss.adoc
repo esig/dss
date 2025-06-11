@@ -19,7 +19,7 @@ This section explains the usage and build requirements for https://github.com/es
 
 The latest version of DSS framework has the following minimal requirements:
 
-* Java 8 or higher (tested up to Java 22) is required for usage;
+* Java 8 or higher (tested up to Java 24) is required for usage;
 * Java 11 or higher is required for the build. Java 15 is the minimal requirement for a build with unit tests;
 * Maven 3.6.3 and higher (if build required);
 * Memory and Disk: see minimal requirements for the used JVM. In general the higher available is better;
@@ -175,7 +175,7 @@ This section explains the build and use requirements for the https://github.com/
 
 The minimal requirements to build/run DSS Demonstrations:
 
-* Java 17 or higher (tested up to Java 22) is required;
+* Java 17 or higher (tested up to Java 24) is required;
 * Maven 3.6 or higher (if build required);
 * Tomcat 10 or higher (for Web-application);
 * Memory and Disk: see minimal requirements for the used JVM. In general the highest available is the best;
@@ -251,11 +251,11 @@ In order to build a bundle for JDK 17 (minimum requirement), the following profi
 mvn clean install -P java17
 ----
 
-DSS webapp version with Java 23 can be created with a command below:
+DSS webapp version with Java 24 can be created with a command below:
 
-.Maven command to create a JDK 23 bundle
+.Maven command to create a JDK 24 bundle
 ----
-mvn clean install -P java23
+mvn clean install -P java24
 ----
 
 ====== Integration tests
