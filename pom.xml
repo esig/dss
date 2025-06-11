@@ -1151,6 +1151,25 @@
 			</properties>
 		</profile>
 		<profile>
+			<!-- Execute tests on large files of 8GB size -->
+			<id>large-files-tests</id>
+			<properties>
+				<exclude.tag.tests>nothing-to-exclude</exclude.tag.tests>
+				<large.file.size.mb>8096</large.file.size.mb>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<configuration>
+							<argLine>-Dlarge.file.size.mb=${large.file.size.mb}</argLine>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
 			<id>owasp</id>
 			<build>
 				<plugins>

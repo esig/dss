@@ -86,23 +86,6 @@ class CAdESLevelLTAEnvelopingLargeFileTest extends AbstractCAdESTestSignature {
         tempFileResourcesHandlerBuilder.clear();
     }
 
-    private FileDocument generateLargeFile() throws IOException {
-        File file = new File("target/large-binary.bin");
-
-        long size = 0x00FFFFFF; // Integer.MAX_VALUE -1
-        byte [] data = new byte[(int)size];
-        SecureRandom sr = new SecureRandom();
-        sr.nextBytes(data);
-
-        try (FileOutputStream fos = new FileOutputStream(file)) {
-            for (int i = 0; i < 500; i++) {
-                fos.write(data);
-            }
-        }
-
-        return new FileDocument(file);
-    }
-
     @Override
     @Test
     public void signAndVerify() {

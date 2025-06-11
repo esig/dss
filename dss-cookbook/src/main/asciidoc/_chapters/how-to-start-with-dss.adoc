@@ -143,6 +143,7 @@ In addition to the general build, the framework provides a list of various profi
 * *quick* - disables unit tests and java-doc validation, in order to process the build as quick as possible (takes 1-2 minutes). *This profile cannot be used for a primary DSS build* (see below).
 * *quick-init* - is similar to the `quick` profile. Disables java-doc validation for all modules and unit tests excluding some modules which have dependencies on their test classes. *Can be used for the primary build of DSS*.
 * *slow-tests* - executes all tests, including time-consuming unit tests.
+* *large-files-tests* - executes all tests, including unit tests on large files of 8GB size, where applicable.
 * *owasp* - runs validation of the project and using dependencies according to the https://nvd.nist.gov[National Vulnerability Database (NVD)].
 * *spotless* - used to add a licence header into project files.
 

@@ -72,9 +72,9 @@ class ASiCEXAdESLevelLargeMultipleFilesLTATest extends AbstractASiCEWithXAdESMul
         ZipUtils.getInstance().setZipContainerHandlerBuilder(secureContainerHandlerBuilder);
 
         documentToSigns = new ArrayList<>();
-        documentToSigns.add(generateLargeFile(1));
-        documentToSigns.add(generateLargeFile(2));
-        documentToSigns.add(generateLargeFile(3));
+        documentToSigns.add(generateLargeFile("1.bin"));
+        documentToSigns.add(generateLargeFile("2.bin"));
+        documentToSigns.add(generateLargeFile("3.bin"));
 
         signatureParameters = new ASiCWithXAdESSignatureParameters();
         signatureParameters.bLevel().setSigningDate(new Date());
@@ -100,23 +100,6 @@ class ASiCEXAdESLevelLargeMultipleFilesLTATest extends AbstractASiCEWithXAdESMul
         }
 
         tempFileResourcesHandlerBuilder.clear();
-    }
-
-    private FileDocument generateLargeFile(int count) throws IOException {
-        File file = new File("target/large-binary-" + count + ".bin");
-
-        long size = 0x00FFFFFF; // Integer.MAX_VALUE -1
-        byte [] data = new byte[(int)size];
-        SecureRandom sr = new SecureRandom();
-        sr.nextBytes(data);
-
-        try (FileOutputStream fos = new FileOutputStream(file)) {
-            for (int i = 0; i < 100; i++) {
-                fos.write(data);
-            }
-        }
-
-        return new FileDocument(file);
     }
 
     @Test
