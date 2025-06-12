@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.xades.signature;
 
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.evidencerecord.EvidenceRecordIncorporationService;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SignatureValue;
@@ -55,7 +56,8 @@ import java.util.Objects;
  */
 public class XAdESService extends AbstractSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> 
 					implements MultipleDocumentsSignatureService<XAdESSignatureParameters, XAdESTimestampParameters>,
-					CounterSignatureService<XAdESCounterSignatureParameters> {
+					CounterSignatureService<XAdESCounterSignatureParameters>,
+		            EvidenceRecordIncorporationService<XAdESEvidenceRecordIncorporationParameters> {
 
 	private static final long serialVersionUID = -391276429698752703L;
 
@@ -320,16 +322,7 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 		return counterSigned;
 	}
 
-	/**
-	 * Incorporates the Evidence Record as an unsigned property into the XAdES Signature
-	 *
-	 * @param signatureDocument      {@link DSSDocument} containing a XAdES Signature
-	 *                               to add the evidence record into
-	 * @param evidenceRecordDocument {@link DSSDocument} to add
-	 * @param parameters             {@link XAdESEvidenceRecordIncorporationParameters} providing configuration for
-	 *                               the evidence record incorporation
-	 * @return {@link DSSDocument} XAdESSignature with an incorporated evidence record
-	 */
+	@Override
 	public DSSDocument addSignatureEvidenceRecord(DSSDocument signatureDocument, DSSDocument evidenceRecordDocument,
 												  XAdESEvidenceRecordIncorporationParameters parameters) {
 		Objects.requireNonNull(signatureDocument, "The signature document cannot be null");

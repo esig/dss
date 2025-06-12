@@ -26,9 +26,11 @@ import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.ZipUtils;
 import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
 import eu.europa.esig.dss.enumerations.MimeType;
+import eu.europa.esig.dss.evidencerecord.EvidenceRecordIncorporationService;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.SerializableCounterSignatureParameters;
+import eu.europa.esig.dss.model.SerializableEvidenceRecordIncorporationParameters;
 import eu.europa.esig.dss.model.SerializableSignatureParameters;
 import eu.europa.esig.dss.model.SerializableTimestampParameters;
 import eu.europa.esig.dss.model.SignatureValue;
@@ -53,10 +55,11 @@ import java.util.Objects;
  * @param <SP> implementation of signature parameters corresponding to the supported signature format
  * @param <TP> implementation of timestamp parameters corresponding to the supported document format
  * @param <CSP> implementation of counter-signature parameters corresponding to the supported signature format
+ * @param <ERP> implementation of parameters used for evidince record embedding
  */
 public abstract class AbstractASiCSignatureService<SP extends SerializableSignatureParameters, TP extends SerializableTimestampParameters, 
-					CSP extends SerializableCounterSignatureParameters>
-		extends AbstractSignatureService<SP, TP> implements MultipleDocumentsSignatureService<SP, TP>, CounterSignatureService<CSP> {
+					CSP extends SerializableCounterSignatureParameters, ERP extends SerializableEvidenceRecordIncorporationParameters>
+		extends AbstractSignatureService<SP, TP> implements MultipleDocumentsSignatureService<SP, TP>, CounterSignatureService<CSP>, EvidenceRecordIncorporationService<ERP> {
 
 	private static final long serialVersionUID = 243114076381526665L;
 

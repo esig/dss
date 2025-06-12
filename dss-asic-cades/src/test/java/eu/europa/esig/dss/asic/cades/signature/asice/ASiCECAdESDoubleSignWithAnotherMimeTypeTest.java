@@ -162,7 +162,8 @@ class ASiCECAdESDoubleSignWithAnotherMimeTypeTest extends AbstractASiCECAdESTest
         return GOOD_USER;
     }
 
-    private class MockASiCWithCAdESService extends ASiCWithCAdESService {
+    @SuppressWarnings("serial")
+    private static class MockASiCWithCAdESService extends ASiCWithCAdESService {
 
         /**
          * The default constructor to instantiate the service

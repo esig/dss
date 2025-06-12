@@ -73,7 +73,7 @@ import java.util.Objects;
  */
 @SuppressWarnings("serial")
 public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithCAdESSignatureParameters,
-		ASiCWithCAdESTimestampParameters, CAdESCounterSignatureParameters> {
+		ASiCWithCAdESTimestampParameters, CAdESCounterSignatureParameters, CAdESEvidenceRecordIncorporationParameters> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ASiCWithCAdESService.class);
 
@@ -456,16 +456,7 @@ public class ASiCWithCAdESService extends AbstractASiCSignatureService<ASiCWithC
 		return resultArchive;
 	}
 
-	/**
-	 * Incorporates the Evidence Record as an unsigned property into the CAdES Signature within the given ASiC container
-	 *
-	 * @param asicContainer          {@link DSSDocument} representing an ASiC container containing a CAdES Signature
-	 *                               to add the evidence record into
-	 * @param evidenceRecordDocument {@link DSSDocument} to add
-	 * @param parameters             {@link CAdESEvidenceRecordIncorporationParameters} providing configuration for
-	 *                               the evidence record incorporation
-	 * @return {@link DSSDocument} ASiC container containing a CAdESSignature with an incorporated evidence record
-	 */
+	@Override
 	public DSSDocument addSignatureEvidenceRecord(DSSDocument asicContainer, DSSDocument evidenceRecordDocument,
 												  CAdESEvidenceRecordIncorporationParameters parameters) {
 		Objects.requireNonNull(asicContainer, "The ASiC container cannot be null!");

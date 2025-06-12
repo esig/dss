@@ -31,6 +31,7 @@ import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.evidencerecord.EvidenceRecordIncorporationService;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DigestDocument;
@@ -66,7 +67,8 @@ import java.util.Objects;
  */
 public class CAdESService extends
 		AbstractSignatureService<CAdESSignatureParameters, CAdESTimestampParameters> 
-		implements CounterSignatureService<CAdESCounterSignatureParameters> {
+		implements CounterSignatureService<CAdESCounterSignatureParameters>,
+		           EvidenceRecordIncorporationService<CAdESEvidenceRecordIncorporationParameters> {
 
 	private static final long serialVersionUID = -7744554779153433450L;
 
@@ -442,16 +444,7 @@ public class CAdESService extends
 		return counterSignatureBuilder;
 	}
 
-	/**
-	 * Incorporates the Evidence Record as an unsigned property into the CAdES Signature
-	 *
-	 * @param signatureDocument      {@link DSSDocument} containing a CAdES Signature
-	 *                               to add the evidence record into
-	 * @param evidenceRecordDocument {@link DSSDocument} to add
-	 * @param parameters             {@link CAdESEvidenceRecordIncorporationParameters} providing configuration for
-	 *                               the evidence record incorporation
-	 * @return {@link DSSDocument} CAdESSignature with an incorporated evidence record
-	 */
+	@Override
 	public DSSDocument addSignatureEvidenceRecord(DSSDocument signatureDocument, DSSDocument evidenceRecordDocument,
 												  CAdESEvidenceRecordIncorporationParameters parameters) {
 		Objects.requireNonNull(signatureDocument, "The signature document cannot be null");

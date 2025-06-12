@@ -21,15 +21,15 @@
 package eu.europa.esig.dss.evidencerecord;
 
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.SerializableEvidenceRecordIncorporationParameters;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
  * Contains parameters used on Evidence Record incorporation within an existing signature
  *
  */
-public abstract class AbstractEvidenceRecordIncorporationParameters implements Serializable {
+public abstract class AbstractEvidenceRecordIncorporationParameters implements SerializableEvidenceRecordIncorporationParameters {
 
     private static final long serialVersionUID = 8520066550031111847L;
 
@@ -56,63 +56,32 @@ public abstract class AbstractEvidenceRecordIncorporationParameters implements S
         // empty
     }
 
-    /**
-     * Gets an identifier of signature to include the evidence record into
-     *
-     * @return {@link String}
-     */
+    @Override
     public String getSignatureId() {
         return signatureId;
     }
 
-    /**
-     * Sets an identifier of signature to include the evidence record into.
-     * When a document with a single signature is provided, the value can be set to null.
-     * Otherwise, the signature with the given identifier shall be found in order to perform the operation.
-     *
-     * @param signatureId {@link String}
-     */
+    @Override
     public void setSignatureId(String signatureId) {
         this.signatureId = signatureId;
     }
 
-    /**
-     * Gets detached documents signed by a signature
-     *
-     * @return a list of {@link DSSDocument}s
-     */
+    @Override
     public List<DSSDocument> getDetachedContents() {
         return detachedContents;
     }
 
-    /**
-     * Sets detached documents signed by a signature
-     *
-     * @param detachedContents a list of {@link DSSDocument}s
-     */
+    @Override
     public void setDetachedContents(List<DSSDocument> detachedContents) {
         this.detachedContents = detachedContents;
     }
 
-    /**
-     * Gets whether the evidence record should be incorporated within an existing (latest) evidence-record unsigned property,
-     * when available. Otherwise, a new evidence record attribute is to be created for incorporation of the evidence record.
-     *
-     * @return whether the evidence record should be included in the existing (latest) evidence-record unsigned property
-     */
+    @Override
     public boolean isParallelEvidenceRecord() {
         return parallelEvidenceRecord;
     }
 
-    /**
-     * Sets whether the evidence record should be incorporated within an existing (latest) evidence-record unsigned property,
-     * when available. Otherwise, a new evidence record attribute is to be created for incorporation of the evidence record.
-     * <p>
-     * Default : FALSE (a new evidence record unsigned property is to be created)
-     *
-     * @param parallelEvidenceRecord whether the evidence record should be included in
-     *                               the existing (latest) evidence-record unsigned property
-     */
+    @Override
     public void setParallelEvidenceRecord(boolean parallelEvidenceRecord) {
         this.parallelEvidenceRecord = parallelEvidenceRecord;
     }
