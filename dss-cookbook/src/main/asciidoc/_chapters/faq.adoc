@@ -28,6 +28,23 @@ This chapter covers the most frequently asked questions and issues occurring in 
 </dependencies>
 ----
 
+|v6.3                      a|"No implementation found for ICMSUtils in classpath, please choose between dss-cades-cms or dss-cades-cms-stream" exception is returned.    a|Since version `6.3` DSS provides two alternative implementations for CMS object handling. If CMS processing is required by the application (such as a use of `dss-cades`, `dss-pades` or `dss-asic-cades` modules), one of the implementations shall be added. In order to get back to the behavior familiar by previous versions of DSS, the module `dss-cms-object` should be added within the list of dependencies:
+
+[source,xml]
+.pom.xml
+----
+<dependencies>
+    ...
+    <dependency>
+        <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+        <artifactId>dss-cms-object</artifactId>
+    </dependency>
+    ...
+</dependencies>
+----
+
+For the description of the available implementations, please see the <<dssCms>> section.
+
 |v6.2                      a|`SSLCertificateLoader` does not work with Spring-Boot `3.3.x` or before                a|Since version `6.2` DSS uses HttpClient5 of version `5.4.x` (or higher), bringing incompatible changes in the API used by the `SSLCertificateLoader` class. In case the support of the class is required, please upgrade to the latest version of Spring-Boot, starting from `3.4.0`.
 
 |v6.1 and after             |CMS validation fails because of "invalid OID contents"       a|Starting from version `1.78` cryptographic library BouncyCastle enforces a secure validation of `ASN1ObjectIdentifier` objects, which makes validation of invalid signatures (or other tokens, such as CRL/OCSP responses) to fail with the exception "java.lang.IllegalArgumentException: invalid OID contents". In order to get back to the original behavior (no validation is performed), the following system property should be added before signature validation:
