@@ -58,6 +58,7 @@ import java.util.Set;
  * has been created in order to provide digestAlgorithms to original {@code CMSSignedDataStreamGenerator}.
  *
  */
+@SuppressWarnings("unchecked")
 public class DSSCMSSignedDataStreamGenerator extends CMSSignedDataStreamGenerator {
 
     /**

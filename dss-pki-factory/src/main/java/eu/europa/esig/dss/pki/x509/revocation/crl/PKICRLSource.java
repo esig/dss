@@ -270,6 +270,7 @@ public class PKICRLSource implements CRLSource {
      * @throws IOException if an exception occurs on CRL generation
      * @throws OperatorCreationException if an exception occurs on CRL signing
      */
+    @SuppressWarnings("unchecked")
     protected CRLBinary generateCRL(CertEntity crlIssuer) throws IOException, OperatorCreationException {
         X509CertificateHolder caCert = DSSASN1Utils.getX509CertificateHolder(crlIssuer.getCertificateToken());
 

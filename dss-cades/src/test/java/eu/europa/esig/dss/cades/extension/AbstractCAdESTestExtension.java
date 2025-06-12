@@ -155,6 +155,7 @@ public abstract class AbstractCAdESTestExtension extends AbstractTestExtension<C
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	protected void checkArchiveTimeStampV3(DSSDocument document, SignatureLevel signatureLevel) {
 		if (SignatureLevel.CAdES_BASELINE_LTA != signatureLevel) {
 			return; // skip
