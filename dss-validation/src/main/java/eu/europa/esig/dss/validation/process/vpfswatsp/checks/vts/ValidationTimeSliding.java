@@ -32,13 +32,13 @@ import eu.europa.esig.dss.diagnostic.TokenProxy;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.RevocationReason;
+import eu.europa.esig.dss.enumerations.SubContext;
+import eu.europa.esig.dss.enumerations.ValidationModel;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.SubContext;
-import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.jaxb.CertificateValuesConstraint;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
-import eu.europa.esig.dss.policy.jaxb.Model;
+import eu.europa.esig.dss.model.policy.CertificateApplicabilityRule;
+import eu.europa.esig.dss.model.policy.LevelRule;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
@@ -198,7 +198,7 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 				RevocationDataRequiredCheck<XmlVTS> revocationDataRequiredCheck = revocationDataRequired(certificate, subContext);
 				boolean revocationDataRequired = revocationDataRequiredCheck.process();
 				if (revocationDataRequired) {
-					final LevelConstraint revocationIssuerSunsetDateConstraint = policy.getCertificateSunsetDateConstraint(
+					final LevelRule revocationIssuerSunsetDateConstraint = policy.getCertificateSunsetDateConstraint(
 							Context.REVOCATION, SubContext.SIGNING_CERT);
 					final List<CertificateRevocationWrapper> certificateRevocationData = SubContext.SIGNING_CERT.equals(subContext) ?
 							ValidationProcessUtils.getAcceptableRevocationDataForPSVIfExistOrReturnAll(
@@ -243,11 +243,11 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 				 * - go to step d).
 				 */
 				else if (latestCompliantRevocation.isRevoked()) {
-					Model validationModel = policy.getValidationModel();
+					ValidationModel validationModel = policy.getValidationModel();
 					RevocationReason revocationReason = latestCompliantRevocation.getReason();
 					// NOTE : HYBRID model is treated as CHAIN for Signing Cert and as SHELL for CAs
-					if (Model.SHELL.equals(validationModel)
-							|| (Model.HYBRID.equals(validationModel) && SubContext.CA_CERTIFICATE.equals(subContext))
+					if (ValidationModel.SHELL.equals(validationModel)
+							|| (ValidationModel.HYBRID.equals(validationModel) && SubContext.CA_CERTIFICATE.equals(subContext))
 							|| RevocationReason.KEY_COMPROMISE.equals(revocationReason) || RevocationReason.UNSPECIFIED.equals(revocationReason)) {
 						controlTime = latestCompliantRevocation.getRevocationDate();
 					}
@@ -352,23 +352,23 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 	}
 
 	private ChainItem<XmlVTS> sunsetDateCheck(CertificateWrapper trustedCertificate) {
-		return new SunsetDateCheck(i18nProvider, result, trustedCertificate, getFailLevelConstraint());
+		return new SunsetDateCheck(i18nProvider, result, trustedCertificate, getFailLevelRule());
 	}
 
 	private RevocationDataRequiredCheck<XmlVTS> revocationDataRequired(CertificateWrapper certificate, SubContext subContext) {
-		CertificateValuesConstraint constraint = policy.getRevocationDataSkipConstraint(context, subContext);
-		LevelConstraint sunsetDateConstraint = policy.getCertificateSunsetDateConstraint(context, subContext);
+		CertificateApplicabilityRule constraint = policy.getRevocationDataSkipConstraint(context, subContext);
+		LevelRule sunsetDateConstraint = policy.getCertificateSunsetDateConstraint(context, subContext);
 		return new RevocationDataRequiredCheck<>(i18nProvider, result, certificate, currentTime, sunsetDateConstraint, constraint);
 	}
 
 	private ChainItem<XmlVTS> satisfyingRevocationDataExists(XmlCRS crsResult, CertificateWrapper certificateWrapper,
 															 Date controlTime) {
 		return new SatisfyingRevocationDataExistsCheck<>(i18nProvider, result, crsResult, certificateWrapper,
-				controlTime, getFailLevelConstraint());
+				controlTime, getFailLevelRule());
 	}
 
 	private ChainItem<XmlVTS> controlTimeConclusive(Date controlTime) {
-		return new ControlTimeCheck(i18nProvider, result, controlTime, getFailLevelConstraint());
+		return new ControlTimeCheck(i18nProvider, result, controlTime, getFailLevelRule());
 	}
 	
     private XmlSAV getCertificateCryptographicAcceptanceResult(CertificateWrapper certificateWrapper, Date controlTime) {

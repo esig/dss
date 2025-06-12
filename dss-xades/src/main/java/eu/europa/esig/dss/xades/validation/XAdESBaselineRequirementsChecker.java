@@ -484,6 +484,25 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         return minimalLTARequirement();
     }
 
+    @Override
+    public boolean hasExtendedERSProfile() {
+        Element signatureElement = signature.getSignatureElement();
+        XAdESPath xadesPaths = signature.getXAdESPaths();
+        // SigningTime (Cardinality == 1)
+        if (getNumberOfOccurrences(signatureElement, xadesPaths.getSigningTimePath()) != 1) {
+            LOG.debug("SigningTime shall be present for XAdES-E-ERS signature (cardinality == 1)!");
+            return false;
+        }
+        // TODO : verify validation data presence for all except last timestamp (minimalLTRequirement) ?
+        // other requirements are skipped, as same as for XAdES-LT/XAdES-XL
+        // xadesen:SealingEvidenceRecords (Cardinality >= 1)
+        if (getNumberOfOccurrences(signatureElement, xadesPaths.getSealingEvidenceRecordsPath()) == 0) {
+            LOG.debug("xadesen:SealingEvidenceRecords shall be present for XAdES-E-ERS signature (cardinality >= 1)!");
+            return false;
+        }
+        return true;
+    }
+
     private boolean isSigningCertificatePresent(Element signatureElement, XAdESPath xadesPaths) {
         return getNumberOfOccurrences(signatureElement, xadesPaths.getSigningCertificatePath()) +
                 getNumberOfOccurrences(signatureElement, xadesPaths.getSigningCertificateV2Path()) == 1;

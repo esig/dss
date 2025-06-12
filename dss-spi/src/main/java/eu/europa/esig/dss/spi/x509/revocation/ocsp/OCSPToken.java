@@ -57,6 +57,7 @@ import javax.security.auth.x500.X500Principal;
 import java.security.PublicKey;
 import java.text.ParseException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -245,6 +246,11 @@ public class OCSPToken extends RevocationToken<OCSP> {
 			certificateSource = new OCSPCertificateSource(getBasicOCSPResp());
 		}
 		return certificateSource;
+	}
+
+	@Override
+	public List<CertificateToken> getCertificates() {
+		return getCertificateSource().getCertificates();
 	}
 
 	@Override

@@ -30,7 +30,7 @@ import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.spi.x509.aia.DefaultAIASource;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 
-public class DSS3298Test extends AbstractPAdESTestValidation {
+class DSS3298Test extends AbstractPAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

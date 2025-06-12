@@ -27,7 +27,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
@@ -50,11 +50,11 @@ public class PastValidationAcceptableRevocationDataAvailable<T extends XmlConstr
      * @param i18nProvider {@link I18nProvider}
      * @param result the result
      * @param revocationData a list of {@link CertificateRevocationWrapper}s
-     * @param constraint {@link LevelConstraint}
+     * @param constraint {@link LevelRule}
      */
     public PastValidationAcceptableRevocationDataAvailable(I18nProvider i18nProvider, T result,
                                                            List<CertificateRevocationWrapper> revocationData,
-                                                           LevelConstraint constraint) {
+                                                           LevelRule constraint) {
         super(i18nProvider, result, constraint);
         this.revocationData = revocationData;
     }
@@ -81,7 +81,7 @@ public class PastValidationAcceptableRevocationDataAvailable<T extends XmlConstr
 
     @Override
     protected SubIndication getFailedSubIndicationForConclusion() {
-        return SubIndication.TRY_LATER;
+        return SubIndication.CERTIFICATE_CHAIN_GENERAL_FAILURE;
     }
 
     @Override

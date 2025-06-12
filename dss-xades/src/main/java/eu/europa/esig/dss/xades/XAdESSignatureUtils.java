@@ -21,6 +21,9 @@
 package eu.europa.esig.dss.xades;
 
 
+import eu.europa.esig.dss.xades.definition.xadesen.XAdESEvidencerecordNamespaceElement;
+import eu.europa.esig.dss.xades.validation.XAdESAttribute;
+import eu.europa.esig.dss.xades.validation.XAdESUnsignedSigProperties;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
@@ -177,6 +180,24 @@ public final class XAdESSignatureUtils {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Returns the latest "SealingEvidenceRecords" unsigned property, when present
+	 *
+	 * @param unsignedSigProperties {@link XAdESUnsignedSigProperties} to analyze
+	 * @return {@link XAdESAttribute} when a "SealingEvidenceRecords" unsigned property is present, NULL otherwise
+	 */
+	public static XAdESAttribute getLastSealingEvidenceRecordAttribute(XAdESUnsignedSigProperties unsignedSigProperties) {
+		// Execute in reverse order in order to change only last evidence-record, when applicable
+		List<XAdESAttribute> attributes = unsignedSigProperties.getAttributes();
+		for (int i = attributes.size() - 1; i >= 0; i--) {
+			XAdESAttribute attribute = attributes.get(i);
+			if (XAdESEvidencerecordNamespaceElement.SEALING_EVIDENCE_RECORDS.isSameTagName(attribute.getName())) {
+				return attribute;
+			}
+		}
+		return null;
 	}
 
 }

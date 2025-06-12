@@ -42,7 +42,7 @@ import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PAdESVisibleSigOutsidePageTest extends AbstractPAdESTestSignature {
+class PAdESVisibleSigOutsidePageTest extends AbstractPAdESTestSignature {
 
     private PAdESService service;
     private PAdESSignatureParameters signatureParameters;
@@ -80,7 +80,7 @@ public class PAdESVisibleSigOutsidePageTest extends AbstractPAdESTestSignature {
         pdfObjectFactory.setPdfSignatureFieldPositionChecker(pdfSignatureFieldPositionChecker);
         service.setPdfObjFactory(pdfObjectFactory);
 
-        Exception exception = assertThrows(AlertException.class, () -> super.sign());
+        Exception exception = assertThrows(AlertException.class, super::sign);
         assertTrue(exception.getMessage().contains("The new signature field position is outside the page dimensions!"));
 
         pdfSignatureFieldPositionChecker.setAlertOnSignatureFieldOutsidePageDimensions(new LogOnStatusAlert());

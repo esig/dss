@@ -38,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PAdESEndEntityCertIssuedByNotCACertTest extends AbstractPAdESTestValidation {
+class PAdESEndEntityCertIssuedByNotCACertTest extends AbstractPAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

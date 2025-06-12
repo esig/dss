@@ -25,7 +25,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.ValueConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.ValueConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.ContentHintsCheck;
@@ -47,7 +48,7 @@ class ContentHintsCheckTest extends AbstractTestCheck {
 		constraint.setValue("Valid_Value");
 
 		XmlSAV result = new XmlSAV();
-		ContentHintsCheck chc = new ContentHintsCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
+		ContentHintsCheck chc = new ContentHintsCheck(i18nProvider, result, new SignatureWrapper(sig), new ValueConstraintWrapper(constraint));
 		chc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -65,7 +66,7 @@ class ContentHintsCheckTest extends AbstractTestCheck {
 		constraint.setValue("Valid_Value");
 
 		XmlSAV result = new XmlSAV();
-		ContentHintsCheck chc = new ContentHintsCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
+		ContentHintsCheck chc = new ContentHintsCheck(i18nProvider, result, new SignatureWrapper(sig), new ValueConstraintWrapper(constraint));
 		chc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

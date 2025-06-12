@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PAdESWithAddedPageTest extends AbstractPAdESTestValidation {
+class PAdESWithAddedPageTest extends AbstractPAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {
@@ -59,7 +59,7 @@ public class PAdESWithAddedPageTest extends AbstractPAdESTestValidation {
 		assertEquals(SubIndication.FORMAT_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
 
 		List<Message> errors = simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId());
-		List<String> errorMessages = errors.stream().map(m -> m.getValue()).collect(Collectors.toList());
+		List<String> errorMessages = errors.stream().map(Message::getValue).collect(Collectors.toList());
 
 		I18nProvider i18nProvider = new I18nProvider();
 		assertTrue(errorMessages.contains(i18nProvider.getMessage(MessageTag.BBB_FC_DSFREAP_ANS)));

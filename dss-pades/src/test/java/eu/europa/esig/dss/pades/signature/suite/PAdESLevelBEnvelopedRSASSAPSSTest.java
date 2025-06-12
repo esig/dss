@@ -46,7 +46,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PAdESLevelBEnvelopedRSASSAPSSTest extends AbstractPAdESTestSignature {
+class PAdESLevelBEnvelopedRSASSAPSSTest extends AbstractPAdESTestSignature {
 
     private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;
     private PAdESSignatureParameters signatureParameters;

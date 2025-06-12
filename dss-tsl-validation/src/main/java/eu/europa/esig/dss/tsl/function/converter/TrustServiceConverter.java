@@ -46,6 +46,9 @@ import eu.europa.esig.trustedlist.jaxb.tsl.TSPServiceInformationType;
 import eu.europa.esig.trustedlist.jaxb.tsl.TSPServiceType;
 
 import jakarta.xml.bind.JAXBElement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -59,20 +62,25 @@ import java.util.function.Function;
  */
 public class TrustServiceConverter implements Function<TSPServiceType, TrustService> {
 
+	private static final Logger LOG = LoggerFactory.getLogger(TrustServiceConverter.class);
+
 	/**
 	 * Default constructor
 	 */
 	public TrustServiceConverter() {
-		// emptyTrustServiceEquivalenceConverter
+		// empty
 	}
 
 	@Override
 	public TrustService apply(TSPServiceType original) {
 		TrustServiceBuilder trustServiceBuilder = new TrustService.TrustServiceBuilder();
-		return trustServiceBuilder
-				.setCertificates(extractCertificates(original.getServiceInformation()))
-				.setStatusAndInformationExtensions(extractStatusAndHistory(original))
-				.build();
+		if (original.getServiceInformation() != null) {
+			trustServiceBuilder.setCertificates(extractCertificates(original.getServiceInformation()))
+					.setStatusAndInformationExtensions(extractStatusAndHistory(original));
+		} else {
+			LOG.warn("No mandatory TSPServiceInformation element found within TSPService element!");
+		}
+		return trustServiceBuilder.build();
 	}
 
 	private List<CertificateToken> extractCertificates(TSPServiceInformationType serviceInformation) {
@@ -102,6 +110,11 @@ public class TrustServiceConverter implements Function<TSPServiceType, TrustServ
 
 		if (original.getServiceHistory() != null && Utils.isCollectionNotEmpty(original.getServiceHistory().getServiceHistoryInstance())) {
 			for (ServiceHistoryInstanceType serviceHistory : original.getServiceHistory().getServiceHistoryInstance()) {
+				if (serviceHistory.getStatusStartingTime() == null) {
+					LOG.warn("No StatusStartingTime is found within a ServiceHistoryInstance element. The entry is skipped.");
+					continue;
+				}
+
 				TrustServiceStatusAndInformationExtensionsBuilder statusHistoryBuilder = 
 						new TrustServiceStatusAndInformationExtensions.TrustServiceStatusAndInformationExtensionsBuilder();
 				statusHistoryBuilder.setNames(converter.apply(serviceHistory.getServiceName()));
@@ -220,7 +233,10 @@ public class TrustServiceConverter implements Function<TSPServiceType, TrustServ
 	}
 
 	private Date convertToDate(XMLGregorianCalendar gregorianCalendar) {
-		return gregorianCalendar.toGregorianCalendar().getTime();
+		if (gregorianCalendar != null) {
+			return gregorianCalendar.toGregorianCalendar().getTime();
+		}
+		return null;
 	}
 
 	private List<String> extractQualifiers(QualificationElementType qualificationElement) {

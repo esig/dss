@@ -21,6 +21,8 @@
 package eu.europa.esig.dss.spi.x509.tsp;
 
 import eu.europa.esig.dss.spi.x509.CMSOCSPSource;
+import org.bouncycastle.asn1.cms.CMSObjectIdentifiers;
+import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.bouncycastle.tsp.TimeStampToken;
 
 /**
@@ -30,8 +32,14 @@ import org.bouncycastle.tsp.TimeStampToken;
 @SuppressWarnings("serial")
 public class TimestampOCSPSource extends CMSOCSPSource {
 
+	/**
+	 * Default constructor
+	 *
+	 * @param timeStampToken {@link TimeStampToken}
+	 */
 	TimestampOCSPSource(TimeStampToken timeStampToken) {
-		super(timeStampToken.toCMSSignedData(), timeStampToken.getUnsignedAttributes());
+		super(timeStampToken.toCMSSignedData().getOtherRevocationInfo(CMSObjectIdentifiers.id_ri_ocsp_response),
+				timeStampToken.toCMSSignedData().getOtherRevocationInfo(OCSPObjectIdentifiers.id_pkix_ocsp_basic), timeStampToken.getUnsignedAttributes());
 	}
 
 }

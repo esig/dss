@@ -11,6 +11,7 @@ $ curl 'http://localhost:8080/services/rest/validation/getOriginalDocuments' -i 
   },
   "originalDocuments" : null,
   "policy" : null,
+  "cryptographicSuite" : null,
   "validationTime" : null,
   "evidenceRecords" : null,
   "tokenExtractionStrategy" : "NONE",

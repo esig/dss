@@ -72,7 +72,8 @@ class TLValidationJobAlertTest {
 
 	private static final DSSDocument CZ = new FileDocument("src/test/resources/lotlCache/CZ.xml");
 	private static final DSSDocument CZ_BROKEN_SIG = new FileDocument("src/test/resources/lotlCache/CZ_broken-sig.xml");
-	private static final DSSDocument CZ_NOT_PARSABLE = new FileDocument("src/test/resources/lotlCache/CZ_not-compliant.xml");
+	private static final DSSDocument CZ_NOT_PARSABLE = new FileDocument("src/test/resources/lotlCache/CZ_not-parsable.xml");
+	private static final DSSDocument CZ_NOT_COMPLIANT = new FileDocument("src/test/resources/lotlCache/CZ_not-compliant.xml");
 
 	private static final DSSDocument LOTL = new FileDocument("src/test/resources/lotlCache/tl_pivot_247_mp.xml");
 	private static final String LOTL_URL = "https://ec.europa.eu/tools/lotl/eu-lotl.xml";
@@ -137,6 +138,29 @@ class TLValidationJobAlertTest {
 		TLValidationJob job = new TLValidationJob();
 		job.setTrustedListSources(getTLSource(url));
 		job.setOnlineDataLoader(getOnlineDataLoader(CZ_NOT_PARSABLE, url));
+
+		List<Alert<TLInfo>> alerts = new ArrayList<>();
+		TLParsingErrorDetection signingDetection = new TLParsingErrorDetection();
+
+		CallbackAlertHandler callback = new CallbackAlertHandler();
+		AlertHandler<TLInfo> handler = new CompositeAlertHandler<TLInfo>(Arrays.asList(callback, new LogTLParsingErrorAlertHandler()));
+
+		TLAlert alert = new TLAlert(signingDetection, handler);
+		alerts.add(alert);
+		job.setTLAlerts(alerts);
+
+		job.onlineRefresh();
+
+		assertFalse(callback.called); // Download job fails -> not XML
+	}
+
+	@Test
+	void testParsingNoCompliant() {
+		String url = "not-compliant";
+
+		TLValidationJob job = new TLValidationJob();
+		job.setTrustedListSources(getTLSource(url));
+		job.setOnlineDataLoader(getOnlineDataLoader(CZ_NOT_COMPLIANT, url));
 
 		List<Alert<TLInfo>> alerts = new ArrayList<>();
 		TLParsingErrorDetection signingDetection = new TLParsingErrorDetection();

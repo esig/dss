@@ -47,7 +47,7 @@ class DSS1444Test {
 	void testValidation() throws IOException {
 		try (InputStream is = getClass().getResourceAsStream("/EmptyPage-corrupted.pdf")) {
 			PDFDocumentAnalyzer analyzer = new PDFDocumentAnalyzer(new InMemoryDocument(is, "corrupted.pdf"));
-			Exception exception = assertThrows(DSSException.class, () -> analyzer.getSignatures());
+			Exception exception = assertThrows(DSSException.class, analyzer::getSignatures);
 			assertTrue(exception.getMessage().contains("The document with name [corrupted.pdf] is either not accessible or not PDF compatible. Reason :"));
 		}
 	}
@@ -63,7 +63,7 @@ class DSS1444Test {
 	void test2Validation() throws IOException {
 		try (InputStream is = getClass().getResourceAsStream("/EmptyPage-corrupted2.pdf")) {
 			PDFDocumentAnalyzer analyzeral = new PDFDocumentAnalyzer(new InMemoryDocument(is, "corrupted.pdf"));
-			Exception exception = assertThrows(DSSException.class, () -> analyzeral.getSignatures());
+			Exception exception = assertThrows(DSSException.class, analyzeral::getSignatures);
 			assertTrue(exception.getMessage().contains("The document with name [corrupted.pdf] is either not accessible or not PDF compatible. Reason :"));
 		}
 	}

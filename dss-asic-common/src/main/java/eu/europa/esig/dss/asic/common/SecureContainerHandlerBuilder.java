@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.asic.common;
 
-import eu.europa.esig.dss.signature.resources.DSSResourcesHandlerBuilder;
+import eu.europa.esig.dss.spi.signature.resources.DSSResourcesHandlerBuilder;
 import eu.europa.esig.dss.signature.resources.InMemoryResourcesHandlerBuilder;
 
 import java.util.Objects;

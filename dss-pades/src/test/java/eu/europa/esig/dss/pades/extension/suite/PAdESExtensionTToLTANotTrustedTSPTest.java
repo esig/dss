@@ -31,7 +31,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PAdESExtensionTToLTANotTrustedTSPTest extends AbstractPAdESTestExtension {
+class PAdESExtensionTToLTANotTrustedTSPTest extends AbstractPAdESTestExtension {
 
     @Override
     protected SignatureLevel getOriginalSignatureLevel() {
@@ -65,7 +65,7 @@ public class PAdESExtensionTToLTANotTrustedTSPTest extends AbstractPAdESTestExte
     @Test
     @Override
     public void extendAndVerify() throws Exception {
-        Exception exception = assertThrows(AlertException.class, () -> super.extendAndVerify());
+        Exception exception = assertThrows(AlertException.class, super::extendAndVerify);
         assertTrue(exception.getMessage().contains("Revocation data is missing for one or more certificate(s)."));
         assertTrue(exception.getMessage().contains("Revocation data is skipped for untrusted certificate chain!"));
     }

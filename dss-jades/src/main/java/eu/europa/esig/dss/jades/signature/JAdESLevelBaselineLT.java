@@ -37,8 +37,6 @@ import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import eu.europa.esig.dss.utils.Utils;
 import org.jose4j.json.internal.json_simple.JSONArray;
 import org.jose4j.json.internal.json_simple.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,8 +48,6 @@ import static eu.europa.esig.dss.enumerations.SignatureLevel.JAdES_BASELINE_LT;
  * Creates an LT-level of a JAdES signature
  */
 public class JAdESLevelBaselineLT extends JAdESLevelBaselineT {
-
-	private static final Logger LOG = LoggerFactory.getLogger(JAdESLevelBaselineLT.class);
 
 	/**
 	 * The default constructor

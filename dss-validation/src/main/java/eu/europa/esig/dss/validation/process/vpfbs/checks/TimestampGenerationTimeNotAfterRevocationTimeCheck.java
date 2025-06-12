@@ -27,7 +27,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
@@ -54,10 +54,10 @@ public class TimestampGenerationTimeNotAfterRevocationTimeCheck<T extends XmlCon
      * @param result {@link XmlConstraintsConclusion}
      * @param contentTimestamp {@link TimestampWrapper}
      * @param signingCertificateRevocationTime {@link Date} the time when the signing certificate has been revoked
-     * @param constraint {@link LevelConstraint}
+     * @param constraint {@link LevelRule}
      */
     public TimestampGenerationTimeNotAfterRevocationTimeCheck(I18nProvider i18nProvider, T result,
-                        TimestampWrapper contentTimestamp, Date signingCertificateRevocationTime, LevelConstraint constraint) {
+                        TimestampWrapper contentTimestamp, Date signingCertificateRevocationTime, LevelRule constraint) {
         super(i18nProvider, result, constraint, contentTimestamp.getId());
         this.contentTimestamp = contentTimestamp;
         this.signingCertificateRevocationTime = signingCertificateRevocationTime;

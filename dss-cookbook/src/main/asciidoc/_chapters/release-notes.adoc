@@ -11,6 +11,37 @@
 |===
 |Version           |Release date             |Features
 
+|v6.3.RC1          |June 2025               a|Main new features / improvements :
+
+                                            * Introduction of CMS handling using Streams (as alternative to CMS object in-memory processing, impacting CAdES, PAdES, ASiC with CAdES modules);
+                                            * Support of XAdES and CAdES embedded evidence records (ETSI TS 119 132-3 <<R01>> and ETSI TS 119 122-3 <<R02>>, respectively);
+                                            * Embedding of Evidence Records within existing XAdES or CAdES signatures;
+                                            * Embedding of Evidence Records within an ASiC container;
+                                            * Support of ETSI TS 119 322 (cf. <<R21>>) cryptographic suite schemas (XML and JSON);
+                                            * Lax validation of Trusted Lists against XSD (with customizable structure validation);
+                                            * Added signature expiration date within Simple Report;
+                                            * Improved ASiC conformance checks;
+                                            * Improved logs in case of missed OCSP AIA location URL;
+                                            * Improved configuration for LDAP GET requests;
+                                            * Dependencies update (xmlsec, BouncyCastle, PdfBox, VeraPDF, HttpClient5, etc.);
+                                            * Java 24 support.
+
+|v6.3.RC1          |June 2025               a|Bug fixes :
+
+                                            * PAdES augmentation fails for some documents with multiple signatures;
+                                            * Incorrect identification of PDF "undefined object modification" on signature verification;
+                                            * CRL is retrieved instead of OCSP when delegated OCSP responder requires revocation check;
+                                            * CMS signed-attributes shall not be returned when multiple values are defined;
+                                            * Issues with DiagnosticData Serialization/Deserialization;
+                                            * JPMS Module Issue with `dss-validation` module;
+                                            * `#equals` and `#hashCode` methods change when calling #getDigest on `DSSDocument` implementations;
+                                            * `RevocationIssuerNotExpired` policy constraint is not used during LTV process;
+                                            * `xVals` entries are not considered as candidates for a signing certificate for JAdES signature;
+                                            * Improve CryptoInformation element within ETSI VR for multiple signing-certificate references;
+                                            * Certificate Synchronization Issue with `TLValidationJob` when a custom synchronization strategy is used;
+                                            * DSS fails to read `FieldMDP` or `Lock` dictionary when defined as indirect reference;
+                                            * DSS fails to create a visual signature field for a PDF page with negative coordinates.
+
 |v6.2              |February 2025           a|Main new features / improvements :
 
                                             * Dependencies upgrade (BouncyCastle, etc.);
@@ -442,14 +473,14 @@ _pass:[*] October 2015: Implementing Acts Art. 27 & 37 (eSig formats)_
 
 To upgrade version of DSS, locate to the `pom.xml` file of your project, search for the properties and then change the dss version in the corresponding field(s).
 
-The example below shows how to switch to DSS version `6.2` using <<BomModule>>:
+The example below shows how to switch to DSS version `6.3.RC1` using <<BomModule>>:
 
 [source,xml]
 .pom.xml
 ----
 <properties>
     ...
-    <dss.version>6.2</dss.version>
+    <dss.version>6.3.RC1</dss.version>
     ...
 </properties>
 

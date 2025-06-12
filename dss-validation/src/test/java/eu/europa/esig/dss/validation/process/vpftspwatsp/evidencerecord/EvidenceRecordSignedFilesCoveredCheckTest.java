@@ -28,8 +28,11 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlEvidenceRecord;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
+import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.enumerations.EvidenceRecordOrigin;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.evidencerecord.checks.EvidenceRecordSignedFilesCoveredCheck;
@@ -67,7 +70,7 @@ class EvidenceRecordSignedFilesCoveredCheckTest extends AbstractTestCheck {
 
         XmlValidationProcessEvidenceRecord result = new XmlValidationProcessEvidenceRecord();
         EvidenceRecordSignedFilesCoveredCheck ersfcc = new EvidenceRecordSignedFilesCoveredCheck(
-                i18nProvider, result, new EvidenceRecordWrapper(xmlEvidenceRecord), constraint);
+                i18nProvider, result, new EvidenceRecordWrapper(xmlEvidenceRecord), new LevelConstraintWrapper(constraint));
         ersfcc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -100,7 +103,7 @@ class EvidenceRecordSignedFilesCoveredCheckTest extends AbstractTestCheck {
 
         XmlValidationProcessEvidenceRecord result = new XmlValidationProcessEvidenceRecord();
         EvidenceRecordSignedFilesCoveredCheck ersfcc = new EvidenceRecordSignedFilesCoveredCheck(
-                i18nProvider, result, new EvidenceRecordWrapper(xmlEvidenceRecord), constraint);
+                i18nProvider, result, new EvidenceRecordWrapper(xmlEvidenceRecord), new LevelConstraintWrapper(constraint));
         ersfcc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -137,7 +140,7 @@ class EvidenceRecordSignedFilesCoveredCheckTest extends AbstractTestCheck {
 
         XmlValidationProcessEvidenceRecord result = new XmlValidationProcessEvidenceRecord();
         EvidenceRecordSignedFilesCoveredCheck ersfcc = new EvidenceRecordSignedFilesCoveredCheck(
-                i18nProvider, result, new EvidenceRecordWrapper(xmlEvidenceRecord), constraint);
+                i18nProvider, result, new EvidenceRecordWrapper(xmlEvidenceRecord), new LevelConstraintWrapper(constraint));
         ersfcc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -170,7 +173,7 @@ class EvidenceRecordSignedFilesCoveredCheckTest extends AbstractTestCheck {
 
         XmlValidationProcessEvidenceRecord result = new XmlValidationProcessEvidenceRecord();
         EvidenceRecordSignedFilesCoveredCheck ersfcc = new EvidenceRecordSignedFilesCoveredCheck(
-                i18nProvider, result, new EvidenceRecordWrapper(xmlEvidenceRecord), constraint);
+                i18nProvider, result, new EvidenceRecordWrapper(xmlEvidenceRecord), new LevelConstraintWrapper(constraint));
         ersfcc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -207,7 +210,115 @@ class EvidenceRecordSignedFilesCoveredCheckTest extends AbstractTestCheck {
 
         XmlValidationProcessEvidenceRecord result = new XmlValidationProcessEvidenceRecord();
         EvidenceRecordSignedFilesCoveredCheck ersfcc = new EvidenceRecordSignedFilesCoveredCheck(
-                i18nProvider, result, new EvidenceRecordWrapper(xmlEvidenceRecord), constraint);
+                i18nProvider, result, new EvidenceRecordWrapper(xmlEvidenceRecord), new LevelConstraintWrapper(constraint));
+        ersfcc.execute();
+
+        List<XmlConstraint> constraints = result.getConstraint();
+        assertEquals(1, constraints.size());
+        assertEquals(XmlStatus.OK, constraints.get(0).getStatus());
+    }
+
+    @Test
+    void missingScopeManifestSigTest() {
+        XmlDigestMatcher xmlDigestMatcherOne = new XmlDigestMatcher();
+        xmlDigestMatcherOne.setDocumentName("manifest.xml");
+        xmlDigestMatcherOne.setType(DigestMatcherType.MANIFEST);
+
+        XmlDigestMatcher xmlDigestMatcherTwo = new XmlDigestMatcher();
+        xmlDigestMatcherTwo.setDocumentName("doc1.xml");
+        xmlDigestMatcherTwo.setType(DigestMatcherType.MANIFEST_ENTRY);
+
+        XmlSignature xmlSignature = new XmlSignature();
+        xmlSignature.getDigestMatchers().add(xmlDigestMatcherOne);
+        xmlSignature.getDigestMatchers().add(xmlDigestMatcherTwo);
+
+        XmlEvidenceRecord xmlEvidenceRecord = new XmlEvidenceRecord();
+        xmlEvidenceRecord.setOrigin(EvidenceRecordOrigin.SIGNATURE);
+        xmlEvidenceRecord.getDigestMatchers().add(xmlDigestMatcherOne);
+
+        XmlTimestampedObject xmlTimestampedObject = new XmlTimestampedObject();
+        xmlTimestampedObject.setToken(xmlSignature);
+        xmlTimestampedObject.setCategory(TimestampedObjectType.SIGNATURE);
+        xmlEvidenceRecord.getTimestampedObjects().add(xmlTimestampedObject);
+
+        LevelConstraint constraint = new LevelConstraint();
+        constraint.setLevel(Level.FAIL);
+
+        XmlValidationProcessEvidenceRecord result = new XmlValidationProcessEvidenceRecord();
+        EvidenceRecordSignedFilesCoveredCheck ersfcc = new EvidenceRecordSignedFilesCoveredCheck(
+                i18nProvider, result, new EvidenceRecordWrapper(xmlEvidenceRecord), new LevelConstraintWrapper(constraint));
+        ersfcc.execute();
+
+        List<XmlConstraint> constraints = result.getConstraint();
+        assertEquals(1, constraints.size());
+        assertEquals(XmlStatus.OK, constraints.get(0).getStatus());
+    }
+
+    @Test
+    void missingScopeManifestSigExternalTest() {
+        XmlDigestMatcher xmlDigestMatcherOne = new XmlDigestMatcher();
+        xmlDigestMatcherOne.setDocumentName("manifest.xml");
+        xmlDigestMatcherOne.setType(DigestMatcherType.MANIFEST);
+
+        XmlDigestMatcher xmlDigestMatcherTwo = new XmlDigestMatcher();
+        xmlDigestMatcherTwo.setDocumentName("doc1.xml");
+        xmlDigestMatcherTwo.setType(DigestMatcherType.MANIFEST_ENTRY);
+
+        XmlSignature xmlSignature = new XmlSignature();
+        xmlSignature.getDigestMatchers().add(xmlDigestMatcherOne);
+        xmlSignature.getDigestMatchers().add(xmlDigestMatcherTwo);
+
+        XmlEvidenceRecord xmlEvidenceRecord = new XmlEvidenceRecord();
+        xmlEvidenceRecord.setOrigin(EvidenceRecordOrigin.EXTERNAL);
+        xmlEvidenceRecord.getDigestMatchers().add(xmlDigestMatcherOne);
+
+        XmlTimestampedObject xmlTimestampedObject = new XmlTimestampedObject();
+        xmlTimestampedObject.setToken(xmlSignature);
+        xmlTimestampedObject.setCategory(TimestampedObjectType.SIGNATURE);
+        xmlEvidenceRecord.getTimestampedObjects().add(xmlTimestampedObject);
+
+        LevelConstraint constraint = new LevelConstraint();
+        constraint.setLevel(Level.FAIL);
+
+        XmlValidationProcessEvidenceRecord result = new XmlValidationProcessEvidenceRecord();
+        EvidenceRecordSignedFilesCoveredCheck ersfcc = new EvidenceRecordSignedFilesCoveredCheck(
+                i18nProvider, result, new EvidenceRecordWrapper(xmlEvidenceRecord), new LevelConstraintWrapper(constraint));
+        ersfcc.execute();
+
+        List<XmlConstraint> constraints = result.getConstraint();
+        assertEquals(1, constraints.size());
+        assertEquals(XmlStatus.NOT_OK, constraints.get(0).getStatus());
+    }
+
+    @Test
+    void missingScopeRefSigTest() {
+        XmlDigestMatcher xmlDigestMatcherOne = new XmlDigestMatcher();
+        xmlDigestMatcherOne.setDocumentName("manifest.xml");
+        xmlDigestMatcherOne.setType(DigestMatcherType.REFERENCE);
+
+        XmlDigestMatcher xmlDigestMatcherTwo = new XmlDigestMatcher();
+        xmlDigestMatcherTwo.setDocumentName("doc1.xml");
+        xmlDigestMatcherTwo.setType(DigestMatcherType.REFERENCE);
+
+        XmlSignature xmlSignature = new XmlSignature();
+        xmlSignature.getDigestMatchers().add(xmlDigestMatcherOne);
+        xmlSignature.getDigestMatchers().add(xmlDigestMatcherTwo);
+
+        XmlEvidenceRecord xmlEvidenceRecord = new XmlEvidenceRecord();
+        xmlEvidenceRecord.setOrigin(EvidenceRecordOrigin.SIGNATURE);
+        xmlEvidenceRecord.getDigestMatchers().add(xmlDigestMatcherOne);
+
+        XmlTimestampedObject xmlTimestampedObject = new XmlTimestampedObject();
+        xmlTimestampedObject.setToken(xmlSignature);
+        xmlTimestampedObject.setCategory(TimestampedObjectType.SIGNATURE);
+        xmlEvidenceRecord.getTimestampedObjects().add(xmlTimestampedObject);
+
+        LevelConstraint constraint = new LevelConstraint();
+        constraint.setLevel(Level.FAIL);
+
+        XmlValidationProcessEvidenceRecord result = new XmlValidationProcessEvidenceRecord();
+        EvidenceRecordSignedFilesCoveredCheck ersfcc = new EvidenceRecordSignedFilesCoveredCheck(
+                i18nProvider, result, new EvidenceRecordWrapper(xmlEvidenceRecord), new LevelConstraintWrapper(constraint));
         ersfcc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

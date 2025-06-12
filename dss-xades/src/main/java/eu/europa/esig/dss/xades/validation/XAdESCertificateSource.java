@@ -168,10 +168,11 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 			CertificateSource signingCertificateSource) {
 		CandidatesForSigningCertificate candidatesForSigningCertificate = new CandidatesForSigningCertificate();
 		
-		/**
-		 * 5.1.4.1 XAdES processing<br>
-		 * <i>Candidates for the signing certificate extracted from ds:KeyInfo
-		 * element</i> shall be checked against all references present in the
+		/*
+		 * 5.1.4.1 XAdES processing
+		 *
+		 * Candidates for the signing certificate extracted from ds:KeyInfo
+		 * element shall be checked against all references present in the
 		 * ds:SigningCertificate property, if present, since one of these references
 		 * shall be a reference to the signing certificate.
 		 */

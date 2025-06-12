@@ -142,16 +142,6 @@ public class SignatureWrapper extends AbstractSignatureWrapper {
 		return new FoundRevocationsProxy(signature.getFoundRevocations());
 	}
 
-	/**
-	 * Returns a signature filename
-	 *
-	 * @return {@link String}
-	 * @deprecated since DSS 6.2. Please use {@code #getFilename} method instead
-	 */
-	@Deprecated
-	public String getSignatureFilename() {
-		return getFilename();
-	}
 
 	/**
 	 * Gets name of the signature file, when applicable
@@ -335,6 +325,21 @@ public class SignatureWrapper extends AbstractSignatureWrapper {
 			result.addAll(evidenceRecordWrapper.getTimestampIdsList());
 		}
 		return result;
+	}
+
+	/**
+	 * Returns a list of {@code EvidenceRecordWrapper}s embedded within the signature
+	 *
+	 * @return a list of {@code EvidenceRecordWrapper}s
+	 */
+	public List<EvidenceRecordWrapper> getEmbeddedEvidenceRecords() {
+		List<EvidenceRecordWrapper> embeddedEvidenceRecords = new ArrayList<>();
+		for (EvidenceRecordWrapper evidenceRecord : getEvidenceRecords()) {
+			if (evidenceRecord.isEmbedded()) {
+				embeddedEvidenceRecords.add(evidenceRecord);
+			}
+		}
+		return embeddedEvidenceRecords;
 	}
 
 	/**
@@ -854,6 +859,16 @@ public class SignatureWrapper extends AbstractSignatureWrapper {
 			}
 		}
 		return result;
+	}
+
+	/**
+	 * Returns if there is the ERS-Level within the signature
+	 *
+	 * @return TRUE if there is the ERS-Level, FALSE otherwise
+	 */
+	public boolean isThereERSLevel() {
+		List<EvidenceRecordWrapper> embeddedEvidenceRecords = getEmbeddedEvidenceRecords();
+		return embeddedEvidenceRecords != null && !embeddedEvidenceRecords.isEmpty();
 	}
 
 	/**

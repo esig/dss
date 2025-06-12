@@ -20,9 +20,11 @@
  */
 package eu.europa.esig.dss.cades.validation.timestamp;
 
-import eu.europa.esig.dss.cades.CMSUtils;
+import eu.europa.esig.dss.cades.CAdESUtils;
 import eu.europa.esig.dss.cades.signature.CadesLevelBaselineLTATimestampExtractor;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
+import eu.europa.esig.dss.cms.CMS;
+import eu.europa.esig.dss.cms.CMSUtils;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -32,31 +34,25 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSMessageDigestCalculator;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.x509.ListCertificateSource;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.validation.timestamp.TimestampMessageDigestBuilder;
+import eu.europa.esig.dss.spi.x509.ListCertificateSource;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.ASN1Set;
-import org.bouncycastle.asn1.BEROctetString;
-import org.bouncycastle.asn1.BERSequence;
-import org.bouncycastle.asn1.BERSet;
-import org.bouncycastle.asn1.BERTaggedObject;
 import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.DERTaggedObject;
 import org.bouncycastle.asn1.cms.Attribute;
-import org.bouncycastle.asn1.cms.ContentInfo;
-import org.bouncycastle.asn1.cms.SignedData;
 import org.bouncycastle.asn1.cms.SignerInfo;
-import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.Objects;
 
@@ -77,8 +73,8 @@ public class CAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 	/** The error message to be thrown in case of a message-imprint build error */
 	private static final String MESSAGE_IMPRINT_ERROR = "Unable to compute message-imprint for TimestampToken with Id '{}'. Reason : {}";
 
-	/** The CMS SignedData */
-	private final CMSSignedData cmsSignedData;
+	/** The CMS */
+	private final CMS cms;
 
 	/** The SignerInformation of the related signature */
 	private final SignerInformation signerInformation;
@@ -110,25 +106,6 @@ public class CAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 	}
 
 	/**
-	 * The constructor to compute message-imprint for timestamps related to the {@code signature},
-	 * to be used on timestamp creation.
-	 *
-	 * @param signature {@link CAdESSignature} to create timestamps for
-	 * @param certificateSource {@link ListCertificateSource} merged certificate source of the signature
-	 * @param digestAlgorithm {@link DigestAlgorithm} to be used for message-imprint digest computation
-	 * @deprecated since DSS 6.2. Please use instead constructor
-	 * 			   {@code new CAdESTimestampMessageDigestBuilder(CAdESSignature signature, DigestAlgorithm digestAlgorithm}
-	 */
-	@Deprecated
-	public CAdESTimestampMessageDigestBuilder(final CAdESSignature signature,
-											  final ListCertificateSource certificateSource,
-											  final DigestAlgorithm digestAlgorithm) {
-		this(signature, certificateSource.getCertificates());
-		Objects.requireNonNull(digestAlgorithm, "DigestAlgorithm cannot be null!");
-		this.digestAlgorithm = digestAlgorithm;
-	}
-
-	/**
 	 * The constructor to compute message-imprint for timestamps related to the {@code signature}.
 	 * This constructor uses a provides {@code certificateSource} to validate the ats-v3-hash-table
 	 *
@@ -155,7 +132,7 @@ public class CAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 											   final List<CertificateToken> certificates) {
 		Objects.requireNonNull(signature, "Signature cannot be null!");
 		Objects.requireNonNull(certificates, "List of CertificateToken's cannot be null!");
-		this.cmsSignedData = signature.getCmsSignedData();
+		this.cms = signature.getCMS();
 		this.signerInformation = signature.getSignerInformation();
 		this.detachedDocuments = signature.getDetachedContents();
 		this.timestampExtractor = new CadesLevelBaselineLTATimestampExtractor(signature);
@@ -181,7 +158,7 @@ public class CAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 			// We don't include the outer SEQUENCE, only the attrType and
 			// attrValues as stated by the TS Â§6.3.5, NOTE 2
 
-			final Attribute[] attributes = CMSUtils.getUnsignedAttributes(signerInformation, id_aa_signatureTimeStampToken);
+			final Attribute[] attributes = CAdESUtils.getUnsignedAttributes(signerInformation, id_aa_signatureTimeStampToken);
 			if (Utils.isArrayNotEmpty(attributes)) {
 				for (Attribute attribute : attributes) {
 					digestCalculator.update(DSSASN1Utils.getDEREncoded(attribute.getAttrType()));
@@ -190,7 +167,7 @@ public class CAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 			}
 			// Method is common to Type 1 and Type 2
 			writeTimestampX2MessageDigest(digestCalculator);
-			return digestCalculator.getMessageDigest();
+			return digestCalculator.getMessageDigest(digestAlgorithm);
 
 		} catch (Exception e) {
 			if (LOG.isDebugEnabled()) {
@@ -207,7 +184,7 @@ public class CAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 		try {
 			final DSSMessageDigestCalculator digestCalculator = new DSSMessageDigestCalculator(digestAlgorithm);
 			writeTimestampX2MessageDigest(digestCalculator);
-			return digestCalculator.getMessageDigest();
+			return digestCalculator.getMessageDigest(digestAlgorithm);
 
 		} catch (Exception e) {
 			if (LOG.isDebugEnabled()) {
@@ -221,14 +198,14 @@ public class CAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 
 	private void writeTimestampX2MessageDigest(DSSMessageDigestCalculator digestCalculator) {
 		// Those are common to Type 1 and Type 2
-		final Attribute[] certAttributes = CMSUtils.getUnsignedAttributes(signerInformation, id_aa_ets_certificateRefs);
+		final Attribute[] certAttributes = CAdESUtils.getUnsignedAttributes(signerInformation, id_aa_ets_certificateRefs);
 		if (Utils.isArrayNotEmpty(certAttributes)) {
 			for (Attribute attribute : certAttributes) {
 				digestCalculator.update(DSSASN1Utils.getDEREncoded(attribute.getAttrType()));
 				digestCalculator.update(DSSASN1Utils.getDEREncoded(attribute.getAttrValues()));
 			}
 		}
-		final Attribute[] revAttributes = CMSUtils.getUnsignedAttributes(signerInformation, id_aa_ets_revocationRefs);
+		final Attribute[] revAttributes = CAdESUtils.getUnsignedAttributes(signerInformation, id_aa_ets_revocationRefs);
 		if (Utils.isArrayNotEmpty(revAttributes)) {
 			for (Attribute attribute : revAttributes) {
 				digestCalculator.update(DSSASN1Utils.getDEREncoded(attribute.getAttrType()));
@@ -319,117 +296,63 @@ public class CAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 		try {
 			final DSSMessageDigestCalculator digestCalculator = new DSSMessageDigestCalculator(digestAlgorithm);
 
-			final ContentInfo contentInfo = cmsSignedData.toASN1Structure();
-			final SignedData signedData = SignedData.getInstance(contentInfo.getContent());
-			
-			byte[] bytes = getContentInfoBytes(signedData);
-			digestCalculator.update(bytes);
-			
-			if (CMSUtils.isDetachedSignature(cmsSignedData)) {
-				bytes = getOriginalDocumentBinaries();
-				if (bytes == null) {
-					LOG.warn("The detached content is not provided for a TimestampToken with Id '{}'. "
-							+ "Not possible to compute message imprint!", timestampToken.getDSSIdAsString());
-					return DSSMessageDigest.createEmptyDigest();
+			try (OutputStream dos = digestCalculator.getOutputStream()) {
+
+				writeContentInfoBytes(dos);
+
+				if (cms.isDetachedSignature()) {
+					writeOriginalDocumentBinaries(dos);
 				}
-				digestCalculator.update(bytes);
-			}
-			
-			bytes = getCertificateDataBytes(signedData);
-			if (Utils.isArrayNotEmpty(bytes)) {
-				digestCalculator.update(bytes);
-			}
-			
-			bytes = getCRLDataBytes(signedData);
-			if (Utils.isArrayNotEmpty(bytes)) {
-				digestCalculator.update(bytes);
-			}
 
-			writeSignerInfoBytes(digestCalculator, includeUnsignedAttrsTagAndLength);
+				writeCertificateDataBytes(dos);
 
-			return digestCalculator.getMessageDigest();
+				writeCRLDataBytes(dos);
+
+				writeSignerInfoBytes(dos, includeUnsignedAttrsTagAndLength);
+
+				return digestCalculator.getMessageDigest(digestAlgorithm);
+
+			}
 
 		} catch (Exception e) {
 			// When error in computing or in format the algorithm just continues.
-			LOG.warn("An error in computing of message-imprint for a TimestampToken with Id : {}. Reason : {}",
-					timestampToken.getDSSIdAsString(), e.getMessage(), e);
-			return null;
+			String errorMessage = "An error in computing of message-imprint for a TimestampToken with Id : %s. Reason : %s";
+			if (LOG.isDebugEnabled()) {
+				LOG.warn(String.format(errorMessage, timestampToken.getDSSIdAsString(), e.getMessage()), e);
+			} else {
+				LOG.warn(String.format(errorMessage, timestampToken.getDSSIdAsString(), e.getMessage()));
+			}
+			return DSSMessageDigest.createEmptyDigest();
 		}
 	}
 	
-	private byte[] getContentInfoBytes(final SignedData signedData) {
-		final ContentInfo content = signedData.getEncapContentInfo();
-		byte[] contentInfoBytes;
-		if (content.getContent() instanceof BEROctetString) {
-			contentInfoBytes = DSSASN1Utils.getBEREncoded(content);
-		} else {
-			contentInfoBytes = DSSASN1Utils.getDEREncoded(content);
-		}
-		if (LOG.isTraceEnabled()) {
-			LOG.trace("Content Info: {}", DSSUtils.toHex(contentInfoBytes));
-		}
-		return contentInfoBytes;
+	private void writeContentInfoBytes(OutputStream os) throws IOException {
+		CMSUtils.writeContentInfoEncoded(cms, os);
 	}
 	
-	private byte[] getOriginalDocumentBinaries() {
+	private void writeOriginalDocumentBinaries(OutputStream os) throws IOException {
 		/*
 		 * Detached signatures have either no encapContentInfo in signedData, or it
 		 * exists but has no eContent
 		 */
 		DSSDocument originalDocument = getOriginalDocument();
 		if (originalDocument != null) {
-			return DSSUtils.toByteArray(getOriginalDocument());
+			os.write(DSSUtils.toByteArray(originalDocument));
+		} else {
+			throw new DSSException(String.format("The detached content is not provided for a TimestampToken with Id '%s'. "
+					+ "Not possible to compute message imprint!", timestampToken.getDSSIdAsString()));
 		}
-		return null;
 	}
 	
-	private byte[] getCertificateDataBytes(final SignedData signedData) throws IOException {
-		byte[] certificatesBytes = null;
-		
-		final ASN1Set certificates = signedData.getCertificates();
-		if (certificates != null) {
-			/*
-			 * In order to calculate correct message imprint it is important
-			 * to use the correct encoding.
-			 */
-			if (certificates instanceof BERSet) {
-				certificatesBytes = new BERTaggedObject(false, 0, new BERSequence(certificates.toArray())).getEncoded();
-			} else {
-				certificatesBytes = new DERTaggedObject(false, 0, new DERSequence(certificates.toArray())).getEncoded();
-			}
-			
-			if (LOG.isTraceEnabled()) {
-				LOG.trace("Certificates: {}", DSSUtils.toHex(certificatesBytes));
-			}
-		}
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("Certificates are not present in the SignedData.");
-		}
-		return certificatesBytes;
+	private void writeCertificateDataBytes(OutputStream os) throws IOException {
+		CMSUtils.writeSignedDataCertificatesEncoded(cms, os);
 	}
 	
-	private byte[] getCRLDataBytes(final SignedData signedData) throws IOException {
-		byte[] crlBytes = null;
-		
-		final ASN1Set crLs = signedData.getCRLs();
-		if (crLs != null) {
-			
-			if (signedData.getCRLs() instanceof BERSet) {
-				crlBytes = new BERTaggedObject(false, 1, new BERSequence(crLs.toArray())).getEncoded();
-			} else {
-				crlBytes = new DERTaggedObject(false, 1, new DERSequence(crLs.toArray())).getEncoded();
-			}
-			if (LOG.isTraceEnabled()) {
-				LOG.trace("CRLs: {}", DSSUtils.toHex(crlBytes));
-			}
-		}
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("CRLs are not present in the SignedData.");
-		}
-		return crlBytes;
+	private void writeCRLDataBytes(OutputStream os) throws IOException {
+		CMSUtils.writeSignedDataCRLsEncoded(cms, os);
 	}
 	
-	private void writeSignerInfoBytes(final DSSMessageDigestCalculator digestCalculator, boolean includeUnsignedAttrsTagAndLength) {
+	private void writeSignerInfoBytes(final OutputStream os, boolean includeUnsignedAttrsTagAndLength) throws IOException {
 		final SignerInfo signerInfo = signerInformation.toASN1Structure();
 		final ASN1Set unauthenticatedAttributes = signerInfo.getUnauthenticatedAttributes();
 		final ASN1Sequence filteredUnauthenticatedAttributes = filterUnauthenticatedAttributes(unauthenticatedAttributes, timestampToken);
@@ -439,7 +362,7 @@ public class CAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 			if (LOG.isTraceEnabled()) {
 				LOG.trace("SignerInfoBytes: {}", DSSUtils.toHex(signerInfoBytes));
 			}
-			digestCalculator.update(signerInfoBytes);
+			os.write(signerInfoBytes);
 		}
 	}
 
@@ -456,7 +379,7 @@ public class CAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 			if (id_aa_ets_archiveTimestampV2.equals(attrType) || id_aa_ets_archiveTimestampV3.equals(attrType)) {
 				try {
 
-					TimeStampToken token = CMSUtils.getTimeStampToken(attribute);
+					TimeStampToken token = CAdESUtils.getTimeStampToken(attribute);
 					if (token == null || !token.getTimeStampInfo().getGenTime().before(timestampToken.getGenerationTime())) {
 						continue;
 					}
@@ -501,7 +424,7 @@ public class CAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 		v.add(signerInfo.getSID());
 		v.add(signerInfo.getDigestAlgorithm());
 
-		final DERTaggedObject signedAttributes = CMSUtils.getDERSignedAttributes(signerInformation);
+		final DERTaggedObject signedAttributes = CAdESUtils.getDERSignedAttributes(signerInformation);
 		if (signedAttributes != null) {
 			v.add(signedAttributes);
 		}
@@ -524,7 +447,7 @@ public class CAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 	
 	private DSSDocument getOriginalDocument() {
 		try {
-			return CMSUtils.getOriginalDocument(cmsSignedData, detachedDocuments);
+			return CAdESUtils.getOriginalDocument(cms, detachedDocuments);
 		} catch (DSSException e) {
 			LOG.warn("Cannot extract original document! Reason : {}", e.getMessage());
 			return null;

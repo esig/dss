@@ -31,7 +31,8 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlEvidenceRecord;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.EvidenceRecordHashTreeRenewalTimestampCheck;
@@ -90,7 +91,7 @@ class EvidenceRecordHashTreeRenewalTimestampCheckTest extends AbstractTestCheck 
 
         XmlCV result = new XmlCV();
         EvidenceRecordHashTreeRenewalTimestampCheck erhtrtc = new EvidenceRecordHashTreeRenewalTimestampCheck(
-                i18nProvider, result, new DiagnosticData(xmlDiagnosticData), new TimestampWrapper(xmlTimestamp), constraint);
+                i18nProvider, result, new DiagnosticData(xmlDiagnosticData), new TimestampWrapper(xmlTimestamp), new LevelConstraintWrapper(constraint));
         erhtrtc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -144,7 +145,7 @@ class EvidenceRecordHashTreeRenewalTimestampCheckTest extends AbstractTestCheck 
 
         XmlCV result = new XmlCV();
         EvidenceRecordHashTreeRenewalTimestampCheck erhtrtc = new EvidenceRecordHashTreeRenewalTimestampCheck(
-                i18nProvider, result, new DiagnosticData(xmlDiagnosticData), new TimestampWrapper(xmlTimestamp), constraint);
+                i18nProvider, result, new DiagnosticData(xmlDiagnosticData), new TimestampWrapper(xmlTimestamp), new LevelConstraintWrapper(constraint));
         erhtrtc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -198,7 +199,7 @@ class EvidenceRecordHashTreeRenewalTimestampCheckTest extends AbstractTestCheck 
 
         XmlCV result = new XmlCV();
         EvidenceRecordHashTreeRenewalTimestampCheck erhtrtc = new EvidenceRecordHashTreeRenewalTimestampCheck(
-                i18nProvider, result, new DiagnosticData(xmlDiagnosticData), new TimestampWrapper(xmlTimestamp), constraint);
+                i18nProvider, result, new DiagnosticData(xmlDiagnosticData), new TimestampWrapper(xmlTimestamp), new LevelConstraintWrapper(constraint));
         erhtrtc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -225,7 +226,7 @@ class EvidenceRecordHashTreeRenewalTimestampCheckTest extends AbstractTestCheck 
 
         XmlCV result = new XmlCV();
         EvidenceRecordHashTreeRenewalTimestampCheck erhtrtc = new EvidenceRecordHashTreeRenewalTimestampCheck(
-                i18nProvider, result, new DiagnosticData(xmlDiagnosticData), new TimestampWrapper(xmlTimestamp), constraint);
+                i18nProvider, result, new DiagnosticData(xmlDiagnosticData), new TimestampWrapper(xmlTimestamp), new LevelConstraintWrapper(constraint));
         erhtrtc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -280,7 +281,7 @@ class EvidenceRecordHashTreeRenewalTimestampCheckTest extends AbstractTestCheck 
 
         XmlCV result = new XmlCV();
         EvidenceRecordHashTreeRenewalTimestampCheck erhtrtc = new EvidenceRecordHashTreeRenewalTimestampCheck(
-                i18nProvider, result, new DiagnosticData(xmlDiagnosticData), new TimestampWrapper(xmlTimestamp), constraint);
+                i18nProvider, result, new DiagnosticData(xmlDiagnosticData), new TimestampWrapper(xmlTimestamp), new LevelConstraintWrapper(constraint));
         erhtrtc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -331,7 +332,7 @@ class EvidenceRecordHashTreeRenewalTimestampCheckTest extends AbstractTestCheck 
 
         XmlCV result = new XmlCV();
         EvidenceRecordHashTreeRenewalTimestampCheck erhtrtc = new EvidenceRecordHashTreeRenewalTimestampCheck(
-                i18nProvider, result, new DiagnosticData(xmlDiagnosticData), new TimestampWrapper(xmlTimestamp), constraint);
+                i18nProvider, result, new DiagnosticData(xmlDiagnosticData), new TimestampWrapper(xmlTimestamp), new LevelConstraintWrapper(constraint));
         erhtrtc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -376,7 +377,7 @@ class EvidenceRecordHashTreeRenewalTimestampCheckTest extends AbstractTestCheck 
 
         XmlCV result = new XmlCV();
         EvidenceRecordHashTreeRenewalTimestampCheck erhtrtc = new EvidenceRecordHashTreeRenewalTimestampCheck(
-                i18nProvider, result, new DiagnosticData(xmlDiagnosticData), new TimestampWrapper(xmlTimestamp), constraint);
+                i18nProvider, result, new DiagnosticData(xmlDiagnosticData), new TimestampWrapper(xmlTimestamp), new LevelConstraintWrapper(constraint));
         erhtrtc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -430,7 +431,7 @@ class EvidenceRecordHashTreeRenewalTimestampCheckTest extends AbstractTestCheck 
 
         XmlCV result = new XmlCV();
         EvidenceRecordHashTreeRenewalTimestampCheck erhtrtc = new EvidenceRecordHashTreeRenewalTimestampCheck(
-                i18nProvider, result, new DiagnosticData(xmlDiagnosticData), new TimestampWrapper(xmlTimestamp), constraint);
+                i18nProvider, result, new DiagnosticData(xmlDiagnosticData), new TimestampWrapper(xmlTimestamp), new LevelConstraintWrapper(constraint));
         erhtrtc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

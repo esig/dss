@@ -31,7 +31,7 @@ import java.util.Objects;
  * with the alerts processing specified in CertificateVerifier
  *
  */
-public class CompleteValidationContextExecutor implements ValidationContextExecutor {
+public final class CompleteValidationContextExecutor implements ValidationContextExecutor {
 
     /** Singleton instance */
     public static final CompleteValidationContextExecutor INSTANCE = new CompleteValidationContextExecutor();
@@ -57,6 +57,7 @@ public class CompleteValidationContextExecutor implements ValidationContextExecu
         validationAlerter.assertAllRequiredRevocationDataPresent();
         validationAlerter.assertAllPOECoveredByRevocationData();
 
+        validationAlerter.assertAllSignaturesAreYetValid();
         validationAlerter.assertAllSignaturesNotExpired();
         validationAlerter.assertAllSignatureCertificatesNotRevoked();
         validationAlerter.assertAllSignatureCertificateHaveFreshRevocationData();

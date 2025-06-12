@@ -26,7 +26,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
@@ -50,11 +50,11 @@ public class BestSignatureTimeBeforeSuspensionTimeCheck extends ChainItem<XmlVal
      * @param result {@link XmlValidationProcessLongTermData}
      * @param certificateRevocation {@link CertificateRevocationWrapper}
      * @param bestSignatureTime {@link Date}
-     * @param constraint {@link LevelConstraint}
+     * @param constraint {@link LevelRule}
      */
     public BestSignatureTimeBeforeSuspensionTimeCheck(I18nProvider i18nProvider, XmlValidationProcessLongTermData result,
                                                       CertificateRevocationWrapper certificateRevocation,
-                                                      Date bestSignatureTime, LevelConstraint constraint) {
+                                                      Date bestSignatureTime, LevelRule constraint) {
         super(i18nProvider, result, constraint);
 
         this.certificateRevocation = certificateRevocation;

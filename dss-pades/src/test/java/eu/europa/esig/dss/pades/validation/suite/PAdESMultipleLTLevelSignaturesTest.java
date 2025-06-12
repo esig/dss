@@ -37,7 +37,7 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 // See DSS-3422
-public class PAdESMultipleLTLevelSignaturesTest extends AbstractPAdESTestValidation {
+class PAdESMultipleLTLevelSignaturesTest extends AbstractPAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

@@ -47,7 +47,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("slow")
-public class PAdESLevelBWithPlainECDSATest extends AbstractPAdESTestSignature {
+class PAdESLevelBWithPlainECDSATest extends AbstractPAdESTestSignature {
 
     private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;
     private PAdESSignatureParameters signatureParameters;

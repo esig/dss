@@ -31,7 +31,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
 
-public class DSS2116WithPAdESTest extends AbstractPAdESTestValidation {
+class DSS2116WithPAdESTest extends AbstractPAdESTestValidation {
 
 	private static final DigestAlgorithm ORIGINAL_DA = DigestAlgorithm.SHA256;
 	private static final String ORIGINAL_DTBSR = "Zym/kv++RGKZ7eDCjvxQwUFBzvU1XiHFj+nwMUcNuMQ=";

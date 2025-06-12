@@ -22,10 +22,12 @@ package eu.europa.esig.dss.pdf.pdfbox.visible.defaultdrawer;
 
 import eu.europa.esig.dss.pades.DSSFont;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
+import eu.europa.esig.dss.pdf.AnnotationBox;
 import eu.europa.esig.dss.pdf.pdfbox.visible.AbstractPdfBoxSignatureDrawer;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
 import eu.europa.esig.dss.pdf.visible.SignatureFieldDimensionAndPosition;
 import org.apache.pdfbox.cos.COSName;
+import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.visible.PDVisibleSigProperties;
 import org.apache.pdfbox.pdmodel.interactive.digitalsignature.visible.PDVisibleSignDesigner;
 
@@ -79,10 +81,14 @@ public class DefaultPdfBoxVisibleSignatureDrawer extends AbstractPdfBoxSignature
 		int page = parameters.getFieldParameters().getPage();
 		PDVisibleSignDesigner visibleSig = new PDVisibleSignDesigner(document, bufferedImage, page);
 
-		visibleSig.xAxis(dimensionAndPosition.getBoxX());
-		visibleSig.yAxis(dimensionAndPosition.getBoxY());
-		visibleSig.width(dimensionAndPosition.getBoxWidth());
-		visibleSig.height(dimensionAndPosition.getBoxHeight());
+		PDPage originalPage = getPage();
+		AnnotationBox pageBox = getPageAnnotationBox(originalPage);
+
+		AnnotationBox annotationBox = dimensionAndPosition.getAnnotationBox();
+		visibleSig.xAxis(annotationBox.getMinX());
+		visibleSig.yAxis(pageBox.getHeight() - annotationBox.getMaxY()); // PdfBox Default requires coordinates from the upper left corner
+		visibleSig.width(annotationBox.getWidth());
+		visibleSig.height(annotationBox.getHeight());
 
 		PDVisibleSigProperties signatureProperties = new PDVisibleSigProperties();
 		signatureProperties.visualSignEnabled(true);

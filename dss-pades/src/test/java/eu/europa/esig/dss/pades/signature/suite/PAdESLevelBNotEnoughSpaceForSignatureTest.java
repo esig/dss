@@ -35,7 +35,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PAdESLevelBNotEnoughSpaceForSignatureTest extends PKIFactoryAccess {
+class PAdESLevelBNotEnoughSpaceForSignatureTest extends PKIFactoryAccess {
 
 	@Test
 	void testException() throws Exception {

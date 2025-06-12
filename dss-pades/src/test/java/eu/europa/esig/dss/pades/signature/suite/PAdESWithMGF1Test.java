@@ -43,7 +43,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class PAdESWithMGF1Test extends AbstractPAdESTestSignature {
+class PAdESWithMGF1Test extends AbstractPAdESTestSignature {
 
     private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;
     private PAdESSignatureParameters signatureParameters;

@@ -63,7 +63,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PAdESSignatureFieldTest extends PKIFactoryAccess {
+class PAdESSignatureFieldTest extends PKIFactoryAccess {
 
 	private PAdESService service;
 	private PAdESSignatureParameters signatureParameters;
@@ -876,7 +876,8 @@ public class PAdESSignatureFieldTest extends PKIFactoryAccess {
 	@Test
 	void testWithTempFileResources() throws IOException {
 		IPdfObjFactory pdfObjFactory = new ServiceLoaderPdfObjFactory();
-		pdfObjFactory.setResourcesHandlerBuilder(new TempFileResourcesHandlerBuilder());
+		TempFileResourcesHandlerBuilder resourcesHandlerBuilder = new TempFileResourcesHandlerBuilder();
+		pdfObjFactory.setResourcesHandlerBuilder(resourcesHandlerBuilder);
 		service.setPdfObjFactory(pdfObjFactory);
 
 		DSSDocument documentToSign = new InMemoryDocument(getClass().getResourceAsStream("/EmptyPage.pdf"));
@@ -897,6 +898,8 @@ public class PAdESSignatureFieldTest extends PKIFactoryAccess {
 		DSSDocument signed = signAndValidate(doc);
 		assertNotNull(signed);
 		assertTrue(signed instanceof FileDocument);
+
+		resourcesHandlerBuilder.clear();
 	}
 
 	// see DSS-3269
@@ -1022,6 +1025,142 @@ public class PAdESSignatureFieldTest extends PKIFactoryAccess {
 		Exception exception = assertThrows(IllegalArgumentException.class,
 				() -> signAndValidate(withSecondField));
 		assertTrue(exception.getMessage().contains("signature1"));
+	}
+
+	@Test
+	void testNegativeCoordinates() throws IOException {
+		// Add to an empty doc
+		DSSDocument emptyDoc = new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/coordinates/doc-negative-coordinates.pdf"));
+
+		SignatureFieldParameters parameters = new SignatureFieldParameters();
+		parameters.setFieldId("signature1");
+		parameters.setOriginX(10);
+		parameters.setOriginY(10);
+		parameters.setHeight(50);
+		parameters.setWidth(50);
+		parameters.setRotation(VisualSignatureRotation.NONE);
+
+		DSSDocument oneSigFieldDoc = service.addNewSignatureField(emptyDoc, parameters);
+		assertNotNull(oneSigFieldDoc);
+
+		Exception exception = assertThrows(AlertException.class, () -> service.addNewSignatureField(oneSigFieldDoc, parameters));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
+
+		parameters.setFieldId("signature2");
+		parameters.setRotation(VisualSignatureRotation.ROTATE_90);
+
+		DSSDocument twoSigFieldDoc = service.addNewSignatureField(oneSigFieldDoc, parameters);
+		assertNotNull(twoSigFieldDoc);
+
+        signatureParameters.getImageParameters().getFieldParameters().setFieldId("signature1");
+        DSSDocument signed = signAndValidate(twoSigFieldDoc);
+        assertNotNull(signed);
+
+		// Add to a doc with existing sig field
+		DSSDocument docWithField = new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/check/negative_coordinates_NONE.pdf"));
+
+		parameters.setFieldId("signature1");
+		parameters.setRotation(VisualSignatureRotation.NONE);
+
+		exception = assertThrows(AlertException.class, () -> service.addNewSignatureField(docWithField, parameters));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
+
+		parameters.setFieldId("signature2");
+		parameters.setRotation(VisualSignatureRotation.ROTATE_90);
+
+		twoSigFieldDoc = service.addNewSignatureField(docWithField, parameters);
+		assertNotNull(twoSigFieldDoc);
+
+        signatureParameters.getImageParameters().getFieldParameters().setFieldId("signature2");
+        signed = signAndValidate(twoSigFieldDoc);
+        assertNotNull(signed);
+
+		// Add to a doc with existing sig field
+		DSSDocument docWithFieldAndRotation = new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/check/negative_coordinates_ROTATE_90.pdf"));
+
+		parameters.setFieldId("signature1");
+		parameters.setRotation(VisualSignatureRotation.NONE);
+
+		twoSigFieldDoc = service.addNewSignatureField(docWithFieldAndRotation, parameters);
+		assertNotNull(twoSigFieldDoc);
+
+		parameters.setFieldId("signature2");
+		parameters.setRotation(VisualSignatureRotation.ROTATE_90);
+
+		exception = assertThrows(AlertException.class, () -> service.addNewSignatureField(docWithFieldAndRotation, parameters));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
+
+        signatureParameters.getImageParameters().getFieldParameters().setFieldId("signature1");
+        signed = signAndValidate(twoSigFieldDoc);
+        assertNotNull(signed);
+	}
+
+	@Test
+	void testPositiveCoordinates() throws IOException {
+		// Add to an empty doc
+		DSSDocument emptyDoc = new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/coordinates/doc-positive-coordinates.pdf"));
+
+		SignatureFieldParameters parameters = new SignatureFieldParameters();
+		parameters.setFieldId("signature1");
+		parameters.setOriginX(10);
+		parameters.setOriginY(10);
+		parameters.setHeight(50);
+		parameters.setWidth(50);
+		parameters.setRotation(VisualSignatureRotation.NONE);
+
+		DSSDocument oneSigFieldDoc = service.addNewSignatureField(emptyDoc, parameters);
+		assertNotNull(oneSigFieldDoc);
+
+		Exception exception = assertThrows(AlertException.class, () -> service.addNewSignatureField(oneSigFieldDoc, parameters));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
+
+		parameters.setFieldId("signature2");
+		parameters.setRotation(VisualSignatureRotation.ROTATE_90);
+
+		DSSDocument twoSigFieldDoc = service.addNewSignatureField(oneSigFieldDoc, parameters);
+		assertNotNull(twoSigFieldDoc);
+
+        signatureParameters.getImageParameters().getFieldParameters().setFieldId("signature1");
+        DSSDocument signed = signAndValidate(twoSigFieldDoc);
+        assertNotNull(signed);
+
+		// Add to a doc with existing sig field
+		DSSDocument docWithField = new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/check/positive_coordinates_NONE.pdf"));
+
+		parameters.setFieldId("signature1");
+		parameters.setRotation(VisualSignatureRotation.NONE);
+
+		exception = assertThrows(AlertException.class, () -> service.addNewSignatureField(docWithField, parameters));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
+
+		parameters.setFieldId("signature2");
+		parameters.setRotation(VisualSignatureRotation.ROTATE_90);
+
+		twoSigFieldDoc = service.addNewSignatureField(docWithField, parameters);
+		assertNotNull(twoSigFieldDoc);
+
+        signatureParameters.getImageParameters().getFieldParameters().setFieldId("signature2");
+        signed = signAndValidate(twoSigFieldDoc);
+        assertNotNull(signed);
+
+		// Add to a doc with existing sig field
+		DSSDocument docWithFieldAndRotation = new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/check/positive_coordinates_ROTATE_90.pdf"));
+
+		parameters.setFieldId("signature1");
+		parameters.setRotation(VisualSignatureRotation.NONE);
+
+		twoSigFieldDoc = service.addNewSignatureField(docWithFieldAndRotation, parameters);
+		assertNotNull(twoSigFieldDoc);
+
+        signatureParameters.getImageParameters().getFieldParameters().setFieldId("signature1");
+        signed = signAndValidate(twoSigFieldDoc);
+        assertNotNull(signed);
+
+		parameters.setFieldId("signature2");
+		parameters.setRotation(VisualSignatureRotation.ROTATE_90);
+
+		exception = assertThrows(AlertException.class, () -> service.addNewSignatureField(docWithFieldAndRotation, parameters));
+		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
 	}
 
 	private DSSDocument signAndValidate(DSSDocument documentToSign) throws IOException {

@@ -23,7 +23,7 @@ package eu.europa.esig.dss.cades.validation;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
@@ -46,7 +46,7 @@ class CAdESCounterSignatureValidationTest extends AbstractCAdESTestValidation {
 	@Override
 	@SuppressWarnings("unchecked")
 	protected DSSDocument getSignedDocument() {
-		FileDocument fileDocument = new FileDocument("src/test/resources/validation/counterSig.p7m");
+		DSSDocument fileDocument = new InMemoryDocument(CAdESCounterSignatureValidationTest.class.getResourceAsStream("/validation/counterSig.p7m"));
 		
 		try (InputStream is = fileDocument.openStream()) {
 			CMSSignedData cms = new CMSSignedData(is);

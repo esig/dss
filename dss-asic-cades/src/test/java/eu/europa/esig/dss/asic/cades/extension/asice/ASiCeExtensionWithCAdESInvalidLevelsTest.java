@@ -118,26 +118,26 @@ class ASiCeExtensionWithCAdESInvalidLevelsTest extends AbstractASiCWithCAdESTest
         finalSignatureLevel = SignatureLevel.CAdES_BASELINE_T;
         exception = assertThrows(IllegalInputException.class, () -> extendSignature(signedDocument));
         assertEquals(exception.getMessage(), "Cannot extend signature to 'CAdES-BASELINE-T'. " +
-                "The signature is already covered by an archive manifest.");
+                "The signature is already covered by a manifest file.");
 
         certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new SilentOnStatusAlert());
 
         exception = assertThrows(IllegalInputException.class, () -> extendSignature(signedDocument));
         assertEquals(exception.getMessage(), "Cannot extend signature to 'CAdES-BASELINE-T'. " +
-                "The signature is already covered by an archive manifest.");
+                "The signature is already covered by a manifest file.");
 
         certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new ExceptionOnStatusAlert());
 
         finalSignatureLevel = SignatureLevel.CAdES_BASELINE_LT;
         exception = assertThrows(IllegalInputException.class, () -> extendSignature(signedDocument));
         assertEquals(exception.getMessage(), "Cannot extend signature to 'CAdES-BASELINE-LT'. " +
-                "The signature is already covered by an archive manifest.");
+                "The signature is already covered by a manifest file.");
 
         certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new SilentOnStatusAlert());
 
         exception = assertThrows(IllegalInputException.class, () -> extendSignature(signedDocument));
         assertEquals(exception.getMessage(), "Cannot extend signature to 'CAdES-BASELINE-LT'. " +
-                "The signature is already covered by an archive manifest.");
+                "The signature is already covered by a manifest file.");
 
         certificateVerifier.setAugmentationAlertOnHigherSignatureLevel(new ExceptionOnStatusAlert());
 

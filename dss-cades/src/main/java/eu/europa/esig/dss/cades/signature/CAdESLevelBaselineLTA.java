@@ -21,27 +21,30 @@
 package eu.europa.esig.dss.cades.signature;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
-import eu.europa.esig.dss.cades.CMSUtils;
+import eu.europa.esig.dss.cades.CAdESUtils;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.cades.validation.CMSDocumentAnalyzer;
+import eu.europa.esig.dss.cms.CMS;
+import eu.europa.esig.dss.cms.CMSUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSMessageDigest;
+import eu.europa.esig.dss.signature.SignatureRequirementsChecker;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.OID;
-import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
+import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.ASN1Object;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
-import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static eu.europa.esig.dss.spi.OID.id_aa_ATSHashIndex;
@@ -69,18 +72,21 @@ public class CAdESLevelBaselineLTA extends CAdESLevelBaselineLT {
 	}
 
 	@Override
-	protected CMSSignedData extendCMSSignatures(CMSSignedData cmsSignedData, CAdESSignatureParameters parameters, List<String> signatureIdsToExtend) {
-		cmsSignedData = super.extendCMSSignatures(cmsSignedData, parameters, signatureIdsToExtend);
+	protected CMS extendCMSSignatures(CMS cms, CAdESSignatureParameters parameters, List<String> signatureIdsToExtend) {
+		cms = super.extendCMSSignatures(cms, parameters, signatureIdsToExtend);
 
 		final List<SignerInformation> newSignerInformationList = new ArrayList<>();
 
-		CMSDocumentAnalyzer documentAnalyzer = getDocumentValidator(cmsSignedData, parameters);
+		CMSDocumentAnalyzer documentAnalyzer = getDocumentValidator(cms, parameters);
 		List<AdvancedSignature> signatures = documentAnalyzer.getSignatures();
 
 		final List<AdvancedSignature> signaturesToExtend = getExtendToLTLevelSignatures(signatures, signatureIdsToExtend);
 		if (Utils.isCollectionEmpty(signaturesToExtend)) {
-			return cmsSignedData;
+			return cms;
 		}
+
+		final SignatureRequirementsChecker signatureRequirementsChecker = getSignatureRequirementsChecker(parameters);
+		signatureRequirementsChecker.assertExtendToLTALevelPossible(signaturesToExtend);
 
 		// signature validity is checked within -LT augmentation
 
@@ -90,9 +96,9 @@ public class CAdESLevelBaselineLTA extends CAdESLevelBaselineLT {
 			SignerInformation newSignerInformation = signerInformation;
 
 			if (signaturesToExtend.contains(cadesSignature)) {
-				AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
+				AttributeTable unsignedAttributes = CAdESUtils.getUnsignedAttributes(signerInformation);
 				unsignedAttributes = addArchiveTimestampV3Attribute(cadesSignature, signerInformation, parameters, unsignedAttributes);
-				newSignerInformation = SignerInformation.replaceUnsignedAttributes(signerInformation, unsignedAttributes);
+				newSignerInformation = CMSUtils.replaceUnsignedAttributes(signerInformation, unsignedAttributes);
 
 				/*
 				 * Add a DigestAlgorithm used by an Archive TimeStamp to SignedData.digestAlgorithms set, when required.
@@ -100,11 +106,11 @@ public class CAdESLevelBaselineLTA extends CAdESLevelBaselineLT {
 				 */
 				DigestAlgorithm timestampDigestAlgorithm = parameters.getArchiveTimestampParameters().getDigestAlgorithm();
 				AlgorithmIdentifier algorithmIdentifier = DSSASN1Utils.getAlgorithmIdentifier(timestampDigestAlgorithm);
-				cmsSignedData = CMSUtils.addDigestAlgorithm(cmsSignedData, algorithmIdentifier);
+				cms = CMSUtils.populateDigestAlgorithmSet(cms, Collections.singleton(algorithmIdentifier));
 			}
 			newSignerInformationList.add(newSignerInformation);
 		}
-		return replaceSigners(cmsSignedData, newSignerInformationList);
+		return replaceSigners(cms, newSignerInformationList);
 	}
 
 	/**

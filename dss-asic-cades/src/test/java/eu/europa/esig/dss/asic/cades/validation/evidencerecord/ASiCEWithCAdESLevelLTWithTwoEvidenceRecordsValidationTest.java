@@ -20,6 +20,9 @@
  */
 package eu.europa.esig.dss.asic.cades.validation.evidencerecord;
 
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
@@ -51,11 +54,26 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class ASiCEWithCAdESLevelLTWithTwoEvidenceRecordsValidationTest extends AbstractASiCEWithCAdESWithEvidenceRecordTestValidation {
+class ASiCEWithCAdESLevelLTWithTwoEvidenceRecordsValidationTest extends AbstractASiCWithCAdESWithEvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {
         return new FileDocument("src/test/resources/validation/evidencerecord/cades-lt-with-two-ers-multi-files.sce");
+    }
+
+    @Override
+    protected void checkEvidenceRecordCoverage(DiagnosticData diagnosticData, SignatureWrapper signature) {
+        boolean firstERFound = false;
+        boolean secondERFound = false;
+        for (EvidenceRecordWrapper evidenceRecordWrapper : signature.getEvidenceRecords()) {
+            if (Utils.collectionSize(evidenceRecordWrapper.getEvidenceRecordScopes()) == 4) {
+                firstERFound = true;
+            } else if (Utils.collectionSize(evidenceRecordWrapper.getEvidenceRecordScopes()) == 6) {
+                secondERFound = true;
+            }
+        }
+        assertTrue(firstERFound);
+        assertTrue(secondERFound);
     }
 
     @Override

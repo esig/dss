@@ -256,20 +256,20 @@ public class DigestDocument extends CommonDocument {
 	}
 
 	@Override
-	public int hashCode() {
-		return super.hashCode();
-	}
-
-	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
 
 		DigestDocument that = (DigestDocument) o;
-		return Objects.equals(digestMap, that.digestMap)
-				&& Objects.equals(mimeType, that.mimeType)
-				&& Objects.equals(name, that.name);
+		return Objects.equals(digestMap, that.digestMap);
+	}
 
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + Objects.hashCode(digestMap);
+		return result;
 	}
 
 }

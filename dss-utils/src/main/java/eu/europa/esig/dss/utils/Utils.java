@@ -523,6 +523,15 @@ public final class Utils {
 	}
 
 	/**
+	 * Opens an {@code OutputStream} that discards all bytes (written to nowhere)
+	 *
+	 * @return {@link OutputStream}
+	 */
+	public static OutputStream nullOutputStream() {
+		return impl.nullOutputStream();
+	}
+
+	/**
 	 * Gets the size of the InputStream content
 	 *
 	 * @param is {@link InputStream}

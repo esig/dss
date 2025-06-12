@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.cookbook.example.snippets;
 
-import eu.europa.esig.dss.cades.validation.evidencerecord.CAdESEvidenceRecordDigestBuilder;
+import eu.europa.esig.dss.cades.evidencerecord.CAdESEvidenceRecordDigestBuilder;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.evidencerecord.asn1.digest.ASN1EvidenceRecordDataObjectDigestBuilder;
 import eu.europa.esig.dss.evidencerecord.asn1.digest.ASN1EvidenceRecordRenewalDigestBuilder;
@@ -138,6 +138,15 @@ class ERDataObjectBuilderTest {
         // When FALSE : computes hash of the complete CMS signature
         // Default : FALSE (computes digest on the whole signature)
         cadesEvidenceRecordDigestBuilder.setParallelEvidenceRecord(true);
+
+        // Optional : Define whether the CMS shall be forced DER-encoded,
+        // as required by ETSI TS 119 122-3 v1.1.1.
+        // The requirement is not present in RFC 4998, thus both implementation may exist.
+        // When TRUE : DER-encodes the CMS signature before computing hash
+        // (aligned with ETSI TS 119 122-3 v1.1.1).
+        // When FALSE : computes hash on the original coding of CMS (aligned with RFC 4998).
+        // Default : FALSE (computes digest on the existing coding of CMS)
+        cadesEvidenceRecordDigestBuilder.setDEREncoded(true);
 
         // Use method #build to build signature digest for internal-evidence-record
         // incorporation

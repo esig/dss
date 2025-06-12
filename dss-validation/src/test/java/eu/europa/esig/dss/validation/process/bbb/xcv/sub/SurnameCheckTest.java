@@ -25,7 +25,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.MultiValuesConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.SurnameCheck;
@@ -47,7 +48,7 @@ class SurnameCheckTest extends AbstractTestCheck {
 		xc.setSurname("Valid_Surname");
 
 		XmlSubXCV result = new XmlSubXCV();
-		SurnameCheck sc = new SurnameCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
+		SurnameCheck sc = new SurnameCheck(i18nProvider, result, new CertificateWrapper(xc), new MultiValuesConstraintWrapper(constraint));
 		sc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -65,7 +66,7 @@ class SurnameCheckTest extends AbstractTestCheck {
 		xc.setSurname("Valid_Surname");
 
 		XmlSubXCV result = new XmlSubXCV();
-		SurnameCheck sc = new SurnameCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
+		SurnameCheck sc = new SurnameCheck(i18nProvider, result, new CertificateWrapper(xc), new MultiValuesConstraintWrapper(constraint));
 		sc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

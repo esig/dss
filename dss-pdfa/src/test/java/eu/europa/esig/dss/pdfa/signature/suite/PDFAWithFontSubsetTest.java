@@ -39,7 +39,7 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-public class PDFAWithFontSubsetTest extends AbstractPDFATestSignature {
+class PDFAWithFontSubsetTest extends AbstractPDFATestSignature {
 
     private static final String FONT_NAME = "PTSerif-Regular";
 

@@ -51,7 +51,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PAdESFieldMDPTest extends PKIFactoryAccess {
+class PAdESFieldMDPTest extends PKIFactoryAccess {
 
     static Stream<String> getParams() {
 

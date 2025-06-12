@@ -30,7 +30,7 @@ import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 
 import java.util.ArrayList;
@@ -45,7 +45,7 @@ class CAdESRevocationSourceMultipleRefOriginsTest extends AbstractCAdESTestValid
 
 	@Override
 	protected DSSDocument getSignedDocument() {
-		return new FileDocument("src/test/resources/validation/Signature-C-X-1.p7m");
+		return new InMemoryDocument(CAdESRevocationSourceMultipleRefOriginsTest.class.getResourceAsStream("/validation/Signature-C-X-1.p7m"));
 	}
 	
 	@Override

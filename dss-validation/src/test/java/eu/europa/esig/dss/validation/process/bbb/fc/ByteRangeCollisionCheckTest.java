@@ -32,7 +32,8 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFSignatureDictionary;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.ByteRangeCollisionCheck;
@@ -83,7 +84,7 @@ class ByteRangeCollisionCheckTest extends AbstractTestCheck {
 
         XmlFC result = new XmlFC();
         ByteRangeCollisionCheck brcc = new ByteRangeCollisionCheck(i18nProvider, result,
-                new SignatureWrapper(xmlSignatureOne), new DiagnosticData(xmlDiagnosticData), constraint);
+                new SignatureWrapper(xmlSignatureOne), new DiagnosticData(xmlDiagnosticData), new LevelConstraintWrapper(constraint));
         brcc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -92,7 +93,7 @@ class ByteRangeCollisionCheckTest extends AbstractTestCheck {
 
         result = new XmlFC();
         brcc = new ByteRangeCollisionCheck(i18nProvider, result,
-                new SignatureWrapper(xmlSignatureTwo), new DiagnosticData(xmlDiagnosticData), constraint);
+                new SignatureWrapper(xmlSignatureTwo), new DiagnosticData(xmlDiagnosticData), new LevelConstraintWrapper(constraint));
         brcc.execute();
 
         constraints = result.getConstraint();
@@ -137,7 +138,7 @@ class ByteRangeCollisionCheckTest extends AbstractTestCheck {
 
         XmlFC result = new XmlFC();
         ByteRangeCollisionCheck brcc = new ByteRangeCollisionCheck(i18nProvider, result,
-                new SignatureWrapper(xmlSignatureOne), new DiagnosticData(xmlDiagnosticData), constraint);
+                new SignatureWrapper(xmlSignatureOne), new DiagnosticData(xmlDiagnosticData), new LevelConstraintWrapper(constraint));
         brcc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -146,7 +147,7 @@ class ByteRangeCollisionCheckTest extends AbstractTestCheck {
 
         result = new XmlFC();
         brcc = new ByteRangeCollisionCheck(i18nProvider, result,
-                new SignatureWrapper(xmlSignatureTwo), new DiagnosticData(xmlDiagnosticData), constraint);
+                new SignatureWrapper(xmlSignatureTwo), new DiagnosticData(xmlDiagnosticData), new LevelConstraintWrapper(constraint));
         brcc.execute();
 
         constraints = result.getConstraint();
@@ -191,7 +192,7 @@ class ByteRangeCollisionCheckTest extends AbstractTestCheck {
 
         XmlFC result = new XmlFC();
         ByteRangeCollisionCheck brcc = new ByteRangeCollisionCheck(i18nProvider, result,
-                new SignatureWrapper(xmlSignature), new DiagnosticData(xmlDiagnosticData), constraint);
+                new SignatureWrapper(xmlSignature), new DiagnosticData(xmlDiagnosticData), new LevelConstraintWrapper(constraint));
         brcc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -200,7 +201,7 @@ class ByteRangeCollisionCheckTest extends AbstractTestCheck {
 
         result = new XmlFC();
         brcc = new ByteRangeCollisionCheck(i18nProvider, result,
-                new TimestampWrapper(xmlTimestamp), new DiagnosticData(xmlDiagnosticData), constraint);
+                new TimestampWrapper(xmlTimestamp), new DiagnosticData(xmlDiagnosticData), new LevelConstraintWrapper(constraint));
         brcc.execute();
 
         constraints = result.getConstraint();
@@ -245,7 +246,7 @@ class ByteRangeCollisionCheckTest extends AbstractTestCheck {
 
         XmlFC result = new XmlFC();
         ByteRangeCollisionCheck brcc = new ByteRangeCollisionCheck(i18nProvider, result,
-                new SignatureWrapper(xmlSignature), new DiagnosticData(xmlDiagnosticData), constraint);
+                new SignatureWrapper(xmlSignature), new DiagnosticData(xmlDiagnosticData), new LevelConstraintWrapper(constraint));
         brcc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -254,7 +255,7 @@ class ByteRangeCollisionCheckTest extends AbstractTestCheck {
 
         result = new XmlFC();
         brcc = new ByteRangeCollisionCheck(i18nProvider, result,
-                new TimestampWrapper(xmlTimestamp), new DiagnosticData(xmlDiagnosticData), constraint);
+                new TimestampWrapper(xmlTimestamp), new DiagnosticData(xmlDiagnosticData), new LevelConstraintWrapper(constraint));
         brcc.execute();
 
         constraints = result.getConstraint();

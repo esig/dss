@@ -44,7 +44,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PAdESLevelBWithAsn1EvidenceRecordValidationTest extends AbstractPAdESWithEvidenceRecordTestValidation {
+class PAdESLevelBWithAsn1EvidenceRecordValidationTest extends AbstractPAdESWithEvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

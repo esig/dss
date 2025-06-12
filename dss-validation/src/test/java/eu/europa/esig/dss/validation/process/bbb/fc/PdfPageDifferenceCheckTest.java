@@ -27,7 +27,8 @@ import eu.europa.esig.dss.diagnostic.PDFRevisionWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlModification;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlModificationDetection;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.PdfPageDifferenceCheck;
@@ -48,7 +49,7 @@ class PdfPageDifferenceCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlFC result = new XmlFC();
-		PdfPageDifferenceCheck ppdc = new PdfPageDifferenceCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
+		PdfPageDifferenceCheck ppdc = new PdfPageDifferenceCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), new LevelConstraintWrapper(constraint));
 		ppdc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -67,7 +68,7 @@ class PdfPageDifferenceCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlFC result = new XmlFC();
-		PdfPageDifferenceCheck ppdc = new PdfPageDifferenceCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
+		PdfPageDifferenceCheck ppdc = new PdfPageDifferenceCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), new LevelConstraintWrapper(constraint));
 		ppdc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -86,7 +87,7 @@ class PdfPageDifferenceCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlFC result = new XmlFC();
-		PdfPageDifferenceCheck ppdc = new PdfPageDifferenceCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
+		PdfPageDifferenceCheck ppdc = new PdfPageDifferenceCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), new LevelConstraintWrapper(constraint));
 		ppdc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -107,7 +108,7 @@ class PdfPageDifferenceCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlFC result = new XmlFC();
-		PdfPageDifferenceCheck ppdc = new PdfPageDifferenceCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
+		PdfPageDifferenceCheck ppdc = new PdfPageDifferenceCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), new LevelConstraintWrapper(constraint));
 		ppdc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

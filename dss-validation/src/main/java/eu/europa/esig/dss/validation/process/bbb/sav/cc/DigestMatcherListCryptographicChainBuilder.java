@@ -29,12 +29,14 @@ import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
+import eu.europa.esig.dss.model.policy.CryptographicSuite;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.DigestMatcherCryptographicCheckerResultCheck;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashSet;
@@ -65,13 +67,26 @@ public class DigestMatcherListCryptographicChainBuilder<T extends XmlConstraints
     private final Date validationTime;
 
     /** The used cryptographic constraints */
-    private final CryptographicConstraint constraint;
+    private final CryptographicSuite constraint;
 
     /** Cached XmlCC */
     private XmlCC concernedCC;
 
     /** Cached reference names */
     private List<String> concernedMaterial;
+
+    /** Contains a list of digest matcher types to be ignored in case of unknown digest algorithm */
+    private static List<DigestMatcherType> digestMatcherTypesToIgnore;
+
+    static {
+        digestMatcherTypesToIgnore = Arrays.asList(
+                DigestMatcherType.COUNTER_SIGNED_SIGNATURE_VALUE,
+                DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT,
+                DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_TIME_STAMP,
+                DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_TIME_STAMP_SEQUENCE,
+                DigestMatcherType.EVIDENCE_RECORD_MASTER_SIGNATURE
+        );
+    }
 
     /**
      * Default constructor
@@ -80,11 +95,11 @@ public class DigestMatcherListCryptographicChainBuilder<T extends XmlConstraints
      * @param result {@link XmlConstraintsConclusion}
      * @param digestMatchers a list of {@link XmlDigestMatcher}s to be validated
      * @param validationTime {@link Date} the validation time
-     * @param constraint {@link CryptographicConstraint}
+     * @param constraint {@link CryptographicSuite}
      */
     public DigestMatcherListCryptographicChainBuilder(final I18nProvider i18nProvider, final T result,
                                                       final List<XmlDigestMatcher> digestMatchers, final Date validationTime,
-                                                      final CryptographicConstraint constraint) {
+                                                      final CryptographicSuite constraint) {
        this.i18nProvider = i18nProvider;
        this.result = result;
        this.digestMatchers = digestMatchers;
@@ -104,11 +119,12 @@ public class DigestMatcherListCryptographicChainBuilder<T extends XmlConstraints
             return chainItem;
         }
 
-        final Set<DigestAlgorithm> usedDigestAlgorithms = getUsedDigestAlgorithms(digestMatchers);
-        final Set<MessageTag> usedPositions = getUsedPositions(digestMatchers);
+        List<XmlDigestMatcher> digestMatchersToProcess = getDigestMatchersToProcess(digestMatchers);
+        final Set<DigestAlgorithm> usedDigestAlgorithms = getUsedDigestAlgorithms(digestMatchersToProcess);
+        final Set<MessageTag> usedPositions = getUsedPositions(digestMatchersToProcess);
         for (DigestAlgorithm digestAlgorithm : usedDigestAlgorithms) {
             for (MessageTag position : usedPositions) {
-                List<XmlDigestMatcher> digestMatchersGroup = getDigestMatchersByAlgorithmAndPosition(digestMatchers, digestAlgorithm, position);
+                List<XmlDigestMatcher> digestMatchersGroup = getDigestMatchersByAlgorithmAndPosition(digestMatchersToProcess, digestAlgorithm, position);
                 if (Utils.isCollectionNotEmpty(digestMatchersGroup)) {
                     DigestCryptographicChecker dac = new DigestCryptographicChecker(
                             i18nProvider, digestAlgorithm, validationTime, position, constraint);
@@ -144,6 +160,25 @@ public class DigestMatcherListCryptographicChainBuilder<T extends XmlConstraints
         return concernedMaterial;
     }
 
+    /**
+     * This method omits digest matchers that were created for validation purposes but not originally are present in a signature
+     *
+     * @param digestMatchers a list of {@link XmlDigestMatcher}s
+     * @return a list of {@link XmlDigestMatcher}s
+     */
+    private List<XmlDigestMatcher> getDigestMatchersToProcess(List<XmlDigestMatcher> digestMatchers) {
+        final List<XmlDigestMatcher> digestMatchersToProcess = new ArrayList<>();
+        for (XmlDigestMatcher digestMatcher : digestMatchers) {
+            if (digestMatcher.getDigestMethod() != null || !digestMatcherTypesToIgnore.contains(digestMatcher.getType())) {
+                digestMatchersToProcess.add(digestMatcher);
+            }
+        }
+        if (Utils.isCollectionEmpty(digestMatchersToProcess)) {
+            return digestMatchers; // return original values if no matching entries found
+        }
+        return digestMatchersToProcess;
+    }
+
     private Set<DigestAlgorithm> getUsedDigestAlgorithms(List<XmlDigestMatcher> digestMatchers) {
         return digestMatchers.stream().map(XmlDigestAlgoAndValue::getDigestMethod).collect(Collectors.toCollection(LinkedHashSet::new));
     }
@@ -164,7 +199,7 @@ public class DigestMatcherListCryptographicChainBuilder<T extends XmlConstraints
     }
 
     private ChainItem<T> digestAlgorithmCheckResult(List<XmlDigestMatcher> digestMatchers, XmlCC ccResult,
-                                                    CryptographicConstraint constraint) {
+                                                    CryptographicSuite constraint) {
         MessageTag position = ValidationProcessUtils.getDigestMatcherCryptoPosition(digestMatchers);
         return new DigestMatcherCryptographicCheckerResultCheck<>(i18nProvider, result, validationTime, position,
                 getReferenceNames(digestMatchers), ccResult, constraint);

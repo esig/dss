@@ -186,6 +186,16 @@ The `AdES-BASELINE-T` trusted time indications should be created before the sign
 
 After the revocation data update, satisfying the revocation freshness constraint, the `BASELINE-LT` level can be incorporated to the signature, providing the information about validity of the used certificate chains. In order to prove the existence of the revocation data, the `BASELINE-LTA` level should be added after. The `BASELINE-LTA` level will prove the existence of the incorporated revocation data, so it can be trusted by the validators even after its expiration, as well as the timestamp will provide a POE for cryptographic constraints and all the previous certificate chains, including the ones used for timestamp creation.
 
+NOTE: In order to simplify the signature augmentation process, the information about the "best extension period" can be extracted on a signature validation from a <<SimpleReport>>, with a help of the <<MinAndMaxAugmentationDates>>.
+
 As each timestamp has its own validity range, it is important to preserve timestamp validity with another following `BASELINE-LTA` level, before expiration of the timestamp's certificate.
 
 NOTE: It can be beneficial to use timestamps from different TSAs approach in order to avoid signature validity expiration in case one of the timestamps becomes unexpectedly invalid by one or another reason (e.g. revocation of a timestamp's certificate).
+
+=== Signature preservation with Evidence Records
+
+As an alternative to signature and archive timestamps, document and/or signature preservation can also be done with a use of evidence records, providing a cost-efficient option to ensure a long-term validity of electronic signatures.
+
+DSS offers a possibility for addition of existing evidence records (either of RFC 6283 <<R23>> or RFC 4998 <<R24>> format) within a signature or an ASiC container. For more detail about the implementation, please see the <<evidenceRecordsAddition>> chapter in the Annex.
+
+NOTE: Creation of evidence records is out of scope of DSS and a third-party application should be used, whether a creation of evidence records is required.

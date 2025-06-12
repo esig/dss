@@ -54,6 +54,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -67,6 +68,7 @@ class OnlineOCSPSourceTest extends OnlineSourceTest {
 	private static CertificateToken goodUser;
 	private static CertificateToken goodUserOCSPWithReqCertId;
 	private static CertificateToken goodCa;
+	private static CertificateToken rootCa;
 	private static CertificateToken ed25519goodUser;
 	private static CertificateToken ed25519goodCa;
 
@@ -86,6 +88,7 @@ class OnlineOCSPSourceTest extends OnlineSourceTest {
 		goodUser = DSSUtils.loadCertificate(dataLoader.get(ONLINE_PKI_HOST + "/crt/good-user.crt"));
 		goodUserOCSPWithReqCertId = DSSUtils.loadCertificate(dataLoader.get(ONLINE_PKI_HOST + "/crt/good-user-ocsp-certid-digest.crt"));
 		goodCa = DSSUtils.loadCertificate(dataLoader.get(ONLINE_PKI_HOST + "/crt/good-ca.crt"));
+		rootCa = DSSUtils.loadCertificate(dataLoader.get(ONLINE_PKI_HOST + "/crt/root-ca.crt"));
 
 		ed25519goodUser = DSSUtils.loadCertificate(dataLoader.get(ONLINE_PKI_HOST + "/crt/Ed25519-good-user.crt"));
 		ed25519goodCa = DSSUtils.loadCertificate(dataLoader.get(ONLINE_PKI_HOST + "/crt/Ed25519-good-ca.crt"));
@@ -132,6 +135,14 @@ class OnlineOCSPSourceTest extends OnlineSourceTest {
 		OCSPToken ocspToken = ocspSource.getRevocationToken(goodUser, goodCa);
 		assertNotNull(ocspToken);
 		assertNotNull(ocspToken.getBasicOCSPResp());
+	}
+
+	@Test
+	void testNoOCSPUrl() {
+		OnlineOCSPSource ocspSource = new OnlineOCSPSource();
+		ocspSource.setDataLoader(new OCSPDataLoader());
+		OCSPToken ocspToken = ocspSource.getRevocationToken(goodCa, rootCa);
+		assertNull(ocspToken);
 	}
 
 	@Test

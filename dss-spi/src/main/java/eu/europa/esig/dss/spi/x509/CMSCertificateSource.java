@@ -45,6 +45,8 @@ import org.bouncycastle.asn1.x509.Certificate;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
+import org.bouncycastle.cms.SignerInformationStore;
+import org.bouncycastle.util.Store;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,8 +70,11 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CMSCertificateSource.class);
 
-	/** The CMSSignedData */
-	private final transient CMSSignedData cmsSignedData;
+	/** The signers present in a CMS */
+	private final transient SignerInformationStore signerInformations;
+
+	/** The certificates present within SignedData.certificates field */
+	private final transient Store<X509CertificateHolder> certificates;
 
 	/** The SignerInformation of the current signature */
 	private final transient SignerInformation currentSignerInformation;
@@ -81,11 +86,30 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 	 * @param cmsSignedData            {@link CMSSignedData}
 	 * @param currentSignerInformation the current {@link SignerInformation}
 	 *                                 extracted from cmsSignedData
+	 * @deprecated since DSS 6.3. Please use {@code new CMSCertificateSource(SignerInformationStore signerInformations,
+	 *             Store<X509CertificateHolder> certificates, SignerInformation currentSignerInformation} constructor instead
 	 */
+	@Deprecated
 	protected CMSCertificateSource(final CMSSignedData cmsSignedData, final SignerInformation currentSignerInformation) {
-		Objects.requireNonNull(cmsSignedData, "CMS SignedData is null, it must be provided!");
+		this(cmsSignedData.getSignerInfos(), cmsSignedData.getCertificates(), currentSignerInformation);
+	}
+
+	/**
+	 *
+	 * The constructor is used to instantiate a CMSCertificateSource. Allows to define a used signerInformation.
+	 *
+	 * @param signerInformations {@link SignerInformationStore} all signers from a CMS
+	 * @param certificates {@link Store} containing SignedData.certificates
+	 * @param currentSignerInformation {@link SignerInformation} current signer
+	 */
+	protected CMSCertificateSource(final SignerInformationStore signerInformations, Store<X509CertificateHolder> certificates,
+								   final SignerInformation currentSignerInformation) {
+		Objects.requireNonNull(signerInformations, "SignerInformationStore is null, it must be provided!");
+		Objects.requireNonNull(certificates, "Certificates is null, it must be provided!");
 		Objects.requireNonNull(currentSignerInformation, "currentSignerInformation is null, it must be provided!");
-		this.cmsSignedData = cmsSignedData;
+
+		this.signerInformations = signerInformations;
+		this.certificates = certificates;
 		this.currentSignerInformation = currentSignerInformation;
 
 		extractCertificateIdentifiers();
@@ -100,7 +124,7 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 	private void extractCertificateIdentifiers() {
 		SignerIdentifier currentSignerIdentifier = DSSASN1Utils.toSignerIdentifier(currentSignerInformation.getSID());
 		boolean found = false;
-		Collection<SignerInformation> signers = cmsSignedData.getSignerInfos().getSigners();
+		Collection<SignerInformation> signers = signerInformations.getSigners();
 		for (SignerInformation signerInformation : signers) {
 			SignerIdentifier signerIdentifier = DSSASN1Utils.toSignerIdentifier(signerInformation.getSID());
 			if (signerIdentifier.isEquivalent(currentSignerIdentifier)) {
@@ -118,7 +142,7 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 
 	private void extractSignedCertificates() {
 		try {
-			final Collection<X509CertificateHolder> x509CertificateHolders = cmsSignedData.getCertificates().getMatches(null);
+			final Collection<X509CertificateHolder> x509CertificateHolders = certificates.getMatches(null);
 			for (final X509CertificateHolder x509CertificateHolder : x509CertificateHolders) {
 				addCertificate(DSSASN1Utils.getCertificate(x509CertificateHolder), CertificateOrigin.SIGNED_DATA);
 			}
@@ -228,15 +252,24 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 	}
 
 	private void extractCertificateValues(Attribute attribute) {
-		final ASN1Sequence seq = (ASN1Sequence) attribute.getAttrValues().getObjectAt(0);
-		for (int ii = 0; ii < seq.size(); ii++) {
-			try {
-				final Certificate cs = Certificate.getInstance(seq.getObjectAt(ii));
-				addCertificate(DSSUtils.loadCertificate(cs.getEncoded()), CertificateOrigin.CERTIFICATE_VALUES);
-			} catch (Exception e) {
-				LOG.warn("Unable to parse encapsulated certificate : {}", e.getMessage());
-			}
+		final ASN1Encodable attrValue = DSSASN1Utils.getAsn1Encodable(attribute);
+		if (attrValue == null) {
+			return;
 		}
+		if (attrValue instanceof ASN1Sequence) {
+			final ASN1Sequence seq = (ASN1Sequence) attrValue;
+			for (int ii = 0; ii < seq.size(); ii++) {
+				try {
+					final Certificate cs = Certificate.getInstance(seq.getObjectAt(ii));
+					addCertificate(DSSUtils.loadCertificate(cs.getEncoded()), CertificateOrigin.CERTIFICATE_VALUES);
+				} catch (Exception e) {
+					LOG.warn("Unable to parse encapsulated certificate : {}", e.getMessage());
+				}
+			}
+		} else {
+			LOG.warn("Certificate values shall be encoded as an ASN1Sequence. Found encoding : {}", attrValue.getClass().getSimpleName());
+		}
+
 	}
 
 	private void extractCertificateRefsFromUnsignedAttribute(ASN1ObjectIdentifier attributeOid, CertificateRefOrigin origin) {
@@ -245,15 +278,23 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 			Attribute[] attributes = DSSASN1Utils.getAsn1Attributes(unsignedAttributes, attributeOid);
 			if (Utils.isArrayNotEmpty(attributes)) {
 				for (Attribute attribute : attributes) {
-					final ASN1Sequence seq = (ASN1Sequence) attribute.getAttrValues().getObjectAt(0);
-					for (int ii = 0; ii < seq.size(); ii++) {
-						try {
-							OtherCertID otherCertId = OtherCertID.getInstance(seq.getObjectAt(ii));
-							CertificateRef certRef = DSSASN1Utils.getCertificateRef(otherCertId);
-							addCertificateRef(certRef, origin);
-						} catch (Exception e) {
-							LOG.warn("Unable to parse encapsulated OtherCertID : {}", e.getMessage());
+					final ASN1Encodable attrValue = DSSASN1Utils.getAsn1Encodable(attribute);
+					if (attrValue == null) {
+						continue;
+					}
+					if (attrValue instanceof ASN1Sequence) {
+						final ASN1Sequence seq = (ASN1Sequence) attrValue;
+						for (int ii = 0; ii < seq.size(); ii++) {
+							try {
+								OtherCertID otherCertId = OtherCertID.getInstance(seq.getObjectAt(ii));
+								CertificateRef certRef = DSSASN1Utils.getCertificateRef(otherCertId);
+								addCertificateRef(certRef, origin);
+							} catch (Exception e) {
+								LOG.warn("Unable to parse encapsulated OtherCertID : {}", e.getMessage());
+							}
 						}
+					} else {
+						LOG.warn("Certificate values shall be encoded as an ASN1Sequence. Found encoding : {}", attrValue.getClass().getSimpleName());
 					}
 				}
 			}
@@ -314,10 +355,10 @@ public abstract class CMSCertificateSource extends SignatureCertificateSource {
 			candidates.setTheCertificateValidity(certificateValidity);
 
 		} else if (signingCertificateSource != null) {
-			List<CertificateToken> certificates = signingCertificateSource.getCertificates();
+			List<CertificateToken> allSignatureCertificates = signingCertificateSource.getCertificates();
 			LOG.debug("No signing certificate reference found. " +
-					"Resolve all {} certificates from the provided certificate source as signing candidates.", certificates.size());
-			for (CertificateToken certCandidate : certificates) {
+					"Resolve all {} certificates from the provided certificate source as signing candidates.", allSignatureCertificates.size());
+			for (CertificateToken certCandidate : allSignatureCertificates) {
 				candidates.add(new CertificateValidity(certCandidate));
 			}
 		}

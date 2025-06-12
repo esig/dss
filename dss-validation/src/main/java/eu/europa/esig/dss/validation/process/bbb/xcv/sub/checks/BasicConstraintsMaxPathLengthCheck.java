@@ -26,7 +26,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
 import java.util.List;
@@ -47,10 +47,10 @@ public class BasicConstraintsMaxPathLengthCheck extends ChainItem<XmlSubXCV> {
      * @param i18nProvider {@link I18nProvider}
      * @param result the result
      * @param certificate {@link CertificateWrapper}
-     * @param constraint {@link LevelConstraint}
+     * @param constraint {@link LevelRule}
      */
     public BasicConstraintsMaxPathLengthCheck(I18nProvider i18nProvider, XmlSubXCV result,
-                                              CertificateWrapper certificate, LevelConstraint constraint) {
+                                              CertificateWrapper certificate, LevelRule constraint) {
         super(i18nProvider, result, constraint);
         this.certificate = certificate;
     }

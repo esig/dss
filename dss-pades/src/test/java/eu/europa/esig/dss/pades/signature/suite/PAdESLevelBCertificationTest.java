@@ -40,7 +40,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class PAdESLevelBCertificationTest extends AbstractPAdESTestSignature {
+class PAdESLevelBCertificationTest extends AbstractPAdESTestSignature {
 
 	private DSSDocument originalDocument;
 

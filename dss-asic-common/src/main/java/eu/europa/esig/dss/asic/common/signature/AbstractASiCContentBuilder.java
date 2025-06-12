@@ -22,11 +22,11 @@ package eu.europa.esig.dss.asic.common.signature;
 
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
-import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
+import eu.europa.esig.dss.asic.common.extract.ASiCContainerExtractor;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
-import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.utils.Utils;
 
 import java.util.ArrayList;
@@ -59,26 +59,19 @@ public abstract class AbstractASiCContentBuilder {
     public ASiCContent build(List<DSSDocument> documents, ASiCContainerType asicContainerType) {
         if (Utils.isCollectionNotEmpty(documents) && documents.size() == 1) {
             DSSDocument archiveDocument = documents.get(0);
-            if (ASiCUtils.isZip(archiveDocument) && isAcceptableContainerFormat(archiveDocument)) {
-                return fromZipArchive(archiveDocument, asicContainerType);
+            if (ASiCUtils.isASiC(archiveDocument)) {
+                ASiCContainerExtractor extractor = getContainerExtractor(archiveDocument);
+                if (extractor.isSupportedContainerFormat()) {
+                    return fromZipArchive(extractor, asicContainerType);
+                }
             }
         }
         return fromFiles(documents, asicContainerType);
     }
 
-    /**
-     * Method verifies whether the given {@code archiveDocument} has an acceptable to the format type
-     *
-     * @param archiveDocument {@link DSSDocument}
-     * @return TRUE if the given document corresponds to the current format, FALSE otherwise
-     */
-    protected abstract boolean isAcceptableContainerFormat(DSSDocument archiveDocument);
-
-    private ASiCContent fromZipArchive(DSSDocument archiveDoc, ASiCContainerType asicContainerType) {
-        DefaultASiCContainerExtractor extractor = getContainerExtractor(archiveDoc);
+    private ASiCContent fromZipArchive(ASiCContainerExtractor extractor, ASiCContainerType asicContainerType) {
         ASiCContent asicContent = extractor.extract();
         assertContainerTypeValid(asicContent, asicContainerType);
-
         return asicContent;
     }
 
@@ -96,9 +89,9 @@ public abstract class AbstractASiCContentBuilder {
      * Returns an instance of a corresponding container extractor class
      *
      * @param archiveDocument {@link DSSDocument} representing a container to be extracted
-     * @return {@link DefaultASiCContainerExtractor}
+     * @return {@link ASiCContainerExtractor}
      */
-    protected abstract DefaultASiCContainerExtractor getContainerExtractor(DSSDocument archiveDocument);
+    protected abstract ASiCContainerExtractor getContainerExtractor(DSSDocument archiveDocument);
 
     private void assertContainerTypeValid(ASiCContent result, ASiCContainerType asicContainerType) {
         if (ASiCUtils.filesContainSignatures(DSSUtils.getDocumentNames(result.getAllDocuments()))

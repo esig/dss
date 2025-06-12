@@ -25,7 +25,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.NextUpdateCheck;
@@ -46,7 +47,7 @@ class NextUpdateCheckTest extends AbstractTestCheck {
 		XmlRevocation xr = new XmlRevocation();
 		xr.setNextUpdate(new Date());
 		XmlRFC result = new XmlRFC();
-		NextUpdateCheck nec = new NextUpdateCheck(i18nProvider, result, new RevocationWrapper(xr), constraint);
+		NextUpdateCheck nec = new NextUpdateCheck(i18nProvider, result, new RevocationWrapper(xr), new LevelConstraintWrapper(constraint));
 		nec.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -61,7 +62,7 @@ class NextUpdateCheckTest extends AbstractTestCheck {
 
 		XmlRevocation xr = new XmlRevocation();
 		XmlRFC result = new XmlRFC();
-		NextUpdateCheck nec = new NextUpdateCheck(i18nProvider, result, new RevocationWrapper(xr), constraint);
+		NextUpdateCheck nec = new NextUpdateCheck(i18nProvider, result, new RevocationWrapper(xr), new LevelConstraintWrapper(constraint));
 		nec.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

@@ -59,8 +59,8 @@ public abstract class CMSCRLSource extends OfflineCRLSource {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CMSCRLSource.class);
 
-	/** The CMS SignedData */
-	private final transient CMSSignedData cmsSignedData;
+	/** The SignedData.crls values */
+	private final transient Store<X509CRLHolder> crls;
 
 	/** Represents unsigned properties */
 	private final transient AttributeTable unsignedAttributes;
@@ -70,11 +70,25 @@ public abstract class CMSCRLSource extends OfflineCRLSource {
 	 *
 	 * @param cmsSignedData      {@link CMSSignedData}
 	 * @param unsignedAttributes {@link AttributeTable} unsignedAttributes
+	 * @deprecated since DSS 6.3. Please use {@code CMSCRLSource(Store<X509CRLHolder> crls, AttributeTable unsignedAttributes)}
+	 *             constructor instead.
 	 */
+	@Deprecated
 	protected CMSCRLSource(final CMSSignedData cmsSignedData, final AttributeTable unsignedAttributes) {
-		this.cmsSignedData = cmsSignedData;
+		this(cmsSignedData.getCRLs(), unsignedAttributes);
+	}
+
+	/**
+	 * The default constructor for CMSCRLSource.
+	 *
+	 * @param crls               {@link Store} containing SignedData.crls values
+	 * @param unsignedAttributes {@link AttributeTable} unsignedAttributes
+	 */
+	protected CMSCRLSource(final Store<X509CRLHolder> crls, final AttributeTable unsignedAttributes) {
+		this.crls = crls;
 		this.unsignedAttributes = unsignedAttributes;
 		extract();
+
 	}
 
 	private void extract() {
@@ -129,8 +143,7 @@ public abstract class CMSCRLSource extends OfflineCRLSource {
 	}
 
 	private void collectFromSignedData() {
-		final Store<X509CRLHolder> crLs = cmsSignedData.getCRLs();
-		final Collection<X509CRLHolder> collection = crLs.getMatches(null);
+		final Collection<X509CRLHolder> collection = crls.getMatches(null);
 		for (final X509CRLHolder x509CRLHolder : collection) {
 			addX509CRLHolder(x509CRLHolder, RevocationOrigin.CMS_SIGNED_DATA);
 		}

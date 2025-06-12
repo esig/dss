@@ -25,7 +25,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 
 import java.util.Date;
 
@@ -48,11 +48,11 @@ public class TokenCertificateChainCryptographicCheck<T extends XmlConstraintsCon
      * @param validationDate {@link Date}
      * @param position {@link MessageTag}
      * @param ccResult {@link XmlCC}
-     * @param constraint {@link LevelConstraint}
+     * @param constraint {@link LevelRule}
      */
     public TokenCertificateChainCryptographicCheck(I18nProvider i18nProvider, T result, TokenProxy token,
                                                    Date validationDate, MessageTag position, XmlCC ccResult,
-                                                   LevelConstraint constraint) {
+                                                   LevelRule constraint) {
         super(i18nProvider, result, token, validationDate, position, ccResult, constraint);
         this.token = token;
     }

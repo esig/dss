@@ -60,7 +60,7 @@ class XAdESExternalManifestWithoutIdLevelBTest extends AbstractXAdESTestSignatur
     @Test
     @Override
     public void signAndVerify() {
-        Exception exception = assertThrows(IllegalInputException.class, () -> super.signAndVerify());
+        Exception exception = assertThrows(IllegalInputException.class, super::signAndVerify);
         assertEquals("Manifest signature is not possible for an XML file without Id attribute in the root element!", exception.getMessage());
     }
 

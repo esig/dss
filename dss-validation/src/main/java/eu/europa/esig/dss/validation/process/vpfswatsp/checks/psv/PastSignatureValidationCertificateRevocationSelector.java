@@ -26,11 +26,11 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.enumerations.Context;
+import eu.europa.esig.dss.enumerations.SubContext;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.SubContext;
-import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationIssuerTrustedCheck;
@@ -132,23 +132,22 @@ public class PastSignatureValidationCertificateRevocationSelector extends LongTe
     }
 
     private ChainItem<XmlCRS> revocationDataIssuerTrusted(CertificateWrapper revocationIssuer) {
-        LevelConstraint sunsetDateConstraint = validationPolicy.getCertificateSunsetDateConstraint(Context.REVOCATION, SubContext.SIGNING_CERT);
-        return new RevocationIssuerTrustedCheck<>(i18nProvider, result, revocationIssuer, currentTime, sunsetDateConstraint, getWarnLevelConstraint());
+        LevelRule sunsetDateConstraint = validationPolicy.getCertificateSunsetDateConstraint(Context.REVOCATION, SubContext.SIGNING_CERT);
+        return new RevocationIssuerTrustedCheck<>(i18nProvider, result, revocationIssuer, currentTime, sunsetDateConstraint, getWarnLevelRule());
     }
 
     private ChainItem<XmlCRS> poeForRevocationDataIssuerExists(CertificateWrapper revocationIssuer) {
-        return new POEExistsWithinCertificateValidityRangeCheck<>(i18nProvider, result, revocationIssuer, poe,
-                getWarnLevelConstraint());
+        return new POEExistsWithinCertificateValidityRangeCheck<>(i18nProvider, result, revocationIssuer, poe, getWarnLevelRule());
     }
 
     @Override
     protected ChainItem<XmlCRS> acceptableRevocationDataAvailable() {
         return new PastValidationAcceptableRevocationDataAvailable<>(i18nProvider, result,
-                acceptableCertificateRevocations, getFailLevelConstraint());
+                acceptableCertificateRevocations, getFailLevelRule());
     }
 
     private boolean isRevocationIssuerTrusted(CertificateWrapper certificateWrapper) {
-        LevelConstraint constraint = validationPolicy.getCertificateSunsetDateConstraint(Context.REVOCATION, SubContext.SIGNING_CERT);
+        LevelRule constraint = validationPolicy.getCertificateSunsetDateConstraint(Context.REVOCATION, SubContext.SIGNING_CERT);
         return ValidationProcessUtils.isTrustAnchor(certificateWrapper, currentTime, constraint);
     }
 

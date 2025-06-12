@@ -45,7 +45,7 @@ public abstract class AbstractCAdESTestSigningTime extends AbstractCAdESTestSign
 	private Date signingTime;
 
 	@BeforeEach
-	public void init() throws Exception {
+	void init() throws Exception {
 		documentToSign = new InMemoryDocument("Hello World".getBytes());
 
 		signatureParameters = new CAdESSignatureParameters();

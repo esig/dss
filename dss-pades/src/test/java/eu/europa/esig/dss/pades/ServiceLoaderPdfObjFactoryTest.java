@@ -20,12 +20,11 @@
  */
 package eu.europa.esig.dss.pades;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.pdf.IPdfObjFactory;
 import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ServiceLoaderPdfObjFactoryTest {
 
@@ -33,9 +32,9 @@ class ServiceLoaderPdfObjFactoryTest {
 	void testFallback() {
 		IPdfObjFactory factory = new ServiceLoaderPdfObjFactory();
 
-		assertThrows(ExceptionInInitializerError.class, () -> factory.newPAdESSignatureService());
+		assertThrows(ExceptionInInitializerError.class, factory::newPAdESSignatureService);
 
-		assertThrows(ExceptionInInitializerError.class, () -> factory.newSignatureTimestampService());
+		assertThrows(ExceptionInInitializerError.class, factory::newSignatureTimestampService);
 	}
 
 }

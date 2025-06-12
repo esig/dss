@@ -37,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PAdESSpoofingAttackReplacementTest extends AbstractPAdESTestValidation {
+class PAdESSpoofingAttackReplacementTest extends AbstractPAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

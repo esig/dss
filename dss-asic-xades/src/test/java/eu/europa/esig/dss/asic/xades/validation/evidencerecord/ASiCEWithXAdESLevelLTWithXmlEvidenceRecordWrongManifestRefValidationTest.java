@@ -57,7 +57,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class ASiCEWithXAdESLevelLTWithXmlEvidenceRecordWrongManifestRefValidationTest extends AbstractASiCEWithXAdESWithEvidenceRecordTestValidation {
+class ASiCEWithXAdESLevelLTWithXmlEvidenceRecordWrongManifestRefValidationTest extends AbstractASiCWithXAdESWithEvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {
@@ -77,7 +77,7 @@ class ASiCEWithXAdESLevelLTWithXmlEvidenceRecordWrongManifestRefValidationTest e
 
     @Override
     protected int getNumberOfExpectedEvidenceScopes() {
-        return 4;
+        return 3;
     }
 
     @Override
@@ -88,7 +88,7 @@ class ASiCEWithXAdESLevelLTWithXmlEvidenceRecordWrongManifestRefValidationTest e
         int validRefsCounter = 0;
         int invalidRefsCounter = 0;
         List<ReferenceValidation> referenceValidationList = evidenceRecord.getReferenceValidation();
-        assertEquals(getNumberOfExpectedEvidenceScopes(), Utils.collectionSize(referenceValidationList));
+        assertEquals(4, Utils.collectionSize(referenceValidationList));
         for (ReferenceValidation referenceValidation : referenceValidationList) {
             assertTrue(referenceValidation.isFound());
             if (referenceValidation.isIntact()) {
@@ -149,7 +149,7 @@ class ASiCEWithXAdESLevelLTWithXmlEvidenceRecordWrongManifestRefValidationTest e
         int validRefsCounter = 0;
         int invalidRefsCounter = 0;
         List<XmlDigestMatcher> digestMatcherList = evidenceRecord.getDigestMatchers();
-        assertEquals(getNumberOfExpectedEvidenceScopes(), Utils.collectionSize(digestMatcherList));
+        assertEquals(4, Utils.collectionSize(digestMatcherList));
         for (XmlDigestMatcher digestMatcher : digestMatcherList) {
             assertNotNull(digestMatcher.getDocumentName());
             assertTrue(digestMatcher.isDataFound());

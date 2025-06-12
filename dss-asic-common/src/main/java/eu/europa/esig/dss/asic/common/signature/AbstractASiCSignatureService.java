@@ -20,14 +20,17 @@
  */
 package eu.europa.esig.dss.asic.common.signature;
 
+import eu.europa.esig.dss.asic.common.ASiCContainerEvidenceRecordParameters;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
-import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.ZipUtils;
+import eu.europa.esig.dss.asic.common.extract.DefaultASiCContainerExtractor;
+import eu.europa.esig.dss.enumerations.MimeType;
+import eu.europa.esig.dss.evidencerecord.EvidenceRecordIncorporationService;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DigestDocument;
-import eu.europa.esig.dss.enumerations.MimeType;
 import eu.europa.esig.dss.model.SerializableCounterSignatureParameters;
+import eu.europa.esig.dss.model.SerializableEvidenceRecordIncorporationParameters;
 import eu.europa.esig.dss.model.SerializableSignatureParameters;
 import eu.europa.esig.dss.model.SerializableTimestampParameters;
 import eu.europa.esig.dss.model.SignatureValue;
@@ -35,12 +38,13 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.signature.AbstractSignatureService;
 import eu.europa.esig.dss.signature.CounterSignatureService;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
-import eu.europa.esig.dss.signature.SigningOperation;
-import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.enumerations.SigningOperation;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.utils.Utils;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -51,10 +55,11 @@ import java.util.Objects;
  * @param <SP> implementation of signature parameters corresponding to the supported signature format
  * @param <TP> implementation of timestamp parameters corresponding to the supported document format
  * @param <CSP> implementation of counter-signature parameters corresponding to the supported signature format
+ * @param <ERP> implementation of parameters used for evidince record embedding
  */
 public abstract class AbstractASiCSignatureService<SP extends SerializableSignatureParameters, TP extends SerializableTimestampParameters, 
-					CSP extends SerializableCounterSignatureParameters> extends AbstractSignatureService<SP, TP> 
-					implements MultipleDocumentsSignatureService<SP, TP>, CounterSignatureService<CSP> {
+					CSP extends SerializableCounterSignatureParameters, ERP extends SerializableEvidenceRecordIncorporationParameters>
+		extends AbstractSignatureService<SP, TP> implements MultipleDocumentsSignatureService<SP, TP>, CounterSignatureService<CSP>, EvidenceRecordIncorporationService<ERP> {
 
 	private static final long serialVersionUID = 243114076381526665L;
 
@@ -91,6 +96,39 @@ public abstract class AbstractASiCSignatureService<SP extends SerializableSignat
 	}
 
 	/**
+	 * Creates a new ASiC container with the {@code evidenceRecordDocument} applied to the {@code document}.
+	 * <p>
+	 * If the provided original document is an existing ASiC container, then the {@code evidenceRecordDocument}
+	 * will be evaluated against the container files and places within the container.
+	 *
+	 * @param document               a list of {@link DSSDocument}s preserved by an evidence record
+	 * @param evidenceRecordDocument {@link DSSDocument} to add
+	 * @param parameters             {@link ASiCContainerEvidenceRecordParameters} providing configuration for
+	 *                               the evidence record incorporation
+	 * @return {@link DSSDocument} ASiC container containing the evidence record file document
+	 */
+	public DSSDocument addContainerEvidenceRecord(DSSDocument document, DSSDocument evidenceRecordDocument,
+												  ASiCContainerEvidenceRecordParameters parameters) {
+		Objects.requireNonNull(document, "Document cannot be null!");
+		return addContainerEvidenceRecord(Collections.singletonList(document), evidenceRecordDocument, parameters);
+	}
+
+	/**
+	 * Creates a new ASiC container with the {@code evidenceRecordDocument} applied to the {@code documents}.
+	 * <p>
+	 * If the provided original document is an existing ASiC container, then the {@code evidenceRecordDocument}
+	 * will be evaluated against the container files and places within the container.
+	 *
+	 * @param documents              a list of {@link DSSDocument}s preserved by an evidence record
+	 * @param evidenceRecordDocument {@link DSSDocument} to add
+	 * @param parameters             {@link ASiCContainerEvidenceRecordParameters} providing configuration for
+	 *                               the evidence record incorporation
+	 * @return {@link DSSDocument} ASiC container containing the evidence record file document
+	 */
+	public abstract DSSDocument addContainerEvidenceRecord(List<DSSDocument> documents, DSSDocument evidenceRecordDocument,
+												  ASiCContainerEvidenceRecordParameters parameters);
+
+	/**
 	 * Extracts the content (documents) of the ASiC container
 	 *
 	 * @param archive {@link DSSDocument} representing an ASiC container
@@ -108,6 +146,17 @@ public abstract class AbstractASiCSignatureService<SP extends SerializableSignat
 	 * @return an instance of {@link DefaultASiCContainerExtractor}
 	 */
 	protected abstract DefaultASiCContainerExtractor getArchiveExtractor(DSSDocument archive);
+
+	/**
+	 * Creates a ZIP-Archive by copying the provided documents to the new container using
+	 * the current time as ZIP creation time
+	 *
+	 * @param asicContent            {@link ASiCContent} to create a new ZIP archive from
+	 * @return {@link DSSDocument} the created ASiC Container
+	 */
+	protected DSSDocument buildASiCContainer(ASiCContent asicContent) {
+		return buildASiCContainer(asicContent, new Date());
+	}
 
 	/**
 	 * Creates a ZIP-Archive by copying the provided documents to the new container

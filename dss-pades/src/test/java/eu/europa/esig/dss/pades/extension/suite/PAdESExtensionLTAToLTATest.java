@@ -30,7 +30,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class PAdESExtensionLTAToLTATest extends AbstractPAdESTestExtension {
+class PAdESExtensionLTAToLTATest extends AbstractPAdESTestExtension {
 
 	@Override
 	protected SignatureLevel getOriginalSignatureLevel() {

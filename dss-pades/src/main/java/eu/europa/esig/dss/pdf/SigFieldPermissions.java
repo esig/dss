@@ -23,6 +23,7 @@ package eu.europa.esig.dss.pdf;
 import eu.europa.esig.dss.enumerations.PdfLockAction;
 import eu.europa.esig.dss.enumerations.CertificationPermission;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -30,7 +31,9 @@ import java.util.List;
  * by the current signature/field
  *
  */
-public class SigFieldPermissions {
+public class SigFieldPermissions implements Serializable {
+
+    private static final long serialVersionUID = -9025990647233753969L;
 
     /** Indicates the set of fields that should be locked */
     private PdfLockAction action;

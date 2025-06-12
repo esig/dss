@@ -26,7 +26,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
@@ -60,7 +60,7 @@ public class BestSignatureTimeNotBeforeCertificateIssuanceCheck<T extends XmlCon
 	 * @param constraint         the constraint
 	 */
 	public BestSignatureTimeNotBeforeCertificateIssuanceCheck(I18nProvider i18nProvider, T result, Date bestSignatureTime,
-			CertificateWrapper signingCertificate, LevelConstraint constraint) {
+			CertificateWrapper signingCertificate, LevelRule constraint) {
 		super(i18nProvider, result, constraint);
 
 		this.bestSignatureTime = bestSignatureTime;

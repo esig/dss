@@ -43,7 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class ASiCEWithXAdESLevelLTWithEvidenceRecordValidationTest extends AbstractASiCEWithXAdESWithEvidenceRecordTestValidation {
+class ASiCEWithXAdESLevelLTWithEvidenceRecordValidationTest extends AbstractASiCWithXAdESWithEvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

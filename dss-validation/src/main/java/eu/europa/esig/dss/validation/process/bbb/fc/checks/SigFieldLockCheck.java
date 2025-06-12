@@ -27,7 +27,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.utils.Utils;
 
 /**
@@ -44,7 +44,7 @@ public class SigFieldLockCheck extends AbstractPdfLockDictionaryCheck {
      * @param pdfRevision {@link SignatureWrapper}
      * @param constraint {@link PDFRevisionWrapper}
      */
-    public SigFieldLockCheck(I18nProvider i18nProvider, XmlFC result, PDFRevisionWrapper pdfRevision, LevelConstraint constraint) {
+    public SigFieldLockCheck(I18nProvider i18nProvider, XmlFC result, PDFRevisionWrapper pdfRevision, LevelRule constraint) {
         super(i18nProvider, result, pdfRevision, pdfRevision.getSigFieldLock(), constraint);
     }
 

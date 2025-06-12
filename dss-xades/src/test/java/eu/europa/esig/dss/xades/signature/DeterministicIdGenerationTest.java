@@ -34,9 +34,6 @@ class DeterministicIdGenerationTest extends PKIFactoryAccess {
 
 	private CertificateToken signingCert;
 
-	public DeterministicIdGenerationTest() {
-	}
-
 	@BeforeEach
 	void setUp() throws Exception {
 		signingCert = getSigningCert();

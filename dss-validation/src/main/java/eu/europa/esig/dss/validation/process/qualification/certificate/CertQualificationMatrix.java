@@ -21,9 +21,9 @@
 package eu.europa.esig.dss.validation.process.qualification.certificate;
 
 import eu.europa.esig.dss.enumerations.CertificateQualification;
-import eu.europa.esig.dss.enumerations.QSCDStatus;
 import eu.europa.esig.dss.enumerations.CertificateQualifiedStatus;
 import eu.europa.esig.dss.enumerations.CertificateType;
+import eu.europa.esig.dss.enumerations.QSCDStatus;
 
 /**
  * This class is used to determine the certificate qualification based on the given qualification parameters

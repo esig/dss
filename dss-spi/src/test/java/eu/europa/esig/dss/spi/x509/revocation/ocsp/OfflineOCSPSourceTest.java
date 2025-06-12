@@ -208,6 +208,9 @@ class OfflineOCSPSourceTest {
 		CertificateToken ocspResponderCert = certificates.get(0);
 		assertTrue(ocspUser1.isSignedBy(ocspResponderCert));
 
+		certificates = ocspUser1.getCertificates();
+		assertEquals(1, certificates.size());
+
 		ocspTokens = ocspSource.getRevocationTokens(user2, ca2);
 		assertEquals(1, ocspTokens.size());
 		OCSPToken ocspUser2 = (OCSPToken) ocspTokens.get(0);

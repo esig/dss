@@ -73,6 +73,36 @@ public class CertificateVerifierBuilder {
 	}
 
 	/**
+	 * Builds a copy of the {@code certificateVerifier} by skipping the data sources, but keeping alerts
+	 *
+	 * @return {@link CertificateVerifier} copy
+	 */
+	public CertificateVerifier buildOfflineCopy() {
+		CertificateVerifier offlineCertificateVerifier = new CommonCertificateVerifier(true);
+		if (certificateVerifier != null) {
+			offlineCertificateVerifier.setAdjunctCertSources(certificateVerifier.getAdjunctCertSources());
+			offlineCertificateVerifier.setTrustedCertSources(certificateVerifier.getTrustedCertSources());
+			offlineCertificateVerifier.setRevocationDataVerifier(certificateVerifier.getRevocationDataVerifier());
+			offlineCertificateVerifier.setTimestampTokenVerifier(certificateVerifier.getTimestampTokenVerifier());
+			offlineCertificateVerifier.setTrustAnchorVerifier(getTrustAnchorVerifierOfflineCopy(certificateVerifier.getTrustAnchorVerifier()));
+
+			// keep alerting
+			offlineCertificateVerifier.setAlertOnInvalidSignature(certificateVerifier.getAlertOnInvalidSignature());
+			offlineCertificateVerifier.setAlertOnInvalidTimestamp(certificateVerifier.getAlertOnInvalidTimestamp());
+			offlineCertificateVerifier.setAlertOnMissingRevocationData(certificateVerifier.getAlertOnMissingRevocationData());
+			offlineCertificateVerifier.setAlertOnNoRevocationAfterBestSignatureTime(certificateVerifier.getAlertOnNoRevocationAfterBestSignatureTime());
+			offlineCertificateVerifier.setAlertOnRevokedCertificate(certificateVerifier.getAlertOnRevokedCertificate());
+			offlineCertificateVerifier.setAlertOnUncoveredPOE(certificateVerifier.getAlertOnUncoveredPOE());
+			offlineCertificateVerifier.setAlertOnExpiredCertificate(certificateVerifier.getAlertOnExpiredCertificate());
+			offlineCertificateVerifier.setAlertOnNotYetValidCertificate(certificateVerifier.getAlertOnNotYetValidCertificate());
+			offlineCertificateVerifier.setAugmentationAlertOnSignatureWithoutCertificates(certificateVerifier.getAugmentationAlertOnSignatureWithoutCertificates());
+			offlineCertificateVerifier.setAugmentationAlertOnHigherSignatureLevel(certificateVerifier.getAugmentationAlertOnHigherSignatureLevel());
+			offlineCertificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(certificateVerifier.getAugmentationAlertOnSelfSignedCertificateChains());
+		}
+		return offlineCertificateVerifier;
+	}
+
+	/**
 	 * Builds a copy of the {@code certificateVerifier} by skipping the data sources and disabling alerts
 	 *
 	 * @return {@link CertificateVerifier} copy

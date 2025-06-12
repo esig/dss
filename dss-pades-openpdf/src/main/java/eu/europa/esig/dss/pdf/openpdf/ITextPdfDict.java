@@ -202,16 +202,6 @@ class ITextPdfDict implements eu.europa.esig.dss.pdf.PdfDict {
 	}
 
 	@Override
-	@Deprecated
-	public Long getObjectNumber(String name) {
-		ITextObjectKey objectKey = getObjectKey(name);
-		if (objectKey != null) {
-			return objectKey.getNumber();
-		}
-		return null;
-	}
-
-	@Override
 	public ITextObjectKey getObjectKey(String name) {
 		PdfIndirectReference indirectObject = wrapped.getAsIndirectObject(new PdfName(name));
 		if (indirectObject != null) {

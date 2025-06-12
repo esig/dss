@@ -38,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 // See DSS-3422. Manual testing
 @Tag("slow")
-public class PAdESLevelLTALoopSigningTest extends AbstractPAdESTestSignature {
+class PAdESLevelLTALoopSigningTest extends AbstractPAdESTestSignature {
 
     private static final int LOOPS = 15;
 

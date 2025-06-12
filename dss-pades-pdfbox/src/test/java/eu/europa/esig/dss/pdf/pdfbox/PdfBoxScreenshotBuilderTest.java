@@ -108,6 +108,8 @@ class PdfBoxScreenshotBuilderTest {
         assertInstanceOf(InMemoryDocument.class, inMemoryScreenshot);
 
         assertVisuallyEqual(fileScreenshot, inMemoryScreenshot);
+
+        tempFileResourcesHandlerBuilder.clear();
     }
 
     @Test

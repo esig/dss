@@ -34,13 +34,13 @@ import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.ValidationLevel;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.BasicSignatureConstraints;
 import eu.europa.esig.dss.policy.jaxb.CertificateConstraints;
-import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.SignatureConstraints;
 import eu.europa.esig.dss.simplereport.SimpleReport;
@@ -65,7 +65,7 @@ class DSS2338ExecutorTest extends AbstractProcessExecutorTest {
                 new File("src/test/resources/diag-data/diag_data_expired_ocsp_responder.xml"));
         assertNotNull(xmlDiagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(xmlDiagnosticData);
         executor.setValidationPolicy(validationPolicy);
@@ -122,9 +122,9 @@ class DSS2338ExecutorTest extends AbstractProcessExecutorTest {
 
         boolean consistencyCheckFound = false;
         for (XmlConstraint constraint : xmlRAC.getConstraint()) {
-            if (MessageTag.BBB_XCV_IRDC.getId().equals(constraint.getName().getKey())) {
+            if (MessageTag.BBB_XCV_REVOC_ISSUER_VALID_AT_PROD.getId().equals(constraint.getName().getKey())) {
                 assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
-                assertEquals(MessageTag.BBB_XCV_IRDC_ANS.getId(), constraint.getError().getKey());
+                assertEquals(MessageTag.BBB_XCV_REVOC_ISSUER_VALID_AT_PROD_ANS.getId(), constraint.getError().getKey());
                 assertEquals(i18nProvider.getMessage(MessageTag.REVOCATION_PRODUCED_AT_OUT_OF_BOUNDS,
                                 ValidationProcessUtils.getFormattedDate(revocationWrapper.getProductionDate()),
                                 ValidationProcessUtils.getFormattedDate(revocationWrapper.getSigningCertificate().getNotBefore()),
@@ -143,7 +143,7 @@ class DSS2338ExecutorTest extends AbstractProcessExecutorTest {
                 new File("src/test/resources/diag-data/diag_data_expired_ocsp_responder.xml"));
         assertNotNull(xmlDiagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         SignatureConstraints signatureConstraints = validationPolicy.getSignatureConstraints();
         BasicSignatureConstraints basicSignatureConstraints = signatureConstraints.getBasicSignatureConstraints();
         CertificateConstraints signingCertificateConstraints = basicSignatureConstraints.getSigningCertificate();
@@ -205,9 +205,9 @@ class DSS2338ExecutorTest extends AbstractProcessExecutorTest {
 
         boolean consistencyCheckFound = false;
         for (XmlConstraint constraint : xmlRAC.getConstraint()) {
-            if (MessageTag.BBB_XCV_IRDC.getId().equals(constraint.getName().getKey())) {
+            if (MessageTag.BBB_XCV_REVOC_ISSUER_VALID_AT_PROD.getId().equals(constraint.getName().getKey())) {
                 assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
-                assertEquals(MessageTag.BBB_XCV_IRDC_ANS.getId(), constraint.getError().getKey());
+                assertEquals(MessageTag.BBB_XCV_REVOC_ISSUER_VALID_AT_PROD_ANS.getId(), constraint.getError().getKey());
                 assertEquals(i18nProvider.getMessage(MessageTag.REVOCATION_PRODUCED_AT_OUT_OF_BOUNDS,
                                 ValidationProcessUtils.getFormattedDate(revocationWrapper.getProductionDate()),
                                 ValidationProcessUtils.getFormattedDate(revocationWrapper.getSigningCertificate().getNotBefore()),
@@ -225,7 +225,7 @@ class DSS2338ExecutorTest extends AbstractProcessExecutorTest {
                 new File("src/test/resources/diag-data/diag_data_expired_ocsp_responder.xml"));
         assertNotNull(xmlDiagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         SignatureConstraints signatureConstraints = validationPolicy.getSignatureConstraints();
         BasicSignatureConstraints basicSignatureConstraints = signatureConstraints.getBasicSignatureConstraints();
         CertificateConstraints signingCertificateConstraints = basicSignatureConstraints.getSigningCertificate();

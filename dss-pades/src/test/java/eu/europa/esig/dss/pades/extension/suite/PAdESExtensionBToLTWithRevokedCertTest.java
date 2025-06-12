@@ -32,7 +32,7 @@ import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PAdESExtensionBToLTWithRevokedCertTest extends AbstractPAdESTestExtension {
+class PAdESExtensionBToLTWithRevokedCertTest extends AbstractPAdESTestExtension {
 
     private PAdESSignatureParameters signatureParameters;
     private PAdESSignatureParameters extensionParameters;

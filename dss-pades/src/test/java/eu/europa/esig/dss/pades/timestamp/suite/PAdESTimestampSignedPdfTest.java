@@ -37,7 +37,6 @@ import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.pades.signature.suite.AbstractPAdESTestSignature;
-import eu.europa.esig.dss.pades.signature.suite.PAdESLevelBTest;
 import eu.europa.esig.dss.pades.validation.PDFDocumentAnalyzer;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
@@ -49,7 +48,7 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PAdESTimestampSignedPdfTest extends AbstractPAdESTestSignature {
+class PAdESTimestampSignedPdfTest extends AbstractPAdESTestSignature {
 
     private DSSDocument originalDocument;
 
@@ -59,7 +58,7 @@ public class PAdESTimestampSignedPdfTest extends AbstractPAdESTestSignature {
 
     @BeforeEach
     void init() throws Exception {
-        originalDocument = new InMemoryDocument(PAdESLevelBTest.class.getResourceAsStream("/sample.pdf"));
+        originalDocument = new InMemoryDocument(PAdESTimestampSignedPdfTest.class.getResourceAsStream("/sample.pdf"));
 
         signatureParameters = new PAdESSignatureParameters();
         signatureParameters.setSigningCertificate(getSigningCert());

@@ -27,9 +27,9 @@ import eu.europa.esig.dss.diagnostic.PDFRevisionWrapper;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
-import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
+import eu.europa.esig.dss.model.policy.MultiValuesRule;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
@@ -215,6 +215,14 @@ public abstract class AbstractFormatChecking<S extends AbstractSignatureWrapper>
 
             item = item.setNextItem(signedFilesPresentCheck());
 
+            item = item.setNextItem(filenameAdherenceCheck());
+
+            if (manifestExistsForToken()) {
+
+                item = item.setNextItem(manifestFilenameAdherenceCheck());
+
+            }
+
         }
 
         return item;
@@ -222,113 +230,132 @@ public abstract class AbstractFormatChecking<S extends AbstractSignatureWrapper>
     }
 
     private ChainItem<XmlFC> byteRangeCheck() {
-        LevelConstraint constraint = policy.getByteRangeConstraint(context);
+        LevelRule constraint = policy.getByteRangeConstraint(context);
         return new ByteRangeCheck(i18nProvider, result, token.getPDFRevision(), constraint);
     }
 
     private ChainItem<XmlFC> byteRangeCollisionCheck() {
-        LevelConstraint constraint = policy.getByteRangeCollisionConstraint(context);
+        LevelRule constraint = policy.getByteRangeCollisionConstraint(context);
         return new ByteRangeCollisionCheck(i18nProvider, result, token, diagnosticData, constraint);
     }
 
     private ChainItem<XmlFC> byteRangeAllDocumentCheck() {
-        LevelConstraint constraint = policy.getByteRangeAllDocumentConstraint(context);
+        LevelRule constraint = policy.getByteRangeAllDocumentConstraint(context);
         return new ByteRangeAllDocumentCheck(i18nProvider, result, diagnosticData, constraint);
     }
 
     private ChainItem<XmlFC> pdfSignatureDictionaryCheck() {
-        LevelConstraint constraint = policy.getPdfSignatureDictionaryConstraint(context);
+        LevelRule constraint = policy.getPdfSignatureDictionaryConstraint(context);
         return new PdfSignatureDictionaryCheck(i18nProvider, result, token.getPDFRevision(), constraint);
     }
 
     private ChainItem<XmlFC> pdfPageDifferenceCheck() {
-        LevelConstraint constraint = policy.getPdfPageDifferenceConstraint(context);
+        LevelRule constraint = policy.getPdfPageDifferenceConstraint(context);
         return new PdfPageDifferenceCheck(i18nProvider, result, token.getPDFRevision(), constraint);
     }
 
     private ChainItem<XmlFC> pdfAnnotationOverlapCheck() {
-        LevelConstraint constraint = policy.getPdfAnnotationOverlapConstraint(context);
+        LevelRule constraint = policy.getPdfAnnotationOverlapConstraint(context);
         return new PdfAnnotationOverlapCheck(i18nProvider, result, token.getPDFRevision(), constraint);
     }
 
     private ChainItem<XmlFC> pdfVisualDifferenceCheck() {
-        LevelConstraint constraint = policy.getPdfVisualDifferenceConstraint(context);
+        LevelRule constraint = policy.getPdfVisualDifferenceConstraint(context);
         return new PdfVisualDifferenceCheck(i18nProvider, result, token.getPDFRevision(), constraint);
     }
 
     private ChainItem<XmlFC> docMDPCheck() {
-        LevelConstraint constraint = policy.getDocMDPConstraint(context);
+        LevelRule constraint = policy.getDocMDPConstraint(context);
         return new DocMDPCheck(i18nProvider, result, token.getPDFRevision(), constraint);
     }
 
     private ChainItem<XmlFC> fieldMDPCheck() {
-        LevelConstraint constraint = policy.getFieldMDPConstraint(context);
+        LevelRule constraint = policy.getFieldMDPConstraint(context);
         return new FieldMDPCheck(i18nProvider, result, token.getPDFRevision(), constraint);
     }
 
     private ChainItem<XmlFC> sigFieldLockCheck() {
-        LevelConstraint constraint = policy.getSigFieldLockConstraint(context);
+        LevelRule constraint = policy.getSigFieldLockConstraint(context);
         return new SigFieldLockCheck(i18nProvider, result, token.getPDFRevision(), constraint);
     }
 
     private ChainItem<XmlFC> formFillChangesCheck() {
-        LevelConstraint constraint = policy.getFormFillChangesConstraint(context);
+        LevelRule constraint = policy.getFormFillChangesConstraint(context);
         return new FormFillChangesCheck(i18nProvider, result, token.getPDFRevision(), constraint);
     }
 
     private ChainItem<XmlFC> annotationChangesCheck() {
-        LevelConstraint constraint = policy.getAnnotationChangesConstraint(context);
+        LevelRule constraint = policy.getAnnotationChangesConstraint(context);
         return new AnnotationChangesCheck(i18nProvider, result, token.getPDFRevision(), constraint);
     }
 
     private ChainItem<XmlFC> undefinedChangesCheck() {
-        LevelConstraint constraint = policy.getUndefinedChangesConstraint(context);
+        LevelRule constraint = policy.getUndefinedChangesConstraint(context);
         return new UndefinedChangesCheck(i18nProvider, result, token.getPDFRevision(), constraint);
     }
 
     private ChainItem<XmlFC> pdfaProfileCheck() {
-        MultiValuesConstraint constraint = policy.getAcceptablePDFAProfilesConstraint();
+        MultiValuesRule constraint = policy.getAcceptablePDFAProfilesConstraint();
         return new PDFAProfileCheck(i18nProvider, result, diagnosticData.getPDFAProfileId(), constraint);
     }
 
     private ChainItem<XmlFC> pdfaCompliantCheck() {
-        LevelConstraint constraint = policy.getPDFACompliantConstraint();
+        LevelRule constraint = policy.getPDFACompliantConstraint();
         return new PDFAComplianceCheck(i18nProvider, result, diagnosticData.isPDFACompliant(), constraint);
     }
 
     private ChainItem<XmlFC> containerTypeCheck() {
-        MultiValuesConstraint constraint = policy.getAcceptedContainerTypesConstraint();
+        MultiValuesRule constraint = policy.getAcceptedContainerTypesConstraint();
         return new ContainerTypeCheck(i18nProvider, result, diagnosticData.getContainerType(), constraint);
     }
 
+    /**
+     * Creates a filename adherence check for the given token type
+     *
+     * @return {@link ChainItem}
+     */
+    protected abstract ChainItem<XmlFC> filenameAdherenceCheck();
+
+    /**
+     * Creates a filename adherence check for the manifest file related to the given token
+     *
+     * @return {@link ChainItem}
+     */
+    protected abstract ChainItem<XmlFC> manifestFilenameAdherenceCheck();
+
     private ChainItem<XmlFC> zipCommentPresentCheck() {
-        LevelConstraint constraint = policy.getZipCommentPresentConstraint();
+        LevelRule constraint = policy.getZipCommentPresentConstraint();
         return new ZipCommentPresentCheck(i18nProvider, result, diagnosticData.getZipComment(), constraint);
     }
 
     private ChainItem<XmlFC> acceptableZipCommentCheck() {
-        MultiValuesConstraint constraint = policy.getAcceptedZipCommentsConstraint();
+        MultiValuesRule constraint = policy.getAcceptedZipCommentsConstraint();
         return new AcceptableZipCommentCheck(i18nProvider, result, diagnosticData.getZipComment(), constraint);
     }
 
     private ChainItem<XmlFC> mimetypeFilePresentCheck() {
-        LevelConstraint constraint = policy.getMimeTypeFilePresentConstraint();
+        LevelRule constraint = policy.getMimeTypeFilePresentConstraint();
         return new MimeTypeFilePresentCheck(i18nProvider, result, diagnosticData.isMimetypeFilePresent(), constraint);
     }
 
     private ChainItem<XmlFC> mimetypeFileContentCheck() {
-        MultiValuesConstraint constraint = policy.getAcceptedMimeTypeContentsConstraint();
+        MultiValuesRule constraint = policy.getAcceptedMimeTypeContentsConstraint();
         return new AcceptableMimetypeFileContentCheck(i18nProvider, result, diagnosticData.getMimetypeFileContent(), constraint);
     }
 
     private ChainItem<XmlFC> manifestFilePresentCheck() {
-        LevelConstraint constraint = policy.getManifestFilePresentConstraint();
+        LevelRule constraint = policy.getManifestFilePresentConstraint();
         return new ManifestFilePresentCheck(i18nProvider, result, diagnosticData.getContainerInfo(), constraint);
     }
 
     private ChainItem<XmlFC> signedFilesPresentCheck() {
-        LevelConstraint constraint = policy.getSignedFilesPresentConstraint();
+        LevelRule constraint = policy.getSignedFilesPresentConstraint();
         return new SignedFilesPresentCheck(i18nProvider, result, diagnosticData.getContainerInfo(), constraint);
     }
+
+    private boolean manifestExistsForToken() {
+        return diagnosticData.getManifestFileForFilename(token.getFilename()) != null;
+    }
+
 
 }

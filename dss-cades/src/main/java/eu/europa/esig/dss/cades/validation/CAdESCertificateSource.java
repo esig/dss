@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.cades.validation;
 
+import eu.europa.esig.dss.cms.CMS;
+import eu.europa.esig.dss.spi.x509.CMSCertificateSource;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
-
-import eu.europa.esig.dss.spi.x509.CMSCertificateSource;
 
 /**
  * CertificateSource that retrieves items from a CAdES Signature
@@ -37,9 +37,23 @@ public class CAdESCertificateSource extends CMSCertificateSource {
 	 *
 	 * @param cmsSignedData {@link CMSSignedData} of the signature
 	 * @param signerInformation {@link SignerInformation} extracted from cmsSignedData
+	 * @deprecated since DSS 6.3. Please use {@code new CAdESCertificateSource(CMS cms, SignerInformation signerInformation)}
+	 *             constructor instead.
 	 */
+	@Deprecated
 	public CAdESCertificateSource(final CMSSignedData cmsSignedData, final SignerInformation signerInformation) {
 		super(cmsSignedData, signerInformation);
+	}
+
+	/**
+	 * The constructor to create a CAdES certificate source from a {@code CMS} with an additional signer id parameter.
+	 * All certificates are extracted during instantiation.
+	 *
+	 * @param cms {@link CMS} of the signature
+	 * @param signerInformation {@link SignerInformation} extracted from cmsSignedData
+	 */
+	public CAdESCertificateSource(final CMS cms, final SignerInformation signerInformation) {
+		super(cms.getSignerInfos(), cms.getCertificates(), signerInformation);
 	}
 
 }

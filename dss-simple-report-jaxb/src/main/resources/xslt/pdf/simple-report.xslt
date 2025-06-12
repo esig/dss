@@ -598,6 +598,40 @@
 									</fo:table-cell>
 								</fo:table-row>
 							</xsl:if>
+
+							<!-- Ignore embedded timestamps -->
+							<xsl:if test="not($nodeName = 'Timestamp') or (count(ancestor::*/dss:Signature) = 0 and count(ancestor::*/dss:EvidenceRecord) = 0)">
+								<fo:table-row>
+									<xsl:attribute name="margin-top">1px</xsl:attribute>
+									<xsl:attribute name="margin-bottom">1px</xsl:attribute>
+									<fo:table-cell>
+										<fo:block>
+											<xsl:attribute name="margin-top">1px</xsl:attribute>
+											<xsl:attribute name="margin-bottom">1px</xsl:attribute>
+
+											<xsl:attribute name="font-weight">bold</xsl:attribute>
+											Maximum validity time:
+										</fo:block>
+									</fo:table-cell>
+									<fo:table-cell>
+										<fo:block>
+											<xsl:attribute name="margin-top">1px</xsl:attribute>
+											<xsl:attribute name="margin-bottom">1px</xsl:attribute>
+
+											<xsl:choose>
+												<xsl:when test="dss:ExtensionPeriodMax">
+													<xsl:call-template name="formatdate">
+														<xsl:with-param name="DateTimeStr" select="dss:ExtensionPeriodMax"/>
+													</xsl:call-template>
+												</xsl:when>
+												<xsl:otherwise>
+													N/A
+												</xsl:otherwise>
+											</xsl:choose>
+										</fo:block>
+									</fo:table-cell>
+								</fo:table-row>
+							</xsl:if>
 							
 							<xsl:if test="$nodeName = 'Signature'">
 								<fo:table-row>

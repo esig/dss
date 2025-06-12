@@ -59,7 +59,7 @@ public class SignatureFieldDimensionAndPositionBuilder {
     /** The page's rotation value */
     private final int pageRotation;
 
-    /** The signature field rectangle */
+    /** The page rectangle */
     private AnnotationBox pageBox;
 
     /** The annotation box representing a target signature field dimensions when applicable */
@@ -105,7 +105,7 @@ public class SignatureFieldDimensionAndPositionBuilder {
     public SignatureFieldDimensionAndPosition build() {
         assertConfigurationValid();
         if (dimensionAndPosition == null) {
-            dimensionAndPosition = new SignatureFieldDimensionAndPosition();
+            dimensionAndPosition = new SignatureFieldDimensionAndPosition(pageBox);
             initDpi();
             initRotation();
             assignImageBoundaryBox();
@@ -251,7 +251,8 @@ public class SignatureFieldDimensionAndPositionBuilder {
      * @return {@link AnnotationBox}
      */
     private AnnotationBox getSignatureFieldBoundaryBox() {
-        float width, height;
+        float width;
+        float height;
         if (signatureFieldAnnotationBox != null) {
             width = signatureFieldAnnotationBox.getWidth();
             height = signatureFieldAnnotationBox.getHeight();
@@ -419,7 +420,11 @@ public class SignatureFieldDimensionAndPositionBuilder {
                     break;
 
                 case ZOOM_AND_CENTER:
-                    float x, y, width, height;
+                    float x;
+                    float y;
+                    float width;
+                    float height;
+
                     float imageRatio = dimensionAndPosition.getImageWidth() / dimensionAndPosition.getImageHeight();
                     float boxRatio = dimensionAndPosition.getImageBoxWidth() / dimensionAndPosition.getImageBoxHeight();
                     if (imageRatio < boxRatio) {

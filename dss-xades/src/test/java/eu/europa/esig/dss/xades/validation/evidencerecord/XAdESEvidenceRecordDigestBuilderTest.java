@@ -106,6 +106,26 @@ class XAdESEvidenceRecordDigestBuilderTest {
         assertTrue(exception.getMessage().contains("An error occurred on ds:Reference processing. " +
                         "In case of detached signature, please use #setDetachedContent method to provide original documents."));
 
+        assertEquals("4553BD4AD40A006B7BD6FB5EEEEA533CFFC0A517944A87791649AAFBBAB5B4DD",
+                new XAdESEvidenceRecordDigestBuilder(signatureDoc, DigestAlgorithm.SHA256)
+                        .setDetachedContent(Collections.singletonList(detachedDoc)).build().getHexValue());
+        assertEquals("4553BD4AD40A006B7BD6FB5EEEEA533CFFC0A517944A87791649AAFBBAB5B4DD",
+                new XAdESEvidenceRecordDigestBuilder(signatureDoc, DigestAlgorithm.SHA256)
+                        .setDetachedContent(Collections.singletonList(detachedDoc)).setParallelEvidenceRecord(false).build().getHexValue());
+        assertEquals("8EBBC33629E40276970F8F4E135D7B4C77BB28F6A695CB522AF8AB003ADF4B88",
+                new XAdESEvidenceRecordDigestBuilder(signatureDoc, DigestAlgorithm.SHA256)
+                        .setDetachedContent(Collections.singletonList(detachedDoc)).setParallelEvidenceRecord(true).build().getHexValue());
+    }
+
+    @Test
+    void xadesLtDetachedWithErDataNotCoveredTest() {
+        DSSDocument signatureDoc = new FileDocument("src/test/resources/validation/evidence-record/X-E-ERS-DETACHED-LT-data-not-covered.xml");
+        DSSDocument detachedDoc = new FileDocument("src/test/resources/sample.xml");
+
+        Exception exception = assertThrows(DSSException.class, () -> new XAdESEvidenceRecordDigestBuilder(signatureDoc, DigestAlgorithm.SHA256).build());
+        assertTrue(exception.getMessage().contains("An error occurred on ds:Reference processing. " +
+                "In case of detached signature, please use #setDetachedContent method to provide original documents."));
+
         assertEquals("40C9BAD41AE78248C4EABDDFBECAD28D7A505EF14382F856379CF9B19DD78908",
                 new XAdESEvidenceRecordDigestBuilder(signatureDoc, DigestAlgorithm.SHA256)
                         .setDetachedContent(Collections.singletonList(detachedDoc)).build().getHexValue());
@@ -180,6 +200,18 @@ class XAdESEvidenceRecordDigestBuilderTest {
     @Test
     void xadesLtWithTwoParallelErsTest() {
         DSSDocument document = new FileDocument("src/test/resources/validation/evidence-record/X-E-ERS-two-parallel-ers.xml");
+
+        assertEquals("A3B26C7C7CD2EF5F9CE84C4B6C144E55DF5DE462CD9C309F762886BCE3C489A1",
+                new XAdESEvidenceRecordDigestBuilder(document, DigestAlgorithm.SHA256).build().getHexValue());
+        assertEquals("A3B26C7C7CD2EF5F9CE84C4B6C144E55DF5DE462CD9C309F762886BCE3C489A1",
+                new XAdESEvidenceRecordDigestBuilder(document, DigestAlgorithm.SHA256).setParallelEvidenceRecord(false).build().getHexValue());
+        assertEquals("E69F1ED3CE0AB6F8A72D9773CD9E862ED56E5C558DD79C2E695993810BC5B0E1",
+                new XAdESEvidenceRecordDigestBuilder(document, DigestAlgorithm.SHA256).setParallelEvidenceRecord(true).build().getHexValue());
+    }
+
+    @Test
+    void xadesLtWithTwoParallelErsOneInvalidTest() {
+        DSSDocument document = new FileDocument("src/test/resources/validation/evidence-record/X-E-ERS-two-parallel-ers-one-invalid.xml");
 
         assertEquals("DDC64E2A03C392C1C7C11932461FB4757CBB0E932111722ECEB16CF8147E8C09",
                 new XAdESEvidenceRecordDigestBuilder(document, DigestAlgorithm.SHA256).build().getHexValue());

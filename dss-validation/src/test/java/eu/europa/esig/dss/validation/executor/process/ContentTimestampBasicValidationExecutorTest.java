@@ -32,11 +32,11 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -61,7 +61,7 @@ class ContentTimestampBasicValidationExecutorTest extends AbstractProcessExecuto
                 new File("src/test/resources/diag-data/valid-diag-data.xml"));
         assertNotNull(xmlDiagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
         validationPolicy.getTimestampConstraints().setTimestampValid(constraint);
@@ -212,7 +212,7 @@ class ContentTimestampBasicValidationExecutorTest extends AbstractProcessExecuto
 
         xmlDiagnosticData.getUsedTimestamps().get(0).getBasicSignature().setSignatureIntact(false);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.IGNORE);
         validationPolicy.getTimestampConstraints().setTimestampValid(constraint);
@@ -287,7 +287,7 @@ class ContentTimestampBasicValidationExecutorTest extends AbstractProcessExecuto
 
         xmlDiagnosticData.getUsedTimestamps().get(0).getBasicSignature().setSignatureIntact(false);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.WARN);
         validationPolicy.getTimestampConstraints().setTimestampValid(constraint);
@@ -366,7 +366,7 @@ class ContentTimestampBasicValidationExecutorTest extends AbstractProcessExecuto
 
         xmlDiagnosticData.getUsedTimestamps().get(0).getBasicSignature().setSignatureIntact(false);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
         validationPolicy.getTimestampConstraints().setTimestampValid(constraint);
@@ -448,7 +448,7 @@ class ContentTimestampBasicValidationExecutorTest extends AbstractProcessExecuto
                 new File("src/test/resources/diag-data/diag_data_pastSigValidation.xml"));
         assertNotNull(xmlDiagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
         validationPolicy.getTimestampConstraints().setTimestampValid(constraint);
@@ -524,7 +524,7 @@ class ContentTimestampBasicValidationExecutorTest extends AbstractProcessExecuto
 
         xmlDiagnosticData.getUsedTimestamps().get(0).getBasicSignature().setSignatureIntact(false);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.WARN);
         validationPolicy.getTimestampConstraints().setTimestampValid(constraint);
@@ -610,7 +610,7 @@ class ContentTimestampBasicValidationExecutorTest extends AbstractProcessExecuto
 
         xmlDiagnosticData.getUsedTimestamps().get(0).getBasicSignature().setSignatureIntact(false);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
         validationPolicy.getTimestampConstraints().setTimestampValid(constraint);
@@ -694,7 +694,7 @@ class ContentTimestampBasicValidationExecutorTest extends AbstractProcessExecuto
                 new File("src/test/resources/diag-data/diag_data_pastSigValidation_diff_cnt_tst_issuer.xml"));
         assertNotNull(xmlDiagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
         validationPolicy.getTimestampConstraints().setTimestampValid(constraint);
@@ -780,7 +780,7 @@ class ContentTimestampBasicValidationExecutorTest extends AbstractProcessExecuto
         XmlCertificate cntTstIssuerCert = xmlDiagnosticData.getUsedTimestamps().get(0).getSigningCertificate().getCertificate();
         cntTstIssuerCert.setNotAfter(DSSUtils.parseRFCDate("2018-12-06T13:04:10Z"));
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
         validationPolicy.getTimestampConstraints().setTimestampValid(constraint);

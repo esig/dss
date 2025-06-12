@@ -43,11 +43,11 @@ import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.enumerations.ValidationLevel;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.executor.AbstractDetailedReportBuilder;
-import eu.europa.esig.dss.enumerations.ValidationLevel;
 import eu.europa.esig.dss.validation.process.qualification.signature.SignatureQualificationBlock;
 import eu.europa.esig.dss.validation.process.vpfbs.BasicSignatureValidationProcess;
 import eu.europa.esig.dss.validation.process.vpfltvd.ValidationProcessForSignaturesWithLongTermValidationData;
@@ -106,7 +106,7 @@ public class DetailedReportBuilder extends AbstractDetailedReportBuilder {
 	 *
 	 * @return {@link XmlDetailedReport}
 	 */
-	XmlDetailedReport build() {
+	public XmlDetailedReport build() {
 		XmlDetailedReport detailedReport = init();
 		
 		detailedReport.setValidationTime(currentTime);

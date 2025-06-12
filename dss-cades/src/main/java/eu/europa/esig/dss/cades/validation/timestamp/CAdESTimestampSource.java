@@ -20,17 +20,22 @@
  */
 package eu.europa.esig.dss.cades.validation.timestamp;
 
-import eu.europa.esig.dss.cades.CMSUtils;
+import eu.europa.esig.dss.cades.CAdESUtils;
 import eu.europa.esig.dss.cades.validation.CAdESAttribute;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.cades.validation.CAdESSignedAttributes;
 import eu.europa.esig.dss.cades.validation.CAdESUnsignedAttributes;
+import eu.europa.esig.dss.cades.evidencerecord.CAdESEmbeddedEvidenceRecordHelper;
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EvidenceRecordIncorporationType;
+import eu.europa.esig.dss.enumerations.EvidenceRecordOrigin;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -41,6 +46,8 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.SignatureCertificateSource;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.validation.SignatureProperties;
+import eu.europa.esig.dss.spi.validation.analyzer.evidencerecord.EvidenceRecordAnalyzer;
+import eu.europa.esig.dss.spi.validation.analyzer.evidencerecord.EvidenceRecordAnalyzerFactory;
 import eu.europa.esig.dss.spi.validation.timestamp.SignatureTimestampIdentifierBuilder;
 import eu.europa.esig.dss.spi.validation.timestamp.SignatureTimestampSource;
 import eu.europa.esig.dss.spi.x509.CMSCRLSource;
@@ -89,8 +96,6 @@ import java.util.List;
 
 import static eu.europa.esig.dss.spi.OID.attributeCertificateRefsOid;
 import static eu.europa.esig.dss.spi.OID.attributeRevocationRefsOid;
-import static eu.europa.esig.dss.spi.OID.id_aa_er_external;
-import static eu.europa.esig.dss.spi.OID.id_aa_er_internal;
 import static eu.europa.esig.dss.spi.OID.id_aa_ets_archiveTimestampV2;
 import static eu.europa.esig.dss.spi.OID.id_aa_ets_archiveTimestampV3;
 import static eu.europa.esig.dss.spi.OID.id_aa_ets_sigPolicyStore;
@@ -257,8 +262,7 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 
 	@Override
 	protected boolean isEvidenceRecord(CAdESAttribute unsignedAttribute) {
-		return id_aa_er_internal.equals(unsignedAttribute.getASN1Oid()) ||
-				id_aa_er_external.equals(unsignedAttribute.getASN1Oid());
+		return unsignedAttribute.isEvidenceRecord();
 	}
 
 	@Override
@@ -276,11 +280,47 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 	}
 
 	@Override
-	protected List<EvidenceRecord> makeEvidenceRecords(CAdESAttribute signatureAttribute, List<TimestampedReference> references) {
-		if (signatureAttribute != null) {
-			LOG.warn("Embedded evidence records are not supported! The unsigned attribute is skipped.");
+	protected List<EvidenceRecord> makeEvidenceRecords(CAdESAttribute unsignedAttribute, List<TimestampedReference> references) {
+		final List<EvidenceRecord> result = new ArrayList<>();
+		ASN1Set attrValues = unsignedAttribute.getAttrValues();
+		for (int i = 0; i < attrValues.size(); i++)
+		{
+			EvidenceRecord evidenceRecord = createEvidenceRecord(unsignedAttribute, attrValues.getObjectAt(i), i);
+			if (evidenceRecord != null) {
+				result.add(evidenceRecord);
+			}
 		}
-		return Collections.emptyList();
+		return result;
+	}
+
+	private EvidenceRecord createEvidenceRecord(CAdESAttribute unsignedAttribute, ASN1Encodable erASN1Encodable, int orderWithinAttribute) {
+		try {
+			byte[] erEncoded = DSSASN1Utils.getDEREncoded(erASN1Encodable);
+			DSSDocument erDocument = new InMemoryDocument(erEncoded);
+			EvidenceRecordAnalyzer evidenceRecordAnalyzer = EvidenceRecordAnalyzerFactory.fromDocument(erDocument);
+			evidenceRecordAnalyzer.setEvidenceRecordOrigin(EvidenceRecordOrigin.SIGNATURE);
+
+			EvidenceRecordIncorporationType incorporationType = CAdESUtils.getEvidenceRecordIncorporationType(unsignedAttribute.getASN1Oid());
+			evidenceRecordAnalyzer.setEvidenceRecordIncorporationType(incorporationType);
+
+			final CAdESEmbeddedEvidenceRecordHelper embeddedEvidenceRecordHelper = new CAdESEmbeddedEvidenceRecordHelper(signature, unsignedAttribute);
+			if (EvidenceRecordIncorporationType.EXTERNAL_EVIDENCE_RECORD == incorporationType) {
+				if (Utils.collectionSize(signature.getDetachedContents()) == 1) {
+					embeddedEvidenceRecordHelper.setDetachedContents(signature.getDetachedContents());
+				} else {
+					LOG.warn("Detached document has not been provided to the validation of an external-evidence-record!");
+				}
+			}
+			embeddedEvidenceRecordHelper.setOrderOfAttribute(getAttributeOrder(unsignedAttribute));
+			embeddedEvidenceRecordHelper.setOrderWithinAttribute(orderWithinAttribute);
+
+			evidenceRecordAnalyzer.setEmbeddedEvidenceRecordHelper(embeddedEvidenceRecordHelper);
+			return evidenceRecordAnalyzer.getEvidenceRecord();
+
+		} catch (Exception e) {
+			LOG.warn("Unable to build an embedded evidence record. Reason : {}", e.getMessage(), e);
+			return null;
+		}
 	}
 
 	@Override
@@ -294,16 +334,16 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 		List<TimestampedReference> timestampedReferences = new ArrayList<>();
 		addReferences(timestampedReferences, getSignatureTimestampReferences());
 
-		final ASN1Sequence atsHashIndex = CMSUtils.getAtsHashIndex(timestampToken.getUnsignedAttributes());
+		final ASN1Sequence atsHashIndex = CAdESUtils.getAtsHashIndex(timestampToken.getUnsignedAttributes());
 		if (atsHashIndex != null) {
 			final DigestAlgorithm digestAlgorithm = getHashIndexDigestAlgorithm(atsHashIndex);
 
-			final ASN1Sequence certsHashIndex = CMSUtils.getCertificatesHashIndex(atsHashIndex);
-			final ASN1Sequence crlHashIndex = CMSUtils.getCRLHashIndex(atsHashIndex);
+			final ASN1Sequence certsHashIndex = CAdESUtils.getCertificatesHashIndex(atsHashIndex);
+			final ASN1Sequence crlHashIndex = CAdESUtils.getCRLHashIndex(atsHashIndex);
 			addReferences(timestampedReferences, getSignedDataCertificateReferences(certsHashIndex, digestAlgorithm));
 			addReferences(timestampedReferences, getSignedDataRevocationReferences(crlHashIndex, digestAlgorithm));
 
-			final ASN1Sequence unsignedAttrsHashIndex = CMSUtils.getUnsignedAttributesHashIndex(atsHashIndex);
+			final ASN1Sequence unsignedAttrsHashIndex = CAdESUtils.getUnsignedAttributesHashIndex(atsHashIndex);
 			addReferences(timestampedReferences,
 					getUnsignedAttributesReferences(unsignedAttrsHashIndex, digestAlgorithm, previousTimestamps));
 		}
@@ -426,7 +466,7 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 
 	private boolean isOCSPDigestValueMatch(byte[] binaries, ASN1ObjectIdentifier objectIdentifier,
 										   List<DEROctetString> crlsHashList, DigestAlgorithm digestAlgorithm) {
-		byte[] encoded = CMSUtils.getSignedDataEncodedOCSPResponse(binaries, objectIdentifier);
+		byte[] encoded = CAdESUtils.getSignedDataEncodedOCSPResponse(binaries, objectIdentifier);
 		return isDigestValuePresent(DSSUtils.digest(digestAlgorithm, encoded), crlsHashList);
 	}
 	
@@ -439,7 +479,7 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 		
 		final SignatureProperties<CAdESAttribute> unsignedSignatureProperties = getUnsignedSignatureProperties();
 		for (CAdESAttribute unsignedAttribute : unsignedSignatureProperties.getAttributes()) {
-			List<byte[]> octets = CMSUtils.getATSHashIndexV3OctetString(unsignedAttribute.getASN1Oid(),
+			List<byte[]> octets = CAdESUtils.getATSHashIndexV3OctetString(unsignedAttribute.getASN1Oid(),
 					unsignedAttribute.getAttrValues());
 			for (byte[] bytes : octets) {
 				final byte[] digest = DSSUtils.digest(digestAlgorithm, bytes);
@@ -524,7 +564,7 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 	private DigestAlgorithm getHashIndexDigestAlgorithm(ASN1Sequence atsHashIndex) {
 		AlgorithmIdentifier algorithmIdentifier = DSSASN1Utils.getAlgorithmIdentifier(atsHashIndex);
 		return algorithmIdentifier != null ? 
-				DigestAlgorithm.forOID(algorithmIdentifier.getAlgorithm().getId()) : CMSUtils.DEFAULT_ARCHIVE_TIMESTAMP_HASH_ALGO;
+				DigestAlgorithm.forOID(algorithmIdentifier.getAlgorithm().getId()) : CAdESUtils.DEFAULT_ARCHIVE_TIMESTAMP_HASH_ALGO;
 	}
 	
 	private boolean isDigestValuePresent(final byte[] digestValue, final List<DEROctetString> hashList) {

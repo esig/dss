@@ -31,7 +31,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class DSS1188Test extends AbstractPAdESTestValidation {
+class DSS1188Test extends AbstractPAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

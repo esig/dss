@@ -43,7 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PAdESExtensionBToLTAWithExpiredUserTest extends AbstractPAdESTestExtension {
+class PAdESExtensionBToLTAWithExpiredUserTest extends AbstractPAdESTestExtension {
 
     private PAdESService service;
 
@@ -71,7 +71,7 @@ public class PAdESExtensionBToLTAWithExpiredUserTest extends AbstractPAdESTestEx
 
         Exception exception = assertThrows(AlertException.class, () -> service.extendDocument(signedDocument, getExtensionParameters()));
         assertTrue(exception.getMessage().contains("Error on signature augmentation"));
-        assertTrue(exception.getMessage().contains("is expired at signing time"));
+        assertTrue(exception.getMessage().contains("The signing certificate has expired"));
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(getSigningCert().getNotAfter());
@@ -82,7 +82,7 @@ public class PAdESExtensionBToLTAWithExpiredUserTest extends AbstractPAdESTestEx
 
         exception = assertThrows(AlertException.class, () -> service.extendDocument(signedDocument, getExtensionParameters()));
         assertTrue(exception.getMessage().contains("Error on signature augmentation"));
-        assertTrue(exception.getMessage().contains("is expired at signing time"));
+        assertTrue(exception.getMessage().contains("The signing certificate has expired"));
 
         certificateVerifier.setAlertOnExpiredCertificate(new SilentOnStatusAlert());
 

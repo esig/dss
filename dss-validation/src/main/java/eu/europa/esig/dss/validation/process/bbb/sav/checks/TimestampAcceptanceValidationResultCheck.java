@@ -24,7 +24,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 
 /**
  * This class verifies output of "5.2.8 Signature Acceptance Validation" with a timestamp provided as the input
@@ -39,9 +39,9 @@ public class TimestampAcceptanceValidationResultCheck<T extends XmlConstraintsCo
      * @param i18nProvider {@link I18nProvider}
      * @param result       the result
      * @param savResult    {@link XmlSAV}
-     * @param constraint   {@link LevelConstraint}
+     * @param constraint   {@link LevelRule}
      */
-    public TimestampAcceptanceValidationResultCheck(I18nProvider i18nProvider, T result, XmlSAV savResult, LevelConstraint constraint) {
+    public TimestampAcceptanceValidationResultCheck(I18nProvider i18nProvider, T result, XmlSAV savResult, LevelRule constraint) {
         super(i18nProvider, result, savResult, constraint);
     }
 

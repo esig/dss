@@ -49,9 +49,7 @@ public class PDFTimestampServiceTest extends AbstractPAdESTestValidation {
 		PAdESTimestampParameters parameters = new PAdESTimestampParameters();
 
 		DSSDocument document = new InMemoryDocument(getClass().getResourceAsStream("/sample.pdf"));
-		DSSDocument timestamped = service.timestamp(document, parameters);
-		
-		return timestamped;
+        return service.timestamp(document, parameters);
 	}
 
 	@Override

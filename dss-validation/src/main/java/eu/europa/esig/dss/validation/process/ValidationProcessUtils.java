@@ -36,14 +36,14 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.enumerations.SubContext;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.enumerations.ValidationTime;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.SubContext;
-import eu.europa.esig.dss.policy.jaxb.Level;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
 
@@ -190,12 +190,12 @@ public class ValidationProcessUtils {
 	 * @param currentTime {@link Date}
 	 * @param bbbs a map of {@link XmlBasicBuildingBlocks}
 	 * @param poe {@link POEExtraction}
-	 * @param revocationIssuerSunsetDateConstraint {@link LevelConstraint}
+	 * @param revocationIssuerSunsetDateConstraint {@link LevelRule}
 	 * @return a list of {@link CertificateRevocationWrapper}s
 	 */
 	public static List<CertificateRevocationWrapper> getAcceptableRevocationDataForPSVIfExistOrReturnAll(
 			TokenProxy token, CertificateWrapper certificate, Date currentTime, Map<String, XmlBasicBuildingBlocks> bbbs,
-			POEExtraction poe, LevelConstraint revocationIssuerSunsetDateConstraint) {
+			POEExtraction poe, LevelRule revocationIssuerSunsetDateConstraint) {
 		List<CertificateRevocationWrapper> revocationWrappers =
 				filterRevocationDataForPastSignatureValidation(token, certificate, currentTime, bbbs, poe, revocationIssuerSunsetDateConstraint);
 		if (Utils.isCollectionNotEmpty(revocationWrappers)) {
@@ -213,12 +213,12 @@ public class ValidationProcessUtils {
 	 * @param currentTime {@link Date}
 	 * @param bbbs a map of {@link XmlBasicBuildingBlocks}
 	 * @param poe {@link POEExtraction}
-	 * @param revocationIssuerSunsetDateConstraint {@link LevelConstraint}
+	 * @param revocationIssuerSunsetDateConstraint {@link LevelRule}
 	 * @return a list of {@link CertificateRevocationWrapper}s
 	 */
 	private static List<CertificateRevocationWrapper> filterRevocationDataForPastSignatureValidation(
 			TokenProxy token, CertificateWrapper certificate, Date currentTime, Map<String, XmlBasicBuildingBlocks> bbbs,
-			POEExtraction poe, LevelConstraint revocationIssuerSunsetDateConstraint) {
+			POEExtraction poe, LevelRule revocationIssuerSunsetDateConstraint) {
 		final List<CertificateRevocationWrapper> certificateRevocations = new ArrayList<>();
 
 		for (CertificateRevocationWrapper certificateRevocation : certificate.getCertificateRevocationData()) {
@@ -241,17 +241,17 @@ public class ValidationProcessUtils {
 	 *
 	 * @param certificateWrapper {@link CertificateWrapper} trust anchor candidate
 	 * @param currentTime {@link Date} to verify certificate's sunset date, when applicable
-	 * @param certificateSunsetDateConstraint {@link LevelConstraint}
+	 * @param certificateSunsetDateConstraint {@link LevelRule}
 	 * @return TRUE if the certificate is a trust anchor at the given time, FALSE otherwise
 	 */
 	public static boolean isTrustAnchor(CertificateWrapper certificateWrapper, Date currentTime,
-										LevelConstraint certificateSunsetDateConstraint) {
+										LevelRule certificateSunsetDateConstraint) {
 		return certificateWrapper.isTrusted() &&
 				(certificateWrapper.getTrustSunsetDate() == null || currentTime.before(certificateWrapper.getTrustSunsetDate()) ||
 						!certificateSunsetDateCheckEnforced(certificateSunsetDateConstraint));
 	}
 
-	private static boolean certificateSunsetDateCheckEnforced(LevelConstraint constraint) {
+	private static boolean certificateSunsetDateCheckEnforced(LevelRule constraint) {
 		return constraint != null && Level.FAIL == constraint.getLevel();
 	}
 
@@ -352,9 +352,12 @@ public class ValidationProcessUtils {
 	 * @return {@link String} formatted date
 	 */
 	public static String getFormattedDate(Date date) {
-		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
-		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-		return sdf.format(date);
+		if (date != null) {
+			SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+			sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+			return sdf.format(date);
+		}
+		return null;
 	}
 	
 	/**
@@ -459,6 +462,8 @@ public class ValidationProcessUtils {
 				return MessageTag.ACCM_POS_ER_TST;
 			case EVIDENCE_RECORD_ARCHIVE_TIME_STAMP_SEQUENCE:
 				return MessageTag.ACCM_POS_ER_TST_SEQ;
+			case EVIDENCE_RECORD_MASTER_SIGNATURE:
+				return MessageTag.ACCM_POS_ER_MST_SIG;
 			default:
 				throw new IllegalArgumentException(String.format(
 						"The provided DigestMatcherType '%s' is not supported!", digestMatcher.getType()));
@@ -667,15 +672,14 @@ public class ValidationProcessUtils {
 	/**
 	 * This method is used to return the current level with a max limit of the {@code maxLevel}
 	 *
-	 * @param constraint {@link LevelConstraint} to check
+	 * @param constraint {@link LevelRule} to check
 	 * @param maxLevel {@link Level}
-	 * @return {@link LevelConstraint}
+	 * @return {@link LevelRule}
 	 */
-	public static LevelConstraint getConstraintOrMaxLevel(LevelConstraint constraint, Level maxLevel) {
+	public static LevelRule getConstraintOrMaxLevel(LevelRule constraint, Level maxLevel) {
 		if (constraint == null || maxLevel == null) {
 			return null;
 		}
-		final LevelConstraint newConstraint = new LevelConstraint();
 		Level level;
 		switch (constraint.getLevel()) {
 			case FAIL:
@@ -703,8 +707,21 @@ public class ValidationProcessUtils {
 			default:
 				throw new IllegalArgumentException(String.format("The support of Level '%s' is not implemented!", constraint.getLevel()));
 		}
-		newConstraint.setLevel(level);
-		return newConstraint;
+
+		return getLevelRule(level);
+	}
+
+	/**
+	 * Generates an anonymous implementation of the {@code LevelRule} with the given {@code Level}
+	 *
+	 * @param level {@link Level}
+	 * @return {@link LevelRule}
+	 */
+	public static LevelRule getLevelRule(Level level) {
+		if (level == null) {
+			return null;
+		}
+		return () -> level;
 	}
 
 }

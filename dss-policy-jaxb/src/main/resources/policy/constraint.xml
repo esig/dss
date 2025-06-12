@@ -20,6 +20,7 @@
 		</AcceptableMimeTypeFileContent>
 		<ManifestFilePresent Level="FAIL" />
 		<SignedFilesPresent Level="FAIL" />
+		<FilenameAdherence Level="WARN" />
 		<AllFilesSigned Level="WARN" />
 	</ContainerConstraints>
 	<PDFAConstraints>
@@ -443,6 +444,11 @@
 	</Timestamp>
 	<Revocation>
         <UnknownStatus Level="FAIL" />
+		<ThisUpdatePresent Level="FAIL" />
+		<RevocationIssuerKnown Level="FAIL" />
+		<RevocationIssuerValidAtProductionTime Level="FAIL" />
+		<RevocationAfterCertificateIssuance Level="FAIL" />
+		<RevocationHasInformationAboutCertificate Level="FAIL" />
 		<OCSPResponderIdMatch Level="FAIL" />
         <SelfIssuedOCSP Level="WARN" />
 		<BasicSignatureConstraints>
@@ -567,7 +573,7 @@
 			<Algo>RIPEMD160</Algo>
 			<Algo>WHIRLPOOL</Algo>
 		</AcceptableDigestAlgo>
-		<AlgoExpirationDate Level="FAIL" Format="yyyy-MM-dd" UpdateDate="2025-01-01" LevelAfterUpdate="WARN">
+		<AlgoExpirationDate Level="FAIL" Format="yyyy-MM-dd" UpdateDate="2024-10-13" LevelAfterUpdate="WARN">
 			<!-- Digest algorithms -->
 			<Algo Date="2004-08-01">MD5</Algo> <!-- ETSI TS 102 176-1 (Historical) V2.1.1 -->
 			<Algo Date="2012-08-01">SHA1</Algo> <!-- ETSI TS 119 312 v1.5.1 -->
@@ -618,5 +624,6 @@
 			<Id>5</Id>
 			<Id>6</Id>
 		</TLVersion>
+		<TLStructure Level="WARN" />
 	</eIDAS>
 </ConstraintsParameters>

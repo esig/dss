@@ -34,12 +34,11 @@ import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.simplereport.jaxb.XmlEvidenceRecord;
 import eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp;
@@ -63,12 +62,12 @@ class CAdESLevelLTAWithWrongXmlEvidenceRecordValidationTest extends AbstractCAdE
 
     @Override
     protected DSSDocument getSignedDocument() {
-        return new FileDocument("src/test/resources/validation/evidence-record/Signature-C-LTA-d233a2d9-a257-40dc-bcdb-bf4516b6d1da.p7m");
+        return new InMemoryDocument(CAdESLevelBWithEmbeddedEvidenceRecordTest.class.getResourceAsStream("/validation/evidence-record/Signature-C-LTA-d233a2d9-a257-40dc-bcdb-bf4516b6d1da.p7m"), "sig.p7m");
     }
 
     @Override
     protected List<DSSDocument> getDetachedEvidenceRecords() {
-        return Collections.singletonList(new FileDocument("src/test/resources/validation/evidence-record/evidence-record-d233a2d9-a257-40dc-bcdb-bf4516b6d1da.xml"));
+        return Collections.singletonList(new InMemoryDocument(CAdESLevelBWithEmbeddedEvidenceRecordTest.class.getResourceAsStream("/validation/evidence-record/evidence-record-d233a2d9-a257-40dc-bcdb-bf4516b6d1da.xml"), "er.xml"));
     }
 
     @Override
@@ -111,16 +110,7 @@ class CAdESLevelLTAWithWrongXmlEvidenceRecordValidationTest extends AbstractCAdE
             assertEquals(1, invalidRedCount);
 
             List<XmlSignatureScope> evidenceRecordScopes = evidenceRecord.getEvidenceRecordScopes();
-            assertEquals(1, Utils.collectionSize(evidenceRecordScopes)); // Only signature document is referenced in the scopes
-
-            boolean sigNameFound = false;
-            for (XmlSignatureScope evidenceRecordScope : evidenceRecordScopes) {
-                assertEquals(SignatureScopeType.FULL, evidenceRecordScope.getScope());
-                if (signature.getFilename().equals(evidenceRecordScope.getName())) {
-                    sigNameFound = true;
-                }
-            }
-            assertTrue(sigNameFound);
+            assertEquals(0, Utils.collectionSize(evidenceRecordScopes)); // invalid hash
 
             boolean coversSignature = false;
             boolean coversSignedData = false;
@@ -164,16 +154,7 @@ class CAdESLevelLTAWithWrongXmlEvidenceRecordValidationTest extends AbstractCAdE
                 assertTrue(timestamp.isSignatureValid());
 
                 List<XmlSignatureScope> timestampScopes = timestamp.getTimestampScopes();
-                assertEquals(1, Utils.collectionSize(timestampScopes));
-
-                sigNameFound = false;
-                for (XmlSignatureScope tstScope : timestampScopes) {
-                    assertEquals(SignatureScopeType.FULL, tstScope.getScope());
-                    if (signature.getFilename().equals(tstScope.getName())) {
-                        sigNameFound = true;
-                    }
-                }
-                assertTrue(sigNameFound);
+                assertEquals(0, Utils.collectionSize(timestampScopes));
 
                 boolean coversEvidenceRecord = false;
                 coversSignature = false;
@@ -254,16 +235,7 @@ class CAdESLevelLTAWithWrongXmlEvidenceRecordValidationTest extends AbstractCAdE
             assertEquals(SubIndication.HASH_FAILURE, xmlEvidenceRecord.getSubIndication());
 
             List<eu.europa.esig.dss.simplereport.jaxb.XmlSignatureScope> evidenceRecordScopes = xmlEvidenceRecord.getEvidenceRecordScope();
-            assertEquals(1, Utils.collectionSize(evidenceRecordScopes));
-
-            boolean sigNameFound = false;
-            for (eu.europa.esig.dss.simplereport.jaxb.XmlSignatureScope evidenceRecordScope : evidenceRecordScopes) {
-                assertEquals(SignatureScopeType.FULL, evidenceRecordScope.getScope());
-                if (simpleReport.getDocumentFilename().equals(evidenceRecordScope.getName())) {
-                    sigNameFound = true;
-                }
-            }
-            assertTrue(sigNameFound);
+            assertEquals(0, Utils.collectionSize(evidenceRecordScopes));
 
             XmlTimestamps timestamps = xmlEvidenceRecord.getTimestamps();
             assertNotNull(timestamps);
@@ -273,16 +245,7 @@ class CAdESLevelLTAWithWrongXmlEvidenceRecordValidationTest extends AbstractCAdE
                 assertNotEquals(Indication.FAILED, xmlTimestamp.getIndication());
 
                 List<eu.europa.esig.dss.simplereport.jaxb.XmlSignatureScope> timestampScopes = xmlTimestamp.getTimestampScope();
-                assertEquals(1, Utils.collectionSize(timestampScopes));
-
-                sigNameFound = false;
-                for (eu.europa.esig.dss.simplereport.jaxb.XmlSignatureScope tstScope : timestampScopes) {
-                    assertEquals(SignatureScopeType.FULL, tstScope.getScope());
-                    if (simpleReport.getDocumentFilename().equals(tstScope.getName())) {
-                        sigNameFound = true;
-                    }
-                }
-                assertTrue(sigNameFound);
+                assertEquals(0, Utils.collectionSize(timestampScopes));
             }
         }
     }

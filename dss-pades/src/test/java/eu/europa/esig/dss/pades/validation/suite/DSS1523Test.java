@@ -51,7 +51,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class DSS1523Test extends AbstractPkiFactoryTestValidation {
+class DSS1523Test extends AbstractPkiFactoryTestValidation {
 
 	@Test
 	void validation() {

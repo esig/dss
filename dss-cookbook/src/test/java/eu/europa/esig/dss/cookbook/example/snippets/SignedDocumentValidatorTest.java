@@ -25,11 +25,13 @@ import eu.europa.esig.dss.detailedreport.DetailedReportXmlDefiner;
 import eu.europa.esig.dss.detailedreport.jaxb.ObjectFactory;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
 import eu.europa.esig.dss.enumerations.ValidationLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.policy.SignaturePolicyProvider;
 import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
@@ -50,6 +52,7 @@ import javax.xml.transform.Templates;
 import javax.xml.validation.Schema;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -237,6 +240,33 @@ class SignedDocumentValidatorTest {
 		Templates pdfTemplates = DetailedReportXmlDefiner.getPdfTemplates();
 
 		// end::demo-xml-definer[]
+
+		String signatureId = reports.getDiagnosticData().getFirstSignatureId();
+		Date currentTime = new Date();
+
+		// tag::demo-simple-report-min-and-max-dates[]
+		// import eu.europa.esig.dss.enumerations.Indication;
+		// import eu.europa.esig.dss.simplereport.SimpleReport;
+		// import java.util.Date;
+
+		// Access SimpleReport from Reports object
+		SimpleReport simpleReport = reports.getSimpleReport();
+
+		// Extracts the minimum possible signature augmentation time
+		Date extensionPeriodMin = simpleReport.getExtensionPeriodMin(signatureId);
+
+		// Extracts the maximum possible signature augmentation time
+		Date extensionPeriodMax = simpleReport.getExtensionPeriodMax(signatureId);
+
+		// Perform signature augmentation if applicable.
+		// NOTE: Example below is provided for informational purposes only. Custom logic may apply.
+		if (Indication.TOTAL_PASSED.equals(simpleReport.getIndication(signatureId))
+				&& (extensionPeriodMin == null || extensionPeriodMin.before(currentTime))
+				&& extensionPeriodMax.after(currentTime)) {
+			// extend signature
+		}
+		// end::demo-simple-report-min-and-max-dates[]
+
 		assertNotNull(objectFactory);
 		assertNotNull(jaxbContext);
 		assertNotNull(schema);

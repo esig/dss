@@ -33,7 +33,7 @@ import org.junit.jupiter.api.BeforeEach;
 
 import java.util.Date;
 
-public class PAdESLevelBWithSHA256andMGF1Test extends AbstractPAdESTestSignature {
+class PAdESLevelBWithSHA256andMGF1Test extends AbstractPAdESTestSignature {
 
 	private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;
 	private PAdESSignatureParameters signatureParameters;

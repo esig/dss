@@ -52,7 +52,7 @@ public abstract class AbstractDSS2058 extends AbstractPAdESTestValidation {
 	protected abstract DSSDocument getDocumentToExtend();
 	
 	@BeforeEach
-	public void init() {
+	void init() {
 		DSSDocument document = getDocumentToExtend();
 
 		PAdESService service = new PAdESService(getCompositeCertificateVerifier());

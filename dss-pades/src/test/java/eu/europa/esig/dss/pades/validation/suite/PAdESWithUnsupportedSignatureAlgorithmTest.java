@@ -28,7 +28,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class PAdESWithUnsupportedSignatureAlgorithmTest extends AbstractPAdESTestValidation {
+class PAdESWithUnsupportedSignatureAlgorithmTest extends AbstractPAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

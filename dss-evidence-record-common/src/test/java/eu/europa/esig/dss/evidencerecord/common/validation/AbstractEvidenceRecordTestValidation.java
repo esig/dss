@@ -172,7 +172,7 @@ public abstract class AbstractEvidenceRecordTestValidation extends AbstractDocum
                 assertNull(simpleReport.getSubIndication(sigId));
                 assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationErrors(sigId)));
 
-                assertNotNull(simpleReport.getSignatureExtensionPeriodMax(sigId));
+                assertNotNull(simpleReport.getExtensionPeriodMax(sigId));
                 ++numberOfValidSignatures;
 
             } else {
@@ -181,7 +181,7 @@ public abstract class AbstractEvidenceRecordTestValidation extends AbstractDocum
                 assertFalse(Utils.isCollectionEmpty(simpleReport.getAdESValidationErrors(sigId)));
 
                 if (SubIndication.TRY_LATER.equals(subIndication)) {
-                    assertNotNull(simpleReport.getSignatureExtensionPeriodMax(sigId));
+                    assertNotNull(simpleReport.getExtensionPeriodMax(sigId));
                 }
             }
             assertNotNull(simpleReport.getSignatureQualification(sigId));
@@ -213,8 +213,25 @@ public abstract class AbstractEvidenceRecordTestValidation extends AbstractDocum
             if (indication != Indication.PASSED) {
                 assertNotNull(simpleReport.getSubIndication(tstId));
                 assertTrue(Utils.isCollectionNotEmpty(simpleReport.getAdESValidationErrors(tstId)));
+            } else {
+                assertNotNull(simpleReport.getExtensionPeriodMax(tstId));
             }
             assertNotNull(simpleReport.getTimestampQualification(tstId));
+        }
+
+        List<String> evidenceRecordIdList = simpleReport.getEvidenceRecordIdList();
+        for (String erId : evidenceRecordIdList) {
+            Indication indication = simpleReport.getIndication(erId);
+            assertNotNull(indication);
+            assertTrue(Indication.PASSED.equals(indication) || Indication.INDETERMINATE.equals(indication)
+                    || Indication.FAILED.equals(indication));
+            if (indication != Indication.PASSED) {
+                assertNotNull(simpleReport.getSubIndication(erId));
+                assertTrue(Utils.isCollectionNotEmpty(simpleReport.getAdESValidationErrors(erId)));
+            } else {
+                assertTrue(Utils.isCollectionNotEmpty(simpleReport.getSignatureScopes(erId)));
+                assertNotNull(simpleReport.getExtensionPeriodMax(erId));
+            }
         }
 
         assertNotNull(simpleReport.getValidationTime());

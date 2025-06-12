@@ -29,7 +29,7 @@ import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import org.junit.jupiter.api.BeforeEach;
 
-public class PAdESSignDocumentWithEmptySignatureTest extends AbstractPAdESTestSignature {
+class PAdESSignDocumentWithEmptySignatureTest extends AbstractPAdESTestSignature {
 
     private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;
     private PAdESSignatureParameters signatureParameters;
@@ -38,7 +38,7 @@ public class PAdESSignDocumentWithEmptySignatureTest extends AbstractPAdESTestSi
     @BeforeEach
     void init() throws Exception {
 
-        documentToSign = new InMemoryDocument(PAdESLevelBTest.class.getResourceAsStream("/validation/pdf-with-empty-sig.pdf"));
+        documentToSign = new InMemoryDocument(PAdESSignDocumentWithEmptySignatureTest.class.getResourceAsStream("/validation/pdf-with-empty-sig.pdf"));
 
         signatureParameters = new PAdESSignatureParameters();
         signatureParameters.setSigningCertificate(getSigningCert());

@@ -45,6 +45,7 @@ public class PKIDelegatedOCSPSource extends PKIOCSPSource {
      *
      * @param certEntityRepository {@link CertEntityRepository}
      */
+    @SuppressWarnings("unchecked")
     public PKIDelegatedOCSPSource(final CertEntityRepository certEntityRepository) {
         super(certEntityRepository);
     }

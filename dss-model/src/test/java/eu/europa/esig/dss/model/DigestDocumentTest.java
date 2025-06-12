@@ -21,19 +21,22 @@
 package eu.europa.esig.dss.model;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.Test;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.Security;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class DigestDocumentTest {
+class DigestDocumentTest extends AbstractTestDSSDocument {
 
 	@Test
 	void testByteArray() {
@@ -103,6 +106,24 @@ class DigestDocumentTest {
 			assertNotNull(doc.getDigestValue(digestAlgorithm));
 		}
 		Security.removeProvider(BouncyCastleProvider.PROVIDER_NAME);
+	}
+
+	@Override
+	protected DSSDocument getPersistenceTestDocument() {
+		return new DigestDocument(DigestAlgorithm.SHA256, "aaa");
+	}
+
+	@Override
+	protected List<DSSDocument> getPersistenceTestAlternativeDocuments() {
+		DigestDocument multipleDigestDoc = new DigestDocument(DigestAlgorithm.SHA256, "aaa");
+		multipleDigestDoc.addDigest(DigestAlgorithm.SHA1, "aa");
+		return Arrays.asList(
+				multipleDigestDoc,
+				new DigestDocument(DigestAlgorithm.SHA1, "aaa"),
+				new DigestDocument(DigestAlgorithm.SHA256, "bbb"),
+				new DigestDocument(DigestAlgorithm.SHA256, "aaa", "digestDoc"),
+				new DigestDocument(DigestAlgorithm.SHA256, "aaa", null, MimeTypeEnum.TEXT)
+		);
 	}
 
 }

@@ -38,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PAdESInvalidDigestAlgorithmTest extends AbstractPAdESTestValidation {
+class PAdESInvalidDigestAlgorithmTest extends AbstractPAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

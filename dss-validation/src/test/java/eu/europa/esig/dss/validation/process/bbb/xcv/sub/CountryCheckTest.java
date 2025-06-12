@@ -25,7 +25,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.MultiValuesConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CountryCheck;
@@ -47,7 +48,7 @@ class CountryCheckTest extends AbstractTestCheck {
 		xc.setCountryName("BE");
 
 		XmlSubXCV result = new XmlSubXCV();
-		CountryCheck cc = new CountryCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
+		CountryCheck cc = new CountryCheck(i18nProvider, result, new CertificateWrapper(xc), new MultiValuesConstraintWrapper(constraint));
 		cc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -65,7 +66,7 @@ class CountryCheckTest extends AbstractTestCheck {
 		xc.setCountryName("LU");
 
 		XmlSubXCV result = new XmlSubXCV();
-		CountryCheck cc = new CountryCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
+		CountryCheck cc = new CountryCheck(i18nProvider, result, new CertificateWrapper(xc), new MultiValuesConstraintWrapper(constraint));
 		cc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

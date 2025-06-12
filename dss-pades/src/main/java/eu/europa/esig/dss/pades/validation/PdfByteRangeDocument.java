@@ -68,4 +68,23 @@ public class PdfByteRangeDocument extends CommonDocument {
         return new ByteRangeInputStream(pdfDocument.openStream(), byteRange);
     }
 
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        if (!super.equals(object)) return false;
+
+        PdfByteRangeDocument that = (PdfByteRangeDocument) object;
+        return pdfDocument.equals(that.pdfDocument)
+                && byteRange.equals(that.byteRange);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + pdfDocument.hashCode();
+        result = 31 * result + byteRange.hashCode();
+        return result;
+    }
+
 }

@@ -33,7 +33,7 @@ import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 
-public class PAdESLevelBWithContentTimestampTest extends AbstractPAdESTestSignature {
+class PAdESLevelBWithContentTimestampTest extends AbstractPAdESTestSignature {
 
 	private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;
 	private PAdESSignatureParameters signatureParameters;

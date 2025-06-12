@@ -35,7 +35,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class DSS1376GetOriginalDocTest extends AbstractPAdESTestValidation {
+class DSS1376GetOriginalDocTest extends AbstractPAdESTestValidation {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DSS1376GetOriginalDocTest.class);
 

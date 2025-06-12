@@ -120,6 +120,16 @@ class CAdESDoubleLTADifferentDigestAlgoTest extends AbstractCAdESTestSignature {
     }
 
     @Override
+    protected void checkDigestAlgorithm(DiagnosticData diagnosticData) {
+        // skip (digestAlgo change)
+    }
+
+    @Override
+    protected void checkMessageDigestAlgorithm(DiagnosticData diagnosticData) {
+        // skip (digestAlgo change)
+    }
+
+    @Override
     protected void checkArchiveTimeStampV3(byte[] byteArray) {
         // skip (digestAlgo change)
     }

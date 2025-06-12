@@ -43,7 +43,7 @@ public abstract class DefaultASiCContainerExtractor implements ASiCContainerExtr
 	private static final Logger LOG = LoggerFactory.getLogger(DefaultASiCContainerExtractor.class);
 
 	/** Represents an ASiC container */
-	private final DSSDocument asicContainer;
+	protected final DSSDocument asicContainer;
 
 	/**
 	 * The default constructor

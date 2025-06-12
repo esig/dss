@@ -31,7 +31,7 @@ import eu.europa.esig.dss.pades.PAdESTimestampParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 
-public class PAdESLevelLTWrongAIATest extends AbstractPAdESTestSignature {
+class PAdESLevelLTWrongAIATest extends AbstractPAdESTestSignature {
 
 	private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;
 	private PAdESSignatureParameters signatureParameters;

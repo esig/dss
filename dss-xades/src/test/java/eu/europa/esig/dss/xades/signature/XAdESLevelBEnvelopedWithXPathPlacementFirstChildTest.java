@@ -44,7 +44,7 @@ class XAdESLevelBEnvelopedWithXPathPlacementFirstChildTest extends AbstractXAdES
 	private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
 	private XAdESSignatureParameters signatureParameters;
 	private DSSDocument documentToSign;
-	private final String XPATH = "//*[local-name() = 'tr']";
+	private static final String XPATH = "//*[local-name() = 'tr']";
 
 	@BeforeEach
 	void init() throws Exception {

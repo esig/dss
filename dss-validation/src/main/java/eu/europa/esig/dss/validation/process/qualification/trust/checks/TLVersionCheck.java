@@ -26,7 +26,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
+import eu.europa.esig.dss.model.policy.MultiValuesRule;
 import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
 import eu.europa.esig.dss.validation.process.qualification.EIDASUtils;
 
@@ -51,10 +51,10 @@ public class TLVersionCheck extends AbstractMultiValuesCheckItem<XmlTLAnalysis> 
 	 * @param result {@link XmlTLAnalysis}
 	 * @param currentTl {@link XmlTrustedList}
 	 * @param currentTime {@link Date}
-	 * @param constraint {@link MultiValuesConstraint}
+	 * @param constraint {@link MultiValuesRule}
 	 */
 	public TLVersionCheck(I18nProvider i18nProvider, XmlTLAnalysis result, XmlTrustedList currentTl, Date currentTime,
-						  MultiValuesConstraint constraint) {
+						  MultiValuesRule constraint) {
 		super(i18nProvider, result, constraint);
 		this.currentTL = currentTl;
 		this.currentTime = currentTime;

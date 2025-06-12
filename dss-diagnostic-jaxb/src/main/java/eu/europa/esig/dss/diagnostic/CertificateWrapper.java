@@ -163,6 +163,7 @@ public class CertificateWrapper extends AbstractTokenProxy {
 	 * @param <T> instance of {@link XmlCertificateExtension} corresponding to the {@code targetClass} parameter type
 	 * @return {@link XmlCertificateExtension} when present, NULL otherwise
 	 */
+	@SuppressWarnings("unchecked")
 	public <T extends XmlCertificateExtension> T getCertificateExtensionForOid(String oid, Class<T> targetClass) {
 		for (XmlCertificateExtension certificateExtension : getCertificateExtensions()) {
 			if (oid.equals(certificateExtension.getOID())) {

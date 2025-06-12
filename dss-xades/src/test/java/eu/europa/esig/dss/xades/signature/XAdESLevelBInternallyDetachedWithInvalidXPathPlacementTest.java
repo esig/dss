@@ -106,7 +106,7 @@ class XAdESLevelBInternallyDetachedWithInvalidXPathPlacementTest extends Abstrac
     @Test
     @Override
     public void signAndVerify() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> super.signAndVerify());
+        Exception exception = assertThrows(IllegalArgumentException.class, super::signAndVerify);
         assertEquals(String.format("Unable to find an element corresponding to XPath location '%s'", XPATH), exception.getMessage());
     }
 

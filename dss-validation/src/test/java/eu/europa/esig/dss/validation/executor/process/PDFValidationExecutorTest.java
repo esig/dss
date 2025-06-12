@@ -39,6 +39,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.PdfLockAction;
 import eu.europa.esig.dss.enumerations.PdfObjectModificationType;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -46,10 +47,8 @@ import eu.europa.esig.dss.enumerations.ValidationLevel;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.jaxb.object.Message;
 import eu.europa.esig.dss.policy.EtsiValidationPolicy;
-import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.ValidationPolicyFacade;
+import eu.europa.esig.dss.policy.EtsiValidationPolicyFactory;
 import eu.europa.esig.dss.policy.jaxb.BasicSignatureConstraints;
-import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.SignatureConstraints;
 import eu.europa.esig.dss.policy.jaxb.SignedAttributesConstraints;
@@ -156,7 +155,7 @@ class PDFValidationExecutorTest extends AbstractProcessExecutorTest {
 
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
-        EtsiValidationPolicy defaultPolicy = (EtsiValidationPolicy) ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
+        EtsiValidationPolicy defaultPolicy = (EtsiValidationPolicy) new EtsiValidationPolicyFactory().loadDefaultValidationPolicy();
         BasicSignatureConstraints basicSignatureConstraints = defaultPolicy.getSignatureConstraints().getBasicSignatureConstraints();
         LevelConstraint signerInformationStore = basicSignatureConstraints.getSignerInformationStore();
         signerInformationStore.setLevel(Level.WARN);
@@ -180,7 +179,7 @@ class PDFValidationExecutorTest extends AbstractProcessExecutorTest {
 
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
-        EtsiValidationPolicy defaultPolicy = (EtsiValidationPolicy) ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
+        EtsiValidationPolicy defaultPolicy = (EtsiValidationPolicy) new EtsiValidationPolicyFactory().loadDefaultValidationPolicy();
         BasicSignatureConstraints basicSignatureConstraints = defaultPolicy.getSignatureConstraints().getBasicSignatureConstraints();
         LevelConstraint pdfAnnotationOverlap = basicSignatureConstraints.getPdfAnnotationOverlap();
         pdfAnnotationOverlap.setLevel(Level.FAIL);
@@ -207,7 +206,7 @@ class PDFValidationExecutorTest extends AbstractProcessExecutorTest {
 
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
-        EtsiValidationPolicy defaultPolicy = (EtsiValidationPolicy) ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
+        EtsiValidationPolicy defaultPolicy = (EtsiValidationPolicy) new EtsiValidationPolicyFactory().loadDefaultValidationPolicy();
         BasicSignatureConstraints basicSignatureConstraints = defaultPolicy.getSignatureConstraints().getBasicSignatureConstraints();
         LevelConstraint pdfAnnotationOverlap = basicSignatureConstraints.getPdfAnnotationOverlap();
         pdfAnnotationOverlap.setLevel(Level.WARN);
@@ -233,7 +232,7 @@ class PDFValidationExecutorTest extends AbstractProcessExecutorTest {
 
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
-        EtsiValidationPolicy defaultPolicy = (EtsiValidationPolicy) ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
+        EtsiValidationPolicy defaultPolicy = (EtsiValidationPolicy) new EtsiValidationPolicyFactory().loadDefaultValidationPolicy();
         BasicSignatureConstraints basicSignatureConstraints = defaultPolicy.getSignatureConstraints().getBasicSignatureConstraints();
         LevelConstraint pdfVisualDifference = basicSignatureConstraints.getPdfVisualDifference();
         pdfVisualDifference.setLevel(Level.FAIL);
@@ -260,7 +259,7 @@ class PDFValidationExecutorTest extends AbstractProcessExecutorTest {
 
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
-        EtsiValidationPolicy defaultPolicy = (EtsiValidationPolicy) ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
+        EtsiValidationPolicy defaultPolicy = (EtsiValidationPolicy) new EtsiValidationPolicyFactory().loadDefaultValidationPolicy();
         BasicSignatureConstraints basicSignatureConstraints = defaultPolicy.getSignatureConstraints().getBasicSignatureConstraints();
         LevelConstraint pdfVisualDifference = basicSignatureConstraints.getPdfVisualDifference();
         pdfVisualDifference.setLevel(Level.WARN);
@@ -379,7 +378,7 @@ class PDFValidationExecutorTest extends AbstractProcessExecutorTest {
                 new File("src/test/resources/diag-data/diag_data_pkcs7.xml"));
         assertNotNull(xmlDiagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         SignatureConstraints signatureConstraints = validationPolicy.getSignatureConstraints();
         SignedAttributesConstraints signedAttributes = signatureConstraints.getSignedAttributes();
         LevelConstraint levelConstraint = new LevelConstraint();
@@ -414,7 +413,7 @@ class PDFValidationExecutorTest extends AbstractProcessExecutorTest {
         xmlDocMDP.setPermissions(CertificationPermission.NO_CHANGE_PERMITTED);
         pdfSignatureDictionary.setDocMDP(xmlDocMDP);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint levelConstraint = new LevelConstraint();
         levelConstraint.setLevel(Level.FAIL);
         validationPolicy.getSignatureConstraints().getBasicSignatureConstraints().setDocMDP(levelConstraint);
@@ -464,7 +463,7 @@ class PDFValidationExecutorTest extends AbstractProcessExecutorTest {
         xmlPDFLockDictionary.setAction(PdfLockAction.ALL);
         pdfSignatureDictionary.setFieldMDP(xmlPDFLockDictionary);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint levelConstraint = new LevelConstraint();
         levelConstraint.setLevel(Level.FAIL);
         validationPolicy.getSignatureConstraints().getBasicSignatureConstraints().setFieldMDP(levelConstraint);
@@ -514,7 +513,7 @@ class PDFValidationExecutorTest extends AbstractProcessExecutorTest {
         xmlPDFLockDictionary.setPermissions(CertificationPermission.NO_CHANGE_PERMITTED);
         xmlSignature.getPDFRevision().getFields().get(0).setSigFieldLock(xmlPDFLockDictionary);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint levelConstraint = new LevelConstraint();
         levelConstraint.setLevel(Level.FAIL);
         validationPolicy.getSignatureConstraints().getBasicSignatureConstraints().setSigFieldLock(levelConstraint);
@@ -566,7 +565,7 @@ class PDFValidationExecutorTest extends AbstractProcessExecutorTest {
         xmlSignature.getPDFRevision().getModificationDetection()
                 .getObjectModifications().getSignatureOrFormFill().add(objectModification);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint levelConstraint = new LevelConstraint();
         levelConstraint.setLevel(Level.FAIL);
         validationPolicy.getSignatureConstraints().getBasicSignatureConstraints().setFormFillChanges(levelConstraint);
@@ -617,7 +616,7 @@ class PDFValidationExecutorTest extends AbstractProcessExecutorTest {
         xmlSignature.getPDFRevision().getModificationDetection()
                 .getObjectModifications().getAnnotationChanges().add(objectModification);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint levelConstraint = new LevelConstraint();
         levelConstraint.setLevel(Level.FAIL);
         validationPolicy.getSignatureConstraints().getBasicSignatureConstraints().setAnnotationChanges(levelConstraint);
@@ -668,7 +667,7 @@ class PDFValidationExecutorTest extends AbstractProcessExecutorTest {
         xmlSignature.getPDFRevision().getModificationDetection()
                 .getObjectModifications().getUndefined().add(undefinedChange);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint levelConstraint = new LevelConstraint();
         levelConstraint.setLevel(Level.FAIL);
         validationPolicy.getSignatureConstraints().getBasicSignatureConstraints().setUndefinedChanges(levelConstraint);
@@ -710,7 +709,7 @@ class PDFValidationExecutorTest extends AbstractProcessExecutorTest {
         XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
                 new File("src/test/resources/diag-data/diag_data_pades_lta_mod_tst.xml"));
         assertNotNull(xmlDiagnosticData);
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint levelConstraint = new LevelConstraint();
         levelConstraint.setLevel(Level.FAIL);
         validationPolicy.getTimestampConstraints().getBasicSignatureConstraints().setUndefinedChanges(levelConstraint);
@@ -781,7 +780,7 @@ class PDFValidationExecutorTest extends AbstractProcessExecutorTest {
 
         xmlTimestamp.getPDFRevision().getModificationDetection().setObjectModifications(new XmlObjectModifications());
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint levelConstraint = new LevelConstraint();
         levelConstraint.setLevel(Level.FAIL);
         validationPolicy.getTimestampConstraints().getBasicSignatureConstraints().setUndefinedChanges(levelConstraint);
@@ -852,7 +851,7 @@ class PDFValidationExecutorTest extends AbstractProcessExecutorTest {
         XmlByteRange signatureByteRange = pdfSignatureDictionary.getSignatureByteRange();
         signatureByteRange.setValid(false);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint levelConstraint = new LevelConstraint();
         levelConstraint.setLevel(Level.FAIL);
         validationPolicy.getSignatureConstraints().getBasicSignatureConstraints().setByteRange(levelConstraint);
@@ -911,7 +910,7 @@ class PDFValidationExecutorTest extends AbstractProcessExecutorTest {
         XmlByteRange signatureByteRange = xmlSignature.getPDFRevision().getPDFSignatureDictionary().getSignatureByteRange();
         signatureByteRange.setValid(false);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint levelConstraint = new LevelConstraint();
         levelConstraint.setLevel(Level.WARN);
         validationPolicy.getSignatureConstraints().getBasicSignatureConstraints().setByteRange(levelConstraint);
@@ -967,7 +966,7 @@ class PDFValidationExecutorTest extends AbstractProcessExecutorTest {
         byteRange.getValue().clear();
         byteRange.getValue().addAll(Arrays.asList(BigInteger.valueOf(0), BigInteger.valueOf(156500), BigInteger.valueOf(176500), BigInteger.valueOf(500)));
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint levelConstraint = new LevelConstraint();
         levelConstraint.setLevel(Level.FAIL);
         validationPolicy.getSignatureConstraints().getBasicSignatureConstraints().setByteRangeCollision(levelConstraint);
@@ -1017,7 +1016,7 @@ class PDFValidationExecutorTest extends AbstractProcessExecutorTest {
         XmlByteRange byteRange = xmlTimestamp.getPDFRevision().getPDFSignatureDictionary().getSignatureByteRange();
         byteRange.setValid(false);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint levelConstraint = new LevelConstraint();
         levelConstraint.setLevel(Level.FAIL);
         validationPolicy.getSignatureConstraints().getBasicSignatureConstraints().setByteRangeAllDocument(levelConstraint);
@@ -1066,7 +1065,7 @@ class PDFValidationExecutorTest extends AbstractProcessExecutorTest {
         XmlSignature xmlSignature = xmlDiagnosticData.getSignatures().get(0);
         xmlSignature.getPDFRevision().getPDFSignatureDictionary().setConsistent(false);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
 
         LevelConstraint levelConstraint = new LevelConstraint();
         levelConstraint.setLevel(Level.FAIL);

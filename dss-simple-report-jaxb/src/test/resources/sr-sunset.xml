@@ -10,7 +10,7 @@
     <DocumentName>original-409d4d7b-b62c-4c2e-a4f0-a90d97d4a5e5-signed-xades-baseline-t-extended-xades-baseline-lta.xml</DocumentName>
     <ValidSignaturesCount>1</ValidSignaturesCount>
     <SignaturesCount>1</SignaturesCount>
-    <Signature SignatureFormat="XAdES-BASELINE-LTA" ExtensionPeriodMin="2021-10-08T12:54:25Z" ExtensionPeriodMax="2023-12-13T16:03:43Z" Id="S-6417E9A7865F756B27A5EADB49DADAEB4110CBD1AE080B3D30BFF16EC841F629">
+    <Signature SignatureFormat="XAdES-BASELINE-LTA" Id="S-6417E9A7865F756B27A5EADB49DADAEB4110CBD1AE080B3D30BFF16EC841F629">
         <CertificateChain>
             <Certificate Id="C-CF2E8D7B9B949524B8CE689CFCF337A48BAE0C0D5FA5F8C894FC1D69227B1014">
                 <QualifiedName>good-user</QualifiedName>
@@ -26,6 +26,8 @@
         <QualificationDetails>
             <Error Key="QUAL_CERT_TRUSTED_LIST_REACHED_ANS">Unable to build a certificate chain up to a trusted list!</Error>
         </QualificationDetails>
+        <ExtensionPeriodMin>2021-10-08T12:54:25Z</ExtensionPeriodMin>
+        <ExtensionPeriodMax>2023-12-13T16:03:43Z</ExtensionPeriodMax>
         <SigningTime>2021-04-08T12:54:21Z</SigningTime>
         <BestSignatureTime>2021-04-08T12:54:23Z</BestSignatureTime>
         <SignedBy>good-user</SignedBy>

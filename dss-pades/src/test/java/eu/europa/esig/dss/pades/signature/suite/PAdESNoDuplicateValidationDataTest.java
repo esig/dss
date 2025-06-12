@@ -49,7 +49,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class PAdESNoDuplicateValidationDataTest extends PKIFactoryAccess {
+class PAdESNoDuplicateValidationDataTest extends PKIFactoryAccess {
 	
 	@Test
 	void test() throws IOException {

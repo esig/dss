@@ -28,7 +28,7 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.ValidationTime;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
@@ -54,10 +54,10 @@ public class TrustServiceAtTimeCheck extends ChainItem<XmlValidationCertificateQ
      * @param result {@link XmlValidationCertificateQualification}
      * @param trustServicesAtTime list of {@link TrustServiceWrapper}s
      * @param validationTime {@link ValidationTime}
-     * @param constraint {@link LevelConstraint}
+     * @param constraint {@link LevelRule}
      */
     public TrustServiceAtTimeCheck(I18nProvider i18nProvider, XmlValidationCertificateQualification result,
-                     List<TrustServiceWrapper> trustServicesAtTime, ValidationTime validationTime, LevelConstraint constraint) {
+                     List<TrustServiceWrapper> trustServicesAtTime, ValidationTime validationTime, LevelRule constraint) {
         super(i18nProvider, result, constraint);
         this.trustServicesAtTime = trustServicesAtTime;
         this.validationTime = validationTime;

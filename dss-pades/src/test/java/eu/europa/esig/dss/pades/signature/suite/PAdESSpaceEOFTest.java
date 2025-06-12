@@ -30,7 +30,7 @@ import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import org.junit.jupiter.api.BeforeEach;
 
-public class PAdESSpaceEOFTest extends AbstractPAdESTestSignature {
+class PAdESSpaceEOFTest extends AbstractPAdESTestSignature {
 
 	private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;
 	private PAdESSignatureParameters signatureParameters;
@@ -39,7 +39,7 @@ public class PAdESSpaceEOFTest extends AbstractPAdESTestSignature {
 	@BeforeEach
 	void init() {
 
-		documentToSign = new InMemoryDocument(PAdESLevelBTest.class.getResourceAsStream("/sample_end_space.pdf"), null, MimeTypeEnum.PDF);
+		documentToSign = new InMemoryDocument(PAdESSpaceEOFTest.class.getResourceAsStream("/sample_end_space.pdf"), null, MimeTypeEnum.PDF);
 
 		signatureParameters = new PAdESSignatureParameters();
 		signatureParameters.setSigningCertificate(getSigningCert());

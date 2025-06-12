@@ -82,7 +82,7 @@ class ASiCEWithCAdESAsn1EvidenceRecordNoHashTreeWrongRefFileValidationTest exten
         assertEquals(0, orphanReferencesCounter);
 
         List<TimestampedReference> timestampedReferences = evidenceRecord.getTimestampedReferences();
-        assertTrue(Utils.isCollectionNotEmpty(timestampedReferences));
+        assertFalse(Utils.isCollectionNotEmpty(timestampedReferences));
 
         int tstCounter = 0;
         List<TimestampToken> timestamps = evidenceRecord.getTimestamps();
@@ -93,6 +93,20 @@ class ASiCEWithCAdESAsn1EvidenceRecordNoHashTreeWrongRefFileValidationTest exten
             ++tstCounter;
         }
         assertEquals(1, tstCounter);
+    }
+
+    @Override
+    protected void checkEvidenceRecordScopes(DiagnosticData diagnosticData) {
+        List<EvidenceRecordWrapper> evidenceRecords = diagnosticData.getEvidenceRecords();
+        EvidenceRecordWrapper evidenceRecord = evidenceRecords.get(0);
+        assertFalse(Utils.isCollectionNotEmpty(evidenceRecord.getEvidenceRecordScopes()));
+    }
+
+    @Override
+    protected void checkEvidenceRecordTimestampedReferences(DiagnosticData diagnosticData) {
+        List<EvidenceRecordWrapper> evidenceRecords = diagnosticData.getEvidenceRecords();
+        EvidenceRecordWrapper evidenceRecord = evidenceRecords.get(0);
+        assertFalse(Utils.isCollectionNotEmpty(evidenceRecord.getCoveredObjects()));
     }
 
     @Override

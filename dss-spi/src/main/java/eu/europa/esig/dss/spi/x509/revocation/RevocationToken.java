@@ -30,6 +30,7 @@ import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.model.x509.revocation.Revocation;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -266,6 +267,14 @@ public abstract class RevocationToken<R extends Revocation> extends Token {
 	 * @return {@link RevocationCertificateSource}
 	 */
 	public abstract RevocationCertificateSource getCertificateSource();
+
+	/**
+	 * Returns a collection of embedded certificates.
+	 * NOTE: returns empty collection for CRL.
+	 *
+	 * @return a list of {@code CertificateToken}s
+	 */
+	public abstract List<CertificateToken> getCertificates();
 
 	/**
 	 * Sets the external origin

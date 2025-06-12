@@ -26,13 +26,11 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
 import eu.europa.esig.dss.enumerations.ValidationLevel;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.model.identifier.TokenIdentifierProvider;
-import eu.europa.esig.dss.policy.EtsiValidationPolicy;
-import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.ValidationPolicyFacade;
-import eu.europa.esig.dss.policy.jaxb.ConstraintsParameters;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.policy.SignaturePolicyProvider;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
@@ -48,6 +46,7 @@ import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.executor.DocumentProcessExecutor;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
+import eu.europa.esig.dss.validation.policy.ValidationPolicyLoader;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.validation.reports.diagnostic.SignedDocumentDiagnosticDataBuilder;
 import eu.europa.esig.dss.validation.reports.diagnostic.XmlDiagnosticDataFactory;
@@ -58,7 +57,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.nio.file.Files;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -107,7 +105,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 	/**
 	 * The expected validation level
-	 *
+	 * <p>
 	 * Default: ValidationLevel.ARCHIVAL_DATA (the highest level)
 	 */
 	private ValidationLevel validationLevel = ValidationLevel.ARCHIVAL_DATA;
@@ -120,7 +118,7 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 	/**
 	 * Defines if the ETSI Validation report shall be produced
-	 *
+	 * <p>
 	 * Default: true
 	 */
 	private boolean enableEtsiValidationReport = true;
@@ -299,55 +297,27 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 
 	@Override
 	public Reports validateDocument() {
-		return validateDocument((InputStream) null);
+		return validateDocument((DSSDocument) null);
 	}
 
 	@Override
 	public Reports validateDocument(final URL validationPolicyURL) {
-		if (validationPolicyURL == null) {
-			return validateDocument((InputStream) null);
-		}
-		try (InputStream is = validationPolicyURL.openStream()) {
-			return validateDocument(is);
-		} catch (IOException e) {
-			throw new IllegalInputException(String.format("Unable to load policy with URL '%s'. Reason : %s",
-					validationPolicyURL, e.getMessage()), e);
-		}
+		return validateDocument(validationPolicyURL, null);
 	}
 
 	@Override
 	public Reports validateDocument(final String policyResourcePath) {
-		if (policyResourcePath == null) {
-			return validateDocument((InputStream) null);
-		}
-		try (InputStream is = getClass().getResourceAsStream(policyResourcePath)) {
-			return validateDocument(is);
-		} catch (IOException e) {
-			throw new IllegalInputException(String.format("Unable to load policy from path '%s'. Reason : %s",
-					policyResourcePath, e.getMessage()), e);
-		}
+		return validateDocument(policyResourcePath, null);
 	}
 
 	@Override
 	public Reports validateDocument(final File policyFile) {
-		if ((policyFile == null) || !policyFile.exists()) {
-			return validateDocument((InputStream) null);
-		}
-		try (InputStream is = Files.newInputStream(policyFile.toPath())) {
-			return validateDocument(is);
-		} catch (IOException e) {
-			throw new IllegalInputException(String.format("Unable to load policy from file '%s'. Reason : %s",
-					policyFile, e.getMessage()), e);
-		}
+		return validateDocument(policyFile, null);
 	}
 
 	@Override
 	public Reports validateDocument(DSSDocument policyDocument) {
-		try (InputStream is = policyDocument.openStream()) {
-			return validateDocument(is);
-		} catch (IOException e) {
-			throw new DSSException(String.format("Unable to read policy file: %s", e.getMessage()), e);
-		}
+		return validateDocument(policyDocument, null);
 	}
 
 	/**
@@ -359,33 +329,79 @@ public abstract class SignedDocumentValidator implements DocumentValidator {
 	 */
 	@Override
 	public Reports validateDocument(final InputStream policyDataStream) {
-		ValidationPolicy validationPolicy;
-		try {
-			if (policyDataStream == null) {
-				LOG.debug("No provided validation policy : use the default policy");
-				validationPolicy = ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
-			} else {
-				validationPolicy = ValidationPolicyFacade.newFacade().getValidationPolicy(policyDataStream);
-			}
-		} catch (Exception e) {
-			throw new IllegalInputException("Unable to load the policy", e);
+		return validateDocument(policyDataStream, null);
+	}
+
+	@Override
+	public Reports validateDocument(URL validationPolicyURL, URL cryptographicSuiteURL) {
+		try (InputStream validationPolicyIS = validationPolicyURL != null ? validationPolicyURL.openStream() : null ;
+			 InputStream cryptographicSuiteIS = cryptographicSuiteURL != null ? cryptographicSuiteURL.openStream() : null) {
+			return validateDocument(validationPolicyIS, cryptographicSuiteIS);
+		} catch (IOException e) {
+			throw new IllegalInputException(String.format(
+					"Unable to load policy with URL '%s' and cryptographic suite '%s'. Reason : %s",
+					validationPolicyURL, cryptographicSuiteURL, e.getMessage()), e);
 		}
+	}
+
+	@Override
+	public Reports validateDocument(String policyResourcePath, String cryptographicSuitePath) {
+		try (InputStream validationPolicyIS = Utils.isStringNotEmpty(policyResourcePath) ? getClass().getResourceAsStream(policyResourcePath) : null ;
+			 InputStream cryptographicSuiteIS = Utils.isStringNotEmpty(cryptographicSuitePath) ? getClass().getResourceAsStream(cryptographicSuitePath) : null) {
+			return validateDocument(validationPolicyIS, cryptographicSuiteIS);
+		} catch (IOException e) {
+			throw new IllegalInputException(String.format(
+					"Unable to load policy with URL '%s' and cryptographic suite '%s'. Reason : %s",
+					policyResourcePath, cryptographicSuitePath, e.getMessage()), e);
+		}
+	}
+
+	@Override
+	public Reports validateDocument(File policyFile, File cryptographicSuiteFile) {
+		DSSDocument policyDocument = policyFile != null && policyFile.exists() ? new FileDocument(policyFile) : null;
+		DSSDocument cryptographicSuiteDocument = cryptographicSuiteFile != null && cryptographicSuiteFile.exists() ? new FileDocument(cryptographicSuiteFile) : null;
+		return validateDocument(policyDocument, cryptographicSuiteDocument);
+	}
+
+	@Override
+	public Reports validateDocument(DSSDocument policyDocument, DSSDocument cryptographicSuiteDocument) {
+		ValidationPolicy validationPolicy = loadValidationPolicy(policyDocument, cryptographicSuiteDocument);
 		return validateDocument(validationPolicy);
 	}
 
 	/**
-	 * Validates the document and all its signatures. The
-	 * {@code validationPolicyDom} contains the constraint file. If null or empty
-	 * the default file is used.
+	 * This method loads a validation policy from the {@code policyDocument} and a {@code cryptographicSuiteDocument}.
+	 * When a document is not provided, a default policy or cryptographic suite is used, respectively.
 	 *
-	 * @param validationPolicyJaxb the {@code ConstraintsParameters} to use in the
-	 *                             validation process
-	 * @return the validation reports
+	 * @param policyDocument {@link DSSDocument} containing the validation policy document
+	 * @param cryptographicSuiteDocument {@link DSSDocument} containing the cryptographic suite document
+	 * @return {@link ValidationPolicy}
 	 */
+	protected ValidationPolicy loadValidationPolicy(DSSDocument policyDocument, DSSDocument cryptographicSuiteDocument) {
+		try {
+			ValidationPolicyLoader validationPolicyLoader;
+			if (policyDocument == null) {
+				LOG.debug("No provided validation policy : use the default policy");
+				validationPolicyLoader = ValidationPolicyLoader.fromDefaultValidationPolicy();
+			} else {
+				validationPolicyLoader = ValidationPolicyLoader.fromValidationPolicy(policyDocument);
+			}
+			if (cryptographicSuiteDocument != null) {
+				validationPolicyLoader = validationPolicyLoader.withCryptographicSuite(cryptographicSuiteDocument);
+			}
+
+			return validationPolicyLoader.create();
+
+		} catch (Exception e) {
+			throw new IllegalInputException("Unable to load the policy", e);
+		}
+	}
+
 	@Override
-	public Reports validateDocument(final ConstraintsParameters validationPolicyJaxb) {
-		final ValidationPolicy validationPolicy = new EtsiValidationPolicy(validationPolicyJaxb);
-		return validateDocument(validationPolicy);
+	public Reports validateDocument(InputStream policyDataStream, InputStream cryptographicSuiteStream) {
+		DSSDocument policyDocument = policyDataStream != null ? new InMemoryDocument(policyDataStream) : null;
+		DSSDocument cryptographicSuiteDocument = cryptographicSuiteStream != null ? new InMemoryDocument(cryptographicSuiteStream) : null;
+		return validateDocument(policyDocument, cryptographicSuiteDocument);
 	}
 
 	/**

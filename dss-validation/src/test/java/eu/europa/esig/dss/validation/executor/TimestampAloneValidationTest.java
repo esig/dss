@@ -21,25 +21,30 @@
 package eu.europa.esig.dss.validation.executor;
 
 import eu.europa.esig.dss.detailedreport.DetailedReport;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlEvidenceRecord;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSignature;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTimestamp;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalDataTimestamp;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessEvidenceRecord;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationTimestampQualification;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationTimestampQualificationAtTime;
 import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampQualification;
 import eu.europa.esig.dss.enumerations.ValidationLevel;
 import eu.europa.esig.dss.enumerations.ValidationTime;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
+import eu.europa.esig.dss.policy.EtsiValidationPolicy;
+import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
@@ -48,6 +53,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -80,6 +86,10 @@ class TimestampAloneValidationTest extends AbstractTestValidationExecutor {
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(TimestampQualification.QTSA, simpleReport.getTimestampQualification(simpleReport.getFirstTimestampId()));
 
+		assertNull(simpleReport.getExtensionPeriodMin(simpleReport.getFirstTimestampId()));
+		assertEquals(diagnosticData.getUsedTimestamps().get(0).getSigningCertificate().getCertificate().getNotAfter(),
+				simpleReport.getExtensionPeriodMax(simpleReport.getFirstTimestampId()));
+
 		DetailedReport detailedReport = reports.getDetailedReport();
 		assertEquals(TimestampQualification.QTSA, detailedReport.getTimestampQualificationAtTstGenerationTime(detailedReport.getFirstTimestampId()));
 		assertEquals(TimestampQualification.QTSA, detailedReport.getTimestampQualificationAtBestPoeTime(detailedReport.getFirstTimestampId()));
@@ -100,6 +110,9 @@ class TimestampAloneValidationTest extends AbstractTestValidationExecutor {
 
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(TimestampQualification.TSA, simpleReport.getTimestampQualification(simpleReport.getFirstTimestampId()));
+
+		assertNull(simpleReport.getExtensionPeriodMin(simpleReport.getFirstTimestampId()));
+		assertNull(simpleReport.getExtensionPeriodMax(simpleReport.getFirstTimestampId()));
 
 		DetailedReport detailedReport = reports.getDetailedReport();
 		assertEquals(TimestampQualification.TSA, detailedReport.getTimestampQualificationAtTstGenerationTime(detailedReport.getFirstTimestampId()));
@@ -185,6 +198,16 @@ class TimestampAloneValidationTest extends AbstractTestValidationExecutor {
 
 		SimpleReport simpleReport = reports.getSimpleReport();
 		assertEquals(TimestampQualification.NA, simpleReport.getTimestampQualification(simpleReport.getFirstTimestampId()));
+
+		for (String sigId : simpleReport.getSignatureIdList()) {
+			assertNull(simpleReport.getExtensionPeriodMin(sigId));
+			assertNull(simpleReport.getExtensionPeriodMax(sigId));
+		}
+		for (String tstId : simpleReport.getTimestampIdList()) {
+			assertNull(simpleReport.getExtensionPeriodMin(tstId));
+			assertEquals(reports.getDiagnosticData().getTimestampById(tstId).getSigningCertificate().getNotAfter(),
+					simpleReport.getExtensionPeriodMax(tstId));
+		}
 
 		DetailedReport detailedReport = reports.getDetailedReport();
 		assertEquals(2, detailedReport.getSignatures().size());
@@ -404,6 +427,17 @@ class TimestampAloneValidationTest extends AbstractTestValidationExecutor {
 		assertEquals(Indication.PASSED, simpleReport.getIndication(timestampIdList.get(1)));
 		assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationErrors(timestampIdList.get(1))));
 		assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationWarnings(timestampIdList.get(1))));
+
+		assertNull(simpleReport.getExtensionPeriodMin(simpleReport.getTimestampIdList().get(0)));
+		assertEquals(diagnosticData.getUsedTimestamps().get(1).getSigningCertificate().getCertificate().getNotAfter(),
+				simpleReport.getExtensionPeriodMax(simpleReport.getTimestampIdList().get(0)));
+
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(diagnosticData.getValidationDate());
+		calendar.add(Calendar.SECOND, 1);
+		assertEquals(calendar.getTime(), simpleReport.getExtensionPeriodMin(simpleReport.getTimestampIdList().get(1)));
+		assertEquals(diagnosticData.getUsedTimestamps().get(1).getSigningCertificate().getCertificate().getNotAfter(),
+				simpleReport.getExtensionPeriodMax(simpleReport.getTimestampIdList().get(1)));
 
 		DetailedReport detailedReport = reports.getDetailedReport();
 		assertEquals(0, detailedReport.getSignatures().size());
@@ -749,6 +783,313 @@ class TimestampAloneValidationTest extends AbstractTestValidationExecutor {
 		assertTrue(erValidationCheckFound);
 		assertTrue(basicTstValidationCheckFound);
 		assertTrue(pastTstValidationCheckFound);
+
+		checkReports(reports);
+	}
+
+	@Test
+	void asicsTstFilenamePassTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag-data/timestamp-validation/asics-tst.xml"));
+		assertNotNull(diagnosticData);
+
+		diagnosticData.getUsedTimestamps().get(0).setTimestampFilename("META-INF/timestamp.tst");
+
+		EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
+
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.FAIL);
+		validationPolicy.getContainerConstraints().setFilenameAdherence(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.PASSED, simpleReport.getIndication(simpleReport.getFirstTimestampId()));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		XmlBasicBuildingBlocks timestampBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstTimestampId());
+		assertEquals(Indication.PASSED, timestampBBB.getConclusion().getIndication());
+
+		XmlFC fc = timestampBBB.getFC();
+		assertNotNull(fc);
+		assertEquals(Indication.PASSED, fc.getConclusion().getIndication());
+
+		int filenameAdherenceCounter = 0;
+		for (XmlConstraint constraint : fc.getConstraint()) {
+			if (MessageTag.BBB_FC_ISFCS.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+				++filenameAdherenceCounter;
+			}
+		}
+		assertEquals(1, filenameAdherenceCounter);
+
+		checkReports(reports);
+	}
+
+	@Test
+	void asicsTstFilenameFailTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag-data/timestamp-validation/asics-tst.xml"));
+		assertNotNull(diagnosticData);
+
+		EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
+
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.FAIL);
+		validationPolicy.getContainerConstraints().setFilenameAdherence(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.FAILED, simpleReport.getIndication(simpleReport.getFirstTimestampId()));
+		assertEquals(SubIndication.FORMAT_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstTimestampId()));
+		assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstTimestampId()),
+				i18nProvider.getMessage(MessageTag.BBB_FC_ISFCS_ANS)));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		XmlBasicBuildingBlocks timestampBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstTimestampId());
+		assertEquals(Indication.FAILED, timestampBBB.getConclusion().getIndication());
+		assertEquals(SubIndication.FORMAT_FAILURE, timestampBBB.getConclusion().getSubIndication());
+		assertTrue(checkMessageValuePresence(convert(timestampBBB.getConclusion().getErrors()),
+				i18nProvider.getMessage(MessageTag.BBB_FC_ISFCS_ANS)));
+
+		XmlFC fc = timestampBBB.getFC();
+		assertNotNull(fc);
+		assertEquals(Indication.FAILED, fc.getConclusion().getIndication());
+		assertEquals(SubIndication.FORMAT_FAILURE, fc.getConclusion().getSubIndication());
+
+		int filenameAdherenceCounter = 0;
+		for (XmlConstraint constraint : fc.getConstraint()) {
+			if (MessageTag.BBB_FC_ISFCS.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+				assertEquals(MessageTag.BBB_FC_ISFCS_ANS.getId(), constraint.getError().getKey());
+				++filenameAdherenceCounter;
+			}
+		}
+		assertEquals(1, filenameAdherenceCounter);
+
+		checkReports(reports);
+	}
+
+	@Test
+	void asicsManifestFilenamePassTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag-data/timestamp-validation/sig-and-tst.xml"));
+		assertNotNull(diagnosticData);
+
+		EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
+
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.FAIL);
+		validationPolicy.getContainerConstraints().setFilenameAdherence(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(Indication.PASSED, simpleReport.getIndication(simpleReport.getFirstTimestampId()));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		XmlBasicBuildingBlocks sigBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		assertEquals(Indication.INDETERMINATE, sigBBB.getConclusion().getIndication());
+
+		XmlFC fc = sigBBB.getFC();
+		assertNotNull(fc);
+		assertEquals(Indication.PASSED, fc.getConclusion().getIndication());
+
+		int filenameAdherenceCounter = 0;
+		int manifestFilenameAdherenceCounter = 0;
+		for (XmlConstraint constraint : fc.getConstraint()) {
+			if (MessageTag.BBB_FC_ISFCS.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+				++filenameAdherenceCounter;
+			} else if (MessageTag.BBB_FC_IMFCS.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+				++manifestFilenameAdherenceCounter;
+			}
+		}
+		assertEquals(1, filenameAdherenceCounter);
+		assertEquals(1, manifestFilenameAdherenceCounter);
+
+		XmlBasicBuildingBlocks tstBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstTimestampId());
+		assertEquals(Indication.PASSED, tstBBB.getConclusion().getIndication());
+
+		fc = tstBBB.getFC();
+		assertNotNull(fc);
+		assertEquals(Indication.PASSED, fc.getConclusion().getIndication());
+
+		filenameAdherenceCounter = 0;
+		manifestFilenameAdherenceCounter = 0;
+		for (XmlConstraint constraint : fc.getConstraint()) {
+			if (MessageTag.BBB_FC_ISFCS.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+				++filenameAdherenceCounter;
+			} else if (MessageTag.BBB_FC_IMFCS.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+				++manifestFilenameAdherenceCounter;
+			}
+		}
+		assertEquals(1, filenameAdherenceCounter);
+		assertEquals(1, manifestFilenameAdherenceCounter);
+
+		checkReports(reports);
+	}
+
+	@Test
+	void asicsSigManifestFilenameFailTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag-data/timestamp-validation/sig-and-tst.xml"));
+		assertNotNull(diagnosticData);
+
+		diagnosticData.getContainerInfo().getManifestFiles().get(1).setFilename("META-INF/manifest.xml");
+
+		EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
+
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.FAIL);
+		validationPolicy.getContainerConstraints().setFilenameAdherence(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.TOTAL_FAILED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(SubIndication.FORMAT_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(Indication.PASSED, simpleReport.getIndication(simpleReport.getFirstTimestampId()));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		XmlBasicBuildingBlocks sigBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		assertEquals(Indication.INDETERMINATE, sigBBB.getConclusion().getIndication());
+
+		XmlFC fc = sigBBB.getFC();
+		assertNotNull(fc);
+		assertEquals(Indication.FAILED, fc.getConclusion().getIndication());
+		assertEquals(SubIndication.FORMAT_FAILURE, fc.getConclusion().getSubIndication());
+
+		int filenameAdherenceCounter = 0;
+		int manifestFilenameAdherenceCounter = 0;
+		for (XmlConstraint constraint : fc.getConstraint()) {
+			if (MessageTag.BBB_FC_ISFCS.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+				++filenameAdherenceCounter;
+			} else if (MessageTag.BBB_FC_IMFCS.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+				assertEquals(MessageTag.BBB_FC_IMFCS_ANS.getId(), constraint.getError().getKey());
+				++manifestFilenameAdherenceCounter;
+			}
+		}
+		assertEquals(1, filenameAdherenceCounter);
+		assertEquals(1, manifestFilenameAdherenceCounter);
+
+		XmlBasicBuildingBlocks tstBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstTimestampId());
+		assertEquals(Indication.PASSED, tstBBB.getConclusion().getIndication());
+
+		fc = tstBBB.getFC();
+		assertNotNull(fc);
+		assertEquals(Indication.PASSED, fc.getConclusion().getIndication());
+
+		filenameAdherenceCounter = 0;
+		manifestFilenameAdherenceCounter = 0;
+		for (XmlConstraint constraint : fc.getConstraint()) {
+			if (MessageTag.BBB_FC_ISFCS.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+				++filenameAdherenceCounter;
+			} else if (MessageTag.BBB_FC_IMFCS.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+				++manifestFilenameAdherenceCounter;
+			}
+		}
+		assertEquals(1, filenameAdherenceCounter);
+		assertEquals(1, manifestFilenameAdherenceCounter);
+
+		checkReports(reports);
+	}
+
+	@Test
+	void asicsTstManifestFilenamePassTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+				new File("src/test/resources/diag-data/timestamp-validation/sig-and-tst.xml"));
+		assertNotNull(diagnosticData);
+
+		diagnosticData.getContainerInfo().getManifestFiles().get(2).setFilename("META-INF/ASiCArchiveManifest.xml");
+
+		EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
+
+		LevelConstraint levelConstraint = new LevelConstraint();
+		levelConstraint.setLevel(Level.FAIL);
+		validationPolicy.getContainerConstraints().setFilenameAdherence(levelConstraint);
+
+		DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(validationPolicy);
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		Reports reports = executor.execute();
+		SimpleReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+		assertEquals(Indication.FAILED, simpleReport.getIndication(simpleReport.getFirstTimestampId()));
+		assertEquals(SubIndication.FORMAT_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstTimestampId()));
+
+		DetailedReport detailedReport = reports.getDetailedReport();
+		XmlBasicBuildingBlocks sigBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+		assertEquals(Indication.INDETERMINATE, sigBBB.getConclusion().getIndication());
+
+		XmlFC fc = sigBBB.getFC();
+		assertNotNull(fc);
+		assertEquals(Indication.PASSED, fc.getConclusion().getIndication());
+
+		int filenameAdherenceCounter = 0;
+		int manifestFilenameAdherenceCounter = 0;
+		for (XmlConstraint constraint : fc.getConstraint()) {
+			if (MessageTag.BBB_FC_ISFCS.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+				++filenameAdherenceCounter;
+			} else if (MessageTag.BBB_FC_IMFCS.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+				++manifestFilenameAdherenceCounter;
+			}
+		}
+		assertEquals(1, filenameAdherenceCounter);
+		assertEquals(1, manifestFilenameAdherenceCounter);
+
+		XmlBasicBuildingBlocks tstBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstTimestampId());
+		assertEquals(Indication.FAILED, tstBBB.getConclusion().getIndication());
+		assertEquals(SubIndication.FORMAT_FAILURE, tstBBB.getConclusion().getSubIndication());
+
+		fc = tstBBB.getFC();
+		assertNotNull(fc);
+		assertEquals(Indication.FAILED, fc.getConclusion().getIndication());
+		assertEquals(SubIndication.FORMAT_FAILURE, fc.getConclusion().getSubIndication());
+
+		filenameAdherenceCounter = 0;
+		manifestFilenameAdherenceCounter = 0;
+		for (XmlConstraint constraint : fc.getConstraint()) {
+			if (MessageTag.BBB_FC_ISFCS.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.OK, constraint.getStatus());
+				++filenameAdherenceCounter;
+			} else if (MessageTag.BBB_FC_IMFCS.getId().equals(constraint.getName().getKey())) {
+				assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+				assertEquals(MessageTag.BBB_FC_IMFCS_ANS.getId(), constraint.getError().getKey());
+				++manifestFilenameAdherenceCounter;
+			}
+		}
+		assertEquals(1, filenameAdherenceCounter);
+		assertEquals(1, manifestFilenameAdherenceCounter);
 
 		checkReports(reports);
 	}

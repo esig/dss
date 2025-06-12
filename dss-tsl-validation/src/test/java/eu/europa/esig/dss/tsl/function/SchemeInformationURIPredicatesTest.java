@@ -38,21 +38,21 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class SchemeInformationURIPredicatesTest {
 
-	private static NonEmptyMultiLangURIListType SCHEME_INFORMATION_URI_LIST_TYPE;
+	private static NonEmptyMultiLangURIListType schemeInformationUriListType;
 
 	@BeforeAll
 	static void init() throws Exception {
 		try (FileInputStream fis = new FileInputStream("src/test/resources/eu-lotl-pivot.xml")) {
 			TrustStatusListType lotlPivot = TrustedListFacade.newFacade().unmarshall(fis);
 			assertNotNull(lotlPivot);
-			SCHEME_INFORMATION_URI_LIST_TYPE = lotlPivot.getSchemeInformation().getSchemeInformationURI();
-			assertNotNull(SCHEME_INFORMATION_URI_LIST_TYPE);
+			schemeInformationUriListType = lotlPivot.getSchemeInformation().getSchemeInformationURI();
+			assertNotNull(schemeInformationUriListType);
 		}
 	}
 
 	@Test
 	void pivotLOTL() {
-		List<String> pivotUrls = SCHEME_INFORMATION_URI_LIST_TYPE.getURI().stream().filter(new PivotSchemeInformationURI()).map(NonEmptyMultiLangURIType::getValue)
+		List<String> pivotUrls = schemeInformationUriListType.getURI().stream().filter(new PivotSchemeInformationURI()).map(NonEmptyMultiLangURIType::getValue)
 				.collect(Collectors.toList());
 		assertEquals(4, pivotUrls.size());
 
@@ -65,8 +65,8 @@ class SchemeInformationURIPredicatesTest {
 
 	@Test
 	void byLang() {
-		assertEquals(1, SCHEME_INFORMATION_URI_LIST_TYPE.getURI().stream().filter(new SchemeInformationURIByLang("fr")).count());
-		assertEquals(0, SCHEME_INFORMATION_URI_LIST_TYPE.getURI().stream().filter(new SchemeInformationURIByLang("xx")).count());
+		assertEquals(1, schemeInformationUriListType.getURI().stream().filter(new SchemeInformationURIByLang("fr")).count());
+		assertEquals(0, schemeInformationUriListType.getURI().stream().filter(new SchemeInformationURIByLang("xx")).count());
 		assertThrows(NullPointerException.class, () -> new SchemeInformationURIByLang(null));
 	}
 
@@ -74,18 +74,18 @@ class SchemeInformationURIPredicatesTest {
 	void oj() {
 		String currentPivotOjUrl = "http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.C_.2016.233.01.0001.01.ENG";
 
-		List<String> list = SCHEME_INFORMATION_URI_LIST_TYPE.getURI().stream().filter(new OfficialJournalSchemeInformationURI(currentPivotOjUrl))
+		List<String> list = schemeInformationUriListType.getURI().stream().filter(new OfficialJournalSchemeInformationURI(currentPivotOjUrl))
 				.map(NonEmptyMultiLangURIType::getValue).collect(Collectors.toList());
 		assertEquals(1, list.size());
 		assertEquals(currentPivotOjUrl, list.get(0));
 
 		String otherOJUrl = "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.C_.2019.276.01.0001.01.ENG";
-		list = SCHEME_INFORMATION_URI_LIST_TYPE.getURI().stream().filter(new OfficialJournalSchemeInformationURI(otherOJUrl)).map(NonEmptyMultiLangURIType::getValue)
+		list = schemeInformationUriListType.getURI().stream().filter(new OfficialJournalSchemeInformationURI(otherOJUrl)).map(NonEmptyMultiLangURIType::getValue)
 				.collect(Collectors.toList());
 		assertEquals(1, list.size());
 		assertEquals(currentPivotOjUrl, list.get(0));
 
-		Exception exception = assertThrows(DSSException.class, () -> SCHEME_INFORMATION_URI_LIST_TYPE.getURI().stream()
+		Exception exception = assertThrows(DSSException.class, () -> schemeInformationUriListType.getURI().stream()
 				.filter(new OfficialJournalSchemeInformationURI("blabla")).collect(Collectors.toList()));
 		assertEquals("Incorrect format of Official Journal URL [blabla] is provided", exception.getMessage());
 

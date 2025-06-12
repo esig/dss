@@ -35,7 +35,7 @@ import org.junit.jupiter.api.BeforeEach;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class PAdESDoubleSignBAndExtendToLTATest extends AbstractPAdESTestSignature {
+class PAdESDoubleSignBAndExtendToLTATest extends AbstractPAdESTestSignature {
 
     private DSSDocument originalDocument;
 

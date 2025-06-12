@@ -41,7 +41,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-public class TwoPAdESSignaturesMustHaveDifferentIdTest extends PKIFactoryAccess {
+class TwoPAdESSignaturesMustHaveDifferentIdTest extends PKIFactoryAccess {
 
 	@Test
 	void test() throws Exception {

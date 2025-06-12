@@ -26,13 +26,14 @@ import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.ListCertificateSource;
+import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.spi.x509.revocation.ListRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
-import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -236,6 +237,30 @@ public interface ValidationContext {
 	boolean checkAllSignaturesNotExpired();
 
 	/**
+	 * This method returns whether the certificate token is not yet expired
+	 *
+	 * @param certificateToken {@link CertificateToken} to be validated
+	 * @return true if the certificate or/and its POE(s) are not yet expired, false otherwise
+	 */
+	boolean checkCertificateNotExpired(CertificateToken certificateToken);
+
+	/**
+	 * This method returns whether all signatures added to the ValidationContext have been produced with
+	 * yet valid certificates at the time of signing
+	 *
+	 * @return true if the signing certificate or its POE(s) is yet valid, false otherwise
+	 */
+	boolean checkAllSignaturesAreYetValid();
+
+	/**
+	 * This method returns whether the certificate token is yet valid
+	 *
+	 * @param certificateToken {@link CertificateToken} to be validated
+	 * @return true if the certificate is yet valid, false otherwise
+	 */
+	boolean checkCertificateIsYetValid(CertificateToken certificateToken);
+
+	/**
 	 * Returns signatures added to the validation context
 	 *
 	 * @return a set of {@link AdvancedSignature}s
@@ -319,5 +344,14 @@ public interface ValidationContext {
 	 * @return {@link ValidationData}
 	 */
 	ValidationData getValidationData(final TimestampToken timestampToken);
+
+	/**
+	 * Returns revocation data for the given {@code certificateToken}, whether extracted from a signature file
+	 * or obtained online.
+	 *
+	 * @param certificateToken {@link CertificateToken} to retrieve revocation data for
+	 * @return a list of {@link RevocationToken}s
+	 */
+	List<RevocationToken<?>> getRevocationData(CertificateToken certificateToken);
 
 }

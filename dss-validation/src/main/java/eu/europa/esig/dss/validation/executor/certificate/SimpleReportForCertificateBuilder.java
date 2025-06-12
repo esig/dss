@@ -31,7 +31,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustService;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustServiceProvider;
 import eu.europa.esig.dss.jaxb.object.Message;
-import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlChainItem;
 import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlDetails;
 import eu.europa.esig.dss.simplecertificatereport.jaxb.XmlMessage;

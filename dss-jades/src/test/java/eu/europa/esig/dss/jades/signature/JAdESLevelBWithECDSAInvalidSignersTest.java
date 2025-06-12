@@ -104,7 +104,7 @@ class JAdESLevelBWithECDSAInvalidSignersTest extends AbstractJAdESTestSignature 
 
         service = new JAdESService(getOfflineCertificateVerifier());
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> super.signAndVerify());
+        Exception exception = assertThrows(IllegalArgumentException.class, super::signAndVerify);
         assertEquals(String.format("For ECDSA with %s a key with P-%s curve shall be used for a JWS! See RFC 7518.",
                 digestAlgo.getName(), getKeySizeForDigestAlgo(digestAlgo)), exception.getMessage());
     }

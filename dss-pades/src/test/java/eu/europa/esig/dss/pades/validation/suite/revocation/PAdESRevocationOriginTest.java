@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.pades.validation.suite.revocation;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.PDFRevisionWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationType;
@@ -28,19 +29,37 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.validation.suite.AbstractPAdESTestValidation;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PAdESRevocationOriginTest extends AbstractPAdESTestValidation {
+class PAdESRevocationOriginTest extends AbstractPAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {
 		return new InMemoryDocument(getClass().getResourceAsStream("/validation/Signature-P-HU_POL-3.pdf"));
 	}
 	
+	@Override
+	protected void checkPdfRevision(DiagnosticData diagnosticData) {
+		super.checkPdfRevision(diagnosticData);
+
+		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+			PDFRevisionWrapper pdfRevision = signatureWrapper.getPDFRevision();
+			assertFalse(pdfRevision.arePdfModificationsDetected());
+			assertTrue(pdfRevision.arePdfObjectModificationsDetected());
+			assertFalse(Utils.isCollectionEmpty(pdfRevision.getPdfExtensionChanges()));
+			assertTrue(Utils.isCollectionEmpty(pdfRevision.getPdfSignatureOrFormFillChanges()));
+			assertTrue(Utils.isCollectionEmpty(pdfRevision.getPdfAnnotationChanges()));
+			assertTrue(Utils.isCollectionEmpty(pdfRevision.getPdfUndefinedChanges()));
+		}
+	}
+
 	@Override
 	protected void verifySourcesAndDiagnosticData(List<AdvancedSignature> advancedSignatures,
 			DiagnosticData diagnosticData) {

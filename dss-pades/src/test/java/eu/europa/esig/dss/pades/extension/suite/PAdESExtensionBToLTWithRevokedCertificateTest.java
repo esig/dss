@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PAdESExtensionBToLTWithRevokedCertificateTest extends AbstractPAdESTestExtension {
+class PAdESExtensionBToLTWithRevokedCertificateTest extends AbstractPAdESTestExtension {
 
     @Override
     protected SignatureLevel getOriginalSignatureLevel() {
@@ -42,7 +42,7 @@ public class PAdESExtensionBToLTWithRevokedCertificateTest extends AbstractPAdES
     @Override
     @Test
     public void extendAndVerify() throws Exception {
-        Exception exception = assertThrows(AlertException.class, () -> super.extendAndVerify());
+        Exception exception = assertThrows(AlertException.class, super::extendAndVerify);
         assertTrue(exception.getMessage().contains("Revoked/Suspended certificate(s) detected."));
     }
 

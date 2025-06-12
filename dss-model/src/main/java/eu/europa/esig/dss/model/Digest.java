@@ -121,6 +121,15 @@ public class Digest implements Serializable {
 		return Base64.getEncoder().encodeToString(value);
 	}
 
+	/**
+	 * Checks whether the object contains a value
+	 *
+	 * @return TRUE if the object is empty, FALSE otherwise
+	 */
+	public boolean isEmpty() {
+		return getAlgorithm() == null || getValue() == null;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

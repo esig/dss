@@ -23,7 +23,7 @@ package eu.europa.esig.dss.validation.process.bbb.xcv.checks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.i18n.I18nProvider;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 
 import java.util.Date;
 
@@ -41,10 +41,10 @@ public class CertificateValidationBeforeSunsetDateWithIdCheck<T extends XmlConst
      * @param result the result
      * @param certificate {@link CertificateWrapper}
      * @param controlTime {@link Date}
-     * @param constraint {@link LevelConstraint}
+     * @param constraint {@link LevelRule}
      */
     public CertificateValidationBeforeSunsetDateWithIdCheck(I18nProvider i18nProvider, T result,
-                                                      CertificateWrapper certificate, Date controlTime, LevelConstraint constraint) {
+                                                      CertificateWrapper certificate, Date controlTime, LevelRule constraint) {
         super(i18nProvider, result, certificate, controlTime, constraint, certificate.getId());
     }
 

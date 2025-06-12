@@ -20,12 +20,8 @@
  */
 package eu.europa.esig.dss.pades.validation.suite.revocation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
-import java.util.List;
-
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.validation.suite.AbstractPAdESTestValidation;
@@ -35,11 +31,28 @@ import eu.europa.esig.validationreport.jaxb.SignatureReferenceType;
 import eu.europa.esig.validationreport.jaxb.ValidationObjectListType;
 import eu.europa.esig.validationreport.jaxb.ValidationObjectType;
 
-public class PAdESSignatureDigestRefPresenceTest extends AbstractPAdESTestValidation {
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+class PAdESSignatureDigestRefPresenceTest extends AbstractPAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {
 		return new InMemoryDocument(getClass().getResourceAsStream("/validation/PAdES-LTA.pdf"));
+	}
+
+	@Override
+	protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
+		SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+
+		assertTrue(signature.isSigningCertificateIdentified());
+		assertTrue(signature.isSigningCertificateReferencePresent());
+		assertFalse(signature.isSigningCertificateReferenceUnique());
 	}
 	
 	@Override

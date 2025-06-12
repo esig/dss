@@ -20,17 +20,15 @@
  */
 package eu.europa.esig.dss.tsl.download;
 
-import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
-import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.Digest;
-import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
-import org.w3c.dom.Document;
+import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
 
-import javax.xml.crypto.dsig.CanonicalizationMethod;
 import java.util.Objects;
 import java.util.function.Supplier;
 
@@ -38,6 +36,12 @@ import java.util.function.Supplier;
  * Downloads the document and returns a {@code XmlDownloadResult}
  */
 public class XmlDownloadTask implements Supplier<XmlDownloadResult> {
+
+	/** Default digest algorithm used for document integrity identification */
+	private static final DigestAlgorithm DEFAULT_DIGEST_ALGORITHM = DigestAlgorithm.SHA256;
+
+	/** Default canonicalization method to be used on a document's digest computation */
+	private static final String DEFAULT_CANONICALIZATION_METHOD = XMLCanonicalizer.DEFAULT_DSS_C14N_METHOD;
 
 	/** The file loader */
 	private final DSSFileLoader dssFileLoader;
@@ -64,9 +68,9 @@ public class XmlDownloadTask implements Supplier<XmlDownloadResult> {
 			final DSSDocument dssDocument = dssFileLoader.getDocument(url);
 			assertDocumentIsValidXML(dssDocument);
 
-			final Document dom = DomUtils.buildDOM(dssDocument);
-			final byte[] canonicalizedContent = XMLCanonicalizer.createInstance(CanonicalizationMethod.EXCLUSIVE).canonicalize(dom);
-			return new XmlDownloadResult(dssDocument, new Digest(DigestAlgorithm.SHA256, DSSUtils.digest(DigestAlgorithm.SHA256, canonicalizedContent)));
+			final Digest digest = DSSXMLUtils.getDigestOnCanonicalizedInputStream(dssDocument.openStream(),
+					DEFAULT_DIGEST_ALGORITHM, DEFAULT_CANONICALIZATION_METHOD);
+			return new XmlDownloadResult(dssDocument, digest);
 		} catch (DSSException e) {
 			throw e;
 		} catch (Exception e) {

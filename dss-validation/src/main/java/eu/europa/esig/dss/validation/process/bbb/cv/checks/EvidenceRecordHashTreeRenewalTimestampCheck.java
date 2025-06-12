@@ -30,7 +30,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
 import java.util.List;
@@ -55,10 +55,10 @@ public class EvidenceRecordHashTreeRenewalTimestampCheck extends ChainItem<XmlCV
      * @param result {@link XmlCV}
      * @param diagnosticData {@link DiagnosticData}
      * @param timestampWrapper {@link TimestampWrapper}
-     * @param constraint {@link LevelConstraint}
+     * @param constraint {@link LevelRule}
      */
     public EvidenceRecordHashTreeRenewalTimestampCheck(I18nProvider i18nProvider, XmlCV result, DiagnosticData diagnosticData,
-                                                       TimestampWrapper timestampWrapper, LevelConstraint constraint) {
+                                                       TimestampWrapper timestampWrapper, LevelRule constraint) {
         super(i18nProvider, result, constraint);
         this.diagnosticData = diagnosticData;
         this.timestampWrapper = timestampWrapper;

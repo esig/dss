@@ -14,6 +14,159 @@ For changes within Diagnostic Data XSD please refer <<DiagnosticDataChanges>>.
 For changes within XML Signature Policy please refer <<ValidationPolicyChanges>>.
 
 [cols="2,5,5"]
+.Code changes from version 6.2 to 6.3
+|===
+|Title                               |v6.2                            |v6.3
+a|Default validation process requires the `dss-policy-jaxb` module           a|
+[source,xml]
+.pom.xml
+----
+<dependencies>
+    ...
+    <dependency>
+        <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+        <artifactId>dss-validation</artifactId>
+    </dependency>
+    ...
+</dependencies>
+----
+                                                                     a|
+In order to benefit from default XML Validation Policy, please add the `dss-policy-jaxb` module:
+
+[source,xml]
+.pom.xml
+----
+<dependencies>
+    ...
+    <dependency>
+        <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+        <artifactId>dss-validation</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+        <artifactId>dss-policy-jaxb</artifactId>
+    </dependency>
+    ...
+</dependencies>
+----
+
+a|CAdES/PAdES signature and validation (see <<dssCms>>)             a|
+[source,xml]
+.pom.xml
+----
+<dependencies>
+    ...
+    <dependency>
+        <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+        <artifactId>dss-cades</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+        <artifactId>dss-pades-pdfbox</artifactId>
+    </dependency>
+    ...
+</dependencies>
+----
+                                                                     a|
+[source,xml]
+.pom.xml
+----
+<dependencies>
+    ...
+    <dependency>
+        <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+        <artifactId>dss-cades</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+        <artifactId>dss-pades-pdfbox</artifactId>
+    </dependency>
+    <!-- dss-cms implementation shall be added -->
+    <dependency>
+        <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+        <artifactId>dss-cms-object</artifactId>
+    </dependency>
+    ...
+</dependencies>
+----
+
+a|Old `CMSUtils` moved to `CAdESUtils`             a|
+[source,java]
+----
+import eu.europa.esig.dss.cades.CMSUtils;
+----
+                                                                     a|
+[source,java]
+----
+import eu.europa.esig.dss.cades.CAdESUtils;
+----
+
+a|`CAdESSignatureExtension` and related classes             a|
+[source,java]
+----
+import eu.europa.esig.dss.cades.signature.CAdESSignatureExtension;
+import org.bouncycastle.cms.CMSSignedData;
+
+CAdESSignatureExtension cadesExtension = ...
+CMSSignedData cmsSignedData = ...
+cmsSignedData = cadesExtension.extendCMSSignatures(cmsSignedData, signatureParameters);
+----
+                                                                     a|
+Replaced by a new `CMS` object
+[source,java]
+----
+
+import eu.europa.esig.dss.cades.signature.CAdESSignatureExtension;
+import eu.europa.esig.dss.cms.CMS;
+
+CAdESSignatureExtension cadesExtension = ...
+CMS cms = ...
+cms = cadesExtension.extendCMSSignatures(cms, signatureParameters);
+----
+
+a|Min and Max signature extension times             a|
+[source,java]
+----
+import eu.europa.esig.dss.simplereport.SimpleReport;
+import java.util.Date;
+
+SimpleReport simpleReport = reports.getSimpleReport();
+Date extensionPeriodMin = simpleReport.getSignatureExtensionPeriodMin(signatureId);
+Date extensionPeriodMax = simpleReport.getSignatureExtensionPeriodMax(signatureId);
+----
+                                                                     a|[source,java]
+----
+import eu.europa.esig.dss.simplereport.SimpleReport;
+import java.util.Date;
+
+SimpleReport simpleReport = reports.getSimpleReport();
+Date extensionPeriodMin = simpleReport.getExtensionPeriodMin(signatureId);
+Date extensionPeriodMax = simpleReport.getExtensionPeriodMax(signatureId);
+----
+
+a|`ValidationPolicy` package             a|
+[source,java]
+----
+import eu.europa.esig.dss.policy.ValidationPolicy;
+----
+                                                                     a|[source,java]
+----
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
+----
+
+a|`SigningOperation` package             a|
+[source,java]
+----
+import eu.europa.esig.dss.signature.SigningOperation;
+----
+                                                                     a|[source,java]
+----
+import eu.europa.esig.dss.enumerations.SigningOperation;
+----
+
+|===
+
+[cols="2,5,5"]
 .Code changes from version 6.1 to 6.2
 |===
 |Title                               |v6.1                            |v6.2
@@ -418,7 +571,7 @@ boolean result = DSSASN1Utils.isArchiveTimeStampToken(attribute);
 a|
 [source,java]
 ----
-import eu.europa.esig.dss.cades.CMSUtils;
+import eu.europa.esig.dss.cades.CAdESUtils;
 
 List<ASN1ObjectIdentifier> oids = CMSUtils.getTimestampOids();
 boolean result = CMSUtils.isArchiveTimeStampToken(attribute);
@@ -863,19 +1016,19 @@ List<SignatureScope> signatureScopes = advancedSignature.getSignatureScopes();
 
 |CMSSignedDataBuilder refactoring                               a|[source,java]
 ----
-import eu.europa.esig.dss.cades.CMSUtils;
-import eu.europa.esig.dss.cades.signature.CMSSignedDataBuilder;
+import eu.europa.esig.dss.cades.CAdESUtils;
+import eu.europa.esig.dss.cades.signature.CMSBuilder;
 import org.bouncycastle.cms.SignerInfoGeneratorBuilder;
 
-CMSSignedDataBuilder cmsSignedDataBuilder = new CMSSignedDataBuilder(certificateVerifier);
-SignerInfoGeneratorBuilder signerInfoGeneratorBuilder = cmsSignedDataBuilder.getSignerInfoGeneratorBuilder(dcp, parameters, true, contentToSign);
-CMSSignedDataGenerator cmsSignedDataGenerator = cmsSignedDataBuilder.createCMSSignedDataGenerator(parameters, customContentSigner, signerInfoGeneratorBuilder, originalCmsSignedData);
+CMSSignedDataBuilder cmsBuilder = new CMSSignedDataBuilder(certificateVerifier);
+SignerInfoGeneratorBuilder signerInfoGeneratorBuilder = cmsBuilder.getSignerInfoGeneratorBuilder(dcp, parameters, true, contentToSign);
+CMSSignedDataGenerator cmsSignedDataGenerator = cmsBuilder.createCMSSignedDataGenerator(parameters, customContentSigner, signerInfoGeneratorBuilder, originalCmsSignedData);
 CMSTypedData content = CMSUtils.getContentToBeSigned(contentToSign);
 CMSSignedData cmsSignedData = CMSUtils.generateCMSSignedData(cmsSignedDataGenerator, content, encapsulate);
 ----
                                                                 a|[source,java]
 ----
-import eu.europa.esig.dss.spi.x509.CMSSignedDataBuilder;
+import eu.europa.esig.dss.cades.signature.CMSBuilder;
 import org.bouncycastle.cms.SignerInfoGenerator;
 
 SignerInfoGenerator signerInfoGenerator = new CMSSignerInfoGeneratorBuilder().build(contentToSign, parameters, customContentSigner);

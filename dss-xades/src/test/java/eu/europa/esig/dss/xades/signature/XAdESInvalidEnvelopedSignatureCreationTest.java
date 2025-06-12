@@ -79,12 +79,12 @@ class XAdESInvalidEnvelopedSignatureCreationTest extends AbstractXAdESTestSignat
 
         documentToSign = signedDocument;
 
-        Exception exception = assertThrows(IllegalInputException.class, () -> super.sign());
+        Exception exception = assertThrows(IllegalInputException.class, super::sign);
         assertEquals("Unable to create an enveloped signature for another XML signature document!", exception.getMessage());
 
         documentToSign = new InMemoryDocument("Hello World!".getBytes(), "test.txt");
 
-        exception = assertThrows(IllegalInputException.class, () -> super.sign());
+        exception = assertThrows(IllegalInputException.class, super::sign);
         assertEquals("Enveloped signature cannot be created. Reason : the provided document is not XML!", exception.getMessage());
 
         documentToSign = signedDocument;
@@ -103,7 +103,7 @@ class XAdESInvalidEnvelopedSignatureCreationTest extends AbstractXAdESTestSignat
         reference.setTransforms(dssTransformList);
         signatureParameters.setReferences(Arrays.asList(reference));
 
-        exception = assertThrows(IllegalInputException.class, () -> super.sign());
+        exception = assertThrows(IllegalInputException.class, super::sign);
         assertEquals(String.format("Unable to perform the next transform. The %s produced an empty output!", xpathTransform), exception.getMessage());
     }
 

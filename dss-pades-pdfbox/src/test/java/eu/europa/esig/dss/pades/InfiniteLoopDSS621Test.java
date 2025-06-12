@@ -282,7 +282,7 @@ class InfiniteLoopDSS621Test {
 
 	private List<X509Certificate> extractCertificates(SignedData signedData) throws Exception {
 		ASN1Set certificates = signedData.getCertificates();
-		logger.debug("CERTIFICATES (" + certificates.size() + ") : " + certificates);
+		logger.debug(String.format("CERTIFICATES (%s) : %s", certificates.size(), certificates));
 
 		List<X509Certificate> foundCertificates = new ArrayList<>();
 		for (int i = 0; i < certificates.size(); i++) {

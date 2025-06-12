@@ -25,10 +25,10 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.Level;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 
 import java.util.List;
 
@@ -153,34 +153,28 @@ public abstract class Chain<T extends XmlConstraintsConclusion> {
 	/**
 	 * Returns the FAIL level constraint
 	 *
-	 * @return {@link LevelConstraint}
+	 * @return {@link LevelRule}
 	 */
-	protected LevelConstraint getFailLevelConstraint() {
-		LevelConstraint constraint = new LevelConstraint();
-		constraint.setLevel(Level.FAIL);
-		return constraint;
+	protected LevelRule getFailLevelRule() {
+		return ValidationProcessUtils.getLevelRule(Level.FAIL);
 	}
 
 	/**
 	 * Returns the WARN level constraint
 	 *
-	 * @return {@link LevelConstraint}
+	 * @return {@link LevelRule}
 	 */
-	protected LevelConstraint getWarnLevelConstraint() {
-		LevelConstraint constraint = new LevelConstraint();
-		constraint.setLevel(Level.WARN);
-		return constraint;
+	protected LevelRule getWarnLevelRule() {
+		return ValidationProcessUtils.getLevelRule(Level.WARN);
 	}
 
 	/**
 	 * Returns the INFO level constraint
 	 *
-	 * @return {@link LevelConstraint}
+	 * @return {@link LevelRule}
 	 */
-	protected LevelConstraint getInfoLevelConstraint() {
-		LevelConstraint constraint = new LevelConstraint();
-		constraint.setLevel(Level.INFORM);
-		return constraint;
+	protected LevelRule getInfoLevelRule() {
+		return ValidationProcessUtils.getLevelRule(Level.INFORM);
 	}
 
 	/**

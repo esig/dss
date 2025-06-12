@@ -28,7 +28,8 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOID;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
 import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.MultiValuesConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificateSemanticsIdentifierCheck;
@@ -60,7 +61,7 @@ class CertificateSemanticsIdentifiersCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateSemanticsIdentifierCheck csic = new CertificateSemanticsIdentifierCheck(
-                i18nProvider, result, new CertificateWrapper(xc), constraint);
+                i18nProvider, result, new CertificateWrapper(xc), new MultiValuesConstraintWrapper(constraint));
         csic.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -89,7 +90,7 @@ class CertificateSemanticsIdentifiersCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateSemanticsIdentifierCheck csic = new CertificateSemanticsIdentifierCheck(
-                i18nProvider, result, new CertificateWrapper(xc), constraint);
+                i18nProvider, result, new CertificateWrapper(xc), new MultiValuesConstraintWrapper(constraint));
         csic.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -117,7 +118,7 @@ class CertificateSemanticsIdentifiersCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateSemanticsIdentifierCheck csic = new CertificateSemanticsIdentifierCheck(
-                i18nProvider, result, new CertificateWrapper(xc), constraint);
+                i18nProvider, result, new CertificateWrapper(xc), new MultiValuesConstraintWrapper(constraint));
         csic.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -145,7 +146,7 @@ class CertificateSemanticsIdentifiersCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateSemanticsIdentifierCheck csic = new CertificateSemanticsIdentifierCheck(
-                i18nProvider, result, new CertificateWrapper(xc), constraint);
+                i18nProvider, result, new CertificateWrapper(xc), new MultiValuesConstraintWrapper(constraint));
         csic.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -167,7 +168,7 @@ class CertificateSemanticsIdentifiersCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateSemanticsIdentifierCheck csic = new CertificateSemanticsIdentifierCheck(
-                i18nProvider, result, new CertificateWrapper(xc), constraint);
+                i18nProvider, result, new CertificateWrapper(xc), new MultiValuesConstraintWrapper(constraint));
         csic.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -185,7 +186,7 @@ class CertificateSemanticsIdentifiersCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificateSemanticsIdentifierCheck csic = new CertificateSemanticsIdentifierCheck(
-                i18nProvider, result, new CertificateWrapper(xc), constraint);
+                i18nProvider, result, new CertificateWrapper(xc), new MultiValuesConstraintWrapper(constraint));
         csic.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

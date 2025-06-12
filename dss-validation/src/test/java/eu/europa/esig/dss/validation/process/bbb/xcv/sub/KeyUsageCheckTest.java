@@ -29,8 +29,9 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlKeyUsages;
 import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.KeyUsageBit;
-import eu.europa.esig.dss.policy.SubContext;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.enumerations.SubContext;
+import eu.europa.esig.dss.policy.MultiValuesConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.KeyUsageCheck;
@@ -56,7 +57,7 @@ class KeyUsageCheckTest extends AbstractTestCheck {
 		xc.getCertificateExtensions().add(keyUsages);
 
 		XmlSubXCV result = new XmlSubXCV();
-		KeyUsageCheck kuc = new KeyUsageCheck(i18nProvider, result, new CertificateWrapper(xc), Context.REVOCATION, SubContext.SIGNING_CERT, constraint);
+		KeyUsageCheck kuc = new KeyUsageCheck(i18nProvider, result, new CertificateWrapper(xc), Context.REVOCATION, SubContext.SIGNING_CERT, new MultiValuesConstraintWrapper(constraint));
 		kuc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -78,7 +79,7 @@ class KeyUsageCheckTest extends AbstractTestCheck {
 		xc.getCertificateExtensions().add(keyUsages);
 
 		XmlSubXCV result = new XmlSubXCV();
-		KeyUsageCheck kuc = new KeyUsageCheck(i18nProvider, result, new CertificateWrapper(xc), Context.REVOCATION, SubContext.SIGNING_CERT, constraint);
+		KeyUsageCheck kuc = new KeyUsageCheck(i18nProvider, result, new CertificateWrapper(xc), Context.REVOCATION, SubContext.SIGNING_CERT, new MultiValuesConstraintWrapper(constraint));
 		kuc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -102,7 +103,7 @@ class KeyUsageCheckTest extends AbstractTestCheck {
 		constraint.getId().add(keyUsages.getKeyUsageBit().get(0).getValue());
 
 		XmlSubXCV result = new XmlSubXCV();
-		KeyUsageCheck kuc = new KeyUsageCheck(i18nProvider, result, new CertificateWrapper(xc), Context.SIGNATURE, SubContext.SIGNING_CERT, constraint);
+		KeyUsageCheck kuc = new KeyUsageCheck(i18nProvider, result, new CertificateWrapper(xc), Context.SIGNATURE, SubContext.SIGNING_CERT, new MultiValuesConstraintWrapper(constraint));
 		kuc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

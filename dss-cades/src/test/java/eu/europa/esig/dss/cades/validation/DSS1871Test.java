@@ -22,13 +22,13 @@ package eu.europa.esig.dss.cades.validation;
 
 
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 
 class DSS1871Test extends AbstractCAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {
-		return new FileDocument("src/test/resources/validation/wrongContentHints.p7m");
+		return new InMemoryDocument(DSS1871Test.class.getResourceAsStream("/validation/wrongContentHints.p7m"));
 	}
 
 }

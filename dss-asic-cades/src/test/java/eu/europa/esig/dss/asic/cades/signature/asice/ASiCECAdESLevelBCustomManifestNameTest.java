@@ -69,7 +69,7 @@ class ASiCECAdESLevelBCustomManifestNameTest extends AbstractASiCEWithCAdESMulti
         filenameFactory.setManifestFilename("manifest.xml");
         getService().setAsicFilenameFactory(filenameFactory);
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> super.sign());
+        Exception exception = assertThrows(IllegalArgumentException.class, super::sign);
         assertEquals("A manifest file within ASiC with CAdES container shall match the template " +
                         "'META-INF/ASiCManifest*.xml'!", exception.getMessage());
 

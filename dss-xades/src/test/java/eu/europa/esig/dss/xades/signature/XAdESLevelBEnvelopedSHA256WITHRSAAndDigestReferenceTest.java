@@ -79,6 +79,7 @@ class XAdESLevelBEnvelopedSHA256WITHRSAAndDigestReferenceTest extends AbstractXA
 
 	@Override
 	public void signAndVerify() {
+		// skip global test
 	}
 	
 	@Override

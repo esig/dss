@@ -20,32 +20,30 @@
  */
 package eu.europa.esig.dss.cades.validation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.io.File;
-
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 class CAdESNoKeyInfoCertProvidedTest extends AbstractCAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {
-		return new FileDocument("src/test/resources/validation/no-key-info-cert.pkcs7");
+		return new InMemoryDocument(CAdESNoKeyInfoCertProvidedTest.class.getResourceAsStream("/validation/no-key-info-cert.pkcs7"));
 	}
 	
 	@Override
 	protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
 		SignedDocumentValidator validator = super.getValidator(signedDocument);
 		CertificateSource signingCertificateSource = new CommonCertificateSource();
-		signingCertificateSource.addCertificate(DSSUtils.loadCertificate(new File("src/test/resources/validation/signCert.cer")));
+		signingCertificateSource.addCertificate(DSSUtils.loadCertificate(CAdESNoKeyInfoCertProvidedTest.class.getResourceAsStream("/validation/signCert.cer")));
 		validator.setSigningCertificateSource(signingCertificateSource );
 		return validator;
 	}

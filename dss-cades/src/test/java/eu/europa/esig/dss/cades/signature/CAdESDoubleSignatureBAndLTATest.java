@@ -20,14 +20,6 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.Date;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -38,8 +30,16 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import org.junit.jupiter.api.Test;
+
+import java.util.Date;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CAdESDoubleSignatureBAndLTATest extends PKIFactoryAccess {
 
@@ -110,9 +110,18 @@ class CAdESDoubleSignatureBAndLTATest extends PKIFactoryAccess {
 		SignatureWrapper signatureTwo = diagnosticData.getSignatures().get(1);
 		assertNotEquals(signatureOne.getId(), signatureTwo.getId());
 		assertEquals(firstSignatureId, signatureOne.getId());
-		
-		assertEquals(0, signatureOne.getTimestampList().size());
-		assertEquals(2, signatureTwo.getTimestampList().size());
+
+		boolean bLevelSigFound = false;
+		boolean aLevelSigFound = false;
+		for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+			if (Utils.collectionSize(signatureWrapper.getTimestampList()) == 0) {
+				bLevelSigFound = true;
+			} else if (Utils.collectionSize(signatureWrapper.getTimestampList()) == 2) {
+				aLevelSigFound = true;
+			}
+		}
+		assertTrue(bLevelSigFound);
+		assertTrue(aLevelSigFound);
 	}
 
 	@Override

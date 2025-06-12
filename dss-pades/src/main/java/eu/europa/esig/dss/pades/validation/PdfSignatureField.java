@@ -25,14 +25,22 @@ import eu.europa.esig.dss.pdf.PAdESConstants;
 import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.SigFieldPermissions;
 
+import java.io.Serializable;
+import java.util.Objects;
+
 /**
  * Object of this interface represents a PDF Signature field
  *
  */
-public class PdfSignatureField {
+public class PdfSignatureField implements Serializable {
 
-    /** Represents an extracted /Lock dictionary (optional) */
-    private final PdfDict sigFieldDict;
+    private static final long serialVersionUID = 1391102373661984177L;
+
+    /** Name of the  signature field */
+    private final String fieldName;
+
+    /** The lock dictionary */
+    private final SigFieldPermissions lockDictionary;
 
     /**
      * Default constructor
@@ -40,7 +48,21 @@ public class PdfSignatureField {
      * @param sigFieldDict {@link PdfDict}
      */
     public PdfSignatureField(final PdfDict sigFieldDict) {
-        this.sigFieldDict = sigFieldDict;
+        Objects.requireNonNull(sigFieldDict, "sigFieldDict cannot be null!");
+        this.fieldName = extractFieldName(sigFieldDict);
+        this.lockDictionary = extractLockDictionary(sigFieldDict);
+    }
+
+    private static String extractFieldName(PdfDict sigFieldDict) {
+        return sigFieldDict.getStringValue(PAdESConstants.FIELD_NAME_NAME);
+    }
+
+    private static SigFieldPermissions extractLockDictionary(PdfDict sigFieldDict) {
+        PdfDict lock = sigFieldDict.getAsDict(PAdESConstants.LOCK_NAME);
+        if (lock != null) {
+            return PAdESUtils.extractPermissionsDictionary(lock);
+        }
+        return null;
     }
 
     /**
@@ -49,7 +71,7 @@ public class PdfSignatureField {
      * @return {@link String} name
      */
     public String getFieldName() {
-        return sigFieldDict.getStringValue(PAdESConstants.FIELD_NAME_NAME);
+        return fieldName;
     }
 
     /**
@@ -58,11 +80,7 @@ public class PdfSignatureField {
      * @return {@link SigFieldPermissions}
      */
     public SigFieldPermissions getLockDictionary() {
-        PdfDict lock = sigFieldDict.getAsDict(PAdESConstants.LOCK_NAME);
-        if (lock != null) {
-            return PAdESUtils.extractPermissionsDictionary(lock);
-        }
-        return null;
+        return lockDictionary;
     }
 
     @Override

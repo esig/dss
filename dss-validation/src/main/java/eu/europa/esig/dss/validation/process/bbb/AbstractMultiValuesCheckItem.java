@@ -22,7 +22,7 @@ package eu.europa.esig.dss.validation.process.bbb;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.i18n.I18nProvider;
-import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
+import eu.europa.esig.dss.model.policy.MultiValuesRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
@@ -36,16 +36,16 @@ import java.util.List;
 public abstract class AbstractMultiValuesCheckItem<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
 	/** The constraint value */
-	private final MultiValuesConstraint constraint;
+	private final MultiValuesRule constraint;
 
 	/**
 	 * Default constructor
 	 *
 	 * @param i18nProvider {@link I18nProvider}
 	 * @param result the result
-	 * @param constraint {@link MultiValuesConstraint}
+	 * @param constraint {@link MultiValuesRule}
 	 */
-	protected AbstractMultiValuesCheckItem(I18nProvider i18nProvider, T result, MultiValuesConstraint constraint) {
+	protected AbstractMultiValuesCheckItem(I18nProvider i18nProvider, T result, MultiValuesRule constraint) {
 		super(i18nProvider, result, constraint);
 		this.constraint = constraint;
 	}
@@ -57,7 +57,7 @@ public abstract class AbstractMultiValuesCheckItem<T extends XmlConstraintsConcl
 	 * @return TRUE if the value is allowed by the constraint, FALSE otherwise
 	 */
 	protected boolean processValueCheck(String value) {
-		return ValidationProcessUtils.processValueCheck(value, constraint.getId());
+		return ValidationProcessUtils.processValueCheck(value, constraint.getValues());
 	}
 
 	/**
@@ -67,7 +67,7 @@ public abstract class AbstractMultiValuesCheckItem<T extends XmlConstraintsConcl
 	 * @return TRUE if the values are allowed by the constraint, FALSE otherwise
 	 */
 	protected boolean processValuesCheck(List<String> values) {
-		return ValidationProcessUtils.processValuesCheck(values, constraint.getId());
+		return ValidationProcessUtils.processValuesCheck(values, constraint.getValues());
 	}
 
 }

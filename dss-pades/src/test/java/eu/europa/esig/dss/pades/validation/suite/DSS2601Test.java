@@ -42,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class DSS2601Test extends AbstractPAdESTestValidation {
+class DSS2601Test extends AbstractPAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

@@ -23,10 +23,10 @@ package eu.europa.esig.dss.validation.executor.signature;
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.enumerations.ValidationLevel;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSimpleReport;
 import eu.europa.esig.dss.validation.executor.AbstractProcessExecutor;
 import eu.europa.esig.dss.validation.executor.DocumentProcessExecutor;
-import eu.europa.esig.dss.enumerations.ValidationLevel;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 

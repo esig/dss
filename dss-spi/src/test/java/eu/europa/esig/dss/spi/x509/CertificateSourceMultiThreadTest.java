@@ -38,9 +38,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 class CertificateSourceMultiThreadTest {
 
-	public CertificateSourceMultiThreadTest() {
-	}
-
 	@RepeatedTest(5)
 	void testMultiThreads() throws IOException {
 

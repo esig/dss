@@ -26,8 +26,8 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
-import eu.europa.esig.dss.policy.jaxb.ValueConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
+import eu.europa.esig.dss.model.policy.ValueRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
 /**
@@ -45,10 +45,10 @@ public class TLWellSignedCheck extends ChainItem<XmlTLAnalysis> {
 	 * @param i18nProvider {@link I18nProvider}
 	 * @param result {@link XmlTLAnalysis}
 	 * @param currentTl {@link XmlTrustedList}
-	 * @param constraint {@link ValueConstraint}
+	 * @param constraint {@link ValueRule}
 	 */
 	public TLWellSignedCheck(I18nProvider i18nProvider, XmlTLAnalysis result, XmlTrustedList currentTl,
-							 LevelConstraint constraint) {
+							 LevelRule constraint) {
 		super(i18nProvider, result, constraint);
 		this.currentTL = currentTl;
 	}

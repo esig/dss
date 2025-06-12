@@ -90,7 +90,7 @@ class JAdESWithASN1PolicyWithDigPSpTest extends AbstractJAdESTestSignature {
 
     @Override
     protected DSSDocument sign() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> super.sign());
+        Exception exception = assertThrows(IllegalArgumentException.class, super::sign);
         assertEquals("SpDocSpecification shall be defined when DigestAsInTechnicalSpecification is set to true!", exception.getMessage());
 
         Policy signaturePolicy = signatureParameters.bLevel().getSignaturePolicy();

@@ -75,7 +75,7 @@ class ASiCSWithXAdESLevelBContainerMergerDifferentMultipleDocumentsTest extends 
     @Test
     @Override
     public void createTwoContainersAndMerge() throws Exception {
-        Exception exception = assertThrows(UnsupportedOperationException.class, () -> super.createTwoContainersAndMerge());
+        Exception exception = assertThrows(UnsupportedOperationException.class, super::createTwoContainersAndMerge);
         assertEquals("Unable to merge containers. " +
                 "Containers contain different documents under the same name : package.zip!", exception.getMessage());
     }

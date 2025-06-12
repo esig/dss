@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class PAdESExtensionLTToLTAWithError500TimestampTest extends AbstractPAdESTestExtension {
+class PAdESExtensionLTToLTAWithError500TimestampTest extends AbstractPAdESTestExtension {
 
 	@Override
 	protected TSPSource getUsedTSPSourceAtExtensionTime() {
@@ -47,7 +47,7 @@ public class PAdESExtensionLTToLTAWithError500TimestampTest extends AbstractPAdE
 	@Override
 	@Test
 	public void extendAndVerify() throws Exception {
-		assertThrows(DSSException.class, () -> super.extendAndVerify());
+		assertThrows(DSSException.class, super::extendAndVerify);
 	}
 
 }

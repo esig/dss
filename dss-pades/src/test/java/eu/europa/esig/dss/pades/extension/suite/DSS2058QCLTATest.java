@@ -31,7 +31,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.extension.suite.dss2058.AbstractDSS2058;
 
 @Tag("slow")
-public class DSS2058QCLTATest extends AbstractDSS2058 {
+class DSS2058QCLTATest extends AbstractDSS2058 {
 
 	@Override
 	protected DSSDocument getDocumentToExtend() {

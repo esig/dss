@@ -27,7 +27,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
 import java.util.List;
@@ -50,10 +50,10 @@ public class CounterSignatureCheck extends ChainItem<XmlSAV> {
 	 * @param result {@link XmlSAV}
 	 * @param diagnosticData {@link DiagnosticData}
 	 * @param signature {@link SignatureWrapper}
-	 * @param constraint {@link LevelConstraint}
+	 * @param constraint {@link LevelRule}
 	 */
 	public CounterSignatureCheck(I18nProvider i18nProvider, XmlSAV result, DiagnosticData diagnosticData,
-								 SignatureWrapper signature, LevelConstraint constraint) {
+								 SignatureWrapper signature, LevelRule constraint) {
 		super(i18nProvider, result, constraint);
 		this.diagnosticData = diagnosticData;
 		this.signature = signature;

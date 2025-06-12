@@ -33,13 +33,13 @@ import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.jaxb.object.Message;
-import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.BasicSignatureConstraints;
-import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.SignatureConstraints;
 import eu.europa.esig.dss.simplereport.SimpleReport;
@@ -204,7 +204,7 @@ class DSS1686ExecutorTest extends AbstractProcessExecutorTest {
         XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/DSS-1686/dss-1686.xml"));
         assertNotNull(diagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         SignatureConstraints signatureConstraints = validationPolicy.getSignatureConstraints();
         BasicSignatureConstraints basicSignatureConstraints = signatureConstraints.getBasicSignatureConstraints();
 
@@ -313,7 +313,7 @@ class DSS1686ExecutorTest extends AbstractProcessExecutorTest {
                 .unmarshall(new File("src/test/resources/diag-data/DSS-1686/dss-1686-broken-signature-timestamp.xml"));
         assertNotNull(diagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         BasicSignatureConstraints timestampBasicSignatureConstraints = validationPolicy.getTimestampConstraints()
                 .getBasicSignatureConstraints();
 
@@ -510,7 +510,7 @@ class DSS1686ExecutorTest extends AbstractProcessExecutorTest {
                 new File("src/test/resources/diag-data/DSS-1686/dss-1686-broken-signature-and-archival-timestamp.xml"));
         assertNotNull(diagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         BasicSignatureConstraints timestampBasicConstraints = validationPolicy.getTimestampConstraints().getBasicSignatureConstraints();
 
         LevelConstraint levelConstraint = new LevelConstraint();

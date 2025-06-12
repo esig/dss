@@ -20,13 +20,17 @@
  */
 package eu.europa.esig.dss.cookbook.example.snippets;
 
+import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SubContext;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -35,6 +39,7 @@ import eu.europa.esig.dss.token.JKSSignatureToken;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
+import eu.europa.esig.dss.validation.policy.ValidationPolicyLoader;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
@@ -53,7 +58,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 class Snippets {
 
 	@SuppressWarnings({ "null" })
-	public void demo() {
+	void demo() {
 
 		CertificateToken certificateToken = new CertificateToken(null);
 		List<CertificateToken> certificateChain = new LinkedList<>();
@@ -170,16 +175,35 @@ class Snippets {
 		validator.setLocale(Locale.FRENCH); // for French language
 		// end::i18n[]
 
+		ValidationPolicy validationPolicy = ValidationPolicyLoader
+				.fromValidationPolicy(new File("/path/to/validation/policy.xml")
+				).create();
+
 		// tag::validationPolicy[]
+		// import eu.europa.esig.dss.model.policy.ValidationPolicy;
 		// import eu.europa.esig.dss.validation.reports.Reports;
 		// import java.io.File;
 
-		Reports reports = validator.validateDocument(new File("/path/to/validation/policy.xml"));
+		Reports reports = validator.validateDocument(validationPolicy);
 		// end::validationPolicy[]
+
+		// tag::validationPolicyFile[]
+		// import eu.europa.esig.dss.validation.reports.Reports;
+		// import java.io.File;
+
+		reports = validator.validateDocument(new File("/path/to/validation/policy.xml"));
+		// end::validationPolicyFile[]
+
+		// tag::validationPolicyAndCryptoSuite[]
+		// import eu.europa.esig.dss.validation.reports.Reports;
+		// import java.io.File;
+
+		reports = validator.validateDocument(new File("/path/to/validation/policy.xml"), new File("/path/to/cryptographic/suite.xml"));
+		// end::validationPolicyAndCryptoSuite[]
 
 	}
 
-	public void demo2() {
+	void demo2() {
 		// tag::select-pdf-signature-field[]
 		// import eu.europa.esig.dss.pades.SignatureFieldParameters;
 
@@ -188,7 +212,7 @@ class Snippets {
 		// end::select-pdf-signature-field[]
 	}
 
-	public void threeAtomicSteps() {
+	void threeAtomicSteps() {
 		DSSDocument toSignDocument = new InMemoryDocument("Hello world".getBytes());
 		XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
 		DigestAlgorithm digestAlgorithm = signatureParameters.getDigestAlgorithm();
@@ -217,7 +241,7 @@ class Snippets {
 		// end::threeStepsSign[]
 	}
 
-	public void fourAtomicSteps() {
+	void fourAtomicSteps() {
 		DSSDocument toSignDocument = new InMemoryDocument("Hello world".getBytes());
 		XAdESSignatureParameters signatureParameters = new XAdESSignatureParameters();
 		DigestAlgorithm digestAlgorithm = signatureParameters.getDigestAlgorithm();
@@ -252,7 +276,7 @@ class Snippets {
 	}
 
 	@Test
-	public void hashComputation() {
+	void hashComputation() {
 		// tag::hashComputation[]
 		// import eu.europa.esig.dss.model.InMemoryDocument;
 		// import eu.europa.esig.dss.model.DSSDocument;
@@ -270,6 +294,98 @@ class Snippets {
 		// end::hashComputation[]
 
 		assertArrayEquals(sha256HashOfDocument, sha256HashOfBinaries);
+	}
+
+	void validationPolicyLoaderDefaultSnippet() {
+		// tag::validationPolicyLoaderDefault[]
+		// import eu.europa.esig.dss.model.policy.ValidationPolicy;
+		// import eu.europa.esig.dss.validation.policy.ValidationPolicyLoader;
+
+		ValidationPolicy validationPolicy = ValidationPolicyLoader.fromDefaultValidationPolicy().create();
+
+		// end::validationPolicyLoaderDefault[]
+	}
+
+	void validationPolicyLoaderSimpleSnippet() {
+		// tag::validationPolicyLoaderFromFile[]
+		// import eu.europa.esig.dss.model.policy.ValidationPolicy;
+		// import eu.europa.esig.dss.validation.policy.ValidationPolicyLoader;
+		// import java.io.File;
+
+		ValidationPolicy validationPolicy = ValidationPolicyLoader.fromValidationPolicy(
+				new File("/path/to/validation/policy")).create();
+
+		// end::validationPolicyLoaderFromFile[]
+
+		DSSDocument document = new InMemoryDocument("Hello World!".getBytes());
+
+		// tag::validateWithValidationPolicy[]
+		// import eu.europa.esig.dss.validation.reports.Reports;
+		// import eu.europa.esig.dss.validation.SignedDocumentValidator;
+
+		SignedDocumentValidator documentValidator = SignedDocumentValidator.fromDocument(document);
+		// ... configure
+		Reports reports = documentValidator.validateDocument(validationPolicy);
+
+		// end::validateWithValidationPolicy[]
+	}
+
+	void validationPolicyLoaderWithCryptoSuiteSnippet() {
+		// tag::validationPolicyLoaderWithCryptoSuite[]
+		// import eu.europa.esig.dss.model.policy.ValidationPolicy;
+		// import eu.europa.esig.dss.validation.policy.ValidationPolicyLoader;
+		// import java.io.File;
+
+		ValidationPolicy validationPolicy = ValidationPolicyLoader
+				.fromValidationPolicy(new File("/path/to/validation/policy"))
+				.withCryptographicSuite(new File("/path/to/cryptographic/suite"))
+				.create();
+
+		// end::validationPolicyLoaderWithCryptoSuite[]
+	}
+
+	void validationPolicyLoaderWithCryptoSuiteForSignCertSnippet() {
+		// tag::validationPolicyLoaderWithCryptoSuiteForSignCert[]
+		// import eu.europa.esig.dss.model.policy.ValidationPolicy;
+		// import eu.europa.esig.dss.validation.policy.ValidationPolicyLoader;
+		// import java.io.File;
+
+		ValidationPolicy validationPolicy = ValidationPolicyLoader
+				.fromValidationPolicy(new File("/path/to/validation/policy"))
+				.withCryptographicSuiteForContext(new File("/path/to/cryptographic/suite"), Context.SIGNATURE, SubContext.SIGNING_CERT)
+				.create();
+
+		// end::validationPolicyLoaderWithCryptoSuiteForSignCert[]
+	}
+
+	void validationPolicyLoaderWithCryptoSuiteWithLevelSnippet() {
+		// tag::validationPolicyLoaderWithCryptoSuiteWithLevel[]
+		// import eu.europa.esig.dss.enumerations.Level;
+		// import eu.europa.esig.dss.model.policy.ValidationPolicy;
+		// import eu.europa.esig.dss.validation.policy.ValidationPolicyLoader;
+		// import java.io.File;
+
+		ValidationPolicy validationPolicy = ValidationPolicyLoader
+				.fromValidationPolicy(new File("/path/to/validation/policy"))
+				// provide a cryptographic suite to be configured
+				.withCryptographicSuite(new File("/path/to/cryptographic/suite"))
+				// With a global level set for the current cryptographic suite
+				.andLevel(Level.WARN)
+				// and/or level for validation of digest algorithms acceptance
+				.andAcceptableDigestAlgorithmsLevel(Level.WARN)
+				// and/or level for validation of encryption algorithms acceptance
+				.andAcceptableEncryptionAlgorithmsLevel(Level.WARN)
+				// and/or level for validation of key sizes of encryption algorithms acceptance
+				.andAcceptableEncryptionAlgorithmsMiniKeySizeLevel(Level.WARN)
+				// and/or level for validation of cryptographic algorithms against their expiration dates
+				.andAlgorithmsExpirationDateLevel(Level.WARN)
+				// and/or level for validation of cryptographic algorithms against their expiration dates
+				// after the validation policy update time
+				.andAlgorithmsExpirationTimeAfterPolicyUpdateLevel(Level.IGNORE)
+				// create final validation policy
+				.create();
+
+		// end::validationPolicyLoaderWithCryptoSuiteWithLevel[]
 	}
 
 }

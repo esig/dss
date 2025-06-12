@@ -26,7 +26,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
 
 import java.util.List;
@@ -38,7 +38,7 @@ class CAdESWithDoubleSigningTimeValidationTest extends AbstractCAdESTestValidati
 
     @Override
     protected DSSDocument getSignedDocument() {
-        return new FileDocument("src/test/resources/validation/cades-double-signing-time.p7m");
+        return new InMemoryDocument(CAdESWithDoubleSigningTimeValidationTest.class.getResourceAsStream("/validation/cades-double-signing-time.p7m"));
     }
 
     @Override

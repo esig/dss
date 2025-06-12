@@ -30,7 +30,8 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificatePolicy;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcSSCD;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
 import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificatePolicySupportedByQSCDIdsCheck;
@@ -57,7 +58,7 @@ class CertificatePolicySupportedByQSCDIdsCheckTest extends AbstractTestCheck {
 
 		XmlSubXCV result = new XmlSubXCV();
 		CertificatePolicySupportedByQSCDIdsCheck csbsc = new CertificatePolicySupportedByQSCDIdsCheck(
-				i18nProvider, result, new CertificateWrapper(xc), constraint);
+				i18nProvider, result, new CertificateWrapper(xc), new LevelConstraintWrapper(constraint));
 		csbsc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -81,7 +82,7 @@ class CertificatePolicySupportedByQSCDIdsCheckTest extends AbstractTestCheck {
 
 		XmlSubXCV result = new XmlSubXCV();
 		CertificatePolicySupportedByQSCDIdsCheck csbsc = new CertificatePolicySupportedByQSCDIdsCheck(
-				i18nProvider, result, new CertificateWrapper(xc), constraint);
+				i18nProvider, result, new CertificateWrapper(xc), new LevelConstraintWrapper(constraint));
 		csbsc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -104,7 +105,7 @@ class CertificatePolicySupportedByQSCDIdsCheckTest extends AbstractTestCheck {
 
 		XmlSubXCV result = new XmlSubXCV();
 		CertificatePolicySupportedByQSCDIdsCheck csbsc = new CertificatePolicySupportedByQSCDIdsCheck(
-				i18nProvider, result, new CertificateWrapper(xc), constraint);
+				i18nProvider, result, new CertificateWrapper(xc), new LevelConstraintWrapper(constraint));
 		csbsc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

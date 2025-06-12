@@ -36,7 +36,7 @@ import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 
-public class PAdESExtensionLTAToLTAWithDifferentTSATest extends AbstractPAdESTestExtension {
+class PAdESExtensionLTAToLTAWithDifferentTSATest extends AbstractPAdESTestExtension {
 
 	@Override
 	protected SignatureLevel getOriginalSignatureLevel() {

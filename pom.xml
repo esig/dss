@@ -5,7 +5,7 @@
 
 	<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 	<artifactId>sd-dss</artifactId>
-	<version>6.2</version>
+	<version>6.3.RC1</version>
 	<packaging>pom</packaging>
 
 	<name>Digital Signature Services</name>
@@ -43,17 +43,18 @@
 		<project.encoding>UTF-8</project.encoding>
 		<module-name>jpms_dss</module-name>
 
-		<slf4j.version>2.0.16</slf4j.version>
+		<slf4j.version>2.0.17</slf4j.version>
 		<logback-classic.version>1.3.15</logback-classic.version> <!-- Version 1.4+ supports only Java 11+ -->
 		<commons-logging.version>1.3.4</commons-logging.version>  <!-- Force version to resolve conflict between dependencies -->
 
-		<bouncycastle.version>1.80</bouncycastle.version>
-		<xmlsec.version>3.0.5</xmlsec.version>
+		<bouncycastle.version>1.81</bouncycastle.version>
+		<xmlsec.version>3.0.6</xmlsec.version>
 		<jose4j.version>0.9.6</jose4j.version>
-		<pdfbox.version>3.0.4</pdfbox.version>
+		<pdfbox.version>3.0.5</pdfbox.version>
 		<openpdf.version>1.3.43</openpdf.version>
-		<verapdf.version>1.26.5</verapdf.version>
-		<httpclient5.version>5.4.2</httpclient5.version>
+		<verapdf.version>1.28.1</verapdf.version>
+		<httpclient5.version>5.5</httpclient5.version>
+		<json-sKema.version>0.23.0</json-sKema.version>
 
 		<jakarta.xml.bind-api.version>3.0.1</jakarta.xml.bind-api.version> <!-- Version 4 requires JDK 11+ -->
 		<jakarta.activation-api.version>2.1.3</jakarta.activation-api.version>
@@ -63,13 +64,14 @@
 		<jakarta.ws.rs-api.version>3.1.0</jakarta.ws.rs-api.version>
 		<jakarta.xml.ws-api.version>3.0.1</jakarta.xml.ws-api.version>
 
-		<junit.version>5.11.4</junit.version>
+		<!-- Test use -->
+		<junit.version>5.13.0</junit.version>
 
-		<awaitility.version>4.2.2</awaitility.version>
-		<mockito.version>5.15.2</mockito.version> <!-- Test use -->
-		<h2database.version>2.3.232</h2database.version> <!-- Test use -->
-		<jackson.version>2.18.2</jackson.version>
-		<fop-core.version>2.10</fop-core.version>
+		<awaitility.version>4.3.0</awaitility.version>
+		<mockito.version>5.18.0</mockito.version>
+		<h2database.version>2.3.232</h2database.version>
+		<jackson.version>2.19.0</jackson.version>
+		<fop-core.version>2.11</fop-core.version>
 
 		<sonar.java.source>1.8</sonar.java.source>
 		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
@@ -93,6 +95,7 @@
 		<module>dss-enumerations</module>
 		<module>dss-alert</module>
 		<module>dss-xml-common</module>
+		<module>dss-json-common</module>
 		<module>dss-jaxb-common</module>
 		<module>dss-jaxb-parsers</module>
 		<module>specs-xmldsig</module>
@@ -105,6 +108,8 @@
 		<module>specs-jws</module>
 		<module>specs-jades</module>
 		<module>dss-policy-jaxb</module>
+		<module>dss-policy-crypto-xml</module>
+		<module>dss-policy-crypto-json</module>
 		<module>dss-diagnostic-jaxb</module>
 		<module>dss-detailed-report-jaxb</module>
 		<module>dss-simple-report-jaxb</module>
@@ -124,6 +129,9 @@
 		<module>dss-pki-factory</module>
 		<module>dss-pki-factory-jaxb</module>
 		<module>dss-document</module>
+		<module>dss-cms</module>
+		<module>dss-cms-object</module>
+		<module>dss-cms-stream</module>
 		<module>dss-validation</module>
 		<module>dss-test</module>
 		<module>dss-xades</module>
@@ -343,20 +351,18 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<groupId>org.sonatype.plugins</groupId>
-				<artifactId>nexus-staging-maven-plugin</artifactId>
-				<version>1.7.0</version>
+				<groupId>org.sonatype.central</groupId>
+				<artifactId>central-publishing-maven-plugin</artifactId>
+				<version>0.7.0</version>
 				<extensions>true</extensions>
 				<configuration>
-					<serverId>ossrh</serverId>
-					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-					<autoReleaseAfterClose>false</autoReleaseAfterClose>
+					<publishingServerId>central</publishingServerId>
 				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.12</version>
+				<version>0.8.13</version>
 				<executions>
 					<execution>
 						<id>prepare-agent</id>
@@ -373,7 +379,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
-					<version>3.13.0</version>
+					<version>3.14.0</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -383,7 +389,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
-					<version>3.5.2</version>
+					<version>3.5.3</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -425,12 +431,12 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-install-plugin</artifactId>
-					<version>3.1.3</version>
+					<version>3.1.4</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-project-info-reports-plugin</artifactId>
-					<version>3.8.0</version>
+					<version>3.9.0</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -450,7 +456,7 @@
 		<url>https://ec.europa.eu/digital-building-blocks/code/scm/esig/dss.git</url>
 		<connection>scm:git:https://ec.europa.eu/digital-building-blocks/code/scm/esig/dss.git</connection>
 		<developerConnection>scm:git:https://ec.europa.eu/digital-building-blocks/code/scm/esig/dss.git</developerConnection>
-		<tag>6.2</tag>
+		<tag>6.3.RC1</tag>
 	</scm>
 
 	<dependencyManagement>
@@ -518,6 +524,11 @@
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-json-common</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-crl-parser</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -571,6 +582,27 @@
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-cades</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-cades</artifactId>
+				<type>test-jar</type>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-cms</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-cms-object</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-cms-stream</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -844,6 +876,16 @@
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-policy-crypto-xml</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-policy-crypto-json</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-detailed-report-jaxb</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -1013,6 +1055,13 @@
 				<scope>runtime</scope>
 			</dependency>
 
+			<!-- JSON -->
+			<dependency>
+				<groupId>com.github.erosb</groupId>
+				<artifactId>json-sKema</artifactId>
+				<version>${json-sKema.version}</version>
+			</dependency>
+
 			<!-- REST/SOAP API -->
 			<dependency>
 				<groupId>jakarta.ws.rs</groupId>
@@ -1100,13 +1149,32 @@
 			</properties>
 		</profile>
 		<profile>
+			<!-- Execute tests on large files of 8GB size -->
+			<id>large-files-tests</id>
+			<properties>
+				<exclude.tag.tests>nothing-to-exclude</exclude.tag.tests>
+				<large.file.size.mb>8096</large.file.size.mb>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<configuration>
+							<argLine>-Dlarge.file.size.mb=${large.file.size.mb}</argLine>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
 			<id>owasp</id>
 			<build>
 				<plugins>
 					<plugin>
 						<groupId>org.owasp</groupId>
 						<artifactId>dependency-check-maven</artifactId>
-						<version>12.1.0</version>
+						<version>12.1.1</version>
 						<configuration>
 							<failBuildOnCVSS>8</failBuildOnCVSS>
 						</configuration>
@@ -1128,7 +1196,7 @@
 					<plugin>
 						<groupId>com.diffplug.spotless</groupId>
 						<artifactId>spotless-maven-plugin</artifactId>
-						<version>2.44.2</version>
+						<version>2.44.5</version>
 						<configuration>
 							<java>
 								<licenseHeader>

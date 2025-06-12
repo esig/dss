@@ -22,7 +22,7 @@ package eu.europa.esig.dss.asic.xades.extract;
 
 import eu.europa.esig.dss.asic.common.extract.ASiCContainerExtractor;
 import eu.europa.esig.dss.asic.common.extract.ASiCContainerExtractorFactory;
-import eu.europa.esig.dss.asic.xades.validation.ASiCContainerWithXAdESAnalyzerFactory;
+import eu.europa.esig.dss.asic.xades.ASiCWithXAdESFormatDetector;
 import eu.europa.esig.dss.model.DSSDocument;
 
 import java.util.Objects;
@@ -44,9 +44,7 @@ public class ASiCWithXAdESContainerExtractorFactory implements ASiCContainerExtr
     @Override
     public boolean isSupported(DSSDocument asicContainer) {
         Objects.requireNonNull(asicContainer, "ASiC container cannot be null!");
-
-        final ASiCContainerWithXAdESAnalyzerFactory documentValidatorFactory = new ASiCContainerWithXAdESAnalyzerFactory();
-        return documentValidatorFactory.isSupported(asicContainer);
+        return new ASiCWithXAdESFormatDetector().isSupportedZip(asicContainer);
     }
 
     @Override

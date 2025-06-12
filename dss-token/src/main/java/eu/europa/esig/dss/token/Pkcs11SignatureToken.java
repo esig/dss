@@ -25,15 +25,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.security.auth.callback.Callback;
-import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.PasswordCallback;
-import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.security.auth.login.LoginException;
-import java.io.IOException;
 import java.security.AuthProvider;
 import java.security.KeyStore;
 import java.security.KeyStore.PasswordProtection;
-import java.security.KeyStore.ProtectionParameter;
 import java.security.NoSuchAlgorithmException;
 import java.security.Provider;
 import java.security.Security;
@@ -313,25 +309,15 @@ public class Pkcs11SignatureToken extends AbstractKeyStoreTokenConnection {
 	protected KeyStore getKeyStore() throws DSSException {
 		try {
 			KeyStore keyStore = KeyStore.getInstance(SUN_PKCS11_KEYSTORE_TYPE, getProvider());
-			keyStore.load(new KeyStore.LoadStoreParameter() {
-
-				@Override
-				public ProtectionParameter getProtectionParameter() {
-					return new KeyStore.CallbackHandlerProtection(new CallbackHandler() {
-
-						@Override
-						public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
-							for (Callback c : callbacks) {
-								if (c instanceof PasswordCallback) {
-									((PasswordCallback) c).setPassword(callback.getPassword());
-									return;
-								}
-							}
-							throw new DSSException("No password callback");
-						}
-					});
-				}
-			});
+			keyStore.load(() -> new KeyStore.CallbackHandlerProtection(callbacks -> {
+                for (Callback c : callbacks) {
+                    if (c instanceof PasswordCallback) {
+                        ((PasswordCallback) c).setPassword(callback.getPassword());
+                        return;
+                    }
+                }
+                throw new DSSException("No password callback");
+            }));
 			return keyStore;
 		} catch (Exception e) {
 			if ("CKR_PIN_INCORRECT".equals(e.getMessage())) {

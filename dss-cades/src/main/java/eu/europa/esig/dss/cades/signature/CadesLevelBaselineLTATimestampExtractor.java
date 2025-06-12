@@ -20,11 +20,13 @@
  */
 package eu.europa.esig.dss.cades.signature;
 
-import eu.europa.esig.dss.cades.CMSUtils;
+import eu.europa.esig.dss.cades.CAdESUtils;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
+import eu.europa.esig.dss.cms.CMS;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampHashIndexVersion;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.model.identifier.EncapsulatedRevocationTokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -43,26 +45,26 @@ import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.ASN1Sequence;
-import org.bouncycastle.asn1.ASN1Set;
 import org.bouncycastle.asn1.DEROctetString;
 import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.DERSet;
 import org.bouncycastle.asn1.DERTaggedObject;
 import org.bouncycastle.asn1.cms.Attribute;
 import org.bouncycastle.asn1.cms.AttributeTable;
-import org.bouncycastle.asn1.cms.SignedData;
+import org.bouncycastle.asn1.cms.CMSObjectIdentifiers;
 import org.bouncycastle.asn1.cms.SignerIdentifier;
 import org.bouncycastle.asn1.cms.SignerInfo;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
-import org.bouncycastle.cms.CMSSignedData;
+import org.bouncycastle.cert.X509CRLHolder;
 import org.bouncycastle.cms.SignerInformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Objects;
 
@@ -140,8 +142,8 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	 */
 	public Attribute getVerifiedAtsHashIndex(SignerInformation signerInformation, TimestampToken timestampToken) {
 		final AttributeTable unsignedAttributes = timestampToken.getUnsignedAttributes();
-		ASN1ObjectIdentifier atsHashIndexVersionIdentifier = CMSUtils.getAtsHashIndexVersionIdentifier(unsignedAttributes);
-		ASN1Sequence atsHashIndex = CMSUtils.getAtsHashIndexByVersion(unsignedAttributes, atsHashIndexVersionIdentifier);
+		ASN1ObjectIdentifier atsHashIndexVersionIdentifier = CAdESUtils.getAtsHashIndexVersionIdentifier(unsignedAttributes);
+		ASN1Sequence atsHashIndex = CAdESUtils.getAtsHashIndexByVersion(unsignedAttributes, atsHashIndexVersionIdentifier);
 		if (atsHashIndex == null) {
 			LOG.warn("A valid atsHashIndex [oid: {}] has not been found for a timestamp with id {}",
 					atsHashIndexVersionIdentifier, timestampToken.getDSSIdAsString());
@@ -184,7 +186,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	 */
 	private DigestAlgorithm getHashIndexDigestAlgorithm(AlgorithmIdentifier algorithmIdentifier) {
 		return algorithmIdentifier != null ? DigestAlgorithm.forOID(algorithmIdentifier.getAlgorithm().getId()) :
-				CMSUtils.DEFAULT_ARCHIVE_TIMESTAMP_HASH_ALGO;
+				CAdESUtils.DEFAULT_ARCHIVE_TIMESTAMP_HASH_ALGO;
 	}
 
 	private Attribute getComposedAtsHashIndex(AlgorithmIdentifier algorithmIdentifiers, ASN1Sequence certificatesHashIndex, ASN1Sequence crLsHashIndex,
@@ -253,7 +255,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	private ASN1Sequence getVerifiedCertificatesHashIndex(final ASN1Sequence timestampHashIndex,
 			DigestAlgorithm hashIndexDigestAlgorithm, ArchiveTimestampHashIndexStatus atsHashIndexStatus) {
 
-		final ASN1Sequence certHashes = CMSUtils.getCertificatesHashIndex(timestampHashIndex);
+		final ASN1Sequence certHashes = CAdESUtils.getCertificatesHashIndex(timestampHashIndex);
 		final List<DEROctetString> certHashesList = DSSASN1Utils.getDEROctetStrings(certHashes);
 
 		// Evaluate SignedData.certificates
@@ -307,15 +309,41 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	private ASN1Sequence getCRLsHashIndex(DigestAlgorithm hashIndexDigestAlgorithm) {
 		final ASN1EncodableVector crlsHashIndex = new ASN1EncodableVector();
 
-		final SignedData signedData = SignedData.getInstance(signature.getCmsSignedData().toASN1Structure().getContent());
-		final ASN1Set signedDataCRLs = signedData.getCRLs();
-		if (signedDataCRLs != null) {
-			final Enumeration<ASN1Encodable> crLs = signedDataCRLs.getObjects();
-			if (crLs != null) {
-				while (crLs.hasMoreElements()) {
-					final ASN1Encodable asn1Encodable = crLs.nextElement();
-					digestAndAddToList(crlsHashIndex, DSSASN1Utils.getDEREncoded(asn1Encodable), hashIndexDigestAlgorithm);
+		final CMS cms = signature.getCMS();
+		final Collection<X509CRLHolder> crls = cms.getCRLs().getMatches(null);
+		for (X509CRLHolder x509CRLHolder : crls) {
+			try {
+				digestAndAddToList(crlsHashIndex, x509CRLHolder.getEncoded(), hashIndexDigestAlgorithm);
+			} catch (IOException e) {
+				throw new DSSException(String.format("Unable to read CRL. Reason : %s", e.getMessage()), e);
+			}
+		}
+
+		Collection<?> ocspResponses = cms.getOcspResponseStore().getMatches(null);
+		for (Object object : ocspResponses) {
+			try {
+				if (object instanceof ASN1Sequence) {
+					final ASN1Sequence otherRevocationInfoMatch = (ASN1Sequence) object;
+					DEROctetString ocspResponseDigest = getOcspResponseDigest(
+							otherRevocationInfoMatch.getEncoded(), CMSObjectIdentifiers.id_ri_ocsp_response, hashIndexDigestAlgorithm);
+					crlsHashIndex.add(ocspResponseDigest);
 				}
+			} catch (IOException e) {
+				throw new DSSException(String.format("Unable to read OCSP Basic. Reason : %s", e.getMessage()), e);
+			}
+		}
+
+		Collection<?> ocspBasics = cms.getOcspBasicStore().getMatches(null);
+		for (Object object : ocspBasics) {
+			try {
+				if (object instanceof ASN1Sequence) {
+					final ASN1Sequence otherRevocationInfoMatch = (ASN1Sequence) object;
+					DEROctetString ocspResponseDigest = getOcspResponseDigest(
+							otherRevocationInfoMatch.getEncoded(), OCSPObjectIdentifiers.id_pkix_ocsp_basic, hashIndexDigestAlgorithm);
+					crlsHashIndex.add(ocspResponseDigest);
+				}
+			} catch (IOException e) {
+				throw new DSSException(String.format("Unable to read OCSP Basic. Reason : %s", e.getMessage()), e);
 			}
 		}
 
@@ -347,54 +375,21 @@ public class CadesLevelBaselineLTATimestampExtractor {
 	@SuppressWarnings("unchecked")
 	private ASN1Sequence getVerifiedCRLsHashIndex(final ASN1Sequence timestampHashIndex, DigestAlgorithm hashIndexDigestAlgorithm,
 												  ArchiveTimestampHashIndexStatus atsHashIndexStatus) {
-		final ASN1Sequence crlHashes = CMSUtils.getCRLHashIndex(timestampHashIndex);
+		final ASN1Sequence crlHashes = CAdESUtils.getCRLHashIndex(timestampHashIndex);
 		final List<DEROctetString> crlHashesList = DSSASN1Utils.getDEROctetStrings(crlHashes);
 
-		final SignedData signedData = SignedData.getInstance(signature.getCmsSignedData().toASN1Structure().getContent());
-		final ASN1Set signedDataCRLs = signedData.getCRLs();
-		if (signedDataCRLs != null) {
-			final Enumeration<ASN1Encodable> crLs = signedDataCRLs.getObjects();
-			if (crLs != null) {
-				while (crLs.hasMoreElements()) {
-					final ASN1Encodable asn1Encodable = crLs.nextElement();
-					handleRevocationEncoded(crlHashesList, DSSASN1Utils.getDEREncoded(asn1Encodable), hashIndexDigestAlgorithm);
-				}
-			}
-		}
+
+		findCRLMatches(crlHashesList, hashIndexDigestAlgorithm,
+				signature.getCRLSource().getCMSSignedDataRevocationBinaries(),
+				signature.getOCSPSource().getCMSSignedDataRevocationBinaries(), true);
+
 
 		// Evaluate against other certificate entries (lax processing)
 		if (!crlHashesList.isEmpty()) {
 
-			List<EncapsulatedRevocationTokenIdentifier<CRL>> crlBinaries = signature.getCompleteCRLSource().getAllRevocationBinaries();
-			for (EncapsulatedRevocationTokenIdentifier<CRL> crl : crlBinaries) {
-				final byte[] digest = crl.getDigestValue(hashIndexDigestAlgorithm);
-				final DEROctetString derOctetStringDigest = new DEROctetString(digest);
-				if (crlHashesList.remove(derOctetStringDigest)) {
-					LOG.warn("ats-hash-index attribute contains CRL '{}' present outside SignedData.crls", crl.getDSSId().asXmlId());
-				}
-			}
-
-			List<EncapsulatedRevocationTokenIdentifier<OCSP>> ocspBinaries = signature.getCompleteOCSPSource().getAllRevocationBinaries();
-			for (EncapsulatedRevocationTokenIdentifier<OCSP> ocsp : ocspBinaries) {
-				OCSPResponseBinary binary = (OCSPResponseBinary) ocsp;
-				ASN1ObjectIdentifier objectIdentifier = binary.getAsn1ObjectIdentifier();
-				if (objectIdentifier != null) {
-					// OCSPObjectIdentifiers.id_pkix_ocsp_basic or OCSPObjectIdentifiers.id_ri_ocsp_response cases
-					DEROctetString derOctetStringDigest = getOcspResponseDigest(
-							binary.getBasicOCSPRespContent(), objectIdentifier, hashIndexDigestAlgorithm);
-					if (crlHashesList.remove(derOctetStringDigest)) {
-						LOG.warn("ats-hash-index attribute contains OCSP '{}' present outside SignedData.crls", ocsp.getDSSId().asXmlId());
-					}
-				} else {
-					// CMSObjectIdentifiers.id_ri_ocsp_response full binaries
-					objectIdentifier = OCSPObjectIdentifiers.id_pkix_ocsp_response;
-					DEROctetString derOctetStringDigest = getOcspResponseDigest(
-							binary.getBinaries(), objectIdentifier, hashIndexDigestAlgorithm);
-					if (crlHashesList.remove(derOctetStringDigest)) {
-						LOG.warn("ats-hash-index attribute contains OCSP '{}' present outside SignedData.crls", ocsp.getDSSId().asXmlId());
-					}
-				}
-			}
+			findCRLMatches(crlHashesList, hashIndexDigestAlgorithm,
+					signature.getCompleteCRLSource().getAllRevocationBinaries(),
+					signature.getCompleteOCSPSource().getAllRevocationBinaries(), false);
 
 			if (crlHashesList.isEmpty()) {
 				atsHashIndexStatus.addErrorMessage(
@@ -410,9 +405,55 @@ public class CadesLevelBaselineLTATimestampExtractor {
 		return crlHashes;
 	}
 
+	private void findCRLMatches(final List<DEROctetString> crlHashesList, DigestAlgorithm hashIndexDigestAlgorithm,
+								List<EncapsulatedRevocationTokenIdentifier<CRL>> crlBinaries,
+								List<EncapsulatedRevocationTokenIdentifier<OCSP>> ocspBinaries,
+								boolean cmsSignedDataMode) {
+		for (EncapsulatedRevocationTokenIdentifier<CRL> crl : crlBinaries) {
+			final byte[] digest = crl.getDigestValue(hashIndexDigestAlgorithm);
+			final DEROctetString derOctetStringDigest = new DEROctetString(digest);
+			if (crlHashesList.remove(derOctetStringDigest)) {
+				if (!cmsSignedDataMode) {
+					LOG.warn("ats-hash-index attribute contains CRL '{}' present outside SignedData.crls", crl.getDSSId().asXmlId());
+				}
+			}
+		}
+
+		for (EncapsulatedRevocationTokenIdentifier<OCSP> ocsp : ocspBinaries) {
+			OCSPResponseBinary binary = (OCSPResponseBinary) ocsp;
+			ASN1ObjectIdentifier objectIdentifier = binary.getAsn1ObjectIdentifier();
+			if (OCSPObjectIdentifiers.id_pkix_ocsp_basic.equals(objectIdentifier)) {
+				// OCSPObjectIdentifiers.id_pkix_ocsp_basic
+				DEROctetString basicResponseDigest = getOcspResponseDigest(
+						binary.getBasicOCSPRespContent(), objectIdentifier, hashIndexDigestAlgorithm);
+				if (crlHashesList.remove(basicResponseDigest)) {
+					if (!cmsSignedDataMode) {
+						LOG.warn("ats-hash-index attribute contains OCSP '{}' present outside SignedData.crls", binary.getDSSId().asXmlId());
+					}
+				}
+
+			} else {
+				// OCSPObjectIdentifiers.id_ri_ocsp_response case
+				if (objectIdentifier == null) {
+					objectIdentifier = OCSPObjectIdentifiers.id_pkix_ocsp_response;
+				}
+				DEROctetString fullBinaryDigest = getOcspResponseDigest(
+						binary.getBinaries(), objectIdentifier, hashIndexDigestAlgorithm);
+				DEROctetString basicResponseDigest = getOcspResponseDigest(
+						binary.getBasicOCSPRespContent(), objectIdentifier, hashIndexDigestAlgorithm);
+				if (crlHashesList.remove(fullBinaryDigest) || crlHashesList.remove(basicResponseDigest)) {
+					if (!cmsSignedDataMode) {
+						LOG.warn("ats-hash-index attribute contains OCSP '{}' present outside SignedData.crls", binary.getDSSId().asXmlId());
+					}
+				}
+			}
+		}
+	}
+
+
 	private DEROctetString getOcspResponseDigest(byte[] binaries, ASN1ObjectIdentifier objectIdentifier,
 												 DigestAlgorithm digestAlgorithm) {
-		byte[] encoded = CMSUtils.getSignedDataEncodedOCSPResponse(binaries, objectIdentifier);
+		byte[] encoded = CAdESUtils.getSignedDataEncodedOCSPResponse(binaries, objectIdentifier);
 		byte[] digest = DSSUtils.digest(digestAlgorithm, encoded);
 		return new DEROctetString(digest);
 	}
@@ -493,10 +534,10 @@ public class CadesLevelBaselineLTATimestampExtractor {
 			ASN1Sequence timestampHashIndex, ASN1ObjectIdentifier atsHashIndexVersionIdentifier,
 			DigestAlgorithm hashIndexDigestAlgorithm, ArchiveTimestampHashIndexStatus atsHashIndexStatus) {
 		
-		final ASN1Sequence unsignedAttributesHashes = CMSUtils.getUnsignedAttributesHashIndex(timestampHashIndex);
+		final ASN1Sequence unsignedAttributesHashes = CAdESUtils.getUnsignedAttributesHashIndex(timestampHashIndex);
 		final List<DEROctetString> timestampUnsignedAttributesHashesList = DSSASN1Utils.getDEROctetStrings(unsignedAttributesHashes);
 		
-		AttributeTable unsignedAttributes = CMSUtils.getUnsignedAttributes(signerInformation);
+		AttributeTable unsignedAttributes = CAdESUtils.getUnsignedAttributes(signerInformation);
 		final ASN1EncodableVector asn1EncodableVector = unsignedAttributes.toASN1EncodableVector();
 		for (int i = 0; i < asn1EncodableVector.size(); i++) {
 			final Attribute attribute = (Attribute) asn1EncodableVector.get(i);
@@ -524,7 +565,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 
 	private List<DEROctetString> getAttributeDerOctetStringHashes(Attribute attribute, ASN1ObjectIdentifier atsHashIndexVersionIdentifier,
 																  DigestAlgorithm hashIndexDigestAlgorithm) {
-		List<byte[]> octets = CMSUtils.getOctetStringForAtsHashIndex(attribute, atsHashIndexVersionIdentifier);
+		List<byte[]> octets = CAdESUtils.getOctetStringForAtsHashIndex(attribute, atsHashIndexVersionIdentifier);
 		if (Utils.isCollectionNotEmpty(octets)) {
 			List<DEROctetString> derOctetStrings = new ArrayList<>();
 			for (byte[] bytes : octets) {
@@ -551,7 +592,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 
 	private AlgorithmIdentifier getHashIndexDigestAlgorithmIdentifier(DigestAlgorithm hashIndexDigestAlgorithm) {
 		// If the algorithm identifier in ATSHashIndex has the default value, then it can be omitted
-		if (hashIndexDigestAlgorithm.getOid().equals(CMSUtils.DEFAULT_ARCHIVE_TIMESTAMP_HASH_ALGO.getOid())) {
+		if (hashIndexDigestAlgorithm.getOid().equals(CAdESUtils.DEFAULT_ARCHIVE_TIMESTAMP_HASH_ALGO.getOid())) {
 			return null;
 		} else {
 			return DSSASN1Utils.getAlgorithmIdentifier(hashIndexDigestAlgorithm);
@@ -581,7 +622,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 			LOG.debug("Archive Timestamp Data v3 is:");
 		}
 
-		bytes = getEncodedContentType(signature.getCmsSignedData()); // OID
+		bytes = getEncodedContentType(signature.getCMS()); // OID
 		digestCalculator.update(bytes);
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("eContentType={}", bytes != null ? Utils.toHex(bytes) : bytes);
@@ -601,23 +642,23 @@ public class CadesLevelBaselineLTATimestampExtractor {
 			LOG.debug("encodedFields end");
 		}
 
-		bytes = DSSASN1Utils.getDEREncoded(atsHashIndexAttribute.getAttrValues().getObjectAt(0));
+		bytes = getAtsHashIndexAttributeEncoding(atsHashIndexAttribute);
 		digestCalculator.update(bytes);
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("encodedAtsHashIndex={}", bytes != null ? Utils.toHex(bytes) : bytes);
 		}
 
-		return digestCalculator.getMessageDigest();
+		return digestCalculator.getMessageDigest(digestAlgorithm);
 	}
 
 	/**
 	 * 1) The SignedData.encapContentInfo.eContentType.
 	 *
-	 * @param cmsSignedData {@link CMSSignedData}
-	 * @return cmsSignedData.getSignedContentTypeOID() as DER encoded
+	 * @param cms {@link CMS}
+	 * @return cms.getSignedContentTypeOID() as DER encoded
 	 */
-	private byte[] getEncodedContentType(final CMSSignedData cmsSignedData) {
-		return DSSASN1Utils.getDEREncoded(CMSUtils.getEncapsulatedContentType(cmsSignedData));
+	private byte[] getEncodedContentType(final CMS cms) {
+		return DSSASN1Utils.getDEREncoded(signature.getCMS().getSignedContentType());
 	}
 
 	/**
@@ -653,7 +694,7 @@ public class CadesLevelBaselineLTATimestampExtractor {
 			LOG.debug("getSignedFields DigestAlgorithm={}", Utils.toBase64(bytes));
 		}
 
-		final DERTaggedObject signedAttributes = CMSUtils.getDERSignedAttributes(signerInformation);
+		final DERTaggedObject signedAttributes = CAdESUtils.getDERSignedAttributes(signerInformation);
 		bytes = DSSASN1Utils.getDEREncoded(signedAttributes);
 		digestCalculator.update(bytes);
 		if (LOG.isDebugEnabled()) {
@@ -672,6 +713,16 @@ public class CadesLevelBaselineLTATimestampExtractor {
 		digestCalculator.update(bytes);
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("getSignedFields EncryptedDigest={}", Utils.toBase64(bytes));
+		}
+	}
+
+	private byte[] getAtsHashIndexAttributeEncoding(Attribute atsHashIndexAttribute) {
+		ASN1Encodable attrValue = DSSASN1Utils.getAsn1Encodable(atsHashIndexAttribute);
+		if (attrValue != null) {
+			return DSSASN1Utils.getDEREncoded(attrValue);
+		} else {
+			LOG.warn("Invalid ats-hash-table-index attribute encoding! The value is skipped.");
+			return DSSUtils.EMPTY_BYTE_ARRAY;
 		}
 	}
 

@@ -41,7 +41,7 @@ import eu.europa.esig.validationreport.jaxb.SignatureAttributesType;
 import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 
-public class DSS2258Test extends AbstractPAdESTestValidation {
+class DSS2258Test extends AbstractPAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

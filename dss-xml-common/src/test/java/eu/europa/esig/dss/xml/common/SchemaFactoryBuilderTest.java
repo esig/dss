@@ -20,16 +20,15 @@
  */
 package eu.europa.esig.dss.xml.common;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
+import eu.europa.esig.dss.alert.exception.AlertException;
+import org.junit.jupiter.api.Test;
 
 import javax.xml.validation.SchemaFactory;
 
-import org.junit.jupiter.api.Test;
-
-import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
-import eu.europa.esig.dss.alert.exception.AlertException;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SchemaFactoryBuilderTest {
 	
@@ -48,7 +47,7 @@ class SchemaFactoryBuilderTest {
 		
 		schemaBuilder.setSecurityExceptionAlert(new ExceptionOnStatusAlert());
 		
-		Exception exception = assertThrows(AlertException.class, () -> schemaBuilder.build());
+		Exception exception = assertThrows(AlertException.class, schemaBuilder::build);
 		assertNotNull(exception);
 		assertTrue(exception.getMessage().contains("SECURITY : unable to set feature(s)"));
 		assertTrue(exception.getMessage().contains("CUSTOM_FEATURE"));

@@ -26,7 +26,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlPSV;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.vpfswatsp.checks.AbstractPastTokenValidationCheck;
 
@@ -47,10 +47,10 @@ public class PastTimestampValidationCheck<T extends XmlConstraintsConclusion> ex
 	 * @param result {@link XmlConstraintsConclusion}
 	 * @param timestamp {@link TimestampWrapper}
 	 * @param xmlPSV {@link XmlPSV}
-	 * @param constraint {@link LevelConstraint}
+	 * @param constraint {@link LevelRule}
 	 */
 	public PastTimestampValidationCheck(I18nProvider i18nProvider, T result, TimestampWrapper timestamp, XmlPSV xmlPSV,
-										LevelConstraint constraint) {
+										LevelRule constraint) {
 		super(i18nProvider, result, timestamp, xmlPSV, constraint);
 		this.timestamp = timestamp;
 	}

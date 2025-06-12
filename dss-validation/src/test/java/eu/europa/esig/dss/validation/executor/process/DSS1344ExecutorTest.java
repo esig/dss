@@ -69,8 +69,8 @@ class DSS1344ExecutorTest extends AbstractProcessExecutorTest {
         SimpleReport simpleReport = reports.getSimpleReport();
         assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 
-        assertNotNull(simpleReport.getSignatureExtensionPeriodMin(simpleReport.getFirstSignatureId()));
-        assertNotNull(simpleReport.getSignatureExtensionPeriodMax(simpleReport.getFirstSignatureId()));
+        assertNotNull(simpleReport.getExtensionPeriodMin(simpleReport.getFirstSignatureId()));
+        assertNotNull(simpleReport.getExtensionPeriodMax(simpleReport.getFirstSignatureId()));
 
         validateBestSigningTimes(reports);
         checkReports(reports);

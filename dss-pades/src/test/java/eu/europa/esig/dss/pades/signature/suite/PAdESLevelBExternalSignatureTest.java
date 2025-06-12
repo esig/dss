@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.pades.signature.suite;
 
-import eu.europa.esig.dss.cades.CMSUtils;
+import eu.europa.esig.dss.cades.CAdESUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -53,7 +53,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * NOTE: This test is kept for retro-compatibility.
  * For creation of PAdES with external CMS see {@code PAdESExternalCMSSignatureBLevelTest}.
  */
-public class PAdESLevelBExternalSignatureTest extends AbstractPAdESTestSignature {
+class PAdESLevelBExternalSignatureTest extends AbstractPAdESTestSignature {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PAdESLevelBExternalSignatureTest.class);
 	private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;
@@ -132,7 +132,7 @@ public class PAdESLevelBExternalSignatureTest extends AbstractPAdESTestSignature
 			AttributeTable signedAttribute = new AttributeTable(dlSet);
 			ASN1EncodableVector signedAttributeEncodableVector = signedAttribute.toASN1EncodableVector();
 
-			CMSUtils.addSigningCertificateAttribute(signedAttributeEncodableVector, digestAlgo, signingCertificate);
+			CAdESUtils.addSigningCertificateAttribute(signedAttributeEncodableVector, digestAlgo, signingCertificate);
 
 			DERSet signedAttributesData = new DERSet(signedAttributeEncodableVector);
 

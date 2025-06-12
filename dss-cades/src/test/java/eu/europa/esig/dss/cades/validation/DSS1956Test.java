@@ -20,19 +20,19 @@
  */
 package eu.europa.esig.dss.cades.validation;
 
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
 
 class DSS1956Test extends AbstractCAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {
-		return new FileDocument("src/test/resources/validation/cades-dss1956.p7m");
+		return new InMemoryDocument(DSS1956Test.class.getResourceAsStream("/validation/cades-dss1956.p7m"));
 	}
 	
 	@Override

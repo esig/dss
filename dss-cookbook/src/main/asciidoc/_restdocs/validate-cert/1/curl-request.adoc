@@ -12,6 +12,7 @@ $ curl 'http://localhost:8080/services/rest/certificate-validation/validateCerti
   } ],
   "validationTime" : null,
   "policy" : null,
+  "cryptographicSuite" : null,
   "tokenExtractionStrategy" : "NONE"
 }'
 ----

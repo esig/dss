@@ -45,7 +45,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Tag("slow")
-public class PAdESLevelBWithECDSATest extends AbstractPAdESTestSignature {
+class PAdESLevelBWithECDSATest extends AbstractPAdESTestSignature {
 
 	private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;
 	private PAdESSignatureParameters signatureParameters;
@@ -93,6 +93,7 @@ public class PAdESLevelBWithECDSATest extends AbstractPAdESTestSignature {
 
 	@Override
 	public void signAndVerify() {
+		// skip global test
 	}
 
 	@Override

@@ -41,7 +41,7 @@ class XAdESLevelBEnvelopedWithInvalidXPathPlacementTest extends AbstractXAdESTes
     private DocumentSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> service;
     private XAdESSignatureParameters signatureParameters;
     private DSSDocument documentToSign;
-    private final String XPATH = "//*[local-name() = 'ElementNotExists']";
+    private static final String XPATH = "//*[local-name() = 'ElementNotExists']";
 
     @BeforeEach
     void init() throws Exception {
@@ -61,7 +61,7 @@ class XAdESLevelBEnvelopedWithInvalidXPathPlacementTest extends AbstractXAdESTes
     @Test
     @Override
     public void signAndVerify() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> super.signAndVerify());
+        Exception exception = assertThrows(IllegalArgumentException.class, super::signAndVerify);
         assertEquals(String.format("Unable to find an element corresponding to XPath location '%s'", XPATH), exception.getMessage());
     }
 

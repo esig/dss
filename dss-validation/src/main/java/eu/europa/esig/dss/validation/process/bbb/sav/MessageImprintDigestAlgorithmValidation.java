@@ -24,7 +24,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
+import eu.europa.esig.dss.model.policy.CryptographicSuite;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.MessageImprintCryptographicCheck;
@@ -44,7 +44,7 @@ public class MessageImprintDigestAlgorithmValidation extends Chain<XmlSAV> {
 	private final Date currentTime;
 
 	/** Set of cryptographical constraint to validate against */
-	private final CryptographicConstraint constraint;
+	private final CryptographicSuite constraint;
 
 	/**
 	 * Default constructor
@@ -52,10 +52,10 @@ public class MessageImprintDigestAlgorithmValidation extends Chain<XmlSAV> {
 	 * @param i18nProvider {@link I18nProvider}
 	 * @param currentTime {@link Date}
 	 * @param digestAlgorithm {@link DigestAlgorithm}
-	 * @param constraint {@link CryptographicConstraint}
+	 * @param constraint {@link CryptographicSuite}
 	 */
 	public MessageImprintDigestAlgorithmValidation(I18nProvider i18nProvider, Date currentTime,
-			DigestAlgorithm digestAlgorithm, CryptographicConstraint constraint) {
+			DigestAlgorithm digestAlgorithm, CryptographicSuite constraint) {
 		super(i18nProvider, new XmlSAV());
 		this.digestAlgorithm = digestAlgorithm;
 		this.currentTime = currentTime;

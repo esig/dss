@@ -20,14 +20,13 @@
  */
 package eu.europa.esig.dss.xades.validation.scope;
 
-import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.identifier.TokenIdentifierProvider;
 import eu.europa.esig.dss.spi.validation.scope.SignatureScopeWithTransformations;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * XPointer signature scope
@@ -80,24 +79,6 @@ public class XPointerSignatureScope extends SignatureScopeWithTransformations {
 		return "XPointerSignatureScope{" +
 				"uri='" + uri + '\'' +
 				"} " + super.toString();
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (!(o instanceof XPointerSignatureScope)) return false;
-		if (!super.equals(o)) return false;
-
-		XPointerSignatureScope that = (XPointerSignatureScope) o;
-
-		return Objects.equals(uri, that.uri);
-	}
-
-	@Override
-	public int hashCode() {
-		int result = super.hashCode();
-		result = 31 * result + (uri != null ? uri.hashCode() : 0);
-		return result;
 	}
 
 }

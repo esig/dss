@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:dssc="urn:ietf:params:xml:ns:dssc"
+           xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+           targetNamespace="urn:ietf:params:xml:ns:dssc"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+    <xs:import namespace="http://www.w3.org/XML/1998/namespace"
+               schemaLocation="http://www.w3.org/2001/xml.xsd"/>
+    <xs:import namespace="http://www.w3.org/2000/09/xmldsig#"
+               schemaLocation="xmldsig-core-schema.xsd"/>
+    <xs:element name="SecuritySuitabilityPolicy"
+                type="dssc:SecuritySuitabilityPolicyType"/>
+    <xs:complexType name="SecuritySuitabilityPolicyType">
+        <xs:sequence>
+            <xs:element ref="dssc:PolicyName"/>
+            <xs:element ref="dssc:Publisher"/>
+            <xs:element name="PolicyIssueDate" type="xs:dateTime"/>
+            <xs:element name="NextUpdate" type="xs:dateTime" minOccurs="0"/>
+            <xs:element name="Usage" type="xs:string" minOccurs="0"/>
+            <xs:element ref="dssc:Algorithm" maxOccurs="unbounded"/>
+            <xs:element ref="ds:Signature" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="version" type="xs:string" default="1"/>
+        <xs:attribute name="lang" default="en"/>
+        <xs:attribute name="id" type="xs:ID"/>
+    </xs:complexType>
+    <xs:element name="PolicyName" type="dssc:PolicyNameType"/>
+    <xs:complexType name="PolicyNameType">
+        <xs:sequence>
+            <xs:element ref="dssc:Name"/>
+            <xs:element ref="dssc:ObjectIdentifier" minOccurs="0"/>
+            <xs:element ref="dssc:URI" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="Publisher" type="dssc:PublisherType"/>
+    <xs:complexType name="PublisherType">
+        <xs:sequence>
+            <xs:element ref="dssc:Name"/>
+            <xs:element name="Address" type="xs:string" minOccurs="0"/>
+            <xs:element ref="dssc:URI" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="Name" type="xs:string"/>
+    <xs:element name="ObjectIdentifier">
+        <xs:simpleType>
+            <xs:restriction base="xs:string">
+            <xs:pattern value="(\d+\.)+\d+"/>
+        </xs:restriction>
+        </xs:simpleType>
+    </xs:element>
+    <xs:element name="URI" type="xs:anyURI"/>
+    <xs:element name="Algorithm" type="dssc:AlgorithmType"/>
+    <xs:complexType name="AlgorithmType">
+        <xs:sequence>
+            <xs:element ref="dssc:AlgorithmIdentifier"/>
+            <xs:element ref="dssc:Evaluation" maxOccurs="unbounded"/>
+            <xs:element ref="dssc:Information" minOccurs="0"/>
+            <xs:any namespace="##other" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="AlgorithmIdentifier"
+                type="dssc:AlgorithmIdentifierType"/>
+    <xs:complexType name="AlgorithmIdentifierType">
+        <xs:sequence>
+            <xs:element ref="dssc:Name"/>
+            <xs:element ref="dssc:ObjectIdentifier" maxOccurs="unbounded"/>
+            <xs:element ref="dssc:URI" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="Validity" type="dssc:ValidityType"/>
+    <xs:complexType name="ValidityType">
+        <xs:sequence>
+            <xs:element name="Start" type="xs:date" minOccurs="0"/>
+            <xs:element name="End" type="xs:date" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="Information" type="dssc:InformationType"/>
+    <xs:complexType name="InformationType">
+        <xs:sequence>
+            <xs:element name="Text" type="xs:string" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="Evaluation" type="dssc:EvaluationType"/>
+    <xs:complexType name="EvaluationType">
+        <xs:sequence>
+            <xs:element ref="dssc:Parameter" minOccurs="0"
+                        maxOccurs="unbounded"/>
+            <xs:element ref="dssc:Validity"/>
+            <xs:any namespace="##other" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="Parameter" type="dssc:ParameterType"/>
+    <xs:complexType name="ParameterType">
+        <xs:sequence>
+            <xs:element name="Min" type="xs:int" minOccurs="0"/>
+            <xs:element name="Max" type="xs:int" minOccurs="0"/>
+            <xs:any namespace="##other" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+    </xs:complexType>
+</xs:schema>

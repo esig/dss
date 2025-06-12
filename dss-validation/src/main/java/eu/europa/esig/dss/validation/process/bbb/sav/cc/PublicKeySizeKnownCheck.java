@@ -24,8 +24,9 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlCC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
+import eu.europa.esig.dss.model.policy.CryptographicSuite;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicConstraintWrapper;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
 /**
  * Check if EncryptionAlgorithm is public key size is known
@@ -42,11 +43,11 @@ public class PublicKeySizeKnownCheck extends AbstractCryptographicCheck {
 	 * @param keySize {@link String}
 	 * @param result {@link XmlCC}
 	 * @param position {@link MessageTag}
-	 * @param constraintWrapper {@link CryptographicConstraintWrapper}
+	 * @param cryptographicSuite {@link CryptographicSuite}
 	 */
-	protected PublicKeySizeKnownCheck(I18nProvider i18nProvider, String keySize, XmlCC result, MessageTag position, 
-			CryptographicConstraintWrapper constraintWrapper) {
-		super(i18nProvider, result, position, constraintWrapper.getMiniPublicKeySizeLevel());
+	protected PublicKeySizeKnownCheck(I18nProvider i18nProvider, String keySize, XmlCC result, MessageTag position,
+									  CryptographicSuite cryptographicSuite) {
+		super(i18nProvider, result, position, ValidationProcessUtils.getLevelRule(cryptographicSuite.getAcceptableEncryptionAlgorithmsMiniKeySizeLevel()));
 		this.keySize = keySize;
 	}
 

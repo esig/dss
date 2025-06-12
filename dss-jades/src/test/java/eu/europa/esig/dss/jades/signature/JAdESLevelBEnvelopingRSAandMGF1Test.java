@@ -80,6 +80,7 @@ class JAdESLevelBEnvelopingRSAandMGF1Test extends AbstractJAdESTestSignature {
 
 	@Override
 	public void signAndVerify() {
+		// skip global test
 	}
 
 	@Override

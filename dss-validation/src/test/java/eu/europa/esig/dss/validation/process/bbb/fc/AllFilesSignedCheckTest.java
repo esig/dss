@@ -29,9 +29,10 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlManifestFile;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.AllFilesSignedCheck;
@@ -57,7 +58,7 @@ class AllFilesSignedCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlFC result = new XmlFC();
-		AllFilesSignedCheck afsc = new AllFilesSignedCheck(i18nProvider, result, new SignatureWrapper(sig), xmlContainerInfo, constraint);
+		AllFilesSignedCheck afsc = new AllFilesSignedCheck(i18nProvider, result, new SignatureWrapper(sig), xmlContainerInfo, new LevelConstraintWrapper(constraint));
 		afsc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -77,7 +78,7 @@ class AllFilesSignedCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlFC result = new XmlFC();
-		AllFilesSignedCheck afsc = new AllFilesSignedCheck(i18nProvider, result, new SignatureWrapper(sig), xmlContainerInfo, constraint);
+		AllFilesSignedCheck afsc = new AllFilesSignedCheck(i18nProvider, result, new SignatureWrapper(sig), xmlContainerInfo, new LevelConstraintWrapper(constraint));
 		afsc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -98,7 +99,7 @@ class AllFilesSignedCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlFC result = new XmlFC();
-		AllFilesSignedCheck afsc = new AllFilesSignedCheck(i18nProvider, result, new SignatureWrapper(sig), xmlContainerInfo, constraint);
+		AllFilesSignedCheck afsc = new AllFilesSignedCheck(i18nProvider, result, new SignatureWrapper(sig), xmlContainerInfo, new LevelConstraintWrapper(constraint));
 		afsc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -125,7 +126,7 @@ class AllFilesSignedCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlFC result = new XmlFC();
-		AllFilesSignedCheck afsc = new AllFilesSignedCheck(i18nProvider, result, new SignatureWrapper(sig), xmlContainerInfo, constraint);
+		AllFilesSignedCheck afsc = new AllFilesSignedCheck(i18nProvider, result, new SignatureWrapper(sig), xmlContainerInfo, new LevelConstraintWrapper(constraint));
 		afsc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -152,7 +153,7 @@ class AllFilesSignedCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlFC result = new XmlFC();
-		AllFilesSignedCheck afsc = new AllFilesSignedCheck(i18nProvider, result, new SignatureWrapper(sig), xmlContainerInfo, constraint);
+		AllFilesSignedCheck afsc = new AllFilesSignedCheck(i18nProvider, result, new SignatureWrapper(sig), xmlContainerInfo, new LevelConstraintWrapper(constraint));
 		afsc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -179,7 +180,7 @@ class AllFilesSignedCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlFC result = new XmlFC();
-		AllFilesSignedCheck afsc = new AllFilesSignedCheck(i18nProvider, result, new SignatureWrapper(sig), xmlContainerInfo, constraint);
+		AllFilesSignedCheck afsc = new AllFilesSignedCheck(i18nProvider, result, new SignatureWrapper(sig), xmlContainerInfo, new LevelConstraintWrapper(constraint));
 		afsc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -220,7 +221,7 @@ class AllFilesSignedCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlFC result = new XmlFC();
-		AllFilesSignedCheck afsc = new AllFilesSignedCheck(i18nProvider, result, new SignatureWrapper(sig), xmlContainerInfo, constraint);
+		AllFilesSignedCheck afsc = new AllFilesSignedCheck(i18nProvider, result, new SignatureWrapper(sig), xmlContainerInfo, new LevelConstraintWrapper(constraint));
 		afsc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -261,7 +262,7 @@ class AllFilesSignedCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlFC result = new XmlFC();
-		AllFilesSignedCheck afsc = new AllFilesSignedCheck(i18nProvider, result, new SignatureWrapper(sig), xmlContainerInfo, constraint);
+		AllFilesSignedCheck afsc = new AllFilesSignedCheck(i18nProvider, result, new SignatureWrapper(sig), xmlContainerInfo, new LevelConstraintWrapper(constraint));
 		afsc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -299,7 +300,7 @@ class AllFilesSignedCheckTest extends AbstractTestCheck {
 
 		XmlFC result = new XmlFC();
 		AllFilesSignedCheck afsc = new AllFilesSignedCheck(i18nProvider, result,
-				new SignatureWrapper(sig), xmlContainerInfo, constraint);
+				new SignatureWrapper(sig), xmlContainerInfo, new LevelConstraintWrapper(constraint));
 		afsc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -338,7 +339,7 @@ class AllFilesSignedCheckTest extends AbstractTestCheck {
 
 		XmlFC result = new XmlFC();
 		AllFilesSignedCheck afsc = new AllFilesSignedCheck(i18nProvider, result,
-				new SignatureWrapper(sig), xmlContainerInfo, constraint);
+				new SignatureWrapper(sig), xmlContainerInfo, new LevelConstraintWrapper(constraint));
 		afsc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -371,7 +372,7 @@ class AllFilesSignedCheckTest extends AbstractTestCheck {
 
 		XmlFC result = new XmlFC();
 		AllFilesSignedCheck afsc = new AllFilesSignedCheck(i18nProvider, result,
-				new SignatureWrapper(sig), xmlContainerInfo, constraint);
+				new SignatureWrapper(sig), xmlContainerInfo, new LevelConstraintWrapper(constraint));
 		afsc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -404,7 +405,7 @@ class AllFilesSignedCheckTest extends AbstractTestCheck {
 
 		XmlFC result = new XmlFC();
 		AllFilesSignedCheck afsc = new AllFilesSignedCheck(i18nProvider, result,
-				new SignatureWrapper(sig), xmlContainerInfo, constraint);
+				new SignatureWrapper(sig), xmlContainerInfo, new LevelConstraintWrapper(constraint));
 		afsc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

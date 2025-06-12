@@ -30,7 +30,6 @@ import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.policy.SignaturePolicyValidator;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.definition.xades141.XAdES141Attribute;
 import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
@@ -71,10 +70,10 @@ public class SignaturePolicyStoreBuilder extends ExtensionBuilder {
 		Objects.requireNonNull(signatureDocument, "Signature document must be provided!");
 		assertConfigurationValid(signaturePolicyStore);
 
-		final XMLDocumentAnalyzer documentValidator = initDocumentValidator(signatureDocument);
+		final XMLDocumentAnalyzer documentAnalyzer = initDocumentAnalyzer(signatureDocument);
 
 		boolean signaturePolicyStoreAdded = false;
-		for (AdvancedSignature signature : documentValidator.getSignatures()) {
+		for (AdvancedSignature signature : documentAnalyzer.getSignatures()) {
 			boolean added = addSignaturePolicyStoreIfDigestMatch((XAdESSignature) signature, documentDom, signaturePolicyStore);
 			signaturePolicyStoreAdded = signaturePolicyStoreAdded || added;
 		}
@@ -99,8 +98,8 @@ public class SignaturePolicyStoreBuilder extends ExtensionBuilder {
 		Objects.requireNonNull(signatureDocument, "Signature document must be provided!");
 		assertConfigurationValid(signaturePolicyStore);
 
-		final XMLDocumentAnalyzer documentValidator = initDocumentValidator(signatureDocument);
-		AdvancedSignature signature = documentValidator.getSignatureById(signatureId);
+		final XMLDocumentAnalyzer documentAnalyzer = initDocumentAnalyzer(signatureDocument);
+		AdvancedSignature signature = documentAnalyzer.getSignatureById(signatureId);
 		if (signature == null) {
 			throw new IllegalInputException(String.format("Unable to find a signature with Id : %s!", signatureId));
 		}
@@ -113,15 +112,6 @@ public class SignaturePolicyStoreBuilder extends ExtensionBuilder {
 		return createXmlDocument();
 	}
 
-	private XMLDocumentAnalyzer initDocumentValidator(DSSDocument document) {
-		params = new XAdESSignatureParameters();
-
-		documentAnalyzer = new XMLDocumentAnalyzer(document);
-		documentDom = documentAnalyzer.getRootElement();
-
-		return documentAnalyzer;
-	}
-
 	/**
 	 * This method adds {@code SignaturePolicyStore} to a {@code documentDom} if required
 	 *
@@ -132,6 +122,8 @@ public class SignaturePolicyStoreBuilder extends ExtensionBuilder {
 	 */
 	protected boolean addSignaturePolicyStoreIfDigestMatch(XAdESSignature xadesSignature, Document documentDom,
 														SignaturePolicyStore signaturePolicyStore) {
+		assertUnsignedPropertiesExtensionPossible(xadesSignature);
+
 		xadesSignature = initializeSignatureBuilder(xadesSignature);
 
 		ensureUnsignedProperties();
@@ -229,7 +221,7 @@ public class SignaturePolicyStoreBuilder extends ExtensionBuilder {
 
 		boolean signaturePolicyContentPresent = signaturePolicyStore.getSignaturePolicyContent() != null;
 		boolean sigPolDocLocalURIPresent = signaturePolicyStore.getSigPolDocLocalURI() != null;
-		if (!(signaturePolicyContentPresent ^ sigPolDocLocalURIPresent)) {
+		if (signaturePolicyContentPresent == sigPolDocLocalURIPresent) {
 			throw new IllegalArgumentException("SignaturePolicyStore shall contain either " +
 					"SignaturePolicyContent document or sigPolDocLocalURI!");
 		}

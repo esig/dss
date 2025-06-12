@@ -33,7 +33,8 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificateToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRelatedCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.SigningCertificateReferencesValidityCheck;
@@ -69,7 +70,7 @@ class SigningCertificateReferencesValidityCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlSAV result = new XmlSAV();
-		SigningCertificateReferencesValidityCheck scrc = new SigningCertificateReferencesValidityCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
+		SigningCertificateReferencesValidityCheck scrc = new SigningCertificateReferencesValidityCheck(i18nProvider, result, new SignatureWrapper(sig), new LevelConstraintWrapper(constraint));
 		scrc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -101,7 +102,7 @@ class SigningCertificateReferencesValidityCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlSAV result = new XmlSAV();
-		SigningCertificateReferencesValidityCheck scrc = new SigningCertificateReferencesValidityCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
+		SigningCertificateReferencesValidityCheck scrc = new SigningCertificateReferencesValidityCheck(i18nProvider, result, new SignatureWrapper(sig), new LevelConstraintWrapper(constraint));
 		scrc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -136,7 +137,7 @@ class SigningCertificateReferencesValidityCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlSAV result = new XmlSAV();
-		SigningCertificateReferencesValidityCheck scrc = new SigningCertificateReferencesValidityCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
+		SigningCertificateReferencesValidityCheck scrc = new SigningCertificateReferencesValidityCheck(i18nProvider, result, new SignatureWrapper(sig), new LevelConstraintWrapper(constraint));
 		scrc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -169,7 +170,7 @@ class SigningCertificateReferencesValidityCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlSAV result = new XmlSAV();
-		SigningCertificateReferencesValidityCheck scrc = new SigningCertificateReferencesValidityCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
+		SigningCertificateReferencesValidityCheck scrc = new SigningCertificateReferencesValidityCheck(i18nProvider, result, new SignatureWrapper(sig), new LevelConstraintWrapper(constraint));
 		scrc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -209,7 +210,7 @@ class SigningCertificateReferencesValidityCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlSAV result = new XmlSAV();
-		SigningCertificateReferencesValidityCheck scrc = new SigningCertificateReferencesValidityCheck(i18nProvider, result, new SignatureWrapper(sig), constraint);
+		SigningCertificateReferencesValidityCheck scrc = new SigningCertificateReferencesValidityCheck(i18nProvider, result, new SignatureWrapper(sig), new LevelConstraintWrapper(constraint));
 		scrc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

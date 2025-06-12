@@ -71,6 +71,9 @@ class XAdESTooManyDataObjectFormatValidationTest extends AbstractXAdESTestValida
         return reports;
     }
 
+    /**
+     * For manual testing
+     */
     @Disabled
     @Override
     public void validate() {

@@ -35,7 +35,7 @@ import eu.europa.esig.dss.spi.CertificateExtensionsUtils;
 import eu.europa.esig.dss.spi.DSSPKUtils;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.OID;
-import eu.europa.esig.dss.spi.x509.CertificateSource;
+import eu.europa.esig.dss.spi.x509.CertificateReorderer;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.asn1.ocsp.OCSPObjectIdentifiers;
@@ -103,7 +103,10 @@ public class RevocationDataVerifier {
     /**
      * A collection of revocation data to be processed. This is a local variable used to be defined
      * by a SignatureValidationContext, calling the class
+     *
+     * @deprecated since DSS 6.3. Please provide revocation data within {@code validationContext}
      */
+    @Deprecated
     private Collection<RevocationToken<?>> processedRevocations;
 
     /**
@@ -175,6 +178,11 @@ public class RevocationDataVerifier {
     private TrustAnchorVerifier trustAnchorVerifier;
 
     /**
+     * Signature validation context
+     */
+    private ValidationContext validationContext;
+
+    /**
      * Default constructor
      */
     protected RevocationDataVerifier() {
@@ -217,44 +225,14 @@ public class RevocationDataVerifier {
     }
 
     /**
-     * Gets trusted certificate source, when present
-     *
-     * @return {@link CertificateSource}
-     * @deprecated since DSS 6.2. Please use {@code #getTrustAnchorVerifier#getTrustedCertificateSource} method instead
-     */
-    @Deprecated
-    public CertificateSource getTrustedCertificateSource() {
-        return getTrustAnchorVerifier().getTrustedCertificateSource();
-    }
-
-    /**
-     * Sets a trusted certificate source in order to accept trusted revocation data issuer certificates.
-     * Note : This method is used internally during a {@code eu.europa.esig.dss.validation.SignatureValidationContext}
-     *        initialization, in order to provide the same trusted source as the one used within
-     *        a {@code eu.europa.esig.dss.validation.CertificateVerifier}.
-     *
-     * @param trustedCertificateSource {@link CertificateSource}
-     * @deprecated since DSS 6.2. Please provide trusted certificate source within
-     *             {@code TrustAnchorVerifier#setTrustedCertificateSource}, which can be set using
-     *             {@code #setTrustAnchorVerifier} method
-     */
-    @Deprecated
-    protected void setTrustedCertificateSource(CertificateSource trustedCertificateSource) {
-        TrustAnchorVerifier currentTrustAnchorVerifier = getTrustAnchorVerifier();
-        if (currentTrustAnchorVerifier == null) {
-            throw new NullPointerException("TrustAnchorVerifier is not defined! " +
-                    "Please set TrustAnchorVerifier in order to provide a trustedCertificateSource.");
-        }
-        currentTrustAnchorVerifier.setTrustedCertificateSource(trustedCertificateSource);
-    }
-
-    /**
      * Gets a collection of processed revocations, when present.
      * This method is used internally during a {@code eu.europa.esig.dss.validation.SignatureValidationContext} execution,
      * to verify presence of the collection of processed revocation data
      *
      * @return a collection of {@link RevocationToken}s
+     * @deprecated since DSS 6.3. Please use {@code validationContext} instead.
      */
+    @Deprecated
     protected Collection<RevocationToken<?>> getProcessedRevocations() {
         return processedRevocations;
     }
@@ -264,8 +242,11 @@ public class RevocationDataVerifier {
      * Note : This method is used internally during a {@code eu.europa.esig.dss.validation.SignatureValidationContext}
      *        initialization, in order to provide the same revocation data as the one used within
      *        the certificate validation process.
+     *
      * @param processedRevocations a collection of {@link RevocationToken}s
+     * @deprecated since DSS 6.3. Please provide revocation data within {@code validationContext} instead.
      */
+    @Deprecated
     protected void setProcessedRevocations(Collection<RevocationToken<?>> processedRevocations) {
         this.processedRevocations = processedRevocations;
     }
@@ -408,6 +389,15 @@ public class RevocationDataVerifier {
     }
 
     /**
+     * Sets validation context for certificates validation
+     *
+     * @param validationContext {@link ValidationContext}
+     */
+    protected void setValidationContext(ValidationContext validationContext) {
+        this.validationContext = validationContext;
+    }
+
+    /**
      * This method verifies the validity of the given {@code RevocationToken} using the embedded
      * issuer certificate token at the current time
      *
@@ -525,7 +515,7 @@ public class RevocationDataVerifier {
                     revocationToken.getDSSIdAsString());
             return false;
         }
-        if (!isCertificateValid(issuerCertificateToken, controlTime)) {
+        if (!isCertificateValid(issuerCertificateToken, revocationToken.getCertificates(), controlTime)) {
             return false;
         }
         return true;
@@ -824,7 +814,7 @@ public class RevocationDataVerifier {
                 LOG.warn("The certificate '{}' is cryptographically invalid!", certificateToken.getDSSIdAsString());
                 return false;
             }
-            if (!isCertificateValid(certificateToken, controlTime)) {
+            if (!isCertificateValid(certificateToken, certificateTokenChain, controlTime)) {
                 return false;
             }
         }
@@ -842,8 +832,23 @@ public class RevocationDataVerifier {
      * @param certificateToken {@link CertificateToken}
      * @param controlTime {@link Date}
      * @return TRUE if the certificate token is valid, FALSE otherwise
+     * @deprecated since DSS 6.3.
+     *             Please use {@code #isCertificateValid(certificateToken, certificateChain, controlTime)} instead.
      */
+    @Deprecated
     protected boolean isCertificateValid(CertificateToken certificateToken, Date controlTime) {
+        return isCertificateValid(certificateToken, Collections.emptyList(), controlTime);
+    }
+
+    /**
+     * Verifies if the certificate is valid
+     *
+     * @param certificateToken {@link CertificateToken}
+     * @param certificateChain collection of {@link CertificateToken}s
+     * @param controlTime {@link Date}
+     * @return TRUE if the certificate token is valid, FALSE otherwise
+     */
+    protected boolean isCertificateValid(CertificateToken certificateToken, Collection<CertificateToken> certificateChain, Date controlTime) {
         if (!isRevocationDataSkip(certificateToken, controlTime)) {
             if (!hasRevocationAccessPoints(certificateToken)) {
                 LOG.warn("The certificate '{}' requires a revocation data, " +
@@ -851,7 +856,7 @@ public class RevocationDataVerifier {
                         certificateToken.getDSSIdAsString());
                 return false;
             }
-            if (!isCertificateNotRevoked(certificateToken, controlTime)) {
+            if (!isCertificateNotRevoked(certificateToken, certificateChain, controlTime)) {
                 LOG.warn("The certificate '{}' does not contain a valid revocation data information!",
                         certificateToken.getDSSIdAsString());
                 return false;
@@ -871,12 +876,30 @@ public class RevocationDataVerifier {
      * @param certificateToken {@link CertificateToken} to validated
      * @param controlTime {@link Date} validation time
      * @return TRUE if the certificate token is valid at control time, FALSE otherwise
+     * @deprecated since DSS 6.3.
+     *             Please use {@code #isCertificateNotRevoked(certificateToken, certificateChain, controlTime)} instead.
      */
+    @Deprecated
     protected boolean isCertificateNotRevoked(CertificateToken certificateToken, Date controlTime) {
+        return isCertificateNotRevoked(certificateToken, Collections.emptyList(), controlTime);
+    }
+
+    /**
+     * This method verifies whether a certificate token is not revoked at control time
+     *
+     * @param certificateToken {@link CertificateToken} to validated
+     * @param certificateChain collection of {@link CertificateToken}s
+     * @param controlTime {@link Date} validation time
+     * @return TRUE if the certificate token is valid at control time, FALSE otherwise
+     */
+    protected boolean isCertificateNotRevoked(CertificateToken certificateToken, Collection<CertificateToken> certificateChain, Date controlTime) {
+        populateValidationContext(certificateChain);
+
         List<RevocationToken<?>> revocationData = getRelatedRevocationTokens(certificateToken);
         if (Utils.isCollectionNotEmpty(revocationData)) {
             for (RevocationToken<?> revocationToken : revocationData) {
-                if (isAcceptable(revocationToken, controlTime) && checkCertificateNotRevoked(revocationToken, controlTime)) {
+                if (!isSelfIssuedRevocation(certificateToken, revocationToken) && isAcceptable(revocationToken, controlTime)
+                        && checkCertificateNotRevoked(revocationToken, controlTime)) {
                     return true;
                 }
             }
@@ -885,12 +908,61 @@ public class RevocationDataVerifier {
         return false;
     }
 
+    /**
+     * Verifies whether the verified certificate does not occur in the revocation's issuer certificate chain
+     *
+     * @param certificateToken {@link CertificateToken} to be verified
+     * @param revocationData {@link RevocationToken}
+     * @return TRUE if the certificate occurs in the revocation's certificate chain, FALSE otherwise
+     */
+    protected boolean isSelfIssuedRevocation(CertificateToken certificateToken, RevocationToken<?> revocationData) {
+        if (certificateToken.equals(revocationData.getIssuerCertificateToken())) {
+            LOG.warn("Revocation data '{}' has been issued by the concerned certificate '{}'!",
+                    revocationData.getDSSIdAsString(), certificateToken.getDSSIdAsString());
+            return true;
+        }
+
+        // verify certificate occurrence within the chain
+        if (Utils.isCollectionNotEmpty(revocationData.getCertificates())) {
+            List<CertificateToken> certificateChain = new CertificateReorderer(
+                    revocationData.getIssuerCertificateToken(), revocationData.getCertificates()).getOrderedCertificates();
+            if (certificateChain.contains(certificateToken)) {
+                LOG.warn("The concerned certificate '{}' found at the revocation '{}' certificate chain!",
+                        certificateToken.getDSSIdAsString(), revocationData.getDSSIdAsString());
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void populateValidationContext(Collection<CertificateToken> certificateChain) {
+        if (validationContext != null) {
+            for (CertificateToken certificateToken : certificateChain) {
+                validationContext.addCertificateTokenForVerification(certificateToken);
+            }
+        }
+    }
+
     private List<RevocationToken<?>> getRelatedRevocationTokens(CertificateToken certificateToken) {
-        if (Utils.isCollectionEmpty(processedRevocations)) {
+        // TODO : temporary support of processedRevocations. Remove in DSS 6.3
+        if (validationContext == null && Utils.isCollectionEmpty(processedRevocations)) {
+            LOG.warn("ValidationContext is not defined! Unable to retrieve revocation data for certificate.");
+            return Collections.emptyList();
+        }
+
+        List<RevocationToken<?>> revocationData = new ArrayList<>();
+        if (validationContext != null) {
+            revocationData.addAll(validationContext.getRevocationData(certificateToken));
+        }
+        // TODO : temporary processing. Remove in DSS 6.3
+        if (Utils.isCollectionNotEmpty(processedRevocations)) {
+            revocationData.addAll(processedRevocations);
+        }
+        if (Utils.isCollectionEmpty(revocationData)) {
             return Collections.emptyList();
         }
         List<RevocationToken<?>> result = new ArrayList<>();
-        for (RevocationToken<?> revocationToken : processedRevocations) {
+        for (RevocationToken<?> revocationToken : revocationData) {
             if (Utils.areStringsEqual(certificateToken.getDSSIdAsString(), revocationToken.getRelatedCertificateId())) {
                 result.add(revocationToken);
             }

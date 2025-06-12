@@ -25,10 +25,10 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignaturePolicyType;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
+import eu.europa.esig.dss.model.policy.MultiValuesRule;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
 
 /**
@@ -40,7 +40,7 @@ public class SignaturePolicyIdentifierCheck extends AbstractMultiValuesCheckItem
 	private final SignatureWrapper signature;
 
 	/** The constraint */
-	private final MultiValuesConstraint multiValues;
+	private final MultiValuesRule multiValues;
 
 	/**
 	 * Default constructor
@@ -48,10 +48,10 @@ public class SignaturePolicyIdentifierCheck extends AbstractMultiValuesCheckItem
 	 * @param i18nProvider {@link I18nProvider}
 	 * @param result {@link XmlVCI}
 	 * @param signature {@link SignatureWrapper}
-	 * @param multiValues {@link MultiValuesConstraint}
+	 * @param multiValues {@link MultiValuesRule}
 	 */
 	public SignaturePolicyIdentifierCheck(I18nProvider i18nProvider, XmlVCI result, SignatureWrapper signature,
-										  MultiValuesConstraint multiValues) {
+										  MultiValuesRule multiValues) {
 		super(i18nProvider, result, multiValues);
 		this.signature = signature;
 		this.multiValues = multiValues;
@@ -60,11 +60,11 @@ public class SignaturePolicyIdentifierCheck extends AbstractMultiValuesCheckItem
 	@Override
 	protected boolean process() {
 		String policyId = signature.getPolicyId();
-		if (multiValues.getId().contains(SignaturePolicyType.NO_POLICY.name()) && Utils.isStringEmpty(policyId)) {
+		if (multiValues.getValues().contains(SignaturePolicyType.NO_POLICY.name()) && Utils.isStringEmpty(policyId)) {
 			return true;
-		} else if (multiValues.getId().contains(SignaturePolicyType.ANY_POLICY.name()) && Utils.isStringNotEmpty(policyId)) {
+		} else if (multiValues.getValues().contains(SignaturePolicyType.ANY_POLICY.name()) && Utils.isStringNotEmpty(policyId)) {
 			return true;
-		} else if (multiValues.getId().contains(SignaturePolicyType.IMPLICIT_POLICY.name())
+		} else if (multiValues.getValues().contains(SignaturePolicyType.IMPLICIT_POLICY.name())
 				&& Utils.areStringsEqual(SignaturePolicyType.IMPLICIT_POLICY.name(), policyId)) {
 			return true;
 		}

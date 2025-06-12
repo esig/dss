@@ -30,6 +30,7 @@ import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.ReferenceValidation;
@@ -63,7 +64,6 @@ import eu.europa.esig.dss.xades.definition.XAdESPath;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
-import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
 import eu.europa.esig.dss.xades.reference.XAdESReferenceValidation;
 import eu.europa.esig.dss.xades.validation.scope.XAdESSignatureScopeFinder;
 import eu.europa.esig.dss.xades.validation.timestamp.XAdESTimestampSource;
@@ -73,7 +73,6 @@ import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.xml.utils.SantuarioInitializer;
-import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
 import org.apache.xml.security.algorithms.JCEMapper;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.Reference;
@@ -90,7 +89,6 @@ import org.w3c.dom.NodeList;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -159,7 +157,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		JCEMapper.setProviderId(DSSSecurityProvider.getSecurityProviderName());
 		JCEMapper.registerDefaultAlgorithms();
 
-		/**
+		/*
 		 * Adds the support of not standard algorithm name: http://www.w3.org/2001/04/xmldsig-more/rsa-ripemd160. Used
 		 * by some AT signature providers. The BC
 		 * provider must be previously added.
@@ -179,7 +177,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	/**
 	 * Customized
 	 * org.apache.xml.security.utils.resolver.ResourceResolver.registerDefaultResolvers()
-	 *
+	 * <p>
 	 * Ignore references which point to a file (file://) or external http urls
 	 * Enforce ResolverFragment against XPath injections
 	 */
@@ -195,7 +193,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 *            the signature DOM element
 	 */
 	public XAdESSignature(final Element signatureElement) {
-		this(signatureElement, Arrays.asList(new XAdES132Path()));
+		this(signatureElement, Collections.singletonList(new XAdES132Path()));
 	}
 
 	/**
@@ -517,9 +515,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			if (transformList.getLength() == 1) {
 				Node transform = transformList.item(0);
 				String algorithm = DomUtils.getValue(transform, "@Algorithm");
-				if (DSSXMLUtils.SP_DOC_DIGEST_AS_IN_SPECIFICATION_ALGORITHM_URI.equals(algorithm)) {
-					return true;
-				}
+                return DSSXMLUtils.SP_DOC_DIGEST_AS_IN_SPECIFICATION_ALGORITHM_URI.equals(algorithm);
 			}
 		}
 		return false;
@@ -678,7 +674,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	@Override
 	public List<SignerRole> getCertifiedSignerRoles() {
-		/**
+		/*
 		 * <!-- Start EncapsulatedPKIDataType-->
 		 * <xsd:element name="EncapsulatedPKIData" type="EncapsulatedPKIDataType"/>
 		 * <xsd:complexType name="EncapsulatedPKIDataType">
@@ -790,99 +786,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 */
 	public NodeList getObjects() {
 		return DomUtils.getNodeList(signatureElement, XMLDSigPath.OBJECT_PATH);
-	}
-
-	/**
-	 * Gets xades:CompleteCertificateRefs or xades141:CompleteCertificateRefsV2 element
-	 *
-	 * @return {@link Element}
-	 * @deprecated since DSS 6.2. To be removed.
-	 */
-	@Deprecated
-	public Element getCompleteCertificateRefs() {
-		Element element = null;
-		String completeCertificateRefsPath = xadesPath.getCompleteCertificateRefsPath();
-		if (Utils.isStringNotEmpty(completeCertificateRefsPath)) {
-			element = DomUtils.getElement(signatureElement, completeCertificateRefsPath);
-		}
-		String completeCertificateRefsV2Path = xadesPath.getCompleteCertificateRefsV2Path();
-		if (element == null && Utils.isStringNotEmpty(completeCertificateRefsV2Path)) {
-			element = DomUtils.getElement(signatureElement, completeCertificateRefsV2Path);
-		}
-		return element;
-	}
-
-	/**
-	 * Gets xades:CompleteRevocationRefs
-	 *
-	 * @return {@link Element}
-	 * @deprecated since DSS 6.2. To be removed.
-	 */
-	@Deprecated
-	public Element getCompleteRevocationRefs() {
-		return DomUtils.getElement(signatureElement, xadesPath.getCompleteRevocationRefsPath());
-	}
-
-	/**
-	 * Gets xades:SigAndRefsTimeStamp node list
-	 *
-	 * @return {@link NodeList}
-	 * @deprecated since DSS 6.2. To be removed.
-	 */
-	@Deprecated
-	public NodeList getSigAndRefsTimeStamp() {
-		NodeList nodeList = null;
-		String sigAndRefsTimestampPath = xadesPath.getSigAndRefsTimestampPath();
-		if (Utils.isStringNotEmpty(sigAndRefsTimestampPath)) {
-			nodeList = DomUtils.getNodeList(signatureElement, sigAndRefsTimestampPath);
-		}
-		String sigAndRefsTimestampV2Path = xadesPath.getSigAndRefsTimestampV2Path();
-		if ((nodeList == null || nodeList.getLength() == 0) && Utils.isStringNotEmpty(sigAndRefsTimestampV2Path)) {
-			nodeList = DomUtils.getNodeList(signatureElement, sigAndRefsTimestampV2Path);
-		}
-		return nodeList;
-	}
-
-	/**
-	 * Gets xades:RefsOnlyTimestamp node list
-	 *
-	 * @return {@link NodeList}
-	 * @deprecated since DSS 6.2. To be removed.
-	 */
-	@Deprecated
-	public NodeList getRefsOnlyTimestampTimeStamp() {
-		NodeList nodeList = null;
-		String refsOnlyTimestampPath = xadesPath.getRefsOnlyTimestampPath();
-		if (Utils.isStringNotEmpty(refsOnlyTimestampPath)) {
-			nodeList = DomUtils.getNodeList(signatureElement, refsOnlyTimestampPath);
-		}
-		String refsOnlyTimestampV2Path = xadesPath.getRefsOnlyTimestampV2Path();
-		if ((nodeList == null || nodeList.getLength() == 0) && Utils.isStringNotEmpty(refsOnlyTimestampV2Path)) {
-			nodeList = DomUtils.getNodeList(signatureElement, refsOnlyTimestampV2Path);
-		}
-		return nodeList;
-	}
-
-	/**
-	 * Gets xades:CertificateValues element
-	 *
-	 * @return {@link Element}
-	 * @deprecated since DSS 6.2. To be removed.
-	 */
-	@Deprecated
-	public Element getCertificateValues() {
-		return DomUtils.getElement(signatureElement, xadesPath.getCertificateValuesPath());
-	}
-
-	/**
-	 * Gets xades:RevocationValues element
-	 *
-	 * @return {@link Element}
-	 * @deprecated since DSS 6.2. To be removed.
-	 */
-	@Deprecated
-	public Element getRevocationValues() {
-		return DomUtils.getElement(signatureElement, xadesPath.getRevocationValuesPath());
 	}
 
 	@Override
@@ -1106,7 +1009,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	/**
 	 * TS 119 442 - V1.1.1 - Electronic Signatures and Infrastructures (ESI), ch. 5.1.4.2.1.3 XML component:
-	 * 
+	 * <p>
 	 * In case of XAdES signatures, the input of the digest value computation shall be the result of applying the
 	 * canonicalization algorithm identified within the CanonicalizationMethod child element's value to the
 	 * corresponding ds:Signature element and its contents. The canonicalization shall be computed keeping this
@@ -1114,9 +1017,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 */
 	@Override
 	public SignatureDigestReference getSignatureDigestReference(DigestAlgorithm digestAlgorithm) {
-		byte[] signatureElementBytes = XMLCanonicalizer.createInstance(DEFAULT_CANONICALIZATION_METHOD).canonicalize(signatureElement);
-		byte[] digestValue = DSSUtils.digest(digestAlgorithm, signatureElementBytes);
-		return new SignatureDigestReference(DEFAULT_CANONICALIZATION_METHOD, new Digest(digestAlgorithm, digestValue));
+		DSSMessageDigest digest = DSSXMLUtils.getDigestOnCanonicalizedNode(signatureElement, digestAlgorithm, DEFAULT_CANONICALIZATION_METHOD);
+		return new SignatureDigestReference(DEFAULT_CANONICALIZATION_METHOD, digest);
 	}
 
 	@Override
@@ -1136,8 +1038,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			LOG.warn("Canonicalization method is not present in SignedInfo element! Unable to compute DTBSR.");
 			return null;
 		}
-		byte[] canonicalizedSignedInfo = XMLCanonicalizer.createInstance(canonicalizationMethod).canonicalize(signedInfo);
-		return new Digest(digestAlgorithm, DSSUtils.digest(digestAlgorithm, canonicalizedSignedInfo));
+		return DSSXMLUtils.getDigestOnCanonicalizedNode(signedInfo, digestAlgorithm, canonicalizationMethod);
 	}
 
 	/**
@@ -1288,15 +1189,15 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	/**
 	 * This method retrieves the potential countersignatures embedded in the XAdES signature document. From ETSI TS 101
 	 * 903 v1.4.2:
-	 *
+	 * <p>
 	 * 7.2.4.1 Countersignature identifier in Type attribute of ds:Reference
-	 *
+	 * <p>
 	 * A XAdES signature containing a ds:Reference element whose Type attribute has value
 	 * "http://uri.etsi.org/01903#CountersignedSignature" will indicate that
 	 * is is, in fact, a countersignature of the signature referenced by this element.
-	 *
+	 * <p>
 	 * 7.2.4.2 Enveloped countersignatures: the CounterSignature element
-	 *
+	 * <p>
 	 * The CounterSignature is an unsigned property that qualifies the signature. A XAdES signature MAY have more than
 	 * one CounterSignature properties. As
 	 * indicated by its name, it contains one countersignature of the qualified signature.
@@ -1404,6 +1305,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 		baselineProfile = baselineProfile && hasTProfile();
 
 		if (baselineProfile && hasLTProfile()) {
+			if (hasERSProfile()) {
+				return SignatureLevel.XAdES_ERS;
+			}
 			if (hasLTAProfile()) {
 				return SignatureLevel.XAdES_BASELINE_LTA;
 			}
@@ -1411,6 +1315,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 		} else if (hasCProfile()) {
 			if (hasXLProfile()) {
+				if (hasERSProfile()) {
+					return SignatureLevel.XAdES_ERS;
+				}
 				if (hasAProfile()) {
 					return SignatureLevel.XAdES_A;
 				}
@@ -1424,6 +1331,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			return SignatureLevel.XAdES_C;
 
 		} else if (hasXLProfile()) {
+			if (hasERSProfile()) {
+				return SignatureLevel.XAdES_ERS;
+			}
 			if (hasAProfile()) {
 				return SignatureLevel.XAdES_A; // XAdES-E-A can be built on XAdES-E-T directly
 			}
@@ -1443,26 +1353,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	@Override
 	protected List<SignatureScope> findSignatureScopes() {
 		return new XAdESSignatureScopeFinder().findSignatureScope(this);
-	}
-
-	/**
-	 * This method returns the last timestamp validation data for an archive
-	 * timestamp.
-	 *
-	 * @return {@link Element} xades141:TimestampValidationData
-	 * @deprecated since DSS 6.2. To be removed.
-	 */
-	@Deprecated
-	public Element getLastTimestampValidationData() {
-		final NodeList nodeList = DomUtils.getNodeList(signatureElement, xadesPath.getUnsignedSignaturePropertiesPath() + "/*");
-		if (nodeList.getLength() > 0) {
-			final Element unsignedSignatureElement = (Element) nodeList.item(nodeList.getLength() - 1);
-			final String nodeName = unsignedSignatureElement.getLocalName();
-			if (XAdES141Element.TIMESTAMP_VALIDATION_DATA.isSameTagName(nodeName)) {
-				return unsignedSignatureElement;
-			}
-		}
-		return null;
 	}
 
 	@Override

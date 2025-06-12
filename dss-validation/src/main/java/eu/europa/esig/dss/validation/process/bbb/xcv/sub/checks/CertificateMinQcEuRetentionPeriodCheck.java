@@ -26,7 +26,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.IntValueConstraint;
+import eu.europa.esig.dss.model.policy.NumericValueRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
 /**
@@ -38,7 +38,7 @@ public class CertificateMinQcEuRetentionPeriodCheck extends ChainItem<XmlSubXCV>
     private final CertificateWrapper certificate;
 
     /** The constraint from policy file */
-    private final IntValueConstraint constraint;
+    private final NumericValueRule constraint;
 
     /**
      * Default constructor
@@ -46,10 +46,10 @@ public class CertificateMinQcEuRetentionPeriodCheck extends ChainItem<XmlSubXCV>
      * @param i18nProvider {@link I18nProvider}
      * @param result the result
      * @param certificate {@link CertificateWrapper}
-     * @param constraint {@link IntValueConstraint}
+     * @param constraint {@link NumericValueRule}
      */
     public CertificateMinQcEuRetentionPeriodCheck(I18nProvider i18nProvider, XmlSubXCV result,
-                                                  CertificateWrapper certificate, IntValueConstraint constraint) {
+                                                  CertificateWrapper certificate, NumericValueRule constraint) {
         super(i18nProvider, result, constraint);
         this.certificate = certificate;
         this.constraint = constraint;
@@ -59,7 +59,7 @@ public class CertificateMinQcEuRetentionPeriodCheck extends ChainItem<XmlSubXCV>
     protected boolean process() {
         Integer qcEuRetentionPeriod = certificate.getQCEuRetentionPeriod();
         if (qcEuRetentionPeriod != null) {
-            return qcEuRetentionPeriod >= constraint.getValue();
+            return qcEuRetentionPeriod >= constraint.getValue().intValue();
         }
         // not present
         return false;

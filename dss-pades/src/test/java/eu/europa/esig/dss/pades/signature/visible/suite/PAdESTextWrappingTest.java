@@ -41,7 +41,7 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class PAdESTextWrappingTest extends AbstractPAdESTestSignature {
+class PAdESTextWrappingTest extends AbstractPAdESTestSignature {
 
     private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;
     private PAdESSignatureParameters signatureParameters;
@@ -177,11 +177,11 @@ public class PAdESTextWrappingTest extends AbstractPAdESTestSignature {
 
         signatureParameters.setImageParameters(imageParameters);
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> super.signAndVerify());
+        Exception exception = assertThrows(IllegalArgumentException.class, super::signAndVerify);
         assertEquals("Signature field dimensions are not defined! Unable to use 'FILL_BOX' option.", exception.getMessage());
 
         textParameters.setTextWrapping(TextWrapping.FILL_BOX_AND_LINEBREAK);
-        exception = assertThrows(IllegalArgumentException.class, () -> super.signAndVerify());
+        exception = assertThrows(IllegalArgumentException.class, super::signAndVerify);
         assertEquals("Signature field dimensions are not defined! Unable to use 'FILL_BOX_AND_LINEBREAK' option.", exception.getMessage());
     }
 

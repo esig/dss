@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PAdESWithDetachedTstWithAsn1EvidenceRecordValidationTest extends AbstractPAdESWithEvidenceRecordTestValidation {
+class PAdESWithDetachedTstWithAsn1EvidenceRecordValidationTest extends AbstractPAdESWithEvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

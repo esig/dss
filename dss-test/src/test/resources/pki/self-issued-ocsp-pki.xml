@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<pki xmlns="http://pki-factory.nowina.lu/pki-factory" name="self-issued-ocsp-pki">
+
+    <certificate>
+        <serialNumber>1000</serialNumber>
+        <subject>self-issued-ocsp-root-ca</subject>
+        <issuer serialNumber="1000">self-issued-ocsp-root-ca</issuer>
+        <ocspResponder serialNumber="1001">self-issued-ocsp-root-ca</ocspResponder>
+        <notBefore year="-1"/>
+        <notAfter year="1"/>
+        <keyAlgo encryption="RSA" length="2048" />
+        <digestAlgo>SHA256</digestAlgo>
+        <keyUsages>
+            <keyUsage>crlSign</keyUsage>
+            <keyUsage>keyCertSign</keyUsage>
+        </keyUsages>
+        <ca/>
+        <trustAnchor/>
+    </certificate>
+
+    <certificate>
+        <serialNumber>1001</serialNumber>
+        <subject>self-issued-ocsp-good-ca</subject>
+        <issuer serialNumber="1000">self-issued-ocsp-root-ca</issuer>
+        <notBefore month="-11"/>
+        <notAfter month="11"/>
+        <keyAlgo encryption="RSA" length="2048" />
+        <digestAlgo>SHA256</digestAlgo>
+        <keyUsages>
+            <keyUsage>crlSign</keyUsage>
+            <keyUsage>keyCertSign</keyUsage>
+        </keyUsages>
+        <ca/>
+        <ocsp>self-issued-ocsp-root-ca</ocsp>
+        <caIssuers>self-issued-ocsp-root-ca</caIssuers>
+    </certificate>
+
+    <certificate>
+        <serialNumber>1010</serialNumber>
+        <subject>self-issued-ocsp-delegated-root-ca</subject>
+        <issuer serialNumber="1010">self-issued-ocsp-delegated-root-ca</issuer>
+        <notBefore year="-1"/>
+        <notAfter year="1"/>
+        <keyAlgo encryption="RSA" length="2048" />
+        <digestAlgo>SHA256</digestAlgo>
+        <keyUsages>
+            <keyUsage>crlSign</keyUsage>
+            <keyUsage>keyCertSign</keyUsage>
+        </keyUsages>
+        <ca/>
+    </certificate>
+
+    <certificate>
+        <serialNumber>1011</serialNumber>
+        <subject>self-issued-ocsp-delegated-good-ca</subject>
+        <issuer serialNumber="1010">self-issued-ocsp-delegated-root-ca</issuer>
+        <ocspResponder serialNumber="1012">self-issued-ocsp-delegated-good-ca</ocspResponder>
+        <notBefore month="-11"/>
+        <notAfter month="11"/>
+        <keyAlgo encryption="RSA" length="2048" />
+        <digestAlgo>SHA256</digestAlgo>
+        <keyUsages>
+            <keyUsage>crlSign</keyUsage>
+            <keyUsage>keyCertSign</keyUsage>
+        </keyUsages>
+        <ca/>
+        <crl>self-issued-ocsp-delegated-root-ca</crl>
+        <caIssuers>self-issued-ocsp-delegated-root-ca</caIssuers>
+        <trustAnchor/>
+    </certificate>
+
+    <certificate>
+        <serialNumber>1012</serialNumber>
+        <subject>self-issued-ocsp-delegated-ocsp-responder</subject>
+        <issuer serialNumber="1011">self-issued-ocsp-delegated-root-ca</issuer>
+        <notBefore month="-11"/>
+        <notAfter month="11"/>
+        <keyAlgo encryption="RSA" length="2048" />
+        <digestAlgo>SHA256</digestAlgo>
+        <keyUsages>
+            <keyUsage>crlSign</keyUsage>
+            <keyUsage>keyCertSign</keyUsage>
+        </keyUsages>
+        <ca/>
+        <ocsp>self-issued-ocsp-delegated-good-ca</ocsp>
+        <caIssuers>self-issued-ocsp-delegated-root-ca</caIssuers>
+    </certificate>
+
+    <certificate>
+        <serialNumber>1021</serialNumber>
+        <subject>self-issued-ocsp-delegated-loop-good-ca</subject>
+        <issuer serialNumber="1010">self-issued-ocsp-delegated-root-ca</issuer>
+        <ocspResponder serialNumber="1023">self-issued-ocsp-delegated-loop-ca-ocsp-responder</ocspResponder>
+        <notBefore month="-11"/>
+        <notAfter month="11"/>
+        <keyAlgo encryption="RSA" length="2048" />
+        <digestAlgo>SHA256</digestAlgo>
+        <keyUsages>
+            <keyUsage>crlSign</keyUsage>
+            <keyUsage>keyCertSign</keyUsage>
+        </keyUsages>
+        <ca/>
+        <crl>self-issued-ocsp-delegated-root-ca</crl>
+        <caIssuers>self-issued-ocsp-delegated-root-ca</caIssuers>
+        <trustAnchor/>
+    </certificate>
+
+    <certificate>
+        <serialNumber>1022</serialNumber>
+        <subject>self-issued-ocsp-delegated-loop-ca-ocsp-responder</subject>
+        <issuer serialNumber="1021">self-issued-ocsp-delegated-root-ca</issuer>
+        <notBefore month="-11"/>
+        <notAfter month="11"/>
+        <keyAlgo encryption="RSA" length="2048" />
+        <digestAlgo>SHA256</digestAlgo>
+        <keyUsages>
+            <keyUsage>crlSign</keyUsage>
+            <keyUsage>keyCertSign</keyUsage>
+        </keyUsages>
+        <ca/>
+        <ocsp>self-issued-ocsp-delegated-loop-good-ca</ocsp>
+        <caIssuers>self-issued-ocsp-delegated-loop-good-ca</caIssuers>
+    </certificate>
+
+    <certificate>
+        <serialNumber>1023</serialNumber>
+        <subject>self-issued-ocsp-delegated-loop-ocsp-responder</subject>
+        <issuer serialNumber="1022">self-issued-ocsp-delegated-loop-good-ca</issuer>
+        <notBefore month="-11"/>
+        <notAfter month="11"/>
+        <keyAlgo encryption="RSA" length="2048" />
+        <digestAlgo>SHA256</digestAlgo>
+        <keyUsages>
+            <keyUsage>crlSign</keyUsage>
+            <keyUsage>keyCertSign</keyUsage>
+        </keyUsages>
+        <ca/>
+        <ocsp>self-issued-ocsp-delegated-loop-ca-ocsp-responder</ocsp>
+        <caIssuers>self-issued-ocsp-delegated-loop-ca-ocsp-responder</caIssuers>
+    </certificate>
+
+    <certificate>
+        <serialNumber>1100</serialNumber>
+        <subject>self-issued-ocsp-good-user</subject>
+        <issuer serialNumber="1001">self-issued-ocsp-root-ca</issuer>
+        <notBefore month="-11"/>
+        <notAfter month="11"/>
+        <keyAlgo encryption="RSA" length="2048" />
+        <digestAlgo>SHA256</digestAlgo>
+        <keyUsages>
+            <keyUsage>nonRepudiation</keyUsage>
+        </keyUsages>
+        <ocsp>self-issued-ocsp-good-ca</ocsp>
+        <caIssuers>self-issued-ocsp-good-ca</caIssuers>
+    </certificate>
+
+    <certificate>
+        <serialNumber>1110</serialNumber>
+        <subject>self-issued-ocsp-delegated-good-user</subject>
+        <issuer serialNumber="1011">self-issued-ocsp-delegated-root-ca</issuer>
+        <notBefore month="-11"/>
+        <notAfter month="11"/>
+        <keyAlgo encryption="RSA" length="2048" />
+        <digestAlgo>SHA256</digestAlgo>
+        <keyUsages>
+            <keyUsage>nonRepudiation</keyUsage>
+        </keyUsages>
+        <ocsp>self-issued-ocsp-delegated-good-ca</ocsp>
+        <caIssuers>self-issued-ocsp-delegated-good-ca</caIssuers>
+    </certificate>
+
+    <certificate>
+        <serialNumber>1120</serialNumber>
+        <subject>self-issued-ocsp-delegated-loop-good-user</subject>
+        <issuer serialNumber="1021">self-issued-ocsp-delegated-root-ca</issuer>
+        <notBefore month="-11"/>
+        <notAfter month="11"/>
+        <keyAlgo encryption="RSA" length="2048" />
+        <digestAlgo>SHA256</digestAlgo>
+        <keyUsages>
+            <keyUsage>nonRepudiation</keyUsage>
+        </keyUsages>
+        <ocsp>self-issued-ocsp-delegated-loop-good-ca</ocsp>
+        <caIssuers>self-issued-ocsp-delegated-loop-good-ca</caIssuers>
+    </certificate>
+
+    <certificate>
+        <serialNumber>1200</serialNumber>
+        <subject>self-issued-ocsp-good-tsa</subject>
+        <issuer serialNumber="1001">self-issued-ocsp-root-ca</issuer>
+        <notBefore month="-11"/>
+        <notAfter month="11"/>
+        <keyAlgo encryption="RSA" length="2048" />
+        <digestAlgo>SHA512</digestAlgo>
+        <keyUsages>
+            <keyUsage>digitalSignature</keyUsage>
+        </keyUsages>
+        <extendedKeyUsages>
+            <extendedKeyUsage>1.3.6.1.5.5.7.3.8</extendedKeyUsage> <!-- time-stamping -->
+        </extendedKeyUsages>
+        <ocsp>self-issued-ocsp-good-ca</ocsp>
+        <caIssuers>self-issued-ocsp-good-ca</caIssuers>
+        <trustAnchor/>
+    </certificate>
+
+</pki>

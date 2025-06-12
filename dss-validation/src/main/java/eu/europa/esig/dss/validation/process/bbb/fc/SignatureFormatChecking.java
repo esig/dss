@@ -27,16 +27,17 @@ import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureForm;
 import eu.europa.esig.dss.i18n.I18nProvider;
-import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
-import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
+import eu.europa.esig.dss.model.policy.MultiValuesRule;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.AllFilesSignedCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.EllipticCurveKeySizeCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.FormatCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.FullScopeCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.ReferencesNotAmbiguousCheck;
+import eu.europa.esig.dss.validation.process.bbb.fc.checks.SignatureFilenameAdherenceCheck;
+import eu.europa.esig.dss.validation.process.bbb.fc.checks.SignatureManifestFilenameAdherenceCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.SignatureNotAmbiguousCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.SignerInformationStoreCheck;
 
@@ -61,11 +62,6 @@ public class SignatureFormatChecking extends AbstractFormatChecking<SignatureWra
 	public SignatureFormatChecking(I18nProvider i18nProvider, DiagnosticData diagnosticData,
 								   SignatureWrapper signature, Context context, ValidationPolicy policy) {
 		super(i18nProvider, diagnosticData, signature, context, policy);
-	}
-	
-	@Override
-	protected MessageTag getTitle() {
-		return MessageTag.FORMAT_CHECKING;
 	}
 
 	@Override
@@ -116,36 +112,48 @@ public class SignatureFormatChecking extends AbstractFormatChecking<SignatureWra
 	}
 
 	private ChainItem<XmlFC> formatCheck() {
-		MultiValuesConstraint constraint = policy.getSignatureFormatConstraint(context);
+		MultiValuesRule constraint = policy.getSignatureFormatConstraint(context);
 		return new FormatCheck(i18nProvider, result, token, constraint);
 	}
 	
 	private ChainItem<XmlFC> signatureDuplicateCheck() {
-		LevelConstraint constraint = policy.getSignatureDuplicatedConstraint(context);
+		LevelRule constraint = policy.getSignatureDuplicatedConstraint(context);
 		return new SignatureNotAmbiguousCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlFC> referenceDuplicateCheck() {
-		return new ReferencesNotAmbiguousCheck(i18nProvider, result, token, getFailLevelConstraint());
+		return new ReferencesNotAmbiguousCheck(i18nProvider, result, token, getFailLevelRule());
 	}
 
 	private ChainItem<XmlFC> fullScopeCheck() {
-		LevelConstraint constraint = policy.getFullScopeConstraint();
+		LevelRule constraint = policy.getFullScopeConstraint();
 		return new FullScopeCheck(i18nProvider, result, token.getSignatureScopes(), constraint);
 	}
 	
 	private ChainItem<XmlFC> signerInformationStoreCheck() {
-		LevelConstraint constraint = policy.getSignerInformationStoreConstraint(context);
+		LevelRule constraint = policy.getSignerInformationStoreConstraint(context);
 		return new SignerInformationStoreCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlFC> ellipticCurveKeySizeCheck() {
-		LevelConstraint constraint = policy.getEllipticCurveKeySizeConstraint(context);
+		LevelRule constraint = policy.getEllipticCurveKeySizeConstraint(context);
 		return new EllipticCurveKeySizeCheck(i18nProvider, result, token, constraint);
 	}
 
+	@Override
+	protected ChainItem<XmlFC> filenameAdherenceCheck() {
+		LevelRule constraint = policy.getFilenameAdherenceConstraint();
+		return new SignatureFilenameAdherenceCheck(i18nProvider, result, diagnosticData, token, constraint);
+	}
+
+	@Override
+	protected ChainItem<XmlFC> manifestFilenameAdherenceCheck() {
+		LevelRule constraint = policy.getFilenameAdherenceConstraint();
+		return new SignatureManifestFilenameAdherenceCheck(i18nProvider, result, diagnosticData, token, constraint);
+	}
+
 	private ChainItem<XmlFC> allFilesSignedCheck() {
-		LevelConstraint constraint = policy.getAllFilesSignedConstraint();
+		LevelRule constraint = policy.getAllFilesSignedConstraint();
 		return new AllFilesSignedCheck(i18nProvider, result, token, diagnosticData.getContainerInfo(), constraint);
 	}
 

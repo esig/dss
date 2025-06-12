@@ -25,6 +25,7 @@ import eu.europa.esig.dss.enumerations.MimeType;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Objects;
 
@@ -34,8 +35,12 @@ import java.util.Objects;
  */
 public class InMemoryDocument extends CommonDocument {
 
+	/** The binary content of the document */
 	private byte[] bytes;
 
+	/**
+	 * Empty constructor
+	 */
 	public InMemoryDocument() {
 		// empty
 	}
@@ -138,17 +143,49 @@ public class InMemoryDocument extends CommonDocument {
 		return new ByteArrayInputStream(bytes);
 	}
 
+	/**
+	 * Gets binary content of the document
+	 *
+	 * @return byte array
+	 */
 	public byte[] getBytes() {
 		return bytes;
 	}
 
+	/**
+	 * Sets binary content of the document
+	 *
+	 * @param bytes byte array
+	 */
 	public void setBytes(byte[] bytes) {
 		this.bytes = bytes;
 	}
 
+	/**
+	 * Gets base64-encoded content of the document
+	 *
+	 * @return {@link String} base64 encoded
+	 */
 	public String getBase64Encoded() {
 		Objects.requireNonNull(bytes, "Byte array is not defined!");
 		return Base64.getEncoder().encodeToString(bytes);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		if (!super.equals(o)) return false;
+
+		InMemoryDocument that = (InMemoryDocument) o;
+		return Arrays.equals(bytes, that.bytes);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + Arrays.hashCode(bytes);
+		return result;
 	}
 
 }

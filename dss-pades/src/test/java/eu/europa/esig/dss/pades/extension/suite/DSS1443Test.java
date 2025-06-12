@@ -48,7 +48,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class DSS1443Test extends PKIFactoryAccess {
+class DSS1443Test extends PKIFactoryAccess {
 
 	@Test
 	void testSigWithAttached() {

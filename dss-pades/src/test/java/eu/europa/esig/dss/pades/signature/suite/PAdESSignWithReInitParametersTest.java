@@ -45,7 +45,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("slow")
-public class PAdESSignWithReInitParametersTest extends AbstractPAdESTestSignature {
+class PAdESSignWithReInitParametersTest extends AbstractPAdESTestSignature {
 
     private static PAdESSignatureParameters signatureParameters;
     private static PAdESService service;

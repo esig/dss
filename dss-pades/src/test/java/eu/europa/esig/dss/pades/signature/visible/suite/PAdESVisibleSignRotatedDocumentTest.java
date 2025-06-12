@@ -50,7 +50,7 @@ import java.util.stream.Stream;
  *
  */
 @Tag("slow")
-public class PAdESVisibleSignRotatedDocumentTest extends AbstractPAdESTestSignature {
+class PAdESVisibleSignRotatedDocumentTest extends AbstractPAdESTestSignature {
 
     protected PAdESService service;
     private PAdESSignatureParameters signatureParameters;
@@ -76,6 +76,16 @@ public class PAdESVisibleSignRotatedDocumentTest extends AbstractPAdESTestSignat
         signable.add(new InMemoryDocument(PAdESVisibleSignRotatedDocumentTest.class.getResourceAsStream("/visualSignature/test_-90.pdf"), "test_-90"));
         signable.add(new InMemoryDocument(PAdESVisibleSignRotatedDocumentTest.class.getResourceAsStream("/visualSignature/test_-180.pdf"), "test_-180"));
         signable.add(new InMemoryDocument(PAdESVisibleSignRotatedDocumentTest.class.getResourceAsStream("/visualSignature/test_-270.pdf"), "test_-270"));
+        
+        signable.add(new InMemoryDocument(PAdESVisibleSignRotatedDocumentTest.class.getResourceAsStream("/visualSignature/coordinates/doc-negative-coordinates.pdf"), "doc-negative-coordinates"));
+        signable.add(new InMemoryDocument(PAdESVisibleSignRotatedDocumentTest.class.getResourceAsStream("/visualSignature/coordinates/doc-negative-coordinates-rotate-90.pdf"), "doc-negative-coordinates-90"));
+        signable.add(new InMemoryDocument(PAdESVisibleSignRotatedDocumentTest.class.getResourceAsStream("/visualSignature/coordinates/doc-negative-coordinates-rotate-180.pdf"), "doc-negative-coordinates-180"));
+        signable.add(new InMemoryDocument(PAdESVisibleSignRotatedDocumentTest.class.getResourceAsStream("/visualSignature/coordinates/doc-negative-coordinates-rotate-270.pdf"), "doc-negative-coordinates-270"));
+
+        signable.add(new InMemoryDocument(PAdESVisibleSignRotatedDocumentTest.class.getResourceAsStream("/visualSignature/coordinates/doc-positive-coordinates.pdf"), "doc-positive-coordinates"));
+        signable.add(new InMemoryDocument(PAdESVisibleSignRotatedDocumentTest.class.getResourceAsStream("/visualSignature/coordinates/doc-positive-coordinates-rotate-90.pdf"), "doc-positive-coordinates-90"));
+        signable.add(new InMemoryDocument(PAdESVisibleSignRotatedDocumentTest.class.getResourceAsStream("/visualSignature/coordinates/doc-positive-coordinates-rotate-180.pdf"), "doc-positive-coordinates-180"));
+        signable.add(new InMemoryDocument(PAdESVisibleSignRotatedDocumentTest.class.getResourceAsStream("/visualSignature/coordinates/doc-positive-coordinates-rotate-270.pdf"), "doc-positive-coordinates-270"));
 
         Collection<Arguments> dataToRun = new ArrayList<>();
         for (DSSDocument document : signable) {

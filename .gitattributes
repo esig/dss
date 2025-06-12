@@ -16,5 +16,6 @@ dss-utils/src/test/resources/sample-cr-lf.xml         binary
 dss-utils/src/test/resources/sample-lf.xml         binary
 dss-xades/src/test/resources/validation/dss1334/simple-test.xml         binary
 dss-xades/src/test/resources/validation/evidence-record/Signature-X-LT-5b5edd31-344d-4d66-8e95-79f9acaab566.xml         binary
+dss-xades/src/test/resources/validation/evidence-record/X-E-ERS-LT.xml         binary
 dss-xades/src/test/resources/validation/xades-ecc-brainpool.xml         binary
 dss-xades/src/test/resources/sample.xml         binary

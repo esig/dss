@@ -28,7 +28,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 
-public class PAdESExtensionBToTWithError500TimestampTest extends AbstractPAdESTestExtension {
+class PAdESExtensionBToTWithError500TimestampTest extends AbstractPAdESTestExtension {
 
 	@Override
 	protected TSPSource getUsedTSPSourceAtExtensionTime() {
@@ -48,7 +48,7 @@ public class PAdESExtensionBToTWithError500TimestampTest extends AbstractPAdESTe
 	@Override
 	@Test
 	public void extendAndVerify() throws Exception {
-		assertThrows(DSSException.class, () -> super.extendAndVerify());
+		assertThrows(DSSException.class, super::extendAndVerify);
 	}
 
 }

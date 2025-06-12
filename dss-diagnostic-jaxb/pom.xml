@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>6.2</version>
+		<version>6.3.RC1</version>
 	</parent>
 
 	<artifactId>dss-diagnostic-jaxb</artifactId>
@@ -98,6 +98,13 @@
 		    <groupId>org.junit.jupiter</groupId>
 		    <artifactId>junit-jupiter-engine</artifactId>
 		    <scope>test</scope>
+		</dependency>
+
+		<!-- For serialization tests -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.module</groupId>
+			<artifactId>jackson-module-jakarta-xmlbind-annotations</artifactId>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 	

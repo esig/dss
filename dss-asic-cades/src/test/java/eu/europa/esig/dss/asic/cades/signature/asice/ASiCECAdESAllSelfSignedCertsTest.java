@@ -81,7 +81,7 @@ class ASiCECAdESAllSelfSignedCertsTest extends AbstractASiCECAdESTestSignature {
 		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new ExceptionOnStatusAlert());
 
 		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LT);
-		Exception exception = assertThrows(AlertException.class, () -> super.signAndVerify());
+		Exception exception = assertThrows(AlertException.class, super::signAndVerify);
 		assertTrue(exception.getMessage().contains("Error on signature augmentation to LT-level."));
 		assertTrue(exception.getMessage().contains("The signature contains only self-signed certificate chains."));
 
@@ -96,7 +96,7 @@ class ASiCECAdESAllSelfSignedCertsTest extends AbstractASiCECAdESTestSignature {
 		certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new ExceptionOnStatusAlert());
 
 		parameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_LTA);
-		Exception exception = assertThrows(AlertException.class, () -> super.signAndVerify());
+		Exception exception = assertThrows(AlertException.class, super::signAndVerify);
 		assertTrue(exception.getMessage().contains("Error on signature augmentation to LT-level."));
 		assertTrue(exception.getMessage().contains("The signature contains only self-signed certificate chains."));
 

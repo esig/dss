@@ -32,10 +32,10 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlContainerInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlManifestFile;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.simplereport.jaxb.XmlEvidenceRecord;
@@ -60,7 +60,7 @@ class ASiCConsequentlyCoveredFilesTest extends AbstractProcessExecutorTest {
                 new File("src/test/resources/diag-data/diag_data_asic_two_tsts.xml"));
         assertNotNull(diagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
         validationPolicy.getTimestampConstraints().setContainerSignedAndTimestampedFilesCovered(constraint);
@@ -122,7 +122,7 @@ class ASiCConsequentlyCoveredFilesTest extends AbstractProcessExecutorTest {
         XmlManifestFile xmlManifestFile = containerInfo.getManifestFiles().get(0);
         xmlManifestFile.getEntries().remove(1);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
         validationPolicy.getTimestampConstraints().setContainerSignedAndTimestampedFilesCovered(constraint);
@@ -212,7 +212,7 @@ class ASiCConsequentlyCoveredFilesTest extends AbstractProcessExecutorTest {
         XmlManifestFile xmlManifestFile = containerInfo.getManifestFiles().get(0);
         xmlManifestFile.getEntries().remove(1);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.WARN);
         validationPolicy.getTimestampConstraints().setContainerSignedAndTimestampedFilesCovered(constraint);
@@ -297,7 +297,7 @@ class ASiCConsequentlyCoveredFilesTest extends AbstractProcessExecutorTest {
         String sigTstId = diagnosticData.getUsedTimestamps().get(0).getId();
         String erId = diagnosticData.getEvidenceRecords().get(0).getId();
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
         validationPolicy.getEvidenceRecordConstraints().setContainerSignedAndTimestampedFilesCovered(constraint);
@@ -364,7 +364,7 @@ class ASiCConsequentlyCoveredFilesTest extends AbstractProcessExecutorTest {
         String sigTstId = diagnosticData.getUsedTimestamps().get(0).getId();
         String erId = diagnosticData.getEvidenceRecords().get(0).getId();
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
         validationPolicy.getEvidenceRecordConstraints().setContainerSignedAndTimestampedFilesCovered(constraint);

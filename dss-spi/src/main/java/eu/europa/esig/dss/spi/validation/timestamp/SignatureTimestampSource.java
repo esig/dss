@@ -852,6 +852,20 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
     }
 
     /**
+     * Returns a list of TimestampedReferences for tokens encapsulated within the list of evidenceRecords
+     *
+     * @param evidenceRecords a list of {@link EvidenceRecord} to get references from
+     * @return a list of {@link TimestampedReference}s
+     */
+    protected List<TimestampedReference> getEncapsulatedReferencesFromEvidenceRecords(List<EvidenceRecord> evidenceRecords) {
+        final List<TimestampedReference> references = new ArrayList<>();
+        for (EvidenceRecord er : evidenceRecords) {
+            addReferences(references, getReferencesFromEvidenceRecord(er, certificateSource, crlSource, ocspSource));
+        }
+        return references;
+    }
+
+    /**
      * Returns a list of {@code TimestampedReference}s created from signing certificates of the signature
      *
      * @return list of {@link TimestampedReference}s
@@ -998,6 +1012,7 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
                                                              List<TimestampToken> previousTimestamps) {
         for (EvidenceRecord evidenceRecord : createdEvidenceRecords) {
             addReferences(evidenceRecord.getTimestampedReferences(), getArchiveTimestampReferences(previousTimestamps));
+            addReferences(evidenceRecord.getTimestampedReferences(), getEncapsulatedReferencesFromEvidenceRecords(embeddedEvidenceRecords));
             processEvidenceRecordTimestamps(evidenceRecord);
         }
     }
@@ -1262,6 +1277,8 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
         addReferences(timestampedReferences, getEncapsulatedReferencesFromTimestamps(getArchiveTimestamps()));
         addReferences(timestampedReferences, getEncapsulatedReferencesFromTimestamps(
                 getTimestampsCoveredByManifest(evidenceRecord.getManifestFile())));
+        addReferences(timestampedReferences, getEncapsulatedReferencesFromEvidenceRecords(getEmbeddedEvidenceRecords()));
+
         addReferences(evidenceRecord.getTimestampedReferences(), timestampedReferences);
 
         processEvidenceRecordTimestamps(evidenceRecord);
@@ -1300,7 +1317,10 @@ public abstract class SignatureTimestampSource<AS extends AdvancedSignature, SA 
      */
     protected void populateSources(EvidenceRecord externalEvidenceRecord) {
         if (externalEvidenceRecord != null) {
-            // TODO : add extraction of embedded validation data
+            certificateSource.add(externalEvidenceRecord.getCertificateSource());
+            crlSource.add(externalEvidenceRecord.getCRLSource());
+            ocspSource.add(externalEvidenceRecord.getOCSPSource());
+
             populateSources(externalEvidenceRecord.getTimestamps());
         }
     }

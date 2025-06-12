@@ -39,14 +39,15 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.CryptographicConstraintWrapper;
+import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.Algo;
 import eu.europa.esig.dss.policy.jaxb.AlgoExpirationDate;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
-import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp;
@@ -721,9 +722,10 @@ class EvidenceRecordAloneValidationTest extends AbstractTestValidationExecutor {
 
         eu.europa.esig.dss.diagnostic.jaxb.XmlEvidenceRecord evidenceRecord = diagnosticData.getEvidenceRecords().get(0);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
-        CryptographicConstraint cryptographicConstraint = validationPolicy.getEvidenceRecordCryptographicConstraint();
-        AlgoExpirationDate algoExpirationDate = cryptographicConstraint.getAlgoExpirationDate();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
+        CryptographicConstraintWrapper cryptographicConstraint = (CryptographicConstraintWrapper) validationPolicy.getEvidenceRecordCryptographicConstraint();
+        CryptographicConstraint constraint = (CryptographicConstraint) cryptographicConstraint.getConstraint();
+        AlgoExpirationDate algoExpirationDate = constraint.getAlgoExpirationDate();
         for (Algo algo : algoExpirationDate.getAlgos()) {
             if (DigestAlgorithm.SHA224.getName().equals(algo.getValue())) {
                 algo.setDate("2022-01-01");
@@ -970,9 +972,10 @@ class EvidenceRecordAloneValidationTest extends AbstractTestValidationExecutor {
 
         eu.europa.esig.dss.diagnostic.jaxb.XmlEvidenceRecord evidenceRecord = diagnosticData.getEvidenceRecords().get(0);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
-        CryptographicConstraint cryptographicConstraint = validationPolicy.getEvidenceRecordCryptographicConstraint();
-        AlgoExpirationDate algoExpirationDate = cryptographicConstraint.getAlgoExpirationDate();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
+        CryptographicConstraintWrapper cryptographicConstraint = (CryptographicConstraintWrapper) validationPolicy.getEvidenceRecordCryptographicConstraint();
+        CryptographicConstraint constraint = (CryptographicConstraint) cryptographicConstraint.getConstraint();
+        AlgoExpirationDate algoExpirationDate = constraint.getAlgoExpirationDate();
         for (Algo algo : algoExpirationDate.getAlgos()) {
             if (DigestAlgorithm.SHA224.getName().equals(algo.getValue())) {
                 algo.setDate("2020-01-01");
@@ -1236,7 +1239,7 @@ class EvidenceRecordAloneValidationTest extends AbstractTestValidationExecutor {
         evidenceRecord.getDigestMatchers().get(2).setDataFound(false);
         evidenceRecord.getDigestMatchers().get(2).setDataIntact(false);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.WARN);
         validationPolicy.getEvidenceRecordConstraints().setDataObjectGroup(constraint);
@@ -1405,7 +1408,7 @@ class EvidenceRecordAloneValidationTest extends AbstractTestValidationExecutor {
         evidenceRecord.getDigestMatchers().get(2).setDataFound(false);
         evidenceRecord.getDigestMatchers().get(2).setDataIntact(false);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
         validationPolicy.getEvidenceRecordConstraints().setDataObjectGroup(constraint);
@@ -1581,7 +1584,7 @@ class EvidenceRecordAloneValidationTest extends AbstractTestValidationExecutor {
         evidenceRecord.getDigestMatchers().get(2).setDataFound(false);
         evidenceRecord.getDigestMatchers().get(2).setDataIntact(false);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
         validationPolicy.getEvidenceRecordConstraints().setDataObjectFound(constraint);
@@ -1749,7 +1752,7 @@ class EvidenceRecordAloneValidationTest extends AbstractTestValidationExecutor {
         List<XmlDigestMatcher> digestMatchers = diagnosticData.getUsedTimestamps().get(1).getDigestMatchers();
         digestMatchers.remove(digestMatchers.get(1));
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
         validationPolicy.getEvidenceRecordConstraints().setHashTreeRenewal(constraint);
@@ -1955,7 +1958,7 @@ class EvidenceRecordAloneValidationTest extends AbstractTestValidationExecutor {
         List<XmlDigestMatcher> digestMatchers = diagnosticData.getUsedTimestamps().get(1).getDigestMatchers();
         digestMatchers.remove(digestMatchers.get(1));
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.WARN);
         validationPolicy.getEvidenceRecordConstraints().setHashTreeRenewal(constraint);
@@ -2156,7 +2159,7 @@ class EvidenceRecordAloneValidationTest extends AbstractTestValidationExecutor {
         digestMatcher.setDataFound(false);
         digestMatcher.setDataIntact(false);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
         validationPolicy.getEvidenceRecordConstraints().setHashTreeRenewal(constraint);

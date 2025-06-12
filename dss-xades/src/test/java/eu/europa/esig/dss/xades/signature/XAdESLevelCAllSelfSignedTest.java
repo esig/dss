@@ -68,7 +68,7 @@ class XAdESLevelCAllSelfSignedTest extends XAdESLevelCTest {
     public void signAndVerify() {
         certificateVerifier.setAugmentationAlertOnSelfSignedCertificateChains(new ExceptionOnStatusAlert());
 
-        Exception exception = assertThrows(AlertException.class, () -> super.sign());
+        Exception exception = assertThrows(AlertException.class, super::sign);
         assertTrue(exception.getMessage().contains("Error on signature augmentation to C-level."));
         assertTrue(exception.getMessage().contains("The signature contains only self-signed certificate chains."));
 

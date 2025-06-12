@@ -25,7 +25,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
+import eu.europa.esig.dss.model.policy.MultiValuesRule;
 import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
 
 /**
@@ -43,10 +43,10 @@ public class PDFAProfileCheck extends AbstractMultiValuesCheckItem<XmlFC> {
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlFC}
      * @param pdfaProfile {@link String}
-     * @param constraint {@link MultiValuesConstraint}
+     * @param constraint {@link MultiValuesRule}
      */
     public PDFAProfileCheck(I18nProvider i18nProvider, XmlFC result, String pdfaProfile,
-                              MultiValuesConstraint constraint) {
+                              MultiValuesRule constraint) {
         super(i18nProvider, result, constraint);
         this.pdfaProfile = pdfaProfile;
     }

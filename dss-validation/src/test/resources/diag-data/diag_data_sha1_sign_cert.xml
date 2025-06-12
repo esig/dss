@@ -1,0 +1,904 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
+    <DocumentName>2025-03-03_SHA3_384_STS LTA_SHA3-512.pdf</DocumentName>
+    <ValidationDate>2025-03-18T11:38:01Z</ValidationDate>
+    <PDFAInfo compliant="true">
+        <ProfileId>PDF/A-2B</ProfileId>
+        <ValidationMessages/>
+    </PDFAInfo>
+    <Signatures>
+        <Signature Id="S-4086A5387E6054068E8C2F78342F4BD94B9522232FCF479769FDC5F9EA658068">
+            <SignatureFilename>2025-03-03_SHA3_384_STS LTA_SHA3-512.pdf</SignatureFilename>
+            <ClaimedSigningTime>2025-03-03T16:44:52Z</ClaimedSigningTime>
+            <SignatureFormat>PAdES-BASELINE-LTA</SignatureFormat>
+            <StructuralValidation valid="true"/>
+            <DigestMatchers>
+                <DigestMatcher type="MESSAGE_DIGEST">
+                    <DigestMethod>SHA3_384</DigestMethod>
+                    <DigestValue>c7216CFW0H+0BsyxeOf+ek2xGMcqRc9PbILInG/p/Xzv70RuTXJggfebUWKDMCiy</DigestValue>
+                    <DataFound>true</DataFound>
+                    <DataIntact>true</DataIntact>
+                </DigestMatcher>
+            </DigestMatchers>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>384</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA3_384</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-968F294386FD2BA56FE1832C1A7E8B48A696B878430B279E4FEEC875DC24C79B"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-968F294386FD2BA56FE1832C1A7E8B48A696B878430B279E4FEEC875DC24C79B"/>
+                <ChainItem Certificate="C-9716C6DDA3A46565302A12FC6229C7FA0A01A623414C59A96C8B108BF770B6BF"/>
+                <ChainItem Certificate="C-88E040C143F6DF5F280E83F830B5ECB46778F63A683F95A1DF1E48AD6B323EE2"/>
+            </CertificateChain>
+            <ContentType>1.2.840.113549.1.7.1</ContentType>
+            <CommitmentTypeIndications/>
+            <SignerInformationStore>
+                <SignerInfo Current="true">
+                    <IssuerName>CN=ADIC CA ECC, O=Asmens dokumentu israsymo centras prie LR VRM, OID.2.5.4.97=188778315, C=LT</IssuerName>
+                    <SerialNumber>550977500058640164119924791553466</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
+            <PDFRevision>
+                <SignatureField name="padesSignature_0"/>
+                <PDFSignatureDictionary consistent="true">
+                    <Type>Sig</Type>
+                    <Filter>Adobe.PPKLite</Filter>
+                    <SubFilter>ETSI.CAdES.detached</SubFilter>
+                    <Reason>SIGNING</Reason>
+                    <SignatureByteRange valid="true">0 64407 82297 1168</SignatureByteRange>
+                </PDFSignatureDictionary>
+                <ModificationDetection>
+                    <ObjectModifications>
+                        <ExtensionChange action="CREATION" fieldName="padesDocumentTimeStamp_1" type="DocTimeStamp">/Catalog /Pages 6 0 R /Kids 9 0 R /Annots 24 0 R</ExtensionChange>
+                        <ExtensionChange action="CREATION">/Catalog /Extensions /ADBE</ExtensionChange>
+                        <ExtensionChange action="CREATION" fieldName="padesDocumentTimeStamp_1" type="DocTimeStamp">/Catalog /AcroForm /Fields 24 0 R</ExtensionChange>
+                        <ExtensionChange action="CREATION" type="DSS">/Catalog /DSS 25 0 R</ExtensionChange>
+                    </ObjectModifications>
+                </ModificationDetection>
+            </PDFRevision>
+            <SignerDocumentRepresentations HashOnly="false" DocHashOnly="false"/>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-9716C6DDA3A46565302A12FC6229C7FA0A01A623414C59A96C8B108BF770B6BF">
+                    <Origin>DSS_DICTIONARY</Origin>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-968F294386FD2BA56FE1832C1A7E8B48A696B878430B279E4FEEC875DC24C79B">
+                    <Origin>SIGNED_DATA</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <IssuerSerial match="true">MIGFMHOkcTBvMQswCQYDVQQGEwJMVDESMBAGA1UEYRMJMTg4Nzc4MzE1MTYwNAYDVQQKEy1Bc21lbnMgZG9rdW1lbnR1IGlzcmFzeW1vIGNlbnRyYXMgcHJpZSBMUiBWUk0xFDASBgNVBAMTC0FESUMgQ0EgRUNDAg4bKlBSAF59mgAAAAOtug==</IssuerSerial>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA3_384</DigestMethod>
+                            <DigestValue>MbKH2sV9FjDsEbdIicEoh5YgnPUpcBqBPDNp0QlXfKfTmLNpYvTggp/ZSwTJFXp+</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+                <RelatedCertificate Certificate="C-ABB497CA02CCBFF4887576BE898114E8BF5AB27F8F238960395631A459C5E816">
+                    <Origin>DSS_DICTIONARY</Origin>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations>
+                <RelatedRevocation Revocation="R-84CEF6CD9F8CA32448F800B5EF5318B87A2E990AE272E22DF280F7964495DB1E">
+                    <Type>OCSP</Type>
+                    <Origin>DSS_DICTIONARY</Origin>
+                </RelatedRevocation>
+            </FoundRevocations>
+            <FoundTimestamps>
+                <FoundTimestamp Timestamp="T-CF0D2E75F43F2DBEC2E81577973281142A63DA2A91A2B7E1AA88D54C8BE73D1F"/>
+                <FoundTimestamp Timestamp="T-3E061BCC5D67542DEF00952E2FC05FC8B34FD3BC8F1411166CFD55E074166719"/>
+            </FoundTimestamps>
+            <FoundEvidenceRecords/>
+            <SignatureScopes>
+                <SignatureScope SignerData="D-68D41ADC2B876A6EDEE719390199E5C48F8D16C6760058F5E8481204A97E4A31">
+                    <Scope>PARTIAL</Scope>
+                    <Name>Partial PDF</Name>
+                    <Description>The document ByteRange : [0, 64407, 82297, 1168]</Description>
+                </SignatureScope>
+            </SignatureScopes>
+            <SignatureDigestReference>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>CtPPOTcAKONzfp1Uf1iyAoH/Dpu8hxSP27lmn8oKags=</DigestValue>
+            </SignatureDigestReference>
+            <DataToBeSignedRepresentation>
+                <DigestMethod>SHA3_384</DigestMethod>
+                <DigestValue>6HSK+MxDUbQqTkY3ucwUAP9Z6H7Ys+duX9FBeEIAtP0x6fS9yb9gdxGombxVcXnh</DigestValue>
+            </DataToBeSignedRepresentation>
+            <SignatureValue>MGUCMQDxjqk/pDFcJSkfBgzdkAch8fpn+W8xHaN0Y2MrrsVCXCTR9Y4rKMxY/sLYaM/9ZhkCMHaGM0UzcfuxD6Shtfob0kpC//HAqQUonv4Oxt5SNLtRzPYh3ymxkiE6fMYhPu9gNA==</SignatureValue>
+        </Signature>
+    </Signatures>
+    <EvidenceRecords/>
+    <UsedCertificates>
+        <Certificate Id="C-168E3AE71FEA7C6B0E864E8C31F93BD0975F4E3FECE93C92B991352E6B67FE76">
+            <SubjectDistinguishedName Format="CANONICAL">cn=mitsoft qtsa tsu-2,2.5.4.97=#0c0f4e54524c542d313230373932303830,o=uab \"mit-soft\",c=lt</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=MitSoft QTSA TSU-2,2.5.4.97=#0c0f4e54524c542d313230373932303830,O=UAB \"MIT-SOFT\",C=LT</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=mitsoft qtsa tsu-2 root,2.5.4.97=#0c0f4e54524c542d313230373932303830,o=uab \"mit-soft\",c=lt</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=MitSoft QTSA TSU-2 Root,2.5.4.97=#0c0f4e54524c542d313230373932303830,O=UAB \"MIT-SOFT\",C=LT</IssuerDistinguishedName>
+            <SerialNumber>655750329300843566315064003705390535515441720656</SerialNumber>
+            <CommonName>MitSoft QTSA TSU-2</CommonName>
+            <CountryName>LT</CountryName>
+            <OrganizationIdentifier>NTRLT-120792080</OrganizationIdentifier>
+            <OrganizationName>UAB "MIT-SOFT"</OrganizationName>
+            <Sources>
+                <Source>TIMESTAMP</Source>
+                <Source>TRUSTED_LIST</Source>
+            </Sources>
+            <NotAfter>2032-03-04T12:45:59Z</NotAfter>
+            <NotBefore>2024-09-02T12:45:59Z</NotBefore>
+            <PublicKeySize>384</PublicKeySize>
+            <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
+            <EntityKey>EK-FC589CD170C2235CA20B704942935D6DF98FB542EE547559C63D4689C438F002</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>384</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-1F93BD0975F4E3FECE93C9168E3AE71FEA7C6B0E864E8C32B991352E6B67FE76"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-1F93BD0975F4E3FECE93C9168E3AE71FEA7C6B0E864E8C32B991352E6B67FE76"/>
+            </CertificateChain>
+            <Trusted startDate="2025-01-14T14:00:00Z">true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>pujiPj6oeHTbdMMOjhlYlB//Kho=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>DbMp5Uc3cj01YT+yyCcxXaBmTSk=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="false" OID="2.5.29.19" critical="true"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="false">
+                    <certificatePolicy cpsUrl="https://www.mitsoft.lt/qtsp-repo/MitSoft_QTSS-CPS_Certificate_Policy_and_Practice_Statement.pdf">1.3.6.1.4.1.57890.1.2.1</certificatePolicy>
+                </CertificatePolicies>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="true">
+                    <extendedKeyUsageOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsageOid>
+                </ExtendedKeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://www.mitsoft.lt/qtsp-repo/cdp/MitSoft_QTSA_TSU-2_Root_2024.crt</caIssuersUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://www.mitsoft.lt/qtsp-repo/cdp/MitSoft_QTSA_TSU-2_Root.crl</crlUrl>
+                </CRLDistributionPoints>
+                <OtherExtension OID="2.5.29.16" description="privateKeyUsagePeriod" critical="false">
+                    <octets>BCQwIoAPMjAyNDA5MDIwMDAwMDBagQ8yMDI3MDkwMjIzNTk1OVo=</octets>
+                </OtherExtension>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-90DCC256A302389275B5C190995F4D7FF6D3F088E104789C0E22C15071291BA1" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="lt">UAB Mit-Soft</TSPName>
+                        <TSPName lang="en">UAB Mit-Soft</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="en">UAB Mit-Soft</TSPTradeName>
+                        <TSPTradeName lang="en">UAB "MIT-SOFT"</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>NTRLT-120792080</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-168E3AE71FEA7C6B0E864E8C31F93BD0975F4E3FECE93C92B991352E6B67FE76">
+                            <ServiceNames>
+                                <ServiceName lang="lt">MIT-SOFT kvalifikuotų elektroninių laiko žymų kūrimo paslauga 2 2024</ServiceName>
+                                <ServiceName lang="en">MIT-SOFT qualified electronic time stamp generation service 2 2024</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2025-01-14T14:00:00Z</StartDate>
+                            <CapturedQualifiers/>
+                            <AdditionalServiceInfoUris/>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>Fo465x/qfGsOhk6MMfk70JdfTj/s6TySuZE1Lmtn/nY=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-1F93BD0975F4E3FECE93C9168E3AE71FEA7C6B0E864E8C32B991352E6B67FE76">
+            <SubjectDistinguishedName Format="CANONICAL">cn=mitsoft qtsa tsu-2,2.5.4.97=#0c0f4e54524c542d313230373932303830,o=uab \"mit-soft\",c=lt</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=MitSoft QTSA TSU-2,2.5.4.97=#0c0f4e54524c542d313230373932303830,O=UAB \"MIT-SOFT\",C=LT</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=mitsoft qtsa tsu-2 root,2.5.4.97=#0c0f4e54524c542d313230373932303830,o=uab \"mit-soft\",c=lt</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=MitSoft QTSA TSU-2 Root,2.5.4.97=#0c0f4e54524c542d313230373932303830,O=UAB \"MIT-SOFT\",C=LT</IssuerDistinguishedName>
+            <SerialNumber>655750329300843566315064003705390535515441720656</SerialNumber>
+            <CommonName>MitSoft QTSA TSU-2</CommonName>
+            <CountryName>LT</CountryName>
+            <OrganizationIdentifier>NTRLT-120792080</OrganizationIdentifier>
+            <OrganizationName>UAB "MIT-SOFT"</OrganizationName>
+            <Sources>
+                <Source>TIMESTAMP</Source>
+            </Sources>
+            <NotAfter>2032-03-04T12:45:59Z</NotAfter>
+            <NotBefore>2024-09-02T12:45:59Z</NotBefore>
+            <PublicKeySize>384</PublicKeySize>
+            <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
+            <EntityKey>EK-FC589CD170C2235CA20B704942935D6DF98FB542EE547559C63D4689C438F002</EntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>384</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-1F93BD0975F4E3FECE93C9168E3AE71FEA7C6B0E864E8C32B991352E6B67FE76"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-1F93BD0975F4E3FECE93C9168E3AE71FEA7C6B0E864E8C32B991352E6B67FE76"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>pujiPj6oeHTbdMMOjhlYlB//Kho=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>DbMp5Uc3cj01YT+yyCcxXaBmTSk=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="false" OID="2.5.29.19" critical="true"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="false">
+                    <certificatePolicy cpsUrl="https://www.mitsoft.lt/qtsp-repo/MitSoft_QTSS-CPS_Certificate_Policy_and_Practice_Statement.pdf">1.3.6.1.4.1.57890.1.2.1</certificatePolicy>
+                </CertificatePolicies>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="true">
+                    <extendedKeyUsageOid Description="timeStamping">1.3.6.1.5.5.7.3.8</extendedKeyUsageOid>
+                </ExtendedKeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://www.mitsoft.lt/qtsp-repo/cdp/MitSoft_QTSA_TSU-2_Root_2024.crt</caIssuersUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://www.mitsoft.lt/qtsp-repo/cdp/MitSoft_QTSA_TSU-2_Root.crl</crlUrl>
+                </CRLDistributionPoints>
+                <OtherExtension OID="2.5.29.16" description="privateKeyUsagePeriod" critical="false">
+                    <octets>BCQwIoAPMjAyNDA5MDIwMDAwMDBagQ8yMDI3MDkwMjIzNTk1OVo=</octets>
+                </OtherExtension>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-90DCC256A302389275B5C190995F4D7FF6D3F088E104789C0E22C15071291BA1" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="lt">UAB Mit-Soft</TSPName>
+                        <TSPName lang="en">UAB Mit-Soft</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="en">UAB Mit-Soft</TSPTradeName>
+                        <TSPTradeName lang="en">UAB "MIT-SOFT"</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>NTRLT-120792080</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-168E3AE71FEA7C6B0E864E8C31F93BD0975F4E3FECE93C92B991352E6B67FE76">
+                            <ServiceNames>
+                                <ServiceName lang="lt">MIT-SOFT kvalifikuotų elektroninių laiko žymų kūrimo paslauga 2 2024</ServiceName>
+                                <ServiceName lang="en">MIT-SOFT qualified electronic time stamp generation service 2 2024</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/TSA/QTST</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2025-01-14T14:00:00Z</StartDate>
+                            <CapturedQualifiers/>
+                            <AdditionalServiceInfoUris/>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>Fo465x/qfGsOhk6MMfk70JdfTj/s6TySuZE1Lmtn/nY=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-88E040C143F6DF5F280E83F830B5ECB46778F63A683F95A1DF1E48AD6B323EE2">
+            <SubjectDistinguishedName Format="CANONICAL">cn=adic root ca ecc,o=asmens dokumentu israsymo centras prie lr vrm,2.5.4.97=#1309313838373738333135,c=lt</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=ADIC Root CA ECC,O=Asmens dokumentu israsymo centras prie LR VRM,2.5.4.97=#1309313838373738333135,C=LT</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=adic root ca ecc,o=asmens dokumentu israsymo centras prie lr vrm,2.5.4.97=#1309313838373738333135,c=lt</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=ADIC Root CA ECC,O=Asmens dokumentu israsymo centras prie LR VRM,2.5.4.97=#1309313838373738333135,C=LT</IssuerDistinguishedName>
+            <SerialNumber>109045424679845896947205472508420218130</SerialNumber>
+            <CommonName>ADIC Root CA ECC</CommonName>
+            <CountryName>LT</CountryName>
+            <OrganizationIdentifier>188778315</OrganizationIdentifier>
+            <OrganizationName>Asmens dokumentu israsymo centras prie LR VRM</OrganizationName>
+            <Sources>
+                <Source>AIA</Source>
+            </Sources>
+            <NotAfter>2038-05-29T10:18:24Z</NotAfter>
+            <NotBefore>2023-05-29T10:12:50Z</NotBefore>
+            <PublicKeySize>521</PublicKeySize>
+            <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
+            <EntityKey>EK-FB2F97F8C3456EEC68C82C36B4E153D997CC367C2D044DCCC8558594831067AC</EntityKey>
+            <IssuerEntityKey key="true" subjectName="true">EK-FB2F97F8C3456EEC68C82C36B4E153D997CC367C2D044DCCC8558594831067AC</IssuerEntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>521</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <CertificateChain/>
+            <Trusted>false</Trusted>
+            <SelfSigned>true</SelfSigned>
+            <CertificateExtensions>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>mrrAN6kvrTwf3Ste+yZqBIPdeUo=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="true" pathLenConstraint="2147483647" OID="2.5.29.19" critical="true"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <OtherExtension OID="1.3.6.1.4.1.311.21.1" critical="false">
+                    <octets>BAMCAQA=</octets>
+                </OtherExtension>
+            </CertificateExtensions>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>iOBAwUP2318oDoP4MLXstGd49jpoP5Wh3x5IrWsyPuI=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-968F294386FD2BA56FE1832C1A7E8B48A696B878430B279E4FEEC875DC24C79B">
+            <SubjectDistinguishedName Format="CANONICAL">2.5.4.5=#130b3338303033313330363933,2.5.4.42=#130641444f4d4153,2.5.4.4=#0c0a424952c5a054554e4153,cn=adomas birštunas,c=lt</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">2.5.4.5=#130b3338303033313330363933,2.5.4.42=#130641444f4d4153,2.5.4.4=#0c0a424952c5a054554e4153,CN=ADOMAS BIRŠTUNAS,C=LT</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=adic ca ecc,o=asmens dokumentu israsymo centras prie lr vrm,2.5.4.97=#1309313838373738333135,c=lt</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=ADIC CA ECC,O=Asmens dokumentu israsymo centras prie LR VRM,2.5.4.97=#1309313838373738333135,C=LT</IssuerDistinguishedName>
+            <SerialNumber>550977500058640164119924791553466</SerialNumber>
+            <SubjectSerialNumber>38003130693</SubjectSerialNumber>
+            <CommonName>ADOMAS BIRŠTUNAS</CommonName>
+            <CountryName>LT</CountryName>
+            <GivenName>ADOMAS</GivenName>
+            <Surname>BIRŠTUNAS</Surname>
+            <Sources>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2029-07-24T08:22:26Z</NotAfter>
+            <NotBefore>2024-07-25T08:22:26Z</NotBefore>
+            <PublicKeySize>384</PublicKeySize>
+            <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
+            <EntityKey>EK-51EB62F8624F516E426851EAA9EFCCDED54BB8DD8EA83A8ADC767377D26518A4</EntityKey>
+            <IssuerEntityKey key="true" subjectName="true">EK-24909147D2E4F3BE0BA1554F0D92A7A2B0CFCC21826BA46D2385D95F7E474E60</IssuerEntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>384</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA384</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-9716C6DDA3A46565302A12FC6229C7FA0A01A623414C59A96C8B108BF770B6BF"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-9716C6DDA3A46565302A12FC6229C7FA0A01A623414C59A96C8B108BF770B6BF"/>
+                <ChainItem Certificate="C-88E040C143F6DF5F280E83F830B5ECB46778F63A683F95A1DF1E48AD6B323EE2"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>4+ty8vYtClEMk/E7Vf+rYpo8m6k=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>F0yXqZGwd6oC3jMvsqDSioUdmp0=</ski>
+                </SubjectKeyIdentifier>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                    <keyUsageBit>nonRepudiation</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="false">
+                    <certificatePolicy cpsUrl="https://www.nsc.vrm.lt/policies.htm">1.3.6.1.4.1.33621.2.2.2</certificatePolicy>
+                    <certificatePolicy Description="qcp-natural-qscd">0.4.0.194112.1.2</certificatePolicy>
+                </CertificatePolicies>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsageOid>1.3.6.1.4.1.311.10.3.12</extendedKeyUsageOid>
+                </ExtendedKeyUsages>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://nsc.vrm.lt/aia/ADIC_CA_ECC.crt</caIssuersUrl>
+                    <ocspUrl>http://nsc.vrm.lt/OCSP/ocspresponder.nsc</ocspUrl>
+                </AuthorityInformationAccess>
+                <QcStatements OID="1.3.6.1.5.5.7.1.3" critical="false">
+                    <QcCompliance present="true"/>
+                    <QcSSCD present="true"/>
+                    <QcEuPDS>
+                        <PdsLocation lang="en">http://nsc.vrm.lt/pds</PdsLocation>
+                    </QcEuPDS>
+                    <QcTypes/>
+                    <QcCClegislation/>
+                </QcStatements>
+                <OtherExtension OID="1.3.6.1.4.1.311.21.10" critical="false">
+                    <octets>BBAwDjAMBgorBgEEAYI3CgMM</octets>
+                </OtherExtension>
+                <OtherExtension OID="2.5.29.9" description="subjectDirectoryAttributes" critical="false">
+                    <octets>BEQwQjAPBggrBgEFBQcJAzEDEwFNMB0GCCsGAQUFBwkBMREYDzE5ODAwMzEzMTIwMDAwWjAQBggrBgEFBQcJBDEEEwJMVA==</octets>
+                </OtherExtension>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-90DCC256A302389275B5C190995F4D7FF6D3F088E104789C0E22C15071291BA1" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="lt">Asmens dokumentų išrašymo centras prie LR Vidaus reikalų ministerijos</TSPName>
+                        <TSPName lang="en">Identity Documents Personalisation Centre under the Ministry of the Interior</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="lt">Asmens dokumentu israsymo centras prie LR VRM</TSPTradeName>
+                        <TSPTradeName lang="en">Asmens dokumentu israsymo centras prie LR VRM</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>NTRLT-188778315</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-9716C6DDA3A46565302A12FC6229C7FA0A01A623414C59A96C8B108BF770B6BF">
+                            <ServiceNames>
+                                <ServiceName lang="lt">ADIC_Kvalifikuoti elektroninio parašo sertifikatai-7 (ECC)</ServiceName>
+                                <ServiceName lang="en">ADIC_Qualified certificates for electronic signature-7 (ECC)</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2023-06-02T10:38:18Z</StartDate>
+                            <CapturedQualifiers/>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <Revocations>
+                <CertificateRevocation Revocation="R-84CEF6CD9F8CA32448F800B5EF5318B87A2E990AE272E22DF280F7964495DB1E">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+                <CertificateRevocation Revocation="R-8FC0B90E4C22F84615B66423DB1EE7D3637A26862C68E8FCC1898E03B22FCC2D">
+                    <Status>GOOD</Status>
+                </CertificateRevocation>
+            </Revocations>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>lo8pQ4b9K6Vv4YMsGn6LSKaWuHhDCyeeT+7Iddwkx5s=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-9716C6DDA3A46565302A12FC6229C7FA0A01A623414C59A96C8B108BF770B6BF">
+            <SubjectDistinguishedName Format="CANONICAL">cn=adic ca ecc,o=asmens dokumentu israsymo centras prie lr vrm,2.5.4.97=#1309313838373738333135,c=lt</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=ADIC CA ECC,O=Asmens dokumentu israsymo centras prie LR VRM,2.5.4.97=#1309313838373738333135,C=LT</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=adic root ca ecc,o=asmens dokumentu israsymo centras prie lr vrm,2.5.4.97=#1309313838373738333135,c=lt</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=ADIC Root CA ECC,O=Asmens dokumentu israsymo centras prie LR VRM,2.5.4.97=#1309313838373738333135,C=LT</IssuerDistinguishedName>
+            <SerialNumber>1040165561812068403922115124789257</SerialNumber>
+            <CommonName>ADIC CA ECC</CommonName>
+            <CountryName>LT</CountryName>
+            <OrganizationIdentifier>188778315</OrganizationIdentifier>
+            <OrganizationName>Asmens dokumentu israsymo centras prie LR VRM</OrganizationName>
+            <Sources>
+                <Source>OTHER</Source>
+                <Source>TRUSTED_LIST</Source>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2033-05-29T13:33:38Z</NotAfter>
+            <NotBefore>2023-05-29T13:33:38Z</NotBefore>
+            <PublicKeySize>384</PublicKeySize>
+            <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
+            <EntityKey>EK-24909147D2E4F3BE0BA1554F0D92A7A2B0CFCC21826BA46D2385D95F7E474E60</EntityKey>
+            <IssuerEntityKey key="true" subjectName="true">EK-FB2F97F8C3456EEC68C82C36B4E153D997CC367C2D044DCCC8558594831067AC</IssuerEntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>521</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA512</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-88E040C143F6DF5F280E83F830B5ECB46778F63A683F95A1DF1E48AD6B323EE2"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-88E040C143F6DF5F280E83F830B5ECB46778F63A683F95A1DF1E48AD6B323EE2"/>
+            </CertificateChain>
+            <Trusted startDate="2023-06-02T10:38:18Z">true</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>mrrAN6kvrTwf3Ste+yZqBIPdeUo=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>4+ty8vYtClEMk/E7Vf+rYpo8m6k=</ski>
+                </SubjectKeyIdentifier>
+                <BasicConstraints CA="true" pathLenConstraint="2147483647" OID="2.5.29.19" critical="true"/>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>keyCertSign</keyUsageBit>
+                    <keyUsageBit>crlSign</keyUsageBit>
+                </KeyUsages>
+                <CertificatePolicies OID="2.5.29.32" critical="false">
+                    <certificatePolicy cpsUrl="https://www.nsc.vrm.lt/policies.htm">2.5.29.32.0</certificatePolicy>
+                </CertificatePolicies>
+                <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
+                    <caIssuersUrl>http://nsc.vrm.lt/aia/ADIC_Root_CA_ECC.crt</caIssuersUrl>
+                    <ocspUrl>http://nsc.vrm.lt/OCSP/ocspresponder.nsc</ocspUrl>
+                </AuthorityInformationAccess>
+                <CRLDistributionPoints OID="2.5.29.31" critical="false">
+                    <crlUrl>http://nsc.vrm.lt/cdp/ADIC_Root_CA_ECC.crl</crlUrl>
+                </CRLDistributionPoints>
+                <OtherExtension OID="1.3.6.1.4.1.311.21.1" critical="false">
+                    <octets>BAMCAQA=</octets>
+                </OtherExtension>
+                <OtherExtension OID="1.3.6.1.4.1.311.20.2" critical="false">
+                    <octets>BAweCgBTAHUAYgBDAEE=</octets>
+                </OtherExtension>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-90DCC256A302389275B5C190995F4D7FF6D3F088E104789C0E22C15071291BA1" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="lt">Asmens dokumentų išrašymo centras prie LR Vidaus reikalų ministerijos</TSPName>
+                        <TSPName lang="en">Identity Documents Personalisation Centre under the Ministry of the Interior</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="lt">Asmens dokumentu israsymo centras prie LR VRM</TSPTradeName>
+                        <TSPTradeName lang="en">Asmens dokumentu israsymo centras prie LR VRM</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>NTRLT-188778315</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-9716C6DDA3A46565302A12FC6229C7FA0A01A623414C59A96C8B108BF770B6BF">
+                            <ServiceNames>
+                                <ServiceName lang="lt">ADIC_Kvalifikuoti elektroninio parašo sertifikatai-7 (ECC)</ServiceName>
+                                <ServiceName lang="en">ADIC_Qualified certificates for electronic signature-7 (ECC)</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2023-06-02T10:38:18Z</StartDate>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>lxbG3aOkZWUwKhL8YinH+goBpiNBTFmpbIsQi/dwtr8=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+        <Certificate Id="C-ABB497CA02CCBFF4887576BE898114E8BF5AB27F8F238960395631A459C5E816">
+            <SubjectDistinguishedName Format="CANONICAL">cn=ocsp for adic ca ecc,o=asmens dokumentu israsymo centras prie lr vrm,c=lt</SubjectDistinguishedName>
+            <SubjectDistinguishedName Format="RFC2253">CN=OCSP for ADIC CA ECC,O=Asmens dokumentu israsymo centras prie LR VRM,C=LT</SubjectDistinguishedName>
+            <IssuerDistinguishedName Format="CANONICAL">cn=adic ca ecc,o=asmens dokumentu israsymo centras prie lr vrm,2.5.4.97=#1309313838373738333135,c=lt</IssuerDistinguishedName>
+            <IssuerDistinguishedName Format="RFC2253">CN=ADIC CA ECC,O=Asmens dokumentu israsymo centras prie LR VRM,2.5.4.97=#1309313838373738333135,C=LT</IssuerDistinguishedName>
+            <SerialNumber>550977500058640164119924791312389</SerialNumber>
+            <CommonName>OCSP for ADIC CA ECC</CommonName>
+            <CountryName>LT</CountryName>
+            <OrganizationName>Asmens dokumentu israsymo centras prie LR VRM</OrganizationName>
+            <Sources>
+                <Source>OTHER</Source>
+                <Source>OCSP_RESPONSE</Source>
+                <Source>SIGNATURE</Source>
+            </Sources>
+            <NotAfter>2028-05-29T05:53:58Z</NotAfter>
+            <NotBefore>2023-05-31T05:53:58Z</NotBefore>
+            <PublicKeySize>384</PublicKeySize>
+            <PublicKeyEncryptionAlgo>ECDSA</PublicKeyEncryptionAlgo>
+            <EntityKey>EK-29192BE5BA9FF1DE42BAAF3BA97BC70723BDA4A9CCDC3850D7F89DBEAA97D9AF</EntityKey>
+            <IssuerEntityKey key="true" subjectName="true">EK-24909147D2E4F3BE0BA1554F0D92A7A2B0CFCC21826BA46D2385D95F7E474E60</IssuerEntityKey>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>384</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA384</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-9716C6DDA3A46565302A12FC6229C7FA0A01A623414C59A96C8B108BF770B6BF"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-9716C6DDA3A46565302A12FC6229C7FA0A01A623414C59A96C8B108BF770B6BF"/>
+                <ChainItem Certificate="C-88E040C143F6DF5F280E83F830B5ECB46778F63A683F95A1DF1E48AD6B323EE2"/>
+            </CertificateChain>
+            <Trusted>false</Trusted>
+            <SelfSigned>false</SelfSigned>
+            <CertificateExtensions>
+                <AuthorityKeyIdentifier OID="2.5.29.35" critical="false">
+                    <keyIdentifier>4+ty8vYtClEMk/E7Vf+rYpo8m6k=</keyIdentifier>
+                </AuthorityKeyIdentifier>
+                <SubjectKeyIdentifier OID="2.5.29.14" critical="false">
+                    <ski>e8ej//lnjS+d7Dx2nrbvRRwNkmI=</ski>
+                </SubjectKeyIdentifier>
+                <KeyUsages OID="2.5.29.15" critical="true">
+                    <keyUsageBit>digitalSignature</keyUsageBit>
+                </KeyUsages>
+                <ExtendedKeyUsages OID="2.5.29.37" critical="false">
+                    <extendedKeyUsageOid Description="ocspSigning">1.3.6.1.5.5.7.3.9</extendedKeyUsageOid>
+                </ExtendedKeyUsages>
+                <IdPkixOcspNoCheck present="true" OID="1.3.6.1.5.5.7.48.1.5" critical="false"/>
+                <OtherExtension OID="1.3.6.1.4.1.311.21.10" critical="false">
+                    <octets>BA4wDDAKBggrBgEFBQcDCQ==</octets>
+                </OtherExtension>
+            </CertificateExtensions>
+            <TrustServiceProviders>
+                <TrustServiceProvider TL="TL-90DCC256A302389275B5C190995F4D7FF6D3F088E104789C0E22C15071291BA1" LOTL="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+                    <TSPNames>
+                        <TSPName lang="lt">Asmens dokumentų išrašymo centras prie LR Vidaus reikalų ministerijos</TSPName>
+                        <TSPName lang="en">Identity Documents Personalisation Centre under the Ministry of the Interior</TSPName>
+                    </TSPNames>
+                    <TSPTradeNames>
+                        <TSPTradeName lang="lt">Asmens dokumentu israsymo centras prie LR VRM</TSPTradeName>
+                        <TSPTradeName lang="en">Asmens dokumentu israsymo centras prie LR VRM</TSPTradeName>
+                    </TSPTradeNames>
+                    <TSPRegistrationIdentifiers>
+                        <TSPRegistrationIdentifier>NTRLT-188778315</TSPRegistrationIdentifier>
+                    </TSPRegistrationIdentifiers>
+                    <TrustServices>
+                        <TrustService ServiceDigitalIdentifier="C-9716C6DDA3A46565302A12FC6229C7FA0A01A623414C59A96C8B108BF770B6BF">
+                            <ServiceNames>
+                                <ServiceName lang="lt">ADIC_Kvalifikuoti elektroninio parašo sertifikatai-7 (ECC)</ServiceName>
+                                <ServiceName lang="en">ADIC_Qualified certificates for electronic signature-7 (ECC)</ServiceName>
+                            </ServiceNames>
+                            <ServiceType>http://uri.etsi.org/TrstSvc/Svctype/CA/QC</ServiceType>
+                            <Status>http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted</Status>
+                            <StartDate>2023-06-02T10:38:18Z</StartDate>
+                            <AdditionalServiceInfoUris>
+                                <AdditionalServiceInfoUri>http://uri.etsi.org/TrstSvc/TrustedList/SvcInfoExt/ForeSignatures</AdditionalServiceInfoUri>
+                            </AdditionalServiceInfoUris>
+                        </TrustService>
+                    </TrustServices>
+                </TrustServiceProvider>
+            </TrustServiceProviders>
+            <Revocations/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>q7SXygLMv/SIdXa+iYEU6L9asn+PI4lgOVYxpFnF6BY=</DigestValue>
+            </DigestAlgoAndValue>
+        </Certificate>
+    </UsedCertificates>
+    <UsedRevocations>
+        <Revocation Id="R-84CEF6CD9F8CA32448F800B5EF5318B87A2E990AE272E22DF280F7964495DB1E">
+            <Origin>INPUT_DOCUMENT</Origin>
+            <Type>OCSP</Type>
+            <ProductionDate>2025-03-03T16:45:05Z</ProductionDate>
+            <ThisUpdate>2025-03-03T16:44:35Z</ThisUpdate>
+            <ArchiveCutOff>2024-03-03T18:45:05Z</ArchiveCutOff>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>384</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA384</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-ABB497CA02CCBFF4887576BE898114E8BF5AB27F8F238960395631A459C5E816"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-ABB497CA02CCBFF4887576BE898114E8BF5AB27F8F238960395631A459C5E816"/>
+                <ChainItem Certificate="C-9716C6DDA3A46565302A12FC6229C7FA0A01A623414C59A96C8B108BF770B6BF"/>
+                <ChainItem Certificate="C-88E040C143F6DF5F280E83F830B5ECB46778F63A683F95A1DF1E48AD6B323EE2"/>
+            </CertificateChain>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-ABB497CA02CCBFF4887576BE898114E8BF5AB27F8F238960395631A459C5E816">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <SerialInfo>
+                            <Ski>e8ej//lnjS+d7Dx2nrbvRRwNkmI=</Ski>
+                        </SerialInfo>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>hM72zZ+MoyRI+AC171MYuHoumQricuIt8oD3lkSV2x4=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+        <Revocation Id="R-8FC0B90E4C22F84615B66423DB1EE7D3637A26862C68E8FCC1898E03B22FCC2D">
+            <Origin>EXTERNAL</Origin>
+            <Type>OCSP</Type>
+            <SourceAddress>http://nsc.vrm.lt/OCSP/ocspresponder.nsc</SourceAddress>
+            <ProductionDate>2025-03-18T11:38:03Z</ProductionDate>
+            <ThisUpdate>2025-03-18T11:37:33Z</ThisUpdate>
+            <ArchiveCutOff>2024-03-18T13:38:03Z</ArchiveCutOff>
+            <CertHashExtensionPresent>false</CertHashExtensionPresent>
+            <CertHashExtensionMatch>false</CertHashExtensionMatch>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>384</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA384</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-ABB497CA02CCBFF4887576BE898114E8BF5AB27F8F238960395631A459C5E816"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-ABB497CA02CCBFF4887576BE898114E8BF5AB27F8F238960395631A459C5E816"/>
+                <ChainItem Certificate="C-9716C6DDA3A46565302A12FC6229C7FA0A01A623414C59A96C8B108BF770B6BF"/>
+                <ChainItem Certificate="C-88E040C143F6DF5F280E83F830B5ECB46778F63A683F95A1DF1E48AD6B323EE2"/>
+            </CertificateChain>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-ABB497CA02CCBFF4887576BE898114E8BF5AB27F8F238960395631A459C5E816">
+                    <Origin>BASIC_OCSP_RESP</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <SerialInfo>
+                            <Ski>e8ej//lnjS+d7Dx2nrbvRRwNkmI=</Ski>
+                        </SerialInfo>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>j8C5Dkwi+EYVtmQj2x7n02N6JoYsaOj8wYmOA7IvzC0=</DigestValue>
+            </DigestAlgoAndValue>
+        </Revocation>
+    </UsedRevocations>
+    <UsedTimestamps>
+        <Timestamp Type="SIGNATURE_TIMESTAMP" Id="T-CF0D2E75F43F2DBEC2E81577973281142A63DA2A91A2B7E1AA88D54C8BE73D1F">
+            <ProductionTime>2025-03-03T16:45:01Z</ProductionTime>
+            <DigestMatcher type="MESSAGE_IMPRINT">
+                <DigestMethod>SHA3_384</DigestMethod>
+                <DigestValue>AQTiL9NrnvMRCURGuNTWdCnxMmSq8QMF0Af1e7fTm4njQYzD/1ybB4WSK1HIJJ49</DigestValue>
+                <DataFound>true</DataFound>
+                <DataIntact>true</DataIntact>
+            </DigestMatcher>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>384</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA3_384</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-168E3AE71FEA7C6B0E864E8C31F93BD0975F4E3FECE93C92B991352E6B67FE76"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-168E3AE71FEA7C6B0E864E8C31F93BD0975F4E3FECE93C92B991352E6B67FE76"/>
+                <ChainItem Certificate="C-1F93BD0975F4E3FECE93C9168E3AE71FEA7C6B0E864E8C32B991352E6B67FE76"/>
+            </CertificateChain>
+            <SignerInformationStore>
+                <SignerInfo Current="true">
+                    <IssuerName>CN=MitSoft QTSA TSU-2 Root, OID.2.5.4.97=NTRLT-120792080, O="UAB \"MIT-SOFT\"", C=LT</IssuerName>
+                    <SerialNumber>655750329300843566315064003705390535515441720656</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
+            <TSAGeneralName contentMatch="true" orderMatch="true">CN=MitSoft QTSA TSU-2,2.5.4.97=#0c0f4e54524c542d313230373932303830,O=UAB \"MIT-SOFT\",C=LT</TSAGeneralName>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-168E3AE71FEA7C6B0E864E8C31F93BD0975F4E3FECE93C92B991352E6B67FE76">
+                    <Origin>SIGNED_DATA</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA1</DigestMethod>
+                            <DigestValue>LPcmrNBXdOfbR6TTMFM4zcSaxsQ=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA3_384</DigestMethod>
+                            <DigestValue>+4j5p/MkGkK45n6a7PnFxNmJ40RTwgMREt94pX6jhkKNyqE3OQREppHgSuF7a9Z3</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations/>
+            <FoundEvidenceRecords/>
+            <TimestampedObjects>
+                <TimestampedObject Token="D-68D41ADC2B876A6EDEE719390199E5C48F8D16C6760058F5E8481204A97E4A31" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="S-4086A5387E6054068E8C2F78342F4BD94B9522232FCF479769FDC5F9EA658068" Category="SIGNATURE"/>
+                <TimestampedObject Token="C-968F294386FD2BA56FE1832C1A7E8B48A696B878430B279E4FEEC875DC24C79B" Category="CERTIFICATE"/>
+            </TimestampedObjects>
+            <TimestampScopes/>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>BnzObXv9H0yZnM06li+vA0VHR5eHCUxPYCYb8FNV4iY=</DigestValue>
+            </DigestAlgoAndValue>
+        </Timestamp>
+        <Timestamp Type="DOCUMENT_TIMESTAMP" Id="T-3E061BCC5D67542DEF00952E2FC05FC8B34FD3BC8F1411166CFD55E074166719">
+            <ArchiveTimestampType>PAdES</ArchiveTimestampType>
+            <ProductionTime>2025-03-03T16:45:05Z</ProductionTime>
+            <DigestMatcher type="MESSAGE_IMPRINT">
+                <DigestMethod>SHA3_512</DigestMethod>
+                <DigestValue>JTxXs7FEzdWFvmUV8/PYJnA95q3q1B+Ld9/kxr9IR4DNgoeUBQtMCsg2zp1yv66IpkpME6alkDXAkwEZgE71Wg==</DigestValue>
+                <DataFound>true</DataFound>
+                <DataIntact>true</DataIntact>
+            </DigestMatcher>
+            <BasicSignature>
+                <EncryptionAlgoUsedToSignThisToken>ECDSA</EncryptionAlgoUsedToSignThisToken>
+                <KeyLengthUsedToSignThisToken>384</KeyLengthUsedToSignThisToken>
+                <DigestAlgoUsedToSignThisToken>SHA3_512</DigestAlgoUsedToSignThisToken>
+                <SignatureIntact>true</SignatureIntact>
+                <SignatureValid>true</SignatureValid>
+            </BasicSignature>
+            <SigningCertificate Certificate="C-168E3AE71FEA7C6B0E864E8C31F93BD0975F4E3FECE93C92B991352E6B67FE76"/>
+            <CertificateChain>
+                <ChainItem Certificate="C-168E3AE71FEA7C6B0E864E8C31F93BD0975F4E3FECE93C92B991352E6B67FE76"/>
+                <ChainItem Certificate="C-1F93BD0975F4E3FECE93C9168E3AE71FEA7C6B0E864E8C32B991352E6B67FE76"/>
+            </CertificateChain>
+            <SignerInformationStore>
+                <SignerInfo Current="true">
+                    <IssuerName>CN=MitSoft QTSA TSU-2 Root, OID.2.5.4.97=NTRLT-120792080, O="UAB \"MIT-SOFT\"", C=LT</IssuerName>
+                    <SerialNumber>655750329300843566315064003705390535515441720656</SerialNumber>
+                </SignerInfo>
+            </SignerInformationStore>
+            <TSAGeneralName contentMatch="true" orderMatch="true">CN=MitSoft QTSA TSU-2,2.5.4.97=#0c0f4e54524c542d313230373932303830,O=UAB \"MIT-SOFT\",C=LT</TSAGeneralName>
+            <PDFRevision>
+                <SignatureField name="padesDocumentTimeStamp_1"/>
+                <PDFSignatureDictionary consistent="true">
+                    <Type>DocTimeStamp</Type>
+                    <Filter>Adobe.PPKLite</Filter>
+                    <SubFilter>ETSI.RFC3161</SubFilter>
+                    <SignatureByteRange valid="true">0 84307 94549 3343</SignatureByteRange>
+                </PDFSignatureDictionary>
+            </PDFRevision>
+            <FoundCertificates>
+                <RelatedCertificate Certificate="C-168E3AE71FEA7C6B0E864E8C31F93BD0975F4E3FECE93C92B991352E6B67FE76">
+                    <Origin>SIGNED_DATA</Origin>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA1</DigestMethod>
+                            <DigestValue>LPcmrNBXdOfbR6TTMFM4zcSaxsQ=</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                    <CertificateRef>
+                        <Origin>SIGNING_CERTIFICATE</Origin>
+                        <DigestAlgoAndValue match="true">
+                            <DigestMethod>SHA3_512</DigestMethod>
+                            <DigestValue>i0ExbZ5BRpzIkiYriM2fIOpDARxXVmM36DzmEfUwkeAoeDFa/8b/K7aSwUa+E758+FqtQ1Pr8X7nc8/hoS8BVg==</DigestValue>
+                        </DigestAlgoAndValue>
+                    </CertificateRef>
+                </RelatedCertificate>
+            </FoundCertificates>
+            <FoundRevocations/>
+            <FoundEvidenceRecords/>
+            <TimestampedObjects>
+                <TimestampedObject Token="D-C0C9B6225BB31ECF9B04C18D2B1C2611A58BA4A32D08D4C82AB3835265EC1FEB" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="D-68D41ADC2B876A6EDEE719390199E5C48F8D16C6760058F5E8481204A97E4A31" Category="SIGNED_DATA"/>
+                <TimestampedObject Token="S-4086A5387E6054068E8C2F78342F4BD94B9522232FCF479769FDC5F9EA658068" Category="SIGNATURE"/>
+                <TimestampedObject Token="C-968F294386FD2BA56FE1832C1A7E8B48A696B878430B279E4FEEC875DC24C79B" Category="CERTIFICATE"/>
+                <TimestampedObject Token="T-CF0D2E75F43F2DBEC2E81577973281142A63DA2A91A2B7E1AA88D54C8BE73D1F" Category="TIMESTAMP"/>
+                <TimestampedObject Token="C-168E3AE71FEA7C6B0E864E8C31F93BD0975F4E3FECE93C92B991352E6B67FE76" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-9716C6DDA3A46565302A12FC6229C7FA0A01A623414C59A96C8B108BF770B6BF" Category="CERTIFICATE"/>
+                <TimestampedObject Token="C-ABB497CA02CCBFF4887576BE898114E8BF5AB27F8F238960395631A459C5E816" Category="CERTIFICATE"/>
+                <TimestampedObject Token="R-84CEF6CD9F8CA32448F800B5EF5318B87A2E990AE272E22DF280F7964495DB1E" Category="REVOCATION"/>
+            </TimestampedObjects>
+            <TimestampScopes>
+                <TimestampScope SignerData="D-C0C9B6225BB31ECF9B04C18D2B1C2611A58BA4A32D08D4C82AB3835265EC1FEB">
+                    <Scope>FULL</Scope>
+                    <Name>Full PDF</Name>
+                    <Description>The document ByteRange : [0, 84307, 94549, 3343]</Description>
+                </TimestampScope>
+            </TimestampScopes>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>CDy8azUhqZ5+VYdmuW81y+37Y3yvcc/0A0SSunQPt14=</DigestValue>
+            </DigestAlgoAndValue>
+        </Timestamp>
+    </UsedTimestamps>
+    <OriginalDocuments>
+        <SignerData Id="D-68D41ADC2B876A6EDEE719390199E5C48F8D16C6760058F5E8481204A97E4A31">
+            <ReferencedName>Partial PDF</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>zsuK0fTjeC4S9iV5eDS2lTkpkUU4u0USxUSeyxwdk+s=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+        <SignerData Id="D-C0C9B6225BB31ECF9B04C18D2B1C2611A58BA4A32D08D4C82AB3835265EC1FEB">
+            <ReferencedName>Full PDF</ReferencedName>
+            <DigestAlgoAndValue>
+                <DigestMethod>SHA256</DigestMethod>
+                <DigestValue>/csyZLenO+UcDe+VGLyvL8Q6AsAI/0sIbPMHeHBQQRI=</DigestValue>
+            </DigestAlgoAndValue>
+        </SignerData>
+    </OriginalDocuments>
+    <TrustedLists>
+        <TrustedList Id="TL-90DCC256A302389275B5C190995F4D7FF6D3F088E104789C0E22C15071291BA1" parent="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B">
+            <CountryCode>LT</CountryCode>
+            <Url>https://elektroninisparasas.lt/LT-TSL.xml</Url>
+            <TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric</TSLType>
+            <SequenceNumber>76</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2025-03-18T11:33:04Z</LastLoading>
+            <IssueDate>2025-02-10T07:02:04Z</IssueDate>
+            <NextUpdate>2025-08-10T06:02:04Z</NextUpdate>
+            <WellSigned>true</WellSigned>
+            <StructuralValidation valid="true"/>
+        </TrustedList>
+        <TrustedList Id="LOTL-EC2AE37FE9A43B48B1CFE2A57EBEE2BD6373EDFF36537EB1BC905747ACBF4C3B" LOTL="true">
+            <CountryCode>EU</CountryCode>
+            <Url>https://ec.europa.eu/tools/lotl/eu-lotl.xml</Url>
+            <TSLType>http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUlistofthelists</TSLType>
+            <SequenceNumber>360</SequenceNumber>
+            <Version>5</Version>
+            <LastLoading>2025-03-18T11:33:02Z</LastLoading>
+            <IssueDate>2025-03-14T09:43:00Z</IssueDate>
+            <NextUpdate>2025-09-03T10:00:00Z</NextUpdate>
+            <WellSigned>true</WellSigned>
+            <StructuralValidation valid="true"/>
+        </TrustedList>
+    </TrustedLists>
+</DiagnosticData>

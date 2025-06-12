@@ -186,19 +186,19 @@ public class CertificateQualificationBlock extends Chain<XmlCertificate> {
 	}
 
 	private AcceptableListOfTrustedListsCheck<XmlCertificate> isAcceptableLOTL(XmlTLAnalysis xmlLOTLAnalysis) {
-		return new AcceptableListOfTrustedListsCheck<>(i18nProvider, result, xmlLOTLAnalysis, getWarnLevelConstraint());
+		return new AcceptableListOfTrustedListsCheck<>(i18nProvider, result, xmlLOTLAnalysis, getWarnLevelRule());
 	}
 
 	private AcceptableTrustedListCheck<XmlCertificate> isAcceptableTL(XmlTLAnalysis xmlTLAnalysis) {
-		return new AcceptableTrustedListCheck<>(i18nProvider, result, xmlTLAnalysis, getWarnLevelConstraint());
+		return new AcceptableTrustedListCheck<>(i18nProvider, result, xmlTLAnalysis, getWarnLevelRule());
 	}
 
 	private ChainItem<XmlCertificate> isAcceptableTLPresent(Set<String> acceptableUrls) {
-		return new AcceptableTrustedListPresenceCheck<>(i18nProvider, result, acceptableUrls, getFailLevelConstraint());
+		return new AcceptableTrustedListPresenceCheck<>(i18nProvider, result, acceptableUrls, getFailLevelRule());
 	}
 
 	private ChainItem<XmlCertificate> isAcceptableBuildingBlockConclusion(XmlConclusion buildingBlocksConclusion) {
-		return new AcceptableBuildingBlockConclusionCheck(i18nProvider, result, buildingBlocksConclusion, getWarnLevelConstraint());
+		return new AcceptableBuildingBlockConclusionCheck(i18nProvider, result, buildingBlocksConclusion, getWarnLevelRule());
 	}
 
 }

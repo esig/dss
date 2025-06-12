@@ -28,7 +28,7 @@ import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -40,7 +40,7 @@ class CAdESLevelLTAHashIndexWrongOCSPDigestTest extends AbstractCAdESTestValidat
 
     @Override
     protected DSSDocument getSignedDocument() {
-        return new FileDocument("src/test/resources/validation/cades-ats-v3-wrong-ocsp.p7s");
+        return new InMemoryDocument(CAdESLevelLTAHashIndexWrongOCSPDigestTest.class.getResourceAsStream("/validation/cades-ats-v3-wrong-ocsp.p7s"));
     }
 
     @Override

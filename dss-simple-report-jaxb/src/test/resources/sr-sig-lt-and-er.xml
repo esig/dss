@@ -11,7 +11,7 @@
     <ValidSignaturesCount>1</ValidSignaturesCount>
     <SignaturesCount>1</SignaturesCount>
     <ContainerType>ASiC-E</ContainerType>
-    <Signature SignatureFormat="CAdES-BASELINE-LT" ExtensionPeriodMax="2027-11-14T16:39:38Z" Id="S-C7C81D982077A31EF63B0D2E9F6B9058741D49D495AB1FA5D1272FD188DFE05B">
+    <Signature SignatureFormat="CAdES-BASELINE-LT" Id="S-C7C81D982077A31EF63B0D2E9F6B9058741D49D495AB1FA5D1272FD188DFE05B">
         <Filename>META-INF/signature001.p7s</Filename>
         <CertificateChain>
             <Certificate Id="C-8ED9A642598ECA72B02E8DE52F58947295E01DC4BB5838C133A24C00B1787322">
@@ -28,6 +28,7 @@
         <QualificationDetails>
             <Error Key="QUAL_CERT_TRUSTED_LIST_REACHED_ANS">Unable to build a certificate chain up to a trusted list!</Error>
         </QualificationDetails>
+        <ExtensionPeriodMax>2027-11-14T16:39:38Z</ExtensionPeriodMax>
         <SigningTime>2023-09-06T10:08:15Z</SigningTime>
         <BestSignatureTime>2023-09-06T10:08:25Z</BestSignatureTime>
         <SignedBy>Aleksandr Beliakov</SignedBy>
@@ -62,6 +63,7 @@
             <EvidenceRecord Id="ER-3AC9C418A0389EBCE35CFF479CF5FEBB807BFB539CE01E0524098FC586898905">
                 <Filename>META-INF/evidencerecord001.xml</Filename>
                 <Indication>PASSED</Indication>
+                <ExtensionPeriodMax>2027-11-14T16:39:38Z</ExtensionPeriodMax>
                 <POETime>2023-09-06T10:43:24Z</POETime>
                 <EvidenceRecordScope Id="D-88DB99CE16C24FC7801014245CC6B4F3CD1D212B661FE7EA71186CAD2D531CC9" name="META-INF/signature001.p7s" scope="FULL">Full document</EvidenceRecordScope>
                 <Timestamps>

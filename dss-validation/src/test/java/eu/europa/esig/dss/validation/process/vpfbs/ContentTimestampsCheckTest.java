@@ -25,7 +25,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicSignature;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.vpfbs.checks.ContentTimestampsCheck;
@@ -47,7 +48,7 @@ class ContentTimestampsCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlValidationProcessBasicSignature result = new XmlValidationProcessBasicSignature();
-        ContentTimestampsCheck ctc = new ContentTimestampsCheck<>(i18nProvider, result, contentTimestamps, constraint);
+        ContentTimestampsCheck ctc = new ContentTimestampsCheck<>(i18nProvider, result, contentTimestamps, new LevelConstraintWrapper(constraint));
         ctc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -63,7 +64,7 @@ class ContentTimestampsCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlValidationProcessBasicSignature result = new XmlValidationProcessBasicSignature();
-        ContentTimestampsCheck ctc = new ContentTimestampsCheck<>(i18nProvider, result, contentTimestamps, constraint);
+        ContentTimestampsCheck ctc = new ContentTimestampsCheck<>(i18nProvider, result, contentTimestamps, new LevelConstraintWrapper(constraint));
         ctc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

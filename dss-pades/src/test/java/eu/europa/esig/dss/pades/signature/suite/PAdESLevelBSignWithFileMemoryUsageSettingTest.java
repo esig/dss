@@ -61,7 +61,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 @Tag("slow")
-public class PAdESLevelBSignWithFileMemoryUsageSettingTest extends AbstractPAdESTestSignature {
+class PAdESLevelBSignWithFileMemoryUsageSettingTest extends AbstractPAdESTestSignature {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PAdESLevelBSignWithFileMemoryUsageSettingTest.class);
 

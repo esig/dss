@@ -26,7 +26,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
@@ -48,10 +48,10 @@ public class RelatedToMraEnactedTrustServiceCheck<T extends XmlConstraintsConclu
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlConstraintsConclusion}
      * @param trustServicesAtTime list of {@link TrustServiceWrapper}s
-     * @param constraint {@link LevelConstraint}
+     * @param constraint {@link LevelRule}
      */
     public RelatedToMraEnactedTrustServiceCheck(I18nProvider i18nProvider, T result,
-                                                List<TrustServiceWrapper> trustServicesAtTime, LevelConstraint constraint) {
+                                                List<TrustServiceWrapper> trustServicesAtTime, LevelRule constraint) {
         super(i18nProvider, result, constraint);
         this.trustServicesAtTime = trustServicesAtTime;
     }

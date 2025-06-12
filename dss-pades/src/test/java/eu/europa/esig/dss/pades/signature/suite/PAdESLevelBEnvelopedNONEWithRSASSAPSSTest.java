@@ -43,7 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class PAdESLevelBEnvelopedNONEWithRSASSAPSSTest extends AbstractPAdESTestSignature {
+class PAdESLevelBEnvelopedNONEWithRSASSAPSSTest extends AbstractPAdESTestSignature {
 
     private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;
     private PAdESSignatureParameters signatureParameters;

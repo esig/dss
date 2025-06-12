@@ -53,7 +53,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PAdESVisibleWithOverlappingFieldsTest extends AbstractPAdESTestSignature {
+class PAdESVisibleWithOverlappingFieldsTest extends AbstractPAdESTestSignature {
 
 	private PAdESService service;
 	private PAdESSignatureParameters signatureParameters;
@@ -97,7 +97,7 @@ public class PAdESVisibleWithOverlappingFieldsTest extends AbstractPAdESTestSign
 		
 		documentToSign = signed;
 
-		Exception exception = assertThrows(AlertException.class, () -> super.sign());
+		Exception exception = assertThrows(AlertException.class, super::sign);
 		assertEquals("The new signature field position overlaps with an existing annotation!", exception.getMessage());
 
 		pdfSignatureFieldPositionChecker.setAlertOnSignatureFieldOverlap(new LogOnStatusAlert());

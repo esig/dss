@@ -48,12 +48,12 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class GetOriginalDocumentTest extends PKIFactoryAccess {
+class GetOriginalDocumentTest extends PKIFactoryAccess {
 
 	private static final Logger LOG = LoggerFactory.getLogger(GetOriginalDocumentTest.class);
 
 	@Test
-	public final void getOriginalDocument() throws Exception {
+	final void getOriginalDocument() throws Exception {
 		DSSDocument document = new InMemoryDocument(GetOriginalDocumentTest.class.getResourceAsStream("/sample.pdf"), "sample.pdf", MimeTypeEnum.PDF);
 
 		PAdESSignatureParameters signatureParameters = new PAdESSignatureParameters();

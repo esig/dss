@@ -20,28 +20,28 @@
  */
 package eu.europa.esig.dss.validation.process.vpfltvd;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessLongTermData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.vpfltvd.checks.TimestampCoherenceOrderCheck;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TimestampCoherenceOrderCheckTest extends AbstractTestCheck {
 	
@@ -201,7 +201,7 @@ class TimestampCoherenceOrderCheckTest extends AbstractTestCheck {
 	
 	private void validate(List<TimestampWrapper> timestamps, XmlStatus expectedResult) {
 		TimestampCoherenceOrderCheck tcoc = new TimestampCoherenceOrderCheck(i18nProvider, result, timestamps,
-				constraint);
+				new LevelConstraintWrapper(constraint));
 		tcoc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

@@ -29,7 +29,7 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DigestDocument;
-import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
 
 import java.util.Collections;
@@ -44,7 +44,7 @@ class CAdESWithDoubleSigningCertificateValidationTest extends AbstractCAdESTestV
 
     @Override
     protected DSSDocument getSignedDocument() {
-        return new FileDocument("src/test/resources/validation/cades-double-signing-certificate.p7m");
+        return new InMemoryDocument(CAdESWithDoubleSigningCertificateValidationTest.class.getResourceAsStream("/validation/cades-double-signing-certificate.p7m"));
     }
 
     @Override

@@ -31,8 +31,7 @@ import java.util.List;
 public class PKCS11SignatureTokenApp {
 
 	public static void main(String[] args) {
-
-		String PIN = "PINCODE";
+		String pin = "PINCODE";
 
 		// -Djava.security.debug = sunpkcs11
 
@@ -48,7 +47,7 @@ public class PKCS11SignatureTokenApp {
 		// new PasswordProtection(PIN.toCharArray()), 1)
 		String alias;
 		try (Pkcs11SignatureToken token = new Pkcs11SignatureToken("C:\\Program Files\\Gemalto\\Classic Client\\BIN\\gclib.dll",
-				new PasswordProtection(PIN.toCharArray()), 2)) {
+				new PasswordProtection(pin.toCharArray()), 2)) {
 
 			List<DSSPrivateKeyEntry> keys = token.getKeys();
 			for (DSSPrivateKeyEntry entry : keys) {
@@ -64,9 +63,9 @@ public class PKCS11SignatureTokenApp {
 		}
 
 		try (Pkcs11SignatureToken token = new Pkcs11SignatureToken("C:\\Program Files\\Gemalto\\Classic Client\\BIN\\gclib.dll",
-				new PasswordProtection(PIN.toCharArray()), 2)) {
+				new PasswordProtection(pin.toCharArray()), 2)) {
 
-			DSSPrivateKeyEntry key = token.getKey(alias, new PasswordProtection(PIN.toCharArray()));
+			DSSPrivateKeyEntry key = token.getKey(alias, new PasswordProtection(pin.toCharArray()));
 
 			ToBeSigned toBeSigned = new ToBeSigned("Hello world".getBytes());
 			SignatureValue signatureValue = token.sign(toBeSigned, DigestAlgorithm.SHA256, key);

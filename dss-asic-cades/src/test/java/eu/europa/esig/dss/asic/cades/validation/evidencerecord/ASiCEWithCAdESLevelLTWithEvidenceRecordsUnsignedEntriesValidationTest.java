@@ -50,11 +50,12 @@ import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class ASiCEWithCAdESLevelLTWithEvidenceRecordsUnsignedEntriesValidationTest extends AbstractASiCEWithCAdESWithEvidenceRecordTestValidation {
+class ASiCEWithCAdESLevelLTWithEvidenceRecordsUnsignedEntriesValidationTest extends AbstractASiCWithCAdESWithEvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {
@@ -170,7 +171,7 @@ class ASiCEWithCAdESLevelLTWithEvidenceRecordsUnsignedEntriesValidationTest exte
                         sigFileFound = true;
                     }
                 }
-                assertTrue(sigFileFound);
+                assertFalse(sigFileFound);
             }
         }
     }
@@ -206,7 +207,7 @@ class ASiCEWithCAdESLevelLTWithEvidenceRecordsUnsignedEntriesValidationTest exte
                             sigFileFound = true;
                         }
                     }
-                    assertTrue(sigFileFound);
+                    assertFalse(sigFileFound);
 
                     boolean coversEvidenceRecord = false;
                     boolean coversSignature = false;
@@ -232,7 +233,7 @@ class ASiCEWithCAdESLevelLTWithEvidenceRecordsUnsignedEntriesValidationTest exte
                         }
                     }
 
-                    assertEquals(getNumberOfExpectedEvidenceScopes(), timestampedObjects.stream()
+                    assertEquals(4, timestampedObjects.stream()
                             .filter(r -> TimestampedObjectType.SIGNED_DATA == r.getCategory()).count()); // created additional objects for "invalid" sig ref (no POE provided)
 
                     assertTrue(coversEvidenceRecord);
@@ -295,7 +296,7 @@ class ASiCEWithCAdESLevelLTWithEvidenceRecordsUnsignedEntriesValidationTest exte
                         sigFileFound = true;
                     }
                 }
-                assertTrue(sigFileFound);
+                assertFalse(sigFileFound);
 
                 XmlTimestamps timestamps = xmlEvidenceRecord.getTimestamps();
                 assertNotNull(timestamps);
@@ -313,7 +314,7 @@ class ASiCEWithCAdESLevelLTWithEvidenceRecordsUnsignedEntriesValidationTest exte
                             sigFileFound = true;
                         }
                     }
-                    assertTrue(sigFileFound);
+                    assertFalse(sigFileFound);
                 }
 
             }
@@ -322,7 +323,7 @@ class ASiCEWithCAdESLevelLTWithEvidenceRecordsUnsignedEntriesValidationTest exte
 
     @Override
     protected int getNumberOfExpectedEvidenceScopes() {
-        return 4;
+        return 2;
     }
 
 }

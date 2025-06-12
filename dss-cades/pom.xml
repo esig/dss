@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>6.2</version>
+		<version>6.3.RC1</version>
 	</parent>
 
 	<artifactId>dss-cades</artifactId>
@@ -16,8 +16,31 @@
 	<properties>
 		<module-name>jpms_dss_cades</module-name>
 	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<exclude>eu/**/extension/**/*Test.java</exclude>
+						<exclude>eu/**/requirements/**/*Test.java</exclude>
+						<exclude>eu/**/signature/**/*Test.java</exclude>
+						<exclude>eu/**/timestamp/**/*Test.java</exclude>
+						<exclude>eu/**/validation/**/*Test.java</exclude>
+						<exclude>eu/**/preservation/**/*Test.java</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 	
 	<dependencies>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-cms</artifactId>
+		</dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
             <artifactId>dss-document</artifactId>
@@ -45,4 +68,14 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
+	<profiles>
+		<profile>
+			<id>quick-init</id>
+			<properties>
+				<maven.test.skip>false</maven.test.skip>
+				<skipTests>true</skipTests>
+			</properties>
+		</profile>
+	</profiles>
 </project>

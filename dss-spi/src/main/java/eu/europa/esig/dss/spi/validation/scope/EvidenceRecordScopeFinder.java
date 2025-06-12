@@ -24,8 +24,9 @@ import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.ReferenceValidation;
 import eu.europa.esig.dss.model.scope.SignatureScope;
-import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
+import eu.europa.esig.dss.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +36,7 @@ import java.util.Objects;
  * Extracts evidence record scopes representing the covered archival data objects
  *
  */
-public class EvidenceRecordScopeFinder {
+public class EvidenceRecordScopeFinder extends AbstractSignatureScopeFinder {
 
     /** The associated evidence record */
     protected final EvidenceRecord evidenceRecord;
@@ -56,7 +57,38 @@ public class EvidenceRecordScopeFinder {
      * @return a list of {@link SignatureScope}s
      */
     public List<SignatureScope> findEvidenceRecordScope() {
-        return findEvidenceRecordScope(evidenceRecord.getReferenceValidation());
+        final List<SignatureScope> evidenceRecordScopes = new ArrayList<>(findEvidenceRecordScope(evidenceRecord.getReferenceValidation()));
+        if (isSignatureEmbeddedAndValid(evidenceRecord)) {
+            enrichRecursively(evidenceRecordScopes, evidenceRecord.getMasterSignature().getSignatureScopes());
+        }
+        return evidenceRecordScopes;
+    }
+
+    private void enrichRecursively(List<SignatureScope> evidenceRecordScopes, List<SignatureScope> signatureScopes) {
+        for (SignatureScope signatureScope : signatureScopes) {
+            if (!evidenceRecordScopes.contains(signatureScope)) {
+                evidenceRecordScopes.add(signatureScope);
+            } else if (Utils.isCollectionNotEmpty(signatureScope.getChildren())) {
+                enrichRecursively(evidenceRecordScopes, signatureScope.getChildren());
+            }
+        }
+    }
+
+    /**
+     * Verifies whether the signature is embedded and covers the master signature
+     *
+     * @param evidenceRecord {@link EvidenceRecord}
+     * @return TRUE if the evidence record es embedded and valid, FALSE otherwise
+     */
+    protected boolean isSignatureEmbeddedAndValid(EvidenceRecord evidenceRecord) {
+        if (evidenceRecord.isEmbedded()) {
+            for (ReferenceValidation referenceValidation : evidenceRecord.getReferenceValidation()) {
+                if (DigestMatcherType.EVIDENCE_RECORD_MASTER_SIGNATURE == referenceValidation.getType() && referenceValidation.isIntact()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -72,17 +104,29 @@ public class EvidenceRecordScopeFinder {
 
         List<DSSDocument> coveredDocuments = new ArrayList<>();
         for (ReferenceValidation referenceValidation : referenceValidations) {
-            if (referenceValidation.isFound() && DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT.equals(referenceValidation.getType())) {
-                DSSDocument detachedDocument;
-                if (Utils.collectionSize(detachedContents) == 1) {
-                    detachedDocument = detachedContents.iterator().next();
-                } else {
-                    detachedDocument = getDetachedDocument(referenceValidation, detachedContents);
-                }
-                if (detachedDocument != null && !coveredDocuments.contains(detachedDocument)) {
-                    signatureScopes.add(new FullSignatureScope(detachedDocument.getName() != null ?
-                            detachedDocument.getName() : "Full document", detachedDocument));
-                    coveredDocuments.add(detachedDocument); // do not add documents with the same digests
+            if (referenceValidation.isIntact()) {
+                switch (referenceValidation.getType()) {
+                    case EVIDENCE_RECORD_ARCHIVE_OBJECT:
+                        DSSDocument detachedDocument;
+                        if (Utils.collectionSize(detachedContents) == 1) {
+                            detachedDocument = detachedContents.iterator().next();
+                        } else {
+                            detachedDocument = getDetachedDocument(referenceValidation, detachedContents);
+                        }
+                        if (detachedDocument != null && !coveredDocuments.contains(detachedDocument)) {
+                            signatureScopes.add(new FullSignatureScope(detachedDocument.getName() != null ?
+                                    detachedDocument.getName() : "Full document", detachedDocument));
+                            coveredDocuments.add(detachedDocument); // do not add documents with the same digests
+                        }
+                        break;
+                    case EVIDENCE_RECORD_MASTER_SIGNATURE:
+                        AdvancedSignature masterSignature = evidenceRecord.getMasterSignature();
+                        signatureScopes.add(new EvidenceRecordMasterSignatureScope(masterSignature,
+                                createDigestDocument(referenceValidation.getDigest())));
+                        break;
+                    default:
+                        // skip
+                        break;
                 }
             }
         }
@@ -91,10 +135,12 @@ public class EvidenceRecordScopeFinder {
     }
 
     private DSSDocument getDetachedDocument(ReferenceValidation referenceValidation, List<DSSDocument> detachedDocuments) {
-        for (DSSDocument document : detachedDocuments) {
-            Objects.requireNonNull(document.getName(), "Name shall be defined when multiple documents provided!");
-            if (referenceValidation.getDocumentName().equals(document.getName())) {
-                return document;
+        if (Utils.isCollectionNotEmpty(detachedDocuments)) {
+            for (DSSDocument document : detachedDocuments) {
+                Objects.requireNonNull(document.getName(), "Name shall be defined when multiple documents provided!");
+                if (referenceValidation.getDocumentName().equals(document.getName())) {
+                    return document;
+                }
             }
         }
         return null;

@@ -37,11 +37,11 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrusted;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.CertificateConstraints;
-import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.SignatureConstraints;
 import eu.europa.esig.dss.policy.jaxb.TimeConstraint;
@@ -70,7 +70,7 @@ class RevocationFreshnessExecutorTest extends AbstractProcessExecutorTest {
                 new File("src/test/resources/diag-data/diag_data_thisUpdate_before_sigTst.xml"));
         assertNotNull(diagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         SignatureConstraints signatureConstraints = validationPolicy.getSignatureConstraints();
         CertificateConstraints signingCertificate = signatureConstraints.getBasicSignatureConstraints().getSigningCertificate();
         TimeConstraint timeConstraint = new TimeConstraint();
@@ -97,7 +97,7 @@ class RevocationFreshnessExecutorTest extends AbstractProcessExecutorTest {
                 new File("src/test/resources/diag-data/diag_data_thisUpdate_before_sigTst.xml"));
         assertNotNull(diagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         SignatureConstraints signatureConstraints = validationPolicy.getSignatureConstraints();
         CertificateConstraints signingCertificate = signatureConstraints.getBasicSignatureConstraints().getSigningCertificate();
         TimeConstraint timeConstraint = new TimeConstraint();
@@ -161,7 +161,7 @@ class RevocationFreshnessExecutorTest extends AbstractProcessExecutorTest {
                 new File("src/test/resources/diag-data/diag_data_with_old_and_fresh_ocsp.xml"));
         assertNotNull(diagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         SignatureConstraints signatureConstraints = validationPolicy.getSignatureConstraints();
         CertificateConstraints signingCertificate = signatureConstraints.getBasicSignatureConstraints().getSigningCertificate();
         TimeConstraint timeConstraint = new TimeConstraint();
@@ -220,7 +220,7 @@ class RevocationFreshnessExecutorTest extends AbstractProcessExecutorTest {
                 new File("src/test/resources/diag-data/diag_data_xades_level_lta_revo_freshness.xml"));
         assertNotNull(diagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         SignatureConstraints signatureConstraints = validationPolicy.getSignatureConstraints();
         CertificateConstraints caCertificateConstraints = signatureConstraints
                 .getBasicSignatureConstraints().getCACertificate();
@@ -248,14 +248,14 @@ class RevocationFreshnessExecutorTest extends AbstractProcessExecutorTest {
         assertEquals(1, revocations.size());
 
         assertEquals(revocations.get(0).getRevocation().getNextUpdate(),
-                simpleReport.getSignatureExtensionPeriodMin(simpleReport.getFirstSignatureId()));
+                simpleReport.getExtensionPeriodMin(simpleReport.getFirstSignatureId()));
 
         List<XmlTimestamp> usedTimestamps = diagnosticData.getUsedTimestamps();
         assertEquals(1, usedTimestamps.size());
         XmlTimestamp xmlTimestamp = usedTimestamps.get(0);
 
         assertEquals(xmlTimestamp.getSigningCertificate().getCertificate().getNotAfter(),
-                simpleReport.getSignatureExtensionPeriodMax(simpleReport.getFirstSignatureId()));
+                simpleReport.getExtensionPeriodMax(simpleReport.getFirstSignatureId()));
 
         checkReports(reports);
     }
@@ -278,7 +278,7 @@ class RevocationFreshnessExecutorTest extends AbstractProcessExecutorTest {
         xmlTrusted.setValue(true);
         caCertificate.getCertificate().setTrusted(xmlTrusted);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         SignatureConstraints signatureConstraints = validationPolicy.getSignatureConstraints();
         CertificateConstraints caCertificateConstraints = signatureConstraints
                 .getBasicSignatureConstraints().getCACertificate();
@@ -310,10 +310,10 @@ class RevocationFreshnessExecutorTest extends AbstractProcessExecutorTest {
         }
         assertNotNull(firstUpdateTime);
 
-        assertEquals(firstUpdateTime, simpleReport.getSignatureExtensionPeriodMin(simpleReport.getFirstSignatureId()));
+        assertEquals(firstUpdateTime, simpleReport.getExtensionPeriodMin(simpleReport.getFirstSignatureId()));
 
         assertEquals(xmlTimestamp.getSigningCertificate().getCertificate().getNotAfter(),
-                simpleReport.getSignatureExtensionPeriodMax(simpleReport.getFirstSignatureId()));
+                simpleReport.getExtensionPeriodMax(simpleReport.getFirstSignatureId()));
 
         checkReports(reports);
     }
@@ -365,10 +365,10 @@ class RevocationFreshnessExecutorTest extends AbstractProcessExecutorTest {
         }
         assertNotNull(firstUpdateTime);
 
-        assertEquals(firstUpdateTime, simpleReport.getSignatureExtensionPeriodMin(simpleReport.getFirstSignatureId()));
+        assertEquals(firstUpdateTime, simpleReport.getExtensionPeriodMin(simpleReport.getFirstSignatureId()));
 
         assertEquals(xmlTimestamp.getSigningCertificate().getCertificate().getNotAfter(),
-                simpleReport.getSignatureExtensionPeriodMax(simpleReport.getFirstSignatureId()));
+                simpleReport.getExtensionPeriodMax(simpleReport.getFirstSignatureId()));
 
         checkReports(reports);
     }
@@ -403,10 +403,10 @@ class RevocationFreshnessExecutorTest extends AbstractProcessExecutorTest {
         assertEquals(1, revocations.size());
 
         assertEquals(revocations.get(0).getRevocation().getNextUpdate(),
-                simpleReport.getSignatureExtensionPeriodMin(simpleReport.getFirstSignatureId()));
+                simpleReport.getExtensionPeriodMin(simpleReport.getFirstSignatureId()));
 
         assertEquals(signingCertificate.getCertificate().getNotAfter(),
-                simpleReport.getSignatureExtensionPeriodMax(simpleReport.getFirstSignatureId()));
+                simpleReport.getExtensionPeriodMax(simpleReport.getFirstSignatureId()));
 
         checkReports(reports);
     }
@@ -443,10 +443,10 @@ class RevocationFreshnessExecutorTest extends AbstractProcessExecutorTest {
         assertEquals(1, revocations.size());
 
         assertEquals(revocations.get(0).getRevocation().getNextUpdate(),
-                simpleReport.getSignatureExtensionPeriodMin(simpleReport.getFirstSignatureId()));
+                simpleReport.getExtensionPeriodMin(simpleReport.getFirstSignatureId()));
 
         assertEquals(xmlTimestamp.getSigningCertificate().getCertificate().getNotAfter(),
-                simpleReport.getSignatureExtensionPeriodMax(simpleReport.getFirstSignatureId()));
+                simpleReport.getExtensionPeriodMax(simpleReport.getFirstSignatureId()));
 
         checkReports(reports);
     }
@@ -483,9 +483,9 @@ class RevocationFreshnessExecutorTest extends AbstractProcessExecutorTest {
 
         SimpleReport simpleReport = reports.getSimpleReport();
 
-        assertNull(simpleReport.getSignatureExtensionPeriodMin(simpleReport.getFirstSignatureId()));
+        assertNull(simpleReport.getExtensionPeriodMin(simpleReport.getFirstSignatureId()));
         assertEquals(xmlTimestamp.getSigningCertificate().getCertificate().getNotAfter(),
-                simpleReport.getSignatureExtensionPeriodMax(simpleReport.getFirstSignatureId()));
+                simpleReport.getExtensionPeriodMax(simpleReport.getFirstSignatureId()));
 
         checkReports(reports);
     }
@@ -496,7 +496,7 @@ class RevocationFreshnessExecutorTest extends AbstractProcessExecutorTest {
                 new File("src/test/resources/diag-data/valid-diag-data.xml"));
         assertNotNull(diagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         SignatureConstraints signatureConstraints = validationPolicy.getSignatureConstraints();
         CertificateConstraints signingCertificateConstraints = signatureConstraints
                 .getBasicSignatureConstraints().getSigningCertificate();
@@ -593,7 +593,7 @@ class RevocationFreshnessExecutorTest extends AbstractProcessExecutorTest {
                 new File("src/test/resources/diag-data/valid-diag-data.xml"));
         assertNotNull(diagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         SignatureConstraints signatureConstraints = validationPolicy.getSignatureConstraints();
         CertificateConstraints signingCertificateConstraints = signatureConstraints
                 .getBasicSignatureConstraints().getSigningCertificate();
@@ -685,7 +685,7 @@ class RevocationFreshnessExecutorTest extends AbstractProcessExecutorTest {
                 new File("src/test/resources/diag-data/valid-diag-data.xml"));
         assertNotNull(diagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         SignatureConstraints signatureConstraints = validationPolicy.getSignatureConstraints();
 
         signatureConstraints.getBasicSignatureConstraints().getSigningCertificate()
@@ -784,7 +784,7 @@ class RevocationFreshnessExecutorTest extends AbstractProcessExecutorTest {
                 new File("src/test/resources/diag-data/valid-diag-data.xml"));
         assertNotNull(diagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         SignatureConstraints signatureConstraints = validationPolicy.getSignatureConstraints();
 
         signatureConstraints.getBasicSignatureConstraints().getSigningCertificate()

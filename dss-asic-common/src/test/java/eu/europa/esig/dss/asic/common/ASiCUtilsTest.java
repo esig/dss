@@ -25,6 +25,7 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DigestDocument;
+import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import org.junit.jupiter.api.Test;
@@ -56,6 +57,29 @@ class ASiCUtilsTest {
 
 		assertFalse(ASiCUtils.isZip(new DigestDocument()));
 		assertFalse(ASiCUtils.isZip(new DigestDocument(DigestAlgorithm.SHA1, "RslITpSJk9+wNlvSAQbRhBAWCdk=")));
+
+		assertTrue(ASiCUtils.isZip(new FileDocument("src/test/resources/test.zip")));
+		assertTrue(ASiCUtils.isZip(new FileDocument("src/test/resources/multifiles-ok.asice")));
+	}
+
+	@Test
+	void isASiC() {
+		assertFalse(ASiCUtils.isASiC(null));
+		assertFalse(ASiCUtils.isASiC(new InMemoryDocument(new byte[] { 0 })));
+		assertFalse(ASiCUtils.isASiC(InMemoryDocument.createEmptyDocument()));
+		assertFalse(ASiCUtils.isASiC(new InMemoryDocument(new byte[] { 'P', 'P' })));
+		assertFalse(ASiCUtils.isASiC(new InMemoryDocument(new byte[] { 'p', 'k' })));
+
+		InMemoryDocument emptyInMemoryDoc = new InMemoryDocument();
+		assertThrows(NullPointerException.class, () -> ASiCUtils.isASiC(emptyInMemoryDoc));
+
+		assertFalse(ASiCUtils.isASiC(new InMemoryDocument(new byte[] { 'P', 'K' })));
+
+		assertFalse(ASiCUtils.isASiC(new DigestDocument()));
+		assertFalse(ASiCUtils.isASiC(new DigestDocument(DigestAlgorithm.SHA1, "RslITpSJk9+wNlvSAQbRhBAWCdk=")));
+
+		assertFalse(ASiCUtils.isASiC(new FileDocument("src/test/resources/test.zip")));
+		assertTrue(ASiCUtils.isASiC(new FileDocument("src/test/resources/multifiles-ok.asice")));
 	}
 
 	@Test

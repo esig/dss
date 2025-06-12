@@ -23,7 +23,8 @@ package eu.europa.esig.dss.validation.process.bbb.fc;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.PDFAComplianceCheck;
@@ -41,7 +42,7 @@ class PDFAComplianceCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        PDFAComplianceCheck pdfacc = new PDFAComplianceCheck(i18nProvider, result, true, constraint);
+        PDFAComplianceCheck pdfacc = new PDFAComplianceCheck(i18nProvider, result, true, new LevelConstraintWrapper(constraint));
         pdfacc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -55,7 +56,7 @@ class PDFAComplianceCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        PDFAComplianceCheck pdfacc = new PDFAComplianceCheck(i18nProvider, result, false, constraint);
+        PDFAComplianceCheck pdfacc = new PDFAComplianceCheck(i18nProvider, result, false, new LevelConstraintWrapper(constraint));
         pdfacc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

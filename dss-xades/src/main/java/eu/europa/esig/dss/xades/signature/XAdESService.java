@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import eu.europa.esig.dss.xml.utils.SantuarioInitializer;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
+import eu.europa.esig.dss.evidencerecord.EvidenceRecordIncorporationService;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SignatureValue;
@@ -30,21 +30,23 @@ import eu.europa.esig.dss.signature.AbstractSignatureService;
 import eu.europa.esig.dss.signature.CounterSignatureService;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.signature.SignatureExtension;
-import eu.europa.esig.dss.signature.SigningOperation;
+import eu.europa.esig.dss.enumerations.SigningOperation;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.SignatureProfile;
 import eu.europa.esig.dss.xades.XAdESProfileParameters;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import eu.europa.esig.dss.xades.evidencerecord.EmbeddedEvidenceRecordBuilder;
+import eu.europa.esig.dss.xades.evidencerecord.XAdESEvidenceRecordIncorporationParameters;
 import eu.europa.esig.dss.xades.reference.DSSReference;
+import eu.europa.esig.dss.xml.utils.SantuarioInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -54,7 +56,8 @@ import java.util.Objects;
  */
 public class XAdESService extends AbstractSignatureService<XAdESSignatureParameters, XAdESTimestampParameters> 
 					implements MultipleDocumentsSignatureService<XAdESSignatureParameters, XAdESTimestampParameters>,
-					CounterSignatureService<XAdESCounterSignatureParameters> {
+					CounterSignatureService<XAdESCounterSignatureParameters>,
+		            EvidenceRecordIncorporationService<XAdESEvidenceRecordIncorporationParameters> {
 
 	private static final long serialVersionUID = -391276429698752703L;
 
@@ -80,7 +83,7 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 
 	@Override
 	public TimestampToken getContentTimestamp(DSSDocument toSignDocument, XAdESSignatureParameters parameters) {
-		return getContentTimestamp(Arrays.asList(toSignDocument), parameters);
+		return getContentTimestamp(Collections.singletonList(toSignDocument), parameters);
 	}
 
 	@Override
@@ -304,7 +307,7 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 
 		CounterSignatureBuilder counterSignatureBuilder = new CounterSignatureBuilder(certificateVerifier);
 		final DSSDocument signatureValueToSign = counterSignatureBuilder.getCanonicalizedSignatureValue(signatureDocument, parameters);
-		parameters.getContext().setDetachedContents(Arrays.asList(signatureValueToSign));
+		parameters.getContext().setDetachedContents(Collections.singletonList(signatureValueToSign));
 
 		DSSReference counterSignatureReference = counterSignatureBuilder.buildCounterSignatureDSSReference(signatureDocument, parameters);
 		parameters.setReferences(Collections.singletonList(counterSignatureReference));
@@ -317,6 +320,19 @@ public class XAdESService extends AbstractSignatureService<XAdESSignatureParamet
 		counterSigned.setMimeType(signatureDocument.getMimeType());
 		
 		return counterSigned;
+	}
+
+	@Override
+	public DSSDocument addSignatureEvidenceRecord(DSSDocument signatureDocument, DSSDocument evidenceRecordDocument,
+												  XAdESEvidenceRecordIncorporationParameters parameters) {
+		Objects.requireNonNull(signatureDocument, "The signature document cannot be null");
+		Objects.requireNonNull(evidenceRecordDocument, "The evidence record document cannot be null");
+
+		EmbeddedEvidenceRecordBuilder builder = new EmbeddedEvidenceRecordBuilder(certificateVerifier);
+		DSSDocument signatureWithEvidenceRecord = builder.addEvidenceRecord(signatureDocument, evidenceRecordDocument, parameters);
+		signatureWithEvidenceRecord.setName(getFinalFileName(signatureDocument, SigningOperation.ADD_EVIDENCE_RECORD));
+		signatureWithEvidenceRecord.setMimeType(signatureDocument.getMimeType());
+		return signatureWithEvidenceRecord;
 	}
 	
 	private void verifyAndSetCounterSignatureParameters(XAdESCounterSignatureParameters parameters) {

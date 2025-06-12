@@ -62,7 +62,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PDFArchiveTimestampingTest extends PKIFactoryAccess {
+class PDFArchiveTimestampingTest extends PKIFactoryAccess {
 	
 	@Test
 	void test() throws Exception {

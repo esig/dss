@@ -26,7 +26,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicSignature;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.vpfbs.checks.TimestampGenerationTimeNotAfterCryptographicConstraintsExpirationCheck;
@@ -60,7 +61,7 @@ class TimestampGenerationTimeNotAfterCryptographicConstraintsExpirationCheckTest
         XmlValidationProcessBasicSignature result = new XmlValidationProcessBasicSignature();
         TimestampGenerationTimeNotAfterCryptographicConstraintsExpirationCheck tgtnaccec =
                 new TimestampGenerationTimeNotAfterCryptographicConstraintsExpirationCheck<>(
-                        i18nProvider, result, new TimestampWrapper(xmlTimestamp), xmlCryptographicValidation, constraint);
+                        i18nProvider, result, new TimestampWrapper(xmlTimestamp), xmlCryptographicValidation, new LevelConstraintWrapper(constraint));
         tgtnaccec.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -88,7 +89,7 @@ class TimestampGenerationTimeNotAfterCryptographicConstraintsExpirationCheckTest
         XmlValidationProcessBasicSignature result = new XmlValidationProcessBasicSignature();
         TimestampGenerationTimeNotAfterCryptographicConstraintsExpirationCheck tgtnaccec =
                 new TimestampGenerationTimeNotAfterCryptographicConstraintsExpirationCheck<>(
-                        i18nProvider, result, new TimestampWrapper(xmlTimestamp), xmlCryptographicValidation, constraint);
+                        i18nProvider, result, new TimestampWrapper(xmlTimestamp), xmlCryptographicValidation, new LevelConstraintWrapper(constraint));
         tgtnaccec.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -113,7 +114,7 @@ class TimestampGenerationTimeNotAfterCryptographicConstraintsExpirationCheckTest
         XmlValidationProcessBasicSignature result = new XmlValidationProcessBasicSignature();
         TimestampGenerationTimeNotAfterCryptographicConstraintsExpirationCheck tgtnaccec =
                 new TimestampGenerationTimeNotAfterCryptographicConstraintsExpirationCheck<>(
-                        i18nProvider, result, new TimestampWrapper(xmlTimestamp), xmlCryptographicValidation, constraint);
+                        i18nProvider, result, new TimestampWrapper(xmlTimestamp), xmlCryptographicValidation, new LevelConstraintWrapper(constraint));
         tgtnaccec.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

@@ -20,16 +20,16 @@
  */
 package eu.europa.esig.dss.cades.validation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class DSS2116WithCAdESTest extends AbstractCAdESTestValidation {
 
@@ -38,7 +38,7 @@ class DSS2116WithCAdESTest extends AbstractCAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {
-		return new FileDocument("src/test/resources/validation/Signature-C-HU_MIC-1.p7m");
+		return new InMemoryDocument(DSS2116WithCAdESTest.class.getResourceAsStream("/validation/Signature-C-HU_MIC-1.p7m"));
 	}
 	
 	@Override

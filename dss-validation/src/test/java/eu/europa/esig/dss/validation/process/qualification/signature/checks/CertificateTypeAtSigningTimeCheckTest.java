@@ -24,7 +24,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationSignatureQualification;
 import eu.europa.esig.dss.enumerations.CertificateQualification;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import org.junit.jupiter.api.Test;
@@ -42,7 +43,7 @@ class CertificateTypeAtSigningTimeCheckTest extends AbstractTestCheck {
 
         XmlValidationSignatureQualification result = new XmlValidationSignatureQualification();
         CertificateTypeAtSigningTimeCheck ctstc = new CertificateTypeAtSigningTimeCheck(i18nProvider, result,
-                CertificateQualification.QCERT_FOR_ESIG, constraint);
+                CertificateQualification.QCERT_FOR_ESIG, new LevelConstraintWrapper(constraint));
         ctstc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -57,7 +58,7 @@ class CertificateTypeAtSigningTimeCheckTest extends AbstractTestCheck {
 
         XmlValidationSignatureQualification result = new XmlValidationSignatureQualification();
         CertificateTypeAtSigningTimeCheck ctstc = new CertificateTypeAtSigningTimeCheck(i18nProvider, result,
-                CertificateQualification.CERT_FOR_ESEAL, constraint);
+                CertificateQualification.CERT_FOR_ESEAL, new LevelConstraintWrapper(constraint));
         ctstc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -72,7 +73,7 @@ class CertificateTypeAtSigningTimeCheckTest extends AbstractTestCheck {
 
         XmlValidationSignatureQualification result = new XmlValidationSignatureQualification();
         CertificateTypeAtSigningTimeCheck ctstc = new CertificateTypeAtSigningTimeCheck(i18nProvider, result,
-                CertificateQualification.NA, constraint);
+                CertificateQualification.NA, new LevelConstraintWrapper(constraint));
         ctstc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

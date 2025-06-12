@@ -28,7 +28,7 @@ import eu.europa.esig.dss.pdf.ServiceLoaderPdfObjFactory;
 import eu.europa.esig.dss.pdf.modifications.DefaultPdfObjectModificationsFinder;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
-public class DSS3226Test extends AbstractPAdESTestValidation {
+class DSS3226Test extends AbstractPAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

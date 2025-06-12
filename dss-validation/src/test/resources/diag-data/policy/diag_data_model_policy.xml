@@ -20,6 +20,7 @@
 		</AcceptableMimeTypeFileContent>
 		<ManifestFilePresent Level="FAIL" />
 		<SignedFilesPresent Level="FAIL" />
+		<FilenameAdherence Level="WARN" />
 		<AllFilesSigned Level="WARN" />
 	</ContainerConstraints>
 	<SignatureConstraints>
@@ -637,5 +638,6 @@
 			<Id>5</Id>
 			<Id>6</Id>
 		</TLVersion>
+		<TLStructure Level="WARN" />
 	</eIDAS>
 </ConstraintsParameters>

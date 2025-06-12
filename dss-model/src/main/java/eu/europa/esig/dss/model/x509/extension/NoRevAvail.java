@@ -37,8 +37,10 @@ import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
  */
 public class NoRevAvail extends CertificateExtension {
 
+    private static final long serialVersionUID = -488544490030463439L;
+
     /** Defines the value of noRevAvail extension */
-    private boolean noRevAvail;
+    private boolean noRevAvailValue;
 
     /**
      * Default constructor
@@ -53,7 +55,7 @@ public class NoRevAvail extends CertificateExtension {
      * @return TRUE if noRevAvail extension is present, FALSE otherwise
      */
     public boolean isNoRevAvail() {
-        return noRevAvail;
+        return noRevAvailValue;
     }
 
     /**
@@ -62,7 +64,7 @@ public class NoRevAvail extends CertificateExtension {
      * @param noRevAvail whether noRevAvail extension is present
      */
     public void setNoRevAvail(boolean noRevAvail) {
-        this.noRevAvail = noRevAvail;
+        this.noRevAvailValue = noRevAvail;
     }
 
 }

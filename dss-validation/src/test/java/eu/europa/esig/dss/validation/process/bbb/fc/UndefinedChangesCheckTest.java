@@ -28,7 +28,8 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlModificationDetection;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlObjectModification;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlObjectModifications;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.UndefinedChangesCheck;
@@ -48,7 +49,7 @@ class UndefinedChangesCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        UndefinedChangesCheck ucc = new UndefinedChangesCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
+        UndefinedChangesCheck ucc = new UndefinedChangesCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), new LevelConstraintWrapper(constraint));
         ucc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -72,7 +73,7 @@ class UndefinedChangesCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        UndefinedChangesCheck ucc = new UndefinedChangesCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
+        UndefinedChangesCheck ucc = new UndefinedChangesCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), new LevelConstraintWrapper(constraint));
         ucc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -97,7 +98,7 @@ class UndefinedChangesCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        UndefinedChangesCheck ucc = new UndefinedChangesCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
+        UndefinedChangesCheck ucc = new UndefinedChangesCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), new LevelConstraintWrapper(constraint));
         ucc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

@@ -32,7 +32,7 @@ import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
@@ -57,10 +57,10 @@ public class AllFilesSignedCheck extends ChainItem<XmlFC> {
 	 * @param result {@link XmlFC}
 	 * @param signature {@link SignatureWrapper}
 	 * @param containerInfo {@link XmlContainerInfo}
-	 * @param constraint {@link LevelConstraint}
+	 * @param constraint {@link LevelRule}
 	 */
 	public AllFilesSignedCheck(I18nProvider i18nProvider, XmlFC result, SignatureWrapper signature,
-							   XmlContainerInfo containerInfo, LevelConstraint constraint) {
+							   XmlContainerInfo containerInfo, LevelRule constraint) {
 		super(i18nProvider, result, constraint);
 		this.signature = signature;
 		this.containerInfo = containerInfo;

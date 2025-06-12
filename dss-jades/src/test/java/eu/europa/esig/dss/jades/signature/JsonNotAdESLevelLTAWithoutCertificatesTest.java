@@ -73,7 +73,7 @@ class JsonNotAdESLevelLTAWithoutCertificatesTest extends AbstractJAdESTestSignat
     public void signAndVerify() {
         certificateVerifier.setAugmentationAlertOnSignatureWithoutCertificates(new ExceptionOnStatusAlert());
 
-        Exception exception = assertThrows(AlertException.class, () -> super.signAndVerify());
+        Exception exception = assertThrows(AlertException.class, super::signAndVerify);
         assertTrue(exception.getMessage().contains("Error on signature augmentation to LT-level."));
         assertTrue(exception.getMessage().contains("The signature does not contain certificates."));
 

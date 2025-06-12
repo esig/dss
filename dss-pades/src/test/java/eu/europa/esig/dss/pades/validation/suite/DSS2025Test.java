@@ -41,7 +41,7 @@ import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.SignatureCertificateSource;
 
-public class DSS2025Test extends AbstractPAdESTestValidation {
+class DSS2025Test extends AbstractPAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

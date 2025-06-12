@@ -1,0 +1,215 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://uri.etsi.org/19322/algoCatSchema",
+  "definitions": {
+    "SecuritySuitabilityPolicyType": {
+      "type": "object",
+      "required": [
+        "PolicyName",
+        "Publisher",
+        "PolicyIssueDate",
+        "Algorithm"
+      ],
+      "properties": {
+        "PolicyName": {
+          "$ref": "#/definitions/PolicyNameType"
+        },
+        "Publisher": {
+          "$ref": "#/definitions/PublisherType"
+        },
+        "PolicyIssueDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "NextUpdate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "Usage": {
+          "type": "string"
+        },
+        "Algorithm": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/AlgorithmType"
+          },
+          "minItems": 1
+        },
+        "Signature": {
+          "$ref": "#/definitions/SignatureType"
+        },
+        "version": {
+          "type": "string",
+          "default": "1"
+        },
+        "lang": {
+          "type": "string",
+          "default": "en-GB"
+        },
+        "id": {
+          "type": "string"
+        }
+      }
+    },
+    "PolicyNameType": {
+      "type": "object",
+      "required": [
+        "Name"
+      ],
+      "properties": {
+        "Name": {
+          "type": "string"
+        },
+        "ObjectIdentifier": {
+          "type": "string"
+        },
+        "URI": {
+          "type": "string",
+          "format": "uri"
+        }
+      }
+    },
+    "PublisherType": {
+      "type": "object",
+      "required": [
+        "Name"
+      ],
+      "properties": {
+        "Name": {
+          "type": "string"
+        },
+        "Address": {
+          "type": "string"
+        },
+        "URI": {
+          "type": "string",
+          "format": "uri"
+        }
+      }
+    },
+    "AlgorithmType": {
+      "type": "object",
+      "required": [
+        "AlgorithmIdentifier",
+        "Evaluation"
+      ],
+      "properties": {
+        "AlgorithmIdentifier": {
+          "$ref": "#/definitions/AlgorithmIdentifierType"
+        },
+        "Evaluation": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/EvaluationType"
+          },
+          "minItems": 1
+        },
+        "Information": {
+          "$ref": "#/definitions/InformationType"
+        },
+        "Any": {
+          "type": "object"
+        }
+      }
+    },
+    "AlgorithmIdentifierType": {
+      "type": "object",
+      "required": [
+        "Name",
+        "ObjectIdentifier"
+      ],
+      "properties": {
+        "Name": {
+          "type": "string"
+        },
+        "ObjectIdentifier": {
+          "type": "string",
+          "format": "oid",
+          "minItems": 1
+        },
+        "URI": {
+          "type": "string",
+          "format": "uri",
+          "minItems": 0
+        }
+      }
+    },
+    "EvaluationType": {
+      "type": "object",
+      "required": [
+        "Validity"
+      ],
+      "properties": {
+        "Parameter": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ParameterType"
+          },
+          "minItems": 0
+        },
+        "Validity": {
+          "$ref": "#/definitions/ValidityType"
+        },
+        "AlgorithmUsage": {
+          "type": "string",
+          "format": "uri"
+        },
+        "Recommendation": {
+          "type": "string",
+          "pattern": "L|R"
+        },
+        "Any": {
+          "type": "object"
+        }
+      }
+    },
+    "ParameterType": {
+      "type": "object",
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "Min": {
+          "type": "integer"
+        },
+        "Max": {
+          "type": "integer"
+        },
+        "Any": {
+          "type": "object"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "ValidityType": {
+      "type": "object",
+      "properties": {
+        "Start": {
+          "type": "string",
+          "format": "date"
+        },
+        "End": {
+          "type": "string",
+          "format": "date"
+        }
+      }
+    },
+    "InformationType": {
+      "type": "object",
+      "required": [
+        "Text"
+      ],
+      "properties": {
+        "Text": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
+        }
+      }
+    }
+  }
+}

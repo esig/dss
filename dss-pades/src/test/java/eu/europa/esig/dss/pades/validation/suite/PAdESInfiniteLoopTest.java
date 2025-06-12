@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 
 // See DSS-1872
-public class PAdESInfiniteLoopTest extends PKIFactoryAccess {
+class PAdESInfiniteLoopTest extends PKIFactoryAccess {
 	
 	@Test
 	void test() {

@@ -22,7 +22,6 @@ package eu.europa.esig.dss.pades.signature.suite;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
 import eu.europa.esig.dss.cades.signature.CAdESService;
-import eu.europa.esig.dss.cades.signature.CMSSignedDocument;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -30,6 +29,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
@@ -37,7 +37,6 @@ import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.signature.ExternalCMSService;
 import eu.europa.esig.dss.pades.signature.PAdESWithExternalCMSService;
-import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
@@ -55,7 +54,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PAdESExternalCMSSignatureServiceTest extends PKIFactoryAccess {
+class PAdESExternalCMSSignatureServiceTest extends PKIFactoryAccess {
 
     @Test
     void test() {
@@ -89,14 +88,14 @@ public class PAdESExternalCMSSignatureServiceTest extends PKIFactoryAccess {
         assertEquals("messageDigest shall be provided!", exception.getMessage());
         exception = assertThrows(NullPointerException.class, () ->
                 service.isValidCMSSignedData(messageDigest, null));
-        assertEquals("CMSSignedDocument shall be provided!", exception.getMessage());
+        assertEquals("cmsDocument shall be provided!", exception.getMessage());
 
         exception = assertThrows(NullPointerException.class, () ->
                 service.isValidPAdESBaselineCMSSignedData(null, null));
         assertEquals("messageDigest shall be provided!", exception.getMessage());
         exception = assertThrows(NullPointerException.class, () ->
                 service.isValidPAdESBaselineCMSSignedData(messageDigest, null));
-        assertEquals("CMSSignedDocument shall be provided!", exception.getMessage());
+        assertEquals("cmsDocument shall be provided!", exception.getMessage());
 
         assertFalse(service.isValidCMSSignedData(messageDigest, documentToSign));
         assertFalse(service.isValidCMSSignedData(messageDigest, digestDocument));
@@ -129,7 +128,7 @@ public class PAdESExternalCMSSignatureServiceTest extends PKIFactoryAccess {
         ExternalCMSService cmsGeneratorService = new ExternalCMSService(getOfflineCertificateVerifier());
         dataToSign = cmsGeneratorService.getDataToSign(messageDigest, cmsParameters);
         signatureValue = getToken().sign(dataToSign, messageDigest.getAlgorithm(), getPrivateKeyEntry());
-        CMSSignedDocument cmsSignature = cmsGeneratorService.signMessageDigest(messageDigest, cmsParameters, signatureValue);
+        DSSDocument cmsSignature = cmsGeneratorService.signMessageDigest(messageDigest, cmsParameters, signatureValue);
 
         assertFalse(service.isValidCMSSignedData(new DSSMessageDigest(digestDocument.getExistingDigest()), cmsSignature));
         assertTrue(service.isValidCMSSignedData(messageDigest, cmsSignature));

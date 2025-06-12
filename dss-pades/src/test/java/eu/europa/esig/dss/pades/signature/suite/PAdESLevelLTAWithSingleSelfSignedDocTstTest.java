@@ -54,7 +54,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PAdESLevelLTAWithSingleSelfSignedDocTstTest extends AbstractPAdESTestSignature {
+class PAdESLevelLTAWithSingleSelfSignedDocTstTest extends AbstractPAdESTestSignature {
 
     private CertificateVerifier certificateVerifier;
     private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;

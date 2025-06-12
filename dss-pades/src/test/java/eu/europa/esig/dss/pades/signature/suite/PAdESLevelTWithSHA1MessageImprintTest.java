@@ -42,7 +42,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class PAdESLevelTWithSHA1MessageImprintTest extends AbstractPAdESTestSignature {
+class PAdESLevelTWithSHA1MessageImprintTest extends AbstractPAdESTestSignature {
 
 	private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;
 	private PAdESSignatureParameters signatureParameters;

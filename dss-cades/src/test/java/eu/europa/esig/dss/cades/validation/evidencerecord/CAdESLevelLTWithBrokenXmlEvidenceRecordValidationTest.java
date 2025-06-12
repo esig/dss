@@ -33,7 +33,7 @@ import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.simplereport.jaxb.XmlEvidenceRecord;
 import eu.europa.esig.dss.simplereport.jaxb.XmlTimestamp;
@@ -55,12 +55,12 @@ class CAdESLevelLTWithBrokenXmlEvidenceRecordValidationTest extends AbstractCAdE
 
     @Override
     protected DSSDocument getSignedDocument() {
-        return new FileDocument("src/test/resources/validation/evidence-record/Signature-C-LT-d233a2d9-a257-40dc-bcdb-bf4516b6d1da.p7m");
+        return new InMemoryDocument(CAdESLevelLTWithBrokenXmlEvidenceRecordValidationTest.class.getResourceAsStream("/validation/evidence-record/Signature-C-LT-d233a2d9-a257-40dc-bcdb-bf4516b6d1da.p7m"), "sig.p7m");
     }
 
     @Override
     protected List<DSSDocument> getDetachedEvidenceRecords() {
-        return Collections.singletonList(new FileDocument("src/test/resources/validation/evidence-record/evidence-record-d233a2d9-a257-40dc-bcdb-bf4516b6d1da-broken.xml"));
+        return Collections.singletonList(new InMemoryDocument(CAdESLevelLTWithBrokenXmlEvidenceRecordValidationTest.class.getResourceAsStream("/validation/evidence-record/evidence-record-d233a2d9-a257-40dc-bcdb-bf4516b6d1da-broken.xml"), "er.xml"));
     }
 
     @Override

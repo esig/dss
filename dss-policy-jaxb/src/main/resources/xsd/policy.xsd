@@ -119,6 +119,11 @@
 					<xsd:documentation>Checks if one or more signed files is present outside META-INF folder (ASiC-E) or only one file is present at root level (ASiC-S)</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="FilenameAdherence" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Verifies conformance of a document filename to the ASiC specification</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
 			<xsd:element name="AllFilesSigned" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Checks in all present files in the container are covered by the signature</xsd:documentation>
@@ -447,6 +452,31 @@
 					<xsd:element name="UnknownStatus" type="LevelConstraint" minOccurs="0">
 						<xsd:annotation>
 							<xsd:documentation>Checks the returned status is not unknown</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="ThisUpdatePresent" type="LevelConstraint" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>Checks whether thisUpdate field is defined within the revocation data</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="RevocationIssuerKnown" type="LevelConstraint" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>Checks whether the revocation issuer certificate can be identified</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="RevocationIssuerValidAtProductionTime" type="LevelConstraint" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>Checks whether the revocation issuer has been valid during the production time of the revocation data (i.e. at producedAt time)</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="RevocationAfterCertificateIssuance" type="LevelConstraint" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>Checks whether the thisUpdate date of the revocation information is after the verifying certificate's notBefore date</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="RevocationHasInformationAboutCertificate" type="LevelConstraint" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>Checks whether the revocation issuer has information about the certificate. The condition applies when: either certificate is still valid; or the revocation contains expiredCertsOnCRL (CRL) or archiveCutOff (OCSP), or Trust Service defines a expiredCertsRevocationInfo, with a value before certificate's expiration; or the cert-hash matches (OCSP).</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
 					<xsd:element name="OCSPResponderIdMatch" type="LevelConstraint" minOccurs="0">
@@ -1064,7 +1094,7 @@
 						<xsd:documentation>Date of the last update of cryptographic suites (matching the Format)</xsd:documentation>
 					</xsd:annotation>
 				</xsd:attribute>
-				<xsd:attribute name="LevelAfterUpdate" type="level" use="optional">
+				<xsd:attribute name="LevelAfterUpdate" type="Level" use="optional">
 					<xsd:annotation>
 						<xsd:documentation>Defines a level of the check for cryptographic constraints expiring after the defined UpdateDate value</xsd:documentation>
 					</xsd:annotation>
@@ -1116,6 +1146,11 @@
 					<xsd:documentation>Checks if the version (TSLVersionIdentifier) of the Trusted List is equals to one of the given values</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="TLStructure" type="LevelConstraint" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Checks if the Trusted List passes the structure validation</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -1123,7 +1158,7 @@
 		<xsd:annotation>
 			<xsd:documentation>Boolean check : follows the specified level behavior in case of failure</xsd:documentation>
 		</xsd:annotation>
-		<xsd:attribute name="Level" type="level">
+		<xsd:attribute name="Level" type="Level">
 			<xsd:annotation>
 				<xsd:documentation>The level of criticality</xsd:documentation>
 			</xsd:annotation>
@@ -1191,7 +1226,7 @@
   		</xsd:complexContent>
 	</xsd:complexType>
 	
-	<xsd:simpleType name="level">
+	<xsd:simpleType name="Level">
 		<xsd:annotation>
 			<xsd:documentation>Defined levels for a validation step</xsd:documentation>
 		</xsd:annotation>

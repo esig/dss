@@ -129,6 +129,19 @@ public class ASN1ArchiveTimeStampSequenceDigestHelper extends AbstractEvidenceRe
     public DSSMessageDigest computeChainAndDocumentHash(Digest archiveTimeStampChainHash,
                                                         DSSDocument document) {
         DigestAlgorithm digestAlgorithm = archiveTimeStampChainHash.getAlgorithm();
+        return computeChainAndDocumentHash(archiveTimeStampChainHash, document.getDigest(digestAlgorithm));
+    }
+
+    /**
+     * Computes a hash value for chain-hash and document-hash
+     *
+     * @param archiveTimeStampChainHash {@link Digest} hash of the previous ArchiveTimeStampChain
+     * @param documentDigest {@link Digest} of a detached document
+     * @return {@link DSSMessageDigest}
+     */
+    public DSSMessageDigest computeChainAndDocumentHash(Digest archiveTimeStampChainHash,
+                                                        Digest documentDigest) {
+        DigestAlgorithm digestAlgorithm = archiveTimeStampChainHash.getAlgorithm();
 
         /*
          * The algorithm by which a root hash value is generated from the
@@ -144,7 +157,7 @@ public class ASN1ArchiveTimeStampSequenceDigestHelper extends AbstractEvidenceRe
          */
 
         // 0. Compute hash of the document
-        byte[] documentMessageDigest = document.getDigestValue(digestAlgorithm);
+        byte[] documentMessageDigest = documentDigest.getValue();
 
         // 1. Group together items
         List<byte[]> hashValueList = new ArrayList<>();
@@ -176,7 +189,7 @@ public class ASN1ArchiveTimeStampSequenceDigestHelper extends AbstractEvidenceRe
             digestCalculator.update(hashValue);
         }
         // 4. Calculate hash value
-        return digestCalculator.getMessageDigest();
+        return digestCalculator.getMessageDigest(digestAlgorithm);
     }
 
 }

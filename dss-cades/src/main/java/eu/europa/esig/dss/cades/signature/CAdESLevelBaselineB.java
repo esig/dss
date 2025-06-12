@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.cades.signature;
 
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
-import eu.europa.esig.dss.cades.CMSUtils;
+import eu.europa.esig.dss.cades.CAdESUtils;
 import eu.europa.esig.dss.cades.SignedAssertion;
 import eu.europa.esig.dss.cades.SignedAssertions;
 import eu.europa.esig.dss.cades.SignerAttributeV2;
@@ -158,7 +158,7 @@ public class CAdESLevelBaselineB {
 	public AttributeTable getSignedAttributes(final CAdESSignatureParameters parameters) {
 		if (Utils.isArrayNotEmpty(parameters.getSignedData())) {
 			LOG.debug("Using explicit SignedAttributes from parameter");
-			return CMSUtils.getAttributesFromByteArray(parameters.getSignedData());
+			return CAdESUtils.getAttributesFromByteArray(parameters.getSignedData());
 		}
 
 		ASN1EncodableVector signedAttributes = new ASN1EncodableVector();
@@ -582,7 +582,7 @@ public class CAdESLevelBaselineB {
 			return;
 		}
 
-		CMSUtils.addSigningCertificateAttribute(signedAttributes, parameters.getDigestAlgorithm(), parameters.getSigningCertificate());
+		CAdESUtils.addSigningCertificateAttribute(signedAttributes, parameters.getDigestAlgorithm(), parameters.getSigningCertificate());
 	}
 
 	private void addMimeType(final CAdESSignatureParameters parameters, final ASN1EncodableVector signedAttributes) {

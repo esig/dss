@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class DSS2821Test extends AbstractPAdESTestValidation {
+class DSS2821Test extends AbstractPAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {
@@ -85,7 +85,7 @@ public class DSS2821Test extends AbstractPAdESTestValidation {
         assertTrue(detachedTst.arePdfObjectModificationsDetected());
         assertTrue(Utils.isCollectionNotEmpty(detachedTst.getPdfExtensionChanges()));
         assertTrue(Utils.isCollectionNotEmpty(detachedTst.getPdfSignatureOrFormFillChanges()));
-        assertTrue(Utils.isCollectionNotEmpty(detachedTst.getPdfAnnotationChanges()));
+        assertFalse(Utils.isCollectionNotEmpty(detachedTst.getPdfAnnotationChanges()));
         assertTrue(Utils.isCollectionNotEmpty(detachedTst.getPdfUndefinedChanges()));
     }
 

@@ -25,7 +25,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCryptographicAlgorithm;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
@@ -49,10 +49,10 @@ public class CryptographicCheckerResultCheck<T extends XmlConstraintsConclusion>
 	 * @param validationDate {@link Date}
 	 * @param position {@link MessageTag}
 	 * @param ccResult {@link XmlCC}
-	 * @param constraint {@link LevelConstraint}
+	 * @param constraint {@link LevelRule}
 	 */
 	public CryptographicCheckerResultCheck(I18nProvider i18nProvider, T result, Date validationDate,
-										   MessageTag position, XmlCC ccResult, LevelConstraint constraint) {
+										   MessageTag position, XmlCC ccResult, LevelRule constraint) {
 		this(i18nProvider, result, validationDate, position, ccResult, constraint, null);
 	}
 
@@ -64,11 +64,11 @@ public class CryptographicCheckerResultCheck<T extends XmlConstraintsConclusion>
 	 * @param validationDate {@link Date}
 	 * @param position {@link MessageTag}
 	 * @param ccResult {@link XmlCC}
-	 * @param constraint {@link LevelConstraint}
+	 * @param constraint {@link LevelRule}
 	 * @param tokenId {@link String} identifier of the corresponding token
 	 */
 	public CryptographicCheckerResultCheck(I18nProvider i18nProvider, T result, Date validationDate,
-										   MessageTag position, XmlCC ccResult, LevelConstraint constraint, String tokenId) {
+										   MessageTag position, XmlCC ccResult, LevelRule constraint, String tokenId) {
 		super(i18nProvider, result, position, ccResult, constraint, tokenId);
 		this.validationDate = validationDate;
 	}

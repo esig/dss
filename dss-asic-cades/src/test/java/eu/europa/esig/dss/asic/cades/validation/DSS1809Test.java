@@ -66,18 +66,18 @@ class DSS1809Test extends AbstractASiCWithCAdESTestValidation {
 		List<XmlDigestMatcher> digestMatchers = signature.getDigestMatchers();
 		assertEquals(2, digestMatchers.size());
 		
-		boolean ASiCManifestSigned = false;
+		boolean asicManifestSigned = false;
 		boolean entryFound = false;
 		for (XmlDigestMatcher digestMatcher : digestMatchers) {
 			assertNotNull(digestMatcher.getDocumentName());
 			if ("META-INF/ASiCManifest.xml".equals(digestMatcher.getDocumentName())) {
 				assertEquals(DigestMatcherType.MESSAGE_DIGEST, digestMatcher.getType());
-				ASiCManifestSigned = true;
+				asicManifestSigned = true;
 			} else if (DigestMatcherType.MANIFEST_ENTRY.equals(digestMatcher.getType())) {
 				entryFound = true;
 			}
 		}
-		assertTrue(ASiCManifestSigned);
+		assertTrue(asicManifestSigned);
 		assertTrue(entryFound);
 	}
 	
@@ -157,7 +157,7 @@ class DSS1809Test extends AbstractASiCWithCAdESTestValidation {
 	}
 
 	private void assertCertificateChainWithinFoundCertificates(List<CertificateWrapper> certChain, FoundCertificatesProxy foundCertificates) {
-		Set<String> certIds = foundCertificates.getRelatedCertificates().stream().map(c -> c.getId()).collect(Collectors.toSet());
+		Set<String> certIds = foundCertificates.getRelatedCertificates().stream().map(CertificateWrapper::getId).collect(Collectors.toSet());
 		for (CertificateWrapper certificateWrapper : certChain) {
 			if (certificateWrapper.isTrusted()) {
 				break;

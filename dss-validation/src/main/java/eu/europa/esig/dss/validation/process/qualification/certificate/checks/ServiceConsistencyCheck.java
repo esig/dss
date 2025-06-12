@@ -26,7 +26,8 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.qualification.trust.consistency.TrustServiceChecker;
 
@@ -48,10 +49,10 @@ public class ServiceConsistencyCheck extends ChainItem<XmlValidationCertificateQ
 	 * @param i18nProvider {@link I18nProvider}
 	 * @param result {@link XmlValidationCertificateQualification}
 	 * @param trustService {@link TrustServiceWrapper}
-	 * @param constraint {@link LevelConstraint}
+	 * @param constraint {@link LevelRule}
 	 */
 	public ServiceConsistencyCheck(I18nProvider i18nProvider, XmlValidationCertificateQualification result, 
-			TrustServiceWrapper trustService, LevelConstraint constraint) {
+			TrustServiceWrapper trustService, LevelRule constraint) {
 		super(i18nProvider, result, constraint);
 
 		this.trustService = trustService;
@@ -128,7 +129,7 @@ public class ServiceConsistencyCheck extends ChainItem<XmlValidationCertificateQ
 
 	@Override
 	protected String buildAdditionalInfo() {
-		if (trustService != null) {
+		if (trustService != null && Utils.isCollectionNotEmpty(trustService.getServiceNames())) {
 			return i18nProvider.getMessage(MessageTag.TRUST_SERVICE_NAME, trustService.getServiceNames().get(0));
 		}
 		return null;

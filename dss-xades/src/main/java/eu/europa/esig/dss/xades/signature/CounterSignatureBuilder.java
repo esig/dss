@@ -87,6 +87,7 @@ public class CounterSignatureBuilder extends ExtensionBuilder {
 		documentDom = documentAnalyzer.getRootElement();
 
 		xadesSignature = extractSignatureById(parameters);
+		assertUnsignedPropertiesExtensionPossible(xadesSignature);
 
 		Element signatureValueElement = getSignatureValueElement(xadesSignature);
 		byte[] canonicalizedSignatureValue = XMLCanonicalizer.createInstance(parameters.getCounterSignatureCanonicalizationMethod()).canonicalize(signatureValueElement);
@@ -155,6 +156,8 @@ public class CounterSignatureBuilder extends ExtensionBuilder {
 		documentDom = documentAnalyzer.getRootElement();
 
 		xadesSignature = extractSignatureById(parameters);
+		assertUnsignedPropertiesExtensionPossible(xadesSignature);
+
 		initializeSignatureBuilder(xadesSignature);
 		
 		Element levelBUnsignedProperties = (Element) unsignedSignaturePropertiesDom.cloneNode(true);

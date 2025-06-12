@@ -43,7 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CAdESLevelBNestedDetachedSignatureTest extends AbstractCAdESTestSignature {
+class CAdESLevelBNestedDetachedSignatureTest extends AbstractCAdESTestSignature {
 
     private static DSSDocument originalDocument;
     private static DSSDocument nestedSignature;

@@ -27,7 +27,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class PAdESLTVValidationTest extends AbstractPAdESTestValidation {
+class PAdESLTVValidationTest extends AbstractPAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

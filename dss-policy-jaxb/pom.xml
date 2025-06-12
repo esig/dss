@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 		<artifactId>sd-dss</artifactId>
-		<version>6.2</version>
+		<version>6.3.RC1</version>
 	</parent>
 	
   	<artifactId>dss-policy-jaxb</artifactId>
@@ -74,6 +74,10 @@
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 			<artifactId>dss-jaxb-parsers</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+			<artifactId>dss-model</artifactId>
 		</dependency>
 		
 		<dependency>

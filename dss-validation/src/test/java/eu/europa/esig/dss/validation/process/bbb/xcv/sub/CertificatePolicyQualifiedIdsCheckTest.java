@@ -31,7 +31,8 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlQcCompliance;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
 import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
 import eu.europa.esig.dss.enumerations.CertificatePolicy;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificatePolicyQualifiedIdsCheck;
@@ -58,7 +59,7 @@ class CertificatePolicyQualifiedIdsCheckTest extends AbstractTestCheck {
 
 		XmlSubXCV result = new XmlSubXCV();
 		CertificatePolicyQualifiedIdsCheck cqc = new CertificatePolicyQualifiedIdsCheck(
-				i18nProvider, result, new CertificateWrapper(xc), constraint);
+				i18nProvider, result, new CertificateWrapper(xc), new LevelConstraintWrapper(constraint));
 		cqc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -81,7 +82,7 @@ class CertificatePolicyQualifiedIdsCheckTest extends AbstractTestCheck {
 
 		XmlSubXCV result = new XmlSubXCV();
 		CertificatePolicyQualifiedIdsCheck cqc = new CertificatePolicyQualifiedIdsCheck(
-				i18nProvider, result, new CertificateWrapper(xc), constraint);
+				i18nProvider, result, new CertificateWrapper(xc), new LevelConstraintWrapper(constraint));
 		cqc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -104,7 +105,7 @@ class CertificatePolicyQualifiedIdsCheckTest extends AbstractTestCheck {
 
 		XmlSubXCV result = new XmlSubXCV();
 		CertificatePolicyQualifiedIdsCheck cqc = new CertificatePolicyQualifiedIdsCheck(
-				i18nProvider, result, new CertificateWrapper(xc), constraint);
+				i18nProvider, result, new CertificateWrapper(xc), new LevelConstraintWrapper(constraint));
 		cqc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -128,7 +129,7 @@ class CertificatePolicyQualifiedIdsCheckTest extends AbstractTestCheck {
 
 		XmlSubXCV result = new XmlSubXCV();
 		CertificatePolicyQualifiedIdsCheck cqc = new CertificatePolicyQualifiedIdsCheck(
-				i18nProvider, result, new CertificateWrapper(xc), constraint);
+				i18nProvider, result, new CertificateWrapper(xc), new LevelConstraintWrapper(constraint));
 		cqc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -145,7 +146,7 @@ class CertificatePolicyQualifiedIdsCheckTest extends AbstractTestCheck {
 
 		XmlSubXCV result = new XmlSubXCV();
 		CertificatePolicyQualifiedIdsCheck cqc = new CertificatePolicyQualifiedIdsCheck(
-				i18nProvider, result, new CertificateWrapper(xc), constraint);
+				i18nProvider, result, new CertificateWrapper(xc), new LevelConstraintWrapper(constraint));
 		cqc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

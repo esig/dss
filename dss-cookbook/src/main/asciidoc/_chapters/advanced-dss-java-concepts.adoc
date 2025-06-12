@@ -64,6 +64,49 @@ If your integration requires `dss-crl-parser`, you will need to choose your impl
 </dependency>
 ----
 
+[[dssCms]]
+==== DSS CMS
+
+Starting from the version `6.3`, DSS provides two implementations for handling of a Cryptographic Message Syntax (CMS) (RFC 5652, cf. <<R31>>) object. The modules define a logic on how the CMS signature objects are created, augmented and validated.
+
+The interfaces and common utility classes are present within the `dss-cms` module. The available implementations are:
+
+* `dss-cms-object`: contains a classic implementation for processing of a CMS signature, used in previous versions of DSS, based on `CMSSignedData` processing.
+* `dss-cms-stream`: provides an experimental implementation for processing of CMS signatures based on streams.
+
+One of the two implementations shall be added to the list of dependencies in order to perform a successful execution of some other DSS modules. The choice of the implementation impacts processing within `dss-cades`, `dss-pades-*` and `dss-asic-cades` modules.
+
+For instance, the `dss-cms-object` implementation may be added as below within a `pom.xml` file of your project:
+
+[source,xml,indent=0]
+.pom.xml
+----
+<dependency>
+    <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+    <artifactId>dss-cms-object</artifactId>
+</dependency>
+----
+
+===== DSS CMS Object
+
+This module operates with the `org.bouncycastle.cms.CMSSignedData` object and provides a complete functionality for working with CMS or CAdES signatures. As `CMSSignedData` object loads the data in memory, the implementation limits the possible size of an original document and/or a CMS signature, and can cause `OutOfMemoryError`. The implementation creates CMS signatures in a `DL` encoded format and keeps the original encoding of a CMS on augmentation.
+
+===== DSS CMS Stream
+
+The implementation does not require loading of the encapsulated content, thus allowing signing of large files (e.g. bigger than 2GB), as well as validation of large CMS documents. The implementation creates CMS signatures in a `BER` format (due to computing the CMS content "on the fly" without knowing final document size), as well as modifies the encoding of CMS signature to the `BER` format on the augmentation, regardless of the provided original encoding (i.e. `BER` or `DER`).
+
+WARNING: The `dss-cms-stream` implementation does not support augmentation of signatures containing a legacy `id-aa-ets-archiveTimestampV2` (OID: `1.2.840.113549.1.9.16.2.48`) unsigned property due to inability to keep the original encoding of CMS signatures on extension, which is required for the given archive timestamp type validation.
+
+In order to allow signing and/or augmentation of CAdES signatures encapsulating the original documents of a large size (e.g. more than 2GB), the <<DSSResourcesHandler>> should be configured within a `CAdESService` to switch processing from the default in-memory handling. An example of a configuration can be found below:
+
+[source,java,indent=0]
+.CAdES signing with TempFileResourcesHandlerBuilder
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignCAdESWithTempFileTest.java[tags=demo]
+----
+
+NOTE: The implementation `dss-cms-stream` is experimental. While it may provide a better performance as well as a possibility of large documents signing and validation, we advise implementors to carefully evaluate the produced results before switching to this implementation.
+
 [[dssPades]]
 ==== DSS PAdES
 
@@ -131,6 +174,19 @@ eu.europa.esig.dss.cookbook.example.CustomMimeTypeLoader
 
 This will load firstly the created class (`CustomMimeTypeLoader.java`) and after other available implementations (i.e. `MimeTypeEnumLoader` with default mimetypes).
 
+[[ServiceLoaderPolicy]]
+==== Validation Policy and Cryptographic Suite
+
+Starting from version `6.3`, DSS uses a `ServiceLoader` to load a validation policy, as well as a cryptographic suite.
+
+For a validation policy, DSS provides a single implementation, containing the default AdES validation policy. To enable the support of the default validation policy implementation, the `dss-policy-jaxb` module should be added in the list of the dependencies of the project.
+
+A custom validation policy can be provided by implementing a `ValidationPolicyFactory` class and by setting a reference to the corresponding implementation class within a `/META-INF/services/eu.europa.esig.dss.model.policy.ValidationPolicyFactory` file in the resources folder.
+
+For a cryptographic suite, an implementation of a `CryptographicSuiteFactory` interface is required, with DSS providing two implementations in modules `dss-policy-crypto-xml` and `dss-policy-crypto-json` for XML and JSON cryptographic suite, respectively.
+
+The list of supported or custom implementations of a `CryptographicSuiteFactory` should be added within the `/META-INF/services/eu.europa.esig.dss.model.policy.CryptographicSuiteFactory` file in the resources folder.
+
 === Multithreading
 
 DSS can be used in multi-threaded environments but some points need to be considered like resources sharing and caching. All operations are stateless and this fact requires to be maintained. Some resources can be shared, others are proper to an operation.
@@ -155,6 +211,7 @@ See section <<CachingUseCases>> of the Annex for complete examples of caching re
 DSS provides the following JAXB modules with a harmonized structure :
 
 * `dss-policy-jaxb` - defines validation policy JAXB model;
+* `dss-policy-crypto-xml` - defines XML cryptographic suite JAXB model;
 * `dss-diagnostic-jaxb` - defines Diagnostic Data JAXB model;
 * `dss-detailed-report-jaxb` - defines Detailed Report JAXB model;
 * `dss-simple-report-jaxb` - defines Simple Report JAXB model;

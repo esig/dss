@@ -31,7 +31,7 @@ import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampCertificateSource;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
@@ -47,7 +47,7 @@ class DSS1401Test extends AbstractCAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {
-		return new FileDocument("src/test/resources/validation/dss-1401/sig_with_atsv2.p7s");
+		return new InMemoryDocument(DSS1401Test.class.getResourceAsStream("/validation/dss-1401/sig_with_atsv2.p7s"));
 	}
 	
 	@Override

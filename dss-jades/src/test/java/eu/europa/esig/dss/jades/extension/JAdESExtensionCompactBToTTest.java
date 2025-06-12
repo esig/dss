@@ -57,7 +57,7 @@ class JAdESExtensionCompactBToTTest extends AbstractJAdESTestExtension {
     @Test
     @Override
     public void extendAndVerify() throws Exception {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> super.extendAndVerify());
+        Exception exception = assertThrows(IllegalArgumentException.class, super::extendAndVerify);
         assertEquals("The type 'COMPACT_SERIALIZATION' does not support signature extension!",
                 exception.getMessage());
     }

@@ -27,7 +27,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
@@ -53,11 +53,11 @@ public class TrustedCertificateMatchTrustServiceCheck extends ChainItem<XmlValid
 	 * @param i18nProvider {@link I18nProvider}
 	 * @param result {@link XmlValidationCertificateQualification}
 	 * @param trustService {@link TrustServiceWrapper}
-	 * @param constraint {@link LevelConstraint}
+	 * @param constraint {@link LevelRule}
 	 */
 	public TrustedCertificateMatchTrustServiceCheck(I18nProvider i18nProvider,
 													XmlValidationCertificateQualification result,
-													TrustServiceWrapper trustService, LevelConstraint constraint) {
+													TrustServiceWrapper trustService, LevelRule constraint) {
 		super(i18nProvider, result, constraint);
 
 		this.trustService = trustService;

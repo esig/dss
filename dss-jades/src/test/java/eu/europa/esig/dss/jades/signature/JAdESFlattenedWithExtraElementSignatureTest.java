@@ -63,7 +63,7 @@ class JAdESFlattenedWithExtraElementSignatureTest extends AbstractJAdESTestSigna
 	@Test
 	@Override
 	public void signAndVerify() {
-		Exception exception = assertThrows(IllegalInputException.class, () -> super.sign());
+		Exception exception = assertThrows(IllegalInputException.class, super::sign);
 		assertTrue(exception.getMessage().contains("Parallel signing is not supported for invalid RFC 7515 signatures."));
 		assertTrue(exception.getMessage().contains("evil"));
 	}

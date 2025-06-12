@@ -22,8 +22,8 @@ package eu.europa.esig.dss.validation.reports;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ReportsTest {
@@ -38,15 +38,15 @@ class ReportsTest {
         assertNotNull(reports.getSimpleReport());
         assertNull(reports.getSimpleReport().getJaxbModel());
         assertNull(reports.getSimpleReportJaxb());
-        assertThrows(NullPointerException.class, () -> reports.getXmlSimpleReport());
+        assertThrows(NullPointerException.class, reports::getXmlSimpleReport);
 
         assertNotNull(reports.getDetailedReport());
         assertNull(reports.getDetailedReport().getJAXBModel());
         assertNull(reports.getDetailedReportJaxb());
-        assertThrows(NullPointerException.class, () -> reports.getXmlDetailedReport());
+        assertThrows(NullPointerException.class, reports::getXmlDetailedReport);
 
         assertNull(reports.getEtsiValidationReportJaxb());
-        assertThrows(NullPointerException.class, () -> reports.getXmlValidationReport());
+        assertThrows(NullPointerException.class, reports::getXmlValidationReport);
     }
 
 }

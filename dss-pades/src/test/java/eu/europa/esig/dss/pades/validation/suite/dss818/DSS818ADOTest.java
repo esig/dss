@@ -27,7 +27,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class DSS818ADOTest extends AbstractDSS818Test {
+class DSS818ADOTest extends AbstractDSS818Test {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

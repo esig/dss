@@ -43,7 +43,7 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PAdESVisibleZoomRotationTest extends AbstractPAdESTestSignature {
+class PAdESVisibleZoomRotationTest extends AbstractPAdESTestSignature {
 
 	private final DSSDocument RED_CROSS_IMAGE = new InMemoryDocument(
 			getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeTypeEnum.JPEG);
@@ -140,7 +140,7 @@ public class PAdESVisibleZoomRotationTest extends AbstractPAdESTestSignature {
 		imageParameters.setZoom(200);
 		signatureParameters.setImageParameters(imageParameters);
 
-		Exception exception = assertThrows(AlertException.class, () -> super.signAndVerify());
+		Exception exception = assertThrows(AlertException.class, super::signAndVerify);
 		assertTrue(exception.getMessage().contains("The new signature field position is outside the page dimensions!"));
 
 		fieldParameters.setHeight(200);

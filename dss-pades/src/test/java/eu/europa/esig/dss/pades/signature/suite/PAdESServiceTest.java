@@ -61,7 +61,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PAdESServiceTest extends PKIFactoryAccess {
+class PAdESServiceTest extends PKIFactoryAccess {
 	
 	private static DSSDocument documentToSign;
     private static CertificateVerifier certificateVerifier;

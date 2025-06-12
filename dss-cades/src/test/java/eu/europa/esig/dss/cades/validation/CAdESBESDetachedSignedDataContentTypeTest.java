@@ -24,7 +24,6 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 
 import java.util.Collections;
@@ -33,11 +32,11 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class CAdESBESDetachedSignedDataContentTypeTest extends AbstractCAdESTestValidation {
+class CAdESBESDetachedSignedDataContentTypeTest extends AbstractCAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {
-        return new FileDocument("src/test/resources/validation/cades-bes-signeddata-detached.p7s");
+        return new InMemoryDocument(CAdESBESDetachedSignedDataContentTypeTest.class.getResourceAsStream("/validation/cades-bes-signeddata-detached.p7s"));
     }
 
     @Override

@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.pades.extension.suite;
 
-public class PAdESExtensionLTToLTAWithSelfSignedTest extends PAdESExtensionLTToLTATest {
+class PAdESExtensionLTToLTAWithSelfSignedTest extends PAdESExtensionLTToLTATest {
 
 	@Override
 	protected String getSigningAlias() {

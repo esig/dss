@@ -30,8 +30,8 @@ import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.Context;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.isc.checks.DigestValueMatchCheck;
@@ -155,22 +155,22 @@ public class IdentificationOfTheSigningCertificate extends Chain<XmlISC> {
 	}
 
 	private ChainItem<XmlISC> signingCertificateRecognition() {
-		LevelConstraint constraint = validationPolicy.getSigningCertificateRecognitionConstraint(context);
+		LevelRule constraint = validationPolicy.getSigningCertificateRecognitionConstraint(context);
 		return new SigningCertificateRecognitionCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlISC> digestValuePresent() {
-		LevelConstraint constraint = validationPolicy.getSigningCertificateDigestValuePresentConstraint(context);
+		LevelRule constraint = validationPolicy.getSigningCertificateDigestValuePresentConstraint(context);
 		return new DigestValuePresentCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlISC> digestValueMatch() {
-		LevelConstraint constraint = validationPolicy.getSigningCertificateDigestValueMatchConstraint(context);
+		LevelRule constraint = validationPolicy.getSigningCertificateDigestValueMatchConstraint(context);
 		return new DigestValueMatchCheck(i18nProvider, result, token, constraint);
 	}
 
 	private ChainItem<XmlISC> issuerSerialMatch() {
-		LevelConstraint constraint = validationPolicy.getSigningCertificateIssuerSerialMatchConstraint(context);
+		LevelRule constraint = validationPolicy.getSigningCertificateIssuerSerialMatchConstraint(context);
 		return new IssuerSerialMatchCheck(i18nProvider, result, token, constraint);
 	}
 

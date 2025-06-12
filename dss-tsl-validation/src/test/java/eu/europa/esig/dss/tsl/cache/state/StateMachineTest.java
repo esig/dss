@@ -46,7 +46,7 @@ class StateMachineTest {
 		assertEquals(CacheStateEnum.REFRESH_NEEDED, cachedEntry.getCurrentState());
 		assertTrue(cachedEntry.isRefreshNeeded());
 
-		IllegalStateException e = assertThrows(IllegalStateException.class, () -> cachedEntry.sync());
+		IllegalStateException e = assertThrows(IllegalStateException.class, cachedEntry::sync);
 		assertEquals("Transition from 'REFRESH_NEEDED' to 'SYNCHRONIZED' is not allowed", e.getMessage());
 
 		assertEquals(CacheStateEnum.REFRESH_NEEDED, cachedEntry.getCurrentState());
@@ -69,7 +69,7 @@ class StateMachineTest {
 		assertNotEquals(emptyStateDate, desynchonizedStateDate);
 		assertEquals(5, cachedEntry.getCachedResult().integer);
 
-		assertThrows(IllegalStateException.class, () -> cachedEntry.toBeDeleted());
+		assertThrows(IllegalStateException.class, cachedEntry::toBeDeleted);
 
 		await().atMost(1, TimeUnit.SECONDS).until(() -> !desynchonizedStateDate.equals(new Date()));
 		cachedEntry.sync();
@@ -109,8 +109,8 @@ class StateMachineTest {
 
 		cachedEntry.toBeDeleted();
 		assertEquals(CacheStateEnum.TO_BE_DELETED, cachedEntry.getCurrentState());
-		assertThrows(IllegalStateException.class, () -> cachedEntry.sync());
-		assertThrows(IllegalStateException.class, () -> cachedEntry.toBeDeleted());
+		assertThrows(IllegalStateException.class, cachedEntry::sync);
+		assertThrows(IllegalStateException.class, cachedEntry::toBeDeleted);
 
 		cachedEntry.expire();
 

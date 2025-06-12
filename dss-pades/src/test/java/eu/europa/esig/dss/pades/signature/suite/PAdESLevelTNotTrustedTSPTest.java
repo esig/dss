@@ -34,7 +34,7 @@ import org.junit.jupiter.api.BeforeEach;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class PAdESLevelTNotTrustedTSPTest extends AbstractPAdESTestSignature {
+class PAdESLevelTNotTrustedTSPTest extends AbstractPAdESTestSignature {
 
     private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;
     private PAdESSignatureParameters signatureParameters;

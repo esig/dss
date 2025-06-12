@@ -37,7 +37,7 @@ import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.jaxb.ValidationObjectListType;
 import eu.europa.esig.validationreport.jaxb.ValidationStatusType;
 
-public class BadEncodedCMSTest extends AbstractPAdESTestValidation {
+class BadEncodedCMSTest extends AbstractPAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

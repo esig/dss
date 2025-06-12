@@ -25,7 +25,9 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicConstraintWrapper;
+import eu.europa.esig.dss.model.policy.CryptographicSuite;
+import eu.europa.esig.dss.validation.policy.CryptographicSuiteUtils;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
 /**
  * Check if DigestAlgorithm is acceptable
@@ -35,8 +37,8 @@ public class DigestAlgorithmReliableCheck extends AbstractCryptographicCheck {
 	/** The algorithm to check */
 	private final DigestAlgorithm digestAlgo;
 
-	/** The constraint */
-	private final CryptographicConstraintWrapper constraintWrapper;
+	/** The cryptographic rules */
+	private final CryptographicSuite cryptographicSuite;
 
 	/**
 	 * Default constructor
@@ -45,18 +47,18 @@ public class DigestAlgorithmReliableCheck extends AbstractCryptographicCheck {
 	 * @param digestAlgo {@link DigestAlgorithm}
 	 * @param result {@link XmlCC}
 	 * @param position {@link MessageTag}
-	 * @param constraintWrapper {@link CryptographicConstraintWrapper}
+	 * @param cryptographicSuite {@link CryptographicSuite}
 	 */
 	protected DigestAlgorithmReliableCheck(I18nProvider i18nProvider, DigestAlgorithm digestAlgo, XmlCC result,
-										   MessageTag position, CryptographicConstraintWrapper constraintWrapper) {
-		super(i18nProvider, result, position, constraintWrapper.getAcceptableDigestAlgoLevel());
+										   MessageTag position, CryptographicSuite cryptographicSuite) {
+		super(i18nProvider, result, position, ValidationProcessUtils.getLevelRule(cryptographicSuite.getAcceptableDigestAlgorithmsLevel()));
 		this.digestAlgo = digestAlgo;
-		this.constraintWrapper = constraintWrapper;
+		this.cryptographicSuite = cryptographicSuite;
 	}
 
 	@Override
 	protected boolean process() {
-		return constraintWrapper.isDigestAlgorithmReliable(digestAlgo);
+		return CryptographicSuiteUtils.isDigestAlgorithmReliable(cryptographicSuite, digestAlgo);
 	}
 	
 	@Override

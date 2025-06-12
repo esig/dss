@@ -37,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class PDFSignWithPermissionsTest extends AbstractPAdESTestSignature {
+class PDFSignWithPermissionsTest extends AbstractPAdESTestSignature {
 
     private PAdESService service;
     private PAdESSignatureParameters signatureParameters;

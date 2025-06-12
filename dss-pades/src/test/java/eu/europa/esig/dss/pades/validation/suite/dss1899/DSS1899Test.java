@@ -33,7 +33,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.validation.suite.AbstractPAdESTestValidation;
 
-public class DSS1899Test extends AbstractPAdESTestValidation {
+class DSS1899Test extends AbstractPAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

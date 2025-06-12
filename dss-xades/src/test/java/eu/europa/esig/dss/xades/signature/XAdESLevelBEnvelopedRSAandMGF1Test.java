@@ -82,6 +82,7 @@ class XAdESLevelBEnvelopedRSAandMGF1Test extends AbstractXAdESTestSignature {
 
 	@Override
 	public void signAndVerify() {
+		// skip global test
 	}
 
 	@Override

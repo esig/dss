@@ -103,4 +103,25 @@ public class DocumentWithSha2 extends CommonDocument {
         return document.openStream();
     }
 
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        if (!super.equals(object)) return false;
+
+        DocumentWithSha2 that = (DocumentWithSha2) object;
+        return Objects.equals(document, that.document)
+                && Objects.equals(sha2Document, that.sha2Document)
+                && Objects.equals(errors, that.errors);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + Objects.hashCode(document);
+        result = 31 * result + Objects.hashCode(sha2Document);
+        result = 31 * result + Objects.hashCode(errors);
+        return result;
+    }
+
 }

@@ -26,26 +26,29 @@ import eu.europa.esig.dss.cades.signature.CAdESService;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.OrphanTokenWrapper;
 import eu.europa.esig.dss.diagnostic.RelatedRevocationWrapper;
+import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.TimestampType;
-import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignaturePolicyStore;
 import eu.europa.esig.dss.model.SpDocSpecification;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
-import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.slf4j.event.Level;
 
@@ -59,6 +62,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 // See DSS-2060/DSS-2061
+@Tag("atst-v2")
 class DSS2059Test extends AbstractCAdESTestExtension {
 
 	private DSSDocument document;
@@ -66,7 +70,7 @@ class DSS2059Test extends AbstractCAdESTestExtension {
 
 	@BeforeEach
 	void init() {
-		document = new FileDocument("src/test/resources/validation/dss2059.p7s");
+		document = new InMemoryDocument(DSS2059Test.class.getResourceAsStream("/validation/dss2059.p7s"));
 
 		CertificateVerifier certificateVerifier = getOfflineCertificateVerifier();
 		certificateVerifier.setCheckRevocationForUntrustedChains(true);
@@ -118,7 +122,7 @@ class DSS2059Test extends AbstractCAdESTestExtension {
 		// see DSS-2172
 
 		SignaturePolicyStore signaturePolicyStore = new SignaturePolicyStore();
-		signaturePolicyStore.setSignaturePolicyContent(new FileDocument("src/test/resources/validation/signature-policy.der"));
+		signaturePolicyStore.setSignaturePolicyContent(new InMemoryDocument(DSS2059Test.class.getResourceAsStream("/validation/signature-policy.der")));
 		SpDocSpecification spDocSpec = new SpDocSpecification();
 		spDocSpec.setId("1.2.3.4.5.6");
 		signaturePolicyStore.setSpDocSpecification(spDocSpec);
@@ -147,9 +151,9 @@ class DSS2059Test extends AbstractCAdESTestExtension {
 		assertTrue(revoked);
 
 		List<String> signatureRevocationIds = signature.foundRevocations().getRelatedRevocationData()
-				.stream().map(r -> r.getId()).collect(Collectors.toList());
+				.stream().map(RevocationWrapper::getId).collect(Collectors.toList());
 		signatureRevocationIds.addAll(signature.foundRevocations().getOrphanRevocationData()
-				.stream().map(r -> r.getId()).collect(Collectors.toList()));
+				.stream().map(OrphanTokenWrapper::getId).collect(Collectors.toList()));
 
 		for (TimestampWrapper timestampWrapper : diagnosticData.getTimestampList()) {
 			if (ArchiveTimestampType.CAdES_V2.equals(timestampWrapper.getArchiveTimestampType())) {

@@ -23,12 +23,15 @@ package eu.europa.esig.dss.validation.process.bbb.cv.checks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
+import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
+
+import java.util.Objects;
 
 /**
  * Checks if the referenced document name matches the reference name
@@ -46,9 +49,9 @@ public class ReferenceDataNameMatchCheck<T extends XmlConstraintsConclusion> ext
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlCV}
      * @param digestMatcher {@link XmlDigestMatcher}
-     * @param constraint {@link LevelConstraint}
+     * @param constraint {@link LevelRule}
      */
-    public ReferenceDataNameMatchCheck(I18nProvider i18nProvider, T result, XmlDigestMatcher digestMatcher, LevelConstraint constraint) {
+    public ReferenceDataNameMatchCheck(I18nProvider i18nProvider, T result, XmlDigestMatcher digestMatcher, LevelRule constraint) {
         super(i18nProvider, result, constraint);
         this.digestMatcher = digestMatcher;
     }
@@ -60,22 +63,18 @@ public class ReferenceDataNameMatchCheck<T extends XmlConstraintsConclusion> ext
 
     @Override
     protected MessageTag getMessageTag() {
-        switch (digestMatcher.getType()) {
-            case MANIFEST_ENTRY:
-                return MessageTag.BBB_CV_DMENMND;
-            default:
-                return MessageTag.BBB_CV_DRNMND;
+        if (Objects.requireNonNull(digestMatcher.getType()) == DigestMatcherType.MANIFEST_ENTRY) {
+            return MessageTag.BBB_CV_DMENMND;
         }
+        return MessageTag.BBB_CV_DRNMND;
     }
 
     @Override
     protected MessageTag getErrorMessageTag() {
-        switch (digestMatcher.getType()) {
-            case MANIFEST_ENTRY:
-                return MessageTag.BBB_CV_DMENMND_ANS;
-            default:
-                return MessageTag.BBB_CV_DRNMND_ANS;
+        if (Objects.requireNonNull(digestMatcher.getType()) == DigestMatcherType.MANIFEST_ENTRY) {
+            return MessageTag.BBB_CV_DMENMND_ANS;
         }
+        return MessageTag.BBB_CV_DRNMND_ANS;
     }
 
     @Override

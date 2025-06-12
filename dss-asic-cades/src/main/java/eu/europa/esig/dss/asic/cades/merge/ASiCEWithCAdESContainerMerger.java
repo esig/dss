@@ -20,19 +20,18 @@
  */
 package eu.europa.esig.dss.asic.cades.merge;
 
-import eu.europa.esig.dss.asic.common.definition.ASiCManifestAttribute;
-import eu.europa.esig.dss.asic.common.definition.ASiCManifestPath;
-import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESUtils;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.ZipUtils;
+import eu.europa.esig.dss.asic.common.definition.ASiCManifestAttribute;
+import eu.europa.esig.dss.asic.common.definition.ASiCManifestPath;
 import eu.europa.esig.dss.asic.common.validation.ASiCManifestParser;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.EvidenceRecordTypeEnum;
-import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import org.w3c.dom.Document;
@@ -190,8 +189,8 @@ public class ASiCEWithCAdESContainerMerger extends AbstractASiCWithCAdESContaine
                     throw new UnsupportedOperationException(String.format("Unable to merge ASiC-E with CAdES containers. " +
                             "A signature with filename '%s' does not have a corresponding manifest file!", signatureToCompare.getName()));
 
-                } else if (ASiCWithCAdESUtils.isCoveredByManifest(currentASiCContent.getAllManifestDocuments(), currentSignatureDocument.getName()) ||
-                        ASiCWithCAdESUtils.isCoveredByManifest(asicContentToCompare.getAllManifestDocuments(), signatureToCompare.getName())) {
+                } else if (ASiCUtils.isCoveredByManifest(currentASiCContent.getAllManifestDocuments(), currentSignatureDocument.getName()) ||
+                        ASiCUtils.isCoveredByManifest(asicContentToCompare.getAllManifestDocuments(), signatureToCompare.getName())) {
                     throw new UnsupportedOperationException(String.format("Unable to merge ASiC-E with CAdES containers. " +
                             "A signature with name '%s' in a container is covered by a manifest!", currentSignatureDocument.getName()));
 
@@ -244,8 +243,8 @@ public class ASiCEWithCAdESContainerMerger extends AbstractASiCWithCAdESContaine
                         if (Arrays.equals(manifest.getDigestValue(DEFAULT_DIGEST_ALGORITHM), currentManifest.getDigestValue(DEFAULT_DIGEST_ALGORITHM))) {
                             // continue
 
-                        } else if (ASiCWithCAdESUtils.isCoveredByManifest(asicContent.getAllManifestDocuments(), manifest.getName()) ||
-                                ASiCWithCAdESUtils.isCoveredByManifest(currentASiCContent.getAllManifestDocuments(), currentManifest.getName())) {
+                        } else if (ASiCUtils.isCoveredByManifest(asicContent.getAllManifestDocuments(), manifest.getName()) ||
+                                ASiCUtils.isCoveredByManifest(currentASiCContent.getAllManifestDocuments(), currentManifest.getName())) {
                             throw new UnsupportedOperationException(String.format("Unable to merge ASiC-E with CAdES containers. " +
                                     "A manifest with name '%s' in a container is covered by another manifest!", currentManifest.getName()));
 
@@ -267,8 +266,8 @@ public class ASiCEWithCAdESContainerMerger extends AbstractASiCWithCAdESContaine
                         if (Arrays.equals(manifest.getDigestValue(DEFAULT_DIGEST_ALGORITHM), currentManifest.getDigestValue(DEFAULT_DIGEST_ALGORITHM))) {
                             // continue
 
-                        } else if (ASiCWithCAdESUtils.isCoveredByManifest(asicContent.getAllManifestDocuments(), manifest.getName()) ||
-                                ASiCWithCAdESUtils.isCoveredByManifest(currentASiCContent.getAllManifestDocuments(), currentManifest.getName())) {
+                        } else if (ASiCUtils.isCoveredByManifest(asicContent.getAllManifestDocuments(), manifest.getName()) ||
+                                ASiCUtils.isCoveredByManifest(currentASiCContent.getAllManifestDocuments(), currentManifest.getName())) {
                             throw new UnsupportedOperationException(String.format("Unable to merge ASiC-E with CAdES containers. " +
                                     "A manifest with name '%s' in a container is covered by another manifest!", currentManifest.getName()));
 
@@ -291,8 +290,8 @@ public class ASiCEWithCAdESContainerMerger extends AbstractASiCWithCAdESContaine
                         if (Arrays.equals(manifest.getDigestValue(DEFAULT_DIGEST_ALGORITHM), currentManifest.getDigestValue(DEFAULT_DIGEST_ALGORITHM))) {
                             // continue
 
-                        } else if (ASiCWithCAdESUtils.isCoveredByManifest(asicContent.getAllManifestDocuments(), manifest.getName()) ||
-                                ASiCWithCAdESUtils.isCoveredByManifest(currentASiCContent.getAllManifestDocuments(), currentManifest.getName())) {
+                        } else if (ASiCUtils.isCoveredByManifest(asicContent.getAllManifestDocuments(), manifest.getName()) ||
+                                ASiCUtils.isCoveredByManifest(currentASiCContent.getAllManifestDocuments(), currentManifest.getName())) {
                             throw new UnsupportedOperationException(String.format("Unable to merge ASiC-E with CAdES containers. " +
                                     "A manifest with name '%s' in a container is covered by another manifest!", currentManifest.getName()));
 
@@ -325,8 +324,8 @@ public class ASiCEWithCAdESContainerMerger extends AbstractASiCWithCAdESContaine
                             if (Arrays.equals(evidenceRecord.getDigestValue(DEFAULT_DIGEST_ALGORITHM), currentEvidenceRecord.getDigestValue(DEFAULT_DIGEST_ALGORITHM))) {
                                 // continue
 
-                            } else if (ASiCWithCAdESUtils.isCoveredByManifest(asicContent.getAllManifestDocuments(), evidenceRecord.getName()) ||
-                                    ASiCWithCAdESUtils.isCoveredByManifest(currentASiCContent.getAllManifestDocuments(), currentEvidenceRecord.getName())) {
+                            } else if (ASiCUtils.isCoveredByManifest(asicContent.getAllManifestDocuments(), evidenceRecord.getName()) ||
+                                    ASiCUtils.isCoveredByManifest(currentASiCContent.getAllManifestDocuments(), currentEvidenceRecord.getName())) {
                                 throw new UnsupportedOperationException(String.format("Unable to merge ASiC-E with CAdES containers. " +
                                         "An evidence record with name '%s' in a container is covered by a manifest!", currentEvidenceRecord.getName()));
 

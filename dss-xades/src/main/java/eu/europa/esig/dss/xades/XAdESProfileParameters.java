@@ -21,10 +21,11 @@
 package eu.europa.esig.dss.xades;
 
 import eu.europa.esig.dss.signature.ProfileParameters;
-import eu.europa.esig.dss.signature.SigningOperation;
+import eu.europa.esig.dss.enumerations.SigningOperation;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * This class is used to accelerate signature creation process for XAdES.
@@ -131,6 +132,29 @@ public class XAdESProfileParameters extends ProfileParameters {
 	 */
 	public void setReferences(List<DSSReference> references) {
 		this.references = references;
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		if (this == object) return true;
+		if (object == null || getClass() != object.getClass()) return false;
+		if (!super.equals(object)) return false;
+
+		XAdESProfileParameters that = (XAdESProfileParameters) object;
+		return Objects.equals(profile, that.profile)
+				&& Objects.equals(builder, that.builder)
+				&& operationKind == that.operationKind
+				&& Objects.equals(references, that.references);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + Objects.hashCode(profile);
+		result = 31 * result + Objects.hashCode(builder);
+		result = 31 * result + Objects.hashCode(operationKind);
+		result = 31 * result + Objects.hashCode(references);
+		return result;
 	}
 
 }

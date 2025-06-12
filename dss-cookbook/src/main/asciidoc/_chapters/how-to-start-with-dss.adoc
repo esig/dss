@@ -19,7 +19,7 @@ This section explains the usage and build requirements for https://github.com/es
 
 The latest version of DSS framework has the following minimal requirements:
 
-* Java 8 or higher (tested up to Java 22) is required for usage;
+* Java 8 or higher (tested up to Java 24) is required for usage;
 * Java 11 or higher is required for the build. Java 15 is the minimal requirement for a build with unit tests;
 * Maven 3.6.3 and higher (if build required);
 * Memory and Disk: see minimal requirements for the used JVM. In general the higher available is better;
@@ -44,12 +44,12 @@ The simplest way to include DSS to your project is to use https://central.sonaty
     <dependency>
         <groupId>eu.europa.ec.joinup.sd-dss</groupId>
         <artifactId>dss-xades</artifactId>
-        <version>6.2</version>
+        <version>6.3.RC1</version>
     </dependency>
     <dependency>
         <groupId>eu.europa.ec.joinup.sd-dss</groupId>
         <artifactId>dss-validation</artifactId>
-        <version>6.2</version>
+        <version>6.3.RC1</version>
     </dependency>
     ...
 </dependencies>
@@ -94,7 +94,7 @@ The root `pom.xml` of `dss-bom` defines versions of all modules within DSS-libra
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
             <artifactId>dss-bom</artifactId>
-            <version>6.2</version>
+            <version>6.3.RC1</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
@@ -143,6 +143,7 @@ In addition to the general build, the framework provides a list of various profi
 * *quick* - disables unit tests and java-doc validation, in order to process the build as quick as possible (takes 1-2 minutes). *This profile cannot be used for a primary DSS build* (see below).
 * *quick-init* - is similar to the `quick` profile. Disables java-doc validation for all modules and unit tests excluding some modules which have dependencies on their test classes. *Can be used for the primary build of DSS*.
 * *slow-tests* - executes all tests, including time-consuming unit tests.
+* *large-files-tests* - executes all tests, including unit tests on large files of 8GB size, where applicable.
 * *owasp* - runs validation of the project and using dependencies according to the https://nvd.nist.gov[National Vulnerability Database (NVD)].
 * *spotless* - used to add a licence header into project files.
 
@@ -175,7 +176,7 @@ This section explains the build and use requirements for the https://github.com/
 
 The minimal requirements to build/run DSS Demonstrations:
 
-* Java 17 or higher (tested up to Java 22) is required;
+* Java 17 or higher (tested up to Java 24) is required;
 * Maven 3.6 or higher (if build required);
 * Tomcat 10 or higher (for Web-application);
 * Memory and Disk: see minimal requirements for the used JVM. In general the highest available is the best;
@@ -251,11 +252,11 @@ In order to build a bundle for JDK 17 (minimum requirement), the following profi
 mvn clean install -P java17
 ----
 
-DSS webapp version with Java 23 can be created with a command below:
+DSS webapp version with Java 24 can be created with a command below:
 
-.Maven command to create a JDK 23 bundle
+.Maven command to create a JDK 24 bundle
 ----
-mvn clean install -P java23
+mvn clean install -P java24
 ----
 
 ====== Integration tests
@@ -309,7 +310,6 @@ specs-asic-manifest:: ETSI EN 319 162 schema for ASiCManifest.
 specs-saml-assertion:: OASIS schema for SAML Assertions.
 
 '''
-dss-policy-jaxb:: JAXB model of the validation policy.
 dss-diagnostic-jaxb:: JAXB model of the diagnostic data.
 dss-detailed-report-jaxb:: JAXB model of the detailed report.
 dss-simple-report-jaxb:: JAXB model of the simple report.
@@ -317,7 +317,8 @@ dss-simple-certificate-report-jaxb:: JAXB model of the simple report for certifi
 
 ===== JSON validation modules
 
-specs-jws:: JSON Schemas based on the RFC 7515 specifications (<<R21>>).
+dss-json-common:: Utils for working with JSON-based content.
+specs-jws:: JSON Schemas based on the RFC 7515 specifications (<<R22>>).
 specs-jades:: ETSI TS 119 182-1 JSON Schemas for JAdES (<<R05>>).
 
 ===== Utils modules
@@ -337,8 +338,8 @@ dss-i18n:: Module allowing internationalization of generated reports.
 
 dss-model:: Data model used in almost every module.
 dss-crl-parser:: API to validate CRLs and retrieve revocation data
-dss-crl-parser-stream:: Implementation of dss-crl-parser which streams the CRL.
-dss-crl-parser-x509crl:: Implementation of dss-crl-parser which uses the java object X509CRL.
+dss-crl-parser-stream:: Implementation of `dss-crl-parser` which streams the CRL.
+dss-crl-parser-x509crl:: Implementation of `dss-crl-parser` which uses the java object X509CRL.
 dss-spi:: Interfaces and util classes to process ASN.1 structure, compute digests, etc.
 dss-service:: Implementations to communicate with online resources (TSP, CRL, OCSP).
 dss-token:: Token definitions and implementations for MS CAPI, MacOS Keychain, PKCS#11, PKCS#12.
@@ -346,10 +347,19 @@ dss-document:: Common module to sign or extend a document.
 dss-validation:: Business logic for the signature and certificate validation (ETSI EN 319 102 / TS 119 615).
 dss-tsl-validation:: Module which allows loading / parsing / validating of LOTL and TSLs.
 
+===== Validation policy modules
+
+dss-policy-jaxb:: JAXB model for the XML validation policy (default policy).
+dss-policy-crypto-xml:: JAXB model for the XML Cryptographic Suite as per ETSI TS 119 322 (cf. <<R21>>).
+dss-policy-crypto-json:: Model for the JSON Cryptographic Suite as per ETSI TS 119 322 (cf. <<R21>>).
+
 ===== Signature format specific modules
 
 dss-xades:: Implementation of the XAdES signature, augmentation and validation.
 dss-cades:: Implementation of the CAdES signature, augmentation and validation.
+dss-cms:: Provides interfaces and utility methods for working with CMS objects (see RFC 5652, cf. <<R31>>).
+dss-cms-object:: Implementation of 'dss-cms' module, processing the data objects and files in memory.
+dss-cms-stream:: Implementation of 'dss-cms' module, processing the data objects and files using streaming.
 dss-jades:: Implementation of the JAdES signature, augmentation and validation.
 dss-pades:: Common code which is shared between dss-pades-pdfbox and dss-pades-openpdf.
 dss-pades-pdfbox:: Implementation of the PAdES signature, augmentation and validation with https://pdfbox.apache.org/[PDFBox].
@@ -362,8 +372,8 @@ dss-asic-xades:: Implementation of the ASiC-S and ASiC-E signature, augmentation
 ===== Evidence Record validation modules
 
 dss-evidence-record-common:: Common code and interfaces for validation of evidence records.
-dss-evidence-record-xml:: Code for validation of RFC 6283 XML Evidence Records (cf. <<R22>>).
-dss-evidence-record-asn1:: Code for validation of RFC 4998 Evidence Records (ASN.1 format) (cf. <<R23>>).
+dss-evidence-record-xml:: Code for validation of RFC 6283 XML Evidence Records (cf. <<R23>>).
+dss-evidence-record-asn1:: Code for validation of RFC 4998 Evidence Records (ASN.1 format) (cf. <<R24>>).
 
 ===== WebServices
 
@@ -431,6 +441,7 @@ DSS contains a bundle of JAXB-based modules, generating Java classes at runtime 
 * specs-asic-manifest;
 * specs-saml-assertion;
 * dss-policy-jaxb;
+* dss-policy-crypto-xml;
 * dss-diagnostic-jaxb;
 * dss-detailed-report-jaxb;
 * dss-simple-report-jaxb;
@@ -446,6 +457,7 @@ Also, as it was explained in the previous section, some modules are required to 
 * <<dssUtils,dss-utils>>;
 * <<dssCrlParser,dss-crl-parser>>;
 * dss-test;
+* <<dssCms,dss-cms>>;
 * <<dssPades,dss-pades>>;
 * dss-asic-common.
 

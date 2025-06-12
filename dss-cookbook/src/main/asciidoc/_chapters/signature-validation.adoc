@@ -185,9 +185,28 @@ See section <<Alerts>> in the Annex for more information on alerts.
 [[validationPolicy]]
 === AdES validation constraints/policy
 
-The validation process is driven by a set of constraints that are contained in the XML policy file.
+The validation process in DSS is driven by a set of validation constraints or a validation policy, providing a configuration for execution behavior of certain validation checks.
 
-In order to run a validation process with a custom validation policy, an XML file shall be created in compliance with the https://github.com/esig/dss/blob/master/dss-policy-jaxb/src/main/resources/xsd/policy.xsd[policy.xsd] schema and passed to the relevant `DocumentValidator` as shown below.
+By default, DSS provides a JAXB-based XML implementation of a validation policy within the `dss-policy-jaxb` module. In order to load a default validation policy implementation, the module shall be added within a `pom.xml` file of the project, as demonstrated below:
+
+[source,xml]
+.Support of default XML Validation Policy (pom.xml)
+----
+<dependencies>
+    ...
+    <dependency>
+        <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+        <artifactId>dss-policy-jaxb</artifactId>
+    </dependency>
+    ...
+</dependencies>
+----
+
+NOTE: The `dss-policy-jaxb` has to be explicitly added within the list of dependencies of your project starting from DSS `6.3`, if a support of XML Validation Policy is required.
+
+The default validation process in DSS is supplied with an AdES based validation policy, allowing a comprehensive validation of both advanced and qualified electronic signatures and seals (please see <<defaultXmlPolicy>> for more information). Should one need to use a customized validation policy, an instance of a `ValidationPolicy` class, containing the desired validation policy should be provided on validation.
+
+The configuration can be provided to a `DocumentValidator`, as demonstrated below:
 
 [source,java,indent=0]
 .Custom validation policy
@@ -195,9 +214,22 @@ In order to run a validation process with a custom validation policy, an XML fil
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.java[tags=validationPolicy]
 ----
 
-For a description of available for configuration constraints within the XML validation policy please see the <<validationPolicyConstraints>> chapter.
+The `DocumentValidator` may also load the validation policy from a file, see below:
 
-==== XML policy structure
+[source,java,indent=0]
+.Custom validation policy from a file
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.java[tags=validationPolicyFile]
+----
+
+This method will search for an available `ValidationPolicyFactory` implementation in the runtime by means of the <<ServiceLoaderAdvanced>>.
+
+For more information about XML Validation Policy and its configuration, please see the section <<JaxbValidationPolicy>>.
+
+In addition to the main validation policy, a custom cryptographic suite (optional) can be provided on validation, according to the selected formats. For more information about a cryptographic suite configuration, please see the section <<CryptographicSuite>> of this documentation.
+
+[[JaxbValidationPolicy]]
+==== XML validation policy structure
 
 The validation policy allows defining different behavior for various token types or signature formats. The following groups are considered:
 
@@ -211,7 +243,9 @@ The validation policy allows defining different behavior for various token types
 * `Model` - defines the way of a certificate chain processing;
 * `eIDAS` - defines rules for validation of Trusted Lists.
 
-==== Constraints
+For a description of available for configuration constraints within the XML validation policy please see the <<validationPolicyConstraints>> chapter.
+
+===== Constraints
 
 Each constraint defined in the policy forces an execution of a relevant check in the validation process.
 
@@ -225,7 +259,7 @@ The following constraint types are supported:
 * `MultiValuesConstraint` - defines a set of accepted values relatively to the using constraint;
 * `TimeConstraint` - defines a time unit and value for the constraint (the behavior depends on the check). See <<RevocationFreshness>> for an example of the constraint use.
 
-==== Level
+===== Level
 
 The `Level` attribute of a constraint defines a validation process behavior in case of a check failure. While used, the following behaviors apply in case of a check failure:
 
@@ -234,7 +268,7 @@ The `Level` attribute of a constraint defines a validation process behavior in c
 * `INFORM` - continues the validation process and returns an information message to the validation process output;
 * `IGNORE` - processes the check in a silent mode. The check is shown in the output report, but does not have impact on the process (equivalent to a not defined constraint).
 
-==== Multi Values Constraint
+===== Multi Values Constraint
 
 When using the `MultiValuesConstraint`, a list of acceptable values shall be defined in the list of `<Id>...</Id>` elements, one for each accepted value. While doing, the following rules apply:
 
@@ -242,7 +276,7 @@ When using the `MultiValuesConstraint`, a list of acceptable values shall be def
 * `"*"` constraint value -> accepts all values, reject empty list of values;
 * Custom values -> accepts only item values matching the constraint.
 
-==== Cryptographic constraints
+===== Cryptographic constraints
 
 Cryptographic constraints define a list of acceptable cryptographic algorithms and their expiration dates when needed. The following settings are possible:
 
@@ -261,6 +295,105 @@ The default XML validation policy is present below.
 ----
 include::{samplesdir}/constraint.xml[]
 ----
+
+[[CryptographicSuite]]
+==== Cryptographic Suite
+
+Since the version `6.3`, DSS implements a support of the ETSI TS 119 322 (cf. <<R21>>), providing a specification for machine-readable cryptographic suites catalogues, in both XML and JSON formats. The cryptographic suite allows definition of supported cryptographic algorithms by the current application, as well definition of supported parameters (such as minimum key sizes for encryption algorithms) and expiration times of the algorithms.
+
+DSS supplies the following modules providing an implementation for the cryptographic suite, namely:
+
+* `dss-policy-crypto-xml` - provides a `CryptographicSuiteXmlWrapper` implementing the XML Policy Schema as defined in the "Annex A" of the ETSI TS 119 322 (cf. <<R21>>). The policy file shall be provided in the XML format, conformant to the underlying schema.
+* `dss-policy-crypto-json` - provides a `CryptographicSuiteJsonWrapper` implementing the JSON format schema as defined in the "Annex B" of the ETSI TS 119 322 (cf. <<R21>>). The policy file shall be provided in the JSON format, conformant to the underlying schema.
+
+To add a support of one or another implementation, the corresponding module shall be added as a dependency within the project, as shown below (for example, for the XML Policy Schema):
+
+[source,xml]
+.Support of XML Policy Schema as per ETSI TS 119 322 (pom.xml)
+----
+<dependencies>
+    ...
+    <dependency>
+        <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+        <artifactId>dss-policy-crypto-xml</artifactId>
+    </dependency>
+    ...
+</dependencies>
+----
+
+A custom cryptographic suite can be provided to a `DocumentValidator` next to the main validation policy, as shown below:
+
+[source,java,indent=0]
+.Custom validation policy and cryptographic suite from a file
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.java[tags=validationPolicyAndCryptoSuite]
+----
+
+The `DocumentValidator` will search for an available implementation of a `CryptographicSuiteFactory`, supporting the given cryptographic suite file, in the runtime by means of the <<ServiceLoaderAdvanced>>.
+
+NOTE: The cryptographic suite, when provided, overwrites all configuration for validation of cryptographic algorithms, defined in the main validation policy.
+
+When loaded from a file explicitly in the `DocumentValidator`, the cryptographic suite will be applied globally with a `FAIL` execution level of the cryptographic checks. In order to apply a cryptographic suite conditionally based on a content or execution level, please see <<ValidationPolicyLoader>> configuration.
+
+[[ValidationPolicyLoader]]
+==== Validation Policy Loader
+
+In order to create a customized Validation Policy, the class `ValidationPolicyLoader` can be used, incorporating the logic of loading a validation policy with applicable cryptographic suite(s).
+
+In a simple use-case scenario, a default validation policy can be loaded, provided the implementation is discoverable and available to the application in the runtime:
+
+[source,java,indent=0]
+.Default validation policy creation
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.java[tags=validationPolicyLoaderDefault]
+----
+
+Or, alternatively, the `Validation Policy` can be also loaded from a custom file, as demonstrated below:
+
+[source,java,indent=0]
+.Validation policy from file creation
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.java[tags=validationPolicyLoaderFromFile]
+----
+
+With the `ValidationPolicyLoader` verifying whether a module supporting the provided validation policy is available in the runtime, and loading the policy using the first found implementation, supporting the given validation policy file.
+
+After that, the created `ValidationPolicy` object can be used to perform a validation of document, as demonstrated below:
+
+[source,java,indent=0]
+.Validate document with created ValidationPolicy
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.java[tags=validateWithValidationPolicy]
+----
+
+A custom cryptographic suite can be provided in addition to the main validation policy:
+
+[source,java,indent=0]
+.Load validation policy with a cryptographic suite file
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.java[tags=validationPolicyLoaderWithCryptoSuite]
+----
+
+With the cryptographic suite to be applied globally, for all validation tokens (such as signatures, timestamps, etc.).
+
+In order to provide a cryptographic suite for a specific execution content (e.g. for a signature's signing-certificate), the following method can be used:
+
+[source,java,indent=0]
+.Load validation policy with a cryptographic suite file for a signature's signing-certificate
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.java[tags=validationPolicyLoaderWithCryptoSuiteForSignCert]
+----
+
+It is also possible to enhance the configuration further and provide specific validation level for various validation checks, see below:
+
+[source,java,indent=0]
+.Load validation policy with a cryptographic suite file for a signature's signing-certificate
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Snippets.java[tags=validationPolicyLoaderWithCryptoSuiteWithLevel]
+----
+
+NOTE: The execution `Level` parameter applies only to the latest cryptographic suite provided in the `ValidationPolicyLoader`.
+If you need to customize execution levels for multiple cryptographic suites, please provide the configuration separately.
 
 [[signatureValidationProcess]]
 === Signature validation and reports
@@ -329,9 +462,27 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/SignedDocu
 [[SimpleReport]]
 ==== Simple report
 
-The result of the validation process is based on complex algorithm and rules. The purpose of this report is to make as simple as possible the information while keeping the most important elements. Thus the end user can, at a glance, have a synthetic view of the validation. To build this report the framework uses some simple rules and the detailed report as input.
+The result of the validation process is based on complex algorithm and rules. The purpose of this report is to make as simple as possible the information while keeping the most important elements. Thus, the end user can, at a glance, have a synthetic view of the validation. To build this report the framework uses some simple rules and the detailed report as input.
 
 A sample of the simple validation report can be found https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_samples/simple-report-example.xml[here].
+
+[[MinAndMaxAugmentationDates]]
+===== Minimum and maximum signature augmentation dates
+
+As a part of the final validation result, the Simple Report contains two useful dates indicating a possible extension period applicable for a signature or a token, namely:
+
+- `extensionPeriodMin` - Date indicates when an augmentation of a signature or a token becomes possible, ensuring the revocation freshness. The returned `Date` corresponds to the latest value across all `nextUpdate` fields of the token's revocation data required for the signature or token validation. When all revocation data, supplied to the validation process, is acceptable and considered fresh, or no revocation data is required for validation of the related certificate chain(s), a `NULL` value is returned.
+- `extensionPeriodMax` - Date indicates the latest time when it is possible to augment a signature or a token. This constraint is built based on the signing certificate's and applicable timestamps' validity periods, but does not take into account a probability of a certificate's revocation or expiration of cryptographic constraints. Please note that a signature or a token may expire earlier due to external factors.
+
+NOTE: The `extensionPeriodMin` and `extensionPeriodMax` values are returned only for valid or temporary invalid signatures, timestamps and evidence records (i.e. such as having a `TOTAL_PASSED`, `PASSED` or `INDETERMINATE/TRY_LATER` indications). In all other cases, the `NULL` indication is returned.
+
+Example of minimum and maximum augmentation dates usage is provided below:
+
+[source,java,indent=0]
+.Minimum and maximum signature augmentation dates
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/SignedDocumentValidatorTest.java[tags=demo-simple-report-min-and-max-dates]
+----
 
 [[DetailedReport]]
 ==== Detailed report
@@ -532,11 +683,11 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/SignedDocu
 
 Since version `5.13` DSS provides a functionality of evidence records validation in relation to digital signatures or alone.
 
-DSS provides support of RFC 6283 XML Evidence Records (cf. <<R22>>) and RFC 4998 Evidence Record Syntax (cf. <<R23>>).
+DSS provides support of RFC 6283 XML Evidence Records (cf. <<R23>>) and RFC 4998 Evidence Record Syntax (cf. <<R24>>).
 
 DSS performs cryptographic validation of the evidence record's hash tree, as well as processing of evidence record as a material for achieving a long-term preservation and availability as per ETSI EN 319 102-1 (cf. <<R09>>).
 
- One or both following modules should be included to the project in order to add support of evidence records on validation:
+One or both following modules should be included to the project in order to add support of evidence records on validation:
 
  * `dss-evidence-record-xml` - for validation of RFC 6283 XML Evidence Records;
  * `dss-evidence-record-asn1` - for validation of RFC 4998 Evidence Records.
@@ -558,6 +709,7 @@ Please note, that as evidence records processing is a part of "5.6 Validation pr
 
 DSS is able to validate an evidence record as a material providing a signature's proof of existence (POE) in the following circumstances:
 
+* as an embedded evidence record within a XAdES or CAdES signature, conformant to ETSI TS 119 132-3 (cf. <<R01>>) and ETSI TS 119 122-3 (cf. <<R02>>), respectively (supported since DSS `6.3`);
 * as a detached evidence record applied on the whole document containing the signature(s) (the support is independent of the signature's type);
 * as an embedded evidence record within an ASiC container, conformant to the specification within ETSI EN 319 162-1 (cf. <<R04>>) standard. This includes support of ASiC-E and ASiC-S container types with XAdES or CAdES signatures.
 
@@ -603,7 +755,7 @@ NOTE: DSS does not provide a functionality for creation of evidence records. Cre
 
 The following classes are provided, based on the target implementation of evidence records:
 
-* `XMLEvidenceRecordDataObjectDigestBuilder` (part of `dss-evidence-record-xml` module) - creates digest for a given document to be protected by an RFC 6283 XMLERS Evidence Record (cf. <<R22>>). Canonicalizes XML data objects.
+* `XMLEvidenceRecordDataObjectDigestBuilder` (part of `dss-evidence-record-xml` module) - creates digest for a given document to be protected by an RFC 6283 XMLERS Evidence Record (cf. <<R23>>). Canonicalizes XML data objects.
 
 [source,java,indent=0]
 .Hash computation for RFC 6283 XMLERS Evidence Record
@@ -611,7 +763,7 @@ The following classes are provided, based on the target implementation of eviden
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/ERDataObjectBuilderTest.java[tags=xml-er]
 ----
 
-* `ASN1EvidenceRecordDataObjectDigestBuilder` (part of `dss-evidence-record-asn1` module) - creates digest for a given document to be protected by an RFC 4998 Evidence Record Syntax (ERS) (cf. <<R23>>).
+* `ASN1EvidenceRecordDataObjectDigestBuilder` (part of `dss-evidence-record-asn1` module) - creates digest for a given document to be protected by an RFC 4998 Evidence Record Syntax (ERS) (cf. <<R24>>).
 
 [source,java,indent=0]
 .Hash computation for RFC 4998 Evidence Record Syntax (ERS)
@@ -619,7 +771,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/ERDataObje
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/ERDataObjectBuilderTest.java[tags=asn1-er]
 ----
 
-* `XAdESEvidenceRecordDigestBuilder` (part of `dss-xades` module) - creates digest for an XML or XAdES signature to be protected by an embedded evidence-record. Can be used for both XMLERS (cf. <<R22>>) and Evidence Record Syntax (cf. <<R23>>) evidence record implementations.
+* `XAdESEvidenceRecordDigestBuilder` (part of `dss-xades` module) - creates digest for an XML or XAdES signature to be protected by an embedded evidence-record. Can be used for both XMLERS (cf. <<R23>>) and Evidence Record Syntax (cf. <<R24>>) evidence record implementations.
 
 [source,java,indent=0]
 .Hash computation for a XAdES signature
@@ -627,7 +779,9 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/ERDataObje
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/ERDataObjectBuilderTest.java[tags=xades-er]
 ----
 
-* `CAdESEvidenceRecordDigestBuilder` (part of `dss-cades` module) - creates digest for a CMS or CAdES signature to be protected by an embedded evidence-record. Can be used only for Evidence Record Syntax (cf. <<R23>>) evidence record implementation.
+* `CAdESEvidenceRecordDigestBuilder` (part of `dss-cades` module) - creates digest for a CMS or CAdES signature to be protected by an embedded evidence-record. Can be used only for Evidence Record Syntax (cf. <<R24>>) evidence record implementation.
+
+WARNING: There is an inconsistency between RFC 4998 (cf. <<R24>>) and ETSI TS 119 122-3 v1.1.1 (cf. <<R02>>), with RFC 4998 requiring an embedded evidence record to be computed on a CMS using the original CMS coding, while ETSI TS 119 122-3 v1.1.1 requires to compute evidence records based on a `DER` encoded CMS. DSS addresses this inconsistency by validating evidence records created according to both definitions, whatever succeeds first.
 
 [source,java,indent=0]
 .Hash computation for a CAdES signature
@@ -635,7 +789,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/ERDataObje
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/ERDataObjectBuilderTest.java[tags=cades-er]
 ----
 
-* `ASiCEvidenceRecordDigestBuilder` (part of `dss-asic-common` module) - creates digest for documents embedded within an ASiC container to be protected by an evidence-record. Can be used for both XMLERS (cf. <<R22>>) and Evidence Record Syntax (cf. <<R23>>) evidence record implementations, as well as for XAdES, CAdES and time-stamp ASiC containers.
+* `ASiCEvidenceRecordDigestBuilder` (part of `dss-asic-common` module) - creates digest for documents embedded within an ASiC container to be protected by an evidence-record. Can be used for both XMLERS (cf. <<R23>>) and Evidence Record Syntax (cf. <<R24>>) evidence record implementations, as well as for XAdES, CAdES and time-stamp ASiC containers.
 
 [source,java,indent=0]
 .Hash computation for an ASiC container's content
@@ -661,7 +815,7 @@ In addition to digest computation for evidence record creation, DSS provides cla
 
 The following classes are provided:
 
-* `XMLEvidenceRecordRenewalDigestBuilder` (part of `dss-evidence-record-xml` module) - creates digest for time-stamp or hash-tree renewal of an RFC 6283 XMLERS Evidence Record (cf. <<R22>>).
+* `XMLEvidenceRecordRenewalDigestBuilder` (part of `dss-evidence-record-xml` module) - creates digest for time-stamp or hash-tree renewal of an RFC 6283 XMLERS Evidence Record (cf. <<R23>>).
 
 [source,java,indent=0]
 .Hash computation for an XMLERS Evidence record renewal
@@ -669,7 +823,7 @@ The following classes are provided:
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/ERDataObjectBuilderTest.java[tags=xmlers-renewal-er]
 ----
 
-* `ASN1EvidenceRecordRenewalDigestBuilder` (part of `dss-evidence-record-asn1` module) - creates digest for time-stamp or hash-tree renewal of an RFC 4998 ERS Evidence Record (cf. <<R23>>).
+* `ASN1EvidenceRecordRenewalDigestBuilder` (part of `dss-evidence-record-asn1` module) - creates digest for time-stamp or hash-tree renewal of an RFC 4998 ERS Evidence Record (cf. <<R24>>).
 
 [source,java,indent=0]
 .Hash computation for an ERS Evidence record renewal
@@ -715,8 +869,8 @@ A validator implementation for an evidence record document can be loaded using e
 
 The following implementation of a validator factory is present in DSS:
 
-* `XMLEvidenceRecordValidatorFactory`: loads `XMLEvidenceRecordValidator`, used for an RFC 6283 XMLERS Evidence Record (cf. <<R22>>) validation (delivered in `dss-evidence-record-xml` module);
-* `ANS1EvidenceRecordValidatorFactory`: loads `ASN1EvidenceRecordValidator`, used for an RFC 4998 Evidence Record Syntax (ERS) (cf. <<R23>>) validation (delivered in `dss-evidence-record-asn1` module).
+* `XMLEvidenceRecordValidatorFactory`: loads `XMLEvidenceRecordValidator`, used for an RFC 6283 XMLERS Evidence Record (cf. <<R23>>) validation (delivered in `dss-evidence-record-xml` module);
+* `ANS1EvidenceRecordValidatorFactory`: loads `ASN1EvidenceRecordValidator`, used for an RFC 4998 Evidence Record Syntax (ERS) (cf. <<R24>>) validation (delivered in `dss-evidence-record-asn1` module).
 
 ==== Signature Policy Validator
 

@@ -338,6 +338,7 @@ An eIDAS XML node linked to the status of the Trusted List is included in the DS
 * *TLNotExpired*: The TL might be expired in case of an attack consisting in replacing the current TL by an older one. Using an old TL might bring problems. The expired TL could for example contain Certificate Authorities that are not present in the current TL. Thus, an expired TL should lead to a warning during the validation.
 * *TLWellSigned*: If the signature of the TL is not valid, the TL should be discarded. A non-valid TL signature might indicate that the content of that TL is "fake" and should not be trusted.
 * *TLVersion*: If the version of the trusted list does not correspond to the version indicated in the validation policy, the validation process fails.
+* *TLStructure*: If the structure of the trusted list does not correspond to the definition and XSD of the Trusted List of the corresponding version, the validation of the check fails.
 
 === Using non-EU trusted lists
 

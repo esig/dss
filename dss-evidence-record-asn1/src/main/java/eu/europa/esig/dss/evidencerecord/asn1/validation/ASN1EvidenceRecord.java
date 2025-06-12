@@ -87,7 +87,9 @@ public class ASN1EvidenceRecord extends DefaultEvidenceRecord {
 
     @Override
     protected EvidenceRecordParser buildEvidenceRecordParser() {
-        return new ASN1EvidenceRecordParser(evidenceRecord);
+        return new ASN1EvidenceRecordParser(evidenceRecord)
+                .setFilename(getFilename())
+                .setEmbeddedEvidenceRecordHelper(getEmbeddedEvidenceRecordHelper());
     }
 
     @Override

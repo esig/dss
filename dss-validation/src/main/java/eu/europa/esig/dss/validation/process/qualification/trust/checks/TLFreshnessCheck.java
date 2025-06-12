@@ -26,8 +26,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.RuleUtils;
-import eu.europa.esig.dss.policy.jaxb.TimeConstraint;
+import eu.europa.esig.dss.model.policy.DurationRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
 import java.util.Date;
@@ -45,7 +44,7 @@ public class TLFreshnessCheck extends ChainItem<XmlTLAnalysis> {
 	private final Date currentTime;
 
 	/** Constraint defining the maximum freshness time */
-	private final TimeConstraint timeConstraint;
+	private final DurationRule durationRule;
 
 	/**
 	 * Default constructor
@@ -54,14 +53,14 @@ public class TLFreshnessCheck extends ChainItem<XmlTLAnalysis> {
 	 * @param result {@link XmlTLAnalysis}
 	 * @param currentTL {@link XmlTrustedList}
 	 * @param currentTime {@link Date}
-	 * @param timeConstraint {@link TimeConstraint}
+	 * @param durationRule {@link DurationRule}
 	 */
 	public TLFreshnessCheck(I18nProvider i18nProvider, XmlTLAnalysis result, XmlTrustedList currentTL,
-							Date currentTime, TimeConstraint timeConstraint) {
-		super(i18nProvider, result, timeConstraint);
+							Date currentTime, DurationRule durationRule) {
+		super(i18nProvider, result, durationRule);
 		this.currentTL = currentTL;
 		this.currentTime = currentTime;
-		this.timeConstraint = timeConstraint;
+		this.durationRule = durationRule;
 	}
 
 	@Override
@@ -75,7 +74,7 @@ public class TLFreshnessCheck extends ChainItem<XmlTLAnalysis> {
 	}
 
 	private long getMaxFreshness() {
-		return RuleUtils.convertDuration(timeConstraint);
+		return durationRule.getDuration();
 	}
 
 	@Override

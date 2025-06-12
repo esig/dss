@@ -27,10 +27,10 @@ import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
+import eu.europa.esig.dss.model.policy.CryptographicSuite;
+import eu.europa.esig.dss.validation.policy.CryptographicSuiteUtils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicConstraintWrapper;
 
 import java.util.Date;
 
@@ -58,7 +58,7 @@ public abstract class AbstractCryptographicChecker extends Chain<XmlCC> {
 	protected final Date validationDate;
 
 	/** Cryptographic constraint */
-	protected final CryptographicConstraintWrapper constraintWrapper;
+	protected final CryptographicSuite cryptographicSuite;
 
 	/** The validation constraint position */
 	protected final MessageTag position;
@@ -73,11 +73,11 @@ public abstract class AbstractCryptographicChecker extends Chain<XmlCC> {
 	 * @param digestAlgorithm {@link DigestAlgorithm}
 	 * @param validationDate {@link Date}
 	 * @param position {@link MessageTag}
-	 * @param constraint {@link CryptographicConstraint}
+	 * @param constraint {@link CryptographicSuite}
 	 */
 	protected AbstractCryptographicChecker(I18nProvider i18nProvider, DigestAlgorithm digestAlgorithm,
 										   Date validationDate, MessageTag position,
-										   CryptographicConstraint constraint) {
+										   CryptographicSuite constraint) {
 		this(i18nProvider, null, digestAlgorithm, null,
 				validationDate, position, constraint);
 	}
@@ -91,19 +91,18 @@ public abstract class AbstractCryptographicChecker extends Chain<XmlCC> {
 	 * @param keyLengthUsedToSignThisToken {@link String}
 	 * @param validationDate {@link Date}
 	 * @param position {@link MessageTag}
-	 * @param constraint {@link CryptographicConstraint}
+	 * @param cryptographicSuite {@link CryptographicSuite}
 	 */
 	protected AbstractCryptographicChecker(I18nProvider i18nProvider, EncryptionAlgorithm encryptionAlgorithm,
 										   DigestAlgorithm digestAlgorithm, String keyLengthUsedToSignThisToken,
-										   Date validationDate, MessageTag position, CryptographicConstraint constraint) {
+										   Date validationDate, MessageTag position, CryptographicSuite cryptographicSuite) {
 		super(i18nProvider, new XmlCC());
 		
 		this.encryptionAlgorithm = encryptionAlgorithm;
 		this.digestAlgorithm = digestAlgorithm;
 		this.keyLengthUsedToSignThisToken = keyLengthUsedToSignThisToken;
 		this.validationDate = validationDate;
-		
-		this.constraintWrapper = new CryptographicConstraintWrapper(constraint);
+		this.cryptographicSuite = cryptographicSuite;
 		this.position = position;
 	}
     
@@ -119,7 +118,7 @@ public abstract class AbstractCryptographicChecker extends Chain<XmlCC> {
 	 * @return TRUE if expiration constrains are defines, FALSE otherwise
 	 */
 	protected boolean isExpirationDateAvailable(DigestAlgorithm digestAlgorithm) {
-		return constraintWrapper.getExpirationDate(digestAlgorithm) != null;
+		return CryptographicSuiteUtils.getExpirationDate(cryptographicSuite, digestAlgorithm) != null;
 	}
 
 	/**
@@ -130,7 +129,7 @@ public abstract class AbstractCryptographicChecker extends Chain<XmlCC> {
 	 * @return TRUE if expiration constrains are defines, FALSE otherwise
 	 */
 	protected boolean isExpirationDateAvailable(EncryptionAlgorithm encryptionAlgorithm, String keyLength) {
-		return constraintWrapper.getExpirationDate(encryptionAlgorithm, keyLength) != null;
+		return CryptographicSuiteUtils.getExpirationDate(cryptographicSuite, encryptionAlgorithm, keyLength) != null;
 	}
 
 	/**
@@ -139,7 +138,7 @@ public abstract class AbstractCryptographicChecker extends Chain<XmlCC> {
 	 * @return TRUE if the {@code encryptionAlgorithm} is acceptable, FALSE otherwise
 	 */
 	protected ChainItem<XmlCC> encryptionAlgorithmReliable() {
-		return new EncryptionAlgorithmReliableCheck(i18nProvider, encryptionAlgorithm, result, position, constraintWrapper);
+		return new EncryptionAlgorithmReliableCheck(i18nProvider, encryptionAlgorithm, result, position, cryptographicSuite);
 	}
 
 	/**
@@ -148,7 +147,7 @@ public abstract class AbstractCryptographicChecker extends Chain<XmlCC> {
 	 * @return TRUE if the {@code digestAlgorithm} is acceptable, FALSE otherwise
 	 */
 	protected ChainItem<XmlCC> digestAlgorithmReliable() {
-		return new DigestAlgorithmReliableCheck(i18nProvider, digestAlgorithm, result, position, constraintWrapper);
+		return new DigestAlgorithmReliableCheck(i18nProvider, digestAlgorithm, result, position, cryptographicSuite);
 	}
 
 	/**
@@ -158,7 +157,7 @@ public abstract class AbstractCryptographicChecker extends Chain<XmlCC> {
 	 */
 	protected ChainItem<XmlCC> encryptionAlgorithmOnValidationTime() {
 		return new EncryptionAlgorithmAtValidationTimeCheck(i18nProvider, encryptionAlgorithm, keyLengthUsedToSignThisToken, validationDate, result,
-				position, constraintWrapper);
+				position, cryptographicSuite);
 	}
 
 	/**
@@ -167,7 +166,7 @@ public abstract class AbstractCryptographicChecker extends Chain<XmlCC> {
 	 * @return TRUE if the {@code digestAlgorithm} is not expired in validation time, FALSE otherwise
 	 */
 	protected ChainItem<XmlCC> digestAlgorithmOnValidationTime() {
-		return new DigestAlgorithmAtValidationTimeCheck(i18nProvider, digestAlgorithm, validationDate, result, position, constraintWrapper);
+		return new DigestAlgorithmAtValidationTimeCheck(i18nProvider, digestAlgorithm, validationDate, result, position, cryptographicSuite);
 	}
 
 	/**
@@ -176,7 +175,7 @@ public abstract class AbstractCryptographicChecker extends Chain<XmlCC> {
 	 * @return TRUE if the {@code keyLengthUsedToSignThisToken} is known, FALSE otherwise
 	 */
 	protected ChainItem<XmlCC> publicKeySizeKnown() {
-		return new PublicKeySizeKnownCheck(i18nProvider, keyLengthUsedToSignThisToken, result, position, constraintWrapper);
+		return new PublicKeySizeKnownCheck(i18nProvider, keyLengthUsedToSignThisToken, result, position, cryptographicSuite);
 	}
 
 	/**
@@ -185,7 +184,7 @@ public abstract class AbstractCryptographicChecker extends Chain<XmlCC> {
 	 * @return TRUE if the {@code keyLengthUsedToSignThisToken} is acceptable, FALSE otherwise
 	 */
 	protected ChainItem<XmlCC> publicKeySizeAcceptable() {
-		return new PublicKeySizeAcceptableCheck(i18nProvider, encryptionAlgorithm, keyLengthUsedToSignThisToken, result, position, constraintWrapper);
+		return new PublicKeySizeAcceptableCheck(i18nProvider, encryptionAlgorithm, keyLengthUsedToSignThisToken, result, position, cryptographicSuite);
 	}
 
 	@Override
@@ -259,11 +258,11 @@ public abstract class AbstractCryptographicChecker extends Chain<XmlCC> {
 	 * @return {@link Date}
 	 */
 	protected Date getNotAfter() {
-		if (constraintWrapper.isDigestAlgorithmReliable(digestAlgorithm) &&
-				constraintWrapper.isEncryptionAlgorithmReliable(encryptionAlgorithm) &&
-				constraintWrapper.isEncryptionAlgorithmWithKeySizeReliable(encryptionAlgorithm, keyLengthUsedToSignThisToken)) {
-			Date notAfter = constraintWrapper.getExpirationDate(digestAlgorithm);
-			Date expirationEncryption = constraintWrapper.getExpirationDate(encryptionAlgorithm, keyLengthUsedToSignThisToken);
+		if (CryptographicSuiteUtils.isDigestAlgorithmReliable(cryptographicSuite, digestAlgorithm) &&
+				CryptographicSuiteUtils.isEncryptionAlgorithmReliable(cryptographicSuite, encryptionAlgorithm) &&
+				CryptographicSuiteUtils.isEncryptionAlgorithmWithKeySizeReliable(cryptographicSuite, encryptionAlgorithm, keyLengthUsedToSignThisToken)) {
+			Date notAfter = CryptographicSuiteUtils.getExpirationDate(cryptographicSuite, digestAlgorithm);
+			Date expirationEncryption = CryptographicSuiteUtils.getExpirationDate(cryptographicSuite, encryptionAlgorithm, keyLengthUsedToSignThisToken);
 			if (notAfter == null || (expirationEncryption != null && expirationEncryption.before(notAfter))) {
 				notAfter = expirationEncryption;
 			}

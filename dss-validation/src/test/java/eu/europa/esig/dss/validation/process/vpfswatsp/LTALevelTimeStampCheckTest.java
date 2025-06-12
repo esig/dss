@@ -39,10 +39,11 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.sav.checks.LTALevelTimeStampCheck;
@@ -92,7 +93,7 @@ class LTALevelTimeStampCheckTest extends AbstractTestCheck {
 
         XmlValidationProcessArchivalData result = new XmlValidationProcessArchivalData();
         LTALevelTimeStampCheck<XmlValidationProcessArchivalData> ltaltsc = new LTALevelTimeStampCheck<>(i18nProvider, result, new SignatureWrapper(xmlSignature),
-                bbbs, Collections.singleton(xmlTimestamp), constraint);
+                bbbs, Collections.singleton(xmlTimestamp), new LevelConstraintWrapper(constraint));
         ltaltsc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -134,7 +135,7 @@ class LTALevelTimeStampCheckTest extends AbstractTestCheck {
 
         XmlValidationProcessArchivalData result = new XmlValidationProcessArchivalData();
         LTALevelTimeStampCheck<XmlValidationProcessArchivalData> ltaltsc = new LTALevelTimeStampCheck<>(i18nProvider, result, new SignatureWrapper(xmlSignature),
-                bbbs, Collections.singleton(xmlTimestamp), constraint);
+                bbbs, Collections.singleton(xmlTimestamp), new LevelConstraintWrapper(constraint));
         ltaltsc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -198,7 +199,7 @@ class LTALevelTimeStampCheckTest extends AbstractTestCheck {
 
         XmlValidationProcessArchivalData result = new XmlValidationProcessArchivalData();
         LTALevelTimeStampCheck<XmlValidationProcessArchivalData> ltaltsc = new LTALevelTimeStampCheck<>(i18nProvider, result, new SignatureWrapper(xmlSignature),
-                bbbs, Collections.singleton(xmlTimestamp), constraint);
+                bbbs, Collections.singleton(xmlTimestamp), new LevelConstraintWrapper(constraint));
         ltaltsc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -262,7 +263,7 @@ class LTALevelTimeStampCheckTest extends AbstractTestCheck {
 
         XmlValidationProcessArchivalData result = new XmlValidationProcessArchivalData();
         LTALevelTimeStampCheck<XmlValidationProcessArchivalData> ltaltsc = new LTALevelTimeStampCheck<>(i18nProvider, result, new SignatureWrapper(xmlSignature),
-                bbbs, Collections.singleton(xmlTimestamp), constraint);
+                bbbs, Collections.singleton(xmlTimestamp), new LevelConstraintWrapper(constraint));
         ltaltsc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -310,7 +311,7 @@ class LTALevelTimeStampCheckTest extends AbstractTestCheck {
 
         XmlValidationProcessArchivalData result = new XmlValidationProcessArchivalData();
         LTALevelTimeStampCheck<XmlValidationProcessArchivalData> ltaltsc = new LTALevelTimeStampCheck<>(i18nProvider, result, new SignatureWrapper(xmlSignature),
-                bbbs, Collections.singleton(xmlTimestamp), constraint);
+                bbbs, Collections.singleton(xmlTimestamp), new LevelConstraintWrapper(constraint));
         ltaltsc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -358,7 +359,7 @@ class LTALevelTimeStampCheckTest extends AbstractTestCheck {
 
         XmlValidationProcessArchivalData result = new XmlValidationProcessArchivalData();
         LTALevelTimeStampCheck<XmlValidationProcessArchivalData> ltaltsc = new LTALevelTimeStampCheck<>(i18nProvider, result, new SignatureWrapper(xmlSignature),
-                bbbs, Collections.singleton(xmlTimestamp), constraint);
+                bbbs, Collections.singleton(xmlTimestamp), new LevelConstraintWrapper(constraint));
         ltaltsc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -399,7 +400,7 @@ class LTALevelTimeStampCheckTest extends AbstractTestCheck {
 
         XmlValidationProcessArchivalData result = new XmlValidationProcessArchivalData();
         LTALevelTimeStampCheck<XmlValidationProcessArchivalData> ltaltsc = new LTALevelTimeStampCheck<>(i18nProvider, result, new SignatureWrapper(xmlSignature),
-                bbbs, Collections.singleton(xmlTimestamp), constraint);
+                bbbs, Collections.singleton(xmlTimestamp), new LevelConstraintWrapper(constraint));
         ltaltsc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -441,7 +442,7 @@ class LTALevelTimeStampCheckTest extends AbstractTestCheck {
 
         XmlValidationProcessArchivalData result = new XmlValidationProcessArchivalData();
         LTALevelTimeStampCheck<XmlValidationProcessArchivalData> ltaltsc = new LTALevelTimeStampCheck<>(i18nProvider, result, new SignatureWrapper(xmlSignature),
-                bbbs, Collections.singleton(xmlTimestamp), constraint);
+                bbbs, Collections.singleton(xmlTimestamp), new LevelConstraintWrapper(constraint));
         ltaltsc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -507,7 +508,7 @@ class LTALevelTimeStampCheckTest extends AbstractTestCheck {
 
         XmlValidationProcessArchivalData result = new XmlValidationProcessArchivalData();
         LTALevelTimeStampCheck<XmlValidationProcessArchivalData> ltaltsc = new LTALevelTimeStampCheck<>(i18nProvider, result, new SignatureWrapper(xmlSignature),
-                bbbs, Collections.singleton(xmlTimestamp), constraint);
+                bbbs, Collections.singleton(xmlTimestamp), new LevelConstraintWrapper(constraint));
         ltaltsc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

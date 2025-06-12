@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.service.http.commons;
 
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.service.http.proxy.ProxyConfig;
 import eu.europa.esig.dss.service.http.proxy.ProxyProperties;
@@ -33,8 +32,6 @@ import eu.europa.esig.dss.utils.Utils;
 import org.apache.hc.core5.http.HttpStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -45,12 +42,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 class CommonsDataLoaderTest {
 
-	private static final Logger LOG = LoggerFactory.getLogger(CommonsDataLoaderTest.class);
-
 	private static final String URL_TO_LOAD = "http://certs.eid.belgium.be/belgiumrs2.crt";
+	private static final String TIMEOUT_URL = "https://httpstat.us/200?sleep=1";
 
 	private CommonsDataLoader dataLoader;
 
@@ -74,20 +71,45 @@ class CommonsDataLoaderTest {
 
 	@Test
 	void ldapTest1() {
-		String url = "ldap://x500.gov.si/ou=sigen-ca,o=state-institutions,c=si?certificateRevocationList?base";
+		String url = "ldap://directory.d-trust.net/CN=D-TRUST%20CA%203-1%202016,O=D-Trust%20GmbH,C=DE?cACertificate?base?";
 		getDataAndAssertNotNull(url);
 	}
 
 	@Test
 	void ldapTest2() {
-		String url = "ldap://postarca.posta.si/ou=POSTArCA,o=POSTA,c=SI?certificateRevocationList";
+		String url = "ldap://directory.d-trust.net/CN=D-TRUST%20CA%203-1%202016,O=D-Trust%20GmbH,C=DE?certificaterevocationlist";
 		getDataAndAssertNotNull(url);
 	}
 
 	@Test
-	void ldapTest3() {
-		String url = "ldap://acldap.nlb.si/o=ACNLB,c=SI?certificateRevocationList";
-		getDataAndAssertNotNull(url);
+	void ldapWithTrustedHostNamesTest() {
+		CommonsDataLoader commonsDataLoader = new CommonsDataLoader();
+		String url = "ldap://directory.d-trust.net/CN=D-TRUST%20CA%203-1%202016,O=D-Trust%20GmbH,C=DE?cACertificate?base?";
+		assertTrue(Utils.isArrayNotEmpty(commonsDataLoader.get(url)));
+
+		commonsDataLoader.setLdapTrustedHostnames(null);
+		assertTrue(Utils.isArrayNotEmpty(commonsDataLoader.get(url)));
+
+		commonsDataLoader.setLdapTrustedHostnames(Collections.emptyList());
+		Exception exception = assertThrows(DSSExternalResourceException.class, () -> commonsDataLoader.get(url));
+		assertEquals(String.format("Cannot get data from URL [%s]. " +
+				"Reason : [Untrusted host name 'directory.d-trust.net']", url), exception.getMessage());
+
+		commonsDataLoader.setLdapTrustedHostnames(Collections.singletonList("trusted.url.com"));
+		exception = assertThrows(DSSExternalResourceException.class, () -> commonsDataLoader.get(url));
+		assertEquals(String.format("Cannot get data from URL [%s]. " +
+				"Reason : [Untrusted host name 'directory.d-trust.net']", url), exception.getMessage());
+
+		commonsDataLoader.setLdapTrustedHostnames(Collections.singletonList("d-trust.net"));
+		exception = assertThrows(DSSExternalResourceException.class, () -> commonsDataLoader.get(url));
+		assertEquals(String.format("Cannot get data from URL [%s]. " +
+				"Reason : [Untrusted host name 'directory.d-trust.net']", url), exception.getMessage());
+
+		commonsDataLoader.setLdapTrustedHostnames(Collections.singletonList("directory.d-trust.net"));
+		assertTrue(Utils.isArrayNotEmpty(commonsDataLoader.get(url)));
+
+		commonsDataLoader.setLdapTrustedHostnames(Arrays.asList("trusted.url.com", "directory.d-trust.net"));
+		assertTrue(Utils.isArrayNotEmpty(commonsDataLoader.get(url)));
 	}
 
 	@Test
@@ -110,25 +132,25 @@ class CommonsDataLoaderTest {
 		try {
 			assertTrue(Utils.isArrayNotEmpty(dataLoader.get(url)));
 		} catch (DSSExternalResourceException e) {
-			LOG.error("Failed to obtain data from an external source. Reason : [{}]", e.getMessage());
+			fail(String.format("Failed to obtain data from an external source. Reason : [%s])", e.getMessage()), e);
 		}
 	}
 
 	@Test
 	void dss1583WarningTest() {
-		assertThrows(DSSException.class, () -> {
+		assertThrows(DSSExternalResourceException.class, () -> {
 			String url = "ldap://pks-ldap.telesec.de/o=T-Systems International GmbH,c=de%2";
 			dataLoader.get(url);
 		});
-		assertThrows(DSSException.class, () -> {
+		assertThrows(DSSExternalResourceException.class, () -> {
 			String url = "ldap://pks-ldap.telesec.de/o=T-Syste%ms International GmbH,c=de";
 			dataLoader.get(url);
 		});
-		assertThrows(DSSException.class, () -> {
+		assertThrows(DSSExternalResourceException.class, () -> {
 			String url = "ldap://pks-ldap.telesec.de/o=T-SystemsInternational GmbH,c=de";
 			dataLoader.get(url);
 		});
-		assertThrows(DSSException.class, () -> {
+		assertThrows(DSSExternalResourceException.class, () -> {
 			String url = "ldap://pks-ldap.telesec.de/o=T-Systems International GmbH,c=de?certificate";
 			dataLoader.get(url);
 		});
@@ -136,15 +158,18 @@ class CommonsDataLoaderTest {
 
 	@Test
 	void timeoutTest() {
+		// no timeout
+		assertNotNull(dataLoader.get(TIMEOUT_URL));
+
 		dataLoader.setTimeoutConnection(1);
 		DSSExternalResourceException exception = assertThrows(DSSExternalResourceException.class,
-				() -> dataLoader.get(URL_TO_LOAD));
-		assertTrue(exception.getMessage().startsWith("Unable to process GET call for url [" + URL_TO_LOAD + "]"));
+				() -> dataLoader.get(TIMEOUT_URL));
+		assertTrue(exception.getMessage().startsWith("Unable to process GET call for url [" + TIMEOUT_URL + "]"));
 
 		dataLoader.setTimeoutConnection(60000);
 		dataLoader.setTimeoutResponse(1);
-		exception = assertThrows(DSSExternalResourceException.class, () -> dataLoader.get(URL_TO_LOAD));
-		assertTrue(exception.getMessage().startsWith("Unable to process GET call for url [" + URL_TO_LOAD + "]"));
+		exception = assertThrows(DSSExternalResourceException.class, () -> dataLoader.get(TIMEOUT_URL));
+		assertTrue(exception.getMessage().startsWith("Unable to process GET call for url [" + TIMEOUT_URL + "]"));
 	}
 
 	@Test
@@ -165,7 +190,7 @@ class CommonsDataLoaderTest {
 
 		dataAndUrl = dataLoader.get(Arrays.asList("http://wrong.url", "does_not_exist", URL_TO_LOAD));
 		assertEquals(URL_TO_LOAD, dataAndUrl.getUrlString());
-		assertTrue(Arrays.equals(firstUrlData, dataAndUrl.getData()));
+        assertArrayEquals(firstUrlData, dataAndUrl.getData());
 
 	}
 
@@ -274,13 +299,13 @@ class CommonsDataLoaderTest {
 		dataLoader.setHttpClientResponseHandler(httpClientResponseHandler);
 		assertTrue(Utils.isArrayNotEmpty(dataLoader.get(URL_TO_LOAD)));
 
-		httpClientResponseHandler.setAcceptedHttpStatuses(Arrays.asList(HttpStatus.SC_OK));
+		httpClientResponseHandler.setAcceptedHttpStatuses(Collections.singletonList(HttpStatus.SC_OK));
 		assertTrue(Utils.isArrayNotEmpty(dataLoader.get(URL_TO_LOAD)));
 
 		httpClientResponseHandler.setAcceptedHttpStatuses(Arrays.asList(HttpStatus.SC_OK, HttpStatus.SC_CONTINUE));
 		assertTrue(Utils.isArrayNotEmpty(dataLoader.get(URL_TO_LOAD)));
 
-		httpClientResponseHandler.setAcceptedHttpStatuses(Arrays.asList(HttpStatus.SC_CONTINUE));
+		httpClientResponseHandler.setAcceptedHttpStatuses(Collections.singletonList(HttpStatus.SC_CONTINUE));
 		Exception exception = assertThrows(DSSExternalResourceException.class, () -> dataLoader.get(URL_TO_LOAD));
 		assertEquals("Unable to process GET call for url [http://certs.eid.belgium.be/belgiumrs2.crt]. " +
 				"Reason : [Not acceptable HTTP Status (HTTP status code : 200 / reason : OK)]", exception.getMessage());

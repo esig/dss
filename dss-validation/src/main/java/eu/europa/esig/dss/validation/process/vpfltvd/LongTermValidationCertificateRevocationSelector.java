@@ -33,7 +33,7 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
-import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.xcv.crs.CertificateRevocationSelector;
@@ -147,7 +147,7 @@ public class LongTermValidationCertificateRevocationSelector extends Certificate
     }
 
     private ChainItem<XmlCRS> revocationBasicValidationAcceptable(String revocationId, XmlConclusion revocationBBBConclusion) {
-        return new RevocationDataAcceptableCheck<>(i18nProvider, result, revocationId, revocationBBBConclusion, getWarnLevelConstraint());
+        return new RevocationDataAcceptableCheck<>(i18nProvider, result, revocationId, revocationBBBConclusion, getWarnLevelRule());
     }
 
     @Override
@@ -172,7 +172,7 @@ public class LongTermValidationCertificateRevocationSelector extends Certificate
 
     @Override
     protected ChainItem<XmlCRS> acceptableRevocationDataAvailable() {
-        return new AcceptableRevocationDataAvailableCheck<XmlCRS>(i18nProvider, result, getLatestAcceptableCertificateRevocation(), getFailLevelConstraint()) {
+        return new AcceptableRevocationDataAvailableCheck<XmlCRS>(i18nProvider, result, getLatestAcceptableCertificateRevocation(), getFailLevelRule()) {
 
             @Override
             protected Indication getFailedIndicationForConclusion() {

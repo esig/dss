@@ -85,7 +85,9 @@ public class XmlEvidenceRecord extends DefaultEvidenceRecord {
 
     @Override
     protected EvidenceRecordParser buildEvidenceRecordParser() {
-        return new XmlEvidenceRecordParser(evidenceRecordElement).setFilename(getFilename());
+        return new XmlEvidenceRecordParser(evidenceRecordElement)
+                .setFilename(getFilename())
+                .setEmbeddedEvidenceRecordHelper(getEmbeddedEvidenceRecordHelper());
     }
 
     @Override

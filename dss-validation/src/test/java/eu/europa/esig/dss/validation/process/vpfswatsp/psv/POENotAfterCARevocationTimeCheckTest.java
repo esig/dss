@@ -30,8 +30,9 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.vpfswatsp.POEExtraction;
@@ -87,7 +88,7 @@ class POENotAfterCARevocationTimeCheckTest extends AbstractTestCheck {
         XmlPSV result = new XmlPSV();
         POENotAfterCARevocationTimeCheck pnacartc = new POENotAfterCARevocationTimeCheck<>(i18nProvider, result,
                 Arrays.asList(new RevocationWrapper(xmlRevocationOne), new RevocationWrapper(xmlRevocationTwo)),
-                caRevocationTime, poeExtraction, constraint);
+                caRevocationTime, poeExtraction, new LevelConstraintWrapper(constraint));
         pnacartc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -128,7 +129,7 @@ class POENotAfterCARevocationTimeCheckTest extends AbstractTestCheck {
         XmlPSV result = new XmlPSV();
         POENotAfterCARevocationTimeCheck pnacartc = new POENotAfterCARevocationTimeCheck<>(i18nProvider, result,
                 Arrays.asList(new RevocationWrapper(xmlRevocationOne), new RevocationWrapper(xmlRevocationTwo)),
-                caRevocationTime, poeExtraction, constraint);
+                caRevocationTime, poeExtraction, new LevelConstraintWrapper(constraint));
         pnacartc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -169,7 +170,7 @@ class POENotAfterCARevocationTimeCheckTest extends AbstractTestCheck {
         XmlPSV result = new XmlPSV();
         POENotAfterCARevocationTimeCheck pnacartc = new POENotAfterCARevocationTimeCheck<>(i18nProvider, result,
                 Arrays.asList(new RevocationWrapper(xmlRevocationTwo)),
-                caRevocationTime, poeExtraction, constraint);
+                caRevocationTime, poeExtraction, new LevelConstraintWrapper(constraint));
         pnacartc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -215,7 +216,7 @@ class POENotAfterCARevocationTimeCheckTest extends AbstractTestCheck {
         XmlPSV result = new XmlPSV();
         POENotAfterCARevocationTimeCheck pnacartc = new POENotAfterCARevocationTimeCheck<>(i18nProvider, result,
                 Arrays.asList(new RevocationWrapper(xmlRevocationOne), new RevocationWrapper(xmlRevocationTwo)),
-                caRevocationTime, poeExtraction, constraint);
+                caRevocationTime, poeExtraction, new LevelConstraintWrapper(constraint));
         pnacartc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

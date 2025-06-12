@@ -27,7 +27,8 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlBasicConstraints;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.BasicConstraintsCACheck;
@@ -53,7 +54,7 @@ class BasicConstraintsCACheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         BasicConstraintsCACheck bccac = new BasicConstraintsCACheck(i18nProvider, result,
-                new CertificateWrapper(xc), constraint);
+                new CertificateWrapper(xc), new LevelConstraintWrapper(constraint));
         bccac.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -75,7 +76,7 @@ class BasicConstraintsCACheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         BasicConstraintsCACheck bccac = new BasicConstraintsCACheck(i18nProvider, result,
-                new CertificateWrapper(xc), constraint);
+                new CertificateWrapper(xc), new LevelConstraintWrapper(constraint));
         bccac.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -92,7 +93,7 @@ class BasicConstraintsCACheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         BasicConstraintsCACheck bccac = new BasicConstraintsCACheck(i18nProvider, result,
-                new CertificateWrapper(xc), constraint);
+                new CertificateWrapper(xc), new LevelConstraintWrapper(constraint));
         bccac.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

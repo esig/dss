@@ -35,6 +35,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlStructuralValidation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
+import eu.europa.esig.dss.enumerations.EvidenceRecordIncorporationType;
 import eu.europa.esig.dss.enumerations.EvidenceRecordOrigin;
 import eu.europa.esig.dss.enumerations.EvidenceRecordTypeEnum;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
@@ -106,7 +107,7 @@ public class EvidenceRecordWrapper {
      */
     public TimestampWrapper getFirstTimestamp() {
         List<TimestampWrapper> timestampList = getTimestampList();
-        if (timestampList != null && timestampList.size() > 0) {
+        if (timestampList != null && !timestampList.isEmpty()) {
             return timestampList.get(0);
         }
         return null;
@@ -176,6 +177,38 @@ public class EvidenceRecordWrapper {
      */
     public EvidenceRecordOrigin getOrigin() {
         return evidenceRecord.getOrigin();
+    }
+
+    /**
+     * Gets whether the evidence record has been embedded into a signature (supported for XAdES and CAdES)
+     *
+     * @return TRUE if the evidence record is embedded, FALSE otherwise
+     */
+    public boolean isEmbedded() {
+        return evidenceRecord.isEmbedded() != null && evidenceRecord.isEmbedded();
+    }
+
+    /**
+     * Returns a master-signature in case of a counter-signature
+     *
+     * @return {@link SignatureWrapper}
+     */
+    public SignatureWrapper getParent() {
+        XmlSignature parent = evidenceRecord.getParent();
+        if (parent != null) {
+            return new SignatureWrapper(parent);
+        }
+        return null;
+    }
+
+    /**
+     * Gets the incorporation of the evidence record within an embedding signature.
+     * NOTE: applicable only for attached evidence records in CAdES.
+     *
+     * @return {@link EvidenceRecordIncorporationType}
+     */
+    public EvidenceRecordIncorporationType getIncorporationType() {
+        return evidenceRecord.getIncorporationType();
     }
 
     /**

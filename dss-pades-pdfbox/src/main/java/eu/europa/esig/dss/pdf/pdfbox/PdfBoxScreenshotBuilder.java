@@ -25,8 +25,8 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pdf.PdfMemoryUsageSetting;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
-import eu.europa.esig.dss.signature.resources.DSSResourcesHandler;
-import eu.europa.esig.dss.signature.resources.DSSResourcesHandlerBuilder;
+import eu.europa.esig.dss.spi.signature.resources.DSSResourcesHandler;
+import eu.europa.esig.dss.spi.signature.resources.DSSResourcesHandlerBuilder;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -137,23 +137,6 @@ public class PdfBoxScreenshotBuilder {
     public DSSDocument generateScreenshot(int page) {
         BufferedImage bufferedImage = generateBufferedImageScreenshot(page);
         return ImageUtils.toDSSDocument(bufferedImage, initDssResourcesHandler());
-    }
-
-    /**
-     * Generates a screenshot image of the specified page for the given PDF document using
-     * the provided {@code dssResourcesHandler}.
-     * NOTE: This is a temporary method to ensure a smooth migration. Please do not use it.
-     *
-     * @param page a page number to generate screenshot for (page order starts from 1)
-     * @param dssResourcesHandler {@link DSSResourcesHandler}
-     * @return {@link DSSDocument} PNG screenshot
-     * @deprecated since DSS 6.2. This is a temporary method to ensure smooth migration.
-     */
-    @Deprecated
-    public DSSDocument generateScreenshot(int page, DSSResourcesHandler dssResourcesHandler) {
-        // to be removed
-        BufferedImage bufferedImage = generateBufferedImageScreenshot(page);
-        return ImageUtils.toDSSDocument(bufferedImage, dssResourcesHandler);
     }
 
     /**

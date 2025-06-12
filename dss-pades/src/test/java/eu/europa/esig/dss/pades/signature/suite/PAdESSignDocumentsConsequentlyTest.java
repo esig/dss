@@ -43,7 +43,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 @Tag("slow")
-public class PAdESSignDocumentsConsequentlyTest extends AbstractPAdESTestSignature {
+class PAdESSignDocumentsConsequentlyTest extends AbstractPAdESTestSignature {
 
     private static PAdESSignatureParameters signatureParameters;
     private static DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;

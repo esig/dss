@@ -71,7 +71,7 @@ class ASiCSWithXAdESLevelBContainerMergerSameSigParamsTest extends AbstractWithX
     @Test
     @Override
     public void createTwoContainersAndMerge() throws Exception {
-        Exception exception = assertThrows(IllegalInputException.class, () -> super.createTwoContainersAndMerge());
+        Exception exception = assertThrows(IllegalInputException.class, super::createTwoContainersAndMerge);
         assertEquals("Signature documents contain signatures with the same identifiers!", exception.getMessage());
     }
 

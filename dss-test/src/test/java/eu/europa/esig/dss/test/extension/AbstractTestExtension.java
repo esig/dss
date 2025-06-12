@@ -127,9 +127,6 @@ public abstract class AbstractTestExtension<SP extends SerializableSignaturePara
 
 		DSSDocument extendedDocument = service.extendDocument(signedDocument, extensionParameters);
 		assertNotNull(extendedDocument);
-
-		// extendedDocument.save("target/pdf.pdf");
-
 		return extendedDocument;
 	}
 

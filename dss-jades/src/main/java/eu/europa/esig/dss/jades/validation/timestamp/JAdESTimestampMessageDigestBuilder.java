@@ -141,7 +141,7 @@ public class JAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 		try {
 			DSSMessageDigestCalculator digestCalculator = new DSSMessageDigestCalculator(digestAlgorithm);
 			writeSignedDataBinaries(digestCalculator);
-			return digestCalculator.getMessageDigest();
+			return digestCalculator.getMessageDigest(digestAlgorithm);
 
 		} catch (Exception e) {
 			String errorMessage = timestampToken == null ? String.format(MESSAGE_IMPRINT_ERROR, e.getMessage()) :
@@ -285,7 +285,7 @@ public class JAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 						+ "The 'etsiU' components shall have a common format (Strings or Objects)!", JAdESHeaderParameterNames.SIG_R_TST);
 			}
 
-			final DSSMessageDigest messageDigest = digestCalculator.getMessageDigest();
+			final DSSMessageDigest messageDigest = digestCalculator.getMessageDigest(digestAlgorithm);
 			if (LOG.isTraceEnabled()) {
 				LOG.trace(MESSAGE_IMPRINT_MESSAGE, JAdESHeaderParameterNames.SIG_R_TST, messageDigest);
 			}
@@ -354,7 +354,7 @@ public class JAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 						+ "The 'etsiU' components shall have a common format (Strings or Objects)!", JAdESHeaderParameterNames.RFS_TST);
 			}
 
-			final DSSMessageDigest messageDigest = digestCalculator.getMessageDigest();
+			final DSSMessageDigest messageDigest = digestCalculator.getMessageDigest(digestAlgorithm);
 			if (LOG.isTraceEnabled()) {
 				LOG.trace(MESSAGE_IMPRINT_MESSAGE, JAdESHeaderParameterNames.RFS_TST, messageDigest);
 			}
@@ -457,7 +457,7 @@ public class JAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 						+ "The 'etsiU' components shall have a common format (Strings or Objects)!", JAdESHeaderParameterNames.ARC_TST);
 			}
 
-			final DSSMessageDigest messageDigest = digestCalculator.getMessageDigest();
+			final DSSMessageDigest messageDigest = digestCalculator.getMessageDigest(digestAlgorithm);
 			if (LOG.isTraceEnabled()) {
 				LOG.trace(MESSAGE_IMPRINT_MESSAGE, JAdESHeaderParameterNames.ARC_TST, messageDigest);
 			}

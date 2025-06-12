@@ -38,6 +38,7 @@ public abstract class AbstractASiCDataToSignHelperBuilder {
 	 * Default constructor
 	 */
 	protected AbstractASiCDataToSignHelperBuilder() {
+		// empty
 	}
 
 	/**

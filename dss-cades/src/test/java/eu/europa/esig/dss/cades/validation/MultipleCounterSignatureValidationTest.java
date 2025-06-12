@@ -23,13 +23,13 @@ package eu.europa.esig.dss.cades.validation;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.validationreport.jaxb.SACounterSignatureType;
 import eu.europa.esig.validationreport.jaxb.SignatureAttributesType;
 import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
-
 import jakarta.xml.bind.JAXBElement;
+
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,7 +39,7 @@ class MultipleCounterSignatureValidationTest extends AbstractCAdESTestValidation
 
 	@Override
 	protected DSSDocument getSignedDocument() {
-		return new FileDocument("src/test/resources/validation/signedFile.pdf.p7s");
+		return new InMemoryDocument(MultipleCounterSignatureValidationTest.class.getResourceAsStream("/validation/signedFile.pdf.p7s"));
 	}
 	
 	@Override

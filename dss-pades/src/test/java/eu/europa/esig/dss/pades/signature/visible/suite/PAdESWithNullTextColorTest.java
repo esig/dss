@@ -34,7 +34,7 @@ import org.junit.jupiter.api.BeforeEach;
 
 import java.util.Date;
 
-public class PAdESWithNullTextColorTest extends AbstractPAdESTestSignature {
+class PAdESWithNullTextColorTest extends AbstractPAdESTestSignature {
 
     private DocumentSignatureService<PAdESSignatureParameters, PAdESTimestampParameters> service;
     private PAdESSignatureParameters signatureParameters;

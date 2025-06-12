@@ -24,17 +24,18 @@ import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.BasicSignatureConstraints;
-import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.validation.executor.signature.DefaultSignatureProcessExecutor;
@@ -61,7 +62,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
         XmlDigestMatcher digestMatcher = diagnosticData.getSignatures().get(0).getDigestMatchers().get(0);
         digestMatcher.setDocumentName("wrong-name.xml");
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint levelConstraint = new LevelConstraint();
         levelConstraint.setLevel(Level.WARN);
         validationPolicy.getSignatureConstraints().getBasicSignatureConstraints().setReferenceDataNameMatch(levelConstraint);
@@ -111,7 +112,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
         XmlDigestMatcher digestMatcher = diagnosticData.getSignatures().get(0).getDigestMatchers().get(0);
         digestMatcher.setDocumentName("wrong-name.xml");
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         LevelConstraint levelConstraint = new LevelConstraint();
         levelConstraint.setLevel(Level.FAIL);
         validationPolicy.getSignatureConstraints().getBasicSignatureConstraints().setReferenceDataNameMatch(levelConstraint);
@@ -264,7 +265,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
                 new File("src/test/resources/diag-data/diag_data_many_references.xml"));
         assertNotNull(diagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         BasicSignatureConstraints basicSignatureConstraints = validationPolicy.getSignatureConstraints().getBasicSignatureConstraints();
 
         LevelConstraint levelConstraint = new LevelConstraint();
@@ -274,9 +275,11 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
         basicSignatureConstraints.setManifestEntryObjectIntact(levelConstraint);
         basicSignatureConstraints.setManifestEntryNameMatch(levelConstraint);
 
+        validationPolicy.getContainerConstraints().setFilenameAdherence(levelConstraint);
+
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
-        executor.setValidationPolicy(loadDefaultPolicy());
+        executor.setValidationPolicy(validationPolicy);
         executor.setCurrentTime(diagnosticData.getValidationDate());
 
         Reports reports = executor.execute();
@@ -315,6 +318,19 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
         assertEquals(24, digestMatcherIntactCounter);
         assertEquals(24, digestMatcherNameCounter);
 
+        XmlFC fc = signatureBBB.getFC();
+        assertNotNull(fc);
+        assertEquals(Indication.PASSED, fc.getConclusion().getIndication());
+
+        int filenameAdherenceCounter = 0;
+        for (XmlConstraint constraint : fc.getConstraint()) {
+            if (MessageTag.BBB_FC_ISFCS.getId().equals(constraint.getName().getKey())) {
+                assertEquals(XmlStatus.OK, constraint.getStatus());
+                ++filenameAdherenceCounter;
+            }
+        }
+        assertEquals(1, filenameAdherenceCounter);
+
         checkReports(reports);
     }
 
@@ -328,7 +344,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
         XmlDigestMatcher digestMatcher = digestMatchers.get(digestMatchers.size() - 2);
         digestMatcher.setDocumentName("wrong-name.pdf");
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         BasicSignatureConstraints basicSignatureConstraints = validationPolicy.getSignatureConstraints().getBasicSignatureConstraints();
 
         LevelConstraint levelConstraint = new LevelConstraint();
@@ -403,7 +419,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
         XmlDigestMatcher digestMatcher = digestMatchers.get(digestMatchers.size() - 2);
         digestMatcher.setDataIntact(false);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         BasicSignatureConstraints basicSignatureConstraints = validationPolicy.getSignatureConstraints().getBasicSignatureConstraints();
 
         LevelConstraint levelConstraint = new LevelConstraint();
@@ -479,7 +495,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
         digestMatcher.setDataFound(false);
         digestMatcher.setDataIntact(false);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         BasicSignatureConstraints basicSignatureConstraints = validationPolicy.getSignatureConstraints().getBasicSignatureConstraints();
 
         LevelConstraint levelConstraint = new LevelConstraint();
@@ -560,7 +576,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
             digestMatcher.setDataIntact(false);
         }
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         BasicSignatureConstraints basicSignatureConstraints = validationPolicy.getSignatureConstraints().getBasicSignatureConstraints();
 
         LevelConstraint levelConstraint = new LevelConstraint();
@@ -635,7 +651,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
             }
         }
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         BasicSignatureConstraints basicSignatureConstraints = validationPolicy.getSignatureConstraints().getBasicSignatureConstraints();
 
         LevelConstraint levelConstraint = new LevelConstraint();
@@ -701,7 +717,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
                 new File("src/test/resources/diag-data/diag_data_many_references.xml"));
         assertNotNull(diagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         BasicSignatureConstraints basicSignatureConstraints = validationPolicy.getSignatureConstraints().getBasicSignatureConstraints();
 
         LevelConstraint levelConstraint = new LevelConstraint();
@@ -716,7 +732,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
 
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
-        executor.setValidationPolicy(loadDefaultPolicy());
+        executor.setValidationPolicy(validationPolicy);
         executor.setCurrentTime(diagnosticData.getValidationDate());
 
         Reports reports = executor.execute();
@@ -768,7 +784,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
         XmlDigestMatcher digestMatcher = digestMatchers.get(digestMatchers.size() - 2);
         digestMatcher.setDocumentName("wrong-name.pdf");
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         BasicSignatureConstraints basicSignatureConstraints = validationPolicy.getSignatureConstraints().getBasicSignatureConstraints();
 
         LevelConstraint levelConstraint = new LevelConstraint();
@@ -843,7 +859,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
         XmlDigestMatcher digestMatcher = digestMatchers.get(digestMatchers.size() - 2);
         digestMatcher.setDataIntact(false);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         BasicSignatureConstraints basicSignatureConstraints = validationPolicy.getSignatureConstraints().getBasicSignatureConstraints();
 
         LevelConstraint levelConstraint = new LevelConstraint();
@@ -922,7 +938,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
         digestMatcher.setDataFound(false);
         digestMatcher.setDataIntact(false);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         BasicSignatureConstraints basicSignatureConstraints = validationPolicy.getSignatureConstraints().getBasicSignatureConstraints();
 
         LevelConstraint levelConstraint = new LevelConstraint();
@@ -1006,7 +1022,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
             digestMatcher.setDataIntact(false);
         }
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         BasicSignatureConstraints basicSignatureConstraints = validationPolicy.getSignatureConstraints().getBasicSignatureConstraints();
 
         LevelConstraint levelConstraint = new LevelConstraint();
@@ -1084,7 +1100,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
             }
         }
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         BasicSignatureConstraints basicSignatureConstraints = validationPolicy.getSignatureConstraints().getBasicSignatureConstraints();
 
         LevelConstraint levelConstraint = new LevelConstraint();
@@ -1153,7 +1169,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
                 new File("src/test/resources/diag-data/diag_data_many_references.xml"));
         assertNotNull(diagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         BasicSignatureConstraints basicSignatureConstraints = validationPolicy.getSignatureConstraints().getBasicSignatureConstraints();
 
         LevelConstraint levelConstraint = new LevelConstraint();
@@ -1169,7 +1185,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
 
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
-        executor.setValidationPolicy(loadDefaultPolicy());
+        executor.setValidationPolicy(validationPolicy);
         executor.setCurrentTime(diagnosticData.getValidationDate());
 
         Reports reports = executor.execute();
@@ -1221,7 +1237,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
         XmlDigestMatcher digestMatcher = digestMatchers.get(digestMatchers.size() - 2);
         digestMatcher.setDocumentName("wrong-name.pdf");
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         BasicSignatureConstraints basicSignatureConstraints = validationPolicy.getSignatureConstraints().getBasicSignatureConstraints();
 
         LevelConstraint levelConstraint = new LevelConstraint();
@@ -1300,7 +1316,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
         XmlDigestMatcher digestMatcher = digestMatchers.get(digestMatchers.size() - 2);
         digestMatcher.setDataIntact(false);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         BasicSignatureConstraints basicSignatureConstraints = validationPolicy.getSignatureConstraints().getBasicSignatureConstraints();
 
         LevelConstraint levelConstraint = new LevelConstraint();
@@ -1380,7 +1396,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
         digestMatcher.setDataFound(false);
         digestMatcher.setDataIntact(false);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         BasicSignatureConstraints basicSignatureConstraints = validationPolicy.getSignatureConstraints().getBasicSignatureConstraints();
 
         LevelConstraint levelConstraint = new LevelConstraint();
@@ -1462,7 +1478,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
             digestMatcher.setDataIntact(false);
         }
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         BasicSignatureConstraints basicSignatureConstraints = validationPolicy.getSignatureConstraints().getBasicSignatureConstraints();
 
         LevelConstraint levelConstraint = new LevelConstraint();
@@ -1541,7 +1557,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
             }
         }
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         BasicSignatureConstraints basicSignatureConstraints = validationPolicy.getSignatureConstraints().getBasicSignatureConstraints();
 
         LevelConstraint levelConstraint = new LevelConstraint();
@@ -1611,7 +1627,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
                 new File("src/test/resources/diag-data/diag_data_many_references.xml"));
         assertNotNull(diagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         BasicSignatureConstraints basicSignatureConstraints = validationPolicy.getSignatureConstraints().getBasicSignatureConstraints();
 
         LevelConstraint levelConstraint = new LevelConstraint();
@@ -1626,7 +1642,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
 
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
-        executor.setValidationPolicy(loadDefaultPolicy());
+        executor.setValidationPolicy(validationPolicy);
         executor.setCurrentTime(diagnosticData.getValidationDate());
 
         Reports reports = executor.execute();
@@ -1678,7 +1694,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
         XmlDigestMatcher digestMatcher = digestMatchers.get(digestMatchers.size() - 2);
         digestMatcher.setDocumentName("wrong-name.pdf");
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         BasicSignatureConstraints basicSignatureConstraints = validationPolicy.getSignatureConstraints().getBasicSignatureConstraints();
 
         LevelConstraint levelConstraint = new LevelConstraint();
@@ -1753,7 +1769,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
         XmlDigestMatcher digestMatcher = digestMatchers.get(digestMatchers.size() - 2);
         digestMatcher.setDataIntact(false);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         BasicSignatureConstraints basicSignatureConstraints = validationPolicy.getSignatureConstraints().getBasicSignatureConstraints();
 
         LevelConstraint levelConstraint = new LevelConstraint();
@@ -1832,7 +1848,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
         digestMatcher.setDataFound(false);
         digestMatcher.setDataIntact(false);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         BasicSignatureConstraints basicSignatureConstraints = validationPolicy.getSignatureConstraints().getBasicSignatureConstraints();
 
         LevelConstraint levelConstraint = new LevelConstraint();
@@ -1913,7 +1929,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
             digestMatcher.setDataIntact(false);
         }
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         BasicSignatureConstraints basicSignatureConstraints = validationPolicy.getSignatureConstraints().getBasicSignatureConstraints();
 
         LevelConstraint levelConstraint = new LevelConstraint();
@@ -1991,7 +2007,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
             }
         }
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         BasicSignatureConstraints basicSignatureConstraints = validationPolicy.getSignatureConstraints().getBasicSignatureConstraints();
 
         LevelConstraint levelConstraint = new LevelConstraint();
@@ -2060,7 +2076,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
                 new File("src/test/resources/diag-data/diag_data_many_references.xml"));
         assertNotNull(diagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         BasicSignatureConstraints basicSignatureConstraints = validationPolicy.getSignatureConstraints().getBasicSignatureConstraints();
 
         LevelConstraint levelConstraint = new LevelConstraint();
@@ -2075,7 +2091,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
 
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
-        executor.setValidationPolicy(loadDefaultPolicy());
+        executor.setValidationPolicy(validationPolicy);
         executor.setCurrentTime(diagnosticData.getValidationDate());
 
         Reports reports = executor.execute();
@@ -2127,7 +2143,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
         XmlDigestMatcher digestMatcher = digestMatchers.get(digestMatchers.size() - 2);
         digestMatcher.setDocumentName("wrong-name.pdf");
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         BasicSignatureConstraints basicSignatureConstraints = validationPolicy.getSignatureConstraints().getBasicSignatureConstraints();
 
         LevelConstraint levelConstraint = new LevelConstraint();
@@ -2202,7 +2218,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
         XmlDigestMatcher digestMatcher = digestMatchers.get(digestMatchers.size() - 2);
         digestMatcher.setDataIntact(false);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         BasicSignatureConstraints basicSignatureConstraints = validationPolicy.getSignatureConstraints().getBasicSignatureConstraints();
 
         LevelConstraint levelConstraint = new LevelConstraint();
@@ -2281,7 +2297,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
         digestMatcher.setDataFound(false);
         digestMatcher.setDataIntact(false);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         BasicSignatureConstraints basicSignatureConstraints = validationPolicy.getSignatureConstraints().getBasicSignatureConstraints();
 
         LevelConstraint levelConstraint = new LevelConstraint();
@@ -2362,7 +2378,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
             digestMatcher.setDataIntact(false);
         }
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         BasicSignatureConstraints basicSignatureConstraints = validationPolicy.getSignatureConstraints().getBasicSignatureConstraints();
 
         LevelConstraint levelConstraint = new LevelConstraint();
@@ -2437,7 +2453,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
             }
         }
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         BasicSignatureConstraints basicSignatureConstraints = validationPolicy.getSignatureConstraints().getBasicSignatureConstraints();
 
         LevelConstraint levelConstraint = new LevelConstraint();
@@ -2503,7 +2519,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
                 new File("src/test/resources/diag-data/diag_data_many_references.xml"));
         assertNotNull(diagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         BasicSignatureConstraints basicSignatureConstraints = validationPolicy.getSignatureConstraints().getBasicSignatureConstraints();
 
         LevelConstraint levelWarn = new LevelConstraint();
@@ -2515,7 +2531,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
 
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
-        executor.setValidationPolicy(loadDefaultPolicy());
+        executor.setValidationPolicy(validationPolicy);
         executor.setCurrentTime(diagnosticData.getValidationDate());
 
         Reports reports = executor.execute();
@@ -2567,7 +2583,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
         XmlDigestMatcher digestMatcher = digestMatchers.get(digestMatchers.size() - 2);
         digestMatcher.setDocumentName("wrong-name.pdf");
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         BasicSignatureConstraints basicSignatureConstraints = validationPolicy.getSignatureConstraints().getBasicSignatureConstraints();
 
         LevelConstraint levelWarn = new LevelConstraint();
@@ -2639,7 +2655,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
         XmlDigestMatcher digestMatcher = digestMatchers.get(digestMatchers.size() - 2);
         digestMatcher.setDataIntact(false);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         BasicSignatureConstraints basicSignatureConstraints = validationPolicy.getSignatureConstraints().getBasicSignatureConstraints();
 
         LevelConstraint levelWarn = new LevelConstraint();
@@ -2712,7 +2728,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
         digestMatcher.setDataFound(false);
         digestMatcher.setDataIntact(false);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         BasicSignatureConstraints basicSignatureConstraints = validationPolicy.getSignatureConstraints().getBasicSignatureConstraints();
 
         LevelConstraint levelWarn = new LevelConstraint();
@@ -2790,7 +2806,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
             digestMatcher.setDataIntact(false);
         }
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         BasicSignatureConstraints basicSignatureConstraints = validationPolicy.getSignatureConstraints().getBasicSignatureConstraints();
 
         LevelConstraint levelWarn = new LevelConstraint();
@@ -2862,7 +2878,7 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
             }
         }
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         BasicSignatureConstraints basicSignatureConstraints = validationPolicy.getSignatureConstraints().getBasicSignatureConstraints();
 
         LevelConstraint levelWarn = new LevelConstraint();
@@ -2915,6 +2931,92 @@ class ManifestEntriesValidationExecutorTest extends AbstractProcessExecutorTest 
         assertEquals(0, allDigestMatcherFoundCounter);
         assertEquals(0, digestMatcherIntactCounter);
         assertEquals(0, digestMatcherNameCounter);
+
+        checkReports(reports);
+    }
+
+    @Test
+    void manifestValidationAllStrictInvalidFilenameFail() throws Exception {
+        XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+                new File("src/test/resources/diag-data/diag_data_many_references.xml"));
+        assertNotNull(diagnosticData);
+
+        diagnosticData.getContainerInfo().getManifestFiles().get(0).setSignatureFilename("META-INF/signature.xml");
+        diagnosticData.getSignatures().get(0).setSignatureFilename("META-INF/signature.xml");
+
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
+        BasicSignatureConstraints basicSignatureConstraints = validationPolicy.getSignatureConstraints().getBasicSignatureConstraints();
+
+        LevelConstraint levelConstraint = new LevelConstraint();
+        levelConstraint.setLevel(Level.FAIL);
+        basicSignatureConstraints.setManifestEntryObjectExistence(levelConstraint);
+        basicSignatureConstraints.setManifestEntryObjectGroup(levelConstraint);
+        basicSignatureConstraints.setManifestEntryObjectIntact(levelConstraint);
+        basicSignatureConstraints.setManifestEntryNameMatch(levelConstraint);
+
+        validationPolicy.getContainerConstraints().setFilenameAdherence(levelConstraint);
+
+        DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+        executor.setDiagnosticData(diagnosticData);
+        executor.setValidationPolicy(validationPolicy);
+        executor.setCurrentTime(diagnosticData.getValidationDate());
+
+        Reports reports = executor.execute();
+        SimpleReport simpleReport = reports.getSimpleReport();
+        assertEquals(Indication.TOTAL_FAILED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+        assertEquals(SubIndication.FORMAT_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+        assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
+                i18nProvider.getMessage(MessageTag.BBB_FC_ISFCS_ANS)));
+
+        DetailedReport detailedReport = reports.getDetailedReport();
+        XmlBasicBuildingBlocks signatureBBB = detailedReport.getBasicBuildingBlockById(detailedReport.getFirstSignatureId());
+        assertEquals(Indication.FAILED, signatureBBB.getConclusion().getIndication());
+        assertEquals(SubIndication.FORMAT_FAILURE, signatureBBB.getConclusion().getSubIndication());
+        assertTrue(checkMessageValuePresence(convert(signatureBBB.getConclusion().getErrors()),
+                i18nProvider.getMessage(MessageTag.BBB_FC_ISFCS_ANS)));
+
+        XmlCV cv = signatureBBB.getCV();
+        assertNotNull(cv);
+        assertEquals(Indication.PASSED, cv.getConclusion().getIndication());
+
+        int digestMatcherValidationPerformedCounter = 0;
+        int allDigestMatcherFoundCounter = 0;
+        int digestMatcherIntactCounter = 0;
+        int digestMatcherNameCounter = 0;
+        for (XmlConstraint constraint : cv.getConstraint()) {
+            if (MessageTag.BBB_CV_ISMEC.getId().equals(constraint.getName().getKey())) {
+                assertEquals(XmlStatus.OK, constraint.getStatus());
+                ++digestMatcherValidationPerformedCounter;
+            } else if (MessageTag.BBB_CV_AAMEF.getId().equals(constraint.getName().getKey())) {
+                assertEquals(XmlStatus.OK, constraint.getStatus());
+                ++allDigestMatcherFoundCounter;
+            } else if (MessageTag.BBB_CV_IMEDOI.getId().equals(constraint.getName().getKey())) {
+                assertEquals(XmlStatus.OK, constraint.getStatus());
+                ++digestMatcherIntactCounter;
+            } else if (MessageTag.BBB_CV_DMENMND.getId().equals(constraint.getName().getKey())) {
+                assertEquals(XmlStatus.OK, constraint.getStatus());
+                ++digestMatcherNameCounter;
+            }
+        }
+        assertEquals(1, digestMatcherValidationPerformedCounter);
+        assertEquals(1, allDigestMatcherFoundCounter);
+        assertEquals(24, digestMatcherIntactCounter);
+        assertEquals(24, digestMatcherNameCounter);
+
+        XmlFC fc = signatureBBB.getFC();
+        assertNotNull(fc);
+        assertEquals(Indication.FAILED, fc.getConclusion().getIndication());
+        assertEquals(SubIndication.FORMAT_FAILURE, fc.getConclusion().getSubIndication());
+
+        int filenameAdherenceCounter = 0;
+        for (XmlConstraint constraint : fc.getConstraint()) {
+            if (MessageTag.BBB_FC_ISFCS.getId().equals(constraint.getName().getKey())) {
+                assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+                assertEquals(MessageTag.BBB_FC_ISFCS_ANS.getId(), constraint.getError().getKey());
+                ++filenameAdherenceCounter;
+            }
+        }
+        assertEquals(1, filenameAdherenceCounter);
 
         checkReports(reports);
     }

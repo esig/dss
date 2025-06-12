@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class DSS3226StrictNumberComparisonTest extends DSS3226Test {
+class DSS3226StrictNumberComparisonTest extends DSS3226Test {
 
     @Override
     protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {

@@ -36,6 +36,7 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.signature.resources.TempFileResourcesHandlerBuilder;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,13 +54,15 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class ASiCEXAdESWithTempFileHandlerTest extends AbstractASiCEXAdESTestSignature {
+class ASiCEXAdESWithTempFileHandlerTest extends AbstractASiCEXAdESTestSignature {
 
     private static final Logger LOG = LoggerFactory.getLogger(ASiCEXAdESWithTempFileHandlerTest.class);
 
     private DocumentSignatureService<ASiCWithXAdESSignatureParameters, XAdESTimestampParameters> service;
     private ASiCWithXAdESSignatureParameters signatureParameters;
     private DSSDocument documentToSign;
+
+    private File signedFile;
 
     @BeforeEach
     void init() throws Exception {
@@ -74,6 +77,13 @@ public class ASiCEXAdESWithTempFileHandlerTest extends AbstractASiCEXAdESTestSig
         signatureParameters.setCertificateChain(getCertificateChain());
         signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
         signatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
+    }
+
+    @AfterEach
+    void clean() {
+        assertTrue(signedFile.exists());
+        assertTrue(signedFile.delete());
+        assertFalse(signedFile.exists());
     }
 
     @Override
@@ -164,6 +174,8 @@ public class ASiCEXAdESWithTempFileHandlerTest extends AbstractASiCEXAdESTestSig
 
         assertFalse(ltaSignatureFile.exists());
         assertTrue(tempFile.exists());
+
+        signedFile = tempFile;
 
         return new FileDocument(tempFile);
     }

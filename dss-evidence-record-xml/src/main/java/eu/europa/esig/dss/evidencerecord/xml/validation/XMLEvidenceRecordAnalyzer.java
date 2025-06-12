@@ -21,11 +21,11 @@
 package eu.europa.esig.dss.evidencerecord.xml.validation;
 
 import eu.europa.esig.dss.enumerations.EvidenceRecordTypeEnum;
+import eu.europa.esig.dss.evidencerecord.common.validation.DefaultEvidenceRecordAnalyzer;
 import eu.europa.esig.dss.evidencerecord.xml.definition.XMLERSNamespace;
 import eu.europa.esig.dss.evidencerecord.xml.definition.XMLERSPath;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
-import eu.europa.esig.dss.evidencerecord.common.validation.DefaultEvidenceRecordAnalyzer;
 import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.xmlers.XMLEvidenceRecordFacade;
@@ -117,7 +117,8 @@ public class XMLEvidenceRecordAnalyzer extends DefaultEvidenceRecordAnalyzer {
             evidenceRecord.setFilename(document.getName());
             evidenceRecord.setOrigin(evidenceRecordOrigin);
             evidenceRecord.setManifestFile(manifestFile);
-            evidenceRecord.setDetachedContents(detachedContents);
+            evidenceRecord.setDetachedContents(getEvidenceRecordDetachedContents());
+            evidenceRecord.setEmbeddedEvidenceRecordHelper(embeddedEvidenceRecordHelper);
             return evidenceRecord;
         }
         return null;

@@ -38,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 // See DSS-3281
-public class PAdESLevelLTAWithOrphanRefsWithXmlEvidenceRecordValidationTest extends AbstractPAdESWithEvidenceRecordTestValidation {
+class PAdESLevelLTAWithOrphanRefsWithXmlEvidenceRecordValidationTest extends AbstractPAdESWithEvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

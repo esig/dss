@@ -70,12 +70,12 @@ class XAdESLevelBWithCommonCommitmentTypeOidAsUriTest extends AbstractXAdESTestS
 
     @Override
     protected DSSDocument sign() {
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> super.sign());
+        Exception exception = assertThrows(IllegalArgumentException.class, super::sign);
         assertEquals("When using OID as object identifier in XAdES, " +
                 "a Qualifier shall be provided! See EN 319 132-1 for more details.", exception.getMessage());
 
         commitmentType.setQualifier(ObjectIdentifierQualifier.OID_AS_URI);
-        exception = assertThrows(IllegalArgumentException.class, () -> super.sign());
+        exception = assertThrows(IllegalArgumentException.class, super::sign);
         assertEquals("Qualifier 'OID_AS_URI' shall not be used for URN encoded OID! " +
                 "See EN 319 132-1 for more details.", exception.getMessage());
 

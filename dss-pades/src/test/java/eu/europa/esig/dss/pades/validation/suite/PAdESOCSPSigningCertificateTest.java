@@ -33,7 +33,7 @@ import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 
-public class PAdESOCSPSigningCertificateTest extends AbstractPAdESTestValidation {
+class PAdESOCSPSigningCertificateTest extends AbstractPAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

@@ -25,7 +25,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.MultiValuesConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.cv.checks.ManifestEntryExistenceCheck;
@@ -36,7 +37,8 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class ManifestEntryExistenceCheckTest extends AbstractTestCheck {
+class
+ManifestEntryExistenceCheckTest extends AbstractTestCheck {
 
 	@Test
 	void valid() {
@@ -57,7 +59,7 @@ class ManifestEntryExistenceCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlCV result = new XmlCV();
-		ManifestEntryExistenceCheck meec = new ManifestEntryExistenceCheck(i18nProvider, result, digestMatchers, constraint);
+		ManifestEntryExistenceCheck meec = new ManifestEntryExistenceCheck(i18nProvider, result, digestMatchers, new MultiValuesConstraintWrapper(constraint));
 		meec.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -84,7 +86,7 @@ class ManifestEntryExistenceCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlCV result = new XmlCV();
-		ManifestEntryExistenceCheck meec = new ManifestEntryExistenceCheck(i18nProvider, result, digestMatchers, constraint);
+		ManifestEntryExistenceCheck meec = new ManifestEntryExistenceCheck(i18nProvider, result, digestMatchers, new MultiValuesConstraintWrapper(constraint));
 		meec.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -109,7 +111,7 @@ class ManifestEntryExistenceCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlCV result = new XmlCV();
-		ManifestEntryExistenceCheck meec = new ManifestEntryExistenceCheck(i18nProvider, result, digestMatchers, constraint);
+		ManifestEntryExistenceCheck meec = new ManifestEntryExistenceCheck(i18nProvider, result, digestMatchers, new MultiValuesConstraintWrapper(constraint));
 		meec.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

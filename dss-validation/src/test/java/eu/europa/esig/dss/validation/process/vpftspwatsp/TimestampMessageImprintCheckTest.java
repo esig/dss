@@ -27,8 +27,9 @@ import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.TimestampType;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.vpftspwatsp.checks.TimestampMessageImprintCheck;
@@ -58,7 +59,7 @@ class TimestampMessageImprintCheckTest extends AbstractTestCheck {
 
         XmlSAV result = new XmlSAV();
         TimestampMessageImprintCheck<?> tmic = new TimestampMessageImprintCheck<>(
-                i18nProvider, result, new TimestampWrapper(xmlTimestamp), constraint);
+                i18nProvider, result, new TimestampWrapper(xmlTimestamp), new LevelConstraintWrapper(constraint));
         tmic.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -83,7 +84,7 @@ class TimestampMessageImprintCheckTest extends AbstractTestCheck {
 
         XmlSAV result = new XmlSAV();
         TimestampMessageImprintCheck<?> tmic = new TimestampMessageImprintCheck<>(
-                i18nProvider, result, new TimestampWrapper(xmlTimestamp), constraint);
+                i18nProvider, result, new TimestampWrapper(xmlTimestamp), new LevelConstraintWrapper(constraint));
         tmic.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

@@ -57,7 +57,7 @@ class CrossedASiCContainerTypeTest extends AbstractASiCEXAdESTestSignature {
 	@Test
 	@Override
 	public void signAndVerify() {
-		IllegalInputException exception = assertThrows(IllegalInputException.class, () -> super.signAndVerify());
+		IllegalInputException exception = assertThrows(IllegalInputException.class, super::signAndVerify);
 		assertEquals("The provided container of type 'ASiC-E' does not correspond the expected format 'ASiC-S'!",
 				exception.getMessage());
 	}

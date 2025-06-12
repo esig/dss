@@ -52,7 +52,7 @@ class ASiCeExtensionWithXAdESBToLTUnknownTest extends AbstractASiCWithXAdESTestE
 
 	@Override
 	public void extendAndVerify() throws Exception {
-		AlertException exception = assertThrows(AlertException.class, () -> super.extendAndVerify());
+		AlertException exception = assertThrows(AlertException.class, super::extendAndVerify);
 		assertTrue(exception.getMessage().contains("Revoked/Suspended certificate(s) detected."));
 	}
 

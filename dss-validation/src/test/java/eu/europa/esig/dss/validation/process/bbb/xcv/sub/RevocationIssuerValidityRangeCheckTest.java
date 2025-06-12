@@ -27,7 +27,8 @@ import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.RevocationIssuerValidityRangeCheck;
@@ -60,7 +61,7 @@ class RevocationIssuerValidityRangeCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         RevocationIssuerValidityRangeCheck<XmlSubXCV> rivrc = new RevocationIssuerValidityRangeCheck<>(
-                i18nProvider, result,  new RevocationWrapper(xmlRevocation), new Date(), constraint);
+                i18nProvider, result,  new RevocationWrapper(xmlRevocation), new Date(), new LevelConstraintWrapper(constraint));
         rivrc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -88,7 +89,7 @@ class RevocationIssuerValidityRangeCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         RevocationIssuerValidityRangeCheck<XmlSubXCV> rivrc = new RevocationIssuerValidityRangeCheck<>(
-                i18nProvider, result,  new RevocationWrapper(xmlRevocation), new Date(), constraint);
+                i18nProvider, result,  new RevocationWrapper(xmlRevocation), new Date(), new LevelConstraintWrapper(constraint));
         rivrc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

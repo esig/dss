@@ -124,7 +124,7 @@ public class TrustedListCertificateSourceSynchronizer {
 
 	private boolean isCertificateSyncNeeded(TLValidationJobSummary summary) {
 		for (LOTLInfo lotlInfo : summary.getLOTLInfos()) {
-			if (isTLParsingDesyncOrError(lotlInfo.getTLInfos())) {
+			if (isTLParsingDesyncOrError(lotlInfo) || isTLParsingDesyncOrError(lotlInfo.getTLInfos())) {
 				return true;
 			}
 		}
@@ -132,13 +132,12 @@ public class TrustedListCertificateSourceSynchronizer {
 	}
 
 	private boolean isTLParsingDesyncOrError(List<TLInfo> tlInfos) {
-		for (TLInfo tlInfo : tlInfos) {
-			ParsingInfoRecord parsingCacheInfo = tlInfo.getParsingCacheInfo();
-			if (parsingCacheInfo == null || parsingCacheInfo.isDesynchronized() || parsingCacheInfo.isError()) {
-				return true;
-			}
-		}
-		return false;
+		return tlInfos.stream().anyMatch(this::isTLParsingDesyncOrError);
+	}
+
+	private boolean isTLParsingDesyncOrError(TLInfo tlInfo) {
+		ParsingInfoRecord parsingCacheInfo = tlInfo.getParsingCacheInfo();
+		return parsingCacheInfo == null || parsingCacheInfo.isDesynchronized() || parsingCacheInfo.isError();
 	}
 
 	private void synchronizeCertificates(TLValidationJobSummary summary) {

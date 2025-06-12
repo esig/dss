@@ -27,8 +27,9 @@ import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlArchiveTimestampHashIndex;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestamp;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.TimestampType;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.CAdESV3HashIndexCheck;
@@ -55,7 +56,7 @@ class CAdESV3HashIndexCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        CAdESV3HashIndexCheck chic = new CAdESV3HashIndexCheck(i18nProvider, result, new TimestampWrapper(xmlTimestamp), constraint);
+        CAdESV3HashIndexCheck chic = new CAdESV3HashIndexCheck(i18nProvider, result, new TimestampWrapper(xmlTimestamp), new LevelConstraintWrapper(constraint));
         chic.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -78,7 +79,7 @@ class CAdESV3HashIndexCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        CAdESV3HashIndexCheck chic = new CAdESV3HashIndexCheck(i18nProvider, result, new TimestampWrapper(xmlTimestamp), constraint);
+        CAdESV3HashIndexCheck chic = new CAdESV3HashIndexCheck(i18nProvider, result, new TimestampWrapper(xmlTimestamp), new LevelConstraintWrapper(constraint));
         chic.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -97,7 +98,7 @@ class CAdESV3HashIndexCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        CAdESV3HashIndexCheck chic = new CAdESV3HashIndexCheck(i18nProvider, result, new TimestampWrapper(xmlTimestamp), constraint);
+        CAdESV3HashIndexCheck chic = new CAdESV3HashIndexCheck(i18nProvider, result, new TimestampWrapper(xmlTimestamp), new LevelConstraintWrapper(constraint));
         chic.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -116,7 +117,7 @@ class CAdESV3HashIndexCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        CAdESV3HashIndexCheck chic = new CAdESV3HashIndexCheck(i18nProvider, result, new TimestampWrapper(xmlTimestamp), constraint);
+        CAdESV3HashIndexCheck chic = new CAdESV3HashIndexCheck(i18nProvider, result, new TimestampWrapper(xmlTimestamp), new LevelConstraintWrapper(constraint));
         chic.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -134,7 +135,7 @@ class CAdESV3HashIndexCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        CAdESV3HashIndexCheck chic = new CAdESV3HashIndexCheck(i18nProvider, result, new TimestampWrapper(xmlTimestamp), constraint);
+        CAdESV3HashIndexCheck chic = new CAdESV3HashIndexCheck(i18nProvider, result, new TimestampWrapper(xmlTimestamp), new LevelConstraintWrapper(constraint));
         chic.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

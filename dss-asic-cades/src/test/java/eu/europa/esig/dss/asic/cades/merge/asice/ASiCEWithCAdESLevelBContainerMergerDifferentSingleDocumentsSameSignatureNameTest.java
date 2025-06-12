@@ -71,7 +71,7 @@ class ASiCEWithCAdESLevelBContainerMergerDifferentSingleDocumentsSameSignatureNa
     @Test
     @Override
     public void createTwoContainersAndMerge() throws Exception {
-        Exception exception = assertThrows(UnsupportedOperationException.class, () -> super.createTwoContainersAndMerge());
+        Exception exception = assertThrows(UnsupportedOperationException.class, super::createTwoContainersAndMerge);
         assertEquals("Unable to merge ASiC-E with CAdES containers. " +
                 "Signatures with filename 'META-INF/signature001.p7s' sign different manifests!", exception.getMessage());
     }

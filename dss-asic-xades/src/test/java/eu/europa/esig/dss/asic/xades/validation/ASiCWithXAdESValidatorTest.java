@@ -62,8 +62,8 @@ class ASiCWithXAdESValidatorTest extends AbstractTestDocumentValidator {
 		assertTrue(validator.isSupported(new FileDocument("src/test/resources/validation/evidencerecord/er-one-file.scs")));
 		assertTrue(validator.isSupported(new FileDocument("src/test/resources/validation/evidencerecord/er-multi-files.sce")));
 		assertTrue(validator.isSupported(new FileDocument("src/test/resources/signable/asic_xades.zip")));
-		assertTrue(validator.isSupported(new FileDocument("src/test/resources/signable/test.zip")));
-		assertTrue(validator.isSupported(new FileDocument("src/test/resources/signable/empty.zip")));
+		assertFalse(validator.isSupported(new FileDocument("src/test/resources/signable/test.zip")));
+		assertFalse(validator.isSupported(new FileDocument("src/test/resources/signable/empty.zip")));
 		assertTrue(validator.isSupported(new FileDocument("src/test/resources/ASiCEWith2Signatures.bdoc")));
 
 		assertFalse(validator.isSupported(new FileDocument("src/test/resources/bdoc-spec21.pdf")));

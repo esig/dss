@@ -24,7 +24,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlCC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
@@ -51,11 +51,11 @@ public class DigestMatcherCryptographicCheckerResultCheck<T extends XmlConstrain
      * @param position {@link MessageTag}
      * @param referenceNames a list of {@link String}s
      * @param ccResult {@link XmlCC}
-     * @param constraint {@link LevelConstraint}
+     * @param constraint {@link LevelRule}
      */
     public DigestMatcherCryptographicCheckerResultCheck(I18nProvider i18nProvider, T result, Date validationDate,
                                                         MessageTag position, List<String> referenceNames,
-                                                        XmlCC ccResult, LevelConstraint constraint) {
+                                                        XmlCC ccResult, LevelRule constraint) {
         super(i18nProvider, result, validationDate, position, ccResult, constraint);
         this.referenceNames = referenceNames;
     }

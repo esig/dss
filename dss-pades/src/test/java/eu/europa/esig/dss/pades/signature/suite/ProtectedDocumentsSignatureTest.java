@@ -49,7 +49,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ProtectedDocumentsSignatureTest extends AbstractPAdESTestValidation {
+class ProtectedDocumentsSignatureTest extends AbstractPAdESTestValidation {
 
 	private final char[] correctProtectionPhrase = new char[]{ ' ' };
 	private final char[] wrongProtectionPhrase = new char[]{ 'A', 'A', 'A', 'A'};

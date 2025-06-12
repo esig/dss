@@ -27,12 +27,11 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.jaxb.object.Message;
-import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.ValidationPolicyFacade;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.SignatureConstraints;
 import eu.europa.esig.dss.simplereport.SimpleReport;
@@ -95,7 +94,7 @@ class StructureValidationExecutorTest extends AbstractProcessExecutorTest {
         List<String> messages = diagnosticData.getSignatures().get(0).getStructuralValidation().getMessages();
         assertTrue(Utils.isCollectionNotEmpty(messages));
 
-        ValidationPolicy policy = ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
+        EtsiValidationPolicy policy = loadDefaultPolicy();
         SignatureConstraints signatureConstraints = policy.getSignatureConstraints();
         LevelConstraint levelConstraint = new LevelConstraint();
         levelConstraint.setLevel(Level.FAIL);

@@ -671,29 +671,6 @@ public class TimestampToken extends Token {
 		}
 		return Utils.isTrue(messageImprintIntact);
 	}
-	
-	/**
-	 * This method returns the file name of a detached timestamp
-	 * 
-	 * @return {@link String}
-	 * @deprecated since DSS 6.2. Please use {@code #getFilename} method instead.
-	 */
-	@Deprecated
-	public String getFileName() {
-		return getFilename();
-	}
-
-	/**
-	 * Sets the filename of a detached timestamp
-	 * 
-	 * @param filename
-	 * 					{@link String}
-	 * @deprecated since DSS 6.2. Please use {@code #setFilename} method instead.
-	 */
-	@Deprecated
-	public void setFileName(String filename) {
-		setFilename(filename);
-	}
 
 	/**
 	 * This method returns the file name of a detached timestamp
@@ -846,7 +823,7 @@ public class TimestampToken extends Token {
 	 *
 	 * @return TRUE if all reference validations are valid, FALSE otherwise
 	 */
-	protected boolean areReferenceValidationsValid() {
+	public boolean areReferenceValidationsValid() {
 		if (Utils.isCollectionNotEmpty(referenceValidations)) {
 			for (ReferenceValidation referenceValidation : referenceValidations) {
 				if (DigestMatcherType.EVIDENCE_RECORD_ORPHAN_REFERENCE != referenceValidation.getType() &&

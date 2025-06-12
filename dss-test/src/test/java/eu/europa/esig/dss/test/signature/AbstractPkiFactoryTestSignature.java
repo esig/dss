@@ -55,6 +55,7 @@ import eu.europa.esig.dss.model.AbstractSerializableSignatureParameters;
 import eu.europa.esig.dss.model.CommonCommitmentType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.Policy;
 import eu.europa.esig.dss.model.SerializableSignatureParameters;
@@ -83,8 +84,11 @@ import org.slf4j.LoggerFactory;
 
 import javax.xml.crypto.dsig.CanonicalizationMethod;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -913,6 +917,41 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 	protected String getCanonicalizationMethod() {
 		// Inclusive by default
 		return CanonicalizationMethod.INCLUSIVE;
+	}
+
+	protected FileDocument generateLargeFile() throws IOException {
+		return generateLargeFile("large-file.bin");
+	}
+
+	protected FileDocument generateLargeFile(String filename) throws IOException {
+		// -Dlarge.file.size.mb=...
+		String fileSizeStr = System.getProperty("large.file.size.mb", "2048");
+		final int fileSizeMB = Integer.parseInt(fileSizeStr);
+
+		File file = new File("target/" + filename);
+
+		byte[] data = getRandomByteArray(0x00FFFFFF); // ~16 MB
+		int reachedSize = 0;
+		int byteArraySizeMB = 16;
+		try (FileOutputStream fos = new FileOutputStream(file)) {
+			while (reachedSize < fileSizeMB) {
+				fos.write(data);
+				reachedSize += byteArraySizeMB;
+				if (reachedSize + byteArraySizeMB > fileSizeMB) {
+					byteArraySizeMB = fileSizeMB - reachedSize;
+					data = getRandomByteArray(byteArraySizeMB);
+				}
+			}
+		}
+
+		return new FileDocument(file);
+	}
+
+	private byte[] getRandomByteArray(int size) {
+		byte[] data = new byte[(int)size];
+		SecureRandom sr = new SecureRandom();
+		sr.nextBytes(data);
+		return data;
 	}
 
 	protected abstract List<DSSDocument> getOriginalDocuments();

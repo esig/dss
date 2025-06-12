@@ -1,7 +1,7 @@
 [source,http,options="nowrap"]
 ----
 HTTP/1.1 200 OK
-Date: Wed, 11 Dec 2024 11:32:46 GMT
+Date: Tue, 10 Jun 2025 13:23:36 GMT
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 0
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
@@ -19,7 +19,7 @@ Content-Length: 7857
 {
   "diagnosticData" : {
     "DocumentName" : null,
-    "ValidationDate" : "2024-12-11T11:32:46Z",
+    "ValidationDate" : "2025-06-10T13:23:36Z",
     "ContainerInfo" : null,
     "PDFAInfo" : null,
     "Signature" : null,
@@ -154,7 +154,7 @@ Content-Length: 7857
         "Info" : [ ]
       }
     } ],
-    "ValidationTime" : "2024-12-11T11:32:46Z"
+    "ValidationTime" : "2025-06-10T13:23:36Z"
   },
   "detailedReport" : {
     "signatureOrTimestampOrEvidenceRecord" : [ {

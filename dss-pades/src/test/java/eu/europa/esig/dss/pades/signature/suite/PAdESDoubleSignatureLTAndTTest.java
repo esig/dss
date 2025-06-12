@@ -48,7 +48,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 // See DSS-2761
-public class PAdESDoubleSignatureLTAndTTest extends AbstractPAdESTestSignature {
+class PAdESDoubleSignatureLTAndTTest extends AbstractPAdESTestSignature {
 
     private DSSDocument originalDocument;
 

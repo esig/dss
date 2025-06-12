@@ -25,7 +25,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rfc.checks.AcceptableRevocationDataAvailableCheck;
@@ -44,7 +45,7 @@ class AcceptableRevocationDataAvailableCheckTest extends AbstractTestCheck {
 
 		XmlRFC result = new XmlRFC();
 		AcceptableRevocationDataAvailableCheck<XmlRFC> rdac = new AcceptableRevocationDataAvailableCheck<>(i18nProvider, result,
-				new RevocationWrapper(new XmlRevocation()), constraint);
+				new RevocationWrapper(new XmlRevocation()), new LevelConstraintWrapper(constraint));
 		rdac.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -59,7 +60,7 @@ class AcceptableRevocationDataAvailableCheckTest extends AbstractTestCheck {
 
 		XmlRFC result = new XmlRFC();
 		AcceptableRevocationDataAvailableCheck<XmlRFC> rdac = new AcceptableRevocationDataAvailableCheck<>(i18nProvider, result, 
-				null, constraint);
+				null, new LevelConstraintWrapper(constraint));
 		rdac.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

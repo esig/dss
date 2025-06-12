@@ -107,4 +107,21 @@ public class FileDocument extends CommonDocument {
 		return file.getAbsolutePath();
 	}
 
+	@Override
+	public boolean equals(Object object) {
+		if (this == object) return true;
+		if (object == null || getClass() != object.getClass()) return false;
+		if (!super.equals(object)) return false;
+
+		FileDocument document = (FileDocument) object;
+		return Objects.equals(file, document.file);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = super.hashCode();
+		result = 31 * result + Objects.hashCode(file);
+		return result;
+	}
+
 }

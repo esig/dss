@@ -26,7 +26,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.diagnostic.PDFRevisionWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFRevision;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFSignatureDictionary;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.fc.checks.PdfSignatureDictionaryCheck;
@@ -50,7 +51,7 @@ class PdfSignatureDictionaryCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        PdfSignatureDictionaryCheck sdc = new PdfSignatureDictionaryCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
+        PdfSignatureDictionaryCheck sdc = new PdfSignatureDictionaryCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), new LevelConstraintWrapper(constraint));
         sdc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -70,7 +71,7 @@ class PdfSignatureDictionaryCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlFC result = new XmlFC();
-        PdfSignatureDictionaryCheck sdc = new PdfSignatureDictionaryCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), constraint);
+        PdfSignatureDictionaryCheck sdc = new PdfSignatureDictionaryCheck(i18nProvider, result, new PDFRevisionWrapper(pdfRevision), new LevelConstraintWrapper(constraint));
         sdc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

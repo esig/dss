@@ -29,10 +29,10 @@ import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPDFAInfo;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.simplereport.SimpleReport;
@@ -58,7 +58,7 @@ class PDFAValidationExecutorTest extends AbstractProcessExecutorTest {
                 new File("src/test/resources/diag-data/diag_data_pdfa.xml"));
         assertNotNull(xmlDiagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
 
         MultiValuesConstraint valuesConstraint = new MultiValuesConstraint();
         valuesConstraint.setLevel(Level.FAIL);
@@ -113,7 +113,7 @@ class PDFAValidationExecutorTest extends AbstractProcessExecutorTest {
                 new File("src/test/resources/diag-data/diag_data_pdfa.xml"));
         assertNotNull(xmlDiagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
 
         MultiValuesConstraint valuesConstraint = new MultiValuesConstraint();
         valuesConstraint.setLevel(Level.FAIL);
@@ -172,7 +172,7 @@ class PDFAValidationExecutorTest extends AbstractProcessExecutorTest {
 
         xmlDiagnosticData.getPDFAInfo().setCompliant(false);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
 
         MultiValuesConstraint valuesConstraint = new MultiValuesConstraint();
         valuesConstraint.setLevel(Level.FAIL);
@@ -232,7 +232,7 @@ class PDFAValidationExecutorTest extends AbstractProcessExecutorTest {
 
         xmlDiagnosticData.getPDFAInfo().setCompliant(true);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
 
         LevelConstraint levelConstraint = new LevelConstraint();
         levelConstraint.setLevel(Level.FAIL);
@@ -278,7 +278,7 @@ class PDFAValidationExecutorTest extends AbstractProcessExecutorTest {
 
         xmlDiagnosticData.getPDFAInfo().setCompliant(false);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
 
         LevelConstraint levelConstraint = new LevelConstraint();
         levelConstraint.setLevel(Level.FAIL);
@@ -332,7 +332,7 @@ class PDFAValidationExecutorTest extends AbstractProcessExecutorTest {
         xmlPDFAInfo.setCompliant(false);
         xmlDiagnosticData.setPDFAInfo(xmlPDFAInfo);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
 
         LevelConstraint levelConstraint = new LevelConstraint();
         levelConstraint.setLevel(Level.FAIL);

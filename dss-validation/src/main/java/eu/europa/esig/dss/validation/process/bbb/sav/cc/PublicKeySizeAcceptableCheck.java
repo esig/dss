@@ -25,7 +25,9 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.validation.process.bbb.sav.checks.CryptographicConstraintWrapper;
+import eu.europa.esig.dss.model.policy.CryptographicSuite;
+import eu.europa.esig.dss.validation.policy.CryptographicSuiteUtils;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
 /**
  * Check if public key size is acceptable
@@ -38,8 +40,8 @@ public class PublicKeySizeAcceptableCheck extends AbstractCryptographicCheck {
 	/** Used public key length */
 	private final String keyLength;
 
-	/** The constraint */
-	private final CryptographicConstraintWrapper constraintWrapper;
+	/** The cryptographic rules */
+	private final CryptographicSuite cryptographicSuite;
 
 	/**
 	 * Default constructor
@@ -49,19 +51,19 @@ public class PublicKeySizeAcceptableCheck extends AbstractCryptographicCheck {
 	 * @param keyLength {@link String}
 	 * @param result {@link XmlCC}
 	 * @param position {@link MessageTag}
-	 * @param constraintWrapper {@link CryptographicConstraintWrapper}
+	 * @param cryptographicSuite {@link CryptographicSuite}
 	 */
 	protected PublicKeySizeAcceptableCheck(I18nProvider i18nProvider, EncryptionAlgorithm encryptionAlgo, String keyLength,
-			XmlCC result, MessageTag position, CryptographicConstraintWrapper constraintWrapper) {
-		super(i18nProvider, result, position, constraintWrapper.getMiniPublicKeySizeLevel());
+			XmlCC result, MessageTag position, CryptographicSuite cryptographicSuite) {
+		super(i18nProvider, result, position, ValidationProcessUtils.getLevelRule(cryptographicSuite.getAcceptableEncryptionAlgorithmsMiniKeySizeLevel()));
 		this.encryptionAlgo = encryptionAlgo;
 		this.keyLength = keyLength;
-		this.constraintWrapper = constraintWrapper;
+		this.cryptographicSuite = cryptographicSuite;
 	}
 
 	@Override
 	protected boolean process() {
-		return constraintWrapper.isEncryptionAlgorithmWithKeySizeReliable(encryptionAlgo, keyLength);
+		return CryptographicSuiteUtils.isEncryptionAlgorithmWithKeySizeReliable(cryptographicSuite, encryptionAlgo, keyLength);
 	}
 	
 	@Override

@@ -79,7 +79,7 @@ class JAdESLevelBCompactCounterSignatureTest extends AbstractJAdESCounterSignatu
     @Test
     @Override
     public void signAndVerify() {
-        Exception exception = assertThrows(IllegalInputException.class, () -> super.signAndVerify());
+        Exception exception = assertThrows(IllegalInputException.class, super::signAndVerify);
         assertEquals("The extended signature shall have JSON Serialization (or Flattened) type! " +
                 "Use JWSConverter to convert the signature.", exception.getMessage());
     }

@@ -168,7 +168,7 @@ public class ManifestFile implements Serializable {
 	 * @return TRUE if the document with the given name is covered, FALSE otherwise
 	 */
 	public boolean isDocumentCovered(String documentName) {
-		if (documentName != null && documentName.length() > 0) {
+		if (documentName != null && !documentName.isEmpty()) {
 			for (ManifestEntry entry : getEntries()) {
 				if (documentName.equals(entry.getUri())) {
 					return true;

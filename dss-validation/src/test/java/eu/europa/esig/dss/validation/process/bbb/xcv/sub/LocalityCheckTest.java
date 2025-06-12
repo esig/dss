@@ -25,7 +25,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.MultiValuesConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.LocalityCheck;
@@ -47,7 +48,7 @@ class LocalityCheckTest extends AbstractTestCheck {
         xc.setLocality("Valid_Locality");
 
         XmlSubXCV result = new XmlSubXCV();
-        LocalityCheck lc = new LocalityCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
+        LocalityCheck lc = new LocalityCheck(i18nProvider, result, new CertificateWrapper(xc), new MultiValuesConstraintWrapper(constraint));
         lc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -65,7 +66,7 @@ class LocalityCheckTest extends AbstractTestCheck {
         xc.setLocality("Invalid_Locality");
 
         XmlSubXCV result = new XmlSubXCV();
-        LocalityCheck lc = new LocalityCheck(i18nProvider, result, new CertificateWrapper(xc), constraint);
+        LocalityCheck lc = new LocalityCheck(i18nProvider, result, new CertificateWrapper(xc), new MultiValuesConstraintWrapper(constraint));
         lc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

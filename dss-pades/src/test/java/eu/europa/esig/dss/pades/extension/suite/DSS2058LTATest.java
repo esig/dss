@@ -35,7 +35,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Tag("slow")
-public class DSS2058LTATest extends AbstractDSS2058 {
+class DSS2058LTATest extends AbstractDSS2058 {
 
 	@Override
 	protected DSSDocument getDocumentToExtend() {

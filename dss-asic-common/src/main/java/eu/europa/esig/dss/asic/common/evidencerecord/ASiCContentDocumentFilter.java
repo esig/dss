@@ -26,6 +26,7 @@ import eu.europa.esig.dss.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -88,6 +89,11 @@ public class ASiCContentDocumentFilter {
      * Contains a collection of filenames (including the directory path) to be excluded from the returned result
      */
     private Collection<String> excludedFilenames;
+
+    /**
+     * Contains a collection of filenames (including the directory path) to be including despite the other settings
+     */
+    private Collection<String> includedFilenames;
 
     /**
      * Default constructor instantiating an ASiCContentDocumentFilter object with an empty configuration
@@ -187,6 +193,16 @@ public class ASiCContentDocumentFilter {
     }
 
     /**
+     * Sets a collection of document filenames to be included in the final return result despite other settings.
+     * NOTE: take precedence over all other constraints.
+     *
+     * @param includedFilenames a collection of {@link String} document filenames to be included
+     */
+    public void setIncludedFilenames(Collection<String> includedFilenames) {
+        this.includedFilenames = includedFilenames;
+    }
+
+    /**
      * Returns a list of filtered {@code DSSDocument}s according to the configuration
      *
      * @param asicContent {@link ASiCContent} representing the ASiC container to get documents from
@@ -194,44 +210,32 @@ public class ASiCContentDocumentFilter {
      */
     public List<DSSDocument> filter(ASiCContent asicContent) {
         final List<DSSDocument> result = new ArrayList<>();
-        if (mimetypeDocument && asicContent.getMimeTypeDocument() != null) {
-            DSSDocument mimeTypeDocument = asicContent.getMimeTypeDocument();
-            if (Utils.isCollectionEmpty(excludedFilenames) || !excludedFilenames.contains(mimeTypeDocument.getName())) {
-                result.add(mimeTypeDocument);
-            }
+        if (asicContent.getMimeTypeDocument() != null) {
+            result.addAll(filterDocuments(Collections.singletonList(asicContent.getMimeTypeDocument()), mimetypeDocument));
         }
-        if (signedDocuments) {
-            result.addAll(filterDocuments(asicContent.getSignedDocuments()));
-        }
-        if (signatureDocuments) {
-            result.addAll(filterDocuments(asicContent.getSignatureDocuments()));
-        }
-        if (timestampDocuments) {
-            result.addAll(filterDocuments(asicContent.getTimestampDocuments()));
-        }
-        if (evidenceRecordDocuments) {
-            result.addAll(filterDocuments(asicContent.getEvidenceRecordDocuments()));
-        }
-        if (manifestDocuments) {
-            result.addAll(filterDocuments(asicContent.getManifestDocuments()));
-        }
-        if (archiveManifestDocuments) {
-            result.addAll(filterDocuments(asicContent.getArchiveManifestDocuments()));
-        }
-        if (evidenceRecordManifestDocuments) {
-            result.addAll(filterDocuments(asicContent.getEvidenceRecordManifestDocuments()));
-        }
-        if (unsupportedDocuments) {
-            result.addAll(filterDocuments(asicContent.getUnsupportedDocuments()));
-        }
+        result.addAll(filterDocuments(asicContent.getSignedDocuments(), signedDocuments));
+        result.addAll(filterDocuments(asicContent.getSignatureDocuments(), signatureDocuments));
+        result.addAll(filterDocuments(asicContent.getTimestampDocuments(), timestampDocuments));
+        result.addAll(filterDocuments(asicContent.getEvidenceRecordDocuments(), evidenceRecordDocuments));
+        result.addAll(filterDocuments(asicContent.getManifestDocuments(), manifestDocuments));
+        result.addAll(filterDocuments(asicContent.getArchiveManifestDocuments(), archiveManifestDocuments));
+        result.addAll(filterDocuments(asicContent.getEvidenceRecordManifestDocuments(), evidenceRecordManifestDocuments));
+        result.addAll(filterDocuments(asicContent.getUnsupportedDocuments(), unsupportedDocuments));
         return result;
     }
 
-    private Collection<DSSDocument> filterDocuments(Collection<DSSDocument> documents) {
+    private Collection<DSSDocument> filterDocuments(Collection<DSSDocument> documents, boolean formatSupported) {
+        final List<DSSDocument> result = new ArrayList<>();
+        if (Utils.isCollectionNotEmpty(includedFilenames)) {
+            documents.stream().filter(d -> includedFilenames.contains(d.getName())).forEach(result::add);
+        }
+        if (!formatSupported) {
+            return result;
+        }
         if (Utils.isCollectionEmpty(excludedFilenames)) {
             return documents;
         }
-        return documents.stream().filter(d -> !excludedFilenames.contains(d.getName())).collect(Collectors.toList());
+        return documents.stream().filter(d -> !result.contains(d) && !excludedFilenames.contains(d.getName())).collect(Collectors.toList());
     }
 
 }

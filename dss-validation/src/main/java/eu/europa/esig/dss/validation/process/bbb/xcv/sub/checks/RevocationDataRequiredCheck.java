@@ -27,8 +27,8 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.CertificateValuesConstraint;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.CertificateApplicabilityRule;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.AbstractCertificateCheckItem;
 
@@ -49,7 +49,7 @@ public class RevocationDataRequiredCheck<T extends XmlConstraintsConclusion> ext
     private final Date currentTime;
 
     /** The certificate's sunset date constraint */
-    private final LevelConstraint certificateSunsetDateConstraint;
+    private final LevelRule certificateSunsetDateConstraint;
 
     /**
      * Default constructor
@@ -58,11 +58,11 @@ public class RevocationDataRequiredCheck<T extends XmlConstraintsConclusion> ext
      * @param result {@link XmlConstraintsConclusion}
      * @param certificate {@link CertificateWrapper}
      * @param currentTime {@link Date}
-     * @param certificateSunsetDateConstraint {@link LevelConstraint}
-     * @param constraint {@link LevelConstraint}
+     * @param certificateSunsetDateConstraint {@link LevelRule}
+     * @param constraint {@link LevelRule}
      */
     public RevocationDataRequiredCheck(I18nProvider i18nProvider, T result, CertificateWrapper certificate,
-                                       Date currentTime, LevelConstraint certificateSunsetDateConstraint, CertificateValuesConstraint constraint) {
+                                       Date currentTime, LevelRule certificateSunsetDateConstraint, CertificateApplicabilityRule constraint) {
         super(i18nProvider, result, certificate, constraint);
         this.certificate = certificate;
         this.currentTime = currentTime;

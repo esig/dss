@@ -23,6 +23,7 @@ package eu.europa.esig.dss.xades.validation.timestamp;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.TimestampType;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.spi.DSSMessageDigestCalculator;
 import eu.europa.esig.dss.spi.validation.timestamp.TimestampMessageDigestBuilder;
@@ -52,6 +53,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -204,7 +206,7 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 					writeReferenceBytes(digestCalculator, reference, canonicalizationAlgorithm);
 				}
 			}
-			final DSSMessageDigest messageDigest = digestCalculator.getMessageDigest();
+			final DSSMessageDigest messageDigest = digestCalculator.getMessageDigest(digestAlgorithm);
 			if (LOG.isTraceEnabled()) {
 				LOG.trace(String.format("AllDataObjectsTimestampData message-imprint: %s", messageDigest));
 			}
@@ -242,7 +244,7 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 									"with URI '{}'!", include.getURI());
 				}
 			}
-			DSSMessageDigest messageDigest = digestCalculator.getMessageDigest();
+			DSSMessageDigest messageDigest = digestCalculator.getMessageDigest(digestAlgorithm);
 			if (LOG.isTraceEnabled()) {
 				LOG.trace(String.format("IndividualDataObjectsTimestampData message-imprint: %s", messageDigest));
 			}
@@ -263,13 +265,14 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 	 * clause 4.4.3.2;
 	 * 2) if the result is a XML node set, canonicalize it as specified in clause 4.5; and
 	 */
-	private void writeReferenceBytes(DSSMessageDigestCalculator digestCalculator, Reference reference, String canonicalizationMethod) throws IOException, XMLSecurityException {
+	private void writeReferenceBytes(DSSMessageDigestCalculator digestCalculator, Reference reference, String canonicalizationMethod)
+			throws IOException, XMLSecurityException {
 
 		if (ReferenceOutputType.NODE_SET.equals(DSSXMLUtils.getReferenceOutputType(reference))) {
 
 			byte[] referencedBytes = reference.getReferencedBytes();
 			if (DomUtils.isDOM(referencedBytes)) {
-				digestCalculator.update(XMLCanonicalizer.createInstance(canonicalizationMethod).canonicalize(referencedBytes));
+				writeDigestValueOnCanonicalizedBinaries(digestCalculator, referencedBytes, canonicalizationMethod);
 			} else {
 				digestCalculator.update(referencedBytes);
 			}
@@ -315,9 +318,9 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 	public DSSMessageDigest getSignatureTimestampMessageDigest() {
 		try {
 			final DSSMessageDigestCalculator digestCalculator = new DSSMessageDigestCalculator(digestAlgorithm);
-			digestCalculator.update(getCanonicalizedValue(XMLDSigPath.SIGNATURE_VALUE_PATH, canonicalizationAlgorithm));
+			writeCanonicalizedValue(digestCalculator, XMLDSigPath.SIGNATURE_VALUE_PATH, canonicalizationAlgorithm);
 
-			final DSSMessageDigest messageDigest = digestCalculator.getMessageDigest();
+			final DSSMessageDigest messageDigest = digestCalculator.getMessageDigest(digestAlgorithm);
 			if (LOG.isTraceEnabled()) {
 				LOG.trace(String.format("Signature timestamp message-imprint: %s", messageDigest));
 			}
@@ -351,7 +354,7 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 			/*
 			 * 1) The ds:SignatureValue element.
 			 */
-			digestCalculator.update(getCanonicalizedValue(XMLDSigPath.SIGNATURE_VALUE_PATH, canonicalizationAlgorithm));
+			writeCanonicalizedValue(digestCalculator, XMLDSigPath.SIGNATURE_VALUE_PATH, canonicalizationAlgorithm);
 
 			/*
 			 * 2) Those among the following unsigned qualifying properties that appear before SigAndRefsTimeStampV2,
@@ -381,7 +384,7 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 					if (checkAttributeNameMatches(xadesAttribute, XAdES132Element.SIGNATURE_TIMESTAMP,
 							XAdES141Element.COMPLETE_CERTIFICATE_REFS_V2, XAdES132Element.COMPLETE_REVOCATION_REFS,
 							XAdES141Element.ATTRIBUTE_CERTIFICATE_REFS_V2, XAdES132Element.ATTRIBUTE_REVOCATION_REFS)) {
-						digestCalculator.update(getCanonicalizedValue(xadesAttribute, canonicalizationAlgorithm));
+						writeCanonicalizedValue(digestCalculator, xadesAttribute, canonicalizationAlgorithm);
 					}
 
 				} else {
@@ -399,12 +402,12 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 					if (checkAttributeNameMatches(xadesAttribute, XAdES132Element.SIGNATURE_TIMESTAMP,
 							XAdES132Element.COMPLETE_CERTIFICATE_REFS, XAdES132Element.COMPLETE_REVOCATION_REFS,
 							XAdES132Element.ATTRIBUTE_CERTIFICATE_REFS, XAdES132Element.ATTRIBUTE_REVOCATION_REFS)) {
-						digestCalculator.update(getCanonicalizedValue(xadesAttribute, canonicalizationAlgorithm));
+						writeCanonicalizedValue(digestCalculator, xadesAttribute, canonicalizationAlgorithm);
 					}
 				}
 			}
 
-			final DSSMessageDigest messageDigest = digestCalculator.getMessageDigest();
+			final DSSMessageDigest messageDigest = digestCalculator.getMessageDigest(digestAlgorithm);
 			if (LOG.isTraceEnabled()) {
 				LOG.trace(String.format("X1Timestamp (SigAndRefsTimeStamp) message-imprint: %s", messageDigest));
 			}
@@ -459,7 +462,7 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 					if (checkAttributeNameMatches(xadesAttribute,
 							XAdES141Element.COMPLETE_CERTIFICATE_REFS_V2, XAdES132Element.COMPLETE_REVOCATION_REFS,
 							XAdES141Element.ATTRIBUTE_CERTIFICATE_REFS_V2, XAdES132Element.ATTRIBUTE_REVOCATION_REFS)) {
-						digestCalculator.update(getCanonicalizedValue(xadesAttribute, canonicalizationAlgorithm));
+						writeCanonicalizedValue(digestCalculator, xadesAttribute, canonicalizationAlgorithm);
 					}
 
 				} else {
@@ -474,12 +477,12 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 					if (checkAttributeNameMatches(xadesAttribute,
 							XAdES132Element.COMPLETE_CERTIFICATE_REFS, XAdES132Element.COMPLETE_REVOCATION_REFS,
 							XAdES132Element.ATTRIBUTE_CERTIFICATE_REFS, XAdES132Element.ATTRIBUTE_REVOCATION_REFS)) {
-						digestCalculator.update(getCanonicalizedValue(xadesAttribute, canonicalizationAlgorithm));
+						writeCanonicalizedValue(digestCalculator, xadesAttribute, canonicalizationAlgorithm);
 					}
 				}
 			}
 
-			final DSSMessageDigest messageDigest = digestCalculator.getMessageDigest();
+			final DSSMessageDigest messageDigest = digestCalculator.getMessageDigest(digestAlgorithm);
 			if (LOG.isTraceEnabled()) {
 				LOG.trace(String.format("TimestampX2Data (RefsOnlyTimeStamp) message-imprint: %s", messageDigest));
 			}
@@ -542,11 +545,11 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 			 * - The ds:SignatureValue element.<br>
 			 * - The ds:KeyInfo element, if present.
 			 */
-			digestCalculator.update(getCanonicalizedValue(XMLDSigPath.SIGNED_INFO_PATH, canonicalizationAlgorithm));
+			writeCanonicalizedValue(digestCalculator, XMLDSigPath.SIGNED_INFO_PATH, canonicalizationAlgorithm);
 
-			digestCalculator.update(getCanonicalizedValue(XMLDSigPath.SIGNATURE_VALUE_PATH, canonicalizationAlgorithm));
+			writeCanonicalizedValue(digestCalculator, XMLDSigPath.SIGNATURE_VALUE_PATH, canonicalizationAlgorithm);
 
-			digestCalculator.update(getCanonicalizedValue(XMLDSigPath.KEY_INFO_PATH, canonicalizationAlgorithm));
+			writeCanonicalizedValue(digestCalculator, XMLDSigPath.KEY_INFO_PATH, canonicalizationAlgorithm);
 			/*
 			 * 4) Take the unsigned signature properties that appear before the current xadesv141:ArchiveTimeStamp in
 			 * the order they appear within the xades:UnsignedSignatureProperties, canonicalize each one and
@@ -564,7 +567,7 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 			final NodeList objects = getObjects();
 			writeObjectBytes(digestCalculator, objects, referenceURIs, canonicalizationAlgorithm);
 
-			DSSMessageDigest messageDigest = digestCalculator.getMessageDigest();
+			DSSMessageDigest messageDigest = digestCalculator.getMessageDigest(digestAlgorithm);
 			if (LOG.isTraceEnabled()) {
 				LOG.trace(String.format("ArchiveTimeStamp message-imprint: %s", messageDigest));
 			}
@@ -582,16 +585,30 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 		return null;
 	}
 
-	private byte[] getCanonicalizedValue(final String xPathString, final String canonicalizationMethod) {
+	private void writeCanonicalizedValue(final DSSMessageDigestCalculator digestCalculator, final String xPathString,
+										 final String canonicalizationMethod) {
 		final Element element = DomUtils.getElement(signature, xPathString);
 		if (element != null) {
-			final byte[] bytes = XMLCanonicalizer.createInstance(canonicalizationMethod).canonicalize(element);
-			if (LOG.isTraceEnabled()) {
-				LOG.trace("Canonicalized subtree string : \n{}", new String(bytes));
-			}
-			return bytes;
+			writeDigestValueOnCanonicalizedNode(digestCalculator, element, canonicalizationMethod);
 		}
-		return null;
+	}
+
+	private void writeDigestValueOnCanonicalizedBinaries(DSSMessageDigestCalculator digestCalculator,
+														 byte[] binaries, final String canonicalizationMethod) {
+		try (OutputStream os = digestCalculator.getOutputStream()) {
+			XMLCanonicalizer.createInstance(canonicalizationMethod).canonicalize(binaries, os);
+		} catch (IOException e) {
+			throw new DSSException("Cannot build an AllDataObjectsTimestamp : An error occurred on canonicalization", e);
+		}
+	}
+
+	private void writeDigestValueOnCanonicalizedNode(DSSMessageDigestCalculator digestCalculator,
+													 Node node, final String canonicalizationMethod) {
+		try (OutputStream os = digestCalculator.getOutputStream()) {
+			XMLCanonicalizer.createInstance(canonicalizationMethod).canonicalize(node, os);
+		} catch (IOException e) {
+			throw new DSSException("Cannot build an AllDataObjectsTimestamp : An error occurred on canonicalization", e);
+		}
 	}
 
 	private Element getUnsignedSignaturePropertiesDom() {
@@ -661,7 +678,7 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 			 */
 			}
 
-			digestCalculator.update(getCanonicalizedValue(xadesAttribute, canonicalizationMethod));
+			writeCanonicalizedValue(digestCalculator, xadesAttribute, canonicalizationMethod);
 		}
 	}
 
@@ -694,13 +711,9 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 		return false;
 	}
 
-	private byte[] getCanonicalizedValue(XAdESAttribute attribute, String canonicalizationMethod) {
-		byte[] canonicalizedValue = XMLCanonicalizer.createInstance(canonicalizationMethod).canonicalize(attribute.getElement());
-		if (LOG.isTraceEnabled()) {
-			LOG.trace("{}: Canonicalization: {} : \n{}", attribute.getName(), canonicalizationMethod,
-					new String(canonicalizedValue));
-		}
-		return canonicalizedValue;
+	private void writeCanonicalizedValue(final DSSMessageDigestCalculator digestCalculator, final XAdESAttribute attribute,
+										 final String canonicalizationMethod) {
+		writeDigestValueOnCanonicalizedNode(digestCalculator, attribute.getElement(), canonicalizationMethod);
 	}
 
 	/**
@@ -746,7 +759,7 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 					continue;
 				}
 			}
-			digestCalculator.update(XMLCanonicalizer.createInstance(canonicalizationMethod).canonicalize(node));
+			writeDigestValueOnCanonicalizedNode(digestCalculator, node, canonicalizationMethod);
 		}
 		
 	}

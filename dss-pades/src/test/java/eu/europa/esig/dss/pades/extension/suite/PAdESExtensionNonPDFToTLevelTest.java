@@ -29,7 +29,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class PAdESExtensionNonPDFToTLevelTest extends AbstractPAdESTestExtension {
+class PAdESExtensionNonPDFToTLevelTest extends AbstractPAdESTestExtension {
 
     @Override
     protected SignatureLevel getOriginalSignatureLevel() {
@@ -52,6 +52,7 @@ public class PAdESExtensionNonPDFToTLevelTest extends AbstractPAdESTestExtension
 
     @Override
     public void extendAndVerify() throws Exception {
+        // skip
     }
 
 }

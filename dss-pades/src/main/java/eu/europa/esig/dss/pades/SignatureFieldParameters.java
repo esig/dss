@@ -51,9 +51,7 @@ public class SignatureFieldParameters implements Serializable {
 	/** Signature field height */
 	private float height;
 
-	/**
-	 * Use rotation on the PDF page, where the signature field will be created
-	 */
+	/** Use rotation on the PDF page, where the signature field will be created */
 	private VisualSignatureRotation rotation;
 
 	/**

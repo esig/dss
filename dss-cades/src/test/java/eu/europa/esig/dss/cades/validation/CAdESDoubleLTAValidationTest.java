@@ -26,7 +26,7 @@ import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 
 import java.util.List;
 
@@ -38,7 +38,7 @@ class CAdESDoubleLTAValidationTest extends AbstractCAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {
-		return new FileDocument("src/test/resources/validation/CAdESDoubleLTA.p7m");
+		return new InMemoryDocument(CAdESDoubleLTAValidationTest.class.getResourceAsStream("/validation/CAdESDoubleLTA.p7m"));
 	}
 	
 	@Override

@@ -28,7 +28,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
@@ -55,10 +55,10 @@ public class AcceptableBasicSignatureValidationCheck extends ChainItem<XmlValida
 	 * @param i18nProvider {@link I18nProvider}
 	 * @param result {@link XmlValidationProcessLongTermData}
 	 * @param basicSignatureValidation {@link XmlConstraintsConclusion}
-	 * @param constraint {@link LevelConstraint}
+	 * @param constraint {@link LevelRule}
 	 */
 	public AcceptableBasicSignatureValidationCheck(I18nProvider i18nProvider, XmlValidationProcessLongTermData result, 
-			XmlConstraintsConclusion basicSignatureValidation, LevelConstraint constraint) {
+			XmlConstraintsConclusion basicSignatureValidation, LevelRule constraint) {
 		super(i18nProvider, result, constraint);
 
 		this.basicSignatureValidation = basicSignatureValidation;

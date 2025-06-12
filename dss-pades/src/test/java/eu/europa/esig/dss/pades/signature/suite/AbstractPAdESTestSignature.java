@@ -212,7 +212,7 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 	}
 
 	protected void checkSignedAttributesOrder(PAdESSignature padesSig) {
-		try (ASN1InputStream asn1sInput = new ASN1InputStream(padesSig.getCmsSignedData().getEncoded())) {
+		try (ASN1InputStream asn1sInput = new ASN1InputStream(padesSig.getCMS().getDEREncoded())) {
 			ASN1Sequence asn1Seq = (ASN1Sequence) asn1sInput.readObject();
 
 			SignedData signedData = SignedData.getInstance(ASN1TaggedObject.getInstance(asn1Seq.getObjectAt(1)).getBaseObject());

@@ -60,7 +60,7 @@ class XAdESExtensionNoDetachedFileBToATest extends PKIFactoryAccess {
 		extensionParameters.setSignatureLevel(SignatureLevel.XAdES_A);
 		
 		Exception exception = assertThrows(AlertException.class, () -> service.extendDocument(signedDocument, extensionParameters));
-		assertTrue(exception.getMessage().contains("Error on signature augmentation."));
+		assertTrue(exception.getMessage().contains("Error on signature augmentation"));
 		assertTrue(exception.getMessage().contains("ryptographic signature verification has failed / Best candidate validation failed"));
 		
 	}

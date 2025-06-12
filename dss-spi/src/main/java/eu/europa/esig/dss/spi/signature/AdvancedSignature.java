@@ -65,24 +65,6 @@ public interface AdvancedSignature extends IdentifierBasedObject, Serializable {
 
 	/**
 	 * This method returns the signature filename (useful for ASiC and multiple signature files)
-	 * 
-	 * @return the signature filename
-	 * @deprecated since DSS 6.2. Please use {@code #getFilename} method instead.
-	 */
-	@Deprecated
-	String getSignatureFilename();
-
-	/**
-	 * This method allows to set the signature filename (useful in case of ASiC)
-	 *
-	 * @param filename {@link String}
-	 * @deprecated since DSS 6.2. Please use {@code #setFilename} method instead.
-	 */
-	@Deprecated
-	void setSignatureFilename(String filename);
-
-	/**
-	 * This method returns the signature filename (useful for ASiC and multiple signature files)
 	 *
 	 * @return the signature filename
 	 */
@@ -544,7 +526,7 @@ public interface AdvancedSignature extends IdentifierBasedObject, Serializable {
 	boolean hasLTAProfile();
 
 	/**
-	 * Checks the presence of signing certificate covered by the signature, what is the proof -BES profile existence
+	 * Checks the presence of signing certificate covered by the signature, what is the proof of the -BES profile existence
 	 *
 	 * @return true if BES Profile is detected
 	 */
@@ -552,14 +534,14 @@ public interface AdvancedSignature extends IdentifierBasedObject, Serializable {
 
 	/**
 	 * Checks the presence of SignaturePolicyIdentifier element in the signature,
-	 * what is the proof -EPES profile existence
+	 * what is the proof of the -EPES profile existence
 	 *
 	 * @return true if EPES Profile is detected
 	 */
 	boolean hasEPESProfile();
 
 	/**
-	 * Checks the presence of SignatureTimeStamp element in the signature, what is the proof -T profile existence
+	 * Checks the presence of SignatureTimeStamp element in the signature, what is the proof of the -T profile existence
 	 *
 	 * @return true if T Profile is detected
 	 */
@@ -567,32 +549,39 @@ public interface AdvancedSignature extends IdentifierBasedObject, Serializable {
 
 	/**
 	 * Checks the presence of CompleteCertificateRefs and CompleteRevocationRefs segments in the signature,
-	 * what is the proof -C profile existence
+	 * what is the proof of the -C profile existence
 	 *
 	 * @return true if C Profile is detected
 	 */
 	boolean hasCProfile();
 
 	/**
-	 * Checks the presence of SigAndRefsTimeStamp segment in the signature, what is the proof -X profile existence
+	 * Checks the presence of SigAndRefsTimeStamp segment in the signature, what is the proof of the -X profile existence
 	 *
 	 * @return true if the -X extension is present
 	 */
 	boolean hasXProfile();
 
 	/**
-	 * Checks the presence of CertificateValues/RevocationValues segment in the signature, what is the proof -XL profile existence
+	 * Checks the presence of CertificateValues/RevocationValues segment in the signature, what is the proof of the -XL profile existence
 	 *
 	 * @return true if the -XL extension is present
 	 */
 	boolean hasXLProfile();
 
 	/**
-	 * Checks the presence of ArchiveTimeStamp element in the signature, what is the proof -A profile existence
+	 * Checks the presence of ArchiveTimeStamp element in the signature, what is the proof of the -A profile existence
 	 *
 	 * @return true if the -A extension is present
 	 */
 	boolean hasAProfile();
+
+	/**
+	 * Checks the presence of SealingEvidenceRecord element in the signature, what is the proof of the -ERS profile existence
+	 *
+	 * @return true if the -A extension is present
+	 */
+	boolean hasERSProfile();
 	
 	/**
 	 * Checks if all certificate chains present in the signature are self-signed

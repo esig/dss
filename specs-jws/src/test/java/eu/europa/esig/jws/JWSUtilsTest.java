@@ -20,81 +20,75 @@
  */
 package eu.europa.esig.jws;
 
-import com.github.erosb.jsonsKema.JsonArray;
-import com.github.erosb.jsonsKema.JsonObject;
-import com.github.erosb.jsonsKema.JsonString;
-import com.github.erosb.jsonsKema.JsonValue;
+import eu.europa.esig.json.JSONParser;
+import eu.europa.esig.json.JsonObjectWrapper;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.InputStream;
 import java.util.Base64;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class JWSUtilsTest {
-	
+
 	private static JWSUtils jwsUtils;
+	private static JWSProtectedHeaderUtils jwsProtectedHeaderUtils;
+	private static JWSUnprotectedHeaderUtils jwsUnprotectedHeaderUtils;
 	
 	@BeforeAll
 	static void init() {
 		jwsUtils = JWSUtils.getInstance();
+		jwsProtectedHeaderUtils = JWSProtectedHeaderUtils.getInstance();
+		jwsUnprotectedHeaderUtils = JWSUnprotectedHeaderUtils.getInstance();
 	}
 	
 	@Test
 	void jsonSerializationTest() {
 		InputStream is = JWSUtilsTest.class.getResourceAsStream("/jws-serialization.json");
-		JsonObject jws = jwsUtils.parseJson(is);
+		JsonObjectWrapper jws = new JSONParser().parse(is);
 		
-		List<String> errors = jwsUtils.validateAgainstJWSSchema(jws);
+		List<String> errors = jwsUtils.validateAgainstSchema(jws);
 		assertTrue(errors.isEmpty(), errors.toString());
 
-		JsonArray signatures = (JsonArray) jws.get("signatures");
+		List<JsonObjectWrapper> signatures = jws.getAsObjectList("signatures");
 		assertNotNull(signatures);
-		assertTrue(signatures.length() > 0);
+		assertTrue(signatures.size() > 0);
 
-		for (JsonValue signature : signatures.getElements()) {
-			JsonObject jsonSignature = (JsonObject) signature;
-			validateSignature(jsonSignature);
+		for (JsonObjectWrapper signature : signatures) {
+			validateSignature(signature);
 		}
 	}
 	
 	@Test
 	void jsonFlattenedTest() {
 		InputStream is = JWSUtilsTest.class.getResourceAsStream("/jws-flattened.json");
-		JsonObject jws = jwsUtils.parseJson(is);
+		JsonObjectWrapper jws = new JSONParser().parse(is);
 		
-		List<String> errors = jwsUtils.validateAgainstJWSSchema(jws);
+		List<String> errors = jwsUtils.validateAgainstSchema(jws);
 		assertTrue(errors.isEmpty());
 		
 		validateSignature(jws);
 	}
 	
-	private void validateSignature(JsonObject signature) {
-		JsonString protectedBase64 = (JsonString) signature.get("protected");
-		assertNotNull(protectedBase64);
-		assertNotNull(protectedBase64.getValue());
+	private void validateSignature(JsonObjectWrapper signature) {
+		String protectedBase64String = signature.getAsString("protected");
+		assertNotNull(protectedBase64String);
 
-		String protectedBase64String = protectedBase64.getValue();
-		
 		byte[] decodedProtected = Base64.getDecoder().decode(protectedBase64String);
 		String protectedString = new String(decodedProtected);
 		
-		List<String> errors = jwsUtils.validateAgainstJWSProtectedHeaderSchema(protectedString);
+		List<String> errors = jwsProtectedHeaderUtils.validateAgainstSchema(protectedString);
 		assertTrue(errors.isEmpty());
 
-		JsonObject header = (JsonObject) signature.get("header");
+		JsonObjectWrapper header = signature.getAsObject("header");
 		assertNotNull(header);
-
-		Map<JsonString, JsonValue> properties = header.getProperties();
-		assertNotNull(header.getProperties());
-		assertFalse(properties.isEmpty());
+		assertFalse(header.isEmpty());
 		
-		errors = jwsUtils.validateAgainstJWSUnprotectedHeaderSchema(header);
+		errors = jwsUnprotectedHeaderUtils.validateAgainstSchema(header);
 		assertTrue(errors.isEmpty());
 	}
 

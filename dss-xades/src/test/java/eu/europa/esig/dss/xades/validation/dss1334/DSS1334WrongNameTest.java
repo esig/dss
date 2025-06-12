@@ -44,7 +44,7 @@ class DSS1334WrongNameTest extends AbstractXAdESTestValidation {
     private static final DSSDocument ORIGINAL_FILE = new FileDocument("src/test/resources/validation/dss1334/simple-test.xml");
 
     @BeforeEach
-    public void init() {
+    void init() {
         ORIGINAL_FILE.setName("wrong-name.xml");
     }
 

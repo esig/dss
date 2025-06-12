@@ -36,18 +36,17 @@ import eu.europa.esig.dss.signature.resources.TempFileResourcesHandlerBuilder;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -56,12 +55,13 @@ class ASiCEXAdESLevelLargeMultipleFilesLTATest extends AbstractASiCEWithXAdESMul
 
     private ASiCWithXAdESService service;
     private ASiCWithXAdESSignatureParameters signatureParameters;
-    private List<DSSDocument> documentToSigns;
+    private List<FileDocument> documentToSigns;
+
+    private TempFileResourcesHandlerBuilder tempFileResourcesHandlerBuilder;
 
     @BeforeEach
     void init() throws Exception {
-
-        TempFileResourcesHandlerBuilder tempFileResourcesHandlerBuilder = new TempFileResourcesHandlerBuilder();
+        tempFileResourcesHandlerBuilder = new TempFileResourcesHandlerBuilder();
         tempFileResourcesHandlerBuilder.setTempFileDirectory(new File("target"));
 
         SecureContainerHandlerBuilder secureContainerHandlerBuilder = new SecureContainerHandlerBuilder()
@@ -69,9 +69,9 @@ class ASiCEXAdESLevelLargeMultipleFilesLTATest extends AbstractASiCEWithXAdESMul
         ZipUtils.getInstance().setZipContainerHandlerBuilder(secureContainerHandlerBuilder);
 
         documentToSigns = new ArrayList<>();
-        documentToSigns.add(generateLargeFile(1));
-        documentToSigns.add(generateLargeFile(2));
-        documentToSigns.add(generateLargeFile(3));
+        documentToSigns.add(generateLargeFile("1.bin"));
+        documentToSigns.add(generateLargeFile("2.bin"));
+        documentToSigns.add(generateLargeFile("3.bin"));
 
         signatureParameters = new ASiCWithXAdESSignatureParameters();
         signatureParameters.bLevel().setSigningDate(new Date());
@@ -87,21 +87,16 @@ class ASiCEXAdESLevelLargeMultipleFilesLTATest extends AbstractASiCEWithXAdESMul
         service.setTspSource(getGoodTsa());
     }
 
-    private DSSDocument generateLargeFile(int count) throws IOException {
-        File file = new File("target/large-binary-" + count + ".bin");
-
-        long size = 0x00FFFFFF; // Integer.MAX_VALUE -1
-        byte [] data = new byte[(int)size];
-        SecureRandom sr = new SecureRandom();
-        sr.nextBytes(data);
-
-        try (FileOutputStream fos = new FileOutputStream(file)) {
-            for (int i = 0; i < 100; i++) {
-                fos.write(data);
-            }
+    @AfterEach
+    void clean() {
+        for (FileDocument fileDocument : documentToSigns) {
+            File file = fileDocument.getFile();
+            assertTrue(file.exists());
+            assertTrue(file.delete());
+            assertFalse(file.exists());
         }
 
-        return new FileDocument(file);
+        tempFileResourcesHandlerBuilder.clear();
     }
 
     @Test
@@ -140,7 +135,7 @@ class ASiCEXAdESLevelLargeMultipleFilesLTATest extends AbstractASiCEWithXAdESMul
 
     @Override
     protected List<DSSDocument> getDocumentsToSign() {
-        return documentToSigns;
+        return new ArrayList<>(documentToSigns);
     }
 
     @Override

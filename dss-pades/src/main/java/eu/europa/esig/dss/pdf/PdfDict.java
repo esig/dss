@@ -105,16 +105,6 @@ public interface PdfDict extends PdfObject {
 	PdfObject getObject(String name);
 
 	/**
-	 * Returns a number of indirect reference to an object, when applicable
-	 *
-	 * @param name {@link String} property name
-	 * @return {@link Object} value
-	 * @deprecated since DSS 6.2. Please use {@code #getObjectKey} method instead
-	 */
-	@Deprecated
-	Long getObjectNumber(String name);
-
-	/**
 	 * Returns a Pdf object ket of indirect reference to an object, when applicable
 	 *
 	 * @param name {@link String} property name

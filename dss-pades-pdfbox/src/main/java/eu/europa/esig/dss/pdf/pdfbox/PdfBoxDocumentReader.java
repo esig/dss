@@ -41,7 +41,7 @@ import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfDocumentReader;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfMemoryUsageSetting;
-import eu.europa.esig.dss.pdf.PdfSigDictWrapper;
+import eu.europa.esig.dss.pdf.PdfSigDictWrapperFactory;
 import eu.europa.esig.dss.pdf.SingleDssDict;
 import eu.europa.esig.dss.pdf.visible.ImageRotationUtils;
 import eu.europa.esig.dss.pdf.visible.ImageUtils;
@@ -162,36 +162,6 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 	}
 
 	/**
-	 * The PDFBox implementation of the Reader
-	 * 
-	 * @param binaries           a byte array of a PDF to read
-	 * @param passwordProtection {@link String} a password to open a protected
-	 *                           document
-	 * @throws IOException       if an exception occurs
-	 * @throws InvalidPasswordException if the password is not provided or
-	 *                           invalid for a protected document
-	 * @deprecated since DSS 6.2. To be removed.
-	 */
-	@Deprecated
-	public PdfBoxDocumentReader(byte[] binaries, String passwordProtection)
-			throws IOException, InvalidPasswordException {
-		Objects.requireNonNull(binaries, "The document binaries must be defined!");
-		this.dssDocument = new InMemoryDocument(binaries);
-		this.pdDocument = Loader.loadPDF(binaries, passwordProtection);
-	}
-
-	/**
-	 * The constructor to directly instantiate the {@code PdfBoxDocumentReader}
-	 * 
-	 * @param pdDocument {@link PDDocument}
-	 * @deprecated since DSS 6.2. To be removed.
-	 */
-	@Deprecated
-	public PdfBoxDocumentReader(final PDDocument pdDocument) {
-		this.pdDocument = pdDocument;
-	}
-
-	/**
 	 * Returns the current instance of {@code PDDocument}
 	 *
 	 * @return {@link PDDocument}
@@ -231,7 +201,7 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 					if (signature == null) {
 						try {
 							PdfDict dictionary = new PdfBoxDict((COSDictionary) sigDictObject.getObject(), pdDocument);
-							signature = new PdfSigDictWrapper(dictionary);
+							signature = new PdfSigDictWrapperFactory(dictionary).create();
 						} catch (Exception e) {
 							LOG.warn("Unable to create a PdfSignatureDictionary for field with name '{}'",
 									pdfSignatureField.getFieldName(), e);

@@ -20,9 +20,8 @@
  */
 package eu.europa.esig.dss.validation.process.bbb;
 
-import org.junit.jupiter.api.BeforeAll;
-
 import eu.europa.esig.dss.i18n.I18nProvider;
+import org.junit.jupiter.api.BeforeAll;
 
 public abstract class AbstractTestCheck {
 	

@@ -45,7 +45,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class ASiCEWithCAdESLevelLTWithEvidenceRecordNoSigCoveredValidationTest extends AbstractASiCEWithCAdESWithEvidenceRecordTestValidation {
+class ASiCEWithCAdESLevelLTWithEvidenceRecordNoSigCoveredValidationTest extends AbstractASiCWithCAdESWithEvidenceRecordTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {
@@ -55,6 +55,11 @@ class ASiCEWithCAdESLevelLTWithEvidenceRecordNoSigCoveredValidationTest extends 
     @Override
     protected int getNumberOfExpectedEvidenceScopes() {
         return 2; // two docs covered
+    }
+
+    @Override
+    protected void checkEvidenceRecordCoverage(DiagnosticData diagnosticData, SignatureWrapper signature) {
+        assertFalse(Utils.isCollectionNotEmpty(signature.getEvidenceRecords()));
     }
 
     @Override

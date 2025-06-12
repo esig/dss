@@ -28,7 +28,7 @@ import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.validationreport.jaxb.SignerInformationType;
 
@@ -43,7 +43,7 @@ class CMSNoSigningCertificateTest extends AbstractCAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {
-        return new FileDocument("src/test/resources/validation/cms-no-sign-cert.p7m");
+        return new InMemoryDocument(CMSNoSigningCertificateTest.class.getResourceAsStream("/validation/cms-no-sign-cert.p7m"));
     }
 
     @Override

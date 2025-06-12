@@ -44,7 +44,7 @@ import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.signature.SigningOperation;
+import eu.europa.esig.dss.enumerations.SigningOperation;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.junit.jupiter.api.BeforeEach;
@@ -162,7 +162,8 @@ class ASiCECAdESDoubleSignWithAnotherMimeTypeTest extends AbstractASiCECAdESTest
         return GOOD_USER;
     }
 
-    private class MockASiCWithCAdESService extends ASiCWithCAdESService {
+    @SuppressWarnings("serial")
+    private static class MockASiCWithCAdESService extends ASiCWithCAdESService {
 
         /**
          * The default constructor to instantiate the service

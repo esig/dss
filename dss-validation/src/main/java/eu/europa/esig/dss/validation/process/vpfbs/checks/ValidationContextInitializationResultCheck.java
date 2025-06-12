@@ -27,7 +27,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
 /**
@@ -50,10 +50,10 @@ public class ValidationContextInitializationResultCheck<T extends XmlConstraints
      * @param result {@link XmlConstraintsConclusion}
      * @param xmlVCI {@link XmlVCI}
      * @param token {@link TokenProxy}
-     * @param constraint {@link LevelConstraint}
+     * @param constraint {@link LevelRule}
      */
     public ValidationContextInitializationResultCheck(I18nProvider i18nProvider, T result,
-                                                      XmlVCI xmlVCI, TokenProxy token, LevelConstraint constraint) {
+                                                      XmlVCI xmlVCI, TokenProxy token, LevelRule constraint) {
         super(i18nProvider, result, constraint, token.getId() + VCI_BLOCK_SUFFIX);
         this.xmlVCI = xmlVCI;
     }

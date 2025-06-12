@@ -252,9 +252,7 @@ public class SignatureValidationContext implements ValidationContext {
 		if (revocationDataVerifier.getTrustAnchorVerifier() == null) {
 			revocationDataVerifier.setTrustAnchorVerifier(getTrustAnchorVerifier());
 		}
-		if (revocationDataVerifier.getProcessedRevocations() == null) {
-			revocationDataVerifier.setProcessedRevocations(processedRevocations);
-		}
+		revocationDataVerifier.setValidationContext(this);
 		return revocationDataVerifier;
 	}
 
@@ -462,9 +460,7 @@ public class SignatureValidationContext implements ValidationContext {
 		}
 		final List<RevocationToken<?>> revocationTokens = new ArrayList<>(processedRevocations);
 		for (RevocationToken<?> revocationToken : revocationTokens) {
-			Boolean processed = tokensToProcess.get(revocationToken);
-			if (!Boolean.TRUE.equals(processed)) {
-				tokensToProcess.put(revocationToken, true);
+			if (!isYetVerified(revocationToken)) {
 				return revocationToken;
 			}
 		}
@@ -477,34 +473,37 @@ public class SignatureValidationContext implements ValidationContext {
 	 * @return token to verify or null
 	 */
 	private TimestampToken getNotYetVerifiedTimestamp() {
-		synchronized (tokensToProcess) {
-			if (Utils.isCollectionEmpty(processedTimestamps)) {
-				return null;
-			}
-			final List<TimestampToken> sortedTimestampTokens = new ArrayList<>(processedTimestamps);
-			sortedTimestampTokens.sort(new TimestampTokenComparator());
-			Collections.reverse(sortedTimestampTokens); // start processing from the freshest timestamp
-			for (TimestampToken timestampToken : sortedTimestampTokens) {
-				Boolean processed = tokensToProcess.get(timestampToken);
-				if (!Boolean.TRUE.equals(processed)) {
-					tokensToProcess.put(timestampToken, true);
-					return timestampToken;
-				}
-			}
+		if (Utils.isCollectionEmpty(processedTimestamps)) {
 			return null;
 		}
+		final List<TimestampToken> sortedTimestampTokens = new ArrayList<>(processedTimestamps);
+		sortedTimestampTokens.sort(new TimestampTokenComparator());
+		Collections.reverse(sortedTimestampTokens); // start processing from the freshest timestamp
+		for (TimestampToken timestampToken : sortedTimestampTokens) {
+			if (!isYetVerified(timestampToken)) {
+				return timestampToken;
+			}
+		}
+		return null;
 	}
 
 	private Token getNotYetVerifiedTokenFromChain(List<Token> certChain) {
-		synchronized (tokensToProcess) {
-			for (Token token : certChain) {
-				Boolean processed = tokensToProcess.get(token);
-				if (!Boolean.TRUE.equals(processed)) {
-					tokensToProcess.put(token, true);
-					return token;
-				}
+		for (Token token : certChain) {
+			if (!isYetVerified(token)) {
+				return token;
 			}
-			return null;
+		}
+		return null;
+	}
+
+	private boolean isYetVerified(Token token) {
+		synchronized (tokensToProcess) {
+			Boolean processed = tokensToProcess.get(token);
+			if (!Boolean.TRUE.equals(processed)) {
+				tokensToProcess.put(token, true);
+				return false;
+			}
+			return true;
 		}
 	}
 	
@@ -1002,7 +1001,14 @@ public class SignatureValidationContext implements ValidationContext {
 			}
 		}
 		if (token instanceof CertificateToken) {
-			getRevocationData((CertificateToken) token, certChain);
+			findRevocationData((CertificateToken) token, certChain);
+		}
+	}
+
+	private void validateTokenIfNeeded(Token token) {
+		addTokenForVerification(token); // ensure the token is added to the validation context
+		if (!isYetVerified(token)) {
+			validateToken(token);
 		}
 	}
 
@@ -1015,7 +1021,7 @@ public class SignatureValidationContext implements ValidationContext {
 	 * @param certChain the complete chain
 	 * @return a set of found {@link RevocationToken}s
 	 */
-	private Set<RevocationToken<?>> getRevocationData(final CertificateToken certToken, List<Token> certChain) {
+	private Set<RevocationToken<?>> findRevocationData(final CertificateToken certToken, List<Token> certChain) {
 
 		if (LOG.isTraceEnabled()) {
 			LOG.trace("Checking revocation data for : {}", certToken.getDSSIdAsString());
@@ -1080,6 +1086,18 @@ public class SignatureValidationContext implements ValidationContext {
 		}
 
 		return revocations;
+	}
+
+	@Override
+	public List<RevocationToken<?>> getRevocationData(CertificateToken certificateToken) {
+		validateTokenIfNeeded(certificateToken);
+		List<RevocationToken<?>> result = new ArrayList<>();
+		for (RevocationToken<?> revocationToken : processedRevocations) {
+			if (Utils.areStringsEqual(certificateToken.getDSSIdAsString(), revocationToken.getRelatedCertificateId())) {
+				result.add(revocationToken);
+			}
+		}
+		return result;
 	}
 
 	private <T extends Token> boolean containsTrustAnchor(List<T> certChain) {
@@ -1381,10 +1399,6 @@ public class SignatureValidationContext implements ValidationContext {
 		}
 	}
 
-	private boolean checkCertificateIsNotRevokedRecursively(CertificateToken certificateToken, List<POE> poeTimes) {
-		return checkCertificateIsNotRevokedRecursively(certificateToken, poeTimes, null);
-	}
-
 	private boolean checkCertificateIsNotRevokedRecursively(CertificateToken certificateToken, List<POE> poeTimes, TokenStatus status) {
 		Date lowestPOETime = getLowestPOETime(poeTimes);
 		if (isSelfSignedOrTrustedAtTime(certificateToken, lowestPOETime)) {
@@ -1427,13 +1441,7 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	private List<RevocationToken<?>> getRelatedRevocationTokens(CertificateToken certificateToken) {
-		List<RevocationToken<?>> result = new ArrayList<>();
-		for (RevocationToken<?> revocationToken : processedRevocations) {
-			if (Utils.areStringsEqual(certificateToken.getDSSIdAsString(), revocationToken.getRelatedCertificateId())) {
-				result.add(revocationToken);
-			}
-		}
-		return result;
+		return getRevocationData(certificateToken);
 	}
 
 	private boolean isRevocationDataRefreshNeeded(CertificateToken certToken, Collection<RevocationToken<?>> revocations) {
@@ -1673,10 +1681,30 @@ public class SignatureValidationContext implements ValidationContext {
 		return status;
 	}
 
+	@Override
+	public boolean checkCertificateNotExpired(CertificateToken certificateToken) {
+		return certificateNotExpired(certificateToken).isEmpty();
+	}
+
+	/**
+	 * Returns the status of certificate not expired check
+	 *
+	 * @param certificateToken {@link CertificateToken} to be verified
+	 * @return {@link SignatureStatus}
+	 */
+	protected TokenStatus certificateNotExpired(CertificateToken certificateToken) {
+		TokenStatus status = new TokenStatus();
+		checkCertificateNotExpired(certificateToken, status);
+		if (!status.isEmpty()) {
+			status.setMessage("Expired certificate found.");
+		}
+		return status;
+	}
+
 	private void checkSignatureNotExpired(AdvancedSignature signature, SignatureStatus status) {
 		CertificateToken signingCertificate = signature.getSigningCertificateToken();
 		if (signingCertificate != null) {
-			boolean signatureNotExpired = verifyCertificateTokenHasPOERecursively(signingCertificate, poeTimes.get(signature.getId()));
+			boolean signatureNotExpired = verifyCertificateTokenNotExpired(signingCertificate, poeTimes.get(signature.getId()));
 			if (!signatureNotExpired) {
 				status.addRelatedTokenAndErrorMessage(signature, String.format("The signing certificate has expired " +
 								"and there is no POE during its validity range : [%s - %s]!",
@@ -1686,10 +1714,20 @@ public class SignatureValidationContext implements ValidationContext {
 		}
 	}
 
-	private boolean verifyCertificateTokenHasPOERecursively(CertificateToken certificateToken, List<POE> poeTimeList) {
-		if (Utils.isCollectionNotEmpty(poeTimeList)) {
+	private void checkCertificateNotExpired(CertificateToken certificateToken, TokenStatus status) {
+		boolean certificateNotExpired = verifyCertificateTokenNotExpired(certificateToken, poeTimes.get(certificateToken.getDSSIdAsString()));
+		if (!certificateNotExpired) {
+			status.addRelatedTokenAndErrorMessage(certificateToken, String.format("The signing certificate has expired " +
+							"and there is no POE during its validity range : [%s - %s]!",
+					DSSUtils.formatDateToRFC(certificateToken.getNotBefore()),
+					DSSUtils.formatDateToRFC(certificateToken.getNotAfter())));
+		}
+	}
+
+	private boolean verifyCertificateTokenNotExpired(CertificateToken certificateToken, List<POE> poeTimeList) {
+		if (Utils.isCollectionNotEmpty(poeTimeList) && certificateToken.getNotAfter() != null) {
 			for (POE poeTime : poeTimeList) {
-				if (certificateToken.isValidOn(poeTime.getTime()) && verifyPOE(poeTime)) {
+				if (poeTime.getTime() != null && !poeTime.getTime().after(certificateToken.getNotAfter())) {
 					return true;
 				}
 			}
@@ -1697,18 +1735,79 @@ public class SignatureValidationContext implements ValidationContext {
 		return false;
 	}
 
-	private boolean verifyPOE(POE poe) {
-		TimestampToken timestampToken = poe.getTimestampToken();
-		if (timestampToken != null) {
-			// check if the timestamp is valid at validation time
-			CertificateToken issuerCertificateToken = getIssuer(timestampToken);
-			List<POE> timestampPOEs = poeTimes.get(timestampToken.getDSSIdAsString());
-			return issuerCertificateToken != null && timestampToken.isValid()
-					&& verifyCertificateTokenHasPOERecursively(issuerCertificateToken, timestampPOEs)
-					&& checkCertificateIsNotRevokedRecursively(issuerCertificateToken, timestampPOEs);
+	@Override
+	public boolean checkAllSignaturesAreYetValid() {
+		return allSignaturesAreYetValid().isEmpty();
+	}
+
+	/**
+	 * Returns the status of the all signatures are yet valid check
+	 *
+	 * @return {@link SignatureStatus}
+	 */
+	protected SignatureStatus allSignaturesAreYetValid() {
+		SignatureStatus status = new SignatureStatus();
+		for (AdvancedSignature signature : processedSignatures) {
+			checkSignatureIsYetValid(signature, status);
 		}
-		// POE is provided
-		return true;
+		if (!status.isEmpty()) {
+			status.setMessage("Not yet valid signature found.");
+		}
+		return status;
+	}
+
+	@Override
+	public boolean checkCertificateIsYetValid(CertificateToken certificateToken) {
+		return certificateNotExpired(certificateToken).isEmpty();
+	}
+
+	/**
+	 * Returns the status of the certificate yet valid check
+	 *
+	 * @param certificateToken {@link CertificateToken} to be verified
+	 * @return {@link SignatureStatus}
+	 */
+	protected TokenStatus certificateIsYetValid(CertificateToken certificateToken) {
+		TokenStatus status = new TokenStatus();
+		checkCertificateIsYetValid(certificateToken, status);
+		if (!status.isEmpty()) {
+			status.setMessage("Not yet valid certificate found.");
+		}
+		return status;
+	}
+
+	private void checkSignatureIsYetValid(AdvancedSignature signature, SignatureStatus status) {
+		CertificateToken signingCertificate = signature.getSigningCertificateToken();
+		if (signingCertificate != null) {
+			boolean signatureNotExpired = verifyCertificateTokenIsYetValid(signingCertificate, poeTimes.get(signature.getId()));
+			if (!signatureNotExpired) {
+				status.addRelatedTokenAndErrorMessage(signature, String.format(
+						"The signing certificate with validity range [%s - %s] is not yet valid at signing time!",
+						DSSUtils.formatDateToRFC(signingCertificate.getNotBefore()),
+						DSSUtils.formatDateToRFC(signingCertificate.getNotAfter())));
+			}
+		}
+	}
+
+	private void checkCertificateIsYetValid(CertificateToken certificateToken, TokenStatus status) {
+		boolean certificateNotExpired = verifyCertificateTokenIsYetValid(certificateToken, poeTimes.get(certificateToken.getDSSIdAsString()));
+		if (!certificateNotExpired) {
+			status.addRelatedTokenAndErrorMessage(certificateToken, String.format(
+					"The signing certificate with validity range [%s - %s] is not yet valid at signing time!",
+					DSSUtils.formatDateToRFC(certificateToken.getNotBefore()),
+					DSSUtils.formatDateToRFC(certificateToken.getNotAfter())));
+		}
+	}
+
+	private boolean verifyCertificateTokenIsYetValid(CertificateToken certificateToken, List<POE> poeTimeList) {
+		if (Utils.isCollectionNotEmpty(poeTimeList) && certificateToken.getNotAfter() != null) {
+			for (POE poeTime : poeTimeList) {
+				if (poeTime.getTime() != null && !poeTime.getTime().before(certificateToken.getNotBefore())) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	@Override

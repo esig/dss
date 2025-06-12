@@ -48,7 +48,7 @@ class ListCertificateSourceTest {
 		CommonCertificateSource commonCertificateSource = new CommonCertificateSource();
 		assertThrows(UnsupportedOperationException.class, () -> sources.add(commonCertificateSource));
 		
-		assertThrows(UnsupportedOperationException.class, () -> sources.clear());
+		assertThrows(UnsupportedOperationException.class, sources::clear);
 	}
 
 	@Test

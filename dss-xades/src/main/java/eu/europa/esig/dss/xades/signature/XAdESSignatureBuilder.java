@@ -751,13 +751,13 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 			signedPropertiesDom = DSSXMLUtils.ensureNamespacesDefined(documentDom, deterministicId, xadesPath.getSignedPropertiesPath());
 		}
 
-		final byte[] canonicalizedBytes = XMLCanonicalizer.createInstance(signedPropertiesCanonicalizationMethod).canonicalize(getNodeToCanonicalize(signedPropertiesDom));
+		final byte[] digestValue = DSSXMLUtils.getDigestOnCanonicalizedNode(getNodeToCanonicalize(signedPropertiesDom),
+				digestAlgorithm, signedPropertiesCanonicalizationMethod).getValue();
 		if (LOG.isTraceEnabled()) {
-			LOG.trace("Canonicalization method  --> {}", signedPropertiesCanonicalizationMethod);
-			LOG.trace("Canonicalized REF_2      --> {}", new String(canonicalizedBytes));
+			LOG.trace("Canonicalization method REF_SigProps  --> {}", signedPropertiesCanonicalizationMethod);
+			LOG.trace("Digest on canonicalized REF_SigProps  --> {}", Utils.toHex(digestValue));
 		}
-
-		incorporateDigestValueOfReference(reference, digestAlgorithm, canonicalizedBytes);
+		incorporateDigestValueOfReference(reference, digestValue);
 		
 	}
 	
@@ -794,27 +794,26 @@ public abstract class XAdESSignatureBuilder extends XAdESBuilder implements Sign
 		
 		final DigestAlgorithm digestAlgorithm = DSSXMLUtils.getReferenceDigestAlgorithmOrDefault(params);
 		DSSXMLUtils.incorporateDigestMethod(reference, digestAlgorithm, getXmldsigNamespace());
-		
-		final byte[] canonicalizedBytes = XMLCanonicalizer.createInstance(keyInfoCanonicalizationMethod).canonicalize(getNodeToCanonicalize(keyInfoDom));
+
+		final byte[] digestValue = DSSXMLUtils.getDigestOnCanonicalizedNode(getNodeToCanonicalize(keyInfoDom),
+				digestAlgorithm, keyInfoCanonicalizationMethod).getValue();
 		if (LOG.isTraceEnabled()) {
-			LOG.trace("Canonicalization method   --> {}", keyInfoCanonicalizationMethod);
-			LOG.trace("Canonicalized REF_KeyInfo --> {}", new String(canonicalizedBytes));
+			LOG.trace("Canonicalization method REF_KeyInfo --> {}", keyInfoCanonicalizationMethod);
+			LOG.trace("Digest on canonicalized REF_KeyInfo --> {}", Utils.toHex(digestValue));
 		}
-		incorporateDigestValueOfReference(reference, digestAlgorithm, canonicalizedBytes);
+		incorporateDigestValueOfReference(reference, digestValue);
 	}
 	
 	/**
-	 * Creates the ds:DigestValue DOM object for the given {@code canonicalizedBytes}
+	 * Creates the ds:DigestValue DOM object for the given {@code digestValue}
 	 *
 	 * @param referenceDom - the parent element to append new DOM element to
-	 * @param digestAlgorithm - {@link DigestAlgorithm} to use
-	 * @param canonicalizedBytes - canonicalized byte array of the relevant reference DOM to hash
+	 * @param digestValue - digest value of the reference computed on a canonicalized content
 	 */
-	private void incorporateDigestValueOfReference(final Element referenceDom, final DigestAlgorithm digestAlgorithm,
-												   final byte[] canonicalizedBytes) {
+	private void incorporateDigestValueOfReference(final Element referenceDom, final byte[] digestValue) {
 		final Element digestValueDom = DomUtils.createElementNS(documentDom, getXmldsigNamespace(),
 				XMLDSigElement.DIGEST_VALUE);
-		final String base64EncodedDigestBytes = Utils.toBase64(DSSUtils.digest(digestAlgorithm, canonicalizedBytes));
+		final String base64EncodedDigestBytes = Utils.toBase64(digestValue);
 		final Text textNode = documentDom.createTextNode(base64EncodedDigestBytes);
 		digestValueDom.appendChild(textNode);
 		referenceDom.appendChild(digestValueDom);

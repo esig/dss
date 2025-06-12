@@ -1,0 +1,125 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * <p>
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * <p>
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * <p>
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+package eu.europa.esig.dss.cades.validation.evidencerecord;
+
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.diagnostic.TimestampWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
+import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.simplereport.SimpleReport;
+import eu.europa.esig.dss.simplereport.jaxb.XmlEvidenceRecord;
+
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+class CAdESLevelERSDetachedOriginalNotCoveredTest extends AbstractCAdESWithEvidenceRecordTestValidation {
+
+    @Override
+    protected DSSDocument getSignedDocument() {
+        return new InMemoryDocument(CAdESLevelBWithEmbeddedEvidenceRecordTest.class.getResourceAsStream("/validation/evidence-record/C-E-ERS-detached-original-not-covered.p7s"));
+    }
+
+    @Override
+    protected List<DSSDocument> getDetachedContents() {
+        return Collections.singletonList(new InMemoryDocument("Hello World!".getBytes(), "helloworld"));
+    }
+
+    @Override
+    protected void checkSignatureLevel(DiagnosticData diagnosticData) {
+        assertEquals(SignatureLevel.CAdES_ERS, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+    }
+
+    @Override
+    protected int getNumberOfExpectedEvidenceScopes() {
+        return 2;
+    }
+
+    @Override
+    protected void checkEvidenceRecordDigestMatchers(DiagnosticData diagnosticData) {
+        SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
+        List<EvidenceRecordWrapper> evidenceRecords = signature.getEvidenceRecords();
+        assertEquals(1, evidenceRecords.size());
+
+        EvidenceRecordWrapper evidenceRecordWrapper = evidenceRecords.get(0);
+        List<XmlDigestMatcher> digestMatchers = evidenceRecordWrapper.getDigestMatchers();
+        assertEquals(2, digestMatchers.size());
+
+        int masterSigDMCounter = 0;
+        int refDMCounter = 0;
+        for (XmlDigestMatcher digestMatcher : digestMatchers) {
+            if (DigestMatcherType.EVIDENCE_RECORD_MASTER_SIGNATURE == digestMatcher.getType()) {
+                assertTrue(digestMatcher.isDataFound());
+                assertTrue(digestMatcher.isDataIntact());
+                ++masterSigDMCounter;
+            } else if (DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_OBJECT == digestMatcher.getType()) {
+                assertTrue(digestMatcher.isDataFound());
+                assertFalse(digestMatcher.isDataIntact());
+                ++refDMCounter;
+            }
+        }
+        assertEquals(1, masterSigDMCounter);
+        assertEquals(1, refDMCounter);
+    }
+
+    @Override
+    protected void checkEvidenceRecordTimestamps(DiagnosticData diagnosticData) {
+        List<EvidenceRecordWrapper> evidenceRecords = diagnosticData.getEvidenceRecords();
+        assertEquals(1, evidenceRecords.size());
+
+        EvidenceRecordWrapper evidenceRecordWrapper = evidenceRecords.get(0);
+        List<TimestampWrapper> timestampList = evidenceRecordWrapper.getTimestampList();
+        assertEquals(1, timestampList.size());
+
+        TimestampWrapper timestampWrapper = timestampList.get(0);
+        assertNotNull(timestampWrapper.getProductionTime());
+        assertTrue(timestampWrapper.isMessageImprintDataFound());
+        assertTrue(timestampWrapper.isMessageImprintDataIntact());
+        assertTrue(timestampWrapper.isSignatureIntact());
+        assertTrue(timestampWrapper.isSignatureValid());
+
+        assertTrue(timestampWrapper.isSigningCertificateIdentified());
+        assertTrue(timestampWrapper.isSigningCertificateReferencePresent());
+        assertFalse(timestampWrapper.isSigningCertificateReferenceUnique());
+    }
+
+    @Override
+    protected void verifySimpleReport(SimpleReport simpleReport) {
+        List<XmlEvidenceRecord> signatureEvidenceRecords = simpleReport.getSignatureEvidenceRecords(simpleReport.getFirstSignatureId());
+        assertEquals(1, signatureEvidenceRecords.size());
+
+        XmlEvidenceRecord evidenceRecord = signatureEvidenceRecords.get(0);
+        assertEquals(Indication.FAILED, evidenceRecord.getIndication());
+        assertEquals(SubIndication.HASH_FAILURE, evidenceRecord.getSubIndication());
+    }
+
+}

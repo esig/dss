@@ -20,23 +20,22 @@
  */
 package eu.europa.esig.dss.tsl.download;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
 import eu.europa.esig.dss.spi.client.http.MemoryDataLoader;
+import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class XmlDownloadTaskTest {
 
@@ -51,7 +50,7 @@ class XmlDownloadTaskTest {
 		DSSFileLoader dataLoader = new FileCacheDataLoader(memoryDataLoader);
 		for (String url : dataMap.keySet()) {
 			XmlDownloadTask task = new XmlDownloadTask(dataLoader, url);
-			assertThrows(DSSException.class, () -> task.get());
+			assertThrows(DSSException.class, task::get);
 		}
 	}
 

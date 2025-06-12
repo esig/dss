@@ -27,7 +27,7 @@ import eu.europa.esig.dss.diagnostic.SignerDataWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 
 import java.util.List;
@@ -40,7 +40,7 @@ class CAdESEnvelopingValidationTest extends AbstractCAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {
-		return new FileDocument("src/test/resources/validation/dss-2011/cades-enveloping.pkcs7");
+		return new InMemoryDocument(CAdESEnvelopingValidationTest.class.getResourceAsStream("/validation/dss-2011/cades-enveloping.pkcs7"));
 	}
 	
 	@Override

@@ -244,6 +244,12 @@ public class CommonsDataLoader implements DataLoader {
 	private transient HttpClientResponseHandler<byte[]> httpClientResponseHandler = new CommonsHttpClientResponseHandler();
 
 	/**
+	 * Collection of allowed host names for LDAP get request.
+	 * NOTE: if not defined, all host names are allowed.
+	 */
+	private Collection<String> ldapTrustedHostnames;
+
+	/**
 	 * The default constructor for CommonsDataLoader.
 	 */
 	public CommonsDataLoader() {
@@ -764,6 +770,19 @@ public class CommonsDataLoader implements DataLoader {
 		this.httpClientResponseHandler = httpClientResponseHandler;
 	}
 
+	/**
+	 * Sets a collection of allowed host names to perform an LDAP get request.
+	 * The name of the host shall be defined in the complete form corresponding to the full domain name extracted
+	 * from an extracted LDAP URL.
+	 * E.g. "ldap.infonotary.com" for LDAP URL "ldap://ldap.infonotary.com/dc=identity-ca,dc=infonotary,dc=com".
+	 * NOTE: when not defined, all LDAP URLs will be accepted.
+	 *
+	 * @param ldapTrustedHostnames a collection of allowed host name {@link String}s
+	 */
+	public void setLdapTrustedHostnames(Collection<String> ldapTrustedHostnames) {
+		this.ldapTrustedHostnames = ldapTrustedHostnames;
+	}
+
 	@Override
 	public byte[] get(final String urlString) {
 		if (Protocol.isFileUrl(urlString)) {
@@ -814,12 +833,17 @@ public class CommonsDataLoader implements DataLoader {
 	 * @return byte array
 	 */
 	protected byte[] ldapGet(String urlString) {
+		String host = LdapURLUtils.getHost(urlString);
+		if (ldapTrustedHostnames != null && !ldapTrustedHostnames.contains(host)) {
+			throw new DSSExternalResourceException(String.format(
+					"Cannot get data from URL [%s]. Reason : [Untrusted host name '%s']", urlString, host));
+		}
 
 		urlString = LdapURLUtils.encode(urlString);
 
-		final Hashtable<String, String> env = new Hashtable<>();
-		env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
+		final Hashtable<String, String> env = initLdapContextEnvironment();
 		env.put(Context.PROVIDER_URL, urlString);
+
 		try {
 
 			// parse URL according to the template: 'ldap://host:port/DN?attributes?scope?filter?extensions'
@@ -849,6 +873,17 @@ public class CommonsDataLoader implements DataLoader {
 		} catch (Exception e) {
 			throw new DSSExternalResourceException(String.format("Cannot get data from URL [%s]. Reason : [%s]", urlString, e.getMessage()), e);
 		}
+	}
+
+	/**
+	 * Creates an LDAP Context environment
+	 *
+	 * @return {@link Hashtable} containing a list of properties for the LDAP environment
+	 */
+	protected Hashtable<String, String> initLdapContextEnvironment() {
+		final Hashtable<String, String> env = new Hashtable<>();
+		env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
+		return env;
 	}
 
 	/**

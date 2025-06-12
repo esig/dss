@@ -112,7 +112,7 @@ class XmlNonAdESExtensionBToLTAWithExpiredUserTest extends AbstractXAdESTestExte
 
         Exception exception = assertThrows(AlertException.class, () -> super.extendSignature(signedDocument));
         assertTrue(exception.getMessage().contains("Error on signature augmentation"));
-        assertTrue(exception.getMessage().contains("is expired at signing time"));
+        assertTrue(exception.getMessage().contains("The signing certificate has expired"));
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(getSigningCert().getNotAfter());
@@ -123,7 +123,7 @@ class XmlNonAdESExtensionBToLTAWithExpiredUserTest extends AbstractXAdESTestExte
 
         exception = assertThrows(AlertException.class, () -> super.extendSignature(signedDocument));
         assertTrue(exception.getMessage().contains("Error on signature augmentation"));
-        assertTrue(exception.getMessage().contains("is expired at signing time"));
+        assertTrue(exception.getMessage().contains("The signing certificate has expired"));
 
         certificateVerifier.setAlertOnExpiredCertificate(new SilentOnStatusAlert());
 

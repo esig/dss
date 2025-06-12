@@ -28,7 +28,8 @@ import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.SelfIssuedOCSPCheck;
@@ -60,7 +61,7 @@ class SelfIssuedOCSPCheckTest extends AbstractTestCheck {
 
 		XmlRAC result = new XmlRAC();
 		SelfIssuedOCSPCheck sioc = new SelfIssuedOCSPCheck(i18nProvider, result, new CertificateWrapper(xmlCertificate),
-				new RevocationWrapper(xmlRevocation), constraint);
+				new RevocationWrapper(xmlRevocation), new LevelConstraintWrapper(constraint));
 		sioc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -86,7 +87,7 @@ class SelfIssuedOCSPCheckTest extends AbstractTestCheck {
 
 		XmlRAC result = new XmlRAC();
 		SelfIssuedOCSPCheck sioc = new SelfIssuedOCSPCheck(i18nProvider, result, new CertificateWrapper(xmlCertificate),
-				new RevocationWrapper(xmlRevocation), constraint);
+				new RevocationWrapper(xmlRevocation), new LevelConstraintWrapper(constraint));
 		sioc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

@@ -4,7 +4,7 @@ POST /services/rest/certificate-validation/validateCertificate HTTP/1.1
 Accept: application/json, application/javascript, text/javascript, text/json
 Content-Type: application/json
 Host: localhost:8080
-Content-Length: 2215
+Content-Length: 2247
 
 {
   "certificate" : {
@@ -15,6 +15,7 @@ Content-Length: 2215
   } ],
   "validationTime" : null,
   "policy" : null,
+  "cryptographicSuite" : null,
   "tokenExtractionStrategy" : "NONE"
 }
 ----

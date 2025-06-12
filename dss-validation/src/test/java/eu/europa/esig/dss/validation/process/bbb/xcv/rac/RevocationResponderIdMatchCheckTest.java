@@ -31,7 +31,8 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlRelatedCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRevocation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.checks.RevocationResponderIdMatchCheck;
@@ -61,7 +62,7 @@ class RevocationResponderIdMatchCheckTest extends AbstractTestCheck {
 
         XmlRAC result = new XmlRAC();
         RevocationResponderIdMatchCheck rrimc = new RevocationResponderIdMatchCheck(i18nProvider, result,
-                new RevocationWrapper(xmlRevocation), constraint);
+                new RevocationWrapper(xmlRevocation), new LevelConstraintWrapper(constraint));
         rrimc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -87,7 +88,7 @@ class RevocationResponderIdMatchCheckTest extends AbstractTestCheck {
 
         XmlRAC result = new XmlRAC();
         RevocationResponderIdMatchCheck rrimc = new RevocationResponderIdMatchCheck(i18nProvider, result,
-                new RevocationWrapper(xmlRevocation), constraint);
+                new RevocationWrapper(xmlRevocation), new LevelConstraintWrapper(constraint));
         rrimc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -109,7 +110,7 @@ class RevocationResponderIdMatchCheckTest extends AbstractTestCheck {
 
         XmlRAC result = new XmlRAC();
         RevocationResponderIdMatchCheck rrimc = new RevocationResponderIdMatchCheck(i18nProvider, result,
-                new RevocationWrapper(xmlRevocation), constraint);
+                new RevocationWrapper(xmlRevocation), new LevelConstraintWrapper(constraint));
         rrimc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -131,7 +132,7 @@ class RevocationResponderIdMatchCheckTest extends AbstractTestCheck {
 
         XmlRAC result = new XmlRAC();
         RevocationResponderIdMatchCheck rrimc = new RevocationResponderIdMatchCheck(i18nProvider, result,
-                new RevocationWrapper(xmlRevocation), constraint);
+                new RevocationWrapper(xmlRevocation), new LevelConstraintWrapper(constraint));
         rrimc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

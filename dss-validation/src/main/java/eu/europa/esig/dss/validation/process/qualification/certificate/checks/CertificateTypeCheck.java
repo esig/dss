@@ -27,7 +27,7 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.ValidationTime;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
 /**
@@ -49,10 +49,10 @@ public class CertificateTypeCheck extends ChainItem<XmlValidationCertificateQual
 	 * @param result {@link XmlValidationCertificateQualification}
 	 * @param type {@link CertificateType}
 	 * @param validationTime {@link ValidationTime}
-	 * @param constraint {@link LevelConstraint}
+	 * @param constraint {@link LevelRule}
 	 */
 	public CertificateTypeCheck(I18nProvider i18nProvider, XmlValidationCertificateQualification result,
-								CertificateType type, ValidationTime validationTime, LevelConstraint constraint) {
+								CertificateType type, ValidationTime validationTime, LevelRule constraint) {
 		super(i18nProvider, result, constraint);
 
 		this.type = type;

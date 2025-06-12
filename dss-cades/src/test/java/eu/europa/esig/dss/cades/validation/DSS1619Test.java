@@ -26,7 +26,7 @@ import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 
 import java.util.List;
 
@@ -37,7 +37,7 @@ class DSS1619Test extends AbstractCAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {
-		return new FileDocument("src/test/resources/validation/dss-1619/CAdES-XL-T1-Double-AV2.png.p7m");
+		return new InMemoryDocument(DSS1619Test.class.getResourceAsStream("/validation/dss-1619/CAdES-XL-T1-Double-AV2.png.p7m"));
 	}
 	
 	@Override

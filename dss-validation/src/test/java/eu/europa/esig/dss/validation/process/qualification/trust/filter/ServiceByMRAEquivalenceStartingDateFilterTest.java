@@ -22,9 +22,9 @@ package eu.europa.esig.dss.validation.process.qualification.trust.filter;
 
 import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 import eu.europa.esig.dss.utils.Utils;
+import jakarta.xml.bind.DatatypeConverter;
 import org.junit.jupiter.api.Test;
 
-import jakarta.xml.bind.DatatypeConverter;
 import java.util.ArrayList;
 import java.util.Date;
 

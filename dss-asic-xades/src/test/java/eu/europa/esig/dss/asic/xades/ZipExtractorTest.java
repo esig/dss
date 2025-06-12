@@ -172,9 +172,7 @@ class ZipExtractorTest extends PKIFactoryAccess {
 		
 		ToBeSigned dataToSign = service.getDataToSign(documentToSign, signatureParameters);
 		SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
-		DSSDocument signedDocument = service.signDocument(documentToSign, signatureParameters, signatureValue);
-		
-		return signedDocument;
+        return service.signDocument(documentToSign, signatureParameters, signatureValue);
 	}
 	
 	private void checkDocuments(DSSDocument original, DSSDocument signed) {		

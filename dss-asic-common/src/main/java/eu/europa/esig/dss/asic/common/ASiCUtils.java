@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.asic.common;
 
+import eu.europa.esig.dss.asic.common.validation.ASiCManifestParser;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.MimeType;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
@@ -113,28 +114,28 @@ public final class ASiCUtils {
 	public static final String ASICE_METAINF_MANIFEST = META_INF_FOLDER + ASIC_XAdES_MANIFEST_FILENAME + XML_EXTENSION;
 
 	/** The default signature filename for ASiC-E with XAdES container */
-	public static final String ASICE_METAINF_XADES_SIGNATURE = ASiCUtils.META_INF_FOLDER + "signatures001.xml";
+	public static final String ASICE_METAINF_XADES_SIGNATURE = META_INF_FOLDER + "signatures001.xml";
 
 	/** The default signature filename for ASiC-E with CAdES container */
-	public static final String ASICE_METAINF_CADES_SIGNATURE = ASiCUtils.META_INF_FOLDER + "signature001.p7s";
+	public static final String ASICE_METAINF_CADES_SIGNATURE = META_INF_FOLDER + "signature001.p7s";
 
 	/** The default timestamp filename for ASiC-E with CAdES container */
-	public static final String ASICE_METAINF_CADES_TIMESTAMP = ASiCUtils.META_INF_FOLDER + "timestamp001.tst";
+	public static final String ASICE_METAINF_CADES_TIMESTAMP = META_INF_FOLDER + "timestamp001.tst";
 
 	/** The default ERS evidence record filename for ASiC-E with CAdES container */
-	public static final String ASICE_METAINF_CADES_EVIDENCE_RECORD_ASN1 = ASiCUtils.META_INF_FOLDER + "evidencerecord001.ers";
+	public static final String ASICE_METAINF_CADES_EVIDENCE_RECORD_ASN1 = META_INF_FOLDER + "evidencerecord001.ers";
 
 	/** The default XMLERS evidence record filename for ASiC-E with CAdES container */
-	public static final String ASICE_METAINF_CADES_EVIDENCE_RECORD_XML = ASiCUtils.META_INF_FOLDER + "evidencerecord001.xml";
+	public static final String ASICE_METAINF_CADES_EVIDENCE_RECORD_XML = META_INF_FOLDER + "evidencerecord001.xml";
 
 	/** The default ASIC manifest filename for ASiC-E with CAdES container */
-	public static final String ASICE_METAINF_CADES_MANIFEST = ASiCUtils.META_INF_FOLDER + "ASiCManifest001.xml";
+	public static final String ASICE_METAINF_CADES_MANIFEST = META_INF_FOLDER + "ASiCManifest001.xml";
 
 	/** The default ASIC archive manifest filename for ASiC-E with CAdES container */
-	public static final String ASICE_METAINF_CADES_ARCHIVE_MANIFEST = ASiCUtils.META_INF_FOLDER + "ASiCArchiveManifest001.xml";
+	public static final String ASICE_METAINF_CADES_ARCHIVE_MANIFEST = META_INF_FOLDER + "ASiCArchiveManifest001.xml";
 
 	/** The default ASIC evidence record manifest filename for ASiC-E container */
-	public static final String ASICE_METAINF_EVIDENCE_RECORD_MANIFEST = ASiCUtils.META_INF_FOLDER + "ASiCEvidenceRecordManifest001.xml";
+	public static final String ASICE_METAINF_EVIDENCE_RECORD_MANIFEST = META_INF_FOLDER + "ASiCEvidenceRecordManifest001.xml";
 
 	/** The ASiC-S with CAdES signature document name (META-INF/signature.p7s) */
 	public static final String SIGNATURE_P7S = META_INF_FOLDER + SIGNATURE_FILENAME + CADES_SIGNATURE_EXTENSION;
@@ -149,7 +150,7 @@ public final class ASiCUtils {
 	public static final String EVIDENCE_RECORD_XML = META_INF_FOLDER + EVIDENCE_RECORD_FILENAME + XML_EXTENSION;
 
 	/** Identifies a first bytes of a zip archive document */
-	public static final byte[] ZIP_PREFIX = new byte[] {'P','K'};
+	private static final byte[] ZIP_PREFIX = new byte[] {'P','K'};
 
 	/** The zip comment identifier in the end of ZIP archive */
 	private static final byte[] MAGIC_DIR = { 0x50, 0x4b, 0x05, 0x06 };
@@ -330,10 +331,25 @@ public final class ASiCUtils {
 		}
 		return isASiCE(asicParameters) ? MimeTypeEnum.ASICE : MimeTypeEnum.ASICS;
 	}
+
+	/**
+	 * Checks if the list of filenames contains a document within the /META-INF folder
+	 *
+	 * @param filenames a list of file names
+	 * @return TRUE if the list of filename contains a file within the /META-INF folder,
+	 *         FALSE otherwise
+	 */
+	public static boolean filesContainMetaInfFolder(List<String> filenames) {
+		for (String filename : filenames) {
+			if (filename.startsWith(META_INF_FOLDER)) {
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	/**
-	 * Checks if the list of filenames contains a signature with the expected
-	 * {@code extension}
+	 * Checks if the list of filenames contains a signature with the expected {@code extension}
 	 * 
 	 * @param filenames a list of file names
 	 * @param extension {@link String} signature file extension to find
@@ -406,7 +422,8 @@ public final class ASiCUtils {
 	public static boolean isAsicFileContent(List<String> filenames) {
 		return filesContainCorrectSignatureFileWithExtension(filenames, CADES_SIGNATURE_EXTENSION)
 				|| filesContainCorrectSignatureFileWithExtension(filenames, XML_EXTENSION)
-				|| filesContainTimestamps(filenames);
+				|| filesContainTimestamps(filenames)
+				|| filesContainEvidenceRecords(filenames);
 	}
 
 	/**
@@ -443,6 +460,20 @@ public final class ASiCUtils {
 		} catch (IOException e) {
 			throw new IllegalInputException("Unable to read the 2 first bytes", e);
 		}
+	}
+
+	/**
+	 * This method verifies whether the given {@code document} represents an ASiC container
+	 *
+	 * @param document {@link DSSDocument} to verify
+	 * @return TRUE if the document is an ASiC container, FALSE otherwise
+	 */
+	public static boolean isASiC(DSSDocument document) {
+		if (isZip(document)) {
+			List<String> filenames = ZipUtils.getInstance().extractEntryNames(document);
+			return filesContainMetaInfFolder(filenames);
+		}
+		return false;
 	}
 
 	/**
@@ -962,6 +993,29 @@ public final class ASiCUtils {
 			entries.add(entry);
 		}
 		return entries;
+	}
+
+	/**
+	 * Checks if a document (e.g. a signature) with the given filename is covered by a manifest
+	 *
+	 * @param manifestDocuments a list of manifest {@link DSSDocument}s extracted from the archive
+	 * @param filename {@link String} a filename of a document to check
+	 * @return TRUE if the document is covered by a manifest, FALSE otherwise
+	 */
+	public static boolean isCoveredByManifest(List<DSSDocument> manifestDocuments, String filename) {
+		if (Utils.isCollectionNotEmpty(manifestDocuments)) {
+			for (DSSDocument archiveManifest : manifestDocuments) {
+				ManifestFile manifestFile = ASiCManifestParser.getManifestFile(archiveManifest);
+				if (manifestFile != null) {
+					for (ManifestEntry entry : manifestFile.getEntries()) {
+						if (filename != null && filename.equals(entry.getUri())) {
+							return true;
+						}
+					}
+				}
+			}
+		}
+		return false;
 	}
 
 }

@@ -40,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class PAdESAllSelfSignedCertsTest extends PKIFactoryAccess {
+class PAdESAllSelfSignedCertsTest extends PKIFactoryAccess {
 	
 	private DSSDocument documentToSign;
 	private PAdESSignatureParameters parameters;
@@ -49,7 +49,7 @@ public class PAdESAllSelfSignedCertsTest extends PKIFactoryAccess {
 	
 	@BeforeEach
 	void init() {
-		documentToSign = new InMemoryDocument(PAdESLevelBTest.class.getResourceAsStream("/sample.pdf"));
+		documentToSign = new InMemoryDocument(PAdESAllSelfSignedCertsTest.class.getResourceAsStream("/sample.pdf"));
 		
 		parameters = new PAdESSignatureParameters();
 		parameters.setSigningCertificate(getSigningCert());

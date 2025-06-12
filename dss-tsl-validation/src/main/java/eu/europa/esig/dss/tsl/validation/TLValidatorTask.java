@@ -29,9 +29,8 @@ import eu.europa.esig.dss.enumerations.TokenExtractionStrategy;
 import eu.europa.esig.dss.enumerations.ValidationLevel;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.ValidationPolicyFacade;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.policy.SignaturePolicyProvider;
@@ -41,6 +40,7 @@ import eu.europa.esig.dss.spi.validation.executor.SkipValidationContextExecutor;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.spi.x509.TrustedCertificateSource;
+import eu.europa.esig.dss.validation.policy.ValidationPolicyLoader;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.definition.XAdESPath;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
@@ -55,6 +55,9 @@ import java.util.function.Supplier;
  * This class allows to validate TL or LOTL.
  */
 public class TLValidatorTask implements Supplier<ValidationResult> {
+
+	/** The path for a LOTL/TL validation policy */
+	private static final String TRUSTED_LIST_VALIDATION_POLICY_LOCATION = "/policy/tsl-constraint.xml";
 
 	/** The Trusted List document to validate */
 	private final DSSDocument trustedList;
@@ -132,7 +135,8 @@ public class TLValidatorTask implements Supplier<ValidationResult> {
 
 	private ValidationPolicy getTrustedListValidationPolicy() {
 		try {
-			return ValidationPolicyFacade.newFacade().getTrustedListValidationPolicy();
+			return ValidationPolicyLoader.fromValidationPolicy(
+					TLValidatorTask.class.getResourceAsStream(TRUSTED_LIST_VALIDATION_POLICY_LOCATION)).create();
 		} catch (Exception e) {
 			throw new DSSException("Unable to load the validation policy for trusted list", e);
 		}

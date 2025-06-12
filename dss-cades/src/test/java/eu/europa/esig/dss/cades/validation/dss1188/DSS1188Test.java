@@ -20,27 +20,27 @@
  */
 package eu.europa.esig.dss.cades.validation.dss1188;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.Arrays;
-import java.util.List;
-
 import eu.europa.esig.dss.cades.validation.AbstractCAdESTestValidation;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
+
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class DSS1188Test extends AbstractCAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {
-		return new FileDocument("src/test/resources/validation/dss-1188/Test.bin.sig");
+		return new InMemoryDocument(DSS1188Test.class.getResourceAsStream("/validation/dss-1188/Test.bin.sig"));
 	}
 	
 	@Override
 	protected List<DSSDocument> getDetachedContents() {
-		return Arrays.asList(new FileDocument("src/test/resources/validation/dss-1188/Test.bin"));
+		return Collections.singletonList(new InMemoryDocument(DSS1188Test.class.getResourceAsStream("/validation/dss-1188/Test.bin")));
 	}
 	
 	@Override

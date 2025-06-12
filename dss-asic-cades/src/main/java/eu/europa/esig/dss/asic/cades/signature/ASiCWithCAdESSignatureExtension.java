@@ -20,19 +20,20 @@
  */
 package eu.europa.esig.dss.asic.cades.signature;
 
-import eu.europa.esig.dss.asic.cades.validation.ASiCWithCAdESUtils;
 import eu.europa.esig.dss.asic.common.ASiCContent;
 import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.validation.ASiCManifestParser;
 import eu.europa.esig.dss.cades.CAdESSignatureParameters;
+import eu.europa.esig.dss.cades.CAdESUtils;
 import eu.europa.esig.dss.cades.signature.CAdESService;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
-import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
+import eu.europa.esig.dss.spi.signature.resources.DSSResourcesHandlerBuilder;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -58,6 +59,9 @@ public class ASiCWithCAdESSignatureExtension implements Serializable {
     /** The CAdESService to be used for a CAdES signature extension */
     private CAdESService cadesService;
 
+    /** This object is used to create data container objects such as an OutputStream or a DSSDocument */
+    protected DSSResourcesHandlerBuilder resourcesHandlerBuilder;
+
     /**
      * Default constructor
      *
@@ -67,6 +71,16 @@ public class ASiCWithCAdESSignatureExtension implements Serializable {
     public ASiCWithCAdESSignatureExtension(final CertificateVerifier certificateVerifier, final TSPSource tspSource) {
         this.certificateVerifier = certificateVerifier;
         this.tspSource = tspSource;
+    }
+
+    /**
+     * This method sets a {@code DSSResourcesHandlerBuilder} to be used for operating with internal objects
+     * during the signature creation procedure.
+     *
+     * @param resourcesHandlerBuilder {@link DSSResourcesHandlerBuilder}
+     */
+    public void setResourcesHandlerBuilder(DSSResourcesHandlerBuilder resourcesHandlerBuilder) {
+        this.resourcesHandlerBuilder = resourcesHandlerBuilder;
     }
 
     /**
@@ -85,10 +99,11 @@ public class ASiCWithCAdESSignatureExtension implements Serializable {
         }
 
         for (DSSDocument signature : signatureDocuments) {
-            boolean coveredByManifest = isCoveredByManifest(asicContent, signature);
-            if (extensionRequired(parameters, coveredByManifest)) {
-                // not to extend the signature covered by a manifest
-                assertExtendSignaturePossible(parameters, coveredByManifest);
+            boolean coveredByArchiveManifest = isCoveredByArchiveManifest(asicContent, signature);
+            if (extensionRequired(parameters, coveredByArchiveManifest)) {
+                // to not extend a signature covered by any other manifest
+                boolean coveredByAnyManifest = isCoveredByAnyManifest(asicContent, signature);
+                assertExtendSignaturePossible(parameters, coveredByAnyManifest);
 
                 DSSDocument extendedSignature = extendSignatureDocument(signature, asicContent, parameters);
                 ASiCUtils.addOrReplaceDocument(signatureDocuments, extendedSignature);
@@ -134,6 +149,9 @@ public class ASiCWithCAdESSignatureExtension implements Serializable {
         if (cadesService == null) {
             cadesService = new CAdESService(certificateVerifier);
             cadesService.setTspSource(tspSource);
+            if (CAdESUtils.DEFAULT_RESOURCES_HANDLER_BUILDER != resourcesHandlerBuilder) {
+                cadesService.setResourcesHandlerBuilder(resourcesHandlerBuilder);
+            }
         }
         return cadesService;
     }
@@ -160,7 +178,7 @@ public class ASiCWithCAdESSignatureExtension implements Serializable {
         SignatureLevel signatureLevel = parameters.getSignatureLevel();
         if ((CAdES_BASELINE_T.equals(signatureLevel) || CAdES_BASELINE_LT.equals(signatureLevel)) && coveredByManifest) {
             throw new IllegalInputException(String.format(
-                    "Cannot extend signature to '%s'. The signature is already covered by an archive manifest.", signatureLevel));
+                    "Cannot extend signature to '%s'. The signature is already covered by a manifest file.", signatureLevel));
         }
     }
 
@@ -171,8 +189,19 @@ public class ASiCWithCAdESSignatureExtension implements Serializable {
      * @param signature {@link DSSDocument}
      * @return TRUE if the signature is covered by an archive manifest, FALSE otherwise
      */
-    protected boolean isCoveredByManifest(ASiCContent asicContent, DSSDocument signature) {
-        return ASiCWithCAdESUtils.isCoveredByManifest(asicContent.getAllManifestDocuments(), signature.getName());
+    protected boolean isCoveredByArchiveManifest(ASiCContent asicContent, DSSDocument signature) {
+        return ASiCUtils.isCoveredByManifest(asicContent.getArchiveManifestDocuments(), signature.getName());
+    }
+
+    /**
+     * Verifies whether the {@code signature} document is covered by any ASiC Manifest file
+     *
+     * @param asicContent {@link ASiCContent}
+     * @param signature {@link DSSDocument}
+     * @return TRUE if the signature is covered by any ASiC Manifest file, FALSE otherwise
+     */
+    protected boolean isCoveredByAnyManifest(ASiCContent asicContent, DSSDocument signature) {
+        return ASiCUtils.isCoveredByManifest(asicContent.getAllManifestDocuments(), signature.getName());
     }
 
 }

@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.validation.executor.signature;
 
 import eu.europa.esig.dss.detailedreport.DetailedReport;
+import eu.europa.esig.dss.diagnostic.AbstractTokenProxy;
 import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -30,6 +31,7 @@ import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlLangAndValue;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlTimestampedObject;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustService;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustServiceProvider;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -39,7 +41,7 @@ import eu.europa.esig.dss.enumerations.TimestampQualification;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.jaxb.object.Message;
-import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.simplereport.jaxb.XmlCertificate;
 import eu.europa.esig.dss.simplereport.jaxb.XmlCertificateChain;
 import eu.europa.esig.dss.simplereport.jaxb.XmlDetails;
@@ -170,7 +172,12 @@ public class SimpleReportBuilder {
 			attachedTimestampIds.addAll(timestamp.getEvidenceRecordTimestampIds());
 			Indication tstValidationIndication = detailedReport.getBasicTimestampValidationIndication(timestamp.getId());
 			if (tstValidationIndication != null) {
-				simpleReport.getSignatureOrTimestampOrEvidenceRecord().add(getXmlTimestamp(timestamp));
+				XmlTimestamp xmlTimestamp = getXmlTimestamp(timestamp);
+				if (isValidConclusion(timestamp.getId())) {
+					// perform extension period check only for detached timestamps
+					determineExtensionPeriod(xmlTimestamp);
+				}
+				simpleReport.getSignatureOrTimestampOrEvidenceRecord().add(xmlTimestamp);
 			}
 		}
 
@@ -621,6 +628,10 @@ public class SimpleReportBuilder {
 			xmlEvidenceRecord.setAdESValidationDetails(validationDetails);
 		}
 
+		if (isValidConclusion(evidenceRecordId)) {
+			determineExtensionPeriod(xmlEvidenceRecord);
+		}
+
 		if (Utils.isCollectionNotEmpty(evidenceRecordWrapper.getEvidenceRecordScopes())) {
 			for (eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope timestampScope : evidenceRecordWrapper.getEvidenceRecordScopes()) {
 				xmlEvidenceRecord.getEvidenceRecordScope().add(getXmlSignatureScope(timestampScope));
@@ -641,6 +652,11 @@ public class SimpleReportBuilder {
 			}
 		}
 
+		if (evidenceRecordWrapper.isEmbedded()) {
+			xmlEvidenceRecord.setEmbedded(true);
+			xmlEvidenceRecord.setParentId(evidenceRecordWrapper.getParent().getId());
+		}
+
 		return xmlEvidenceRecord;
 	}
 
@@ -654,16 +670,75 @@ public class SimpleReportBuilder {
 
 	private void determineExtensionPeriod(XmlSignature xmlSignature) {
 		SignatureWrapper signatureWrapper = diagnosticData.getSignatureById(xmlSignature.getId());
-		xmlSignature.setExtensionPeriodMin(getMinExtensionPeriod(signatureWrapper));
-		xmlSignature.setExtensionPeriodMax(getMaxExtensionPeriod(signatureWrapper));
+		List<TimestampWrapper> timestampList = getAllTimestampsForSignature(signatureWrapper);
+		xmlSignature.setExtensionPeriodMin(getMinExtensionPeriod(signatureWrapper, timestampList));
+		xmlSignature.setExtensionPeriodMax(getMaxExtensionPeriod(signatureWrapper, timestampList));
 	}
 
-	private Date getMinExtensionPeriod(SignatureWrapper signatureWrapper) {
+	private List<TimestampWrapper> getAllTimestampsForSignature(SignatureWrapper signatureWrapper) {
+		final List<TimestampWrapper> timestampList = new ArrayList<>(signatureWrapper.getAllTimestampsProducedAfterSignatureCreation());
+		timestampList.addAll(getEvidenceRecordTimestampsForTokenWithId(signatureWrapper.getId()));
+		return timestampList;
+	}
 
+	private void determineExtensionPeriod(XmlTimestamp xmlTimestamp) {
+		TimestampWrapper timestampWrapper = diagnosticData.getTimestampById(xmlTimestamp.getId());
+		List<TimestampWrapper> timestampList = getAllTimestampsForTimestamp(timestampWrapper);
+		xmlTimestamp.setExtensionPeriodMin(getMinExtensionPeriod(timestampWrapper, timestampList));
+		xmlTimestamp.setExtensionPeriodMax(getMaxExtensionPeriod(timestampWrapper, timestampList));
+	}
+
+	private List<TimestampWrapper> getAllTimestampsForTimestamp(TimestampWrapper timestampWrapper) {
+		final List<TimestampWrapper> timestampList = new ArrayList<>();
+
+		for (TimestampWrapper timestamp : diagnosticData.getTimestampList()) {
+			List<XmlTimestampedObject> timestampedObjects = timestamp.getTimestampedObjects();
+			if (containObjectWithId(timestampedObjects, timestampWrapper.getId())) {
+				timestampList.add(timestamp);
+			}
+		}
+
+		timestampList.addAll(getEvidenceRecordTimestampsForTokenWithId(timestampWrapper.getId()));
+
+		return timestampList;
+	}
+
+	private void determineExtensionPeriod(XmlEvidenceRecord xmlEvidenceRecord) {
+		EvidenceRecordWrapper evidenceRecordWrapper = diagnosticData.getEvidenceRecordById(xmlEvidenceRecord.getId());
+		List<TimestampWrapper> timestampList = getAllTimestampsForEvidenceRecord(evidenceRecordWrapper);
+		xmlEvidenceRecord.setExtensionPeriodMin(getMinExtensionPeriodForTimestampList(timestampList));
+		xmlEvidenceRecord.setExtensionPeriodMax(getMaxExtensionPeriodForTimestampList(timestampList));
+	}
+
+	private List<TimestampWrapper> getAllTimestampsForEvidenceRecord(EvidenceRecordWrapper evidenceRecordWrapper) {
+		final List<TimestampWrapper> timestampList = new ArrayList<>(evidenceRecordWrapper.getTimestampList());
+		timestampList.addAll(getEvidenceRecordTimestampsForTokenWithId(evidenceRecordWrapper.getId()));
+		return timestampList;
+	}
+
+	private List<TimestampWrapper> getEvidenceRecordTimestampsForTokenWithId(String tokenId) {
+		final List<TimestampWrapper> timestampList = new ArrayList<>();
+
+		for (EvidenceRecordWrapper evidenceRecord : diagnosticData.getEvidenceRecords()) {
+			if (!isValidConclusion(evidenceRecord.getId())) {
+				continue;
+			}
+
+			List<XmlTimestampedObject> coveredObjects = evidenceRecord.getCoveredObjects();
+			if (containObjectWithId(coveredObjects, tokenId)) {
+				timestampList.addAll(evidenceRecord.getTimestampList());
+			}
+		}
+
+		return timestampList;
+	}
+
+	private Date getMinExtensionPeriod(AbstractTokenProxy token, List<TimestampWrapper> timestampList) {
 		Date min = null;
-		List<List<CertificateWrapper>> chains = new ArrayList<>();
-		chains.add(signatureWrapper.getCertificateChain());
-		List<RelatedRevocationWrapper> relatedRevocations = signatureWrapper.foundRevocations().getRelatedRevocationData();
+
+		final List<List<CertificateWrapper>> chains = new ArrayList<>();
+		chains.add(token.getCertificateChain());
+		List<RelatedRevocationWrapper> relatedRevocations = token.foundRevocations().getRelatedRevocationData();
 		for (RevocationWrapper revocation : relatedRevocations) {
 			chains.add(revocation.getCertificateChain());
 		}
@@ -677,7 +752,17 @@ public class SimpleReportBuilder {
 			}
 		}
 
-		List<TimestampWrapper> timestampList = signatureWrapper.getTimestampList();
+		Date minExtensionPeriodForTimestampList = getMinExtensionPeriodForTimestampList(timestampList);
+		if (minExtensionPeriodForTimestampList != null && (min == null || min.before(minExtensionPeriodForTimestampList))) {
+			min = minExtensionPeriodForTimestampList;
+		}
+
+		return min;
+	}
+
+	private Date getMinExtensionPeriodForTimestampList(List<TimestampWrapper> timestampList) {
+		Date min = null;
+
 		for (TimestampWrapper timestampWrapper : timestampList) {
 			Date certChainMin = getMinExtensionPeriodForChain(timestampWrapper.getCertificateChain(), timestampWrapper.getProductionTime());
 			if (certChainMin != null) {
@@ -742,29 +827,46 @@ public class SimpleReportBuilder {
 		return min;
 	}
 
-	private Date getMaxExtensionPeriod(SignatureWrapper signatureWrapper) {
-		Date max = null;
+	private Date getMaxExtensionPeriod(AbstractTokenProxy token, List<TimestampWrapper> timestampList) {
+		Date max;
 
-		CertificateWrapper signingCertificate = signatureWrapper.getSigningCertificate();
+		CertificateWrapper signingCertificate = token.getSigningCertificate();
 		if (signingCertificate != null) {
 			max = signingCertificate.getNotAfter();
+		} else {
+			return null;
 		}
 
-		List<TimestampWrapper> timestampList = signatureWrapper.getAllTimestampsProducedAfterSignatureCreation();
+		Date maxTimestampExtensionPeriod = getMaxExtensionPeriodForTimestampList(timestampList);
+		if (maxTimestampExtensionPeriod != null && maxTimestampExtensionPeriod.after(max)) {
+			max = maxTimestampExtensionPeriod;
+		}
+
+		return max;
+	}
+
+	private Date getMaxExtensionPeriodForTimestampList(List<TimestampWrapper> timestampList) {
+		Date max = null;
 		for (TimestampWrapper timestampWrapper : timestampList) {
-			if (!timestampWrapper.isSignatureValid()) {
+			if (!isValidConclusion(timestampWrapper.getId())) {
 				continue;
 			}
 			CertificateWrapper timestampSigningCertificate = timestampWrapper.getSigningCertificate();
-			List<SignatureWrapper> timestampedSignatures = timestampWrapper.getTimestampedSignatures();
-			if (timestampSigningCertificate != null && timestampedSignatures.contains(signatureWrapper)) {
-				if (timestampSigningCertificate.getNotAfter().after(max)) {
-					max = timestampSigningCertificate.getNotAfter();
-				}
+			if (timestampSigningCertificate != null && (max == null || timestampSigningCertificate.getNotAfter().after(max))) {
+				max = timestampSigningCertificate.getNotAfter();
 			}
 		}
 
 		return max;
+	}
+
+	private boolean isValidConclusion(String tokenId) {
+		Indication finalIndication = detailedReport.getFinalIndication(tokenId);
+		return Indication.TOTAL_PASSED == finalIndication || Indication.PASSED == finalIndication;
+	}
+
+	private boolean containObjectWithId(List<XmlTimestampedObject> timestampedObjects, String tokenId) {
+		return timestampedObjects.stream().anyMatch(o -> tokenId.equals(o.getToken().getId()));
 	}
 
 }

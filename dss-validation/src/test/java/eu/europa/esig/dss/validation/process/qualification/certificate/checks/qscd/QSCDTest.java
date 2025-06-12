@@ -39,9 +39,9 @@ import eu.europa.esig.dss.enumerations.QCType;
 import eu.europa.esig.dss.enumerations.QSCDStatus;
 import eu.europa.esig.dss.enumerations.ServiceQualification;
 import eu.europa.esig.dss.utils.Utils;
+import jakarta.xml.bind.DatatypeConverter;
 import org.junit.jupiter.api.Test;
 
-import jakarta.xml.bind.DatatypeConverter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;

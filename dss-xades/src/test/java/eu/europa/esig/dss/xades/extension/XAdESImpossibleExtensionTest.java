@@ -55,7 +55,7 @@ class XAdESImpossibleExtensionTest extends PKIFactoryAccess {
 		parameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_T);
 
 		Exception exception = assertThrows(IllegalInputException.class, () -> service.extendDocument(doc, parameters));
-		assertEquals("Signing-certificate token was not found! Unable to verify its validity range. " +
+		assertEquals("Signing-certificate token was not found! Unable to verify its validity. " +
 						"Provide signing-certificate or use method #setGenerateTBSWithoutCertificate(true) " +
 						"for signature creation without signing-certificate.",
 				exception.getMessage());

@@ -32,7 +32,8 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlRelatedCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.isc.checks.DigestValuePresentCheck;
@@ -74,7 +75,7 @@ class DigestValuePresentCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlISC result = new XmlISC();
-		DigestValuePresentCheck dvpc = new DigestValuePresentCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), constraint);
+		DigestValuePresentCheck dvpc = new DigestValuePresentCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), new LevelConstraintWrapper(constraint));
 		dvpc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();
@@ -108,7 +109,7 @@ class DigestValuePresentCheckTest extends AbstractTestCheck {
 		constraint.setLevel(Level.FAIL);
 
 		XmlISC result = new XmlISC();
-		DigestValuePresentCheck dvpc = new DigestValuePresentCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), constraint);
+		DigestValuePresentCheck dvpc = new DigestValuePresentCheck(i18nProvider, result, new SignatureWrapper(xmlSignature), new LevelConstraintWrapper(constraint));
 		dvpc.execute();
 
 		List<XmlConstraint> constraints = result.getConstraint();

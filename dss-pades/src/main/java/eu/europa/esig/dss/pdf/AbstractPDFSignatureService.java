@@ -52,8 +52,8 @@ import eu.europa.esig.dss.pdf.visible.SignatureDrawer;
 import eu.europa.esig.dss.pdf.visible.SignatureDrawerFactory;
 import eu.europa.esig.dss.pdf.visible.SignatureFieldBoxBuilder;
 import eu.europa.esig.dss.pdf.visible.VisualSignatureFieldAppearance;
-import eu.europa.esig.dss.signature.resources.DSSResourcesHandler;
-import eu.europa.esig.dss.signature.resources.DSSResourcesHandlerBuilder;
+import eu.europa.esig.dss.spi.signature.resources.DSSResourcesHandler;
+import eu.europa.esig.dss.spi.signature.resources.DSSResourcesHandlerBuilder;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
@@ -852,9 +852,6 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 													   SignatureFieldParameters fieldParameters) throws IOException {
 		AnnotationBox signatureFieldAnnotation = buildSignatureFieldBox(signatureDrawer);
 		if (signatureFieldAnnotation != null) {
-			AnnotationBox pageBox = documentReader.getPageBox(fieldParameters.getPage());
-			signatureFieldAnnotation = toPdfPageCoordinates(signatureFieldAnnotation, pageBox);
-
 			assertSignatureFieldPositionValid(documentReader, signatureFieldAnnotation, fieldParameters.getPage());
 		}
 		return signatureFieldAnnotation;
@@ -932,7 +929,7 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 	 * @return {@link AnnotationBox}
 	 */
 	protected AnnotationBox toPdfPageCoordinates(AnnotationBox fieldAnnotationBox, AnnotationBox pageBox) {
-		return fieldAnnotationBox.toPdfPageCoordinates(pageBox.getHeight());
+		return fieldAnnotationBox.toPdfPageCoordinates(pageBox);
 	}
 
 	@Override

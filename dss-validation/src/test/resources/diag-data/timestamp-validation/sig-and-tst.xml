@@ -424,7 +424,7 @@
     </UsedCertificates>
     <UsedRevocations/>
     <UsedTimestamps>
-        <Timestamp Type="CONTENT_TIMESTAMP" Id="T-3CAE93DB41E97DE1F7FF4378CF7F8180E4B39F03DA62178A720157BF41EA14C7">
+        <Timestamp Type="CONTAINER_TIMESTAMP" Id="T-3CAE93DB41E97DE1F7FF4378CF7F8180E4B39F03DA62178A720157BF41EA14C7">
             <TimestampFilename>META-INF/timestamp002.tst</TimestampFilename>
             <ArchiveTimestampType>CAdES_DETACHED</ArchiveTimestampType>
             <ProductionTime>2019-12-17T10:12:31Z</ProductionTime>
@@ -463,7 +463,7 @@
                 <DigestValue>PK6T20HpfeH3/0N4z3+BgOSznwPaYheKcgFXv0HqFMc=</DigestValue>
             </DigestAlgoAndValue>
         </Timestamp>
-        <Timestamp Type="CONTENT_TIMESTAMP" Id="T-4D347396BE807515297C751A26DCD4DCE8EB0BE8A86E32E7B49E23D8B7D1215E">
+        <Timestamp Type="CONTAINER_TIMESTAMP" Id="T-4D347396BE807515297C751A26DCD4DCE8EB0BE8A86E32E7B49E23D8B7D1215E">
             <TimestampFilename>META-INF/timestamp001.tst</TimestampFilename>
             <ArchiveTimestampType>CAdES_DETACHED</ArchiveTimestampType>
             <ProductionTime>2019-12-17T10:12:30Z</ProductionTime>

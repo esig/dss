@@ -30,7 +30,7 @@ import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.ValidationPolicy;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.bbb.xcv.rac.RevocationAcceptanceChecker;
@@ -194,7 +194,7 @@ public class CertificateRevocationSelector extends Chain<XmlCRS> {
     }
 
     private ChainItem<XmlCRS> revocationAcceptable(XmlRAC racResult) {
-        return new RevocationAcceptanceCheckerResultCheck<>(i18nProvider, result, racResult, getWarnLevelConstraint());
+        return new RevocationAcceptanceCheckerResultCheck<>(i18nProvider, result, racResult, getWarnLevelRule());
     }
 
     /**
@@ -203,7 +203,7 @@ public class CertificateRevocationSelector extends Chain<XmlCRS> {
      * @return {@link ChainItem}
      */
     protected ChainItem<XmlCRS> acceptableRevocationDataAvailable() {
-        return new AcceptableRevocationDataAvailableCheck<>(i18nProvider, result, latestCertificateRevocation, getFailLevelConstraint());
+        return new AcceptableRevocationDataAvailableCheck<>(i18nProvider, result, latestCertificateRevocation, getFailLevelRule());
     }
 
     @Override

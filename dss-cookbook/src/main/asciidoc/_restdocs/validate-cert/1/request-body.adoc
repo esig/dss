@@ -9,6 +9,7 @@
   } ],
   "validationTime" : null,
   "policy" : null,
+  "cryptographicSuite" : null,
   "tokenExtractionStrategy" : "NONE"
 }
 ----

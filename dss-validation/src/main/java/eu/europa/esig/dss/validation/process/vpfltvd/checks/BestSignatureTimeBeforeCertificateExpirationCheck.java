@@ -26,7 +26,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
@@ -53,13 +53,13 @@ public class BestSignatureTimeBeforeCertificateExpirationCheck<T extends XmlCons
 	 * @param result {@link XmlConstraintsConclusion}
 	 * @param bestSignatureTime {@link Date}
 	 * @param signingCertificate {@link CertificateWrapper}
-	 * @param constraint {@link LevelConstraint}
+	 * @param constraint {@link LevelRule}
 	 */
 	public BestSignatureTimeBeforeCertificateExpirationCheck(I18nProvider i18nProvider,
 															 T result,
 															 Date bestSignatureTime,
 															 CertificateWrapper signingCertificate,
-															 LevelConstraint constraint) {
+															 LevelRule constraint) {
 		super(i18nProvider, result, constraint);
 		this.bestSignatureTime = bestSignatureTime;
 		this.signingCertificate = signingCertificate;

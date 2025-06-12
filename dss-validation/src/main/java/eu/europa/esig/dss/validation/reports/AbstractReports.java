@@ -26,9 +26,9 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
+import jakarta.xml.bind.JAXBException;
 import org.xml.sax.SAXException;
 
-import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
 
 /**

@@ -65,34 +65,34 @@ class JAdESExtensionBToLTAWithExpiredUserTest extends AbstractJAdESTestExtension
         CertificateVerifier certificateVerifier = getCompleteCertificateVerifier();
         certificateVerifier.setAlertOnExpiredCertificate(new ExceptionOnStatusAlert());
 
-        JAdESService service = new JAdESService(certificateVerifier);
-        service.setTspSource(getUsedTSPSourceAtExtensionTime());
+        JAdESService jadesService = new JAdESService(certificateVerifier);
+        jadesService.setTspSource(getUsedTSPSourceAtExtensionTime());
 
-        Exception exception = assertThrows(AlertException.class, () -> service.extendDocument(signedDocument, getExtensionParameters()));
+        Exception exception = assertThrows(AlertException.class, () -> jadesService.extendDocument(signedDocument, getExtensionParameters()));
         assertTrue(exception.getMessage().contains("Error on signature augmentation"));
-        assertTrue(exception.getMessage().contains("is expired at signing time"));
+        assertTrue(exception.getMessage().contains("The signing certificate has expired"));
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(getSigningCert().getNotAfter());
         calendar.add(Calendar.MONTH, -6);
         Date tstTime = calendar.getTime();
 
-        service.setTspSource(getGoodTsaByTime(tstTime));
+        jadesService.setTspSource(getGoodTsaByTime(tstTime));
 
-        exception = assertThrows(AlertException.class, () -> service.extendDocument(signedDocument, getExtensionParameters()));
+        exception = assertThrows(AlertException.class, () -> jadesService.extendDocument(signedDocument, getExtensionParameters()));
         assertTrue(exception.getMessage().contains("Error on signature augmentation"));
-        assertTrue(exception.getMessage().contains("is expired at signing time"));
+        assertTrue(exception.getMessage().contains("The signing certificate has expired"));
 
         certificateVerifier.setAlertOnExpiredCertificate(new SilentOnStatusAlert());
 
-        DSSDocument extendedDocument = service.extendDocument(signedDocument, getExtensionParameters());
+        DSSDocument extendedDocument = jadesService.extendDocument(signedDocument, getExtensionParameters());
         assertNotNull(extendedDocument);
 
         certificateVerifier.setAlertOnExpiredCertificate(new ExceptionOnStatusAlert());
 
-        service.setTspSource(getGoodTsa());
+        jadesService.setTspSource(getGoodTsa());
 
-        extendedDocument = service.extendDocument(extendedDocument, getExtensionParameters());
+        extendedDocument = jadesService.extendDocument(extendedDocument, getExtensionParameters());
         assertNotNull(extendedDocument);
         return extendedDocument;
     }

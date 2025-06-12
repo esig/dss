@@ -41,7 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class PAdESLevelBWithNoChangesPermittedTest extends AbstractPAdESTestSignature {
+class PAdESLevelBWithNoChangesPermittedTest extends AbstractPAdESTestSignature {
 
     private DSSDocument originalDocument;
 
@@ -68,7 +68,7 @@ public class PAdESLevelBWithNoChangesPermittedTest extends AbstractPAdESTestSign
         DSSDocument signedDocument = super.sign();
 
         documentToSign = signedDocument;
-        Exception exception = assertThrows(ProtectedDocumentException.class, () -> super.sign());
+        Exception exception = assertThrows(ProtectedDocumentException.class, super::sign);
         assertEquals("The creation of new signatures is not permitted in the current document. " +
                 "Reason : DocMDP dictionary does not permit a new signature creation!", exception.getMessage());
 

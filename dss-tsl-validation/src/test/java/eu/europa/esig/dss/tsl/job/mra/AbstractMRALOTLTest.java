@@ -181,8 +181,7 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
         XAdESSignatureParameters signatureParameters = new TrustedListV5SignatureParametersBuilder(getSigningCert(), tlToSign).build();
         ToBeSigned dataToSign = service.getDataToSign(tlToSign, signatureParameters);
         SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
-        DSSDocument signedTL = service.signDocument(tlToSign, signatureParameters, signatureValue);
-        return signedTL;
+        return service.signDocument(tlToSign, signatureParameters, signatureValue);
     }
 
     protected DSSDocument createZZLOTL() {
@@ -949,7 +948,7 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
         return "John Doe";
     }
 
-    protected static abstract class AbstractSetCondition<C extends Condition> implements Condition {
+    protected abstract static class AbstractSetCondition<C extends Condition> implements Condition {
 
         private static final long serialVersionUID = 2549774575899981832L;
 

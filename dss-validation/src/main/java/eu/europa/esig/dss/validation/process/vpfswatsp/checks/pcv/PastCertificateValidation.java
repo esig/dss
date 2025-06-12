@@ -29,12 +29,12 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlVTS;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.TokenProxy;
 import eu.europa.esig.dss.enumerations.Context;
+import eu.europa.esig.dss.enumerations.SubContext;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.SubContext;
-import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.CryptographicSuite;
+import eu.europa.esig.dss.model.policy.LevelRule;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.Chain;
 import eu.europa.esig.dss.validation.process.ChainItem;
@@ -223,7 +223,7 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 	}
 
 	private ChainItem<XmlPCV> prospectiveCertificateChain() {
-		LevelConstraint constraint = policy.getProspectiveCertificateChainConstraint(context);
+		LevelRule constraint = policy.getProspectiveCertificateChainConstraint(context);
 		return new ProspectiveCertificateChainCheck(i18nProvider, result, token, constraint);
 	}
 
@@ -234,15 +234,15 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 	}
 
 	private ChainItem<XmlPCV> validationTimeSliding(XmlVTS vts, CertificateWrapper trustedCertificate) {
-		return new ValidationTimeSlidingCheck(i18nProvider, result, vts, token.getId(), trustedCertificate, getWarnLevelConstraint());
+		return new ValidationTimeSlidingCheck(i18nProvider, result, vts, token.getId(), trustedCertificate, getWarnLevelRule());
 	}
 
 	private ChainItem<XmlPCV> successfulValidationTimeSlidingFound(XmlVTS vts) {
-		return new SuccessfulValidationTimeSlidingFoundCheck(i18nProvider, result, vts, getFailLevelConstraint());
+		return new SuccessfulValidationTimeSlidingFoundCheck(i18nProvider, result, vts, getFailLevelRule());
 	}
 
 	private ChainItem<XmlPCV> cryptographicCheck(XmlPCV result, CertificateWrapper certificate, Date validationTime, SubContext subContext) {
-		CryptographicConstraint constraint = policy.getCertificateCryptographicConstraint(context, subContext);
+		CryptographicSuite constraint = policy.getCertificateCryptographicConstraint(context, subContext);
 		MessageTag position = ValidationProcessUtils.getCertificateChainCryptoPosition(context);
 		
 		return new CryptographicCheck<>(i18nProvider, result, certificate, position, validationTime, constraint);

@@ -91,6 +91,8 @@ class PdfBoxUtilsTest {
 		assertInstanceOf(InMemoryDocument.class, inMemorySubtractionImage);
 
 		assertVisuallyEqual(fileSubtractionImage, inMemorySubtractionImage);
+
+		tempFileResourcesHandlerBuilder.clear();
 	}
 
 	private void assertVisuallyEqual(DSSDocument documentOne, DSSDocument documentTwo) throws IOException {

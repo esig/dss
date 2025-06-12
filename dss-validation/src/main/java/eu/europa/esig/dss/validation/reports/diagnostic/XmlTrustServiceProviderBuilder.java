@@ -396,7 +396,7 @@ public class XmlTrustServiceProviderBuilder {
     }
 
     private boolean checkServiceTypeASi(TrustServiceStatusAndInformationExtensions serviceInfoStatus, ServiceTypeASi serviceTypeASi) {
-        return serviceInfoStatus.getType().equals(serviceTypeASi.getType()) &&
+        return serviceInfoStatus.getType() != null && serviceInfoStatus.getType().equals(serviceTypeASi.getType()) &&
                 (serviceTypeASi.getAsi() == null || serviceInfoStatus.getAdditionalServiceInfoUris().contains(serviceTypeASi.getAsi()));
     }
 

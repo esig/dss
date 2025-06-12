@@ -114,7 +114,7 @@ class SignedDocumentAnalyzerTest {
 		for (Message error : errors) {
 			assertTrue(messageValues.contains(error.getValue()));
 		}
-		List<String> messages = errors.stream().map(m -> m.getValue()).collect(Collectors.toList());
+		List<String> messages = errors.stream().map(Message::getValue).collect(Collectors.toList());
 		if (expectedErrorMessage != null) {
 			assertTrue(messages.contains(expectedErrorMessage));
 		}

@@ -27,7 +27,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
 /**
@@ -47,10 +47,10 @@ public class BasicValidationProcessCheck<T extends XmlConstraintsConclusion> ext
      * @param result {@link XmlConstraintsConclusion}
      * @param xmlConclusion {@link XmlConclusion}
      * @param token {@link TokenProxy}
-     * @param constraint {@link LevelConstraint}
+     * @param constraint {@link LevelRule}
      */
     public BasicValidationProcessCheck(I18nProvider i18nProvider, T result,
-                                       XmlConclusion xmlConclusion, TokenProxy token, LevelConstraint constraint) {
+                                       XmlConclusion xmlConclusion, TokenProxy token, LevelRule constraint) {
         super(i18nProvider, result, constraint, token.getId());
         this.xmlConclusion = xmlConclusion;
     }

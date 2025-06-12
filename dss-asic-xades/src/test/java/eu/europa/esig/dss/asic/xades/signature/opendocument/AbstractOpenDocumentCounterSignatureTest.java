@@ -73,6 +73,7 @@ public abstract class AbstractOpenDocumentCounterSignatureTest extends AbstractA
 
 	@Override
 	public void signAndVerify() {
+		// skip global test
 	}
 
 	@Override

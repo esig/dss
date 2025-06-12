@@ -28,8 +28,9 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicSignature
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.SubIndication;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.vpfbs.checks.IdentificationOfSigningCertificateResultCheck;
@@ -53,7 +54,7 @@ class IdentificationOfSigningCertificateResultCheckTest extends AbstractTestChec
 
         XmlValidationProcessBasicSignature result = new XmlValidationProcessBasicSignature();
         IdentificationOfSigningCertificateResultCheck iscrc = new IdentificationOfSigningCertificateResultCheck<>(
-                i18nProvider, result, xmlISC, new SignatureWrapper(new XmlSignature()), constraint);
+                i18nProvider, result, xmlISC, new SignatureWrapper(new XmlSignature()), new LevelConstraintWrapper(constraint));
         iscrc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -74,7 +75,7 @@ class IdentificationOfSigningCertificateResultCheckTest extends AbstractTestChec
 
         XmlValidationProcessBasicSignature result = new XmlValidationProcessBasicSignature();
         IdentificationOfSigningCertificateResultCheck iscrc = new IdentificationOfSigningCertificateResultCheck<>(
-                i18nProvider, result, xmlISC, new SignatureWrapper(new XmlSignature()), constraint);
+                i18nProvider, result, xmlISC, new SignatureWrapper(new XmlSignature()), new LevelConstraintWrapper(constraint));
         iscrc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

@@ -517,15 +517,6 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		return getXmlStructuralValidation(signature.getStructureValidationResult());
 	}
 
-	private XmlStructuralValidation getXmlStructuralValidation(List<String> errorMessages) {
-		final XmlStructuralValidation xmlStructuralValidation = new XmlStructuralValidation();
-		xmlStructuralValidation.setValid(Utils.isCollectionEmpty(errorMessages));
-		if (Utils.isCollectionNotEmpty(errorMessages)) {
-			xmlStructuralValidation.getMessages().addAll(errorMessages);
-		}
-		return xmlStructuralValidation;
-	}
-
 	private XmlSignatureProductionPlace getXmlSignatureProductionPlace(SignatureProductionPlace signatureProductionPlace) {
 		if (signatureProductionPlace != null) {
 			final XmlSignatureProductionPlace xmlSignatureProductionPlace = new XmlSignatureProductionPlace();
@@ -927,6 +918,7 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		xmlEvidenceRecord.setDocumentName(evidenceRecord.getFilename());
 		xmlEvidenceRecord.setType(evidenceRecord.getEvidenceRecordType());
 		xmlEvidenceRecord.setOrigin(evidenceRecord.getOrigin());
+		xmlEvidenceRecord.setIncorporationType(evidenceRecord.getIncorporationType());
 		xmlEvidenceRecord.setStructuralValidation(getXmlStructuralValidation(evidenceRecord));
 		xmlEvidenceRecord.setDigestMatchers(getXmlDigestMatchers(evidenceRecord));
 		xmlEvidenceRecord.setEvidenceRecordScopes(getXmlSignatureScopes(evidenceRecord.getEvidenceRecordScopes()));
@@ -969,6 +961,15 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 		for (AdvancedSignature signature : signatures) {
 			XmlSignature xmlSignature = xmlSignaturesMap.get(signature.getId());
 			xmlSignature.setFoundEvidenceRecords(getXmlSignatureEvidenceRecords(signature));
+		}
+		for (EvidenceRecord evidenceRecord : evidenceRecords) {
+			if (evidenceRecord.isEmbedded()) {
+				XmlEvidenceRecord xmlEvidenceRecord = xmlEvidenceRecordMap.get(evidenceRecord.getId());
+				xmlEvidenceRecord.setEmbedded(evidenceRecord.isEmbedded());
+
+				XmlSignature xmlSignature = xmlSignaturesMap.get(evidenceRecord.getMasterSignature().getId());
+				xmlEvidenceRecord.setParent(xmlSignature);
+			}
 		}
 	}
 

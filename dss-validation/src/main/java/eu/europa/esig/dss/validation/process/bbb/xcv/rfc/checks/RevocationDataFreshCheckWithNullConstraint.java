@@ -24,7 +24,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlRFC;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 
 import java.util.Date;
 
@@ -40,10 +40,10 @@ public class RevocationDataFreshCheckWithNullConstraint extends AbstractRevocati
 	 * @param result {@link XmlRFC}
 	 * @param revocationData {@link RevocationWrapper}
 	 * @param validationDate {@link Date}
-	 * @param constraint {@link LevelConstraint}
+	 * @param constraint {@link LevelRule}
 	 */
 	public RevocationDataFreshCheckWithNullConstraint(I18nProvider i18nProvider, XmlRFC result, RevocationWrapper revocationData, 
-			Date validationDate, LevelConstraint constraint) {
+			Date validationDate, LevelRule constraint) {
 		super(i18nProvider, result, revocationData, validationDate, constraint);
 	}
 

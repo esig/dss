@@ -42,17 +42,16 @@ import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.jaxb.object.Message;
-import eu.europa.esig.dss.policy.ValidationPolicy;
-import eu.europa.esig.dss.policy.ValidationPolicyFacade;
+import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.Algo;
 import eu.europa.esig.dss.policy.jaxb.AlgoExpirationDate;
 import eu.europa.esig.dss.policy.jaxb.CertificateConstraints;
 import eu.europa.esig.dss.policy.jaxb.CryptographicConstraint;
-import eu.europa.esig.dss.policy.jaxb.Level;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.SignatureConstraints;
 import eu.europa.esig.dss.policy.jaxb.SignedAttributesConstraints;
@@ -90,8 +89,8 @@ class CryptographicValidationExecutorTest extends AbstractProcessExecutorTest {
         SimpleReport simpleReport = reports.getSimpleReport();
         assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
 
-        assertNull(simpleReport.getSignatureExtensionPeriodMin(simpleReport.getFirstSignatureId()));
-        assertNotNull(simpleReport.getSignatureExtensionPeriodMax(simpleReport.getFirstSignatureId()));
+        assertNull(simpleReport.getExtensionPeriodMin(simpleReport.getFirstSignatureId()));
+        assertNotNull(simpleReport.getExtensionPeriodMax(simpleReport.getFirstSignatureId()));
 
         assertEquals(SignatureQualification.QESIG, simpleReport.getSignatureQualification(simpleReport.getFirstSignatureId()));
 
@@ -208,7 +207,7 @@ class CryptographicValidationExecutorTest extends AbstractProcessExecutorTest {
         XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/dss-1635-diag-data.xml"));
         DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
-        ValidationPolicy defaultPolicy = ValidationPolicyFacade.newFacade().getDefaultValidationPolicy();
+        EtsiValidationPolicy defaultPolicy = loadDefaultPolicy();
         List<Algo> algos = defaultPolicy.getCryptographic().getAlgoExpirationDate().getAlgos();
         for (Algo algo : algos) {
             if ("SHA1".equals(algo.getValue())) {
@@ -665,7 +664,7 @@ class CryptographicValidationExecutorTest extends AbstractProcessExecutorTest {
             }
         }
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         SignatureConstraints signatureConstraints = validationPolicy.getSignatureConstraints();
         SignedAttributesConstraints signedAttributes = signatureConstraints.getSignedAttributes();
         LevelConstraint levelConstraint = new LevelConstraint();
@@ -728,7 +727,7 @@ class CryptographicValidationExecutorTest extends AbstractProcessExecutorTest {
             }
         }
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         SignatureConstraints signatureConstraints = validationPolicy.getSignatureConstraints();
         SignedAttributesConstraints signedAttributes = signatureConstraints.getSignedAttributes();
         LevelConstraint levelConstraint = new LevelConstraint();
@@ -791,7 +790,7 @@ class CryptographicValidationExecutorTest extends AbstractProcessExecutorTest {
             }
         }
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         SignatureConstraints signatureConstraints = validationPolicy.getSignatureConstraints();
         SignedAttributesConstraints signedAttributes = signatureConstraints.getSignedAttributes();
         LevelConstraint levelConstraint = new LevelConstraint();
@@ -839,8 +838,7 @@ class CryptographicValidationExecutorTest extends AbstractProcessExecutorTest {
                 new File("src/test/resources/diag-data/universign.xml"));
         assertNotNull(diagnosticData);
 
-        ValidationPolicy validationPolicy = ValidationPolicyFacade.newFacade().getValidationPolicy(
-                new File("src/test/resources/diag-data/policy/all-constraint-specified-policy.xml"));
+        EtsiValidationPolicy validationPolicy = loadPolicy("src/test/resources/diag-data/policy/all-constraint-specified-policy.xml");
         SignatureConstraints signatureConstraints = validationPolicy.getSignatureConstraints();
         SignedAttributesConstraints signedAttributes = signatureConstraints.getSignedAttributes();
         LevelConstraint levelConstraint = new LevelConstraint();
@@ -896,8 +894,7 @@ class CryptographicValidationExecutorTest extends AbstractProcessExecutorTest {
                 new File("src/test/resources/diag-data/universign.xml"));
         assertNotNull(diagnosticData);
 
-        ValidationPolicy validationPolicy = ValidationPolicyFacade.newFacade().getValidationPolicy(
-                new File("src/test/resources/diag-data/policy/all-constraint-specified-policy.xml"));
+        EtsiValidationPolicy validationPolicy = loadPolicy("src/test/resources/diag-data/policy/all-constraint-specified-policy.xml");
         SignatureConstraints signatureConstraints = validationPolicy.getSignatureConstraints();
         SignedAttributesConstraints signedAttributes = signatureConstraints.getSignedAttributes();
         LevelConstraint levelConstraint = new LevelConstraint();
@@ -935,7 +932,7 @@ class CryptographicValidationExecutorTest extends AbstractProcessExecutorTest {
                 new File("src/test/resources/diag-data/DSS-1453/diag-data-lta-dss.xml"));
         assertNotNull(diagnosticData);
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
         SignatureConstraints signatureConstraints = validationPolicy.getSignatureConstraints();
         SignedAttributesConstraints signedAttributes = signatureConstraints.getSignedAttributes();
         LevelConstraint levelConstraint = new LevelConstraint();
@@ -1335,7 +1332,7 @@ class CryptographicValidationExecutorTest extends AbstractProcessExecutorTest {
         xmlSignature.getBasicSignature().setDigestAlgoUsedToSignThisToken(DigestAlgorithm.SHA512);
         xmlSignature.getBasicSignature().setKeyLengthUsedToSignThisToken("256");
 
-        ValidationPolicy validationPolicy = loadDefaultPolicy();
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
 
         LevelConstraint levelConstraint = new LevelConstraint();
         levelConstraint.setLevel(Level.FAIL);

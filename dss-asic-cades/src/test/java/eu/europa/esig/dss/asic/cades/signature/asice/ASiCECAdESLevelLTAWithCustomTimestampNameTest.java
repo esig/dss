@@ -70,7 +70,7 @@ class ASiCECAdESLevelLTAWithCustomTimestampNameTest extends AbstractASiCEWithCAd
         filenameFactory.setTimestampFilename("stamp.tst");
         getService().setAsicFilenameFactory(filenameFactory);
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> super.sign());
+        Exception exception = assertThrows(IllegalArgumentException.class, super::sign);
         assertEquals("A timestamp file within ASiC-E with CAdES container shall match the template " +
                 "'META-INF/timestamp*.tst'!", exception.getMessage());
 

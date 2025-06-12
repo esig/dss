@@ -64,7 +64,7 @@ class ASiCSCAdESSignTimestampedContainerTest extends AbstractASiCSCAdESTestSigna
         DSSDocument timestampedContainer = service.timestamp(originalDocument, timestampParameters);
 
         documentToSign = timestampedContainer;
-        Exception exception = assertThrows(IllegalInputException.class, () -> super.sign());
+        Exception exception = assertThrows(IllegalInputException.class, super::sign);
         assertEquals("Unable to sign an ASiC-S with CAdES container containing time assertion files!", exception.getMessage());
     }
 

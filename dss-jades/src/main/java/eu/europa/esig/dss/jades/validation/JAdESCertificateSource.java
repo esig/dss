@@ -307,14 +307,26 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 			candidatesForSigningCertificate.add(new CertificateValidity(certificateToken));
 		}
 
-		if (signingCertificateSource != null) {
-			resolveFromSource(signingCertificateSource, candidatesForSigningCertificate);
+		// if x5u does not contain certificates,
+		// check other certificates embedded into the signature
+		if (candidatesForSigningCertificate.isEmpty()) {
+
+			// From JWK (not JAdES)
+			PublicKey publicKey = extractPublicKey();
+			if (publicKey != null) {
+				candidatesForSigningCertificate.add(new CertificateValidity(publicKey));
+
+			} else {
+				// Add all found certificates
+				for (final CertificateToken certificateToken : getCertificates()) {
+					candidatesForSigningCertificate.add(new CertificateValidity(certificateToken));
+				}
+			}
+
 		}
 
-		// From JWK (not JAdES)
-		PublicKey publicKey = extractPublicKey();
-		if (publicKey != null) {
-			candidatesForSigningCertificate.add(new CertificateValidity(publicKey));
+		if (signingCertificateSource != null) {
+			resolveFromSource(signingCertificateSource, candidatesForSigningCertificate);
 		}
 
 		checkSigningCertificateRef(candidatesForSigningCertificate);

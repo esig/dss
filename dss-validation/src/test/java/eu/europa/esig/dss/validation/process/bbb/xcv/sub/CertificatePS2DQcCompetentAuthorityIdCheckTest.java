@@ -28,7 +28,8 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPSD2QcInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQcStatements;
 import eu.europa.esig.dss.enumerations.CertificateExtensionEnum;
-import eu.europa.esig.dss.policy.jaxb.Level;
+import eu.europa.esig.dss.enumerations.Level;
+import eu.europa.esig.dss.policy.MultiValuesConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.validation.process.bbb.AbstractTestCheck;
 import eu.europa.esig.dss.validation.process.bbb.xcv.sub.checks.CertificatePS2DQcCompetentAuthorityIdCheck;
@@ -59,7 +60,7 @@ class CertificatePS2DQcCompetentAuthorityIdCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificatePS2DQcCompetentAuthorityIdCheck cqcps2dic = new CertificatePS2DQcCompetentAuthorityIdCheck(
-                i18nProvider, result, new CertificateWrapper(xc), constraint);
+                i18nProvider, result, new CertificateWrapper(xc), new MultiValuesConstraintWrapper(constraint));
         cqcps2dic.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -86,7 +87,7 @@ class CertificatePS2DQcCompetentAuthorityIdCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificatePS2DQcCompetentAuthorityIdCheck cqcps2dic = new CertificatePS2DQcCompetentAuthorityIdCheck(
-                i18nProvider, result, new CertificateWrapper(xc), constraint);
+                i18nProvider, result, new CertificateWrapper(xc), new MultiValuesConstraintWrapper(constraint));
         cqcps2dic.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -112,7 +113,7 @@ class CertificatePS2DQcCompetentAuthorityIdCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificatePS2DQcCompetentAuthorityIdCheck cqcps2dic = new CertificatePS2DQcCompetentAuthorityIdCheck(
-                i18nProvider, result, new CertificateWrapper(xc), constraint);
+                i18nProvider, result, new CertificateWrapper(xc), new MultiValuesConstraintWrapper(constraint));
         cqcps2dic.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -134,7 +135,7 @@ class CertificatePS2DQcCompetentAuthorityIdCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificatePS2DQcCompetentAuthorityNameCheck cqcps2dnc = new CertificatePS2DQcCompetentAuthorityNameCheck(
-                i18nProvider, result, new CertificateWrapper(xc), constraint);
+                i18nProvider, result, new CertificateWrapper(xc), new MultiValuesConstraintWrapper(constraint));
         cqcps2dnc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -152,7 +153,7 @@ class CertificatePS2DQcCompetentAuthorityIdCheckTest extends AbstractTestCheck {
 
         XmlSubXCV result = new XmlSubXCV();
         CertificatePS2DQcCompetentAuthorityNameCheck cqcps2dnc = new CertificatePS2DQcCompetentAuthorityNameCheck(
-                i18nProvider, result, new CertificateWrapper(xc), constraint);
+                i18nProvider, result, new CertificateWrapper(xc), new MultiValuesConstraintWrapper(constraint));
         cqcps2dnc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

@@ -31,7 +31,7 @@ import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class DSS3111DSSTest extends AbstractPAdESTestValidation {
+class DSS3111DSSTest extends AbstractPAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

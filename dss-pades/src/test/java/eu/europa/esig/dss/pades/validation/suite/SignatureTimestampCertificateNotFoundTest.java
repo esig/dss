@@ -38,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 // See DSS-2025
-public class SignatureTimestampCertificateNotFoundTest extends AbstractPAdESTestValidation {
+class SignatureTimestampCertificateNotFoundTest extends AbstractPAdESTestValidation {
 
 	@Override
 	protected DSSDocument getSignedDocument() {

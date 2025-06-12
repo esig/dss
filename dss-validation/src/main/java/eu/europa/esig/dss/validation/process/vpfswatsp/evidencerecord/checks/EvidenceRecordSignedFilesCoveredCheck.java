@@ -24,11 +24,12 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessEvidenceRecord
 import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
+import eu.europa.esig.dss.enumerations.EvidenceRecordOrigin;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
-import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
+import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
@@ -49,16 +50,21 @@ public class EvidenceRecordSignedFilesCoveredCheck extends ChainItem<XmlValidati
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlValidationProcessEvidenceRecord}
      * @param evidenceRecord {@link EvidenceRecordWrapper}
-     * @param constraint {@link LevelConstraint}
+     * @param constraint {@link LevelRule}
      */
     public EvidenceRecordSignedFilesCoveredCheck(I18nProvider i18nProvider, XmlValidationProcessEvidenceRecord result,
-            EvidenceRecordWrapper evidenceRecord, LevelConstraint constraint) {
+            EvidenceRecordWrapper evidenceRecord, LevelRule constraint) {
         super(i18nProvider, result, constraint);
         this.evidenceRecord = evidenceRecord;
     }
 
     @Override
     protected boolean process() {
+        if (EvidenceRecordOrigin.SIGNATURE == evidenceRecord.getOrigin()) {
+            // embedded signature covers all original documents
+            return true;
+        }
+
         List<SignatureWrapper> coveredSignatures = evidenceRecord.getCoveredSignatures();
         List<XmlDigestMatcher> evidenceRecordDigestMatchers = evidenceRecord.getDigestMatchers();
         if (Utils.isCollectionNotEmpty(coveredSignatures)) {

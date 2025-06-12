@@ -230,7 +230,7 @@ class ASiCSWithCAdESContainerMergerTest extends AbstractPkiFactoryTestValidation
         ASiCWithCAdESTimestampParameters timestampParameters = new ASiCWithCAdESTimestampParameters();
         timestampParameters.aSiC().setContainerType(ASiCContainerType.ASiC_S);
 
-        DSSDocument timestampedContainer = timestampService.timestamp(Arrays.asList(toSignDocument), timestampParameters);
+        DSSDocument timestampedContainer = timestampService.timestamp(Collections.singletonList(toSignDocument), timestampParameters);
 
         DSSDocument documentToAdd = new InMemoryDocument("Bye World !".getBytes(), "directory/test.txt", MimeTypeEnum.TEXT);
         ASiCContent asicContentToAdd = new ASiCContent();
@@ -352,7 +352,7 @@ class ASiCSWithCAdESContainerMergerTest extends AbstractPkiFactoryTestValidation
                 new InMemoryDocument("signature".getBytes(), "META-INF/signature001.xml", MimeTypeEnum.XML)));
 
         ASiCSWithCAdESContainerMerger merger = new ASiCSWithCAdESContainerMerger(firstASiCContent, secondASiCContent);
-        Exception exception = assertThrows(UnsupportedOperationException.class, () -> merger.merge());
+        Exception exception = assertThrows(UnsupportedOperationException.class, merger::merge);
         assertEquals("Unable to merge ASiC-S with CAdES containers. " +
                 "The signature document in one of the containers has invalid naming!", exception.getMessage());
     }
@@ -370,7 +370,7 @@ class ASiCSWithCAdESContainerMergerTest extends AbstractPkiFactoryTestValidation
                 new InMemoryDocument("signature".getBytes(), "META-INF/signature.p7s", MimeTypeEnum.PKCS7)));
 
         ASiCSWithCAdESContainerMerger merger = new ASiCSWithCAdESContainerMerger(firstASiCContent, secondASiCContent);
-        Exception exception = assertThrows(UnsupportedOperationException.class, () -> merger.merge());
+        Exception exception = assertThrows(UnsupportedOperationException.class, merger::merge);
         assertEquals("Unable to merge ASiC-S with CAdES containers. " +
                 "One of the containers has more than one signature, timestamp or evidence record documents!", exception.getMessage());
     }
@@ -386,7 +386,7 @@ class ASiCSWithCAdESContainerMergerTest extends AbstractPkiFactoryTestValidation
                 new InMemoryDocument("timestamp".getBytes(), "META-INF/timestamp.tst", MimeTypeEnum.TST)));
 
         ASiCSWithCAdESContainerMerger merger = new ASiCSWithCAdESContainerMerger(firstASiCContent, secondASiCContent);
-        Exception exception = assertThrows(UnsupportedOperationException.class, () -> merger.merge());
+        Exception exception = assertThrows(UnsupportedOperationException.class, merger::merge);
         assertEquals("Unable to merge ASiC-S with CAdES containers. " +
                 "Only one type of a container is allowed (signature, timestamp or evidence record)!", exception.getMessage());
     }
@@ -407,7 +407,7 @@ class ASiCSWithCAdESContainerMergerTest extends AbstractPkiFactoryTestValidation
                 new InMemoryDocument("Bye World!".getBytes(), "bye.txt", MimeTypeEnum.TEXT)));
 
         ASiCSWithCAdESContainerMerger merger = new ASiCSWithCAdESContainerMerger(firstASiCContent, secondASiCContent);
-        Exception exception = assertThrows(UnsupportedOperationException.class, () -> merger.merge());
+        Exception exception = assertThrows(UnsupportedOperationException.class, merger::merge);
         assertEquals("Unable to merge ASiC-S with CAdES containers. " +
                 "One of the containers has more than one signer documents!", exception.getMessage());
     }
@@ -427,7 +427,7 @@ class ASiCSWithCAdESContainerMergerTest extends AbstractPkiFactoryTestValidation
                 new InMemoryDocument("Hello World!".getBytes(), "bye.txt", MimeTypeEnum.TEXT)));
 
         ASiCSWithCAdESContainerMerger merger = new ASiCSWithCAdESContainerMerger(firstASiCContent, secondASiCContent);
-        Exception exception = assertThrows(UnsupportedOperationException.class, () -> merger.merge());
+        Exception exception = assertThrows(UnsupportedOperationException.class, merger::merge);
         assertEquals("Unable to merge ASiC-S with CAdES containers. " +
                 "Signer documents have different names!", exception.getMessage());
     }
@@ -490,7 +490,7 @@ class ASiCSWithCAdESContainerMergerTest extends AbstractPkiFactoryTestValidation
         assertEquals("At least one ASiCContent shall be provided!", exception.getMessage());
 
         ASiCSWithCAdESContainerMerger merger = new ASiCSWithCAdESContainerMerger();
-        exception = assertThrows(NullPointerException.class, () -> merger.merge());
+        exception = assertThrows(NullPointerException.class, merger::merge);
         assertEquals("At least one container shall be provided!", exception.getMessage());
     }
 
@@ -556,7 +556,7 @@ class ASiCSWithCAdESContainerMergerTest extends AbstractPkiFactoryTestValidation
         DSSDocument secondContainer = new FileDocument("src/test/resources/validation/evidencerecord/er-asn1-one-file-ok.scs");
 
         ASiCSWithCAdESContainerMerger merger = new ASiCSWithCAdESContainerMerger(firstContainer, secondContainer);
-        Exception exception = assertThrows(UnsupportedOperationException.class, () -> merger.merge());
+        Exception exception = assertThrows(UnsupportedOperationException.class, merger::merge);
         assertEquals("Unable to merge ASiC-S with CAdES containers. " +
                 "Only one type of a container is allowed (signature, timestamp or evidence record)!", exception.getMessage());
     }
@@ -571,7 +571,7 @@ class ASiCSWithCAdESContainerMergerTest extends AbstractPkiFactoryTestValidation
         ASiCContent erASiC = ASiCWithCAdESContainerExtractor.fromDocument(erContainer).extract();
 
         ASiCSWithCAdESContainerMerger merger = new ASiCSWithCAdESContainerMerger(tstAsic, erASiC);
-        Exception exception = assertThrows(UnsupportedOperationException.class, () -> merger.merge());
+        Exception exception = assertThrows(UnsupportedOperationException.class, merger::merge);
         assertEquals("Unable to merge ASiC-S with CAdES containers. " +
                 "Timestamp or evidence record containers cannot be merged with the given container type!", exception.getMessage());
     }
@@ -605,7 +605,7 @@ class ASiCSWithCAdESContainerMergerTest extends AbstractPkiFactoryTestValidation
         DSSDocument secondContainer = new FileDocument("src/test/resources/validation/evidencerecord/er-asn1-one-file-ok.scs");
 
         ASiCSWithCAdESContainerMerger merger = new ASiCSWithCAdESContainerMerger(firstContainer, secondContainer);
-        Exception exception = assertThrows(UnsupportedOperationException.class, () -> merger.merge());
+        Exception exception = assertThrows(UnsupportedOperationException.class, merger::merge);
         assertEquals("Unable to merge ASiC-S with CAdES containers. " +
                 "Signer documents have different names!", exception.getMessage());
     }
@@ -616,7 +616,7 @@ class ASiCSWithCAdESContainerMergerTest extends AbstractPkiFactoryTestValidation
         DSSDocument secondContainer = new FileDocument("src/test/resources/validation/evidencerecord/er-asn1-one-file-ok.scs");
 
         ASiCSWithCAdESContainerMerger merger = new ASiCSWithCAdESContainerMerger(firstContainer, secondContainer);
-        Exception exception = assertThrows(UnsupportedOperationException.class, () -> merger.merge());
+        Exception exception = assertThrows(UnsupportedOperationException.class, merger::merge);
         assertEquals("Unable to merge ASiC-S with CAdES containers. " +
                 "Timestamp or evidence record containers cannot be merged with the given container type!", exception.getMessage());
     }
@@ -642,7 +642,7 @@ class ASiCSWithCAdESContainerMergerTest extends AbstractPkiFactoryTestValidation
         secondASiCContent.setZipComment(ASiCUtils.getZipComment(MimeTypeEnum.ZIP));
 
         ASiCSWithCAdESContainerMerger merger = new ASiCSWithCAdESContainerMerger(firstASiCContent, secondASiCContent);
-        Exception exception = assertThrows(UnsupportedOperationException.class, () -> merger.merge());
+        Exception exception = assertThrows(UnsupportedOperationException.class, merger::merge);
         assertTrue(exception.getMessage().contains("Unable to merge containers. Containers contain different zip comments"));
     }
 

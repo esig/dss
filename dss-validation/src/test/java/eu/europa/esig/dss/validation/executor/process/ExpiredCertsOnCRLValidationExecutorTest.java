@@ -95,7 +95,7 @@ class ExpiredCertsOnCRLValidationExecutorTest extends AbstractProcessExecutorTes
         XmlRAC xmlRAC = racs.get(0);
         boolean consistencyCheckFound = false;
         for (XmlConstraint constraint : xmlRAC.getConstraint()) {
-            if (MessageTag.BBB_XCV_IRDC.getId().equals(constraint.getName().getKey())) {
+            if (MessageTag.BBB_XCV_REVOC_HAS_CERT_INFO.getId().equals(constraint.getName().getKey())) {
                 assertEquals(i18nProvider.getMessage(MessageTag.REVOCATION_CONSISTENT_TL,
                         ValidationProcessUtils.getFormattedDate(certificateRevocation.getThisUpdate()),
                         ValidationProcessUtils.getFormattedDate(certificateRevocation.getSigningCertificate().getCertificateTSPServiceExpiredCertsRevocationInfo()),
@@ -150,7 +150,7 @@ class ExpiredCertsOnCRLValidationExecutorTest extends AbstractProcessExecutorTes
         XmlRAC xmlRAC = racs.get(0);
         boolean consistencyCheckFound = false;
         for (XmlConstraint constraint : xmlRAC.getConstraint()) {
-            if (MessageTag.BBB_XCV_IRDC.getId().equals(constraint.getName().getKey())) {
+            if (MessageTag.BBB_XCV_REVOC_HAS_CERT_INFO.getId().equals(constraint.getName().getKey())) {
                 assertEquals(i18nProvider.getMessage(MessageTag.REVOCATION_CONSISTENT_CRL,
                         ValidationProcessUtils.getFormattedDate(certificateRevocation.getThisUpdate()),
                         ValidationProcessUtils.getFormattedDate(certificateRevocation.getExpiredCertsOnCRL()),
@@ -206,8 +206,9 @@ class ExpiredCertsOnCRLValidationExecutorTest extends AbstractProcessExecutorTes
         XmlRAC xmlRAC = racs.get(0);
         boolean consistencyCheckFound = false;
         for (XmlConstraint constraint : xmlRAC.getConstraint()) {
-            if (MessageTag.BBB_XCV_IRDC.getId().equals(constraint.getName().getKey())) {
+            if (MessageTag.BBB_XCV_REVOC_HAS_CERT_INFO.getId().equals(constraint.getName().getKey())) {
                 assertEquals(XmlStatus.NOT_OK, constraint.getStatus());
+                assertEquals(MessageTag.BBB_XCV_REVOC_HAS_CERT_INFO_ANS.getId(), constraint.getError().getKey());
                 assertEquals(i18nProvider.getMessage(MessageTag.REVOCATION_NOT_AFTER_AFTER,
                         ValidationProcessUtils.getFormattedDate(certificateRevocation.getExpiredCertsOnCRL()),
                         ValidationProcessUtils.getFormattedDate(signingCertificate.getNotBefore()),

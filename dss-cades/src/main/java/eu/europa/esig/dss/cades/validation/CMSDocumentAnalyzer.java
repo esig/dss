@@ -20,15 +20,26 @@
  */
 package eu.europa.esig.dss.cades.validation;
 
+import eu.europa.esig.dss.cades.validation.scope.CAdESEvidenceRecordScopeFinder;
 import eu.europa.esig.dss.cades.validation.scope.CAdESSignatureScopeFinder;
+import eu.europa.esig.dss.cms.CMS;
+import eu.europa.esig.dss.cms.CMSSignedDocument;
+import eu.europa.esig.dss.cms.CMSUtils;
+import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.validation.analyzer.DefaultDocumentAnalyzer;
 import eu.europa.esig.dss.spi.validation.analyzer.evidencerecord.EvidenceRecordAnalyzerFactory;
+import eu.europa.esig.dss.spi.validation.scope.EvidenceRecordTimestampScopeFinder;
+import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
+import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
 import org.slf4j.Logger;
@@ -47,8 +58,8 @@ public class CMSDocumentAnalyzer extends DefaultDocumentAnalyzer {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CMSDocumentAnalyzer.class);
 
-	/** The CMSSignedData to be validated */
-	protected CMSSignedData cmsSignedData;
+	/** The CMS to be validated */
+	protected CMS cms;
 
 	/**
 	 * The empty constructor, instantiate {@link CAdESSignatureScopeFinder}
@@ -58,17 +69,29 @@ public class CMSDocumentAnalyzer extends DefaultDocumentAnalyzer {
 	}
 
 	/**
-	 * The default constructor for {@code CMSDocumentValidator}.
+	 * The default constructor for {@code CMSDocumentAnalyzer}.
 	 *
 	 * @param cmsSignedData
 	 *            pkcs7-signature(s)
+	 * @deprecated since DSS 6.3. Please use {@code new CMSDocumentAnalyzer(CMS cms)} constructor instead.
 	 */
+	@Deprecated
 	public CMSDocumentAnalyzer(final CMSSignedData cmsSignedData) {
-		this.cmsSignedData = cmsSignedData;
+		this.cms = toCMS(new CMSSignedDocument(cmsSignedData));
 	}
 
 	/**
-	 * The default constructor for {@code CMSDocumentValidator}.
+	 * The constructor for {@code CMSDocumentAnalyzer} creation from a {@code CMS}.
+	 *
+	 * @param cms
+	 *            {@link CMS} representing the pkcs7-signature(s)
+	 */
+	public CMSDocumentAnalyzer(final CMS cms) {
+		this.cms = cms;
+	}
+
+	/**
+	 * The default constructor for {@code CMSDocumentAnalyzer} creation from a {@code DSSDocument}.
 	 *
 	 * @param document
 	 *            document to validate (with the signature(s))
@@ -76,12 +99,12 @@ public class CMSDocumentAnalyzer extends DefaultDocumentAnalyzer {
 	public CMSDocumentAnalyzer(final DSSDocument document) {
 		Objects.requireNonNull(document, "Document to be validated cannot be null!");
 		this.document = document;
-		this.cmsSignedData = toCMSSignedData(document);
+		this.cms = toCMS(document);
 	}
 
-	private CMSSignedData toCMSSignedData(DSSDocument document) {
+	private CMS toCMS(DSSDocument document) {
 		try {
-			return DSSUtils.toCMSSignedData(document);
+			return CMSUtils.parseToCMS(document);
 		} catch (Exception e) {
 			throw new IllegalInputException(String.format("A CMS file is expected : %s", e.getMessage()), e);
 		}
@@ -99,9 +122,9 @@ public class CMSDocumentAnalyzer extends DefaultDocumentAnalyzer {
 	@Override
 	protected List<AdvancedSignature> buildSignatures() {
 		List<AdvancedSignature> signatures = new ArrayList<>();
-		if (cmsSignedData != null) {
-			for (final SignerInformation signerInformation : cmsSignedData.getSignerInfos().getSigners()) {
-				final CAdESSignature cadesSignature = new CAdESSignature(cmsSignedData, signerInformation);
+		if (cms != null) {
+			for (final SignerInformation signerInformation : cms.getSignerInfos().getSigners()) {
+				final CAdESSignature cadesSignature = new CAdESSignature(cms, signerInformation);
 				if (document != null) {
 					cadesSignature.setFilename(document.getName());
 				}
@@ -117,13 +140,66 @@ public class CMSDocumentAnalyzer extends DefaultDocumentAnalyzer {
 		return signatures;
 	}
 
+	@Override
+	protected void appendExternalEvidenceRecords(List<AdvancedSignature> allSignatureList) {
+		super.appendExternalEvidenceRecords(allSignatureList);
+
+		// For CMS, an embedded ER covers all SignerInformation's
+		// Add as external evidence record only for
+		for (AdvancedSignature signature : allSignatureList) {
+			List<EvidenceRecord> embeddedEvidenceRecords = signature.getEmbeddedEvidenceRecords();
+			if (Utils.isCollectionNotEmpty(embeddedEvidenceRecords)) {
+				for (AdvancedSignature coveredSignature : allSignatureList) {
+					if (signature != coveredSignature && sameCMS(signature, coveredSignature)) {
+						embeddedEvidenceRecords.forEach(coveredSignature::addExternalEvidenceRecord);
+						embeddedEvidenceRecords.forEach(r -> addSignatureScope(r, coveredSignature));
+					}
+				}
+			}
+		}
+	}
+
+	private boolean sameCMS(AdvancedSignature signatureOne, AdvancedSignature signatureTwo) {
+		CAdESSignature cadesSignatureOne = (CAdESSignature) signatureOne;
+		CAdESSignature cadesSignatureTwo = (CAdESSignature) signatureTwo;
+		return cadesSignatureOne.getCMS() == cadesSignatureTwo.getCMS();
+	}
+
+	private void addSignatureScope(EvidenceRecord evidenceRecord, AdvancedSignature signature) {
+		CAdESEvidenceRecordScopeFinder evidenceRecordScopeFinder = new CAdESEvidenceRecordScopeFinder(evidenceRecord, signature);
+		List<SignatureScope> evidenceRecordScopes = evidenceRecordScopeFinder.findEvidenceRecordScope();
+		evidenceRecord.setEvidenceRecordScopes(evidenceRecordScopes);
+		addTimestampedReferences(evidenceRecord.getTimestampedReferences(), evidenceRecordScopes);
+
+		EvidenceRecordTimestampScopeFinder timestampScopeFinder = new EvidenceRecordTimestampScopeFinder(evidenceRecord);
+		for (TimestampToken timestampToken : evidenceRecord.getTimestamps()) {
+			List<SignatureScope> timestampScopes = timestampToken.getTimestampScopes();
+			for (SignatureScope evidenceRecordScope : timestampScopeFinder.findTimestampScope(timestampToken)) {
+				if (!timestampScopes.contains(evidenceRecordScope)) {
+					timestampToken.getTimestampScopes().add(evidenceRecordScope);
+				}
+			}
+			addTimestampedReferences(timestampToken.getTimestampedReferences(), evidenceRecordScopes);
+		}
+	}
+
+	private void addTimestampedReferences(List<TimestampedReference> references, List<SignatureScope> signatureScopes) {
+		for (SignatureScope signatureScope : signatureScopes) {
+			TimestampedReference timestampedReference = new TimestampedReference(
+					signatureScope.getDSSIdAsString(), TimestampedObjectType.SIGNED_DATA);
+			if (!references.contains(timestampedReference)) {
+				references.add(timestampedReference);
+			}
+		}
+	}
+
 	/**
-	 * This method returns a CMSSignedData
+	 * This method returns a CMS
 	 *
-	 * @return {@link CMSSignedData}
+	 * @return {@link CMS}
 	 */
-	public CMSSignedData getCmsSignedData() {
-		return cmsSignedData;
+	public CMS getCMS() {
+		return cms;
 	}
 
 	@Override

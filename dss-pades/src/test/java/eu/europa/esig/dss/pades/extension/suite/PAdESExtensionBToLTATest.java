@@ -27,7 +27,7 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 
-public class PAdESExtensionBToLTATest extends AbstractPAdESTestExtension {
+class PAdESExtensionBToLTATest extends AbstractPAdESTestExtension {
 
 	@Override
 	protected SignatureLevel getOriginalSignatureLevel() {

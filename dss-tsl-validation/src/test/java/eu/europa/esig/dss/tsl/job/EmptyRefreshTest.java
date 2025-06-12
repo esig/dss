@@ -20,21 +20,20 @@
  */
 package eu.europa.esig.dss.tsl.job;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
+import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 import org.junit.jupiter.api.Test;
 
-import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class EmptyRefreshTest {
 
 	@Test
 	void test() {
 		TLValidationJob job = new TLValidationJob();
-		NullPointerException exception = assertThrows(NullPointerException.class, () -> job.offlineRefresh());
+		NullPointerException exception = assertThrows(NullPointerException.class, job::offlineRefresh);
 		assertEquals("The offlineLoader must be defined!", exception.getMessage());
-		assertThrows(NullPointerException.class, () -> job.onlineRefresh());
+		assertThrows(NullPointerException.class, job::onlineRefresh);
 
 		job.setOfflineDataLoader(new FileCacheDataLoader());
 		job.setDebug(true);

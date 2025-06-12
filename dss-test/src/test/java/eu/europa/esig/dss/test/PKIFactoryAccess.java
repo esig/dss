@@ -133,6 +133,7 @@ public abstract class PKIFactoryAccess {
     protected static final String GOOD_TSA_CROSS_CERTIF = "cc-good-tsa-crossed";
     protected static final String SELF_SIGNED_TSA = "self-signed-tsa";
     protected static final String SELF_SIGNED_LONG_TSA = "self-signed-long-tsa";
+    protected static final String EXPIRED_TSA = "expired-tsa";
 
     /* Produces timestamp with a fail status */
     private static final String FAIL_GOOD_TSA_ONLINE = "fail/good-tsa";
@@ -170,6 +171,7 @@ public abstract class PKIFactoryAccess {
     protected static final String EE_GOOD_USER = "ee-good-user";
     protected static final String OCSP_SKIP_USER = "ocsp-skip-user";
     protected static final String OCSP_SKIP_USER_WITH_CRL = "ocsp-skip-user-with-crl";
+    protected static final String OCSP_USER_WITH_RESPONDER_WITH_OCSP =  "ocsp-responder-with-ocsp-ee";
     protected static final String OCSP_SKIP_CA = "ocsp-skip-valid-ca";
     protected static final String OCSP_EXPIRED_RESPONDER_USER = "ocsp-skip-expired-ocsp-user";
     protected static final String OCSP_NOT_YET_VALID_CA_USER = "ocsp-skip-not-yet-valid-ca-user";

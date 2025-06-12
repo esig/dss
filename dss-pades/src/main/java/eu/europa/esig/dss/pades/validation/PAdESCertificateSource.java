@@ -52,7 +52,7 @@ public class PAdESCertificateSource extends CAdESCertificateSource {
 	 */
 	public PAdESCertificateSource(PdfSignatureRevision pdfSignatureRevision, final String vriDictionaryName,
 								  SignerInformation signerInformation) {
-		super(pdfSignatureRevision.getCMSSignedData(), signerInformation);
+		super(pdfSignatureRevision.getCMS(), signerInformation);
 		Objects.requireNonNull(vriDictionaryName, "vriDictionaryName cannot be null!");
 
 		this.dssDictionaryCertificateSource = new PdfDssDictCertificateSource(

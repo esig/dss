@@ -74,7 +74,7 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 
 	/**
 	 * Creates a revocation data loading strategy used to fetch OCSP or CRL for validating certificates.
-	 *
+	 * <p>
 	 * Default: {@code OCSPFirstRevocationDataLoadingStrategyFactory} is used to extract OCSP token first and CRL after
 	 */
 	private RevocationDataLoadingStrategyFactory revocationDataLoadingStrategyFactory = new OCSPFirstRevocationDataLoadingStrategyFactory();
@@ -109,7 +109,7 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	/**
 	 * This variable set the behavior to follow in case of invalid signature
 	 * (augmentation process).
-	 *
+	 * <p>
 	 * Default : ExceptionOnStatusAlert - throw the exception
 	 */
 	private StatusAlert alertOnInvalidSignature = new ExceptionOnStatusAlert();
@@ -117,7 +117,7 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	/**
 	 * This variable set the behavior to follow in case of invalid timestamp
 	 * (augmentation process).
-	 * 
+	 * <p>
 	 * Default : ExceptionOnStatusAlert - throw the exception
 	 */
 	private StatusAlert alertOnInvalidTimestamp = new ExceptionOnStatusAlert();
@@ -125,7 +125,7 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	/**
 	 * This variable set the behavior to follow in case of missing revocation data
 	 * (augmentation process).
-	 * 
+	 * <p>
 	 * Default : ExceptionOnStatusAlert - throw the exception
 	 */
 	private StatusAlert alertOnMissingRevocationData = new ExceptionOnStatusAlert();
@@ -133,7 +133,7 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	/**
 	 * This variable set the behavior to follow in case of revoked certificate
 	 * (augmentation process).
-	 * 
+	 * <p>
 	 * Default : ExceptionOnStatusAlert - throw the exception
 	 */
 	private StatusAlert alertOnRevokedCertificate = new ExceptionOnStatusAlert();
@@ -141,7 +141,7 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	/**
 	 * This variable set the behavior to follow in case of no revocation data issued
 	 * after the bestSignatureTime (augmentation process).
-	 * 
+	 * <p>
 	 * Default : LogOnStatusAlert - log a warning message
 	 */
 	private StatusAlert alertOnNoRevocationAfterBestSignatureTime = new LogOnStatusAlert(Level.WARN);
@@ -149,40 +149,42 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	/**
 	 * This variable set the behavior to follow in case of missing revocation data
 	 * for a POE.
-	 * 
+	 * <p>
 	 * Default : LogOnStatusAlert - log a warning message
 	 */
 	private StatusAlert alertOnUncoveredPOE = new LogOnStatusAlert(Level.WARN);
 
 	/**
 	 * Defines a behavior on signature creation with an expired signing-certificate
-	 *
+	 * <p>
 	 * Default : ExceptionOnStatusAlert - throw the exception
 	 */
 	private StatusAlert alertOnExpiredCertificate = new ExceptionOnStatusAlert();
 
 	/**
 	 * Defines a behavior on signature creation with a not yet valid certificate
-	 *
+	 * <p>
 	 * Default : ExceptionOnStatusAlert - throw the exception
 	 */
 	private StatusAlert alertOnNotYetValidCertificate = new ExceptionOnStatusAlert();
 
 	/**
 	 * Defines behavior on signature augmentation when a signature with a higher level is present, than the target one
-	 *
+	 * <p>
 	 * Default : ExceptionOnStatusAlert - throw the exception
 	 */
 	private StatusAlert augmentationAlertOnHigherSignatureLevel = new ExceptionOnStatusAlert();
 
 	/**
 	 * Defines behavior on augmentation for a signature not containing certificates
+	 * <p>
 	 * Default : ExceptionOnStatusAlert - throw the exception
 	 */
 	private StatusAlert augmentationAlertOnSignatureWithoutCertificates = new ExceptionOnStatusAlert();
 
 	/**
 	 * Defines behavior on augmentation for a signature containing only self-signed certificate chains.
+	 * <p>
 	 * Default : ExceptionOnStatusAlert - throw the exception
 	 */
 	private StatusAlert augmentationAlertOnSelfSignedCertificateChains = new ExceptionOnStatusAlert();
@@ -190,19 +192,11 @@ public class CommonCertificateVerifier implements CertificateVerifier {
 	/**
 	 * This variable sets the behavior to follow for revocation retrieving in case of
 	 * untrusted certificate chains.
-	 * 
+	 * <p>
 	 * Default : false (revocation are not checked in case of certificates issued
 	 * from an unsure source)
 	 */
 	private boolean checkRevocationForUntrustedChains = false;
-
-	/**
-	 * This variable sets whether POEs should be extracted from timestamps with
-	 * untrusted certificate chains.
-	 *
-	 * Default : false (POE is not extracted from a timestamp with untrusted certificate chain)
-	 */
-	private boolean extractPOEFromUntrustedChains = false;
 
 	/**
 	 * The default constructor. The {@code DataLoader} is created to allow the
