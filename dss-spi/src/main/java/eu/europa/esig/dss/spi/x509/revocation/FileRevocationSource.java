@@ -2,13 +2,13 @@ package eu.europa.esig.dss.spi.x509.revocation;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.Revocation;
+import eu.europa.esig.dss.spi.DSSUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -87,7 +87,7 @@ public abstract class FileRevocationSource<R extends Revocation> extends Reposit
 	                                                   CertificateToken issuerCertToken) {
 		List<RevocationToken<R>> revocationTokens = new ArrayList<>();
 
-		File cacheFile = getCacheFile(key);
+		File cacheFile = getCacheFileFromKey(key);
 		if (!cacheFile.exists()) {
 			return revocationTokens;
 		}
@@ -124,15 +124,12 @@ public abstract class FileRevocationSource<R extends Revocation> extends Reposit
 
 	@Override
 	protected void insertRevocation(String revocationKey, RevocationToken<R> token) {
-		File cacheFile = getCacheFile(revocationKey);
+		File cacheFile = getCacheFileFromKey(revocationKey);
+		byte[] encodedData = token.getEncoded();
 
-		try {
-			byte[] encodedData = token.getEncoded();
-			writeCacheFile(cacheFile, encodedData);
-			LOG.debug("Revocation token inserted into cache file for key: {}", revocationKey);
-		} catch (Exception e) {
-			LOG.error("Failed to cache revocation token for key '{}': {}", revocationKey, e.getMessage());
-		}
+		DSSUtils.saveToFile(encodedData, cacheFile);
+
+		LOG.debug("Revocation token inserted into cache file for key: {}", revocationKey);
 	}
 
 	@Override
@@ -144,11 +141,14 @@ public abstract class FileRevocationSource<R extends Revocation> extends Reposit
 
 	@Override
 	protected void removeRevocation(String revocationKey) {
-		File cacheFile = getCacheFile(revocationKey);
-		if (cacheFile.exists()) {
-			deleteCacheFile(cacheFile);
-			LOG.debug("Revocation token removed from cache for key: {}", revocationKey);
+		File cacheFile = getCacheFileFromKey(revocationKey);
+
+		if (!cacheFile.exists()) {
+			return;
 		}
+
+		deleteCacheFile(cacheFile);
+		LOG.debug("Revocation token removed from cache for key: {}", revocationKey);
 	}
 
 	/**
@@ -176,29 +176,8 @@ public abstract class FileRevocationSource<R extends Revocation> extends Reposit
 	 * @param key the cache key
 	 * @return the cache file
 	 */
-	protected File getCacheFile(String key) {
+	protected File getCacheFileFromKey(String key) {
 		return new File(cacheDirectory, key + getFileExtension());
-	}
-
-	/**
-	 * Writes encoded revocation data to a cache file
-	 *
-	 * @param cacheFile   the cache file to write to
-	 * @param encodedData the encoded data to write
-	 */
-	protected void writeCacheFile(File cacheFile, byte[] encodedData) {
-		try {
-			// Ensure parent directories exist
-			File parentDir = cacheFile.getParentFile();
-			if (parentDir != null && !parentDir.exists()) {
-				parentDir.mkdirs();
-			}
-
-			Files.write(cacheFile.toPath(), encodedData, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
-		} catch (IOException e) {
-			LOG.error("Failed to write cache file '{}': {}", cacheFile.getAbsolutePath(), e.getMessage());
-			throw new RuntimeException("Failed to write to cache file", e);
-		}
 	}
 
 	/**
@@ -218,16 +197,24 @@ public abstract class FileRevocationSource<R extends Revocation> extends Reposit
 	 * Clears all cached files from the cache directory
 	 */
 	public void clearCache() {
-		if (cacheDirectory.exists() && cacheDirectory.isDirectory()) {
-			File[] files = cacheDirectory.listFiles();
-			if (files != null) {
-				for (File file : files) {
-					if (file.isFile() && file.getName().endsWith(getFileExtension())) {
-						deleteCacheFile(file);
-					}
+		if (!cacheDirectory.exists()) {
+			return;
+		}
+
+		if (!cacheDirectory.isDirectory()) {
+			LOG.warn("Cache directory '{}' is not a directory", cacheDirectory.getAbsolutePath());
+			return;
+		}
+
+		File[] files = cacheDirectory.listFiles();
+		if (files != null) {
+			for (File file : files) {
+				if (file.isFile() && file.getName().endsWith(getFileExtension())) {
+					deleteCacheFile(file);
 				}
 			}
 		}
+
 		LOG.info("Cache cleared for directory: {}", cacheDirectory.getAbsolutePath());
 	}
 
