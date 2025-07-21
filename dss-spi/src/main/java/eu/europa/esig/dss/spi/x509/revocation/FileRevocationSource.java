@@ -2,7 +2,6 @@ package eu.europa.esig.dss.spi.x509.revocation;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.Revocation;
-import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -178,22 +177,7 @@ public abstract class FileRevocationSource<R extends Revocation> extends Reposit
 	 * @return the cache file
 	 */
 	protected File getCacheFile(String key) {
-		String normalizedKey = normalizeKey(key);
-		return new File(cacheDirectory, normalizedKey + getFileExtension());
-	}
-
-	/**
-	 * Normalizes a cache key to be safe for file names
-	 *
-	 * @param key the original key
-	 * @return the normalized key
-	 */
-	protected String normalizeKey(String key) {
-		if (Utils.isStringEmpty(key)) {
-			throw new IllegalArgumentException("Cache key cannot be null or empty");
-		}
-		// Replace characters that are not safe for file names
-		return key.replaceAll("[^a-zA-Z0-9._-]", "_");
+		return new File(cacheDirectory, key + getFileExtension());
 	}
 
 	/**

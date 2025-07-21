@@ -5,6 +5,7 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.CertificateExtensionsUtils;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.revocation.FileRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRespStatus;
@@ -92,7 +93,7 @@ public class FileCacheOCSPSource extends FileRevocationSource<OCSP> implements O
 
 	@Override
 	protected String getRevocationTokenKey(CertificateToken certificateToken, String revocationAccessUrl) {
-		return normalizeKey(revocationAccessUrl);
+		return DSSUtils.getNormalizedString(revocationAccessUrl);
 	}
 
 	@Override

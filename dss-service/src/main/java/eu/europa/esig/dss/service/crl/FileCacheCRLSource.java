@@ -27,6 +27,7 @@ import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.spi.CertificateExtensionsUtils;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.revocation.FileRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.revocation.crl.CRLSource;
@@ -93,7 +94,7 @@ public class FileCacheCRLSource extends FileRevocationSource<CRL> implements CRL
 
     @Override
     protected String getRevocationTokenKey(CertificateToken certificateToken, String urlString) {
-        return normalizeKey(urlString);
+        return DSSUtils.getNormalizedString(urlString);
     }
 
     @Override
