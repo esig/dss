@@ -1,5 +1,6 @@
 package eu.europa.esig.dss.spi.x509.revocation;
 
+import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.Revocation;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -78,8 +79,8 @@ public abstract class FileRevocationSource<R extends Revocation> extends Reposit
 	 *
 	 * @return the cache directory
 	 */
-	public File getCacheDirectory() {
-		return cacheDirectory;
+	public FileDocument getCacheDirectory() {
+		return new FileDocument(cacheDirectory);
 	}
 
 	@Override
