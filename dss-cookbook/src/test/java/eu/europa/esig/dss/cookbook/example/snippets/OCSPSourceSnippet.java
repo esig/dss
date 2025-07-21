@@ -26,6 +26,7 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.service.SecureRandomNonceSource;
 import eu.europa.esig.dss.service.http.commons.OCSPDataLoader;
+import eu.europa.esig.dss.service.ocsp.FileCacheOCSPSource;
 import eu.europa.esig.dss.service.ocsp.JdbcCacheOCSPSource;
 import eu.europa.esig.dss.service.ocsp.OnlineOCSPSource;
 import eu.europa.esig.dss.spi.client.jdbc.JdbcCacheConnector;
@@ -33,6 +34,7 @@ import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 
 import javax.sql.DataSource;
+import java.io.File;
 import java.sql.SQLException;
 
 public class OCSPSourceSnippet {
@@ -51,7 +53,7 @@ public class OCSPSourceSnippet {
 		// end::demo[]
 
 		DataSource dataSource = null;
-		
+
 		// tag::demo-online[]
 		// import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 		// import eu.europa.esig.dss.service.SecureRandomNonceSource;
@@ -60,32 +62,38 @@ public class OCSPSourceSnippet {
 
 		// Instantiates a new OnlineOCSPSource object
 		OnlineOCSPSource onlineOCSPSource = new OnlineOCSPSource();
-		
+
 		// Allows setting an implementation of the `DataLoader` interface,
-		// processing a querying of a remote revocation server. 
+		// processing a querying of a remote revocation server.
 		// `CommonsDataLoader` instance is used by default.
 		onlineOCSPSource.setDataLoader(new OCSPDataLoader());
-		
-		// Defines an arbitrary integer used in OCSP source querying in order to prevent a replay attack. 
+
+		// Defines an arbitrary integer used in OCSP source querying in order to prevent
+		// a replay attack.
 		// Default : null (not used by default).
 		onlineOCSPSource.setNonceSource(new SecureRandomNonceSource());
 
 		// Defines behavior on invalid nonce within the OCSP response
 		// (i.e. obtained nonce does not match the value within the request)
-		// Default : ExceptionOnStatusAlert (throws an exception in case of nonce mismatch)
+		// Default : ExceptionOnStatusAlert (throws an exception in case of nonce
+		// mismatch)
 		onlineOCSPSource.setAlertOnInvalidNonce(new ExceptionOnStatusAlert());
 
-		// Defines behavior in case of OCSP response without nonce (provided the NonceSource
+		// Defines behavior in case of OCSP response without nonce (provided the
+		// NonceSource
 		// is defined)
-		// Default : LogOnStatusAlert(Level.WARN) (logs a warning in case of OCSP response
-		//           without nonce)
+		// Default : LogOnStatusAlert(Level.WARN) (logs a warning in case of OCSP
+		// response
+		// without nonce)
 		onlineOCSPSource.setAlertOnNonexistentNonce(new ExceptionOnStatusAlert());
 
-		// Defines behavior in case of OCSP "freshness" check failure (i.e. the current time
+		// Defines behavior in case of OCSP "freshness" check failure (i.e. the current
+		// time
 		// is outside thisUpdate-nextUpdate range extracted from the OCSP response).
 		// See RFC 5019 for more information.
-		// Note : executed only when nonce is not checked (not enforced or OCSP responder
-		//        replies without nonce).
+		// Note : executed only when nonce is not checked (not enforced or OCSP
+		// responder
+		// replies without nonce).
 		// Default : SilentOnStatusAlert (the check is ignored)
 		onlineOCSPSource.setAlertOnInvalidUpdateTime(new SilentOnStatusAlert());
 
@@ -93,15 +101,15 @@ public class OCSPSourceSnippet {
 		// the nextUpdate time (see RFC 5019)
 		// Default : 0 (in milliseconds)
 		onlineOCSPSource.setNextUpdateTolerancePeriod(1000); // 1 second
-		
+
 		// Defines a DigestAlgorithm being used to generate a CertificateID in order to
-		// complete an OCSP request.  OCSP servers supporting multiple hash functions may
+		// complete an OCSP request. OCSP servers supporting multiple hash functions may
 		// produce a revocation response with a digest algorithm depending on
 		// the provided CertificateID's algorithm.
 		// Default : SHA1 (as a mandatory requirement to be implemented by OCSP servers.
-		//           See RFC 5019).
+		// See RFC 5019).
 		onlineOCSPSource.setCertIDDigestAlgorithm(DigestAlgorithm.SHA1);
-		
+
 		// end::demo-online[]
 
 		// tag::demo-cached[]
@@ -118,19 +126,26 @@ public class OCSPSourceSnippet {
 		// Set the JdbcCacheConnector
 		cacheOCSPSource.setJdbcCacheConnector(jdbcCacheConnector);
 
-		// Allows definition of an alternative dataLoader to be used to access a revocation
-		// from online sources if a requested revocation is not present in the repository or has been expired (see below).
+		// Allows definition of an alternative dataLoader to be used to access a
+		// revocation
+		// from online sources if a requested revocation is not present in the
+		// repository or has been expired (see below).
 		cacheOCSPSource.setProxySource(onlineOCSPSource);
 
 		// All setters accept values in seconds
 		Long threeMinutes = (long) (60 * 3); // seconds * minutes
 
-		// If "nextUpdate" field is not defined for a revocation token, the value of "defaultNextUpdateDelay"
-		// will be used in order to determine when a new revocation data should be requested.
-		// If the current time is not beyond the "thisUpdate" time + "defaultNextUpdateDelay",
-		// then a revocation data will be retrieved from the repository source, otherwise a new revocation data
+		// If "nextUpdate" field is not defined for a revocation token, the value of
+		// "defaultNextUpdateDelay"
+		// will be used in order to determine when a new revocation data should be
+		// requested.
+		// If the current time is not beyond the "thisUpdate" time +
+		// "defaultNextUpdateDelay",
+		// then a revocation data will be retrieved from the repository source,
+		// otherwise a new revocation data
 		// will be requested from a proxiedSource.
-		// Default : null (a new revocation data will be requested of "nestUpdate" field is not defined).
+		// Default : null (a new revocation data will be requested of "nestUpdate" field
+		// is not defined).
 		cacheOCSPSource.setDefaultNextUpdateDelay(threeMinutes);
 
 		// Creates an SQL table
@@ -139,6 +154,25 @@ public class OCSPSourceSnippet {
 		// Extract OCSP for a certificate
 		OCSPToken ocspRevocationToken = cacheOCSPSource.getRevocationToken(certificateToken, issuerCertificateToken);
 		// end::demo-cached[]
+
+		// tag::demo-file-cached[]
+		// import eu.europa.esig.dss.service.ocsp.FileCacheOCSPSource;
+		// import java.io.File;
+
+		// Initialize the file-based OCSP source
+		FileCacheOCSPSource fileCacheOCSPSource = new FileCacheOCSPSource("path/to/ocsp/cache");
+
+		// Optionally, set a backup online source for when cache misses occur
+		fileCacheOCSPSource.setProxySource(onlineOCSPSource);
+
+		// Extract OCSP for a certificate (will use cache if available, otherwise fetch
+		// from proxy source)
+		OCSPToken fileOcspRevocationToken = fileCacheOCSPSource.getRevocationToken(certificateToken,
+				issuerCertificateToken);
+
+		// Clear cache when needed (removes all cached OCSP files)
+		fileCacheOCSPSource.clearCache();
+		// end::demo-file-cached[]
 
 	}
 
