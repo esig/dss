@@ -12,7 +12,7 @@ Digested documents can be used during signature creation instead of the original
 Refer to section <<DSSDocuments>> for more information on digested documents, section <<Packaging>> for information on the detached packaging of signatures and section <<DetachedSignatureDigest>> for code illustrations.
 
 === Original document in the Data To Be Signed
-The data to be signed (DTBS) for CAdES and XAdES does not contain the original document on which the signature value is computed. JAdES and PAdES DTBS, however, does contain the whole original content.
+The data to be signed (DTBS) for CAdES, XAdES and PAdES does not contain the original document on which the signature value is computed. JAdES DTBS however, when not the DTBS of a detached JAdES signature making use of the ObjectIdByURIHash referencing mechanism, does contain the whole original content.
 
 === Private information in logs
 
@@ -40,8 +40,8 @@ With DSS, it is possible to sign a document without needing to send it to the si
 See section <<SignatureCreationThreeSteps>> and <<SignatureCreationFourSteps>> for an extensive description of these steps.
 
 . The first step is performed by the client and consists in the computation of the data to be signed (DTBS).
-. For the XAdES and CAdES formats, the client can optionally compute the digest of the DTBS (DTBSR). For JAdES and PAdES the client shall compute the digest of the DTBS to "hide" the content of the original document, given that the DTBS of these two formats contains the whole original content. The client sends the DTBS or the DTBSR to the server.
-. Then, the server encrypts the DTBS using the private key to create the signature value. The server sends the signature value back to the client.
+. For the XAdES, CAdES and PAdES formats, the client can optionally compute the digest of the DTBS (DTBSR). For JAdES the client should compute the digest of the DTBS to "hide" the content of the original document, given that the DTBS of this format (usually) contains the whole original content. The client sends the DTBS or the DTBSR to the server.
+. Then, the server computes the signature value by encrypting the DTBSR (or hashing the DTBS and encrypting the resulting DTBSR in one go) using the private key. The server sends the signature value back to the client.
 . The last step takes place at the client-side. The client adds the signature value to the appropriate field.
 
 The following schema illustrates the different steps

@@ -22,6 +22,8 @@ package eu.europa.esig.dss.spi.signature.identifier;
 
 import eu.europa.esig.dss.model.identifier.IdentifierBuilder;
 
+import eu.europa.esig.dss.model.identifier.IdentifierBuilder;
+
 /**
  * Builds a deterministic Signature Identifier for the produced reports
  */

@@ -24,6 +24,7 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.model.tsl.Condition;
 import eu.europa.esig.dss.tsl.dto.condition.CertSubjectDNAttributeCondition;
+import eu.europa.esig.dss.tsl.dto.condition.CompositeCondition;
 import eu.europa.esig.dss.tsl.dto.condition.ExtendedKeyUsageCondition;
 import eu.europa.esig.dss.tsl.dto.condition.KeyUsageCondition;
 import eu.europa.esig.dss.tsl.dto.condition.PolicyIdCondition;
@@ -39,7 +40,6 @@ import eu.europa.esig.trustedlist.jaxb.mra.QcStatementListType;
 import eu.europa.esig.trustedlist.jaxb.mra.QcStatementType;
 import eu.europa.esig.trustedlist.jaxb.tslx.CertSubjectDNAttributeType;
 import eu.europa.esig.trustedlist.jaxb.tslx.ExtendedKeyUsageType;
-import eu.europa.esig.dss.tsl.dto.condition.CompositeCondition;
 import eu.europa.esig.xades.jaxb.xades132.IdentifierType;
 import eu.europa.esig.xades.jaxb.xades132.ObjectIdentifierType;
 import org.slf4j.Logger;
@@ -107,6 +107,16 @@ public class CriteriaListConverter implements Function<CriteriaListType, Conditi
 				criteriaCondition.addChild(condition);
 			}
 		}
+	}
+
+	private String getOID(IdentifierType identifier) {
+		String id = identifier.getValue();
+		// ES TSL : <ns4:Identifier
+		// Qualifier="OIDAsURN">urn:oid:1.3.6.1.4.1.36035.1.3.1</ns4:Identifier>
+		if (DSSUtils.isUrnOid(id)) {
+			id = DSSUtils.getOidCode(id);
+		}
+		return id;
 	}
 
 	/**

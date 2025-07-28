@@ -43,10 +43,18 @@ As well as a list of sources (`ListRevocationSource`) with a collection of sever
 
 === Caching
 
-The above-mentioned class allows caching of CRL and OCSP responses to a user-chosen source. By default, DSS provides a JDBC based implementation for this class, but other implementations also can be created. The class contains a complete set of functions to save revocation data to a database, extract, update and remove it. +
-Furthermore, the `RepositoryRevocationSource` allows the implementer to define a backup revocation source, for the case if the database does not contain the certificate's revocation data yet.
+DSS provides caching mechanisms for CRL and OCSP responses to improve performance by reducing network calls to online revocation sources. Two types of caching implementations are available:
 
-List of cached Revocation sources implemented in DSS:
+* **JDBC-based caching**: Stores revocation data in a database
+* **File-based caching**: Stores revocation data in the local file system
+
+Both implementations extend the `RepositoryRevocationSource` class and allow the implementer to define a backup revocation source for cases when cached data is not available.
+
+==== JDBC-based caching
+
+The JDBC-based implementation allows caching of CRL and OCSP responses to a database. The class contains a complete set of functions to save revocation data to a database, extract, update and remove it.
+
+List of JDBC cached Revocation sources implemented in DSS:
 
 * `JdbcRevocationSource`
 ** `JdbcCacheCRLSource`
@@ -54,7 +62,7 @@ List of cached Revocation sources implemented in DSS:
 
 WARNING: A database table shall be initialized before you start working with the cached revocation repository.
 
-==== CRL
+===== CRL
 An example for JdbcCacheCRLSource :
 
 [source,java,indent=0]
@@ -63,7 +71,7 @@ An example for JdbcCacheCRLSource :
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/CRLSourceSnippet.java[tags=demo-cached]
 ----
 
-==== OCSP
+===== OCSP
 An example for JdbcCacheOCSPSource :
 
 [source,java,indent=0]
@@ -72,7 +80,7 @@ An example for JdbcCacheOCSPSource :
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/OCSPSourceSnippet.java[tags=demo-cached]
 ----
 
-==== JDBC sources with other databases
+===== JDBC sources with other databases
 
 Depending on a used database, the executed SQL requests may differ (for example one or another datatype may be not supported).
 In order to adapt the `JdbcRevocationSource` to the used database, the easiest way is to override the SQL requests with values supported by the target database.
@@ -83,6 +91,38 @@ For instance, in PostgreSQL a `bytea` datatype is required for storing binary da
 .JdbcCacheCRLSource with PostgreSQL
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/CRLSourceSnippet.java[tags=demo-postgresql]
+----
+
+==== File-based caching
+
+The file-based implementation provides an alternative caching mechanism that stores revocation data directly on the local file system. This approach is particularly useful in environments where database access is not available or when simpler deployment is desired.
+
+List of File-based cached Revocation sources implemented in DSS:
+
+* `FileRevocationSource`
+** `FileCacheCRLSource`
+** `FileCacheOCSPSource`
+
+The file-based cache stores each revocation response as a separate file in a designated cache directory, using a normalized URL-based filename with the appropriate extension (`.crl` for CRL files, `.ocsp` for OCSP responses).
+
+WARNING: Ensure that the cache directory has appropriate read/write permissions for the application. The file-based cache will automatically handle file creation and cleanup operations.
+
+===== CRL
+An example for FileCacheCRLSource :
+
+[source,java,indent=0]
+.FileCacheCRLSource usage
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/CRLSourceSnippet.java[tags=demo-file-cached]
+----
+
+===== OCSP
+An example for FileCacheOCSPSource :
+
+[source,java,indent=0]
+.FileCacheOCSPSource usage
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/OCSPSourceSnippet.java[tags=demo-file-cached]
 ----
 
 === Online fetching
@@ -127,6 +167,7 @@ Other revocation sources find the status of a certificate either from a list sto
 *** `ExternalResourcesCRLSource` : A class that can instantiate a list of certificate revocation lists from a directory where the individual lists should be.
 ** `OnlineCRLSource` : Retrieves CRL files from online sources with the CRL Distribution Points information from the certificate.
 ** `JdbcCacheCrlSource` : Implementation of the `JdbcRevocationSource`. This implementation allows storage of valid CRL entries to a defined `DataSource'` and retrieve them locally.
+** `FileCacheCRLSource` : Implementation of the `FileRevocationSource`. This implementation allows storage of valid CRL entries to the local file system and retrieve them locally.
 
 * OCSP sources:
 ** `OfflineOCSPSource` : This class implements the `OfflineRevocationSource` and retrieves the revocation data from extracted information. The code is common for all signature formats and OCSP responses are injected by its sub-classes:
@@ -138,6 +179,7 @@ Other revocation sources find the status of a certificate either from a list sto
 **** `ExternalResourcesOCSPSource` : A class that can instantiate a list of OCSPToken from a directory where should be the individual DER Encoded X509 certificates files.
 ** `OnlineOCSPSource` : Retrieves OCSP responses from online source.
 ** `JdbcCacheOcspSource` : Implementation of the `JdbcRevocationSource`. This implementation allows storage of valid OCSP entries to a defined `DataSource` and retrieve them locally.
+** `FileCacheOCSPSource` : Implementation of the `FileRevocationSource`. This implementation allows storage of valid OCSP entries to the local file system and retrieve them locally.
 
 [[RevocationLoadingStrategy]]
 === Revocation data loading strategy
