@@ -19,9 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * OCSP Source that stores its OCSP responses on the file system.
+ * OCSPSource that stores its OCSP responses on the file system.
  * <p>
- * WARNING: Experimental version included within DSS 6.3. Please note the class was not intensively tested.
+ * WARNING: The class represents an experimental functionality and included in the DSS version 6.3.
+ *          Please note the class was not extensively tested.
  */
 public class FileCacheOCSPSource extends FileRevocationSource<OCSP> implements OCSPSource {
 

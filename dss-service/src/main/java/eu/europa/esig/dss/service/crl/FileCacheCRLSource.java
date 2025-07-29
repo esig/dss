@@ -41,7 +41,8 @@ import java.util.List;
 /**
  * CRLSource that provides file-based caching functionality for CRL revocation data.
  * <p>
- * WARNING: Experimental version included within DSS 6.3. Please note the class was not intensively tested.
+ * WARNING: The class represents an experimental functionality and included in the DSS version 6.3.
+ *          Please note the class was not extensively tested.
  */
 public class FileCacheCRLSource extends FileRevocationSource<CRL> implements CRLSource {
 

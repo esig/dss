@@ -69,10 +69,8 @@ public class CRLSourceSnippet {
 		onlineCRLSource.setDataLoader(new CommonsDataLoader());
 
 		// Sets a preferred protocol that will be used for obtaining a CRL.
-		// E.g. for a list of urls with protocols HTTP, LDAP and FTP, with a defined
-		// preferred
-		// protocol as FTP, the FTP url will be called first, and in case of an
-		// unsuccessful
+		// E.g. for a list of urls with protocols HTTP, LDAP and FTP, with a defined preferred
+		// protocol as FTP, the FTP url will be called first, and in case of an unsuccessful
 		// result other url calls will follow.
 		// Default : null (urls will be called in a provided order).
 		onlineCRLSource.setPreferredProtocol(Protocol.FTP);
@@ -80,6 +78,10 @@ public class CRLSourceSnippet {
 		// end::demo-online[]
 
 		// tag::demo-cached[]
+		// import eu.europa.esig.dss.service.crl.JdbcCacheCRLSource;
+		// import eu.europa.esig.dss.spi.client.jdbc.JdbcCacheConnector;
+		// import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
+
 		// Creates an instance of JdbcCacheCRLSource
 		JdbcCacheCRLSource cacheCRLSource = new JdbcCacheCRLSource();
 
@@ -89,8 +91,7 @@ public class CRLSourceSnippet {
 		// Set the JdbcCacheConnector
 		cacheCRLSource.setJdbcCacheConnector(jdbcCacheConnector);
 
-		// Allows definition of an alternative dataLoader to be used to access a
-		// revocation
+		// Allows definition of an alternative dataLoader to be used to access a revocation
 		// from online sources if a requested revocation is not present in the
 		// repository or has been expired (see below).
 		cacheCRLSource.setProxySource(onlineCRLSource);
@@ -98,21 +99,16 @@ public class CRLSourceSnippet {
 		// All setters accept values in seconds
 		Long oneWeek = (long) (60 * 60 * 24 * 7); // seconds * minutes * hours * days
 
-		// If "nextUpdate" field is not defined for a revocation token, the value of
-		// "defaultNextUpdateDelay"
-		// will be used in order to determine when a new revocation data should be
-		// requested.
-		// If the current time is not beyond the "thisUpdate" time +
-		// "defaultNextUpdateDelay",
+		// If "nextUpdate" field is not defined for a revocation token, the value of "defaultNextUpdateDelay"
+		// will be used in order to determine when a new revocation data should be requested.
+		// If the current time is not beyond the "thisUpdate" time + "defaultNextUpdateDelay",
 		// then a revocation data will be retrieved from the repository source,
-		// otherwise a new revocation data
-		// will be requested from a proxiedSource.
-		// Default : null (a new revocation data will be requested of "nestUpdate" field
-		// is not defined).
+		// otherwise a new revocation data will be requested from a proxiedSource.
+		// Default : null (a new revocation data will be requested of "nextUpdate" field
+		//           is not defined).
 		cacheCRLSource.setDefaultNextUpdateDelay(oneWeek);
 
-		// Defines a custom maximum possible nextUpdate delay. Allows limiting of a time
-		// interval
+		// Defines a custom maximum possible nextUpdate delay. Allows limiting of a time interval
 		// from "thisUpdate" to "nextUpdate" defined in a revocation data.
 		// Default : null (not specified, the "nextUpdate" value provided in a
 		// revocation is used).
@@ -131,16 +127,15 @@ public class CRLSourceSnippet {
 
 		// tag::demo-file-cached[]
 		// import eu.europa.esig.dss.service.crl.FileCacheCRLSource;
+		// import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 		// import java.io.File;
 
 		// Initialize the file-based CRL source
 		FileCacheCRLSource fileCacheCRLSource = new FileCacheCRLSource(onlineCRLSource);
 
 		// Provide a cache location directory
+		// Default : Temporary directory ("java.io.tmpdir") with a "/dss-cache-revocation" subdirectory
 		fileCacheCRLSource.setFileCacheDirectory(new File("path/to/crl/cache"));
-
-		// Optionally, set a backup online source for when cache misses occur
-		fileCacheCRLSource.setProxySource(onlineCRLSource);
 
 		// Extract CRL for a certificate (will use cache if available, otherwise fetch
 		// from proxy source)

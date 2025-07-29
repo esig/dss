@@ -79,20 +79,14 @@ public class OCSPSourceSnippet {
 		// mismatch)
 		onlineOCSPSource.setAlertOnInvalidNonce(new ExceptionOnStatusAlert());
 
-		// Defines behavior in case of OCSP response without nonce (provided the
-		// NonceSource
-		// is defined)
-		// Default : LogOnStatusAlert(Level.WARN) (logs a warning in case of OCSP
-		// response
-		// without nonce)
+		// Defines behavior in case of OCSP response without nonce (provided the NonceSource is defined)
+		// Default : LogOnStatusAlert(Level.WARN) (logs a warning in case of OCSP response without nonce)
 		onlineOCSPSource.setAlertOnNonexistentNonce(new ExceptionOnStatusAlert());
 
-		// Defines behavior in case of OCSP "freshness" check failure (i.e. the current
-		// time
+		// Defines behavior in case of OCSP "freshness" check failure (i.e. the current time
 		// is outside thisUpdate-nextUpdate range extracted from the OCSP response).
 		// See RFC 5019 for more information.
-		// Note : executed only when nonce is not checked (not enforced or OCSP
-		// responder
+		// Note : executed only when nonce is not checked (not enforced or OCSP responder
 		// replies without nonce).
 		// Default : SilentOnStatusAlert (the check is ignored)
 		onlineOCSPSource.setAlertOnInvalidUpdateTime(new SilentOnStatusAlert());
@@ -135,17 +129,13 @@ public class OCSPSourceSnippet {
 		// All setters accept values in seconds
 		Long threeMinutes = (long) (60 * 3); // seconds * minutes
 
-		// If "nextUpdate" field is not defined for a revocation token, the value of
-		// "defaultNextUpdateDelay"
-		// will be used in order to determine when a new revocation data should be
-		// requested.
-		// If the current time is not beyond the "thisUpdate" time +
-		// "defaultNextUpdateDelay",
+		// If "nextUpdate" field is not defined for a revocation token, the value of "defaultNextUpdateDelay"
+		// will be used in order to determine when a new revocation data should be requested.
+		// If the current time is not beyond the "thisUpdate" time + "defaultNextUpdateDelay",
 		// then a revocation data will be retrieved from the repository source,
-		// otherwise a new revocation data
-		// will be requested from a proxiedSource.
-		// Default : null (a new revocation data will be requested of "nestUpdate" field
-		// is not defined).
+		// otherwise a new revocation data will be requested from a proxiedSource.
+		// Default : null (a new revocation data will be requested of "nextUpdate" field
+		//           is not defined).
 		cacheOCSPSource.setDefaultNextUpdateDelay(threeMinutes);
 
 		// Creates an SQL table
@@ -158,16 +148,15 @@ public class OCSPSourceSnippet {
 
 		// tag::demo-file-cached[]
 		// import eu.europa.esig.dss.service.ocsp.FileCacheOCSPSource;
+		// import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 		// import java.io.File;
 
 		// Initialize the file-based OCSP source
 		FileCacheOCSPSource fileCacheOCSPSource = new FileCacheOCSPSource(onlineOCSPSource);
 
 		// Provide a cache location directory
+		// Default : Temporary directory ("java.io.tmpdir") with a "/dss-cache-revocation" subdirectory
 		fileCacheOCSPSource.setFileCacheDirectory(new File("path/to/ocsp/cache"));
-
-		// Optionally, set a backup online source for when cache misses occur
-		fileCacheOCSPSource.setProxySource(onlineOCSPSource);
 
 		// Extract OCSP for a certificate (will use cache if available, otherwise fetch
 		// from proxy source)

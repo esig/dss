@@ -50,20 +50,23 @@ DSS provides caching mechanisms for CRL and OCSP responses to improve performanc
 
 Both implementations extend the `RepositoryRevocationSource` class and allow the implementer to define a backup revocation source for cases when cached data is not available.
 
+The classes provide logic for revocation data management based on the `NextUpdate` field, such as retrieving fresh enough revocation data from the cache, but updating revocation data with a backup revocation source when no fresh revocation data is available in cache (e.g. when the `NextUpdate` datetime of the cached revocation data has been reached).
+
 ==== JDBC-based caching
 
 The JDBC-based implementation allows caching of CRL and OCSP responses to a database. The class contains a complete set of functions to save revocation data to a database, extract, update and remove it.
 
 List of JDBC cached Revocation sources implemented in DSS:
 
-* `JdbcRevocationSource`
-** `JdbcCacheCRLSource`
-** `JdbcCacheOCSPSource`
+* `JdbcRevocationSource` - an abstract class containing a logic for processing the revocation data cache within the JDBC;
+** `JdbcCacheCRLSource` - class for CRL handling using the JDBC cache;
+** `JdbcCacheOCSPSource` - class for OCSP handling using the JDBC cache.
 
 WARNING: A database table shall be initialized before you start working with the cached revocation repository.
 
 ===== CRL
-An example for JdbcCacheCRLSource :
+
+The `JdbcCacheCRLSource` is used for CRL tokens handling using the JDBC cache. Please see an example below:
 
 [source,java,indent=0]
 .JdbcCacheCRLSource usage
@@ -72,7 +75,8 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/CRLSourceS
 ----
 
 ===== OCSP
-An example for JdbcCacheOCSPSource :
+
+The `JdbcCacheOCSPSource` is used for OCSP tokens handling using the JDBC cache. Please see an example below:
 
 [source,java,indent=0]
 .JdbcCacheOCSPSource usage
@@ -95,20 +99,23 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/CRLSourceS
 
 ==== File-based caching
 
+NOTE: The following classes are experimental and included starting from DSS version `6.3`. The classes were not extensively tested and may be modified in the future.
+
 The file-based implementation provides an alternative caching mechanism that stores revocation data directly on the local file system. This approach is particularly useful in environments where database access is not available or when simpler deployment is desired.
 
 List of File-based cached Revocation sources implemented in DSS:
 
-* `FileRevocationSource`
-** `FileCacheCRLSource`
-** `FileCacheOCSPSource`
+* `FileRevocationSource` - an abstract class containing a logic for processing the revocation data cache within the filesystem;
+** `FileCacheCRLSource` - class for CRL handling using the filesystem cache;
+** `FileCacheOCSPSource` - class for OCSP handling using the filesystem cache.
 
 The file-based cache stores each revocation response as a separate file in a designated cache directory, using a normalized URL-based filename with the appropriate extension (`.crl` for CRL files, `.ocsp` for OCSP responses).
 
 WARNING: Ensure that the cache directory has appropriate read/write permissions for the application. The file-based cache will automatically handle file creation and cleanup operations.
 
 ===== CRL
-An example for FileCacheCRLSource :
+
+The `FileCacheCRLSource` is used for CRL tokens handling using the filesystem cache. Please see an example below:
 
 [source,java,indent=0]
 .FileCacheCRLSource usage
@@ -117,7 +124,8 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/CRLSourceS
 ----
 
 ===== OCSP
-An example for FileCacheOCSPSource :
+
+The `FileCacheOCSPSource` is used for OCSP tokens handling using the filesystem cache. Please see an example below:
 
 [source,java,indent=0]
 .FileCacheOCSPSource usage
