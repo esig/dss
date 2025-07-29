@@ -111,7 +111,7 @@ public class FileCacheDataLoader implements DataLoader, DSSCacheFileLoader {
 	}
 
 	/**
-	 * This method allows to set the file cache directory. If the cache folder does not exists then it's created.
+	 * This method allows to set the file cache directory. If the cache folder does not exist then it's created.
 	 *
 	 * @param fileCacheDirectory
 	 *            {@code File} pointing the cache folder to be used.
@@ -134,9 +134,9 @@ public class FileCacheDataLoader implements DataLoader, DSSCacheFileLoader {
 	 * Sets the expiration time for the cached files in milliseconds.
 	 * If the defined time has passed after the cache file's last modification time,
 	 * then a fresh copy is downloaded and cached, otherwise a cached copy is used.
-	 *
+	 * <p>
 	 * A negative value is interpreted as undefined (cache does not expire).
-	 *
+	 * <p>
 	 * Default: {@code -1}
 	 *
 	 * @param cacheExpirationTimeInMilliseconds value in milliseconds
@@ -155,7 +155,7 @@ public class FileCacheDataLoader implements DataLoader, DSSCacheFileLoader {
 	}
 
 	/**
-	 * This methods allows to indicate if the resource must be obtained. If this method has been invoked then only the
+	 * This method allow indicating if the resource must be obtained. If this method has been invoked then only the
 	 * provided URL will be processed.
 	 *
 	 * @param url
@@ -174,9 +174,8 @@ public class FileCacheDataLoader implements DataLoader, DSSCacheFileLoader {
 	}
 
 	/**
-	 * This methods allows to indicate which resources must be ignored. It is useful in a test environment where some of
-	 * fake sources a not available. It prevents to wait for the
-	 * timeout.
+	 * This method allow indicating which resources must be ignored. It is useful in a test environment where some of
+	 * fake sources are not available. It prevents to wait for the timeout.
 	 *
 	 * @param urlString
 	 *            to be ignored. It can be the original URL or the cache file name

@@ -134,7 +134,10 @@ public class CRLSourceSnippet {
 		// import java.io.File;
 
 		// Initialize the file-based CRL source
-		FileCacheCRLSource fileCacheCRLSource = new FileCacheCRLSource("path/to/crl/cache");
+		FileCacheCRLSource fileCacheCRLSource = new FileCacheCRLSource(onlineCRLSource);
+
+		// Provide a cache location directory
+		fileCacheCRLSource.setFileCacheDirectory(new File("path/to/crl/cache"));
 
 		// Optionally, set a backup online source for when cache misses occur
 		fileCacheCRLSource.setProxySource(onlineCRLSource);

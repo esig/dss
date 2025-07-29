@@ -35,46 +35,59 @@ import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * CRLSource that provides file-based caching functionality for CRL revocation
- * data
+ * CRLSource that provides file-based caching functionality for CRL revocation data.
+ * <p>
+ * WARNING: Experimental version included within DSS 6.3. Please note the class was not intensively tested.
  */
 public class FileCacheCRLSource extends FileRevocationSource<CRL> implements CRLSource {
 
+    private static final long serialVersionUID = 5466286947813965429L;
+
     private static final Logger LOG = LoggerFactory.getLogger(FileCacheCRLSource.class);
 
-    private static final long serialVersionUID = 1L;
+    /** Extension used for the CRL filename definition */
+    private static final String CRL_FILE_EXTENSION = ".crl";
 
     /**
-     * @param cacheDirectory {@link File} the directory where cached CRL files will
-     *                       be stored
+     * Empty constructor.
+     * The proxied CRLSource can be provided using the {@code #setProxySource} method.
      */
-    public FileCacheCRLSource(File cacheDirectory) {
-        super(cacheDirectory);
+    public FileCacheCRLSource() {
+        super();
     }
 
     /**
-     * @param cacheDirectory path of directory where cached CRL files will be stored
+     * Constructor that initializes the file cache CRL source with a proxiedCRLSource provided.
+     *
+     * @param proxiedSource {@link CRLSource} to be used to load CRL when the corresponding
+     *                                       revocation document is not available in the file system.
      */
-    public FileCacheCRLSource(String cacheDirectory) {
-        super(cacheDirectory);
+    public FileCacheCRLSource(CRLSource proxiedSource) {
+        super(proxiedSource);
     }
 
     @Override
-    protected RevocationToken<CRL> reconstructTokenFromEncodedData(byte[] encodedData,
-            CertificateToken certificateToken,
-            CertificateToken issuerCertToken) {
+    protected RevocationToken<CRL> reconstructTokenFromEncodedData(FileRevocationSource<CRL>.FileCacheEntry revocationCache,
+                                                                   CertificateToken certificateToken, CertificateToken issuerCertToken) {
         try {
-            CRLBinary crlBinary = CRLUtils.buildCRLBinary(encodedData);
-            CRLValidity crlValidity = CRLUtils.buildCRLValidity(crlBinary, issuerCertToken);
+            CRLBinary crlBinary = CRLUtils.buildCRLBinary(revocationCache.getRevocationDataBinaries());
+
+            CertificateToken revocationIssuer = revocationCache.getIssuerCertificateToken();
+            if (revocationIssuer == null) {
+                revocationIssuer = issuerCertToken;
+            }
+
+            CRLValidity crlValidity = CRLUtils.buildCRLValidity(crlBinary, revocationIssuer);
+            crlValidity.setIssuerToken(revocationIssuer);
 
             if (crlValidity.isValid()) {
                 CRLToken token = new CRLToken(certificateToken, crlValidity);
                 token.setExternalOrigin(RevocationOrigin.CACHED);
+                token.setSourceURL(revocationCache.getRevocationDataSourceUrl());
                 return token;
             } else {
                 LOG.warn("Invalid CRL validity for certificate: {}", certificateToken.getDSSIdAsString());
@@ -88,8 +101,16 @@ public class FileCacheCRLSource extends FileRevocationSource<CRL> implements CRL
     }
 
     @Override
-    protected String getFileExtension() {
-        return ".crl";
+    protected void saveRevocationToken(FileRevocationSource<CRL>.FileCacheEntry revocationCache, RevocationToken<CRL> token) {
+        super.saveRevocationToken(revocationCache, token);
+        if (token.getIssuerCertificateToken() != null) {
+            revocationCache.saveCertificateToken(token.getIssuerCertificateToken());
+        }
+    }
+
+    @Override
+    protected String getRevocationFileExtension() {
+        return CRL_FILE_EXTENSION;
     }
 
     @Override
@@ -122,4 +143,6 @@ public class FileCacheCRLSource extends FileRevocationSource<CRL> implements CRL
     public CRLToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
         return this.getRevocationToken(certificateToken, issuerCertificateToken, false);
     }
+
+
 }

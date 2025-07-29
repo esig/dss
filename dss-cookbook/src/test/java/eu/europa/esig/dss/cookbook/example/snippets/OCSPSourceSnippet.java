@@ -152,7 +152,8 @@ public class OCSPSourceSnippet {
 		cacheOCSPSource.initTable();
 
 		// Extract OCSP for a certificate
-		OCSPToken ocspRevocationToken = cacheOCSPSource.getRevocationToken(certificateToken, issuerCertificateToken);
+		OCSPToken ocspRevocationToken = cacheOCSPSource
+				.getRevocationToken(certificateToken, issuerCertificateToken);
 		// end::demo-cached[]
 
 		// tag::demo-file-cached[]
@@ -160,15 +161,18 @@ public class OCSPSourceSnippet {
 		// import java.io.File;
 
 		// Initialize the file-based OCSP source
-		FileCacheOCSPSource fileCacheOCSPSource = new FileCacheOCSPSource("path/to/ocsp/cache");
+		FileCacheOCSPSource fileCacheOCSPSource = new FileCacheOCSPSource(onlineOCSPSource);
+
+		// Provide a cache location directory
+		fileCacheOCSPSource.setFileCacheDirectory(new File("path/to/ocsp/cache"));
 
 		// Optionally, set a backup online source for when cache misses occur
 		fileCacheOCSPSource.setProxySource(onlineOCSPSource);
 
 		// Extract OCSP for a certificate (will use cache if available, otherwise fetch
 		// from proxy source)
-		OCSPToken fileOcspRevocationToken = fileCacheOCSPSource.getRevocationToken(certificateToken,
-				issuerCertificateToken);
+		OCSPToken fileOcspRevocationToken = fileCacheOCSPSource
+				.getRevocationToken(certificateToken, issuerCertificateToken);
 
 		// Clear cache when needed (removes all cached OCSP files)
 		fileCacheOCSPSource.clearCache();

@@ -45,14 +45,14 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 class FileCacheCRLSourceTest extends OnlineSourceTest {
 
 	@TempDir
-	Path tempDir;
+	private Path tempDir;
 
-	private FileCacheCRLSource crlSource;
+	private FileCacheCRLSource fileCacheCRLSource;
 
 	@BeforeEach
 	void setUp() {
-		File cacheDirectory = tempDir.toFile();
-		crlSource = new FileCacheCRLSource(cacheDirectory);
+		fileCacheCRLSource = new FileCacheCRLSource();
+		fileCacheCRLSource.setFileCacheDirectory(tempDir.toFile());
 	}
 
 	@Test
@@ -64,30 +64,31 @@ class FileCacheCRLSourceTest extends OnlineSourceTest {
 				.loadCertificate(dataLoader.get(ONLINE_PKI_HOST + "/crt/good-user-crl-ocsp.crt"));
 		CertificateToken caToken = DSSUtils.loadCertificate(dataLoader.get(ONLINE_PKI_HOST + "/crt/good-ca.crt"));
 
-		revocationToken = crlSource.getRevocationToken(certificateToken, caToken);
+		revocationToken = fileCacheCRLSource.getRevocationToken(certificateToken, caToken);
 		assertNull(revocationToken);
 
 		OnlineCRLSource onlineCRLSource = new OnlineCRLSource();
-		crlSource.setProxySource(onlineCRLSource);
-		revocationToken = crlSource.getRevocationToken(certificateToken, caToken);
+		fileCacheCRLSource.setProxySource(onlineCRLSource);
+
+		revocationToken = fileCacheCRLSource.getRevocationToken(certificateToken, caToken);
 		assertNotNull(revocationToken);
 		assertEquals(RevocationOrigin.EXTERNAL, revocationToken.getExternalOrigin());
 
-		CRLToken savedRevocationToken = crlSource.getRevocationToken(certificateToken, caToken);
+		CRLToken savedRevocationToken = fileCacheCRLSource.getRevocationToken(certificateToken, caToken);
 		assertNotNull(savedRevocationToken);
 		compareTokens(revocationToken, savedRevocationToken);
 		assertEquals(RevocationOrigin.CACHED, savedRevocationToken.getExternalOrigin());
 
-		CRLToken forceRefresh = crlSource.getRevocationToken(certificateToken, caToken, true);
+		CRLToken forceRefresh = fileCacheCRLSource.getRevocationToken(certificateToken, caToken, true);
 		assertNotNull(forceRefresh);
 		assertEquals(RevocationOrigin.EXTERNAL, forceRefresh.getExternalOrigin());
 
-		savedRevocationToken = crlSource.getRevocationToken(certificateToken, caToken);
+		savedRevocationToken = fileCacheCRLSource.getRevocationToken(certificateToken, caToken);
 		assertNotNull(savedRevocationToken);
 		compareTokens(forceRefresh, savedRevocationToken);
 		assertEquals(RevocationOrigin.CACHED, savedRevocationToken.getExternalOrigin());
 
-		crlSource.setMaxNextUpdateDelay(1L);
+		fileCacheCRLSource.setMaxNextUpdateDelay(1L);
 
 		// wait one second
 		Calendar nextSecond = Calendar.getInstance();
@@ -95,12 +96,12 @@ class FileCacheCRLSourceTest extends OnlineSourceTest {
 		nextSecond.add(Calendar.SECOND, 1);
 		await().atMost(2, TimeUnit.SECONDS).until(() -> Calendar.getInstance().getTime().after(nextSecond.getTime()));
 
-		forceRefresh = crlSource.getRevocationToken(certificateToken, caToken);
+		forceRefresh = fileCacheCRLSource.getRevocationToken(certificateToken, caToken);
 		assertNotNull(forceRefresh);
 		assertEquals(RevocationOrigin.EXTERNAL, forceRefresh.getExternalOrigin());
 
-		crlSource.setMaxNextUpdateDelay(null);
-		forceRefresh = crlSource.getRevocationToken(certificateToken, caToken);
+		fileCacheCRLSource.setMaxNextUpdateDelay(null);
+		forceRefresh = fileCacheCRLSource.getRevocationToken(certificateToken, caToken);
 		assertNotNull(forceRefresh);
 		assertEquals(RevocationOrigin.CACHED, forceRefresh.getExternalOrigin());
 
@@ -112,16 +113,16 @@ class FileCacheCRLSourceTest extends OnlineSourceTest {
 
 		CertificateToken certificateToken = DSSUtils.loadCertificate(new File("src/test/resources/ec.europa.eu.crt"));
 		CertificateToken caToken = DSSUtils.loadCertificate(new File("src/test/resources/CALT.crt"));
-		revocationToken = crlSource.getRevocationToken(certificateToken, caToken);
+		revocationToken = fileCacheCRLSource.getRevocationToken(certificateToken, caToken);
 		assertNull(revocationToken);
 
 		OnlineCRLSource onlineCRLSource = new OnlineCRLSource();
-		crlSource.setProxySource(onlineCRLSource);
-		revocationToken = crlSource.getRevocationToken(certificateToken, caToken);
+		fileCacheCRLSource.setProxySource(onlineCRLSource);
+		revocationToken = fileCacheCRLSource.getRevocationToken(certificateToken, caToken);
 		assertNotNull(revocationToken);
 		assertEquals(RevocationOrigin.EXTERNAL, revocationToken.getExternalOrigin());
 
-		CRLToken savedRevocationToken = crlSource.getRevocationToken(certificateToken, caToken);
+		CRLToken savedRevocationToken = fileCacheCRLSource.getRevocationToken(certificateToken, caToken);
 		assertNotNull(savedRevocationToken);
 		assertEquals(revocationToken.getNextUpdate(), savedRevocationToken.getNextUpdate());
 		assertEquals(RevocationOrigin.EXTERNAL, savedRevocationToken.getExternalOrigin()); // expired crl
@@ -143,8 +144,8 @@ class FileCacheCRLSourceTest extends OnlineSourceTest {
 
 	@AfterEach
 	void cleanUp() {
-		if (crlSource != null) {
-			crlSource.clearCache();
+		if (fileCacheCRLSource != null) {
+			fileCacheCRLSource.clearCache();
 		}
 	}
 

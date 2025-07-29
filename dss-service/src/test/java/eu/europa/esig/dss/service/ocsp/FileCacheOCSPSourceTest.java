@@ -45,14 +45,14 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 class FileCacheOCSPSourceTest extends OnlineSourceTest {
 
 	@TempDir
-	Path tempDir;
+	private Path tempDir;
 
-	private FileCacheOCSPSource ocspSource;
+	private FileCacheOCSPSource fileCacheOCSPSource;
 
 	@BeforeEach
 	void setUp() {
-		File cacheDirectory = tempDir.toFile();
-		ocspSource = new FileCacheOCSPSource(cacheDirectory);
+		fileCacheOCSPSource = new FileCacheOCSPSource();
+		fileCacheOCSPSource.setFileCacheDirectory(tempDir.toFile());
 	}
 
 	@Test
@@ -61,18 +61,18 @@ class FileCacheOCSPSourceTest extends OnlineSourceTest {
 
 		CertificateToken certificateToken = DSSUtils.loadCertificate(new File("src/test/resources/ec.europa.eu.crt"));
 		CertificateToken rootToken = DSSUtils.loadCertificate(new File("src/test/resources/CALT.crt"));
-		revocationToken = ocspSource.getRevocationToken(certificateToken, rootToken);
+		revocationToken = fileCacheOCSPSource.getRevocationToken(certificateToken, rootToken);
 		assertNull(revocationToken);
 
-		OnlineOCSPSource onlineOCSPSource = new OnlineOCSPSource();
-		ocspSource.setProxySource(onlineOCSPSource);
-		ocspSource.setDefaultNextUpdateDelay(180L); // cache expiration in 180 seconds
-		revocationToken = ocspSource.getRevocationToken(certificateToken, rootToken);
+		fileCacheOCSPSource.setProxySource(new OnlineOCSPSource());
+
+		fileCacheOCSPSource.setDefaultNextUpdateDelay(180L); // cache expiration in 180 seconds
+		revocationToken = fileCacheOCSPSource.getRevocationToken(certificateToken, rootToken);
 		assertNotNull(revocationToken);
 		assertEquals(RevocationOrigin.EXTERNAL, revocationToken.getExternalOrigin());
 
 		// check real findRevocation() method behavior
-		OCSPToken savedRevocationToken = ocspSource.getRevocationToken(certificateToken, rootToken);
+		OCSPToken savedRevocationToken = fileCacheOCSPSource.getRevocationToken(certificateToken, rootToken);
 		assertNotNull(savedRevocationToken);
 		assertEquals(revocationToken.getAbbreviation(), savedRevocationToken.getAbbreviation());
 		assertEquals(revocationToken.getCreationDate(), savedRevocationToken.getCreationDate());
@@ -96,17 +96,17 @@ class FileCacheOCSPSourceTest extends OnlineSourceTest {
 		assertEquals(revocationToken.getThisUpdate(), savedRevocationToken.getThisUpdate());
 
 		// check that token can be obtained more than once
-		OCSPToken storedRevocationToken = ocspSource.getRevocationToken(certificateToken, rootToken);
+		OCSPToken storedRevocationToken = fileCacheOCSPSource.getRevocationToken(certificateToken, rootToken);
 		assertNotNull(storedRevocationToken);
 		assertEquals(RevocationOrigin.CACHED, storedRevocationToken.getExternalOrigin());
 
 		// check a dummy token with the old maxUpdateDelay
-		OCSPToken refreshedRevocationToken = ocspSource.getRevocationToken(certificateToken, rootToken);
+		OCSPToken refreshedRevocationToken = fileCacheOCSPSource.getRevocationToken(certificateToken, rootToken);
 		assertNotNull(refreshedRevocationToken);
 		assertEquals(RevocationOrigin.CACHED, refreshedRevocationToken.getExternalOrigin());
 
 		// Force refresh (1 second)
-		ocspSource.setMaxNextUpdateDelay(1L);
+		fileCacheOCSPSource.setMaxNextUpdateDelay(1L);
 
 		// wait one second
 		Calendar nextSecond = Calendar.getInstance();
@@ -115,15 +115,15 @@ class FileCacheOCSPSourceTest extends OnlineSourceTest {
 		await().atMost(2, TimeUnit.SECONDS).until(() -> Calendar.getInstance().getTime().after(nextSecond.getTime()));
 
 		// check the dummy token with forcing one second refresh
-		refreshedRevocationToken = ocspSource.getRevocationToken(certificateToken, rootToken);
+		refreshedRevocationToken = fileCacheOCSPSource.getRevocationToken(certificateToken, rootToken);
 		assertNotNull(refreshedRevocationToken);
 		assertEquals(RevocationOrigin.EXTERNAL, refreshedRevocationToken.getExternalOrigin());
 	}
 
 	@AfterEach
 	void cleanUp() {
-		if (ocspSource != null) {
-			ocspSource.clearCache();
+		if (fileCacheOCSPSource != null) {
+			fileCacheOCSPSource.clearCache();
 		}
 	}
 
