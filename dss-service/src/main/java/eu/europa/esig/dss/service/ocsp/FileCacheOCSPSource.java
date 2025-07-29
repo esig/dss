@@ -7,7 +7,6 @@ import eu.europa.esig.dss.spi.CertificateExtensionsUtils;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.revocation.FileRevocationSource;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRespStatus;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPSource;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
@@ -56,35 +55,16 @@ public class FileCacheOCSPSource extends FileRevocationSource<OCSP> implements O
 			CertificateToken certificateToken, CertificateToken issuerCertToken) {
 		try {
 			OCSPResp ocspResp = new OCSPResp(revocationCache.getRevocationDataBinaries());
-
-			OCSPRespStatus status = OCSPRespStatus.fromInt(ocspResp.getStatus());
-			if (!OCSPRespStatus.SUCCESSFUL.equals(status)) {
-				LOG.warn("OCSP Response status is not successful: {} for certificate: {}",
-						status, certificateToken.getDSSIdAsString());
-				return null;
-			}
-
 			Object responseObject = ocspResp.getResponseObject();
-			if (!(responseObject instanceof BasicOCSPResp)) {
-				LOG.warn("OCSP Response Object is not of type BasicOCSPResp for certificate: {}",
-						certificateToken.getDSSIdAsString());
-				return null;
-			}
-
 			BasicOCSPResp basicOCSPResp = (BasicOCSPResp) responseObject;
 			SingleResp latestSingleResponse = DSSRevocationUtils.getLatestSingleResponse(
 					basicOCSPResp, certificateToken, issuerCertToken);
 
-			if (latestSingleResponse != null) {
-				OCSPToken token = new OCSPToken(basicOCSPResp, latestSingleResponse, certificateToken, issuerCertToken);
-				token.setExternalOrigin(RevocationOrigin.CACHED);
-				token.setSourceURL(revocationCache.getRevocationDataSourceUrl());
-				return token;
-			} else {
-				LOG.warn("No valid SingleResp found in OCSP response for certificate: {}",
-						certificateToken.getDSSIdAsString());
-				return null;
-			}
+			OCSPToken token = new OCSPToken(basicOCSPResp, latestSingleResponse, certificateToken, issuerCertToken);
+			token.setExternalOrigin(RevocationOrigin.CACHED);
+			token.setSourceURL(revocationCache.getRevocationDataSourceUrl());
+			return token;
+
 		} catch (Exception e) {
 			LOG.error("Failed to create OCSP token from cached data for certificate '{}': {}",
 					certificateToken.getDSSIdAsString(), e.getMessage());

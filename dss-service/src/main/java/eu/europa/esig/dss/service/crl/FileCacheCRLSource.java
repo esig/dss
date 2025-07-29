@@ -84,15 +84,11 @@ public class FileCacheCRLSource extends FileRevocationSource<CRL> implements CRL
             CRLValidity crlValidity = CRLUtils.buildCRLValidity(crlBinary, revocationIssuer);
             crlValidity.setIssuerToken(revocationIssuer);
 
-            if (crlValidity.isValid()) {
-                CRLToken token = new CRLToken(certificateToken, crlValidity);
-                token.setExternalOrigin(RevocationOrigin.CACHED);
-                token.setSourceURL(revocationCache.getRevocationDataSourceUrl());
-                return token;
-            } else {
-                LOG.warn("Invalid CRL validity for certificate: {}", certificateToken.getDSSIdAsString());
-                return null;
-            }
+            CRLToken token = new CRLToken(certificateToken, crlValidity);
+            token.setExternalOrigin(RevocationOrigin.CACHED);
+            token.setSourceURL(revocationCache.getRevocationDataSourceUrl());
+            return token;
+
         } catch (Exception e) {
             LOG.error("Failed to create CRL token from cached data for certificate '{}': {}",
                     certificateToken.getDSSIdAsString(), e.getMessage());

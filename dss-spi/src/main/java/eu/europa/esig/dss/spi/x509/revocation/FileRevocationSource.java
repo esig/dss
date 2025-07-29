@@ -98,22 +98,19 @@ public abstract class FileRevocationSource<R extends Revocation> extends Reposit
 	protected List<RevocationToken<R>> findRevocations(String key, CertificateToken certificateToken,
 	                                                   CertificateToken issuerCertToken) {
 		FileCacheEntry revocationCache = getRevocationCache(key);
-		if (!revocationCache.exists()) {
-			return Collections.emptyList();
-		}
+		if (revocationCache.exists()) {
+			try {
+				RevocationToken<R> token = reconstructTokenFromEncodedData(revocationCache, certificateToken, issuerCertToken);
+				if (token != null) {
+					return Collections.singletonList(token);
+				}
+				LOG.warn("Failed to reconstruct revocation token from cache for key: {}", key);
 
-		try {
-			RevocationToken<R> token = reconstructTokenFromEncodedData(revocationCache, certificateToken, issuerCertToken);
-			if (token != null) {
-				return Collections.singletonList(token);
+			} catch (Exception e) {
+				LOG.warn("Failed to read revocation cache file for key '{}': {}", key, e.getMessage(), e);
 			}
-			LOG.warn("Failed to reconstruct revocation token from cache for key: {}", key);
-			return Collections.emptyList();
-
-		} catch (Exception e) {
-			LOG.warn("Failed to read revocation cache file for key '{}': {}", key, e.getMessage(), e);
-			return Collections.emptyList();
 		}
+		return Collections.emptyList();
 	}
 
 	private FileCacheEntry getRevocationCache(String key) {
