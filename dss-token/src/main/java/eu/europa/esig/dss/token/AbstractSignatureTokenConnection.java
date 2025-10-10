@@ -83,7 +83,7 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 	@Override
 	public SignatureValue signDigest(Digest digest, DSSPrivateKeyEntry keyEntry) throws DSSException {
 		final EncryptionAlgorithm encryptionAlgorithm = keyEntry.getEncryptionAlgorithm();
-		final SignatureAlgorithm signatureAlgorithm = getRawSignatureAlgorithm(encryptionAlgorithm);
+		final SignatureAlgorithm signatureAlgorithm = getRawSignatureAlgorithm(encryptionAlgorithm, digest.getAlgorithm());
 		return signDigest(digest, signatureAlgorithm, keyEntry);
 	}
 
@@ -92,7 +92,10 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 			throws DSSException {
 		assertConfigurationValid(digest, signatureAlgorithm, keyEntry);
 
-		final String javaSignatureAlgorithm = getRawSignatureAlgorithm(signatureAlgorithm.getEncryptionAlgorithm()).getJCEId();
+		final String javaSignatureAlgorithm = getRawSignatureAlgorithm(
+			signatureAlgorithm.getEncryptionAlgorithm(),
+			signatureAlgorithm.getDigestAlgorithm()
+		).getJCEId();
 		digest = ensureDigestUniform(signatureAlgorithm, digest);
 
 		final byte[] digestedBytes = digest.getValue();
@@ -179,8 +182,8 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 	 * @param encryptionAlgorithm {@link EncryptionAlgorithm}
 	 * @return {@link SignatureAlgorithm}
 	 */
-	private SignatureAlgorithm getRawSignatureAlgorithm(EncryptionAlgorithm encryptionAlgorithm) {
-		SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, null);
+	private SignatureAlgorithm getRawSignatureAlgorithm(EncryptionAlgorithm encryptionAlgorithm, DigestAlgorithm digestAlgorithm) {
+		SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digestAlgorithm);
 		if (signatureAlgorithm == null) {
 			throw new UnsupportedOperationException(String.format("The SignatureAlgorithm for digest signing is not found " +
 							"for the given configuration [EncryptionAlgorithm: %s]",
