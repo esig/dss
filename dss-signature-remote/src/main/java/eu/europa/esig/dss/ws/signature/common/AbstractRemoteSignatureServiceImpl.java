@@ -173,6 +173,7 @@ public abstract class AbstractRemoteSignatureServiceImpl {
 		padesParams.setContentSize(9472 * 2); // double reserved space for signature
 		// padesParams.setImageParameters(toImageParameters(remoteParameters.getImageParameters())); //ALISDEV puvodni metoda narazena - fillPAdESVisibleSignatureParameters
 		fillPAdESVisibleSignatureParameters(padesParams, remoteParameters); //ALISDEV
+		padesParams.setIncludeVRIDictionary( true ); // ALISDEV - DSS-34
 		return padesParams;
 	}
 	
