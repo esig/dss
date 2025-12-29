@@ -103,6 +103,12 @@ public class ImageUtils {
 	 */
 	public static final int DEFAULT_FIRST_PAGE = 1;
 
+	/** The starting bytes of a JPEG document */
+	private static final byte[] JPEG_PREAMBLE = new byte[]{ -1, -40, -1 };
+
+	/** The starting bytes of a PNG document */
+	private static final byte[] PNG_PREAMBLE = new byte[]{ -119, 'P', 'N', 'G', '\r', '\n', 26, '\n' };
+
 	static {
 		int[] imageAlphaTypes = new int[] { BufferedImage.TYPE_4BYTE_ABGR, BufferedImage.TYPE_4BYTE_ABGR_PRE,
 				BufferedImage.TYPE_INT_ARGB, BufferedImage.TYPE_INT_ARGB_PRE };
@@ -114,6 +120,7 @@ public class ImageUtils {
 	 * Default constructor
 	 */
 	private ImageUtils() {
+		// empty
 	}
 
 	/**
@@ -127,10 +134,11 @@ public class ImageUtils {
 	public static ImageResolution secureReadMetadata(SignatureImageParameters imageParameters) throws IOException {
 		ImageResolution imageAndResolution;
 		try {
-			imageAndResolution = ImageUtils.readDisplayMetadata(imageParameters.getImage());
+			imageAndResolution = readDisplayMetadata(imageParameters.getImage());
 		} catch (Exception e) {
 			LOG.warn("Cannot access the image metadata : {}. Returns default info.", e.getMessage());
-			imageAndResolution = new ImageResolution(imageParameters.getDpi(), imageParameters.getDpi());
+			int dpi = DPIUtils.getDpi(imageParameters.getDpi());
+			imageAndResolution = new ImageResolution(dpi, dpi);
 		}
 		return imageAndResolution;
 	}
@@ -143,12 +151,40 @@ public class ImageUtils {
 	 * @throws IOException in case of image reading error
 	 */
 	public static ImageResolution readDisplayMetadata(DSSDocument image) throws IOException {
+		if (isJPEG(image)) {
+			return readAndDisplayMetadataJPEG(image);
+		} else if (isPNG(image)) {
+			return readAndDisplayMetadataPNG(image);
+		}
+		LOG.debug("Unable to determine image type based on magic bytes. Check image type based on document MimeType.");
 		if (isImageWithContentType(image, MimeTypeEnum.JPEG)) {
 			return readAndDisplayMetadataJPEG(image);
 		} else if (isImageWithContentType(image, MimeTypeEnum.PNG)) {
 			return readAndDisplayMetadataPNG(image);
 		}
 		throw new IllegalInputException("Unsupported image type");
+	}
+
+	/**
+	 * Checks if the image is a JPEG/JPG
+	 *
+	 * @param image {@link DSSDocument} to verify
+	 * @return TRUE if the document is JPEG/JPG, FALSE otherwise
+	 * @throws IOException if an exception occurs on document reading
+	 */
+	public static boolean isJPEG(DSSDocument image) throws IOException {
+		return Utils.startsWith(image.openStream(), JPEG_PREAMBLE);
+	}
+
+	/**
+	 * Checks if the image is a PNG
+	 *
+	 * @param image {@link DSSDocument} to verify
+	 * @return TRUE if the document is PNG, FALSE otherwise
+	 * @throws IOException if an exception occurs on document reading
+	 */
+	public static boolean isPNG(DSSDocument image) throws IOException {
+		return Utils.startsWith(image.openStream(), PNG_PREAMBLE);
 	}
 
 	private static boolean isImageWithContentType(DSSDocument image, MimeType expectedContentType) {
@@ -506,13 +542,13 @@ public class ImageUtils {
 	 * @return TRUE if the given parameters contains at least one RGB color, FALSE otherwise
 	 */
 	public static boolean containRGBColor(SignatureImageParameters parameters) {
-		if (parameters.getBackgroundColor() != null && !ImageUtils.isGrayscale(parameters.getBackgroundColor())) {
+		if (parameters.getBackgroundColor() != null && !isGrayscale(parameters.getBackgroundColor())) {
 			return true;
 		}
-		if (parameters.getTextParameters().getTextColor() != null && !ImageUtils.isGrayscale(parameters.getTextParameters().getTextColor())) {
+		if (parameters.getTextParameters().getTextColor() != null && !isGrayscale(parameters.getTextParameters().getTextColor())) {
 			return true;
 		}
-		if (parameters.getTextParameters().getBackgroundColor() != null && !ImageUtils.isGrayscale(parameters.getTextParameters().getBackgroundColor())) {
+		if (parameters.getTextParameters().getBackgroundColor() != null && !isGrayscale(parameters.getTextParameters().getBackgroundColor())) {
 			return true;
 		}
 		return false;

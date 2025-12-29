@@ -124,7 +124,8 @@ public class SignatureFieldDimensionAndPositionBuilder {
                 imageResolution = ImageUtils.secureReadMetadata(imageParameters);
             } catch (Exception e) {
                 LOG.warn("Cannot access the image metadata : {}. Returns default info.", e.getMessage());
-                imageResolution = new ImageResolution(imageParameters.getDpi(), imageParameters.getDpi());
+                int dpi = DPIUtils.getDpi(imageParameters.getDpi());
+                imageResolution = new ImageResolution(dpi, dpi);
             }
         } else {
             imageResolution = new ImageResolution(DEFAULT_DPI, DEFAULT_DPI);
@@ -270,15 +271,20 @@ public class SignatureFieldDimensionAndPositionBuilder {
         DSSDocument docImage = imageParameters.getImage();
         if (docImage != null) {
             AnnotationBox imageBoundaryBox = ImageUtils.getImageBoundaryBox(docImage);
-            dimensionAndPosition.setImageWidth(imageBoundaryBox.getWidth() * scaleFactor);
-            dimensionAndPosition.setImageHeight(imageBoundaryBox.getHeight() * scaleFactor);
+            float xDpiFactor = 1;
+            float yDpiFactor = 1;
+            if (imageParameters.getDpi() != null) {
+                int dpi = DPIUtils.getDpi(imageParameters.getDpi());
+                xDpiFactor *= dimensionAndPosition.getImageResolution().getXDpi() / (float) dpi;
+                yDpiFactor *= dimensionAndPosition.getImageResolution().getXDpi() / (float) dpi;
+            }
+            dimensionAndPosition.setImageWidth(imageBoundaryBox.getWidth() * scaleFactor * xDpiFactor);
+            dimensionAndPosition.setImageHeight(imageBoundaryBox.getHeight() * scaleFactor * yDpiFactor);
             if (width == 0) {
-                width = imageBoundaryBox.getWidth();
-                width *= DPIUtils.getPageScaleFactor(dimensionAndPosition.getImageResolution().getXDpi());
+                width = imageBoundaryBox.getWidth() * xDpiFactor;
             }
             if (height == 0) {
-                height = imageBoundaryBox.getHeight();
-                height *= DPIUtils.getPageScaleFactor(dimensionAndPosition.getImageResolution().getYDpi());
+                height = imageBoundaryBox.getHeight() * yDpiFactor;
             }
         }
         width *= scaleFactor;

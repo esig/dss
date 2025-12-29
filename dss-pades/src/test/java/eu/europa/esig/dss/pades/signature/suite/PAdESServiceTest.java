@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.pades.signature.suite;
 
 import eu.europa.esig.dss.alert.SilentOnStatusAlert;
+import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
@@ -215,6 +216,10 @@ class PAdESServiceTest extends PKIFactoryAccess {
         imageParameters.setTextParameters(textParameters);
 
         signatureParameters.setImageParameters(imageParameters);
+        exception = assertThrows(AlertException.class, () -> signAndValidate(documentToSign, signatureParameters));
+        assertTrue(exception.getMessage().contains("The new signature field position is outside the page dimensions!"));
+
+        signatureParameters.getImageParameters().setDpi(300);
         signAndValidate(documentToSign, signatureParameters);
 
         signatureParameters.setImageParameters(null);

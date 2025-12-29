@@ -273,7 +273,7 @@ class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualComparator {
 		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/signature-image.png"), "signature-image.png", MimeTypeEnum.PNG));
 		
 		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
-		fieldParameters.setOriginX(100);
+		fieldParameters.setOriginX(50);
 		fieldParameters.setOriginY(100);
 		imageParameters.setFieldParameters(fieldParameters);
 
@@ -610,6 +610,8 @@ class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualComparator {
 
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/signature.png")));
+		imageParameters.setDpi(300);
+
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("My signature\nsecond line\nlong line is very long line with long text example this");
 		textParameters.setSignerTextPosition(SignerTextPosition.RIGHT);
@@ -780,7 +782,7 @@ class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualComparator {
 		initPdfATest();
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/signature-image.png"), "signature-image.png", MimeTypeEnum.PNG));
-		imageParameters.setDpi(300);
+		imageParameters.setDpi(72);
 
 		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
 		fieldParameters.setOriginX(20);
@@ -792,8 +794,7 @@ class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualComparator {
 		Exception exception = assertThrows(AlertException.class, () -> drawAndCompareVisually());
 		assertTrue(exception.getMessage().contains("The new signature field position is outside the page dimensions!"));
 
-		fieldParameters.setWidth(400);
-		fieldParameters.setHeight(200);
+		imageParameters.setDpi(300);
 		drawAndCompareVisually();
 	}
 	

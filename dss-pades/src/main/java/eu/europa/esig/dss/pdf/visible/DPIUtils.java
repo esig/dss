@@ -36,6 +36,7 @@ public class DPIUtils {
 	 * Default constructor
 	 */
 	private DPIUtils() {
+		// empty
 	}
 
 	/**

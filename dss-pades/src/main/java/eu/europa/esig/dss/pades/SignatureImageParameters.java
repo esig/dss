@@ -25,7 +25,6 @@ import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentHorizontal;
 import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentVertical;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DigestDocument;
-import eu.europa.esig.dss.pdf.visible.DPIUtils;
 
 import java.awt.Color;
 import java.io.Serializable;
@@ -39,7 +38,9 @@ public class SignatureImageParameters implements Serializable {
 
 	private static final long serialVersionUID = -327971057134928889L;
 
-	/** The default zoom constraint */
+	/**
+	 * The default zoom constraint
+	 */
 	private static final int NO_SCALING = 100;
 
 	/**
@@ -80,7 +81,7 @@ public class SignatureImageParameters implements Serializable {
 
 	/**
 	 * Defines the image scaling behavior within a signature field with a fixed size
-	 *
+	 * <p>
 	 * DEFAULT : ImageScaling.STRETCH (stretches the image in both directions to fill the signature field)
 	 */
 	private ImageScaling imageScaling = ImageScaling.STRETCH;
@@ -99,6 +100,7 @@ public class SignatureImageParameters implements Serializable {
 
 	/**
 	 * Returns a {@code DSSDocument} image defined for displaying on the signature field
+	 *
 	 * @return {@link DSSDocument} image
 	 */
 	public DSSDocument getImage() {
@@ -107,6 +109,7 @@ public class SignatureImageParameters implements Serializable {
 
 	/**
 	 * Allows to set a custom image to display on a signature field
+	 *
 	 * @param image {@link DSSDocument}
 	 */
 	public void setImage(DSSDocument image) {
@@ -139,6 +142,7 @@ public class SignatureImageParameters implements Serializable {
 
 	/**
 	 * Returns the defined Zoom value in percentage
+	 *
 	 * @return {@code int} zoom
 	 */
 	public int getZoom() {
@@ -147,6 +151,7 @@ public class SignatureImageParameters implements Serializable {
 
 	/**
 	 * Defines the signature field zoom in percentage (default value = 100)
+	 *
 	 * @param zoom {@code int} zoom value
 	 */
 	public void setZoom(int zoom) {
@@ -155,6 +160,7 @@ public class SignatureImageParameters implements Serializable {
 
     /**
      * Returns a specified background color for the signature field
+	 *
      * @return {@link Color} background color
      */
 	public Color getBackgroundColor() {
@@ -163,6 +169,7 @@ public class SignatureImageParameters implements Serializable {
 
 	/**
 	 * Sets the background color for the signature field
+	 *
 	 * @param backgroundColor {@link Color} to set
 	 */
 	public void setBackgroundColor(Color backgroundColor) {
@@ -171,16 +178,20 @@ public class SignatureImageParameters implements Serializable {
 
 	/**
 	 * Returns a defined DPI value
-	 * Note: can be null
+	 * NOTE: can be null
+	 *
 	 * @return {@link Integer} dpi value
 	 */
 	public Integer getDpi() {
-		return DPIUtils.getDpi(dpi);
+		return dpi;
 	}
 
 	/**
-	 * Sets an expected DPI value. If NULL the default dpi of the provided image is applied.
-	 * Note: images with a lower DPI will take more space on a PDF page
+	 * Sets an expected DPI value. If NULL the default DPI of the provided image is applied and
+	 * the image will take the exact space according to its dimensions.
+	 * Otherwise, a ratio between the image DPI and the set value is to be applied.
+	 * NOTE: images with a lower DPI will take more space on a PDF page
+	 *
 	 * @param dpi {@link Integer} dpi value
 	 */
 	public void setDpi(Integer dpi) {
@@ -189,6 +200,7 @@ public class SignatureImageParameters implements Serializable {
 
 	/**
 	 * Returns text parameters
+	 *
 	 * @return {@link SignatureImageTextParameters}
 	 */
 	public SignatureImageTextParameters getTextParameters() {
@@ -200,6 +212,7 @@ public class SignatureImageParameters implements Serializable {
 
 	/**
 	 * Sets text parameters
+	 *
 	 * @param textParameters {@link SignatureImageTextParameters}
 	 */
 	public void setTextParameters(SignatureImageTextParameters textParameters) {
@@ -208,6 +221,7 @@ public class SignatureImageParameters implements Serializable {
 
 	/**
 	 * Returns a horizontal alignment value of the signature field
+	 *
 	 * @return {@link VisualSignatureAlignmentHorizontal}
 	 */
 	public VisualSignatureAlignmentHorizontal getVisualSignatureAlignmentHorizontal() {
@@ -216,6 +230,7 @@ public class SignatureImageParameters implements Serializable {
 
     /**
      * Sets a horizontal alignment respectively to a page of the signature field
+	 *
      * @param alignmentHorizontal {@link VisualSignatureAlignmentHorizontal}
      */
 	public void setAlignmentHorizontal(VisualSignatureAlignmentHorizontal alignmentHorizontal) {
@@ -224,6 +239,7 @@ public class SignatureImageParameters implements Serializable {
 
 	/**
 	 * Returns a vertical alignment value of the signature field
+	 *
 	 * @return {@link VisualSignatureAlignmentVertical}
 	 */
 	public VisualSignatureAlignmentVertical getVisualSignatureAlignmentVertical() {
@@ -232,6 +248,7 @@ public class SignatureImageParameters implements Serializable {
 
     /**
      * Sets a vertical alignment respectively to a page of the signature field
+	 *
      * @param alignmentVertical {@link VisualSignatureAlignmentVertical}
      */
 	public void setAlignmentVertical(VisualSignatureAlignmentVertical alignmentVertical) {
@@ -249,7 +266,7 @@ public class SignatureImageParameters implements Serializable {
 
 	/**
 	 * Sets the parameter used to define an image scaling behavior within a signature field
-	 *
+	 * <p>
 	 * DEFAULT : ImageScaling.STRETCH (stretches the image in both directions in order to fill the signature field)
 	 *
 	 * @param imageScaling {@link ImageScaling}

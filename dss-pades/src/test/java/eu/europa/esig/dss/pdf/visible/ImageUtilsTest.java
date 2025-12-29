@@ -20,13 +20,14 @@
  */
 package eu.europa.esig.dss.pdf.visible;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import eu.europa.esig.dss.model.FileDocument;
+import org.junit.jupiter.api.Test;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ImageUtilsTest {
 
@@ -51,6 +52,36 @@ class ImageUtilsTest {
 		try (FileInputStream fis = new FileInputStream("src/test/resources/small-red.jpg")) {
 			assertFalse(ImageUtils.isTransparent(ImageUtils.toBufferedImage(fis)));
 		}
+	}
+
+	@Test
+	void isJPEGTest() throws IOException {
+		assertTrue(ImageUtils.isJPEG(new FileDocument("src/test/resources/cmyk.jpg")));
+		assertTrue(ImageUtils.isJPEG(new FileDocument("src/test/resources/grayscale_image.jpg")));
+		assertTrue(ImageUtils.isJPEG(new FileDocument("src/test/resources/small-red.jpg")));
+
+		assertFalse(ImageUtils.isJPEG(new FileDocument("src/test/resources/grayscale_image.png")));
+		assertFalse(ImageUtils.isJPEG(new FileDocument("src/test/resources/signature-image.png")));
+		assertFalse(ImageUtils.isJPEG(new FileDocument("src/test/resources/signature-pen.png")));
+		assertFalse(ImageUtils.isJPEG(new FileDocument("src/test/resources/signature-pen-no-alpha.png")));
+
+		assertFalse(ImageUtils.isJPEG(new FileDocument("src/test/resources/files_to_sign.txt")));
+		assertFalse(ImageUtils.isJPEG(new FileDocument("src/test/resources/sample.pdf")));
+	}
+
+	@Test
+	void isPNGTest() throws IOException {
+		assertTrue(ImageUtils.isPNG(new FileDocument("src/test/resources/grayscale_image.png")));
+		assertTrue(ImageUtils.isPNG(new FileDocument("src/test/resources/signature-image.png")));
+		assertTrue(ImageUtils.isPNG(new FileDocument("src/test/resources/signature-pen.png")));
+		assertTrue(ImageUtils.isPNG(new FileDocument("src/test/resources/signature-pen-no-alpha.png")));
+
+		assertFalse(ImageUtils.isPNG(new FileDocument("src/test/resources/cmyk.jpg")));
+		assertFalse(ImageUtils.isPNG(new FileDocument("src/test/resources/grayscale_image.jpg")));
+		assertFalse(ImageUtils.isPNG(new FileDocument("src/test/resources/small-red.jpg")));
+
+		assertFalse(ImageUtils.isPNG(new FileDocument("src/test/resources/files_to_sign.txt")));
+		assertFalse(ImageUtils.isPNG(new FileDocument("src/test/resources/sample.pdf")));
 	}
 
 }
