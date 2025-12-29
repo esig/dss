@@ -445,10 +445,28 @@ public class SignatureFieldDimensionAndPositionBuilder {
                     break;
 
                 case CENTER:
+                    float textBoxWidth = 0;
+                    float textBoxHeight = 0;
+                    SignatureImageTextParameters textParameters = imageParameters.getTextParameters();
+                    if (textParameters != null && !textParameters.isEmpty()) {
+                        switch (textParameters.getSignerTextPosition()) {
+                            case LEFT:
+                            case RIGHT:
+                                textBoxWidth = dimensionAndPosition.getTextBoxWidth();
+                                break;
+                            case TOP:
+                            case BOTTOM:
+                                textBoxHeight = dimensionAndPosition.getTextBoxHeight();
+                                break;
+                            default:
+                                throw new IllegalArgumentException(String.format("The SignerTextPosition '%s' is not supported!",
+                                        textParameters.getSignerTextPosition()));
+                        }
+                    }
                     dimensionAndPosition.setImageX(dimensionAndPosition.getImageBoxX() +
-                            (dimensionAndPosition.getImageBoxWidth() - dimensionAndPosition.getImageWidth()) / 2f);
+                            (dimensionAndPosition.getBoxWidth() - textBoxWidth - dimensionAndPosition.getImageBoxWidth()) / 2f);
                     dimensionAndPosition.setImageY(dimensionAndPosition.getImageBoxY() +
-                            (dimensionAndPosition.getImageBoxHeight() - dimensionAndPosition.getImageHeight()) / 2f);
+                            (dimensionAndPosition.getBoxHeight() - textBoxHeight - dimensionAndPosition.getImageBoxHeight()) / 2f);
                     break;
 
                 default:

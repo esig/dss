@@ -1414,6 +1414,39 @@ class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualComparator {
 		drawAndCompareVisually();
 	}
 
+	@Test
+	void dss3779Test() throws IOException {
+		initPdfATest();
+
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/small-red.jpg"), "small-red.jpg", MimeTypeEnum.JPEG));
+
+		imageParameters.setAlignmentHorizontal(VisualSignatureAlignmentHorizontal.NONE);
+		imageParameters.setAlignmentVertical(VisualSignatureAlignmentVertical.NONE);
+		imageParameters.setImageScaling(ImageScaling.CENTER);
+		imageParameters.setBackgroundColor(new Color(0, 0, 0, 0));
+
+		fieldParameters.setRotation(VisualSignatureRotation.AUTOMATIC);
+
+		textParameters.setText("Signed by: Bob Dylan\n" +
+				"Organization: World Music");
+
+		textParameters.setPadding(0f);
+		textParameters.setSignerTextPosition(SignerTextPosition.BOTTOM);
+		textParameters.setSignerTextHorizontalAlignment(SignerTextHorizontalAlignment.LEFT);
+		textParameters.setSignerTextVerticalAlignment(SignerTextVerticalAlignment.BOTTOM);
+		textParameters.setBackgroundColor(new Color(0, 0, 0, 0));
+		textParameters.setTextWrapping(TextWrapping.FONT_BASED);
+		imageParameters.setTextParameters(textParameters);
+		imageParameters.setFieldParameters(fieldParameters);
+
+		signatureParameters.setImageParameters(imageParameters);
+
+		drawAndCompareVisually();
+	}
+
 	@Override
 	protected String getTestName() {
 		return testName;
