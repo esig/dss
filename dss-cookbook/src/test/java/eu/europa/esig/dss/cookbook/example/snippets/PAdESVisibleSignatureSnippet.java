@@ -24,6 +24,8 @@ import eu.europa.esig.dss.enumerations.ImageScaling;
 import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentHorizontal;
 import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentVertical;
 import eu.europa.esig.dss.enumerations.VisualSignatureRotation;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
 import eu.europa.esig.dss.pades.SignatureFieldParameters;
 import eu.europa.esig.dss.pades.SignatureImageParameters;
@@ -135,6 +137,43 @@ public class PAdESVisibleSignatureSnippet {
 		// end::nativeFont[]
 		// end::visibleSigParams[]
 		
+	}
+
+	public void dss65Migration() {
+		DSSDocument modifiedImage = new InMemoryDocument(); // blank sample
+
+		// tag::dss65Migration[]
+		// import eu.europa.esig.dss.pades.SignatureImageParameters;
+		// import eu.europa.esig.dss.enumerations.ImageScaling;
+
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+
+		// Option 1.
+		// Set alternative DPI.
+		// Hint: Use lower DPI to increase image size
+		// (quality loss) or bigger DPI value to downsize
+		// the image (better quality).
+		imageParameters.setDpi(144);
+
+		// Option 2.
+		// Zoom image.
+		// Value is provided in percentages relatively
+		// the original size (i.e. 100%).
+		// NOTE: Zoom will apply on text as well,
+		// when defined.
+		imageParameters.setZoom(50);
+
+		// Option 3.
+		// Stretch the image.
+		// Define the exact signature field dimensions and
+		// stretch the image in it.
+		imageParameters.setImageScaling(ImageScaling.ZOOM_AND_CENTER); // or ImageScaling.STRETCH
+
+		// Option 4.
+		// Modify the original image's dimensions or DPI.
+		imageParameters.setImage(modifiedImage);
+
+		// end::dss65Migration[]
 	}
 
 }

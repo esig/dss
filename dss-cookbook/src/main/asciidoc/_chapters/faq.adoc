@@ -4,6 +4,7 @@
 :samplesdir: ../_samples
 :imagesdir: ../images/
 
+[[FAQ]]
 === Frequently asked questions and implementation issues
 
 This chapter covers the most frequently asked questions and issues occurring in implementations using DSS.
@@ -12,6 +13,18 @@ This chapter covers the most frequently asked questions and issues occurring in 
 .Possible problems and solutions
 |===
 |Version                    |Description                                   |Solution
+
+|v6.5                      a|Different image size on visual PDF signature creation    a|In version `6.5` we have reviewed image DPI handling, which previously applied an additional zoom relatively to the default PDF page DPI value (which was assumed to be equal to 72). Starting from now, an image, by default, will be placed in a PDF document according to its original size (i.e. width and height), with the original DPI staying intact. This may change the produced visual signature representation, subject to a configuration. Therefore, it is recommended for all developers to review their implementations and adapt if needed.
+
+Possible options to align implementations are provided below for a reference:
+
+[source,java,indent=0]
+.DPI visual signature migration in DSS 6.5
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/PAdESVisibleSignatureSnippet.java[tags=dss65Migration]
+----
+
+|v6.5                      a|I receive the message "The new signature field position is outside the page dimensions!", but it was working before.    a|It is very likely the change in the signature field dimensions computation is caused by the rework of image DPI handling we did in DSS `6.5`. Please see the question above for more information and instructions for resolving the issue.
 
 |v6.3                      a|"No ValidationPolicyFactory has been found!" exception is returned on a validation.    a|Since version `6.3` DSS separates the JAXB validation policy implementation from the validation algorithm, making it more configurable. In order to enable the support of XML validation policy, please add the following module within a `pom.xml` file of you project, as below:
 
