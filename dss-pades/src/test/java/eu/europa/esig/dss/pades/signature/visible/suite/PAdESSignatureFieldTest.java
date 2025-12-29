@@ -981,7 +981,6 @@ class PAdESSignatureFieldTest extends PKIFactoryAccess {
 
 		DSSDocument doubleSigned = signAndValidate(doc);
 		assertNotNull(doubleSigned);
-		doubleSigned.save("target/doubleSigned.pdf");
 
 		signatureParameters.getImageParameters().getFieldParameters().setPage(2);
 		Exception exception = assertThrows(AlertException.class,

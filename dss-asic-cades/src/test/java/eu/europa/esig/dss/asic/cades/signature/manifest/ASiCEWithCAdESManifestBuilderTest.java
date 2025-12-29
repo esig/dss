@@ -117,8 +117,6 @@ class ASiCEWithCAdESManifestBuilderTest {
 				.setEvidenceRecordFilenameFactory(new SimpleASiCWithCAdESFilenameFactory());
 		DSSDocument manifest = builder.build();
 
-		manifest.save("target/manifest.xml");
-
 		validator.validate(new DOMSource(DomUtils.buildDOM(manifest)));
 
 		DSSDocument zipArchive = ZipUtils.getInstance().createZipArchive(asicContent);
