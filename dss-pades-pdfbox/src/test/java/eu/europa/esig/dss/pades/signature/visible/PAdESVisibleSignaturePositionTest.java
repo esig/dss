@@ -469,6 +469,7 @@ class PAdESVisibleSignaturePositionTest extends AbstractTestVisualComparator {
 	private SignatureImageParameters createSignatureImageParameters() throws Exception {
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(signatureImage);
+		imageParameters.setDpi(300);
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("My signature\nsecond line\nlong line is very long line with long text example this");
 		textParameters.setSignerTextPosition(SignerTextPosition.RIGHT);

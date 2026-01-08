@@ -79,7 +79,7 @@ class PAdESVisibleCombinationTextAndImageSignatureTest extends AbstractTestVisua
 		imageParameters.setImage(getPngPicture());
 
 		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
-		fieldParameters.setOriginX(100);
+		fieldParameters.setOriginX(50);
 		fieldParameters.setOriginY(100);
 		imageParameters.setFieldParameters(fieldParameters);
 
@@ -99,7 +99,7 @@ class PAdESVisibleCombinationTextAndImageSignatureTest extends AbstractTestVisua
 		imageParameters.setImage(getPngPicture());
 		
 		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
-		fieldParameters.setOriginX(100);
+		fieldParameters.setOriginX(50);
 		fieldParameters.setOriginY(100);
 		imageParameters.setFieldParameters(fieldParameters);
 
