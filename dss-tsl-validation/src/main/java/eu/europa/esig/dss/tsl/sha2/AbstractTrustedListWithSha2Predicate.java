@@ -25,6 +25,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.xades.definition.tsl.TrustedListPath;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.xades.definition.tsl.TrustedListNamespace;
 import org.slf4j.Logger;
@@ -46,9 +47,6 @@ public abstract class AbstractTrustedListWithSha2Predicate implements Predicate<
 
     /** The default sha2 digest algorithm defined in ETSI TS 119 612 */
     protected static final DigestAlgorithm SHA2_ALGORITHM = DigestAlgorithm.SHA256;
-
-    /** The path to reach a tl:NextUpdate element */
-    protected static final String NEXT_UPDATE_PATH = "./tl:SchemeInformation/tl:NextUpdate";
 
     static {
         DomUtils.registerNamespace(TrustedListNamespace.NS);
@@ -106,7 +104,7 @@ public abstract class AbstractTrustedListWithSha2Predicate implements Predicate<
         }
         try {
             Document documentDom = DomUtils.buildDOM(tlDocument);
-            Element nextUpdateElement = DomUtils.getElement(documentDom.getDocumentElement(), NEXT_UPDATE_PATH);
+            Element nextUpdateElement = DomUtils.getElement(documentDom.getDocumentElement(), TrustedListPath.NEXT_UPDATE_PATH);
             if (nextUpdateElement != null) {
                 String nextUpdate = nextUpdateElement.getTextContent();
                 if (Utils.isStringNotEmpty(nextUpdate)) {

@@ -42,6 +42,7 @@ import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import eu.europa.esig.dss.xades.validation.XAdESUnsignedSigProperties;
 import eu.europa.esig.dss.xades.validation.XMLDocumentAnalyzer;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
+import eu.europa.esig.dss.xml.common.xpath.XPathQuery;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
 import org.apache.xml.security.exceptions.XMLSecurityException;
@@ -371,9 +372,9 @@ public class XAdESEvidenceRecordDigestBuilder extends AbstractSignatureEvidenceR
         return messageDigestCalculator.getMessageDigest(digestAlgorithm).getValue();
     }
 
-    private byte[] getDigestValueOnCanonicalizedNode(final XAdESSignature signature, final String xPathString,
+    private byte[] getDigestValueOnCanonicalizedNode(final XAdESSignature signature, final XPathQuery xPathQuery,
                                                      final String canonicalizationAlgorithm) {
-        final Element element = DomUtils.getElement(signature.getSignatureElement(), xPathString);
+        final Element element = DomUtils.getElement(signature.getSignatureElement(), xPathQuery);
         return getDigestValueOnCanonicalizedNode(element, canonicalizationAlgorithm);
     }
 

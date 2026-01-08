@@ -25,6 +25,7 @@ import eu.europa.esig.dss.xades.definition.XAdESPath;
 import eu.europa.esig.dss.xml.common.definition.AbstractPath;
 import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
+import eu.europa.esig.dss.xml.common.xpath.XPathQuery;
 
 /**
  * XAdES 1.2.2 paths
@@ -56,613 +57,630 @@ public class XAdES122Path extends AbstractPath implements XAdESPath {
 	}
 
 	@Override
-	public String getQualifyingPropertiesPath() {
+	public XPathQuery getQualifyingPropertiesPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES122Element.QUALIFYING_PROPERTIES);
 	}
 
 	@Override
-	public String getSignedPropertiesPath() {
+	public XPathQuery getSignedPropertiesPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES122Element.QUALIFYING_PROPERTIES, XAdES122Element.SIGNED_PROPERTIES);
 	}
 
 	@Override
-	public String getSignedSignaturePropertiesPath() {
+	public XPathQuery getSignedSignaturePropertiesPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES122Element.QUALIFYING_PROPERTIES, XAdES122Element.SIGNED_PROPERTIES,
 				XAdES122Element.SIGNED_SIGNATURE_PROPERTIES);
 	}
 
 	@Override
-	public String getSigningTimePath() {
+	public XPathQuery getSigningTimePath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES122Element.QUALIFYING_PROPERTIES, XAdES122Element.SIGNED_PROPERTIES,
 				XAdES122Element.SIGNED_SIGNATURE_PROPERTIES, XAdES122Element.SIGNING_TIME);
 	}
 
 	@Override
-	public String getSigningCertificatePath() {
+	public XPathQuery getSigningCertificatePath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES122Element.QUALIFYING_PROPERTIES, XAdES122Element.SIGNED_PROPERTIES,
 				XAdES122Element.SIGNED_SIGNATURE_PROPERTIES, XAdES122Element.SIGNING_CERTIFICATE);
 	}
 
 	@Override
-	public String getSigningCertificateChildren() {
+	public XPathQuery getSigningCertificateChildren() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES122Element.QUALIFYING_PROPERTIES, XAdES122Element.SIGNED_PROPERTIES,
 				XAdES122Element.SIGNED_SIGNATURE_PROPERTIES, XAdES122Element.SIGNING_CERTIFICATE, XAdES122Element.CERT);
 	}
 
 	@Override
-	public String getSigningCertificateV2Path() {
+	public XPathQuery getSigningCertificateV2Path() {
 		return null;
 	}
 
 	@Override
-	public String getSigningCertificateV2Children() {
+	public XPathQuery getSigningCertificateV2Children() {
 		return null;
 	}
 
 	@Override
-	public String getSignatureProductionPlacePath() {
+	public XPathQuery getSignatureProductionPlacePath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES122Element.QUALIFYING_PROPERTIES, XAdES122Element.SIGNED_PROPERTIES,
 				XAdES122Element.SIGNED_SIGNATURE_PROPERTIES, XAdES122Element.SIGNATURE_PRODUCTION_PLACE);
 	}
 
 	@Override
-	public String getSignatureProductionPlaceV2Path() {
+	public XPathQuery getSignatureProductionPlaceV2Path() {
 		return null;
 	}
 
 	@Override
-	public String getSignaturePolicyIdentifierPath() {
+	public XPathQuery getSignaturePolicyIdentifierPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES122Element.QUALIFYING_PROPERTIES, XAdES122Element.SIGNED_PROPERTIES,
 				XAdES122Element.SIGNED_SIGNATURE_PROPERTIES, XAdES122Element.SIGNATURE_POLICY_IDENTIFIER);
 	}
 
 	@Override
-	public String getSignerRolePath() {
+	public XPathQuery getSignerRolePath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES122Element.QUALIFYING_PROPERTIES, XAdES122Element.SIGNED_PROPERTIES,
 				XAdES122Element.SIGNED_SIGNATURE_PROPERTIES, XAdES122Element.SIGNER_ROLE);
 	}
 
 	@Override
-	public String getSignerRoleV2Path() {
+	public XPathQuery getSignerRoleV2Path() {
 		return null;
 	}
 
 	@Override
-	public String getClaimedRolePath() {
+	public XPathQuery getClaimedRolePath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES122Element.QUALIFYING_PROPERTIES, XAdES122Element.SIGNED_PROPERTIES,
 				XAdES122Element.SIGNED_SIGNATURE_PROPERTIES, XAdES122Element.SIGNER_ROLE, XAdES122Element.CLAIMED_ROLES, XAdES122Element.CLAIMED_ROLE);
 	}
 
 	@Override
-	public String getClaimedRoleV2Path() {
+	public XPathQuery getClaimedRoleV2Path() {
 		return null;
 	}
 
 	@Override
-	public String getSignedAssertionPath() {
+	public XPathQuery getSignedAssertionPath() {
 		return null;
 	}
 
 	@Override
-	public String getCertifiedRolePath() {
+	public XPathQuery getCertifiedRolePath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES122Element.QUALIFYING_PROPERTIES, XAdES122Element.SIGNED_PROPERTIES,
 				XAdES122Element.SIGNED_SIGNATURE_PROPERTIES, XAdES122Element.SIGNER_ROLE, XAdES122Element.CERTIFIED_ROLES, XAdES122Element.CERTIFIED_ROLE);
 	}
 
 	@Override
-	public String getCertifiedRoleV2Path() {
+	public XPathQuery getCertifiedRoleV2Path() {
 		return null;
 	}
 
 	@Override
-	public String getSignedDataObjectPropertiesPath() {
+	public XPathQuery getSignedDataObjectPropertiesPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES122Element.QUALIFYING_PROPERTIES, XAdES122Element.SIGNED_PROPERTIES,
 				XAdES122Element.SIGNED_DATA_OBJECT_PROPERTIES);
 	}
 
 	@Override
-	public String getDataObjectFormat() {
+	public XPathQuery getAllDataObjectsTimestampPath() {
+		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES122Element.QUALIFYING_PROPERTIES, XAdES122Element.SIGNED_PROPERTIES,
+				XAdES122Element.SIGNED_DATA_OBJECT_PROPERTIES, XAdES122Element.ALL_DATA_OBJECTS_TIMESTAMP);
+	}
+
+	@Override
+	public XPathQuery getIndividualDataObjectsTimestampPath() {
+		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES122Element.QUALIFYING_PROPERTIES, XAdES122Element.SIGNED_PROPERTIES,
+				XAdES122Element.SIGNED_DATA_OBJECT_PROPERTIES, XAdES122Element.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP);
+	}
+
+	@Override
+	public XPathQuery getDataObjectFormat() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES122Element.QUALIFYING_PROPERTIES, XAdES122Element.SIGNED_PROPERTIES,
 				XAdES122Element.SIGNED_DATA_OBJECT_PROPERTIES, XAdES122Element.DATA_OBJECT_FORMAT);
 	}
 
 	@Override
-	public String getDataObjectFormatMimeType() {
+	public XPathQuery getDataObjectFormatMimeType() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES122Element.QUALIFYING_PROPERTIES, XAdES122Element.SIGNED_PROPERTIES,
 				XAdES122Element.SIGNED_DATA_OBJECT_PROPERTIES, XAdES122Element.DATA_OBJECT_FORMAT, XAdES122Element.MIME_TYPE);
 	}
 
 	@Override
-	public String getDataObjectFormatObjectIdentifier() {
+	public XPathQuery getDataObjectFormatObjectIdentifier() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES122Element.QUALIFYING_PROPERTIES, XAdES122Element.SIGNED_PROPERTIES,
 				XAdES122Element.SIGNED_DATA_OBJECT_PROPERTIES, XAdES122Element.DATA_OBJECT_FORMAT, XAdES122Element.OBJECT_IDENTIFIER);
 	}
 
 	@Override
-	public String getCommitmentTypeIndicationPath() {
+	public XPathQuery getCommitmentTypeIndicationPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES122Element.QUALIFYING_PROPERTIES, XAdES122Element.SIGNED_PROPERTIES,
 				XAdES122Element.SIGNED_DATA_OBJECT_PROPERTIES, XAdES122Element.COMMITMENT_TYPE_INDICATION);
 	}
 
 	@Override
-	public String getUnsignedPropertiesPath() {
+	public XPathQuery getUnsignedPropertiesPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES122Element.QUALIFYING_PROPERTIES, XAdES122Element.UNSIGNED_PROPERTIES);
 	}
 
 	@Override
-	public String getUnsignedSignaturePropertiesPath() {
+	public XPathQuery getUnsignedSignaturePropertiesPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES122Element.QUALIFYING_PROPERTIES, XAdES122Element.UNSIGNED_PROPERTIES,
 				XAdES122Element.UNSIGNED_SIGNATURE_PROPERTIES);
 	}
 
 	@Override
-	public String getCounterSignaturePath() {
+	public XPathQuery getCounterSignaturePath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES122Element.QUALIFYING_PROPERTIES, XAdES122Element.UNSIGNED_PROPERTIES,
 				XAdES122Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES122Element.COUNTER_SIGNATURE);
 	}
 
 	@Override
-	public String getAttributeRevocationRefsPath() {
+	public XPathQuery getAttributeRevocationRefsPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES122Element.QUALIFYING_PROPERTIES, XAdES122Element.UNSIGNED_PROPERTIES,
 				XAdES122Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES122Element.ATTRIBUTE_REVOCATION_REFS);
 	}
 
 	@Override
-	public String getCompleteRevocationRefsPath() {
+	public XPathQuery getCompleteRevocationRefsPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES122Element.QUALIFYING_PROPERTIES, XAdES122Element.UNSIGNED_PROPERTIES,
 				XAdES122Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES122Element.COMPLETE_REVOCATION_REFS);
 	}
 
 	@Override
-	public String getCompleteCertificateRefsPath() {
+	public XPathQuery getCompleteCertificateRefsPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES122Element.QUALIFYING_PROPERTIES, XAdES122Element.UNSIGNED_PROPERTIES,
 				XAdES122Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES122Element.COMPLETE_CERTIFICATE_REFS);
 	}
 
 	@Override
-	public String getCompleteCertificateRefsCertPath() {
+	public XPathQuery getCompleteCertificateRefsCertPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES122Element.QUALIFYING_PROPERTIES, XAdES122Element.UNSIGNED_PROPERTIES,
 				XAdES122Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES122Element.COMPLETE_CERTIFICATE_REFS, XAdES122Element.CERT_REFS, XAdES122Element.CERT);
 	}
 
 	@Override
-	public String getCompleteCertificateRefsV2Path() {
+	public XPathQuery getCompleteCertificateRefsV2Path() {
 		return null;
 	}
 
 	@Override
-	public String getCompleteCertificateRefsV2CertPath() {
+	public XPathQuery getCompleteCertificateRefsV2CertPath() {
 		return null;
 	}
 
 	@Override
-	public String getAttributeCertificateRefsPath() {
+	public XPathQuery getAttributeCertificateRefsPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES122Element.QUALIFYING_PROPERTIES, XAdES122Element.UNSIGNED_PROPERTIES,
 				XAdES122Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES122Element.ATTRIBUTE_CERTIFICATE_REFS);
 	}
 
 	@Override
-	public String getAttributeCertificateRefsCertPath() {
+	public XPathQuery getAttributeCertificateRefsCertPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES122Element.QUALIFYING_PROPERTIES, XAdES122Element.UNSIGNED_PROPERTIES,
 				XAdES122Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES122Element.ATTRIBUTE_CERTIFICATE_REFS, XAdES122Element.CERT_REFS, XAdES122Element.CERT);
 	}
 
 	@Override
-	public String getAttributeCertificateRefsV2Path() {
+	public XPathQuery getAttributeCertificateRefsV2Path() {
 		return null;
 	}
 
 	@Override
-	public String getAttributeCertificateRefsV2CertPath() {
+	public XPathQuery getAttributeCertificateRefsV2CertPath() {
 		return null;
 	}
 
 	@Override
-	public String getCertificateValuesPath() {
+	public XPathQuery getCertificateValuesPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES122Element.QUALIFYING_PROPERTIES, XAdES122Element.UNSIGNED_PROPERTIES,
 				XAdES122Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES122Element.CERTIFICATE_VALUES);
 	}
 
 	@Override
-	public String getRevocationValuesPath() {
+	public XPathQuery getRevocationValuesPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES122Element.QUALIFYING_PROPERTIES, XAdES122Element.UNSIGNED_PROPERTIES,
 				XAdES122Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES122Element.REVOCATION_VALUES);
 	}
 
 	@Override
-	public String getEncapsulatedCertificateValuesPath() {
+	public XPathQuery getEncapsulatedCertificateValuesPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES122Element.QUALIFYING_PROPERTIES, XAdES122Element.UNSIGNED_PROPERTIES,
 				XAdES122Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES122Element.CERTIFICATE_VALUES, XAdES122Element.ENCAPSULATED_X509_CERTIFICATE);
 	}
 
 	@Override
-	public String getAttrAuthoritiesCertValuesPath() {
+	public XPathQuery getAttrAuthoritiesCertValuesPath() {
 		return null;
 	}
 
 	@Override
-	public String getEncapsulatedAttrAuthoritiesCertValuesPath() {
+	public XPathQuery getEncapsulatedAttrAuthoritiesCertValuesPath() {
 		return null;
 	}
 
 	@Override
-	public String getEncapsulatedTimeStampValidationDataCertValuesPath() {
+	public XPathQuery getEncapsulatedTimeStampValidationDataCertValuesPath() {
 		return null;
 	}
 
 	@Override
-	public String getAttributeRevocationValuesPath() {
+	public XPathQuery getAttributeRevocationValuesPath() {
 		return null;
 	}
 
 	@Override
-	public String getTimeStampValidationDataRevocationValuesPath() {
+	public XPathQuery getTimeStampValidationDataRevocationValuesPath() {
 		return null;
 	}
 
 	@Override
-	public String getEncapsulatedAnyValidationDataCertValuesPath() {
+	public XPathQuery getAnyValidationDataPath() {
 		return null;
 	}
 
 	@Override
-	public String getAnyValidationDataRevocationValuesPath() {
+	public XPathQuery getEncapsulatedAnyValidationDataCertValuesPath() {
 		return null;
 	}
 
 	@Override
-	public String getSignatureTimestampPath() {
+	public XPathQuery getAnyValidationDataRevocationValuesPath() {
+		return null;
+	}
+
+	@Override
+	public XPathQuery getSignatureTimestampPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES122Element.QUALIFYING_PROPERTIES, XAdES122Element.UNSIGNED_PROPERTIES,
 				XAdES122Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES122Element.SIGNATURE_TIMESTAMP);
 	}
 
 	@Override
-	public String getSigAndRefsTimestampPath() {
+	public XPathQuery getSigAndRefsTimestampPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES122Element.QUALIFYING_PROPERTIES, XAdES122Element.UNSIGNED_PROPERTIES,
 				XAdES122Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES122Element.SIG_AND_REFS_TIMESTAMP);
 	}
 
 	@Override
-	public String getSigAndRefsTimestampV2Path() {
+	public XPathQuery getSigAndRefsTimestampV2Path() {
 		return null;
 	}
 
 	@Override
-	public String getRefsOnlyTimestampPath() {
+	public XPathQuery getRefsOnlyTimestampPath() {
 		return null;
 	}
 
 	@Override
-	public String getRefsOnlyTimestampV2Path() {
+	public XPathQuery getRefsOnlyTimestampV2Path() {
 		return null;
 	}
 
 	@Override
-	public String getArchiveTimestampPath() {
+	public XPathQuery getArchiveTimestampPath() {
 		return null;
 	}
 
 	@Override
-	public String getSealingEvidenceRecordsPath() {
+	public XPathQuery getSealingEvidenceRecordsPath() {
 		return null;
 	}
 
 	@Override
-	public String getTimestampValidationDataPath() {
+	public XPathQuery getTimestampValidationDataPath() {
 		return null;
 	}
 
 	@Override
-	public String getSignaturePolicyStorePath() {
+	public XPathQuery getSignaturePolicyStorePath() {
 		return null;
 	}
 
 	// ------------------------------------------------
 
 	@Override
-	public String getCurrentCRLValuesChildren() {
+	public XPathQuery getCurrentCRLValuesChildren() {
 		return fromCurrentPosition(XAdES122Element.CRL_VALUES, XAdES122Element.ENCAPSULATED_CRL_VALUE);
 	}
 
 	@Override
-	public String getCurrentCRLRefsChildren() {
+	public XPathQuery getCurrentCRLRefsChildren() {
 		return fromCurrentPosition(XAdES122Element.CRL_REFS, XAdES122Element.CRL_REF);
 	}
 
 	@Override
-	public String getCurrentCRLRefCRLIdentifier() {
+	public XPathQuery getCurrentCRLRefCRLIdentifier() {
 		return fromCurrentPosition(XAdES122Element.CRL_IDENTIFIER);
 	}
 
 	@Override
-	public String getCurrentCRLRefCRLIdentifierIssuer() {
+	public XPathQuery getCurrentCRLRefCRLIdentifierIssuer() {
 		return fromCurrentPosition(XAdES122Element.CRL_IDENTIFIER, XAdES122Element.ISSUER);
 	}
 
 	@Override
-	public String getCurrentCRLRefCRLIdentifierIssueTime() {
+	public XPathQuery getCurrentCRLRefCRLIdentifierIssueTime() {
 		return fromCurrentPosition(XAdES122Element.CRL_IDENTIFIER, XAdES122Element.ISSUE_TIME);
 	}
 
 	@Override
-	public String getCurrentCRLRefCRLIdentifierNumber() {
+	public XPathQuery getCurrentCRLRefCRLIdentifierNumber() {
 		return fromCurrentPosition(XAdES122Element.CRL_IDENTIFIER, XAdES122Element.NUMBER);
 	}
 
 	@Override
-	public String getCurrentOCSPRefsChildren() {
+	public XPathQuery getCurrentOCSPRefsChildren() {
 		return fromCurrentPosition(XAdES122Element.OCSP_REFS, XAdES122Element.OCSP_REF);
 	}
 
 	@Override
-	public String getCurrentOCSPValuesChildren() {
+	public XPathQuery getCurrentOCSPValuesChildren() {
 		return fromCurrentPosition(XAdES122Element.OCSP_VALUES, XAdES122Element.ENCAPSULATED_OCSP_VALUE);
 	}
 
 	@Override
-	public String getCurrentOCSPRefResponderID() {
+	public XPathQuery getCurrentOCSPRefResponderID() {
 		return fromCurrentPosition(XAdES122Element.OCSP_IDENTIFIER, XAdES122Element.RESPONDER_ID);
 	}
 
 	@Override
-	public String getCurrentOCSPRefResponderIDByName() {
+	public XPathQuery getCurrentOCSPRefResponderIDByName() {
 		return null;
 	}
 
 	@Override
-	public String getCurrentOCSPRefResponderIDByKey() {
+	public XPathQuery getCurrentOCSPRefResponderIDByKey() {
 		return null;
 	}
 
 	@Override
-	public String getCurrentOCSPRefProducedAt() {
+	public XPathQuery getCurrentOCSPRefProducedAt() {
 		return fromCurrentPosition(XAdES122Element.OCSP_IDENTIFIER, XAdES122Element.PRODUCED_AT);
 	}
 
 	@Override
-	public String getCurrentDigestAlgAndValue() {
+	public XPathQuery getCurrentDigestAlgAndValue() {
 		return fromCurrentPosition(XAdES122Element.DIGEST_ALG_AND_VALUE);
 	}
 
 	@Override
-	public String getCurrentCertRefsCertChildren() {
+	public XPathQuery getCurrentCertRefsCertChildren() {
 		return fromCurrentPosition(XAdES122Element.CERT_REFS, XAdES122Element.CERT);
 	}
 
 	@Override
-	public String getCurrentCertRefs141CertChildren() {
+	public XPathQuery getCurrentCertRefs141CertChildren() {
 		return null;
 	}
 
 	@Override
-	public String getCurrentCertChildren() {
+	public XPathQuery getCurrentCertChildren() {
 		return fromCurrentPosition(XAdES122Element.CERT);
 	}
 
 	@Override
-	public String getCurrentCertDigest() {
+	public XPathQuery getCurrentCertDigest() {
 		return fromCurrentPosition(XAdES122Element.CERT_DIGEST);
 	}
 
 	@Override
-	public String getCurrentEncapsulatedTimestamp() {
+	public XPathQuery getCurrentEncapsulatedTimestamp() {
 		return fromCurrentPosition(XAdES122Element.ENCAPSULATED_TIMESTAMP);
 	}
 
 	@Override
-	public String getCurrentSignaturePolicyId() {
+	public XPathQuery getCurrentSignaturePolicyId() {
 		return fromCurrentPosition(XAdES122Element.SIGNATURE_POLICY_ID, XAdES122Element.SIG_POLICY_ID, XAdES122Element.IDENTIFIER);
 	}
 
 	@Override
-	public String getCurrentSignaturePolicyDigestAlgAndValue() {
+	public XPathQuery getCurrentSignaturePolicyDigestAlgAndValue() {
 		return fromCurrentPosition(XAdES122Element.SIGNATURE_POLICY_ID, XAdES122Element.SIG_POLICY_HASH);
 	}
 
 	@Override
-	public String getCurrentSignaturePolicySPURI() {
+	public XPathQuery getCurrentSignaturePolicySPURI() {
 		return fromCurrentPosition(XAdES122Element.SIGNATURE_POLICY_ID, XAdES122Element.SIG_POLICY_QUALIFIERS, XAdES122Element.SIG_POLICY_QUALIFIER,
 				XAdES122Element.SP_URI);
 	}
 
 	@Override
-	public String getCurrentSignaturePolicySPUserNotice() {
+	public XPathQuery getCurrentSignaturePolicySPUserNotice() {
 		return fromCurrentPosition(XAdES122Element.SIGNATURE_POLICY_ID, XAdES122Element.SIG_POLICY_QUALIFIERS, XAdES122Element.SIG_POLICY_QUALIFIER,
 				XAdES122Element.SP_USER_NOTICE);
 	}
 
 	@Override
-	public String getCurrentSPUserNoticeNoticeRefOrganization() {
+	public XPathQuery getCurrentSPUserNoticeNoticeRefOrganization() {
 		return fromCurrentPosition(XAdES122Element.NOTICE_REF, XAdES122Element.ORGANIZATION);
 	}
 
 	@Override
-	public String getCurrentSPUserNoticeNoticeRefNoticeNumbers() {
+	public XPathQuery getCurrentSPUserNoticeNoticeRefNoticeNumbers() {
 		return fromCurrentPosition(XAdES122Element.NOTICE_REF, XAdES122Element.NOTICE_NUMBERS);
 	}
 
 	@Override
-	public String getCurrentSPUserNoticeExplicitText() {
+	public XPathQuery getCurrentSPUserNoticeExplicitText() {
 		return fromCurrentPosition(XAdES122Element.EXPLICIT_TEXT);
 	}
 
 	@Override
-	public String getCurrentSignaturePolicySPDocSpecification() {
+	public XPathQuery getCurrentSignaturePolicySPDocSpecification() {
 		return null;
 	}
 
 	@Override
-	public String getCurrentSignaturePolicySPDocSpecificationIdentifier() {
+	public XPathQuery getCurrentSignaturePolicySPDocSpecificationIdentifier() {
 		return null;
 	}
 
 	@Override
-	public String getCurrentSignaturePolicyDescription() {
+	public XPathQuery getCurrentSignaturePolicyDescription() {
 		return fromCurrentPosition(XAdES122Element.SIGNATURE_POLICY_ID, XAdES122Element.SIG_POLICY_ID, XAdES122Element.DESCRIPTION);
 	}
 
 	@Override
-	public String getCurrentSignaturePolicyDocumentationReferences() {
+	public XPathQuery getCurrentSignaturePolicyDocumentationReferences() {
 		return fromCurrentPosition(XAdES122Element.SIGNATURE_POLICY_ID, XAdES122Element.SIG_POLICY_ID, XAdES122Element.DOCUMENTATION_REFERENCES);
 	}
 
 	@Override
-	public String getCurrentSignaturePolicyImplied() {
+	public XPathQuery getCurrentSignaturePolicyImplied() {
 		return fromCurrentPosition(XAdES122Element.SIGNATURE_POLICY_IMPLIED);
 	}
 	
 	@Override
-	public String getCurrentSignaturePolicyTransforms() {
+	public XPathQuery getCurrentSignaturePolicyTransforms() {
 		return fromCurrentPosition(XAdES122Element.SIGNATURE_POLICY_ID, XMLDSigElement.TRANSFORMS);
 	}
 
 	@Override
-	public String getCurrentSignaturePolicyQualifiers() {
+	public XPathQuery getCurrentSignaturePolicyQualifiers() {
 		return fromCurrentPosition(XAdES122Element.SIGNATURE_POLICY_ID, XAdES122Element.SIG_POLICY_QUALIFIERS);
 	}
 
 	@Override
-	public String getCurrentIssuerSerialIssuerNamePath() {
+	public XPathQuery getCurrentIssuerSerialIssuerNamePath() {
 		return fromCurrentPosition(XAdES122Element.ISSUER_SERIAL, XMLDSigElement.X509_ISSUER_NAME);
 	}
 
 	@Override
-	public String getCurrentIssuerSerialSerialNumberPath() {
+	public XPathQuery getCurrentIssuerSerialSerialNumberPath() {
 		return fromCurrentPosition(XAdES122Element.ISSUER_SERIAL, XMLDSigElement.X509_SERIAL_NUMBER);
 	}
 
 	@Override
-	public String getCurrentIssuerSerialV2Path() {
+	public XPathQuery getCurrentIssuerSerialV2Path() {
 		return null;
 	}
 
 	@Override
-	public String getCurrentCommitmentIdentifierPath() {
+	public XPathQuery getCurrentCommitmentIdentifierPath() {
 		return fromCurrentPosition(XAdES122Element.COMMITMENT_TYPE_ID, XAdES122Element.IDENTIFIER);
 	}
 
 	@Override
-	public String getCurrentCommitmentDescriptionPath() {
+	public XPathQuery getCurrentCommitmentDescriptionPath() {
 		return fromCurrentPosition(XAdES122Element.COMMITMENT_TYPE_ID, XAdES122Element.DESCRIPTION);
 	}
 
 	@Override
-	public String getCurrentCommitmentDocumentationReferencesPath() {
+	public XPathQuery getCurrentCommitmentDocumentationReferencesPath() {
 		return fromCurrentPosition(XAdES122Element.COMMITMENT_TYPE_ID, XAdES122Element.DOCUMENTATION_REFERENCES);
 	}
 
 	@Override
-	public String getCurrentDocumentationReference() {
+	public XPathQuery getCurrentDocumentationReference() {
 		return fromCurrentPosition(XAdES122Element.DOCUMENTATION_REFERENCE);
 	}
 
 	@Override
-	public String getCurrentCommitmentObjectReferencesPath() {
+	public XPathQuery getCurrentCommitmentObjectReferencesPath() {
 		return fromCurrentPosition(XAdES122Element.OBJECT_REFERENCE);
 	}
 
 	@Override
-	public String getCurrentCommitmentAllSignedDataObjectsPath() {
+	public XPathQuery getCurrentCommitmentAllSignedDataObjectsPath() {
 		return fromCurrentPosition(XAdES122Element.ALL_SIGNED_DATA_OBJECTS);
 	}
 
 	@Override
-	public String getCurrentInclude() {
+	public XPathQuery getCurrentInclude() {
 		return fromCurrentPosition(XAdES122Element.INCLUDE);
 	}
 
 	@Override
-	public String getCurrentEncapsulatedCertificate() {
+	public XPathQuery getCurrentEncapsulatedCertificate() {
 		return fromCurrentPosition(XAdES122Element.ENCAPSULATED_X509_CERTIFICATE);
 	}
 
 	@Override
-	public String getCurrentCertificateValuesEncapsulatedCertificate() {
+	public XPathQuery getCurrentCertificateValuesEncapsulatedCertificate() {
 		return fromCurrentPosition(XAdES122Element.CERTIFICATE_VALUES, XAdES122Element.ENCAPSULATED_X509_CERTIFICATE);
 	}
 
 	@Override
-	public String getCurrentEncapsulatedOCSPValue() {
+	public XPathQuery getCurrentEncapsulatedOCSPValue() {
 		return fromCurrentPosition(XAdES122Element.OCSP_VALUES, XAdES122Element.ENCAPSULATED_OCSP_VALUE);
 	}
 
 	@Override
-	public String getCurrentRevocationValuesEncapsulatedOCSPValue() {
+	public XPathQuery getCurrentRevocationValuesEncapsulatedOCSPValue() {
 		return fromCurrentPosition(XAdES122Element.REVOCATION_VALUES, XAdES122Element.OCSP_VALUES, XAdES122Element.ENCAPSULATED_OCSP_VALUE);
 	}
 
 	@Override
-	public String getCurrentEncapsulatedCRLValue() {
+	public XPathQuery getCurrentEncapsulatedCRLValue() {
 		return fromCurrentPosition(XAdES122Element.CRL_VALUES, XAdES122Element.ENCAPSULATED_CRL_VALUE);
 	}
 
 	@Override
-	public String getCurrentRevocationValuesEncapsulatedCRLValue() {
+	public XPathQuery getCurrentRevocationValuesEncapsulatedCRLValue() {
 		return fromCurrentPosition(XAdES122Element.REVOCATION_VALUES, XAdES122Element.CRL_VALUES, XAdES122Element.ENCAPSULATED_CRL_VALUE);
 	}
 
 	@Override
-	public String getCurrentQualifyingPropertiesPath() {
+	public XPathQuery getCurrentQualifyingPropertiesPath() {
 		return fromCurrentPosition(XAdES122Element.QUALIFYING_PROPERTIES);
 	}
 
 	@Override
-	public String getCurrentDescription() {
+	public XPathQuery getCurrentDescription() {
 		return fromCurrentPosition(XAdES122Element.DESCRIPTION);
 	}
 
 	@Override
-	public String getCurrentObjectIdentifier() {
+	public XPathQuery getCurrentObjectIdentifier() {
 		return fromCurrentPosition(XAdES122Element.OBJECT_IDENTIFIER);
 	}
 
 	@Override
-	public String getCurrentMimeType() {
+	public XPathQuery getCurrentMimeType() {
 		return fromCurrentPosition(XAdES122Element.MIME_TYPE);
 	}
 
 	@Override
-	public String getCurrentEncoding() {
+	public XPathQuery getCurrentEncoding() {
 		return fromCurrentPosition(XAdES122Element.ENCODING);
 	}
 
 	@Override
-	public String getCurrentSPDocSpecification() {
+	public XPathQuery getCurrentSPDocSpecification() {
 		return null;
 	}
 
 	@Override
-	public String getCurrentIdentifier() {
+	public XPathQuery getCurrentIdentifier() {
 		return fromCurrentPosition(XAdES122Element.IDENTIFIER);
 	}
 
 	@Override
-	public String getCurrentSPDocSpecificationIdentifier() {
+	public XPathQuery getCurrentSPDocSpecificationIdentifier() {
 		return null;
 	}
 
 	@Override
-	public String getCurrentSPDocSpecificationDescription() {
+	public XPathQuery getCurrentSPDocSpecificationDescription() {
 		return null;
 	}
 
 	@Override
-	public String getCurrentDocumentationReferenceElements() {
+	public XPathQuery getCurrentDocumentationReferenceElements() {
 		return null;
 	}
 
 	@Override
-	public String getCurrentSPDocSpecificationDocumentationReferenceElements() {
+	public XPathQuery getCurrentSPDocSpecificationDocumentationReferenceElements() {
 		return null;
 	}
 
 	@Override
-	public String getCurrentSignaturePolicyDocument() {
+	public XPathQuery getCurrentSignaturePolicyDocument() {
 		return null;
 	}
 
 	@Override
-	public String getCurrentSigPolDocLocalURI() {
+	public XPathQuery getCurrentSigPolDocLocalURI() {
 		return null;
 	}
 

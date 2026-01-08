@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
+import eu.europa.esig.dss.xml.common.xpath.XPathQuery;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.crl.CRLUtils;
@@ -76,7 +77,7 @@ public class XAdESCRLSource extends OfflineCRLSource {
 		collectRefs(xadesPaths.getAttributeRevocationRefsPath(), RevocationRefOrigin.ATTRIBUTE_REVOCATION_REFS);
 	}
 
-	private void collectValues(final String revocationValuesPath, RevocationOrigin revocationOrigin) {
+	private void collectValues(final XPathQuery revocationValuesPath, RevocationOrigin revocationOrigin) {
 		if (revocationValuesPath == null) {
 			return;
 		}
@@ -99,7 +100,7 @@ public class XAdESCRLSource extends OfflineCRLSource {
 		}
 	}
 
-	private void collectRefs(final String revocationRefsPath, RevocationRefOrigin revocationRefOrigin) {
+	private void collectRefs(final XPathQuery revocationRefsPath, RevocationRefOrigin revocationRefOrigin) {
 		if (revocationRefsPath == null) {
 			return;
 		}

@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
+import eu.europa.esig.dss.xml.common.xpath.XPathQuery;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
@@ -102,7 +103,7 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 	 * @param xPathQuery XPath query
 	 * @param origin     the certificate origin
 	 */
-	private void extractCertificates(final String xPathQuery, CertificateOrigin origin) {
+	private void extractCertificates(final XPathQuery xPathQuery, CertificateOrigin origin) {
 		if (xPathQuery == null) {
 			return;
 		}
@@ -128,7 +129,7 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 	 * @param xpathV2 XPath query for certificate reference V2
 	 * @param origin  the certificate reference origin
 	 */
-	private void extractCertificateRefs(String xpathV1, String xpathV2, CertificateRefOrigin origin) {
+	private void extractCertificateRefs(XPathQuery xpathV1, XPathQuery xpathV2, CertificateRefOrigin origin) {
 		if (xpathV1 != null) {
 			NodeList certRefNodeList = DomUtils.getNodeList(signatureElement, xpathV1);
 			if (certRefNodeList != null) {

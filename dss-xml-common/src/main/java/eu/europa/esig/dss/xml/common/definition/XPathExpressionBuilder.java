@@ -23,6 +23,7 @@ package eu.europa.esig.dss.xml.common.definition;
 /**
  * Builds an XPath expression
  */
+@Deprecated
 public class XPathExpressionBuilder {
 
 	/** The path to search all entries in the whole document */
@@ -45,14 +46,14 @@ public class XPathExpressionBuilder {
 
 	/**
 	 * Defines if to start search from the current position
-	 *
+	 * <p>
 	 * Default: false
 	 */
 	private boolean fromCurrentPosition = false;
 
 	/**
 	 * Defines if to search all occurrences
-	 *
+	 * <p>
 	 * Default: false
 	 */
 	private boolean all = false;

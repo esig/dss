@@ -23,7 +23,7 @@ package eu.europa.esig.dss.xades.definition.tsl;
 import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
 
 /**
- * This class contains constants for Trusted List XSD and its namespace.
+ * This class contains the Trusted List XSD namespace.
  *
  */
 public class TrustedListNamespace {

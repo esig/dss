@@ -24,6 +24,7 @@ import eu.europa.esig.asic.manifest.ASiCManifestUtils;
 import eu.europa.esig.dss.xml.common.definition.DSSAttribute;
 import eu.europa.esig.dss.xml.common.definition.DSSElement;
 import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
+import eu.europa.esig.dss.xml.common.xpath.XPathQueryBuilder;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.xades.XAdESUtils;
 import org.junit.jupiter.api.Test;
@@ -48,7 +49,6 @@ class ASiCEnumsTest {
 			Document xsdDom = DomUtils.buildDOM(is);
 			checkElementSynchronization(xsdDom, ASiCManifestElement.values());
 		}
-
 	}
 
 	@Test
@@ -63,7 +63,7 @@ class ASiCEnumsTest {
 	}
 
 	private void checkElementSynchronization(Document xsdDom, DSSElement[] elements) {
-		NodeList nodeList = DomUtils.getNodeList(xsdDom, "//xsd:element");
+		NodeList nodeList = DomUtils.getNodeList(xsdDom, XPathQueryBuilder.all().element(DSSElement.fromDefinition("element", XSD_NS)).build());
 		assertTrue(nodeList.getLength() > 0);
 		for (int i = 0; i < nodeList.getLength(); i++) {
 			Node item = nodeList.item(i);
@@ -84,13 +84,15 @@ class ASiCEnumsTest {
 		}
 
 		for (DSSElement dssElement : elements) {
-			NodeList nodeListByTagName = DomUtils.getNodeList(xsdDom, "//xsd:element[@name=\"" + dssElement.getTagName() + "\"]");
+			NodeList nodeListByTagName = DomUtils.getNodeList(xsdDom, XPathQueryBuilder.all()
+					.element(DSSElement.fromDefinition("element", XSD_NS))
+					.attribute(DSSAttribute.fromDefinition("name"), dssElement.getTagName()).build());
 			assertTrue(nodeListByTagName.getLength() > 0, "Element [" + dssElement.getTagName() + "] not found in XSD");
 		}
 	}
 
 	private void checkAttributesSynchronization(Document xsdDom, DSSAttribute[] attributes) {
-		NodeList nodeList = DomUtils.getNodeList(xsdDom, "//xsd:attribute");
+		NodeList nodeList = DomUtils.getNodeList(xsdDom, XPathQueryBuilder.all().element(DSSElement.fromDefinition("attribute", XSD_NS)).build());
 		assertTrue(nodeList.getLength() > 0);
 
 		for (int i = 0; i < nodeList.getLength(); i++) {
@@ -112,7 +114,9 @@ class ASiCEnumsTest {
 		}
 
 		for (DSSAttribute dssAttribute : attributes) {
-			NodeList nodeListByTagName = DomUtils.getNodeList(xsdDom, "//xsd:attribute[@name=\"" + dssAttribute.getAttributeName() + "\"]");
+			NodeList nodeListByTagName = DomUtils.getNodeList(xsdDom, XPathQueryBuilder.all()
+					.element(DSSElement.fromDefinition("attribute", XSD_NS))
+					.attribute(DSSAttribute.fromDefinition("name"), dssAttribute.getAttributeName()).build());
 			assertTrue(nodeListByTagName.getLength() > 0, "Attribute [" + dssAttribute.getAttributeName() + "] not found in XSD");
 		}
 	}

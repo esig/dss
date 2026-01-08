@@ -268,7 +268,7 @@ class XAdESDoubleLTAWithValDataContainerTypesTest extends PKIFactoryAccess {
         if (tstVDList != null && tstVDList.getLength() > 0) {
             timeStampValidationDataCounter = tstVDList.getLength();
         }
-        NodeList anyVDList = DomUtils.getNodeList(signature, paths.getAnyValidationDataRevocationValuesPath());
+        NodeList anyVDList = DomUtils.getNodeList(signature, paths.getAnyValidationDataPath());
         if (anyVDList != null && anyVDList.getLength() > 0) {
             anyValidationDataCounter = anyVDList.getLength();
         }

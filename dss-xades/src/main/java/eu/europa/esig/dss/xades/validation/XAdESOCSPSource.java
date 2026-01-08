@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
+import eu.europa.esig.dss.xml.common.xpath.XPathQuery;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
@@ -80,7 +81,7 @@ public class XAdESOCSPSource extends OfflineOCSPSource {
 		collectRefs(xadesPaths.getAttributeRevocationRefsPath(), RevocationRefOrigin.ATTRIBUTE_REVOCATION_REFS);
 	}
 
-	private void collectValues(String revocationValuesPath, RevocationOrigin origin) {
+	private void collectValues(XPathQuery revocationValuesPath, RevocationOrigin origin) {
 		if (revocationValuesPath == null) {
 			return;
 		}
@@ -98,7 +99,7 @@ public class XAdESOCSPSource extends OfflineOCSPSource {
 		}
 	}
 
-	private void collectRefs(final String revocationRefsPath, RevocationRefOrigin revocationRefOrigin) {
+	private void collectRefs(final XPathQuery revocationRefsPath, RevocationRefOrigin revocationRefOrigin) {
 		if (revocationRefsPath == null) {
 			return;
 		}

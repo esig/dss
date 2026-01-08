@@ -34,6 +34,7 @@ import eu.europa.esig.dss.xades.definition.XAdESPath;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
+import eu.europa.esig.dss.xml.common.xpath.XPathQuery;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.slf4j.Logger;
@@ -150,8 +151,8 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
             return false;
         }
         // ArchiveTimeStamp (defined in namespace whose URI is "http://uri.etsi.org/01903/v1.3.2#") (Cardinality == 0)
-        String archiveTimestampPath = xadesPaths.getArchiveTimestampPath();
-        if (Utils.isStringNotEmpty(archiveTimestampPath)) {
+        XPathQuery archiveTimestampPath = xadesPaths.getArchiveTimestampPath();
+        if (archiveTimestampPath != null) {
             NodeList archiveTimeStampList = DomUtils.getNodeList(signatureElement, archiveTimestampPath);
             for (int ii = 0; ii < archiveTimeStampList.getLength(); ii++) {
                 Node archiveTimeStamp = archiveTimeStampList.item(ii);
@@ -188,8 +189,8 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
             }
         }
         // Additional requirement (i)
-        String signingCertificateV2Path = xadesPaths.getSigningCertificateV2Path();
-        if (Utils.isStringNotEmpty(signingCertificateV2Path)) {
+        XPathQuery signingCertificateV2Path = xadesPaths.getSigningCertificateV2Path();
+        if (signingCertificateV2Path != null) {
             NodeList signingCertificateV2List = DomUtils.getNodeList(signatureElement, signingCertificateV2Path);
             if (signingCertificateV2List.getLength() == 1) {
                 Node signingCertificateV2 = signingCertificateV2List.item(0);
@@ -637,18 +638,15 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         return false;
     }
 
-    private int getNumberOfOccurrences(Element element, String xPath) {
-        if (element != null && Utils.isStringNotEmpty(xPath)) {
+    private int getNumberOfOccurrences(Element element, XPathQuery xPath) {
+        if (element != null && xPath != null) {
             return DomUtils.getNodesAmount(element, xPath);
         }
         return 0;
     }
 
-    private boolean isElementPresent(final Node xmlNode, final String xPathString) {
-        if (Utils.isStringEmpty(xPathString)) {
-            return false;
-        }
-        return DomUtils.isNotEmpty(xmlNode, xPathString);
+    private boolean isElementPresent(final Element element, final XPathQuery xPathString) {
+        return getNumberOfOccurrences(element, xPathString) > 0;
     }
 
     private Map<String, ReferenceValidationStatus> getReferenceValidationStatusMap() {

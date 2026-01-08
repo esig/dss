@@ -29,6 +29,7 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
 import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.xpath.JavaXmlXPathQueryExecutor;
 import org.apache.xml.security.transforms.Transforms;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -151,9 +152,9 @@ public abstract class XPathPlacementSignatureBuilder extends XAdESSignatureBuild
     protected Node getParentNodeOfSignature() {
         final String xPathLocationString = params.getXPathLocationString();
         if (Utils.isStringNotEmpty(xPathLocationString)) {
-            Element element = DomUtils.getElement(documentDom, xPathLocationString);
-            if (element != null) {
-                return element;
+            NodeList nodeList = new JavaXmlXPathQueryExecutor().getNodeList(documentDom, xPathLocationString);
+            if (nodeList != null && nodeList.getLength() == 1) {
+                return nodeList.item(0);
             }
             throw new IllegalArgumentException(String.format(
                     "Unable to find an element corresponding to XPath location '%s'", xPathLocationString));

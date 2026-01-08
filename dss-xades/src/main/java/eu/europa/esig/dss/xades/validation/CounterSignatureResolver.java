@@ -20,12 +20,12 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.utils.resolver.ResourceResolverContext;
 import org.apache.xml.security.utils.resolver.ResourceResolverException;
@@ -36,7 +36,7 @@ import org.w3c.dom.Node;
 
 /**
  * Resolver for a counter signature only.
- * 
+ * <p>
  * Used for a counter signature extension.
  */
 public class CounterSignatureResolver extends ResourceResolverSpi {
@@ -96,13 +96,12 @@ public class CounterSignatureResolver extends ResourceResolverSpi {
 		}
 
 		Document documentDom = DomUtils.buildDOM(document);
-		Node node = DomUtils.getNode(documentDom, XMLDSigPath.ALL_SIGNATURE_VALUES_PATH + DomUtils.getXPathByIdAttribute(uriValue));
+		Node node = DomUtils.getElementById(documentDom, XMLDSigPath.ALL_SIGNATURE_VALUES_PATH, uriValue);
 		
 		if (node == null && isXPointerSlash(uriValue) && XMLDSigElement.SIGNATURE_VALUE.getTagName().equals(documentDom.getLocalName())) {
 			node = documentDom;
 		} else if (node == null && DomUtils.isXPointerQuery(uriValue)) {
-			String xPointerId = DomUtils.getXPointerId(uriValue);
-			node = DomUtils.getNode(documentDom, XMLDSigPath.ALL_SIGNATURE_VALUES_PATH + DomUtils.getXPathByIdAttribute(xPointerId));
+			node = DomUtils.getElementById(documentDom, XMLDSigPath.ALL_SIGNATURE_VALUES_PATH, uriValue);
 		}
 		
 		if (node != null) {

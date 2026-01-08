@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
+import eu.europa.esig.dss.xml.common.xpath.XPathQuery;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
@@ -104,7 +105,9 @@ public class XAdESAttribute implements SignatureAttribute {
 	 *
 	 * @param xPathExpression {@link String} to find an element
 	 * @return {@link Element}
+	 * @deprecated since DSS 6.5. To be removed.
 	 */
+	@Deprecated
 	public final Element findElement(String xPathExpression) {
 		return DomUtils.getElement(element, xPathExpression);
 	}
@@ -114,9 +117,21 @@ public class XAdESAttribute implements SignatureAttribute {
 	 *
 	 * @param xPathExpression {@link String} to find an element
 	 * @return {@link NodeList}
+	 * @deprecated since DSS 6.5. Please use {@code #getNodeList(XPathQuery xPathQuery)} method instead.
 	 */
+	@Deprecated
 	public final NodeList getNodeList(String xPathExpression) {
 		return DomUtils.getNodeList(element, xPathExpression);
+	}
+
+	/**
+	 * Returns a {@link NodeList} found by the given {@code xPathExpression}
+	 *
+	 * @param xPathQuery {@link XPathQuery} to find an element
+	 * @return {@link NodeList}
+	 */
+	public final NodeList getNodeList(XPathQuery xPathQuery) {
+		return DomUtils.getNodeList(element, xPathQuery);
 	}
 
 	/**
@@ -145,7 +160,7 @@ public class XAdESAttribute implements SignatureAttribute {
 	 * @return list of {@link TimestampInclude}s in case of IndividualDataObjectsTimestamp, NULL otherwise
 	 */
 	public List<TimestampInclude> getTimestampIncludedReferences() {
-		String currentIncludePath = xadesPaths.getCurrentInclude();
+		XPathQuery currentIncludePath = xadesPaths.getCurrentInclude();
 		if (currentIncludePath != null) {
 			final NodeList timestampIncludes = DomUtils.getNodeList(element, currentIncludePath);
 			if (timestampIncludes != null && timestampIncludes.getLength() > 0) {

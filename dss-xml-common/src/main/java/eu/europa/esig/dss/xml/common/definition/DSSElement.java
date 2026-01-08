@@ -56,4 +56,41 @@ public interface DSSElement extends Serializable {
 	 */
 	boolean isSameTagName(String value);
 
+	/**
+	 * Creates a DSSElement from the given definition
+	 *
+	 * @param localName {@link String} name of the XML element
+	 * @param namespace {@link DSSNamespace} namespace used within the element
+	 * @return {@link DSSElement}
+	 */
+	static DSSElement fromDefinition(String localName, DSSNamespace namespace) {
+
+		return new DSSElement() {
+
+			private static final long serialVersionUID = 70850116359044197L;
+
+			@Override
+			public String getTagName() {
+				return localName;
+			}
+
+			@Override
+			public DSSNamespace getNamespace() {
+				return namespace;
+			}
+
+			@Override
+			public String getURI() {
+				return namespace != null ? namespace.getUri() : null;
+			}
+
+			@Override
+			public boolean isSameTagName(String value) {
+				return localName.equals(value);
+			}
+
+		};
+
+	}
+
 }

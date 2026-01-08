@@ -132,7 +132,6 @@ public class CounterSignatureBuilder extends ExtensionBuilder {
 			reference.setTransforms(Collections.singletonList(transform));
 			
 		} else {
-			// TODO : build an XPath ???
 			throw new IllegalInputException(String.format(
 					"The signature with Id '%s' does not have an Id for a SignatureValue element! " +
 							"Unable to counter sign.", parameters.getSignatureIdToCounterSign()));

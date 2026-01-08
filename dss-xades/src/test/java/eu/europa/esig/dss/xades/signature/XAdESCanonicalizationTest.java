@@ -32,7 +32,9 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
 import eu.europa.esig.dss.xml.common.definition.AbstractPath;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
+import eu.europa.esig.dss.xml.common.xpath.XPathQueryBuilder;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
 import org.apache.xml.security.c14n.Canonicalizer;
@@ -145,7 +147,7 @@ class XAdESCanonicalizationTest extends AbstractXAdESTestSignature {
 
 			// ------------------------------------ SIGNATURE VERIFICATION
 			// -----------------------------------------------------
-			String signatureValueBase64 = DomUtils.getValue(doc, "//ds:Signature/ds:SignatureValue");
+			String signatureValueBase64 = DomUtils.getValue(doc, AbstractPath.all(XMLDSigElement.SIGNATURE, XMLDSigElement.SIGNATURE_VALUE));
 			assertNotNull(signatureValueBase64);
 
 			byte[] canonicalized = XMLCanonicalizer.createInstance(canonicalizationSignedInfo).canonicalize(signedInfo);
@@ -280,7 +282,10 @@ class XAdESCanonicalizationTest extends AbstractXAdESTestSignature {
 	}
 
 	private NodeList getReferenceTransforms(Document doc, String uri) {
-		NodeList referenceTransform = DomUtils.getNodeList(doc, "//ds:Reference[@URI = '" + uri + "']/ds:Transforms/ds:Transform");
+		Node referenceNode = DomUtils.getNode(doc, XPathQueryBuilder.all().element(XMLDSigElement.REFERENCE).attribute(XMLDSigAttribute.URI, uri).build());
+		assertNotNull(referenceNode);
+
+		NodeList referenceTransform = DomUtils.getNodeList(referenceNode, XPathQueryBuilder.allFromCurrentPosition().elements(XMLDSigElement.TRANSFORMS, XMLDSigElement.TRANSFORM).build());
 		assertNotNull(referenceTransform);
 		return referenceTransform;
 	}
@@ -293,7 +298,10 @@ class XAdESCanonicalizationTest extends AbstractXAdESTestSignature {
 	}
 
 	private String getReferenceDigest(Document doc, String uri) {
-		Node referenceDigest = DomUtils.getNode(doc, "//ds:Reference[@URI = '" + uri + "']/ds:DigestValue");
+		Node referenceNode = DomUtils.getNode(doc, XPathQueryBuilder.all().element(XMLDSigElement.REFERENCE).attribute(XMLDSigAttribute.URI, uri).build());
+		assertNotNull(referenceNode);
+
+		Node referenceDigest = DomUtils.getNode(referenceNode, XPathQueryBuilder.allFromCurrentPosition().elements(XMLDSigElement.DIGEST_VALUE).build());
 		assertNotNull(referenceDigest);
 		return referenceDigest.getTextContent();
 	}

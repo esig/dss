@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.xades.signature;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.SigningOperation;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -31,7 +32,6 @@ import eu.europa.esig.dss.model.TimestampParameters;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.signature.SignatureExtension;
 import eu.europa.esig.dss.signature.SignatureRequirementsChecker;
-import eu.europa.esig.dss.enumerations.SigningOperation;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
@@ -60,6 +60,7 @@ import eu.europa.esig.dss.xades.validation.XMLDocumentAnalyzer;
 import eu.europa.esig.dss.xml.common.definition.DSSElement;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
+import eu.europa.esig.dss.xml.common.xpath.XPathQueryBuilder;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -482,12 +483,15 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	}
 
 	private Element getLastElementIfPresent(DSSElement... xadesElements) {
-		final NodeList nodeList = DomUtils.getNodeList(xadesSignature.getSignatureElement(), xadesPath.getUnsignedSignaturePropertiesPath() + "/*");
-		if (nodeList.getLength() > 0) {
-			final Element unsignedSignatureElement = (Element) nodeList.item(nodeList.getLength() - 1);
-			final String nodeName = unsignedSignatureElement.getLocalName();
-			if (Arrays.stream(xadesElements).anyMatch(e -> e.isSameTagName(nodeName))) {
-				return unsignedSignatureElement;
+		final Node unsignedSignatureProperties = DomUtils.getNode(xadesSignature.getSignatureElement(), xadesPath.getUnsignedSignaturePropertiesPath());
+		if (unsignedSignatureProperties != null) {
+			NodeList childNodes = DomUtils.getNodeList(unsignedSignatureProperties, XPathQueryBuilder.fromCurrentPosition().build());
+			if (childNodes.getLength() > 0) {
+				final Element unsignedSignatureElement = (Element) childNodes.item(childNodes.getLength() - 1);
+				final String nodeName = unsignedSignatureElement.getLocalName();
+				if (Arrays.stream(xadesElements).anyMatch(e -> e.isSameTagName(nodeName))) {
+					return unsignedSignatureElement;
+				}
 			}
 		}
 		return null;

@@ -67,9 +67,9 @@ class XAdESLevelBEnvelopedWithXPathPlacementAfterRootNodeTest extends AbstractXA
 	protected void onDocumentSigned(byte[] byteArray) {
 		super.onDocumentSigned(byteArray);
 		Document dom = DomUtils.buildDOM(byteArray);
-		Element referencedElement = DomUtils.getElement(dom.getDocumentElement(), XPATH);
-		assertNotNull(referencedElement.getLastChild());
-		assertEquals("ds:Signature", referencedElement.getLastChild().getNodeName());
+		Element rootElement = dom.getDocumentElement();
+		assertNotNull(rootElement.getLastChild());
+		assertEquals("ds:Signature", rootElement.getLastChild().getNodeName());
 	}
 
 	@Override

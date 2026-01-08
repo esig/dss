@@ -22,7 +22,10 @@ package eu.europa.esig.dss.xml.utils;
 
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.xml.common.definition.DSSElement;
 import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
+import eu.europa.esig.dss.xml.common.xpath.XPathQuery;
+import eu.europa.esig.dss.xml.common.xpath.XPathQueryBuilder;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -54,13 +57,15 @@ class DomUtilsTest {
 	void registerNamespaceTest() {
 		Document document = DomUtils.buildDOM(XML_WITH_NAMESPACE);
 
-		final String xPathExpression = "./m:file-entry";
-		Exception exception = assertThrows(DSSException.class, () -> DomUtils.getElement(document.getDocumentElement(), xPathExpression));
+		DSSNamespace manifestNamespace = new DSSNamespace("urn:oasis:names:tc:opendocument:xmlns:manifest:1.0", "m");
+		final XPathQuery xPathQuery = XPathQueryBuilder.fromCurrentPosition()
+				.element(DSSElement.fromDefinition("file-entry", manifestNamespace)).build();
+		Exception exception = assertThrows(DSSException.class, () -> DomUtils.getElement(document.getDocumentElement(), xPathQuery));
 		assertTrue(exception.getMessage().contains("Unable to create an XPath expression"));
 
-		DomUtils.registerNamespace(new DSSNamespace("urn:oasis:names:tc:opendocument:xmlns:manifest:1.0", "m"));
+		DomUtils.registerNamespace(manifestNamespace);
 
-		Element fileEntry = DomUtils.getElement(document.getDocumentElement(), "./m:file-entry");
+		Element fileEntry = DomUtils.getElement(document.getDocumentElement(), xPathQuery);
 		assertNotNull(fileEntry);
 
 		exception = assertThrows(UnsupportedOperationException.class,

@@ -25,6 +25,7 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlQualifier;
+import eu.europa.esig.dss.enumerations.Assert;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.MRAEquivalenceContext;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -63,12 +64,16 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.definition.XAdESNamespace;
+import eu.europa.esig.dss.xades.definition.tsl.TrustedListElement;
+import eu.europa.esig.dss.xades.definition.tsl.TrustedListPath;
+import eu.europa.esig.dss.xades.definition.tsl.mra.MRAElement;
+import eu.europa.esig.dss.xades.definition.tsl.mra.MRAPath;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 import eu.europa.esig.dss.xades.tsl.TrustedListV5SignatureParametersBuilder;
 import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigNamespace;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
 import eu.europa.esig.dss.xml.utils.DomUtils;
-import eu.europa.esig.dss.enumerations.Assert;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
@@ -126,51 +131,53 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
 
     protected DSSDocument createZZTL() {
         Document tlDocument = DomUtils.buildDOM(getOriginalTL());
-        Element lotlCertElement = DomUtils.getElement(tlDocument.getDocumentElement(),
-                "./tl:SchemeInformation/tl:PointersToOtherTSL/tl:OtherTSLPointer/tl:ServiceDigitalIdentities/tl:ServiceDigitalIdentity/tl:DigitalId/tl:X509Certificate");
+
+        Element otherTSLPointerElement = DomUtils.getElement(tlDocument.getDocumentElement(), TrustedListPath.OTHER_TSL_POINTER_PATH);
+        assertNotNull(otherTSLPointerElement);
+
+        Element lotlCertElement = DomUtils.getElement(otherTSLPointerElement, TrustedListPath.X509_CERTIFICATE_PATH);
+        assertNotNull(lotlCertElement);
         Text firstChild = (Text) lotlCertElement.getFirstChild();
         firstChild.setNodeValue(Utils.toBase64(getCertificate(SIGNER_LOTL_NAME).getEncoded()));
 
-        Element tspServiceSI = DomUtils.getElement(tlDocument.getDocumentElement(),
-                "./tl:TrustServiceProviderList/tl:TrustServiceProvider/tl:TSPServices/tl:TSPService/tl:ServiceInformation");
-        Element originalTspServiceSDI = DomUtils.getElement(tspServiceSI,"./tl:ServiceDigitalIdentity");
+        Element tspServiceSI = DomUtils.getElement(tlDocument.getDocumentElement(), TrustedListPath.TSP_SERVICE_INFORMATION_PATH);
+        Element originalTspServiceSDI = DomUtils.getElement(tspServiceSI,TrustedListPath.SERVICE_DIGITAL_IDENTITY_PATH);
 
-        Element newTspServiceSDI = tlDocument.createElementNS(tspServiceSI.getNamespaceURI(), "ServiceDigitalIdentity");
+        Element newTspServiceSDI = tlDocument.createElementNS(tspServiceSI.getNamespaceURI(), TrustedListElement.SERVICE_DIGITAL_IDENTITIES.getTagName());
         tspServiceSI.replaceChild(newTspServiceSDI, originalTspServiceSDI);
 
 
         CertificateToken rootCA = getCertificate(TRUSTED_ROOT_CA_NAME);
 
-        Element digitalId = tlDocument.createElementNS(tspServiceSI.getNamespaceURI(), "DigitalId");
+        Element digitalId = tlDocument.createElementNS(tspServiceSI.getNamespaceURI(), TrustedListElement.DIGITAL_ID.getTagName());
         newTspServiceSDI.appendChild(digitalId);
 
-        Element x509Certificate = tlDocument.createElementNS(tspServiceSI.getNamespaceURI(), "X509Certificate");
+        Element x509Certificate = tlDocument.createElementNS(tspServiceSI.getNamespaceURI(), TrustedListElement.X509_CERTIFICATE.getTagName());
         digitalId.appendChild(x509Certificate);
 
         Text valueNode = tlDocument.createTextNode(Utils.toBase64(rootCA.getEncoded()));
         x509Certificate.appendChild(valueNode);
 
-        digitalId = tlDocument.createElementNS(tspServiceSI.getNamespaceURI(), "DigitalId");
+        digitalId = tlDocument.createElementNS(tspServiceSI.getNamespaceURI(), TrustedListElement.DIGITAL_ID.getTagName());
         newTspServiceSDI.appendChild(digitalId);
 
-        Element x509SubjectName = tlDocument.createElementNS(tspServiceSI.getNamespaceURI(), "X509SubjectName");
+        Element x509SubjectName = tlDocument.createElementNS(tspServiceSI.getNamespaceURI(), TrustedListElement.X509_SUBJECT_NAME.getTagName());
         digitalId.appendChild(x509SubjectName);
 
         valueNode = tlDocument.createTextNode(DSSASN1Utils.getSubjectCommonName(rootCA));
         x509SubjectName.appendChild(valueNode);
 
-        digitalId = tlDocument.createElementNS(tspServiceSI.getNamespaceURI(), "DigitalId");
+        digitalId = tlDocument.createElementNS(tspServiceSI.getNamespaceURI(), TrustedListElement.DIGITAL_ID.getTagName());
         newTspServiceSDI.appendChild(digitalId);
 
-        Element x509SKI = tlDocument.createElementNS(tspServiceSI.getNamespaceURI(), "X509SKI");
+        Element x509SKI = tlDocument.createElementNS(tspServiceSI.getNamespaceURI(), TrustedListElement.X509_SKI.getTagName());
         digitalId.appendChild(x509SKI);
 
         valueNode = tlDocument.createTextNode(Utils.toBase64(CertificateExtensionsUtils.getSubjectKeyIdentifier(rootCA).getSki()));
         x509SKI.appendChild(valueNode);
 
 
-        Element signature = DomUtils.getElement(tlDocument.getDocumentElement(),
-                "//ds:Signature");
+        Element signature = DomUtils.getElement(tlDocument.getDocumentElement(), XMLDSigPath.SIGNATURE_PATH);
         tlDocument.getDocumentElement().removeChild(signature);
 
 
@@ -187,24 +194,21 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
     protected DSSDocument createZZLOTL() {
         Document lotlDocument = DomUtils.buildDOM(getOriginalLOTL());
 
-        NodeList tslPointers = DomUtils.getNodeList(lotlDocument.getDocumentElement(), "./tl:SchemeInformation/tl:PointersToOtherTSL/tl:OtherTSLPointer");
+        NodeList tslPointers = DomUtils.getNodeList(lotlDocument.getDocumentElement(), TrustedListPath.OTHER_TSL_POINTER_PATH);
         assertEquals(44, tslPointers.getLength());
 
         Element zzTslPointer = (Element) tslPointers.item(43);
 
-        Element tlCertElement = DomUtils.getElement(zzTslPointer,
-                "./tl:ServiceDigitalIdentities/tl:ServiceDigitalIdentity/tl:DigitalId/tl:X509Certificate");
+        Element tlCertElement = DomUtils.getElement(zzTslPointer, TrustedListPath.X509_CERTIFICATE_PATH);
         Text firstChild = (Text) tlCertElement.getFirstChild();
         firstChild.setNodeValue(Utils.toBase64(getCertificate(SIGNER_ZZ_TL_NAME).getEncoded()));
 
 
-        Element mraInformation = DomUtils.getElement(zzTslPointer,
-                "//mra:MutualRecognitionAgreementInformation");
+        Element mraInformation = DomUtils.getElement(zzTslPointer, MRAPath.MUTUAL_RECOGNITION_AGREEMENT_INFORMATION_PATH);
         configureMRAInformationElement(lotlDocument, mraInformation);
 
 
-        Element signature = DomUtils.getElement(lotlDocument.getDocumentElement(),
-                "//ds:Signature");
+        Element signature = DomUtils.getElement(lotlDocument.getDocumentElement(), XMLDSigPath.SIGNATURE_PATH);
         lotlDocument.getDocumentElement().removeChild(signature);
 
 
@@ -230,65 +234,58 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
     protected void configureMRAInformationElement(Document document, Element mraInformation) {
         String trustServiceLegalIdentifier = getTrustServiceLegalIdentifier();
         if (Utils.isStringNotEmpty(trustServiceLegalIdentifier)) {
-            Element trustServiceLegalIdentifierElement = DomUtils.getElement(mraInformation,
-                    "./mra:TrustServiceEquivalenceInformation/mra:TrustServiceLegalIdentifier");
+            Element trustServiceLegalIdentifierElement = DomUtils.getElement(mraInformation, MRAPath.TRUST_SERVICE_LEGAL_IDENTIFIER_PATH);
             setText(trustServiceLegalIdentifierElement, trustServiceLegalIdentifier);
         }
 
-        Element trustServiceTSLTypeListPointedParty = DomUtils.getElement(mraInformation,
-                "./mra:TrustServiceEquivalenceInformation/mra:TrustServiceTSLTypeEquivalenceList/mra:TrustServiceTSLTypeListPointedParty");
+        Element trustServiceTSLTypeListPointedParty = DomUtils.getElement(mraInformation, MRAPath.TRUST_SERVICE_TSL_TYPE_LIST_POINTED_PARTY_PATH);
 
         String serviceTypeIdentifierPointedParty = getTrustServiceTSLTypeListPointedPartyServiceTypeIdentifier();
         if (Utils.isStringNotEmpty(serviceTypeIdentifierPointedParty)) {
-            Element serviceTypeIdentifierElement = DomUtils.getElement(trustServiceTSLTypeListPointedParty,
-                    "./mra:TrustServiceTSLType/tl:ServiceTypeIdentifier");
+            Element serviceTypeIdentifierElement = DomUtils.getElement(trustServiceTSLTypeListPointedParty, MRAPath.SERVICE_TYPE_IDENTIFIER_PATH);
             setText(serviceTypeIdentifierElement, serviceTypeIdentifierPointedParty);
         }
 
         String asiPointedParty = getTrustServiceTSLTypeListPointedPartyAdditionalServiceInformation();
         if (Utils.isStringNotEmpty(asiPointedParty)) {
-            Element trustServiceTSLType = DomUtils.getElement(trustServiceTSLTypeListPointedParty,
-                    "./mra:TrustServiceTSLType");
-            NodeList asiList = DomUtils.getNodeList(trustServiceTSLType, "./tl:AdditionalServiceInformation");
+            Element trustServiceTSLType = DomUtils.getElement(trustServiceTSLTypeListPointedParty, MRAPath.TRUST_SERVICE_TSL_TYPE_PATH);
+            NodeList asiList = DomUtils.getNodeList(trustServiceTSLType, TrustedListPath.ADDITIONAL_SERVICE_INFORMATION_PATH);
             if (asiList != null && asiList.getLength() > 0) {
                 for (int i = 0; i < asiList.getLength(); i++) {
                     trustServiceTSLType.removeChild(asiList.item(i));
                 }
             }
-            Element newAsiElement = document.createElementNS(TL_NAMESPACE.getUri(), "AdditionalServiceInformation");
+            Element newAsiElement = document.createElementNS(TL_NAMESPACE.getUri(), TrustedListElement.ADDITIONAL_INFORMATION.getTagName());
             trustServiceTSLType.appendChild(newAsiElement);
 
-            Element uriElement = document.createElementNS(TL_NAMESPACE.getUri(), "URI");
+            Element uriElement = document.createElementNS(TL_NAMESPACE.getUri(), TrustedListElement.URI.getTagName());
             newAsiElement.appendChild(uriElement);
 
             uriElement.setAttribute("xml:lang", "en");
             setText(uriElement, asiPointedParty);
         }
 
-        Element trustServiceTSLTypeListPointingParty = DomUtils.getElement(mraInformation,
-                "./mra:TrustServiceEquivalenceInformation/mra:TrustServiceTSLTypeEquivalenceList/mra:TrustServiceTSLTypeListPointingParty");
+        Element trustServiceTSLTypeListPointingParty = DomUtils.getElement(mraInformation, MRAPath.TRUST_SERVICE_TSL_TYPE_LIST_POINTING_PARTY_PATH);
 
         String serviceTypeIdentifierPointingParty = getTrustServiceTSLTypeListPointingPartyServiceTypeIdentifier();
         if (Utils.isStringNotEmpty(serviceTypeIdentifierPointingParty)) {
-            Element serviceTypeIdentifierElement = DomUtils.getElement(trustServiceTSLTypeListPointingParty,
-                    "./mra:TrustServiceTSLType/tl:ServiceTypeIdentifier");
+            Element serviceTypeIdentifierElement = DomUtils.getElement(trustServiceTSLTypeListPointingParty, MRAPath.SERVICE_TYPE_IDENTIFIER_PATH);
             setText(serviceTypeIdentifierElement, serviceTypeIdentifierPointingParty);
         }
 
         String asiPointingParty = getTrustServiceTSLTypeListPointingPartyAdditionalServiceInformation();
         if (Utils.isStringNotEmpty(asiPointingParty)) {
-            Element trustServiceTSLType = DomUtils.getElement(trustServiceTSLTypeListPointingParty,
-                    "./mra:TrustServiceTSLType");
-            NodeList asiList = DomUtils.getNodeList(trustServiceTSLType, "./tl:AdditionalServiceInformation");
+            Element trustServiceTSLType = DomUtils.getElement(trustServiceTSLTypeListPointingParty, MRAPath.TRUST_SERVICE_TSL_TYPE_PATH);
+            NodeList asiList = DomUtils.getNodeList(trustServiceTSLType, TrustedListPath.ADDITIONAL_SERVICE_INFORMATION_PATH);
             if (asiList != null && asiList.getLength() > 0) {
                 for (int i = 0; i < asiList.getLength(); i++) {
                     trustServiceTSLType.removeChild(asiList.item(i));
                 }
             }
-            Element newAsiElement = document.createElementNS(TL_NAMESPACE.getUri(), "AdditionalServiceInformation");
+            Element newAsiElement = document.createElementNS(TL_NAMESPACE.getUri(), TrustedListElement.ADDITIONAL_INFORMATION.getTagName());
             trustServiceTSLType.appendChild(newAsiElement);
 
-            Element uriElement = document.createElementNS(TL_NAMESPACE.getUri(), "URI");
+            Element uriElement = document.createElementNS(TL_NAMESPACE.getUri(), TrustedListElement.URI.getTagName());
             newAsiElement.appendChild(uriElement);
 
             uriElement.setAttribute("xml:lang", "en");
@@ -297,44 +294,38 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
 
         String trustServiceEquivalenceStatus = getTrustServiceEquivalenceStatus();
         if (Utils.isStringNotEmpty(trustServiceEquivalenceStatus)) {
-            Element trustServiceEquivalenceStatusElement = DomUtils.getElement(mraInformation,
-                    "./mra:TrustServiceEquivalenceInformation/mra:TrustServiceEquivalenceStatus");
+            Element trustServiceEquivalenceStatusElement = DomUtils.getElement(mraInformation, MRAPath.TRUST_SERVICE_EQUIVALENCE_INFORMATION_STATUS_PATH);
             setText(trustServiceEquivalenceStatusElement, trustServiceEquivalenceStatus);
         }
 
         Date trustServiceEquivalenceStatusStartingTime = getTrustServiceEquivalenceStatusStartingTime();
         if (trustServiceEquivalenceStatusStartingTime != null) {
             String timeString = DSSUtils.formatDateToRFC(trustServiceEquivalenceStatusStartingTime);
-            Element trustServiceEquivalenceStatusStartingTimeElement = DomUtils.getElement(mraInformation,
-                    "./mra:TrustServiceEquivalenceInformation/mra:TrustServiceEquivalenceStatusStartingTime");
+            Element trustServiceEquivalenceStatusStartingTimeElement = DomUtils.getElement(mraInformation, MRAPath.TRUST_SERVICE_EQUIVALENCE_INFORMATION_STATUS_STARTING_TIME_PATH);
             setText(trustServiceEquivalenceStatusStartingTimeElement, timeString);
         }
 
         String validEquivalencePointedParty = getTrustServiceTSLTypeListPointedPartyTrustServiceTSLStatusValidEquivalence();
         if (Utils.isStringNotEmpty(validEquivalencePointedParty)) {
-            Element trustServiceTSLStatusListPointedParty = DomUtils.getElement(mraInformation,
-                    "./mra:TrustServiceEquivalenceInformation/mra:TrustServiceTSLStatusEquivalenceList/mra:TrustServiceTSLStatusValidEquivalence/mra:TrustServiceTSLStatusListPointedParty/tl:ServiceStatus");
+            Element trustServiceTSLStatusListPointedParty = DomUtils.getElement(mraInformation, MRAPath.TRUST_SERVICE_TSL_STATUS_VALID_EQUIVALENCE_LIST_POINTED_PARTY_SERVICE_STATUS_PATH);
             setText(trustServiceTSLStatusListPointedParty, validEquivalencePointedParty);
         }
 
         String validEquivalencePointingParty = getTrustServiceTSLTypeListPointingPartyTrustServiceTSLStatusValidEquivalence();
         if (Utils.isStringNotEmpty(validEquivalencePointingParty)) {
-            Element trustServiceTSLStatusListPointingParty = DomUtils.getElement(mraInformation,
-                    "./mra:TrustServiceEquivalenceInformation/mra:TrustServiceTSLStatusEquivalenceList/mra:TrustServiceTSLStatusValidEquivalence/mra:TrustServiceTSLStatusListPointingParty/tl:ServiceStatus");
+            Element trustServiceTSLStatusListPointingParty = DomUtils.getElement(mraInformation, MRAPath.TRUST_SERVICE_TSL_STATUS_VALID_EQUIVALENCE_LIST_POINTING_PARTY_SERVICE_STATUS_PATH);
             setText(trustServiceTSLStatusListPointingParty, validEquivalencePointingParty);
         }
 
         String invalidEquivalencePointedParty = getTrustServiceTSLTypeListPointedPartyTrustServiceTSLStatusInvalidEquivalence();
         if (Utils.isStringNotEmpty(invalidEquivalencePointedParty)) {
-            Element trustServiceTSLStatusListPointedParty = DomUtils.getElement(mraInformation,
-                    "./mra:TrustServiceEquivalenceInformation/mra:TrustServiceTSLStatusEquivalenceList/mra:TrustServiceTSLStatusInvalidEquivalence/mra:TrustServiceTSLStatusListPointedParty/tl:ServiceStatus");
+            Element trustServiceTSLStatusListPointedParty = DomUtils.getElement(mraInformation, MRAPath.TRUST_SERVICE_TSL_STATUS_INVALID_EQUIVALENCE_LIST_POINTED_PARTY_SERVICE_STATUS_PATH);
             setText(trustServiceTSLStatusListPointedParty, invalidEquivalencePointedParty);
         }
 
         String invalidEquivalencePointingParty = getTrustServiceTSLTypeListPointingPartyTrustServiceTSLStatusInvalidEquivalence();
         if (Utils.isStringNotEmpty(invalidEquivalencePointingParty)) {
-            Element trustServiceTSLStatusListPointingParty = DomUtils.getElement(mraInformation,
-                    "./mra:TrustServiceEquivalenceInformation/mra:TrustServiceTSLStatusEquivalenceList/mra:TrustServiceTSLStatusInvalidEquivalence/mra:TrustServiceTSLStatusListPointingParty/tl:ServiceStatus");
+            Element trustServiceTSLStatusListPointingParty = DomUtils.getElement(mraInformation, MRAPath.TRUST_SERVICE_TSL_STATUS_INVALID_EQUIVALENCE_LIST_POINTING_PARTY_SERVICE_STATUS_PATH);
             setText(trustServiceTSLStatusListPointingParty, invalidEquivalencePointingParty);
         }
 
@@ -342,12 +333,10 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
         Element qcTypeCertificateContentReferenceEquivalence = null;
         Element qcQSCDCertificateContentReferenceEquivalence = null;
 
-        NodeList certificateContentReferencesEquivalenceList = DomUtils.getNodeList(mraInformation,
-                "./mra:TrustServiceEquivalenceInformation/mra:CertificateContentReferencesEquivalenceList/mra:CertificateContentReferenceEquivalence");
+        NodeList certificateContentReferencesEquivalenceList = DomUtils.getNodeList(mraInformation, MRAPath.CERTIFICATE_CONTENT_REFERENCES_EQUIVALENCE_PATH);
         for (int i = 0; i < certificateContentReferencesEquivalenceList.getLength(); i++) {
             Element certificateContentReferencesEquivalence = (Element) certificateContentReferencesEquivalenceList.item(i);
-            Element certificateContentReferenceEquivalenceContext = DomUtils.getElement(certificateContentReferencesEquivalence,
-                    "./mra:CertificateContentReferenceEquivalenceContext");
+            Element certificateContentReferenceEquivalenceContext = DomUtils.getElement(certificateContentReferencesEquivalence, MRAPath.CERTIFICATE_CONTENT_REFERENCE_EQUIVALENCE_CONTEXT_PATH);
             if (certificateContentReferenceEquivalenceContext != null) {
                 Text textValue = (Text) certificateContentReferenceEquivalenceContext.getFirstChild();
                 if (MRAEquivalenceContext.QC_COMPLIANCE.getUri().equals(textValue.getWholeText())) {
@@ -364,8 +353,8 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
         assertNotNull(qcTypeCertificateContentReferenceEquivalence);
         assertNotNull(qcQSCDCertificateContentReferenceEquivalence);
 
-        Element qcComplianceCertificateContentDeclarationPointedPartyElement = DomUtils.getElement(qcComplianceCertificateContentReferenceEquivalence,
-                "./mra:CertificateContentDeclarationPointedParty");
+        Element qcComplianceCertificateContentDeclarationPointedPartyElement = DomUtils.getElement(
+                qcComplianceCertificateContentReferenceEquivalence, MRAPath.CERTIFICATE_CONTENT_DECLARATION_POINTED_PARTY_PATH);
 
         Assert qcCompliancePointedPartyAssertStatus = getCertificateContentDeclarationPointedPartyQcComplianceAssertStatus();
         if (qcCompliancePointedPartyAssertStatus != null) {
@@ -378,8 +367,8 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
             setCondition(document, qcComplianceCertificateContentDeclarationPointedPartyElement, qcCompliancePointedParty);
         }
 
-        Element qcComplianceCertificateContentDeclarationPointingPartyElement = DomUtils.getElement(qcComplianceCertificateContentReferenceEquivalence,
-                "./mra:CertificateContentDeclarationPointingParty");
+        Element qcComplianceCertificateContentDeclarationPointingPartyElement = DomUtils.getElement(
+                qcComplianceCertificateContentReferenceEquivalence, MRAPath.CERTIFICATE_CONTENT_DECLARATION_POINTING_PARTY_PATH);
 
         Assert qcCompliancePointingPartyAssertStatus = getCertificateContentDeclarationPointingPartyQcComplianceAssertStatus();
         if (qcCompliancePointingPartyAssertStatus != null) {
@@ -392,8 +381,8 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
             setCondition(document, qcComplianceCertificateContentDeclarationPointingPartyElement, qcCompliancePointingParty);
         }
 
-        Element qcTypeCertificateContentDeclarationPointedPartyElement = DomUtils.getElement(qcTypeCertificateContentReferenceEquivalence,
-                "./mra:CertificateContentDeclarationPointedParty");
+        Element qcTypeCertificateContentDeclarationPointedPartyElement = DomUtils.getElement(
+                qcTypeCertificateContentReferenceEquivalence, MRAPath.CERTIFICATE_CONTENT_DECLARATION_POINTED_PARTY_PATH);
 
         Assert qcTypePointedPartyAssertStatus = getCertificateContentDeclarationPointedPartyQcTypeAssertStatus();
         if (qcTypePointedPartyAssertStatus != null) {
@@ -406,8 +395,8 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
             setCondition(document, qcTypeCertificateContentDeclarationPointedPartyElement, qcTypePointedParty);
         }
 
-        Element qcTypeCertificateContentDeclarationPointingPartyElement = DomUtils.getElement(qcTypeCertificateContentReferenceEquivalence,
-                "./mra:CertificateContentDeclarationPointingParty");
+        Element qcTypeCertificateContentDeclarationPointingPartyElement = DomUtils.getElement(
+                qcTypeCertificateContentReferenceEquivalence, MRAPath.CERTIFICATE_CONTENT_DECLARATION_POINTING_PARTY_PATH);
 
         Assert qcTypePointingPartyAssertStatus = getCertificateContentDeclarationPointingPartyQcTypeAssertStatus();
         if (qcTypePointingPartyAssertStatus != null) {
@@ -420,8 +409,8 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
             setCondition(document, qcTypeCertificateContentDeclarationPointingPartyElement, qcTypePointingParty);
         }
 
-        Element qcQSCDCertificateContentDeclarationPointedPartyElement = DomUtils.getElement(qcQSCDCertificateContentReferenceEquivalence,
-                "./mra:CertificateContentDeclarationPointedParty");
+        Element qcQSCDCertificateContentDeclarationPointedPartyElement = DomUtils.getElement(
+                qcQSCDCertificateContentReferenceEquivalence, MRAPath.CERTIFICATE_CONTENT_DECLARATION_POINTED_PARTY_PATH);
 
         Assert qcQSCDPointedPartyAssertStatus = getCertificateContentDeclarationPointedPartyQcQSCDAssertStatus();
         if (qcQSCDPointedPartyAssertStatus != null) {
@@ -434,8 +423,8 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
             setCondition(document, qcQSCDCertificateContentDeclarationPointedPartyElement, qcQSCDPointedParty);
         }
 
-        Element qcQSCDCertificateContentDeclarationPointingPartyElement = DomUtils.getElement(qcQSCDCertificateContentReferenceEquivalence,
-                "./mra:CertificateContentDeclarationPointingParty");
+        Element qcQSCDCertificateContentDeclarationPointingPartyElement = DomUtils.getElement(
+                qcQSCDCertificateContentReferenceEquivalence, MRAPath.CERTIFICATE_CONTENT_DECLARATION_POINTING_PARTY_PATH);
 
         Assert qcQSCDPointingPartyAssertStatus = getCertificateContentDeclarationPointingPartyQcQSCDAssertStatus();
         if (qcQSCDPointingPartyAssertStatus != null) {
@@ -450,42 +439,38 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
 
         Map<String, String> qualifierEquivalenceMap = getQualifierEquivalenceMap();
         if (qualifierEquivalenceMap != null) {
-            Element qualifierEquivalenceListElement = DomUtils.getElement(mraInformation,
-                    "./mra:TrustServiceEquivalenceInformation/mra:TrustServiceTSLQualificationExtensionEquivalenceList/mra:QualifierEquivalenceList");
+            Element qualifierEquivalenceListElement = DomUtils.getElement(mraInformation, MRAPath.QUALIFIER_EQUIVALENCE_LIST_PATH);
             if (Utils.isMapEmpty(qualifierEquivalenceMap)) {
                 removeElement(qualifierEquivalenceListElement);
             } else {
                 removeAllChildren(qualifierEquivalenceListElement);
                 for (Map.Entry<String, String> entry : qualifierEquivalenceMap.entrySet()) {
-                    Element qualifierEquivalenceElement = document.createElementNS(MRA_NAMESPACE.getUri(), "mra:QualifierEquivalence");
+                    Element qualifierEquivalenceElement = document.createElementNS(MRA_NAMESPACE.getUri(), MRAElement.QUALIFIER_EQUIVALENCE.getTagName());
                     qualifierEquivalenceListElement.appendChild(qualifierEquivalenceElement);
 
-                    Element qualifierPointingPartyElement = document.createElementNS(MRA_NAMESPACE.getUri(), "mra:QualifierPointingParty");
+                    Element qualifierPointingPartyElement = document.createElementNS(MRA_NAMESPACE.getUri(), MRAElement.QUALIFIER_POINTING_PARTY.getTagName());
                     qualifierEquivalenceElement.appendChild(qualifierPointingPartyElement);
                     qualifierPointingPartyElement.setAttribute("uri", entry.getValue());
 
-                    Element qualifierPointedPartyElement = document.createElementNS(MRA_NAMESPACE.getUri(), "mra:QualifierPointedParty");
+                    Element qualifierPointedPartyElement = document.createElementNS(MRA_NAMESPACE.getUri(),  MRAElement.QUALIFIER_POINTED_PARTY.getTagName());
                     qualifierEquivalenceElement.appendChild(qualifierPointedPartyElement);
                     qualifierPointedPartyElement.setAttribute("uri", entry.getKey());
                 }
             }
         }
 
-        Element trustServiceEquivalenceHistoryElement = DomUtils.getElement(mraInformation,
-                "./mra:TrustServiceEquivalenceInformation/mra:TrustServiceEquivalenceHistory/mra:TrustServiceEquivalenceHistoryInstance");
+        Element trustServiceEquivalenceHistoryElement = DomUtils.getElement(mraInformation, MRAPath.TRUST_SERVICE_EQUIVALENCE_HISTORY_INSTANCE_PATH);
         if (trustServiceEquivalenceHistoryElement != null) {
             String trustServiceEquivalenceHistoryStatus = getTrustServiceEquivalenceHistoryStatus();
             if (Utils.isStringNotEmpty(trustServiceEquivalenceHistoryStatus)) {
-                Element trustServiceEquivalenceStatusElement = DomUtils.getElement(trustServiceEquivalenceHistoryElement,
-                        "./mra:TrustServiceEquivalenceStatus");
+                Element trustServiceEquivalenceStatusElement = DomUtils.getElement(trustServiceEquivalenceHistoryElement, MRAPath.TRUST_SERVICE_EQUIVALENCE_STATUS_PATH);
                 setText(trustServiceEquivalenceStatusElement, trustServiceEquivalenceHistoryStatus);
             }
 
             Date trustServiceEquivalenceHistoryStatusStartingTime = getTrustServiceEquivalenceHistoryStatusStartingTime();
             if (trustServiceEquivalenceHistoryStatusStartingTime != null) {
                 String timeString = DSSUtils.formatDateToRFC(trustServiceEquivalenceHistoryStatusStartingTime);
-                Element trustServiceEquivalenceStatusStartingTimeElement = DomUtils.getElement(trustServiceEquivalenceHistoryElement,
-                        "./mra:TrustServiceEquivalenceStatusStartingTime");
+                Element trustServiceEquivalenceStatusStartingTimeElement = DomUtils.getElement(trustServiceEquivalenceHistoryElement, MRAPath.TRUST_SERVICE_EQUIVALENCE_STATUS_STARTING_TIME_PATH);
                 setText(trustServiceEquivalenceStatusStartingTimeElement, timeString);
             }
         }

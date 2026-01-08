@@ -94,8 +94,8 @@ class ExtendWithLastTimestampValidationDataTest extends PKIFactoryAccess {
 		Node unsignedSignatureProperties = DomUtils.getNode(signatureElement, xadesPaths.getUnsignedSignaturePropertiesPath());
 		Node lastArchveTST = unsignedSignatureProperties.getLastChild();
 		unsignedSignatureProperties.removeChild(lastArchveTST);
-		
-		NodeList timestampValidationData = DomUtils.getNodeList(extendedDocDom, "//xades141:TimeStampValidationData");
+
+		NodeList timestampValidationData = DomUtils.getNodeList(signatureElement, xadesPaths.getTimestampValidationDataPath());
 		assertEquals(2, timestampValidationData.getLength());
 		
 		DSSDocument ltaWithTSValidationData = DomUtils.createDssDocumentFromDomDocument(extendedDocDom, "LTAWithTimeStampValidationData.xml");
@@ -162,7 +162,11 @@ class ExtendWithLastTimestampValidationDataTest extends PKIFactoryAccess {
 		assertEquals(1, ocspCounter);
 
 		Document newExtendedDocDom = DomUtils.buildDOM(newExtendedDocument);
-		timestampValidationData = DomUtils.getNodeList(newExtendedDocDom, "//xades141:TimeStampValidationData");
+		signatures = DomUtils.getNodeList(newExtendedDocDom, XMLDSigPath.ALL_SIGNATURES_PATH);
+		assertEquals(1, signatures.getLength());
+		signatureElement = signatures.item(0);
+		assertNotNull(signatureElement);
+		timestampValidationData = DomUtils.getNodeList(signatureElement, xadesPaths.getTimestampValidationDataPath());
 		assertEquals(2, timestampValidationData.getLength());
 		
 	}

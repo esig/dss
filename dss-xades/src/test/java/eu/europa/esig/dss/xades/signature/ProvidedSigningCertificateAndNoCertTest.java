@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -36,12 +35,11 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
 import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -75,8 +73,7 @@ class ProvidedSigningCertificateAndNoCertTest extends AbstractXAdESTestSignature
 		Document dom = DomUtils.buildDOM(signedDoc);
 		try {
 			Element root = dom.getDocumentElement();
-			XPathExpression xpath = DomUtils.createXPathExpression(XMLDSigPath.KEY_INFO_PATH);
-			Element keyInfoTag = (Element) xpath.evaluate(root, XPathConstants.NODE);
+			Element keyInfoTag = DomUtils.getElement(root, XMLDSigPath.KEY_INFO_PATH);
 			keyInfoTag.getParentNode().removeChild(keyInfoTag);
 		} catch (Exception e) {
 			throw new DSSException("Unable to remove the KeyInfo element", e);

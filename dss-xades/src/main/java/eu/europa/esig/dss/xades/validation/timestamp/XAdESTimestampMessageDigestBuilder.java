@@ -40,6 +40,7 @@ import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import eu.europa.esig.dss.xades.validation.XAdESUnsignedSigProperties;
 import eu.europa.esig.dss.xml.common.definition.DSSElement;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
+import eu.europa.esig.dss.xml.common.xpath.XPathQuery;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
 import org.apache.xml.security.exceptions.XMLSecurityException;
@@ -363,7 +364,7 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 			// Canonicalization copy is used in order to allow XL/A levels creation
 			Element unsignedProperties = getUnsignedSignaturePropertiesCanonicalizationCopy();
 			if (unsignedProperties == null) {
-				throw new NullPointerException(xadesPaths.getUnsignedSignaturePropertiesPath());
+				throw new IllegalStateException("UnsignedSignatureProperties are not initialized!");
 			}
 
 			XAdESUnsignedSigProperties xadesUnsignedSigProperties = new XAdESUnsignedSigProperties(unsignedProperties, xadesPaths);
@@ -441,7 +442,7 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 			// Canonicalization copy is used in order to allow XL/A level creation
 			Element unsignedProperties = getUnsignedSignaturePropertiesCanonicalizationCopy();
 			if (unsignedProperties == null) {
-				throw new NullPointerException(xadesPaths.getUnsignedSignaturePropertiesPath());
+				throw new IllegalStateException("UnsignedSignatureProperties are not initialized!");
 			}
 
 			XAdESUnsignedSigProperties xadesUnsignedSigProperties = new XAdESUnsignedSigProperties(unsignedProperties, xadesPaths);
@@ -584,7 +585,7 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 		return null;
 	}
 
-	private void writeCanonicalizedValue(final DSSMessageDigestCalculator digestCalculator, final String xPathString,
+	private void writeCanonicalizedValue(final DSSMessageDigestCalculator digestCalculator, final XPathQuery xPathString,
 										 final String canonicalizationMethod) {
 		final Element element = DomUtils.getElement(signature, xPathString);
 		if (element != null) {
@@ -690,7 +691,7 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 			unsignedProperties = getUnsignedSignaturePropertiesDom();
 		}
 		if (unsignedProperties == null) {
-			throw new NullPointerException(xadesPaths.getUnsignedSignaturePropertiesPath());
+			throw new IllegalStateException("UnsignedSignatureProperties are not initialized!");
 		}
 
 		return new XAdESUnsignedSigProperties(unsignedProperties, xadesPaths);

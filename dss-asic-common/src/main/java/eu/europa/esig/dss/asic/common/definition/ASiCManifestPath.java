@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.asic.common.definition;
 
 import eu.europa.esig.dss.xml.common.definition.AbstractPath;
+import eu.europa.esig.dss.xml.common.xpath.XPathQuery;
 
 /**
  * Contains paths for an ASiC scheme
@@ -32,22 +33,22 @@ public class ASiCManifestPath extends AbstractPath {
 	/**
 	 * "./asic:ASiCManifest"
 	 */
-	public static final String ASIC_MANIFEST_PATH = fromCurrentPosition(ASiCManifestElement.ASIC_MANIFEST);
+	public static final XPathQuery ASIC_MANIFEST_PATH = fromCurrentPosition(ASiCManifestElement.ASIC_MANIFEST);
 
 	/**
 	 * "./asic:DataObjectReference"
 	 */
-	public static final String DATA_OBJECT_REFERENCE_PATH = fromCurrentPosition(ASiCManifestElement.DATA_OBJECT_REFERENCE);
+	public static final XPathQuery DATA_OBJECT_REFERENCE_PATH = fromCurrentPosition(ASiCManifestElement.DATA_OBJECT_REFERENCE);
 	
 	/**
 	 * "./asic:SigReference"
 	 */
-	public static final String SIG_REFERENCE_PATH = fromCurrentPosition(ASiCManifestElement.SIG_REFERENCE);
+	public static final XPathQuery SIG_REFERENCE_PATH = fromCurrentPosition(ASiCManifestElement.SIG_REFERENCE);
 
 	/**
 	 * "./asic:SigReference@URI"
 	 */
-	public static final String SIG_REFERENCE_URI_PATH = fromCurrentPosition(ASiCManifestElement.SIG_REFERENCE, ASiCManifestAttribute.URI);
+	public static final XPathQuery SIG_REFERENCE_URI_PATH = fromCurrentPosition(ASiCManifestElement.SIG_REFERENCE, ASiCManifestAttribute.URI);
 
 	/**
 	 * Default constructor

@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.xml.common.definition.xmldsig;
 
 import eu.europa.esig.dss.xml.common.definition.AbstractPath;
+import eu.europa.esig.dss.xml.common.xpath.XPathQuery;
 
 /**
  * Contains a list of "http://www.w3.org/2000/09/xmldsig#" xpaths
@@ -40,83 +41,83 @@ public class XMLDSigPath extends AbstractPath {
 	public static final String COUNTER_SIGNATURE_TYPE = "http://uri.etsi.org/01903#CountersignedSignature";
 
 	/** "./ds:Signature" */
-	public static final String SIGNATURE_PATH = fromCurrentPosition(XMLDSigElement.SIGNATURE);
+	public static final XPathQuery SIGNATURE_PATH = fromCurrentPosition(XMLDSigElement.SIGNATURE);
 
 	/** "//ds:Signature" */
-	public static final String ALL_SIGNATURES_PATH = all(XMLDSigElement.SIGNATURE);
+	public static final XPathQuery ALL_SIGNATURES_PATH = all(XMLDSigElement.SIGNATURE);
 
 	// ----------------------- From ds:Signature
 
 	/** "./ds:Object" */
-	public static final String OBJECT_PATH = fromCurrentPosition(XMLDSigElement.OBJECT);
+	public static final XPathQuery OBJECT_PATH = fromCurrentPosition(XMLDSigElement.OBJECT);
 
 	/** "./ds:Object/ds:Manifest" */
-	public static final String MANIFEST_PATH = fromCurrentPosition(XMLDSigElement.OBJECT, XMLDSigElement.MANIFEST);
+	public static final XPathQuery MANIFEST_PATH = fromCurrentPosition(XMLDSigElement.OBJECT, XMLDSigElement.MANIFEST);
 
 	/** "./ds:SignedInfo" */
-	public static final String SIGNED_INFO_PATH = fromCurrentPosition(XMLDSigElement.SIGNED_INFO);
+	public static final XPathQuery SIGNED_INFO_PATH = fromCurrentPosition(XMLDSigElement.SIGNED_INFO);
 
 	/** "./ds:SignedInfo/ds:CanonicalizationMethod" */
-	public static final String SIGNED_INFO_CANONICALIZATION_METHOD = fromCurrentPosition(XMLDSigElement.SIGNED_INFO, XMLDSigElement.CANONICALIZATION_METHOD);
+	public static final XPathQuery SIGNED_INFO_CANONICALIZATION_METHOD = fromCurrentPosition(XMLDSigElement.SIGNED_INFO, XMLDSigElement.CANONICALIZATION_METHOD);
 
 	/** "./ds:SignedInfo/ds:Reference" */
-	public static final String SIGNED_INFO_REFERENCE_PATH = fromCurrentPosition(XMLDSigElement.SIGNED_INFO, XMLDSigElement.REFERENCE);
+	public static final XPathQuery SIGNED_INFO_REFERENCE_PATH = fromCurrentPosition(XMLDSigElement.SIGNED_INFO, XMLDSigElement.REFERENCE);
 
 	/** "./ds:SignedInfo/ds:SignatureMethod" */
-	public static final String SIGNATURE_METHOD_PATH = fromCurrentPosition(XMLDSigElement.SIGNED_INFO, XMLDSigElement.SIGNATURE_METHOD);
+	public static final XPathQuery SIGNATURE_METHOD_PATH = fromCurrentPosition(XMLDSigElement.SIGNED_INFO, XMLDSigElement.SIGNATURE_METHOD);
 
 	/** "./ds:Reference" */
-	public static final String REFERENCE_PATH = fromCurrentPosition(XMLDSigElement.REFERENCE);
+	public static final XPathQuery REFERENCE_PATH = fromCurrentPosition(XMLDSigElement.REFERENCE);
 
 	/** "./ds:SignatureValue" */
-	public static final String SIGNATURE_VALUE_PATH = fromCurrentPosition(XMLDSigElement.SIGNATURE_VALUE);
+	public static final XPathQuery SIGNATURE_VALUE_PATH = fromCurrentPosition(XMLDSigElement.SIGNATURE_VALUE);
 
 	/** "./ds:SignatureValue/@Id" */
-	public static final String SIGNATURE_VALUE_ID_PATH = fromCurrentPosition(XMLDSigElement.SIGNATURE_VALUE, XMLDSigAttribute.ID);
+	public static final XPathQuery SIGNATURE_VALUE_ID_PATH = fromCurrentPosition(XMLDSigElement.SIGNATURE_VALUE, XMLDSigAttribute.ID);
 	
 	/** "//ds:SignatureValue" */
-	public static final String ALL_SIGNATURE_VALUES_PATH = all(XMLDSigElement.SIGNATURE_VALUE);
+	public static final XPathQuery ALL_SIGNATURE_VALUES_PATH = all(XMLDSigElement.SIGNATURE_VALUE);
 
 	/** "./ds:KeyInfo" */
-	public static final String KEY_INFO_PATH = fromCurrentPosition(XMLDSigElement.KEY_INFO);
+	public static final XPathQuery KEY_INFO_PATH = fromCurrentPosition(XMLDSigElement.KEY_INFO);
 
 	/** "./ds:KeyInfo/ds:X509Data" */
-	public static final String KEY_INFO_X509_DATA = fromCurrentPosition(XMLDSigElement.KEY_INFO, XMLDSigElement.X509_DATA);
+	public static final XPathQuery KEY_INFO_X509_DATA = fromCurrentPosition(XMLDSigElement.KEY_INFO, XMLDSigElement.X509_DATA);
 
 	/** "./ds:KeyInfo/ds:X509Data/ds:X509Certificate" */
-	public static final String KEY_INFO_X509_CERTIFICATE_PATH = fromCurrentPosition(XMLDSigElement.KEY_INFO, XMLDSigElement.X509_DATA,
+	public static final XPathQuery KEY_INFO_X509_CERTIFICATE_PATH = fromCurrentPosition(XMLDSigElement.KEY_INFO, XMLDSigElement.X509_DATA,
 			XMLDSigElement.X509_CERTIFICATE);
 
 	/** "./ds:Object/ds:SignatureProperties" */
-	public static final String SIGNATURE_PROPERTIES_PATH = fromCurrentPosition(XMLDSigElement.OBJECT, XMLDSigElement.SIGNATURE_PROPERTIES);
+	public static final XPathQuery SIGNATURE_PROPERTIES_PATH = fromCurrentPosition(XMLDSigElement.OBJECT, XMLDSigElement.SIGNATURE_PROPERTIES);
 
 	/** "./ds:Object/ds:SignatureProperties/ds:SignatureProperty" */
-	public static final String SIGNATURE_PROPERTY_PATH = fromCurrentPosition(XMLDSigElement.OBJECT, XMLDSigElement.SIGNATURE_PROPERTIES,
+	public static final XPathQuery SIGNATURE_PROPERTY_PATH = fromCurrentPosition(XMLDSigElement.OBJECT, XMLDSigElement.SIGNATURE_PROPERTIES,
 			XMLDSigElement.SIGNATURE_PROPERTY);
 
 	// ----------------------- For digest
 
 	/** "./ds:DigestMethod/@Algorithm" */
-	public static final String DIGEST_METHOD_ALGORITHM_PATH = fromCurrentPosition(XMLDSigElement.DIGEST_METHOD, XMLDSigAttribute.ALGORITHM);
+	public static final XPathQuery DIGEST_METHOD_ALGORITHM_PATH = fromCurrentPosition(XMLDSigElement.DIGEST_METHOD, XMLDSigAttribute.ALGORITHM);
 
 	/** "./ds:DigestValue" */
-	public static final String DIGEST_VALUE_PATH = fromCurrentPosition(XMLDSigElement.DIGEST_VALUE);
+	public static final XPathQuery DIGEST_VALUE_PATH = fromCurrentPosition(XMLDSigElement.DIGEST_VALUE);
 
 	// ------------------------- Canonicalization
 
 	/** "./ds:CanonicalizationMethod/@Algorithm" */
-	public static final String CANONICALIZATION_ALGORITHM_PATH = fromCurrentPosition(XMLDSigElement.CANONICALIZATION_METHOD, XMLDSigAttribute.ALGORITHM);
+	public static final XPathQuery CANONICALIZATION_ALGORITHM_PATH = fromCurrentPosition(XMLDSigElement.CANONICALIZATION_METHOD, XMLDSigAttribute.ALGORITHM);
 
 	// ------------------------- Transforms
 
 	/** "./ds:Transform" */
-	public static final String TRANSFORM_PATH = fromCurrentPosition(XMLDSigElement.TRANSFORM);
+	public static final XPathQuery TRANSFORM_PATH = fromCurrentPosition(XMLDSigElement.TRANSFORM);
 
 	/** "./ds:Transforms" */
-	public static final String TRANSFORMS_PATH = fromCurrentPosition(XMLDSigElement.TRANSFORMS);
+	public static final XPathQuery TRANSFORMS_PATH = fromCurrentPosition(XMLDSigElement.TRANSFORMS);
 
 	/** "./ds:Transforms/ds:Transform" */
-	public static final String TRANSFORMS_TRANSFORM_PATH = fromCurrentPosition(XMLDSigElement.TRANSFORMS, XMLDSigElement.TRANSFORM);
+	public static final XPathQuery TRANSFORMS_TRANSFORM_PATH = fromCurrentPosition(XMLDSigElement.TRANSFORMS, XMLDSigElement.TRANSFORM);
 
 	/**
 	 * Default constructor

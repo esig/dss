@@ -20,17 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import java.io.File;
-import java.util.Date;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
-import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -38,6 +27,19 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import eu.europa.esig.dss.xml.common.definition.DSSElement;
+import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
+import eu.europa.esig.dss.xml.common.xpath.XPathQueryBuilder;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import org.junit.jupiter.api.BeforeEach;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import java.io.File;
+import java.util.Date;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class XAdESLevelBEnvelopedWithXPathPlacementFirstChildTest extends AbstractXAdESTestSignature {
 
@@ -68,7 +70,8 @@ class XAdESLevelBEnvelopedWithXPathPlacementFirstChildTest extends AbstractXAdES
 	protected void onDocumentSigned(byte[] byteArray) {
 		super.onDocumentSigned(byteArray);
 		Document dom = DomUtils.buildDOM(byteArray);
-		Element referencedElement = DomUtils.getElement(dom.getDocumentElement(), XPATH);
+		Element referencedElement = DomUtils.getElement(dom.getDocumentElement(),
+				XPathQueryBuilder.all().element(DSSElement.fromDefinition("tr", new DSSNamespace("http://www.w3.org/TR/html4/", "h"))).build());
 		assertNotNull(referencedElement.getFirstChild());
 		assertEquals("ds:Signature", referencedElement.getFirstChild().getNodeName());
 	}

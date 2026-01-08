@@ -21,15 +21,20 @@
 package eu.europa.esig.dss.xades;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.model.DSSMessageDigest;
-import eu.europa.esig.dss.spi.DSSMessageDigestCalculator;
-import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.jaxb.common.XSDAbstractUtils;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.spi.DSSMessageDigestCalculator;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.xades.definition.XAdESNamespace;
+import eu.europa.esig.dss.xades.definition.XAdESPath;
+import eu.europa.esig.dss.xades.definition.xades111.XAdES111Path;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.DSSTransform;
 import eu.europa.esig.dss.xades.reference.DSSTransformOutput;
@@ -41,17 +46,14 @@ import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import eu.europa.esig.dss.xml.common.definition.AbstractPath;
 import eu.europa.esig.dss.xml.common.definition.DSSElement;
 import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
-import eu.europa.esig.dss.xml.utils.DomUtils;
-import eu.europa.esig.dss.xml.utils.SantuarioInitializer;
-import eu.europa.esig.dss.xades.definition.XAdESNamespace;
-import eu.europa.esig.dss.xades.definition.XAdESPath;
-import eu.europa.esig.dss.xades.definition.xades111.XAdES111Path;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigNamespace;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
+import eu.europa.esig.dss.xml.common.xpath.XPathQuery;
+import eu.europa.esig.dss.xml.common.xpath.XPathQueryBuilder;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.SantuarioInitializer;
 import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
 import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.exceptions.XMLSecurityException;
@@ -74,9 +76,6 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
 import javax.xml.transform.Source;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathExpressionException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -330,24 +329,24 @@ public final class DSSXMLUtils {
 	public static Node getIndentedNode(final Node documentDom, final Node xmlNode) {
 		NodeList signatures = DomUtils.getNodeList(documentDom, XMLDSigPath.ALL_SIGNATURES_PATH);
 
-		String pathAllFromCurrentPosition;
+		XPathQuery pathAllFromCurrentPosition;
 		// TODO handle by namespace
 		DSSElement element = XAdES132Element.fromTagName(xmlNode.getLocalName());
-		if (element != null) {
-			pathAllFromCurrentPosition = AbstractPath.allFromCurrentPosition(element);
-		} else {
-			pathAllFromCurrentPosition = ".//" + xmlNode.getNodeName();
+		if (element == null) {
+			element = DSSElement.fromDefinition(xmlNode.getLocalName(), new DSSNamespace(xmlNode.getNamespaceURI(), xmlNode.getPrefix()));
 		}
+		pathAllFromCurrentPosition = XPathQueryBuilder.allFromCurrentPosition().element(element).build();
 
 		for (int i = 0; i < signatures.getLength(); i++) {
 			Node signature = signatures.item(i);
 			NodeList candidateList;
 			String idAttribute = getIDIdentifier(xmlNode);
 			if (idAttribute != null) {
-				candidateList = DomUtils.getNodeList(signature, ".//*" + DomUtils.getXPathByIdAttribute(idAttribute));
+				candidateList = DomUtils.getNodeList(signature, XPathQueryBuilder.allFromCurrentPosition().idValue(idAttribute).build());
 			} else {
 				candidateList = DomUtils.getNodeList(signature, pathAllFromCurrentPosition);
 			}
+			// TODO : review necessity of node comparison
 			if (isNodeListContains(candidateList, xmlNode)) {
 				Node indentedSignature = getIndentedNode(signature);
 				Node indentedXmlNode;
@@ -516,31 +515,26 @@ public final class DSSXMLUtils {
 	 * @return TRUE if a duplicate id is detected
 	 */
 	public static boolean isDuplicateIdsDetected(DSSDocument doc) {
-		try {
-			Document dom = DomUtils.buildDOM(doc);
-			Element root = dom.getDocumentElement();
-			recursiveIdBrowse(root);
-			XPathExpression xPathExpression = DomUtils.createXPathExpression("//*/@*");
-			NodeList nodeList = (NodeList) xPathExpression.evaluate(root, XPathConstants.NODESET);
-			for (int i = 0; i < nodeList.getLength(); i++) {
-				Attr attr = (Attr) nodeList.item(i);
-				if (Utils.areStringsEqualIgnoreCase(XMLDSigAttribute.ID.getAttributeName(), attr.getName())) {
-					XPathExpression xpathAllById = DomUtils.createXPathExpression("//*[@" + attr.getName() + "='" + attr.getValue() + "']");
-					NodeList nodeListById = (NodeList) xpathAllById.evaluate(root, XPathConstants.NODESET);
-					if (nodeListById.getLength() != 1) {
-						LOG.warn("Problem detected with Id '{}', nb occurences = {}", attr.getValue(), nodeListById.getLength());
-						return true;
-					}
+		Document dom = DomUtils.buildDOM(doc);
+		Element root = dom.getDocumentElement();
+		recursiveIdBrowse(root); // TODO : improve recursiveIdBrowse
+		NodeList nodeList = DomUtils.getNodeList(root, XPathQueryBuilder.all().attribute(XMLDSigAttribute.ID).build());
+		for (int i = 0; i < nodeList.getLength(); i++) {
+			Attr attr = (Attr) nodeList.item(i);
+			if (Utils.areStringsEqualIgnoreCase(XMLDSigAttribute.ID.getAttributeName(), attr.getName())) {
+				NodeList nodeListById = DomUtils.getNodeList(root, XPathQueryBuilder.all().idValue(attr.getValue()).build());
+				if (nodeListById.getLength() != 1) {
+					LOG.warn("Problem detected with Id '{}', nb occurrences = {}", attr.getValue(), nodeListById.getLength());
+					return true;
 				}
 			}
-		} catch (XPathExpressionException e) {
-			throw new DSSException("Unable to check if duplicate ids are present", e);
 		}
 		return false;
 	}
 	
 	/**
 	 * Returns bytes of the original referenced data
+	 *
 	 * @param reference {@link Reference} to get bytes from
 	 * @return byte array containing original data
 	 */
@@ -575,7 +569,11 @@ public final class DSSXMLUtils {
 	}
 	
 	private static boolean isEnvelopedTransform(Node transformation) {
-		final String algorithm = DomUtils.getValue(transformation, "@Algorithm");
+		if (Node.ELEMENT_NODE != transformation.getNodeType()) {
+			return false;
+		}
+		final Element transformationElement = (Element) transformation;
+		final String algorithm = transformationElement.getAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName());
 		if (Transforms.TRANSFORM_ENVELOPED_SIGNATURE.equals(algorithm)) {
 			return true;
 		} else if (Transforms.TRANSFORM_XPATH.equals(algorithm) || 
@@ -743,7 +741,7 @@ public final class DSSXMLUtils {
 	public static boolean isKeyInfoReference(final Reference reference, final Element signature) {
 		String uri = reference.getURI();
 		uri = DomUtils.getId(uri);
-		Element keyInfoElement = DomUtils.getElement(signature, XMLDSigPath.KEY_INFO_PATH + DomUtils.getXPathByIdAttribute(uri));
+		Element keyInfoElement = DomUtils.getElementById(signature, XMLDSigPath.KEY_INFO_PATH, uri);
 		return keyInfoElement != null;
 	}
 	
@@ -759,8 +757,8 @@ public final class DSSXMLUtils {
 	public static boolean isSignaturePropertiesReference(final Reference reference, final Element signature) {
 		String uri = reference.getURI();
 		uri = DomUtils.getId(uri);
-		Element signaturePropertiesElement = DomUtils.getElement(signature, XMLDSigPath.SIGNATURE_PROPERTIES_PATH + DomUtils.getXPathByIdAttribute(uri));
-		Element signaturePropertyElement = DomUtils.getElement(signature, XMLDSigPath.SIGNATURE_PROPERTY_PATH + DomUtils.getXPathByIdAttribute(uri));
+		Element signaturePropertiesElement = DomUtils.getElementById(signature, XMLDSigPath.SIGNATURE_PROPERTIES_PATH, uri);
+		Element signaturePropertyElement = DomUtils.getElementById(signature, XMLDSigPath.SIGNATURE_PROPERTY_PATH, uri);
 		return signaturePropertiesElement != null || signaturePropertyElement != null;
 	}
 	
@@ -793,7 +791,7 @@ public final class DSSXMLUtils {
 	
 	/**
 	 * XMLDSIG 4.4.3.2 The Reference Processing Model
-	 * 
+	 * <p>
 	 * A 'same-document' reference is defined as a URI-Reference that consists of 
 	 * a hash sign ('#') followed by a fragment or alternatively consists of an empty URI
 	 * 
@@ -814,8 +812,7 @@ public final class DSSXMLUtils {
 	public static Element getObjectById(Element signatureElement, String id) {
 		if (Utils.isStringNotBlank(id)) {
 			try {
-				String objectById = XMLDSigPath.OBJECT_PATH + DomUtils.getXPathByIdAttribute(id);
-				return DomUtils.getElement(signatureElement, objectById);
+				return DomUtils.getElementById(signatureElement, XMLDSigPath.OBJECT_PATH, id);
 			} catch (Exception e) {
 				String errorMessage = "An error occurred on attempt to extract Object element with Id '{}' : {}";
 				if (LOG.isDebugEnabled()) {
@@ -838,8 +835,7 @@ public final class DSSXMLUtils {
 	public static Element getManifestById(Element signatureElement, String id) {
 		if (Utils.isStringNotBlank(id)) {
 			try {
-				String manifestById = XMLDSigPath.MANIFEST_PATH + DomUtils.getXPathByIdAttribute(id);
-				return DomUtils.getElement(signatureElement, manifestById);
+				return DomUtils.getElementById(signatureElement, XMLDSigPath.MANIFEST_PATH, id);
 			} catch (Exception e) {
 				String errorMessage = "An error occurred on attempt to extract Manifest element with Id '{}' : {}";
 				if (LOG.isDebugEnabled()) {
@@ -1024,11 +1020,9 @@ public final class DSSXMLUtils {
 	}
 
 	/**
-	 * Applies transforms on the node and returns the byte array to be used for a
-	 * digest computation
-	 * 
-	 * NOTE: returns the original node binaries, if the list of {@code transforms}
-	 * is empty
+	 * Applies transforms on the node and returns the byte array to be used for a digest computation
+	 * <p>
+	 * NOTE: returns the original node binaries, if the list of {@code transforms} is empty
 	 * 
 	 * @param node         {@link Node} to apply transforms on
 	 * @param transforms   a list of {@link DSSTransform}s to execute on the node
@@ -1066,7 +1060,7 @@ public final class DSSXMLUtils {
 	/**
 	 * Applies transforms on document content and returns the byte array to be used for a
 	 * digest computation
-	 * 
+	 * <p>
 	 * NOTE: returns the original document binaries, if the list of {@code transforms}
 	 * is empty. The {@code document} shall represent an XML content.
 	 * 
@@ -1119,7 +1113,7 @@ public final class DSSXMLUtils {
 
 	/**
 	 * Extracts a list of {@code Reference}s from the given {@code Manifest} object
-	 *
+	 * <p>
 	 * NOTE: can be used also for a {@code SignedInfo} element
 	 *
 	 * @param manifest {@link Manifest}
@@ -1160,7 +1154,7 @@ public final class DSSXMLUtils {
 
 	/**
 	 * This method retrieves an Id attribute value of the given reference, when applicable
-	 *
+	 * <p>
 	 * NOTE: Method is used due to Apache Santuario Signature returning an empty string instead of null result.
 	 *
 	 * @param reference {@link Reference} to get value of Id attribute
@@ -1178,7 +1172,7 @@ public final class DSSXMLUtils {
 
 	/**
 	 * This method retrieves a URI attribute value of the given reference, when applicable
-	 *
+	 * <p>
 	 * NOTE: Method is used due to Apache Santuario Signature returning an empty string instead of null result.
 	 *
 	 * @param reference {@link Reference} to get value of URI attribute
@@ -1312,7 +1306,10 @@ public final class DSSXMLUtils {
      * @param elementId {@link String} optional element Id to start XPath expression from
      * @param xpathString {@link String} corresponding to an XPath of element to be returned
      * @return {@link Element}
+	 * @deprecated since DSS 6.5. Please use {@code ensureNamespacesDefined(Document document, String elementId, XPathQuery xpathQuery)}
+	 *             method instead
      */
+	@Deprecated
 	public static Element ensureNamespacesDefined(Document document, String elementId, String xpathString) {
 		// TODO : consider switching to DomUtils#createDeepCopy method
 		final byte[] serializedDoc = DomUtils.serializeNode(document);
@@ -1322,6 +1319,28 @@ public final class DSSXMLUtils {
 			element = DomUtils.getElementById(recreatedDocument, elementId);
 		}
 		return DomUtils.getElement(element, xpathString);
+	}
+
+	/**
+	 * This method produces a copy of the document and returns an element by the defined {@code xpathString}.
+	 * This method can be used as a workaround for canonicalization, as namespaces are not added to canonicalizer
+	 * for new created elements.
+	 * The issue was reported on: <a href="https://issues.apache.org/jira/browse/SANTUARIO-139">SANTUARIO-139</a>
+	 *
+	 * @param document {@link Document}
+	 * @param elementId {@link String} optional element Id to start XPath expression from
+	 * @param xpathQuery {@link XPathQuery} corresponding to a path of an element to be returned
+	 * @return {@link Element}
+	 */
+	public static Element ensureNamespacesDefined(Document document, String elementId, XPathQuery xpathQuery) {
+		// TODO : consider switching to DomUtils#createDeepCopy method
+		final byte[] serializedDoc = DomUtils.serializeNode(document);
+		Document recreatedDocument = DomUtils.buildDOM(serializedDoc);
+		Element element = recreatedDocument.getDocumentElement();
+		if (Utils.isStringNotEmpty(elementId)) {
+			element = DomUtils.getElementById(recreatedDocument, elementId);
+		}
+		return DomUtils.getElement(element, xpathQuery);
 	}
 
 	/**

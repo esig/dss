@@ -28,6 +28,7 @@ import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.definition.XAdESPath;
+import eu.europa.esig.dss.xml.common.xpath.XPathQuery;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,8 +86,8 @@ public final class XAdESRevocationRefExtractionUtils {
 	private static ResponderId getOCSPResponderId(final XAdESPath xadesPaths, final Element ocspRefElement) {
 		X500Principal responderName = null;
 		byte[] ski = null;
-		String currentOCSPRefResponderIDByName = xadesPaths.getCurrentOCSPRefResponderIDByName();
-		String currentOCSPRefResponderIDByKey = xadesPaths.getCurrentOCSPRefResponderIDByKey();
+		XPathQuery currentOCSPRefResponderIDByName = xadesPaths.getCurrentOCSPRefResponderIDByName();
+		XPathQuery currentOCSPRefResponderIDByKey = xadesPaths.getCurrentOCSPRefResponderIDByKey();
 		if (currentOCSPRefResponderIDByName != null && currentOCSPRefResponderIDByKey != null) {
 			final Element responderIdByName = DomUtils.getElement(ocspRefElement, currentOCSPRefResponderIDByName);
 			if (responderIdByName != null) {

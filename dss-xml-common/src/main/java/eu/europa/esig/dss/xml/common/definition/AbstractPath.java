@@ -20,6 +20,9 @@
  */
 package eu.europa.esig.dss.xml.common.definition;
 
+import eu.europa.esig.dss.xml.common.xpath.XPathQuery;
+import eu.europa.esig.dss.xml.common.xpath.XPathQueryBuilder;
+
 import java.io.Serializable;
 
 /**
@@ -40,62 +43,62 @@ public abstract class AbstractPath implements Serializable {
 	 * Builds the xpath expression to return entries of the {@code element}
 	 *
 	 * @param element {@link DSSElement}
-	 * @return {@link String} xpath expression
+	 * @return {@link XPathQuery} xpath expression
 	 */
-	public static final String all(DSSElement element) {
-		return new XPathExpressionBuilder().all().element(element).build();
+	public static XPathQuery all(DSSElement element) {
+		return XPathQueryBuilder.all().element(element).build();
 	}
 
 	/**
 	 * Builds the xpath expression to return entries of the {@code element} from the current position
 	 *
 	 * @param element {@link DSSElement}
-	 * @return {@link String} xpath expression
+	 * @return {@link XPathQuery} xpath expression
 	 */
-	public static final String fromCurrentPosition(DSSElement element) {
-		return new XPathExpressionBuilder().fromCurrentPosition().element(element).build();
+	public static XPathQuery fromCurrentPosition(DSSElement element) {
+		return XPathQueryBuilder.fromCurrentPosition().element(element).build();
 	}
 
 	/**
 	 * Builds the xpath expression to return entries of the {@code element} from the current position
 	 *
 	 * @param element {@link DSSElement}
-	 * @return {@link String} xpath expression
+	 * @return {@link XPathQuery} xpath expression
 	 */
-	public static final String allFromCurrentPosition(DSSElement element) {
-		return new XPathExpressionBuilder().all().fromCurrentPosition().element(element).build();
+	public static XPathQuery allFromCurrentPosition(DSSElement element) {
+		return XPathQueryBuilder.allFromCurrentPosition().element(element).build();
 	}
 
 	/**
 	 * Builds the xpath expression to return entries of the given {@code element}s array
 	 *
 	 * @param elements an array of {@link DSSElement}s
-	 * @return {@link String} xpath expression
+	 * @return {@link XPathQuery} xpath expression
 	 */
-	protected static final String all(DSSElement... elements) {
-		return new XPathExpressionBuilder().all().elements(elements).build();
+	public static XPathQuery all(DSSElement... elements) {
+		return XPathQueryBuilder.all().elements(elements).build();
 	}
 
 	/**
 	 * Builds the xpath expression to return entries of the {@code element}
-	 * which are not parent of {@code notParentOf}
+	 * which are not child of {@code notChildOf} element
 	 *
 	 * @param element {@link DSSElement}
-	 * @param notParentOf {@link DSSElement}
-	 * @return {@link String} xpath expression
+	 * @param notChildOf {@link DSSElement}
+	 * @return {@link XPathQuery} xpath expression
 	 */
-	protected static String allNotParent(DSSElement element, DSSElement notParentOf) {
-		return new XPathExpressionBuilder().all().element(element).notParentOf(notParentOf).build();
+	public static XPathQuery allNotParent(DSSElement element, DSSElement notChildOf) {
+		return XPathQueryBuilder.all().element(element).notChildOf(notChildOf).build();
 	}
 
 	/**
 	 * Builds the xpath expression to return entries starting from the current position
 	 *
 	 * @param elements {@link DSSElement}
-	 * @return {@link String} xpath expression
+	 * @return {@link XPathQuery} xpath expression
 	 */
-	protected static final String fromCurrentPosition(DSSElement... elements) {
-		return new XPathExpressionBuilder().fromCurrentPosition().elements(elements).build();
+	public static XPathQuery fromCurrentPosition(DSSElement... elements) {
+		return XPathQueryBuilder.fromCurrentPosition().elements(elements).build();
 	}
 
 	/**
@@ -104,10 +107,10 @@ public abstract class AbstractPath implements Serializable {
 	 *
 	 * @param element {@link DSSElement}
 	 * @param attribute {@link DSSAttribute}
-	 * @return {@link String} xpath expression
+	 * @return {@link XPathQuery} xpath expression
 	 */
-	protected static final String fromCurrentPosition(DSSElement element, DSSAttribute attribute) {
-		return new XPathExpressionBuilder().fromCurrentPosition().element(element).attribute(attribute).build();
+	public static XPathQuery fromCurrentPosition(DSSElement element, DSSAttribute attribute) {
+		return XPathQueryBuilder.fromCurrentPosition().element(element).attribute(attribute).build();
 	}
 
 }

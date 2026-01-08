@@ -29,6 +29,7 @@ import eu.europa.esig.dss.model.TimestampBinary;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
 import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -113,8 +114,7 @@ class XAdESExtensionTToTTest extends AbstractXAdESTestExtension {
 
         Node signature = signaturesList.item(0);
 
-        String xpath = "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades:SignatureTimeStamp";
-        NodeList contentTstList = DomUtils.getNodeList(signature, xpath);
+        NodeList contentTstList = DomUtils.getNodeList(signature, new XAdES132Path().getSignatureTimestampPath());
         assertEquals(2, contentTstList.getLength());
 
         List<String> result = new ArrayList<>();

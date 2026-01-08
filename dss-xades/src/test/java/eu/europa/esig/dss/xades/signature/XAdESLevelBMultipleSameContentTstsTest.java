@@ -30,6 +30,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
 import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -115,8 +116,7 @@ class XAdESLevelBMultipleSameContentTstsTest extends AbstractXAdESTestSignature 
 
         Node signature = signaturesList.item(0);
 
-        String xpath = "./ds:Object/xades:QualifyingProperties/xades:SignedProperties/xades:SignedDataObjectProperties/xades:AllDataObjectsTimeStamp";
-        NodeList contentTstList = DomUtils.getNodeList(signature, xpath);
+        NodeList contentTstList = DomUtils.getNodeList(signature, new XAdES132Path().getAllDataObjectsTimestampPath());
         assertEquals(2, contentTstList.getLength());
 
         List<String> result = new ArrayList<>();
