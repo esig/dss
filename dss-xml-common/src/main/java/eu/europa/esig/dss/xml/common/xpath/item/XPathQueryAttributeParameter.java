@@ -19,14 +19,33 @@ public class XPathQueryAttributeParameter extends AbstractXPathQueryParameter {
     /** Value of the attribute */
     private final String attributeValue;
 
+    /** Whether the case comparison on attribute name is to be ignored */
+    private final boolean ignoreCase;
+
     /**
-     * Constructor with an expected attribute value
+     * Constructor with an expected attribute value.
+     * When this constructor is used, the string case comparison is enforced.
+     *
+     * @param attribute {@link DSSAttribute}
+     * @param attributeValue {@link String}
      */
     public XPathQueryAttributeParameter(final DSSAttribute attribute, final String attributeValue) {
+        this(attribute, attributeValue, false);
+    }
+
+    /**
+     * Constructor with an expected attribute value with indication on whether case is to be ignored
+     *
+     * @param attribute {@link DSSAttribute}
+     * @param attributeValue {@link String}
+     * @param ignoreCase whether case comparison of the attribute name is to be ignored
+     */
+    public XPathQueryAttributeParameter(final DSSAttribute attribute, final String attributeValue, final boolean ignoreCase) {
         Objects.requireNonNull(attribute, "DSSAttribute cannot be null!");
         Objects.requireNonNull(attributeValue, "Attribute value cannot be null!");
         this.attribute = attribute;
         this.attributeValue = attributeValue;
+        this.ignoreCase = ignoreCase;
     }
 
     /**
@@ -55,7 +74,10 @@ public class XPathQueryAttributeParameter extends AbstractXPathQueryParameter {
             if (attributes != null && attributes.getLength() > 0) {
                 for (int i = 0; i < attributes.getLength(); i++) {
                     Node attributeNode = attributes.item(i);
-                    if (attribute.getAttributeName().equals(getLocalName(attributeNode))) {
+                    boolean attributeNameMatch = ignoreCase ?
+                            attribute.getAttributeName().equalsIgnoreCase(getLocalName(attributeNode)) :
+                            attribute.getAttributeName().equals(getLocalName(attributeNode));
+                    if (attributeNameMatch) {
                         String nodeValue = attributeNode.getNodeValue();
                         if (attributeValue.equals(nodeValue)) {
                             return true;
@@ -80,16 +102,25 @@ public class XPathQueryAttributeParameter extends AbstractXPathQueryParameter {
     @Override
     public String getQueryString() {
         StringBuilder sb = new StringBuilder();
+        addQueryForAttributeWithName(sb, attribute.getAttributeName());
+        if (ignoreCase) {
+            sb.append(" or ");
+            addQueryForAttributeWithName(sb, attribute.getAttributeName().toLowerCase());
+            sb.append(" or ");
+            addQueryForAttributeWithName(sb, attribute.getAttributeName().toUpperCase());
+        }
+        return sb.toString();
+    }
 
+    private void addQueryForAttributeWithName(StringBuilder sb, String attrName) {
         sb.append("@*[local-name()='");
-        sb.append(attribute.getAttributeName());
+        sb.append(attrName);
         sb.append("']");
         if (attributeValue != null) {
             sb.append("='");
             sb.append(attributeValue);
             sb.append("'");
         }
-        return sb.toString();
     }
 
 }

@@ -1,5 +1,8 @@
 package eu.europa.esig.dss.xml.utils.xpath;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Iterator;
 import java.util.ServiceLoader;
 
@@ -10,6 +13,8 @@ import java.util.ServiceLoader;
  *
  */
 public class XPathQueryExecutorLoader {
+
+    private static final Logger LOG = LoggerFactory.getLogger(XPathQueryExecutorLoader.class);
 
     /** The cached version of the executor */
     private XPathQueryExecutor executor;
@@ -32,6 +37,7 @@ public class XPathQueryExecutorLoader {
     public XPathQueryExecutor getExecutor() {
         if (executor == null) {
             executor = loadXPathQueryExecutor();
+            LOG.debug("{} has been loaded.", executor.getClass().getSimpleName());
         }
         return executor;
     }

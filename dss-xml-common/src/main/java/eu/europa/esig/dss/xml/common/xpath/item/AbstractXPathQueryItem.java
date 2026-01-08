@@ -87,14 +87,7 @@ public abstract class AbstractXPathQueryItem implements XPathQueryItem {
      * @return {@link String}
      */
     protected String getLocalName(Node node) {
-        if (node == null) {
-            return null;
-        }
-        String nodeName = node.getNodeName();
-        if (nodeName.contains(":")) {
-            return nodeName.split(":", 2)[1];
-        }
-        return nodeName;
+        return node.getLocalName() != null ? node.getLocalName() : node.getNodeName();
     }
 
     @Override

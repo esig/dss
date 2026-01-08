@@ -1132,7 +1132,6 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			final Document document = signatureElement.getOwnerDocument();
 			final Element rootElement = document.getDocumentElement();
 
-			DSSXMLUtils.setIDIdentifier(rootElement);
 			DSSXMLUtils.recursiveIdBrowse(rootElement);
 
 			// Secure validation disabled to support all signature algos
