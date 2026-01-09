@@ -100,15 +100,9 @@ public class CounterSignatureResolver extends ResourceResolverSpi {
 		
 		if (node == null && isXPointerSlash(uriValue) && XMLDSigElement.SIGNATURE_VALUE.getTagName().equals(documentDom.getLocalName())) {
 			node = documentDom;
-		} else if (node == null && DomUtils.isXPointerQuery(uriValue)) {
-			node = DomUtils.getElementById(documentDom, XMLDSigPath.ALL_SIGNATURE_VALUES_PATH, uriValue);
 		}
-		
-		if (node != null) {
-			return node;
-		}
-		
-		return null;
+
+		return node;
 	}
 
 }
