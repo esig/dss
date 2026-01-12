@@ -1,9 +1,15 @@
 package eu.europa.esig.dss.xades.dom;
 
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.definition.XAdESPath;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigAttribute;
+import eu.europa.esig.dss.xml.utils.DomUtils;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import java.util.ArrayList;
@@ -26,6 +32,9 @@ public class XAdESDOMDocument {
 
     /** Cached list of ds:Signature nodes, except counter signatures */
     private NodeList signatureNodes;
+
+    /** Stores the state of the Id browsing procedure */
+    private boolean idBrowsingCompleted;
 
     /**
      * Default constructor instantiating a XAdES DOM document using XAdES 1.3.2 namespace paths
@@ -79,6 +88,66 @@ public class XAdESDOMDocument {
             signatureNodes = DSSXMLUtils.getAllSignaturesExceptCounterSignatures(document);
         }
         return signatureNodes;
+    }
+
+    /**
+     * Gets element with the requested Id.
+     * This method uses a cached map of identifiers for a value extraction
+     *
+     * @param id {@link String} to get
+     * @return {@link Element}
+     */
+    public Element getElementById(String id) {
+        recursiveIdBrowse();
+        id = DomUtils.getId(id);
+        return document.getElementById(id);
+    }
+
+    /**
+     * An ID attribute can only be dereferenced if it is declared in the validation context. This behaviour is caused by
+     * the fact that the attribute does not have attached type of information. Another solution is to parse the XML
+     * against some DTD or XML schema. This process adds the necessary type of information to each ID attribute.
+     */
+    public void recursiveIdBrowse() {
+        if (!idBrowsingCompleted) {
+            recursiveIdBrowse(document.getDocumentElement());
+            idBrowsingCompleted = true;
+        }
+    }
+
+    /**
+     * Browsers element recursively and enables their Ids
+     *
+     * @param element {@link Element}
+     */
+    protected void recursiveIdBrowse(final Element element) {
+        setIDIdentifier(element);
+        for (int ii = 0; ii < element.getChildNodes().getLength(); ii++) {
+            final Node childNode = element.getChildNodes().item(ii);
+            if (childNode.getNodeType() == Node.ELEMENT_NODE) {
+                recursiveIdBrowse((Element) childNode);
+            }
+        }
+    }
+
+    /**
+     * If this method finds an attribute with names ID (case-insensitive) then declares it to be a user-determined ID
+     * attribute.
+     *
+     * @param childElement {@link Element}
+     */
+    protected void setIDIdentifier(final Element childElement) {
+        final NamedNodeMap attributes = childElement.getAttributes();
+        for (int jj = 0; jj < attributes.getLength(); jj++) {
+
+            final Node item = attributes.item(jj);
+            final String localName = item.getLocalName();
+            final String nodeName = item.getNodeName();
+            if (localName != null && Utils.areStringsEqualIgnoreCase(XMLDSigAttribute.ID.getAttributeName(), localName)) {
+                childElement.setIdAttribute(nodeName, true);
+                break;
+            }
+        }
     }
 
 }

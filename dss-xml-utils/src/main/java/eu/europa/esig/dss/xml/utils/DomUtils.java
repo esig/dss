@@ -879,6 +879,13 @@ public final class DomUtils {
 	 * @return {@link Element} with the given Id, NULL if unique result is not found
 	 */
 	public static Element getElementById(Node node, XPathQuery xPathQuery, String id) {
+		// Fast path, if recursive id browse has been performed
+		Element element = node.getOwnerDocument().getElementById(id);
+		if (element != null) {
+			return element;
+		}
+
+		// In other cases
 		try {
 			return getElement(node, XPathQueryBuilder.fromXPathQuery(xPathQuery).idValue(getId(id)).build());
 		} catch (Exception e) {

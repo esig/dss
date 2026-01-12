@@ -108,9 +108,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 
 	private static final Logger LOG = LoggerFactory.getLogger(XAdESSignature.class);
 	
-	/**
-	 * The default canonicalization method used in {@link SignatureDigestReference} computation
-	 */
+	/** The default canonicalization method used in {@link SignatureDigestReference} computation */
 	private static final String DEFAULT_CANONICALIZATION_METHOD = CanonicalizationMethod.EXCLUSIVE;
 	
 	/** Represents the signature element container */
@@ -131,9 +129,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	/** Cached Apache Santuario Signature */
 	private transient XMLSignature santuarioSignature;
 	
-	/**
-	 * A signature identifier provided by a Driving Application.
-	 */
+	/** A signature identifier provided by a Driving Application. */
 	private String daIdentifier;
 
 	/**
@@ -1148,10 +1144,8 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 			return santuarioSignature;
 		}
 		try {
-			final Document document = signatureElement.getOwnerDocument().getDocument();
-			final Element rootElement = document.getDocumentElement();
-
-			DSSXMLUtils.recursiveIdBrowse(rootElement);
+			// This method is used to enable Ids for cryptographic validation
+			getOwnerDocument().recursiveIdBrowse();
 
 			// Secure validation disabled to support all signature algos
 			santuarioSignature = new XMLSignature(getSignatureElement(), "", false);
@@ -1160,6 +1154,7 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 				initCounterSignatureResolver(detachedContents);
 			}
 			return santuarioSignature;
+
 		} catch (XMLSecurityException e) {
 			throw new DSSException(String.format("Unable to initialize Santuario XMLSignature. Reason : %s", e.getMessage()), e);
 		}
