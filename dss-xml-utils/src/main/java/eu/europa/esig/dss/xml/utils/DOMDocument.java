@@ -32,8 +32,6 @@ import java.util.Objects;
 /**
  * This class allows handling of an {@code org.w3c.dom.Node} as a {@code eu.europa.esig.dss.model.DSSDocument}.
  * The class handles the {@code Node} in memory, and reads its data only on request.
- * This class uses a {@code eu.europa.esig.dss.model.InMemoryDocument} for internal processing of
- * the cached {@code org.w3c.dom.Node}'s content.
  *
  */
 public class DOMDocument extends CommonDocument {

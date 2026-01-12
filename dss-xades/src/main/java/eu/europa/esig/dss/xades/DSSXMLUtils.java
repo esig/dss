@@ -35,6 +35,7 @@ import eu.europa.esig.dss.xades.definition.XAdESPath;
 import eu.europa.esig.dss.xades.definition.xades111.XAdES111Path;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
+import eu.europa.esig.dss.xades.dom.XAdESDOMElement;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.DSSTransform;
 import eu.europa.esig.dss.xades.reference.DSSTransformOutput;
@@ -924,9 +925,10 @@ public final class DSSXMLUtils {
 			 * of the XAdES signature where CounterSignature is incorporated. 
 			 */
 			final Node counterSignatureNode = DomUtils.getNode(counterSignatureElement, XMLDSigPath.SIGNATURE_PATH);
-			
+			XAdESDOMElement counterSigDOMElement = new XAdESDOMElement((Element) counterSignatureNode, masterSignature.getOwnerDocument());
+
 			// Verify that the element is a proper signature by trying to build a XAdESSignature out of it
-			final XAdESSignature xadesCounterSignature = new XAdESSignature((Element) counterSignatureNode, masterSignature.getXAdESPathsHolders());
+			final XAdESSignature xadesCounterSignature = new XAdESSignature(counterSigDOMElement);
 			xadesCounterSignature.setFilename(masterSignature.getFilename());
 			xadesCounterSignature.setDetachedContents(masterSignature.getDetachedContents());
 			xadesCounterSignature.setMasterSignature(masterSignature);

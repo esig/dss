@@ -32,6 +32,8 @@ import eu.europa.esig.dss.xades.definition.XAdESPath;
 import eu.europa.esig.dss.xades.definition.xades111.XAdES111Path;
 import eu.europa.esig.dss.xades.definition.xades122.XAdES122Path;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
+import eu.europa.esig.dss.xades.dom.XAdESDOMDocument;
+import eu.europa.esig.dss.xades.dom.XAdESDOMElement;
 import eu.europa.esig.dss.xades.validation.policy.XMLSignaturePolicyValidator;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import org.w3c.dom.Document;
@@ -49,14 +51,8 @@ import java.util.Objects;
  */
 public class XMLDocumentAnalyzer extends DefaultDocumentAnalyzer {
 
-	/**
-	 * This variable contains the list of {@code XAdESPaths} adapted to the specific
-	 * signature schema.
-	 */
-	protected List<XAdESPath> xadesPathsHolders;
-
-	/** The root element of the document to validate */
-	protected Document rootElement;
+	/** The document to validate */
+	protected XAdESDOMDocument domDocument;
 
 	/** Defines if the XSW protection shall be disabled (false by default) */
 	private boolean disableXSWProtection = false;
@@ -74,26 +70,40 @@ public class XMLDocumentAnalyzer extends DefaultDocumentAnalyzer {
 
 	/**
 	 * The default constructor for XMLDocumentValidator. The created instance is
-	 * initialised with default {@code XAdESPaths} .
+	 * initialised with default {@code XAdESPaths}, allowing support of XAdES v1.1.1, v1.2.2 and v1.3.2.
 	 *
 	 * @param dssDocument
 	 *                    The instance of {@code DSSDocument} to validate
 	 */
 	public XMLDocumentAnalyzer(final DSSDocument dssDocument) {
-		Objects.requireNonNull(dssDocument, "Document to be validated cannot be null!");
+		this(dssDocument, initXAdESPathsHolders());
+	}
 
-		this.document = dssDocument;
-		this.rootElement = toDomDocument(dssDocument);
-
-		xadesPathsHolders = new ArrayList<>();
+	private static List<XAdESPath> initXAdESPathsHolders() {
+		List<XAdESPath> xadesPathsHolders = new ArrayList<>();
 		xadesPathsHolders.add(new XAdES111Path());
 		xadesPathsHolders.add(new XAdES122Path());
 		xadesPathsHolders.add(new XAdES132Path());
+		return xadesPathsHolders;
 	}
 
-	private Document toDomDocument(DSSDocument document) {
+	/**
+	 * Constructor for XMLDocumentValidator allowing to provide a custom list of XAdES Path holders.
+	 * Can be used to enforce signature validation of a certain XAdES version(s) only.
+	 *
+	 * @param dssDocument
+	 *                    The instance of {@code DSSDocument} to validate
+	 */
+	public XMLDocumentAnalyzer(final DSSDocument dssDocument, final List<XAdESPath> xadesPathHolders) {
+		Objects.requireNonNull(dssDocument, "Document to be validated cannot be null!");
+		Objects.requireNonNull(xadesPathHolders, "XAdES Path holders cannot be null!");
+		this.document = dssDocument;
+		this.domDocument = toDomDocument(dssDocument, xadesPathHolders);
+	}
+
+	private XAdESDOMDocument toDomDocument(DSSDocument document, List<XAdESPath> xadesPathsHolders) {
 		try {
-			return DomUtils.buildDOM(document);
+			return new XAdESDOMDocument(DomUtils.buildDOM(document), xadesPathsHolders);
 		} catch (Exception e) {
 			throw new IllegalInputException(String.format("An XML file is expected : %s", e.getMessage()), e);
 		}
@@ -119,7 +129,7 @@ public class XMLDocumentAnalyzer extends DefaultDocumentAnalyzer {
 	@Override
 	protected List<AdvancedSignature> buildSignatures() {
 		List<AdvancedSignature> signatures = new ArrayList<>();
-		final NodeList signatureNodeList = DSSXMLUtils.getAllSignaturesExceptCounterSignatures(rootElement);
+		final NodeList signatureNodeList = domDocument.getSignatureNodes();
 		for (int ii = 0; ii < signatureNodeList.getLength(); ii++) {
 
 			final Element signatureEl = (Element) signatureNodeList.item(ii);
@@ -131,7 +141,8 @@ public class XMLDocumentAnalyzer extends DefaultDocumentAnalyzer {
 				continue; // skip signed assertions
 			}
 
-			final XAdESSignature xadesSignature = new XAdESSignature(signatureEl, xadesPathsHolders);
+			XAdESDOMElement signatureDomElement = new XAdESDOMElement(signatureEl, domDocument);
+			final XAdESSignature xadesSignature = new XAdESSignature(signatureDomElement);
 			xadesSignature.setFilename(document.getName());
 			xadesSignature.setDetachedContents(detachedContents);
 			xadesSignature.setContainerContents(containerContents);
@@ -154,9 +165,11 @@ public class XMLDocumentAnalyzer extends DefaultDocumentAnalyzer {
 	 * This getter returns the {@code XAdESPaths}
 	 *
 	 * @return a list of {@link XAdESPath}
+	 * @deprecated since DSS 6.5. To be removed.
 	 */
+	@Deprecated
 	public List<XAdESPath> getXAdESPathsHolder() {
-		return xadesPathsHolders;
+		return domDocument.getXAdESPathHolders();
 	}
 
 	/**
@@ -164,16 +177,23 @@ public class XMLDocumentAnalyzer extends DefaultDocumentAnalyzer {
 	 * particular schema.
 	 *
 	 * @param xadesPathsHolder {@link XAdESPath}
+	 * @deprecated since DSS 6.5. Please provide a final version of XAdES Paths using constructor
+	 *             {@code new XMLDocumentValidator(DSSDocument dssDocument, List<XAdESPath> xadesPathHolders)}
 	 */
+	@Deprecated
 	public void addXAdESPathsHolder(final XAdESPath xadesPathsHolder) {
-		xadesPathsHolders.add(xadesPathsHolder);
+		domDocument.getXAdESPathHolders().add(xadesPathsHolder);
 	}
 
 	/**
 	 * Removes all elements from the list of query holders. The list will be empty after this call returns.
+	 *
+	 * @deprecated since DSS 6.5. Please provide a final version of XAdES Paths using constructor
+	 *             {@code new XMLDocumentValidator(DSSDocument dssDocument, List<XAdESPath> xadesPathHolders)}
 	 */
+	@Deprecated
 	public void clearQueryHolders() {
-		xadesPathsHolders.clear();
+		domDocument.getXAdESPathHolders().clear();
 	}
 
 	/**
@@ -182,7 +202,7 @@ public class XMLDocumentAnalyzer extends DefaultDocumentAnalyzer {
 	 * @return {@link Document}
 	 */
 	public Document getRootElement() {
-		return rootElement;
+		return domDocument.getDocument();
 	}
 
 	@Override

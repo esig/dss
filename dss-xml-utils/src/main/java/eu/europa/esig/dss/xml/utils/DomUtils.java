@@ -487,7 +487,9 @@ public final class DomUtils {
 	 * @return the NodeList corresponding to the XPath query
 	 */
 	public static NodeList getNodeList(final Node xmlNode, final XPathQuery xPathQuery) {
-		return xPathQueryExecutorLoader.getExecutor().getNodeList(xmlNode, xPathQuery);
+		XPathQueryExecutor executor = xPathQueryExecutorLoader.getExecutor();
+		executor.setNamespaceContext(namespacePrefixMapper);
+		return executor.getNodeList(xmlNode, xPathQuery);
 	}
 
 	/**
