@@ -654,7 +654,9 @@ public abstract class DefaultDocumentAnalyzer implements DocumentAnalyzer {
      * Returns a list of timestamp validators for timestamps embedded into the container
      *
      * @return a list of {@link TimestampAnalyzer}s
+     * @deprecated since DSS 6.5. To be removed.
      */
+    @Deprecated
     protected List<TimestampAnalyzer> getTimestampReaders() {
         // nothing by default
         return Collections.emptyList();
