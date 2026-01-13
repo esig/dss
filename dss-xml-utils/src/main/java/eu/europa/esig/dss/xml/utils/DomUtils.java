@@ -155,13 +155,24 @@ public final class DomUtils {
 	}
 
 	/**
+	 * Gets the XPath Query executor
+	 *
+	 * @return {@link XPathQueryExecutor}
+	 */
+	public static XPathQueryExecutor getXPathQueryExecutor() {
+		XPathQueryExecutor executor = xPathQueryExecutorLoader.getExecutor();
+		executor.setNamespaceContext(namespacePrefixMapper);
+		return executor;
+	}
+
+	/**
 	 * Sets the XPathQueryExecutor to be used by the implementation.
 	 * This method also sets a namespace context to the executor defined within the implementation.
 	 * Default : Loads implementation accessible through ServiceLoader mechanism.
 	 *
 	 * @param xPathQueryExecutor {@link XPathQueryExecutor}
 	 */
-	public void setXPathQueryExecutor(XPathQueryExecutor xPathQueryExecutor) {
+	public static void setXPathQueryExecutor(XPathQueryExecutor xPathQueryExecutor) {
 		xPathQueryExecutorLoader.setExecutor(xPathQueryExecutor);
 	}
 
@@ -487,9 +498,7 @@ public final class DomUtils {
 	 * @return the NodeList corresponding to the XPath query
 	 */
 	public static NodeList getNodeList(final Node xmlNode, final XPathQuery xPathQuery) {
-		XPathQueryExecutor executor = xPathQueryExecutorLoader.getExecutor();
-		executor.setNamespaceContext(namespacePrefixMapper);
-		return executor.getNodeList(xmlNode, xPathQuery);
+		return getXPathQueryExecutor().getNodeList(xmlNode, xPathQuery);
 	}
 
 	/**
@@ -879,13 +888,6 @@ public final class DomUtils {
 	 * @return {@link Element} with the given Id, NULL if unique result is not found
 	 */
 	public static Element getElementById(Node node, XPathQuery xPathQuery, String id) {
-		// Fast path, if recursive id browse has been performed
-		Element element = node.getOwnerDocument().getElementById(id);
-		if (element != null) {
-			return element;
-		}
-
-		// In other cases
 		try {
 			return getElement(node, XPathQueryBuilder.fromXPathQuery(xPathQuery).idValue(getId(id)).build());
 		} catch (Exception e) {

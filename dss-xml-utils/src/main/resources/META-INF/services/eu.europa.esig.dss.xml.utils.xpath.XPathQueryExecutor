@@ -1,2 +1,2 @@
-eu.europa.esig.dss.xml.utils.xpath.NativeDOMXPathQueryExecutor
 eu.europa.esig.dss.xml.utils.xpath.JavaXmlXPathQueryExecutor
+eu.europa.esig.dss.xml.utils.xpath.NativeDOMXPathQueryExecutor

@@ -518,17 +518,16 @@ public final class DSSXMLUtils {
 	public static boolean isDuplicateIdsDetected(DSSDocument doc) {
 		Document dom = DomUtils.buildDOM(doc);
 		Element root = dom.getDocumentElement();
-		recursiveIdBrowse(root); // TODO : improve recursiveIdBrowse
 		NodeList nodeList = DomUtils.getNodeList(root, XPathQueryBuilder.all().attribute(XMLDSigAttribute.ID).build());
+		Set<String> foundIdentifiers = new HashSet<>();
 		for (int i = 0; i < nodeList.getLength(); i++) {
 			Attr attr = (Attr) nodeList.item(i);
-			if (Utils.areStringsEqualIgnoreCase(XMLDSigAttribute.ID.getAttributeName(), attr.getName())) {
-				NodeList nodeListById = DomUtils.getNodeList(root, XPathQueryBuilder.all().idValue(attr.getValue()).build());
-				if (nodeListById.getLength() != 1) {
-					LOG.warn("Problem detected with Id '{}', nb occurrences = {}", attr.getValue(), nodeListById.getLength());
-					return true;
-				}
+			String attrValue = attr.getNodeValue();
+			if (foundIdentifiers.contains(attrValue)) {
+				LOG.warn("Duplicated identifier '{}' detected", attrValue);
+				return true;
 			}
+			foundIdentifiers.add(attrValue);
 		}
 		return false;
 	}
