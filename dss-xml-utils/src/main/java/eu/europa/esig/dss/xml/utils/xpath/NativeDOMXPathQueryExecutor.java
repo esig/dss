@@ -43,12 +43,13 @@ public class NativeDOMXPathQueryExecutor extends AbstractXPathQueryExecutor {
             }
         }
 
+        boolean firstLoop = true;
         XPathQueryItem queryItem = xPathQuery.getFirstXPathQueryItem();
         while (queryItem != null){
             List<Node> nextNodes = new ArrayList<>();
 
             for (Node parent : currentNodes) {
-                collectDescendants(parent, queryItem, nextNodes, deepSearch);
+                collectDescendants(parent, queryItem, nextNodes, deepSearch && firstLoop);
             }
 
             currentNodes = nextNodes;
@@ -58,6 +59,7 @@ public class NativeDOMXPathQueryExecutor extends AbstractXPathQueryExecutor {
             }
 
             queryItem = queryItem.nextItem();
+            firstLoop = false;
         }
 
         return toNodeList(currentNodes);

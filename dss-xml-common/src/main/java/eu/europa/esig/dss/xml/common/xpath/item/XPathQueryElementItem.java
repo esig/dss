@@ -42,7 +42,7 @@ public class XPathQueryElementItem extends AbstractXPathQueryItem {
     @Override
     protected boolean process(Node node) {
         if (Node.ELEMENT_NODE == node.getNodeType()) {
-            return element.isSameTagName(node.getLocalName()) && element.getURI().equals(node.getNamespaceURI());
+            return element.isSameTagName(node.getLocalName()) && (element.getURI() == null || element.getURI().equals(node.getNamespaceURI()));
         }
         return false;
     }

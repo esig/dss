@@ -45,13 +45,7 @@ public class XPathQueryNotChildOfParameter extends AbstractXPathQueryParameter {
     protected boolean process(Node node) {
         if (Node.ELEMENT_NODE == node.getNodeType()) {
             Node parentNode = node.getParentNode();
-            while (parentNode != null) {
-                if (elementItem.matchNode(parentNode)) {
-                    return false;
-                }
-                parentNode = parentNode.getParentNode();
-            }
-            return true;
+            return !elementItem.matchNode(parentNode);
         }
         return false;
     }
