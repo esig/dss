@@ -45,6 +45,7 @@ import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
 import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Tag;
 import org.w3c.dom.Document;
@@ -178,10 +179,10 @@ class XAdESCrossCertificationDoubleLTAOldValDataTest extends PKIFactoryAccess {
         Document document = DomUtils.buildDOM(doubleLTADoc);
         assertNotNull(document);
 
-        Element timeStampValidationDataElement = DomUtils.getElement(document, new XAdES132Path().getTimestampValidationDataPath());
+        Element timeStampValidationDataElement = XPathUtils.getElement(document, new XAdES132Path().getTimestampValidationDataPath());
         assertNull(timeStampValidationDataElement);
 
-        Element anyValidationDataElement = DomUtils.getElement(document, new XAdES132Path().getAnyValidationDataPath());
+        Element anyValidationDataElement = XPathUtils.getElement(document, new XAdES132Path().getAnyValidationDataPath());
         assertNull(anyValidationDataElement);
 
     }

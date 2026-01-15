@@ -29,6 +29,7 @@ import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
 import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -47,7 +48,7 @@ public class ASiCEWithXAdESManifestParser {
 	private static final Logger LOG = LoggerFactory.getLogger(ASiCEWithXAdESManifestParser.class);
 
 	static {
-		DomUtils.registerNamespace(ManifestNamespace.NS);
+		XPathUtils.registerNamespace(ManifestNamespace.NS);
 	}
 
 	/** The related signature document */
@@ -102,7 +103,7 @@ public class ASiCEWithXAdESManifestParser {
 			Document manifestDom = DomUtils.buildDOM(manifestDocument);
 			DSSNamespace manifestNamespace = getManifestNamespace(manifestDom);
 
-			NodeList nodeList = DomUtils.getNodeList(manifestDom, ManifestPath.FILE_ENTRY_PATH);
+			NodeList nodeList = XPathUtils.getNodeList(manifestDom, ManifestPath.FILE_ENTRY_PATH);
 			if (nodeList != null && nodeList.getLength() > 0) {
 				for (int i = 0; i < nodeList.getLength(); i++) {
 					ManifestEntry manifestEntry = new ManifestEntry();

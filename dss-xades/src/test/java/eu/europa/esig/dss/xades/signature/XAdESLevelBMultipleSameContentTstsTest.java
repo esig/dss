@@ -33,6 +33,7 @@ import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
 import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
 import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -67,7 +68,7 @@ class XAdESLevelBMultipleSameContentTstsTest extends AbstractXAdESTestSignature 
         signingDate = new Date();
         contentTimestamp = service.getContentTimestamp(documentToSign, getSignatureParameters());
 
-        DomUtils.registerNamespace(new DSSNamespace("http://uri.etsi.org/01903/v1.3.2#", "xades"));
+        XPathUtils.registerNamespace(new DSSNamespace("http://uri.etsi.org/01903/v1.3.2#", "xades"));
     }
 
     @Override
@@ -116,7 +117,7 @@ class XAdESLevelBMultipleSameContentTstsTest extends AbstractXAdESTestSignature 
 
         Node signature = signaturesList.item(0);
 
-        NodeList contentTstList = DomUtils.getNodeList(signature, new XAdES132Path().getAllDataObjectsTimestampPath());
+        NodeList contentTstList = XPathUtils.getNodeList(signature, new XAdES132Path().getAllDataObjectsTimestampPath());
         assertEquals(2, contentTstList.getLength());
 
         List<String> result = new ArrayList<>();

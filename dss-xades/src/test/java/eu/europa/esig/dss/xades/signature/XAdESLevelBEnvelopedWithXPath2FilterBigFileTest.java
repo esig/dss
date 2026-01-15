@@ -20,29 +20,27 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import static java.time.Duration.ofMillis;
-import static org.junit.jupiter.api.Assertions.assertTimeout;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.DSSTransform;
 import eu.europa.esig.dss.xades.reference.XPath2FilterEnvelopedSignatureTransform;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static java.time.Duration.ofMillis;
+import static org.junit.jupiter.api.Assertions.assertTimeout;
 
 /*
  * DSS-1613 test
@@ -83,11 +81,7 @@ class XAdESLevelBEnvelopedWithXPath2FilterBigFileTest extends AbstractXAdESTestS
 	@Test
 	@Override
 	public void signAndVerify() {
-		assertTimeout(ofMillis(5000), () -> {
-			final DSSDocument signedDocument = sign();
-			SignedDocumentValidator validator = getValidator(signedDocument);
-			validator.validateDocument();
-		});
+		assertTimeout(ofMillis(5000), super::signAndVerify);
 	}
 
 	@Override

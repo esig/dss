@@ -29,7 +29,7 @@ import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.reference.XAdESReferenceValidation;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
-import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.Manifest;
 import org.apache.xml.security.signature.Reference;
@@ -157,7 +157,7 @@ public class ManifestValidator {
 	
 	private List<String> getTransformNames(Element refNode) {
 		List<String> transformNames = new ArrayList<>();
-		NodeList nodeList = DomUtils.getNodeList(refNode, XMLDSigPath.TRANSFORMS_TRANSFORM_PATH);
+		NodeList nodeList = XPathUtils.getNodeList(refNode, XMLDSigPath.TRANSFORMS_TRANSFORM_PATH);
 		if (nodeList != null && nodeList.getLength() > 0) {
 			for (int ii = 0; ii < nodeList.getLength(); ii++) {
 				Element transformElement = (Element) nodeList.item(ii);

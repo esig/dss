@@ -30,6 +30,7 @@ import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
 import eu.europa.esig.dss.xml.utils.DOMDocument;
 import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import eu.europa.esig.xmlers.XMLEvidenceRecordFacade;
 import eu.europa.esig.xmlers.jaxb.EvidenceRecordType;
 import jakarta.xml.bind.JAXBException;
@@ -69,7 +70,7 @@ public class XMLEvidenceRecordAnalyzer extends DefaultEvidenceRecordAnalyzer {
     }
 
     static {
-        DomUtils.registerNamespace(XMLERSNamespace.XMLERS);
+        XPathUtils.registerNamespace(XMLERSNamespace.XMLERS);
     }
 
     private Element toEvidenceRecordElement(DSSDocument document) {
@@ -86,7 +87,7 @@ public class XMLEvidenceRecordAnalyzer extends DefaultEvidenceRecordAnalyzer {
             } else {
                 documentNode = DomUtils.buildDOM(document);
             }
-            erElement = DomUtils.getElement(documentNode, XMLERSPath.EVIDENCE_RECORD_PATH);
+            erElement = XPathUtils.getElement(documentNode, XMLERSPath.EVIDENCE_RECORD_PATH);
 
         } catch (Exception e) {
             throw new IllegalInputException(String.format("An XML file is expected : %s", e.getMessage()), e);

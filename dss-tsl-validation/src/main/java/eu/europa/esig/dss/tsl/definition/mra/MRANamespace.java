@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.xades.definition.tsl.mra;
+package eu.europa.esig.dss.tsl.definition.mra;
 
 import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
 

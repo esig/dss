@@ -1,4 +1,4 @@
-package eu.europa.esig.dss.xades.definition.tsl.mra;
+package eu.europa.esig.dss.tsl.definition.mra;
 
 import eu.europa.esig.dss.xades.definition.tsl.TrustedListElement;
 import eu.europa.esig.dss.xml.common.definition.AbstractPath;
@@ -24,7 +24,7 @@ public class MRAPath extends AbstractPath {
     public static final XPathQuery CERTIFICATE_CONTENT_REFERENCE_EQUIVALENCE_CONTEXT_PATH = fromCurrentPosition(MRAElement.CERTIFICATE_CONTENT_REFERENCE_EQUIVALENCE_CONTEXT);
 
     /** The path to reach a mra:MutualRecognitionAgreementInformation element */
-    public static final XPathQuery MUTUAL_RECOGNITION_AGREEMENT_INFORMATION_PATH = fromCurrentPosition(MRAElement.MUTUAL_RECOGNITION_AGREEMENT_INFORMATION);
+    public static final XPathQuery MUTUAL_RECOGNITION_AGREEMENT_INFORMATION_PATH = all(MRAElement.MUTUAL_RECOGNITION_AGREEMENT_INFORMATION);
 
     /** The path to reach a mra:QualifierEquivalenceList element */
     public static final XPathQuery QUALIFIER_EQUIVALENCE_LIST_PATH = fromCurrentPosition(MRAElement.TRUST_SERVICE_EQUIVALENCE_INFORMATION,

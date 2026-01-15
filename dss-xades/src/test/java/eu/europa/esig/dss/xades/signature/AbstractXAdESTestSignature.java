@@ -39,24 +39,25 @@ import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.SignatureCertificateSource;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.x509.revocation.OfflineRevocationSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationCertificateSource;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationToken;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.test.signature.AbstractPkiFactoryTestDocumentSignatureService;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.dataobject.DSSDataObjectFormat;
-import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigAttribute;
-import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
-import eu.europa.esig.dss.xml.utils.DomUtils;
-import eu.europa.esig.validationreport.jaxb.SAMessageDigestType;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
+import eu.europa.esig.validationreport.jaxb.SAMessageDigestType;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.w3c.dom.Document;
@@ -102,8 +103,8 @@ public abstract class AbstractXAdESTestSignature extends AbstractPkiFactoryTestD
 		NodeList signatureNodeList = DSSXMLUtils.getAllSignaturesExceptCounterSignatures(documentDOM);
 		for (int i = 0; i < signatureNodeList.getLength(); i++) {
 			Element signatureElement = (Element) signatureNodeList.item(i);
-			NodeList referenceNodeList = DomUtils.getNodeList(signatureElement, XMLDSigPath.SIGNED_INFO_REFERENCE_PATH);
-			NodeList dataObjectFormatNodeList = DomUtils.getNodeList(signatureElement, new XAdES132Path().getDataObjectFormat());
+			NodeList referenceNodeList = XPathUtils.getNodeList(signatureElement, XMLDSigPath.SIGNED_INFO_REFERENCE_PATH);
+			NodeList dataObjectFormatNodeList = XPathUtils.getNodeList(signatureElement, new XAdES132Path().getDataObjectFormat());
 			for (int j = 0; j < referenceNodeList.getLength(); j++) {
 				Element reference = (Element) referenceNodeList.item(j);
 
@@ -138,7 +139,7 @@ public abstract class AbstractXAdESTestSignature extends AbstractPkiFactoryTestD
 		NodeList signatureNodeList = DSSXMLUtils.getAllSignaturesExceptCounterSignatures(documentDOM);
 		for (int i = 0; i < signatureNodeList.getLength(); i++) {
 			Element signatureElement = (Element) signatureNodeList.item(i);
-			NodeList dataObjectFormatNodeList = DomUtils.getNodeList(signatureElement, new XAdES132Path().getDataObjectFormat());
+			NodeList dataObjectFormatNodeList = XPathUtils.getNodeList(signatureElement, new XAdES132Path().getDataObjectFormat());
 
 			List<DSSDataObjectFormat> dataObjectFormatList = getSignatureParameters().getDataObjectFormatList();
 			for (int j = 0; j < dataObjectFormatNodeList.getLength(); j++) {
@@ -146,18 +147,18 @@ public abstract class AbstractXAdESTestSignature extends AbstractPkiFactoryTestD
 				String objectReference = dataObjectFormat.getAttribute(XAdES132Attribute.OBJECT_REFERENCE.getAttributeName());
 				assertNotNull(objectReference);
 
-				Element elementById = DomUtils.getElementById(documentDOM, DomUtils.getId(objectReference));
+				Element elementById = XPathUtils.getElementById(documentDOM, DomUtils.getId(objectReference));
 				assertNotNull(elementById);
 				assertTrue(XMLDSigElement.REFERENCE.isSameTagName(elementById.getLocalName()));
 
-				Element mimeTypeElement = DomUtils.getElement(dataObjectFormat, new XAdES132Path().getCurrentMimeType());
+				Element mimeTypeElement = XPathUtils.getElement(dataObjectFormat, new XAdES132Path().getCurrentMimeType());
 				assertNotNull(mimeTypeElement);
 				assertTrue(Utils.isStringNotEmpty(mimeTypeElement.getTextContent()));
 
 				if (dataObjectFormatList != null) {
 					DSSDataObjectFormat dssDOF = dataObjectFormatList.get(j);
 
-					Element descriptionElement = DomUtils.getElement(dataObjectFormat, new XAdES132Path().getCurrentDescription());
+					Element descriptionElement = XPathUtils.getElement(dataObjectFormat, new XAdES132Path().getCurrentDescription());
 					if (dssDOF.getDescription() != null) {
 						assertNotNull(descriptionElement);
 						assertEquals(dssDOF.getDescription(), descriptionElement.getTextContent());
@@ -165,7 +166,7 @@ public abstract class AbstractXAdESTestSignature extends AbstractPkiFactoryTestD
 						assertNull(descriptionElement);
 					}
 
-					Element objectIdentifierElement = DomUtils.getElement(dataObjectFormat, new XAdES132Path().getCurrentObjectIdentifier());
+					Element objectIdentifierElement = XPathUtils.getElement(dataObjectFormat, new XAdES132Path().getCurrentObjectIdentifier());
 					if (dssDOF.getObjectIdentifier() != null) {
 						ObjectIdentifier oId = dssDOF.getObjectIdentifier();
 						assertNotNull(objectIdentifierElement);
@@ -174,11 +175,11 @@ public abstract class AbstractXAdESTestSignature extends AbstractPkiFactoryTestD
 						assertNull(objectIdentifierElement);
 					}
 
-					mimeTypeElement = DomUtils.getElement(dataObjectFormat, new XAdES132Path().getCurrentMimeType());
+					mimeTypeElement = XPathUtils.getElement(dataObjectFormat, new XAdES132Path().getCurrentMimeType());
 					assertNotNull(mimeTypeElement);
 					assertEquals(dssDOF.getMimeType(), mimeTypeElement.getTextContent());
 
-					Element encodingElement = DomUtils.getElement(dataObjectFormat, new XAdES132Path().getCurrentEncoding());
+					Element encodingElement = XPathUtils.getElement(dataObjectFormat, new XAdES132Path().getCurrentEncoding());
 					if (dssDOF.getEncoding() != null) {
 						assertNotNull(encodingElement);
 						assertEquals(dssDOF.getEncoding(), encodingElement.getTextContent());
@@ -193,7 +194,7 @@ public abstract class AbstractXAdESTestSignature extends AbstractPkiFactoryTestD
 	protected void checkObjectIdentifierType(ObjectIdentifier objectIdentifier, Element objectIdentifierElement) {
 		assertNotNull(objectIdentifier);
 		if (Utils.isStringNotEmpty(objectIdentifier.getOid()) || Utils.isStringNotEmpty(objectIdentifier.getUri())) {
-			Element identifier = DomUtils.getElement(objectIdentifierElement, new XAdES132Path().getCurrentIdentifier());
+			Element identifier = XPathUtils.getElement(objectIdentifierElement, new XAdES132Path().getCurrentIdentifier());
 			assertNotNull(identifier);
 			assertTrue(identifier.getTextContent().equals(objectIdentifier.getOid()) || identifier.getTextContent().equals(objectIdentifier.getUri()));
 			if (objectIdentifier.getQualifier() != null) {
@@ -201,14 +202,14 @@ public abstract class AbstractXAdESTestSignature extends AbstractPkiFactoryTestD
 				assertEquals(objectIdentifier.getQualifier().getValue(), qualifier);
 			}
 		}
-		Element description = DomUtils.getElement(objectIdentifierElement, new XAdES132Path().getCurrentDescription());
+		Element description = XPathUtils.getElement(objectIdentifierElement, new XAdES132Path().getCurrentDescription());
 		if (objectIdentifier.getDescription() != null) {
 			assertNotNull(description);
 			assertEquals(objectIdentifier.getDescription(), description.getTextContent());
 		} else {
 			assertNull(description);
 		}
-		NodeList docRefs = DomUtils.getNodeList(objectIdentifierElement, new XAdES132Path().getCurrentDocumentationReferenceElements());
+		NodeList docRefs = XPathUtils.getNodeList(objectIdentifierElement, new XAdES132Path().getCurrentDocumentationReferenceElements());
 		assertNotNull(docRefs);
 		if (Utils.isArrayNotEmpty(objectIdentifier.getDocumentationReferences())) {
 			assertNotEquals(0, docRefs.getLength());

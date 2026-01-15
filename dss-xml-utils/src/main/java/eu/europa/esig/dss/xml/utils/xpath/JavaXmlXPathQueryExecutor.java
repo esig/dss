@@ -15,7 +15,7 @@ import javax.xml.xpath.XPathFactory;
  * Executes XPath expression query based on the {@code javax.xml.xpath.XPathExpression} class.
  *
  */
-public class JavaXmlXPathQueryExecutor extends AbstractXPathQueryExecutor {
+public class JavaXmlXPathQueryExecutor extends AbstractXPathQueryExecutor implements XPathStringExecutor {
 
     /** The used XPathFactory */
     private static final XPathFactory factory = XPathFactory.newInstance();
@@ -41,6 +41,7 @@ public class JavaXmlXPathQueryExecutor extends AbstractXPathQueryExecutor {
      *                    {@link String} XPath query string
      * @return the NodeList corresponding to the XPath query
      */
+    @Override
     public NodeList getNodeList(Node xmlNode, String xPathString) {
         try {
             final XPathExpression expr = createXPathExpression(xPathString);

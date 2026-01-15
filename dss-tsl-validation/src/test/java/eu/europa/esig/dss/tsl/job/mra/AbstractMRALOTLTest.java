@@ -49,6 +49,8 @@ import eu.europa.esig.dss.spi.tsl.TrustedListsCertificateSource;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
+import eu.europa.esig.dss.tsl.definition.mra.MRAElement;
+import eu.europa.esig.dss.tsl.definition.mra.MRAPath;
 import eu.europa.esig.dss.tsl.dto.condition.CertSubjectDNAttributeCondition;
 import eu.europa.esig.dss.tsl.dto.condition.CompositeCondition;
 import eu.europa.esig.dss.tsl.dto.condition.ExtendedKeyUsageCondition;
@@ -66,14 +68,13 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.definition.XAdESNamespace;
 import eu.europa.esig.dss.xades.definition.tsl.TrustedListElement;
 import eu.europa.esig.dss.xades.definition.tsl.TrustedListPath;
-import eu.europa.esig.dss.xades.definition.tsl.mra.MRAElement;
-import eu.europa.esig.dss.xades.definition.tsl.mra.MRAPath;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 import eu.europa.esig.dss.xades.tsl.TrustedListV5SignatureParametersBuilder;
 import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigNamespace;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
 import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
@@ -115,11 +116,11 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
 
     @BeforeAll
     static void init() {
-        DomUtils.registerNamespace(XMLDSigNamespace.NS);
-        DomUtils.registerNamespace(XAdESNamespace.XADES_132);
-        DomUtils.registerNamespace(TL_NAMESPACE);
-        DomUtils.registerNamespace(MRA_NAMESPACE);
-        DomUtils.registerNamespace(CONDITION_NAMESPACE);
+        XPathUtils.registerNamespace(XMLDSigNamespace.NS);
+        XPathUtils.registerNamespace(XAdESNamespace.XADES_132);
+        XPathUtils.registerNamespace(TL_NAMESPACE);
+        XPathUtils.registerNamespace(MRA_NAMESPACE);
+        XPathUtils.registerNamespace(CONDITION_NAMESPACE);
     }
 
     @Override
@@ -132,18 +133,18 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
     protected DSSDocument createZZTL() {
         Document tlDocument = DomUtils.buildDOM(getOriginalTL());
 
-        Element otherTSLPointerElement = DomUtils.getElement(tlDocument.getDocumentElement(), TrustedListPath.OTHER_TSL_POINTER_PATH);
+        Element otherTSLPointerElement = XPathUtils.getElement(tlDocument.getDocumentElement(), TrustedListPath.OTHER_TSL_POINTER_PATH);
         assertNotNull(otherTSLPointerElement);
 
-        Element lotlCertElement = DomUtils.getElement(otherTSLPointerElement, TrustedListPath.X509_CERTIFICATE_PATH);
+        Element lotlCertElement = XPathUtils.getElement(otherTSLPointerElement, TrustedListPath.X509_CERTIFICATE_PATH);
         assertNotNull(lotlCertElement);
         Text firstChild = (Text) lotlCertElement.getFirstChild();
         firstChild.setNodeValue(Utils.toBase64(getCertificate(SIGNER_LOTL_NAME).getEncoded()));
 
-        Element tspServiceSI = DomUtils.getElement(tlDocument.getDocumentElement(), TrustedListPath.TSP_SERVICE_INFORMATION_PATH);
-        Element originalTspServiceSDI = DomUtils.getElement(tspServiceSI,TrustedListPath.SERVICE_DIGITAL_IDENTITY_PATH);
+        Element tspServiceSI = XPathUtils.getElement(tlDocument.getDocumentElement(), TrustedListPath.TSP_SERVICE_INFORMATION_PATH);
+        Element originalTspServiceSDI = XPathUtils.getElement(tspServiceSI, TrustedListPath.SERVICE_DIGITAL_IDENTITY_PATH);
 
-        Element newTspServiceSDI = tlDocument.createElementNS(tspServiceSI.getNamespaceURI(), TrustedListElement.SERVICE_DIGITAL_IDENTITIES.getTagName());
+        Element newTspServiceSDI = tlDocument.createElementNS(tspServiceSI.getNamespaceURI(), TrustedListElement.SERVICE_DIGITAL_IDENTITY.getTagName());
         tspServiceSI.replaceChild(newTspServiceSDI, originalTspServiceSDI);
 
 
@@ -177,7 +178,7 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
         x509SKI.appendChild(valueNode);
 
 
-        Element signature = DomUtils.getElement(tlDocument.getDocumentElement(), XMLDSigPath.SIGNATURE_PATH);
+        Element signature = XPathUtils.getElement(tlDocument.getDocumentElement(), XMLDSigPath.SIGNATURE_PATH);
         tlDocument.getDocumentElement().removeChild(signature);
 
 
@@ -194,21 +195,20 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
     protected DSSDocument createZZLOTL() {
         Document lotlDocument = DomUtils.buildDOM(getOriginalLOTL());
 
-        NodeList tslPointers = DomUtils.getNodeList(lotlDocument.getDocumentElement(), TrustedListPath.OTHER_TSL_POINTER_PATH);
+        NodeList tslPointers = XPathUtils.getNodeList(lotlDocument.getDocumentElement(), TrustedListPath.OTHER_TSL_POINTER_PATH);
         assertEquals(44, tslPointers.getLength());
 
         Element zzTslPointer = (Element) tslPointers.item(43);
 
-        Element tlCertElement = DomUtils.getElement(zzTslPointer, TrustedListPath.X509_CERTIFICATE_PATH);
+        Element tlCertElement = XPathUtils.getElement(zzTslPointer, TrustedListPath.X509_CERTIFICATE_PATH);
         Text firstChild = (Text) tlCertElement.getFirstChild();
         firstChild.setNodeValue(Utils.toBase64(getCertificate(SIGNER_ZZ_TL_NAME).getEncoded()));
 
 
-        Element mraInformation = DomUtils.getElement(zzTslPointer, MRAPath.MUTUAL_RECOGNITION_AGREEMENT_INFORMATION_PATH);
+        Element mraInformation = XPathUtils.getElement(zzTslPointer, MRAPath.MUTUAL_RECOGNITION_AGREEMENT_INFORMATION_PATH);
         configureMRAInformationElement(lotlDocument, mraInformation);
 
-
-        Element signature = DomUtils.getElement(lotlDocument.getDocumentElement(), XMLDSigPath.SIGNATURE_PATH);
+        Element signature = XPathUtils.getElement(lotlDocument.getDocumentElement(), XMLDSigPath.SIGNATURE_PATH);
         lotlDocument.getDocumentElement().removeChild(signature);
 
 
@@ -234,28 +234,28 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
     protected void configureMRAInformationElement(Document document, Element mraInformation) {
         String trustServiceLegalIdentifier = getTrustServiceLegalIdentifier();
         if (Utils.isStringNotEmpty(trustServiceLegalIdentifier)) {
-            Element trustServiceLegalIdentifierElement = DomUtils.getElement(mraInformation, MRAPath.TRUST_SERVICE_LEGAL_IDENTIFIER_PATH);
+            Element trustServiceLegalIdentifierElement = XPathUtils.getElement(mraInformation, MRAPath.TRUST_SERVICE_LEGAL_IDENTIFIER_PATH);
             setText(trustServiceLegalIdentifierElement, trustServiceLegalIdentifier);
         }
 
-        Element trustServiceTSLTypeListPointedParty = DomUtils.getElement(mraInformation, MRAPath.TRUST_SERVICE_TSL_TYPE_LIST_POINTED_PARTY_PATH);
+        Element trustServiceTSLTypeListPointedParty = XPathUtils.getElement(mraInformation, MRAPath.TRUST_SERVICE_TSL_TYPE_LIST_POINTED_PARTY_PATH);
 
         String serviceTypeIdentifierPointedParty = getTrustServiceTSLTypeListPointedPartyServiceTypeIdentifier();
         if (Utils.isStringNotEmpty(serviceTypeIdentifierPointedParty)) {
-            Element serviceTypeIdentifierElement = DomUtils.getElement(trustServiceTSLTypeListPointedParty, MRAPath.SERVICE_TYPE_IDENTIFIER_PATH);
+            Element serviceTypeIdentifierElement = XPathUtils.getElement(trustServiceTSLTypeListPointedParty, MRAPath.SERVICE_TYPE_IDENTIFIER_PATH);
             setText(serviceTypeIdentifierElement, serviceTypeIdentifierPointedParty);
         }
 
         String asiPointedParty = getTrustServiceTSLTypeListPointedPartyAdditionalServiceInformation();
         if (Utils.isStringNotEmpty(asiPointedParty)) {
-            Element trustServiceTSLType = DomUtils.getElement(trustServiceTSLTypeListPointedParty, MRAPath.TRUST_SERVICE_TSL_TYPE_PATH);
-            NodeList asiList = DomUtils.getNodeList(trustServiceTSLType, TrustedListPath.ADDITIONAL_SERVICE_INFORMATION_PATH);
+            Element trustServiceTSLType = XPathUtils.getElement(trustServiceTSLTypeListPointedParty, MRAPath.TRUST_SERVICE_TSL_TYPE_PATH);
+            NodeList asiList = XPathUtils.getNodeList(trustServiceTSLType, TrustedListPath.ADDITIONAL_SERVICE_INFORMATION_PATH);
             if (asiList != null && asiList.getLength() > 0) {
                 for (int i = 0; i < asiList.getLength(); i++) {
                     trustServiceTSLType.removeChild(asiList.item(i));
                 }
             }
-            Element newAsiElement = document.createElementNS(TL_NAMESPACE.getUri(), TrustedListElement.ADDITIONAL_INFORMATION.getTagName());
+            Element newAsiElement = document.createElementNS(TL_NAMESPACE.getUri(), TrustedListElement.ADDITIONAL_SERVICE_INFORMATION.getTagName());
             trustServiceTSLType.appendChild(newAsiElement);
 
             Element uriElement = document.createElementNS(TL_NAMESPACE.getUri(), TrustedListElement.URI.getTagName());
@@ -265,24 +265,24 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
             setText(uriElement, asiPointedParty);
         }
 
-        Element trustServiceTSLTypeListPointingParty = DomUtils.getElement(mraInformation, MRAPath.TRUST_SERVICE_TSL_TYPE_LIST_POINTING_PARTY_PATH);
+        Element trustServiceTSLTypeListPointingParty = XPathUtils.getElement(mraInformation, MRAPath.TRUST_SERVICE_TSL_TYPE_LIST_POINTING_PARTY_PATH);
 
         String serviceTypeIdentifierPointingParty = getTrustServiceTSLTypeListPointingPartyServiceTypeIdentifier();
         if (Utils.isStringNotEmpty(serviceTypeIdentifierPointingParty)) {
-            Element serviceTypeIdentifierElement = DomUtils.getElement(trustServiceTSLTypeListPointingParty, MRAPath.SERVICE_TYPE_IDENTIFIER_PATH);
+            Element serviceTypeIdentifierElement = XPathUtils.getElement(trustServiceTSLTypeListPointingParty, MRAPath.SERVICE_TYPE_IDENTIFIER_PATH);
             setText(serviceTypeIdentifierElement, serviceTypeIdentifierPointingParty);
         }
 
         String asiPointingParty = getTrustServiceTSLTypeListPointingPartyAdditionalServiceInformation();
         if (Utils.isStringNotEmpty(asiPointingParty)) {
-            Element trustServiceTSLType = DomUtils.getElement(trustServiceTSLTypeListPointingParty, MRAPath.TRUST_SERVICE_TSL_TYPE_PATH);
-            NodeList asiList = DomUtils.getNodeList(trustServiceTSLType, TrustedListPath.ADDITIONAL_SERVICE_INFORMATION_PATH);
+            Element trustServiceTSLType = XPathUtils.getElement(trustServiceTSLTypeListPointingParty, MRAPath.TRUST_SERVICE_TSL_TYPE_PATH);
+            NodeList asiList = XPathUtils.getNodeList(trustServiceTSLType, TrustedListPath.ADDITIONAL_SERVICE_INFORMATION_PATH);
             if (asiList != null && asiList.getLength() > 0) {
                 for (int i = 0; i < asiList.getLength(); i++) {
                     trustServiceTSLType.removeChild(asiList.item(i));
                 }
             }
-            Element newAsiElement = document.createElementNS(TL_NAMESPACE.getUri(), TrustedListElement.ADDITIONAL_INFORMATION.getTagName());
+            Element newAsiElement = document.createElementNS(TL_NAMESPACE.getUri(), TrustedListElement.ADDITIONAL_SERVICE_INFORMATION.getTagName());
             trustServiceTSLType.appendChild(newAsiElement);
 
             Element uriElement = document.createElementNS(TL_NAMESPACE.getUri(), TrustedListElement.URI.getTagName());
@@ -294,38 +294,38 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
 
         String trustServiceEquivalenceStatus = getTrustServiceEquivalenceStatus();
         if (Utils.isStringNotEmpty(trustServiceEquivalenceStatus)) {
-            Element trustServiceEquivalenceStatusElement = DomUtils.getElement(mraInformation, MRAPath.TRUST_SERVICE_EQUIVALENCE_INFORMATION_STATUS_PATH);
+            Element trustServiceEquivalenceStatusElement = XPathUtils.getElement(mraInformation, MRAPath.TRUST_SERVICE_EQUIVALENCE_INFORMATION_STATUS_PATH);
             setText(trustServiceEquivalenceStatusElement, trustServiceEquivalenceStatus);
         }
 
         Date trustServiceEquivalenceStatusStartingTime = getTrustServiceEquivalenceStatusStartingTime();
         if (trustServiceEquivalenceStatusStartingTime != null) {
             String timeString = DSSUtils.formatDateToRFC(trustServiceEquivalenceStatusStartingTime);
-            Element trustServiceEquivalenceStatusStartingTimeElement = DomUtils.getElement(mraInformation, MRAPath.TRUST_SERVICE_EQUIVALENCE_INFORMATION_STATUS_STARTING_TIME_PATH);
+            Element trustServiceEquivalenceStatusStartingTimeElement = XPathUtils.getElement(mraInformation, MRAPath.TRUST_SERVICE_EQUIVALENCE_INFORMATION_STATUS_STARTING_TIME_PATH);
             setText(trustServiceEquivalenceStatusStartingTimeElement, timeString);
         }
 
         String validEquivalencePointedParty = getTrustServiceTSLTypeListPointedPartyTrustServiceTSLStatusValidEquivalence();
         if (Utils.isStringNotEmpty(validEquivalencePointedParty)) {
-            Element trustServiceTSLStatusListPointedParty = DomUtils.getElement(mraInformation, MRAPath.TRUST_SERVICE_TSL_STATUS_VALID_EQUIVALENCE_LIST_POINTED_PARTY_SERVICE_STATUS_PATH);
+            Element trustServiceTSLStatusListPointedParty = XPathUtils.getElement(mraInformation, MRAPath.TRUST_SERVICE_TSL_STATUS_VALID_EQUIVALENCE_LIST_POINTED_PARTY_SERVICE_STATUS_PATH);
             setText(trustServiceTSLStatusListPointedParty, validEquivalencePointedParty);
         }
 
         String validEquivalencePointingParty = getTrustServiceTSLTypeListPointingPartyTrustServiceTSLStatusValidEquivalence();
         if (Utils.isStringNotEmpty(validEquivalencePointingParty)) {
-            Element trustServiceTSLStatusListPointingParty = DomUtils.getElement(mraInformation, MRAPath.TRUST_SERVICE_TSL_STATUS_VALID_EQUIVALENCE_LIST_POINTING_PARTY_SERVICE_STATUS_PATH);
+            Element trustServiceTSLStatusListPointingParty = XPathUtils.getElement(mraInformation, MRAPath.TRUST_SERVICE_TSL_STATUS_VALID_EQUIVALENCE_LIST_POINTING_PARTY_SERVICE_STATUS_PATH);
             setText(trustServiceTSLStatusListPointingParty, validEquivalencePointingParty);
         }
 
         String invalidEquivalencePointedParty = getTrustServiceTSLTypeListPointedPartyTrustServiceTSLStatusInvalidEquivalence();
         if (Utils.isStringNotEmpty(invalidEquivalencePointedParty)) {
-            Element trustServiceTSLStatusListPointedParty = DomUtils.getElement(mraInformation, MRAPath.TRUST_SERVICE_TSL_STATUS_INVALID_EQUIVALENCE_LIST_POINTED_PARTY_SERVICE_STATUS_PATH);
+            Element trustServiceTSLStatusListPointedParty = XPathUtils.getElement(mraInformation, MRAPath.TRUST_SERVICE_TSL_STATUS_INVALID_EQUIVALENCE_LIST_POINTED_PARTY_SERVICE_STATUS_PATH);
             setText(trustServiceTSLStatusListPointedParty, invalidEquivalencePointedParty);
         }
 
         String invalidEquivalencePointingParty = getTrustServiceTSLTypeListPointingPartyTrustServiceTSLStatusInvalidEquivalence();
         if (Utils.isStringNotEmpty(invalidEquivalencePointingParty)) {
-            Element trustServiceTSLStatusListPointingParty = DomUtils.getElement(mraInformation, MRAPath.TRUST_SERVICE_TSL_STATUS_INVALID_EQUIVALENCE_LIST_POINTING_PARTY_SERVICE_STATUS_PATH);
+            Element trustServiceTSLStatusListPointingParty = XPathUtils.getElement(mraInformation, MRAPath.TRUST_SERVICE_TSL_STATUS_INVALID_EQUIVALENCE_LIST_POINTING_PARTY_SERVICE_STATUS_PATH);
             setText(trustServiceTSLStatusListPointingParty, invalidEquivalencePointingParty);
         }
 
@@ -333,10 +333,10 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
         Element qcTypeCertificateContentReferenceEquivalence = null;
         Element qcQSCDCertificateContentReferenceEquivalence = null;
 
-        NodeList certificateContentReferencesEquivalenceList = DomUtils.getNodeList(mraInformation, MRAPath.CERTIFICATE_CONTENT_REFERENCES_EQUIVALENCE_PATH);
+        NodeList certificateContentReferencesEquivalenceList = XPathUtils.getNodeList(mraInformation, MRAPath.CERTIFICATE_CONTENT_REFERENCES_EQUIVALENCE_PATH);
         for (int i = 0; i < certificateContentReferencesEquivalenceList.getLength(); i++) {
             Element certificateContentReferencesEquivalence = (Element) certificateContentReferencesEquivalenceList.item(i);
-            Element certificateContentReferenceEquivalenceContext = DomUtils.getElement(certificateContentReferencesEquivalence, MRAPath.CERTIFICATE_CONTENT_REFERENCE_EQUIVALENCE_CONTEXT_PATH);
+            Element certificateContentReferenceEquivalenceContext = XPathUtils.getElement(certificateContentReferencesEquivalence, MRAPath.CERTIFICATE_CONTENT_REFERENCE_EQUIVALENCE_CONTEXT_PATH);
             if (certificateContentReferenceEquivalenceContext != null) {
                 Text textValue = (Text) certificateContentReferenceEquivalenceContext.getFirstChild();
                 if (MRAEquivalenceContext.QC_COMPLIANCE.getUri().equals(textValue.getWholeText())) {
@@ -353,7 +353,7 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
         assertNotNull(qcTypeCertificateContentReferenceEquivalence);
         assertNotNull(qcQSCDCertificateContentReferenceEquivalence);
 
-        Element qcComplianceCertificateContentDeclarationPointedPartyElement = DomUtils.getElement(
+        Element qcComplianceCertificateContentDeclarationPointedPartyElement = XPathUtils.getElement(
                 qcComplianceCertificateContentReferenceEquivalence, MRAPath.CERTIFICATE_CONTENT_DECLARATION_POINTED_PARTY_PATH);
 
         Assert qcCompliancePointedPartyAssertStatus = getCertificateContentDeclarationPointedPartyQcComplianceAssertStatus();
@@ -367,7 +367,7 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
             setCondition(document, qcComplianceCertificateContentDeclarationPointedPartyElement, qcCompliancePointedParty);
         }
 
-        Element qcComplianceCertificateContentDeclarationPointingPartyElement = DomUtils.getElement(
+        Element qcComplianceCertificateContentDeclarationPointingPartyElement = XPathUtils.getElement(
                 qcComplianceCertificateContentReferenceEquivalence, MRAPath.CERTIFICATE_CONTENT_DECLARATION_POINTING_PARTY_PATH);
 
         Assert qcCompliancePointingPartyAssertStatus = getCertificateContentDeclarationPointingPartyQcComplianceAssertStatus();
@@ -381,7 +381,7 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
             setCondition(document, qcComplianceCertificateContentDeclarationPointingPartyElement, qcCompliancePointingParty);
         }
 
-        Element qcTypeCertificateContentDeclarationPointedPartyElement = DomUtils.getElement(
+        Element qcTypeCertificateContentDeclarationPointedPartyElement = XPathUtils.getElement(
                 qcTypeCertificateContentReferenceEquivalence, MRAPath.CERTIFICATE_CONTENT_DECLARATION_POINTED_PARTY_PATH);
 
         Assert qcTypePointedPartyAssertStatus = getCertificateContentDeclarationPointedPartyQcTypeAssertStatus();
@@ -395,7 +395,7 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
             setCondition(document, qcTypeCertificateContentDeclarationPointedPartyElement, qcTypePointedParty);
         }
 
-        Element qcTypeCertificateContentDeclarationPointingPartyElement = DomUtils.getElement(
+        Element qcTypeCertificateContentDeclarationPointingPartyElement = XPathUtils.getElement(
                 qcTypeCertificateContentReferenceEquivalence, MRAPath.CERTIFICATE_CONTENT_DECLARATION_POINTING_PARTY_PATH);
 
         Assert qcTypePointingPartyAssertStatus = getCertificateContentDeclarationPointingPartyQcTypeAssertStatus();
@@ -409,7 +409,7 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
             setCondition(document, qcTypeCertificateContentDeclarationPointingPartyElement, qcTypePointingParty);
         }
 
-        Element qcQSCDCertificateContentDeclarationPointedPartyElement = DomUtils.getElement(
+        Element qcQSCDCertificateContentDeclarationPointedPartyElement = XPathUtils.getElement(
                 qcQSCDCertificateContentReferenceEquivalence, MRAPath.CERTIFICATE_CONTENT_DECLARATION_POINTED_PARTY_PATH);
 
         Assert qcQSCDPointedPartyAssertStatus = getCertificateContentDeclarationPointedPartyQcQSCDAssertStatus();
@@ -423,7 +423,7 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
             setCondition(document, qcQSCDCertificateContentDeclarationPointedPartyElement, qcQSCDPointedParty);
         }
 
-        Element qcQSCDCertificateContentDeclarationPointingPartyElement = DomUtils.getElement(
+        Element qcQSCDCertificateContentDeclarationPointingPartyElement = XPathUtils.getElement(
                 qcQSCDCertificateContentReferenceEquivalence, MRAPath.CERTIFICATE_CONTENT_DECLARATION_POINTING_PARTY_PATH);
 
         Assert qcQSCDPointingPartyAssertStatus = getCertificateContentDeclarationPointingPartyQcQSCDAssertStatus();
@@ -439,7 +439,7 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
 
         Map<String, String> qualifierEquivalenceMap = getQualifierEquivalenceMap();
         if (qualifierEquivalenceMap != null) {
-            Element qualifierEquivalenceListElement = DomUtils.getElement(mraInformation, MRAPath.QUALIFIER_EQUIVALENCE_LIST_PATH);
+            Element qualifierEquivalenceListElement = XPathUtils.getElement(mraInformation, MRAPath.QUALIFIER_EQUIVALENCE_LIST_PATH);
             if (Utils.isMapEmpty(qualifierEquivalenceMap)) {
                 removeElement(qualifierEquivalenceListElement);
             } else {
@@ -459,18 +459,18 @@ public abstract class AbstractMRALOTLTest extends PKIFactoryAccess {
             }
         }
 
-        Element trustServiceEquivalenceHistoryElement = DomUtils.getElement(mraInformation, MRAPath.TRUST_SERVICE_EQUIVALENCE_HISTORY_INSTANCE_PATH);
+        Element trustServiceEquivalenceHistoryElement = XPathUtils.getElement(mraInformation, MRAPath.TRUST_SERVICE_EQUIVALENCE_HISTORY_INSTANCE_PATH);
         if (trustServiceEquivalenceHistoryElement != null) {
             String trustServiceEquivalenceHistoryStatus = getTrustServiceEquivalenceHistoryStatus();
             if (Utils.isStringNotEmpty(trustServiceEquivalenceHistoryStatus)) {
-                Element trustServiceEquivalenceStatusElement = DomUtils.getElement(trustServiceEquivalenceHistoryElement, MRAPath.TRUST_SERVICE_EQUIVALENCE_STATUS_PATH);
+                Element trustServiceEquivalenceStatusElement = XPathUtils.getElement(trustServiceEquivalenceHistoryElement, MRAPath.TRUST_SERVICE_EQUIVALENCE_STATUS_PATH);
                 setText(trustServiceEquivalenceStatusElement, trustServiceEquivalenceHistoryStatus);
             }
 
             Date trustServiceEquivalenceHistoryStatusStartingTime = getTrustServiceEquivalenceHistoryStatusStartingTime();
             if (trustServiceEquivalenceHistoryStatusStartingTime != null) {
                 String timeString = DSSUtils.formatDateToRFC(trustServiceEquivalenceHistoryStatusStartingTime);
-                Element trustServiceEquivalenceStatusStartingTimeElement = DomUtils.getElement(trustServiceEquivalenceHistoryElement, MRAPath.TRUST_SERVICE_EQUIVALENCE_STATUS_STARTING_TIME_PATH);
+                Element trustServiceEquivalenceStatusStartingTimeElement = XPathUtils.getElement(trustServiceEquivalenceHistoryElement, MRAPath.TRUST_SERVICE_EQUIVALENCE_STATUS_STARTING_TIME_PATH);
                 setText(trustServiceEquivalenceStatusStartingTimeElement, timeString);
             }
         }

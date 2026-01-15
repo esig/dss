@@ -44,6 +44,7 @@ import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
 import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -88,14 +89,14 @@ class ExtendWithLastTimestampValidationDataTest extends PKIFactoryAccess {
 		XAdESPath xadesPaths = new XAdES132Path();
 
 		Document extendedDocDom = DomUtils.buildDOM(doubleExtendedDocument);
-		NodeList signatures = DomUtils.getNodeList(extendedDocDom, XMLDSigPath.ALL_SIGNATURES_PATH);
+		NodeList signatures = XPathUtils.getNodeList(extendedDocDom, XMLDSigPath.ALL_SIGNATURES_PATH);
 		assertEquals(1, signatures.getLength());
 		Node signatureElement = signatures.item(0);
-		Node unsignedSignatureProperties = DomUtils.getNode(signatureElement, xadesPaths.getUnsignedSignaturePropertiesPath());
+		Node unsignedSignatureProperties = XPathUtils.getNode(signatureElement, xadesPaths.getUnsignedSignaturePropertiesPath());
 		Node lastArchveTST = unsignedSignatureProperties.getLastChild();
 		unsignedSignatureProperties.removeChild(lastArchveTST);
 
-		NodeList timestampValidationData = DomUtils.getNodeList(signatureElement, xadesPaths.getTimestampValidationDataPath());
+		NodeList timestampValidationData = XPathUtils.getNodeList(signatureElement, xadesPaths.getTimestampValidationDataPath());
 		assertEquals(2, timestampValidationData.getLength());
 		
 		DSSDocument ltaWithTSValidationData = DomUtils.createDssDocumentFromDomDocument(extendedDocDom, "LTAWithTimeStampValidationData.xml");
@@ -162,11 +163,11 @@ class ExtendWithLastTimestampValidationDataTest extends PKIFactoryAccess {
 		assertEquals(1, ocspCounter);
 
 		Document newExtendedDocDom = DomUtils.buildDOM(newExtendedDocument);
-		signatures = DomUtils.getNodeList(newExtendedDocDom, XMLDSigPath.ALL_SIGNATURES_PATH);
+		signatures = XPathUtils.getNodeList(newExtendedDocDom, XMLDSigPath.ALL_SIGNATURES_PATH);
 		assertEquals(1, signatures.getLength());
 		signatureElement = signatures.item(0);
 		assertNotNull(signatureElement);
-		timestampValidationData = DomUtils.getNodeList(signatureElement, xadesPaths.getTimestampValidationDataPath());
+		timestampValidationData = XPathUtils.getNodeList(signatureElement, xadesPaths.getTimestampValidationDataPath());
 		assertEquals(2, timestampValidationData.getLength());
 		
 	}

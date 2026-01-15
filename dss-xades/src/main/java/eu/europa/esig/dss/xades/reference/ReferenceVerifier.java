@@ -20,11 +20,12 @@
  */
 package eu.europa.esig.dss.xades.reference;
 
-import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.apache.xml.security.transforms.Transforms;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,7 +76,7 @@ public class ReferenceVerifier {
                 if (DomUtils.isElementReference(reference.getUri()) && !DSSXMLUtils.isObjectReferenceType(reference.getType()) && DomUtils.isDOM(reference.getContents())) {
                     Document document = DomUtils.buildDOM(reference.getContents());
                     String id = DomUtils.getId(reference.getUri());
-                    if (DomUtils.getElementById(document, id) == null) {
+                    if (XPathUtils.getElementById(document, id) == null) {
                         throw new IllegalArgumentException(String.format("An element with Id '%s' has not been found in the provided content!", id));
                     }
                 }

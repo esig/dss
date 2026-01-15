@@ -5,7 +5,6 @@ import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.definition.XAdESPath;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigAttribute;
-import eu.europa.esig.dss.xml.utils.DomUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -32,9 +31,6 @@ public class XAdESDOMDocument {
 
     /** Cached list of ds:Signature nodes, except counter signatures */
     private NodeList signatureNodes;
-
-    /** Stores the state of the Id browsing procedure */
-    private boolean idBrowsingCompleted;
 
     /**
      * Default constructor instantiating a XAdES DOM document using XAdES 1.3.2 namespace paths
@@ -91,28 +87,12 @@ public class XAdESDOMDocument {
     }
 
     /**
-     * Gets element with the requested Id.
-     * This method uses a cached map of identifiers for a value extraction
-     *
-     * @param id {@link String} to get
-     * @return {@link Element}
-     */
-    public Element getElementById(String id) {
-        recursiveIdBrowse();
-        id = DomUtils.getId(id);
-        return document.getElementById(id);
-    }
-
-    /**
      * An ID attribute can only be dereferenced if it is declared in the validation context. This behaviour is caused by
      * the fact that the attribute does not have attached type of information. Another solution is to parse the XML
      * against some DTD or XML schema. This process adds the necessary type of information to each ID attribute.
      */
     public void recursiveIdBrowse() {
-        if (!idBrowsingCompleted) {
-            recursiveIdBrowse(document.getDocumentElement());
-            idBrowsingCompleted = true;
-        }
+        recursiveIdBrowse(document.getDocumentElement());
     }
 
     /**

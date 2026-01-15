@@ -30,11 +30,10 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.xades.definition.XAdESPath;
-import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import eu.europa.esig.validationreport.jaxb.SACertIDListType;
 import eu.europa.esig.validationreport.jaxb.SARevIDListType;
 import eu.europa.esig.validationreport.jaxb.SignatureAttributesType;
-
 import jakarta.xml.bind.JAXBElement;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -100,9 +99,9 @@ class XAdESLevelCSelfSignedUserTest extends XAdESLevelCTest {
     @Override
     protected void validateCompleteRevocationRefsList(NodeList completeRevocationRefsList, XAdESPath paths) {
         Node completeRevocationRefNode = completeRevocationRefsList.item(0);
-        NodeList crlRefs = DomUtils.getNodeList(completeRevocationRefNode, paths.getCurrentCRLRefsChildren());
+        NodeList crlRefs = XPathUtils.getNodeList(completeRevocationRefNode, paths.getCurrentCRLRefsChildren());
         assertEquals(1, crlRefs.getLength());
-        NodeList ocspRefs = DomUtils.getNodeList(completeRevocationRefNode, paths.getCurrentOCSPRefsChildren());
+        NodeList ocspRefs = XPathUtils.getNodeList(completeRevocationRefNode, paths.getCurrentOCSPRefsChildren());
         assertEquals(0, ocspRefs.getLength());
     }
 

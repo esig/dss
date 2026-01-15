@@ -26,6 +26,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.definition.tsl.TrustedListNamespace;
 import eu.europa.esig.dss.xades.definition.tsl.TrustedListPath;
 import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -47,7 +48,7 @@ public final class XAdESTrustedListUtils {
     public static final Integer TL_V6_IDENTIFIER = 6;
 
     static {
-        DomUtils.registerNamespace(TrustedListNamespace.NS);
+        XPathUtils.registerNamespace(TrustedListNamespace.NS);
     }
 
     /**
@@ -64,7 +65,7 @@ public final class XAdESTrustedListUtils {
      * @return {@link Integer} XML Trusted List version
      */
     public static Integer getTSLVersionIdentifier(Document documentDom) {
-        Element tlVersionIdentifierElement = DomUtils.getElement(documentDom.getDocumentElement(), TrustedListPath.TSL_VERSION_IDENTIFIER_PATH);
+        Element tlVersionIdentifierElement = XPathUtils.getElement(documentDom.getDocumentElement(), TrustedListPath.TSL_VERSION_IDENTIFIER_PATH);
         if (tlVersionIdentifierElement != null) {
             String tlVersionIdentifier = tlVersionIdentifierElement.getTextContent();
             if (tlVersionIdentifier != null && Utils.isStringDigits(tlVersionIdentifier)) {

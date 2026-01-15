@@ -24,6 +24,7 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.transforms.Transform;
@@ -74,7 +75,7 @@ public abstract class ComplexTransform extends AbstractTransform {
 			createTransform(document, transformsDom);
 			final NodeList childNodes = transformsDom.getFirstChild().getChildNodes();
 			final Transform transform = new Transform(document, algorithm, childNodes);
-			for (Entry<String, String> namespace : DomUtils.getCurrentNamespaces().entrySet()) {
+			for (Entry<String, String> namespace : XPathUtils.getNamespaceContextMap().getPrefixMap().entrySet()) {
 				transform.setXPathNamespaceContext(namespace.getKey(), namespace.getValue());
 			}
 			return transform;

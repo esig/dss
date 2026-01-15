@@ -1,15 +1,15 @@
 package eu.europa.esig.dss.xml.utils.xpath;
 
-import eu.europa.esig.dss.xml.common.xpath.XPathQuery;
 import eu.europa.esig.dss.xml.utils.NamespaceContextMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+
 /**
- * This class executes the given {@code eu.europa.esig.dss.xml.common.xpath.XPathQuery}.
+ * This class executes the given XPath String expression.
  *
  */
-public interface XPathQueryExecutor {
+public interface XPathStringExecutor {
 
     /**
      * Sets the namespace context map containing a declaration of namespaces defined within the used XPath expressions
@@ -23,10 +23,10 @@ public interface XPathQueryExecutor {
      *
      * @param xmlNode
      *                    The node where the search should be performed.
-     * @param xPathQuery
-     *                    {@link XPathQuery}
+     * @param xPathString
+     *                    {@link String} XPath query string
      * @return the NodeList corresponding to the XPath query
      */
-    NodeList getNodeList(final Node xmlNode, final XPathQuery xPathQuery);
+    NodeList getNodeList(final Node xmlNode, final String xPathString);
 
 }

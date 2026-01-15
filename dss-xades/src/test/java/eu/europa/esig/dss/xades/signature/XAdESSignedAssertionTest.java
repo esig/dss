@@ -20,12 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import eu.europa.esig.dss.xades.DSSXMLUtils;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
-import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigAttribute;
-import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
-import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -35,8 +29,15 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigAttribute;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -114,8 +115,8 @@ class XAdESSignedAssertionTest extends AbstractXAdESTestSignature {
 		NodeList signatureNodeList = DSSXMLUtils.getAllSignaturesExceptCounterSignatures(documentDOM);
 		// validate only the first
 		Element signatureElement = (Element) signatureNodeList.item(0);
-		NodeList referenceNodeList = DomUtils.getNodeList(signatureElement, XMLDSigPath.SIGNED_INFO_REFERENCE_PATH);
-		NodeList dataObjectFormatNodeList = DomUtils.getNodeList(signatureElement, new XAdES132Path().getDataObjectFormat());
+		NodeList referenceNodeList = XPathUtils.getNodeList(signatureElement, XMLDSigPath.SIGNED_INFO_REFERENCE_PATH);
+		NodeList dataObjectFormatNodeList = XPathUtils.getNodeList(signatureElement, new XAdES132Path().getDataObjectFormat());
 		for (int j = 0; j < referenceNodeList.getLength(); j++) {
 			Element reference = (Element) referenceNodeList.item(j);
 

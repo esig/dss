@@ -62,6 +62,7 @@ import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.xml.common.xpath.XPathQueryBuilder;
 import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -438,7 +439,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	 */
 	protected String removeOldCertificateValues() {
 		String text = null;
-		final Element toRemove = DomUtils.getElement(xadesSignature.getSignatureElement(), xadesPath.getCertificateValuesPath());
+		final Element toRemove = XPathUtils.getElement(xadesSignature.getSignatureElement(), xadesPath.getCertificateValuesPath());
 		if (toRemove != null) {
 			text = removeNode(toRemove);
 			xadesSignature.resetCertificateSource();
@@ -450,7 +451,7 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	 * This method removes old revocation values from the unsigned signature properties element.
 	 */
 	protected void removeOldRevocationValues() {
-		final Element toRemove = DomUtils.getElement(xadesSignature.getSignatureElement(), xadesPath.getRevocationValuesPath());
+		final Element toRemove = XPathUtils.getElement(xadesSignature.getSignatureElement(), xadesPath.getRevocationValuesPath());
 		if (toRemove != null) {
 			removeNode(toRemove);
 			xadesSignature.resetRevocationSources();
@@ -483,9 +484,9 @@ public class XAdESLevelBaselineT extends ExtensionBuilder implements SignatureEx
 	}
 
 	private Element getLastElementIfPresent(DSSElement... xadesElements) {
-		final Node unsignedSignatureProperties = DomUtils.getNode(xadesSignature.getSignatureElement(), xadesPath.getUnsignedSignaturePropertiesPath());
+		final Node unsignedSignatureProperties = XPathUtils.getNode(xadesSignature.getSignatureElement(), xadesPath.getUnsignedSignaturePropertiesPath());
 		if (unsignedSignatureProperties != null) {
-			NodeList childNodes = DomUtils.getNodeList(unsignedSignatureProperties, XPathQueryBuilder.fromCurrentPosition().build());
+			NodeList childNodes = XPathUtils.getNodeList(unsignedSignatureProperties, XPathQueryBuilder.fromCurrentPosition().build());
 			if (childNodes.getLength() > 0) {
 				final Element unsignedSignatureElement = (Element) childNodes.item(childNodes.getLength() - 1);
 				final String nodeName = unsignedSignatureElement.getLocalName();

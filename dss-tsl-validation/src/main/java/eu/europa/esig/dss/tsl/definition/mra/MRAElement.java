@@ -1,6 +1,5 @@
-package eu.europa.esig.dss.xades.definition.tsl.mra;
+package eu.europa.esig.dss.tsl.definition.mra;
 
-import eu.europa.esig.dss.xades.definition.tsl.TrustedListNamespace;
 import eu.europa.esig.dss.xml.common.definition.DSSElement;
 import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
 
@@ -124,7 +123,7 @@ public enum MRAElement implements DSSElement {
      */
     MRAElement(String tagName) {
         this.tagName = tagName;
-        this.namespace = TrustedListNamespace.NS;
+        this.namespace = MRANamespace.NS;
     }
 
     @Override

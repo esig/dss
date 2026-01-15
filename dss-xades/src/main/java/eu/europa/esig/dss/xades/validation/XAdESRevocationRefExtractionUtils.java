@@ -30,6 +30,7 @@ import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.definition.XAdESPath;
 import eu.europa.esig.dss.xml.common.xpath.XPathQuery;
 import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -57,7 +58,7 @@ public final class XAdESRevocationRefExtractionUtils {
 	 */
 	public static OCSPRef createOCSPRef(final XAdESPath xadesPaths, final Element ocspRefElement) {
 
-		Digest digest = DSSXMLUtils.getDigestAndValue(DomUtils.getElement(ocspRefElement, xadesPaths.getCurrentDigestAlgAndValue()));
+		Digest digest = DSSXMLUtils.getDigestAndValue(XPathUtils.getElement(ocspRefElement, xadesPaths.getCurrentDigestAlgAndValue()));
 
 		ResponderId responderId = getOCSPResponderId(xadesPaths, ocspRefElement);
 		if (responderId == null) {
@@ -76,7 +77,7 @@ public final class XAdESRevocationRefExtractionUtils {
 
 	private static Date getOCSPProducedAtDate(final XAdESPath xadesPaths, final Element ocspRefElement) {
 		Date producedAtDate = null;
-		final Element producedAtEl = DomUtils.getElement(ocspRefElement, xadesPaths.getCurrentOCSPRefProducedAt());
+		final Element producedAtEl = XPathUtils.getElement(ocspRefElement, xadesPaths.getCurrentOCSPRefProducedAt());
 		if (producedAtEl != null) {
 			producedAtDate = DomUtils.getDate(producedAtEl.getTextContent());
 		}
@@ -89,12 +90,12 @@ public final class XAdESRevocationRefExtractionUtils {
 		XPathQuery currentOCSPRefResponderIDByName = xadesPaths.getCurrentOCSPRefResponderIDByName();
 		XPathQuery currentOCSPRefResponderIDByKey = xadesPaths.getCurrentOCSPRefResponderIDByKey();
 		if (currentOCSPRefResponderIDByName != null && currentOCSPRefResponderIDByKey != null) {
-			final Element responderIdByName = DomUtils.getElement(ocspRefElement, currentOCSPRefResponderIDByName);
+			final Element responderIdByName = XPathUtils.getElement(ocspRefElement, currentOCSPRefResponderIDByName);
 			if (responderIdByName != null) {
 				responderName = DSSASN1Utils.getX500PrincipalOrNull(responderIdByName.getTextContent());
 			}
 
-			final Element responderIdByKey = DomUtils.getElement(ocspRefElement, currentOCSPRefResponderIDByKey);
+			final Element responderIdByKey = XPathUtils.getElement(ocspRefElement, currentOCSPRefResponderIDByKey);
 			if (responderIdByKey != null) {
 				String base64EncodedResponderId = responderIdByKey.getTextContent();
 				if (Utils.isBase64Encoded(base64EncodedResponderId)) {
@@ -104,7 +105,7 @@ public final class XAdESRevocationRefExtractionUtils {
 				}
 			}
 		} else {
-			final Element responderIdElement = DomUtils.getElement(ocspRefElement, xadesPaths.getCurrentOCSPRefResponderID());
+			final Element responderIdElement = XPathUtils.getElement(ocspRefElement, xadesPaths.getCurrentOCSPRefResponderID());
 			if (responderIdElement != null) {
 				responderName = DSSASN1Utils.getX500PrincipalOrNull(responderIdElement.getTextContent());
 			}
@@ -124,7 +125,7 @@ public final class XAdESRevocationRefExtractionUtils {
 	 * @return {@link OCSPRef}
 	 */
 	public static CRLRef createCRLRef(XAdESPath xadesPaths, Element crlRefElement) {
-		final Digest digest = DSSXMLUtils.getDigestAndValue(DomUtils.getElement(crlRefElement, xadesPaths.getCurrentDigestAlgAndValue()));
+		final Digest digest = DSSXMLUtils.getDigestAndValue(XPathUtils.getElement(crlRefElement, xadesPaths.getCurrentDigestAlgAndValue()));
 		if (digest == null) {
 			LOG.warn("Skipped CRLRef (missing DigestAlgAndValue)");
 			return null;
@@ -148,7 +149,7 @@ public final class XAdESRevocationRefExtractionUtils {
 
 	private static X500Principal getCRLIssuer(final XAdESPath xadesPaths, final Element crlRefElement) {
 		X500Principal issuer = null;
-		final Element issuerEl = DomUtils.getElement(crlRefElement, xadesPaths.getCurrentCRLRefCRLIdentifierIssuer());
+		final Element issuerEl = XPathUtils.getElement(crlRefElement, xadesPaths.getCurrentCRLRefCRLIdentifierIssuer());
 		if (issuerEl != null) {
 			issuer = DSSASN1Utils.getX500PrincipalOrNull(issuerEl.getTextContent());
 		}
@@ -157,7 +158,7 @@ public final class XAdESRevocationRefExtractionUtils {
 
 	private static Date getCRLIssueTime(final XAdESPath xadesPaths, final Element crlRefElement) {
 		Date issueTime = null;
-		final Element issueTimeEl = DomUtils.getElement(crlRefElement, xadesPaths.getCurrentCRLRefCRLIdentifierIssueTime());
+		final Element issueTimeEl = XPathUtils.getElement(crlRefElement, xadesPaths.getCurrentCRLRefCRLIdentifierIssueTime());
 		if (issueTimeEl != null) {
 			issueTime = DomUtils.getDate(issueTimeEl.getTextContent());
 		}
@@ -166,7 +167,7 @@ public final class XAdESRevocationRefExtractionUtils {
 
 	private static BigInteger getCRLNumber(final XAdESPath xadesPaths, final Element crlRefElement) {
 		BigInteger number = null;
-		final Element numberEl = DomUtils.getElement(crlRefElement, xadesPaths.getCurrentCRLRefCRLIdentifierNumber());
+		final Element numberEl = XPathUtils.getElement(crlRefElement, xadesPaths.getCurrentCRLRefCRLIdentifierNumber());
 		if (numberEl != null) {
 			try {
 				number = new BigInteger(numberEl.getTextContent());

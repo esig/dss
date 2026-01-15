@@ -43,6 +43,7 @@ import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
 import eu.europa.esig.dss.xml.common.xpath.XPathQuery;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.Reference;
 import org.apache.xml.security.signature.XMLSignatureInput;
@@ -587,7 +588,7 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 
 	private void writeCanonicalizedValue(final DSSMessageDigestCalculator digestCalculator, final XPathQuery xPathString,
 										 final String canonicalizationMethod) {
-		final Element element = DomUtils.getElement(signature, xPathString);
+		final Element element = XPathUtils.getElement(signature, xPathString);
 		if (element != null) {
 			writeDigestValueOnCanonicalizedNode(digestCalculator, element, canonicalizationMethod);
 		}
@@ -612,7 +613,7 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 	}
 
 	private Element getUnsignedSignaturePropertiesDom() {
-		return DomUtils.getElement(signature, xadesPaths.getUnsignedSignaturePropertiesPath());
+		return XPathUtils.getElement(signature, xadesPaths.getUnsignedSignaturePropertiesPath());
 	}
 	
 	private Element getUnsignedSignaturePropertiesCanonicalizationCopy() {
@@ -722,7 +723,7 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 	 * @return {@link NodeList}
 	 */
 	private NodeList getObjects() {
-		return DomUtils.getNodeList(signature, XMLDSigPath.OBJECT_PATH);
+		return XPathUtils.getNodeList(signature, XMLDSigPath.OBJECT_PATH);
 	}
 	
 	private void writeObjectBytes(final DSSMessageDigestCalculator digestCalculator, final NodeList objects,
@@ -730,7 +731,7 @@ public class XAdESTimestampMessageDigestBuilder implements TimestampMessageDiges
 		final boolean xades141 = (timestampToken == null) || !ArchiveTimestampType.XAdES.equals(timestampToken.getArchiveTimestampType());
 		for (int ii = 0; ii < objects.getLength(); ii++) {
 			final Node node = objects.item(ii);
-			final Node qualifyingProperties = DomUtils.getElement(node, xadesPaths.getCurrentQualifyingPropertiesPath());
+			final Node qualifyingProperties = XPathUtils.getElement(node, xadesPaths.getCurrentQualifyingPropertiesPath());
 			if (qualifyingProperties != null) {
 				continue;
 			}

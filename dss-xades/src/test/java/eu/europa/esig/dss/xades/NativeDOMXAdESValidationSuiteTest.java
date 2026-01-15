@@ -1,8 +1,8 @@
 package eu.europa.esig.dss.xades;
 
-import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.xml.utils.xpath.NativeDOMXPathQueryExecutor;
 import eu.europa.esig.dss.xml.utils.xpath.XPathQueryExecutorLoader;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.junit.platform.suite.api.AfterSuite;
 import org.junit.platform.suite.api.BeforeSuite;
 import org.junit.platform.suite.api.SelectPackages;
@@ -14,13 +14,13 @@ public class NativeDOMXAdESValidationSuiteTest {
 
     @BeforeSuite
     public static void init() {
-        DomUtils.setXPathQueryExecutor(new NativeDOMXPathQueryExecutor());
+        XPathUtils.setXPathQueryExecutor(new NativeDOMXPathQueryExecutor());
     }
 
     @AfterSuite
     public static void clear() {
         // return to default
-        DomUtils.setXPathQueryExecutor(new XPathQueryExecutorLoader().getExecutor());
+        XPathUtils.setXPathQueryExecutor(new XPathQueryExecutorLoader().getXPathQueryExecutor());
     }
 
 }

@@ -23,8 +23,6 @@ package eu.europa.esig.dss.xades.requirements;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import org.junit.jupiter.api.BeforeEach;
 
-import javax.xml.xpath.XPathExpressionException;
-
 class XAdESBaselineLTATest extends XAdESBaselineLTTest {
 
 	@BeforeEach
@@ -38,7 +36,7 @@ class XAdESBaselineLTATest extends XAdESBaselineLTTest {
 	 * Checks UnsignedSignatureProperties present for T/LT/LTA levels
 	 */
 	@Override
-	protected void checkUnsignedProperties() throws XPathExpressionException {
+	protected void checkUnsignedProperties() {
 		super.checkUnsignedProperties();
 
 		checkArchiveTimeStampPresent();

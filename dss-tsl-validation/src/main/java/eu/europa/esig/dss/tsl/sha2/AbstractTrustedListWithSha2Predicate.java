@@ -25,9 +25,10 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.xades.definition.tsl.TrustedListNamespace;
 import eu.europa.esig.dss.xades.definition.tsl.TrustedListPath;
 import eu.europa.esig.dss.xml.utils.DomUtils;
-import eu.europa.esig.dss.xades.definition.tsl.TrustedListNamespace;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -49,7 +50,7 @@ public abstract class AbstractTrustedListWithSha2Predicate implements Predicate<
     protected static final DigestAlgorithm SHA2_ALGORITHM = DigestAlgorithm.SHA256;
 
     static {
-        DomUtils.registerNamespace(TrustedListNamespace.NS);
+        XPathUtils.registerNamespace(TrustedListNamespace.NS);
     }
 
     /**
@@ -104,7 +105,7 @@ public abstract class AbstractTrustedListWithSha2Predicate implements Predicate<
         }
         try {
             Document documentDom = DomUtils.buildDOM(tlDocument);
-            Element nextUpdateElement = DomUtils.getElement(documentDom.getDocumentElement(), TrustedListPath.NEXT_UPDATE_PATH);
+            Element nextUpdateElement = XPathUtils.getElement(documentDom.getDocumentElement(), TrustedListPath.NEXT_UPDATE_PATH);
             if (nextUpdateElement != null) {
                 String nextUpdate = nextUpdateElement.getTextContent();
                 if (Utils.isStringNotEmpty(nextUpdate)) {

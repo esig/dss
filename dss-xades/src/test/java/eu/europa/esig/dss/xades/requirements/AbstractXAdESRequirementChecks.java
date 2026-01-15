@@ -20,26 +20,26 @@
  */
 package eu.europa.esig.dss.xades.requirements;
 
-import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.signature.AbstractXAdESTestSignature;
+import eu.europa.esig.dss.xml.common.definition.DSSElement;
+import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
+import eu.europa.esig.dss.xml.common.xpath.XPathQuery;
+import eu.europa.esig.dss.xml.common.xpath.XPathQueryBuilder;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import javax.xml.namespace.NamespaceContext;
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
 import java.io.ByteArrayInputStream;
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -47,41 +47,13 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 public abstract class AbstractXAdESRequirementChecks extends AbstractXAdESTestSignature {
 
-	protected static XPath xpath;
-
 	protected Document document;
 
 	@BeforeAll
 	public static void initClass() {
-		XPathFactory f = XPathFactory.newInstance();
-		xpath = f.newXPath();
-		xpath.setNamespaceContext(new NamespaceContext() {
-
-			@Override
-			public String getNamespaceURI(String prefix) {
-				if ("xades".equals(prefix)) {
-					return "http://uri.etsi.org/01903/v1.3.2#";
-				} else if ("xades141".endsWith(prefix)) {
-					return "http://uri.etsi.org/01903/v1.4.1#";
-				} else if ("ds".equals(prefix)) {
-					return "http://www.w3.org/2000/09/xmldsig#";
-				}
-				// "http://uri.etsi.org/19132/v1.1.1#"
-				return null;
-			}
-
-			@Override
-			public String getPrefix(String namespaceURI) {
-				return null;
-			}
-
-			@Override
-			@SuppressWarnings({ "rawtypes" })
-			public Iterator getPrefixes(String namespaceURI) {
-				return null;
-			}
-			
-		});
+		XPathUtils.registerNamespace(new DSSNamespace("http://uri.etsi.org/01903/v1.3.2#", "xades"));
+		XPathUtils.registerNamespace(new DSSNamespace("http://uri.etsi.org/01903/v1.4.1#", "xades141"));
+		XPathUtils.registerNamespace(new DSSNamespace("http://www.w3.org/2000/09/xmldsig#", "ds"));
 	}
 	
 	@Override
@@ -109,9 +81,9 @@ public abstract class AbstractXAdESRequirementChecks extends AbstractXAdESTestSi
 	/**
 	 * ds:KeyInfo/X509Data/X509Certificate shall be present in B/T/LT/LTA
 	 */
-	protected void checkX509CertificatePresent() throws XPathExpressionException {
-		XPathExpression exp = xpath.compile("//ds:KeyInfo/ds:X509Data/ds:X509Certificate");
-		NodeList nodeList = (NodeList) exp.evaluate(document, XPathConstants.NODESET);
+	protected void checkX509CertificatePresent() {
+		XPathQuery exp = toXPathQuery("ds:KeyInfo", "ds:X509Data", "ds:X509Certificate");
+		NodeList nodeList = XPathUtils.getNodeList(document, exp);
 		assertNotNull(nodeList);
 		int length = nodeList.getLength();
 		assertTrue(length > 0);
@@ -128,11 +100,11 @@ public abstract class AbstractXAdESRequirementChecks extends AbstractXAdESTestSi
 	}
 
 	/**
-	 * ds:SignedInfo/ds:CanonicalizationMethod shall be present in B/T/LT/LTA
+	 * ds:SignedInfo", "ds:CanonicalizationMethod shall be present in B/T/LT/LTA
 	 */
-	protected void checkSignedInfoCanonicalizationMethodPresent() throws XPathExpressionException {
-		XPathExpression exp = xpath.compile("//ds:SignedInfo/ds:CanonicalizationMethod");
-		Node node = (Node) exp.evaluate(document, XPathConstants.NODE);
+	protected void checkSignedInfoCanonicalizationMethodPresent() {
+		XPathQuery exp = toXPathQuery("ds:SignedInfo", "ds:CanonicalizationMethod");
+		Node node = XPathUtils.getNode(document, exp);
 		assertNotNull(node);
 		NamedNodeMap attributes = node.getAttributes();
 		Node algoNode = attributes.getNamedItem("Algorithm");
@@ -142,9 +114,9 @@ public abstract class AbstractXAdESRequirementChecks extends AbstractXAdESTestSi
 	/**
 	 * ds:Reference shall be present in B/T/LT/LTA
 	 */
-	protected void checkReferencesPresent() throws XPathExpressionException {
-		XPathExpression exp = xpath.compile("//ds:Reference");
-		NodeList nodeList = (NodeList) exp.evaluate(document, XPathConstants.NODESET);
+	protected void checkReferencesPresent() {
+		XPathQuery exp = toXPathQuery("ds:Reference");
+		NodeList nodeList = XPathUtils.getNodeList(document, exp);
 		assertNotNull(nodeList);
 		int length = nodeList.getLength();
 		assertTrue(length >= 2);
@@ -153,27 +125,27 @@ public abstract class AbstractXAdESRequirementChecks extends AbstractXAdESTestSi
 	/**
 	 * SigningTime shall be present in B/T/LT/LTA
 	 */
-	protected void checkSigningTimePresent() throws XPathExpressionException {
-		XPathExpression exp = xpath.compile("//xades:SignedProperties/xades:SignedSignatureProperties/xades:SigningTime");
-		Node node = (Node) exp.evaluate(document, XPathConstants.NODE);
+	protected void checkSigningTimePresent() {
+		XPathQuery exp = toXPathQuery("xades:SignedProperties", "xades:SignedSignatureProperties", "xades:SigningTime");
+		Node node = XPathUtils.getNode(document, exp);
 		assertNotNull(node);
 	}
 
 	/**
 	 * SigningCertificate shall be present in B/T/LT/LTA
 	 */
-	protected void checkSigningCertificatePresent() throws XPathExpressionException {
-		XPathExpression exp = xpath.compile("//xades:SignedProperties/xades:SignedSignatureProperties/xades:SigningCertificateV2");
-		Node node = (Node) exp.evaluate(document, XPathConstants.NODE);
+	protected void checkSigningCertificatePresent() {
+		XPathQuery exp = toXPathQuery("xades:SignedProperties", "xades:SignedSignatureProperties", "xades:SigningCertificateV2");
+		Node node = XPathUtils.getNode(document, exp);
 		assertNotNull(node);
 	}
 
 	/**
 	 * DataObjectFormat with attribute ObjectReference shall be present in B/T/LT/LTA
 	 */
-	protected void checkDataObjectFormatPresent() throws XPathExpressionException {
-		XPathExpression exp = xpath.compile("//xades:SignedProperties/xades:SignedDataObjectProperties/xades:DataObjectFormat");
-		Node node = (Node) exp.evaluate(document, XPathConstants.NODE);
+	protected void checkDataObjectFormatPresent() {
+		XPathQuery exp = toXPathQuery("xades:SignedProperties", "xades:SignedDataObjectProperties", "xades:DataObjectFormat");
+		Node node = XPathUtils.getNode(document, exp);
 		assertNotNull(node);
 
 		NamedNodeMap attributes = node.getAttributes();
@@ -184,9 +156,9 @@ public abstract class AbstractXAdESRequirementChecks extends AbstractXAdESTestSi
 	/**
 	 * DataObjectFormat/MimeType shall be present in B/T/LT/LTA
 	 */
-	protected void checkDataObjectFormatMimeTypePresent() throws XPathExpressionException {
-		XPathExpression exp = xpath.compile("//xades:SignedProperties/xades:SignedDataObjectProperties/xades:DataObjectFormat/xades:MimeType");
-		Node node = (Node) exp.evaluate(document, XPathConstants.NODE);
+	protected void checkDataObjectFormatMimeTypePresent() {
+		XPathQuery exp = toXPathQuery("xades:SignedProperties", "xades:SignedDataObjectProperties", "xades:DataObjectFormat", "xades:MimeType");
+		Node node = XPathUtils.getNode(document, exp);
 		assertNotNull(node);
 		assertTrue(Utils.isStringNotEmpty(node.getTextContent()));
 	}
@@ -194,14 +166,14 @@ public abstract class AbstractXAdESRequirementChecks extends AbstractXAdESTestSi
 	/**
 	 * Checks UnsignedSignatureProperties present for T/LT/LTA levels
 	 */
-	protected abstract void checkUnsignedProperties() throws XPathExpressionException;
+	protected abstract void checkUnsignedProperties();
 
 	/**
 	 * SignatureTimeStamp shall be present in T/LT/LTA
 	 */
-	protected void checkSignatureTimeStampPresent() throws XPathExpressionException {
-		XPathExpression exp = xpath.compile("//xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades:SignatureTimeStamp");
-		Node node = (Node) exp.evaluate(document, XPathConstants.NODE);
+	protected void checkSignatureTimeStampPresent() {
+		XPathQuery exp = toXPathQuery("xades:UnsignedProperties", "xades:UnsignedSignatureProperties", "xades:SignatureTimeStamp");
+		Node node = XPathUtils.getNode(document, exp);
 		assertNotNull(node);
 	}
 
@@ -210,9 +182,9 @@ public abstract class AbstractXAdESRequirementChecks extends AbstractXAdESTestSi
 	 *
 	 * @return whether the CertificateValues element is present
 	 */
-	protected boolean checkCertificateValuesPresent() throws XPathExpressionException {
-		XPathExpression exp = xpath.compile("//xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades:CertificateValues");
-		Node node = (Node) exp.evaluate(document, XPathConstants.NODE);
+	protected boolean checkCertificateValuesPresent() {
+		XPathQuery exp = toXPathQuery("xades:UnsignedProperties", "xades:UnsignedSignatureProperties", "xades:CertificateValues");
+		Node node = XPathUtils.getNode(document, exp);
 		return node != null;
 	}
 
@@ -221,18 +193,18 @@ public abstract class AbstractXAdESRequirementChecks extends AbstractXAdESTestSi
 	 *
 	 * @return whether the RevocationValues element is present
 	 */
-	protected boolean checkRevocationValuesPresent() throws XPathExpressionException {
-		XPathExpression exp = xpath.compile("//xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades:RevocationValues");
-		Node node = (Node) exp.evaluate(document, XPathConstants.NODE);
+	protected boolean checkRevocationValuesPresent() {
+		XPathQuery exp = toXPathQuery("xades:UnsignedProperties", "xades:UnsignedSignatureProperties", "xades:RevocationValues");
+		Node node = XPathUtils.getNode(document, exp);
 		return node != null;
 	}
 
 	/**
 	 * ArchiveTimeStamp shall be present in LTA
 	 */
-	protected void checkArchiveTimeStampPresent() throws XPathExpressionException {
-		XPathExpression exp = xpath.compile("//xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades141:ArchiveTimeStamp");
-		Node node = (Node) exp.evaluate(document, XPathConstants.NODE);
+	protected void checkArchiveTimeStampPresent() {
+		XPathQuery exp = toXPathQuery("xades:UnsignedProperties", "xades:UnsignedSignatureProperties", "xades141:ArchiveTimeStamp");
+		Node node = XPathUtils.getNode(document, exp);
 		assertNotNull(node);
 	}
 
@@ -241,9 +213,9 @@ public abstract class AbstractXAdESRequirementChecks extends AbstractXAdESTestSi
 	 *
 	 * @return whether the TimeStampValidationData element is present
 	 */
-	protected boolean checkTimeStampValidationDataPresent() throws XPathExpressionException {
-		XPathExpression exp = xpath.compile("//xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades141:TimeStampValidationData");
-		Node node = (Node) exp.evaluate(document, XPathConstants.NODE);
+	protected boolean checkTimeStampValidationDataPresent() {
+		XPathQuery exp = toXPathQuery("xades:UnsignedProperties", "xades:UnsignedSignatureProperties", "xades141:TimeStampValidationData");
+		Node node = XPathUtils.getNode(document, exp);
 		return node != null;
 	}
 
@@ -252,37 +224,52 @@ public abstract class AbstractXAdESRequirementChecks extends AbstractXAdESTestSi
 	 *
 	 * @return whether the AnyValidationData element is present
 	 */
-	protected boolean checkAnyValidationDataPresent() throws XPathExpressionException {
-		XPathExpression exp = xpath.compile("//xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades141:AnyValidationData");
-		Node node = (Node) exp.evaluate(document, XPathConstants.NODE);
+	protected boolean checkAnyValidationDataPresent() {
+		XPathQuery exp = toXPathQuery("xades:UnsignedProperties", "xades:UnsignedSignatureProperties", "xades141:AnyValidationData");
+		Node node = XPathUtils.getNode(document, exp);
 		return node != null;
 	}
 
 	/**
 	 * CompleteCertificateRefsV2 shall be present in C/X/XL/A
 	 */
-	protected void checkCompleteCertificateRefsV2Present() throws XPathExpressionException {
-		XPathExpression exp = xpath.compile("//xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades141:CompleteCertificateRefsV2");
-		Node node = (Node) exp.evaluate(document, XPathConstants.NODE);
+	protected void checkCompleteCertificateRefsV2Present() {
+		XPathQuery exp = toXPathQuery("xades:UnsignedProperties", "xades:UnsignedSignatureProperties", "xades141:CompleteCertificateRefsV2");
+		Node node = XPathUtils.getNode(document, exp);
 		assertNotNull(node);
 	}
 
 	/**
 	 * CompleteRevocationRefs shall be present in C/X/XL/A
 	 */
-	protected void checkCompleteRevocationRefsPresent() throws XPathExpressionException {
-		XPathExpression exp = xpath.compile("//xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades:CompleteRevocationRefs");
-		Node node = (Node) exp.evaluate(document, XPathConstants.NODE);
+	protected void checkCompleteRevocationRefsPresent() {
+		XPathQuery exp = toXPathQuery("xades:UnsignedProperties", "xades:UnsignedSignatureProperties", "xades:CompleteRevocationRefs");
+		Node node = XPathUtils.getNode(document, exp);
 		assertNotNull(node);
 	}
 
 	/**
 	 * SigAndRefsTimeStampV2 shall be present in X/XL/A
 	 */
-	protected void checkSigAndRefsTimeStampV2Present() throws XPathExpressionException {
-		XPathExpression exp = xpath.compile("//xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades141:SigAndRefsTimeStampV2");
-		Node node = (Node) exp.evaluate(document, XPathConstants.NODE);
+	protected void checkSigAndRefsTimeStampV2Present() {
+		XPathQuery exp = toXPathQuery("xades:UnsignedProperties", "xades:UnsignedSignatureProperties", "xades141:SigAndRefsTimeStampV2");
+		Node node = XPathUtils.getNode(document, exp);
 		assertNotNull(node);
+	}
+
+	protected XPathQuery toXPathQuery(String... elements) {
+		final XPathQueryBuilder builder = XPathQueryBuilder.all();
+		
+		List<DSSElement> elementList = new ArrayList<>();
+		for (String element : elements) {
+			String[] parts = element.split(":", 2);
+			String prefix = parts[0];
+			String localName = parts[1];
+			elementList.add(DSSElement.fromDefinition(localName, new DSSNamespace(XPathUtils.getNamespaceContextMap().getNamespaceURI(prefix), prefix)));
+		}
+		builder.elements(elementList.toArray(new DSSElement[0]));
+		
+		return builder.build();
 	}
 
 }

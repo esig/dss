@@ -69,7 +69,7 @@ import eu.europa.esig.dss.xades.validation.scope.XAdESTimestampScopeFinder;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
 import eu.europa.esig.dss.xml.common.xpath.XPathQuery;
 import eu.europa.esig.dss.xml.utils.DOMDocument;
-import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -649,7 +649,7 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 
 	@Override
 	protected List<AdvancedSignature> getCounterSignatures(XAdESAttribute unsignedAttribute) {
-		final Node counterSignatureNode = DomUtils.getNode(unsignedAttribute.getElement(), XMLDSigPath.SIGNATURE_PATH);
+		final Node counterSignatureNode = XPathUtils.getNode(unsignedAttribute.getElement(), XMLDSigPath.SIGNATURE_PATH);
 		if (counterSignatureNode != null) {
 			List<AdvancedSignature> counterSignatures = signature.getCounterSignatures();
 			for (AdvancedSignature counterSignature : counterSignatures) {

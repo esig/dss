@@ -24,8 +24,6 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import org.junit.jupiter.api.BeforeEach;
 
-import javax.xml.xpath.XPathExpressionException;
-
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -50,7 +48,7 @@ class XAdESBaselineLTTest extends XAdESBaselineTTest {
 	 * Checks UnsignedSignatureProperties present for T/LT/LTA levels
 	 */
 	@Override
-	protected void checkUnsignedProperties() throws XPathExpressionException {
+	protected void checkUnsignedProperties() {
 		super.checkUnsignedProperties();
 
 		assertTrue(checkCertificateValuesPresent());

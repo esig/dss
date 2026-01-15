@@ -37,6 +37,7 @@ import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigNamespace;
 import eu.europa.esig.dss.xml.common.xpath.XPathQueryBuilder;
 import eu.europa.esig.dss.xml.utils.DOMDocument;
 import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -56,10 +57,10 @@ class XMLEvidenceRecordRenewalDigestBuilderTest {
     private final static DSSNamespace XAdESEN_NAMESPACE = new DSSNamespace("http://uri.etsi.org/19132/v1.1.1#", "xadesen");
 
     static {
-        DomUtils.registerNamespace(XMLDSigNamespace.NS);
-        DomUtils.registerNamespace(XAdES_NAMESPACE);
-        DomUtils.registerNamespace(XAdESEN_NAMESPACE);
-        DomUtils.registerNamespace(XMLERSNamespace.XMLERS);
+        XPathUtils.registerNamespace(XMLDSigNamespace.NS);
+        XPathUtils.registerNamespace(XAdES_NAMESPACE);
+        XPathUtils.registerNamespace(XAdESEN_NAMESPACE);
+        XPathUtils.registerNamespace(XMLERSNamespace.XMLERS);
     }
 
     @Test
@@ -248,7 +249,7 @@ class XMLEvidenceRecordRenewalDigestBuilderTest {
 
         Document document = DomUtils.buildDOM(xadesDocument);
 
-        Element erElement = DomUtils.getElement(document, XPathQueryBuilder.fromCurrentPosition().elements(
+        Element erElement = XPathUtils.getElement(document, XPathQueryBuilder.fromCurrentPosition().elements(
                 XMLDSigElement.SIGNATURE, XMLDSigElement.OBJECT, DSSElement.fromDefinition("QualifyingProperties", XAdES_NAMESPACE),
                         DSSElement.fromDefinition("UnsignedProperties", XAdES_NAMESPACE), DSSElement.fromDefinition("UnsignedSignatureProperties", XAdES_NAMESPACE),
                         DSSElement.fromDefinition("SealingEvidenceRecords", XAdESEN_NAMESPACE), XMLERSElement.EVIDENCE_RECORD).build());
@@ -294,7 +295,7 @@ class XMLEvidenceRecordRenewalDigestBuilderTest {
 
         Document document = DomUtils.buildDOM(xadesDocument);
 
-        Element erElement = DomUtils.getElement(document, XPathQueryBuilder.fromCurrentPosition().elements(
+        Element erElement = XPathUtils.getElement(document, XPathQueryBuilder.fromCurrentPosition().elements(
                 XMLDSigElement.SIGNATURE, XMLDSigElement.OBJECT, DSSElement.fromDefinition("QualifyingProperties", XAdES_NAMESPACE),
                 DSSElement.fromDefinition("UnsignedProperties", XAdES_NAMESPACE), DSSElement.fromDefinition("UnsignedSignatureProperties", XAdES_NAMESPACE),
                 DSSElement.fromDefinition("SealingEvidenceRecords", XAdESEN_NAMESPACE), XMLERSElement.EVIDENCE_RECORD).build());
@@ -334,7 +335,7 @@ class XMLEvidenceRecordRenewalDigestBuilderTest {
     void xadesEmbeddedChainRenewalTest() {
         DSSDocument xadesDocument = new FileDocument("src/test/resources/er-within-xades-inclusive.xml");
         Document document = DomUtils.buildDOM(xadesDocument);
-        Element erElement = DomUtils.getElement(document, XPathQueryBuilder.fromCurrentPosition().elements(
+        Element erElement = XPathUtils.getElement(document, XPathQueryBuilder.fromCurrentPosition().elements(
                 XMLDSigElement.SIGNATURE, XMLDSigElement.OBJECT, DSSElement.fromDefinition("QualifyingProperties", XAdES_NAMESPACE),
                 DSSElement.fromDefinition("UnsignedProperties", XAdES_NAMESPACE), DSSElement.fromDefinition("UnsignedSignatureProperties", XAdES_NAMESPACE),
                 DSSElement.fromDefinition("SealingEvidenceRecords", XAdESEN_NAMESPACE), XMLERSElement.EVIDENCE_RECORD).build());

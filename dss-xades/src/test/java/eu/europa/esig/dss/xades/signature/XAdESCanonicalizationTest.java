@@ -37,6 +37,7 @@ import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.xml.common.xpath.XPathQueryBuilder;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -139,7 +140,7 @@ class XAdESCanonicalizationTest extends AbstractXAdESTestSignature {
 			// ------------------------------------ SIGNED INFO
 			// -----------------------------------------------------
 			// Signed info extraction
-			NodeList signedInfoNodeList = DomUtils.getNodeList(doc, AbstractPath.all(XMLDSigElement.SIGNED_INFO));
+			NodeList signedInfoNodeList = XPathUtils.getNodeList(doc, AbstractPath.all(XMLDSigElement.SIGNED_INFO));
 			assertNotNull(signedInfoNodeList);
 			assertEquals(1, signedInfoNodeList.getLength());
 
@@ -147,7 +148,7 @@ class XAdESCanonicalizationTest extends AbstractXAdESTestSignature {
 
 			// ------------------------------------ SIGNATURE VERIFICATION
 			// -----------------------------------------------------
-			String signatureValueBase64 = DomUtils.getValue(doc, AbstractPath.all(XMLDSigElement.SIGNATURE, XMLDSigElement.SIGNATURE_VALUE));
+			String signatureValueBase64 = XPathUtils.getValue(doc, AbstractPath.all(XMLDSigElement.SIGNATURE, XMLDSigElement.SIGNATURE_VALUE));
 			assertNotNull(signatureValueBase64);
 
 			byte[] canonicalized = XMLCanonicalizer.createInstance(canonicalizationSignedInfo).canonicalize(signedInfo);
@@ -182,7 +183,7 @@ class XAdESCanonicalizationTest extends AbstractXAdESTestSignature {
 			originalFileByteArray = XMLCanonicalizer.createInstance(algo).canonicalize(fileContent);
 		} else {
 			// Original File base64 extraction + Verification
-			NodeList originalFileNodeList = DomUtils.getNodeList(doc, AbstractPath.all(XMLDSigElement.OBJECT));
+			NodeList originalFileNodeList = XPathUtils.getNodeList(doc, AbstractPath.all(XMLDSigElement.OBJECT));
 			assertNotNull(originalFileNodeList);
 			assertEquals(2, originalFileNodeList.getLength());
 
@@ -213,7 +214,7 @@ class XAdESCanonicalizationTest extends AbstractXAdESTestSignature {
 		// ------------------------------------ KEY INFO
 		// -----------------------------------------------------
 		// Key info extraction + Verification
-		NodeList keyInfoNodeList = DomUtils.getNodeList(doc, AbstractPath.all(XMLDSigElement.KEY_INFO));
+		NodeList keyInfoNodeList = XPathUtils.getNodeList(doc, AbstractPath.all(XMLDSigElement.KEY_INFO));
 		assertNotNull(keyInfoNodeList);
 		assertEquals(1, keyInfoNodeList.getLength());
 
@@ -241,7 +242,7 @@ class XAdESCanonicalizationTest extends AbstractXAdESTestSignature {
 		// -----------------------------------------------------
 		try {
 			// Signed properties extraction + verification
-			NodeList signedPropertiesNodeList = DomUtils.getNodeList(doc, AbstractPath.all(XAdES132Element.SIGNED_PROPERTIES));
+			NodeList signedPropertiesNodeList = XPathUtils.getNodeList(doc, AbstractPath.all(XAdES132Element.SIGNED_PROPERTIES));
 			assertNotNull(signedPropertiesNodeList);
 			assertEquals(1, signedPropertiesNodeList.getLength());
 
@@ -282,10 +283,10 @@ class XAdESCanonicalizationTest extends AbstractXAdESTestSignature {
 	}
 
 	private NodeList getReferenceTransforms(Document doc, String uri) {
-		Node referenceNode = DomUtils.getNode(doc, XPathQueryBuilder.all().element(XMLDSigElement.REFERENCE).attribute(XMLDSigAttribute.URI, uri).build());
+		Node referenceNode = XPathUtils.getNode(doc, XPathQueryBuilder.all().element(XMLDSigElement.REFERENCE).attribute(XMLDSigAttribute.URI, uri).build());
 		assertNotNull(referenceNode);
 
-		NodeList referenceTransform = DomUtils.getNodeList(referenceNode, XPathQueryBuilder.allFromCurrentPosition().elements(XMLDSigElement.TRANSFORMS, XMLDSigElement.TRANSFORM).build());
+		NodeList referenceTransform = XPathUtils.getNodeList(referenceNode, XPathQueryBuilder.allFromCurrentPosition().elements(XMLDSigElement.TRANSFORMS, XMLDSigElement.TRANSFORM).build());
 		assertNotNull(referenceTransform);
 		return referenceTransform;
 	}
@@ -298,10 +299,10 @@ class XAdESCanonicalizationTest extends AbstractXAdESTestSignature {
 	}
 
 	private String getReferenceDigest(Document doc, String uri) {
-		Node referenceNode = DomUtils.getNode(doc, XPathQueryBuilder.all().element(XMLDSigElement.REFERENCE).attribute(XMLDSigAttribute.URI, uri).build());
+		Node referenceNode = XPathUtils.getNode(doc, XPathQueryBuilder.all().element(XMLDSigElement.REFERENCE).attribute(XMLDSigAttribute.URI, uri).build());
 		assertNotNull(referenceNode);
 
-		Node referenceDigest = DomUtils.getNode(referenceNode, XPathQueryBuilder.allFromCurrentPosition().elements(XMLDSigElement.DIGEST_VALUE).build());
+		Node referenceDigest = XPathUtils.getNode(referenceNode, XPathQueryBuilder.allFromCurrentPosition().elements(XMLDSigElement.DIGEST_VALUE).build());
 		assertNotNull(referenceDigest);
 		return referenceDigest.getTextContent();
 	}

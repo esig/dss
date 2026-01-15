@@ -30,7 +30,6 @@ import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 import org.junit.jupiter.api.BeforeEach;
 
-import javax.xml.xpath.XPathExpressionException;
 import java.io.File;
 
 class XAdESBaselineBTest extends AbstractXAdESRequirementChecks {
@@ -53,7 +52,7 @@ class XAdESBaselineBTest extends AbstractXAdESRequirementChecks {
 	}
 
 	@Override
-	protected void checkUnsignedProperties() throws XPathExpressionException {
+	protected void checkUnsignedProperties() {
 		// do nothing
 	}
 

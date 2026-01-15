@@ -33,18 +33,19 @@ import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationRef;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
 import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import eu.europa.esig.validationreport.jaxb.SACertIDListType;
 import eu.europa.esig.validationreport.jaxb.SARevIDListType;
 import eu.europa.esig.validationreport.jaxb.SignatureAttributesType;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
 import jakarta.xml.bind.JAXBElement;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
@@ -93,19 +94,19 @@ class XAdESLevelCAllSelfSignedTest extends XAdESLevelCTest {
         XAdES132Path paths = new XAdES132Path();
 
         Node signature = signaturesList.item(0);
-        NodeList signingCertificateList = DomUtils.getNodeList(signature, paths.getSigningCertificateChildren());
+        NodeList signingCertificateList = XPathUtils.getNodeList(signature, paths.getSigningCertificateChildren());
         assertEquals(1, signingCertificateList.getLength());
 
-        NodeList signingCertificateV2List = DomUtils.getNodeList(signature, paths.getSigningCertificateV2Children());
+        NodeList signingCertificateV2List = XPathUtils.getNodeList(signature, paths.getSigningCertificateV2Children());
         assertEquals(0, signingCertificateV2List.getLength());
 
-        NodeList completeCertificateRefsList = DomUtils.getNodeList(signature, paths.getCompleteCertificateRefsPath());
+        NodeList completeCertificateRefsList = XPathUtils.getNodeList(signature, paths.getCompleteCertificateRefsPath());
         assertEquals(1, completeCertificateRefsList.getLength());
 
-        NodeList completeCertificateRefsV2List = DomUtils.getNodeList(signature, paths.getCompleteCertificateRefsV2Path());
+        NodeList completeCertificateRefsV2List = XPathUtils.getNodeList(signature, paths.getCompleteCertificateRefsV2Path());
         assertEquals(0, completeCertificateRefsV2List.getLength());
 
-        NodeList completeRevocationRefsList = DomUtils.getNodeList(signature, paths.getCompleteRevocationRefsPath());
+        NodeList completeRevocationRefsList = XPathUtils.getNodeList(signature, paths.getCompleteRevocationRefsPath());
         assertEquals(0, completeRevocationRefsList.getLength());
     }
 

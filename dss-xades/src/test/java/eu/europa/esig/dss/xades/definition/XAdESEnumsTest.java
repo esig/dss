@@ -20,15 +20,6 @@
  */
 package eu.europa.esig.dss.xades.definition;
 
-import eu.europa.esig.dss.xml.common.definition.DSSAttribute;
-import eu.europa.esig.dss.xml.common.definition.DSSElement;
-import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
-import eu.europa.esig.dss.xml.common.xpath.XPathQueryBuilder;
-import eu.europa.esig.dss.xml.utils.DomUtils;
-import eu.europa.esig.xades.XAdES111Utils;
-import eu.europa.esig.xades.XAdES122Utils;
-import eu.europa.esig.xades.XAdES319132Utils;
-import eu.europa.esig.xades.XAdESUtils;
 import eu.europa.esig.dss.xades.definition.xades111.XAdES111Attribute;
 import eu.europa.esig.dss.xades.definition.xades111.XAdES111Element;
 import eu.europa.esig.dss.xades.definition.xades122.XAdES122Attribute;
@@ -37,9 +28,19 @@ import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
 import eu.europa.esig.dss.xades.definition.xades141.XAdES141Attribute;
 import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
-import eu.europa.esig.xmldsig.XmlDSigUtils;
+import eu.europa.esig.dss.xml.common.definition.DSSAttribute;
+import eu.europa.esig.dss.xml.common.definition.DSSElement;
+import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
+import eu.europa.esig.dss.xml.common.xpath.XPathQueryBuilder;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
+import eu.europa.esig.xades.XAdES111Utils;
+import eu.europa.esig.xades.XAdES122Utils;
+import eu.europa.esig.xades.XAdES319132Utils;
+import eu.europa.esig.xades.XAdESUtils;
+import eu.europa.esig.xmldsig.XmlDSigUtils;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -57,7 +58,7 @@ class XAdESEnumsTest {
 
 	@Test
 	void getAllEments() throws Exception {
-		DomUtils.registerNamespace(XSD_NS);
+		XPathUtils.registerNamespace(XSD_NS);
 
 		try (InputStream is = XAdESUtils.class.getResourceAsStream(XmlDSigUtils.XMLDSIG_SCHEMA_LOCATION)) {
 			Document xsdDom = DomUtils.buildDOM(is);
@@ -99,7 +100,7 @@ class XAdESEnumsTest {
 
 	@Test
 	void getAllAttributes() throws Exception {
-		DomUtils.registerNamespace(XSD_NS);
+		XPathUtils.registerNamespace(XSD_NS);
 
 		try (InputStream is = XAdESUtils.class.getResourceAsStream(XmlDSigUtils.XMLDSIG_SCHEMA_LOCATION)) {
 			Document xsdDom = DomUtils.buildDOM(is);
@@ -130,7 +131,7 @@ class XAdESEnumsTest {
 
 
 	private void checkElementSynchronization(Document xsdDom, DSSElement[] elements) {
-		NodeList nodeList = DomUtils.getNodeList(xsdDom, XPathQueryBuilder.all().element(DSSElement.fromDefinition("element", XSD_NS)).build());
+		NodeList nodeList = XPathUtils.getNodeList(xsdDom, XPathQueryBuilder.all().element(DSSElement.fromDefinition("element", XSD_NS)).build());
 		assertTrue(nodeList.getLength() > 0);
 		for (int i = 0; i < nodeList.getLength(); i++) {
 			Node item = nodeList.item(i);
@@ -151,7 +152,7 @@ class XAdESEnumsTest {
 		}
 
 		for (DSSElement dssElement : elements) {
-			NodeList nodeListByTagName = DomUtils.getNodeList(xsdDom, XPathQueryBuilder.all()
+			NodeList nodeListByTagName = XPathUtils.getNodeList(xsdDom, XPathQueryBuilder.all()
 					.element(DSSElement.fromDefinition("element", XSD_NS))
 					.attribute(DSSAttribute.fromDefinition("name"), dssElement.getTagName()).build());
 			assertTrue(nodeListByTagName.getLength() > 0, "Element [" + dssElement.getTagName() + "] not found in XSD");
@@ -159,7 +160,7 @@ class XAdESEnumsTest {
 	}
 
 	private void checkAttributesSynchronization(Document xsdDom, DSSAttribute[] attributes) {
-		NodeList nodeList = DomUtils.getNodeList(xsdDom, XPathQueryBuilder.all().element(DSSElement.fromDefinition("attribute", XSD_NS)).build());
+		NodeList nodeList = XPathUtils.getNodeList(xsdDom, XPathQueryBuilder.all().element(DSSElement.fromDefinition("attribute", XSD_NS)).build());
 		assertTrue(nodeList.getLength() > 0);
 
 		for (int i = 0; i < nodeList.getLength(); i++) {
@@ -181,7 +182,7 @@ class XAdESEnumsTest {
 		}
 
 		for (DSSAttribute dssAttribute : attributes) {
-			NodeList nodeListByTagName = DomUtils.getNodeList(xsdDom, XPathQueryBuilder.all()
+			NodeList nodeListByTagName = XPathUtils.getNodeList(xsdDom, XPathQueryBuilder.all()
 					.element(DSSElement.fromDefinition("attribute", XSD_NS))
 					.attribute(DSSAttribute.fromDefinition("name"), dssAttribute.getAttributeName()).build());
 			assertTrue(nodeListByTagName.getLength() > 0, "Attribute [" + dssAttribute.getAttributeName() + "] not found in XSD");

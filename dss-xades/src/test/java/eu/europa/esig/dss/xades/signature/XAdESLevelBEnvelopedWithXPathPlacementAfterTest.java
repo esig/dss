@@ -31,6 +31,7 @@ import eu.europa.esig.dss.xml.common.definition.DSSElement;
 import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
 import eu.europa.esig.dss.xml.common.xpath.XPathQueryBuilder;
 import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -71,8 +72,8 @@ class XAdESLevelBEnvelopedWithXPathPlacementAfterTest extends AbstractXAdESTestS
 		super.onDocumentSigned(byteArray);
 		Document dom = DomUtils.buildDOM(byteArray);
 		DSSNamespace namespace = new DSSNamespace("http://www.w3.org/TR/html4/", "h");
-		DomUtils.registerNamespace(namespace);
-		Element referencedElement = DomUtils.getElement(dom.getDocumentElement(),
+		XPathUtils.registerNamespace(namespace);
+		Element referencedElement = XPathUtils.getElement(dom.getDocumentElement(),
 				XPathQueryBuilder.all().element(DSSElement.fromDefinition("tr", namespace)).build());
 		assertNotNull(referencedElement.getNextSibling());
 		assertEquals("ds:Signature", referencedElement.getNextSibling().getNodeName());

@@ -29,10 +29,7 @@ import eu.europa.esig.dss.xml.common.XmlDefinerUtils;
 import eu.europa.esig.dss.xml.common.definition.DSSAttribute;
 import eu.europa.esig.dss.xml.common.definition.DSSElement;
 import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
-import eu.europa.esig.dss.xml.common.xpath.XPathQuery;
-import eu.europa.esig.dss.xml.common.xpath.XPathQueryBuilder;
-import eu.europa.esig.dss.xml.utils.xpath.XPathQueryExecutor;
-import eu.europa.esig.dss.xml.utils.xpath.XPathQueryExecutorLoader;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -92,9 +89,6 @@ public final class DomUtils {
 	/** The hash '#' character */
 	private static final String HASH = "#";
 
-	/** The default namespace prefix */
-	private static final String XMLNS = "xmlns";
-
 	/** The 'xmlns' opener */
 	private static final String XNS_OPEN = "xmlns(";
 
@@ -116,23 +110,24 @@ public final class DomUtils {
 	/** The staring binaries of an XML file with BOM */
 	private static final byte[] xmlWithBomPreamble = new byte[] { -17, -69, -65, '<' }; // UTF-8 with BOM
 
+	/**
+	 * Utils class
+	 */
 	private DomUtils() {
 		// empty
 	}
 
-	/** The used XPathFactory */
+	/**
+	 * The used XPathFactory
+	 *
+	 * @deprecated since DSS 6.5. To be removed.
+	 *             See {@code eu.europa.esig.dss.xml.utils.xpath.JavaXmlXPathQueryExecutor} for alternative.
+	 */
+	@Deprecated
 	private static final XPathFactory factory;
-
-	/** Map containing the defined namespaces */
-	private static final NamespaceContextMap namespacePrefixMapper;
-
-	/** XPath query executor loader */
-	private static final XPathQueryExecutorLoader xPathQueryExecutorLoader;
 
 	static {
 		factory = XPathFactory.newInstance();
-		namespacePrefixMapper = new NamespaceContextMap();
-		xPathQueryExecutorLoader = new XPathQueryExecutorLoader();
 	}
 
 	/**
@@ -141,39 +136,11 @@ public final class DomUtils {
 	 * @param namespace
 	 *            namespace object with the prefix and the URI
 	 * @return true if this map did not already contain the specified element
+	 * @deprecated since DSS 6.5. Please use {@code XPathUtils#registerNamespace} method instead.
 	 */
+	@Deprecated
 	public static boolean registerNamespace(final DSSNamespace namespace) {
-		final String prefix = namespace.getPrefix();
-		final String uri = namespace.getUri();
-		if (Utils.isStringEmpty(prefix)) {
-			throw new UnsupportedOperationException("The empty namespace cannot be registered!");
-		}
-		if (XMLNS.equals(prefix)) {
-			throw new UnsupportedOperationException(String.format("The default namespace '%s' cannot be registered!", XMLNS));
-		}
-		return namespacePrefixMapper.registerNamespace(prefix, uri);
-	}
-
-	/**
-	 * Gets the XPath Query executor
-	 *
-	 * @return {@link XPathQueryExecutor}
-	 */
-	public static XPathQueryExecutor getXPathQueryExecutor() {
-		XPathQueryExecutor executor = xPathQueryExecutorLoader.getExecutor();
-		executor.setNamespaceContext(namespacePrefixMapper);
-		return executor;
-	}
-
-	/**
-	 * Sets the XPathQueryExecutor to be used by the implementation.
-	 * This method also sets a namespace context to the executor defined within the implementation.
-	 * Default : Loads implementation accessible through ServiceLoader mechanism.
-	 *
-	 * @param xPathQueryExecutor {@link XPathQueryExecutor}
-	 */
-	public static void setXPathQueryExecutor(XPathQueryExecutor xPathQueryExecutor) {
-		xPathQueryExecutorLoader.setExecutor(xPathQueryExecutor);
+		return XPathUtils.registerNamespace(namespace);
 	}
 
 	/**
@@ -415,12 +382,12 @@ public final class DomUtils {
 	 * @param xpathString
 	 *                    XPath query string
 	 * @return an instance of {@code XPathExpression} for the given xpathString
-	 * @deprecated since DSS 6.5. Please see {@code eu.europa.esig.dss.xml.utils.xpath.XPathQueryExecutor}
+	 * @deprecated since DSS 6.5. Please use {@code eu.europa.esig.dss.xml.utils.xpath.XPathUtils} class instead.
 	 */
 	@Deprecated
 	public static XPathExpression createXPathExpression(final String xpathString) {
 		final XPath xpath = factory.newXPath();
-		xpath.setNamespaceContext(namespacePrefixMapper);
+		xpath.setNamespaceContext(XPathUtils.getNamespaceContextMap());
 		try {
 			return xpath.compile(xpathString);
 		} catch (XPathExpressionException e) {
@@ -436,7 +403,7 @@ public final class DomUtils {
 	 * @param xPathString
 	 *                    XPath query string
 	 * @return string value of the XPath query
-	 * @deprecated since DSS 6.5. Please use {@code #getValue(Node xmlNode, XPathQuery xPathQuery)} method instead.
+	 * @deprecated since DSS 6.5. Please use {@code XPathUtils#getValue(Node xmlNode, XPathQuery xPathQuery)} method instead.
 	 */
 	@Deprecated
 	public static String getValue(final Node xmlNode, final String xPathString) {
@@ -450,24 +417,6 @@ public final class DomUtils {
 	}
 
 	/**
-	 * Returns the String value of the corresponding to the XPath query.
-	 *
-	 * @param xmlNode
-	 *                    The node where the search should be performed.
-	 * @param xPathQuery
-	 *                    {@link XPathQuery}
-	 * @return string value of the XPath query
-	 */
-	public static String getValue(final Node xmlNode, final XPathQuery xPathQuery) {
-		Node node = getNode(xmlNode, xPathQuery);
-		if (node != null) {
-			String string = node.getTextContent();
-			return Utils.trim(string);
-		}
-		return null;
-	}
-
-	/**
 	 * Returns the NodeList corresponding to the XPath query.
 	 *
 	 * @param xmlNode
@@ -475,7 +424,7 @@ public final class DomUtils {
 	 * @param xPathString
 	 *                    XPath query string
 	 * @return the NodeList corresponding to the XPath query
-	 * @deprecated since DSS 6.5. Please use {@code #getNodeList(Node xmlNode, XPathQuery xPathQuery)} method instead.
+	 * @deprecated since DSS 6.5. Please use {@code XPathUtils#getNodeList(Node xmlNode, XPathQuery xPathQuery)} method instead.
 	 */
 	@Deprecated
 	public static NodeList getNodeList(final Node xmlNode, final String xPathString) {
@@ -489,19 +438,6 @@ public final class DomUtils {
 	}
 
 	/**
-	 * Returns the NodeList corresponding to the XPath query.
-	 *
-	 * @param xmlNode
-	 *                    The node where the search should be performed.
-	 * @param xPathQuery
-	 *                    {@link XPathQuery}
-	 * @return the NodeList corresponding to the XPath query
-	 */
-	public static NodeList getNodeList(final Node xmlNode, final XPathQuery xPathQuery) {
-		return getXPathQueryExecutor().getNodeList(xmlNode, xPathQuery);
-	}
-
-	/**
 	 * Returns the Node corresponding to the XPath query.
 	 *
 	 * @param xmlNode
@@ -509,7 +445,7 @@ public final class DomUtils {
 	 * @param xPathString
 	 *            XPath query string
 	 * @return the Node corresponding to the XPath query.
-	 * @deprecated since DSS 6.5. Please use {@code #getNode(Node xmlNode, XPathQuery xPathQuery)} method instead.
+	 * @deprecated since DSS 6.5. Please use {@code XPathUtils#getNode(Node xmlNode, XPathQuery xPathQuery)} method instead.
 	 */
 	@Deprecated
 	public static Node getNode(final Node xmlNode, final String xPathString) {
@@ -521,23 +457,6 @@ public final class DomUtils {
 	}
 
 	/**
-	 * Returns the Node corresponding to the XPath query.
-	 *
-	 * @param xmlNode
-	 *            The node where the search should be performed.
-	 * @param xPathQuery
-	 *            {@link XPathQuery}
-	 * @return the Node corresponding to the XPath query.
-	 */
-	public static Node getNode(final Node xmlNode, final XPathQuery xPathQuery) {
-		final NodeList list = getNodeList(xmlNode, xPathQuery);
-		if (list.getLength() > 1) {
-			throw new DSSException("More than one result for XPath: " + xPathQuery);
-		}
-		return list.item(0);
-	}
-
-	/**
 	 * Returns the Element corresponding to the XPath query.
 	 *
 	 * @param xmlNode
@@ -545,24 +464,11 @@ public final class DomUtils {
 	 * @param xPathString
 	 *            XPath query string
 	 * @return the Element corresponding to the XPath query
-	 * @deprecated since DSS 6.5. Please use {@code #getElement(Node xmlNode, XPathQuery xPathQuery)} method instead.
+	 * @deprecated since DSS 6.5. Please use {@code XPathUtils#getElement(Node xmlNode, XPathQuery xPathQuery)} method instead.
 	 */
 	@Deprecated
 	public static Element getElement(final Node xmlNode, final String xPathString) {
 		return (Element) getNode(xmlNode, xPathString);
-	}
-
-	/**
-	 * Returns the Element corresponding to the XPath query.
-	 *
-	 * @param xmlNode
-	 *            The node where the search should be performed.
-	 * @param xPathQuery
-	 *            {@link XPathQuery}
-	 * @return the Element corresponding to the XPath query
-	 */
-	public static Element getElement(final Node xmlNode, final XPathQuery xPathQuery) {
-		return (Element) getNode(xmlNode, xPathQuery);
 	}
 
 	/**
@@ -588,25 +494,11 @@ public final class DomUtils {
 	 * @param xPathString
 	 *            the expected child node
 	 * @return an amount of returned nodes
-	 * @deprecated since DSS 6.5. Please use {@code #getNodesAmount(Node xmlNode, XPathQuery xPathQuery)} method instead.
+	 * @deprecated since DSS 6.5. Please use {@code XPathUtils#getNodesAmount(Node xmlNode, XPathQuery xPathQuery)} method instead.
 	 */
 	@Deprecated
 	public static int getNodesAmount(final Node xmlNode, final String xPathString) {
 		final NodeList list = getNodeList(xmlNode, xPathString);
-		return list.getLength();
-	}
-
-	/**
-	 * Returns an amount of found nodes matching the {@code xPathString}
-	 *
-	 * @param xmlNode
-	 *            the current node
-	 * @param xPathQuery
-	 *            {@link XPathQuery}
-	 * @return an amount of returned nodes
-	 */
-	public static int getNodesAmount(final Node xmlNode, final XPathQuery xPathQuery) {
-		final NodeList list = getNodeList(xmlNode, xPathQuery);
 		return list.getLength();
 	}
 
@@ -699,34 +591,12 @@ public final class DomUtils {
 	 * @param xPathString
 	 *            XPath query string
 	 * @return {@code List} of children's names
-	 * @deprecated since DSS 6.5. Please use {@code #getChildrenNames(Node xmlNode, XPathQuery xPathQuery)} method instead.
+	 * @deprecated since DSS 6.5. Please use {@code XPathUtils#getChildrenNames(Node xmlNode, XPathQuery xPathQuery)} method instead.
 	 */
 	@Deprecated
 	public static List<String> getChildrenNames(final Node xmlNode, final String xPathString) {
 		List<String> childrenNames = new ArrayList<>();
 		final Element element = getElement(xmlNode, xPathString);
-		if (element != null) {
-			final NodeList unsignedProperties = element.getChildNodes();
-			for (int ii = 0; ii < unsignedProperties.getLength(); ++ii) {
-				final Node node = unsignedProperties.item(ii);
-				childrenNames.add(node.getLocalName());
-			}
-		}
-		return childrenNames;
-	}
-
-	/**
-	 * This method returns the list of children's names for a given {@code Node}.
-	 *
-	 * @param xmlNode
-	 *            The node where the search should be performed.
-	 * @param xPathQuery
-	 *            {@link XPathQuery}
-	 * @return {@code List} of children's names
-	 */
-	public static List<String> getChildrenNames(final Node xmlNode, final XPathQuery xPathQuery) {
-		List<String> childrenNames = new ArrayList<>();
-		final Element element = getElement(xmlNode, xPathQuery);
 		if (element != null) {
 			final NodeList unsignedProperties = element.getChildNodes();
 			for (int ii = 0; ii < unsignedProperties.getLength(); ++ii) {
@@ -825,9 +695,11 @@ public final class DomUtils {
 	 * This method returns stored namespace definitions
 	 * 
 	 * @return a map with the prefix and the related URI
+	 * @deprecated since DSS 6.5. Please use {@code XPathUtils#getCurrentNamespaces#getPrefixMap} method instead.
 	 */
+	@Deprecated
 	public static Map<String, String> getCurrentNamespaces() {
-		return namespacePrefixMapper.getPrefixMap();
+		return XPathUtils.getNamespaceContextMap().getPrefixMap();
 	}
 
 	/**
@@ -872,33 +744,11 @@ public final class DomUtils {
 	 * @param node {@link Node} containing the element with the Id
 	 * @param id {@link String} id of an element to find
 	 * @return {@link Element} with the given Id, NULL if unique result is not found
+	 * @deprecated since DSS 6.5. Please use {@code XPathUtils.getElementById(Node node, String id)} method instead
 	 */
+	@Deprecated
 	public static Element getElementById(Node node, String id) {
-		return getElementById(node, XPathQueryBuilder.allFromCurrentPosition().build(), id);
-	}
-
-	/**
-	 * Extract an element from the given {@code node} according to the {@code xPathQuery}
-	 * with the matching {@code id} if any.
-	 * This method normalizes id safely (ensuring it is not a URI or XPointer value).
-	 *
-	 * @param node {@link Node} containing the element with the Id
-	 * @param xPathQuery {@link XPathQuery}
-	 * @param id {@link String} id of an element to find
-	 * @return {@link Element} with the given Id, NULL if unique result is not found
-	 */
-	public static Element getElementById(Node node, XPathQuery xPathQuery, String id) {
-		try {
-			return getElement(node, XPathQueryBuilder.fromXPathQuery(xPathQuery).idValue(getId(id)).build());
-		} catch (Exception e) {
-			String errorMessage = "An exception occurred during an attempt to extract an element with XPath query '{}' by its Id '{}' : {}";
-			if (LOG.isDebugEnabled()) {
-				LOG.warn(errorMessage, xPathQuery, id, e.getMessage(), e);
-			} else {
-				LOG.warn(errorMessage, xPathQuery, id, e.getMessage());
-			}
-			return null;
-		}
+		return XPathUtils.getElementById(node, id);
 	}
 
 	/**
@@ -1193,7 +1043,7 @@ public final class DomUtils {
 			Node copiedRoot = documentCopy.importNode(originalRoot, true);
 			documentCopy.appendChild(copiedRoot);
 
-			copyElement = getElementById(documentCopy, id);
+			copyElement = XPathUtils.getElementById(documentCopy, id);
 			return copyElement;
 
 		} finally {

@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.xades.signature;
 
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -30,11 +29,13 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.test.signature.ExternalXAdESSignatureResult;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.test.signature.ExternalXAdESSignatureResult;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -173,7 +174,7 @@ class XAdESLevelBExternalSignatureTest extends AbstractXAdESTestSignature {
 		}
 
 		public byte[] getSerializedObject() {
-			Element objectDom = DomUtils.getElement(signatureDom, XMLDSigPath.OBJECT_PATH);
+			Element objectDom = XPathUtils.getElement(signatureDom, XMLDSigPath.OBJECT_PATH);
 			return DomUtils.serializeNode(objectDom);
 		}
 	}

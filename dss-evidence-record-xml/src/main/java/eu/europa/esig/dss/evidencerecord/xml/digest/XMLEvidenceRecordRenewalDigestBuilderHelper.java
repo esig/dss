@@ -37,6 +37,7 @@ import eu.europa.esig.dss.spi.DSSMessageDigestCalculator;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -76,7 +77,7 @@ public class XMLEvidenceRecordRenewalDigestBuilderHelper extends AbstractEvidenc
     public DSSMessageDigest buildTimeStampRenewalDigest(ArchiveTimeStampObject archiveTimeStamp, DigestAlgorithm digestAlgorithm, String canonicalizationMethod) {
         XmlArchiveTimeStampObject xmlArchiveTimeStampObject = (XmlArchiveTimeStampObject) archiveTimeStamp;
         Element archiveTimeStampElement = xmlArchiveTimeStampObject.getElement();
-        Element timeStampElement = DomUtils.getElement(archiveTimeStampElement, XMLERSPath.TIME_STAMP_PATH);
+        Element timeStampElement = XPathUtils.getElement(archiveTimeStampElement, XMLERSPath.TIME_STAMP_PATH);
         return getDigestOnCanonicalizedNode(timeStampElement, digestAlgorithm, canonicalizationMethod);
     }
 
@@ -98,7 +99,7 @@ public class XMLEvidenceRecordRenewalDigestBuilderHelper extends AbstractEvidenc
     public DSSMessageDigest buildArchiveTimeStampSequenceDigest(DigestAlgorithm digestAlgorithm, String canonicalizationMethod,
                                                                 int archiveTimeStampChainOrder) {
         Element evidenceRecordElementCopy = createEvidenceRecordElementCopy();
-        Element archiveTimeStampSequence = DomUtils.getElement(evidenceRecordElementCopy, XMLERSPath.ARCHIVE_TIME_STAMP_SEQUENCE_PATH);
+        Element archiveTimeStampSequence = XPathUtils.getElement(evidenceRecordElementCopy, XMLERSPath.ARCHIVE_TIME_STAMP_SEQUENCE_PATH);
         NodeList childNodes = archiveTimeStampSequence.getChildNodes();
         for (int i = 0; i < childNodes.getLength(); i++) {
             Node node = childNodes.item(i);

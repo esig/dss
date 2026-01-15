@@ -26,6 +26,7 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
 import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.utils.resolver.ResourceResolverContext;
 import org.apache.xml.security.utils.resolver.ResourceResolverException;
@@ -96,7 +97,7 @@ public class CounterSignatureResolver extends ResourceResolverSpi {
 		}
 
 		Document documentDom = DomUtils.buildDOM(document);
-		Node node = DomUtils.getElementById(documentDom, XMLDSigPath.ALL_SIGNATURE_VALUES_PATH, uriValue);
+		Node node = XPathUtils.getElementById(documentDom, XMLDSigPath.ALL_SIGNATURE_VALUES_PATH, uriValue);
 		
 		if (node == null && isXPointerSlash(uriValue) && XMLDSigElement.SIGNATURE_VALUE.getTagName().equals(documentDom.getLocalName())) {
 			node = documentDom;

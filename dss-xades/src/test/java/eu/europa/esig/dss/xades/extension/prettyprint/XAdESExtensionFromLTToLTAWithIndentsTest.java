@@ -37,10 +37,11 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 import eu.europa.esig.dss.xml.common.definition.AbstractPath;
 import eu.europa.esig.dss.xml.utils.DomUtils;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -116,7 +117,7 @@ class XAdESExtensionFromLTToLTAWithIndentsTest extends PKIFactoryAccess {
 	
 	private DSSDocument addCustomIndents(DSSDocument document) {
 		Document documentDom = DomUtils.buildDOM(document);
-		Node unsignedSignaturePropertiesNode = DomUtils.getNode(documentDom, AbstractPath.all(XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES));
+		Node unsignedSignaturePropertiesNode = XPathUtils.getNode(documentDom, AbstractPath.all(XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES));
 		Text customIndents = documentDom.createTextNode("\n\t\n\t\t\n\t\t\t\n\t\t\t\n\t\t\n\t\n\n\n\n");
 		Node firstChild = getFirstElement(unsignedSignaturePropertiesNode);
 		unsignedSignaturePropertiesNode.insertBefore(customIndents, firstChild);
