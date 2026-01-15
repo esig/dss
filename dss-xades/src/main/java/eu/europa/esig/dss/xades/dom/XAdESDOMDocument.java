@@ -5,6 +5,7 @@ import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.definition.XAdESPath;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigAttribute;
+import eu.europa.esig.dss.xml.utils.DOMDocument;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -21,10 +22,9 @@ import java.util.Objects;
  * containing utility methods as well as common cached values
  *
  */
-public class XAdESDOMDocument {
+public class XAdESDOMDocument extends DOMDocument {
 
-    /** XML DOM Document */
-    private final Document document;
+    private static final long serialVersionUID = 6378173641785956001L;
 
     /** This variable contains the list of {@code XAdESPaths} adapted to the specific signature schema */
     private final List<XAdESPath> xadesPathsHolders;
@@ -49,9 +49,20 @@ public class XAdESDOMDocument {
      * @param xadesPathsHolders a list of {@link XAdESPath}s
      */
     public XAdESDOMDocument(final Document document, final List<XAdESPath> xadesPathsHolders) {
-        Objects.requireNonNull(document, "Document cannot be null!");
+        this(document, null, xadesPathsHolders);
+    }
+
+    /**
+     * Constructor with provided XAdES Path holders and document name.
+     * The method instantiates a new XAdES Path list based on the provided one.
+     *
+     * @param document {@link Document}
+     * @param name {@link String} document name
+     * @param xadesPathsHolders a list of {@link XAdESPath}s
+     */
+    public XAdESDOMDocument(final Document document, final String name, final List<XAdESPath> xadesPathsHolders) {
+        super(document, name);
         Objects.requireNonNull(xadesPathsHolders, "XAdES Path holders cannot be null!");
-        this.document = document;
         this.xadesPathsHolders = new ArrayList<>(xadesPathsHolders);
     }
 
@@ -61,7 +72,7 @@ public class XAdESDOMDocument {
      * @return {@link Document}
      */
     public Document getDocument() {
-        return document;
+        return (Document) getNode();
     }
 
     /**
@@ -81,7 +92,7 @@ public class XAdESDOMDocument {
      */
     public NodeList getSignatureNodes() {
         if (signatureNodes == null) {
-            signatureNodes = DSSXMLUtils.getAllSignaturesExceptCounterSignatures(document);
+            signatureNodes = DSSXMLUtils.getAllSignaturesExceptCounterSignatures(getDocument());
         }
         return signatureNodes;
     }
@@ -92,7 +103,7 @@ public class XAdESDOMDocument {
      * against some DTD or XML schema. This process adds the necessary type of information to each ID attribute.
      */
     public void recursiveIdBrowse() {
-        recursiveIdBrowse(document.getDocumentElement());
+        recursiveIdBrowse(getDocument().getDocumentElement());
     }
 
     /**
