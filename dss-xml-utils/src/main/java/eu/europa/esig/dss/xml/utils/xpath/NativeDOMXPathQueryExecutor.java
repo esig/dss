@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Implementation of {@code eu.europa.esig.dss.xml.utils.xpath.XPathQueryExecutor}
+ * (Experimental) Implementation of {@code eu.europa.esig.dss.xml.utils.xpath.XPathQueryExecutor}
  * based on the native XML DOM Node's processing.
  *
  */

@@ -972,6 +972,48 @@ If a more advanced configuration of the `SignaturePolicyValidator` loading proce
 
 === Format specificities
 
+==== XAdES
+
+[[XPathQueryExpressions]]
+===== XPath query expressions
+
+Since version `6.5` DSS provides a customization of XPath queries execution, used on a XAdES processing for elements of interest lookup and extraction (mainly in augmentation and validation processes).
+
+The configuration of the default behavior can be useful on processing of large XML documents with many XML nodes inside in order to improve performance of a XAdES augmentation and/or validation.
+
+For customization of the behavior, DSS provides the following interfaces:
+
+* `eu.europa.esig.dss.xml.utils.xpath.XPathQueryExecutor` - performs node extraction based on XPath expressions execution on XAdES processing, including augmentation and validation processes (less on signing, as it is required only occasionally).
+* `eu.europa.esig.dss.xml.utils.xpath.XPathStringExecutor` - performs string XPath queries execution. Currently only used in pair with the `XAdESSignatureParameters#setXPathLocationString` method usage.
+
+NOTE: The scope of the XPath executors is limited to the aforementioned components. As such, the XPath executors do not currently apply on XPath transform processing within a `ds:Reference` element.
+
+Alternative implementations shall implement the target interface. Within DSS package the following implementations are provided:
+
+* `JavaXmlXPathQueryExecutor` _(Default)_ - The XPath expressions processing implementation based on the `javax.xml.xpath` package classes. This implementation replicates the behavior on XPath processing in previous versions of DSS, before `6.4` (inclusive).
+* `NativeDOMXPathQueryExecutor` _(Experimental)_ - Alternative implementation of XPath expressions handling, aiming to improve the performance of XPath queries execution. This implementation works on pure `org.w3c.dom` package elements, such as `Node` lookup and processing.
+
+NOTE: DSS `6.5` uses the _legacy_ implementation of XPath expressions execution. We aim to switch the default implementation to the `NativeDOMXPathQueryExecutor` in the future version of DSS, thus improving XML processing performance out of the box.
+
+DSS provides two ways of the implementation configuration:
+
+1) Using a `ServiceLoader` _(recommended)_. A definition of the class implementation shall be provided in the folder `META-INF/services` within the root directory of the project, in a file with a name corresponding to the full path of the target interface. For instance, for a `XPathQueryExecutor` implementation configuration, the filename `eu.europa.esig.dss.xml.utils.xpath.XPathQueryExecutor` shall be used. The file itself shall contain a selected implementation, as shown below for an example:
+[source,indent=0]
+./META-INF/services/eu.europa.esig.dss.xml.utils.xpath.XPathQueryExecutor
+----
+eu.europa.esig.dss.xml.utils.xpath.NativeDOMXPathQueryExecutor
+----
+
+2) Using `XPathUtils` (for `XPathQueryExecutor` only). The chosen implementation can be provided directly using a corresponding setter within the `XPathUtils` class, as shown below:
+
+[source,java,indent=0]
+.XPathQueryExecutor configuration using XPathUtils
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/XPathSnippet.java[tags=demo]
+----
+
+NOTE: It is also possible to integrate a third-party dependency to be used within a custom alternative XPath executor implementation. As such, successful tests have been performed on using a `Saxon-HE` library for XPath execution.
+
 ==== PAdES
 
 [[ShadowAttackDetection]]
