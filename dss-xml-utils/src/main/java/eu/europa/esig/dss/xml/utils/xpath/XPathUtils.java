@@ -186,7 +186,9 @@ public final class XPathUtils {
             final NodeList unsignedProperties = element.getChildNodes();
             for (int ii = 0; ii < unsignedProperties.getLength(); ++ii) {
                 final Node node = unsignedProperties.item(ii);
-                childrenNames.add(node.getLocalName());
+                if (node.getLocalName() != null) {
+                    childrenNames.add(node.getLocalName());
+                }
             }
         }
         return childrenNames;

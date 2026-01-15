@@ -7,10 +7,12 @@ import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
 import eu.europa.esig.dss.xml.common.xpath.XPathQuery;
 import eu.europa.esig.dss.xml.common.xpath.XPathQueryBuilder;
 import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.NamespaceContextMap;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -21,24 +23,18 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class XPathUtilsTest {
 
     private static final Document DOC = DomUtils.buildDOM("<a><b><d>Hello</d><e><e pos=\"nested\">Nested</e></e></b><c><d>Bye</d><d Id=\"world\">World</d></c></a>");
-    private static final String XML_WITH_NAMESPACE = "<m:manifest xmlns:m=\"urn:oasis:names:tc:opendocument:xmlns:manifest:1.0\"><m:file-entry m:media-type=\"text/plain\" m:full-path=\"hello.txt\" /></m:manifest>";
 
     @Test
     void registerNamespaceTest() {
-        Document document = DomUtils.buildDOM(XML_WITH_NAMESPACE);
+        DSSNamespace manifestNamespace = new DSSNamespace("urn:dss:namespace", "dss");
 
-        DSSNamespace manifestNamespace = new DSSNamespace("urn:oasis:names:tc:opendocument:xmlns:manifest:1.0", "m");
-        final XPathQuery xPathQuery = XPathQueryBuilder.fromCurrentPosition()
-                .element(DSSElement.fromDefinition("file-entry", manifestNamespace)).build();
-        Exception exception = assertThrows(DSSException.class, () -> XPathUtils.getElement(document.getDocumentElement(), xPathQuery));
-        assertTrue(exception.getMessage().contains("Unable to create an XPath expression"));
+        NamespaceContextMap namespaceContextMap = XPathUtils.getNamespaceContextMap();
+        assertEquals("", namespaceContextMap.getNamespaceURI("dss"));
 
         XPathUtils.registerNamespace(manifestNamespace);
+        assertEquals("urn:dss:namespace", namespaceContextMap.getNamespaceURI("dss"));
 
-        Element fileEntry = XPathUtils.getElement(document.getDocumentElement(), xPathQuery);
-        assertNotNull(fileEntry);
-
-        exception = assertThrows(UnsupportedOperationException.class,
+        Exception exception = assertThrows(UnsupportedOperationException.class,
                 () -> XPathUtils.registerNamespace(new DSSNamespace("http://some-uri.net", null)));
         assertEquals("The empty namespace cannot be registered!", exception.getMessage());
 
@@ -67,6 +63,15 @@ class XPathUtilsTest {
                 DomUtils.buildDOM("<el id=\"signedData\">Text</el>"), "notSignedData"));
         assertNull(XPathUtils.getElementById(
                 DomUtils.buildDOM("<el ids=\"signedData\">Text</el>"), "signedData"));
+
+        assertNotNull(XPathUtils.getElementById(DOC, "world"));
+        assertNull(XPathUtils.getElementById(DOC, "nested"));
+        assertNull(XPathUtils.getElementById(DOC, "hello"));
+
+        XPathQuery query = XPathQueryBuilder.allFromCurrentPosition().elements(getElement("a"), getElement("c"), getElement("d")).build();
+        assertNotNull(XPathUtils.getElementById(DOC, query, "world"));
+        query = XPathQueryBuilder.allFromCurrentPosition().elements(getElement("a"), getElement("b"), getElement("d")).build();
+        assertNull(XPathUtils.getElementById(DOC, query, "world"));
     }
 
     @Test
@@ -194,6 +199,95 @@ class XPathUtilsTest {
         assertEquals(1, XPathUtils.getNodeList(DOC, query).getLength());
         query = XPathQueryBuilder.all().element(getElement("d")).notChildOf(getElement("a")).build();
         assertEquals(3, XPathUtils.getNodeList(DOC, query).getLength());
+    }
+
+    @Test
+    public void getValueTest() {
+        Node bElement = DOC.getDocumentElement().getFirstChild();
+
+        XPathQuery query = XPathQueryBuilder.fromCurrentPosition().element(getElement("d")).build();
+        assertEquals("Hello", XPathUtils.getValue(bElement, query));
+        query = XPathQueryBuilder.allFromCurrentPosition().element(getElement("d")).build();
+        assertEquals("Hello", XPathUtils.getValue(bElement, query));
+        query = XPathQueryBuilder.fromCurrentPosition().element(getElement("e")).build();
+        assertEquals("Nested", XPathUtils.getValue(bElement, query));
+        query = XPathQueryBuilder.fromCurrentPosition().elements(getElement("e"), getElement("e")).build();
+        assertEquals("Nested", XPathUtils.getValue(bElement, query));
+        query = XPathQueryBuilder.fromCurrentPosition().element(getElement("g")).build();
+        assertNull(XPathUtils.getValue(bElement, query));
+
+        assertThrows(DSSException.class, () -> XPathUtils.getValue(bElement,
+                XPathQueryBuilder.allFromCurrentPosition().element(getElement("e")).build()));
+    }
+
+    @Test
+    public void getNodeTest() {
+        Node bElement = DOC.getDocumentElement().getFirstChild();
+
+        XPathQuery query = XPathQueryBuilder.fromCurrentPosition().element(getElement("d")).build();
+        assertNotNull(XPathUtils.getNode(bElement, query));
+        query = XPathQueryBuilder.allFromCurrentPosition().element(getElement("d")).build();
+        assertNotNull(XPathUtils.getNode(bElement, query));
+        query = XPathQueryBuilder.fromCurrentPosition().element(getElement("e")).build();
+        assertNotNull(XPathUtils.getNode(bElement, query));
+        query = XPathQueryBuilder.fromCurrentPosition().elements(getElement("e"), getElement("e")).build();
+        assertNotNull(XPathUtils.getNode(bElement, query));
+        query = XPathQueryBuilder.fromCurrentPosition().element(getElement("g")).build();
+        assertNull(XPathUtils.getNode(bElement, query));
+
+        assertThrows(DSSException.class, () -> XPathUtils.getNode(bElement,
+                XPathQueryBuilder.allFromCurrentPosition().element(getElement("e")).build()));
+    }
+
+    @Test
+    public void getElementTest() {
+        Node bElement = DOC.getDocumentElement().getFirstChild();
+
+        XPathQuery query = XPathQueryBuilder.fromCurrentPosition().element(getElement("d")).build();
+        assertNotNull(XPathUtils.getElement(bElement, query));
+        query = XPathQueryBuilder.allFromCurrentPosition().element(getElement("d")).build();
+        assertNotNull(XPathUtils.getElement(bElement, query));
+        query = XPathQueryBuilder.fromCurrentPosition().element(getElement("e")).build();
+        assertNotNull(XPathUtils.getElement(bElement, query));
+        query = XPathQueryBuilder.fromCurrentPosition().elements(getElement("e"), getElement("e")).build();
+        assertNotNull(XPathUtils.getElement(bElement, query));
+        query = XPathQueryBuilder.fromCurrentPosition().element(getElement("g")).build();
+        assertNull(XPathUtils.getElement(bElement, query));
+
+        assertThrows(DSSException.class, () -> XPathUtils.getElement(bElement,
+                XPathQueryBuilder.allFromCurrentPosition().element(getElement("e")).build()));
+    }
+
+    @Test
+    public void getNodesAmountTest() {
+        Node bElement = DOC.getDocumentElement().getFirstChild();
+
+        XPathQuery query = XPathQueryBuilder.fromCurrentPosition().element(getElement("d")).build();
+        assertEquals(1, XPathUtils.getNodesAmount(bElement, query));
+        query = XPathQueryBuilder.allFromCurrentPosition().element(getElement("d")).build();
+        assertEquals(1, XPathUtils.getNodesAmount(bElement, query));
+        query = XPathQueryBuilder.fromCurrentPosition().element(getElement("e")).build();
+        assertEquals(1, XPathUtils.getNodesAmount(bElement, query));
+        query = XPathQueryBuilder.fromCurrentPosition().elements(getElement("e"), getElement("e")).build();
+        assertEquals(1, XPathUtils.getNodesAmount(bElement, query));
+        query = XPathQueryBuilder.fromCurrentPosition().element(getElement("g")).build();
+        assertEquals(0, XPathUtils.getNodesAmount(bElement, query));
+        query = XPathQueryBuilder.allFromCurrentPosition().element(getElement("e")).build();
+        assertEquals(2, XPathUtils.getNodesAmount(bElement, query));
+    }
+
+    @Test
+    public void getChildrenNamesTest() {
+        Node bElement = DOC.getDocumentElement().getFirstChild();
+
+        XPathQuery query = XPathQueryBuilder.fromCurrentPosition().element(getElement("d")).build();
+        assertEquals(Collections.emptyList(), XPathUtils.getChildrenNames(bElement, query));
+        query = XPathQueryBuilder.fromCurrentPosition().element(getElement("e")).build();
+        assertEquals(Collections.singletonList("e"), XPathUtils.getChildrenNames(bElement, query));
+        query = XPathQueryBuilder.fromCurrentPosition().elements(getElement("e"), getElement("e")).build();
+        assertEquals(Collections.emptyList(), XPathUtils.getChildrenNames(bElement, query));
+        query = XPathQueryBuilder.fromCurrentPosition().element(getElement("g")).build();
+        assertEquals(Collections.emptyList(), XPathUtils.getChildrenNames(bElement, query));
     }
 
     private DSSElement getElement(String localName) {
