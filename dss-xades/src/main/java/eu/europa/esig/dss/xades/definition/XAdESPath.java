@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.xades.definition;
 
 import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
+import eu.europa.esig.dss.xml.common.xpath.XPathQuery;
 
 import java.io.Serializable;
 
@@ -57,385 +58,406 @@ public interface XAdESPath extends Serializable {
 	 *
 	 * @return {@link String} path
 	 */
-	String getQualifyingPropertiesPath();
+	XPathQuery getQualifyingPropertiesPath();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:SignedProperties"
 	 *
 	 * @return {@link String} path
 	 */
-	String getSignedPropertiesPath();
+	XPathQuery getSignedPropertiesPath();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:SignedProperties/xades:SignedSignatureProperties"
 	 *
 	 * @return {@link String} path
 	 */
-	String getSignedSignaturePropertiesPath();
+	XPathQuery getSignedSignaturePropertiesPath();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:SignedProperties/xades:SignedSignatureProperties/xades:SigningTime"
 	 *
 	 * @return {@link String} path
 	 */
-	String getSigningTimePath();
+	XPathQuery getSigningTimePath();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:SignedProperties/xades:SignedSignatureProperties/xades:SigningCertificate"
 	 *
 	 * @return {@link String} path
 	 */
-	String getSigningCertificatePath();
+	XPathQuery getSigningCertificatePath();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:SignedProperties/xades:SignedSignatureProperties/xades:SigningCertificate/xades:Cert"
 	 *
 	 * @return {@link String} path
 	 */
-	String getSigningCertificateChildren();
+	XPathQuery getSigningCertificateChildren();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:SignedProperties/xades:SignedSignatureProperties/xades:SigningCertificateV2"
 	 *
 	 * @return {@link String} path
 	 */
-	String getSigningCertificateV2Path();
+	XPathQuery getSigningCertificateV2Path();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:SignedProperties/xades:SignedSignatureProperties/xades:SigningCertificateV2/xades:Cert"
 	 *
 	 * @return {@link String} path
 	 */
-	String getSigningCertificateV2Children();
+	XPathQuery getSigningCertificateV2Children();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:SignedProperties/xades:SignedSignatureProperties/xades:SignatureProductionPlace"
 	 *
 	 * @return {@link String} path
 	 */
-	String getSignatureProductionPlacePath();
+	XPathQuery getSignatureProductionPlacePath();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:SignedProperties/xades:SignedSignatureProperties/xades:SignatureProductionPlaceV2"
 	 *
 	 * @return {@link String} path
 	 */
-	String getSignatureProductionPlaceV2Path();
+	XPathQuery getSignatureProductionPlaceV2Path();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:SignedProperties/xades:SignedSignatureProperties/xades:SignaturePolicyIdentifier"
 	 *
 	 * @return {@link String} path
 	 */
-	String getSignaturePolicyIdentifierPath();
+	XPathQuery getSignaturePolicyIdentifierPath();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:SignedProperties/xades:SignedSignatureProperties/xades:SignerRole"
 	 *
 	 * @return {@link String} path
 	 */
-	String getSignerRolePath();
+	XPathQuery getSignerRolePath();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:SignedProperties/xades:SignedSignatureProperties/xades:SignerRole/xades:ClaimedRoles/xades:ClaimedRole"
 	 *
 	 * @return {@link String} path
 	 */
-	String getClaimedRolePath();
+	XPathQuery getClaimedRolePath();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:SignedProperties/xades:SignedSignatureProperties/xades:SignerRole/xades:SignedAssertions/xades:SignedAssertion"
 	 *
 	 * @return {@link String} path
 	 */
-	String getSignedAssertionPath();
+	XPathQuery getSignedAssertionPath();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:SignedProperties/xades:SignedSignatureProperties/xades:SignerRoleV2"
 	 *
 	 * @return {@link String} path
 	 */
-	String getSignerRoleV2Path();
+	XPathQuery getSignerRoleV2Path();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:SignedProperties/xades:SignedSignatureProperties/xades:SignerRoleV2/xades:ClaimedRoles/xades:ClaimedRole"
 	 *
 	 * @return {@link String} path
 	 */
-	String getClaimedRoleV2Path();
+	XPathQuery getClaimedRoleV2Path();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:SignedProperties/xades:SignedSignatureProperties/xades:SignerRole/xades:CertifiedRoles/xades:CertifiedRole"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCertifiedRolePath();
+	XPathQuery getCertifiedRolePath();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:SignedProperties/xades:SignedSignatureProperties/xades:SignerRoleV2/xades:CertifiedRoles/xades:CertifiedRole"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCertifiedRoleV2Path();
+	XPathQuery getCertifiedRoleV2Path();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:SignedProperties/xades:SignedDataObjectProperties"
 	 *
 	 * @return {@link String} path
 	 */
-	String getSignedDataObjectPropertiesPath();
+	XPathQuery getSignedDataObjectPropertiesPath();
+
+	/**
+	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:SignedProperties/xades:SignedDataObjectProperties/xades:AllDataObjectsTimeStamp"
+	 *
+	 * @return {@link String} path
+	 */
+	XPathQuery getAllDataObjectsTimestampPath();
+
+	/**
+	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:SignedProperties/xades:SignedDataObjectProperties/xades:IndividualDataObjectsTimeStamp"
+	 *
+	 * @return {@link String} path
+	 */
+	XPathQuery getIndividualDataObjectsTimestampPath();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:SignedProperties/xades:SignedDataObjectProperties/xades:DataObjectFormat"
 	 *
 	 * @return {@link String} path
 	 */
-	String getDataObjectFormat();
+	XPathQuery getDataObjectFormat();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:SignedProperties/xades:SignedDataObjectProperties/xades:DataObjectFormat/xades:MimeType"
 	 *
 	 * @return {@link String} path
 	 */
-	String getDataObjectFormatMimeType();
+	XPathQuery getDataObjectFormatMimeType();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:SignedProperties/xades:SignedDataObjectProperties/xades:DataObjectFormat/xades:ObjectIdentifier"
 	 *
 	 * @return {@link String} path
 	 */
-	String getDataObjectFormatObjectIdentifier();
+	XPathQuery getDataObjectFormatObjectIdentifier();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:SignedProperties/xades:SignedDataObjectProperties/xades:CommitmentTypeIndication"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCommitmentTypeIndicationPath();
+	XPathQuery getCommitmentTypeIndicationPath();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties"
 	 *
 	 * @return {@link String} path
 	 */
-	String getUnsignedPropertiesPath();
+	XPathQuery getUnsignedPropertiesPath();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties"
 	 *
 	 * @return {@link String} path
 	 */
-	String getUnsignedSignaturePropertiesPath();
+	XPathQuery getUnsignedSignaturePropertiesPath();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades:CounterSignature"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCounterSignaturePath();
+	XPathQuery getCounterSignaturePath();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades:AttributeRevocationRefs"
 	 *
 	 * @return {@link String} path
 	 */
-	String getAttributeRevocationRefsPath();
+	XPathQuery getAttributeRevocationRefsPath();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades:CompleteRevocationRefs"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCompleteRevocationRefsPath();
+	XPathQuery getCompleteRevocationRefsPath();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades:CompleteCertificateRefs"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCompleteCertificateRefsPath();
+	XPathQuery getCompleteCertificateRefsPath();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades:CompleteCertificateRefs/xades:CertRefs/xades:Cert"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCompleteCertificateRefsCertPath();
+	XPathQuery getCompleteCertificateRefsCertPath();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades141:CompleteCertificateRefsV2"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCompleteCertificateRefsV2Path();
+	XPathQuery getCompleteCertificateRefsV2Path();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades141:CompleteCertificateRefsV2/xades141:CertRefs/xades:Cert"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCompleteCertificateRefsV2CertPath();
+	XPathQuery getCompleteCertificateRefsV2CertPath();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades:AttributeCertificateRefs"
 	 *
 	 * @return {@link String} path
 	 */
-	String getAttributeCertificateRefsPath();
+	XPathQuery getAttributeCertificateRefsPath();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades:AttributeCertificateRefs/xades:CertRefs/xades:Cert"
 	 *
 	 * @return {@link String} path
 	 */
-	String getAttributeCertificateRefsCertPath();
+	XPathQuery getAttributeCertificateRefsCertPath();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades141:AttributeCertificateRefsV2"
 	 *
 	 * @return {@link String} path
 	 */
-	String getAttributeCertificateRefsV2Path();
+	XPathQuery getAttributeCertificateRefsV2Path();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades141:AttributeCertificateRefsV2/xades141:CertRefs/xades:Cert"
 	 *
 	 * @return {@link String} path
 	 */
-	String getAttributeCertificateRefsV2CertPath();
+	XPathQuery getAttributeCertificateRefsV2CertPath();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades:CertificateValues"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCertificateValuesPath();
+	XPathQuery getCertificateValuesPath();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades:RevocationValues"
 	 *
 	 * @return {@link String} path
 	 */
-	String getRevocationValuesPath();
+	XPathQuery getRevocationValuesPath();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades:AttributeRevocationValues"
 	 *
 	 * @return {@link String} path
 	 */
-	String getAttributeRevocationValuesPath();
+	XPathQuery getAttributeRevocationValuesPath();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades141:SigAndRefsTimeStampV2"
 	 *
 	 * @return {@link String} path
 	 */
-	String getEncapsulatedCertificateValuesPath();
+	XPathQuery getEncapsulatedCertificateValuesPath();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades:AttrAuthoritiesCertValues"
 	 *
 	 * @return {@link String} path
 	 */
-	String getAttrAuthoritiesCertValuesPath();
+	XPathQuery getAttrAuthoritiesCertValuesPath();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades:AttrAuthoritiesCertValues/xades:EncapsulatedX509Certificate"
 	 *
 	 * @return {@link String} path
 	 */
-	String getEncapsulatedAttrAuthoritiesCertValuesPath();
+	XPathQuery getEncapsulatedAttrAuthoritiesCertValuesPath();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades:TimeStampValidationData/xades:CertificateValues/xades:EncapsulatedX509Certificate"
 	 *
 	 * @return {@link String} path
 	 */
-	String getEncapsulatedTimeStampValidationDataCertValuesPath();
+	XPathQuery getEncapsulatedTimeStampValidationDataCertValuesPath();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades:TimeStampValidationData/xades:RevocationValues"
 	 *
 	 * @return {@link String} path
 	 */
-	String getTimeStampValidationDataRevocationValuesPath();
+	XPathQuery getTimeStampValidationDataRevocationValuesPath();
+
+	/**
+	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades141:AnyValidationData"
+	 *
+	 * @return {@link String} path
+	 */
+	XPathQuery getAnyValidationDataPath();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades141:AnyValidationData/xades:CertificateValues/xades:EncapsulatedX509Certificate"
 	 *
 	 * @return {@link String} path
 	 */
-	String getEncapsulatedAnyValidationDataCertValuesPath();
+	XPathQuery getEncapsulatedAnyValidationDataCertValuesPath();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades141:AnyValidationData/xades:RevocationValues"
 	 *
 	 * @return {@link String} path
 	 */
-	String getAnyValidationDataRevocationValuesPath();
+	XPathQuery getAnyValidationDataRevocationValuesPath();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades:SignatureTimeStamp"
 	 *
 	 * @return {@link String} path
 	 */
-	String getSignatureTimestampPath();
+	XPathQuery getSignatureTimestampPath();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades:SigAndRefsTimeStamp"
 	 *
 	 * @return {@link String} path
 	 */
-	String getSigAndRefsTimestampPath();
+	XPathQuery getSigAndRefsTimestampPath();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades141:SigAndRefsTimeStampV2"
 	 *
 	 * @return {@link String} path
 	 */
-	String getSigAndRefsTimestampV2Path();
+	XPathQuery getSigAndRefsTimestampV2Path();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades:RefsOnlyTimeStamp"
 	 *
 	 * @return {@link String} path
 	 */
-	String getRefsOnlyTimestampPath();
+	XPathQuery getRefsOnlyTimestampPath();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades141:RefsOnlyTimeStampV2"
 	 *
 	 * @return {@link String} path
 	 */
-	String getRefsOnlyTimestampV2Path();
+	XPathQuery getRefsOnlyTimestampV2Path();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades141:ArchiveTimeStamp"
 	 *
 	 * @return {@link String} path
 	 */
-	String getArchiveTimestampPath();
+	XPathQuery getArchiveTimestampPath();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades141:TimeStampValidationData"
 	 *
 	 * @return {@link String} path
 	 */
-	String getTimestampValidationDataPath();
+	XPathQuery getTimestampValidationDataPath();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xades141:SignaturePolicyStore"
 	 *
 	 * @return {@link String} path
 	 */
-	String getSignaturePolicyStorePath();
+	XPathQuery getSignaturePolicyStorePath();
 
 	/**
 	 * Gets path "./ds:Object/xades:QualifyingProperties/xades:UnsignedProperties/xades:UnsignedSignatureProperties/xadesen:SealingEvidenceRecords"
 	 *
 	 * @return {@link String} path
 	 */
-	String getSealingEvidenceRecordsPath();
+	XPathQuery getSealingEvidenceRecordsPath();
 
 	// ----------------
 
@@ -444,259 +466,259 @@ public interface XAdESPath extends Serializable {
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentCRLValuesChildren();
+	XPathQuery getCurrentCRLValuesChildren();
 
 	/**
 	 * Gets path "./xades:CRLRefs/xades:CRLRef"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentCRLRefsChildren();
+	XPathQuery getCurrentCRLRefsChildren();
 
 	/**
 	 * Gets path "./xades:CRLIdentifier"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentCRLRefCRLIdentifier();
+	XPathQuery getCurrentCRLRefCRLIdentifier();
 
 	/**
 	 * Gets path "./xades:CRLIdentifier/xades:Issuer"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentCRLRefCRLIdentifierIssuer();
+	XPathQuery getCurrentCRLRefCRLIdentifierIssuer();
 
 	/**
 	 * Gets path "./xades:CRLIdentifier/xades:IssueTime"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentCRLRefCRLIdentifierIssueTime();
+	XPathQuery getCurrentCRLRefCRLIdentifierIssueTime();
 
 	/**
 	 * Gets path "./xades:CRLIdentifier/xades:Number"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentCRLRefCRLIdentifierNumber();
+	XPathQuery getCurrentCRLRefCRLIdentifierNumber();
 
 	/**
 	 * Gets path "./xades:OCSPValues/xades:EncapsulatedOCSPValue"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentOCSPValuesChildren();
+	XPathQuery getCurrentOCSPValuesChildren();
 
 	/**
 	 * Gets path "./xades:OCSPRefs/xades:OCSPRef"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentOCSPRefsChildren();
+	XPathQuery getCurrentOCSPRefsChildren();
 
 	/**
 	 * Gets path "./xades:OCSPIdentifier/xades:ResponderID"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentOCSPRefResponderID();
+	XPathQuery getCurrentOCSPRefResponderID();
 
 	/**
 	 * Gets path "./xades:OCSPIdentifier/xades:ResponderID/xades:ByName"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentOCSPRefResponderIDByName();
+	XPathQuery getCurrentOCSPRefResponderIDByName();
 
 	/**
 	 * Gets path "./xades:OCSPIdentifier/xades:ResponderID/xades:ByKey"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentOCSPRefResponderIDByKey();
+	XPathQuery getCurrentOCSPRefResponderIDByKey();
 
 	/**
 	 * Gets path "./xades:OCSPIdentifier/xades:ProducedAt"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentOCSPRefProducedAt();
+	XPathQuery getCurrentOCSPRefProducedAt();
 
 	/**
 	 * Gets path "./xades:DigestAlgAndValue"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentDigestAlgAndValue();
+	XPathQuery getCurrentDigestAlgAndValue();
 
 	/**
 	 * Gets path "./xades:CertRefs/xades:Cert"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentCertRefsCertChildren();
+	XPathQuery getCurrentCertRefsCertChildren();
 
 	/**
 	 * Gets path "./xades141:CertRefs/xades:Cert"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentCertRefs141CertChildren();
+	XPathQuery getCurrentCertRefs141CertChildren();
 
 	/**
 	 * Gets path "./xades:Cert"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentCertChildren();
+	XPathQuery getCurrentCertChildren();
 
 	/**
 	 * Gets path "./xades:CertDigest"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentCertDigest();
+	XPathQuery getCurrentCertDigest();
 
 	/**
 	 * Gets path "./xades:EncapsulatedTimeStamp"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentEncapsulatedTimestamp();
+	XPathQuery getCurrentEncapsulatedTimestamp();
 
 	/**
 	 * Gets path "./xades:EncapsulatedX509Certificate"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentEncapsulatedCertificate();
+	XPathQuery getCurrentEncapsulatedCertificate();
 
 	/**
 	 * Gets path "./xades:CertificateValues/xades:EncapsulatedX509Certificate"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentCertificateValuesEncapsulatedCertificate();
+	XPathQuery getCurrentCertificateValuesEncapsulatedCertificate();
 
 	/**
 	 * Gets path "./xades:RevocationValues/xades:OCSPValues/xades:EncapsulatedOCSPValue"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentRevocationValuesEncapsulatedOCSPValue();
+	XPathQuery getCurrentRevocationValuesEncapsulatedOCSPValue();
 
 	/**
 	 * Gets path "./xades:OCSPValues/xades:EncapsulatedOCSPValue"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentEncapsulatedOCSPValue();
+	XPathQuery getCurrentEncapsulatedOCSPValue();
 
 	/**
 	 * Gets path "./xades:RevocationValues/xades:CRLValues/xades:EncapsulatedCRLValue"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentRevocationValuesEncapsulatedCRLValue();
+	XPathQuery getCurrentRevocationValuesEncapsulatedCRLValue();
 
 	/**
 	 * Gets path "./xades:CRLValues/xades:EncapsulatedCRLValue"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentEncapsulatedCRLValue();
+	XPathQuery getCurrentEncapsulatedCRLValue();
 
 	/**
 	 * Gets path "./xades:IssuerSerial/xades:X509IssuerName"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentIssuerSerialIssuerNamePath();
+	XPathQuery getCurrentIssuerSerialIssuerNamePath();
 
 	/**
 	 * Gets path "./xades:IssuerSerial/xades:X509SerialNumber"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentIssuerSerialSerialNumberPath();
+	XPathQuery getCurrentIssuerSerialSerialNumberPath();
 
 	/**
 	 * Gets path "./xades:IssuerSerialV2"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentIssuerSerialV2Path();
+	XPathQuery getCurrentIssuerSerialV2Path();
 
 	/**
 	 * Gets path "./xades:CommitmentTypeId/xades:Identifier"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentCommitmentIdentifierPath();
+	XPathQuery getCurrentCommitmentIdentifierPath();
 
 	/**
 	 * Gets path "./xades:CommitmentTypeId/xades:Description"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentCommitmentDescriptionPath();
+	XPathQuery getCurrentCommitmentDescriptionPath();
 
 	/**
 	 * Gets path "./xades:CommitmentTypeId/xades:DocumentationReferences"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentCommitmentDocumentationReferencesPath();
+	XPathQuery getCurrentCommitmentDocumentationReferencesPath();
 
 	/**
 	 * Gets path "./xades:DocumentationReferences"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentDocumentationReference();
+	XPathQuery getCurrentDocumentationReference();
 
 	/**
 	 * Gets path "./xades:Description"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentDescription();
+	XPathQuery getCurrentDescription();
 
 	/**
 	 * Gets path "./xades:ObjectIdentifier"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentObjectIdentifier();
+	XPathQuery getCurrentObjectIdentifier();
 
 	/**
 	 * Gets path "./xades:ObjectReference"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentCommitmentObjectReferencesPath();
+	XPathQuery getCurrentCommitmentObjectReferencesPath();
 
 	/**
 	 * Gets path "./xades:AllSignedDataObjects"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentCommitmentAllSignedDataObjectsPath();
+	XPathQuery getCurrentCommitmentAllSignedDataObjectsPath();
 
 	/**
 	 * Gets path "./xades:MimeType"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentMimeType();
+	XPathQuery getCurrentMimeType();
 
 	/**
 	 * Gets path "./xades:Encoding"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentEncoding();
+	XPathQuery getCurrentEncoding();
 
 	// --------------------------- Policy
 
@@ -705,112 +727,112 @@ public interface XAdESPath extends Serializable {
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentSignaturePolicyId();
+	XPathQuery getCurrentSignaturePolicyId();
 
 	/**
 	 * Gets path "./xades:SignaturePolicyId/xades:SigPolicyHash"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentSignaturePolicyDigestAlgAndValue();
+	XPathQuery getCurrentSignaturePolicyDigestAlgAndValue();
 
 	/**
 	 * Gets path "./xades:SignaturePolicyId/xades:SigPolicyQualifiers/xades:SigPolicyQualifier/xades:SPURI"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentSignaturePolicySPURI();
+	XPathQuery getCurrentSignaturePolicySPURI();
 
 	/**
 	 * Gets path "./xades:SignaturePolicyId/xades:SigPolicyQualifiers/xades:SigPolicyQualifier/xades:SPUserNotice"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentSignaturePolicySPUserNotice();
+	XPathQuery getCurrentSignaturePolicySPUserNotice();
 
 	/**
 	 * Gets path "./xades:NoticeRef/xades:Organization"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentSPUserNoticeNoticeRefOrganization();
+	XPathQuery getCurrentSPUserNoticeNoticeRefOrganization();
 
 	/**
 	 * Gets path "./xades:NoticeRef/xades:NoticeNumbers"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentSPUserNoticeNoticeRefNoticeNumbers();
+	XPathQuery getCurrentSPUserNoticeNoticeRefNoticeNumbers();
 
 	/**
 	 * Gets path "./xades:NoticeRef/xades:NoticeNumbers"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentSPUserNoticeExplicitText();
+	XPathQuery getCurrentSPUserNoticeExplicitText();
 
 	/**
 	 * Gets path "./xades:SignaturePolicyId/xades:SigPolicyQualifiers/xades:SigPolicyQualifier/xades141:SPDocSpecification"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentSignaturePolicySPDocSpecification();
+	XPathQuery getCurrentSignaturePolicySPDocSpecification();
 
 	/**
 	 * Gets path "./xades:SignaturePolicyId/xades:SigPolicyQualifiers/xades:SigPolicyQualifier/xades141:SPDocSpecification/xades:Identifier"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentSignaturePolicySPDocSpecificationIdentifier();
+	XPathQuery getCurrentSignaturePolicySPDocSpecificationIdentifier();
 
 	/**
 	 * Gets path "./xades:SignaturePolicyId/xades:SigPolicyId/xades:Description"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentSignaturePolicyDescription();
+	XPathQuery getCurrentSignaturePolicyDescription();
 
 	/**
 	 * Gets path "./xades:SignaturePolicyId/xades:SigPolicyId/xades:DocumentationReferences"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentSignaturePolicyDocumentationReferences();
+	XPathQuery getCurrentSignaturePolicyDocumentationReferences();
 
 	/**
 	 * Gets path "./xades:SignaturePolicyImplied"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentSignaturePolicyImplied();
+	XPathQuery getCurrentSignaturePolicyImplied();
 
 	/**
 	 * Gets path "./xades:SignaturePolicyId/ds:Transforms"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentSignaturePolicyTransforms();
+	XPathQuery getCurrentSignaturePolicyTransforms();
 
 	/**
 	 * Gets path "./xades:SignaturePolicyId/ds:SigPolicyQualifiers"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentSignaturePolicyQualifiers();
+	XPathQuery getCurrentSignaturePolicyQualifiers();
 
 	/**
 	 * Gets path "./xades:Include"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentInclude();
+	XPathQuery getCurrentInclude();
 
 	/**
 	 * Gets path "./xades:QualifyingProperties"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentQualifyingPropertiesPath();
+	XPathQuery getCurrentQualifyingPropertiesPath();
 
 	// --------------------------- Signature Policy Store
 
@@ -819,55 +841,55 @@ public interface XAdESPath extends Serializable {
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentSPDocSpecification();
+	XPathQuery getCurrentSPDocSpecification();
 
 	/**
 	 * Gets path "./xades:Identifier"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentIdentifier();
+	XPathQuery getCurrentIdentifier();
 
 	/**
 	 * Gets path "./xades141:SPDocSpecification/xades:Identifier"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentSPDocSpecificationIdentifier();
+	XPathQuery getCurrentSPDocSpecificationIdentifier();
 
 	/**
 	 * Gets path "./xades141:SPDocSpecification/xades:Description"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentSPDocSpecificationDescription();
+	XPathQuery getCurrentSPDocSpecificationDescription();
 
 	/**
 	 * Gets path ".xades:DocumentationReferences/xades:DocumentationReference"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentDocumentationReferenceElements();
+	XPathQuery getCurrentDocumentationReferenceElements();
 
 	/**
 	 * Gets path "./xades141:SPDocSpecification/xades:DocumentationReferences/xades:DocumentationReference"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentSPDocSpecificationDocumentationReferenceElements();
+	XPathQuery getCurrentSPDocSpecificationDocumentationReferenceElements();
 
 	/**
 	 * Gets path "./xades141:SignaturePolicyDocument"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentSignaturePolicyDocument();
+	XPathQuery getCurrentSignaturePolicyDocument();
 
 	/**
 	 * Gets path "./xades141:SigPolDocLocalURI"
 	 *
 	 * @return {@link String} path
 	 */
-	String getCurrentSigPolDocLocalURI();
+	XPathQuery getCurrentSigPolDocLocalURI();
 
 }

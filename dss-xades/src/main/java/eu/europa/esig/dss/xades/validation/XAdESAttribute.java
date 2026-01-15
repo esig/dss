@@ -20,15 +20,17 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import eu.europa.esig.dss.xml.utils.DomUtils;
-import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigAttribute;
-import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.validation.SignatureAttribute;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampInclude;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.definition.XAdESPath;
 import eu.europa.esig.dss.xades.definition.xades111.XAdES111Path;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigAttribute;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
+import eu.europa.esig.dss.xml.common.xpath.XPathQuery;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -104,7 +106,9 @@ public class XAdESAttribute implements SignatureAttribute {
 	 *
 	 * @param xPathExpression {@link String} to find an element
 	 * @return {@link Element}
+	 * @deprecated since DSS 6.5. To be removed.
 	 */
+	@Deprecated
 	public final Element findElement(String xPathExpression) {
 		return DomUtils.getElement(element, xPathExpression);
 	}
@@ -114,9 +118,21 @@ public class XAdESAttribute implements SignatureAttribute {
 	 *
 	 * @param xPathExpression {@link String} to find an element
 	 * @return {@link NodeList}
+	 * @deprecated since DSS 6.5. Please use {@code #getNodeList(XPathQuery xPathQuery)} method instead.
 	 */
+	@Deprecated
 	public final NodeList getNodeList(String xPathExpression) {
 		return DomUtils.getNodeList(element, xPathExpression);
+	}
+
+	/**
+	 * Returns a {@link NodeList} found by the given {@code xPathExpression}
+	 *
+	 * @param xPathQuery {@link XPathQuery} to find an element
+	 * @return {@link NodeList}
+	 */
+	public final NodeList getNodeList(XPathQuery xPathQuery) {
+		return XPathUtils.getNodeList(element, xPathQuery);
 	}
 
 	/**
@@ -125,9 +141,9 @@ public class XAdESAttribute implements SignatureAttribute {
 	 * @return {@link String} timestamp canonicalization method
 	 */
 	public String getTimestampCanonicalizationMethod() {
-		String canonicalizationMethod = DomUtils.getValue(element, XMLDSigPath.CANONICALIZATION_ALGORITHM_PATH);
+		String canonicalizationMethod = XPathUtils.getValue(element, XMLDSigPath.CANONICALIZATION_ALGORITHM_PATH);
 		if (Utils.isStringEmpty(canonicalizationMethod)) {
-			NodeList nodeList = DomUtils.getNodeList(element, XAdES111Path.HASH_DATA_INFO_TRANSFORM_PATH);
+			NodeList nodeList = XPathUtils.getNodeList(element, XAdES111Path.HASH_DATA_INFO_TRANSFORM_PATH);
 			if (nodeList != null && nodeList.getLength() == 1) {
 				Element transform = (Element) nodeList.item(0);
 				canonicalizationMethod = transform.getAttribute(XMLDSigAttribute.ALGORITHM.getAttributeName());
@@ -145,9 +161,9 @@ public class XAdESAttribute implements SignatureAttribute {
 	 * @return list of {@link TimestampInclude}s in case of IndividualDataObjectsTimestamp, NULL otherwise
 	 */
 	public List<TimestampInclude> getTimestampIncludedReferences() {
-		String currentIncludePath = xadesPaths.getCurrentInclude();
+		XPathQuery currentIncludePath = xadesPaths.getCurrentInclude();
 		if (currentIncludePath != null) {
-			final NodeList timestampIncludes = DomUtils.getNodeList(element, currentIncludePath);
+			final NodeList timestampIncludes = XPathUtils.getNodeList(element, currentIncludePath);
 			if (timestampIncludes != null && timestampIncludes.getLength() > 0) {
 				List<TimestampInclude> includes = new ArrayList<>();
 				for (int jj = 0; jj < timestampIncludes.getLength(); jj++) {

@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
@@ -28,6 +27,8 @@ import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPRef;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPResponseBinary;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.OfflineOCSPSource;
 import eu.europa.esig.dss.xades.definition.XAdESPath;
+import eu.europa.esig.dss.xml.common.xpath.XPathQuery;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -80,15 +81,15 @@ public class XAdESOCSPSource extends OfflineOCSPSource {
 		collectRefs(xadesPaths.getAttributeRevocationRefsPath(), RevocationRefOrigin.ATTRIBUTE_REVOCATION_REFS);
 	}
 
-	private void collectValues(String revocationValuesPath, RevocationOrigin origin) {
+	private void collectValues(XPathQuery revocationValuesPath, RevocationOrigin origin) {
 		if (revocationValuesPath == null) {
 			return;
 		}
 
-		final NodeList revocationValuesNodeList = DomUtils.getNodeList(signatureElement, revocationValuesPath);
+		final NodeList revocationValuesNodeList = XPathUtils.getNodeList(signatureElement, revocationValuesPath);
 		for (int i = 0; i < revocationValuesNodeList.getLength(); i++) {
 			final Element revocationValuesElement = (Element) revocationValuesNodeList.item(i);
-			final NodeList ocspValueNodes = DomUtils.getNodeList(revocationValuesElement, xadesPaths.getCurrentOCSPValuesChildren());
+			final NodeList ocspValueNodes = XPathUtils.getNodeList(revocationValuesElement, xadesPaths.getCurrentOCSPValuesChildren());
 			for (int ii = 0; ii < ocspValueNodes.getLength(); ii++) {
 				final Element ocspValueEl = (Element) ocspValueNodes.item(ii);
 				if (ocspValueEl != null) {
@@ -98,15 +99,15 @@ public class XAdESOCSPSource extends OfflineOCSPSource {
 		}
 	}
 
-	private void collectRefs(final String revocationRefsPath, RevocationRefOrigin revocationRefOrigin) {
+	private void collectRefs(final XPathQuery revocationRefsPath, RevocationRefOrigin revocationRefOrigin) {
 		if (revocationRefsPath == null) {
 			return;
 		}
 
-		final NodeList revocationRefsNodeList = DomUtils.getNodeList(signatureElement, revocationRefsPath);
+		final NodeList revocationRefsNodeList = XPathUtils.getNodeList(signatureElement, revocationRefsPath);
 		for (int i = 0; i < revocationRefsNodeList.getLength(); i++) {
 			final Element revocationRefsElement = (Element) revocationRefsNodeList.item(i);
-			final NodeList ocspRefNodes = DomUtils.getNodeList(revocationRefsElement, xadesPaths.getCurrentOCSPRefsChildren());
+			final NodeList ocspRefNodes = XPathUtils.getNodeList(revocationRefsElement, xadesPaths.getCurrentOCSPRefsChildren());
 			for (int ii = 0; ii < ocspRefNodes.getLength(); ii++) {
 				final Element ocspRefElement = (Element) ocspRefNodes.item(ii);
 				if (ocspRefElement != null) {

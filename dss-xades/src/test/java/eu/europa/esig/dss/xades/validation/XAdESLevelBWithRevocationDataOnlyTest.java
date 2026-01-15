@@ -41,9 +41,10 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 import eu.europa.esig.dss.xml.utils.DomUtils;
-import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -94,11 +95,11 @@ class XAdESLevelBWithRevocationDataOnlyTest extends AbstractXAdESTestValidation 
 		assertEquals(1, signaturesList.getLength());
 
 		Node signature = signaturesList.item(0);
-		Element unsignedSignatureProperties = DomUtils.getElement(signature,
+		Element unsignedSignatureProperties = XPathUtils.getElement(signature,
 				new XAdES132Path().getUnsignedSignaturePropertiesPath());
 		assertNotNull(unsignedSignatureProperties);
 
-		Element signatureTimeStamp = DomUtils.getElement(signature, new XAdES132Path().getSignatureTimestampPath());
+		Element signatureTimeStamp = XPathUtils.getElement(signature, new XAdES132Path().getSignatureTimestampPath());
 		assertNotNull(signatureTimeStamp);
 
 		unsignedSignatureProperties.removeChild(signatureTimeStamp);

@@ -42,9 +42,9 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
-import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
-import eu.europa.esig.dss.xml.common.definition.XPathExpressionBuilder;
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
 import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Tag;
 import org.w3c.dom.Document;
@@ -178,10 +178,10 @@ class XAdESCrossCertificationDoubleLTATest extends PKIFactoryAccess {
         Document document = DomUtils.buildDOM(doubleLTADoc);
         assertNotNull(document);
 
-        Element timeStampValidationDataElement = DomUtils.getElement(document, new XPathExpressionBuilder().all().element(XAdES141Element.TIMESTAMP_VALIDATION_DATA).build());
-        assertNotNull(timeStampValidationDataElement);
+        Element timeStampValidationDataElement = XPathUtils.getElement(document, new XAdES132Path().getTimestampValidationDataPath());
+        assertNull(timeStampValidationDataElement);
 
-        Element anyValidationDataElement = DomUtils.getElement(document, new XPathExpressionBuilder().all().element(XAdES141Element.ANY_VALIDATION_DATA).build());
+        Element anyValidationDataElement = XPathUtils.getElement(document, new XAdES132Path().getAnyValidationDataPath());
         assertNull(anyValidationDataElement);
 
     }

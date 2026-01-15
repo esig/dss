@@ -67,8 +67,9 @@ import eu.europa.esig.dss.xades.validation.XAdESSignedDataObjectProperties;
 import eu.europa.esig.dss.xades.validation.XAdESUnsignedSigProperties;
 import eu.europa.esig.dss.xades.validation.scope.XAdESTimestampScopeFinder;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
+import eu.europa.esig.dss.xml.common.xpath.XPathQuery;
 import eu.europa.esig.dss.xml.utils.DOMDocument;
-import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -485,13 +486,13 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 
 		NodeList certRefsNodeList = null;
 		if (certificateRefV1) {
-			String currentCertRefsCertChildrenPath = xadesPaths.getCurrentCertRefsCertChildren();
-			if (Utils.isStringNotEmpty(currentCertRefsCertChildrenPath)) {
+			XPathQuery currentCertRefsCertChildrenPath = xadesPaths.getCurrentCertRefsCertChildren();
+			if (currentCertRefsCertChildrenPath != null) {
 				certRefsNodeList = unsignedAttribute.getNodeList(currentCertRefsCertChildrenPath);
 			}
 		} else {
-			String currentCertRefs141CertChildrenPath = xadesPaths.getCurrentCertRefs141CertChildren();
-			if (Utils.isStringNotEmpty(currentCertRefs141CertChildrenPath)) {
+			XPathQuery currentCertRefs141CertChildrenPath = xadesPaths.getCurrentCertRefs141CertChildren();
+			if (currentCertRefs141CertChildrenPath != null) {
 				certRefsNodeList = unsignedAttribute.getNodeList(currentCertRefs141CertChildrenPath);
 			}
 		}
@@ -549,9 +550,9 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 	@Override
 	protected List<Identifier> getEncapsulatedCertificateIdentifiers(XAdESAttribute unsignedAttribute) {
 		List<Identifier> certificateIdentifiers = new ArrayList<>();
-		String xPathString = isTimeStampValidationData(unsignedAttribute) || isAnyValidationData(unsignedAttribute) ?
+		XPathQuery xPathQuery = isTimeStampValidationData(unsignedAttribute) || isAnyValidationData(unsignedAttribute) ?
 				xadesPaths.getCurrentCertificateValuesEncapsulatedCertificate() : xadesPaths.getCurrentEncapsulatedCertificate();
-		NodeList encapsulatedNodes = unsignedAttribute.getNodeList(xPathString);
+		NodeList encapsulatedNodes = unsignedAttribute.getNodeList(xPathQuery);
 		for (int ii = 0; ii < encapsulatedNodes.getLength(); ii++) {
 			try {
 				Element element = (Element) encapsulatedNodes.item(ii);
@@ -573,9 +574,9 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 	@Override
 	protected List<CRLBinary> getEncapsulatedCRLIdentifiers(XAdESAttribute unsignedAttribute) {
 		List<CRLBinary> crlIdentifiers = new ArrayList<>();
-		String xPathString = isTimeStampValidationData(unsignedAttribute) || isAnyValidationData(unsignedAttribute) ?
+		XPathQuery xPathQuery = isTimeStampValidationData(unsignedAttribute) || isAnyValidationData(unsignedAttribute) ?
 				xadesPaths.getCurrentRevocationValuesEncapsulatedCRLValue() : xadesPaths.getCurrentEncapsulatedCRLValue();
-		NodeList encapsulatedNodes = unsignedAttribute.getNodeList(xPathString);
+		NodeList encapsulatedNodes = unsignedAttribute.getNodeList(xPathQuery);
 		for (int ii = 0; ii < encapsulatedNodes.getLength(); ii++) {
 			try {
 				Element element = (Element) encapsulatedNodes.item(ii);
@@ -596,9 +597,9 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 	@Override
 	protected List<OCSPResponseBinary> getEncapsulatedOCSPIdentifiers(XAdESAttribute unsignedAttribute) {
 		List<OCSPResponseBinary> ocspIdentifiers = new ArrayList<>();
-		String xPathString = isTimeStampValidationData(unsignedAttribute) || isAnyValidationData(unsignedAttribute) ?
+		XPathQuery xPxPathQuerythString = isTimeStampValidationData(unsignedAttribute) || isAnyValidationData(unsignedAttribute) ?
 				xadesPaths.getCurrentRevocationValuesEncapsulatedOCSPValue() : xadesPaths.getCurrentEncapsulatedOCSPValue();
-		NodeList encapsulatedNodes = unsignedAttribute.getNodeList(xPathString);
+		NodeList encapsulatedNodes = unsignedAttribute.getNodeList(xPxPathQuerythString);
 		for (int ii = 0; ii < encapsulatedNodes.getLength(); ii++) {
 			try {
 				Element element = (Element) encapsulatedNodes.item(ii);
@@ -648,7 +649,7 @@ public class XAdESTimestampSource extends SignatureTimestampSource<XAdESSignatur
 
 	@Override
 	protected List<AdvancedSignature> getCounterSignatures(XAdESAttribute unsignedAttribute) {
-		final Node counterSignatureNode = DomUtils.getNode(unsignedAttribute.getElement(), XMLDSigPath.SIGNATURE_PATH);
+		final Node counterSignatureNode = XPathUtils.getNode(unsignedAttribute.getElement(), XMLDSigPath.SIGNATURE_PATH);
 		if (counterSignatureNode != null) {
 			List<AdvancedSignature> counterSignatures = signature.getCounterSignatures();
 			for (AdvancedSignature counterSignature : counterSignatures) {

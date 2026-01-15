@@ -27,6 +27,7 @@ import eu.europa.esig.dss.xades.definition.xadesen.XAdESEvidencerecordNamespaceE
 import eu.europa.esig.dss.xml.common.definition.AbstractPath;
 import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
+import eu.europa.esig.dss.xml.common.xpath.XPathQuery;
 
 /**
  * XAdES 1.3.2 paths
@@ -35,13 +36,12 @@ public class XAdES132Path extends AbstractPath implements XAdESPath {
 
 	private static final long serialVersionUID = 1878591854613359863L;
 
-	// TODO: find a proper way (namespace independent)
 	/** Gets all signatures without counter signatures */
-	public static final String ALL_SIGNATURE_WITH_NO_COUNTERSIGNATURE_AS_PARENT_PATH =
+	public static final XPathQuery ALL_SIGNATURE_WITH_NO_COUNTERSIGNATURE_AS_PARENT_PATH =
 			allNotParent(XMLDSigElement.SIGNATURE, XAdES132Element.COUNTER_SIGNATURE);
 
 	/** Gets all encapsulated time-stamp token elements */
-	public static final String ALL_ENCAPSULATED_TIMESTAMP_PARENT_PATH = all(XAdES132Element.ENCAPSULATED_TIMESTAMP);
+	public static final XPathQuery ALL_ENCAPSULATED_TIMESTAMP_PARENT_PATH = all(XAdES132Element.ENCAPSULATED_TIMESTAMP);
 
 	/**
 	 * Default constructor
@@ -66,332 +66,350 @@ public class XAdES132Path extends AbstractPath implements XAdESPath {
 	}
 
 	@Override
-	public String getQualifyingPropertiesPath() {
+	public XPathQuery getQualifyingPropertiesPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES);
 	}
 
 	@Override
-	public String getSignedPropertiesPath() {
+	public XPathQuery getSignedPropertiesPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.SIGNED_PROPERTIES);
 	}
 
 	@Override
-	public String getSignedSignaturePropertiesPath() {
+	public XPathQuery getSignedSignaturePropertiesPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.SIGNED_PROPERTIES,
 				XAdES132Element.SIGNED_SIGNATURE_PROPERTIES);
 	}
 
 	@Override
-	public String getSigningTimePath() {
+	public XPathQuery getSigningTimePath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.SIGNED_PROPERTIES,
 				XAdES132Element.SIGNED_SIGNATURE_PROPERTIES, XAdES132Element.SIGNING_TIME);
 	}
 
 	@Override
-	public String getSigningCertificatePath() {
+	public XPathQuery getSigningCertificatePath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.SIGNED_PROPERTIES,
 				XAdES132Element.SIGNED_SIGNATURE_PROPERTIES, XAdES132Element.SIGNING_CERTIFICATE);
 	}
 
 	@Override
-	public String getSigningCertificateChildren() {
+	public XPathQuery getSigningCertificateChildren() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.SIGNED_PROPERTIES,
 				XAdES132Element.SIGNED_SIGNATURE_PROPERTIES, XAdES132Element.SIGNING_CERTIFICATE, XAdES132Element.CERT);
 	}
 
 	@Override
-	public String getSigningCertificateV2Path() {
+	public XPathQuery getSigningCertificateV2Path() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.SIGNED_PROPERTIES,
 				XAdES132Element.SIGNED_SIGNATURE_PROPERTIES, XAdES132Element.SIGNING_CERTIFICATE_V2);
 	}
 
 	@Override
-	public String getSigningCertificateV2Children() {
+	public XPathQuery getSigningCertificateV2Children() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.SIGNED_PROPERTIES,
 				XAdES132Element.SIGNED_SIGNATURE_PROPERTIES, XAdES132Element.SIGNING_CERTIFICATE_V2, XAdES132Element.CERT);
 	}
 
 	@Override
-	public String getSignatureProductionPlacePath() {
+	public XPathQuery getSignatureProductionPlacePath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.SIGNED_PROPERTIES,
 				XAdES132Element.SIGNED_SIGNATURE_PROPERTIES, XAdES132Element.SIGNATURE_PRODUCTION_PLACE);
 	}
 
 	@Override
-	public String getSignatureProductionPlaceV2Path() {
+	public XPathQuery getSignatureProductionPlaceV2Path() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.SIGNED_PROPERTIES,
 				XAdES132Element.SIGNED_SIGNATURE_PROPERTIES, XAdES132Element.SIGNATURE_PRODUCTION_PLACE_V2);
 	}
 
 	@Override
-	public String getSignaturePolicyIdentifierPath() {
+	public XPathQuery getSignaturePolicyIdentifierPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.SIGNED_PROPERTIES,
 				XAdES132Element.SIGNED_SIGNATURE_PROPERTIES, XAdES132Element.SIGNATURE_POLICY_IDENTIFIER);
 	}
 
 	@Override
-	public String getSignerRolePath() {
+	public XPathQuery getSignerRolePath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.SIGNED_PROPERTIES,
 				XAdES132Element.SIGNED_SIGNATURE_PROPERTIES, XAdES132Element.SIGNER_ROLE);
 	}
 
 	@Override
-	public String getSignerRoleV2Path() {
+	public XPathQuery getSignerRoleV2Path() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.SIGNED_PROPERTIES,
 				XAdES132Element.SIGNED_SIGNATURE_PROPERTIES, XAdES132Element.SIGNER_ROLE_V2);
 	}
 
 	@Override
-	public String getClaimedRolePath() {
+	public XPathQuery getClaimedRolePath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.SIGNED_PROPERTIES,
 				XAdES132Element.SIGNED_SIGNATURE_PROPERTIES, XAdES132Element.SIGNER_ROLE, XAdES132Element.CLAIMED_ROLES, XAdES132Element.CLAIMED_ROLE);
 	}
 
 	@Override
-	public String getClaimedRoleV2Path() {
+	public XPathQuery getClaimedRoleV2Path() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.SIGNED_PROPERTIES,
 				XAdES132Element.SIGNED_SIGNATURE_PROPERTIES, XAdES132Element.SIGNER_ROLE_V2, XAdES132Element.CLAIMED_ROLES, XAdES132Element.CLAIMED_ROLE);
 	}
 	
 	@Override
-	public String getSignedAssertionPath() {
+	public XPathQuery getSignedAssertionPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.SIGNED_PROPERTIES,
 				XAdES132Element.SIGNED_SIGNATURE_PROPERTIES, XAdES132Element.SIGNER_ROLE_V2, XAdES132Element.SIGNED_ASSERTIONS, XAdES132Element.SIGNED_ASSERTION);
 	}
 
 	@Override
-	public String getCertifiedRolePath() {
+	public XPathQuery getCertifiedRolePath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.SIGNED_PROPERTIES,
 				XAdES132Element.SIGNED_SIGNATURE_PROPERTIES, XAdES132Element.SIGNER_ROLE, XAdES132Element.CERTIFIED_ROLES, XAdES132Element.CERTIFIED_ROLE);
 	}
 
 	@Override
-	public String getCertifiedRoleV2Path() {
+	public XPathQuery getCertifiedRoleV2Path() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.SIGNED_PROPERTIES,
 				XAdES132Element.SIGNED_SIGNATURE_PROPERTIES, XAdES132Element.SIGNER_ROLE_V2, XAdES132Element.CERTIFIED_ROLES_V2,
 				XAdES132Element.CERTIFIED_ROLE);
 	}
 
 	@Override
-	public String getSignedDataObjectPropertiesPath() {
+	public XPathQuery getSignedDataObjectPropertiesPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.SIGNED_PROPERTIES,
 				XAdES132Element.SIGNED_DATA_OBJECT_PROPERTIES);
 	}
 
 	@Override
-	public String getDataObjectFormat() {
+	public XPathQuery getAllDataObjectsTimestampPath() {
+		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.SIGNED_PROPERTIES,
+				XAdES132Element.SIGNED_DATA_OBJECT_PROPERTIES, XAdES132Element.ALL_DATA_OBJECTS_TIMESTAMP);
+	}
+
+	@Override
+	public XPathQuery getIndividualDataObjectsTimestampPath() {
+		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.SIGNED_PROPERTIES,
+				XAdES132Element.SIGNED_DATA_OBJECT_PROPERTIES, XAdES132Element.INDIVIDUAL_DATA_OBJECTS_TIMESTAMP);
+	}
+
+	@Override
+	public XPathQuery getDataObjectFormat() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.SIGNED_PROPERTIES,
 				XAdES132Element.SIGNED_DATA_OBJECT_PROPERTIES, XAdES132Element.DATA_OBJECT_FORMAT);
 	}
 
 	@Override
-	public String getDataObjectFormatMimeType() {
+	public XPathQuery getDataObjectFormatMimeType() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.SIGNED_PROPERTIES,
 				XAdES132Element.SIGNED_DATA_OBJECT_PROPERTIES, XAdES132Element.DATA_OBJECT_FORMAT, XAdES132Element.MIME_TYPE);
 	}
 
 	@Override
-	public String getDataObjectFormatObjectIdentifier() {
+	public XPathQuery getDataObjectFormatObjectIdentifier() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.SIGNED_PROPERTIES,
 				XAdES132Element.SIGNED_DATA_OBJECT_PROPERTIES, XAdES132Element.DATA_OBJECT_FORMAT, XAdES132Element.OBJECT_IDENTIFIER);
 	}
 
 	@Override
-	public String getCommitmentTypeIndicationPath() {
+	public XPathQuery getCommitmentTypeIndicationPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.SIGNED_PROPERTIES,
 				XAdES132Element.SIGNED_DATA_OBJECT_PROPERTIES, XAdES132Element.COMMITMENT_TYPE_INDICATION);
 	}
 
 	@Override
-	public String getUnsignedPropertiesPath() {
+	public XPathQuery getUnsignedPropertiesPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.UNSIGNED_PROPERTIES);
 	}
 
 	@Override
-	public String getUnsignedSignaturePropertiesPath() {
+	public XPathQuery getUnsignedSignaturePropertiesPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.UNSIGNED_PROPERTIES,
 				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES);
 	}
 
 	@Override
-	public String getCounterSignaturePath() {
+	public XPathQuery getCounterSignaturePath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.UNSIGNED_PROPERTIES,
 				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES132Element.COUNTER_SIGNATURE);
 	}
 
 	@Override
-	public String getAttributeRevocationRefsPath() {
+	public XPathQuery getAttributeRevocationRefsPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.UNSIGNED_PROPERTIES,
 				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES132Element.ATTRIBUTE_REVOCATION_REFS);
 	}
 
 	@Override
-	public String getCompleteRevocationRefsPath() {
+	public XPathQuery getCompleteRevocationRefsPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.UNSIGNED_PROPERTIES,
 				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES132Element.COMPLETE_REVOCATION_REFS);
 	}
 
 	@Override
-	public String getCompleteCertificateRefsPath() {
+	public XPathQuery getCompleteCertificateRefsPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.UNSIGNED_PROPERTIES,
 				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES132Element.COMPLETE_CERTIFICATE_REFS);
 	}
 
 	@Override
-	public String getCompleteCertificateRefsCertPath() {
+	public XPathQuery getCompleteCertificateRefsCertPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.UNSIGNED_PROPERTIES,
 				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES132Element.COMPLETE_CERTIFICATE_REFS, XAdES132Element.CERT_REFS, XAdES132Element.CERT);
 	}
 
 	@Override
-	public String getCompleteCertificateRefsV2Path() {
+	public XPathQuery getCompleteCertificateRefsV2Path() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.UNSIGNED_PROPERTIES,
 				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES141Element.COMPLETE_CERTIFICATE_REFS_V2);
 	}
 
 	@Override
-	public String getCompleteCertificateRefsV2CertPath() {
+	public XPathQuery getCompleteCertificateRefsV2CertPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.UNSIGNED_PROPERTIES,
 				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES141Element.COMPLETE_CERTIFICATE_REFS_V2, XAdES141Element.CERT_REFS, XAdES132Element.CERT);
 	}
 
 	@Override
-	public String getAttributeCertificateRefsPath() {
+	public XPathQuery getAttributeCertificateRefsPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.UNSIGNED_PROPERTIES,
 				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES132Element.ATTRIBUTE_CERTIFICATE_REFS);
 	}
 
 	@Override
-	public String getAttributeCertificateRefsCertPath() {
+	public XPathQuery getAttributeCertificateRefsCertPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.UNSIGNED_PROPERTIES,
 				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES132Element.ATTRIBUTE_CERTIFICATE_REFS, XAdES132Element.CERT_REFS, XAdES132Element.CERT);
 	}
 
 	@Override
-	public String getAttributeCertificateRefsV2Path() {
+	public XPathQuery getAttributeCertificateRefsV2Path() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.UNSIGNED_PROPERTIES,
 				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES141Element.ATTRIBUTE_CERTIFICATE_REFS_V2);
 	}
 
 	@Override
-	public String getAttributeCertificateRefsV2CertPath() {
+	public XPathQuery getAttributeCertificateRefsV2CertPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.UNSIGNED_PROPERTIES,
 				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES141Element.ATTRIBUTE_CERTIFICATE_REFS_V2, XAdES141Element.CERT_REFS, XAdES132Element.CERT);
 	}
 
 	@Override
-	public String getCertificateValuesPath() {
+	public XPathQuery getCertificateValuesPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.UNSIGNED_PROPERTIES,
 				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES132Element.CERTIFICATE_VALUES);
 	}
 
 	@Override
-	public String getRevocationValuesPath() {
+	public XPathQuery getRevocationValuesPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.UNSIGNED_PROPERTIES,
 				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES132Element.REVOCATION_VALUES);
 	}
 
 	@Override
-	public String getEncapsulatedCertificateValuesPath() {
+	public XPathQuery getEncapsulatedCertificateValuesPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.UNSIGNED_PROPERTIES,
 				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES132Element.CERTIFICATE_VALUES, XAdES132Element.ENCAPSULATED_X509_CERTIFICATE);
 	}
 
 	@Override
-	public String getAttrAuthoritiesCertValuesPath() {
+	public XPathQuery getAttrAuthoritiesCertValuesPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.UNSIGNED_PROPERTIES,
 				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES132Element.ATTR_AUTHORITIES_CERT_VALUES);
 	}
 
 	@Override
-	public String getEncapsulatedAttrAuthoritiesCertValuesPath() {
+	public XPathQuery getEncapsulatedAttrAuthoritiesCertValuesPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.UNSIGNED_PROPERTIES,
 				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES132Element.ATTR_AUTHORITIES_CERT_VALUES, XAdES132Element.ENCAPSULATED_X509_CERTIFICATE);
 	}
 
 	@Override
-	public String getEncapsulatedTimeStampValidationDataCertValuesPath() {
+	public XPathQuery getEncapsulatedTimeStampValidationDataCertValuesPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.UNSIGNED_PROPERTIES,
 				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES141Element.TIMESTAMP_VALIDATION_DATA, XAdES132Element.CERTIFICATE_VALUES,
 				XAdES132Element.ENCAPSULATED_X509_CERTIFICATE);
 	}
 
 	@Override
-	public String getAttributeRevocationValuesPath() {
+	public XPathQuery getAttributeRevocationValuesPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.UNSIGNED_PROPERTIES,
 				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES132Element.ATTRIBUTE_REVOCATION_VALUES);
 	}
 
 	@Override
-	public String getTimeStampValidationDataRevocationValuesPath() {
+	public XPathQuery getTimeStampValidationDataRevocationValuesPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.UNSIGNED_PROPERTIES,
 				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES141Element.TIMESTAMP_VALIDATION_DATA, XAdES132Element.REVOCATION_VALUES);
 	}
 
 	@Override
-	public String getEncapsulatedAnyValidationDataCertValuesPath() {
+	public XPathQuery getAnyValidationDataPath() {
+		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.UNSIGNED_PROPERTIES,
+				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES141Element.ANY_VALIDATION_DATA);
+	}
+
+	@Override
+	public XPathQuery getEncapsulatedAnyValidationDataCertValuesPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.UNSIGNED_PROPERTIES,
 				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES141Element.ANY_VALIDATION_DATA, XAdES132Element.CERTIFICATE_VALUES,
 				XAdES132Element.ENCAPSULATED_X509_CERTIFICATE);
 	}
 
 	@Override
-	public String getAnyValidationDataRevocationValuesPath() {
+	public XPathQuery getAnyValidationDataRevocationValuesPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.UNSIGNED_PROPERTIES,
 				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES141Element.ANY_VALIDATION_DATA, XAdES132Element.REVOCATION_VALUES);
 	}
 
 	@Override
-	public String getSignatureTimestampPath() {
+	public XPathQuery getSignatureTimestampPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.UNSIGNED_PROPERTIES,
 				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES132Element.SIGNATURE_TIMESTAMP);
 	}
 
 	@Override
-	public String getSigAndRefsTimestampPath() {
+	public XPathQuery getSigAndRefsTimestampPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.UNSIGNED_PROPERTIES,
 				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES132Element.SIG_AND_REFS_TIMESTAMP);
 	}
 
 	@Override
-	public String getSigAndRefsTimestampV2Path() {
+	public XPathQuery getSigAndRefsTimestampV2Path() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.UNSIGNED_PROPERTIES,
 				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES141Element.SIG_AND_REFS_TIMESTAMP_V2);
 	}
 
 	@Override
-	public String getRefsOnlyTimestampPath() {
+	public XPathQuery getRefsOnlyTimestampPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.UNSIGNED_PROPERTIES,
 				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES132Element.REFS_ONLY_TIMESTAMP);
 	}
 
 	@Override
-	public String getRefsOnlyTimestampV2Path() {
+	public XPathQuery getRefsOnlyTimestampV2Path() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.UNSIGNED_PROPERTIES,
 				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES141Element.REFS_ONLY_TIMESTAMP_V2);
 	}
 
 	@Override
-	public String getArchiveTimestampPath() {
+	public XPathQuery getArchiveTimestampPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.UNSIGNED_PROPERTIES,
 				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES141Element.ARCHIVE_TIMESTAMP);
 	}
 
 	@Override
-	public String getTimestampValidationDataPath() {
+	public XPathQuery getTimestampValidationDataPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES, XAdES132Element.UNSIGNED_PROPERTIES,
 				XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES, XAdES141Element.TIMESTAMP_VALIDATION_DATA);
 	}
 
 	@Override
-	public String getSignaturePolicyStorePath() {
+	public XPathQuery getSignaturePolicyStorePath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES,
 				XAdES132Element.UNSIGNED_PROPERTIES, XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES,
 				XAdES141Element.SIGNATURE_POLICY_STORE);
 	}
 
 	@Override
-	public String getSealingEvidenceRecordsPath() {
+	public XPathQuery getSealingEvidenceRecordsPath() {
 		return fromCurrentPosition(XMLDSigElement.OBJECT, XAdES132Element.QUALIFYING_PROPERTIES,
 				XAdES132Element.UNSIGNED_PROPERTIES, XAdES132Element.UNSIGNED_SIGNATURE_PROPERTIES,
 				XAdESEvidencerecordNamespaceElement.SEALING_EVIDENCE_RECORDS);
@@ -400,315 +418,315 @@ public class XAdES132Path extends AbstractPath implements XAdESPath {
 	// ------------------------------------------------
 
 	@Override
-	public String getCurrentCRLValuesChildren() {
+	public XPathQuery getCurrentCRLValuesChildren() {
 		return fromCurrentPosition(XAdES132Element.CRL_VALUES, XAdES132Element.ENCAPSULATED_CRL_VALUE);
 	}
 
 	@Override
-	public String getCurrentCRLRefsChildren() {
+	public XPathQuery getCurrentCRLRefsChildren() {
 		return fromCurrentPosition(XAdES132Element.CRL_REFS, XAdES132Element.CRL_REF);
 	}
 
 	@Override
-	public String getCurrentCRLRefCRLIdentifier() {
+	public XPathQuery getCurrentCRLRefCRLIdentifier() {
 		return fromCurrentPosition(XAdES132Element.CRL_IDENTIFIER);
 	}
 
 	@Override
-	public String getCurrentCRLRefCRLIdentifierIssuer() {
+	public XPathQuery getCurrentCRLRefCRLIdentifierIssuer() {
 		return fromCurrentPosition(XAdES132Element.CRL_IDENTIFIER, XAdES132Element.ISSUER);
 	}
 
 	@Override
-	public String getCurrentCRLRefCRLIdentifierIssueTime() {
+	public XPathQuery getCurrentCRLRefCRLIdentifierIssueTime() {
 		return fromCurrentPosition(XAdES132Element.CRL_IDENTIFIER, XAdES132Element.ISSUE_TIME);
 	}
 
 	@Override
-	public String getCurrentCRLRefCRLIdentifierNumber() {
+	public XPathQuery getCurrentCRLRefCRLIdentifierNumber() {
 		return fromCurrentPosition(XAdES132Element.CRL_IDENTIFIER, XAdES132Element.NUMBER);
 	}
 
 	@Override
-	public String getCurrentOCSPRefsChildren() {
+	public XPathQuery getCurrentOCSPRefsChildren() {
 		return fromCurrentPosition(XAdES132Element.OCSP_REFS, XAdES132Element.OCSP_REF);
 	}
 
 	@Override
-	public String getCurrentOCSPValuesChildren() {
+	public XPathQuery getCurrentOCSPValuesChildren() {
 		return fromCurrentPosition(XAdES132Element.OCSP_VALUES, XAdES132Element.ENCAPSULATED_OCSP_VALUE);
 	}
 
 	@Override
-	public String getCurrentOCSPRefResponderID() {
+	public XPathQuery getCurrentOCSPRefResponderID() {
 		return fromCurrentPosition(XAdES132Element.OCSP_IDENTIFIER, XAdES132Element.RESPONDER_ID);
 	}
 
 	@Override
-	public String getCurrentOCSPRefResponderIDByName() {
+	public XPathQuery getCurrentOCSPRefResponderIDByName() {
 		return fromCurrentPosition(XAdES132Element.OCSP_IDENTIFIER, XAdES132Element.RESPONDER_ID, XAdES132Element.BY_NAME);
 	}
 
 	@Override
-	public String getCurrentOCSPRefResponderIDByKey() {
+	public XPathQuery getCurrentOCSPRefResponderIDByKey() {
 		return fromCurrentPosition(XAdES132Element.OCSP_IDENTIFIER, XAdES132Element.RESPONDER_ID, XAdES132Element.BY_KEY);
 	}
 
 	@Override
-	public String getCurrentOCSPRefProducedAt() {
+	public XPathQuery getCurrentOCSPRefProducedAt() {
 		return fromCurrentPosition(XAdES132Element.OCSP_IDENTIFIER, XAdES132Element.PRODUCED_AT);
 	}
 
 	@Override
-	public String getCurrentDigestAlgAndValue() {
+	public XPathQuery getCurrentDigestAlgAndValue() {
 		return fromCurrentPosition(XAdES132Element.DIGEST_ALG_AND_VALUE);
 	}
 
 	@Override
-	public String getCurrentCertRefsCertChildren() {
+	public XPathQuery getCurrentCertRefsCertChildren() {
 		return fromCurrentPosition(XAdES132Element.CERT_REFS, XAdES132Element.CERT);
 	}
 
 	@Override
-	public String getCurrentCertRefs141CertChildren() {
+	public XPathQuery getCurrentCertRefs141CertChildren() {
 		return fromCurrentPosition(XAdES141Element.CERT_REFS, XAdES132Element.CERT);
 	}
 
 	@Override
-	public String getCurrentCertChildren() {
+	public XPathQuery getCurrentCertChildren() {
 		return fromCurrentPosition(XAdES132Element.CERT);
 	}
 
 	@Override
-	public String getCurrentCertDigest() {
+	public XPathQuery getCurrentCertDigest() {
 		return fromCurrentPosition(XAdES132Element.CERT_DIGEST);
 	}
 
 	@Override
-	public String getCurrentEncapsulatedTimestamp() {
+	public XPathQuery getCurrentEncapsulatedTimestamp() {
 		return fromCurrentPosition(XAdES132Element.ENCAPSULATED_TIMESTAMP);
 	}
 
 	@Override
-	public String getCurrentSignaturePolicyId() {
+	public XPathQuery getCurrentSignaturePolicyId() {
 		return fromCurrentPosition(XAdES132Element.SIGNATURE_POLICY_ID, XAdES132Element.SIG_POLICY_ID, XAdES132Element.IDENTIFIER);
 	}
 
 	@Override
-	public String getCurrentSignaturePolicyDigestAlgAndValue() {
+	public XPathQuery getCurrentSignaturePolicyDigestAlgAndValue() {
 		return fromCurrentPosition(XAdES132Element.SIGNATURE_POLICY_ID, XAdES132Element.SIG_POLICY_HASH);
 	}
 
 	@Override
-	public String getCurrentSignaturePolicySPURI() {
+	public XPathQuery getCurrentSignaturePolicySPURI() {
 		return fromCurrentPosition(XAdES132Element.SIGNATURE_POLICY_ID, XAdES132Element.SIG_POLICY_QUALIFIERS, XAdES132Element.SIG_POLICY_QUALIFIER,
 				XAdES132Element.SP_URI);
 	}
 
 	@Override
-	public String getCurrentSignaturePolicySPUserNotice() {
+	public XPathQuery getCurrentSignaturePolicySPUserNotice() {
 		return fromCurrentPosition(XAdES132Element.SIGNATURE_POLICY_ID, XAdES132Element.SIG_POLICY_QUALIFIERS, XAdES132Element.SIG_POLICY_QUALIFIER,
 				XAdES132Element.SP_USER_NOTICE);
 	}
 
 	@Override
-	public String getCurrentSPUserNoticeNoticeRefOrganization() {
+	public XPathQuery getCurrentSPUserNoticeNoticeRefOrganization() {
 		return fromCurrentPosition(XAdES132Element.NOTICE_REF, XAdES132Element.ORGANIZATION);
 	}
 
 	@Override
-	public String getCurrentSPUserNoticeNoticeRefNoticeNumbers() {
+	public XPathQuery getCurrentSPUserNoticeNoticeRefNoticeNumbers() {
 		return fromCurrentPosition(XAdES132Element.NOTICE_REF, XAdES132Element.NOTICE_NUMBERS);
 	}
 
 	@Override
-	public String getCurrentSPUserNoticeExplicitText() {
+	public XPathQuery getCurrentSPUserNoticeExplicitText() {
 		return fromCurrentPosition(XAdES132Element.EXPLICIT_TEXT);
 	}
 
 	@Override
-	public String getCurrentSignaturePolicySPDocSpecification() {
+	public XPathQuery getCurrentSignaturePolicySPDocSpecification() {
 		return fromCurrentPosition(XAdES132Element.SIGNATURE_POLICY_ID, XAdES132Element.SIG_POLICY_QUALIFIERS,
 				XAdES132Element.SIG_POLICY_QUALIFIER, XAdES141Element.SP_DOC_SPECIFICATION);
 	}
 
 	@Override
-	public String getCurrentSignaturePolicySPDocSpecificationIdentifier() {
+	public XPathQuery getCurrentSignaturePolicySPDocSpecificationIdentifier() {
 		return fromCurrentPosition(XAdES132Element.SIGNATURE_POLICY_ID, XAdES132Element.SIG_POLICY_QUALIFIERS,
 				XAdES132Element.SIG_POLICY_QUALIFIER, XAdES141Element.SP_DOC_SPECIFICATION, XAdES132Element.IDENTIFIER);
 	}
 
 	@Override
-	public String getCurrentSignaturePolicyDescription() {
+	public XPathQuery getCurrentSignaturePolicyDescription() {
 		return fromCurrentPosition(XAdES132Element.SIGNATURE_POLICY_ID, XAdES132Element.SIG_POLICY_ID, XAdES132Element.DESCRIPTION);
 	}
 
 	@Override
-	public String getCurrentSignaturePolicyDocumentationReferences() {
+	public XPathQuery getCurrentSignaturePolicyDocumentationReferences() {
 		return fromCurrentPosition(XAdES132Element.SIGNATURE_POLICY_ID, XAdES132Element.SIG_POLICY_ID, XAdES132Element.DOCUMENTATION_REFERENCES);
 	}
 
 	@Override
-	public String getCurrentSignaturePolicyImplied() {
+	public XPathQuery getCurrentSignaturePolicyImplied() {
 		return fromCurrentPosition(XAdES132Element.SIGNATURE_POLICY_IMPLIED);
 	}
 	
 	@Override
-	public String getCurrentSignaturePolicyTransforms() {
+	public XPathQuery getCurrentSignaturePolicyTransforms() {
 		return fromCurrentPosition(XAdES132Element.SIGNATURE_POLICY_ID, XMLDSigElement.TRANSFORMS);
 	}
 
 	@Override
-	public String getCurrentSignaturePolicyQualifiers() {
+	public XPathQuery getCurrentSignaturePolicyQualifiers() {
 		return fromCurrentPosition(XAdES132Element.SIGNATURE_POLICY_ID, XAdES132Element.SIG_POLICY_QUALIFIERS);
 	}
 
 	@Override
-	public String getCurrentIssuerSerialIssuerNamePath() {
+	public XPathQuery getCurrentIssuerSerialIssuerNamePath() {
 		return fromCurrentPosition(XAdES132Element.ISSUER_SERIAL, XMLDSigElement.X509_ISSUER_NAME);
 	}
 
 	@Override
-	public String getCurrentIssuerSerialSerialNumberPath() {
+	public XPathQuery getCurrentIssuerSerialSerialNumberPath() {
 		return fromCurrentPosition(XAdES132Element.ISSUER_SERIAL, XMLDSigElement.X509_SERIAL_NUMBER);
 	}
 
 	@Override
-	public String getCurrentIssuerSerialV2Path() {
+	public XPathQuery getCurrentIssuerSerialV2Path() {
 		return fromCurrentPosition(XAdES132Element.ISSUER_SERIAL_V2);
 	}
 
 	@Override
-	public String getCurrentCommitmentIdentifierPath() {
+	public XPathQuery getCurrentCommitmentIdentifierPath() {
 		return fromCurrentPosition(XAdES132Element.COMMITMENT_TYPE_ID, XAdES132Element.IDENTIFIER);
 	}
 
 	@Override
-	public String getCurrentCommitmentDescriptionPath() {
+	public XPathQuery getCurrentCommitmentDescriptionPath() {
 		return fromCurrentPosition(XAdES132Element.COMMITMENT_TYPE_ID, XAdES132Element.DESCRIPTION);
 	}
 
 	@Override
-	public String getCurrentCommitmentDocumentationReferencesPath() {
+	public XPathQuery getCurrentCommitmentDocumentationReferencesPath() {
 		return fromCurrentPosition(XAdES132Element.COMMITMENT_TYPE_ID, XAdES132Element.DOCUMENTATION_REFERENCES);
 	}
 
 	@Override
-	public String getCurrentDocumentationReference() {
+	public XPathQuery getCurrentDocumentationReference() {
 		return fromCurrentPosition(XAdES132Element.DOCUMENTATION_REFERENCE);
 	}
 
 	@Override
-	public String getCurrentCommitmentObjectReferencesPath() {
+	public XPathQuery getCurrentCommitmentObjectReferencesPath() {
 		return fromCurrentPosition(XAdES132Element.OBJECT_REFERENCE);
 	}
 
 	@Override
-	public String getCurrentCommitmentAllSignedDataObjectsPath() {
+	public XPathQuery getCurrentCommitmentAllSignedDataObjectsPath() {
 		return fromCurrentPosition(XAdES132Element.ALL_SIGNED_DATA_OBJECTS);
 	}
 
 	@Override
-	public String getCurrentInclude() {
+	public XPathQuery getCurrentInclude() {
 		return fromCurrentPosition(XAdES132Element.INCLUDE);
 	}
 
 	@Override
-	public String getCurrentEncapsulatedCertificate() {
+	public XPathQuery getCurrentEncapsulatedCertificate() {
 		return fromCurrentPosition(XAdES132Element.ENCAPSULATED_X509_CERTIFICATE);
 	}
 
 	@Override
-	public String getCurrentCertificateValuesEncapsulatedCertificate() {
+	public XPathQuery getCurrentCertificateValuesEncapsulatedCertificate() {
 		return fromCurrentPosition(XAdES132Element.CERTIFICATE_VALUES, XAdES132Element.ENCAPSULATED_X509_CERTIFICATE);
 	}
 
 	@Override
-	public String getCurrentEncapsulatedOCSPValue() {
+	public XPathQuery getCurrentEncapsulatedOCSPValue() {
 		return fromCurrentPosition(XAdES132Element.OCSP_VALUES, XAdES132Element.ENCAPSULATED_OCSP_VALUE);
 	}
 
 	@Override
-	public String getCurrentRevocationValuesEncapsulatedOCSPValue() {
+	public XPathQuery getCurrentRevocationValuesEncapsulatedOCSPValue() {
 		return fromCurrentPosition(XAdES132Element.REVOCATION_VALUES, XAdES132Element.OCSP_VALUES, XAdES132Element.ENCAPSULATED_OCSP_VALUE);
 	}
 
 	@Override
-	public String getCurrentEncapsulatedCRLValue() {
+	public XPathQuery getCurrentEncapsulatedCRLValue() {
 		return fromCurrentPosition(XAdES132Element.CRL_VALUES, XAdES132Element.ENCAPSULATED_CRL_VALUE);
 	}
 
 	@Override
-	public String getCurrentRevocationValuesEncapsulatedCRLValue() {
+	public XPathQuery getCurrentRevocationValuesEncapsulatedCRLValue() {
 		return fromCurrentPosition(XAdES132Element.REVOCATION_VALUES, XAdES132Element.CRL_VALUES, XAdES132Element.ENCAPSULATED_CRL_VALUE);
 	}
 
 	@Override
-	public String getCurrentQualifyingPropertiesPath() {
+	public XPathQuery getCurrentQualifyingPropertiesPath() {
 		return fromCurrentPosition(XAdES132Element.QUALIFYING_PROPERTIES);
 	}
 
 	@Override
-	public String getCurrentDescription() {
+	public XPathQuery getCurrentDescription() {
 		return fromCurrentPosition(XAdES132Element.DESCRIPTION);
 	}
 
 	@Override
-	public String getCurrentObjectIdentifier() {
+	public XPathQuery getCurrentObjectIdentifier() {
 		return fromCurrentPosition(XAdES132Element.OBJECT_IDENTIFIER);
 	}
 
 	@Override
-	public String getCurrentMimeType() {
+	public XPathQuery getCurrentMimeType() {
 		return fromCurrentPosition(XAdES132Element.MIME_TYPE);
 	}
 
 	@Override
-	public String getCurrentEncoding() {
+	public XPathQuery getCurrentEncoding() {
 		return fromCurrentPosition(XAdES132Element.ENCODING);
 	}
 
 	// --------------------------- Signature Policy Store
 
 	@Override
-	public String getCurrentSPDocSpecification() {
+	public XPathQuery getCurrentSPDocSpecification() {
 		return fromCurrentPosition(XAdES141Element.SP_DOC_SPECIFICATION);
 	}
 
 	@Override
-	public String getCurrentIdentifier() {
+	public XPathQuery getCurrentIdentifier() {
 		return fromCurrentPosition(XAdES132Element.IDENTIFIER);
 	}
 
 	@Override
-	public String getCurrentSPDocSpecificationIdentifier() {
+	public XPathQuery getCurrentSPDocSpecificationIdentifier() {
 		return fromCurrentPosition(XAdES141Element.SP_DOC_SPECIFICATION, XAdES132Element.IDENTIFIER);
 	}
 
 	@Override
-	public String getCurrentSPDocSpecificationDescription() {
+	public XPathQuery getCurrentSPDocSpecificationDescription() {
 		return fromCurrentPosition(XAdES141Element.SP_DOC_SPECIFICATION, XAdES132Element.DESCRIPTION);
 	}
 
 	@Override
-	public String getCurrentDocumentationReferenceElements() {
+	public XPathQuery getCurrentDocumentationReferenceElements() {
 		return fromCurrentPosition(XAdES132Element.DOCUMENTATION_REFERENCES,
 				XAdES132Element.DOCUMENTATION_REFERENCE);
 	}
 
 	@Override
-	public String getCurrentSPDocSpecificationDocumentationReferenceElements() {
+	public XPathQuery getCurrentSPDocSpecificationDocumentationReferenceElements() {
 		return fromCurrentPosition(XAdES141Element.SP_DOC_SPECIFICATION, XAdES132Element.DOCUMENTATION_REFERENCES,
 				XAdES132Element.DOCUMENTATION_REFERENCE);
 	}
 
 	@Override
-	public String getCurrentSignaturePolicyDocument() {
+	public XPathQuery getCurrentSignaturePolicyDocument() {
 		return fromCurrentPosition(XAdES141Element.SIGNATURE_POLICY_DOCUMENT);
 	}
 
 	@Override
-	public String getCurrentSigPolDocLocalURI() {
+	public XPathQuery getCurrentSigPolDocLocalURI() {
 		return fromCurrentPosition(XAdES141Element.SIG_POL_DOC_LOCAL_URI);
 	}
 

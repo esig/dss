@@ -34,6 +34,7 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -364,7 +365,7 @@ public class ASiCEWithCAdESContainerMerger extends AbstractASiCWithCAdESContaine
 
     private DSSDocument replaceSigReferenceDocumentName(DSSDocument evidenceRecordManifest, String newEvidenceRecordName) {
         Document manifestDocumentDom = DomUtils.buildDOM(evidenceRecordManifest);
-        Element sigReferenceElement = DomUtils.getElement(manifestDocumentDom.getDocumentElement(), ASiCManifestPath.SIG_REFERENCE_PATH);
+        Element sigReferenceElement = XPathUtils.getElement(manifestDocumentDom.getDocumentElement(), ASiCManifestPath.SIG_REFERENCE_PATH);
         if (sigReferenceElement == null) {
             throw new IllegalArgumentException(String.format(
                     "Invalid structure of ASiCEvidenceRecordManifest with name '%s'.", evidenceRecordManifest.getName()));

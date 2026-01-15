@@ -20,22 +20,23 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import eu.europa.esig.dss.xml.utils.DomUtils;
-import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.SignatureCertificateSource;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CertificateValidity;
 import eu.europa.esig.dss.spi.x509.SignerIdentifier;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.spi.SignatureCertificateSource;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.definition.XAdESPath;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
+import eu.europa.esig.dss.xml.common.xpath.XPathQuery;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -102,11 +103,11 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 	 * @param xPathQuery XPath query
 	 * @param origin     the certificate origin
 	 */
-	private void extractCertificates(final String xPathQuery, CertificateOrigin origin) {
+	private void extractCertificates(final XPathQuery xPathQuery, CertificateOrigin origin) {
 		if (xPathQuery == null) {
 			return;
 		}
-		final NodeList nodeList = DomUtils.getNodeList(signatureElement, xPathQuery);
+		final NodeList nodeList = XPathUtils.getNodeList(signatureElement, xPathQuery);
 		for (int ii = 0; ii < nodeList.getLength(); ii++) {
 			final Element certificateElement = (Element) nodeList.item(ii);
 			String base64EncodedCertificate = certificateElement.getTextContent();
@@ -128,15 +129,15 @@ public class XAdESCertificateSource extends SignatureCertificateSource {
 	 * @param xpathV2 XPath query for certificate reference V2
 	 * @param origin  the certificate reference origin
 	 */
-	private void extractCertificateRefs(String xpathV1, String xpathV2, CertificateRefOrigin origin) {
+	private void extractCertificateRefs(XPathQuery xpathV1, XPathQuery xpathV2, CertificateRefOrigin origin) {
 		if (xpathV1 != null) {
-			NodeList certRefNodeList = DomUtils.getNodeList(signatureElement, xpathV1);
+			NodeList certRefNodeList = XPathUtils.getNodeList(signatureElement, xpathV1);
 			if (certRefNodeList != null) {
 				extractXAdESCertsV1(certRefNodeList, origin);
 			}
 		}
 		if (xpathV2 != null) {
-			NodeList certRefNodeList = DomUtils.getNodeList(signatureElement, xpathV2);
+			NodeList certRefNodeList = XPathUtils.getNodeList(signatureElement, xpathV2);
 			if (certRefNodeList != null) {
 				extractXAdESCertsV2(certRefNodeList, origin);
 			}

@@ -24,23 +24,23 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.signature.SignatureRequirementsChecker;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
-import eu.europa.esig.dss.spi.x509.ResponderId;
-import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
-import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.validation.ValidationData;
 import eu.europa.esig.dss.spi.validation.ValidationDataContainer;
+import eu.europa.esig.dss.spi.x509.ResponderId;
+import eu.europa.esig.dss.spi.x509.revocation.crl.CRLToken;
+import eu.europa.esig.dss.spi.x509.revocation.ocsp.OCSPToken;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import eu.europa.esig.dss.xml.utils.DomUtils;
-import eu.europa.esig.dss.xades.definition.xades141.XAdES141Element;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
 import org.bouncycastle.cert.ocsp.RespID;
 import org.w3c.dom.Element;
 
 import javax.xml.datatype.XMLGregorianCalendar;
-
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -164,8 +164,8 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 
 	private String removeOldCertificateRefs() {
 		String text = null;
-		final Element certRefs = DomUtils.getElement(xadesSignature.getSignatureElement(), xadesPath.getCompleteCertificateRefsPath());
-		final Element certRefsV2 = DomUtils.getElement(xadesSignature.getSignatureElement(), xadesPath.getCompleteCertificateRefsV2Path());
+		final Element certRefs = XPathUtils.getElement(xadesSignature.getSignatureElement(), xadesPath.getCompleteCertificateRefsPath());
+		final Element certRefsV2 = XPathUtils.getElement(xadesSignature.getSignatureElement(), xadesPath.getCompleteCertificateRefsV2Path());
 		if (certRefs != null || certRefsV2 != null) {
 			text = removeNode(certRefs);
 			if (text == null || certRefsV2 != null) {
@@ -178,7 +178,7 @@ public class XAdESLevelC extends XAdESLevelBaselineT {
 	}
 
 	private void removeOldRevocationRefs() {
-		final Element toRemove = DomUtils.getElement(xadesSignature.getSignatureElement(), xadesPath.getCompleteRevocationRefsPath());
+		final Element toRemove = XPathUtils.getElement(xadesSignature.getSignatureElement(), xadesPath.getCompleteRevocationRefsPath());
 		if (toRemove != null) {
 			removeNode(toRemove);
 			/* Because the element was removed, the revocation sources need to be reset */

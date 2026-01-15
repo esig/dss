@@ -42,12 +42,11 @@ import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.spi.x509.TrustedCertificateSource;
 import eu.europa.esig.dss.validation.policy.ValidationPolicyLoader;
 import eu.europa.esig.dss.validation.reports.Reports;
-import eu.europa.esig.dss.xades.definition.XAdESPath;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
 import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
 
+import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 
@@ -89,7 +88,8 @@ public class TLValidatorTask implements Supplier<ValidationResult> {
 		final CertificateVerifier certificateVerifier = new CommonCertificateVerifier(true);
 		certificateVerifier.setTrustedCertSources(buildTrustedCertificateSource(certificateSource));
 
-		final XMLDocumentValidator xmlDocumentValidator = new XMLDocumentValidator(trustedList);
+		// To increase the security: the default {@code XAdESPaths} is used.
+		final XMLDocumentValidator xmlDocumentValidator = new XMLDocumentValidator(trustedList, Collections.singletonList(new XAdES132Path()));
 
 		xmlDocumentValidator.setCertificateVerifier(certificateVerifier);
 		xmlDocumentValidator.setTokenExtractionStrategy(TokenExtractionStrategy.EXTRACT_CERTIFICATES_ONLY);
@@ -97,11 +97,6 @@ public class TLValidatorTask implements Supplier<ValidationResult> {
 		xmlDocumentValidator.setValidationLevel(ValidationLevel.BASIC_SIGNATURES); // Timestamps,... are ignored
 		xmlDocumentValidator.setValidationContextExecutor(SkipValidationContextExecutor.INSTANCE); // Only need to validate against the trusted certificate source
 		xmlDocumentValidator.setSignaturePolicyProvider(new SignaturePolicyProvider()); // ignore signature policy loading
-
-		// To increase the security: the default {@code XAdESPaths} is used.
-		List<XAdESPath> xadesPathsHolders = xmlDocumentValidator.getXAdESPathsHolder();
-		xadesPathsHolders.clear();
-		xadesPathsHolders.add(new XAdES132Path());
 
 		return xmlDocumentValidator.validateDocument(getTrustedListValidationPolicy());
 	}

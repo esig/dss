@@ -35,7 +35,7 @@ import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.DSSTransform;
 import eu.europa.esig.dss.xades.reference.XPathTransform;
 import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
-import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.ArrayList;
@@ -52,7 +52,7 @@ class XAdESEnvelopingSignByXpathWithNamespaceTest extends AbstractXAdESTestSigna
 
     @BeforeEach
     void init() throws Exception {
-        DomUtils.registerNamespace(new DSSNamespace("urn:czech-ba:instant-payments:v1:instantPayment", "czip"));
+        XPathUtils.registerNamespace(new DSSNamespace("urn:czech-ba:instant-payments:v1:instantPayment", "czip"));
 
         documentToSign = new FileDocument("src/test/resources/ns-prefixes-sample.xml");
 

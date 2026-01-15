@@ -38,6 +38,7 @@ import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.reference.XAdESReferenceValidation;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -123,7 +124,7 @@ public class XAdESSignatureScopeFinder extends AbstractSignatureScopeFinder impl
 				}
 				
 			} else if (xadesReferenceValidation.isFound() && DomUtils.isElementReference(uri)) {
-				Element signedElement = DomUtils.getElementById(
+				Element signedElement = XPathUtils.getElementById(
 						xadesSignature.getSignatureElement().getOwnerDocument(), DomUtils.getId(uri));
 				if (signedElement != null) {
 					if (isEverythingCovered(xadesSignature, xmlIdOfSignedElement)) {

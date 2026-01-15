@@ -25,7 +25,6 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import org.junit.jupiter.api.BeforeEach;
 
-import javax.xml.xpath.XPathExpressionException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -43,7 +42,7 @@ class XAdESXLTest extends XAdESXTest {
      * Checks UnsignedSignatureProperties present for T/LT/LTA levels
      */
     @Override
-    protected void checkUnsignedProperties() throws XPathExpressionException {
+    protected void checkUnsignedProperties() {
         super.checkUnsignedProperties();
 
         checkCertificateValuesPresent();

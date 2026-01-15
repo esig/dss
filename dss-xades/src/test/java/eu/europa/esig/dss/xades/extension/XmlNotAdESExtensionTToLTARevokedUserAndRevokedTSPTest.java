@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.xades.extension;
 
-import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
-import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
 import eu.europa.esig.dss.alert.LogOnStatusAlert;
 import eu.europa.esig.dss.alert.exception.AlertException;
@@ -31,19 +29,22 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.x509.tsp.TSPSource;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigNamespace;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -91,10 +92,10 @@ class XmlNotAdESExtensionTToLTARevokedUserAndRevokedTSPTest extends AbstractXAdE
     protected DSSDocument getSignedDocument(DSSDocument doc) {
         DSSDocument signedDocument = super.getSignedDocument(doc);
         Document docDom = DomUtils.buildDOM(signedDocument);
-        NodeList signatures = DomUtils.getNodeList(docDom, XMLDSigPath.ALL_SIGNATURES_PATH);
+        NodeList signatures = XPathUtils.getNodeList(docDom, XMLDSigPath.ALL_SIGNATURES_PATH);
         assertEquals(1, signatures.getLength());
         Node signatureElement = signatures.item(0);
-        Node signatureValueNode = DomUtils.getElement(signatureElement, XMLDSigPath.SIGNATURE_VALUE_PATH);
+        Node signatureValueNode = XPathUtils.getElement(signatureElement, XMLDSigPath.SIGNATURE_VALUE_PATH);
         final Element keyInfoDom = DomUtils.createElementNS(docDom, XMLDSigNamespace.NS, XMLDSigElement.KEY_INFO);
         signatureValueNode.getParentNode().insertBefore(keyInfoDom, signatureValueNode.getNextSibling());
         for (CertificateToken token : getCertificateChain()) {

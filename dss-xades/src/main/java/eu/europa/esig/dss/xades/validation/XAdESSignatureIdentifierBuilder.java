@@ -23,8 +23,7 @@ package eu.europa.esig.dss.xades.validation;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.signature.identifier.AbstractSignatureIdentifierBuilder;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.xades.DSSXMLUtils;
-import org.w3c.dom.Document;
+import eu.europa.esig.dss.xades.dom.XAdESDOMDocument;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -65,8 +64,8 @@ public class XAdESSignatureIdentifierBuilder extends AbstractSignatureIdentifier
 	protected Integer getSignaturePosition() {
 		XAdESSignature xadesSignature = (XAdESSignature) signature;
 		Element signatureElement = xadesSignature.getSignatureElement();
-		Document document = signatureElement.getOwnerDocument();
-		final NodeList signatureNodeList = DSSXMLUtils.getAllSignaturesExceptCounterSignatures(document);
+		XAdESDOMDocument ownerDocument = xadesSignature.getOwnerDocument();
+		final NodeList signatureNodeList = ownerDocument.getSignatureNodes();
 		
 		int counter = 0;
 		while (counter < signatureNodeList.getLength()) {

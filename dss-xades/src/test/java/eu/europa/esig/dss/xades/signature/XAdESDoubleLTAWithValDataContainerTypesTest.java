@@ -50,6 +50,7 @@ import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
 import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -252,23 +253,23 @@ class XAdESDoubleLTAWithValDataContainerTypesTest extends PKIFactoryAccess {
         int timeStampValidationDataCounter = 0;
         int anyValidationDataCounter = 0;
 
-        NodeList certificateValuesList = DomUtils.getNodeList(signature, paths.getCertificateValuesPath());
+        NodeList certificateValuesList = XPathUtils.getNodeList(signature, paths.getCertificateValuesPath());
         if (certificateValuesList != null && certificateValuesList.getLength() > 0) {
             certificateValuesCounter = certificateValuesList.getLength();
         }
-        NodeList revocationValuesList = DomUtils.getNodeList(signature, paths.getRevocationValuesPath());
+        NodeList revocationValuesList = XPathUtils.getNodeList(signature, paths.getRevocationValuesPath());
         if (revocationValuesList != null && revocationValuesList.getLength() > 0) {
             revocationValuesCounter = revocationValuesList.getLength();
         }
-        NodeList archiveTstList = DomUtils.getNodeList(signature, paths.getArchiveTimestampPath());
+        NodeList archiveTstList = XPathUtils.getNodeList(signature, paths.getArchiveTimestampPath());
         if (archiveTstList != null && archiveTstList.getLength() > 0) {
             archiveTimeStampCounter = archiveTstList.getLength();
         }
-        NodeList tstVDList = DomUtils.getNodeList(signature, paths.getTimestampValidationDataPath());
+        NodeList tstVDList = XPathUtils.getNodeList(signature, paths.getTimestampValidationDataPath());
         if (tstVDList != null && tstVDList.getLength() > 0) {
             timeStampValidationDataCounter = tstVDList.getLength();
         }
-        NodeList anyVDList = DomUtils.getNodeList(signature, paths.getAnyValidationDataRevocationValuesPath());
+        NodeList anyVDList = XPathUtils.getNodeList(signature, paths.getAnyValidationDataPath());
         if (anyVDList != null && anyVDList.getLength() > 0) {
             anyValidationDataCounter = anyVDList.getLength();
         }

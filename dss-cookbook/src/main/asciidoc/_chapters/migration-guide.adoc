@@ -24,6 +24,69 @@ Image is created keeping the original dimensions.
 
 Please see the corresponding item in the <<FAQ>> for more information.
 
+a|XML Namespace registration          a|
+[source,java]
+----
+import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+
+DSSNamespace namespace = new DSSNamespace("http://uri.etsi.org/01903/v1.3.2#", "xades");
+Element element = DomUtils.registerNamespace(namespace);
+----
+a|
+[source,java]
+----
+import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
+
+DSSNamespace namespace = new DSSNamespace("http://uri.etsi.org/01903/v1.3.2#", "xades");
+Element element = XPathUtils.registerNamespace(namespace);
+----
+
+a|Selected Namespace validation           a|
+[source,java]
+----
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
+import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
+
+XMLDocumentValidator xmlDocumentValidator = new XMLDocumentValidator(xmlDocument);
+...
+List<XAdESPath> xadesPathsHolders = xmlDocumentValidator.getXAdESPathsHolder();
+xadesPathsHolders.clear();
+xadesPathsHolders.add(new XAdES132Path());
+----
+a|
+[source,java]
+----
+import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
+import eu.europa.esig.dss.xades.validation.XMLDocumentValidator;
+import java.util.Collections;
+
+XMLDocumentValidator xmlDocumentValidator = new XMLDocumentValidator(
+        xmlDocument, Collections.singletonList(new XAdES132Path()));
+----
+
+a|XPath DOM lookup          a|
+[source,java]
+----
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import org.w3c.dom.Element;
+
+Element element = DomUtils.getElement(document, "./ds:Signature");
+----
+a|
+[source,java]
+----
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
+import eu.europa.esig.dss.xml.common.xpath.XPathQuery;
+import eu.europa.esig.dss.xml.common.xpath.XPathQueryBuilder;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
+import org.w3c.dom.Element;
+
+XPathQuery query = XPathQueryBuilder.fromCurrentPosition().element(XMLDSigElement.SIGNATURE).build();
+Element element = XPathUtils.getElement(document, query);
+----
+
 |===
 
 .Code changes from version 6.3 to 6.4

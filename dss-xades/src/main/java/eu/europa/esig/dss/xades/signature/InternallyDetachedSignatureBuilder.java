@@ -20,12 +20,13 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.reference.DSSReference;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -116,7 +117,7 @@ class InternallyDetachedSignatureBuilder extends XPathPlacementSignatureBuilder 
 		for (DSSReference ref : references) {
 			String elementId = DomUtils.getId(ref.getUri());
 			// the content shall be added only when it is not yet present in the document
-			if (DomUtils.getElementById(documentDom, elementId) == null) {
+			if (XPathUtils.getElementById(documentDom, elementId) == null) {
 				Document doc = DomUtils.buildDOM(ref.getContents());
 				Element root = doc.getDocumentElement();
 				Node adopted = documentDom.importNode(root, true);

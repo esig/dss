@@ -50,6 +50,7 @@ import eu.europa.esig.dss.xades.evidencerecord.XAdESEvidenceRecordIncorporationP
 import eu.europa.esig.dss.xades.signature.XAdESCounterSignatureParameters;
 import eu.europa.esig.dss.xades.signature.XAdESService;
 import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -73,8 +74,8 @@ public class ASiCWithXAdESService extends AbstractASiCSignatureService<ASiCWithX
 	private ASiCWithXAdESFilenameFactory asicFilenameFactory = new DefaultASiCWithXAdESFilenameFactory();
 
 	static {
-		DomUtils.registerNamespace(ASiCManifestNamespace.NS);
-		DomUtils.registerNamespace(ManifestNamespace.NS);
+		XPathUtils.registerNamespace(ASiCManifestNamespace.NS);
+		XPathUtils.registerNamespace(ManifestNamespace.NS);
 	}
 
 	/**

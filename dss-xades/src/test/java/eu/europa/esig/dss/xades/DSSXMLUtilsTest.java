@@ -23,12 +23,12 @@ package eu.europa.esig.dss.xades;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.xades.dom.XAdESDOMDocument;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.xades.XAdES319132Utils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import javax.xml.transform.Source;
@@ -95,8 +95,8 @@ class DSSXMLUtilsTest {
 	void setIdentifierPrefixed() {
 		FileDocument document = new FileDocument("src/test/resources/ns-prefixes-sample.xml");
 		Document dom = DomUtils.buildDOM(document);
-		NodeList list = dom.getDocumentElement().getElementsByTagName("czip:initInstantPayment");
-		DSSXMLUtils.setIDIdentifier((Element) list.item(0));
+		XAdESDOMDocument doc = new XAdESDOMDocument(dom);
+		doc.recursiveIdBrowse();
 
 		assertNotNull(dom.getElementById("signedData"));
 	}

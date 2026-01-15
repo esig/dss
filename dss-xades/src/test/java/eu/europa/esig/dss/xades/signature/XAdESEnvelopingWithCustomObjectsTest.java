@@ -20,9 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import eu.europa.esig.dss.xml.utils.DomUtils;
-import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigAttribute;
-import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -36,6 +33,10 @@ import eu.europa.esig.dss.xades.DSSObject;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigAttribute;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -86,7 +87,7 @@ class XAdESEnvelopingWithCustomObjectsTest extends AbstractXAdESTestSignature {
         super.onDocumentSigned(byteArray);
 
         Document document = DomUtils.buildDOM(byteArray);
-        NodeList objectList = DomUtils.getNodeList(document.getDocumentElement(), XMLDSigPath.OBJECT_PATH);
+        NodeList objectList = XPathUtils.getNodeList(document.getDocumentElement(), XMLDSigPath.OBJECT_PATH);
         assertEquals(4, objectList.getLength());
 
         boolean xmlObjectFound = false;

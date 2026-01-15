@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
@@ -42,6 +41,8 @@ import eu.europa.esig.dss.xades.reference.Base64Transform;
 import eu.europa.esig.dss.xades.reference.CanonicalizationTransform;
 import eu.europa.esig.dss.xades.reference.DSSReference;
 import eu.europa.esig.dss.xades.reference.DSSTransform;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.apache.xml.security.signature.Reference;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
@@ -122,7 +123,7 @@ class XAdESLevelBBase64TransformTest extends PKIFactoryAccess {
 		String originalBase64 = Utils.toBase64(DSSUtils.toByteArray(image));
 		assertTrue(Utils.isStringNotBlank(originalBase64));
 		Document documentDom = DomUtils.buildDOM(signedDocument);
-		Element objectElement = DomUtils.getElementById(documentDom, imageFileName);
+		Element objectElement = XPathUtils.getElementById(documentDom, imageFileName);
 		assertNotNull(objectElement);
 		assertEquals(originalBase64, objectElement.getTextContent());
 		

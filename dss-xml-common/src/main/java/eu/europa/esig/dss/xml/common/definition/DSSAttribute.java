@@ -20,10 +20,12 @@
  */
 package eu.europa.esig.dss.xml.common.definition;
 
+import java.io.Serializable;
+
 /**
  * The XML attribute interface
  */
-public interface DSSAttribute {
+public interface DSSAttribute extends Serializable {
 
 	/**
 	 * Returns the attribute name
@@ -31,5 +33,26 @@ public interface DSSAttribute {
 	 * @return {@link String} name
 	 */
 	String getAttributeName();
+
+	/**
+	 * Creates a DSSAttribute from the given definition
+	 *
+	 * @param attributeName {@link String} name of the attribute
+	 * @return {@link DSSElement}
+	 */
+	static DSSAttribute fromDefinition(String attributeName) {
+
+		return new DSSAttribute() {
+
+			private static final long serialVersionUID = 2281652820823176961L;
+
+			@Override
+			public String getAttributeName() {
+				return attributeName;
+			}
+
+		};
+
+	}
 
 }

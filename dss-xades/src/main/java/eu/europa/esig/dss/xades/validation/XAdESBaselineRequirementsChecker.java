@@ -34,7 +34,9 @@ import eu.europa.esig.dss.xades.definition.XAdESPath;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
+import eu.europa.esig.dss.xml.common.xpath.XPathQuery;
 import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,11 +91,11 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
             return false;
         }
         // ds:SignedInfo/ds:Reference/ds:Transforms (Cardinality 0 or 1)
-        NodeList referenceList = DomUtils.getNodeList(signatureElement, XMLDSigPath.SIGNED_INFO_REFERENCE_PATH);
+        NodeList referenceList = XPathUtils.getNodeList(signatureElement, XMLDSigPath.SIGNED_INFO_REFERENCE_PATH);
         if (referenceList != null && referenceList.getLength() > 0) {
             for (int ii = 0; ii < referenceList.getLength(); ii++) {
                 Element reference = (Element) referenceList.item(ii);
-                if (DomUtils.getNodesAmount(reference, XMLDSigPath.TRANSFORMS_PATH) > 1) {
+                if (XPathUtils.getNodesAmount(reference, XMLDSigPath.TRANSFORMS_PATH) > 1) {
                     LOG.warn("Only one ds:Reference/ds:Transforms may be present for XAdES-BASELINE-B signature (cardinality 0 or 1)!");
                     return false;
                 }
@@ -150,9 +152,9 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
             return false;
         }
         // ArchiveTimeStamp (defined in namespace whose URI is "http://uri.etsi.org/01903/v1.3.2#") (Cardinality == 0)
-        String archiveTimestampPath = xadesPaths.getArchiveTimestampPath();
-        if (Utils.isStringNotEmpty(archiveTimestampPath)) {
-            NodeList archiveTimeStampList = DomUtils.getNodeList(signatureElement, archiveTimestampPath);
+        XPathQuery archiveTimestampPath = xadesPaths.getArchiveTimestampPath();
+        if (archiveTimestampPath != null) {
+            NodeList archiveTimeStampList = XPathUtils.getNodeList(signatureElement, archiveTimestampPath);
             for (int ii = 0; ii < archiveTimeStampList.getLength(); ii++) {
                 Node archiveTimeStamp = archiveTimeStampList.item(ii);
                 if (XAdESNamespace.XADES_132.getUri().equals(archiveTimeStamp.getNamespaceURI())) {
@@ -170,7 +172,7 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         // Additional requirement (d)
         final Element signedInfo = signature.getSignedInfo();
         if (signedInfo != null) {
-            String canonicalizationMethod = DomUtils.getValue(signedInfo, XMLDSigPath.CANONICALIZATION_ALGORITHM_PATH);
+            String canonicalizationMethod = XPathUtils.getValue(signedInfo, XMLDSigPath.CANONICALIZATION_ALGORITHM_PATH);
             if (Utils.isStringNotEmpty(canonicalizationMethod)) {
                 switch (canonicalizationMethod) {
                     case Canonicalizer.ALGO_ID_C14N11_OMIT_COMMENTS:
@@ -188,12 +190,12 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
             }
         }
         // Additional requirement (i)
-        String signingCertificateV2Path = xadesPaths.getSigningCertificateV2Path();
-        if (Utils.isStringNotEmpty(signingCertificateV2Path)) {
-            NodeList signingCertificateV2List = DomUtils.getNodeList(signatureElement, signingCertificateV2Path);
+        XPathQuery signingCertificateV2Path = xadesPaths.getSigningCertificateV2Path();
+        if (signingCertificateV2Path != null) {
+            NodeList signingCertificateV2List = XPathUtils.getNodeList(signatureElement, signingCertificateV2Path);
             if (signingCertificateV2List.getLength() == 1) {
                 Node signingCertificateV2 = signingCertificateV2List.item(0);
-                NodeList certList = DomUtils.getNodeList(signingCertificateV2, xadesPaths.getCurrentCertChildren());
+                NodeList certList = XPathUtils.getNodeList(signingCertificateV2, xadesPaths.getCurrentCertChildren());
                 for (int ii = 0; ii < certList.getLength(); ii++) {
                     Element cert = (Element) certList.item(ii);
                     if (cert.hasAttribute(XAdES132Attribute.URI.getAttributeName())) {
@@ -235,10 +237,10 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         XAdESPath xadesPaths = signature.getXAdESPaths();
 
         // Additional requirement (n)
-        NodeList signatureTimeStampList = DomUtils.getNodeList(signatureElement, xadesPaths.getSignatureTimestampPath());
+        NodeList signatureTimeStampList = XPathUtils.getNodeList(signatureElement, xadesPaths.getSignatureTimestampPath());
         for (int ii = 0; ii < signatureTimeStampList.getLength(); ii++) {
             Node signatureTimeStamp = signatureTimeStampList.item(ii);
-            NodeList encapsulatedTimestampList = DomUtils.getNodeList(signatureTimeStamp, xadesPaths.getCurrentEncapsulatedTimestamp());
+            NodeList encapsulatedTimestampList = XPathUtils.getNodeList(signatureTimeStamp, xadesPaths.getCurrentEncapsulatedTimestamp());
             if (encapsulatedTimestampList.getLength() != 1) {
                 LOG.warn("SignatureTimeStamp shall contain only one electronic timestamp for XAdES-BASELINE-T signature (requirement (n))!");
                 return false;
@@ -415,10 +417,10 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         XAdESPath xadesPaths = signature.getXAdESPaths();
 
         // Additional requirement (d)
-        NodeList signatureTimeStampList = DomUtils.getNodeList(signatureElement, xadesPaths.getSignatureTimestampPath());
+        NodeList signatureTimeStampList = XPathUtils.getNodeList(signatureElement, xadesPaths.getSignatureTimestampPath());
         for (int ii = 0; ii < signatureTimeStampList.getLength(); ii++) {
             Node signatureTimeStamp = signatureTimeStampList.item(ii);
-            NodeList encapsulatedTimestampList = DomUtils.getNodeList(signatureTimeStamp, xadesPaths.getCurrentEncapsulatedTimestamp());
+            NodeList encapsulatedTimestampList = XPathUtils.getNodeList(signatureTimeStamp, xadesPaths.getCurrentEncapsulatedTimestamp());
             if (encapsulatedTimestampList.getLength() == 0) {
                 LOG.warn("SignatureTimeStamp shall contain one or more electronic timestamp for XAdES-T signature (requirement (d))!");
                 return false;
@@ -512,7 +514,7 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
     }
 
     private NodeList getDataObjectFormatList(Element signatureElement, XAdESPath xadesPaths) {
-        return DomUtils.getNodeList(signatureElement, xadesPaths.getDataObjectFormat());
+        return XPathUtils.getNodeList(signatureElement, xadesPaths.getDataObjectFormat());
     }
 
     private boolean isValidXAdESDataObjectFormat(Element dataObjectFormat, XAdESSignature signature, XAdESPath xadesPaths,
@@ -569,7 +571,7 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
 
     private boolean isDataObjectFormatValuesCompliant(Element dataObjectFormat, ReferenceValidation reference, Element signatureElement, XAdESPath xadesPaths) {
         if (DomUtils.isElementReference(reference.getUri())) {
-            Element dataObjectFormatMimeType = DomUtils.getElement(dataObjectFormat, xadesPaths.getCurrentMimeType());
+            Element dataObjectFormatMimeType = XPathUtils.getElement(dataObjectFormat, xadesPaths.getCurrentMimeType());
             if (dataObjectFormatMimeType != null) {
                 Element object = DSSXMLUtils.getObjectById(signatureElement, reference.getUri());
                 if (object != null) {
@@ -580,7 +582,7 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
                     }
                 }
             }
-            Element dataObjectFormatEncoding = DomUtils.getElement(dataObjectFormat, xadesPaths.getCurrentEncoding());
+            Element dataObjectFormatEncoding = XPathUtils.getElement(dataObjectFormat, xadesPaths.getCurrentEncoding());
             if (dataObjectFormatEncoding != null) {
                 Element object = DSSXMLUtils.getObjectById(signatureElement, reference.getUri());
                 if (object != null) {
@@ -637,18 +639,15 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
         return false;
     }
 
-    private int getNumberOfOccurrences(Element element, String xPath) {
-        if (element != null && Utils.isStringNotEmpty(xPath)) {
-            return DomUtils.getNodesAmount(element, xPath);
+    private int getNumberOfOccurrences(Element element, XPathQuery xPath) {
+        if (element != null && xPath != null) {
+            return XPathUtils.getNodesAmount(element, xPath);
         }
         return 0;
     }
 
-    private boolean isElementPresent(final Node xmlNode, final String xPathString) {
-        if (Utils.isStringEmpty(xPathString)) {
-            return false;
-        }
-        return DomUtils.isNotEmpty(xmlNode, xPathString);
+    private boolean isElementPresent(final Element element, final XPathQuery xPathString) {
+        return getNumberOfOccurrences(element, xPathString) > 0;
     }
 
     private Map<String, ReferenceValidationStatus> getReferenceValidationStatusMap() {

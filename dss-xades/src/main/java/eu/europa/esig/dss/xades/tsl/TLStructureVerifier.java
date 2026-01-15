@@ -29,6 +29,7 @@ import eu.europa.esig.dss.xades.definition.xades132.XAdES132Element;
 import eu.europa.esig.dss.xml.common.definition.DSSElement;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import eu.europa.esig.trustedlist.TrustedListUtils;
 import eu.europa.esig.trustedlist211.TrustedList211Utils;
 import org.slf4j.Logger;
@@ -62,7 +63,7 @@ public class TLStructureVerifier {
     private boolean signingMode;
 
     static {
-        DomUtils.registerNamespace(TrustedListNamespace.NS);
+        XPathUtils.registerNamespace(TrustedListNamespace.NS);
     }
 
     /**

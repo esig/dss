@@ -20,10 +20,9 @@
  */
 package eu.europa.esig.dss.xades.validation;
 
-import org.w3c.dom.Element;
-
-import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.xades.definition.XAdESPath;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
+import org.w3c.dom.Element;
 
 /**
  * Unsigned XAdES signature properties
@@ -62,7 +61,7 @@ public class XAdESUnsignedSigProperties extends XAdESSigProperties {
 	 * @return {@link Element}
 	 */
 	protected static Element getUnsignedSignaturePropertiesDom(Element signatureElement, XAdESPath xadesPaths) {
-		return DomUtils.getElement(signatureElement, xadesPaths.getUnsignedSignaturePropertiesPath());
+		return XPathUtils.getElement(signatureElement, xadesPaths.getUnsignedSignaturePropertiesPath());
 	}
 
 }

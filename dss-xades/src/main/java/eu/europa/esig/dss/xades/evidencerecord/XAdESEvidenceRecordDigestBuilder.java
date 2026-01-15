@@ -42,8 +42,10 @@ import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import eu.europa.esig.dss.xades.validation.XAdESUnsignedSigProperties;
 import eu.europa.esig.dss.xades.validation.XMLDocumentAnalyzer;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
+import eu.europa.esig.dss.xml.common.xpath.XPathQuery;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.Manifest;
 import org.apache.xml.security.signature.Reference;
@@ -325,7 +327,7 @@ public class XAdESEvidenceRecordDigestBuilder extends AbstractSignatureEvidenceR
         if (signedInfo == null) {
             throw new IllegalStateException("ds:SignedInfo element shall be defined within a signature!");
         }
-        String canonicalizationMethod = DomUtils.getValue(signedInfo, XMLDSigPath.CANONICALIZATION_ALGORITHM_PATH);
+        String canonicalizationMethod = XPathUtils.getValue(signedInfo, XMLDSigPath.CANONICALIZATION_ALGORITHM_PATH);
         if (Utils.isStringEmpty(canonicalizationMethod)) {
             LOG.warn("No canonicalization method found within ds:SignedInfo element. " +
                     "Re-use the default canonicalization algorithm 'http://www.w3.org/TR/2001/REC-xml-c14n-20010315'");
@@ -371,9 +373,9 @@ public class XAdESEvidenceRecordDigestBuilder extends AbstractSignatureEvidenceR
         return messageDigestCalculator.getMessageDigest(digestAlgorithm).getValue();
     }
 
-    private byte[] getDigestValueOnCanonicalizedNode(final XAdESSignature signature, final String xPathString,
+    private byte[] getDigestValueOnCanonicalizedNode(final XAdESSignature signature, final XPathQuery xPathQuery,
                                                      final String canonicalizationAlgorithm) {
-        final Element element = DomUtils.getElement(signature.getSignatureElement(), xPathString);
+        final Element element = XPathUtils.getElement(signature.getSignatureElement(), xPathQuery);
         return getDigestValueOnCanonicalizedNode(element, canonicalizationAlgorithm);
     }
 
@@ -428,7 +430,7 @@ public class XAdESEvidenceRecordDigestBuilder extends AbstractSignatureEvidenceR
     }
 
     private boolean containsQualifyingProperties(Node node, XAdESPath xadesPath) {
-        Node qualifyingProperties = DomUtils.getNode(node, xadesPath.getCurrentQualifyingPropertiesPath());
+        Node qualifyingProperties = XPathUtils.getNode(node, xadesPath.getCurrentQualifyingPropertiesPath());
         return qualifyingProperties != null;
     }
 

@@ -27,12 +27,13 @@ import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
+import eu.europa.esig.dss.xades.definition.XAdESNamespace;
 import eu.europa.esig.dss.xades.validation.XAdESSignature;
 import eu.europa.esig.dss.xades.validation.XMLDocumentAnalyzer;
 import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
-import eu.europa.esig.dss.xml.utils.DomUtils;
-import eu.europa.esig.dss.xades.definition.XAdESNamespace;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigNamespace;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -118,14 +119,14 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 	 */
 	protected void ensureUnsignedProperties() {
 
-		final NodeList qualifyingPropertiesNodeList = DomUtils.getNodeList(currentSignatureDom, xadesPath.getQualifyingPropertiesPath());
+		final NodeList qualifyingPropertiesNodeList = XPathUtils.getNodeList(currentSignatureDom, xadesPath.getQualifyingPropertiesPath());
 		if (qualifyingPropertiesNodeList.getLength() != 1) {
 			throw new IllegalInputException("The signature does not contain QualifyingProperties element (or contains more than one)! Extension is not possible.");
 		}
 
 		qualifyingPropertiesDom = (Element) qualifyingPropertiesNodeList.item(0);
 
-		final NodeList unsignedPropertiesNodeList = DomUtils.getNodeList(currentSignatureDom, xadesPath.getUnsignedPropertiesPath());
+		final NodeList unsignedPropertiesNodeList = XPathUtils.getNodeList(currentSignatureDom, xadesPath.getUnsignedPropertiesPath());
 		final int length = unsignedPropertiesNodeList.getLength();
 		if (length == 1) {
 			unsignedPropertiesDom = (Element) unsignedPropertiesNodeList.item(0);
@@ -133,7 +134,7 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 			unsignedPropertiesDom = DomUtils.addElement(documentDom, qualifyingPropertiesDom, getXadesNamespace(), getCurrentXAdESElements().getElementUnsignedProperties());
 			if (params.isPrettyPrint()) {
 				qualifyingPropertiesDom = (Element) DSSXMLUtils.alignChildrenIndents(qualifyingPropertiesDom);
-				unsignedPropertiesDom = (Element) DomUtils.getNode(currentSignatureDom, xadesPath.getUnsignedPropertiesPath());
+				unsignedPropertiesDom = (Element) XPathUtils.getNode(currentSignatureDom, xadesPath.getUnsignedPropertiesPath());
 			}
 		} else {
 			throw new IllegalInputException("The signature contains more then one UnsignedProperties element! Extension is not possible.");
@@ -144,7 +145,7 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 	 * Returns or creates (if it does not exist) the UnsignedSignaturePropertiesType DOM object.
 	 */
 	protected void ensureUnsignedSignatureProperties() {
-		final NodeList unsignedSignaturePropertiesNodeList = DomUtils.getNodeList(currentSignatureDom, xadesPath.getUnsignedSignaturePropertiesPath());
+		final NodeList unsignedSignaturePropertiesNodeList = XPathUtils.getNodeList(currentSignatureDom, xadesPath.getUnsignedSignaturePropertiesPath());
 		final int length = unsignedSignaturePropertiesNodeList.getLength();
 		if (length == 1) {
 			unsignedSignaturePropertiesDom = (Element) unsignedSignaturePropertiesNodeList.item(0);
@@ -152,7 +153,7 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 			unsignedSignaturePropertiesDom = DomUtils.addElement(documentDom, unsignedPropertiesDom, getXadesNamespace(), getCurrentXAdESElements().getElementUnsignedSignatureProperties());
 			if (params.isPrettyPrint()) {
 				unsignedPropertiesDom = (Element) DSSXMLUtils.indentAndReplace(documentDom, unsignedPropertiesDom);
-				unsignedSignaturePropertiesDom = (Element) DomUtils.getNode(currentSignatureDom, xadesPath.getUnsignedSignaturePropertiesPath());
+				unsignedSignaturePropertiesDom = (Element) XPathUtils.getNode(currentSignatureDom, xadesPath.getUnsignedSignaturePropertiesPath());
 			}
 		} else {
 			throw new IllegalInputException("The signature contains more than one UnsignedSignatureProperties element! Extension is not possible.");
@@ -163,7 +164,7 @@ public abstract class ExtensionBuilder extends XAdESBuilder {
 	 * Returns or create (if it does not exist) the SignedDataObjectProperties DOM object.
 	 */
 	protected void ensureSignedDataObjectProperties() {
-		final NodeList signedDataObjectPropertiesNodeList = DomUtils.getNodeList(currentSignatureDom, xadesPath.getSignedDataObjectPropertiesPath());
+		final NodeList signedDataObjectPropertiesNodeList = XPathUtils.getNodeList(currentSignatureDom, xadesPath.getSignedDataObjectPropertiesPath());
 		final int length = signedDataObjectPropertiesNodeList.getLength();
 		if (length > 1) {
 			throw new IllegalInputException("The signature contains more than one SignedDataObjectProperties element! Extension is not possible.");

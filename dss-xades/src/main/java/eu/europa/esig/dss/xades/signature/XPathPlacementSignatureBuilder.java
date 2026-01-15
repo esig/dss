@@ -29,6 +29,8 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigAttribute;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
 import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.xpath.XPathQueryExecutorLoader;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.apache.xml.security.transforms.Transforms;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -126,13 +128,13 @@ public abstract class XPathPlacementSignatureBuilder extends XAdESSignatureBuild
             // covers the whole file
             return true;
         } else {
-            Node referencedNode = DomUtils.getElementById(documentDom, id);
+            Node referencedNode = XPathUtils.getElementById(documentDom, id);
             return affectedNodes.contains(referencedNode);
         }
     }
 
     private void assertDoesNotContainEnvelopedTransform(final Node referenceNode) {
-        NodeList transformList = DomUtils.getNodeList(referenceNode, XMLDSigPath.TRANSFORMS_TRANSFORM_PATH);
+        NodeList transformList = XPathUtils.getNodeList(referenceNode, XMLDSigPath.TRANSFORMS_TRANSFORM_PATH);
         if (transformList != null && transformList.getLength() > 0) {
             for (int jj = 0; jj < transformList.getLength(); jj++) {
                 final Element transformElement = (Element) transformList.item(jj);
@@ -151,9 +153,9 @@ public abstract class XPathPlacementSignatureBuilder extends XAdESSignatureBuild
     protected Node getParentNodeOfSignature() {
         final String xPathLocationString = params.getXPathLocationString();
         if (Utils.isStringNotEmpty(xPathLocationString)) {
-            Element element = DomUtils.getElement(documentDom, xPathLocationString);
-            if (element != null) {
-                return element;
+            NodeList nodeList = new XPathQueryExecutorLoader().getXPathStringExecutor().getNodeList(documentDom, xPathLocationString);
+            if (nodeList != null && nodeList.getLength() == 1) {
+                return nodeList.item(0);
             }
             throw new IllegalArgumentException(String.format(
                     "Unable to find an element corresponding to XPath location '%s'", xPathLocationString));

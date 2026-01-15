@@ -39,6 +39,7 @@ import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -132,7 +133,6 @@ public class CounterSignatureBuilder extends ExtensionBuilder {
 			reference.setTransforms(Collections.singletonList(transform));
 			
 		} else {
-			// TODO : build an XPath ???
 			throw new IllegalInputException(String.format(
 					"The signature with Id '%s' does not have an Id for a SignatureValue element! " +
 							"Unable to counter sign.", parameters.getSignatureIdToCounterSign()));
@@ -226,7 +226,7 @@ public class CounterSignatureBuilder extends ExtensionBuilder {
 	private Element getSignatureValueElement(XAdESSignature xadesSignature) {
 		Element signatureElement = xadesSignature.getSignatureElement();
 
-		Element signatureValueElement = DomUtils.getElement(signatureElement, XMLDSigPath.SIGNATURE_VALUE_PATH);
+		Element signatureValueElement = XPathUtils.getElement(signatureElement, XMLDSigPath.SIGNATURE_VALUE_PATH);
 		if (signatureValueElement != null) {
 			return signatureValueElement;
 		}

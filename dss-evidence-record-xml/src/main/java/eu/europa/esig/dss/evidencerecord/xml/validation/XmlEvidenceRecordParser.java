@@ -27,13 +27,13 @@ import eu.europa.esig.dss.evidencerecord.common.validation.CryptographicInformat
 import eu.europa.esig.dss.evidencerecord.common.validation.CryptographicInformationType;
 import eu.europa.esig.dss.evidencerecord.common.validation.EvidenceRecordParser;
 import eu.europa.esig.dss.evidencerecord.common.validation.timestamp.EvidenceRecordTimestampIdentifierBuilder;
+import eu.europa.esig.dss.evidencerecord.xml.definition.XMLERSAttribute;
+import eu.europa.esig.dss.evidencerecord.xml.definition.XMLERSPath;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.validation.evidencerecord.EmbeddedEvidenceRecordHelper;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.xml.utils.DomUtils;
-import eu.europa.esig.dss.evidencerecord.xml.definition.XMLERSAttribute;
-import eu.europa.esig.dss.evidencerecord.xml.definition.XMLERSPath;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -100,7 +100,7 @@ public class XmlEvidenceRecordParser implements EvidenceRecordParser {
      */
     @Override
     public List<XmlArchiveTimeStampChainObject> parse() {
-        final NodeList archiveTimeStampSequenceList = DomUtils.getNodeList(evidenceRecordElement, XMLERSPath.ARCHIVE_TIME_STAMP_CHAIN_PATH);
+        final NodeList archiveTimeStampSequenceList = XPathUtils.getNodeList(evidenceRecordElement, XMLERSPath.ARCHIVE_TIME_STAMP_CHAIN_PATH);
         if (archiveTimeStampSequenceList != null && archiveTimeStampSequenceList.getLength() > 0) {
             XmlArchiveTimeStampChainObject[] result = new XmlArchiveTimeStampChainObject[archiveTimeStampSequenceList.getLength()];
             for (int i = 0; i < archiveTimeStampSequenceList.getLength(); i++) {
@@ -126,7 +126,7 @@ public class XmlEvidenceRecordParser implements EvidenceRecordParser {
     }
 
     private List<? extends ArchiveTimeStampObject> getXmlArchiveTimeStamps(Element archiveTimeStampChain, int archiveTimeStampChainOrder) {
-        final NodeList archiveTimeStampList = DomUtils.getNodeList(archiveTimeStampChain, XMLERSPath.ARCHIVE_TIME_STAMP_PATH);
+        final NodeList archiveTimeStampList = XPathUtils.getNodeList(archiveTimeStampChain, XMLERSPath.ARCHIVE_TIME_STAMP_PATH);
         if (archiveTimeStampList != null && archiveTimeStampList.getLength() > 0) {
             XmlArchiveTimeStampObject[] result = new XmlArchiveTimeStampObject[archiveTimeStampList.getLength()];
             for (int i = 0; i < archiveTimeStampList.getLength(); i++) {
@@ -150,7 +150,7 @@ public class XmlEvidenceRecordParser implements EvidenceRecordParser {
     }
 
     private TimestampToken getTimestampToken(Element archiveTimeStampElement, int archiveTimeStampChainOrder, int archieTimeStampOrder) {
-        Element timeStampTokenElement = DomUtils.getElement(archiveTimeStampElement, XMLERSPath.TIME_STAMP_TOKEN_PATH);
+        Element timeStampTokenElement = XPathUtils.getElement(archiveTimeStampElement, XMLERSPath.TIME_STAMP_TOKEN_PATH);
         if (timeStampTokenElement == null) {
             throw new IllegalInputException("TimeStampToken shall be defined!");
         }
@@ -177,7 +177,7 @@ public class XmlEvidenceRecordParser implements EvidenceRecordParser {
     }
 
     private List<XmlSequenceObject> getHashTree(Element archiveTimeStampElement) {
-        final NodeList hashTree = DomUtils.getNodeList(archiveTimeStampElement, XMLERSPath.HASH_TREE_SEQUENCE_PATH);
+        final NodeList hashTree = XPathUtils.getNodeList(archiveTimeStampElement, XMLERSPath.HASH_TREE_SEQUENCE_PATH);
         if (hashTree != null && hashTree.getLength() > 0) {
             XmlSequenceObject[] result = new XmlSequenceObject[hashTree.getLength()];
             for (int i = 0; i < hashTree.getLength(); i++) {
@@ -201,7 +201,7 @@ public class XmlEvidenceRecordParser implements EvidenceRecordParser {
     private List<byte[]> getDigestValues(Element sequenceElement) {
         List<byte[]> result = new ArrayList<>();
 
-        final NodeList digestValueList = DomUtils.getNodeList(sequenceElement, XMLERSPath.DIGEST_VALUE_PATH);
+        final NodeList digestValueList = XPathUtils.getNodeList(sequenceElement, XMLERSPath.DIGEST_VALUE_PATH);
         for (int i = 0; i < digestValueList.getLength(); i++) {
             final Element digestValueElement = (Element) digestValueList.item(i);
 
@@ -224,7 +224,7 @@ public class XmlEvidenceRecordParser implements EvidenceRecordParser {
     }
 
     private DigestAlgorithm getDigestAlgorithm(Element archiveTimeStampChainElement) {
-        Element digestMethod = DomUtils.getElement(archiveTimeStampChainElement, XMLERSPath.DIGEST_METHOD_PATH);
+        Element digestMethod = XPathUtils.getElement(archiveTimeStampChainElement, XMLERSPath.DIGEST_METHOD_PATH);
         if (digestMethod == null) {
             throw new IllegalInputException("The DigestMethod element shall be present!");
         }
@@ -236,7 +236,7 @@ public class XmlEvidenceRecordParser implements EvidenceRecordParser {
     }
 
     private String getCanonicalizationMethod(Element archiveTimeStampChainElement) {
-        Element canonicalizationMethod = DomUtils.getElement(archiveTimeStampChainElement, XMLERSPath.CANONICALIZATION_METHOD_PATH);
+        Element canonicalizationMethod = XPathUtils.getElement(archiveTimeStampChainElement, XMLERSPath.CANONICALIZATION_METHOD_PATH);
         if (canonicalizationMethod == null) {
             throw new IllegalInputException("The CanonicalizationMethod element shall be present!");
         }
@@ -248,7 +248,7 @@ public class XmlEvidenceRecordParser implements EvidenceRecordParser {
     }
 
     private List<CryptographicInformation> getCryptographicInformationList(Element archiveTimeStampElement) {
-        NodeList cryptographicInformationNodeList = DomUtils.getNodeList(archiveTimeStampElement, XMLERSPath.CRYPTOGRAPHIC_INFORMATION_PATH);
+        NodeList cryptographicInformationNodeList = XPathUtils.getNodeList(archiveTimeStampElement, XMLERSPath.CRYPTOGRAPHIC_INFORMATION_PATH);
         if (cryptographicInformationNodeList == null || cryptographicInformationNodeList.getLength() == 0) {
             return Collections.emptyList();
         }

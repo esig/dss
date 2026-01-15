@@ -20,14 +20,11 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import eu.europa.esig.dss.diagnostic.OrphanRevocationWrapper;
-import eu.europa.esig.dss.enumerations.RevocationType;
-import eu.europa.esig.dss.xades.definition.XAdESPath;
-import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
 import eu.europa.esig.dss.diagnostic.FoundRevocationsProxy;
+import eu.europa.esig.dss.diagnostic.OrphanRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
 import eu.europa.esig.dss.diagnostic.RelatedRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.RevocationRefWrapper;
@@ -35,6 +32,7 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
+import eu.europa.esig.dss.enumerations.RevocationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -43,25 +41,28 @@ import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.pki.x509.revocation.ocsp.PKIOCSPSource;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.revocation.RevocationRef;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.spi.signature.AdvancedSignature;
-import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
+import eu.europa.esig.dss.xades.definition.XAdESPath;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import eu.europa.esig.validationreport.jaxb.SACertIDListType;
 import eu.europa.esig.validationreport.jaxb.SARevIDListType;
 import eu.europa.esig.validationreport.jaxb.SignatureAttributesType;
+import jakarta.xml.bind.JAXBElement;
 import org.junit.jupiter.api.BeforeEach;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import jakarta.xml.bind.JAXBElement;
 import java.io.File;
 import java.util.List;
 import java.util.Set;
@@ -109,38 +110,38 @@ public class XAdESLevelCTest extends AbstractXAdESTestSignature {
 		XAdES132Path paths = new XAdES132Path();
 
 		Node signature = signaturesList.item(0);
-		NodeList signingCertificateList = DomUtils.getNodeList(signature, paths.getSigningCertificateChildren());
+		NodeList signingCertificateList = XPathUtils.getNodeList(signature, paths.getSigningCertificateChildren());
 		assertEquals(1, signingCertificateList.getLength());
 
-		NodeList signingCertificateV2List = DomUtils.getNodeList(signature, paths.getSigningCertificateV2Children());
+		NodeList signingCertificateV2List = XPathUtils.getNodeList(signature, paths.getSigningCertificateV2Children());
 		assertEquals(0, signingCertificateV2List.getLength());
 
-		NodeList completeCertificateRefsList = DomUtils.getNodeList(signature, paths.getCompleteCertificateRefsPath());
+		NodeList completeCertificateRefsList = XPathUtils.getNodeList(signature, paths.getCompleteCertificateRefsPath());
 		assertEquals(1, completeCertificateRefsList.getLength());
 
-		NodeList completeCertificateRefsV2List = DomUtils.getNodeList(signature, paths.getCompleteCertificateRefsV2Path());
+		NodeList completeCertificateRefsV2List = XPathUtils.getNodeList(signature, paths.getCompleteCertificateRefsV2Path());
 		assertEquals(0, completeCertificateRefsV2List.getLength());
 
-		NodeList completeRevocationRefsList = DomUtils.getNodeList(signature, paths.getCompleteRevocationRefsPath());
+		NodeList completeRevocationRefsList = XPathUtils.getNodeList(signature, paths.getCompleteRevocationRefsPath());
 		assertEquals(1, completeRevocationRefsList.getLength());
 		validateCompleteRevocationRefsList(completeRevocationRefsList, paths);
 	}
 	
 	protected void validateCompleteRevocationRefsList(NodeList completeRevocationRefsList, XAdESPath paths) {
 		Node completeRevocationRefNode = completeRevocationRefsList.item(0);
-		NodeList crlRefs = DomUtils.getNodeList(completeRevocationRefNode, paths.getCurrentCRLRefsChildren());
+		NodeList crlRefs = XPathUtils.getNodeList(completeRevocationRefNode, paths.getCurrentCRLRefsChildren());
 		assertEquals(1, crlRefs.getLength());
-		NodeList ocspRefs = DomUtils.getNodeList(completeRevocationRefNode, paths.getCurrentOCSPRefsChildren());
+		NodeList ocspRefs = XPathUtils.getNodeList(completeRevocationRefNode, paths.getCurrentOCSPRefsChildren());
 		assertEquals(1, ocspRefs.getLength());
 
-		Element crlIdentifier = DomUtils.getElement(crlRefs.item(0), paths.getCurrentCRLRefCRLIdentifier());
+		Element crlIdentifier = XPathUtils.getElement(crlRefs.item(0), paths.getCurrentCRLRefCRLIdentifier());
 		assertNotNull(crlIdentifier);
 
-		Element crlIdentifierIssuer = DomUtils.getElement(crlRefs.item(0), paths.getCurrentCRLRefCRLIdentifierIssuer());
+		Element crlIdentifierIssuer = XPathUtils.getElement(crlRefs.item(0), paths.getCurrentCRLRefCRLIdentifierIssuer());
 		assertNotNull(crlIdentifierIssuer);
-		Element crlIdentifierIssueTime = DomUtils.getElement(crlRefs.item(0), paths.getCurrentCRLRefCRLIdentifierIssueTime());
+		Element crlIdentifierIssueTime = XPathUtils.getElement(crlRefs.item(0), paths.getCurrentCRLRefCRLIdentifierIssueTime());
 		assertNotNull(crlIdentifierIssueTime);
-		Element crlIdentifierNumber = DomUtils.getElement(crlRefs.item(0), paths.getCurrentCRLRefCRLIdentifierNumber());
+		Element crlIdentifierNumber = XPathUtils.getElement(crlRefs.item(0), paths.getCurrentCRLRefCRLIdentifierNumber());
 		assertNull(crlIdentifierNumber);
 	}
 

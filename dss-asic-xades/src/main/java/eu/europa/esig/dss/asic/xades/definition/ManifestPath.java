@@ -23,6 +23,7 @@ package eu.europa.esig.dss.asic.xades.definition;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xml.common.definition.AbstractPath;
 import eu.europa.esig.dss.xml.common.definition.DSSNamespace;
+import eu.europa.esig.dss.xml.common.xpath.XPathQuery;
 
 /**
  * Path expressions for a Manifest
@@ -32,7 +33,7 @@ public class ManifestPath extends AbstractPath {
 	private static final long serialVersionUID = 1661986382868079585L;
 
 	/** {@code "//manifest/file-entry"} */
-	public static final String FILE_ENTRY_PATH = fromCurrentPosition(ManifestElement.MANIFEST, ManifestElement.FILE_ENTRY);
+	public static final XPathQuery FILE_ENTRY_PATH = fromCurrentPosition(ManifestElement.MANIFEST, ManifestElement.FILE_ENTRY);
 
 	/**
 	 * Default constructor

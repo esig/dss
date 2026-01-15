@@ -20,8 +20,6 @@
  */
 package eu.europa.esig.dss.xades.validation.xsw;
 
-import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
-import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureDigestReference;
@@ -31,6 +29,9 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.validation.AbstractXAdESTestValidation;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigPath;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -62,7 +63,7 @@ class XAdESEnvelopedXSWTest extends AbstractXAdESTestValidation {
 		assertNotNull(signatureDigestReference);
 
 		Document documentDom = DomUtils.buildDOM(document);
-		NodeList nodeList = DomUtils.getNodeList(documentDom.getDocumentElement(), XMLDSigPath.SIGNATURE_PATH);
+		NodeList nodeList = XPathUtils.getNodeList(documentDom.getDocumentElement(), XMLDSigPath.SIGNATURE_PATH);
 		Element signatureElement = (Element) nodeList.item(0);
 		byte[] canonicalizedSignatureElement = XMLCanonicalizer.createInstance(signatureDigestReference.getCanonicalizationMethod()).canonicalize(signatureElement);
 		byte[] digest = DSSUtils.digest(signatureDigestReference.getDigestMethod(), canonicalizedSignatureElement);

@@ -27,7 +27,7 @@ import eu.europa.esig.dss.spi.x509.SignerIdentifier;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.DSSXMLUtils;
 import eu.europa.esig.dss.xades.definition.XAdESPath;
-import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.bouncycastle.asn1.x509.IssuerSerial;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,7 +58,7 @@ public final class XAdESCertificateRefExtractionUtils {
 	 */
 	public static CertificateRef createCertificateRefFromV1(Element certRefElement, XAdESPath xadesPaths) {
 		if (certRefElement != null) {
-			Digest certDigest = DSSXMLUtils.getDigestAndValue(DomUtils.getElement(certRefElement, xadesPaths.getCurrentCertDigest()));
+			Digest certDigest = DSSXMLUtils.getDigestAndValue(XPathUtils.getElement(certRefElement, xadesPaths.getCurrentCertDigest()));
 			if (certDigest != null) {
 				CertificateRef certRef = new CertificateRef();
 				certRef.setCertDigest(certDigest);
@@ -78,7 +78,7 @@ public final class XAdESCertificateRefExtractionUtils {
 	 */
 	public static CertificateRef createCertificateRefFromV2(Element certRefElement, XAdESPath xadesPaths) {
 		if (certRefElement != null) {
-			Digest certDigest = DSSXMLUtils.getDigestAndValue(DomUtils.getElement(certRefElement, xadesPaths.getCurrentCertDigest()));
+			Digest certDigest = DSSXMLUtils.getDigestAndValue(XPathUtils.getElement(certRefElement, xadesPaths.getCurrentCertDigest()));
 			if (certDigest != null) {
 				CertificateRef certRef = new CertificateRef();
 				certRef.setCertDigest(certDigest);
@@ -93,12 +93,12 @@ public final class XAdESCertificateRefExtractionUtils {
 		X500Principal issuerName = null;
 		BigInteger serialNumber = null;
 
-		final Element issuerNameEl = DomUtils.getElement(certRefElement, xadesPaths.getCurrentIssuerSerialIssuerNamePath());
+		final Element issuerNameEl = XPathUtils.getElement(certRefElement, xadesPaths.getCurrentIssuerSerialIssuerNamePath());
 		if (issuerNameEl != null) {
 			issuerName = DSSASN1Utils.getX500PrincipalOrNull(issuerNameEl.getTextContent());
 		}
 
-		final Element serialNumberEl = DomUtils.getElement(certRefElement, xadesPaths.getCurrentIssuerSerialSerialNumberPath());
+		final Element serialNumberEl = XPathUtils.getElement(certRefElement, xadesPaths.getCurrentIssuerSerialSerialNumberPath());
 		if (serialNumberEl != null) {
 			String serialNumberText = serialNumberEl.getTextContent();
 			serialNumberText = Utils.trim(serialNumberText);
@@ -127,7 +127,7 @@ public final class XAdESCertificateRefExtractionUtils {
 	}
 
 	private static SignerIdentifier getCertificateIdentifierV2(Element certRefElement, XAdESPath xadesPaths) {
-		final Element issuerSerialV2Element = DomUtils.getElement(certRefElement, xadesPaths.getCurrentIssuerSerialV2Path());
+		final Element issuerSerialV2Element = XPathUtils.getElement(certRefElement, xadesPaths.getCurrentIssuerSerialV2Path());
 		if (issuerSerialV2Element == null) {
 			// Tag issuerSerialV2 is optional
 			return null;

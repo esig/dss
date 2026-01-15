@@ -21,11 +21,11 @@
 package eu.europa.esig.dss.xades.requirements;
 
 import eu.europa.esig.dss.enumerations.SignatureLevel;
+import eu.europa.esig.dss.xml.common.xpath.XPathQuery;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.w3c.dom.Node;
 
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -44,11 +44,11 @@ class XAdESBaselineTTest extends XAdESBaselineBTest {
 	 * Checks UnsignedSignatureProperties present for T/LT/LTA levels
 	 */
 	@Override
-	protected void checkUnsignedProperties() throws XPathExpressionException {
+	protected void checkUnsignedProperties() {
 		super.checkUnsignedProperties();
 
-		XPathExpression exp = xpath.compile("//xades:UnsignedProperties/xades:UnsignedSignatureProperties");
-		Node node = (Node) exp.evaluate(document, XPathConstants.NODE);
+		XPathQuery exp = toXPathQuery("xades:UnsignedProperties", "xades:UnsignedSignatureProperties");
+		Node node = XPathUtils.getNode(document, exp);
 		assertNotNull(node);
 
 		checkSignatureTimeStampPresent();

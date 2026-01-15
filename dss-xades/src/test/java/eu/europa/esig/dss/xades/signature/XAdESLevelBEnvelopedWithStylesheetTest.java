@@ -20,9 +20,6 @@
  */
 package eu.europa.esig.dss.xades.signature;
 
-import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
-import eu.europa.esig.dss.xml.utils.DomUtils;
-import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -35,6 +32,10 @@ import eu.europa.esig.dss.xades.XAdESSignatureParameters;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Attribute;
 import eu.europa.esig.dss.xades.definition.xades132.XAdES132Path;
+import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
+import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -77,14 +78,14 @@ class XAdESLevelBEnvelopedWithStylesheetTest extends AbstractXAdESTestSignature 
         assertEquals(1, signatureNodeList.getLength());
 
         Element signatureElement = (Element) signatureNodeList.item(0);
-        NodeList dataObjectFormatList = DomUtils.getNodeList(signatureElement, new XAdES132Path().getDataObjectFormat());
+        NodeList dataObjectFormatList = XPathUtils.getNodeList(signatureElement, new XAdES132Path().getDataObjectFormat());
         assertEquals(1, dataObjectFormatList.getLength());
 
         Element dataObjectFormat = (Element) dataObjectFormatList.item(0);
         String objectReference = dataObjectFormat.getAttribute(XAdES132Attribute.OBJECT_REFERENCE.getAttributeName());
         assertNotNull(objectReference);
 
-        Element elementById = DomUtils.getElementById(signatureElement, DomUtils.getId(objectReference));
+        Element elementById = XPathUtils.getElementById(signatureElement, DomUtils.getId(objectReference));
         assertNotNull(elementById);
         assertTrue(XMLDSigElement.REFERENCE.isSameTagName(elementById.getLocalName()));
     }

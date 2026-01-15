@@ -24,8 +24,6 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import org.junit.jupiter.api.BeforeEach;
 
-import javax.xml.xpath.XPathExpressionException;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class XAdESATest extends XAdESXLTest {
@@ -41,7 +39,7 @@ class XAdESATest extends XAdESXLTest {
      * Checks UnsignedSignatureProperties present for T/LT/LTA levels
      */
     @Override
-    protected void checkUnsignedProperties() throws XPathExpressionException {
+    protected void checkUnsignedProperties() {
         super.checkUnsignedProperties();
 
         checkArchiveTimeStampPresent();

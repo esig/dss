@@ -31,7 +31,7 @@ import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xades.definition.XAdESPath;
-import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
 import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.cert.CertIOException;
@@ -84,19 +84,19 @@ class XAdESLevelCWithCrlNumberTest extends XAdESLevelCTest {
 	@Override
 	protected void validateCompleteRevocationRefsList(NodeList completeRevocationRefsList, XAdESPath paths) {
 		Node completeRevocationRefNode = completeRevocationRefsList.item(0);
-		NodeList crlRefs = DomUtils.getNodeList(completeRevocationRefNode, paths.getCurrentCRLRefsChildren());
+		NodeList crlRefs = XPathUtils.getNodeList(completeRevocationRefNode, paths.getCurrentCRLRefsChildren());
 		assertEquals(1, crlRefs.getLength());
-		NodeList ocspRefs = DomUtils.getNodeList(completeRevocationRefNode, paths.getCurrentOCSPRefsChildren());
+		NodeList ocspRefs = XPathUtils.getNodeList(completeRevocationRefNode, paths.getCurrentOCSPRefsChildren());
 		assertEquals(1, ocspRefs.getLength());
 
-		Element crlIdentifier = DomUtils.getElement(crlRefs.item(0), paths.getCurrentCRLRefCRLIdentifier());
+		Element crlIdentifier = XPathUtils.getElement(crlRefs.item(0), paths.getCurrentCRLRefCRLIdentifier());
 		assertNotNull(crlIdentifier);
 
-		Element crlIdentifierIssuer = DomUtils.getElement(crlRefs.item(0), paths.getCurrentCRLRefCRLIdentifierIssuer());
+		Element crlIdentifierIssuer = XPathUtils.getElement(crlRefs.item(0), paths.getCurrentCRLRefCRLIdentifierIssuer());
 		assertNotNull(crlIdentifierIssuer);
-		Element crlIdentifierIssueTime = DomUtils.getElement(crlRefs.item(0), paths.getCurrentCRLRefCRLIdentifierIssueTime());
+		Element crlIdentifierIssueTime = XPathUtils.getElement(crlRefs.item(0), paths.getCurrentCRLRefCRLIdentifierIssueTime());
 		assertNotNull(crlIdentifierIssueTime);
-		Element crlIdentifierNumber = DomUtils.getElement(crlRefs.item(0), paths.getCurrentCRLRefCRLIdentifierNumber());
+		Element crlIdentifierNumber = XPathUtils.getElement(crlRefs.item(0), paths.getCurrentCRLRefCRLIdentifierNumber());
 		assertNotNull(crlIdentifierNumber);
 		assertEquals("1235", crlIdentifierNumber.getTextContent());
 	}
