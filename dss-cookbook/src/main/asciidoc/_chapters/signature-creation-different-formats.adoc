@@ -183,6 +183,38 @@ DSS provides a set of functions to align a text with respect to an image.
 The parameters must be applied to a 'SignatureImageTextParameters' object.
 See section <<TextImageCombi>> in the Annex for a concrete example.
 
+[[PdfDPI]]
+====== DPI
+
+In general, DSS aims to keep the original image attributes, such as size and DPI, when provided for a visual signature creation.
+This behavior can be configured using various settings, some of them being:
+
+ * Signature field dimensions (height and width);
+ * Target DPI configuration;
+ * Image stretching behavior;
+ * etc.
+
+Since version `6.5`, DSS changes the behavior on DPI settings handling, impacting the final image's dimensions, where applicable. To simplify the migration, an option to choose between the old "legacy" behavior (DSS 6.4 and before) and the new one is provided:
+
+ * When enabled (default in DSS `6.5`, to be changed later), the image size for not enforced dimensions is computed based on the ratio PDF_DPI/Image_DPI (where PDF_DPI=72, and Image_DPI is extracted from the image attributes). The image attributes are extracted only for image files with a defined filename.
+ * When disabled (recommended, to be enforced in future DSS versions), the original image size is used on visual signature field's dimension computation (when not explicitly defined), with image being scaled in the ratio Image_DPI/Target_DPI, where Image_DPI is extracted from the image attributes, and Target_DPI being the DPI setting in the signature image parameters. If no DPI is explicitly defined, the original image DPI is used for the Target_DPI, thus effectively keeping the original image dimensions. The image attributes are extracted for all image files based on the file type, when supported.
+
+[source,java,indent=0]
+.Set legacy DPI handling on PDF visual signature creation
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/PAdESVisibleSignatureSnippet.java[tags=pdfLegacyDpi]
+----
+
+NOTE: The rationale for migration to the new DPI handling is that the old behavior was not consistent with final image having a different size when no signature field's width or height were defined. The new behavior aims to provide a clearer and easier to use across different settings solution.
+
+Should you need assistance on migration to the new DPI handling behavior, please see some possible options below:
+
+[source,java,indent=0]
+.Migration options to the new DPI handling behavior (6.5+)
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/PAdESVisibleSignatureSnippet.java[tags=dss65Migration]
+----
+
 ===== Fonts usage
 
 To customize a text representation a custom font can be defined. The font must be added as an instance of the `DSSFont` interface to a `SignatureImageTextParameters` object.

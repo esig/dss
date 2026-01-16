@@ -129,9 +129,8 @@ public class ImageUtils {
 	 * 
 	 * @param imageParameters {@link SignatureImageParameters}
 	 * @return {@link ImageResolution} metadata
-	 * @throws IOException in case of image reading error
 	 */
-	public static ImageResolution secureReadMetadata(SignatureImageParameters imageParameters) throws IOException {
+	public static ImageResolution secureReadMetadata(SignatureImageParameters imageParameters) {
 		ImageResolution imageAndResolution;
 		try {
 			imageAndResolution = readDisplayMetadata(imageParameters.getImage());
@@ -157,12 +156,7 @@ public class ImageUtils {
 			return readAndDisplayMetadataPNG(image);
 		}
 		LOG.debug("Unable to determine image type based on magic bytes. Check image type based on document MimeType.");
-		if (isImageWithContentType(image, MimeTypeEnum.JPEG)) {
-			return readAndDisplayMetadataJPEG(image);
-		} else if (isImageWithContentType(image, MimeTypeEnum.PNG)) {
-			return readAndDisplayMetadataPNG(image);
-		}
-		throw new IllegalInputException("Unsupported image type");
+		return readDisplayMetadataBasedOnExtension(image);
 	}
 
 	/**
@@ -185,6 +179,23 @@ public class ImageUtils {
 	 */
 	public static boolean isPNG(DSSDocument image) throws IOException {
 		return Utils.startsWith(image.openStream(), PNG_PREAMBLE);
+	}
+
+	/**
+	 * This method reads and returns image details only based on the image's filename extension,
+	 * without processing the "magic bytes".
+	 *
+	 * @param image {@link DSSDocument} image document to be checked
+	 * @return {@link ImageResolution}
+	 * @throws IOException if an exception occurs on document reading
+	 */
+	public static ImageResolution readDisplayMetadataBasedOnExtension(DSSDocument image) throws IOException {
+		if (isImageWithContentType(image, MimeTypeEnum.JPEG)) {
+			return readAndDisplayMetadataJPEG(image);
+		} else if (isImageWithContentType(image, MimeTypeEnum.PNG)) {
+			return readAndDisplayMetadataPNG(image);
+		}
+		throw new IllegalInputException("Unsupported image type");
 	}
 
 	private static boolean isImageWithContentType(DSSDocument image, MimeType expectedContentType) {

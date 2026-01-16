@@ -25,6 +25,9 @@ import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentHorizontal;
 import eu.europa.esig.dss.enumerations.VisualSignatureAlignmentVertical;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DigestDocument;
+import eu.europa.esig.dss.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.Color;
 import java.io.Serializable;
@@ -37,6 +40,8 @@ import java.util.Objects;
 public class SignatureImageParameters implements Serializable {
 
 	private static final long serialVersionUID = -327971057134928889L;
+
+	private static final Logger LOG = LoggerFactory.getLogger(SignatureImageParameters.class);
 
 	/**
 	 * The default zoom constraint
@@ -68,6 +73,20 @@ public class SignatureImageParameters implements Serializable {
 	 * This variable defines the DPI of the image
 	 */
 	private Integer dpi;
+
+	/**
+	 * Allows setting of the behavior on image scaling based on the DPI value.
+	 * This parameter is used to provide a smooth migration to the DSS version 6.5 and later.
+	 * When enabled (default in 6.5, to be changed later), the old behavior, hard-coded in DSS 6.4 and before is applied,
+	 * with the image is zoomed reversely, in the ratio of PDF_DPI/Image_DPI.
+	 * When disabled (recommended), the new behavior is used, with the image being scaled in the ratio
+	 * of Image_DPI/Target_DPI, effectively keeping the original image size, unless a custom DPI value is defined.
+	 * <p>
+	 * It is advisable to update the used implementation to the new behavior (with parameter value set to true),
+	 * as it will be enforced in future DSS versions.
+	 */
+	// TODO : set to FALSE by default in DSS 6.6 (can change to boolean instead)
+	private Boolean legacyDPIHandling;
 
 	/**
 	 * Horizontal alignment of the visual signature on the pdf page
@@ -196,6 +215,38 @@ public class SignatureImageParameters implements Serializable {
 	 */
 	public void setDpi(Integer dpi) {
 		this.dpi = dpi;
+	}
+
+	/**
+	 * Gets whether the legacy DPI handling is to be applied
+	 *
+	 * @return whether the legacy DPI handling is to be applied
+	 */
+	public boolean isLegacyDPIHandling() {
+		if (legacyDPIHandling == null) {
+			LOG.debug("legacyDPIHandling parameter is not defined, the legacy behavior is applied! The parameter provides a smooth migration to DSS 6.5. " +
+					"Please use SignatureImageParameters#setLegacyDPIHandling(true) to use the legacy behavior (DSS 6.4 or before) " +
+					"or SignatureImageParameters#setLegacyDPIHandling(false) to update to the new DPI handling (recommended).");
+			return true; // TODO : Update in DSS 6.6
+		}
+		return Utils.isTrue(legacyDPIHandling);
+	}
+
+	/**
+	 * Sets the image scaling behavior based on the document DPI value.
+	 * This parameter is used to provide a smooth migration to the DSS version 6.5 and later.
+	 * When enabled (default in 6.5, to be changed later), the old behavior, hard-coded in DSS 6.4 and before is applied,
+	 * with the image is zoomed reversely, in the ratio of PDF_DPI/Image_DPI.
+	 * When disabled (recommended), the new behavior is used, with the image being scaled in the ratio
+	 * of Image_DPI/Target_DPI, effectively keeping the original image size, unless a custom DPI value is defined.
+	 * <p>
+	 * It is advisable to update the used implementation to the new behavior (with parameter value set to true),
+	 * as it will be enforced in future DSS versions.
+	 *
+	 * @param legacyDPIHandling {@link Boolean} whether the image scaling based on PDF DPI to be applied
+	 */
+	public void setLegacyDPIHandling(Boolean legacyDPIHandling) {
+		this.legacyDPIHandling = legacyDPIHandling;
 	}
 
 	/**

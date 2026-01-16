@@ -610,7 +610,6 @@ class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualComparator {
 
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/visualSignature/signature.png")));
-		imageParameters.setDpi(300);
 
 		SignatureImageTextParameters textParameters = new SignatureImageTextParameters();
 		textParameters.setText("My signature\nsecond line\nlong line is very long line with long text example this");
@@ -623,6 +622,7 @@ class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualComparator {
 		textParameters.setFont(font);
 		imageParameters.setTextParameters(textParameters);
 		imageParameters.setBackgroundColor(new Color(0, 0, 1, 0.25f));
+		imageParameters.setLegacyDPIHandling(true);
 		
 		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
 		fieldParameters.setOriginX(20);
@@ -778,11 +778,35 @@ class DefaultVsNativeDrawerComparatorTest extends AbstractTestVisualComparator {
 	}
 	
 	@Test
+	void dpiLegacyTest() throws IOException {
+		initPdfATest();
+		SignatureImageParameters imageParameters = new SignatureImageParameters();
+		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/signature-image.png"), "signature-image.png", MimeTypeEnum.PNG));
+		imageParameters.setDpi(300);
+		imageParameters.setLegacyDPIHandling(true);
+
+		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
+		fieldParameters.setOriginX(20);
+		fieldParameters.setOriginY(50);
+		imageParameters.setFieldParameters(fieldParameters);
+
+		signatureParameters.setImageParameters(imageParameters);
+
+		Exception exception = assertThrows(AlertException.class, () -> drawAndCompareVisually());
+		assertTrue(exception.getMessage().contains("The new signature field position is outside the page dimensions!"));
+
+		fieldParameters.setWidth(400);
+		fieldParameters.setHeight(200);
+		drawAndCompareVisually();
+	}
+
+	@Test
 	void dpiTest() throws IOException {
 		initPdfATest();
 		SignatureImageParameters imageParameters = new SignatureImageParameters();
 		imageParameters.setImage(new InMemoryDocument(getClass().getResourceAsStream("/signature-image.png"), "signature-image.png", MimeTypeEnum.PNG));
 		imageParameters.setDpi(72);
+		imageParameters.setLegacyDPIHandling(false);
 
 		SignatureFieldParameters fieldParameters = new SignatureFieldParameters();
 		fieldParameters.setOriginX(20);

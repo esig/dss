@@ -18,11 +18,11 @@ For changes within XML Signature Policy please refer <<ValidationPolicyChanges>>
 |===
 |Title                               |v6.4                            |v6.5
 a|DPI handling on PDF visual signature creation          a|
-Image is re-sized relatively the PDF document's DPI.
+Image is zoomed inversely to the PDF DPI, when no field dimensions defined.
                                                                      a|
-Image is created keeping the original dimensions.
+Image is created keeping the original dimensions, when new DPI behavior is enabled.
 
-Please see the corresponding item in the <<FAQ>> for more information.
+Please see the section <<PdfDPI>> for more information.
 
 a|XML Namespace registration          a|
 [source,java]

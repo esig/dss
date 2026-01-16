@@ -121,7 +121,13 @@ public class SignatureFieldDimensionAndPositionBuilder {
         ImageResolution imageResolution;
         if (imageParameters.getImage() != null) {
             try {
-                imageResolution = ImageUtils.secureReadMetadata(imageParameters);
+                // TODO : remove legacy handling later
+                if (imageParameters.isLegacyDPIHandling()) {
+                    imageResolution = ImageUtils.readDisplayMetadataBasedOnExtension(imageParameters.getImage());
+                } else {
+                    imageResolution = ImageUtils.secureReadMetadata(imageParameters);
+                }
+
             } catch (Exception e) {
                 LOG.warn("Cannot access the image metadata : {}. Returns default info.", e.getMessage());
                 int dpi = DPIUtils.getDpi(imageParameters.getDpi());
@@ -273,7 +279,14 @@ public class SignatureFieldDimensionAndPositionBuilder {
             AnnotationBox imageBoundaryBox = ImageUtils.getImageBoundaryBox(docImage);
             float xDpiFactor = 1;
             float yDpiFactor = 1;
-            if (imageParameters.getDpi() != null) {
+            if (imageParameters.isLegacyDPIHandling()) {
+                if (width == 0) {
+                    xDpiFactor = DPIUtils.getPageScaleFactor(dimensionAndPosition.getImageResolution().getXDpi());
+                }
+                if (height == 0) {
+                    yDpiFactor = DPIUtils.getPageScaleFactor(dimensionAndPosition.getImageResolution().getYDpi());
+                }
+            } else if (imageParameters.getDpi() != null) {
                 int dpi = DPIUtils.getDpi(imageParameters.getDpi());
                 xDpiFactor *= dimensionAndPosition.getImageResolution().getXDpi() / (float) dpi;
                 yDpiFactor *= dimensionAndPosition.getImageResolution().getXDpi() / (float) dpi;
@@ -469,10 +482,14 @@ public class SignatureFieldDimensionAndPositionBuilder {
                                         textParameters.getSignerTextPosition()));
                         }
                     }
+                    // TODO : the code ensures same behavior for legacy DPI handling and new behavior.
+                    // To be adapted when removing the legacy behavior
                     dimensionAndPosition.setImageX(dimensionAndPosition.getImageBoxX() +
-                            (dimensionAndPosition.getBoxWidth() - textBoxWidth - dimensionAndPosition.getImageBoxWidth()) / 2f);
+                            ((dimensionAndPosition.getBoxWidth() - textBoxWidth - dimensionAndPosition.getImageBoxWidth())
+                                    + (dimensionAndPosition.getImageBoxWidth() - dimensionAndPosition.getImageWidth())) / 2f);
                     dimensionAndPosition.setImageY(dimensionAndPosition.getImageBoxY() +
-                            (dimensionAndPosition.getBoxHeight() - textBoxHeight - dimensionAndPosition.getImageBoxHeight()) / 2f);
+                            ((dimensionAndPosition.getBoxHeight() - textBoxHeight - dimensionAndPosition.getImageBoxHeight())
+                                    +(dimensionAndPosition.getImageBoxHeight() - dimensionAndPosition.getImageHeight())) / 2f);
                     break;
 
                 default:

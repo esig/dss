@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.pades.signature.suite;
 
 import eu.europa.esig.dss.alert.SilentOnStatusAlert;
-import eu.europa.esig.dss.alert.exception.AlertException;
 import eu.europa.esig.dss.cades.signature.CAdESTimestampParameters;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.TimestampWrapper;
@@ -45,9 +44,9 @@ import eu.europa.esig.dss.pades.SignatureImageParameters;
 import eu.europa.esig.dss.pades.SignatureImageTextParameters;
 import eu.europa.esig.dss.pades.signature.PAdESService;
 import eu.europa.esig.dss.simplereport.SimpleReport;
+import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.api.BeforeEach;
@@ -193,6 +192,7 @@ class PAdESServiceTest extends PKIFactoryAccess {
         signAndValidate(documentToSign, signatureParameters);
 
         SignatureImageParameters imageParameters = new SignatureImageParameters();
+        imageParameters.setLegacyDPIHandling(true);
         imageParameters.setImage(null);
 
         exception = assertThrows(IllegalArgumentException.class, () -> imageParameters.setImage(new DigestDocument()));
@@ -216,10 +216,6 @@ class PAdESServiceTest extends PKIFactoryAccess {
         imageParameters.setTextParameters(textParameters);
 
         signatureParameters.setImageParameters(imageParameters);
-        exception = assertThrows(AlertException.class, () -> signAndValidate(documentToSign, signatureParameters));
-        assertTrue(exception.getMessage().contains("The new signature field position is outside the page dimensions!"));
-
-        signatureParameters.getImageParameters().setDpi(300);
         signAndValidate(documentToSign, signatureParameters);
 
         signatureParameters.setImageParameters(null);

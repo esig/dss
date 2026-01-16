@@ -174,6 +174,10 @@ public class PAdESVisibleSignatureSnippet {
 		imageParameters.setImage(modifiedImage);
 
 		// end::dss65Migration[]
+
+		// tag::pdfLegacyDpi[]
+		imageParameters.setLegacyDPIHandling(true);
+		// end::pdfLegacyDpi[]
 	}
 
 }
