@@ -75,7 +75,21 @@ public enum QCStatement implements OidDescription {
 	 * esi4-qcStatement-7 QC-STATEMENT ::= { SYNTAX QcCClegislation IDENTIFIED BY id-etsi-qcsQcCClegislation }
 	 * id-etsi-qcs-QcCClegislation OBJECT IDENTIFIER ::= { id-etsi-qcs 7 }
 	 */
-	QC_CCLEGISLATION("qc-cclegislation", "0.4.0.1862.1.7");
+	QC_CCLEGISLATION("qc-cclegislation", "0.4.0.1862.1.7"),
+
+	/**
+	 * esi4-qcStatement-8 QC-STATEMENT ::= { SYNTAX QcIdentMethod IDENTIFIED BY id-etsi-qcs-QcIdentMethod }
+	 * QcIdentMethod ::= SEQUENCE SIZE (1) OF OBJECT IDENTIFIER ( id-etsi-qct-eIDAS1-ab |
+	 * id-etsi-qct-eIDAS1-cd | id-etsi-qct-eIDAS2-acd | id-etsi-qct-eIDAS2-b | ...)
+	 */
+	QC_IDENT_METHOD("qc-identMethod", "0.4.0.1862.1.8"),
+
+	/**
+	 * id-etsi-qcs-QcQSCDlegislation OBJECT IDENTIFIER ::= { id-etsi-qcs 9 }
+	 * QcQSCDlegislation ::= SEQUENCE SIZE (1..MAX) OF CountryName
+	 * CountryName ::= PrintableString (SIZE (2)) (CONSTRAINED BY { -- ISO 3166-1 [6] alpha-2 codes only
+	 */
+	QC_QSCD_LEGISLATION("qc-qscdLegislation", "0.4.0.1862.1.9");
 
 	/** User-friendly identifier */
 	private final String description;

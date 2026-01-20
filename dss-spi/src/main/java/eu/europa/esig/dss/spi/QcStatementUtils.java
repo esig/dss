@@ -245,7 +245,7 @@ public class QcStatementUtils {
      * This method verifies of the given OID is a QcQSCDlegislation statement
      *
      * @param oid {@link String} to check
-     * @return TRUE if QcIdentMethod, FALSE otherwise
+     * @return TRUE if QcQSCDlegislation, FALSE otherwise
      */
     public static boolean isQcQSCDlegislation(String oid) {
         return OID.id_etsi_qcs_QcQSCDlegislation.getId().equals(oid);
@@ -524,6 +524,10 @@ public class QcStatementUtils {
             return qcStatements.getQcSemanticsIdentifier() != null;
         } else if (isPsd2QcType(qcStatementOid)) {
             return qcStatements.getPsd2QcType() != null;
+        } else if (isQcQSCDlegislation(qcStatementOid)) {
+            return Utils.isCollectionNotEmpty(qcStatements.getQcQSCDLegislationCountryCodes());
+        } else if (isQcIdentMethod(qcStatementOid)) {
+            return qcStatements.getQcIdentMethod() != null;
         } else {
             return qcStatements.getOtherOids().contains(qcStatementOid);
         }
