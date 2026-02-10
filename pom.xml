@@ -255,28 +255,12 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
 					<!-- Default test configuration -->
-					<skipTests>true</skipTests>
 					<classpathDependencyExcludes>
 						<classpathDependencyExclude>commons-logging:commons-logging</classpathDependencyExclude>
 					</classpathDependencyExcludes>
 					<threadCount>1</threadCount>
 				</configuration>
 				<executions>
-					<execution>
-						<id>non-regression</id>
-						<phase>test</phase>
-						<goals>
-							<goal>test</goal>
-						</goals>
-						<configuration>
-							<skipTests>false</skipTests>
-							<testFailureIgnore>false</testFailureIgnore>
-							<includes>
-								<include>eu/**/*Test.java</include>
-							</includes>
-							<excludedGroups>${exclude.tag.tests}</excludedGroups>
-						</configuration>
-					</execution>
 					<execution>
 						<id>plugtests</id>
 						<phase>test</phase>
@@ -288,20 +272,6 @@
 							<testFailureIgnore>true</testFailureIgnore>
 							<includes>
 								<include>plugtests/**/*Test.java</include>
-							</includes>
-						</configuration>
-					</execution>
-					<execution>
-						<id>known-issues</id>
-						<phase>test</phase>
-						<goals>
-							<goal>test</goal>
-						</goals>
-						<configuration>
-							<skipTests>false</skipTests>
-							<testFailureIgnore>true</testFailureIgnore>
-							<includes>
-								<include>known/issues/**/*Test.java</include>
 							</includes>
 						</configuration>
 					</execution>
