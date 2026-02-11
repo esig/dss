@@ -20,13 +20,13 @@
  */
 package eu.europa.esig.dss.jades;
 
+import org.jose4j.json.JsonUtil;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-
-import org.jose4j.json.JsonUtil;
 
 /**
  * Represents a wrapper of a Map with JsonObject methods
@@ -48,7 +48,7 @@ public class JsonObject implements Map<String, Object> {
 	 * @param m {@link Map} to wrap
 	 */
 	public JsonObject(Map<String, Object> m) {
-		Objects.requireNonNull("Map cannot be null!");
+		Objects.requireNonNull(m, "Map cannot be null!");
 		map = m;
 	}
 
