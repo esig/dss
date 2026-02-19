@@ -33,19 +33,25 @@ import java.util.Map;
 public final class LOTEJsonUtils extends JSONSchemaAbstractUtils {
 
     /** LoTE schema URI */
-    private static final String SCHEMA_URI =  "19602_json_schema.json";
+    private static final String SCHEMA_URI =  "1960201_json_schema.json";
 
-    /** LoTE extension schema URI */
-    private static final String EXTENSION_SCHEMA_URI =  "19602_json_schema_sie.json";
+    /** LoTE SIE extension schema URI */
+    private static final String SIE_SCHEMA_URI =  "1960201_json_schema_sie.json";
+
+    /** LoTE Additional Types extension schema URI */
+    private static final String ADDITIONAL_TYPES_SCHEMA_URI =  "1960201_json_schema_tie.json";
 
     /** RFC 7517 schema URI */
     private static final String RFC7517_URI = "rfcs/rfc7517.json";
 
     /** LoTE schema's location */
-    private static final String SCHEMA_LOCATION = "/schema/19602_json_schema.json";
+    private static final String SCHEMA_LOCATION = "/schema/1960201_json_schema.json";
 
-    /** LoTE Extension schema's location */
-    private static final String EXTENSION_SCHEMA_LOCATION = "/schema/19602_json_schema_sie.json";
+    /** LoTE SIE Extension schema's location */
+    private static final String SIE_EXTENSION_SCHEMA_LOCATION = "/schema/1960201_json_schema_sie.json";
+
+    /** LoTE Additional Types Extension schema's location */
+    private static final String ADDITIONAL_TYPES_SCHEMA_LOCATION = "/schema/1960201_json_schema_tie.json";
 
     /** RFC 7517 schema's location */
     private static final String RFC7517_SCHEMA_LOCATION = "/schema/rfcs/rfc7517.json";
@@ -82,7 +88,8 @@ public final class LOTEJsonUtils extends JSONSchemaAbstractUtils {
         Map<URI, String> definitions = getJSONSchemaDefinitions();
         definitions.put(URI.create(RFC7517_URI), RFC7517_SCHEMA_LOCATION);
         definitions.put(URI.create(SCHEMA_URI), SCHEMA_LOCATION);
-        definitions.put(URI.create(EXTENSION_SCHEMA_URI), EXTENSION_SCHEMA_LOCATION);
+        definitions.put(URI.create(SIE_SCHEMA_URI), SIE_EXTENSION_SCHEMA_LOCATION);
+        definitions.put(URI.create(ADDITIONAL_TYPES_SCHEMA_URI), ADDITIONAL_TYPES_SCHEMA_LOCATION);
         return definitions;
     }
 

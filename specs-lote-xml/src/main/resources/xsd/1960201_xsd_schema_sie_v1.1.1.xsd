@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--                  ****** NOTICE ******
+This document is part of ETSI TS 119 602. In the event that any
+part of this document is in conflict with the text of TS 119 602 
+then that text shall prevail as the authoritative source
+-->
+<xsd:schema targetNamespace="http://uri.etsi.org/019602/v1/ServiceInformationExtensions" xmlns:lote="http://uri.etsi.org/019602/v1#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<!-- Imports -->
+	<xsd:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="http://www.w3.org/2001/xml.xsd"/>
+	<xsd:annotation><xsd:documentation>Specified in TS 119 602 v1.1.1 clause 6.6.9.1 Service Unique Identififer</xsd:documentation></xsd:annotation>
+	<xsd:element name="ServiceUniqueIdentifier" type="lote:NonEmptyURIType"/>
+</xsd:schema>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--                  ****** NOTICE ******
+This document is part of ETSI TS 119 602. In the event that any
+part of this document is in conflict with the text of TS 119 602 
+then that text shall prevail as the authoritative source
+-->
+<xsd:schema targetNamespace="http://uri.etsi.org/019602/v1/TrustedEntityExtensions" xmlns:tie="http://uri.etsi.org/019602/v1/TrustedEntityExtensions" xmlns:lote="http://uri.etsi.org/019602/v1#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<!-- Imports -->
+	<xsd:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="http://www.w3.org/2001/xml.xsd"/>
+	<!-- Trusted Entity Extensions -->
+	<xsd:annotation><xsd:documentation>Specified in TS 119 602 v1.1.1 clause 6.5.1 Other associated bodies extension</xsd:documentation></xsd:annotation>
+	<xsd:element name="OtherAssociatedBodies" type="tie:OtherAssociatedBodiesType"/>
+	<xsd:complexType name="OtherAssociatedBodiesType">
+		<xsd:sequence>
+			<xsd:element ref="tie:AssociatedBody"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:annotation><xsd:documentation>Specified in TS 119 602 v1.1.1 clause 6.5.1.1 Associated body</xsd:documentation></xsd:annotation>
+	<xsd:element name="AssociatedBody" type="tie:AssociatedBodyType"/>
+	<xsd:complexType name="AssociatedBodyType">
+		<xsd:sequence>
+			<!--Specified in TS 119 602 v1.1.1 clause 6.5.5.1.2 Associated body name-->
+			<xsd:element name="AssociatedBodyName" type="lote:InternationalNamesType"/>
+			<!--Specified in TS 119 602 v1.1.1 clause 6.5.5.1.3 Associated body trade name-->
+			<xsd:element name="AssociatedBodyTradeName" type="lote:InternationalNamesType" minOccurs="0"/>
+				<!--Specified in TS 119 602 v1.1.1 clause 6.5.5.1.4 Associated body address.-->
+			<xsd:element name="AssociatedBodyAddress" type="lote:AddressType"/>
+			<!--Specified in TS 119 602 v1.1.1 clause 6.5.5.1.5 AssociatedBody information URI-->
+			<xsd:element name="AssociatedBodyInformationURI" type="lote:NonEmptyMultiLangURIListType"/>
+			<!--Specified in TS 119 602 v1.1.1 clause 6.5.5.1.6 AssociatedBody information extensions-->
+			<xsd:element name="AssociatedBodyInformationExtensions" type="lote:ExtensionsListType" minOccurs="0"/>
+		</xsd:sequence>
+	</xsd:complexType>
+</xsd:schema>
