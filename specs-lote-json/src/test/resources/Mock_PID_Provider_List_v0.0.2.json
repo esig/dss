@@ -1,0 +1,1200 @@
+{
+  "LoTE": {
+    "ListAndSchemeInformation": {
+      "LoTEVersionIdentifier": 1,
+      "LoTESequenceNumber": 1,
+      "LoTEType": "http://uri.etsi.org/19602/LoTEType/EUPIDProvidersList",
+      "SchemeOperatorName": [
+        {
+          "lang": "en",
+          "value": "European Commission"
+        },
+        {
+          "lang": "bg",
+          "value": "Европейска комисия"
+        },
+        {
+          "lang": "es",
+          "value": "Comisión Europea"
+        },
+        {
+          "lang": "cs",
+          "value": "Evropská komise"
+        },
+        {
+          "lang": "da",
+          "value": "Europa-Kommissionen"
+        },
+        {
+          "lang": "de",
+          "value": "Europäische Kommission"
+        },
+        {
+          "lang": "et",
+          "value": "Euroopa Komisjon"
+        },
+        {
+          "lang": "el",
+          "value": "Ευρωπαϊκή Επιτροπή"
+        },
+        {
+          "lang": "fr",
+          "value": "Commission européenne"
+        },
+        {
+          "lang": "it",
+          "value": "Commissione europea"
+        },
+        {
+          "lang": "lv",
+          "value": "Eiropas Komisija"
+        },
+        {
+          "lang": "lt",
+          "value": "Europos Komisija"
+        },
+        {
+          "lang": "hu",
+          "value": "Európai Bizottság"
+        },
+        {
+          "lang": "mt",
+          "value": "Il-Kummissjoni Ewropea"
+        },
+        {
+          "lang": "nl",
+          "value": "Europese Commissie"
+        },
+        {
+          "lang": "pl",
+          "value": "Komisja Europejska"
+        },
+        {
+          "lang": "pt",
+          "value": "Comissão Europeia"
+        },
+        {
+          "lang": "ro",
+          "value": "Comisia Europeană"
+        },
+        {
+          "lang": "sk",
+          "value": "Európska komisia"
+        },
+        {
+          "lang": "sl",
+          "value": "Evropska komisija"
+        },
+        {
+          "lang": "fi",
+          "value": "Euroopan komissio"
+        },
+        {
+          "lang": "sv",
+          "value": "Europeiska kommissionen"
+        },
+        {
+          "lang": "hr",
+          "value": "Europska komisija"
+        }
+      ],
+      "SchemeOperatorAddress": {
+        "SchemeOperatorPostalAddress": [
+          {
+            "lang": "fr",
+            "StreetAddress": "Rue de la Loi 200",
+            "Locality": "Bruxelles",
+            "PostalCode": "1049",
+            "Country": "BE"
+          },
+          {
+            "lang": "nl",
+            "StreetAddress": "Wetstraat 200",
+            "Locality": "Brussel",
+            "PostalCode": "1049",
+            "Country": "BE"
+          },
+          {
+            "lang": "en",
+            "StreetAddress": "Rue de la Loi/Wetstraat 200",
+            "Locality": "Brussels",
+            "PostalCode": "1049",
+            "Country": "BE"
+          }
+        ],
+        "SchemeOperatorElectronicAddress": [
+          {
+            "lang": "en",
+            "uriValue": "mailto:DIGIT-EU-TRUST-NON-PROD@ec.europa.eu"
+          },
+          {
+            "lang": "en",
+            "uriValue": "https://digital-strategy.ec.europa.eu/en/policies/eu-trusted-lists"
+          }
+        ]
+      },
+      "SchemeName": [
+        {
+          "lang": "en",
+          "value": "The present list is a list of person identifier providers of EUDI Wallet issued in accordance with CIR 2024/2980"
+        }
+      ],
+      "SchemeInformationURI": [
+        {
+          "lang": "en",
+          "uriValue": "https://trust.tech.ec.europa.eu/lists/eudiw/pid-providers-list-scheme-information"
+        }
+      ],
+      "StatusDeterminationApproach": "http://uri.etsi.org/19602/PIDProvidersList/StatusDetn/EU",
+      "SchemeTypeCommunityRules": [
+        {
+          "lang": "en",
+          "uriValue": "http://uri.etsi.org/19602/PIDProviders/schemerules/EU"
+        }
+      ],
+      "SchemeTerritory": "EU",
+      "PolicyOrLegalNotice": [
+        {
+          "LoTEPolicy": {
+            "lang": "en",
+            "uriValue": "http://trust.tech.ec.europa.eu/lists/eudiw/legal-notice#EN"
+          }
+        }
+      ],
+      "ListIssueDateTime": "2025-12-01T13:10:57Z",
+      "NextUpdate": "2026-06-01T13:10:57Z"
+    },
+    "TrustedEntitiesList": [
+      {
+        "TrustedEntityInformation": {
+          "TEName": [
+            { "lang": "en", "value": "Agence Nationale des Titres Sécurisés" }
+          ],
+          "TETradeName": [{ "lang": "en", "value": "VATFR-2356568" }],
+          "TEAddress": {
+            "TEPostalAddress": [
+              {
+                "lang": "en",
+                "StreetAddress": "test",
+                "Locality": "test",
+                "StateOrProvince": "test",
+                "PostalCode": "3465",
+                "Country": "FR"
+              }
+            ],
+            "TEElectronicAddress": [
+              { "lang": "en", "uriValue": "mailto:test@test.fr" },
+              { "lang": "en", "uriValue": "tel:+337848346754" }
+            ]
+          },
+          "TEInformationURI": [
+            { "lang": "en", "uriValue": "http://test.fr" },
+            {
+              "lang": "en",
+              "uriValue": "http://uri.etsi.org/19602/ListOfTrustedEntities/PIDProvider/FR"
+            }
+          ]
+        },
+        "TrustedEntityServices": [
+          {
+            "ServiceInformation": {
+              "ServiceName": [
+                { "lang": "en", "value": "name_PID_solution_fr_1" }
+              ],
+              "ServiceDigitalIdentity": {
+                "X509Certificates": [
+                  {
+                    "val": "MIIDLTCCAtKgAwIBAgISESEFJUbpBJovlg7lg3Eb5YTCMAoGCCqGSM49BAMCMIGiMQswCQYDVQQGEwJGUjEwMC4GA1UECgwnQWdlbmNlIE5hdGlvbmFsZSBkZXMgVGl0cmVzIFPDqWN1cmlzw6lzMRcwFQYDVQQLDA4wMDAyIDEzMDAwMzI2MjE8MDoGA1UEAwwzQXV0b3JpdMOpIGRlIENlcnRpZmljYXRpb24gRnJhbmNlIEF0dGVzdGF0aW9ucyBJQUNBMQowCAYDVQQFEwExMB4XDTI1MTAxNzAwMDAwMFoXDTM0MTAxNzAwMDAwMFowgaIxCzAJBgNVBAYTAkZSMTAwLgYDVQQKDCdBZ2VuY2UgTmF0aW9uYWxlIGRlcyBUaXRyZXMgU8OpY3VyaXPDqXMxFzAVBgNVBAsMDjAwMDIgMTMwMDAzMjYyMTwwOgYDVQQDDDNBdXRvcml0w6kgZGUgQ2VydGlmaWNhdGlvbiBGcmFuY2UgQXR0ZXN0YXRpb25zIElBQ0ExCjAIBgNVBAUTATEwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASa4ZI0w4Mn4FW6kYdKPUlYYgVbwFf1A6lBDnurRsoPJxM3+dVupbkGl9O+QnJ36wc8ngoXE3oH1hP11flDmWsIo4HlMIHiMA4GA1UdDwEB/wQEAwIBBjASBgNVHRMBAf8ECDAGAQH/AgEAMDAGA1UdEgQpMCeBJWZyYW5jZS1hdHRlc3RhdGlvbnNAaW50ZXJpZXVyLmdvdXYuZnIwSgYDVR0fBEMwQTA/oD2gO4Y5aHR0cDovL2NybC5hbnRzLmdvdXYuZnIvYWNfZnJhbmNlX2F0dGVzdGF0aW9uc19pYWNhXzEuY3JsMB0GA1UdDgQWBBT/dscZoX+tou0+F2dDsFrTPfsMpzAfBgNVHSMEGDAWgBT/dscZoX+tou0+F2dDsFrTPfsMpzAKBggqhkjOPQQDAgNJADBGAiEAmMD8Kpgnctmx12gCBYrj98knoKDSPlO5SucThy1EEqwCIQDsYM80Ere4Yw0fHNJQQHl6D1rAITDV3qFKP62Uq7xtsQ=="
+                  }
+                ]
+              },
+              "ServiceTypeIdentifier": "http://uri.etsi.org/19602/SvcType/PID/Issuance"
+            }
+          },
+          {
+            "ServiceInformation": {
+              "ServiceName": [
+                { "lang": "en", "value": "name_PID_solution_fr_2" }
+              ],
+              "ServiceDigitalIdentity": {
+                "X509Certificates": [
+                  {
+                    "val": "MIIDUzCCAvmgAwIBAgISESHtNjf+2KAQ0ttWtR9EhAAPMAoGCCqGSM49BAMCMIHFMQswCQYDVQQGEwJGUjEwMC4GA1UECgwnQWdlbmNlIE5hdGlvbmFsZSBkZXMgVGl0cmVzIFPDqWN1cmlzw6lzMRcwFQYDVQQLDA4wMDAyIDEzMDAwMzI2MjEmMCQGA1UECwwdUE9VUiBRVUFMSUZJQ0FUSU9OIFVOSVFVRU1FTlQxNzA1BgNVBAMMLkF1dG9yaXTDqSBkZSBDZXJ0aWZpY2F0aW9uIEZyYW5jZSBBdHRlc3RhdGlvbnMxCjAIBgNVBAUTATEwHhcNMjUwMTI5MDAwMDAwWhcNMzAwMTI5MDAwMDAwWjCBxTELMAkGA1UEBhMCRlIxMDAuBgNVBAoMJ0FnZW5jZSBOYXRpb25hbGUgZGVzIFRpdHJlcyBTw6ljdXJpc8OpczEXMBUGA1UECwwOMDAwMiAxMzAwMDMyNjIxJjAkBgNVBAsMHVBPVVIgUVVBTElGSUNBVElPTiBVTklRVUVNRU5UMTcwNQYDVQQDDC5BdXRvcml0w6kgZGUgQ2VydGlmaWNhdGlvbiBGcmFuY2UgQXR0ZXN0YXRpb25zMQowCAYDVQQFEwExMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEoCYCM9LYS8zUk8I1xL2B2G9voa4yFskoqohrsEQkpNEeKb59J3VDHausTqFWCOfwEGUzi6yocLIbE+gfz59pnaOBxjCBwzAOBgNVHQ8BAf8EBAMCAQYwMAYDVR0SBCkwJ4ElZnJhbmNlLWF0dGVzdGF0aW9uc0BpbnRlcmlldXIuZ291di5mcjASBgNVHRMBAf8ECDAGAQH/AgEAMEwGA1UdHwRFMEMwQaA/oD2GO2h0dHA6Ly9jcmwucXVhbGlmLmFudHMuZ291di5mci9hY19mcmFuY2VfYXR0ZXN0YXRpb25zXzEuY3JsMB0GA1UdDgQWBBR3bIy6PB3fPAlYHOvqk7nftps4sDAKBggqhkjOPQQDAgNIADBFAiBrI2HGG1SZNRfEoaIwk3bjAjLBcE9tcKPi1gu0oah58AIhAL+KWRF8FwT4JBblyZdmuoVVXJ36LMmAUcs5YwJpMiQW"
+                  }
+                ]
+              },
+              "ServiceTypeIdentifier": "http://uri.etsi.org/19602/SvcType/PID/Issuance"
+            }
+          },
+          {
+            "ServiceInformation": {
+              "ServiceName": [
+                { "lang": "en", "value": "name_PID_solution_fr_3" }
+              ],
+              "ServiceDigitalIdentity": {
+                "X509Certificates": [
+                  {
+                    "val": "MIIDHTCCAsSgAwIBAgISESEhmoph1P1OOjDCLJAgGdBbMAoGCCqGSM49BAMCMIGfMQswCQYDVQQGEwJGUjEwMC4GA1UECgwnQWdlbmNlIE5hdGlvbmFsZSBkZXMgVGl0cmVzIFPDqWN1cmlzw6lzMRcwFQYDVQQLDA4wMDAyIDEzMDAwMzI2MjE5MDcGA1UEAwwwQXV0b3JpdMOpIGRlIENlcnRpZmljYXRpb24gRnJhbmNlIElkZW50aXTDqSBJQUNBMQowCAYDVQQFEwExMB4XDTI1MTAxNzAwMDAwMFoXDTM0MTAxNzAwMDAwMFowgZ8xCzAJBgNVBAYTAkZSMTAwLgYDVQQKDCdBZ2VuY2UgTmF0aW9uYWxlIGRlcyBUaXRyZXMgU8OpY3VyaXPDqXMxFzAVBgNVBAsMDjAwMDIgMTMwMDAzMjYyMTkwNwYDVQQDDDBBdXRvcml0w6kgZGUgQ2VydGlmaWNhdGlvbiBGcmFuY2UgSWRlbnRpdMOpIElBQ0ExCjAIBgNVBAUTATEwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAQqfRW/7OTJS4K0IPMa/c8UicIUq62jTccQtGnHAYk6UnvXyRO3PC4/2pdq5QjhwIKwJVqCFOr4fbGboMKLX+L/o4HdMIHaMA4GA1UdDwEB/wQEAwIBBjASBgNVHRMBAf8ECDAGAQH/AgEAMCwGA1UdEgQlMCOBIWZyYW5jZS1pZGVudGl0ZUBpbnRlcmlldXIuZ291di5mcjBGBgNVHR8EPzA9MDugOaA3hjVodHRwOi8vY3JsLmFudHMuZ291di5mci9hY19mcmFuY2VfaWRlbnRpdGVfaWFjYV8xLmNybDAdBgNVHQ4EFgQUAQ1+Rjq9mU0kAyKKyTwFdgjmwA4wHwYDVR0jBBgwFoAUAQ1+Rjq9mU0kAyKKyTwFdgjmwA4wCgYIKoZIzj0EAwIDRwAwRAIgSNKCT8z4zaZLfdOd/rHevKYDbvjqylK723wjd4g4s0ECIDnoWVWyJHwlO31z3QmK7QapM00sOCJnsTIvEGi1Fz/I"
+                  }
+                ]
+              },
+              "ServiceTypeIdentifier": "http://uri.etsi.org/19602/SvcType/PID/Issuance"
+            }
+          }
+        ]
+      },
+      {
+        "TrustedEntityInformation": {
+          "TEName": [
+            {
+              "lang": "en",
+              "value": "Centralny Osrodek Informatyki"
+            }
+          ],
+          "TETradeName": [
+            {
+              "lang": "en",
+              "value": "VATPL-5478"
+            }
+          ],
+          "TEAddress": {
+            "TEPostalAddress": [
+              {
+                "lang": "en",
+                "StreetAddress": "test",
+                "Locality": "test",
+                "StateOrProvince": "test",
+                "PostalCode": "2357",
+                "Country": "PL"
+              }
+            ],
+            "TEElectronicAddress": [
+              {
+                "lang": "en",
+                "uriValue": "mailto:test@test.pl"
+              },
+              {
+                "lang": "en",
+                "uriValue": "tel:+4834845399"
+              }
+            ]
+          },
+          "TEInformationURI": [
+            {
+              "lang": "en",
+              "uriValue": "http://test.pl"
+            },
+            {
+              "lang": "en",
+              "uriValue": "http://uri.etsi.org/19602/ListOfTrustedEntities/PIDProvider/PL"
+            }
+          ]
+        },
+        "TrustedEntityServices": [
+          {
+            "ServiceInformation": {
+              "ServiceName": [
+                {
+                  "lang": "en",
+                  "value": "name_PID_solution_pl"
+                }
+              ],
+              "ServiceDigitalIdentity": {
+                "X509Certificates": [
+                  {
+                    "val": "MIICfTCCAiOgAwIBAgIUY40NDpiFzzSFi/PbZs8Blj2NYwQwCgYIKoZIzj0EAwIwXDELMAkGA1UEBhMCUEwxJjAkBgNVBAoMHUNlbnRyYWxueSBPc3JvZGVrIEluZm9ybWF0eWtpMSUwIwYDVQQDDBxjb2ktd2FsbGV0LXRlc3QtZGV2ZWxvcC1yb290MB4XDTI1MDQxNjA3NDMxOFoXDTI2MDQxNjA3NDMxOFowXDELMAkGA1UEBhMCUEwxJjAkBgNVBAoMHUNlbnRyYWxueSBPc3JvZGVrIEluZm9ybWF0eWtpMSUwIwYDVQQDDBxjb2ktd2FsbGV0LXRlc3QtZGV2ZWxvcC1yb290MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEVxl64nVyxR8ce8YOiLEF3QtDF+JcFYnh1/KwnV74FKansf93f5bxRbofxlgKCmj0UwQkSK/bOwRZVO0tuDfhmqOBwjCBvzASBgNVHRMBAf8ECDAGAQH/AgEAMA4GA1UdDwEB/wQEAwIBBjBBBgNVHR8EOjA4MDagNKAyhjBodHRwczovL2RldmVsb3AuYXBpLm1vYnl3YXRlbC5wcm8uY29pLmdvdi5wbC9jcmwwHQYDVR0OBBYEFLu6+CYIr1FkZK1ZLL8UZyGYNAEhMDcGA1UdEgQwMC6GLGh0dHBzOi8vZGV2ZWxvcC5hcGkubW9ieXdhdGVsLnByby5jb2kuZ292LnBsMAoGCCqGSM49BAMCA0gAMEUCIDvcYpG4vZYZ8lx64Sfa5p3jsrQP8ejC9Z14FDM/c3U0AiEAwZAXhJ9QpXnuR6XltSc6Qiia7+8XLx5twLuieZLELTA="
+                  }
+                ]
+              },
+              "ServiceTypeIdentifier": "http://uri.etsi.org/19602/SvcType/PID/Issuance"
+            }
+          }
+        ]
+      },
+      {
+        "TrustedEntityInformation": {
+          "TEName": [
+            {
+              "lang": "en",
+              "value": "Digitaliseringsdirektoratet - Bevisporten"
+            }
+          ],
+          "TETradeName": [
+            {
+              "lang": "en",
+              "value": "NTRNO-NOFOR.991825827"
+            }
+          ],
+          "TEAddress": {
+            "TEPostalAddress": [
+              {
+                "lang": "en",
+                "StreetAddress": "test",
+                "Locality": "test",
+                "StateOrProvince": "test",
+                "PostalCode": "5788",
+                "Country": "NO"
+              }
+            ],
+            "TEElectronicAddress": [
+              {
+                "lang": "en",
+                "uriValue": "mailto:test@test.no"
+              },
+              {
+                "lang": "en",
+                "uriValue": "tel:+4734869323"
+              }
+            ]
+          },
+          "TEInformationURI": [
+            {
+              "lang": "en",
+              "uriValue": "http://test.no"
+            },
+            {
+              "lang": "en",
+              "uriValue": "http://uri.etsi.org/19602/ListOfTrustedEntities/PIDProvider/NO"
+            }
+          ]
+        },
+        "TrustedEntityServices": [
+          {
+            "ServiceInformation": {
+              "ServiceName": [
+                {
+                  "lang": "en",
+                  "value": "name_PID_solution_no"
+                }
+              ],
+              "ServiceDigitalIdentity": {
+                "X509Certificates": [
+                  {
+                    "val": "MIIDBTCCAqygAwIBAgIJALyA/nuVMsUpMAoGCCqGSM49BAMEMIGCMR4wHAYDVQRhExVOVFJOTy1OT0ZPUi45OTE4MjU4MjcxLTArBgNVBAMTJGVpZGFzMnNhbmRrYXNzZSBFQUEgUHJvdmlkZXIgQ0EgdGVzdDEkMCIGA1UEChMbRElHSVRBTElTRVJJTkdTRElSRUtUT1JBVEVUMQswCQYDVQQGEwJOTzAeFw0yNTEwMTAwODE2MzZaFw0yNjEwMDgxMjQ3MzZaMGExCzAJBgNVBAYTAk5PMTIwMAYDVQQDDClEaWdpdGFsaXNlcmluZ3NkaXJla3RvcmF0ZXQgLSBCZXZpc3BvcnRlbjEeMBwGA1UEYQwVTlRSTk8tTk9GT1IuOTkxODI1ODI3MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEggybfUUfbzJltJnTd3NjkH/OApRXdjznhsiDEShxa14362U8s1d/z8fsFMNxiO+z/ZSkHsUurkh2EiNQMcG0T6OCASkwggElMB8GA1UdIwQYMBaAFG2uFOu+dBM1aEzXwQ1nMTFpj7JfMB0GA1UdDgQWBBRTpQH9HAw203fM8Z6Nnc6Aj5RsVzAMBgNVHRMBAf8EAjAAMFwGA1UdHwRVMFMwUaBPoE2GS2h0dHBzOi8vY2EudGVzdC5laWRhczJzYW5ka2Fzc2UubmV0L3YxL2NlcnRzL2ludGVybWVkaWF0ZXMvZWFhX3Byb3ZpZGVyLmNybDBnBggrBgEFBQcBAQRbMFkwVwYIKwYBBQUHMAKGS2h0dHBzOi8vY2EudGVzdC5laWRhczJzYW5ka2Fzc2UubmV0L3YxL2NlcnRzL2ludGVybWVkaWF0ZXMvZWFhX3Byb3ZpZGVyLmNlcjAOBgNVHQ8BAf8EBAMCBaAwCgYIKoZIzj0EAwQDRwAwRAIgco5xnaAZPzLFF0aC7FbF3bEmbHsXId42CRiZIJdqyK0CIG9cjXM31kTF3kmHgN8NligxMbxEmT2HjkAYkKRKUUZR"
+                  }
+                ]
+              },
+              "ServiceTypeIdentifier": "http://uri.etsi.org/19602/SvcType/PID/Issuance"
+            }
+          }
+        ]
+      },
+      {
+        "TrustedEntityInformation": {
+          "TEName": [
+            {
+              "lang": "en",
+              "value": "Digitaliseringsdirektoratet - PID-utsteder"
+            }
+          ],
+          "TETradeName": [
+            {
+              "lang": "en",
+              "value": "NTRNO-NOFOR.991825827"
+            }
+          ],
+          "TEAddress": {
+            "TEPostalAddress": [
+              {
+                "lang": "en",
+                "StreetAddress": "test",
+                "Locality": "test",
+                "StateOrProvince": "test",
+                "PostalCode": "3478",
+                "Country": "NO"
+              }
+            ],
+            "TEElectronicAddress": [
+              {
+                "lang": "en",
+                "uriValue": "mailto:test@test.no"
+              },
+              {
+                "lang": "en",
+                "uriValue": "tel:+47348346754"
+              }
+            ]
+          },
+          "TEInformationURI": [
+            {
+              "lang": "en",
+              "uriValue": "http://test.no"
+            },
+            {
+              "lang": "en",
+              "uriValue": "http://uri.etsi.org/19602/ListOfTrustedEntities/PIDProvider/NO"
+            }
+          ]
+        },
+        "TrustedEntityServices": [
+          {
+            "ServiceInformation": {
+              "ServiceName": [
+                {
+                  "lang": "en",
+                  "value": "name_PID_solution_no_2"
+                }
+              ],
+              "ServiceDigitalIdentity": {
+                "X509Certificates": [
+                  {
+                    "val": "MIIDMzCCAtmgAwIBAgIIGkwIqxyvEDswCgYIKoZIzj0EAwQwZzEYMBYGA1UEYRMPTlRSTk8tOTkxODI1ODI3MQswCQYDVQQGEwJubzEPMA0GA1UECxMGRGlnZGlyMS0wKwYDVQQDEyRlaWRhczJzYW5ka2Fzc2UgUElEIFByb3ZpZGVyIENBIHRlc3QwHhcNMjUxMDE1MTExMzA3WhcNMjYxMDE1MTExMzA3WjBiMQswCQYDVQQGEwJOTzEzMDEGA1UEAwwqRGlnaXRhbGlzZXJpbmdzZGlyZWt0b3JhdGV0IC0gUElELXV0c3RlZGVyMR4wHAYDVQRhDBVOVFJOTy1OT0ZPUi45OTE4MjU4MjcwdjAQBgcqhkjOPQIBBgUrgQQAIgNiAATLIEmdVcdTVfQ/6YpsPvS4taSRiebXwcjHWGEWpZLfrKb3yvowmUMe2SaDZD8HCOXjvSXfbIQsgFKeMU88IkNaDOfyMHbXYf3cJZCFJYo799hQL6j2tMogjUMkyoP+dnCjggFVMIIBUTAfBgNVHSMEGDAWgBRX7XviJqjDMVi/g0bAr0FvQshSDDAdBgNVHQ4EFgQUUCIS5a/pLXMjHV+a4AV8NkiRHZMwDAYDVR0TAQH/BAIwADBcBgNVHR8EVTBTMFGgT6BNhktodHRwczovL2NhLnRlc3QuZWlkYXMyc2FuZGthc3NlLm5ldC92MS9jZXJ0cy9pbnRlcm1lZGlhdGVzL3BpZF9wcm92aWRlci5jcmwwZwYIKwYBBQUHAQEEWzBZMFcGCCsGAQUFBzAChktodHRwczovL2NhLnRlc3QuZWlkYXMyc2FuZGthc3NlLm5ldC92MS9jZXJ0cy9pbnRlcm1lZGlhdGVzL3BpZF9wcm92aWRlci5jZXIwDgYDVR0PAQH/BAQDAgWgMCoGCCsGAQUFBwEDAQH/BBswGQYGBACORgEGDA9pZC1ldHNpLXFjdC1waWQwCgYIKoZIzj0EAwQDSAAwRQIgPNu17SJ+E628cVBT1J1CCZQEI85MIG1hqm1ynwyQN84CIQC67g+mvEDLF9C5gcwN8Q38IEJu3bw0EhCvBbUqPORQPA=="
+                  }
+                ]
+              },
+              "ServiceTypeIdentifier": "http://uri.etsi.org/19602/SvcType/PID/Issuance"
+            }
+          }
+        ]
+      },
+      {
+        "TrustedEntityInformation": {
+          "TEName": [
+            {
+              "lang": "en",
+              "value": "Digi- ja väestötietovirasto"
+            }
+          ],
+          "TETradeName": [
+            {
+              "lang": "en",
+              "value": "VATFI-8567"
+            }
+          ],
+          "TEAddress": {
+            "TEPostalAddress": [
+              {
+                "lang": "en",
+                "StreetAddress": "test",
+                "Locality": "test",
+                "StateOrProvince": "test",
+                "PostalCode": "5685",
+                "Country": "FI"
+              }
+            ],
+            "TEElectronicAddress": [
+              {
+                "lang": "en",
+                "uriValue": "mailto:test@test.fi"
+              },
+              {
+                "lang": "en",
+                "uriValue": "tel:+358348346754"
+              }
+            ]
+          },
+          "TEInformationURI": [
+            {
+              "lang": "en",
+              "uriValue": "http://test.fi"
+            },
+            {
+              "lang": "en",
+              "uriValue": "http://uri.etsi.org/19602/ListOfTrustedEntities/PIDProvider/FI"
+            }
+          ]
+        },
+        "TrustedEntityServices": [
+          {
+            "ServiceInformation": {
+              "ServiceName": [
+                {
+                  "lang": "en",
+                  "value": "name_PID_solution_fi"
+                }
+              ],
+              "ServiceDigitalIdentity": {
+                "X509Certificates": [
+                  {
+                    "val": "MIIDDTCCApKgAwIBAgIUaqDAxDTFQMkDVdM0LpPFNCskEV4wCgYIKoZIzj0EAwMwgagxODA2BgNVBAMML0RWViBEaWdpLUlEIE1vY2sgQXR0cmlidXRlIFNlYWxpbmcgQ2VydGlmaWNhdGVzMSYwJAYDVQQKDB1EaWdpLSBqYSB2w6Rlc3TDtnRpZXRvdmlyYXN0bzERMA8GA1UEBwwISGVsc2lua2kxCzAJBgNVBAYTAkZJMRAwDgYDVQQIDAdGaW5sYW5kMRIwEAYDVQQFEwkwMjQ1NDM3LTIwHhcNMjQwMTE1MDkyNTE5WhcNMzMwMTEyMDkyNTE5WjCBqDE4MDYGA1UEAwwvRFZWIERpZ2ktSUQgTW9jayBBdHRyaWJ1dGUgU2VhbGluZyBDZXJ0aWZpY2F0ZXMxJjAkBgNVBAoMHURpZ2ktIGphIHbDpGVzdMO2dGlldG92aXJhc3RvMREwDwYDVQQHDAhIZWxzaW5raTELMAkGA1UEBhMCRkkxEDAOBgNVBAgMB0ZpbmxhbmQxEjAQBgNVBAUTCTAyNDU0MzctMjB2MBAGByqGSM49AgEGBSuBBAAiA2IABGcz86+Pt3o1TZ5BYKXtOrFhqi6fDVq7+32J8DaeiSibJES5c9mAPIP/eNB8b+Wm+7RU9blUZ3xlxsmVTGScEOwwSVczmiwBHtk4+7KNltd6CrAAFgSdyDKCEe+w+AKwLqN7MHkwEgYDVR0TAQH/BAgwBgEB/wIBADAOBgNVHQ8BAf8EBAMCAQYwGQYDVR0SBBIwEIYOaHR0cHM6Ly9kdnYuZmkwGQYDVR0RBBIwEIYOaHR0cHM6Ly9kdnYuZmkwHQYDVR0OBBYEFJNVLFsDRkyYNcoRYUEBvtvpEOv7MAoGCCqGSM49BAMDA2kAMGYCMQCwfwzQ2A07a3RiA3BUs2BhdNNuhiZcj5HZN7H8fEEiSvkHay67c2XvuyRlZ+zhE18CMQD6OMM6GM+7oKSBtHEbXuiskiWhl9nq7FPQDwPFoaVGxu/SQ3itFL4k2nNsJrEBcfg="
+                  }
+                ]
+              },
+              "ServiceTypeIdentifier": "http://uri.etsi.org/19602/SvcType/PID/Issuance"
+            }
+          }
+        ]
+      },
+      {
+        "TrustedEntityInformation": {
+          "TEName": [
+            {
+              "lang": "en",
+              "value": "eidas2sandkasse PID Provider CA test"
+            }
+          ],
+          "TETradeName": [
+            {
+              "lang": "en",
+              "value": "NTRNO-991825827"
+            }
+          ],
+          "TEAddress": {
+            "TEPostalAddress": [
+              {
+                "lang": "en",
+                "StreetAddress": "test",
+                "Locality": "test",
+                "StateOrProvince": "test",
+                "PostalCode": "9678",
+                "Country": "NO"
+              }
+            ],
+            "TEElectronicAddress": [
+              {
+                "lang": "en",
+                "uriValue": "mailto:test@test.no"
+              },
+              {
+                "lang": "en",
+                "uriValue": "tel:+47348346754"
+              }
+            ]
+          },
+          "TEInformationURI": [
+            {
+              "lang": "en",
+              "uriValue": "http://test.no"
+            },
+            {
+              "lang": "en",
+              "uriValue": "http://uri.etsi.org/19602/ListOfTrustedEntities/PIDProvider/NO"
+            }
+          ]
+        },
+        "TrustedEntityServices": [
+          {
+            "ServiceInformation": {
+              "ServiceName": [
+                {
+                  "lang": "en",
+                  "value": "name_PID_solution_no_3"
+                }
+              ],
+              "ServiceDigitalIdentity": {
+                "X509Certificates": [
+                  {
+                    "val": "MIICvTCCAmSgAwIBAgIJAJ7Fdm0r3xiMMAoGCCqGSM49BAMDMGMxGDAWBgNVBGETD05UUk5PLTk5MTgyNTgyNzELMAkGA1UEBhMCbm8xDzANBgNVBAsTBkRpZ2RpcjEpMCcGA1UEAxMgZWlkYXMyc2FuZGthc3NlLm5ldCByb290IENBIHRlc3QwHhcNMjUwNzE0MDk1MDE5WhcNMjkxMjE2MDk1MDE5WjBnMRgwFgYDVQRhEw9OVFJOTy05OTE4MjU4MjcxCzAJBgNVBAYTAm5vMQ8wDQYDVQQLEwZEaWdkaXIxLTArBgNVBAMTJGVpZGFzMnNhbmRrYXNzZSBQSUQgUHJvdmlkZXIgQ0EgdGVzdDBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABMyVKdaQbLy6E4y7A2Crz/7qBv2x9vebD+7B3N0o2rpxXsDzOQYkBBaBh8uD2LxmEI3E3a6vISekCY0NK/nhUR2jgfwwgfkwUQYIKwYBBQUHAQEERTBDMEEGCCsGAQUFBzAChjVodHRwczovL2NhLnRlc3QuZWlkYXMyc2FuZGthc3NlLm5ldC92MS9jZXJ0cy9yb290LmNlcjAdBgNVHQ4EFgQUV+174iaowzFYv4NGwK9Bb0LIUgwwDgYDVR0PAQH/BAQDAgEGMAwGA1UdEwQFMAMBAf8wRgYDVR0fBD8wPTA7oDmgN4Y1aHR0cHM6Ly9jYS50ZXN0LmVpZGFzMnNhbmRrYXNzZS5uZXQvdjEvY2VydHMvcm9vdC5jcmwwHwYDVR0jBBgwFoAUCi/G/x9Z1uJAVlFqD3onNXclrPEwCgYIKoZIzj0EAwMDRwAwRAIgLvJLEoUbacsoa2calE0f/XVOAnHDWVYDizHJqJAwS3kCIDz8miu6b8cD09rfGSD727joqPunkIGRQqi72HTVabcA"
+                  }
+                ]
+              },
+              "ServiceTypeIdentifier": "http://uri.etsi.org/19602/SvcType/PID/Issuance"
+            }
+          }
+        ]
+      },
+      {
+        "TrustedEntityInformation": {
+          "TEName": [
+            {
+              "lang": "en",
+              "value": "eidas2sandkasse Pub EAA Provider CA test"
+            }
+          ],
+          "TETradeName": [
+            {
+              "lang": "en",
+              "value": "NTRNO-991825827"
+            }
+          ],
+          "TEAddress": {
+            "TEPostalAddress": [
+              {
+                "lang": "en",
+                "StreetAddress": "test",
+                "Locality": "test",
+                "StateOrProvince": "test",
+                "PostalCode": "5784",
+                "Country": "NO"
+              }
+            ],
+            "TEElectronicAddress": [
+              {
+                "lang": "en",
+                "uriValue": "mailto:test@test.no"
+              },
+              {
+                "lang": "en",
+                "uriValue": "tel:+4734869323"
+              }
+            ]
+          },
+          "TEInformationURI": [
+            {
+              "lang": "en",
+              "uriValue": "http://test.no"
+            },
+            {
+              "lang": "en",
+              "uriValue": "http://uri.etsi.org/19602/ListOfTrustedEntities/PIDProvider/NO"
+            }
+          ]
+        },
+        "TrustedEntityServices": [
+          {
+            "ServiceInformation": {
+              "ServiceName": [
+                {
+                  "lang": "en",
+                  "value": "name_PID_solution_no_4"
+                }
+              ],
+              "ServiceDigitalIdentity": {
+                "X509Certificates": [
+                  {
+                    "val": "MIICwjCCAmigAwIBAgIJAPm2yYm712+4MAoGCCqGSM49BAMDMGMxGDAWBgNVBGETD05UUk5PLTk5MTgyNTgyNzELMAkGA1UEBhMCbm8xDzANBgNVBAsTBkRpZ2RpcjEpMCcGA1UEAxMgZWlkYXMyc2FuZGthc3NlLm5ldCByb290IENBIHRlc3QwHhcNMjUwNzE0MDk1MDUxWhcNMjkxMjE2MDk1MDUxWjBrMRgwFgYDVQRhEw9OVFJOTy05OTE4MjU4MjcxCzAJBgNVBAYTAm5vMQ8wDQYDVQQLEwZEaWdkaXIxMTAvBgNVBAMTKGVpZGFzMnNhbmRrYXNzZSBQdWIgRUFBIFByb3ZpZGVyIENBIHRlc3QwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAS+7CQFU3oWwu9dxauSvk5Xc7AeDhDtLb/x8WcUWFvlG4ekHKlqvW9gxe+W4KJrfn95UZ/0fOfm+znsha/zpiMKo4H8MIH5MFEGCCsGAQUFBwEBBEUwQzBBBggrBgEFBQcwAoY1aHR0cHM6Ly9jYS50ZXN0LmVpZGFzMnNhbmRrYXNzZS5uZXQvdjEvY2VydHMvcm9vdC5jZXIwHQYDVR0OBBYEFD/oYNwZ6+S0FLt9IQvCHPFK6ktiMA4GA1UdDwEB/wQEAwIBBjAMBgNVHRMEBTADAQH/MEYGA1UdHwQ/MD0wO6A5oDeGNWh0dHBzOi8vY2EudGVzdC5laWRhczJzYW5ka2Fzc2UubmV0L3YxL2NlcnRzL3Jvb3QuY3JsMB8GA1UdIwQYMBaAFAovxv8fWdbiQFZRag96JzV3JazxMAoGCCqGSM49BAMDA0gAMEUCIHcgPyDKaizjJPpyztDqUwVqDabzOBVSQwgFIAFT+aV+AiEA8sFi8APxqLmwmCjd5EOd2WhGXSWRksIcCW+aS8kpPmU="
+                  }
+                ]
+              },
+              "ServiceTypeIdentifier": "http://uri.etsi.org/19602/SvcType/PID/Issuance"
+            }
+          }
+        ]
+      },
+      {
+        "TrustedEntityInformation": {
+          "TEName": [
+            {
+              "lang": "en",
+              "value": "AMA - Agência para a Modernização Administrativa"
+            }
+          ],
+          "TETradeName": [
+            {
+              "lang": "en",
+              "value": "VATPT-98765"
+            }
+          ],
+          "TEAddress": {
+            "TEPostalAddress": [
+              {
+                "lang": "en",
+                "StreetAddress": "Rue test",
+                "Locality": "test",
+                "StateOrProvince": "test",
+                "PostalCode": "2345",
+                "Country": "PT"
+              }
+            ],
+            "TEElectronicAddress": [
+              {
+                "lang": "en",
+                "uriValue": "mailto:test@domain.pt"
+              },
+              {
+                "lang": "en",
+                "uriValue": "tel:+35134567"
+              }
+            ]
+          },
+          "TEInformationURI": [
+            {
+              "lang": "en",
+              "uriValue": "https://test.pt"
+            },
+            {
+              "lang": "en",
+              "uriValue": "http://uri.etsi.org/19602/ListOfTrustedEntities/PIDProvider/PT"
+            }
+          ]
+        },
+        "TrustedEntityServices": [
+          {
+            "ServiceInformation": {
+              "ServiceName": [
+                {
+                  "lang": "en",
+                  "value": "name_pid_solution_pt"
+                }
+              ],
+              "ServiceDigitalIdentity": {
+                "X509Certificates": [
+                  {
+                    "val": "MIIC3zCCAoWgAwIBAgIUcSydOyasuB5uNjr9rj5tPAhpbQUwCgYIKoZIzj0EAwIwejEtMCsGA1UEAwwkRW1pc3NvciBkZSBQSUQgLSBDZXJ0aWZpY2FkbyByYWl6IDAxMTwwOgYDVQQKDDNBTUEgLSBBZ8OqbmNpYSBwYXJhIGEgTW9kZXJuaXphw6fDo28gQWRtaW5pc3RyYXRpdmExCzAJBgNVBAYTAlBUMB4XDTI0MDgyMzE4MTQ0N1oXDTMzMTExOTE4MTQ0NlowejEtMCsGA1UEAwwkRW1pc3NvciBkZSBQSUQgLSBDZXJ0aWZpY2FkbyByYWl6IDAxMTwwOgYDVQQKDDNBTUEgLSBBZ8OqbmNpYSBwYXJhIGEgTW9kZXJuaXphw6fDo28gQWRtaW5pc3RyYXRpdmExCzAJBgNVBAYTAlBUMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEJQQp1ekgl4ztbyvAEHQcHjiIwNRbELpVBzqXiGP2AZdhCP0qgEQ5Ud2hb0fbrE2/hEtiZmw0ppGX37g/wx+VLaOB6DCB5TASBgNVHRMBAf8ECDAGAQH/AgEAMB8GA1UdIwQYMBaAFNl5BlM1kkgig634oJOTlZRNJbezMBYGA1UdJQEB/wQMMAoGCCuBAgIAAAEHMEMGA1UdHwQ8MDowOKA2oDSGMmh0dHBzOi8vcHJlcHJvZC5wa2kuYW1hLnByb2pqLmV1L2NybC9waWRfQ0FfMDEuY3JsMB0GA1UdDgQWBBTZeQZTNZJIIoOt+KCTk5WUTSW3szAOBgNVHQ8BAf8EBAMCAQYwIgYDVR0SBBswVIZSaHR0cHM6Ly93d3cuYW1hLmdvdi5wdC8wCgYIKoZIzj0EAwIDSAAwRQIhAPlr1TTIv8pTKOY08FpKrpNsFLj9gKIagDIUHcDPjy6iAiBL8GUS5H5NcHhTEjJxxEMX9CVuFfVhvRCssbaCV3RwsA=="
+                  }
+                ]
+              },
+              "ServiceTypeIdentifier": "http://uri.etsi.org/19602/SvcType/PID/Issuance"
+            }
+          }
+        ]
+      },
+      {
+        "TrustedEntityInformation": {
+          "TEName": [
+            {
+              "lang": "en",
+              "value": "A-SIT"
+            }
+          ],
+          "TETradeName": [
+            {
+              "lang": "en",
+              "value": "VATAT-45678"
+            }
+          ],
+          "TEAddress": {
+            "TEPostalAddress": [
+              {
+                "lang": "en",
+                "StreetAddress": "Rue test",
+                "Locality": "test",
+                "StateOrProvince": "test",
+                "PostalCode": "2345",
+                "Country": "AT"
+              }
+            ],
+            "TEElectronicAddress": [
+              {
+                "lang": "en",
+                "uriValue": "mailto:test@domain.at"
+              },
+              {
+                "lang": "en",
+                "uriValue": "tel:+4378901"
+              }
+            ]
+          },
+          "TEInformationURI": [
+            {
+              "lang": "en",
+              "uriValue": "https://test.at"
+            },
+            {
+              "lang": "en",
+              "uriValue": "http://uri.etsi.org/19602/ListOfTrustedEntities/PIDProvider/AT"
+            }
+          ]
+        },
+        "TrustedEntityServices": [
+          {
+            "ServiceInformation": {
+              "ServiceName": [
+                {
+                  "lang": "en",
+                  "value": "name_pid_solution_at_1"
+                }
+              ],
+              "ServiceDigitalIdentity": {
+                "X509Certificates": [
+                  {
+                    "val": "MIICGzCCAcCgAwIBAgIUb9GJdqQMdwXaoO61uxoBlg+jhbYwCgYIKoZIzj0EAwIwLDELMAkGA1UEBhMCQVQxDjAMBgNVBAoMBUEtU0lUMQ0wCwYDVQQDDARJQUNBMB4XDTI1MDQwNzA5NDQ1N1oXDTI2MDQwNzA5NDQ1N1owLDELMAkGA1UEBhMCQVQxDjAMBgNVBAoMBUEtU0lUMQ0wCwYDVQQDDARJQUNBMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAElIXOzb+iF+zGutygdIVOBnC4R6OvhYo5TGWhrH0idmqs56IVwJWYzQYzK4CbYePcxpMQY3lKBa5O0MAZe+EogKOBvzCBvDASBgNVHRMBAf8ECDAGAQH/AgEAMA4GA1UdDwEB/wQEAwIBBjAiBgNVHRIEGzAZhhdodHRwczovL3dhbGxldC5hLXNpdC5hdDAyBgNVHR8EKzApMCegJaAjhiFodHRwczovL3dhbGxldC5hLXNpdC5hdC9jcmwvMS5jcmwwHwYDVR0jBBgwFoAUDQF5K46YVgzLpfV5stoutBezK6QwHQYDVR0OBBYEFA0BeSuOmFYMy6X1ebLaLrQXsyukMAoGCCqGSM49BAMCA0kAMEYCIQCz0i9GA24ZOf3Wk+w8+09J6ARAHKLuBuepszBxVZdaZAIhAJlgzKBhHw8+Bwr+wLGQVjMC5e9BWWaUga8ZP9dRYhHJ"
+                  }
+                ]
+              },
+              "ServiceTypeIdentifier": "http://uri.etsi.org/19602/SvcType/PID/Issuance"
+            }
+          }
+        ]
+      },
+      {
+        "TrustedEntityInformation": {
+          "TEName": [
+            {
+              "lang": "en",
+              "value": "IDAKTO IACA 4"
+            }
+          ],
+          "TETradeName": [
+            {
+              "lang": "en",
+              "value": "VATFR-567890"
+            }
+          ],
+          "TEAddress": {
+            "TEPostalAddress": [
+              {
+                "lang": "en",
+                "StreetAddress": "Rue test",
+                "Locality": "test",
+                "StateOrProvince": "test",
+                "PostalCode": "2345",
+                "Country": "FR"
+              }
+            ],
+            "TEElectronicAddress": [
+              {
+                "lang": "en",
+                "uriValue": "mailto:test@domain.fr"
+              },
+              {
+                "lang": "en",
+                "uriValue": "tel:+3345678"
+              }
+            ]
+          },
+          "TEInformationURI": [
+            {
+              "lang": "en",
+              "uriValue": "https://test.fr"
+            },
+            {
+              "lang": "en",
+              "uriValue": "http://uri.etsi.org/19602/ListOfTrustedEntities/PIDProvider/FR"
+            }
+          ]
+        },
+        "TrustedEntityServices": [
+          {
+            "ServiceInformation": {
+              "ServiceName": [
+                {
+                  "lang": "en",
+                  "value": "name_pid_solution_fr_1"
+                }
+              ],
+              "ServiceDigitalIdentity": {
+                "X509Certificates": [
+                  {
+                    "val": "MIIB2TCCAX+gAwIBAgIJAI5LEB+QbO+3MAoGCCqGSM49BAMCMCUxCzAJBgNVBAYTAkZSMRYwFAYDVQQDDA1JREFLVE8gSUFDQSA0MB4XDTI0MDkyNjEyMzQ1M1oXDTI5MDkyNTEyMzQ1M1owJTELMAkGA1UEBhMCRlIxFjAUBgNVBAMMDUlEQUtUTyBJQUNBIDQwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAARMophaPOvIcnsKuxs3iGxJA3kyQx3pHeC0LWj8RNPLtYWAcPJq8bB5PSyOkGtB6XcGUTJukaBxU//5cAe2I18po4GXMIGUMBIGA1UdEwEB/wQIMAYBAf8CAQAwDgYDVR0PAQH/BAQDAgEGMB0GA1UdDgQWBBS2EQayXDKCQSR99d/ve3ZXwxWPpzAaBgNVHRIEEzARgQ9pYWNhQGlkYWt0by5jb20wMwYDVR0fBCwwKjAooCagJIYiaHR0cDovL2NybC5jaG9wcGVyLmlkbGFiLmxpdmU6NTU1NTAKBggqhkjOPQQDAgNIADBFAiAX1wM1La0uufb2yA4jZ+11FfF6hcx3ER8/kcC52teviQIhALNwfW4Zusu4QD8QFxRKrLyi8UVWpDXI5G7rHRnIbNPf"
+                  }
+                ]
+              },
+              "ServiceTypeIdentifier": "http://uri.etsi.org/19602/SvcType/PID/Issuance"
+            }
+          }
+        ]
+      },
+      {
+        "TrustedEntityInformation": {
+          "TEName": [
+            {
+              "lang": "en",
+              "value": "ISO Root CA"
+            }
+          ],
+          "TETradeName": [
+            {
+              "lang": "en",
+              "value": "VATAT-0987"
+            }
+          ],
+          "TEAddress": {
+            "TEPostalAddress": [
+              {
+                "lang": "en",
+                "StreetAddress": "Rue test",
+                "Locality": "test",
+                "StateOrProvince": "test",
+                "PostalCode": "2345",
+                "Country": "AT"
+              }
+            ],
+            "TEElectronicAddress": [
+              {
+                "lang": "en",
+                "uriValue": "mailto:test@domain2.at"
+              },
+              {
+                "lang": "en",
+                "uriValue": "tel:+3320390"
+              }
+            ]
+          },
+          "TEInformationURI": [
+            {
+              "lang": "en",
+              "uriValue": "https://test.at"
+            },
+            {
+              "lang": "en",
+              "uriValue": "http://uri.etsi.org/19602/ListOfTrustedEntities/PIDProvider/AT"
+            }
+          ]
+        },
+        "TrustedEntityServices": [
+          {
+            "ServiceInformation": {
+              "ServiceName": [
+                {
+                  "lang": "en",
+                  "value": "name_pid_solution_at_2"
+                }
+              ],
+              "ServiceDigitalIdentity": {
+                "X509Certificates": [
+                  {
+                    "val": "MIICbDCCAhKgAwIBAgIUH23VY4YX6sFgbdidaIr2o7cR154wCgYIKoZIzj0EAwIwIzELMAkGA1UEBhMCQVQxFDASBgNVBAMMC0lTTyBSb290IENBMB4XDTI1MDUyODExNTMxMloXDTM1MDUyNjExNTMxMlowIzELMAkGA1UEBhMCQVQxFDASBgNVBAMMC0lTTyBSb290IENBMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEisG5+9ei6IRPnTkc2HuiY5kDWM+SUEeTkDXBs7bz/Xc1gwa0WbfEwJA2GuasCl4h0Zzv2fuDK+ER2+Gb7IsPWKOCASIwggEeMA4GA1UdDwEB/wQEAwIBBjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdDgQWBBTeJAquS8H45Kv/lng41lul7kTOCDAfBgNVHSMEGDAWgBTeJAquS8H45Kv/lng41lul7kTOCDCBiwYDVR0fBIGDMIGAMH6gfKB6hnhodHRwczovL3ZhdWx0LmxpZS1pbnRlcm5hbC5wcm9kdWN0aW9uLmNsdXN0ZXJzLnlvdW5pcXguY29tL3YxL21hbmFnZWQvcGtpL21pYS1saWUtaW50ZXJuYWwvbWlhLWxpZS1pbnRlcm5hbC1pc28tcm9vdC9jcmwwKgYDVR0SBCMwIYEfdGVhbS5xdWFudHVtcXVva2thc0B5b3VuaXF4LmNvbTAKBggqhkjOPQQDAgNIADBFAiA9ehNPI3Ck4bfcma27BbKClYLOmjIbu0ytFf6etfp5dwIhAIZT1olmq8bVm7iDRjtFAWUUpNjKQMPAXXY83EbqiqQV"
+                  }
+                ]
+              },
+              "ServiceTypeIdentifier": "http://uri.etsi.org/19602/SvcType/PID/Issuance"
+            }
+          }
+        ]
+      },
+      {
+        "TrustedEntityInformation": {
+          "TEName": [
+            {
+              "lang": "en",
+              "value": "Bundesdruckerei GmbH"
+            }
+          ],
+          "TETradeName": [
+            {
+              "lang": "en",
+              "value": "VATDE-12345"
+            }
+          ],
+          "TEAddress": {
+            "TEPostalAddress": [
+              {
+                "lang": "en",
+                "StreetAddress": "Rue test",
+                "Locality": "test",
+                "StateOrProvince": "test",
+                "PostalCode": "2345",
+                "Country": "DE"
+              }
+            ],
+            "TEElectronicAddress": [
+              {
+                "lang": "en",
+                "uriValue": "mailto:test@domain.de"
+              },
+              {
+                "lang": "en",
+                "uriValue": "tel:+49320390"
+              }
+            ]
+          },
+          "TEInformationURI": [
+            {
+              "lang": "en",
+              "uriValue": "https://test.de"
+            },
+            {
+              "lang": "en",
+              "uriValue": "http://uri.etsi.org/19602/ListOfTrustedEntities/PIDProvider/DE"
+            }
+          ]
+        },
+        "TrustedEntityServices": [
+          {
+            "ServiceInformation": {
+              "ServiceName": [
+                {
+                  "lang": "en",
+                  "value": "name_pid_solution_de_1"
+                }
+              ],
+              "ServiceDigitalIdentity": {
+                "X509Certificates": [
+                  {
+                    "val": "MIICNTCCAdygAwIBAgIUBEfh5TdWaKkeiOkVBHKBHe7VHOUwCgYIKoZIzj0EAwIwZzELMAkGA1UEBhMCREUxDzANBgNVBAcMBkJlcmxpbjEdMBsGA1UECgwUQnVuZGVzZHJ1Y2tlcmVpIEdtYkgxETAPBgNVBAsMCFQgQ1MgSURFMRUwEwYDVQQDDAxQSURQIERlbW8gQ0EwHhcNMjUxMTE5MTIwNjMwWhcNMzUxMTE3MTIwNjMwWjBnMQswCQYDVQQGEwJERTEPMA0GA1UEBwwGQmVybGluMR0wGwYDVQQKDBRCdW5kZXNkcnVja2VyZWkgR21iSDERMA8GA1UECwwIVCBDUyBJREUxFTATBgNVBAMMDFBJRFAgRGVtbyBDQTBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABLfzEvVnrtzbM47MtwES2H4cOFtqvaZEQw4DGMiENSbfKih9WxxhDN8HzuukmiFZYhOxy0frbPlCBJkhGZFsKOWjZjBkMB0GA1UdDgQWBBSAX87IYWUcmGz01ZRdX/qAWEO+XzAfBgNVHSMEGDAWgBSAX87IYWUcmGz01ZRdX/qAWEO+XzASBgNVHRMBAf8ECDAGAQH/AgEAMA4GA1UdDwEB/wQEAwIBhjAKBggqhkjOPQQDAgNHADBEAiBae8hSEdl3gqo8gmbvl9IV9rTrG5iw/6kk6h8w0upuVwIgM29abFnlKUY07mil1xc43zoMqql4YuWv29VHA9ZiT4Y="
+                  }
+                ]
+              },
+              "ServiceTypeIdentifier": "http://uri.etsi.org/19602/SvcType/PID/Issuance"
+            }
+          }
+        ]
+      },
+      {
+        "TrustedEntityInformation": {
+          "TEName": [
+            {
+              "lang": "en",
+              "value": "Microsec Ltd."
+            }
+          ],
+          "TETradeName": [
+            {
+              "lang": "en",
+              "value": "VATHU-23584497"
+            }
+          ],
+          "TEAddress": {
+            "TEPostalAddress": [
+              {
+                "lang": "en",
+                "StreetAddress": "Rue test",
+                "Locality": "test",
+                "StateOrProvince": "test",
+                "PostalCode": "23451",
+                "Country": "HU"
+              }
+            ],
+            "TEElectronicAddress": [
+              {
+                "lang": "en",
+                "uriValue": "mailto:test@domain.hu"
+              },
+              {
+                "lang": "en",
+                "uriValue": "tel:+3698709"
+              }
+            ]
+          },
+          "TEInformationURI": [
+            {
+              "lang": "en",
+              "uriValue": "https://test.hu"
+            },
+            {
+              "lang": "en",
+              "uriValue": "http://uri.etsi.org/19602/ListOfTrustedEntities/PIDProvider/HU"
+            }
+          ]
+        },
+        "TrustedEntityServices": [
+          {
+            "ServiceInformation": {
+              "ServiceName": [
+                {
+                  "lang": "en",
+                  "value": "name_pid_solution_hu_1"
+                }
+              ],
+              "ServiceDigitalIdentity": {
+                "X509Certificates": [
+                  {
+                    "val": "MIIDQzCCAuigAwIBAgIMBcKMJXgy2272WHQKMAoGCCqGSM49BAMCMHYxCzAJBgNVBAYTAkhVMREwDwYDVQQHDAhCdWRhcGVzdDEWMBQGA1UECgwNTWljcm9zZWMgTHRkLjEXMBUGA1UEYQwOVkFUSFUtMjM1ODQ0OTcxIzAhBgNVBAMMGlRlc3QgZS1Temlnbm8gUm9vdCBDQSAyMDE3MB4XDTE3MDkyMjIwMDAwMFoXDTQyMDkyMjA2MDAwMFowcTELMAkGA1UEBhMCSFUxETAPBgNVBAcMCEJ1ZGFwZXN0MRYwFAYDVQQKDA1NaWNyb3NlYyBMdGQuMRcwFQYDVQRhDA5WQVRIVS0yMzU4NDQ5NzEeMBwGA1UEAwwVVGVzdCBlLVN6aWdubyBDQSAyMDE3MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAElKYzOPtAdd2ohSfwEgX2A+Zr2jXWrEqAwJYRs9aBjxT67VwuD10R+TEY0aRwzbrAAPfR2hsOr9DcvZlh4AXRraOCAV8wggFbMA8GA1UdEwEB/wQFMAMBAf8wDgYDVR0PAQH/BAQDAgEGMD4GA1UdIAQ3MDUwMwYEVR0gADArMCkGCCsGAQUFBwIBFh1odHRwOi8vdGVzenQuZS1zemlnbm8uaHUvcWNwczAdBgNVHQ4EFgQUeptoh454hhbzt/k2HvgamLNkHIkwHwYDVR0jBBgwFoAUklDZBPHkz7JSHyQKgYTiOO2dO44wOQYDVR0fBDIwMDAuoCygKoYoaHR0cDovL3Rlc3p0LmUtc3ppZ25vLmh1L3Ryb290Y2EyMDE3LmNybDB9BggrBgEFBQcBAQRxMG8wNwYIKwYBBQUHMAGGK2h0dHA6Ly90ZXN6dC5lLXN6aWduby5odS90ZXN0cm9vdGNhMjAxN29jc3AwNAYIKwYBBQUHMAKGKGh0dHA6Ly90ZXN6dC5lLXN6aWduby5odS90cm9vdGNhMjAxNy5jcnQwCgYIKoZIzj0EAwIDSQAwRgIhAL+F7BHEDUvV/weTnf4TwzwDIssl0hMF/0oKo0c9CaXXAiEAvNpfSAJjlU9kCqsRVUYVQqVffJCuBPIKdFvfcejwfbY="
+                  }
+                ]
+              },
+              "ServiceTypeIdentifier": "http://uri.etsi.org/19602/SvcType/PID/Issuance"
+            }
+          }
+        ]
+      },
+      {
+        "TrustedEntityInformation": {
+          "TEName": [
+            {
+              "lang": "en",
+              "value": "TEST Authority"
+            }
+          ],
+          "TETradeName": [
+            {
+              "lang": "en",
+              "value": "VATEE-12345"
+            }
+          ],
+          "TEAddress": {
+            "TEPostalAddress": [
+              {
+                "lang": "en",
+                "StreetAddress": "Rue test",
+                "Locality": "test",
+                "StateOrProvince": "test",
+                "PostalCode": "23451",
+                "Country": "EE"
+              }
+            ],
+            "TEElectronicAddress": [
+              {
+                "lang": "en",
+                "uriValue": "mailto:test@domain.ee"
+              },
+              {
+                "lang": "en",
+                "uriValue": "tel:+37298709"
+              }
+            ]
+          },
+          "TEInformationURI": [
+            {
+              "lang": "en",
+              "uriValue": "https://test.ee"
+            },
+            {
+              "lang": "en",
+              "uriValue": "http://uri.etsi.org/19602/ListOfTrustedEntities/PIDProvider/EE"
+            }
+          ]
+        },
+        "TrustedEntityServices": [
+          {
+            "ServiceInformation": {
+              "ServiceName": [
+                {
+                  "lang": "en",
+                  "value": "name_pid_solution_ee"
+                }
+              ],
+              "ServiceDigitalIdentity": {
+                "X509Certificates": [
+                  {
+                    "val": "MIICiTCCAjCgAwIBAgIUD89WCelKX+PFzZTKvrIsMgoIjZcwCgYIKoZIzj0EAwIwUjELMAkGA1UEBhMCRUUxDjAMBgNVBAgMBUhhcmp1MRcwFQYDVQQKDA5URVNUIEF1dGhvcml0eTEaMBgGA1UEAwwRVEVTVCBJQUNBIFJvb3QgQ0EwHhcNMjUwMjE5MTExNDI2WhcNNDUwMjE0MTExNDI2WjBSMQswCQYDVQQGEwJFRTEOMAwGA1UECAwFSGFyanUxFzAVBgNVBAoMDlRFU1QgQXV0aG9yaXR5MRowGAYDVQQDDBFURVNUIElBQ0EgUm9vdCBDQTBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABOJyw8+GgiTyqkzhvwA5nNMwsjLA24/2wjYrXJMb23fCAWeskZu014znoXZHJZK+cxlnvLtLscYCiF7REr6NWcqjgeMwgeAwEgYDVR0TAQH/BAgwBgEB/wIBADAOBgNVHQ8BAf8EBAMCAQYwHQYDVR0OBBYEFHAddh/lzBAlZm1hAO/QgQmhV9WBMCMGA1UdEgQcMBqBGGNvbnRhY3RAaWFjYS5leGFtcGxlLmNvbTB2BgNVHR8EbzBtMGugaaBnhmVodHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vb3Blbi1laWQvZXVkaS1xZWFhLWlzc3Vlci1wb2MvcmVmcy9oZWFkcy9kZXZlbG9wL2xvY2FsL2NybC9pYWNhLmNybDAKBggqhkjOPQQDAgNHADBEAiBt84QP49zoXBFItKhxIPkg+7qXbf6eIMY0xkc1M7RYlQIgWOSUJbP8KEreKUQ5Nwgae13YifG3jpJfU+nVWAe+1Ik="
+                  }
+                ]
+              },
+              "ServiceTypeIdentifier": "http://uri.etsi.org/19602/SvcType/PID/Issuance"
+            }
+          }
+        ]
+      },
+      {
+        "TrustedEntityInformation": {
+          "TEName": [
+            {
+              "lang": "en",
+              "value": "GRNET"
+            }
+          ],
+          "TETradeName": [
+            {
+              "lang": "en",
+              "value": "VATEL-77432"
+            }
+          ],
+          "TEAddress": {
+            "TEPostalAddress": [
+              {
+                "lang": "en",
+                "StreetAddress": "Rue test",
+                "Locality": "test",
+                "StateOrProvince": "test",
+                "PostalCode": "53554",
+                "Country": "EL"
+              }
+            ],
+            "TEElectronicAddress": [
+              {
+                "lang": "en",
+                "uriValue": "mailto:test2@domain.el"
+              },
+              {
+                "lang": "en",
+                "uriValue": "tel:+30293239487"
+              }
+            ]
+          },
+          "TEInformationURI": [
+            {
+              "lang": "en",
+              "uriValue": "https://test.el"
+            },
+            {
+              "lang": "en",
+              "uriValue": "http://uri.etsi.org/19602/ListOfTrustedEntities/PIDProvider/EL"
+            }
+          ]
+        },
+        "TrustedEntityServices": [
+          {
+            "ServiceInformation": {
+              "ServiceName": [
+                {
+                  "lang": "en",
+                  "value": "name_pid_solution_el"
+                }
+              ],
+              "ServiceDigitalIdentity": {
+                "X509Certificates": [
+                  {
+                    "val": "MIICkTCCAjigAwIBAgIUBHi4ixVY+v67hn64ELqWc/cuIoQwCgYIKoZIzj0EAwIwPTEeMBwGA1UEAwwVUElEIElzc3VlciBDQSAtIEdSIDAxMQ4wDAYDVQQKDAVHUk5FVDELMAkGA1UEBhMCR1IwHhcNMjUxMTAzMTMwMzQ1WhcNMjYxMTAzMTMwMzQ1WjA9MR4wHAYDVQQDDBVQSUQgSXNzdWVyIENBIC0gR1IgMDExDjAMBgNVBAoMBUdSTkVUMQswCQYDVQQGEwJHUjBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABGV76duOyXnqudRE1nzJHu4TF/hQLSzrUNNj/g14e1eno+mdF/2BUsTKMMoVi6Nvahco45gI0aC/sXBK+zfhysmjggEUMIIBEDASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdDgQWBBQ9fVq9ZifBrdIV1gL89UMxFC+HyzBiBgNVHSMEWzBZoUGkPzA9MR4wHAYDVQQDDBVQSUQgSXNzdWVyIENBIC0gR1IgMDExDjAMBgNVBAoMBUdSTkVUMQswCQYDVQQGEwJHUoIUBHi4ixVY+v67hn64ELqWc/cuIoQwFgYDVR0lAQH/BAwwCgYIK4ECAgAAAQcwMgYDVR0fBCswKTAnoCWgI4YhaHR0cDovLzgzLjIxMi43Mi4xMTQ6ODA4Mi9jcmwucGVtMA4GA1UdDwEB/wQEAwIBBjAbBgNVHRIEFDAShhBodHRwczovL2dybmV0LmdyMAoGCCqGSM49BAMCA0cAMEQCICAFSFanRww3RVPLqp4IC+/1JxXF9q3qE22t0R0pSKxUAiAJLUpXIknyy2qAwukAZujeuZne71PJ1Yh9xYjUdQZuhQ=="
+                  }
+                ]
+              },
+              "ServiceTypeIdentifier": "http://uri.etsi.org/19602/SvcType/PID/Issuance"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

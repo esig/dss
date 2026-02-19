@@ -1,14 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "definitions": {
-    "OtherAssociatedBodiesExtension": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/AssociatedBodies"
-      },
-      "minItems": 1
-    },
-    "AssociatedBodies": {
+    "OtherAssociatedBodies": {
       "type": "array",
       "items": {
         "$ref": "#/definitions/AssociatedBody"
@@ -45,14 +38,14 @@
     "AssociatedBodyName": {
       "type": "array",
       "items": {
-        "$ref": "19602-jsonSchema.json#/definitions/multiLangString"
+        "$ref": "1960201-jsonSchema.json#/definitions/multiLangString"
       },
       "minItems": 1
     },
     "AssociatedBodyTradeName": {
       "type": "array",
       "items": {
-        "$ref": "19602-jsonSchema.json#/definitions/multiLangString"
+        "$ref": "1960201-jsonSchema.json#/definitions/multiLangString"
       },
       "minItems": 1
     },
@@ -60,10 +53,10 @@
       "type": "object",
       "properties": {
         "AssociatedBodyPostalAddress": {
-          "$ref": "19602-jsonSchema.json#/definitions/PostalAddress"
+          "$ref": "1960201-jsonSchema.json#/definitions/PostalAddress"
         },
         "AssociatedBodyElectronicAddress": {
-          "$ref": "19602-jsonSchema.json#/definitions/ElectronicAddress"
+          "$ref": "1960201-jsonSchema.json#/definitions/ElectronicAddress"
         }
       },
       "required": [
@@ -75,7 +68,7 @@
     "AssociatedBodyInformationURI": {
       "type": "array",
       "items": {
-        "$ref": "19602-jsonSchema.json#/definitions/NonEmptyMultiLangURI"
+        "$ref": "1960201-jsonSchema.json#/definitions/NonEmptyMultiLangURI"
       },
       "minItems": 1
     },

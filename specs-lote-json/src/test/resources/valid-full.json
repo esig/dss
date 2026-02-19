@@ -1,6 +1,6 @@
 {
   "LoTE": {
-    "SchemeInformation": {
+    "ListAndSchemeInformation": {
       "LoTEVersionIdentifier": 1,
       "LoTESequenceNumber": 42,
       "LoTEType": "http://example.org/LoTE/type",
@@ -26,16 +26,14 @@
           }
         ],
         "SchemeOperatorElectronicAddress": [
-          [
-            {
-              "lang": "fr",
-              "uriValue": "mailto:contact@trust.gov.fr"
-            },
-            {
-              "lang": "en",
-              "uriValue": "mailto:support@trust.gov.fr"
-            }
-          ]
+          {
+            "lang": "fr",
+            "uriValue": "mailto:contact@trust.gov.fr"
+          },
+          {
+            "lang": "en",
+            "uriValue": "mailto:support@trust.gov.fr"
+          }
         ]
       },
       "SchemeName": [
@@ -77,7 +75,7 @@
 
       ],
       "HistoricalInformationPeriod": 24,
-      "PointerToOtherLoTE": [
+      "PointersToOtherLoTE": [
         {
           "LoTELocation": "https://other-lote.example.org/lotefile.xml",
           "ServiceDigitalIdentities": [
@@ -155,14 +153,16 @@
             }
           ],
           "TEAddress": {
-            "TEPostalAddress": {
-              "lang": "fr",
-              "StreetAddress": "7 Rue de la Sécurité",
-              "Locality": "Lyon",
-              "StateOrProvince": "Auvergne-Rhône-Alpes",
-              "PostalCode": "69001",
-              "Country": "FR"
-            },
+            "TEPostalAddress": [
+              {
+                "lang": "fr",
+                "StreetAddress": "7 Rue de la Sécurité",
+                "Locality": "Lyon",
+                "StateOrProvince": "Auvergne-Rhône-Alpes",
+                "PostalCode": "69001",
+                "Country": "FR"
+              }
+            ],
             "TEElectronicAddress": [
               {
                 "lang": "fr",
@@ -204,13 +204,21 @@
               "ServiceStatus": "http://uri.etsi.org/TrstSvc/Status/underSupervision",
               "StatusStartingTime": "2024-01-01T00:00:00Z",
               "SchemeServiceDefinitionURI": [
-                "https://psc.fr/services/signature"
+                {
+                  "lang": "en",
+                  "uriValue": "https://psc.fr/services/signature"
+                }
               ],
-              "ServiceSupplyPoint": [
-                "https://psc.fr/api/sign"
+              "ServiceSupplyPoints": [
+                {
+                  "uriValue": "https://psc.fr/api/sign"
+                }
               ],
               "ServiceDefinitionURI": [
-                "https://psc.fr/docs/signature.pdf"
+                {
+                  "lang": "en",
+                  "uriValue": "https://psc.fr/docs/signature.pdf"
+                }
               ],
               "ServiceInformationExtensions": [
                 {
@@ -218,30 +226,32 @@
                 }
               ]
             },
-            "ServiceHistory": {
-              "ServiceName": [
-                {
-                  "lang":  "en",
-                  "value":  "Signature Qualifiée"
-                }
-
-              ],
-              "ServiceDigitalIdentity": {
-                "X509Certificates": [
+            "ServiceHistory": [
+              {
+                "ServiceName": [
                   {
-                    "val": "MIIFazHISTORICDATA...."
+                    "lang":  "en",
+                    "value":  "Signature Qualifiée"
+                  }
+
+                ],
+                "ServiceDigitalIdentity": {
+                  "X509Certificates": [
+                    {
+                      "val": "MIIFazHISTORICDATA...."
+                    }
+                  ]
+                },
+                "ServiceStatus": "http://uri.etsi.org/TrstSvc/Status/recognised",
+                "StatusStartingTime": "2022-01-01T00:00:00Z",
+                "ServiceTypeIdentifier": "http://uri.etsi.org/TrstSvc/Svctype/QES",
+                "ServiceInformationExtensions": [
+                  {
+                    "audit": "2022-Q4"
                   }
                 ]
-              },
-              "ServiceStatus": "http://uri.etsi.org/TrstSvc/Status/recognised",
-              "StatusStartingTime": "2022-01-01T00:00:00Z",
-              "ServiceTypeIdentifier": "http://uri.etsi.org/TrstSvc/Svctype/QES",
-              "ServiceInformationExtensions": [
-                {
-                  "audit": "2022-Q4"
-                }
-              ]
-            }
+              }
+            ]
           }
         ]
       }

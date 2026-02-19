@@ -54,9 +54,9 @@
                 <configuration>
                     <schemaDirectory>src/main/resources/xsd</schemaDirectory>
                     <schemaIncludes>
-<!--                        <schemaInclude>19602_xsd_v0.0.6a.xsd</schemaInclude>-->
-                        <schemaInclude>19602_xsd_schema_sie_v0.0.6.xsd</schemaInclude>
-                        <schemaInclude>19602_xsd_schema_tie_v0.0.6.xsd</schemaInclude>
+<!--                        <schemaInclude>1960201_xsd_schema.xsd</schemaInclude>-->
+                        <schemaInclude>1960201_xsd_schema_sie.xsd</schemaInclude>
+                        <schemaInclude>1960201_xsd_schema_tie.xsd</schemaInclude>
                     </schemaIncludes>
                     <catalog>src/main/resources/xsd/catalog.cat</catalog>
                     <bindingIncludes>

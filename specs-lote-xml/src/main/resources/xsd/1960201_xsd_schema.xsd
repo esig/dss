@@ -57,7 +57,7 @@ then that text shall prevail as the authoritative source
 		</xsd:sequence>
 	</xsd:complexType>
 	<!--PostalAddressList Type-->
-	<xsd:annotation><xsd:documentation>Specified in TS 119 612 v1.1.1 clause 6.3.5.1 Scheme operator postal address</xsd:documentation></xsd:annotation>
+	<xsd:annotation><xsd:documentation>Specified in TS 119 602 v1.1.1 clause 6.3.5.1 Scheme operator postal address</xsd:documentation></xsd:annotation>
 	<xsd:element name="PostalAddresses" type="lote:PostalAddressListType"/>
 	<xsd:complexType name="PostalAddressListType">
 		<xsd:sequence>
@@ -153,7 +153,7 @@ then that text shall prevail as the authoritative source
 	<!-- List of Trusted Entities Type Definition -->
 	<xsd:complexType name="ListOfTrustedEntitiesType">
 		<xsd:sequence>
-		   <!--Specified in TS 119 602 v1.1.1 clause 6.3 Scheme information-->
+		   <!--Specified in TS 119 602 v1.1.1 clause 6.3 List and Scheme information-->
 			<xsd:element ref="lote:ListAndSchemeInformation"/>
 		   <!--Specified in TS 119 602 v1.1.1 clause 6.4 Trusted Entities List -->
 			<xsd:element ref="lote:TrustedEntitiesList" minOccurs="0"/>
@@ -175,8 +175,8 @@ then that text shall prevail as the authoritative source
 	</xsd:complexType>
 	<!-- LoTE Scheme Information -->
 	<xsd:annotation><xsd:documentation>Specified in TS 119 602 v1.1.1 clause 6.3 Scheme information</xsd:documentation></xsd:annotation>
-	<xsd:element name="ListAndSchemeInformation" type="lote:LoTESchemeInformationType"/>
-	<xsd:complexType name="LoTESchemeInformationType">
+	<xsd:element name="ListAndSchemeInformation" type="lote:LoTEListAndSchemeInformationType"/>
+	<xsd:complexType name="LoTEListAndSchemeInformationType">
 		<xsd:sequence>
 		   <!--Specified in TS 119 602 v1.1.1 clause 6.3.1 LoTE version identifier-->
 			<xsd:element name="LoTEVersionIdentifier" type="xsd:integer"/>
