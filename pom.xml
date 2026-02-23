@@ -259,6 +259,7 @@
 						<classpathDependencyExclude>commons-logging:commons-logging</classpathDependencyExclude>
 					</classpathDependencyExcludes>
 					<threadCount>1</threadCount>
+					<excludedGroups>${exclude.tag.tests}</excludedGroups>
 				</configuration>
 				<executions>
 					<execution>
