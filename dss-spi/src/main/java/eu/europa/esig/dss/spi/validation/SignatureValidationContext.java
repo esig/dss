@@ -119,8 +119,8 @@ public class SignatureValidationContext implements ValidationContext {
 	/** Map of tokens defining if they have been processed yet */
 	private final Map<Token, Boolean> tokensToProcess = new HashMap<>();
 
-	/** A map between certificate tokens and corresponding signatures (b-level creation) */
-	private final Map<CertificateToken, List<AdvancedSignature>> certificateSignaturesUsage = new HashMap<>();
+	/** A map between signing certificate tokens and corresponding signatures (b-level creation) */
+	private final Map<CertificateToken, List<AdvancedSignature>> signCertificateSignaturesUsage = new HashMap<>();
 
 	/** The usages of a timestamp's certificate tokens */
 	private final Map<CertificateToken, List<Date>> timestampCertChainDates = new HashMap<>();
@@ -133,6 +133,9 @@ public class SignatureValidationContext implements ValidationContext {
 
 	/** Cached map of parent {@code CertificateToken}'s and their corresponding issued certificates */
 	private final Map<Token, Set<CertificateToken>> certificateChildrenMap = new HashMap<>();
+
+	/** Cached map of issuer {@code CertificateToken}'s and their issued revocation data (i.e. obtained online) */
+	private final Map<Token, List<RevocationToken<?>>> externalRevocationTokensMap = new HashMap<>();
 
 	/** Certificates from the document */
 	private final ListCertificateSource documentCertificateSource = new ListCertificateSource();
@@ -402,12 +405,9 @@ public class SignatureValidationContext implements ValidationContext {
 	private void registerCertChainUsage(AdvancedSignature signature) {
 		CertificateToken signingCertificate = signature.getSigningCertificateToken();
 		if (signingCertificate != null) {
-			List<CertificateToken> certificateChain = toCertificateTokenChain(getCertChain(signingCertificate));
-			for (CertificateToken cert : certificateChain) {
-				List<AdvancedSignature> certUsageSignatures = certificateSignaturesUsage.computeIfAbsent(cert, k -> new ArrayList<>());
-				if (!certUsageSignatures.contains(signature)) {
-					certUsageSignatures.add(signature);
-				}
+			List<AdvancedSignature> certUsageSignatures = signCertificateSignaturesUsage.computeIfAbsent(signingCertificate, k -> new ArrayList<>());
+			if (!certUsageSignatures.contains(signature)) {
+				certUsageSignatures.add(signature);
 			}
 		}
 	}
@@ -1062,6 +1062,8 @@ public class SignatureValidationContext implements ValidationContext {
 		// add processed revocation tokens
 		revocations.addAll(getRelatedRevocationTokens(certToken));
 
+		revocations.addAll(getExternalRevocationTokens(certToken, issuerToken));
+
 		if ((remoteOCSPSource != null || remoteCRLSource != null) &&
 				(Utils.isCollectionEmpty(revocations) || isRevocationDataRefreshNeeded(certToken, revocations))) {
 			LOG.debug("The signature does not contain relative revocation data.");
@@ -1091,6 +1093,29 @@ public class SignatureValidationContext implements ValidationContext {
 		}
 
 		return revocations;
+	}
+
+	private Collection<? extends RevocationToken<?>> getExternalRevocationTokens(CertificateToken certToken,
+																				 CertificateToken issuerCertificateToken) {
+		List<RevocationToken<?>> result = new ArrayList<>();
+		if (issuerCertificateToken != null) {
+			List<RevocationToken<?>> revocationTokens = externalRevocationTokensMap.get(issuerCertificateToken);
+			if (Utils.isCollectionNotEmpty(revocationTokens)) {
+				for (RevocationToken<?> revocationToken : revocationTokens) {
+					if (revocationToken instanceof CRLToken && !certToken.equals(revocationToken.getRelatedCertificate())) {
+						CRLToken crlToken = (CRLToken) revocationToken;
+
+						CRLToken newCRLToken = new CRLToken(certToken, crlToken.getCrlValidity());
+						newCRLToken.setExternalOrigin(crlToken.getExternalOrigin());
+						newCRLToken.setSourceURL(crlToken.getSourceURL());
+						addRevocationTokenForVerification(newCRLToken);
+
+						result.add(newCRLToken);
+					}
+				}
+			}
+		}
+		return result;
 	}
 
 	@Override
@@ -1133,19 +1158,8 @@ public class SignatureValidationContext implements ValidationContext {
 
 	private void linkRevocationToOtherCertificates(RevocationToken<?> revocationToken, CertificateToken certificateToken,
 												   CertificateToken issuerCertificateToken) {
-		// Only CRL may relate to multiple certificates
-		if (revocationToken instanceof CRLToken) {
-			CRLToken crlToken = (CRLToken) revocationToken;
-			Set<CertificateToken> certificateTokens = certificateChildrenMap.get(issuerCertificateToken);
-			for (CertificateToken childCertificate : certificateTokens) {
-				if (certificateToken != childCertificate) {
-					CRLToken newCRLToken = new CRLToken(childCertificate, crlToken.getCrlValidity());
-					newCRLToken.setExternalOrigin(crlToken.getExternalOrigin());
-					newCRLToken.setSourceURL(crlToken.getSourceURL());
-					addRevocationTokenForVerification(newCRLToken);
-				}
-			}
-		}
+		List<RevocationToken<?>> revocationTokens = externalRevocationTokensMap.computeIfAbsent(issuerCertificateToken, k -> new ArrayList<>());
+		revocationTokens.add(revocationToken);
 	}
 
 	private RevocationToken<?> getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificate,
@@ -1506,12 +1520,12 @@ public class SignatureValidationContext implements ValidationContext {
 		return latestPOETime;
 	}
 
-	private List<Date> getBestSignatureTimes(CertificateToken certificateToken) {
-		List<AdvancedSignature> signatures = certificateSignaturesUsage.get(certificateToken);
+	private Set<Date> getBestSignatureTimes(CertificateToken certificateToken) {
+		Set<AdvancedSignature> signatures = getSignaturesIssuedByCertificateOrItsChildren(certificateToken);
 		if (Utils.isCollectionEmpty(signatures)) {
-			return Collections.emptyList();
+			return Collections.emptySet();
 		}
-		final List<Date> bestSignatureTimes = new ArrayList<>();
+		final Set<Date> bestSignatureTimes = new HashSet<>();
 		for (AdvancedSignature signature : signatures) {
 			Date poeTime = getLowestPOETime(poeTimes.get(signature.getId()));
 			if (poeTime != null) {
@@ -1519,6 +1533,29 @@ public class SignatureValidationContext implements ValidationContext {
 			}
 		}
 		return bestSignatureTimes;
+	}
+
+	private Set<AdvancedSignature> getSignaturesIssuedByCertificateOrItsChildren(CertificateToken certificateToken) {
+		return getSignaturesIssuedByCertificateOrItsChildren(certificateToken, new HashSet<>());
+	}
+
+	private Set<AdvancedSignature> getSignaturesIssuedByCertificateOrItsChildren(CertificateToken certificateToken, Set<CertificateToken> processedCertificates) {
+		final Set<AdvancedSignature> signatures = new HashSet<>();
+		List<AdvancedSignature> certSignatures = signCertificateSignaturesUsage.get(certificateToken);
+		if (Utils.isCollectionNotEmpty(certSignatures)) {
+			signatures.addAll(certSignatures);
+		}
+		processedCertificates.add(certificateToken);
+
+		Set<CertificateToken> certificateChildren = certificateChildrenMap.get(certificateToken);
+		if (Utils.isCollectionNotEmpty(certificateChildren)) {
+			for (CertificateToken certKid : certificateChildren) {
+				if (!processedCertificates.contains(certKid)) {
+					signatures.addAll(getSignaturesIssuedByCertificateOrItsChildren(certKid, processedCertificates));
+				}
+			}
+		}
+		return signatures;
 	}
 
 	private Date getLatestTimestampUsageDate(CertificateToken certificateToken) {
@@ -1845,7 +1882,7 @@ public class SignatureValidationContext implements ValidationContext {
 
 	private <T extends Token> boolean isTrustedAtUsageTime(T token, Context context) {
 		if (token instanceof CertificateToken) {
-			List<Date> bestSignatureTimes = getBestSignatureTimes((CertificateToken) token);
+			Set<Date> bestSignatureTimes = getBestSignatureTimes((CertificateToken) token);
 			if (Utils.isCollectionNotEmpty(bestSignatureTimes)) {
 				for (Date date : bestSignatureTimes) {
 					if (isTrustedAtTime(token, date, context)) {
