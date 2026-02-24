@@ -168,7 +168,7 @@ class FileCacheCRLSourceTest extends OnlineSourceTest {
 		// wait one second
 		Calendar nextSecond = Calendar.getInstance();
 		nextSecond.setTime(secondCRLTokenUpdated.getThisUpdate());
-		nextSecond.add(Calendar.SECOND, 1);
+		nextSecond.add(Calendar.MILLISECOND, 1500);
 		await().atMost(2, TimeUnit.SECONDS).until(() -> Calendar.getInstance().getTime().after(nextSecond.getTime()));
 
 		firstCRLTokenUpdated = fileCacheCRLSource.getRevocationToken(goodCa, rootCa);
