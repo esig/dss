@@ -160,7 +160,7 @@ class FileCacheOCSPSourceTest extends OnlineSourceTest {
 		// wait one second
 		Calendar nextSecond = Calendar.getInstance();
 		nextSecond.setTime(secondOCSPTokenUpdated.getThisUpdate());
-		nextSecond.add(Calendar.SECOND, 1);
+		nextSecond.add(Calendar.MILLISECOND, 1500);
 		await().atMost(2, TimeUnit.SECONDS).until(() -> Calendar.getInstance().getTime().after(nextSecond.getTime()));
 
 		firstOCSPTokenUpdated = fileCacheOCSPSource.getRevocationToken(goodUser, goodCa);
