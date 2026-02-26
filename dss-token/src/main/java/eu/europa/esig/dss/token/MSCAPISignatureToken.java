@@ -23,8 +23,7 @@ package eu.europa.esig.dss.token;
 import eu.europa.esig.dss.model.DSSException;
 
 import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.security.KeyStore;
+import java.security.*;
 import java.security.KeyStore.PasswordProtection;
 
 /**
@@ -32,7 +31,7 @@ import java.security.KeyStore.PasswordProtection;
  *
  */
 public class MSCAPISignatureToken extends AbstractKeyStoreTokenConnection {
-
+	private static final String SUN_MSCAPI = "SunMSCAPI";
 	/**
 	 * Default constructor
 	 */
@@ -60,6 +59,17 @@ public class MSCAPISignatureToken extends AbstractKeyStoreTokenConnection {
 	@Override
 	public void close() {
 		// nothing to close
+	}
+
+	@Override
+	protected Signature getSignatureInstance(final String javaSignatureAlgorithm) throws NoSuchAlgorithmException {
+		try {
+			return Signature.getInstance(javaSignatureAlgorithm, SUN_MSCAPI);
+		} catch (NoSuchAlgorithmException | NoSuchProviderException e) {
+			// Fallback to default behavior (e.g. if algorithm not supported by SunMSCAPI or
+			// provider not available)
+			return super.getSignatureInstance(javaSignatureAlgorithm);
+		}
 	}
 
 }
