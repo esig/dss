@@ -64,6 +64,11 @@ public class MSCAPISignatureToken extends AbstractKeyStoreTokenConnection {
 	@Override
 	protected Signature getSignatureInstance(final String javaSignatureAlgorithm) throws NoSuchAlgorithmException {
 		try {
+			// ? Check if this is the best way to map the algorithm.
+			if (javaSignatureAlgorithm.contains("RSAandMGF1") || javaSignatureAlgorithm.contains("PSS")) {
+				return Signature.getInstance("RSASSA-PSS", SUN_MSCAPI);
+			}
+
 			return Signature.getInstance(javaSignatureAlgorithm, SUN_MSCAPI);
 		} catch (NoSuchAlgorithmException | NoSuchProviderException e) {
 			// Fallback to default behavior (e.g. if algorithm not supported by SunMSCAPI or
