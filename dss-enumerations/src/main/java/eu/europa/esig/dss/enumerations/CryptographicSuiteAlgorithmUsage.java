@@ -36,19 +36,19 @@ public enum CryptographicSuiteAlgorithmUsage implements UriBasedEnum {
      * http://uri.etsi.org/19322/sign_data/sign_certificates shall be used to indicate that the evaluation is applicable
      * for signing certificates.
      */
-    SIGN_CERTIFICATES("http://uri.etsi.org/19322/sign_certificates"),
+    SIGN_CERTIFICATES("http://uri.etsi.org/19322/sign_data/sign_certificates"),
 
     /**
      * http://uri.etsi.org/19322/sign_data/sign_ocsp shall be used to indicate that the evaluation is applicable for
      * signing OCSP responses.
      */
-    SIGN_OCSP("http://uri.etsi.org/19322/sign_ocsp"),
+    SIGN_OCSP("http://uri.etsi.org/19322/sign_data/sign_ocsp"),
 
     /**
      * http://uri.etsi.org/19322/sign_data/sign_timestamps shall be used to indicate that the evaluation is applicable
      * for signing timestamps.
      */
-    SIGN_TIMESTAMPS("http://uri.etsi.org/19322/sign_timestamps"),
+    SIGN_TIMESTAMPS("http://uri.etsi.org/19322/sign_data/sign_timestamps"),
 
     /**
      * http://uri.etsi.org/19322/sign_data/validate_data shall be used to indicate that the evaluation is applicable for

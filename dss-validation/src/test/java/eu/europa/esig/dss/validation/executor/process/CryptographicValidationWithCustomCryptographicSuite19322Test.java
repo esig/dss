@@ -316,6 +316,101 @@ class CryptographicValidationWithCustomCryptographicSuite19322Test extends Abstr
         validateBestSigningTimes(reports);
     }
 
+    // See DSS-3804
+    @Test
+    void sigCertRestrictionXmlTest() throws Exception {
+        XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/valid-diag-data.xml"));
+        assertNotNull(diagnosticData);
+
+        ValidationPolicy validationPolicy = ValidationPolicyLoader.fromValidationPolicy(loadDefaultPolicy())
+                .withCryptographicSuite(new File("src/test/resources/diag-data/crypto-suite/allow-sha256withRSA-1900_sig-5000_cert.xml")).create();
+
+        DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+        executor.setDiagnosticData(diagnosticData);
+        executor.setValidationPolicy(validationPolicy);
+        executor.setCurrentTime(diagnosticData.getValidationDate());
+
+        Reports reports = executor.execute();
+
+        SimpleReport simpleReport = reports.getSimpleReport();
+        assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+        validateBestSigningTimes(reports);
+    }
+
+    @Test
+    void sigCertAllowanceXmlTest() throws Exception {
+        XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/valid-diag-data.xml"));
+        assertNotNull(diagnosticData);
+
+        ValidationPolicy validationPolicy = ValidationPolicyLoader.fromValidationPolicy(loadDefaultPolicy())
+                .withCryptographicSuite(new File("src/test/resources/diag-data/crypto-suite/allow-sha256withRSA-5000_sig-2000_cert.xml")).create();
+
+        DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+        executor.setDiagnosticData(diagnosticData);
+        executor.setValidationPolicy(validationPolicy);
+        executor.setCurrentTime(diagnosticData.getValidationDate());
+
+        Reports reports = executor.execute();
+
+        SimpleReport simpleReport = reports.getSimpleReport();
+        assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+        assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+        assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
+                i18nProvider.getMessage(MessageTag.ASCCM_AR_ANS_AKSNR, SignatureAlgorithm.RSA_SHA256.getName(), "2048", MessageTag.ACCM_POS_SIG_SIG)));
+        assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
+                i18nProvider.getMessage(MessageTag.ASCCM_AR_ANS_AKSNR, SignatureAlgorithm.RSA_SHA256.getName(), "2048", MessageTag.ACCM_POS_REVOC_SIG)));
+
+        validateBestSigningTimes(reports);
+    }
+
+    @Test
+    void sigCertRestrictionJsonTest() throws Exception {
+        XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/valid-diag-data.xml"));
+        assertNotNull(diagnosticData);
+
+        ValidationPolicy validationPolicy = ValidationPolicyLoader.fromValidationPolicy(loadDefaultPolicy())
+                .withCryptographicSuite(new File("src/test/resources/diag-data/crypto-suite/allow-sha256withRSA-1900_sig-5000_cert.json")).create();
+
+        DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+        executor.setDiagnosticData(diagnosticData);
+        executor.setValidationPolicy(validationPolicy);
+        executor.setCurrentTime(diagnosticData.getValidationDate());
+
+        Reports reports = executor.execute();
+
+        SimpleReport simpleReport = reports.getSimpleReport();
+        assertEquals(Indication.TOTAL_PASSED, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+
+        validateBestSigningTimes(reports);
+    }
+
+    @Test
+    void sigCertAllowanceJsonTest() throws Exception {
+        XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(new File("src/test/resources/diag-data/valid-diag-data.xml"));
+        assertNotNull(diagnosticData);
+
+        ValidationPolicy validationPolicy = ValidationPolicyLoader.fromValidationPolicy(loadDefaultPolicy())
+                .withCryptographicSuite(new File("src/test/resources/diag-data/crypto-suite/allow-sha256withRSA-5000_sig-2000_cert.json")).create();
+
+        DefaultSignatureProcessExecutor executor = new DefaultSignatureProcessExecutor();
+        executor.setDiagnosticData(diagnosticData);
+        executor.setValidationPolicy(validationPolicy);
+        executor.setCurrentTime(diagnosticData.getValidationDate());
+
+        Reports reports = executor.execute();
+
+        SimpleReport simpleReport = reports.getSimpleReport();
+        assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
+        assertEquals(SubIndication.CRYPTO_CONSTRAINTS_FAILURE_NO_POE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
+        assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
+                i18nProvider.getMessage(MessageTag.ASCCM_AR_ANS_AKSNR, SignatureAlgorithm.RSA_SHA256.getName(), "2048", MessageTag.ACCM_POS_SIG_SIG)));
+        assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstSignatureId()),
+                i18nProvider.getMessage(MessageTag.ASCCM_AR_ANS_AKSNR, SignatureAlgorithm.RSA_SHA256.getName(), "2048", MessageTag.ACCM_POS_REVOC_SIG)));
+
+        validateBestSigningTimes(reports);
+    }
+
     private CryptographicSuiteAlgorithm createDigestAlgorithmDefinition(DigestAlgorithm digestAlgorithm, List<EvaluationDTO> evaluationList) {
         CryptographicSuiteAlgorithm algorithm = new CryptographicSuiteAlgorithm();
 
