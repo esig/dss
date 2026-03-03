@@ -303,7 +303,7 @@
             <keyUsage>keyEncipherment</keyUsage>
         </keyUsages>
         <extendedKeyUsages>
-            <extendedKeyUsage>0.4.0.194115.0.1.0</extendedKeyUsage> <!-- id-kp-tls-binding -->
+            <extendedKeyUsage>0.4.0.194115.1.0</extendedKeyUsage> <!-- id-kp-tls-binding -->
         </extendedKeyUsages>
         <certificatePolicies>
             <certificatePolicy>0.4.0.194112.1.6</certificatePolicy> <!-- qncp-web-gen -->

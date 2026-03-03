@@ -61,7 +61,7 @@ public class QWAC2ExtKeyUsageCheck extends ChainItem<XmlValidationQWACProcess> {
     protected boolean process() {
         List<XmlOID> extendedKeyUsages = certificate.getExtendedKeyUsages();
         return Utils.collectionSize(extendedKeyUsages) == 1 &&
-                ExtendedKeyUsage.TSL_BINDING_MOD.getOid().equals(extendedKeyUsages.get(0).getValue());
+                ExtendedKeyUsage.TSL_BINDING.getOid().equals(extendedKeyUsages.get(0).getValue());
     }
 
     @Override

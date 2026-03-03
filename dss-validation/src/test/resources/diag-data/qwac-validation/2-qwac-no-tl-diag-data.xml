@@ -251,7 +251,7 @@
                     <subjectAlternativeName type="dNSName">*.nowina.lu</subjectAlternativeName>
                 </SubjectAlternativeNames>
                 <ExtendedKeyUsages OID="2.5.29.37" critical="true">
-                    <extendedKeyUsageOid Description="tslBindingMod">0.4.0.194115.0.1.0</extendedKeyUsageOid>
+                    <extendedKeyUsageOid Description="tslBinding">0.4.0.194115.1.0</extendedKeyUsageOid>
                 </ExtendedKeyUsages>
                 <AuthorityInformationAccess OID="1.3.6.1.5.5.7.1.1" critical="false">
                     <caIssuersUrl>http://dss.nowina.lu/pki-factory/crt/Test-Qualified-CA1-from-ZZ.crt</caIssuersUrl>
