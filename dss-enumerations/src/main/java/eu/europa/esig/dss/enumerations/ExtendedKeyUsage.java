@@ -64,10 +64,12 @@ public enum ExtendedKeyUsage implements OidDescription {
 	 * The following ASN.1 module shall be interpreted using the syntax defined in Recommendation ITU-T X.680 [11]. It
 	 * defines the KeyPurposeID id-kp-tls-binding.
 	 * <p>
-	 * TLSBindingMod { itu-t(0) identified-organization(4) etsi(0)
-	 *  id-qwacImplementation(194115) id-mod(0) id-mod-tlsbinding(1) v1(0) }
+	 *  -- Object Identifier arc for extended Key Usage purpose id-kp-tls-binding
+	 *  id-tlsBinding OBJECT IDENTIFIER ::= { itu-t(0) identified-organization(4)
+	 *  etsi(0) id-qwacImplementation(194115) tls-binding (1) }
+	 *  id-kp-tls-binding OBJECT IDENTIFIER ::= { id-tlsBinding id-kp-tls-binding(0) }
 	 */
-	TSL_BINDING_MOD("tslBindingMod", "0.4.0.194115.0.1.0");
+	TSL_BINDING("tslBinding", "0.4.0.194115.1.0");
 
 	/** ExtendedKeyUsage description */
 	private final String description;

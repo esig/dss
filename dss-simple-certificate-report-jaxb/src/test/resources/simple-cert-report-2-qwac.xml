@@ -131,7 +131,7 @@
                         <keyUsage>keyEncipherment</keyUsage>
                     </keyUsages>
                     <extendedKeyUsages>
-                        <extendedKeyUsage>tslBindingMod</extendedKeyUsage>
+                        <extendedKeyUsage>tslBinding</extendedKeyUsage>
                     </extendedKeyUsages>
                     <ocspUrls>
                         <ocspUrl>http://dss.nowina.lu/pki-factory/ocsp/Test-Qualified-CA1-from-ZZ</ocspUrl>

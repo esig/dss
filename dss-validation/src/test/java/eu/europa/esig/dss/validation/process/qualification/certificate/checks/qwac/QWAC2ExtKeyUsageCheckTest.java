@@ -50,7 +50,7 @@ class QWAC2ExtKeyUsageCheckTest extends AbstractTestCheck {
         XmlExtendedKeyUsages xmlExtendedKeyUsages = new XmlExtendedKeyUsages();
         xmlExtendedKeyUsages.setOID("2.5.29.37");
         XmlOID xmlOID = new XmlOID();
-        xmlOID.setValue("0.4.0.194115.0.1.0");
+        xmlOID.setValue("0.4.0.194115.1.0");
         xmlExtendedKeyUsages.getExtendedKeyUsageOid().add(xmlOID);
         xmlCertificate.setCertificateExtensions(Collections.singletonList(xmlExtendedKeyUsages));
 
@@ -98,7 +98,7 @@ class QWAC2ExtKeyUsageCheckTest extends AbstractTestCheck {
         XmlExtendedKeyUsages xmlExtendedKeyUsages = new XmlExtendedKeyUsages();
         xmlExtendedKeyUsages.setOID("2.5.29.37");
         XmlOID xmlOID1 = new XmlOID();
-        xmlOID1.setValue("0.4.0.194115.0.1.0");
+        xmlOID1.setValue("0.4.0.194115.1.0");
         xmlExtendedKeyUsages.getExtendedKeyUsageOid().add(xmlOID1);
         XmlOID xmlOID2 = new XmlOID();
         xmlOID2.setValue("0.1.2.4.5");
