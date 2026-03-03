@@ -393,6 +393,19 @@ NOTE: `sign OCSP` and `validate OCSP` algorithm usage types apply to both OCSP R
 
 As the use of `algorithmUsage` element is optional, it also stays possible to define a particular context and sub context of a cryptographic suite programmatically. For more details about the implementation, please see the <<ValidationPolicyLoader>> chapter.
 
+===== Policy issue date
+
+Policy issue date has an extended functionality in the DSS validation process than providing an information only. As such, similarly to the `UpdateDate` in the <<CryptographicConstraints>> of the DSS validation policy, the `PolicyIssueDate` element present within an XML or JSON Cryptographic Suite allows configuring a different validation behavior for algorithms expiring before and/or after the defined datetime.
+
+As such, the following default rules apply:
+
+* For cryptographic algorithms with the end of validity date before or at the datetime present within the `PolicyIssueDate` element, the validation would result to a `FAIL` level; and
+* For cryptographic algorithms with the end of validity date after datetime present within the `PolicyIssueDate` element, the validation would result to a `WARN` level.
+
+NOTE: This behavior can be useful to provide a "lax" deprecation mechanism for some cryptographic algorithms.
+
+The default behavior can be configured with a custom validation level. Please see `ValidationPolicyLoader` with a cryptographic suite configuration provided in the <<ValidationPolicyLoader>> chapter.
+
 [[ValidationPolicyLoader]]
 ==== Validation Policy Loader
 
