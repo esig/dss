@@ -1062,10 +1062,11 @@ public class SignatureValidationContext implements ValidationContext {
 		// add processed revocation tokens
 		revocations.addAll(getRelatedRevocationTokens(certToken));
 
-		revocations.addAll(getExternalRevocationTokens(certToken, issuerToken));
+		Set<RevocationToken<?>> externalRevocationTokens = getExternalRevocationTokens(certToken, issuerToken);
+		revocations.addAll(externalRevocationTokens);
 
 		if ((remoteOCSPSource != null || remoteCRLSource != null) &&
-				(Utils.isCollectionEmpty(revocations) || isRevocationDataRefreshNeeded(certToken, revocations))) {
+				(Utils.isCollectionEmpty(revocations) || (Utils.isCollectionEmpty(externalRevocationTokens) && isRevocationDataRefreshNeeded(certToken, revocations)))) {
 			LOG.debug("The signature does not contain relative revocation data.");
 			if (checkRevocationForUntrustedChains || containsTrustAnchor(certChain)) {
 				LOG.trace("Revocation update is in progress for certificate : {}", certToken.getDSSIdAsString());
@@ -1080,7 +1081,7 @@ public class SignatureValidationContext implements ValidationContext {
 							onlineRevocationToken.getDSSIdAsString(), certToken.getDSSIdAsString());
 					revocations.add(onlineRevocationToken);
 					addRevocationTokenForVerification(onlineRevocationToken);
-					linkRevocationToOtherCertificates(onlineRevocationToken, certToken, issuerToken);
+					linkRevocationToOtherCertificates(onlineRevocationToken, issuerToken);
 				}
 				
 			} else {
@@ -1095,9 +1096,9 @@ public class SignatureValidationContext implements ValidationContext {
 		return revocations;
 	}
 
-	private Collection<? extends RevocationToken<?>> getExternalRevocationTokens(CertificateToken certToken,
-																				 CertificateToken issuerCertificateToken) {
-		List<RevocationToken<?>> result = new ArrayList<>();
+	private Set<RevocationToken<?>> getExternalRevocationTokens(CertificateToken certToken,
+																	   CertificateToken issuerCertificateToken) {
+		Set<RevocationToken<?>> result = new HashSet<>();
 		if (issuerCertificateToken != null) {
 			List<RevocationToken<?>> revocationTokens = externalRevocationTokensMap.get(issuerCertificateToken);
 			if (Utils.isCollectionNotEmpty(revocationTokens)) {
@@ -1156,8 +1157,7 @@ public class SignatureValidationContext implements ValidationContext {
 		return false;
 	}
 
-	private void linkRevocationToOtherCertificates(RevocationToken<?> revocationToken, CertificateToken certificateToken,
-												   CertificateToken issuerCertificateToken) {
+	private void linkRevocationToOtherCertificates(RevocationToken<?> revocationToken, CertificateToken issuerCertificateToken) {
 		List<RevocationToken<?>> revocationTokens = externalRevocationTokensMap.computeIfAbsent(issuerCertificateToken, k -> new ArrayList<>());
 		revocationTokens.add(revocationToken);
 	}
