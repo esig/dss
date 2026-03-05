@@ -11,6 +11,21 @@
 |===
 |Version           |Release date             |Features
 
+|v6.4              |March 2026             a|Main new features / improvements :
+
+                                            * LoTE schemas aligned with TS 119 602 v1.1.1;
+                                            * Updated default XML certificate validation policy;
+                                            * Dependencies update (HttpClient5, etc.);
+                                            * Documentation improvements;
+                                            * DSS WebApplication : signature levels reviewed for signing operations.
+
+Bug fixes :
+
+                                            * Fixes related to 2-QWAC validation;
+                                            * Fixed processing of `qc-identMethod` and `qc-qscdLegislation` QcStatements;
+                                            * Incorrect behavior for some algorithm usages defined within a cryptographic suite;
+                                            * DSS Standalone : changed the digest algorithm selector type to fix a button overflow issue.
+
 |v6.4.RC1          |December 2025           a|Main new features / improvements :
 
                                             * QWAC Validator as per ETSI TS 119 411-5 <<R32>>;
@@ -552,14 +567,14 @@ _pass:[*] October 2015: Implementing Acts Art. 27 & 37 (eSig formats)_
 
 To upgrade version of DSS, locate to the `pom.xml` file of your project, search for the properties and then change the dss version in the corresponding field(s).
 
-The example below shows how to switch to DSS version `6.4.RC1` using <<BomModule>>:
+The example below shows how to switch to DSS version `6.4` using <<BomModule>>:
 
 [source,xml]
 .pom.xml
 ----
 <properties>
     ...
-    <dss.version>6.4.RC1</dss.version>
+    <dss.version>6.4</dss.version>
     ...
 </properties>
 

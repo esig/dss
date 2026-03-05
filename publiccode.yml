@@ -50,7 +50,7 @@ platforms:
   - windows
   - linux
   - mac
-releaseDate: '2025-08-05'
+releaseDate: '2026-03-06'
 softwareType: library
 url: 'https://code.europa.eu/dit/dss.git'
-softwareVersion: '6.3'
+softwareVersion: '6.4'
