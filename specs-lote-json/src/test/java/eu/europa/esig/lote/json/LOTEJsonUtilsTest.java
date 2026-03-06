@@ -55,6 +55,17 @@ class LOTEJsonUtilsTest {
 
     @Test
     void mockPID() {
+        InputStream is = LOTEJsonUtilsTest.class.getResourceAsStream("/Mock_PID_Provider_List_v0.0.2.json");
+        JsonObjectWrapper jsonObject = new JSONParser().parse(is);
+
+        assertNotNull(jsonObject);
+
+        List<String> errors = LOTEJsonUtils.getInstance().validateAgainstSchema(jsonObject);
+        assertTrue(errors.isEmpty(), errors.toString());
+    }
+
+    @Test
+    void mockPIDOld() {
         InputStream is = LOTEJsonUtilsTest.class.getResourceAsStream("/Mock_PID_Provider_List_v0.0.1-fixed.json");
         JsonObjectWrapper jsonObject = new JSONParser().parse(is);
 

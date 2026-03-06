@@ -4,19 +4,19 @@
     "LoTE": {
       "type": "object",
       "properties": {
-        "SchemeInformation": {
-          "$ref": "#/definitions/SchemeInformation"
+        "ListAndSchemeInformation": {
+          "$ref": "#/definitions/ListAndSchemeInformation"
         },
         "TrustedEntitiesList": {
           "$ref": "#/definitions/TrustedEntitiesList"
         }
       },
       "required": [
-        "SchemeInformation"
+        "ListAndSchemeInformation"
       ],
       "additionalProperties": false
     },
-    "SchemeInformation": {
+    "ListAndSchemeInformation": {
       "type": "object",
       "properties": {
         "LoTEVersionIdentifier": {
@@ -55,8 +55,8 @@
         "HistoricalInformationPeriod": {
           "$ref": "#/definitions/HistoricalInformationPeriod"
         },
-        "PointerToOtherLoTE": {
-          "$ref": "#/definitions/PointerToOtherLoTE"
+        "PointersToOtherLoTE": {
+          "$ref": "#/definitions/PointersToOtherLoTE"
         },
         "ListIssueDateTime": {
           "$ref": "#/definitions/ListIssueDateTime"
@@ -138,7 +138,7 @@
           "$ref": "#/definitions/PostalAddresses"
         },
         "SchemeOperatorElectronicAddress": {
-          "$ref": "#/definitions/ElectronicAddresses"
+          "$ref": "#/definitions/ElectronicAddress"
         }
       },
       "required": [
@@ -182,13 +182,6 @@
         "Country"
       ],
       "additionalProperties": false
-    },
-    "ElectronicAddresses": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/ElectronicAddress"
-      },
-      "minItems": 1
     },
     "ElectronicAddress": {
       "type": "array",
@@ -262,14 +255,14 @@
     "HistoricalInformationPeriod": {
       "type": "integer"
     },
-    "PointerToOtherLoTE": {
+    "PointersToOtherLoTE": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/OtherTSLPointer"
+        "$ref": "#/definitions/OtherLoTEPointer"
       },
       "minItems": 1
     },
-    "OtherTSLPointer": {
+    "OtherLoTEPointer": {
       "type": "object",
       "properties": {
         "LoTELocation": {
@@ -291,6 +284,11 @@
           "minItems": 1
         }
       },
+      "required": [
+        "LoTELocation",
+        "ServiceDigitalIdentities",
+        "LoTEQualifiers"
+      ],
       "additionalProperties": false
     },
     "ServiceDigitalIdentity": {
@@ -303,21 +301,36 @@
           },
           "minItems": 1
         },
-        "X509SubjectName": {
-          "type": "string"
+        "X509SubjectNames": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/X509SubjectName"
+          },
+          "minItems": 1
         },
-        "PublicKeyValue": {
-          "$ref": "rfcs/rfc7517.json#/definitions/jwk"
+        "PublicKeyValues": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PublicKeyValue"
+          },
+          "minItems": 1
         },
-        "X509SKI": {
-          "type": "string",
-          "contentEncoding": "base64"
+        "X509SKIs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/X509SKI"
+          },
+          "minItems": 1
         },
-        "OtherId": {
-          "type": "string"
-        }
-      },
+        "OtherIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/OtherId"
+          },
+          "minItems": 1
+        },
       "additionalProperties": false
+      }
     },
     "pkiOb": {
       "type": "object",
@@ -338,6 +351,19 @@
         "val"
       ],
       "additionalProperties": false
+    },
+    "X509SubjectName": {
+      "type": "string"
+    },
+    "PublicKeyValue": {
+      "$ref": "rfcs/rfc7517.json#/definitions/jwk"
+    },
+    "X509SKI": {
+      "type": "string",
+      "contentEncoding": "base64"
+    },
+    "OtherId": {
+      "type": "string"
     },
     "LoTEQualifier": {
       "type": "object",
@@ -454,8 +480,8 @@
         "SchemeServiceDefinitionURI": {
           "$ref": "#/definitions/SchemeServiceDefinitionURI"
         },
-        "ServiceSupplyPoint": {
-          "$ref": "#/definitions/ServiceSupplyPoint"
+        "ServiceSupplyPoints": {
+          "$ref": "#/definitions/ServiceSupplyPoints"
         },
         "ServiceDefinitionURI": {
           "$ref": "#/definitions/ServiceDefinitionURI"
@@ -492,24 +518,40 @@
     "SchemeServiceDefinitionURI": {
       "type": "array",
       "items": {
-        "type": "string",
-        "format": "uri"
+        "$ref": "#/definitions/NonEmptyMultiLangURI"
       },
       "minItems": 1
     },
-    "ServiceSupplyPoint": {
+    "ServiceSupplyPoints": {
       "type": "array",
       "items": {
-        "type": "string",
-        "format": "uri"
+        "$ref": "#/definitions/ServiceSupplyPointURI"
       },
       "minItems": 1
+    },
+    "ServiceSupplyPointURI": {
+      "type": "object",
+      "properties": {
+        "ServiceType": {
+          "type": "string",
+          "format": "uri",
+          "minLength": 1
+        },
+        "uriValue": {
+          "type": "string",
+          "format": "uri",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "uriValue"
+      ],
+      "additionalProperties": false
     },
     "ServiceDefinitionURI": {
       "type": "array",
       "items": {
-        "type": "string",
-        "format": "uri"
+        "$ref": "#/definitions/NonEmptyMultiLangURI"
       },
       "minItems": 1
     },
@@ -517,7 +559,14 @@
       "type": "array",
       "minItems": 1
     },
-    "ServiceHistory": {
+    "ServiceHistory":{
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ServiceHistoryInstance"
+      },
+      "minItems": 1
+    },
+    "ServiceHistoryInstance": {
       "type": "object",
       "properties": {
         "ServiceName": {
@@ -568,7 +617,6 @@
       },
       "required": [
         "TEName",
-        "TETradeName",
         "TEAddress",
         "TEInformationURI"
       ],
@@ -588,11 +636,13 @@
       },
       "minItems": 1
     },
+
+
     "TEAddress": {
       "type": "object",
       "properties": {
         "TEPostalAddress": {
-          "$ref": "#/definitions/PostalAddress"
+          "$ref": "#/definitions/PostalAddresses"
         },
         "TEElectronicAddress": {
           "$ref": "#/definitions/ElectronicAddress"

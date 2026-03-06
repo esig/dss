@@ -1,6 +1,6 @@
 {
   "LoTE": {
-    "SchemeInformation": {
+    "ListAndSchemeInformation": {
       "LoTEVersionIdentifier": 1,
       "LoTESequenceNumber": 1,
       "LoTEType": "http://uri.etsi.org/LoTE/ListOfTrustedEntities/LoTEType/PIDProviderList",
@@ -123,16 +123,14 @@
           }
         ],
         "SchemeOperatorElectronicAddress": [
-          [
-            {
-              "lang": "en",
-              "uriValue": "mailto:EC-TL-Service@ec.europa.eu"
-            },
-            {
-              "lang": "en",
-              "uriValue": "https://digital-strategy.ec.europa.eu/en/policies/eu-trusted-lists"
-            }
-          ]
+          {
+            "lang": "en",
+            "uriValue": "mailto:EC-TL-Service@ec.europa.eu"
+          },
+          {
+            "lang": "en",
+            "uriValue": "https://digital-strategy.ec.europa.eu/en/policies/eu-trusted-lists"
+          }
         ]
       },
       "SchemeName": [
@@ -183,13 +181,15 @@
             }
           ],
           "TEAddress": {
-            "TEPostalAddress": {
-              "lang": "en",
-              "StreetAddress": "Central street",
-              "Locality": "Metropolis",
-              "PostalCode": "1234",
-              "Country": "FR"
-            },
+            "TEPostalAddress": [
+              {
+                "lang": "en",
+                "StreetAddress": "Central street",
+                "Locality": "Metropolis",
+                "PostalCode": "1234",
+                "Country": "FR"
+              }
+            ],
             "TEElectronicAddress": [
               {
                 "lang": "en",

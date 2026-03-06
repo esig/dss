@@ -39,9 +39,9 @@ public class LOTEUtils extends XSDAbstractUtils {
     /** The Object Factory to use */
     public static final ObjectFactory OBJECT_FACTORY = new ObjectFactory();
 
-    public static final String LOTE_SCHEMA_LOCATION = "/xsd/19602_xsd_v0.0.6a.xsd";
-    public static final String LOTE_SIE_SCHEMA_LOCATION = "/xsd/19602_xsd_schema_sie_v0.0.6.xsd";
-    public static final String LOTE_TIE_SCHEMA_LOCATION = "/xsd/19602_xsd_schema_tie_v0.0.6.xsd";
+    public static final String LOTE_SCHEMA_LOCATION = "/xsd/1960201_xsd_schema.xsd";
+    public static final String LOTE_SIE_SCHEMA_LOCATION = "/xsd/1960201_xsd_schema_sie.xsd";
+    public static final String LOTE_TIE_SCHEMA_LOCATION = "/xsd/1960201_xsd_schema_tie.xsd";
 
     /** Singleton */
     private static LOTEUtils singleton;

@@ -22,6 +22,7 @@ The following modules are provided with independent implementations:
 
 * DSS Utils;
 * DSS CRL Parser;
+* DSS CMS;
 * DSS PAdES.
 
 WARNING: At least one implementation shall be chosen.

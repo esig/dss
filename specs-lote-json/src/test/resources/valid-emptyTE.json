@@ -1,6 +1,6 @@
 {
    "LoTE" : {
-      "SchemeInformation": {
+      "ListAndSchemeInformation": {
          "LoTEVersionIdentifier": 1,
          "LoTESequenceNumber": 42,
          "SchemeOperatorName": [

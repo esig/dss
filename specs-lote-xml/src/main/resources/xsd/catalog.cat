@@ -1,4 +1,4 @@
 PUBLIC "-//W3C//DTD XMLSCHEMA 200102//EN" "XMLSchema.dtd"
-SYSTEM "http://uri.etsi.org/019602/v1.1.1/lote.xsd" "19602_xsd_v0.0.6a.xsd"
+SYSTEM "http://uri.etsi.org/019602/v1.1.1/lote.xsd" "1960201_xsd_schema.xsd"
 REWRITE_SYSTEM "http://www.w3.org/TR/2008/REC-xmldsig-core-20080610/xmldsig-core-schema.xsd" "maven:eu.europa.ec.joinup.sd-dss:specs-xmldsig:jar::!/xsd/xmldsig-core-schema.xsd"
 REWRITE_SYSTEM "http://www.w3.org/2001/xml.xsd" "maven:eu.europa.ec.joinup.sd-dss:specs-xmldsig:jar::!/xsd/xml.xsd"

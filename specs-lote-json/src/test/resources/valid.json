@@ -1,6 +1,6 @@
 {
    "LoTE" : {
-      "SchemeInformation": {
+      "ListAndSchemeInformation": {
          "LoTEVersionIdentifier": 1,
          "LoTESequenceNumber": 42,
          "SchemeOperatorName": [
@@ -26,11 +26,13 @@
                   }
                ],
                "TEAddress": {
-                  "TEPostalAddress": {
-                     "lang" : "en",
-                     "StreetAddress": "123 Example Street",
-                     "Country": "FR"
-                  },
+                  "TEPostalAddress": [
+                     {
+                        "lang" : "en",
+                        "StreetAddress": "123 Example Street",
+                        "Country": "FR"
+                     }
+                  ],
                   "TEElectronicAddress": [
                      {
                         "lang": "en",

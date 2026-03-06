@@ -497,7 +497,7 @@ public class CertificateExtensionsUtils {
 
             ASN1Primitive extension = JcaX509ExtensionUtils.parseExtensionValue(extensionValue);
             org.bouncycastle.asn1.x509.AuthorityKeyIdentifier aki = org.bouncycastle.asn1.x509.AuthorityKeyIdentifier.getInstance(extension);
-            authorityKeyIdentifier.setKeyIdentifier(aki.getKeyIdentifier());
+            authorityKeyIdentifier.setKeyIdentifier(aki.getKeyIdentifierOctets());
             if (aki.getAuthorityCertIssuer() != null && aki.getAuthorityCertSerialNumber() != null) {
                 IssuerSerial issuerSerial = new IssuerSerial(aki.getAuthorityCertIssuer(), aki.getAuthorityCertSerialNumber());
                 authorityKeyIdentifier.setAuthorityCertIssuerSerial(DSSASN1Utils.getDEREncoded(issuerSerial));
