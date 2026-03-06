@@ -24,16 +24,22 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
+import org.bouncycastle.asn1.x500.style.BCStyle;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.security.KeyStore;
+import java.util.Iterator;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -62,7 +68,12 @@ class SSLCommonDataLoaderTest {
 		try (OutputStream os = new FileOutputStream(CORRECT_KS_PATH)) {
 			KeyStore ks = KeyStore.getInstance(KS_TYPE);
 			ks.load(null);
-			ks.setCertificateEntry("cef", certificateTokens.iterator().next().getCertificate());
+			Iterator<CertificateToken> it = certificateTokens.iterator();
+			while (it.hasNext()) {
+				CertificateToken certificateToken = it.next();
+				String commonName = DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.CN, certificateToken.getSubject());
+				ks.setCertificateEntry(commonName, certificateToken.getCertificate());
+			}
 			ks.store(os, KS_PASSWORD);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -118,6 +129,18 @@ class SSLCommonDataLoaderTest {
 
 		Exception exception = assertThrows(DSSException.class, () -> dataLoader.get(URL));
 		assertTrue(exception.getMessage().contains("Unable to process GET call for url [" + URL + "]"));
+	}
+
+	@AfterAll
+	static void clean() {
+		cleanFile(new File(CORRECT_KS_PATH));
+		cleanFile(new File(WRONG_KS_PATH));
+	}
+
+	private static void cleanFile(File file) {
+		assertTrue(file.exists());
+		assertTrue(file.delete());
+		assertFalse(file.exists());
 	}
 
 }
