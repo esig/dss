@@ -800,11 +800,16 @@
 
     <xsl:template match="dss:ProofOfExistence" />
     <xsl:template match="dss:CertificateChain" />
+	<xsl:template match="dss:RevocationThisUpdate" />
     <xsl:template match="dss:RevocationProductionDate" />
     <xsl:template match="dss:RevocationInfo" />
     <xsl:template match="dss:CrossCertificate" />
 	<xsl:template match="dss:EquivalentCertificate" />
 	<xsl:template match="dss:CryptographicValidation" />
+	<xsl:template match="dss:SignatureCryptographicValidation" />
+	<xsl:template match="dss:SignedAttributesValidation" />
+	<xsl:template match="dss:DigestMatchersValidation" />
+	<xsl:template match="dss:CertificateChainCryptographicValidation" />
 	<xsl:template match="dss:ControlTime" />
 
 	<xsl:template name="formatdate">

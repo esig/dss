@@ -13,7 +13,7 @@
 
 |v6.4              |March 2026             a|Main new features / improvements :
 
-                                            * LoTE schemas aligned with TS 119 602 v1.1.1;
+                                            * LoTE schemas aligned with TS 119 602 v1.1.1 <<R33>>;
                                             * Updated default XML certificate validation policy;
                                             * Dependencies update (HttpClient5, etc.);
                                             * Documentation improvements;
@@ -24,6 +24,7 @@ Bug fixes :
                                             * Fixes related to 2-QWAC validation;
                                             * Fixed processing of `qc-identMethod` and `qc-qscdLegislation` QcStatements;
                                             * Incorrect behavior for some algorithm usages defined within a cryptographic suite;
+                                            * Fixed printing of Algorithm Obsolescence Validation block within PDF Detailed Report;
                                             * DSS Standalone : changed the digest algorithm selector type to fix a button overflow issue.
 
 |v6.4.RC1          |December 2025           a|Main new features / improvements :
