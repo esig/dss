@@ -15,6 +15,8 @@ All implementors are strongly advised to upgrade their systems to one of the afo
 
 WARNING: Failure to upgrade DSS version may result to inability to process the Trusted Lists v6.
 
+In addition to the Trusted List version change, the https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.C_.2019.276.01.0001.01.ENG[OJ EU keystore] is set for a change as well. For the migration procedure, please refer to the <<TLKeystoreConfig>>.
+
 For signing a Trusted List of v5 or v6, please see the chapter <<TLSigning>>.
 
 [[tlValidationJob]]
@@ -220,6 +222,63 @@ NOTE: When the value is set within a `LOTLSource` object, the parameter will be 
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/TLValidationJobSnippets.java[tags=tl-version]
 ----
+
+[[TLKeystoreConfig]]
+==== Trusted List keystore configuration
+
+To validate the signature of a Trusted List (TL) or a List of Trusted Lists (LOTL), DSS requires a collection of signing certificate candidates. These certificates act as trust anchors for verifying the authenticity of the TL/LOTL.
+
+These certificates must be supplied in a form of `CertificateSource` and associated with the corresponding `TLSource` or `LOTLSource` instance:
+
+[source,java,indent=0]
+.LOTL signing-certificates configuration
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/EuropeanLOTLSnippets.java[tags=eu-lotl-cert-source]
+----
+
+===== LOTL keystore configuration
+
+When using a `TLValidationJob` configured with a LOTL, only the certificates for the initial LOTL (or pivot LOTL) should be provided, as shown above. Certificates required for validating referenced Trusted Lists are automatically extracted from the LOTL content. See chapters below for LOTL-related specifics.
+
+====== Pivot mechanism
+
+When a LOTL relies on a pivot mechanism, the initial keystore must contain the signing certificate candidates corresponding to the first pivot LOTL.  This allows the LOTL signing certificates to evolve over time without breaking validation. For more details about this mechanism, refer to the https://ec.europa.eu/tools/lotl/pivot-lotl-explanation.html[pivot mechanism explanation].
+
+To enable pivot support please use the property below:
+
+[source,java,indent=0]
+.Pivot mechanism configuration
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/EuropeanLOTLSnippets.java[tags=eu-lotl-pivot]
+----
+
+====== Signing certificate announcement predicate
+
+When the pivot mechanism is enabled, LOTL validation may be performed using different entry points. These sources are declared in the LOTL using `<SchemeInformationURI>` element.
+
+To ensure deterministic validation, it is recommended to explicitly define the location of the original keystore (or the list of signing certificates) used to validate the LOTL signature:
+
+[source,java,indent=0]
+.Signing certificate announcement predicate
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/EuropeanLOTLSnippets.java[tags=eu-lotl-ojeu]
+----
+
+Where `OJ_URL` is a value of the `<SchemeInformationURI>/<URI>` element pointing to the publication of signing certificate candidates.
+
+WARNING: If no signing certificate announcement predicate is defined, DSS will process all pivot LOTLs, provided the pivot mechanism is enabled.
+
+====== EU LOTL keystore transition
+
+NOTE: In the EU LOTL, multiple OJEU URIs may temporarily coexist during transitions (e.g. due to a LOTL location or version change). After the transition, only the latest URI (and therefore, keystore) remains active.
+
+Should the EU LOTL initiate a transition process, implementers must perform the following actions:
+
+1. Locate the latest Official Journal of the European Union (OJEU) publication referenced in the freshest EU LOTL inside a `<SchemeInformationURI>` element.
+2. Update the certificate source with a new set of LOTL signing-certificate candidates obtained from the new OJEU URI.
+3. Update the `signingCertificatesAnnouncementPredicate` in the `LOTLSource` to reference the new OJEU URI.
+
+WARNING: Inability to update the keystore before the transition period ends, may result to a failure on the LOTL validation.
 
 [[TrustAnchorValidityPredicate]]
 ==== Trust anchor validity predicate
