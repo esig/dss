@@ -76,12 +76,21 @@ public class CAdESAttribute implements SignatureAttribute {
 	
 	/**
 	 * Returns attribute values set
-	 * 
+	 *
 	 * @return {@link ASN1Set}
 	 */
 	public ASN1Set getAttrValues() {
 		return attribute.getAttrValues();
 	}
+
+    /**
+     * Returns the attribute
+     *
+     * @return {@link Attribute}
+     */
+    public Attribute getAttribute() {
+        return attribute;
+    }
 
 	/**
 	 * Returns the inner {@link ASN1Encodable} object

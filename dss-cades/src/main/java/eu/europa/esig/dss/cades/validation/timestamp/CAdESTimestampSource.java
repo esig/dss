@@ -69,6 +69,7 @@ import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.ASN1Set;
 import org.bouncycastle.asn1.DEROctetString;
+import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.cms.CMSAttributes;
 import org.bouncycastle.asn1.cms.SignerInfo;
 import org.bouncycastle.asn1.esf.CrlListID;
@@ -345,7 +346,7 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 
 			final ASN1Sequence unsignedAttrsHashIndex = CAdESUtils.getUnsignedAttributesHashIndex(atsHashIndex);
 			addReferences(timestampedReferences,
-					getUnsignedAttributesReferences(unsignedAttrsHashIndex, digestAlgorithm, previousTimestamps));
+					getUnsignedAttributesReferences(unsignedAttrsHashIndex, digestAlgorithm, timestampToken.getUnsignedAttributes(), previousTimestamps));
 		}
 		timestampToken.getTimestampedReferences().addAll(timestampedReferences);
 	}
@@ -471,7 +472,7 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 	}
 	
 	private List<TimestampedReference> getUnsignedAttributesReferences(final ASN1Sequence unsignedAttrsHashIndex,
-			final DigestAlgorithm digestAlgorithm, final List<TimestampToken> previousTimestamps) {
+            final DigestAlgorithm digestAlgorithm, final AttributeTable unsignedAttributes, final List<TimestampToken> previousTimestamps) {
 		final List<TimestampedReference> references = new ArrayList<>();
 
 		final List<DEROctetString> timestampUnsignedAttributesHashesList = DSSASN1Utils
@@ -479,8 +480,8 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 		
 		final SignatureProperties<CAdESAttribute> unsignedSignatureProperties = getUnsignedSignatureProperties();
 		for (CAdESAttribute unsignedAttribute : unsignedSignatureProperties.getAttributes()) {
-			List<byte[]> octets = CAdESUtils.getATSHashIndexV3OctetString(unsignedAttribute.getASN1Oid(),
-					unsignedAttribute.getAttrValues());
+            List<byte[]> octets = CAdESUtils.getOctetStringForAtsHashIndex(unsignedAttribute.getAttribute(),
+                    CAdESUtils.getAtsHashIndexVersionIdentifier(unsignedAttributes));
 			for (byte[] bytes : octets) {
 				final byte[] digest = DSSUtils.digest(digestAlgorithm, bytes);
 				DEROctetString derDigest = new DEROctetString(digest);
