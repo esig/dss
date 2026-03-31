@@ -335,7 +335,9 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 		List<TimestampedReference> timestampedReferences = new ArrayList<>();
 		addReferences(timestampedReferences, getSignatureTimestampReferences());
 
-		final ASN1Sequence atsHashIndex = CAdESUtils.getAtsHashIndex(timestampToken.getUnsignedAttributes());
+		final AttributeTable unsignedAttributes = timestampToken.getUnsignedAttributes();
+		final ASN1ObjectIdentifier atsHashIndexVersionIdentifier = CAdESUtils.getAtsHashIndexVersionIdentifier(unsignedAttributes);
+		final ASN1Sequence atsHashIndex = CAdESUtils.getAtsHashIndexByVersion(unsignedAttributes, atsHashIndexVersionIdentifier);
 		if (atsHashIndex != null) {
 			final DigestAlgorithm digestAlgorithm = getHashIndexDigestAlgorithm(atsHashIndex);
 
@@ -345,8 +347,8 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 			addReferences(timestampedReferences, getSignedDataRevocationReferences(crlHashIndex, digestAlgorithm));
 
 			final ASN1Sequence unsignedAttrsHashIndex = CAdESUtils.getUnsignedAttributesHashIndex(atsHashIndex);
-			addReferences(timestampedReferences,
-					getUnsignedAttributesReferences(unsignedAttrsHashIndex, digestAlgorithm, timestampToken.getUnsignedAttributes(), previousTimestamps));
+			addReferences(timestampedReferences, getUnsignedAttributesReferences(
+					atsHashIndexVersionIdentifier, unsignedAttrsHashIndex, digestAlgorithm, previousTimestamps));
 		}
 		timestampToken.getTimestampedReferences().addAll(timestampedReferences);
 	}
@@ -471,8 +473,9 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 		return isDigestValuePresent(DSSUtils.digest(digestAlgorithm, encoded), crlsHashList);
 	}
 	
-	private List<TimestampedReference> getUnsignedAttributesReferences(final ASN1Sequence unsignedAttrsHashIndex,
-            final DigestAlgorithm digestAlgorithm, final AttributeTable unsignedAttributes, final List<TimestampToken> previousTimestamps) {
+	private List<TimestampedReference> getUnsignedAttributesReferences(
+			final ASN1ObjectIdentifier atsHashIndexVersionIdentifier, final ASN1Sequence unsignedAttrsHashIndex,
+            final DigestAlgorithm digestAlgorithm, final List<TimestampToken> previousTimestamps) {
 		final List<TimestampedReference> references = new ArrayList<>();
 
 		final List<DEROctetString> timestampUnsignedAttributesHashesList = DSSASN1Utils
@@ -480,8 +483,7 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 		
 		final SignatureProperties<CAdESAttribute> unsignedSignatureProperties = getUnsignedSignatureProperties();
 		for (CAdESAttribute unsignedAttribute : unsignedSignatureProperties.getAttributes()) {
-            List<byte[]> octets = CAdESUtils.getOctetStringForAtsHashIndex(unsignedAttribute.getAttribute(),
-                    CAdESUtils.getAtsHashIndexVersionIdentifier(unsignedAttributes));
+            List<byte[]> octets = CAdESUtils.getOctetStringForAtsHashIndex(unsignedAttribute.getAttribute(), atsHashIndexVersionIdentifier);
 			for (byte[] bytes : octets) {
 				final byte[] digest = DSSUtils.digest(digestAlgorithm, bytes);
 				DEROctetString derDigest = new DEROctetString(digest);

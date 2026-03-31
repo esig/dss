@@ -13,15 +13,17 @@ import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 
-public class CAdESLevelLTAEN319122Test extends AbstractCAdESTestValidation {
+class CAdESLevelLTAEN319122ValidationTest extends AbstractCAdESTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {
-        return new InMemoryDocument(CAdESLevelLTAEN319122Test.class.getResourceAsStream("/validation/cades-lta-en319122.cms"));
+        return new InMemoryDocument(CAdESLevelLTAEN319122ValidationTest.class.getResourceAsStream("/validation/cades-lta-en319122.cms"));
     }
 
     @Override
     protected void checkTimestamps(final DiagnosticData diagnosticData) {
+        super.checkTimestamps(diagnosticData);
+
         List<TimestampWrapper> timestampList = diagnosticData.getTimestampList();
         assertEquals(2, timestampList.size());
 
@@ -55,4 +57,5 @@ public class CAdESLevelLTAEN319122Test extends AbstractCAdESTestValidation {
         assertTrue(sigTstFound);
         assertTrue(arcTstFound);
     }
+
 }
