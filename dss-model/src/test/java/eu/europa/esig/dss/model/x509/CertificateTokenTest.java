@@ -47,6 +47,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -54,6 +57,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 class CertificateTokenTest {
 
@@ -215,6 +219,33 @@ class CertificateTokenTest {
 		assertTrue(copy.remove(goodUser));
 		assertFalse(set.contains(goodUserBis));
 	}
+
+    @Test
+    void testMultiThread() {
+        String rootCaB64 = "MIIDVzCCAj+gAwIBAgIBATANBgkqhkiG9w0BAQ0FADBNMRAwDgYDVQQDDAdyb290LWNhMRkwFwYDVQQKDBBOb3dpbmEgU29sdXRpb25zMREwDwYDVQQLDAhQS0ktVEVTVDELMAkGA1UEBhMCTFUwHhcNMTkwMjE4MDkzMTU0WhcNMjEwMjE4MDkzMTU0WjBNMRAwDgYDVQQDDAdyb290LWNhMRkwFwYDVQQKDBBOb3dpbmEgU29sdXRpb25zMREwDwYDVQQLDAhQS0ktVEVTVDELMAkGA1UEBhMCTFUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCr35vEZwV4ynpmxadO6nuJTqhdPSDN0JIO3CFMU4CT/QQ2ZquuPxt4ImFW3mxXzsXkozrUV99Mwt8yRuYt6uJf761DkSjdPB/HVWNyLXVTq1hyiLsrfRlsklnZ08HSLcDK9gmuiHYyOlIl6V9dZkgscdH68mBQHzaS5Ve9P7p0QXBu1PaY/Mc65eSYUGTi75W6vBeX59mEGYAkUlr0LFdUf+Nr3kFlZ14Okh7w0y1NY8v8EUPQvMGnyrcAs+LBm5i65LoGdSQaIE9LiyYZvoFiC0CutY/aYWoLIhvjiLhMEmk+odU/6XOpvI7cUMrBVcLsvWrSmD/ju/mtaiPXfVV5AgMBAAGjQjBAMA4GA1UdDwEB/wQEAwIBBjAdBgNVHQ4EFgQUMAns58WjMfSq9Xqlt1OwKEY8ze4wDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0BAQ0FAAOCAQEAYTtRueasFMQOuhKeJqI8QTonjxptdXpcOEx5lr7Hmo1+GDTuyKnGQIGWDl2WZoQuan9XITQsJSZWURY4yxsGhIxrM680M+FgZX/PQcgNOJDX00vAytnvZjssp45LDHMKbo9R9T5sjyjkxmMiQgWaQmKgt8biarZpzgTtlIG2U4aH6weuCNX8RW1nZHGMHjoR6lwV93jn8b8oZFqY7q0ISCR4gcIJ/Evqmshoau8vS8tIVD6FqECFWLKku+h9sO4LrYdDKLSZ4VAcZSv3jjGDbOmr4/L1XGF4WOWlrPNk3vVUH8ZbazNELzFPY24mrdZPDR9rNTE+rUZ4Nd1hhCKISg==";
+        String goodCaB64 = "MIID6jCCAtKgAwIBAgIBBDANBgkqhkiG9w0BAQsFADBNMRAwDgYDVQQDDAdyb290LWNhMRkwFwYDVQQKDBBOb3dpbmEgU29sdXRpb25zMREwDwYDVQQLDAhQS0ktVEVTVDELMAkGA1UEBhMCTFUwHhcNMTkwMzE4MDkzMTU1WhcNMjEwMTE4MDkzMTU1WjBNMRAwDgYDVQQDDAdnb29kLWNhMRkwFwYDVQQKDBBOb3dpbmEgU29sdXRpb25zMREwDwYDVQQLDAhQS0ktVEVTVDELMAkGA1UEBhMCTFUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCfUvDNM8lvv9P5pILP98HhhM0iiGMdw/MjJOqSKdA3Ss0xXT0UeYlr0blGBFt4yKHxfIAwR8BqLviT1CA0a6+PS8EDEC29txIRCPO+BscKlz4ZFlU9g2dGwA4Dl5ynEq0AP/TYjKl5RY+rGZT/Qx8Ea5OAr9MgQWWKuONFyo7dv4tM7FMTcHUL+hUqdQEpKXXsCOT5WYjtr3oYeu34Cal8m8YN/UmK70fGDwlRHLKgDIvcfZT3dkNOehabuez2Sj6kFkWNseQWeXSjzM1f2OH9idW9UmSQ7RvxDIAgKBYD/D9gGannG2SPZWQo+w5O9UhcE1N8Nc89CLCdJguVNF9hAgMBAAGjgdQwgdEwDgYDVR0PAQH/BAQDAgEGMEEGA1UdHwQ6MDgwNqA0oDKGMGh0dHA6Ly9kc3Mubm93aW5hLmx1L3BraS1mYWN0b3J5L2NybC9yb290LWNhLmNybDBMBggrBgEFBQcBAQRAMD4wPAYIKwYBBQUHMAKGMGh0dHA6Ly9kc3Mubm93aW5hLmx1L3BraS1mYWN0b3J5L2NydC9yb290LWNhLmNydDAdBgNVHQ4EFgQU4tC4xPvJxRJqFXnjSqGn5Rzj5jYwDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAQEAFJbVMStk22yRI6dczyzj6zyIh2noFa7STDW3oWg5UdXrjvWpCrw3OSqbF1UEF6X6FtDJfrXhmgyhVwVgHzH1n6+SXG3I/lOeAOKiCNjUA7uhenZuOgoVmWdfs+c9lIx8q7/f8L/kEePoDMLOYqhsSwfDhjELuq+2OOkMOqstuRyKPLQbK7nvf985W7qdjoggm4BHNm+RxkRkrLn1DxYqxnU+2ByZbZEWsqlPTgfRobBLbgPT7PMwVdwuZ6MzdVUsmBj82kGL2duAnzE117cTLmiEluUVXy/RskcHDcbhtOyOBzmQCKmXzafSiHTHtTUPC2XgpRwfwqad4jB+iMSL9A==";
+
+        CertificateToken goodCa = getCertificate(goodCaB64);
+        CertificateToken rootCa = getCertificate(rootCaB64);
+
+        ExecutorService executor = Executors.newFixedThreadPool(10);
+        List<Future<?>> futures = new ArrayList<>();
+        for (int i = 0; i < 1000; i++) {
+            futures.add(executor.submit(() -> {
+                assertTrue(rootCa.isSelfSigned());
+                assertFalse(rootCa.isSignedBy(goodCa));
+            }));
+        }
+
+        futures.forEach(future -> {
+            try {
+                future.get();
+            } catch (Exception e) {
+                fail(e);
+            }
+        });
+        executor.shutdown();
+    }
 
 	private CertificateToken getCertificate(String base64) {
 		return getCertificate(new ByteArrayInputStream(Base64.getDecoder().decode(base64)));

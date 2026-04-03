@@ -22,6 +22,7 @@ package eu.europa.esig.dss.spi.validation;
 
 import eu.europa.esig.dss.alert.ExceptionOnStatusAlert;
 import eu.europa.esig.dss.alert.SilentOnStatusAlert;
+import eu.europa.esig.dss.enumerations.SignatureValidity;
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -45,18 +46,24 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.security.PublicKey;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -639,6 +646,38 @@ class SignatureValidationContextTest {
 		certificateVerifier.setAlertOnExpiredCertificate(null);
 		assertFalse(validationContext.checkAllSignaturesNotExpired());
 	}
+
+    @Test
+    void testMultiThreadValidation() {
+        String certB64 = "MIIC6TCCAdGgAwIBAgIUfgPljMvc6LPgcqZzsOcBm5P9TV8wDQYJKoZIhvcNAQELBQAwIDEMMAoGA1UECgwDQ0dJMRAwDgYDVQQDDAd0ZXN0LWNhMB4XDTI2MDEwNjE1NDY0OVoXDTQwMDEwMjE1NDY0OVowITEMMAoGA1UECgwDQ0dJMREwDwYDVQQDDAh0ZXN0LWFwcDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAL8y6g/GuTbCflNQMVyRh9w1c03JreQPiLap6PCzUf69sfWtRo7kxpMxKpXNUZz84s4eCjFa5OZh7RjniwmG5rPKvZ+1YWQKjX7NaP864V2JjZQjLB1Peqx0FgdiQPGYPxrAB2jZKIU6OgfI+MjEqOozjLvexDG024D7NLKlU6/3/qTtOpaSz9zBcpRzDSb1uSSL9j8c6XdHnlpn0TlFyWHUVwrJ6yzlSlTbsIkIV67QYKs8DDn01ro+Jwad2k7FtUtd6V1z19td7riwoPieZlt92459ampb6kQbTg9MXGacRYe49F+AC+P2dwAu6F3mNnXtigOigTT2j6on40sBY3ECAwEAAaMaMBgwCQYDVR0TBAIwADALBgNVHQ8EBAMCBLAwDQYJKoZIhvcNAQELBQADggEBAAN2Xku4GGKJZZwnGHCzrlxsOVLbpszk0t1jTYnaZ92fZ3UQVQqK1lWLQmGTrpG6YOju80QEPgkrvHqM0jjHqWdaG/BkMvTZN2+wVqeQH83MIKy/2Ec6hGC5afFo5dESnJcf/gZ/+HLiYcl999PPucpqjJHnooe2HeGAKY4QMXQYftDGZ779aAc5wWd2p5ADXw5dIhzcxyIVlhaS6k2tu6qW4pavcnX8POrUCYsDegDPcQ+qVS7xdkPVKmI3dJNH433E6REDWFcfKMR5TSBdwRgCeydaAWge0QFq83ddz0pBhASdwYiS3Y6ClADQnVDfgIthY94iQGZdTSgu0dcHhlU=";
+        String caB64 = "MIIC6zCCAdOgAwIBAgIUf4pAJRS0kBjqisZG15gBm5P8f04wDQYJKoZIhvcNAQENBQAwIDEMMAoGA1UECgwDQ0dJMRAwDgYDVQQDDAd0ZXN0LWNhMB4XDTI2MDEwNjE1NDU1N1oXDTQwMDEwMjE1NDU1N1owIDEMMAoGA1UECgwDQ0dJMRAwDgYDVQQDDAd0ZXN0LWNhMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1yLXj+0eXxJWeLCtFOpHebgYUwb2fHOs5UTpDAYkt3bnELxK8fJ7XkqNamoGTFa81Q9fBRKrgFrWR6/j5W+eOOkO7ttC28wE+SR0QpYjjtVGf/h9ZGFPHsd8SRKfDE6GCbvOVIk5pVruXtlH5T3Z4OjgtQ7pINm5XuUYLyBxlaXPmgNAoC3f66nm1sVeyite0eCXEbOxQTLvwIINavNFwmw8nR4Di5YiogZjpjmc2+wGxuM33uOiv4uwjX8T/c+Zj+T9FuPjTqn7VRuQ/KmTRvSaDpqiii2ttMSeimDPzC6tfaQ/4Zp2c0laofJk8XiLsQlLh0BfxqcbMixfM4nqvQIDAQABox0wGzAMBgNVHRMEBTADAQH/MAsGA1UdDwQEAwIBBjANBgkqhkiG9w0BAQ0FAAOCAQEACXRNTC7WJgN3pYa/1shA44GswokAy2haS59j3nIBCd/HA6zdhh1dGGQw0rZ9+Be2LIOYpcRbvmRP6KGF3suH0gGjEEJNCMhzbvTXTjzkgf0KuV6bJtdkAOz2SZ9WuzatX6NUf+XZgcEAUr6vFrkCKAKnYKMvoBgcb6r7lq+JU1mGjT4fu7DDJYMUHQQlIT2oKJUM/fFj1hsCkxWjKWzRBcJSWSVE/T0mtk4OkB7h6IKlVvZeI/JCnQPJXPBD/7i6svjFvGuioOZA5uH4d2vPR5UDvTmEUp+hHquNVUr61EjHtHCfEamtqZtOCVVhuDPTsvPdDAYM0YnF1SHVaTukNA==";
+
+        CertificateToken cert = DSSUtils.loadCertificateFromBase64EncodedString(certB64);
+        CertificateToken ca = DSSUtils.loadCertificateFromBase64EncodedString(caB64);
+
+        ExecutorService executor = Executors.newFixedThreadPool(10);
+        List<Future<?>> futures = new ArrayList<>();
+        for (int i = 0; i < 1000; i++) {
+            futures.add(executor.submit(() -> {
+                final SignatureValidationContext validationContext = new SignatureValidationContext();
+                validationContext.initialize(new CommonCertificateVerifier());
+                validationContext.addCertificateTokenForVerification(ca);
+                validationContext.addCertificateTokenForVerification(cert);
+                validationContext.validate();
+                assertEquals(SignatureValidity.VALID, ca.getSignatureValidity());
+                assertEquals(SignatureValidity.VALID, cert.getSignatureValidity());
+            }));
+        }
+
+        futures.forEach(future -> {
+            try {
+                future.get();
+            } catch (Exception e) {
+                fail(e);
+            }
+        });
+        executor.shutdown();
+    }
 
 	private static class MockAIASource extends DefaultAIASource {
 

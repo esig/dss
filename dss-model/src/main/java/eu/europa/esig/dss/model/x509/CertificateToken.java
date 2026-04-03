@@ -309,17 +309,18 @@ public class CertificateToken extends Token {
 
     @Override
     protected SignatureValidity checkIsSignedBy(final PublicKey publicKey) {
-        signatureValidity = SignatureValidity.INVALID;
+        SignatureValidity result = SignatureValidity.INVALID;
         signatureInvalidityReason = "";
         try {
             x509Certificate.verify(publicKey);
-            signatureValidity = SignatureValidity.VALID;
+            result = SignatureValidity.VALID;
         } catch (NoSuchProviderException e) { // if there's no default provider.
             throw new DSSException(String.format("No provider has been found for signature validation : %s", e.getMessage()), e);
         } catch (Exception e) {
             signatureInvalidityReason = e.getClass().getSimpleName() + " : " + e.getMessage();
         }
-        return signatureValidity;
+        signatureValidity = result;
+        return result;
     }
 
     /**
