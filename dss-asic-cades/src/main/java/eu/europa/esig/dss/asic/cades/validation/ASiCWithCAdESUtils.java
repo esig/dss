@@ -25,6 +25,7 @@ import eu.europa.esig.dss.asic.common.ASiCUtils;
 import eu.europa.esig.dss.asic.common.validation.ASiCManifestParser;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,7 +65,8 @@ public class ASiCWithCAdESUtils {
 		} else if (ASiCContainerType.ASiC_E.equals(type)) {
 			// the manifest file is signed
 			List<DSSDocument> manifestDocuments = extractResult.getManifestDocuments();
-			if (manifestDocuments.size() == 1) {
+			List<DSSDocument> signatureDocuments = extractResult.getSignatureDocuments();
+			if (Utils.collectionSize(manifestDocuments) == 1 && Utils.collectionSize(signatureDocuments) == 1) {
 				return manifestDocuments.iterator().next();
 			}
 			// we need to check the manifest file and its digest
