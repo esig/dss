@@ -127,17 +127,6 @@ public interface ValidationPolicy {
 	 *
 	 * @param context {@link Context}
 	 * @return {@code LevelRule} if SigningTime element is present in the constraint file, null otherwise.
-	 * @deprecated since DSS 6.4. Please use {@code #getSigningTimeConstraint} method instead.
-	 */
-	@Deprecated
-	LevelRule getSigningDurationRule(Context context);
-
-	/**
-	 * Indicates if the signed property: signing-time should be checked. If SigningTime element is absent within the
-	 * constraint file then null is returned.
-	 *
-	 * @param context {@link Context}
-	 * @return {@code LevelRule} if SigningTime element is present in the constraint file, null otherwise.
 	 */
 	LevelRule getSigningTimeConstraint(Context context);
 
@@ -1189,16 +1178,6 @@ public interface ValidationPolicy {
 	 *                                 in the constraint file, null otherwise.
 	 */
 	LevelRule getTimestampContainerSignedAndTimestampedFilesCoveredConstraint();
-
-	/**
-	 * Returns RevocationTimeAgainstBestSignatureTime constraint if present in the policy, null otherwise
-	 *
-	 * @return {@code LevelRule} if RevocationTimeAgainstBestSignatureTime element is present
-	 *                                 in the constraint file, null otherwise.
-	 * @deprecated since DSS 6.4. Please use {@code #getRevocationTimeAgainstBestSignatureTimeConstraint} method instead.
-	 */
-	@Deprecated
-	LevelRule getRevocationTimeAgainstBestSignatureDurationRule();
 
 	/**
 	 * Returns RevocationTimeAgainstBestSignatureTime constraint if present in the policy, null otherwise

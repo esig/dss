@@ -124,17 +124,6 @@ public class ManifestEntry implements Serializable {
 	}
 
 	/**
-	 * Gets the name of the corresponding document
-	 *
-	 * @return {@link String}
-	 * @deprecated since DSS 6.4. Please use {@code getDocument().getName()} method instead.
-	 */
-	@Deprecated
-	public String getDocumentName() {
-		return document != null ? document.getName() : null;
-	}
-
-	/**
 	 * Sets the name of the corresponding document
 	 *
 	 * @param documentName {@link String}

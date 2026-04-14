@@ -286,12 +286,6 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 		return null;
 	}
 
-	@Deprecated
-	@Override
-	public LevelRule getSigningDurationRule(Context context) {
-		return getSigningTimeConstraint(context);
-	}
-
 	@Override
 	public LevelRule getSigningTimeConstraint(Context context) {
 		SignedAttributesConstraints signedAttributeConstraints = getSignedAttributeConstraints(context);
@@ -1368,12 +1362,6 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 			return toLevelRule(timestamp.getBestSignatureTimeBeforeExpirationDateOfSigningCertificate());
 		}
 		return null;
-	}
-
-	@Deprecated
-	@Override
-	public LevelRule getRevocationTimeAgainstBestSignatureDurationRule() {
-		return getRevocationTimeAgainstBestSignatureTimeConstraint();
 	}
 
 	@Override

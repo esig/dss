@@ -217,28 +217,6 @@ public class ReferenceValidation implements Serializable {
 	}
 
 	/**
-	 * Gets matching document name
-	 *
-	 * @return {@link String}
-	 * @deprecated since DSS 6.4. Please use {@code getDocument().getName()} method instead
-	 */
-	@Deprecated
-	public String getDocumentName() {
-		return document != null ? document.getName() : null;
-	}
-
-	/**
-	 * Sets the matching document name
-	 *
-	 * @param documentName {@link String}
-	 * @deprecated since DSS 6.4. Please use {@code setDocument()} method instead
-	 */
-	@Deprecated
-	public void setDocumentName(String documentName) {
-		LOG.warn("Use of deprecated method #setDocumentName. Please switch to #setDocument. Current method processing is skipped");
-	}
-
-	/**
 	 * Gets matching document
 	 *
 	 * @return {@link DSSDocument}

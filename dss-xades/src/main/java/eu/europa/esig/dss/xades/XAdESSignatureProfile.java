@@ -28,7 +28,7 @@ import java.util.List;
  * XAdES signature creation profile
  *
  */
-public interface XAdESSignatureProfile extends SignatureProfile {
+public interface XAdESSignatureProfile {
 
     /**
      * Creates a signature of the defines profile for signing a document

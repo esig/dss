@@ -183,28 +183,6 @@ public class X509CertificateBuilder {
      * Sets mandatory information about the certificate's issuer to sign the created certificate
      *
      * @param issuerName {@link X500Name} representing a DN issuer name of the certificate to be created
-     * @param issuerPrivateKey {@link PrivateKey} of the issuer certificate to sign the certificate
-     * @param signatureAlgorithm {@link SignatureAlgorithm} to be used on signature creation
-     * @return {@link X509CertificateBuilder} this
-     * @deprecated since DSS 6.4. Please use {@code #issuer(X500Name issuerName, KeyPair issuerKeyPair, SignatureAlgorithm signatureAlgorithm)}
-     *             method instead
-     */
-    @Deprecated
-    public X509CertificateBuilder issuer(X500Name issuerName, PrivateKey issuerPrivateKey, SignatureAlgorithm signatureAlgorithm) {
-        Objects.requireNonNull(issuerName, "IssuerName cannot be null!");
-        Objects.requireNonNull(issuerPrivateKey, "issuerPrivateKey cannot be null!");
-        Objects.requireNonNull(signatureAlgorithm, "SignatureAlgorithm cannot be null!");
-
-        this.issuerName = issuerName;
-        this.issuerKey = issuerPrivateKey;
-        this.signatureAlgorithm = signatureAlgorithm;
-        return this;
-    }
-
-    /**
-     * Sets mandatory information about the certificate's issuer to sign the created certificate
-     *
-     * @param issuerName {@link X500Name} representing a DN issuer name of the certificate to be created
      * @param issuerKeyPair {@link KeyPair} of the issuer certificate
      * @param signatureAlgorithm {@link SignatureAlgorithm} to be used on signature creation
      * @return {@link X509CertificateBuilder} this
@@ -218,23 +196,6 @@ public class X509CertificateBuilder {
         this.issuerKeyPair = issuerKeyPair;
         this.signatureAlgorithm = signatureAlgorithm;
         return this;
-    }
-
-    /**
-     * Sets mandatory information about the certificate's issuer to sign the created certificate
-     * with a CertificateToken of the issuer
-     *
-     * @param issuerCertificate {@link CertificateToken} representing a certificate token of the issuer
-     * @param issuerPrivateKey {@link PrivateKey} of the issuer certificate to sign the certificate
-     * @param signatureAlgorithm {@link SignatureAlgorithm} to be used on signature creation
-     * @return {@link X509CertificateBuilder} this
-     * @deprecated since DSS 6.4. Please use {@code #issuer(CertificateToken issuerCertificate, KeyPair issuerKeyPair, SignatureAlgorithm signatureAlgorithm)}
-     *             method instead
-     */
-    @Deprecated
-    public X509CertificateBuilder issuer(CertificateToken issuerCertificate, PrivateKey issuerPrivateKey, SignatureAlgorithm signatureAlgorithm) {
-        Objects.requireNonNull(issuerCertificate, "CertificateToken cannot be null!");
-        return issuer(DSSASN1Utils.getX509CertificateHolder(issuerCertificate).getSubject(), issuerPrivateKey, signatureAlgorithm);
     }
 
     /**

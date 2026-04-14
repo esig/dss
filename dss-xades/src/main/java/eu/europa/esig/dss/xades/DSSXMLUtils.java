@@ -699,19 +699,6 @@ public final class DSSXMLUtils {
 	}
 
 	/**
-	 * Determines if the given {@code reference} refers to CounterSignature element
-	 *
-	 * @param reference {@link Reference} to check
-	 * @param xadesPaths {@link XAdESPath}
-	 * @return TRUE if the reference refers to the CounterSignature, FALSE otherwise
-	 * @deprecated since DSS 6.4. Please use {@code #isCounterSignatureReferenceType(reference.getType())} method instead
-	 */
-	@Deprecated
-	public static boolean isCounterSignature(final Reference reference, final XAdESPath xadesPaths) {
-		return isCounterSignatureReferenceType(reference.getType());
-	}
-
-	/**
 	 * Determines if the given {@code reference} refers to CounterSignature element within the {@code signature}
 	 *
 	 * @param reference {@link Reference} to check
@@ -1347,19 +1334,6 @@ public final class DSSXMLUtils {
 			element = XPathUtils.getElementById(recreatedDocument, elementId);
 		}
 		return XPathUtils.getElement(element, xpathQuery);
-	}
-
-	/**
-	 * This method returns a name of the linked document to the reference (when applicable)
-	 *
-	 * @param reference {@link Reference} to get a name of the linked document for
-	 * @return {@link String} document name
-	 * @deprecated since DSS 6.4. Please use {@code getDocument(reference).getName()} method instead
-	 */
-	@Deprecated
-	public static String getDocumentName(Reference reference) {
-		DSSDocument document = getDocument(reference);
-		return document != null ? document.getName() : null;
 	}
 
 	/**

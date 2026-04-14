@@ -798,18 +798,6 @@ public class ValidationPolicyLoader {
         }
 
         /**
-         * Sets the execution level for acceptable encryption algorithms check of the last provided cryptographic suite
-         *
-         * @param level {@link Level}
-         * @return this
-         * @deprecated since DSS 6.4. Please use {@code #andAcceptableSignatureAlgorithmsLevel} method instead.
-         */
-        @Deprecated
-        public ValidationPolicyLoaderWithCryptoSuite andAcceptableEncryptionAlgorithmsLevel(Level level) {
-            return andAcceptableSignatureAlgorithmsLevel(level);
-        }
-
-        /**
          * Sets the execution level for acceptable signature algorithms check of the last provided cryptographic suite
          *
          * @param level {@link Level}
@@ -818,19 +806,6 @@ public class ValidationPolicyLoader {
         public ValidationPolicyLoaderWithCryptoSuite andAcceptableSignatureAlgorithmsLevel(Level level) {
             cryptographicSuites.forEach(s -> s.setAcceptableSignatureAlgorithmsLevel(level));
             return this;
-        }
-
-        /**
-         * Sets the execution level for acceptable minimum key sizes of encryption algorithms check of
-         * the last provided cryptographic suite
-         *
-         * @param level {@link Level}
-         * @return this
-         * @deprecated since DSS 6.4. Please use {@code #andAcceptableSignatureAlgorithmsMiniKeySizeLevel} method instead.
-         */
-        @Deprecated
-        public ValidationPolicyLoaderWithCryptoSuite andAcceptableEncryptionAlgorithmsMiniKeySizeLevel(Level level) {
-            return andAcceptableSignatureAlgorithmsMiniKeySizeLevel(level);
         }
 
         /**

@@ -122,21 +122,6 @@ public class NativeHTTPDataLoader implements DataLoader, AdvancedDataLoader {
 	}
 
 	/**
-	 * Execute the request
-	 *
-	 * @param url {@link String}
-	 * @param method {@link HttpMethod}
-	 * @param content request content
-	 * @param refresh if enforce the refresh
-	 * @return response binaries
-	 * @deprecated since DSS 6.4. Please use {@code #request(url, method, content, refresh, true, false)} method instead.
-	 */
-	@Deprecated
-	protected byte[] request(String url, HttpMethod method, byte[] content, boolean refresh) {
-		return request(url, method, content, refresh, false, true).getResponseBody();
-	}
-
-	/**
 	 * This method creates a task call to be executed by NativeHTTPDataLoader
 	 *
 	 * @param url {@link String} URL to call
@@ -181,22 +166,6 @@ public class NativeHTTPDataLoader implements DataLoader, AdvancedDataLoader {
 		} catch (Exception e) {
 			throw new DSSExternalResourceException(e);
 		}
-	}
-
-	/**
-	 * This method creates a task call to be executed by NativeHTTPDataLoader
-	 *
-	 * @param url {@link String} URL to call
-	 * @param method {@link HttpMethod} of the request
-	 * @param content byte array containing a body of the request, when required
-	 * @param refresh defined if the cache should be used
-	 * @return {@link Callable} task
-	 * @deprecated since DSS 6.4. Please use {@code #createNativeHTTPDataLoaderCall(
-	 *             String url, HttpMethod method, byte[] content, boolean refresh, boolean includeHTTPContent)} method instead
-	 */
-	@Deprecated
-	protected Callable<byte[]> createNativeDataLoaderCall(String url, HttpMethod method, byte[] content, boolean refresh) {
-		return new NativeDataLoaderCall(url, content, !refresh, maxInputSize, connectTimeout, readTimeout);
 	}
 
 	@Override

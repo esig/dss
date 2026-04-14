@@ -109,18 +109,6 @@ public class CAdESLevelBaselineB {
 	}
 
 	/**
-	 * The constructor for CAdESLevelBaselineB with a {@code padesUsage} indication
-	 *
-	 * @param padesUsage defines if the CMS signature shall be created a PAdES
-	 * @deprecated since DSS 6.4. Please use {@code new PAdESLevelBaselineB()} instead.
-	 */
-	@Deprecated
-	public CAdESLevelBaselineB(boolean padesUsage) {
-		throw new UnsupportedOperationException("Constructor CAdESLevelBaselineB(boolean padesUsage) has been deprecated. " +
-				"Please use PAdESLevelBaselineB instead.");
-	}
-
-	/**
 	 * The constructor for CAdESLevelBaselineB with a {@code documentToSign}
 	 *
 	 * @param documentToSign {@link DSSDocument} document to be signed

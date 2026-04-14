@@ -1023,20 +1023,6 @@ public class CommonsDataLoader implements DataLoader, AdvancedDataLoader {
 	 *
 	 * @param client {@link CloseableHttpClient}
 	 * @param httpRequest {@link HttpUriRequest}
-	 * @return byte array representing the response's content
-	 * @throws IOException if an exception occurs
-	 * @deprecated since DSS 6.4. Please use {@code #executeHttpRequest(client, httpRequest, false)} method instead.
-	 */
-	@Deprecated
-	protected ResponseEnvelope executeHttpRequest(final CloseableHttpClient client, final HttpUriRequest httpRequest) throws IOException {
-		return executeHttpRequest(client, httpRequest, false, true);
-	}
-
-	/**
-	 * Processes {@code httpRequest} and returns the byte array representing the response's content
-	 *
-	 * @param client {@link CloseableHttpClient}
-	 * @param httpRequest {@link HttpUriRequest}
 	 * @param includeResponseDetails whether the response details are to be included
 	 * @param includeResponseBody whether the response message body is to be included in the result
 	 * @return byte array representing the response's content

@@ -795,20 +795,6 @@ public final class DSSUtils {
 	}
 
 	/**
-	 * This method returns the {@code X500Principal} corresponding to the given string or {@code null} if the conversion
-	 * is not possible.
-	 *
-	 * @param x500PrincipalString
-	 *            a {@code String} representation of the {@code X500Principal}
-	 * @return {@code X500Principal} or null
-	 * @deprecated since DSS 6.4. Please use {@code DSSASN1Utils#getX500PrincipalOrNull} method instead.
-	 */
-	@Deprecated
-	public static X500Principal getX500PrincipalOrNull(final String x500PrincipalString) {
-		return DSSASN1Utils.getX500PrincipalOrNull(x500PrincipalString);
-	}
-
-	/**
 	 * This method returns an UTC date base on the year, the month and the day. 
 	 * The year must be encoded as 1978... and not 78
 	 *

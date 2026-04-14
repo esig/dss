@@ -349,25 +349,6 @@ public final class CAdESUtils {
 	}
 
 	/**
-	 * Returns a {@code DigestCalculatorProvider}
-	 *
-	 * @param toSignDocument {@link DSSDocument} to sign
-	 * @param digestAlgorithm {@link DigestAlgorithm} to use
-	 * @return {@link DigestCalculatorProvider}
-	 * @deprecated since DSS 6.4. To be removed
-	 */
-	@Deprecated
-	public static DigestCalculatorProvider getDigestCalculatorProvider(DSSDocument toSignDocument,
-																	   DigestAlgorithm digestAlgorithm) {
-		if (digestAlgorithm != null) {
-			return new CustomMessageDigestCalculatorProvider(digestAlgorithm, toSignDocument.getDigestValue(digestAlgorithm));
-		} else if (toSignDocument instanceof DigestDocument) {
-			return new PrecomputedDigestCalculatorProvider(toSignDocument);
-		}
-		return new BcDigestCalculatorProvider();
-	}
-
-	/**
 	 * Checks if the given {@code SignerInformation}'s unsignedProperties contain an archive-time-stamp (ATSv2) element
 	 * 
 	 * @param signerInformation {@link SignerInformation} to check
@@ -704,50 +685,6 @@ public final class CAdESUtils {
             }
         }
 		return null;
-	}
-
-	/**
-	 * Checks if the {@code attributeTable} is empty
-	 *
-	 * @param attributeTable {@link AttributeTable}
-	 * @return TRUE if the attribute table is empty, FALSE otherwise
-	 * @deprecated since DSS 6.4. Please use {@code eu.europa.esig.dss.spi.DSSASN1Utils#isEmpty} method instead.
-	 */
-	@Deprecated
-	public static boolean isEmpty(AttributeTable attributeTable) {
-		return (attributeTable == null) || (attributeTable.size() == 0);
-	}
-
-	/**
-	 * Returns the current {@code originalAttributeTable} if instantiated, an empty {@code AttributeTable} if null
-	 *
-	 * @param originalAttributeTable {@link AttributeTable}
-	 * @return {@link AttributeTable}
-	 * @deprecated since DSS 6.4. Please use {@code eu.europa.esig.dss.spi.DSSASN1Utils#emptyIfNull} method instead.
-	 */
-	@Deprecated
-	public static AttributeTable emptyIfNull(AttributeTable originalAttributeTable) {
-		if (originalAttributeTable != null) {
-			return originalAttributeTable;
-		}
-		return new AttributeTable(new Hashtable<ASN1ObjectIdentifier, Attribute>());
-	}
-
-	/**
-	 * Checks if the given attribute is an instance of the expected asn1ObjectIdentifier type
-	 *
-	 * @param attribute {@link Attribute} to check
-	 * @param asn1ObjectIdentifier {@link ASN1ObjectIdentifier} type to check against
-	 * @return TRUE if the attribute is of type asn1ObjectIdentifier, FALSE otherwise
-	 * @deprecated since DSS 6.4. Please use {@code eu.europa.esig.dss.spi.DSSASN1Utils#isAttributeOfType} method instead.
-	 */
-	@Deprecated
-	public static boolean isAttributeOfType(Attribute attribute, ASN1ObjectIdentifier asn1ObjectIdentifier) {
-		if (attribute == null) {
-			return false;
-		}
-		ASN1ObjectIdentifier objectIdentifier = attribute.getAttrType();
-		return asn1ObjectIdentifier.equals(objectIdentifier);
 	}
 
 	/**

@@ -269,6 +269,10 @@ public class RemoteDocumentSignatureServiceImpl extends AbstractRemoteSignatureS
 
 		if (signatureProfile == null) {
 			signatureProfile = remoteParameters.getSignatureLevel().getSignatureProfile();
+			LOG.info("Target signature profile has been derived from the RemoteSignatureParameters : {}. " +
+					"SignatureProfile is to be required in future versions.", signatureProfile);
+		} else if (remoteParameters != null && remoteParameters.getSignatureLevel() != null) {
+			LOG.warn("Both SignatureProfile and RemoteSignatureParameters.SignatureLevel are defined. The SignatureProfile will be used : {}", signatureProfile);
 		}
 
 		DSSDocument extendDocument = documentExtender.extendDocument(signatureProfile, signatureParameters);
