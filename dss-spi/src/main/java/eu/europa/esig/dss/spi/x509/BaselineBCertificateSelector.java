@@ -21,8 +21,10 @@
 package eu.europa.esig.dss.spi.x509;
 
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.utils.Utils;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -90,9 +92,14 @@ public class BaselineBCertificateSelector extends CertificateReorderer {
 		List<CertificateToken> orderedCertificates = getOrderedCertificates();
 
 		// if true, trust anchor certificates (and upper certificates) are not included in the signature
-		if (trustAnchorBPPolicy && trustedCertificateSource != null) {
-			List<CertificateToken> result = new LinkedList<>();
-			for (CertificateToken certificateToken : orderedCertificates) {
+		if (trustAnchorBPPolicy && trustedCertificateSource != null && Utils.isCollectionNotEmpty(orderedCertificates)) {
+			final List<CertificateToken> result = new LinkedList<>();
+			Iterator<CertificateToken> it = orderedCertificates.iterator();
+			// signing certificate is required to be included in BASELINE-B signature
+			CertificateToken signingCertificate = it.next();
+			result.add(signingCertificate);
+			while (it.hasNext()) {
+				CertificateToken certificateToken = it.next();
 				if (trustedCertificateSource.isTrusted(certificateToken)) {
 					break;
 				}
