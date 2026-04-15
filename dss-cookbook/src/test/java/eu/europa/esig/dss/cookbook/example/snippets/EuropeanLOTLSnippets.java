@@ -143,11 +143,24 @@ class EuropeanLOTLSnippets {
 	}
 
 	public LOTLSource europeanLOTL() {
+		// tag::eu-lotl-cert-source[]
+		// import eu.europa.esig.dss.tsl.source.LOTLSource;
+
 		LOTLSource lotlSource = new LOTLSource();
+
+		// end::eu-lotl-cert-source[]
 		lotlSource.setUrl(LOTL_URL);
+		// tag::eu-lotl-cert-source[]
 		lotlSource.setCertificateSource(officialJournalContentKeyStore());
+		// end::eu-lotl-cert-source[]
+		// tag::eu-lotl-ojeu[]
+		// import eu.europa.esig.dss.tsl.function.OfficialJournalSchemeInformationURI;
+
 		lotlSource.setSigningCertificatesAnnouncementPredicate(new OfficialJournalSchemeInformationURI(OJ_URL));
+		// end::eu-lotl-ojeu[]
+		// tag::eu-lotl-pivot[]
 		lotlSource.setPivotSupport(true);
+		// end::eu-lotl-pivot[]
 		lotlSource.setTLVersions(Arrays.asList(5, 6));
 		return lotlSource;
 	}
