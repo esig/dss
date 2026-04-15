@@ -181,7 +181,9 @@ A List of Trusted Lists (LOTL) is a list that contains:
 * links towards all the published EU MS Trusted Lists;
 * the certificates used to verify the signatures of these trusted lists.
 
-In the EU/EEA context, a LOTL is published by the European Commission at a secure location that is made publicly available on the https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.C_.2019.276.01.0001.01.ENG[Official Journal of the European Commission (OJEU)]. It is available in an XML format which is suitable for automated processing. This format of the LOTL is digitally signed/sealed, which allows to assure authenticity and integrity of the LOTL. The signing certificates of the LOTL are also made publicly available in the OJEU.
+In the EU/EEA context, a LOTL is published by the European Commission at a secure location that is made publicly available on the https://eur-lex.europa.eu/eli/C/2026/1944/oj[Official Journal of the European Commission (OJEU)]. It is available in an XML format which is suitable for automated processing. This format of the LOTL is digitally signed/sealed, which allows to assure authenticity and integrity of the LOTL. The signing certificates of the LOTL are also made publicly available in the OJEU.
+
+NOTE: A new notice in the Official Journal of the European Union https://eur-lex.europa.eu/eli/C/2026/1944/oj[OJEU C/2026/1944, 15.4.2026] has been published on 15 April 2026. The notice declares a new set of EU LOTL signing certificates and EU LOTL location. It replaces the information published in the notice: https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.C_.2019.276.01.0001.01.ENG[OJEU C 276, 16.8.2019, pp. 1-7]. The transition period starts immediately upon the publication of new LOTL and concludes on 29 April 2026. For migration procedure of DSS installation please refer to the <<TLKeystoreConfig>> chapter.
 
 The LOTL is used to authenticate EU MS Trusted Lists and to provide an easy and trustworthy way to access these TLs.
 
