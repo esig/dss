@@ -475,6 +475,11 @@
 				<artifactId>dss-cookbook</artifactId>
 				<version>${project.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-azure-key-vault</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 </project>
