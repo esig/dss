@@ -35,6 +35,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Calendar;
+import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -54,6 +56,7 @@ class CAdESLevelBEnvelopingWithParallelSigTest extends AbstractCAdESTestSignatur
         documentToSign = originalDocument;
 
         parameters = new CAdESSignatureParameters();
+        parameters.bLevel().setSigningDate(new Date());
         parameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
         parameters.setSigningCertificate(getSigningCert());
         parameters.setCertificateChain(getCertificateChain());
@@ -67,6 +70,10 @@ class CAdESLevelBEnvelopingWithParallelSigTest extends AbstractCAdESTestSignatur
     @Override
     public void signAndVerify() {
         DSSDocument signed = sign();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.SECOND, 1);
+        parameters.bLevel().setSigningDate(calendar.getTime());
 
         CMSSignedData signedCMS = DSSUtils.toCMSSignedData(signed);
         assertFalse(signedCMS.isDetachedSignature());
@@ -92,6 +99,11 @@ class CAdESLevelBEnvelopingWithParallelSigTest extends AbstractCAdESTestSignatur
     @Override
     protected void checkNumberOfSignatures(DiagnosticData diagnosticData) {
         assertEquals(2, Utils.collectionSize(diagnosticData.getSignatureIdList()));
+    }
+
+    @Override
+    protected void checkSigningDate(DiagnosticData diagnosticData) {
+        // skip
     }
 
     @Override

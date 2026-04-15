@@ -20,16 +20,8 @@
  */
 package eu.europa.esig.dss.jades.signature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-
-import java.io.File;
-import java.util.Date;
-import java.util.List;
-
-import org.junit.jupiter.api.BeforeEach;
-
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -39,8 +31,17 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.CounterSignatureService;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.utils.Utils;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 class JAdESLevelBDoubleCounterSignTest extends AbstractJAdESCounterSignatureTest {
 
@@ -100,6 +101,13 @@ class JAdESLevelBDoubleCounterSignTest extends AbstractJAdESCounterSignatureTest
 	@Override
 	protected void checkNumberOfSignatures(DiagnosticData diagnosticData) {
 		assertEquals(3, Utils.collectionSize(diagnosticData.getSignatureIdList()));
+	}
+
+	@Override
+	protected void checkNoDuplicateSignatures(DiagnosticData diagnosticData) {
+		List<SignatureWrapper> counterSignatures = new ArrayList<>(diagnosticData.getAllCounterSignatures());
+		assertEquals(2, counterSignatures.size());
+		assertEquals(counterSignatures.get(0).getDAIdentifier(), counterSignatures.get(1).getDAIdentifier());
 	}
 
 	@Override

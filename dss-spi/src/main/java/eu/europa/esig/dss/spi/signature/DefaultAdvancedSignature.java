@@ -20,12 +20,14 @@
  */
 package eu.europa.esig.dss.spi.signature;
 
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.ManifestFile;
 import eu.europa.esig.dss.model.ReferenceValidation;
 import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.model.signature.SignatureCryptographicVerification;
+import eu.europa.esig.dss.model.signature.SignatureDigestReference;
 import eu.europa.esig.dss.model.signature.SignaturePolicy;
 import eu.europa.esig.dss.model.signature.SignerRole;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -50,7 +52,9 @@ import eu.europa.esig.dss.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A common implementation of {@code AdvancedSignature}
@@ -146,6 +150,11 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	 * Unique signature identifier
 	 */
 	protected SignatureIdentifier signatureIdentifier;
+
+	/**
+	 * Cached map of computed SignatureDigestReference's as defined in ETSI TS 119 102-2 ch. "4.1.1.5 Signature Reference"
+	 */
+	private Map<DigestAlgorithm, SignatureDigestReference> signatureDigestReferences = new HashMap<>();
 
 	/**
 	 * Performs a conformance check for the signature to a given profile
@@ -523,6 +532,22 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	 * @return {@link SignaturePolicy}
 	 */
 	protected abstract SignaturePolicy buildSignaturePolicy();
+
+	@Override
+	public SignatureDigestReference getSignatureDigestReference(DigestAlgorithm digestAlgorithm) {
+		if (signatureDigestReferences == null) {
+			signatureDigestReferences = new HashMap<>();
+		}
+		return signatureDigestReferences.computeIfAbsent(digestAlgorithm, v -> buildSignatureDigestReference(digestAlgorithm));
+	}
+
+	/**
+	 * Builds a new SignatureDigestReference according to the applicable signature format rules
+	 *
+	 * @param digestAlgorithm {@link DigestAlgorithm} to be used for digest computation
+	 * @return {@link SignatureDigestReference}
+	 */
+	protected abstract SignatureDigestReference buildSignatureDigestReference(DigestAlgorithm digestAlgorithm);
 
 	/**
 	 * Returns a cached instance of the {@code BaselineRequirementsChecker}

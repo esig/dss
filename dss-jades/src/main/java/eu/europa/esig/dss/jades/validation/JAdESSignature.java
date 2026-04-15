@@ -596,7 +596,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 
 	// TODO : no definition available in ETSI TS 119 442 - V1.1.1
 	@Override
-	public SignatureDigestReference getSignatureDigestReference(DigestAlgorithm digestAlgorithm) {
+	public SignatureDigestReference buildSignatureDigestReference(DigestAlgorithm digestAlgorithm) {
 		String encodedHeader = jws.getEncodedHeader();
 		String payload = jws.isRfc7797UnencodedPayload() ? jws.getUnverifiedPayload() : jws.getEncodedPayload();
 		String encodedSignature = jws.getEncodedSignature();

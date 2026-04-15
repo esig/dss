@@ -38,6 +38,7 @@ import org.junit.jupiter.api.BeforeEach;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -78,8 +79,11 @@ class ASiCECAdESMultiFilesLevelBDoubleSignatureTest extends AbstractASiCEWithCAd
         DSSDocument firstSignedDocument = super.sign();
         assertNotNull(firstSignedDocument);
 
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.SECOND, 1);
+
         signatureParameters = new ASiCWithCAdESSignatureParameters();
-        signatureParameters.bLevel().setSigningDate(new Date());
+        signatureParameters.bLevel().setSigningDate(calendar.getTime());
         signatureParameters.setSigningCertificate(getSigningCert());
         signatureParameters.setCertificateChain(getCertificateChain());
         signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);

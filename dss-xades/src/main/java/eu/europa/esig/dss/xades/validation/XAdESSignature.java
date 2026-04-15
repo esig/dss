@@ -1042,8 +1042,9 @@ public class XAdESSignature extends DefaultAdvancedSignature {
 	 * corresponding ds:Signature element and its contents. The canonicalization shall be computed keeping this
 	 * ds:Signature element as a descendant of the XML root element, without detaching it.
 	 */
+
 	@Override
-	public SignatureDigestReference getSignatureDigestReference(DigestAlgorithm digestAlgorithm) {
+	protected SignatureDigestReference buildSignatureDigestReference(DigestAlgorithm digestAlgorithm) {
 		DSSMessageDigest digest = DSSXMLUtils.getDigestOnCanonicalizedNode(getSignatureElement(), digestAlgorithm, DEFAULT_CANONICALIZATION_METHOD);
 		return new SignatureDigestReference(DEFAULT_CANONICALIZATION_METHOD, digest);
 	}

@@ -454,11 +454,12 @@ public class SignedDocumentDiagnosticDataBuilder extends DiagnosticDataBuilder {
 	}
 
 	private boolean hasDuplicate(AdvancedSignature currentSignature) {
+		// NOTE: with DSS-3847 we introduce a stricter verification of the signature duplication,
+		// verifying by DSS and DA identifiers across all signature files, as well as a SignatureDigestReference
 		for (AdvancedSignature signature : signatures) {
-			if (currentSignature != signature
-					&& (currentSignature.getId().equals(signature.getId()) ||
-					(currentSignature.getDAIdentifier() != null && currentSignature.getDAIdentifier().equals(signature.getDAIdentifier())
-							&& currentSignature.getFilename() != null && currentSignature.getFilename().equals(signature.getFilename())))) {
+			if (currentSignature != signature && (currentSignature.getId().equals(signature.getId()) ||
+					(currentSignature.getDAIdentifier() != null && currentSignature.getDAIdentifier().equals(signature.getDAIdentifier())) ||
+							currentSignature.getSignatureDigestReference(defaultDigestAlgorithm).equals(signature.getSignatureDigestReference(defaultDigestAlgorithm))) ) {
 				return true;
 			}
 		}

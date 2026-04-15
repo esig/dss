@@ -26,6 +26,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
+import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -37,6 +38,7 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.simplereport.SimpleReport;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
@@ -47,13 +49,18 @@ import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class XAdESLevelBEnvelopedDuplicateSignatureTest extends PKIFactoryAccess {
 	
 	private static final I18nProvider i18nProvider = new I18nProvider();
+
+	private static final DigestAlgorithm DEFAULT_DIGEST_ALGORITHM = DigestAlgorithm.SHA256;
 	
 	@Test
 	void test() throws Exception {
@@ -78,6 +85,17 @@ class XAdESLevelBEnvelopedDuplicateSignatureTest extends PKIFactoryAccess {
 		
 		SignedDocumentValidator validator = SignedDocumentValidator.fromDocument(signedTwiceDoc);
 		validator.setCertificateVerifier(getOfflineCertificateVerifier());
+
+		List<AdvancedSignature> advancedSignatures = validator.getSignatures();
+		assertEquals(2, advancedSignatures.size());
+		assertNotEquals(advancedSignatures.get(0).getId(), advancedSignatures.get(1).getId());
+		assertEquals(advancedSignatures.get(0).getSignatureDigestReference(DEFAULT_DIGEST_ALGORITHM), advancedSignatures.get(1).getSignatureDigestReference(DEFAULT_DIGEST_ALGORITHM));
+		assertNotSame(advancedSignatures.get(0).getSignatureDigestReference(DEFAULT_DIGEST_ALGORITHM), advancedSignatures.get(1).getSignatureDigestReference(DEFAULT_DIGEST_ALGORITHM));
+		assertEquals(advancedSignatures.get(0).getSignatureDigestReference(DEFAULT_DIGEST_ALGORITHM), advancedSignatures.get(0).getSignatureDigestReference(DEFAULT_DIGEST_ALGORITHM));
+		assertEquals(advancedSignatures.get(1).getSignatureDigestReference(DEFAULT_DIGEST_ALGORITHM), advancedSignatures.get(1).getSignatureDigestReference(DEFAULT_DIGEST_ALGORITHM));
+        assertSame(advancedSignatures.get(0).getSignatureDigestReference(DEFAULT_DIGEST_ALGORITHM), advancedSignatures.get(0).getSignatureDigestReference(DEFAULT_DIGEST_ALGORITHM));
+		assertSame(advancedSignatures.get(1).getSignatureDigestReference(DEFAULT_DIGEST_ALGORITHM), advancedSignatures.get(1).getSignatureDigestReference(DEFAULT_DIGEST_ALGORITHM));
+
 		Reports reports = validator.validateDocument();
 		
 		DiagnosticData diagnosticData = reports.getDiagnosticData();
@@ -86,6 +104,7 @@ class XAdESLevelBEnvelopedDuplicateSignatureTest extends PKIFactoryAccess {
 		assertNotEquals(signatures.get(0).getId(), signatures.get(1).getId());
 		
 		for (SignatureWrapper signatureWrapper : signatures) {
+			assertFalse(signatureWrapper.isBLevelTechnicallyValid());
 		
 			SimpleReport simpleReport = reports.getSimpleReport();
 			assertEquals(Indication.TOTAL_FAILED, simpleReport.getIndication(signatureWrapper.getId()));

@@ -24,6 +24,8 @@ import eu.europa.esig.dss.asic.cades.ASiCWithCAdESSignatureParameters;
 import eu.europa.esig.dss.asic.cades.ASiCWithCAdESTimestampParameters;
 import eu.europa.esig.dss.asic.cades.merge.AbstractWithCAdESTestMerge;
 import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -34,6 +36,8 @@ import org.junit.jupiter.api.BeforeEach;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ASiCEWithCAdESLevelBContainerMergerSameSigParamsSameSignatureNameTest extends AbstractWithCAdESTestMerge {
 
@@ -85,6 +89,12 @@ class ASiCEWithCAdESLevelBContainerMergerSameSigParamsSameSignatureNameTest exte
         secondSignatureParameters.setSigningCertificate(getSigningCert());
         secondSignatureParameters.setCertificateChain(getCertificateChain());
         return secondSignatureParameters;
+    }
+
+    @Override
+    protected void checkNoDuplicateSignatures(DiagnosticData diagnosticData) {
+        List<SignatureWrapper> signatures = diagnosticData.getSignatures();
+        assertEquals(signatures.get(0).getDAIdentifier(), signatures.get(1).getDAIdentifier());
     }
 
     @Override

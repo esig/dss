@@ -34,7 +34,7 @@ import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.junit.jupiter.api.BeforeEach;
 
-import java.util.Date;
+import java.util.Calendar;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -64,15 +64,22 @@ class ASiCECAdESLevelBSignFourTimeTest extends AbstractASiCECAdESTestSignature {
 		documentToSign = originalDocument;
 		DSSDocument signedDocument = super.sign();
 
-		signatureParameters.bLevel().setSigningDate(new Date());
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.SECOND, 1);
+
+		signatureParameters.bLevel().setSigningDate(calendar.getTime());
 		documentToSign = signedDocument;
 		signedDocument = super.sign();
 
-		signatureParameters.bLevel().setSigningDate(new Date());
+		calendar.add(Calendar.SECOND, 1);
+
+		signatureParameters.bLevel().setSigningDate(calendar.getTime());
 		documentToSign = signedDocument;
 		signedDocument = super.sign();
 
-		signatureParameters.bLevel().setSigningDate(new Date());
+		calendar.add(Calendar.SECOND, 1);
+
+		signatureParameters.bLevel().setSigningDate(calendar.getTime());
 		documentToSign = signedDocument;
 		signedDocument = super.sign();
 

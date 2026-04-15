@@ -51,6 +51,7 @@ import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -97,7 +98,9 @@ class ASiCSWithCAdESContainerMergerTest extends AbstractPkiFactoryTestValidation
         SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
         DSSDocument containerOne = service.signDocument(toSignDocument, signatureParameters, signatureValue);
 
-        signatureParameters.bLevel().setSigningDate(new Date());
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.SECOND, 1);
+        signatureParameters.bLevel().setSigningDate(calendar.getTime());
 
         dataToSign = service.getDataToSign(toSignDocument, signatureParameters);
         signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
@@ -448,13 +451,16 @@ class ASiCSWithCAdESContainerMergerTest extends AbstractPkiFactoryTestValidation
         SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
         DSSDocument containerOne = service.signDocument(toSignDocument, signatureParameters, signatureValue);
 
-        signatureParameters.bLevel().setSigningDate(new Date());
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.SECOND, 1);
+        signatureParameters.bLevel().setSigningDate(calendar.getTime());
 
         dataToSign = service.getDataToSign(toSignDocument, signatureParameters);
         signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
         DSSDocument containerTwo = service.signDocument(toSignDocument, signatureParameters, signatureValue);
 
-        signatureParameters.bLevel().setSigningDate(new Date());
+        calendar.add(Calendar.SECOND, 1);
+        signatureParameters.bLevel().setSigningDate(calendar.getTime());
 
         dataToSign = service.getDataToSign(toSignDocument, signatureParameters);
         signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());

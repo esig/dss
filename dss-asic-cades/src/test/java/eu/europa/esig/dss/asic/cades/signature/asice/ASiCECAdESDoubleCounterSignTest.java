@@ -26,6 +26,7 @@ import eu.europa.esig.dss.asic.cades.signature.ASiCWithCAdESService;
 import eu.europa.esig.dss.asic.cades.signature.AbstractASiCCAdESCounterSignatureTest;
 import eu.europa.esig.dss.cades.signature.CAdESCounterSignatureParameters;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -36,6 +37,7 @@ import eu.europa.esig.dss.signature.DocumentSignatureService;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import org.junit.jupiter.api.BeforeEach;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -99,6 +101,13 @@ class ASiCECAdESDoubleCounterSignTest extends AbstractASiCCAdESCounterSignatureT
 		assertEquals(2, counterSignatures.size());
 		
 		assertNotEquals(counterSignatures.get(0).getId(), counterSignatures.get(1).getId());
+	}
+
+	@Override
+	protected void checkNoDuplicateSignatures(DiagnosticData diagnosticData) {
+		List<SignatureWrapper> counterSignatures = new ArrayList<>(diagnosticData.getAllCounterSignatures());
+		assertEquals(2, counterSignatures.size());
+		assertEquals(counterSignatures.get(0).getDAIdentifier(), counterSignatures.get(1).getDAIdentifier());
 	}
 
 	@Override

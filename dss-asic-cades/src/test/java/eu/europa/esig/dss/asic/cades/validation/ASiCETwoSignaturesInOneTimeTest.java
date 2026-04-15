@@ -80,4 +80,10 @@ class ASiCETwoSignaturesInOneTimeTest extends AbstractASiCWithCAdESTestValidatio
 				timestampList.get(1).getDigestAlgoAndValue().getDigestValue());
 	}
 
+	@Override
+	protected void checkNoDuplicateSignatures(DiagnosticData diagnosticData) {
+		List<SignatureWrapper> signatures = diagnosticData.getSignatures();
+		assertEquals(signatures.get(0).getDAIdentifier(), signatures.get(1).getDAIdentifier());
+	}
+
 }

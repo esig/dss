@@ -30,7 +30,8 @@ import java.util.Locale;
 import java.util.Objects;
 
 /**
- * Container for a Digest and his algorithm
+ * Container for a Digest value and algorithm
+ *
  */
 @SuppressWarnings("serial")
 public class Digest implements Serializable {

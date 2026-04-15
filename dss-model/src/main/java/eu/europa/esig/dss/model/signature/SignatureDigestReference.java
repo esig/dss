@@ -23,6 +23,8 @@ package eu.europa.esig.dss.model.signature;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.Digest;
 
+import java.util.Objects;
+
 /**
  * A signature reference element references a specific electronic signature.
  * Contains Digest of a referenced signature
@@ -82,4 +84,29 @@ public class SignatureDigestReference {
 		return digest.getValue();
 	}
 	
+	@Override
+	public boolean equals(Object object) {
+		if (this == object) return true;
+		if (object == null || getClass() != object.getClass()) return false;
+
+		SignatureDigestReference that = (SignatureDigestReference) object;
+		return Objects.equals(canonicalizationMethod, that.canonicalizationMethod)
+				&& Objects.equals(digest, that.digest);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = Objects.hashCode(canonicalizationMethod);
+		result = 31 * result + Objects.hashCode(digest);
+		return result;
+	}
+
+	@Override
+	public String toString() {
+		return "SignatureDigestReference [" +
+				"canonicalizationMethod='" + canonicalizationMethod + '\'' +
+				", digest=" + digest +
+				']';
+	}
+
 }

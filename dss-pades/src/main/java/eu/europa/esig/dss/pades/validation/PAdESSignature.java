@@ -256,13 +256,13 @@ public class PAdESSignature extends CAdESSignature {
 
 	/**
 	 * TS 119 442 - V1.1.1 - Electronic Signatures and Infrastructures (ESI), ch. 5.1.4.2.1.3 XML component:
-	 * 
+	 * <p>
 	 * In case of PAdES signatures, the input of the digest value computation shall be the result of decoding the
 	 * hexadecimal string present within the Contents field of the Signature PDF dictionary enclosing one PAdES
 	 * digital signature. 
 	 */
 	@Override
-	public SignatureDigestReference getSignatureDigestReference(DigestAlgorithm digestAlgorithm) {
+	public SignatureDigestReference buildSignatureDigestReference(DigestAlgorithm digestAlgorithm) {
 		byte[] contents = getPdfSignatureDictionary().getContents();
 		byte[] digestValue = DSSUtils.digest(digestAlgorithm, contents);
 		return new SignatureDigestReference(new Digest(digestAlgorithm, digestValue));

@@ -36,11 +36,13 @@ import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import eu.europa.esig.dss.xades.XAdESTimestampParameters;
 import org.junit.jupiter.api.BeforeEach;
 
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ASiCEWithXAdESLevelBContainerMergerCustomSigNameTest extends AbstractWithXAdESTestMerge {
@@ -62,12 +64,16 @@ class ASiCEWithXAdESLevelBContainerMergerCustomSigNameTest extends AbstractWithX
         filenameFactory.setSignatureFilename("signaturesAAA.xml");
         service.setAsicFilenameFactory(filenameFactory);
 
-        Date signingTime = new Date();
+        Calendar calendar = Calendar.getInstance();
+        Date signingTime = calendar.getTime();
 
         firstSignatureParameters = new ASiCWithXAdESSignatureParameters();
         firstSignatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
         firstSignatureParameters.aSiC().setContainerType(ASiCContainerType.ASiC_E);
         firstSignatureParameters.bLevel().setSigningDate(signingTime);
+
+        calendar.add(Calendar.SECOND, 1);
+        signingTime = calendar.getTime();
 
         secondSignatureParameters = new ASiCWithXAdESSignatureParameters();
         secondSignatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
@@ -78,7 +84,7 @@ class ASiCEWithXAdESLevelBContainerMergerCustomSigNameTest extends AbstractWithX
     @Override
     protected ASiCContainerMerger getASiCContainerMerger(DSSDocument containerOne, DSSDocument containerTwo) {
         ASiCContainerMerger asicContainerMerger = super.getASiCContainerMerger(containerOne, containerTwo);
-        assertTrue(asicContainerMerger instanceof ASiCEWithXAdESContainerMerger);
+        assertInstanceOf(ASiCEWithXAdESContainerMerger.class, asicContainerMerger);
         ASiCEWithXAdESContainerMerger xadesContainerMerger = (ASiCEWithXAdESContainerMerger) asicContainerMerger;
 
         SimpleASiCWithXAdESFilenameFactory filenameFactory = new SimpleASiCWithXAdESFilenameFactory();
@@ -129,6 +135,11 @@ class ASiCEWithXAdESLevelBContainerMergerCustomSigNameTest extends AbstractWithX
         secondSignatureParameters.setSigningCertificate(getSigningCert());
         secondSignatureParameters.setCertificateChain(getCertificateChain());
         return secondSignatureParameters;
+    }
+
+    @Override
+    protected void checkSigningDate(DiagnosticData diagnosticData) {
+        // skip
     }
 
     @Override
