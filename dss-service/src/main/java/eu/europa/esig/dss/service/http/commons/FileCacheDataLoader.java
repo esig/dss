@@ -292,7 +292,7 @@ public class FileCacheDataLoader implements DataLoader, DSSCacheFileLoader {
 		if (Utils.isArrayEmpty(bytes)) {
 			throw new DSSExternalResourceException(String.format("Cannot retrieve data from url [%s]. Empty content is obtained!", url));
 		}
-		if (shouldBeCashed(bytes)) {
+		if (shouldBeCached(bytes)) {
 			final File out = createFile(fileName, bytes);
 			return new FileDocument(out);
 		}
@@ -308,7 +308,7 @@ public class FileCacheDataLoader implements DataLoader, DSSCacheFileLoader {
 
 	}
 
-	private boolean shouldBeCashed(byte[] bytes) {
+	private boolean shouldBeCached(byte[] bytes) {
 		if (cacheConditions == null || cacheConditions.isEmpty()) {
 			return true;
 		}
@@ -441,7 +441,7 @@ public class FileCacheDataLoader implements DataLoader, DSSCacheFileLoader {
 		if (Utils.isArrayEmpty(returnedBytes)) {
 			throw new DSSExternalResourceException(String.format("Cannot retrieve data from url [%s]. Empty content is obtained!", urlString));
 		}
-		if (shouldBeCashed(returnedBytes)) {
+		if (shouldBeCached(returnedBytes)) {
 			final File cacheFile = getCacheFile(cacheFileName);
 			DSSUtils.saveToFile(returnedBytes, cacheFile);
 			return returnedBytes;
