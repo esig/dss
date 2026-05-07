@@ -24,6 +24,7 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.client.http.DSSCacheFileLoader;
 import eu.europa.esig.dss.spi.client.http.DataLoader;
@@ -37,12 +38,8 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.function.Predicate;
 
 /**
  * This class provides some caching features to handle the resources. The default cache folder is set to
@@ -70,11 +67,19 @@ public class FileCacheDataLoader implements DataLoader, DSSCacheFileLoader {
 	/** List of URIs to be ignored */
 	private List<String> toIgnored;
 
+	/** List of conditions to be passed by data */
+	private List<Predicate<byte[]>> cacheConditions;
+
 	/** The cache expiration time, after which the document shall be downloaded again */
 	private long cacheExpirationTime = -1;
 
 	/** The dataloader to be used for a remote files access */
 	private DataLoader dataLoader;
+
+	/** The dataloader to be used as a fallback, when the data returned by {@link FileCacheDataLoader#dataLoader}
+	 * does not pass the {@link FileCacheDataLoader#cacheConditions}
+	 * */
+	private DataLoader fallbackDataLoader;
 
 	/**
 	 * Empty constructor
@@ -110,6 +115,23 @@ public class FileCacheDataLoader implements DataLoader, DSSCacheFileLoader {
 		this.dataLoader = dataLoader;
 	}
 
+	/**
+	 * Gets the fallback data loader
+	 *
+	 * @return {@link DataLoader}
+	 */
+	public DataLoader getFallbackDataLoader() {
+		return  fallbackDataLoader;
+	}
+
+	/**
+	 * Sets the fallback data loader
+	 *
+	 * @param fallbackDataLoader {@link DataLoader}
+	 */
+	public void setFallbackDataLoader(DataLoader fallbackDataLoader) {
+		this.fallbackDataLoader = fallbackDataLoader;
+	}
 	/**
 	 * This method allows to set the file cache directory. If the cache folder does not exist then it's created.
 	 *
@@ -194,6 +216,21 @@ public class FileCacheDataLoader implements DataLoader, DSSCacheFileLoader {
 	}
 
 	/**
+	 * This method allows setting predicates, that the data returned by {@link FileCacheDataLoader#dataLoader} must
+	 * pass in order to be cached and returned.
+	 *
+	 * @param cacheCondition
+	 *            the predicate to be tested with the returned data
+	 */
+	public void addCacheCondition(final Predicate<byte[]> cacheCondition) {
+		if (cacheConditions == null) {
+
+			cacheConditions = new ArrayList<>();
+		}
+		cacheConditions.add(cacheCondition);
+	}
+
+	/**
 	 * Executes a GET request to the provided URL, with a forced cache {@code refresh} when defined
 	 *
 	 * @param url
@@ -251,14 +288,32 @@ public class FileCacheDataLoader implements DataLoader, DSSCacheFileLoader {
 			bytes = dataLoader.get(url);
 			
 		}
-		
-		if (Utils.isArrayNotEmpty(bytes)) {
+
+		if (Utils.isArrayEmpty(bytes)) {
+			throw new DSSExternalResourceException(String.format("Cannot retrieve data from url [%s]. Empty content is obtained!", url));
+		}
+		if (shouldBeCashed(bytes)) {
 			final File out = createFile(fileName, bytes);
 			return new FileDocument(out);
-			
-		} 
-		throw new DSSExternalResourceException(String.format("Cannot retrieve data from url [%s]. Empty content is obtained!", url));
-		
+		}
+		if (fileExists) {
+			LOG.warn("Data retrieved from url [{}] did not pass cache conditions! Returning earlier cached data", url);
+			return new FileDocument(file);
+		}
+		if (fallbackDataLoader != null) {
+			LOG.warn("Data retrieved from url [{}] did not pass cache conditions! Returning data from fallback data loader", url);
+			return new InMemoryDocument(fallbackDataLoader.get(url));
+		}
+		throw new DSSExternalResourceException(String.format("Data retrieved from url [%s] did not pass cache conditions!", url));
+
+	}
+
+	private boolean shouldBeCashed(byte[] bytes) {
+		if (cacheConditions == null || cacheConditions.isEmpty()) {
+			return true;
+		}
+		return cacheConditions.stream()
+				.allMatch(cond -> cond.test(bytes));
 	}
 
 	@Override
@@ -383,12 +438,23 @@ public class FileCacheDataLoader implements DataLoader, DSSCacheFileLoader {
 			returnedBytes = dataLoader.post(urlString, content);
 		}
 		
-		if (Utils.isArrayNotEmpty(returnedBytes)) {
+		if (Utils.isArrayEmpty(returnedBytes)) {
+			throw new DSSExternalResourceException(String.format("Cannot retrieve data from url [%s]. Empty content is obtained!", urlString));
+		}
+		if (shouldBeCashed(returnedBytes)) {
 			final File cacheFile = getCacheFile(cacheFileName);
 			DSSUtils.saveToFile(returnedBytes, cacheFile);
 			return returnedBytes;
 		}
-		throw new DSSExternalResourceException(String.format("Cannot retrieve data from URL [%s]", urlString));
+		if (fileExists) {
+			LOG.warn("Data retrieved from url [{}] did not pass cache conditions! Returning earlier cached data", urlString);
+			return DSSUtils.toByteArray(file);
+		}
+		if (fallbackDataLoader != null) {
+			LOG.warn("Data retrieved from url [{}] did not pass cache conditions! Returning data from fallback data loader", urlString);
+			return fallbackDataLoader.get(urlString);
+		}
+		throw new DSSExternalResourceException(String.format("Data retrieved from url [%s] did not pass cache conditions!", urlString));
 	}
 
 	private boolean isCacheExpired(File file) {

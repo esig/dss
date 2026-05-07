@@ -23,9 +23,11 @@ package eu.europa.esig.dss.service.http.commons;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.client.http.DataLoader;
 import eu.europa.esig.dss.spi.client.http.DataLoader.DataAndUrl;
 import eu.europa.esig.dss.spi.client.http.IgnoreDataLoader;
 import eu.europa.esig.dss.spi.client.http.MemoryDataLoader;
+import eu.europa.esig.dss.spi.exception.DSSExternalResourceException;
 import eu.europa.esig.dss.utils.Utils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,10 +45,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static org.awaitility.Awaitility.await;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class FileCacheDataLoaderTest {
 
@@ -177,6 +176,25 @@ class FileCacheDataLoaderTest {
 		assertNotNull(dataAndUrl);
 		assertEquals("sample", dataAndUrl.getUrlString());
 		assertNotNull(dataAndUrl.getData());
+	}
+
+	@Test
+	void testCacheConditions() {
+		dataLoader.addCacheCondition(it -> false);
+		assertThrows(DSSExternalResourceException.class, () -> dataLoader.get(URL_TO_LOAD));
+		assertNull(getCachedFile(cacheDirectory));
+	}
+
+	@Test
+	void testFallbackDataLoader() {
+		Map<String, byte[]> dataMap = new HashMap<>();
+		dataMap.put(URL_TO_LOAD, URL_TO_LOAD.getBytes());
+		DataLoader fallbackDataLoader = new MemoryDataLoader(dataMap);
+		dataLoader.addCacheCondition(it -> false);
+		dataLoader.setFallbackDataLoader(fallbackDataLoader);
+
+		assertArrayEquals(URL_TO_LOAD.getBytes(), dataLoader.get(URL_TO_LOAD));
+		assertNull(getCachedFile(cacheDirectory));
 	}
 
 	private long getUrlAndReturnCacheCreationTime() {
