@@ -53,7 +53,7 @@ public class ServiceByDateFilter extends AbstractTrustServiceFilter {
 
 		boolean afterStartRange = (startDate != null && (date.compareTo(startDate) >= 0));
 		boolean beforeEndRange = (endDate == null || (date.compareTo(endDate) <= 0)); // end date can be null (in case
-																						// of current status)
+																						// of current revocation)
 
 		return afterStartRange && beforeEndRange;
 	}

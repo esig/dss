@@ -92,7 +92,7 @@ public class EvidenceRecordWrapper {
     }
 
     /**
-     * Gets a list of digest matchers representing the associated archival data objects validation status
+     * Gets a list of digest matchers representing the associated archival data objects validation revocation
      *
      * @return a list of {@link XmlDigestMatcher}
      */

@@ -52,7 +52,7 @@ import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSignature;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.executor.eaa.AttestationProcessExecutor;
+import eu.europa.esig.dss.validation.executor.attestation.AttestationProcessExecutor;
 import eu.europa.esig.dss.validation.policy.ValidationPolicyLoader;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.reports.Reports;
@@ -84,7 +84,7 @@ class AttestationValidationProcessExecutorTest extends AbstractTestValidationExe
     @Test
     void validTest() throws Exception {
         XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_eaa.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_eaa.xml"));
         assertNotNull(diagnosticData);
 
         AttestationProcessExecutor executor = new AttestationProcessExecutor();
@@ -192,7 +192,7 @@ class AttestationValidationProcessExecutorTest extends AbstractTestValidationExe
     @Test
     void validWithOrphanDisclosuresTest() throws Exception {
         XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_eaa.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_eaa.xml"));
         assertNotNull(diagnosticData);
 
         List<XmlDigestMatcher> digestMatchers = diagnosticData.getEAAs().get(0).getDigestMatchers();
@@ -304,7 +304,7 @@ class AttestationValidationProcessExecutorTest extends AbstractTestValidationExe
     @Test
     void disclosureNotIntactTest() throws Exception {
         XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_eaa.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_eaa.xml"));
         assertNotNull(diagnosticData);
 
         List<XmlDigestMatcher> digestMatchers = diagnosticData.getEAAs().get(0).getDigestMatchers();
@@ -429,7 +429,7 @@ class AttestationValidationProcessExecutorTest extends AbstractTestValidationExe
     @Test
     void noDisclosuresWarnTest() throws Exception {
         XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_eaa_no_disclosures.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_eaa_no_disclosures.xml"));
         assertNotNull(diagnosticData);
 
         EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
@@ -550,7 +550,7 @@ class AttestationValidationProcessExecutorTest extends AbstractTestValidationExe
     @Test
     void noDisclosuresFailTest() throws Exception {
         XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_eaa_no_disclosures.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_eaa_no_disclosures.xml"));
         assertNotNull(diagnosticData);
 
         EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
@@ -677,7 +677,7 @@ class AttestationValidationProcessExecutorTest extends AbstractTestValidationExe
     @Test
     void sigInvalidTest() throws Exception {
         XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_eaa.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_eaa.xml"));
         assertNotNull(diagnosticData);
 
         EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
@@ -820,7 +820,7 @@ class AttestationValidationProcessExecutorTest extends AbstractTestValidationExe
     @Test
     void kbSigInvalidTest() throws Exception {
         XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_eaa.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_eaa.xml"));
         assertNotNull(diagnosticData);
 
         EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
@@ -963,7 +963,7 @@ class AttestationValidationProcessExecutorTest extends AbstractTestValidationExe
     @Test
     void technicalPeriodExpiredFailTest() throws Exception {
         XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_eaa.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_eaa.xml"));
         assertNotNull(diagnosticData);
 
         Calendar calendar = Calendar.getInstance();
@@ -1120,7 +1120,7 @@ class AttestationValidationProcessExecutorTest extends AbstractTestValidationExe
     @Test
     void technicalPeriodExpiredWarnTest() throws Exception {
         XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_eaa.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_eaa.xml"));
         assertNotNull(diagnosticData);
 
         Calendar calendar = Calendar.getInstance();
@@ -1243,7 +1243,7 @@ class AttestationValidationProcessExecutorTest extends AbstractTestValidationExe
     @Test
     void technicalPeriodExpiredWarnEtsiFailTest() throws Exception {
         XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_eaa.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_eaa.xml"));
         assertNotNull(diagnosticData);
 
         Calendar calendar = Calendar.getInstance();
@@ -1364,7 +1364,7 @@ class AttestationValidationProcessExecutorTest extends AbstractTestValidationExe
     @Test
     void administrativePeriodExpiredFailTest() throws Exception {
         XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_eaa.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_eaa.xml"));
         assertNotNull(diagnosticData);
 
         Calendar calendar = Calendar.getInstance();
@@ -1493,7 +1493,7 @@ class AttestationValidationProcessExecutorTest extends AbstractTestValidationExe
     @Test
     void administrativePeriodExpiredWarnAllChecksPresentTest() throws Exception {
         XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_eaa.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_eaa.xml"));
         assertNotNull(diagnosticData);
 
         Calendar calendar = Calendar.getInstance();
@@ -1620,7 +1620,7 @@ class AttestationValidationProcessExecutorTest extends AbstractTestValidationExe
     @Test
     void claimsValidTest() throws Exception {
         XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_eaa.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_eaa.xml"));
         assertNotNull(xmlDiagnosticData);
 
         EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
@@ -1704,7 +1704,7 @@ class AttestationValidationProcessExecutorTest extends AbstractTestValidationExe
     @Test
     void claimsNotPresentTest() throws Exception {
         XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_eaa.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_eaa.xml"));
         assertNotNull(xmlDiagnosticData);
 
         EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
@@ -1795,7 +1795,7 @@ class AttestationValidationProcessExecutorTest extends AbstractTestValidationExe
     @Test
     void claimsNotSupportedTest() throws Exception {
         XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_eaa.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_eaa.xml"));
         assertNotNull(xmlDiagnosticData);
 
         EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
@@ -1887,7 +1887,7 @@ class AttestationValidationProcessExecutorTest extends AbstractTestValidationExe
     @Test
     void claimNamespacesNotSupportedFailTest() throws Exception {
         XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_mdoc.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_mdoc.xml"));
         assertNotNull(xmlDiagnosticData);
 
         EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
@@ -1964,7 +1964,7 @@ class AttestationValidationProcessExecutorTest extends AbstractTestValidationExe
     @Test
     void claimNamespacesNotSupportedWarnTest() throws Exception {
         XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_mdoc.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_mdoc.xml"));
         assertNotNull(xmlDiagnosticData);
 
         EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
@@ -2037,14 +2037,14 @@ class AttestationValidationProcessExecutorTest extends AbstractTestValidationExe
     @Test
     void eaaCategoryTest() throws Exception {
         XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_eaa.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_eaa.xml"));
         assertNotNull(xmlDiagnosticData);
 
         EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
 
         MultiValuesConstraint constraint = new MultiValuesConstraint();
         constraint.setLevel(Level.FAIL);
-        constraint.getId().add("urn:etsi:esi:eaa:eu:qualified");
+        constraint.getId().add("urn:etsi:esi:attestation:eu:qualified");
         validationPolicy.getEAAConstraints().setEAACategory(constraint);
 
         AttestationProcessExecutor executor = new AttestationProcessExecutor();
@@ -2111,7 +2111,7 @@ class AttestationValidationProcessExecutorTest extends AbstractTestValidationExe
     @Test
     void eaaSubjectTest() throws Exception {
         XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_eaa.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_eaa.xml"));
         assertNotNull(xmlDiagnosticData);
 
         EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
@@ -2185,7 +2185,7 @@ class AttestationValidationProcessExecutorTest extends AbstractTestValidationExe
     @Test
     void eaaSubjectPseudonymTest() throws Exception {
         XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_eaa.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_eaa.xml"));
         assertNotNull(xmlDiagnosticData);
 
         EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
@@ -2259,7 +2259,7 @@ class AttestationValidationProcessExecutorTest extends AbstractTestValidationExe
     @Test
     void eaaIssuingCountryTest() throws Exception {
         XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_eaa.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_eaa.xml"));
         assertNotNull(xmlDiagnosticData);
 
         EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
@@ -2333,7 +2333,7 @@ class AttestationValidationProcessExecutorTest extends AbstractTestValidationExe
     @Test
     void eaaIssuingAuthorityTest() throws Exception {
         XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_eaa.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_eaa.xml"));
         assertNotNull(xmlDiagnosticData);
 
         EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
@@ -2407,7 +2407,7 @@ class AttestationValidationProcessExecutorTest extends AbstractTestValidationExe
     @Test
     void eaaIssuingAuthorityRegistrationIdentifierTest() throws Exception {
         XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_eaa.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_eaa.xml"));
         assertNotNull(xmlDiagnosticData);
 
         EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
@@ -2481,7 +2481,7 @@ class AttestationValidationProcessExecutorTest extends AbstractTestValidationExe
     @Test
     void EAARevocationPresentTest() throws Exception {
         XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_eaa.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_eaa.xml"));
         assertNotNull(xmlDiagnosticData);
 
         XmlEAAPayload eaaPayload = xmlDiagnosticData.getEAAs().get(0).getEAAPayload();
@@ -2572,7 +2572,7 @@ class AttestationValidationProcessExecutorTest extends AbstractTestValidationExe
     @Test
     void eaaShortLivedTest() throws Exception {
         XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_eaa.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_eaa.xml"));
         assertNotNull(xmlDiagnosticData);
 
         XmlEAAPayload eaaPayload = xmlDiagnosticData.getEAAs().get(0).getEAAPayload();
@@ -2661,7 +2661,7 @@ class AttestationValidationProcessExecutorTest extends AbstractTestValidationExe
     @Test
     void eaaOneTimeTest() throws Exception {
         XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_eaa.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_eaa.xml"));
         assertNotNull(xmlDiagnosticData);
 
         XmlEAAPayload eaaPayload = xmlDiagnosticData.getEAAs().get(0).getEAAPayload();
@@ -2751,7 +2751,7 @@ class AttestationValidationProcessExecutorTest extends AbstractTestValidationExe
     @Test
     void eaaNoPseudonymUsePresentTest() throws Exception {
         XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_eaa.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_eaa.xml"));
         assertNotNull(xmlDiagnosticData);
 
         EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
@@ -2818,7 +2818,7 @@ class AttestationValidationProcessExecutorTest extends AbstractTestValidationExe
     @Test
     void eaaPseudonymUsePresentTest() throws Exception {
         XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_eaa.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_eaa.xml"));
         assertNotNull(xmlDiagnosticData);
 
         XmlEAAPayload eaaPayload = xmlDiagnosticData.getEAAs().get(0).getEAAPayload();
@@ -2893,7 +2893,7 @@ class AttestationValidationProcessExecutorTest extends AbstractTestValidationExe
     @Test
     void statusCheckValidTest() throws Exception {
         XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_eaa.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_eaa.xml"));
         assertNotNull(diagnosticData);
 
         XmlEAARevocationToken eaaRevocationToken = diagnosticData.getUsedEAARevocationTokens().get(0);
@@ -3059,7 +3059,7 @@ class AttestationValidationProcessExecutorTest extends AbstractTestValidationExe
     @Test
     void statusNotAvailableTest() throws Exception {
         XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_eaa.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_eaa.xml"));
         assertNotNull(diagnosticData);
 
         diagnosticData.getEAAs().get(0).getAttestationRevocations().clear();
@@ -3165,7 +3165,7 @@ class AttestationValidationProcessExecutorTest extends AbstractTestValidationExe
     @Test
     void statusNoTypeTest() throws Exception {
         XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_eaa.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_eaa.xml"));
         assertNotNull(diagnosticData);
 
         XmlEAARevocationToken eaaRevocationToken = diagnosticData.getUsedEAARevocationTokens().get(0);
@@ -3300,7 +3300,7 @@ class AttestationValidationProcessExecutorTest extends AbstractTestValidationExe
     @Test
     void statusInvalidTest() throws Exception {
         XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_eaa.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_eaa.xml"));
         assertNotNull(diagnosticData);
 
         diagnosticData.getEAAs().get(0).getAttestationRevocations().get(0).setStatus(AttestationStatus.INVALID);
@@ -3406,7 +3406,7 @@ class AttestationValidationProcessExecutorTest extends AbstractTestValidationExe
     @Test
     void statusSuspendedTest() throws Exception {
         XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_eaa.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_eaa.xml"));
         assertNotNull(diagnosticData);
 
         diagnosticData.getEAAs().get(0).getAttestationRevocations().get(0).setStatus(AttestationStatus.SUSPENDED);

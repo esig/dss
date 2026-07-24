@@ -33,7 +33,7 @@ import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import java.util.Date;
 
 /**
- * This class verifies if the issuance date of the revocation status information is before control time
+ * This class verifies if the issuance date of the revocation revocation information is before control time
  *
  * @param <T> implementation of the block's conclusion
  */

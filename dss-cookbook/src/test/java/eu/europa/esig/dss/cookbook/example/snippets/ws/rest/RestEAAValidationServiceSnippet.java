@@ -27,10 +27,10 @@ import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
 import eu.europa.esig.dss.ws.converter.RemoteDocumentConverter;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
-import eu.europa.esig.dss.ws.eaa.validation.dto.AttestationToValidateDTO;
-import eu.europa.esig.dss.ws.eaa.validation.dto.AttestationValidationParametersDTO;
-import eu.europa.esig.dss.ws.eaa.validation.rest.RestAttestationValidationServiceImpl;
-import eu.europa.esig.dss.ws.eaa.validation.rest.client.RestAttestationValidationService;
+import eu.europa.esig.dss.ws.attestation.validation.dto.AttestationToValidateDTO;
+import eu.europa.esig.dss.ws.attestation.validation.dto.AttestationValidationParametersDTO;
+import eu.europa.esig.dss.ws.attestation.validation.rest.RestAttestationValidationServiceImpl;
+import eu.europa.esig.dss.ws.attestation.validation.rest.client.RestAttestationValidationService;
 import eu.europa.esig.dss.ws.validation.dto.WSReportsDTO;
 
 public class RestEAAValidationServiceSnippet extends CookbookTools {
@@ -46,7 +46,7 @@ public class RestEAAValidationServiceSnippet extends CookbookTools {
             RestAttestationValidationService restClient = new RestAttestationValidationServiceImpl();
 
             // Initialize EAA document to be validated
-            FileDocument signatureToValidate = new FileDocument("src/test/resources/mdoc-eaa.cbor");
+            FileDocument signatureToValidate = new FileDocument("src/test/resources/mdoc-attestation.cbor");
             RemoteDocument signedDocument = RemoteDocumentConverter.toRemoteDocument(signatureToValidate);
 
             // Initialize validation parameters, when needed

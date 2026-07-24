@@ -360,7 +360,7 @@ public class OnlineOCSPSource implements OCSPSource, RevocationSourceAlternateUr
 			OCSPRespStatus status = OCSPRespStatus.fromInt(ocspResp.getStatus());
 			if (!OCSPRespStatus.SUCCESSFUL.equals(status)) {
 				throw new DSSExternalResourceException(String.format(
-						"Ignored OCSP Response from URL '%s' : status -> %s", ocspAccessLocation, status));
+						"Ignored OCSP Response from URL '%s' : revocation -> %s", ocspAccessLocation, status));
 			}
 			Object responseObject = ocspResp.getResponseObject();
 			if (!(responseObject instanceof BasicOCSPResp)) {

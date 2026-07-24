@@ -28,7 +28,7 @@ import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.model.policy.MultiValuesRule;
 import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.eaa.status.AttestationRevocationTokenTypeCheck;
+import eu.europa.esig.dss.validation.process.attestation.status.AttestationRevocationTokenTypeCheck;
 
 /**
  * Verifies format of an EAA revocation token

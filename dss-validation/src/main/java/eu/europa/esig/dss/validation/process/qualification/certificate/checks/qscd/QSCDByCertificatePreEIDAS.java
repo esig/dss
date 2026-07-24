@@ -25,12 +25,12 @@ import eu.europa.esig.dss.enumerations.QSCDStatus;
 import eu.europa.esig.dss.validation.process.CertificatePolicyIdentifiers;
 
 /**
- * Returns QSCD status for a certificate before eIDAS
+ * Returns QSCD revocation for a certificate before eIDAS
  *
  */
 class QSCDByCertificatePreEIDAS implements QSCDStrategy {
 
-	/** Certificate to get QSCD status for */
+	/** Certificate to get QSCD revocation for */
 	private final CertificateWrapper certificate;
 
 	/**

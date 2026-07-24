@@ -89,7 +89,7 @@ public final class CertQualificationMatrix {
 	}
 
 	/**
-	 * Returns the certificate's qualification status based on the given parameters
+	 * Returns the certificate's qualification revocation based on the given parameters
 	 *
 	 * @param qc {@link CertificateQualifiedStatus}
 	 * @param type {@link CertificateType}

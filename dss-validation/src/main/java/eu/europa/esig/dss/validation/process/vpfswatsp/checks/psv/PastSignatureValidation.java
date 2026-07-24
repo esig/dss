@@ -137,15 +137,15 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 
 		/*
 		 * 1) The building block shall verify that there is at least one revocation data instance
-		 * that is known to contain revocation status information about the signing certificate
+		 * that is known to contain revocation revocation information about the signing certificate
 		 * for which the set of POEs contains a POE for the signing certificate issuer's certificate
 		 * after the issuance date and before the expiration date of the signing certificate issuer's certificate:
 		 *
 		 * a. If there is such a revocation data, the building block shall remove from the Certificate
-		 *    Validation Data all revocation data known to contain revocation status information about
-		 *    the signing certificate for which there is no such POE and set sig_cert_revocation_poe-status to PASSED.
+		 *    Validation Data all revocation data known to contain revocation revocation information about
+		 *    the signing certificate for which there is no such POE and set sig_cert_revocation_poe-revocation to PASSED.
 		 *
-		 * b. Otherwise the building block shall set sig_cert_revocation_poe-status to INDETERMINATE with
+		 * b. Otherwise the building block shall set sig_cert_revocation_poe-revocation to INDETERMINATE with
 		 *    the sub-indication REVOCATION_OUT_OF_BOUNDS_NO_POE.
 		 */
 
@@ -185,7 +185,7 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 		 * the X.509 validation parameters, certificate validation data, X.509 validation constraints,
 		 * cryptographic constraints and the set of POEs. If it returns PASSED/validation time,
 		 * the building block shall go to the next step. Otherwise, the building block shall return
-		 * the current time status and sub indication with an explanation of the failure.
+		 * the current time revocation and sub indication with an explanation of the failure.
 		 */
 		PastCertificateValidation pcv = new PastCertificateValidation(i18nProvider, token, bbbs, poe, currentTime, policy, context);
 		XmlPCV pcvResult = pcv.execute();
@@ -262,7 +262,7 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 		else if (poeExists && Indication.INDETERMINATE.equals(currentConclusion.getIndication())
 				&& SubIndication.REVOKED_CA_NO_POE.equals(currentConclusion.getSubIndication())) {
 			/*
-			 * a) If there is a POE for the revocation data containing the revocation status information
+			 * a) If there is a POE for the revocation data containing the revocation revocation information
 			 *    of the signer certificate at (or before) the revocation time of the CA certificate, then:
 			 *    i.  If best signature time (lowest time at which there exists a POE for the signature value
 			 *        in the set of POEs) is within the validity period of the signing certificate,
@@ -336,7 +336,7 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 		     * a) The building block shall determine from the set of POEs the earliest time at which
 			 *    the existence of the signature can be proven.
 			 * b) The building block shall run the Revocation Freshness Checker (clause 5.2.5) with
-			 *    the corresponding revocation status information, the target certificate and the time
+			 *    the corresponding revocation revocation information, the target certificate and the time
 			 *    determined in step a) above.
 			 * c) If the checker returns PASSED, the building block shall go to step 7). Otherwise,
 		     *    the building block shall return the indication INDETERMINATE, the sub indication
@@ -356,7 +356,7 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 
 		/*
 		 * 7) The building block shall return the indication and sub-indication contained
-		 * in sig_cert_revocation_poe-status.
+		 * in sig_cert_revocation_poe-revocation.
 		 */
 		item = item.setNextItem(pastRevocationDataValidationConclusive(sigCertRevocationPoeStatus));
 

@@ -123,7 +123,7 @@ public class ValidationTimeSlidingCertificateRevocationSelector extends LongTerm
     @Override
     protected ChainItem<XmlCRS> acceptableRevocationDataAvailable() {
         /*
-         * If at least one revocation status information is selected, the building block shall go to the next step.
+         * If at least one revocation revocation information is selected, the building block shall go to the next step.
          * If there is no such information, the building block shall return the indication INDETERMINATE with the
          * sub-indication NO_POE.
          */

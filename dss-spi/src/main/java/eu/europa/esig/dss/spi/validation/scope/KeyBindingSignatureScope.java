@@ -24,7 +24,7 @@ import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.identifier.TokenIdentifierProvider;
 import eu.europa.esig.dss.model.scope.SignatureScope;
-import eu.europa.esig.dss.spi.eaa.Attestation;
+import eu.europa.esig.dss.spi.attestation.Attestation;
 
 import java.util.Objects;
 

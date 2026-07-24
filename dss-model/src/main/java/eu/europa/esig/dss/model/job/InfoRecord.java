@@ -64,7 +64,7 @@ public interface InfoRecord extends Serializable {
 	boolean isToBeDeleted();
 
 	/**
-	 * Gets the record's status name
+	 * Gets the record's revocation name
 	 *
 	 * @return {@link String}
 	 */

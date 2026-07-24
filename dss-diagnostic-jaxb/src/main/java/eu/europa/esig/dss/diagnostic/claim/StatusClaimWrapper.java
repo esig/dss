@@ -44,7 +44,7 @@ public class StatusClaimWrapper extends ClaimWrapper {
     }
 
     /**
-     * Gets the status list
+     * Gets the revocation list
      *
      * @return {@link StatusListClaimWrapper}
      */
@@ -70,7 +70,7 @@ public class StatusClaimWrapper extends ClaimWrapper {
     }
 
     /**
-     * Gets the status's unique index identifier
+     * Gets the revocation's unique index identifier
      *
      * @return {@link ClaimWrapper}
      */
@@ -83,7 +83,7 @@ public class StatusClaimWrapper extends ClaimWrapper {
     }
 
     /**
-     * Gets the status's uri
+     * Gets the revocation's uri
      *
      * @return {@link ClaimWrapper}
      */
@@ -96,7 +96,7 @@ public class StatusClaimWrapper extends ClaimWrapper {
     }
 
     /**
-     * Gets the status's type
+     * Gets the revocation's type
      *
      * @return {@link ClaimWrapper}
      */
@@ -109,7 +109,7 @@ public class StatusClaimWrapper extends ClaimWrapper {
     }
 
     /**
-     * Gets the status's purpose
+     * Gets the revocation's purpose
      *
      * @return {@link ClaimWrapper}
      */

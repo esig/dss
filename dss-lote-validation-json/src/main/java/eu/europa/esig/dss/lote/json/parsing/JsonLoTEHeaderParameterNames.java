@@ -296,7 +296,7 @@ public class JsonLoTEHeaderParameterNames {
     /** Service type identifier */
     public static final String SERVICE_TYPE_IDENTIFIER = "ServiceTypeIdentifier";
 
-    /** Service status */
+    /** Service revocation */
     public static final String SERVICE_STATUS = "ServiceStatus";
 
     /** Status starting time */
@@ -340,7 +340,7 @@ public class JsonLoTEHeaderParameterNames {
     /** Service digital identity */
     public static final String HISTORY_SERVICE_DIGITAL_IDENTITY = "ServiceDigitalIdentity";
 
-    /** Service status */
+    /** Service revocation */
     public static final String HISTORY_SERVICE_STATUS = "ServiceStatus";
 
     /** Status starting time */

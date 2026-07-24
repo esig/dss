@@ -159,9 +159,9 @@
 		<module>dss-attestation-revocation-common</module>
 		<module>dss-attestation-revocation-jwt</module>
 		<module>dss-attestation-revocation-cwt</module>
-		<module>dss-attestation-common</module>
-		<module>dss-attestation-sd-jwt</module>
-		<module>dss-attestation-mdoc</module>
+		<module>dss-attestation</module>
+		<module>dss-sd-jwt</module>
+		<module>dss-mdoc</module>
 		<module>dss-common-remote-dto</module>
 		<module>dss-common-remote-converter</module>
 		<module>dss-signature-dto</module>
@@ -702,23 +702,23 @@
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-attestation-common</artifactId>
+				<artifactId>dss-attestation</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-attestation-common</artifactId>
+				<artifactId>dss-attestation</artifactId>
 				<type>test-jar</type>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-attestation-sd-jwt</artifactId>
+				<artifactId>dss-sd-jwt</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-attestation-mdoc</artifactId>
+				<artifactId>dss-mdoc</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

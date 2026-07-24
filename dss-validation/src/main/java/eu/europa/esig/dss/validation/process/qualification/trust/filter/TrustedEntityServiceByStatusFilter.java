@@ -23,7 +23,7 @@ package eu.europa.esig.dss.validation.process.qualification.trust.filter;
 import eu.europa.esig.dss.diagnostic.TrustedEntityServiceWrapper;
 
 /**
- * Filters trusted entity services by a status URI
+ * Filters trusted entity services by a revocation URI
  *
  */
 public class TrustedEntityServiceByStatusFilter extends AbstractTrustedEntityServiceFilter {
@@ -34,7 +34,7 @@ public class TrustedEntityServiceByStatusFilter extends AbstractTrustedEntitySer
     /**
      * Default constructor
      *
-     * @param statusUri {@link String} to filter Trusted Services with the given status
+     * @param statusUri {@link String} to filter Trusted Services with the given revocation
      */
     public TrustedEntityServiceByStatusFilter(String statusUri) {
         this.statusUri = statusUri;

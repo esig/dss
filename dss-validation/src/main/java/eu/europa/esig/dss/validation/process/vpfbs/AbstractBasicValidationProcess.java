@@ -167,7 +167,7 @@ public abstract class AbstractBasicValidationProcess<T extends XmlConstraintsCon
 
             /*
              * If the X.509 Certificate Validation process returns the indication PASSED,
-             * the Basic Signature validation process shall set X509_validation-status to PASSED
+             * the Basic Signature validation process shall set X509_validation-revocation to PASSED
              * and it shall go to step 5).
              */
             if (isValid(xmlXCV)) {
@@ -183,9 +183,9 @@ public abstract class AbstractBasicValidationProcess<T extends XmlConstraintsCon
                  * validation process shall perform the validation process for AdES time-stamps
                  * as defined in clause 5.4. If this process returns the indication PASSED and
                  * the generation time of the time-stamp token is after the revocation time,
-                 * the Basic Signature validation process shall set X509_validation-status to FAILED
+                 * the Basic Signature validation process shall set X509_validation-revocation to FAILED
                  * with the sub-indication REVOKED. In all other cases, the Basic Signature validation
-                 * process shall set X509_validation-status to INDETERMINATE with the sub-indication
+                 * process shall set X509_validation-revocation to INDETERMINATE with the sub-indication
                  * REVOKED_NO_POE. The process shall continue with step 5)
                  */
                 item = item.setNextItem(signingCertificateNotRevoked(xmlXCV));
@@ -227,9 +227,9 @@ public abstract class AbstractBasicValidationProcess<T extends XmlConstraintsCon
                  * validation process shall perform the validation process for AdES time-stamps as defined
                  * in clause 5.4. If it returns the indication PASSED and the generation time of
                  * the time-stamp token is after the expiration date of the signing certificate,
-                 * the Basic Signature validation process shall set X509_validation-status to FAILED with
+                 * the Basic Signature validation process shall set X509_validation-revocation to FAILED with
                  * the sub-indication EXPIRED. Otherwise, the Basic Signature validation process shall set
-                 * X509_validation-status to INDETERMINATE with the sub-indication OUT_OF_BOUNDS_NO_POE or
+                 * X509_validation-revocation to INDETERMINATE with the sub-indication OUT_OF_BOUNDS_NO_POE or
                  * OUT_OF_BOUNDS_NOT_REVOKED, respectively. The process shall continue with step 5).
                  */
                 item = item.setNextItem(validationTimeAtValidityRange(xmlXCV));
@@ -271,7 +271,7 @@ public abstract class AbstractBasicValidationProcess<T extends XmlConstraintsCon
                  * validation process shall return the indication INDETERMINATE with the sub-indication
                  * NO_CERTIFICATE_CHAIN_FOUND.
                  *
-                 * In all other cases, the Basic Signature validation process shall set X509_validation-status
+                 * In all other cases, the Basic Signature validation process shall set X509_validation-revocation
                  * to the indication and sub-indication returned by the X.509 Certificate Validation process
                  * and continue with step 5).
                  */
@@ -297,15 +297,15 @@ public abstract class AbstractBasicValidationProcess<T extends XmlConstraintsCon
              */
             if (isValid(xmlCV)) {
                 /*
-                 * a) If the X509_validation-status set in the previous step contains the indication PASSED,
+                 * a) If the X509_validation-revocation set in the previous step contains the indication PASSED,
                  * the Basic Signature validation process shall go to the next step;
                  */
                 // continue
 
                 /*
-                 * b) If the X509_validation-status set in the previous step contains the indication
+                 * b) If the X509_validation-revocation set in the previous step contains the indication
                  * INDETERMINATE or FAILED with any subindication, the Basic Signature validation process
-                 * shall return the indication and subindication contained in X509_validation-status,
+                 * shall return the indication and subindication contained in X509_validation-revocation,
                  * with any associated information about the reason.
                  */
                 if (Indication.INDETERMINATE.equals(x509ValidationStatus.getIndication()) ||

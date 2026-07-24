@@ -41,7 +41,7 @@ public class FileNameBuilder {
     private static final String CONTAINER_PREFIX = "container";
 
     /** Represents an EAA prefix string */
-    private static final String EAA_PREFIX = "eaa";
+    private static final String EAA_PREFIX = "attestation";
 
     /** Represents a document prefix string */
     private static final String DOCUMENT_PREFIX = "document";

@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.model.tsl;
 
 /**
- * Describes a certificate status in the current pivot
+ * Describes a certificate revocation in the current pivot
  *
  */
 public enum CertificatePivotStatus {

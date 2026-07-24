@@ -46,7 +46,7 @@ import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.executor.eaa.AttestationProcessExecutor;
+import eu.europa.esig.dss.validation.executor.attestation.AttestationProcessExecutor;
 import eu.europa.esig.dss.validation.policy.ValidationPolicyLoader;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.api.BeforeAll;
@@ -76,7 +76,7 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
     @Test
     void validTest() throws Exception {
         XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_pid.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_pid.xml"));
         assertNotNull(diagnosticData);
 
         AttestationProcessExecutor executor = new AttestationProcessExecutor();
@@ -203,7 +203,7 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
     @Test
     void noLoTETest() throws Exception {
         XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_pid.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_pid.xml"));
         assertNotNull(diagnosticData);
 
         XmlSigningCertificate signingCertificate = diagnosticData.getEAAs().get(0)
@@ -337,7 +337,7 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
     @Test
     void noPIDTypeTest() throws Exception {
         XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_pid.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_pid.xml"));
         assertNotNull(diagnosticData);
 
         eu.europa.esig.dss.diagnostic.jaxb.XmlEAA eaa = diagnosticData.getEAAs().get(0);
@@ -473,7 +473,7 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
     @Test
     void noAcceptableLoTETest() throws Exception {
         XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_pid.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_pid.xml"));
         assertNotNull(diagnosticData);
 
         XmlListOfTrustedEntities lote = diagnosticData.getListsOfTrustedEntities().get(0);
@@ -619,7 +619,7 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
     @Test
     void noPIDLoTETest() throws Exception {
         XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_pid.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_pid.xml"));
         assertNotNull(diagnosticData);
 
         XmlListOfTrustedEntities lote = diagnosticData.getListsOfTrustedEntities().get(0);
@@ -765,7 +765,7 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
     @Test
     void noPIDIssuanceTest() throws Exception {
         XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_pid.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_pid.xml"));
         assertNotNull(diagnosticData);
 
         XmlSigningCertificate signingCertificate = diagnosticData.getEAAs().get(0)
@@ -912,7 +912,7 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
     @Test
     void noPIDProviderAtTimeTest() throws Exception {
         XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_pid.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_pid.xml"));
         assertNotNull(diagnosticData);
 
         XmlSigningCertificate signingCertificate = diagnosticData.getEAAs().get(0)

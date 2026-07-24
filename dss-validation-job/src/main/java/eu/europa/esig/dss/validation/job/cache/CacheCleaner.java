@@ -35,13 +35,13 @@ public class CacheCleaner {
 	private static final Logger LOG = LoggerFactory.getLogger(CacheCleaner.class);
 	
 	/**
-	 * If true, removes all map entries with status TO_BE_DELETED
+	 * If true, removes all map entries with revocation TO_BE_DELETED
 	 * Default : true
 	 */
 	private boolean cleanMemory = true;
 	
 	/**
-	 * If true, removes files from the file system for each entry with status TO_BE_DELETED
+	 * If true, removes files from the file system for each entry with revocation TO_BE_DELETED
 	 * Default : false
 	 */
 	private boolean cleanFileSystem = false;

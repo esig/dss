@@ -20,17 +20,17 @@
  */
 package eu.europa.esig.dss.cookbook.example.snippets;
 
-import eu.europa.esig.dss.eaa.common.validation.DefaultAttestationDocumentValidator;
-import eu.europa.esig.dss.eaa.revocation.source.ExternalResourcesAttestationRevocationSource;
-import eu.europa.esig.dss.eaa.revocation.source.OnlineAttestationRevocationSource;
-import eu.europa.esig.dss.eaa.sd.jwt.creation.SDJWTPayloadParameters;
-import eu.europa.esig.dss.eaa.sd.jwt.creation.SDJWTClaim;
-import eu.europa.esig.dss.eaa.sd.jwt.creation.SDJWTPayloadBuilder;
-import eu.europa.esig.dss.eaa.sd.jwt.creation.SDJWTService;
-import eu.europa.esig.dss.eaa.mdoc.creation.MdocPayloadBuilder;
-import eu.europa.esig.dss.eaa.mdoc.creation.MdocService;
-import eu.europa.esig.dss.eaa.mdoc.creation.MdocClaim;
-import eu.europa.esig.dss.eaa.mdoc.validation.MdocDeviceResponseAttestationDocumentValidator;
+import eu.europa.esig.dss.attestation.common.validation.DefaultAttestationDocumentValidator;
+import eu.europa.esig.dss.attestation.revocation.source.ExternalResourcesAttestationRevocationSource;
+import eu.europa.esig.dss.attestation.revocation.source.OnlineAttestationRevocationSource;
+import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTPayloadParameters;
+import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTClaim;
+import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTPayloadBuilder;
+import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTService;
+import eu.europa.esig.dss.attestation.mdoc.creation.MdocPayloadBuilder;
+import eu.europa.esig.dss.attestation.mdoc.creation.MdocService;
+import eu.europa.esig.dss.attestation.mdoc.creation.MdocClaim;
+import eu.europa.esig.dss.attestation.mdoc.validation.MdocDeviceResponseAttestationDocumentValidator;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.reports.Reports;
@@ -44,7 +44,7 @@ public class AttestationSnippet {
         SDJWTPayloadParameters payloadParameters = new SDJWTPayloadParameters();
 
         // tag::status-list[]
-        // IETF draft-ietf-oauth-status-list: simple index + URL
+        // IETF draft-ietf-oauth-revocation-list: simple index + URL
         payloadParameters.setStatusList(42, "https://example.com/statuslists/1");
 
         // ETSI TS 119 472-1 v1.2.1 variant with type, purpose, index and URL
@@ -93,9 +93,9 @@ public class AttestationSnippet {
         // end::online-eaa-revocation-source[]
 
         // tag::external-eaa-revocation-source[]
-        // import eu.europa.esig.dss.eaa.revocation.source.ExternalResourcesEAARevocationSource;
+        // import eu.europa.esig.dss.attestation.revocation.source.ExternalResourcesEAARevocationSource;
 
-        ExternalResourcesAttestationRevocationSource externalRevocationSource = new ExternalResourcesAttestationRevocationSource("path/to/status-list-token.jwt");
+        ExternalResourcesAttestationRevocationSource externalRevocationSource = new ExternalResourcesAttestationRevocationSource("path/to/revocation-list-token.jwt");
 
         // Attach to the validator
         validator.setEAARevocationSource(revocationSource);
@@ -105,7 +105,7 @@ public class AttestationSnippet {
         // import eu.europa.esig.dss.model.FileDocument;
 
         // Custom validation policy
-        Reports reportsFromCustomPolicy = validator.validateDocument(new FileDocument("path/to/custom-eaa-policy.xml"));
+        Reports reportsFromCustomPolicy = validator.validateDocument(new FileDocument("path/to/custom-attestation-policy.xml"));
 
         // Default validation policy
         Reports reports = validator.validateDocument();

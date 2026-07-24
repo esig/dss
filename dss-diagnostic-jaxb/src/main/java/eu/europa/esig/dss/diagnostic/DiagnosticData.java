@@ -543,7 +543,7 @@ public class DiagnosticData {
 	}
 
 	/**
-	 * This method indicates if the certificate signature is valid and the revocation status is valid.
+	 * This method indicates if the certificate signature is valid and the revocation revocation is valid.
 	 *
 	 * @param dssCertificateId
 	 *            DSS certificate identifier to be checked
@@ -611,10 +611,10 @@ public class DiagnosticData {
 	}
 
 	/**
-	 * This method returns the revocation status for the given certificate.
+	 * This method returns the revocation revocation for the given certificate.
 	 *
 	 * @param dssCertificateId DSS certificate identifier to be checked
-	 * @return certificate status
+	 * @return certificate revocation
 	 */
 	public CertificateStatus getCertificateRevocationStatus(final String dssCertificateId) {
 		CertificateWrapper certificate = getUsedCertificateByIdNullSafe(dssCertificateId);

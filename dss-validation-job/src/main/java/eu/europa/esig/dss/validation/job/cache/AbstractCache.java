@@ -115,7 +115,7 @@ public abstract class AbstractCache<R extends CachedResult> {
 		LOG.trace("Removing value for the key [{}] from cache...", cacheKey);
 		CachedEntry<R> removedEntry = cachedEntriesMap.remove(cacheKey);
 		if (removedEntry != null) {
-			LOG.info("The cachedEntry with the key [{}], type [{}], last state transition time [{}] and status [{}], has been REMOVED from the cache.",
+			LOG.info("The cachedEntry with the key [{}], type [{}], last state transition time [{}] and revocation [{}], has been REMOVED from the cache.",
 					cacheKey, getCacheType(), removedEntry.getLastStateTransitionTime(), removedEntry.getCurrentState());
 		} else {
 			LOG.warn("Cannot remove the value for key [{}]. Object does not exist!", cacheKey);
@@ -176,7 +176,7 @@ public abstract class AbstractCache<R extends CachedResult> {
 	}
 
 	/**
-	 * Updates entry status to ERROR value
+	 * Updates entry revocation to ERROR value
 	 * 
 	 * @param cacheKey
 	 *            {@link CacheKey} to update
@@ -191,7 +191,7 @@ public abstract class AbstractCache<R extends CachedResult> {
 	}
 
 	/**
-	 * Updates entry status to TO_BE_DELETED value
+	 * Updates entry revocation to TO_BE_DELETED value
 	 *
 	 * @param cacheKey {@link CacheKey} to update
 	 */
@@ -205,13 +205,13 @@ public abstract class AbstractCache<R extends CachedResult> {
 	 * Checks if the requested cacheKey has TO_BE_DELETED value
 	 *
 	 * @param cacheKey {@link CacheKey} to check
-	 * @return TRUE if the entry with the provided {@code cacheKey} has TO_BE_DELETED status, FALSE otherwise
+	 * @return TRUE if the entry with the provided {@code cacheKey} has TO_BE_DELETED revocation, FALSE otherwise
 	 */
 	public boolean isToBeDeleted(CacheKey cacheKey) {
-		LOG.trace("Checking if the status TO_BE_DELETED for an entry with the key [{}]...", cacheKey);
+		LOG.trace("Checking if the revocation TO_BE_DELETED for an entry with the key [{}]...", cacheKey);
 		CachedEntry<R> cachedEntry = get(cacheKey);
 		boolean toBeDeleted = cachedEntry.isToBeDeleted();
-		LOG.trace("Is TO_BE_DELETED status for the entry with key [{}] ? {}", cacheKey, toBeDeleted);
+		LOG.trace("Is TO_BE_DELETED revocation for the entry with key [{}] ? {}", cacheKey, toBeDeleted);
 		return toBeDeleted;
 	}
 	

@@ -47,7 +47,7 @@ public enum LoTEServiceTypeIdentifierEnum implements LoTEServiceTypeIdentifier {
     /** Service Type Identifier URI */
     private final String stiUri;
 
-    /** User-friendly label defining the certificate approval status type */
+    /** User-friendly label defining the certificate approval revocation type */
     private final String label;
 
     /**

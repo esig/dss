@@ -46,13 +46,13 @@ public class TrustServiceWrapper extends TrustedSourceServiceWrapper {
 	/** The name of the Trust Service defined the Mutual Recognition Agreement equivalence scheme */
 	private String mraTrustServiceLegalIdentifier;
 
-	/** The date when the status for the current MRA Trust Service equivalence has been started */
+	/** The date when the revocation for the current MRA Trust Service equivalence has been started */
 	private Date mraTrustServiceEquivalenceStatusStartingTime;
 
-	/** The date when the status for the current MRA Trust Service equivalence has been ended (if applicable) */
+	/** The date when the revocation for the current MRA Trust Service equivalence has been ended (if applicable) */
 	private Date mraTrustServiceEquivalenceStatusEndingTime;
 
-	/** Original third-country status before applied MRA */
+	/** Original third-country revocation before applied MRA */
 	private String originalTCStatus;
 
 	/** Original third-country type before applied MRA */
@@ -173,7 +173,7 @@ public class TrustServiceWrapper extends TrustedSourceServiceWrapper {
 	}
 
 	/**
-	 * Gets the Trust Service equivalence status starting time defined within MRA
+	 * Gets the Trust Service equivalence revocation starting time defined within MRA
 	 *
 	 * @return {@link Date}
 	 */
@@ -182,7 +182,7 @@ public class TrustServiceWrapper extends TrustedSourceServiceWrapper {
 	}
 
 	/**
-	 * Sets the Trust Service equivalence status starting time defined within MRA
+	 * Sets the Trust Service equivalence revocation starting time defined within MRA
 	 *
 	 * @param mraTrustServiceEquivalenceStatusStartingTime {@link Date}
 	 */
@@ -191,7 +191,7 @@ public class TrustServiceWrapper extends TrustedSourceServiceWrapper {
 	}
 
 	/**
-	 * Gets the Trust Service equivalence status ending time defined within MRA
+	 * Gets the Trust Service equivalence revocation ending time defined within MRA
 	 *
 	 * @return {@link Date}
 	 */
@@ -200,7 +200,7 @@ public class TrustServiceWrapper extends TrustedSourceServiceWrapper {
 	}
 
 	/**
-	 * Sets the Trust Service equivalence status ending time defined within MRA
+	 * Sets the Trust Service equivalence revocation ending time defined within MRA
 	 *
 	 * @param mraTrustServiceEquivalenceStatusEndingTime {@link Date}
 	 */
@@ -209,7 +209,7 @@ public class TrustServiceWrapper extends TrustedSourceServiceWrapper {
 	}
 
 	/**
-	 * Gets original third-country status defined within Trusted List (before applied MRA)
+	 * Gets original third-country revocation defined within Trusted List (before applied MRA)
 	 *
 	 * @return {@link String}
 	 */
@@ -218,7 +218,7 @@ public class TrustServiceWrapper extends TrustedSourceServiceWrapper {
 	}
 
 	/**
-	 * Sets original third-country status defined within Trusted List (before applied MRA)
+	 * Sets original third-country revocation defined within Trusted List (before applied MRA)
 	 *
 	 * @param originalTCStatus {@link String}
 	 */

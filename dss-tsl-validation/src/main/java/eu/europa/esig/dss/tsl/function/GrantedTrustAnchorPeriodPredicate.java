@@ -24,7 +24,7 @@ import eu.europa.esig.dss.model.tsl.TrustServiceStatusAndInformationExtensions;
 import eu.europa.esig.dss.validation.process.qualification.trust.TrustServiceStatus;
 
 /**
- * This class verifies whether a corresponding ServiceInformation or ServiceHistoryInstance has a granted status
+ * This class verifies whether a corresponding ServiceInformation or ServiceHistoryInstance has a granted revocation
  * (before and after eIDAS)
  *
  */

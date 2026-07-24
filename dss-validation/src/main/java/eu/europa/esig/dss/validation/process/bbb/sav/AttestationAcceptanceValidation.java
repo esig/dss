@@ -36,36 +36,36 @@ import eu.europa.esig.dss.model.policy.MultiValuesRule;
 import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.eaa.checks.AcceptableAttestationRevocationFoundCheck;
-import eu.europa.esig.dss.validation.process.eaa.checks.AttestationAdministrativeExpirationDatePresentCheck;
-import eu.europa.esig.dss.validation.process.eaa.checks.AttestationAdministrativeIssuanceDatePresentCheck;
-import eu.europa.esig.dss.validation.process.eaa.checks.AttestationAdministrativePeriodNotExpiredCheck;
-import eu.europa.esig.dss.validation.process.eaa.checks.AttestationCategoryCheck;
-import eu.europa.esig.dss.validation.process.eaa.checks.AttestationClaimsCheck;
-import eu.europa.esig.dss.validation.process.eaa.checks.AttestationExpirationPresentCheck;
-import eu.europa.esig.dss.validation.process.eaa.checks.AttestationIdentifierPresentCheck;
-import eu.europa.esig.dss.validation.process.eaa.checks.AttestationIssuanceDatePresentCheck;
-import eu.europa.esig.dss.validation.process.eaa.checks.AttestationIssuingAuthorityCheck;
-import eu.europa.esig.dss.validation.process.eaa.checks.AttestationIssuingAuthorityRegistrationIdentifierCheck;
-import eu.europa.esig.dss.validation.process.eaa.checks.AttestationIssuingCountryCheck;
-import eu.europa.esig.dss.validation.process.eaa.checks.AttestationNotBeforePresentCheck;
-import eu.europa.esig.dss.validation.process.eaa.checks.AttestationNotExpiredCheck;
-import eu.europa.esig.dss.validation.process.eaa.checks.AttestationNotOnHoldCheck;
-import eu.europa.esig.dss.validation.process.eaa.checks.AttestationNotRevokedCheck;
-import eu.europa.esig.dss.validation.process.eaa.checks.AttestationOneTimeUseCheck;
-import eu.europa.esig.dss.validation.process.eaa.checks.AttestationPseudonymUsageCheck;
-import eu.europa.esig.dss.validation.process.eaa.checks.AttestationRevocationAcceptableCheck;
-import eu.europa.esig.dss.validation.process.eaa.checks.AttestationRevocationAvailableCheck;
-import eu.europa.esig.dss.validation.process.eaa.checks.AttestationRevocationPresentCheck;
-import eu.europa.esig.dss.validation.process.eaa.checks.AttestationRevocationStatusKnownCheck;
-import eu.europa.esig.dss.validation.process.eaa.checks.AttestationShortLivedCheck;
-import eu.europa.esig.dss.validation.process.eaa.checks.AttestationSubjectCheck;
-import eu.europa.esig.dss.validation.process.eaa.checks.AttestationSubjectPseudonymCheck;
-import eu.europa.esig.dss.validation.process.eaa.checks.AttestationSupportedClaimsCheck;
-import eu.europa.esig.dss.validation.process.eaa.checks.AttestationSupportedNamespacesCheck;
-import eu.europa.esig.dss.validation.process.eaa.checks.AttestationTypeCheck;
-import eu.europa.esig.dss.validation.process.eaa.checks.AttestationTypeIntegrityPresentCheck;
-import eu.europa.esig.dss.validation.process.eaa.checks.ETSI194721ConformanceCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AcceptableAttestationRevocationFoundCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationAdministrativeExpirationDatePresentCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationAdministrativeIssuanceDatePresentCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationAdministrativePeriodNotExpiredCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationCategoryCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationClaimsCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationExpirationPresentCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationIdentifierPresentCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationIssuanceDatePresentCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationIssuingAuthorityCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationIssuingAuthorityRegistrationIdentifierCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationIssuingCountryCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationNotBeforePresentCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationNotExpiredCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationNotOnHoldCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationNotRevokedCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationOneTimeUseCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationPseudonymUsageCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationRevocationAcceptableCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationRevocationAvailableCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationRevocationPresentCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationRevocationStatusKnownCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationShortLivedCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationSubjectCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationSubjectPseudonymCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationSupportedClaimsCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationSupportedNamespacesCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationTypeCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationTypeIntegrityPresentCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.ETSI194721ConformanceCheck;
 
 import java.util.Date;
 import java.util.Map;
@@ -79,7 +79,7 @@ public class AttestationAcceptanceValidation extends AbstractAcceptanceValidatio
     /** A map of BasicBuildingBlocks */
     private final Map<String, XmlBasicBuildingBlocks> bbbs;
 
-    /** Last acceptable EAA token status */
+    /** Last acceptable EAA token revocation */
     private AttestationRevocationWrapper lastAcceptableStatus;
 
     /**
@@ -157,7 +157,7 @@ public class AttestationAcceptanceValidation extends AbstractAcceptanceValidatio
 
         } else {
 
-            // TODO : make status check configurable ?
+            // TODO : make revocation check configurable ?
 
             AttestationRevocationPresentCheck revocationPresentCheck = statusPresent();
 

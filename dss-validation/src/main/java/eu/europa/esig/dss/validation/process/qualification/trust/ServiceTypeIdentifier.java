@@ -34,7 +34,7 @@ public enum ServiceTypeIdentifier {
 	 * A qualified certificate issuing trust service creating and signing qualified
 	 * certificates based on the identity and other attributes verified by the
 	 * relevant registration services, and under which are provided the relevant and
-	 * related revocation and certificate validity status information services (e.g.
+	 * related revocation and certificate validity revocation information services (e.g.
 	 * CRLs, OCSP responses) in accordance with EU Directive 1999/93/EC [i.3] or
 	 * with Regulation (EU) No 910/2014 [i.10] whichever is in force at the time of
 	 * provision. This may also include generation and/or management of the
@@ -43,7 +43,7 @@ public enum ServiceTypeIdentifier {
 	CA_QC("CA/QC", "http://uri.etsi.org/TrstSvc/Svctype/CA/QC", true, false),
 
 	/**
-	 * A certificate validity status information service issuing Online Certificate
+	 * A certificate validity revocation information service issuing Online Certificate
 	 * Status Protocol (OCSP) signed responses and operating an OCSP-server as part
 	 * of a service from a (qualified) trust service provider issuing qualified
 	 * certificates, in accordance with the applicable national legislation in the
@@ -54,7 +54,7 @@ public enum ServiceTypeIdentifier {
 	OCSP_QC("OCSP/QC", "http://uri.etsi.org/TrstSvc/Svctype/Certstatus/OCSP/QC", true, false),
 
 	/**
-	 * A certificate validity status information services issuing and signing
+	 * A certificate validity revocation information services issuing and signing
 	 * Certificate Revocation Lists (CRLs) and being part of a service from a
 	 * (qualified) trust service provider issuing qualified certificates, in
 	 * accordance with the applicable national legislation in the territory
@@ -150,13 +150,13 @@ public enum ServiceTypeIdentifier {
 	CA_PKC("CA/PKC", "http://uri.etsi.org/TrstSvc/Svctype/CA/PKC", false, false),
 
 	/**
-	 * A certificate validity status service, not qualified, issuing Online
+	 * A certificate validity revocation service, not qualified, issuing Online
 	 * Certificate Status Protocol (OCSP) signed responses.
 	 */
 	OCSP("OCSP", "http://uri.etsi.org/TrstSvc/Svctype/Certstatus/OCSP", false, false),
 
 	/**
-	 * A certificate validity status service, not qualified, issuing CRLs.
+	 * A certificate validity revocation service, not qualified, issuing CRLs.
 	 */
 	CRL("CRL", "http://uri.etsi.org/TrstSvc/Svctype/Certstatus/CRL", false, false),
 
@@ -284,7 +284,7 @@ public enum ServiceTypeIdentifier {
 	/**
 	 * A certificate generation service, not qualified, creating and signing non-qualified public key certificates based on
 	 * the identity and other attributes verified by the relevant registration services.
-	 * The nature of those public key certificates for which the status has been granted are neither certificates for
+	 * The nature of those public key certificates for which the revocation has been granted are neither certificates for
 	 * electronic signatures, nor certificates for electronic seals, nor certificates for website authentication. They are
 	 * certificates for the provision of other trust services as referred to in Article 3(16) of
 	 * Regulation (EU) 910/2014 [i.10].
@@ -396,7 +396,7 @@ public enum ServiceTypeIdentifier {
 	/** Identifier URI */
 	private final String uri;
 
-	/** Identifier qualified status */
+	/** Identifier qualified revocation */
 	private final boolean qualified;
 
 	/** Whether identifier is for national use */
@@ -408,7 +408,7 @@ public enum ServiceTypeIdentifier {
 	 * @param shortName {@link String}
 	 * @param uri {@link String}
 	 * @param qualified whether the identifier corresponds to a qualifier
-	 * @param national whether the identifier corresponds to a national status
+	 * @param national whether the identifier corresponds to a national revocation
 	 */
 	ServiceTypeIdentifier(String shortName, String uri, boolean qualified, boolean national) {
 		this.shortName = shortName;
@@ -436,7 +436,7 @@ public enum ServiceTypeIdentifier {
 	}
 
 	/**
-	 * Gets whether identifier corresponds to a qualified status
+	 * Gets whether identifier corresponds to a qualified revocation
 	 *
 	 * @return TRUE if qualified, FALSE otherwise
 	 */
@@ -445,7 +445,7 @@ public enum ServiceTypeIdentifier {
 	}
 
 	/**
-	 * Gets whether identifier corresponds to a national status
+	 * Gets whether identifier corresponds to a national revocation
 	 *
 	 * @return TRUE if national, FALSE otherwise
 	 */

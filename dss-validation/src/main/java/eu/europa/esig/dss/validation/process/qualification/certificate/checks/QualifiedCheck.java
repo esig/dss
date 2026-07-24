@@ -36,7 +36,7 @@ import eu.europa.esig.dss.validation.process.ChainItem;
  */
 public class QualifiedCheck extends ChainItem<XmlValidationCertificateQualification> {
 
-	/** The certificate qualification status */
+	/** The certificate qualification revocation */
 	private final CertificateQualifiedStatus qualifiedStatus;
 
 	/** Validation time type */

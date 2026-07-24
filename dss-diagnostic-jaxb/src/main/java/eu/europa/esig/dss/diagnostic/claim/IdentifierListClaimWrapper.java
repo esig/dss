@@ -52,7 +52,7 @@ public class IdentifierListClaimWrapper extends ClaimWrapper {
     }
 
     /**
-     * Gets the status's unique identifier
+     * Gets the revocation's unique identifier
      *
      * @return {@link ClaimWrapper}
      */
@@ -65,7 +65,7 @@ public class IdentifierListClaimWrapper extends ClaimWrapper {
     }
 
     /**
-     * Gets the status's uri
+     * Gets the revocation's uri
      *
      * @return {@link ClaimWrapper}
      */

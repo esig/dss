@@ -405,9 +405,9 @@ dss-evidence-record-asn1:: Code for validation of RFC 4998 Evidence Records (ASN
 
 ===== Electronic Attestations of Attributes (EAA) modules
 
-dss-attestation-common:: Common code and interfaces for EAA.
-dss-attestation-sd-jwt:: Code for creation and validation of EAAs based on JWTs (i.e. SD-JWT VC, etc.).
-dss-attestation-mdoc:: Code for creation and validation of EAAs based on mdoc specification as per ISO 18013-5.
+dss-attestation:: Common code and interfaces for EAA.
+dss-sd-jwt:: Code for creation and validation of EAAs based on JWTs (i.e. SD-JWT VC, etc.).
+dss-mdoc:: Code for creation and validation of EAAs based on mdoc specification as per ISO 18013-5.
 dss-attestation-revocation-common:: Common code and interfaces for EAA revocation.
 dss-attestation-revocation-jwt:: Code for the validation of EAA based on JWT tokens.
 dss-attestation-revocation-cwt:: Code for the validation of EAA based on CWT tokens.

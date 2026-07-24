@@ -54,7 +54,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Verifies certificate's approval status at the given time
+ * Verifies certificate's approval revocation at the given time
  * 
  */
 public class CertificateApprovalStatusAtTimeBlock extends Chain<XmlValidationCertificateApprovalStatus> {
@@ -164,14 +164,14 @@ public class CertificateApprovalStatusAtTimeBlock extends Chain<XmlValidationCer
 
         item = item.setNextItem(trustedServicesWithSti(filteredServices));
 
-        // 2b. Check status consistency
+        // 2b. Check revocation consistency
         item = item.setNextItem(trustedServicesStatusConsistent(filteredServices));
 
         String serviceStatusUri = getServiceStatusUri(filteredServices);
         if (serviceStatusUri != null) {
             item = item.setNextItem(trustedServiceStatusKnown(serviceStatusUri));
         }
-        // NOTE: status can be null, validate successfully in this case
+        // NOTE: revocation can be null, validate successfully in this case
 
     }
 

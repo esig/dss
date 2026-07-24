@@ -228,20 +228,20 @@
 		</dependency>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-attestation-common</artifactId>
+			<artifactId>dss-attestation</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-attestation-common</artifactId>
+			<artifactId>dss-attestation</artifactId>
 			<type>test-jar</type>
 		</dependency>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-attestation-sd-jwt</artifactId>
+			<artifactId>dss-sd-jwt</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-attestation-mdoc</artifactId>
+			<artifactId>dss-mdoc</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>

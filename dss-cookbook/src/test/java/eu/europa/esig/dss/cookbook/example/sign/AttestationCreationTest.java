@@ -23,24 +23,24 @@ package eu.europa.esig.dss.cookbook.example.sign;
 import java.util.Date;
 import java.util.List;
 
-import eu.europa.esig.dss.eaa.common.creation.TokenStatusList;
-import eu.europa.esig.dss.eaa.sd.jwt.creation.SDJWTClaim;
-import eu.europa.esig.dss.eaa.sd.jwt.creation.SDJWTClaimArray;
-import eu.europa.esig.dss.eaa.sd.jwt.creation.SDJWTClaimObject;
+import eu.europa.esig.dss.attestation.common.creation.TokenStatusList;
+import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTClaim;
+import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTClaimArray;
+import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTClaimObject;
 import org.junit.jupiter.api.Test;
 
 import eu.europa.esig.dss.cbades.signature.CBAdESSignatureParameters;
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
-import eu.europa.esig.dss.eaa.sd.jwt.creation.SDJWTSelectiveDisclosure;
-import eu.europa.esig.dss.eaa.sd.jwt.creation.SDJWTPayloadParameters;
-import eu.europa.esig.dss.eaa.sd.jwt.creation.SDJWTService;
-import eu.europa.esig.dss.eaa.sd.jwt.creation.SDJWTKeyBindingParameters;
-import eu.europa.esig.dss.eaa.mdoc.MdocConstants;
-import eu.europa.esig.dss.eaa.mdoc.creation.MdocSelectiveDisclosure;
-import eu.europa.esig.dss.eaa.mdoc.creation.MdocPayloadParameters;
-import eu.europa.esig.dss.eaa.mdoc.creation.MdocService;
-import eu.europa.esig.dss.eaa.mdoc.creation.MdocKeyBindingParameters;
-import eu.europa.esig.dss.eaa.mdoc.creation.SessionTranscriptBuilder;
+import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTSelectiveDisclosure;
+import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTPayloadParameters;
+import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTService;
+import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTKeyBindingParameters;
+import eu.europa.esig.dss.attestation.mdoc.MdocConstants;
+import eu.europa.esig.dss.attestation.mdoc.creation.MdocSelectiveDisclosure;
+import eu.europa.esig.dss.attestation.mdoc.creation.MdocPayloadParameters;
+import eu.europa.esig.dss.attestation.mdoc.creation.MdocService;
+import eu.europa.esig.dss.attestation.mdoc.creation.MdocKeyBindingParameters;
+import eu.europa.esig.dss.attestation.mdoc.creation.SessionTranscriptBuilder;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EllipticCurve;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
@@ -68,11 +68,11 @@ class AttestationCreationTest extends CookbookTools {
             CertificateToken deviceCertificate = devicePrivateKey.getCertificate();
 
             // tag::sdjwt-payload-parameters[]
-            // import eu.europa.esig.dss.eaa.jwt.creation.SDJWTEAAClaim;
-            // import eu.europa.esig.dss.eaa.jwt.creation.SDJWTEAAClaimArray;
-            // import eu.europa.esig.dss.eaa.jwt.creation.SDJWTEAAClaimObject;
-            // import eu.europa.esig.dss.eaa.jwt.creation.SDJWTEAADisclosure;
-            // import eu.europa.esig.dss.eaa.jwt.creation.SDJWTEAAPayloadParameters;
+            // import eu.europa.esig.dss.attestation.jwt.creation.SDJWTEAAClaim;
+            // import eu.europa.esig.dss.attestation.jwt.creation.SDJWTEAAClaimArray;
+            // import eu.europa.esig.dss.attestation.jwt.creation.SDJWTEAAClaimObject;
+            // import eu.europa.esig.dss.attestation.jwt.creation.SDJWTEAADisclosure;
+            // import eu.europa.esig.dss.attestation.jwt.creation.SDJWTEAAPayloadParameters;
 
             SDJWTPayloadParameters payloadParameters = new SDJWTPayloadParameters();
 
@@ -110,7 +110,7 @@ class AttestationCreationTest extends CookbookTools {
             // end::sdjwt-payload-parameters[]
 
             // tag::sdjwt-signed-eaa[]
-            // import eu.europa.esig.dss.eaa.jwt.creation.SDJWTEAAService;
+            // import eu.europa.esig.dss.attestation.jwt.creation.SDJWTEAAService;
             // import eu.europa.esig.dss.jades.JAdESSignatureParameters;
             // import eu.europa.esig.dss.model.DSSDocument;
             // import eu.europa.esig.dss.model.SignatureValue;
@@ -134,14 +134,14 @@ class AttestationCreationTest extends CookbookTools {
             // end::sdjwt-signed-eaa[]
 
             // tag::sdjwt-get-disclosures[]
-            // import eu.europa.esig.dss.eaa.jwt.creation.SDJWTEAADisclosure;
+            // import eu.europa.esig.dss.attestation.jwt.creation.SDJWTEAADisclosure;
 
             // Retrieve disclosures for the selectively disclosable claims
             List<SDJWTSelectiveDisclosure> disclosures = service.getDisclosures(payloadParameters);
             // end::sdjwt-get-disclosures[]
 
             // tag::sdjwt-key-biding[]
-            // import eu.europa.esig.dss.eaa.jwt.creation.SDJWTKeyBindingParameters;
+            // import eu.europa.esig.dss.attestation.jwt.creation.SDJWTKeyBindingParameters;
             // import eu.europa.esig.dss.jades.JAdESSignatureParameters;
             // import eu.europa.esig.dss.model.DSSDocument;
             // import eu.europa.esig.dss.model.SignatureValue;
@@ -193,8 +193,8 @@ class AttestationCreationTest extends CookbookTools {
             CertificateToken deviceCertificate = devicePrivateKey.getCertificate();
 
             // tag::mdoc-payload-parameters[]
-            // import eu.europa.esig.dss.eaa.mdoc.MdocConstants;
-            // import eu.europa.esig.dss.eaa.mdoc.creation.MdocEAAPayloadParameters;
+            // import eu.europa.esig.dss.attestation.mdoc.MdocConstants;
+            // import eu.europa.esig.dss.attestation.mdoc.creation.MdocEAAPayloadParameters;
 
             MdocPayloadParameters payloadParameters = new MdocPayloadParameters();
 
@@ -216,7 +216,7 @@ class AttestationCreationTest extends CookbookTools {
             // end::mdoc-payload-parameters[]
 
             // tag::mdoc-status-list[]
-            // IETF draft-ietf-oauth-status-list: index + URL
+            // IETF draft-ietf-oauth-revocation-list: index + URL
             payloadParameters.setStatusList(42, "https://example.com/statuslists/1");
 
             // ISO/IEC 18013-5 Identifier List: identifier bytes + URL
@@ -229,7 +229,7 @@ class AttestationCreationTest extends CookbookTools {
 
             // tag::mdoc-signed-eaa[]
             // import eu.europa.esig.dss.cbades.signature.CBAdESSignatureParameters;
-            // import eu.europa.esig.dss.eaa.mdoc.creation.MdocEAAService;
+            // import eu.europa.esig.dss.attestation.mdoc.creation.MdocEAAService;
             // import eu.europa.esig.dss.enumerations.DigestAlgorithm;
             // import eu.europa.esig.dss.model.DSSDocument;
             // import eu.europa.esig.dss.model.SignatureValue;
@@ -253,15 +253,15 @@ class AttestationCreationTest extends CookbookTools {
             // end::mdoc-signed-eaa[]
 
             // tag::mdoc-get-disclosures[]
-            // import eu.europa.esig.dss.eaa.mdoc.creation.MdocEAADisclosure;
+            // import eu.europa.esig.dss.attestation.mdoc.creation.MdocEAADisclosure;
 
             // Retrieve disclosures (one IssuerSignedItem per selectively disclosable element)
             List<MdocSelectiveDisclosure> disclosures = service.getDisclosures(payloadParameters);
             // end::mdoc-get-disclosures[]
 
             // tag::mdoc-key-binding[]
-            // import eu.europa.esig.dss.eaa.mdoc.creation.MdocKeyBindingParameters;
-            // import eu.europa.esig.dss.eaa.mdoc.creation.SessionTranscriptBuilder;
+            // import eu.europa.esig.dss.attestation.mdoc.creation.MdocKeyBindingParameters;
+            // import eu.europa.esig.dss.attestation.mdoc.creation.SessionTranscriptBuilder;
             // import eu.europa.esig.dss.enumerations.EllipticCurve;
 
             // Build the SessionTranscript (NFC Handover example)

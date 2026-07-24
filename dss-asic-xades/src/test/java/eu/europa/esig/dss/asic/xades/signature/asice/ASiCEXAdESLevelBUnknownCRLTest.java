@@ -79,7 +79,7 @@ class ASiCEXAdESLevelBUnknownCRLTest extends AbstractASiCEXAdESTestSignature {
     protected void verifySimpleReport(SimpleReport simpleReport) {
         super.verifySimpleReport(simpleReport);
 
-        // Revocation status is unknown
+        // Revocation revocation is unknown
         assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstSignatureId()));
         assertEquals(SubIndication.CERTIFICATE_CHAIN_GENERAL_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstSignatureId()));
 

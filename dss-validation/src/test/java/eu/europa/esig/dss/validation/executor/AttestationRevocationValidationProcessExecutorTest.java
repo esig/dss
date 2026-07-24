@@ -45,7 +45,7 @@ import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.executor.eaa.AttestationProcessExecutor;
+import eu.europa.esig.dss.validation.executor.attestation.AttestationProcessExecutor;
 import eu.europa.esig.dss.validation.policy.ValidationPolicyLoader;
 import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.reports.Reports;
@@ -76,7 +76,7 @@ class AttestationRevocationValidationProcessExecutorTest extends AbstractTestVal
     @Test
     void statusUnknownTest() throws Exception {
         XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_eaa.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_eaa.xml"));
         assertNotNull(diagnosticData);
 
         XmlEAARevocationStatus xmlEAARevocationStatus = diagnosticData.getEAAs().get(0).getAttestationRevocations().get(0);
@@ -254,7 +254,7 @@ class AttestationRevocationValidationProcessExecutorTest extends AbstractTestVal
     @Test
     void statusIssuanceFailTest() throws Exception {
         XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_eaa.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_eaa.xml"));
         assertNotNull(diagnosticData);
 
         XmlEAARevocationStatus xmlEAARevocationStatus = diagnosticData.getEAAs().get(0).getAttestationRevocations().get(0);
@@ -426,7 +426,7 @@ class AttestationRevocationValidationProcessExecutorTest extends AbstractTestVal
     @Test
     void statusIssuanceWarnTest() throws Exception {
         XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_eaa.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_eaa.xml"));
         assertNotNull(diagnosticData);
 
         XmlEAARevocationStatus xmlEAARevocationStatus = diagnosticData.getEAAs().get(0).getAttestationRevocations().get(0);
@@ -591,7 +591,7 @@ class AttestationRevocationValidationProcessExecutorTest extends AbstractTestVal
     @Test
     void statusExpirationFailTest() throws Exception {
         XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_eaa.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_eaa.xml"));
         assertNotNull(diagnosticData);
 
         XmlEAARevocationStatus xmlEAARevocationStatus = diagnosticData.getEAAs().get(0).getAttestationRevocations().get(0);
@@ -765,7 +765,7 @@ class AttestationRevocationValidationProcessExecutorTest extends AbstractTestVal
     @Test
     void statusExpirationWarnTest() throws Exception {
         XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_eaa.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_eaa.xml"));
         assertNotNull(diagnosticData);
 
         XmlEAARevocationStatus xmlEAARevocationStatus = diagnosticData.getEAAs().get(0).getAttestationRevocations().get(0);
@@ -931,7 +931,7 @@ class AttestationRevocationValidationProcessExecutorTest extends AbstractTestVal
     @Test
     void statusExpiredFailTest() throws Exception {
         XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_eaa.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_eaa.xml"));
         assertNotNull(diagnosticData);
 
         XmlEAARevocationStatus xmlEAARevocationStatus = diagnosticData.getEAAs().get(0).getAttestationRevocations().get(0);
@@ -1109,7 +1109,7 @@ class AttestationRevocationValidationProcessExecutorTest extends AbstractTestVal
     @Test
     void statusNotExpiredWarnTest() throws Exception {
         XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_eaa.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_eaa.xml"));
         assertNotNull(diagnosticData);
 
         XmlEAARevocationStatus xmlEAARevocationStatus = diagnosticData.getEAAs().get(0).getAttestationRevocations().get(0);
@@ -1279,7 +1279,7 @@ class AttestationRevocationValidationProcessExecutorTest extends AbstractTestVal
     @Test
     void statusSubjectFailTest() throws Exception {
         XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_eaa.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_eaa.xml"));
         assertNotNull(diagnosticData);
 
         XmlEAARevocationStatus xmlEAARevocationStatus = diagnosticData.getEAAs().get(0).getAttestationRevocations().get(0);
@@ -1455,7 +1455,7 @@ class AttestationRevocationValidationProcessExecutorTest extends AbstractTestVal
     @Test
     void statusSubjectWarnTest() throws Exception {
         XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_eaa.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_eaa.xml"));
         assertNotNull(diagnosticData);
 
         XmlEAARevocationStatus xmlEAARevocationStatus = diagnosticData.getEAAs().get(0).getAttestationRevocations().get(0);
@@ -1622,7 +1622,7 @@ class AttestationRevocationValidationProcessExecutorTest extends AbstractTestVal
     @Test
     void statusSubjectNoMatchFailTest() throws Exception {
         XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_eaa.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_eaa.xml"));
         assertNotNull(diagnosticData);
 
         XmlEAARevocationStatus xmlEAARevocationStatus = diagnosticData.getEAAs().get(0).getAttestationRevocations().get(0);
@@ -1797,7 +1797,7 @@ class AttestationRevocationValidationProcessExecutorTest extends AbstractTestVal
     @Test
     void statusSubjectNoMatchWarnTest() throws Exception {
         XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_eaa.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_eaa.xml"));
         assertNotNull(diagnosticData);
 
         XmlEAARevocationStatus xmlEAARevocationStatus = diagnosticData.getEAAs().get(0).getAttestationRevocations().get(0);
@@ -1963,7 +1963,7 @@ class AttestationRevocationValidationProcessExecutorTest extends AbstractTestVal
     @Test
     void statusIssCertValidFailTest() throws Exception {
         XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_eaa.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_eaa.xml"));
         assertNotNull(diagnosticData);
 
         XmlEAARevocationStatus xmlEAARevocationStatus = diagnosticData.getEAAs().get(0).getAttestationRevocations().get(0);
@@ -2141,7 +2141,7 @@ class AttestationRevocationValidationProcessExecutorTest extends AbstractTestVal
     @Test
     void statusIssCertValidWarnTest() throws Exception {
         XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/eaa-validation/diag_data_eaa.xml"));
+                new File("src/test/resources/diag-data/attestation-validation/diag_data_eaa.xml"));
         assertNotNull(diagnosticData);
 
         XmlEAARevocationStatus xmlEAARevocationStatus = diagnosticData.getEAAs().get(0).getAttestationRevocations().get(0);

@@ -107,7 +107,7 @@ public class CRLUtilsStreamImpl extends AbstractCRLUtils implements ICRLUtils {
 		try (InputStream is = crlValidity.toCRLInputStream()) {
 			crlEntry = parser.retrieveRevocationInfo(is, serialNumber);
 		} catch (IOException e) {
-			LOG.warn("Unable to retrieve the revocation status", e);
+			LOG.warn("Unable to retrieve the revocation revocation", e);
 		}
 		return crlEntry;
 	}

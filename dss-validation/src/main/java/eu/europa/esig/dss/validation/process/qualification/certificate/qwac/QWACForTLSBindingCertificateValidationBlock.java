@@ -59,7 +59,7 @@ public class QWACForTLSBindingCertificateValidationBlock extends Chain<XmlQWACPr
     /** Map of Basic Building Blocks */
     private final Map<String, XmlBasicBuildingBlocks> bbbs;
 
-    /** Qualification status of the certificate */
+    /** Qualification revocation of the certificate */
     private final XmlCertificateQualificationProcess certificateQualification;
 
     /** URL of the website to validate the QWAC certificate against */

@@ -142,7 +142,7 @@ public final class DSSRevocationUtils {
 	}
 
 	/**
-	 * Convert a BasicOCSPResp in OCSPResp (connection status is set to
+	 * Convert a BasicOCSPResp in OCSPResp (connection revocation is set to
 	 * SUCCESSFUL).
 	 *
 	 * @param basicOCSPResp
@@ -178,7 +178,7 @@ public final class DSSRevocationUtils {
 	}
 
 	/**
-	 * Convert a BasicOCSPResp in OCSPResp (connection status is set to
+	 * Convert a BasicOCSPResp in OCSPResp (connection revocation is set to
 	 * SUCCESSFUL).
 	 *
 	 * @param basicOCSPRespBinary

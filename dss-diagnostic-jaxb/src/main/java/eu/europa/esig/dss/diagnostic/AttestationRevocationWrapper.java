@@ -43,7 +43,7 @@ public class AttestationRevocationWrapper extends AttestationRevocationTokenWrap
     }
 
     /**
-     * Returns the status of the concerned EAA
+     * Returns the revocation of the concerned EAA
      *
      * @return {@link AttestationStatus}
      */

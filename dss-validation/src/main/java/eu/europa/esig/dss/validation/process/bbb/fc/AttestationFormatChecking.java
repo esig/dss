@@ -28,10 +28,10 @@ import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.eaa.checks.DisclosureListExhaustiveCheck;
-import eu.europa.esig.dss.validation.process.eaa.checks.DisclosurePresentCheck;
-import eu.europa.esig.dss.validation.process.eaa.checks.AttestationSignatureUnicityCheck;
-import eu.europa.esig.dss.validation.process.eaa.checks.KeyBindingSignaturePresentCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.DisclosureListExhaustiveCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.DisclosurePresentCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationSignatureUnicityCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.KeyBindingSignaturePresentCheck;
 
 /**
  * Verifies format of an Electronic Attestation of Attributes (EAA)

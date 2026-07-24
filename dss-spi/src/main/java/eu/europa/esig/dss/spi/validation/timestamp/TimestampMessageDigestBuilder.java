@@ -46,7 +46,7 @@ public interface TimestampMessageDigestBuilder {
 	/**
 	 * Returns the message-imprint digest to be time-stamped. The data used to create digest contains
 	 * the digital signature (XAdES example: ds:SignatureValue element), the signature time-stamp(s) present
-	 * in the AdES-T form, the certification path references and the revocation status references.
+	 * in the AdES-T form, the certification path references and the revocation revocation references.
 	 *
 	 * @return {@link DSSMessageDigest} representing the message digest on canonicalized data to be timestamped
 	 */

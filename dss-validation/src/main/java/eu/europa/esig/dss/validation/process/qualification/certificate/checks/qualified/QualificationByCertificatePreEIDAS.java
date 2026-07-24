@@ -26,12 +26,12 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.CertificatePolicyIdentifiers;
 
 /**
- * Gets certificate qualification status before eIDAS
+ * Gets certificate qualification revocation before eIDAS
  *
  */
 class QualificationByCertificatePreEIDAS implements QualificationStrategy {
 
-	/** Certificate to get qualification status for */
+	/** Certificate to get qualification revocation for */
 	private final CertificateWrapper signingCertificate;
 
 	/**

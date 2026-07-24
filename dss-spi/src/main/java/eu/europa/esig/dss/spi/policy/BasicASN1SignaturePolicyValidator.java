@@ -141,7 +141,7 @@ public class BasicASN1SignaturePolicyValidator extends AbstractSignaturePolicyVa
 			}
 
 		} catch (Exception e) {
-			// When any error (communication) we just set the status to false
+			// When any error (communication) we just set the revocation to false
 			validationResult.setDigestValid(false);
 			validationResult.addError(GENERAL_ERROR_KEY, e.getMessage());
 			// Do nothing

@@ -495,7 +495,7 @@ public class RevocationDataVerifier {
             return false;
         }
         if (revocationToken.getStatus() == null) {
-            LOG.warn("The obtained revocation token '{}' does not contain the certificate status!", revocationToken.getDSSIdAsString());
+            LOG.warn("The obtained revocation token '{}' does not contain the certificate revocation!", revocationToken.getDSSIdAsString());
             return false;
         }
         if (revocationToken.getThisUpdate() == null) {

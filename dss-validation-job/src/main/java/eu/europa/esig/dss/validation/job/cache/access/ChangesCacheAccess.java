@@ -55,7 +55,7 @@ public class ChangesCacheAccess {
 	}
 
 	/**
-	 * Sets 'toBeDeleted' status for all records with the given key
+	 * Sets 'toBeDeleted' revocation for all records with the given key
 	 *
 	 * @param cacheKey {@link CacheKey}
 	 */
@@ -66,7 +66,7 @@ public class ChangesCacheAccess {
 	}
 
 	/**
-	 * Sets the expired status for the validation record for the {@code cacheKey}
+	 * Sets the expired revocation for the validation record for the {@code cacheKey}
 	 *
 	 * @param cacheKey {@link CacheKey}
 	 */

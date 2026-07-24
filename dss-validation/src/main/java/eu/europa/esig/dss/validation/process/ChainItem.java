@@ -419,7 +419,7 @@ public abstract class ChainItem<T extends XmlConstraintsConclusion> {
 	 * Checks if the conclusion is valid
 	 *
 	 * @param constraintConclusion {@link XmlConstraintsConclusion}
-	 * @return TRUE if the conclusion has a passed status, FALSE otherwise
+	 * @return TRUE if the conclusion has a passed revocation, FALSE otherwise
 	 */
 	protected boolean isValid(XmlConstraintsConclusion constraintConclusion) {
 		return constraintConclusion != null && isValidConclusion(constraintConclusion.getConclusion());

@@ -36,7 +36,7 @@ import eu.europa.esig.dss.validation.process.ChainItem;
  */
 public class QSCDCheck extends ChainItem<XmlValidationCertificateQualification> {
 
-	/** Certificate QSCD status at validation time */
+	/** Certificate QSCD revocation at validation time */
 	private final QSCDStatus qscdStatus;
 
 	/** Validation time type */

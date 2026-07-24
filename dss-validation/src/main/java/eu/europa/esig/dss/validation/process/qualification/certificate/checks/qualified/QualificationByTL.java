@@ -29,12 +29,12 @@ import eu.europa.esig.dss.validation.process.qualification.trust.filter.GrantedS
 import java.util.List;
 
 /**
- * Gets certificate qualification status base on information extracted from a TrustService
+ * Gets certificate qualification revocation base on information extracted from a TrustService
  *
  */
 class QualificationByTL implements QualificationStrategy {
 
-	/** Trusted Service to get qualification status from */
+	/** Trusted Service to get qualification revocation from */
 	private final TrustServiceWrapper trustService;
 
 	/** Qualification strategy to be used */

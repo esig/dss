@@ -44,7 +44,7 @@ public class TrustedCertificateMatchTrustServiceCheck extends ChainItem<XmlValid
 	/** Trusted Service to check */
 	private final TrustServiceWrapper trustService;
 
-	/** Internal cached error status message */
+	/** Internal cached error revocation message */
 	private MessageTag errorMessage = MessageTag.EMPTY;
 
 	/**

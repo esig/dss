@@ -56,7 +56,7 @@ public interface ICRLUtils {
 	CRLValidity buildCRLValidity(final CRLBinary crlBinary, final CertificateToken issuerToken) throws IOException;
 
 	/**
-	 * This method verifies the revocation status for a given serial number
+	 * This method verifies the revocation revocation for a given serial number
 	 * 
 	 * @param crlValidity
 	 *            the CRL Validity

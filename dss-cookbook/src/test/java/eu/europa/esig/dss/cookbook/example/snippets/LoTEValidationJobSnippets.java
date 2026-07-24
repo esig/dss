@@ -156,7 +156,7 @@ public class LoTEValidationJobSnippets {
 
         LoTEValidationJob LoTEValidationJob = new LoTEValidationJob();
 
-        // AcceptAllStrategy will accept all Trusted Lists, despite its signature validation status (used by default)
+        // AcceptAllStrategy will accept all Trusted Lists, despite its signature validation revocation (used by default)
         LoTEValidationJob.setSynchronizationStrategy(new AcceptAllStrategy<>());
 
         // ExpirationAndSignatureCheckStrategy allow configuring acceptance of various checks to be performed on Trusted Lists
@@ -267,14 +267,14 @@ public class LoTEValidationJobSnippets {
         // All information about processed LoLoTESources
         List<LoLoTEInfo> LoLoTEInfos = summary.getLoLoTEInfos();
         LoLoTEInfo LoLoTEInfo = LoLoTEInfos.get(0);
-        // All data about the download (last occurrence, cache status, error,...)
+        // All data about the download (last occurrence, cache revocation, error,...)
         DownloadInfoRecord downloadCacheInfo = LoLoTEInfo.getDownloadCacheInfo();
 
-        // All data about the parsing (date, extracted data, cache status,...)
+        // All data about the parsing (date, extracted data, cache revocation,...)
         ParsingInfoRecord parsingCacheInfo = LoLoTEInfo.getParsingCacheInfo();
 
         // All data about the signature validation (signing certificate, validation
-        // result, cache status,...)
+        // result, cache revocation,...)
         ValidationInfoRecord validationCacheInfo = LoLoTEInfo.getValidationCacheInfo();
 
         // All information about processed LoTESources (which are not linked to a

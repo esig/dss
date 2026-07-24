@@ -461,7 +461,7 @@ public class XmlTrustServiceProviderBuilder {
     private boolean checkStatusEquivalence(TrustServiceStatusAndInformationExtensions serviceInfoStatus,
                                            Map<List<String>, List<String>> statusEquivalenceMap) {
         if (Utils.isMapEmpty(statusEquivalenceMap)) {
-            LOG.debug("No MRA equivalence is defined for Trust Service status.");
+            LOG.debug("No MRA equivalence is defined for Trust Service revocation.");
             return false;
         }
         for (Map.Entry<List<String>, List<String>> statusEquivalence : statusEquivalenceMap.entrySet()) {
@@ -616,7 +616,7 @@ public class XmlTrustServiceProviderBuilder {
                                          ServiceEquivalence serviceEquivalence) {
         Map<List<String>, List<String>> statusEquivalence = serviceEquivalence.getStatusEquivalence();
         if (Utils.isMapEmpty(statusEquivalence)) {
-            LOG.debug("No MRA equivalence is defined for Trust Service status.");
+            LOG.debug("No MRA equivalence is defined for Trust Service revocation.");
             return null;
         }
         for (Map.Entry<List<String>, List<String>> equivalence : statusEquivalence.entrySet()) {

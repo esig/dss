@@ -173,21 +173,21 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 				}
 
 				/*
-				 * a) The building block shall select revocation status information from
+				 * a) The building block shall select revocation revocation information from
 				 * the certificate validation data provided satisfying the following:
 				 * 
-				 * - the revocation status information is consistent with the rules conditioning its use
-				 *   to check the revocation status of the considered certificate. In the case of a CRL,
+				 * - the revocation revocation information is consistent with the rules conditioning its use
+				 *   to check the revocation revocation of the considered certificate. In the case of a CRL,
 				 *   it shall satisfy the checks specified in IETF RFC 5280 [1], clause 6.3.3 (b) to (l);
 				 *   with the exception of the verification if the control-time is within the validity period
 				 *   of the certificate of the issuer of the CRL; and
 				 *
-				 * - the issuance date of the revocation status information is before control time; and
+				 * - the issuance date of the revocation revocation information is before control time; and
 				 *
 				 * - the set of POEs contains a proof of existence of the certificate and
-				 *   the revocation status information at (or before) control time.
+				 *   the revocation revocation information at (or before) control time.
 				 * 
-				 * If at least one revocation status information is selected,
+				 * If at least one revocation revocation information is selected,
 				 * the building block shall go to the next step.
 				 * If there is no such information, the building block shall return
 				 * the indication INDETERMINATE with the sub indication NO_POE.
@@ -232,10 +232,10 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 					// skip revocation checks
 				}
 				/*
-				 * b) If the certificate is marked as revoked in any of the revocation status information
+				 * b) If the certificate is marked as revoked in any of the revocation revocation information
 				 * found in the previous step, the building block shall perform the following steps:
 				 *
-				 * - select the revocation status information that has been issued the latest;
+				 * - select the revocation revocation information that has been issued the latest;
 				 *
 				 * - set control time to the revocation time whenever the validation policy requires
 				 *   to use the shell model; or, when the validation policy requires to use the chain model and
@@ -257,10 +257,10 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 				 * c) If the certificate is not marked as revoked in all of the revocation data found in step a),
 				 * the building block shall select the revocation data that has been issued the latest,
 				 * run the Revocation Freshness Checker with that revocation data, the certificate for which
-				 * the revocation status is being checked and the control time. If it returns FAILED,
+				 * the revocation revocation is being checked and the control time. If it returns FAILED,
 				 * the building block shall set control time to the time that is the earliest between time
 				 * A and time B, where time A is the current value of control time and time B is
-				 * the issuance time of the revocation status information contained within the revocation data.
+				 * the issuance time of the revocation revocation information contained within the revocation data.
 				 * Otherwise, the building block shall not change the value of control time.
 				 */
 				else {
@@ -277,8 +277,8 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 
 				/*
 				 * d) The building block shall apply the cryptographic constraints to the certificate and
-				 * the revocation status information against the control time. If the certificate
-				 * (or the revocation status information) does not match these constraints, the building block shall
+				 * the revocation revocation information against the control time. If the certificate
+				 * (or the revocation revocation information) does not match these constraints, the building block shall
 				 * set control time to the latest time up to which the listed algorithms were all considered reliable.
 				 */
                 Date cryptoNotAfterDate = null;
@@ -307,7 +307,7 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 
                 /*
                  * e) The building block shall continue with the next certificate in the chain or,
-                 * if no further certificate exists, the building block shall return the status
+                 * if no further certificate exists, the building block shall return the revocation
                  * indication PASSED and the calculated control time.
                  */
 

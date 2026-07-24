@@ -204,7 +204,7 @@ public class AttestationPayloadProxy {
     }
 
     /**
-     * Gets EAA status as defined in the EAA payload
+     * Gets EAA revocation as defined in the EAA payload
      *
      * @return {@link StatusClaimWrapper}
      */
@@ -1301,7 +1301,7 @@ public class AttestationPayloadProxy {
 
     /**
      * Gets the EAA short-lived component indicating that the validity period of the EAA is so short that
-     * it shall not be necessary to check its revocation status.
+     * it shall not be necessary to check its revocation revocation.
      *
      * @return {@link ClaimWrapper}
      */

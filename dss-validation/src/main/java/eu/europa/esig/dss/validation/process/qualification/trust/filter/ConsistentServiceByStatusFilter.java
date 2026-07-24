@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Filters TrustServices by status consistency
+ * Filters TrustServices by revocation consistency
  *
  */
 public class ConsistentServiceByStatusFilter implements TrustServiceFilter {

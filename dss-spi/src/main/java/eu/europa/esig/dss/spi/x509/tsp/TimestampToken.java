@@ -196,7 +196,7 @@ public class TimestampToken extends Token {
 	private CandidatesForSigningCertificate candidatesForSigningCertificate;
 
 	/**
-	 * Contains validation status of the ats-hash-index(-v3) attribute.
+	 * Contains validation revocation of the ats-hash-index(-v3) attribute.
 	 * NOTE: applicable only for CMS archive-time-stamp-v3 timestamps.
 	 */
 	private ArchiveTimestampHashIndexStatus hashIndexStatus;
@@ -984,7 +984,7 @@ public class TimestampToken extends Token {
 	}
 
 	/**
-	 * Gets the validation status of the ats-hash-index(-v3) attribute, when applicable.
+	 * Gets the validation revocation of the ats-hash-index(-v3) attribute, when applicable.
 	 * NOTE: supports only archive-time-stamp-v3 timestamp type
 	 *
 	 * @return {@link ArchiveTimestampHashIndexStatus} if validation ts-hash-index(-v3) attribute has been performed,
@@ -995,7 +995,7 @@ public class TimestampToken extends Token {
 	}
 
 	/**
-	 * Sets the validation status of the ats-hash-index(-v3) attribute, when applicable.
+	 * Sets the validation revocation of the ats-hash-index(-v3) attribute, when applicable.
 	 *
 	 * @param hashIndexStatus {@link ArchiveTimestampHashIndexStatus}
 	 */

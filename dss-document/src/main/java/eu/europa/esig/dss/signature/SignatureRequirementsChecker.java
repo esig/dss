@@ -291,7 +291,7 @@ public class SignatureRequirementsChecker {
 
     /**
      * This class is used to create a {@code RevocationDataVerifier} returning always
-     * a valid revocation status for a certificate.
+     * a valid revocation revocation for a certificate.
      * NOTE: This method is used internally for a silent revocation data processing check.
      *
      * @return {@link RevocationDataVerifier}

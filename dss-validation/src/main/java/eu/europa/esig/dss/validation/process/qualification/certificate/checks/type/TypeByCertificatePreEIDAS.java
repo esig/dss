@@ -25,7 +25,7 @@ import eu.europa.esig.dss.enumerations.CertificateType;
 import eu.europa.esig.dss.validation.process.CertificatePolicyIdentifiers;
 
 /**
- * Gets certificate approval status type before eIDAS
+ * Gets certificate approval revocation type before eIDAS
  *
  */
 class TypeByCertificatePreEIDAS implements TypeStrategy {

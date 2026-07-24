@@ -347,7 +347,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/EAAValidat
 
 ==== Validation Policy
 
-The validator uses a dedicated EAA validation policy (`/policy/attestation-constraint.xml` from the `dss-attestation-common` module). The validation level is fixed at `BASIC_SIGNATURES`.
+The validator uses a dedicated EAA validation policy (`/policy/attestation-constraint.xml` from the `dss-attestation` module). The validation level is fixed at `BASIC_SIGNATURES`.
 
 Custom validation policies can be provided as for regular signatures:
 
@@ -369,7 +369,7 @@ Two base revocation mechanisms are defined:
 * **Identifier List** – as per ISO/IEC 18013-5 (CWT encoded).
 ** Implemented in `dss-attestation-revocation-cwt`.
 
-The ETSI TS 119 472-1 v1.2.1 (<<R34,[R34]>>) variant of the Token Status List is also supported and is handled automatically by the `ETSI194721V121AttestationStatusListValidator`.
+The ETSI TS 119 472-1 v1.2.1 (<<R34,[R34]>>) variant of the Token Status List is also supported and is handled automatically by the `ETSI194721V121TokenStatusListValidator`.
 
 The actual `AttestationRevocationValidator` to use is automatically selected at runtime via a `ServiceLoader` based on the revocation information embedded in the EAA payload. It is therefore necessary to include the appropriate revocation module on the classpath and register the corresponding `AttestationRevocationValidator` implementation in `META-INF/services`.
 

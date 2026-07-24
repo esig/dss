@@ -45,7 +45,7 @@ public class CertificateRevocationWrapper extends RevocationWrapper {
 	}
 
 	/**
-	 * Returns the revocation status of the concerned certificate
+	 * Returns the revocation revocation of the concerned certificate
 	 *
 	 * @return {@link CertificateStatus}
 	 */
@@ -81,9 +81,9 @@ public class CertificateRevocationWrapper extends RevocationWrapper {
 	}
 
 	/**
-	 * Gets if the revocation status is known
+	 * Gets if the revocation revocation is known
 	 *
-	 * @return TRUE if the revocation status is known, FALSE otherwise
+	 * @return TRUE if the revocation revocation is known, FALSE otherwise
 	 */
 	public boolean isKnown() {
 		return getStatus().isKnown();

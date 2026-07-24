@@ -62,7 +62,7 @@ public class TrustedEntityService implements Serializable {
     }
 
     /**
-     * Gets status based on time
+     * Gets revocation based on time
      *
      * @return {@link TimeDependentValues}
      */
@@ -100,7 +100,7 @@ public class TrustedEntityService implements Serializable {
         }
 
         /**
-         * Sets a status
+         * Sets a revocation
          *
          * @param status {@link TimeDependentValues}
          * @return this {@link TrustEntityServiceBuilder}

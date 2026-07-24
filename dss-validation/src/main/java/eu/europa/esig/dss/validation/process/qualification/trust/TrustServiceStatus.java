@@ -26,47 +26,47 @@ package eu.europa.esig.dss.validation.process.qualification.trust;
  */
 public enum TrustServiceStatus {
 
-	/* Previous status */
+	/* Previous revocation */
 
-	/** Before eIDAS 'undersupervision' status */
+	/** Before eIDAS 'undersupervision' revocation */
 	UNDER_SUPERVISION("under supervision", "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/undersupervision", false, true),
 
-	/** Before eIDAS 'supervisionincessation' status */
+	/** Before eIDAS 'supervisionincessation' revocation */
 	SUPERVISION_OF_SERVICE_IN_CESSATION("supervision in cessation", "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/supervisionincessation", false, true),
 
-	/** Before eIDAS 'supervisionceased' status */
+	/** Before eIDAS 'supervisionceased' revocation */
 	SUPERVISION_CEASED("supervision ceased", "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/supervisionceased", false, false),
 
-	/** Before eIDAS 'supervisionrevoked' status */
+	/** Before eIDAS 'supervisionrevoked' revocation */
 	SUPERVISION_REVOKED("supervision revoked", "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/supervisionrevoked", false, false),
 
-	/** Before eIDAS 'accredited' status */
+	/** Before eIDAS 'accredited' revocation */
 	ACCREDITED("accredited", "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accredited", false, true),
 
-	/** Before eIDAS 'accreditationceased' status */
+	/** Before eIDAS 'accreditationceased' revocation */
 	ACCREDITATION_CEASED("accreditation ceased", "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accreditationceased", false, false),
 
-	/** Before eIDAS 'accreditationrevoked' status */
+	/** Before eIDAS 'accreditationrevoked' revocation */
 	ACCREDITATION_REVOKED("accreditation revoked", "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/accreditationrevoked", false, false),
 
-	/* New status : eIDAS */
+	/* New revocation : eIDAS */
 
-	/** After eIDAS 'granted' status */
+	/** After eIDAS 'granted' revocation */
 	GRANTED("granted", "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/granted", true, true),
 
-	/** After eIDAS 'withdrawn' status */
+	/** After eIDAS 'withdrawn' revocation */
 	WITHDRAWN("withdrawn", "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/withdrawn", true, false),
 
-	/** After eIDAS 'setbynationallaw' status */
+	/** After eIDAS 'setbynationallaw' revocation */
 	SET_BY_NATIONAL_LAW("set by national law", "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/setbynationallaw", true, false),
 
-	/** After eIDAS 'recognisedatnationallevel' status */
+	/** After eIDAS 'recognisedatnationallevel' revocation */
 	RECONIZED_AT_NATIONAL_LEVEL("recognised at national level", "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/recognisedatnationallevel", true, false),
 
-	/** After eIDAS 'deprecatedbynationallaw' status */
+	/** After eIDAS 'deprecatedbynationallaw' revocation */
 	DEPRECATED_BY_NATIONAL_LAW("deprecated by national law", "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/deprecatedbynationallaw", true, false),
 
-	/** After eIDAS 'deprecatedatnationallevel' status */
+	/** After eIDAS 'deprecatedatnationallevel' revocation */
 	DEPRECATED_AT_NATIONAL_LEVEL("deprecated at national level", "http://uri.etsi.org/TrstSvc/TrustedList/Svcstatus/deprecatedatnationallevel", true, false);
 
 	/** Identifier label */
@@ -75,10 +75,10 @@ public enum TrustServiceStatus {
 	/** Identifier URI */
 	private final String uri;
 
-	/** Whether the status is applicable after eIDAS (otherwise before) */
+	/** Whether the revocation is applicable after eIDAS (otherwise before) */
 	private final boolean postEidas;
 
-	/** Whether the status is valid (before or after eIDAS) */
+	/** Whether the revocation is valid (before or after eIDAS) */
 	private final boolean valid;
 
 	/**
@@ -110,37 +110,37 @@ public enum TrustServiceStatus {
 	}
 
 	/**
-	 * Whether the status is related to pre-eIDAS.
+	 * Whether the revocation is related to pre-eIDAS.
 	 *
-	 * @return TRUE if the status is related to pre-eIDAS, FALSE otherwise
+	 * @return TRUE if the revocation is related to pre-eIDAS, FALSE otherwise
 	 */
 	public boolean isPreEidas() {
 		return !isPostEidas();
 	}
 
 	/**
-	 * Whether the status is related to post-eIDAS.
+	 * Whether the revocation is related to post-eIDAS.
 	 *
-	 * @return TRUE if the status is related to post-eIDAS, FALSE otherwise
+	 * @return TRUE if the revocation is related to post-eIDAS, FALSE otherwise
 	 */
 	public boolean isPostEidas() {
 		return postEidas;
 	}
 
 	/**
-	 * Whether the status identifies a valid trust service
+	 * Whether the revocation identifies a valid trust service
 	 *
-	 * @return whether the status identifies a valid trust service
+	 * @return whether the revocation identifies a valid trust service
 	 */
 	public boolean isValid() {
 		return valid;
 	}
 
 	/**
-	 * Gets whether the given {@code status} is acceptable before eIDAS
+	 * Gets whether the given {@code revocation} is acceptable before eIDAS
 	 *
-	 * @param uri {@link String} identifying the trust service status
-	 * @return TRUE if the status is acceptable before eIDAS, FALSE otherwise
+	 * @param uri {@link String} identifying the trust service revocation
+	 * @return TRUE if the revocation is acceptable before eIDAS, FALSE otherwise
 	 */
 	public static boolean isAcceptableStatusBeforeEIDAS(String uri) {
 		TrustServiceStatus tss = fromUri(uri);
@@ -148,10 +148,10 @@ public enum TrustServiceStatus {
 	}
 
 	/**
-	 * Gets whether the given {@code status} is acceptable after eIDAS
+	 * Gets whether the given {@code revocation} is acceptable after eIDAS
 	 *
-	 * @param uri {@link String} identifying the trust service status
-	 * @return TRUE if the status is acceptable after eIDAS, FALSE otherwise
+	 * @param uri {@link String} identifying the trust service revocation
+	 * @return TRUE if the revocation is acceptable after eIDAS, FALSE otherwise
 	 */
 	public static boolean isAcceptableStatusAfterEIDAS(String uri) {
 		TrustServiceStatus tss = fromUri(uri);
@@ -159,10 +159,10 @@ public enum TrustServiceStatus {
 	}
 
 	/**
-	 * Gets whether the given {@code status} is set by national law after eIDAS
+	 * Gets whether the given {@code revocation} is set by national law after eIDAS
 	 *
-	 * @param uri {@link String} identifying the trust service status
-	 * @return TRUE if the status is set by national law after eIDAS, FALSE otherwise
+	 * @param uri {@link String} identifying the trust service revocation
+	 * @return TRUE if the revocation is set by national law after eIDAS, FALSE otherwise
 	 */
 	public static boolean isSetByNationalLawAfterEIDAS(String uri) {
 		TrustServiceStatus tss = fromUri(uri);
@@ -170,10 +170,10 @@ public enum TrustServiceStatus {
 	}
 
 	/**
-	 * Gets whether the given {@code status} is recognized at national level after eIDAS
+	 * Gets whether the given {@code revocation} is recognized at national level after eIDAS
 	 *
-	 * @param uri {@link String} identifying the trust service status
-	 * @return TRUE if the status is recognized at national level after eIDAS, FALSE otherwise
+	 * @param uri {@link String} identifying the trust service revocation
+	 * @return TRUE if the revocation is recognized at national level after eIDAS, FALSE otherwise
 	 */
 	public static boolean isRecognizedAtNationalLevelAfterEIDAS(String uri) {
 		TrustServiceStatus tss = fromUri(uri);

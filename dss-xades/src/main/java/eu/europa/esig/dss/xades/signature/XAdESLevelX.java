@@ -54,7 +54,7 @@ public class XAdESLevelX extends XAdESLevelC {
 	/**
 	 * Adds SigAndRefsTimeStamp segment to UnsignedSignatureProperties<br>
 	 * The time-stamp is placed on the digital signature (ds:Signature element), the time-stamp(s) present in the
-	 * XAdES-T form, the certification path references and the revocation status references.
+	 * XAdES-T form, the certification path references and the revocation revocation references.
 	 *
 	 * A XAdES-X form MAY contain several SigAndRefsTimeStamp elements, obtained from different TSAs.
 	 *

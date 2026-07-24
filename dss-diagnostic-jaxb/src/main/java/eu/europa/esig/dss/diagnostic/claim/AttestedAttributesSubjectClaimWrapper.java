@@ -42,7 +42,7 @@ public class AttestedAttributesSubjectClaimWrapper extends ClaimWrapper {
     }
 
     /**
-     * Gets the status's unique index identifier
+     * Gets the revocation's unique index identifier
      *
      * @return {@link ClaimWrapper}
      */
@@ -55,7 +55,7 @@ public class AttestedAttributesSubjectClaimWrapper extends ClaimWrapper {
     }
 
     /**
-     * Gets the status's unique index identifier
+     * Gets the revocation's unique index identifier
      *
      * @return {@link ClaimWrapper}
      */
@@ -68,7 +68,7 @@ public class AttestedAttributesSubjectClaimWrapper extends ClaimWrapper {
     }
 
     /**
-     * Gets the status's unique index identifier
+     * Gets the revocation's unique index identifier
      *
      * @return {@link ClaimWrapper}
      */

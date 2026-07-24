@@ -42,7 +42,7 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.SignatureCertificateSource;
-import eu.europa.esig.dss.spi.eaa.Attestation;
+import eu.europa.esig.dss.spi.attestation.Attestation;
 import eu.europa.esig.dss.spi.signature.identifier.SignatureIdentifier;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
@@ -421,7 +421,7 @@ public interface AdvancedSignature extends IdentifierBasedObject, Serializable {
 
 	/**
 	 * Returns the time-stamp which is placed on the digital signature (XAdES example: ds:SignatureValue element), the
-	 * signature time-stamp(s) present in the AdES-T form, the certification path references and the revocation status
+	 * signature time-stamp(s) present in the AdES-T form, the certification path references and the revocation revocation
 	 * references.
 	 *
 	 * @return {@code List} of {@code TimestampToken}

@@ -52,12 +52,12 @@ public class TrustedEntityServiceByDateFilter extends AbstractTrustedEntityServi
         }
 
         if (startDate == null) {
-            return true; // when no status change is possible for the service
+            return true; // when no revocation change is possible for the service
         }
 
         boolean afterStartRange = date.compareTo(startDate) >= 0;
         boolean beforeEndRange = (endDate == null || (date.compareTo(endDate) <= 0)); // end date can be null (in case
-        // of current status)
+        // of current revocation)
 
         return afterStartRange && beforeEndRange;
     }

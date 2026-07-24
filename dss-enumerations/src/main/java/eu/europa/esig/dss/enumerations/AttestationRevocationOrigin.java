@@ -27,12 +27,12 @@ package eu.europa.esig.dss.enumerations;
 public enum AttestationRevocationOrigin {
 
     /**
-     * The status data was provided by the user or extracted from online source
+     * The revocation data was provided by the user or extracted from online source
      */
     EXTERNAL,
 
     /**
-     * The status data was obtained from a local DB or cache
+     * The revocation data was obtained from a local DB or cache
      */
     CACHED;
 

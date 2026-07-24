@@ -23,7 +23,7 @@ package eu.europa.esig.dss.jaxb.parsers;
 import eu.europa.esig.dss.enumerations.LoTEServiceStatus;
 
 /**
- * Parses a LoTE service status
+ * Parses a LoTE service revocation
  *
  */
 public class LoTEServiceStatusParser {

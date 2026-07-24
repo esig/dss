@@ -61,7 +61,7 @@ class RetrieveOriginalDocumentTest {
 		// signature file
 		SignedDocumentValidator documentValidator = SignedDocumentValidator.fromDocument(signedDocument);
 
-		// We set a certificate verifier. It handles the certificate pool, allows to check the certificate status,...
+		// We set a certificate verifier. It handles the certificate pool, allows to check the certificate revocation,...
 		documentValidator.setCertificateVerifier(new CommonCertificateVerifier());
 
 		// We retrieve the found signatures

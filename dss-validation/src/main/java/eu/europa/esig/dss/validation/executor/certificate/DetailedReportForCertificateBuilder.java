@@ -154,7 +154,7 @@ public class DetailedReportForCertificateBuilder extends AbstractDetailedReportB
 	}
 
 	/**
-	 * Gets the certificate approval status block
+	 * Gets the certificate approval revocation block
 	 *
 	 * @param detailedReport {@link XmlDetailedReport}
 	 * @param basicBuildingBlocks {@link XmlBasicBuildingBlocks}
@@ -166,9 +166,9 @@ public class DetailedReportForCertificateBuilder extends AbstractDetailedReportB
 	}
 
 	/**
-	 * Checks if the certificate approval status is to be validated
+	 * Checks if the certificate approval revocation is to be validated
 	 *
-	 * @return TRUE if to validate the certificate approval status, FALSE otherwise
+	 * @return TRUE if to validate the certificate approval revocation, FALSE otherwise
 	 */
 	protected boolean validateCertificateApprovalStatus() {
 		return Utils.isCollectionNotEmpty(diagnosticData.getListsOfTrustedEntities());

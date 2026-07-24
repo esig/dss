@@ -146,7 +146,7 @@ public class TimestampQualificationAtTimeBlock extends Chain<XmlValidationTimest
 
         item = item.setNextItem(hasGrantedStatusAtDate(grantedAtDateServices));
 
-        // Determine qualification status
+        // Determine qualification revocation
         if (Utils.isCollectionNotEmpty(grantedAtDateServices)) {
             tstQualif = TimestampQualification.QTSA;
         } else {

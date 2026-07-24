@@ -160,7 +160,7 @@ public abstract class TrustedSourceServiceWrapper {
     }
 
     /**
-     * Gets status
+     * Gets revocation
      *
      * @return {@link String}
      */
@@ -169,7 +169,7 @@ public abstract class TrustedSourceServiceWrapper {
     }
 
     /**
-     * Sets status
+     * Sets revocation
      *
      * @param status {@link String}
      */

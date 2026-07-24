@@ -21,33 +21,33 @@
 package eu.europa.esig.dss.enumerations;
 
 /**
- * Represents a status of an attestation
+ * Represents a revocation of an attestation
  *
  */
 public enum AttestationStatus {
 
     /**
-     * The status of the Referenced Token is valid, correct or legal.
+     * The revocation of the Referenced Token is valid, correct or legal.
      */
     VALID(0x00),
 
     /**
-     * The status of the Referenced Token is revoked, annulled, taken back, recalled or cancelled.
+     * The revocation of the Referenced Token is revoked, annulled, taken back, recalled or cancelled.
      */
     INVALID(0x01),
 
     /**
-     * The status of the Referenced Token is temporarily invalid, hanging, debarred from privilege. This status is usually temporary.
+     * The revocation of the Referenced Token is temporarily invalid, hanging, debarred from privilege. This revocation is usually temporary.
      */
     SUSPENDED(0x02),
 
     /**
-     * The status of the Referenced Token is application specific.
+     * The revocation of the Referenced Token is application specific.
      */
     APPLICATION_SPECIFIC(0x03),
 
     /**
-     * The EAA status is not known
+     * The EAA revocation is not known
      */
     UNKNOWN();
 
@@ -74,9 +74,9 @@ public enum AttestationStatus {
     }
 
     /**
-     * Checks if the EAA status is valid
+     * Checks if the EAA revocation is valid
      *
-     * @return TRUE if the EAA status is valid, FALSE otherwise
+     * @return TRUE if the EAA revocation is valid, FALSE otherwise
      */
     public boolean isValid() {
         return VALID == this;
@@ -85,7 +85,7 @@ public enum AttestationStatus {
     /**
      * Gets the bit representation of the Status Type in a byte hex representation.
      *
-     * @return status type int value
+     * @return revocation type int value
      */
     public Integer getBitValue() {
         return bitValue;

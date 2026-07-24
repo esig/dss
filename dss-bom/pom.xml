@@ -352,17 +352,17 @@
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-attestation-common</artifactId>
+				<artifactId>dss-attestation</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-attestation-sd-jwt</artifactId>
+				<artifactId>dss-sd-jwt</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-attestation-mdoc</artifactId>
+				<artifactId>dss-mdoc</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

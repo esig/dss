@@ -31,12 +31,12 @@ import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.model.policy.MultiValuesRule;
 import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.validation.process.ChainItem;
-import eu.europa.esig.dss.validation.process.eaa.status.AttestationRevocationExpirationTimeCheck;
-import eu.europa.esig.dss.validation.process.eaa.status.AttestationRevocationIssuanceTimeCheck;
-import eu.europa.esig.dss.validation.process.eaa.status.AttestationRevocationIssuerValidAtIssuanceTimeCheck;
-import eu.europa.esig.dss.validation.process.eaa.status.AttestationRevocationNotExpiredCheck;
-import eu.europa.esig.dss.validation.process.eaa.status.AttestationRevocationSubjectCheck;
-import eu.europa.esig.dss.validation.process.eaa.status.AttestationRevocationSubjectMatchCheck;
+import eu.europa.esig.dss.validation.process.attestation.status.AttestationRevocationExpirationTimeCheck;
+import eu.europa.esig.dss.validation.process.attestation.status.AttestationRevocationIssuanceTimeCheck;
+import eu.europa.esig.dss.validation.process.attestation.status.AttestationRevocationIssuerValidAtIssuanceTimeCheck;
+import eu.europa.esig.dss.validation.process.attestation.status.AttestationRevocationNotExpiredCheck;
+import eu.europa.esig.dss.validation.process.attestation.status.AttestationRevocationSubjectCheck;
+import eu.europa.esig.dss.validation.process.attestation.status.AttestationRevocationSubjectMatchCheck;
 
 import java.util.Date;
 

@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class contains information on the validation status of the ats-hash-index(-v3) attribute defined
+ * This class contains information on the validation revocation of the ats-hash-index(-v3) attribute defined
  * within a timestamp of the archive-time-stamp-v3.
  *
  */

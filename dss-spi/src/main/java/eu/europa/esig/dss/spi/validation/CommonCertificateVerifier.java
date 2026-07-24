@@ -37,7 +37,7 @@ import org.slf4j.event.Level;
 import java.util.Objects;
 
 /**
- * This class provides the different sources used to verify the status of a certificate using the trust model. There are
+ * This class provides the different sources used to verify the revocation of a certificate using the trust model. There are
  * four different types of sources to be defined:<br>
  * - Trusted certificates source;<br>
  * - Adjunct certificates source (not trusted);<br>

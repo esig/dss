@@ -360,9 +360,9 @@ This is a review done in January 2016 adding the possibility to specify the Serv
 			<xsd:element name="ServiceName" type="tsl:InternationalNamesType"/>
 			<!--Specified in TS 119 612 v2.1.1 clause 5.5.3 Service digital identity-->
 			<xsd:element ref="tsl:ServiceDigitalIdentity"/>
-			<!--Specified in TS 119 612 v2.1.1 clause 5.5.4 Service current status-->
+			<!--Specified in TS 119 612 v2.1.1 clause 5.5.4 Service current revocation-->
 			<xsd:element ref="tsl:ServiceStatus"/>
-			<!--Specified in TS 119 612 v2.1.1 clause 5.5.5 Service status starting date and time-->
+			<!--Specified in TS 119 612 v2.1.1 clause 5.5.5 Service revocation starting date and time-->
 			<xsd:element name="StatusStartingTime" type="xsd:dateTime"/>
 			<!--Specified in TS 119 612 v2.1.1 clause 5.5.6 Scheme service definition URI-->
 			<xsd:element name="SchemeServiceDefinitionURI" type="tsl:NonEmptyMultiLangURIListType" minOccurs="0"/>
@@ -374,7 +374,7 @@ This is a review done in January 2016 adding the possibility to specify the Serv
 			<xsd:element name="ServiceInformationExtensions" type="tsl:ExtensionsListType" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	<!-- Service status -->
+	<!-- Service revocation -->
 	<xsd:annotation><xsd:documentation>Specified in TS 119 612 v2.1.1 clause 5.5.4 Service current status</xsd:documentation></xsd:annotation>
 	<xsd:element name="ServiceStatus" type="tsl:NonEmptyURIType"/>
 	<!-- Type for Service Supply Points -->
@@ -382,8 +382,8 @@ This is a review done in January 2016 adding the possibility to specify the Serv
 	<!-- ServiceSupplyPointsType changed to use AttributedNonEmptyURIType. The optional type attribute of AttributedNonEmptyURIType allows for each URI to specify the service/information to be found under this URI. 
 For example a ServiceSupplyPoints field associated to a service of a type "http://uri.etsi.org/TrstSvc/Svctype/CA/QC" could include: 
 -	a URI pointing towards a descriptive text where users could be given information on (local) registration authorities and procedures to follow for being issued qualified certificates; 
--	a URI providing a CRL distribution point giving certificate status information for qualified certificates issued by or under the and further specified by the type attibute value "http://uri.etsi.org/TrstSvc/Svctype/Certstatus/CRL/QC". Such URI can for example provide access to a last and final CRL in case of service unexpected termination and/or impossibility to provide such a final CRL at the CRL distribution point available from issued certificate's extensions; and/or
--	a URI providing one access location of an OCSP responder authorized to provide certificate status information for qualified certificates issued by or under the service, and further specified by the type attibute value "http://uri.etsi.org/TrstSvc/Svctype/Certstatus/OCSP/QC".
+-	a URI providing a CRL distribution point giving certificate revocation information for qualified certificates issued by or under the and further specified by the type attibute value "http://uri.etsi.org/TrstSvc/Svctype/Certstatus/CRL/QC". Such URI can for example provide access to a last and final CRL in case of service unexpected termination and/or impossibility to provide such a final CRL at the CRL distribution point available from issued certificate's extensions; and/or
+-	a URI providing one access location of an OCSP responder authorized to provide certificate revocation information for qualified certificates issued by or under the service, and further specified by the type attibute value "http://uri.etsi.org/TrstSvc/Svctype/Certstatus/OCSP/QC".
 -->
 	<xsd:annotation><xsd:documentation>Specified in TS 119 612 v2.1.1 clause 5.5.7 Service supply points</xsd:documentation></xsd:annotation>
 	<xsd:element name="ServiceSupplyPoints" type="tsl:ServiceSupplyPointsType"/>
@@ -431,9 +431,9 @@ For example a ServiceSupplyPoints field associated to a service of a type "http:
 			<xsd:element name="ServiceName" type="tsl:InternationalNamesType"/>
 			<!--Specified in TS 119 612 v2.1.1 clause 5.6.3 Service digital identity-->
 			<xsd:element ref="tsl:ServiceDigitalIdentity"/>
-			<!--Specified in TS 119 612 v2.1.1 clause 5.6.4 Service previous status-->
+			<!--Specified in TS 119 612 v2.1.1 clause 5.6.4 Service previous revocation-->
 			<xsd:element ref="tsl:ServiceStatus"/>
-			<!--Specified in TS 119 612 v2.1.1 clause 5.6.5 Previous status starting date and time-->
+			<!--Specified in TS 119 612 v2.1.1 clause 5.6.5 Previous revocation starting date and time-->
 			<xsd:element name="StatusStartingTime" type="xsd:dateTime"/>
 			<!--Specified in TS 119 612 v2.1.1 clause 5.6.6 Service information extensions-->
 			<xsd:element name="ServiceInformationExtensions" type="tsl:ExtensionsListType" minOccurs="0"/>

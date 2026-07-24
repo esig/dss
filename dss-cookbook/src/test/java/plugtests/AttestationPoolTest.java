@@ -12,7 +12,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlEAADocument;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlEAAPresentationInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
-import eu.europa.esig.dss.eaa.common.validation.DefaultAttestationDocumentValidator;
+import eu.europa.esig.dss.attestation.common.validation.DefaultAttestationDocumentValidator;
 import eu.europa.esig.dss.enumerations.AttestationFormat;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
@@ -21,13 +21,13 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.simplereport.jaxb.XmlSignature;
-import eu.europa.esig.dss.spi.eaa.Attestation;
-import eu.europa.esig.dss.spi.eaa.AttestationPresentation;
+import eu.europa.esig.dss.spi.attestation.Attestation;
+import eu.europa.esig.dss.spi.attestation.AttestationPresentation;
 import eu.europa.esig.dss.spi.policy.SignaturePolicyProvider;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
-import eu.europa.esig.dss.validation.eaa.AttestationDocumentValidator;
+import eu.europa.esig.dss.validation.attestation.AttestationDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
 import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
@@ -69,7 +69,7 @@ class AttestationPoolTest extends AbstractTestSignaturePool {
 
         // -Deaa.pool.folder=...
 
-        String signaturePoolFolder = System.getProperty("eaa.pool.folder", "src/test/resources/eaa-pool");
+        String signaturePoolFolder = System.getProperty("attestation.pool.folder", "src/test/resources/attestation-pool");
         File folder = new File(signaturePoolFolder);
         Collection<File> listFiles = Utils.listFiles(folder, new String[] { "json", "jwt", "cbor", "mdoc", "mdl" }, true);
         Collection<Arguments> dataToRun = new ArrayList<>();

@@ -347,9 +347,9 @@ This is a review done in October 2013 as a result of mismatches between the XML 
 			<xsd:element name="ServiceName" type="tsl:InternationalNamesType"/>
 			<!--Specified in TS 119 612 v2.1.1 clause 5.5.3 Service digital identity-->
 			<xsd:element ref="tsl:ServiceDigitalIdentity"/>
-			<!--Specified in TS 119 612 v2.1.1 clause 5.5.4 Service current status-->
+			<!--Specified in TS 119 612 v2.1.1 clause 5.5.4 Service current revocation-->
 			<xsd:element ref="tsl:ServiceStatus"/>
-			<!--Specified in TS 119 612 v2.1.1 clause 5.5.5 Service status starting date and time-->
+			<!--Specified in TS 119 612 v2.1.1 clause 5.5.5 Service revocation starting date and time-->
 			<xsd:element name="StatusStartingTime" type="xsd:dateTime"/>
 			<!--Specified in TS 119 612 v2.1.1 clause 5.5.6 Scheme service definition URI-->
 			<xsd:element name="SchemeServiceDefinitionURI" type="tsl:NonEmptyMultiLangURIListType" minOccurs="0"/>
@@ -361,7 +361,7 @@ This is a review done in October 2013 as a result of mismatches between the XML 
 			<xsd:element name="ServiceInformationExtensions" type="tsl:ExtensionsListType" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	<!-- Service status -->
+	<!-- Service revocation -->
 	<xsd:annotation><xsd:documentation>Specified in TS 119 612 v2.1.1 clause 5.5.4 Service current status</xsd:documentation></xsd:annotation>
 	<xsd:element name="ServiceStatus" type="tsl:NonEmptyURIType"/>
 	<!-- Type for Service Supply Points -->
@@ -411,9 +411,9 @@ This is a review done in October 2013 as a result of mismatches between the XML 
 			<xsd:element name="ServiceName" type="tsl:InternationalNamesType"/>
 			<!--Specified in TS 119 612 v2.1.1 clause 5.6.3 Service digital identity-->
 			<xsd:element ref="tsl:ServiceDigitalIdentity"/>
-			<!--Specified in TS 119 612 v2.1.1 clause 5.6.4 Service previous status-->
+			<!--Specified in TS 119 612 v2.1.1 clause 5.6.4 Service previous revocation-->
 			<xsd:element ref="tsl:ServiceStatus"/>
-			<!--Specified in TS 119 612 v2.1.1 clause 5.6.5 Previous status starting date and time-->
+			<!--Specified in TS 119 612 v2.1.1 clause 5.6.5 Previous revocation starting date and time-->
 			<xsd:element name="StatusStartingTime" type="xsd:dateTime"/>
 			<!--Specified in TS 119 612 v2.1.1 clause 5.6.6 Service information extensions-->
 			<xsd:element name="ServiceInformationExtensions" type="tsl:ExtensionsListType" minOccurs="0"/>

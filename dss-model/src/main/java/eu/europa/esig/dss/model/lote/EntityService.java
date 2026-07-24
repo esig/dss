@@ -41,7 +41,7 @@ public interface EntityService<S extends ServiceStatusAndInformationExtensions> 
     List<CertificateToken> getCertificates();
 
     /**
-     * Gets status based on time
+     * Gets revocation based on time
      *
      * @return {@link TimeDependentValues}
      */

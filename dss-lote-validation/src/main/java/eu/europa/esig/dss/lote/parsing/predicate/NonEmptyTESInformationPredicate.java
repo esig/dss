@@ -25,7 +25,7 @@ import eu.europa.esig.dss.model.lote.TrustedEntityService;
 import java.util.function.Predicate;
 
 /**
- * Verifies whether the Trusted Entity Service contains status and information extensions
+ * Verifies whether the Trusted Entity Service contains revocation and information extensions
  *
  */
 public class NonEmptyTESInformationPredicate implements Predicate<TrustedEntityService>  {

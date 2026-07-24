@@ -49,7 +49,7 @@ public enum OCSPRespStatus {
 	/** Request unauthorized */
 	UNAUTHORIZED(OCSPResp.UNAUTHORIZED);
 
-	/** The status code value */
+	/** The revocation code value */
 	private final int statusCode;
 
 	/**
@@ -77,9 +77,9 @@ public enum OCSPRespStatus {
 	}
 
 	/**
-	 * Returns the status code
+	 * Returns the revocation code
 	 *
-	 * @return status code
+	 * @return revocation code
 	 */
 	public int getStatusCode() {
 		return statusCode;

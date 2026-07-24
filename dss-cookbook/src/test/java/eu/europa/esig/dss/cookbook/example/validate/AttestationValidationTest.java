@@ -27,21 +27,21 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.AttestationRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.AttestationWrapper;
 import eu.europa.esig.dss.diagnostic.claim.ClaimWrapper;
-import eu.europa.esig.dss.eaa.common.validation.DefaultAttestationDocumentValidator;
-import eu.europa.esig.dss.eaa.mdoc.validation.MdocDeviceResponseAttestationDocumentValidator;
-import eu.europa.esig.dss.eaa.sd.jwt.creation.SDJWTSelectiveDisclosure;
-import eu.europa.esig.dss.eaa.sd.jwt.creation.SDJWTPayloadParameters;
-import eu.europa.esig.dss.eaa.sd.jwt.creation.SDJWTService;
-import eu.europa.esig.dss.eaa.sd.jwt.creation.SDJWTKeyBindingParameters;
-import eu.europa.esig.dss.eaa.sd.jwt.validation.SDJWTCompactAttestationDocumentValidator;
-import eu.europa.esig.dss.eaa.mdoc.MdocConstants;
-import eu.europa.esig.dss.eaa.mdoc.creation.MdocSelectiveDisclosure;
-import eu.europa.esig.dss.eaa.mdoc.creation.MdocPayloadParameters;
-import eu.europa.esig.dss.eaa.mdoc.creation.MdocService;
-import eu.europa.esig.dss.eaa.mdoc.creation.MdocKeyBindingParameters;
-import eu.europa.esig.dss.eaa.mdoc.creation.SessionTranscriptBuilder;
-import eu.europa.esig.dss.eaa.mdoc.validation.MdocIssuerSignedAttestationDocumentValidator;
-import eu.europa.esig.dss.eaa.mdoc.validation.MdocValidationParameters;
+import eu.europa.esig.dss.attestation.common.validation.DefaultAttestationDocumentValidator;
+import eu.europa.esig.dss.attestation.mdoc.validation.MdocDeviceResponseAttestationDocumentValidator;
+import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTSelectiveDisclosure;
+import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTPayloadParameters;
+import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTService;
+import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTKeyBindingParameters;
+import eu.europa.esig.dss.attestation.sd.jwt.validation.SDJWTCompactAttestationDocumentValidator;
+import eu.europa.esig.dss.attestation.mdoc.MdocConstants;
+import eu.europa.esig.dss.attestation.mdoc.creation.MdocSelectiveDisclosure;
+import eu.europa.esig.dss.attestation.mdoc.creation.MdocPayloadParameters;
+import eu.europa.esig.dss.attestation.mdoc.creation.MdocService;
+import eu.europa.esig.dss.attestation.mdoc.creation.MdocKeyBindingParameters;
+import eu.europa.esig.dss.attestation.mdoc.creation.SessionTranscriptBuilder;
+import eu.europa.esig.dss.attestation.mdoc.validation.MdocIssuerSignedAttestationDocumentValidator;
+import eu.europa.esig.dss.attestation.mdoc.validation.MdocValidationParameters;
 import eu.europa.esig.dss.enumerations.AttestationQualification;
 import eu.europa.esig.dss.enumerations.AttestationStatus;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -123,7 +123,7 @@ class AttestationValidationTest extends CookbookTools {
             // import eu.europa.esig.dss.detailedreport.DetailedReport;
             // import eu.europa.esig.dss.diagnostic.DiagnosticData;
             // tag::eaa-qualification[]
-            // import eu.europa.esig.dss.eaa.common.validation.DefaultEAAPresentationValidator;
+            // import eu.europa.esig.dss.attestation.common.validation.DefaultEAAPresentationValidator;
             // import eu.europa.esig.dss.simplereport.SimpleReport;
             // import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
             // import eu.europa.esig.dss.validation.reports.Reports;
@@ -147,7 +147,7 @@ class AttestationValidationTest extends CookbookTools {
             // end::eaa-validation-auto[]
 
             // tag::eaa-validation-sdjwt-compact[]
-            // import eu.europa.esig.dss.eaa.jwt.validation.SDJWTCompactEAAPresentationValidator;
+            // import eu.europa.esig.dss.attestation.jwt.validation.SDJWTCompactEAAPresentationValidator;
 
             SDJWTCompactAttestationDocumentValidator sdJWTValidator =
                     new SDJWTCompactAttestationDocumentValidator(presentationDocument);
@@ -191,7 +191,7 @@ class AttestationValidationTest extends CookbookTools {
             String kbNonce = eaa.getKeyBindingSignatureNonce();
             String kbAudience = eaa.getKeyBindingSignatureAudience();
 
-            // Revocation / status list information
+            // Revocation / revocation list information
             for (AttestationRevocationWrapper revocation : eaa.getAttestationRevocations()) {
                 String sourceAddress = revocation.getSourceAddress();
                 AttestationStatus status = revocation.getStatus();
@@ -263,8 +263,8 @@ class AttestationValidationTest extends CookbookTools {
             // end::mdoc-presentation-document[]
 
             // tag::eaa-validation-mdoc-device-response[]
-            // import eu.europa.esig.dss.eaa.mdoc.validation.MdocDeviceResponseEAAPresentationValidator;
-            // import eu.europa.esig.dss.eaa.mdoc.validation.MdocValidationParameters;
+            // import eu.europa.esig.dss.attestation.mdoc.validation.MdocDeviceResponseEAAPresentationValidator;
+            // import eu.europa.esig.dss.attestation.mdoc.validation.MdocValidationParameters;
 
             MdocDeviceResponseAttestationDocumentValidator mdocValidator =
                     new MdocDeviceResponseAttestationDocumentValidator(presentationDocument);
@@ -279,7 +279,7 @@ class AttestationValidationTest extends CookbookTools {
             // end::eaa-validation-mdoc-device-response[]
 
             // tag::eaa-validation-mdoc-issuer-signed[]
-            // import eu.europa.esig.dss.eaa.mdoc.validation.MdocIssuerSignedEAAPresentationValidator;
+            // import eu.europa.esig.dss.attestation.mdoc.validation.MdocIssuerSignedEAAPresentationValidator;
 
             // Issue an IssuerSigned-only presentation (no device authentication)
             DSSDocument issuerSignedDocument = service.createIssuerSigned(signedEAA, disclosures);

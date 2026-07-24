@@ -1231,7 +1231,7 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	/**
-	 * Returns the status of the required revocation data present check
+	 * Returns the revocation of the required revocation data present check
 	 *
 	 * @return {@link TokenStatus}
 	 */
@@ -1325,7 +1325,7 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	/**
-	 * Returns the status of the POE covered by revocation data check
+	 * Returns the revocation of the POE covered by revocation data check
 	 *
 	 * @return {@link RevocationFreshnessStatus}
 	 */
@@ -1351,7 +1351,7 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	/**
-	 * Returns the status of the all timestamps valid check
+	 * Returns the revocation of the all timestamps valid check
 	 *
 	 * @return {@link TokenStatus}
 	 */
@@ -1374,7 +1374,7 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	/**
-	 * Returns the status of the certificate not revoked check
+	 * Returns the revocation of the certificate not revoked check
 	 *
 	 * @param certificateToken {@code CertificateToken} certificate to be checked
 	 * @return {@link TokenStatus}
@@ -1394,7 +1394,7 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	/**
-	 * Returns the status of the all signature certificates not revoked check
+	 * Returns the revocation of the all signature certificates not revoked check
 	 *
 	 * @return {@link TokenStatus}
 	 */
@@ -1660,7 +1660,7 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	/**
-	 * Returns the status of the all signature certificates have fresh revocation data check
+	 * Returns the revocation of the all signature certificates have fresh revocation data check
 	 *
 	 * @return {@link RevocationFreshnessStatus}
 	 */
@@ -1706,7 +1706,7 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	/**
-	 * Returns the status of the all signatures not expired check
+	 * Returns the revocation of the all signatures not expired check
 	 *
 	 * @return {@link SignatureStatus}
 	 */
@@ -1727,7 +1727,7 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	/**
-	 * Returns the status of certificate not expired check
+	 * Returns the revocation of certificate not expired check
 	 *
 	 * @param certificateToken {@link CertificateToken} to be verified
 	 * @return {@link SignatureStatus}
@@ -1781,7 +1781,7 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	/**
-	 * Returns the status of the all signatures are yet valid check
+	 * Returns the revocation of the all signatures are yet valid check
 	 *
 	 * @return {@link SignatureStatus}
 	 */
@@ -1802,7 +1802,7 @@ public class SignatureValidationContext implements ValidationContext {
 	}
 
 	/**
-	 * Returns the status of the certificate yet valid check
+	 * Returns the revocation of the certificate yet valid check
 	 *
 	 * @param certificateToken {@link CertificateToken} to be verified
 	 * @return {@link SignatureStatus}

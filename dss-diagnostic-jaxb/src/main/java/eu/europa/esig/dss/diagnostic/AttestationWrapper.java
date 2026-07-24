@@ -465,7 +465,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets EAA status index as defined in the EAA payload
+     * Gets EAA revocation index as defined in the EAA payload
      *
      * @return {@link Integer}
      */
@@ -482,7 +482,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets EAA status URI as defined in the EAA payload
+     * Gets EAA revocation URI as defined in the EAA payload
      *
      * @return {@link String}
      */
@@ -513,7 +513,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets EAA status type as defined in the EAA payload
+     * Gets EAA revocation type as defined in the EAA payload
      *
      * @return {@link String}
      */
@@ -526,7 +526,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets EAA status purpose as defined in the EAA payload
+     * Gets EAA revocation purpose as defined in the EAA payload
      *
      * @return {@link String}
      */
@@ -539,7 +539,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets EAA identifier to be used for the EAA status verification using an Identifier List mechanism
+     * Gets EAA identifier to be used for the EAA revocation verification using an Identifier List mechanism
      *
      * @return byte array
      */
@@ -552,7 +552,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets EAA status URI as defined in the EAA payload
+     * Gets EAA revocation URI as defined in the EAA payload
      *
      * @return {@link String}
      */
@@ -1662,7 +1662,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
 
     /**
      * Gets the EAA short-lived component indicating that the validity period of the EAA is so short that
-     * it shall not be necessary to check its revocation status.
+     * it shall not be necessary to check its revocation revocation.
      *
      * @return {@link Boolean}
      */

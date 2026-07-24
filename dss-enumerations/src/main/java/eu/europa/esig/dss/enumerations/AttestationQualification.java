@@ -35,7 +35,7 @@ public enum AttestationQualification {
     QEAA("QEAA", "Qualified Electronic Attestation of Attributes", "urn:cef:dss:eaaQualification:QEAA"),
 
     /**
-     * Electronic attestation of attributes as defined in Regulation EU 2024/1183, without a qualified status.
+     * Electronic attestation of attributes as defined in Regulation EU 2024/1183, without a qualified revocation.
      */
     EAA("EAA", "Electronic Attestation of Attributes", "urn:cef:dss:eaaQualification:EAA"),
 
@@ -51,7 +51,7 @@ public enum AttestationQualification {
     PID("PID", "Personal Identification Data", "urn:cef:dss:eaaQualification:PID"),
 
     /**
-     * Electronic attestation of attributes of unknown or conflicting status.
+     * Electronic attestation of attributes of unknown or conflicting revocation.
      */
     UNKNOWN("Unknown", "Electronic Attestation of Attributes of unknown type", "urn:cef:dss:eaaQualification:Unknown"),
 
@@ -61,7 +61,7 @@ public enum AttestationQualification {
     INDETERMINATE_QEAA("Indeterminate QEAA", "Indeterminate Qualified Electronic Attestation of Attributes", "urn:cef:dss:eaaQualification:indeterminateQEAA"),
 
     /**
-     * Indeterminate electronic attestation of attributes as defined in Regulation EU 2024/1183, without a qualified status.
+     * Indeterminate electronic attestation of attributes as defined in Regulation EU 2024/1183, without a qualified revocation.
      */
     INDETERMINATE_EAA("Indeterminate EAA", "Indeterminate Electronic Attestation of Attributes", "urn:cef:dss:eaaQualification:indeterminateEAA"),
 
@@ -77,7 +77,7 @@ public enum AttestationQualification {
     INDETERMINATE_PID("Indeterminate PID", "Indeterminate Personal Identification Data", "urn:cef:dss:eaaQualification:indeterminatePID"),
 
     /**
-     * Indeterminate electronic attestation of attributes of unknown or conflicting status.
+     * Indeterminate electronic attestation of attributes of unknown or conflicting revocation.
      */
     INDETERMINATE_UNKNOWN("Indeterminate Unknown", "Indeterminate Electronic Attestation of Attributes of unknown type", "urn:cef:dss:eaaQualification:indeterminateUnknown"),
 

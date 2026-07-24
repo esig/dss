@@ -591,7 +591,7 @@ public class SimpleCertificateReport {
 	}
 
 	/**
-	 * This method retrieve the TS 119 602/605 certificate approval status process's errors for
+	 * This method retrieve the TS 119 602/605 certificate approval revocation process's errors for
 	 * a given certificate by id at issuance time for the given {@code CertificateApprovalStatus}
 	 *
 	 * @param certificateId
@@ -610,7 +610,7 @@ public class SimpleCertificateReport {
 	}
 
 	/**
-	 * This method retrieve the TS 119 602/605 certificate approval status process's warnings for
+	 * This method retrieve the TS 119 602/605 certificate approval revocation process's warnings for
 	 * a given certificate by id at issuance time for the given {@code CertificateApprovalStatus}
 	 *
 	 * @param certificateId
@@ -629,7 +629,7 @@ public class SimpleCertificateReport {
 	}
 
 	/**
-	 * This method retrieve the TS 119 602/605 certificate approval status process's information messages for
+	 * This method retrieve the TS 119 602/605 certificate approval revocation process's information messages for
 	 * a given certificate by id at issuance time for the given {@code CertificateApprovalStatus}
 	 *
 	 * @param certificateId
@@ -648,7 +648,7 @@ public class SimpleCertificateReport {
 	}
 
 	/**
-	 * This method retrieve the TS 119 602/605 certificate approval status process's errors for
+	 * This method retrieve the TS 119 602/605 certificate approval revocation process's errors for
 	 * a given certificate by id at validation time for the given {@code CertificateApprovalStatus}
 	 *
 	 * @param certificateId
@@ -667,7 +667,7 @@ public class SimpleCertificateReport {
 	}
 
 	/**
-	 * This method retrieve the TS 119 602/605 certificate approval status process's warnings for
+	 * This method retrieve the TS 119 602/605 certificate approval revocation process's warnings for
 	 * a given certificate by id at validation time for the given {@code CertificateApprovalStatus}
 	 *
 	 * @param certificateId
@@ -686,7 +686,7 @@ public class SimpleCertificateReport {
 	}
 
 	/**
-	 * This method retrieve the TS 119 602/605 certificate approval status process's information messages for
+	 * This method retrieve the TS 119 602/605 certificate approval revocation process's information messages for
 	 * a given certificate by id at validation time for the given {@code CertificateApprovalStatus}
 	 *
 	 * @param certificateId

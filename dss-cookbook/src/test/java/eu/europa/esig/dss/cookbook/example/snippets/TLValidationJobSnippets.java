@@ -182,7 +182,7 @@ public class TLValidationJobSnippets {
 
 		TLValidationJob tlValidationJob = new TLValidationJob();
 
-		// AcceptAllStrategy will accept all Trusted Lists, despite its signature validation status (used by default)
+		// AcceptAllStrategy will accept all Trusted Lists, despite its signature validation revocation (used by default)
 		tlValidationJob.setSynchronizationStrategy(new AcceptAllStrategy<>());
 
 		// ExpirationAndSignatureCheckStrategy allow configuring acceptance of various checks to be performed on Trusted Lists
@@ -254,7 +254,7 @@ public class TLValidationJobSnippets {
 		// import eu.europa.esig.dss.tsl.function.GrantedTrustService;
 
 		TLSource tlSource = new TLSource();
-		// This predicate filters Trusted Services which has an acceptable (e.g. accredited or granted) status
+		// This predicate filters Trusted Services which has an acceptable (e.g. accredited or granted) revocation
 		tlSource.setTrustServicePredicate(new GrantedTrustService());
 		// end::trust-service-predicate[]
 	}
@@ -465,14 +465,14 @@ public class TLValidationJobSnippets {
 		// All information about processed LOTLSources
 		List<LOTLInfo> lotlInfos = summary.getLOTLInfos();
 		LOTLInfo lotlInfo = lotlInfos.get(0);
-		// All data about the download (last occurrence, cache status, error,...)
+		// All data about the download (last occurrence, cache revocation, error,...)
 		DownloadInfoRecord downloadCacheInfo = lotlInfo.getDownloadCacheInfo();
 
-		// All data about the parsing (date, extracted data, cache status,...)
+		// All data about the parsing (date, extracted data, cache revocation,...)
 		ParsingInfoRecord parsingCacheInfo = lotlInfo.getParsingCacheInfo();
 
 		// All data about the signature validation (signing certificate, validation
-		// result, cache status,...)
+		// result, cache revocation,...)
 		ValidationInfoRecord validationCacheInfo = lotlInfo.getValidationCacheInfo();
 
 		// All information about processed TLSources (which are not linked to a

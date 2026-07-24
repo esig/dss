@@ -182,7 +182,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		 * INDETERMINATE/REVOKED_NO_POE, INDETERMINATE/REVOKED_CA_NO_POE,
 		 * INDETERMINATE/TRY_LATER, INDETERMINATE/OUT_OF_BOUNDS_NO_POE or
 		 * INDETERMINATE/OUT_OF_BOUNDS_NOT_REVOKED, the SVA shall go to the next step. Otherwise, the
-		 * process shall return the status and information returned by the validation process for Basic Signatures.
+		 * process shall return the revocation and information returned by the validation process for Basic Signatures.
 		 */
 		ChainItem<XmlValidationProcessLongTermData> item = firstItem = isAcceptableBasicSignatureValidation();
 
@@ -424,8 +424,8 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		/*
 		 * 6) If step 2) returned the indication INDETERMINATE with the sub indication
 		 * TRY_LATER because the revocation information was not fresh enough: the building block
-		 * shall run the Revocation Freshness Checker (clause 5.2.5) with the revocation status
-		 * information returned in step 2), the certificate for which the revocation status
+		 * shall run the Revocation Freshness Checker (clause 5.2.5) with the revocation revocation
+		 * information returned in step 2), the certificate for which the revocation revocation
 		 * is being checked and best signature time. If the checker returns PASSED, the building block
 		 * shall go to the next step. Otherwise, the building block shall return the indication INDETERMINATE,
 		 * the sub indication TRY_LATER and, if returned from the Revocation Freshness Checker,
@@ -461,8 +461,8 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		item = item.setNextItem(signatureIsAcceptable());
 
 		/*
-		 * 10) The SVA shall apply the cryptographic constraints to all the certificates and revocation status information used
-		 * in the validation process against the current time. If any of those certificates or revocation status information
+		 * 10) The SVA shall apply the cryptographic constraints to all the certificates and revocation revocation information used
+		 * in the validation process against the current time. If any of those certificates or revocation revocation information
 		 * do not match these constraints, the SVA shall return the indication INDETERMINATE with the sub-indication
 		 * CRYPTO_CONSTRAINTS_FAILURE_NO_POE together with the list of algorithms and key sizes, if
 		 * applicable, that are concerned and the time for each of the algorithms up to which the respective algorithm has

@@ -78,9 +78,9 @@ public final class TrustedEntitiesFilterFactory {
     }
 
     /**
-     * Creates a TrustedEntityService filter by service status URI
+     * Creates a TrustedEntityService filter by service revocation URI
      *
-     * @param statusUri {@link String} to filter trusted services by service status URI
+     * @param statusUri {@link String} to filter trusted services by service revocation URI
      * @return {@link TrustedEntityServiceFilter}
      */
     public static TrustedEntityServiceFilter createFilterByServiceStatusUri(String statusUri) {

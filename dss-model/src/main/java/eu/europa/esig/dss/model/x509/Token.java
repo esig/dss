@@ -51,7 +51,7 @@ public abstract class Token implements IdentifierBasedObject, Serializable {
 	protected PublicKey publicKeyOfTheSigner;
 
 	/**
-	 * Indicates a status of token's signature
+	 * Indicates a revocation of token's signature
 	 * Method isSignedBy(CertificateToken) must be called in order to obtain a signature validity
 	 * Default: NOT_EVALUATED
 	 */
@@ -260,7 +260,7 @@ public abstract class Token implements IdentifierBasedObject, Serializable {
 	}
 	
 	/**
-	 * Indicates a status of the token's signature validity. For each kind of token the
+	 * Indicates a revocation of the token's signature validity. For each kind of token the
 	 * method isSignedBy(CertificateToken) must be called to set this flag.
 	 * 
 	 * @return {@link SignatureValidity}
