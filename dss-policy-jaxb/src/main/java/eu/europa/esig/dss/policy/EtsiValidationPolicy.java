@@ -1613,13 +1613,13 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 
 	@Override
 	public CryptographicSuite getEAACryptographicConstraint() {
-		CryptographicConstraint eaaPresentationCryptographic = new CryptographicConstraint();
+		CryptographicConstraint attestationPresentationCryptographic = new CryptographicConstraint();
 		EAAConstraints eaaConstraints = getEAAConstraints();
 		if (eaaConstraints != null && eaaConstraints.getCryptographic() != null) {
-			eaaPresentationCryptographic = eaaConstraints.getCryptographic();
+			attestationPresentationCryptographic = eaaConstraints.getCryptographic();
 		}
-		initializeCryptographicSuite(eaaPresentationCryptographic, getCryptographic());
-		return toCryptographicSuite(eaaPresentationCryptographic);
+		initializeCryptographicSuite(attestationPresentationCryptographic, getCryptographic());
+		return toCryptographicSuite(attestationPresentationCryptographic);
 	}
 
 	private CertificateConstraints getSigningCertificateByContext(Context context) {

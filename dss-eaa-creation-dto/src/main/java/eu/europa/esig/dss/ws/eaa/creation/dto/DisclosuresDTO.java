@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.ws.eaa.creation.dto;
 
-import eu.europa.esig.dss.ws.eaa.creation.dto.parameters.RemoteEAAPayloadParameters;
+import eu.europa.esig.dss.ws.eaa.creation.dto.parameters.RemoteAttestationPayloadParameters;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -36,7 +36,7 @@ public class DisclosuresDTO implements Serializable {
     private static final long serialVersionUID = -2112601914515598469L;
 
     /** Configuration used for the payload computation */
-    private RemoteEAAPayloadParameters payloadParameters;
+    private RemoteAttestationPayloadParameters payloadParameters;
 
     /**
      * Default constructor
@@ -48,27 +48,27 @@ public class DisclosuresDTO implements Serializable {
     /**
      * Constructor with payload parameters
      *
-     * @param payloadParameters {@link RemoteEAAPayloadParameters}
+     * @param payloadParameters {@link RemoteAttestationPayloadParameters}
      */
-    public DisclosuresDTO(RemoteEAAPayloadParameters payloadParameters) {
+    public DisclosuresDTO(RemoteAttestationPayloadParameters payloadParameters) {
         this.payloadParameters = payloadParameters;
     }
 
     /**
      * Gets the EAA payload parameters
      *
-     * @return {@link RemoteEAAPayloadParameters}
+     * @return {@link RemoteAttestationPayloadParameters}
      */
-    public RemoteEAAPayloadParameters getPayloadParameters() {
+    public RemoteAttestationPayloadParameters getPayloadParameters() {
         return payloadParameters;
     }
 
     /**
      * Sets the EAA payload parameters
      *
-     * @param payloadParameters {@link RemoteEAAPayloadParameters}
+     * @param payloadParameters {@link RemoteAttestationPayloadParameters}
      */
-    public void setPayloadParameters(RemoteEAAPayloadParameters payloadParameters) {
+    public void setPayloadParameters(RemoteAttestationPayloadParameters payloadParameters) {
         this.payloadParameters = payloadParameters;
     }
 

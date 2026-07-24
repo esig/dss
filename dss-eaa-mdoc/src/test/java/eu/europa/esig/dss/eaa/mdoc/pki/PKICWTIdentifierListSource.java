@@ -25,9 +25,9 @@ import eu.europa.esig.dss.cbades.cbor.CBORUtils;
 import eu.europa.esig.dss.cbades.cwt.CWTClaims;
 import eu.europa.esig.dss.cbades.signature.CBAdESService;
 import eu.europa.esig.dss.cbades.signature.CBAdESSignatureParameters;
-import eu.europa.esig.dss.eaa.common.pki.AbstractPKIEAARevocationListSource;
+import eu.europa.esig.dss.eaa.common.pki.AbstractPKIAttestationRevocationListSource;
 import eu.europa.esig.dss.eaa.revocation.cwt.model.identifierlist.CWTIdentifierListClaims;
-import eu.europa.esig.dss.eaa.revocation.source.ExternalResourcesEAARevocationSource;
+import eu.europa.esig.dss.eaa.revocation.source.ExternalResourcesAttestationRevocationSource;
 import eu.europa.esig.dss.enumerations.COSEStructureType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -37,8 +37,8 @@ import eu.europa.esig.dss.model.eaa.claim.ClaimStatus;
 import eu.europa.esig.dss.pki.model.CertEntity;
 import eu.europa.esig.dss.pki.model.CertEntityRepository;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.eaa.EAA;
-import eu.europa.esig.dss.spi.eaa.EAARevocationToken;
+import eu.europa.esig.dss.spi.eaa.Attestation;
+import eu.europa.esig.dss.spi.eaa.AttestationRevocationToken;
 import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -49,7 +49,7 @@ import java.util.List;
  * Test implementation for generation of CWT-encoded Identifier List
  *
  */
-public class PKICWTIdentifierListSource extends AbstractPKIEAARevocationListSource<CBAdESSignatureParameters> {
+public class PKICWTIdentifierListSource extends AbstractPKIAttestationRevocationListSource<CBAdESSignatureParameters> {
 
     /**
      * Identifiers list
@@ -103,11 +103,11 @@ public class PKICWTIdentifierListSource extends AbstractPKIEAARevocationListSour
     }
 
     @Override
-    public EAARevocationToken getEAARevocation(EAA eaa) {
-        if (eaa != null && eaa.getPayload() != null && eaa.getPayload().getStatus() != null
-                && eaa.getPayload().getStatus().getIdentifierList() != null) {
-            DSSDocument statusListToken = generateStatusListToken(eaa);
-            return new ExternalResourcesEAARevocationSource(DSSUtils.toByteArray(statusListToken)).getEAARevocation(eaa);
+    public AttestationRevocationToken getAttestationRevocation(Attestation attestation) {
+        if (attestation != null && attestation.getPayload() != null && attestation.getPayload().getStatus() != null
+                && attestation.getPayload().getStatus().getIdentifierList() != null) {
+            DSSDocument statusListToken = generateStatusListToken(attestation);
+            return new ExternalResourcesAttestationRevocationSource(DSSUtils.toByteArray(statusListToken)).getAttestationRevocation(attestation);
         }
         return null;
     }

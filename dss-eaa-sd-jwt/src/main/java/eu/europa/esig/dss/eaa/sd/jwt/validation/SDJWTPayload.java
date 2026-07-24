@@ -51,7 +51,7 @@ import eu.europa.esig.dss.model.eaa.claim.ClaimPlaceOfBirth;
 import eu.europa.esig.dss.model.eaa.claim.ClaimStatus;
 import eu.europa.esig.dss.model.eaa.claim.ClaimString;
 import eu.europa.esig.dss.model.eaa.claim.ClaimValidityInfo;
-import eu.europa.esig.dss.spi.eaa.EAAPayload;
+import eu.europa.esig.dss.spi.eaa.AttestationPayload;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -61,7 +61,7 @@ import java.util.List;
  * This class implements a user-friendly access to the EAA payload elements of the SD-JWT token
  *
  */
-public class SDJWTPayload extends SDJWTClaimMap implements EAAPayload {
+public class SDJWTPayload extends SDJWTClaimMap implements AttestationPayload {
 
     private static final long serialVersionUID = -4552799683587409954L;
 

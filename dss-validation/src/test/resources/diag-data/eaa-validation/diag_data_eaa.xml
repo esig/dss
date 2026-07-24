@@ -110,14 +110,14 @@
                             <Number>1</Number>
                         </Index>
                         <Uri name="uri">
-                            <Text>http://nowina.lu/eaa/status</Text>
+                            <Text>http://nowina.lu/attestation/status</Text>
                         </Uri>
                     </StatusList>
                     <Index name="index">
                         <Number>1</Number>
                     </Index>
                     <Uri name="uri">
-                        <Text>http://nowina.lu/eaa/status</Text>
+                        <Text>http://nowina.lu/attestation/status</Text>
                     </Uri>
                     <Type name="type">
                         <Text>TokenStatusList</Text>
@@ -352,8 +352,8 @@
         <EAARevocationToken Id="ST-A9144C67449944517D4481B366337C02488BA6CBD42F89E1C2C8225E507518EF">
             <Origin>EXTERNAL</Origin>
             <Type>statuslist+cwt</Type>
-            <SourceAddress>https://dss.nowina.lu/pki-factory/eaa/status_list</SourceAddress>
-            <Subject match="true">https://dss.nowina.lu/pki-factory/eaa/status_list</Subject>
+            <SourceAddress>https://dss.nowina.lu/pki-factory/attestation/status_list</SourceAddress>
+            <Subject match="true">https://dss.nowina.lu/pki-factory/attestation/status_list</Subject>
             <IssuedAt>2026-04-23T09:29:00Z</IssuedAt>
             <ExpirationTime>2027-05-10T14:11:28Z</ExpirationTime>
             <BasicSignature>

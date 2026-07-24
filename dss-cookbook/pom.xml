@@ -137,35 +137,35 @@
 		</dependency>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-eaa-creation-rest</artifactId>
+			<artifactId>dss-attestation-creation-rest</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-eaa-creation-soap</artifactId>
+			<artifactId>dss-attestation-creation-soap</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-eaa-validation-rest</artifactId>
+			<artifactId>dss-attestation-validation-rest</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-			<artifactId>dss-eaa-validation-soap</artifactId>
+			<artifactId>dss-attestation-validation-soap</artifactId>
 		</dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-            <artifactId>dss-eaa-sd-jwt</artifactId>
+            <artifactId>dss-attestation-sd-jwt</artifactId>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-            <artifactId>dss-eaa-mdoc</artifactId>
+            <artifactId>dss-attestation-mdoc</artifactId>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-            <artifactId>dss-eaa-revocation-jwt</artifactId>
+            <artifactId>dss-attestation-revocation-jwt</artifactId>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-            <artifactId>dss-eaa-revocation-cwt</artifactId>
+            <artifactId>dss-attestation-revocation-cwt</artifactId>
         </dependency>
     </dependencies>
 

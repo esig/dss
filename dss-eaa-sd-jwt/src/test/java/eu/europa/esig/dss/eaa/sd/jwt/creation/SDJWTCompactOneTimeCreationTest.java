@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.eaa.sd.jwt.creation;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.diagnostic.EAAWrapper;
+import eu.europa.esig.dss.diagnostic.AttestationWrapper;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -30,9 +30,9 @@ import org.junit.jupiter.api.BeforeEach;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class SDJWTCompactOneTimeCreationTest extends AbstractSDJWTEAAPresentationTestIssuance {
+class SDJWTCompactOneTimeCreationTest extends AbstractSDJWTTestIssuance {
 
-    private SDJWTEAAPayloadParameters parameters;
+    private SDJWTPayloadParameters parameters;
     private JAdESSignatureParameters signatureParameters;
 
     private String signer;
@@ -41,7 +41,7 @@ class SDJWTCompactOneTimeCreationTest extends AbstractSDJWTEAAPresentationTestIs
     void init() {
         signer = ECDSA_USER;
 
-        parameters = new SDJWTEAAPayloadParameters();
+        parameters = new SDJWTPayloadParameters();
         parameters.setIssuer("https://issuer.example.com");
         parameters.nonSelectivelyDisclosable().setSubject(getSigningCert().getSubject().getPrettyPrintRFC2253());
         parameters.nonSelectivelyDisclosable().setIssuingAuthority("Public body");
@@ -67,7 +67,7 @@ class SDJWTCompactOneTimeCreationTest extends AbstractSDJWTEAAPresentationTestIs
     }
 
     @Override
-    protected SDJWTEAAPayloadParameters getPayloadParameters() {
+    protected SDJWTPayloadParameters getPayloadParameters() {
         return parameters;
     }
 
@@ -90,7 +90,7 @@ class SDJWTCompactOneTimeCreationTest extends AbstractSDJWTEAAPresentationTestIs
     protected void checkClaims(final DiagnosticData diagnosticData) {
         super.checkClaims(diagnosticData);
 
-        EAAWrapper eaa = diagnosticData.getEAAs().get(0);
+        AttestationWrapper eaa = diagnosticData.getEAAs().get(0);
         assertTrue(eaa.getOneTimeUse());
     }
 

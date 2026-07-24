@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class MdocRefImplValidationTest extends AbstractMdocEAAPresentationTestValidation {
+class MdocRefImplValidationTest extends AbstractMdocAttestationPresentationTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

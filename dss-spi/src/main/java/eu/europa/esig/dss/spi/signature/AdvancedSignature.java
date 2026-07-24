@@ -42,7 +42,7 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.SignatureCertificateSource;
-import eu.europa.esig.dss.spi.eaa.EAA;
+import eu.europa.esig.dss.spi.eaa.Attestation;
 import eu.europa.esig.dss.spi.signature.identifier.SignatureIdentifier;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
@@ -263,16 +263,16 @@ public interface AdvancedSignature extends IdentifierBasedObject, Serializable {
 	/**
 	 * Gets the EAA of an EAA issuing or key binding signature
 	 *
-	 * @return {@link EAA}
+	 * @return {@link Attestation}
 	 */
-	EAA getEAA();
+	Attestation getEAA();
 
 	/**
 	 * Sets EAA presentation of the EAA issuing or key binging signature
 	 *
-	 * @param eaa {@link EAA}
+	 * @param attestation {@link Attestation}
 	 */
-	void setEAA(EAA eaa);
+	void setEAA(Attestation attestation);
 	
 	/**
 	 * Checks if the current signature is a counter signature (i.e. has a Master signature)

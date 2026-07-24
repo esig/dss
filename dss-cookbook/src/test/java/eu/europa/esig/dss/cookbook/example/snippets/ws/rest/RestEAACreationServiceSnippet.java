@@ -23,8 +23,8 @@ package eu.europa.esig.dss.cookbook.example.snippets.ws.rest;
 // tag::demo[]
 
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
+import eu.europa.esig.dss.enumerations.AttestationFormat;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.EAAType;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
@@ -34,18 +34,18 @@ import eu.europa.esig.dss.ws.dto.RemoteDocument;
 import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
 import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
 import eu.europa.esig.dss.ws.eaa.creation.dto.CreateKeyBindingSignatureDTO;
-import eu.europa.esig.dss.ws.eaa.creation.dto.DataToSignEAADTO;
+import eu.europa.esig.dss.ws.eaa.creation.dto.DataToSignAttestationDTO;
 import eu.europa.esig.dss.ws.eaa.creation.dto.DataToSignForKeyBindingSignatureDTO;
 import eu.europa.esig.dss.ws.eaa.creation.dto.DisclosuresDTO;
 import eu.europa.esig.dss.ws.eaa.creation.dto.IssuePresentationDTO;
-import eu.europa.esig.dss.ws.eaa.creation.dto.SignEAADTO;
+import eu.europa.esig.dss.ws.eaa.creation.dto.SignAttestationDTO;
 import eu.europa.esig.dss.ws.eaa.creation.dto.parameters.DisclosureDTO;
-import eu.europa.esig.dss.ws.eaa.creation.dto.parameters.RemoteEAAClaimParameters;
-import eu.europa.esig.dss.ws.eaa.creation.dto.parameters.RemoteEAAPayloadParameters;
-import eu.europa.esig.dss.ws.eaa.creation.dto.parameters.RemoteEAAPresentationParameters;
+import eu.europa.esig.dss.ws.eaa.creation.dto.parameters.RemoteAttestationClaimParameters;
+import eu.europa.esig.dss.ws.eaa.creation.dto.parameters.RemoteAttestationPayloadParameters;
+import eu.europa.esig.dss.ws.eaa.creation.dto.parameters.RemoteAttestationPresentationParameters;
 import eu.europa.esig.dss.ws.eaa.creation.dto.parameters.RemoteKeyBindingParameters;
-import eu.europa.esig.dss.ws.eaa.creation.rest.RestEAACreationServiceImpl;
-import eu.europa.esig.dss.ws.eaa.creation.rest.client.RestEAACreationService;
+import eu.europa.esig.dss.ws.eaa.creation.rest.RestAttestationCreationServiceImpl;
+import eu.europa.esig.dss.ws.eaa.creation.rest.client.RestAttestationCreationService;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteBLevelParameters;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureParameters;
 
@@ -63,7 +63,7 @@ public class RestEAACreationServiceSnippet extends CookbookTools {
             DSSPrivateKeyEntry privateKey = signingToken.getKeys().get(0);
 
             // Instantiate the REST client
-            RestEAACreationService restClient = new RestEAACreationServiceImpl();
+            RestAttestationCreationService restClient = new RestAttestationCreationServiceImpl();
 
             // 1 EAA issuance
 
@@ -77,7 +77,7 @@ public class RestEAACreationServiceSnippet extends CookbookTools {
             signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 
             // 1.2 Define payload parameters, claims definition
-            RemoteEAAPayloadParameters payloadParameters = new RemoteEAAPayloadParameters(EAAType.SD_JWT_VC);
+            RemoteAttestationPayloadParameters payloadParameters = new RemoteAttestationPayloadParameters(AttestationFormat.SD_JWT_VC);
 
             // 1.2.1 Define technical claims
             // NOTE: Ensure the dates are defined for a deterministic behavior
@@ -88,35 +88,35 @@ public class RestEAACreationServiceSnippet extends CookbookTools {
             payloadParameters.setExpirationDate(expirationTime);
 
             payloadParameters.setIssuer("EAA provider");
-            payloadParameters.setSubject("good-ecdsa-user");
 
             // 1.2.2 Define optional claims, as selectively disclosable
-            RemoteEAAClaimParameters selectivelyDisclosable = new RemoteEAAClaimParameters();
+            RemoteAttestationClaimParameters selectivelyDisclosable = new RemoteAttestationClaimParameters();
             selectivelyDisclosable.setGivenName("John");
             selectivelyDisclosable.setFamilyName("Doe");
             payloadParameters.setSelectivelyDisclosable(selectivelyDisclosable);
 
             // Or not selectively disclosable
-            RemoteEAAClaimParameters nonSelectivelyDisclosable = new RemoteEAAClaimParameters();
+            RemoteAttestationClaimParameters nonSelectivelyDisclosable = new RemoteAttestationClaimParameters();
+            nonSelectivelyDisclosable.setSubject("good-ecdsa-user");
             nonSelectivelyDisclosable.setIssuingAuthority("TEST Authority");
             nonSelectivelyDisclosable.setIssuingCountry("LU");
             nonSelectivelyDisclosable.setIssuingAuthorityRegistrationIdentifier("VATLU-123456");
             payloadParameters.setNonSelectivelyDisclosable(nonSelectivelyDisclosable);
 
             // 1.3 Create DTBS (Data To Be Signed)
-            DataToSignEAADTO dataToSignEAADTO = new DataToSignEAADTO(payloadParameters, signatureParameters);
-            ToBeSignedDTO dataToSign = restClient.getDataToSign(dataToSignEAADTO);
+            DataToSignAttestationDTO dataToSignAttestationDTO = new DataToSignAttestationDTO(payloadParameters, signatureParameters);
+            ToBeSignedDTO dataToSign = restClient.getDataToSign(dataToSignAttestationDTO);
 
             // 1.4 Create Signature Value
             SignatureValue signatureValue = signingToken.sign(DTOConverter.toToBeSigned(dataToSign), DigestAlgorithm.SHA256, privateKey);
 
             // 1.5 Sign EAA (ensure the same parameters are used as in #getDataToSign method)
-            SignEAADTO signEAADTO = new SignEAADTO(payloadParameters, signatureParameters,
+            SignAttestationDTO signAttestationDTO = new SignAttestationDTO(payloadParameters, signatureParameters,
                     new SignatureValueDTO(signatureValue.getAlgorithm(), signatureValue.getValue()));
-            RemoteDocument signedEAA = restClient.signEAA(signEAADTO);
+            RemoteDocument signedEAA = restClient.signEAA(signAttestationDTO);
 
             // 2 Extract selective disclosures
-            // NOTE: all, some or none of them may be provided within an EAA Presentation
+            // NOTE: all, some or none of them may be provided within an Attestation Presentation
             DisclosuresDTO disclosuresDTO = new DisclosuresDTO(payloadParameters);
             List<DisclosureDTO> disclosures = restClient.getDisclosures(disclosuresDTO);
 
@@ -129,7 +129,7 @@ public class RestEAACreationServiceSnippet extends CookbookTools {
 
             // 3.2 Create key binding signature payload parameters
             RemoteKeyBindingParameters keyBindingParameters = new RemoteKeyBindingParameters();
-            keyBindingParameters.setEaaType(EAAType.SD_JWT_VC);
+            keyBindingParameters.setEaaType(AttestationFormat.SD_JWT_VC);
             keyBindingParameters.setNonce("123456");
             keyBindingParameters.setAudience("audience");
 
@@ -150,8 +150,8 @@ public class RestEAACreationServiceSnippet extends CookbookTools {
             // NOTE: requires signed EAA, (optional) disclosures,
             // (optional, format specific) key binding signature and EAA presentation parameters
             IssuePresentationDTO issuePresentationDTO = new IssuePresentationDTO(signedEAA, disclosures, keyBindingSignature,
-                    new RemoteEAAPresentationParameters(EAAType.SD_JWT_VC));
-            RemoteDocument eaaPresentation = restClient.issuePresentation(issuePresentationDTO);
+                    new RemoteAttestationPresentationParameters(AttestationFormat.SD_JWT_VC));
+            RemoteDocument attestationPresentation = restClient.issuePresentation(issuePresentationDTO);
         }
 
     }

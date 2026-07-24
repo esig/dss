@@ -27,10 +27,10 @@ import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
 import eu.europa.esig.dss.ws.converter.RemoteDocumentConverter;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
-import eu.europa.esig.dss.ws.eaa.validation.dto.EAAToValidateDTO;
-import eu.europa.esig.dss.ws.eaa.validation.dto.EAAValidationParametersDTO;
-import eu.europa.esig.dss.ws.eaa.validation.soap.SoapEAAValidationServiceImpl;
-import eu.europa.esig.dss.ws.eaa.validation.soap.client.SoapEAAValidationService;
+import eu.europa.esig.dss.ws.eaa.validation.dto.AttestationToValidateDTO;
+import eu.europa.esig.dss.ws.eaa.validation.dto.AttestationValidationParametersDTO;
+import eu.europa.esig.dss.ws.eaa.validation.soap.SoapAttestationValidationServiceImpl;
+import eu.europa.esig.dss.ws.eaa.validation.soap.client.SoapAttestationValidationService;
 import eu.europa.esig.dss.ws.validation.dto.WSReportsDTO;
 
 public class SoapEAAValidationServiceSnippet extends CookbookTools {
@@ -43,14 +43,14 @@ public class SoapEAAValidationServiceSnippet extends CookbookTools {
             DSSPrivateKeyEntry privateKey = signingToken.getKeys().get(0);
 
             // Instantiate the REST client
-            SoapEAAValidationService soapClient = new SoapEAAValidationServiceImpl();
+            SoapAttestationValidationService soapClient = new SoapAttestationValidationServiceImpl();
 
             // Initialize EAA document to be validated
             FileDocument signatureToValidate = new FileDocument("src/test/resources/mdoc-eaa.cbor");
             RemoteDocument signedDocument = RemoteDocumentConverter.toRemoteDocument(signatureToValidate);
 
             // Initialize validation parameters, when needed
-            EAAValidationParametersDTO validationParameters = new EAAValidationParametersDTO();
+            AttestationValidationParametersDTO validationParameters = new AttestationValidationParametersDTO();
 
             // E.g. provide SessionTranscript, required for mdoc's key binding signature validation
             FileDocument sessionTranscript = new FileDocument("src/test/resources/sessionTranscript.cbor");
@@ -61,9 +61,9 @@ public class SoapEAAValidationServiceSnippet extends CookbookTools {
             RemoteDocument policy = RemoteDocumentConverter.toRemoteDocument(policyFile);
             
             // Create the object containing data to be validated
-            EAAToValidateDTO toValidate = new EAAToValidateDTO(signedDocument, validationParameters, policy);
+            AttestationToValidateDTO toValidate = new AttestationToValidateDTO(signedDocument, validationParameters, policy);
 
-            // Validate the EAA Presentation
+            // Validate the Attestation Presentation
             WSReportsDTO result = soapClient.validateEAA(toValidate);
         }
 

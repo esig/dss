@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.eaa.revocation.cwt.validation.identifierlist;
 
-import eu.europa.esig.dss.enumerations.EAAStatus;
+import eu.europa.esig.dss.enumerations.AttestationStatus;
 import eu.europa.esig.dss.utils.Utils;
 import org.junit.jupiter.api.Test;
 
@@ -48,14 +48,14 @@ class CWTIdentifierListValidatorTest {
 
         CWTIdentifierListValidator validator = new CWTIdentifierListValidator(tokenBytes);
 
-        assertEquals(EAAStatus.INVALID, validator.getRevocationToken(Utils.fromHex("aaaa")).getStatus());
-        assertEquals(EAAStatus.VALID, validator.getRevocationToken(Utils.fromHex("bbbb")).getStatus());
-        assertEquals(EAAStatus.INVALID, validator.getRevocationToken(Utils.fromHex("cccc")).getStatus());
-        assertEquals(EAAStatus.INVALID, validator.getRevocationToken(Utils.fromHex("abcd")).getStatus());
-        assertEquals(EAAStatus.VALID, validator.getRevocationToken(Utils.fromHex("dcba")).getStatus());
+        assertEquals(AttestationStatus.INVALID, validator.getRevocationToken(Utils.fromHex("aaaa")).getStatus());
+        assertEquals(AttestationStatus.VALID, validator.getRevocationToken(Utils.fromHex("bbbb")).getStatus());
+        assertEquals(AttestationStatus.INVALID, validator.getRevocationToken(Utils.fromHex("cccc")).getStatus());
+        assertEquals(AttestationStatus.INVALID, validator.getRevocationToken(Utils.fromHex("abcd")).getStatus());
+        assertEquals(AttestationStatus.VALID, validator.getRevocationToken(Utils.fromHex("dcba")).getStatus());
 
-        assertEquals(EAAStatus.VALID, validator.getRevocationToken(new byte[] {}).getStatus());
-        assertEquals(EAAStatus.VALID, validator.getRevocationToken(new byte[] { 1 }).getStatus());
+        assertEquals(AttestationStatus.VALID, validator.getRevocationToken(new byte[] {}).getStatus());
+        assertEquals(AttestationStatus.VALID, validator.getRevocationToken(new byte[] { 1 }).getStatus());
     }
 
 }

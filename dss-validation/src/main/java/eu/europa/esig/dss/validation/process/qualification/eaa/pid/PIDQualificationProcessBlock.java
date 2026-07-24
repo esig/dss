@@ -26,13 +26,13 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlLoTEAnalysis;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationCertificateApprovalStatus;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationPIDQualificationProcess;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
-import eu.europa.esig.dss.diagnostic.EAAWrapper;
+import eu.europa.esig.dss.diagnostic.AttestationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.TrustedEntityServiceWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustSourceList;
 import eu.europa.esig.dss.enumerations.CertificateApprovalStatus;
 import eu.europa.esig.dss.enumerations.CertificateApprovalStatusEnum;
-import eu.europa.esig.dss.enumerations.EAAQualification;
+import eu.europa.esig.dss.enumerations.AttestationQualification;
 import eu.europa.esig.dss.enumerations.LoTEServiceTypeIdentifierEnum;
 import eu.europa.esig.dss.enumerations.LoTETypeEnum;
 import eu.europa.esig.dss.enumerations.ValidationTime;
@@ -45,7 +45,7 @@ import eu.europa.esig.dss.validation.process.qualification.certificate.usage.Cer
 import eu.europa.esig.dss.validation.process.qualification.certificate.usage.checks.AcceptableLoLoTECheck;
 import eu.europa.esig.dss.validation.process.qualification.certificate.usage.checks.AcceptableLoTECheck;
 import eu.europa.esig.dss.validation.process.qualification.certificate.usage.checks.AcceptableLoTEPresenceCheck;
-import eu.europa.esig.dss.validation.process.qualification.eaa.EAAQualificationMatrix;
+import eu.europa.esig.dss.validation.process.qualification.eaa.AttestationQualificationMatrix;
 import eu.europa.esig.dss.validation.process.qualification.eaa.pid.checks.ListOfTrustedEntitiesReachedForCertificateChainCheck;
 import eu.europa.esig.dss.validation.process.qualification.eaa.pid.checks.PIDDocumentTypeAcceptableCheck;
 import eu.europa.esig.dss.validation.process.qualification.eaa.pid.checks.PIDIssuanceTrustedEntityServicesCheck;
@@ -71,7 +71,7 @@ import java.util.stream.Collectors;
 public class PIDQualificationProcessBlock extends Chain<XmlValidationPIDQualificationProcess> {
 
     /** The EAA to be validated */
-    private final EAAWrapper eaa;
+    private final AttestationWrapper eaa;
 
     /** The conclusion of EAA validation */
     private final XmlConclusion eaaConclusion;
@@ -86,12 +86,12 @@ public class PIDQualificationProcessBlock extends Chain<XmlValidationPIDQualific
      * Default constructor
      *
      * @param i18nProvider         {@link I18nProvider}
-     * @param eaa      {@link EAAWrapper} for which qualification is to be determined
+     * @param eaa      {@link AttestationWrapper} for which qualification is to be determined
      * @param eaaConclusion {@link XmlConclusion}
      * @param loteAnalysis         a list of performed {@link XmlLoTEAnalysis}
      * @param currentTime          {@link Date}
      */
-    public PIDQualificationProcessBlock(final I18nProvider i18nProvider, final EAAWrapper eaa,
+    public PIDQualificationProcessBlock(final I18nProvider i18nProvider, final AttestationWrapper eaa,
                                         final XmlConclusion eaaConclusion, final List<XmlLoTEAnalysis> loteAnalysis,
                                         final Date currentTime) {
         super(i18nProvider, new XmlValidationPIDQualificationProcess());
@@ -308,7 +308,7 @@ public class PIDQualificationProcessBlock extends Chain<XmlValidationPIDQualific
 
     private void determineFinalQualification(CertificateApprovalStatus certificateApprovalStatusAtIssuanceTime, CertificateApprovalStatus certificateApprovalStatusAtValidationTime) {
         CertificateApprovalStatus certificateApprovalStatus = determinedFinalCertificateApprovalStatus(certificateApprovalStatusAtIssuanceTime, certificateApprovalStatusAtValidationTime);
-        EAAQualification finalQualification = EAAQualificationMatrix.getPIDQualification(
+        AttestationQualification finalQualification = AttestationQualificationMatrix.getPIDQualification(
                 eaaConclusion.getIndication(), certificateApprovalStatus);
         result.setEAAQualification(finalQualification);
     }

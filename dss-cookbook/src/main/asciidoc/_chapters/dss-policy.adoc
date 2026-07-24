@@ -2939,7 +2939,7 @@ NOTE: This constraint aims to enforce all requirements specified in the ETSI TS 
 </EAA>
 ----
 
-* `EAAType` - this constraint checks whether the EAA type is part of the list of accepted values. The wildcard value `*` can be used to accept any EAA type.
+* `AttestationFormat` - this constraint checks whether the EAA type is part of the list of accepted values. The wildcard value `*` can be used to accept any EAA type.
 
 Default: `WARN`
 

@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.eaa.sd.jwt.validation.list;
 
-import eu.europa.esig.dss.eaa.common.validation.DefaultEAAPresentationValidator;
+import eu.europa.esig.dss.eaa.common.validation.DefaultAttestationDocumentValidator;
 import eu.europa.esig.dss.eaa.sd.jwt.MockDataLoader;
+import eu.europa.esig.dss.enumerations.AttestationQualification;
 import eu.europa.esig.dss.enumerations.EAACategory;
-import eu.europa.esig.dss.enumerations.EAAQualification;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -148,22 +148,22 @@ class QEAATLTest extends PKIFactoryAccess {
     static Stream<Arguments> data() throws Exception {
         final List<Arguments> data = new ArrayList<>();
 
-        data.add(Arguments.of("Test-QEAA-CERT", EAAQualification.QEAA));
-        data.add(Arguments.of("Test-PubEAA-CERT", EAAQualification.PUBEAA));
-        data.add(Arguments.of("Test-EAA-CERT", EAAQualification.EAA));
-        data.add(Arguments.of("Test-PKC-QEAA-CERT", EAAQualification.EAA));
-        data.add(Arguments.of("Test-not-trusted", EAAQualification.NA));
+        data.add(Arguments.of("Test-QEAA-CERT", AttestationQualification.QEAA));
+        data.add(Arguments.of("Test-PubEAA-CERT", AttestationQualification.PUBEAA));
+        data.add(Arguments.of("Test-EAA-CERT", AttestationQualification.EAA));
+        data.add(Arguments.of("Test-PKC-QEAA-CERT", AttestationQualification.EAA));
+        data.add(Arguments.of("Test-not-trusted", AttestationQualification.NA));
 
         return data.stream();
     }
 
     @ParameterizedTest(name = "EAA Qualification Test : {0}")
     @MethodSource("data")
-    void test(String signerName, EAAQualification expectedQualification) throws Exception {
+    void test(String signerName, AttestationQualification expectedQualification) throws Exception {
         signer = signerName;
-        DSSDocument eaaPresentation = createEAAPresentation();
+        DSSDocument attestationPresentation = createEAAPresentation();
 
-        SignedDocumentValidator validator = DefaultEAAPresentationValidator.fromDocument(eaaPresentation);
+        SignedDocumentValidator validator = DefaultAttestationDocumentValidator.fromDocument(attestationPresentation);
 
         CertificateVerifier certificateVerifier = getCompleteCertificateVerifier();
         certificateVerifier.setTrustedCertSources(getTrustedSource());
@@ -173,8 +173,8 @@ class QEAATLTest extends PKIFactoryAccess {
 
         SimpleReport simpleReport = reports.getSimpleReport();
 
-        EAAQualification eaaQualification = simpleReport.getEAAQualification(simpleReport.getFirstEAAId());
-        assertEquals(expectedQualification, eaaQualification);
+        AttestationQualification attestationQualification = simpleReport.getEAAQualification(simpleReport.getFirstEAAId());
+        assertEquals(expectedQualification, attestationQualification);
         assertEquals(1, simpleReport.getEAAQualifications(simpleReport.getFirstEAAId()).size());
     }
 

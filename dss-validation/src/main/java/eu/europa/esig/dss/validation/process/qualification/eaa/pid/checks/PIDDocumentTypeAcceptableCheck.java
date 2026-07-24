@@ -22,7 +22,7 @@ package eu.europa.esig.dss.validation.process.qualification.eaa.pid.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationPIDQualificationProcess;
-import eu.europa.esig.dss.diagnostic.EAAWrapper;
+import eu.europa.esig.dss.diagnostic.AttestationWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
@@ -37,18 +37,18 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 public class PIDDocumentTypeAcceptableCheck extends ChainItem<XmlValidationPIDQualificationProcess> {
 
     /** EAA presentation to be checked */
-    private final EAAWrapper eaa;
+    private final AttestationWrapper eaa;
 
     /**
      * Default constructor
      *
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlValidationPIDQualificationProcess}
-     * @param eaa {@link EAAWrapper}
+     * @param eaa {@link AttestationWrapper}
      * @param constraint {@link LevelRule}
      */
     public PIDDocumentTypeAcceptableCheck(I18nProvider i18nProvider, XmlValidationPIDQualificationProcess result,
-                                          EAAWrapper eaa, LevelRule constraint) {
+                                          AttestationWrapper eaa, LevelRule constraint) {
         super(i18nProvider, result, constraint);
 
         this.eaa = eaa;

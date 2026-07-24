@@ -1,0 +1,95 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * <p>
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * <p>
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * <p>
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+package eu.europa.esig.dss.validation.process.eaa.checks;
+
+import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
+import eu.europa.esig.dss.diagnostic.AttestationWrapper;
+import eu.europa.esig.dss.enumerations.Indication;
+import eu.europa.esig.dss.enumerations.SubIndication;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
+import eu.europa.esig.dss.model.policy.MultiValuesRule;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
+import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+/**
+ * This class verifies whether the EAA contains all the specified claims,
+ * either as part of the original payload or through the provided selective disclosures
+ *
+ */
+public class AttestationClaimsCheck extends AbstractMultiValuesCheckItem<XmlSAV> {
+
+    /** EAA to check */
+    private final AttestationWrapper eaa;
+
+    /**
+     * Default constructor
+     *
+     * @param i18nProvider {@link I18nProvider}
+     * @param result {@link XmlSAV}
+     * @param eaa {@link AttestationWrapper}
+     * @param constraint {@link MultiValuesRule}
+     */
+    public AttestationClaimsCheck(final I18nProvider i18nProvider, final XmlSAV result,
+                                  final AttestationWrapper eaa, final MultiValuesRule constraint) {
+        super(i18nProvider, result, constraint);
+        this.eaa = eaa;
+    }
+
+    @Override
+    protected boolean process() {
+        List<String> claimNames = eaa.getAllEAAPayloadClaimNames();
+        return processValuesForEachExpectedCheck(claimNames);
+    }
+
+    @Override
+    protected String buildAdditionalInfo() {
+        List<String> notPresentClaims = getValues().stream()
+                .filter(v -> !ValidationProcessUtils.processValueCheck(v, eaa.getAllEAAPayloadClaimNames()))
+                .collect(Collectors.toList());
+        return i18nProvider.getMessage(MessageTag.EAA_CLAIMS_INFO, Utils.joinStrings(notPresentClaims, ", "));
+    }
+
+    @Override
+    protected MessageTag getMessageTag() {
+        return MessageTag.EAA_CLAIMS;
+    }
+
+    @Override
+    protected MessageTag getErrorMessageTag() {
+        return MessageTag.EAA_CLAIMS_ANS;
+    }
+
+    @Override
+    protected Indication getFailedIndicationForConclusion() {
+        return Indication.INDETERMINATE;
+    }
+
+    @Override
+    protected SubIndication getFailedSubIndicationForConclusion() {
+        return SubIndication.EAA_CONSTRAINTS_FAILURE;
+    }
+
+}

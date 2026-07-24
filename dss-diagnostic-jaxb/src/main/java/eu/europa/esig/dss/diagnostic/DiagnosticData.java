@@ -43,7 +43,7 @@ import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.CertificateStatus;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.EAAPresentationType;
+import eu.europa.esig.dss.enumerations.AttestationPresentationType;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.enumerations.RevocationType;
@@ -82,7 +82,7 @@ public class DiagnosticData {
 	private List<EvidenceRecordWrapper> foundEvidenceRecords;
 
 	/** List of found EAA presentations */
-	private List<EAAWrapper> foundEAAs;
+	private List<AttestationWrapper> foundEAAs;
 
 	/**
 	 * Default constructor
@@ -1016,13 +1016,13 @@ public class DiagnosticData {
 	 *
 	 * @return a list of EAA wrappers
 	 */
-	public List<EAAWrapper> getEAAs() {
+	public List<AttestationWrapper> getEAAs() {
 		if (foundEAAs == null) {
 			foundEAAs = new ArrayList<>();
 			List<XmlEAA> xmlEAAs = wrapped.getEAAs();
 			if (xmlEAAs != null) {
 				for (XmlEAA xmlEAA : xmlEAAs) {
-					foundEAAs.add(new EAAWrapper(xmlEAA));
+					foundEAAs.add(new AttestationWrapper(xmlEAA));
 				}
 			}
 		}
@@ -1036,9 +1036,9 @@ public class DiagnosticData {
 	 *            EAA presentation id
 	 * @return evidence record wrapper or null
 	 */
-	public EAAWrapper getEAAById(String id) {
-		List<EAAWrapper> eaas = getEAAs();
-		for (EAAWrapper eaa : eaas) {
+	public AttestationWrapper getEAAById(String id) {
+		List<AttestationWrapper> eaas = getEAAs();
+		for (AttestationWrapper eaa : eaas) {
 			if (id.equals(eaa.getId())) {
 				return eaa;
 			}
@@ -1052,16 +1052,16 @@ public class DiagnosticData {
 	 * @return the first EAA id
 	 */
 	public String getFirstEAAId() {
-		EAAWrapper firstEAA = getFirstEAANullSafe();
+		AttestationWrapper firstEAA = getFirstEAANullSafe();
 		return firstEAA.getId();
 	}
 
-	private EAAWrapper getFirstEAANullSafe() {
-		List<EAAWrapper> eaas = getEAAs();
+	private AttestationWrapper getFirstEAANullSafe() {
+		List<AttestationWrapper> eaas = getEAAs();
 		if (eaas != null && !eaas.isEmpty()) {
 			return eaas.get(0);
 		}
-		return new EAAWrapper(new XmlEAA());
+		return new AttestationWrapper(new XmlEAA());
 	}
 
 	/**
@@ -1181,10 +1181,10 @@ public class DiagnosticData {
 	 *
 	 * @return a set of EAAs
 	 */
-	public Set<EAAWrapper> getAllEAA() {
-		Set<EAAWrapper> eaas = new HashSet<>();
+	public Set<AttestationWrapper> getAllEAA() {
+		Set<AttestationWrapper> eaas = new HashSet<>();
 		for (XmlEAA xmlEAA : wrapped.getEAAs()) {
-			eaas.add(new EAAWrapper(xmlEAA));
+			eaas.add(new AttestationWrapper(xmlEAA));
 		}
 		return eaas;
 	}
@@ -1194,10 +1194,10 @@ public class DiagnosticData {
 	 *
 	 * @return a set of revocation data
 	 */
-	public Set<EAARevocationTokenWrapper> getAllEAARevocationTokens() {
-		Set<EAARevocationTokenWrapper> eaaStatusTokens = new HashSet<>();
+	public Set<AttestationRevocationTokenWrapper> getAllEAARevocationTokens() {
+		Set<AttestationRevocationTokenWrapper> eaaStatusTokens = new HashSet<>();
 		for (XmlEAARevocationToken xmlEAARevocationToken : wrapped.getUsedEAARevocationTokens()) {
-			eaaStatusTokens.add(new EAARevocationTokenWrapper(xmlEAARevocationToken));
+			eaaStatusTokens.add(new AttestationRevocationTokenWrapper(xmlEAARevocationToken));
 		}
 		return eaaStatusTokens;
 	}
@@ -1485,7 +1485,7 @@ public class DiagnosticData {
 	}
 
 	/**
-	 * Returns information about EAA Presentation document
+	 * Returns information about Attestation Presentation document
 	 *
 	 * @return {@link XmlEAAPresentationInfo}
 	 */
@@ -1494,14 +1494,14 @@ public class DiagnosticData {
 	}
 
 	/**
-	 * Gets type of the EAA Presentation document
+	 * Gets type of the Attestation Presentation document
 	 *
-	 * @return {@link EAAPresentationType}
+	 * @return {@link AttestationPresentationType}
 	 */
-	public EAAPresentationType getEAAPresentationType() {
-		XmlEAAPresentationInfo eaaPresentationInfo = getEAAPresentationInfo();
-		if (eaaPresentationInfo != null) {
-			return eaaPresentationInfo.getEAAPresentationType();
+	public AttestationPresentationType getEAAPresentationType() {
+		XmlEAAPresentationInfo attestationPresentationInfo = getEAAPresentationInfo();
+		if (attestationPresentationInfo != null) {
+			return attestationPresentationInfo.getEAAPresentationType();
 		}
 		return null;
 	}

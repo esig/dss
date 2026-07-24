@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.eaa.revocation.cwt.validation.statuslist;
 
-import eu.europa.esig.dss.eaa.revocation.validation.statuslist.StatusListValidator;
+import eu.europa.esig.dss.eaa.revocation.validation.statuslist.TokenStatusListValidator;
 import eu.europa.esig.dss.eaa.revocation.validation.statuslist.StatusListValidatorFactory;
 
 /**
@@ -39,12 +39,12 @@ public class CWTStatusListValidatorFactory implements StatusListValidatorFactory
 
     @Override
     public boolean isSupported(byte[] eaaStatusList) {
-        return new CWTStatusListValidator().isSupported(eaaStatusList);
+        return new CWTTokenStatusListValidator().isSupported(eaaStatusList);
     }
 
     @Override
-    public StatusListValidator create(byte[] eaaStatusList) {
-        return new CWTStatusListValidator(eaaStatusList);
+    public TokenStatusListValidator create(byte[] eaaStatusList) {
+        return new CWTTokenStatusListValidator(eaaStatusList);
     }
 
 }

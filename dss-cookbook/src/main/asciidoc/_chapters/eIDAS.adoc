@@ -186,7 +186,7 @@ The following qualification levels are supported and can be obtained on EAA vali
 
 * `QEAA` - Qualified electronic attestation of attributes as defined in Regulation EU 2024/1183 <<R40>>, Article 45d.
 * `PuB-EAA` - Electronic attestation of attributes issued by or on behalf of a public sector body responsible for an authentic source as defined in Regulation EU 2024/1183<<R40>>, Article 45f.
-* `EAA` - Electronic attestation of attributes as defined in Regulation EU 2024/1183<<R40>>, without a qualified status.
+* `Attestation` - Electronic attestation of attributes as defined in Regulation EU 2024/1183<<R40>>, without a qualified status.
 
 Additionally, DSS is able to recognize a Person Identity Data (`PID`) token, should a corresponding data be derived from the ETSI TS 119 602 <<R33>> PID Providers List (loaded using a <<ListOfTrustedEntities>>).
 
@@ -199,7 +199,7 @@ The example below verifies the qualification level of an EAA:
 [source,java,indent=0]
 .Validate an EAA and retrieve its qualification level
 ----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/EAAValidationTest.java[tags=eaa-qualification]
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/EAAValidationTest.java[tags=attestation-qualification]
 ----
 
 NOTE: Unline signature or timestamp qualification results, an EAA qualification process may output more than one qualification statuses, e.g. when a PID status applies.

@@ -7,7 +7,7 @@
         <version>6.6-SNAPSHOT</version>
     </parent>
 
-    <artifactId>dss-eaa-validation-remote</artifactId>
+    <artifactId>dss-attestation-validation-remote</artifactId>
     <name>DSS EAA Validation Remote</name>
     <description>Contains common logic and classes for performing of a validation of Electronic Attestation of Attributes (EAA) or EAA Presentations using the WebServices</description>
 
@@ -22,11 +22,11 @@
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-            <artifactId>dss-eaa-validation-dto</artifactId>
+            <artifactId>dss-attestation-validation-dto</artifactId>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-            <artifactId>dss-eaa-common</artifactId>
+            <artifactId>dss-attestation-common</artifactId>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
@@ -35,7 +35,7 @@
 
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-            <artifactId>dss-eaa-mdoc</artifactId>
+            <artifactId>dss-attestation-mdoc</artifactId>
             <optional>true</optional>
         </dependency>
 
@@ -48,12 +48,12 @@
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-            <artifactId>dss-eaa-sd-jwt</artifactId>
+            <artifactId>dss-attestation-sd-jwt</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-            <artifactId>dss-eaa-revocation-jwt</artifactId>
+            <artifactId>dss-attestation-revocation-jwt</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

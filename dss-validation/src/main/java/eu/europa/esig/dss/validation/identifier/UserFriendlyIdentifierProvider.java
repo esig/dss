@@ -40,8 +40,8 @@ import eu.europa.esig.dss.model.x509.Token;
 import eu.europa.esig.dss.model.x509.X500PrincipalHelper;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.eaa.EAA;
-import eu.europa.esig.dss.spi.eaa.EAARevocationToken;
+import eu.europa.esig.dss.spi.eaa.Attestation;
+import eu.europa.esig.dss.spi.eaa.AttestationRevocationToken;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.evidencerecord.EvidenceRecord;
@@ -362,8 +362,8 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
         } else if (object instanceof EvidenceRecord) {
             return getIdAsStringForEvidenceRecordIdentifier((EvidenceRecord) object);
 
-        }  else if (object instanceof EAA) {
-            return getIdAsStringForEAAIdentifier((EAA) object);
+        }  else if (object instanceof Attestation) {
+            return getIdAsStringForEAAIdentifier((Attestation) object);
 
         } else if (object instanceof TLInfo) {
             return getIdAsStringForTL((TLInfo) object);
@@ -562,26 +562,26 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
     /**
      * Gets an identifier for the EAA
      *
-     * @param eaa {@link EAA}
+     * @param attestation {@link Attestation}
      * @return {@link String} identifier
      */
-    protected String getIdAsStringForEAAIdentifier(EAA eaa) {
+    protected String getIdAsStringForEAAIdentifier(Attestation attestation) {
         StringBuilder stringBuilder = new StringBuilder(eaaPrefix);
 
-        if (eaa.getPayload().getSubject() != null) {
+        if (attestation.getPayload().getSubject() != null) {
             stringBuilder.append(STRING_DELIMITER);
-            stringBuilder.append(eaa.getPayload().getSubject().getStringValue());
+            stringBuilder.append(attestation.getPayload().getSubject().getStringValue());
         }
-        if  (eaa.getPayload().getDocType() != null) {
+        if  (attestation.getPayload().getDocType() != null) {
             stringBuilder.append(STRING_DELIMITER);
-            stringBuilder.append(eaa.getPayload().getDocType().getStringValue());
+            stringBuilder.append(attestation.getPayload().getDocType().getStringValue());
         }
-        if (eaa.getPayload().getIssuedAtTime() != null) {
+        if (attestation.getPayload().getIssuedAtTime() != null) {
             stringBuilder.append(STRING_DELIMITER);
-            stringBuilder.append(DSSUtils.formatDateWithCustomFormat(eaa.getPayload().getIssuedAtTime().getDateValue(), dateFormat));
+            stringBuilder.append(DSSUtils.formatDateWithCustomFormat(attestation.getPayload().getIssuedAtTime().getDateValue(), dateFormat));
         }
 
-        return generateId(stringBuilder, eaa.getId());
+        return generateId(stringBuilder, attestation.getId());
     }
 
     private String createIdString(String prefix, X500PrincipalHelper subject, Date creationDate, String dssId) {
@@ -645,7 +645,7 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
             return ocspPrefix;
         } else if (token instanceof TimestampToken) {
             return timestampPrefix;
-        }  else if (token instanceof EAARevocationToken) {
+        }  else if (token instanceof AttestationRevocationToken) {
             return eaaStatusTokenPrefix;
         } else {
             throw new IllegalArgumentException(String.format(

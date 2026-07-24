@@ -31,7 +31,7 @@ import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.validation.scope.AbstractSignatureScopeFinder;
 import eu.europa.esig.dss.spi.validation.scope.CounterSignatureScope;
 import eu.europa.esig.dss.spi.validation.scope.DigestSignatureScope;
-import eu.europa.esig.dss.spi.validation.scope.EAASignatureScope;
+import eu.europa.esig.dss.spi.validation.scope.AttestationSignatureScope;
 import eu.europa.esig.dss.spi.validation.scope.FullSignatureScope;
 import eu.europa.esig.dss.spi.validation.scope.KeyBindingSignatureScope;
 import eu.europa.esig.dss.spi.validation.scope.SignatureScopeFinder;
@@ -86,7 +86,7 @@ public class CBAdESSignatureScopeFinder extends AbstractSignatureScopeFinder imp
 
                 } else if (cbadesSignature.getEAA() != null) {
                     // only one document shall be present
-                    return Collections.singletonList(new EAASignatureScope(cbadesSignature.getEAA(), originalDocuments.get(0)));
+                    return Collections.singletonList(new AttestationSignatureScope(cbadesSignature.getEAA(), originalDocuments.get(0)));
 
                 } else if (originalDocuments.size() == 1) {
                     return Collections.singletonList(getSignatureScopeFromOriginalDocument(originalDocuments.get(0)));

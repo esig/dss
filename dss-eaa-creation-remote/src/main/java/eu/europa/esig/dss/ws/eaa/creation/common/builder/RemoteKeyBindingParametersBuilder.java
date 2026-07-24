@@ -24,7 +24,7 @@ import eu.europa.esig.dss.eaa.common.creation.KeyBindingParameters;
 import eu.europa.esig.dss.eaa.sd.jwt.creation.SDJWTKeyBindingParameters;
 import eu.europa.esig.dss.eaa.mdoc.creation.MdocKeyBindingParameters;
 import eu.europa.esig.dss.ws.converter.RemoteDocumentConverter;
-import eu.europa.esig.dss.ws.eaa.creation.common.converter.MdocEAAClaimFromDTOConverter;
+import eu.europa.esig.dss.ws.eaa.creation.common.converter.MdocClaimFromDTOConverter;
 import eu.europa.esig.dss.ws.eaa.creation.dto.parameters.RemoteKeyBindingParameters;
 
 import java.util.Objects;
@@ -108,7 +108,7 @@ public class RemoteKeyBindingParametersBuilder {
             keyBindingParameters.setDocType(remoteKeyBindingParameters.getDocType());
         }
         if (remoteKeyBindingParameters.getDeviceSignedDataElements() != null && !remoteKeyBindingParameters.getDeviceSignedDataElements().isEmpty()) {
-            final MdocEAAClaimFromDTOConverter converter = new MdocEAAClaimFromDTOConverter();
+            final MdocClaimFromDTOConverter converter = new MdocClaimFromDTOConverter();
             remoteKeyBindingParameters.getDeviceSignedDataElements().forEach(c -> keyBindingParameters.addDeviceSignedDataElement(converter.apply(c)));
         }
         return keyBindingParameters;

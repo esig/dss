@@ -21,13 +21,13 @@
 package eu.europa.esig.dss.eaa.mdoc.validation;
 
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.spi.eaa.EAAValidationParameters;
+import eu.europa.esig.dss.spi.eaa.AttestationValidationParameters;
 
 /**
  * Contains supplementary data parameters for validation of Mdoc EAA presentation
  *
  */
-public class MdocValidationParameters implements EAAValidationParameters {
+public class MdocValidationParameters implements AttestationValidationParameters {
 
     private static final long serialVersionUID = 8075475063597375229L;
 

@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.ws.eaa.creation.common.converter;
 
-import eu.europa.esig.dss.eaa.common.creation.EAADisclosure;
-import eu.europa.esig.dss.eaa.sd.jwt.creation.SDJWTEAADisclosure;
-import eu.europa.esig.dss.eaa.mdoc.creation.MdocEAADisclosure;
-import eu.europa.esig.dss.enumerations.EAAType;
+import eu.europa.esig.dss.eaa.common.creation.SelectiveDisclosure;
+import eu.europa.esig.dss.eaa.sd.jwt.creation.SDJWTSelectiveDisclosure;
+import eu.europa.esig.dss.eaa.mdoc.creation.MdocSelectiveDisclosure;
+import eu.europa.esig.dss.enumerations.AttestationFormat;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.ws.eaa.creation.dto.parameters.DisclosureDTO;
 
@@ -33,30 +33,30 @@ import java.util.function.Function;
 /**
  * Converts a {@code DisclosureDTO} into {@code EAADisclosure} of a corresponding format
  */
-public class DisclosureFromDTOConverter implements Function<DisclosureDTO, EAADisclosure> {
+public class DisclosureFromDTOConverter implements Function<DisclosureDTO, SelectiveDisclosure> {
 
     /** EAA Type */
-    private final EAAType eaaType;
+    private final AttestationFormat attestationFormat;
 
     /**
      * Default constructor
      *
-     * @param eaaType {@link EAAType} to create a corresponding implementation of disclosures
+     * @param attestationFormat {@link AttestationFormat} to create a corresponding implementation of disclosures
      */
-    public DisclosureFromDTOConverter(final EAAType eaaType) {
-        Objects.requireNonNull(eaaType, "eaaType is mandatory!");
-        this.eaaType = eaaType;
+    public DisclosureFromDTOConverter(final AttestationFormat attestationFormat) {
+        Objects.requireNonNull(attestationFormat, "eaaType is mandatory!");
+        this.attestationFormat = attestationFormat;
     }
 
     @Override
-    public EAADisclosure apply(DisclosureDTO disclosureDTO) {
-        switch (eaaType) {
+    public SelectiveDisclosure apply(DisclosureDTO disclosureDTO) {
+        switch (attestationFormat) {
             case SD_JWT_VC:
-                return new SDJWTEAADisclosure(disclosureDTO.getValue());
+                return new SDJWTSelectiveDisclosure(disclosureDTO.getValue());
             case ISO_IEC_MDOC:
-                return new MdocEAADisclosure(disclosureDTO.getNamespace(), disclosureDTO.getDigestId(), Utils.fromBase64(disclosureDTO.getValue()));
+                return new MdocSelectiveDisclosure(disclosureDTO.getNamespace(), disclosureDTO.getDigestId(), Utils.fromBase64(disclosureDTO.getValue()));
             default:
-                throw new UnsupportedOperationException(String.format("The EAA Type '%s' is not supported!", eaaType));
+                throw new UnsupportedOperationException(String.format("The EAA Type '%s' is not supported!", attestationFormat));
         }
     }
 

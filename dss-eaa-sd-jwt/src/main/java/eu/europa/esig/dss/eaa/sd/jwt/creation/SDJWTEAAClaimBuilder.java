@@ -40,9 +40,9 @@ public interface SDJWTEAAClaimBuilder {
     /**
      * Creates claims for the given payload parameters
      *
-     * @param payloadParameters {@link SDJWTEAAPayloadParameters}
-     * @return a list of {@link SDJWTEAAClaim}s
+     * @param payloadParameters {@link SDJWTPayloadParameters}
+     * @return a list of {@link SDJWTClaim}s
      */
-    List<SDJWTEAAClaim> buildClaims(SDJWTEAAPayloadParameters payloadParameters);
+    List<SDJWTClaim> buildClaims(SDJWTPayloadParameters payloadParameters);
 
 }

@@ -135,14 +135,14 @@
 
 	  <jaxb:bindings node="//xs:simpleType[@name='EAAType']">
 		  <jaxb:javaType name="eu.europa.esig.dss.enumerations.EAAType"
-						 parseMethod="eu.europa.esig.dss.jaxb.parsers.EAATypeParser.parse"
-						 printMethod="eu.europa.esig.dss.jaxb.parsers.EAATypeParser.print" />
+						 parseMethod="eu.europa.esig.dss.jaxb.parsers.AttestationFormatParser.parse"
+						 printMethod="eu.europa.esig.dss.jaxb.parsers.AttestationFormatParser.print" />
 	  </jaxb:bindings>
 
 	  <jaxb:bindings node="//xs:simpleType[@name='EAAPresentationType']">
 		  <jaxb:javaType name="eu.europa.esig.dss.enumerations.EAAPresentationType"
-						 parseMethod="eu.europa.esig.dss.jaxb.parsers.EAAPresentationTypeParser.parse"
-						 printMethod="eu.europa.esig.dss.jaxb.parsers.EAAPresentationTypeParser.print" />
+						 parseMethod="eu.europa.esig.dss.jaxb.parsers.AttestationPresentationTypeParser.parse"
+						 printMethod="eu.europa.esig.dss.jaxb.parsers.AttestationPresentationTypeParser.print" />
 	  </jaxb:bindings>
 
   	<jaxb:bindings node="//xs:complexType[@name='BasicSignature']//xs:element[@name='EncryptionAlgoUsedToSignThisToken']">
@@ -387,13 +387,13 @@
 
 	<jaxb:bindings node="//xs:simpleType[@name='EAARevocationOrigin']">
 		  <jaxb:javaType name="eu.europa.esig.dss.enumerations.EAARevocationOrigin"
-						 parseMethod="eu.europa.esig.dss.jaxb.parsers.EAARevocationOriginParser.parse"
-						 printMethod="eu.europa.esig.dss.jaxb.parsers.EAARevocationOriginParser.print" />
+						 parseMethod="eu.europa.esig.dss.jaxb.parsers.AttestationRevocationOriginParser.parse"
+						 printMethod="eu.europa.esig.dss.jaxb.parsers.AttestationRevocationOriginParser.print" />
 	  </jaxb:bindings>
 	<jaxb:bindings node="//xs:simpleType[@name='EAAStatus']">
 		  <jaxb:javaType name="eu.europa.esig.dss.enumerations.EAAStatus"
-						 parseMethod="eu.europa.esig.dss.jaxb.parsers.EAAStatusParser.parse"
-						 printMethod="eu.europa.esig.dss.jaxb.parsers.EAAStatusParser.print" />
+						 parseMethod="eu.europa.esig.dss.jaxb.parsers.AttestationStatusParser.parse"
+						 printMethod="eu.europa.esig.dss.jaxb.parsers.AttestationStatusParser.print" />
 	  </jaxb:bindings>
 	<jaxb:bindings node="//xs:complexType[@name='EAARevocationStatus']//xs:attribute[@name='EAARevocationToken']">
 		  <jaxb:property>

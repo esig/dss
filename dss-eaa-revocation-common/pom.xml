@@ -9,7 +9,7 @@
         <version>6.6-SNAPSHOT</version>
     </parent>
 
-    <artifactId>dss-eaa-revocation-common</artifactId>
+    <artifactId>dss-attestation-revocation-common</artifactId>
     <name>DSS EAA Revocation Common</name>
     <description>This module contains common classes for validation of EAA Revocations</description>
 

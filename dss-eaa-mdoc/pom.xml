@@ -9,7 +9,7 @@
         <version>6.6-SNAPSHOT</version>
     </parent>
 
-    <artifactId>dss-eaa-mdoc</artifactId>
+    <artifactId>dss-attestation-mdoc</artifactId>
     <name>DSS Electronic Attestation of Attributes mdoc</name>
     <description>This module performs validation of presentations of EAA based on mdoc specification as per ISO 18013-5</description>
 
@@ -20,7 +20,7 @@
     <dependencies>
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-            <artifactId>dss-eaa-common</artifactId>
+            <artifactId>dss-attestation-common</artifactId>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
@@ -62,13 +62,13 @@
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-            <artifactId>dss-eaa-common</artifactId>
+            <artifactId>dss-attestation-common</artifactId>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-            <artifactId>dss-eaa-revocation-cwt</artifactId>
+            <artifactId>dss-attestation-revocation-cwt</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

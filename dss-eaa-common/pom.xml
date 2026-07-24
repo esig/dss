@@ -9,7 +9,7 @@
         <version>6.6-SNAPSHOT</version>
     </parent>
 
-    <artifactId>dss-eaa-common</artifactId>
+    <artifactId>dss-attestation-common</artifactId>
     <name>DSS Electronic Attestation of Attributes</name>
     <description>This module contains common code for creation and validation of Presentation of Electronic Attestation of Attributes</description>
 
@@ -30,7 +30,7 @@
 
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-            <artifactId>dss-eaa-revocation-common</artifactId>
+            <artifactId>dss-attestation-revocation-common</artifactId>
             <scope>test</scope>
         </dependency>
 

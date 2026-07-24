@@ -22,9 +22,9 @@ package eu.europa.esig.dss.eaa.sd.jwt.key;
 
 import eu.europa.esig.dss.eaa.common.key.PublicKeyInfo;
 import eu.europa.esig.dss.eaa.sd.jwt.SDJWTConstants;
-import eu.europa.esig.dss.eaa.sd.jwt.creation.SDJWTEAAClaim;
-import eu.europa.esig.dss.eaa.sd.jwt.creation.SDJWTEAAClaimArray;
-import eu.europa.esig.dss.eaa.sd.jwt.creation.SDJWTEAAClaimObject;
+import eu.europa.esig.dss.eaa.sd.jwt.creation.SDJWTClaim;
+import eu.europa.esig.dss.eaa.sd.jwt.creation.SDJWTClaimArray;
+import eu.europa.esig.dss.eaa.sd.jwt.creation.SDJWTClaimObject;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.model.Digest;
@@ -155,10 +155,10 @@ public class JWKClaimBuilder {
      * - a representation of the EAA subject public key; or
      * - a representation of the EAA subject certificate.
      *
-     * @return the generated {@link SDJWTEAAClaim}
+     * @return the generated {@link SDJWTClaim}
      */
-    public SDJWTEAAClaim create() {
-        final SDJWTEAAClaimObject jwk = SDJWTEAAClaim.createObject(SDJWTConstants.JWK);
+    public SDJWTClaim create() {
+        final SDJWTClaimObject jwk = SDJWTClaim.createObject(SDJWTConstants.JWK);
 
         if (publicKeyInfo != null) {
             if (Utils.isCollectionNotEmpty(certificateChain) || certificateThumbprint != null || x5u != null) {
@@ -166,7 +166,7 @@ public class JWKClaimBuilder {
                         "The 'jwk' claim may only contain either a representation of the EAA subject public key or " +
                                 "a representation of the EAA subject certificate as specified in IETF RFC 7800.");
             }
-            jwk.addChild(SDJWTEAAClaim.create(SDJWTConstants.KTY, publicKeyInfo.getKeyType()));
+            jwk.addChild(SDJWTClaim.create(SDJWTConstants.KTY, publicKeyInfo.getKeyType()));
 
             if (publicKeyInfo instanceof PublicKeyInfo.ECKey) {
                 createEC(jwk, (PublicKeyInfo.ECKey) publicKeyInfo);
@@ -186,8 +186,8 @@ public class JWKClaimBuilder {
                                 "nor the x5t#S256 parameter shall be present.");
             }
 
-            SDJWTEAAClaimArray x5c = SDJWTEAAClaim.createArray(SDJWTConstants.X5C);
-            certificateChain.forEach(c -> x5c.addElement(SDJWTEAAClaim.create(DSSJsonUtils.toBase64Url(c.getEncoded()))));
+            SDJWTClaimArray x5c = SDJWTClaim.createArray(SDJWTConstants.X5C);
+            certificateChain.forEach(c -> x5c.addElement(SDJWTClaim.create(DSSJsonUtils.toBase64Url(c.getEncoded()))));
             jwk.addChild(x5c);
 
         } else if (certificateThumbprint != null) {
@@ -197,10 +197,10 @@ public class JWKClaimBuilder {
                                 "Found algorithm : %s", certificateThumbprint.getAlgorithm()));
             }
 
-            jwk.addChild(SDJWTEAAClaim.create(SDJWTConstants.X5TS526, DSSJsonUtils.toBase64Url(certificateThumbprint.getValue())));
+            jwk.addChild(SDJWTClaim.create(SDJWTConstants.X5TS526, DSSJsonUtils.toBase64Url(certificateThumbprint.getValue())));
 
             if (x5u != null) {
-                jwk.addChild(SDJWTEAAClaim.create(SDJWTConstants.X5U, x5u));
+                jwk.addChild(SDJWTClaim.create(SDJWTConstants.X5U, x5u));
             }
 
         } else if (x5u != null) {
@@ -214,26 +214,26 @@ public class JWKClaimBuilder {
 
         if (publicKeyInfo == null) {
             Objects.requireNonNull(keyType, "Key type shall be provided if no PublicKeyInfo is defined!");
-            jwk.addChild(SDJWTEAAClaim.create(SDJWTConstants.KTY, keyType));
+            jwk.addChild(SDJWTClaim.create(SDJWTConstants.KTY, keyType));
         }
 
         return jwk;
     }
 
-    private void createEC(SDJWTEAAClaimObject jwk, PublicKeyInfo.ECKey publicKeyInfo) {
-        jwk.addChild(SDJWTEAAClaim.create(SDJWTConstants.EC_CRV, publicKeyInfo.getCurve().getLabel()));
-        jwk.addChild(SDJWTEAAClaim.create(SDJWTConstants.EC_X, DSSJsonUtils.toBase64Url(publicKeyInfo.getX())));
-        jwk.addChild(SDJWTEAAClaim.create(SDJWTConstants.EC_Y, DSSJsonUtils.toBase64Url(publicKeyInfo.getY())));
+    private void createEC(SDJWTClaimObject jwk, PublicKeyInfo.ECKey publicKeyInfo) {
+        jwk.addChild(SDJWTClaim.create(SDJWTConstants.EC_CRV, publicKeyInfo.getCurve().getLabel()));
+        jwk.addChild(SDJWTClaim.create(SDJWTConstants.EC_X, DSSJsonUtils.toBase64Url(publicKeyInfo.getX())));
+        jwk.addChild(SDJWTClaim.create(SDJWTConstants.EC_Y, DSSJsonUtils.toBase64Url(publicKeyInfo.getY())));
     }
 
-    private void createOKP(SDJWTEAAClaimObject jwk, PublicKeyInfo.OKPKey publicKeyInfo) {
-        jwk.addChild(SDJWTEAAClaim.create(SDJWTConstants.OKP_CRV, publicKeyInfo.getCurve().getLabel()));
-        jwk.addChild(SDJWTEAAClaim.create(SDJWTConstants.OKP_X, DSSJsonUtils.toBase64Url(publicKeyInfo.getX())));
+    private void createOKP(SDJWTClaimObject jwk, PublicKeyInfo.OKPKey publicKeyInfo) {
+        jwk.addChild(SDJWTClaim.create(SDJWTConstants.OKP_CRV, publicKeyInfo.getCurve().getLabel()));
+        jwk.addChild(SDJWTClaim.create(SDJWTConstants.OKP_X, DSSJsonUtils.toBase64Url(publicKeyInfo.getX())));
     }
 
-    private void createRSA(SDJWTEAAClaimObject jwk, PublicKeyInfo.RSAKey publicKeyInfo) {
-        jwk.addChild(SDJWTEAAClaim.create(SDJWTConstants.RSA_N, DSSJsonUtils.toBase64Url(publicKeyInfo.getModulus())));
-        jwk.addChild(SDJWTEAAClaim.create(SDJWTConstants.RSA_E, DSSJsonUtils.toBase64Url(publicKeyInfo.getExponent())));
+    private void createRSA(SDJWTClaimObject jwk, PublicKeyInfo.RSAKey publicKeyInfo) {
+        jwk.addChild(SDJWTClaim.create(SDJWTConstants.RSA_N, DSSJsonUtils.toBase64Url(publicKeyInfo.getModulus())));
+        jwk.addChild(SDJWTClaim.create(SDJWTConstants.RSA_E, DSSJsonUtils.toBase64Url(publicKeyInfo.getExponent())));
     }
 
 }

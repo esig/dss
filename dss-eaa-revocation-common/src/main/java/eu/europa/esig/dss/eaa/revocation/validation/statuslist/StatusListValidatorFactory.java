@@ -27,24 +27,24 @@ package eu.europa.esig.dss.eaa.revocation.validation.statuslist;
 public interface StatusListValidatorFactory {
 
     /**
-     * This method tests if the current implementation of {@link StatusListValidator}
+     * This method tests if the current implementation of {@link TokenStatusListValidator}
      * supports the given document
      *
      * @param eaaStatusList
      *                 the document to be tested
-     * @return true, if the {@link StatusListValidator} supports the given document
+     * @return true, if the {@link TokenStatusListValidator} supports the given document
      */
     boolean isSupported(byte[] eaaStatusList);
 
     /**
-     * This method instantiates a {@link StatusListValidator} with the given document
+     * This method instantiates a {@link TokenStatusListValidator} with the given document
      *
      * @param eaaStatusList
-     *                 the document to be used for the {@link StatusListValidator}
+     *                 the document to be used for the {@link TokenStatusListValidator}
      *                 creation
-     * @return an instance of {@link StatusListValidator} with the document
+     * @return an instance of {@link TokenStatusListValidator} with the document
      */
-    StatusListValidator create(byte[] eaaStatusList);
+    TokenStatusListValidator create(byte[] eaaStatusList);
 
 }
 

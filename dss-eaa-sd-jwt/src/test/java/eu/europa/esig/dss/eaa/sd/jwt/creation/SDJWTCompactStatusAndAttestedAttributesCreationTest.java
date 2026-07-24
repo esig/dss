@@ -21,8 +21,8 @@
 package eu.europa.esig.dss.eaa.sd.jwt.creation;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.diagnostic.EAAWrapper;
-import eu.europa.esig.dss.eaa.common.creation.EAAStatusList;
+import eu.europa.esig.dss.diagnostic.AttestationWrapper;
+import eu.europa.esig.dss.eaa.common.creation.TokenStatusList;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -39,16 +39,16 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-class SDJWTCompactStatusAndAttestedAttributesCreationTest extends AbstractSDJWTEAAPresentationTestIssuance {
+class SDJWTCompactStatusAndAttestedAttributesCreationTest extends AbstractSDJWTTestIssuance {
 
-    private SDJWTEAAPayloadParameters payloadParameters;
+    private SDJWTPayloadParameters payloadParameters;
     private JAdESSignatureParameters signatureParameters;
 
     @BeforeEach
     void init() {
         Date issuanceDate = new Date();
 
-        payloadParameters = new SDJWTEAAPayloadParameters();
+        payloadParameters = new SDJWTPayloadParameters();
         payloadParameters.setIssuer("https://issuer.example.com");
         payloadParameters.nonSelectivelyDisclosable().setIssuanceDate(issuanceDate);
         payloadParameters.setExpirationDate(new Date(issuanceDate.getTime() + 3600 * 1000));
@@ -59,11 +59,11 @@ class SDJWTCompactStatusAndAttestedAttributesCreationTest extends AbstractSDJWTE
         Digest digest = new Digest(DigestAlgorithm.SHA256, DSSUtils.digest(DigestAlgorithm.SHA256, "Hello World".getBytes()));
         payloadParameters.setVerifiableCredentialsTypeIntegrity(digest);
 
-        SDJWTEAAClaimObject status = SDJWTEAAClaim.createObject("status");
-        status.addChild(SDJWTEAAClaim.create("type", "TokenStatusList"));
-        status.addChild(SDJWTEAAClaim.create("purpose", "revocation"));
-        status.addChild(SDJWTEAAClaim.create("index", 0));
-        status.addChild(SDJWTEAAClaim.create("uri", "https://nowina.lu/pki-factory/status"));
+        SDJWTClaimObject status = SDJWTClaim.createObject("status");
+        status.addChild(SDJWTClaim.create("type", "TokenStatusList"));
+        status.addChild(SDJWTClaim.create("purpose", "revocation"));
+        status.addChild(SDJWTClaim.create("index", 0));
+        status.addChild(SDJWTClaim.create("uri", "https://nowina.lu/pki-factory/status"));
         payloadParameters.nonSelectivelyDisclosable().addClaim(status);
 
         payloadParameters.nonSelectivelyDisclosable().setAttestedAttributesSubjectIdentifier(
@@ -84,7 +84,7 @@ class SDJWTCompactStatusAndAttestedAttributesCreationTest extends AbstractSDJWTE
     }
 
     @Override
-    protected SDJWTEAAPayloadParameters getPayloadParameters() {
+    protected SDJWTPayloadParameters getPayloadParameters() {
         return payloadParameters;
     }
 
@@ -107,7 +107,7 @@ class SDJWTCompactStatusAndAttestedAttributesCreationTest extends AbstractSDJWTE
     protected void checkClaims(final DiagnosticData diagnosticData) {
         super.checkClaims(diagnosticData);
 
-        EAAWrapper eaa = diagnosticData.getEAAs().get(0);
+        AttestationWrapper eaa = diagnosticData.getEAAs().get(0);
 
         assertEquals("TokenStatusList", eaa.getStatusType());
         assertEquals("revocation", eaa.getStatusPurpose());
@@ -125,7 +125,7 @@ class SDJWTCompactStatusAndAttestedAttributesCreationTest extends AbstractSDJWTE
     }
 
     @Override
-    protected void assertStatusListEqual(EAAStatusList statusList, EAAWrapper eaa) {
+    protected void assertStatusListEqual(TokenStatusList statusList, AttestationWrapper eaa) {
         // skip
     }
 

@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.eaa.revocation.jwt.validation.statuslist;
 
-import eu.europa.esig.dss.eaa.revocation.validation.statuslist.StatusListValidator;
+import eu.europa.esig.dss.eaa.revocation.validation.statuslist.TokenStatusListValidator;
 import eu.europa.esig.dss.eaa.revocation.validation.statuslist.StatusListValidatorFactory;
 
 /**
@@ -39,12 +39,12 @@ public class JWTStatusListValidatorFactory implements StatusListValidatorFactory
 
     @Override
     public boolean isSupported(byte[] eaaStatusList) {
-        return new JWTStatusListValidator().isSupported(eaaStatusList);
+        return new JWTTokenStatusListValidator().isSupported(eaaStatusList);
     }
 
     @Override
-    public StatusListValidator create(byte[] eaaStatusList) {
-        return new JWTStatusListValidator(eaaStatusList);
+    public TokenStatusListValidator create(byte[] eaaStatusList) {
+        return new JWTTokenStatusListValidator(eaaStatusList);
     }
 
 }

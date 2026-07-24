@@ -7,7 +7,7 @@
         <version>6.6-SNAPSHOT</version>
     </parent>
 
-    <artifactId>dss-eaa-creation-dto</artifactId>
+    <artifactId>dss-attestation-creation-dto</artifactId>
     <name>DSS EAA Creation DTO</name>
     <description>Contains DTO classes for performing of a creation of Electronic Attestation of Attributes (EAA) and issuance of EAA Presentations using the WebServices</description>
 

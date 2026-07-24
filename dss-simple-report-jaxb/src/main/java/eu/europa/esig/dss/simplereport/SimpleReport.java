@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.simplereport;
 
 import eu.europa.esig.dss.enumerations.ASiCContainerType;
-import eu.europa.esig.dss.enumerations.EAAQualification;
+import eu.europa.esig.dss.enumerations.AttestationQualification;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
@@ -571,12 +571,12 @@ public class SimpleReport {
 	 * This method could be used for a simple EAAQualification result extraction, suitable for the most use cases.
 	 * Should you need a more comprehensive validation output, please use the {@code #getEAAQualifications} method.
 	 *
-	 * @param eaaPresentationId
+	 * @param attestationPresentationId
 	 *                    the EAA presentation id
-	 * @return {@link EAAQualification} for a given EAA
+	 * @return {@link AttestationQualification} for a given EAA
 	 */
-	public EAAQualification getEAAQualification(final String eaaPresentationId) {
-		XmlEAA xmlEAA = getEAAById(eaaPresentationId);
+	public AttestationQualification getEAAQualification(final String attestationPresentationId) {
+		XmlEAA xmlEAA = getEAAById(attestationPresentationId);
 		if (xmlEAA != null && xmlEAA.getEAALevel() != null && !xmlEAA.getEAALevel().isEmpty()) {
 			return xmlEAA.getEAALevel().iterator().next().getValue();
 		}
@@ -589,12 +589,12 @@ public class SimpleReport {
 	 * as potentially a token may be qualified with different outputs during the validation process,
 	 * even thought it should not happen in production environments.
 	 *
-	 * @param eaaPresentationId
+	 * @param attestationPresentationId
 	 *                    the EAA presentation id
-	 * @return a list of {@link EAAQualification}s for a given EAA
+	 * @return a list of {@link AttestationQualification}s for a given EAA
 	 */
-	public List<EAAQualification> getEAAQualifications(final String eaaPresentationId) {
-		XmlEAA xmlEAA = getEAAById(eaaPresentationId);
+	public List<AttestationQualification> getEAAQualifications(final String attestationPresentationId) {
+		XmlEAA xmlEAA = getEAAById(attestationPresentationId);
 		if (xmlEAA != null && xmlEAA.getEAALevel() != null && !xmlEAA.getEAALevel().isEmpty()) {
 			return xmlEAA.getEAALevel().stream().map(XmlEAALevel::getValue).collect(Collectors.toList());
 		}
@@ -838,12 +838,12 @@ public class SimpleReport {
 	/**
 	 * This method returns a key binding signature for the EAA, when present
 	 *
-	 * @param eaaPresentationId
+	 * @param attestationPresentationId
 	 *            the evidence record id
 	 * @return {@link XmlSignature}
 	 */
-	public XmlSignature getEAAKeyBindingSignature(String eaaPresentationId) {
-		XmlEAA eaa = getEAAById(eaaPresentationId);
+	public XmlSignature getEAAKeyBindingSignature(String attestationPresentationId) {
+		XmlEAA eaa = getEAAById(attestationPresentationId);
 		if (eaa != null) {
 			return eaa.getKeyBindingSignature();
 		}

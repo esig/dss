@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.eaa.sd.jwt.creation;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.diagnostic.EAAWrapper;
+import eu.europa.esig.dss.diagnostic.AttestationWrapper;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -35,14 +35,14 @@ import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class SDJWTCompactQEAAPresentationNoSDTest extends AbstractSDJWTEAAPresentationTestIssuance {
+class SDJWTCompactQEAAPresentationNoSDTest extends AbstractSDJWTTestIssuance {
 
-    private SDJWTEAAPayloadParameters payloadParameters;
+    private SDJWTPayloadParameters payloadParameters;
     private JAdESSignatureParameters signatureParameters;
 
     @BeforeEach
     void init() {
-        payloadParameters = new SDJWTEAAPayloadParameters();
+        payloadParameters = new SDJWTPayloadParameters();
         payloadParameters.setIssuer("EAA provider");
         payloadParameters.nonSelectivelyDisclosable().setSubject(DSSASN1Utils.getSubjectCommonName(getSigningCert()));
         payloadParameters.setDeviceKey(getSigningCert().getPublicKey());
@@ -79,7 +79,7 @@ class SDJWTCompactQEAAPresentationNoSDTest extends AbstractSDJWTEAAPresentationT
     }
 
     @Override
-    protected SDJWTEAAPayloadParameters getPayloadParameters() {
+    protected SDJWTPayloadParameters getPayloadParameters() {
         return payloadParameters;
     }
 
@@ -102,7 +102,7 @@ class SDJWTCompactQEAAPresentationNoSDTest extends AbstractSDJWTEAAPresentationT
     protected void checkClaims(DiagnosticData diagnosticData) {
         super.checkClaims(diagnosticData);
 
-        EAAWrapper eaa = diagnosticData.getEAAById(diagnosticData.getFirstEAAId());
+        AttestationWrapper eaa = diagnosticData.getEAAById(diagnosticData.getFirstEAAId());
         assertEquals("urn:eudi:eaa:1", eaa.getVerifiableCredentialsTypeUri());
         assertEquals(DigestAlgorithm.SHA256, eaa.getVerifiableCredentialsTypeIntegrityDigestAlgorithm());
         assertArrayEquals(DSSUtils.digest(DigestAlgorithm.SHA256, "vct".getBytes()), eaa.getVerifiableCredentialsTypeIntegrityBytes());

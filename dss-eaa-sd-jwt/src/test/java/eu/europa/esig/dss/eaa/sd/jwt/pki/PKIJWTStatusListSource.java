@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.eaa.sd.jwt.pki;
 
-import eu.europa.esig.dss.eaa.common.pki.PKIEAAStatusListSource;
+import eu.europa.esig.dss.eaa.common.pki.PKIAttestationStatusListSource;
 import eu.europa.esig.dss.eaa.revocation.jwt.model.statuslist.JWTStatusListClaimNames;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -40,7 +40,7 @@ import org.jose4j.json.internal.json_simple.JSONObject;
 
 import java.util.Collections;
 
-public class PKIJWTStatusListSource extends PKIEAAStatusListSource<JAdESSignatureParameters> {
+public class PKIJWTStatusListSource extends PKIAttestationStatusListSource<JAdESSignatureParameters> {
 
     /**
      * Creates a PKIJWTStatusListSource instance with status list signer {@code CertEntity}

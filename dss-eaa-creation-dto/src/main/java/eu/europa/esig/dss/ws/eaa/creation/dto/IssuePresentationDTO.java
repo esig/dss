@@ -22,7 +22,7 @@ package eu.europa.esig.dss.ws.eaa.creation.dto;
 
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 import eu.europa.esig.dss.ws.eaa.creation.dto.parameters.DisclosureDTO;
-import eu.europa.esig.dss.ws.eaa.creation.dto.parameters.RemoteEAAPresentationParameters;
+import eu.europa.esig.dss.ws.eaa.creation.dto.parameters.RemoteAttestationPresentationParameters;
 
 import java.io.Serializable;
 import java.util.List;
@@ -47,7 +47,7 @@ public class IssuePresentationDTO implements Serializable {
     private RemoteDocument keyBindingSignature;
 
     /** Parameters for the EAA presentation */
-    private RemoteEAAPresentationParameters presentationParameters;
+    private RemoteAttestationPresentationParameters presentationParameters;
 
     /**
      * Empty constructor
@@ -62,10 +62,10 @@ public class IssuePresentationDTO implements Serializable {
      * @param eaa {@link RemoteDocument} EAA document
      * @param disclosures a list of {@link DisclosureDTO}s
      * @param keyBindingSignature {@link RemoteDocument} key binding signature document
-     * @param presentationParameters {@link RemoteEAAPresentationParameters}
+     * @param presentationParameters {@link RemoteAttestationPresentationParameters}
      */
     public IssuePresentationDTO(RemoteDocument eaa, List<DisclosureDTO> disclosures, RemoteDocument keyBindingSignature,
-                                RemoteEAAPresentationParameters presentationParameters) {
+                                RemoteAttestationPresentationParameters presentationParameters) {
         this.eaa = eaa;
         this.disclosures = disclosures;
         this.keyBindingSignature = keyBindingSignature;
@@ -127,20 +127,20 @@ public class IssuePresentationDTO implements Serializable {
     }
 
     /**
-     * Gets the EAA Presentation parameters
+     * Gets the Attestation Presentation parameters
      *
-     * @return {@link RemoteEAAPresentationParameters}
+     * @return {@link RemoteAttestationPresentationParameters}
      */
-    public RemoteEAAPresentationParameters getPresentationParameters() {
+    public RemoteAttestationPresentationParameters getPresentationParameters() {
         return presentationParameters;
     }
 
     /**
-     * Sets the EAA Presentation parameters
+     * Sets the Attestation Presentation parameters
      *
-     * @param presentationParameters {@link RemoteEAAPresentationParameters}
+     * @param presentationParameters {@link RemoteAttestationPresentationParameters}
      */
-    public void setPresentationParameters(RemoteEAAPresentationParameters presentationParameters) {
+    public void setPresentationParameters(RemoteAttestationPresentationParameters presentationParameters) {
         this.presentationParameters = presentationParameters;
     }
 

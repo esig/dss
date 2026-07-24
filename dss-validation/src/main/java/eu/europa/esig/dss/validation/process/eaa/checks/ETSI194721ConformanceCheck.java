@@ -22,11 +22,11 @@ package eu.europa.esig.dss.validation.process.eaa.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
-import eu.europa.esig.dss.diagnostic.EAAWrapper;
+import eu.europa.esig.dss.diagnostic.AttestationWrapper;
 import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
-import eu.europa.esig.dss.enumerations.EAAQualification;
-import eu.europa.esig.dss.enumerations.EAAType;
+import eu.europa.esig.dss.enumerations.AttestationFormat;
+import eu.europa.esig.dss.enumerations.AttestationQualification;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
@@ -59,7 +59,7 @@ public class ETSI194721ConformanceCheck extends ChainItem<XmlSAV> {
     public static final String ETSI_19472_1_NAMESPACE = "org.etsi.01947201.010101";
 
     /** EAA to check */
-    private final EAAWrapper eaa;
+    private final AttestationWrapper eaa;
 
     /** Validation time */
     private final Date validationTime;
@@ -72,14 +72,14 @@ public class ETSI194721ConformanceCheck extends ChainItem<XmlSAV> {
      * @param result
      *         {@link XmlSAV}
      * @param eaa
-     *         {@link EAAWrapper}
+     *         {@link AttestationWrapper}
      * @param validationTime
      *         {@link Date}
      * @param constraint
      *         {@link LevelRule}
      */
     public ETSI194721ConformanceCheck(I18nProvider i18nProvider, XmlSAV result,
-                                      EAAWrapper eaa, Date validationTime, LevelRule constraint) {
+                                      AttestationWrapper eaa, Date validationTime, LevelRule constraint) {
         super(i18nProvider, result, constraint);
         this.eaa = eaa;
         this.validationTime = validationTime;
@@ -104,21 +104,21 @@ public class ETSI194721ConformanceCheck extends ChainItem<XmlSAV> {
     }
 
     private boolean checkVCTPresent() {
-        if (EAAType.SD_JWT_VC.equals(eaa.getEAAType())) {
+        if (AttestationFormat.SD_JWT_VC.equals(eaa.getEAAType())) {
             return eaa.getVerifiableCredentialsTypeUri() != null;
         }
         return true;
     }
 
     private boolean checkVCTIntegrityPresent() {
-        if (EAAType.SD_JWT_VC.equals(eaa.getEAAType())) {
+        if (AttestationFormat.SD_JWT_VC.equals(eaa.getEAAType())) {
             return eaa.getVerifiableCredentialsTypeIntegrityBytes() != null;
         }
         return true;
     }
 
     private boolean checkSDJWTIssuingAuthorityAndCountryPresent() {
-        if (EAAType.SD_JWT_VC.equals(eaa.getEAAType())) {
+        if (AttestationFormat.SD_JWT_VC.equals(eaa.getEAAType())) {
             SignatureWrapper eaaSignature = eaa.getEAASignatures().get(0);
             CertificateWrapper signingCertificate = eaaSignature.getSigningCertificate();
             List<RelatedCertificateWrapper> relatedCertificates = eaaSignature.foundCertificates().getRelatedCertificates();
@@ -129,8 +129,8 @@ public class ETSI194721ConformanceCheck extends ChainItem<XmlSAV> {
                 if (signingCertificate.isQcCompliance()) {
                     return eaa.getDocumentIssuingAuthority() == null && eaa.getDocumentIssuingAuthorityCountry() == null;
                 }
-            } else if (eaa.getCategoryQualification().equals(EAAQualification.QEAA)
-                    || eaa.getCategoryQualification().equals(EAAQualification.PUBEAA)) {
+            } else if (eaa.getCategoryQualification().equals(AttestationQualification.QEAA)
+                    || eaa.getCategoryQualification().equals(AttestationQualification.PUBEAA)) {
                 // NOTE: TS 119 472-1 v1.2.1 expects a QC for a QEAA/PubEAA, but does not define how to proceed for a not QC
                 // Therefore we accept any certificate in such a case
                 return eaa.getDocumentIssuingAuthority() != null && eaa.getDocumentIssuingAuthorityCountry() != null;
@@ -141,7 +141,7 @@ public class ETSI194721ConformanceCheck extends ChainItem<XmlSAV> {
     }
 
     private boolean checkMDOCIssuingAuthorityPresent() {
-        if (EAAType.ISO_IEC_MDOC.equals(eaa.getEAAType())) {
+        if (AttestationFormat.ISO_IEC_MDOC.equals(eaa.getEAAType())) {
             return eaa.getDocumentIssuingAuthority() != null;
         }
 
@@ -162,7 +162,7 @@ public class ETSI194721ConformanceCheck extends ChainItem<XmlSAV> {
          * 2) May contain data elements defined in the present document; and
          * 3) May contain data elements defined in another document.
          */
-        if (EAAType.ISO_IEC_MDOC.equals(eaa.getEAAType())) {
+        if (AttestationFormat.ISO_IEC_MDOC.equals(eaa.getEAAType())) {
             Set<String> namespaces = eaa.getAllClaimNamespaces();
             if (ISO18013_5_MDL_DOC_TYPE.equals(eaa.getAttestationDocumentType())) {
                 if (!namespaces.contains(ISO18013_5_NAMESPACE)) {
@@ -181,7 +181,7 @@ public class ETSI194721ConformanceCheck extends ChainItem<XmlSAV> {
     }
 
     private boolean checkMDOCDocumentNumberPresent() {
-        if (EAAType.ISO_IEC_MDOC.equals(eaa.getEAAType())) {
+        if (AttestationFormat.ISO_IEC_MDOC.equals(eaa.getEAAType())) {
             return eaa.getDocumentNumber() != null;
         }
 
@@ -189,7 +189,7 @@ public class ETSI194721ConformanceCheck extends ChainItem<XmlSAV> {
     }
 
     private boolean checkSDJWTAdministrativeDateConformance() {
-        if (EAAType.SD_JWT_VC == eaa.getEAAType()) {
+        if (AttestationFormat.SD_JWT_VC == eaa.getEAAType()) {
             return (eaa.getAdministrativeIssuanceDate() == null) == (eaa.getAdministrativeExpirationDate() == null);
         }
 
@@ -230,7 +230,7 @@ public class ETSI194721ConformanceCheck extends ChainItem<XmlSAV> {
     }
 
     private boolean checkStatusIsPresentIfMandatory() {
-        if ((eaa.getCategoryQualification().equals(EAAQualification.QEAA) || eaa.getCategoryQualification().equals(EAAQualification.PUBEAA))
+        if ((eaa.getCategoryQualification().equals(AttestationQualification.QEAA) || eaa.getCategoryQualification().equals(AttestationQualification.PUBEAA))
                 && !Utils.isTrue(eaa.getShortLived())) {
             return eaa.getPayload().getStatus() != null;
         }

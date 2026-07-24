@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.eaa.sd.jwt.creation;
 
-import eu.europa.esig.dss.eaa.common.creation.AbstractEAAClaimParameters;
+import eu.europa.esig.dss.eaa.common.creation.AbstractAttestationClaimParameters;
 import eu.europa.esig.dss.utils.Utils;
 
 import java.util.Date;
@@ -30,7 +30,7 @@ import java.util.List;
  * Contains parameters for SD-JWT VC creation which may or may not be made selectively disclosable
  *
  */
-public class SDJWTClaimParameters extends AbstractEAAClaimParameters<SDJWTEAAClaim> {
+public class SDJWTClaimParameters extends AbstractAttestationClaimParameters<SDJWTClaim> {
 
     // ietf-oauh-sd-jwt-vc
 
@@ -506,7 +506,7 @@ public class SDJWTClaimParameters extends AbstractEAAClaimParameters<SDJWTEAACla
      * @param value {@link Object}
      */
     public void addClaim(final String name, final Object value) {
-        addClaim(SDJWTEAAClaim.create(name, value));
+        addClaim(SDJWTClaim.create(name, value));
     }
 
     @Override

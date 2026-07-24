@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.ws.eaa.creation.dto.parameters;
 
+import eu.europa.esig.dss.enumerations.AttestationFormat;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.EAAType;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 
 import java.io.Serializable;
@@ -38,7 +38,7 @@ public class RemoteKeyBindingParameters implements Serializable {
     private static final long serialVersionUID = 7115773287145650462L;
 
     /** (Required) Type of the EAA to be created */
-    private EAAType eaaType;
+    private AttestationFormat attestationFormat;
 
     /* SD-JWT VC parameters */
 
@@ -75,28 +75,28 @@ public class RemoteKeyBindingParameters implements Serializable {
     /**
      * Constructor with EAA type provided
      *
-     * @param eaaType {@link EAAType}
+     * @param attestationFormat {@link AttestationFormat}
      */
-    public RemoteKeyBindingParameters(EAAType eaaType) {
-        this.eaaType = eaaType;
+    public RemoteKeyBindingParameters(AttestationFormat attestationFormat) {
+        this.attestationFormat = attestationFormat;
     }
 
     /**
      * Gets the EAA Type
      *
-     * @return {@link EAAType}
+     * @return {@link AttestationFormat}
      */
-    public EAAType getEaaType() {
-        return eaaType;
+    public AttestationFormat getEaaType() {
+        return attestationFormat;
     }
 
     /**
      * Sets the target EAA type
      *
-     * @param eaaType {@link EAAType}
+     * @param attestationFormat {@link AttestationFormat}
      */
-    public void setEaaType(EAAType eaaType) {
-        this.eaaType = eaaType;
+    public void setEaaType(AttestationFormat attestationFormat) {
+        this.attestationFormat = attestationFormat;
     }
 
     /**
@@ -228,7 +228,7 @@ public class RemoteKeyBindingParameters implements Serializable {
     @Override
     public String toString() {
         return "RemoteKeyBindingParameters [" +
-                "eaaType=" + eaaType +
+                "eaaType=" + attestationFormat +
                 ", digestAlgorithm=" + digestAlgorithm +
                 ", issuanceTime=" + issuanceTime +
                 ", audience='" + audience + '\'' +
@@ -245,7 +245,7 @@ public class RemoteKeyBindingParameters implements Serializable {
         if (object == null || getClass() != object.getClass()) return false;
 
         RemoteKeyBindingParameters that = (RemoteKeyBindingParameters) object;
-        return eaaType == that.eaaType
+        return attestationFormat == that.attestationFormat
                 && digestAlgorithm == that.digestAlgorithm
                 && Objects.equals(issuanceTime, that.issuanceTime)
                 && Objects.equals(audience, that.audience)
@@ -257,7 +257,7 @@ public class RemoteKeyBindingParameters implements Serializable {
 
     @Override
     public int hashCode() {
-        int result = Objects.hashCode(eaaType);
+        int result = Objects.hashCode(attestationFormat);
         result = 31 * result + Objects.hashCode(digestAlgorithm);
         result = 31 * result + Objects.hashCode(issuanceTime);
         result = 31 * result + Objects.hashCode(audience);

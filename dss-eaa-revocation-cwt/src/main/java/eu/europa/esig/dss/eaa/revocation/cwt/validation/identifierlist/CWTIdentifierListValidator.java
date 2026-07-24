@@ -27,15 +27,15 @@ import eu.europa.esig.dss.cbades.cbor.CBORObject;
 import eu.europa.esig.dss.cbades.validation.CBAdESSignature;
 import eu.europa.esig.dss.cbades.validation.COSEDocumentAnalyzer;
 import eu.europa.esig.dss.eaa.revocation.cwt.model.identifierlist.CWTIdentifierListPayload;
-import eu.europa.esig.dss.eaa.revocation.model.identifierlist.EAAIdentifierListToken;
+import eu.europa.esig.dss.eaa.revocation.model.identifierlist.IdentifierListToken;
 import eu.europa.esig.dss.eaa.revocation.model.identifierlist.IdentifierListPayload;
 import eu.europa.esig.dss.eaa.revocation.validation.identifierlist.IdentifierListValidator;
+import eu.europa.esig.dss.enumerations.AttestationStatus;
 import eu.europa.esig.dss.enumerations.COSESignatureType;
-import eu.europa.esig.dss.enumerations.EAAStatus;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.spi.eaa.EAARevocationToken;
-import eu.europa.esig.dss.spi.eaa.EAARevocationTokenBinary;
+import eu.europa.esig.dss.spi.eaa.AttestationRevocationToken;
+import eu.europa.esig.dss.spi.eaa.AttestationRevocationTokenBinary;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.utils.Utils;
@@ -143,7 +143,7 @@ public class CWTIdentifierListValidator implements IdentifierListValidator {
 
 
     @Override
-    public EAARevocationToken getRevocationToken(byte[] identifier) {
+    public AttestationRevocationToken getRevocationToken(byte[] identifier) {
         Objects.requireNonNull(identifierListDocument, "Identifier List Document cannot be null!");
 
         /*
@@ -157,8 +157,8 @@ public class CWTIdentifierListValidator implements IdentifierListValidator {
         AdvancedSignature signature = getTokenSignature();
         if (signature != null) {
             IdentifierListPayload identifierListPayload = getPayload(signature);
-            return EAAIdentifierListToken.initBuilder()
-                    .setBinary(new EAARevocationTokenBinary(identifierListDocument))
+            return IdentifierListToken.initBuilder()
+                    .setBinary(new AttestationRevocationTokenBinary(identifierListDocument))
                     .setSignature(signature)
                     .setPayload(identifierListPayload)
                     .setStatus(getEAAStatus(identifierListPayload, identifier))
@@ -184,15 +184,15 @@ public class CWTIdentifierListValidator implements IdentifierListValidator {
      *
      * @param identifierListPayload {@link IdentifierListPayload} of the retrieved token
      * @param identifier byte array of the identifier of the EAA
-     * @return {@link EAAStatus}
+     * @return {@link AttestationStatus}
      */
-    protected EAAStatus getEAAStatus(IdentifierListPayload identifierListPayload, byte[] identifier) {
+    protected AttestationStatus getEAAStatus(IdentifierListPayload identifierListPayload, byte[] identifier) {
         List<byte[]> identifierListIdentifiers = identifierListPayload.getIdentifierListIdentifiers();
         if (Utils.isCollectionNotEmpty(identifierListIdentifiers)
             && identifierListIdentifiers.stream().anyMatch(i -> Arrays.equals(identifier, i))) {
-                return EAAStatus.INVALID;
+                return AttestationStatus.INVALID;
         }
-        return EAAStatus.VALID;
+        return AttestationStatus.VALID;
     }
 
 }

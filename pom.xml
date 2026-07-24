@@ -156,12 +156,12 @@
 		<module>dss-evidence-record-common</module>
 		<module>dss-evidence-record-xml</module>
 		<module>dss-evidence-record-asn1</module>
-		<module>dss-eaa-revocation-common</module>
-		<module>dss-eaa-revocation-jwt</module>
-		<module>dss-eaa-revocation-cwt</module>
-		<module>dss-eaa-common</module>
-		<module>dss-eaa-sd-jwt</module>
-		<module>dss-eaa-mdoc</module>
+		<module>dss-attestation-revocation-common</module>
+		<module>dss-attestation-revocation-jwt</module>
+		<module>dss-attestation-revocation-cwt</module>
+		<module>dss-attestation-common</module>
+		<module>dss-attestation-sd-jwt</module>
+		<module>dss-attestation-mdoc</module>
 		<module>dss-common-remote-dto</module>
 		<module>dss-common-remote-converter</module>
 		<module>dss-signature-dto</module>
@@ -194,18 +194,18 @@
 		<module>dss-timestamp-remote-soap-client</module>
 		<module>dss-timestamp-remote-rest</module>
 		<module>dss-timestamp-remote-soap</module>
-		<module>dss-eaa-creation-dto</module>
-		<module>dss-eaa-creation-remote</module>
-		<module>dss-eaa-creation-rest-client</module>
-		<module>dss-eaa-creation-rest</module>
-		<module>dss-eaa-creation-soap-client</module>
-		<module>dss-eaa-creation-soap</module>
-		<module>dss-eaa-validation-dto</module>
-		<module>dss-eaa-validation-remote</module>
-		<module>dss-eaa-validation-rest-client</module>
-		<module>dss-eaa-validation-soap-client</module>
-		<module>dss-eaa-validation-rest</module>
-		<module>dss-eaa-validation-soap</module>
+		<module>dss-attestation-creation-dto</module>
+		<module>dss-attestation-creation-remote</module>
+		<module>dss-attestation-creation-rest-client</module>
+		<module>dss-attestation-creation-rest</module>
+		<module>dss-attestation-creation-soap-client</module>
+		<module>dss-attestation-creation-soap</module>
+		<module>dss-attestation-validation-dto</module>
+		<module>dss-attestation-validation-remote</module>
+		<module>dss-attestation-validation-rest-client</module>
+		<module>dss-attestation-validation-soap-client</module>
+		<module>dss-attestation-validation-rest</module>
+		<module>dss-attestation-validation-soap</module>
 		<module>dss-cookbook</module>
 
 		<module>dss-jacoco-coverage</module>
@@ -687,38 +687,38 @@
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-eaa-revocation-common</artifactId>
+				<artifactId>dss-attestation-revocation-common</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-eaa-revocation-jwt</artifactId>
+				<artifactId>dss-attestation-revocation-jwt</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-eaa-revocation-cwt</artifactId>
+				<artifactId>dss-attestation-revocation-cwt</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-eaa-common</artifactId>
+				<artifactId>dss-attestation-common</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-eaa-common</artifactId>
+				<artifactId>dss-attestation-common</artifactId>
 				<type>test-jar</type>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-eaa-sd-jwt</artifactId>
+				<artifactId>dss-attestation-sd-jwt</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-eaa-mdoc</artifactId>
+				<artifactId>dss-attestation-mdoc</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
@@ -1027,62 +1027,62 @@
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-eaa-creation-dto</artifactId>
+				<artifactId>dss-attestation-creation-dto</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-eaa-creation-remote</artifactId>
+				<artifactId>dss-attestation-creation-remote</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-eaa-creation-rest-client</artifactId>
+				<artifactId>dss-attestation-creation-rest-client</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-eaa-creation-soap-client</artifactId>
+				<artifactId>dss-attestation-creation-soap-client</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-eaa-creation-rest</artifactId>
+				<artifactId>dss-attestation-creation-rest</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-eaa-creation-soap</artifactId>
+				<artifactId>dss-attestation-creation-soap</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-eaa-validation-dto</artifactId>
+				<artifactId>dss-attestation-validation-dto</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-eaa-validation-remote</artifactId>
+				<artifactId>dss-attestation-validation-remote</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-eaa-validation-rest</artifactId>
+				<artifactId>dss-attestation-validation-rest</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-eaa-validation-rest-client</artifactId>
+				<artifactId>dss-attestation-validation-rest-client</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-eaa-validation-soap</artifactId>
+				<artifactId>dss-attestation-validation-soap</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-eaa-validation-soap-client</artifactId>
+				<artifactId>dss-attestation-validation-soap-client</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<!-- Public Dependencies -->

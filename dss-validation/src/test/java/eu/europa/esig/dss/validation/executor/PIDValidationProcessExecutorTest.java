@@ -35,7 +35,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlListOfTrustedEntities;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlTrustedEntity;
-import eu.europa.esig.dss.enumerations.EAAQualification;
+import eu.europa.esig.dss.enumerations.AttestationQualification;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.LoTEServiceTypeIdentifierEnum;
@@ -46,7 +46,7 @@ import eu.europa.esig.dss.policy.EtsiValidationPolicy;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
 import eu.europa.esig.dss.simplereport.SimpleReport;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.validation.executor.eaa.EAAPresentationProcessExecutor;
+import eu.europa.esig.dss.validation.executor.eaa.AttestationProcessExecutor;
 import eu.europa.esig.dss.validation.policy.ValidationPolicyLoader;
 import eu.europa.esig.dss.validation.reports.Reports;
 import org.junit.jupiter.api.BeforeAll;
@@ -79,7 +79,7 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
                 new File("src/test/resources/diag-data/eaa-validation/diag_data_pid.xml"));
         assertNotNull(diagnosticData);
 
-        EAAPresentationProcessExecutor executor = new EAAPresentationProcessExecutor();
+        AttestationProcessExecutor executor = new AttestationProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
         executor.setCurrentTime(diagnosticData.getValidationDate());
         executor.setValidationPolicy(loadDefaultPolicy());
@@ -89,14 +89,14 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
         SimpleReport simpleReport = reports.getSimpleReport();
         assertNotNull(simpleReport);
 
-        assertEquals(EAAQualification.PID, simpleReport.getEAAQualification(simpleReport.getFirstEAAId()));
-        assertEquals(Collections.singletonList(EAAQualification.PID), simpleReport.getEAAQualifications(simpleReport.getFirstEAAId()));
+        assertEquals(AttestationQualification.PID, simpleReport.getEAAQualification(simpleReport.getFirstEAAId()));
+        assertEquals(Collections.singletonList(AttestationQualification.PID), simpleReport.getEAAQualifications(simpleReport.getFirstEAAId()));
         assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationErrors(simpleReport.getFirstEAAId())));
         assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationWarnings(simpleReport.getFirstEAAId())));
         assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationInfo(simpleReport.getFirstEAAId())));
 
         DetailedReport detailedReport = reports.getDetailedReport();
-        assertEquals(Collections.singletonList(EAAQualification.PID), detailedReport.getEAAQualifications(simpleReport.getFirstEAAId()));
+        assertEquals(Collections.singletonList(AttestationQualification.PID), detailedReport.getEAAQualifications(simpleReport.getFirstEAAId()));
 
         XmlEAA xmlEAA = detailedReport.getXmlEAAById(detailedReport.getFirstEAAId());
         assertNotNull(xmlEAA);
@@ -153,12 +153,12 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
         XmlValidationEAAQualificationProcess eaaQualificationProcess = validationEAAQualification.getValidationEAAQualificationProcess();
         assertNotNull(eaaQualificationProcess);
         assertEquals(Indication.FAILED, eaaQualificationProcess.getConclusion().getIndication());
-        assertEquals(EAAQualification.NA, eaaQualificationProcess.getEAAQualification());
+        assertEquals(AttestationQualification.NA, eaaQualificationProcess.getEAAQualification());
 
         XmlValidationPIDQualificationProcess pidQualificationProcess = validationEAAQualification.getValidationPIDQualificationProcess();
         assertNotNull(pidQualificationProcess);
         assertEquals(Indication.PASSED, pidQualificationProcess.getConclusion().getIndication());
-        assertEquals(EAAQualification.PID, pidQualificationProcess.getEAAQualification());
+        assertEquals(AttestationQualification.PID, pidQualificationProcess.getEAAQualification());
 
         boolean loteReachedCheckFound = false;
         boolean pidDocumentTypeCheckFound = false;
@@ -210,7 +210,7 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
                 .getEAASignature().get(0).getSignature().getSigningCertificate();
         signingCertificate.getCertificate().getTrustedEntities().clear();
 
-        EAAPresentationProcessExecutor executor = new EAAPresentationProcessExecutor();
+        AttestationProcessExecutor executor = new AttestationProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
         executor.setCurrentTime(diagnosticData.getValidationDate());
         executor.setValidationPolicy(loadDefaultPolicy());
@@ -220,15 +220,15 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
         SimpleReport simpleReport = reports.getSimpleReport();
         assertNotNull(simpleReport);
 
-        assertEquals(EAAQualification.NA, simpleReport.getEAAQualification(simpleReport.getFirstEAAId()));
-        assertEquals(Collections.singletonList(EAAQualification.NA), simpleReport.getEAAQualifications(simpleReport.getFirstEAAId()));
+        assertEquals(AttestationQualification.NA, simpleReport.getEAAQualification(simpleReport.getFirstEAAId()));
+        assertEquals(Collections.singletonList(AttestationQualification.NA), simpleReport.getEAAQualifications(simpleReport.getFirstEAAId()));
         assertTrue(checkMessageValuePresence(simpleReport.getQualificationErrors(simpleReport.getFirstEAAId()),
                 i18nProvider.getMessage(MessageTag.EAA_CERT_TRUST_ANCHOR_LIST_REACHED_ANS)));
         assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationWarnings(simpleReport.getFirstEAAId())));
         assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationInfo(simpleReport.getFirstEAAId())));
 
         DetailedReport detailedReport = reports.getDetailedReport();
-        assertEquals(Collections.singletonList(EAAQualification.NA), detailedReport.getEAAQualifications(simpleReport.getFirstEAAId()));
+        assertEquals(Collections.singletonList(AttestationQualification.NA), detailedReport.getEAAQualifications(simpleReport.getFirstEAAId()));
 
         XmlEAA xmlEAA = detailedReport.getXmlEAAById(detailedReport.getFirstEAAId());
         assertNotNull(xmlEAA);
@@ -286,12 +286,12 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
         XmlValidationEAAQualificationProcess eaaQualificationProcess = validationEAAQualification.getValidationEAAQualificationProcess();
         assertNotNull(eaaQualificationProcess);
         assertEquals(Indication.FAILED, eaaQualificationProcess.getConclusion().getIndication());
-        assertEquals(EAAQualification.NA, eaaQualificationProcess.getEAAQualification());
+        assertEquals(AttestationQualification.NA, eaaQualificationProcess.getEAAQualification());
 
         XmlValidationPIDQualificationProcess pidQualificationProcess = validationEAAQualification.getValidationPIDQualificationProcess();
         assertNotNull(pidQualificationProcess);
         assertEquals(Indication.FAILED, pidQualificationProcess.getConclusion().getIndication());
-        assertEquals(EAAQualification.NA, pidQualificationProcess.getEAAQualification());
+        assertEquals(AttestationQualification.NA, pidQualificationProcess.getEAAQualification());
 
         boolean loteReachedCheckFound = false;
         boolean pidDocumentTypeCheckFound = false;
@@ -343,7 +343,7 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
         eu.europa.esig.dss.diagnostic.jaxb.XmlEAA eaa = diagnosticData.getEAAs().get(0);
         eaa.getEAAPayload().getVerifiableCredentialsType().setText("urn:none:eu:pid:1");
 
-        EAAPresentationProcessExecutor executor = new EAAPresentationProcessExecutor();
+        AttestationProcessExecutor executor = new AttestationProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
         executor.setCurrentTime(diagnosticData.getValidationDate());
         executor.setValidationPolicy(loadDefaultPolicy());
@@ -353,8 +353,8 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
         SimpleReport simpleReport = reports.getSimpleReport();
         assertNotNull(simpleReport);
 
-        assertEquals(EAAQualification.NA, simpleReport.getEAAQualification(simpleReport.getFirstEAAId()));
-        assertEquals(Collections.singletonList(EAAQualification.NA), simpleReport.getEAAQualifications(simpleReport.getFirstEAAId()));
+        assertEquals(AttestationQualification.NA, simpleReport.getEAAQualification(simpleReport.getFirstEAAId()));
+        assertEquals(Collections.singletonList(AttestationQualification.NA), simpleReport.getEAAQualifications(simpleReport.getFirstEAAId()));
         assertTrue(checkMessageValuePresence(simpleReport.getQualificationErrors(simpleReport.getFirstEAAId()),
                 i18nProvider.getMessage(MessageTag.EAA_QUAL_CONCLUSIVE_ANS)));
         assertTrue(checkMessageValuePresence(simpleReport.getQualificationErrors(simpleReport.getFirstEAAId()),
@@ -363,7 +363,7 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
         assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationInfo(simpleReport.getFirstEAAId())));
 
         DetailedReport detailedReport = reports.getDetailedReport();
-        assertEquals(Collections.singletonList(EAAQualification.NA), detailedReport.getEAAQualifications(simpleReport.getFirstEAAId()));
+        assertEquals(Collections.singletonList(AttestationQualification.NA), detailedReport.getEAAQualifications(simpleReport.getFirstEAAId()));
 
         XmlEAA xmlEAA = detailedReport.getXmlEAAById(detailedReport.getFirstEAAId());
         assertNotNull(xmlEAA);
@@ -421,12 +421,12 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
         XmlValidationEAAQualificationProcess eaaQualificationProcess = validationEAAQualification.getValidationEAAQualificationProcess();
         assertNotNull(eaaQualificationProcess);
         assertEquals(Indication.FAILED, eaaQualificationProcess.getConclusion().getIndication());
-        assertEquals(EAAQualification.NA, eaaQualificationProcess.getEAAQualification());
+        assertEquals(AttestationQualification.NA, eaaQualificationProcess.getEAAQualification());
 
         XmlValidationPIDQualificationProcess pidQualificationProcess = validationEAAQualification.getValidationPIDQualificationProcess();
         assertNotNull(pidQualificationProcess);
         assertEquals(Indication.FAILED, pidQualificationProcess.getConclusion().getIndication());
-        assertEquals(EAAQualification.NA, pidQualificationProcess.getEAAQualification());
+        assertEquals(AttestationQualification.NA, pidQualificationProcess.getEAAQualification());
 
         boolean loteReachedCheckFound = false;
         boolean pidDocumentTypeCheckFound = false;
@@ -484,7 +484,7 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
         levelConstraint.setLevel(Level.FAIL);
         validationPolicy.getEIDASConstraints().setLoTEWellSigned(levelConstraint);
 
-        EAAPresentationProcessExecutor executor = new EAAPresentationProcessExecutor();
+        AttestationProcessExecutor executor = new AttestationProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
         executor.setCurrentTime(diagnosticData.getValidationDate());
         executor.setValidationPolicy(validationPolicy);
@@ -494,8 +494,8 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
         SimpleReport simpleReport = reports.getSimpleReport();
         assertNotNull(simpleReport);
 
-        assertEquals(EAAQualification.NA, simpleReport.getEAAQualification(simpleReport.getFirstEAAId()));
-        assertEquals(Collections.singletonList(EAAQualification.NA), simpleReport.getEAAQualifications(simpleReport.getFirstEAAId()));
+        assertEquals(AttestationQualification.NA, simpleReport.getEAAQualification(simpleReport.getFirstEAAId()));
+        assertEquals(Collections.singletonList(AttestationQualification.NA), simpleReport.getEAAQualifications(simpleReport.getFirstEAAId()));
         assertTrue(checkMessageValuePresence(simpleReport.getQualificationErrors(simpleReport.getFirstEAAId()),
                 i18nProvider.getMessage(MessageTag.EAA_QUAL_CONCLUSIVE_ANS)));
         assertTrue(checkMessageValuePresence(simpleReport.getQualificationErrors(simpleReport.getFirstEAAId()),
@@ -505,7 +505,7 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
         assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationInfo(simpleReport.getFirstEAAId())));
 
         DetailedReport detailedReport = reports.getDetailedReport();
-        assertEquals(Collections.singletonList(EAAQualification.NA), detailedReport.getEAAQualifications(simpleReport.getFirstEAAId()));
+        assertEquals(Collections.singletonList(AttestationQualification.NA), detailedReport.getEAAQualifications(simpleReport.getFirstEAAId()));
 
         XmlEAA xmlEAA = detailedReport.getXmlEAAById(detailedReport.getFirstEAAId());
         assertNotNull(xmlEAA);
@@ -563,12 +563,12 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
         XmlValidationEAAQualificationProcess eaaQualificationProcess = validationEAAQualification.getValidationEAAQualificationProcess();
         assertNotNull(eaaQualificationProcess);
         assertEquals(Indication.FAILED, eaaQualificationProcess.getConclusion().getIndication());
-        assertEquals(EAAQualification.NA, eaaQualificationProcess.getEAAQualification());
+        assertEquals(AttestationQualification.NA, eaaQualificationProcess.getEAAQualification());
 
         XmlValidationPIDQualificationProcess pidQualificationProcess = validationEAAQualification.getValidationPIDQualificationProcess();
         assertNotNull(pidQualificationProcess);
         assertEquals(Indication.FAILED, pidQualificationProcess.getConclusion().getIndication());
-        assertEquals(EAAQualification.NA, pidQualificationProcess.getEAAQualification());
+        assertEquals(AttestationQualification.NA, pidQualificationProcess.getEAAQualification());
 
         boolean loteReachedCheckFound = false;
         boolean pidDocumentTypeCheckFound = false;
@@ -630,7 +630,7 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
         levelConstraint.setLevel(Level.FAIL);
         validationPolicy.getEIDASConstraints().setLoTEWellSigned(levelConstraint);
 
-        EAAPresentationProcessExecutor executor = new EAAPresentationProcessExecutor();
+        AttestationProcessExecutor executor = new AttestationProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
         executor.setCurrentTime(diagnosticData.getValidationDate());
         executor.setValidationPolicy(validationPolicy);
@@ -640,8 +640,8 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
         SimpleReport simpleReport = reports.getSimpleReport();
         assertNotNull(simpleReport);
 
-        assertEquals(EAAQualification.NA, simpleReport.getEAAQualification(simpleReport.getFirstEAAId()));
-        assertEquals(Collections.singletonList(EAAQualification.NA), simpleReport.getEAAQualifications(simpleReport.getFirstEAAId()));
+        assertEquals(AttestationQualification.NA, simpleReport.getEAAQualification(simpleReport.getFirstEAAId()));
+        assertEquals(Collections.singletonList(AttestationQualification.NA), simpleReport.getEAAQualifications(simpleReport.getFirstEAAId()));
         assertTrue(checkMessageValuePresence(simpleReport.getQualificationErrors(simpleReport.getFirstEAAId()),
                 i18nProvider.getMessage(MessageTag.EAA_QUAL_CONCLUSIVE_ANS)));
         assertTrue(checkMessageValuePresence(simpleReport.getQualificationErrors(simpleReport.getFirstEAAId()),
@@ -651,7 +651,7 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
         assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationInfo(simpleReport.getFirstEAAId())));
 
         DetailedReport detailedReport = reports.getDetailedReport();
-        assertEquals(Collections.singletonList(EAAQualification.NA), detailedReport.getEAAQualifications(simpleReport.getFirstEAAId()));
+        assertEquals(Collections.singletonList(AttestationQualification.NA), detailedReport.getEAAQualifications(simpleReport.getFirstEAAId()));
 
         XmlEAA xmlEAA = detailedReport.getXmlEAAById(detailedReport.getFirstEAAId());
         assertNotNull(xmlEAA);
@@ -709,12 +709,12 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
         XmlValidationEAAQualificationProcess eaaQualificationProcess = validationEAAQualification.getValidationEAAQualificationProcess();
         assertNotNull(eaaQualificationProcess);
         assertEquals(Indication.FAILED, eaaQualificationProcess.getConclusion().getIndication());
-        assertEquals(EAAQualification.NA, eaaQualificationProcess.getEAAQualification());
+        assertEquals(AttestationQualification.NA, eaaQualificationProcess.getEAAQualification());
 
         XmlValidationPIDQualificationProcess pidQualificationProcess = validationEAAQualification.getValidationPIDQualificationProcess();
         assertNotNull(pidQualificationProcess);
         assertEquals(Indication.FAILED, pidQualificationProcess.getConclusion().getIndication());
-        assertEquals(EAAQualification.NA, pidQualificationProcess.getEAAQualification());
+        assertEquals(AttestationQualification.NA, pidQualificationProcess.getEAAQualification());
 
         boolean loteReachedCheckFound = false;
         boolean pidDocumentTypeCheckFound = false;
@@ -778,7 +778,7 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
         levelConstraint.setLevel(Level.FAIL);
         validationPolicy.getEIDASConstraints().setLoTEWellSigned(levelConstraint);
 
-        EAAPresentationProcessExecutor executor = new EAAPresentationProcessExecutor();
+        AttestationProcessExecutor executor = new AttestationProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
         executor.setCurrentTime(diagnosticData.getValidationDate());
         executor.setValidationPolicy(validationPolicy);
@@ -788,8 +788,8 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
         SimpleReport simpleReport = reports.getSimpleReport();
         assertNotNull(simpleReport);
 
-        assertEquals(EAAQualification.UNKNOWN, simpleReport.getEAAQualification(simpleReport.getFirstEAAId()));
-        assertEquals(Collections.singletonList(EAAQualification.UNKNOWN), simpleReport.getEAAQualifications(simpleReport.getFirstEAAId()));
+        assertEquals(AttestationQualification.UNKNOWN, simpleReport.getEAAQualification(simpleReport.getFirstEAAId()));
+        assertEquals(Collections.singletonList(AttestationQualification.UNKNOWN), simpleReport.getEAAQualifications(simpleReport.getFirstEAAId()));
         assertTrue(checkMessageValuePresence(simpleReport.getQualificationErrors(simpleReport.getFirstEAAId()),
                 i18nProvider.getMessage(MessageTag.EAA_QUAL_CONCLUSIVE_ANS)));
         assertTrue(checkMessageValuePresence(simpleReport.getQualificationErrors(simpleReport.getFirstEAAId()),
@@ -798,7 +798,7 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
         assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationInfo(simpleReport.getFirstEAAId())));
 
         DetailedReport detailedReport = reports.getDetailedReport();
-        assertEquals(Collections.singletonList(EAAQualification.UNKNOWN), detailedReport.getEAAQualifications(simpleReport.getFirstEAAId()));
+        assertEquals(Collections.singletonList(AttestationQualification.UNKNOWN), detailedReport.getEAAQualifications(simpleReport.getFirstEAAId()));
 
         XmlEAA xmlEAA = detailedReport.getXmlEAAById(detailedReport.getFirstEAAId());
         assertNotNull(xmlEAA);
@@ -856,12 +856,12 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
         XmlValidationEAAQualificationProcess eaaQualificationProcess = validationEAAQualification.getValidationEAAQualificationProcess();
         assertNotNull(eaaQualificationProcess);
         assertEquals(Indication.FAILED, eaaQualificationProcess.getConclusion().getIndication());
-        assertEquals(EAAQualification.NA, eaaQualificationProcess.getEAAQualification());
+        assertEquals(AttestationQualification.NA, eaaQualificationProcess.getEAAQualification());
 
         XmlValidationPIDQualificationProcess pidQualificationProcess = validationEAAQualification.getValidationPIDQualificationProcess();
         assertNotNull(pidQualificationProcess);
         assertEquals(Indication.FAILED, pidQualificationProcess.getConclusion().getIndication());
-        assertEquals(EAAQualification.UNKNOWN, pidQualificationProcess.getEAAQualification());
+        assertEquals(AttestationQualification.UNKNOWN, pidQualificationProcess.getEAAQualification());
 
         boolean loteReachedCheckFound = false;
         boolean pidDocumentTypeCheckFound = false;
@@ -925,7 +925,7 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
         levelConstraint.setLevel(Level.FAIL);
         validationPolicy.getEIDASConstraints().setLoTEWellSigned(levelConstraint);
 
-        EAAPresentationProcessExecutor executor = new EAAPresentationProcessExecutor();
+        AttestationProcessExecutor executor = new AttestationProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
         executor.setCurrentTime(diagnosticData.getValidationDate());
         executor.setValidationPolicy(validationPolicy);
@@ -935,8 +935,8 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
         SimpleReport simpleReport = reports.getSimpleReport();
         assertNotNull(simpleReport);
 
-        assertEquals(EAAQualification.UNKNOWN, simpleReport.getEAAQualification(simpleReport.getFirstEAAId()));
-        assertEquals(Collections.singletonList(EAAQualification.UNKNOWN), simpleReport.getEAAQualifications(simpleReport.getFirstEAAId()));
+        assertEquals(AttestationQualification.UNKNOWN, simpleReport.getEAAQualification(simpleReport.getFirstEAAId()));
+        assertEquals(Collections.singletonList(AttestationQualification.UNKNOWN), simpleReport.getEAAQualifications(simpleReport.getFirstEAAId()));
         assertTrue(checkMessageValuePresence(simpleReport.getQualificationErrors(simpleReport.getFirstEAAId()),
                 i18nProvider.getMessage(MessageTag.EAA_QUAL_CONCLUSIVE_ANS)));
         assertTrue(checkMessageValuePresence(simpleReport.getQualificationErrors(simpleReport.getFirstEAAId()),
@@ -946,7 +946,7 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
         assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationInfo(simpleReport.getFirstEAAId())));
 
         DetailedReport detailedReport = reports.getDetailedReport();
-        assertEquals(Collections.singletonList(EAAQualification.UNKNOWN), detailedReport.getEAAQualifications(simpleReport.getFirstEAAId()));
+        assertEquals(Collections.singletonList(AttestationQualification.UNKNOWN), detailedReport.getEAAQualifications(simpleReport.getFirstEAAId()));
 
         XmlEAA xmlEAA = detailedReport.getXmlEAAById(detailedReport.getFirstEAAId());
         assertNotNull(xmlEAA);
@@ -1004,12 +1004,12 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
         XmlValidationEAAQualificationProcess eaaQualificationProcess = validationEAAQualification.getValidationEAAQualificationProcess();
         assertNotNull(eaaQualificationProcess);
         assertEquals(Indication.FAILED, eaaQualificationProcess.getConclusion().getIndication());
-        assertEquals(EAAQualification.NA, eaaQualificationProcess.getEAAQualification());
+        assertEquals(AttestationQualification.NA, eaaQualificationProcess.getEAAQualification());
 
         XmlValidationPIDQualificationProcess pidQualificationProcess = validationEAAQualification.getValidationPIDQualificationProcess();
         assertNotNull(pidQualificationProcess);
         assertEquals(Indication.FAILED, pidQualificationProcess.getConclusion().getIndication());
-        assertEquals(EAAQualification.UNKNOWN, pidQualificationProcess.getEAAQualification());
+        assertEquals(AttestationQualification.UNKNOWN, pidQualificationProcess.getEAAQualification());
 
         boolean loteReachedCheckFound = false;
         boolean pidDocumentTypeCheckFound = false;

@@ -1618,18 +1618,18 @@
 }</con:request><con:originalUri>http://localhost/services/rest/signature/one-document/getDataToSign</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder/></con:request></con:method></con:resource><con:resource name="signWithSignatureAlgo" path="/services/rest/server-signing/sign-with-signature-algo/certificate/RSA_SSA_PSS_SHA256_MGF1" id="a4b29f7d-cb93-4e48-825e-54831ec4f896"><con:settings/><con:parameters/><con:method name="Method 1" id="7f615f37-e7d8-4fc0-be79-1434a72d7ef9" method="POST"><con:settings/><con:parameters/><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>405</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType>text/html;charset=utf-8</con:mediaType><con:status>500</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/x-www-form-urlencoded</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>415</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:sha2="http://localhost/services/rest/server-signing/sign/certificate/SHA256">sha2:Response</con:element></con:representation><con:representation type="FAULT"><con:mediaType>application/json</con:mediaType><con:status>500</con:status><con:params/></con:representation><con:request name="Request 1" id="6fe699cd-64db-464d-8f46-c094c3116f66" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{"bytes": "SGVsbG8gV29ybGQh"}</con:request><con:originalUri>http://localhost/services/rest/server-signing/sign/certificate/SHA256</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder/></con:request></con:method></con:resource><con:resource name="signDigestWithSignatureAlgo" path="/services/rest/server-signing/sign-digest-with-signature-algo/certificate/RSA_SSA_PSS_SHA256_MGF1" id="a4b29f7d-cb93-4e48-825e-54831ec4f896"><con:settings/><con:parameters/><con:method name="Method 1" id="7f615f37-e7d8-4fc0-be79-1434a72d7ef9" method="POST"><con:settings/><con:parameters/><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>405</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType>text/html;charset=utf-8</con:mediaType><con:status>500</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>404</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>500</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/x-www-form-urlencoded</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType xsi:nil="true"/><con:status>415</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:sha2="http://localhost/services/rest/server-signing/sign/certificate/SHA256">sha2:Response</con:element></con:representation><con:representation type="FAULT"><con:mediaType>application/json</con:mediaType><con:status>500</con:status><con:params/></con:representation><con:request name="Request 1" id="6fe699cd-64db-464d-8f46-c094c3116f66" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{
     "algorithm": "SHA256",
     "value": "f4OxZX/x/FO5LcGBSKHWXfwtSx+j1ncoSt3SABJtkGk="
-}</con:request><con:originalUri>http://localhost/services/rest/server-signing/sign/certificate/SHA256</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder/></con:request></con:method></con:resource><con:resource name="validateEAA" path="/services/rest/eaa-validation/validateEAA" id="5b733b80-1e81-432f-8575-035d78512959"><con:settings/><con:parameters/><con:method name="ValidateEAA" id="08467f8b-ede6-4b87-a1e4-0cb7ed950056" method="POST"><con:settings/><con:parameters/><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType>application/json</con:mediaType><con:status>500</con:status><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:val="http://localhost/services/rest/validation/services/rest/eaa-validation/validateEAA">val:Response</con:element></con:representation><con:request name="Request 1" id="79d0b5dd-98f7-4761-aaf0-8beff389c988" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{
-  "eaaPresentation" : {
+}</con:request><con:originalUri>http://localhost/services/rest/server-signing/sign/certificate/SHA256</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder/></con:request></con:method></con:resource><con:resource name="validateEAA" path="/services/rest/attestation-validation/validateEAA" id="5b733b80-1e81-432f-8575-035d78512959"><con:settings/><con:parameters/><con:method name="ValidateEAA" id="08467f8b-ede6-4b87-a1e4-0cb7ed950056" method="POST"><con:settings/><con:parameters/><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType>application/json</con:mediaType><con:status>500</con:status><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:val="http://localhost/services/rest/validation/services/rest/attestation-validation/validateEAA">val:Response</con:element></con:representation><con:request name="Request 1" id="79d0b5dd-98f7-4761-aaf0-8beff389c988" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{
+  "attestationPresentation" : {
     "bytes" : "ZXlKaGJHY2lPaUpGVXpJMU5pSXNJbU4wZVNJNkltcHpiMjRpTENKcmFXUWlPaUpOU1VjMFRVbEhabkJKUjJOTlNVZGFUVkZ6ZDBOUldVUldVVkZIUlhkS1NsWkVSVmxOUWxsSFFURlZSVU5uZDFCVFZ6VnRZakJPYkdOdVVXZFZlVFYzVEd0RmRVMVNPSGRJVVZsRVZsRlJURVJDV2xWamJsWjZaRU5DVkZwWVNqSmhWMDVzU1VaQ2VXSXpXbkJhUjFaNVRWSnZkMGRCV1VSV1VWSm9SRUpHVjFGV1VrcFdRekIzVG5wck1FNVVTWGhOVkVGM1RtcEZlazFFUlVkQk1WVkZRWGQzY1ZOWE5XMWlNRTVzWTI1UloxRXlWbmxrUjJ4dFlWZE9hR1JIYkhaaWFVSlVXbGhLTW1GWFRteGplVUpHVVhsQ1JGRlRRVEJKUlU1TlFXaFNXV28wVlhJM1UzWlpWelJUZEVWRlIwZzROVWxEZURKME0wRm5QVDBpTENKNE5YUWpVekkxTmlJNkluaE1PRWhSYVhKemFtWTVkR3RmWTFwSkxVUkhOMmx0ZWxGUUxVZzFjVGhMVlROQ1NuUTRjM2R2U1djaUxDSjROV01pT2xzaVRVbEpSVzVVUTBOQ1EwOW5RWGRKUWtGblNWVlhTU3RHU3lzd2NqSkdkVVZ5VWtKQ2FDOVBVMEZ6WkhKa2QwbDNRMmRaU1V0dldrbDZhakJGUVhkTmQyZGFhM2hEZWtGS1FtZE9Wa0pCV1ZSQmEyeFZUVkpuZDBabldVUldVVkZMUkVFNVNtSnRXblpSTWxaNVpFTkNWRXh1UVhWUlV6UjRTSHBCWkVKblRsWkNRWE5OUm14U2VXUllUakJKUms1c1kyNWFjRmt5VldkVlNFcDJaRzFzYTFwWVNYaEhha0ZaUW1kT1ZrSkhSVTFGVmxwQ1ZrVnNWVXhVUVROUFZGRXhUV3BGZUUxRVFUSk5WRTEzVFZGWlJGWlJVVVJFUTNCS1ltMWFkbEV5Vm5sa1EwSkVXbGhLTUdGWFduQlpNa1l3WVZjNWRVbEdUbXhqYmxwd1dUSldla2xGVmtSSlJVNUNTVVJSWjFFd2QzZElhR05PVFdwWmQwNXFRWHBOUkdONlRYcE5NRmRvWTA1TmFtTjNUbXBCZWsxRVZYcE5lazE2VjJwRFFqWnFSV0pOUW10SFFURlZSVUYzZDFOUlYzaHNZVE5PYUdKdFVubEpSVXBzWWtkc2FHRXlPVEpOVVhOM1ExRlpSRlpSVVVkRmQwcE5WbFJGVUUxQk1FZEJNVlZGUW5kM1IxTXlWbTlpUjFaMVRWSnJkMFozV1VSV1VWRkxSRUpDVDJJelpIQmliVVZuVlRJNWMyUllVbkJpTWpWNlRWSk5kMFZSV1VSV1VWRk1SRUZ3YkZVeWJHNWliVVl3WkZoS2JFMVNRWGRFWjFsRVZsRlJSa1YzWXpOT2VtTXpUbnBqTTAxVGMzZExVVmxLUzI5YVNXaDJZMDVCVVd0Q1JtaDRhR0pIVm5Kak1rWjFXa2hKZFZsdFZuTmhWMFp5WWpOYVFXSnRPVE5oVnpWb1RHMTRNVTFTU1hkRlFWbEVWbEZSY1VSQmJFSmlSMVp5WXpKR2RWcElTWGhGVkVGUVFtZE9Wa0pCVVUxRFJVcHNZa2RzYUdFeU9USk5VbU4zUmxGWlJGWlJVWFZGZHpSNVRVUkpNazlVYXpWUFJGVjNUV3ByZUU1NlFscE5RazFIUW5seFIxTk5ORGxCWjBWSFEwTnhSMU5OTkRsQmQwVklRVEJKUVVKQlVrWlFURFE0TkZRMU16aHpOV2hZTjBsNFduaHplVXhYVEhWaGRYaGhRVmhQVTJkTVlrTjRURlpZWlZKdFJpdHRSRmswVW14VlNEbFBXRmxYTDBsYVNHdHFaelpXVTA0NGFVRTBZMm8zZVhSeFUzVk5ObXBuWjBnd1RVbEpRamhFUVdSQ1owNVdTRk5WUlVacVFWVkNaMmR5UW1kRlJrSlJZMFJCWjFsSlMzZFpRa0pSVlVoQmQxRjNaMkZGUjBFeFZXUkpRVk5DYlZSRFFteHFRMEpyZDFsSFN6QjNhMEZSUlVsTlNVZEpUVVZGUjBORGMwZEJVVlZHUW5kSlEwMUVWVTFOTVU1VVZFTjNaMVV3TVVwVVZWVm5XVmMxYTBsRlVuQmFNbXd3V1ZkM1oxVXliRzVpYlVZd1pGaEtiRWxGVG5OaFYxWjFaRU5DUkZwWVNqQmhWMXB3V1RKR01GcFVRa1JDWjJkeVFtZEZSa0pSWTBOQlVsa3pZVWhTTUdORWIzWk1NMlF6WkhrMWJXRllTblJaVXpWd1ltMWFkbGt5Vm5sa1F6VndaRU01YTJJeVRqRmlWMVoxWkVkR05tRlhPWFZhVXpsMFdWYzFNVmxYZUhCTWJrSnZZMFJDTUVKblozSkNaMFZHUWxGalFrRlJVbTlOUjFsM1RHZFpTVXQzV1VKQ1VWVklUVUZIUjBsdGFEQmtTRUUyVEhrNWRsa3pUbmRaTW5kMVdUTk9iRmw1TldwWlZGRjFZVmMxYldJeVRteGpibEYxWVZoUmQwNUJXVWxMZDFsQ1FsRlZTRTFCUzBkTFIyZ3daRWhCTmt4NU9XcGpiWGhxWWtNMWFsbFVVWFZoVnpWdFlqSk9iR051VVhWaFdGRjJXVE5PYkZsNU9VUlJVelZxWTI1UmQxQkJXVVJXVWpCbVFrUlZkMDE2UVhodlF5dG5URmxaY21GSVVqQmpSRzkyVERKT2VXSkhUbk5NYlU1b1RrTTFjR0p0V25aWk1sWjVaRU0xY0dSRE9XcGpNbFpxVERCT1UxUkVRWGhNYlU1NVlrUkJUMEpuVGxaSVVUaENRV1k0UlVKQlRVTkNURUYzU25kWlJGWlNNRkpDUTBGM1NHOUZZMWxYZUd4aE0wNW9ZbTFTZVV4dFNteGlSMnhvWVRJNU1sRkhOWFprTW14MVdWTTFjMlJVUVdaQ1owNVdTRk5OUlVkRVFWZG5RbEZRV0ZVMmQwdEpZMmwyV2xGSU9ERXZOMm80T0ROT01XSTFaRVJCWkVKblRsWklVVFJGUm1kUlZVOWpUalJoTWs4dldHaGxTV2w2WWt4bmVuWjRNM1pUVTNSTU1IZERaMWxKUzI5YVNYcHFNRVZCZDAxRVlVRkJkMXBSU1hoQlRWRldhRU12WjJkb1pUWklhbGhEVWpRcmRTdHFkSE12WVhwQlIwaGFNMFpGU1hwdFoycE9XbXR5YTNsTE1VUkVOM2x2V0ZsdWRTOWhabWN3ZDNaSU1FRkpkMWxMT0VFM2JFNVdWMFYzYXprNWVpdE9aelpXVmxvM2JtVnljbU5XYXpsNk9VeHdiVFJpYjFoV1JrRTRiM0pvUVVsU2NuTnRLeTh4TlRkblVsTnVUellpWFN3aWRIbHdJam9pWkdNcmMyUXRhbmQwSWl3aWFXRjBJam94Tnpnd05qWTBOak01ZlEuZXlKZmMyUmZZV3huSWpvaWMyaGhMVEkxTmlJc0ltbHpjeUk2SWtWQlFTQndjbTkyYVdSbGNpSXNJbTVpWmlJNk1UYzRNRFkyTkRZek9Td2laWGh3SWpveE9ERXlNREF3T0RFekxDSjJZM1FpT2lKMWNtNDZaWFZrYVRwbFlXRTZNU0lzSW5aamRDTnBiblJsWjNKcGRIa2lPaUp6YUdFeU5UWXRURWhsUVZjdmNHdDFMME0wT1dGSldqYzNjM0Y1V0dsUmJYTTRLM0p6ZUZCc1prWmxkelpGT1cxM1dUMGlMQ0ptWVcxcGJIbGZibUZ0WlNJNklrUnZaU0lzSW1kcGRtVnVYMjVoYldVaU9pSktiMmh1SWl3aWFYTnpkV2x1WjE5aGRYUm9iM0pwZEhraU9pSlVSVk5VSUVGMWRHaHZjbWwwZVNKOS5udXdqdzI1Wm0wNzlxQW91c193MEtBOGR4TXVGVlF6dTZMc2xvQ09MOFBvc3R0Wl9udkhYOWhKdEpIV3Z3VlZIeDBpaTYtWGR5aVFZUXlkM0U0TENwUX4=",
     "digestAlgorithm" : null,
     "name" : "sdjwt.json"
   },
-  "eaaValidationParameters" : null,
+  "attestationValidationParameters" : null,
   "policy" : null,
   "cryptographicSuite" : null,
   "validationTime" : null,
   "tokenExtractionStrategy" : "NONE"
-}</con:request><con:originalUri>http://localhost/services/rest/validation/services/rest/eaa-validation/validateEAA</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="getDataToSign" path="/services/rest/eaa-creation/getDataToSign" id="5e09fcd8-0af5-406a-9198-22e91367ad3f"><con:settings/><con:parameters/><con:method name="getDataToSignEAA" id="ce56a3da-207b-46af-a706-40f9ef3184ba" method="POST"><con:settings/><con:parameters/><con:representation type="FAULT"><con:mediaType>application/json</con:mediaType><con:status>500 403</con:status><con:params/></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:get="http://localhost/services/rest/signature/one-document/getDataToSign">get:Response</con:element></con:representation><con:request name="Request 1" id="17bb4e83-c920-4537-931d-e308b8e0b45c" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{
+}</con:request><con:originalUri>http://localhost/services/rest/validation/services/rest/attestation-validation/validateEAA</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="getDataToSign" path="/services/rest/attestation-creation/getDataToSign" id="5e09fcd8-0af5-406a-9198-22e91367ad3f"><con:settings/><con:parameters/><con:method name="getDataToSignEAA" id="ce56a3da-207b-46af-a706-40f9ef3184ba" method="POST"><con:settings/><con:parameters/><con:representation type="FAULT"><con:mediaType>application/json</con:mediaType><con:status>500 403</con:status><con:params/></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:get="http://localhost/services/rest/signature/one-document/getDataToSign">get:Response</con:element></con:representation><con:request name="Request 1" id="17bb4e83-c920-4537-931d-e308b8e0b45c" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{
   "parameters" : {
     "signingCertificate" : {
       "encodedCertificate" : "MIIC6jCCAdKgAwIBAgIGLtYU17tXMA0GCSqGSIb3DQEBCwUAMDAxGzAZBgNVBAMMElJvb3RTZWxmU2lnbmVkRmFrZTERMA8GA1UECgwIRFNTLXRlc3QwHhcNMTcwNjA4MTEyNjAxWhcNNDcwNzA0MDc1NzI0WjAoMRMwEQYDVQQDDApTaWduZXJGYWtlMREwDwYDVQQKDAhEU1MtdGVzdDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMI3kZhtnipn+iiZHZ9ax8FlfE5Ow/cFwBTfAEb3R1ZQUp6/BQnBt7Oo0JWBtc9qkv7JUDdcBJXPV5QWS5AyMPHpqQ75Hitjsq/Fzu8eHtkKpFizcxGa9BZdkQjh4rSrtO1Kjs0Rd5DQtWSgkeVCCN09kN0ZsZ0ENY+Ip8QxSmyztsStkYXdULqpwz4JEXW9vz64eTbde4vQJ6pjHGarJf1gQNEc2XzhmI/prXLysWNqC7lZg7PUZUTrdegABTUzYCRJ1kWBRPm4qo0LN405c94QQd45a5kTgowHzEgLnAQI28x0M3A59TKC+ieNc6VF1PsTLpUw7PNI2VstX5jAuasCAwEAAaMSMBAwDgYDVR0PAQH/BAQDAgEGMA0GCSqGSIb3DQEBCwUAA4IBAQCK6LGA01TR+rmU8p6yhAi4OkDN2b1dbIL8l8iCMYopLCxx8xqq3ubZCOxqh1X2j6pgWzarb0b/MUix00IoUvNbFOxAW7PBZIKDLnm6LsckRxs1U32sC9d1LOHe3WKBNB6GZALT1ewjh7hSbWjftlmcovq+6eVGA5cvf2u/2+TkKkyHV/NR394nXrdsdpvygwypEtXjetzD7UT93Nuw3xcV8VIftIvHf9LjU7h+UjGmKXG9c15eYr3SzUmv6kyOI0Bvw14PWtsWGl0QdOSRvIBBrP4adCnGTgjgjk9LTcO8B8FKrr+8lHGuc0bp4lIUToiUkGILXsiEeEg9WAqm+XqO"
@@ -1694,7 +1694,7 @@
     }
   },
   "payloadParameters" : {
-    "eaaType" : "SD_JWT_VC",
+    "attestationFormat" : "SD_JWT_VC",
     "preComputedPayload" : null,
     "digestAlgorithm" : null,
     "issuanceDate" : null,
@@ -1706,20 +1706,20 @@
     },
     "statusList" : {
       "index" : 1,
-      "uri" : "https://pki.nowina.lu/eaa/status_list",
+      "uri" : "https://pki.nowina.lu/attestation/status_list",
       "certificate" : null,
       "type" : null,
       "purpose" : null
     },
     "identifierList" : null,
-    "category" : "urn:etsi:esi:eaa:eu:qualified",
+    "category" : "urn:etsi:esi:attestation:eu:qualified",
     "shortLived" : null,
     "oneTime" : null,
     "decoyDigestNumber" : null,
     "shuffleHashes" : null,
     "issuer" : "EAA provider",
     "subject" : "good-ecdsa-user",
-    "verifiableCredentialsType" : "urn:eudi:eaa:1",
+    "verifiableCredentialsType" : "urn:eudi:attestation:1",
     "verifiableCredentialsTypeIntegrity" : {
       "algorithm" : "SHA256",
       "value" : "LHeAW/pku/C49aIZ77sqyXiQms8+rsxPlfFew6E9mwY="
@@ -2031,7 +2031,7 @@
       } ]
     }
   }
-}</con:request><con:originalUri>http://localhost/services/rest/signature/one-document/getDataToSign</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="signEAA" path="/services/rest/eaa-creation/signEAA" id="91eeebb3-2916-4350-98b9-52af2753b2c5"><con:settings/><con:parameters/><con:method name="Method 1" id="3b5aa0d8-68c9-4ffc-80f5-f327d22479ac" method="POST"><con:settings/><con:parameters/><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:sig="http://localhost/services/rest/eaa-creation/signEAA">sig:Response</con:element></con:representation><con:request name="Request 1" id="e96f5e65-9814-4394-800e-43cdce7eede0" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{
+}</con:request><con:originalUri>http://localhost/services/rest/signature/one-document/getDataToSign</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="signEAA" path="/services/rest/attestation-creation/signEAA" id="91eeebb3-2916-4350-98b9-52af2753b2c5"><con:settings/><con:parameters/><con:method name="Method 1" id="3b5aa0d8-68c9-4ffc-80f5-f327d22479ac" method="POST"><con:settings/><con:parameters/><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:sig="http://localhost/services/rest/attestation-creation/signEAA">sig:Response</con:element></con:representation><con:request name="Request 1" id="e96f5e65-9814-4394-800e-43cdce7eede0" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{
   "parameters" : {
     "signingCertificate" : {
       "encodedCertificate" : "MIIC6jCCAdKgAwIBAgIGLtYU17tXMA0GCSqGSIb3DQEBCwUAMDAxGzAZBgNVBAMMElJvb3RTZWxmU2lnbmVkRmFrZTERMA8GA1UECgwIRFNTLXRlc3QwHhcNMTcwNjA4MTEyNjAxWhcNNDcwNzA0MDc1NzI0WjAoMRMwEQYDVQQDDApTaWduZXJGYWtlMREwDwYDVQQKDAhEU1MtdGVzdDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMI3kZhtnipn+iiZHZ9ax8FlfE5Ow/cFwBTfAEb3R1ZQUp6/BQnBt7Oo0JWBtc9qkv7JUDdcBJXPV5QWS5AyMPHpqQ75Hitjsq/Fzu8eHtkKpFizcxGa9BZdkQjh4rSrtO1Kjs0Rd5DQtWSgkeVCCN09kN0ZsZ0ENY+Ip8QxSmyztsStkYXdULqpwz4JEXW9vz64eTbde4vQJ6pjHGarJf1gQNEc2XzhmI/prXLysWNqC7lZg7PUZUTrdegABTUzYCRJ1kWBRPm4qo0LN405c94QQd45a5kTgowHzEgLnAQI28x0M3A59TKC+ieNc6VF1PsTLpUw7PNI2VstX5jAuasCAwEAAaMSMBAwDgYDVR0PAQH/BAQDAgEGMA0GCSqGSIb3DQEBCwUAA4IBAQCK6LGA01TR+rmU8p6yhAi4OkDN2b1dbIL8l8iCMYopLCxx8xqq3ubZCOxqh1X2j6pgWzarb0b/MUix00IoUvNbFOxAW7PBZIKDLnm6LsckRxs1U32sC9d1LOHe3WKBNB6GZALT1ewjh7hSbWjftlmcovq+6eVGA5cvf2u/2+TkKkyHV/NR394nXrdsdpvygwypEtXjetzD7UT93Nuw3xcV8VIftIvHf9LjU7h+UjGmKXG9c15eYr3SzUmv6kyOI0Bvw14PWtsWGl0QdOSRvIBBrP4adCnGTgjgjk9LTcO8B8FKrr+8lHGuc0bp4lIUToiUkGILXsiEeEg9WAqm+XqO"
@@ -2100,7 +2100,7 @@
     "value" : "YUKNY7nevLUD999oM8/oUA1kjT8FMBA/7RiEpw9U/qErkGO8LV+fUvfxRIt4lvBIPTUWFQRGiyIdqnfS/KsK68JLbjCGMWi7HqP3PnE0OiiFXE6+aQFksMhKXYjDlt+Mhxv5H6ufGF4WvZunt6m49Ys4i1BoaIa+VCV5aZbUmJj4n0kezOa3WLAeqM5jGL3DAu6uvyirzG72Z7U4aX92QiniqNbeyY2JXX4SJkCuIH5qWHB2dUz6bemvVxyLVKPUcu3aAaJMabwyWWCTT7rVfV+ilvsMIXCW1z/pc5+ErwMdtY39GJAEI6qfjX/9b9uNwE00u13X+MgTubhdlgimlQ=="
   },
   "payloadParameters" : {
-    "eaaType" : "SD_JWT_VC",
+    "attestationFormat" : "SD_JWT_VC",
     "preComputedPayload" : null,
     "digestAlgorithm" : null,
     "issuanceDate" : null,
@@ -2112,20 +2112,20 @@
     },
     "statusList" : {
       "index" : 1,
-      "uri" : "https://pki.nowina.lu/eaa/status_list",
+      "uri" : "https://pki.nowina.lu/attestation/status_list",
       "certificate" : null,
       "type" : null,
       "purpose" : null
     },
     "identifierList" : null,
-    "category" : "urn:etsi:esi:eaa:eu:qualified",
+    "category" : "urn:etsi:esi:attestation:eu:qualified",
     "shortLived" : null,
     "oneTime" : null,
     "decoyDigestNumber" : null,
     "shuffleHashes" : null,
     "issuer" : "EAA provider",
     "subject" : "good-ecdsa-user",
-    "verifiableCredentialsType" : "urn:eudi:eaa:1",
+    "verifiableCredentialsType" : "urn:eudi:attestation:1",
     "verifiableCredentialsTypeIntegrity" : {
       "algorithm" : "SHA256",
       "value" : "LHeAW/pku/C49aIZ77sqyXiQms8+rsxPlfFew6E9mwY="
@@ -2437,9 +2437,9 @@
       } ]
     }
   }
-}</con:request><con:originalUri>http://localhost/services/rest/eaa-creation/signEAA</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="getDisclosures" path="/services/rest/eaa-creation/getDisclosures" id="ec99fa68-f6b0-4f22-88ec-3df2928b6f87"><con:settings/><con:parameters/><con:method name="Method 1" id="3a8de1d9-363a-47d9-b477-9797081dafdd" method="POST"><con:settings/><con:parameters/><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element>Response</con:element></con:representation><con:request name="Request 1" id="8895bfca-910b-4714-bede-4e3ffa4cc2f5" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{
+}</con:request><con:originalUri>http://localhost/services/rest/attestation-creation/signEAA</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="getDisclosures" path="/services/rest/attestation-creation/getDisclosures" id="ec99fa68-f6b0-4f22-88ec-3df2928b6f87"><con:settings/><con:parameters/><con:method name="Method 1" id="3a8de1d9-363a-47d9-b477-9797081dafdd" method="POST"><con:settings/><con:parameters/><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element>Response</con:element></con:representation><con:request name="Request 1" id="8895bfca-910b-4714-bede-4e3ffa4cc2f5" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{
   "payloadParameters" : {
-    "eaaType" : "SD_JWT_VC",
+    "attestationFormat" : "SD_JWT_VC",
     "preComputedPayload" : null,
     "digestAlgorithm" : null,
     "issuanceDate" : null,
@@ -2451,20 +2451,20 @@
     },
     "statusList" : {
       "index" : 1,
-      "uri" : "https://pki.nowina.lu/eaa/status_list",
+      "uri" : "https://pki.nowina.lu/attestation/status_list",
       "certificate" : null,
       "type" : null,
       "purpose" : null
     },
     "identifierList" : null,
-    "category" : "urn:etsi:esi:eaa:eu:qualified",
+    "category" : "urn:etsi:esi:attestation:eu:qualified",
     "shortLived" : null,
     "oneTime" : null,
     "decoyDigestNumber" : null,
     "shuffleHashes" : null,
     "issuer" : "EAA provider",
     "subject" : "good-ecdsa-user",
-    "verifiableCredentialsType" : "urn:eudi:eaa:1",
+    "verifiableCredentialsType" : "urn:eudi:attestation:1",
     "verifiableCredentialsTypeIntegrity" : {
       "algorithm" : "SHA256",
       "value" : "LHeAW/pku/C49aIZ77sqyXiQms8+rsxPlfFew6E9mwY="
@@ -2776,7 +2776,7 @@
       } ]
     }
   }
-}</con:request><con:originalUri>http://localhost/services/rest/eaa-creation/getDisclosures</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="getDataToSignForKeyBindingSignature" path="/services/rest/eaa-creation/getDataToSignForKeyBindingSignature" id="4954d2ee-a93a-4dc5-bc3f-e4a6e726c6f3"><con:settings/><con:parameters/><con:method name="Method 1" id="f14fb752-68d1-46eb-8e40-d0a86bc0421a" method="POST"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:get="http://localhost/services/rest/eaa-creation/getDataToSignForKeyBindingSignature">get:Response</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:request name="Request 1" id="0b509775-406d-420a-a320-812123c2fdcc" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{
+}</con:request><con:originalUri>http://localhost/services/rest/attestation-creation/getDisclosures</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="getDataToSignForKeyBindingSignature" path="/services/rest/attestation-creation/getDataToSignForKeyBindingSignature" id="4954d2ee-a93a-4dc5-bc3f-e4a6e726c6f3"><con:settings/><con:parameters/><con:method name="Method 1" id="f14fb752-68d1-46eb-8e40-d0a86bc0421a" method="POST"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:get="http://localhost/services/rest/attestation-creation/getDataToSignForKeyBindingSignature">get:Response</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:request name="Request 1" id="0b509775-406d-420a-a320-812123c2fdcc" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{
   "parameters" : {
     "signingCertificate" : {
       "encodedCertificate" : "MIIDkTCCAfmgAwIBAgIBDjANBgkqhkiG9w0BAQsFADBNMRAwDgYDVQQDDAdnb29kLWNhMRkwFwYDVQQKDBBOb3dpbmEgU29sdXRpb25zMREwDwYDVQQLDAhQS0ktVEVTVDELMAkGA1UEBhMCTFUwIBcNMjQwNjE4MDgyMDI2WhgPMjA1NjA2MTgwODIwMjZaMFUxGDAWBgNVBAMMD2dvb2QtZWNkc2EtdXNlcjEZMBcGA1UECgwQTm93aW5hIFNvbHV0aW9uczERMA8GA1UECwwIUEtJLVRFU1QxCzAJBgNVBAYTAkxVMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEEv1XiCEdzBg9SOzF90jr8ZCbRSymlNapvTUidkL/6xPzuJBAzGvgYJKmwvLz8KLFsJzSJrUgFe5tfkVeykqg46OBvDCBuTAOBgNVHQ8BAf8EBAMCBkAwgYcGCCsGAQUFBwEBBHsweTA5BggrBgEFBQcwAYYtaHR0cDovL2Rzcy5ub3dpbmEubHUvcGtpLWZhY3Rvcnkvb2NzcC9nb29kLWNhMDwGCCsGAQUFBzAChjBodHRwOi8vZHNzLm5vd2luYS5sdS9wa2ktZmFjdG9yeS9jcnQvZ29vZC1jYS5jcnQwHQYDVR0OBBYEFFPM6T9egCxDzj0X/RShEa8WLRMaMA0GCSqGSIb3DQEBCwUAA4IBgQBTuvDRgsEWIc6M7p3K9EU9kBxQxs0eaZZe5pn6R3XjNX+aJmJ+kutIi4eknMeDFKC8vo/8uQWK0EHsT3d/DmfSBch5GWQTKUOLgjRAZihDm1eyIFKeLkUw/NvPQHGaa2034pFURHzvcJ9UK5LfLWW0wjnT06R71c/Mv0EHRABE157RwI+5ON7PWrUcVIG0UV7dm5GEOLqgJ57elg0rJJX2MopI1hA8aUjCrQw8vV3VtmpBugaGNLSXLiwVnVbR7OUTyLvtzU+eipWtsG/9e9PFBFw7exDuvsxpfRQBcgKcT3dQz2BvHoH2oCPS1TyQindZBRXlQYTOQ41ya/UmNRmdXM39udgiiLcdX76w7e3eOq+bAkFf/Q1UDqy1yqL3fKuvADhFtKOw1AZw/LBbICnI9dK6VZCDM7cMFDGYl4bC0tS+rHC0YeIORTyVCdrd6jEDxHTmgfs+JvItyzA6jEr1/c/ZqqstGIrkP8I6yXdfm3k74SW0f7YjeDkf+55uWdc="
@@ -2840,7 +2840,7 @@
       "signerLocationStreet" : null
     }
   },
-  "eaa" : {
+  "attestation" : {
     "bytes" : "ZXlKaGJHY2lPaUpTVXpJMU5pSXNJbXRwWkNJNklrMUVOSGRPUzFGNVRVUkJlRWQ2UVZwQ1owNVdRa0ZOVFVWc1NuWmlNMUpVV2xkNGJWVXliRzVpYlZaclVtMUdjbHBVUlZKTlFUaEhRVEZWUlVObmQwbFNSazVVVEZoU2JHTXpVVU5DYVRkWFJrNWxOMVozUFQwaUxDSjROWFFqVXpJMU5pSTZJa0YyVUhKNVowWnFTakJLVkhaSlEyUktNRzFPTVVKMWQwMVhNUzFoZDFwd1dVSkdaRFJXVmxsdVduY2lMQ0o0TldNaU9sc2lUVWxKUXpacVEwTkJaRXRuUVhkSlFrRm5TVWRNZEZsVk1UZDBXRTFCTUVkRFUzRkhVMGxpTTBSUlJVSkRkMVZCVFVSQmVFZDZRVnBDWjA1V1FrRk5UVVZzU25aaU0xSlVXbGQ0YlZVeWJHNWliVlpyVW0xR2NscFVSVkpOUVRoSFFURlZSVU5uZDBsU1JrNVVURmhTYkdNelVYZElhR05PVFZSamQwNXFRVFJOVkVWNVRtcEJlRmRvWTA1T1JHTjNUbnBCTUUxRVl6Rk9la2t3VjJwQmIwMVNUWGRGVVZsRVZsRlJSRVJCY0ZSaFYyUjFXbGhLUjFsWGRHeE5Va1YzUkhkWlJGWlJVVXRFUVdoRlZURk5kR1JIVm5wa1JFTkRRVk5KZDBSUldVcExiMXBKYUhaalRrRlJSVUpDVVVGRVoyZEZVRUZFUTBOQlVXOURaMmRGUWtGTlNUTnJXbWgwYm1sd2JpdHBhVnBJV2psaGVEaEdiR1pGTlU5M0wyTkdkMEpVWmtGRllqTlNNVnBSVlhBMkwwSlJia0owTjA5dk1FcFhRblJqT1hGcmRqZEtWVVJrWTBKS1dGQldOVkZYVXpWQmVVMVFTSEJ4VVRjMVNHbDBhbk54TDBaNmRUaGxTSFJyUzNCR2FYcGplRWRoT1VKYVpHdFJhbWcwY2xOeWRFOHhTMnB6TUZKa05VUlJkRmRUWjJ0bFZrTkRUakE1YTA0d1duTmFNRVZPV1N0SmNEaFJlRk50ZVhwMGMxTjBhMWxZWkZWTWNYQjNlalJLUlZoWE9YWjZOalJsVkdKa1pUUjJVVW8yY0dwSVIyRnlTbVl4WjFGT1JXTXlXSHBvYlVrdmNISllUSGx6VjA1eFF6ZHNXbWMzVUZWYVZWUnlaR1ZuUVVKVVZYcFpRMUpLTVd0WFFsSlFiVFJ4YnpCTVRqUXdOV001TkZGUlpEUTFZVFZyVkdkdmQwaDZSV2RNYmtGUlNUSTRlREJOTTBFMU9WUkxReXRwWlU1ak5sWkdNVkJ6VkV4d1ZYYzNVRTVKTWxaemRGZzFha0YxWVhORFFYZEZRVUZoVFZOTlFrRjNSR2RaUkZaU01GQkJVVWd2UWtGUlJFRm5SVWROUVRCSFExTnhSMU5KWWpORVVVVkNRM2RWUVVFMFNVSkJVVU5MTmt4SFFUQXhWRklyY20xVk9IQTJlV2hCYVRSUGEwUk9NbUl4WkdKSlREaHNPR2xEVFZsdmNFeERlSGc0ZUhGeE0zVmlXa05QZUhGb01WZ3lhalp3WjFkNllYSmlNR0l2VFZWcGVEQXdTVzlWZGs1aVJrOTRRVmMzVUVKYVNVdEVURzV0Tmt4elkydFNlSE14VlRNeWMwTTVaREZNVDBobE0xZExRazVDTmtkYVFVeFVNV1YzYW1nM2FGTmlWMnBtZEd4dFkyOTJjU3MyWlZaSFFUVmpkbVl5ZFM4eUsxUnJTMnQ1U0ZZdlRsSXpPVFJ1V0hKa2MyUndkbmxuZDNsd1JYUllhbVYwZWtRM1ZWUTVNMDUxZHpONFkxWTRWa2xtZEVsMlNHWTVUR3BWTjJnclZXcEhiVXRZUnpsak1UVmxXWEl6VTNwVmJYWTJhM2xQU1RCQ2RuY3hORkJYZEhOWFIyd3dVV1JQVTFKMlNVSkNjbEEwWVdSRGJrZFVaMnBuYW1zNVRGUmpUemhDT0VaTGNuSXJPR3hJUjNWak1HSndOR3hKVlZSdmFWVnJSMGxNV0hOcFJXVkZaemxYUVhGdEsxaHhUeUpkTENKMGVYQWlPaUprWXl0elpDMXFkM1FpTENKcFlYUWlPakUzT0RFM09EazBPRE45LmV5SmZjMlJmWVd4bklqb2ljMmhoTFRJMU5pSXNJbWx6Y3lJNklrVkJRU0J3Y205MmFXUmxjaUlzSW01aVppSTZNVGM0TVRjNE9UUTRNeXdpWlhod0lqb3hOemc1TnpNNE1qZ3pMQ0p6ZFdJaU9pSm5iMjlrTFdWalpITmhMWFZ6WlhJaUxDSmpZWFJsWjI5eWVTSTZJblZ5YmpwbGRITnBPbVZ6YVRwbFlXRTZaWFU2Y1hWaGJHbG1hV1ZrSWl3aWMzUmhkSFZ6SWpwN0luTjBZWFIxYzE5c2FYTjBJanA3SW1sa2VDSTZNU3dpZFhKcElqb2lhSFIwY0hNNkx5OXdhMmt1Ym05M2FXNWhMbXgxTDJWaFlTOXpkR0YwZFhOZmJHbHpkQ0o5ZlN3aVkyNW1JanA3SW1wM2F5STZleUpyZEhraU9pSkZReUlzSW1OeWRpSTZJbEF0TWpVMklpd2llQ0k2SWtWMk1WaHBRMFZrZWtKbk9WTlBla1k1TUdweU9GcERZbEpUZVcxc1RtRndkbFJWYVdSclRGODJlRTBpTENKNUlqb2lPRGRwVVZGTmVISTBSME5UY0hOTWVUaGZRMmw0WWtOak1HbGhNVWxDV0hWaVdEVkdXSE53UzI5UFRTSjlmU3dpZG1OMElqb2lkWEp1T21WMVpHazZaV0ZoT2pFaUxDSjJZM1FqYVc1MFpXZHlhWFI1SWpvaWMyaGhNalUyTFV4SVpVRlhMM0JyZFM5RE5EbGhTVm8zTjNOeGVWaHBVVzF6T0N0eWMzaFFiR1pHWlhjMlJUbHRkMWs5SWl3aWFYTnpkV2x1WjE5aGRYUm9iM0pwZEhraU9pSlVSVk5VSUVGMWRHaHZjbWwwZVNJc0ltbHpjM1ZwYm1kZlkyOTFiblJ5ZVNJNklreFZJaXdpYVhOelgzSmxaMTlwWkNJNklsWkJWRXhWTFRFeU16UTFOaUlzSWw5elpDSTZXeUpVTnkwMVZYaDBNbWhQZG5ab1kwUk5iR0p0YURCWlRXMW1jVU52UXpoWlMySmlZMGN6Y3pNMlRYcG5JaXdpYUd0S2FIcEVTa3RMZVRSeE5rOW9aR1JGUjFsb1dsaDFNMmx2WkdSdVUzWktjQzB3WDFsb2JuVkZSU0lzSWpSTVFtbERNWFJJUTAwM1ZHNXhaamsyUjBabVRHbG1jWE5MYW1aa1kyUnZkVXhxVTFOV09HRkRkRlVpWFgwLllVS05ZN25ldkxVRDk5OW9NOF9vVUExa2pUOEZNQkFfN1JpRXB3OVVfcUVya0dPOExWLWZVdmZ4Ukl0NGx2QklQVFVXRlFSR2l5SWRxbmZTX0tzSzY4SkxiakNHTVdpN0hxUDNQbkUwT2lpRlhFNi1hUUZrc01oS1hZakRsdC1NaHh2NUg2dWZHRjRXdlp1bnQ2bTQ5WXM0aTFCb2FJYS1WQ1Y1YVpiVW1KajRuMGtlek9hM1dMQWVxTTVqR0wzREF1NnV2eWlyekc3Mlo3VTRhWDkyUWluaXFOYmV5WTJKWFg0U0prQ3VJSDVxV0hCMmRVejZiZW12Vnh5TFZLUFVjdTNhQWFKTWFid3lXV0NUVDdyVmZWLWlsdnNNSVhDVzF6X3BjNS1FcndNZHRZMzlHSkFFSTZxZmpYXzliOXVOd0UwMHUxM1gtTWdUdWJoZGxnaW1sUQ==",
     "digestAlgorithm" : null,
     "name" : "document-signed-jades-baseline-b.json"
@@ -2883,7 +2883,7 @@
     "value" : "WyJTNW9UZDlSUFRqSDN4cldnYkx0QlR3IiwicGV0cyIsW3siLi4uIjoidWpIaml5bHFmRGc2NkIzOFJUb2VkN3BseG1IQTVnRThFd05tb3l4VHpWNCJ9LHsiLi4uIjoiSGVLSTNxVHkxMDY5bHptRTE1WkQwdnVpVUlxZEVfVnA3Q3FZM1cwNTRIWSJ9XV0"
   } ],
   "keyBindingParameters" : {
-    "eaaType" : "SD_JWT_VC",
+    "attestationFormat" : "SD_JWT_VC",
     "digestAlgorithm" : null,
     "issuanceTime" : null,
     "audience" : "audience",
@@ -2892,7 +2892,7 @@
     "docType" : null,
     "deviceSignedDataElements" : null
   }
-}</con:request><con:originalUri>http://localhost/services/rest/eaa-creation/getDataToSignForKeyBindingSignature</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="createKeyBindingSignature" path="/services/rest/eaa-creation/createKeyBindingSignature" id="26d4ec21-c554-4760-986f-d4d1eab1c9ed"><con:settings/><con:parameters/><con:method name="Method 1" id="9a8e97c2-1cae-418e-83cb-9e6b677c708d" method="POST"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:cre="http://localhost/services/rest/eaa-creation/createKeyBindingSignature">cre:Response</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:request name="Request 1" id="b74781b8-1a0e-4a78-ae0d-4121ff2be768" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{
+}</con:request><con:originalUri>http://localhost/services/rest/attestation-creation/getDataToSignForKeyBindingSignature</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="createKeyBindingSignature" path="/services/rest/attestation-creation/createKeyBindingSignature" id="26d4ec21-c554-4760-986f-d4d1eab1c9ed"><con:settings/><con:parameters/><con:method name="Method 1" id="9a8e97c2-1cae-418e-83cb-9e6b677c708d" method="POST"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:cre="http://localhost/services/rest/attestation-creation/createKeyBindingSignature">cre:Response</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:request name="Request 1" id="b74781b8-1a0e-4a78-ae0d-4121ff2be768" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{
   "parameters" : {
     "signingCertificate" : {
       "encodedCertificate" : "MIIDkTCCAfmgAwIBAgIBDjANBgkqhkiG9w0BAQsFADBNMRAwDgYDVQQDDAdnb29kLWNhMRkwFwYDVQQKDBBOb3dpbmEgU29sdXRpb25zMREwDwYDVQQLDAhQS0ktVEVTVDELMAkGA1UEBhMCTFUwIBcNMjQwNjE4MDgyMDI2WhgPMjA1NjA2MTgwODIwMjZaMFUxGDAWBgNVBAMMD2dvb2QtZWNkc2EtdXNlcjEZMBcGA1UECgwQTm93aW5hIFNvbHV0aW9uczERMA8GA1UECwwIUEtJLVRFU1QxCzAJBgNVBAYTAkxVMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEEv1XiCEdzBg9SOzF90jr8ZCbRSymlNapvTUidkL/6xPzuJBAzGvgYJKmwvLz8KLFsJzSJrUgFe5tfkVeykqg46OBvDCBuTAOBgNVHQ8BAf8EBAMCBkAwgYcGCCsGAQUFBwEBBHsweTA5BggrBgEFBQcwAYYtaHR0cDovL2Rzcy5ub3dpbmEubHUvcGtpLWZhY3Rvcnkvb2NzcC9nb29kLWNhMDwGCCsGAQUFBzAChjBodHRwOi8vZHNzLm5vd2luYS5sdS9wa2ktZmFjdG9yeS9jcnQvZ29vZC1jYS5jcnQwHQYDVR0OBBYEFFPM6T9egCxDzj0X/RShEa8WLRMaMA0GCSqGSIb3DQEBCwUAA4IBgQBTuvDRgsEWIc6M7p3K9EU9kBxQxs0eaZZe5pn6R3XjNX+aJmJ+kutIi4eknMeDFKC8vo/8uQWK0EHsT3d/DmfSBch5GWQTKUOLgjRAZihDm1eyIFKeLkUw/NvPQHGaa2034pFURHzvcJ9UK5LfLWW0wjnT06R71c/Mv0EHRABE157RwI+5ON7PWrUcVIG0UV7dm5GEOLqgJ57elg0rJJX2MopI1hA8aUjCrQw8vV3VtmpBugaGNLSXLiwVnVbR7OUTyLvtzU+eipWtsG/9e9PFBFw7exDuvsxpfRQBcgKcT3dQz2BvHoH2oCPS1TyQindZBRXlQYTOQ41ya/UmNRmdXM39udgiiLcdX76w7e3eOq+bAkFf/Q1UDqy1yqL3fKuvADhFtKOw1AZw/LBbICnI9dK6VZCDM7cMFDGYl4bC0tS+rHC0YeIORTyVCdrd6jEDxHTmgfs+JvItyzA6jEr1/c/ZqqstGIrkP8I6yXdfm3k74SW0f7YjeDkf+55uWdc="
@@ -2960,7 +2960,7 @@
     "algorithm" : "ECDSA_SHA256",
     "value" : "MEUCIH6ZCkzt7vFPVenI6LFHQmTyq7UILmgkeWkTJscFAenlAiEA7QzjowYBparPXDPPY8RPRM5VLNDy+9CLSsredGLJsUo="
   },
-  "eaa" : {
+  "attestation" : {
     "bytes" : "ZXlKaGJHY2lPaUpTVXpJMU5pSXNJbXRwWkNJNklrMUVOSGRPUzFGNVRVUkJlRWQ2UVZwQ1owNVdRa0ZOVFVWc1NuWmlNMUpVV2xkNGJWVXliRzVpYlZaclVtMUdjbHBVUlZKTlFUaEhRVEZWUlVObmQwbFNSazVVVEZoU2JHTXpVVU5DYVRkWFJrNWxOMVozUFQwaUxDSjROWFFqVXpJMU5pSTZJa0YyVUhKNVowWnFTakJLVkhaSlEyUktNRzFPTVVKMWQwMVhNUzFoZDFwd1dVSkdaRFJXVmxsdVduY2lMQ0o0TldNaU9sc2lUVWxKUXpacVEwTkJaRXRuUVhkSlFrRm5TVWRNZEZsVk1UZDBXRTFCTUVkRFUzRkhVMGxpTTBSUlJVSkRkMVZCVFVSQmVFZDZRVnBDWjA1V1FrRk5UVVZzU25aaU0xSlVXbGQ0YlZVeWJHNWliVlpyVW0xR2NscFVSVkpOUVRoSFFURlZSVU5uZDBsU1JrNVVURmhTYkdNelVYZElhR05PVFZSamQwNXFRVFJOVkVWNVRtcEJlRmRvWTA1T1JHTjNUbnBCTUUxRVl6Rk9la2t3VjJwQmIwMVNUWGRGVVZsRVZsRlJSRVJCY0ZSaFYyUjFXbGhLUjFsWGRHeE5Va1YzUkhkWlJGWlJVVXRFUVdoRlZURk5kR1JIVm5wa1JFTkRRVk5KZDBSUldVcExiMXBKYUhaalRrRlJSVUpDVVVGRVoyZEZVRUZFUTBOQlVXOURaMmRGUWtGTlNUTnJXbWgwYm1sd2JpdHBhVnBJV2psaGVEaEdiR1pGTlU5M0wyTkdkMEpVWmtGRllqTlNNVnBSVlhBMkwwSlJia0owTjA5dk1FcFhRblJqT1hGcmRqZEtWVVJrWTBKS1dGQldOVkZYVXpWQmVVMVFTSEJ4VVRjMVNHbDBhbk54TDBaNmRUaGxTSFJyUzNCR2FYcGplRWRoT1VKYVpHdFJhbWcwY2xOeWRFOHhTMnB6TUZKa05VUlJkRmRUWjJ0bFZrTkRUakE1YTA0d1duTmFNRVZPV1N0SmNEaFJlRk50ZVhwMGMxTjBhMWxZWkZWTWNYQjNlalJLUlZoWE9YWjZOalJsVkdKa1pUUjJVVW8yY0dwSVIyRnlTbVl4WjFGT1JXTXlXSHBvYlVrdmNISllUSGx6VjA1eFF6ZHNXbWMzVUZWYVZWUnlaR1ZuUVVKVVZYcFpRMUpLTVd0WFFsSlFiVFJ4YnpCTVRqUXdOV001TkZGUlpEUTFZVFZyVkdkdmQwaDZSV2RNYmtGUlNUSTRlREJOTTBFMU9WUkxReXRwWlU1ak5sWkdNVkJ6VkV4d1ZYYzNVRTVKTWxaemRGZzFha0YxWVhORFFYZEZRVUZoVFZOTlFrRjNSR2RaUkZaU01GQkJVVWd2UWtGUlJFRm5SVWROUVRCSFExTnhSMU5KWWpORVVVVkNRM2RWUVVFMFNVSkJVVU5MTmt4SFFUQXhWRklyY20xVk9IQTJlV2hCYVRSUGEwUk9NbUl4WkdKSlREaHNPR2xEVFZsdmNFeERlSGc0ZUhGeE0zVmlXa05QZUhGb01WZ3lhalp3WjFkNllYSmlNR0l2VFZWcGVEQXdTVzlWZGs1aVJrOTRRVmMzVUVKYVNVdEVURzV0Tmt4elkydFNlSE14VlRNeWMwTTVaREZNVDBobE0xZExRazVDTmtkYVFVeFVNV1YzYW1nM2FGTmlWMnBtZEd4dFkyOTJjU3MyWlZaSFFUVmpkbVl5ZFM4eUsxUnJTMnQ1U0ZZdlRsSXpPVFJ1V0hKa2MyUndkbmxuZDNsd1JYUllhbVYwZWtRM1ZWUTVNMDUxZHpONFkxWTRWa2xtZEVsMlNHWTVUR3BWTjJnclZXcEhiVXRZUnpsak1UVmxXWEl6VTNwVmJYWTJhM2xQU1RCQ2RuY3hORkJYZEhOWFIyd3dVV1JQVTFKMlNVSkNjbEEwWVdSRGJrZFVaMnBuYW1zNVRGUmpUemhDT0VaTGNuSXJPR3hJUjNWak1HSndOR3hKVlZSdmFWVnJSMGxNV0hOcFJXVkZaemxYUVhGdEsxaHhUeUpkTENKMGVYQWlPaUprWXl0elpDMXFkM1FpTENKcFlYUWlPakUzT0RFM09EazBPRE45LmV5SmZjMlJmWVd4bklqb2ljMmhoTFRJMU5pSXNJbWx6Y3lJNklrVkJRU0J3Y205MmFXUmxjaUlzSW01aVppSTZNVGM0TVRjNE9UUTRNeXdpWlhod0lqb3hOemc1TnpNNE1qZ3pMQ0p6ZFdJaU9pSm5iMjlrTFdWalpITmhMWFZ6WlhJaUxDSmpZWFJsWjI5eWVTSTZJblZ5YmpwbGRITnBPbVZ6YVRwbFlXRTZaWFU2Y1hWaGJHbG1hV1ZrSWl3aWMzUmhkSFZ6SWpwN0luTjBZWFIxYzE5c2FYTjBJanA3SW1sa2VDSTZNU3dpZFhKcElqb2lhSFIwY0hNNkx5OXdhMmt1Ym05M2FXNWhMbXgxTDJWaFlTOXpkR0YwZFhOZmJHbHpkQ0o5ZlN3aVkyNW1JanA3SW1wM2F5STZleUpyZEhraU9pSkZReUlzSW1OeWRpSTZJbEF0TWpVMklpd2llQ0k2SWtWMk1WaHBRMFZrZWtKbk9WTlBla1k1TUdweU9GcERZbEpUZVcxc1RtRndkbFJWYVdSclRGODJlRTBpTENKNUlqb2lPRGRwVVZGTmVISTBSME5UY0hOTWVUaGZRMmw0WWtOak1HbGhNVWxDV0hWaVdEVkdXSE53UzI5UFRTSjlmU3dpZG1OMElqb2lkWEp1T21WMVpHazZaV0ZoT2pFaUxDSjJZM1FqYVc1MFpXZHlhWFI1SWpvaWMyaGhNalUyTFV4SVpVRlhMM0JyZFM5RE5EbGhTVm8zTjNOeGVWaHBVVzF6T0N0eWMzaFFiR1pHWlhjMlJUbHRkMWs5SWl3aWFYTnpkV2x1WjE5aGRYUm9iM0pwZEhraU9pSlVSVk5VSUVGMWRHaHZjbWwwZVNJc0ltbHpjM1ZwYm1kZlkyOTFiblJ5ZVNJNklreFZJaXdpYVhOelgzSmxaMTlwWkNJNklsWkJWRXhWTFRFeU16UTFOaUlzSWw5elpDSTZXeUpVTnkwMVZYaDBNbWhQZG5ab1kwUk5iR0p0YURCWlRXMW1jVU52UXpoWlMySmlZMGN6Y3pNMlRYcG5JaXdpYUd0S2FIcEVTa3RMZVRSeE5rOW9aR1JGUjFsb1dsaDFNMmx2WkdSdVUzWktjQzB3WDFsb2JuVkZSU0lzSWpSTVFtbERNWFJJUTAwM1ZHNXhaamsyUjBabVRHbG1jWE5MYW1aa1kyUnZkVXhxVTFOV09HRkRkRlVpWFgwLllVS05ZN25ldkxVRDk5OW9NOF9vVUExa2pUOEZNQkFfN1JpRXB3OVVfcUVya0dPOExWLWZVdmZ4Ukl0NGx2QklQVFVXRlFSR2l5SWRxbmZTX0tzSzY4SkxiakNHTVdpN0hxUDNQbkUwT2lpRlhFNi1hUUZrc01oS1hZakRsdC1NaHh2NUg2dWZHRjRXdlp1bnQ2bTQ5WXM0aTFCb2FJYS1WQ1Y1YVpiVW1KajRuMGtlek9hM1dMQWVxTTVqR0wzREF1NnV2eWlyekc3Mlo3VTRhWDkyUWluaXFOYmV5WTJKWFg0U0prQ3VJSDVxV0hCMmRVejZiZW12Vnh5TFZLUFVjdTNhQWFKTWFid3lXV0NUVDdyVmZWLWlsdnNNSVhDVzF6X3BjNS1FcndNZHRZMzlHSkFFSTZxZmpYXzliOXVOd0UwMHUxM1gtTWdUdWJoZGxnaW1sUQ==",
     "digestAlgorithm" : null,
     "name" : "document-signed-jades-baseline-b.json"
@@ -3003,7 +3003,7 @@
     "value" : "WyJTNW9UZDlSUFRqSDN4cldnYkx0QlR3IiwicGV0cyIsW3siLi4uIjoidWpIaml5bHFmRGc2NkIzOFJUb2VkN3BseG1IQTVnRThFd05tb3l4VHpWNCJ9LHsiLi4uIjoiSGVLSTNxVHkxMDY5bHptRTE1WkQwdnVpVUlxZEVfVnA3Q3FZM1cwNTRIWSJ9XV0"
   } ],
   "keyBindingParameters" : {
-    "eaaType" : "SD_JWT_VC",
+    "attestationFormat" : "SD_JWT_VC",
     "digestAlgorithm" : null,
     "issuanceTime" : null,
     "audience" : "audience",
@@ -3012,8 +3012,8 @@
     "docType" : null,
     "deviceSignedDataElements" : null
   }
-}</con:request><con:originalUri>http://localhost/services/rest/eaa-creation/createKeyBindingSignature</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="issuePresentation" path="/services/rest/eaa-creation/issuePresentation" id="19472cbc-b95f-43ca-bb87-390297484c87"><con:settings/><con:parameters/><con:method name="Method 1" id="ab35d0d8-2498-4430-ab3f-278080575153" method="POST"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:iss="http://localhost/services/rest/eaa-creation/issuePresentation">iss:Response</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:request name="Request 1" id="70350072-e4cd-47fc-8163-5f6fe4136570" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{
-  "eaa" : {
+}</con:request><con:originalUri>http://localhost/services/rest/attestation-creation/createKeyBindingSignature</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="issuePresentation" path="/services/rest/attestation-creation/issuePresentation" id="19472cbc-b95f-43ca-bb87-390297484c87"><con:settings/><con:parameters/><con:method name="Method 1" id="ab35d0d8-2498-4430-ab3f-278080575153" method="POST"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:iss="http://localhost/services/rest/attestation-creation/issuePresentation">iss:Response</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:request name="Request 1" id="70350072-e4cd-47fc-8163-5f6fe4136570" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{
+  "attestation" : {
     "bytes" : "ZXlKaGJHY2lPaUpTVXpJMU5pSXNJbXRwWkNJNklrMUVOSGRPUzFGNVRVUkJlRWQ2UVZwQ1owNVdRa0ZOVFVWc1NuWmlNMUpVV2xkNGJWVXliRzVpYlZaclVtMUdjbHBVUlZKTlFUaEhRVEZWUlVObmQwbFNSazVVVEZoU2JHTXpVVU5DYVRkWFJrNWxOMVozUFQwaUxDSjROWFFqVXpJMU5pSTZJa0YyVUhKNVowWnFTakJLVkhaSlEyUktNRzFPTVVKMWQwMVhNUzFoZDFwd1dVSkdaRFJXVmxsdVduY2lMQ0o0TldNaU9sc2lUVWxKUXpacVEwTkJaRXRuUVhkSlFrRm5TVWRNZEZsVk1UZDBXRTFCTUVkRFUzRkhVMGxpTTBSUlJVSkRkMVZCVFVSQmVFZDZRVnBDWjA1V1FrRk5UVVZzU25aaU0xSlVXbGQ0YlZVeWJHNWliVlpyVW0xR2NscFVSVkpOUVRoSFFURlZSVU5uZDBsU1JrNVVURmhTYkdNelVYZElhR05PVFZSamQwNXFRVFJOVkVWNVRtcEJlRmRvWTA1T1JHTjNUbnBCTUUxRVl6Rk9la2t3VjJwQmIwMVNUWGRGVVZsRVZsRlJSRVJCY0ZSaFYyUjFXbGhLUjFsWGRHeE5Va1YzUkhkWlJGWlJVVXRFUVdoRlZURk5kR1JIVm5wa1JFTkRRVk5KZDBSUldVcExiMXBKYUhaalRrRlJSVUpDVVVGRVoyZEZVRUZFUTBOQlVXOURaMmRGUWtGTlNUTnJXbWgwYm1sd2JpdHBhVnBJV2psaGVEaEdiR1pGTlU5M0wyTkdkMEpVWmtGRllqTlNNVnBSVlhBMkwwSlJia0owTjA5dk1FcFhRblJqT1hGcmRqZEtWVVJrWTBKS1dGQldOVkZYVXpWQmVVMVFTSEJ4VVRjMVNHbDBhbk54TDBaNmRUaGxTSFJyUzNCR2FYcGplRWRoT1VKYVpHdFJhbWcwY2xOeWRFOHhTMnB6TUZKa05VUlJkRmRUWjJ0bFZrTkRUakE1YTA0d1duTmFNRVZPV1N0SmNEaFJlRk50ZVhwMGMxTjBhMWxZWkZWTWNYQjNlalJLUlZoWE9YWjZOalJsVkdKa1pUUjJVVW8yY0dwSVIyRnlTbVl4WjFGT1JXTXlXSHBvYlVrdmNISllUSGx6VjA1eFF6ZHNXbWMzVUZWYVZWUnlaR1ZuUVVKVVZYcFpRMUpLTVd0WFFsSlFiVFJ4YnpCTVRqUXdOV001TkZGUlpEUTFZVFZyVkdkdmQwaDZSV2RNYmtGUlNUSTRlREJOTTBFMU9WUkxReXRwWlU1ak5sWkdNVkJ6VkV4d1ZYYzNVRTVKTWxaemRGZzFha0YxWVhORFFYZEZRVUZoVFZOTlFrRjNSR2RaUkZaU01GQkJVVWd2UWtGUlJFRm5SVWROUVRCSFExTnhSMU5KWWpORVVVVkNRM2RWUVVFMFNVSkJVVU5MTmt4SFFUQXhWRklyY20xVk9IQTJlV2hCYVRSUGEwUk9NbUl4WkdKSlREaHNPR2xEVFZsdmNFeERlSGc0ZUhGeE0zVmlXa05QZUhGb01WZ3lhalp3WjFkNllYSmlNR0l2VFZWcGVEQXdTVzlWZGs1aVJrOTRRVmMzVUVKYVNVdEVURzV0Tmt4elkydFNlSE14VlRNeWMwTTVaREZNVDBobE0xZExRazVDTmtkYVFVeFVNV1YzYW1nM2FGTmlWMnBtZEd4dFkyOTJjU3MyWlZaSFFUVmpkbVl5ZFM4eUsxUnJTMnQ1U0ZZdlRsSXpPVFJ1V0hKa2MyUndkbmxuZDNsd1JYUllhbVYwZWtRM1ZWUTVNMDUxZHpONFkxWTRWa2xtZEVsMlNHWTVUR3BWTjJnclZXcEhiVXRZUnpsak1UVmxXWEl6VTNwVmJYWTJhM2xQU1RCQ2RuY3hORkJYZEhOWFIyd3dVV1JQVTFKMlNVSkNjbEEwWVdSRGJrZFVaMnBuYW1zNVRGUmpUemhDT0VaTGNuSXJPR3hJUjNWak1HSndOR3hKVlZSdmFWVnJSMGxNV0hOcFJXVkZaemxYUVhGdEsxaHhUeUpkTENKMGVYQWlPaUprWXl0elpDMXFkM1FpTENKcFlYUWlPakUzT0RFM09EazBPRE45LmV5SmZjMlJmWVd4bklqb2ljMmhoTFRJMU5pSXNJbWx6Y3lJNklrVkJRU0J3Y205MmFXUmxjaUlzSW01aVppSTZNVGM0TVRjNE9UUTRNeXdpWlhod0lqb3hOemc1TnpNNE1qZ3pMQ0p6ZFdJaU9pSm5iMjlrTFdWalpITmhMWFZ6WlhJaUxDSmpZWFJsWjI5eWVTSTZJblZ5YmpwbGRITnBPbVZ6YVRwbFlXRTZaWFU2Y1hWaGJHbG1hV1ZrSWl3aWMzUmhkSFZ6SWpwN0luTjBZWFIxYzE5c2FYTjBJanA3SW1sa2VDSTZNU3dpZFhKcElqb2lhSFIwY0hNNkx5OXdhMmt1Ym05M2FXNWhMbXgxTDJWaFlTOXpkR0YwZFhOZmJHbHpkQ0o5ZlN3aVkyNW1JanA3SW1wM2F5STZleUpyZEhraU9pSkZReUlzSW1OeWRpSTZJbEF0TWpVMklpd2llQ0k2SWtWMk1WaHBRMFZrZWtKbk9WTlBla1k1TUdweU9GcERZbEpUZVcxc1RtRndkbFJWYVdSclRGODJlRTBpTENKNUlqb2lPRGRwVVZGTmVISTBSME5UY0hOTWVUaGZRMmw0WWtOak1HbGhNVWxDV0hWaVdEVkdXSE53UzI5UFRTSjlmU3dpZG1OMElqb2lkWEp1T21WMVpHazZaV0ZoT2pFaUxDSjJZM1FqYVc1MFpXZHlhWFI1SWpvaWMyaGhNalUyTFV4SVpVRlhMM0JyZFM5RE5EbGhTVm8zTjNOeGVWaHBVVzF6T0N0eWMzaFFiR1pHWlhjMlJUbHRkMWs5SWl3aWFYTnpkV2x1WjE5aGRYUm9iM0pwZEhraU9pSlVSVk5VSUVGMWRHaHZjbWwwZVNJc0ltbHpjM1ZwYm1kZlkyOTFiblJ5ZVNJNklreFZJaXdpYVhOelgzSmxaMTlwWkNJNklsWkJWRXhWTFRFeU16UTFOaUlzSWw5elpDSTZXeUpVTnkwMVZYaDBNbWhQZG5ab1kwUk5iR0p0YURCWlRXMW1jVU52UXpoWlMySmlZMGN6Y3pNMlRYcG5JaXdpYUd0S2FIcEVTa3RMZVRSeE5rOW9aR1JGUjFsb1dsaDFNMmx2WkdSdVUzWktjQzB3WDFsb2JuVkZSU0lzSWpSTVFtbERNWFJJUTAwM1ZHNXhaamsyUjBabVRHbG1jWE5MYW1aa1kyUnZkVXhxVTFOV09HRkRkRlVpWFgwLllVS05ZN25ldkxVRDk5OW9NOF9vVUExa2pUOEZNQkFfN1JpRXB3OVVfcUVya0dPOExWLWZVdmZ4Ukl0NGx2QklQVFVXRlFSR2l5SWRxbmZTX0tzSzY4SkxiakNHTVdpN0hxUDNQbkUwT2lpRlhFNi1hUUZrc01oS1hZakRsdC1NaHh2NUg2dWZHRjRXdlp1bnQ2bTQ5WXM0aTFCb2FJYS1WQ1Y1YVpiVW1KajRuMGtlek9hM1dMQWVxTTVqR0wzREF1NnV2eWlyekc3Mlo3VTRhWDkyUWluaXFOYmV5WTJKWFg0U0prQ3VJSDVxV0hCMmRVejZiZW12Vnh5TFZLUFVjdTNhQWFKTWFid3lXV0NUVDdyVmZWLWlsdnNNSVhDVzF6X3BjNS1FcndNZHRZMzlHSkFFSTZxZmpYXzliOXVOd0UwMHUxM1gtTWdUdWJoZGxnaW1sUQ==",
     "digestAlgorithm" : null,
     "name" : "document-signed-jades-baseline-b.json"
@@ -3061,10 +3061,10 @@
     "name" : "document-signed-jades-baseline-b.json"
   },
   "presentationParameters" : {
-    "eaaType" : "SD_JWT_VC",
+    "attestationFormat" : "SD_JWT_VC",
     "deviceSignedDataElements" : null
   }
-}</con:request><con:originalUri>http://localhost/services/rest/eaa-creation/issuePresentation</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource></con:interface><con:interface xsi:type="con:WsdlInterface" id="194e5a3c-e7a8-4be9-b063-3063c1f5e1ec" wsaVersion="NONE" name="SoapDocumentSignatureServiceImplServiceSoapBinding" type="wsdl" bindingName="{http://soap.signature.ws.dss.esig.europa.eu/}SoapDocumentSignatureServiceImplServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/services/soap/signature/one-document?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/services/soap/signature/one-document?wsdl"><con:part><con:url>http://localhost:8080/services/soap/signature/one-document?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="SoapDocumentSignatureServiceImplService" targetNamespace="http://soap.signature.ws.dss.esig.europa.eu/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://soap.signature.ws.dss.esig.europa.eu/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns2="http://schemas.xmlsoap.org/soap/http" xmlns:ns1="http://signature.dss.esig.europa.eu/">
+}</con:request><con:originalUri>http://localhost/services/rest/attestation-creation/issuePresentation</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource></con:interface><con:interface xsi:type="con:WsdlInterface" id="194e5a3c-e7a8-4be9-b063-3063c1f5e1ec" wsaVersion="NONE" name="SoapDocumentSignatureServiceImplServiceSoapBinding" type="wsdl" bindingName="{http://soap.signature.ws.dss.esig.europa.eu/}SoapDocumentSignatureServiceImplServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/services/soap/signature/one-document?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/services/soap/signature/one-document?wsdl"><con:part><con:url>http://localhost:8080/services/soap/signature/one-document?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="SoapDocumentSignatureServiceImplService" targetNamespace="http://soap.signature.ws.dss.esig.europa.eu/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://soap.signature.ws.dss.esig.europa.eu/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns2="http://schemas.xmlsoap.org/soap/http" xmlns:ns1="http://signature.dss.esig.europa.eu/">
   <wsdl:import location="http://localhost:8080/services/soap/signature/one-document?wsdl=SoapDocumentSignatureService.wsdl" namespace="http://signature.dss.esig.europa.eu/"></wsdl:import>
   <wsdl:binding name="SoapDocumentSignatureServiceImplServiceSoapBinding" type="ns1:SoapDocumentSignatureService">
     <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
@@ -7877,8 +7877,8 @@
          </signMessageDigest>\r
       </sig:signMessageDigest>\r
    </soapenv:Body>\r
-</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://soap.signature.ws.dss.esig.europa.eu/SoapExternalCMSService/signMessageDigest"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:WsdlInterface" id="2575763a-d3a0-4526-a6d9-8ccc84368646" wsaVersion="NONE" name="SoapEAAValidationServiceImplServiceSoapBinding" type="wsdl" bindingName="{http://soap.validation.eaa.ws.dss.esig.europa.eu/}SoapEAAValidationServiceImplServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/services/soap/eaa-validation?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/services/soap/eaa-validation?wsdl"><con:part><con:url>http://localhost:8080/services/soap/eaa-validation?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="SoapEAAValidationServiceImplService" targetNamespace="http://soap.validation.eaa.ws.dss.esig.europa.eu/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://soap.validation.eaa.ws.dss.esig.europa.eu/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns2="http://schemas.xmlsoap.org/soap/http" xmlns:ns1="http://eaa.validation.dss.esig.europa.eu/">
-  <wsdl:import location="http://localhost:8080/services/soap/eaa-validation?wsdl=SoapEAAValidationService.wsdl" namespace="http://eaa.validation.dss.esig.europa.eu/"></wsdl:import>
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://soap.signature.ws.dss.esig.europa.eu/SoapExternalCMSService/signMessageDigest"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:WsdlInterface" id="2575763a-d3a0-4526-a6d9-8ccc84368646" wsaVersion="NONE" name="SoapEAAValidationServiceImplServiceSoapBinding" type="wsdl" bindingName="{http://soap.validation.attestation.ws.dss.esig.europa.eu/}SoapEAAValidationServiceImplServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/services/soap/attestation-validation?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/services/soap/attestation-validation?wsdl"><con:part><con:url>http://localhost:8080/services/soap/attestation-validation?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="SoapEAAValidationServiceImplService" targetNamespace="http://soap.validation.attestation.ws.dss.esig.europa.eu/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://soap.validation.attestation.ws.dss.esig.europa.eu/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns2="http://schemas.xmlsoap.org/soap/http" xmlns:ns1="http://attestation.validation.dss.esig.europa.eu/">
+  <wsdl:import location="http://localhost:8080/services/soap/attestation-validation?wsdl=SoapEAAValidationService.wsdl" namespace="http://attestation.validation.dss.esig.europa.eu/"></wsdl:import>
   <wsdl:binding name="SoapEAAValidationServiceImplServiceSoapBinding" type="ns1:SoapEAAValidationService">
     <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
     <wsdl:operation name="validateEAA">
@@ -7893,12 +7893,12 @@
   </wsdl:binding>
   <wsdl:service name="SoapEAAValidationServiceImplService">
     <wsdl:port binding="tns:SoapEAAValidationServiceImplServiceSoapBinding" name="SoapEAAValidationServiceImplPort">
-      <soap:address location="http://localhost:8080/services/soap/eaa-validation"/>
+      <soap:address location="http://localhost:8080/services/soap/attestation-validation"/>
     </wsdl:port>
   </wsdl:service>
-</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part><con:part><con:url>http://localhost:8080/services/soap/eaa-validation?wsdl=SoapEAAValidationService.wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="SoapEAAValidationService" targetNamespace="http://eaa.validation.dss.esig.europa.eu/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns1="http://eaa.validation.dss.esig.europa.eu/">
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part><con:part><con:url>http://localhost:8080/services/soap/attestation-validation?wsdl=SoapEAAValidationService.wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="SoapEAAValidationService" targetNamespace="http://attestation.validation.dss.esig.europa.eu/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns1="http://attestation.validation.dss.esig.europa.eu/">
   <wsdl:types>
-    <xs:schema elementFormDefault="unqualified" targetNamespace="http://eaa.validation.dss.esig.europa.eu/" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:tns="http://eaa.validation.dss.esig.europa.eu/" xmlns:ns3="http://dss.esig.europa.eu/validation/detailed-report" xmlns:ns2="http://dss.esig.europa.eu/validation/simple-report" xmlns:ns1="http://dss.esig.europa.eu/validation/diagnostic">
+    <xs:schema elementFormDefault="unqualified" targetNamespace="http://attestation.validation.dss.esig.europa.eu/" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:tns="http://attestation.validation.dss.esig.europa.eu/" xmlns:ns3="http://dss.esig.europa.eu/validation/detailed-report" xmlns:ns2="http://dss.esig.europa.eu/validation/simple-report" xmlns:ns1="http://dss.esig.europa.eu/validation/diagnostic">
       <xs:import namespace="http://dss.esig.europa.eu/validation/diagnostic"/>
       <xs:import namespace="http://dss.esig.europa.eu/validation/simple-report"/>
       <xs:import namespace="http://dss.esig.europa.eu/validation/detailed-report"/>
@@ -7907,14 +7907,14 @@
       <xs:element name="validateEAAResponse" type="tns:validateEAAResponse"/>
       <xs:complexType name="validateEAA">
         <xs:sequence>
-          <xs:element minOccurs="0" name="dataToValidateDTO" type="tns:eaaToValidateDTO"/>
+          <xs:element minOccurs="0" name="dataToValidateDTO" type="tns:attestationToValidateDTO"/>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="eaaToValidateDTO">
+      <xs:complexType name="attestationToValidateDTO">
         <xs:sequence>
           <xs:element minOccurs="0" name="cryptographicSuite" type="tns:remoteDocument"/>
-          <xs:element minOccurs="0" name="eaaPresentation" type="tns:remoteDocument"/>
-          <xs:element minOccurs="0" name="eaaValidationParameters" type="tns:eaaValidationParametersDTO"/>
+          <xs:element minOccurs="0" name="attestationPresentation" type="tns:remoteDocument"/>
+          <xs:element minOccurs="0" name="attestationValidationParameters" type="tns:attestationValidationParametersDTO"/>
           <xs:element minOccurs="0" name="policy" type="tns:remoteDocument"/>
           <xs:element minOccurs="0" name="tokenExtractionStrategy" type="tns:tokenExtractionStrategy"/>
           <xs:element minOccurs="0" name="validationTime" type="xs:dateTime"/>
@@ -7927,7 +7927,7 @@
           <xs:element minOccurs="0" name="name" type="xs:string"/>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="eaaValidationParametersDTO">
+      <xs:complexType name="attestationValidationParametersDTO">
         <xs:sequence>
           <xs:element minOccurs="0" name="sessionTranscript" type="tns:remoteDocument"/>
         </xs:sequence>
@@ -10941,24 +10941,24 @@
       <wsdl:output message="ns1:validateEAAResponse" name="validateEAAResponse"></wsdl:output>
     </wsdl:operation>
   </wsdl:portType>
-</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:8080/services/soap/eaa-validation</con:endpoint></con:endpoints><con:operation id="d637f023-dde1-445d-a9ae-5589de291f02" isOneWay="false" action="" name="validateEAA" bindingOperationName="validateEAA" type="Request-Response" outputName="validateEAAResponse" inputName="validateEAA" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="f3b3af44-8df7-4c63-9459-1a4617833bf0" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/services/soap/eaa-validation</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:eaa="http://eaa.validation.dss.esig.europa.eu/">\r
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:8080/services/soap/attestation-validation</con:endpoint></con:endpoints><con:operation id="d637f023-dde1-445d-a9ae-5589de291f02" isOneWay="false" action="" name="validateEAA" bindingOperationName="validateEAA" type="Request-Response" outputName="validateEAAResponse" inputName="validateEAA" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="f3b3af44-8df7-4c63-9459-1a4617833bf0" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/services/soap/attestation-validation</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:attestation="http://attestation.validation.dss.esig.europa.eu/">\r
    <soapenv:Header/>\r
    <soapenv:Body>\r
-      <eaa:validateEAA>\r
+      <attestation:validateEAA>\r
          <!--Optional:-->\r
          <dataToValidateDTO>\r
             <!--Optional:-->\r
-            <eaaPresentation>\r
+            <attestationPresentation>\r
                <!--Optional:-->\r
                <bytes>ZXlKaGJHY2lPaUpGVXpJMU5pSXNJbU4wZVNJNkltcHpiMjRpTENKcmFXUWlPaUpOU1VjMFRVbEhabkJKUjJOTlNVZGFUVkZ6ZDBOUldVUldVVkZIUlhkS1NsWkVSVmxOUWxsSFFURlZSVU5uZDFCVFZ6VnRZakJPYkdOdVVXZFZlVFYzVEd0RmRVMVNPSGRJVVZsRVZsRlJURVJDV2xWamJsWjZaRU5DVkZwWVNqSmhWMDVzU1VaQ2VXSXpXbkJhUjFaNVRWSnZkMGRCV1VSV1VWSm9SRUpHVjFGV1VrcFdRekIzVG5wck1FNVVTWGhOVkVGM1RtcEZlazFFUlVkQk1WVkZRWGQzY1ZOWE5XMWlNRTVzWTI1UloxRXlWbmxrUjJ4dFlWZE9hR1JIYkhaaWFVSlVXbGhLTW1GWFRteGplVUpHVVhsQ1JGRlRRVEJKUlU1TlFXaFNXV28wVlhJM1UzWlpWelJUZEVWRlIwZzROVWxEZURKME0wRm5QVDBpTENKNE5YUWpVekkxTmlJNkluaE1PRWhSYVhKemFtWTVkR3RmWTFwSkxVUkhOMmx0ZWxGUUxVZzFjVGhMVlROQ1NuUTRjM2R2U1djaUxDSjROV01pT2xzaVRVbEpSVzVVUTBOQ1EwOW5RWGRKUWtGblNWVlhTU3RHU3lzd2NqSkdkVVZ5VWtKQ2FDOVBVMEZ6WkhKa2QwbDNRMmRaU1V0dldrbDZhakJGUVhkTmQyZGFhM2hEZWtGS1FtZE9Wa0pCV1ZSQmEyeFZUVkpuZDBabldVUldVVkZMUkVFNVNtSnRXblpSTWxaNVpFTkNWRXh1UVhWUlV6UjRTSHBCWkVKblRsWkNRWE5OUm14U2VXUllUakJKUms1c1kyNWFjRmt5VldkVlNFcDJaRzFzYTFwWVNYaEhha0ZaUW1kT1ZrSkhSVTFGVmxwQ1ZrVnNWVXhVUVROUFZGRXhUV3BGZUUxRVFUSk5WRTEzVFZGWlJGWlJVVVJFUTNCS1ltMWFkbEV5Vm5sa1EwSkVXbGhLTUdGWFduQlpNa1l3WVZjNWRVbEdUbXhqYmxwd1dUSldla2xGVmtSSlJVNUNTVVJSWjFFd2QzZElhR05PVFdwWmQwNXFRWHBOUkdONlRYcE5NRmRvWTA1TmFtTjNUbXBCZWsxRVZYcE5lazE2VjJwRFFqWnFSV0pOUW10SFFURlZSVUYzZDFOUlYzaHNZVE5PYUdKdFVubEpSVXBzWWtkc2FHRXlPVEpOVVhOM1ExRlpSRlpSVVVkRmQwcE5WbFJGVUUxQk1FZEJNVlZGUW5kM1IxTXlWbTlpUjFaMVRWSnJkMFozV1VSV1VWRkxSRUpDVDJJelpIQmliVVZuVlRJNWMyUllVbkJpTWpWNlRWSk5kMFZSV1VSV1VWRk1SRUZ3YkZVeWJHNWliVVl3WkZoS2JFMVNRWGRFWjFsRVZsRlJSa1YzWXpOT2VtTXpUbnBqTTAxVGMzZExVVmxLUzI5YVNXaDJZMDVCVVd0Q1JtaDRhR0pIVm5Kak1rWjFXa2hKZFZsdFZuTmhWMFp5WWpOYVFXSnRPVE5oVnpWb1RHMTRNVTFTU1hkRlFWbEVWbEZSY1VSQmJFSmlSMVp5WXpKR2RWcElTWGhGVkVGUVFtZE9Wa0pCVVUxRFJVcHNZa2RzYUdFeU9USk5VbU4zUmxGWlJGWlJVWFZGZHpSNVRVUkpNazlVYXpWUFJGVjNUV3ByZUU1NlFscE5RazFIUW5seFIxTk5ORGxCWjBWSFEwTnhSMU5OTkRsQmQwVklRVEJKUVVKQlVrWlFURFE0TkZRMU16aHpOV2hZTjBsNFduaHplVXhYVEhWaGRYaGhRVmhQVTJkTVlrTjRURlpZWlZKdFJpdHRSRmswVW14VlNEbFBXRmxYTDBsYVNHdHFaelpXVTA0NGFVRTBZMm8zZVhSeFUzVk5ObXBuWjBnd1RVbEpRamhFUVdSQ1owNVdTRk5WUlVacVFWVkNaMmR5UW1kRlJrSlJZMFJCWjFsSlMzZFpRa0pSVlVoQmQxRjNaMkZGUjBFeFZXUkpRVk5DYlZSRFFteHFRMEpyZDFsSFN6QjNhMEZSUlVsTlNVZEpUVVZGUjBORGMwZEJVVlZHUW5kSlEwMUVWVTFOTVU1VVZFTjNaMVV3TVVwVVZWVm5XVmMxYTBsRlVuQmFNbXd3V1ZkM1oxVXliRzVpYlVZd1pGaEtiRWxGVG5OaFYxWjFaRU5DUkZwWVNqQmhWMXB3V1RKR01GcFVRa1JDWjJkeVFtZEZSa0pSWTBOQlVsa3pZVWhTTUdORWIzWk1NMlF6WkhrMWJXRllTblJaVXpWd1ltMWFkbGt5Vm5sa1F6VndaRU01YTJJeVRqRmlWMVoxWkVkR05tRlhPWFZhVXpsMFdWYzFNVmxYZUhCTWJrSnZZMFJDTUVKblozSkNaMFZHUWxGalFrRlJVbTlOUjFsM1RHZFpTVXQzV1VKQ1VWVklUVUZIUjBsdGFEQmtTRUUyVEhrNWRsa3pUbmRaTW5kMVdUTk9iRmw1TldwWlZGRjFZVmMxYldJeVRteGpibEYxWVZoUmQwNUJXVWxMZDFsQ1FsRlZTRTFCUzBkTFIyZ3daRWhCTmt4NU9XcGpiWGhxWWtNMWFsbFVVWFZoVnpWdFlqSk9iR051VVhWaFdGRjJXVE5PYkZsNU9VUlJVelZxWTI1UmQxQkJXVVJXVWpCbVFrUlZkMDE2UVhodlF5dG5URmxaY21GSVVqQmpSRzkyVERKT2VXSkhUbk5NYlU1b1RrTTFjR0p0V25aWk1sWjVaRU0xY0dSRE9XcGpNbFpxVERCT1UxUkVRWGhNYlU1NVlrUkJUMEpuVGxaSVVUaENRV1k0UlVKQlRVTkNURUYzU25kWlJGWlNNRkpDUTBGM1NHOUZZMWxYZUd4aE0wNW9ZbTFTZVV4dFNteGlSMnhvWVRJNU1sRkhOWFprTW14MVdWTTFjMlJVUVdaQ1owNVdTRk5OUlVkRVFWZG5RbEZRV0ZVMmQwdEpZMmwyV2xGSU9ERXZOMm80T0ROT01XSTFaRVJCWkVKblRsWklVVFJGUm1kUlZVOWpUalJoTWs4dldHaGxTV2w2WWt4bmVuWjRNM1pUVTNSTU1IZERaMWxKUzI5YVNYcHFNRVZCZDAxRVlVRkJkMXBSU1hoQlRWRldhRU12WjJkb1pUWklhbGhEVWpRcmRTdHFkSE12WVhwQlIwaGFNMFpGU1hwdFoycE9XbXR5YTNsTE1VUkVOM2x2V0ZsdWRTOWhabWN3ZDNaSU1FRkpkMWxMT0VFM2JFNVdWMFYzYXprNWVpdE9aelpXVmxvM2JtVnljbU5XYXpsNk9VeHdiVFJpYjFoV1JrRTRiM0pvUVVsU2NuTnRLeTh4TlRkblVsTnVUellpWFN3aWRIbHdJam9pWkdNcmMyUXRhbmQwSWl3aWFXRjBJam94Tnpnd05qWTBOak01ZlEuZXlKZmMyUmZZV3huSWpvaWMyaGhMVEkxTmlJc0ltbHpjeUk2SWtWQlFTQndjbTkyYVdSbGNpSXNJbTVpWmlJNk1UYzRNRFkyTkRZek9Td2laWGh3SWpveE9ERXlNREF3T0RFekxDSjJZM1FpT2lKMWNtNDZaWFZrYVRwbFlXRTZNU0lzSW5aamRDTnBiblJsWjNKcGRIa2lPaUp6YUdFeU5UWXRURWhsUVZjdmNHdDFMME0wT1dGSldqYzNjM0Y1V0dsUmJYTTRLM0p6ZUZCc1prWmxkelpGT1cxM1dUMGlMQ0ptWVcxcGJIbGZibUZ0WlNJNklrUnZaU0lzSW1kcGRtVnVYMjVoYldVaU9pSktiMmh1SWl3aWFYTnpkV2x1WjE5aGRYUm9iM0pwZEhraU9pSlVSVk5VSUVGMWRHaHZjbWwwZVNKOS5udXdqdzI1Wm0wNzlxQW91c193MEtBOGR4TXVGVlF6dTZMc2xvQ09MOFBvc3R0Wl9udkhYOWhKdEpIV3Z3VlZIeDBpaTYtWGR5aVFZUXlkM0U0TENwUX4=</bytes>\r
                <!--Optional:-->\r
                <name>sdjwt.json</name>\r
-            </eaaPresentation>\r
+            </attestationPresentation>\r
          </dataToValidateDTO>\r
-      </eaa:validateEAA>\r
+      </attestation:validateEAA>\r
    </soapenv:Body>\r
-</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://soap.validation.eaa.ws.dss.esig.europa.eu/SoapEAAValidationService/validateEAA"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:WsdlInterface" id="dadf88e5-e292-492e-bc3b-48592cb8b1f5" wsaVersion="NONE" name="SoapEAACreationServiceImplServiceSoapBinding" type="wsdl" bindingName="{http://soap.creation.eaa.ws.dss.esig.europa.eu/}SoapEAACreationServiceImplServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/services/soap/eaa-creation?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/services/soap/eaa-creation?wsdl"><con:part><con:url>http://localhost:8080/services/soap/eaa-creation?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="SoapEAACreationServiceImplService" targetNamespace="http://soap.creation.eaa.ws.dss.esig.europa.eu/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://soap.creation.eaa.ws.dss.esig.europa.eu/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns2="http://schemas.xmlsoap.org/soap/http" xmlns:ns1="http://eaa.creation.dss.esig.europa.eu/">
-  <wsdl:import location="http://localhost:8080/services/soap/eaa-creation?wsdl=SoapEAACreationService.wsdl" namespace="http://eaa.creation.dss.esig.europa.eu/"></wsdl:import>
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://soap.validation.attestation.ws.dss.esig.europa.eu/SoapEAAValidationService/validateEAA"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:WsdlInterface" id="dadf88e5-e292-492e-bc3b-48592cb8b1f5" wsaVersion="NONE" name="SoapEAACreationServiceImplServiceSoapBinding" type="wsdl" bindingName="{http://soap.creation.attestation.ws.dss.esig.europa.eu/}SoapEAACreationServiceImplServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/services/soap/attestation-creation?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/services/soap/attestation-creation?wsdl"><con:part><con:url>http://localhost:8080/services/soap/attestation-creation?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="SoapEAACreationServiceImplService" targetNamespace="http://soap.creation.attestation.ws.dss.esig.europa.eu/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://soap.creation.attestation.ws.dss.esig.europa.eu/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns2="http://schemas.xmlsoap.org/soap/http" xmlns:ns1="http://attestation.creation.dss.esig.europa.eu/">
+  <wsdl:import location="http://localhost:8080/services/soap/attestation-creation?wsdl=SoapEAACreationService.wsdl" namespace="http://attestation.creation.dss.esig.europa.eu/"></wsdl:import>
   <wsdl:binding name="SoapEAACreationServiceImplServiceSoapBinding" type="ns1:SoapEAACreationService">
     <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
     <wsdl:operation name="signEAA">
@@ -11018,12 +11018,12 @@
   </wsdl:binding>
   <wsdl:service name="SoapEAACreationServiceImplService">
     <wsdl:port binding="tns:SoapEAACreationServiceImplServiceSoapBinding" name="SoapEAACreationServiceImplPort">
-      <soap:address location="http://localhost:8080/services/soap/eaa-creation"/>
+      <soap:address location="http://localhost:8080/services/soap/attestation-creation"/>
     </wsdl:port>
   </wsdl:service>
-</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part><con:part><con:url>http://localhost:8080/services/soap/eaa-creation?wsdl=SoapEAACreationService.wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="SoapEAACreationService" targetNamespace="http://eaa.creation.dss.esig.europa.eu/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns1="http://eaa.creation.dss.esig.europa.eu/">
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part><con:part><con:url>http://localhost:8080/services/soap/attestation-creation?wsdl=SoapEAACreationService.wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="SoapEAACreationService" targetNamespace="http://attestation.creation.dss.esig.europa.eu/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns1="http://attestation.creation.dss.esig.europa.eu/">
   <wsdl:types>
-    <xs:schema elementFormDefault="unqualified" targetNamespace="http://eaa.creation.dss.esig.europa.eu/" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://eaa.creation.dss.esig.europa.eu/">
+    <xs:schema elementFormDefault="unqualified" targetNamespace="http://attestation.creation.dss.esig.europa.eu/" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://attestation.creation.dss.esig.europa.eu/">
       <xs:element name="createKeyBindingSignature" type="tns:createKeyBindingSignature"/>
       <xs:element name="createKeyBindingSignatureResponse" type="tns:createKeyBindingSignatureResponse"/>
       <xs:element name="getDataToSign" type="tns:getDataToSign"/>
@@ -11038,14 +11038,14 @@
       <xs:element name="signEAAResponse" type="tns:signEAAResponse"/>
       <xs:complexType name="signEAA">
         <xs:sequence>
-          <xs:element minOccurs="0" name="signEAADTO" type="tns:signEAADTO"/>
+          <xs:element minOccurs="0" name="signAttestationDTO" type="tns:signAttestationDTO"/>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="signEAADTO">
+      <xs:complexType name="signAttestationDTO">
         <xs:complexContent>
           <xs:extension base="tns:abstractSignDocumentDTO">
             <xs:sequence>
-              <xs:element minOccurs="0" name="payloadParameters" type="tns:remoteEAAPayloadParameters"/>
+              <xs:element minOccurs="0" name="payloadParameters" type="tns:remoteAttestationPayloadParameters"/>
             </xs:sequence>
           </xs:extension>
         </xs:complexContent>
@@ -11056,14 +11056,14 @@
           <xs:element minOccurs="0" name="signatureValue" type="tns:signatureValueDTO"/>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="remoteEAAPayloadParameters">
+      <xs:complexType name="remoteAttestationPayloadParameters">
         <xs:sequence>
           <xs:element minOccurs="0" name="category" type="xs:string"/>
           <xs:element minOccurs="0" name="decoyDigestNumber" type="xs:int"/>
           <xs:element minOccurs="0" name="deviceKey" type="tns:remotePublicKey"/>
           <xs:element minOccurs="0" name="digestAlgorithm" type="tns:digestAlgorithm"/>
           <xs:element minOccurs="0" name="docType" type="xs:string"/>
-          <xs:element minOccurs="0" name="eaaType" type="tns:eaaType"/>
+          <xs:element minOccurs="0" name="attestationFormat" type="tns:attestationFormat"/>
           <xs:element minOccurs="0" name="expectedUpdate" type="xs:dateTime"/>
           <xs:element minOccurs="0" name="expirationDate" type="xs:dateTime"/>
           <xs:element minOccurs="0" name="identifierList" type="tns:remoteEAAIdentifierList"/>
@@ -11418,7 +11418,7 @@
           <xs:extension base="tns:abstractSignDocumentDTO">
             <xs:sequence>
               <xs:element maxOccurs="unbounded" minOccurs="0" name="disclosures" nillable="true" type="tns:disclosureDTO"/>
-              <xs:element minOccurs="0" name="eaa" type="tns:remoteDocument"/>
+              <xs:element minOccurs="0" name="attestation" type="tns:remoteDocument"/>
               <xs:element minOccurs="0" name="keyBindingParameters" type="tns:remoteKeyBindingParameters"/>
             </xs:sequence>
           </xs:extension>
@@ -11437,7 +11437,7 @@
           <xs:element maxOccurs="unbounded" minOccurs="0" name="deviceSignedDataElements" nillable="true" type="tns:claimDTO"/>
           <xs:element minOccurs="0" name="digestAlgorithm" type="tns:digestAlgorithm"/>
           <xs:element minOccurs="0" name="docType" type="xs:string"/>
-          <xs:element minOccurs="0" name="eaaType" type="tns:eaaType"/>
+          <xs:element minOccurs="0" name="attestationFormat" type="tns:attestationFormat"/>
           <xs:element minOccurs="0" name="issuanceTime" type="xs:dateTime"/>
           <xs:element minOccurs="0" name="nonce" type="xs:string"/>
           <xs:element minOccurs="0" name="sessionTranscript" type="tns:remoteDocument"/>
@@ -11456,15 +11456,15 @@
       <xs:complexType name="issuePresentationDTO">
         <xs:sequence>
           <xs:element maxOccurs="unbounded" minOccurs="0" name="disclosures" nillable="true" type="tns:disclosureDTO"/>
-          <xs:element minOccurs="0" name="eaa" type="tns:remoteDocument"/>
+          <xs:element minOccurs="0" name="attestation" type="tns:remoteDocument"/>
           <xs:element minOccurs="0" name="keyBindingSignature" type="tns:remoteDocument"/>
-          <xs:element minOccurs="0" name="presentationParameters" type="tns:remoteEAAPresentationParameters"/>
+          <xs:element minOccurs="0" name="presentationParameters" type="tns:remoteAttestationPresentationParameters"/>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="remoteEAAPresentationParameters">
+      <xs:complexType name="remoteAttestationPresentationParameters">
         <xs:sequence>
           <xs:element maxOccurs="unbounded" minOccurs="0" name="deviceSignedDataElements" nillable="true" type="tns:claimDTO"/>
-          <xs:element minOccurs="0" name="eaaType" type="tns:eaaType"/>
+          <xs:element minOccurs="0" name="attestationFormat" type="tns:attestationFormat"/>
         </xs:sequence>
       </xs:complexType>
       <xs:complexType name="issuePresentationResponse">
@@ -11474,14 +11474,14 @@
       </xs:complexType>
       <xs:complexType name="getDataToSign">
         <xs:sequence>
-          <xs:element minOccurs="0" name="dataToSignEAADTO" type="tns:dataToSignEAADTO"/>
+          <xs:element minOccurs="0" name="dataToSignAttestationDTO" type="tns:dataToSignAttestationDTO"/>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="dataToSignEAADTO">
+      <xs:complexType name="dataToSignAttestationDTO">
         <xs:complexContent>
           <xs:extension base="tns:abstractDataToSignDTO">
             <xs:sequence>
-              <xs:element minOccurs="0" name="payloadParameters" type="tns:remoteEAAPayloadParameters"/>
+              <xs:element minOccurs="0" name="payloadParameters" type="tns:remoteAttestationPayloadParameters"/>
             </xs:sequence>
           </xs:extension>
         </xs:complexContent>
@@ -11508,7 +11508,7 @@
       </xs:complexType>
       <xs:complexType name="disclosuresDTO">
         <xs:sequence>
-          <xs:element minOccurs="0" name="payloadParameters" type="tns:remoteEAAPayloadParameters"/>
+          <xs:element minOccurs="0" name="payloadParameters" type="tns:remoteAttestationPayloadParameters"/>
         </xs:sequence>
       </xs:complexType>
       <xs:complexType name="getDisclosuresResponse">
@@ -11526,7 +11526,7 @@
           <xs:extension base="tns:abstractDataToSignDTO">
             <xs:sequence>
               <xs:element maxOccurs="unbounded" minOccurs="0" name="disclosures" nillable="true" type="tns:disclosureDTO"/>
-              <xs:element minOccurs="0" name="eaa" type="tns:remoteDocument"/>
+              <xs:element minOccurs="0" name="attestation" type="tns:remoteDocument"/>
               <xs:element minOccurs="0" name="keyBindingParameters" type="tns:remoteKeyBindingParameters"/>
             </xs:sequence>
           </xs:extension>
@@ -11557,7 +11557,7 @@
           <xs:enumeration value="WHIRLPOOL"/>
         </xs:restriction>
       </xs:simpleType>
-      <xs:simpleType name="eaaType">
+      <xs:simpleType name="attestationFormat">
         <xs:restriction base="xs:string">
           <xs:enumeration value="SD_JWT_VC"/>
           <xs:enumeration value="ISO_IEC_MDOC"/>
@@ -11903,10 +11903,10 @@
       <wsdl:output message="ns1:getDataToSignForKeyBindingSignatureResponse" name="getDataToSignForKeyBindingSignatureResponse"></wsdl:output>
     </wsdl:operation>
   </wsdl:portType>
-</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:8080/services/soap/eaa-creation</con:endpoint></con:endpoints><con:operation id="439f13ee-e766-40bb-a7cf-dafb26401ad8" isOneWay="false" action="" name="createKeyBindingSignature" bindingOperationName="createKeyBindingSignature" type="Request-Response" outputName="createKeyBindingSignatureResponse" inputName="createKeyBindingSignature" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="7615e3c2-50fd-4cfd-958b-b5df2611f102" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/services/soap/eaa-creation</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:eaa="http://eaa.creation.dss.esig.europa.eu/">\r
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:8080/services/soap/attestation-creation</con:endpoint></con:endpoints><con:operation id="439f13ee-e766-40bb-a7cf-dafb26401ad8" isOneWay="false" action="" name="createKeyBindingSignature" bindingOperationName="createKeyBindingSignature" type="Request-Response" outputName="createKeyBindingSignatureResponse" inputName="createKeyBindingSignature" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="7615e3c2-50fd-4cfd-958b-b5df2611f102" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/services/soap/attestation-creation</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:attestation="http://attestation.creation.dss.esig.europa.eu/">\r
    <soapenv:Header/>\r
    <soapenv:Body>\r
-      <eaa:createKeyBindingSignature>\r
+      <attestation:createKeyBindingSignature>\r
          <!--Optional:-->\r
          <createKeyBindingSignatureDTO>\r
             <!--Optional:-->\r
@@ -11969,32 +11969,32 @@
                <value>WyJTNW9UZDlSUFRqSDN4cldnYkx0QlR3IiwicGV0cyIsW3siLi4uIjoidWpIaml5bHFmRGc2NkIzOFJUb2VkN3BseG1IQTVnRThFd05tb3l4VHpWNCJ9LHsiLi4uIjoiSGVLSTNxVHkxMDY5bHptRTE1WkQwdnVpVUlxZEVfVnA3Q3FZM1cwNTRIWSJ9XV0</value>
             </disclosures>
             <!--Optional:-->\r
-            <eaa>
+            <attestation>
                <!--Optional:-->
                <bytes>ZXlKaGJHY2lPaUpTVXpJMU5pSXNJbXRwWkNJNklrMUVOSGRPUzFGNVRVUkJlRWQ2UVZwQ1owNVdRa0ZOVFVWc1NuWmlNMUpVV2xkNGJWVXliRzVpYlZaclVtMUdjbHBVUlZKTlFUaEhRVEZWUlVObmQwbFNSazVVVEZoU2JHTXpVVU5DYVRkWFJrNWxOMVozUFQwaUxDSjROWFFqVXpJMU5pSTZJa0YyVUhKNVowWnFTakJLVkhaSlEyUktNRzFPTVVKMWQwMVhNUzFoZDFwd1dVSkdaRFJXVmxsdVduY2lMQ0o0TldNaU9sc2lUVWxKUXpacVEwTkJaRXRuUVhkSlFrRm5TVWRNZEZsVk1UZDBXRTFCTUVkRFUzRkhVMGxpTTBSUlJVSkRkMVZCVFVSQmVFZDZRVnBDWjA1V1FrRk5UVVZzU25aaU0xSlVXbGQ0YlZVeWJHNWliVlpyVW0xR2NscFVSVkpOUVRoSFFURlZSVU5uZDBsU1JrNVVURmhTYkdNelVYZElhR05PVFZSamQwNXFRVFJOVkVWNVRtcEJlRmRvWTA1T1JHTjNUbnBCTUUxRVl6Rk9la2t3VjJwQmIwMVNUWGRGVVZsRVZsRlJSRVJCY0ZSaFYyUjFXbGhLUjFsWGRHeE5Va1YzUkhkWlJGWlJVVXRFUVdoRlZURk5kR1JIVm5wa1JFTkRRVk5KZDBSUldVcExiMXBKYUhaalRrRlJSVUpDVVVGRVoyZEZVRUZFUTBOQlVXOURaMmRGUWtGTlNUTnJXbWgwYm1sd2JpdHBhVnBJV2psaGVEaEdiR1pGTlU5M0wyTkdkMEpVWmtGRllqTlNNVnBSVlhBMkwwSlJia0owTjA5dk1FcFhRblJqT1hGcmRqZEtWVVJrWTBKS1dGQldOVkZYVXpWQmVVMVFTSEJ4VVRjMVNHbDBhbk54TDBaNmRUaGxTSFJyUzNCR2FYcGplRWRoT1VKYVpHdFJhbWcwY2xOeWRFOHhTMnB6TUZKa05VUlJkRmRUWjJ0bFZrTkRUakE1YTA0d1duTmFNRVZPV1N0SmNEaFJlRk50ZVhwMGMxTjBhMWxZWkZWTWNYQjNlalJLUlZoWE9YWjZOalJsVkdKa1pUUjJVVW8yY0dwSVIyRnlTbVl4WjFGT1JXTXlXSHBvYlVrdmNISllUSGx6VjA1eFF6ZHNXbWMzVUZWYVZWUnlaR1ZuUVVKVVZYcFpRMUpLTVd0WFFsSlFiVFJ4YnpCTVRqUXdOV001TkZGUlpEUTFZVFZyVkdkdmQwaDZSV2RNYmtGUlNUSTRlREJOTTBFMU9WUkxReXRwWlU1ak5sWkdNVkJ6VkV4d1ZYYzNVRTVKTWxaemRGZzFha0YxWVhORFFYZEZRVUZoVFZOTlFrRjNSR2RaUkZaU01GQkJVVWd2UWtGUlJFRm5SVWROUVRCSFExTnhSMU5KWWpORVVVVkNRM2RWUVVFMFNVSkJVVU5MTmt4SFFUQXhWRklyY20xVk9IQTJlV2hCYVRSUGEwUk9NbUl4WkdKSlREaHNPR2xEVFZsdmNFeERlSGc0ZUhGeE0zVmlXa05QZUhGb01WZ3lhalp3WjFkNllYSmlNR0l2VFZWcGVEQXdTVzlWZGs1aVJrOTRRVmMzVUVKYVNVdEVURzV0Tmt4elkydFNlSE14VlRNeWMwTTVaREZNVDBobE0xZExRazVDTmtkYVFVeFVNV1YzYW1nM2FGTmlWMnBtZEd4dFkyOTJjU3MyWlZaSFFUVmpkbVl5ZFM4eUsxUnJTMnQ1U0ZZdlRsSXpPVFJ1V0hKa2MyUndkbmxuZDNsd1JYUllhbVYwZWtRM1ZWUTVNMDUxZHpONFkxWTRWa2xtZEVsMlNHWTVUR3BWTjJnclZXcEhiVXRZUnpsak1UVmxXWEl6VTNwVmJYWTJhM2xQU1RCQ2RuY3hORkJYZEhOWFIyd3dVV1JQVTFKMlNVSkNjbEEwWVdSRGJrZFVaMnBuYW1zNVRGUmpUemhDT0VaTGNuSXJPR3hJUjNWak1HSndOR3hKVlZSdmFWVnJSMGxNV0hOcFJXVkZaemxYUVhGdEsxaHhUeUpkTENKMGVYQWlPaUprWXl0elpDMXFkM1FpTENKcFlYUWlPakUzT0RFM09EazBPRE45LmV5SmZjMlJmWVd4bklqb2ljMmhoTFRJMU5pSXNJbWx6Y3lJNklrVkJRU0J3Y205MmFXUmxjaUlzSW01aVppSTZNVGM0TVRjNE9UUTRNeXdpWlhod0lqb3hOemc1TnpNNE1qZ3pMQ0p6ZFdJaU9pSm5iMjlrTFdWalpITmhMWFZ6WlhJaUxDSmpZWFJsWjI5eWVTSTZJblZ5YmpwbGRITnBPbVZ6YVRwbFlXRTZaWFU2Y1hWaGJHbG1hV1ZrSWl3aWMzUmhkSFZ6SWpwN0luTjBZWFIxYzE5c2FYTjBJanA3SW1sa2VDSTZNU3dpZFhKcElqb2lhSFIwY0hNNkx5OXdhMmt1Ym05M2FXNWhMbXgxTDJWaFlTOXpkR0YwZFhOZmJHbHpkQ0o5ZlN3aVkyNW1JanA3SW1wM2F5STZleUpyZEhraU9pSkZReUlzSW1OeWRpSTZJbEF0TWpVMklpd2llQ0k2SWtWMk1WaHBRMFZrZWtKbk9WTlBla1k1TUdweU9GcERZbEpUZVcxc1RtRndkbFJWYVdSclRGODJlRTBpTENKNUlqb2lPRGRwVVZGTmVISTBSME5UY0hOTWVUaGZRMmw0WWtOak1HbGhNVWxDV0hWaVdEVkdXSE53UzI5UFRTSjlmU3dpZG1OMElqb2lkWEp1T21WMVpHazZaV0ZoT2pFaUxDSjJZM1FqYVc1MFpXZHlhWFI1SWpvaWMyaGhNalUyTFV4SVpVRlhMM0JyZFM5RE5EbGhTVm8zTjNOeGVWaHBVVzF6T0N0eWMzaFFiR1pHWlhjMlJUbHRkMWs5SWl3aWFYTnpkV2x1WjE5aGRYUm9iM0pwZEhraU9pSlVSVk5VSUVGMWRHaHZjbWwwZVNJc0ltbHpjM1ZwYm1kZlkyOTFiblJ5ZVNJNklreFZJaXdpYVhOelgzSmxaMTlwWkNJNklsWkJWRXhWTFRFeU16UTFOaUlzSWw5elpDSTZXeUpVTnkwMVZYaDBNbWhQZG5ab1kwUk5iR0p0YURCWlRXMW1jVU52UXpoWlMySmlZMGN6Y3pNMlRYcG5JaXdpYUd0S2FIcEVTa3RMZVRSeE5rOW9aR1JGUjFsb1dsaDFNMmx2WkdSdVUzWktjQzB3WDFsb2JuVkZSU0lzSWpSTVFtbERNWFJJUTAwM1ZHNXhaamsyUjBabVRHbG1jWE5MYW1aa1kyUnZkVXhxVTFOV09HRkRkRlVpWFgwLllVS05ZN25ldkxVRDk5OW9NOF9vVUExa2pUOEZNQkFfN1JpRXB3OVVfcUVya0dPOExWLWZVdmZ4Ukl0NGx2QklQVFVXRlFSR2l5SWRxbmZTX0tzSzY4SkxiakNHTVdpN0hxUDNQbkUwT2lpRlhFNi1hUUZrc01oS1hZakRsdC1NaHh2NUg2dWZHRjRXdlp1bnQ2bTQ5WXM0aTFCb2FJYS1WQ1Y1YVpiVW1KajRuMGtlek9hM1dMQWVxTTVqR0wzREF1NnV2eWlyekc3Mlo3VTRhWDkyUWluaXFOYmV5WTJKWFg0U0prQ3VJSDVxV0hCMmRVejZiZW12Vnh5TFZLUFVjdTNhQWFKTWFid3lXV0NUVDdyVmZWLWlsdnNNSVhDVzF6X3BjNS1FcndNZHRZMzlHSkFFSTZxZmpYXzliOXVOd0UwMHUxM1gtTWdUdWJoZGxnaW1sUQ==</bytes>
                <!--Optional:-->
                <name>document-signed-jades-baseline-b.json</name>
-            </eaa>
+            </attestation>
 
             <!--Optional:-->\r
             <keyBindingParameters>
                <!--Optional:-->
                <audience>audience</audience>
                <!--Optional:-->
-               <eaaType>SD_JWT_VC</eaaType>
+               <attestationFormat>SD_JWT_VC</attestationFormat>
                <!--Optional:-->
                <nonce>123456</nonce>
             </keyBindingParameters>
 
          </createKeyBindingSignatureDTO>\r
-      </eaa:createKeyBindingSignature>\r
+      </attestation:createKeyBindingSignature>\r
    </soapenv:Body>\r
-</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://soap.creation.eaa.ws.dss.esig.europa.eu/SoapEAACreationService/createKeyBindingSignature"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="2eb5483d-9246-4376-8a80-680d302ae8a7" isOneWay="false" action="" name="getDataToSign" bindingOperationName="getDataToSign" type="Request-Response" outputName="getDataToSignResponse" inputName="getDataToSign" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="b1d1e450-5332-40f7-b8d8-60b2091e870b" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/services/soap/eaa-creation</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:eaa="http://eaa.creation.dss.esig.europa.eu/">\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://soap.creation.attestation.ws.dss.esig.europa.eu/SoapEAACreationService/createKeyBindingSignature"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="2eb5483d-9246-4376-8a80-680d302ae8a7" isOneWay="false" action="" name="getDataToSign" bindingOperationName="getDataToSign" type="Request-Response" outputName="getDataToSignResponse" inputName="getDataToSign" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="b1d1e450-5332-40f7-b8d8-60b2091e870b" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/services/soap/attestation-creation</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:attestation="http://attestation.creation.dss.esig.europa.eu/">\r
    <soapenv:Header/>\r
    <soapenv:Body>\r
-      <eaa:getDataToSign>\r
+      <attestation:getDataToSign>\r
          <!--Optional:-->\r
-         <dataToSignEAADTO>\r
+         <dataToSignAttestationDTO>\r
             <!--Optional:-->\r
             <parameters>\r
                <!--Optional:-->\r
@@ -12013,14 +12013,14 @@
             <!--Optional:-->\r
             <payloadParameters>\r
                <!--Optional:-->\r
-               <category>urn:etsi:esi:eaa:eu:qualified</category>\r
+               <category>urn:etsi:esi:attestation:eu:qualified</category>\r
                <!--Optional:-->\r
                <deviceKey>\r
                   <!--Optional:-->\r
                   <publicKey>MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEEv1XiCEdzBg9SOzF90jr8ZCbRSymlNapvTUidkL/6xPzuJBAzGvgYJKmwvLz8KLFsJzSJrUgFe5tfkVeykqg4w==</publicKey>\r
                </deviceKey>\r
                <!--Optional:-->\r
-               <eaaType>SD_JWT_VC</eaaType>\r
+               <attestationFormat>SD_JWT_VC</attestationFormat>\r
                <!--Optional:-->\r
                <expirationDate>2026-09-18T13:31:23.912Z</expirationDate>\r
                <!--Optional:-->\r
@@ -12119,12 +12119,12 @@
                   <!--Optional:-->\r
                   <index>1</index>\r
                   <!--Optional:-->\r
-                  <uri>https://pki.nowina.lu/eaa/status_list</uri>\r
+                  <uri>https://pki.nowina.lu/attestation/status_list</uri>\r
                </statusList>\r
                <!--Optional:-->\r
                <subject>good-ecdsa-user</subject>\r
                <!--Optional:-->\r
-               <verifiableCredentialsType>urn:eudi:eaa:1</verifiableCredentialsType>\r
+               <verifiableCredentialsType>urn:eudi:attestation:1</verifiableCredentialsType>\r
                <!--Optional:-->\r
                <verifiableCredentialsTypeIntegrity>\r
                   <!--Optional:-->\r
@@ -12133,13 +12133,13 @@
                   <value>LHeAW/pku/C49aIZ77sqyXiQms8+rsxPlfFew6E9mwY=</value>\r
                </verifiableCredentialsTypeIntegrity>\r
             </payloadParameters>\r
-         </dataToSignEAADTO>\r
-      </eaa:getDataToSign>\r
+         </dataToSignAttestationDTO>\r
+      </attestation:getDataToSign>\r
    </soapenv:Body>\r
-</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://soap.creation.eaa.ws.dss.esig.europa.eu/SoapEAACreationService/getDataToSign"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="38dbd626-2c27-4604-9bf1-897e7685a0fc" isOneWay="false" action="" name="getDataToSignForKeyBindingSignature" bindingOperationName="getDataToSignForKeyBindingSignature" type="Request-Response" outputName="getDataToSignForKeyBindingSignatureResponse" inputName="getDataToSignForKeyBindingSignature" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="9888fce7-ab98-4ee0-a9af-ef9846a022fe" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/services/soap/eaa-creation</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:eaa="http://eaa.creation.dss.esig.europa.eu/">\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://soap.creation.attestation.ws.dss.esig.europa.eu/SoapEAACreationService/getDataToSign"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="38dbd626-2c27-4604-9bf1-897e7685a0fc" isOneWay="false" action="" name="getDataToSignForKeyBindingSignature" bindingOperationName="getDataToSignForKeyBindingSignature" type="Request-Response" outputName="getDataToSignForKeyBindingSignatureResponse" inputName="getDataToSignForKeyBindingSignature" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="9888fce7-ab98-4ee0-a9af-ef9846a022fe" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/services/soap/attestation-creation</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:attestation="http://attestation.creation.dss.esig.europa.eu/">\r
    <soapenv:Header/>\r
    <soapenv:Body>\r
-      <eaa:getDataToSignForKeyBindingSignature>\r
+      <attestation:getDataToSignForKeyBindingSignature>\r
          <!--Optional:-->\r
          <dataToSignForKeyBindingSignatureDTO>\r
             <!--Optional:-->\r
@@ -12195,41 +12195,41 @@
                <value>WyJTNW9UZDlSUFRqSDN4cldnYkx0QlR3IiwicGV0cyIsW3siLi4uIjoidWpIaml5bHFmRGc2NkIzOFJUb2VkN3BseG1IQTVnRThFd05tb3l4VHpWNCJ9LHsiLi4uIjoiSGVLSTNxVHkxMDY5bHptRTE1WkQwdnVpVUlxZEVfVnA3Q3FZM1cwNTRIWSJ9XV0</value>
             </disclosures>
             <!--Optional:-->\r
-            <eaa>\r
+            <attestation>\r
                <!--Optional:-->\r
                <bytes>ZXlKaGJHY2lPaUpTVXpJMU5pSXNJbXRwWkNJNklrMUVOSGRPUzFGNVRVUkJlRWQ2UVZwQ1owNVdRa0ZOVFVWc1NuWmlNMUpVV2xkNGJWVXliRzVpYlZaclVtMUdjbHBVUlZKTlFUaEhRVEZWUlVObmQwbFNSazVVVEZoU2JHTXpVVU5DYVRkWFJrNWxOMVozUFQwaUxDSjROWFFqVXpJMU5pSTZJa0YyVUhKNVowWnFTakJLVkhaSlEyUktNRzFPTVVKMWQwMVhNUzFoZDFwd1dVSkdaRFJXVmxsdVduY2lMQ0o0TldNaU9sc2lUVWxKUXpacVEwTkJaRXRuUVhkSlFrRm5TVWRNZEZsVk1UZDBXRTFCTUVkRFUzRkhVMGxpTTBSUlJVSkRkMVZCVFVSQmVFZDZRVnBDWjA1V1FrRk5UVVZzU25aaU0xSlVXbGQ0YlZVeWJHNWliVlpyVW0xR2NscFVSVkpOUVRoSFFURlZSVU5uZDBsU1JrNVVURmhTYkdNelVYZElhR05PVFZSamQwNXFRVFJOVkVWNVRtcEJlRmRvWTA1T1JHTjNUbnBCTUUxRVl6Rk9la2t3VjJwQmIwMVNUWGRGVVZsRVZsRlJSRVJCY0ZSaFYyUjFXbGhLUjFsWGRHeE5Va1YzUkhkWlJGWlJVVXRFUVdoRlZURk5kR1JIVm5wa1JFTkRRVk5KZDBSUldVcExiMXBKYUhaalRrRlJSVUpDVVVGRVoyZEZVRUZFUTBOQlVXOURaMmRGUWtGTlNUTnJXbWgwYm1sd2JpdHBhVnBJV2psaGVEaEdiR1pGTlU5M0wyTkdkMEpVWmtGRllqTlNNVnBSVlhBMkwwSlJia0owTjA5dk1FcFhRblJqT1hGcmRqZEtWVVJrWTBKS1dGQldOVkZYVXpWQmVVMVFTSEJ4VVRjMVNHbDBhbk54TDBaNmRUaGxTSFJyUzNCR2FYcGplRWRoT1VKYVpHdFJhbWcwY2xOeWRFOHhTMnB6TUZKa05VUlJkRmRUWjJ0bFZrTkRUakE1YTA0d1duTmFNRVZPV1N0SmNEaFJlRk50ZVhwMGMxTjBhMWxZWkZWTWNYQjNlalJLUlZoWE9YWjZOalJsVkdKa1pUUjJVVW8yY0dwSVIyRnlTbVl4WjFGT1JXTXlXSHBvYlVrdmNISllUSGx6VjA1eFF6ZHNXbWMzVUZWYVZWUnlaR1ZuUVVKVVZYcFpRMUpLTVd0WFFsSlFiVFJ4YnpCTVRqUXdOV001TkZGUlpEUTFZVFZyVkdkdmQwaDZSV2RNYmtGUlNUSTRlREJOTTBFMU9WUkxReXRwWlU1ak5sWkdNVkJ6VkV4d1ZYYzNVRTVKTWxaemRGZzFha0YxWVhORFFYZEZRVUZoVFZOTlFrRjNSR2RaUkZaU01GQkJVVWd2UWtGUlJFRm5SVWROUVRCSFExTnhSMU5KWWpORVVVVkNRM2RWUVVFMFNVSkJVVU5MTmt4SFFUQXhWRklyY20xVk9IQTJlV2hCYVRSUGEwUk9NbUl4WkdKSlREaHNPR2xEVFZsdmNFeERlSGc0ZUhGeE0zVmlXa05QZUhGb01WZ3lhalp3WjFkNllYSmlNR0l2VFZWcGVEQXdTVzlWZGs1aVJrOTRRVmMzVUVKYVNVdEVURzV0Tmt4elkydFNlSE14VlRNeWMwTTVaREZNVDBobE0xZExRazVDTmtkYVFVeFVNV1YzYW1nM2FGTmlWMnBtZEd4dFkyOTJjU3MyWlZaSFFUVmpkbVl5ZFM4eUsxUnJTMnQ1U0ZZdlRsSXpPVFJ1V0hKa2MyUndkbmxuZDNsd1JYUllhbVYwZWtRM1ZWUTVNMDUxZHpONFkxWTRWa2xtZEVsMlNHWTVUR3BWTjJnclZXcEhiVXRZUnpsak1UVmxXWEl6VTNwVmJYWTJhM2xQU1RCQ2RuY3hORkJYZEhOWFIyd3dVV1JQVTFKMlNVSkNjbEEwWVdSRGJrZFVaMnBuYW1zNVRGUmpUemhDT0VaTGNuSXJPR3hJUjNWak1HSndOR3hKVlZSdmFWVnJSMGxNV0hOcFJXVkZaemxYUVhGdEsxaHhUeUpkTENKMGVYQWlPaUprWXl0elpDMXFkM1FpTENKcFlYUWlPakUzT0RFM09EazBPRE45LmV5SmZjMlJmWVd4bklqb2ljMmhoTFRJMU5pSXNJbWx6Y3lJNklrVkJRU0J3Y205MmFXUmxjaUlzSW01aVppSTZNVGM0TVRjNE9UUTRNeXdpWlhod0lqb3hOemc1TnpNNE1qZ3pMQ0p6ZFdJaU9pSm5iMjlrTFdWalpITmhMWFZ6WlhJaUxDSmpZWFJsWjI5eWVTSTZJblZ5YmpwbGRITnBPbVZ6YVRwbFlXRTZaWFU2Y1hWaGJHbG1hV1ZrSWl3aWMzUmhkSFZ6SWpwN0luTjBZWFIxYzE5c2FYTjBJanA3SW1sa2VDSTZNU3dpZFhKcElqb2lhSFIwY0hNNkx5OXdhMmt1Ym05M2FXNWhMbXgxTDJWaFlTOXpkR0YwZFhOZmJHbHpkQ0o5ZlN3aVkyNW1JanA3SW1wM2F5STZleUpyZEhraU9pSkZReUlzSW1OeWRpSTZJbEF0TWpVMklpd2llQ0k2SWtWMk1WaHBRMFZrZWtKbk9WTlBla1k1TUdweU9GcERZbEpUZVcxc1RtRndkbFJWYVdSclRGODJlRTBpTENKNUlqb2lPRGRwVVZGTmVISTBSME5UY0hOTWVUaGZRMmw0WWtOak1HbGhNVWxDV0hWaVdEVkdXSE53UzI5UFRTSjlmU3dpZG1OMElqb2lkWEp1T21WMVpHazZaV0ZoT2pFaUxDSjJZM1FqYVc1MFpXZHlhWFI1SWpvaWMyaGhNalUyTFV4SVpVRlhMM0JyZFM5RE5EbGhTVm8zTjNOeGVWaHBVVzF6T0N0eWMzaFFiR1pHWlhjMlJUbHRkMWs5SWl3aWFYTnpkV2x1WjE5aGRYUm9iM0pwZEhraU9pSlVSVk5VSUVGMWRHaHZjbWwwZVNJc0ltbHpjM1ZwYm1kZlkyOTFiblJ5ZVNJNklreFZJaXdpYVhOelgzSmxaMTlwWkNJNklsWkJWRXhWTFRFeU16UTFOaUlzSWw5elpDSTZXeUpVTnkwMVZYaDBNbWhQZG5ab1kwUk5iR0p0YURCWlRXMW1jVU52UXpoWlMySmlZMGN6Y3pNMlRYcG5JaXdpYUd0S2FIcEVTa3RMZVRSeE5rOW9aR1JGUjFsb1dsaDFNMmx2WkdSdVUzWktjQzB3WDFsb2JuVkZSU0lzSWpSTVFtbERNWFJJUTAwM1ZHNXhaamsyUjBabVRHbG1jWE5MYW1aa1kyUnZkVXhxVTFOV09HRkRkRlVpWFgwLllVS05ZN25ldkxVRDk5OW9NOF9vVUExa2pUOEZNQkFfN1JpRXB3OVVfcUVya0dPOExWLWZVdmZ4Ukl0NGx2QklQVFVXRlFSR2l5SWRxbmZTX0tzSzY4SkxiakNHTVdpN0hxUDNQbkUwT2lpRlhFNi1hUUZrc01oS1hZakRsdC1NaHh2NUg2dWZHRjRXdlp1bnQ2bTQ5WXM0aTFCb2FJYS1WQ1Y1YVpiVW1KajRuMGtlek9hM1dMQWVxTTVqR0wzREF1NnV2eWlyekc3Mlo3VTRhWDkyUWluaXFOYmV5WTJKWFg0U0prQ3VJSDVxV0hCMmRVejZiZW12Vnh5TFZLUFVjdTNhQWFKTWFid3lXV0NUVDdyVmZWLWlsdnNNSVhDVzF6X3BjNS1FcndNZHRZMzlHSkFFSTZxZmpYXzliOXVOd0UwMHUxM1gtTWdUdWJoZGxnaW1sUQ==</bytes>\r
                <!--Optional:-->\r
                <name>document-signed-jades-baseline-b.json</name>\r
-            </eaa>\r
+            </attestation>\r
             <!--Optional:-->\r
             <keyBindingParameters>\r
                <!--Optional:-->\r
                <audience>audience</audience>\r
                <!--Optional:-->\r
-               <eaaType>SD_JWT_VC</eaaType>\r
+               <attestationFormat>SD_JWT_VC</attestationFormat>\r
                <!--Optional:-->\r
                <nonce>123456</nonce>\r
             </keyBindingParameters>\r
          </dataToSignForKeyBindingSignatureDTO>\r
-      </eaa:getDataToSignForKeyBindingSignature>\r
+      </attestation:getDataToSignForKeyBindingSignature>\r
    </soapenv:Body>\r
-</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://soap.creation.eaa.ws.dss.esig.europa.eu/SoapEAACreationService/getDataToSignForKeyBindingSignature"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="c2a7d60e-726f-4ac1-a336-989cab965882" isOneWay="false" action="" name="getDisclosures" bindingOperationName="getDisclosures" type="Request-Response" outputName="getDisclosuresResponse" inputName="getDisclosures" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="32f08c54-e1a0-40b1-8a33-cb40e289f1b6" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/services/soap/eaa-creation</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:eaa="http://eaa.creation.dss.esig.europa.eu/">\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://soap.creation.attestation.ws.dss.esig.europa.eu/SoapEAACreationService/getDataToSignForKeyBindingSignature"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="c2a7d60e-726f-4ac1-a336-989cab965882" isOneWay="false" action="" name="getDisclosures" bindingOperationName="getDisclosures" type="Request-Response" outputName="getDisclosuresResponse" inputName="getDisclosures" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="32f08c54-e1a0-40b1-8a33-cb40e289f1b6" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/services/soap/attestation-creation</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:attestation="http://attestation.creation.dss.esig.europa.eu/">\r
    <soapenv:Header/>\r
    <soapenv:Body>\r
-      <eaa:getDisclosures>\r
+      <attestation:getDisclosures>\r
          <!--Optional:-->\r
          <disclosuresDTO>\r
             <!--Optional:-->\r
             <payloadParameters>
                <!--Optional:-->
-               <category>urn:etsi:esi:eaa:eu:qualified</category>
+               <category>urn:etsi:esi:attestation:eu:qualified</category>
                <!--Optional:-->
                <deviceKey>
                   <!--Optional:-->
                   <publicKey>MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEEv1XiCEdzBg9SOzF90jr8ZCbRSymlNapvTUidkL/6xPzuJBAzGvgYJKmwvLz8KLFsJzSJrUgFe5tfkVeykqg4w==</publicKey>
                </deviceKey>
                <!--Optional:-->
-               <eaaType>SD_JWT_VC</eaaType>
+               <attestationFormat>SD_JWT_VC</attestationFormat>
                <!--Optional:-->
                <expirationDate>2026-09-18T13:31:23.912Z</expirationDate>
                <!--Optional:-->
@@ -12328,12 +12328,12 @@
                   <!--Optional:-->
                   <index>1</index>
                   <!--Optional:-->
-                  <uri>https://pki.nowina.lu/eaa/status_list</uri>
+                  <uri>https://pki.nowina.lu/attestation/status_list</uri>
                </statusList>
                <!--Optional:-->
                <subject>good-ecdsa-user</subject>
                <!--Optional:-->
-               <verifiableCredentialsType>urn:eudi:eaa:1</verifiableCredentialsType>
+               <verifiableCredentialsType>urn:eudi:attestation:1</verifiableCredentialsType>
                <!--Optional:-->
                <verifiableCredentialsTypeIntegrity>
                   <!--Optional:-->
@@ -12343,12 +12343,12 @@
                </verifiableCredentialsTypeIntegrity>
             </payloadParameters>
          </disclosuresDTO>\r
-      </eaa:getDisclosures>\r
+      </attestation:getDisclosures>\r
    </soapenv:Body>\r
-</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://soap.creation.eaa.ws.dss.esig.europa.eu/SoapEAACreationService/getDisclosures"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="0354afef-1a90-4863-a0b5-13b8b914fb65" isOneWay="false" action="" name="issuePresentation" bindingOperationName="issuePresentation" type="Request-Response" outputName="issuePresentationResponse" inputName="issuePresentation" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="1857db19-daa2-4efc-8015-a88a0a66b4ac" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/services/soap/eaa-creation</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:eaa="http://eaa.creation.dss.esig.europa.eu/">\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://soap.creation.attestation.ws.dss.esig.europa.eu/SoapEAACreationService/getDisclosures"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="0354afef-1a90-4863-a0b5-13b8b914fb65" isOneWay="false" action="" name="issuePresentation" bindingOperationName="issuePresentation" type="Request-Response" outputName="issuePresentationResponse" inputName="issuePresentation" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="1857db19-daa2-4efc-8015-a88a0a66b4ac" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/services/soap/attestation-creation</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:attestation="http://attestation.creation.dss.esig.europa.eu/">\r
    <soapenv:Header/>\r
    <soapenv:Body>\r
-      <eaa:issuePresentation>\r
+      <attestation:issuePresentation>\r
          <!--Optional:-->\r
          <issuePresentationDTO>\r
             <!--Zero or more repetitions:-->\r
@@ -12389,12 +12389,12 @@
                <value>WyJTNW9UZDlSUFRqSDN4cldnYkx0QlR3IiwicGV0cyIsW3siLi4uIjoidWpIaml5bHFmRGc2NkIzOFJUb2VkN3BseG1IQTVnRThFd05tb3l4VHpWNCJ9LHsiLi4uIjoiSGVLSTNxVHkxMDY5bHptRTE1WkQwdnVpVUlxZEVfVnA3Q3FZM1cwNTRIWSJ9XV0</value>
             </disclosures>
             <!--Optional:-->\r
-            <eaa>
+            <attestation>
                <!--Optional:-->
                <bytes>ZXlKaGJHY2lPaUpTVXpJMU5pSXNJbXRwWkNJNklrMUVOSGRPUzFGNVRVUkJlRWQ2UVZwQ1owNVdRa0ZOVFVWc1NuWmlNMUpVV2xkNGJWVXliRzVpYlZaclVtMUdjbHBVUlZKTlFUaEhRVEZWUlVObmQwbFNSazVVVEZoU2JHTXpVVU5DYVRkWFJrNWxOMVozUFQwaUxDSjROWFFqVXpJMU5pSTZJa0YyVUhKNVowWnFTakJLVkhaSlEyUktNRzFPTVVKMWQwMVhNUzFoZDFwd1dVSkdaRFJXVmxsdVduY2lMQ0o0TldNaU9sc2lUVWxKUXpacVEwTkJaRXRuUVhkSlFrRm5TVWRNZEZsVk1UZDBXRTFCTUVkRFUzRkhVMGxpTTBSUlJVSkRkMVZCVFVSQmVFZDZRVnBDWjA1V1FrRk5UVVZzU25aaU0xSlVXbGQ0YlZVeWJHNWliVlpyVW0xR2NscFVSVkpOUVRoSFFURlZSVU5uZDBsU1JrNVVURmhTYkdNelVYZElhR05PVFZSamQwNXFRVFJOVkVWNVRtcEJlRmRvWTA1T1JHTjNUbnBCTUUxRVl6Rk9la2t3VjJwQmIwMVNUWGRGVVZsRVZsRlJSRVJCY0ZSaFYyUjFXbGhLUjFsWGRHeE5Va1YzUkhkWlJGWlJVVXRFUVdoRlZURk5kR1JIVm5wa1JFTkRRVk5KZDBSUldVcExiMXBKYUhaalRrRlJSVUpDVVVGRVoyZEZVRUZFUTBOQlVXOURaMmRGUWtGTlNUTnJXbWgwYm1sd2JpdHBhVnBJV2psaGVEaEdiR1pGTlU5M0wyTkdkMEpVWmtGRllqTlNNVnBSVlhBMkwwSlJia0owTjA5dk1FcFhRblJqT1hGcmRqZEtWVVJrWTBKS1dGQldOVkZYVXpWQmVVMVFTSEJ4VVRjMVNHbDBhbk54TDBaNmRUaGxTSFJyUzNCR2FYcGplRWRoT1VKYVpHdFJhbWcwY2xOeWRFOHhTMnB6TUZKa05VUlJkRmRUWjJ0bFZrTkRUakE1YTA0d1duTmFNRVZPV1N0SmNEaFJlRk50ZVhwMGMxTjBhMWxZWkZWTWNYQjNlalJLUlZoWE9YWjZOalJsVkdKa1pUUjJVVW8yY0dwSVIyRnlTbVl4WjFGT1JXTXlXSHBvYlVrdmNISllUSGx6VjA1eFF6ZHNXbWMzVUZWYVZWUnlaR1ZuUVVKVVZYcFpRMUpLTVd0WFFsSlFiVFJ4YnpCTVRqUXdOV001TkZGUlpEUTFZVFZyVkdkdmQwaDZSV2RNYmtGUlNUSTRlREJOTTBFMU9WUkxReXRwWlU1ak5sWkdNVkJ6VkV4d1ZYYzNVRTVKTWxaemRGZzFha0YxWVhORFFYZEZRVUZoVFZOTlFrRjNSR2RaUkZaU01GQkJVVWd2UWtGUlJFRm5SVWROUVRCSFExTnhSMU5KWWpORVVVVkNRM2RWUVVFMFNVSkJVVU5MTmt4SFFUQXhWRklyY20xVk9IQTJlV2hCYVRSUGEwUk9NbUl4WkdKSlREaHNPR2xEVFZsdmNFeERlSGc0ZUhGeE0zVmlXa05QZUhGb01WZ3lhalp3WjFkNllYSmlNR0l2VFZWcGVEQXdTVzlWZGs1aVJrOTRRVmMzVUVKYVNVdEVURzV0Tmt4elkydFNlSE14VlRNeWMwTTVaREZNVDBobE0xZExRazVDTmtkYVFVeFVNV1YzYW1nM2FGTmlWMnBtZEd4dFkyOTJjU3MyWlZaSFFUVmpkbVl5ZFM4eUsxUnJTMnQ1U0ZZdlRsSXpPVFJ1V0hKa2MyUndkbmxuZDNsd1JYUllhbVYwZWtRM1ZWUTVNMDUxZHpONFkxWTRWa2xtZEVsMlNHWTVUR3BWTjJnclZXcEhiVXRZUnpsak1UVmxXWEl6VTNwVmJYWTJhM2xQU1RCQ2RuY3hORkJYZEhOWFIyd3dVV1JQVTFKMlNVSkNjbEEwWVdSRGJrZFVaMnBuYW1zNVRGUmpUemhDT0VaTGNuSXJPR3hJUjNWak1HSndOR3hKVlZSdmFWVnJSMGxNV0hOcFJXVkZaemxYUVhGdEsxaHhUeUpkTENKMGVYQWlPaUprWXl0elpDMXFkM1FpTENKcFlYUWlPakUzT0RFM09EazBPRE45LmV5SmZjMlJmWVd4bklqb2ljMmhoTFRJMU5pSXNJbWx6Y3lJNklrVkJRU0J3Y205MmFXUmxjaUlzSW01aVppSTZNVGM0TVRjNE9UUTRNeXdpWlhod0lqb3hOemc1TnpNNE1qZ3pMQ0p6ZFdJaU9pSm5iMjlrTFdWalpITmhMWFZ6WlhJaUxDSmpZWFJsWjI5eWVTSTZJblZ5YmpwbGRITnBPbVZ6YVRwbFlXRTZaWFU2Y1hWaGJHbG1hV1ZrSWl3aWMzUmhkSFZ6SWpwN0luTjBZWFIxYzE5c2FYTjBJanA3SW1sa2VDSTZNU3dpZFhKcElqb2lhSFIwY0hNNkx5OXdhMmt1Ym05M2FXNWhMbXgxTDJWaFlTOXpkR0YwZFhOZmJHbHpkQ0o5ZlN3aVkyNW1JanA3SW1wM2F5STZleUpyZEhraU9pSkZReUlzSW1OeWRpSTZJbEF0TWpVMklpd2llQ0k2SWtWMk1WaHBRMFZrZWtKbk9WTlBla1k1TUdweU9GcERZbEpUZVcxc1RtRndkbFJWYVdSclRGODJlRTBpTENKNUlqb2lPRGRwVVZGTmVISTBSME5UY0hOTWVUaGZRMmw0WWtOak1HbGhNVWxDV0hWaVdEVkdXSE53UzI5UFRTSjlmU3dpZG1OMElqb2lkWEp1T21WMVpHazZaV0ZoT2pFaUxDSjJZM1FqYVc1MFpXZHlhWFI1SWpvaWMyaGhNalUyTFV4SVpVRlhMM0JyZFM5RE5EbGhTVm8zTjNOeGVWaHBVVzF6T0N0eWMzaFFiR1pHWlhjMlJUbHRkMWs5SWl3aWFYTnpkV2x1WjE5aGRYUm9iM0pwZEhraU9pSlVSVk5VSUVGMWRHaHZjbWwwZVNJc0ltbHpjM1ZwYm1kZlkyOTFiblJ5ZVNJNklreFZJaXdpYVhOelgzSmxaMTlwWkNJNklsWkJWRXhWTFRFeU16UTFOaUlzSWw5elpDSTZXeUpVTnkwMVZYaDBNbWhQZG5ab1kwUk5iR0p0YURCWlRXMW1jVU52UXpoWlMySmlZMGN6Y3pNMlRYcG5JaXdpYUd0S2FIcEVTa3RMZVRSeE5rOW9aR1JGUjFsb1dsaDFNMmx2WkdSdVUzWktjQzB3WDFsb2JuVkZSU0lzSWpSTVFtbERNWFJJUTAwM1ZHNXhaamsyUjBabVRHbG1jWE5MYW1aa1kyUnZkVXhxVTFOV09HRkRkRlVpWFgwLllVS05ZN25ldkxVRDk5OW9NOF9vVUExa2pUOEZNQkFfN1JpRXB3OVVfcUVya0dPOExWLWZVdmZ4Ukl0NGx2QklQVFVXRlFSR2l5SWRxbmZTX0tzSzY4SkxiakNHTVdpN0hxUDNQbkUwT2lpRlhFNi1hUUZrc01oS1hZakRsdC1NaHh2NUg2dWZHRjRXdlp1bnQ2bTQ5WXM0aTFCb2FJYS1WQ1Y1YVpiVW1KajRuMGtlek9hM1dMQWVxTTVqR0wzREF1NnV2eWlyekc3Mlo3VTRhWDkyUWluaXFOYmV5WTJKWFg0U0prQ3VJSDVxV0hCMmRVejZiZW12Vnh5TFZLUFVjdTNhQWFKTWFid3lXV0NUVDdyVmZWLWlsdnNNSVhDVzF6X3BjNS1FcndNZHRZMzlHSkFFSTZxZmpYXzliOXVOd0UwMHUxM1gtTWdUdWJoZGxnaW1sUQ==</bytes>
                <!--Optional:-->
                <name>document-signed-jades-baseline-b.json</name>
-            </eaa>
+            </attestation>
             <!--Optional:-->\r
             <keyBindingSignature>\r
                <!--Optional:-->\r
@@ -12407,17 +12407,17 @@
             <!--Optional:-->\r
             <presentationParameters>\r
                <!--Optional:-->\r
-               <eaaType>SD_JWT_VC</eaaType>\r
+               <attestationFormat>SD_JWT_VC</attestationFormat>\r
             </presentationParameters>\r
          </issuePresentationDTO>\r
-      </eaa:issuePresentation>\r
+      </attestation:issuePresentation>\r
    </soapenv:Body>\r
-</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://soap.creation.eaa.ws.dss.esig.europa.eu/SoapEAACreationService/issuePresentation"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="5a00edce-c601-4f64-928d-a0c29fbedd3b" isOneWay="false" action="" name="signEAA" bindingOperationName="signEAA" type="Request-Response" outputName="signEAAResponse" inputName="signEAA" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="2124ba75-bcf2-4af8-91a0-9650a80a1660" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/services/soap/eaa-creation</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:eaa="http://eaa.creation.dss.esig.europa.eu/">\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://soap.creation.attestation.ws.dss.esig.europa.eu/SoapEAACreationService/issuePresentation"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="5a00edce-c601-4f64-928d-a0c29fbedd3b" isOneWay="false" action="" name="signEAA" bindingOperationName="signEAA" type="Request-Response" outputName="signEAAResponse" inputName="signEAA" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="2124ba75-bcf2-4af8-91a0-9650a80a1660" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/services/soap/attestation-creation</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:attestation="http://attestation.creation.dss.esig.europa.eu/">\r
    <soapenv:Header/>\r
    <soapenv:Body>\r
-      <eaa:signEAA>\r
+      <attestation:signEAA>\r
          <!--Optional:-->\r
-         <signEAADTO>\r
+         <signAttestationDTO>\r
             <!--Optional:-->
             <parameters>
                <!--Optional:-->
@@ -12443,14 +12443,14 @@
             <!--Optional:-->
             <payloadParameters>
                <!--Optional:-->
-               <category>urn:etsi:esi:eaa:eu:qualified</category>
+               <category>urn:etsi:esi:attestation:eu:qualified</category>
                <!--Optional:-->
                <deviceKey>
                   <!--Optional:-->
                   <publicKey>MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEEv1XiCEdzBg9SOzF90jr8ZCbRSymlNapvTUidkL/6xPzuJBAzGvgYJKmwvLz8KLFsJzSJrUgFe5tfkVeykqg4w==</publicKey>
                </deviceKey>
                <!--Optional:-->
-               <eaaType>SD_JWT_VC</eaaType>
+               <attestationFormat>SD_JWT_VC</attestationFormat>
                <!--Optional:-->
                <expirationDate>2026-09-18T13:31:23.912Z</expirationDate>
                <!--Optional:-->
@@ -12549,12 +12549,12 @@
                   <!--Optional:-->
                   <index>1</index>
                   <!--Optional:-->
-                  <uri>https://pki.nowina.lu/eaa/status_list</uri>
+                  <uri>https://pki.nowina.lu/attestation/status_list</uri>
                </statusList>
                <!--Optional:-->
                <subject>good-ecdsa-user</subject>
                <!--Optional:-->
-               <verifiableCredentialsType>urn:eudi:eaa:1</verifiableCredentialsType>
+               <verifiableCredentialsType>urn:eudi:attestation:1</verifiableCredentialsType>
                <!--Optional:-->
                <verifiableCredentialsTypeIntegrity>
                   <!--Optional:-->
@@ -12563,7 +12563,7 @@
                   <value>LHeAW/pku/C49aIZ77sqyXiQms8+rsxPlfFew6E9mwY=</value>
                </verifiableCredentialsTypeIntegrity>
             </payloadParameters>
-         </signEAADTO>\r
-      </eaa:signEAA>\r
+         </signAttestationDTO>\r
+      </attestation:signEAA>\r
    </soapenv:Body>\r
-</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://soap.creation.eaa.ws.dss.esig.europa.eu/SoapEAACreationService/signEAA"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:properties/><con:wssContainer/><con:oAuth2ProfileContainer/><con:oAuth1ProfileContainer/><con:sensitiveInformation/></con:soapui-project>
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://soap.creation.attestation.ws.dss.esig.europa.eu/SoapEAACreationService/signEAA"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:properties/><con:wssContainer/><con:oAuth2ProfileContainer/><con:oAuth1ProfileContainer/><con:sensitiveInformation/></con:soapui-project>

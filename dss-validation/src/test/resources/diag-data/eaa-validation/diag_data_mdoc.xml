@@ -24,7 +24,7 @@
                     <DigestValue>ImJZwW02szAknF8EOi/kUN8U6lU/q+DaxDz+09vKcw4=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
-                    <DisclosableClaim id="1" name="category" namespace="org.etsi.01947201.010101">urn:etsi:esi:eaa:eu:qualified</DisclosableClaim>
+                    <DisclosableClaim id="1" name="category" namespace="org.etsi.01947201.010101">urn:etsi:esi:attestation:eu:qualified</DisclosableClaim>
                 </DigestMatcher>
                 <DigestMatcher type="EAA_DISCLOSURE">
                     <DigestMethod>SHA256</DigestMethod>
@@ -107,7 +107,7 @@
             <EAASignature Signature="S-433AB06EBC1C8297FFFEA618BDCF84A1F0F0E793223A32FA54A39EFE16698F3A"/>
             <EAAPayload>
                 <Category name="category" namespace="org.etsi.01947201.010101" disclosure="true">
-                    <Text>urn:etsi:esi:eaa:eu:qualified</Text>
+                    <Text>urn:etsi:esi:attestation:eu:qualified</Text>
                 </Category>
                 <Status name="status">
                     <StatusList name="status_list">
@@ -115,7 +115,7 @@
                             <Number>1</Number>
                         </Index>
                         <Uri name="uri">
-                            <Text>https://pki.nowina.lu/eaa/status_list</Text>
+                            <Text>https://pki.nowina.lu/attestation/status_list</Text>
                         </Uri>
                     </StatusList>
                 </Status>
@@ -352,8 +352,8 @@
         <EAARevocationToken Id="ST-E7FD1BFA54DF088935736C724DE494BD233CE0EBD3FDED66345667092D137BBE">
             <Origin>EXTERNAL</Origin>
             <Type>application/statuslist+cwt</Type>
-            <SourceAddress>https://pki.nowina.lu/eaa/status_list</SourceAddress>
-            <Subject match="true">https://pki.nowina.lu/eaa/status_list</Subject>
+            <SourceAddress>https://pki.nowina.lu/attestation/status_list</SourceAddress>
+            <Subject match="true">https://pki.nowina.lu/attestation/status_list</Subject>
             <IssuedAt>2026-07-22T07:57:06Z</IssuedAt>
             <ExpirationTime>2027-06-22T07:57:04Z</ExpirationTime>
             <BasicSignature>

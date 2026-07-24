@@ -7,7 +7,7 @@
         <version>6.6-SNAPSHOT</version>
     </parent>
 
-    <artifactId>dss-eaa-creation-rest</artifactId>
+    <artifactId>dss-attestation-creation-rest</artifactId>
     <name>DSS EAA Creation REST</name>
     <description>REST server for performing of a signature of Electronic Attestation of Attributes (EAA) and issuance of EAA Presentations using the WebServices</description>
 
@@ -18,11 +18,11 @@
     <dependencies>
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-            <artifactId>dss-eaa-creation-remote</artifactId>
+            <artifactId>dss-attestation-creation-remote</artifactId>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-            <artifactId>dss-eaa-creation-rest-client</artifactId>
+            <artifactId>dss-attestation-creation-rest-client</artifactId>
         </dependency>
     </dependencies>
 </project>

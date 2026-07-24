@@ -24,7 +24,7 @@ import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.identifier.TokenIdentifierProvider;
 import eu.europa.esig.dss.model.scope.SignatureScope;
-import eu.europa.esig.dss.spi.eaa.EAA;
+import eu.europa.esig.dss.spi.eaa.Attestation;
 
 import java.util.Objects;
 
@@ -37,18 +37,18 @@ public class KeyBindingSignatureScope extends SignatureScope {
     private static final long serialVersionUID = -8670355199644516262L;
 
     /** The counter-signed parent signature */
-    protected EAA eaa;
+    protected Attestation attestation;
 
     /**
      * Default constructor
      *
-     * @param eaa {@link EAA}
+     * @param attestation {@link Attestation}
      * @param originalDocument {@link DSSDocument}
      */
-    public KeyBindingSignatureScope(final EAA eaa, final DSSDocument originalDocument) {
+    public KeyBindingSignatureScope(final Attestation attestation, final DSSDocument originalDocument) {
         super(originalDocument);
-        Objects.requireNonNull(eaa, "EAA cannot be null!");
-        this.eaa = eaa;
+        Objects.requireNonNull(attestation, "EAA cannot be null!");
+        this.attestation = attestation;
     }
 
     @Override
@@ -62,7 +62,7 @@ public class KeyBindingSignatureScope extends SignatureScope {
     }
 
     private String getEAAPresentationId(TokenIdentifierProvider tokenIdentifierProvider) {
-        return tokenIdentifierProvider.getIdAsString(eaa);
+        return tokenIdentifierProvider.getIdAsString(attestation);
     }
 
     @Override

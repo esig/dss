@@ -22,10 +22,10 @@ package eu.europa.esig.dss.eaa.sd.jwt.validation.list;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.europa.esig.dss.eaa.common.validation.DefaultEAAPresentationValidator;
+import eu.europa.esig.dss.eaa.common.validation.DefaultAttestationDocumentValidator;
 import eu.europa.esig.dss.eaa.sd.jwt.MockDataLoader;
+import eu.europa.esig.dss.enumerations.AttestationQualification;
 import eu.europa.esig.dss.enumerations.EAACategory;
-import eu.europa.esig.dss.enumerations.EAAQualification;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -175,32 +175,32 @@ class QEAATLAndPIDLoTETest extends PKIFactoryAccess {
     static Stream<Arguments> data() throws Exception {
         final List<Arguments> data = new ArrayList<>();
 
-        data.add(Arguments.of("Test-QEAA-PID", Arrays.asList(EAAQualification.QEAA, EAAQualification.PID)));
-        data.add(Arguments.of("Test-QEAA", Collections.singletonList(EAAQualification.QEAA)));
-        data.add(Arguments.of("Test-EAA-PID", Arrays.asList(EAAQualification.EAA, EAAQualification.PID)));
-        data.add(Arguments.of("Test-QC-PID", Arrays.asList(EAAQualification.EAA, EAAQualification.PID)));
-        data.add(Arguments.of("Test-QC-CERT", Collections.singletonList(EAAQualification.EAA)));
-        data.add(Arguments.of("Test-QC-PubEAA", Collections.singletonList(EAAQualification.PUBEAA)));
-        data.add(Arguments.of("Test-QC-PubEAA-PID", Arrays.asList(EAAQualification.PUBEAA, EAAQualification.PID)));
-        data.add(Arguments.of("Test-Non-Qualified-CERT", Collections.singletonList(EAAQualification.EAA)));
-        data.add(Arguments.of("Test-PKC-EAA-PID", Arrays.asList(EAAQualification.EAA, EAAQualification.PID)));
-        data.add(Arguments.of("Test-PKC-EAA", Collections.singletonList(EAAQualification.EAA)));
-        data.add(Arguments.of("Test-PKC-PID", Arrays.asList(EAAQualification.EAA, EAAQualification.PID)));
-        data.add(Arguments.of("Test-PKC-CERT", Collections.singletonList(EAAQualification.EAA)));
-        data.add(Arguments.of("Test-PKC-PubEAA", Collections.singletonList(EAAQualification.EAA)));
-        data.add(Arguments.of("Test-PKC-PubEAA-PID", Arrays.asList(EAAQualification.EAA, EAAQualification.PID)));
-        data.add(Arguments.of("Test-not-trusted-EAA-CERT", Collections.singletonList(EAAQualification.NA)));
+        data.add(Arguments.of("Test-QEAA-PID", Arrays.asList(AttestationQualification.QEAA, AttestationQualification.PID)));
+        data.add(Arguments.of("Test-QEAA", Collections.singletonList(AttestationQualification.QEAA)));
+        data.add(Arguments.of("Test-EAA-PID", Arrays.asList(AttestationQualification.EAA, AttestationQualification.PID)));
+        data.add(Arguments.of("Test-QC-PID", Arrays.asList(AttestationQualification.EAA, AttestationQualification.PID)));
+        data.add(Arguments.of("Test-QC-CERT", Collections.singletonList(AttestationQualification.EAA)));
+        data.add(Arguments.of("Test-QC-PubEAA", Collections.singletonList(AttestationQualification.PUBEAA)));
+        data.add(Arguments.of("Test-QC-PubEAA-PID", Arrays.asList(AttestationQualification.PUBEAA, AttestationQualification.PID)));
+        data.add(Arguments.of("Test-Non-Qualified-CERT", Collections.singletonList(AttestationQualification.EAA)));
+        data.add(Arguments.of("Test-PKC-EAA-PID", Arrays.asList(AttestationQualification.EAA, AttestationQualification.PID)));
+        data.add(Arguments.of("Test-PKC-EAA", Collections.singletonList(AttestationQualification.EAA)));
+        data.add(Arguments.of("Test-PKC-PID", Arrays.asList(AttestationQualification.EAA, AttestationQualification.PID)));
+        data.add(Arguments.of("Test-PKC-CERT", Collections.singletonList(AttestationQualification.EAA)));
+        data.add(Arguments.of("Test-PKC-PubEAA", Collections.singletonList(AttestationQualification.EAA)));
+        data.add(Arguments.of("Test-PKC-PubEAA-PID", Arrays.asList(AttestationQualification.EAA, AttestationQualification.PID)));
+        data.add(Arguments.of("Test-not-trusted-EAA-CERT", Collections.singletonList(AttestationQualification.NA)));
 
         return data.stream();
     }
 
     @ParameterizedTest(name = "EAA Qualification Test : {0}")
     @MethodSource("data")
-    void test(String signerName, Collection<EAAQualification> expectedQualification) {
+    void test(String signerName, Collection<AttestationQualification> expectedQualification) {
         signer = signerName;
-        DSSDocument eaaPresentation = createEAAPresentation();
+        DSSDocument attestationPresentation = createEAAPresentation();
 
-        SignedDocumentValidator validator = DefaultEAAPresentationValidator.fromDocument(eaaPresentation);
+        SignedDocumentValidator validator = DefaultAttestationDocumentValidator.fromDocument(attestationPresentation);
 
         CertificateVerifier certificateVerifier = getCompleteCertificateVerifier();
         certificateVerifier.setTrustedCertSources(getTrustedListSource(), getTrustedEntitiesSource());

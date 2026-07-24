@@ -22,9 +22,9 @@ package eu.europa.esig.dss.eaa.sd.jwt.validation.list;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.europa.esig.dss.eaa.common.validation.DefaultEAAPresentationValidator;
+import eu.europa.esig.dss.eaa.common.validation.DefaultAttestationDocumentValidator;
 import eu.europa.esig.dss.eaa.sd.jwt.MockDataLoader;
-import eu.europa.esig.dss.enumerations.EAAQualification;
+import eu.europa.esig.dss.enumerations.AttestationQualification;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -108,18 +108,18 @@ class PIDLoTETest extends PKIFactoryAccess {
 
     static Stream<Arguments> data() {
         final List<Arguments> data = new ArrayList<>();
-        data.add(Arguments.of("Test-PID", EAAQualification.PID));
-        data.add(Arguments.of("Test-not-trusted-EAA-CERT", EAAQualification.NA));
+        data.add(Arguments.of("Test-PID", AttestationQualification.PID));
+        data.add(Arguments.of("Test-not-trusted-EAA-CERT", AttestationQualification.NA));
         return data.stream();
     }
 
     @ParameterizedTest(name = "EAA Qualification Test : {0}")
     @MethodSource("data")
-    void test(String signerName, EAAQualification expectedQualification) {
+    void test(String signerName, AttestationQualification expectedQualification) {
         signer = signerName;
-        DSSDocument eaaPresentation = createEAAPresentation();
+        DSSDocument attestationPresentation = createEAAPresentation();
 
-        SignedDocumentValidator validator = DefaultEAAPresentationValidator.fromDocument(eaaPresentation);
+        SignedDocumentValidator validator = DefaultAttestationDocumentValidator.fromDocument(attestationPresentation);
 
         CertificateVerifier certificateVerifier = getCompleteCertificateVerifier();
         certificateVerifier.setTrustedCertSources(getTrustedSource());
@@ -129,8 +129,8 @@ class PIDLoTETest extends PKIFactoryAccess {
 
         SimpleReport simpleReport = reports.getSimpleReport();
 
-        EAAQualification eaaQualification = simpleReport.getEAAQualification(simpleReport.getFirstEAAId());
-        assertEquals(expectedQualification, eaaQualification);
+        AttestationQualification attestationQualification = simpleReport.getEAAQualification(simpleReport.getFirstEAAId());
+        assertEquals(expectedQualification, attestationQualification);
         assertEquals(1, simpleReport.getEAAQualifications(simpleReport.getFirstEAAId()).size());
     }
 

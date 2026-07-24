@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.eaa.sd.jwt.validation;
 
-import eu.europa.esig.dss.eaa.common.validation.EAAPayloadVerifier;
+import eu.europa.esig.dss.eaa.common.validation.AttestationPayloadVerifier;
 import eu.europa.esig.dss.eaa.sd.jwt.SDJWTConstants;
 import eu.europa.esig.dss.eaa.sd.jwt.SDJWTUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -47,7 +47,7 @@ import java.util.Objects;
  * This class requires execution of {@code #verify} method before accessing the validation results.
  *
  */
-public class SDJWTPayloadVerifier extends EAAPayloadVerifier {
+public class SDJWTPayloadVerifier extends AttestationPayloadVerifier {
 
     private static final Logger LOG = LoggerFactory.getLogger(SDJWTPayloadVerifier.class);
 

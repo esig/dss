@@ -25,7 +25,7 @@ import eu.europa.esig.dss.cbades.cbor.CBORUtils;
 import eu.europa.esig.dss.cbades.cwt.CWTClaims;
 import eu.europa.esig.dss.cbades.signature.CBAdESService;
 import eu.europa.esig.dss.cbades.signature.CBAdESSignatureParameters;
-import eu.europa.esig.dss.eaa.common.pki.PKIEAAStatusListSource;
+import eu.europa.esig.dss.eaa.common.pki.PKIAttestationStatusListSource;
 import eu.europa.esig.dss.eaa.revocation.cwt.model.statuslist.CWTStatusListClaims;
 import eu.europa.esig.dss.enumerations.COSEStructureType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -44,7 +44,7 @@ import java.util.Collections;
  * Test implementation for generation of CWT-encoded Token Status List
  *
  */
-public class PKICWTStatusListSource extends PKIEAAStatusListSource<CBAdESSignatureParameters> {
+public class PKICWTStatusListSource extends PKIAttestationStatusListSource<CBAdESSignatureParameters> {
 
     /**
      * Creates a PKIJWTStatusListSource instance with status list signer {@code CertEntity}

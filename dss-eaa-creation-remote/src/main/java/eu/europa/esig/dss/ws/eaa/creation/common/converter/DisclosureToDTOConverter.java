@@ -21,9 +21,9 @@
 package eu.europa.esig.dss.ws.eaa.creation.common.converter;
 
 import eu.europa.esig.dss.cbades.cbor.CBORUtils;
-import eu.europa.esig.dss.eaa.common.creation.EAADisclosure;
-import eu.europa.esig.dss.eaa.sd.jwt.creation.SDJWTEAADisclosure;
-import eu.europa.esig.dss.eaa.mdoc.creation.MdocEAADisclosure;
+import eu.europa.esig.dss.eaa.common.creation.SelectiveDisclosure;
+import eu.europa.esig.dss.eaa.sd.jwt.creation.SDJWTSelectiveDisclosure;
+import eu.europa.esig.dss.eaa.mdoc.creation.MdocSelectiveDisclosure;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.ws.eaa.creation.dto.parameters.DisclosureDTO;
 
@@ -33,7 +33,7 @@ import java.util.function.Function;
  * Converts a {@code EAADisclosure} into {@code DisclosureDTO} of a corresponding format
  *
  */
-public class DisclosureToDTOConverter implements Function<EAADisclosure, DisclosureDTO> {
+public class DisclosureToDTOConverter implements Function<SelectiveDisclosure, DisclosureDTO> {
 
     /**
      * Default constructor
@@ -43,12 +43,12 @@ public class DisclosureToDTOConverter implements Function<EAADisclosure, Disclos
     }
 
     @Override
-    public DisclosureDTO apply(EAADisclosure disclosureDTO) {
-        if (disclosureDTO instanceof SDJWTEAADisclosure) {
-            SDJWTEAADisclosure sdjwteaaDisclosure = (SDJWTEAADisclosure) disclosureDTO;
-            return new DisclosureDTO(sdjwteaaDisclosure.getDisclosure());
-        } else if (disclosureDTO instanceof MdocEAADisclosure) {
-            MdocEAADisclosure mdocEAADisclosure = (MdocEAADisclosure) disclosureDTO;
+    public DisclosureDTO apply(SelectiveDisclosure disclosureDTO) {
+        if (disclosureDTO instanceof SDJWTSelectiveDisclosure) {
+            SDJWTSelectiveDisclosure sdjwtSelectiveDisclosure = (SDJWTSelectiveDisclosure) disclosureDTO;
+            return new DisclosureDTO(sdjwtSelectiveDisclosure.getDisclosure());
+        } else if (disclosureDTO instanceof MdocSelectiveDisclosure) {
+            MdocSelectiveDisclosure mdocEAADisclosure = (MdocSelectiveDisclosure) disclosureDTO;
             String disclosureValueB64 = Utils.toBase64(CBORUtils.serializeCborObject(mdocEAADisclosure.getIssuerSignedItemBytes()));
             return new DisclosureDTO(mdocEAADisclosure.getNamespace(), mdocEAADisclosure.getDigestId(), disclosureValueB64);
         } else {

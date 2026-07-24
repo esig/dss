@@ -16,8 +16,8 @@ The different webservices are :
 * *Signature validation webservices* (`dss-validation-soap` / `dss-validation-rest`) and their clients: expose methods to allow signature validation, with an optional detached file and an optional validation policy.
 * *Certificate validation webservices* (`dss-certificate-validation-soap` / `dss-certificate-validation-rest`) and their clients: expose methods to allow certificate validation, with an optional provided certificate chain and custom validation time.
 * *Timestamp webservices* (`dss-timestamp-remote-soap` / `dss-timestamp-remote-rest`) and their clients: expose methods to allow remote timestamp creation, by providing digest value to be timestamped and a digest algorithm, used for the digest calculation.
-* *EAA creation webservices* (`dss-eaa-creation-soap` / `dss-eaa-creation-rest`) and their clients: expose methods to allow remote EAA creation, by providing payload or payload configuration and signature parameters, disclosures extraction based on parameters, key binding signature creation and EAA Presentation issuance.
-* *EAA validation webservices* (`dss-eaa-validation-soap` / `dss-eaa-validation-rest`) and their clients: expose methods to allow validation of EAA Presentations.
+* *EAA creation webservices* (`dss-attestation-creation-soap` / `dss-attestation-creation-rest`) and their clients: expose methods to allow remote EAA creation, by providing payload or payload configuration and signature parameters, disclosures extraction based on parameters, key binding signature creation and EAA Presentation issuance.
+* *EAA validation webservices* (`dss-attestation-validation-soap` / `dss-attestation-validation-rest`) and their clients: expose methods to allow validation of EAA Presentations.
 
 The data structure in webservices is similar in both REST and SOAP modules.
 
@@ -432,10 +432,10 @@ The method allows retrieving the data to be signed. The user sends the payload p
 
 Samples:
 
-* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/eaa-and-eaa-presentation/1/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/eaa-and-eaa-presentation/1/response-body.adoc[Response]
-* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/eaa-and-eaa-presentation/1/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/eaa-and-eaa-presentation/1/http-response.adoc[Response]
-* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/eaa-and-eaa-presentation/1/httpie-request.adoc[Request]
-* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/eaa-and-eaa-presentation/1/curl-request.adoc[Request]
+* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/1/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/1/response-body.adoc[Response]
+* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/1/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/1/http-response.adoc[Response]
+* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/1/httpie-request.adoc[Request]
+* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/1/curl-request.adoc[Request]
 
 ====== Sign EAA
 
@@ -443,10 +443,10 @@ The method allows generation of a signed EAA. The user sends the payload paramet
 
 Samples:
 
-* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/eaa-and-eaa-presentation/2/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/eaa-and-eaa-presentation/2/response-body.adoc[Response]
-* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/eaa-and-eaa-presentation/2/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/eaa-and-eaa-presentation/2/http-response.adoc[Response]
-* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/eaa-and-eaa-presentation/2/httpie-request.adoc[Request]
-* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/eaa-and-eaa-presentation/2/curl-request.adoc[Request]
+* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/2/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/2/response-body.adoc[Response]
+* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/2/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/2/http-response.adoc[Response]
+* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/2/httpie-request.adoc[Request]
+* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/2/curl-request.adoc[Request]
 
 ====== Get disclosures
 
@@ -454,10 +454,10 @@ The method allows retrieving of disclosures used to generate hashes for selectiv
 
 Samples:
 
-* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/eaa-and-eaa-presentation/3/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/eaa-and-eaa-presentation/3/response-body.adoc[Response]
-* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/eaa-and-eaa-presentation/3/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/eaa-and-eaa-presentation/3/http-response.adoc[Response]
-* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/eaa-and-eaa-presentation/3/httpie-request.adoc[Request]
-* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/eaa-and-eaa-presentation/3/curl-request.adoc[Request]
+* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/3/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/3/response-body.adoc[Response]
+* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/3/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/3/http-response.adoc[Response]
+* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/3/httpie-request.adoc[Request]
+* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/3/curl-request.adoc[Request]
 
 ====== Get data to sign for key binding signature
 
@@ -465,10 +465,10 @@ The method allows retrieving the data to be signed for a key binding signature g
 
 Samples:
 
-* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/eaa-and-eaa-presentation/4/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/eaa-and-eaa-presentation/4/response-body.adoc[Response]
-* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/eaa-and-eaa-presentation/4/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/eaa-and-eaa-presentation/4/http-response.adoc[Response]
-* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/eaa-and-eaa-presentation/4/httpie-request.adoc[Request]
-* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/eaa-and-eaa-presentation/4/curl-request.adoc[Request]
+* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/4/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/4/response-body.adoc[Response]
+* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/4/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/4/http-response.adoc[Response]
+* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/4/httpie-request.adoc[Request]
+* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/4/curl-request.adoc[Request]
 
 ====== Create key binding signature
 
@@ -476,10 +476,10 @@ The method allows generation of a key binding signature. The user sends the sign
 
 Samples:
 
-* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/eaa-and-eaa-presentation/5/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/eaa-and-eaa-presentation/5/response-body.adoc[Response]
-* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/eaa-and-eaa-presentation/5/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/eaa-and-eaa-presentation/5/http-response.adoc[Response]
-* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/eaa-and-eaa-presentation/5/httpie-request.adoc[Request]
-* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/eaa-and-eaa-presentation/5/curl-request.adoc[Request]
+* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/5/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/5/response-body.adoc[Response]
+* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/5/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/5/http-response.adoc[Response]
+* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/5/httpie-request.adoc[Request]
+* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/5/curl-request.adoc[Request]
 
 ====== Issue presentation
 
@@ -487,10 +487,10 @@ The method allows generation of an EAA Presentation. The user sends the signed E
 
 Samples:
 
-* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/eaa-and-eaa-presentation/6/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/eaa-and-eaa-presentation/6/response-body.adoc[Response]
-* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/eaa-and-eaa-presentation/6/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/eaa-and-eaa-presentation/6/http-response.adoc[Response]
-* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/eaa-and-eaa-presentation/6/httpie-request.adoc[Request]
-* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/eaa-and-eaa-presentation/6/curl-request.adoc[Request]
+* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/6/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/6/response-body.adoc[Response]
+* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/6/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/6/http-response.adoc[Response]
+* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/6/httpie-request.adoc[Request]
+* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/6/curl-request.adoc[Request]
 
 [[RestEAAValidationService]]
 ==== REST EAA validation service
@@ -509,10 +509,10 @@ This service allows a validation of an EAA Presentation, or EAAs of a certain fo
 
 Samples:
 
-* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/eaa-validation/1/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/eaa-validation/1/response-body.adoc[Response]
-* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/eaa-validation/1/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/eaa-validation/1/http-response.adoc[Response]
-* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/eaa-validation/1/httpie-request.adoc[Request]
-* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/eaa-validation/1/curl-request.adoc[Request]
+* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-validation/1/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-validation/1/response-body.adoc[Response]
+* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-validation/1/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-validation/1/http-response.adoc[Response]
+* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-validation/1/httpie-request.adoc[Request]
+* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-validation/1/curl-request.adoc[Request]
 
 [[SOAP]]
 === SOAP
@@ -578,7 +578,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/ws/soap/So
 
 ==== SOAP EAA creation service
 
-SOAP EAA creation service's client is initialized using `SoapEAACreationService` class.
+SOAP EAA creation service's client is initialized using `SoapAttestationCreationService` class.
 
 [source,java,indent=0]
 .Soap EAA creation service
@@ -588,7 +588,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/ws/soap/So
 
 ==== SOAP EAA validation service
 
-SOAP EAA validation service's client is initialized using `SoapEAAValidationService` class.
+SOAP EAA validation service's client is initialized using `SoapAttestationValidationService` class.
 
 [source,java,indent=0]
 .Soap EAA validation service

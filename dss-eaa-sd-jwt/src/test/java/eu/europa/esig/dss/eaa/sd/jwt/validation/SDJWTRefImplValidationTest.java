@@ -29,7 +29,7 @@ import eu.europa.esig.validationreport.jaxb.SignerInformationType;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class SDJWTRefImplValidationTest extends AbstractSDJWTEAAPresentationTestValidation {
+class SDJWTRefImplValidationTest extends AbstractSDJWTTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

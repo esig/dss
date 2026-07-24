@@ -1,1 +1,1 @@
-eu.europa.esig.dss.eaa.revocation.cwt.validation.identifierlist.CWTIdentifierListValidatorFactory
+eu.europa.esig.dss.attestation.revocation.cwt.validation.identifierlist.CWTIdentifierListValidatorFactory

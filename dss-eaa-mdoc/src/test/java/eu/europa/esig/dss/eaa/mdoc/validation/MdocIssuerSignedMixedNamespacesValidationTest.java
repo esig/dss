@@ -1,7 +1,7 @@
 package eu.europa.esig.dss.eaa.mdoc.validation;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.diagnostic.EAAWrapper;
+import eu.europa.esig.dss.diagnostic.AttestationWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class MdocIssuerSignedMixedNamespacesValidationTest extends AbstractMdocEAAPresentationTestValidation {
+class MdocIssuerSignedMixedNamespacesValidationTest extends AbstractMdocAttestationPresentationTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {
@@ -27,7 +27,7 @@ class MdocIssuerSignedMixedNamespacesValidationTest extends AbstractMdocEAAPrese
 
     @Override
     protected void checkEAADigestMatchers(DiagnosticData diagnosticData) {
-        EAAWrapper eaa = diagnosticData.getEAAs().get(0);
+        AttestationWrapper eaa = diagnosticData.getEAAs().get(0);
         List<XmlDigestMatcher> digestMatchers = eaa.getDigestMatchers();
         assertEquals(6, digestMatchers.size());
 

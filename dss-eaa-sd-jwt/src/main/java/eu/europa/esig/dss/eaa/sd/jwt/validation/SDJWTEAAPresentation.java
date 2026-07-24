@@ -20,12 +20,12 @@
  */
 package eu.europa.esig.dss.eaa.sd.jwt.validation;
 
-import eu.europa.esig.dss.eaa.common.validation.DefaultEAAPresentation;
+import eu.europa.esig.dss.eaa.common.validation.DefaultAttestationPresentation;
 
 /**
  * SD-JWT EAA presentation
  */
-public class SDJWTEAAPresentation extends DefaultEAAPresentation {
+public class SDJWTEAAPresentation extends DefaultAttestationPresentation {
 
     /**
      * Default constructor

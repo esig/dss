@@ -7,7 +7,7 @@
         <version>6.6-SNAPSHOT</version>
     </parent>
 
-    <artifactId>dss-eaa-creation-soap</artifactId>
+    <artifactId>dss-attestation-creation-soap</artifactId>
     <name>DSS EAA Creation SOAP</name>
     <description>SOAP server for performing of a signature of Electronic Attestation of Attributes (EAA) and issuance of EAA Presentations using the WebServices</description>
 
@@ -18,11 +18,11 @@
     <dependencies>
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-            <artifactId>dss-eaa-creation-soap-client</artifactId>
+            <artifactId>dss-attestation-creation-soap-client</artifactId>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-            <artifactId>dss-eaa-creation-remote</artifactId>
+            <artifactId>dss-attestation-creation-remote</artifactId>
         </dependency>
     </dependencies>
 </project>

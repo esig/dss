@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.validation.process.eaa.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
-import eu.europa.esig.dss.diagnostic.EAAWrapper;
+import eu.europa.esig.dss.diagnostic.AttestationWrapper;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -38,18 +38,18 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 public class DisclosurePresentCheck extends ChainItem<XmlFC> {
 
     /** EAA to check */
-    private final EAAWrapper eaa;
+    private final AttestationWrapper eaa;
 
     /**
      * Default constructor
      *
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlFC}
-     * @param eaa {@link EAAWrapper}
+     * @param eaa {@link AttestationWrapper}
      * @param constraint {@link LevelRule}
      */
     public DisclosurePresentCheck(I18nProvider i18nProvider, XmlFC result,
-                                  EAAWrapper eaa, LevelRule constraint) {
+                                  AttestationWrapper eaa, LevelRule constraint) {
         super(i18nProvider, result, constraint);
         this.eaa = eaa;
     }

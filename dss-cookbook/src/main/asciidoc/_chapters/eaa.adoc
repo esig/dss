@@ -16,34 +16,34 @@ Electronic Attestations of Attributes (EAA) are digital identity credentials def
 
 The exact classes to use depends on the format of the EAA, but for each format there's an implementation of the following interface :
 
-- `EAAService` is the service that manages the workflow to create the EAA. It is used to compute the data to be signed, create the signed EAA, create the key binding signature and issue an EAA presentation.
+- `AttestationService` is the service that manages the workflow to create the EAA. It is used to compute the data to be signed, create the signed EAA, create the key binding signature and issue an EAA presentation.
 
 This service relies on the following interfaces :
 
-- `EAAPayloadParameters` to configure the claims. It's possible to define technical claims (i.e. issuance date, expiration date, etc.) or claims that can be selectively or non selectively disclosable. Helper methods are present for known claims, but it is also possible to define your own claim structures, using the specific implementation of `EAAClaim`, `EAAClaimArray` and `EAAClaimObject`.
+- `AttestationPayloadParameters` to configure the claims. It's possible to define technical claims (i.e. issuance date, expiration date, etc.) or claims that can be selectively or non selectively disclosable. Helper methods are present for known claims, but it is also possible to define your own claim structures, using the specific implementation of `AttestationClaim`, `AttestationClaimArray` and `AttestationClaimObject`.
 - `KeyBindingParameters` for the parameters required for the keybinding signature.
-- `EAADisclosure` for the representation of the disclosure of the EAA.
+- `SelectiveDisclosure` for the representation of the disclosure of the EAA.
 
 ==== SD-JWT VC
-The implementation of `EAAService` to use for SD-JWT VC EAA creation is `SDJWTEAAService`.
+The implementation of `AttestationService` to use for SD-JWT VC EAA creation is `SDJWTService`.
 
 This service relies on the following implementations :
 
-* `SDJWTEAAPayloadParameters` as the implementation of `EAAPayloadParameters`, with the following classes to define your own claim structures:
-** `SDJWTEAAClaim` for simple key/value claims, array elements and selectively disclosable object keys
-** `SDJWTEAAClaimArray` for array-typed claims
-** `SDJWTEAAClaimObject` for object-typed claims
+* `SDJWTPayloadParameters` as the implementation of `AttestationPayloadParameters`, with the following classes to define your own claim structures:
+** `SDJWTClaim` for simple key/value claims, array elements and selectively disclosable object keys
+** `SDJWTClaimArray` for array-typed claims
+** `SDJWTClaimObject` for object-typed claims
 * `SDJWTKeyBindingParameters` as the implementation of `KeyBindingParameters`.
-* `SDJWTEAADisclosure` as the implementation of `EAADisclosure`.
+* `SDJWTSelectiveDisclosure` as the implementation of `SelectiveDisclosure`.
 
 ===== Payload creation
-`SDJWTEAAPayloadParameters` allows defining claims for the EAA. It contains helper methods for known claim types. These known claims can be:
+`SDJWTPayloadParameters` allows defining claims for the EAA. It contains helper methods for known claim types. These known claims can be:
 
 * Technical claims (`iss`, `iat`, etc.). Technical claims are always non-selectively disclosable in the produced EAA.
 * Selectively disclosable claims.
 * Non-selectively disclosable claims.
 
-Custom claim structures can be built using `SDJWTEAAClaim`, `SDJWTEAAClaimArray` and `SDJWTEAAClaimObject`, allowing selective disclosure at the individual element or property level.
+Custom claim structures can be built using `SDJWTClaim`, `SDJWTClaimArray` and `SDJWTClaimObject`, allowing selective disclosure at the individual element or property level.
 
 [source,java,indent=0]
 .SD-JWT VC Payload parameters
@@ -65,7 +65,7 @@ Each selectively disclosable claim is committed to in the EAA payload as the has
 
 **Default salt generation**
 
-DSS automatically generates a 128-bit salt for every selectively disclosable claim during payload building. Internally, the `SDJWTEAAPayloadBuilder` seeds a `SecureRandom` deterministically from a hash of `payloadParameters.toString()` (via `DSSSecureRandomProvider`). This means that the same payload parameters configuration will always produce the same salts.
+DSS automatically generates a 128-bit salt for every selectively disclosable claim during payload building. Internally, the `SDJWTPayloadBuilder` seeds a `SecureRandom` deterministically from a hash of `payloadParameters.toString()` (via `DSSSecureRandomProvider`). This means that the same payload parameters configuration will always produce the same salts.
 
 **Custom salt per claim**
 
@@ -90,7 +90,7 @@ NOTE: For known claims (those set via helper methods such as `setGivenName()`, `
 
 **Custom SecureRandom provider**
 
-To override the `SecureRandom` used for automatic salt generation — for instance, to use a non-deterministic generation — configure a custom `SecureRandomProvider` on the `SDJWTEAAPayloadBuilder` and set it on the service:
+To override the `SecureRandom` used for automatic salt generation — for instance, to use a non-deterministic generation — configure a custom `SecureRandomProvider` on the `SDJWTPayloadBuilder` and set it on the service:
 
 [source,java,indent=0]
 .SD-JWT VC custom SecureRandom provider
@@ -99,7 +99,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/EAASnippet
 ----
 
 ===== Disclosures
-The list of disclosures for the selectively disclosable claims can be retrieved from the payload parameters with `SDJWTEAAService`.
+The list of disclosures for the selectively disclosable claims can be retrieved from the payload parameters with `SDJWTService`.
 
 [source,java,indent=0]
 .SD-JWT VC disclosures
@@ -123,7 +123,7 @@ WARNING: The payload and signature parameters that are provided to get the data 
 [source,java,indent=0]
 .SD-JWT VC creation of signed EAA
 ----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/EAACreationTest.java[tags=sdjwt-signed-eaa]
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/EAACreationTest.java[tags=sdjwt-signed-attestation]
 ----
 
 ===== Key Binding
@@ -165,17 +165,17 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/EAACreationTes
 ----
 
 ==== ISO/IEC 18013-5 mdoc
-The implementation of `EAAService` to use for ISO/IEC 18013-5 mdoc EAA creation is `MdocEAAService`.
+The implementation of `AttestationService` to use for ISO/IEC 18013-5 mdoc EAA creation is `MdocService`.
 
 This service relies on the following implementations :
 
-* `MdocEAAPayloadParameters` as the implementation of `EAAPayloadParameters`, with the following class to define custom claim structures:
-** `MdocEAAClaim` for arbitrary selectively disclosable elements defined by a namespace, an element identifier and a value
+* `MdocPayloadParameters` as the implementation of `AttestationPayloadParameters`, with the following class to define custom claim structures:
+** `MdocClaim` for arbitrary selectively disclosable elements defined by a namespace, an element identifier and a value
 * `MdocKeyBindingParameters` as the implementation of `KeyBindingParameters`.
-* `MdocEAADisclosure` as the implementation of `EAADisclosure`.
+* `MdocSelectiveDisclosure` as the implementation of `SelectiveDisclosure`.
 
 ===== Payload creation
-`MdocEAAPayloadParameters` allows defining claims for the EAA. It contains helper methods for known claim types (given name, family name, issuing country, etc.). All claims are selectively disclosable and are automatically assigned to the matching ISO/IEC namespace based on the configured `docType`. Technical claims (`validFrom`, `validUntil`, `docType`, `version`, `deviceKey`) are always part of the MSO and are not selectively disclosable.
+`MdocPayloadParameters` allows defining claims for the EAA. It contains helper methods for known claim types (given name, family name, issuing country, etc.). All claims are selectively disclosable and are automatically assigned to the matching ISO/IEC namespace based on the configured `docType`. Technical claims (`validFrom`, `validUntil`, `docType`, `version`, `deviceKey`) are always part of the MSO and are not selectively disclosable.
 
 [source,java,indent=0]
 .mdoc Payload parameters
@@ -201,7 +201,7 @@ DSS automatically generates a 128-bit salt for every selectively disclosable cla
 
 **Custom salt per claim**
 
-When creating custom claims using `MdocEAAClaim`, an explicit salt (byte array) can be supplied directly on the claim object:
+When creating custom claims using `MdocClaim`, an explicit salt (byte array) can be supplied directly on the claim object:
 
 [source,java,indent=0]
 .mdoc custom salt on a claim
@@ -209,7 +209,7 @@ When creating custom claims using `MdocEAAClaim`, an explicit salt (byte array) 
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/EAASnippet.java[tags=mdoc-custom-salt]
 ----
 
-The `MdocEAAClaim` factory methods that accept an explicit salt are:
+The `MdocClaim` factory methods that accept an explicit salt are:
 
 * `MdocEAAClaim.create(namespace, name, value, salt)` — with auto-assigned digestId
 * `MdocEAAClaim.create(namespace, digestId, name, value, salt)` — with explicit digestId and salt
@@ -220,7 +220,7 @@ NOTE: For known claims (those set via helper methods such as `setGivenName()`, `
 
 **Custom SecureRandom provider**
 
-To override the `SecureRandom` used for automatic salt generation — for instance, to use a fully non-deterministic RNG in production — configure a custom `SecureRandomProvider` on the `MdocEAAPayloadBuilder` and set it on the service:
+To override the `SecureRandom` used for automatic salt generation — for instance, to use a fully non-deterministic RNG in production — configure a custom `SecureRandomProvider` on the `MdocPayloadBuilder` and set it on the service:
 
 [source,java,indent=0]
 .mdoc custom SecureRandom provider
@@ -229,7 +229,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/EAASnippet
 ----
 
 ===== Disclosures
-The list of disclosures (one `IssuerSignedItem` entry per selectively disclosable element) can be retrieved from the payload parameters with `MdocEAAService`.
+The list of disclosures (one `IssuerSignedItem` entry per selectively disclosable element) can be retrieved from the payload parameters with `MdocService`.
 
 [source,java,indent=0]
 .mdoc disclosures
@@ -249,14 +249,14 @@ The implementation of signature parameters to use for this format is `CBAdESSign
 
 If these parameters are not defined, these values will be set automatically.
 
-NOTE: If no `docType` is defined, `MdocEAAService` will attempt to derive it automatically from the list of configured claims (e.g. driving-privilege claims → `org.iso.18013.5.1.mDL`, EUDI PID claims → EUDI PID docType, ISO 23220-1 claims → `org.iso.23220.1.mID`).
+NOTE: If no `docType` is defined, `MdocService` will attempt to derive it automatically from the list of configured claims (e.g. driving-privilege claims → `org.iso.18013.5.1.mDL`, EUDI PID claims → EUDI PID docType, ISO 23220-1 claims → `org.iso.23220.1.mID`).
 
 WARNING: The payload and signature parameters that are provided to get the data to be signed and to create the signed EAA must be equivalent. A mismatch may result in an invalid signature.
 
 [source,java,indent=0]
 .mdoc creation of signed EAA
 ----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/EAACreationTest.java[tags=mdoc-signed-eaa]
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/EAACreationTest.java[tags=mdoc-signed-attestation]
 ----
 
 ===== Key Binding
@@ -300,7 +300,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/EAACreationTes
 
 ==== EAA presentation validation
 
-The EAA presentation validation follows the same pattern as regular signature validation. The entry point is `DefaultEAAPresentationValidator`, which extends `SignedDocumentValidator`.
+The EAA presentation validation follows the same pattern as regular signature validation. The entry point is `DefaultAttestationDocumentValidator`, which extends `SignedDocumentValidator`.
 
 The validator can be obtained in two ways:
 
@@ -308,19 +308,19 @@ The validator can be obtained in two ways:
 
 2. **Direct instantiation** of a format-specific validator:
 * SD-JWT: It performs the validation of an EAA presentation as defined in TS 119 472-2, section 4.1 EAAP implementation based on SD-JWT VC (<<R36,[R36]>>)
-** `SDJWTCompactEAAPresentationValidator`: SD-JWT VC in compact serialization (`header.payload.signature\~disclosures~kbjwt`).
-** `SDJWTJsonSerializationEAAPresentationValidator`: SD-JWT VC in JSON serialization.
+** `SDJWTCompactAttestationDocumentValidator`: SD-JWT VC in compact serialization (`header.payload.signature\~disclosures~kbjwt`).
+** `SDJWTJsonSerializationAttestationDocumentValidator`: SD-JWT VC in JSON serialization.
 
 * ISO/IEC-mdoc
-** `MdocDeviceResponseEAAPresentationValidator`: mdoc DeviceResponse (full presentation with device authentication). It performs the validation of an EAA presentation as defined in TS 119 472-2, section 4.2 EAAP implementation based on ISO/IEC-mdoc (<<R36,[R36]>>)
-** `MdocIssuerSignedEAAPresentationValidator`: mdoc IssuerSigned only (without device authentication). It performs the validation of an EAA presentation as defined in TS 119 472-1, section 6 Implementation of EAA based on ISO/IEC-mdoc (<<R34,[R34]>>)
+** `MdocDeviceResponseAttestationDocumentValidator`: mdoc DeviceResponse (full presentation with device authentication). It performs the validation of an EAA presentation as defined in TS 119 472-2, section 4.2 EAAP implementation based on ISO/IEC-mdoc (<<R36,[R36]>>)
+** `MdocIssuerSignedAttestationDocumentValidator`: mdoc IssuerSigned only (without device authentication). It performs the validation of an EAA presentation as defined in TS 119 472-1, section 6 Implementation of EAA based on ISO/IEC-mdoc (<<R34,[R34]>>)
 
 ===== Auto-detection
 
 [source,java,indent=0]
 .EAA presentation validation (auto-detection)
 ----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/EAAValidationTest.java[tags=eaa-validation-auto]
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/EAAValidationTest.java[tags=attestation-validation-auto]
 ----
 
 ===== SD-JWT VC
@@ -328,7 +328,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/EAAValidat
 [source,java,indent=0]
 .SD-JWT VC presentation validation (explicit compact validator)
 ----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/EAAValidationTest.java[tags=eaa-validation-sdjwt-compact]
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/EAAValidationTest.java[tags=attestation-validation-sdjwt-compact]
 ----
 
 ===== ISO/IEC mdoc
@@ -336,74 +336,74 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/EAAValidat
 [source,java,indent=0]
 .mdoc DeviceResponse validation (explicit validator with session transcript)
 ----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/EAAValidationTest.java[tags=eaa-validation-mdoc-device-response]
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/EAAValidationTest.java[tags=attestation-validation-mdoc-device-response]
 ----
 
 [source,java,indent=0]
 .mdoc IssuerSigned validation (no device authentication)
 ----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/EAAValidationTest.java[tags=eaa-validation-mdoc-issuer-signed]
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/EAAValidationTest.java[tags=attestation-validation-mdoc-issuer-signed]
 ----
 
 ==== Validation Policy
 
-The validator uses a dedicated EAA validation policy (`/policy/eaa-constraint.xml` from the `dss-eaa-common` module). The validation level is fixed at `BASIC_SIGNATURES`.
+The validator uses a dedicated EAA validation policy (`/policy/attestation-constraint.xml` from the `dss-attestation-common` module). The validation level is fixed at `BASIC_SIGNATURES`.
 
 Custom validation policies can be provided as for regular signatures:
 
 [source,java,indent=0]
 .Using a custom validation policy
 ----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/EAASnippet.java[tags=eaa-validation-policy]
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/EAASnippet.java[tags=attestation-validation-policy]
 ----
 
 ==== Revocation
 
-DSS supports revocation checking for EAA presentations. Revocation information is provided to the validator via an `EAARevocationSource` instance set on the validator before calling `validateDocument()`.
+DSS supports revocation checking for EAA presentations. Revocation information is provided to the validator via an `AttestationRevocationSource` instance set on the validator before calling `validateDocument()`.
 
 Two base revocation mechanisms are defined:
 
 * **Token Status List** – as per IETF `draft-ietf-oauth-status-list` (JWT or CWT encoded).
-** JWT Status List: implemented in `dss-eaa-revocation-jwt`.
-** CWT Status List: implemented in `dss-eaa-revocation-cwt`.
+** JWT Status List: implemented in `dss-attestation-revocation-jwt`.
+** CWT Status List: implemented in `dss-attestation-revocation-cwt`.
 * **Identifier List** – as per ISO/IEC 18013-5 (CWT encoded).
-** Implemented in `dss-eaa-revocation-cwt`.
+** Implemented in `dss-attestation-revocation-cwt`.
 
-The ETSI TS 119 472-1 v1.2.1 (<<R34,[R34]>>) variant of the Token Status List is also supported and is handled automatically by the `ETSI194721V121EAAStatusListValidator`.
+The ETSI TS 119 472-1 v1.2.1 (<<R34,[R34]>>) variant of the Token Status List is also supported and is handled automatically by the `ETSI194721V121AttestationStatusListValidator`.
 
-The actual `EAARevocationValidator` to use is automatically selected at runtime via a `ServiceLoader` based on the revocation information embedded in the EAA payload. It is therefore necessary to include the appropriate revocation module on the classpath and register the corresponding `EAARevocationValidator` implementation in `META-INF/services`.
+The actual `AttestationRevocationValidator` to use is automatically selected at runtime via a `ServiceLoader` based on the revocation information embedded in the EAA payload. It is therefore necessary to include the appropriate revocation module on the classpath and register the corresponding `AttestationRevocationValidator` implementation in `META-INF/services`.
 
 ===== Online Revocation Source
 
-The `OnlineEAARevocationSource` fetches revocation tokens from their URLs using an HTTP data loader.
+The `OnlineAttestationRevocationSource` fetches revocation tokens from their URLs using an HTTP data loader.
 
 [source,java,indent=0]
 .Online EAA revocation source
 ----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/EAASnippet.java[tags=online-eaa-revocation-source]
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/EAASnippet.java[tags=online-attestation-revocation-source]
 ----
 
 ===== External Resources Revocation Source
 
-The `ExternalResourcesEAARevocationSource` provides an EAA revocation source based on extracted EAA revocation documents.
+The `ExternalResourcesAttestationRevocationSource` provides an EAA revocation source based on extracted EAA revocation documents.
 
 [source,java,indent=0]
 .External resources EAA revocation source
 ----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/EAASnippet.java[tags=external-eaa-revocation-source]
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/EAASnippet.java[tags=external-attestation-revocation-source]
 ----
 
 ==== Inspection of Validation Reports
 
-After calling `validateDocument()`, the three standard DSS reports are available: `DiagnosticData`, `SimpleReport`, and `DetailedReport`. The `DiagnosticData` exposes EAA-specific information through `EAAWrapper` objects.
+After calling `validateDocument()`, the three standard DSS reports are available: `DiagnosticData`, `SimpleReport`, and `DetailedReport`. The `DiagnosticData` exposes EAA-specific information through `AttestationWrapper` objects.
 
 ===== Claims
 
-All payload claims (whether selectively disclosable or not) can be retrieved from the `EAAWrapper`. Each `ClaimWrapper` exposes the claim name, its typed value, whether it was selectively disclosed, and its display value for presentation.
+All payload claims (whether selectively disclosable or not) can be retrieved from the `AttestationWrapper`. Each `ClaimWrapper` exposes the claim name, its typed value, whether it was selectively disclosed, and its display value for presentation.
 
 [source,java,indent=0]
 .Retrieving EAA claims from diagnostic data
 ----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/EAAValidationTest.java[tags=eaa-diagnostic-eaa-data]
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/EAAValidationTest.java[tags=attestation-diagnostic-attestation-data]
 ----
 

@@ -7,7 +7,7 @@
         <version>6.6-SNAPSHOT</version>
     </parent>
 
-    <artifactId>dss-eaa-validation-dto</artifactId>
+    <artifactId>dss-attestation-validation-dto</artifactId>
     <name>DSS EAA Validation DTO</name>
     <description>Contains DTO classes for performing of a validation of Electronic Attestation of Attributes (EAA) or EAA Presentations using the WebServices</description>
 

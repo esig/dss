@@ -23,7 +23,7 @@ package eu.europa.esig.dss.validation.process.eaa.checks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
-import eu.europa.esig.dss.diagnostic.EAAWrapper;
+import eu.europa.esig.dss.diagnostic.AttestationWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlClaim;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlEAA;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlEAAPayload;
@@ -32,9 +32,9 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlIntegrityClaim;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlStatusClaim;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlVerifiableCredentialsTypeClaim;
+import eu.europa.esig.dss.enumerations.AttestationFormat;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EAACategory;
-import eu.europa.esig.dss.enumerations.EAAType;
 import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.policy.LevelConstraintWrapper;
@@ -60,7 +60,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(EAAType.SD_JWT_VC);
+        xmlEAA.setEAAType(AttestationFormat.SD_JWT_VC);
 
         XmlEAASignature presentationSignature = new XmlEAASignature();
         XmlSignature signature = new XmlSignature();
@@ -89,7 +89,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new EAAWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -105,7 +105,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(EAAType.ISO_IEC_MDOC);
+        xmlEAA.setEAAType(AttestationFormat.ISO_IEC_MDOC);
         xmlEAA.setDocumentType("org.iso.18013.5.1.mDL");
 
         XmlEAASignature presentationSignature = new XmlEAASignature();
@@ -138,7 +138,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new EAAWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -154,7 +154,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(EAAType.SD_JWT_VC);
+        xmlEAA.setEAAType(AttestationFormat.SD_JWT_VC);
 
         XmlEAASignature presentationSignature = new XmlEAASignature();
         XmlSignature signature = new XmlSignature();
@@ -183,7 +183,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new EAAWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -199,7 +199,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(EAAType.SD_JWT_VC);
+        xmlEAA.setEAAType(AttestationFormat.SD_JWT_VC);
 
         XmlEAASignature presentationSignature = new XmlEAASignature();
         XmlSignature signature = new XmlSignature();
@@ -228,7 +228,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new EAAWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -244,7 +244,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(EAAType.SD_JWT_VC);
+        xmlEAA.setEAAType(AttestationFormat.SD_JWT_VC);
 
         XmlEAASignature presentationSignature = new XmlEAASignature();
         XmlSignature signature = new XmlSignature();
@@ -281,7 +281,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new EAAWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -297,7 +297,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(EAAType.SD_JWT_VC);
+        xmlEAA.setEAAType(AttestationFormat.SD_JWT_VC);
 
         XmlEAASignature presentationSignature = new XmlEAASignature();
         XmlSignature signature = new XmlSignature();
@@ -334,7 +334,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new EAAWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -350,7 +350,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(EAAType.SD_JWT_VC);
+        xmlEAA.setEAAType(AttestationFormat.SD_JWT_VC);
 
         XmlEAASignature presentationSignature = new XmlEAASignature();
         XmlSignature signature = new XmlSignature();
@@ -383,7 +383,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new EAAWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -399,7 +399,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(EAAType.ISO_IEC_MDOC);
+        xmlEAA.setEAAType(AttestationFormat.ISO_IEC_MDOC);
         xmlEAA.setDocumentType("org.iso.18013.5.1.mDL");
 
         XmlEAASignature presentationSignature = new XmlEAASignature();
@@ -436,7 +436,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new EAAWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -452,7 +452,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(EAAType.ISO_IEC_MDOC);
+        xmlEAA.setEAAType(AttestationFormat.ISO_IEC_MDOC);
         xmlEAA.setDocumentType("org.iso.18013.5.1.mDL");
 
         XmlEAASignature presentationSignature = new XmlEAASignature();
@@ -493,7 +493,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new EAAWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -509,7 +509,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(EAAType.ISO_IEC_MDOC);
+        xmlEAA.setEAAType(AttestationFormat.ISO_IEC_MDOC);
         xmlEAA.setDocumentType("org.iso.18013.5.1.mDL");
 
         XmlEAASignature presentationSignature = new XmlEAASignature();
@@ -550,7 +550,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new EAAWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -567,7 +567,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(EAAType.ISO_IEC_MDOC);
+        xmlEAA.setEAAType(AttestationFormat.ISO_IEC_MDOC);
         xmlEAA.setDocumentType("org.iso.18013.5.1.mDL");
 
         XmlEAASignature presentationSignature = new XmlEAASignature();
@@ -608,7 +608,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new EAAWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -625,7 +625,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(EAAType.ISO_IEC_MDOC);
+        xmlEAA.setEAAType(AttestationFormat.ISO_IEC_MDOC);
         xmlEAA.setDocumentType("eu.europa.ec.eudi.pid.1");
 
         XmlEAASignature presentationSignature = new XmlEAASignature();
@@ -666,7 +666,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new EAAWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -682,7 +682,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(EAAType.ISO_IEC_MDOC);
+        xmlEAA.setEAAType(AttestationFormat.ISO_IEC_MDOC);
         xmlEAA.setDocumentType("eu.europa.ec.eudi.pid.1");
 
         XmlEAASignature presentationSignature = new XmlEAASignature();
@@ -723,7 +723,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new EAAWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -740,7 +740,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(EAAType.ISO_IEC_MDOC);
+        xmlEAA.setEAAType(AttestationFormat.ISO_IEC_MDOC);
         xmlEAA.setDocumentType("org.iso.18013.5.1.mDL");
 
         XmlEAASignature presentationSignature = new XmlEAASignature();
@@ -768,7 +768,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new EAAWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -784,7 +784,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(EAAType.ISO_IEC_MDOC);
+        xmlEAA.setEAAType(AttestationFormat.ISO_IEC_MDOC);
         xmlEAA.setDocumentType("org.iso.18013.5.1.mDL");
 
         XmlEAASignature presentationSignature = new XmlEAASignature();
@@ -812,7 +812,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new EAAWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -828,7 +828,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(EAAType.SD_JWT_VC);
+        xmlEAA.setEAAType(AttestationFormat.SD_JWT_VC);
 
         XmlEAASignature presentationSignature = new XmlEAASignature();
         XmlSignature signature = new XmlSignature();
@@ -864,7 +864,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new EAAWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -880,7 +880,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(EAAType.SD_JWT_VC);
+        xmlEAA.setEAAType(AttestationFormat.SD_JWT_VC);
 
         XmlEAASignature presentationSignature = new XmlEAASignature();
         XmlSignature signature = new XmlSignature();
@@ -916,7 +916,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new EAAWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -932,7 +932,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(EAAType.SD_JWT_VC);
+        xmlEAA.setEAAType(AttestationFormat.SD_JWT_VC);
 
         XmlEAASignature presentationSignature = new XmlEAASignature();
         XmlSignature signature = new XmlSignature();
@@ -972,7 +972,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new EAAWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -988,7 +988,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(EAAType.SD_JWT_VC);
+        xmlEAA.setEAAType(AttestationFormat.SD_JWT_VC);
 
         XmlEAASignature presentationSignature = new XmlEAASignature();
         XmlSignature signature = new XmlSignature();
@@ -1028,7 +1028,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new EAAWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -1044,7 +1044,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(EAAType.SD_JWT_VC);
+        xmlEAA.setEAAType(AttestationFormat.SD_JWT_VC);
 
         XmlEAASignature presentationSignature = new XmlEAASignature();
         XmlSignature signature = new XmlSignature();
@@ -1088,7 +1088,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new EAAWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -1104,7 +1104,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(EAAType.SD_JWT_VC);
+        xmlEAA.setEAAType(AttestationFormat.SD_JWT_VC);
 
         XmlEAASignature presentationSignature = new XmlEAASignature();
         XmlSignature signature = new XmlSignature();
@@ -1148,7 +1148,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new EAAWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -1164,7 +1164,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(EAAType.ISO_IEC_MDOC);
+        xmlEAA.setEAAType(AttestationFormat.ISO_IEC_MDOC);
         xmlEAA.setDocumentType("org.iso.18013.5.1.mDL");
 
         XmlEAASignature presentationSignature = new XmlEAASignature();
@@ -1200,7 +1200,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new EAAWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -1218,7 +1218,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(EAAType.SD_JWT_VC);
+        xmlEAA.setEAAType(AttestationFormat.SD_JWT_VC);
 
         XmlEAASignature presentationSignature = new XmlEAASignature();
         XmlSignature signature = new XmlSignature();
@@ -1249,7 +1249,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new EAAWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -1265,7 +1265,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(EAAType.SD_JWT_VC);
+        xmlEAA.setEAAType(AttestationFormat.SD_JWT_VC);
 
         XmlEAASignature presentationSignature = new XmlEAASignature();
         XmlSignature signature = new XmlSignature();
@@ -1310,7 +1310,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new EAAWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -1326,7 +1326,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(EAAType.SD_JWT_VC);
+        xmlEAA.setEAAType(AttestationFormat.SD_JWT_VC);
 
         XmlEAASignature presentationSignature = new XmlEAASignature();
         XmlSignature signature = new XmlSignature();
@@ -1348,7 +1348,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new EAAWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -1364,7 +1364,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         constraint.setLevel(Level.FAIL);
 
         XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(EAAType.SD_JWT_VC);
+        xmlEAA.setEAAType(AttestationFormat.SD_JWT_VC);
 
         XmlEAASignature presentationSignature = new XmlEAASignature();
         XmlSignature signature = new XmlSignature();
@@ -1389,7 +1389,7 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new EAAWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

@@ -1,0 +1,189 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * <p>
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * <p>
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * <p>
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+package eu.europa.esig.dss.enumerations;
+
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Defines possible supported qualification types for an Attestation (e.g. QEAA, PuBEAA, PID, etc.)
+ *
+ */
+public enum AttestationQualification {
+
+    /**
+     * Qualified electronic attestation of attributes as defined in Regulation EU 2024/1183, Article 45d.
+     */
+    QEAA("QEAA", "Qualified Electronic Attestation of Attributes", "urn:cef:dss:eaaQualification:QEAA"),
+
+    /**
+     * Electronic attestation of attributes as defined in Regulation EU 2024/1183, without a qualified status.
+     */
+    EAA("EAA", "Electronic Attestation of Attributes", "urn:cef:dss:eaaQualification:EAA"),
+
+    /**
+     * Electronic attestation of attributes issued by or on behalf of a public sector body responsible
+     * for an authentic source as defined in Regulation EU 2024/1183, Article 45f.
+     */
+    PUBEAA("PuB-EAA", "Electronic Attestation of Attributes issued by or on behalf of a public sector body", "urn:cef:dss:eaaQualification:PUBEAA"),
+
+    /**
+     * Personal Identification Data (PID)
+     */
+    PID("PID", "Personal Identification Data", "urn:cef:dss:eaaQualification:PID"),
+
+    /**
+     * Electronic attestation of attributes of unknown or conflicting status.
+     */
+    UNKNOWN("Unknown", "Electronic Attestation of Attributes of unknown type", "urn:cef:dss:eaaQualification:Unknown"),
+
+    /**
+     * Indeterminate qualified electronic attestation of attributes as defined in Regulation EU 2024/1183, Article 45d.
+     */
+    INDETERMINATE_QEAA("Indeterminate QEAA", "Indeterminate Qualified Electronic Attestation of Attributes", "urn:cef:dss:eaaQualification:indeterminateQEAA"),
+
+    /**
+     * Indeterminate electronic attestation of attributes as defined in Regulation EU 2024/1183, without a qualified status.
+     */
+    INDETERMINATE_EAA("Indeterminate EAA", "Indeterminate Electronic Attestation of Attributes", "urn:cef:dss:eaaQualification:indeterminateEAA"),
+
+    /**
+     * Indeterminate electronic attestation of attributes issued by or on behalf of a public sector body responsible
+     * for an authentic source as defined in Regulation EU 2024/1183, Article 45f.
+     */
+    INDETERMINATE_PUBEAA("Indeterminate Pub-EAA", "Indeterminate Electronic Attestation of Attributes issued by or on behalf of a public sector body", "urn:cef:dss:eaaQualification:indeterminatePUBEAA"),
+
+    /**
+     * Indeterminate Personal Identification Data (PID)
+     */
+    INDETERMINATE_PID("Indeterminate PID", "Indeterminate Personal Identification Data", "urn:cef:dss:eaaQualification:indeterminatePID"),
+
+    /**
+     * Indeterminate electronic attestation of attributes of unknown or conflicting status.
+     */
+    INDETERMINATE_UNKNOWN("Indeterminate Unknown", "Indeterminate Electronic Attestation of Attributes of unknown type", "urn:cef:dss:eaaQualification:indeterminateUnknown"),
+
+    /**
+     * Not electronic attestation of attributes
+     */
+    NOT_EAA("Not EAA", "Not Electronic Attestation of Attributes", "urn:cef:dss:eaaQualification:NOTEAA"),
+
+    /**
+     * Not Applicable
+     */
+    NA("N/A", "Not applicable", "urn:cef:dss:eaaQualification:NA");
+
+    /**
+     * This class is used to provide a quick mapping of the user-friendly labels to enums
+     */
+    private static class Registry {
+
+        private static final Map<String, AttestationQualification> QUALIFS_BY_READABLE = registerByReadable();
+
+        private static Map<String, AttestationQualification> registerByReadable() {
+            final Map<String, AttestationQualification> map = new HashMap<>();
+            for (final AttestationQualification qualification : values()) {
+                map.put(qualification.readable, qualification);
+            }
+            return map;
+        }
+    }
+
+    /** User-friendly name (abbreviation) of the qualification */
+    private final String readable;
+
+    /** Description of the enumeration */
+    private final String label;
+
+    /** Unique URL */
+    private final String uri;
+
+    /**
+     * Default constructor
+     *
+     * @param readable {@link String}
+     * @param label {@link String}
+     * @param uri {@link String}
+     */
+    AttestationQualification(String readable, String label, String uri) {
+        this.readable = readable;
+        this.label = label;
+        this.uri = uri;
+    }
+
+    /**
+     * Gets user-friendly name of the enumeration
+     *
+     * @return {@link String}
+     */
+    public String getReadable() {
+        return readable;
+    }
+
+    /**
+     * Gets description of the enumeration
+     *
+     * @return {@link String}
+     */
+    public String getLabel() {
+        return label;
+    }
+
+    /**
+     * Gets a unique URI
+     *
+     * @return {@link String}
+     */
+    public String getUri() {
+        return uri;
+    }
+
+    /**
+     * Gets EAAQualification from an enumeration name
+     * Note: EAAQualification can be null
+     *
+     * @param value
+     *            the qualification name to be converted to the enum
+     * @return the linked EAAQualification or null
+     */
+    public static AttestationQualification forName(String value) {
+        if ((value != null) && !value.isEmpty()) {
+            return AttestationQualification.valueOf(value);
+        }
+        return null;
+    }
+
+    /**
+     * Gets EAAQualification from a readable user-friendly label
+     * Note: EAAQualification can be null
+     *
+     * @param readable
+     *            the readable description of the qualification to be converted to the enum
+     * @return the linked EAAQualification or null
+     */
+    public static AttestationQualification fromReadable(String readable) {
+        if ((readable != null) && !readable.isEmpty()) {
+            return AttestationQualification.Registry.QUALIFS_BY_READABLE.get(readable);
+        }
+        return null;
+    }
+    
+}

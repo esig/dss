@@ -7,7 +7,7 @@
         <version>6.6-SNAPSHOT</version>
     </parent>
 
-    <artifactId>dss-eaa-validation-soap-client</artifactId>
+    <artifactId>dss-attestation-validation-soap-client</artifactId>
     <name>DSS EAA Validation SOAP client</name>
     <description>SOAP client for performing of a validation of Electronic Attestation of Attributes (EAA) or EAA
         Presentations using the WebServices
@@ -20,7 +20,7 @@
     <dependencies>
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-            <artifactId>dss-eaa-validation-dto</artifactId>
+            <artifactId>dss-attestation-validation-dto</artifactId>
         </dependency>
         <dependency>
             <groupId>jakarta.xml.ws</groupId>

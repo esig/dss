@@ -23,7 +23,7 @@ package eu.europa.esig.dss.eaa.mdoc.validation;
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.diagnostic.EAAWrapper;
+import eu.europa.esig.dss.diagnostic.AttestationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.claim.ClaimWrapper;
 import eu.europa.esig.dss.diagnostic.claim.DeviceKeyClaimWrapper;
@@ -31,7 +31,7 @@ import eu.europa.esig.dss.diagnostic.claim.DrivingPrivilegeClaimWrapper;
 import eu.europa.esig.dss.diagnostic.claim.DrivingPrivilegesClaimWrapper;
 import eu.europa.esig.dss.diagnostic.claim.ValidityInfoClaimWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlEAAPresentationInfo;
-import eu.europa.esig.dss.enumerations.EAAPresentationType;
+import eu.europa.esig.dss.enumerations.AttestationPresentationType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -47,7 +47,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-class MdocResponseSampleValidationTest extends AbstractMdocEAAPresentationTestValidation {
+class MdocResponseSampleValidationTest extends AbstractMdocAttestationPresentationTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {
@@ -58,7 +58,7 @@ class MdocResponseSampleValidationTest extends AbstractMdocEAAPresentationTestVa
     protected void checkClaims(DiagnosticData diagnosticData) {
         super.checkClaims(diagnosticData);
 
-        EAAWrapper eaa = diagnosticData.getEAAs().get(0);
+        AttestationWrapper eaa = diagnosticData.getEAAs().get(0);
         assertEquals(DSSUtils.parseRFCDate("2024-10-20T00:00:00Z"), eaa.getAdministrativeExpirationDate());
         assertEquals(DSSUtils.parseRFCDate("2019-10-20T00:00:00Z"), eaa.getAdministrativeIssuanceDate());
         assertNotNull(eaa.getDevicePublicKey());
@@ -211,14 +211,14 @@ class MdocResponseSampleValidationTest extends AbstractMdocEAAPresentationTestVa
     protected void checkEAAPresentationInfo(DiagnosticData diagnosticData) {
         super.checkEAAPresentationInfo(diagnosticData);
 
-        XmlEAAPresentationInfo eaaPresentationInfo = diagnosticData.getEAAPresentationInfo();
-        assertEquals(getEAAPresentationType(), eaaPresentationInfo.getEAAPresentationType());
+        XmlEAAPresentationInfo attestationPresentationInfo = diagnosticData.getEAAPresentationInfo();
+        assertEquals(getEAAPresentationType(), attestationPresentationInfo.getEAAPresentationType());
         assertEquals(getEAAPresentationType(), diagnosticData.getEAAPresentationType());
     }
 
     @Override
-    protected EAAPresentationType getEAAPresentationType() {
-        return EAAPresentationType.MDOC_DEVICE_RESPONSE;
+    protected AttestationPresentationType getEAAPresentationType() {
+        return AttestationPresentationType.MDOC_DEVICE_RESPONSE;
     }
 
     @Override

@@ -52,7 +52,7 @@ import eu.europa.esig.dss.enumerations.CertificateApprovalStatus;
 import eu.europa.esig.dss.enumerations.CertificateApprovalStatusEnum;
 import eu.europa.esig.dss.enumerations.CertificateQualification;
 import eu.europa.esig.dss.enumerations.Context;
-import eu.europa.esig.dss.enumerations.EAAQualification;
+import eu.europa.esig.dss.enumerations.AttestationQualification;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.QWACProfile;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
@@ -752,9 +752,9 @@ public class DetailedReport {
 	 * Gets the final qualification result for an EAA presentation with id
 	 *
 	 * @param EAAId {@link String}
-	 * @return {@link EAAQualification}
+	 * @return {@link AttestationQualification}
 	 */
-	public List<EAAQualification> getEAAQualifications(String EAAId) {
+	public List<AttestationQualification> getEAAQualifications(String EAAId) {
 		XmlValidationEAAQualification eaaQualification = getXmlEAAQualificationById(EAAId);
 		if (eaaQualification !=null) {
 			return eaaQualification.getEAAQualification();

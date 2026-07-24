@@ -25,13 +25,13 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlEAADocument;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlEAAPresentationInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlError;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlErrors;
-import eu.europa.esig.dss.eaa.common.validation.EAAPresentationDiagnosticDataBuilder;
+import eu.europa.esig.dss.eaa.common.validation.AttestationDocumentDiagnosticDataBuilder;
 import eu.europa.esig.dss.eaa.mdoc.model.MdocDeviceResponse;
 import eu.europa.esig.dss.eaa.mdoc.model.MdocDocument;
 import eu.europa.esig.dss.eaa.mdoc.model.MdocDocumentError;
 import eu.europa.esig.dss.eaa.mdoc.model.MdocErrorItems;
-import eu.europa.esig.dss.spi.eaa.EAA;
-import eu.europa.esig.dss.spi.eaa.EAAPresentation;
+import eu.europa.esig.dss.spi.eaa.Attestation;
+import eu.europa.esig.dss.spi.eaa.AttestationPresentation;
 import eu.europa.esig.dss.utils.Utils;
 
 import java.math.BigInteger;
@@ -44,7 +44,7 @@ import java.util.Map;
  * Builds a diagnostic data for the mdoc EAA presentation
  *
  */
-public class MdocPresentationDiagnosticDataBuilder extends EAAPresentationDiagnosticDataBuilder {
+public class MdocPresentationDiagnosticDataBuilder extends AttestationDocumentDiagnosticDataBuilder {
 
     /**
      * Default constructor
@@ -54,10 +54,10 @@ public class MdocPresentationDiagnosticDataBuilder extends EAAPresentationDiagno
     }
 
     @Override
-    protected XmlEAAPresentationInfo buildXmlEAAPresentationInfo(EAAPresentation eaaPresentation) {
-        final XmlEAAPresentationInfo xmlEAAPresentationInfo = super.buildXmlEAAPresentationInfo(eaaPresentation);
-        if (eaaPresentation instanceof MdocEAAPresentation) {
-            MdocEAAPresentation mdocEAAPresentation = (MdocEAAPresentation) eaaPresentation;
+    protected XmlEAAPresentationInfo buildXmlEAAPresentationInfo(AttestationPresentation attestationPresentation) {
+        final XmlEAAPresentationInfo xmlEAAPresentationInfo = super.buildXmlEAAPresentationInfo(attestationPresentation);
+        if (attestationPresentation instanceof MdocAttestationPresentation) {
+            MdocAttestationPresentation mdocEAAPresentation = (MdocAttestationPresentation) attestationPresentation;
             MdocDeviceResponse mdocDeviceResponse = mdocEAAPresentation.getMdocDeviceResponse();
             if (mdocDeviceResponse != null) {
                 xmlEAAPresentationInfo.setVersion(mdocDeviceResponse.getVersion());
@@ -85,10 +85,10 @@ public class MdocPresentationDiagnosticDataBuilder extends EAAPresentationDiagno
     }
 
     @Override
-    protected XmlEAADocument buildXmlEAADocument(EAA eaa) {
-        final XmlEAADocument xmlEAADocument = super.buildXmlEAADocument(eaa);
-        if (eaa instanceof MdocEAA) {
-            MdocEAA mdocEAA = (MdocEAA) eaa;
+    protected XmlEAADocument buildXmlEAADocument(Attestation attestation) {
+        final XmlEAADocument xmlEAADocument = super.buildXmlEAADocument(attestation);
+        if (attestation instanceof MdocAttestation) {
+            MdocAttestation mdocEAA = (MdocAttestation) attestation;
             MdocDocument document = mdocEAA.getDocument();
             if (document != null) {
                 xmlEAADocument.setDocumentType(document.getDocType());
@@ -127,9 +127,9 @@ public class MdocPresentationDiagnosticDataBuilder extends EAAPresentationDiagno
     }
 
     @Override
-    protected XmlEAA buildDetachedXmlEAA(EAA eaa) {
-        XmlEAA xmlEAA = super.buildDetachedXmlEAA(eaa);
-        MdocEAA mdocEAA = (MdocEAA) eaa;
+    protected XmlEAA buildDetachedXmlEAA(Attestation attestation) {
+        XmlEAA xmlEAA = super.buildDetachedXmlEAA(attestation);
+        MdocAttestation mdocEAA = (MdocAttestation) attestation;
         if (mdocEAA.getDocument() != null) {
             xmlEAA.setDocumentType(mdocEAA.getDocument().getDocType());
         }

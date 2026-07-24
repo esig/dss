@@ -21,8 +21,8 @@
 package eu.europa.esig.dss.eaa.sd.jwt.key;
 
 import eu.europa.esig.dss.eaa.common.key.PublicKeyInfo;
-import eu.europa.esig.dss.eaa.sd.jwt.creation.SDJWTEAAClaim;
-import eu.europa.esig.dss.eaa.sd.jwt.creation.SDJWTEAAClaimObject;
+import eu.europa.esig.dss.eaa.sd.jwt.creation.SDJWTClaim;
+import eu.europa.esig.dss.eaa.sd.jwt.creation.SDJWTClaimObject;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EllipticCurve;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
@@ -60,11 +60,11 @@ class JWKClaimBuilderTest {
                 new byte[]{ 1, 2, 3 },
                 new byte[]{ 4, 5, 6 });
 
-        SDJWTEAAClaim claim = new JWKClaimBuilder()
+        SDJWTClaim claim = new JWKClaimBuilder()
                 .publicKeyInfo(keyInfo)
                 .create();
 
-        SDJWTEAAClaimObject object = assertInstanceOf(SDJWTEAAClaimObject.class, claim);
+        SDJWTClaimObject object = assertInstanceOf(SDJWTClaimObject.class, claim);
         assertEquals("EC", getClaim(object, "kty").getValue());
         assertEquals("P-256", getClaim(object, "crv").getValue());
         assertEquals(DSSJsonUtils.toBase64Url(keyInfo.getX()), getClaim(object, "x").getValue());
@@ -77,11 +77,11 @@ class JWKClaimBuilderTest {
                 EllipticCurve.ED25519,
                 new byte[] { 10, 20, 30 });
 
-        SDJWTEAAClaim claim = new JWKClaimBuilder()
+        SDJWTClaim claim = new JWKClaimBuilder()
                 .publicKeyInfo(keyInfo)
                 .create();
 
-        SDJWTEAAClaimObject object = assertInstanceOf(SDJWTEAAClaimObject.class, claim);
+        SDJWTClaimObject object = assertInstanceOf(SDJWTClaimObject.class, claim);
 
         assertEquals("OKP", getClaim(object, "kty").getValue());
         assertEquals("Ed25519", getClaim(object, "crv").getValue());
@@ -94,11 +94,11 @@ class JWKClaimBuilderTest {
                 EllipticCurve.X25519,
                 new byte[] { 10, 20, 30 });
 
-        SDJWTEAAClaim claim = new JWKClaimBuilder()
+        SDJWTClaim claim = new JWKClaimBuilder()
                 .publicKeyInfo(keyInfo)
                 .create();
 
-        SDJWTEAAClaimObject object = assertInstanceOf(SDJWTEAAClaimObject.class, claim);
+        SDJWTClaimObject object = assertInstanceOf(SDJWTClaimObject.class, claim);
 
         assertEquals("OKP", getClaim(object, "kty").getValue());
         assertEquals("X25519", getClaim(object, "crv").getValue());
@@ -111,11 +111,11 @@ class JWKClaimBuilderTest {
                 new byte[] { 1, 2, 3, 4 },
                 new byte[] { 1, 0, 1 });
 
-        SDJWTEAAClaim claim = new JWKClaimBuilder()
+        SDJWTClaim claim = new JWKClaimBuilder()
                 .publicKeyInfo(keyInfo)
                 .create();
 
-        SDJWTEAAClaimObject object = assertInstanceOf(SDJWTEAAClaimObject.class, claim);
+        SDJWTClaimObject object = assertInstanceOf(SDJWTClaimObject.class, claim);
 
         assertEquals("RSA", getClaim(object, "kty").getValue());
         assertEquals(DSSJsonUtils.toBase64Url(keyInfo.getModulus()), getClaim(object, "n").getValue());
@@ -145,8 +145,8 @@ class JWKClaimBuilderTest {
     void includeX5TS256() {
         Digest digest = new Digest(DigestAlgorithm.SHA256, goodUserCert.getDigest(DigestAlgorithm.SHA256));
 
-        SDJWTEAAClaimObject object = assertInstanceOf(
-                SDJWTEAAClaimObject.class,
+        SDJWTClaimObject object = assertInstanceOf(
+                SDJWTClaimObject.class,
                 new JWKClaimBuilder()
                         .keyType("RSA")
                         .certificateThumbprint(digest)
@@ -190,8 +190,8 @@ class JWKClaimBuilderTest {
         Digest digest = new Digest(DigestAlgorithm.SHA256, goodUserCert.getDigest(DigestAlgorithm.SHA256));
         String x5u = "https://example.com/certificate.pem";
 
-        SDJWTEAAClaimObject object = assertInstanceOf(
-                SDJWTEAAClaimObject.class,
+        SDJWTClaimObject object = assertInstanceOf(
+                SDJWTClaimObject.class,
                 new JWKClaimBuilder()
                         .keyType("RSA")
                         .certificateThumbprint(digest)
@@ -220,21 +220,21 @@ class JWKClaimBuilderTest {
 
     @Test
     void includeCertificateChain() {
-        SDJWTEAAClaimObject object = assertInstanceOf(
-                SDJWTEAAClaimObject.class,
+        SDJWTClaimObject object = assertInstanceOf(
+                SDJWTClaimObject.class,
                 new JWKClaimBuilder()
                         .keyType("RSA")
                         .certificateChain(Collections.singletonList(goodUserCert))
                         .create());
 
         assertEquals("RSA", getClaim(object, "kty").getValue());
-        SDJWTEAAClaim x5c = getClaim(object, "x5c");
+        SDJWTClaim x5c = getClaim(object, "x5c");
         assertNotNull(x5c);
         assertNotNull(x5c.getValue());
         List<?> certList = assertInstanceOf(List.class, x5c.getValue());
         assertEquals(1, certList.size());
 
-        SDJWTEAAClaim certClaim = assertInstanceOf(SDJWTEAAClaim.class, certList.get(0));
+        SDJWTClaim certClaim = assertInstanceOf(SDJWTClaim.class, certList.get(0));
         assertEquals(DSSJsonUtils.toBase64Url(goodUserCert.getEncoded()), certClaim.getValue());
     }
 
@@ -253,8 +253,8 @@ class JWKClaimBuilderTest {
 
     @Test
     void keyAndEmptyCertificateChain() {
-        SDJWTEAAClaimObject object = assertInstanceOf(
-                SDJWTEAAClaimObject.class,
+        SDJWTClaimObject object = assertInstanceOf(
+                SDJWTClaimObject.class,
                 new JWKClaimBuilder()
                         .publicKeyInfo(
                                 PublicKeyInfo.rsaKey(
@@ -313,7 +313,7 @@ class JWKClaimBuilderTest {
                 exception.getMessage());
     }
 
-    private SDJWTEAAClaim getClaim(SDJWTEAAClaimObject object, String name) {
+    private SDJWTClaim getClaim(SDJWTClaimObject object, String name) {
         return object.getChildren().stream()
                 .filter(c -> name.equals(c.getName()))
                 .findFirst()

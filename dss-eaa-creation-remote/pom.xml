@@ -7,7 +7,7 @@
         <version>6.6-SNAPSHOT</version>
     </parent>
 
-    <artifactId>dss-eaa-creation-remote</artifactId>
+    <artifactId>dss-attestation-creation-remote</artifactId>
     <name>DSS Remote EAA Creation</name>
     <description>Contains common implementation for performing of a creation of Electronic Attestation of Attributes (EAA) and issuance of EAA Presentations using the WebServices</description>
 
@@ -18,7 +18,7 @@
     <dependencies>
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-            <artifactId>dss-eaa-creation-dto</artifactId>
+            <artifactId>dss-attestation-creation-dto</artifactId>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
@@ -27,11 +27,11 @@
 
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-            <artifactId>dss-eaa-sd-jwt</artifactId>
+            <artifactId>dss-attestation-sd-jwt</artifactId>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-            <artifactId>dss-eaa-mdoc</artifactId>
+            <artifactId>dss-attestation-mdoc</artifactId>
         </dependency>
 
         <dependency>
