@@ -95,11 +95,11 @@ class MdocISOMdLStatusListTest extends AbstractMdocPresentationTestIssuance {
     }
 
     @Override
-    protected void checkEAADigestMatchers(DiagnosticData diagnosticData) {
-        super.checkEAADigestMatchers(diagnosticData);
+    protected void checkAttestationDigestMatchers(DiagnosticData diagnosticData) {
+        super.checkAttestationDigestMatchers(diagnosticData);
 
-        AttestationWrapper eaa = diagnosticData.getEAAs().get(0);
-        List<XmlDigestMatcher> digestMatchers = eaa.getDigestMatchers();
+        AttestationWrapper attestation = diagnosticData.getAttestations().get(0);
+        List<XmlDigestMatcher> digestMatchers = attestation.getDigestMatchers();
         assertEquals(11, digestMatchers.size());
 
         boolean familyNameSDFound = false;
@@ -178,17 +178,17 @@ class MdocISOMdLStatusListTest extends AbstractMdocPresentationTestIssuance {
     protected void checkClaims(DiagnosticData diagnosticData) {
         super.checkClaims(diagnosticData);
 
-        AttestationWrapper eaa = diagnosticData.getEAAById(diagnosticData.getFirstEAAId());
-        assertEquals("1.0", eaa.getVersion());
-        assertEquals("org.iso.18013.5.1.mDL", eaa.getAttestationDocumentType());
+        AttestationWrapper attestation = diagnosticData.getAttestationById(diagnosticData.getFirstAttestationId());
+        assertEquals("1.0", attestation.getVersion());
+        assertEquals("org.iso.18013.5.1.mDL", attestation.getAttestationDocumentType());
 
-        assertEquals(1, eaa.getStatusIndex());
-        assertEquals("https://pki.nowina.lu/eaa/status_list", eaa.getStatusUri());
-        assertNull(eaa.getStatusCertificate());
+        assertEquals(1, attestation.getStatusIndex());
+        assertEquals("https://pki.nowina.lu/eaa/status_list", attestation.getStatusUri());
+        assertNull(attestation.getStatusCertificate());
 
-        assertNull(eaa.getIdentifierListId());
-        assertNull(eaa.getIdentifierListUri());
-        assertNull(eaa.getIdentifierListCertificate());
+        assertNull(attestation.getIdentifierListId());
+        assertNull(attestation.getIdentifierListUri());
+        assertNull(attestation.getIdentifierListCertificate());
     }
 
     @Override

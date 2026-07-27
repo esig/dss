@@ -40,7 +40,7 @@ class SDJWTCompactNonSDAllOptionalElementsTest extends AbstractSDJWTTestIssuance
     @BeforeEach
     void init() {
         payloadParameters = new SDJWTPayloadParameters();
-        payloadParameters.setIssuer("EAA provider");
+        payloadParameters.setIssuer("Attestation provider");
         payloadParameters.nonSelectivelyDisclosable().setSubject(DSSASN1Utils.getSubjectCommonName(getSigningCert()));
         payloadParameters.setDeviceKey(getSigningCert().getPublicKey());
 
@@ -133,14 +133,14 @@ class SDJWTCompactNonSDAllOptionalElementsTest extends AbstractSDJWTTestIssuance
         signatureParameters.setCertificateChain(getCertificateChain());
 
         signatureParameters.setIncludeKeyIdentifier(false);
-        signatureParameters.setX509Url("https://pki.nowina.lu/eaa/pub-eaa.crt");
+        signatureParameters.setX509Url("https://pki.nowina.lu/eaa/pub-attestation.crt");
     }
 
     @Override
     protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
         SignedDocumentValidator documentValidator = super.getValidator(signedDocument);
         CommonX509URLCertificateSource x509URLCertificateSource = new CommonX509URLCertificateSource();
-        x509URLCertificateSource.addCertificate("https://pki.nowina.lu/eaa/pub-eaa.crt", getSigningCert());
+        x509URLCertificateSource.addCertificate("https://pki.nowina.lu/eaa/pub-attestation.crt", getSigningCert());
         documentValidator.setSigningCertificateSource(x509URLCertificateSource);
         return documentValidator;
     }

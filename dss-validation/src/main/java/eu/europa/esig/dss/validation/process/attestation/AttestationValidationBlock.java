@@ -23,12 +23,12 @@ package eu.europa.esig.dss.validation.process.attestation;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusionWithProofOfExistence;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlEAA;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlAttestation;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlLoTEAnalysis;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSignature;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTLAnalysis;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicSignature;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessEAA;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessAttestation;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationSignatureQualification;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.AttestationWrapper;
@@ -49,7 +49,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This class performs validation of the EAA
+ * This class performs validation of the attestation
  *
  */
 public class AttestationValidationBlock {
@@ -99,42 +99,42 @@ public class AttestationValidationBlock {
     }
 
     /**
-     * Performs validation of EAA presentations
+     * Performs validation of attestation presentations
      *
-     * @return a list of {@link XmlEAA}s
+     * @return a list of {@link XmlAttestation}s
      */
-    public List<XmlEAA> execute() {
-        final List<XmlEAA> result = new ArrayList<>();
+    public List<XmlAttestation> execute() {
+        final List<XmlAttestation> result = new ArrayList<>();
 
-        for (AttestationWrapper eaa : diagnosticData.getEAAs()) {
-            final XmlEAA eaaAnalysis = new XmlEAA();
-            eaaAnalysis.setId(eaa.getId());
+        for (AttestationWrapper attestation : diagnosticData.getAttestations()) {
+            final XmlAttestation attestationAnalysis = new XmlAttestation();
+            attestationAnalysis.setId(attestation.getId());
 
             final Map<String, XmlSignature> signatureValidationMap = new HashMap<>();
 
-            for (SignatureWrapper signature : eaa.getEAASignatures()) {
-                XmlSignature signatureValidation = getEAASignatureValidation(signature);
-                eaaAnalysis.getSignature().add(signatureValidation);
+            for (SignatureWrapper signature : attestation.getAttestationSignatures()) {
+                XmlSignature signatureValidation = getAttestationSignatureValidation(signature);
+                attestationAnalysis.getSignature().add(signatureValidation);
                 signatureValidationMap.put(signature.getId(), signatureValidation);
             }
 
-            if (eaa.getKeyBindingSignature() != null) {
-                XmlSignature signatureValidation = getEAASignatureValidation(eaa.getKeyBindingSignature());
-                eaaAnalysis.setKeyBindingSignature(signatureValidation);
-                signatureValidationMap.put(eaa.getKeyBindingSignature().getId(), signatureValidation);
+            if (attestation.getKeyBindingSignature() != null) {
+                XmlSignature signatureValidation = getAttestationSignatureValidation(attestation.getKeyBindingSignature());
+                attestationAnalysis.setKeyBindingSignature(signatureValidation);
+                signatureValidationMap.put(attestation.getKeyBindingSignature().getId(), signatureValidation);
             }
 
-            AttestationValidationProcess eaapvp = new AttestationValidationProcess(
-                    i18nProvider, eaa, signatureValidationMap, bbbs, policy);
-            XmlValidationProcessEAA validationProcessEAA = eaapvp.execute();
-            eaaAnalysis.setValidationProcessEAA(validationProcessEAA);
+            AttestationValidationProcess attestationpvp = new AttestationValidationProcess(
+                    i18nProvider, attestation, signatureValidationMap, bbbs, policy);
+            XmlValidationProcessAttestation validationProcessAttestation = attestationpvp.execute();
+            attestationAnalysis.setValidationProcessAttestation(validationProcessAttestation);
 
-            XmlConclusion conclusion = validationProcessEAA.getConclusion();
-            eaaAnalysis.setConclusion(conclusion);
+            XmlConclusion conclusion = validationProcessAttestation.getConclusion();
+            attestationAnalysis.setConclusion(conclusion);
 
             if (policy.isEIDASConstraintPresent()) {
 
-                for (SignatureWrapper signature : eaa.getEAASignatures()) {
+                for (SignatureWrapper signature : attestation.getAttestationSignatures()) {
 
                     XmlSignature xmlSignature = signatureValidationMap.get(signature.getId());
                     XmlValidationSignatureQualification validationSignatureQualification = getXmlValidationSignatureQualification(signature, xmlSignature);
@@ -143,18 +143,18 @@ public class AttestationValidationBlock {
                 }
 
                 AttestationQualificationBlock qualificationBlock = new AttestationQualificationBlock(
-                        i18nProvider, eaa, conclusion, signatureValidationMap, tlAnalysis, loteAnalysis, currentTime);
-                eaaAnalysis.setValidationEAAQualification(qualificationBlock.execute());
+                        i18nProvider, attestation, conclusion, signatureValidationMap, tlAnalysis, loteAnalysis, currentTime);
+                attestationAnalysis.setValidationAttestationQualification(qualificationBlock.execute());
 
             }
 
-            result.add(eaaAnalysis);
+            result.add(attestationAnalysis);
         }
 
         return result;
     }
 
-    private XmlSignature getEAASignatureValidation(SignatureWrapper signatureWrapper) {
+    private XmlSignature getAttestationSignatureValidation(SignatureWrapper signatureWrapper) {
 
         final XmlSignature xmlSignature = new XmlSignature();
         xmlSignature.setId(signatureWrapper.getId());

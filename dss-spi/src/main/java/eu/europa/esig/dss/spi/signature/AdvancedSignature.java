@@ -261,18 +261,18 @@ public interface AdvancedSignature extends IdentifierBasedObject, Serializable {
 	void setMasterSignature(final AdvancedSignature masterSignature);
 
 	/**
-	 * Gets the EAA of an EAA issuing or key binding signature
+	 * Gets the attestation of an attestation issuing or key binding signature
 	 *
 	 * @return {@link Attestation}
 	 */
-	Attestation getEAA();
+	Attestation getAttestation();
 
 	/**
-	 * Sets EAA presentation of the EAA issuing or key binging signature
+	 * Sets attestation presentation of the attestation issuing or key binging signature
 	 *
 	 * @param attestation {@link Attestation}
 	 */
-	void setEAA(Attestation attestation);
+	void setAttestation(Attestation attestation);
 	
 	/**
 	 * Checks if the current signature is a counter signature (i.e. has a Master signature)
@@ -283,7 +283,7 @@ public interface AdvancedSignature extends IdentifierBasedObject, Serializable {
 
 	/**
 	 * Checks if the current signature is a key binding signature.
-	 * NOTE: Used for EAA tokens.
+	 * NOTE: Used for attestation tokens.
 	 *
 	 * @return TRUE if it is a key binding signature, FALSE otherwise
 	 */
@@ -291,7 +291,7 @@ public interface AdvancedSignature extends IdentifierBasedObject, Serializable {
 
 	/**
 	 * Sets whether the current signature is a key binding signature.
-	 * NOTE: Used for EAA tokens.
+	 * NOTE: Used for attestation tokens.
 	 *
 	 * @param keyBindingSignature whether the current signature is a key binding signature
 	 */
@@ -421,7 +421,7 @@ public interface AdvancedSignature extends IdentifierBasedObject, Serializable {
 
 	/**
 	 * Returns the time-stamp which is placed on the digital signature (XAdES example: ds:SignatureValue element), the
-	 * signature time-stamp(s) present in the AdES-T form, the certification path references and the revocation revocation
+	 * signature time-stamp(s) present in the AdES-T form, the certification path references and the revocation status
 	 * references.
 	 *
 	 * @return {@code List} of {@code TimestampToken}

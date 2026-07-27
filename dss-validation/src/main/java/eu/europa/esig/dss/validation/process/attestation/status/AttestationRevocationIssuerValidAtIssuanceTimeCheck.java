@@ -35,32 +35,32 @@ import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import java.util.Date;
 
 /**
- * Checks whether the issuer certificate of the EAA revocation token was valid at the EAA revocation token issuance time
+ * Checks whether the issuer certificate of the attestation revocation token was valid at the attestation revocation token issuance time
  *
  */
 public class AttestationRevocationIssuerValidAtIssuanceTimeCheck extends ChainItem<XmlSAV> {
 
-    /** EAA revocation token to check */
-    private final AttestationRevocationTokenWrapper eaaStatusToken;
+    /** attestation revocation token to check */
+    private final AttestationRevocationTokenWrapper attestationRevocationToken;
 
     /**
      * Default constructor
      *
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlSAV}
-     * @param eaaStatusToken {@link AttestationRevocationWrapper}
+     * @param attestationRevocationToken {@link AttestationRevocationWrapper}
      * @param constraint {@link LevelRule}
      */
     public AttestationRevocationIssuerValidAtIssuanceTimeCheck(I18nProvider i18nProvider, XmlSAV result,
-                                                               AttestationRevocationTokenWrapper eaaStatusToken, LevelRule constraint) {
+                                                               AttestationRevocationTokenWrapper attestationRevocationToken, LevelRule constraint) {
         super(i18nProvider, result, constraint);
-        this.eaaStatusToken = eaaStatusToken;
+        this.attestationRevocationToken = attestationRevocationToken;
     }
 
     @Override
     protected boolean process() {
-        Date issuedAt = eaaStatusToken.getIssuedAt();
-        CertificateWrapper signingCertificate = eaaStatusToken.getSigningCertificate();
+        Date issuedAt = attestationRevocationToken.getIssuedAt();
+        CertificateWrapper signingCertificate = attestationRevocationToken.getSigningCertificate();
         return issuedAt != null && signingCertificate != null
                 && !issuedAt.before(signingCertificate.getNotBefore())
                 && !issuedAt.after(signingCertificate.getNotAfter());
@@ -78,10 +78,10 @@ public class AttestationRevocationIssuerValidAtIssuanceTimeCheck extends ChainIt
 
     @Override
     protected String buildAdditionalInfo() {
-        if (eaaStatusToken.getSigningCertificate() != null) {
-            return i18nProvider.getMessage(MessageTag.EAA_REV_ISS_CERT, ValidationProcessUtils.getFormattedDate(eaaStatusToken.getIssuedAt()),
-                    ValidationProcessUtils.getFormattedDate(eaaStatusToken.getSigningCertificate().getNotBefore()),
-                    ValidationProcessUtils.getFormattedDate(eaaStatusToken.getSigningCertificate().getNotAfter()));
+        if (attestationRevocationToken.getSigningCertificate() != null) {
+            return i18nProvider.getMessage(MessageTag.EAA_REV_ISS_CERT, ValidationProcessUtils.getFormattedDate(attestationRevocationToken.getIssuedAt()),
+                    ValidationProcessUtils.getFormattedDate(attestationRevocationToken.getSigningCertificate().getNotBefore()),
+                    ValidationProcessUtils.getFormattedDate(attestationRevocationToken.getSigningCertificate().getNotAfter()));
         }
         return null;
     }
@@ -94,7 +94,7 @@ public class AttestationRevocationIssuerValidAtIssuanceTimeCheck extends ChainIt
 
     @Override
     protected SubIndication getFailedSubIndicationForConclusion() {
-        return SubIndication.EAA_CONSTRAINTS_FAILURE;
+        return SubIndication.ATTESTATION_CONSTRAINTS_FAILURE;
     }
 
 }

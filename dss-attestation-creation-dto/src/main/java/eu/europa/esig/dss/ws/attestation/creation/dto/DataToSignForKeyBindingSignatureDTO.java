@@ -38,8 +38,8 @@ public class DataToSignForKeyBindingSignatureDTO extends AbstractDataToSignDTO {
 
     private static final long serialVersionUID = -9080107638635078347L;
 
-    /** Signed EAA document */
-    private RemoteDocument eaa;
+    /** Signed attestation document */
+    private RemoteDocument attestation;
 
     /** (Optional) List of disclosures */
     private List<DisclosureDTO> disclosures;
@@ -57,35 +57,35 @@ public class DataToSignForKeyBindingSignatureDTO extends AbstractDataToSignDTO {
     /**
      * Default constructor
      *
-     * @param eaa {@link RemoteDocument} EAA document
+     * @param attestation {@link RemoteDocument} attestation document
      * @param disclosures a list of {@link DisclosureDTO}s
      * @param keyBindingParameters {@link RemoteKeyBindingParameters}
      * @param signatureParameters {@link RemoteSignatureParameters}
      */
-    public DataToSignForKeyBindingSignatureDTO(RemoteDocument eaa, List<DisclosureDTO> disclosures,
+    public DataToSignForKeyBindingSignatureDTO(RemoteDocument attestation, List<DisclosureDTO> disclosures,
                                                RemoteKeyBindingParameters keyBindingParameters, RemoteSignatureParameters signatureParameters) {
         super(signatureParameters);
-        this.eaa = eaa;
+        this.attestation = attestation;
         this.disclosures = disclosures;
         this.keyBindingParameters = keyBindingParameters;
     }
 
     /**
-     * Gets the signed EAA document
+     * Gets the signed attestation document
      *
      * @return {@link RemoteDocument}
      */
-    public RemoteDocument getEaa() {
-        return eaa;
+    public RemoteDocument getAttestation() {
+        return attestation;
     }
 
     /**
-     * Sets a signed EAA document
+     * Sets a signed attestation document
      *
-     * @param eaa {@link RemoteDocument}
+     * @param attestation {@link RemoteDocument}
      */
-    public void setEaa(RemoteDocument eaa) {
-        this.eaa = eaa;
+    public void setAttestation(RemoteDocument attestation) {
+        this.attestation = attestation;
     }
 
     /**
@@ -127,7 +127,7 @@ public class DataToSignForKeyBindingSignatureDTO extends AbstractDataToSignDTO {
     @Override
     public String toString() {
         return "DataToSignForKeyBindingSignature [" +
-                "attestation=" + eaa +
+                "attestation=" + attestation +
                 ", disclosures=" + disclosures +
                 ", keyBindingParameters=" + keyBindingParameters +
                 "] " + super.toString();
@@ -140,7 +140,7 @@ public class DataToSignForKeyBindingSignatureDTO extends AbstractDataToSignDTO {
         if (!super.equals(object)) return false;
 
         DataToSignForKeyBindingSignatureDTO that = (DataToSignForKeyBindingSignatureDTO) object;
-        return Objects.equals(eaa, that.eaa)
+        return Objects.equals(attestation, that.attestation)
                 && Objects.equals(disclosures, that.disclosures)
                 && Objects.equals(keyBindingParameters, that.keyBindingParameters);
     }
@@ -148,7 +148,7 @@ public class DataToSignForKeyBindingSignatureDTO extends AbstractDataToSignDTO {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + Objects.hashCode(eaa);
+        result = 31 * result + Objects.hashCode(attestation);
         result = 31 * result + Objects.hashCode(disclosures);
         result = 31 * result + Objects.hashCode(keyBindingParameters);
         return result;

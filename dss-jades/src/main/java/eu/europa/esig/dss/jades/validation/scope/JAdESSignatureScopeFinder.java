@@ -85,10 +85,10 @@ public class JAdESSignatureScopeFinder extends AbstractSignatureScopeFinder impl
 						return Collections.singletonList(new CounterSignatureScope(jadesSignature.getMasterSignature(), originalDocuments.get(0)));
 					} else if (jadesSignature.isKeyBindingSignature()) {
 						// only one document shall be present
-						return Collections.singletonList(new KeyBindingSignatureScope(jadesSignature.getEAA(), originalDocuments.get(0)));
-					} else if (jadesSignature.getEAA() != null) {
+						return Collections.singletonList(new KeyBindingSignatureScope(jadesSignature.getAttestation(), originalDocuments.get(0)));
+					} else if (jadesSignature.getAttestation() != null) {
 						// only one document shall be present
-						return Collections.singletonList(new AttestationSignatureScope(jadesSignature.getEAA(), originalDocuments.get(0)));
+						return Collections.singletonList(new AttestationSignatureScope(jadesSignature.getAttestation(), originalDocuments.get(0)));
 					} else {
 						return Collections.singletonList(getSignatureScopeFromOriginalDocument(originalDocuments.get(0), referenceValidation));
 					}

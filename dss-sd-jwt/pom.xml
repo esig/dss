@@ -10,8 +10,8 @@
     </parent>
 
     <artifactId>dss-sd-jwt</artifactId>
-    <name>DSS Electronic Attestation of Attributes SD-JWT</name>
-    <description>This module performs validation of presentations of EAA based on JWTs (i.e. SD-JWT VC, etc.)</description>
+    <name>DSS SD-JWT</name>
+    <description>This module performs validation of presentations of attestation based on JWTs (i.e. SD-JWT VC, etc.)</description>
 
     <properties>
         <module-name>jpms_dss_sd_jwt</module-name>

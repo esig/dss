@@ -36,9 +36,9 @@ public class RemoteAttestationClaimParameters implements Serializable {
 
     /* Common claims */
 
-    /** Date of the EAA issuance */
+    /** Date of the attestation issuance */
     private Date issuanceDate;
-    /** EAA subject */
+    /** attestation subject */
     private String subject;
     
     /** The user's first or given name information */
@@ -107,14 +107,14 @@ public class RemoteAttestationClaimParameters implements Serializable {
     /** Age attestation identifiers */
     private List<AgeOverNNDTO> ageOverNN;
 
-    /** The registration identifier of the legal entity on whose behalf the EAA has been issued */
+    /** The registration identifier of the legal entity on whose behalf the attestation has been issued */
     private String issuingAuthorityRegistrationIdentifier;
     /** The date when the data (e.g. a PID) was issued */
     private Date administrativeIssuanceDate;
     /** The date when the data (e.g. a PID) will expire */
     private Date administrativeExpirationDate;
 
-    /* SD-JWT VC attributes */
+    /* SD-JWT attributes */
 
     /** URL of the End-User's profile picture. */
     private String picture;
@@ -906,7 +906,7 @@ public class RemoteAttestationClaimParameters implements Serializable {
     }
 
     /**
-     * Gets the picture (SD-JWT VC only)
+     * Gets the picture (SD-JWT only)
      *
      * @return {@link String}
      */
@@ -915,7 +915,7 @@ public class RemoteAttestationClaimParameters implements Serializable {
     }
 
     /**
-     * Sets the picture (SD-JWT VC only)
+     * Sets the picture (SD-JWT only)
      *
      * @param picture {@link String}
      */
@@ -924,7 +924,7 @@ public class RemoteAttestationClaimParameters implements Serializable {
     }
 
     /**
-     * Gets the nickname (SD-JWT VC only)
+     * Gets the nickname (SD-JWT only)
      *
      * @return {@link String}
      */
@@ -933,7 +933,7 @@ public class RemoteAttestationClaimParameters implements Serializable {
     }
 
     /**
-     * Sets the nickname (SD-JWT VC only)
+     * Sets the nickname (SD-JWT only)
      *
      * @param nickname {@link String}
      */
@@ -942,7 +942,7 @@ public class RemoteAttestationClaimParameters implements Serializable {
     }
 
     /**
-     * Gets the preferred nickname (SD-JWT VC only)
+     * Gets the preferred nickname (SD-JWT only)
      *
      * @return {@link String}
      */
@@ -951,7 +951,7 @@ public class RemoteAttestationClaimParameters implements Serializable {
     }
 
     /**
-     * Sets the preferred nickname (SD-JWT VC only)
+     * Sets the preferred nickname (SD-JWT only)
      *
      * @param preferredNickname {@link String}
      */
@@ -960,7 +960,7 @@ public class RemoteAttestationClaimParameters implements Serializable {
     }
 
     /**
-     * Gets the name (SD-JWT VC only)
+     * Gets the name (SD-JWT only)
      *
      * @return {@link String}
      */
@@ -969,7 +969,7 @@ public class RemoteAttestationClaimParameters implements Serializable {
     }
 
     /**
-     * Sets the name (SD-JWT VC only)
+     * Sets the name (SD-JWT only)
      *
      * @param name {@link String}
      */
@@ -978,7 +978,7 @@ public class RemoteAttestationClaimParameters implements Serializable {
     }
 
     /**
-     * Gets the middle name (SD-JWT VC only)
+     * Gets the middle name (SD-JWT only)
      *
      * @return {@link String}
      */
@@ -987,7 +987,7 @@ public class RemoteAttestationClaimParameters implements Serializable {
     }
 
     /**
-     * Sets the middle name (SD-JWT VC only)
+     * Sets the middle name (SD-JWT only)
      *
      * @param middleName {@link String}
      */
@@ -996,7 +996,7 @@ public class RemoteAttestationClaimParameters implements Serializable {
     }
 
     /**
-     * Gets the profile URL (SD-JWT VC only)
+     * Gets the profile URL (SD-JWT only)
      *
      * @return {@link String}
      */
@@ -1005,7 +1005,7 @@ public class RemoteAttestationClaimParameters implements Serializable {
     }
 
     /**
-     * Sets the profile URL (SD-JWT VC only)
+     * Sets the profile URL (SD-JWT only)
      *
      * @param profile {@link String}
      */
@@ -1014,7 +1014,7 @@ public class RemoteAttestationClaimParameters implements Serializable {
     }
 
     /**
-     * Gets the website URL (SD-JWT VC only)
+     * Gets the website URL (SD-JWT only)
      *
      * @return {@link String}
      */
@@ -1023,7 +1023,7 @@ public class RemoteAttestationClaimParameters implements Serializable {
     }
 
     /**
-     * Sets the website URL (SD-JWT VC only)
+     * Sets the website URL (SD-JWT only)
      *
      * @param website {@link String}
      */
@@ -1032,7 +1032,7 @@ public class RemoteAttestationClaimParameters implements Serializable {
     }
 
     /**
-     * Gets whether the email has been verified (SD-JWT VC only)
+     * Gets whether the email has been verified (SD-JWT only)
      *
      * @return {@link Boolean}
      */
@@ -1041,7 +1041,7 @@ public class RemoteAttestationClaimParameters implements Serializable {
     }
 
     /**
-     * Sets whether the email has been verified (SD-JWT VC only)
+     * Sets whether the email has been verified (SD-JWT only)
      *
      * @param emailVerified {@link Boolean}
      */
@@ -1050,7 +1050,7 @@ public class RemoteAttestationClaimParameters implements Serializable {
     }
 
     /**
-     * Gets the gender (SD-JWT VC only)
+     * Gets the gender (SD-JWT only)
      *
      * @return {@link String}
      */
@@ -1059,7 +1059,7 @@ public class RemoteAttestationClaimParameters implements Serializable {
     }
 
     /**
-     * Sets the gender (SD-JWT VC only)
+     * Sets the gender (SD-JWT only)
      *
      * @param gender {@link String}
      */
@@ -1068,7 +1068,7 @@ public class RemoteAttestationClaimParameters implements Serializable {
     }
 
     /**
-     * Gets the zone information (SD-JWT VC only)
+     * Gets the zone information (SD-JWT only)
      *
      * @return {@link String}
      */
@@ -1077,7 +1077,7 @@ public class RemoteAttestationClaimParameters implements Serializable {
     }
 
     /**
-     * Sets the zone information (SD-JWT VC only)
+     * Sets the zone information (SD-JWT only)
      *
      * @param zoneinfo {@link String}
      */
@@ -1086,7 +1086,7 @@ public class RemoteAttestationClaimParameters implements Serializable {
     }
 
     /**
-     * Gets the locale (SD-JWT VC only)
+     * Gets the locale (SD-JWT only)
      *
      * @return {@link String}
      */
@@ -1095,7 +1095,7 @@ public class RemoteAttestationClaimParameters implements Serializable {
     }
 
     /**
-     * Sets the locale (SD-JWT VC only)
+     * Sets the locale (SD-JWT only)
      *
      * @param locale {@link String}
      */
@@ -1104,7 +1104,7 @@ public class RemoteAttestationClaimParameters implements Serializable {
     }
 
     /**
-     * Gets whether the phone number has been verified (SD-JWT VC only)
+     * Gets whether the phone number has been verified (SD-JWT only)
      *
      * @return {@link Boolean}
      */
@@ -1113,7 +1113,7 @@ public class RemoteAttestationClaimParameters implements Serializable {
     }
 
     /**
-     * Sets whether the phone number has been verified (SD-JWT VC only)
+     * Sets whether the phone number has been verified (SD-JWT only)
      *
      * @param phoneNumberVerified {@link Boolean}
      */
@@ -1122,7 +1122,7 @@ public class RemoteAttestationClaimParameters implements Serializable {
     }
 
     /**
-     * Gets the updated at date (SD-JWT VC only)
+     * Gets the updated at date (SD-JWT only)
      *
      * @return {@link Date}
      */
@@ -1131,7 +1131,7 @@ public class RemoteAttestationClaimParameters implements Serializable {
     }
 
     /**
-     * Sets the updated at date (SD-JWT VC only)
+     * Sets the updated at date (SD-JWT only)
      *
      * @param updatedAt {@link Date}
      */
@@ -1140,7 +1140,7 @@ public class RemoteAttestationClaimParameters implements Serializable {
     }
 
     /**
-     * Gets the birth middle name (SD-JWT VC only)
+     * Gets the birth middle name (SD-JWT only)
      *
      * @return {@link String}
      */
@@ -1149,7 +1149,7 @@ public class RemoteAttestationClaimParameters implements Serializable {
     }
 
     /**
-     * Sets the birth middle name (SD-JWT VC only)
+     * Sets the birth middle name (SD-JWT only)
      *
      * @param birthMiddleName {@link String}
      */
@@ -1158,7 +1158,7 @@ public class RemoteAttestationClaimParameters implements Serializable {
     }
 
     /**
-     * Gets the salutation (SD-JWT VC only)
+     * Gets the salutation (SD-JWT only)
      *
      * @return {@link String}
      */
@@ -1167,7 +1167,7 @@ public class RemoteAttestationClaimParameters implements Serializable {
     }
 
     /**
-     * Sets the salutation (SD-JWT VC only)
+     * Sets the salutation (SD-JWT only)
      *
      * @param salutation {@link String}
      */
@@ -1176,7 +1176,7 @@ public class RemoteAttestationClaimParameters implements Serializable {
     }
 
     /**
-     * Gets the date of expiry (SD-JWT VC only)
+     * Gets the date of expiry (SD-JWT only)
      *
      * @return {@link Date}
      */
@@ -1185,7 +1185,7 @@ public class RemoteAttestationClaimParameters implements Serializable {
     }
 
     /**
-     * Sets the date of expiry (SD-JWT VC only)
+     * Sets the date of expiry (SD-JWT only)
      *
      * @param dateOfExpiry {@link Date}
      */
@@ -1194,7 +1194,7 @@ public class RemoteAttestationClaimParameters implements Serializable {
     }
 
     /**
-     * Gets the date of issuance (SD-JWT VC only)
+     * Gets the date of issuance (SD-JWT only)
      *
      * @return {@link Date}
      */
@@ -1203,7 +1203,7 @@ public class RemoteAttestationClaimParameters implements Serializable {
     }
 
     /**
-     * Sets the date of issuance (SD-JWT VC only)
+     * Sets the date of issuance (SD-JWT only)
      *
      * @param dateOfIssuance {@link Date}
      */
@@ -1212,7 +1212,7 @@ public class RemoteAttestationClaimParameters implements Serializable {
     }
 
     /**
-     * Gets the attested attributes subject identifier (SD-JWT VC only)
+     * Gets the attested attributes subject identifier (SD-JWT only)
      *
      * @return {@link String}
      */
@@ -1221,7 +1221,7 @@ public class RemoteAttestationClaimParameters implements Serializable {
     }
 
     /**
-     * Sets the attested attributes subject identifier (SD-JWT VC only)
+     * Sets the attested attributes subject identifier (SD-JWT only)
      *
      * @param attestedAttributesSubjectIdentifier {@link String}
      */
@@ -1230,7 +1230,7 @@ public class RemoteAttestationClaimParameters implements Serializable {
     }
 
     /**
-     * Gets the attested attributes subject pseudonym (SD-JWT VC and mdoc)
+     * Gets the attested attributes subject pseudonym (SD-JWT and mdoc)
      *
      * @return {@link String}
      */
@@ -1239,7 +1239,7 @@ public class RemoteAttestationClaimParameters implements Serializable {
     }
 
     /**
-     * Sets the attested attributes subject pseudonym (SD-JWT VC and mdoc)
+     * Sets the attested attributes subject pseudonym (SD-JWT and mdoc)
      *
      * @param attestedAttributesSubjectPseudonym {@link String}
      */
@@ -1248,7 +1248,7 @@ public class RemoteAttestationClaimParameters implements Serializable {
     }
 
     /**
-     * Gets the attested attributes (SD-JWT VC only)
+     * Gets the attested attributes (SD-JWT only)
      *
      * @return {@link List<String>}
      */
@@ -1257,7 +1257,7 @@ public class RemoteAttestationClaimParameters implements Serializable {
     }
 
     /**
-     * Sets the attested attributes (SD-JWT VC only)
+     * Sets the attested attributes (SD-JWT only)
      *
      * @param attestedAttributes {@link List<String>}
      */
@@ -2023,7 +2023,7 @@ public class RemoteAttestationClaimParameters implements Serializable {
 
     @Override
     public String toString() {
-        return "RemoteEAAClaimParameters [" +
+        return "RemoteAttestationClaimParameters [" +
                 "givenName='" + givenName + '\'' +
                 ", familyName='" + familyName + '\'' +
                 ", birthdate=" + birthdate +

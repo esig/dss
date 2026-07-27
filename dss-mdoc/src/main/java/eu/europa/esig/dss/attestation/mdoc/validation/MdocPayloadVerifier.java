@@ -30,9 +30,9 @@ import eu.europa.esig.dss.attestation.mdoc.MdocUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.attestation.SelectivelyDisclosableClaim;
 import eu.europa.esig.dss.model.attestation.DisclosureValidation;
-import eu.europa.esig.dss.model.attestation.claim.Claim;
-import eu.europa.esig.dss.model.attestation.claim.ClaimMap;
-import eu.europa.esig.dss.model.attestation.claim.ClaimString;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaim;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimMap;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimString;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
@@ -48,7 +48,7 @@ import java.util.stream.Collectors;
 
 /**
  * This class verifies issuer signed items, when provided, and computes the combined version of
- * the EAA payload, which includes the MobileSecurityObject as defined in ISO 18013-5
+ * the attestation payload, which includes the MobileSecurityObject as defined in ISO 18013-5
  * "9.1.2.4 Signing method and structure for MSO" as well as issuer signed items.
  * This class requires execution of {@code #verify} method before accessing the validation results.
  *
@@ -94,21 +94,21 @@ public class MdocPayloadVerifier extends AttestationPayloadVerifier {
      */
     @Override
     public void verify() {
-        ClaimMap originalPayloadMap = parseCborPayload();
+        VerifiedClaimMap originalPayloadMap = parseCborPayload();
         this.disclosureValidations = new ArrayList<>();
         this.digestAlgorithm = getDigestAlgorithm(originalPayloadMap);
-        ClaimMap verifiedPayloadMap = buildPayloadWithDisclosures(originalPayloadMap);
+        VerifiedClaimMap verifiedPayloadMap = buildPayloadWithDisclosures(originalPayloadMap);
         this.verifiedPayload = new MdocAttestationPayload(verifiedPayloadMap, docType);
     }
 
     /**
      * Parses the {@code cborPayload} to a {@code ClaimMap} object
      *
-     * @return {@link ClaimMap}
+     * @return {@link VerifiedClaimMap}
      */
-    protected ClaimMap parseCborPayload() {
+    protected VerifiedClaimMap parseCborPayload() {
         CBORMap mso = getMobileSecurityObject();
-        return (ClaimMap) MdocUtils.createClaim(mso);
+        return (VerifiedClaimMap) MdocUtils.createClaim(mso);
     }
 
     private CBORMap getMobileSecurityObject() {
@@ -129,8 +129,8 @@ public class MdocPayloadVerifier extends AttestationPayloadVerifier {
         }
     }
 
-    private DigestAlgorithm getDigestAlgorithm(ClaimMap originalPayloadMap) {
-        ClaimString digestAlgorithm = originalPayloadMap.getAsString(MdocConstants.DIGEST_ALGORITHM);
+    private DigestAlgorithm getDigestAlgorithm(VerifiedClaimMap originalPayloadMap) {
+        VerifiedClaimString digestAlgorithm = originalPayloadMap.getAsString(MdocConstants.DIGEST_ALGORITHM);
         if (digestAlgorithm != null) {
             String msoDigestAlgorithmId = digestAlgorithm.getValueAsString();
             try {
@@ -149,34 +149,34 @@ public class MdocPayloadVerifier extends AttestationPayloadVerifier {
     }
 
     @Override
-    protected Map<String, Claim> buildSelectivelyDisclosableClaimMap(Claim valueDigestsClaim) {
+    protected Map<String, VerifiedClaim> buildSelectivelyDisclosableClaimMap(VerifiedClaim valueDigestsClaim) {
         if (!valueDigestsClaim.isMapValueType()) {
             LOG.warn("valueDigests header shall be of a CBOR Map type!");
             return Collections.emptyMap();
         }
 
-        final Map<String, Claim> result = new HashMap<>();
+        final Map<String, VerifiedClaim> result = new HashMap<>();
 
-        Map<String, Claim> valueDigestsMap = valueDigestsClaim.getMapValue();
-        for (Map.Entry<String, Claim> valueDigestsEntry : valueDigestsMap.entrySet()) {
+        Map<String, VerifiedClaim> valueDigestsMap = valueDigestsClaim.getMapValue();
+        for (Map.Entry<String, VerifiedClaim> valueDigestsEntry : valueDigestsMap.entrySet()) {
             String namespace = valueDigestsEntry.getKey();
-            Claim digestIDs = valueDigestsEntry.getValue();
+            VerifiedClaim digestIDs = valueDigestsEntry.getValue();
             if (!digestIDs.isMapValueType()) {
                 LOG.warn("DigestIDs object shall be of a CBOR Map type! The value is skipped.");
                 continue;
             }
 
-            for (Map.Entry<String, Claim> digestIDsEntry : digestIDs.getMapValue().entrySet()) {
+            for (Map.Entry<String, VerifiedClaim> digestIDsEntry : digestIDs.getMapValue().entrySet()) {
                 String digestId = digestIDsEntry.getKey();
                 if (!Utils.isStringDigits(digestId)) {
                     LOG.warn("DigestID key shall be represented by an unsigned integer! The value is skipped.");
                     continue;
                 }
-                Claim digest = digestIDsEntry.getValue();
+                VerifiedClaim digest = digestIDsEntry.getValue();
 
                 long digestIdLong = Long.parseLong(digestId);
                 List<SelectivelyDisclosableClaim> disclosureCandidates = getDisclosureByNamespaceAndId(namespace, digestIdLong);
-                Claim claim = buildSelectivelyDisclosableClaim(digest, disclosureCandidates, namespace, digestIdLong);
+                VerifiedClaim claim = buildSelectivelyDisclosableClaim(digest, disclosureCandidates, namespace, digestIdLong);
                 if (claim != null) {
                     if (claim.getName() != null) {
                         result.put(claim.getName(), claim);
@@ -214,13 +214,13 @@ public class MdocPayloadVerifier extends AttestationPayloadVerifier {
     /**
      * Validates the disclosure and returns the extracted value
      *
-     * @param hashClaim {@link Claim}
+     * @param hashClaim {@link VerifiedClaim}
      * @param disclosures a list of {@link SelectivelyDisclosableClaim}s
      * @param namespace {@link String}
      * @param digestId {@link Long}
-     * @return {@link Claim}
+     * @return {@link VerifiedClaim}
      */
-    protected Claim buildSelectivelyDisclosableClaim(Claim hashClaim, List<SelectivelyDisclosableClaim> disclosures, String namespace, Long digestId) {
+    protected VerifiedClaim buildSelectivelyDisclosableClaim(VerifiedClaim hashClaim, List<SelectivelyDisclosableClaim> disclosures, String namespace, Long digestId) {
         DisclosureValidation disclosureValidation = validateHashClaim(hashClaim, disclosures, namespace, digestId);
         return getDisclosedClaim(disclosureValidation);
     }
@@ -228,13 +228,13 @@ public class MdocPayloadVerifier extends AttestationPayloadVerifier {
     /**
      * Validates the {@code hashClaim} against a list of {@code disclosures} and returns the resulted {@code DisclosureValidation}
      *
-     * @param hashClaim {@link Claim}
+     * @param hashClaim {@link VerifiedClaim}
      * @param disclosures a list of {@link SelectivelyDisclosableClaim}s
      * @param namespace {@link String}
      * @param digestId {@link Long}
      * @return {@link DisclosureValidation}
      */
-    protected DisclosureValidation validateHashClaim(Claim hashClaim, List<SelectivelyDisclosableClaim> disclosures, String namespace, Long digestId) {
+    protected DisclosureValidation validateHashClaim(VerifiedClaim hashClaim, List<SelectivelyDisclosableClaim> disclosures, String namespace, Long digestId) {
         DisclosureValidation disclosureValidation = super.validateHashClaim(hashClaim, disclosures);
         disclosureValidation.setId(hashClaim.getName());
         disclosureValidation.setNamespace(namespace);
@@ -248,18 +248,18 @@ public class MdocPayloadVerifier extends AttestationPayloadVerifier {
     }
 
     @Override
-    protected Claim createClaim(String claimName, Claim parentClaim, Object claimValue, boolean isSelectivelyDisclosable) {
+    protected VerifiedClaim createClaim(String claimName, VerifiedClaim parentClaim, Object claimValue, boolean isSelectivelyDisclosable) {
         return MdocUtils.createClaim(claimName, parentClaim, claimValue, isSelectivelyDisclosable);
     }
 
     @Override
-    protected Claim getClaimHashItem(Claim claim) {
+    protected VerifiedClaim getClaimHashItem(VerifiedClaim claim) {
         // not applicable for mdoc
         return null;
     }
 
     @Override
-    protected byte[] getHashBytes(Claim hashClaim) {
+    protected byte[] getHashBytes(VerifiedClaim hashClaim) {
         if (!hashClaim.isBinaryValueType()) {
             LOG.warn("Digest object shall be of a CBOR Byte String type! The value is skipped.");
             return null;

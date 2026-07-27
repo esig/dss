@@ -47,7 +47,7 @@ class SDJWTCompactSDArraysNestedRecursiveTest extends AbstractSDJWTTestIssuance 
     @BeforeEach
     void init() {
         payloadParameters = new SDJWTPayloadParameters();
-        payloadParameters.setIssuer("EAA provider");
+        payloadParameters.setIssuer("Attestation provider");
         payloadParameters.nonSelectivelyDisclosable().setSubject(DSSASN1Utils.getSubjectCommonName(getSigningCert()));
         payloadParameters.setDeviceKey(getSigningCert().getPublicKey());
 
@@ -93,11 +93,11 @@ class SDJWTCompactSDArraysNestedRecursiveTest extends AbstractSDJWTTestIssuance 
     }
 
     @Override
-    protected void checkEAADigestMatchers(DiagnosticData diagnosticData) {
-        super.checkEAADigestMatchers(diagnosticData);
+    protected void checkAttestationDigestMatchers(DiagnosticData diagnosticData) {
+        super.checkAttestationDigestMatchers(diagnosticData);
 
-        AttestationWrapper eaa = diagnosticData.getEAAs().get(0);
-        List<XmlDigestMatcher> digestMatchers = eaa.getDigestMatchers();
+        AttestationWrapper attestation = diagnosticData.getAttestations().get(0);
+        List<XmlDigestMatcher> digestMatchers = attestation.getDigestMatchers();
         assertEquals(7, digestMatchers.size());
 
         boolean petsSDFound = false;
@@ -135,8 +135,8 @@ class SDJWTCompactSDArraysNestedRecursiveTest extends AbstractSDJWTTestIssuance 
     protected void checkClaims(DiagnosticData diagnosticData) {
         super.checkClaims(diagnosticData);
 
-        AttestationWrapper eaa = diagnosticData.getEAAs().get(0);
-        List<ClaimWrapper> otherClaims = eaa.getOtherClaims();
+        AttestationWrapper attestation = diagnosticData.getAttestations().get(0);
+        List<ClaimWrapper> otherClaims = attestation.getOtherClaims();
         assertEquals(1, otherClaims.size());
 
         ClaimWrapper pets = otherClaims.get(0);

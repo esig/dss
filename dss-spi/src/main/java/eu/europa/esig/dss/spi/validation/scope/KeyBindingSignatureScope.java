@@ -47,21 +47,21 @@ public class KeyBindingSignatureScope extends SignatureScope {
      */
     public KeyBindingSignatureScope(final Attestation attestation, final DSSDocument originalDocument) {
         super(originalDocument);
-        Objects.requireNonNull(attestation, "EAA cannot be null!");
+        Objects.requireNonNull(attestation, "Attestation cannot be null!");
         this.attestation = attestation;
     }
 
     @Override
     public String getName(TokenIdentifierProvider tokenIdentifierProvider) {
-        return getEAAPresentationId(tokenIdentifierProvider);
+        return getAttestationPresentationId(tokenIdentifierProvider);
     }
 
     @Override
     public String getDescription(TokenIdentifierProvider tokenIdentifierProvider) {
-        return String.format("Key binding for EAA with Id : %s", getEAAPresentationId(tokenIdentifierProvider));
+        return String.format("Key binding for attestation with Id : %s", getAttestationPresentationId(tokenIdentifierProvider));
     }
 
-    private String getEAAPresentationId(TokenIdentifierProvider tokenIdentifierProvider) {
+    private String getAttestationPresentationId(TokenIdentifierProvider tokenIdentifierProvider) {
         return tokenIdentifierProvider.getIdAsString(attestation);
     }
 

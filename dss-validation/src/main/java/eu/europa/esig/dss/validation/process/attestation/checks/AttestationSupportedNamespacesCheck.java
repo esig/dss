@@ -15,31 +15,31 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * This class verifies whether the EAA contains only claims within namespaces which are supported
+ * This class verifies whether the attestation contains only claims within namespaces which are supported
  *
  */
 public class AttestationSupportedNamespacesCheck extends AbstractMultiValuesCheckItem<XmlSAV> {
 
-    /** EAA to check */
-    private final AttestationWrapper eaa;
+    /** attestation to check */
+    private final AttestationWrapper attestation;
 
     /**
      * Default constructor
      *
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlSAV}
-     * @param eaa {@link AttestationWrapper}
+     * @param attestation {@link AttestationWrapper}
      * @param constraint {@link MultiValuesRule}
      */
     public AttestationSupportedNamespacesCheck(I18nProvider i18nProvider, XmlSAV result,
-                                               AttestationWrapper eaa, MultiValuesRule constraint) {
+                                               AttestationWrapper attestation, MultiValuesRule constraint) {
         super(i18nProvider, result, constraint);
-        this.eaa = eaa;
+        this.attestation = attestation;
     }
 
     @Override
     protected boolean process() {
-        Set<String> claimNamespaces = eaa.getAllClaimNamespaces();
+        Set<String> claimNamespaces = attestation.getAllClaimNamespaces();
         if (Utils.isCollectionEmpty(claimNamespaces)) {
             return true;
         }
@@ -48,7 +48,7 @@ public class AttestationSupportedNamespacesCheck extends AbstractMultiValuesChec
 
     @Override
     protected String buildAdditionalInfo() {
-        Set<String> claimNamespaces = eaa.getAllClaimNamespaces();
+        Set<String> claimNamespaces = attestation.getAllClaimNamespaces();
         List<String> unsupportedNamespaces = claimNamespaces.stream().filter(c -> !processValueCheck(c)).collect(Collectors.toList());
         return i18nProvider.getMessage(MessageTag.EAA_UNSUPPORTED_CLAIM_NAMESPACES, Utils.joinStrings(unsupportedNamespaces, ", "));
     }
@@ -70,7 +70,7 @@ public class AttestationSupportedNamespacesCheck extends AbstractMultiValuesChec
 
     @Override
     protected SubIndication getFailedSubIndicationForConclusion() {
-        return SubIndication.EAA_CONSTRAINTS_FAILURE;
+        return SubIndication.ATTESTATION_CONSTRAINTS_FAILURE;
     }
 
 }

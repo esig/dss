@@ -35,39 +35,39 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * This class verifies whether the EAA contains all the specified claims,
+ * This class verifies whether the attestation contains all the specified claims,
  * either as part of the original payload or through the provided selective disclosures
  *
  */
 public class AttestationClaimsCheck extends AbstractMultiValuesCheckItem<XmlSAV> {
 
-    /** EAA to check */
-    private final AttestationWrapper eaa;
+    /** attestation to check */
+    private final AttestationWrapper attestation;
 
     /**
      * Default constructor
      *
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlSAV}
-     * @param eaa {@link AttestationWrapper}
+     * @param attestation {@link AttestationWrapper}
      * @param constraint {@link MultiValuesRule}
      */
     public AttestationClaimsCheck(final I18nProvider i18nProvider, final XmlSAV result,
-                                  final AttestationWrapper eaa, final MultiValuesRule constraint) {
+                                  final AttestationWrapper attestation, final MultiValuesRule constraint) {
         super(i18nProvider, result, constraint);
-        this.eaa = eaa;
+        this.attestation = attestation;
     }
 
     @Override
     protected boolean process() {
-        List<String> claimNames = eaa.getAllEAAPayloadClaimNames();
+        List<String> claimNames = attestation.getAllAttestationPayloadClaimNames();
         return processValuesForEachExpectedCheck(claimNames);
     }
 
     @Override
     protected String buildAdditionalInfo() {
         List<String> notPresentClaims = getValues().stream()
-                .filter(v -> !ValidationProcessUtils.processValueCheck(v, eaa.getAllEAAPayloadClaimNames()))
+                .filter(v -> !ValidationProcessUtils.processValueCheck(v, attestation.getAllAttestationPayloadClaimNames()))
                 .collect(Collectors.toList());
         return i18nProvider.getMessage(MessageTag.EAA_CLAIMS_INFO, Utils.joinStrings(notPresentClaims, ", "));
     }
@@ -89,7 +89,7 @@ public class AttestationClaimsCheck extends AbstractMultiValuesCheckItem<XmlSAV>
 
     @Override
     protected SubIndication getFailedSubIndicationForConclusion() {
-        return SubIndication.EAA_CONSTRAINTS_FAILURE;
+        return SubIndication.ATTESTATION_CONSTRAINTS_FAILURE;
     }
 
 }

@@ -31,7 +31,7 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 import eu.europa.esig.dss.validation.process.attestation.status.AttestationRevocationTokenTypeCheck;
 
 /**
- * Verifies format of an EAA revocation token
+ * Verifies format of an attestation revocation token
  *
  */
 public class AttestationRevocationFormatChecking extends AbstractFormatChecking<AttestationRevocationTokenWrapper> {
@@ -41,13 +41,13 @@ public class AttestationRevocationFormatChecking extends AbstractFormatChecking<
      *
      * @param i18nProvider {@link I18nProvider}
      * @param diagnosticData {@link DiagnosticData}
-     * @param eaaStatusToken {@link AttestationRevocationTokenWrapper}
+     * @param attestationRevocationToken {@link AttestationRevocationTokenWrapper}
      * @param context {@link Context}
      * @param policy {@link ValidationPolicy}
      */
     public AttestationRevocationFormatChecking(I18nProvider i18nProvider, DiagnosticData diagnosticData,
-                                               AttestationRevocationTokenWrapper eaaStatusToken, Context context, ValidationPolicy policy) {
-        super(i18nProvider, diagnosticData, eaaStatusToken, context, policy);
+                                               AttestationRevocationTokenWrapper attestationRevocationToken, Context context, ValidationPolicy policy) {
+        super(i18nProvider, diagnosticData, attestationRevocationToken, context, policy);
     }
 
     @Override
@@ -60,7 +60,7 @@ public class AttestationRevocationFormatChecking extends AbstractFormatChecking<
     }
 
     private ChainItem<XmlFC> type() {
-        MultiValuesRule constraint = policy.getEAARevocationTokenTypeConstraint();
+        MultiValuesRule constraint = policy.getAttestationRevocationTokenTypeConstraint();
         return new AttestationRevocationTokenTypeCheck(i18nProvider, result, token, constraint);
     }
 

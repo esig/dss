@@ -66,11 +66,11 @@ class SDJWTFlattenedJsonSerializationWithKBSignatureDifferentCertTest extends Ab
         if (includeKeyBindingSignature()) {
             JAdESSignatureParameters params = getKeyBindingSignatureParameters();
 
-            DSSDocument signedEAA = signEAA();
+            DSSDocument signedAttestation = signAttestation();
             List<SDJWTSelectiveDisclosure> disclosures = getDisclosures();
             SDJWTKeyBindingParameters kbParams = getKeyBindingParameters();
 
-            ToBeSigned dataToSign = getService().getDataToSignForKeyBindingSignature(signedEAA, disclosures, kbParams, params);
+            ToBeSigned dataToSign = getService().getDataToSignForKeyBindingSignature(signedAttestation, disclosures, kbParams, params);
 
             SignatureValue signatureValue;
             try (CertEntitySignatureTokenConnection kbToken = new CertEntitySignatureTokenConnection(getCertEntity(ECDSA_521_USER))) {
@@ -78,7 +78,7 @@ class SDJWTFlattenedJsonSerializationWithKBSignatureDifferentCertTest extends Ab
                 signatureValue = kbToken.sign(dataToSign, params.getSignatureAlgorithm(), kbPrivateKeyEntry);
             }
 
-            return getService().createKeyBindingSignature(signedEAA, disclosures, kbParams, params, signatureValue);
+            return getService().createKeyBindingSignature(signedAttestation, disclosures, kbParams, params, signatureValue);
         }
         return null;
     }
@@ -104,11 +104,11 @@ class SDJWTFlattenedJsonSerializationWithKBSignatureDifferentCertTest extends Ab
     }
 
     @Override
-    protected void checkEAADigestMatchers(DiagnosticData diagnosticData) {
-        super.checkEAADigestMatchers(diagnosticData);
+    protected void checkAttestationDigestMatchers(DiagnosticData diagnosticData) {
+        super.checkAttestationDigestMatchers(diagnosticData);
 
-        AttestationWrapper eaa = diagnosticData.getEAAs().get(0);
-        List<XmlDigestMatcher> digestMatchers = eaa.getDigestMatchers();
+        AttestationWrapper attestation = diagnosticData.getAttestations().get(0);
+        List<XmlDigestMatcher> digestMatchers = attestation.getDigestMatchers();
         assertEquals(2, digestMatchers.size());
 
         boolean givenNameSDFound = false;
@@ -129,10 +129,10 @@ class SDJWTFlattenedJsonSerializationWithKBSignatureDifferentCertTest extends Ab
     protected void checkClaims(final DiagnosticData diagnosticData) {
         super.checkClaims(diagnosticData);
 
-        AttestationWrapper eaa = diagnosticData.getEAAs().get(0);
-        assertEquals("https://issuer.example.com", eaa.getIssuer());
-        assertEquals("John", eaa.getGivenName());
-        assertEquals("Doe", eaa.getFamilyName());
+        AttestationWrapper attestation = diagnosticData.getAttestations().get(0);
+        assertEquals("https://issuer.example.com", attestation.getIssuer());
+        assertEquals("John", attestation.getGivenName());
+        assertEquals("Doe", attestation.getFamilyName());
     }
 
     @Override

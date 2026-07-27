@@ -30,30 +30,30 @@ import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
 /**
- * This class verifies whether the SD-JWT EAA contains the claim "vct#integrity"
+ * This class verifies whether the SD-JWT attestation contains the claim "vct#integrity"
  */
 public class AttestationTypeIntegrityPresentCheck extends ChainItem<XmlSAV> {
 
-    /** EAA to check */
-    private final AttestationWrapper eaa;
+    /** attestation to check */
+    private final AttestationWrapper attestation;
 
     /**
      * Default constructor
      *
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlSAV}
-     * @param eaa {@link AttestationWrapper}
+     * @param attestation {@link AttestationWrapper}
      * @param constraint {@link LevelRule}
      */
     public AttestationTypeIntegrityPresentCheck(I18nProvider i18nProvider, XmlSAV result,
-                                                AttestationWrapper eaa, LevelRule constraint) {
+                                                AttestationWrapper attestation, LevelRule constraint) {
         super(i18nProvider, result, constraint);
-        this.eaa = eaa;
+        this.attestation = attestation;
     }
 
     @Override
     protected boolean process() {
-        return eaa.getVerifiableCredentialsTypeIntegrityDigestAlgorithm() != null && eaa.getVerifiableCredentialsTypeIntegrityBytes() != null;
+        return attestation.getVerifiableCredentialsTypeIntegrityDigestAlgorithm() != null && attestation.getVerifiableCredentialsTypeIntegrityBytes() != null;
     }
 
     @Override
@@ -73,7 +73,7 @@ public class AttestationTypeIntegrityPresentCheck extends ChainItem<XmlSAV> {
 
     @Override
     protected SubIndication getFailedSubIndicationForConclusion() {
-        return SubIndication.EAA_CONSTRAINTS_FAILURE;
+        return SubIndication.ATTESTATION_CONSTRAINTS_FAILURE;
     }
 
 }

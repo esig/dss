@@ -75,7 +75,7 @@ public class JWKClaimBuilder {
     /**
      * Certificate URL represented through the RFC 7517 {@code x5u} parameter.
      * <p>
-     * According to the SD-JWT EAA specification, this parameter shall only be
+     * According to the SD-JWT attestation specification, this parameter shall only be
      * present together with {@code x5t#S256}.
      */
     private String x5u;
@@ -149,11 +149,11 @@ public class JWKClaimBuilder {
     }
 
     /**
-     * Builds the {@code jwk} claim according to RFC 7517 and the SD-JWT EAA
+     * Builds the {@code jwk} claim according to RFC 7517 and the SD-JWT
      * specification.
      * The resulting claim contains either:
-     * - a representation of the EAA subject public key; or
-     * - a representation of the EAA subject certificate.
+     * - a representation of the attestation subject public key; or
+     * - a representation of the attestation subject certificate.
      *
      * @return the generated {@link SDJWTClaim}
      */
@@ -163,8 +163,8 @@ public class JWKClaimBuilder {
         if (publicKeyInfo != null) {
             if (Utils.isCollectionNotEmpty(certificateChain) || certificateThumbprint != null || x5u != null) {
                 throw new IllegalArgumentException(
-                        "The 'jwk' claim may only contain either a representation of the EAA subject public key or " +
-                                "a representation of the EAA subject certificate as specified in IETF RFC 7800.");
+                        "The 'jwk' claim may only contain either a representation of the attestation subject public key or " +
+                                "a representation of the attestation subject certificate as specified in IETF RFC 7800.");
             }
             jwk.addChild(SDJWTClaim.create(SDJWTConstants.KTY, publicKeyInfo.getKeyType()));
 
@@ -182,7 +182,7 @@ public class JWKClaimBuilder {
         } else if (Utils.isCollectionNotEmpty(certificateChain)) {
             if (certificateThumbprint != null || x5u != null) {
                 throw new IllegalArgumentException(
-                        "If the EAA subject certificate is represented by the x5c parameter, neither the x5u parameter, " +
+                        "If the attestation subject certificate is represented by the x5c parameter, neither the x5u parameter, " +
                                 "nor the x5t#S256 parameter shall be present.");
             }
 
@@ -204,11 +204,11 @@ public class JWKClaimBuilder {
             }
 
         } else if (x5u != null) {
-            throw new IllegalArgumentException("If the EAA subject certificate is represented by the x5u parameter, " +
+            throw new IllegalArgumentException("If the attestation subject certificate is represented by the x5u parameter, " +
                     "the x5t#S256 parameter shall also be present.");
 
         } else {
-            throw new NullPointerException("No configuration has been present for the EAA subject public key or " +
+            throw new NullPointerException("No configuration has been present for the attestation subject public key or " +
                     "certificate representation!");
         }
 

@@ -8,11 +8,11 @@
     </parent>
 
     <artifactId>dss-attestation-validation-dto</artifactId>
-    <name>DSS EAA Validation DTO</name>
-    <description>Contains DTO classes for performing of a validation of Electronic Attestation of Attributes (EAA) or EAA Presentations using the WebServices</description>
+    <name>DSS Attestation Validation DTO</name>
+    <description>Contains DTO classes for performing of a validation of annotations (EAA, PID, etc.) and issuance of annotation presentations using the WebServices</description>
 
     <properties>
-        <module-name>jpms_dss_ws_eaa_validation_dto</module-name>
+        <module-name>jpms_dss_ws_attestation_validation_dto</module-name>
     </properties>
 
     <dependencies>

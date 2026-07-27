@@ -25,7 +25,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlCertificate;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCertificateApprovalStatus;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlEAA;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlAttestation;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlEvidenceRecord;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlQWACProcess;
@@ -36,7 +36,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationCertificateQualificat
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationCertificateApprovalStatus;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessArchivalDataTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicTimestamp;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessEAA;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessAttestation;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessEvidenceRecord;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationSignatureQualification;
 import eu.europa.esig.dss.enumerations.CertificateApprovalStatus;
@@ -333,9 +333,9 @@ public class DetailedReportMessageCollector {
 		if (evidenceRecordById != null) {
 			return collectEvidenceRecordValidation(type, evidenceRecordById);
 		}
-		XmlEAA EAAById = detailedReport.getXmlEAAById(tokenId);
-		if (EAAById != null) {
-			return collectEAAValidation(type, EAAById);
+		XmlAttestation attestationById = detailedReport.getXmlAttestationById(tokenId);
+		if (attestationById != null) {
+			return collectAttestationValidation(type, attestationById);
 		}
 		XmlTLAnalysis tlAnalysisById = detailedReport.getTLAnalysisById(tokenId);
 		if (tlAnalysisById != null) {
@@ -364,9 +364,9 @@ public class DetailedReportMessageCollector {
 		if (timestampById != null) {
 			return collectTimestampQualification(type, timestampById);
 		}
-		XmlEAA EAAById = detailedReport.getXmlEAAById(tokenId);
-		if (EAAById != null) {
-			return collectEAAQualification(type, EAAById);
+		XmlAttestation attestationById = detailedReport.getXmlAttestationById(tokenId);
+		if (attestationById != null) {
+			return collectAttestationQualification(type, attestationById);
 		}
 		List<XmlValidationCertificateQualification> certificateById = getCertificateQualificationProcess(tokenId);
 		if (certificateById != null) {
@@ -411,11 +411,11 @@ public class DetailedReportMessageCollector {
 		return result;
 	}
 
-	private List<Message> collectEAAValidation(MessageType type, XmlEAA xmlEAA) {
+	private List<Message> collectAttestationValidation(MessageType type, XmlAttestation xmlAttestation) {
 		List<Message> result = new ArrayList<>();
 
-		XmlValidationProcessEAA validationProcessEAA = xmlEAA.getValidationProcessEAA();
-		addMessages(result, getMessages(type, validationProcessEAA));
+		XmlValidationProcessAttestation validationProcessAttestation = xmlAttestation.getValidationProcessAttestation();
+		addMessages(result, getMessages(type, validationProcessAttestation));
 		return result;
 	}
 
@@ -449,9 +449,9 @@ public class DetailedReportMessageCollector {
 		return result;
 	}
 
-	private List<Message> collectEAAQualification(MessageType type, XmlEAA xmlEAA) {
+	private List<Message> collectAttestationQualification(MessageType type, XmlAttestation xmlAttestation) {
 		List<Message> result = new ArrayList<>();
-		addMessages(result, getMessages(type, xmlEAA.getValidationEAAQualification()));
+		addMessages(result, getMessages(type, xmlAttestation.getValidationAttestationQualification()));
 		return result;
 	}
 

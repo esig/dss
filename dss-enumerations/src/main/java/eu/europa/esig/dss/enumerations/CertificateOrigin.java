@@ -58,7 +58,7 @@ public enum CertificateOrigin {
 	/** Certificates present within an unprotected header parameter (JWS or COSE) */
 	UNPROTECTED_HEADER,
 
-	/** Certificates present within a Token Status List claim of an EAA */
-	EAA
+	/** Certificates present within a Token Status List claim of an attestation */
+	ATTESTATION
 
 }

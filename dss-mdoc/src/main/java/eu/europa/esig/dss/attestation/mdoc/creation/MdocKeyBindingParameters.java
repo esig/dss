@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Implementation of {@link KeyBindingParameters} for ISO/IEC 18013-5 mdoc EAA.
+ * Implementation of {@link KeyBindingParameters} for ISO/IEC 18013-5 mdoc attestation.
  */
 public class MdocKeyBindingParameters implements KeyBindingParameters, MdocDeviceSignedParameters {
 
@@ -75,7 +75,7 @@ public class MdocKeyBindingParameters implements KeyBindingParameters, MdocDevic
     }
 
     /**
-     * Sets the document type. Shall be the same as the docType of the EAA.
+     * Sets the document type. Shall be the same as the docType of the attestation.
      *
      * @param docType {@link String}
      */

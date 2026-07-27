@@ -37,14 +37,14 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlClaim;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlEAA;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlEAARevocationStatus;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlEAASignature;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestation;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationRevocationStatus;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
+import eu.europa.esig.dss.enumerations.AttestationProfile;
 import eu.europa.esig.dss.enumerations.AttestationQualification;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EAACategory;
-import eu.europa.esig.dss.enumerations.AttestationFormat;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -57,21 +57,21 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Provides a user-friendly interface for information extraction from a {@code eu.europa.esig.dss.diagnostic.jaxb.XmlEAA} JAXB object
+ * Provides a user-friendly interface for information extraction from a {@code eu.europa.esig.dss.diagnostic.jaxb.XmlAttestation} JAXB object
  *
  */
 public class AttestationWrapper extends AbstractTokenProxy {
 
-    /** Wrapped EAA object */
-    private final XmlEAA eaa;
+    /** Wrapped attestation object */
+    private final XmlAttestation attestation;
 
     /**
      * Default constructor
      *
-     * @param eaa {@link XmlEAA} to read
+     * @param attestation {@link XmlAttestation} to read
      */
-    public AttestationWrapper(final XmlEAA eaa) {
-        this.eaa = eaa;
+    public AttestationWrapper(final XmlAttestation attestation) {
+        this.attestation = attestation;
     }
 
     /**
@@ -80,16 +80,16 @@ public class AttestationWrapper extends AbstractTokenProxy {
      * @return {@link String}
      */
     public String getId() {
-        return eaa.getId();
+        return attestation.getId();
     }
 
     /**
-     * Returns name of the EAA presentation's document, when applicable
+     * Returns name of the attestation presentation's document, when applicable
      *
      * @return {@link String}
      */
     public String getFilename() {
-        return eaa.getDocumentName();
+        return attestation.getDocumentName();
     }
 
     /**
@@ -103,40 +103,40 @@ public class AttestationWrapper extends AbstractTokenProxy {
         if (docType != null) {
             return docType;
         }
-        return eaa.getDocumentType();
+        return attestation.getDocumentType();
     }
 
     @Override
     protected XmlBasicSignature getCurrentBasicSignature() {
-        SignatureWrapper eaaSignature = getEAASignature();
-        if (eaaSignature != null) {
-            return eaaSignature.getCurrentBasicSignature();
+        SignatureWrapper attestationSignature = getAttestationSignature();
+        if (attestationSignature != null) {
+            return attestationSignature.getCurrentBasicSignature();
         }
         return null;
     }
 
     @Override
     protected List<XmlChainItem> getCurrentCertificateChain() {
-        SignatureWrapper eaaSignature = getEAASignature();
-        if (eaaSignature != null) {
-            return eaaSignature.getCurrentCertificateChain();
+        SignatureWrapper attestationSignature = getAttestationSignature();
+        if (attestationSignature != null) {
+            return attestationSignature.getCurrentCertificateChain();
         }
         return null;
     }
 
     @Override
     protected XmlSigningCertificate getCurrentSigningCertificate() {
-        SignatureWrapper eaaSignature = getEAASignature();
-        if (eaaSignature != null) {
-            return eaaSignature.getCurrentSigningCertificate();
+        SignatureWrapper attestationSignature = getAttestationSignature();
+        if (attestationSignature != null) {
+            return attestationSignature.getCurrentSigningCertificate();
         }
         return null;
     }
 
-    private SignatureWrapper getEAASignature() {
-        List<SignatureWrapper> eaaSignatures = getEAASignatures();
-        if (eaaSignatures != null && eaaSignatures.size() == 1) {
-            return eaaSignatures.get(0);
+    private SignatureWrapper getAttestationSignature() {
+        List<SignatureWrapper> attestationSignatures = getAttestationSignatures();
+        if (attestationSignatures != null && attestationSignatures.size() == 1) {
+            return attestationSignatures.get(0);
         }
         return null;
     }
@@ -147,7 +147,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
      * @return {@link DigestAlgorithm}
      */
     public DigestAlgorithm getSelectiveDisclosuresDigestAlgorithm() {
-        return eaa.getDigestMethod();
+        return attestation.getDigestMethod();
     }
 
     /**
@@ -157,31 +157,31 @@ public class AttestationWrapper extends AbstractTokenProxy {
      */
     @Override
     public List<XmlDigestMatcher> getDigestMatchers() {
-        return eaa.getDigestMatchers();
+        return attestation.getDigestMatchers();
     }
 
     /**
-     * Gets signatures used to create the EAA.
+     * Gets signatures used to create the attestation.
      * NOTE: in most of the cases a single signature is expected,
-     * but it is possible for EAA to be signed by multiple signers.
+     * but it is possible for attestation to be signed by multiple signers.
      *
      * @return a list of {@link SignatureWrapper}s
      */
-    public List<SignatureWrapper> getEAASignatures() {
+    public List<SignatureWrapper> getAttestationSignatures() {
         final List<SignatureWrapper> result = new ArrayList<>();
-        for (XmlEAASignature xmlEAASignature : eaa.getEAASignature()) {
-            result.add(new SignatureWrapper(xmlEAASignature.getSignature()));
+        for (XmlAttestationSignature xmlAttestationSignature : attestation.getAttestationSignature()) {
+            result.add(new SignatureWrapper(xmlAttestationSignature.getSignature()));
         }
         return result;
     }
 
     /**
-     * Gets a list of identifiers of signatures used to create the EAA
+     * Gets a list of identifiers of signatures used to create the attestation
      *
      * @return a list of {@link String}s
      */
-    public List<String> getEAASignatureIds() {
-        List<SignatureWrapper> attestationPresentationSignatures = getEAASignatures();
+    public List<String> getAttestationSignatureIds() {
+        List<SignatureWrapper> attestationPresentationSignatures = getAttestationSignatures();
         if (attestationPresentationSignatures != null && !attestationPresentationSignatures.isEmpty()) {
             return attestationPresentationSignatures.stream().map(SignatureWrapper::getId).collect(Collectors.toList());
         }
@@ -194,8 +194,8 @@ public class AttestationWrapper extends AbstractTokenProxy {
      * @return {@link SignatureWrapper}
      */
     public SignatureWrapper getKeyBindingSignature() {
-        if (eaa.getKeyBindingSignature() != null) {
-            return new SignatureWrapper(eaa.getKeyBindingSignature().getSignature());
+        if (attestation.getKeyBindingSignature() != null) {
+            return new SignatureWrapper(attestation.getKeyBindingSignature().getSignature());
         }
         return null;
     }
@@ -214,12 +214,12 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets access to the EAA payload, containing complete claims data
+     * Gets access to the attestation payload, containing complete claims data
      *
      * @return {@link AttestationPayloadProxy}
      */
     public AttestationPayloadProxy getPayload() {
-        return new AttestationPayloadProxy(eaa.getEAAPayload());
+        return new AttestationPayloadProxy(attestation.getAttestationPayload());
     }
 
     /**
@@ -228,11 +228,11 @@ public class AttestationWrapper extends AbstractTokenProxy {
      * @return {@link String}
      */
     public String getKeyBindingSignatureNonce() {
-        if (eaa.getKeyBindingPayload() == null) {
+        if (attestation.getKeyBindingPayload() == null) {
             return null;
         }
 
-        final XmlClaim nonce = eaa.getKeyBindingPayload().getNonce();
+        final XmlClaim nonce = attestation.getKeyBindingPayload().getNonce();
         if (nonce != null) {
             return nonce.getText();
         }
@@ -246,11 +246,11 @@ public class AttestationWrapper extends AbstractTokenProxy {
      * @return {@link String}
      */
     public String getKeyBindingSignatureAudience() {
-        if (eaa.getKeyBindingPayload() == null) {
+        if (attestation.getKeyBindingPayload() == null) {
             return null;
         }
 
-        final XmlClaim audience = eaa.getKeyBindingPayload().getAudience();
+        final XmlClaim audience = attestation.getKeyBindingPayload().getAudience();
         if (audience != null) {
             return audience.getText();
         }
@@ -264,11 +264,11 @@ public class AttestationWrapper extends AbstractTokenProxy {
      * @return {@link Date}
      */
     public Date getKeyBindingSignatureIssuanceTime() {
-        if (eaa.getKeyBindingPayload() == null) {
+        if (attestation.getKeyBindingPayload() == null) {
             return null;
         }
 
-        final XmlClaim issuanceTime = eaa.getKeyBindingPayload().getIssuanceTime();
+        final XmlClaim issuanceTime = attestation.getKeyBindingPayload().getIssuanceTime();
         if (issuanceTime != null) {
             return issuanceTime.getDateTime();
         }
@@ -283,14 +283,14 @@ public class AttestationWrapper extends AbstractTokenProxy {
      * @return a list of {@link ClaimWrapper}s
      */
     public List<ClaimWrapper> getOtherKeyBindingPayloadClaims() {
-        if (eaa.getKeyBindingPayload() != null && eaa.getKeyBindingPayload().getOtherClaim() != null) {
-            return eaa.getKeyBindingPayload().getOtherClaim().stream().map(ClaimWrapper::new).collect(Collectors.toList());
+        if (attestation.getKeyBindingPayload() != null && attestation.getKeyBindingPayload().getOtherClaim() != null) {
+            return attestation.getKeyBindingPayload().getOtherClaim().stream().map(ClaimWrapper::new).collect(Collectors.toList());
         }
         return Collections.emptyList();
     }
 
     /**
-     * Gets EAA identifier provided in the EAA payload
+     * Gets attestation identifier provided in the attestation payload
      *
      * @return {@link String}
      */
@@ -299,7 +299,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets EAA issuer as defined in the EAA payload
+     * Gets attestation issuer as defined in the attestation payload
      *
      * @return {@link String}
      */
@@ -308,7 +308,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets EAA subject as defined in the EAA payload
+     * Gets attestation subject as defined in the attestation payload
      *
      * @return {@link String}
      */
@@ -317,7 +317,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets EAA audience as defined in the EAA payload
+     * Gets attestation audience as defined in the attestation payload
      *
      * @return {@link String}
      */
@@ -326,7 +326,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets EAA issuance time as defined in the EAA payload
+     * Gets attestation issuance time as defined in the attestation payload
      *
      * @return {@link Date}
      */
@@ -335,15 +335,15 @@ public class AttestationWrapper extends AbstractTokenProxy {
         if (issuedAt != null) {
             return issuedAt;
         }
-        ValidityInfoClaimWrapper eaaValidityInfo = getPayload().getValidityInfo();
-        if (eaaValidityInfo != null) {
-            return getPayloadClaimDateValue(eaaValidityInfo.getSigned());
+        ValidityInfoClaimWrapper attestationValidityInfo = getPayload().getValidityInfo();
+        if (attestationValidityInfo != null) {
+            return getPayloadClaimDateValue(attestationValidityInfo.getSigned());
         }
         return null;
     }
 
     /**
-     * Gets EAA not before time as defined in the EAA payload
+     * Gets attestation not before time as defined in the attestation payload
      *
      * @return {@link Date}
      */
@@ -352,15 +352,15 @@ public class AttestationWrapper extends AbstractTokenProxy {
         if (notBefore != null) {
             return notBefore;
         }
-        ValidityInfoClaimWrapper eaaValidityInfo = getPayload().getValidityInfo();
-        if (eaaValidityInfo != null) {
-            return getPayloadClaimDateValue(eaaValidityInfo.getValidFrom());
+        ValidityInfoClaimWrapper attestationValidityInfo = getPayload().getValidityInfo();
+        if (attestationValidityInfo != null) {
+            return getPayloadClaimDateValue(attestationValidityInfo.getValidFrom());
         }
         return null;
     }
 
     /**
-     * Gets EAA expiration time as defined in the EAA payload
+     * Gets attestation expiration time as defined in the attestation payload
      *
      * @return {@link Date}
      */
@@ -369,15 +369,15 @@ public class AttestationWrapper extends AbstractTokenProxy {
         if (expirationTime != null) {
             return expirationTime;
         }
-        ValidityInfoClaimWrapper eaaValidityInfo = getPayload().getValidityInfo();
-        if (eaaValidityInfo != null) {
-            return getPayloadClaimDateValue(eaaValidityInfo.getValidUntil());
+        ValidityInfoClaimWrapper attestationValidityInfo = getPayload().getValidityInfo();
+        if (attestationValidityInfo != null) {
+            return getPayloadClaimDateValue(attestationValidityInfo.getValidUntil());
         }
         return null;
     }
 
     /**
-     * Gets EAA update time as defined in the EAA payload
+     * Gets attestation update time as defined in the attestation payload
      *
      * @return {@link Date}
      */
@@ -386,20 +386,20 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets EAA expected next update time
+     * Gets attestation expected next update time
      *
      * @return {@link Date}
      */
     public Date getNextUpdate() {
-        ValidityInfoClaimWrapper eaaValidityInfo = getPayload().getValidityInfo();
-        if (eaaValidityInfo != null) {
-            return getPayloadClaimDateValue(eaaValidityInfo.getExpectedUpdate());
+        ValidityInfoClaimWrapper attestationValidityInfo = getPayload().getValidityInfo();
+        if (attestationValidityInfo != null) {
+            return getPayloadClaimDateValue(attestationValidityInfo.getExpectedUpdate());
         }
         return null;
     }
 
     /**
-     * Gets category URN provided in the EAA payload
+     * Gets category URN provided in the attestation payload
      *
      * @return {@link String}
      */
@@ -408,20 +408,20 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets the EAA Qualification based on the category URN provided in the EAA payload
+     * Gets the attestation Qualification based on the category URN provided in the attestation payload
      *
      * @return {@link AttestationQualification}
      */
     public AttestationQualification getCategoryQualification() {
-        String eaaCategory = getCategory();
-        if (EAACategory.EU_QEAA.getUrn().equals(eaaCategory)) {
+        String category = getCategory();
+        if (EAACategory.EU_QEAA.getUrn().equals(category)) {
             return AttestationQualification.QEAA;
-        } else if (EAACategory.EU_PUBEAA.getUrn().equals(eaaCategory)) {
+        } else if (EAACategory.EU_PUBEAA.getUrn().equals(category)) {
             return AttestationQualification.PUBEAA;
-        } else if (eaaCategory == null) {
+        } else if (category == null) {
             /*
-             * EAA-5.2.2.1-01: SD-JWT VC EAAs issued by EAAs issuers registered in the European Union,
-             * which are neither SD-JWT VC QEAAs nor SD-JWT VC PuB-EAAs, shall not include the category claim.
+             * EAA-5.2.2.1-01: SD-JWT VC attestations issued by attestations issuers registered in the European Union,
+             * which are neither SD-JWT VC QAttestations nor SD-JWT VC PuB-Attestations, shall not include the category claim.
              */
             return AttestationQualification.EAA;
         } else {
@@ -430,7 +430,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets EAA metadata URI (e.g. 'vct' claim) as defined in the EAA payload
+     * Gets attestation metadata URI (e.g. 'vct' claim) as defined in the attestation payload
      *
      * @return {@link String}
      */
@@ -439,60 +439,60 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets Digest Algorithm used to compute the integrity material for the EAA metadata (when present)
+     * Gets Digest Algorithm used to compute the integrity material for the attestation metadata (when present)
      *
      * @return {@link DigestAlgorithm}
      */
     public DigestAlgorithm getVerifiableCredentialsTypeIntegrityDigestAlgorithm() {
-        IntegrityClaimWrapper eaaVerifiableCredentialsTypeIntegrity = getPayload().getVerifiableCredentialsTypeIntegrity();
-        if (eaaVerifiableCredentialsTypeIntegrity != null) {
-            return eaaVerifiableCredentialsTypeIntegrity.getDigestAlgorithm();
+        IntegrityClaimWrapper attestationVerifiableCredentialsTypeIntegrity = getPayload().getVerifiableCredentialsTypeIntegrity();
+        if (attestationVerifiableCredentialsTypeIntegrity != null) {
+            return attestationVerifiableCredentialsTypeIntegrity.getDigestAlgorithm();
         }
         return null;
     }
 
     /**
-     * Gets the integrity material for the EAA metadata (when present)
+     * Gets the integrity material for the attestation metadata (when present)
      *
-     * @return byte array representing the EAA's metadata hash
+     * @return byte array representing the attestation's metadata hash
      */
     public byte[] getVerifiableCredentialsTypeIntegrityBytes() {
-        IntegrityClaimWrapper eaaVerifiableCredentialsTypeIntegrity = getPayload().getVerifiableCredentialsTypeIntegrity();
-        if (eaaVerifiableCredentialsTypeIntegrity != null) {
-            return eaaVerifiableCredentialsTypeIntegrity.getDigestValue();
+        IntegrityClaimWrapper attestationVerifiableCredentialsTypeIntegrity = getPayload().getVerifiableCredentialsTypeIntegrity();
+        if (attestationVerifiableCredentialsTypeIntegrity != null) {
+            return attestationVerifiableCredentialsTypeIntegrity.getDigestValue();
         }
         return null;
     }
 
     /**
-     * Gets EAA revocation index as defined in the EAA payload
+     * Gets status index as defined in the attestation payload
      *
      * @return {@link Integer}
      */
     public Integer getStatusIndex() {
-        StatusClaimWrapper eaaStatus = getPayload().getStatus();
-        if (eaaStatus != null) {
-            if (eaaStatus.getIndex() != null) {
-                return getPayloadClaimIntegerValue(eaaStatus.getIndex());
-            } else if (eaaStatus.getStatusList() != null) {
-                return getPayloadClaimIntegerValue(eaaStatus.getStatusList().getIndex());
+        StatusClaimWrapper status = getPayload().getStatus();
+        if (status != null) {
+            if (status.getIndex() != null) {
+                return getPayloadClaimIntegerValue(status.getIndex());
+            } else if (status.getStatusList() != null) {
+                return getPayloadClaimIntegerValue(status.getStatusList().getIndex());
             }
         }
         return null;
     }
 
     /**
-     * Gets EAA revocation URI as defined in the EAA payload
+     * Gets status URI as defined in the attestation payload
      *
      * @return {@link String}
      */
     public String getStatusUri() {
-        StatusClaimWrapper eaaStatus = getPayload().getStatus();
-        if (eaaStatus != null) {
-            if (eaaStatus.getUri() != null) {
-                return getPayloadClaimTextValue(eaaStatus.getUri());
-            } else if (eaaStatus.getStatusList() != null) {
-                return getPayloadClaimTextValue(eaaStatus.getStatusList().getUri());
+        StatusClaimWrapper status = getPayload().getStatus();
+        if (status != null) {
+            if (status.getUri() != null) {
+                return getPayloadClaimTextValue(status.getUri());
+            } else if (status.getStatusList() != null) {
+                return getPayloadClaimTextValue(status.getStatusList().getUri());
             }
         }
         return null;
@@ -505,61 +505,61 @@ public class AttestationWrapper extends AbstractTokenProxy {
      * @return {@link String}
      */
     public byte[] getStatusCertificate() {
-        StatusClaimWrapper eaaStatus = getPayload().getStatus();
-        if (eaaStatus != null && eaaStatus.getStatusList() != null) {
-            return getPayloadClaimByteValue(eaaStatus.getStatusList().getCertificate());
+        StatusClaimWrapper status = getPayload().getStatus();
+        if (status != null && status.getStatusList() != null) {
+            return getPayloadClaimByteValue(status.getStatusList().getCertificate());
         }
         return null;
     }
 
     /**
-     * Gets EAA revocation type as defined in the EAA payload
+     * Gets status type as defined in the attestation payload
      *
      * @return {@link String}
      */
     public String getStatusType() {
-        StatusClaimWrapper eaaStatus = getPayload().getStatus();
-        if (eaaStatus != null) {
-            return getPayloadClaimTextValue(eaaStatus.getType());
+        StatusClaimWrapper status = getPayload().getStatus();
+        if (status != null) {
+            return getPayloadClaimTextValue(status.getType());
         }
         return null;
     }
 
     /**
-     * Gets EAA revocation purpose as defined in the EAA payload
+     * Gets status purpose as defined in the attestation payload
      *
      * @return {@link String}
      */
     public String getStatusPurpose() {
-        StatusClaimWrapper eaaStatus = getPayload().getStatus();
-        if (eaaStatus != null) {
-            return getPayloadClaimTextValue(eaaStatus.getPurpose());
+        StatusClaimWrapper status = getPayload().getStatus();
+        if (status != null) {
+            return getPayloadClaimTextValue(status.getPurpose());
         }
         return null;
     }
 
     /**
-     * Gets EAA identifier to be used for the EAA revocation verification using an Identifier List mechanism
+     * Gets attestation identifier to be used for the status verification using an Identifier List mechanism
      *
      * @return byte array
      */
     public byte[] getIdentifierListId() {
-        StatusClaimWrapper eaaStatus = getPayload().getStatus();
-        if (eaaStatus != null && eaaStatus.getIdentifierList() != null) {
-            return getPayloadClaimByteValue(eaaStatus.getIdentifierList().getIdentifier());
+        StatusClaimWrapper status = getPayload().getStatus();
+        if (status != null && status.getIdentifierList() != null) {
+            return getPayloadClaimByteValue(status.getIdentifierList().getIdentifier());
         }
         return null;
     }
 
     /**
-     * Gets EAA revocation URI as defined in the EAA payload
+     * Gets status URI as defined in the attestation payload
      *
      * @return {@link String}
      */
     public String getIdentifierListUri() {
-        StatusClaimWrapper eaaStatus = getPayload().getStatus();
-        if (eaaStatus != null && eaaStatus.getIdentifierList() != null) {
-            return getPayloadClaimTextValue(eaaStatus.getIdentifierList().getUri());
+        StatusClaimWrapper status = getPayload().getStatus();
+        if (status != null && status.getIdentifierList() != null) {
+            return getPayloadClaimTextValue(status.getIdentifierList().getUri());
         }
         return null;
     }
@@ -571,15 +571,15 @@ public class AttestationWrapper extends AbstractTokenProxy {
      * @return {@link String}
      */
     public byte[] getIdentifierListCertificate() {
-        StatusClaimWrapper eaaStatus = getPayload().getStatus();
-        if (eaaStatus != null && eaaStatus.getIdentifierList() != null) {
-            return getPayloadClaimByteValue(eaaStatus.getIdentifierList().getCertificate());
+        StatusClaimWrapper status = getPayload().getStatus();
+        if (status != null && status.getIdentifierList() != null) {
+            return getPayloadClaimByteValue(status.getIdentifierList().getCertificate());
         }
         return null;
     }
 
     /**
-     * Gets EAA nonce when defined in the EAA payload
+     * Gets attestation nonce when defined in the attestation payload
      *
      * @return {@link String}
      */
@@ -588,27 +588,27 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets EAA device public key when defined in the EAA payload
+     * Gets attestation device public key when defined in the attestation payload
      *
      * @return byte array containing an encoded device public key
      */
     public byte[] getDevicePublicKey() {
-        DeviceKeyClaimWrapper eaaDeviceKey = getPayload().getDeviceKey();
-        if (eaaDeviceKey != null) {
-            return eaaDeviceKey.getPublicKey();
+        DeviceKeyClaimWrapper attestationDeviceKey = getPayload().getDeviceKey();
+        if (attestationDeviceKey != null) {
+            return attestationDeviceKey.getPublicKey();
         }
         return null;
     }
 
     /**
-     * Gets EAA device certificate token when defined in the EAA payload
+     * Gets attestation device certificate token when defined in the attestation payload
      *
      * @return {@link CertificateWrapper}
      */
     public CertificateWrapper getDeviceCertificate() {
-        DeviceKeyClaimWrapper eaaDeviceKey = getPayload().getDeviceKey();
-        if (eaaDeviceKey != null) {
-            List<CertificateWrapper> certificates = eaaDeviceKey.getCertificates();
+        DeviceKeyClaimWrapper attestationDeviceKey = getPayload().getDeviceKey();
+        if (attestationDeviceKey != null) {
+            List<CertificateWrapper> certificates = attestationDeviceKey.getCertificates();
             if (certificates != null && !certificates.isEmpty()) {
                 return certificates.get(0);
             }
@@ -617,53 +617,53 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets EAA device certificate chain when defined in the EAA payload
+     * Gets attestation device certificate chain when defined in the attestation payload
      *
      * @return a list of {@link CertificateWrapper}s
      */
     public List<CertificateWrapper> getDeviceCertificateChain() {
-        DeviceKeyClaimWrapper eaaDeviceKey = getPayload().getDeviceKey();
-        if (eaaDeviceKey != null) {
-            return eaaDeviceKey.getCertificates();
+        DeviceKeyClaimWrapper attestationDeviceKey = getPayload().getDeviceKey();
+        if (attestationDeviceKey != null) {
+            return attestationDeviceKey.getCertificates();
         }
         return null;
     }
 
     /**
-     * Gets EAA device certificate chain digests when defined in the EAA payload
+     * Gets attestation device certificate chain digests when defined in the attestation payload
      *
      * @return a list of {@link XmlDigestAlgoAndValue}s
      */
     public List<XmlDigestAlgoAndValue> getDeviceCertificateChainDigests() {
-        DeviceKeyClaimWrapper eaaDeviceKey = getPayload().getDeviceKey();
-        if (eaaDeviceKey != null) {
-            return eaaDeviceKey.getCertificateDigests();
+        DeviceKeyClaimWrapper attestationDeviceKey = getPayload().getDeviceKey();
+        if (attestationDeviceKey != null) {
+            return attestationDeviceKey.getCertificateDigests();
         }
         return null;
     }
 
     /**
-     * Gets EAA device certificate chain KIDs when defined in the EAA payload
+     * Gets attestation device certificate chain KIDs when defined in the attestation payload
      *
      * @return a list of {@link String}s
      */
     public List<String> getDeviceCertificateKIDs() {
-        DeviceKeyClaimWrapper eaaDeviceKey = getPayload().getDeviceKey();
-        if (eaaDeviceKey != null) {
-            return eaaDeviceKey.getKIDs();
+        DeviceKeyClaimWrapper attestationDeviceKey = getPayload().getDeviceKey();
+        if (attestationDeviceKey != null) {
+            return attestationDeviceKey.getKIDs();
         }
         return null;
     }
 
     /**
-     * Gets EAA device certificate chain location URLs when defined in the EAA payload
+     * Gets attestation device certificate chain location URLs when defined in the attestation payload
      *
      * @return a list of {@link String}s
      */
     public List<String> getDeviceCertificateUrls() {
-        DeviceKeyClaimWrapper eaaDeviceKey = getPayload().getDeviceKey();
-        if (eaaDeviceKey != null) {
-            return eaaDeviceKey.getX509URLs();
+        DeviceKeyClaimWrapper attestationDeviceKey = getPayload().getDeviceKey();
+        if (attestationDeviceKey != null) {
+            return attestationDeviceKey.getX509URLs();
         }
         return null;
     }
@@ -674,9 +674,9 @@ public class AttestationWrapper extends AbstractTokenProxy {
      * @return a list of {@link String}s
      */
     public List<String> getDeviceKeyAuthorizedNamespaces() {
-        DeviceKeyClaimWrapper eaaDeviceKey = getPayload().getDeviceKey();
-        if (eaaDeviceKey != null) {
-            return eaaDeviceKey.getAuthorizedNamespaces();
+        DeviceKeyClaimWrapper attestationDeviceKey = getPayload().getDeviceKey();
+        if (attestationDeviceKey != null) {
+            return attestationDeviceKey.getAuthorizedNamespaces();
         }
         return null;
     }
@@ -687,23 +687,23 @@ public class AttestationWrapper extends AbstractTokenProxy {
      * @return a map of {@link String} namespaces of lists of {@link String} data elements
      */
     public Map<String, List<String>> getDeviceKeyAuthorizedDataElements() {
-        DeviceKeyClaimWrapper eaaDeviceKey = getPayload().getDeviceKey();
-        if (eaaDeviceKey != null) {
-            return eaaDeviceKey.getAuthorizedDataElements();
+        DeviceKeyClaimWrapper attestationDeviceKey = getPayload().getDeviceKey();
+        if (attestationDeviceKey != null) {
+            return attestationDeviceKey.getAuthorizedDataElements();
         }
         return null;
     }
 
     /**
-     * Returns a list of statuses for the EAA
+     * Returns a list of statuses for the attestation
      *
      * @return a list of {@link AttestationRevocationWrapper}s
      */
     public List<AttestationRevocationWrapper> getAttestationRevocations() {
         List<AttestationRevocationWrapper> revocationWrappers = new ArrayList<>();
-        List<XmlEAARevocationStatus> statuses = eaa.getEAARevocations();
-        for (XmlEAARevocationStatus xmlEAARevocationStatus : statuses) {
-            revocationWrappers.add(new AttestationRevocationWrapper(xmlEAARevocationStatus));
+        List<XmlAttestationRevocationStatus> statuses = attestation.getAttestationRevocations();
+        for (XmlAttestationRevocationStatus xmlAttestationRevocationStatus : statuses) {
+            revocationWrappers.add(new AttestationRevocationWrapper(xmlAttestationRevocationStatus));
         }
         return revocationWrappers;
     }
@@ -718,7 +718,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets user's full name when defined within EAA Payload claims
+     * Gets user's full name when defined within attestation Payload claims
      *
      * @return {@link String}
      */
@@ -727,7 +727,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets user's first name when defined within EAA Payload claims
+     * Gets user's first name when defined within attestation Payload claims
      *
      * @return {@link String}
      */
@@ -736,7 +736,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets user's last or family name when defined within EAA Payload claims
+     * Gets user's last or family name when defined within attestation Payload claims
      *
      * @return {@link String}
      */
@@ -745,7 +745,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets user's middle name when defined within EAA Payload claims
+     * Gets user's middle name when defined within attestation Payload claims
      *
      * @return {@link String}
      */
@@ -754,7 +754,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets user's alternative name when defined within EAA Payload claims
+     * Gets user's alternative name when defined within attestation Payload claims
      *
      * @return {@link String}
      */
@@ -763,7 +763,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets user's preferred or short name when defined within EAA Payload claims
+     * Gets user's preferred or short name when defined within attestation Payload claims
      *
      * @return {@link String}
      */
@@ -772,7 +772,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets user's profile URL when defined within EAA Payload claims
+     * Gets user's profile URL when defined within attestation Payload claims
      *
      * @return {@link String}
      */
@@ -781,7 +781,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets user's picture URL when defined within EAA Payload claims
+     * Gets user's picture URL when defined within attestation Payload claims
      *
      * @return {@link String}
      */
@@ -790,7 +790,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets user's website when defined within EAA Payload claims
+     * Gets user's website when defined within attestation Payload claims
      *
      * @return {@link String}
      */
@@ -799,7 +799,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets user's email when defined within EAA Payload claims
+     * Gets user's email when defined within attestation Payload claims
      *
      * @return {@link String}
      */
@@ -808,7 +808,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets whether the user's website has been verified if defined within EAA Payload claims
+     * Gets whether the user's website has been verified if defined within attestation Payload claims
      *
      * @return {@link Boolean}
      */
@@ -817,7 +817,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets user's gender when defined within EAA Payload claims
+     * Gets user's gender when defined within attestation Payload claims
      *
      * @return {@link Integer}
      */
@@ -826,7 +826,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets user's birthdate when defined within EAA Payload claims
+     * Gets user's birthdate when defined within attestation Payload claims
      *
      * @return {@link Date}
      */
@@ -850,7 +850,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets user's timezone when defined within EAA Payload claims
+     * Gets user's timezone when defined within attestation Payload claims
      *
      * @return {@link String}
      */
@@ -859,7 +859,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets user's locale when defined within EAA Payload claims
+     * Gets user's locale when defined within attestation Payload claims
      *
      * @return {@link String}
      */
@@ -868,7 +868,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets user's full postal address, formatted, when defined within EAA Payload claims
+     * Gets user's full postal address, formatted, when defined within attestation Payload claims
      *
      * @return {@link String}
      */
@@ -881,7 +881,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets user's city address when defined within EAA Payload claims
+     * Gets user's city address when defined within attestation Payload claims
      *
      * @return {@link String}
      */
@@ -898,7 +898,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets user's state or region address when defined within EAA Payload claims
+     * Gets user's state or region address when defined within attestation Payload claims
      *
      * @return {@link String}
      */
@@ -915,7 +915,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets user's postal code address when defined within EAA Payload claims
+     * Gets user's postal code address when defined within attestation Payload claims
      *
      * @return {@link String}
      */
@@ -932,7 +932,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets user's country address when defined within EAA Payload claims.
+     * Gets user's country address when defined within attestation Payload claims.
      * NOTE: The returned value is usually represented by 2-letter ISO country code.
      *
      * @return {@link String}
@@ -950,7 +950,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets user's street address when defined within EAA Payload claims
+     * Gets user's street address when defined within attestation Payload claims
      *
      * @return {@link String}
      */
@@ -967,7 +967,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets user's phone number when defined within EAA Payload claims
+     * Gets user's phone number when defined within attestation Payload claims
      *
      * @return {@link String}
      */
@@ -976,7 +976,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets whether the user's phone number has been verified if defined within EAA Payload claims
+     * Gets whether the user's phone number has been verified if defined within attestation Payload claims
      *
      * @return {@link Boolean}
      */
@@ -985,7 +985,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets user's complete place of birth when defined within EAA Payload claims
+     * Gets user's complete place of birth when defined within attestation Payload claims
      *
      * @return {@link String}
      */
@@ -998,7 +998,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets user's country of birth when defined within EAA Payload claims
+     * Gets user's country of birth when defined within attestation Payload claims
      *
      * @return {@link String}
      */
@@ -1011,7 +1011,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets user's state or region of birth when defined within EAA Payload claims
+     * Gets user's state or region of birth when defined within attestation Payload claims
      *
      * @return {@link String}
      */
@@ -1024,7 +1024,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets user's city of birth when defined within EAA Payload claims
+     * Gets user's city of birth when defined within attestation Payload claims
      *
      * @return {@link String}
      */
@@ -1037,7 +1037,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets user's nationalities list when defined within EAA Payload claims.
+     * Gets user's nationalities list when defined within attestation Payload claims.
      * NOTE: The values are usually represented by 3-letter nationality codes.
      *
      * @return a list of {@link String}s
@@ -1047,7 +1047,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets user's last or family name at birth when defined within EAA Payload claims
+     * Gets user's last or family name at birth when defined within attestation Payload claims
      *
      * @return {@link String}
      */
@@ -1056,7 +1056,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets user's first name at birth when defined within EAA Payload claims
+     * Gets user's first name at birth when defined within attestation Payload claims
      *
      * @return {@link String}
      */
@@ -1065,7 +1065,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets user's middle name at birth when defined within EAA Payload claims
+     * Gets user's middle name at birth when defined within attestation Payload claims
      *
      * @return {@link String}
      */
@@ -1074,7 +1074,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets user's preferred salutation when defined within EAA Payload claims
+     * Gets user's preferred salutation when defined within attestation Payload claims
      *
      * @return {@link String}
      */
@@ -1092,7 +1092,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets user's title when defined within EAA Payload claims
+     * Gets user's title when defined within attestation Payload claims
      *
      * @return {@link String}
      */
@@ -1101,7 +1101,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets user's mobile phone number when defined within EAA Payload claims
+     * Gets user's mobile phone number when defined within attestation Payload claims
      *
      * @return {@link String}
      */
@@ -1110,7 +1110,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets user's scenic name or pseudonym, they are known as, when defined within EAA Payload claims
+     * Gets user's scenic name or pseudonym, they are known as, when defined within attestation Payload claims
      *
      * @return {@link String}
      */
@@ -1275,7 +1275,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Returns the claim value whether the age of an EAA's holder is over the {@code age}.
+     * Returns the claim value whether the age of an attestation's holder is over the {@code age}.
      * NOTE: if there is no claim provided for the requested age, NULL is returned.
      *
      * @param age integer age to verify against
@@ -1640,10 +1640,10 @@ public class AttestationWrapper extends AbstractTokenProxy {
         return getPayloadClaimTextValue(getPayload().getResidentPostalAddress());
     }
 
-    /* ETSI TS 119 472-1 "5 Implementation of EAA based on SD-JWT VC" header parameters */
+    /* ETSI TS 119 472-1 "5 Implementation of attestation based on SD-JWT VC" header parameters */
 
     /**
-     * Gets the registration identifier of the legal entity on whose behalf the EAA has been issued.
+     * Gets the registration identifier of the legal entity on whose behalf the attestation has been issued.
      *
      * @return {@link String}
      */
@@ -1652,7 +1652,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets the signal indicating that the EAA shall be used only once, and that it shall not be retained for future use.
+     * Gets the signal indicating that the attestation shall be used only once, and that it shall not be retained for future use.
      *
      * @return {@link Boolean}
      */
@@ -1661,8 +1661,8 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets the EAA short-lived component indicating that the validity period of the EAA is so short that
-     * it shall not be necessary to check its revocation revocation.
+     * Gets the attestation short-lived component indicating that the validity period of the attestation is so short that
+     * it shall not be necessary to check its revocation status.
      *
      * @return {@link Boolean}
      */
@@ -1723,7 +1723,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets the claim for associating a set of attributes to one entity different than the EAA subject.
+     * Gets the claim for associating a set of attributes to one entity different than the attestation subject.
      *
      * @return {@link String}
      */
@@ -1750,7 +1750,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets a list of claims incorporated within the EAA Payload or provided as disclosures,
+     * Gets a list of claims incorporated within the attestation Payload or provided as disclosures,
      * which are not (yet) directly supported by the implementation.
      *
      * @return a list of {@link ClaimWrapper}s
@@ -1760,7 +1760,7 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * This method returns a claim using the header name used within the EAA payload
+     * This method returns a claim using the header name used within the attestation payload
      *
      * @param headerName {@link String} representing the header name
      * @return {@link ClaimWrapper} if present, or NULL otherwise
@@ -1769,9 +1769,9 @@ public class AttestationWrapper extends AbstractTokenProxy {
         if (headerName == null) {
             return null;
         }
-        List<ClaimWrapper> eaaPayloadClaims = getAllEAAPayloadClaims();
-        if (eaa != null && !eaaPayloadClaims.isEmpty()) {
-            for (ClaimWrapper claim : eaaPayloadClaims) {
+        List<ClaimWrapper> attestationPayloadClaims = getAllAttestationPayloadClaims();
+        if (attestation != null && !attestationPayloadClaims.isEmpty()) {
+            for (ClaimWrapper claim : attestationPayloadClaims) {
                 if (headerName.equals(claim.getName())) {
                     return claim;
                 }
@@ -1781,16 +1781,16 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * This method returns all claims that have been selectively disclosed and identified on the EAA
+     * This method returns all claims that have been selectively disclosed and identified on the attestation
      * (i.e. provided in the form of disclosures).
      *
      * @return a list of {@link ClaimWrapper}s
      */
     public List<ClaimWrapper> getSelectivelyDisclosableClaims() {
         final List<ClaimWrapper> result = new ArrayList<>();
-        List<ClaimWrapper> eaaPayloadClaims = getAllEAAPayloadClaims();
-        if (eaa != null && !eaaPayloadClaims.isEmpty()) {
-            for (ClaimWrapper claim : eaaPayloadClaims) {
+        List<ClaimWrapper> attestationPayloadClaims = getAllAttestationPayloadClaims();
+        if (attestation != null && !attestationPayloadClaims.isEmpty()) {
+            for (ClaimWrapper claim : attestationPayloadClaims) {
                 result.addAll(getSelectivelyDisclosableClaimsRecursively(claim));
             }
         }
@@ -1874,23 +1874,23 @@ public class AttestationWrapper extends AbstractTokenProxy {
     }
 
     /**
-     * Gets a list of all disclosable claims present within an EAA Payload
+     * Gets a list of all disclosable claims present within an attestation Payload
      * NOTE: The method retrieves claims from the root payload level only
      *
      * @return a list of {@link ClaimWrapper}s
      */
-    public List<ClaimWrapper> getAllEAAPayloadClaims() {
-        return getPayload().getAllEAAPayloadClaims();
+    public List<ClaimWrapper> getAllAttestationPayloadClaims() {
+        return getPayload().getAllAttestationPayloadClaims();
     }
 
     /**
-     * Gets a list of names (keys) for all disclosable claims present within an EAA Payload
+     * Gets a list of names (keys) for all disclosable claims present within an attestation Payload
      * NOTE: The method retrieves names from the root payload level only
      *
      * @return a list of {@link ClaimWrapper}s
      */
-    public List<String> getAllEAAPayloadClaimNames() {
-        return getAllEAAPayloadClaims().stream().map(ClaimWrapper::getName).filter(Objects::nonNull).collect(Collectors.toList());
+    public List<String> getAllAttestationPayloadClaimNames() {
+        return getAllAttestationPayloadClaims().stream().map(ClaimWrapper::getName).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     /**
@@ -1899,16 +1899,16 @@ public class AttestationWrapper extends AbstractTokenProxy {
      * @return a set of {@link String}s
      */
     public Set<String> getAllClaimNamespaces() {
-        return getAllEAAPayloadClaims().stream().map(ClaimWrapper::getNamespace).filter(Objects::nonNull).collect(Collectors.toSet());
+        return getAllAttestationPayloadClaims().stream().map(ClaimWrapper::getNamespace).filter(Objects::nonNull).collect(Collectors.toSet());
     }
 
     /**
-     * Gets type of the EAA
+     * Gets profile of the attestation
      *
-     * @return {@link AttestationFormat}
+     * @return {@link AttestationProfile}
      */
-    public AttestationFormat getEAAType() {
-        return eaa.getEAAType();
+    public AttestationProfile getAttestationProfile() {
+        return attestation.getProfile();
     }
 
     @Override

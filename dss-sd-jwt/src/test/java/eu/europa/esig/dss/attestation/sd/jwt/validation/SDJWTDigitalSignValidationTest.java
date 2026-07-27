@@ -45,16 +45,16 @@ class SDJWTDigitalSignValidationTest extends AbstractSDJWTTestValidation {
 
     @Override
     protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
-        boolean eaaSignatureFound = false;
+        boolean attestationSignatureFound = false;
         boolean keyBindingSignatureFound = false;
         for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
             if (signatureWrapper.getSigningCertificate() != null) {
-                eaaSignatureFound = true;
+                attestationSignatureFound = true;
             } else if (signatureWrapper.getSigningCertificatePublicKey() != null) {
                 keyBindingSignatureFound = true;
             }
         }
-        assertTrue(eaaSignatureFound);
+        assertTrue(attestationSignatureFound);
         assertTrue(keyBindingSignatureFound);
     }
 

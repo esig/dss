@@ -51,7 +51,7 @@ public class MdocSelectiveDisclosure extends AbstractSelectiveDisclosure {
     /**
      * Constructor to instantiate a void
      *
-     * @param digestId unique integer identifying the element within the EAA namespace
+     * @param digestId unique integer identifying the element within the attestation namespace
      * @param issuerSignedItemBytes serialized IssuerSignedItemBytes object
      */
     protected MdocSelectiveDisclosure(final int digestId, final CBORByteString issuerSignedItemBytes) {
@@ -65,7 +65,7 @@ public class MdocSelectiveDisclosure extends AbstractSelectiveDisclosure {
      * Constructor to instantiate the mdoc disclosure from a serialized IssuerSignedItemBytes object
      *
      * @param namespace {@link String} namespace of the element claim
-     * @param digestId unique integer identifying the element within the EAA namespace
+     * @param digestId unique integer identifying the element within the attestation namespace
      * @param issuerSignedItemBytes serialized IssuerSignedItemBytes object
      */
     public MdocSelectiveDisclosure(final String namespace, final int digestId, final byte[] issuerSignedItemBytes) {
@@ -93,7 +93,7 @@ public class MdocSelectiveDisclosure extends AbstractSelectiveDisclosure {
      * Constructor to instantiate the mdoc disclosure from a IssuerSignedItemBytes object
      *
      * @param namespace {@link String} namespace of the element claim
-     * @param digestId unique integer identifying the element within the EAA namespace
+     * @param digestId unique integer identifying the element within the attestation namespace
      * @param issuerSignedItemBytes {@link CBORByteString}
      */
     public MdocSelectiveDisclosure(final String namespace, final int digestId, final CBORByteString issuerSignedItemBytes) {

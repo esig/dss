@@ -29,14 +29,14 @@ class MdocAttestationPresentationMultipleDocumentsTest extends AbstractMdocAttes
     }
 
     @Override
-    protected int expectedEAAsCount() {
+    protected int expectedAttestationsCount() {
         return 2;
     }
 
     @Override
     protected void checkBLevelValid(DiagnosticData diagnosticData) {
-        int eaaSigValidCount = 0;
-        int eaaSigInvalidCount = 0;
+        int attestationSigValidCount = 0;
+        int attestationSigInvalidCount = 0;
         int kbSigValidCount = 0;
         int kbSigInvalidCount = 0;
         for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
@@ -67,14 +67,14 @@ class MdocAttestationPresentationMultipleDocumentsTest extends AbstractMdocAttes
                     assertTrue(xmlDigestMatcher.isDataIntact());
                     assertTrue(signatureWrapper.isSignatureIntact());
                     assertTrue(signatureWrapper.isSignatureValid());
-                    ++eaaSigValidCount;
+                    ++attestationSigValidCount;
                 } else {
-                    ++eaaSigInvalidCount;
+                    ++attestationSigInvalidCount;
                 }
             }
         }
-        assertEquals(2, eaaSigValidCount);
-        assertEquals(0, eaaSigInvalidCount);
+        assertEquals(2, attestationSigValidCount);
+        assertEquals(0, attestationSigInvalidCount);
         assertEquals(1, kbSigValidCount);
         assertEquals(1, kbSigInvalidCount);
     }

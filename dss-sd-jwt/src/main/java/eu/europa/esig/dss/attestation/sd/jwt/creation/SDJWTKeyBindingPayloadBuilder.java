@@ -32,10 +32,10 @@ public interface SDJWTKeyBindingPayloadBuilder {
     /**
      * Build the payload of the key binding JWT
      *
-     * @param eaa the EAA
+     * @param attestation the signed attestation
      * @param disclosures the disclosures
      * @param keyBindingParameters the key binding parameters
      * @return {@link DSSDocument} the payload
      */
-    DSSDocument buildPayload(DSSDocument eaa, List<SDJWTSelectiveDisclosure> disclosures, SDJWTKeyBindingParameters keyBindingParameters);
+    DSSDocument buildPayload(DSSDocument attestation, List<SDJWTSelectiveDisclosure> disclosures, SDJWTKeyBindingParameters keyBindingParameters);
 }

@@ -18,7 +18,7 @@
 		<xsl:apply-templates select="dss:Signature"/>
 		<xsl:apply-templates select="dss:Timestamp"/>
 		<xsl:apply-templates select="dss:EvidenceRecord"/>
-		<xsl:apply-templates select="dss:EAA"/>
+		<xsl:apply-templates select="dss:Attestation"/>
 	    
 	    <xsl:call-template name="documentInformation"/>
     </xsl:template>
@@ -47,8 +47,8 @@
     	</div>
     </xsl:template>
 
-    <xsl:template match="dss:Signature|dss:Timestamp|dss:EvidenceRecord|dss:EAA
-    		|dss:EAASignature|dss:KeyBindingSignature">
+    <xsl:template match="dss:Signature|dss:Timestamp|dss:EvidenceRecord|dss:Attestation
+    		|dss:AttestationSignature|dss:KeyBindingSignature">
 		<xsl:param name="cardStyle" select="'primary'" />
 		<xsl:param name="parentId" />
 
@@ -109,11 +109,11 @@
 					<xsl:if test="$nodeName = 'EvidenceRecord'">
 						Evidence Record
 					</xsl:if>
-					<xsl:if test="$nodeName = 'EAA'">
-						Electronic Attestation Of Attributes
+					<xsl:if test="$nodeName = 'Attestation'">
+						Attestation
 					</xsl:if>
-					<xsl:if test="$nodeName = 'EAASignature'">
-						EAA Signature
+					<xsl:if test="$nodeName = 'AttestationSignature'">
+						Attestation Signature
 					</xsl:if>
 					<xsl:if test="$nodeName = 'KeyBindingSignature'">
 						Key Binding Signature
@@ -155,10 +155,10 @@
 								Evidence record filename:
 							</dt>
 						</xsl:if>
-						<xsl:if test="$nodeName = 'EAA'">
+						<xsl:if test="$nodeName = 'Attestation'">
 							<dt>
 								<xsl:attribute name="class">col-sm-3</xsl:attribute>
-								Filename:
+								Attestation filename:
 							</dt>
 						</xsl:if>
 			            <dd>
@@ -169,7 +169,7 @@
 			        </dl>
 				</xsl:if>
 				
-				<xsl:if test="dss:SignatureLevel | dss:TimestampLevel | dss:EAALevel">
+				<xsl:if test="dss:SignatureLevel | dss:TimestampLevel | dss:AttestationLevel">
 					<dl>
 			    		<xsl:attribute name="class">row mb-0</xsl:attribute>
 			            <dt>
@@ -185,8 +185,8 @@
 							<xsl:if test="dss:TimestampLevel">
 								<xsl:value-of select="dss:TimestampLevel" />
 							</xsl:if>
-							<xsl:if test="dss:EAALevel">
-								<xsl:value-of select="dss:EAALevel" />
+							<xsl:if test="dss:AttestationLevel">
+								<xsl:value-of select="dss:AttestationLevel" />
 							</xsl:if>
 							<i>
 				    			<xsl:attribute name="class">fa fa-info-circle text-info ml-2</xsl:attribute>
@@ -199,8 +199,8 @@
 								<xsl:if test="dss:TimestampLevel">
 									<xsl:attribute name="title"><xsl:value-of select="dss:TimestampLevel/@description" /></xsl:attribute>
 								</xsl:if>
-								<xsl:if test="dss:EAALevel">
-									<xsl:attribute name="title"><xsl:value-of select="dss:EAALevel/@description" /></xsl:attribute>
+								<xsl:if test="dss:AttestationLevel">
+									<xsl:attribute name="title"><xsl:value-of select="dss:AttestationLevel/@description" /></xsl:attribute>
 								</xsl:if>
 				    		</i>
 				    		
@@ -434,7 +434,7 @@
 				</xsl:if>
 
 				<!-- Ignore embedded timestamps -->
-				<xsl:if test="((not($nodeName = 'Timestamp') or (count(ancestor::*/dss:Signature) = 0 and count(ancestor::*/dss:EvidenceRecord) = 0)) and not($nodeName = 'EAA'))">
+				<xsl:if test="((not($nodeName = 'Timestamp') or (count(ancestor::*/dss:Signature) = 0 and count(ancestor::*/dss:EvidenceRecord) = 0)) and not($nodeName = 'Attestation'))">
 					<dl>
 						<xsl:attribute name="class">row mb-0</xsl:attribute>
 						<dt>
@@ -490,7 +490,7 @@
 				<xsl:apply-templates select="dss:SignatureScope" />
 				<xsl:apply-templates select="dss:TimestampScope" />
 				<xsl:apply-templates select="dss:EvidenceRecordScope" />
-				<xsl:apply-templates select="dss:EAAPayload" />
+				<xsl:apply-templates select="dss:AttestationPayload" />
 
 				<xsl:if test="dss:Timestamps">
 					<div>
@@ -534,10 +534,10 @@
 					</div>
 				</xsl:if>
 
-				<xsl:if test="dss:EAASignature|dss:KeyBindingSignature">
+				<xsl:if test="dss:AttestationSignature|dss:KeyBindingSignature">
 					<div>
 						<xsl:attribute name="class">mt-3</xsl:attribute>
-						<xsl:apply-templates select="dss:EAASignature|dss:KeyBindingSignature">
+						<xsl:apply-templates select="dss:AttestationSignature|dss:KeyBindingSignature">
 							<xsl:with-param name="parentId" select="$idToken"/>
 						</xsl:apply-templates>
 					</div>
@@ -570,7 +570,7 @@
 		</dl>
 	</xsl:template>
 
-	<xsl:template match="dss:EAAPayload">
+	<xsl:template match="dss:AttestationPayload">
 		<xsl:apply-templates />
 	</xsl:template>
 

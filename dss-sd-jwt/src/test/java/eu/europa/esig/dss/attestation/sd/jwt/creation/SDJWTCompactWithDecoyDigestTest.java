@@ -91,23 +91,23 @@ class SDJWTCompactWithDecoyDigestTest extends AbstractSDJWTTestIssuance {
     protected void checkClaims(final DiagnosticData diagnosticData) {
         super.checkClaims(diagnosticData);
 
-        AttestationWrapper eaa = diagnosticData.getEAAs().get(0);
-        assertEquals("https://issuer.example.com", eaa.getIssuer());
-        assertEquals(expiration.toInstant().getEpochSecond(), eaa.getExpiration().toInstant().getEpochSecond());
-        assertEquals(issuanceDate.toInstant().getEpochSecond(), eaa.getIssuedAt().toInstant().getEpochSecond());
+        AttestationWrapper attestation = diagnosticData.getAttestations().get(0);
+        assertEquals("https://issuer.example.com", attestation.getIssuer());
+        assertEquals(expiration.toInstant().getEpochSecond(), attestation.getExpiration().toInstant().getEpochSecond());
+        assertEquals(issuanceDate.toInstant().getEpochSecond(), attestation.getIssuedAt().toInstant().getEpochSecond());
 
-        List<ClaimWrapper> payloadClaims = eaa.getAllEAAPayloadClaims();
+        List<ClaimWrapper> payloadClaims = attestation.getAllAttestationPayloadClaims();
         assertNotNull(payloadClaims);
 
-        final List<XmlDigestMatcher> digestMatchers = eaa.getDigestMatchers();
+        final List<XmlDigestMatcher> digestMatchers = attestation.getDigestMatchers();
         assertEquals(2, digestMatchers.size());
 
         int sdCounter = 0;
         int orphanCounter = 0;
         for (XmlDigestMatcher xmlDigestMatcher : digestMatchers) {
-            if (DigestMatcherType.EAA_DISCLOSURE == xmlDigestMatcher.getType()) {
+            if (DigestMatcherType.SELECTIVE_DISCLOSURE == xmlDigestMatcher.getType()) {
                 ++sdCounter;
-            } else if (DigestMatcherType.EAA_ORPHAN_SELECTIVELY_DISCLOSABLE_CLAIM == xmlDigestMatcher.getType()) {
+            } else if (DigestMatcherType.ORPHAN_SELECTIVELY_DISCLOSABLE_CLAIM == xmlDigestMatcher.getType()) {
                 ++orphanCounter;
             }
         }

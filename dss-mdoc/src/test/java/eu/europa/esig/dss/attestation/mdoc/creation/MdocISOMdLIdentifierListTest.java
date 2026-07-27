@@ -82,22 +82,22 @@ class MdocISOMdLIdentifierListTest extends AbstractMdocPresentationTestIssuance 
     }
 
     @Override
-    protected AttestationRevocationSource getEAAStatusSource() {
+    protected AttestationRevocationSource getAttestationRevocationSource() {
         return new PKICWTIdentifierListSource(getCertEntityRepository(), getCertEntity(GOOD_CA));
     }
 
     @Override
-    protected void checkEAARevocations(DiagnosticData diagnosticData) {
-        super.checkEAARevocations(diagnosticData);
+    protected void checkAttestationRevocations(DiagnosticData diagnosticData) {
+        super.checkAttestationRevocations(diagnosticData);
 
-        AttestationWrapper eaa = diagnosticData.getEAAById(diagnosticData.getFirstEAAId());
-        List<AttestationRevocationWrapper> eaaStatuses = eaa.getAttestationRevocations();
-        assertEquals(1, eaaStatuses.size());
-        AttestationRevocationWrapper eaaRevocationWrapper = eaaStatuses.get(0);
-        assertEquals(AttestationStatus.VALID, eaaRevocationWrapper.getStatus());
-        assertEquals("application/identifierlist+cwt", eaaRevocationWrapper.getType());
+        AttestationWrapper attestation = diagnosticData.getAttestationById(diagnosticData.getFirstAttestationId());
+        List<AttestationRevocationWrapper> attestationStatuses = attestation.getAttestationRevocations();
+        assertEquals(1, attestationStatuses.size());
+        AttestationRevocationWrapper attestationRevocationWrapper = attestationStatuses.get(0);
+        assertEquals(AttestationStatus.VALID, attestationRevocationWrapper.getStatus());
+        assertEquals("application/identifierlist+cwt", attestationRevocationWrapper.getType());
 
-        FoundCertificatesProxy foundCertificates = eaaRevocationWrapper.foundCertificates();
+        FoundCertificatesProxy foundCertificates = attestationRevocationWrapper.foundCertificates();
         List<RelatedCertificateWrapper> relatedCertificates = foundCertificates.getRelatedCertificates();
         assertEquals(1, relatedCertificates.size());
 
@@ -127,11 +127,11 @@ class MdocISOMdLIdentifierListTest extends AbstractMdocPresentationTestIssuance 
     }
 
     @Override
-    protected void checkEAADigestMatchers(DiagnosticData diagnosticData) {
-        super.checkEAADigestMatchers(diagnosticData);
+    protected void checkAttestationDigestMatchers(DiagnosticData diagnosticData) {
+        super.checkAttestationDigestMatchers(diagnosticData);
 
-        AttestationWrapper eaa = diagnosticData.getEAAs().get(0);
-        List<XmlDigestMatcher> digestMatchers = eaa.getDigestMatchers();
+        AttestationWrapper attestation = diagnosticData.getAttestations().get(0);
+        List<XmlDigestMatcher> digestMatchers = attestation.getDigestMatchers();
         assertEquals(11, digestMatchers.size());
 
         boolean familyNameSDFound = false;
@@ -209,17 +209,17 @@ class MdocISOMdLIdentifierListTest extends AbstractMdocPresentationTestIssuance 
     protected void checkClaims(DiagnosticData diagnosticData) {
         super.checkClaims(diagnosticData);
 
-        AttestationWrapper eaa = diagnosticData.getEAAById(diagnosticData.getFirstEAAId());
-        assertEquals("1.0", eaa.getVersion());
-        assertEquals("org.iso.18013.5.1.mDL", eaa.getAttestationDocumentType());
+        AttestationWrapper attestation = diagnosticData.getAttestationById(diagnosticData.getFirstAttestationId());
+        assertEquals("1.0", attestation.getVersion());
+        assertEquals("org.iso.18013.5.1.mDL", attestation.getAttestationDocumentType());
 
-        assertArrayEquals(new byte[] { 1 }, eaa.getIdentifierListId());
-        assertEquals("https://pki.nowina.lu/eaa/identifier_list", eaa.getIdentifierListUri());
-        assertArrayEquals(getCertificate(GOOD_CA).getEncoded(), eaa.getIdentifierListCertificate());
+        assertArrayEquals(new byte[] { 1 }, attestation.getIdentifierListId());
+        assertEquals("https://pki.nowina.lu/eaa/identifier_list", attestation.getIdentifierListUri());
+        assertArrayEquals(getCertificate(GOOD_CA).getEncoded(), attestation.getIdentifierListCertificate());
 
-        assertNull(eaa.getStatusIndex());
-        assertNull(eaa.getStatusUri());
-        assertNull(eaa.getStatusCertificate());
+        assertNull(attestation.getStatusIndex());
+        assertNull(attestation.getStatusUri());
+        assertNull(attestation.getStatusCertificate());
     }
 
     @Override

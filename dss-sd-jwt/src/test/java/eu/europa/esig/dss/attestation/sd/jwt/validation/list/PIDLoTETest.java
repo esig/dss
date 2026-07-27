@@ -113,11 +113,11 @@ class PIDLoTETest extends PKIFactoryAccess {
         return data.stream();
     }
 
-    @ParameterizedTest(name = "EAA Qualification Test : {0}")
+    @ParameterizedTest(name = "Attestation Qualification Test : {0}")
     @MethodSource("data")
     void test(String signerName, AttestationQualification expectedQualification) {
         signer = signerName;
-        DSSDocument attestationPresentation = createEAAPresentation();
+        DSSDocument attestationPresentation = createAttestationPresentation();
 
         SignedDocumentValidator validator = DefaultAttestationDocumentValidator.fromDocument(attestationPresentation);
 
@@ -129,9 +129,9 @@ class PIDLoTETest extends PKIFactoryAccess {
 
         SimpleReport simpleReport = reports.getSimpleReport();
 
-        AttestationQualification attestationQualification = simpleReport.getEAAQualification(simpleReport.getFirstEAAId());
+        AttestationQualification attestationQualification = simpleReport.getAttestationQualification(simpleReport.getFirstAttestationId());
         assertEquals(expectedQualification, attestationQualification);
-        assertEquals(1, simpleReport.getEAAQualifications(simpleReport.getFirstEAAId()).size());
+        assertEquals(1, simpleReport.getAttestationQualifications(simpleReport.getFirstAttestationId()).size());
     }
 
     private TrustedEntitiesCertificateSource getTrustedSource() {
@@ -163,7 +163,7 @@ class PIDLoTETest extends PKIFactoryAccess {
         return trustedCertificateSource;
     }
 
-    private DSSDocument createEAAPresentation() {
+    private DSSDocument createAttestationPresentation() {
         String commonName = DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.CN, getSigningCert().getSubject());
 
         String payload = "{\n" +

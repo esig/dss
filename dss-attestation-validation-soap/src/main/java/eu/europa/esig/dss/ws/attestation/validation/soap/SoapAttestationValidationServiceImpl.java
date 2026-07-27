@@ -53,8 +53,8 @@ public class SoapAttestationValidationServiceImpl implements SoapAttestationVali
     }
 
     @Override
-    public WSReportsDTO validateEAA(AttestationToValidateDTO dataToValidate) {
-        return validationService.validateEAA(dataToValidate);
+    public WSReportsDTO validateAttestation(AttestationToValidateDTO dataToValidate) {
+        return validationService.validateAttestation(dataToValidate);
     }
 
 }

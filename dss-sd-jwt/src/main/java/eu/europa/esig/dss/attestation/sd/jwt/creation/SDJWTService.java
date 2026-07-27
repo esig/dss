@@ -58,7 +58,8 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- * Implementation of {@link AttestationService} to create SD-JWT EAA
+ * Implementation of {@link AttestationService} to create SD-JWT attestation
+ *
  */
 public class SDJWTService extends AbstractAttestationService<JAdESSignatureParameters, SDJWTPayloadParameters, SDJWTClaim, SDJWTSelectiveDisclosure, SDJWTKeyBindingParameters> {
 
@@ -67,7 +68,7 @@ public class SDJWTService extends AbstractAttestationService<JAdESSignatureParam
     private static final Logger LOG = LoggerFactory.getLogger(SDJWTService.class);
 
     /**
-     * Default constructor to instantiate an {@code SDJWTEAAService}
+     * Default constructor to instantiate an {@code SDJWTService}
      *
      * @param certificateVerifier {@link CertificateVerifier}
      */
@@ -91,17 +92,17 @@ public class SDJWTService extends AbstractAttestationService<JAdESSignatureParam
     }
 
     @Override
-    public DSSDocument signEAA(final DSSDocument payload, final JAdESSignatureParameters signatureParameters, final SignatureValue signatureValue) {
+    public DSSDocument signAttestation(final DSSDocument payload, final JAdESSignatureParameters signatureParameters, final SignatureValue signatureValue) {
         validatePayload(payload);
         ensureSignatureParameters(signatureParameters);
         return getJAdESService().signDocument(payload, signatureParameters, signatureValue);
     }
 
     @Override
-    public DSSDocument signEAA(final SDJWTPayloadParameters payloadParameters, final JAdESSignatureParameters signatureParameters, final SignatureValue signatureValue) {
+    public DSSDocument signAttestation(final SDJWTPayloadParameters payloadParameters, final JAdESSignatureParameters signatureParameters, final SignatureValue signatureValue) {
         ensureSignatureParameters(signatureParameters);
         ensurePayloadParameters(payloadParameters, signatureParameters);
-        return signEAA(getPayloadBuilder().buildPayload(payloadParameters), signatureParameters, signatureValue);
+        return signAttestation(getPayloadBuilder().buildPayload(payloadParameters), signatureParameters, signatureValue);
     }
 
     /**
@@ -159,13 +160,13 @@ public class SDJWTService extends AbstractAttestationService<JAdESSignatureParam
         if (DigestAlgorithm.SHA256 != signatureParameters.getSigningCertificateDigestMethod()) {
             LOG.info("ETSI TS 119 472-1 v1.2.1 requires SHA256 to be used for the signing-certificate signed attribute definition. " +
                     "The value is enforced to DigestAlgorithm.SHA256. Should you need to use a different algorithm, " +
-                    "please override the MdocEAAService#ensureSigningCertificateDigestAlgorithm method.");
+                    "please override the MdocService#ensureSigningCertificateDigestAlgorithm method.");
             signatureParameters.setSigningCertificateDigestMethod(DigestAlgorithm.SHA256);
         }
     }
 
     /**
-     * This method verifies validity and/or provides some mandatory payload parameters for EAA creation
+     * This method verifies validity and/or provides some mandatory payload parameters for attestation creation
      *
      * @param payloadParameters {@link SDJWTPayloadParameters}
      * @param signatureParameters {@link JAdESSignatureParameters}
@@ -173,51 +174,51 @@ public class SDJWTService extends AbstractAttestationService<JAdESSignatureParam
     protected void ensurePayloadParameters(final SDJWTPayloadParameters payloadParameters, final JAdESSignatureParameters signatureParameters) {
         if (payloadParameters.getNotBeforeDate() == null) {
             payloadParameters.setNotBeforeDate(signatureParameters.bLevel().getSigningDate());
-            LOG.debug("EAA 'nbf' date is absent and was set to {}", signatureParameters.bLevel().getSigningDate());
+            LOG.debug("Attestation 'nbf' date is absent and was set to {}", signatureParameters.bLevel().getSigningDate());
         }
         if (payloadParameters.getExpirationDate() == null && signatureParameters.getSigningCertificate() != null) {
             payloadParameters.setExpirationDate(signatureParameters.getSigningCertificate().getNotAfter());
-            LOG.debug("EAA 'exp' date is absent and was set to {}", signatureParameters.getSigningCertificate().getNotAfter());
+            LOG.debug("Attestation 'exp' date is absent and was set to {}", signatureParameters.getSigningCertificate().getNotAfter());
         }
         if (Utils.isStringBlank(payloadParameters.getVerifiableCredentialsType())) {
-            LOG.warn("EAA 'vct' claim shall be defined! Absence of the value may lead to interoperability issued. " +
-                    "Please use SDJWTEAAPayloadParameters#setVerifiableCredentialsType method to provide the value.");
+            LOG.warn("Attestation 'vct' claim shall be defined! Absence of the value may lead to interoperability issued. " +
+                    "Please use SDJWTPayloadParameters#setVerifiableCredentialsType method to provide the value.");
         }
         if (payloadParameters.getVerifiableCredentialsTypeIntegrity() == null) {
-            LOG.warn("EAA 'vct#integrity' claim shall be defined! Absence of the value may lead to interoperability issued. " +
-                    "Please use SDJWTEAAPayloadParameters#setVerifiableCredentialsTypeIntegrity method to provide the value.");
+            LOG.warn("Attestation 'vct#integrity' claim shall be defined! Absence of the value may lead to interoperability issued. " +
+                    "Please use SDJWTPayloadParameters#setVerifiableCredentialsTypeIntegrity method to provide the value.");
         }
     }
 
     @Override
-    public ToBeSigned getDataToSignForKeyBindingSignature(final DSSDocument eaa, final SDJWTKeyBindingParameters keyBindingParameters,
+    public ToBeSigned getDataToSignForKeyBindingSignature(final DSSDocument attestation, final SDJWTKeyBindingParameters keyBindingParameters,
                                                           final JAdESSignatureParameters signatureParameters) {
-        return getDataToSignForKeyBindingSignature(eaa, null, keyBindingParameters, signatureParameters);
+        return getDataToSignForKeyBindingSignature(attestation, null, keyBindingParameters, signatureParameters);
     }
 
     @Override
-    public ToBeSigned getDataToSignForKeyBindingSignature(final DSSDocument eaa, final List<SDJWTSelectiveDisclosure> disclosures,
+    public ToBeSigned getDataToSignForKeyBindingSignature(final DSSDocument attestation, final List<SDJWTSelectiveDisclosure> disclosures,
                                                           final SDJWTKeyBindingParameters keyBindingParameters, final JAdESSignatureParameters signatureParameters) {
         ensureKeyBindingParameters(keyBindingParameters, signatureParameters);
         ensureKeyBindingSignatureParameters(signatureParameters);
 
-        DSSDocument keyBindingPayload = getKeyBindingPayloadBuilder().buildPayload(eaa, disclosures, keyBindingParameters);
+        DSSDocument keyBindingPayload = getKeyBindingPayloadBuilder().buildPayload(attestation, disclosures, keyBindingParameters);
         return getJAdESService().getDataToSign(keyBindingPayload, signatureParameters);
     }
 
     @Override
-    public DSSDocument createKeyBindingSignature(final DSSDocument eaa, final SDJWTKeyBindingParameters keyBindingParameters, final JAdESSignatureParameters signatureParameters,
+    public DSSDocument createKeyBindingSignature(final DSSDocument attestation, final SDJWTKeyBindingParameters keyBindingParameters, final JAdESSignatureParameters signatureParameters,
                                                  final SignatureValue signatureValue) {
-        return createKeyBindingSignature(eaa, null, keyBindingParameters, signatureParameters, signatureValue);
+        return createKeyBindingSignature(attestation, null, keyBindingParameters, signatureParameters, signatureValue);
     }
 
     @Override
-    public DSSDocument createKeyBindingSignature(final DSSDocument eaa, final List<SDJWTSelectiveDisclosure> disclosures, final SDJWTKeyBindingParameters keyBindingParameters,
+    public DSSDocument createKeyBindingSignature(final DSSDocument attestation, final List<SDJWTSelectiveDisclosure> disclosures, final SDJWTKeyBindingParameters keyBindingParameters,
                                                  final JAdESSignatureParameters signatureParameters, final SignatureValue signatureValue) {
         ensureKeyBindingParameters(keyBindingParameters, signatureParameters);
         ensureKeyBindingSignatureParameters(signatureParameters);
 
-        DSSDocument keyBindingPayload = getKeyBindingPayloadBuilder().buildPayload(eaa, disclosures, keyBindingParameters);
+        DSSDocument keyBindingPayload = getKeyBindingPayloadBuilder().buildPayload(attestation, disclosures, keyBindingParameters);
         return getJAdESService().signDocument(keyBindingPayload, signatureParameters, signatureValue);
     }
 
@@ -285,7 +286,7 @@ public class SDJWTService extends AbstractAttestationService<JAdESSignatureParam
 
     @Override
     public List<SDJWTSelectiveDisclosure> getDisclosures(final SDJWTPayloadParameters payloadParameters) {
-        Objects.requireNonNull(payloadParameters, "SDJWTEAAPayloadParameters cannot be null!");
+        Objects.requireNonNull(payloadParameters, "SDJWTPayloadParameters cannot be null!");
         Objects.requireNonNull(payloadParameters.getNotBeforeDate(), "NotBefore date cannot be null!");
         Objects.requireNonNull(payloadParameters.getExpirationDate(), "Expiration date a cannot be null!");
         return getPayloadBuilder().buildDisclosures(payloadParameters);
@@ -297,65 +298,65 @@ public class SDJWTService extends AbstractAttestationService<JAdESSignatureParam
     }
 
     @Override
-    public DSSDocument issuePresentation(final DSSDocument eaa, final List<SDJWTSelectiveDisclosure> disclosures, final DSSDocument keyBinding) {
-        Objects.requireNonNull(eaa, "The EAA cannot be null!");
-        JWSCompactSerializationParser compactParser = new JWSCompactSerializationParser(eaa);
+    public DSSDocument issuePresentation(final DSSDocument attestation, final List<SDJWTSelectiveDisclosure> disclosures, final DSSDocument keyBinding) {
+        Objects.requireNonNull(attestation, "The attestation cannot be null!");
+        JWSCompactSerializationParser compactParser = new JWSCompactSerializationParser(attestation);
         if (compactParser.isSupported()) {
-            DSSDocument attestationPresentation = issueJWSCompactPresentation(eaa, disclosures, keyBinding);
-            attestationPresentation.setName(getFinalDocumentName(eaa));
-            attestationPresentation.setMimeType(getEAAPresentationMimeType());
+            DSSDocument attestationPresentation = issueJWSCompactPresentation(attestation, disclosures, keyBinding);
+            attestationPresentation.setName(getFinalDocumentName(attestation));
+            attestationPresentation.setMimeType(getAttestationPresentationMimeType());
             return attestationPresentation;
         }
 
-        JWSJsonSerializationParser jwsJsonSerializationParser = new JWSJsonSerializationParser(eaa);
+        JWSJsonSerializationParser jwsJsonSerializationParser = new JWSJsonSerializationParser(attestation);
         if (jwsJsonSerializationParser.isSupported()) {
             DSSDocument attestationPresentation = issueJWSJsonSerializationPresentation(jwsJsonSerializationParser.parse(), disclosures, keyBinding);
-            attestationPresentation.setName(getFinalDocumentName(eaa));
-            attestationPresentation.setMimeType(getEAAPresentationMimeType());
+            attestationPresentation.setName(getFinalDocumentName(attestation));
+            attestationPresentation.setMimeType(getAttestationPresentationMimeType());
             return attestationPresentation;
         }
 
-        throw new DSSException("The signed EAA must be a JWS Signature");
+        throw new DSSException("The signed attestation must be a JWS Signature");
     }
 
     @Override
-    public DSSDocument issuePresentation(final DSSDocument eaa, final List<SDJWTSelectiveDisclosure> disclosures) {
-        return issuePresentation(eaa, disclosures, null);
+    public DSSDocument issuePresentation(final DSSDocument attestation, final List<SDJWTSelectiveDisclosure> disclosures) {
+        return issuePresentation(attestation, disclosures, null);
     }
 
     @Override
-    public DSSDocument issuePresentation(final DSSDocument eaa, final DSSDocument keyBinding) {
-        return issuePresentation(eaa, Collections.emptyList(), keyBinding);
+    public DSSDocument issuePresentation(final DSSDocument attestation, final DSSDocument keyBinding) {
+        return issuePresentation(attestation, Collections.emptyList(), keyBinding);
     }
 
-    private DSSDocument issueJWSCompactPresentation(final DSSDocument eaa, final List<SDJWTSelectiveDisclosure> disclosures, final DSSDocument keyBinding) {
-        String signedEaa = new String(DSSUtils.toByteArray(eaa));
+    private DSSDocument issueJWSCompactPresentation(final DSSDocument attestation, final List<SDJWTSelectiveDisclosure> disclosures, final DSSDocument keyBinding) {
+        String signedAttestation = new String(DSSUtils.toByteArray(attestation));
 
-        StringBuilder issuedEaa = new StringBuilder(signedEaa).append("~");
+        StringBuilder issuedAttestation = new StringBuilder(signedAttestation).append("~");
         if (disclosures != null && !disclosures.isEmpty()) {
             for (SDJWTSelectiveDisclosure disclosure : disclosures) {
-                issuedEaa.append(disclosure.getDisclosure()).append("~");
+                issuedAttestation.append(disclosure.getDisclosure()).append("~");
             }
         }
 
         if (keyBinding != null) {
             String keyBindingValue = new String(DSSUtils.toByteArray(keyBinding));
-            issuedEaa.append(keyBindingValue);
+            issuedAttestation.append(keyBindingValue);
         }
 
-        return new InMemoryDocument(issuedEaa.toString().getBytes());
+        return new InMemoryDocument(issuedAttestation.toString().getBytes());
     }
 
     private DSSDocument issueJWSJsonSerializationPresentation(JWSJsonSerializationObject jwsJsonSerializationObject, final List<SDJWTSelectiveDisclosure> disclosures,
                                                               final DSSDocument keyBinding) {
         if (jwsJsonSerializationObject.getSignatures().size() != 1) {
-            throw new DSSException("The signed EAA can only contain one signature");
+            throw new DSSException("The signed attestation can only contain one signature");
         }
 
         JWS jws = jwsJsonSerializationObject.getSignatures().get(0);
         Map<String, Object> unprotected = jws.getUnprotected();
         if (unprotected != null && (unprotected.containsKey(SDJWTConstants.DISCLOSURES) || unprotected.containsKey(SDJWTConstants.KB_JWT))) {
-            throw new DSSException("The signed EAA is already an issued presentation");
+            throw new DSSException("The signed attestation is already an issued presentation");
         } else if (unprotected == null) {
             unprotected = new HashMap<>();
         }
@@ -378,7 +379,7 @@ public class SDJWTService extends AbstractAttestationService<JAdESSignatureParam
     }
 
     @Override
-    protected MimeType getEAAPresentationMimeType() {
+    protected MimeType getAttestationPresentationMimeType() {
         return MimeTypeEnum.JSON; // TODO : improve
     }
 

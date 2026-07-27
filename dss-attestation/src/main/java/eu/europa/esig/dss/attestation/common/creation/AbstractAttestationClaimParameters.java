@@ -31,9 +31,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Contains common parameters used within SD-JWT VC and mdoc implementations
+ * Contains common parameters used within SD-JWT and mdoc implementations
  *
- * @param <C> implementation of {@link AttestationClaim} for the EAA format
+ * @param <C> implementation of {@link AttestationClaim} for the attestation format
  */
 public abstract class AbstractAttestationClaimParameters<C extends AttestationClaim> implements AttestationClaimParameters<C> {
 
@@ -208,7 +208,7 @@ public abstract class AbstractAttestationClaimParameters<C extends AttestationCl
     /* ETSI TS 119 472-1 qualified claims */
 
     /**
-     * The registration identifier of the legal entity on whose behalf the EAA has been issued
+     * The registration identifier of the legal entity on whose behalf the attestation has been issued
      */
     private String issuingAuthorityRegistrationIdentifier;
 
@@ -240,7 +240,7 @@ public abstract class AbstractAttestationClaimParameters<C extends AttestationCl
     }
 
     /**
-     * Sets the EAA issuance date
+     * Sets the attestation issuance date
      *
      * @param issuanceDate {@link Date}
      */
@@ -483,7 +483,7 @@ public abstract class AbstractAttestationClaimParameters<C extends AttestationCl
 
     /**
      * Sets user's nationalities using ICAO 3-letter codes.
-     * This type of nationality providing is used within EAA documents conformant to PID Rulebook.
+     * This type of nationality providing is used within attestation documents conformant to PID Rulebook.
      *
      * @param nationalities an array of of {@link String}s
      */
@@ -497,7 +497,7 @@ public abstract class AbstractAttestationClaimParameters<C extends AttestationCl
 
     /**
      * Sets user's nationalities using ICAO 3-letter codes.
-     * This type of nationality providing is used within EAA documents conformant to PID Rulebook.
+     * This type of nationality providing is used within attestation documents conformant to PID Rulebook.
      *
      * @param nationalities a list of {@link String}s
      */
@@ -717,7 +717,7 @@ public abstract class AbstractAttestationClaimParameters<C extends AttestationCl
     }
 
     /**
-     * Sets the registration identifier of the legal entity on whose behalf the EAA has been issued.
+     * Sets the registration identifier of the legal entity on whose behalf the attestation has been issued.
      *
      * @param issuingAuthorityRegistrationIdentifier {@link String}
      */
@@ -772,7 +772,7 @@ public abstract class AbstractAttestationClaimParameters<C extends AttestationCl
 
     @Override
     public String toString() {
-        return "AbstractEAAClaimParameters [" +
+        return "AbstractAttestationClaimParameters [" +
                 "givenName='" + givenName + '\'' +
                 ", familyName='" + familyName + '\'' +
                 ", birthdate=" + birthdate +

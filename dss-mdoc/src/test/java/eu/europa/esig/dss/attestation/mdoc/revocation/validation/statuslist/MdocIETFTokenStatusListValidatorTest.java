@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.revocation.validation.statuslist;
 
-import eu.europa.esig.dss.attestation.mdoc.validation.MdocIssuerSignedAttestationDocumentAnalyzer;
+import eu.europa.esig.dss.attestation.mdoc.validation.MdocIssuerSignedDocumentAnalyzer;
 import eu.europa.esig.dss.attestation.revocation.validation.AttestationRevocationValidator;
 import eu.europa.esig.dss.attestation.revocation.validation.statuslist.IETFTokenStatusListValidator;
 import eu.europa.esig.dss.enumerations.AttestationStatus;
@@ -48,8 +48,8 @@ class MdocIETFTokenStatusListValidatorTest {
         String revocationListB64 = "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";
         byte[] revocationList = Utils.fromBase64(revocationListB64);
 
-        AttestationPresentation attestationPresentation = new MdocIssuerSignedAttestationDocumentAnalyzer(new InMemoryDocument(Utils.fromBase64(mdocB64))).getAttestationPresentation();
-        List<Attestation> electronicAttestationsOfAttributes = attestationPresentation.getElectronicAttestationsOfAttributes();
+        AttestationPresentation attestationPresentation = new MdocIssuerSignedDocumentAnalyzer(new InMemoryDocument(Utils.fromBase64(mdocB64))).getAttestationPresentation();
+        List<Attestation> electronicAttestationsOfAttributes = attestationPresentation.getAttestations();
 
         Attestation attestation = electronicAttestationsOfAttributes.get(0);
 
@@ -74,8 +74,8 @@ class MdocIETFTokenStatusListValidatorTest {
         String revocationListB64 = "0oRZBOamATkBAgRYWDBWMFGkTzBNMRAwDgYDVQQDDAdyb290LWNhMRkwFwYDVQQKDBBOb3dpbmEgU29sdXRpb25zMREwDwYDVQQLDAhQS0ktVEVTVDELMAkGA1UEBhMCTFUCAQQZAQWBgjgrWED7Ee7BwhXOWQVyItEvOu5xsqO66KzW4XN5a0oFMuWlH8iwwSTNILcpkootE9BXlB3tDZ12fFfXYuDmb0FweQ70GCFZBA8wggQLMIIC86ADAgECAgEEMA0GCSqGSIb3DQEBDQUAME0xEDAOBgNVBAMMB3Jvb3QtY2ExGTAXBgNVBAoMEE5vd2luYSBTb2x1dGlvbnMxETAPBgNVBAsMCFBLSS1URVNUMQswCQYDVQQGEwJMVTAeFw0yNTA3MTIxNjA5NDFaFw0yNzA1MTIxNjA5NDFaME0xEDAOBgNVBAMMB2dvb2QtY2ExGTAXBgNVBAoMEE5vd2luYSBTb2x1dGlvbnMxETAPBgNVBAsMCFBLSS1URVNUMQswCQYDVQQGEwJMVTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKQL9VbJcZB3ZelXuK+4hLHl+8H/l7YDthwwgXCagG4ZyXycopntYM1A67k6VBkzqaKlqW9oVadblkhzBUjXvNVDlOtIwKx3xJpIhsca4XXKbwx4NSq/FznHcSrCWN6IwgSiOmT04m02gmqqYDRVrc2OH0WyPJE8fWS6+SMrCScw1y30/9zjhWHippKMyNcOxnR/DKJq1N+q954fO6yUCU8aEVWmyBjuJMPlUdZ7Y3PruDiikswMDAn1HPEJ8U9UntiZ1THgvQgQ9kLvUK034yze1x2avfXBtlehrKmhyCW8jHNn1N0v8spZA5kACuAwvysRoWfQL+rFch1HHuPeCUkCAwEAAaOB9TCB8jAOBgNVHQ8BAf8EBAMCAQYwQQYDVR0fBDowODA2oDSgMoYwaHR0cDovL2Rzcy5ub3dpbmEubHUvcGtpLWZhY3RvcnkvY3JsL3Jvb3QtY2EuY3JsMEwGCCsGAQUFBwEBBEAwPjA8BggrBgEFBQcwAoYwaHR0cDovL2Rzcy5ub3dpbmEubHUvcGtpLWZhY3RvcnkvY3J0L3Jvb3QtY2EuY3J0MB8GA1UdIwQYMBaAFMXJs1vVHYomYq6b70D3CByuGgZ7MB0GA1UdDgQWBBTVn6L0zjk0TXfAlFVvT5h6auhTXDAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBDQUAA4IBAQA/dM6FHUzUovcEhOW+TXAlh8+RFk+PMZc01CuDhSUOUOY+pOdefSBsXaG/UBWMSS1DAIxaD2tq+UGq7tp8/NzvwCBIpmuosU+FbwWrxHdKd7eWPZ+KpCIc9gmE2KcktJDfCQJ7t9WsnBMKpLYKRwDbHQPfaXAm5ok5j5DoV57HHW4ZL55GbfkUUT64qEIQEmGzNi2rX2xqVbBpxdNR1pER6RVVCwbRu29VHsh0kK58v4bLhFdyVm8AjUkWy7kkf4QOB07NOZCNlS4HDLiFvzxDufotCUA8/2GH7ZM/nwBhsrRa8j4QyiWAd45pSQ+bO3hcXGVFTQgrpVew/zvkOBIWEHgeYXBwbGljYXRpb24vaWRlbnRpZmllcmxpc3QrY3d0D6EGGmosL0egWEqkBhpqLC9HBBpr5IRFGf/6oWtpZGVudGlmaWVyc6ACeClodHRwczovL3BraS5ub3dpbmEubHUvZWFhL2lkZW50aWZpZXJfbGlzdFkBAE+krDtzqZhd392tNsG/xOsdNXye/flcC0TXNKrhHR0rXerBwAPDhGK2lKFUvjb7MEEllhVH2Ny/YhxTcwf7Zuw15+Ca9lPA+nkBOLGHJ8IiMcQraul2n2lraMl7/P6dsIrxQuK5JaaMrQU8eVQLQ0ELxENKm0Y6y5wM29U10xmUS59Bvcp9i5+HT2qsCJ2hbuoZPAgQpI9rECehgiYG/2dn5hD+IpOSxZumzGld6b+EOWy0QSb+nWLgXthhEwOZzTEuS0O+FcwATRGU9wbCIP8nCvCbD+ZM3PvOV5CWWgj8VwCXdFyzPC26OkKf4Y2i0smDLQHdVGe4kiF3ypyEd2o=";
         byte[] revocationList = Utils.fromBase64(revocationListB64);
 
-        AttestationPresentation attestationPresentation = new MdocIssuerSignedAttestationDocumentAnalyzer(new InMemoryDocument(Utils.fromBase64(mdocB64))).getAttestationPresentation();
-        List<Attestation> electronicAttestationsOfAttributes = attestationPresentation.getElectronicAttestationsOfAttributes();
+        AttestationPresentation attestationPresentation = new MdocIssuerSignedDocumentAnalyzer(new InMemoryDocument(Utils.fromBase64(mdocB64))).getAttestationPresentation();
+        List<Attestation> electronicAttestationsOfAttributes = attestationPresentation.getAttestations();
 
         Attestation attestation = electronicAttestationsOfAttributes.get(0);
 
@@ -83,10 +83,10 @@ class MdocIETFTokenStatusListValidatorTest {
         assertFalse(validator.isSupported(attestation));
 
         Exception exception = assertThrows(UnsupportedOperationException.class, () -> validator.getUris(attestation));
-        assertEquals("The provided EAA token does not contain 'status_list' or not supported!", exception.getMessage());
+        assertEquals("The provided attestation token does not contain 'status_list' or not supported!", exception.getMessage());
 
         exception = assertThrows(UnsupportedOperationException.class, () -> validator.validate(attestation, revocationList));
-        assertEquals("The provided EAA token does not contain 'status_list' or not supported!", exception.getMessage());
+        assertEquals("The provided attestation token does not contain 'status_list' or not supported!", exception.getMessage());
     }
 
 }

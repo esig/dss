@@ -8,13 +8,12 @@
     </parent>
 
     <artifactId>dss-attestation-validation-soap</artifactId>
-    <name>DSS EAA Validation SOAP</name>
-    <description>SOAP server for performing of a validation of Electronic Attestation of Attributes (EAA) or EAA
-        Presentations using the WebServices
+    <name>DSS Attestation Validation SOAP</name>
+    <description>SOAP server for performing of a validation of annotations (EAA, PID, etc.) and issuance of annotation presentations using the WebServices
     </description>
 
     <properties>
-        <module-name>jpms_dss_ws_eaa_validation_remote_soap</module-name>
+        <module-name>jpms_dss_ws_attestation_validation_remote_soap</module-name>
     </properties>
 
     <dependencies>

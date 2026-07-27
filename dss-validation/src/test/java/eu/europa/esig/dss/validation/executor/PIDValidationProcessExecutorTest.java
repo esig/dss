@@ -23,13 +23,13 @@ package eu.europa.esig.dss.validation.executor;
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlEAA;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlAttestation;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationEAAQualification;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationEAAQualificationProcess;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationAttestationQualification;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationAttestationQualificationProcess;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationPIDQualificationProcess;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessEAA;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessAttestation;
 import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlListOfTrustedEntities;
@@ -76,7 +76,7 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
     @Test
     void validTest() throws Exception {
         XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/attestation-validation/diag_data_pid.xml"));
+                new File("src/test/resources/diag-data/eaa-validation/diag_data_pid.xml"));
         assertNotNull(diagnosticData);
 
         AttestationProcessExecutor executor = new AttestationProcessExecutor();
@@ -89,25 +89,25 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
         SimpleReport simpleReport = reports.getSimpleReport();
         assertNotNull(simpleReport);
 
-        assertEquals(AttestationQualification.PID, simpleReport.getEAAQualification(simpleReport.getFirstEAAId()));
-        assertEquals(Collections.singletonList(AttestationQualification.PID), simpleReport.getEAAQualifications(simpleReport.getFirstEAAId()));
-        assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationErrors(simpleReport.getFirstEAAId())));
-        assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationWarnings(simpleReport.getFirstEAAId())));
-        assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationInfo(simpleReport.getFirstEAAId())));
+        assertEquals(AttestationQualification.PID, simpleReport.getAttestationQualification(simpleReport.getFirstAttestationId()));
+        assertEquals(Collections.singletonList(AttestationQualification.PID), simpleReport.getAttestationQualifications(simpleReport.getFirstAttestationId()));
+        assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationErrors(simpleReport.getFirstAttestationId())));
+        assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationWarnings(simpleReport.getFirstAttestationId())));
+        assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationInfo(simpleReport.getFirstAttestationId())));
 
         DetailedReport detailedReport = reports.getDetailedReport();
-        assertEquals(Collections.singletonList(AttestationQualification.PID), detailedReport.getEAAQualifications(simpleReport.getFirstEAAId()));
+        assertEquals(Collections.singletonList(AttestationQualification.PID), detailedReport.getAttestationQualifications(simpleReport.getFirstAttestationId()));
 
-        XmlEAA xmlEAA = detailedReport.getXmlEAAById(detailedReport.getFirstEAAId());
-        assertNotNull(xmlEAA);
+        XmlAttestation xmlAttestation = detailedReport.getXmlAttestationById(detailedReport.getFirstAttestationId());
+        assertNotNull(xmlAttestation);
 
-        XmlValidationProcessEAA validationProcessEAA = xmlEAA.getValidationProcessEAA();
-        assertNotNull(validationProcessEAA);
-        assertEquals(Indication.PASSED, validationProcessEAA.getConclusion().getIndication());
+        XmlValidationProcessAttestation validationProcessAttestation = xmlAttestation.getValidationProcessAttestation();
+        assertNotNull(validationProcessAttestation);
+        assertEquals(Indication.PASSED, validationProcessAttestation.getConclusion().getIndication());
 
         boolean fcCheckFound = false;
         boolean sigValidationConclusiveCheckFound = false;
-        for (XmlConstraint xmlConstraint : validationProcessEAA.getConstraint()) {
+        for (XmlConstraint xmlConstraint : validationProcessAttestation.getConstraint()) {
             assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
             if (MessageTag.BSV_IFCRC.getId().equals(xmlConstraint.getName().getKey())) {
                 fcCheckFound = true;
@@ -118,10 +118,10 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
         assertTrue(fcCheckFound);
         assertTrue(sigValidationConclusiveCheckFound);
 
-        XmlBasicBuildingBlocks eaaBBB = detailedReport.getBasicBuildingBlockById(xmlEAA.getId());
-        assertNotNull(eaaBBB);
+        XmlBasicBuildingBlocks attestationBBB = detailedReport.getBasicBuildingBlockById(xmlAttestation.getId());
+        assertNotNull(attestationBBB);
 
-        XmlFC xmlFC = eaaBBB.getFC();
+        XmlFC xmlFC = attestationBBB.getFC();
         assertNotNull(xmlFC);
 
         boolean sigPresentCheckFound = false;
@@ -133,32 +133,32 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
         }
         assertTrue(sigPresentCheckFound);
 
-        XmlValidationEAAQualification validationEAAQualification = xmlEAA.getValidationEAAQualification();
-        assertNotNull(validationEAAQualification);
-        assertEquals(Indication.PASSED, validationEAAQualification.getConclusion().getIndication());
+        XmlValidationAttestationQualification validationAttestationQualification = xmlAttestation.getValidationAttestationQualification();
+        assertNotNull(validationAttestationQualification);
+        assertEquals(Indication.PASSED, validationAttestationQualification.getConclusion().getIndication());
 
         boolean trustAnchorListCheckFound = false;
-        boolean eaaQualConclusiveCheckFound = false;
-        for (XmlConstraint xmlConstraint : validationEAAQualification.getConstraint()) {
+        boolean attestationQualConclusiveCheckFound = false;
+        for (XmlConstraint xmlConstraint : validationAttestationQualification.getConstraint()) {
             assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
             if (MessageTag.EAA_CERT_TRUST_ANCHOR_LIST_REACHED.getId().equals(xmlConstraint.getName().getKey())) {
                 trustAnchorListCheckFound = true;
             } else if (MessageTag.EAA_QUAL_CONCLUSIVE.getId().equals(xmlConstraint.getName().getKey())) {
-                eaaQualConclusiveCheckFound = true;
+                attestationQualConclusiveCheckFound = true;
             }
         }
         assertTrue(trustAnchorListCheckFound);
-        assertTrue(eaaQualConclusiveCheckFound);
+        assertTrue(attestationQualConclusiveCheckFound);
 
-        XmlValidationEAAQualificationProcess eaaQualificationProcess = validationEAAQualification.getValidationEAAQualificationProcess();
-        assertNotNull(eaaQualificationProcess);
-        assertEquals(Indication.FAILED, eaaQualificationProcess.getConclusion().getIndication());
-        assertEquals(AttestationQualification.NA, eaaQualificationProcess.getEAAQualification());
+        XmlValidationAttestationQualificationProcess attestationQualificationProcess = validationAttestationQualification.getValidationAttestationQualificationProcess();
+        assertNotNull(attestationQualificationProcess);
+        assertEquals(Indication.FAILED, attestationQualificationProcess.getConclusion().getIndication());
+        assertEquals(AttestationQualification.NA, attestationQualificationProcess.getAttestationQualification());
 
-        XmlValidationPIDQualificationProcess pidQualificationProcess = validationEAAQualification.getValidationPIDQualificationProcess();
+        XmlValidationPIDQualificationProcess pidQualificationProcess = validationAttestationQualification.getValidationPIDQualificationProcess();
         assertNotNull(pidQualificationProcess);
         assertEquals(Indication.PASSED, pidQualificationProcess.getConclusion().getIndication());
-        assertEquals(AttestationQualification.PID, pidQualificationProcess.getEAAQualification());
+        assertEquals(AttestationQualification.PID, pidQualificationProcess.getAttestationQualification());
 
         boolean loteReachedCheckFound = false;
         boolean pidDocumentTypeCheckFound = false;
@@ -203,11 +203,11 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
     @Test
     void noLoTETest() throws Exception {
         XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/attestation-validation/diag_data_pid.xml"));
+                new File("src/test/resources/diag-data/eaa-validation/diag_data_pid.xml"));
         assertNotNull(diagnosticData);
 
-        XmlSigningCertificate signingCertificate = diagnosticData.getEAAs().get(0)
-                .getEAASignature().get(0).getSignature().getSigningCertificate();
+        XmlSigningCertificate signingCertificate = diagnosticData.getAttestations().get(0)
+                .getAttestationSignature().get(0).getSignature().getSigningCertificate();
         signingCertificate.getCertificate().getTrustedEntities().clear();
 
         AttestationProcessExecutor executor = new AttestationProcessExecutor();
@@ -220,26 +220,26 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
         SimpleReport simpleReport = reports.getSimpleReport();
         assertNotNull(simpleReport);
 
-        assertEquals(AttestationQualification.NA, simpleReport.getEAAQualification(simpleReport.getFirstEAAId()));
-        assertEquals(Collections.singletonList(AttestationQualification.NA), simpleReport.getEAAQualifications(simpleReport.getFirstEAAId()));
-        assertTrue(checkMessageValuePresence(simpleReport.getQualificationErrors(simpleReport.getFirstEAAId()),
+        assertEquals(AttestationQualification.NA, simpleReport.getAttestationQualification(simpleReport.getFirstAttestationId()));
+        assertEquals(Collections.singletonList(AttestationQualification.NA), simpleReport.getAttestationQualifications(simpleReport.getFirstAttestationId()));
+        assertTrue(checkMessageValuePresence(simpleReport.getQualificationErrors(simpleReport.getFirstAttestationId()),
                 i18nProvider.getMessage(MessageTag.EAA_CERT_TRUST_ANCHOR_LIST_REACHED_ANS)));
-        assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationWarnings(simpleReport.getFirstEAAId())));
-        assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationInfo(simpleReport.getFirstEAAId())));
+        assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationWarnings(simpleReport.getFirstAttestationId())));
+        assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationInfo(simpleReport.getFirstAttestationId())));
 
         DetailedReport detailedReport = reports.getDetailedReport();
-        assertEquals(Collections.singletonList(AttestationQualification.NA), detailedReport.getEAAQualifications(simpleReport.getFirstEAAId()));
+        assertEquals(Collections.singletonList(AttestationQualification.NA), detailedReport.getAttestationQualifications(simpleReport.getFirstAttestationId()));
 
-        XmlEAA xmlEAA = detailedReport.getXmlEAAById(detailedReport.getFirstEAAId());
-        assertNotNull(xmlEAA);
+        XmlAttestation xmlAttestation = detailedReport.getXmlAttestationById(detailedReport.getFirstAttestationId());
+        assertNotNull(xmlAttestation);
 
-        XmlValidationProcessEAA validationProcessEAA = xmlEAA.getValidationProcessEAA();
-        assertNotNull(validationProcessEAA);
-        assertEquals(Indication.PASSED, validationProcessEAA.getConclusion().getIndication());
+        XmlValidationProcessAttestation validationProcessAttestation = xmlAttestation.getValidationProcessAttestation();
+        assertNotNull(validationProcessAttestation);
+        assertEquals(Indication.PASSED, validationProcessAttestation.getConclusion().getIndication());
 
         boolean fcCheckFound = false;
         boolean sigValidationConclusiveCheckFound = false;
-        for (XmlConstraint xmlConstraint : validationProcessEAA.getConstraint()) {
+        for (XmlConstraint xmlConstraint : validationProcessAttestation.getConstraint()) {
             assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
             if (MessageTag.BSV_IFCRC.getId().equals(xmlConstraint.getName().getKey())) {
                 fcCheckFound = true;
@@ -250,10 +250,10 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
         assertTrue(fcCheckFound);
         assertTrue(sigValidationConclusiveCheckFound);
 
-        XmlBasicBuildingBlocks eaaBBB = detailedReport.getBasicBuildingBlockById(xmlEAA.getId());
-        assertNotNull(eaaBBB);
+        XmlBasicBuildingBlocks attestationBBB = detailedReport.getBasicBuildingBlockById(xmlAttestation.getId());
+        assertNotNull(attestationBBB);
 
-        XmlFC xmlFC = eaaBBB.getFC();
+        XmlFC xmlFC = attestationBBB.getFC();
         assertNotNull(xmlFC);
 
         boolean sigPresentCheckFound = false;
@@ -265,33 +265,33 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
         }
         assertTrue(sigPresentCheckFound);
 
-        XmlValidationEAAQualification validationEAAQualification = xmlEAA.getValidationEAAQualification();
-        assertNotNull(validationEAAQualification);
-        assertEquals(Indication.FAILED, validationEAAQualification.getConclusion().getIndication());
+        XmlValidationAttestationQualification validationAttestationQualification = xmlAttestation.getValidationAttestationQualification();
+        assertNotNull(validationAttestationQualification);
+        assertEquals(Indication.FAILED, validationAttestationQualification.getConclusion().getIndication());
 
         boolean trustAnchorListCheckFound = false;
-        boolean eaaQualConclusiveCheckFound = false;
-        for (XmlConstraint xmlConstraint : validationEAAQualification.getConstraint()) {
+        boolean attestationQualConclusiveCheckFound = false;
+        for (XmlConstraint xmlConstraint : validationAttestationQualification.getConstraint()) {
             if (MessageTag.EAA_CERT_TRUST_ANCHOR_LIST_REACHED.getId().equals(xmlConstraint.getName().getKey())) {
                 assertEquals(XmlStatus.NOT_OK, xmlConstraint.getStatus());
                 assertEquals(MessageTag.EAA_CERT_TRUST_ANCHOR_LIST_REACHED_ANS.getId(), xmlConstraint.getError().getKey());
                 trustAnchorListCheckFound = true;
             } else if (MessageTag.EAA_QUAL_CONCLUSIVE.getId().equals(xmlConstraint.getName().getKey())) {
-                eaaQualConclusiveCheckFound = true;
+                attestationQualConclusiveCheckFound = true;
             }
         }
         assertTrue(trustAnchorListCheckFound);
-        assertFalse(eaaQualConclusiveCheckFound);
+        assertFalse(attestationQualConclusiveCheckFound);
 
-        XmlValidationEAAQualificationProcess eaaQualificationProcess = validationEAAQualification.getValidationEAAQualificationProcess();
-        assertNotNull(eaaQualificationProcess);
-        assertEquals(Indication.FAILED, eaaQualificationProcess.getConclusion().getIndication());
-        assertEquals(AttestationQualification.NA, eaaQualificationProcess.getEAAQualification());
+        XmlValidationAttestationQualificationProcess attestationQualificationProcess = validationAttestationQualification.getValidationAttestationQualificationProcess();
+        assertNotNull(attestationQualificationProcess);
+        assertEquals(Indication.FAILED, attestationQualificationProcess.getConclusion().getIndication());
+        assertEquals(AttestationQualification.NA, attestationQualificationProcess.getAttestationQualification());
 
-        XmlValidationPIDQualificationProcess pidQualificationProcess = validationEAAQualification.getValidationPIDQualificationProcess();
+        XmlValidationPIDQualificationProcess pidQualificationProcess = validationAttestationQualification.getValidationPIDQualificationProcess();
         assertNotNull(pidQualificationProcess);
         assertEquals(Indication.FAILED, pidQualificationProcess.getConclusion().getIndication());
-        assertEquals(AttestationQualification.NA, pidQualificationProcess.getEAAQualification());
+        assertEquals(AttestationQualification.NA, pidQualificationProcess.getAttestationQualification());
 
         boolean loteReachedCheckFound = false;
         boolean pidDocumentTypeCheckFound = false;
@@ -337,11 +337,11 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
     @Test
     void noPIDTypeTest() throws Exception {
         XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/attestation-validation/diag_data_pid.xml"));
+                new File("src/test/resources/diag-data/eaa-validation/diag_data_pid.xml"));
         assertNotNull(diagnosticData);
 
-        eu.europa.esig.dss.diagnostic.jaxb.XmlEAA eaa = diagnosticData.getEAAs().get(0);
-        eaa.getEAAPayload().getVerifiableCredentialsType().setText("urn:none:eu:pid:1");
+        eu.europa.esig.dss.diagnostic.jaxb.XmlAttestation attestation = diagnosticData.getAttestations().get(0);
+        attestation.getAttestationPayload().getVerifiableCredentialsType().setText("urn:none:eu:pid:1");
 
         AttestationProcessExecutor executor = new AttestationProcessExecutor();
         executor.setDiagnosticData(diagnosticData);
@@ -353,28 +353,28 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
         SimpleReport simpleReport = reports.getSimpleReport();
         assertNotNull(simpleReport);
 
-        assertEquals(AttestationQualification.NA, simpleReport.getEAAQualification(simpleReport.getFirstEAAId()));
-        assertEquals(Collections.singletonList(AttestationQualification.NA), simpleReport.getEAAQualifications(simpleReport.getFirstEAAId()));
-        assertTrue(checkMessageValuePresence(simpleReport.getQualificationErrors(simpleReport.getFirstEAAId()),
+        assertEquals(AttestationQualification.NA, simpleReport.getAttestationQualification(simpleReport.getFirstAttestationId()));
+        assertEquals(Collections.singletonList(AttestationQualification.NA), simpleReport.getAttestationQualifications(simpleReport.getFirstAttestationId()));
+        assertTrue(checkMessageValuePresence(simpleReport.getQualificationErrors(simpleReport.getFirstAttestationId()),
                 i18nProvider.getMessage(MessageTag.EAA_QUAL_CONCLUSIVE_ANS)));
-        assertTrue(checkMessageValuePresence(simpleReport.getQualificationErrors(simpleReport.getFirstEAAId()),
+        assertTrue(checkMessageValuePresence(simpleReport.getQualificationErrors(simpleReport.getFirstAttestationId()),
                 i18nProvider.getMessage(MessageTag.PID_DOCUMENT_TYPE_ANS, "urn:none:eu:pid:1")));
-        assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationWarnings(simpleReport.getFirstEAAId())));
-        assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationInfo(simpleReport.getFirstEAAId())));
+        assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationWarnings(simpleReport.getFirstAttestationId())));
+        assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationInfo(simpleReport.getFirstAttestationId())));
 
         DetailedReport detailedReport = reports.getDetailedReport();
-        assertEquals(Collections.singletonList(AttestationQualification.NA), detailedReport.getEAAQualifications(simpleReport.getFirstEAAId()));
+        assertEquals(Collections.singletonList(AttestationQualification.NA), detailedReport.getAttestationQualifications(simpleReport.getFirstAttestationId()));
 
-        XmlEAA xmlEAA = detailedReport.getXmlEAAById(detailedReport.getFirstEAAId());
-        assertNotNull(xmlEAA);
+        XmlAttestation xmlAttestation = detailedReport.getXmlAttestationById(detailedReport.getFirstAttestationId());
+        assertNotNull(xmlAttestation);
 
-        XmlValidationProcessEAA validationProcessEAA = xmlEAA.getValidationProcessEAA();
-        assertNotNull(validationProcessEAA);
-        assertEquals(Indication.PASSED, validationProcessEAA.getConclusion().getIndication());
+        XmlValidationProcessAttestation validationProcessAttestation = xmlAttestation.getValidationProcessAttestation();
+        assertNotNull(validationProcessAttestation);
+        assertEquals(Indication.PASSED, validationProcessAttestation.getConclusion().getIndication());
 
         boolean fcCheckFound = false;
         boolean sigValidationConclusiveCheckFound = false;
-        for (XmlConstraint xmlConstraint : validationProcessEAA.getConstraint()) {
+        for (XmlConstraint xmlConstraint : validationProcessAttestation.getConstraint()) {
             assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
             if (MessageTag.BSV_IFCRC.getId().equals(xmlConstraint.getName().getKey())) {
                 fcCheckFound = true;
@@ -385,10 +385,10 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
         assertTrue(fcCheckFound);
         assertTrue(sigValidationConclusiveCheckFound);
 
-        XmlBasicBuildingBlocks eaaBBB = detailedReport.getBasicBuildingBlockById(xmlEAA.getId());
-        assertNotNull(eaaBBB);
+        XmlBasicBuildingBlocks attestationBBB = detailedReport.getBasicBuildingBlockById(xmlAttestation.getId());
+        assertNotNull(attestationBBB);
 
-        XmlFC xmlFC = eaaBBB.getFC();
+        XmlFC xmlFC = attestationBBB.getFC();
         assertNotNull(xmlFC);
 
         boolean sigPresentCheckFound = false;
@@ -400,33 +400,33 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
         }
         assertTrue(sigPresentCheckFound);
 
-        XmlValidationEAAQualification validationEAAQualification = xmlEAA.getValidationEAAQualification();
-        assertNotNull(validationEAAQualification);
-        assertEquals(Indication.FAILED, validationEAAQualification.getConclusion().getIndication());
+        XmlValidationAttestationQualification validationAttestationQualification = xmlAttestation.getValidationAttestationQualification();
+        assertNotNull(validationAttestationQualification);
+        assertEquals(Indication.FAILED, validationAttestationQualification.getConclusion().getIndication());
 
         boolean trustAnchorListCheckFound = false;
-        boolean eaaQualConclusiveCheckFound = false;
-        for (XmlConstraint xmlConstraint : validationEAAQualification.getConstraint()) {
+        boolean attestationQualConclusiveCheckFound = false;
+        for (XmlConstraint xmlConstraint : validationAttestationQualification.getConstraint()) {
             if (MessageTag.EAA_CERT_TRUST_ANCHOR_LIST_REACHED.getId().equals(xmlConstraint.getName().getKey())) {
                 assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
                 trustAnchorListCheckFound = true;
             } else if (MessageTag.EAA_QUAL_CONCLUSIVE.getId().equals(xmlConstraint.getName().getKey())) {
                 assertEquals(XmlStatus.NOT_OK, xmlConstraint.getStatus());
-                eaaQualConclusiveCheckFound = true;
+                attestationQualConclusiveCheckFound = true;
             }
         }
         assertTrue(trustAnchorListCheckFound);
-        assertTrue(eaaQualConclusiveCheckFound);
+        assertTrue(attestationQualConclusiveCheckFound);
 
-        XmlValidationEAAQualificationProcess eaaQualificationProcess = validationEAAQualification.getValidationEAAQualificationProcess();
-        assertNotNull(eaaQualificationProcess);
-        assertEquals(Indication.FAILED, eaaQualificationProcess.getConclusion().getIndication());
-        assertEquals(AttestationQualification.NA, eaaQualificationProcess.getEAAQualification());
+        XmlValidationAttestationQualificationProcess attestationQualificationProcess = validationAttestationQualification.getValidationAttestationQualificationProcess();
+        assertNotNull(attestationQualificationProcess);
+        assertEquals(Indication.FAILED, attestationQualificationProcess.getConclusion().getIndication());
+        assertEquals(AttestationQualification.NA, attestationQualificationProcess.getAttestationQualification());
 
-        XmlValidationPIDQualificationProcess pidQualificationProcess = validationEAAQualification.getValidationPIDQualificationProcess();
+        XmlValidationPIDQualificationProcess pidQualificationProcess = validationAttestationQualification.getValidationPIDQualificationProcess();
         assertNotNull(pidQualificationProcess);
         assertEquals(Indication.FAILED, pidQualificationProcess.getConclusion().getIndication());
-        assertEquals(AttestationQualification.NA, pidQualificationProcess.getEAAQualification());
+        assertEquals(AttestationQualification.NA, pidQualificationProcess.getAttestationQualification());
 
         boolean loteReachedCheckFound = false;
         boolean pidDocumentTypeCheckFound = false;
@@ -473,7 +473,7 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
     @Test
     void noAcceptableLoTETest() throws Exception {
         XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/attestation-validation/diag_data_pid.xml"));
+                new File("src/test/resources/diag-data/eaa-validation/diag_data_pid.xml"));
         assertNotNull(diagnosticData);
 
         XmlListOfTrustedEntities lote = diagnosticData.getListsOfTrustedEntities().get(0);
@@ -494,29 +494,29 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
         SimpleReport simpleReport = reports.getSimpleReport();
         assertNotNull(simpleReport);
 
-        assertEquals(AttestationQualification.NA, simpleReport.getEAAQualification(simpleReport.getFirstEAAId()));
-        assertEquals(Collections.singletonList(AttestationQualification.NA), simpleReport.getEAAQualifications(simpleReport.getFirstEAAId()));
-        assertTrue(checkMessageValuePresence(simpleReport.getQualificationErrors(simpleReport.getFirstEAAId()),
+        assertEquals(AttestationQualification.NA, simpleReport.getAttestationQualification(simpleReport.getFirstAttestationId()));
+        assertEquals(Collections.singletonList(AttestationQualification.NA), simpleReport.getAttestationQualifications(simpleReport.getFirstAttestationId()));
+        assertTrue(checkMessageValuePresence(simpleReport.getQualificationErrors(simpleReport.getFirstAttestationId()),
                 i18nProvider.getMessage(MessageTag.EAA_QUAL_CONCLUSIVE_ANS)));
-        assertTrue(checkMessageValuePresence(simpleReport.getQualificationErrors(simpleReport.getFirstEAAId()),
+        assertTrue(checkMessageValuePresence(simpleReport.getQualificationErrors(simpleReport.getFirstAttestationId()),
                 i18nProvider.getMessage(MessageTag.CERT_USAGE_VALID_LOTE_PRESENT_ANS)));
-        assertTrue(checkMessageValuePresence(simpleReport.getQualificationWarnings(simpleReport.getFirstEAAId()),
+        assertTrue(checkMessageValuePresence(simpleReport.getQualificationWarnings(simpleReport.getFirstAttestationId()),
                 i18nProvider.getMessage(MessageTag.CERT_USAGE_LOTE_ACCEPT_ANS)));
-        assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationInfo(simpleReport.getFirstEAAId())));
+        assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationInfo(simpleReport.getFirstAttestationId())));
 
         DetailedReport detailedReport = reports.getDetailedReport();
-        assertEquals(Collections.singletonList(AttestationQualification.NA), detailedReport.getEAAQualifications(simpleReport.getFirstEAAId()));
+        assertEquals(Collections.singletonList(AttestationQualification.NA), detailedReport.getAttestationQualifications(simpleReport.getFirstAttestationId()));
 
-        XmlEAA xmlEAA = detailedReport.getXmlEAAById(detailedReport.getFirstEAAId());
-        assertNotNull(xmlEAA);
+        XmlAttestation xmlAttestation = detailedReport.getXmlAttestationById(detailedReport.getFirstAttestationId());
+        assertNotNull(xmlAttestation);
 
-        XmlValidationProcessEAA validationProcessEAA = xmlEAA.getValidationProcessEAA();
-        assertNotNull(validationProcessEAA);
-        assertEquals(Indication.PASSED, validationProcessEAA.getConclusion().getIndication());
+        XmlValidationProcessAttestation validationProcessAttestation = xmlAttestation.getValidationProcessAttestation();
+        assertNotNull(validationProcessAttestation);
+        assertEquals(Indication.PASSED, validationProcessAttestation.getConclusion().getIndication());
 
         boolean fcCheckFound = false;
         boolean sigValidationConclusiveCheckFound = false;
-        for (XmlConstraint xmlConstraint : validationProcessEAA.getConstraint()) {
+        for (XmlConstraint xmlConstraint : validationProcessAttestation.getConstraint()) {
             assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
             if (MessageTag.BSV_IFCRC.getId().equals(xmlConstraint.getName().getKey())) {
                 fcCheckFound = true;
@@ -527,10 +527,10 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
         assertTrue(fcCheckFound);
         assertTrue(sigValidationConclusiveCheckFound);
 
-        XmlBasicBuildingBlocks eaaBBB = detailedReport.getBasicBuildingBlockById(xmlEAA.getId());
-        assertNotNull(eaaBBB);
+        XmlBasicBuildingBlocks attestationBBB = detailedReport.getBasicBuildingBlockById(xmlAttestation.getId());
+        assertNotNull(attestationBBB);
 
-        XmlFC xmlFC = eaaBBB.getFC();
+        XmlFC xmlFC = attestationBBB.getFC();
         assertNotNull(xmlFC);
 
         boolean sigPresentCheckFound = false;
@@ -542,33 +542,33 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
         }
         assertTrue(sigPresentCheckFound);
 
-        XmlValidationEAAQualification validationEAAQualification = xmlEAA.getValidationEAAQualification();
-        assertNotNull(validationEAAQualification);
-        assertEquals(Indication.FAILED, validationEAAQualification.getConclusion().getIndication());
+        XmlValidationAttestationQualification validationAttestationQualification = xmlAttestation.getValidationAttestationQualification();
+        assertNotNull(validationAttestationQualification);
+        assertEquals(Indication.FAILED, validationAttestationQualification.getConclusion().getIndication());
 
         boolean trustAnchorListCheckFound = false;
-        boolean eaaQualConclusiveCheckFound = false;
-        for (XmlConstraint xmlConstraint : validationEAAQualification.getConstraint()) {
+        boolean attestationQualConclusiveCheckFound = false;
+        for (XmlConstraint xmlConstraint : validationAttestationQualification.getConstraint()) {
             if (MessageTag.EAA_CERT_TRUST_ANCHOR_LIST_REACHED.getId().equals(xmlConstraint.getName().getKey())) {
                 assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
                 trustAnchorListCheckFound = true;
             } else if (MessageTag.EAA_QUAL_CONCLUSIVE.getId().equals(xmlConstraint.getName().getKey())) {
                 assertEquals(XmlStatus.NOT_OK, xmlConstraint.getStatus());
-                eaaQualConclusiveCheckFound = true;
+                attestationQualConclusiveCheckFound = true;
             }
         }
         assertTrue(trustAnchorListCheckFound);
-        assertTrue(eaaQualConclusiveCheckFound);
+        assertTrue(attestationQualConclusiveCheckFound);
 
-        XmlValidationEAAQualificationProcess eaaQualificationProcess = validationEAAQualification.getValidationEAAQualificationProcess();
-        assertNotNull(eaaQualificationProcess);
-        assertEquals(Indication.FAILED, eaaQualificationProcess.getConclusion().getIndication());
-        assertEquals(AttestationQualification.NA, eaaQualificationProcess.getEAAQualification());
+        XmlValidationAttestationQualificationProcess attestationQualificationProcess = validationAttestationQualification.getValidationAttestationQualificationProcess();
+        assertNotNull(attestationQualificationProcess);
+        assertEquals(Indication.FAILED, attestationQualificationProcess.getConclusion().getIndication());
+        assertEquals(AttestationQualification.NA, attestationQualificationProcess.getAttestationQualification());
 
-        XmlValidationPIDQualificationProcess pidQualificationProcess = validationEAAQualification.getValidationPIDQualificationProcess();
+        XmlValidationPIDQualificationProcess pidQualificationProcess = validationAttestationQualification.getValidationPIDQualificationProcess();
         assertNotNull(pidQualificationProcess);
         assertEquals(Indication.FAILED, pidQualificationProcess.getConclusion().getIndication());
-        assertEquals(AttestationQualification.NA, pidQualificationProcess.getEAAQualification());
+        assertEquals(AttestationQualification.NA, pidQualificationProcess.getAttestationQualification());
 
         boolean loteReachedCheckFound = false;
         boolean pidDocumentTypeCheckFound = false;
@@ -619,7 +619,7 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
     @Test
     void noPIDLoTETest() throws Exception {
         XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/attestation-validation/diag_data_pid.xml"));
+                new File("src/test/resources/diag-data/eaa-validation/diag_data_pid.xml"));
         assertNotNull(diagnosticData);
 
         XmlListOfTrustedEntities lote = diagnosticData.getListsOfTrustedEntities().get(0);
@@ -640,29 +640,29 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
         SimpleReport simpleReport = reports.getSimpleReport();
         assertNotNull(simpleReport);
 
-        assertEquals(AttestationQualification.NA, simpleReport.getEAAQualification(simpleReport.getFirstEAAId()));
-        assertEquals(Collections.singletonList(AttestationQualification.NA), simpleReport.getEAAQualifications(simpleReport.getFirstEAAId()));
-        assertTrue(checkMessageValuePresence(simpleReport.getQualificationErrors(simpleReport.getFirstEAAId()),
+        assertEquals(AttestationQualification.NA, simpleReport.getAttestationQualification(simpleReport.getFirstAttestationId()));
+        assertEquals(Collections.singletonList(AttestationQualification.NA), simpleReport.getAttestationQualifications(simpleReport.getFirstAttestationId()));
+        assertTrue(checkMessageValuePresence(simpleReport.getQualificationErrors(simpleReport.getFirstAttestationId()),
                 i18nProvider.getMessage(MessageTag.EAA_QUAL_CONCLUSIVE_ANS)));
-        assertTrue(checkMessageValuePresence(simpleReport.getQualificationErrors(simpleReport.getFirstEAAId()),
+        assertTrue(checkMessageValuePresence(simpleReport.getQualificationErrors(simpleReport.getFirstAttestationId()),
                 i18nProvider.getMessage(MessageTag.CERT_USAGE_VALID_LOTE_PRESENT_ANS)));
-        assertTrue(checkMessageValuePresence(simpleReport.getQualificationWarnings(simpleReport.getFirstEAAId()),
+        assertTrue(checkMessageValuePresence(simpleReport.getQualificationWarnings(simpleReport.getFirstAttestationId()),
                 i18nProvider.getMessage(MessageTag.PID_LOTE_TYPE_PID_PROVIDERS_ANS)));
-        assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationInfo(simpleReport.getFirstEAAId())));
+        assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationInfo(simpleReport.getFirstAttestationId())));
 
         DetailedReport detailedReport = reports.getDetailedReport();
-        assertEquals(Collections.singletonList(AttestationQualification.NA), detailedReport.getEAAQualifications(simpleReport.getFirstEAAId()));
+        assertEquals(Collections.singletonList(AttestationQualification.NA), detailedReport.getAttestationQualifications(simpleReport.getFirstAttestationId()));
 
-        XmlEAA xmlEAA = detailedReport.getXmlEAAById(detailedReport.getFirstEAAId());
-        assertNotNull(xmlEAA);
+        XmlAttestation xmlAttestation = detailedReport.getXmlAttestationById(detailedReport.getFirstAttestationId());
+        assertNotNull(xmlAttestation);
 
-        XmlValidationProcessEAA validationProcessEAA = xmlEAA.getValidationProcessEAA();
-        assertNotNull(validationProcessEAA);
-        assertEquals(Indication.PASSED, validationProcessEAA.getConclusion().getIndication());
+        XmlValidationProcessAttestation validationProcessAttestation = xmlAttestation.getValidationProcessAttestation();
+        assertNotNull(validationProcessAttestation);
+        assertEquals(Indication.PASSED, validationProcessAttestation.getConclusion().getIndication());
 
         boolean fcCheckFound = false;
         boolean sigValidationConclusiveCheckFound = false;
-        for (XmlConstraint xmlConstraint : validationProcessEAA.getConstraint()) {
+        for (XmlConstraint xmlConstraint : validationProcessAttestation.getConstraint()) {
             assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
             if (MessageTag.BSV_IFCRC.getId().equals(xmlConstraint.getName().getKey())) {
                 fcCheckFound = true;
@@ -673,10 +673,10 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
         assertTrue(fcCheckFound);
         assertTrue(sigValidationConclusiveCheckFound);
 
-        XmlBasicBuildingBlocks eaaBBB = detailedReport.getBasicBuildingBlockById(xmlEAA.getId());
-        assertNotNull(eaaBBB);
+        XmlBasicBuildingBlocks attestationBBB = detailedReport.getBasicBuildingBlockById(xmlAttestation.getId());
+        assertNotNull(attestationBBB);
 
-        XmlFC xmlFC = eaaBBB.getFC();
+        XmlFC xmlFC = attestationBBB.getFC();
         assertNotNull(xmlFC);
 
         boolean sigPresentCheckFound = false;
@@ -688,33 +688,33 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
         }
         assertTrue(sigPresentCheckFound);
 
-        XmlValidationEAAQualification validationEAAQualification = xmlEAA.getValidationEAAQualification();
-        assertNotNull(validationEAAQualification);
-        assertEquals(Indication.FAILED, validationEAAQualification.getConclusion().getIndication());
+        XmlValidationAttestationQualification validationAttestationQualification = xmlAttestation.getValidationAttestationQualification();
+        assertNotNull(validationAttestationQualification);
+        assertEquals(Indication.FAILED, validationAttestationQualification.getConclusion().getIndication());
 
         boolean trustAnchorListCheckFound = false;
-        boolean eaaQualConclusiveCheckFound = false;
-        for (XmlConstraint xmlConstraint : validationEAAQualification.getConstraint()) {
+        boolean attestationQualConclusiveCheckFound = false;
+        for (XmlConstraint xmlConstraint : validationAttestationQualification.getConstraint()) {
             if (MessageTag.EAA_CERT_TRUST_ANCHOR_LIST_REACHED.getId().equals(xmlConstraint.getName().getKey())) {
                 assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
                 trustAnchorListCheckFound = true;
             } else if (MessageTag.EAA_QUAL_CONCLUSIVE.getId().equals(xmlConstraint.getName().getKey())) {
                 assertEquals(XmlStatus.NOT_OK, xmlConstraint.getStatus());
-                eaaQualConclusiveCheckFound = true;
+                attestationQualConclusiveCheckFound = true;
             }
         }
         assertTrue(trustAnchorListCheckFound);
-        assertTrue(eaaQualConclusiveCheckFound);
+        assertTrue(attestationQualConclusiveCheckFound);
 
-        XmlValidationEAAQualificationProcess eaaQualificationProcess = validationEAAQualification.getValidationEAAQualificationProcess();
-        assertNotNull(eaaQualificationProcess);
-        assertEquals(Indication.FAILED, eaaQualificationProcess.getConclusion().getIndication());
-        assertEquals(AttestationQualification.NA, eaaQualificationProcess.getEAAQualification());
+        XmlValidationAttestationQualificationProcess attestationQualificationProcess = validationAttestationQualification.getValidationAttestationQualificationProcess();
+        assertNotNull(attestationQualificationProcess);
+        assertEquals(Indication.FAILED, attestationQualificationProcess.getConclusion().getIndication());
+        assertEquals(AttestationQualification.NA, attestationQualificationProcess.getAttestationQualification());
 
-        XmlValidationPIDQualificationProcess pidQualificationProcess = validationEAAQualification.getValidationPIDQualificationProcess();
+        XmlValidationPIDQualificationProcess pidQualificationProcess = validationAttestationQualification.getValidationPIDQualificationProcess();
         assertNotNull(pidQualificationProcess);
         assertEquals(Indication.FAILED, pidQualificationProcess.getConclusion().getIndication());
-        assertEquals(AttestationQualification.NA, pidQualificationProcess.getEAAQualification());
+        assertEquals(AttestationQualification.NA, pidQualificationProcess.getAttestationQualification());
 
         boolean loteReachedCheckFound = false;
         boolean pidDocumentTypeCheckFound = false;
@@ -765,11 +765,11 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
     @Test
     void noPIDIssuanceTest() throws Exception {
         XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/attestation-validation/diag_data_pid.xml"));
+                new File("src/test/resources/diag-data/eaa-validation/diag_data_pid.xml"));
         assertNotNull(diagnosticData);
 
-        XmlSigningCertificate signingCertificate = diagnosticData.getEAAs().get(0)
-                .getEAASignature().get(0).getSignature().getSigningCertificate();
+        XmlSigningCertificate signingCertificate = diagnosticData.getAttestations().get(0)
+                .getAttestationSignature().get(0).getSignature().getSigningCertificate();
         List<XmlTrustedEntity> trustedEntities = signingCertificate.getCertificate().getTrustedEntities();
         trustedEntities.get(0).getTrustedEntityServices().get(0).setServiceType(LoTEServiceTypeIdentifierEnum.PID_REVOCATION.getUri());
 
@@ -788,28 +788,28 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
         SimpleReport simpleReport = reports.getSimpleReport();
         assertNotNull(simpleReport);
 
-        assertEquals(AttestationQualification.UNKNOWN, simpleReport.getEAAQualification(simpleReport.getFirstEAAId()));
-        assertEquals(Collections.singletonList(AttestationQualification.UNKNOWN), simpleReport.getEAAQualifications(simpleReport.getFirstEAAId()));
-        assertTrue(checkMessageValuePresence(simpleReport.getQualificationErrors(simpleReport.getFirstEAAId()),
+        assertEquals(AttestationQualification.UNKNOWN, simpleReport.getAttestationQualification(simpleReport.getFirstAttestationId()));
+        assertEquals(Collections.singletonList(AttestationQualification.UNKNOWN), simpleReport.getAttestationQualifications(simpleReport.getFirstAttestationId()));
+        assertTrue(checkMessageValuePresence(simpleReport.getQualificationErrors(simpleReport.getFirstAttestationId()),
                 i18nProvider.getMessage(MessageTag.EAA_QUAL_CONCLUSIVE_ANS)));
-        assertTrue(checkMessageValuePresence(simpleReport.getQualificationErrors(simpleReport.getFirstEAAId()),
+        assertTrue(checkMessageValuePresence(simpleReport.getQualificationErrors(simpleReport.getFirstAttestationId()),
                 i18nProvider.getMessage(MessageTag.PID_STI_PID_ISSUANCE_ANS)));
-        assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationWarnings(simpleReport.getFirstEAAId())));
-        assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationInfo(simpleReport.getFirstEAAId())));
+        assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationWarnings(simpleReport.getFirstAttestationId())));
+        assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationInfo(simpleReport.getFirstAttestationId())));
 
         DetailedReport detailedReport = reports.getDetailedReport();
-        assertEquals(Collections.singletonList(AttestationQualification.UNKNOWN), detailedReport.getEAAQualifications(simpleReport.getFirstEAAId()));
+        assertEquals(Collections.singletonList(AttestationQualification.UNKNOWN), detailedReport.getAttestationQualifications(simpleReport.getFirstAttestationId()));
 
-        XmlEAA xmlEAA = detailedReport.getXmlEAAById(detailedReport.getFirstEAAId());
-        assertNotNull(xmlEAA);
+        XmlAttestation xmlAttestation = detailedReport.getXmlAttestationById(detailedReport.getFirstAttestationId());
+        assertNotNull(xmlAttestation);
 
-        XmlValidationProcessEAA validationProcessEAA = xmlEAA.getValidationProcessEAA();
-        assertNotNull(validationProcessEAA);
-        assertEquals(Indication.PASSED, validationProcessEAA.getConclusion().getIndication());
+        XmlValidationProcessAttestation validationProcessAttestation = xmlAttestation.getValidationProcessAttestation();
+        assertNotNull(validationProcessAttestation);
+        assertEquals(Indication.PASSED, validationProcessAttestation.getConclusion().getIndication());
 
         boolean fcCheckFound = false;
         boolean sigValidationConclusiveCheckFound = false;
-        for (XmlConstraint xmlConstraint : validationProcessEAA.getConstraint()) {
+        for (XmlConstraint xmlConstraint : validationProcessAttestation.getConstraint()) {
             assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
             if (MessageTag.BSV_IFCRC.getId().equals(xmlConstraint.getName().getKey())) {
                 fcCheckFound = true;
@@ -820,10 +820,10 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
         assertTrue(fcCheckFound);
         assertTrue(sigValidationConclusiveCheckFound);
 
-        XmlBasicBuildingBlocks eaaBBB = detailedReport.getBasicBuildingBlockById(xmlEAA.getId());
-        assertNotNull(eaaBBB);
+        XmlBasicBuildingBlocks attestationBBB = detailedReport.getBasicBuildingBlockById(xmlAttestation.getId());
+        assertNotNull(attestationBBB);
 
-        XmlFC xmlFC = eaaBBB.getFC();
+        XmlFC xmlFC = attestationBBB.getFC();
         assertNotNull(xmlFC);
 
         boolean sigPresentCheckFound = false;
@@ -835,33 +835,33 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
         }
         assertTrue(sigPresentCheckFound);
 
-        XmlValidationEAAQualification validationEAAQualification = xmlEAA.getValidationEAAQualification();
-        assertNotNull(validationEAAQualification);
-        assertEquals(Indication.FAILED, validationEAAQualification.getConclusion().getIndication());
+        XmlValidationAttestationQualification validationAttestationQualification = xmlAttestation.getValidationAttestationQualification();
+        assertNotNull(validationAttestationQualification);
+        assertEquals(Indication.FAILED, validationAttestationQualification.getConclusion().getIndication());
 
         boolean trustAnchorListCheckFound = false;
-        boolean eaaQualConclusiveCheckFound = false;
-        for (XmlConstraint xmlConstraint : validationEAAQualification.getConstraint()) {
+        boolean attestationQualConclusiveCheckFound = false;
+        for (XmlConstraint xmlConstraint : validationAttestationQualification.getConstraint()) {
             if (MessageTag.EAA_CERT_TRUST_ANCHOR_LIST_REACHED.getId().equals(xmlConstraint.getName().getKey())) {
                 assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
                 trustAnchorListCheckFound = true;
             } else if (MessageTag.EAA_QUAL_CONCLUSIVE.getId().equals(xmlConstraint.getName().getKey())) {
                 assertEquals(XmlStatus.NOT_OK, xmlConstraint.getStatus());
-                eaaQualConclusiveCheckFound = true;
+                attestationQualConclusiveCheckFound = true;
             }
         }
         assertTrue(trustAnchorListCheckFound);
-        assertTrue(eaaQualConclusiveCheckFound);
+        assertTrue(attestationQualConclusiveCheckFound);
 
-        XmlValidationEAAQualificationProcess eaaQualificationProcess = validationEAAQualification.getValidationEAAQualificationProcess();
-        assertNotNull(eaaQualificationProcess);
-        assertEquals(Indication.FAILED, eaaQualificationProcess.getConclusion().getIndication());
-        assertEquals(AttestationQualification.NA, eaaQualificationProcess.getEAAQualification());
+        XmlValidationAttestationQualificationProcess attestationQualificationProcess = validationAttestationQualification.getValidationAttestationQualificationProcess();
+        assertNotNull(attestationQualificationProcess);
+        assertEquals(Indication.FAILED, attestationQualificationProcess.getConclusion().getIndication());
+        assertEquals(AttestationQualification.NA, attestationQualificationProcess.getAttestationQualification());
 
-        XmlValidationPIDQualificationProcess pidQualificationProcess = validationEAAQualification.getValidationPIDQualificationProcess();
+        XmlValidationPIDQualificationProcess pidQualificationProcess = validationAttestationQualification.getValidationPIDQualificationProcess();
         assertNotNull(pidQualificationProcess);
         assertEquals(Indication.FAILED, pidQualificationProcess.getConclusion().getIndication());
-        assertEquals(AttestationQualification.UNKNOWN, pidQualificationProcess.getEAAQualification());
+        assertEquals(AttestationQualification.UNKNOWN, pidQualificationProcess.getAttestationQualification());
 
         boolean loteReachedCheckFound = false;
         boolean pidDocumentTypeCheckFound = false;
@@ -912,11 +912,11 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
     @Test
     void noPIDProviderAtTimeTest() throws Exception {
         XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
-                new File("src/test/resources/diag-data/attestation-validation/diag_data_pid.xml"));
+                new File("src/test/resources/diag-data/eaa-validation/diag_data_pid.xml"));
         assertNotNull(diagnosticData);
 
-        XmlSigningCertificate signingCertificate = diagnosticData.getEAAs().get(0)
-                .getEAASignature().get(0).getSignature().getSigningCertificate();
+        XmlSigningCertificate signingCertificate = diagnosticData.getAttestations().get(0)
+                .getAttestationSignature().get(0).getSignature().getSigningCertificate();
         List<XmlTrustedEntity> trustedEntities = signingCertificate.getCertificate().getTrustedEntities();
         trustedEntities.get(0).getTrustedEntityServices().get(0).setStatus("unknown");
 
@@ -935,29 +935,29 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
         SimpleReport simpleReport = reports.getSimpleReport();
         assertNotNull(simpleReport);
 
-        assertEquals(AttestationQualification.UNKNOWN, simpleReport.getEAAQualification(simpleReport.getFirstEAAId()));
-        assertEquals(Collections.singletonList(AttestationQualification.UNKNOWN), simpleReport.getEAAQualifications(simpleReport.getFirstEAAId()));
-        assertTrue(checkMessageValuePresence(simpleReport.getQualificationErrors(simpleReport.getFirstEAAId()),
+        assertEquals(AttestationQualification.UNKNOWN, simpleReport.getAttestationQualification(simpleReport.getFirstAttestationId()));
+        assertEquals(Collections.singletonList(AttestationQualification.UNKNOWN), simpleReport.getAttestationQualifications(simpleReport.getFirstAttestationId()));
+        assertTrue(checkMessageValuePresence(simpleReport.getQualificationErrors(simpleReport.getFirstAttestationId()),
                 i18nProvider.getMessage(MessageTag.EAA_QUAL_CONCLUSIVE_ANS)));
-        assertTrue(checkMessageValuePresence(simpleReport.getQualificationErrors(simpleReport.getFirstEAAId()),
+        assertTrue(checkMessageValuePresence(simpleReport.getQualificationErrors(simpleReport.getFirstAttestationId()),
                 i18nProvider.getMessage(MessageTag.PID_PROVIDER_AT_ISSUANCE_TIME_ANS)));
-        assertTrue(checkMessageValuePresence(simpleReport.getQualificationWarnings(simpleReport.getFirstEAAId()),
+        assertTrue(checkMessageValuePresence(simpleReport.getQualificationWarnings(simpleReport.getFirstAttestationId()),
                 i18nProvider.getMessage(MessageTag.CERT_USAGE_STATUS_KNOWN_ANS)));
-        assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationInfo(simpleReport.getFirstEAAId())));
+        assertTrue(Utils.isCollectionEmpty(simpleReport.getQualificationInfo(simpleReport.getFirstAttestationId())));
 
         DetailedReport detailedReport = reports.getDetailedReport();
-        assertEquals(Collections.singletonList(AttestationQualification.UNKNOWN), detailedReport.getEAAQualifications(simpleReport.getFirstEAAId()));
+        assertEquals(Collections.singletonList(AttestationQualification.UNKNOWN), detailedReport.getAttestationQualifications(simpleReport.getFirstAttestationId()));
 
-        XmlEAA xmlEAA = detailedReport.getXmlEAAById(detailedReport.getFirstEAAId());
-        assertNotNull(xmlEAA);
+        XmlAttestation xmlAttestation = detailedReport.getXmlAttestationById(detailedReport.getFirstAttestationId());
+        assertNotNull(xmlAttestation);
 
-        XmlValidationProcessEAA validationProcessEAA = xmlEAA.getValidationProcessEAA();
-        assertNotNull(validationProcessEAA);
-        assertEquals(Indication.PASSED, validationProcessEAA.getConclusion().getIndication());
+        XmlValidationProcessAttestation validationProcessAttestation = xmlAttestation.getValidationProcessAttestation();
+        assertNotNull(validationProcessAttestation);
+        assertEquals(Indication.PASSED, validationProcessAttestation.getConclusion().getIndication());
 
         boolean fcCheckFound = false;
         boolean sigValidationConclusiveCheckFound = false;
-        for (XmlConstraint xmlConstraint : validationProcessEAA.getConstraint()) {
+        for (XmlConstraint xmlConstraint : validationProcessAttestation.getConstraint()) {
             assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
             if (MessageTag.BSV_IFCRC.getId().equals(xmlConstraint.getName().getKey())) {
                 fcCheckFound = true;
@@ -968,10 +968,10 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
         assertTrue(fcCheckFound);
         assertTrue(sigValidationConclusiveCheckFound);
 
-        XmlBasicBuildingBlocks eaaBBB = detailedReport.getBasicBuildingBlockById(xmlEAA.getId());
-        assertNotNull(eaaBBB);
+        XmlBasicBuildingBlocks attestationBBB = detailedReport.getBasicBuildingBlockById(xmlAttestation.getId());
+        assertNotNull(attestationBBB);
 
-        XmlFC xmlFC = eaaBBB.getFC();
+        XmlFC xmlFC = attestationBBB.getFC();
         assertNotNull(xmlFC);
 
         boolean sigPresentCheckFound = false;
@@ -983,33 +983,33 @@ class PIDValidationProcessExecutorTest extends AbstractTestValidationExecutor {
         }
         assertTrue(sigPresentCheckFound);
 
-        XmlValidationEAAQualification validationEAAQualification = xmlEAA.getValidationEAAQualification();
-        assertNotNull(validationEAAQualification);
-        assertEquals(Indication.FAILED, validationEAAQualification.getConclusion().getIndication());
+        XmlValidationAttestationQualification validationAttestationQualification = xmlAttestation.getValidationAttestationQualification();
+        assertNotNull(validationAttestationQualification);
+        assertEquals(Indication.FAILED, validationAttestationQualification.getConclusion().getIndication());
 
         boolean trustAnchorListCheckFound = false;
-        boolean eaaQualConclusiveCheckFound = false;
-        for (XmlConstraint xmlConstraint : validationEAAQualification.getConstraint()) {
+        boolean attestationQualConclusiveCheckFound = false;
+        for (XmlConstraint xmlConstraint : validationAttestationQualification.getConstraint()) {
             if (MessageTag.EAA_CERT_TRUST_ANCHOR_LIST_REACHED.getId().equals(xmlConstraint.getName().getKey())) {
                 assertEquals(XmlStatus.OK, xmlConstraint.getStatus());
                 trustAnchorListCheckFound = true;
             } else if (MessageTag.EAA_QUAL_CONCLUSIVE.getId().equals(xmlConstraint.getName().getKey())) {
                 assertEquals(XmlStatus.NOT_OK, xmlConstraint.getStatus());
-                eaaQualConclusiveCheckFound = true;
+                attestationQualConclusiveCheckFound = true;
             }
         }
         assertTrue(trustAnchorListCheckFound);
-        assertTrue(eaaQualConclusiveCheckFound);
+        assertTrue(attestationQualConclusiveCheckFound);
 
-        XmlValidationEAAQualificationProcess eaaQualificationProcess = validationEAAQualification.getValidationEAAQualificationProcess();
-        assertNotNull(eaaQualificationProcess);
-        assertEquals(Indication.FAILED, eaaQualificationProcess.getConclusion().getIndication());
-        assertEquals(AttestationQualification.NA, eaaQualificationProcess.getEAAQualification());
+        XmlValidationAttestationQualificationProcess attestationQualificationProcess = validationAttestationQualification.getValidationAttestationQualificationProcess();
+        assertNotNull(attestationQualificationProcess);
+        assertEquals(Indication.FAILED, attestationQualificationProcess.getConclusion().getIndication());
+        assertEquals(AttestationQualification.NA, attestationQualificationProcess.getAttestationQualification());
 
-        XmlValidationPIDQualificationProcess pidQualificationProcess = validationEAAQualification.getValidationPIDQualificationProcess();
+        XmlValidationPIDQualificationProcess pidQualificationProcess = validationAttestationQualification.getValidationPIDQualificationProcess();
         assertNotNull(pidQualificationProcess);
         assertEquals(Indication.FAILED, pidQualificationProcess.getConclusion().getIndication());
-        assertEquals(AttestationQualification.UNKNOWN, pidQualificationProcess.getEAAQualification());
+        assertEquals(AttestationQualification.UNKNOWN, pidQualificationProcess.getAttestationQualification());
 
         boolean loteReachedCheckFound = false;
         boolean pidDocumentTypeCheckFound = false;

@@ -24,7 +24,7 @@ import eu.europa.esig.dss.attestation.common.validation.DefaultAttestationPresen
 import eu.europa.esig.dss.attestation.mdoc.model.MdocDeviceResponse;
 
 /**
- * Mdoc ISO/IEC 18013-5 EAA presentation
+ * Mdoc ISO/IEC 18013-5 attestation presentation
  *
  */
 public class MdocAttestationPresentation extends DefaultAttestationPresentation {

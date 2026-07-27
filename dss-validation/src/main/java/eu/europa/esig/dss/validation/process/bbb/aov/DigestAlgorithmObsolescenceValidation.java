@@ -67,7 +67,7 @@ public abstract class DigestAlgorithmObsolescenceValidation<T> extends Algorithm
                 DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_TIME_STAMP,
                 DigestMatcherType.EVIDENCE_RECORD_ARCHIVE_TIME_STAMP_SEQUENCE,
                 DigestMatcherType.EVIDENCE_RECORD_MASTER_SIGNATURE,
-                DigestMatcherType.EAA_ORPHAN_SELECTIVELY_DISCLOSABLE_CLAIM
+                DigestMatcherType.ORPHAN_SELECTIVELY_DISCLOSABLE_CLAIM
         );
     }
 

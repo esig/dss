@@ -23,11 +23,11 @@ package eu.europa.esig.dss.attestation.sd.jwt.validation;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlEAAPresentationInfo;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationPresentationInfo;
 import eu.europa.esig.dss.attestation.common.validation.AbstractAttestationPresentationTestValidation;
-import eu.europa.esig.dss.enumerations.AttestationFormat;
+import eu.europa.esig.dss.enumerations.AttestationProfile;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
-import eu.europa.esig.dss.enumerations.AttestationPresentationType;
+import eu.europa.esig.dss.enumerations.AttestationDocumentFormat;
 import eu.europa.esig.dss.validation.reports.Reports;
 import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
 import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
@@ -40,22 +40,22 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public abstract class AbstractSDJWTTestValidation extends AbstractAttestationPresentationTestValidation {
 
     @Override
-    protected AttestationFormat getEAAType() {
-        return AttestationFormat.SD_JWT_VC;
+    protected AttestationProfile getAttestationType() {
+        return AttestationProfile.SD_JWT_VC;
     }
 
     @Override
-    protected AttestationPresentationType getEAAPresentationType() {
-        return AttestationPresentationType.SD_JWT;
+    protected AttestationDocumentFormat getAttestationPresentationType() {
+        return AttestationDocumentFormat.SD_JWT;
     }
 
     @Override
-    protected void checkEAAPresentationInfo(DiagnosticData diagnosticData) {
-        super.checkEAAPresentationInfo(diagnosticData);
+    protected void checkAttestationPresentationInfo(DiagnosticData diagnosticData) {
+        super.checkAttestationPresentationInfo(diagnosticData);
 
-        XmlEAAPresentationInfo attestationPresentationInfo = diagnosticData.getEAAPresentationInfo();
-        assertEquals(AttestationPresentationType.SD_JWT, attestationPresentationInfo.getEAAPresentationType());
-        assertEquals(AttestationPresentationType.SD_JWT, diagnosticData.getEAAPresentationType());
+        XmlAttestationPresentationInfo attestationPresentationInfo = diagnosticData.getAttestationPresentationInfo();
+        assertEquals(AttestationDocumentFormat.SD_JWT, attestationPresentationInfo.getFormat());
+        assertEquals(AttestationDocumentFormat.SD_JWT, diagnosticData.getAttestationPresentationFormat());
     }
 
     @Override
@@ -72,7 +72,7 @@ public abstract class AbstractSDJWTTestValidation extends AbstractAttestationPre
         for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
             int kbDMCounter = 0;
             for (XmlDigestMatcher xmlDigestMatcher : signatureWrapper.getDigestMatchers()) {
-                if (DigestMatcherType.EAA_KEY_BINDING == xmlDigestMatcher.getType()) {
+                if (DigestMatcherType.KEY_BINDING_SIGNATURE == xmlDigestMatcher.getType()) {
                     ++kbDMCounter;
                 }
             }

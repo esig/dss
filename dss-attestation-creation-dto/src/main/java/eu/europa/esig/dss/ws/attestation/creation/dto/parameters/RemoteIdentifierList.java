@@ -74,18 +74,18 @@ public class RemoteIdentifierList implements Serializable {
     }
 
     /**
-     * Returns the EAA identifier
+     * Returns the attestation identifier
      *
-     * @return the EAA identifier
+     * @return the attestation identifier
      */
     public byte[] getIdentifier() {
         return identifier;
     }
 
     /**
-     * Sets the EAA identifier
+     * Sets the attestation identifier
      *
-     * @param identifier the EAA identifier to set
+     * @param identifier the attestation identifier to set
      */
     public void setIdentifier(byte[] identifier) {
         this.identifier = identifier;
@@ -129,7 +129,7 @@ public class RemoteIdentifierList implements Serializable {
 
     @Override
     public String toString() {
-        return "RemoteEAAIdentifierList [" +
+        return "RemoteAttestationIdentifierList [" +
                 "identifier=" + Arrays.toString(identifier) +
                 ", uri='" + uri + '\'' +
                 ", certificate=" + certificate +

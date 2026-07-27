@@ -12,7 +12,7 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.simplereport.SimpleReport;
-import eu.europa.esig.dss.simplereport.jaxb.XmlEAA;
+import eu.europa.esig.dss.simplereport.jaxb.XmlAttestation;
 import eu.europa.esig.validationreport.jaxb.SignersDocumentType;
 
 class SDJWTJsonSerializationAttestationBrokenSignatureTest extends AbstractSDJWTTestValidation {
@@ -36,11 +36,11 @@ class SDJWTJsonSerializationAttestationBrokenSignatureTest extends AbstractSDJWT
     protected void verifySimpleReport(final SimpleReport simpleReport) {
         super.verifySimpleReport(simpleReport);
 
-        XmlEAA eaa = simpleReport.getEAAById(simpleReport.getFirstEAAId());
-        assertEquals(Indication.FAILED, eaa.getIndication());
-        assertEquals(SubIndication.HASH_FAILURE, eaa.getSubIndication());
+        XmlAttestation attestation = simpleReport.getAttestationById(simpleReport.getFirstAttestationId());
+        assertEquals(Indication.FAILED, attestation.getIndication());
+        assertEquals(SubIndication.HASH_FAILURE, attestation.getSubIndication());
 
-        assertTrue(eaa.getEAASignature().get(0).getAdESValidationDetails().getError().stream().anyMatch(m -> MessageTag.BBB_CV_IRDOI_ANS.getId().equals(m.getKey())));
+        assertTrue(attestation.getAttestationSignature().get(0).getAdESValidationDetails().getError().stream().anyMatch(m -> MessageTag.BBB_CV_IRDOI_ANS.getId().equals(m.getKey())));
     }
 
     @Override

@@ -57,8 +57,8 @@ public enum SigningOperation {
 	ADD_EVIDENCE_RECORD,
 
 	/**
-	 * The EAA presentation
+	 * The attestation presentation
 	 */
-	EAA_PRESENTATION
+	ATTESTATION
 
 }

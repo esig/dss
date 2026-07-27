@@ -31,7 +31,7 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 import java.util.Date;
 
 /**
- * Performs algorithm obsolescence validation for cryptographic algorithms used within an EAA
+ * Performs algorithm obsolescence validation for cryptographic algorithms used within an attestation
  *
  */
 public class AttestationAlgorithmObsolescenceValidation extends DigestAlgorithmObsolescenceValidation<AttestationWrapper> {
@@ -46,7 +46,7 @@ public class AttestationAlgorithmObsolescenceValidation extends DigestAlgorithmO
      */
     public AttestationAlgorithmObsolescenceValidation(I18nProvider i18nProvider, AttestationWrapper token,
                                                       Date validationDate, ValidationPolicy validationPolicy) {
-        super(i18nProvider, token, Context.EAA, validationDate, validationPolicy);
+        super(i18nProvider, token, Context.ATTESTATION, validationDate, validationPolicy);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class AttestationAlgorithmObsolescenceValidation extends DigestAlgorithmO
 
     @Override
     protected CryptographicSuite getCryptographicSuite() {
-        return validationPolicy.getEAACryptographicConstraint();
+        return validationPolicy.getAttestationCryptographicConstraint();
     }
 
 }

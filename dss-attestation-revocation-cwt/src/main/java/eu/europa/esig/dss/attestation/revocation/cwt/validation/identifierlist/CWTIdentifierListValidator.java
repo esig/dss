@@ -161,7 +161,7 @@ public class CWTIdentifierListValidator implements IdentifierListValidator {
                     .setBinary(new AttestationRevocationTokenBinary(identifierListDocument))
                     .setSignature(signature)
                     .setPayload(identifierListPayload)
-                    .setStatus(getEAAStatus(identifierListPayload, identifier))
+                    .setStatus(getAttestationStatus(identifierListPayload, identifier))
                     .build();
         }
         return null;
@@ -180,13 +180,13 @@ public class CWTIdentifierListValidator implements IdentifierListValidator {
     }
 
     /**
-     * Gets the EAA Status for the given {@code attestation} based on the information retrieved from {@code identifierListPayload}
+     * Gets the attestation Status for the given {@code attestation} based on the information retrieved from {@code identifierListPayload}
      *
      * @param identifierListPayload {@link IdentifierListPayload} of the retrieved token
-     * @param identifier byte array of the identifier of the EAA
+     * @param identifier byte array of the identifier of the attestation
      * @return {@link AttestationStatus}
      */
-    protected AttestationStatus getEAAStatus(IdentifierListPayload identifierListPayload, byte[] identifier) {
+    protected AttestationStatus getAttestationStatus(IdentifierListPayload identifierListPayload, byte[] identifier) {
         List<byte[]> identifierListIdentifiers = identifierListPayload.getIdentifierListIdentifiers();
         if (Utils.isCollectionNotEmpty(identifierListIdentifiers)
             && identifierListIdentifiers.stream().anyMatch(i -> Arrays.equals(identifier, i))) {

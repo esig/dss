@@ -26,11 +26,11 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import java.util.Date;
 
 /**
- * Implementation of {@link KeyBindingParameters} for SD-JWT EAA
+ * Implementation of {@link KeyBindingParameters} for SD-JWT-KB
  */
 public class SDJWTKeyBindingParameters implements KeyBindingParameters {
 
-    /** DigestAlgorithm used to compute the hash for the key binding signature, it should the same value as the digest algorithm of the EAA */
+    /** DigestAlgorithm used to compute the hash for the key binding signature, it should the same value as the digest algorithm of the attestation */
     private DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA256;
 
     /** Issuance time of the key binding signature */

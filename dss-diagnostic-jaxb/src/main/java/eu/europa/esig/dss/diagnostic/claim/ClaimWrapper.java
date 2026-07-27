@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 
 /**
  * This class represents a user-friendly wrapper of a generic {@code XmlClaim} object,
- * containing an information about a single claim extracted from an EAA Payload.
+ * containing an information about a single claim extracted from an attestation Payload.
  * <p>
  * The wrapper may return only one of the following values:
  * - Text; or

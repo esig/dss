@@ -93,21 +93,21 @@ class SDJWTCompactWithShuffledHashesTest extends AbstractSDJWTTestIssuance {
     protected void checkClaims(final DiagnosticData diagnosticData) {
         super.checkClaims(diagnosticData);
 
-        AttestationWrapper eaa = diagnosticData.getEAAs().get(0);
-        assertEquals("https://issuer.example.com", eaa.getIssuer());
-        assertEquals(expiration.toInstant().getEpochSecond(), eaa.getExpiration().toInstant().getEpochSecond());
-        assertEquals(issuanceDate.toInstant().getEpochSecond(), eaa.getIssuedAt().toInstant().getEpochSecond());
+        AttestationWrapper attestation = diagnosticData.getAttestations().get(0);
+        assertEquals("https://issuer.example.com", attestation.getIssuer());
+        assertEquals(expiration.toInstant().getEpochSecond(), attestation.getExpiration().toInstant().getEpochSecond());
+        assertEquals(issuanceDate.toInstant().getEpochSecond(), attestation.getIssuedAt().toInstant().getEpochSecond());
 
-        assertEquals("John", eaa.getGivenName());
-        assertEquals("Doe", eaa.getFamilyName());
-        assertEquals("john.doe@example.com", eaa.getEmail());
+        assertEquals("John", attestation.getGivenName());
+        assertEquals("Doe", attestation.getFamilyName());
+        assertEquals("john.doe@example.com", attestation.getEmail());
 
-        List<ClaimWrapper> sdClaims = eaa.getSelectivelyDisclosableClaims();
+        List<ClaimWrapper> sdClaims = attestation.getSelectivelyDisclosableClaims();
         assertNotNull(sdClaims);
         assertEquals(3, sdClaims.size());
         assertTrue(sdClaims.stream().allMatch(ClaimWrapper::isSelectivelyDisclosable));
 
-        assertEquals(3, eaa.getDigestMatchers().size());
+        assertEquals(3, attestation.getDigestMatchers().size());
     }
 
     @Override

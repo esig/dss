@@ -21,13 +21,13 @@
 package eu.europa.esig.dss.model.attestation;
 
 import eu.europa.esig.dss.model.ReferenceValidation;
-import eu.europa.esig.dss.model.attestation.claim.Claim;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaim;
 
 import java.util.Objects;
 
 /**
  * This class represents a validation result of a selectable disclosure provided
- * with presentation of Electronic Attestation of Attributes
+ * with presentation of attestation
  *
  */
 public class DisclosureValidation extends ReferenceValidation {
@@ -81,9 +81,9 @@ public class DisclosureValidation extends ReferenceValidation {
     /**
      * Gets the original provided disclosure claim value
      *
-     * @return {@link Claim}
+     * @return {@link VerifiedClaim}
      */
-    public Claim getValue() {
+    public VerifiedClaim getValue() {
         return disclosure != null ? disclosure.getClaimValue() : null;
     }
 

@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
 import java.io.InputStream;
 
 /**
- * Remote service to perform validation of an Electronic Attestation of Attributes
+ * Remote service to perform validation of an attestations
  *
  */
 public class RemoteAttestationValidationService {
@@ -48,7 +48,7 @@ public class RemoteAttestationValidationService {
     private static final Logger LOG = LoggerFactory.getLogger(RemoteAttestationValidationService.class);
 
     /** The path for default Attestation Presentation policy */
-    private static final String EAA_PRESENTATION_POLICY_LOCATION = "/policy/attestation-constraint.xml";
+    private static final String POLICY_LOCATION = "/policy/eaa-constraint.xml";
 
     /** The certificate verifier to use */
     private CertificateVerifier verifier;
@@ -56,7 +56,7 @@ public class RemoteAttestationValidationService {
     /** The validation policy to be used by default */
     private ValidationPolicy defaultValidationPolicy;
 
-    /** EAA revocation source */
+    /** attestation revocation source */
     private AttestationRevocationSource attestationRevocationSource;
 
     /**
@@ -110,7 +110,7 @@ public class RemoteAttestationValidationService {
             if (validationPolicy != null) {
                 validationPolicyLoader = ValidationPolicyLoader.fromValidationPolicy(validationPolicy);
             } else {
-                validationPolicyLoader = ValidationPolicyLoader.fromValidationPolicy(EAA_PRESENTATION_POLICY_LOCATION);
+                validationPolicyLoader = ValidationPolicyLoader.fromValidationPolicy(POLICY_LOCATION);
             }
         } catch (Exception e) {
             throw new DSSRemoteServiceException(String.format("Unable to instantiate validation policy: %s", e.getMessage()), e);
@@ -135,11 +135,11 @@ public class RemoteAttestationValidationService {
     }
 
     /**
-     * Sets a source to request and verify EAA revocation
+     * Sets a source to request and verify attestation revocation
      *
      * @param attestationRevocationSource {@link AttestationRevocationSource}
      */
-    public void setEAARevocationSource(AttestationRevocationSource attestationRevocationSource) {
+    public void setAttestationRevocationSource(AttestationRevocationSource attestationRevocationSource) {
         this.attestationRevocationSource = attestationRevocationSource;
     }
 
@@ -149,8 +149,8 @@ public class RemoteAttestationValidationService {
      * @param dataToValidate {@link AttestationToValidateDTO} the request
      * @return {@link WSReportsDTO} response
      */
-    public WSReportsDTO validateEAA(AttestationToValidateDTO dataToValidate) {
-        LOG.info("ValidateEAA in process...");
+    public WSReportsDTO validateAttestation(AttestationToValidateDTO dataToValidate) {
+        LOG.info("ValidateAttestation in process...");
         AttestationDocumentValidator validator = initValidator(dataToValidate);
 
         Reports reports;
@@ -161,7 +161,7 @@ public class RemoteAttestationValidationService {
         } else if (defaultValidationPolicy != null) {
             validationPolicyLoader = ValidationPolicyLoader.fromValidationPolicy(defaultValidationPolicy);
         } else {
-            validationPolicyLoader = ValidationPolicyLoader.fromValidationPolicy(EAA_PRESENTATION_POLICY_LOCATION);
+            validationPolicyLoader = ValidationPolicyLoader.fromValidationPolicy(POLICY_LOCATION);
         }
         RemoteDocument cryptographicSuite = dataToValidate.getCryptographicSuite();
         if (cryptographicSuite != null) {
@@ -173,26 +173,26 @@ public class RemoteAttestationValidationService {
 
         WSReportsDTO reportsDTO = new WSReportsDTO(reports.getDiagnosticDataJaxb(), reports.getSimpleReportJaxb(),
                 reports.getDetailedReportJaxb(), reports.getEtsiValidationReportJaxb());
-        LOG.info("ValidateEAA is finished");
+        LOG.info("ValidateAttestation is finished");
         return reportsDTO;
     }
 
     /**
-     * Instantiates a {@code EAAPresentationValidator} based on the request data DTO
+     * Instantiates a {@code AttestationPresentationValidator} based on the request data DTO
      *
      * @param dataToValidate {@link AttestationToValidateDTO} representing the request data
      * @return {@link AttestationDocumentValidator}
      */
     protected AttestationDocumentValidator initValidator(AttestationToValidateDTO dataToValidate) {
-        DSSDocument attestationPresentation = RemoteDocumentConverter.toDSSDocument(dataToValidate.getEaaPresentation());
+        DSSDocument attestationPresentation = RemoteDocumentConverter.toDSSDocument(dataToValidate.getAttestationPresentation());
         AttestationDocumentValidator validator = DefaultAttestationDocumentValidator.fromDocument(attestationPresentation);
         if (attestationRevocationSource != null) {
-            validator.setEAARevocationSource(attestationRevocationSource);
+            validator.setAttestationRevocationSource(attestationRevocationSource);
         }
-        if (dataToValidate.getEaaValidationParameters() != null) {
+        if (dataToValidate.getAttestationValidationParameters() != null) {
             AttestationValidationParameters attestationValidationParameters =
-                    new RemoteAttestationValidationParametersBuilder(dataToValidate.getEaaValidationParameters()).build();
-            validator.setEAAValidationParameters(attestationValidationParameters);
+                    new RemoteAttestationValidationParametersBuilder(dataToValidate.getAttestationValidationParameters()).build();
+            validator.setAttestationValidationParameters(attestationValidationParameters);
         }
         if (dataToValidate.getValidationTime() != null) {
             validator.setValidationTime(dataToValidate.getValidationTime());

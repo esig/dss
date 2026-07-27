@@ -27,9 +27,9 @@ class MdocIssuerSignedDiffNamespaceValidationTest extends AbstractMdocAttestatio
     }
 
     @Override
-    protected void checkEAADigestMatchers(DiagnosticData diagnosticData) {
-        AttestationWrapper eaa = diagnosticData.getEAAs().get(0);
-        List<XmlDigestMatcher> digestMatchers = eaa.getDigestMatchers();
+    protected void checkAttestationDigestMatchers(DiagnosticData diagnosticData) {
+        AttestationWrapper attestation = diagnosticData.getAttestations().get(0);
+        List<XmlDigestMatcher> digestMatchers = attestation.getDigestMatchers();
         assertEquals(7, digestMatchers.size());
 
         boolean orphanSDFound = false;
@@ -40,7 +40,7 @@ class MdocIssuerSignedDiffNamespaceValidationTest extends AbstractMdocAttestatio
         boolean issuingCountrySDFound = false;
         boolean issuingAuthoritySDFound = false;
         for (XmlDigestMatcher xmlDigestMatcher : digestMatchers) {
-            if (DigestMatcherType.EAA_ORPHAN_SELECTIVELY_DISCLOSABLE_CLAIM == xmlDigestMatcher.getType()) {
+            if (DigestMatcherType.ORPHAN_SELECTIVELY_DISCLOSABLE_CLAIM == xmlDigestMatcher.getType()) {
                 assertEquals(1, xmlDigestMatcher.getDisclosableClaim().getId().intValue());
                 assertEquals("org.etsi.01947201.010101", xmlDigestMatcher.getDisclosableClaim().getNamespace());
                 assertFalse(xmlDigestMatcher.isDataFound());

@@ -20,27 +20,22 @@
  */
 package eu.europa.esig.dss.cookbook.example.sign;
 
-import java.util.Date;
-import java.util.List;
-
 import eu.europa.esig.dss.attestation.common.creation.TokenStatusList;
+import eu.europa.esig.dss.attestation.mdoc.MdocConstants;
+import eu.europa.esig.dss.attestation.mdoc.creation.MdocKeyBindingParameters;
+import eu.europa.esig.dss.attestation.mdoc.creation.MdocPayloadParameters;
+import eu.europa.esig.dss.attestation.mdoc.creation.MdocSelectiveDisclosure;
+import eu.europa.esig.dss.attestation.mdoc.creation.MdocService;
+import eu.europa.esig.dss.attestation.mdoc.creation.SessionTranscriptBuilder;
 import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTClaim;
 import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTClaimArray;
 import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTClaimObject;
-import org.junit.jupiter.api.Test;
-
+import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTKeyBindingParameters;
+import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTPayloadParameters;
+import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTSelectiveDisclosure;
+import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTService;
 import eu.europa.esig.dss.cbades.signature.CBAdESSignatureParameters;
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
-import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTSelectiveDisclosure;
-import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTPayloadParameters;
-import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTService;
-import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTKeyBindingParameters;
-import eu.europa.esig.dss.attestation.mdoc.MdocConstants;
-import eu.europa.esig.dss.attestation.mdoc.creation.MdocSelectiveDisclosure;
-import eu.europa.esig.dss.attestation.mdoc.creation.MdocPayloadParameters;
-import eu.europa.esig.dss.attestation.mdoc.creation.MdocService;
-import eu.europa.esig.dss.attestation.mdoc.creation.MdocKeyBindingParameters;
-import eu.europa.esig.dss.attestation.mdoc.creation.SessionTranscriptBuilder;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EllipticCurve;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
@@ -53,14 +48,18 @@ import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.test.pki.CertEntitySignatureTokenConnection;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
+import org.junit.jupiter.api.Test;
+
+import java.util.Date;
+import java.util.List;
 
 /**
- * How to create an EAA
+ * How to create an attestation
  */
 class AttestationCreationTest extends CookbookTools {
 
     @Test
-    void createSDJWTEAA() {
+    void createSDJWT() {
         try (SignatureTokenConnection signingToken = getPkcs12Token()) {
             DSSPrivateKeyEntry privateKey = signingToken.getKeys().get(0);
 
@@ -68,26 +67,26 @@ class AttestationCreationTest extends CookbookTools {
             CertificateToken deviceCertificate = devicePrivateKey.getCertificate();
 
             // tag::sdjwt-payload-parameters[]
-            // import eu.europa.esig.dss.attestation.jwt.creation.SDJWTEAAClaim;
-            // import eu.europa.esig.dss.attestation.jwt.creation.SDJWTEAAClaimArray;
-            // import eu.europa.esig.dss.attestation.jwt.creation.SDJWTEAAClaimObject;
-            // import eu.europa.esig.dss.attestation.jwt.creation.SDJWTEAADisclosure;
-            // import eu.europa.esig.dss.attestation.jwt.creation.SDJWTEAAPayloadParameters;
+            // import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTClaim;
+            // import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTClaimArray;
+            // import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTClaimObject;
+            // import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTDisclosure;
+            // import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTPayloadParameters;
 
             SDJWTPayloadParameters payloadParameters = new SDJWTPayloadParameters();
 
             // Configuration of technical claims
             payloadParameters.setIssuer("https://issuer.example.com"); // "iss" claim
-            payloadParameters.setSubject("subject"); // "sub" claim
-            payloadParameters.setIssuanceDate(new Date()); // "iat" claim
 
             // Configuration of selectively disclosable known claims
             payloadParameters.selectivelyDisclosable().setEmail("john.doe@example.com");
             payloadParameters.selectivelyDisclosable().setPhoneNumber("+352XXXXXXX");
 
             // Configuration of non selectively disclosable known claims
-            payloadParameters.nonSelectivelyDisclosable().setGivenName("John");
-            payloadParameters.nonSelectivelyDisclosable().setFamilyName("Doe");
+            payloadParameters.nonSelectivelyDisclosable().setSubject("subject"); // "sub" claim
+            payloadParameters.nonSelectivelyDisclosable().setIssuanceDate(new Date()); // "iat" claim
+            payloadParameters.nonSelectivelyDisclosable().setGivenName("John"); // "given_name"
+            payloadParameters.nonSelectivelyDisclosable().setFamilyName("Doe"); // "family_name"
 
             // Custom claim
             payloadParameters.selectivelyDisclosable().addClaim(SDJWTClaim.create("company", "CompanyName"));
@@ -109,8 +108,8 @@ class AttestationCreationTest extends CookbookTools {
             payloadParameters.nonSelectivelyDisclosable().addClaim(father);
             // end::sdjwt-payload-parameters[]
 
-            // tag::sdjwt-signed-eaa[]
-            // import eu.europa.esig.dss.attestation.jwt.creation.SDJWTEAAService;
+            // tag::sdjwt-signed-attestation[]
+            // import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTService;
             // import eu.europa.esig.dss.jades.JAdESSignatureParameters;
             // import eu.europa.esig.dss.model.DSSDocument;
             // import eu.europa.esig.dss.model.SignatureValue;
@@ -123,25 +122,25 @@ class AttestationCreationTest extends CookbookTools {
             signatureParameters.setCertificateChain(privateKey.getCertificateChain());
             signatureParameters.setJwsSerializationType(JWSSerializationType.COMPACT_SERIALIZATION);
 
-            // Set up the EAA service
+            // Set up the attestation service
             CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
             SDJWTService service = new SDJWTService(commonCertificateVerifier);
 
-            // Sign the EAA payload
+            // Sign the attestation payload
             ToBeSigned dataToSign = service.getDataToBeSigned(payloadParameters, signatureParameters);
             SignatureValue signatureValue = signingToken.sign(dataToSign, signatureParameters.getDigestAlgorithm(), privateKey);
-            DSSDocument signedEAA = service.signEAA(payloadParameters, signatureParameters, signatureValue);
-            // end::sdjwt-signed-eaa[]
+            DSSDocument signedAttestation = service.signAttestation(payloadParameters, signatureParameters, signatureValue);
+            // end::sdjwt-signed-attestation[]
 
             // tag::sdjwt-get-disclosures[]
-            // import eu.europa.esig.dss.attestation.jwt.creation.SDJWTEAADisclosure;
+            // import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTSelectiveDisclosure;
 
             // Retrieve disclosures for the selectively disclosable claims
             List<SDJWTSelectiveDisclosure> disclosures = service.getDisclosures(payloadParameters);
             // end::sdjwt-get-disclosures[]
 
-            // tag::sdjwt-key-biding[]
-            // import eu.europa.esig.dss.attestation.jwt.creation.SDJWTKeyBindingParameters;
+            // tag::sdjwt-key-binding[]
+            // import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTKeyBindingParameters;
             // import eu.europa.esig.dss.jades.JAdESSignatureParameters;
             // import eu.europa.esig.dss.model.DSSDocument;
             // import eu.europa.esig.dss.model.SignatureValue;
@@ -164,26 +163,26 @@ class AttestationCreationTest extends CookbookTools {
             kbSignatureParameters.setIncludeCertificateChain(false);
 
             // Sign the key binding JWT
-            ToBeSigned kbDataToSign = service.getDataToSignForKeyBindingSignature(signedEAA, disclosures, keyBindingParameters, kbSignatureParameters);
+            ToBeSigned kbDataToSign = service.getDataToSignForKeyBindingSignature(signedAttestation, disclosures, keyBindingParameters, kbSignatureParameters);
             SignatureValue kbSignatureValue = signingToken.sign(kbDataToSign, kbSignatureParameters.getDigestAlgorithm(), devicePrivateKey);
-            DSSDocument keyBindingJWT = service.createKeyBindingSignature(signedEAA, disclosures, keyBindingParameters, kbSignatureParameters, kbSignatureValue);
-            // end::sdjwt-key-biding[]
+            DSSDocument keyBindingJWT = service.createKeyBindingSignature(signedAttestation, disclosures, keyBindingParameters, kbSignatureParameters, kbSignatureValue);
+            // end::sdjwt-key-binding[]
 
             // tag::sdjwt-issuance[]
             // Issue a presentation with disclosures only
-            DSSDocument presentationWithDisclosures = service.issuePresentation(signedEAA, disclosures);
+            DSSDocument presentationWithDisclosures = service.issuePresentation(signedAttestation, disclosures);
 
             // Issue a presentation with a key binding signature only
-            DSSDocument presentationWithKB = service.issuePresentation(signedEAA, keyBindingJWT);
+            DSSDocument presentationWithKB = service.issuePresentation(signedAttestation, keyBindingJWT);
 
             // Issue a presentation with both disclosures and a key binding signature
-            DSSDocument presentationWithKBAndDisclosures = service.issuePresentation(signedEAA, disclosures, keyBindingJWT);
+            DSSDocument presentationWithKBAndDisclosures = service.issuePresentation(signedAttestation, disclosures, keyBindingJWT);
             // end::sdjwt-issuance[]
         }
     }
 
     @Test
-    void createMdocEAA() {
+    void createMdoc() {
         // For mdoc, an ECDSA or EdDSA signing key is required
         try (SignatureTokenConnection signingToken = new CertEntitySignatureTokenConnection(getCertEntity(ECDSA_USER))) {
             DSSPrivateKeyEntry privateKey = signingToken.getKeys().get(0);
@@ -194,7 +193,7 @@ class AttestationCreationTest extends CookbookTools {
 
             // tag::mdoc-payload-parameters[]
             // import eu.europa.esig.dss.attestation.mdoc.MdocConstants;
-            // import eu.europa.esig.dss.attestation.mdoc.creation.MdocEAAPayloadParameters;
+            // import eu.europa.esig.dss.attestation.mdoc.creation.MdocPayloadParameters;
 
             MdocPayloadParameters payloadParameters = new MdocPayloadParameters();
 
@@ -227,9 +226,9 @@ class AttestationCreationTest extends CookbookTools {
             payloadParameters.setStatusList((TokenStatusList) null);
             payloadParameters.setIdentifierList(null);
 
-            // tag::mdoc-signed-eaa[]
+            // tag::mdoc-signed-attestation[]
             // import eu.europa.esig.dss.cbades.signature.CBAdESSignatureParameters;
-            // import eu.europa.esig.dss.attestation.mdoc.creation.MdocEAAService;
+            // import eu.europa.esig.dss.attestation.mdoc.creation.MdocService;
             // import eu.europa.esig.dss.enumerations.DigestAlgorithm;
             // import eu.europa.esig.dss.model.DSSDocument;
             // import eu.europa.esig.dss.model.SignatureValue;
@@ -242,18 +241,18 @@ class AttestationCreationTest extends CookbookTools {
             signatureParameters.setSigningCertificate(privateKey.getCertificate());
             signatureParameters.setCertificateChain(privateKey.getCertificateChain());
 
-            // Set up the EAA service
+            // Set up the attestation service
             CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
             MdocService service = new MdocService(commonCertificateVerifier);
 
             // Sign the MSO (MobileSecurityObject) payload
             ToBeSigned dataToSign = service.getDataToBeSigned(payloadParameters, signatureParameters);
             SignatureValue signatureValue = signingToken.sign(dataToSign, signatureParameters.getDigestAlgorithm(), privateKey);
-            DSSDocument signedEAA = service.signEAA(payloadParameters, signatureParameters, signatureValue);
-            // end::mdoc-signed-eaa[]
+            DSSDocument signedAttestation = service.signAttestation(payloadParameters, signatureParameters, signatureValue);
+            // end::mdoc-signed-attestation[]
 
             // tag::mdoc-get-disclosures[]
-            // import eu.europa.esig.dss.attestation.mdoc.creation.MdocEAADisclosure;
+            // import eu.europa.esig.dss.attestation.mdoc.creation.MdocDisclosure;
 
             // Retrieve disclosures (one IssuerSignedItem per selectively disclosable element)
             List<MdocSelectiveDisclosure> disclosures = service.getDisclosures(payloadParameters);
@@ -282,17 +281,17 @@ class AttestationCreationTest extends CookbookTools {
             kbSignatureParameters.setSigningCertificate(deviceCertificate);
 
             // Sign the DeviceAuthentication structure
-            ToBeSigned kbDataToSign = service.getDataToSignForKeyBindingSignature(signedEAA, disclosures, keyBindingParameters, kbSignatureParameters);
+            ToBeSigned kbDataToSign = service.getDataToSignForKeyBindingSignature(signedAttestation, disclosures, keyBindingParameters, kbSignatureParameters);
             SignatureValue kbSignatureValue = signingToken.sign(kbDataToSign, kbSignatureParameters.getDigestAlgorithm(), devicePrivateKey);
-            DSSDocument deviceAuthSignature = service.createKeyBindingSignature(signedEAA, disclosures, keyBindingParameters, kbSignatureParameters, kbSignatureValue);
+            DSSDocument deviceAuthSignature = service.createKeyBindingSignature(signedAttestation, disclosures, keyBindingParameters, kbSignatureParameters, kbSignatureValue);
             // end::mdoc-key-binding[]
 
             // tag::mdoc-issuance[]
             // Issue an IssuerSigned document (CBOR, no device authentication)
-            DSSDocument issuerSigned = service.createIssuerSigned(signedEAA, disclosures);
+            DSSDocument issuerSigned = service.createIssuerSigned(signedAttestation, disclosures);
 
             // Issue a full DeviceResponse (CBOR, with device authentication)
-            DSSDocument deviceResponse = service.issuePresentation(signedEAA, disclosures, deviceAuthSignature);
+            DSSDocument deviceResponse = service.issuePresentation(signedAttestation, disclosures, deviceAuthSignature);
             // end::mdoc-issuance[]
         }
     }

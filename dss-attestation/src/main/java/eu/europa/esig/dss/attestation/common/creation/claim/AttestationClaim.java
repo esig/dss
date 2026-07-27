@@ -28,14 +28,14 @@ import java.io.Serializable;
 public interface AttestationClaim extends Serializable {
 
     /**
-     * Gets the name of the EAA claim
+     * Gets the name of the attestation claim
      *
      * @return {@link String}
      */
     String getName();
 
     /**
-     * Gets the value of the EAA claim
+     * Gets the value of the attestation claim
      *
      * @return {@link Object}
      */

@@ -34,7 +34,7 @@ public class SDJWTSerializationObject implements Serializable {
 
     private static final long serialVersionUID = 2321956568937413822L;
 
-    /** The EAA signature */
+    /** The attestation signature */
     private JWSJsonSerializationObject signature;
 
     /** List of disclosures attached to the presentation */
@@ -51,7 +51,7 @@ public class SDJWTSerializationObject implements Serializable {
     }
 
     /**
-     * Gets the JWS signature used to create the EAA
+     * Gets the JWS signature used to create the attestation
      *
      * @return {@link JWSJsonSerializationObject}
      */
@@ -60,7 +60,7 @@ public class SDJWTSerializationObject implements Serializable {
     }
 
     /**
-     * Sets the JWS signature used to create the EAA
+     * Sets the JWS signature used to create the attestation
      *
      * @param signature {@link JWSJsonSerializationObject}
      */
@@ -69,7 +69,7 @@ public class SDJWTSerializationObject implements Serializable {
     }
 
     /**
-     * Gets a list of disclosures supplied with the presentation of Electronic Attestation of Attributes
+     * Gets a list of disclosures supplied with the presentation of attestation
      *
      * @return a list of {@link SelectivelyDisclosableClaim}s
      */
@@ -78,7 +78,7 @@ public class SDJWTSerializationObject implements Serializable {
     }
 
     /**
-     * Sets a list of disclosures supplied with the presentation of Electronic Attestation of Attributes
+     * Sets a list of disclosures supplied with the presentation of attestation
      *
      * @param disclosures a list of {@link SelectivelyDisclosableClaim}s
      */
@@ -87,7 +87,7 @@ public class SDJWTSerializationObject implements Serializable {
     }
 
     /**
-     * Gets a key binding signature supplied with the presentation of Electronic Attestation of Attributes
+     * Gets a key binding signature supplied with the presentation of attestation
      *
      * @return {@link JWSJsonSerializationObject}
      */
@@ -96,7 +96,7 @@ public class SDJWTSerializationObject implements Serializable {
     }
 
     /**
-     * Sets a key binding signature supplied with the presentation of Electronic Attestation of Attributes
+     * Sets a key binding signature supplied with the presentation of attestation
      *
      * @param keyBindingSignature {@link JWSJsonSerializationObject}
      */

@@ -46,10 +46,10 @@ public enum Context {
 	/** The processing token is a certificate */
 	CERTIFICATE,
 
-	/** The processing token is an electronic attestation of attributes */
-	EAA,
+	/** The processing token is an attestation (EAA, PID, etc.) */
+	ATTESTATION,
 
-	/** The processing token is an EAA revocation token */
-	EAA_REVOCATION
+	/** The processing token is an attestation's revocation token */
+	ATTESTATION_REVOCATION
 
 }

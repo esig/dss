@@ -27,7 +27,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Represents a JSON array to be incorporated as an SD-JWT VC claim
+ * Represents a JSON array to be incorporated as an SD-JWT claim
  *
  */
 public class SDJWTClaimArray extends SDJWTClaim implements AttestationClaimArray<SDJWTClaim> {
@@ -141,6 +141,7 @@ public class SDJWTClaimArray extends SDJWTClaim implements AttestationClaimArray
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<SDJWTClaim> getElements() {
         return (List<SDJWTClaim>) getValue();
     }

@@ -37,29 +37,29 @@ import eu.europa.esig.dss.validation.process.ChainItem;
  */
 public class DisclosurePresentCheck extends ChainItem<XmlFC> {
 
-    /** EAA to check */
-    private final AttestationWrapper eaa;
+    /** attestation to check */
+    private final AttestationWrapper attestation;
 
     /**
      * Default constructor
      *
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlFC}
-     * @param eaa {@link AttestationWrapper}
+     * @param attestation {@link AttestationWrapper}
      * @param constraint {@link LevelRule}
      */
     public DisclosurePresentCheck(I18nProvider i18nProvider, XmlFC result,
-                                  AttestationWrapper eaa, LevelRule constraint) {
+                                  AttestationWrapper attestation, LevelRule constraint) {
         super(i18nProvider, result, constraint);
-        this.eaa = eaa;
+        this.attestation = attestation;
     }
 
     @Override
     protected boolean process() {
-        if (Utils.isCollectionEmpty(eaa.getDigestMatchers())) {
+        if (Utils.isCollectionEmpty(attestation.getDigestMatchers())) {
             return false;
         }
-        return eaa.getDigestMatchers().stream().anyMatch(d -> DigestMatcherType.EAA_DISCLOSURE == d.getType());
+        return attestation.getDigestMatchers().stream().anyMatch(d -> DigestMatcherType.SELECTIVE_DISCLOSURE == d.getType());
     }
 
     @Override

@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.ws.attestation.creation.dto.parameters;
 
-import eu.europa.esig.dss.enumerations.AttestationFormat;
+import eu.europa.esig.dss.enumerations.AttestationProfile;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 
@@ -37,12 +37,12 @@ public class RemoteKeyBindingParameters implements Serializable {
 
     private static final long serialVersionUID = 7115773287145650462L;
 
-    /** (Required) Type of the EAA to be created */
-    private AttestationFormat attestationFormat;
+    /** (Required) Type of the attestation to be created */
+    private AttestationProfile attestationProfile;
 
-    /* SD-JWT VC parameters */
+    /* SD-JWT parameters */
 
-    /** DigestAlgorithm used to compute the hash for the key binding signature, it should the same value as the digest algorithm of the EAA */
+    /** DigestAlgorithm used to compute the hash for the key binding signature, it should the same value as the digest algorithm of the attestation */
     private DigestAlgorithm digestAlgorithm;
 
     /** Issuance time of the key binding signature */
@@ -59,7 +59,7 @@ public class RemoteKeyBindingParameters implements Serializable {
     /** The session transcript to use for the creation of the key binding signature */
     private RemoteDocument sessionTranscript;
 
-    /** Doc type to use for the key binding signature, the value should be the same as in EAA */
+    /** Doc type to use for the key binding signature, the value should be the same as in attestation */
     private String docType;
 
     /** The list of device signed data elements */
@@ -73,30 +73,30 @@ public class RemoteKeyBindingParameters implements Serializable {
     }
 
     /**
-     * Constructor with EAA type provided
+     * Constructor with attestation type provided
      *
-     * @param attestationFormat {@link AttestationFormat}
+     * @param attestationProfile {@link AttestationProfile}
      */
-    public RemoteKeyBindingParameters(AttestationFormat attestationFormat) {
-        this.attestationFormat = attestationFormat;
+    public RemoteKeyBindingParameters(AttestationProfile attestationProfile) {
+        this.attestationProfile = attestationProfile;
     }
 
     /**
-     * Gets the EAA Type
+     * Gets the attestation Type
      *
-     * @return {@link AttestationFormat}
+     * @return {@link AttestationProfile}
      */
-    public AttestationFormat getEaaType() {
-        return attestationFormat;
+    public AttestationProfile getAttestationProfile() {
+        return attestationProfile;
     }
 
     /**
-     * Sets the target EAA type
+     * Sets the target attestation type
      *
-     * @param attestationFormat {@link AttestationFormat}
+     * @param attestationProfile {@link AttestationProfile}
      */
-    public void setEaaType(AttestationFormat attestationFormat) {
-        this.attestationFormat = attestationFormat;
+    public void setAttestationProfile(AttestationProfile attestationProfile) {
+        this.attestationProfile = attestationProfile;
     }
 
     /**
@@ -109,7 +109,7 @@ public class RemoteKeyBindingParameters implements Serializable {
     }
 
     /**
-     * (SD-JWT VC) Sets the digest algorithm used to compute the hash for the key binding signature
+     * (SD-JWT) Sets the digest algorithm used to compute the hash for the key binding signature
      *
      * @param digestAlgorithm {@link DigestAlgorithm}
      */
@@ -127,7 +127,7 @@ public class RemoteKeyBindingParameters implements Serializable {
     }
 
     /**
-     * (SD-JWT VC) Sets the issuance time of the key binding signature
+     * (SD-JWT) Sets the issuance time of the key binding signature
      *
      * @param issuanceTime {@link Date}
      */
@@ -145,7 +145,7 @@ public class RemoteKeyBindingParameters implements Serializable {
     }
 
     /**
-     * (SD-JWT VC) Sets the intended receiver of the key binding
+     * (SD-JWT) Sets the intended receiver of the key binding
      *
      * @param audience {@link String}
      */
@@ -163,7 +163,7 @@ public class RemoteKeyBindingParameters implements Serializable {
     }
 
     /**
-     * (SD-JWT VC) Sets the nonce of the key binding
+     * (SD-JWT) Sets the nonce of the key binding
      *
      * @param nonce {@link String}
      */
@@ -228,7 +228,7 @@ public class RemoteKeyBindingParameters implements Serializable {
     @Override
     public String toString() {
         return "RemoteKeyBindingParameters [" +
-                "eaaType=" + attestationFormat +
+                "attestationProfile=" + attestationProfile +
                 ", digestAlgorithm=" + digestAlgorithm +
                 ", issuanceTime=" + issuanceTime +
                 ", audience='" + audience + '\'' +
@@ -245,7 +245,7 @@ public class RemoteKeyBindingParameters implements Serializable {
         if (object == null || getClass() != object.getClass()) return false;
 
         RemoteKeyBindingParameters that = (RemoteKeyBindingParameters) object;
-        return attestationFormat == that.attestationFormat
+        return attestationProfile == that.attestationProfile
                 && digestAlgorithm == that.digestAlgorithm
                 && Objects.equals(issuanceTime, that.issuanceTime)
                 && Objects.equals(audience, that.audience)
@@ -257,7 +257,7 @@ public class RemoteKeyBindingParameters implements Serializable {
 
     @Override
     public int hashCode() {
-        int result = Objects.hashCode(attestationFormat);
+        int result = Objects.hashCode(attestationProfile);
         result = 31 * result + Objects.hashCode(digestAlgorithm);
         result = 31 * result + Objects.hashCode(issuanceTime);
         result = 31 * result + Objects.hashCode(audience);

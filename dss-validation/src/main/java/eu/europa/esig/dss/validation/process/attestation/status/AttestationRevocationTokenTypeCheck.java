@@ -31,7 +31,7 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
 
 /**
- * Verifies whether the type declared for the EAA revocation token is within an acceptable list of values
+ * Verifies whether the type declared for the attestation revocation token is within an acceptable list of values
  *
  */
 public class AttestationRevocationTokenTypeCheck extends AbstractMultiValuesCheckItem<XmlFC> {
@@ -39,21 +39,21 @@ public class AttestationRevocationTokenTypeCheck extends AbstractMultiValuesChec
     /** RFC 7519 type prefix */
     private static final String MIME_TYPE_APPLICATION_PREFIX = "application/";
 
-    /** EAA revocation token to check */
-    private final AttestationRevocationTokenWrapper eaaStatusToken;
+    /** attestation revocation token to check */
+    private final AttestationRevocationTokenWrapper attestationRevocationToken;
 
     /**
      * Default constructor
      *
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlFC}
-     * @param eaaStatusToken {@link AttestationRevocationTokenWrapper}
+     * @param attestationRevocationToken {@link AttestationRevocationTokenWrapper}
      * @param constraint {@link MultiValuesRule}
      */
     public AttestationRevocationTokenTypeCheck(I18nProvider i18nProvider, XmlFC result,
-                                               AttestationRevocationTokenWrapper eaaStatusToken, MultiValuesRule constraint) {
+                                               AttestationRevocationTokenWrapper attestationRevocationToken, MultiValuesRule constraint) {
         super(i18nProvider, result, constraint);
-        this.eaaStatusToken = eaaStatusToken;
+        this.attestationRevocationToken = attestationRevocationToken;
     }
 
     @Override
@@ -63,7 +63,7 @@ public class AttestationRevocationTokenTypeCheck extends AbstractMultiValuesChec
 
     private String getType() {
         // TODO : Separate JWT and CWT logic ?
-        return getRFC7519SignatureType(eaaStatusToken.getType());
+        return getRFC7519SignatureType(attestationRevocationToken.getType());
     }
 
     private String getRFC7519SignatureType(String mimeType) {

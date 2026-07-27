@@ -158,7 +158,7 @@
 					<xsl:apply-templates select="dss:Signature"/>
 					<xsl:apply-templates select="dss:Timestamp"/>
 					<xsl:apply-templates select="dss:EvidenceRecord"/>
-					<xsl:apply-templates select="dss:EAA"/>
+					<xsl:apply-templates select="dss:Attestation"/>
 					
 	    			<xsl:call-template name="documentInformation"/>
 	    			
@@ -248,8 +248,8 @@
 		
     </xsl:template>
 
-	<xsl:template match="dss:Signature|dss:Timestamp|dss:EvidenceRecord|dss:EAA
-			|dss:EAASignature|dss:KeyBindingSignature">
+	<xsl:template match="dss:Signature|dss:Timestamp|dss:EvidenceRecord|dss:Attestation
+			|dss:AttestationSignature|dss:KeyBindingSignature">
 		<xsl:param name="sigCounter" />
 		<xsl:param name="erCounter" />
 
@@ -325,11 +325,11 @@
 							<xsl:if test="$nodeName = 'EvidenceRecord'">
 								<xsl:text>Evidence Record: </xsl:text>
 							</xsl:if>
-							<xsl:if test="$nodeName = 'EAA'">
-								Electronic Attestation Of Attributes
+							<xsl:if test="$nodeName = 'Attestation'">
+								Attestation
 							</xsl:if>
-							<xsl:if test="$nodeName = 'EAASignature'">
-								EAA Signature
+							<xsl:if test="$nodeName = 'AttestationSignature'">
+								Attestation Signature
 							</xsl:if>
 							<xsl:if test="$nodeName = 'KeyBindingSignature'">
 								Key Binding Signature
@@ -386,8 +386,8 @@
 											<xsl:if test="$nodeName = 'EvidenceRecord'">
 												Evidence Record filename:
 											</xsl:if>
-											<xsl:if test="$nodeName = 'EAA'">
-												Filename:
+											<xsl:if test="$nodeName = 'Attestation'">
+												Attestation filename:
 											</xsl:if>
 										</fo:block>
 									</fo:table-cell>
@@ -402,7 +402,7 @@
 								</fo:table-row>
 							</xsl:if>
 						
-							<xsl:if test="dss:SignatureLevel | dss:TimestampLevel | dss:EAALevel">
+							<xsl:if test="dss:SignatureLevel | dss:TimestampLevel | dss:AttestationLevel">
 								<fo:table-row>
 									<xsl:attribute name="margin-top">1px</xsl:attribute>
 									<xsl:attribute name="margin-bottom">1px</xsl:attribute>
@@ -426,8 +426,8 @@
 											<xsl:if test="dss:TimestampLevel">
 												<xsl:value-of select="dss:TimestampLevel/@description" />
 											</xsl:if>
-											<xsl:if test="dss:EAALevel">
-												<xsl:value-of select="dss:EAALevel" />
+											<xsl:if test="dss:AttestationLevel">
+												<xsl:value-of select="dss:AttestationLevel" />
 											</xsl:if>
 										</fo:block>
 									</fo:table-cell>
@@ -617,7 +617,7 @@
 							</xsl:if>
 
 							<!-- Ignore embedded timestamps -->
-							<xsl:if test="((not($nodeName = 'Timestamp') or (count(ancestor::*/dss:Signature) = 0 and count(ancestor::*/dss:EvidenceRecord) = 0)) and not($nodeName = 'EAA'))">
+							<xsl:if test="((not($nodeName = 'Timestamp') or (count(ancestor::*/dss:Signature) = 0 and count(ancestor::*/dss:EvidenceRecord) = 0)) and not($nodeName = 'Attestation'))">
 								<fo:table-row>
 									<xsl:attribute name="margin-top">1px</xsl:attribute>
 									<xsl:attribute name="margin-bottom">1px</xsl:attribute>
@@ -677,7 +677,7 @@
 							<xsl:apply-templates select="dss:SignatureScope" />
 							<xsl:apply-templates select="dss:TimestampScope" />
 							<xsl:apply-templates select="dss:EvidenceRecordScope" />
-							<xsl:apply-templates select="dss:EAAPayload" />
+							<xsl:apply-templates select="dss:AttestationPayload" />
 							
 						</fo:table-body>	
 					</fo:table>
@@ -708,7 +708,7 @@
 						<xsl:with-param name="sigCounter" select="$counter"/>
 					</xsl:apply-templates>
 
-					<xsl:apply-templates select="dss:EAASignature|dss:KeyBindingSignature" />
+					<xsl:apply-templates select="dss:AttestationSignature|dss:KeyBindingSignature" />
 		
 		       	</fo:block-container>
 	       	</fo:block-container>
@@ -756,7 +756,7 @@
 		</fo:table-row>
 	</xsl:template>
 
-	<xsl:template match="dss:EAAPayload">
+	<xsl:template match="dss:AttestationPayload">
 		<xsl:apply-templates />
 	</xsl:template>
 

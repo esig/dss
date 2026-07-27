@@ -121,12 +121,12 @@ class PDFGenerationTest {
 	}
 
 	@Test
-	void eaaPidDetailedReport() throws Exception {
+	void attestationPidDetailedReport() throws Exception {
 		createAndValidate("dr-eaa-pid.xml");
 	}
 
 	@Test
-	void eaaWithStatusDetailedReport() throws Exception {
+	void attestationWithStatusDetailedReport() throws Exception {
 		createAndValidate("dr-eaa-status.xml");
 	}
 	

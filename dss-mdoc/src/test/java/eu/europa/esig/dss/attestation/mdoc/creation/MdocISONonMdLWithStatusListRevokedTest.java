@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class MdocISONonMdLWithStatusListRevokedTest extends MdocISONonMdLWithStatusListTest {
 
     @Override
-    protected AttestationRevocationSource getEAAStatusSource() {
+    protected AttestationRevocationSource getAttestationRevocationSource() {
         PKICWTStatusListSource statusListSource = new PKICWTStatusListSource(getCertEntityRepository(), getCertEntity(GOOD_CA));
         byte[] bytes = new byte[8];
         Arrays.fill(bytes, (byte) 1);
@@ -44,12 +44,12 @@ class MdocISONonMdLWithStatusListRevokedTest extends MdocISONonMdLWithStatusList
     }
 
     @Override
-    protected void checkEAARevocations(DiagnosticData diagnosticData) {
-        AttestationWrapper eaa = diagnosticData.getEAAById(diagnosticData.getFirstEAAId());
-        List<AttestationRevocationWrapper> eaaStatuses = eaa.getAttestationRevocations();
-        assertEquals(1, eaaStatuses.size());
-        assertEquals(AttestationStatus.INVALID, eaaStatuses.get(0).getStatus());
-        assertEquals("application/statuslist+cwt", eaaStatuses.get(0).getType());
+    protected void checkAttestationRevocations(DiagnosticData diagnosticData) {
+        AttestationWrapper attestation = diagnosticData.getAttestationById(diagnosticData.getFirstAttestationId());
+        List<AttestationRevocationWrapper> attestationStatuses = attestation.getAttestationRevocations();
+        assertEquals(1, attestationStatuses.size());
+        assertEquals(AttestationStatus.INVALID, attestationStatuses.get(0).getStatus());
+        assertEquals("application/statuslist+cwt", attestationStatuses.get(0).getType());
     }
 
 }

@@ -25,8 +25,8 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.validation.analyzer.attestation.AttestationDocumentAnalyzerFactory;
 
 /**
- * This class is used to load a corresponding {@code eu.europa.esig.dss.spi.validation.analyzer.attestation.EAAPresentationAnalyzer}
- * for an SD-JWT VC validation
+ * This class is used to load a corresponding {@code eu.europa.esig.dss.spi.validation.analyzer.attestation.AttestationPresentationAnalyzer}
+ * for an SD-JWT validation
  *
  */
 public class SDJWTDocumentAnalyzerFactory implements AttestationDocumentAnalyzerFactory {
@@ -40,12 +40,12 @@ public class SDJWTDocumentAnalyzerFactory implements AttestationDocumentAnalyzer
 
     @Override
     public boolean isSupported(DSSDocument document) {
-        SDJWTCompactAttestationDocumentAnalyzer compactAnalyzer = new SDJWTCompactAttestationDocumentAnalyzer();
+        SDJWTCompactDocumentAnalyzer compactAnalyzer = new SDJWTCompactDocumentAnalyzer();
         if (compactAnalyzer.isSupported(document)) {
             return true;
         }
 
-        SDJWTJsonSerializationAttestationDocumentAnalyzer jsonSerializationAnalyzer = new SDJWTJsonSerializationAttestationDocumentAnalyzer();
+        SDJWTJsonSerializationDocumentAnalyzer jsonSerializationAnalyzer = new SDJWTJsonSerializationDocumentAnalyzer();
         if (jsonSerializationAnalyzer.isSupported(document)) {
             return true;
         }
@@ -55,14 +55,14 @@ public class SDJWTDocumentAnalyzerFactory implements AttestationDocumentAnalyzer
 
     @Override
     public DefaultAttestationDocumentAnalyzer create(DSSDocument document) {
-        SDJWTCompactAttestationDocumentAnalyzer compactAnalyzer = new SDJWTCompactAttestationDocumentAnalyzer();
+        SDJWTCompactDocumentAnalyzer compactAnalyzer = new SDJWTCompactDocumentAnalyzer();
         if (compactAnalyzer.isSupported(document)) {
-            return new SDJWTCompactAttestationDocumentAnalyzer(document);
+            return new SDJWTCompactDocumentAnalyzer(document);
         }
 
-        SDJWTJsonSerializationAttestationDocumentAnalyzer jsonSerializationAnalyzer = new SDJWTJsonSerializationAttestationDocumentAnalyzer();
+        SDJWTJsonSerializationDocumentAnalyzer jsonSerializationAnalyzer = new SDJWTJsonSerializationDocumentAnalyzer();
         if (jsonSerializationAnalyzer.isSupported(document)) {
-            return new SDJWTJsonSerializationAttestationDocumentAnalyzer(document);
+            return new SDJWTJsonSerializationDocumentAnalyzer(document);
         }
 
         throw new IllegalArgumentException("Not supported document");

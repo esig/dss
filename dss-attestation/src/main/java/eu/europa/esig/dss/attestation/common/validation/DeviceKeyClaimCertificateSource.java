@@ -22,7 +22,7 @@ package eu.europa.esig.dss.attestation.common.validation;
 
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.model.Digest;
-import eu.europa.esig.dss.model.attestation.claim.ClaimDeviceKey;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimDeviceKey;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.x509.CertificateRef;
 import eu.europa.esig.dss.spi.x509.ProofOfPossessionCertificateSource;
@@ -46,14 +46,14 @@ public class DeviceKeyClaimCertificateSource extends TokenCertificateSource impl
     private static final Logger LOG = LoggerFactory.getLogger(DeviceKeyClaimCertificateSource.class);
 
     /** The "cnf" claim value incorporated in SD-JWT */
-    private final ClaimDeviceKey claimDeviceKey;
+    private final VerifiedClaimDeviceKey claimDeviceKey;
 
     /**
      * Default constructor
      *
-     * @param claimDeviceKey {@link ClaimDeviceKey}
+     * @param claimDeviceKey {@link VerifiedClaimDeviceKey}
      */
-    public DeviceKeyClaimCertificateSource(final ClaimDeviceKey claimDeviceKey) {
+    public DeviceKeyClaimCertificateSource(final VerifiedClaimDeviceKey claimDeviceKey) {
         Objects.requireNonNull(claimDeviceKey, "Device key claim cannot be null");
         this.claimDeviceKey = claimDeviceKey;
 

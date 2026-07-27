@@ -40,8 +40,8 @@ public class FileNameBuilder {
     /** Represents a container prefix string */
     private static final String CONTAINER_PREFIX = "container";
 
-    /** Represents an EAA prefix string */
-    private static final String EAA_PREFIX = "attestation";
+    /** Represents an attestation prefix string */
+    private static final String ATTESTATION_PREFIX = "attestation";
 
     /** Represents a document prefix string */
     private static final String DOCUMENT_PREFIX = "document";
@@ -64,8 +64,8 @@ public class FileNameBuilder {
     /** Represents a document with added evidence-record suffix string */
     private static final String EVIDENCE_RECORD_SUFFIX = "-preserved";
 
-    /** Represents an issued EAA presentation document */
-    private static final String EAA_PRESENTATION_SUFFIX = "-presentation";
+    /** Represents an issued attestation presentation document */
+    private static final String ATTESTATION_PRESENTATION_SUFFIX = "-presentation";
 
     /** Filename extension for an enveloping CMS signature */
     private static final String P7M_EXTENSION = "p7m";
@@ -176,8 +176,8 @@ public class FileNameBuilder {
 
             finalName.append(originalName);
 
-        } else if (isEAA()) {
-            finalName.append(EAA_PREFIX);
+        } else if (isAttestation()) {
+            finalName.append(ATTESTATION_PREFIX);
         } else {
             finalName.append(DOCUMENT_PREFIX);
         }
@@ -202,8 +202,8 @@ public class FileNameBuilder {
                 case ADD_EVIDENCE_RECORD:
                     finalName.append(EVIDENCE_RECORD_SUFFIX);
                     break;
-                case EAA_PRESENTATION:
-                    finalName.append(EAA_PRESENTATION_SUFFIX);
+                case ATTESTATION:
+                    finalName.append(ATTESTATION_PRESENTATION_SUFFIX);
                     break;
                 default:
                     throw new DSSException(String.format("The following operation '%s' is not supported!", signingOperation));
@@ -229,8 +229,8 @@ public class FileNameBuilder {
         return MimeTypeEnum.ASICS.equals(mimeType) || MimeTypeEnum.ASICE.equals(mimeType);
     }
 
-    private boolean isEAA() {
-        return SigningOperation.EAA_PRESENTATION == signingOperation;
+    private boolean isAttestation() {
+        return SigningOperation.ATTESTATION == signingOperation;
     }
 
     private String getFileExtensionString(SignatureLevel level, SignaturePackaging packaging, MimeType mimeType) {

@@ -54,10 +54,10 @@ class MdocISOMdLInvalidDrivingPrivilegeTest extends AbstractMdocPresentationTest
     protected void checkClaims(DiagnosticData diagnosticData) {
         super.checkClaims(diagnosticData);
 
-        AttestationWrapper eaa = diagnosticData.getEAAById(diagnosticData.getFirstEAAId());
-        AttestationPayloadProxy eaaPayload = eaa.getPayload();
+        AttestationWrapper attestation = diagnosticData.getAttestationById(diagnosticData.getFirstAttestationId());
+        AttestationPayloadProxy attestationPayload = attestation.getPayload();
 
-        DrivingPrivilegesClaimWrapper drivingPrivilegesClaimWrapper = eaaPayload.getDrivingPrivileges();
+        DrivingPrivilegesClaimWrapper drivingPrivilegesClaimWrapper = attestationPayload.getDrivingPrivileges();
         assertNotNull(drivingPrivilegesClaimWrapper);
 
         List<DrivingPrivilegeClaimWrapper> drivingPrivileges = drivingPrivilegesClaimWrapper.getDrivingPrivileges();

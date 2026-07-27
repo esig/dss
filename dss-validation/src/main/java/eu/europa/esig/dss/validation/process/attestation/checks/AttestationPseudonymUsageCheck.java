@@ -31,37 +31,37 @@ import eu.europa.esig.dss.model.policy.MultiValuesRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
 /**
- * This class verifies whether the EAA uses a pseudonym
+ * This class verifies whether the attestation uses a pseudonym
  *
  */
 public class AttestationPseudonymUsageCheck extends ChainItem<XmlSAV> {
 
-    /** EAA to check */
-    private final AttestationWrapper eaa;
+    /** attestation to check */
+    private final AttestationWrapper attestation;
 
     /**
      * Default constructor
      *
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlSAV}
-     * @param eaa {@link AttestationWrapper}
+     * @param attestation {@link AttestationWrapper}
      * @param constraint {@link MultiValuesRule}
      */
     public AttestationPseudonymUsageCheck(final I18nProvider i18nProvider, final XmlSAV result,
-                                          final AttestationWrapper eaa, final LevelRule constraint) {
+                                          final AttestationWrapper attestation, final LevelRule constraint) {
         super(i18nProvider, result, constraint);
-        this.eaa = eaa;
+        this.attestation = attestation;
     }
 
     @Override
     protected boolean process() {
-        return eaa.getPseudonym() == null;
+        return attestation.getPseudonym() == null;
     }
 
     @Override
     protected String buildAdditionalInfo() {
-        if (eaa.getPseudonym() != null) {
-            return i18nProvider.getMessage(MessageTag.PSEUDO, eaa.getPseudonym());
+        if (attestation.getPseudonym() != null) {
+            return i18nProvider.getMessage(MessageTag.PSEUDO, attestation.getPseudonym());
         }
         return null;
     }
@@ -83,7 +83,7 @@ public class AttestationPseudonymUsageCheck extends ChainItem<XmlSAV> {
 
     @Override
     protected SubIndication getFailedSubIndicationForConclusion() {
-        return SubIndication.EAA_CONSTRAINTS_FAILURE;
+        return SubIndication.ATTESTATION_CONSTRAINTS_FAILURE;
     }
 
 }

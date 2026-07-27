@@ -34,13 +34,13 @@ import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import java.util.Date;
 
 /**
- * Verifies whether the EAA revocation is not yet expired
+ * Verifies whether the attestation revocation is not yet expired
  *
  */
 public class AttestationRevocationNotExpiredCheck extends ChainItem<XmlSAV> {
 
-    /** EAA revocation token to check */
-    private final AttestationRevocationTokenWrapper eaaStatusToken;
+    /** attestation revocation token to check */
+    private final AttestationRevocationTokenWrapper attestationRevocationToken;
 
     /** Validation time */
     private final Date validationTime;
@@ -50,14 +50,14 @@ public class AttestationRevocationNotExpiredCheck extends ChainItem<XmlSAV> {
      *
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlSAV}
-     * @param eaaStatusToken {@link AttestationRevocationWrapper}
+     * @param attestationRevocationToken {@link AttestationRevocationWrapper}
      * @param validationTime {@link Date}
      * @param constraint {@link LevelRule}
      */
-    public AttestationRevocationNotExpiredCheck(I18nProvider i18nProvider, XmlSAV result, AttestationRevocationTokenWrapper eaaStatusToken,
+    public AttestationRevocationNotExpiredCheck(I18nProvider i18nProvider, XmlSAV result, AttestationRevocationTokenWrapper attestationRevocationToken,
                                                 Date validationTime, LevelRule constraint) {
         super(i18nProvider, result, constraint);
-        this.eaaStatusToken = eaaStatusToken;
+        this.attestationRevocationToken = attestationRevocationToken;
         this.validationTime = validationTime;
     }
 
@@ -67,7 +67,7 @@ public class AttestationRevocationNotExpiredCheck extends ChainItem<XmlSAV> {
          * The "exp" (expiration time) claim identifies the expiration time on
          * or after which the JWT MUST NOT be accepted for processing.
          */
-        return eaaStatusToken.getExpirationTime() != null && validationTime.before(eaaStatusToken.getExpirationTime());
+        return attestationRevocationToken.getExpirationTime() != null && validationTime.before(attestationRevocationToken.getExpirationTime());
     }
 
     @Override
@@ -83,7 +83,7 @@ public class AttestationRevocationNotExpiredCheck extends ChainItem<XmlSAV> {
     @Override
     protected String buildAdditionalInfo() {
         return i18nProvider.getMessage(MessageTag.EAA_REV_TIME, ValidationProcessUtils.getFormattedDate(validationTime),
-                ValidationProcessUtils.getFormattedDate(eaaStatusToken.getIssuedAt()), ValidationProcessUtils.getFormattedDate(eaaStatusToken.getExpirationTime()));
+                ValidationProcessUtils.getFormattedDate(attestationRevocationToken.getIssuedAt()), ValidationProcessUtils.getFormattedDate(attestationRevocationToken.getExpirationTime()));
     }
 
     @Override
@@ -93,7 +93,7 @@ public class AttestationRevocationNotExpiredCheck extends ChainItem<XmlSAV> {
 
     @Override
     protected SubIndication getFailedSubIndicationForConclusion() {
-        return SubIndication.EAA_CONSTRAINTS_FAILURE;
+        return SubIndication.ATTESTATION_CONSTRAINTS_FAILURE;
     }
 
 }

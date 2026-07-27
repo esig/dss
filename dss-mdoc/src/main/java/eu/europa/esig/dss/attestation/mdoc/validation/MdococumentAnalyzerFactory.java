@@ -25,7 +25,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.validation.analyzer.attestation.AttestationDocumentAnalyzerFactory;
 
 /**
- * This class is used to parse and process Electronic Attestation of Attributes (EAAs) embedded
+ * This class is used to parse and process attestations embedded
  * within an mdoc document structure as defined in ISO 18013-5.
  *
  */
@@ -40,12 +40,12 @@ public class MdococumentAnalyzerFactory implements AttestationDocumentAnalyzerFa
 
     @Override
     public boolean isSupported(DSSDocument document) {
-        MdocDeviceResponseAttestationDocumentAnalyzer mdocDeviceResponseAnalyzer = new MdocDeviceResponseAttestationDocumentAnalyzer();
+        MdocDeviceResponseDocumentAnalyzer mdocDeviceResponseAnalyzer = new MdocDeviceResponseDocumentAnalyzer();
         if (mdocDeviceResponseAnalyzer.isSupported(document)) {
             return true;
         }
 
-        MdocIssuerSignedAttestationDocumentAnalyzer mdocIssuerSignedAnalyzer = new MdocIssuerSignedAttestationDocumentAnalyzer();
+        MdocIssuerSignedDocumentAnalyzer mdocIssuerSignedAnalyzer = new MdocIssuerSignedDocumentAnalyzer();
         if (mdocIssuerSignedAnalyzer.isSupported(document)) {
             return true;
         }
@@ -55,14 +55,14 @@ public class MdococumentAnalyzerFactory implements AttestationDocumentAnalyzerFa
 
     @Override
     public DefaultAttestationDocumentAnalyzer create(DSSDocument document) {
-        MdocDeviceResponseAttestationDocumentAnalyzer mdocDeviceResponseAnalyzer = new MdocDeviceResponseAttestationDocumentAnalyzer();
+        MdocDeviceResponseDocumentAnalyzer mdocDeviceResponseAnalyzer = new MdocDeviceResponseDocumentAnalyzer();
         if (mdocDeviceResponseAnalyzer.isSupported(document)) {
-            return new MdocDeviceResponseAttestationDocumentAnalyzer(document);
+            return new MdocDeviceResponseDocumentAnalyzer(document);
         }
 
-        MdocIssuerSignedAttestationDocumentAnalyzer mdocIssuerSignedAnalyzer = new MdocIssuerSignedAttestationDocumentAnalyzer();
+        MdocIssuerSignedDocumentAnalyzer mdocIssuerSignedAnalyzer = new MdocIssuerSignedDocumentAnalyzer();
         if (mdocIssuerSignedAnalyzer.isSupported(document)) {
-            return new MdocIssuerSignedAttestationDocumentAnalyzer(document);
+            return new MdocIssuerSignedDocumentAnalyzer(document);
         }
 
         throw new IllegalArgumentException("Not supported document");

@@ -100,11 +100,11 @@ class MdocISOMdLKeyAuthorizationsDataElementsTest extends AbstractMdocPresentati
     }
 
     @Override
-    protected void checkEAADigestMatchers(DiagnosticData diagnosticData) {
-        super.checkEAADigestMatchers(diagnosticData);
+    protected void checkAttestationDigestMatchers(DiagnosticData diagnosticData) {
+        super.checkAttestationDigestMatchers(diagnosticData);
 
-        AttestationWrapper eaa = diagnosticData.getEAAs().get(0);
-        List<XmlDigestMatcher> digestMatchers = eaa.getDigestMatchers();
+        AttestationWrapper attestation = diagnosticData.getAttestations().get(0);
+        List<XmlDigestMatcher> digestMatchers = attestation.getDigestMatchers();
         assertEquals(11, digestMatchers.size());
 
         boolean familyNameSDFound = false;
@@ -182,14 +182,14 @@ class MdocISOMdLKeyAuthorizationsDataElementsTest extends AbstractMdocPresentati
     protected void checkClaims(DiagnosticData diagnosticData) {
         super.checkClaims(diagnosticData);
 
-        AttestationWrapper eaa = diagnosticData.getEAAById(diagnosticData.getFirstEAAId());
-        assertEquals("1.0", eaa.getVersion());
-        assertEquals("org.iso.18013.5.1.mDL", eaa.getAttestationDocumentType());
-        assertTrue(Utils.isCollectionEmpty(eaa.getDeviceKeyAuthorizedNamespaces()));
+        AttestationWrapper attestation = diagnosticData.getAttestationById(diagnosticData.getFirstAttestationId());
+        assertEquals("1.0", attestation.getVersion());
+        assertEquals("org.iso.18013.5.1.mDL", attestation.getAttestationDocumentType());
+        assertTrue(Utils.isCollectionEmpty(attestation.getDeviceKeyAuthorizedNamespaces()));
 
         Map<String, List<String>> dataElementsMap = new HashMap<>();
         dataElementsMap.put("org.iso.18013.5.1", Arrays.asList("family_name", "given_name", "birth_date", "portrait", "driving_privileges"));
-        assertEquals(dataElementsMap, eaa.getDeviceKeyAuthorizedDataElements());
+        assertEquals(dataElementsMap, attestation.getDeviceKeyAuthorizedDataElements());
     }
 
     @Override

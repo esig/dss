@@ -67,11 +67,11 @@ class SDJWTCompactWithKBSignatureDifferentCertX5CTest extends AbstractSDJWTTestI
         if (includeKeyBindingSignature()) {
             JAdESSignatureParameters params = getKeyBindingSignatureParameters();
 
-            DSSDocument signedEAA = signEAA();
+            DSSDocument signedAttestation = signAttestation();
             List<SDJWTSelectiveDisclosure> disclosures = getDisclosures();
             SDJWTKeyBindingParameters kbParams = getKeyBindingParameters();
 
-            ToBeSigned dataToSign = getService().getDataToSignForKeyBindingSignature(signedEAA, disclosures, kbParams, params);
+            ToBeSigned dataToSign = getService().getDataToSignForKeyBindingSignature(signedAttestation, disclosures, kbParams, params);
 
             SignatureValue signatureValue;
             try (CertEntitySignatureTokenConnection kbToken = new CertEntitySignatureTokenConnection(getCertEntity(ECDSA_521_USER))) {
@@ -79,7 +79,7 @@ class SDJWTCompactWithKBSignatureDifferentCertX5CTest extends AbstractSDJWTTestI
                 signatureValue = kbToken.sign(dataToSign, params.getSignatureAlgorithm(), kbPrivateKeyEntry);
             }
 
-            return getService().createKeyBindingSignature(signedEAA, disclosures, kbParams, params, signatureValue);
+            return getService().createKeyBindingSignature(signedAttestation, disclosures, kbParams, params, signatureValue);
         }
         return null;
     }
@@ -105,11 +105,11 @@ class SDJWTCompactWithKBSignatureDifferentCertX5CTest extends AbstractSDJWTTestI
     }
 
     @Override
-    protected void checkEAADigestMatchers(DiagnosticData diagnosticData) {
-        super.checkEAADigestMatchers(diagnosticData);
+    protected void checkAttestationDigestMatchers(DiagnosticData diagnosticData) {
+        super.checkAttestationDigestMatchers(diagnosticData);
 
-        AttestationWrapper eaa = diagnosticData.getEAAs().get(0);
-        List<XmlDigestMatcher> digestMatchers = eaa.getDigestMatchers();
+        AttestationWrapper attestation = diagnosticData.getAttestations().get(0);
+        List<XmlDigestMatcher> digestMatchers = attestation.getDigestMatchers();
         assertEquals(2, digestMatchers.size());
 
         boolean givenNameSDFound = false;
@@ -130,15 +130,15 @@ class SDJWTCompactWithKBSignatureDifferentCertX5CTest extends AbstractSDJWTTestI
     protected void checkClaims(final DiagnosticData diagnosticData) {
         super.checkClaims(diagnosticData);
 
-        AttestationWrapper eaa = diagnosticData.getEAAs().get(0);
-        assertEquals("https://issuer.example.com", eaa.getIssuer());
-        assertEquals("John", eaa.getGivenName());
-        assertEquals("Doe", eaa.getFamilyName());
+        AttestationWrapper attestation = diagnosticData.getAttestations().get(0);
+        assertEquals("https://issuer.example.com", attestation.getIssuer());
+        assertEquals("John", attestation.getGivenName());
+        assertEquals("Doe", attestation.getFamilyName());
 
-        assertEquals(keyBindingParameters.getNonce(), eaa.getKeyBindingSignatureNonce());
-        assertEquals(keyBindingParameters.getAudience(), eaa.getKeyBindingSignatureAudience());
-        assertEquals(keyBindingParameters.getIssuanceTime().getTime(), eaa.getKeyBindingSignatureIssuanceTime().getTime());
-        assertEquals(0, eaa.getOtherKeyBindingPayloadClaims().size());
+        assertEquals(keyBindingParameters.getNonce(), attestation.getKeyBindingSignatureNonce());
+        assertEquals(keyBindingParameters.getAudience(), attestation.getKeyBindingSignatureAudience());
+        assertEquals(keyBindingParameters.getIssuanceTime().getTime(), attestation.getKeyBindingSignatureIssuanceTime().getTime());
+        assertEquals(0, attestation.getOtherKeyBindingPayloadClaims().size());
     }
 
     @Override

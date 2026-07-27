@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.attestation.common.creation;
 
 /**
- * Contains parameters for creation of a key binding signature to an EAA
+ * Contains parameters for creation of a key binding signature to an attestation
  *
  */
 public interface KeyBindingParameters {

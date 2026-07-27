@@ -28,7 +28,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Represents a JSON object to be incorporated as an SD-JWT VC claim
+ * Represents a JSON object to be incorporated as an SD-JWT claim
  *
  */
 public class SDJWTClaimObject extends SDJWTClaim implements AttestationClaimObject<SDJWTClaim> {
@@ -100,7 +100,7 @@ public class SDJWTClaimObject extends SDJWTClaim implements AttestationClaimObje
     /**
      * Constructor with the claim name and selectively disclosable revocation.
      * When the selectivelyDisclosable revocation is enabled but no salt is provided,
-     * the salt will be generated during the EAA Payload computation.
+     * the salt will be generated during the attestation Payload computation.
      *
      * @param name  {@link String} the claim name
      * @param selectivelyDisclosable whether the claim is selectively disclosable
@@ -147,6 +147,7 @@ public class SDJWTClaimObject extends SDJWTClaim implements AttestationClaimObje
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<SDJWTClaim> getChildren() {
         return (List<SDJWTClaim>) getValue();
     }

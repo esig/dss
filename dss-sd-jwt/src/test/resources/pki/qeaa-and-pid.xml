@@ -117,7 +117,7 @@
         <trustAnchor/>
     </certificate>
 
-    <!-- EAA + PID certificate-->
+    <!-- attestation + PID certificate-->
     <certificate>
         <serialNumber>100103</serialNumber>
         <subject>Test-EAA-PID</subject>
@@ -328,7 +328,7 @@
         <ocspNoCheck/>
     </certificate>
 
-    <!-- EAA + PID certificate-->
+    <!-- attestation + PID certificate-->
     <certificate>
         <serialNumber>100201</serialNumber>
         <subject>Test-PKC-EAA-PID</subject>

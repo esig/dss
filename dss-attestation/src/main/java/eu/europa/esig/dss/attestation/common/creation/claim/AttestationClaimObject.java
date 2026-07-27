@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * Interface representing an object claim
  *
- * @param <T> The implementation of {@link AttestationClaim} for the EAA format
+ * @param <T> The implementation of {@link AttestationClaim} for the attestation format
  */
 public interface AttestationClaimObject<T extends AttestationClaim> extends AttestationClaim {
 

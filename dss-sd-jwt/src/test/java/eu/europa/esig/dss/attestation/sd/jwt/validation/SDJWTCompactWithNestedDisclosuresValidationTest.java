@@ -121,14 +121,14 @@ class SDJWTCompactWithNestedDisclosuresValidationTest extends AbstractSDJWTTestV
     protected void checkClaims(DiagnosticData diagnosticData) {
         super.checkClaims(diagnosticData);
 
-        AttestationWrapper eaa = diagnosticData.getEAAs().get(0);
-        assertEquals("https://issuer.example.com", eaa.getIssuer());
-        assertEquals("user_42", eaa.getSubject());
-        assertEquals(DSSUtils.parseRFCDate("2029-09-01T23:33:20Z"), eaa.getExpiration());
-        assertEquals(DSSUtils.parseRFCDate("2023-05-02T04:00:00Z"), eaa.getIssuedAt());
-        assertEquals(Arrays.asList("DE", "FR", "UK"), eaa.getNationalities());
+        AttestationWrapper attestation = diagnosticData.getAttestations().get(0);
+        assertEquals("https://issuer.example.com", attestation.getIssuer());
+        assertEquals("user_42", attestation.getSubject());
+        assertEquals(DSSUtils.parseRFCDate("2029-09-01T23:33:20Z"), attestation.getExpiration());
+        assertEquals(DSSUtils.parseRFCDate("2023-05-02T04:00:00Z"), attestation.getIssuedAt());
+        assertEquals(Arrays.asList("DE", "FR", "UK"), attestation.getNationalities());
 
-        List<ClaimWrapper> selectivelyDisclosableClaims = eaa.getSelectivelyDisclosableClaims();
+        List<ClaimWrapper> selectivelyDisclosableClaims = attestation.getSelectivelyDisclosableClaims();
         assertEquals(4, selectivelyDisclosableClaims.size());
         assertEquals("nationalities", selectivelyDisclosableClaims.get(0).getName());
         assertTrue(selectivelyDisclosableClaims.get(0).isSelectivelyDisclosable());

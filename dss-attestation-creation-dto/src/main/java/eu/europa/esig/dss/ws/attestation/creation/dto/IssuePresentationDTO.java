@@ -37,8 +37,8 @@ public class IssuePresentationDTO implements Serializable {
 
     private static final long serialVersionUID = -9072162299836706092L;
 
-    /** Signed EAA document */
-    private RemoteDocument eaa;
+    /** Signed attestation document */
+    private RemoteDocument attestation;
 
     /** (Optional) List of disclosures */
     private List<DisclosureDTO> disclosures;
@@ -46,7 +46,7 @@ public class IssuePresentationDTO implements Serializable {
     /** (Optional) Key binding signature document */
     private RemoteDocument keyBindingSignature;
 
-    /** Parameters for the EAA presentation */
+    /** Parameters for the attestation presentation */
     private RemoteAttestationPresentationParameters presentationParameters;
 
     /**
@@ -59,35 +59,35 @@ public class IssuePresentationDTO implements Serializable {
     /**
      * Default constructor
      *
-     * @param eaa {@link RemoteDocument} EAA document
+     * @param attestation {@link RemoteDocument} attestation document
      * @param disclosures a list of {@link DisclosureDTO}s
      * @param keyBindingSignature {@link RemoteDocument} key binding signature document
      * @param presentationParameters {@link RemoteAttestationPresentationParameters}
      */
-    public IssuePresentationDTO(RemoteDocument eaa, List<DisclosureDTO> disclosures, RemoteDocument keyBindingSignature,
+    public IssuePresentationDTO(RemoteDocument attestation, List<DisclosureDTO> disclosures, RemoteDocument keyBindingSignature,
                                 RemoteAttestationPresentationParameters presentationParameters) {
-        this.eaa = eaa;
+        this.attestation = attestation;
         this.disclosures = disclosures;
         this.keyBindingSignature = keyBindingSignature;
         this.presentationParameters = presentationParameters;
     }
 
     /**
-     * Gets the signed EAA document
+     * Gets the signed attestation document
      *
      * @return {@link RemoteDocument}
      */
-    public RemoteDocument getEaa() {
-        return eaa;
+    public RemoteDocument getAttestation() {
+        return attestation;
     }
 
     /**
-     * Sets a signed EAA document
+     * Sets a signed attestation document
      *
-     * @param eaa {@link RemoteDocument}
+     * @param attestation {@link RemoteDocument}
      */
-    public void setEaa(RemoteDocument eaa) {
-        this.eaa = eaa;
+    public void setAttestation(RemoteDocument attestation) {
+        this.attestation = attestation;
     }
 
     /**
@@ -147,7 +147,7 @@ public class IssuePresentationDTO implements Serializable {
     @Override
     public String toString() {
         return "IssuePresentationDTO [" +
-                "attestation=" + eaa +
+                "attestation=" + attestation +
                 ", disclosures=" + disclosures +
                 ", keyBindingSignature=" + keyBindingSignature +
                 ", presentationParameters=" + presentationParameters +
@@ -160,7 +160,7 @@ public class IssuePresentationDTO implements Serializable {
         if (object == null || getClass() != object.getClass()) return false;
 
         IssuePresentationDTO that = (IssuePresentationDTO) object;
-        return Objects.equals(eaa, that.eaa)
+        return Objects.equals(attestation, that.attestation)
                 && Objects.equals(disclosures, that.disclosures)
                 && Objects.equals(keyBindingSignature, that.keyBindingSignature)
                 && Objects.equals(presentationParameters, that.presentationParameters);
@@ -168,7 +168,7 @@ public class IssuePresentationDTO implements Serializable {
 
     @Override
     public int hashCode() {
-        int result = Objects.hashCode(eaa);
+        int result = Objects.hashCode(attestation);
         result = 31 * result + Objects.hashCode(disclosures);
         result = 31 * result + Objects.hashCode(keyBindingSignature);
         result = 31 * result + Objects.hashCode(presentationParameters);

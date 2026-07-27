@@ -28,13 +28,13 @@ class MdocAttestationPresentationNoDisclosuresPresentTest extends AbstractMdocAt
     }
 
     @Override
-    protected void checkEAADigestMatchers(DiagnosticData diagnosticData) {
-        AttestationWrapper eaa = diagnosticData.getEAAs().get(0);
-        List<XmlDigestMatcher> digestMatchers = eaa.getDigestMatchers();
+    protected void checkAttestationDigestMatchers(DiagnosticData diagnosticData) {
+        AttestationWrapper attestation = diagnosticData.getAttestations().get(0);
+        List<XmlDigestMatcher> digestMatchers = attestation.getDigestMatchers();
         assertEquals(11, digestMatchers.size());
 
         for (XmlDigestMatcher xmlDigestMatcher : digestMatchers) {
-            assertEquals(DigestMatcherType.EAA_ORPHAN_SELECTIVELY_DISCLOSABLE_CLAIM, xmlDigestMatcher.getType());
+            assertEquals(DigestMatcherType.ORPHAN_SELECTIVELY_DISCLOSABLE_CLAIM, xmlDigestMatcher.getType());
             assertFalse(xmlDigestMatcher.isDataFound());
             assertFalse(xmlDigestMatcher.isDataIntact());
             assertNotNull(xmlDigestMatcher.getDisclosableClaim());

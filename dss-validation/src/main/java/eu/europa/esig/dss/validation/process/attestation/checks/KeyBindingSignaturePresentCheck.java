@@ -30,31 +30,31 @@ import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
 /**
- * This class verifies whether the EAA contains an attached key binding signature
+ * This class verifies whether the attestation contains an attached key binding signature
  *
  */
 public class KeyBindingSignaturePresentCheck extends ChainItem<XmlFC> {
 
-    /** EAA to check */
-    private final AttestationWrapper eaa;
+    /** attestation to check */
+    private final AttestationWrapper attestation;
 
     /**
      * Default constructor
      *
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlFC}
-     * @param eaa {@link AttestationWrapper}
+     * @param attestation {@link AttestationWrapper}
      * @param constraint {@link LevelRule}
      */
     public KeyBindingSignaturePresentCheck(I18nProvider i18nProvider, XmlFC result,
-                                           AttestationWrapper eaa, LevelRule constraint) {
+                                           AttestationWrapper attestation, LevelRule constraint) {
         super(i18nProvider, result, constraint);
-        this.eaa = eaa;
+        this.attestation = attestation;
     }
 
     @Override
     protected boolean process() {
-        return eaa.getKeyBindingSignature() != null;
+        return attestation.getKeyBindingSignature() != null;
     }
 
     @Override

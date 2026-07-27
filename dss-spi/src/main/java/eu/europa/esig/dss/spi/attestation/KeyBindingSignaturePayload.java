@@ -20,41 +20,41 @@
  */
 package eu.europa.esig.dss.spi.attestation;
 
-import eu.europa.esig.dss.model.attestation.claim.Claim;
-import eu.europa.esig.dss.model.attestation.claim.ClaimDate;
-import eu.europa.esig.dss.model.attestation.claim.ClaimString;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaim;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimDate;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimString;
 
 /**
  * Represents a key binding signature payload
  *
  */
-public interface KeyBindingSignaturePayload extends Claim {
+public interface KeyBindingSignaturePayload extends VerifiedClaim {
 
     /**
      * Gets the value of the nonce from the key binding payload
      *
-     * @return {@link ClaimString}
+     * @return {@link VerifiedClaimString}
      */
-    ClaimString getNonce();
+    VerifiedClaimString getNonce();
 
     /**
      * Gets the issuance date from the key binding payload
      *
-     * @return {@link ClaimDate}
+     * @return {@link VerifiedClaimDate}
      */
-    ClaimDate getIssuedAt();
+    VerifiedClaimDate getIssuedAt();
 
     /**
      * Gets the value of the audience from the key binding payload
      *
-     * @return {@link ClaimString}
+     * @return {@link VerifiedClaimString}
      */
-    ClaimString getAudience();
+    VerifiedClaimString getAudience();
 
     /**
      * Gets the value of the "sd_hash" from the key binding payload
      *
-     * @return {@link ClaimString}
+     * @return {@link VerifiedClaimString}
      */
-    ClaimString getSdHash();
+    VerifiedClaimString getSdHash();
 }

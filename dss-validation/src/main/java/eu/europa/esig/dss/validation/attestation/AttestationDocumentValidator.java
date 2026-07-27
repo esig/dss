@@ -26,30 +26,30 @@ import eu.europa.esig.dss.spi.attestation.revocation.AttestationRevocationSource
 import eu.europa.esig.dss.validation.DocumentValidator;
 
 /**
- * This class is used to validate an Electronic Attestation of Attributes presentation
+ * This class is used to validate an attestation presentation
  *
  */
 public interface AttestationDocumentValidator extends DocumentValidator {
 
     /**
-     * Gets EAAPresentation created from the provided document on validation
+     * Gets AttestationPresentation created from the provided document on validation
      *
      * @return {@link AttestationPresentation}
      */
     AttestationPresentation getAttestationPresentation();
 
     /**
-     * Sets the EAA revocation source providing access to the information about the EAA validity revocation
+     * Sets the attestation revocation source providing access to the information about the attestation validity revocation
      *
      * @param attestationRevocationSource {@link AttestationRevocationSource}
      */
-    void setEAARevocationSource(AttestationRevocationSource attestationRevocationSource);
+    void setAttestationRevocationSource(AttestationRevocationSource attestationRevocationSource);
 
     /**
-     * Sets supplementary data requiring for validation of EAA presentation (format specific)
+     * Sets supplementary data requiring for validation of attestation presentation (format specific)
      *
      * @param attestationValidationParameters {@link AttestationValidationParameters}
      */
-    void setEAAValidationParameters(AttestationValidationParameters attestationValidationParameters);
+    void setAttestationValidationParameters(AttestationValidationParameters attestationValidationParameters);
 
 }

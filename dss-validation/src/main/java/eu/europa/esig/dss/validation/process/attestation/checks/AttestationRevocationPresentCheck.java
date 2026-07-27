@@ -31,31 +31,31 @@ import eu.europa.esig.dss.model.policy.MultiValuesRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
 /**
- * This class verifies whether the EAA revocation claim is present
+ * This class verifies whether the attestation revocation claim is present
  *
  */
 public class AttestationRevocationPresentCheck extends ChainItem<XmlSAV> {
 
-    /** EAA to check */
-    private final AttestationWrapper eaa;
+    /** attestation to check */
+    private final AttestationWrapper attestation;
 
     /**
      * Default constructor
      *
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlSAV}
-     * @param eaa {@link AttestationWrapper}
+     * @param attestation {@link AttestationWrapper}
      * @param constraint {@link MultiValuesRule}
      */
     public AttestationRevocationPresentCheck(final I18nProvider i18nProvider, final XmlSAV result,
-                                             final AttestationWrapper eaa, final LevelRule constraint) {
+                                             final AttestationWrapper attestation, final LevelRule constraint) {
         super(i18nProvider, result, constraint);
-        this.eaa = eaa;
+        this.attestation = attestation;
     }
 
     @Override
     public boolean process() {
-        return eaa.getPayload().getStatus() != null;
+        return attestation.getPayload().getStatus() != null;
     }
 
     @Override
@@ -75,7 +75,7 @@ public class AttestationRevocationPresentCheck extends ChainItem<XmlSAV> {
 
     @Override
     protected SubIndication getFailedSubIndicationForConclusion() {
-        return SubIndication.EAA_CONSTRAINTS_FAILURE;
+        return SubIndication.ATTESTATION_CONSTRAINTS_FAILURE;
     }
 
 }

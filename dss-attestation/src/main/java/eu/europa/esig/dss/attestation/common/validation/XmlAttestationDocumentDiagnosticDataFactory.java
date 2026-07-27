@@ -44,10 +44,10 @@ public class XmlAttestationDocumentDiagnosticDataFactory extends XmlDiagnosticDa
         if (validationContext instanceof AttestationValidationContext) {
             AttestationValidationContext attestationValidationContext = (AttestationValidationContext) validationContext;
             return builder
-                    .foundAttestationPresentation(attestationValidationContext.getProcessedEAAPresentation())
-                    .foundAttestationRevocationTokens(attestationValidationContext.getProcessedEAAStatusTokens());
+                    .foundAttestationPresentation(attestationValidationContext.getProcessedAttestationPresentation())
+                    .foundAttestationRevocationTokens(attestationValidationContext.getProcessedAttestationRevocationTokens());
         } else {
-            throw new IllegalStateException("An instance of EAAValidationContext is expected! Please verify the configuration.");
+            throw new IllegalStateException("An instance of AttestationValidationContext is expected! Please verify the configuration.");
         }
     }
 

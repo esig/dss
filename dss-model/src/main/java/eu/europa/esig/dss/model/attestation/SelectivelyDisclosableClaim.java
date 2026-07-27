@@ -22,7 +22,7 @@ package eu.europa.esig.dss.model.attestation;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.Digest;
-import eu.europa.esig.dss.model.attestation.claim.Claim;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaim;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -41,7 +41,7 @@ public abstract class SelectivelyDisclosableClaim implements Serializable {
     protected byte[] salt;
 
     /** Value of the disclosure claim */
-    protected Claim claim;
+    protected VerifiedClaim claim;
 
     /** Cached map containing computed digest values */
     private final EnumMap<DigestAlgorithm, Digest> digestMap = new EnumMap<>(DigestAlgorithm.class);
@@ -74,9 +74,9 @@ public abstract class SelectivelyDisclosableClaim implements Serializable {
     /**
      * Gets the value of the disclosure claim value
      *
-     * @return {@link Claim}
+     * @return {@link VerifiedClaim}
      */
-    public Claim getClaimValue() {
+    public VerifiedClaim getClaimValue() {
         return claim;
     }
 
@@ -112,7 +112,7 @@ public abstract class SelectivelyDisclosableClaim implements Serializable {
     }
 
     /**
-     * Computes digest according to the rules for the given EAA presentation type
+     * Computes digest according to the rules for the given attestation presentation type
      *
      * @param digestAlgorithm {@link DigestAlgorithm} to be used on the hash computation
      * @return {@link Digest}

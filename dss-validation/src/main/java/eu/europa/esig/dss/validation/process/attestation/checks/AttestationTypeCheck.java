@@ -30,42 +30,42 @@ import eu.europa.esig.dss.model.policy.MultiValuesRule;
 import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
 
 /**
- * This class verifies whether the EAA contains an acceptable EAA type
+ * This class verifies whether the attestation contains an acceptable attestation type
  *
  */
 public class AttestationTypeCheck extends AbstractMultiValuesCheckItem<XmlSAV> {
 
-    /** EAA to check */
-    private final AttestationWrapper eaa;
+    /** attestation to check */
+    private final AttestationWrapper attestation;
 
     /**
      * Default constructor
      *
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlSAV}
-     * @param eaa {@link AttestationWrapper}
+     * @param attestation {@link AttestationWrapper}
      * @param constraint {@link MultiValuesRule}
      */
     public AttestationTypeCheck(I18nProvider i18nProvider, XmlSAV result,
-                                AttestationWrapper eaa, MultiValuesRule constraint) {
+                                AttestationWrapper attestation, MultiValuesRule constraint) {
         super(i18nProvider, result, constraint);
-        this.eaa = eaa;
+        this.attestation = attestation;
     }
 
     @Override
     protected boolean process() {
-        switch (eaa.getEAAType()) {
+        switch (attestation.getAttestationProfile()) {
             case SD_JWT_VC:
-                return processValueCheck(eaa.getVerifiableCredentialsTypeUri());
+                return processValueCheck(attestation.getVerifiableCredentialsTypeUri());
             case ISO_IEC_MDOC:
-                String docType = eaa.getAttestationDocumentType();
+                String docType = attestation.getAttestationDocumentType();
                 if (docType == null) {
                     // Handle IssuerSigned token
-                    docType = eaa.getClaimedDocumentType();
+                    docType = attestation.getClaimedDocumentType();
                 }
                 return processValueCheck(docType);
             default:
-                throw new UnsupportedOperationException(String.format("The EAA Type '%s' is not supported!", eaa.getEAAType()));
+                throw new UnsupportedOperationException(String.format("The attestation Type '%s' is not supported!", attestation.getAttestationProfile()));
         }
     }
 
@@ -86,7 +86,7 @@ public class AttestationTypeCheck extends AbstractMultiValuesCheckItem<XmlSAV> {
 
     @Override
     protected SubIndication getFailedSubIndicationForConclusion() {
-        return SubIndication.EAA_CONSTRAINTS_FAILURE;
+        return SubIndication.ATTESTATION_CONSTRAINTS_FAILURE;
     }
 
 }

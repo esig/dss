@@ -157,12 +157,12 @@ public enum AttestationQualification {
     }
 
     /**
-     * Gets EAAQualification from an enumeration name
-     * Note: EAAQualification can be null
+     * Gets AttestationQualification from an enumeration name
+     * Note: AttestationQualification can be null
      *
      * @param value
      *            the qualification name to be converted to the enum
-     * @return the linked EAAQualification or null
+     * @return the linked AttestationQualification or null
      */
     public static AttestationQualification forName(String value) {
         if ((value != null) && !value.isEmpty()) {
@@ -172,12 +172,12 @@ public enum AttestationQualification {
     }
 
     /**
-     * Gets EAAQualification from a readable user-friendly label
-     * Note: EAAQualification can be null
+     * Gets AttestationQualification from a readable user-friendly label
+     * Note: AttestationQualification can be null
      *
      * @param readable
      *            the readable description of the qualification to be converted to the enum
-     * @return the linked EAAQualification or null
+     * @return the linked AttestationQualification or null
      */
     public static AttestationQualification fromReadable(String readable) {
         if ((readable != null) && !readable.isEmpty()) {

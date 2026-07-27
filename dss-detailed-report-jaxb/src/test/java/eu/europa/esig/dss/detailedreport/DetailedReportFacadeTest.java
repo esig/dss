@@ -95,12 +95,12 @@ class DetailedReportFacadeTest {
 	}
 
 	@Test
-	void eaaPidTest() throws Exception {
+	void attestationPidTest() throws Exception {
 		createAndValidate("dr-eaa-pid.xml");
 	}
 
 	@Test
-	void eaaWithStatusTest() throws Exception {
+	void attestationWithStatusTest() throws Exception {
 		createAndValidate("dr-eaa-status.xml");
 	}
 	

@@ -30,7 +30,7 @@ class MdocAttestationPresentationNoDocumentsTest extends AbstractMdocAttestation
     }
 
     @Override
-    protected int expectedEAAsCount() {
+    protected int expectedAttestationsCount() {
         return 0;
     }
 

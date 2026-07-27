@@ -29,7 +29,7 @@ import eu.europa.esig.dss.attestation.mdoc.MdocUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.attestation.SelectivelyDisclosableClaim;
-import eu.europa.esig.dss.model.attestation.claim.Claim;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaim;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
 
@@ -102,7 +102,7 @@ public class MdocIssuerSignedItem extends SelectivelyDisclosableClaim {
         return randomHeader.getValueAsBytes();
     }
 
-    private Claim getClaim(CBORMap issuerSignedItemMap) {
+    private VerifiedClaim getClaim(CBORMap issuerSignedItemMap) {
         String elementIdentifier = getElementIdentifier(issuerSignedItemMap);
         CBORObject elementValue = getElementValue(issuerSignedItemMap);
         return MdocUtils.createClaim(elementIdentifier, null, elementValue, true, namespace);

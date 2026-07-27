@@ -57,7 +57,7 @@ public class MdocPresentationBuilder {
     /**
      * Builds a DSSDocument representing the IssuerSigned structure as defined in "8.3.2.1.2.2 Device retrieval mdoc response"
      *
-     * @param attestation {@link DSSDocument} containing the signed EAA
+     * @param attestation {@link DSSDocument} containing the signed attestation
      * @param disclosures a list of {@link MdocSelectiveDisclosure}s to be included
      * @return {@link DSSDocument}
      */
@@ -76,14 +76,14 @@ public class MdocPresentationBuilder {
      *   }
      * }
      *
-     * @param attestation {@link DSSDocument} containing the EAA signature (IssuerAuth)
+     * @param attestation {@link DSSDocument} containing the attestation signature (IssuerAuth)
      * @param disclosures a list of {@link MdocSelectiveDisclosure}s to be included
      * @return {@link CBORMap}
      */
     protected CBORMap buildIssuerSigned(DSSDocument attestation, List<MdocSelectiveDisclosure> disclosures) {
-        Objects.requireNonNull(attestation, "EAA cannot be null!");
+        Objects.requireNonNull(attestation, "Attestation cannot be null!");
         if (!CBORUtils.isCbor(attestation)) {
-            throw new IllegalInputException("EAA document shall represent a CBOR encoded object!");
+            throw new IllegalInputException("Attestation document shall represent a CBOR encoded object!");
         }
 
         try {

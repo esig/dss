@@ -43,7 +43,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlBiometricTemplateXXClaim;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlClaim;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDeviceKeyClaim;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDrivingPrivilegesClaim;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlEAAPayload;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationPayload;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlIntegrityClaim;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlStatusClaim;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlValidityInfoClaim;
@@ -59,182 +59,182 @@ import java.util.stream.Collectors;
  */
 public class AttestationPayloadProxy {
     
-    /** Wrapped EAA Payload to get access to */
-    private final XmlEAAPayload xmlEAAPayload;
+    /** Wrapped attestation Payload to get access to */
+    private final XmlAttestationPayload xmlAttestationPayload;
 
     /**
      * Default constructor
      * 
-     * @param xmlEAAPayload {@link XmlEAAPayload}
+     * @param xmlAttestationPayload {@link XmlAttestationPayload}
      */
-    public AttestationPayloadProxy(final XmlEAAPayload xmlEAAPayload) {
-        this.xmlEAAPayload = xmlEAAPayload;
+    public AttestationPayloadProxy(final XmlAttestationPayload xmlAttestationPayload) {
+        this.xmlAttestationPayload = xmlAttestationPayload;
     }
     
     /**
-     * Gets EAA identifier provided in the EAA payload
+     * Gets attestation identifier provided in the attestation payload
      *
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getIdentifier() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getIdentifier());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getIdentifier());
         }
         return null;
     }
 
     /**
-     * Gets EAA issuer as defined in the EAA payload
+     * Gets attestation issuer as defined in the attestation payload
      *
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getIssuer() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getIssuer());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getIssuer());
         }
         return null;
     }
 
     /**
-     * Gets EAA subject as defined in the EAA payload
+     * Gets attestation subject as defined in the attestation payload
      *
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getSubject() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getSubject());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getSubject());
         }
         return null;
     }
 
     /**
-     * Gets EAA audience as defined in the EAA payload
+     * Gets attestation audience as defined in the attestation payload
      *
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getAudience() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getAudience());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getAudience());
         }
         return null;
     }
 
     /**
-     * Gets EAA issuance time as defined in the EAA payload
+     * Gets attestation issuance time as defined in the attestation payload
      *
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getIssuedAt() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getIssuedAt());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getIssuedAt());
         }
         return null;
     }
 
     /**
-     * Gets EAA not before time as defined in the EAA payload
+     * Gets attestation not before time as defined in the attestation payload
      *
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getNotBefore() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getNotBefore());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getNotBefore());
         }
         return null;
     }
 
     /**
-     * Gets EAA expiration time as defined in the EAA payload
+     * Gets attestation expiration time as defined in the attestation payload
      *
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getExpiration() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getExpiration());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getExpiration());
         }
         return null;
     }
 
     /**
-     * Gets EAA update time as defined in the EAA payload
+     * Gets attestation update time as defined in the attestation payload
      *
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getUpdatedAt() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getUpdatedAt());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getUpdatedAt());
         }
         return null;
     }
 
     /**
-     * Gets category URN provided in the EAA payload
+     * Gets category URN provided in the attestation payload
      *
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getCategory() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getCategory());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getCategory());
         }
         return null;
     }
 
     /**
-     * Gets EAA metadata type (e.g. 'vct' claim) as defined in the EAA payload
+     * Gets attestation metadata type (e.g. 'vct' claim) as defined in the attestation payload
      *
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getVerifiableCredentialsType() {
-        if (xmlEAAPayload != null && xmlEAAPayload.getVerifiableCredentialsType() != null) {
-            return getClaim(xmlEAAPayload.getVerifiableCredentialsType());
+        if (xmlAttestationPayload != null && xmlAttestationPayload.getVerifiableCredentialsType() != null) {
+            return getClaim(xmlAttestationPayload.getVerifiableCredentialsType());
         }
         return null;
     }
 
     /**
-     * Gets the integrity material for the EAA metadata (when present)
+     * Gets the integrity material for the attestation metadata (when present)
      *
      * @return {@link ClaimWrapper}
      */
     public IntegrityClaimWrapper getVerifiableCredentialsTypeIntegrity() {
-        if (xmlEAAPayload != null && xmlEAAPayload.getVerifiableCredentialsType() != null) {
-            return getIntegrityClaim(xmlEAAPayload.getVerifiableCredentialsType().getIntegrity());
+        if (xmlAttestationPayload != null && xmlAttestationPayload.getVerifiableCredentialsType() != null) {
+            return getIntegrityClaim(xmlAttestationPayload.getVerifiableCredentialsType().getIntegrity());
         }
         return null;
     }
 
     /**
-     * Gets EAA revocation as defined in the EAA payload
+     * Gets attestation revocation as defined in the attestation payload
      *
      * @return {@link StatusClaimWrapper}
      */
     public StatusClaimWrapper getStatus() {
-        if (xmlEAAPayload != null) {
-            return getStatusClaim(xmlEAAPayload.getStatus());
+        if (xmlAttestationPayload != null) {
+            return getStatusClaim(xmlAttestationPayload.getStatus());
         }
         return null;
     }
 
     /**
-     * Gets EAA nonce when defined in the EAA payload
+     * Gets attestation nonce when defined in the attestation payload
      *
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getNonce() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getNonce());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getNonce());
         }
         return null;
     }
 
     /**
-     * Gets EAA device key when defined in the EAA payload
+     * Gets attestation device key when defined in the attestation payload
      *
      * @return {@link ClaimWrapper}
      */
     public DeviceKeyClaimWrapper getDeviceKey() {
-        if (xmlEAAPayload != null) {
-            return getDeviceKeyClaim(xmlEAAPayload.getDeviceKey());
+        if (xmlAttestationPayload != null) {
+            return getDeviceKeyClaim(xmlAttestationPayload.getDeviceKey());
         }
         return null;
     }
@@ -245,8 +245,8 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getVersion() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getVersion());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getVersion());
         }
         return null;
     }
@@ -258,8 +258,8 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getDocType() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getDocType());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getDocType());
         }
         return null;
     }
@@ -270,285 +270,285 @@ public class AttestationPayloadProxy {
      * @return {@link ValidityInfoClaimWrapper}
      */
     public ValidityInfoClaimWrapper getValidityInfo() {
-        if (xmlEAAPayload != null) {
-            return getValidityInfoClaim(xmlEAAPayload.getValidityInfo());
+        if (xmlAttestationPayload != null) {
+            return getValidityInfoClaim(xmlAttestationPayload.getValidityInfo());
         }
         return null;
     }
 
     /**
-     * Gets holder's full name when defined within EAA Payload claims
+     * Gets holder's full name when defined within attestation Payload claims
      *
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getFullName() {
-        if (xmlEAAPayload != null) {
-            return get(getClaim(xmlEAAPayload.getFullName()), getCredentialSubject().getFullName());
+        if (xmlAttestationPayload != null) {
+            return get(getClaim(xmlAttestationPayload.getFullName()), getCredentialSubject().getFullName());
         }
         return null;
     }
 
     /**
-     * Gets holder's first name when defined within EAA Payload claims
+     * Gets holder's first name when defined within attestation Payload claims
      *
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getGivenName() {
-        if (xmlEAAPayload != null) {
-            return get(getClaim(xmlEAAPayload.getGivenName()), getCredentialSubject().getGivenName());
+        if (xmlAttestationPayload != null) {
+            return get(getClaim(xmlAttestationPayload.getGivenName()), getCredentialSubject().getGivenName());
         }
         return null;
     }
 
     /**
-     * Gets holder's last or family name when defined within EAA Payload claims
+     * Gets holder's last or family name when defined within attestation Payload claims
      *
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getFamilyName() {
-        if (xmlEAAPayload != null) {
-            return get(getClaim(xmlEAAPayload.getFamilyName()), getCredentialSubject().getFamilyName());
+        if (xmlAttestationPayload != null) {
+            return get(getClaim(xmlAttestationPayload.getFamilyName()), getCredentialSubject().getFamilyName());
         }
         return null;
     }
 
     /**
-     * Gets holder's middle name when defined within EAA Payload claims
+     * Gets holder's middle name when defined within attestation Payload claims
      *
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getMiddleName() {
-        if (xmlEAAPayload != null) {
-            return get(getClaim(xmlEAAPayload.getMiddleName()), getCredentialSubject().getMiddleName());
+        if (xmlAttestationPayload != null) {
+            return get(getClaim(xmlAttestationPayload.getMiddleName()), getCredentialSubject().getMiddleName());
         }
         return null;
     }
 
     /**
-     * Gets holder's alternative name when defined within EAA Payload claims
+     * Gets holder's alternative name when defined within attestation Payload claims
      *
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getNickname() {
-        if (xmlEAAPayload != null) {
-            return get(getClaim(xmlEAAPayload.getNickname()), getCredentialSubject().getNickname());
+        if (xmlAttestationPayload != null) {
+            return get(getClaim(xmlAttestationPayload.getNickname()), getCredentialSubject().getNickname());
         }
         return null;
     }
 
     /**
-     * Gets holder's preferred or short name when defined within EAA Payload claims
+     * Gets holder's preferred or short name when defined within attestation Payload claims
      *
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getShortName() {
-        if (xmlEAAPayload != null) {
-            return get(getClaim(xmlEAAPayload.getShortName()), getCredentialSubject().getShortName());
+        if (xmlAttestationPayload != null) {
+            return get(getClaim(xmlAttestationPayload.getShortName()), getCredentialSubject().getShortName());
         }
         return null;
     }
 
     /**
-     * Gets holder's profile URL when defined within EAA Payload claims
+     * Gets holder's profile URL when defined within attestation Payload claims
      *
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getProfileUrl() {
-        if (xmlEAAPayload != null) {
-            return get(getClaim(xmlEAAPayload.getProfileUrl()), getCredentialSubject().getProfileUrl());
+        if (xmlAttestationPayload != null) {
+            return get(getClaim(xmlAttestationPayload.getProfileUrl()), getCredentialSubject().getProfileUrl());
         }
         return null;
     }
 
     /**
-     * Gets holder's picture URL when defined within EAA Payload claims
+     * Gets holder's picture URL when defined within attestation Payload claims
      *
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getPictureUrl() {
-        if (xmlEAAPayload != null) {
-            return get(getClaim(xmlEAAPayload.getPictureUrl()), getCredentialSubject().getPictureUrl());
+        if (xmlAttestationPayload != null) {
+            return get(getClaim(xmlAttestationPayload.getPictureUrl()), getCredentialSubject().getPictureUrl());
         }
         return null;
     }
 
     /**
-     * Gets holder's website when defined within EAA Payload claims
+     * Gets holder's website when defined within attestation Payload claims
      *
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getWebsiteUrl() {
-        if (xmlEAAPayload != null) {
-            return get(getClaim(xmlEAAPayload.getWebsiteUrl()), getCredentialSubject().getWebsiteUrl());
+        if (xmlAttestationPayload != null) {
+            return get(getClaim(xmlAttestationPayload.getWebsiteUrl()), getCredentialSubject().getWebsiteUrl());
         }
         return null;
     }
 
     /**
-     * Gets holder's email when defined within EAA Payload claims
+     * Gets holder's email when defined within attestation Payload claims
      *
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getEmail() {
-        if (xmlEAAPayload != null) {
-            return get(getClaim(xmlEAAPayload.getEmail()), getCredentialSubject().getEmail());
+        if (xmlAttestationPayload != null) {
+            return get(getClaim(xmlAttestationPayload.getEmail()), getCredentialSubject().getEmail());
         }
         return null;
     }
 
     /**
-     * Gets whether the holder's website has been verified if defined within EAA Payload claims
+     * Gets whether the holder's website has been verified if defined within attestation Payload claims
      *
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getEmailVerified() {
-        if (xmlEAAPayload != null) {
-            return get(getClaim(xmlEAAPayload.getEmailVerified()), getCredentialSubject().getEmailVerified());
+        if (xmlAttestationPayload != null) {
+            return get(getClaim(xmlAttestationPayload.getEmailVerified()), getCredentialSubject().getEmailVerified());
         }
         return null;
     }
 
     /**
-     * Gets holder's gender when defined within EAA Payload claims
+     * Gets holder's gender when defined within attestation Payload claims
      *
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getGender() {
-        if (xmlEAAPayload != null) {
-            return get(getClaim(xmlEAAPayload.getGender()), getCredentialSubject().getGender());
+        if (xmlAttestationPayload != null) {
+            return get(getClaim(xmlAttestationPayload.getGender()), getCredentialSubject().getGender());
         }
         return null;
     }
 
     /**
-     * Gets holder's birthdate when defined within EAA Payload claims
+     * Gets holder's birthdate when defined within attestation Payload claims
      *
      * @return {@link BirthdateClaimWrapper}
      */
     public BirthdateClaimWrapper getBirthdate() {
-        if (xmlEAAPayload != null) {
-            return get(getBirthdateClaim(xmlEAAPayload.getBirthdate()), getCredentialSubject().getBirthdate());
+        if (xmlAttestationPayload != null) {
+            return get(getBirthdateClaim(xmlAttestationPayload.getBirthdate()), getCredentialSubject().getBirthdate());
         }
         return null;
     }
 
     /**
-     * Gets holder's timezone when defined within EAA Payload claims
+     * Gets holder's timezone when defined within attestation Payload claims
      *
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getTimezone() {
-        if (xmlEAAPayload != null) {
-            return get(getClaim(xmlEAAPayload.getTimezone()), getCredentialSubject().getTimezone());
+        if (xmlAttestationPayload != null) {
+            return get(getClaim(xmlAttestationPayload.getTimezone()), getCredentialSubject().getTimezone());
         }
         return null;
     }
 
     /**
-     * Gets holder's locale when defined within EAA Payload claims
+     * Gets holder's locale when defined within attestation Payload claims
      *
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getLocale() {
-        if (xmlEAAPayload != null) {
-            return get(getClaim(xmlEAAPayload.getLocale()), getCredentialSubject().getLocale());
+        if (xmlAttestationPayload != null) {
+            return get(getClaim(xmlAttestationPayload.getLocale()), getCredentialSubject().getLocale());
         }
         return null;
     }
 
     /**
-     * Gets holder's full address, when defined within EAA Payload claims
+     * Gets holder's full address, when defined within attestation Payload claims
      *
      * @return {@link AddressClaimWrapper}
      */
     public AddressClaimWrapper getAddress() {
-        if (xmlEAAPayload != null) {
-            return get(getAddressClaim(xmlEAAPayload.getAddress()), getCredentialSubject().getAddress());
+        if (xmlAttestationPayload != null) {
+            return get(getAddressClaim(xmlAttestationPayload.getAddress()), getCredentialSubject().getAddress());
         }
         return null;
     }
 
     /**
-     * Gets holder's phone number when defined within EAA Payload claims
+     * Gets holder's phone number when defined within attestation Payload claims
      *
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getPhoneNumber() {
-        if (xmlEAAPayload != null) {
-            return get(getClaim(xmlEAAPayload.getPhoneNumber()), getCredentialSubject().getPhoneNumber());
+        if (xmlAttestationPayload != null) {
+            return get(getClaim(xmlAttestationPayload.getPhoneNumber()), getCredentialSubject().getPhoneNumber());
         }
         return null;
     }
 
     /**
-     * Gets whether the holder's phone number has been verified if defined within EAA Payload claims
+     * Gets whether the holder's phone number has been verified if defined within attestation Payload claims
      *
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getPhoneNumberVerified() {
-        if (xmlEAAPayload != null) {
-            return get(getClaim(xmlEAAPayload.getPhoneNumberVerified()), getCredentialSubject().getPhoneNumberVerified());
+        if (xmlAttestationPayload != null) {
+            return get(getClaim(xmlAttestationPayload.getPhoneNumberVerified()), getCredentialSubject().getPhoneNumberVerified());
         }
         return null;
     }
 
     /**
-     * Gets holder's place of birth when defined within EAA Payload claims
+     * Gets holder's place of birth when defined within attestation Payload claims
      *
      * @return {@link PlaceOfBirthClaimWrapper}
      */
     public PlaceOfBirthClaimWrapper getPlaceOfBirth() {
-        if (xmlEAAPayload != null) {
-            return get(getPlaceOfBirthClaim(xmlEAAPayload.getPlaceOfBirth()), getCredentialSubject().getPlaceOfBirth());
+        if (xmlAttestationPayload != null) {
+            return get(getPlaceOfBirthClaim(xmlAttestationPayload.getPlaceOfBirth()), getCredentialSubject().getPlaceOfBirth());
         }
         return null;
     }
 
     /**
-     * Gets holder's nationalities list when defined within EAA Payload claims.
+     * Gets holder's nationalities list when defined within attestation Payload claims.
      * NOTE: The values are usually represented by 3-letter nationality codes.
      *
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getNationalities() {
-        if (xmlEAAPayload != null) {
-            return get(getClaim(xmlEAAPayload.getNationalities()), getCredentialSubject().getNationalities());
+        if (xmlAttestationPayload != null) {
+            return get(getClaim(xmlAttestationPayload.getNationalities()), getCredentialSubject().getNationalities());
         }
         return null;
     }
 
     /**
-     * Gets holder's last or family name at birth when defined within EAA Payload claims
+     * Gets holder's last or family name at birth when defined within attestation Payload claims
      *
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getBirthFamilyName() {
-        if (xmlEAAPayload != null) {
-            return get(getClaim(xmlEAAPayload.getBirthFamilyName()), getCredentialSubject().getBirthFamilyName());
+        if (xmlAttestationPayload != null) {
+            return get(getClaim(xmlAttestationPayload.getBirthFamilyName()), getCredentialSubject().getBirthFamilyName());
         }
         return null;
     }
 
     /**
-     * Gets holder's first name at birth when defined within EAA Payload claims
+     * Gets holder's first name at birth when defined within attestation Payload claims
      *
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getBirthGivenName() {
-        if (xmlEAAPayload != null) {
-            return get(getClaim(xmlEAAPayload.getBirthGivenName()), getCredentialSubject().getBirthGivenName());
+        if (xmlAttestationPayload != null) {
+            return get(getClaim(xmlAttestationPayload.getBirthGivenName()), getCredentialSubject().getBirthGivenName());
         }
         return null;
     }
 
     /**
-     * Gets holder's middle name at birth when defined within EAA Payload claims
+     * Gets holder's middle name at birth when defined within attestation Payload claims
      *
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getBirthMiddleName() {
-        if (xmlEAAPayload != null) {
-            return get(getClaim(xmlEAAPayload.getBirthMiddleName()), getCredentialSubject().getBirthMiddleName());
+        if (xmlAttestationPayload != null) {
+            return get(getClaim(xmlAttestationPayload.getBirthMiddleName()), getCredentialSubject().getBirthMiddleName());
         }
         return null;
     }
@@ -559,56 +559,56 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getBirthFullName() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getBirthFullName());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getBirthFullName());
         }
         return null;
     }
 
     /**
-     * Gets holder's preferred salutation when defined within EAA Payload claims
+     * Gets holder's preferred salutation when defined within attestation Payload claims
      *
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getSalutation() {
-        if (xmlEAAPayload != null) {
-            return get(getClaim(xmlEAAPayload.getSalutation()), getCredentialSubject().getSalutation());
+        if (xmlAttestationPayload != null) {
+            return get(getClaim(xmlAttestationPayload.getSalutation()), getCredentialSubject().getSalutation());
         }
         return null;
     }
 
     /**
-     * Gets holder's title when defined within EAA Payload claims
+     * Gets holder's title when defined within attestation Payload claims
      *
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getTitle() {
-        if (xmlEAAPayload != null) {
-            return get(getClaim(xmlEAAPayload.getTitle()), getCredentialSubject().getTitle());
+        if (xmlAttestationPayload != null) {
+            return get(getClaim(xmlAttestationPayload.getTitle()), getCredentialSubject().getTitle());
         }
         return null;
     }
 
     /**
-     * Gets holder's mobile phone number when defined within EAA Payload claims
+     * Gets holder's mobile phone number when defined within attestation Payload claims
      *
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getMobilePhoneNumber() {
-        if (xmlEAAPayload != null) {
-            return get(getClaim(xmlEAAPayload.getMobilePhoneNumber()), getCredentialSubject().getMobilePhoneNumber());
+        if (xmlAttestationPayload != null) {
+            return get(getClaim(xmlAttestationPayload.getMobilePhoneNumber()), getCredentialSubject().getMobilePhoneNumber());
         }
         return null;
     }
 
     /**
-     * Gets holder's scenic name or pseudonym, they are known as, when defined within EAA Payload claims
+     * Gets holder's scenic name or pseudonym, they are known as, when defined within attestation Payload claims
      *
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getPseudonym() {
-        if (xmlEAAPayload != null) {
-            return get(getClaim(xmlEAAPayload.getPseudonym()), getCredentialSubject().getPseudonym());
+        if (xmlAttestationPayload != null) {
+            return get(getClaim(xmlAttestationPayload.getPseudonym()), getCredentialSubject().getPseudonym());
         }
         return null;
     }
@@ -622,8 +622,8 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getDocumentIssuingAuthority() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getIssuingAuthority());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getIssuingAuthority());
         }
         return null;
     }
@@ -634,8 +634,8 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getDocumentIssuingAuthorityCountry() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getIssuingCountry());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getIssuingCountry());
         }
         return null;
     }
@@ -647,8 +647,8 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getDocumentIssuingAuthorityJurisdiction() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getIssuingJurisdiction());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getIssuingJurisdiction());
         }
         return null;
     }
@@ -662,8 +662,8 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getDocumentIssuingAuthorityUNDistinguishingSign() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getUNDistinguishingSign());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getUNDistinguishingSign());
         }
         return null;
     }
@@ -675,8 +675,8 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getPersonalAdministrativeNumber() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getPersonalAdministrativeNumber());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getPersonalAdministrativeNumber());
         }
         return null;
     }
@@ -688,8 +688,8 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getDocumentNumber() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getDocumentNumber());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getDocumentNumber());
         }
         return null;
     }
@@ -700,8 +700,8 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getPortrait() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getPortrait());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getPortrait());
         }
         return null;
     }
@@ -713,8 +713,8 @@ public class AttestationPayloadProxy {
      * @return {@link DrivingPrivilegesClaimWrapper}
      */
     public DrivingPrivilegesClaimWrapper getDrivingPrivileges() {
-        if (xmlEAAPayload != null) {
-            return getDrivingPrivilegesClaim(xmlEAAPayload.getDrivingPrivileges());
+        if (xmlAttestationPayload != null) {
+            return getDrivingPrivilegesClaim(xmlAttestationPayload.getDrivingPrivileges());
         }
         return null;
     }
@@ -725,8 +725,8 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getHeight() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getHeight());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getHeight());
         }
         return null;
     }
@@ -737,8 +737,8 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getWeight() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getWeight());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getWeight());
         }
         return null;
     }
@@ -750,8 +750,8 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getEyeColour() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getEyeColour());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getEyeColour());
         }
         return null;
     }
@@ -763,8 +763,8 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getHairColour() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getHairColour());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getHairColour());
         }
         return null;
     }
@@ -776,8 +776,8 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getResidentPostalAddress() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getResidentPostalAddress());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getResidentPostalAddress());
         }
         return null;
     }
@@ -788,8 +788,8 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getPortraitCaptureDate() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getPortraitCaptureDate());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getPortraitCaptureDate());
         }
         return null;
     }
@@ -800,8 +800,8 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getAgeInYears() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getAgeInYears());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getAgeInYears());
         }
         return null;
     }
@@ -812,8 +812,8 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getAgeBirthYear() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getAgeBirthYear());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getAgeBirthYear());
         }
         return null;
     }
@@ -827,8 +827,8 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public AgeEqualOrOverClaimWrapper getAgeEqualOrOver() {
-        if (xmlEAAPayload != null) {
-            return getAgeEqualOrOverClaim(xmlEAAPayload.getAgeEqualOrOver());
+        if (xmlAttestationPayload != null) {
+            return getAgeEqualOrOverClaim(xmlAttestationPayload.getAgeEqualOrOver());
         }
         return null;
     }
@@ -842,8 +842,8 @@ public class AttestationPayloadProxy {
      * @return a list of {@link AgeOverNNClaimWrapper}s
      */
     public List<AgeOverNNClaimWrapper> getAgeOverList() {
-        if (xmlEAAPayload != null) {
-            List<XmlAgeOverNNClaim> ageOverNN = xmlEAAPayload.getAgeOverNN();
+        if (xmlAttestationPayload != null) {
+            List<XmlAgeOverNNClaim> ageOverNN = xmlAttestationPayload.getAgeOverNN();
             if (ageOverNN != null && !ageOverNN.isEmpty()) {
                 return ageOverNN.stream().map(AgeOverNNClaimWrapper::new).collect(Collectors.toList());
             }
@@ -858,8 +858,8 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getResidentAddressCity() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getResidentAddressCity());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getResidentAddressCity());
         }
         return null;
     }
@@ -871,8 +871,8 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getResidentAddressState() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getResidentAddressState());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getResidentAddressState());
         }
         return null;
     }
@@ -884,8 +884,8 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getResidentAddressPostalCode() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getResidentAddressPostalCode());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getResidentAddressPostalCode());
         }
         return null;
     }
@@ -897,8 +897,8 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getResidentAddressCountry() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getResidentAddressCountry());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getResidentAddressCountry());
         }
         return null;
     }
@@ -914,8 +914,8 @@ public class AttestationPayloadProxy {
      * @return a list of {@link BiometricTemplateXXClaimWrapper}s
      */
     public List<BiometricTemplateXXClaimWrapper> getBiometricTemplateList() {
-        if (xmlEAAPayload != null) {
-            List<XmlBiometricTemplateXXClaim> biometricTemplateList = xmlEAAPayload.getBiometricTemplate();
+        if (xmlAttestationPayload != null) {
+            List<XmlBiometricTemplateXXClaim> biometricTemplateList = xmlAttestationPayload.getBiometricTemplate();
             if (biometricTemplateList != null && !biometricTemplateList.isEmpty()) {
                 return biometricTemplateList.stream().map(BiometricTemplateXXClaimWrapper::new).collect(Collectors.toList());
             }
@@ -929,8 +929,8 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getSignatureUsualMark() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getSignatureUsualMark());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getSignatureUsualMark());
         }
         return null;
     }
@@ -941,8 +941,8 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getFingerprint() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getFingerprint());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getFingerprint());
         }
         return null;
     }
@@ -953,8 +953,8 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getBusinessName() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getBusinessName());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getBusinessName());
         }
         return null;
     }
@@ -965,8 +965,8 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getOrganizationName() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getOrganizationName());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getOrganizationName());
         }
         return null;
     }
@@ -977,8 +977,8 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getProfession() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getProfession());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getProfession());
         }
         return null;
     }
@@ -989,8 +989,8 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getRelationshipFather() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getRelationshipFather());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getRelationshipFather());
         }
         return null;
     }
@@ -1001,8 +1001,8 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getRelationshipMother() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getRelationshipMother());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getRelationshipMother());
         }
         return null;
     }
@@ -1013,8 +1013,8 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getRelationshipParent() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getRelationshipParent());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getRelationshipParent());
         }
         return null;
     }
@@ -1025,8 +1025,8 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getRelationshipSon() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getRelationshipSon());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getRelationshipSon());
         }
         return null;
     }
@@ -1037,8 +1037,8 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getRelationshipDaughter() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getRelationshipDaughter());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getRelationshipDaughter());
         }
         return null;
     }
@@ -1049,8 +1049,8 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getRelationshipBrother() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getRelationshipBrother());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getRelationshipBrother());
         }
         return null;
     }
@@ -1061,8 +1061,8 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getRelationshipSister() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getRelationshipSister());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getRelationshipSister());
         }
         return null;
     }
@@ -1073,8 +1073,8 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getRelationshipSibling() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getRelationshipSibling());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getRelationshipSibling());
         }
         return null;
     }
@@ -1085,8 +1085,8 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getRelationshipSpouse() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getRelationshipSpouse());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getRelationshipSpouse());
         }
         return null;
     }
@@ -1097,8 +1097,8 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getRelationshipFatherInLaw() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getRelationshipFatherInLaw());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getRelationshipFatherInLaw());
         }
         return null;
     }
@@ -1109,8 +1109,8 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getRelationshipMotherInLaw() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getRelationshipMotherInLaw());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getRelationshipMotherInLaw());
         }
         return null;
     }
@@ -1121,8 +1121,8 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getRelationshipParentInLaw() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getRelationshipParentInLaw());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getRelationshipParentInLaw());
         }
         return null;
     }
@@ -1133,8 +1133,8 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getRelationshipSonInLaw() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getRelationshipSonInLaw());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getRelationshipSonInLaw());
         }
         return null;
     }
@@ -1145,8 +1145,8 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getRelationshipDaughterInLaw() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getRelationshipDaughterInLaw());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getRelationshipDaughterInLaw());
         }
         return null;
     }
@@ -1157,8 +1157,8 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getRelationshipChildInLaw() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getRelationshipChildInLaw());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getRelationshipChildInLaw());
         }
         return null;
     }
@@ -1169,8 +1169,8 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getRelationshipParentalAuthority() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getRelationshipParentalAuthority());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getRelationshipParentalAuthority());
         }
         return null;
     }
@@ -1181,8 +1181,8 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getRelationshipLegalRepresentative() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getRelationshipLegalRepresentative());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getRelationshipLegalRepresentative());
         }
         return null;
     }
@@ -1193,8 +1193,8 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getRelationshipAgent() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getRelationshipAgent());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getRelationshipAgent());
         }
         return null;
     }
@@ -1205,8 +1205,8 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getClaimedDocumentType() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getDocumentType());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getDocumentType());
         }
         return null;
     }
@@ -1217,8 +1217,8 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getAdministrativeIssuanceDate() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getAdministrativeIssuanceDate());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getAdministrativeIssuanceDate());
         }
         return null;
     }
@@ -1229,8 +1229,8 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getAdministrativeExpirationDate() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getAdministrativeExpirationDate());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getAdministrativeExpirationDate());
         }
         return null;
     }
@@ -1242,8 +1242,8 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getTrustAnchor() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getTrustAnchor());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getTrustAnchor());
         }
         return null;
     }
@@ -1254,8 +1254,8 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getResidentAddressStreet() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getResidentAddressStreet());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getResidentAddressStreet());
         }
         return null;
     }
@@ -1267,47 +1267,47 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getResidentAddressHouseNumber() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getResidentAddressHouseNumber());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getResidentAddressHouseNumber());
         }
         return null;
     }
 
-    /* ETSI TS 119 472-1 "5 Implementation of EAA based on SD-JWT VC" header parameters */
+    /* ETSI TS 119 472-1 "5 Implementation of attestation based on SD-JWT VC" header parameters */
 
     /**
-     * Gets the registration identifier of the legal entity on whose behalf the EAA has been issued.
+     * Gets the registration identifier of the legal entity on whose behalf the attestation has been issued.
      *
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getIssuingAuthorityRegistrationIdentifier() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getIssuingAuthorityRegistrationIdentifier());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getIssuingAuthorityRegistrationIdentifier());
         }
         return null;
     }
 
     /**
-     * Gets the signal indicating that the EAA shall be used only once, and that it shall not be retained for future use.
+     * Gets the signal indicating that the attestation shall be used only once, and that it shall not be retained for future use.
      *
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getOneTimeUse() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getOneTimeUse());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getOneTimeUse());
         }
         return null;
     }
 
     /**
-     * Gets the EAA short-lived component indicating that the validity period of the EAA is so short that
-     * it shall not be necessary to check its revocation revocation.
+     * Gets the attestation short-lived component indicating that the validity period of the attestation is so short that
+     * it shall not be necessary to check its revocation status.
      *
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getShortLived() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getShortLived());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getShortLived());
         }
         return null;
     }
@@ -1318,20 +1318,20 @@ public class AttestationPayloadProxy {
      * @return {@link ClaimWrapper}
      */
     public ClaimWrapper getEvidence() {
-        if (xmlEAAPayload != null) {
-            return getClaim(xmlEAAPayload.getEvidence());
+        if (xmlAttestationPayload != null) {
+            return getClaim(xmlAttestationPayload.getEvidence());
         }
         return null;
     }
 
     /**
-     * Gets the claim for associating a set of attributes to one entity different than the EAA subject.
+     * Gets the claim for associating a set of attributes to one entity different than the attestation subject.
      *
      * @return {@link ClaimWrapper}
      */
     public AttestedAttributesSubjectClaimWrapper getAttestedAttributesSubject() {
-        if (xmlEAAPayload != null) {
-            return getAttestedAttributesSubjectClaim(xmlEAAPayload.getAttestedAttributesSubject());
+        if (xmlAttestationPayload != null) {
+            return getAttestedAttributesSubjectClaim(xmlAttestationPayload.getAttestedAttributesSubject());
         }
         return null;
     }
@@ -1342,7 +1342,7 @@ public class AttestationPayloadProxy {
      * @return a list of {@link CredentialSubjectClaimWrapper}s
      */
     public List<CredentialSubjectClaimWrapper> getCredentialSubjectClaims() {
-        if (xmlEAAPayload != null) {
+        if (xmlAttestationPayload != null) {
             CredentialSubjectProxy credentialSubject = getCredentialSubject();
             return credentialSubject.getCredentialSubjects();
         }
@@ -1350,345 +1350,345 @@ public class AttestationPayloadProxy {
     }
 
     /**
-     * Gets a list of claims incorporated within the EAA Payload or provided as disclosures,
+     * Gets a list of claims incorporated within the attestation Payload or provided as disclosures,
      * which are not (yet) directly supported by the implementation.
      *
      * @return a lust of {@link ClaimWrapper}s
      */
     public List<ClaimWrapper> getOtherClaims() {
-        if (xmlEAAPayload != null && xmlEAAPayload.getOtherClaim() != null) {
-            return xmlEAAPayload.getOtherClaim().stream().map(ClaimWrapper::new).collect(Collectors.toList());
+        if (xmlAttestationPayload != null && xmlAttestationPayload.getOtherClaim() != null) {
+            return xmlAttestationPayload.getOtherClaim().stream().map(ClaimWrapper::new).collect(Collectors.toList());
         }
         return Collections.emptyList();
     }
 
     /**
-     * Gets a list of all claims present within an EAA Payload
+     * Gets a list of all claims present within an attestation Payload
      *
      * @return a list of {@link ClaimWrapper}s
      */
-    public List<ClaimWrapper> getAllEAAPayloadClaims() {
-        if (xmlEAAPayload == null) {
+    public List<ClaimWrapper> getAllAttestationPayloadClaims() {
+        if (xmlAttestationPayload == null) {
             return Collections.emptyList();
         }
 
         final List<ClaimWrapper> claimList = new ArrayList<>();
 
-        if (xmlEAAPayload.getIdentifier() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getIdentifier()));
+        if (xmlAttestationPayload.getIdentifier() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getIdentifier()));
         }
-        if (xmlEAAPayload.getIssuer() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getIssuer()));
+        if (xmlAttestationPayload.getIssuer() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getIssuer()));
         }
-        if (xmlEAAPayload.getSubject() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getSubject()));
+        if (xmlAttestationPayload.getSubject() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getSubject()));
         }
-        if (xmlEAAPayload.getAudience() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getAudience()));
+        if (xmlAttestationPayload.getAudience() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getAudience()));
         }
-        if (xmlEAAPayload.getIssuedAt() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getIssuedAt()));
+        if (xmlAttestationPayload.getIssuedAt() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getIssuedAt()));
         }
-        if (xmlEAAPayload.getNotBefore() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getNotBefore()));
+        if (xmlAttestationPayload.getNotBefore() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getNotBefore()));
         }
-        if (xmlEAAPayload.getExpiration() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getExpiration()));
+        if (xmlAttestationPayload.getExpiration() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getExpiration()));
         }
-        if (xmlEAAPayload.getUpdatedAt() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getUpdatedAt()));
+        if (xmlAttestationPayload.getUpdatedAt() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getUpdatedAt()));
         }
-        if (xmlEAAPayload.getCategory() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getCategory()));
+        if (xmlAttestationPayload.getCategory() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getCategory()));
         }
-        if (xmlEAAPayload.getVerifiableCredentialsType() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getVerifiableCredentialsType()));
-            if (xmlEAAPayload.getVerifiableCredentialsType().getIntegrity() != null) {
-                claimList.add(getIntegrityClaim(xmlEAAPayload.getVerifiableCredentialsType().getIntegrity()));
+        if (xmlAttestationPayload.getVerifiableCredentialsType() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getVerifiableCredentialsType()));
+            if (xmlAttestationPayload.getVerifiableCredentialsType().getIntegrity() != null) {
+                claimList.add(getIntegrityClaim(xmlAttestationPayload.getVerifiableCredentialsType().getIntegrity()));
             }
         }
-        if (xmlEAAPayload.getStatus() != null) {
-            claimList.add(getStatusClaim(xmlEAAPayload.getStatus()));
+        if (xmlAttestationPayload.getStatus() != null) {
+            claimList.add(getStatusClaim(xmlAttestationPayload.getStatus()));
         }
-        if (xmlEAAPayload.getNonce() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getNonce()));
+        if (xmlAttestationPayload.getNonce() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getNonce()));
         }
-        if (xmlEAAPayload.getDeviceKey() != null) {
-            claimList.add(getDeviceKeyClaim(xmlEAAPayload.getDeviceKey()));
+        if (xmlAttestationPayload.getDeviceKey() != null) {
+            claimList.add(getDeviceKeyClaim(xmlAttestationPayload.getDeviceKey()));
         }
-        if (xmlEAAPayload.getVersion() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getVersion()));
+        if (xmlAttestationPayload.getVersion() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getVersion()));
         }
-        if (xmlEAAPayload.getDocType() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getDocType()));
+        if (xmlAttestationPayload.getDocType() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getDocType()));
         }
-        if (xmlEAAPayload.getValidityInfo() != null) {
-            claimList.add(getValidityInfoClaim(xmlEAAPayload.getValidityInfo()));
+        if (xmlAttestationPayload.getValidityInfo() != null) {
+            claimList.add(getValidityInfoClaim(xmlAttestationPayload.getValidityInfo()));
         }
-        if (xmlEAAPayload.getFullName() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getFullName()));
+        if (xmlAttestationPayload.getFullName() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getFullName()));
         }
-        if (xmlEAAPayload.getGivenName() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getGivenName()));
+        if (xmlAttestationPayload.getGivenName() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getGivenName()));
         }
-        if (xmlEAAPayload.getFamilyName() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getFamilyName()));
+        if (xmlAttestationPayload.getFamilyName() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getFamilyName()));
         }
-        if (xmlEAAPayload.getMiddleName() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getMiddleName()));
+        if (xmlAttestationPayload.getMiddleName() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getMiddleName()));
         }
-        if (xmlEAAPayload.getNickname() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getNickname()));
+        if (xmlAttestationPayload.getNickname() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getNickname()));
         }
-        if (xmlEAAPayload.getShortName() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getShortName()));
+        if (xmlAttestationPayload.getShortName() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getShortName()));
         }
-        if (xmlEAAPayload.getProfileUrl() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getProfileUrl()));
+        if (xmlAttestationPayload.getProfileUrl() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getProfileUrl()));
         }
-        if (xmlEAAPayload.getPictureUrl() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getPictureUrl()));
+        if (xmlAttestationPayload.getPictureUrl() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getPictureUrl()));
         }
-        if (xmlEAAPayload.getWebsiteUrl() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getWebsiteUrl()));
+        if (xmlAttestationPayload.getWebsiteUrl() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getWebsiteUrl()));
         }
-        if (xmlEAAPayload.getEmail() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getEmail()));
+        if (xmlAttestationPayload.getEmail() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getEmail()));
         }
-        if (xmlEAAPayload.getEmailVerified() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getEmailVerified()));
+        if (xmlAttestationPayload.getEmailVerified() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getEmailVerified()));
         }
-        if (xmlEAAPayload.getGender() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getGender()));
+        if (xmlAttestationPayload.getGender() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getGender()));
         }
-        if (xmlEAAPayload.getBirthdate() != null) {
-            claimList.add(getBirthdateClaim(xmlEAAPayload.getBirthdate()));
+        if (xmlAttestationPayload.getBirthdate() != null) {
+            claimList.add(getBirthdateClaim(xmlAttestationPayload.getBirthdate()));
         }
-        if (xmlEAAPayload.getTimezone() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getTimezone()));
+        if (xmlAttestationPayload.getTimezone() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getTimezone()));
         }
-        if (xmlEAAPayload.getLocale() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getLocale()));
+        if (xmlAttestationPayload.getLocale() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getLocale()));
         }
-        if (xmlEAAPayload.getAddress() != null) {
-            claimList.add(getAddressClaim(xmlEAAPayload.getAddress()));
+        if (xmlAttestationPayload.getAddress() != null) {
+            claimList.add(getAddressClaim(xmlAttestationPayload.getAddress()));
         }
-        if (xmlEAAPayload.getPhoneNumber() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getPhoneNumber()));
+        if (xmlAttestationPayload.getPhoneNumber() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getPhoneNumber()));
         }
-        if (xmlEAAPayload.getPhoneNumberVerified() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getPhoneNumberVerified()));
+        if (xmlAttestationPayload.getPhoneNumberVerified() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getPhoneNumberVerified()));
         }
-        if (xmlEAAPayload.getPlaceOfBirth() != null) {
-            claimList.add(getPlaceOfBirthClaim(xmlEAAPayload.getPlaceOfBirth()));
+        if (xmlAttestationPayload.getPlaceOfBirth() != null) {
+            claimList.add(getPlaceOfBirthClaim(xmlAttestationPayload.getPlaceOfBirth()));
         }
-        if (xmlEAAPayload.getNationalities() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getNationalities()));
+        if (xmlAttestationPayload.getNationalities() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getNationalities()));
         }
-        if (xmlEAAPayload.getBirthFamilyName() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getBirthFamilyName()));
+        if (xmlAttestationPayload.getBirthFamilyName() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getBirthFamilyName()));
         }
-        if (xmlEAAPayload.getBirthGivenName() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getBirthGivenName()));
+        if (xmlAttestationPayload.getBirthGivenName() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getBirthGivenName()));
         }
-        if (xmlEAAPayload.getBirthMiddleName() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getBirthMiddleName()));
+        if (xmlAttestationPayload.getBirthMiddleName() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getBirthMiddleName()));
         }
-        if (xmlEAAPayload.getSalutation() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getSalutation()));
+        if (xmlAttestationPayload.getSalutation() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getSalutation()));
         }
-        if (xmlEAAPayload.getTitle() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getTitle()));
+        if (xmlAttestationPayload.getTitle() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getTitle()));
         }
-        if (xmlEAAPayload.getMobilePhoneNumber() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getMobilePhoneNumber()));
+        if (xmlAttestationPayload.getMobilePhoneNumber() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getMobilePhoneNumber()));
         }
-        if (xmlEAAPayload.getPseudonym() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getPseudonym()));
+        if (xmlAttestationPayload.getPseudonym() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getPseudonym()));
         }
-        if (xmlEAAPayload.getCredentialSubject() != null) {
+        if (xmlAttestationPayload.getCredentialSubject() != null) {
             claimList.addAll(getCredentialSubject().getCredentialSubjects());
         }
-        if (xmlEAAPayload.getIssuingCountry() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getIssuingCountry()));
+        if (xmlAttestationPayload.getIssuingCountry() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getIssuingCountry()));
         }
-        if (xmlEAAPayload.getIssuingAuthority() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getIssuingAuthority()));
+        if (xmlAttestationPayload.getIssuingAuthority() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getIssuingAuthority()));
         }
-        if (xmlEAAPayload.getDocumentNumber() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getDocumentNumber()));
+        if (xmlAttestationPayload.getDocumentNumber() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getDocumentNumber()));
         }
-        if (xmlEAAPayload.getPortrait() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getPortrait()));
+        if (xmlAttestationPayload.getPortrait() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getPortrait()));
         }
-        if (xmlEAAPayload.getDrivingPrivileges() != null) {
-            claimList.add(getDrivingPrivilegesClaim(xmlEAAPayload.getDrivingPrivileges()));
+        if (xmlAttestationPayload.getDrivingPrivileges() != null) {
+            claimList.add(getDrivingPrivilegesClaim(xmlAttestationPayload.getDrivingPrivileges()));
         }
-        if (xmlEAAPayload.getUNDistinguishingSign() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getUNDistinguishingSign()));
+        if (xmlAttestationPayload.getUNDistinguishingSign() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getUNDistinguishingSign()));
         }
-        if (xmlEAAPayload.getPersonalAdministrativeNumber() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getPersonalAdministrativeNumber()));
+        if (xmlAttestationPayload.getPersonalAdministrativeNumber() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getPersonalAdministrativeNumber()));
         }
-        if (xmlEAAPayload.getHeight() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getHeight()));
+        if (xmlAttestationPayload.getHeight() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getHeight()));
         }
-        if (xmlEAAPayload.getWeight() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getWeight()));
+        if (xmlAttestationPayload.getWeight() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getWeight()));
         }
-        if (xmlEAAPayload.getEyeColour() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getEyeColour()));
+        if (xmlAttestationPayload.getEyeColour() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getEyeColour()));
         }
-        if (xmlEAAPayload.getHairColour() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getHairColour()));
+        if (xmlAttestationPayload.getHairColour() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getHairColour()));
         }
-        if (xmlEAAPayload.getResidentPostalAddress() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getResidentPostalAddress()));
+        if (xmlAttestationPayload.getResidentPostalAddress() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getResidentPostalAddress()));
         }
-        if (xmlEAAPayload.getPortraitCaptureDate() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getPortraitCaptureDate()));
+        if (xmlAttestationPayload.getPortraitCaptureDate() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getPortraitCaptureDate()));
         }
-        if (xmlEAAPayload.getAgeInYears() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getAgeInYears()));
+        if (xmlAttestationPayload.getAgeInYears() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getAgeInYears()));
         }
-        if (xmlEAAPayload.getAgeBirthYear() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getAgeBirthYear()));
+        if (xmlAttestationPayload.getAgeBirthYear() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getAgeBirthYear()));
         }
-        if (xmlEAAPayload.getAgeEqualOrOver() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getAgeEqualOrOver()));
+        if (xmlAttestationPayload.getAgeEqualOrOver() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getAgeEqualOrOver()));
         }
-        if (xmlEAAPayload.getAgeOverNN() != null) {
-            for (XmlClaim item : xmlEAAPayload.getAgeOverNN()) {
+        if (xmlAttestationPayload.getAgeOverNN() != null) {
+            for (XmlClaim item : xmlAttestationPayload.getAgeOverNN()) {
                 claimList.add(getClaim(item));
             }
         }
-        if (xmlEAAPayload.getIssuingJurisdiction() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getIssuingJurisdiction()));
+        if (xmlAttestationPayload.getIssuingJurisdiction() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getIssuingJurisdiction()));
         }
-        if (xmlEAAPayload.getResidentAddressCity() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getResidentAddressCity()));
+        if (xmlAttestationPayload.getResidentAddressCity() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getResidentAddressCity()));
         }
-        if (xmlEAAPayload.getResidentAddressState() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getResidentAddressState()));
+        if (xmlAttestationPayload.getResidentAddressState() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getResidentAddressState()));
         }
-        if (xmlEAAPayload.getResidentAddressPostalCode() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getResidentAddressPostalCode()));
+        if (xmlAttestationPayload.getResidentAddressPostalCode() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getResidentAddressPostalCode()));
         }
-        if (xmlEAAPayload.getResidentAddressCountry() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getResidentAddressCountry()));
+        if (xmlAttestationPayload.getResidentAddressCountry() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getResidentAddressCountry()));
         }
-        if (xmlEAAPayload.getBiometricTemplate() != null) {
-            for (XmlClaim item : xmlEAAPayload.getBiometricTemplate()) {
+        if (xmlAttestationPayload.getBiometricTemplate() != null) {
+            for (XmlClaim item : xmlAttestationPayload.getBiometricTemplate()) {
                 claimList.add(getClaim(item));
             }
         }
-        if (xmlEAAPayload.getSignatureUsualMark() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getSignatureUsualMark()));
+        if (xmlAttestationPayload.getSignatureUsualMark() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getSignatureUsualMark()));
         }
-        if (xmlEAAPayload.getFingerprint() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getFingerprint()));
+        if (xmlAttestationPayload.getFingerprint() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getFingerprint()));
         }
-        if (xmlEAAPayload.getBusinessName() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getBusinessName()));
+        if (xmlAttestationPayload.getBusinessName() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getBusinessName()));
         }
-        if (xmlEAAPayload.getOrganizationName() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getOrganizationName()));
+        if (xmlAttestationPayload.getOrganizationName() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getOrganizationName()));
         }
-        if (xmlEAAPayload.getBirthFullName() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getBirthFullName()));
+        if (xmlAttestationPayload.getBirthFullName() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getBirthFullName()));
         }
-        if (xmlEAAPayload.getProfession() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getProfession()));
+        if (xmlAttestationPayload.getProfession() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getProfession()));
         }
-        if (xmlEAAPayload.getRelationshipFather() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getRelationshipFather()));
+        if (xmlAttestationPayload.getRelationshipFather() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getRelationshipFather()));
         }
-        if (xmlEAAPayload.getRelationshipMother() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getRelationshipMother()));
+        if (xmlAttestationPayload.getRelationshipMother() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getRelationshipMother()));
         }
-        if (xmlEAAPayload.getRelationshipParent() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getRelationshipParent()));
+        if (xmlAttestationPayload.getRelationshipParent() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getRelationshipParent()));
         }
-        if (xmlEAAPayload.getRelationshipSon() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getRelationshipSon()));
+        if (xmlAttestationPayload.getRelationshipSon() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getRelationshipSon()));
         }
-        if (xmlEAAPayload.getRelationshipDaughter() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getRelationshipDaughter()));
+        if (xmlAttestationPayload.getRelationshipDaughter() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getRelationshipDaughter()));
         }
-        if (xmlEAAPayload.getRelationshipBrother() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getRelationshipBrother()));
+        if (xmlAttestationPayload.getRelationshipBrother() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getRelationshipBrother()));
         }
-        if (xmlEAAPayload.getRelationshipSister() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getRelationshipSister()));
+        if (xmlAttestationPayload.getRelationshipSister() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getRelationshipSister()));
         }
-        if (xmlEAAPayload.getRelationshipSibling() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getRelationshipSibling()));
+        if (xmlAttestationPayload.getRelationshipSibling() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getRelationshipSibling()));
         }
-        if (xmlEAAPayload.getRelationshipSpouse() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getRelationshipSpouse()));
+        if (xmlAttestationPayload.getRelationshipSpouse() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getRelationshipSpouse()));
         }
-        if (xmlEAAPayload.getRelationshipFatherInLaw() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getRelationshipFatherInLaw()));
+        if (xmlAttestationPayload.getRelationshipFatherInLaw() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getRelationshipFatherInLaw()));
         }
-        if (xmlEAAPayload.getRelationshipMotherInLaw() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getRelationshipMotherInLaw()));
+        if (xmlAttestationPayload.getRelationshipMotherInLaw() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getRelationshipMotherInLaw()));
         }
-        if (xmlEAAPayload.getRelationshipParentInLaw() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getRelationshipParentInLaw()));
+        if (xmlAttestationPayload.getRelationshipParentInLaw() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getRelationshipParentInLaw()));
         }
-        if (xmlEAAPayload.getRelationshipSonInLaw() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getRelationshipSonInLaw()));
+        if (xmlAttestationPayload.getRelationshipSonInLaw() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getRelationshipSonInLaw()));
         }
-        if (xmlEAAPayload.getRelationshipDaughterInLaw() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getRelationshipDaughterInLaw()));
+        if (xmlAttestationPayload.getRelationshipDaughterInLaw() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getRelationshipDaughterInLaw()));
         }
-        if (xmlEAAPayload.getRelationshipChildInLaw() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getRelationshipChildInLaw()));
+        if (xmlAttestationPayload.getRelationshipChildInLaw() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getRelationshipChildInLaw()));
         }
-        if (xmlEAAPayload.getRelationshipParentalAuthority() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getRelationshipParentalAuthority()));
+        if (xmlAttestationPayload.getRelationshipParentalAuthority() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getRelationshipParentalAuthority()));
         }
-        if (xmlEAAPayload.getRelationshipLegalRepresentative() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getRelationshipLegalRepresentative()));
+        if (xmlAttestationPayload.getRelationshipLegalRepresentative() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getRelationshipLegalRepresentative()));
         }
-        if (xmlEAAPayload.getRelationshipAgent() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getRelationshipAgent()));
+        if (xmlAttestationPayload.getRelationshipAgent() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getRelationshipAgent()));
         }
-        if (xmlEAAPayload.getDocumentType() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getDocumentType()));
+        if (xmlAttestationPayload.getDocumentType() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getDocumentType()));
         }
-        if (xmlEAAPayload.getAdministrativeIssuanceDate() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getAdministrativeIssuanceDate()));
+        if (xmlAttestationPayload.getAdministrativeIssuanceDate() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getAdministrativeIssuanceDate()));
         }
-        if (xmlEAAPayload.getAdministrativeExpirationDate() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getAdministrativeExpirationDate()));
+        if (xmlAttestationPayload.getAdministrativeExpirationDate() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getAdministrativeExpirationDate()));
         }
-        if (xmlEAAPayload.getTrustAnchor() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getTrustAnchor()));
+        if (xmlAttestationPayload.getTrustAnchor() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getTrustAnchor()));
         }
-        if (xmlEAAPayload.getResidentAddressStreet() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getResidentAddressStreet()));
+        if (xmlAttestationPayload.getResidentAddressStreet() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getResidentAddressStreet()));
         }
-        if (xmlEAAPayload.getResidentAddressHouseNumber() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getResidentAddressHouseNumber()));
+        if (xmlAttestationPayload.getResidentAddressHouseNumber() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getResidentAddressHouseNumber()));
         }
-        if (xmlEAAPayload.getIssuingAuthorityRegistrationIdentifier() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getIssuingAuthorityRegistrationIdentifier()));
+        if (xmlAttestationPayload.getIssuingAuthorityRegistrationIdentifier() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getIssuingAuthorityRegistrationIdentifier()));
         }
-        if (xmlEAAPayload.getOneTimeUse() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getOneTimeUse()));
+        if (xmlAttestationPayload.getOneTimeUse() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getOneTimeUse()));
         }
-        if (xmlEAAPayload.getShortLived() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getShortLived()));
+        if (xmlAttestationPayload.getShortLived() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getShortLived()));
         }
-        if (xmlEAAPayload.getEvidence() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getEvidence()));
+        if (xmlAttestationPayload.getEvidence() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getEvidence()));
         }
-        if (xmlEAAPayload.getAttestedAttributesSubject() != null) {
-            claimList.add(getClaim(xmlEAAPayload.getAttestedAttributesSubject()));
+        if (xmlAttestationPayload.getAttestedAttributesSubject() != null) {
+            claimList.add(getClaim(xmlAttestationPayload.getAttestedAttributesSubject()));
         }
-        if (xmlEAAPayload.getOtherClaim() != null && !xmlEAAPayload.getOtherClaim().isEmpty()) {
-            List<ClaimWrapper> claimWrappers = xmlEAAPayload.getOtherClaim().stream()
+        if (xmlAttestationPayload.getOtherClaim() != null && !xmlAttestationPayload.getOtherClaim().isEmpty()) {
+            List<ClaimWrapper> claimWrappers = xmlAttestationPayload.getOtherClaim().stream()
                     .map(this::getClaim).collect(Collectors.toList());
             claimList.addAll(claimWrappers);
         }
@@ -1762,7 +1762,7 @@ public class AttestationPayloadProxy {
     }
     
     private CredentialSubjectProxy getCredentialSubject() {
-        return new CredentialSubjectProxy(xmlEAAPayload.getCredentialSubject());
+        return new CredentialSubjectProxy(xmlAttestationPayload.getCredentialSubject());
     }
 
     private DrivingPrivilegesClaimWrapper getDrivingPrivilegesClaim(XmlDrivingPrivilegesClaim xmlDrivingPrivilegesClaim) {

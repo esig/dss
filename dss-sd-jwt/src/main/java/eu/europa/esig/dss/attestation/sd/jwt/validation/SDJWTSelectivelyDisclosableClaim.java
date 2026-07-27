@@ -31,7 +31,7 @@ import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import java.util.List;
 
 /**
- * Represents an EAA Disclosure extracted from an SD-JWT VC token
+ * Represents an attestation Disclosure extracted from an SD-JWT token
  *
  */
 public class SDJWTSelectivelyDisclosableClaim extends SelectivelyDisclosableClaim {

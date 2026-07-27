@@ -30,12 +30,12 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Provides configuration for the SD-JWT VC payload creation
+ * Provides configuration for the SD-JWT payload creation
  *
  */
 public class SDJWTPayloadParameters extends AbstractAttestationPayloadParameters {
 
-    /** EAA issuer subject */
+    /** attestation issuer subject */
     private String issuer;
 
     /** Contains the type of the key used for the device authentication. */
@@ -65,14 +65,14 @@ public class SDJWTPayloadParameters extends AbstractAttestationPayloadParameters
     private final SDJWTClaimParameters nonSelectivelyDisclosableParameters = new SDJWTClaimParameters();
 
     /**
-     * Default constructor to instantiate SD-JWT VC Payload parameters
+     * Default constructor to instantiate SD-JWT Payload parameters
      */
     public SDJWTPayloadParameters() {
         // empty
     }
 
     /**
-     * Gets the EAA issuer subject
+     * Gets the attestation issuer subject
      *
      * @return {@link String}
      */
@@ -81,7 +81,7 @@ public class SDJWTPayloadParameters extends AbstractAttestationPayloadParameters
     }
 
     /**
-     * Sets the EAA issue subject
+     * Sets the attestation issue subject
      *
      * @param issuer {@link String}
      */
@@ -100,7 +100,7 @@ public class SDJWTPayloadParameters extends AbstractAttestationPayloadParameters
 
     /**
      * Sets the type of the key used for the device authentication.
-     * To be used only when a representation of an EAA subject certificate is provided, but not a device public key.
+     * To be used only when a representation of an attestation subject certificate is provided, but not a device public key.
      *
      * @param deviceKeyType {@link String}
      */
@@ -227,13 +227,13 @@ public class SDJWTPayloadParameters extends AbstractAttestationPayloadParameters
     /**
      * Sets the revocation, according to the ETSI TS 119 472-1 v1.2.1 definition,
      * that includes type, purpose, index and uri.
-     * NOTE: when used, the properties are to be added within the "revocation" claim,
+     * NOTE: when used, the properties are to be added within the "status" claim,
      * and not within the "status_list" child.
      *
-     * @param type {@link String} type of the EAA revocation token (e.g. "TokenStatusList" for Token Status List
+     * @param type {@link String} type of the attestation revocation token (e.g. "TokenStatusList" for Token Status List
      *             as specified in IETF draft-ietf-oauth-revocation-list-13)
      * @param purpose {@link String} purpose of the revocation list
-     * @param index integer representing an EAA identifier within the revocation
+     * @param index integer representing an attestation identifier within the revocation
      * @param url {@link String} where the revocation can be accessed from
      */
     public void setStatusList(String type, String purpose, int index, String url) {
@@ -241,9 +241,9 @@ public class SDJWTPayloadParameters extends AbstractAttestationPayloadParameters
     }
 
     /**
-     * Gets a catalogue of claims to be made selectively disclosable within the produced SD-JWT VC EAA.
+     * Gets a catalogue of claims to be made selectively disclosable within the produced SD-JWT attestation.
      * When parameters are defined within the object, the computed hashes will be computed and
-     * incorporated within "_sd" header parameter of the EAA Payload.
+     * incorporated within "_sd" header parameter of the attestation Payload.
      * To provide the plain values on presentation, the disclosures shall be generated.
      *
      * @return {@link SDJWTClaimParameters}
@@ -254,7 +254,7 @@ public class SDJWTPayloadParameters extends AbstractAttestationPayloadParameters
 
     /**
      * Gets a catalogue of claims to be mase non-selectively disclosable and
-     * thus to be included within the SD-JWT VC EAA Payload in the plain form.
+     * thus to be included within the SD-JWT attestation Payload in the plain form.
      *
      * @return {@link SDJWTClaimParameters}
      */
@@ -264,7 +264,7 @@ public class SDJWTPayloadParameters extends AbstractAttestationPayloadParameters
 
     @Override
     public String toString() {
-        return "SDJWTEAAPayloadParameters [" +
+        return "SDJWTPayloadParameters [" +
                 "issuer='" + issuer + '\'' +
                 ", selectivelyDisclosableParameters=" + selectivelyDisclosableParameters +
                 ", nonSelectivelyDisclosableParameters=" + nonSelectivelyDisclosableParameters +

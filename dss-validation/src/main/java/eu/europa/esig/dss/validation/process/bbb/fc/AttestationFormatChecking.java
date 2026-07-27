@@ -34,7 +34,7 @@ import eu.europa.esig.dss.validation.process.attestation.checks.AttestationSigna
 import eu.europa.esig.dss.validation.process.attestation.checks.KeyBindingSignaturePresentCheck;
 
 /**
- * Verifies format of an Electronic Attestation of Attributes (EAA)
+ * Verifies format of an attestation
  *
  */
 public class AttestationFormatChecking extends AbstractFormatChecking<AttestationWrapper> {
@@ -44,13 +44,13 @@ public class AttestationFormatChecking extends AbstractFormatChecking<Attestatio
      *
      * @param i18nProvider {@link I18nProvider}
      * @param diagnosticData {@link DiagnosticData}
-     * @param eaa {@link AttestationWrapper}
+     * @param attestation {@link AttestationWrapper}
      * @param context {@link Context}
      * @param policy {@link ValidationPolicy}
      */
     public AttestationFormatChecking(I18nProvider i18nProvider, DiagnosticData diagnosticData,
-                                     AttestationWrapper eaa, Context context, ValidationPolicy policy) {
-        super(i18nProvider, diagnosticData, eaa, context, policy);
+                                     AttestationWrapper attestation, Context context, ValidationPolicy policy) {
+        super(i18nProvider, diagnosticData, attestation, context, policy);
     }
 
     @Override
@@ -67,22 +67,22 @@ public class AttestationFormatChecking extends AbstractFormatChecking<Attestatio
     }
 
     private ChainItem<XmlFC> signatureUnicity() {
-        LevelRule constraint = policy.getEAASignatureUnicityConstraint();
+        LevelRule constraint = policy.getAttestationSignatureUnicityConstraint();
         return new AttestationSignatureUnicityCheck(i18nProvider, result, token, constraint);
     }
 
     private ChainItem<XmlFC> disclosurePresent() {
-        LevelRule constraint = policy.getEAADisclosurePresentConstraint();
+        LevelRule constraint = policy.getAttestationDisclosurePresentConstraint();
         return new DisclosurePresentCheck(i18nProvider, result, token, constraint);
     }
 
     private ChainItem<XmlFC> disclosureListExhaustive() {
-        LevelRule constraint = policy.getEAADisclosureListExhaustiveConstraint();
+        LevelRule constraint = policy.getAttestationDisclosureListExhaustiveConstraint();
         return new DisclosureListExhaustiveCheck(i18nProvider, result, token, constraint);
     }
 
     private ChainItem<XmlFC> keyBindingSignaturePresent() {
-        LevelRule constraint = policy.getEAAKeyBindingSignaturePresentConstraint();
+        LevelRule constraint = policy.getAttestationKeyBindingSignaturePresentConstraint();
         return new KeyBindingSignaturePresentCheck(i18nProvider, result, token, constraint);
     }
 

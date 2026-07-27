@@ -146,34 +146,34 @@ class SDJWTCompactWithDisclosuresValidationTest extends AbstractSDJWTTestValidat
     protected void checkClaims(DiagnosticData diagnosticData) {
         super.checkClaims(diagnosticData);
 
-        AttestationWrapper eaa = diagnosticData.getEAAs().get(0);
-        assertEquals("https://issuer.example.com", eaa.getIssuer());
-        assertEquals("user_42", eaa.getSubject());
-        assertEquals(DSSUtils.parseRFCDate("2029-09-01T23:33:20Z"), eaa.getExpiration());
-        assertEquals(DSSUtils.parseRFCDate("2023-05-02T04:00:00Z"), eaa.getIssuedAt());
-        assertEquals(DSSUtils.parseRFCDate("2019-10-02T07:06:40Z"), eaa.getUpdatedAt());
+        AttestationWrapper attestation = diagnosticData.getAttestations().get(0);
+        assertEquals("https://issuer.example.com", attestation.getIssuer());
+        assertEquals("user_42", attestation.getSubject());
+        assertEquals(DSSUtils.parseRFCDate("2029-09-01T23:33:20Z"), attestation.getExpiration());
+        assertEquals(DSSUtils.parseRFCDate("2023-05-02T04:00:00Z"), attestation.getIssuedAt());
+        assertEquals(DSSUtils.parseRFCDate("2019-10-02T07:06:40Z"), attestation.getUpdatedAt());
 
-        assertEquals("John", eaa.getGivenName());
-        assertEquals("Doe", eaa.getFamilyName());
-        assertEquals("johndoe@example.com", eaa.getEmail());
-        assertNull(eaa.getEmailVerified());
-        assertEquals(DSSUtils.parseRFCDate("1940-01-01T00:00:00Z"), eaa.getBirthdate());
-        assertEquals("Anytown", eaa.getAddressCity());
-        assertEquals("Anystate", eaa.getAddressStateOrProvince());
-        assertEquals("US", eaa.getAddressCountry());
-        assertEquals("123 Main St", eaa.getStreetAddress());
-        assertEquals("+1-202-555-0101", eaa.getPhoneNumber());
-        assertTrue(eaa.getPhoneNumberVerified());
-        assertEquals(Arrays.asList("US", "DE"), eaa.getNationalities());
+        assertEquals("John", attestation.getGivenName());
+        assertEquals("Doe", attestation.getFamilyName());
+        assertEquals("johndoe@example.com", attestation.getEmail());
+        assertNull(attestation.getEmailVerified());
+        assertEquals(DSSUtils.parseRFCDate("1940-01-01T00:00:00Z"), attestation.getBirthdate());
+        assertEquals("Anytown", attestation.getAddressCity());
+        assertEquals("Anystate", attestation.getAddressStateOrProvince());
+        assertEquals("US", attestation.getAddressCountry());
+        assertEquals("123 Main St", attestation.getStreetAddress());
+        assertEquals("+1-202-555-0101", attestation.getPhoneNumber());
+        assertTrue(attestation.getPhoneNumberVerified());
+        assertEquals(Arrays.asList("US", "DE"), attestation.getNationalities());
 
-        assertEquals("urn:eudi:attestation:1", eaa.getVerifiableCredentialsTypeUri());
-        assertEquals(DigestAlgorithm.SHA256, eaa.getVerifiableCredentialsTypeIntegrityDigestAlgorithm());
-        assertNotNull(eaa.getVerifiableCredentialsTypeIntegrityBytes());
+        assertEquals("urn:eudi:attestation:1", attestation.getVerifiableCredentialsTypeUri());
+        assertEquals(DigestAlgorithm.SHA256, attestation.getVerifiableCredentialsTypeIntegrityDigestAlgorithm());
+        assertNotNull(attestation.getVerifiableCredentialsTypeIntegrityBytes());
 
-        List<ClaimWrapper> selectivelyDisclosableClaims = eaa.getSelectivelyDisclosableClaims();
+        List<ClaimWrapper> selectivelyDisclosableClaims = attestation.getSelectivelyDisclosableClaims();
         assertEquals(10, selectivelyDisclosableClaims.size());
 
-        List<ClaimWrapper> payloadClaims = eaa.getAllEAAPayloadClaims();
+        List<ClaimWrapper> payloadClaims = attestation.getAllAttestationPayloadClaims();
         assertNotNull(payloadClaims);
 
         boolean issuerClaimFound = false;

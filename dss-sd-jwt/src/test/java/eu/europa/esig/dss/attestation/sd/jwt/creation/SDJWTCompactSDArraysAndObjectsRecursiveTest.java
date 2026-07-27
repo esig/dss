@@ -46,7 +46,7 @@ class SDJWTCompactSDArraysAndObjectsRecursiveTest extends AbstractSDJWTTestIssua
     @BeforeEach
     void init() {
         payloadParameters = new SDJWTPayloadParameters();
-        payloadParameters.setIssuer("EAA provider");
+        payloadParameters.setIssuer("Attestation provider");
         payloadParameters.nonSelectivelyDisclosable().setSubject(DSSASN1Utils.getSubjectCommonName(getSigningCert()));
         payloadParameters.setDeviceKey(getSigningCert().getPublicKey());
 
@@ -116,11 +116,11 @@ class SDJWTCompactSDArraysAndObjectsRecursiveTest extends AbstractSDJWTTestIssua
     }
 
     @Override
-    protected void checkEAADigestMatchers(DiagnosticData diagnosticData) {
-        super.checkEAADigestMatchers(diagnosticData);
+    protected void checkAttestationDigestMatchers(DiagnosticData diagnosticData) {
+        super.checkAttestationDigestMatchers(diagnosticData);
 
-        AttestationWrapper eaa = diagnosticData.getEAAs().get(0);
-        List<XmlDigestMatcher> digestMatchers = eaa.getDigestMatchers();
+        AttestationWrapper attestation = diagnosticData.getAttestations().get(0);
+        List<XmlDigestMatcher> digestMatchers = attestation.getDigestMatchers();
         assertEquals(24, digestMatchers.size());
 
         boolean givenNameSDFound = false;
@@ -146,7 +146,7 @@ class SDJWTCompactSDArraysAndObjectsRecursiveTest extends AbstractSDJWTTestIssua
         int orphanDisclosures = 0;
 
         for (XmlDigestMatcher xmlDigestMatcher : digestMatchers) {
-            if (DigestMatcherType.EAA_ORPHAN_SELECTIVELY_DISCLOSABLE_CLAIM == xmlDigestMatcher.getType()) {
+            if (DigestMatcherType.ORPHAN_SELECTIVELY_DISCLOSABLE_CLAIM == xmlDigestMatcher.getType()) {
                 ++orphanDisclosures;
                 continue;
             }

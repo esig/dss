@@ -97,11 +97,11 @@ class MdocISOMdLNextUpdateTest extends AbstractMdocPresentationTestIssuance {
     }
 
     @Override
-    protected void checkEAADigestMatchers(DiagnosticData diagnosticData) {
-        super.checkEAADigestMatchers(diagnosticData);
+    protected void checkAttestationDigestMatchers(DiagnosticData diagnosticData) {
+        super.checkAttestationDigestMatchers(diagnosticData);
 
-        AttestationWrapper eaa = diagnosticData.getEAAs().get(0);
-        List<XmlDigestMatcher> digestMatchers = eaa.getDigestMatchers();
+        AttestationWrapper attestation = diagnosticData.getAttestations().get(0);
+        List<XmlDigestMatcher> digestMatchers = attestation.getDigestMatchers();
         assertEquals(11, digestMatchers.size());
 
         boolean familyNameSDFound = false;
@@ -180,10 +180,10 @@ class MdocISOMdLNextUpdateTest extends AbstractMdocPresentationTestIssuance {
     protected void checkClaims(DiagnosticData diagnosticData) {
         super.checkClaims(diagnosticData);
 
-        AttestationWrapper eaa = diagnosticData.getEAAById(diagnosticData.getFirstEAAId());
-        assertEquals("1.0", eaa.getVersion());
-        assertEquals("org.iso.18013.5.1.mDL", eaa.getAttestationDocumentType());
-        assertNotNull(eaa.getNextUpdate());
+        AttestationWrapper attestation = diagnosticData.getAttestationById(diagnosticData.getFirstAttestationId());
+        assertEquals("1.0", attestation.getVersion());
+        assertEquals("org.iso.18013.5.1.mDL", attestation.getAttestationDocumentType());
+        assertNotNull(attestation.getNextUpdate());
     }
 
     @Override

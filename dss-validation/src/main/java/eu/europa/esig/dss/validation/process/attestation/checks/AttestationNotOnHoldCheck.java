@@ -32,31 +32,31 @@ import eu.europa.esig.dss.model.policy.MultiValuesRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
 /**
- * Checks whether the corresponding revocation declares that the EAA is not on hold
+ * Checks whether the corresponding revocation declares that the attestation is not on hold
  *
  */
 public class AttestationNotOnHoldCheck extends ChainItem<XmlSAV> {
 
-    /** EAA revocation token to check */
-    private final AttestationRevocationWrapper eaaStatusToken;
+    /** attestation revocation token to check */
+    private final AttestationRevocationWrapper attestationRevocationToken;
 
     /**
      * Default constructor
      *
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlSAV}
-     * @param eaaStatusToken {@link AttestationRevocationWrapper}
+     * @param attestationRevocationToken {@link AttestationRevocationWrapper}
      * @param constraint {@link MultiValuesRule}
      */
     public AttestationNotOnHoldCheck(final I18nProvider i18nProvider, final XmlSAV result,
-                                     final AttestationRevocationWrapper eaaStatusToken, final LevelRule constraint) {
+                                     final AttestationRevocationWrapper attestationRevocationToken, final LevelRule constraint) {
         super(i18nProvider, result, constraint);
-        this.eaaStatusToken = eaaStatusToken;
+        this.attestationRevocationToken = attestationRevocationToken;
     }
 
     @Override
     protected boolean process() {
-        return eaaStatusToken == null || AttestationStatus.SUSPENDED != eaaStatusToken.getStatus();
+        return attestationRevocationToken == null || AttestationStatus.SUSPENDED != attestationRevocationToken.getStatus();
     }
 
     @Override

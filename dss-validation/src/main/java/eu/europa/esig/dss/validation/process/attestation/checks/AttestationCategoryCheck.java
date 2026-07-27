@@ -30,31 +30,31 @@ import eu.europa.esig.dss.model.policy.MultiValuesRule;
 import eu.europa.esig.dss.validation.process.bbb.AbstractMultiValuesCheckItem;
 
 /**
- * This class verifies whether the EAA category claim contains one of the expected values
+ * This class verifies whether the attestation category claim contains one of the expected values
  *
  */
 public class AttestationCategoryCheck extends AbstractMultiValuesCheckItem<XmlSAV> {
 
-    /** EAA to check */
-    private final AttestationWrapper eaa;
+    /** attestation to check */
+    private final AttestationWrapper attestation;
 
     /**
      * Default constructor
      *
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlSAV}
-     * @param eaa {@link AttestationWrapper}
+     * @param attestation {@link AttestationWrapper}
      * @param constraint {@link MultiValuesRule}
      */
     public AttestationCategoryCheck(I18nProvider i18nProvider, XmlSAV result,
-                                    AttestationWrapper eaa, MultiValuesRule constraint) {
+                                    AttestationWrapper attestation, MultiValuesRule constraint) {
         super(i18nProvider, result, constraint);
-        this.eaa = eaa;
+        this.attestation = attestation;
     }
 
     @Override
     protected boolean process() {
-        return processValueCheck(eaa.getCategory());
+        return processValueCheck(attestation.getCategory());
     }
 
     @Override
@@ -74,7 +74,7 @@ public class AttestationCategoryCheck extends AbstractMultiValuesCheckItem<XmlSA
 
     @Override
     protected SubIndication getFailedSubIndicationForConclusion() {
-        return SubIndication.EAA_CONSTRAINTS_FAILURE;
+        return SubIndication.ATTESTATION_CONSTRAINTS_FAILURE;
     }
 
 }

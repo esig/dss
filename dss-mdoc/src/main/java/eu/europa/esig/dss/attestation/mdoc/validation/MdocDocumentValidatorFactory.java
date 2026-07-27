@@ -25,7 +25,7 @@ import eu.europa.esig.dss.attestation.common.validation.AttestationDocumentValid
 import eu.europa.esig.dss.model.DSSDocument;
 
 /**
- * Processes and validated Electronic Attestation of Attributes (EAAs) provided within an mdoc document structure
+ * Processes and validated attestations provided within an mdoc document structure
  * as per ISO 18013-5.
  *
  */
@@ -40,12 +40,12 @@ public class MdocDocumentValidatorFactory implements AttestationDocumentValidato
 
     @Override
     public boolean isSupported(DSSDocument document) {
-        MdocDeviceResponseAttestationDocumentValidator mdocDeviceResponseValidator = new MdocDeviceResponseAttestationDocumentValidator();
+        MdocDeviceResponseDocumentValidator mdocDeviceResponseValidator = new MdocDeviceResponseDocumentValidator();
         if (mdocDeviceResponseValidator.isSupported(document)) {
             return true;
         }
 
-        MdocIssuerSignedAttestationDocumentValidator mdocIssuerSignedValidator = new MdocIssuerSignedAttestationDocumentValidator();
+        MdocIssuerSignedDocumentValidator mdocIssuerSignedValidator = new MdocIssuerSignedDocumentValidator();
         if (mdocIssuerSignedValidator.isSupported(document)) {
             return true;
         }
@@ -55,14 +55,14 @@ public class MdocDocumentValidatorFactory implements AttestationDocumentValidato
 
     @Override
     public DefaultAttestationDocumentValidator create(DSSDocument document) {
-        MdocDeviceResponseAttestationDocumentValidator mdocDeviceResponseValidator = new MdocDeviceResponseAttestationDocumentValidator();
+        MdocDeviceResponseDocumentValidator mdocDeviceResponseValidator = new MdocDeviceResponseDocumentValidator();
         if (mdocDeviceResponseValidator.isSupported(document)) {
-            return new MdocDeviceResponseAttestationDocumentValidator(document);
+            return new MdocDeviceResponseDocumentValidator(document);
         }
 
-        MdocIssuerSignedAttestationDocumentValidator mdocIssuerSignedValidator = new MdocIssuerSignedAttestationDocumentValidator();
+        MdocIssuerSignedDocumentValidator mdocIssuerSignedValidator = new MdocIssuerSignedDocumentValidator();
         if (mdocIssuerSignedValidator.isSupported(document)) {
-            return new MdocIssuerSignedAttestationDocumentValidator(document);
+            return new MdocIssuerSignedDocumentValidator(document);
         }
 
         throw new IllegalArgumentException("Not supported document");

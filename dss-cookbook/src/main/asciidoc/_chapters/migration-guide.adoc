@@ -36,6 +36,133 @@ String partialName = pdfSignatureField.getPartialFieldName();
 
 |===
 
+[cols="2,5,5"]
+.Code changes from version 6.5.RC1 to 6.5
+|===
+|Title                               |v6.5.RC1                            |v6.5
+a|SD-JWT and Mdoc modules          a|
+[source,xml]
+----
+<dependency>
+	<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+	<artifactId>dss-eaa-jwt</artifactId>
+</dependency>
+<dependency>
+	<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+	<artifactId>dss-eaa-mdoc</artifactId>
+</dependency>
+----
+a|
+[source,xml]
+----
+<dependency>
+	<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+	<artifactId>dss-sd-jwt</artifactId>
+</dependency>
+<dependency>
+	<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+	<artifactId>dss-mdoc</artifactId>
+</dependency>
+----
+
+a|Attestation creation          a|
+[source,java]
+----
+import eu.europa.esig.dss.eaa.jwt.creation.SDJWTEAADisclosure;
+import eu.europa.esig.dss.eaa.jwt.creation.SDJWTEAAPayloadParameters;
+import eu.europa.esig.dss.eaa.jwt.creation.SDJWTEAAService;
+import eu.europa.esig.dss.eaa.jwt.creation.SDJWTKeyBindingParameters;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.SignatureValue;
+import eu.europa.esig.dss.model.ToBeSigned;
+
+SDJWTEAAPayloadParameters payloadParameters = new SDJWTEAAPayloadParameters();
+...
+
+SDJWTEAAService service = new SDJWTEAAService(commonCertificateVerifier);
+
+ToBeSigned dataToSign = service.getDataToBeSigned(payloadParameters, signatureParameters);
+SignatureValue signatureValue = signingToken.sign(dataToSign, signatureParameters.getDigestAlgorithm(), privateKey);
+DSSDocument signedEAA = service.signEAA(payloadParameters, signatureParameters, signatureValue);
+
+List<SDJWTEAADisclosure> disclosures = service.getDisclosures(payloadParameters);
+
+SDJWTKeyBindingParameters keyBindingParameters = new SDJWTKeyBindingParameters();
+
+ToBeSigned kbDataToSign = service.getDataToSignForKeyBindingSignature(signedEAA, disclosures, keyBindingParameters, kbSignatureParameters);
+SignatureValue kbSignatureValue = signingToken.sign(kbDataToSign, kbSignatureParameters.getDigestAlgorithm(), devicePrivateKey);
+DSSDocument keyBindingJWT = service.createKeyBindingSignature(signedEAA, disclosures, keyBindingParameters, kbSignatureParameters, kbSignatureValue);
+
+DSSDocument presentationDocument = service.issuePresentation(signedEAA, disclosures, keyBindingJWT);
+
+----
+a|
+[source,java]
+----
+import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTKeyBindingParameters;
+import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTPayloadParameters;
+import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTSelectiveDisclosure;
+import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTService;
+import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.SignatureValue;
+import eu.europa.esig.dss.model.ToBeSigned;
+
+SDJWTPayloadParameters payloadParameters = new SDJWTPayloadParameters();
+...
+
+SDJWTService service = new SDJWTService(commonCertificateVerifier);
+
+ToBeSigned dataToSign = service.getDataToBeSigned(payloadParameters, signatureParameters);
+SignatureValue signatureValue = signingToken.sign(dataToSign, signatureParameters.getDigestAlgorithm(), privateKey);
+DSSDocument signedAttestation = service.signAttestation(payloadParameters, signatureParameters, signatureValue);
+
+List<SDJWTSelectiveDisclosure> disclosures = service.getDisclosures(payloadParameters);
+
+SDJWTKeyBindingParameters keyBindingParameters = new SDJWTKeyBindingParameters();
+
+ToBeSigned kbDataToSign = service.getDataToSignForKeyBindingSignature(signedAttestation, disclosures, keyBindingParameters, kbSignatureParameters);
+SignatureValue kbSignatureValue = signingToken.sign(kbDataToSign, kbSignatureParameters.getDigestAlgorithm(), devicePrivateKey);
+DSSDocument keyBindingJWT = service.createKeyBindingSignature(signedAttestation, disclosures, keyBindingParameters, kbSignatureParameters, kbSignatureValue);
+
+DSSDocument presentationDocument = service.issuePresentation(signedAttestation, disclosures, keyBindingJWT);
+----
+
+a|Attestation validation          a|
+[source,java]
+----
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.EAAWrapper;
+import eu.europa.esig.dss.eaa.common.validation.DefaultEAAPresentationValidator;
+import eu.europa.esig.dss.simplereport.SimpleReport;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
+
+DefaultEAAPresentationValidator validator = DefaultEAAPresentationValidator.fromDocument(presentationDocument);
+validator.setCertificateVerifier(commonCertificateVerifier);
+Reports reports = validator.validateDocument();
+
+DiagnosticData diagnosticData = reports.getDiagnosticData();
+List<EAAWrapper> eaas = diagnosticData.getEAAs();
+...
+----
+a|
+[source,java]
+----
+import eu.europa.esig.dss.attestation.common.validation.DefaultAttestationPresentationValidator;
+import eu.europa.esig.dss.diagnostic.AttestationWrapper;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.simplereport.SimpleReport;
+import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
+
+DefaultAttestationDocumentValidator validator = DefaultAttestationDocumentValidator.fromDocument(presentationDocument);
+validator.setCertificateVerifier(commonCertificateVerifier);
+Reports reports = validator.validateDocument();
+
+DiagnosticData diagnosticData = reports.getDiagnosticData();
+List<AttestationWrapper> attestations = diagnosticData.getAttestations();
+----
+
+|===
+
 .Code changes from version 6.4 to 6.5
 |===
 |Title                               |v6.4                            |v6.5

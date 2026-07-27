@@ -156,7 +156,7 @@
 		<module>dss-evidence-record-common</module>
 		<module>dss-evidence-record-xml</module>
 		<module>dss-evidence-record-asn1</module>
-		<module>dss-attestation-revocation-common</module>
+		<module>dss-attestation-revocation</module>
 		<module>dss-attestation-revocation-jwt</module>
 		<module>dss-attestation-revocation-cwt</module>
 		<module>dss-attestation</module>
@@ -687,7 +687,7 @@
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
-				<artifactId>dss-attestation-revocation-common</artifactId>
+				<artifactId>dss-attestation-revocation</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

@@ -11,11 +11,11 @@
     <DocumentName>simple-pid.jwt</DocumentName>
     <ValidSignaturesCount>1</ValidSignaturesCount>
     <SignaturesCount>1</SignaturesCount>
-    <EAA Id="EAA-B011F0930552AB7B89D941C51FFDE7A769EA630B8DD5C926512C0870F637FE22">
+    <Attestation Id="EAA-B011F0930552AB7B89D941C51FFDE7A769EA630B8DD5C926512C0870F637FE22">
         <Filename>simple-pid.jwt</Filename>
         <Indication>PASSED</Indication>
-        <EAALevel description="Personal Identification Data">PID</EAALevel>
-        <EAASignature SignatureFormat="JAdES-BASELINE-B" Id="S-59A46D40714D80AB3B6D087B938BE6358130244BAE1D9ACECBB28959F48D06F4">
+        <AttestationLevel description="Personal Identification Data">PID</AttestationLevel>
+        <AttestationSignature SignatureFormat="JAdES-BASELINE-B" Id="S-59A46D40714D80AB3B6D087B938BE6358130244BAE1D9ACECBB28959F48D06F4">
             <CertificateChain>
                 <Certificate Id="C-6EB85705071828887CACAEF723BD95952C862F7FC1CFB1026706CAFD80616BD7">
                     <QualifiedName>Test-PID</QualifiedName>
@@ -38,8 +38,8 @@
             <SignedBy>Test-PID</SignedBy>
             <SignatureLevel description="Not applicable">N/A</SignatureLevel>
             <SignatureScope Id="D-B591F5834847E86E222B306C0C658C74A018556CE17DA91964EAE9037BF7C1CF" scope="FULL">Full document</SignatureScope>
-        </EAASignature>
-        <EAAPayload>
+        </AttestationSignature>
+        <AttestationPayload>
             <Issuer name="iss">https://issuer.example.com</Issuer>
             <Subject name="sub">user_42</Subject>
             <IssuedAt name="iat">2023-05-02T04:00:00Z</IssuedAt>
@@ -52,6 +52,6 @@
             <AddressCountryName name="address/country">US</AddressCountryName>
             <AddressStreetAddress name="address/street_address">123 Main St</AddressStreetAddress>
             <Nationalities name="nationalities">US</Nationalities>
-        </EAAPayload>
-    </EAA>
+        </AttestationPayload>
+    </Attestation>
 </SimpleReport>

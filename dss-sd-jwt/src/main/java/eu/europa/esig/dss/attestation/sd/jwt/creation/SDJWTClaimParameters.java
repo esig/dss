@@ -27,14 +27,14 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Contains parameters for SD-JWT VC creation which may or may not be made selectively disclosable
+ * Contains parameters for SD-JWT creation which may or may not be made selectively disclosable
  *
  */
 public class SDJWTClaimParameters extends AbstractAttestationClaimParameters<SDJWTClaim> {
 
     // ietf-oauh-sd-jwt-vc
 
-    /** EAA subject */
+    /** attestation subject */
     private String subject;
 
     // OpenID Connect Core 1.0
@@ -119,7 +119,7 @@ public class SDJWTClaimParameters extends AbstractAttestationClaimParameters<SDJ
     }
 
     /**
-     * Gets the EAA subject
+     * Gets the attestation subject
      *
      * @return {@link String}
      */
@@ -128,7 +128,7 @@ public class SDJWTClaimParameters extends AbstractAttestationClaimParameters<SDJ
     }
 
     /**
-     * Sets the EAA subject
+     * Sets the attestation subject
      *
      * @param subject {@link String}
      */
@@ -475,7 +475,7 @@ public class SDJWTClaimParameters extends AbstractAttestationClaimParameters<SDJ
     }
 
     /**
-     * Sets the claim for associating a set of attributes to one entity different than the EAA subject,
+     * Sets the claim for associating a set of attributes to one entity different than the attestation subject,
      * when pseudonym is used.
      *
      * @param pseudonym {@link String}  the subject attribute pseudonym

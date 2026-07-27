@@ -25,7 +25,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.diagnostic.AttestationRevocationTokenWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlEAARevocationToken;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationRevocationToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.policy.LevelConstraintWrapper;
@@ -47,11 +47,11 @@ class AttestationRevocationIssuerValidAtIssuanceTimeCheckTest extends AbstractTe
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
-        XmlEAARevocationToken xmlEAARevocationToken = new XmlEAARevocationToken();
+        XmlAttestationRevocationToken xmlAttestationRevocationToken = new XmlAttestationRevocationToken();
 
         Calendar calendar = Calendar.getInstance();
         Date currentTime = calendar.getTime();
-        xmlEAARevocationToken.setIssuedAt(currentTime);
+        xmlAttestationRevocationToken.setIssuedAt(currentTime);
 
         XmlSigningCertificate xmlSigningCertificate = new XmlSigningCertificate();
         XmlCertificate xmlCertificate = new XmlCertificate();
@@ -61,12 +61,12 @@ class AttestationRevocationIssuerValidAtIssuanceTimeCheckTest extends AbstractTe
         xmlCertificate.setNotAfter(calendar.getTime());
         xmlSigningCertificate.setCertificate(xmlCertificate);
 
-        xmlEAARevocationToken.setSigningCertificate(xmlSigningCertificate);
+        xmlAttestationRevocationToken.setSigningCertificate(xmlSigningCertificate);
         XmlSAV result = new XmlSAV();
 
-        AttestationRevocationIssuerValidAtIssuanceTimeCheck eaasivaitc = new AttestationRevocationIssuerValidAtIssuanceTimeCheck(
-                i18nProvider, result, new AttestationRevocationTokenWrapper(xmlEAARevocationToken), new LevelConstraintWrapper(constraint));
-        eaasivaitc.execute();
+        AttestationRevocationIssuerValidAtIssuanceTimeCheck asivaitc = new AttestationRevocationIssuerValidAtIssuanceTimeCheck(
+                i18nProvider, result, new AttestationRevocationTokenWrapper(xmlAttestationRevocationToken), new LevelConstraintWrapper(constraint));
+        asivaitc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
         assertEquals(1, constraints.size());
@@ -78,11 +78,11 @@ class AttestationRevocationIssuerValidAtIssuanceTimeCheckTest extends AbstractTe
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
-        XmlEAARevocationToken xmlEAARevocationToken = new XmlEAARevocationToken();
+        XmlAttestationRevocationToken xmlAttestationRevocationToken = new XmlAttestationRevocationToken();
 
         Calendar calendar = Calendar.getInstance();
         Date currentTime = calendar.getTime();
-        xmlEAARevocationToken.setIssuedAt(currentTime);
+        xmlAttestationRevocationToken.setIssuedAt(currentTime);
 
         XmlSigningCertificate xmlSigningCertificate = new XmlSigningCertificate();
         XmlCertificate xmlCertificate = new XmlCertificate();
@@ -92,12 +92,12 @@ class AttestationRevocationIssuerValidAtIssuanceTimeCheckTest extends AbstractTe
         xmlCertificate.setNotAfter(calendar.getTime());
         xmlSigningCertificate.setCertificate(xmlCertificate);
 
-        xmlEAARevocationToken.setSigningCertificate(xmlSigningCertificate);
+        xmlAttestationRevocationToken.setSigningCertificate(xmlSigningCertificate);
         XmlSAV result = new XmlSAV();
 
-        AttestationRevocationIssuerValidAtIssuanceTimeCheck eaasivaitc = new AttestationRevocationIssuerValidAtIssuanceTimeCheck(
-                i18nProvider, result, new AttestationRevocationTokenWrapper(xmlEAARevocationToken), new LevelConstraintWrapper(constraint));
-        eaasivaitc.execute();
+        AttestationRevocationIssuerValidAtIssuanceTimeCheck asivaitc = new AttestationRevocationIssuerValidAtIssuanceTimeCheck(
+                i18nProvider, result, new AttestationRevocationTokenWrapper(xmlAttestationRevocationToken), new LevelConstraintWrapper(constraint));
+        asivaitc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
         assertEquals(1, constraints.size());
@@ -109,11 +109,11 @@ class AttestationRevocationIssuerValidAtIssuanceTimeCheckTest extends AbstractTe
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
-        XmlEAARevocationToken xmlEAARevocationToken = new XmlEAARevocationToken();
+        XmlAttestationRevocationToken xmlAttestationRevocationToken = new XmlAttestationRevocationToken();
 
         Calendar calendar = Calendar.getInstance();
         Date currentTime = calendar.getTime();
-        xmlEAARevocationToken.setIssuedAt(currentTime);
+        xmlAttestationRevocationToken.setIssuedAt(currentTime);
 
         XmlSigningCertificate xmlSigningCertificate = new XmlSigningCertificate();
         XmlCertificate xmlCertificate = new XmlCertificate();
@@ -123,12 +123,12 @@ class AttestationRevocationIssuerValidAtIssuanceTimeCheckTest extends AbstractTe
         xmlCertificate.setNotAfter(calendar.getTime());
         xmlSigningCertificate.setCertificate(xmlCertificate);
 
-        xmlEAARevocationToken.setSigningCertificate(xmlSigningCertificate);
+        xmlAttestationRevocationToken.setSigningCertificate(xmlSigningCertificate);
         XmlSAV result = new XmlSAV();
 
-        AttestationRevocationIssuerValidAtIssuanceTimeCheck eaasivaitc = new AttestationRevocationIssuerValidAtIssuanceTimeCheck(
-                i18nProvider, result, new AttestationRevocationTokenWrapper(xmlEAARevocationToken), new LevelConstraintWrapper(constraint));
-        eaasivaitc.execute();
+        AttestationRevocationIssuerValidAtIssuanceTimeCheck asivaitc = new AttestationRevocationIssuerValidAtIssuanceTimeCheck(
+                i18nProvider, result, new AttestationRevocationTokenWrapper(xmlAttestationRevocationToken), new LevelConstraintWrapper(constraint));
+        asivaitc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
         assertEquals(1, constraints.size());
@@ -140,17 +140,17 @@ class AttestationRevocationIssuerValidAtIssuanceTimeCheckTest extends AbstractTe
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
-        XmlEAARevocationToken xmlEAARevocationToken = new XmlEAARevocationToken();
+        XmlAttestationRevocationToken xmlAttestationRevocationToken = new XmlAttestationRevocationToken();
 
         Calendar calendar = Calendar.getInstance();
         Date currentTime = calendar.getTime();
-        xmlEAARevocationToken.setIssuedAt(currentTime);
+        xmlAttestationRevocationToken.setIssuedAt(currentTime);
 
         XmlSAV result = new XmlSAV();
 
-        AttestationRevocationIssuerValidAtIssuanceTimeCheck eaasivaitc = new AttestationRevocationIssuerValidAtIssuanceTimeCheck(
-                i18nProvider, result, new AttestationRevocationTokenWrapper(xmlEAARevocationToken), new LevelConstraintWrapper(constraint));
-        eaasivaitc.execute();
+        AttestationRevocationIssuerValidAtIssuanceTimeCheck asivaitc = new AttestationRevocationIssuerValidAtIssuanceTimeCheck(
+                i18nProvider, result, new AttestationRevocationTokenWrapper(xmlAttestationRevocationToken), new LevelConstraintWrapper(constraint));
+        asivaitc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
         assertEquals(1, constraints.size());

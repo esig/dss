@@ -39,8 +39,8 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Performs validation of EAA tokens. During validation, retrieved the corresponding information,
- * including the data required for a signature validation, and/or EAA revocation verification.
+ * Performs validation of attestation tokens. During validation, retrieved the corresponding information,
+ * including the data required for a signature validation, and/or attestation revocation verification.
  */
 public class AttestationValidationContext extends SignatureValidationContext {
 
@@ -52,12 +52,12 @@ public class AttestationValidationContext extends SignatureValidationContext {
     private AttestationPresentation processedAttestationPresentation;
 
     /**
-     * A set of EAAPresentation Status tokens to process
+     * A set of AttestationPresentation Status tokens to process
      */
     private final Set<AttestationRevocationToken> processedAttestationRevocationTokens = new LinkedHashSet<>();
 
     /**
-     * Source used to verify revocation of the EAAPresentation
+     * Source used to verify revocation of the AttestationPresentation
      */
     private AttestationRevocationSource attestationRevocationSource;
 
@@ -78,40 +78,40 @@ public class AttestationValidationContext extends SignatureValidationContext {
     }
 
     /**
-     * Sets the EAAStatusSource used for retrieving an information about a revocation of the EAAPresentations
+     * Sets the AttestationRevocationSource used for retrieving an information about a revocation of the AttestationPresentations
      *
-     * @param AttestationRevocationSource {@link attestationRevocationSource}
+     * @param attestationRevocationSource {@link attestationRevocationSource}
      */
-    public void setEAAStatusSource(AttestationRevocationSource AttestationRevocationSource) {
-        this.attestationRevocationSource = AttestationRevocationSource;
+    public void setAttestationRevocationSource(AttestationRevocationSource attestationRevocationSource) {
+        this.attestationRevocationSource = attestationRevocationSource;
     }
 
     /**
-     * Adds an {@code EAAPresentation} to be verified
+     * Adds an {@code AttestationPresentation} to be verified
      *
      * @param attestationPresentation {@link AttestationPresentation}
      */
-    public void addEAAPresentationForVerification(final AttestationPresentation attestationPresentation) {
+    public void addAttestationPresentationForVerification(final AttestationPresentation attestationPresentation) {
         if (attestationPresentation == null) {
             return;
         }
         if (processedAttestationPresentation != null) {
-            throw new IllegalStateException("Attestation Presentation was already added to EAAValidationContext! " +
-                    "Only one EAAPresentation is supported per validation.");
+            throw new IllegalStateException("Attestation Presentation was already added to attestationValidationContext! " +
+                    "Only one AttestationPresentation is supported per validation.");
         }
 
-        addEAAPresentationCertificateSources(attestationPresentation);
+        addAttestationPresentationCertificateSources(attestationPresentation);
 
         prepareSignatures(attestationPresentation);
 
         processedAttestationPresentation = attestationPresentation;
         if (LOG.isTraceEnabled()) {
-            LOG.trace("EAAPresentation added to EAAValidationContext");
+            LOG.trace("AttestationPresentation added to attestationValidationContext");
         }
     }
 
-    private void addEAAPresentationCertificateSources(AttestationPresentation attestationPresentation) {
-        for (Attestation attestation : attestationPresentation.getElectronicAttestationsOfAttributes()) {
+    private void addAttestationPresentationCertificateSources(AttestationPresentation attestationPresentation) {
+        for (Attestation attestation : attestationPresentation.getAttestations()) {
             CertificateSource deviceKeyCertificateSource = attestation.getDeviceKeyCertificateSource();
             if (deviceKeyCertificateSource != null) {
                 addDocumentCertificateSource(deviceKeyCertificateSource);
@@ -120,7 +120,7 @@ public class AttestationValidationContext extends SignatureValidationContext {
     }
 
     private void prepareSignatures(AttestationPresentation attestationPresentation) {
-        for (Attestation attestation : attestationPresentation.getElectronicAttestationsOfAttributes()) {
+        for (Attestation attestation : attestationPresentation.getAttestations()) {
             List<AdvancedSignature> signatures = attestation.getSignatures();
             if (Utils.isCollectionNotEmpty(signatures)) {
                 for (AdvancedSignature signature : signatures) {
@@ -135,11 +135,11 @@ public class AttestationValidationContext extends SignatureValidationContext {
     }
 
     /**
-     * Adds an {@code EAAStatusToken} to be verified
+     * Adds an {@code AttestationRevocationToken} to be verified
      *
      * @param attestationRevocationToken {@link AttestationRevocationToken}
      */
-    public void addEAAStatusTokenForVerification(final AttestationRevocationToken attestationRevocationToken) {
+    public void addAttestationRevocationTokenForVerification(final AttestationRevocationToken attestationRevocationToken) {
         if (attestationRevocationToken == null) {
             return;
         }
@@ -150,9 +150,9 @@ public class AttestationValidationContext extends SignatureValidationContext {
         final boolean added = processedAttestationRevocationTokens.add(attestationRevocationToken);
         if (LOG.isTraceEnabled()) {
             if (added) {
-                LOG.trace("EAAPresentation Status Token added to processedEAAStatusTokens: {} ", attestationRevocationToken.getDSSIdAsString());
+                LOG.trace("AttestationPresentation Status Token added to processedAttestationRevocationTokens: {} ", attestationRevocationToken.getDSSIdAsString());
             } else {
-                LOG.trace("EAAPresentation already present processedEAAStatusTokens: {} ", attestationRevocationToken.getDSSIdAsString());
+                LOG.trace("AttestationPresentation already present processedAttestationRevocationTokens: {} ", attestationRevocationToken.getDSSIdAsString());
             }
         }
     }
@@ -160,53 +160,53 @@ public class AttestationValidationContext extends SignatureValidationContext {
     @Override
     public void validate() {
         if (processedAttestationPresentation != null) {
-            for (Attestation attestation : processedAttestationPresentation.getElectronicAttestationsOfAttributes()) {
-                findEAAStatusData(attestation);
+            for (Attestation attestation : processedAttestationPresentation.getAttestations()) {
+                findAttestationRevocationData(attestation);
             }
         }
         super.validate();
     }
 
     /**
-     * Fetches the EAAPresentation revocation token for the {@code EAAPresentation}, when required
+     * Fetches the AttestationPresentation revocation token for the {@code AttestationPresentation}, when required
      *
      * @param attestation {@link Attestation} to get revocation for
      */
-    private void findEAAStatusData(Attestation attestation) {
+    private void findAttestationRevocationData(Attestation attestation) {
         if (LOG.isTraceEnabled()) {
             LOG.trace("Checking revocation data for : {}", attestation.getId());
         }
 
-        if (isEAAStatusCheckRequired(attestation)) {
+        if (isAttestationRevocationCheckRequired(attestation)) {
             if (attestationRevocationSource == null) {
-                LOG.info("No EAAStatusSource has been provided. EAA revocation check is skipped.");
+                LOG.info("No AttestationRevocationSource has been provided. attestation revocation check is skipped.");
                 return;
             }
             if (LOG.isTraceEnabled()) {
-                LOG.trace("EAAPresentation revocation check is in progress for EAAPresentation : {}", attestation.getId());
+                LOG.trace("AttestationPresentation revocation check is in progress for AttestationPresentation : {}", attestation.getId());
             }
 
             AttestationRevocationToken attestationRevocationToken = attestationRevocationSource.getAttestationRevocation(attestation);
             if (attestationRevocationToken != null) {
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug("Obtained a new EAAPresentation Status token : {}, for EAAPresentation : {}",
+                    LOG.debug("Obtained a new AttestationPresentation Status token : {}, for AttestationPresentation : {}",
                             attestationRevocationToken.getDSSIdAsString(), attestation.getId());
                 }
-                addEAAStatusTokenForVerification(attestationRevocationToken);
+                addAttestationRevocationTokenForVerification(attestationRevocationToken);
             }
 
         } else if (LOG.isDebugEnabled()) {
-            LOG.debug("Status data is not required for EAAPresentation : {}", attestation.getId());
+            LOG.debug("Status data is not required for AttestationPresentation : {}", attestation.getId());
         }
     }
 
     /**
-     * This method verifies whether the {@code EAAPresentation} requires the revocation verification
+     * This method verifies whether the {@code AttestationPresentation} requires the revocation verification
      *
      * @param attestation {@link Attestation}
-     * @return TRUE if the EAAPresentation revocation should be checked, FALSE otherwise
+     * @return TRUE if the AttestationPresentation revocation should be checked, FALSE otherwise
      */
-    protected boolean isEAAStatusCheckRequired(Attestation attestation) {
+    protected boolean isAttestationRevocationCheckRequired(Attestation attestation) {
         if (attestation.getPayload() != null && attestation.getPayload().getShortLived() != null) {
             Boolean shortLived = attestation.getPayload().getShortLived().getBooleanValue();
             return shortLived != null && !Utils.isTrue(shortLived);
@@ -215,26 +215,26 @@ public class AttestationValidationContext extends SignatureValidationContext {
     }
 
     /**
-     * Gets an EAAPresentations validated by the context
+     * Gets an AttestationPresentations validated by the context
      *
      * @return {@link AttestationPresentation}
      */
-    public AttestationPresentation getProcessedEAAPresentation() {
+    public AttestationPresentation getProcessedAttestationPresentation() {
         return processedAttestationPresentation;
     }
 
     /**
-     * Gets a set of EAAPresentation Status Tokens validated by the context
+     * Gets a set of Attestation Revocation Tokens validated by the context
      *
      * @return a set of {@link AttestationRevocationToken}s
      */
-    public Set<AttestationRevocationToken> getProcessedEAAStatusTokens() {
+    public Set<AttestationRevocationToken> getProcessedAttestationRevocationTokens() {
         return Collections.unmodifiableSet(processedAttestationRevocationTokens);
     }
 
     @Override
     public Set<AdvancedSignature> getProcessedSignatures() {
-        // exclude EAA revocation signatures
+        // exclude attestation revocation signatures
         Set<AdvancedSignature> processedSignatures = super.getProcessedSignatures();
         if (Utils.isCollectionEmpty(processedAttestationRevocationTokens)) {
             return processedSignatures;

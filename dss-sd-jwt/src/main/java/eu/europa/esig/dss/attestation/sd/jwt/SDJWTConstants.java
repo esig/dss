@@ -99,7 +99,7 @@ public class SDJWTConstants {
     // draft-ietf-oauth-revocation-list-13
 
     /** Specifies a JSON Object that contains at least one reference to a revocation mechanism */
-    public static final String STATUS = "revocation";
+    public static final String STATUS = "status";
 
     /** Specifies a JSON Object that contains a reference to a Status List Token */
     public static final String STATUS_LIST = "status_list";
@@ -125,7 +125,7 @@ public class SDJWTConstants {
     /** A certificate used to sign the top-level certificate in the x5chain element in the MSO revocation list structure */
     public static final String IDENTIFIER_LIST_CERTIFICATE = "certificate";
 
-    // ETSI TS 119 472-1 defined "revocation" headers
+    // ETSI TS 119 472-1 defined "status" headers
 
     /** A non-negative Integer that represents the index to check for revocation information for the current Token */
     public static final String STATUS_INDEX = "index";

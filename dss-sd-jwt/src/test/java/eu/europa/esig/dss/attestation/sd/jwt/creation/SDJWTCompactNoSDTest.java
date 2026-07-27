@@ -39,7 +39,7 @@ class SDJWTCompactNoSDTest extends AbstractSDJWTTestIssuance {
     @BeforeEach
     void init() {
         payloadParameters = new SDJWTPayloadParameters();
-        payloadParameters.setIssuer("EAA provider");
+        payloadParameters.setIssuer("Attestation provider");
 
         payloadParameters.setVerifiableCredentialsType("urn:eudi:attestation:1");
         Digest digest = new Digest(DigestAlgorithm.SHA256, DSSUtils.digest(DigestAlgorithm.SHA256, "vct".getBytes()));
@@ -79,16 +79,16 @@ class SDJWTCompactNoSDTest extends AbstractSDJWTTestIssuance {
     protected void checkClaims(DiagnosticData diagnosticData) {
         super.checkClaims(diagnosticData);
 
-        AttestationWrapper eaa = diagnosticData.getEAAById(diagnosticData.getFirstEAAId());
-        assertEquals("urn:eudi:attestation:1", eaa.getVerifiableCredentialsTypeUri());
-        assertEquals(DigestAlgorithm.SHA256, eaa.getVerifiableCredentialsTypeIntegrityDigestAlgorithm());
-        assertArrayEquals(DSSUtils.digest(DigestAlgorithm.SHA256, "vct".getBytes()), eaa.getVerifiableCredentialsTypeIntegrityBytes());
-        assertEquals(DSSUtils.formatDateToRFC(getSignatureParameters().bLevel().getSigningDate()), DSSUtils.formatDateToRFC(eaa.getNotBefore()));
-        assertEquals(DSSUtils.formatDateToRFC(getSigningCert().getNotAfter()), DSSUtils.formatDateToRFC(eaa.getExpiration()));
-        assertEquals("EAA provider", eaa.getIssuer());
-        assertEquals("TEST Authority", eaa.getDocumentIssuingAuthority());
-        assertEquals("John", eaa.getGivenName());
-        assertEquals("Doe", eaa.getFamilyName());
+        AttestationWrapper attestation = diagnosticData.getAttestationById(diagnosticData.getFirstAttestationId());
+        assertEquals("urn:eudi:attestation:1", attestation.getVerifiableCredentialsTypeUri());
+        assertEquals(DigestAlgorithm.SHA256, attestation.getVerifiableCredentialsTypeIntegrityDigestAlgorithm());
+        assertArrayEquals(DSSUtils.digest(DigestAlgorithm.SHA256, "vct".getBytes()), attestation.getVerifiableCredentialsTypeIntegrityBytes());
+        assertEquals(DSSUtils.formatDateToRFC(getSignatureParameters().bLevel().getSigningDate()), DSSUtils.formatDateToRFC(attestation.getNotBefore()));
+        assertEquals(DSSUtils.formatDateToRFC(getSigningCert().getNotAfter()), DSSUtils.formatDateToRFC(attestation.getExpiration()));
+        assertEquals("Attestation provider", attestation.getIssuer());
+        assertEquals("TEST Authority", attestation.getDocumentIssuingAuthority());
+        assertEquals("John", attestation.getGivenName());
+        assertEquals("Doe", attestation.getFamilyName());
     }
 
     @Override

@@ -89,7 +89,7 @@ public class MdocClaimObject extends MdocClaim implements AttestationClaimObject
     /**
      * Constructor with the value
      *
-     * @param children a list of embedded {@code MdocEAAClaim} in the object
+     * @param children a list of embedded {@code MdocClaim} in the object
      */
     protected MdocClaimObject(List<MdocClaim> children) {
         super(null, children);
@@ -99,7 +99,7 @@ public class MdocClaimObject extends MdocClaim implements AttestationClaimObject
      * Constructor with the claim name and value
      *
      * @param name  {@link String} the claim name
-     * @param children a list of embedded {@code MdocEAAClaim} in the object
+     * @param children a list of embedded {@code MdocClaim} in the object
      */
     protected MdocClaimObject(String name, List<MdocClaim> children) {
         super(null, name, children);
@@ -110,7 +110,7 @@ public class MdocClaimObject extends MdocClaim implements AttestationClaimObject
      *
      * @param namespace {@link String}
      * @param name  {@link String} the claim name
-     * @param children a list of embedded {@code MdocEAAClaim} in the object
+     * @param children a list of embedded {@code MdocClaim} in the object
      */
     protected MdocClaimObject(String namespace, String name, List<MdocClaim> children) {
         super(namespace, name, children);
@@ -122,7 +122,7 @@ public class MdocClaimObject extends MdocClaim implements AttestationClaimObject
      * @param namespace {@link String}
      * @param digestId integer identifier of the claim digest
      * @param name  {@link String} the claim name
-     * @param children a list of embedded {@code MdocEAAClaim} in the object
+     * @param children a list of embedded {@code MdocClaim} in the object
      */
     protected MdocClaimObject(String namespace, int digestId, String name, List<MdocClaim> children) {
         super(namespace, digestId, name, children);
@@ -133,7 +133,7 @@ public class MdocClaimObject extends MdocClaim implements AttestationClaimObject
      *
      * @param namespace {@link String}
      * @param name  {@link String} the claim name
-     * @param children a list of embedded {@code MdocEAAClaim} in the object
+     * @param children a list of embedded {@code MdocClaim} in the object
      * @param salt byte array containing a salt with a high entropy used for a digest computation
      */
     protected MdocClaimObject(String namespace, String name, List<MdocClaim> children, byte[] salt) {
@@ -146,7 +146,7 @@ public class MdocClaimObject extends MdocClaim implements AttestationClaimObject
      * @param namespace {@link String}
      * @param digestId integer identifier of the claim digest
      * @param name  {@link String} the claim name
-     * @param children a list of embedded {@code MdocEAAClaim} in the object
+     * @param children a list of embedded {@code MdocClaim} in the object
      * @param salt byte array containing a salt with a high entropy used for a digest computation
      */
     protected MdocClaimObject(String namespace, int digestId, String name, List<MdocClaim> children, byte[] salt) {
@@ -168,6 +168,7 @@ public class MdocClaimObject extends MdocClaim implements AttestationClaimObject
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<MdocClaim> getChildren() {
         return (List<MdocClaim>) getValue();
     }

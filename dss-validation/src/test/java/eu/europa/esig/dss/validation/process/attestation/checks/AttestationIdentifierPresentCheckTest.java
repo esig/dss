@@ -25,9 +25,9 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.diagnostic.AttestationWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlClaim;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlEAA;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlEAAPayload;
-import eu.europa.esig.dss.enumerations.AttestationFormat;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestation;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationPayload;
+import eu.europa.esig.dss.enumerations.AttestationProfile;
 import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
@@ -45,19 +45,19 @@ class AttestationIdentifierPresentCheckTest extends AbstractTestCheck {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
-        XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(AttestationFormat.SD_JWT_VC);
-        XmlEAAPayload xmlEAAPayload = new XmlEAAPayload();
+        XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setProfile(AttestationProfile.SD_JWT_VC);
+        XmlAttestationPayload xmlAttestationPayload = new XmlAttestationPayload();
 
         XmlClaim identifier = new XmlClaim();
         identifier.setText("id");
-        xmlEAAPayload.setIdentifier(identifier);
-        xmlEAA.setEAAPayload(xmlEAAPayload);
+        xmlAttestationPayload.setIdentifier(identifier);
+        xmlAttestation.setAttestationPayload(xmlAttestationPayload);
 
         XmlSAV result = new XmlSAV();
 
         AttestationIdentifierPresentCheck identifierPresentCheck = new AttestationIdentifierPresentCheck(
-                i18nProvider, result, new AttestationWrapper(xmlEAA), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlAttestation), new LevelConstraintWrapper(constraint));
         identifierPresentCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -70,19 +70,19 @@ class AttestationIdentifierPresentCheckTest extends AbstractTestCheck {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
-        XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(AttestationFormat.ISO_IEC_MDOC);
-        XmlEAAPayload xmlEAAPayload = new XmlEAAPayload();
+        XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setProfile(AttestationProfile.ISO_IEC_MDOC);
+        XmlAttestationPayload xmlAttestationPayload = new XmlAttestationPayload();
 
         XmlClaim identifier = new XmlClaim();
         identifier.setText("id");
-        xmlEAAPayload.setDocumentNumber(identifier);
-        xmlEAA.setEAAPayload(xmlEAAPayload);
+        xmlAttestationPayload.setDocumentNumber(identifier);
+        xmlAttestation.setAttestationPayload(xmlAttestationPayload);
 
         XmlSAV result = new XmlSAV();
 
         AttestationIdentifierPresentCheck identifierPresentCheck = new AttestationIdentifierPresentCheck(
-                i18nProvider, result, new AttestationWrapper(xmlEAA), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlAttestation), new LevelConstraintWrapper(constraint));
         identifierPresentCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -95,15 +95,15 @@ class AttestationIdentifierPresentCheckTest extends AbstractTestCheck {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
-        XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(AttestationFormat.SD_JWT_VC);
-        XmlEAAPayload xmlEAAPayload = new XmlEAAPayload();
-        xmlEAA.setEAAPayload(xmlEAAPayload);
+        XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setProfile(AttestationProfile.SD_JWT_VC);
+        XmlAttestationPayload xmlAttestationPayload = new XmlAttestationPayload();
+        xmlAttestation.setAttestationPayload(xmlAttestationPayload);
 
         XmlSAV result = new XmlSAV();
 
         AttestationIdentifierPresentCheck identifierPresentCheck = new AttestationIdentifierPresentCheck(
-                i18nProvider, result, new AttestationWrapper(xmlEAA), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlAttestation), new LevelConstraintWrapper(constraint));
         identifierPresentCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -116,15 +116,15 @@ class AttestationIdentifierPresentCheckTest extends AbstractTestCheck {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
-        XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(AttestationFormat.ISO_IEC_MDOC);
-        XmlEAAPayload xmlEAAPayload = new XmlEAAPayload();
-        xmlEAA.setEAAPayload(xmlEAAPayload);
+        XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setProfile(AttestationProfile.ISO_IEC_MDOC);
+        XmlAttestationPayload xmlAttestationPayload = new XmlAttestationPayload();
+        xmlAttestation.setAttestationPayload(xmlAttestationPayload);
 
         XmlSAV result = new XmlSAV();
 
         AttestationIdentifierPresentCheck identifierPresentCheck = new AttestationIdentifierPresentCheck(
-                i18nProvider, result, new AttestationWrapper(xmlEAA), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlAttestation), new LevelConstraintWrapper(constraint));
         identifierPresentCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

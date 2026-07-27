@@ -31,7 +31,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 /**
- * This class is used to build an identifier for EAA object
+ * This class is used to build an identifier for attestation object
  */
 public class AttestationIdentifierBuilder {
 
@@ -43,28 +43,28 @@ public class AttestationIdentifierBuilder {
     }
 
     /**
-     * Builds an {@code EAAIdentifier} for the given {@code attestation}
+     * Builds an {@code attestationIdentifier} for the given {@code attestation}
      *
-     * @param eaa {@link AttestationIdentifier} to build identifier for
+     * @param attestation {@link AttestationIdentifier} to build identifier for
      * @return {@link AttestationIdentifier}
      */
-    public AttestationIdentifier build(DefaultAttestation eaa) {
-        return new AttestationIdentifier(buildBinaries(eaa));
+    public AttestationIdentifier build(DefaultAttestation attestation) {
+        return new AttestationIdentifier(buildBinaries(attestation));
     }
 
     /**
      * Builds unique binary data describing the object
      *
-     * @param eaa {@link Attestation} to build binaries for identifier on
+     * @param attestation {@link Attestation} to build binaries for identifier on
      * @return a byte array
      */
-    protected byte[] buildBinaries(DefaultAttestation eaa) {
+    protected byte[] buildBinaries(DefaultAttestation attestation) {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-            for (AdvancedSignature signature : eaa.getSignatures()) {
+            for (AdvancedSignature signature : attestation.getSignatures()) {
                 baos.write(signature.getId().getBytes());
             }
-            if (Utils.isCollectionNotEmpty(eaa.getDisclosures())) {
-                for (SelectivelyDisclosableClaim disclosure : eaa.getDisclosures()) {
+            if (Utils.isCollectionNotEmpty(attestation.getDisclosures())) {
+                for (SelectivelyDisclosableClaim disclosure : attestation.getDisclosures()) {
                     baos.write(disclosure.getSalt());
                     if (disclosure.getName() != null) {
                         baos.write(disclosure.getName().getBytes());
@@ -72,8 +72,8 @@ public class AttestationIdentifierBuilder {
                     // claim value is not used to avoid unnecessary information disclosure
                 }
             }
-            if (eaa.getKeyBindingSignature() != null) {
-                baos.write(eaa.getKeyBindingSignature().getId().getBytes());
+            if (attestation.getKeyBindingSignature() != null) {
+                baos.write(attestation.getKeyBindingSignature().getId().getBytes());
             }
             return baos.toByteArray();
 

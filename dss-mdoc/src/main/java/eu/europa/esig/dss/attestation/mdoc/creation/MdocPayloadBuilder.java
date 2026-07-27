@@ -47,7 +47,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- * This class provides access to a configuration to build a payload for an ISO/IEC 18013-5 mdoc EAA.
+ * This class provides access to a configuration to build a payload for an ISO/IEC 18013-5 mdoc attestation.
  *
  */
 public class MdocPayloadBuilder extends AbstractAttestationPayloadBuilder<MdocPayloadParameters, MdocSelectiveDisclosure> {
@@ -60,7 +60,7 @@ public class MdocPayloadBuilder extends AbstractAttestationPayloadBuilder<MdocPa
     private MdocSelectiveDisclosureBuilder disclosureBuilder = new DefaultMdocSelectiveDisclosureBuilder();
 
     /**
-     * Provides MdocEAAClaimsBuilder to build claims
+     * Provides MdocClaimsBuilder to build claims
      */
     private MdocClaimsBuilderFactory mdocClaimsBuilderFactory;
 
@@ -83,8 +83,8 @@ public class MdocPayloadBuilder extends AbstractAttestationPayloadBuilder<MdocPa
     }
 
     /**
-     * Gets the MdocEAAClaimsBuilderFactory
-     * Default : {@code DefaultMdocEAAClaimsBuilderFactory}
+     * Gets the MdocClaimsBuilderFactory
+     * Default : {@code DefaultMdocClaimsBuilderFactory}
      *
      * @return {@link MdocClaimsBuilderFactory}
      */
@@ -96,8 +96,8 @@ public class MdocPayloadBuilder extends AbstractAttestationPayloadBuilder<MdocPa
     }
 
     /**
-     * Sets MdocEAAClaimsBuilderFactory, providing definition of the claims for the given document type.
-     * Default : {@code DefaultMdocEAAClaimsBuilderFactory}. Supported docType's are:
+     * Sets MdocClaimsBuilderFactory, providing definition of the claims for the given document type.
+     * Default : {@code DefaultMdocClaimsBuilderFactory}. Supported docType's are:
      *           "org.iso.18013.5.1.mDL", "org.iso.23220.1.mID", "eu.europa.ec.eudi.pid.1".
      *           For other types it is recommended to provide a custom implementation.
      *
@@ -109,7 +109,7 @@ public class MdocPayloadBuilder extends AbstractAttestationPayloadBuilder<MdocPa
 
     @Override
     public DSSDocument buildPayload(MdocPayloadParameters payloadParameters) {
-        Objects.requireNonNull(payloadParameters, "MdocEAAPayloadParameters cannot be null!");
+        Objects.requireNonNull(payloadParameters, "MdocPayloadParameters cannot be null!");
         CBORMap mso = buildMobileSecurityObject(payloadParameters);
         CBORByteString msoBytes = CBORUtils.toCborBtsrWrappedTagged(mso);
         return new InMemoryDocument(CBORUtils.serializeCborObject(msoBytes));
@@ -354,7 +354,7 @@ public class MdocPayloadBuilder extends AbstractAttestationPayloadBuilder<MdocPa
 
     /**
      * Builds a Status structure.
-     * NOTE: The "revocation" is not defined in ISO/IEC 18013-5:2021,
+     * NOTE: The "status" is not defined in ISO/IEC 18013-5:2021,
      * but referenced in the draft of the amendments to the EU Implementing Acts.
      * {@code
      *   Status = {

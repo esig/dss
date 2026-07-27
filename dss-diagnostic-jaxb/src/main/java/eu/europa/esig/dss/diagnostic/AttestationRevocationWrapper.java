@@ -20,35 +20,35 @@
  */
 package eu.europa.esig.dss.diagnostic;
 
-import eu.europa.esig.dss.diagnostic.jaxb.XmlEAARevocationStatus;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationRevocationStatus;
 import eu.europa.esig.dss.enumerations.AttestationStatus;
 
 /**
- * Contains information about the validity of an EAA
+ * Contains information about the validity of an attestation
  *
  */
 public class AttestationRevocationWrapper extends AttestationRevocationTokenWrapper {
 
-    /** Wrapped {@code XmlEAARevocationStatus} */
-    private final XmlEAARevocationStatus xmlEAARevocationStatus;
+    /** Wrapped {@code XmlAttestationRevocationStatus} */
+    private final XmlAttestationRevocationStatus xmlAttestationRevocationStatus;
 
     /**
      * Default constructor
      *
-     * @param xmlEAARevocationStatus {@link XmlEAARevocationStatus}
+     * @param xmlAttestationRevocationStatus {@link XmlAttestationRevocationStatus}
      */
-    public AttestationRevocationWrapper(XmlEAARevocationStatus xmlEAARevocationStatus) {
-        super(xmlEAARevocationStatus.getEAARevocationToken());
-        this.xmlEAARevocationStatus = xmlEAARevocationStatus;
+    public AttestationRevocationWrapper(XmlAttestationRevocationStatus xmlAttestationRevocationStatus) {
+        super(xmlAttestationRevocationStatus.getAttestationRevocationToken());
+        this.xmlAttestationRevocationStatus = xmlAttestationRevocationStatus;
     }
 
     /**
-     * Returns the revocation of the concerned EAA
+     * Returns the revocation of the concerned attestation
      *
      * @return {@link AttestationStatus}
      */
     public AttestationStatus getStatus() {
-        return xmlEAARevocationStatus.getStatus();
+        return xmlAttestationRevocationStatus.getStatus();
     }
 
 }

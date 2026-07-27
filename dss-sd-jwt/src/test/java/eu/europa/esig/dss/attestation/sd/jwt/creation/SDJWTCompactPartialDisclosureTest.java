@@ -27,7 +27,7 @@ class SDJWTCompactPartialDisclosureTest extends AbstractSDJWTTestIssuance {
     @BeforeEach
     void init() {
         payloadParameters = new SDJWTPayloadParameters();
-        payloadParameters.setIssuer("EAA provider");
+        payloadParameters.setIssuer("Attestation provider");
         payloadParameters.nonSelectivelyDisclosable().setSubject(DSSASN1Utils.getSubjectCommonName(getSigningCert()));
         payloadParameters.setDeviceKey(getSigningCert().getPublicKey());
 
@@ -68,17 +68,17 @@ class SDJWTCompactPartialDisclosureTest extends AbstractSDJWTTestIssuance {
     }
 
     @Override
-    protected void checkEAADigestMatchers(DiagnosticData diagnosticData) {
-        super.checkEAADigestMatchers(diagnosticData);
+    protected void checkAttestationDigestMatchers(DiagnosticData diagnosticData) {
+        super.checkAttestationDigestMatchers(diagnosticData);
 
-        AttestationWrapper eaa = diagnosticData.getEAAs().get(0);
-        List<XmlDigestMatcher> digestMatchers = eaa.getDigestMatchers();
+        AttestationWrapper attestation = diagnosticData.getAttestations().get(0);
+        List<XmlDigestMatcher> digestMatchers = attestation.getDigestMatchers();
         assertEquals(5, digestMatchers.size());
 
         boolean familyNameSDFound = false;
         boolean givenNameSDFound = false;
         for (XmlDigestMatcher xmlDigestMatcher : digestMatchers) {
-            if (xmlDigestMatcher.getType().equals(DigestMatcherType.EAA_DISCLOSURE)) {
+            if (xmlDigestMatcher.getType().equals(DigestMatcherType.SELECTIVE_DISCLOSURE)) {
                 assertNotNull(xmlDigestMatcher.getDisclosableClaim());
                 if ("family_name".equals(xmlDigestMatcher.getDisclosableClaim().getName())) {
                     assertEquals("Doe", xmlDigestMatcher.getDisclosableClaim().getValue());

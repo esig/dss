@@ -30,9 +30,9 @@ class MdocAttestationPresentationDisclosureInvalidTest extends AbstractMdocAttes
     }
 
     @Override
-    protected void checkEAADigestMatchers(DiagnosticData diagnosticData) {
-        AttestationWrapper eaa = diagnosticData.getEAAs().get(0);
-        List<XmlDigestMatcher> digestMatchers = eaa.getDigestMatchers();
+    protected void checkAttestationDigestMatchers(DiagnosticData diagnosticData) {
+        AttestationWrapper attestation = diagnosticData.getAttestations().get(0);
+        List<XmlDigestMatcher> digestMatchers = attestation.getDigestMatchers();
         assertEquals(11, digestMatchers.size());
 
         boolean familyNameSDFound = false;
@@ -123,10 +123,10 @@ class MdocAttestationPresentationDisclosureInvalidTest extends AbstractMdocAttes
     protected void checkClaims(DiagnosticData diagnosticData) {
         super.checkClaims(diagnosticData);
 
-        AttestationWrapper attestationWrapper = diagnosticData.getEAAById(diagnosticData.getFirstEAAId());
-        AttestationPayloadProxy eaaPayload = attestationWrapper.getPayload();
-        assertNull(eaaPayload.getGivenName());
-        assertNotNull(eaaPayload.getFamilyName());
+        AttestationWrapper attestationWrapper = diagnosticData.getAttestationById(diagnosticData.getFirstAttestationId());
+        AttestationPayloadProxy attestationPayload = attestationWrapper.getPayload();
+        assertNull(attestationPayload.getGivenName());
+        assertNotNull(attestationPayload.getFamilyName());
     }
 
 }

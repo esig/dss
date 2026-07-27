@@ -157,11 +157,11 @@ class QEAATLTest extends PKIFactoryAccess {
         return data.stream();
     }
 
-    @ParameterizedTest(name = "EAA Qualification Test : {0}")
+    @ParameterizedTest(name = "Attestation Qualification Test : {0}")
     @MethodSource("data")
     void test(String signerName, AttestationQualification expectedQualification) throws Exception {
         signer = signerName;
-        DSSDocument attestationPresentation = createEAAPresentation();
+        DSSDocument attestationPresentation = createAttestationPresentation();
 
         SignedDocumentValidator validator = DefaultAttestationDocumentValidator.fromDocument(attestationPresentation);
 
@@ -173,9 +173,9 @@ class QEAATLTest extends PKIFactoryAccess {
 
         SimpleReport simpleReport = reports.getSimpleReport();
 
-        AttestationQualification attestationQualification = simpleReport.getEAAQualification(simpleReport.getFirstEAAId());
+        AttestationQualification attestationQualification = simpleReport.getAttestationQualification(simpleReport.getFirstAttestationId());
         assertEquals(expectedQualification, attestationQualification);
-        assertEquals(1, simpleReport.getEAAQualifications(simpleReport.getFirstEAAId()).size());
+        assertEquals(1, simpleReport.getAttestationQualifications(simpleReport.getFirstAttestationId()).size());
     }
 
     private TrustedListsCertificateSource getTrustedSource() {
@@ -207,7 +207,7 @@ class QEAATLTest extends PKIFactoryAccess {
         return trustedListsCertificateSource;
     }
 
-    private DSSDocument createEAAPresentation() {
+    private DSSDocument createAttestationPresentation() {
         String commonName = DSSASN1Utils.extractAttributeFromX500Principal(BCStyle.CN, getSigningCert().getSubject());
 
         String category = null;

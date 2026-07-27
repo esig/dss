@@ -162,7 +162,7 @@ public abstract class AbstractQWACValidationProcessBlock extends Chain<XmlValida
 
         /*
          * The web browser may also perform further checks on the security and authenticity of the QWAC
-         * as appropriate (e.g. for checking revocation revocation).
+         * as appropriate (e.g. for checking revocation status).
          */
         item = item.setNextItem(isAcceptableBuildingBlockConclusion());
 

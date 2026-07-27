@@ -31,31 +31,31 @@ import eu.europa.esig.dss.model.policy.MultiValuesRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
 /**
- * Checks whether an acceptable EAA revocation was found
+ * Checks whether an acceptable attestation revocation was found
  *
  */
 public class AcceptableAttestationRevocationFoundCheck extends ChainItem<XmlSAV> {
 
-    /** EAA revocation token to check */
-    private final AttestationRevocationWrapper eaaStatusToken;
+    /** attestation revocation token to check */
+    private final AttestationRevocationWrapper attestationRevocationToken;
 
     /**
      * Default constructor
      *
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlSAV}
-     * @param eaaStatusToken {@link AttestationRevocationWrapper}
+     * @param attestationRevocationToken {@link AttestationRevocationWrapper}
      * @param constraint {@link MultiValuesRule}
      */
     public AcceptableAttestationRevocationFoundCheck(final I18nProvider i18nProvider, final XmlSAV result,
-                                                     final AttestationRevocationWrapper eaaStatusToken, final LevelRule constraint) {
-        super(i18nProvider, result, constraint, eaaStatusToken != null ? eaaStatusToken.getId() : null);
-        this.eaaStatusToken = eaaStatusToken;
+                                                     final AttestationRevocationWrapper attestationRevocationToken, final LevelRule constraint) {
+        super(i18nProvider, result, constraint, attestationRevocationToken != null ? attestationRevocationToken.getId() : null);
+        this.attestationRevocationToken = attestationRevocationToken;
     }
 
     @Override
     protected boolean process() {
-        return eaaStatusToken != null;
+        return attestationRevocationToken != null;
     }
 
     @Override
@@ -70,8 +70,8 @@ public class AcceptableAttestationRevocationFoundCheck extends ChainItem<XmlSAV>
 
     @Override
     protected String buildAdditionalInfo() {
-        if (eaaStatusToken != null) {
-            return i18nProvider.getMessage(MessageTag.TOKEN_ID, eaaStatusToken.getId());
+        if (attestationRevocationToken != null) {
+            return i18nProvider.getMessage(MessageTag.TOKEN_ID, attestationRevocationToken.getId());
         }
         return null;
     }
@@ -83,7 +83,7 @@ public class AcceptableAttestationRevocationFoundCheck extends ChainItem<XmlSAV>
 
     @Override
     protected SubIndication getFailedSubIndicationForConclusion() {
-        return SubIndication.EAA_CONSTRAINTS_FAILURE;
+        return SubIndication.ATTESTATION_CONSTRAINTS_FAILURE;
     }
 
 }

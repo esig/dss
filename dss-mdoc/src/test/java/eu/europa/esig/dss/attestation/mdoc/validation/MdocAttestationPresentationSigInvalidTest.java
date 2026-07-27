@@ -30,7 +30,7 @@ class MdocAttestationPresentationSigInvalidTest extends AbstractMdocAttestationP
 
     @Override
     protected void checkBLevelValid(DiagnosticData diagnosticData) {
-        boolean eaaSigFound = false;
+        boolean attestationSigFound = false;
         boolean kbSigFound = false;
         for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
             List<XmlDigestMatcher> digestMatchers = signatureWrapper.getDigestMatchers();
@@ -51,10 +51,10 @@ class MdocAttestationPresentationSigInvalidTest extends AbstractMdocAttestationP
                 assertFalse(signatureWrapper.isBLevelTechnicallyValid());
                 assertFalse(signatureWrapper.isSignatureIntact());
                 assertFalse(signatureWrapper.isSignatureValid());
-                eaaSigFound = true;
+                attestationSigFound = true;
             }
         }
-        assertTrue(eaaSigFound);
+        assertTrue(attestationSigFound);
         assertTrue(kbSigFound);
     }
 

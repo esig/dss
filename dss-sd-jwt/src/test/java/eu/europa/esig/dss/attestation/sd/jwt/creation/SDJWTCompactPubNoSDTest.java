@@ -43,7 +43,7 @@ class SDJWTCompactPubNoSDTest extends AbstractSDJWTTestIssuance {
     @BeforeEach
     void init() {
         payloadParameters = new SDJWTPayloadParameters();
-        payloadParameters.setIssuer("EAA provider");
+        payloadParameters.setIssuer("Attestation provider");
         payloadParameters.nonSelectivelyDisclosable().setSubject(DSSASN1Utils.getSubjectCommonName(getSigningCert()));
         payloadParameters.setDeviceKey(getSigningCert().getPublicKey());
 
@@ -66,14 +66,14 @@ class SDJWTCompactPubNoSDTest extends AbstractSDJWTTestIssuance {
         signatureParameters.setCertificateChain(getCertificateChain());
 
         signatureParameters.setIncludeKeyIdentifier(false);
-        signatureParameters.setX509Url("https://pki.nowina.lu/eaa/pub-eaa.crt");
+        signatureParameters.setX509Url("https://pki.nowina.lu/eaa/pub-attestation.crt");
     }
 
     @Override
     protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
         SignedDocumentValidator documentValidator = super.getValidator(signedDocument);
         CommonX509URLCertificateSource x509URLCertificateSource = new CommonX509URLCertificateSource();
-        x509URLCertificateSource.addCertificate("https://pki.nowina.lu/eaa/pub-eaa.crt", getSigningCert());
+        x509URLCertificateSource.addCertificate("https://pki.nowina.lu/eaa/pub-attestation.crt", getSigningCert());
         documentValidator.setSigningCertificateSource(x509URLCertificateSource);
         return documentValidator;
     }
@@ -102,26 +102,26 @@ class SDJWTCompactPubNoSDTest extends AbstractSDJWTTestIssuance {
     protected void checkClaims(DiagnosticData diagnosticData) {
         super.checkClaims(diagnosticData);
 
-        AttestationWrapper eaa = diagnosticData.getEAAById(diagnosticData.getFirstEAAId());
-        assertEquals("urn:eudi:attestation:1", eaa.getVerifiableCredentialsTypeUri());
-        assertEquals(DigestAlgorithm.SHA256, eaa.getVerifiableCredentialsTypeIntegrityDigestAlgorithm());
-        assertArrayEquals(DSSUtils.digest(DigestAlgorithm.SHA256, "vct".getBytes()), eaa.getVerifiableCredentialsTypeIntegrityBytes());
-        assertEquals(DSSUtils.formatDateToRFC(getSignatureParameters().bLevel().getSigningDate()), DSSUtils.formatDateToRFC(eaa.getNotBefore()));
-        assertEquals(DSSUtils.formatDateToRFC(getSigningCert().getNotAfter()), DSSUtils.formatDateToRFC(eaa.getExpiration()));
-        assertEquals("EAA provider", eaa.getIssuer());
-        assertEquals(DSSASN1Utils.getSubjectCommonName(getSigningCert()), eaa.getSubject());
-        assertEquals("TEST Authority", eaa.getDocumentIssuingAuthority());
-        assertEquals("LU", eaa.getDocumentIssuingAuthorityCountry());
-        assertEquals("VATLU-123456", eaa.getIssuingRegistrationIdentifier());
-        assertEquals("John", eaa.getGivenName());
-        assertEquals("Doe", eaa.getFamilyName());
+        AttestationWrapper attestation = diagnosticData.getAttestationById(diagnosticData.getFirstAttestationId());
+        assertEquals("urn:eudi:attestation:1", attestation.getVerifiableCredentialsTypeUri());
+        assertEquals(DigestAlgorithm.SHA256, attestation.getVerifiableCredentialsTypeIntegrityDigestAlgorithm());
+        assertArrayEquals(DSSUtils.digest(DigestAlgorithm.SHA256, "vct".getBytes()), attestation.getVerifiableCredentialsTypeIntegrityBytes());
+        assertEquals(DSSUtils.formatDateToRFC(getSignatureParameters().bLevel().getSigningDate()), DSSUtils.formatDateToRFC(attestation.getNotBefore()));
+        assertEquals(DSSUtils.formatDateToRFC(getSigningCert().getNotAfter()), DSSUtils.formatDateToRFC(attestation.getExpiration()));
+        assertEquals("Attestation provider", attestation.getIssuer());
+        assertEquals(DSSASN1Utils.getSubjectCommonName(getSigningCert()), attestation.getSubject());
+        assertEquals("TEST Authority", attestation.getDocumentIssuingAuthority());
+        assertEquals("LU", attestation.getDocumentIssuingAuthorityCountry());
+        assertEquals("VATLU-123456", attestation.getIssuingRegistrationIdentifier());
+        assertEquals("John", attestation.getGivenName());
+        assertEquals("Doe", attestation.getFamilyName());
 
-        assertEquals("urn:etsi:esi:attestation:eu:pub", eaa.getCategory());
+        assertEquals("urn:etsi:esi:attestation:eu:pub", attestation.getCategory());
 
-        assertEquals(1, eaa.getStatusIndex());
-        assertEquals("https://pki.nowina.lu/eaa/status_list", eaa.getStatusUri());
+        assertEquals(1, attestation.getStatusIndex());
+        assertEquals("https://pki.nowina.lu/eaa/status_list", attestation.getStatusUri());
 
-        assertArrayEquals(getSigningCert().getPublicKey().getEncoded(), eaa.getDevicePublicKey());
+        assertArrayEquals(getSigningCert().getPublicKey().getEncoded(), attestation.getDevicePublicKey());
     }
 
     @Override

@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.enumerations;
 
 /**
- * Defines the certificate revocation revocation
+ * Defines the certificate revocation status
  */
 public enum CertificateStatus {
 

@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.validation.process.qualification.attestation.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationEAAQualificationProcess;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationAttestationQualificationProcess;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
@@ -32,11 +32,11 @@ import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
 /**
- * This class is used to verify whether the EAA has been created with
+ * This class is used to verify whether the attestation has been created with
  * a qualified electronic signature or seal
  *
  */
-public class AttestationQualifiedSignatureOrSealCheck extends ChainItem<XmlValidationEAAQualificationProcess> {
+public class AttestationQualifiedSignatureOrSealCheck extends ChainItem<XmlValidationAttestationQualificationProcess> {
 
     /** Signature to be checked */
     private final SignatureWrapper signature;
@@ -48,12 +48,12 @@ public class AttestationQualifiedSignatureOrSealCheck extends ChainItem<XmlValid
      * Default constructor
      *
      * @param i18nProvider {@link I18nProvider}
-     * @param result {@link XmlValidationEAAQualificationProcess}
+     * @param result {@link XmlValidationAttestationQualificationProcess}
      * @param signature {@link SignatureWrapper}
      * @param signatureQualification {@link SignatureQualification}
      * @param constraint {@link LevelRule}
      */
-    public AttestationQualifiedSignatureOrSealCheck(I18nProvider i18nProvider, XmlValidationEAAQualificationProcess result,
+    public AttestationQualifiedSignatureOrSealCheck(I18nProvider i18nProvider, XmlValidationAttestationQualificationProcess result,
                                                     SignatureWrapper signature, SignatureQualification signatureQualification,
                                                     LevelRule constraint) {
         super(i18nProvider, result, constraint);

@@ -70,11 +70,11 @@ import java.util.stream.Collectors;
  */
 public class PIDQualificationProcessBlock extends Chain<XmlValidationPIDQualificationProcess> {
 
-    /** The EAA to be validated */
-    private final AttestationWrapper eaa;
+    /** The attestation to be validated */
+    private final AttestationWrapper attestation;
 
-    /** The conclusion of EAA validation */
-    private final XmlConclusion eaaConclusion;
+    /** The conclusion of attestation validation */
+    private final XmlConclusion attestationConclusion;
 
     /** List of List of Trusted Entities validations */
     private final List<XmlLoTEAnalysis> loteAnalysis;
@@ -86,17 +86,17 @@ public class PIDQualificationProcessBlock extends Chain<XmlValidationPIDQualific
      * Default constructor
      *
      * @param i18nProvider         {@link I18nProvider}
-     * @param eaa      {@link AttestationWrapper} for which qualification is to be determined
-     * @param eaaConclusion {@link XmlConclusion}
+     * @param attestation      {@link AttestationWrapper} for which qualification is to be determined
+     * @param attestationConclusion {@link XmlConclusion}
      * @param loteAnalysis         a list of performed {@link XmlLoTEAnalysis}
      * @param currentTime          {@link Date}
      */
-    public PIDQualificationProcessBlock(final I18nProvider i18nProvider, final AttestationWrapper eaa,
-                                        final XmlConclusion eaaConclusion, final List<XmlLoTEAnalysis> loteAnalysis,
+    public PIDQualificationProcessBlock(final I18nProvider i18nProvider, final AttestationWrapper attestation,
+                                        final XmlConclusion attestationConclusion, final List<XmlLoTEAnalysis> loteAnalysis,
                                         final Date currentTime) {
         super(i18nProvider, new XmlValidationPIDQualificationProcess());
-        this.eaa = eaa;
-        this.eaaConclusion = eaaConclusion;
+        this.attestation = attestation;
+        this.attestationConclusion = attestationConclusion;
         this.loteAnalysis = loteAnalysis;
         this.currentTime = currentTime;
     }
@@ -109,14 +109,14 @@ public class PIDQualificationProcessBlock extends Chain<XmlValidationPIDQualific
     @Override
     protected void initChain() {
 
-        if (Utils.isCollectionEmpty(eaa.getEAASignatures())) {
-            throw new IllegalStateException("No signatures found within the EAA token!");
+        if (Utils.isCollectionEmpty(attestation.getAttestationSignatures())) {
+            throw new IllegalStateException("No signatures found within the attestation token!");
         }
 
         CertificateApprovalStatus certificateApprovalStatusAtIssuanceTime = CertificateApprovalStatusEnum.NA;
         CertificateApprovalStatus certificateApprovalStatusAtValidationTime = CertificateApprovalStatusEnum.NA;
 
-        SignatureWrapper signature = eaa.getEAASignatures().get(0);
+        SignatureWrapper signature = attestation.getAttestationSignatures().get(0);
         CertificateWrapper signingCertificate = signature.getSigningCertificate();
 
         ChainItem<XmlValidationPIDQualificationProcess> item = firstItem = isListOfTrustedEntitiesReachedForCertificateChain(signingCertificate);
@@ -246,7 +246,7 @@ public class PIDQualificationProcessBlock extends Chain<XmlValidationPIDQualific
     }
 
     private PIDDocumentTypeAcceptableCheck pidDocumentTypeAcceptable() {
-        return new PIDDocumentTypeAcceptableCheck(i18nProvider, result, eaa, getFailLevelRule());
+        return new PIDDocumentTypeAcceptableCheck(i18nProvider, result, attestation, getFailLevelRule());
     }
 
     private ChainItem<XmlValidationPIDQualificationProcess> pidProviderAtIssuanceTime(CertificateApprovalStatus certificateApprovalStatus) {
@@ -309,8 +309,8 @@ public class PIDQualificationProcessBlock extends Chain<XmlValidationPIDQualific
     private void determineFinalQualification(CertificateApprovalStatus certificateApprovalStatusAtIssuanceTime, CertificateApprovalStatus certificateApprovalStatusAtValidationTime) {
         CertificateApprovalStatus certificateApprovalStatus = determinedFinalCertificateApprovalStatus(certificateApprovalStatusAtIssuanceTime, certificateApprovalStatusAtValidationTime);
         AttestationQualification finalQualification = AttestationQualificationMatrix.getPIDQualification(
-                eaaConclusion.getIndication(), certificateApprovalStatus);
-        result.setEAAQualification(finalQualification);
+                attestationConclusion.getIndication(), certificateApprovalStatus);
+        result.setAttestationQualification(finalQualification);
     }
 
     private CertificateApprovalStatus determinedFinalCertificateApprovalStatus(CertificateApprovalStatus certificateApprovalStatusAtIssuanceTime, CertificateApprovalStatus certificateApprovalStatusAtValidationTime) {

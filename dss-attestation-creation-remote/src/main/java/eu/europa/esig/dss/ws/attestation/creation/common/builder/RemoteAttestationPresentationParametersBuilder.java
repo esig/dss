@@ -43,17 +43,17 @@ public class RemoteAttestationPresentationParametersBuilder {
      * @param remoteAttestationPresentationParameters {@link RemoteKeyBindingParameters}
      */
     public RemoteAttestationPresentationParametersBuilder(final RemoteAttestationPresentationParameters remoteAttestationPresentationParameters) {
-        Objects.requireNonNull(remoteAttestationPresentationParameters, "RemoteEAAPresentationParameters must be defined!");
-        Objects.requireNonNull(remoteAttestationPresentationParameters.getEaaType(), "EAA type must be definedy!");
+        Objects.requireNonNull(remoteAttestationPresentationParameters, "RemoteAttestationPresentationParameters must be defined!");
+        Objects.requireNonNull(remoteAttestationPresentationParameters.getAttestationProfile(), "Attestation type must be definedy!");
         this.remoteAttestationPresentationParameters = remoteAttestationPresentationParameters;
     }
 
     /**
-     * Creates {@code MdocEAADeviceSignedParameters}
+     * Creates {@code MdocDeviceSignedParameters}
      *
      * @return {@link MdocDeviceSignedParameters}
      */
-    public MdocDeviceSignedParameters buildMdocEAADeviceSignedParameters() {
+    public MdocDeviceSignedParameters buildMdocDeviceSignedParameters() {
         final MdocKeyBindingParameters mdocKeyBindingParameters = new MdocKeyBindingParameters();
         if (remoteAttestationPresentationParameters.getDeviceSignedDataElements() != null &&
                 !remoteAttestationPresentationParameters.getDeviceSignedDataElements().isEmpty()) {

@@ -39,9 +39,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Default implementation of {@link SDJWTEAAClaimBuilder}
+ * Default implementation of {@link SDJWTClaimBuilder}
  */
-public class DefaultSDJWTClaimBuilder implements SDJWTEAAClaimBuilder {
+public class DefaultSDJWTClaimBuilder implements SDJWTClaimBuilder {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultSDJWTClaimBuilder.class);
 
@@ -282,7 +282,7 @@ public class DefaultSDJWTClaimBuilder implements SDJWTEAAClaimBuilder {
     }
 
     /**
-     * Builds a "revocation" claim a per draft-ietf-oauth-revocation-list-13
+     * Builds a "status" claim a per draft-ietf-oauth-revocation-list-13
      *
      * @param payloadParameters the payload parameters
      * @return the claim or null
@@ -297,12 +297,12 @@ public class DefaultSDJWTClaimBuilder implements SDJWTEAAClaimBuilder {
         TokenStatusList tokenStatusList = payloadParameters.getStatusList();
         if (tokenStatusList instanceof ETSITokenStatusList) {
             LOG.debug("Status list is created as per ETSI TS 119 472-1 v1.2.1 definition.");
-            ETSITokenStatusList etsiEAAStatusList = (ETSITokenStatusList) tokenStatusList;
-            claim.addChild(SDJWTClaim.create(SDJWTConstants.STATUS_TYPE, etsiEAAStatusList.getType()));
-            claim.addChild(SDJWTClaim.create(SDJWTConstants.STATUS_PURPOSE, etsiEAAStatusList.getPurpose()));
-            claim.addChild(SDJWTClaim.create(SDJWTConstants.STATUS_INDEX, etsiEAAStatusList.getIndex()));
-            claim.addChild(SDJWTClaim.create(SDJWTConstants.STATUS_URI, etsiEAAStatusList.getUri()));
-            if (etsiEAAStatusList.getCertificate() != null) {
+            ETSITokenStatusList etsiTokenStatusList = (ETSITokenStatusList) tokenStatusList;
+            claim.addChild(SDJWTClaim.create(SDJWTConstants.STATUS_TYPE, etsiTokenStatusList.getType()));
+            claim.addChild(SDJWTClaim.create(SDJWTConstants.STATUS_PURPOSE, etsiTokenStatusList.getPurpose()));
+            claim.addChild(SDJWTClaim.create(SDJWTConstants.STATUS_INDEX, etsiTokenStatusList.getIndex()));
+            claim.addChild(SDJWTClaim.create(SDJWTConstants.STATUS_URI, etsiTokenStatusList.getUri()));
+            if (etsiTokenStatusList.getCertificate() != null) {
                 claim.addChild(SDJWTClaim.create(SDJWTConstants.STATUS_LIST_CERTIFICATE, Utils.toBase64(tokenStatusList.getCertificate().getEncoded())));
             }
 
@@ -317,7 +317,7 @@ public class DefaultSDJWTClaimBuilder implements SDJWTEAAClaimBuilder {
             claim.addChild(statusList);
         }
 
-        // TODO : identifier_list ? no specification available at the moment for SD-JWT VC
+        // TODO : identifier_list ? no specification available at the moment for SD-JWT
 
         return claim;
     }

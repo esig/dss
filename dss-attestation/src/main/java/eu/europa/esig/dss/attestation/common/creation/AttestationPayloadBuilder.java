@@ -25,15 +25,15 @@ import eu.europa.esig.dss.model.DSSDocument;
 import java.util.List;
 
 /**
- * Builds the EAA payload according to the provided configuration
+ * Builds the attestation payload according to the provided configuration
  *
- * @param <P> implementation of {@link AttestationPayloadParameters} for the EAA format
- * @param <D> implementation of {@link SelectiveDisclosure} for the EAA format
+ * @param <P> implementation of {@link AttestationPayloadParameters} for the attestation format
+ * @param <D> implementation of {@link SelectiveDisclosure} for the attestation format
  */
 public interface AttestationPayloadBuilder<P extends AttestationPayloadParameters, D extends SelectiveDisclosure> {
 
     /**
-     * Builds the EAA payload to be signed
+     * Builds the attestation payload to be signed
      *
      * @param payloadParameters {@link AttestationPayloadParameters}
      * @return {@link DSSDocument}
@@ -41,7 +41,7 @@ public interface AttestationPayloadBuilder<P extends AttestationPayloadParameter
     DSSDocument buildPayload(P payloadParameters);
 
     /**
-     * Builds a list of selectively disclosable EAA claims to be used for Digest computation, format specific
+     * Builds a list of selectively disclosable attestation claims to be used for Digest computation, format specific
      *
      * @param payloadParameters {@link AttestationPayloadParameters}
      * @return {@link SelectiveDisclosure} representing the disclosure structure

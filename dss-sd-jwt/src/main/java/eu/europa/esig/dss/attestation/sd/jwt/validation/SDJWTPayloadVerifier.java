@@ -27,9 +27,9 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.attestation.SelectivelyDisclosableClaim;
-import eu.europa.esig.dss.model.attestation.claim.Claim;
-import eu.europa.esig.dss.model.attestation.claim.ClaimMap;
-import eu.europa.esig.dss.model.attestation.claim.ClaimString;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaim;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimMap;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimString;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +43,7 @@ import java.util.Objects;
 
 /**
  * This class verifies selectively disclosable claims, when provided, and computes the combined version of
- * the EAA payload, which includes the non-selectively disclosable claims as well as disclosed claims.
+ * the attestation payload, which includes the non-selectively disclosable claims as well as disclosed claims.
  * This class requires execution of {@code #verify} method before accessing the validation results.
  *
  */
@@ -72,18 +72,18 @@ public class SDJWTPayloadVerifier extends AttestationPayloadVerifier {
      */
     @Override
     public void verify() {
-        ClaimMap originalPayloadMap = parseJsonPayload();
+        VerifiedClaimMap originalPayloadMap = parseJsonPayload();
         this.disclosureValidations = new ArrayList<>();
         this.digestAlgorithm = getSDDigestAlgorithm(originalPayloadMap);
-        ClaimMap verifiedPayloadMap = buildPayloadWithDisclosures(originalPayloadMap);
+        VerifiedClaimMap verifiedPayloadMap = buildPayloadWithDisclosures(originalPayloadMap);
         this.verifiedPayload = new SDJWTPayload(verifiedPayloadMap);
     }
 
-    private ClaimMap parseJsonPayload() {
+    private VerifiedClaimMap parseJsonPayload() {
         try {
-            Claim payloadClaim = SDJWTUtils.createClaim(jsonPayload);
+            VerifiedClaim payloadClaim = SDJWTUtils.createClaim(jsonPayload);
             if (payloadClaim.isMapValueType()) {
-                return (ClaimMap) payloadClaim;
+                return (VerifiedClaimMap) payloadClaim;
             } else {
                 throw new IllegalInputException("SD-JWT Payload shall be of a JSON Map type!");
             }
@@ -92,8 +92,8 @@ public class SDJWTPayloadVerifier extends AttestationPayloadVerifier {
         }
     }
 
-    private DigestAlgorithm getSDDigestAlgorithm(ClaimMap payloadMap) {
-        ClaimString _sd_alg = payloadMap.getAsString(SDJWTConstants._SD_ALG);
+    private DigestAlgorithm getSDDigestAlgorithm(VerifiedClaimMap payloadMap) {
+        VerifiedClaimString _sd_alg = payloadMap.getAsString(SDJWTConstants._SD_ALG);
         if (_sd_alg != null) {
             String sdAlgId = _sd_alg.getStringValue();
             try {
@@ -119,17 +119,17 @@ public class SDJWTPayloadVerifier extends AttestationPayloadVerifier {
     }
 
     @Override
-    protected Map<String, Claim> buildSelectivelyDisclosableClaimMap(Claim _sdClaim) {
+    protected Map<String, VerifiedClaim> buildSelectivelyDisclosableClaimMap(VerifiedClaim _sdClaim) {
         if (!_sdClaim.isArrayValueType()) {
             LOG.warn("_sd header shall be of type of JSON array!");
             return Collections.emptyMap();
         }
 
-        final Map<String, Claim> result = new HashMap<>();
+        final Map<String, VerifiedClaim> result = new HashMap<>();
 
-        List<Claim> sdClaims = _sdClaim.getListValue();
-        for (Claim sdClaim : sdClaims) {
-            Claim claim = buildSelectivelyDisclosableClaim(sdClaim, disclosures);
+        List<VerifiedClaim> sdClaims = _sdClaim.getListValue();
+        for (VerifiedClaim sdClaim : sdClaims) {
+            VerifiedClaim claim = buildSelectivelyDisclosableClaim(sdClaim, disclosures);
             if (claim != null) {
                 if (claim.getName() != null) {
                     result.put(claim.getName(), claim);
@@ -143,8 +143,8 @@ public class SDJWTPayloadVerifier extends AttestationPayloadVerifier {
     }
 
     @Override
-    protected Claim buildSelectivelyDisclosableClaim(Claim hashClaim, List<SelectivelyDisclosableClaim> disclosures) {
-        Claim claim = super.buildSelectivelyDisclosableClaim(hashClaim, disclosures);
+    protected VerifiedClaim buildSelectivelyDisclosableClaim(VerifiedClaim hashClaim, List<SelectivelyDisclosableClaim> disclosures) {
+        VerifiedClaim claim = super.buildSelectivelyDisclosableClaim(hashClaim, disclosures);
         if (claim != null) {
             return buildClaimWithDisclosures(claim); // process recursively
         }
@@ -157,14 +157,14 @@ public class SDJWTPayloadVerifier extends AttestationPayloadVerifier {
     }
 
     @Override
-    protected Claim createClaim(String claimName, Claim parentClaim, Object claimValue, boolean isSelectivelyDisclosable) {
+    protected VerifiedClaim createClaim(String claimName, VerifiedClaim parentClaim, Object claimValue, boolean isSelectivelyDisclosable) {
         return SDJWTUtils.createClaim(claimName, parentClaim, claimValue, isSelectivelyDisclosable);
     }
 
     @Override
-    protected Claim getClaimHashItem(Claim claim) {
+    protected VerifiedClaim getClaimHashItem(VerifiedClaim claim) {
         if (claim.isMapValueType()) {
-            ClaimMap claimMap = (ClaimMap) claim;
+            VerifiedClaimMap claimMap = (VerifiedClaimMap) claim;
             if (claimMap.getSize() == 1) {
                 return claimMap.getAsString(SDJWTConstants.HASH);
             }
@@ -173,7 +173,7 @@ public class SDJWTPayloadVerifier extends AttestationPayloadVerifier {
     }
 
     @Override
-    protected byte[] getHashBytes(Claim hashClaim) {
+    protected byte[] getHashBytes(VerifiedClaim hashClaim) {
         if (!hashClaim.isStringValueType()) {
             LOG.warn("Selective disclosure hash claim value shall be of String type!");
             return null;

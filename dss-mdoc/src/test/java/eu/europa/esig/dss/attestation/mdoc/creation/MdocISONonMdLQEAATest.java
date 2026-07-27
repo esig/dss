@@ -108,11 +108,11 @@ class MdocISONonMdLQEAATest extends AbstractMdocPresentationTestIssuance {
     }
 
     @Override
-    protected void checkEAADigestMatchers(DiagnosticData diagnosticData) {
-        super.checkEAADigestMatchers(diagnosticData);
+    protected void checkAttestationDigestMatchers(DiagnosticData diagnosticData) {
+        super.checkAttestationDigestMatchers(diagnosticData);
 
-        AttestationWrapper eaa = diagnosticData.getEAAs().get(0);
-        List<XmlDigestMatcher> digestMatchers = eaa.getDigestMatchers();
+        AttestationWrapper attestation = diagnosticData.getAttestations().get(0);
+        List<XmlDigestMatcher> digestMatchers = attestation.getDigestMatchers();
         assertEquals(9, digestMatchers.size());
 
         boolean familyNameSDFound = false;
@@ -179,21 +179,21 @@ class MdocISONonMdLQEAATest extends AbstractMdocPresentationTestIssuance {
     protected void checkClaims(DiagnosticData diagnosticData) {
         super.checkClaims(diagnosticData);
 
-        AttestationWrapper eaa = diagnosticData.getEAAById(diagnosticData.getFirstEAAId());
-        assertEquals("1.0", eaa.getVersion());
-        assertEquals("org.iso.23220.1.mID", eaa.getAttestationDocumentType());
+        AttestationWrapper attestation = diagnosticData.getAttestationById(diagnosticData.getFirstAttestationId());
+        assertEquals("1.0", attestation.getVersion());
+        assertEquals("org.iso.23220.1.mID", attestation.getAttestationDocumentType());
 
-        assertEquals(1, eaa.getStatusIndex());
-        assertEquals("https://pki.nowina.lu/eaa/status_list", eaa.getStatusUri());
-        assertNull(eaa.getStatusCertificate());
+        assertEquals(1, attestation.getStatusIndex());
+        assertEquals("https://pki.nowina.lu/eaa/status_list", attestation.getStatusUri());
+        assertNull(attestation.getStatusCertificate());
     }
 
     @Override
     protected void checkCertificates(DiagnosticData diagnosticData) {
         super.checkCertificates(diagnosticData);
 
-        AttestationWrapper eaa = diagnosticData.getEAAById(diagnosticData.getFirstEAAId());
-        SignatureWrapper signatureWrapper = eaa.getEAASignatures().get(0);
+        AttestationWrapper attestation = diagnosticData.getAttestationById(diagnosticData.getFirstAttestationId());
+        SignatureWrapper signatureWrapper = attestation.getAttestationSignatures().get(0);
         List<RelatedCertificateWrapper> relatedCertificatesByRefOrigin = signatureWrapper.foundCertificates().getRelatedCertificatesByRefOrigin(CertificateRefOrigin.X509_URL);
         assertEquals(1, relatedCertificatesByRefOrigin.size());
 

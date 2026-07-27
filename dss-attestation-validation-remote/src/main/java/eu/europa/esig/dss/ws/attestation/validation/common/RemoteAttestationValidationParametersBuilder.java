@@ -29,7 +29,7 @@ import eu.europa.esig.dss.ws.attestation.validation.dto.AttestationValidationPar
  */
 public class RemoteAttestationValidationParametersBuilder {
 
-    /** DTO EAA Validation parameters */
+    /** DTO attestation Validation parameters */
     private final AttestationValidationParametersDTO attestationValidationParametersDTO;
 
     /**
@@ -42,7 +42,7 @@ public class RemoteAttestationValidationParametersBuilder {
     }
 
     /**
-     * Builds the EAA validation parameters from the DTO
+     * Builds the attestation validation parameters from the DTO
      *
      * @return {@link AttestationValidationParameters}
      */

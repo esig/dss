@@ -22,7 +22,7 @@ package eu.europa.esig.dss.diagnostic;
 
 import eu.europa.esig.dss.diagnostic.jaxb.XmlBasicSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlChainItem;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlEAARevocationToken;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationRevocationToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
 import eu.europa.esig.dss.enumerations.AttestationRevocationOrigin;
 
@@ -32,37 +32,37 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Wraps validation information of the EAA revocation token
+ * Wraps validation information of the attestation revocation token
  *
  */
 public class AttestationRevocationTokenWrapper extends AbstractTokenProxy {
 
-    /** Wrapped {@code XmlEAARevocationToken} */
-    private final XmlEAARevocationToken eaaStatusToken;
+    /** Wrapped {@code XmlAttestationRevocationToken} */
+    private final XmlAttestationRevocationToken attestationRevocationToken;
 
     /**
      * Default constructor
      *
-     * @param eaaRevocationToken {@link XmlEAARevocationToken}
+     * @param attestationRevocationToken {@link XmlAttestationRevocationToken}
      */
-    public AttestationRevocationTokenWrapper(XmlEAARevocationToken eaaRevocationToken) {
-        Objects.requireNonNull(eaaRevocationToken, "XmlEAARevocationToken cannot be null!");
-        this.eaaStatusToken = eaaRevocationToken;
+    public AttestationRevocationTokenWrapper(XmlAttestationRevocationToken attestationRevocationToken) {
+        Objects.requireNonNull(attestationRevocationToken, "XmlAttestationRevocationToken cannot be null!");
+        this.attestationRevocationToken = attestationRevocationToken;
     }
 
     @Override
     protected XmlBasicSignature getCurrentBasicSignature() {
-        return eaaStatusToken.getBasicSignature();
+        return attestationRevocationToken.getBasicSignature();
     }
 
     @Override
     protected List<XmlChainItem> getCurrentCertificateChain() {
-        return eaaStatusToken.getCertificateChain();
+        return attestationRevocationToken.getCertificateChain();
     }
 
     @Override
     protected XmlSigningCertificate getCurrentSigningCertificate() {
-        return eaaStatusToken.getSigningCertificate();
+        return attestationRevocationToken.getSigningCertificate();
     }
 
     /**
@@ -72,89 +72,89 @@ public class AttestationRevocationTokenWrapper extends AbstractTokenProxy {
      */
     @Override
     public FoundCertificatesProxy foundCertificates() {
-        return new FoundCertificatesProxy(eaaStatusToken.getFoundCertificates());
+        return new FoundCertificatesProxy(attestationRevocationToken.getFoundCertificates());
     }
 
     /**
-     * Gets origin of the EAA revocation token (e.g. EXTERNAL or CACHED)
+     * Gets origin of the attestation revocation token (e.g. EXTERNAL or CACHED)
      *
      * @return {@link AttestationRevocationOrigin}
      */
     public AttestationRevocationOrigin getOrigin() {
-        return eaaStatusToken.getOrigin();
+        return attestationRevocationToken.getOrigin();
     }
 
     /**
-     * Gets the claimed type of the EAA revocation token
+     * Gets the claimed type of the attestation revocation token
      *
      * @return {@link String}
      */
     public String getType() {
-        return eaaStatusToken.getType();
+        return attestationRevocationToken.getType();
     }
 
     /**
-     * Gets the location URI used to access the original EAA source token
+     * Gets the location URI used to access the original attestation source token
      *
      * @return {@link String}
      */
     public String getSourceAddress() {
-        return eaaStatusToken.getSourceAddress();
+        return attestationRevocationToken.getSourceAddress();
     }
 
     /**
-     * Gets the subject of the EAA revocation token
+     * Gets the subject of the attestation revocation token
      *
      * @return {@link String}
      */
     public String getSubject() {
-        return eaaStatusToken.getSubject() != null ? eaaStatusToken.getSubject().getValue() : null;
+        return attestationRevocationToken.getSubject() != null ? attestationRevocationToken.getSubject().getValue() : null;
     }
 
     /**
-     * Gets whether the subject of the EAA revocation token matches the subject of the related EAA
+     * Gets whether the subject of the attestation revocation token matches the subject of the related attestation
      *
      * @return TRUE if the subject matches, FALSE otherwise
      */
     public boolean getSubjectMatch() {
-        return eaaStatusToken.getSubject() != null && Boolean.TRUE.equals(eaaStatusToken.getSubject().isMatch());
+        return attestationRevocationToken.getSubject() != null && Boolean.TRUE.equals(attestationRevocationToken.getSubject().isMatch());
     }
 
     /**
-     * Gets time of the issuance of the EAA revocation token
+     * Gets time of the issuance of the attestation revocation token
      *
      * @return {@link Date}
      */
     public Date getIssuedAt() {
-        return eaaStatusToken.getIssuedAt();
+        return attestationRevocationToken.getIssuedAt();
     }
 
     /**
-     * Gets time of the expiration of the EAA revocation token
+     * Gets time of the expiration of the attestation revocation token
      *
      * @return {@link Date}
      */
     public Date getExpirationTime() {
-        return eaaStatusToken.getExpirationTime();
+        return attestationRevocationToken.getExpirationTime();
     }
 
     /**
-     * Gets number of seconds after which a new EAA Status token should be requested
+     * Gets number of seconds after which a new attestation Status token should be requested
      *
      * @return {@link BigInteger}
      */
     public BigInteger getTimeToLive() {
-        return eaaStatusToken.getTimeToLive();
+        return attestationRevocationToken.getTimeToLive();
     }
 
     @Override
     public byte[] getBinaries() {
-        return eaaStatusToken.getBase64Encoded();
+        return attestationRevocationToken.getBase64Encoded();
     }
 
     @Override
     public String getId() {
-        return eaaStatusToken.getId();
+        return attestationRevocationToken.getId();
     }
 
     @Override

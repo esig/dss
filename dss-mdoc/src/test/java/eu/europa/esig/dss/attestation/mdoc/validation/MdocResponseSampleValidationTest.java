@@ -30,8 +30,8 @@ import eu.europa.esig.dss.diagnostic.claim.DeviceKeyClaimWrapper;
 import eu.europa.esig.dss.diagnostic.claim.DrivingPrivilegeClaimWrapper;
 import eu.europa.esig.dss.diagnostic.claim.DrivingPrivilegesClaimWrapper;
 import eu.europa.esig.dss.diagnostic.claim.ValidityInfoClaimWrapper;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlEAAPresentationInfo;
-import eu.europa.esig.dss.enumerations.AttestationPresentationType;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationPresentationInfo;
+import eu.europa.esig.dss.enumerations.AttestationDocumentFormat;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -58,27 +58,27 @@ class MdocResponseSampleValidationTest extends AbstractMdocAttestationPresentati
     protected void checkClaims(DiagnosticData diagnosticData) {
         super.checkClaims(diagnosticData);
 
-        AttestationWrapper eaa = diagnosticData.getEAAs().get(0);
-        assertEquals(DSSUtils.parseRFCDate("2024-10-20T00:00:00Z"), eaa.getAdministrativeExpirationDate());
-        assertEquals(DSSUtils.parseRFCDate("2019-10-20T00:00:00Z"), eaa.getAdministrativeIssuanceDate());
-        assertNotNull(eaa.getDevicePublicKey());
+        AttestationWrapper attestation = diagnosticData.getAttestations().get(0);
+        assertEquals(DSSUtils.parseRFCDate("2024-10-20T00:00:00Z"), attestation.getAdministrativeExpirationDate());
+        assertEquals(DSSUtils.parseRFCDate("2019-10-20T00:00:00Z"), attestation.getAdministrativeIssuanceDate());
+        assertNotNull(attestation.getDevicePublicKey());
 
-        assertEquals("1.0", eaa.getVersion());
-        assertEquals("org.iso.18013.5.1.mDL", eaa.getAttestationDocumentType());
-        assertEquals(DSSUtils.parseRFCDate("2020-10-01T13:30:02Z"), eaa.getIssuedAt());
-        assertEquals(DSSUtils.parseRFCDate("2020-10-01T13:30:02Z"), eaa.getNotBefore());
-        assertEquals(DSSUtils.parseRFCDate("2021-10-01T13:30:02Z"), eaa.getExpiration());
-        assertNull(eaa.getNextUpdate());
-        assertEquals("Doe", eaa.getFamilyName());
-        assertEquals("123456789", eaa.getDocumentNumber());
-        assertTrue(Utils.isArrayNotEmpty(eaa.getPortrait()));
-        assertNotNull(eaa.getDrivingPrivileges());
-        assertEquals(2, eaa.getDrivingPrivileges().getDrivingPrivileges().size());
+        assertEquals("1.0", attestation.getVersion());
+        assertEquals("org.iso.18013.5.1.mDL", attestation.getAttestationDocumentType());
+        assertEquals(DSSUtils.parseRFCDate("2020-10-01T13:30:02Z"), attestation.getIssuedAt());
+        assertEquals(DSSUtils.parseRFCDate("2020-10-01T13:30:02Z"), attestation.getNotBefore());
+        assertEquals(DSSUtils.parseRFCDate("2021-10-01T13:30:02Z"), attestation.getExpiration());
+        assertNull(attestation.getNextUpdate());
+        assertEquals("Doe", attestation.getFamilyName());
+        assertEquals("123456789", attestation.getDocumentNumber());
+        assertTrue(Utils.isArrayNotEmpty(attestation.getPortrait()));
+        assertNotNull(attestation.getDrivingPrivileges());
+        assertEquals(2, attestation.getDrivingPrivileges().getDrivingPrivileges().size());
 
-        List<ClaimWrapper> selectivelyDisclosableClaims = eaa.getSelectivelyDisclosableClaims();
+        List<ClaimWrapper> selectivelyDisclosableClaims = attestation.getSelectivelyDisclosableClaims();
         assertEquals(6, selectivelyDisclosableClaims.size());
 
-        List<ClaimWrapper> payloadClaims = eaa.getAllEAAPayloadClaims();
+        List<ClaimWrapper> payloadClaims = attestation.getAllAttestationPayloadClaims();
         assertNotNull(payloadClaims);
 
         boolean expiryDateClaimFound = false;
@@ -208,17 +208,17 @@ class MdocResponseSampleValidationTest extends AbstractMdocAttestationPresentati
     }
 
     @Override
-    protected void checkEAAPresentationInfo(DiagnosticData diagnosticData) {
-        super.checkEAAPresentationInfo(diagnosticData);
+    protected void checkAttestationPresentationInfo(DiagnosticData diagnosticData) {
+        super.checkAttestationPresentationInfo(diagnosticData);
 
-        XmlEAAPresentationInfo attestationPresentationInfo = diagnosticData.getEAAPresentationInfo();
-        assertEquals(getEAAPresentationType(), attestationPresentationInfo.getEAAPresentationType());
-        assertEquals(getEAAPresentationType(), diagnosticData.getEAAPresentationType());
+        XmlAttestationPresentationInfo attestationPresentationInfo = diagnosticData.getAttestationPresentationInfo();
+        assertEquals(getAttestationPresentationType(), attestationPresentationInfo.getFormat());
+        assertEquals(getAttestationPresentationType(), diagnosticData.getAttestationPresentationFormat());
     }
 
     @Override
-    protected AttestationPresentationType getEAAPresentationType() {
-        return AttestationPresentationType.MDOC_DEVICE_RESPONSE;
+    protected AttestationDocumentFormat getAttestationPresentationType() {
+        return AttestationDocumentFormat.MDOC_DEVICE_RESPONSE;
     }
 
     @Override

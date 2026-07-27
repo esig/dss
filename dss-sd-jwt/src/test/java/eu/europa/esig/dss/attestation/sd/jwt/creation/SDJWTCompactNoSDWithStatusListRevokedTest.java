@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class SDJWTCompactNoSDWithStatusListRevokedTest extends SDJWTCompactNoSDWithStatusListTest {
 
     @Override
-    protected AttestationRevocationSource getEAAStatusSource() {
+    protected AttestationRevocationSource getAttestationRevocationSource() {
         PKIJWTStatusListSource statusListSource = new PKIJWTStatusListSource(getCertEntityRepository(), getCertEntity(GOOD_CA));
         byte[] bytes = new byte[8];
         Arrays.fill(bytes, (byte) 1);
@@ -44,12 +44,12 @@ class SDJWTCompactNoSDWithStatusListRevokedTest extends SDJWTCompactNoSDWithStat
     }
 
     @Override
-    protected void checkEAARevocations(DiagnosticData diagnosticData) {
-        AttestationWrapper eaa = diagnosticData.getEAAById(diagnosticData.getFirstEAAId());
-        List<AttestationRevocationWrapper> eaaStatuses = eaa.getAttestationRevocations();
-        assertEquals(1, eaaStatuses.size());
-        assertEquals(AttestationStatus.INVALID, eaaStatuses.get(0).getStatus());
-        assertEquals("application/statuslist+jwt", eaaStatuses.get(0).getType());
+    protected void checkAttestationRevocations(DiagnosticData diagnosticData) {
+        AttestationWrapper attestation = diagnosticData.getAttestationById(diagnosticData.getFirstAttestationId());
+        List<AttestationRevocationWrapper> attestationStatuses = attestation.getAttestationRevocations();
+        assertEquals(1, attestationStatuses.size());
+        assertEquals(AttestationStatus.INVALID, attestationStatuses.get(0).getStatus());
+        assertEquals("application/statuslist+jwt", attestationStatuses.get(0).getType());
     }
 
 }

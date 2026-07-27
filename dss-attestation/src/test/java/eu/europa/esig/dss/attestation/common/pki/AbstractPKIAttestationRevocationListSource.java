@@ -24,7 +24,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.SerializableSignatureParameters;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
-import eu.europa.esig.dss.model.attestation.claim.ClaimStatus;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimStatus;
 import eu.europa.esig.dss.pki.model.CertEntity;
 import eu.europa.esig.dss.pki.model.CertEntityRepository;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
@@ -150,9 +150,9 @@ public abstract class AbstractPKIAttestationRevocationListSource<T extends Seria
     /**
      * Generates payload
      *
-     * @param claimStatus {@link ClaimStatus}
+     * @param claimStatus {@link VerifiedClaimStatus}
      * @return {@link DSSDocument}
      */
-    protected abstract DSSDocument generatePayload(ClaimStatus claimStatus);
+    protected abstract DSSDocument generatePayload(VerifiedClaimStatus claimStatus);
 
 }

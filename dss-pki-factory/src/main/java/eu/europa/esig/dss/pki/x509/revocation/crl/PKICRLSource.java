@@ -213,7 +213,7 @@ public class PKICRLSource implements CRLSource {
      *
      * @param certificateToken       The CertificateToken representing the certificate to be checked for revocation.
      * @param issuerCertificateToken The CertificateToken representing the issuer certificate of the certificate to be verified.
-     * @return The CRLToken representing the revocation revocation of the certificate.
+     * @return The CRLToken representing the revocation status of the certificate.
      */
     @Override
     public CRLToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken)  {

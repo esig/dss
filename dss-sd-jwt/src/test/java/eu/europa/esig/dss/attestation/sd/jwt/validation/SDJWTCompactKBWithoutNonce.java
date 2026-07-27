@@ -19,10 +19,10 @@ class SDJWTCompactKBWithoutNonce extends AbstractSDJWTTestValidation {
     @Override
     protected void checkClaims(final DiagnosticData diagnosticData) {
         super.checkClaims(diagnosticData);
-        final AttestationWrapper eaa = diagnosticData.getEAAById(diagnosticData.getFirstEAAId());
-        assertNull(eaa.getKeyBindingSignatureNonce());
-        assertNotNull(eaa.getKeyBindingSignatureAudience());
-        assertNotNull(eaa.getKeyBindingSignatureIssuanceTime());
+        final AttestationWrapper attestation = diagnosticData.getAttestationById(diagnosticData.getFirstAttestationId());
+        assertNull(attestation.getKeyBindingSignatureNonce());
+        assertNotNull(attestation.getKeyBindingSignatureAudience());
+        assertNotNull(attestation.getKeyBindingSignatureIssuanceTime());
     }
 
     @Override

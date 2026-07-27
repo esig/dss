@@ -51,7 +51,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Builds {@code EAAPayloadParameters} from {@link RemoteAttestationPayloadParameters}
+ * Builds {@code AttestationPayloadParameters} from {@link RemoteAttestationPayloadParameters}
  *
  */
 public class RemoteAttestationPayloadParametersBuilder {
@@ -65,8 +65,8 @@ public class RemoteAttestationPayloadParametersBuilder {
      * @param remoteAttestationPayloadParameters {@link RemoteAttestationPayloadParameters}
      */
     public RemoteAttestationPayloadParametersBuilder(final RemoteAttestationPayloadParameters remoteAttestationPayloadParameters) {
-        Objects.requireNonNull(remoteAttestationPayloadParameters, "RemoteEAAPayloadParameters must be defined!");
-        Objects.requireNonNull(remoteAttestationPayloadParameters.getEaaType(), "EAA type must be definedy!");
+        Objects.requireNonNull(remoteAttestationPayloadParameters, "RemoteAttestationPayloadParameters must be defined!");
+        Objects.requireNonNull(remoteAttestationPayloadParameters.getAttestationProfile(), "Attestation type must be definedy!");
         this.remoteAttestationPayloadParameters = remoteAttestationPayloadParameters;
     }
 
@@ -76,28 +76,28 @@ public class RemoteAttestationPayloadParametersBuilder {
      * @return {@link SerializableSignatureParameters}
      */
     public AttestationPayloadParameters build() {
-        AbstractAttestationPayloadParameters eaaPayloadParameters;
-        switch (remoteAttestationPayloadParameters.getEaaType()) {
+        AbstractAttestationPayloadParameters attestationPayloadParameters;
+        switch (remoteAttestationPayloadParameters.getAttestationProfile()) {
             case SD_JWT_VC:
-                eaaPayloadParameters = buildSDJWTVCParameters(remoteAttestationPayloadParameters);
+                attestationPayloadParameters = buildSDJWTParameters(remoteAttestationPayloadParameters);
                 break;
             case ISO_IEC_MDOC:
-                eaaPayloadParameters = buildMdocParameters(remoteAttestationPayloadParameters);
+                attestationPayloadParameters = buildMdocParameters(remoteAttestationPayloadParameters);
                 break;
             default:
-                throw new UnsupportedOperationException(String.format("Unsupported EAA format: '%s'. " +
-                        "SD-JWT VC and ISO/IEC mdoc are only supported.", remoteAttestationPayloadParameters.getEaaType()));
+                throw new UnsupportedOperationException(String.format("Unsupported attestation format: '%s'. " +
+                        "SD-JWT and ISO/IEC mdoc are only supported.", remoteAttestationPayloadParameters.getAttestationProfile()));
         }
-        return eaaPayloadParameters;
+        return attestationPayloadParameters;
     }
 
     /**
-     * Builds a payload parameters instance for SD-JWT VC EAA type
+     * Builds a payload parameters instance for SD-JWT attestation type
      *
      * @param remoteAttestationPayloadParameters {@link RemoteAttestationPayloadParameters}
      * @return {@link SDJWTPayloadParameters}
      */
-    protected SDJWTPayloadParameters buildSDJWTVCParameters(RemoteAttestationPayloadParameters remoteAttestationPayloadParameters) {
+    protected SDJWTPayloadParameters buildSDJWTParameters(RemoteAttestationPayloadParameters remoteAttestationPayloadParameters) {
         final SDJWTPayloadParameters payloadParameters = new SDJWTPayloadParameters();
         if (remoteAttestationPayloadParameters.getIssuer() != null) {
             payloadParameters.setIssuer(remoteAttestationPayloadParameters.getIssuer());
@@ -153,7 +153,7 @@ public class RemoteAttestationPayloadParametersBuilder {
     }
 
     /**
-     * Fills the common configuration of the {@code payloadParameters} from the {@code remoteEAAPayloadParameters} definition
+     * Fills the common configuration of the {@code payloadParameters} from the {@code remoteAttestationPayloadParameters} definition
      *
      * @param payloadParameters {@link AbstractAttestationPayloadParameters}
      * @param remoteAttestationPayloadParameters {@link RemoteAttestationPayloadParameters}
@@ -460,7 +460,7 @@ public class RemoteAttestationPayloadParametersBuilder {
     }
 
     /**
-     * Fills common claims from {@code remoteEAAPayloadParameters} to {@code claimParameters}
+     * Fills common claims from {@code remoteAttestationPayloadParameters} to {@code claimParameters}
      *
      * @param claimParameters {@link AbstractAttestationClaimParameters}
      * @param selectivelyDisclosable {@link RemoteAttestationPayloadParameters}

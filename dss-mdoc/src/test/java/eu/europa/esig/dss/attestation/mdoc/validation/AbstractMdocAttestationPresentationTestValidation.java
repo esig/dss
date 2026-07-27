@@ -24,13 +24,13 @@ import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlEAADocument;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlEAAPresentationInfo;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationDocument;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationPresentationInfo;
 import eu.europa.esig.dss.attestation.common.validation.AbstractAttestationPresentationTestValidation;
-import eu.europa.esig.dss.enumerations.AttestationFormat;
+import eu.europa.esig.dss.enumerations.AttestationProfile;
 import eu.europa.esig.dss.enumerations.COSESignatureType;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
-import eu.europa.esig.dss.enumerations.AttestationPresentationType;
+import eu.europa.esig.dss.enumerations.AttestationDocumentFormat;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
@@ -50,16 +50,16 @@ import static org.junit.jupiter.api.Assertions.fail;
 public abstract class AbstractMdocAttestationPresentationTestValidation extends AbstractAttestationPresentationTestValidation {
 
     @Override
-    protected AttestationFormat getEAAType() {
-        return AttestationFormat.ISO_IEC_MDOC;
+    protected AttestationProfile getAttestationType() {
+        return AttestationProfile.ISO_IEC_MDOC;
     }
 
     @Override
-    protected AttestationPresentationType getEAAPresentationType() {
+    protected AttestationDocumentFormat getAttestationPresentationType() {
         if (keyBindingPresent()) {
-            return AttestationPresentationType.MDOC_DEVICE_RESPONSE;
+            return AttestationDocumentFormat.MDOC_DEVICE_RESPONSE;
         } else {
-            return AttestationPresentationType.MDOC_ISSUER_SIGNED;
+            return AttestationDocumentFormat.MDOC_ISSUER_SIGNED;
         }
     }
 
@@ -67,10 +67,10 @@ public abstract class AbstractMdocAttestationPresentationTestValidation extends 
     protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
         SignedDocumentValidator validator = super.getValidator(signedDocument);
         if (keyBindingPresent()) {
-            MdocDeviceResponseAttestationDocumentValidator mdocValidator = assertInstanceOf(MdocDeviceResponseAttestationDocumentValidator.class, validator);
+            MdocDeviceResponseDocumentValidator mdocValidator = assertInstanceOf(MdocDeviceResponseDocumentValidator.class, validator);
             MdocValidationParameters mdocValidationParameters = new MdocValidationParameters();
             mdocValidationParameters.setSessionTranscript(getSessionTranscript());
-            mdocValidator.setEAAValidationParameters(mdocValidationParameters);
+            mdocValidator.setAttestationValidationParameters(mdocValidationParameters);
         }
         return validator;
     }
@@ -80,30 +80,30 @@ public abstract class AbstractMdocAttestationPresentationTestValidation extends 
     }
 
     @Override
-    protected void checkEAAPresentationInfo(DiagnosticData diagnosticData) {
-        super.checkEAAPresentationInfo(diagnosticData);
+    protected void checkAttestationPresentationInfo(DiagnosticData diagnosticData) {
+        super.checkAttestationPresentationInfo(diagnosticData);
 
-        XmlEAAPresentationInfo attestationPresentationInfo = diagnosticData.getEAAPresentationInfo();
-        if (AttestationPresentationType.MDOC_DEVICE_RESPONSE == attestationPresentationInfo.getEAAPresentationType()) {
+        XmlAttestationPresentationInfo attestationPresentationInfo = diagnosticData.getAttestationPresentationInfo();
+        if (AttestationDocumentFormat.MDOC_DEVICE_RESPONSE == attestationPresentationInfo.getFormat()) {
             assertEquals("1.0", attestationPresentationInfo.getVersion());
             assertNull(attestationPresentationInfo.getErrors());
             assertNotNull(attestationPresentationInfo.getStatus());
             assertEquals(0, attestationPresentationInfo.getStatus().intValue());
         }
 
-        for (XmlEAADocument xmlEAADocument : attestationPresentationInfo.getDocuments()) {
-            switch (attestationPresentationInfo.getEAAPresentationType()) {
+        for (XmlAttestationDocument xmlAttestationDocument : attestationPresentationInfo.getDocuments()) {
+            switch (attestationPresentationInfo.getFormat()) {
                 case MDOC_DEVICE_RESPONSE:
-                    assertNotNull(xmlEAADocument.getDocumentType());
+                    assertNotNull(xmlAttestationDocument.getDocumentType());
                     break;
                 case MDOC_ISSUER_SIGNED:
-                    assertNull(xmlEAADocument.getDocumentType());
+                    assertNull(xmlAttestationDocument.getDocumentType());
                     break;
                 default:
-                    fail(String.format("Not supported Attestation Presentation type : %s", attestationPresentationInfo.getEAAPresentationType()));
+                    fail(String.format("Not supported Attestation Presentation type : %s", attestationPresentationInfo.getFormat()));
             }
 
-            assertTrue(Utils.isCollectionEmpty(xmlEAADocument.getErrors()));
+            assertTrue(Utils.isCollectionEmpty(xmlAttestationDocument.getErrors()));
         }
     }
 

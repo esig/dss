@@ -27,7 +27,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureQualification;
 
 /**
- * Builds an EAA qualification result based on the given parameters
+ * Builds an attestation qualification result based on the given parameters
  *
  */
 public final class AttestationQualificationMatrix {
@@ -39,28 +39,28 @@ public final class AttestationQualificationMatrix {
         // empty
     }
 
-    /** EAA passed validation process */
+    /** attestation passed validation process */
     private static final int PASSED_EAA = 0;
 
-    /** EAA with an indeterminate result of validation process */
+    /** attestation with an indeterminate result of validation process */
     private static final int INDETERMINATE_EAA = 1;
 
-    /** EAA failed validation process */
+    /** attestation failed validation process */
     private static final int FAILED_EAA = 2;
 
-    /** Qualified EAA */
+    /** Qualified attestation */
     private static final int QEAA = 0;
 
-    /** Public Sector Body EAA */
+    /** Public Sector Body attestation */
     private static final int PUBEAA = 1;
 
-    /** Non-qualified EAA */
+    /** Non-qualified attestation */
     private static final int EAA = 2;
 
-    /** Unknown EAA */
+    /** Unknown attestation */
     private static final int UNKNOWN_EAA = 3;
 
-    /** Not EAA */
+    /** Not attestation */
     private static final int NOT_EAA = 4;
 
     /** Qualified electronic signature or seal */
@@ -85,7 +85,7 @@ public final class AttestationQualificationMatrix {
     private static final int CERT_USAGE_NA = 2;
 
     /**
-     * Array containing the relationship between qualification parameters and the final EAA qualification
+     * Array containing the relationship between qualification parameters and the final attestation qualification
      */
     private static final AttestationQualification[][][] QUALIFS = new AttestationQualification[3][5][4];
 
@@ -189,14 +189,14 @@ public final class AttestationQualificationMatrix {
     }
 
     /**
-     * Gets EAA qualification based on the given parameters
+     * Gets attestation qualification based on the given parameters
      *
-     * @param indication {@link Indication} representing the final result of validation process for EAA presentation
-     * @param claimedQualification {@link AttestationQualification} claimed qualification extracted from the EAA signed payload
-     * @param signatureQualification {@link SignatureQualification} of the signature used to create the EAA
+     * @param indication {@link Indication} representing the final result of validation process for attestation presentation
+     * @param claimedQualification {@link AttestationQualification} claimed qualification extracted from the attestation signed payload
+     * @param signatureQualification {@link SignatureQualification} of the signature used to create the attestation
      * @return {@link AttestationQualification}
      */
-    public static AttestationQualification getEAAQualification(Indication indication, AttestationQualification claimedQualification,
+    public static AttestationQualification getAttestationQualification(Indication indication, AttestationQualification claimedQualification,
                                                                SignatureQualification signatureQualification) {
         return QUALIFS[getInt(indication)][getInt(claimedQualification)][getInt(signatureQualification)];
     }
@@ -204,7 +204,7 @@ public final class AttestationQualificationMatrix {
     /**
      * Gets PID qualification based on the given parameters
      *
-     * @param indication {@link Indication} representing the final result of validation process for EAA presentation
+     * @param indication {@link Indication} representing the final result of validation process for attestation presentation
      * @param certificateApprovalStatus {@link CertificateApprovalStatus} determined certificate approval revocation
      * @return {@link AttestationQualification}
      */
@@ -240,7 +240,7 @@ public final class AttestationQualificationMatrix {
             case NOT_EAA:
                 return NOT_EAA;
             default:
-                throw new IllegalStateException("Unsupported EAA qualification " + attestationQualification);
+                throw new IllegalStateException("Unsupported attestation qualification " + attestationQualification);
         }
     }
 

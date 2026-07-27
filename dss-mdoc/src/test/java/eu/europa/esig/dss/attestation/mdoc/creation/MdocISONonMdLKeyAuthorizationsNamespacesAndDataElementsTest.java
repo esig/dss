@@ -93,11 +93,11 @@ class MdocISONonMdLKeyAuthorizationsNamespacesAndDataElementsTest extends Abstra
     }
 
     @Override
-    protected void checkEAADigestMatchers(DiagnosticData diagnosticData) {
-        super.checkEAADigestMatchers(diagnosticData);
+    protected void checkAttestationDigestMatchers(DiagnosticData diagnosticData) {
+        super.checkAttestationDigestMatchers(diagnosticData);
 
-        AttestationWrapper eaa = diagnosticData.getEAAs().get(0);
-        List<XmlDigestMatcher> digestMatchers = eaa.getDigestMatchers();
+        AttestationWrapper attestation = diagnosticData.getAttestations().get(0);
+        List<XmlDigestMatcher> digestMatchers = attestation.getDigestMatchers();
         assertEquals(8, digestMatchers.size());
 
         boolean familyNameSDFound = false;
@@ -158,14 +158,14 @@ class MdocISONonMdLKeyAuthorizationsNamespacesAndDataElementsTest extends Abstra
     protected void checkClaims(DiagnosticData diagnosticData) {
         super.checkClaims(diagnosticData);
 
-        AttestationWrapper eaa = diagnosticData.getEAAById(diagnosticData.getFirstEAAId());
-        assertEquals("1.0", eaa.getVersion());
-        assertEquals("org.iso.23220.1.mID", eaa.getAttestationDocumentType());
-        assertEquals(Arrays.asList("org.iso.23220.1", "org.etsi.01947201.010101"), eaa.getDeviceKeyAuthorizedNamespaces());
+        AttestationWrapper attestation = diagnosticData.getAttestationById(diagnosticData.getFirstAttestationId());
+        assertEquals("1.0", attestation.getVersion());
+        assertEquals("org.iso.23220.1.mID", attestation.getAttestationDocumentType());
+        assertEquals(Arrays.asList("org.iso.23220.1", "org.etsi.01947201.010101"), attestation.getDeviceKeyAuthorizedNamespaces());
 
         Map<String, List<String>> dataElementsMap = new HashMap<>();
         dataElementsMap.put("org.iso.23220.1", Arrays.asList("family_name", "given_name", "birth_date", "issuing_country", "issuing_authority", "document_number"));
-        assertEquals(dataElementsMap, eaa.getDeviceKeyAuthorizedDataElements());
+        assertEquals(dataElementsMap, attestation.getDeviceKeyAuthorizedDataElements());
     }
 
     @Override

@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.spi.attestation;
 
+import eu.europa.esig.dss.enumerations.AttestationProfile;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.AttestationFormat;
 import eu.europa.esig.dss.model.attestation.DisclosureValidation;
 import eu.europa.esig.dss.model.identifier.IdentifierBasedObject;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
@@ -30,31 +30,31 @@ import eu.europa.esig.dss.spi.x509.CertificateSource;
 import java.util.List;
 
 /**
- * This class represents a presentation of Electronic Attestation of Attributes
+ * This class represents a signed attestation
  *
  */
 public interface Attestation extends IdentifierBasedObject {
 
     /**
-     * Returns a name of the presentation of Electronic Attestation of Attributes document, when present
+     * Returns a name of the presentation of attestation document, when present
      *
      * @return {@link String}
      */
     String getFilename();
 
     /**
-     * Gets a list of signatures used to issue the Electronic Attestation of Attributes
+     * Gets a list of signatures used to issue the attestation
      *
      * @return a list of {@link AdvancedSignature}s
      */
     List<AdvancedSignature> getSignatures();
 
     /**
-     * Gets the type of the Electronic Attestation of Attributes
+     * Gets the profile of the attestation
      *
-     * @return {@link AttestationFormat}
+     * @return {@link AttestationProfile}
      */
-    AttestationFormat getEAAType();
+    AttestationProfile getAttestationProfile();
 
     /**
      * Gets a list of validation results performed on the selectively disclosable claims
@@ -85,7 +85,7 @@ public interface Attestation extends IdentifierBasedObject {
     CertificateSource getDeviceKeyCertificateSource();
 
     /**
-     * Gets a clear payload of the Electronic Attestation of Attributes
+     * Gets a clear payload of the attestation
      *
      * @return {@link AttestationPayload}
      */

@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This class is used to provide a proper MdocEAAClaim implementation based on the document type.
+ * This class is used to provide a proper MdocClaim implementation based on the document type.
  * The class defines default values for some properties, which may not be present on a specific implementation.
  *
  */
@@ -889,7 +889,7 @@ public abstract class DefaultMdocClaimsBuilder implements MdocClaimsBuilder {
     protected abstract String getNamespace();
 
     /**
-     * Creates a new MdocEAAClaim using the name, value and the applicable namespace
+     * Creates a new MdocClaim using the name, value and the applicable namespace
      *
      * @param name {@link String}
      * @param value {@link Object}

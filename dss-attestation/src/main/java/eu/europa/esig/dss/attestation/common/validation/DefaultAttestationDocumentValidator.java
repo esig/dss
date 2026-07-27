@@ -41,7 +41,7 @@ import java.util.Objects;
 import java.util.ServiceLoader;
 
 /**
- * This class is used to perform a validation of a presentation of Electronic Attestation of Attributes (EAA)
+ * This class is used to perform a validation of an attestation presentation document (EAA, PID, etc.)
  * <p>
  * In order to perform validation-process, please ensure the `dss-validation` module is loaded
  * within the dependencies list of your project.
@@ -52,7 +52,7 @@ public abstract class DefaultAttestationDocumentValidator extends SignedDocument
     private static final Logger LOG = LoggerFactory.getLogger(DefaultAttestationDocumentValidator.class);
 
     /** The path for default Attestation Presentation policy (EAA based) */
-    private static final String ATTESTATION_POLICY_LOCATION = "/policy/attestation-constraint.xml";
+    private static final String ATTESTATION_POLICY_LOCATION = "/policy/eaa-constraint.xml";
 
     /**
      * Empty constructor
@@ -87,13 +87,13 @@ public abstract class DefaultAttestationDocumentValidator extends SignedDocument
     }
 
     @Override
-    public void setEAARevocationSource(AttestationRevocationSource attestationRevocationSource) {
-        getDocumentAnalyzer().setEAARevocationSource(attestationRevocationSource);
+    public void setAttestationRevocationSource(AttestationRevocationSource attestationRevocationSource) {
+        getDocumentAnalyzer().setAttestationRevocationSource(attestationRevocationSource);
     }
 
     @Override
-    public void setEAAValidationParameters(AttestationValidationParameters attestationValidationParameters) {
-        getDocumentAnalyzer().setEAAValidationParameters(attestationValidationParameters);
+    public void setAttestationValidationParameters(AttestationValidationParameters attestationValidationParameters) {
+        getDocumentAnalyzer().setAttestationValidationParameters(attestationValidationParameters);
     }
 
     @Override
@@ -125,7 +125,7 @@ public abstract class DefaultAttestationDocumentValidator extends SignedDocument
 
     @Override
     public void setValidationLevel(ValidationLevel validationLevel) {
-        LOG.info("#setValidationLevel method is not supported within the EAAPresentationValidator class! " +
+        LOG.info("#setValidationLevel method is not supported within the AttestationPresentationValidator class! " +
                 "The validation always corresponds to the BASIC_SIGNATURES level.");
     }
 
@@ -139,7 +139,7 @@ public abstract class DefaultAttestationDocumentValidator extends SignedDocument
     @Override
     public List<DSSDocument> getOriginalDocuments(AdvancedSignature advancedSignature) {
         throw new UnsupportedOperationException("#getOriginalDocuments(AdvancedSignature) is " +
-                "not supported for EAAPresentationValidator!");
+                "not supported for AttestationPresentationValidator!");
     }
 
 }

@@ -2,26 +2,26 @@
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>simple-pid.jwt</DocumentName>
     <ValidationDate>2026-04-03T09:58:12Z</ValidationDate>
-    <EAAs>
-        <EAA Id="EAA-B011F0930552AB7B89D941C51FFDE7A769EA630B8DD5C926512C0870F637FE22">
+    <Attestations>
+        <Attestation Id="EAA-B011F0930552AB7B89D941C51FFDE7A769EA630B8DD5C926512C0870F637FE22">
             <DocumentName>simple-pid.jwt</DocumentName>
-            <EAAType>SD_JWT_VC</EAAType>
+            <Profile>SD_JWT_VC</Profile>
             <DigestMatchers>
-                <DigestMatcher type="EAA_DISCLOSURE">
+                <DigestMatcher type="SELECTIVE_DISCLOSURE">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>TGf4oLbgwd5JQaHyKVQZU9UdGE0w5rtDsrZzfUaomLo=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                     <DisclosableClaim name="family_name">Doe</DisclosableClaim>
                 </DigestMatcher>
-                <DigestMatcher type="EAA_DISCLOSURE">
+                <DigestMatcher type="SELECTIVE_DISCLOSURE">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>gbOsI4Edq2x2Kw+w5wPEzakob9hV1cRD0ATN3oQL9JM=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                     <DisclosableClaim name="birthdate">1940-01-01</DisclosableClaim>
                 </DigestMatcher>
-                <DigestMatcher type="EAA_DISCLOSURE">
+                <DigestMatcher type="SELECTIVE_DISCLOSURE">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>jsu9yVulwQQlhFlM/3JlzMaSFzglhQG0DpfayQwLUK4=</DigestValue>
                     <DataFound>true</DataFound>
@@ -29,8 +29,8 @@
                     <DisclosableClaim name="given_name">John</DisclosableClaim>
                 </DigestMatcher>
             </DigestMatchers>
-            <EAASignature Signature="S-59A46D40714D80AB3B6D087B938BE6358130244BAE1D9ACECBB28959F48D06F4"/>
-            <EAAPayload>
+            <AttestationSignature Signature="S-59A46D40714D80AB3B6D087B938BE6358130244BAE1D9ACECBB28959F48D06F4"/>
+            <AttestationPayload>
                 <Issuer name="iss">
                     <Text>https://issuer.example.com</Text>
                 </Issuer>
@@ -90,15 +90,15 @@
                         <Text>US</Text>
                     </Item>
                 </Nationalities>
-            </EAAPayload>
+            </AttestationPayload>
             <KeyBindingSignature Signature="S-B76CB61A45DDB0E0CA3970C6F40C5FBF329A5546A6A4320EBC331A7498F17FC9"/>
-            <EAARevocations>
-                <EAARevocationStatus EAARevocationToken="ST-A9144C67449944517D4481B366337C02488BA6CBD42F89E1C2C8225E507518EF">
+            <AttestationRevocations>
+                <AttestationRevocationStatus AttestationRevocationToken="ST-A9144C67449944517D4481B366337C02488BA6CBD42F89E1C2C8225E507518EF">
                     <Status>VALID</Status>
-                </EAARevocationStatus>
-            </EAARevocations>
-        </EAA>
-    </EAAs>
+                </AttestationRevocationStatus>
+            </AttestationRevocations>
+        </Attestation>
+    </Attestations>
     <Signatures>
         <Signature Id="S-59A46D40714D80AB3B6D087B938BE6358130244BAE1D9ACECBB28959F48D06F4">
             <SignatureFilename>simple-pid.jwt</SignatureFilename>
@@ -188,7 +188,7 @@
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                 </DigestMatcher>
-                <DigestMatcher type="EAA_KEY_BINDING">
+                <DigestMatcher type="KEY_BINDING_SIGNATURE">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>q8jTTKJJCo5gBLrdgeYz4SzUKuUb27tISQjmKS6gXxc=</DigestValue>
                     <DataFound>true</DataFound>
@@ -241,8 +241,8 @@
         </Signature>
     </Signatures>
     <EvidenceRecords/>
-    <UsedEAARevocationTokens>
-        <EAARevocationToken Id="ST-A9144C67449944517D4481B366337C02488BA6CBD42F89E1C2C8225E507518EF">
+    <UsedAttestationRevocationTokens>
+        <AttestationRevocationToken Id="ST-A9144C67449944517D4481B366337C02488BA6CBD42F89E1C2C8225E507518EF">
             <Origin>EXTERNAL</Origin>
             <Type>statuslist+cwt</Type>
             <SourceAddress>https://dss.nowina.lu/pki-factory/attestation/status_list</SourceAddress>
@@ -285,8 +285,8 @@
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>qRRMZ0SZRFF9RIGzZjN8AkiLpsvUL4nhwsgiXlB1GO8=</DigestValue>
             </DigestAlgoAndValue>
-        </EAARevocationToken>
-    </UsedEAARevocationTokens>
+        </AttestationRevocationToken>
+    </UsedAttestationRevocationTokens>
     <UsedCertificates>
         <Certificate Id="C-2D67C73C1D9D7A3662D066230C742E50866CBF6231CE255CE6960732797B82FA">
             <SubjectDistinguishedName Format="CANONICAL">c=zz,ou=pki-test,o=test pid trusted entity 1,cn=test-ca</SubjectDistinguishedName>

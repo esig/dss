@@ -40,16 +40,16 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Abstract class containing common code for validation of presentations of Electronic Attestation of Attributes.
- * This class can be used as the first point of the EAA presentation validation.
+ * Abstract class containing common code for validation of attestation presentation.
+ * This class can be used as the first point of the attestation presentation validation.
  *
  */
 public abstract class DefaultAttestationDocumentAnalyzer extends DefaultDocumentAnalyzer implements AttestationDocumentAnalyzer {
 
-    /** Cached presentation of Electronic Attestation of Attributes */
+    /** Cached presentation of attestation */
     private AttestationPresentation attestationPresentation;
 
-    /** Source used to verify revocation of the EAA */
+    /** Source used to verify revocation of the attestation */
     private AttestationRevocationSource attestationRevocationSource;
 
     /** Supplementary validation data */
@@ -73,7 +73,7 @@ public abstract class DefaultAttestationDocumentAnalyzer extends DefaultDocument
     }
 
     /**
-     * This method guesses the document format and returns an appropriate EAA presentation reader.
+     * This method guesses the document format and returns an appropriate attestation presentation reader.
      *
      * @param dssDocument
      *            The instance of {@code DSSDocument} to validate
@@ -86,18 +86,18 @@ public abstract class DefaultAttestationDocumentAnalyzer extends DefaultDocument
     @Override
     public AttestationPresentation getAttestationPresentation() {
         if (attestationPresentation == null) {
-            attestationPresentation = buildEAAPresentation();
+            attestationPresentation = buildAttestationPresentation();
             // TODO : scopes ?
         }
         return attestationPresentation;
     }
 
     /**
-     * Sets the EAA revocation source providing access to the information about the EAA validity revocation
+     * Sets the attestation revocation source providing access to the information about the attestation validity revocation
      *
      * @param attestationRevocationSource {@link AttestationRevocationSource}
      */
-    public void setEAARevocationSource(AttestationRevocationSource attestationRevocationSource) {
+    public void setAttestationRevocationSource(AttestationRevocationSource attestationRevocationSource) {
         this.attestationRevocationSource = attestationRevocationSource;
     }
 
@@ -106,7 +106,7 @@ public abstract class DefaultAttestationDocumentAnalyzer extends DefaultDocument
      *
      * @return {@link AttestationValidationParameters}
      */
-    protected AttestationValidationParameters getEAAValidationParameters() {
+    protected AttestationValidationParameters getAttestationValidationParameters() {
         return attestationValidationParameters;
     }
 
@@ -115,23 +115,23 @@ public abstract class DefaultAttestationDocumentAnalyzer extends DefaultDocument
      *
      * @param attestationValidationParameters {@link AttestationValidationParameters}
      */
-    public void setEAAValidationParameters(AttestationValidationParameters attestationValidationParameters) {
+    public void setAttestationValidationParameters(AttestationValidationParameters attestationValidationParameters) {
         this.attestationValidationParameters = attestationValidationParameters;
     }
 
     /**
-     * Builds a list of presentation of Electronic Attestation of Attributes
+     * Builds a presentation of attestation
      *
      * @return {@link AttestationPresentation}
      */
-    protected abstract AttestationPresentation buildEAAPresentation();
+    protected abstract AttestationPresentation buildAttestationPresentation();
 
     @Override
     protected List<AdvancedSignature> buildSignatures() {
         AttestationPresentation presentation = getAttestationPresentation();
 
         final List<AdvancedSignature> result = new ArrayList<>();
-        for (Attestation attestation : presentation.getElectronicAttestationsOfAttributes()) {
+        for (Attestation attestation : presentation.getAttestations()) {
             result.addAll(attestation.getSignatures());
             if (attestation.getKeyBindingSignature() != null) {
                 result.add(attestation.getKeyBindingSignature());
@@ -145,10 +145,10 @@ public abstract class DefaultAttestationDocumentAnalyzer extends DefaultDocument
             Collection<T> signatures, Collection<TimestampToken> detachedTimestamps,
             Collection<EvidenceRecord> detachedEvidenceRecords, CertificateVerifier certificateVerifier) {
         AttestationValidationContext validationContext = (AttestationValidationContext) super.prepareValidationContext(signatures, detachedTimestamps, detachedEvidenceRecords, certificateVerifier);
-        validationContext.setEAAStatusSource(attestationRevocationSource);
+        validationContext.setAttestationRevocationSource(attestationRevocationSource);
 
         AttestationPresentation attestationPresentation = getAttestationPresentation();
-        prepareEAAPresentationValidationContext(validationContext, attestationPresentation);
+        prepareAttestationPresentationValidationContext(validationContext, attestationPresentation);
         return validationContext;
     }
 
@@ -158,37 +158,37 @@ public abstract class DefaultAttestationDocumentAnalyzer extends DefaultDocument
     }
 
     /**
-     * Prepares the {@code EAAValidationContext} for EAA validation process
+     * Prepares the {@code attestationValidationContext} for attestation validation process
      *
      * @param validationContext
      *                          {@link AttestationValidationContext}
      * @param attestationPresentation
      *                          {@link AttestationPresentation} to be validated
      */
-    protected void prepareEAAPresentationValidationContext(
+    protected void prepareAttestationPresentationValidationContext(
             final AttestationValidationContext validationContext, final AttestationPresentation attestationPresentation) {
-        prepareEAAPresentationForVerification(validationContext, attestationPresentation);
-        processEAAPresentationValidation(attestationPresentation);
+        prepareAttestationPresentationForVerification(validationContext, attestationPresentation);
+        processAttestationPresentationValidation(attestationPresentation);
     }
 
     /**
-     * This method prepares a {@code EAAValidationContext} for EAA presentation validation
+     * This method prepares a {@code attestationValidationContext} for attestation presentation validation
      *
-     * @param validationContext {@code EAAValidationContext}
+     * @param validationContext {@code attestationValidationContext}
      * @param attestationPresentation {@link AttestationPresentation}
      */
-    protected void prepareEAAPresentationForVerification(
+    protected void prepareAttestationPresentationForVerification(
             final AttestationValidationContext validationContext, final AttestationPresentation attestationPresentation) {
-        validationContext.addEAAPresentationForVerification(attestationPresentation);
+        validationContext.addAttestationPresentationForVerification(attestationPresentation);
     }
 
     /**
-     * Performs cryptographic validation of the EAA signatures
+     * Performs cryptographic validation of the attestation signatures
      *
      * @param attestationPresentation {@link AttestationPresentation}
      */
-    protected void processEAAPresentationValidation(AttestationPresentation attestationPresentation) {
-        for (final Attestation attestation : attestationPresentation.getElectronicAttestationsOfAttributes()) {
+    protected void processAttestationPresentationValidation(AttestationPresentation attestationPresentation) {
+        for (final Attestation attestation : attestationPresentation.getAttestations()) {
             processSignaturesValidation(attestation.getSignatures());
             processSignatureValidation(attestation.getKeyBindingSignature());
         }
@@ -197,13 +197,13 @@ public abstract class DefaultAttestationDocumentAnalyzer extends DefaultDocument
     @Override
     public List<DSSDocument> getOriginalDocuments(String signatureId) {
         throw new UnsupportedOperationException("getOriginalDocuments(String signatureId) is " +
-                "not supported for DefaultEAAPresentationAnalyzer!");
+                "not supported for DefaultAttestationPresentationAnalyzer!");
     }
 
     @Override
     public List<DSSDocument> getOriginalDocuments(AdvancedSignature advancedSignature) {
         throw new UnsupportedOperationException("getOriginalDocuments(AdvancedSignature advancedSignature) is " +
-                "not supported for DefaultEAAPresentationAnalyzer!");
+                "not supported for DefaultAttestationPresentationAnalyzer!");
     }
 
 }

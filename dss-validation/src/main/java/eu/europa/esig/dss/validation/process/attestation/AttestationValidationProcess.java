@@ -28,7 +28,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSignature;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessEAA;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessAttestation;
 import eu.europa.esig.dss.diagnostic.AttestationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.i18n.I18nProvider;
@@ -46,15 +46,15 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * Performs validation of presentation of Electronic Attestation of Attributes
+ * Performs validation of presentation of attestation
  *
  */
-public class AttestationValidationProcess extends AbstractBasicValidationProcess<XmlValidationProcessEAA> {
+public class AttestationValidationProcess extends AbstractBasicValidationProcess<XmlValidationProcessAttestation> {
 
     /**
-     * EAA being validated
+     * attestation being validated
      */
-    private final AttestationWrapper eaa;
+    private final AttestationWrapper attestation;
 
     /**
      * Map of validated signatures
@@ -70,16 +70,16 @@ public class AttestationValidationProcess extends AbstractBasicValidationProcess
      * Common constructor
      *
      * @param i18nProvider the access to translations
-     * @param eaa {@link AttestationWrapper} to be validated
+     * @param attestation {@link AttestationWrapper} to be validated
      * @param xmlSignatures a map of {@link XmlSignature} validations
      * @param bbbs a map of {@link XmlBasicBuildingBlocks}s
      * @param validationPolicy {@link ValidationPolicy} to be used
      */
-    public AttestationValidationProcess(final I18nProvider i18nProvider, final AttestationWrapper eaa,
+    public AttestationValidationProcess(final I18nProvider i18nProvider, final AttestationWrapper attestation,
                                         final Map<String, XmlSignature> xmlSignatures, final Map<String, XmlBasicBuildingBlocks> bbbs,
                                         final ValidationPolicy validationPolicy) {
-        super(i18nProvider, new XmlValidationProcessEAA(), null, eaa, bbbs);
-        this.eaa = eaa;
+        super(i18nProvider, new XmlValidationProcessAttestation(), null, attestation, bbbs);
+        this.attestation = attestation;
         this.xmlSignatures = xmlSignatures;
         this.policy = validationPolicy;
     }
@@ -92,46 +92,46 @@ public class AttestationValidationProcess extends AbstractBasicValidationProcess
     @Override
     protected void initChain() {
 
-        final XmlBasicBuildingBlocks eaaBBBs = bbbs.get(eaa.getId());
-        if (eaaBBBs == null) {
+        final XmlBasicBuildingBlocks attestationBBBs = bbbs.get(attestation.getId());
+        if (attestationBBBs == null) {
             throw new IllegalStateException(
-                    String.format("Missing Basic Building Blocks result for token with Id '%s'", eaa.getId()));
+                    String.format("Missing Basic Building Blocks result for token with Id '%s'", attestation.getId()));
         }
 
-        ChainItem<XmlValidationProcessEAA> item = firstItem;
+        ChainItem<XmlValidationProcessAttestation> item = firstItem;
 
         // 1. Format checking
-        XmlFC xmlFC = eaaBBBs.getFC();
+        XmlFC xmlFC = attestationBBBs.getFC();
         if (xmlFC != null) {
             item = firstItem = formatChecking(xmlFC);
         }
 
         // 2. Verify electronic signatures
-        for (SignatureWrapper signatureWrapper : eaa.getEAASignatures()) {
+        for (SignatureWrapper signatureWrapper : attestation.getAttestationSignatures()) {
             item = item.setNextItem(signatureValidationConclusive(signatureWrapper));
         }
 
         // 3. Verify Key Binding signature
-        if (eaa.getKeyBindingSignature() != null) {
-            item = item.setNextItem(keyBindingSignatureValidationConclusive(eaa.getKeyBindingSignature()));
+        if (attestation.getKeyBindingSignature() != null) {
+            item = item.setNextItem(keyBindingSignatureValidationConclusive(attestation.getKeyBindingSignature()));
         }
 
         // 4. Digest (selective disclosures) validation
-        XmlCV xmlCV = eaaBBBs.getCV();
+        XmlCV xmlCV = attestationBBBs.getCV();
         if (xmlCV != null) {
             item = item.setNextItem(cryptographicVerification(xmlCV));
         }
 
-        // 5. EAA Acceptance Validation
-        XmlSAV xmlSAV = eaaBBBs.getSAV();
+        // 5. attestation Acceptance Validation
+        XmlSAV xmlSAV = attestationBBBs.getSAV();
         if (xmlSAV != null) {
             item = item.setNextItem(signatureAcceptanceValidation(xmlSAV));
         }
 
     }
 
-    private ChainItem<XmlValidationProcessEAA> signatureValidationConclusive(SignatureWrapper signatureWrapper) {
-        LevelRule constraint = policy.getEAASignatureValidConstraint();
+    private ChainItem<XmlValidationProcessAttestation> signatureValidationConclusive(SignatureWrapper signatureWrapper) {
+        LevelRule constraint = policy.getAttestationSignatureValidConstraint();
         return new SignatureValidationResultCheck<>(i18nProvider, result, getSignatureBasicProcessConclusion(signatureWrapper), constraint);
     }
 
@@ -144,16 +144,16 @@ public class AttestationValidationProcess extends AbstractBasicValidationProcess
         return xmlSignature.getValidationProcessBasicSignature().getConclusion();
     }
 
-    private ChainItem<XmlValidationProcessEAA> keyBindingSignatureValidationConclusive(SignatureWrapper signatureWrapper) {
-        LevelRule constraint = policy.getEAAKeyBindingSignatureValidConstraint();
+    private ChainItem<XmlValidationProcessAttestation> keyBindingSignatureValidationConclusive(SignatureWrapper signatureWrapper) {
+        LevelRule constraint = policy.getAttestationKeyBindingSignatureValidConstraint();
         XmlSignature xmlSignature = xmlSignatures.get(signatureWrapper.getId());
         return new KeyBindingSignatureValidationResultCheck(i18nProvider, result,
                 xmlSignature.getValidationProcessBasicSignature().getConclusion(), constraint);
     }
 
     @Override
-    protected ChainItem<XmlValidationProcessEAA> signatureAcceptanceValidation(final XmlSAV xmlSAV) {
-        return new SignatureAcceptanceValidationResultCheck<XmlValidationProcessEAA>(i18nProvider, result, xmlSAV, token, getFailLevelRule()) {
+    protected ChainItem<XmlValidationProcessAttestation> signatureAcceptanceValidation(final XmlSAV xmlSAV) {
+        return new SignatureAcceptanceValidationResultCheck<XmlValidationProcessAttestation>(i18nProvider, result, xmlSAV, token, getFailLevelRule()) {
 
             @Override
             protected MessageTag getMessageTag() {

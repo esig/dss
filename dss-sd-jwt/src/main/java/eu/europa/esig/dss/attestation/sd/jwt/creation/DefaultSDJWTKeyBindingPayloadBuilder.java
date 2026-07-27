@@ -40,7 +40,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Default implementation to create a payload for the SD-JWT VC key binding signature
+ * Default implementation to create a payload for the SD-JWT key binding signature
  *
  */
 public class DefaultSDJWTKeyBindingPayloadBuilder implements SDJWTKeyBindingPayloadBuilder {
@@ -53,13 +53,13 @@ public class DefaultSDJWTKeyBindingPayloadBuilder implements SDJWTKeyBindingPayl
     }
 
     @Override
-    public DSSDocument buildPayload(final DSSDocument eaa, final List<SDJWTSelectiveDisclosure> disclosures, final SDJWTKeyBindingParameters keyBindingParameters) {
+    public DSSDocument buildPayload(final DSSDocument attestation, final List<SDJWTSelectiveDisclosure> disclosures, final SDJWTKeyBindingParameters keyBindingParameters) {
         StringBuilder signedJWT = new StringBuilder();
-        JWSCompactSerializationParser compactParser = new JWSCompactSerializationParser(eaa);
-        JWSJsonSerializationParser jwsJsonSerializationParser = new JWSJsonSerializationParser(eaa);
+        JWSCompactSerializationParser compactParser = new JWSCompactSerializationParser(attestation);
+        JWSJsonSerializationParser jwsJsonSerializationParser = new JWSJsonSerializationParser(attestation);
 
         if (compactParser.isSupported()) {
-            signedJWT.append(new String(DSSUtils.toByteArray(eaa)));
+            signedJWT.append(new String(DSSUtils.toByteArray(attestation)));
         } else if (jwsJsonSerializationParser.isSupported()) {
             JWSJsonSerializationObject serializationObject = jwsJsonSerializationParser.parse();
             JWS jws = serializationObject.getSignatures().get(0);
@@ -69,7 +69,7 @@ public class DefaultSDJWTKeyBindingPayloadBuilder implements SDJWTKeyBindingPayl
             signedJWT.append(".");
             signedJWT.append(jws.getEncodedSignature());
         } else {
-            throw new DSSException("The signed EAA must be a JWS Signature");
+            throw new DSSException("The signed attestation must be a JWS Signature");
         }
 
         signedJWT.append("~");

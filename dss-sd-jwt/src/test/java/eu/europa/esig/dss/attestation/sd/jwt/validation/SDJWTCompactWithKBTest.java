@@ -155,7 +155,7 @@ class SDJWTCompactWithKBTest extends AbstractSDJWTTestValidation {
 
     @Override
     protected void checkStructureValidation(DiagnosticData diagnosticData) {
-        boolean eaaSignatureFound = false;
+        boolean attestationSignatureFound = false;
         boolean kbSignatureFound = false;
         for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
             if (signatureWrapper.isKeyBindingSignature()) {
@@ -164,10 +164,10 @@ class SDJWTCompactWithKBTest extends AbstractSDJWTTestValidation {
                 kbSignatureFound = true;
             } else {
                 assertTrue(Utils.isCollectionEmpty(signatureWrapper.getStructuralValidationMessages()));
-                eaaSignatureFound = true;
+                attestationSignatureFound = true;
             }
         }
-        assertTrue(eaaSignatureFound);
+        assertTrue(attestationSignatureFound);
         assertTrue(kbSignatureFound);
     }
 

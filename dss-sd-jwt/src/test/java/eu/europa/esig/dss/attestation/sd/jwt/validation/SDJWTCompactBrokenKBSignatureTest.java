@@ -43,7 +43,7 @@ class SDJWTCompactBrokenKBSignatureTest extends AbstractSDJWTTestValidation {
     protected void verifySimpleReport(final SimpleReport simpleReport) {
         super.verifySimpleReport(simpleReport);
 
-        XmlSignature keyBindingSignature = simpleReport.getEAAKeyBindingSignature(simpleReport.getFirstEAAId());
+        XmlSignature keyBindingSignature = simpleReport.getAttestationKeyBindingSignature(simpleReport.getFirstAttestationId());
         assertNotNull(keyBindingSignature);
         assertEquals(Indication.TOTAL_FAILED, keyBindingSignature.getIndication());
         assertEquals(SubIndication.HASH_FAILURE, keyBindingSignature.getSubIndication());

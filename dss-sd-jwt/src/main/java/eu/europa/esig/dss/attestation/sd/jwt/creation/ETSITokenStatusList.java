@@ -26,18 +26,18 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import java.util.Objects;
 
 /**
- * Parameter for an EAA Status definition according to the requirements present in
- * ETSI TS 119 472-1 "5.2.10 EAA revocation service".
+ * Parameter for an attestation Status definition according to the requirements present in
+ * ETSI TS 119 472-1 "5.2.10 attestation revocation service".
  *
  */
 public class ETSITokenStatusList extends TokenStatusList {
 
     private static final long serialVersionUID = 1803354941202111900L;
 
-    /** Type of the EAA revocation */
+    /** Type of the attestation revocation */
     private final String type;
 
-    /** Purpose of the EAA revocation */
+    /** Purpose of the attestation revocation */
     private final String purpose;
 
     /**
@@ -71,7 +71,7 @@ public class ETSITokenStatusList extends TokenStatusList {
     }
 
     /**
-     * Gets type of the EAA revocation list
+     * Gets type of the attestation revocation list
      *
      * @return {@link String}
      */
@@ -80,7 +80,7 @@ public class ETSITokenStatusList extends TokenStatusList {
     }
 
     /**
-     * Gets purpose of the EAA revocation list
+     * Gets purpose of the attestation revocation list
      *
      * @return {@link String}
      */
@@ -109,7 +109,7 @@ public class ETSITokenStatusList extends TokenStatusList {
 
     @Override
     public String toString() {
-        return "ETSIEAAStatusList [" +
+        return "ETSITokenStatusList [" +
                 "type='" + type + '\'' +
                 ", purpose='" + purpose + '\'' +
                 "] " + super.toString();

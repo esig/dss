@@ -48,7 +48,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class SDJWTPayloadBuilderTest {
 
     @Test
-    void buildSDJWTEAAPayload() throws JoseException {
+    void buildSDJWTPayload() throws JoseException {
         SecureRandomProvider randomProvider = new DSSSecureRandomProvider();
         SecureRandom secureRandom = randomProvider.getSecureRandom("hello".getBytes());
 

@@ -66,11 +66,11 @@ class SDJWTCompactIatAndSubSelectivelyDisclosableTest extends AbstractSDJWTTestI
     }
 
     @Override
-    protected void checkEAADigestMatchers(DiagnosticData diagnosticData) {
-        super.checkEAADigestMatchers(diagnosticData);
+    protected void checkAttestationDigestMatchers(DiagnosticData diagnosticData) {
+        super.checkAttestationDigestMatchers(diagnosticData);
 
-        AttestationWrapper eaa = diagnosticData.getEAAs().get(0);
-        List<XmlDigestMatcher> digestMatchers = eaa.getDigestMatchers();
+        AttestationWrapper attestation = diagnosticData.getAttestations().get(0);
+        List<XmlDigestMatcher> digestMatchers = attestation.getDigestMatchers();
         assertEquals(2, digestMatchers.size());
 
         boolean iatFound = false;
@@ -93,11 +93,11 @@ class SDJWTCompactIatAndSubSelectivelyDisclosableTest extends AbstractSDJWTTestI
     protected void checkClaims(final DiagnosticData diagnosticData) {
         super.checkClaims(diagnosticData);
 
-        AttestationWrapper eaa = diagnosticData.getEAAs().get(0);
-        assertEquals("https://issuer.example.com", eaa.getIssuer());
-        assertEquals("good-user", eaa.getSubject());
-        assertEquals(expiration.toInstant().getEpochSecond(), eaa.getExpiration().toInstant().getEpochSecond());
-        assertEquals(issuanceDate.toInstant().getEpochSecond(), eaa.getIssuedAt().toInstant().getEpochSecond());
+        AttestationWrapper attestation = diagnosticData.getAttestations().get(0);
+        assertEquals("https://issuer.example.com", attestation.getIssuer());
+        assertEquals("good-user", attestation.getSubject());
+        assertEquals(expiration.toInstant().getEpochSecond(), attestation.getExpiration().toInstant().getEpochSecond());
+        assertEquals(issuanceDate.toInstant().getEpochSecond(), attestation.getIssuedAt().toInstant().getEpochSecond());
     }
 
     @Override

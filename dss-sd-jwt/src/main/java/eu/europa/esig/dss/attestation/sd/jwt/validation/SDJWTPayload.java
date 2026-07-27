@@ -21,36 +21,36 @@
 package eu.europa.esig.dss.attestation.sd.jwt.validation;
 
 import eu.europa.esig.dss.attestation.sd.jwt.SDJWTConstants;
-import eu.europa.esig.dss.attestation.sd.jwt.claim.SDJWTClaimAddress;
-import eu.europa.esig.dss.attestation.sd.jwt.claim.SDJWTClaimAgeOverNNList;
-import eu.europa.esig.dss.attestation.sd.jwt.claim.SDJWTClaimAttestedAttributesSubject;
-import eu.europa.esig.dss.attestation.sd.jwt.claim.SDJWTClaimCredentialSubject;
-import eu.europa.esig.dss.attestation.sd.jwt.claim.SDJWTClaimDeviceKey;
-import eu.europa.esig.dss.attestation.sd.jwt.claim.SDJWTClaimIntegrity;
-import eu.europa.esig.dss.attestation.sd.jwt.claim.SDJWTClaimMap;
-import eu.europa.esig.dss.attestation.sd.jwt.claim.SDJWTClaimPlaceOfBirth;
-import eu.europa.esig.dss.attestation.sd.jwt.claim.SDJWTClaimStatus;
-import eu.europa.esig.dss.model.attestation.claim.Claim;
-import eu.europa.esig.dss.model.attestation.claim.ClaimAddress;
-import eu.europa.esig.dss.model.attestation.claim.ClaimAgeOverNN;
-import eu.europa.esig.dss.model.attestation.claim.ClaimAgeEqualOrOver;
-import eu.europa.esig.dss.model.attestation.claim.ClaimArray;
-import eu.europa.esig.dss.model.attestation.claim.ClaimAttestedAttributesSubject;
-import eu.europa.esig.dss.model.attestation.claim.ClaimBiometricTemplateXX;
-import eu.europa.esig.dss.model.attestation.claim.ClaimBoolean;
-import eu.europa.esig.dss.model.attestation.claim.ClaimByteString;
-import eu.europa.esig.dss.model.attestation.claim.ClaimCredentialSubject;
-import eu.europa.esig.dss.model.attestation.claim.ClaimDate;
-import eu.europa.esig.dss.model.attestation.claim.ClaimDeviceKey;
-import eu.europa.esig.dss.model.attestation.claim.ClaimDrivingPrivileges;
-import eu.europa.esig.dss.model.attestation.claim.ClaimIntegrity;
-import eu.europa.esig.dss.model.attestation.claim.ClaimMap;
-import eu.europa.esig.dss.model.attestation.claim.ClaimNull;
-import eu.europa.esig.dss.model.attestation.claim.ClaimNumber;
-import eu.europa.esig.dss.model.attestation.claim.ClaimPlaceOfBirth;
-import eu.europa.esig.dss.model.attestation.claim.ClaimStatus;
-import eu.europa.esig.dss.model.attestation.claim.ClaimString;
-import eu.europa.esig.dss.model.attestation.claim.ClaimValidityInfo;
+import eu.europa.esig.dss.attestation.sd.jwt.claim.SDJWTVerifiedClaimAddress;
+import eu.europa.esig.dss.attestation.sd.jwt.claim.SDJWTVerifiedClaimAgeOverNNList;
+import eu.europa.esig.dss.attestation.sd.jwt.claim.SDJWTVerifiedClaimAttestedAttributesSubject;
+import eu.europa.esig.dss.attestation.sd.jwt.claim.SDJWTVerifiedClaimCredentialSubject;
+import eu.europa.esig.dss.attestation.sd.jwt.claim.SDJWTVerifiedClaimDeviceKey;
+import eu.europa.esig.dss.attestation.sd.jwt.claim.SDJWTVerifiedClaimIntegrity;
+import eu.europa.esig.dss.attestation.sd.jwt.claim.SDJWTVerifiedClaimMap;
+import eu.europa.esig.dss.attestation.sd.jwt.claim.SDJWTVerifiedClaimPlaceOfBirth;
+import eu.europa.esig.dss.attestation.sd.jwt.claim.SDJWTVerifiedClaimStatus;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaim;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimAddress;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimAgeOverNN;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimAgeEqualOrOver;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimArray;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimAttestedAttributesSubject;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimBiometricTemplateXX;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimBoolean;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimByteString;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimCredentialSubject;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimDate;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimDeviceKey;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimDrivingPrivileges;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimIntegrity;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimMap;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimNull;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimNumber;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimPlaceOfBirth;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimStatus;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimString;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimValidityInfo;
 import eu.europa.esig.dss.spi.attestation.AttestationPayload;
 
 import java.util.ArrayList;
@@ -58,10 +58,10 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * This class implements a user-friendly access to the EAA payload elements of the SD-JWT token
+ * This class implements a user-friendly access to the attestation payload elements of the SD-JWT token
  *
  */
-public class SDJWTPayload extends SDJWTClaimMap implements AttestationPayload {
+public class SDJWTPayload extends SDJWTVerifiedClaimMap implements AttestationPayload {
 
     private static final long serialVersionUID = -4552799683587409954L;
 
@@ -70,62 +70,62 @@ public class SDJWTPayload extends SDJWTClaimMap implements AttestationPayload {
      *
      * @param verifiedPayloadMap {@link String} json payload
      */
-    public SDJWTPayload(final ClaimMap verifiedPayloadMap) {
+    public SDJWTPayload(final VerifiedClaimMap verifiedPayloadMap) {
         super(verifiedPayloadMap.getMapValue());
     }
 
     @Override
-    public ClaimString getIdentifier() {
+    public VerifiedClaimString getIdentifier() {
         return getAsString(SDJWTConstants.JWT_ID);
     }
 
     @Override
-    public ClaimString getIssuer() {
+    public VerifiedClaimString getIssuer() {
         return getAsString(SDJWTConstants.ISSUER);
     }
 
     @Override
-    public ClaimString getSubject() {
+    public VerifiedClaimString getSubject() {
         return getAsString(SDJWTConstants.SUBJECT);
     }
 
     @Override
-    public ClaimArray getAudience() {
+    public VerifiedClaimArray getAudience() {
         return getAsArray(SDJWTConstants.AUDIENCE);
     }
 
     @Override
-    public ClaimDate getIssuedAtTime() {
+    public VerifiedClaimDate getIssuedAtTime() {
         return getAsDateTime(SDJWTConstants.ISSUED_AT);
     }
 
     @Override
-    public ClaimDate getNotBeforeTime() {
+    public VerifiedClaimDate getNotBeforeTime() {
         return getAsDateTime(SDJWTConstants.NOT_BEFORE);
     }
 
     @Override
-    public ClaimDate getExpirationTime() {
+    public VerifiedClaimDate getExpirationTime() {
         return getAsDateTime(SDJWTConstants.EXPIRATION_TIME);
     }
 
     @Override
-    public ClaimDate getUpdatedAtTime() {
+    public VerifiedClaimDate getUpdatedAtTime() {
         return getAsDateTime(SDJWTConstants.UPDATED_AT);
     }
 
     @Override
-    public ClaimDeviceKey getDeviceKey() {
-        ClaimMap cnf = getAsMap(SDJWTConstants.CNF);
+    public VerifiedClaimDeviceKey getDeviceKey() {
+        VerifiedClaimMap cnf = getAsMap(SDJWTConstants.CNF);
         if (cnf != null) {
-            return new SDJWTClaimDeviceKey(cnf);
+            return new SDJWTVerifiedClaimDeviceKey(cnf);
         }
         return null;
     }
 
     @Override
-    public ClaimString getCategory() {
-        ClaimString category = getAsString(SDJWTConstants.CATEGORY);
+    public VerifiedClaimString getCategory() {
+        VerifiedClaimString category = getAsString(SDJWTConstants.CATEGORY);
         if (category != null) {
             return category;
         }
@@ -133,91 +133,91 @@ public class SDJWTPayload extends SDJWTClaimMap implements AttestationPayload {
     }
 
     @Override
-    public ClaimString getVerifiableCredentialsType() {
+    public VerifiedClaimString getVerifiableCredentialsType() {
         return getAsString(SDJWTConstants.VERIFIABLE_CREDENTIALS_TYPE);
     }
 
     @Override
-    public ClaimIntegrity getVerifiableCredentialsTypeIntegrity() {
-        ClaimString metadataIntegrity = getAsString(SDJWTConstants.VERIFIABLE_CREDENTIALS_INTEGRITY);
+    public VerifiedClaimIntegrity getVerifiableCredentialsTypeIntegrity() {
+        VerifiedClaimString metadataIntegrity = getAsString(SDJWTConstants.VERIFIABLE_CREDENTIALS_INTEGRITY);
         if (metadataIntegrity != null) {
-            return new SDJWTClaimIntegrity(metadataIntegrity);
+            return new SDJWTVerifiedClaimIntegrity(metadataIntegrity);
         }
         return null;
     }
 
     @Override
-    public ClaimStatus getStatus() {
-        ClaimMap statusClaim = getAsMap(SDJWTConstants.STATUS);
+    public VerifiedClaimStatus getStatus() {
+        VerifiedClaimMap statusClaim = getAsMap(SDJWTConstants.STATUS);
         if (statusClaim != null) {
-            return new SDJWTClaimStatus(statusClaim);
+            return new SDJWTVerifiedClaimStatus(statusClaim);
         }
         return null;
     }
 
     @Override
-    public ClaimString getNonce() {
+    public VerifiedClaimString getNonce() {
         return getAsString(SDJWTConstants.NONCE);
     }
 
     @Override
-    public ClaimString getFullName() {
+    public VerifiedClaimString getFullName() {
         return getAsString(SDJWTConstants.USER_NAME);
     }
 
     @Override
-    public ClaimString getGivenName() {
+    public VerifiedClaimString getGivenName() {
         return getAsString(SDJWTConstants.USER_GIVEN_NAME);
     }
 
     @Override
-    public ClaimString getFamilyName() {
+    public VerifiedClaimString getFamilyName() {
         return getAsString(SDJWTConstants.USER_FAMILY_NAME);
     }
 
     @Override
-    public ClaimString getMiddleName() {
+    public VerifiedClaimString getMiddleName() {
         return getAsString(SDJWTConstants.USER_MIDDLE_NAME);
     }
 
     @Override
-    public ClaimString getNickname() {
+    public VerifiedClaimString getNickname() {
         return getAsString(SDJWTConstants.USER_NICKNAME);
     }
 
     @Override
-    public ClaimString getShortName() {
+    public VerifiedClaimString getShortName() {
         return getAsString(SDJWTConstants.USER_PREFERRED_NICKNAME);
     }
 
     @Override
-    public ClaimString getProfileUrl() {
+    public VerifiedClaimString getProfileUrl() {
         return getAsString(SDJWTConstants.USER_PROFILE);
     }
 
     @Override
-    public ClaimString getPictureUrl() {
+    public VerifiedClaimString getPictureUrl() {
         return getAsString(SDJWTConstants.USER_PICTURE);
     }
 
     @Override
-    public ClaimString getWebsiteUrl() {
+    public VerifiedClaimString getWebsiteUrl() {
         return getAsString(SDJWTConstants.USER_WEBSITE);
     }
 
     @Override
-    public ClaimString getEmail() {
+    public VerifiedClaimString getEmail() {
         return getAsString(SDJWTConstants.USER_EMAIL);
     }
 
     @Override
-    public ClaimBoolean getEmailVerified() {
+    public VerifiedClaimBoolean getEmailVerified() {
         return getAsBoolean(SDJWTConstants.USER_EMAIL_VERIFIED);
     }
 
     @Override
-    public Claim getGender() {
-        ClaimString userGender = getAsString(SDJWTConstants.USER_GENDER);
+    public VerifiedClaim getGender() {
+        VerifiedClaimString userGender = getAsString(SDJWTConstants.USER_GENDER);
         if (userGender != null) {
             return userGender;
         }
@@ -225,100 +225,100 @@ public class SDJWTPayload extends SDJWTClaimMap implements AttestationPayload {
     }
 
     @Override
-    public ClaimDate getBirthdate() {
+    public VerifiedClaimDate getBirthdate() {
         return getAsDate(SDJWTConstants.USER_BIRTHDATE);
     }
 
     @Override
-    public ClaimString getTimezone() {
+    public VerifiedClaimString getTimezone() {
         return getAsString(SDJWTConstants.USER_ZONEINFO);
     }
 
     @Override
-    public ClaimString getLocale() {
+    public VerifiedClaimString getLocale() {
         return getAsString(SDJWTConstants.USER_LOCALE);
     }
 
     @Override
-    public ClaimAddress getAddress() {
-        ClaimMap claimAddress = getAsMap(SDJWTConstants.USER_ADDRESS);
+    public VerifiedClaimAddress getAddress() {
+        VerifiedClaimMap claimAddress = getAsMap(SDJWTConstants.USER_ADDRESS);
         if (claimAddress != null) {
-            return new SDJWTClaimAddress(claimAddress);
+            return new SDJWTVerifiedClaimAddress(claimAddress);
         }
         return null;
     }
 
     @Override
-    public ClaimString getPhoneNumber() {
+    public VerifiedClaimString getPhoneNumber() {
         return getAsString(SDJWTConstants.USER_PHONE_NUMBER);
     }
 
     @Override
-    public ClaimBoolean getPhoneNumberVerified() {
+    public VerifiedClaimBoolean getPhoneNumberVerified() {
         return getAsBoolean(SDJWTConstants.USER_PHONE_NUMBER_VERIFIED);
     }
 
     @Override
-    public ClaimPlaceOfBirth getPlaceOfBirth() {
-        ClaimMap claimPlaceOfBirth = getAsMap(SDJWTConstants.USER_PLACE_OF_BIRTH);
+    public VerifiedClaimPlaceOfBirth getPlaceOfBirth() {
+        VerifiedClaimMap claimPlaceOfBirth = getAsMap(SDJWTConstants.USER_PLACE_OF_BIRTH);
         if (claimPlaceOfBirth != null) {
-            return new SDJWTClaimPlaceOfBirth(claimPlaceOfBirth);
+            return new SDJWTVerifiedClaimPlaceOfBirth(claimPlaceOfBirth);
         }
         return null;
     }
 
     @Override
-    public ClaimArray getNationalities() {
+    public VerifiedClaimArray getNationalities() {
         return getAsArray(SDJWTConstants.USER_NATIONALITIES);
     }
 
     @Override
-    public ClaimString getBirthGivenName() {
+    public VerifiedClaimString getBirthGivenName() {
         return getAsString(SDJWTConstants.USER_BIRTH_GIVEN_NAME);
     }
 
     @Override
-    public ClaimString getBirthFamilyName() {
+    public VerifiedClaimString getBirthFamilyName() {
         return getAsString(SDJWTConstants.USER_BIRTH_FAMILY_NAME);
     }
 
     @Override
-    public ClaimString getBirthMiddleName() {
+    public VerifiedClaimString getBirthMiddleName() {
         return getAsString(SDJWTConstants.USER_BIRTH_MIDDLE_NAME);
     }
 
     @Override
-    public ClaimString getSalutation() {
+    public VerifiedClaimString getSalutation() {
         return getAsString(SDJWTConstants.USER_SALUTATION);
     }
 
     @Override
-    public ClaimString getTitle() {
+    public VerifiedClaimString getTitle() {
         return getAsString(SDJWTConstants.USER_TITLE);
     }
 
     @Override
-    public ClaimString getMobilePhoneNumber() {
+    public VerifiedClaimString getMobilePhoneNumber() {
         return getAsString(SDJWTConstants.USER_MOBILE_PHONE_NUMBER);
     }
 
     @Override
-    public ClaimString getPseudonym() {
+    public VerifiedClaimString getPseudonym() {
         return getAsString(SDJWTConstants.USER_PSEUDONYM);
     }
 
     @Override
-    public List<ClaimCredentialSubject> getCredentialSubjects() {
-        ClaimMap claimCredentialSubjectAsMap = getAsMap(SDJWTConstants.CREDENTIAL_SUBJECT);
+    public List<VerifiedClaimCredentialSubject> getCredentialSubjects() {
+        VerifiedClaimMap claimCredentialSubjectAsMap = getAsMap(SDJWTConstants.CREDENTIAL_SUBJECT);
         if (claimCredentialSubjectAsMap != null) {
-            return Collections.singletonList(new SDJWTClaimCredentialSubject(claimCredentialSubjectAsMap));
+            return Collections.singletonList(new SDJWTVerifiedClaimCredentialSubject(claimCredentialSubjectAsMap));
         }
-        ClaimArray claimCredentialSubjectAsArray = getAsArray(SDJWTConstants.CREDENTIAL_SUBJECT);
+        VerifiedClaimArray claimCredentialSubjectAsArray = getAsArray(SDJWTConstants.CREDENTIAL_SUBJECT);
         if (claimCredentialSubjectAsArray != null) {
-            List<ClaimCredentialSubject> result = new ArrayList<>();
-            for (Claim credentialSubject : claimCredentialSubjectAsArray.getListValue()) {
+            List<VerifiedClaimCredentialSubject> result = new ArrayList<>();
+            for (VerifiedClaim credentialSubject : claimCredentialSubjectAsArray.getListValue()) {
                 if (credentialSubject.isMapValueType()) {
-                    result.add(new SDJWTClaimCredentialSubject((ClaimMap) credentialSubject));
+                    result.add(new SDJWTVerifiedClaimCredentialSubject((VerifiedClaimMap) credentialSubject));
                 }
             }
             return result;
@@ -327,268 +327,268 @@ public class SDJWTPayload extends SDJWTClaimMap implements AttestationPayload {
     }
 
     @Override
-    public ClaimString getIssuingCountry() {
+    public VerifiedClaimString getIssuingCountry() {
         return getAsString(SDJWTConstants.ISSUING_COUNTRY);
     }
 
     @Override
-    public ClaimString getIssuingAuthority() {
+    public VerifiedClaimString getIssuingAuthority() {
         return getAsString(SDJWTConstants.ISSUING_AUTHORITY);
     }
 
     @Override
-    public ClaimString getDocumentNumber() {
+    public VerifiedClaimString getDocumentNumber() {
         return getAsString(SDJWTConstants.DOCUMENT_NUMBER);
     }
 
     @Override
-    public ClaimByteString getPortrait() {
+    public VerifiedClaimByteString getPortrait() {
         return null;
     }
 
     @Override
-    public ClaimDrivingPrivileges getDrivingPrivileges() {
+    public VerifiedClaimDrivingPrivileges getDrivingPrivileges() {
         return null;
     }
 
     @Override
-    public ClaimString getUNDistinguishingSign() {
+    public VerifiedClaimString getUNDistinguishingSign() {
         return null;
     }
 
     @Override
-    public ClaimString getPersonalAdministrativeNumber() {
+    public VerifiedClaimString getPersonalAdministrativeNumber() {
         return getAsString(SDJWTConstants.PERSONAL_ADMINISTRATIVE_NUMBER);
     }
 
     @Override
-    public ClaimNumber getHeight() {
+    public VerifiedClaimNumber getHeight() {
         return null;
     }
 
     @Override
-    public ClaimNumber getWeight() {
+    public VerifiedClaimNumber getWeight() {
         return null;
     }
 
     @Override
-    public ClaimString getEyeColour() {
+    public VerifiedClaimString getEyeColour() {
         return null;
     }
 
     @Override
-    public ClaimString getHairColour() {
+    public VerifiedClaimString getHairColour() {
         return null;
     }
 
     @Override
-    public ClaimString getPostalAddress() {
+    public VerifiedClaimString getPostalAddress() {
         return null;
     }
 
     @Override
-    public ClaimDate getPortraitCaptureDate() {
+    public VerifiedClaimDate getPortraitCaptureDate() {
         return null;
     }
 
     @Override
-    public ClaimNumber getAgeInYears() {
+    public VerifiedClaimNumber getAgeInYears() {
         return getAsNumber(SDJWTConstants.AGE_IN_YEARS);
     }
 
     @Override
-    public ClaimNumber getAgeBirthYear() {
+    public VerifiedClaimNumber getAgeBirthYear() {
         return getAsNumber(SDJWTConstants.AGE_BIRTH_YEAR);
     }
 
     @Override
-    public ClaimAgeEqualOrOver getAgeEqualOrOver() {
-        ClaimMap ageEqualOrOver = getAsMap(SDJWTConstants.AGE_EQUAL_OR_OVER);
+    public VerifiedClaimAgeEqualOrOver getAgeEqualOrOver() {
+        VerifiedClaimMap ageEqualOrOver = getAsMap(SDJWTConstants.AGE_EQUAL_OR_OVER);
         if (ageEqualOrOver != null) {
-            return new SDJWTClaimAgeOverNNList(ageEqualOrOver);
+            return new SDJWTVerifiedClaimAgeOverNNList(ageEqualOrOver);
         }
         return null;
     }
 
     @Override
-    public List<ClaimAgeOverNN> getAgeOverNN() {
+    public List<VerifiedClaimAgeOverNN> getAgeOverNN() {
         return Collections.emptyList();
     }
 
     @Override
-    public ClaimString getIssuingJurisdiction() {
+    public VerifiedClaimString getIssuingJurisdiction() {
         return getAsString(SDJWTConstants.ISSUING_JURISDICTION);
     }
 
     @Override
-    public ClaimString getResidentAddressCity() {
+    public VerifiedClaimString getResidentAddressCity() {
         return null;
     }
 
     @Override
-    public ClaimString getResidentAddressState() {
+    public VerifiedClaimString getResidentAddressState() {
         return null;
     }
 
     @Override
-    public ClaimString getResidentAddressPostalCode() {
+    public VerifiedClaimString getResidentAddressPostalCode() {
         return null;
     }
 
     @Override
-    public ClaimString getResidentAddressCountry() {
+    public VerifiedClaimString getResidentAddressCountry() {
         return null;
     }
 
     @Override
-    public List<ClaimBiometricTemplateXX> getBiometricTemplate() {
+    public List<VerifiedClaimBiometricTemplateXX> getBiometricTemplate() {
         return Collections.emptyList();
     }
 
     @Override
-    public ClaimByteString getSignatureUsualMark() {
+    public VerifiedClaimByteString getSignatureUsualMark() {
         return null;
     }
 
     @Override
-    public ClaimString getVersion() {
+    public VerifiedClaimString getVersion() {
         return null;
     }
 
     @Override
-    public ClaimString getDocType() {
+    public VerifiedClaimString getDocType() {
         return null;
     }
 
     @Override
-    public ClaimValidityInfo getValidityInfo() {
+    public VerifiedClaimValidityInfo getValidityInfo() {
         return null;
     }
 
     @Override
-    public ClaimByteString getFingerprint() {
+    public VerifiedClaimByteString getFingerprint() {
         return null;
     }
 
     @Override
-    public ClaimString getBusinessName() {
+    public VerifiedClaimString getBusinessName() {
         return null;
     }
 
     @Override
-    public ClaimString getOrganizationName() {
+    public VerifiedClaimString getOrganizationName() {
         return null;
     }
 
     @Override
-    public ClaimString getBirthFullName() {
+    public VerifiedClaimString getBirthFullName() {
         return null;
     }
 
     @Override
-    public ClaimString getProfession() {
+    public VerifiedClaimString getProfession() {
         return null;
     }
 
     @Override
-    public ClaimString getRelationshipFather() {
+    public VerifiedClaimString getRelationshipFather() {
         return null;
     }
 
     @Override
-    public ClaimString getRelationshipMother() {
+    public VerifiedClaimString getRelationshipMother() {
         return null;
     }
 
     @Override
-    public ClaimString getRelationshipParent() {
+    public VerifiedClaimString getRelationshipParent() {
         return null;
     }
 
     @Override
-    public ClaimString getRelationshipSon() {
+    public VerifiedClaimString getRelationshipSon() {
         return null;
     }
 
     @Override
-    public ClaimString getRelationshipDaughter() {
+    public VerifiedClaimString getRelationshipDaughter() {
         return null;
     }
 
     @Override
-    public ClaimString getRelationshipBrother() {
+    public VerifiedClaimString getRelationshipBrother() {
         return null;
     }
 
     @Override
-    public ClaimString getRelationshipSister() {
+    public VerifiedClaimString getRelationshipSister() {
         return null;
     }
 
     @Override
-    public ClaimString getRelationshipSibling() {
+    public VerifiedClaimString getRelationshipSibling() {
         return null;
     }
 
     @Override
-    public ClaimString getRelationshipSpouse() {
+    public VerifiedClaimString getRelationshipSpouse() {
         return null;
     }
 
     @Override
-    public ClaimString getRelationshipFatherInLaw() {
+    public VerifiedClaimString getRelationshipFatherInLaw() {
         return null;
     }
 
     @Override
-    public ClaimString getRelationshipMotherInLaw() {
+    public VerifiedClaimString getRelationshipMotherInLaw() {
         return null;
     }
 
     @Override
-    public ClaimString getRelationshipParentInLaw() {
+    public VerifiedClaimString getRelationshipParentInLaw() {
         return null;
     }
 
     @Override
-    public ClaimString getRelationshipSonInLaw() {
+    public VerifiedClaimString getRelationshipSonInLaw() {
         return null;
     }
 
     @Override
-    public ClaimString getRelationshipDaughterInLaw() {
+    public VerifiedClaimString getRelationshipDaughterInLaw() {
         return null;
     }
 
     @Override
-    public ClaimString getRelationshipChildInLaw() {
+    public VerifiedClaimString getRelationshipChildInLaw() {
         return null;
     }
 
     @Override
-    public ClaimString getRelationshipParentalAuthority() {
+    public VerifiedClaimString getRelationshipParentalAuthority() {
         return null;
     }
 
     @Override
-    public ClaimString getRelationshipLegalRepresentative() {
+    public VerifiedClaimString getRelationshipLegalRepresentative() {
         return null;
     }
 
     @Override
-    public ClaimString getRelationshipAgent() {
+    public VerifiedClaimString getRelationshipAgent() {
         return null;
     }
 
     @Override
-    public ClaimString getDocumentType() {
+    public VerifiedClaimString getDocumentType() {
         return null;
     }
 
     @Override
-    public ClaimDate getAdministrativeExpirationDate() {
+    public VerifiedClaimDate getAdministrativeExpirationDate() {
         // TODO : PID Rulebook and ETSI both define their own headers, check for conflict ?
-        ClaimDate admExp = getAsDateTime(SDJWTConstants.ADMINISTRATIVE_VALIDITY_EXPIRY);
+        VerifiedClaimDate admExp = getAsDateTime(SDJWTConstants.ADMINISTRATIVE_VALIDITY_EXPIRY);
         if (admExp != null) {
             return admExp;
         }
@@ -596,9 +596,9 @@ public class SDJWTPayload extends SDJWTClaimMap implements AttestationPayload {
     }
 
     @Override
-    public ClaimDate getAdministrativeIssuanceDate() {
+    public VerifiedClaimDate getAdministrativeIssuanceDate() {
         // TODO : PID Rulebook and ETSI both define their own headers, check for conflict ?
-        ClaimDate admNbf = getAsDateTime(SDJWTConstants.ADMINISTRATIVE_VALIDITY_NOT_BEFORE);
+        VerifiedClaimDate admNbf = getAsDateTime(SDJWTConstants.ADMINISTRATIVE_VALIDITY_NOT_BEFORE);
         if (admNbf != null) {
             return admNbf;
         }
@@ -606,48 +606,48 @@ public class SDJWTPayload extends SDJWTClaimMap implements AttestationPayload {
     }
 
     @Override
-    public ClaimString getTrustAnchor() {
+    public VerifiedClaimString getTrustAnchor() {
         return getAsString(SDJWTConstants.TRUST_ANCHOR);
     }
 
     @Override
-    public ClaimString getResidentAddressStreet() {
+    public VerifiedClaimString getResidentAddressStreet() {
         return null;
     }
 
     @Override
-    public ClaimString getResidentAddressHouseNumber() {
+    public VerifiedClaimString getResidentAddressHouseNumber() {
         return null;
     }
 
     @Override
-    public ClaimString getIssuingAuthorityRegistrationIdentifier() {
+    public VerifiedClaimString getIssuingAuthorityRegistrationIdentifier() {
         return getAsString(SDJWTConstants.ISSUING_REGISTRATION_IDENTIFIER);
     }
 
     @Override
-    public ClaimNull getOneTimeUse() {
+    public VerifiedClaimNull getOneTimeUse() {
         /* EAA-5.2.8.2-05: The oneTime claim shall have the null JSON primitive type. */
         return getAsNull(SDJWTConstants.ONE_TIME);
     }
 
     @Override
-    public Claim getShortLived() {
+    public VerifiedClaim getShortLived() {
         /* EAA-5.2.12-02: The shortLived claim shall have the null JSON primitive type.  */
         return getAsNull(SDJWTConstants.SHORT_LIVED);
     }
 
     @Override
-    public ClaimArray getEvidence() {
+    public VerifiedClaimArray getEvidence() {
         // TODO : evidence structure is not supported yet (see https://openid.net/specs/openid-ida-verified-claims-1_0.html)
         return getAsArray(SDJWTConstants.EVIDENCE);
     }
 
     @Override
-    public ClaimAttestedAttributesSubject getAttestedAttributesSubject() {
-        ClaimMap subAttrs = getAsMap(SDJWTConstants.ATTESTED_ATTRIBUTES_SUBJECT);
+    public VerifiedClaimAttestedAttributesSubject getAttestedAttributesSubject() {
+        VerifiedClaimMap subAttrs = getAsMap(SDJWTConstants.ATTESTED_ATTRIBUTES_SUBJECT);
         if (subAttrs != null) {
-            return new SDJWTClaimAttestedAttributesSubject(subAttrs);
+            return new SDJWTVerifiedClaimAttestedAttributesSubject(subAttrs);
         }
         return null;
     }

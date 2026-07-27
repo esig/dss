@@ -25,7 +25,7 @@ import eu.europa.esig.dss.attestation.common.validation.DefaultAttestation;
 import eu.europa.esig.dss.attestation.common.validation.AttestationPayloadVerifier;
 import eu.europa.esig.dss.attestation.mdoc.model.MdocDeviceNameSpaces;
 import eu.europa.esig.dss.attestation.mdoc.model.MdocDocument;
-import eu.europa.esig.dss.enumerations.AttestationFormat;
+import eu.europa.esig.dss.enumerations.AttestationProfile;
 import eu.europa.esig.dss.model.attestation.SelectivelyDisclosableClaim;
 import eu.europa.esig.dss.spi.attestation.KeyBindingSignaturePayload;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
@@ -39,7 +39,7 @@ import java.util.List;
  */
 public class MdocAttestation extends DefaultAttestation {
 
-    /** Document mdoc object enveloping the EAA */
+    /** Document mdoc object enveloping the attestation */
     private MdocDocument document;
 
     /**
@@ -77,17 +77,17 @@ public class MdocAttestation extends DefaultAttestation {
     }
 
     @Override
-    public AttestationFormat getEAAType() {
-        return AttestationFormat.ISO_IEC_MDOC;
+    public AttestationProfile getAttestationProfile() {
+        return AttestationProfile.ISO_IEC_MDOC;
     }
 
     @Override
-    protected AttestationPayloadVerifier initEAAPayloadVerifier() {
+    protected AttestationPayloadVerifier initAttestationPayloadVerifier() {
         List<AdvancedSignature> signatures = getSignatures();
         if (Utils.isCollectionEmpty(signatures)) {
-            throw new IllegalStateException("SD-JWT VC signatures cannot be empty!");
+            throw new IllegalStateException("SD-JWT signatures cannot be empty!");
         }
-        CBAdESSignature signature = (CBAdESSignature) signatures.get(0); // payload is the same for EAA signatures within the same mdoc Document
+        CBAdESSignature signature = (CBAdESSignature) signatures.get(0); // payload is the same for attestation signatures within the same mdoc Document
         MdocPayloadVerifier payloadVerifier = new MdocPayloadVerifier(signature.getCoseSignature().getPayload());
         if (document != null) {
             payloadVerifier.setDocType(document.getDocType());
@@ -105,12 +105,12 @@ public class MdocAttestation extends DefaultAttestation {
     }
 
     /**
-     * This class is used to build a {@code eu.europa.esig.dss.attestation.mdoc.validation.MdocEAA} object
+     * This class is used to build a {@code eu.europa.esig.dss.attestation.mdoc.validation.Mdoc} object
      *
      */
     public static class MdocAttestationBuilder extends DefaultAttestationBuilder {
 
-        /** Document mdoc object enveloping the EAA */
+        /** Document mdoc object enveloping the attestation */
         private MdocDocument document;
 
         /**
@@ -152,15 +152,15 @@ public class MdocAttestation extends DefaultAttestation {
         }
 
         @Override
-        protected DefaultAttestation initEAA() {
+        protected DefaultAttestation initAttestation() {
             return new MdocAttestation();
         }
 
         @Override
         public MdocAttestation build() {
-            MdocAttestation mdocEAA = (MdocAttestation) super.build();
-            mdocEAA.setDocument(document);
-            return mdocEAA;
+            MdocAttestation mdocAttestation = (MdocAttestation) super.build();
+            mdocAttestation.setDocument(document);
+            return mdocAttestation;
         }
 
     }

@@ -122,7 +122,7 @@ public abstract class AbstractSerializableSignatureParameters<TP extends Seriali
 	}
 
 	/**
-	 * Allows setting whether a revocation revocation for a signing certificate should be checked
+	 * Allows setting whether a revocation status for a signing certificate should be checked
 	 * on signature creation or T-level extension.
 	 * <p>
 	 * NOTE: in order to specify a behavior for this check, the relevant alerts should be specified within

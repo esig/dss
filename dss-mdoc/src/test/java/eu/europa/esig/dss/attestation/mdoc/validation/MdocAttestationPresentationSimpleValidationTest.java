@@ -29,7 +29,7 @@ import eu.europa.esig.dss.cbades.signature.CBAdESService;
 import eu.europa.esig.dss.cbades.signature.CBAdESSignatureParameters;
 import eu.europa.esig.dss.enumerations.COSEStructureType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.AttestationPresentationType;
+import eu.europa.esig.dss.enumerations.AttestationDocumentFormat;
 import eu.europa.esig.dss.enumerations.EllipticCurve;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -113,7 +113,7 @@ class MdocAttestationPresentationSimpleValidationTest extends AbstractMdocAttest
 
         documents.add(document);
         mdocResponse.put("documents", documents);
-        mdocResponse.put("revocation", 0L);
+        mdocResponse.put("status", 0L);
 
         // embed in mdoc
         DSSDocument mdocDocument = new InMemoryDocument(CBORUtils.serializeCborObject(mdocResponse));
@@ -138,8 +138,8 @@ class MdocAttestationPresentationSimpleValidationTest extends AbstractMdocAttest
     }
 
     @Override
-    protected AttestationPresentationType getEAAPresentationType() {
-        return AttestationPresentationType.MDOC_DEVICE_RESPONSE;
+    protected AttestationDocumentFormat getAttestationPresentationType() {
+        return AttestationDocumentFormat.MDOC_DEVICE_RESPONSE;
     }
 
     @Override

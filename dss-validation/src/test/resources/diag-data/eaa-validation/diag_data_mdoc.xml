@@ -2,101 +2,101 @@
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>document-signed-cb-ades-baseline-b-presentation.cbor</DocumentName>
     <ValidationDate>2026-07-22T07:57:06Z</ValidationDate>
-    <EAAPresentationInfo>
-        <EAAPresentationType>MDOC_DEVICE_RESPONSE</EAAPresentationType>
+    <AttestationPresentationInfo>
+        <Format>MDOC_DEVICE_RESPONSE</Format>
         <Version>1.0</Version>
         <Documents>
-            <EAADocument EAA="EAA-0668B958873A5E390A8422DAADE09CED4F921AD1F305AE9451D212820ED13BE2">
+            <AttestationDocument Attestation="EAA-0668B958873A5E390A8422DAADE09CED4F921AD1F305AE9451D212820ED13BE2">
                 <DocumentType>org.iso.18013.5.1.mDL</DocumentType>
-            </EAADocument>
+            </AttestationDocument>
         </Documents>
         <Status>0</Status>
-    </EAAPresentationInfo>
-    <EAAs>
-        <EAA Id="EAA-0668B958873A5E390A8422DAADE09CED4F921AD1F305AE9451D212820ED13BE2">
+    </AttestationPresentationInfo>
+    <Attestations>
+        <Attestation Id="EAA-0668B958873A5E390A8422DAADE09CED4F921AD1F305AE9451D212820ED13BE2">
             <DocumentName>document-signed-cb-ades-baseline-b-presentation.cbor</DocumentName>
             <DocumentType>org.iso.18013.5.1.mDL</DocumentType>
-            <EAAType>ISO_IEC_MDOC</EAAType>
+            <Profile>ISO_IEC_MDOC</Profile>
             <DigestMethod>SHA256</DigestMethod>
             <DigestMatchers>
-                <DigestMatcher type="EAA_DISCLOSURE">
+                <DigestMatcher type="SELECTIVE_DISCLOSURE">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>ImJZwW02szAknF8EOi/kUN8U6lU/q+DaxDz+09vKcw4=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                     <DisclosableClaim id="1" name="category" namespace="org.etsi.01947201.010101">urn:etsi:esi:attestation:eu:qualified</DisclosableClaim>
                 </DigestMatcher>
-                <DigestMatcher type="EAA_DISCLOSURE">
+                <DigestMatcher type="SELECTIVE_DISCLOSURE">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>lr/qKJ5QZH70Rw0CUO0jqRVj50d5uGvFpw+7xl+E/VU=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                     <DisclosableClaim id="11" name="driving_privileges" namespace="org.iso.18013.5.1">[{"issue_date": "2020-01-01", "vehicle_category_code": "B", "expiry_date": "2030-01-01"}]</DisclosableClaim>
                 </DigestMatcher>
-                <DigestMatcher type="EAA_DISCLOSURE">
+                <DigestMatcher type="SELECTIVE_DISCLOSURE">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>kZI5qdmZu0T5J4wEfgTqkTuofgEdav5HUrLZlsxJ3+0=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                     <DisclosableClaim id="1" name="family_name" namespace="org.iso.18013.5.1">Doe</DisclosableClaim>
                 </DigestMatcher>
-                <DigestMatcher type="EAA_DISCLOSURE">
+                <DigestMatcher type="SELECTIVE_DISCLOSURE">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>Y0hI5qZi4ciW42uM0pZ7pdP8JATNCqj1WBTn28FrKEM=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                     <DisclosableClaim id="2" name="un_distinguishing_sign" namespace="org.iso.18013.5.1">DN</DisclosableClaim>
                 </DigestMatcher>
-                <DigestMatcher type="EAA_DISCLOSURE">
+                <DigestMatcher type="SELECTIVE_DISCLOSURE">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>42ICjcarIw0Z2xPk9AN7SfmxmiiHY1b0OQbTsAWwLd0=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                     <DisclosableClaim id="3" name="document_number" namespace="org.iso.18013.5.1">123456789</DisclosableClaim>
                 </DigestMatcher>
-                <DigestMatcher type="EAA_DISCLOSURE">
+                <DigestMatcher type="SELECTIVE_DISCLOSURE">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>eYwmd2vCLBho5PSD5Kzni/k83vQyRKttNznLfiPJ580=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                     <DisclosableClaim id="4" name="birth_date" namespace="org.iso.18013.5.1">2001-01-01</DisclosableClaim>
                 </DigestMatcher>
-                <DigestMatcher type="EAA_DISCLOSURE">
+                <DigestMatcher type="SELECTIVE_DISCLOSURE">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>4funLt4oMFmuyV/E05AMb82B6CPqPcZIm+toUKigg7E=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                     <DisclosableClaim id="5" name="given_name" namespace="org.iso.18013.5.1">John</DisclosableClaim>
                 </DigestMatcher>
-                <DigestMatcher type="EAA_DISCLOSURE">
+                <DigestMatcher type="SELECTIVE_DISCLOSURE">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>oQaZ9rSNJmiysdscFC6gtrO73yg7/6b+MJChiSESCyo=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                     <DisclosableClaim id="6" name="expiry_date" namespace="org.iso.18013.5.1">2026-08-31T00:00:00Z</DisclosableClaim>
                 </DigestMatcher>
-                <DigestMatcher type="EAA_DISCLOSURE">
+                <DigestMatcher type="SELECTIVE_DISCLOSURE">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>6icKn+xUYTSdk9RXp93ZRUemgyU25x/Kk3iETl4m+As=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                     <DisclosableClaim id="7" name="issue_date" namespace="org.iso.18013.5.1">2026-06-01T00:00:00Z</DisclosableClaim>
                 </DigestMatcher>
-                <DigestMatcher type="EAA_DISCLOSURE">
+                <DigestMatcher type="SELECTIVE_DISCLOSURE">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>jXVxBED5OaKhT3xxsMtZVrRujunnWw4HuUlTpr5peSk=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                     <DisclosableClaim id="8" name="issuing_authority" namespace="org.iso.18013.5.1">TEST Authority</DisclosableClaim>
                 </DigestMatcher>
-                <DigestMatcher type="EAA_DISCLOSURE">
+                <DigestMatcher type="SELECTIVE_DISCLOSURE">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>v6Bq/nY65Hgi8xa525w6b0V0r5jasxqIQ/3i2jONHC8=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                     <DisclosableClaim id="9" name="issuing_country" namespace="org.iso.18013.5.1">LU</DisclosableClaim>
                 </DigestMatcher>
-                <DigestMatcher type="EAA_DISCLOSURE">
+                <DigestMatcher type="SELECTIVE_DISCLOSURE">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>M8Js8LaTumtF6xk8zLlVQA+4p3+dD4h9xrNAN7am4ac=</DigestValue>
                     <DataFound>true</DataFound>
@@ -104,8 +104,8 @@
                     <DisclosableClaim id="10" name="portrait" namespace="org.iso.18013.5.1">iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAA+SURBVDhPY/hPIWBAFyAVUNeAr7VN/z/6BiMLwcH3qTP/vzexRhceNQCbAW9lVHBiogyg2AUj3QByAMUGAAAAZ7ueWC72UQAAAABJRU5ErkJggg==</DisclosableClaim>
                 </DigestMatcher>
             </DigestMatchers>
-            <EAASignature Signature="S-433AB06EBC1C8297FFFEA618BDCF84A1F0F0E793223A32FA54A39EFE16698F3A"/>
-            <EAAPayload>
+            <AttestationSignature Signature="S-433AB06EBC1C8297FFFEA618BDCF84A1F0F0E793223A32FA54A39EFE16698F3A"/>
+            <AttestationPayload>
                 <Category name="category" namespace="org.etsi.01947201.010101" disclosure="true">
                     <Text>urn:etsi:esi:attestation:eu:qualified</Text>
                 </Category>
@@ -196,16 +196,16 @@
                 <UNDistinguishingSign name="un_distinguishing_sign" namespace="org.iso.18013.5.1" disclosure="true">
                     <Text>DN</Text>
                 </UNDistinguishingSign>
-            </EAAPayload>
+            </AttestationPayload>
             <KeyBindingSignature Signature="S-92F58C14A1DE6E9CF15BEC301DC659C0C214E83BC11716A5723400775664A5AC"/>
             <KeyBindingPayload/>
-            <EAARevocations>
-                <EAARevocationStatus EAARevocationToken="ST-E7FD1BFA54DF088935736C724DE494BD233CE0EBD3FDED66345667092D137BBE">
+            <AttestationRevocations>
+                <AttestationRevocationStatus AttestationRevocationToken="ST-E7FD1BFA54DF088935736C724DE494BD233CE0EBD3FDED66345667092D137BBE">
                     <Status>VALID</Status>
-                </EAARevocationStatus>
-            </EAARevocations>
-        </EAA>
-    </EAAs>
+                </AttestationRevocationStatus>
+            </AttestationRevocations>
+        </Attestation>
+    </Attestations>
     <Signatures>
         <Signature KeyBindingSignature="true" Id="S-92F58C14A1DE6E9CF15BEC301DC659C0C214E83BC11716A5723400775664A5AC">
             <SignatureFilename>document-signed-cb-ades-baseline-b-presentation.cbor</SignatureFilename>
@@ -262,7 +262,7 @@
                 <SignatureScope SignerData="D-D71EC1FFA552DD07211A6EA4C42828001C0CD6399823E32E5B32BC5B8131D000">
                     <Scope>KEY_BINDING_SIGNATURE</Scope>
                     <Name>EAA-0668B958873A5E390A8422DAADE09CED4F921AD1F305AE9451D212820ED13BE2</Name>
-                    <Description>Key binding for EAA with Id : EAA-0668B958873A5E390A8422DAADE09CED4F921AD1F305AE9451D212820ED13BE2</Description>
+                    <Description>Key binding for attestation with Id : EAA-0668B958873A5E390A8422DAADE09CED4F921AD1F305AE9451D212820ED13BE2</Description>
                 </SignatureScope>
             </SignatureScopes>
             <SignatureDigestReference>
@@ -331,7 +331,7 @@
             <FoundEvidenceRecords/>
             <SignatureScopes>
                 <SignatureScope SignerData="D-186F14FEBE87CC502BB2A51AE1D1D4A8FE9BB8AF594B9EDC23318A0A2162BD5D">
-                    <Scope>EAA_SIGNATURE</Scope>
+                    <Scope>ATTESTATION_SIGNATURE</Scope>
                     <Name>EAA-0668B958873A5E390A8422DAADE09CED4F921AD1F305AE9451D212820ED13BE2</Name>
                     <Description>EAA with Id : EAA-0668B958873A5E390A8422DAADE09CED4F921AD1F305AE9451D212820ED13BE2</Description>
                 </SignatureScope>
@@ -348,8 +348,8 @@
         </Signature>
     </Signatures>
     <EvidenceRecords/>
-    <UsedEAARevocationTokens>
-        <EAARevocationToken Id="ST-E7FD1BFA54DF088935736C724DE494BD233CE0EBD3FDED66345667092D137BBE">
+    <UsedAttestationRevocationTokens>
+        <AttestationRevocationToken Id="ST-E7FD1BFA54DF088935736C724DE494BD233CE0EBD3FDED66345667092D137BBE">
             <Origin>EXTERNAL</Origin>
             <Type>application/statuslist+cwt</Type>
             <SourceAddress>https://pki.nowina.lu/attestation/status_list</SourceAddress>
@@ -392,8 +392,8 @@
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>5/0b+lTfCIk1c2xyTeSUvSM84OvT/e1mNFZnCS0Te74=</DigestValue>
             </DigestAlgoAndValue>
-        </EAARevocationToken>
-    </UsedEAARevocationTokens>
+        </AttestationRevocationToken>
+    </UsedAttestationRevocationTokens>
     <UsedCertificates>
         <Certificate Id="C-3972DB630CEFF065C0FDF2BF767757414ECFC2D3455F8C4EC364B2398F3F4704">
             <SubjectDistinguishedName Format="CANONICAL">c=lu,ou=pki-test,o=nowina solutions,cn=root-ca</SubjectDistinguishedName>

@@ -33,34 +33,34 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 
 /**
  * This method verifies whether disclosures have been provided for all selectively disclosable claim hashes
- * present within the EAA's payload
+ * present within the attestation's payload
  *
  */
 public class DisclosureListExhaustiveCheck extends ChainItem<XmlFC> {
 
-    /** EAA to check */
-    private final AttestationWrapper eaa;
+    /** attestation to check */
+    private final AttestationWrapper attestation;
 
     /**
      * Default constructor
      *
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlFC}
-     * @param eaa {@link AttestationWrapper}
+     * @param attestation {@link AttestationWrapper}
      * @param constraint {@link LevelRule}
      */
     public DisclosureListExhaustiveCheck(I18nProvider i18nProvider, XmlFC result,
-                                         AttestationWrapper eaa, LevelRule constraint) {
+                                         AttestationWrapper attestation, LevelRule constraint) {
         super(i18nProvider, result, constraint);
-        this.eaa = eaa;
+        this.attestation = attestation;
     }
 
     @Override
     protected boolean process() {
-        if (Utils.isCollectionEmpty(eaa.getDigestMatchers())) {
+        if (Utils.isCollectionEmpty(attestation.getDigestMatchers())) {
             return true;
         }
-        return eaa.getDigestMatchers().stream().allMatch(XmlDigestMatcher::isDataFound);
+        return attestation.getDigestMatchers().stream().allMatch(XmlDigestMatcher::isDataFound);
     }
 
     @Override

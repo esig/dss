@@ -25,14 +25,14 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.diagnostic.AttestationWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlClaim;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlEAA;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlEAAPayload;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlEAASignature;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestation;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationPayload;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlIntegrityClaim;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlStatusClaim;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlVerifiableCredentialsTypeClaim;
-import eu.europa.esig.dss.enumerations.AttestationFormat;
+import eu.europa.esig.dss.enumerations.AttestationProfile;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EAACategory;
 import eu.europa.esig.dss.enumerations.Level;
@@ -59,37 +59,37 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
-        XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(AttestationFormat.SD_JWT_VC);
+        XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setProfile(AttestationProfile.SD_JWT_VC);
 
-        XmlEAASignature presentationSignature = new XmlEAASignature();
+        XmlAttestationSignature presentationSignature = new XmlAttestationSignature();
         XmlSignature signature = new XmlSignature();
         presentationSignature.setSignature(signature);
-        xmlEAA.getEAASignature().add(presentationSignature);
+        xmlAttestation.getAttestationSignature().add(presentationSignature);
 
-        XmlEAAPayload xmlEAAPayload = new XmlEAAPayload();
+        XmlAttestationPayload xmlAttestationPayload = new XmlAttestationPayload();
         XmlVerifiableCredentialsTypeClaim xmlVerifiableCredentialsTypeClaim = new XmlVerifiableCredentialsTypeClaim();
         xmlVerifiableCredentialsTypeClaim.setText("urn:eudi:pid:1");
         XmlIntegrityClaim xmlIntegrityClaim = new XmlIntegrityClaim();
         xmlIntegrityClaim.setDigestMethod(DigestAlgorithm.SHA256);
         xmlIntegrityClaim.setDigestValue(new byte[]{ 1, 2 , 3});
         xmlVerifiableCredentialsTypeClaim.setIntegrity(xmlIntegrityClaim);
-        xmlEAAPayload.setVerifiableCredentialsType(xmlVerifiableCredentialsTypeClaim);
+        xmlAttestationPayload.setVerifiableCredentialsType(xmlVerifiableCredentialsTypeClaim);
 
         XmlClaim notBefore = new XmlClaim();
         notBefore.setDateTime(new Date(System.currentTimeMillis() - 60000));
-        xmlEAAPayload.setNotBefore(notBefore);
+        xmlAttestationPayload.setNotBefore(notBefore);
 
         XmlClaim notAfter = new XmlClaim();
         notAfter.setDateTime(new Date(notBefore.getDateTime().getTime() + 3600 * 1000));
-        xmlEAAPayload.setExpiration(notAfter);
+        xmlAttestationPayload.setExpiration(notAfter);
 
-        xmlEAA.setEAAPayload(xmlEAAPayload);
+        xmlAttestation.setAttestationPayload(xmlAttestationPayload);
 
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlAttestation), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -104,41 +104,41 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
-        XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(AttestationFormat.ISO_IEC_MDOC);
-        xmlEAA.setDocumentType("org.iso.18013.5.1.mDL");
+        XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setProfile(AttestationProfile.ISO_IEC_MDOC);
+        xmlAttestation.setDocumentType("org.iso.18013.5.1.mDL");
 
-        XmlEAASignature presentationSignature = new XmlEAASignature();
+        XmlAttestationSignature presentationSignature = new XmlAttestationSignature();
         XmlSignature signature = new XmlSignature();
         presentationSignature.setSignature(signature);
-        xmlEAA.getEAASignature().add(presentationSignature);
+        xmlAttestation.getAttestationSignature().add(presentationSignature);
 
-        XmlEAAPayload xmlEAAPayload = new XmlEAAPayload();
+        XmlAttestationPayload xmlAttestationPayload = new XmlAttestationPayload();
 
         XmlClaim notBefore = new XmlClaim();
         notBefore.setDateTime(new Date(System.currentTimeMillis() - 60000));
-        xmlEAAPayload.setNotBefore(notBefore);
+        xmlAttestationPayload.setNotBefore(notBefore);
 
         XmlClaim notAfter = new XmlClaim();
         notAfter.setDateTime(new Date(notBefore.getDateTime().getTime() + 3600 * 1000));
-        xmlEAAPayload.setExpiration(notAfter);
+        xmlAttestationPayload.setExpiration(notAfter);
 
         XmlClaim documentNumber = new XmlClaim();
         documentNumber.setText("test-value");
         documentNumber.setNamespace("org.iso.18013.5.1");
-        xmlEAAPayload.setDocumentNumber(documentNumber);
+        xmlAttestationPayload.setDocumentNumber(documentNumber);
 
         XmlClaim issuingAuthority = new XmlClaim();
         issuingAuthority.setText("issuing_authority");
         issuingAuthority.setNamespace("org.iso.18013.5.1");
-        xmlEAAPayload.setIssuingAuthority(issuingAuthority);
+        xmlAttestationPayload.setIssuingAuthority(issuingAuthority);
 
-        xmlEAA.setEAAPayload(xmlEAAPayload);
+        xmlAttestation.setAttestationPayload(xmlAttestationPayload);
 
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlAttestation), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -153,37 +153,37 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
-        XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(AttestationFormat.SD_JWT_VC);
+        XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setProfile(AttestationProfile.SD_JWT_VC);
 
-        XmlEAASignature presentationSignature = new XmlEAASignature();
+        XmlAttestationSignature presentationSignature = new XmlAttestationSignature();
         XmlSignature signature = new XmlSignature();
         presentationSignature.setSignature(signature);
-        xmlEAA.getEAASignature().add(presentationSignature);
+        xmlAttestation.getAttestationSignature().add(presentationSignature);
 
-        XmlEAAPayload xmlEAAPayload = new XmlEAAPayload();
+        XmlAttestationPayload xmlAttestationPayload = new XmlAttestationPayload();
         XmlVerifiableCredentialsTypeClaim xmlVerifiableCredentialsTypeClaim = new XmlVerifiableCredentialsTypeClaim();
         xmlVerifiableCredentialsTypeClaim.setText("urn:eudi:pid:1");
         XmlIntegrityClaim xmlIntegrityClaim = new XmlIntegrityClaim();
         xmlIntegrityClaim.setDigestMethod(DigestAlgorithm.SHA256);
         xmlIntegrityClaim.setDigestValue(new byte[]{ 1, 2 , 3});
         xmlVerifiableCredentialsTypeClaim.setIntegrity(xmlIntegrityClaim);
-        xmlEAAPayload.setVerifiableCredentialsType(xmlVerifiableCredentialsTypeClaim);
+        xmlAttestationPayload.setVerifiableCredentialsType(xmlVerifiableCredentialsTypeClaim);
 
         XmlClaim notBefore = new XmlClaim();
         notBefore.setDateTime(new Date(System.currentTimeMillis() + 60000));
-        xmlEAAPayload.setNotBefore(notBefore);
+        xmlAttestationPayload.setNotBefore(notBefore);
 
         XmlClaim notAfter = new XmlClaim();
         notAfter.setDateTime(new Date(notBefore.getDateTime().getTime() + 3600 * 1000));
-        xmlEAAPayload.setExpiration(notAfter);
+        xmlAttestationPayload.setExpiration(notAfter);
 
-        xmlEAA.setEAAPayload(xmlEAAPayload);
+        xmlAttestation.setAttestationPayload(xmlAttestationPayload);
 
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlAttestation), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -198,37 +198,37 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
-        XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(AttestationFormat.SD_JWT_VC);
+        XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setProfile(AttestationProfile.SD_JWT_VC);
 
-        XmlEAASignature presentationSignature = new XmlEAASignature();
+        XmlAttestationSignature presentationSignature = new XmlAttestationSignature();
         XmlSignature signature = new XmlSignature();
         presentationSignature.setSignature(signature);
-        xmlEAA.getEAASignature().add(presentationSignature);
+        xmlAttestation.getAttestationSignature().add(presentationSignature);
 
-        XmlEAAPayload xmlEAAPayload = new XmlEAAPayload();
+        XmlAttestationPayload xmlAttestationPayload = new XmlAttestationPayload();
         XmlVerifiableCredentialsTypeClaim xmlVerifiableCredentialsTypeClaim = new XmlVerifiableCredentialsTypeClaim();
         xmlVerifiableCredentialsTypeClaim.setText("urn:eudi:pid:1");
         XmlIntegrityClaim xmlIntegrityClaim = new XmlIntegrityClaim();
         xmlIntegrityClaim.setDigestMethod(DigestAlgorithm.SHA256);
         xmlIntegrityClaim.setDigestValue(new byte[]{ 1, 2 , 3});
         xmlVerifiableCredentialsTypeClaim.setIntegrity(xmlIntegrityClaim);
-        xmlEAAPayload.setVerifiableCredentialsType(xmlVerifiableCredentialsTypeClaim);
+        xmlAttestationPayload.setVerifiableCredentialsType(xmlVerifiableCredentialsTypeClaim);
 
         XmlClaim notBefore = new XmlClaim();
         notBefore.setDateTime(new Date(System.currentTimeMillis() - 600000));
-        xmlEAAPayload.setNotBefore(notBefore);
+        xmlAttestationPayload.setNotBefore(notBefore);
 
         XmlClaim notAfter = new XmlClaim();
         notAfter.setDateTime(new Date(System.currentTimeMillis() - 60000));
-        xmlEAAPayload.setExpiration(notAfter);
+        xmlAttestationPayload.setExpiration(notAfter);
 
-        xmlEAA.setEAAPayload(xmlEAAPayload);
+        xmlAttestation.setAttestationPayload(xmlAttestationPayload);
 
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlAttestation), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -243,45 +243,45 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
-        XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(AttestationFormat.SD_JWT_VC);
+        XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setProfile(AttestationProfile.SD_JWT_VC);
 
-        XmlEAASignature presentationSignature = new XmlEAASignature();
+        XmlAttestationSignature presentationSignature = new XmlAttestationSignature();
         XmlSignature signature = new XmlSignature();
         presentationSignature.setSignature(signature);
-        xmlEAA.getEAASignature().add(presentationSignature);
+        xmlAttestation.getAttestationSignature().add(presentationSignature);
 
-        XmlEAAPayload xmlEAAPayload = new XmlEAAPayload();
+        XmlAttestationPayload xmlAttestationPayload = new XmlAttestationPayload();
         XmlVerifiableCredentialsTypeClaim xmlVerifiableCredentialsTypeClaim = new XmlVerifiableCredentialsTypeClaim();
         xmlVerifiableCredentialsTypeClaim.setText("urn:eudi:pid:1");
         XmlIntegrityClaim xmlIntegrityClaim = new XmlIntegrityClaim();
         xmlIntegrityClaim.setDigestMethod(DigestAlgorithm.SHA256);
         xmlIntegrityClaim.setDigestValue(new byte[]{ 1, 2 , 3});
         xmlVerifiableCredentialsTypeClaim.setIntegrity(xmlIntegrityClaim);
-        xmlEAAPayload.setVerifiableCredentialsType(xmlVerifiableCredentialsTypeClaim);
+        xmlAttestationPayload.setVerifiableCredentialsType(xmlVerifiableCredentialsTypeClaim);
 
         XmlClaim notBefore = new XmlClaim();
         notBefore.setDateTime(new Date(System.currentTimeMillis() - 60000));
-        xmlEAAPayload.setNotBefore(notBefore);
+        xmlAttestationPayload.setNotBefore(notBefore);
 
         XmlClaim notAfter = new XmlClaim();
         notAfter.setDateTime(new Date(notBefore.getDateTime().getTime() + 3600 * 1000));
-        xmlEAAPayload.setExpiration(notAfter);
+        xmlAttestationPayload.setExpiration(notAfter);
 
         XmlClaim administrativeIssuance = new XmlClaim();
         administrativeIssuance.setDateTime(new Date(System.currentTimeMillis() - 600000));
-        xmlEAAPayload.setAdministrativeIssuanceDate(administrativeIssuance);
+        xmlAttestationPayload.setAdministrativeIssuanceDate(administrativeIssuance);
 
         XmlClaim administrativeExpiration = new XmlClaim();
         administrativeExpiration.setDateTime(new Date(System.currentTimeMillis() - 60000));
-        xmlEAAPayload.setAdministrativeExpirationDate(administrativeExpiration);
+        xmlAttestationPayload.setAdministrativeExpirationDate(administrativeExpiration);
 
-        xmlEAA.setEAAPayload(xmlEAAPayload);
+        xmlAttestation.setAttestationPayload(xmlAttestationPayload);
 
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlAttestation), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -296,45 +296,45 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
-        XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(AttestationFormat.SD_JWT_VC);
+        XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setProfile(AttestationProfile.SD_JWT_VC);
 
-        XmlEAASignature presentationSignature = new XmlEAASignature();
+        XmlAttestationSignature presentationSignature = new XmlAttestationSignature();
         XmlSignature signature = new XmlSignature();
         presentationSignature.setSignature(signature);
-        xmlEAA.getEAASignature().add(presentationSignature);
+        xmlAttestation.getAttestationSignature().add(presentationSignature);
 
-        XmlEAAPayload xmlEAAPayload = new XmlEAAPayload();
+        XmlAttestationPayload xmlAttestationPayload = new XmlAttestationPayload();
         XmlVerifiableCredentialsTypeClaim xmlVerifiableCredentialsTypeClaim = new XmlVerifiableCredentialsTypeClaim();
         xmlVerifiableCredentialsTypeClaim.setText("urn:eudi:pid:1");
         XmlIntegrityClaim xmlIntegrityClaim = new XmlIntegrityClaim();
         xmlIntegrityClaim.setDigestMethod(DigestAlgorithm.SHA256);
         xmlIntegrityClaim.setDigestValue(new byte[]{ 1, 2 , 3});
         xmlVerifiableCredentialsTypeClaim.setIntegrity(xmlIntegrityClaim);
-        xmlEAAPayload.setVerifiableCredentialsType(xmlVerifiableCredentialsTypeClaim);
+        xmlAttestationPayload.setVerifiableCredentialsType(xmlVerifiableCredentialsTypeClaim);
 
         XmlClaim notBefore = new XmlClaim();
         notBefore.setDateTime(new Date(System.currentTimeMillis() - 60000));
-        xmlEAAPayload.setNotBefore(notBefore);
+        xmlAttestationPayload.setNotBefore(notBefore);
 
         XmlClaim notAfter = new XmlClaim();
         notAfter.setDateTime(new Date(notBefore.getDateTime().getTime() + 3600 * 1000));
-        xmlEAAPayload.setExpiration(notAfter);
+        xmlAttestationPayload.setExpiration(notAfter);
 
         XmlClaim administrativeIssuance = new XmlClaim();
         administrativeIssuance.setDateTime(new Date(System.currentTimeMillis() + 60000));
-        xmlEAAPayload.setAdministrativeIssuanceDate(administrativeIssuance);
+        xmlAttestationPayload.setAdministrativeIssuanceDate(administrativeIssuance);
 
         XmlClaim administrativeExpiration = new XmlClaim();
         administrativeExpiration.setDateTime(new Date(administrativeIssuance.getDateTime().getTime() + 3600 * 1000));
-        xmlEAAPayload.setAdministrativeExpirationDate(administrativeExpiration);
+        xmlAttestationPayload.setAdministrativeExpirationDate(administrativeExpiration);
 
-        xmlEAA.setEAAPayload(xmlEAAPayload);
+        xmlAttestation.setAttestationPayload(xmlAttestationPayload);
 
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlAttestation), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -349,41 +349,41 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
-        XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(AttestationFormat.SD_JWT_VC);
+        XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setProfile(AttestationProfile.SD_JWT_VC);
 
-        XmlEAASignature presentationSignature = new XmlEAASignature();
+        XmlAttestationSignature presentationSignature = new XmlAttestationSignature();
         XmlSignature signature = new XmlSignature();
         presentationSignature.setSignature(signature);
-        xmlEAA.getEAASignature().add(presentationSignature);
+        xmlAttestation.getAttestationSignature().add(presentationSignature);
 
-        XmlEAAPayload xmlEAAPayload = new XmlEAAPayload();
+        XmlAttestationPayload xmlAttestationPayload = new XmlAttestationPayload();
         XmlVerifiableCredentialsTypeClaim xmlVerifiableCredentialsTypeClaim = new XmlVerifiableCredentialsTypeClaim();
         xmlVerifiableCredentialsTypeClaim.setText("urn:eudi:pid:1");
         XmlIntegrityClaim xmlIntegrityClaim = new XmlIntegrityClaim();
         xmlIntegrityClaim.setDigestMethod(DigestAlgorithm.SHA256);
         xmlIntegrityClaim.setDigestValue(new byte[]{ 1, 2 , 3});
         xmlVerifiableCredentialsTypeClaim.setIntegrity(xmlIntegrityClaim);
-        xmlEAAPayload.setVerifiableCredentialsType(xmlVerifiableCredentialsTypeClaim);
+        xmlAttestationPayload.setVerifiableCredentialsType(xmlVerifiableCredentialsTypeClaim);
 
         XmlClaim notBefore = new XmlClaim();
         notBefore.setDateTime(new Date(System.currentTimeMillis() - 60000));
-        xmlEAAPayload.setNotBefore(notBefore);
+        xmlAttestationPayload.setNotBefore(notBefore);
 
         XmlClaim notAfter = new XmlClaim();
         notAfter.setDateTime(new Date(notBefore.getDateTime().getTime() + 3600 * 1000));
-        xmlEAAPayload.setExpiration(notAfter);
+        xmlAttestationPayload.setExpiration(notAfter);
 
         XmlClaim administrativeIssuance = new XmlClaim();
         administrativeIssuance.setDateTime(new Date(System.currentTimeMillis() - 60000));
-        xmlEAAPayload.setAdministrativeIssuanceDate(administrativeIssuance);
+        xmlAttestationPayload.setAdministrativeIssuanceDate(administrativeIssuance);
 
-        xmlEAA.setEAAPayload(xmlEAAPayload);
+        xmlAttestation.setAttestationPayload(xmlAttestationPayload);
 
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlAttestation), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -398,45 +398,45 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
-        XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(AttestationFormat.ISO_IEC_MDOC);
-        xmlEAA.setDocumentType("org.iso.18013.5.1.mDL");
+        XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setProfile(AttestationProfile.ISO_IEC_MDOC);
+        xmlAttestation.setDocumentType("org.iso.18013.5.1.mDL");
 
-        XmlEAASignature presentationSignature = new XmlEAASignature();
+        XmlAttestationSignature presentationSignature = new XmlAttestationSignature();
         XmlSignature signature = new XmlSignature();
         presentationSignature.setSignature(signature);
-        xmlEAA.getEAASignature().add(presentationSignature);
+        xmlAttestation.getAttestationSignature().add(presentationSignature);
 
-        XmlEAAPayload xmlEAAPayload = new XmlEAAPayload();
+        XmlAttestationPayload xmlAttestationPayload = new XmlAttestationPayload();
 
         XmlClaim notBefore = new XmlClaim();
         notBefore.setDateTime(new Date(System.currentTimeMillis() - 60000));
-        xmlEAAPayload.setNotBefore(notBefore);
+        xmlAttestationPayload.setNotBefore(notBefore);
 
         XmlClaim notAfter = new XmlClaim();
         notAfter.setDateTime(new Date(notBefore.getDateTime().getTime() + 3600 * 1000));
-        xmlEAAPayload.setExpiration(notAfter);
+        xmlAttestationPayload.setExpiration(notAfter);
 
         XmlClaim administrativeIssuance = new XmlClaim();
         administrativeIssuance.setDateTime(new Date(System.currentTimeMillis() - 60000));
-        xmlEAAPayload.setAdministrativeIssuanceDate(administrativeIssuance);
+        xmlAttestationPayload.setAdministrativeIssuanceDate(administrativeIssuance);
 
         XmlClaim documentNumber = new XmlClaim();
         documentNumber.setText("test-value");
         documentNumber.setNamespace("org.iso.18013.5.1");
-        xmlEAAPayload.setDocumentNumber(documentNumber);
+        xmlAttestationPayload.setDocumentNumber(documentNumber);
 
         XmlClaim issuingAuthority = new XmlClaim();
         issuingAuthority.setText("issuing_authority");
         issuingAuthority.setNamespace("org.iso.18013.5.1");
-        xmlEAAPayload.setIssuingAuthority(issuingAuthority);
+        xmlAttestationPayload.setIssuingAuthority(issuingAuthority);
 
-        xmlEAA.setEAAPayload(xmlEAAPayload);
+        xmlAttestation.setAttestationPayload(xmlAttestationPayload);
 
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlAttestation), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -451,49 +451,49 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
-        XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(AttestationFormat.ISO_IEC_MDOC);
-        xmlEAA.setDocumentType("org.iso.18013.5.1.mDL");
+        XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setProfile(AttestationProfile.ISO_IEC_MDOC);
+        xmlAttestation.setDocumentType("org.iso.18013.5.1.mDL");
 
-        XmlEAASignature presentationSignature = new XmlEAASignature();
+        XmlAttestationSignature presentationSignature = new XmlAttestationSignature();
         XmlSignature signature = new XmlSignature();
         presentationSignature.setSignature(signature);
-        xmlEAA.getEAASignature().add(presentationSignature);
+        xmlAttestation.getAttestationSignature().add(presentationSignature);
 
-        XmlEAAPayload xmlEAAPayload = new XmlEAAPayload();
+        XmlAttestationPayload xmlAttestationPayload = new XmlAttestationPayload();
 
         XmlClaim notBefore = new XmlClaim();
         notBefore.setDateTime(new Date(System.currentTimeMillis() - 60000));
-        xmlEAAPayload.setNotBefore(notBefore);
+        xmlAttestationPayload.setNotBefore(notBefore);
 
         XmlClaim notAfter = new XmlClaim();
         notAfter.setDateTime(new Date(notBefore.getDateTime().getTime() + 3600 * 1000));
-        xmlEAAPayload.setExpiration(notAfter);
+        xmlAttestationPayload.setExpiration(notAfter);
 
         XmlClaim issuingAuthority = new XmlClaim();
         issuingAuthority.setText("TEST Authority");
         issuingAuthority.setName("issuing_authority");
         issuingAuthority.setNamespace("org.iso.18013.5.1");
-        xmlEAAPayload.setIssuingAuthority(issuingAuthority);
+        xmlAttestationPayload.setIssuingAuthority(issuingAuthority);
 
         XmlClaim documentNumber = new XmlClaim();
         documentNumber.setText("12345");
         documentNumber.setName("document_number");
         documentNumber.setNamespace("org.iso.18013.5.1");
-        xmlEAAPayload.setDocumentNumber(documentNumber);
+        xmlAttestationPayload.setDocumentNumber(documentNumber);
 
         XmlClaim pseudonym = new XmlClaim();
         pseudonym.setText("X Man");
         pseudonym.setName("also_known_as");
         pseudonym.setNamespace("org.etsi.01947201.010101");
-        xmlEAAPayload.setPseudonym(pseudonym);
+        xmlAttestationPayload.setPseudonym(pseudonym);
 
-        xmlEAA.setEAAPayload(xmlEAAPayload);
+        xmlAttestation.setAttestationPayload(xmlAttestationPayload);
 
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlAttestation), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -508,49 +508,49 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
-        XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(AttestationFormat.ISO_IEC_MDOC);
-        xmlEAA.setDocumentType("org.iso.18013.5.1.mDL");
+        XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setProfile(AttestationProfile.ISO_IEC_MDOC);
+        xmlAttestation.setDocumentType("org.iso.18013.5.1.mDL");
 
-        XmlEAASignature presentationSignature = new XmlEAASignature();
+        XmlAttestationSignature presentationSignature = new XmlAttestationSignature();
         XmlSignature signature = new XmlSignature();
         presentationSignature.setSignature(signature);
-        xmlEAA.getEAASignature().add(presentationSignature);
+        xmlAttestation.getAttestationSignature().add(presentationSignature);
 
-        XmlEAAPayload xmlEAAPayload = new XmlEAAPayload();
+        XmlAttestationPayload xmlAttestationPayload = new XmlAttestationPayload();
 
         XmlClaim notBefore = new XmlClaim();
         notBefore.setDateTime(new Date(System.currentTimeMillis() - 60000));
-        xmlEAAPayload.setNotBefore(notBefore);
+        xmlAttestationPayload.setNotBefore(notBefore);
 
         XmlClaim notAfter = new XmlClaim();
         notAfter.setDateTime(new Date(notBefore.getDateTime().getTime() + 3600 * 1000));
-        xmlEAAPayload.setExpiration(notAfter);
+        xmlAttestationPayload.setExpiration(notAfter);
 
         XmlClaim issuingAuthority = new XmlClaim();
         issuingAuthority.setText("TEST Authority");
         issuingAuthority.setName("issuing_authority");
         issuingAuthority.setNamespace("org.iso.18013.5.1");
-        xmlEAAPayload.setIssuingAuthority(issuingAuthority);
+        xmlAttestationPayload.setIssuingAuthority(issuingAuthority);
 
         XmlClaim documentNumber = new XmlClaim();
         documentNumber.setText("12345");
         documentNumber.setName("document_number");
         documentNumber.setNamespace("org.iso.18013.5.1");
-        xmlEAAPayload.setDocumentNumber(documentNumber);
+        xmlAttestationPayload.setDocumentNumber(documentNumber);
 
         XmlClaim pseudonym = new XmlClaim();
         pseudonym.setText("X Man");
         pseudonym.setName("also_known_as");
         pseudonym.setNamespace("org.iso.23220.1");
-        xmlEAAPayload.setPseudonym(pseudonym);
+        xmlAttestationPayload.setPseudonym(pseudonym);
 
-        xmlEAA.setEAAPayload(xmlEAAPayload);
+        xmlAttestation.setAttestationPayload(xmlAttestationPayload);
 
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlAttestation), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -566,49 +566,49 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
-        XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(AttestationFormat.ISO_IEC_MDOC);
-        xmlEAA.setDocumentType("org.iso.18013.5.1.mDL");
+        XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setProfile(AttestationProfile.ISO_IEC_MDOC);
+        xmlAttestation.setDocumentType("org.iso.18013.5.1.mDL");
 
-        XmlEAASignature presentationSignature = new XmlEAASignature();
+        XmlAttestationSignature presentationSignature = new XmlAttestationSignature();
         XmlSignature signature = new XmlSignature();
         presentationSignature.setSignature(signature);
-        xmlEAA.getEAASignature().add(presentationSignature);
+        xmlAttestation.getAttestationSignature().add(presentationSignature);
 
-        XmlEAAPayload xmlEAAPayload = new XmlEAAPayload();
+        XmlAttestationPayload xmlAttestationPayload = new XmlAttestationPayload();
 
         XmlClaim notBefore = new XmlClaim();
         notBefore.setDateTime(new Date(System.currentTimeMillis() - 60000));
-        xmlEAAPayload.setNotBefore(notBefore);
+        xmlAttestationPayload.setNotBefore(notBefore);
 
         XmlClaim notAfter = new XmlClaim();
         notAfter.setDateTime(new Date(notBefore.getDateTime().getTime() + 3600 * 1000));
-        xmlEAAPayload.setExpiration(notAfter);
+        xmlAttestationPayload.setExpiration(notAfter);
 
         XmlClaim issuingAuthority = new XmlClaim();
         issuingAuthority.setText("TEST Authority");
         issuingAuthority.setName("issuing_authority_unicode");
         issuingAuthority.setNamespace("org.etsi.01947201.010101");
-        xmlEAAPayload.setIssuingAuthority(issuingAuthority);
+        xmlAttestationPayload.setIssuingAuthority(issuingAuthority);
 
         XmlClaim documentNumber = new XmlClaim();
         documentNumber.setText("12345");
         documentNumber.setName("document_number");
         documentNumber.setNamespace("org.etsi.01947201.010101");
-        xmlEAAPayload.setDocumentNumber(documentNumber);
+        xmlAttestationPayload.setDocumentNumber(documentNumber);
 
         XmlClaim pseudonym = new XmlClaim();
         pseudonym.setText("X Man");
         pseudonym.setName("also_known_as");
         pseudonym.setNamespace("org.etsi.01947201.010101");
-        xmlEAAPayload.setPseudonym(pseudonym);
+        xmlAttestationPayload.setPseudonym(pseudonym);
 
-        xmlEAA.setEAAPayload(xmlEAAPayload);
+        xmlAttestation.setAttestationPayload(xmlAttestationPayload);
 
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlAttestation), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -624,49 +624,49 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
-        XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(AttestationFormat.ISO_IEC_MDOC);
-        xmlEAA.setDocumentType("eu.europa.ec.eudi.pid.1");
+        XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setProfile(AttestationProfile.ISO_IEC_MDOC);
+        xmlAttestation.setDocumentType("eu.europa.ec.eudi.pid.1");
 
-        XmlEAASignature presentationSignature = new XmlEAASignature();
+        XmlAttestationSignature presentationSignature = new XmlAttestationSignature();
         XmlSignature signature = new XmlSignature();
         presentationSignature.setSignature(signature);
-        xmlEAA.getEAASignature().add(presentationSignature);
+        xmlAttestation.getAttestationSignature().add(presentationSignature);
 
-        XmlEAAPayload xmlEAAPayload = new XmlEAAPayload();
+        XmlAttestationPayload xmlAttestationPayload = new XmlAttestationPayload();
 
         XmlClaim notBefore = new XmlClaim();
         notBefore.setDateTime(new Date(System.currentTimeMillis() - 60000));
-        xmlEAAPayload.setNotBefore(notBefore);
+        xmlAttestationPayload.setNotBefore(notBefore);
 
         XmlClaim notAfter = new XmlClaim();
         notAfter.setDateTime(new Date(notBefore.getDateTime().getTime() + 3600 * 1000));
-        xmlEAAPayload.setExpiration(notAfter);
+        xmlAttestationPayload.setExpiration(notAfter);
 
         XmlClaim issuingAuthority = new XmlClaim();
         issuingAuthority.setText("TEST Authority");
         issuingAuthority.setName("issuing_authority");
         issuingAuthority.setNamespace("org.iso.18013.5.1");
-        xmlEAAPayload.setIssuingAuthority(issuingAuthority);
+        xmlAttestationPayload.setIssuingAuthority(issuingAuthority);
 
         XmlClaim documentNumber = new XmlClaim();
         documentNumber.setText("12345");
         documentNumber.setName("document_number");
         documentNumber.setNamespace("org.iso.18013.5.1");
-        xmlEAAPayload.setDocumentNumber(documentNumber);
+        xmlAttestationPayload.setDocumentNumber(documentNumber);
 
         XmlClaim pseudonym = new XmlClaim();
         pseudonym.setText("X Man");
         pseudonym.setName("also_known_as");
         pseudonym.setNamespace("org.iso.23220.1");
-        xmlEAAPayload.setPseudonym(pseudonym);
+        xmlAttestationPayload.setPseudonym(pseudonym);
 
-        xmlEAA.setEAAPayload(xmlEAAPayload);
+        xmlAttestation.setAttestationPayload(xmlAttestationPayload);
 
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlAttestation), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -681,49 +681,49 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
-        XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(AttestationFormat.ISO_IEC_MDOC);
-        xmlEAA.setDocumentType("eu.europa.ec.eudi.pid.1");
+        XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setProfile(AttestationProfile.ISO_IEC_MDOC);
+        xmlAttestation.setDocumentType("eu.europa.ec.eudi.pid.1");
 
-        XmlEAASignature presentationSignature = new XmlEAASignature();
+        XmlAttestationSignature presentationSignature = new XmlAttestationSignature();
         XmlSignature signature = new XmlSignature();
         presentationSignature.setSignature(signature);
-        xmlEAA.getEAASignature().add(presentationSignature);
+        xmlAttestation.getAttestationSignature().add(presentationSignature);
 
-        XmlEAAPayload xmlEAAPayload = new XmlEAAPayload();
+        XmlAttestationPayload xmlAttestationPayload = new XmlAttestationPayload();
 
         XmlClaim notBefore = new XmlClaim();
         notBefore.setDateTime(new Date(System.currentTimeMillis() - 60000));
-        xmlEAAPayload.setNotBefore(notBefore);
+        xmlAttestationPayload.setNotBefore(notBefore);
 
         XmlClaim notAfter = new XmlClaim();
         notAfter.setDateTime(new Date(notBefore.getDateTime().getTime() + 3600 * 1000));
-        xmlEAAPayload.setExpiration(notAfter);
+        xmlAttestationPayload.setExpiration(notAfter);
 
         XmlClaim issuingAuthority = new XmlClaim();
         issuingAuthority.setText("TEST Authority");
         issuingAuthority.setName("issuing_authority");
         issuingAuthority.setNamespace("org.iso.18013.5.1");
-        xmlEAAPayload.setIssuingAuthority(issuingAuthority);
+        xmlAttestationPayload.setIssuingAuthority(issuingAuthority);
 
         XmlClaim documentNumber = new XmlClaim();
         documentNumber.setText("12345");
         documentNumber.setName("document_number");
         documentNumber.setNamespace("org.iso.18013.5.1");
-        xmlEAAPayload.setDocumentNumber(documentNumber);
+        xmlAttestationPayload.setDocumentNumber(documentNumber);
 
         XmlClaim pseudonym = new XmlClaim();
         pseudonym.setText("X Man");
         pseudonym.setName("also_known_as");
         pseudonym.setNamespace("org.etsi.01947201.010101");
-        xmlEAAPayload.setPseudonym(pseudonym);
+        xmlAttestationPayload.setPseudonym(pseudonym);
 
-        xmlEAA.setEAAPayload(xmlEAAPayload);
+        xmlAttestation.setAttestationPayload(xmlAttestationPayload);
 
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlAttestation), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -739,36 +739,36 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
-        XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(AttestationFormat.ISO_IEC_MDOC);
-        xmlEAA.setDocumentType("org.iso.18013.5.1.mDL");
+        XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setProfile(AttestationProfile.ISO_IEC_MDOC);
+        xmlAttestation.setDocumentType("org.iso.18013.5.1.mDL");
 
-        XmlEAASignature presentationSignature = new XmlEAASignature();
+        XmlAttestationSignature presentationSignature = new XmlAttestationSignature();
         XmlSignature signature = new XmlSignature();
         presentationSignature.setSignature(signature);
-        xmlEAA.getEAASignature().add(presentationSignature);
+        xmlAttestation.getAttestationSignature().add(presentationSignature);
 
-        XmlEAAPayload xmlEAAPayload = new XmlEAAPayload();
+        XmlAttestationPayload xmlAttestationPayload = new XmlAttestationPayload();
 
         XmlClaim notBefore = new XmlClaim();
         notBefore.setDateTime(new Date(System.currentTimeMillis() - 60000));
-        xmlEAAPayload.setNotBefore(notBefore);
+        xmlAttestationPayload.setNotBefore(notBefore);
 
         XmlClaim notAfter = new XmlClaim();
         notAfter.setDateTime(new Date(notBefore.getDateTime().getTime() + 3600 * 1000));
-        xmlEAAPayload.setExpiration(notAfter);
+        xmlAttestationPayload.setExpiration(notAfter);
 
         XmlClaim issuingAuthority = new XmlClaim();
         issuingAuthority.setText("issuing_authority");
         issuingAuthority.setNamespace("org.iso.18013.5.1");
-        xmlEAAPayload.setIssuingAuthority(issuingAuthority);
+        xmlAttestationPayload.setIssuingAuthority(issuingAuthority);
 
-        xmlEAA.setEAAPayload(xmlEAAPayload);
+        xmlAttestation.setAttestationPayload(xmlAttestationPayload);
 
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlAttestation), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -783,36 +783,36 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
-        XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(AttestationFormat.ISO_IEC_MDOC);
-        xmlEAA.setDocumentType("org.iso.18013.5.1.mDL");
+        XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setProfile(AttestationProfile.ISO_IEC_MDOC);
+        xmlAttestation.setDocumentType("org.iso.18013.5.1.mDL");
 
-        XmlEAASignature presentationSignature = new XmlEAASignature();
+        XmlAttestationSignature presentationSignature = new XmlAttestationSignature();
         XmlSignature signature = new XmlSignature();
         presentationSignature.setSignature(signature);
-        xmlEAA.getEAASignature().add(presentationSignature);
+        xmlAttestation.getAttestationSignature().add(presentationSignature);
 
-        XmlEAAPayload xmlEAAPayload = new XmlEAAPayload();
+        XmlAttestationPayload xmlAttestationPayload = new XmlAttestationPayload();
 
         XmlClaim notBefore = new XmlClaim();
         notBefore.setDateTime(new Date(System.currentTimeMillis() - 60000));
-        xmlEAAPayload.setNotBefore(notBefore);
+        xmlAttestationPayload.setNotBefore(notBefore);
 
         XmlClaim notAfter = new XmlClaim();
         notAfter.setDateTime(new Date(notBefore.getDateTime().getTime() + 3600 * 1000));
-        xmlEAAPayload.setExpiration(notAfter);
+        xmlAttestationPayload.setExpiration(notAfter);
 
         XmlClaim documentNumber = new XmlClaim();
         documentNumber.setText("test-value");
         documentNumber.setNamespace("org.iso.18013.5.1");
-        xmlEAAPayload.setDocumentNumber(documentNumber);
+        xmlAttestationPayload.setDocumentNumber(documentNumber);
 
-        xmlEAA.setEAAPayload(xmlEAAPayload);
+        xmlAttestation.setAttestationPayload(xmlAttestationPayload);
 
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlAttestation), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -827,44 +827,44 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
-        XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(AttestationFormat.SD_JWT_VC);
+        XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setProfile(AttestationProfile.SD_JWT_VC);
 
-        XmlEAASignature presentationSignature = new XmlEAASignature();
+        XmlAttestationSignature presentationSignature = new XmlAttestationSignature();
         XmlSignature signature = new XmlSignature();
         presentationSignature.setSignature(signature);
-        xmlEAA.getEAASignature().add(presentationSignature);
+        xmlAttestation.getAttestationSignature().add(presentationSignature);
 
-        XmlEAAPayload xmlEAAPayload = new XmlEAAPayload();
+        XmlAttestationPayload xmlAttestationPayload = new XmlAttestationPayload();
         XmlVerifiableCredentialsTypeClaim xmlVerifiableCredentialsTypeClaim = new XmlVerifiableCredentialsTypeClaim();
         xmlVerifiableCredentialsTypeClaim.setText("urn:eudi:pid:1");
         XmlIntegrityClaim xmlIntegrityClaim = new XmlIntegrityClaim();
         xmlIntegrityClaim.setDigestMethod(DigestAlgorithm.SHA256);
         xmlIntegrityClaim.setDigestValue(new byte[]{ 1, 2 , 3});
         xmlVerifiableCredentialsTypeClaim.setIntegrity(xmlIntegrityClaim);
-        xmlEAAPayload.setVerifiableCredentialsType(xmlVerifiableCredentialsTypeClaim);
+        xmlAttestationPayload.setVerifiableCredentialsType(xmlVerifiableCredentialsTypeClaim);
 
         XmlClaim shortLived = new XmlClaim();
-        xmlEAAPayload.setShortLived(shortLived);
+        xmlAttestationPayload.setShortLived(shortLived);
 
         XmlClaim notBefore = new XmlClaim();
         notBefore.setDateTime(new Date(System.currentTimeMillis() - 60000));
-        xmlEAAPayload.setNotBefore(notBefore);
+        xmlAttestationPayload.setNotBefore(notBefore);
 
         XmlClaim notAfter = new XmlClaim();
         notAfter.setDateTime(new Date(notBefore.getDateTime().getTime() + 3600 * 1000));
-        xmlEAAPayload.setExpiration(notAfter);
+        xmlAttestationPayload.setExpiration(notAfter);
 
         XmlClaim category = new XmlClaim();
         category.setText(EAACategory.EU_QEAA.getUrn());
-        xmlEAAPayload.setCategory(category);
+        xmlAttestationPayload.setCategory(category);
 
-        xmlEAA.setEAAPayload(xmlEAAPayload);
+        xmlAttestation.setAttestationPayload(xmlAttestationPayload);
 
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlAttestation), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -879,44 +879,44 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
-        XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(AttestationFormat.SD_JWT_VC);
+        XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setProfile(AttestationProfile.SD_JWT_VC);
 
-        XmlEAASignature presentationSignature = new XmlEAASignature();
+        XmlAttestationSignature presentationSignature = new XmlAttestationSignature();
         XmlSignature signature = new XmlSignature();
         presentationSignature.setSignature(signature);
-        xmlEAA.getEAASignature().add(presentationSignature);
+        xmlAttestation.getAttestationSignature().add(presentationSignature);
 
-        XmlEAAPayload xmlEAAPayload = new XmlEAAPayload();
+        XmlAttestationPayload xmlAttestationPayload = new XmlAttestationPayload();
         XmlVerifiableCredentialsTypeClaim xmlVerifiableCredentialsTypeClaim = new XmlVerifiableCredentialsTypeClaim();
         xmlVerifiableCredentialsTypeClaim.setText("urn:eudi:pid:1");
         XmlIntegrityClaim xmlIntegrityClaim = new XmlIntegrityClaim();
         xmlIntegrityClaim.setDigestMethod(DigestAlgorithm.SHA256);
         xmlIntegrityClaim.setDigestValue(new byte[]{ 1, 2 , 3});
         xmlVerifiableCredentialsTypeClaim.setIntegrity(xmlIntegrityClaim);
-        xmlEAAPayload.setVerifiableCredentialsType(xmlVerifiableCredentialsTypeClaim);
+        xmlAttestationPayload.setVerifiableCredentialsType(xmlVerifiableCredentialsTypeClaim);
 
         XmlClaim shortLived = new XmlClaim();
-        xmlEAAPayload.setShortLived(shortLived);
+        xmlAttestationPayload.setShortLived(shortLived);
 
         XmlClaim notBefore = new XmlClaim();
         notBefore.setDateTime(new Date(System.currentTimeMillis() - 60000));
-        xmlEAAPayload.setNotBefore(notBefore);
+        xmlAttestationPayload.setNotBefore(notBefore);
 
         XmlClaim notAfter = new XmlClaim();
         notAfter.setDateTime(new Date(notBefore.getDateTime().getTime() + 3600 * 1000));
-        xmlEAAPayload.setExpiration(notAfter);
+        xmlAttestationPayload.setExpiration(notAfter);
 
         XmlClaim category = new XmlClaim();
         category.setText(EAACategory.EU_PUBEAA.getUrn());
-        xmlEAAPayload.setCategory(category);
+        xmlAttestationPayload.setCategory(category);
 
-        xmlEAA.setEAAPayload(xmlEAAPayload);
+        xmlAttestation.setAttestationPayload(xmlAttestationPayload);
 
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlAttestation), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -931,48 +931,48 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
-        XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(AttestationFormat.SD_JWT_VC);
+        XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setProfile(AttestationProfile.SD_JWT_VC);
 
-        XmlEAASignature presentationSignature = new XmlEAASignature();
+        XmlAttestationSignature presentationSignature = new XmlAttestationSignature();
         XmlSignature signature = new XmlSignature();
         presentationSignature.setSignature(signature);
-        xmlEAA.getEAASignature().add(presentationSignature);
+        xmlAttestation.getAttestationSignature().add(presentationSignature);
 
-        XmlEAAPayload xmlEAAPayload = new XmlEAAPayload();
+        XmlAttestationPayload xmlAttestationPayload = new XmlAttestationPayload();
         XmlVerifiableCredentialsTypeClaim xmlVerifiableCredentialsTypeClaim = new XmlVerifiableCredentialsTypeClaim();
         xmlVerifiableCredentialsTypeClaim.setText("urn:eudi:pid:1");
         XmlIntegrityClaim xmlIntegrityClaim = new XmlIntegrityClaim();
         xmlIntegrityClaim.setDigestMethod(DigestAlgorithm.SHA256);
         xmlIntegrityClaim.setDigestValue(new byte[]{ 1, 2 , 3});
         xmlVerifiableCredentialsTypeClaim.setIntegrity(xmlIntegrityClaim);
-        xmlEAAPayload.setVerifiableCredentialsType(xmlVerifiableCredentialsTypeClaim);
+        xmlAttestationPayload.setVerifiableCredentialsType(xmlVerifiableCredentialsTypeClaim);
 
         XmlClaim issuingAuthority = new XmlClaim();
         issuingAuthority.setText("VAT-12345");
-        xmlEAAPayload.setIssuingAuthority(issuingAuthority);
+        xmlAttestationPayload.setIssuingAuthority(issuingAuthority);
 
         XmlClaim shortLived = new XmlClaim();
-        xmlEAAPayload.setShortLived(shortLived);
+        xmlAttestationPayload.setShortLived(shortLived);
 
         XmlClaim notBefore = new XmlClaim();
         notBefore.setDateTime(new Date(System.currentTimeMillis() - 60000));
-        xmlEAAPayload.setNotBefore(notBefore);
+        xmlAttestationPayload.setNotBefore(notBefore);
 
         XmlClaim notAfter = new XmlClaim();
         notAfter.setDateTime(new Date(notBefore.getDateTime().getTime() + 3600 * 1000));
-        xmlEAAPayload.setExpiration(notAfter);
+        xmlAttestationPayload.setExpiration(notAfter);
 
         XmlClaim category = new XmlClaim();
         category.setText(EAACategory.EU_QEAA.getUrn());
-        xmlEAAPayload.setCategory(category);
+        xmlAttestationPayload.setCategory(category);
 
-        xmlEAA.setEAAPayload(xmlEAAPayload);
+        xmlAttestation.setAttestationPayload(xmlAttestationPayload);
 
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlAttestation), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -987,48 +987,48 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
-        XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(AttestationFormat.SD_JWT_VC);
+        XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setProfile(AttestationProfile.SD_JWT_VC);
 
-        XmlEAASignature presentationSignature = new XmlEAASignature();
+        XmlAttestationSignature presentationSignature = new XmlAttestationSignature();
         XmlSignature signature = new XmlSignature();
         presentationSignature.setSignature(signature);
-        xmlEAA.getEAASignature().add(presentationSignature);
+        xmlAttestation.getAttestationSignature().add(presentationSignature);
 
-        XmlEAAPayload xmlEAAPayload = new XmlEAAPayload();
+        XmlAttestationPayload xmlAttestationPayload = new XmlAttestationPayload();
         XmlVerifiableCredentialsTypeClaim xmlVerifiableCredentialsTypeClaim = new XmlVerifiableCredentialsTypeClaim();
         xmlVerifiableCredentialsTypeClaim.setText("urn:eudi:pid:1");
         XmlIntegrityClaim xmlIntegrityClaim = new XmlIntegrityClaim();
         xmlIntegrityClaim.setDigestMethod(DigestAlgorithm.SHA256);
         xmlIntegrityClaim.setDigestValue(new byte[]{ 1, 2 , 3});
         xmlVerifiableCredentialsTypeClaim.setIntegrity(xmlIntegrityClaim);
-        xmlEAAPayload.setVerifiableCredentialsType(xmlVerifiableCredentialsTypeClaim);
+        xmlAttestationPayload.setVerifiableCredentialsType(xmlVerifiableCredentialsTypeClaim);
 
         XmlClaim issuingAuthority = new XmlClaim();
         issuingAuthority.setText("VAT-12345");
-        xmlEAAPayload.setIssuingAuthority(issuingAuthority);
+        xmlAttestationPayload.setIssuingAuthority(issuingAuthority);
 
         XmlClaim shortLived = new XmlClaim();
-        xmlEAAPayload.setShortLived(shortLived);
+        xmlAttestationPayload.setShortLived(shortLived);
 
         XmlClaim notBefore = new XmlClaim();
         notBefore.setDateTime(new Date(System.currentTimeMillis() - 60000));
-        xmlEAAPayload.setNotBefore(notBefore);
+        xmlAttestationPayload.setNotBefore(notBefore);
 
         XmlClaim notAfter = new XmlClaim();
         notAfter.setDateTime(new Date(notBefore.getDateTime().getTime() + 3600 * 1000));
-        xmlEAAPayload.setExpiration(notAfter);
+        xmlAttestationPayload.setExpiration(notAfter);
 
         XmlClaim category = new XmlClaim();
         category.setText(EAACategory.EU_PUBEAA.getUrn());
-        xmlEAAPayload.setCategory(category);
+        xmlAttestationPayload.setCategory(category);
 
-        xmlEAA.setEAAPayload(xmlEAAPayload);
+        xmlAttestation.setAttestationPayload(xmlAttestationPayload);
 
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlAttestation), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -1043,52 +1043,52 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
-        XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(AttestationFormat.SD_JWT_VC);
+        XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setProfile(AttestationProfile.SD_JWT_VC);
 
-        XmlEAASignature presentationSignature = new XmlEAASignature();
+        XmlAttestationSignature presentationSignature = new XmlAttestationSignature();
         XmlSignature signature = new XmlSignature();
         presentationSignature.setSignature(signature);
-        xmlEAA.getEAASignature().add(presentationSignature);
+        xmlAttestation.getAttestationSignature().add(presentationSignature);
 
-        XmlEAAPayload xmlEAAPayload = new XmlEAAPayload();
+        XmlAttestationPayload xmlAttestationPayload = new XmlAttestationPayload();
         XmlVerifiableCredentialsTypeClaim xmlVerifiableCredentialsTypeClaim = new XmlVerifiableCredentialsTypeClaim();
         xmlVerifiableCredentialsTypeClaim.setText("urn:eudi:pid:1");
         XmlIntegrityClaim xmlIntegrityClaim = new XmlIntegrityClaim();
         xmlIntegrityClaim.setDigestMethod(DigestAlgorithm.SHA256);
         xmlIntegrityClaim.setDigestValue(new byte[]{ 1, 2 , 3});
         xmlVerifiableCredentialsTypeClaim.setIntegrity(xmlIntegrityClaim);
-        xmlEAAPayload.setVerifiableCredentialsType(xmlVerifiableCredentialsTypeClaim);
+        xmlAttestationPayload.setVerifiableCredentialsType(xmlVerifiableCredentialsTypeClaim);
 
         XmlClaim issuingAuthority = new XmlClaim();
         issuingAuthority.setText("VAT-12345");
-        xmlEAAPayload.setIssuingAuthority(issuingAuthority);
+        xmlAttestationPayload.setIssuingAuthority(issuingAuthority);
 
         XmlClaim issuingCountry = new XmlClaim();
         issuingCountry.setText("LU");
-        xmlEAAPayload.setIssuingCountry(issuingCountry);
+        xmlAttestationPayload.setIssuingCountry(issuingCountry);
 
         XmlClaim shortLived = new XmlClaim();
-        xmlEAAPayload.setShortLived(shortLived);
+        xmlAttestationPayload.setShortLived(shortLived);
 
         XmlClaim notBefore = new XmlClaim();
         notBefore.setDateTime(new Date(System.currentTimeMillis() - 60000));
-        xmlEAAPayload.setNotBefore(notBefore);
+        xmlAttestationPayload.setNotBefore(notBefore);
 
         XmlClaim notAfter = new XmlClaim();
         notAfter.setDateTime(new Date(notBefore.getDateTime().getTime() + 3600 * 1000));
-        xmlEAAPayload.setExpiration(notAfter);
+        xmlAttestationPayload.setExpiration(notAfter);
 
         XmlClaim category = new XmlClaim();
         category.setText(EAACategory.EU_QEAA.getUrn());
-        xmlEAAPayload.setCategory(category);
+        xmlAttestationPayload.setCategory(category);
 
-        xmlEAA.setEAAPayload(xmlEAAPayload);
+        xmlAttestation.setAttestationPayload(xmlAttestationPayload);
 
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlAttestation), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -1103,52 +1103,52 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
-        XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(AttestationFormat.SD_JWT_VC);
+        XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setProfile(AttestationProfile.SD_JWT_VC);
 
-        XmlEAASignature presentationSignature = new XmlEAASignature();
+        XmlAttestationSignature presentationSignature = new XmlAttestationSignature();
         XmlSignature signature = new XmlSignature();
         presentationSignature.setSignature(signature);
-        xmlEAA.getEAASignature().add(presentationSignature);
+        xmlAttestation.getAttestationSignature().add(presentationSignature);
 
-        XmlEAAPayload xmlEAAPayload = new XmlEAAPayload();
+        XmlAttestationPayload xmlAttestationPayload = new XmlAttestationPayload();
         XmlVerifiableCredentialsTypeClaim xmlVerifiableCredentialsTypeClaim = new XmlVerifiableCredentialsTypeClaim();
         xmlVerifiableCredentialsTypeClaim.setText("urn:eudi:pid:1");
         XmlIntegrityClaim xmlIntegrityClaim = new XmlIntegrityClaim();
         xmlIntegrityClaim.setDigestMethod(DigestAlgorithm.SHA256);
         xmlIntegrityClaim.setDigestValue(new byte[]{ 1, 2 , 3});
         xmlVerifiableCredentialsTypeClaim.setIntegrity(xmlIntegrityClaim);
-        xmlEAAPayload.setVerifiableCredentialsType(xmlVerifiableCredentialsTypeClaim);
+        xmlAttestationPayload.setVerifiableCredentialsType(xmlVerifiableCredentialsTypeClaim);
 
         XmlClaim issuingAuthority = new XmlClaim();
         issuingAuthority.setText("VAT-12345");
-        xmlEAAPayload.setIssuingAuthority(issuingAuthority);
+        xmlAttestationPayload.setIssuingAuthority(issuingAuthority);
 
         XmlClaim issuingCountry = new XmlClaim();
         issuingCountry.setText("LU");
-        xmlEAAPayload.setIssuingCountry(issuingCountry);
+        xmlAttestationPayload.setIssuingCountry(issuingCountry);
 
         XmlClaim shortLived = new XmlClaim();
-        xmlEAAPayload.setShortLived(shortLived);
+        xmlAttestationPayload.setShortLived(shortLived);
 
         XmlClaim notBefore = new XmlClaim();
         notBefore.setDateTime(new Date(System.currentTimeMillis() - 60000));
-        xmlEAAPayload.setNotBefore(notBefore);
+        xmlAttestationPayload.setNotBefore(notBefore);
 
         XmlClaim notAfter = new XmlClaim();
         notAfter.setDateTime(new Date(notBefore.getDateTime().getTime() + 3600 * 1000));
-        xmlEAAPayload.setExpiration(notAfter);
+        xmlAttestationPayload.setExpiration(notAfter);
 
         XmlClaim category = new XmlClaim();
         category.setText(EAACategory.EU_PUBEAA.getUrn());
-        xmlEAAPayload.setCategory(category);
+        xmlAttestationPayload.setCategory(category);
 
-        xmlEAA.setEAAPayload(xmlEAAPayload);
+        xmlAttestation.setAttestationPayload(xmlAttestationPayload);
 
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlAttestation), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -1163,44 +1163,44 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
-        XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(AttestationFormat.ISO_IEC_MDOC);
-        xmlEAA.setDocumentType("org.iso.18013.5.1.mDL");
+        XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setProfile(AttestationProfile.ISO_IEC_MDOC);
+        xmlAttestation.setDocumentType("org.iso.18013.5.1.mDL");
 
-        XmlEAASignature presentationSignature = new XmlEAASignature();
+        XmlAttestationSignature presentationSignature = new XmlAttestationSignature();
         XmlSignature signature = new XmlSignature();
         presentationSignature.setSignature(signature);
-        xmlEAA.getEAASignature().add(presentationSignature);
+        xmlAttestation.getAttestationSignature().add(presentationSignature);
 
-        XmlEAAPayload xmlEAAPayload = new XmlEAAPayload();
+        XmlAttestationPayload xmlAttestationPayload = new XmlAttestationPayload();
 
         XmlClaim notBefore = new XmlClaim();
         notBefore.setDateTime(new Date(System.currentTimeMillis() - 60000));
-        xmlEAAPayload.setNotBefore(notBefore);
+        xmlAttestationPayload.setNotBefore(notBefore);
 
         XmlClaim notAfter = new XmlClaim();
         notAfter.setDateTime(new Date(notBefore.getDateTime().getTime() + 3600 * 1000));
-        xmlEAAPayload.setExpiration(notAfter);
+        xmlAttestationPayload.setExpiration(notAfter);
 
-        xmlEAAPayload.setShortLived(new XmlClaim());
-        xmlEAAPayload.setStatus(new XmlStatusClaim());
+        xmlAttestationPayload.setShortLived(new XmlClaim());
+        xmlAttestationPayload.setStatus(new XmlStatusClaim());
 
         XmlClaim documentNumber = new XmlClaim();
         documentNumber.setText("test-value");
         documentNumber.setNamespace("org.iso.18013.5.1");
-        xmlEAAPayload.setDocumentNumber(documentNumber);
+        xmlAttestationPayload.setDocumentNumber(documentNumber);
 
         XmlClaim issuingAuthority = new XmlClaim();
         issuingAuthority.setText("issuing_authority");
         issuingAuthority.setNamespace("org.iso.18013.5.1");
-        xmlEAAPayload.setIssuingAuthority(issuingAuthority);
+        xmlAttestationPayload.setIssuingAuthority(issuingAuthority);
 
-        xmlEAA.setEAAPayload(xmlEAAPayload);
+        xmlAttestation.setAttestationPayload(xmlAttestationPayload);
 
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlAttestation), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -1217,39 +1217,39 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
-        XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(AttestationFormat.SD_JWT_VC);
+        XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setProfile(AttestationProfile.SD_JWT_VC);
 
-        XmlEAASignature presentationSignature = new XmlEAASignature();
+        XmlAttestationSignature presentationSignature = new XmlAttestationSignature();
         XmlSignature signature = new XmlSignature();
         presentationSignature.setSignature(signature);
-        xmlEAA.getEAASignature().add(presentationSignature);
+        xmlAttestation.getAttestationSignature().add(presentationSignature);
 
-        XmlEAAPayload xmlEAAPayload = new XmlEAAPayload();
+        XmlAttestationPayload xmlAttestationPayload = new XmlAttestationPayload();
         XmlVerifiableCredentialsTypeClaim xmlVerifiableCredentialsTypeClaim = new XmlVerifiableCredentialsTypeClaim();
         xmlVerifiableCredentialsTypeClaim.setText("urn:eudi:pid:1");
         XmlIntegrityClaim xmlIntegrityClaim = new XmlIntegrityClaim();
         xmlIntegrityClaim.setDigestMethod(DigestAlgorithm.SHA256);
         xmlIntegrityClaim.setDigestValue(new byte[]{ 1, 2 , 3});
         xmlVerifiableCredentialsTypeClaim.setIntegrity(xmlIntegrityClaim);
-        xmlEAAPayload.setVerifiableCredentialsType(xmlVerifiableCredentialsTypeClaim);
+        xmlAttestationPayload.setVerifiableCredentialsType(xmlVerifiableCredentialsTypeClaim);
 
         XmlClaim notBefore = new XmlClaim();
         notBefore.setDateTime(new Date(System.currentTimeMillis() - 60000));
-        xmlEAAPayload.setNotBefore(notBefore);
+        xmlAttestationPayload.setNotBefore(notBefore);
 
         XmlClaim notAfter = new XmlClaim();
         notAfter.setDateTime(new Date(notBefore.getDateTime().getTime() + 3600 * 1000));
-        xmlEAAPayload.setExpiration(notAfter);
+        xmlAttestationPayload.setExpiration(notAfter);
 
-        xmlEAAPayload.setStatus(new XmlStatusClaim());
+        xmlAttestationPayload.setStatus(new XmlStatusClaim());
 
-        xmlEAA.setEAAPayload(xmlEAAPayload);
+        xmlAttestation.setAttestationPayload(xmlAttestationPayload);
 
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlAttestation), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -1264,30 +1264,30 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
-        XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(AttestationFormat.SD_JWT_VC);
+        XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setProfile(AttestationProfile.SD_JWT_VC);
 
-        XmlEAASignature presentationSignature = new XmlEAASignature();
+        XmlAttestationSignature presentationSignature = new XmlAttestationSignature();
         XmlSignature signature = new XmlSignature();
         presentationSignature.setSignature(signature);
-        xmlEAA.getEAASignature().add(presentationSignature);
+        xmlAttestation.getAttestationSignature().add(presentationSignature);
 
-        XmlEAAPayload xmlEAAPayload = new XmlEAAPayload();
+        XmlAttestationPayload xmlAttestationPayload = new XmlAttestationPayload();
         XmlVerifiableCredentialsTypeClaim xmlVerifiableCredentialsTypeClaim = new XmlVerifiableCredentialsTypeClaim();
         xmlVerifiableCredentialsTypeClaim.setText("urn:eudi:pid:1");
         XmlIntegrityClaim xmlIntegrityClaim = new XmlIntegrityClaim();
         xmlIntegrityClaim.setDigestMethod(DigestAlgorithm.SHA256);
         xmlIntegrityClaim.setDigestValue(new byte[]{ 1, 2 , 3});
         xmlVerifiableCredentialsTypeClaim.setIntegrity(xmlIntegrityClaim);
-        xmlEAAPayload.setVerifiableCredentialsType(xmlVerifiableCredentialsTypeClaim);
+        xmlAttestationPayload.setVerifiableCredentialsType(xmlVerifiableCredentialsTypeClaim);
 
         XmlClaim notBefore = new XmlClaim();
         notBefore.setDateTime(new Date(System.currentTimeMillis() - 60000));
-        xmlEAAPayload.setNotBefore(notBefore);
+        xmlAttestationPayload.setNotBefore(notBefore);
 
         XmlClaim notAfter = new XmlClaim();
         notAfter.setDateTime(new Date(notBefore.getDateTime().getTime() + 3600 * 1000));
-        xmlEAAPayload.setExpiration(notAfter);
+        xmlAttestationPayload.setExpiration(notAfter);
 
         XmlStatusClaim statusClaim = new XmlStatusClaim();
         XmlClaim type = new XmlClaim();
@@ -1303,14 +1303,14 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         statusClaim.setIndex(index);
         statusClaim.setUri(uri);
 
-        xmlEAAPayload.setStatus(statusClaim);
+        xmlAttestationPayload.setStatus(statusClaim);
 
-        xmlEAA.setEAAPayload(xmlEAAPayload);
+        xmlAttestation.setAttestationPayload(xmlAttestationPayload);
 
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlAttestation), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -1325,30 +1325,30 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
-        XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(AttestationFormat.SD_JWT_VC);
+        XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setProfile(AttestationProfile.SD_JWT_VC);
 
-        XmlEAASignature presentationSignature = new XmlEAASignature();
+        XmlAttestationSignature presentationSignature = new XmlAttestationSignature();
         XmlSignature signature = new XmlSignature();
         presentationSignature.setSignature(signature);
-        xmlEAA.getEAASignature().add(presentationSignature);
+        xmlAttestation.getAttestationSignature().add(presentationSignature);
 
-        XmlEAAPayload xmlEAAPayload = new XmlEAAPayload();
+        XmlAttestationPayload xmlAttestationPayload = new XmlAttestationPayload();
 
         XmlClaim notBefore = new XmlClaim();
         notBefore.setDateTime(new Date(System.currentTimeMillis() - 60000));
-        xmlEAAPayload.setNotBefore(notBefore);
+        xmlAttestationPayload.setNotBefore(notBefore);
 
         XmlClaim notAfter = new XmlClaim();
         notAfter.setDateTime(new Date(notBefore.getDateTime().getTime() + 3600 * 1000));
-        xmlEAAPayload.setExpiration(notAfter);
+        xmlAttestationPayload.setExpiration(notAfter);
 
-        xmlEAA.setEAAPayload(xmlEAAPayload);
+        xmlAttestation.setAttestationPayload(xmlAttestationPayload);
 
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlAttestation), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -1363,33 +1363,33 @@ class ETSI194721ConformanceCheckTest extends AbstractTestCheck {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
-        XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(AttestationFormat.SD_JWT_VC);
+        XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setProfile(AttestationProfile.SD_JWT_VC);
 
-        XmlEAASignature presentationSignature = new XmlEAASignature();
+        XmlAttestationSignature presentationSignature = new XmlAttestationSignature();
         XmlSignature signature = new XmlSignature();
         presentationSignature.setSignature(signature);
-        xmlEAA.getEAASignature().add(presentationSignature);
+        xmlAttestation.getAttestationSignature().add(presentationSignature);
 
-        XmlEAAPayload xmlEAAPayload = new XmlEAAPayload();
+        XmlAttestationPayload xmlAttestationPayload = new XmlAttestationPayload();
         XmlVerifiableCredentialsTypeClaim xmlVerifiableCredentialsTypeClaim = new XmlVerifiableCredentialsTypeClaim();
         xmlVerifiableCredentialsTypeClaim.setText("urn:eudi:pid:1");
-        xmlEAAPayload.setVerifiableCredentialsType(xmlVerifiableCredentialsTypeClaim);
+        xmlAttestationPayload.setVerifiableCredentialsType(xmlVerifiableCredentialsTypeClaim);
 
         XmlClaim notBefore = new XmlClaim();
         notBefore.setDateTime(new Date(System.currentTimeMillis() - 60000));
-        xmlEAAPayload.setNotBefore(notBefore);
+        xmlAttestationPayload.setNotBefore(notBefore);
 
         XmlClaim notAfter = new XmlClaim();
         notAfter.setDateTime(new Date(notBefore.getDateTime().getTime() + 3600 * 1000));
-        xmlEAAPayload.setExpiration(notAfter);
+        xmlAttestationPayload.setExpiration(notAfter);
 
-        xmlEAA.setEAAPayload(xmlEAAPayload);
+        xmlAttestation.setAttestationPayload(xmlAttestationPayload);
 
         XmlSAV result = new XmlSAV();
 
         ETSI194721ConformanceCheck etsi194721ConformanceCheck = new ETSI194721ConformanceCheck(
-                i18nProvider, result, new AttestationWrapper(xmlEAA), new Date(), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlAttestation), new Date(), new LevelConstraintWrapper(constraint));
         etsi194721ConformanceCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

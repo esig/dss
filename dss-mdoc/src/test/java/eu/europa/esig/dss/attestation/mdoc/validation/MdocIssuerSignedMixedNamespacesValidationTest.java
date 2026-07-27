@@ -26,9 +26,9 @@ class MdocIssuerSignedMixedNamespacesValidationTest extends AbstractMdocAttestat
     }
 
     @Override
-    protected void checkEAADigestMatchers(DiagnosticData diagnosticData) {
-        AttestationWrapper eaa = diagnosticData.getEAAs().get(0);
-        List<XmlDigestMatcher> digestMatchers = eaa.getDigestMatchers();
+    protected void checkAttestationDigestMatchers(DiagnosticData diagnosticData) {
+        AttestationWrapper attestation = diagnosticData.getAttestations().get(0);
+        List<XmlDigestMatcher> digestMatchers = attestation.getDigestMatchers();
         assertEquals(6, digestMatchers.size());
 
         boolean pseudonymSDFound = false;

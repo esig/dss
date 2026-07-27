@@ -23,7 +23,7 @@ package eu.europa.esig.dss.validation.process.qualification.attestation;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSignature;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTLAnalysis;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationEAAQualificationProcess;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationAttestationQualificationProcess;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationSignatureQualification;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.AttestationWrapper;
@@ -62,16 +62,16 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Performs validation of an EAA according to the EAA types defined in Regulation EU 2024/1183 (eIDAS 2.0)
+ * Performs validation of an attestation according to the attestation types defined in Regulation EU 2024/1183 (eIDAS 2.0)
  *
  */
-public class AttestationQualificationProcessBlock extends Chain<XmlValidationEAAQualificationProcess> {
+public class AttestationQualificationProcessBlock extends Chain<XmlValidationAttestationQualificationProcess> {
 
-    /** The EAA to be validated */
-    private final AttestationWrapper eaa;
+    /** The attestation to be validated */
+    private final AttestationWrapper attestation;
 
-    /** The conclusion of EAA validation */
-    private final XmlConclusion eaaConclusion;
+    /** The conclusion of attestation validation */
+    private final XmlConclusion attestationConclusion;
 
     /** Map of signature validation processes */
     private final Map<String, XmlSignature> signatureMap;
@@ -86,18 +86,18 @@ public class AttestationQualificationProcessBlock extends Chain<XmlValidationEAA
      * Default constructor
      *
      * @param i18nProvider         {@link I18nProvider}
-     * @param eaa      {@link AttestationWrapper} for which qualification is to be determined
-     * @param eaaConclusion {@link XmlConclusion}
+     * @param attestation      {@link AttestationWrapper} for which qualification is to be determined
+     * @param attestationConclusion {@link XmlConclusion}
      * @param signatureMap         a map of signature validations
      * @param tlAnalysis           a list of performed {@link XmlTLAnalysis}
      * @param currentTime          {@link Date}
      */
-    public AttestationQualificationProcessBlock(final I18nProvider i18nProvider, final AttestationWrapper eaa,
-                                                final XmlConclusion eaaConclusion, final Map<String, XmlSignature> signatureMap,
+    public AttestationQualificationProcessBlock(final I18nProvider i18nProvider, final AttestationWrapper attestation,
+                                                final XmlConclusion attestationConclusion, final Map<String, XmlSignature> signatureMap,
                                                 final List<XmlTLAnalysis> tlAnalysis, final Date currentTime) {
-        super(i18nProvider, new XmlValidationEAAQualificationProcess());
-        this.eaa = eaa;
-        this.eaaConclusion = eaaConclusion;
+        super(i18nProvider, new XmlValidationAttestationQualificationProcess());
+        this.attestation = attestation;
+        this.attestationConclusion = attestationConclusion;
         this.signatureMap = signatureMap;
         this.tlAnalysis = tlAnalysis;
         this.currentTime = currentTime;
@@ -111,14 +111,14 @@ public class AttestationQualificationProcessBlock extends Chain<XmlValidationEAA
     @Override
     protected void initChain() {
 
-        if (Utils.isCollectionEmpty(eaa.getEAASignatures())) {
-            throw new IllegalStateException("No signatures found within the EAA token!");
+        if (Utils.isCollectionEmpty(attestation.getAttestationSignatures())) {
+            throw new IllegalStateException("No signatures found within the attestation token!");
         }
 
-        SignatureWrapper signature = eaa.getEAASignatures().get(0);
+        SignatureWrapper signature = attestation.getAttestationSignatures().get(0);
         CertificateWrapper signingCertificate = signature.getSigningCertificate();
 
-        ChainItem<XmlValidationEAAQualificationProcess> item = firstItem = isTrustedListReachedForCertificateChain(signingCertificate);
+        ChainItem<XmlValidationAttestationQualificationProcess> item = firstItem = isTrustedListReachedForCertificateChain(signingCertificate);
 
         item = item.setNextItem(categoryPresent());
 
@@ -151,7 +151,7 @@ public class AttestationQualificationProcessBlock extends Chain<XmlValidationEAA
                 for (String lotlURL : listOfTrustedListUrls) {
                     XmlTLAnalysis lotlAnalysis = getTLAnalysis(lotlURL);
                     if (lotlAnalysis != null) {
-                        AcceptableListOfTrustedListsCheck<XmlValidationEAAQualificationProcess> acceptableLOTL = isAcceptableLOTL(lotlAnalysis);
+                        AcceptableListOfTrustedListsCheck<XmlValidationAttestationQualificationProcess> acceptableLOTL = isAcceptableLOTL(lotlAnalysis);
                         item = item.setNextItem(acceptableLOTL);
                         if (acceptableLOTL.process()) {
                             acceptableLOTLUrls.add(lotlURL);
@@ -168,7 +168,7 @@ public class AttestationQualificationProcessBlock extends Chain<XmlValidationEAA
                     for (String tlURL : trustedListUrls) {
                         XmlTLAnalysis currentTL = getTLAnalysis(tlURL);
                         if (currentTL != null) {
-                            AcceptableTrustedListCheck<XmlValidationEAAQualificationProcess> acceptableTL = isAcceptableTL(currentTL);
+                            AcceptableTrustedListCheck<XmlValidationAttestationQualificationProcess> acceptableTL = isAcceptableTL(currentTL);
                             item = item.setNextItem(acceptableTL);
                             if (acceptableTL.process()) {
                                 acceptableTLUrls.add(tlURL);
@@ -220,7 +220,7 @@ public class AttestationQualificationProcessBlock extends Chain<XmlValidationEAA
                     item = item.setNextItem(hasGrantedStatusAtValidationTime(filteredServices));
 
                     if (Utils.isCollectionEmpty(filteredServices)) {
-                        claimedQualification = toNotQualifiedEAA(claimedQualification);
+                        claimedQualification = toNotQualifiedAttestation(claimedQualification);
                     }
 
                 }
@@ -246,11 +246,11 @@ public class AttestationQualificationProcessBlock extends Chain<XmlValidationEAA
 
             if (AttestationQualification.PUBEAA == claimedQualification) {
 
-                AttestationIssuerQcPSBPresentCheck psbEaa = psbEaa(signingCertificate);
-                item = item.setNextItem(psbEaa);
+                AttestationIssuerQcPSBPresentCheck psbAttestation = psbAttestation(signingCertificate);
+                item = item.setNextItem(psbAttestation);
 
-                if (!psbEaa.process()) {
-                    claimedQualification = toNotQualifiedEAA(claimedQualification);
+                if (!psbAttestation.process()) {
+                    claimedQualification = toNotQualifiedAttestation(claimedQualification);
                 }
 
             }
@@ -261,56 +261,56 @@ public class AttestationQualificationProcessBlock extends Chain<XmlValidationEAA
 
     }
 
-    private ChainItem<XmlValidationEAAQualificationProcess> isTrustedListReachedForCertificateChain(CertificateWrapper signingCertificate) {
+    private ChainItem<XmlValidationAttestationQualificationProcess> isTrustedListReachedForCertificateChain(CertificateWrapper signingCertificate) {
         return new TrustedListReachedForCertificateChainCheck<>(i18nProvider, result, signingCertificate, getFailLevelRule());
     }
 
-    private ChainItem<XmlValidationEAAQualificationProcess> categoryPresent() {
-        return new AttestationCategoryForEAAPresenceCheck(i18nProvider, result, eaa, getInfoLevelRule());
+    private ChainItem<XmlValidationAttestationQualificationProcess> categoryPresent() {
+        return new AttestationCategoryForEAAPresenceCheck(i18nProvider, result, attestation, getInfoLevelRule());
     }
 
-    private ChainItem<XmlValidationEAAQualificationProcess> categoryForQEAA() {
-        return new AttestationCategoryForQEAACheck(i18nProvider, result, eaa, getFailLevelRule());
+    private ChainItem<XmlValidationAttestationQualificationProcess> categoryForQEAA() {
+        return new AttestationCategoryForQEAACheck(i18nProvider, result, attestation, getFailLevelRule());
     }
 
-    private ChainItem<XmlValidationEAAQualificationProcess> categoryForPubEAA() {
-        return new AttestationCategoryForPubEAACheck(i18nProvider, result, eaa, getFailLevelRule());
+    private ChainItem<XmlValidationAttestationQualificationProcess> categoryForPubEAA() {
+        return new AttestationCategoryForPubEAACheck(i18nProvider, result, attestation, getFailLevelRule());
     }
 
-    private ChainItem<XmlValidationEAAQualificationProcess> isSignatureQualificationStatusAcceptable(
+    private ChainItem<XmlValidationAttestationQualificationProcess> isSignatureQualificationStatusAcceptable(
             SignatureWrapper signature, SignatureQualification signatureQualification) {
         return new AttestationQualifiedSignatureOrSealCheck(i18nProvider, result, signature, signatureQualification, getFailLevelRule());
     }
 
-    private AcceptableListOfTrustedListsCheck<XmlValidationEAAQualificationProcess> isAcceptableLOTL(XmlTLAnalysis xmlLOTLAnalysis) {
+    private AcceptableListOfTrustedListsCheck<XmlValidationAttestationQualificationProcess> isAcceptableLOTL(XmlTLAnalysis xmlLOTLAnalysis) {
         return new AcceptableListOfTrustedListsCheck<>(i18nProvider, result, xmlLOTLAnalysis, getWarnLevelRule());
     }
 
-    private AcceptableTrustedListCheck<XmlValidationEAAQualificationProcess> isAcceptableTL(XmlTLAnalysis xmlTLAnalysis) {
+    private AcceptableTrustedListCheck<XmlValidationAttestationQualificationProcess> isAcceptableTL(XmlTLAnalysis xmlTLAnalysis) {
         return new AcceptableTrustedListCheck<>(i18nProvider, result, xmlTLAnalysis, getWarnLevelRule());
     }
 
-    private ChainItem<XmlValidationEAAQualificationProcess> isAcceptableTLPresent(Set<String> acceptableUrls) {
+    private ChainItem<XmlValidationAttestationQualificationProcess> isAcceptableTLPresent(Set<String> acceptableUrls) {
         return new AcceptableTrustedListPresenceCheck<>(i18nProvider, result, acceptableUrls, getFailLevelRule());
     }
 
-    private ChainItem<XmlValidationEAAQualificationProcess> hasMraEnactedTrustService(List<TrustServiceWrapper> services) {
+    private ChainItem<XmlValidationAttestationQualificationProcess> hasMraEnactedTrustService(List<TrustServiceWrapper> services) {
         return new RelatedToMraEnactedTrustServiceCheck<>(i18nProvider, result, services, getWarnLevelRule());
     }
 
-    private ChainItem<XmlValidationEAAQualificationProcess> hasQEAA(List<TrustServiceWrapper> services) {
+    private ChainItem<XmlValidationAttestationQualificationProcess> hasQEAA(List<TrustServiceWrapper> services) {
         return new QEAACheck(i18nProvider, result, services, getWarnLevelRule());
     }
 
-    private ChainItem<XmlValidationEAAQualificationProcess> hasGrantedStatus(List<TrustServiceWrapper> services) {
+    private ChainItem<XmlValidationAttestationQualificationProcess> hasGrantedStatus(List<TrustServiceWrapper> services) {
         return new GrantedStatusCheck<>(i18nProvider, result, services, getFailLevelRule());
     }
 
-    private ChainItem<XmlValidationEAAQualificationProcess> hasGrantedStatusAtValidationTime(List<TrustServiceWrapper> services) {
+    private ChainItem<XmlValidationAttestationQualificationProcess> hasGrantedStatusAtValidationTime(List<TrustServiceWrapper> services) {
         return new GrantedStatusAtTimeCheck<>(i18nProvider, result, services, ValidationTime.VALIDATION_TIME, getFailLevelRule());
     }
 
-    private AttestationIssuerQcPSBPresentCheck psbEaa(CertificateWrapper certificateWrapper) {
+    private AttestationIssuerQcPSBPresentCheck psbAttestation(CertificateWrapper certificateWrapper) {
         return new AttestationIssuerQcPSBPresentCheck(i18nProvider, result, certificateWrapper, getWarnLevelRule());
     }
 
@@ -333,15 +333,15 @@ public class AttestationQualificationProcessBlock extends Chain<XmlValidationEAA
     }
 
     private AttestationQualification getClaimedQualification() {
-        String eaaCategory = eaa.getCategory();
-        if (EAACategory.EU_QEAA.getUrn().equals(eaaCategory)) {
+        String attestationCategory = attestation.getCategory();
+        if (EAACategory.EU_QEAA.getUrn().equals(attestationCategory)) {
             return AttestationQualification.QEAA;
-        } else if (EAACategory.EU_PUBEAA.getUrn().equals(eaaCategory)) {
+        } else if (EAACategory.EU_PUBEAA.getUrn().equals(attestationCategory)) {
             return AttestationQualification.PUBEAA;
-        } else if (eaaCategory == null) {
+        } else if (attestationCategory == null) {
             /*
-             * EAA-5.2.2.1-01: SD-JWT VC EAAs issued by EAAs issuers registered in the European Union,
-             * which are neither SD-JWT VC QEAAs nor SD-JWT VC PuB-EAAs, shall not include the category claim.
+             * EAA-5.2.2.1-01: SD-JWT VC attestations issued by attestations issuers registered in the European Union,
+             * which are neither SD-JWT VC QAttestations nor SD-JWT VC PuB-Attestations, shall not include the category claim.
              */
             return AttestationQualification.EAA;
         } else {
@@ -349,7 +349,7 @@ public class AttestationQualificationProcessBlock extends Chain<XmlValidationEAA
         }
     }
 
-    private AttestationQualification toNotQualifiedEAA(AttestationQualification qualification) {
+    private AttestationQualification toNotQualifiedAttestation(AttestationQualification qualification) {
         if (AttestationQualification.QEAA == qualification || AttestationQualification.PUBEAA == qualification) {
             return AttestationQualification.EAA;
         }
@@ -357,9 +357,9 @@ public class AttestationQualificationProcessBlock extends Chain<XmlValidationEAA
     }
 
     private void determineFinalQualification(AttestationQualification claimedQualification, SignatureQualification signatureQualification) {
-        AttestationQualification finalQualification = AttestationQualificationMatrix.getEAAQualification(
-                eaaConclusion.getIndication(), claimedQualification, signatureQualification);
-        result.setEAAQualification(finalQualification);
+        AttestationQualification finalQualification = AttestationQualificationMatrix.getAttestationQualification(
+                attestationConclusion.getIndication(), claimedQualification, signatureQualification);
+        result.setAttestationQualification(finalQualification);
     }
 
 }

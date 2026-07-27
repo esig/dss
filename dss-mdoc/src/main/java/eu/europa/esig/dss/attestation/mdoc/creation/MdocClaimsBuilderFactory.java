@@ -27,7 +27,7 @@ package eu.europa.esig.dss.attestation.mdoc.creation;
 public interface MdocClaimsBuilderFactory {
 
     /**
-     * Loads a relevant {@code MdocEAAClaimsBuilder} based on the {@code payloadParameters}
+     * Loads a relevant {@code MdocClaimsBuilder} based on the {@code payloadParameters}
      *
      * @param payloadParameters {@link MdocPayloadParameters}
      * @return {@link MdocClaimsBuilder}

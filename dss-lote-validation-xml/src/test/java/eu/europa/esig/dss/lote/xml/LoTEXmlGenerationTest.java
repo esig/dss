@@ -98,7 +98,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 class LoTEXmlGenerationTest extends PKIFactoryAccess {
 
-    private static final String PKI_NAME = "pub-attestation-providers";
+    private static final String PKI_NAME = "pub-eaa-providers";
 
     private static final String LOTE_LOCATION_URL = "https://test.test/lote";
 

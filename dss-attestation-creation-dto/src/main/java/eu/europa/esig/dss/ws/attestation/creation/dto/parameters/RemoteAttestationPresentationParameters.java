@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.ws.attestation.creation.dto.parameters;
 
-import eu.europa.esig.dss.enumerations.AttestationFormat;
+import eu.europa.esig.dss.enumerations.AttestationProfile;
 
 import java.io.Serializable;
 import java.util.List;
@@ -34,8 +34,8 @@ public class RemoteAttestationPresentationParameters implements Serializable {
 
     private static final long serialVersionUID = 9020368962150645764L;
 
-    /** (Required) Type of the EAA to be created */
-    private AttestationFormat attestationFormat;
+    /** (Required) Type of the attestation to be created */
+    private AttestationProfile attestationProfile;
 
     /* Mdoc parameters */
 
@@ -50,30 +50,30 @@ public class RemoteAttestationPresentationParameters implements Serializable {
     }
 
     /**
-     * Constructor with EAA type provided
+     * Constructor with attestation type provided
      *
-     * @param attestationFormat {@link AttestationFormat}
+     * @param attestationProfile {@link AttestationProfile}
      */
-    public RemoteAttestationPresentationParameters(AttestationFormat attestationFormat) {
-        this.attestationFormat = attestationFormat;
+    public RemoteAttestationPresentationParameters(AttestationProfile attestationProfile) {
+        this.attestationProfile = attestationProfile;
     }
 
     /**
-     * Gets the EAA Type
+     * Gets the attestation profile
      *
-     * @return {@link AttestationFormat}
+     * @return {@link AttestationProfile}
      */
-    public AttestationFormat getEaaType() {
-        return attestationFormat;
+    public AttestationProfile getAttestationProfile() {
+        return attestationProfile;
     }
 
     /**
-     * Sets the target EAA type
+     * Sets the target attestation profile
      *
-     * @param attestationFormat {@link AttestationFormat}
+     * @param attestationProfile {@link AttestationProfile}
      */
-    public void setEaaType(AttestationFormat attestationFormat) {
-        this.attestationFormat = attestationFormat;
+    public void setAttestationProfile(AttestationProfile attestationProfile) {
+        this.attestationProfile = attestationProfile;
     }
 
     /**
@@ -96,8 +96,8 @@ public class RemoteAttestationPresentationParameters implements Serializable {
 
     @Override
     public String toString() {
-        return "RemoteEAAPresentationParameters [" +
-                "eaaType=" + attestationFormat +
+        return "RemoteAttestationPresentationParameters [" +
+                "attestationProfile=" + attestationProfile +
                 ", deviceSignedDataElements=" + deviceSignedDataElements +
                 ']';
     }
@@ -108,13 +108,13 @@ public class RemoteAttestationPresentationParameters implements Serializable {
         if (object == null || getClass() != object.getClass()) return false;
 
         RemoteAttestationPresentationParameters that = (RemoteAttestationPresentationParameters) object;
-        return attestationFormat == that.attestationFormat
+        return attestationProfile == that.attestationProfile
                 && Objects.equals(deviceSignedDataElements, that.deviceSignedDataElements);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hashCode(attestationFormat);
+        int result = Objects.hashCode(attestationProfile);
         result = 31 * result + Objects.hashCode(deviceSignedDataElements);
         return result;
     }

@@ -142,7 +142,7 @@
         <caIssuers>Test-RootCA</caIssuers>
     </certificate>
 
-    <!-- Not-trusted CA for EAA -->
+    <!-- Not-trusted CA for attestation -->
     <certificate>
         <serialNumber>200100</serialNumber>
         <subject>Test-not-trusted-EAA</subject>

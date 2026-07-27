@@ -66,7 +66,7 @@ public class MdocClaim extends AbstractAttestationClaim {
 
     /**
      * Create a {@link MdocClaim} with the provided namespace, name and value.
-     * NOTE: digestId and salt will be computed during EAA payload computation.
+     * NOTE: digestId and salt will be computed during attestation payload computation.
      *
      * @param namespace {@link String} the claim namespace
      * @param name {@link String} the claim name
@@ -79,10 +79,10 @@ public class MdocClaim extends AbstractAttestationClaim {
 
     /**
      * Create a {@link MdocClaim} with the provided namespace, digestId, name and value.
-     * NOTE: salt will be computed during EAA payload computation.
+     * NOTE: salt will be computed during attestation payload computation.
      *
      * @param namespace {@link String} the claim namespace
-     * @param digestId integer representing a unique identifier of the claim within the namespace in EAA
+     * @param digestId integer representing a unique identifier of the claim within the namespace in attestation
      * @param name {@link String} the claim name
      * @param value {@link Object} the claim value
      * @return the created {@link MdocClaim}
@@ -93,7 +93,7 @@ public class MdocClaim extends AbstractAttestationClaim {
 
     /**
      * Create a {@link MdocClaim} with the provided namespace, name, value and salt.
-     * NOTE: digestId will be computed during EAA payload computation.
+     * NOTE: digestId will be computed during attestation payload computation.
      *
      * @param namespace {@link String} the claim namespace
      * @param name {@link String} the claim name
@@ -109,7 +109,7 @@ public class MdocClaim extends AbstractAttestationClaim {
      * Create a {@link MdocClaim} with the provided namespace, digestId, name, value and salt.
      *
      * @param namespace {@link String} the claim namespace
-     * @param digestId integer representing a unique identifier of the claim within the namespace in EAA
+     * @param digestId integer representing a unique identifier of the claim within the namespace in attestation
      * @param name {@link String} the claim name
      * @param value {@link Object} the claim value
      * @param salt byte array containing a high entropy value to prevent a hash collision
@@ -140,7 +140,7 @@ public class MdocClaim extends AbstractAttestationClaim {
 
     /**
      * Create a {@link MdocClaimObject} with the provided namespace, name and value.
-     * NOTE: digestId and salt will be computed during EAA payload computation.
+     * NOTE: digestId and salt will be computed during attestation payload computation.
      *
      * @param namespace {@link String} the claim namespace
      * @param name {@link String} the claim name
@@ -152,10 +152,10 @@ public class MdocClaim extends AbstractAttestationClaim {
 
     /**
      * Create a {@link MdocClaimObject} with the provided namespace, digestId, name and value.
-     * NOTE: salt will be computed during EAA payload computation.
+     * NOTE: salt will be computed during attestation payload computation.
      *
      * @param namespace {@link String} the claim namespace
-     * @param digestId integer representing a unique identifier of the claim within the namespace in EAA
+     * @param digestId integer representing a unique identifier of the claim within the namespace in attestation
      * @param name {@link String} the claim name
      * @return the created {@link MdocClaimObject}
      */
@@ -165,7 +165,7 @@ public class MdocClaim extends AbstractAttestationClaim {
 
     /**
      * Create a {@link MdocClaimObject} with the provided namespace, name, value and salt.
-     * NOTE: digestId will be computed during EAA payload computation.
+     * NOTE: digestId will be computed during attestation payload computation.
      *
      * @param namespace {@link String} the claim namespace
      * @param name {@link String} the claim name
@@ -180,7 +180,7 @@ public class MdocClaim extends AbstractAttestationClaim {
      * Create a {@link MdocClaimObject} with the provided namespace, digestId, name, value and salt.
      *
      * @param namespace {@link String} the claim namespace
-     * @param digestId integer representing a unique identifier of the claim within the namespace in EAA
+     * @param digestId integer representing a unique identifier of the claim within the namespace in attestation
      * @param name {@link String} the claim name
      * @param salt byte array containing a high entropy value to prevent a hash collision
      * @return the created {@link MdocClaimObject}
@@ -210,7 +210,7 @@ public class MdocClaim extends AbstractAttestationClaim {
 
     /**
      * Create a {@link MdocClaimArray} with the provided namespace, name and value.
-     * NOTE: digestId and salt will be computed during EAA payload computation.
+     * NOTE: digestId and salt will be computed during attestation payload computation.
      *
      * @param namespace {@link String} the claim namespace
      * @param name {@link String} the claim name
@@ -222,10 +222,10 @@ public class MdocClaim extends AbstractAttestationClaim {
 
     /**
      * Create a {@link MdocClaimArray} with the provided namespace, digestId, name and value.
-     * NOTE: salt will be computed during EAA payload computation.
+     * NOTE: salt will be computed during attestation payload computation.
      *
      * @param namespace {@link String} the claim namespace
-     * @param digestId integer representing a unique identifier of the claim within the namespace in EAA
+     * @param digestId integer representing a unique identifier of the claim within the namespace in attestation
      * @param name {@link String} the claim name
      * @return the created {@link MdocClaimArray}
      */
@@ -235,7 +235,7 @@ public class MdocClaim extends AbstractAttestationClaim {
 
     /**
      * Create a {@link MdocClaimArray} with the provided namespace, name, value and salt.
-     * NOTE: digestId will be computed during EAA payload computation.
+     * NOTE: digestId will be computed during attestation payload computation.
      *
      * @param namespace {@link String} the claim namespace
      * @param name {@link String} the claim name
@@ -250,7 +250,7 @@ public class MdocClaim extends AbstractAttestationClaim {
      * Create a {@link MdocClaimArray} with the provided namespace, digestId, name, value and salt.
      *
      * @param namespace {@link String} the claim namespace
-     * @param digestId integer representing a unique identifier of the claim within the namespace in EAA
+     * @param digestId integer representing a unique identifier of the claim within the namespace in attestation
      * @param name {@link String} the claim name
      * @param salt byte array containing a high entropy value to prevent a hash collision
      * @return the created {@link MdocClaimArray}
@@ -395,7 +395,7 @@ public class MdocClaim extends AbstractAttestationClaim {
 
     @Override
     public String toString() {
-        return "MdocEAAClaim [" +
+        return "MdocClaim [" +
                 "name='" + getName() + '\'' +
                 ", value=" + getValue() +
                 ", namespace='" + namespace + '\'' +

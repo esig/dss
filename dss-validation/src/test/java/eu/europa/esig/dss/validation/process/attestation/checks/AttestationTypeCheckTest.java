@@ -24,10 +24,10 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.diagnostic.AttestationWrapper;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlEAA;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlEAAPayload;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestation;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationPayload;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlVerifiableCredentialsTypeClaim;
-import eu.europa.esig.dss.enumerations.AttestationFormat;
+import eu.europa.esig.dss.enumerations.AttestationProfile;
 import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.policy.MultiValuesConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
@@ -46,18 +46,18 @@ class AttestationTypeCheckTest extends AbstractTestCheck {
         constraint.getId().add("urn:eudi:pid:1");
         constraint.setLevel(Level.FAIL);
 
-        XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(AttestationFormat.SD_JWT_VC);
-        XmlEAAPayload xmlEAAPayload = new XmlEAAPayload();
+        XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setProfile(AttestationProfile.SD_JWT_VC);
+        XmlAttestationPayload xmlAttestationPayload = new XmlAttestationPayload();
         XmlVerifiableCredentialsTypeClaim xmlVerifiableCredentialsTypeClaim = new XmlVerifiableCredentialsTypeClaim();
         xmlVerifiableCredentialsTypeClaim.setText("urn:eudi:pid:1");
-        xmlEAAPayload.setVerifiableCredentialsType(xmlVerifiableCredentialsTypeClaim);
-        xmlEAA.setEAAPayload(xmlEAAPayload);
+        xmlAttestationPayload.setVerifiableCredentialsType(xmlVerifiableCredentialsTypeClaim);
+        xmlAttestation.setAttestationPayload(xmlAttestationPayload);
 
         XmlSAV result = new XmlSAV();
 
         AttestationTypeCheck typePresentCheck = new AttestationTypeCheck(
-                i18nProvider, result, new AttestationWrapper(xmlEAA), new MultiValuesConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlAttestation), new MultiValuesConstraintWrapper(constraint));
         typePresentCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -71,18 +71,18 @@ class AttestationTypeCheckTest extends AbstractTestCheck {
         constraint.getId().add("*");
         constraint.setLevel(Level.FAIL);
 
-        XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(AttestationFormat.SD_JWT_VC);
-        XmlEAAPayload xmlEAAPayload = new XmlEAAPayload();
+        XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setProfile(AttestationProfile.SD_JWT_VC);
+        XmlAttestationPayload xmlAttestationPayload = new XmlAttestationPayload();
         XmlVerifiableCredentialsTypeClaim xmlVerifiableCredentialsTypeClaim = new XmlVerifiableCredentialsTypeClaim();
         xmlVerifiableCredentialsTypeClaim.setText("urn:eudi:pid:1");
-        xmlEAAPayload.setVerifiableCredentialsType(xmlVerifiableCredentialsTypeClaim);
-        xmlEAA.setEAAPayload(xmlEAAPayload);
+        xmlAttestationPayload.setVerifiableCredentialsType(xmlVerifiableCredentialsTypeClaim);
+        xmlAttestation.setAttestationPayload(xmlAttestationPayload);
 
         XmlSAV result = new XmlSAV();
 
         AttestationTypeCheck typePresentCheck = new AttestationTypeCheck(
-                i18nProvider, result, new AttestationWrapper(xmlEAA), new MultiValuesConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlAttestation), new MultiValuesConstraintWrapper(constraint));
         typePresentCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -96,14 +96,14 @@ class AttestationTypeCheckTest extends AbstractTestCheck {
         constraint.getId().add("urn:eudi:pid:1");
         constraint.setLevel(Level.FAIL);
 
-        XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(AttestationFormat.ISO_IEC_MDOC);
-        xmlEAA.setDocumentType("urn:eudi:pid:1");
+        XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setProfile(AttestationProfile.ISO_IEC_MDOC);
+        xmlAttestation.setDocumentType("urn:eudi:pid:1");
 
         XmlSAV result = new XmlSAV();
 
         AttestationTypeCheck typePresentCheck = new AttestationTypeCheck(
-                i18nProvider, result, new AttestationWrapper(xmlEAA), new MultiValuesConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlAttestation), new MultiValuesConstraintWrapper(constraint));
         typePresentCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -117,14 +117,14 @@ class AttestationTypeCheckTest extends AbstractTestCheck {
         constraint.getId().add("*");
         constraint.setLevel(Level.FAIL);
 
-        XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(AttestationFormat.ISO_IEC_MDOC);
-        xmlEAA.setDocumentType("urn:eudi:pid:1");
+        XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setProfile(AttestationProfile.ISO_IEC_MDOC);
+        xmlAttestation.setDocumentType("urn:eudi:pid:1");
 
         XmlSAV result = new XmlSAV();
 
         AttestationTypeCheck typePresentCheck = new AttestationTypeCheck(
-                i18nProvider, result, new AttestationWrapper(xmlEAA), new MultiValuesConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlAttestation), new MultiValuesConstraintWrapper(constraint));
         typePresentCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -138,18 +138,18 @@ class AttestationTypeCheckTest extends AbstractTestCheck {
         constraint.getId().add("urn:eudi:pid:2");
         constraint.setLevel(Level.FAIL);
 
-        XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(AttestationFormat.SD_JWT_VC);
-        XmlEAAPayload xmlEAAPayload = new XmlEAAPayload();
+        XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setProfile(AttestationProfile.SD_JWT_VC);
+        XmlAttestationPayload xmlAttestationPayload = new XmlAttestationPayload();
         XmlVerifiableCredentialsTypeClaim xmlVerifiableCredentialsTypeClaim = new XmlVerifiableCredentialsTypeClaim();
         xmlVerifiableCredentialsTypeClaim.setText("urn:eudi:pid:1");
-        xmlEAAPayload.setVerifiableCredentialsType(xmlVerifiableCredentialsTypeClaim);
-        xmlEAA.setEAAPayload(xmlEAAPayload);
+        xmlAttestationPayload.setVerifiableCredentialsType(xmlVerifiableCredentialsTypeClaim);
+        xmlAttestation.setAttestationPayload(xmlAttestationPayload);
 
         XmlSAV result = new XmlSAV();
 
         AttestationTypeCheck typePresentCheck = new AttestationTypeCheck(
-                i18nProvider, result, new AttestationWrapper(xmlEAA), new MultiValuesConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlAttestation), new MultiValuesConstraintWrapper(constraint));
         typePresentCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -163,14 +163,14 @@ class AttestationTypeCheckTest extends AbstractTestCheck {
         constraint.getId().add("urn:eudi:pid:2");
         constraint.setLevel(Level.FAIL);
 
-        XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(AttestationFormat.ISO_IEC_MDOC);
-        xmlEAA.setDocumentType("urn:eudi:pid:1");
+        XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setProfile(AttestationProfile.ISO_IEC_MDOC);
+        xmlAttestation.setDocumentType("urn:eudi:pid:1");
 
         XmlSAV result = new XmlSAV();
 
         AttestationTypeCheck typePresentCheck = new AttestationTypeCheck(
-                i18nProvider, result, new AttestationWrapper(xmlEAA), new MultiValuesConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlAttestation), new MultiValuesConstraintWrapper(constraint));
         typePresentCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -184,13 +184,13 @@ class AttestationTypeCheckTest extends AbstractTestCheck {
         constraint.getId().add("*");
         constraint.setLevel(Level.FAIL);
 
-        XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(AttestationFormat.SD_JWT_VC);
+        XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setProfile(AttestationProfile.SD_JWT_VC);
 
         XmlSAV result = new XmlSAV();
 
         AttestationTypeCheck typePresentCheck = new AttestationTypeCheck(
-                i18nProvider, result, new AttestationWrapper(xmlEAA), new MultiValuesConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlAttestation), new MultiValuesConstraintWrapper(constraint));
         typePresentCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -204,13 +204,13 @@ class AttestationTypeCheckTest extends AbstractTestCheck {
         constraint.getId().add("*");
         constraint.setLevel(Level.FAIL);
 
-        XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(AttestationFormat.ISO_IEC_MDOC);
+        XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setProfile(AttestationProfile.ISO_IEC_MDOC);
 
         XmlSAV result = new XmlSAV();
 
         AttestationTypeCheck typePresentCheck = new AttestationTypeCheck(
-                i18nProvider, result, new AttestationWrapper(xmlEAA), new MultiValuesConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlAttestation), new MultiValuesConstraintWrapper(constraint));
         typePresentCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

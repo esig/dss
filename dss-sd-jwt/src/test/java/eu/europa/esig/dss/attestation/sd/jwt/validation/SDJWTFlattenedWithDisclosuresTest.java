@@ -107,27 +107,27 @@ class SDJWTFlattenedWithDisclosuresTest extends AbstractSDJWTTestValidation {
     protected void checkClaims(DiagnosticData diagnosticData) {
         super.checkClaims(diagnosticData);
 
-        AttestationWrapper eaa = diagnosticData.getEAAs().get(0);
-        assertEquals("https://issuer.example.com", eaa.getIssuer());
-        assertEquals("john_doe_42", eaa.getSubject());
-        assertEquals(DSSUtils.parseRFCDate("2029-09-01T23:33:20Z"), eaa.getExpiration());
-        assertEquals(DSSUtils.parseRFCDate("2023-05-02T04:00:00Z"), eaa.getIssuedAt());
+        AttestationWrapper attestation = diagnosticData.getAttestations().get(0);
+        assertEquals("https://issuer.example.com", attestation.getIssuer());
+        assertEquals("john_doe_42", attestation.getSubject());
+        assertEquals(DSSUtils.parseRFCDate("2029-09-01T23:33:20Z"), attestation.getExpiration());
+        assertEquals(DSSUtils.parseRFCDate("2023-05-02T04:00:00Z"), attestation.getIssuedAt());
 
-        assertEquals("John", eaa.getGivenName());
-        assertEquals("Doe", eaa.getFamilyName());
-        assertEquals(DSSUtils.parseRFCDate("1940-01-01T00:00:00Z"), eaa.getBirthdate());
+        assertEquals("John", attestation.getGivenName());
+        assertEquals("Doe", attestation.getFamilyName());
+        assertEquals(DSSUtils.parseRFCDate("1940-01-01T00:00:00Z"), attestation.getBirthdate());
 
-        assertNull(eaa.getEmail());
-        assertNull(eaa.getEmailVerified());
-        assertNull(eaa.getAddressCity());
-        assertNull(eaa.getAddressStateOrProvince());
-        assertNull(eaa.getAddressCountry());
-        assertNull(eaa.getStreetAddress());
-        assertNull(eaa.getPhoneNumber());
-        assertNull(eaa.getPhoneNumberVerified());
-        assertFalse(Utils.isCollectionNotEmpty(eaa.getNationalities()));
+        assertNull(attestation.getEmail());
+        assertNull(attestation.getEmailVerified());
+        assertNull(attestation.getAddressCity());
+        assertNull(attestation.getAddressStateOrProvince());
+        assertNull(attestation.getAddressCountry());
+        assertNull(attestation.getStreetAddress());
+        assertNull(attestation.getPhoneNumber());
+        assertNull(attestation.getPhoneNumberVerified());
+        assertFalse(Utils.isCollectionNotEmpty(attestation.getNationalities()));
 
-        List<ClaimWrapper> selectivelyDisclosableClaims = eaa.getSelectivelyDisclosableClaims();
+        List<ClaimWrapper> selectivelyDisclosableClaims = attestation.getSelectivelyDisclosableClaims();
         assertEquals(4, selectivelyDisclosableClaims.size());
     }
 

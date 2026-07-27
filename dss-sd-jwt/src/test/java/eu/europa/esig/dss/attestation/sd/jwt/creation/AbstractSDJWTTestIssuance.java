@@ -31,10 +31,10 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.attestation.common.creation.TokenStatusList;
 import eu.europa.esig.dss.attestation.common.validation.AbstractAttestationPresentationTestIssuance;
 import eu.europa.esig.dss.attestation.sd.jwt.SDJWTConstants;
-import eu.europa.esig.dss.enumerations.AttestationFormat;
+import eu.europa.esig.dss.enumerations.AttestationProfile;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
-import eu.europa.esig.dss.enumerations.AttestationPresentationType;
+import eu.europa.esig.dss.enumerations.AttestationDocumentFormat;
 import eu.europa.esig.dss.enumerations.MimeType;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
@@ -78,13 +78,13 @@ public abstract class AbstractSDJWTTestIssuance extends AbstractAttestationPrese
     }
 
     @Override
-    protected AttestationFormat getEAAType() {
-        return AttestationFormat.SD_JWT_VC;
+    protected AttestationProfile getAttestationType() {
+        return AttestationProfile.SD_JWT_VC;
     }
 
     @Override
-    protected AttestationPresentationType getEAAPresentationType() {
-        return AttestationPresentationType.SD_JWT;
+    protected AttestationDocumentFormat getAttestationPresentationType() {
+        return AttestationDocumentFormat.SD_JWT;
     }
 
     @Override
@@ -134,12 +134,12 @@ public abstract class AbstractSDJWTTestIssuance extends AbstractAttestationPrese
     }
 
     @Override
-    protected void checkEAADigestMatchers(DiagnosticData diagnosticData) {
-        super.checkEAADigestMatchers(diagnosticData);
+    protected void checkAttestationDigestMatchers(DiagnosticData diagnosticData) {
+        super.checkAttestationDigestMatchers(diagnosticData);
 
-        for (AttestationWrapper eaa : diagnosticData.getEAAs()) {
-            for (XmlDigestMatcher xmlDigestMatcher : eaa.getDigestMatchers()) {
-                if (DigestMatcherType.EAA_DISCLOSURE == xmlDigestMatcher.getType()) {
+        for (AttestationWrapper attestation : diagnosticData.getAttestations()) {
+            for (XmlDigestMatcher xmlDigestMatcher : attestation.getDigestMatchers()) {
+                if (DigestMatcherType.SELECTIVE_DISCLOSURE == xmlDigestMatcher.getType()) {
                     assertNotNull(xmlDigestMatcher.getDisclosableClaim());
                     assertNotNull(xmlDigestMatcher.getDisclosableClaim().getValue());
                     assertNull(xmlDigestMatcher.getDisclosableClaim().getNamespace());
@@ -153,145 +153,145 @@ public abstract class AbstractSDJWTTestIssuance extends AbstractAttestationPrese
     protected void checkClaims(DiagnosticData diagnosticData) {
         super.checkClaims(diagnosticData);
 
-        for (AttestationWrapper eaa : diagnosticData.getEAAs()) {
+        for (AttestationWrapper attestation : diagnosticData.getAttestations()) {
 
-            assertNotNull(eaa.getNotBefore());
-            assertNotNull(eaa.getExpiration());
+            assertNotNull(attestation.getNotBefore());
+            assertNotNull(attestation.getExpiration());
 
-            assertEquals(getPayloadParameters().getIssuer(), eaa.getIssuer());
+            assertEquals(getPayloadParameters().getIssuer(), attestation.getIssuer());
             // TODO : deviceKeyType
             // assertEquals(getPayloadParameters().getDeviceKeyType(), attestation.getDeviceKeyType());
 
             if (getPayloadParameters().getDeviceKey() != null) {
-                assertArrayEquals(getPayloadParameters().getDeviceKey().getEncoded(), eaa.getDevicePublicKey());
+                assertArrayEquals(getPayloadParameters().getDeviceKey().getEncoded(), attestation.getDevicePublicKey());
             } else {
-                assertNull(eaa.getDevicePublicKey());
+                assertNull(attestation.getDevicePublicKey());
             }
 
             if (Utils.isCollectionNotEmpty(getPayloadParameters().getDeviceX509CertificateChain())) {
-                assertNotNull(eaa.getDeviceCertificateChain());
-                assertEquals(getPayloadParameters().getDeviceX509CertificateChain().size(), eaa.getDeviceCertificateChain().size());
+                assertNotNull(attestation.getDeviceCertificateChain());
+                assertEquals(getPayloadParameters().getDeviceX509CertificateChain().size(), attestation.getDeviceCertificateChain().size());
             } else {
-                assertFalse(Utils.isCollectionNotEmpty(eaa.getDeviceCertificateChain()));
+                assertFalse(Utils.isCollectionNotEmpty(attestation.getDeviceCertificateChain()));
             }
 
             if (getPayloadParameters().getDeviceX509CertificateThumbprint() != null) {
-                assertEquals(1, Utils.collectionSize(eaa.getDeviceCertificateChainDigests()));
+                assertEquals(1, Utils.collectionSize(attestation.getDeviceCertificateChainDigests()));
                 assertEquals(getPayloadParameters().getDeviceX509CertificateThumbprint().getAlgorithm(),
-                        eaa.getDeviceCertificateChainDigests().get(0).getDigestMethod());
+                        attestation.getDeviceCertificateChainDigests().get(0).getDigestMethod());
                 assertArrayEquals(getPayloadParameters().getDeviceX509CertificateThumbprint().getValue(),
-                        eaa.getDeviceCertificateChainDigests().get(0).getDigestValue());
+                        attestation.getDeviceCertificateChainDigests().get(0).getDigestValue());
             } else {
-                assertEquals(0, Utils.collectionSize(eaa.getDeviceCertificateChainDigests()));
+                assertEquals(0, Utils.collectionSize(attestation.getDeviceCertificateChainDigests()));
             }
 
             if (getPayloadParameters().getDeviceX509CertificateUrl() != null) {
-                assertEquals(1, Utils.collectionSize(eaa.getDeviceCertificateUrls()));
-                assertEquals(getPayloadParameters().getDeviceX509CertificateUrl(), eaa.getDeviceCertificateUrls().get(0));
+                assertEquals(1, Utils.collectionSize(attestation.getDeviceCertificateUrls()));
+                assertEquals(getPayloadParameters().getDeviceX509CertificateUrl(), attestation.getDeviceCertificateUrls().get(0));
             } else {
-                assertEquals(0, Utils.collectionSize(eaa.getDeviceCertificateUrls()));
+                assertEquals(0, Utils.collectionSize(attestation.getDeviceCertificateUrls()));
             }
 
             // TODO : not yet supported
-            assertEquals(0, Utils.collectionSize(eaa.getDeviceCertificateKIDs()));
+            assertEquals(0, Utils.collectionSize(attestation.getDeviceCertificateKIDs()));
 
-            assertEquals(getPayloadParameters().getVerifiableCredentialsType(), eaa.getVerifiableCredentialsTypeUri());
+            assertEquals(getPayloadParameters().getVerifiableCredentialsType(), attestation.getVerifiableCredentialsTypeUri());
 
             if (getPayloadParameters().getVerifiableCredentialsTypeIntegrity() != null) {
-                assertEquals(getPayloadParameters().getVerifiableCredentialsTypeIntegrity().getAlgorithm(), eaa.getVerifiableCredentialsTypeIntegrityDigestAlgorithm());
-                assertArrayEquals(getPayloadParameters().getVerifiableCredentialsTypeIntegrity().getValue(), eaa.getVerifiableCredentialsTypeIntegrityBytes());
+                assertEquals(getPayloadParameters().getVerifiableCredentialsTypeIntegrity().getAlgorithm(), attestation.getVerifiableCredentialsTypeIntegrityDigestAlgorithm());
+                assertArrayEquals(getPayloadParameters().getVerifiableCredentialsTypeIntegrity().getValue(), attestation.getVerifiableCredentialsTypeIntegrityBytes());
             } else {
-                assertNull(eaa.getVerifiableCredentialsTypeIntegrityDigestAlgorithm());
-                assertNull(eaa.getVerifiableCredentialsTypeIntegrityBytes());
+                assertNull(attestation.getVerifiableCredentialsTypeIntegrityDigestAlgorithm());
+                assertNull(attestation.getVerifiableCredentialsTypeIntegrityBytes());
             }
 
-            assertEquals(getPayloadParameters().getDigestAlgorithm(), eaa.getSelectiveDisclosuresDigestAlgorithm());
+            assertEquals(getPayloadParameters().getDigestAlgorithm(), attestation.getSelectiveDisclosuresDigestAlgorithm());
 
-            assertEquals(DSSUtils.formatDateToRFC(getPayloadParameters().getNotBeforeDate()), DSSUtils.formatDateToRFC(eaa.getNotBefore()));
-            assertEquals(DSSUtils.formatDateToRFC(getPayloadParameters().getExpirationDate()), DSSUtils.formatDateToRFC(eaa.getExpiration()));
+            assertEquals(DSSUtils.formatDateToRFC(getPayloadParameters().getNotBeforeDate()), DSSUtils.formatDateToRFC(attestation.getNotBefore()));
+            assertEquals(DSSUtils.formatDateToRFC(getPayloadParameters().getExpirationDate()), DSSUtils.formatDateToRFC(attestation.getExpiration()));
 
-            assertStatusListEqual(getPayloadParameters().getStatusList(), eaa);
+            assertStatusListEqual(getPayloadParameters().getStatusList(), attestation);
 
-            assertEquals(getPayloadParameters().getCategory(), eaa.getCategory());
-            assertEquals(Utils.isTrue(getPayloadParameters().isShortLived()), Utils.isTrue(eaa.getShortLived()));
-            assertEquals(Utils.isTrue(getPayloadParameters().isOneTime()), Utils.isTrue(eaa.getOneTimeUse()));
+            assertEquals(getPayloadParameters().getCategory(), attestation.getCategory());
+            assertEquals(Utils.isTrue(getPayloadParameters().isShortLived()), Utils.isTrue(attestation.getShortLived()));
+            assertEquals(Utils.isTrue(getPayloadParameters().isOneTime()), Utils.isTrue(attestation.getOneTimeUse()));
 
-            assertSDJWTClaims(getPayloadParameters().selectivelyDisclosable(), getPayloadParameters().nonSelectivelyDisclosable(), eaa);
+            assertSDJWTClaims(getPayloadParameters().selectivelyDisclosable(), getPayloadParameters().nonSelectivelyDisclosable(), attestation);
         }
     }
 
-    protected void assertStatusListEqual(TokenStatusList statusList, AttestationWrapper eaa) {
+    protected void assertStatusListEqual(TokenStatusList statusList, AttestationWrapper attestation) {
         if (statusList != null) {
             if (statusList instanceof ETSITokenStatusList) {
-                ETSITokenStatusList etsiEAAStatusList = (ETSITokenStatusList) statusList;
-                assertEquals(etsiEAAStatusList.getType(), eaa.getStatusType());
-                assertEquals(etsiEAAStatusList.getPurpose(), eaa.getStatusPurpose());
+                ETSITokenStatusList etsiTokenStatusList = (ETSITokenStatusList) statusList;
+                assertEquals(etsiTokenStatusList.getType(), attestation.getStatusType());
+                assertEquals(etsiTokenStatusList.getPurpose(), attestation.getStatusPurpose());
             } else {
-                assertNull(eaa.getStatusType());
-                assertNull(eaa.getStatusPurpose());
+                assertNull(attestation.getStatusType());
+                assertNull(attestation.getStatusPurpose());
             }
-            assertEquals(statusList.getIndex(), eaa.getStatusIndex());
-            assertEquals(statusList.getUri(), eaa.getStatusUri());
+            assertEquals(statusList.getIndex(), attestation.getStatusIndex());
+            assertEquals(statusList.getUri(), attestation.getStatusUri());
             if (statusList.getCertificate() != null) {
-                assertArrayEquals(statusList.getCertificate().getEncoded(), eaa.getStatusCertificate());
+                assertArrayEquals(statusList.getCertificate().getEncoded(), attestation.getStatusCertificate());
             } else {
-                assertNull(eaa.getStatusCertificate());
+                assertNull(attestation.getStatusCertificate());
             }
         } else {
-            assertNull(eaa.getStatusIndex());
-            assertNull(eaa.getStatusUri());
-            assertNull(eaa.getStatusCertificate());
+            assertNull(attestation.getStatusIndex());
+            assertNull(attestation.getStatusUri());
+            assertNull(attestation.getStatusCertificate());
         }
     }
 
-    protected void assertSDJWTClaims(SDJWTClaimParameters sd, SDJWTClaimParameters nonSd, AttestationWrapper eaa) {
+    protected void assertSDJWTClaims(SDJWTClaimParameters sd, SDJWTClaimParameters nonSd, AttestationWrapper attestation) {
 
-        assertEitherDate(sd.getIssuanceDate(), nonSd.getIssuanceDate(), eaa.getIssuedAt());
-        assertEither(sd.getSubject(), nonSd.getSubject(), eaa.getSubject());
+        assertEitherDate(sd.getIssuanceDate(), nonSd.getIssuanceDate(), attestation.getIssuedAt());
+        assertEither(sd.getSubject(), nonSd.getSubject(), attestation.getSubject());
 
-        assertEither(sd.getGivenName(), nonSd.getGivenName(), eaa.getGivenName());
-        assertEither(sd.getFamilyName(), nonSd.getFamilyName(), eaa.getFamilyName());
-        assertEither(sd.getEmail(), nonSd.getEmail(), eaa.getEmail());
-        assertEither(sd.getPhoneNumber(), nonSd.getPhoneNumber(), eaa.getPhoneNumber());
-        assertEither(sd.getPhoneNumberVerified(), nonSd.getPhoneNumberVerified(), eaa.getPhoneNumberVerified());
-        assertEitherDate(sd.getBirthdate(), nonSd.getBirthdate(), eaa.getBirthdate());
+        assertEither(sd.getGivenName(), nonSd.getGivenName(), attestation.getGivenName());
+        assertEither(sd.getFamilyName(), nonSd.getFamilyName(), attestation.getFamilyName());
+        assertEither(sd.getEmail(), nonSd.getEmail(), attestation.getEmail());
+        assertEither(sd.getPhoneNumber(), nonSd.getPhoneNumber(), attestation.getPhoneNumber());
+        assertEither(sd.getPhoneNumberVerified(), nonSd.getPhoneNumberVerified(), attestation.getPhoneNumberVerified());
+        assertEitherDate(sd.getBirthdate(), nonSd.getBirthdate(), attestation.getBirthdate());
 
-        assertEither(sd.getNationalities(), nonSd.getNationalities(), eaa.getNationalities());
+        assertEither(sd.getNationalities(), nonSd.getNationalities(), attestation.getNationalities());
 
-        assertEither(sd.getPostalAddress(), nonSd.getPostalAddress(), eaa.getResidentPostalAddress());
-        assertEither(sd.getAddressHouseNumber(), nonSd.getAddressHouseNumber(), eaa.getResidentAddressHouseNumber());
-        assertEither(sd.getAddressStreet(), nonSd.getAddressStreet(), eaa.getResidentAddressStreet());
-        assertEither(sd.getAddressCity(), nonSd.getAddressCity(), eaa.getResidentAddressCity());
-        assertEither(sd.getAddressState(), nonSd.getAddressState(), eaa.getResidentAddressState());
-        assertEither(sd.getAddressPostalCode(), nonSd.getAddressPostalCode(), eaa.getResidentAddressPostalCode());
-        assertEither(sd.getAddressCountry(), nonSd.getAddressCountry(), eaa.getResidentAddressCountry());
+        assertEither(sd.getPostalAddress(), nonSd.getPostalAddress(), attestation.getResidentPostalAddress());
+        assertEither(sd.getAddressHouseNumber(), nonSd.getAddressHouseNumber(), attestation.getResidentAddressHouseNumber());
+        assertEither(sd.getAddressStreet(), nonSd.getAddressStreet(), attestation.getResidentAddressStreet());
+        assertEither(sd.getAddressCity(), nonSd.getAddressCity(), attestation.getResidentAddressCity());
+        assertEither(sd.getAddressState(), nonSd.getAddressState(), attestation.getResidentAddressState());
+        assertEither(sd.getAddressPostalCode(), nonSd.getAddressPostalCode(), attestation.getResidentAddressPostalCode());
+        assertEither(sd.getAddressCountry(), nonSd.getAddressCountry(), attestation.getResidentAddressCountry());
 
-        assertEither(sd.getPlaceOfBirthCountry(), nonSd.getPlaceOfBirthCountry(), eaa.getPlaceOfBirth());
-        assertEither(sd.getPlaceOfBirthRegion(), nonSd.getPlaceOfBirthRegion(), eaa.getPlaceOfBirthRegion());
-        assertEither(sd.getPlaceOfBirthLocality(), nonSd.getPlaceOfBirthLocality(), eaa.getPlaceOfBirthCity());
+        assertEither(sd.getPlaceOfBirthCountry(), nonSd.getPlaceOfBirthCountry(), attestation.getPlaceOfBirth());
+        assertEither(sd.getPlaceOfBirthRegion(), nonSd.getPlaceOfBirthRegion(), attestation.getPlaceOfBirthRegion());
+        assertEither(sd.getPlaceOfBirthLocality(), nonSd.getPlaceOfBirthLocality(), attestation.getPlaceOfBirthCity());
 
-        assertEither(sd.getBirthGivenName(), nonSd.getBirthGivenName(), eaa.getBirthGivenName());
-        assertEither(sd.getBirthFamilyName(), nonSd.getBirthFamilyName(), eaa.getBirthFamilyName());
-        assertEither(sd.getTitle(), nonSd.getTitle(), eaa.getTitle());
-        assertEither(sd.getMobilePhoneNumber(), nonSd.getMobilePhoneNumber(), eaa.getMobilePhoneNumber());
-        assertEither(sd.getPseudonym(), nonSd.getPseudonym(), eaa.getPseudonym());
+        assertEither(sd.getBirthGivenName(), nonSd.getBirthGivenName(), attestation.getBirthGivenName());
+        assertEither(sd.getBirthFamilyName(), nonSd.getBirthFamilyName(), attestation.getBirthFamilyName());
+        assertEither(sd.getTitle(), nonSd.getTitle(), attestation.getTitle());
+        assertEither(sd.getMobilePhoneNumber(), nonSd.getMobilePhoneNumber(), attestation.getMobilePhoneNumber());
+        assertEither(sd.getPseudonym(), nonSd.getPseudonym(), attestation.getPseudonym());
 
-        assertEither(sd.getPersonalAdministrativeNumber(), nonSd.getPersonalAdministrativeNumber(), eaa.getPersonalAdministrativeNumber());
+        assertEither(sd.getPersonalAdministrativeNumber(), nonSd.getPersonalAdministrativeNumber(), attestation.getPersonalAdministrativeNumber());
 
         if (sd.getSex() != null || nonSd.getSex() != null) {
-            assertEither(sd.getSex(), nonSd.getSex(), eaa.getGender());
+            assertEither(sd.getSex(), nonSd.getSex(), attestation.getGender());
         } else {
-            assertEither(sd.getGender(), nonSd.getGender(), eaa.getGender());
+            assertEither(sd.getGender(), nonSd.getGender(), attestation.getGender());
         }
 
-        assertEither(sd.getIssuingCountry(), nonSd.getIssuingCountry(), eaa.getDocumentIssuingAuthorityCountry());
-        assertEither(sd.getIssuingAuthority(), nonSd.getIssuingAuthority(), eaa.getDocumentIssuingAuthority());
-        assertEither(sd.getIssuingJurisdiction(), nonSd.getIssuingJurisdiction(), eaa.getDocumentIssuingAuthorityJurisdiction());
-        assertEither(sd.getDocumentNumber(), nonSd.getDocumentNumber(), eaa.getDocumentNumber());
+        assertEither(sd.getIssuingCountry(), nonSd.getIssuingCountry(), attestation.getDocumentIssuingAuthorityCountry());
+        assertEither(sd.getIssuingAuthority(), nonSd.getIssuingAuthority(), attestation.getDocumentIssuingAuthority());
+        assertEither(sd.getIssuingJurisdiction(), nonSd.getIssuingJurisdiction(), attestation.getDocumentIssuingAuthorityJurisdiction());
+        assertEither(sd.getDocumentNumber(), nonSd.getDocumentNumber(), attestation.getDocumentNumber());
 
-        assertEither(sd.getAgeInYears(), nonSd.getAgeInYears(), eaa.getAgeInYears());
-        assertEither(sd.getAgeBirthYear(), nonSd.getAgeBirthYear(), eaa.getAgeBirthYear());
-        assertEither(sd.getTrustAnchor(), nonSd.getTrustAnchor(), eaa.getTrustAnchor());
+        assertEither(sd.getAgeInYears(), nonSd.getAgeInYears(), attestation.getAgeInYears());
+        assertEither(sd.getAgeBirthYear(), nonSd.getAgeBirthYear(), attestation.getAgeBirthYear());
+        assertEither(sd.getTrustAnchor(), nonSd.getTrustAnchor(), attestation.getTrustAnchor());
 
         if (Utils.isMapNotEmpty(sd.getAgeOverNN()) || Utils.isMapNotEmpty(nonSd.getAgeOverNN())) {
             Set<Integer> ages = new HashSet<>();
@@ -308,48 +308,48 @@ public abstract class AbstractSDJWTTestIssuance extends AbstractAttestationPrese
                 Boolean sdValue = Utils.isMapNotEmpty(sd.getAgeOverNN()) ? sd.getAgeOverNN().get(age) : null;
                 Boolean nonSdValue = Utils.isMapNotEmpty(nonSd.getAgeOverNN()) ? nonSd.getAgeOverNN().get(age) : null;
 
-                assertEither(sdValue, nonSdValue, eaa.isAgeOver(age));
+                assertEither(sdValue, nonSdValue, attestation.isAgeOver(age));
             }
         }
 
-        assertEither(sd.getIssuingAuthorityRegistrationIdentifier(), nonSd.getIssuingAuthorityRegistrationIdentifier(), eaa.getIssuingRegistrationIdentifier());
+        assertEither(sd.getIssuingAuthorityRegistrationIdentifier(), nonSd.getIssuingAuthorityRegistrationIdentifier(), attestation.getIssuingRegistrationIdentifier());
 
         if (sd.getDateOfIssuance() != null || nonSd.getDateOfIssuance() != null) {
-            assertEitherDate(sd.getDateOfIssuance(), nonSd.getDateOfIssuance(), eaa.getAdministrativeIssuanceDate());
+            assertEitherDate(sd.getDateOfIssuance(), nonSd.getDateOfIssuance(), attestation.getAdministrativeIssuanceDate());
         } else {
-            assertEitherDate(sd.getAdministrativeIssuanceDate(), nonSd.getAdministrativeIssuanceDate(), eaa.getAdministrativeIssuanceDate());
+            assertEitherDate(sd.getAdministrativeIssuanceDate(), nonSd.getAdministrativeIssuanceDate(), attestation.getAdministrativeIssuanceDate());
         }
         if (sd.getDateOfExpiry() != null || nonSd.getDateOfExpiry() != null) {
-            assertEitherDate(sd.getDateOfExpiry(), nonSd.getDateOfExpiry(), eaa.getAdministrativeExpirationDate());
+            assertEitherDate(sd.getDateOfExpiry(), nonSd.getDateOfExpiry(), attestation.getAdministrativeExpirationDate());
         } else {
-            assertEitherDate(sd.getAdministrativeExpirationDate(), nonSd.getAdministrativeExpirationDate(), eaa.getAdministrativeExpirationDate());
+            assertEitherDate(sd.getAdministrativeExpirationDate(), nonSd.getAdministrativeExpirationDate(), attestation.getAdministrativeExpirationDate());
         }
 
-        assertEither(sd.getPicture(), nonSd.getPicture(), eaa.getPictureUrl());
-        assertEither(sd.getNickname(), nonSd.getNickname(), eaa.getNickname());
+        assertEither(sd.getPicture(), nonSd.getPicture(), attestation.getPictureUrl());
+        assertEither(sd.getNickname(), nonSd.getNickname(), attestation.getNickname());
 
-        assertEither(sd.getPreferredNickname(), nonSd.getPreferredNickname(), eaa.getShortName());
+        assertEither(sd.getPreferredNickname(), nonSd.getPreferredNickname(), attestation.getShortName());
 
-        assertEither(sd.getName(), nonSd.getName(), eaa.getFullName());
-        assertEither(sd.getMiddleName(), nonSd.getMiddleName(), eaa.getMiddleName());
-        assertEither(sd.getProfile(), nonSd.getProfile(), eaa.getProfileUrl());
-        assertEither(sd.getWebsite(), nonSd.getWebsite(), eaa.getWebsiteUrl());
+        assertEither(sd.getName(), nonSd.getName(), attestation.getFullName());
+        assertEither(sd.getMiddleName(), nonSd.getMiddleName(), attestation.getMiddleName());
+        assertEither(sd.getProfile(), nonSd.getProfile(), attestation.getProfileUrl());
+        assertEither(sd.getWebsite(), nonSd.getWebsite(), attestation.getWebsiteUrl());
 
-        assertEither(sd.getEmailVerified(), nonSd.getEmailVerified(), eaa.getEmailVerified());
+        assertEither(sd.getEmailVerified(), nonSd.getEmailVerified(), attestation.getEmailVerified());
 
-        assertEither(sd.getZoneinfo(), nonSd.getZoneinfo(), eaa.getTimezone());
-        assertEither(sd.getLocale(), nonSd.getLocale(), eaa.getLocale());
-        assertEither(sd.getPhoneNumberVerified(), nonSd.getPhoneNumberVerified(), eaa.getPhoneNumberVerified());
+        assertEither(sd.getZoneinfo(), nonSd.getZoneinfo(), attestation.getTimezone());
+        assertEither(sd.getLocale(), nonSd.getLocale(), attestation.getLocale());
+        assertEither(sd.getPhoneNumberVerified(), nonSd.getPhoneNumberVerified(), attestation.getPhoneNumberVerified());
 
-        assertEitherDate(sd.getUpdatedAt(), nonSd.getUpdatedAt(), eaa.getUpdatedAt());
+        assertEitherDate(sd.getUpdatedAt(), nonSd.getUpdatedAt(), attestation.getUpdatedAt());
 
-        assertEither(sd.getBirthMiddleName(), nonSd.getBirthMiddleName(), eaa.getBirthMiddleName());
-        assertEither(sd.getSalutation(), nonSd.getSalutation(), eaa.getSalutation());
+        assertEither(sd.getBirthMiddleName(), nonSd.getBirthMiddleName(), attestation.getBirthMiddleName());
+        assertEither(sd.getSalutation(), nonSd.getSalutation(), attestation.getSalutation());
 
-        assertEither(sd.getAttestedAttributesSubjectIdentifier(), nonSd.getAttestedAttributesSubjectIdentifier(), eaa.getAttestedAttributesSubjectId());
-        assertEither(sd.getAttestedAttributesSubjectPseudonym(), nonSd.getAttestedAttributesSubjectPseudonym(), eaa.getAttestedAttributesSubjectPseudonym());
+        assertEither(sd.getAttestedAttributesSubjectIdentifier(), nonSd.getAttestedAttributesSubjectIdentifier(), attestation.getAttestedAttributesSubjectId());
+        assertEither(sd.getAttestedAttributesSubjectPseudonym(), nonSd.getAttestedAttributesSubjectPseudonym(), attestation.getAttestedAttributesSubjectPseudonym());
 
-        List<ClaimWrapper> selectivelyDisclosableClaims = eaa.getSelectivelyDisclosableClaims();
+        List<ClaimWrapper> selectivelyDisclosableClaims = attestation.getSelectivelyDisclosableClaims();
         if (parametersContainSelectivelyDisclosablClaims()) {
             assertFalse(selectivelyDisclosableClaims.isEmpty());
         } else {

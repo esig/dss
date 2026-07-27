@@ -66,7 +66,7 @@ public interface RemoteAttestationCreationService extends Serializable {
      * @throws DSSException
      *             if an error occurred
      */
-    RemoteDocument signEAA(final RemoteAttestationPayloadParameters payloadParameters, final RemoteSignatureParameters signatureParameters,
+    RemoteDocument signAttestation(final RemoteAttestationPayloadParameters payloadParameters, final RemoteSignatureParameters signatureParameters,
                            final SignatureValueDTO signatureValue) throws DSSException;
 
     /**
@@ -83,10 +83,10 @@ public interface RemoteAttestationCreationService extends Serializable {
     /**
      * Created a DataToBeSigned (DTBS) for a key-binding signature creation, format specific.
      *
-     * @param eaa
-     *            document representing a signed EAA
+     * @param attestation
+     *            document representing a signed attestation
      * @param disclosures
-     *            (optional) a list of disclosures to be provided with the EAA presentation
+     *            (optional) a list of disclosures to be provided with the attestation presentation
      * @param keyBindingParameters
      *            key binding signature configuration
      * @param signatureParameters
@@ -95,16 +95,16 @@ public interface RemoteAttestationCreationService extends Serializable {
      * @throws DSSException
      *             if an error occurred
      */
-    ToBeSignedDTO getDataToSignForKeyBindingSignature(final RemoteDocument eaa, final List<DisclosureDTO> disclosures,
+    ToBeSignedDTO getDataToSignForKeyBindingSignature(final RemoteDocument attestation, final List<DisclosureDTO> disclosures,
                                                       final RemoteKeyBindingParameters keyBindingParameters, final RemoteSignatureParameters signatureParameters) throws DSSException;
 
     /**
      * Creates a key-binding signature, format specific.
      *
-     * @param eaa
-     *            document representing a signed EAA
+     * @param attestation
+     *            document representing a signed attestation
      * @param disclosures
-     *            (optional) a list of disclosures to be provided with the EAA presentation
+     *            (optional) a list of disclosures to be provided with the attestation presentation
      * @param keyBindingParameters
      *            key binding signature configuration
      * @param signatureParameters
@@ -115,17 +115,17 @@ public interface RemoteAttestationCreationService extends Serializable {
      * @throws DSSException
      *             if an error occurred
      */
-    RemoteDocument createKeyBindingSignature(final RemoteDocument eaa, final List<DisclosureDTO> disclosures,
+    RemoteDocument createKeyBindingSignature(final RemoteDocument attestation, final List<DisclosureDTO> disclosures,
                                              final RemoteKeyBindingParameters keyBindingParameters, final RemoteSignatureParameters signatureParameters,
                                              final SignatureValueDTO signatureValue) throws DSSException;
 
     /**
      * Creates an Attestation Presentation, with provided selective disclosures and key binding signature
      *
-     * @param eaa
-     *            document representing a signed EAA
+     * @param attestation
+     *            document representing a signed attestation
      * @param disclosures
-     *            (optional) a list of disclosures to be provided with the EAA presentation
+     *            (optional) a list of disclosures to be provided with the attestation presentation
      * @param keyBinding
      *            (optional) document representing a key binding signature
      * @param presentationParameters
@@ -134,7 +134,7 @@ public interface RemoteAttestationCreationService extends Serializable {
      * @throws DSSException
      *             if an error occurred
      */
-    RemoteDocument issuePresentation(final RemoteDocument eaa, final List<DisclosureDTO> disclosures,
+    RemoteDocument issuePresentation(final RemoteDocument attestation, final List<DisclosureDTO> disclosures,
                                      final RemoteDocument keyBinding, final RemoteAttestationPresentationParameters presentationParameters) throws DSSException;
 
 }

@@ -92,12 +92,12 @@ class SDJWTJsonSerializationSimpleTest extends AbstractSDJWTTestIssuance {
     protected void checkClaims(final DiagnosticData diagnosticData) {
         super.checkClaims(diagnosticData);
 
-        AttestationWrapper eaa = diagnosticData.getEAAs().get(0);
-        assertEquals("https://issuer.example.com", eaa.getIssuer());
-        assertEquals(expiration.toInstant().getEpochSecond(), eaa.getExpiration().toInstant().getEpochSecond());
-        assertEquals(issuanceDate.toInstant().getEpochSecond(), eaa.getIssuedAt().toInstant().getEpochSecond());
+        AttestationWrapper attestation = diagnosticData.getAttestations().get(0);
+        assertEquals("https://issuer.example.com", attestation.getIssuer());
+        assertEquals(expiration.toInstant().getEpochSecond(), attestation.getExpiration().toInstant().getEpochSecond());
+        assertEquals(issuanceDate.toInstant().getEpochSecond(), attestation.getIssuedAt().toInstant().getEpochSecond());
 
-        List<ClaimWrapper> payloadClaims = eaa.getAllEAAPayloadClaims();
+        List<ClaimWrapper> payloadClaims = attestation.getAllAttestationPayloadClaims();
         assertNotNull(payloadClaims);
 
         boolean claimFound = false;

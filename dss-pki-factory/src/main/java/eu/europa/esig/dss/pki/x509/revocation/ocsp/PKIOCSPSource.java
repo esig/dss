@@ -90,12 +90,12 @@ public class PKIOCSPSource implements OCSPSource {
     private Date producedAt;
 
     /**
-     * ThisUpdate of the revocation revocation information
+     * ThisUpdate of the revocation status information
      */
     private Date thisUpdate;
 
     /**
-     * NextUpdate of the revocation revocation information
+     * NextUpdate of the revocation status information
      */
     private Date nextUpdate;
 
@@ -162,7 +162,7 @@ public class PKIOCSPSource implements OCSPSource {
     }
 
     /**
-     * Gets thisUpdate of revocation revocation information
+     * Gets thisUpdate of revocation status information
      *
      * @return {@link Date}
      */
@@ -174,7 +174,7 @@ public class PKIOCSPSource implements OCSPSource {
     }
 
     /**
-     * Sets thisUpdate of the revocation revocation information
+     * Sets thisUpdate of the revocation status information
      *
      * @param thisUpdate {@link Date}
      */
@@ -183,7 +183,7 @@ public class PKIOCSPSource implements OCSPSource {
     }
 
     /**
-     * Gets nextUpdate of revocation revocation information
+     * Gets nextUpdate of revocation status information
      *
      * @return {@link Date}
      */
@@ -192,7 +192,7 @@ public class PKIOCSPSource implements OCSPSource {
     }
 
     /**
-     * Sets nextUpdate of the revocation revocation information
+     * Sets nextUpdate of the revocation status information
      *
      * @param nextUpdate {@link Date}
      */
@@ -267,11 +267,11 @@ public class PKIOCSPSource implements OCSPSource {
     }
 
     /**
-     * Retrieves the OCSP token for the revocation revocation of the given certificate.
+     * Retrieves the OCSP token for the revocation status of the given certificate.
      *
-     * @param certificateToken       The CertificateToken representing the certificate for which the revocation revocation is to be checked.
+     * @param certificateToken       The CertificateToken representing the certificate for which the revocation status is to be checked.
      * @param issuerCertificateToken The CertificateToken representing the issuer certificate of the certificate to be verified.
-     * @return An OCSPToken representing the OCSP response containing the revocation revocation of the certificate.
+     * @return An OCSPToken representing the OCSP response containing the revocation status of the certificate.
      */
     @Override
     public OCSPToken getRevocationToken(CertificateToken certificateToken, CertificateToken issuerCertificateToken) {
@@ -354,9 +354,9 @@ public class PKIOCSPSource implements OCSPSource {
     }
 
     /**
-     * Returns a revocation revocation for the given {@code CertificateToken} or a certificate within {@code OCSPReq}
+     * Returns a revocation status for the given {@code CertificateToken} or a certificate within {@code OCSPReq}
      *
-     * @param certificateToken {@link CertificateToken} to get revocation revocation for
+     * @param certificateToken {@link CertificateToken} to get revocation status for
      * @param ocspReq {@link OCSPReq}
      * @return {@link CertEntityRevocation}
      */
@@ -373,9 +373,9 @@ public class PKIOCSPSource implements OCSPSource {
     /**
      * This method adds certificate revocation information to {@code BasicOCSPRespBuilder}
      *
-     * @param builder {@link BasicOCSPRespBuilder} to enrich with revocation revocation information
+     * @param builder {@link BasicOCSPRespBuilder} to enrich with revocation status information
      * @param ocspReq {@link OCSPReq} containing the generated OCSP request
-     * @param certEntityRevocation {@link CertEntityRevocation} containing revocation revocation information about the certificate
+     * @param certEntityRevocation {@link CertEntityRevocation} containing revocation status information about the certificate
      */
     protected void addRevocationStatusToOCSPResponse(BasicOCSPRespBuilder builder, OCSPReq ocspReq,
                                                      CertEntityRevocation certEntityRevocation) {

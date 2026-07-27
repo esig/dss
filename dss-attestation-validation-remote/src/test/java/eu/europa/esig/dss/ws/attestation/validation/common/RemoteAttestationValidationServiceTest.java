@@ -24,7 +24,7 @@ import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.AttestationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.attestation.revocation.source.ExternalResourcesAttestationRevocationSource;
-import eu.europa.esig.dss.enumerations.AttestationFormat;
+import eu.europa.esig.dss.enumerations.AttestationProfile;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
@@ -54,23 +54,23 @@ class RemoteAttestationValidationServiceTest {
 
     @Test
     void test(){
-        RemoteDocument attestationPresentation = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/sd-jwt-attestation.json"));
+        RemoteDocument attestationPresentation = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/sd-jwt-eaa.json"));
         AttestationToValidateDTO dto = new AttestationToValidateDTO(attestationPresentation);
-        WSReportsDTO result = validationService.validateEAA(dto);
+        WSReportsDTO result = validationService.validateAttestation(dto);
         validateReports(result);
     }
 
     @Test
     void testWithRevocationSource(){
-        RemoteDocument attestationPresentation = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/sd-jwt-attestation.json"));
+        RemoteDocument attestationPresentation = RemoteDocumentConverter.toRemoteDocument(new FileDocument("src/test/resources/sd-jwt-eaa.json"));
         AttestationToValidateDTO dto = new AttestationToValidateDTO(attestationPresentation);
-        ExternalResourcesAttestationRevocationSource revocationSource = new ExternalResourcesAttestationRevocationSource(new FileDocument("src/test/resources/attestation-statuslist-jwt.json"));
-        validationService.setEAARevocationSource(revocationSource);
-        WSReportsDTO result = validationService.validateEAA(dto);
+        ExternalResourcesAttestationRevocationSource revocationSource = new ExternalResourcesAttestationRevocationSource(new FileDocument("src/test/resources/eaa-statuslist-jwt.json"));
+        validationService.setAttestationRevocationSource(revocationSource);
+        WSReportsDTO result = validationService.validateAttestation(dto);
         Reports reports = validateReports(result);
 
         DiagnosticData diagnosticData = reports.getDiagnosticData();
-        assertEquals(1, diagnosticData.getAllEAARevocationTokens().size());
+        assertEquals(1, diagnosticData.getAllAttestationRevocationTokens().size());
     }
 
     private Reports validateReports(WSReportsDTO result) {
@@ -79,7 +79,7 @@ class RemoteAttestationValidationServiceTest {
         assertNotNull(result.getSimpleReport());
         assertNotNull(result.getValidationReport());
 
-        assertEquals(1, result.getDiagnosticData().getEAAs().size());
+        assertEquals(1, result.getDiagnosticData().getAttestations().size());
 
         assertEquals(Indication.INDETERMINATE, result.getSimpleReport().getSignatureOrTimestampOrEvidenceRecord().get(0).getIndication());
 
@@ -91,13 +91,13 @@ class RemoteAttestationValidationServiceTest {
         assertNotNull(reports.getSimpleReport());
 
         DiagnosticData diagnosticData = reports.getDiagnosticData();
-        AttestationWrapper eaa = diagnosticData.getEAAById(diagnosticData.getFirstEAAId());
-        assertNotNull(eaa);
-        assertEquals(AttestationFormat.SD_JWT_VC, eaa.getEAAType());
+        AttestationWrapper attestation = diagnosticData.getAttestationById(diagnosticData.getFirstAttestationId());
+        assertNotNull(attestation);
+        assertEquals(AttestationProfile.SD_JWT_VC, attestation.getAttestationProfile());
 
-        List<SignatureWrapper> eaaSignatures = eaa.getEAASignatures();
-        assertEquals(1, eaaSignatures.size());
-        SignatureWrapper signature = eaaSignatures.get(0);
+        List<SignatureWrapper> attestationSignatures = attestation.getAttestationSignatures();
+        assertEquals(1, attestationSignatures.size());
+        SignatureWrapper signature = attestationSignatures.get(0);
         assertTrue(signature.isBLevelTechnicallyValid());
 
         return reports;

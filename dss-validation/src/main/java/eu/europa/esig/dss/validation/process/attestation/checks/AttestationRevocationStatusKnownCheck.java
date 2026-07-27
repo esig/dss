@@ -31,33 +31,33 @@ import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
 /**
- * Verifies whether the obtained EAA revocation is known
+ * Verifies whether the obtained attestation revocation is known
  *
  */
 public class AttestationRevocationStatusKnownCheck extends ChainItem<XmlSAV> {
 
-    /** EAA revocation token to check */
-    private final AttestationRevocationWrapper eaaStatus;
+    /** attestation revocation token to check */
+    private final AttestationRevocationWrapper attestationRevocation;
 
     /**
      * Default constructor
      *
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlSAV}
-     * @param eaaStatus {@link AttestationRevocationWrapper}
+     * @param attestationRevocation {@link AttestationRevocationWrapper}
      * @param constraint {@link LevelRule}
      */
     public AttestationRevocationStatusKnownCheck(I18nProvider i18nProvider, XmlSAV result,
-                                                 AttestationRevocationWrapper eaaStatus, LevelRule constraint) {
-        super(i18nProvider, result, constraint, eaaStatus.getId());
-        this.eaaStatus = eaaStatus;
+                                                 AttestationRevocationWrapper attestationRevocation, LevelRule constraint) {
+        super(i18nProvider, result, constraint, attestationRevocation.getId());
+        this.attestationRevocation = attestationRevocation;
     }
 
     @Override
     protected boolean process() {
-        return AttestationStatus.VALID == eaaStatus.getStatus() ||
-                AttestationStatus.INVALID == eaaStatus.getStatus() ||
-                AttestationStatus.SUSPENDED == eaaStatus.getStatus();
+        return AttestationStatus.VALID == attestationRevocation.getStatus() ||
+                AttestationStatus.INVALID == attestationRevocation.getStatus() ||
+                AttestationStatus.SUSPENDED == attestationRevocation.getStatus();
     }
 
     @Override
@@ -77,7 +77,7 @@ public class AttestationRevocationStatusKnownCheck extends ChainItem<XmlSAV> {
 
     @Override
     protected SubIndication getFailedSubIndicationForConclusion() {
-        return SubIndication.EAA_CONSTRAINTS_FAILURE;
+        return SubIndication.ATTESTATION_CONSTRAINTS_FAILURE;
     }
 
 }

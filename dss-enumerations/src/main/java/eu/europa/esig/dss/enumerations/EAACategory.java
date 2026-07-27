@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.enumerations;
 
 /**
- * Provides a list of EAA category definitions
+ * Provides a list of attestation category definitions
  *
  */
 public enum EAACategory {
@@ -50,7 +50,7 @@ public enum EAACategory {
     }
 
     /**
-     * Gets URN defined for the EAA category
+     * Gets URN defined for the attestation category
      *
      * @return {@link String}
      */

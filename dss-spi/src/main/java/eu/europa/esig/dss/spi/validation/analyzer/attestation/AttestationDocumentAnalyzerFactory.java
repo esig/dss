@@ -27,8 +27,8 @@ import java.util.Objects;
 import java.util.ServiceLoader;
 
 /**
- * This class is used to load a specific {@code eu.europa.esig.dss.spi.validation.analyzer.attestation.EAAPresentationAnalyzer}
- * based on the format of the provided presentation of Electronic Attestation of Attributes
+ * This class is used to load a specific {@code eu.europa.esig.dss.spi.validation.analyzer.attestation.AttestationPresentationAnalyzer}
+ * based on the format of the provided presentation of attestation
  *
  */
 public interface AttestationDocumentAnalyzerFactory extends DocumentAnalyzerFactory {
@@ -55,7 +55,7 @@ public interface AttestationDocumentAnalyzerFactory extends DocumentAnalyzerFact
 
     /**
      * Verifies if the {@code document} is supported by one of the implementations,
-     * across {@code EAAPresentationValidatorFactory} instances found by ServiceLoader.
+     * across {@code AttestationPresentationValidatorFactory} instances found by ServiceLoader.
      *
      * @param document {@link DSSDocument} to verify
      * @return TRUE if the evidence record is supported by one of the found implementations, FALSE otherwise
@@ -72,8 +72,8 @@ public interface AttestationDocumentAnalyzerFactory extends DocumentAnalyzerFact
     }
 
     /**
-     * Creates an {@code EAAPresentationValidator} by loading a corresponding implementation,
-     * across {@code EAAPresentationValidatorFactory} instances found by ServiceLoader.
+     * Creates an {@code AttestationPresentationValidator} by loading a corresponding implementation,
+     * across {@code AttestationPresentationValidatorFactory} instances found by ServiceLoader.
      *
      * @param document {@link DSSDocument} to load validator for
      * @return {@link AttestationDocumentAnalyzer} if corresponding implementation found

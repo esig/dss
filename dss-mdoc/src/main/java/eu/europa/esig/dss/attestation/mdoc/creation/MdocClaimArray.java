@@ -158,6 +158,7 @@ public class MdocClaimArray extends MdocClaim implements AttestationClaimArray<M
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<MdocClaim> getElements() {
         return (List<MdocClaim>) getValue();
     }

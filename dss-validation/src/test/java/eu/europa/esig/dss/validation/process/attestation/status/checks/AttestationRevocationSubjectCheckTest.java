@@ -24,8 +24,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.diagnostic.AttestationRevocationTokenWrapper;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlEAARevocationToken;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlEAASubject;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationRevocationToken;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationSubject;
 import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.policy.MultiValuesConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
@@ -45,15 +45,15 @@ class AttestationRevocationSubjectCheckTest extends AbstractTestCheck {
         constraint.getId().add("https://dss.nowina.lu/pki-factory/eaa/status");
         constraint.setLevel(Level.FAIL);
 
-        XmlEAARevocationToken xmlEAARevocationToken = new XmlEAARevocationToken();
-        XmlEAASubject xmlEAASubject = new XmlEAASubject();
-        xmlEAASubject.setValue("https://dss.nowina.lu/pki-factory/eaa/status");
-        xmlEAARevocationToken.setSubject(xmlEAASubject);
+        XmlAttestationRevocationToken xmlAttestationRevocationToken = new XmlAttestationRevocationToken();
+        XmlAttestationSubject xmlAttestationSubject = new XmlAttestationSubject();
+        xmlAttestationSubject.setValue("https://dss.nowina.lu/pki-factory/eaa/status");
+        xmlAttestationRevocationToken.setSubject(xmlAttestationSubject);
         XmlSAV result = new XmlSAV();
 
-        AttestationRevocationSubjectCheck eaassc = new AttestationRevocationSubjectCheck(
-                i18nProvider, result, new AttestationRevocationTokenWrapper(xmlEAARevocationToken), new MultiValuesConstraintWrapper(constraint));
-        eaassc.execute();
+        AttestationRevocationSubjectCheck assc = new AttestationRevocationSubjectCheck(
+                i18nProvider, result, new AttestationRevocationTokenWrapper(xmlAttestationRevocationToken), new MultiValuesConstraintWrapper(constraint));
+        assc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
         assertEquals(1, constraints.size());
@@ -66,15 +66,15 @@ class AttestationRevocationSubjectCheckTest extends AbstractTestCheck {
         constraint.getId().add("https://dss.nowina.lu/pki-factory/eaa/status");
         constraint.setLevel(Level.FAIL);
 
-        XmlEAARevocationToken xmlEAARevocationToken = new XmlEAARevocationToken();
-        XmlEAASubject xmlEAASubject = new XmlEAASubject();
-        xmlEAASubject.setValue("https://dss.nowina.lu/pki-factory/neaa/status");
-        xmlEAARevocationToken.setSubject(xmlEAASubject);
+        XmlAttestationRevocationToken xmlAttestationRevocationToken = new XmlAttestationRevocationToken();
+        XmlAttestationSubject xmlAttestationSubject = new XmlAttestationSubject();
+        xmlAttestationSubject.setValue("https://dss.nowina.lu/pki-factory/neaa/status");
+        xmlAttestationRevocationToken.setSubject(xmlAttestationSubject);
         XmlSAV result = new XmlSAV();
 
-        AttestationRevocationSubjectCheck eaassc = new AttestationRevocationSubjectCheck(
-                i18nProvider, result, new AttestationRevocationTokenWrapper(xmlEAARevocationToken), new MultiValuesConstraintWrapper(constraint));
-        eaassc.execute();
+        AttestationRevocationSubjectCheck assc = new AttestationRevocationSubjectCheck(
+                i18nProvider, result, new AttestationRevocationTokenWrapper(xmlAttestationRevocationToken), new MultiValuesConstraintWrapper(constraint));
+        assc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
         assertEquals(1, constraints.size());
@@ -87,15 +87,15 @@ class AttestationRevocationSubjectCheckTest extends AbstractTestCheck {
         constraint.getId().add("*");
         constraint.setLevel(Level.FAIL);
 
-        XmlEAARevocationToken xmlEAARevocationToken = new XmlEAARevocationToken();
-        XmlEAASubject xmlEAASubject = new XmlEAASubject();
-        xmlEAASubject.setValue("https://dss.nowina.lu/pki-factory/eaa/status");
-        xmlEAARevocationToken.setSubject(xmlEAASubject);
+        XmlAttestationRevocationToken xmlAttestationRevocationToken = new XmlAttestationRevocationToken();
+        XmlAttestationSubject xmlAttestationSubject = new XmlAttestationSubject();
+        xmlAttestationSubject.setValue("https://dss.nowina.lu/pki-factory/eaa/status");
+        xmlAttestationRevocationToken.setSubject(xmlAttestationSubject);
         XmlSAV result = new XmlSAV();
 
-        AttestationRevocationSubjectCheck eaassc = new AttestationRevocationSubjectCheck(
-                i18nProvider, result, new AttestationRevocationTokenWrapper(xmlEAARevocationToken), new MultiValuesConstraintWrapper(constraint));
-        eaassc.execute();
+        AttestationRevocationSubjectCheck assc = new AttestationRevocationSubjectCheck(
+                i18nProvider, result, new AttestationRevocationTokenWrapper(xmlAttestationRevocationToken), new MultiValuesConstraintWrapper(constraint));
+        assc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
         assertEquals(1, constraints.size());
@@ -108,12 +108,12 @@ class AttestationRevocationSubjectCheckTest extends AbstractTestCheck {
         constraint.getId().add("*");
         constraint.setLevel(Level.FAIL);
 
-        XmlEAARevocationToken xmlEAARevocationToken = new XmlEAARevocationToken();
+        XmlAttestationRevocationToken xmlAttestationRevocationToken = new XmlAttestationRevocationToken();
         XmlSAV result = new XmlSAV();
 
-        AttestationRevocationSubjectCheck eaassc = new AttestationRevocationSubjectCheck(
-                i18nProvider, result, new AttestationRevocationTokenWrapper(xmlEAARevocationToken), new MultiValuesConstraintWrapper(constraint));
-        eaassc.execute();
+        AttestationRevocationSubjectCheck assc = new AttestationRevocationSubjectCheck(
+                i18nProvider, result, new AttestationRevocationTokenWrapper(xmlAttestationRevocationToken), new MultiValuesConstraintWrapper(constraint));
+        assc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
         assertEquals(1, constraints.size());

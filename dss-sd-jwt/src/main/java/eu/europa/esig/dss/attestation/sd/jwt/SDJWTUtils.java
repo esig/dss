@@ -20,16 +20,16 @@
  */
 package eu.europa.esig.dss.attestation.sd.jwt;
 
-import eu.europa.esig.dss.attestation.sd.jwt.claim.SDJWTClaimArray;
-import eu.europa.esig.dss.attestation.sd.jwt.claim.SDJWTClaimMap;
-import eu.europa.esig.dss.model.attestation.claim.Claim;
-import eu.europa.esig.dss.model.attestation.claim.ClaimArray;
-import eu.europa.esig.dss.model.attestation.claim.ClaimBoolean;
-import eu.europa.esig.dss.model.attestation.claim.ClaimDate;
-import eu.europa.esig.dss.model.attestation.claim.ClaimMap;
-import eu.europa.esig.dss.model.attestation.claim.ClaimNull;
-import eu.europa.esig.dss.model.attestation.claim.ClaimNumber;
-import eu.europa.esig.dss.model.attestation.claim.ClaimString;
+import eu.europa.esig.dss.attestation.sd.jwt.claim.SDJWTVerifiedClaimArray;
+import eu.europa.esig.dss.attestation.sd.jwt.claim.SDJWTVerifiedClaimMap;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaim;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimArray;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimBoolean;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimDate;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimMap;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimNull;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimNumber;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimString;
 
 import java.util.Date;
 import java.util.List;
@@ -50,12 +50,12 @@ public final class SDJWTUtils {
 
     /**
      * This method parses the {@code value} and wraps it into a {@code ClaimValue} according to its format.
-     * This method can be used for non selectively disclosable claims, provided directly within EAA Payload.
+     * This method can be used for non selectively disclosable claims, provided directly within attestation Payload.
      *
      * @param value {@link Object} containing the value of the object
-     * @return {@link Claim}
+     * @return {@link VerifiedClaim}
      */
-    public static Claim createClaim(Object value) {
+    public static VerifiedClaim createClaim(Object value) {
         return createClaim(null, null, value);
     }
 
@@ -66,14 +66,14 @@ public final class SDJWTUtils {
      * otherwise it is set to false.
      *
      * @param claimName {@link String} representing the header name of the claim
-     * @param parent {@link Claim} parent of the claim
+     * @param parent {@link VerifiedClaim} parent of the claim
      * @param value {@link Object} containing the value of the object
-     * @return {@link Claim}
+     * @return {@link VerifiedClaim}
      */
-    public static Claim createClaim(String claimName, Claim parent, Object value) {
+    public static VerifiedClaim createClaim(String claimName, VerifiedClaim parent, Object value) {
         boolean selectivelyDisclosable = false;
-        if (value instanceof Claim) {
-            selectivelyDisclosable = ((Claim) value).isSelectivelyDisclosable();
+        if (value instanceof VerifiedClaim) {
+            selectivelyDisclosable = ((VerifiedClaim) value).isSelectivelyDisclosable();
         }
         return createClaim(claimName, parent, value, selectivelyDisclosable);
     }
@@ -84,41 +84,41 @@ public final class SDJWTUtils {
      * This method allows providing of the claim parent, to be used within the claim's metadata.
      *
      * @param claimName {@link String} representing the header name of the claim
-     * @param parent {@link Claim} parent of the claim
+     * @param parent {@link VerifiedClaim} parent of the claim
      * @param value {@link Object} containing the value of the object
      * @param selectivelyDisclosable whether the claim is selectively disclosable
      *                               (can be TRUE only when the value of claim is provided in a form of disclosure)
-     * @return {@link Claim}
+     * @return {@link VerifiedClaim}
      */
-    public static Claim createClaim(String claimName, Claim parent, Object value, boolean selectivelyDisclosable) {
-        if (value instanceof ClaimString) {
-            return new ClaimString(claimName, ((ClaimString) value).getStringValue(), selectivelyDisclosable, parent);
-        } else if (value instanceof ClaimNumber) {
-            return new ClaimNumber(claimName, ((ClaimNumber) value).getNumberValue(), selectivelyDisclosable, parent);
-        } else if (value instanceof ClaimBoolean) {
-            return new ClaimBoolean(claimName, ((ClaimBoolean) value).getBooleanValue(), selectivelyDisclosable, parent);
-        } else if (value instanceof ClaimDate) {
-            return new ClaimDate(claimName, ((ClaimDate) value).getDateValue(), selectivelyDisclosable, parent);
-        } else if (value instanceof ClaimNull) {
-            return new ClaimNull(claimName, selectivelyDisclosable, parent);
-        } else if (value instanceof ClaimMap) {
-            return new SDJWTClaimMap(claimName, ((ClaimMap) value).getMapValue(), selectivelyDisclosable, parent);
-        } else if (value instanceof ClaimArray) {
-            return new SDJWTClaimArray(claimName, ((ClaimArray) value).getListValue(), selectivelyDisclosable, parent);
+    public static VerifiedClaim createClaim(String claimName, VerifiedClaim parent, Object value, boolean selectivelyDisclosable) {
+        if (value instanceof VerifiedClaimString) {
+            return new VerifiedClaimString(claimName, ((VerifiedClaimString) value).getStringValue(), selectivelyDisclosable, parent);
+        } else if (value instanceof VerifiedClaimNumber) {
+            return new VerifiedClaimNumber(claimName, ((VerifiedClaimNumber) value).getNumberValue(), selectivelyDisclosable, parent);
+        } else if (value instanceof VerifiedClaimBoolean) {
+            return new VerifiedClaimBoolean(claimName, ((VerifiedClaimBoolean) value).getBooleanValue(), selectivelyDisclosable, parent);
+        } else if (value instanceof VerifiedClaimDate) {
+            return new VerifiedClaimDate(claimName, ((VerifiedClaimDate) value).getDateValue(), selectivelyDisclosable, parent);
+        } else if (value instanceof VerifiedClaimNull) {
+            return new VerifiedClaimNull(claimName, selectivelyDisclosable, parent);
+        } else if (value instanceof VerifiedClaimMap) {
+            return new SDJWTVerifiedClaimMap(claimName, ((VerifiedClaimMap) value).getMapValue(), selectivelyDisclosable, parent);
+        } else if (value instanceof VerifiedClaimArray) {
+            return new SDJWTVerifiedClaimArray(claimName, ((VerifiedClaimArray) value).getListValue(), selectivelyDisclosable, parent);
         } else if (value instanceof String) {
-            return new ClaimString(claimName, (String) value, selectivelyDisclosable, parent);
+            return new VerifiedClaimString(claimName, (String) value, selectivelyDisclosable, parent);
         } else if (value instanceof Number) {
-            return new ClaimNumber(claimName, (Number) value, selectivelyDisclosable, parent);
+            return new VerifiedClaimNumber(claimName, (Number) value, selectivelyDisclosable, parent);
         } else if (value instanceof Boolean) {
-            return new ClaimBoolean(claimName, (Boolean) value, selectivelyDisclosable, parent);
+            return new VerifiedClaimBoolean(claimName, (Boolean) value, selectivelyDisclosable, parent);
         } else if (value instanceof Date) {
-            return new ClaimDate(claimName, (Date) value, selectivelyDisclosable, parent);
+            return new VerifiedClaimDate(claimName, (Date) value, selectivelyDisclosable, parent);
         } else if (value instanceof Map) {
-            return new SDJWTClaimMap(claimName, (Map<?,?>) value, selectivelyDisclosable, parent);
+            return new SDJWTVerifiedClaimMap(claimName, (Map<?,?>) value, selectivelyDisclosable, parent);
         } else if (value instanceof List) {
-            return new SDJWTClaimArray(claimName, (List<?>) value, selectivelyDisclosable, parent);
+            return new SDJWTVerifiedClaimArray(claimName, (List<?>) value, selectivelyDisclosable, parent);
         } else if (value == null) {
-            return new ClaimNull(claimName, selectivelyDisclosable, parent);
+            return new VerifiedClaimNull(claimName, selectivelyDisclosable, parent);
         } else {
             throw new IllegalArgumentException(String.format("The claim value of type '%s' is not supported!", value.getClass().getSimpleName()));
         }

@@ -33,15 +33,15 @@ import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import java.util.Date;
 
 /**
- * Verified whether the validation time is within EAA administrative validity period range
+ * Verified whether the validation time is within attestation administrative validity period range
  *
  */
 public class AttestationAdministrativePeriodNotExpiredCheck extends ChainItem<XmlSAV> {
 
-    /** EAA to check */
-    private final AttestationWrapper eaa;
+    /** attestation to check */
+    private final AttestationWrapper attestation;
 
-    /** EAA validation time */
+    /** attestation validation time */
     private final Date validationTime;
 
     /**
@@ -49,14 +49,14 @@ public class AttestationAdministrativePeriodNotExpiredCheck extends ChainItem<Xm
      *
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlSAV}
-     * @param eaa {@link AttestationWrapper}
+     * @param attestation {@link AttestationWrapper}
      * @param validationTime {@link Date}
      * @param constraint {@link LevelRule}
      */
     public AttestationAdministrativePeriodNotExpiredCheck(I18nProvider i18nProvider, XmlSAV result,
-                                                          AttestationWrapper eaa, Date validationTime, LevelRule constraint) {
+                                                          AttestationWrapper attestation, Date validationTime, LevelRule constraint) {
         super(i18nProvider, result, constraint);
-        this.eaa = eaa;
+        this.attestation = attestation;
         this.validationTime = validationTime;
     }
 
@@ -69,14 +69,14 @@ public class AttestationAdministrativePeriodNotExpiredCheck extends ChainItem<Xm
         /*
          * Same logic is applied as for IETF RFC 7519 "nbf" mutatis mutandis
          */
-        return eaa.getAdministrativeIssuanceDate() != null && !validationTime.before(eaa.getAdministrativeIssuanceDate());
+        return attestation.getAdministrativeIssuanceDate() != null && !validationTime.before(attestation.getAdministrativeIssuanceDate());
     }
 
     private boolean notAdministrativePeriodAtOrAfter() {
         /*
          * Same logic is applied as for IETF RFC 7519 "exp" mutatis mutandis
          */
-        return eaa.getAdministrativeExpirationDate() != null && validationTime.before(eaa.getAdministrativeExpirationDate());
+        return attestation.getAdministrativeExpirationDate() != null && validationTime.before(attestation.getAdministrativeExpirationDate());
     }
 
     @Override
@@ -84,8 +84,8 @@ public class AttestationAdministrativePeriodNotExpiredCheck extends ChainItem<Xm
         if (!notAdministrativePeriodBefore() || !notAdministrativePeriodAtOrAfter()) {
             return i18nProvider.getMessage(MessageTag.EAA_VT_IAVR_VALIDITY,
                     ValidationProcessUtils.getFormattedDate(validationTime),
-                    ValidationProcessUtils.getFormattedDate(eaa.getAdministrativeIssuanceDate()),
-                    ValidationProcessUtils.getFormattedDate(eaa.getAdministrativeExpirationDate()));
+                    ValidationProcessUtils.getFormattedDate(attestation.getAdministrativeIssuanceDate()),
+                    ValidationProcessUtils.getFormattedDate(attestation.getAdministrativeExpirationDate()));
         }
         return null;
     }

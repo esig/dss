@@ -45,7 +45,7 @@ public class DefaultMdocSelectiveDisclosureBuilder implements MdocSelectiveDiscl
 
     @Override
     public MdocSelectiveDisclosure build(MdocClaim claim) {
-        Objects.requireNonNull(claim, "MdocEAAClaim cannot be null!");
+        Objects.requireNonNull(claim, "MdocClaim cannot be null!");
 
         final CBORMap issuerSignedItem = new CBORMap();
         issuerSignedItem.put(MdocHeaderParameter.DIGEST_ID.toString(), claim.getDigestId());

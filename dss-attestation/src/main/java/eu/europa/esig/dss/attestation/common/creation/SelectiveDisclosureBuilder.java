@@ -23,15 +23,15 @@ package eu.europa.esig.dss.attestation.common.creation;
 import eu.europa.esig.dss.attestation.common.creation.claim.AttestationClaim;
 
 /**
- * Builds selective disclosure objects for the given EAA format
+ * Builds selective disclosure objects for the given attestation format
  *
- * @param <C> The implementation of {@link AttestationClaim} for the EAA format
- * @param <D> The implementation of {@link SelectiveDisclosure} for the EAA format
+ * @param <C> The implementation of {@link AttestationClaim} for the attestation format
+ * @param <D> The implementation of {@link SelectiveDisclosure} for the attestation format
  */
 public interface SelectiveDisclosureBuilder<C extends AttestationClaim, D extends SelectiveDisclosure> {
 
     /**
-     * Builds a selectively disclosable EAA claim to be used for Digest computation, format specific
+     * Builds a selectively disclosable attestation claim to be used for Digest computation, format specific
      *
      * @param claim {@link AttestationClaim} to create a disclosure for
      * @return {@link SelectiveDisclosure} representing the disclosure structure

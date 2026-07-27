@@ -29,8 +29,8 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampQualification;
 import eu.europa.esig.dss.jaxb.object.Message;
 import eu.europa.esig.dss.simplereport.jaxb.XmlCertificateChain;
-import eu.europa.esig.dss.simplereport.jaxb.XmlEAALevel;
-import eu.europa.esig.dss.simplereport.jaxb.XmlEAA;
+import eu.europa.esig.dss.simplereport.jaxb.XmlAttestationLevel;
+import eu.europa.esig.dss.simplereport.jaxb.XmlAttestation;
 import eu.europa.esig.dss.simplereport.jaxb.XmlEvidenceRecord;
 import eu.europa.esig.dss.simplereport.jaxb.XmlEvidenceRecords;
 import eu.europa.esig.dss.simplereport.jaxb.XmlMessage;
@@ -175,21 +175,21 @@ public class SimpleReport {
 	}
 
 	/**
-	 * This method retrieves the EAA ids
+	 * This method retrieves the attestation ids
 	 *
-	 * @return the {@code List} of EAA id(s) contained in the simpleReport
+	 * @return the {@code List} of attestation id(s) contained in the simpleReport
 	 */
-	public List<String> getEAAIdList() {
-		final List<String> eaaIdList = new ArrayList<>();
+	public List<String> getAttestationIdList() {
+		final List<String> attestationIdList = new ArrayList<>();
 		List<XmlToken> tokens = wrapped.getSignatureOrTimestampOrEvidenceRecord();
 		if (tokens != null) {
 			for (XmlToken token : tokens) {
-				if (token instanceof XmlEAA) {
-					eaaIdList.add(token.getId());
+				if (token instanceof XmlAttestation) {
+					attestationIdList.add(token.getId());
 				}
 			}
 		}
-		return eaaIdList;
+		return attestationIdList;
 	}
 
 	/**
@@ -236,10 +236,10 @@ public class SimpleReport {
 	 *
 	 * @return the first evidence record id
 	 */
-	public String getFirstEAAId() {
-		final List<String> eaaIdList = getEAAIdList();
-		if (!eaaIdList.isEmpty()) {
-			return eaaIdList.get(0);
+	public String getFirstAttestationId() {
+		final List<String> attestationIdList = getAttestationIdList();
+		if (!attestationIdList.isEmpty()) {
+			return attestationIdList.get(0);
 		}
 		return null;
 	}
@@ -567,36 +567,36 @@ public class SimpleReport {
 	}
 
 	/**
-	 * This method returns the first determined EAA's qualification.
-	 * This method could be used for a simple EAAQualification result extraction, suitable for the most use cases.
-	 * Should you need a more comprehensive validation output, please use the {@code #getEAAQualifications} method.
+	 * This method returns the first determined attestation's qualification.
+	 * This method could be used for a simple AttestationQualification result extraction, suitable for the most use cases.
+	 * Should you need a more comprehensive validation output, please use the {@code #getAttestationQualifications} method.
 	 *
 	 * @param attestationPresentationId
-	 *                    the EAA presentation id
-	 * @return {@link AttestationQualification} for a given EAA
+	 *                    the attestation presentation id
+	 * @return {@link AttestationQualification} for a given attestation
 	 */
-	public AttestationQualification getEAAQualification(final String attestationPresentationId) {
-		XmlEAA xmlEAA = getEAAById(attestationPresentationId);
-		if (xmlEAA != null && xmlEAA.getEAALevel() != null && !xmlEAA.getEAALevel().isEmpty()) {
-			return xmlEAA.getEAALevel().iterator().next().getValue();
+	public AttestationQualification getAttestationQualification(final String attestationPresentationId) {
+		XmlAttestation xmlAttestation = getAttestationById(attestationPresentationId);
+		if (xmlAttestation != null && xmlAttestation.getAttestationLevel() != null && !xmlAttestation.getAttestationLevel().isEmpty()) {
+			return xmlAttestation.getAttestationLevel().iterator().next().getValue();
 		}
 		return null;
 	}
 
 	/**
-	 * This method returns a list of determined EAA's qualifications.
-	 * This list should be used if a comprehensive result of EAA validation is required,
+	 * This method returns a list of determined attestation's qualifications.
+	 * This list should be used if a comprehensive result of attestation validation is required,
 	 * as potentially a token may be qualified with different outputs during the validation process,
 	 * even thought it should not happen in production environments.
 	 *
 	 * @param attestationPresentationId
-	 *                    the EAA presentation id
-	 * @return a list of {@link AttestationQualification}s for a given EAA
+	 *                    the attestation presentation id
+	 * @return a list of {@link AttestationQualification}s for a given attestation
 	 */
-	public List<AttestationQualification> getEAAQualifications(final String attestationPresentationId) {
-		XmlEAA xmlEAA = getEAAById(attestationPresentationId);
-		if (xmlEAA != null && xmlEAA.getEAALevel() != null && !xmlEAA.getEAALevel().isEmpty()) {
-			return xmlEAA.getEAALevel().stream().map(XmlEAALevel::getValue).collect(Collectors.toList());
+	public List<AttestationQualification> getAttestationQualifications(final String attestationPresentationId) {
+		XmlAttestation xmlAttestation = getAttestationById(attestationPresentationId);
+		if (xmlAttestation != null && xmlAttestation.getAttestationLevel() != null && !xmlAttestation.getAttestationLevel().isEmpty()) {
+			return xmlAttestation.getAttestationLevel().stream().map(XmlAttestationLevel::getValue).collect(Collectors.toList());
 		}
 		return null;
 	}
@@ -637,8 +637,8 @@ public class SimpleReport {
 					if (timestampById != null) {
 						return timestampById;
 					}
-				} else if (token instanceof XmlEAA) {
-					XmlToken signatureById = getEAASignatureById((XmlEAA) token, tokenId);
+				} else if (token instanceof XmlAttestation) {
+					XmlToken signatureById = getAttestationSignatureById((XmlAttestation) token, tokenId);
 					if (signatureById != null) {
 						return signatureById;
 					}
@@ -680,15 +680,15 @@ public class SimpleReport {
 		return null;
 	}
 
-	private XmlToken getEAASignatureById(XmlEAA eaa, String tokenId) {
-		List<XmlSignature> signatures = eaa.getEAASignature();
+	private XmlToken getAttestationSignatureById(XmlAttestation attestation, String tokenId) {
+		List<XmlSignature> signatures = attestation.getAttestationSignature();
 		if (signatures != null && !signatures.isEmpty()) {
 			XmlToken embeddedTokenById = getEmbeddedTokenById(signatures, tokenId);
 			if (embeddedTokenById != null) {
 				return embeddedTokenById;
 			}
 		}
-		XmlSignature keyBindingSignature = eaa.getKeyBindingSignature();
+		XmlSignature keyBindingSignature = attestation.getKeyBindingSignature();
 		if (keyBindingSignature != null) {
 			XmlToken embeddedTokenById = getEmbeddedTokenById(Collections.singletonList(keyBindingSignature), tokenId);
 			if (embeddedTokenById != null) {
@@ -744,16 +744,16 @@ public class SimpleReport {
 	}
 
 	/**
-	 * This method returns a wrapper for the given EAA
+	 * This method returns a wrapper for the given attestation
 	 *
-	 * @param eaaId
-	 *            the EAA id
-	 * @return the wrapper for the given EAA id
+	 * @param attestationId
+	 *            the attestation id
+	 * @return the wrapper for the given attestation id
 	 */
-	public XmlEAA getEAAById(String eaaId) {
-		XmlToken token = getTokenById(eaaId);
-		if (token instanceof XmlEAA) {
-			return (XmlEAA) token;
+	public XmlAttestation getAttestationById(String attestationId) {
+		XmlToken token = getTokenById(attestationId);
+		if (token instanceof XmlAttestation) {
+			return (XmlAttestation) token;
 		}
 		return null;
 	}
@@ -819,33 +819,33 @@ public class SimpleReport {
 	}
 
 	/**
-	 * This method returns a list of signatures used to create the EAA with the given Id
+	 * This method returns a list of signatures used to create the attestation with the given Id
 	 * NOTE: This method does not return key binding signature. To extract the latest, please use
-	 *       {@code #getEAAKeyBindingSignature} method
+	 *       {@code #getAttestationKeyBindingSignature} method
 	 *
-	 * @param eaaId
+	 * @param attestationId
 	 *            the evidence record id
 	 * @return list if signature wrappers
 	 */
-	public List<XmlSignature> getEAASignatures(String eaaId) {
-		XmlEAA eaaById = getEAAById(eaaId);
-		if (eaaById != null && eaaById.getEAASignature() != null) {
-			return eaaById.getEAASignature();
+	public List<XmlSignature> getAttestationSignatures(String attestationId) {
+		XmlAttestation attestationById = getAttestationById(attestationId);
+		if (attestationById != null && attestationById.getAttestationSignature() != null) {
+			return attestationById.getAttestationSignature();
 		}
 		return Collections.emptyList();
 	}
 
 	/**
-	 * This method returns a key binding signature for the EAA, when present
+	 * This method returns a key binding signature for the attestation, when present
 	 *
 	 * @param attestationPresentationId
 	 *            the evidence record id
 	 * @return {@link XmlSignature}
 	 */
-	public XmlSignature getEAAKeyBindingSignature(String attestationPresentationId) {
-		XmlEAA eaa = getEAAById(attestationPresentationId);
-		if (eaa != null) {
-			return eaa.getKeyBindingSignature();
+	public XmlSignature getAttestationKeyBindingSignature(String attestationPresentationId) {
+		XmlAttestation attestation = getAttestationById(attestationPresentationId);
+		if (attestation != null) {
+			return attestation.getKeyBindingSignature();
 		}
 		return null;
 	}

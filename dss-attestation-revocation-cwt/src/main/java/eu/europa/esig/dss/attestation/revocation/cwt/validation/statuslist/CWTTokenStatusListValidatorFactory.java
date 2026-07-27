@@ -21,14 +21,14 @@
 package eu.europa.esig.dss.attestation.revocation.cwt.validation.statuslist;
 
 import eu.europa.esig.dss.attestation.revocation.validation.statuslist.TokenStatusListValidator;
-import eu.europa.esig.dss.attestation.revocation.validation.statuslist.StatusListValidatorFactory;
+import eu.europa.esig.dss.attestation.revocation.validation.statuslist.TokenStatusListValidatorFactory;
 
 /**
  * Loads a corresponding validator for a Token Status List (TSL) provided in CWT Format,
  * as defined in "5.2. Status List Token in CWT Format" of
  * <a href="https://www.ietf.org/archive/id/draft-ietf-oauth-status-list-20.html">IETF Token Status List (TSL)</a>.
  */
-public class CWTTokenStatusListValidatorFactory implements StatusListValidatorFactory {
+public class CWTTokenStatusListValidatorFactory implements TokenStatusListValidatorFactory {
 
     /**
      * Default constructor
@@ -38,13 +38,13 @@ public class CWTTokenStatusListValidatorFactory implements StatusListValidatorFa
     }
 
     @Override
-    public boolean isSupported(byte[] eaaStatusList) {
-        return new CWTTokenStatusListValidator().isSupported(eaaStatusList);
+    public boolean isSupported(byte[] tokenStatusList) {
+        return new CWTTokenStatusListValidator().isSupported(tokenStatusList);
     }
 
     @Override
-    public TokenStatusListValidator create(byte[] eaaStatusList) {
-        return new CWTTokenStatusListValidator(eaaStatusList);
+    public TokenStatusListValidator create(byte[] tokenStatusList) {
+        return new CWTTokenStatusListValidator(tokenStatusList);
     }
 
 }

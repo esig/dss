@@ -24,7 +24,7 @@ import eu.europa.esig.dss.attestation.common.validation.AttestationDocumentValid
 import eu.europa.esig.dss.model.DSSDocument;
 
 /**
- * This class is used to load a relevant validator for a presentation of Electronic Attestation of Attributes validation
+ * This class is used to load a relevant validator for a presentation of attestation validation
  *
  */
 public class SDJWTDocumentValidatorFactory implements AttestationDocumentValidatorFactory {
@@ -38,12 +38,12 @@ public class SDJWTDocumentValidatorFactory implements AttestationDocumentValidat
 
     @Override
     public boolean isSupported(DSSDocument document) {
-        SDJWTCompactAttestationDocumentValidator compactValidator = new SDJWTCompactAttestationDocumentValidator();
+        SDJWTCompactDocumentValidator compactValidator = new SDJWTCompactDocumentValidator();
         if (compactValidator.isSupported(document)) {
             return true;
         }
 
-        SDJWTJsonSerializationAttestationDocumentValidator jsonSerializationValidator = new SDJWTJsonSerializationAttestationDocumentValidator();
+        SDJWTJsonSerializationDocumentValidator jsonSerializationValidator = new SDJWTJsonSerializationDocumentValidator();
         if (jsonSerializationValidator.isSupported(document)) {
             return true;
         }
@@ -53,14 +53,14 @@ public class SDJWTDocumentValidatorFactory implements AttestationDocumentValidat
 
     @Override
     public AbstractSDJWTDocumentValidator create(DSSDocument document) {
-        SDJWTCompactAttestationDocumentValidator compactValidator = new SDJWTCompactAttestationDocumentValidator();
+        SDJWTCompactDocumentValidator compactValidator = new SDJWTCompactDocumentValidator();
         if (compactValidator.isSupported(document)) {
-            return new SDJWTCompactAttestationDocumentValidator(document);
+            return new SDJWTCompactDocumentValidator(document);
         }
 
-        SDJWTJsonSerializationAttestationDocumentValidator jsonSerializationValidator = new SDJWTJsonSerializationAttestationDocumentValidator();
+        SDJWTJsonSerializationDocumentValidator jsonSerializationValidator = new SDJWTJsonSerializationDocumentValidator();
         if (jsonSerializationValidator.isSupported(document)) {
-            return new SDJWTJsonSerializationAttestationDocumentValidator(document);
+            return new SDJWTJsonSerializationDocumentValidator(document);
         }
 
         throw new IllegalArgumentException("Not supported document");

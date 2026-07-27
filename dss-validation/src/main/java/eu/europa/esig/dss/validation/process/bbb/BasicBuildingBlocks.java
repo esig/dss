@@ -228,10 +228,10 @@ public class BasicBuildingBlocks {
 			if (Utils.isCollectionNotEmpty(xmlFC.getConstraint())) {
 				return xmlFC;
 			}
-		} else if (Context.EAA.equals(context)) {
+		} else if (Context.ATTESTATION.equals(context)) {
 			AttestationFormatChecking fc = new AttestationFormatChecking(i18nProvider, diagnosticData, (AttestationWrapper) token, context, policy);
 			return fc.execute();
-		} else if (Context.EAA_REVOCATION.equals(context)) {
+		} else if (Context.ATTESTATION_REVOCATION.equals(context)) {
 			AttestationRevocationFormatChecking fc = new AttestationRevocationFormatChecking(i18nProvider, diagnosticData, (AttestationRevocationTokenWrapper) token, context, policy);
 			return fc.execute();
 		}
@@ -239,7 +239,7 @@ public class BasicBuildingBlocks {
 	}
 
 	private XmlISC executeIdentificationOfTheSigningCertificate() {
-		if (!Context.CERTIFICATE.equals(context) && !Context.EAA.equals(context)) {
+		if (!Context.CERTIFICATE.equals(context) && !Context.ATTESTATION.equals(context)) {
 			IdentificationOfTheSigningCertificate isc = new IdentificationOfTheSigningCertificate(i18nProvider, token, context, policy);
 			return isc.execute();
 		} else {
@@ -269,10 +269,10 @@ public class BasicBuildingBlocks {
 		} else if (Context.CERTIFICATE.equals(context)) {
 			aov = new CertificateAndChainAlgorithmObsolescenceValidation(
 					i18nProvider, (CertificateWrapper) token, context, currentTime, policy);
-		} else if (Context.EAA.equals(context)) {
+		} else if (Context.ATTESTATION.equals(context)) {
 			aov = new AttestationAlgorithmObsolescenceValidation(
 					i18nProvider, (AttestationWrapper) token, currentTime, policy);
-		} else if (Context.EAA_REVOCATION.equals(context)) {
+		} else if (Context.ATTESTATION_REVOCATION.equals(context)) {
 			aov = new AttestationRevocationAlgorithmObsolescenceValidation(
 					i18nProvider, (AttestationRevocationTokenWrapper) token, currentTime, policy);
 		}
@@ -308,7 +308,7 @@ public class BasicBuildingBlocks {
 					return new X509CertificateValidation(i18nProvider, signingCertificate, currentTime,
 							((RevocationWrapper) token).getProductionDate(), context, aov, policy);
 
-				} else if (Context.EAA_REVOCATION.equals(context)) {
+				} else if (Context.ATTESTATION_REVOCATION.equals(context)) {
 					return new X509CertificateValidation(i18nProvider, signingCertificate, currentTime,
 							((AttestationRevocationTokenWrapper) token).getIssuedAt(), context, aov, policy);
 				}
@@ -380,9 +380,9 @@ public class BasicBuildingBlocks {
 			aav = new TimestampAcceptanceValidation(i18nProvider, currentTime, (TimestampWrapper) token, aov, policy);
 		} else if (Context.REVOCATION.equals(context)) {
 			aav = new RevocationAcceptanceValidation(i18nProvider, currentTime, (RevocationWrapper) token, aov, policy);
-		} else if (Context.EAA.equals(context)) {
+		} else if (Context.ATTESTATION.equals(context)) {
 			aav = new AttestationAcceptanceValidation(i18nProvider, currentTime, (AttestationWrapper) token, bbbs, aov, policy);
-		} else if (Context.EAA_REVOCATION.equals(context)) {
+		} else if (Context.ATTESTATION_REVOCATION.equals(context)) {
 			aav = new AttestationRevocationTokenAcceptanceValidation(i18nProvider, currentTime, (AttestationRevocationTokenWrapper) token, aov, policy);
 		}
 		return aav != null ? aav.execute() : null;

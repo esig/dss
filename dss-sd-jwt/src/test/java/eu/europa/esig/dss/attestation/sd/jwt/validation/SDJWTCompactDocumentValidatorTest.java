@@ -26,7 +26,7 @@ class SDJWTCompactDocumentValidatorTest extends AbstractTestDocumentValidator {
 
     @Test
     void test() {
-        SDJWTCompactAttestationDocumentValidator validator = new SDJWTCompactAttestationDocumentValidator();
+        SDJWTCompactDocumentValidator validator = new SDJWTCompactDocumentValidator();
 
         DSSDocument sdjwt = SDJWT_SIGNATURE;
         assertTrue(validator.isSupported(sdjwt));
@@ -73,12 +73,12 @@ class SDJWTCompactDocumentValidatorTest extends AbstractTestDocumentValidator {
 
     @Override
     protected SignedDocumentValidator initEmptyValidator() {
-        return new SDJWTCompactAttestationDocumentValidator();
+        return new SDJWTCompactDocumentValidator();
     }
 
     @Override
     protected SignedDocumentValidator initValidator(DSSDocument document) {
-        return new SDJWTCompactAttestationDocumentValidator(document);
+        return new SDJWTCompactDocumentValidator(document);
     }
 
     @Override
@@ -125,7 +125,7 @@ class SDJWTCompactDocumentValidatorTest extends AbstractTestDocumentValidator {
         assertNotNull(reports);
         SimpleReport simpleReport = reports.getSimpleReport();
         assertNotNull(simpleReport);
-        assertEquals(containsSignature, simpleReport.getFirstEAAId() != null);
+        assertEquals(containsSignature, simpleReport.getFirstAttestationId() != null);
     }
 
 }

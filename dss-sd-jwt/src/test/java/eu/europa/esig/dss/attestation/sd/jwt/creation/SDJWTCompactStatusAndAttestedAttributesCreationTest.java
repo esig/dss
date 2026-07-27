@@ -59,7 +59,7 @@ class SDJWTCompactStatusAndAttestedAttributesCreationTest extends AbstractSDJWTT
         Digest digest = new Digest(DigestAlgorithm.SHA256, DSSUtils.digest(DigestAlgorithm.SHA256, "Hello World".getBytes()));
         payloadParameters.setVerifiableCredentialsTypeIntegrity(digest);
 
-        SDJWTClaimObject status = SDJWTClaim.createObject("revocation");
+        SDJWTClaimObject status = SDJWTClaim.createObject("status");
         status.addChild(SDJWTClaim.create("type", "TokenStatusList"));
         status.addChild(SDJWTClaim.create("purpose", "revocation"));
         status.addChild(SDJWTClaim.create("index", 0));
@@ -107,25 +107,25 @@ class SDJWTCompactStatusAndAttestedAttributesCreationTest extends AbstractSDJWTT
     protected void checkClaims(final DiagnosticData diagnosticData) {
         super.checkClaims(diagnosticData);
 
-        AttestationWrapper eaa = diagnosticData.getEAAs().get(0);
+        AttestationWrapper attestation = diagnosticData.getAttestations().get(0);
 
-        assertEquals("TokenStatusList", eaa.getStatusType());
-        assertEquals("revocation", eaa.getStatusPurpose());
-        assertEquals(0, eaa.getStatusIndex().intValue());
-        assertEquals("https://nowina.lu/pki-factory/status", eaa.getStatusUri());
+        assertEquals("TokenStatusList", attestation.getStatusType());
+        assertEquals("revocation", attestation.getStatusPurpose());
+        assertEquals(0, attestation.getStatusIndex().intValue());
+        assertEquals("https://nowina.lu/pki-factory/status", attestation.getStatusUri());
 
-        assertEquals("good-user", eaa.getAttestedAttributesSubjectId());
-        assertNull(eaa.getAttestedAttributesSubjectFamilyName());
-        assertNull(eaa.getAttestedAttributesSubjectGivenName());
-        assertNull(eaa.getAttestedAttributesSubjectDocumentNumber());
-        assertNull(eaa.getAttestedAttributesSubjectPseudonym());
-        assertEquals(Arrays.asList("given_name", "family_name"), eaa.getAttestedAttributes());
+        assertEquals("good-user", attestation.getAttestedAttributesSubjectId());
+        assertNull(attestation.getAttestedAttributesSubjectFamilyName());
+        assertNull(attestation.getAttestedAttributesSubjectGivenName());
+        assertNull(attestation.getAttestedAttributesSubjectDocumentNumber());
+        assertNull(attestation.getAttestedAttributesSubjectPseudonym());
+        assertEquals(Arrays.asList("given_name", "family_name"), attestation.getAttestedAttributes());
 
-        assertEquals("LU", eaa.getPlaceOfBirthCountry());
+        assertEquals("LU", attestation.getPlaceOfBirthCountry());
     }
 
     @Override
-    protected void assertStatusListEqual(TokenStatusList statusList, AttestationWrapper eaa) {
+    protected void assertStatusListEqual(TokenStatusList statusList, AttestationWrapper attestation) {
         // skip
     }
 

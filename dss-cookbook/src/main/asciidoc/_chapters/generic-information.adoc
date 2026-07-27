@@ -42,7 +42,7 @@ In a more detailed manner the following concepts and features are addressed in t
 * Validation of the signing certificate;
 * Timestamp creation;
 * Timestamp validation and qualification;
-* Electronic Attestation of Attributes;
+* Attestations (EAA, PID, etc.);
 * REST and SOAP webservices.
 
 This is not an exhaustive list of all the possibilities offered by the framework and the proposed examples cover only the most useful features. However, to discover every detail of the operational principles of the framework, the JavaDoc is available within the source code.
@@ -117,6 +117,7 @@ For the DSS demo: https://www.gnu.org/licenses/old-licenses/lgpl-2.1.en.html[GNU
 |OOXML			|Office Open XML
 |PAdES			|PDF Advanced Electronic Signatures
 |PC/SC			|Personal computer/Smart Card
+|PID			|Person Identification Data
 |PDF			|Portable Document Format
 |PDFBox			|Apache PDFBox - A Java PDF Library: http://pdfbox.apache.org/
 |PKCS			|Public Key Cryptographic Standards

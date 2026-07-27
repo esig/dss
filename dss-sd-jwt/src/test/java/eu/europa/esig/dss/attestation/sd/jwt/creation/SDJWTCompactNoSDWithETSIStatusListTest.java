@@ -44,7 +44,7 @@ class SDJWTCompactNoSDWithETSIStatusListTest extends AbstractSDJWTTestIssuance {
     @BeforeEach
     void init() {
         payloadParameters = new SDJWTPayloadParameters();
-        payloadParameters.setIssuer("EAA provider");
+        payloadParameters.setIssuer("Attestation provider");
 
         payloadParameters.setVerifiableCredentialsType("urn:eudi:attestation:1");
         Digest digest = new Digest(DigestAlgorithm.SHA256, DSSUtils.digest(DigestAlgorithm.SHA256, "vct".getBytes()));
@@ -59,30 +59,30 @@ class SDJWTCompactNoSDWithETSIStatusListTest extends AbstractSDJWTTestIssuance {
     }
 
     @Override
-    protected AttestationRevocationSource getEAAStatusSource() {
+    protected AttestationRevocationSource getAttestationRevocationSource() {
         return new PKIJWTStatusListSource(getCertEntityRepository(), getCertEntity(GOOD_CA));
     }
 
     @Override
-    protected void checkEAARevocations(DiagnosticData diagnosticData) {
-        super.checkEAARevocations(diagnosticData);
+    protected void checkAttestationRevocations(DiagnosticData diagnosticData) {
+        super.checkAttestationRevocations(diagnosticData);
 
-        AttestationWrapper eaa = diagnosticData.getEAAById(diagnosticData.getFirstEAAId());
-        List<AttestationRevocationWrapper> eaaStatuses = eaa.getAttestationRevocations();
-        assertEquals(1, eaaStatuses.size());
-        assertEquals(AttestationStatus.VALID, eaaStatuses.get(0).getStatus());
-        assertEquals("application/statuslist+jwt", eaaStatuses.get(0).getType());
+        AttestationWrapper attestation = diagnosticData.getAttestationById(diagnosticData.getFirstAttestationId());
+        List<AttestationRevocationWrapper> attestationStatuses = attestation.getAttestationRevocations();
+        assertEquals(1, attestationStatuses.size());
+        assertEquals(AttestationStatus.VALID, attestationStatuses.get(0).getStatus());
+        assertEquals("application/statuslist+jwt", attestationStatuses.get(0).getType());
     }
 
     @Override
     protected void checkClaims(DiagnosticData diagnosticData) {
         super.checkClaims(diagnosticData);
 
-        AttestationWrapper eaa = diagnosticData.getEAAById(diagnosticData.getFirstEAAId());
-        assertEquals("TokenStatusList", eaa.getStatusType());
-        assertEquals("revocation", eaa.getStatusPurpose());
-        assertEquals(0, eaa.getStatusIndex());
-        assertEquals("https://dss.nowina.lu/pki-factory/eaa/status_list", eaa.getStatusUri());
+        AttestationWrapper attestation = diagnosticData.getAttestationById(diagnosticData.getFirstAttestationId());
+        assertEquals("TokenStatusList", attestation.getStatusType());
+        assertEquals("revocation", attestation.getStatusPurpose());
+        assertEquals(0, attestation.getStatusIndex());
+        assertEquals("https://dss.nowina.lu/pki-factory/eaa/status_list", attestation.getStatusUri());
     }
 
     @Override

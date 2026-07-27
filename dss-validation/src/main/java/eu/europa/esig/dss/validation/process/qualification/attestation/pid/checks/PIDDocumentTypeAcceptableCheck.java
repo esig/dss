@@ -36,22 +36,22 @@ import eu.europa.esig.dss.validation.process.ChainItem;
  */
 public class PIDDocumentTypeAcceptableCheck extends ChainItem<XmlValidationPIDQualificationProcess> {
 
-    /** EAA presentation to be checked */
-    private final AttestationWrapper eaa;
+    /** attestation presentation to be checked */
+    private final AttestationWrapper attestation;
 
     /**
      * Default constructor
      *
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlValidationPIDQualificationProcess}
-     * @param eaa {@link AttestationWrapper}
+     * @param attestation {@link AttestationWrapper}
      * @param constraint {@link LevelRule}
      */
     public PIDDocumentTypeAcceptableCheck(I18nProvider i18nProvider, XmlValidationPIDQualificationProcess result,
-                                          AttestationWrapper eaa, LevelRule constraint) {
+                                          AttestationWrapper attestation, LevelRule constraint) {
         super(i18nProvider, result, constraint);
 
-        this.eaa = eaa;
+        this.attestation = attestation;
     }
 
     @Override
@@ -60,7 +60,7 @@ public class PIDDocumentTypeAcceptableCheck extends ChainItem<XmlValidationPIDQu
         if (documentType == null) {
             return false;
         }
-        switch (eaa.getEAAType()) {
+        switch (attestation.getAttestationProfile()) {
             case SD_JWT_VC:
                 return documentType.startsWith("urn:eudi:pid:");
             case ISO_IEC_MDOC:
@@ -71,23 +71,23 @@ public class PIDDocumentTypeAcceptableCheck extends ChainItem<XmlValidationPIDQu
                  */
                 return documentType.equals("eu.europa.ec.eudi.pid.1");
             default:
-                throw new UnsupportedOperationException(String.format("Not supported EAA Type : '%s'", eaa.getEAAType()));
+                throw new UnsupportedOperationException(String.format("Not supported attestation Type : '%s'", attestation.getAttestationProfile()));
         }
     }
 
     private String getClaimedDocumentType() {
-        switch (eaa.getEAAType()) {
+        switch (attestation.getAttestationProfile()) {
             case SD_JWT_VC:
-                return eaa.getVerifiableCredentialsTypeUri();
+                return attestation.getVerifiableCredentialsTypeUri();
             case ISO_IEC_MDOC:
                 // TODO : not clear what element is to be checked
                 /*
                  * The attestation type for person identification data in ISO/IEC mdoc format
                  * shall be "eu.europa.ec.eudi.pid.1".
                  */
-                return eaa.getAttestationDocumentType();
+                return attestation.getAttestationDocumentType();
             default:
-                throw new UnsupportedOperationException(String.format("Not supported EAA Type : '%s'", eaa.getEAAType()));
+                throw new UnsupportedOperationException(String.format("Not supported attestation Type : '%s'", attestation.getAttestationProfile()));
         }
     }
 

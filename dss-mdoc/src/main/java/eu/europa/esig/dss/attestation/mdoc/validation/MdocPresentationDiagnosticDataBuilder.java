@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.validation;
 
-import eu.europa.esig.dss.diagnostic.jaxb.XmlEAA;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlEAADocument;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlEAAPresentationInfo;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestation;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationDocument;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationPresentationInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlError;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlErrors;
 import eu.europa.esig.dss.attestation.common.validation.AttestationDocumentDiagnosticDataBuilder;
@@ -41,7 +41,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Builds a diagnostic data for the mdoc EAA presentation
+ * Builds a diagnostic data for the mdoc attestation presentation
  *
  */
 public class MdocPresentationDiagnosticDataBuilder extends AttestationDocumentDiagnosticDataBuilder {
@@ -54,20 +54,20 @@ public class MdocPresentationDiagnosticDataBuilder extends AttestationDocumentDi
     }
 
     @Override
-    protected XmlEAAPresentationInfo buildXmlEAAPresentationInfo(AttestationPresentation attestationPresentation) {
-        final XmlEAAPresentationInfo xmlEAAPresentationInfo = super.buildXmlEAAPresentationInfo(attestationPresentation);
+    protected XmlAttestationPresentationInfo buildXmlAttestationPresentationInfo(AttestationPresentation attestationPresentation) {
+        final XmlAttestationPresentationInfo xmlAttestationPresentationInfo = super.buildXmlAttestationPresentationInfo(attestationPresentation);
         if (attestationPresentation instanceof MdocAttestationPresentation) {
-            MdocAttestationPresentation mdocEAAPresentation = (MdocAttestationPresentation) attestationPresentation;
-            MdocDeviceResponse mdocDeviceResponse = mdocEAAPresentation.getMdocDeviceResponse();
+            MdocAttestationPresentation mdocAttestationPresentation = (MdocAttestationPresentation) attestationPresentation;
+            MdocDeviceResponse mdocDeviceResponse = mdocAttestationPresentation.getMdocDeviceResponse();
             if (mdocDeviceResponse != null) {
-                xmlEAAPresentationInfo.setVersion(mdocDeviceResponse.getVersion());
-                xmlEAAPresentationInfo.setErrors(getXmlErrors(mdocDeviceResponse.getDocumentErrors()));
-                xmlEAAPresentationInfo.setStatus(BigInteger.valueOf(mdocDeviceResponse.getStatus()));
+                xmlAttestationPresentationInfo.setVersion(mdocDeviceResponse.getVersion());
+                xmlAttestationPresentationInfo.setErrors(getXmlErrors(mdocDeviceResponse.getDocumentErrors()));
+                xmlAttestationPresentationInfo.setStatus(BigInteger.valueOf(mdocDeviceResponse.getStatus()));
             }
-            return xmlEAAPresentationInfo;
+            return xmlAttestationPresentationInfo;
 
         } else {
-            throw new IllegalStateException("An instance of MdocEAAPresentation is expected!");
+            throw new IllegalStateException("An instance of MdocPresentation is expected!");
         }
     }
 
@@ -85,21 +85,21 @@ public class MdocPresentationDiagnosticDataBuilder extends AttestationDocumentDi
     }
 
     @Override
-    protected XmlEAADocument buildXmlEAADocument(Attestation attestation) {
-        final XmlEAADocument xmlEAADocument = super.buildXmlEAADocument(attestation);
+    protected XmlAttestationDocument buildXmlAttestationDocument(Attestation attestation) {
+        final XmlAttestationDocument xmlAttestationDocument = super.buildXmlAttestationDocument(attestation);
         if (attestation instanceof MdocAttestation) {
-            MdocAttestation mdocEAA = (MdocAttestation) attestation;
-            MdocDocument document = mdocEAA.getDocument();
+            MdocAttestation mdocAttestation = (MdocAttestation) attestation;
+            MdocDocument document = mdocAttestation.getDocument();
             if (document != null) {
-                xmlEAADocument.setDocumentType(document.getDocType());
+                xmlAttestationDocument.setDocumentType(document.getDocType());
                 if (Utils.isMapNotEmpty(document.getErrors())) {
-                    xmlEAADocument.getErrors().addAll(getXmlErrors(document.getErrors()));
+                    xmlAttestationDocument.getErrors().addAll(getXmlErrors(document.getErrors()));
                 }
             }
-            return xmlEAADocument;
+            return xmlAttestationDocument;
 
         } else {
-            throw new IllegalStateException("An instance of MdocEAA is expected!");
+            throw new IllegalStateException("An instance of Mdoc is expected!");
         }
     }
 
@@ -127,13 +127,13 @@ public class MdocPresentationDiagnosticDataBuilder extends AttestationDocumentDi
     }
 
     @Override
-    protected XmlEAA buildDetachedXmlEAA(Attestation attestation) {
-        XmlEAA xmlEAA = super.buildDetachedXmlEAA(attestation);
-        MdocAttestation mdocEAA = (MdocAttestation) attestation;
-        if (mdocEAA.getDocument() != null) {
-            xmlEAA.setDocumentType(mdocEAA.getDocument().getDocType());
+    protected XmlAttestation buildDetachedXmlAttestation(Attestation attestation) {
+        XmlAttestation xmlAttestation = super.buildDetachedXmlAttestation(attestation);
+        MdocAttestation mdocAttestation = (MdocAttestation) attestation;
+        if (mdocAttestation.getDocument() != null) {
+            xmlAttestation.setDocumentType(mdocAttestation.getDocument().getDocType());
         }
-        return xmlEAA;
+        return xmlAttestation;
     }
 
 }

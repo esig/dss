@@ -38,7 +38,7 @@ public enum MdocHeaderParameter {
     DOCUMENTS("documents"),
 
     /** Status code */
-    STATUS("revocation"),
+    STATUS("status"),
 
     /** Version of the structure */
     VERSION("version"),

@@ -23,7 +23,7 @@ package eu.europa.esig.dss.attestation.sd.jwt.validation;
 import eu.europa.esig.dss.attestation.common.validation.DefaultAttestation;
 import eu.europa.esig.dss.attestation.common.validation.AttestationPayloadVerifier;
 import eu.europa.esig.dss.attestation.sd.jwt.SDJWTConstants;
-import eu.europa.esig.dss.enumerations.AttestationFormat;
+import eu.europa.esig.dss.enumerations.AttestationProfile;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.attestation.SelectivelyDisclosableClaim;
@@ -49,7 +49,7 @@ public class SDJWTAttestation extends DefaultAttestation {
     }
 
     /**
-     * Instantiates a builder to create an {@code SDJWTEAA} object
+     * Instantiates a builder to create an {@code SDJWT} object
      *
      * @return {@link SDJWTAttestationBuilder}
      */
@@ -58,8 +58,8 @@ public class SDJWTAttestation extends DefaultAttestation {
     }
 
     @Override
-    public AttestationFormat getEAAType() {
-        return AttestationFormat.SD_JWT_VC;
+    public AttestationProfile getAttestationProfile() {
+        return AttestationProfile.SD_JWT_VC;
     }
 
     @Override
@@ -80,12 +80,12 @@ public class SDJWTAttestation extends DefaultAttestation {
     }
 
     @Override
-    protected AttestationPayloadVerifier initEAAPayloadVerifier() {
+    protected AttestationPayloadVerifier initAttestationPayloadVerifier() {
         List<AdvancedSignature> signatures = getSignatures();
         if (Utils.isCollectionEmpty(signatures)) {
             throw new IllegalStateException("SD-JWT signatures cannot be empty!");
         }
-        JAdESSignature signature = (JAdESSignature) signatures.get(0); // payload is the same for EAA signatures
+        JAdESSignature signature = (JAdESSignature) signatures.get(0); // payload is the same for attestation signatures
         try {
             return new SDJWTPayloadVerifier(signature.getJws().getDecodedPayload());
         } catch (Exception e) {
@@ -94,7 +94,7 @@ public class SDJWTAttestation extends DefaultAttestation {
     }
 
     /**
-     * This class is used to build a {@code eu.europa.esig.dss.attestation.jwt.validation.SDJWTAttestation} object
+     * This class is used to build a {@code eu.europa.esig.dss.attestation.sd.jwt.validation.SDJWTAttestation} object
      *
      */
     public static class SDJWTAttestationBuilder extends DefaultAttestationBuilder {
@@ -127,7 +127,7 @@ public class SDJWTAttestation extends DefaultAttestation {
         }
 
         @Override
-        protected DefaultAttestation initEAA() {
+        protected DefaultAttestation initAttestation() {
             return new SDJWTAttestation();
         }
 

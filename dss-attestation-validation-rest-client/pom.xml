@@ -8,11 +8,11 @@
     </parent>
 
     <artifactId>dss-attestation-validation-rest-client</artifactId>
-    <name>DSS EAA Validation REST client</name>
-    <description>REST client for performing of a validation of Electronic Attestation of Attributes (EAA) or EAA Presentations using the WebServices</description>
+    <name>DSS Attestation Validation REST client</name>
+    <description>REST client for performing of a validation of annotations (EAA, PID, etc.) and issuance of annotation presentations using the WebServices</description>
 
     <properties>
-        <module-name>jpms_dss_ws_eaa_validation_remote_rest_client</module-name>
+        <module-name>jpms_dss_ws_attestation_validation_remote_rest_client</module-name>
     </properties>
 
     <dependencies>

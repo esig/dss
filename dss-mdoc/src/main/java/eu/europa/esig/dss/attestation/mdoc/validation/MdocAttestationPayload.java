@@ -25,35 +25,35 @@ import eu.europa.esig.dss.attestation.mdoc.EUDIPIDHeaders;
 import eu.europa.esig.dss.attestation.mdoc.ISO180135Headers;
 import eu.europa.esig.dss.attestation.mdoc.ISO232202Headers;
 import eu.europa.esig.dss.attestation.mdoc.MdocConstants;
-import eu.europa.esig.dss.attestation.mdoc.claim.MdocBiometricTemplateXX;
-import eu.europa.esig.dss.attestation.mdoc.claim.MdocClaimAgeOverNN;
-import eu.europa.esig.dss.attestation.mdoc.claim.MdocClaimAttestedAttributesSubject;
-import eu.europa.esig.dss.attestation.mdoc.claim.MdocClaimBirthDate;
-import eu.europa.esig.dss.attestation.mdoc.claim.MdocClaimDeviceKeyInfo;
-import eu.europa.esig.dss.attestation.mdoc.claim.MdocClaimDrivingPrivileges;
-import eu.europa.esig.dss.attestation.mdoc.claim.MdocClaimMap;
-import eu.europa.esig.dss.attestation.mdoc.claim.MdocClaimPlaceOfBirth;
-import eu.europa.esig.dss.attestation.mdoc.claim.MdocClaimStatus;
-import eu.europa.esig.dss.attestation.mdoc.claim.MdocClaimValidityInfo;
-import eu.europa.esig.dss.model.attestation.claim.Claim;
-import eu.europa.esig.dss.model.attestation.claim.ClaimAddress;
-import eu.europa.esig.dss.model.attestation.claim.ClaimAgeOverNN;
-import eu.europa.esig.dss.model.attestation.claim.ClaimAgeEqualOrOver;
-import eu.europa.esig.dss.model.attestation.claim.ClaimArray;
-import eu.europa.esig.dss.model.attestation.claim.ClaimAttestedAttributesSubject;
-import eu.europa.esig.dss.model.attestation.claim.ClaimBiometricTemplateXX;
-import eu.europa.esig.dss.model.attestation.claim.ClaimBoolean;
-import eu.europa.esig.dss.model.attestation.claim.ClaimByteString;
-import eu.europa.esig.dss.model.attestation.claim.ClaimCredentialSubject;
-import eu.europa.esig.dss.model.attestation.claim.ClaimDate;
-import eu.europa.esig.dss.model.attestation.claim.ClaimDeviceKey;
-import eu.europa.esig.dss.model.attestation.claim.ClaimDrivingPrivileges;
-import eu.europa.esig.dss.model.attestation.claim.ClaimIntegrity;
-import eu.europa.esig.dss.model.attestation.claim.ClaimMap;
-import eu.europa.esig.dss.model.attestation.claim.ClaimNumber;
-import eu.europa.esig.dss.model.attestation.claim.ClaimStatus;
-import eu.europa.esig.dss.model.attestation.claim.ClaimString;
-import eu.europa.esig.dss.model.attestation.claim.ClaimValidityInfo;
+import eu.europa.esig.dss.attestation.mdoc.claim.MdocVerifiedClaimBiometricTemplateXX;
+import eu.europa.esig.dss.attestation.mdoc.claim.MdocVerifiedClaimAgeOverNN;
+import eu.europa.esig.dss.attestation.mdoc.claim.MdocVerifiedClaimAttestedAttributesSubject;
+import eu.europa.esig.dss.attestation.mdoc.claim.MdocVerifiedClaimBirthDate;
+import eu.europa.esig.dss.attestation.mdoc.claim.MdocVerifiedClaimDeviceKeyInfo;
+import eu.europa.esig.dss.attestation.mdoc.claim.MdocVerifiedClaimDrivingPrivileges;
+import eu.europa.esig.dss.attestation.mdoc.claim.MdocVerifiedClaimMap;
+import eu.europa.esig.dss.attestation.mdoc.claim.MdocVerifiedClaimPlaceOfBirth;
+import eu.europa.esig.dss.attestation.mdoc.claim.MdocVerifiedClaimStatus;
+import eu.europa.esig.dss.attestation.mdoc.claim.MdocVerifiedClaimValidityInfo;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaim;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimAddress;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimAgeOverNN;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimAgeEqualOrOver;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimArray;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimAttestedAttributesSubject;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimBiometricTemplateXX;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimBoolean;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimByteString;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimCredentialSubject;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimDate;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimDeviceKey;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimDrivingPrivileges;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimIntegrity;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimMap;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimNumber;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimStatus;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimString;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimValidityInfo;
 import eu.europa.esig.dss.spi.attestation.AttestationPayload;
 import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
@@ -66,10 +66,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Mdoc's representation of an EAA payload
+ * Mdoc's representation of an attestation payload
  *
  */
-public class MdocAttestationPayload extends MdocClaimMap implements AttestationPayload {
+public class MdocAttestationPayload extends MdocVerifiedClaimMap implements AttestationPayload {
 
     private static final long serialVersionUID = -5947789662835061427L;
 
@@ -78,116 +78,116 @@ public class MdocAttestationPayload extends MdocClaimMap implements AttestationP
     /**
      * Default constructor
      *
-     * @param verifiedPayloadMap {@link ClaimMap}
+     * @param verifiedPayloadMap {@link VerifiedClaimMap}
      * @param docType {@link String}
      */
-    public MdocAttestationPayload(final ClaimMap verifiedPayloadMap, final String docType) {
+    public MdocAttestationPayload(final VerifiedClaimMap verifiedPayloadMap, final String docType) {
         super(verifiedPayloadMap.getMapValue());
     }
 
     @Override
-    public ClaimString getIdentifier() {
+    public VerifiedClaimString getIdentifier() {
         // not applicable
         return null;
     }
 
     @Override
-    public ClaimString getIssuer() {
+    public VerifiedClaimString getIssuer() {
         // not applicable
         return null;
     }
 
     @Override
-    public ClaimString getSubject() {
+    public VerifiedClaimString getSubject() {
         // not applicable
         return null;
     }
 
     @Override
-    public ClaimArray getAudience() {
+    public VerifiedClaimArray getAudience() {
         // not applicable
         return null;
     }
 
     @Override
-    public ClaimDate getIssuedAtTime() {
+    public VerifiedClaimDate getIssuedAtTime() {
         // see ValidityInfo
         return null;
     }
 
     @Override
-    public ClaimDate getNotBeforeTime() {
+    public VerifiedClaimDate getNotBeforeTime() {
         // see ValidityInfo
         return null;
     }
 
     @Override
-    public ClaimDate getExpirationTime() {
+    public VerifiedClaimDate getExpirationTime() {
         // see ValidityInfo
         return null;
     }
 
     @Override
-    public ClaimDate getUpdatedAtTime() {
+    public VerifiedClaimDate getUpdatedAtTime() {
         // see ValidityInfo
         return null;
     }
 
     @Override
-    public ClaimDeviceKey getDeviceKey() {
-        ClaimMap deviceKeyInfo = getAsMap(forIso180135Implicit(MdocConstants.DEVICE_KEY_INFO), forIso232202Implicit(MdocConstants.DEVICE_KEY_INFO));
+    public VerifiedClaimDeviceKey getDeviceKey() {
+        VerifiedClaimMap deviceKeyInfo = getAsMap(forIso180135Implicit(MdocConstants.DEVICE_KEY_INFO), forIso232202Implicit(MdocConstants.DEVICE_KEY_INFO));
         if (deviceKeyInfo != null) {
-            return new MdocClaimDeviceKeyInfo(deviceKeyInfo);
+            return new MdocVerifiedClaimDeviceKeyInfo(deviceKeyInfo);
         }
         return null;
     }
 
     @Override
-    public ClaimString getCategory() {
+    public VerifiedClaimString getCategory() {
         return getAsString(forEtsi194721(ETSI194721Headers.CATEGORY), forEUDIPid(EUDIPIDHeaders.ATTESTATION_LEGAL_CATEGORY));
     }
 
     @Override
-    public ClaimString getVerifiableCredentialsType() {
+    public VerifiedClaimString getVerifiableCredentialsType() {
         return null;
     }
 
     @Override
-    public ClaimIntegrity getVerifiableCredentialsTypeIntegrity() {
+    public VerifiedClaimIntegrity getVerifiableCredentialsTypeIntegrity() {
         return null;
     }
 
     @Override
-    public ClaimStatus getStatus() {
-        ClaimMap statusClaim = getAsMap(MdocConstants.STATUS);
+    public VerifiedClaimStatus getStatus() {
+        VerifiedClaimMap statusClaim = getAsMap(MdocConstants.STATUS);
         if (statusClaim == null) {
             // Can be defined with a Long key
             Object statusClaimObject = value.get(MdocConstants.STATUS_LONG);
             if (statusClaimObject != null) {
-                Claim claim = createClaim(MdocConstants.STATUS_LONG.getValueAsString(), statusClaimObject);
+                VerifiedClaim claim = createClaim(MdocConstants.STATUS_LONG.getValueAsString(), statusClaimObject);
                 if (claim != null && claim.isMapValueType()) {
-                    statusClaim = (ClaimMap) claim;
+                    statusClaim = (VerifiedClaimMap) claim;
                 }
             }
         }
         if (statusClaim != null) {
-            return new MdocClaimStatus(statusClaim);
+            return new MdocVerifiedClaimStatus(statusClaim);
         }
         return null;
     }
 
     @Override
-    public ClaimString getNonce() {
+    public VerifiedClaimString getNonce() {
         return null;
     }
 
     @Override
-    public ClaimString getFullName() {
+    public VerifiedClaimString getFullName() {
         return getAsString(forIso232202(ISO232202Headers.FULL_NAME, ISO232202Headers.FULL_NAME_LATIN1));
     }
 
     @Override
-    public ClaimString getGivenName() {
+    public VerifiedClaimString getGivenName() {
         return getAsString(
                 forIso180135(ISO180135Headers.GIVEN_NAME, ISO180135Headers.GIVEN_NAME_NATIONAL_CHARACTER),
                 forIso232202(ISO232202Headers.GIVEN_NAME, ISO232202Headers.GIVEN_NAME_UNICODE, ISO232202Headers.GIVEN_NAME_LATIN1),
@@ -196,7 +196,7 @@ public class MdocAttestationPayload extends MdocClaimMap implements AttestationP
     }
 
     @Override
-    public ClaimString getFamilyName() {
+    public VerifiedClaimString getFamilyName() {
         return getAsString(
                 forIso180135(ISO180135Headers.FAMILY_NAME, ISO180135Headers.FAMILY_NAME_NATIONAL_CHARACTER),
                 forIso232202(ISO232202Headers.FAMILY_NAME, ISO232202Headers.FAMILY_NAME_UNICODE, ISO232202Headers.FAMILY_NAME_LATIN1),
@@ -205,105 +205,105 @@ public class MdocAttestationPayload extends MdocClaimMap implements AttestationP
     }
 
     @Override
-    public ClaimString getMiddleName() {
+    public VerifiedClaimString getMiddleName() {
         return null;
     }
 
     @Override
-    public ClaimString getNickname() {
+    public VerifiedClaimString getNickname() {
         return null;
     }
 
     @Override
-    public ClaimString getShortName() {
+    public VerifiedClaimString getShortName() {
         return null;
     }
 
     @Override
-    public ClaimString getProfileUrl() {
+    public VerifiedClaimString getProfileUrl() {
         return null;
     }
 
     @Override
-    public ClaimString getPictureUrl() {
+    public VerifiedClaimString getPictureUrl() {
         return null;
     }
 
     @Override
-    public ClaimString getWebsiteUrl() {
+    public VerifiedClaimString getWebsiteUrl() {
         return null;
     }
 
     @Override
-    public ClaimString getEmail() {
+    public VerifiedClaimString getEmail() {
         return getAsString(forIso232202(ISO232202Headers.EMAIL_ADDRESS), forEUDIPid(EUDIPIDHeaders.EMAIL_ADDRESS));
     }
 
     @Override
-    public ClaimBoolean getEmailVerified() {
+    public VerifiedClaimBoolean getEmailVerified() {
         return null;
     }
 
     @Override
-    public ClaimNumber getGender() {
+    public VerifiedClaimNumber getGender() {
         return getAsNumber(forIso180135(ISO180135Headers.SEX), forIso232202(ISO232202Headers.SEX), forEUDIPid(EUDIPIDHeaders.SEX));
     }
 
     @Override
-    public Claim getBirthdate() {
-        ClaimDate birthdate = getAsDate(forIso180135(ISO180135Headers.BIRTH_DATE), forEUDIPid(EUDIPIDHeaders.BIRTH_DATE));
+    public VerifiedClaim getBirthdate() {
+        VerifiedClaimDate birthdate = getAsDate(forIso180135(ISO180135Headers.BIRTH_DATE), forEUDIPid(EUDIPIDHeaders.BIRTH_DATE));
         if (birthdate != null) {
             return birthdate;
         }
-        ClaimMap birthdateMap = getAsMap(forIso232202(ISO232202Headers.BIRTH_DATE));
+        VerifiedClaimMap birthdateMap = getAsMap(forIso232202(ISO232202Headers.BIRTH_DATE));
         if (birthdateMap != null) {
-            return new MdocClaimBirthDate(birthdateMap);
+            return new MdocVerifiedClaimBirthDate(birthdateMap);
         }
         return null;
     }
 
     @Override
-    public ClaimString getTimezone() {
+    public VerifiedClaimString getTimezone() {
         return null;
     }
 
     @Override
-    public ClaimString getLocale() {
+    public VerifiedClaimString getLocale() {
         return null;
     }
 
     @Override
-    public ClaimAddress getAddress() {
+    public VerifiedClaimAddress getAddress() {
         // see #getPostalAddress, #getResidentAddressCity, etc.
         return null;
     }
 
     @Override
-    public ClaimString getPhoneNumber() {
+    public VerifiedClaimString getPhoneNumber() {
         return getAsString(forIso232202(ISO232202Headers.TELEPHONE_NUMBER));
     }
 
     @Override
-    public ClaimBoolean getPhoneNumberVerified() {
+    public VerifiedClaimBoolean getPhoneNumberVerified() {
         return null;
     }
 
     @Override
-    public Claim getPlaceOfBirth() {
-        ClaimString placeOfBirth = getAsString(forIso180135(ISO180135Headers.BIRTH_PLACE), forIso232202(ISO232202Headers.BIRTHPLACE));
+    public VerifiedClaim getPlaceOfBirth() {
+        VerifiedClaimString placeOfBirth = getAsString(forIso180135(ISO180135Headers.BIRTH_PLACE), forIso232202(ISO232202Headers.BIRTHPLACE));
         if (placeOfBirth != null) {
             return placeOfBirth;
         }
-        ClaimMap placeOfBirthMap = getAsMap(forEUDIPid(EUDIPIDHeaders.PLACE_OF_BIRTH));
+        VerifiedClaimMap placeOfBirthMap = getAsMap(forEUDIPid(EUDIPIDHeaders.PLACE_OF_BIRTH));
         if (placeOfBirthMap != null) {
-            return new MdocClaimPlaceOfBirth(placeOfBirthMap);
+            return new MdocVerifiedClaimPlaceOfBirth(placeOfBirthMap);
         }
         return null;
     }
 
     @Override
-    public Claim getNationalities() {
-        ClaimString nationalities = getAsString(forIso180135(ISO180135Headers.NATIONALITY), forIso232202(ISO232202Headers.NATIONALITY));
+    public VerifiedClaim getNationalities() {
+        VerifiedClaimString nationalities = getAsString(forIso180135(ISO180135Headers.NATIONALITY), forIso232202(ISO232202Headers.NATIONALITY));
         if (nationalities != null) {
             return nationalities;
         }
@@ -311,53 +311,53 @@ public class MdocAttestationPayload extends MdocClaimMap implements AttestationP
     }
 
     @Override
-    public ClaimString getBirthGivenName() {
+    public VerifiedClaimString getBirthGivenName() {
         return getAsString(forEUDIPid(EUDIPIDHeaders.GIVEN_NAME_BIRTH));
     }
 
     @Override
-    public ClaimString getBirthFamilyName() {
+    public VerifiedClaimString getBirthFamilyName() {
         return getAsString(forEUDIPid(EUDIPIDHeaders.FAMILY_NAME_BIRTH));
     }
 
     @Override
-    public ClaimString getBirthMiddleName() {
+    public VerifiedClaimString getBirthMiddleName() {
         return null;
     }
 
     @Override
-    public ClaimString getSalutation() {
+    public VerifiedClaimString getSalutation() {
         return null;
     }
 
     @Override
-    public ClaimString getTitle() {
+    public VerifiedClaimString getTitle() {
         return getAsString(forIso232202(ISO232202Headers.TITLE));
     }
 
     @Override
-    public ClaimString getMobilePhoneNumber() {
+    public VerifiedClaimString getMobilePhoneNumber() {
         return getAsString(forEUDIPid(EUDIPIDHeaders.MOBILE_PHONE_NUMBER));
     }
 
     @Override
-    public ClaimString getPseudonym() {
+    public VerifiedClaimString getPseudonym() {
         return getAsString(forEtsi194721(ETSI194721Headers.ALSO_KNOWN_AS));
     }
 
     @Override
-    public List<ClaimCredentialSubject> getCredentialSubjects() {
+    public List<VerifiedClaimCredentialSubject> getCredentialSubjects() {
         return null;
     }
 
     @Override
-    public ClaimString getIssuingCountry() {
+    public VerifiedClaimString getIssuingCountry() {
         return getAsString(forIso180135(ISO180135Headers.ISSUING_COUNTRY), forIso232202(ISO232202Headers.ISSUING_COUNTRY),
                 forEUDIPid(EUDIPIDHeaders.ISSUING_COUNTRY));
     }
 
     @Override
-    public ClaimString getIssuingAuthority() {
+    public VerifiedClaimString getIssuingAuthority() {
         return getAsString(
                 forIso180135(ISO180135Headers.ISSUING_AUTHORITY),
                 forIso232202(ISO232202Headers.ISSUING_AUTHORITY, ISO232202Headers.ISSUING_AUTHORITY_UNICODE, ISO232202Headers.ISSUING_AUTHORITY_LATIN1),
@@ -366,57 +366,57 @@ public class MdocAttestationPayload extends MdocClaimMap implements AttestationP
     }
 
     @Override
-    public ClaimString getDocumentNumber() {
+    public VerifiedClaimString getDocumentNumber() {
         return getAsString(forIso180135(ISO180135Headers.LICENCE_NUMBER), forIso232202(ISO232202Headers.DOCUMENT_NUMBER),
                 forEUDIPid(EUDIPIDHeaders.DOCUMENT_NUMBER));
     }
 
     @Override
-    public ClaimByteString getPortrait() {
+    public VerifiedClaimByteString getPortrait() {
         return getAsByteString(forIso180135(ISO180135Headers.PORTRAIT), forIso232202(ISO232202Headers.PORTRAIT), forEUDIPid(EUDIPIDHeaders.PORTRAIT));
     }
 
     @Override
-    public ClaimDrivingPrivileges getDrivingPrivileges() {
-        ClaimArray claimDrivingPrivileges = getAsArray(forIso180135(ISO180135Headers.DRIVING_PRIVILEGES));
+    public VerifiedClaimDrivingPrivileges getDrivingPrivileges() {
+        VerifiedClaimArray claimDrivingPrivileges = getAsArray(forIso180135(ISO180135Headers.DRIVING_PRIVILEGES));
         if (claimDrivingPrivileges != null) {
-            return new MdocClaimDrivingPrivileges(claimDrivingPrivileges);
+            return new MdocVerifiedClaimDrivingPrivileges(claimDrivingPrivileges);
         }
         return null;
     }
 
     @Override
-    public ClaimString getUNDistinguishingSign() {
+    public VerifiedClaimString getUNDistinguishingSign() {
         return getAsString(forIso180135(ISO180135Headers.UN_DISTINGUISHING_SIGN));
     }
 
     @Override
-    public ClaimString getPersonalAdministrativeNumber() {
+    public VerifiedClaimString getPersonalAdministrativeNumber() {
         return getAsString(forIso180135(ISO180135Headers.ADMINISTRATIVE_NUMBER), forEUDIPid(EUDIPIDHeaders.PERSONAL_ADMINISTRATIVE_NUMBER));
     }
 
     @Override
-    public ClaimNumber getHeight() {
+    public VerifiedClaimNumber getHeight() {
         return getAsNumber(forIso180135(ISO180135Headers.HEIGHT), forIso232202(ISO232202Headers.HEIGHT));
     }
 
     @Override
-    public ClaimNumber getWeight() {
+    public VerifiedClaimNumber getWeight() {
         return getAsNumber(forIso180135(ISO180135Headers.WEIGHT), forIso232202(ISO232202Headers.WEIGHT));
     }
 
     @Override
-    public ClaimString getEyeColour() {
+    public VerifiedClaimString getEyeColour() {
         return getAsString(forIso180135(ISO180135Headers.EYE_COLOUR));
     }
 
     @Override
-    public ClaimString getHairColour() {
+    public VerifiedClaimString getHairColour() {
         return getAsString(forIso180135(ISO180135Headers.HAIR_COLOUR));
     }
 
     @Override
-    public ClaimString getPostalAddress() {
+    public VerifiedClaimString getPostalAddress() {
         return getAsString(
                 forIso180135(ISO180135Headers.RESIDENT_ADDRESS),
                 forIso232202(ISO232202Headers.RESIDENT_ADDRESS, ISO232202Headers.RESIDENT_ADDRESS_UNICODE, ISO232202Headers.RESIDENT_ADDRESS_LATIN1),
@@ -425,35 +425,35 @@ public class MdocAttestationPayload extends MdocClaimMap implements AttestationP
     }
 
     @Override
-    public ClaimDate getPortraitCaptureDate() {
+    public VerifiedClaimDate getPortraitCaptureDate() {
         return getAsDate(forIso180135(ISO180135Headers.PORTRAIT_CAPTURE_DATE), forIso232202(ISO232202Headers.PORTRAIT_CAPTURE_DATE));
     }
 
     @Override
-    public ClaimNumber getAgeInYears() {
+    public VerifiedClaimNumber getAgeInYears() {
         return getAsNumber(forIso180135(ISO180135Headers.AGE_IN_YEARS), forIso232202(ISO232202Headers.AGE_IN_YEARS));
     }
 
     @Override
-    public ClaimNumber getAgeBirthYear() {
+    public VerifiedClaimNumber getAgeBirthYear() {
         return getAsNumber(forIso180135(ISO180135Headers.AGE_BIRTH_YEAR), forIso232202(ISO232202Headers.AGE_BIRTH_YEAR));
     }
 
     @Override
-    public ClaimAgeEqualOrOver getAgeEqualOrOver() {
+    public VerifiedClaimAgeEqualOrOver getAgeEqualOrOver() {
         return null;
     }
 
     @Override
-    public List<ClaimAgeOverNN> getAgeOverNN() {
-        List<Claim> ageOverNNClaims = getAllStartingWith(forIso180135(ISO180135Headers.AGE_OVER_NN), forIso232202(ISO232202Headers.AGE_OVER_NN));
+    public List<VerifiedClaimAgeOverNN> getAgeOverNN() {
+        List<VerifiedClaim> ageOverNNClaims = getAllStartingWith(forIso180135(ISO180135Headers.AGE_OVER_NN), forIso232202(ISO232202Headers.AGE_OVER_NN));
         if (Utils.isCollectionEmpty(ageOverNNClaims)) {
             return Collections.emptyList();
         }
-        final List<ClaimAgeOverNN> result = new ArrayList<>();
-        for (Claim claim : ageOverNNClaims) {
+        final List<VerifiedClaimAgeOverNN> result = new ArrayList<>();
+        for (VerifiedClaim claim : ageOverNNClaims) {
             if (claim.isBooleanValueType()) {
-                result.add(new MdocClaimAgeOverNN((ClaimBoolean) claim));
+                result.add(new MdocVerifiedClaimAgeOverNN((VerifiedClaimBoolean) claim));
             } else {
                 LOG.warn("Claim with name '{}' shall have a value of CBOR Boolean type!", claim.getName());
             }
@@ -462,13 +462,13 @@ public class MdocAttestationPayload extends MdocClaimMap implements AttestationP
     }
 
     @Override
-    public ClaimString getIssuingJurisdiction() {
+    public VerifiedClaimString getIssuingJurisdiction() {
         return getAsString(forIso180135(ISO180135Headers.ISSUING_JURISDICTION), forIso232202(ISO232202Headers.ISSUING_SUBDIVISION),
                 forEUDIPid(EUDIPIDHeaders.ISSUING_JURISDICTION));
     }
 
     @Override
-    public ClaimString getResidentAddressCity() {
+    public VerifiedClaimString getResidentAddressCity() {
         return getAsString(
                 forIso180135(ISO180135Headers.RESIDENT_CITY),
                 forIso232202(ISO232202Headers.RESIDENT_CITY, ISO232202Headers.RESIDENT_CITY_UNICODE, ISO232202Headers.RESIDENT_CITY_LATIN1),
@@ -477,29 +477,29 @@ public class MdocAttestationPayload extends MdocClaimMap implements AttestationP
     }
 
     @Override
-    public ClaimString getResidentAddressState() {
+    public VerifiedClaimString getResidentAddressState() {
         return getAsString(forIso180135(ISO180135Headers.RESIDENT_STATE),
                 forIso232202(ISO232202Headers.RESIDENT_STATE, ISO232202Headers.RESIDENT_STATE_LATIN1),
                 forEUDIPid(EUDIPIDHeaders.RESIDENT_STATE));
     }
 
     @Override
-    public ClaimString getResidentAddressPostalCode() {
+    public VerifiedClaimString getResidentAddressPostalCode() {
         return getAsString(forIso180135(ISO180135Headers.RESIDENT_POSTAL_CODE), forIso232202(ISO232202Headers.RESIDENT_POSTAL_CODE),
                 forEUDIPid(EUDIPIDHeaders.RESIDENT_POSTAL_CODE)
         );
     }
 
     @Override
-    public ClaimString getResidentAddressCountry() {
+    public VerifiedClaimString getResidentAddressCountry() {
         return getAsString(forIso180135(ISO180135Headers.RESIDENT_COUNTRY), forIso232202(ISO232202Headers.RESIDENT_COUNTRY),
                 forEUDIPid(EUDIPIDHeaders.RESIDENT_COUNTRY));
     }
 
     @Override
-    public List<ClaimBiometricTemplateXX> getBiometricTemplate() {
-        List<Claim> biometricTemplateXXClaims = getAllStartingWith(forIso180135(ISO180135Headers.BIOMETRIC_TEMPLATE_XX));
-        Claim biometricTemplateFace = get(forIso232202(ISO232202Headers.BIOMETRIC_TEMPLATE_FACE));
+    public List<VerifiedClaimBiometricTemplateXX> getBiometricTemplate() {
+        List<VerifiedClaim> biometricTemplateXXClaims = getAllStartingWith(forIso180135(ISO180135Headers.BIOMETRIC_TEMPLATE_XX));
+        VerifiedClaim biometricTemplateFace = get(forIso232202(ISO232202Headers.BIOMETRIC_TEMPLATE_FACE));
         if (biometricTemplateFace != null) {
             biometricTemplateXXClaims.add(biometricTemplateFace);
         }
@@ -507,10 +507,10 @@ public class MdocAttestationPayload extends MdocClaimMap implements AttestationP
             return Collections.emptyList();
         }
 
-        final List<ClaimBiometricTemplateXX> result = new ArrayList<>();
-        for (Claim claim : biometricTemplateXXClaims) {
+        final List<VerifiedClaimBiometricTemplateXX> result = new ArrayList<>();
+        for (VerifiedClaim claim : biometricTemplateXXClaims) {
             if (claim.isBinaryValueType()) {
-                result.add(new MdocBiometricTemplateXX((ClaimByteString) claim));
+                result.add(new MdocVerifiedClaimBiometricTemplateXX((VerifiedClaimByteString) claim));
             } else {
                 LOG.warn("Claim with name '{}' shall have a value of CBOR Byte String type!", claim.getName());
             }
@@ -519,208 +519,208 @@ public class MdocAttestationPayload extends MdocClaimMap implements AttestationP
     }
 
     @Override
-    public ClaimByteString getSignatureUsualMark() {
+    public VerifiedClaimByteString getSignatureUsualMark() {
         return getAsByteString(forIso180135(ISO180135Headers.SIGNATURE));
     }
 
     @Override
-    public ClaimString getVersion() {
+    public VerifiedClaimString getVersion() {
         return getAsString(forIso180135Implicit(MdocConstants.VERSION), forIso232202Implicit(MdocConstants.VERSION));
     }
 
     @Override
-    public ClaimString getDocType() {
+    public VerifiedClaimString getDocType() {
         return getAsString(forIso180135Implicit(MdocConstants.DOC_TYPE), forIso232202Implicit(MdocConstants.DOC_TYPE));
     }
 
     @Override
-    public ClaimValidityInfo getValidityInfo() {
-        ClaimMap validityInfo = getAsMap(forIso180135Implicit(MdocConstants.VALIDITY_INFO), forIso232202Implicit(MdocConstants.VALIDITY_INFO));
+    public VerifiedClaimValidityInfo getValidityInfo() {
+        VerifiedClaimMap validityInfo = getAsMap(forIso180135Implicit(MdocConstants.VALIDITY_INFO), forIso232202Implicit(MdocConstants.VALIDITY_INFO));
         if (validityInfo != null) {
-            return new MdocClaimValidityInfo(validityInfo);
+            return new MdocVerifiedClaimValidityInfo(validityInfo);
         }
         return null;
     }
 
     @Override
-    public ClaimByteString getFingerprint() {
+    public VerifiedClaimByteString getFingerprint() {
         return getAsByteString(forIso232202(ISO232202Headers.FINGERPRINT));
     }
 
     @Override
-    public ClaimString getBusinessName() {
+    public VerifiedClaimString getBusinessName() {
         return getAsString(forIso232202(ISO232202Headers.BUSINESS_NAME, ISO232202Headers.BUSINESS_NAME_UNICODE, ISO232202Headers.BUSINESS_NAME_LATIN1));
     }
 
     @Override
-    public ClaimString getOrganizationName() {
+    public VerifiedClaimString getOrganizationName() {
         return getAsString(forIso232202(ISO232202Headers.ORGANIZATION_NAME, ISO232202Headers.ORGANIZATION_NAME_UNICODE, ISO232202Headers.ORGANIZATION_NAME_LATIN1));
     }
 
     @Override
-    public ClaimString getBirthFullName() {
+    public VerifiedClaimString getBirthFullName() {
         return getAsString(forIso232202(ISO232202Headers.NAME_AT_BIRTH));
     }
 
     @Override
-    public ClaimString getProfession() {
+    public VerifiedClaimString getProfession() {
         return getAsString(forIso232202(ISO232202Headers.PROFESSION));
     }
 
     @Override
-    public ClaimString getRelationshipFather() {
+    public VerifiedClaimString getRelationshipFather() {
         return getAsString(forIso232202(ISO232202Headers.RELATIONSHIP_FATHER));
     }
 
     @Override
-    public ClaimString getRelationshipMother() {
+    public VerifiedClaimString getRelationshipMother() {
         return getAsString(forIso232202(ISO232202Headers.RELATIONSHIP_MOTHER));
     }
 
     @Override
-    public ClaimString getRelationshipParent() {
+    public VerifiedClaimString getRelationshipParent() {
         return getAsString(forIso232202(ISO232202Headers.RELATIONSHIP_PARENT));
     }
 
     @Override
-    public ClaimString getRelationshipSon() {
+    public VerifiedClaimString getRelationshipSon() {
         return getAsString(forIso232202(ISO232202Headers.RELATIONSHIP_SON));
     }
 
     @Override
-    public ClaimString getRelationshipDaughter() {
+    public VerifiedClaimString getRelationshipDaughter() {
         return getAsString(forIso232202(ISO232202Headers.RELATIONSHIP_DAUGHTER));
     }
 
     @Override
-    public ClaimString getRelationshipBrother() {
+    public VerifiedClaimString getRelationshipBrother() {
         return getAsString(forIso232202(ISO232202Headers.RELATIONSHIP_BROTHER));
     }
 
     @Override
-    public ClaimString getRelationshipSister() {
+    public VerifiedClaimString getRelationshipSister() {
         return getAsString(forIso232202(ISO232202Headers.RELATIONSHIP_SISTER));
     }
 
     @Override
-    public ClaimString getRelationshipSibling() {
+    public VerifiedClaimString getRelationshipSibling() {
         return getAsString(forIso232202(ISO232202Headers.RELATIONSHIP_SIBLING));
     }
 
     @Override
-    public ClaimString getRelationshipSpouse() {
+    public VerifiedClaimString getRelationshipSpouse() {
         return getAsString(forIso232202(ISO232202Headers.RELATIONSHIP_SPOUSE));
     }
 
     @Override
-    public ClaimString getRelationshipFatherInLaw() {
+    public VerifiedClaimString getRelationshipFatherInLaw() {
         return getAsString(forIso232202(ISO232202Headers.RELATIONSHIP_FATHER_IN_LAW));
     }
 
     @Override
-    public ClaimString getRelationshipMotherInLaw() {
+    public VerifiedClaimString getRelationshipMotherInLaw() {
         return getAsString(forIso232202(ISO232202Headers.RELATIONSHIP_MOTHER_IN_LAW));
     }
 
     @Override
-    public ClaimString getRelationshipParentInLaw() {
+    public VerifiedClaimString getRelationshipParentInLaw() {
         return getAsString(forIso232202(ISO232202Headers.RELATIONSHIP_PARENT_IN_LAW));
     }
 
     @Override
-    public ClaimString getRelationshipSonInLaw() {
+    public VerifiedClaimString getRelationshipSonInLaw() {
         return getAsString(forIso232202(ISO232202Headers.RELATIONSHIP_SON_IN_LAW));
     }
 
     @Override
-    public ClaimString getRelationshipDaughterInLaw() {
+    public VerifiedClaimString getRelationshipDaughterInLaw() {
         return getAsString(forIso232202(ISO232202Headers.RELATIONSHIP_DAUGHTER_IN_LAW));
     }
 
     @Override
-    public ClaimString getRelationshipChildInLaw() {
+    public VerifiedClaimString getRelationshipChildInLaw() {
         return getAsString(forIso232202(ISO232202Headers.RELATIONSHIP_CHILD_IN_LAW));
     }
 
     @Override
-    public ClaimString getRelationshipParentalAuthority() {
+    public VerifiedClaimString getRelationshipParentalAuthority() {
         return getAsString(forIso232202(ISO232202Headers.RELATIONSHIP_PARENTAL_AUTHORITY));
     }
 
     @Override
-    public ClaimString getRelationshipLegalRepresentative() {
+    public VerifiedClaimString getRelationshipLegalRepresentative() {
         return getAsString(forIso232202(ISO232202Headers.RELATIONSHIP_LEGAL_REPRESENTATIVE));
     }
 
     @Override
-    public ClaimString getRelationshipAgent() {
+    public VerifiedClaimString getRelationshipAgent() {
         return getAsString(forIso232202(ISO232202Headers.RELATIONSHIP_AGENT));
     }
 
     @Override
-    public ClaimString getDocumentType() {
+    public VerifiedClaimString getDocumentType() {
         return getAsString(forIso232202(ISO232202Headers.DOCUMENT_TYPE));
     }
 
     @Override
-    public ClaimDate getAdministrativeExpirationDate() {
+    public VerifiedClaimDate getAdministrativeExpirationDate() {
         return getAsDateOrDateTime(forIso180135(ISO180135Headers.EXPIRY_DATE), forIso232202(ISO232202Headers.EXPIRY_DATE),
                 forEUDIPid(EUDIPIDHeaders.EXPIRY_DATE));
     }
 
     @Override
-    public ClaimDate getAdministrativeIssuanceDate() {
+    public VerifiedClaimDate getAdministrativeIssuanceDate() {
         return getAsDateOrDateTime(forIso180135(ISO180135Headers.ISSUE_DATE), forIso232202(ISO232202Headers.ISSUE_DATE),
                 forEUDIPid(EUDIPIDHeaders.ISSUANCE_DATE));
     }
 
     @Override
-    public ClaimString getResidentAddressStreet() {
+    public VerifiedClaimString getResidentAddressStreet() {
         return getAsString(forIso232202(ISO232202Headers.RESIDENT_STREET, ISO232202Headers.RESIDENT_STREET_LATIN1),
                 forEUDIPid(EUDIPIDHeaders.RESIDENT_STREET));
     }
 
     @Override
-    public ClaimString getResidentAddressHouseNumber() {
+    public VerifiedClaimString getResidentAddressHouseNumber() {
         return getAsString(forEUDIPid(EUDIPIDHeaders.RESIDENT_HOUSE_NUMBER));
     }
 
     @Override
-    public ClaimString getTrustAnchor() {
+    public VerifiedClaimString getTrustAnchor() {
         return getAsString(forEUDIPid(EUDIPIDHeaders.TRUST_ANCHOR));
     }
 
     @Override
-    public ClaimString getIssuingAuthorityRegistrationIdentifier() {
+    public VerifiedClaimString getIssuingAuthorityRegistrationIdentifier() {
         return getAsString(forEtsi194721(ETSI194721Headers.ISSUING_REGISTRATION_IDENTIFIER));
     }
 
     @Override
-    public Claim getOneTimeUse() {
+    public VerifiedClaim getOneTimeUse() {
         /* EAA-6.2.8.2-03: The oneTime data element shall have the bool CBOR type.  */
         return getAsBoolean(forEtsi194721(ETSI194721Headers.ONE_TIME));
     }
 
     @Override
-    public Claim getShortLived() {
+    public VerifiedClaim getShortLived() {
         /* EAA-6.2.12-03: The shortLived data element shall have the bool CBOR type. */
         return getAsBoolean(forEtsi194721(ETSI194721Headers.SHORT_LIVED));
     }
 
     @Override
-    public ClaimArray getEvidence() {
+    public VerifiedClaimArray getEvidence() {
         /*
-         * EAA-6.2.9-01: An ISO/IEC-mdoc EAA shall not incorporate any data element implementing the semantics
+         * EAA-6.2.9-01: An ISO/IEC-mdoc attestation shall not incorporate any data element implementing the semantics
          * specified in clause 4.2.10 of the present document.
          */
         return null;
     }
 
     @Override
-    public ClaimAttestedAttributesSubject getAttestedAttributesSubject() {
-        ClaimMap subAttrs = getAsMap(forEtsi194721(ETSI194721Headers.SUB_ATTRS));
+    public VerifiedClaimAttestedAttributesSubject getAttestedAttributesSubject() {
+        VerifiedClaimMap subAttrs = getAsMap(forEtsi194721(ETSI194721Headers.SUB_ATTRS));
         if (subAttrs != null) {
-            return new MdocClaimAttestedAttributesSubject(subAttrs);
+            return new MdocVerifiedClaimAttestedAttributesSubject(subAttrs);
         }
         return null;
     }
@@ -729,13 +729,13 @@ public class MdocAttestationPayload extends MdocClaimMap implements AttestationP
      * Gets the value for the found element matching the first {@code DataElementReference}
      *
      * @param references an array of {@link DataElementReference}s
-     * @return {@link Claim}
+     * @return {@link VerifiedClaim}
      */
-    protected Claim get(DataElementReference... references) {
+    protected VerifiedClaim get(DataElementReference... references) {
         for (DataElementReference dataElementReference : references) {
             String namespace = dataElementReference.getNamespace();
             for (String headerName : dataElementReference.getHeaderNames()) {
-                Claim value = super.get(headerName);
+                VerifiedClaim value = super.get(headerName);
                 if (value != null && (namespace == null || namespace.equals(value.getNamespace()))) {
                     return value;
                 }
@@ -749,15 +749,15 @@ public class MdocAttestationPayload extends MdocClaimMap implements AttestationP
      * E.g. this method allows extraction values according to the pattern "age_over_NN", where NN can be any data.
      *
      * @param references an array of {@link DataElementReference}s
-     * @return {@link Claim}
+     * @return {@link VerifiedClaim}
      */
-    protected List<Claim> getAllStartingWith(DataElementReference... references) {
-        final List<Claim> result = new ArrayList<>();
-        Map<String, Claim> claimMap = super.getMapValue();
+    protected List<VerifiedClaim> getAllStartingWith(DataElementReference... references) {
+        final List<VerifiedClaim> result = new ArrayList<>();
+        Map<String, VerifiedClaim> claimMap = super.getMapValue();
         for (DataElementReference dataElementReference : references) {
             String namespace = dataElementReference.getNamespace();
             for (String headerName : dataElementReference.getHeaderNames()) {
-                for (Map.Entry<String, Claim> claimMapEntry : claimMap.entrySet()) {
+                for (Map.Entry<String, VerifiedClaim> claimMapEntry : claimMap.entrySet()) {
                     if (claimMapEntry.getKey().startsWith(headerName) &&
                             (namespace == null || namespace.equals(claimMapEntry.getValue().getNamespace()))) {
                         result.add(claimMapEntry.getValue());
@@ -772,10 +772,10 @@ public class MdocAttestationPayload extends MdocClaimMap implements AttestationP
      * Gets the map value for the found element matching the first {@code DataElementReference}
      *
      * @param references an array of {@link DataElementReference}s
-     * @return {@link ClaimMap}
+     * @return {@link VerifiedClaimMap}
      */
-    protected ClaimMap getAsMap(DataElementReference... references) {
-        Claim claim = get(references);
+    protected VerifiedClaimMap getAsMap(DataElementReference... references) {
+        VerifiedClaim claim = get(references);
         return getAsMap(claim);
     }
 
@@ -783,10 +783,10 @@ public class MdocAttestationPayload extends MdocClaimMap implements AttestationP
      * Gets the array value for the found element matching the first {@code DataElementReference}
      *
      * @param references an array of {@link DataElementReference}s
-     * @return {@link ClaimArray}
+     * @return {@link VerifiedClaimArray}
      */
-    protected ClaimArray getAsArray(DataElementReference... references) {
-        Claim claim = get(references);
+    protected VerifiedClaimArray getAsArray(DataElementReference... references) {
+        VerifiedClaim claim = get(references);
         return getAsArray(claim);
     }
 
@@ -794,10 +794,10 @@ public class MdocAttestationPayload extends MdocClaimMap implements AttestationP
      * Gets the number value for the found element matching the first {@code DataElementReference}
      *
      * @param references an array of {@link DataElementReference}s
-     * @return {@link ClaimNumber}
+     * @return {@link VerifiedClaimNumber}
      */
-    protected ClaimNumber getAsNumber(DataElementReference... references) {
-        Claim claim = get(references);
+    protected VerifiedClaimNumber getAsNumber(DataElementReference... references) {
+        VerifiedClaim claim = get(references);
         return getAsNumber(claim);
     }
 
@@ -805,10 +805,10 @@ public class MdocAttestationPayload extends MdocClaimMap implements AttestationP
      * Gets the String value for the found element matching the first {@code DataElementReference}
      *
      * @param references an array of {@link DataElementReference}s
-     * @return {@link ClaimString}
+     * @return {@link VerifiedClaimString}
      */
-    protected ClaimString getAsString(DataElementReference... references) {
-        Claim claim = get(references);
+    protected VerifiedClaimString getAsString(DataElementReference... references) {
+        VerifiedClaim claim = get(references);
         return getAsString(claim);
     }
 
@@ -816,10 +816,10 @@ public class MdocAttestationPayload extends MdocClaimMap implements AttestationP
      * Gets the boolean value for the found element matching the first {@code DataElementReference}
      *
      * @param references an array of {@link DataElementReference}s
-     * @return {@link ClaimBoolean}
+     * @return {@link VerifiedClaimBoolean}
      */
-    protected ClaimBoolean getAsBoolean(DataElementReference... references) {
-        Claim claim = get(references);
+    protected VerifiedClaimBoolean getAsBoolean(DataElementReference... references) {
+        VerifiedClaim claim = get(references);
         return getAsBoolean(claim);
     }
 
@@ -827,10 +827,10 @@ public class MdocAttestationPayload extends MdocClaimMap implements AttestationP
      * Gets the byte string value for the found element matching the first {@code DataElementReference}
      *
      * @param references an array of {@link DataElementReference}s
-     * @return {@link ClaimByteString}
+     * @return {@link VerifiedClaimByteString}
      */
-    protected ClaimByteString getAsByteString(DataElementReference... references) {
-        Claim claim = get(references);
+    protected VerifiedClaimByteString getAsByteString(DataElementReference... references) {
+        VerifiedClaim claim = get(references);
         return getAsByteString(claim);
     }
 
@@ -838,10 +838,10 @@ public class MdocAttestationPayload extends MdocClaimMap implements AttestationP
      * Gets the date value for the found element matching the first {@code DataElementReference}
      *
      * @param references an array of {@link DataElementReference}s
-     * @return {@link ClaimDate}
+     * @return {@link VerifiedClaimDate}
      */
-    protected ClaimDate getAsDate(DataElementReference... references) {
-        Claim claim = get(references);
+    protected VerifiedClaimDate getAsDate(DataElementReference... references) {
+        VerifiedClaim claim = get(references);
         return getAsDate(claim);
     }
 
@@ -849,10 +849,10 @@ public class MdocAttestationPayload extends MdocClaimMap implements AttestationP
      * Gets the date-time value for the found element matching the first {@code DataElementReference}
      *
      * @param references an array of {@link DataElementReference}s
-     * @return {@link ClaimDate}
+     * @return {@link VerifiedClaimDate}
      */
-    protected ClaimDate getAsDateTime(DataElementReference... references) {
-        Claim claim = get(references);
+    protected VerifiedClaimDate getAsDateTime(DataElementReference... references) {
+        VerifiedClaim claim = get(references);
         return getAsDateTime(claim);
     }
 
@@ -860,10 +860,10 @@ public class MdocAttestationPayload extends MdocClaimMap implements AttestationP
      * Gets the date or date-time value for the found element matching the first {@code DataElementReference}
      *
      * @param references an array of {@link DataElementReference}s
-     * @return {@link ClaimDate}
+     * @return {@link VerifiedClaimDate}
      */
-    protected ClaimDate getAsDateOrDateTime(DataElementReference... references) {
-        Claim claim = get(references);
+    protected VerifiedClaimDate getAsDateOrDateTime(DataElementReference... references) {
+        VerifiedClaim claim = get(references);
         return getAsDateOrDateTime(claim);
     }
 
@@ -909,7 +909,7 @@ public class MdocAttestationPayload extends MdocClaimMap implements AttestationP
 
     /**
      * Creates a data element reference to ETSI TS 119 472-1 header parameter names
-     * for the mobile driving license (mDL) EAA
+     * for the mobile driving license (mDL)
      *
      * @param headerNames array of {@link String}s
      * @return {@link DataElementReference}

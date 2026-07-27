@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.attestation.checks;
 
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationEAAQualificationProcess;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationAttestationQualificationProcess;
 import eu.europa.esig.dss.diagnostic.TrustServiceWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -33,10 +33,10 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 import java.util.List;
 
 /**
- * Checks whether the EAA is qualified
+ * Checks whether the attestation is qualified
  *
  */
-public class QEAACheck extends ChainItem<XmlValidationEAAQualificationProcess> {
+public class QEAACheck extends ChainItem<XmlValidationAttestationQualificationProcess> {
 
     /**
      * List of TrustServices declaring EAA/Q revocation for the certificate
@@ -47,11 +47,11 @@ public class QEAACheck extends ChainItem<XmlValidationEAAQualificationProcess> {
      * Default constructor
      *
      * @param i18nProvider {@link I18nProvider}
-     * @param result {@link XmlValidationEAAQualificationProcess}
+     * @param result {@link XmlValidationAttestationQualificationProcess}
      * @param trustServicesAtTime list of {@link TrustServiceWrapper}s
      * @param constraint {@link LevelRule}
      */
-    public QEAACheck(I18nProvider i18nProvider, XmlValidationEAAQualificationProcess result,
+    public QEAACheck(I18nProvider i18nProvider, XmlValidationAttestationQualificationProcess result,
                      List<TrustServiceWrapper> trustServicesAtTime, LevelRule constraint) {
         super(i18nProvider, result, constraint);
         this.trustServicesAtTime = trustServicesAtTime;

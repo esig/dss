@@ -45,7 +45,7 @@ public class RemoteKeyBindingParametersBuilder {
      */
     public RemoteKeyBindingParametersBuilder(final RemoteKeyBindingParameters remoteKeyBindingParameters) {
         Objects.requireNonNull(remoteKeyBindingParameters, "RemoteKeyBindingParameters must be defined!");
-        Objects.requireNonNull(remoteKeyBindingParameters.getEaaType(), "EAA type must be definedy!");
+        Objects.requireNonNull(remoteKeyBindingParameters.getAttestationProfile(), "Attestation type must be definedy!");
         this.remoteKeyBindingParameters = remoteKeyBindingParameters;
     }
 
@@ -56,7 +56,7 @@ public class RemoteKeyBindingParametersBuilder {
      */
     public KeyBindingParameters build() {
         KeyBindingParameters keyBindingParameters;
-        switch (remoteKeyBindingParameters.getEaaType()) {
+        switch (remoteKeyBindingParameters.getAttestationProfile()) {
             case SD_JWT_VC:
                 keyBindingParameters = buildSDJWTVCKeyBindingParameters(remoteKeyBindingParameters);
                 break;
@@ -64,8 +64,8 @@ public class RemoteKeyBindingParametersBuilder {
                 keyBindingParameters = buildMdocKeyBindingParameters(remoteKeyBindingParameters);
                 break;
             default:
-                throw new UnsupportedOperationException(String.format("Unsupported EAA format: '%s'. " +
-                        "SD-JWT VC and ISO/IEC mdoc are only supported.", remoteKeyBindingParameters.getEaaType()));
+                throw new UnsupportedOperationException(String.format("Unsupported attestation format: '%s'. " +
+                        "SD-JWT and ISO/IEC mdoc are only supported.", remoteKeyBindingParameters.getAttestationProfile()));
         }
         return keyBindingParameters;
     }

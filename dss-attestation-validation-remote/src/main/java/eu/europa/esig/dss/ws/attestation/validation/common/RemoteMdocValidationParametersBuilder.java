@@ -25,7 +25,7 @@ import eu.europa.esig.dss.ws.converter.RemoteDocumentConverter;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 
 /**
- * Builds EAA validation parameters for Mdoc validation
+ * Builds attestation validation parameters for Mdoc validation
  *
  */
 public class RemoteMdocValidationParametersBuilder {

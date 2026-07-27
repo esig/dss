@@ -175,34 +175,33 @@ The following example verifies the qualification level of a timestamp:
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/TimestampValidationTest.java[tags=demo]
 ----
 
-=== Verifying the qualified status of EAA
+=== Verifying the qualified status of attestations
 
-ETSI TS 119 615 (<<R14>>), section "4.12 EU qualified electronic attestation of attribute service
-determination", specifies standardized procedures for the determination of the qualification of an Electronic Attestation of Attributes (EAA).
+DSS is able to determine a qualification level of an attestation if corresponding information about TrustServiceProviders is provided to a certificate verifier (loaded automatically to a trusted certificate source with <<tlValidationJob>>).
 
-DSS is able to determine a qualification level of an EAA if corresponding information about TrustServiceProviders is provided to a certificate verifier (loaded automatically to a trusted certificate source with <<tlValidationJob>>).
-
-The following qualification levels are supported and can be obtained on EAA validation:
+The following qualification levels are supported and can be obtained on attestation validation:
 
 * `QEAA` - Qualified electronic attestation of attributes as defined in Regulation EU 2024/1183 <<R40>>, Article 45d.
 * `PuB-EAA` - Electronic attestation of attributes issued by or on behalf of a public sector body responsible for an authentic source as defined in Regulation EU 2024/1183<<R40>>, Article 45f.
-* `Attestation` - Electronic attestation of attributes as defined in Regulation EU 2024/1183<<R40>>, without a qualified status.
+* `EAA` - Electronic attestation of attributes as defined in Regulation EU 2024/1183<<R40>>, without a qualified status.
 
-Additionally, DSS is able to recognize a Person Identity Data (`PID`) token, should a corresponding data be derived from the ETSI TS 119 602 <<R33>> PID Providers List (loaded using a <<ListOfTrustedEntities>>).
+ETSI TS 119 615 (<<R14>>), section "4.12 EU qualified electronic attestation of attribute service
+determination", specifies standardized procedures for the determination of certificate qualification for the issuance of Qualified Electronic Attestation of Attributes (QEAA).
 
-For validation and qualification determination of an EAA, an instance of `EAAValidator` can be used.
+Additionally, DSS is able to recognize a Person Identification Data (`PID`) token, should a corresponding data be derived from the ETSI TS 119 602 <<R33>> PID Providers List (loaded using a <<ListOfTrustedEntities>>).
 
-NOTE: An instance of an EAA Presentation (EAAP) is usually expected as an input to the `EAAValidator`. However, DSS is able to validate pure EAA's in certain cases.
+For validation and qualification determination of an attestation, an instance of `AttestationDocumentValidator` can be used.
 
-The example below verifies the qualification level of an EAA:
+NOTE: An instance of an attestation presentation is usually expected as an input to the `AttestationDocumentValidator`. However, DSS is able to validate pure attestation's in certain cases.
+
+The example below verifies the qualification level of an attestation:
 
 [source,java,indent=0]
-.Validate an EAA and retrieve its qualification level
+.Validate an attestation and retrieve its qualification level
 ----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/EAAValidationTest.java[tags=attestation-qualification]
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/AttestationValidationTest.java[tags=attestation-qualification]
 ----
 
-NOTE: Unline signature or timestamp qualification results, an EAA qualification process may output more than one qualification statuses, e.g. when a PID status applies.
+NOTE: Unline signature or timestamp qualification results, an attestation qualification process may output more than one qualification statuses, e.g. when a PID status applies.
 
-See <<EAAValidation>> chapter for more information about the validation process.
-
+See <<AttestationValidation>> chapter for more information about the validation process.

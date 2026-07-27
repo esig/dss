@@ -25,9 +25,9 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.diagnostic.AttestationWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlClaim;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlEAA;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlEAAPayload;
-import eu.europa.esig.dss.enumerations.AttestationFormat;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestation;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationPayload;
+import eu.europa.esig.dss.enumerations.AttestationProfile;
 import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.policy.MultiValuesConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
@@ -46,19 +46,19 @@ class AttestationIssuingAuthorityRegistrationIdentifierCheckTest extends Abstrac
         constraint.getId().add("VAT-12345");
         constraint.setLevel(Level.FAIL);
 
-        XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(AttestationFormat.SD_JWT_VC);
-        XmlEAAPayload xmlEAAPayload = new XmlEAAPayload();
+        XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setProfile(AttestationProfile.SD_JWT_VC);
+        XmlAttestationPayload xmlAttestationPayload = new XmlAttestationPayload();
         XmlClaim xmlClaim = new XmlClaim();
         xmlClaim.setText("VAT-12345");
-        xmlEAAPayload.setIssuingAuthorityRegistrationIdentifier(xmlClaim);
-        xmlEAA.setEAAPayload(xmlEAAPayload);
+        xmlAttestationPayload.setIssuingAuthorityRegistrationIdentifier(xmlClaim);
+        xmlAttestation.setAttestationPayload(xmlAttestationPayload);
 
         XmlSAV result = new XmlSAV();
 
-        AttestationIssuingAuthorityRegistrationIdentifierCheck eaaiaric = new AttestationIssuingAuthorityRegistrationIdentifierCheck(
-                i18nProvider, result, new AttestationWrapper(xmlEAA), new MultiValuesConstraintWrapper(constraint));
-        eaaiaric.execute();
+        AttestationIssuingAuthorityRegistrationIdentifierCheck aiaric = new AttestationIssuingAuthorityRegistrationIdentifierCheck(
+                i18nProvider, result, new AttestationWrapper(xmlAttestation), new MultiValuesConstraintWrapper(constraint));
+        aiaric.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
         assertEquals(1, constraints.size());
@@ -71,19 +71,19 @@ class AttestationIssuingAuthorityRegistrationIdentifierCheckTest extends Abstrac
         constraint.getId().add("VAT-12345");
         constraint.setLevel(Level.FAIL);
 
-        XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(AttestationFormat.SD_JWT_VC);
-        XmlEAAPayload xmlEAAPayload = new XmlEAAPayload();
+        XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setProfile(AttestationProfile.SD_JWT_VC);
+        XmlAttestationPayload xmlAttestationPayload = new XmlAttestationPayload();
         XmlClaim xmlClaim = new XmlClaim();
         xmlClaim.setText("VAT-67890");
-        xmlEAAPayload.setIssuingAuthorityRegistrationIdentifier(xmlClaim);
-        xmlEAA.setEAAPayload(xmlEAAPayload);
+        xmlAttestationPayload.setIssuingAuthorityRegistrationIdentifier(xmlClaim);
+        xmlAttestation.setAttestationPayload(xmlAttestationPayload);
 
         XmlSAV result = new XmlSAV();
 
-        AttestationIssuingAuthorityRegistrationIdentifierCheck eaaiaric = new AttestationIssuingAuthorityRegistrationIdentifierCheck(
-                i18nProvider, result, new AttestationWrapper(xmlEAA), new MultiValuesConstraintWrapper(constraint));
-        eaaiaric.execute();
+        AttestationIssuingAuthorityRegistrationIdentifierCheck aiaric = new AttestationIssuingAuthorityRegistrationIdentifierCheck(
+                i18nProvider, result, new AttestationWrapper(xmlAttestation), new MultiValuesConstraintWrapper(constraint));
+        aiaric.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
         assertEquals(1, constraints.size());

@@ -2,74 +2,74 @@
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>sample-jwt.jwt</DocumentName>
     <ValidationDate>2026-04-23T09:29:00Z</ValidationDate>
-    <EAAs>
-        <EAA Id="EAA-142BE84DAB5CA7AC88CCAC3DC9E7F4A3C2372EEA97B822978540C31CE18CC20C">
-            <EAAType>SD_JWT_VC</EAAType>
+    <Attestations>
+        <Attestation Id="EAA-142BE84DAB5CA7AC88CCAC3DC9E7F4A3C2372EEA97B822978540C31CE18CC20C">
+            <Profile>SD_JWT_VC</Profile>
             <DigestMatchers>
-                <DigestMatcher type="EAA_DISCLOSURE">
+                <DigestMatcher type="SELECTIVE_DISCLOSURE">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>CrQe7S5kqBAHt+nMYXgc6bdt2SH5aTY1sU/M+PgkjPI=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                     <DisclosableClaim name="updated_at">1570000000</DisclosableClaim>
                 </DigestMatcher>
-                <DigestMatcher type="EAA_DISCLOSURE">
+                <DigestMatcher type="SELECTIVE_DISCLOSURE">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>JzYjH4svliH0R3PyEMfeZu6Jt69u5qehZo7F7EPYlSE=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                     <DisclosableClaim name="email">johndoe@example.com</DisclosableClaim>
                 </DigestMatcher>
-                <DigestMatcher type="EAA_DISCLOSURE">
+                <DigestMatcher type="SELECTIVE_DISCLOSURE">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>PorFbpKuVu6xymJagvkFsFXAbRoc2JGlAUA2BA4o7cI=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                     <DisclosableClaim name="phone_number">+1-202-555-0101</DisclosableClaim>
                 </DigestMatcher>
-                <DigestMatcher type="EAA_DISCLOSURE">
+                <DigestMatcher type="SELECTIVE_DISCLOSURE">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>TGf4oLbgwd5JQaHyKVQZU9UdGE0w5rtDsrZzfUaomLo=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                     <DisclosableClaim name="family_name">Doe</DisclosableClaim>
                 </DigestMatcher>
-                <DigestMatcher type="EAA_DISCLOSURE">
+                <DigestMatcher type="SELECTIVE_DISCLOSURE">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>XQ/3kPKt1XyX7KANkqVR6yZ2Va5NrPIvPYbyMvRKBMM=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                     <DisclosableClaim name="phone_number_verified">true</DisclosableClaim>
                 </DigestMatcher>
-                <DigestMatcher type="EAA_DISCLOSURE">
+                <DigestMatcher type="SELECTIVE_DISCLOSURE">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>XzFrzwscM6Gn6CJDc6vVK8BkMnfG8vOSKfpPIZdAfdE=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                     <DisclosableClaim name="address">{"street_address": "123 Main St", "country": "US", "locality": "Anytown", "region": "Anystate"}</DisclosableClaim>
                 </DigestMatcher>
-                <DigestMatcher type="EAA_DISCLOSURE">
+                <DigestMatcher type="SELECTIVE_DISCLOSURE">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>gbOsI4Edq2x2Kw+w5wPEzakob9hV1cRD0ATN3oQL9JM=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                     <DisclosableClaim name="birthdate">1940-01-01</DisclosableClaim>
                 </DigestMatcher>
-                <DigestMatcher type="EAA_DISCLOSURE">
+                <DigestMatcher type="SELECTIVE_DISCLOSURE">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>jsu9yVulwQQlhFlM/3JlzMaSFzglhQG0DpfayQwLUK4=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                     <DisclosableClaim name="given_name">John</DisclosableClaim>
                 </DigestMatcher>
-                <DigestMatcher type="EAA_DISCLOSURE">
+                <DigestMatcher type="SELECTIVE_DISCLOSURE">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>pFndjkZ/VCzmyTa6UjlZo3dh+ko8aIKQc9DlGzhaVYo=</DigestValue>
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                     <DisclosableClaim>US</DisclosableClaim>
                 </DigestMatcher>
-                <DigestMatcher type="EAA_DISCLOSURE">
+                <DigestMatcher type="SELECTIVE_DISCLOSURE">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>7Cf6JkPudry3lcbwHgeZ8khAv1U1OSlerP0VkBJrWZ0=</DigestValue>
                     <DataFound>true</DataFound>
@@ -77,8 +77,8 @@
                     <DisclosableClaim>DE</DisclosableClaim>
                 </DigestMatcher>
             </DigestMatchers>
-            <EAASignature Signature="S-61D369A7F2D4DD3A70C24A844C4C8E693ECF3BAECFBB558A2B4D3FEF8827A09C"/>
-            <EAAPayload>
+            <AttestationSignature Signature="S-61D369A7F2D4DD3A70C24A844C4C8E693ECF3BAECFBB558A2B4D3FEF8827A09C"/>
+            <AttestationPayload>
                 <Issuer name="iss">
                     <Text>https://issuer.example.com</Text>
                 </Issuer>
@@ -183,15 +183,15 @@
                         <Text>DE</Text>
                     </Item>
                 </Nationalities>
-            </EAAPayload>
+            </AttestationPayload>
             <KeyBindingSignature Signature="S-B76CB61A45DDB0E0CA3970C6F40C5FBF329A5546A6A4320EBC331A7498F17FC9"/>
-            <EAARevocations>
-                <EAARevocationStatus EAARevocationToken="ST-A9144C67449944517D4481B366337C02488BA6CBD42F89E1C2C8225E507518EF">
+            <AttestationRevocations>
+                <AttestationRevocationStatus AttestationRevocationToken="ST-A9144C67449944517D4481B366337C02488BA6CBD42F89E1C2C8225E507518EF">
                     <Status>VALID</Status>
-                </EAARevocationStatus>
-            </EAARevocations>
-        </EAA>
-    </EAAs>
+                </AttestationRevocationStatus>
+            </AttestationRevocations>
+        </Attestation>
+    </Attestations>
     <Signatures>
         <Signature Id="S-61D369A7F2D4DD3A70C24A844C4C8E693ECF3BAECFBB558A2B4D3FEF8827A09C">
             <SignatureFilename>sample-jwt.jwt</SignatureFilename>
@@ -285,7 +285,7 @@
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                 </DigestMatcher>
-                <DigestMatcher type="EAA_KEY_BINDING">
+                <DigestMatcher type="KEY_BINDING_SIGNATURE">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>q8jTTKJJCo5gBLrdgeYz4SzUKuUb27tISQjmKS6gXxc=</DigestValue>
                     <DataFound>true</DataFound>
@@ -348,8 +348,8 @@
         </Signature>
     </Signatures>
     <EvidenceRecords/>
-    <UsedEAARevocationTokens>
-        <EAARevocationToken Id="ST-A9144C67449944517D4481B366337C02488BA6CBD42F89E1C2C8225E507518EF">
+    <UsedAttestationRevocationTokens>
+        <AttestationRevocationToken Id="ST-A9144C67449944517D4481B366337C02488BA6CBD42F89E1C2C8225E507518EF">
             <Origin>EXTERNAL</Origin>
             <Type>statuslist+cwt</Type>
             <SourceAddress>https://dss.nowina.lu/pki-factory/attestation/status_list</SourceAddress>
@@ -392,8 +392,8 @@
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>qRRMZ0SZRFF9RIGzZjN8AkiLpsvUL4nhwsgiXlB1GO8=</DigestValue>
             </DigestAlgoAndValue>
-        </EAARevocationToken>
-    </UsedEAARevocationTokens>
+        </AttestationRevocationToken>
+    </UsedAttestationRevocationTokens>
     <UsedCertificates>
         <Certificate Id="C-57C7CD0B7050F689603B33CD37F86817F53EEE1F81181184FB09DAE40D2007AC">
             <SubjectDistinguishedName Format="CANONICAL">c=lu,ou=pki-test,o=nowina solutions,cn=ocsp-responder</SubjectDistinguishedName>

@@ -34,7 +34,7 @@ public class AgeOverNNDTO implements Serializable {
     /** Age in years */
     private Integer age;
 
-    /** Whether age of the EAA holder is equal or over the age value */
+    /** Whether age of the attestation holder is equal or over the age value */
     private Boolean isOver;
 
     /**

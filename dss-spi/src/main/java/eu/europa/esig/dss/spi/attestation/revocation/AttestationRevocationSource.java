@@ -24,7 +24,7 @@ import eu.europa.esig.dss.spi.attestation.Attestation;
 import eu.europa.esig.dss.spi.attestation.AttestationRevocationToken;
 
 /**
- * Executes an EAA Status request for the given EAA token using the Status List Token mechanism, as defined in
+ * Executes an attestation Status request for the given attestation token using the Status List Token mechanism, as defined in
  * <a href="https://www.ietf.org/archive/id/draft-ietf-oauth-status-list-20.html">IETF Token Status List (TSL)</a>.
  *
  */

@@ -22,13 +22,13 @@ class SDJWTCompactNoDisclosuresValidationTest extends AbstractSDJWTTestValidatio
     }
 
     @Override
-    protected void checkEAADigestMatchers(DiagnosticData diagnosticData) {
-        AttestationWrapper eaa = diagnosticData.getEAAs().get(0);
-        List<XmlDigestMatcher> digestMatchers = eaa.getDigestMatchers();
+    protected void checkAttestationDigestMatchers(DiagnosticData diagnosticData) {
+        AttestationWrapper attestation = diagnosticData.getAttestations().get(0);
+        List<XmlDigestMatcher> digestMatchers = attestation.getDigestMatchers();
         assertEquals(2, digestMatchers.size());
 
         for (XmlDigestMatcher xmlDigestMatcher : digestMatchers) {
-            assertEquals(DigestMatcherType.EAA_ORPHAN_SELECTIVELY_DISCLOSABLE_CLAIM, xmlDigestMatcher.getType());
+            assertEquals(DigestMatcherType.ORPHAN_SELECTIVELY_DISCLOSABLE_CLAIM, xmlDigestMatcher.getType());
             assertFalse(xmlDigestMatcher.isDataFound());
             assertFalse(xmlDigestMatcher.isDataIntact());
             assertNull(xmlDigestMatcher.getDisclosableClaim());
@@ -39,10 +39,10 @@ class SDJWTCompactNoDisclosuresValidationTest extends AbstractSDJWTTestValidatio
     protected void checkClaims(DiagnosticData diagnosticData) {
         super.checkClaims(diagnosticData);
 
-        AttestationWrapper attestationWrapper = diagnosticData.getEAAById(diagnosticData.getFirstEAAId());
-        AttestationPayloadProxy eaaPayload = attestationWrapper.getPayload();
-        assertNull(eaaPayload.getGivenName());
-        assertNull(eaaPayload.getFamilyName());
+        AttestationWrapper attestationWrapper = diagnosticData.getAttestationById(diagnosticData.getFirstAttestationId());
+        AttestationPayloadProxy attestationPayload = attestationWrapper.getPayload();
+        assertNull(attestationPayload.getGivenName());
+        assertNull(attestationPayload.getFamilyName());
     }
 
     @Override

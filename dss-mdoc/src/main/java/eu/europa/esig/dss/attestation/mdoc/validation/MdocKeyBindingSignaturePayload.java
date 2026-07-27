@@ -22,15 +22,15 @@ package eu.europa.esig.dss.attestation.mdoc.validation;
 
 import java.util.Map;
 
-import eu.europa.esig.dss.attestation.mdoc.claim.MdocClaimMap;
-import eu.europa.esig.dss.model.attestation.claim.ClaimDate;
-import eu.europa.esig.dss.model.attestation.claim.ClaimString;
+import eu.europa.esig.dss.attestation.mdoc.claim.MdocVerifiedClaimMap;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimDate;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimString;
 import eu.europa.esig.dss.spi.attestation.KeyBindingSignaturePayload;
 
 /**
  * Implementation of {@link KeyBindingSignaturePayload} for ISO/IEC 18013-5 mdoc
  */
-public class MdocKeyBindingSignaturePayload extends MdocClaimMap implements KeyBindingSignaturePayload {
+public class MdocKeyBindingSignaturePayload extends MdocVerifiedClaimMap implements KeyBindingSignaturePayload {
 
     /**
      * Default constructor
@@ -42,25 +42,25 @@ public class MdocKeyBindingSignaturePayload extends MdocClaimMap implements KeyB
     }
 
     @Override
-    public ClaimString getNonce() {
+    public VerifiedClaimString getNonce() {
         // Not present in mdoc
         return null;
     }
 
     @Override
-    public ClaimDate getIssuedAt() {
+    public VerifiedClaimDate getIssuedAt() {
         // Not present in mdoc
         return null;
     }
 
     @Override
-    public ClaimString getAudience() {
+    public VerifiedClaimString getAudience() {
         // Not present in mdoc
         return null;
     }
 
     @Override
-    public ClaimString getSdHash() {
+    public VerifiedClaimString getSdHash() {
         // Not present in mdoc
         return null;
     }

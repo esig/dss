@@ -10,8 +10,8 @@
     </parent>
 
     <artifactId>dss-attestation</artifactId>
-    <name>DSS Electronic Attestation of Attributes</name>
-    <description>This module contains common code for creation and validation of Presentation of Electronic Attestation of Attributes</description>
+    <name>DSS Attestation Common</name>
+    <description>This module contains common code for creation and validation of attestations (EAA, PID, etc.)</description>
 
     <properties>
         <module-name>jpms_dss_attestation</module-name>
@@ -30,7 +30,7 @@
 
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-            <artifactId>dss-attestation-revocation-common</artifactId>
+            <artifactId>dss-attestation-revocation</artifactId>
             <scope>test</scope>
         </dependency>
 

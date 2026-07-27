@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.attestation.checks;
 
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationEAAQualificationProcess;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationAttestationQualificationProcess;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.AttestationWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -34,20 +34,20 @@ import eu.europa.esig.dss.validation.process.ChainItem;
  * Verifies presence of a QcPSB QcStatement
  *
  */
-public class AttestationIssuerQcPSBPresentCheck extends ChainItem<XmlValidationEAAQualificationProcess> {
+public class AttestationIssuerQcPSBPresentCheck extends ChainItem<XmlValidationAttestationQualificationProcess> {
 
-    /** Signing-certificate of the EAA signature */
+    /** Signing-certificate of the attestation signature */
     private final CertificateWrapper signingCertificate;
 
     /**
      * Default constructor
      *
      * @param i18nProvider {@link I18nProvider}
-     * @param result {@link XmlValidationEAAQualificationProcess}
+     * @param result {@link XmlValidationAttestationQualificationProcess}
      * @param signingCertificate {@link AttestationWrapper}
      * @param constraint {@link LevelRule}
      */
-    public AttestationIssuerQcPSBPresentCheck(I18nProvider i18nProvider, XmlValidationEAAQualificationProcess result,
+    public AttestationIssuerQcPSBPresentCheck(I18nProvider i18nProvider, XmlValidationAttestationQualificationProcess result,
                                               CertificateWrapper signingCertificate, LevelRule constraint) {
         super(i18nProvider, result, constraint);
 

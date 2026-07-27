@@ -32,7 +32,7 @@ import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTService;
 import eu.europa.esig.dss.attestation.mdoc.MdocConstants;
 import eu.europa.esig.dss.attestation.mdoc.creation.MdocService;
 import eu.europa.esig.dss.attestation.mdoc.validation.MdocValidationParameters;
-import eu.europa.esig.dss.enumerations.AttestationFormat;
+import eu.europa.esig.dss.enumerations.AttestationProfile;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -82,15 +82,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class RemoteAttestationCreationServiceImplTest extends PKIFactoryAccess {
 
-    private RemoteAttestationCreationServiceImpl eaaService;
+    private RemoteAttestationCreationServiceImpl attestationService;
 
     private String signingAlias;
 
     @BeforeEach
     void init() {
-        eaaService = new RemoteAttestationCreationServiceImpl();
-        eaaService.setSdjwtService(getSDJWTService());
-        eaaService.setMdocService(getMdocService());
+        attestationService = new RemoteAttestationCreationServiceImpl();
+        attestationService.setSdjwtService(getSDJWTService());
+        attestationService.setMdocService(getMdocService());
     }
 
     private MdocService getMdocService() {
@@ -114,7 +114,7 @@ class RemoteAttestationCreationServiceImplTest extends PKIFactoryAccess {
         signatureParameters.setSigningCertificate(RemoteCertificateConverter.toRemoteCertificate(getSigningCert()));
         signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 
-        RemoteAttestationPayloadParameters payloadParameters = new RemoteAttestationPayloadParameters(AttestationFormat.SD_JWT_VC);
+        RemoteAttestationPayloadParameters payloadParameters = new RemoteAttestationPayloadParameters(AttestationProfile.SD_JWT_VC);
 
         payloadParameters.setNotBeforeDate(signingTime);
         Calendar calendar = Calendar.getInstance();
@@ -122,7 +122,7 @@ class RemoteAttestationCreationServiceImplTest extends PKIFactoryAccess {
         Date expirationTime = calendar.getTime();
         payloadParameters.setExpirationDate(expirationTime);
 
-        payloadParameters.setIssuer("EAA provider");
+        payloadParameters.setIssuer("Attestation provider");
 
         signingAlias = ECDSA_521_USER;
 
@@ -173,15 +173,15 @@ class RemoteAttestationCreationServiceImplTest extends PKIFactoryAccess {
 
         signingAlias = ECDSA_USER;
 
-        ToBeSignedDTO dataToSign = eaaService.getDataToSign(payloadParameters, signatureParameters);
+        ToBeSignedDTO dataToSign = attestationService.getDataToSign(payloadParameters, signatureParameters);
         assertNotNull(dataToSign);
 
         SignatureValue signatureValue = getToken().sign(DTOConverter.toToBeSigned(dataToSign), DigestAlgorithm.SHA256, getPrivateKeyEntry());
-        RemoteDocument signedEAA = eaaService.signEAA(payloadParameters, signatureParameters,
+        RemoteDocument signedAttestation = attestationService.signAttestation(payloadParameters, signatureParameters,
                 new SignatureValueDTO(signatureValue.getAlgorithm(), signatureValue.getValue()));
-        assertNotNull(signedEAA);
+        assertNotNull(signedAttestation);
 
-        List<DisclosureDTO> disclosures = eaaService.getDisclosures(payloadParameters);
+        List<DisclosureDTO> disclosures = attestationService.getDisclosures(payloadParameters);
 
         signingAlias = ECDSA_521_USER;
 
@@ -190,48 +190,48 @@ class RemoteAttestationCreationServiceImplTest extends PKIFactoryAccess {
         keyBindingSignatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
 
         RemoteKeyBindingParameters keyBindingParameters = new RemoteKeyBindingParameters();
-        keyBindingParameters.setEaaType(AttestationFormat.SD_JWT_VC);
+        keyBindingParameters.setAttestationProfile(AttestationProfile.SD_JWT_VC);
         keyBindingParameters.setNonce("123456");
         keyBindingParameters.setAudience("audience");
 
-        dataToSign = eaaService.getDataToSignForKeyBindingSignature(signedEAA, disclosures, keyBindingParameters, keyBindingSignatureParameters);
+        dataToSign = attestationService.getDataToSignForKeyBindingSignature(signedAttestation, disclosures, keyBindingParameters, keyBindingSignatureParameters);
         assertNotNull(dataToSign);
         signatureValue = getToken().sign(DTOConverter.toToBeSigned(dataToSign), DigestAlgorithm.SHA512, getPrivateKeyEntry());
 
-        RemoteDocument keyBindingSignature = eaaService.createKeyBindingSignature(signedEAA, disclosures, keyBindingParameters,
+        RemoteDocument keyBindingSignature = attestationService.createKeyBindingSignature(signedAttestation, disclosures, keyBindingParameters,
                 keyBindingSignatureParameters, new SignatureValueDTO(signatureValue.getAlgorithm(), signatureValue.getValue()));
         assertNotNull(keyBindingSignature);
 
-        RemoteDocument attestationPresentation = eaaService.issuePresentation(signedEAA, disclosures, keyBindingSignature,
-                new RemoteAttestationPresentationParameters(AttestationFormat.SD_JWT_VC));
+        RemoteDocument attestationPresentation = attestationService.issuePresentation(signedAttestation, disclosures, keyBindingSignature,
+                new RemoteAttestationPresentationParameters(AttestationProfile.SD_JWT_VC));
 
         InMemoryDocument iMD = new InMemoryDocument(attestationPresentation.getBytes());
         DiagnosticData diagnosticData = validate(iMD, null);
 
-        AttestationWrapper eaa = diagnosticData.getEAAById(diagnosticData.getFirstEAAId());
-        assertEquals(AttestationFormat.SD_JWT_VC, eaa.getEAAType());
+        AttestationWrapper attestation = diagnosticData.getAttestationById(diagnosticData.getFirstAttestationId());
+        assertEquals(AttestationProfile.SD_JWT_VC, attestation.getAttestationProfile());
 
-        assertEquals("urn:eudi:attestation:1", eaa.getVerifiableCredentialsTypeUri());
-        assertEquals(DigestAlgorithm.SHA256, eaa.getVerifiableCredentialsTypeIntegrityDigestAlgorithm());
-        assertArrayEquals(DSSUtils.digest(DigestAlgorithm.SHA256, "vct".getBytes()), eaa.getVerifiableCredentialsTypeIntegrityBytes());
-        assertEquals(DSSUtils.formatDateToRFC(signingTime), DSSUtils.formatDateToRFC(eaa.getNotBefore()));
-        assertEquals(DSSUtils.formatDateToRFC(expirationTime), DSSUtils.formatDateToRFC(eaa.getExpiration()));
-        assertEquals("EAA provider", eaa.getIssuer());
-        assertEquals("good-ecdsa-user", eaa.getSubject());
-        assertEquals("TEST Authority", eaa.getDocumentIssuingAuthority());
-        assertEquals("LU", eaa.getDocumentIssuingAuthorityCountry());
-        assertEquals("VATLU-123456", eaa.getIssuingRegistrationIdentifier());
-        assertEquals("John", eaa.getGivenName());
-        assertEquals("Doe", eaa.getFamilyName());
+        assertEquals("urn:eudi:attestation:1", attestation.getVerifiableCredentialsTypeUri());
+        assertEquals(DigestAlgorithm.SHA256, attestation.getVerifiableCredentialsTypeIntegrityDigestAlgorithm());
+        assertArrayEquals(DSSUtils.digest(DigestAlgorithm.SHA256, "vct".getBytes()), attestation.getVerifiableCredentialsTypeIntegrityBytes());
+        assertEquals(DSSUtils.formatDateToRFC(signingTime), DSSUtils.formatDateToRFC(attestation.getNotBefore()));
+        assertEquals(DSSUtils.formatDateToRFC(expirationTime), DSSUtils.formatDateToRFC(attestation.getExpiration()));
+        assertEquals("Attestation provider", attestation.getIssuer());
+        assertEquals("good-ecdsa-user", attestation.getSubject());
+        assertEquals("TEST Authority", attestation.getDocumentIssuingAuthority());
+        assertEquals("LU", attestation.getDocumentIssuingAuthorityCountry());
+        assertEquals("VATLU-123456", attestation.getIssuingRegistrationIdentifier());
+        assertEquals("John", attestation.getGivenName());
+        assertEquals("Doe", attestation.getFamilyName());
 
-        assertEquals("urn:etsi:esi:attestation:eu:qualified", eaa.getCategory());
+        assertEquals("urn:etsi:esi:attestation:eu:qualified", attestation.getCategory());
 
-        assertEquals(1, eaa.getStatusIndex());
-        assertEquals("https://pki.nowina.lu/eaa/status_list", eaa.getStatusUri());
+        assertEquals(1, attestation.getStatusIndex());
+        assertEquals("https://pki.nowina.lu/eaa/status_list", attestation.getStatusUri());
 
-        assertArrayEquals(getSigningCert().getPublicKey().getEncoded(), eaa.getDevicePublicKey());
+        assertArrayEquals(getSigningCert().getPublicKey().getEncoded(), attestation.getDevicePublicKey());
 
-        List<ClaimWrapper> otherClaims = eaa.getOtherClaims();
+        List<ClaimWrapper> otherClaims = attestation.getOtherClaims();
         assertEquals(1, otherClaims.size());
 
         ClaimWrapper petsClaimWrapper = otherClaims.get(0);
@@ -272,7 +272,7 @@ class RemoteAttestationCreationServiceImplTest extends PKIFactoryAccess {
 
         signingAlias = ECDSA_521_USER;
 
-        RemoteAttestationPayloadParameters payloadParameters = new RemoteAttestationPayloadParameters(AttestationFormat.ISO_IEC_MDOC);
+        RemoteAttestationPayloadParameters payloadParameters = new RemoteAttestationPayloadParameters(AttestationProfile.ISO_IEC_MDOC);
 
         payloadParameters.setDocType(MdocConstants.ISO18013_5_MDL_DOC_TYPE);
         RemotePublicKey publicKey = new RemotePublicKey();
@@ -319,15 +319,15 @@ class RemoteAttestationCreationServiceImplTest extends PKIFactoryAccess {
 
         signingAlias = ECDSA_USER;
 
-        ToBeSignedDTO dataToSign = eaaService.getDataToSign(payloadParameters, signatureParameters);
+        ToBeSignedDTO dataToSign = attestationService.getDataToSign(payloadParameters, signatureParameters);
         assertNotNull(dataToSign);
 
         SignatureValue signatureValue = getToken().sign(DTOConverter.toToBeSigned(dataToSign), DigestAlgorithm.SHA256, getPrivateKeyEntry());
-        RemoteDocument signedEAA = eaaService.signEAA(payloadParameters, signatureParameters,
+        RemoteDocument signedAttestation = attestationService.signAttestation(payloadParameters, signatureParameters,
                 new SignatureValueDTO(signatureValue.getAlgorithm(), signatureValue.getValue()));
-        assertNotNull(signedEAA);
+        assertNotNull(signedAttestation);
 
-        List<DisclosureDTO> disclosures = eaaService.getDisclosures(payloadParameters);
+        List<DisclosureDTO> disclosures = attestationService.getDisclosures(payloadParameters);
 
         signingAlias = ECDSA_521_USER;
 
@@ -336,50 +336,50 @@ class RemoteAttestationCreationServiceImplTest extends PKIFactoryAccess {
         keyBindingSignatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
 
         RemoteKeyBindingParameters keyBindingParameters = new RemoteKeyBindingParameters();
-        keyBindingParameters.setEaaType(AttestationFormat.ISO_IEC_MDOC);
+        keyBindingParameters.setAttestationProfile(AttestationProfile.ISO_IEC_MDOC);
         keyBindingParameters.setSessionTranscript(new RemoteDocument(Utils.fromHex("80")));
         keyBindingParameters.setDocType(MdocConstants.ISO18013_5_MDL_DOC_TYPE);
 
-        dataToSign = eaaService.getDataToSignForKeyBindingSignature(signedEAA, disclosures, keyBindingParameters, keyBindingSignatureParameters);
+        dataToSign = attestationService.getDataToSignForKeyBindingSignature(signedAttestation, disclosures, keyBindingParameters, keyBindingSignatureParameters);
         assertNotNull(dataToSign);
         signatureValue = getToken().sign(DTOConverter.toToBeSigned(dataToSign), DigestAlgorithm.SHA512, getPrivateKeyEntry());
 
-        RemoteDocument keyBindingSignature = eaaService.createKeyBindingSignature(signedEAA, disclosures, keyBindingParameters,
+        RemoteDocument keyBindingSignature = attestationService.createKeyBindingSignature(signedAttestation, disclosures, keyBindingParameters,
                 keyBindingSignatureParameters, new SignatureValueDTO(signatureValue.getAlgorithm(), signatureValue.getValue()));
         assertNotNull(keyBindingSignature);
 
-        RemoteDocument attestationPresentation = eaaService.issuePresentation(signedEAA, disclosures, keyBindingSignature,
-                new RemoteAttestationPresentationParameters(AttestationFormat.ISO_IEC_MDOC));
+        RemoteDocument attestationPresentation = attestationService.issuePresentation(signedAttestation, disclosures, keyBindingSignature,
+                new RemoteAttestationPresentationParameters(AttestationProfile.ISO_IEC_MDOC));
 
         InMemoryDocument iMD = new InMemoryDocument(attestationPresentation.getBytes());
         DiagnosticData diagnosticData = validate(iMD, new InMemoryDocument(Utils.fromHex("80")));
 
-        AttestationWrapper eaa = diagnosticData.getEAAById(diagnosticData.getFirstEAAId());
-        assertEquals(AttestationFormat.ISO_IEC_MDOC, eaa.getEAAType());
+        AttestationWrapper attestation = diagnosticData.getAttestationById(diagnosticData.getFirstAttestationId());
+        assertEquals(AttestationProfile.ISO_IEC_MDOC, attestation.getAttestationProfile());
 
-        assertEquals("1.0", eaa.getVersion());
-        assertEquals("org.iso.18013.5.1.mDL", eaa.getAttestationDocumentType());
+        assertEquals("1.0", attestation.getVersion());
+        assertEquals("org.iso.18013.5.1.mDL", attestation.getAttestationDocumentType());
 
-        assertEquals(DSSUtils.formatDateToRFC(signingDate), DSSUtils.formatDateToRFC(eaa.getIssuedAt()));
-        assertEquals(DSSUtils.formatDateToRFC(validFrom), DSSUtils.formatDateToRFC(eaa.getNotBefore()));
-        assertEquals(DSSUtils.formatDateToRFC(validUntil), DSSUtils.formatDateToRFC(eaa.getExpiration()));
-        assertEquals(DSSUtils.formatDateToRFC(nextUpdate), DSSUtils.formatDateToRFC(eaa.getNextUpdate()));
+        assertEquals(DSSUtils.formatDateToRFC(signingDate), DSSUtils.formatDateToRFC(attestation.getIssuedAt()));
+        assertEquals(DSSUtils.formatDateToRFC(validFrom), DSSUtils.formatDateToRFC(attestation.getNotBefore()));
+        assertEquals(DSSUtils.formatDateToRFC(validUntil), DSSUtils.formatDateToRFC(attestation.getExpiration()));
+        assertEquals(DSSUtils.formatDateToRFC(nextUpdate), DSSUtils.formatDateToRFC(attestation.getNextUpdate()));
 
-        assertArrayEquals(new byte[] { 1 }, eaa.getIdentifierListId());
-        assertEquals("https://pki.nowina.lu/eaa/identifier_list", eaa.getIdentifierListUri());
-        assertArrayEquals(getCertificate(GOOD_CA).getEncoded(), eaa.getIdentifierListCertificate());
+        assertArrayEquals(new byte[] { 1 }, attestation.getIdentifierListId());
+        assertEquals("https://pki.nowina.lu/eaa/identifier_list", attestation.getIdentifierListUri());
+        assertArrayEquals(getCertificate(GOOD_CA).getEncoded(), attestation.getIdentifierListCertificate());
 
-        assertEquals("John", eaa.getGivenName());
-        assertEquals("Doe", eaa.getFamilyName());
-        assertEquals("2001-01-01T00:00:00Z", DSSUtils.formatDateToRFC(eaa.getBirthdate()));
-        assertEquals("2026-06-01T00:00:00Z", DSSUtils.formatDateToRFC(eaa.getAdministrativeIssuanceDate()));
-        assertEquals("2026-08-31T00:00:00Z", DSSUtils.formatDateToRFC(eaa.getAdministrativeExpirationDate()));
-        assertEquals("LU", eaa.getDocumentIssuingAuthorityCountry());
-        assertEquals("TEST Authority", eaa.getDocumentIssuingAuthority());
-        assertEquals("VATLU-123456789", eaa.getIssuingRegistrationIdentifier());
-        assertEquals("123456789", eaa.getDocumentNumber());
+        assertEquals("John", attestation.getGivenName());
+        assertEquals("Doe", attestation.getFamilyName());
+        assertEquals("2001-01-01T00:00:00Z", DSSUtils.formatDateToRFC(attestation.getBirthdate()));
+        assertEquals("2026-06-01T00:00:00Z", DSSUtils.formatDateToRFC(attestation.getAdministrativeIssuanceDate()));
+        assertEquals("2026-08-31T00:00:00Z", DSSUtils.formatDateToRFC(attestation.getAdministrativeExpirationDate()));
+        assertEquals("LU", attestation.getDocumentIssuingAuthorityCountry());
+        assertEquals("TEST Authority", attestation.getDocumentIssuingAuthority());
+        assertEquals("VATLU-123456789", attestation.getIssuingRegistrationIdentifier());
+        assertEquals("123456789", attestation.getDocumentNumber());
 
-        DrivingPrivilegesClaimWrapper drivingPrivileges = eaa.getDrivingPrivileges();
+        DrivingPrivilegesClaimWrapper drivingPrivileges = attestation.getDrivingPrivileges();
         assertNotNull(drivingPrivileges);
         assertEquals(1, Utils.collectionSize(drivingPrivileges.getDrivingPrivileges()));
 
@@ -394,31 +394,31 @@ class RemoteAttestationCreationServiceImplTest extends PKIFactoryAccess {
         if (sessionTranscript != null) {
             MdocValidationParameters mdocValidationParameters = new MdocValidationParameters();
             mdocValidationParameters.setSessionTranscript(sessionTranscript);
-            validator.setEAAValidationParameters(mdocValidationParameters);
+            validator.setAttestationValidationParameters(mdocValidationParameters);
         }
         validator.setCertificateVerifier(getCompleteCertificateVerifier());
 
         Reports reports = validator.validateDocument();
 
         SimpleReport simpleReport = reports.getSimpleReport();
-        if (Utils.isCollectionNotEmpty(simpleReport.getEAAIdList())) {
-            assertNotEquals(Indication.FAILED, simpleReport.getIndication(simpleReport.getFirstEAAId()));
+        if (Utils.isCollectionNotEmpty(simpleReport.getAttestationIdList())) {
+            assertNotEquals(Indication.FAILED, simpleReport.getIndication(simpleReport.getFirstAttestationId()));
         }
 
         DiagnosticData diagnosticData = reports.getDiagnosticData();
-        List<AttestationWrapper> eaaList = diagnosticData.getEAAs();
-        for (AttestationWrapper eaa : eaaList) {
-            for (XmlDigestMatcher xmlDigestMatcher : eaa.getDigestMatchers()) {
+        List<AttestationWrapper> attestationList = diagnosticData.getAttestations();
+        for (AttestationWrapper attestation : attestationList) {
+            for (XmlDigestMatcher xmlDigestMatcher : attestation.getDigestMatchers()) {
                 assertTrue(xmlDigestMatcher.isDataFound());
                 assertTrue(xmlDigestMatcher.isDataIntact());
             }
-            List<SignatureWrapper> eaaSignatures = eaa.getEAASignatures();
-            assertEquals(1, Utils.collectionSize(eaaSignatures));
-            assertTrue(eaaSignatures.get(0).isSignatureIntact());
-            assertTrue(eaaSignatures.get(0).isSignatureValid());
-            assertTrue(eaaSignatures.get(0).isStructuralValidationValid());
+            List<SignatureWrapper> attestationSignatures = attestation.getAttestationSignatures();
+            assertEquals(1, Utils.collectionSize(attestationSignatures));
+            assertTrue(attestationSignatures.get(0).isSignatureIntact());
+            assertTrue(attestationSignatures.get(0).isSignatureValid());
+            assertTrue(attestationSignatures.get(0).isStructuralValidationValid());
 
-            SignatureWrapper keyBindingSignature = eaa.getKeyBindingSignature();
+            SignatureWrapper keyBindingSignature = attestation.getKeyBindingSignature();
             if (keyBindingSignature != null) {
                 assertTrue(keyBindingSignature.isSignatureIntact());
                 assertTrue(keyBindingSignature.isSignatureValid());

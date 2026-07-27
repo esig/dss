@@ -2671,7 +2671,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 					ValidationStatusType signatureValidationStatus = validationReport.getSignatureValidationStatus();
 					assertNotNull(signatureValidationStatus);
 					if (ObjectType.OTHER == validationObject.getObjectType()) {
-						// skip process for EAA, as may have different validation results than BBB alone
+						// skip process for attestation, as may have different validation results than BBB alone
 						continue;
 					}
 					assertEquals(conclusion.getIndication(), signatureValidationStatus.getMainIndication());
@@ -2736,7 +2736,7 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 			assertEquals(diagnosticData.getTimestampList().size(), timestampCounter);
 			assertEquals(diagnosticData.getEvidenceRecords().size(), evidenceRecordCounter);
 			assertEquals(diagnosticData.getAllSignerDocuments().size(), signedDataCounter);
-			assertEquals(diagnosticData.getEAAs().size(), otherCounter);
+			assertEquals(diagnosticData.getAttestations().size(), otherCounter);
 			
 		} else {
 			assertEquals(0, diagnosticData.getUsedCertificates().size());

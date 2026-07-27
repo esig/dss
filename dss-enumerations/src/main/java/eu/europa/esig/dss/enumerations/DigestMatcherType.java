@@ -103,16 +103,16 @@ public enum DigestMatcherType {
 	/** Evidence record embedded in a signature */
 	EVIDENCE_RECORD_MASTER_SIGNATURE,
 
-	/** Disclosure attached to a presentation of EAA */
-	EAA_DISCLOSURE,
+	/** Disclosure attached to a presentation of attestation */
+	SELECTIVE_DISCLOSURE,
 
-	/** Disclosure nested to provided disclosure to a presentation of EAA */
-	EAA_NESTED_DISCLOSURE,
+	/** Disclosure nested to provided disclosure to a presentation of attestation */
+	NESTED_SELECTIVE_DISCLOSURE,
 
 	/** Incorporated SD claim for which no matching provided disclosure has been found */
-	EAA_ORPHAN_SELECTIVELY_DISCLOSABLE_CLAIM,
+	ORPHAN_SELECTIVELY_DISCLOSABLE_CLAIM,
 
-	/** Input used to compute a key binding signature (used in EAA) */
-	EAA_KEY_BINDING
+	/** Input used to compute a key binding signature (used in attestation presentation) */
+	KEY_BINDING_SIGNATURE
 
 }

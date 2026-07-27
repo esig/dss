@@ -30,31 +30,31 @@ import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
 /**
- * This class verifies whether the EAA contains the 'not before' information
+ * This class verifies whether the attestation contains the 'not before' information
  *
  */
 public class AttestationNotBeforePresentCheck extends ChainItem<XmlSAV> {
 
-    /** EAA to check */
-    private final AttestationWrapper eaa;
+    /** attestation to check */
+    private final AttestationWrapper attestation;
 
     /**
      * Default constructor
      *
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlSAV}
-     * @param eaa {@link AttestationWrapper}
+     * @param attestation {@link AttestationWrapper}
      * @param constraint {@link LevelRule}
      */
     public AttestationNotBeforePresentCheck(I18nProvider i18nProvider, XmlSAV result,
-                                            AttestationWrapper eaa, LevelRule constraint) {
+                                            AttestationWrapper attestation, LevelRule constraint) {
         super(i18nProvider, result, constraint);
-        this.eaa = eaa;
+        this.attestation = attestation;
     }
 
     @Override
     protected boolean process() {
-        return eaa.getNotBefore() != null;
+        return attestation.getNotBefore() != null;
     }
 
     @Override
@@ -74,7 +74,7 @@ public class AttestationNotBeforePresentCheck extends ChainItem<XmlSAV> {
 
     @Override
     protected SubIndication getFailedSubIndicationForConclusion() {
-        return SubIndication.EAA_CONSTRAINTS_FAILURE;
+        return SubIndication.ATTESTATION_CONSTRAINTS_FAILURE;
     }
 
 }

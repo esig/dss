@@ -338,34 +338,34 @@
             <Cryptographic />
         </BasicSignatureConstraints>
     </Revocation>
-    <EAA>
-        <EAASignatureUnicity Level="FAIL" />
-        <EAASignatureValid Level="FAIL" />
+    <Attestation>
+        <AttestationSignatureUnicity Level="FAIL" />
+        <AttestationSignatureValid Level="FAIL" />
         <DisclosurePresent Level="WARN" />
         <DisclosureFound Level="FAIL" />
         <DisclosureIntact Level="FAIL" />
         <KeyBindingSignaturePresent Level="WARN" />
         <KeyBindingSignatureValid Level="FAIL" />
         <ETSI194721Conformance Level="WARN" />
-        <EAAType Level="WARN">
+        <AttestationType Level="WARN">
             <Id>*</Id>
-        </EAAType>
-        <EAATypeIntegrityPresent Level="WARN" />
-        <EAAIssuanceDatePresent Level="FAIL" />
-        <EAANotBeforePresent Level="FAIL" />
-        <EAAExpirationPresent Level="FAIL" />
-        <EAANotExpired Level="FAIL" />
-        <EAAAdministrativePeriodNotExpired Level="WARN" />
-        <EAAOneTimeUse Level="INFORM" />
-        <EAAShortLived Level="INFORM" />
-        <EAARevocationPresent Level="WARN" />
-        <EAARevocationAvailable Level="FAIL" />
-        <AcceptableEAARevocationFound Level="FAIL" />
+        </AttestationType>
+        <AttestationTypeIntegrityPresent Level="WARN" />
+        <IssuanceDatePresent Level="FAIL" />
+        <NotBeforePresent Level="FAIL" />
+        <ExpirationPresent Level="FAIL" />
+        <NotExpired Level="FAIL" />
+        <AdministrativePeriodNotExpired Level="WARN" />
+        <OneTimeUse Level="INFORM" />
+        <ShortLived Level="INFORM" />
+        <RevocationPresent Level="WARN" />
+        <RevocationAvailable Level="FAIL" />
+        <AcceptableRevocationFound Level="FAIL" />
         <NotRevoked Level="FAIL" />
         <NotOnHold Level="FAIL" />
-        <EAAUsePseudonym Level="INFORM" />
-    </EAA>
-    <EAARevocation>
+        <UsePseudonym Level="INFORM" />
+    </Attestation>
+    <AttestationRevocation>
         <Type Level="FAIL">
             <Id>*</Id>
         </Type>
@@ -460,7 +460,7 @@
             </CACertificate>
             <Cryptographic />
         </BasicSignatureConstraints>
-    </EAARevocation>
+    </AttestationRevocation>
     <Cryptographic Level="FAIL">
         <AcceptableEncryptionAlgo>
             <Algo>RSA</Algo>

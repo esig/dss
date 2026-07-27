@@ -30,7 +30,7 @@ import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
 /**
- * Checks if the revocation revocation is known
+ * Checks if the revocation status is known
  */
 public class RevocationDataKnownCheck extends ChainItem<XmlRAC> {
 

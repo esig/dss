@@ -23,37 +23,37 @@ package eu.europa.esig.dss.attestation.sd.jwt.validation;
 import java.util.Map;
 
 import eu.europa.esig.dss.attestation.sd.jwt.SDJWTConstants;
-import eu.europa.esig.dss.attestation.sd.jwt.claim.SDJWTClaimMap;
-import eu.europa.esig.dss.model.attestation.claim.ClaimDate;
-import eu.europa.esig.dss.model.attestation.claim.ClaimString;
+import eu.europa.esig.dss.attestation.sd.jwt.claim.SDJWTVerifiedClaimMap;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimDate;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimString;
 import eu.europa.esig.dss.spi.attestation.KeyBindingSignaturePayload;
 
 /**
- * Implementation of {@link KeyBindingSignaturePayload} for SD-JWT EAA
+ * Implementation of {@link KeyBindingSignaturePayload} for SD-JWT-KB
  */
-public class SDJWTKeyBindingSignaturePayload extends SDJWTClaimMap implements KeyBindingSignaturePayload {
+public class SDJWTKeyBindingSignaturePayload extends SDJWTVerifiedClaimMap implements KeyBindingSignaturePayload {
 
     SDJWTKeyBindingSignaturePayload(final Map<String, Object> payload) {
         super(payload);
     }
 
     @Override
-    public ClaimString getNonce() {
+    public VerifiedClaimString getNonce() {
         return getAsString(SDJWTConstants.NONCE);
     }
 
     @Override
-    public ClaimDate getIssuedAt() {
+    public VerifiedClaimDate getIssuedAt() {
         return getAsDateTime(SDJWTConstants.ISSUED_AT);
     }
 
     @Override
-    public ClaimString getAudience() {
+    public VerifiedClaimString getAudience() {
         return getAsString(SDJWTConstants.AUDIENCE);
     }
 
     @Override
-    public ClaimString getSdHash() {
+    public VerifiedClaimString getSdHash() {
         return getAsString(SDJWTConstants.SD_HASH);
     }
 

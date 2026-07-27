@@ -14,14 +14,14 @@
 |v6.5.RC1          |July 2026              a|Main new features / improvements :
 
                                             * Creation and validation of CB-AdES signatures (ETSI TS 119 152-1 <<R41>>);
-                                            * Creation of Electronic Attestation of Attribute Presentations (EAAP) on SD-JWT VC <<R36>> & ISO/IEC-mdoc <<R38>>;
-                                            * Validation of Electronic Attestation of Attributes (EAA) based on SD-JWT VC <<R36>> and ISO/IEC-mdoc <<R38>> as per ETSI TS 119-472-1 <<R34>>;
-                                            * EAA Qualification validation (QEAA, PuB-EAA, PID);
-                                            * EAA revocation verification (Token Status List, Identifiers List);
+                                            * Creation of attestations and presentations in SD-JWT <<R35>> & ISO/IEC-mdoc <<R38>>;
+                                            * Validation of attestations based on SD-JWT <<R35>> and ISO/IEC-mdoc <<R38>>, with support of ETSI TS 119-472-1 <<R34>>;
+                                            * Attestation qualification validation (QEAA, PuB-EAA, PID, etc.);
+                                            * Attestation revocation verification (Token Status List, Identifiers List);
                                             * Introduce generic validation job module for a document validation;
                                             * Validation job for a List of Trusted Entities (ETSI TS 119 602 <<R33>>), in XML and JSON;
                                             * Validation of certificate approval status using a LoTE (ETSI TS 119 605 <<R39>>);
-                                            * REST and SOAP webservices for EAA creation and validation;
+                                            * REST and SOAP webservices for attestation creation and validation;
                                             * XAdES : Add alternative XPath query executor for XML processing;
                                             * PAdES : Review DPI behavior for visual PDF signatures;
                                             * PAdES : Resolve limitations in DSSSecureRansomProvider;
@@ -31,7 +31,7 @@
                                             * Added a predicate to `FileCacheDataLoader` to choose whether to cache the downloaded data;
                                             * Dependencies update (BouncyCastle, HttpClient5, PdfBox, VeraPDF, etc.);
                                             * Demos : New page for CB-AdES signature creation;
-                                            * Demos : New page in the webapp for validation of EAAs;
+                                            * Demos : New page in the webapp for validation of attestations;
                                             * Demos : OJEU keystore update;
                                             * Demos : Webapp upgraded to Spring-Boot 4;
                                             * Java 26 support.

@@ -21,14 +21,14 @@
 package eu.europa.esig.dss.attestation.revocation.jwt.validation.statuslist;
 
 import eu.europa.esig.dss.attestation.revocation.validation.statuslist.TokenStatusListValidator;
-import eu.europa.esig.dss.attestation.revocation.validation.statuslist.StatusListValidatorFactory;
+import eu.europa.esig.dss.attestation.revocation.validation.statuslist.TokenStatusListValidatorFactory;
 
 /**
  * Loads a corresponding validator for a Token Status List (TSL) provided in JWT Format,
  * as defined in "5.1. Status List Token in JWT Format" of
  * <a href="https://www.ietf.org/archive/id/draft-ietf-oauth-status-list-20.html">IETF Token Status List (TSL)</a>.
  */
-public class JWTTokenStatusListValidatorFactory implements StatusListValidatorFactory {
+public class JWTTokenStatusListValidatorFactory implements TokenStatusListValidatorFactory {
 
     /**
      * Default constructor
@@ -38,13 +38,13 @@ public class JWTTokenStatusListValidatorFactory implements StatusListValidatorFa
     }
 
     @Override
-    public boolean isSupported(byte[] eaaStatusList) {
-        return new JWTTokenStatusListValidator().isSupported(eaaStatusList);
+    public boolean isSupported(byte[] tokenStatusList) {
+        return new JWTTokenStatusListValidator().isSupported(tokenStatusList);
     }
 
     @Override
-    public TokenStatusListValidator create(byte[] eaaStatusList) {
-        return new JWTTokenStatusListValidator(eaaStatusList);
+    public TokenStatusListValidator create(byte[] tokenStatusList) {
+        return new JWTTokenStatusListValidator(tokenStatusList);
     }
 
 }

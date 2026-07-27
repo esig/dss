@@ -30,7 +30,7 @@ import eu.europa.esig.dss.ws.attestation.creation.dto.parameters.DisclosureDTO;
 import java.util.function.Function;
 
 /**
- * Converts a {@code EAADisclosure} into {@code DisclosureDTO} of a corresponding format
+ * Converts a {@code AttestationDisclosure} into {@code DisclosureDTO} of a corresponding format
  *
  */
 public class DisclosureToDTOConverter implements Function<SelectiveDisclosure, DisclosureDTO> {
@@ -48,12 +48,12 @@ public class DisclosureToDTOConverter implements Function<SelectiveDisclosure, D
             SDJWTSelectiveDisclosure sdjwtSelectiveDisclosure = (SDJWTSelectiveDisclosure) disclosureDTO;
             return new DisclosureDTO(sdjwtSelectiveDisclosure.getDisclosure());
         } else if (disclosureDTO instanceof MdocSelectiveDisclosure) {
-            MdocSelectiveDisclosure mdocEAADisclosure = (MdocSelectiveDisclosure) disclosureDTO;
-            String disclosureValueB64 = Utils.toBase64(CBORUtils.serializeCborObject(mdocEAADisclosure.getIssuerSignedItemBytes()));
-            return new DisclosureDTO(mdocEAADisclosure.getNamespace(), mdocEAADisclosure.getDigestId(), disclosureValueB64);
+            MdocSelectiveDisclosure mdocAttestationDisclosure = (MdocSelectiveDisclosure) disclosureDTO;
+            String disclosureValueB64 = Utils.toBase64(CBORUtils.serializeCborObject(mdocAttestationDisclosure.getIssuerSignedItemBytes()));
+            return new DisclosureDTO(mdocAttestationDisclosure.getNamespace(), mdocAttestationDisclosure.getDigestId(), disclosureValueB64);
         } else {
             throw new UnsupportedOperationException(String.format(
-                    "The EAA Disclosure Type '%s' is not supported!", disclosureDTO.getClass().getSimpleName()));
+                    "The attestation Disclosure Type '%s' is not supported!", disclosureDTO.getClass().getSimpleName()));
         }
     }
 

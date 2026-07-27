@@ -41,7 +41,7 @@ import eu.europa.esig.dss.validation.process.attestation.status.AttestationRevoc
 import java.util.Date;
 
 /**
- * Performs verification of EAA revocation token against the validationPolicy defined acceptance criteria
+ * Performs verification of attestation revocation token against the validationPolicy defined acceptance criteria
  *
  */
 public class AttestationRevocationTokenAcceptanceValidation extends AbstractAcceptanceValidation<AttestationRevocationTokenWrapper> {
@@ -57,7 +57,7 @@ public class AttestationRevocationTokenAcceptanceValidation extends AbstractAcce
      */
     public AttestationRevocationTokenAcceptanceValidation(I18nProvider i18nProvider, Date currentTime,
                                                           AttestationRevocationTokenWrapper attestationRevocationTokenWrapper, XmlAOV aov, ValidationPolicy validationPolicy) {
-        super(i18nProvider, attestationRevocationTokenWrapper, currentTime, Context.EAA_REVOCATION, aov, validationPolicy);
+        super(i18nProvider, attestationRevocationTokenWrapper, currentTime, Context.ATTESTATION_REVOCATION, aov, validationPolicy);
     }
 
     @Override
@@ -91,32 +91,32 @@ public class AttestationRevocationTokenAcceptanceValidation extends AbstractAcce
     }
 
     private ChainItem<XmlSAV> issuanceTime() {
-        LevelRule constraint = validationPolicy.getEAARevocationIssuanceTimeConstraint();
+        LevelRule constraint = validationPolicy.getAttestationRevocationIssuanceTimeConstraint();
         return new AttestationRevocationIssuanceTimeCheck(i18nProvider, result, token, constraint);
     }
 
     private ChainItem<XmlSAV> expirationTime() {
-        LevelRule constraint = validationPolicy.getEAARevocationExpirationTimeConstraint();
+        LevelRule constraint = validationPolicy.getAttestationRevocationExpirationTimeConstraint();
         return new AttestationRevocationExpirationTimeCheck(i18nProvider, result, token, constraint);
     }
 
     private ChainItem<XmlSAV> notExpired() {
-        LevelRule constraint = validationPolicy.getEAARevocationNotExpiredConstraint();
+        LevelRule constraint = validationPolicy.getAttestationRevocationNotExpiredConstraint();
         return new AttestationRevocationNotExpiredCheck(i18nProvider, result, token, currentTime, constraint);
     }
 
     private ChainItem<XmlSAV> subject() {
-        MultiValuesRule constraint = validationPolicy.getAttestationRevocationsubjectConstraint();
+        MultiValuesRule constraint = validationPolicy.getAttestationRevocationSubjectConstraint();
         return new AttestationRevocationSubjectCheck(i18nProvider, result, token, constraint);
     }
 
     private ChainItem<XmlSAV> subjectMatches() {
-        LevelRule constraint = validationPolicy.getAttestationRevocationsubjectMatchConstraint();
+        LevelRule constraint = validationPolicy.getAttestationRevocationSubjectMatchConstraint();
         return new AttestationRevocationSubjectMatchCheck(i18nProvider, result, token, constraint);
     }
 
     private ChainItem<XmlSAV> issuerValidAtIssuanceTime() {
-        LevelRule constraint = validationPolicy.getEAARevocationIssuerValidAtIssuanceTimeConstraint();
+        LevelRule constraint = validationPolicy.getAttestationRevocationIssuerValidAtIssuanceTimeConstraint();
         return new AttestationRevocationIssuerValidAtIssuanceTimeCheck(i18nProvider, result, token, constraint);
     }
 

@@ -1,7 +1,7 @@
 package plugtests;
 
 import eu.europa.esig.dss.detailedreport.DetailedReport;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlEAA;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlAttestation;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.AttestationRevocationTokenWrapper;
 import eu.europa.esig.dss.diagnostic.AttestationRevocationWrapper;
@@ -9,11 +9,11 @@ import eu.europa.esig.dss.diagnostic.AttestationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.claim.ClaimWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlEAADocument;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlEAAPresentationInfo;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationDocument;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationPresentationInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.attestation.common.validation.DefaultAttestationDocumentValidator;
-import eu.europa.esig.dss.enumerations.AttestationFormat;
+import eu.europa.esig.dss.enumerations.AttestationProfile;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureScopeType;
 import eu.europa.esig.dss.enumerations.SubIndication;
@@ -57,7 +57,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 /**
- * This test is only to ensure that we don't have exception with valid? EAA files
+ * This test is only to ensure that we don't have exception with valid? attestation files
  */
 class AttestationPoolTest extends AbstractTestSignaturePool {
 
@@ -67,7 +67,7 @@ class AttestationPoolTest extends AbstractTestSignaturePool {
 
     private static Stream<Arguments> data() {
 
-        // -Deaa.pool.folder=...
+        // -Dattestation.pool.folder=...
 
         String signaturePoolFolder = System.getProperty("attestation.pool.folder", "src/test/resources/attestation-pool");
         File folder = new File(signaturePoolFolder);
@@ -100,7 +100,7 @@ class AttestationPoolTest extends AbstractTestSignaturePool {
         validator.setSignaturePolicyProvider(getSignaturePolicyProvider());
         validator.setTokenIdentifierProvider(getTokenIdentifierProvider());
         validator.setSigningCertificateSource(getSigningCertificateSource());
-        validator.setEAARevocationSource(null);
+        validator.setAttestationRevocationSource(null);
 
         SignaturePolicyProvider signaturePolicyProvider = new SignaturePolicyProvider();
         signaturePolicyProvider.setDataLoader(null);
@@ -123,12 +123,12 @@ class AttestationPoolTest extends AbstractTestSignaturePool {
     protected void checkValidationContext(SignedDocumentValidator validator) {
         super.checkValidationContext(validator);
 
-        AttestationDocumentValidator eaaValidator = assertInstanceOf(AttestationDocumentValidator.class, validator);
-        AttestationPresentation attestationPresentation = eaaValidator.getAttestationPresentation();
+        AttestationDocumentValidator attestationValidator = assertInstanceOf(AttestationDocumentValidator.class, validator);
+        AttestationPresentation attestationPresentation = attestationValidator.getAttestationPresentation();
         assertNotNull(attestationPresentation);
-        assertNotNull(attestationPresentation.getEAAPresentationType());
+        assertNotNull(attestationPresentation.getDocumentFormat());
 
-        List<Attestation> attestations = attestationPresentation.getElectronicAttestationsOfAttributes();
+        List<Attestation> attestations = attestationPresentation.getAttestations();
         assertEquals(1, Utils.collectionSize(attestations));
 
         Attestation attestation = attestations.get(0);
@@ -145,46 +145,46 @@ class AttestationPoolTest extends AbstractTestSignaturePool {
     protected void verifyDiagnosticData(DiagnosticData diagnosticData) {
         super.verifyDiagnosticData(diagnosticData);
 
-        checkEAAPresentationInfo(diagnosticData);
-        checkEAAs(diagnosticData);
+        checkAttestationPresentationInfo(diagnosticData);
+        checkAttestations(diagnosticData);
         checkEAAStatusTokens(diagnosticData);
     }
 
-    protected void checkEAAPresentationInfo(DiagnosticData diagnosticData) {
-        XmlEAAPresentationInfo attestationPresentationInfo = diagnosticData.getEAAPresentationInfo();
+    protected void checkAttestationPresentationInfo(DiagnosticData diagnosticData) {
+        XmlAttestationPresentationInfo attestationPresentationInfo = diagnosticData.getAttestationPresentationInfo();
         assertNotNull(attestationPresentationInfo);
-        assertNotNull(attestationPresentationInfo.getEAAPresentationType());
-        assertEquals(attestationPresentationInfo.getEAAPresentationType(), diagnosticData.getEAAPresentationType());
-        List<XmlEAADocument> documents = attestationPresentationInfo.getDocuments();
+        assertNotNull(attestationPresentationInfo.getFormat());
+        assertEquals(attestationPresentationInfo.getFormat(), diagnosticData.getAttestationPresentationFormat());
+        List<XmlAttestationDocument> documents = attestationPresentationInfo.getDocuments();
         assertTrue(Utils.isCollectionNotEmpty(documents));
-        assertEquals(documents.size(), diagnosticData.getEAAs().size());
+        assertEquals(documents.size(), diagnosticData.getAttestations().size());
     }
 
-    protected void checkEAAs(DiagnosticData diagnosticData) {
-        List<AttestationWrapper> eaas = diagnosticData.getEAAs();
-        assertEquals(1, eaas.size());
+    protected void checkAttestations(DiagnosticData diagnosticData) {
+        List<AttestationWrapper> attestations = diagnosticData.getAttestations();
+        assertEquals(1, attestations.size());
 
-        AttestationWrapper eaaWrappper = eaas.get(0);
-        assertNotNull(eaaWrappper.getId());
+        AttestationWrapper attestationWrappper = attestations.get(0);
+        assertNotNull(attestationWrappper.getId());
 
-        checkEAADigestMatchers(diagnosticData);
+        checkAttestationDigestMatchers(diagnosticData);
         checkClaims(diagnosticData);
-        checkEAARevocations(diagnosticData);
+        checkAttestationRevocations(diagnosticData);
     }
 
-    protected void checkEAARevocations(DiagnosticData diagnosticData) {
-        for (AttestationWrapper eaa : diagnosticData.getAllEAA()) {
-            for (AttestationRevocationWrapper eaaStatusWrapper : eaa.getAttestationRevocations()) {
-                assertNotNull(eaaStatusWrapper.getId());
-                assertNotNull(eaaStatusWrapper.getStatus());
+    protected void checkAttestationRevocations(DiagnosticData diagnosticData) {
+        for (AttestationWrapper attestation : diagnosticData.getAllAttestations()) {
+            for (AttestationRevocationWrapper attestationRevocationWrapper : attestation.getAttestationRevocations()) {
+                assertNotNull(attestationRevocationWrapper.getId());
+                assertNotNull(attestationRevocationWrapper.getStatus());
             }
         }
     }
 
-    protected void checkEAADigestMatchers(DiagnosticData diagnosticData) {
-        for (AttestationWrapper eaa : diagnosticData.getEAAs()) {
-            for (XmlDigestMatcher digestMatcher : eaa.getDigestMatchers()) {
-                if (AttestationFormat.ISO_IEC_MDOC == eaa.getEAAType()) {
+    protected void checkAttestationDigestMatchers(DiagnosticData diagnosticData) {
+        for (AttestationWrapper attestation : diagnosticData.getAttestations()) {
+            for (XmlDigestMatcher digestMatcher : attestation.getDigestMatchers()) {
+                if (AttestationProfile.ISO_IEC_MDOC == attestation.getAttestationProfile()) {
                     assertNotNull(digestMatcher.getDisclosableClaim().getId());
                     assertNotNull(digestMatcher.getDisclosableClaim().getNamespace());
                 }
@@ -193,13 +193,13 @@ class AttestationPoolTest extends AbstractTestSignaturePool {
     }
 
     protected void checkClaims(DiagnosticData diagnosticData) {
-        for (AttestationWrapper eaa : diagnosticData.getEAAs()) {
-            List<ClaimWrapper> eaaPayloadClaims = new ArrayList<>(eaa.getAllEAAPayloadClaims());
-            assertTrue(Utils.isCollectionNotEmpty(eaaPayloadClaims));
-            assertTrue(Utils.isCollectionNotEmpty(eaa.getAllEAAPayloadClaimNames()));
-            checkClaimsRecursively(eaaPayloadClaims, true);
-            for (ClaimWrapper claimWrapper : eaaPayloadClaims) {
-                ClaimWrapper claimByHeaderName = eaa.getClaimByHeaderName(claimWrapper.getName());
+        for (AttestationWrapper attestation : diagnosticData.getAttestations()) {
+            List<ClaimWrapper> attestationPayloadClaims = new ArrayList<>(attestation.getAllAttestationPayloadClaims());
+            assertTrue(Utils.isCollectionNotEmpty(attestationPayloadClaims));
+            assertTrue(Utils.isCollectionNotEmpty(attestation.getAllAttestationPayloadClaimNames()));
+            checkClaimsRecursively(attestationPayloadClaims, true);
+            for (ClaimWrapper claimWrapper : attestationPayloadClaims) {
+                ClaimWrapper claimByHeaderName = attestation.getClaimByHeaderName(claimWrapper.getName());
                 assertNotNull(claimByHeaderName);
                 assertEquals(claimByHeaderName.getName(), claimWrapper.getName());
                 assertEquals(claimByHeaderName.getNamespace(), claimWrapper.getNamespace());
@@ -225,7 +225,7 @@ class AttestationPoolTest extends AbstractTestSignaturePool {
                     assertNull(claimByHeaderName.getMap());
                 }
 
-                if (AttestationFormat.ISO_IEC_MDOC == eaa.getEAAType() && claimWrapper.isSelectivelyDisclosable()) {
+                if (AttestationProfile.ISO_IEC_MDOC == attestation.getAttestationProfile() && claimWrapper.isSelectivelyDisclosable()) {
                     assertNotNull(claimWrapper.getNamespace());
                 }
             }
@@ -306,7 +306,7 @@ class AttestationPoolTest extends AbstractTestSignaturePool {
     }
 
     protected void checkEAAStatusTokens(DiagnosticData diagnosticData) {
-        for (AttestationRevocationTokenWrapper attestationRevocationTokenWrapper : diagnosticData.getAllEAARevocationTokens()) {
+        for (AttestationRevocationTokenWrapper attestationRevocationTokenWrapper : diagnosticData.getAllAttestationRevocationTokens()) {
             assertNotNull(attestationRevocationTokenWrapper.getId());
             assertNotNull(attestationRevocationTokenWrapper.getType());
             assertNotNull(attestationRevocationTokenWrapper.getOrigin());
@@ -325,8 +325,8 @@ class AttestationPoolTest extends AbstractTestSignaturePool {
 
     @Override
     protected void checkSignatureScopes(DiagnosticData diagnosticData) {
-        for (AttestationWrapper eaa : diagnosticData.getEAAs()) {
-            for (SignatureWrapper signatureWrapper : eaa.getEAASignatures()) {
+        for (AttestationWrapper attestation : diagnosticData.getAttestations()) {
+            for (SignatureWrapper signatureWrapper : attestation.getAttestationSignatures()) {
                 if (signatureWrapper.isSignatureValid()) {
                     assertEquals(1, Utils.collectionSize(signatureWrapper.getSignatureScopes()));
                     XmlSignatureScope signatureScope = signatureWrapper.getSignatureScopes().get(0);
@@ -335,10 +335,10 @@ class AttestationPoolTest extends AbstractTestSignaturePool {
                     assertNotNull(signatureScope.getSignerData().getDigestAlgoAndValue());
                     assertNotNull(signatureScope.getSignerData().getDigestAlgoAndValue().getDigestMethod());
                     assertNotNull(signatureScope.getSignerData().getDigestAlgoAndValue().getDigestValue());
-                    assertEquals(SignatureScopeType.EAA_SIGNATURE, signatureScope.getScope());
+                    assertEquals(SignatureScopeType.ATTESTATION_SIGNATURE, signatureScope.getScope());
                 }
             }
-            SignatureWrapper keyBindingSignature = eaa.getKeyBindingSignature();
+            SignatureWrapper keyBindingSignature = attestation.getKeyBindingSignature();
             if (keyBindingSignature != null && keyBindingSignature.isSignatureValid()) {
                 assertEquals(1, Utils.collectionSize(keyBindingSignature.getSignatureScopes()));
                 XmlSignatureScope signatureScope = keyBindingSignature.getSignatureScopes().get(0);
@@ -382,15 +382,15 @@ class AttestationPoolTest extends AbstractTestSignaturePool {
             }
         }
 
-        List<String> eaaIds = detailedReport.getEAAIds();
-        for (String eaaId : eaaIds) {
-            XmlEAA xmlEAA = detailedReport.getXmlEAAById(eaaId);
-            assertNotNull(xmlEAA);
+        List<String> attestationIds = detailedReport.getAttestationIds();
+        for (String attestationId : attestationIds) {
+            XmlAttestation xmlAttestation = detailedReport.getXmlAttestationById(attestationId);
+            assertNotNull(xmlAttestation);
 
-            Indication indication = detailedReport.getEAAValidationIndication(eaaId);
+            Indication indication = detailedReport.getAttestationValidationIndication(attestationId);
             assertNotNull(indication);
             if (!Indication.PASSED.equals(indication)) {
-                SubIndication subIndication = detailedReport.getEAAValidationSubIndication(eaaId);
+                SubIndication subIndication = detailedReport.getAttestationValidationSubIndication(attestationId);
                 assertNotNull(subIndication);
             }
         }
@@ -400,12 +400,12 @@ class AttestationPoolTest extends AbstractTestSignaturePool {
     protected void verifySimpleReport(SimpleReport simpleReport) {
         assertNotNull(simpleReport);
 
-        List<String> attestationPresentationIdList = simpleReport.getEAAIdList();
+        List<String> attestationPresentationIdList = simpleReport.getAttestationIdList();
         assertEquals(1, attestationPresentationIdList.size());
 
-        assertEquals(attestationPresentationIdList.get(0), simpleReport.getFirstEAAId());
+        assertEquals(attestationPresentationIdList.get(0), simpleReport.getFirstAttestationId());
 
-        String attestationPresentationId = simpleReport.getFirstEAAId();
+        String attestationPresentationId = simpleReport.getFirstAttestationId();
 
         Indication indication = simpleReport.getIndication(attestationPresentationId);
         assertNotNull(indication);
@@ -421,14 +421,14 @@ class AttestationPoolTest extends AbstractTestSignaturePool {
             assertNotNull(subIndication);
             assertFalse(Utils.isCollectionEmpty(simpleReport.getAdESValidationErrors(attestationPresentationId)));
         }
-        assertNotNull(simpleReport.getEAAQualification(attestationPresentationId));
+        assertNotNull(simpleReport.getAttestationQualification(attestationPresentationId));
 
-        List<XmlSignature> eaaSignatures = simpleReport.getEAASignatures(attestationPresentationId);
-        for (XmlSignature xmlSignature : eaaSignatures) {
+        List<XmlSignature> attestationSignatures = simpleReport.getAttestationSignatures(attestationPresentationId);
+        for (XmlSignature xmlSignature : attestationSignatures) {
             verifySimpleReportSignature(simpleReport, xmlSignature);
         }
 
-        XmlSignature keyBindingSignature = simpleReport.getEAAKeyBindingSignature(attestationPresentationId);
+        XmlSignature keyBindingSignature = simpleReport.getAttestationKeyBindingSignature(attestationPresentationId);
         if (keyBindingSignature != null) {
             verifySimpleReportSignature(simpleReport, keyBindingSignature);
         }

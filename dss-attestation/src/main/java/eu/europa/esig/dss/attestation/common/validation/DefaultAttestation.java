@@ -24,7 +24,7 @@ import eu.europa.esig.dss.attestation.common.validation.identifier.AttestationId
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.attestation.SelectivelyDisclosableClaim;
 import eu.europa.esig.dss.model.attestation.DisclosureValidation;
-import eu.europa.esig.dss.model.attestation.claim.ClaimDeviceKey;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimDeviceKey;
 import eu.europa.esig.dss.model.identifier.Identifier;
 import eu.europa.esig.dss.spi.attestation.Attestation;
 import eu.europa.esig.dss.spi.attestation.AttestationPayload;
@@ -39,12 +39,12 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 /**
- * Abstract implementation of an EAA
+ * Abstract implementation of an attestation
  *
  */
 public abstract class DefaultAttestation implements Attestation {
 
-    /** Cached signature objects used to create the EAA */
+    /** Cached signature objects used to create the attestation */
     private List<AdvancedSignature> signatures;
 
     /** List of disclosures attached to the Attestation Presentation */
@@ -53,13 +53,13 @@ public abstract class DefaultAttestation implements Attestation {
     /** Key binding signature (optional) */
     private AdvancedSignature keyBindingSignature;
 
-    /** The name of the EAA document */
+    /** The name of the attestation document */
     private String filename;
 
-    /** Unique EAA identifier */
+    /** Unique attestation identifier */
     private Identifier identifier;
 
-    /** Cached instance of an EAA Payload Verifier */
+    /** Cached instance of an attestation Payload Verifier */
     private AttestationPayloadVerifier attestationPayloadVerifier;
 
     /**
@@ -90,7 +90,7 @@ public abstract class DefaultAttestation implements Attestation {
 
     @Override
     public List<DisclosureValidation> getDisclosureValidations() {
-        return getEAAPayloadVerifier().getDisclosureValidations();
+        return getAttestationPayloadVerifier().getDisclosureValidations();
     }
 
     @Override
@@ -100,33 +100,33 @@ public abstract class DefaultAttestation implements Attestation {
 
     @Override
     public AttestationPayload getPayload() {
-        return getEAAPayloadVerifier().getVerifiedPayload();
+        return getAttestationPayloadVerifier().getVerifiedPayload();
     }
 
     /**
-     * Gets the EAA Payload Verifier, performing a verification of the attached disclosures as well as
-     * building a constructed version of the EAA Payload with the discloses values attached
+     * Gets the attestation Payload Verifier, performing a verification of the attached disclosures as well as
+     * building a constructed version of the attestation Payload with the discloses values attached
      *
      * @return {@link AttestationPayloadVerifier}
      */
-    protected AttestationPayloadVerifier getEAAPayloadVerifier() {
+    protected AttestationPayloadVerifier getAttestationPayloadVerifier() {
         if (attestationPayloadVerifier == null) {
-            attestationPayloadVerifier = initEAAPayloadVerifier().setDisclosures(disclosures);
+            attestationPayloadVerifier = initAttestationPayloadVerifier().setDisclosures(disclosures);
             attestationPayloadVerifier.verify();
         }
         return attestationPayloadVerifier;
     }
 
     /**
-     * Creates a new instance of {@code EAAPayloadVerifier} relatively to the current implementation
+     * Creates a new instance of {@code AttestationPayloadVerifier} relatively to the current implementation
      *
      * @return {@link AttestationPayloadVerifier}
      */
-    protected abstract AttestationPayloadVerifier initEAAPayloadVerifier();
+    protected abstract AttestationPayloadVerifier initAttestationPayloadVerifier();
 
     @Override
     public DigestAlgorithm getSelectiveDisclosuresDigestAlgorithm() {
-        return getEAAPayloadVerifier().getDigestAlgorithm();
+        return getAttestationPayloadVerifier().getDigestAlgorithm();
     }
 
     @Override
@@ -173,7 +173,7 @@ public abstract class DefaultAttestation implements Attestation {
 
         private static final Logger LOG = LoggerFactory.getLogger(DefaultAttestationBuilder.class);
 
-        /** Cached signature objects used to create the EAA */
+        /** Cached signature objects used to create the attestation */
         private List<AdvancedSignature> signatures;
 
         /** List of disclosures attached to the Attestation Presentation */
@@ -182,7 +182,7 @@ public abstract class DefaultAttestation implements Attestation {
         /** Key binding signature (optional) */
         private AdvancedSignature keyBindingSignature;
 
-        /** The name of the EAA document */
+        /** The name of the attestation document */
         private String filename;
 
         /**
@@ -193,7 +193,7 @@ public abstract class DefaultAttestation implements Attestation {
         }
 
         /**
-         * Sets signatures list used to create the EAA
+         * Sets signatures list used to create the attestation
          *
          * @param signatures a list of {@link AdvancedSignature}s
          * @return this builder
@@ -204,7 +204,7 @@ public abstract class DefaultAttestation implements Attestation {
         }
 
         /**
-         * Sets a list of disclosures provided with the SD-JWT VC token
+         * Sets a list of disclosures provided with the SD-JWT token
          *
          * @param disclosures a list of {@link SelectivelyDisclosableClaim}s
          * @return this builder
@@ -237,7 +237,7 @@ public abstract class DefaultAttestation implements Attestation {
         }
 
         /**
-         * Builds a new EAA object
+         * Builds a new attestation object
          *
          * @return {@link DefaultAttestation}
          */
@@ -245,32 +245,32 @@ public abstract class DefaultAttestation implements Attestation {
             if (Utils.isCollectionEmpty(signatures)) {
                 throw new NullPointerException("Signatures list cannot be null or empty!");
             }
-            DefaultAttestation eaa = initEAA();
-            eaa.signatures = signatures;
+            DefaultAttestation attestation = initAttestation();
+            attestation.signatures = signatures;
             for (AdvancedSignature signature : signatures) {
-                signature.setEAA(eaa);
+                signature.setAttestation(attestation);
             }
-            eaa.disclosures = disclosures;
+            attestation.disclosures = disclosures;
             if (keyBindingSignature != null) {
                 CertificateSource signingCertificateSource = new ListCertificateSource(
-                        getHolderCertificateSource(eaa.getPayload()), getSigningCertificateSource(signatures));
+                        getHolderCertificateSource(attestation.getPayload()), getSigningCertificateSource(signatures));
                 keyBindingSignature.setSigningCertificateSource(signingCertificateSource);
-                eaa.keyBindingSignature = keyBindingSignature;
-                keyBindingSignature.setEAA(eaa);
+                attestation.keyBindingSignature = keyBindingSignature;
+                keyBindingSignature.setAttestation(attestation);
                 keyBindingSignature.setKeyBindingSignature(true);
             }
-            eaa.filename = filename;
-            return eaa;
+            attestation.filename = filename;
+            return attestation;
         }
 
         /**
-         * Gets a certificate source containing a key of the EAA holder
+         * Gets a certificate source containing a key of the attestation holder
          *
          * @param attestationPayload {@link AttestationPayload}
          * @return {@link CertificateSource}
          */
         protected CertificateSource getHolderCertificateSource(AttestationPayload attestationPayload) {
-            ClaimDeviceKey claimDeviceKey = attestationPayload.getDeviceKey();
+            VerifiedClaimDeviceKey claimDeviceKey = attestationPayload.getDeviceKey();
             if (claimDeviceKey != null) {
                 try {
                     return new DeviceKeyClaimCertificateSource(claimDeviceKey);
@@ -287,11 +287,11 @@ public abstract class DefaultAttestation implements Attestation {
         }
 
         /**
-         * Instantiates a new {@code DefaultEAA} object
+         * Instantiates a new {@code DefaultAttestation} object
          *
          * @return {@link DefaultAttestation}
          */
-        protected abstract DefaultAttestation initEAA();
+        protected abstract DefaultAttestation initAttestation();
 
     }
 

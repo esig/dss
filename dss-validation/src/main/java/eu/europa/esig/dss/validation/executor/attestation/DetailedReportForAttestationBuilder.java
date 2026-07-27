@@ -22,7 +22,7 @@ package eu.europa.esig.dss.validation.executor.attestation;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlDetailedReport;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlEAA;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlAttestation;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlLoTEAnalysis;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTLAnalysis;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This class is used to perform validation of an EAA presentation validation
+ * This class is used to perform validation of an attestation presentation validation
  *
  */
 public class DetailedReportForAttestationBuilder extends DetailedReportBuilder {
@@ -59,11 +59,11 @@ public class DetailedReportForAttestationBuilder extends DetailedReportBuilder {
 
     @Override
     protected void executeValidation(XmlDetailedReport detailedReport, Map<String, XmlBasicBuildingBlocks> bbbs, POEExtraction poe) {
-        List<XmlEAA> eaas = executeAttestationValidations(bbbs, detailedReport.getTLAnalysis(), detailedReport.getLoTEAnalysis());
-        detailedReport.getSignatureOrTimestampOrEvidenceRecord().addAll(eaas);
+        List<XmlAttestation> attestations = executeAttestationValidations(bbbs, detailedReport.getTLAnalysis(), detailedReport.getLoTEAnalysis());
+        detailedReport.getSignatureOrTimestampOrEvidenceRecord().addAll(attestations);
     }
 
-    private List<XmlEAA> executeAttestationValidations(
+    private List<XmlAttestation> executeAttestationValidations(
             Map<String, XmlBasicBuildingBlocks> bbbs, List<XmlTLAnalysis> tlAnalysis, List<XmlLoTEAnalysis> loteAnalysis) {
         AttestationValidationBlock attestationValidationBlock = new AttestationValidationBlock(
                 i18nProvider, diagnosticData, policy, currentTime, bbbs, tlAnalysis, loteAnalysis);

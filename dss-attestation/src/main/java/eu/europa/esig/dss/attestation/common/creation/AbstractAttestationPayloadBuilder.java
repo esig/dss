@@ -30,10 +30,10 @@ import java.security.SecureRandom;
 import java.util.Objects;
 
 /**
- * Abstract implementation of an EAA payload builder.
+ * Abstract implementation of an attestation payload builder.
  *
- * @param <P> implementation of {@link AttestationPayloadParameters} for the EAA format
- * @param <D> implementation of {@link SelectiveDisclosure} for the EAA format
+ * @param <P> implementation of {@link AttestationPayloadParameters} for the attestation format
+ * @param <D> implementation of {@link SelectiveDisclosure} for the attestation format
  */
 public abstract class AbstractAttestationPayloadBuilder<P extends AttestationPayloadParameters, D extends SelectiveDisclosure> implements AttestationPayloadBuilder<P, D> {
 

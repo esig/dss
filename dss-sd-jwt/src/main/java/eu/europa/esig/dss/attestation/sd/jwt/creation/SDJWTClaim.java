@@ -23,7 +23,7 @@ package eu.europa.esig.dss.attestation.sd.jwt.creation;
 import eu.europa.esig.dss.attestation.common.creation.claim.AbstractAttestationClaim;
 
 /**
- * Implementation of an EAA SD-JWT Claim
+ * Implementation of an attestation SD-JWT Claim
  */
 public class SDJWTClaim extends AbstractAttestationClaim {
 
@@ -58,7 +58,7 @@ public class SDJWTClaim extends AbstractAttestationClaim {
 
     /**
      * Create a selectively disclosable {@link SDJWTClaim} with the provided value. The name of the claim will be null.
-     * The salt will be generated during the EAA Payload computation.
+     * The salt will be generated during the attestation Payload computation.
      *
      * @param value {@link Object} the value of the claim
      * @return the created {@link SDJWTClaim}
@@ -80,7 +80,7 @@ public class SDJWTClaim extends AbstractAttestationClaim {
 
     /**
      * Create a selectively disclosable {@link SDJWTClaim} with the provided name and value.
-     * The salt will be generated during the EAA Payload computation.
+     * The salt will be generated during the attestation Payload computation.
      *
      * @param name {@link String} the claim name
      * @param value {@link Object} the value of the claim
@@ -223,7 +223,7 @@ public class SDJWTClaim extends AbstractAttestationClaim {
     /**
      * Constructor with the claim name, value, selectively disclosable revocation.
      * When the selectivelyDisclosable revocation is enabled but no salt is provided,
-     * the salt will be generated during the EAA Payload computation.
+     * the salt will be generated during the attestation Payload computation.
      *
      * @param name {@link String} the claim name
      * @param value {@link Object} the value of the claim
@@ -267,7 +267,7 @@ public class SDJWTClaim extends AbstractAttestationClaim {
 
     @Override
     public String toString() {
-        return "SDJWTEAAClaim [" +
+        return "SDJWTClaim [" +
                 "name='" + getName() + '\'' +
                 ", value=" + getValue() +
                 ", selectivelyDisclosable=" + selectivelyDisclosable +

@@ -42,9 +42,9 @@ public class AttestedAttributesSubjectClaimWrapper extends ClaimWrapper {
     }
 
     /**
-     * Gets the revocation's unique index identifier
+     * Gets the attested attributes subject's identifier
      *
-     * @return {@link ClaimWrapper}
+     * @return {@link AttestedAttributesSubjectClaimIdWrapper}
      */
     public AttestedAttributesSubjectClaimIdWrapper getSubjectId() {
         XmlClaim subjectId = getWrapped().getSubjectId();
@@ -55,7 +55,7 @@ public class AttestedAttributesSubjectClaimWrapper extends ClaimWrapper {
     }
 
     /**
-     * Gets the revocation's unique index identifier
+     * Gets the attested attributes subject's pseudonym
      *
      * @return {@link ClaimWrapper}
      */
@@ -68,7 +68,8 @@ public class AttestedAttributesSubjectClaimWrapper extends ClaimWrapper {
     }
 
     /**
-     * Gets the revocation's unique index identifier
+     /**
+     * Gets the attested attributes
      *
      * @return {@link ClaimWrapper}
      */

@@ -246,7 +246,7 @@
 
             <xs:element name="qcPSB" minOccurs="0">
                 <xs:annotation>
-                    <xs:documentation>Defines a Public Sector Body EAA Provider qualified certificate attributes (TS 119 412-6).</xs:documentation>
+                    <xs:documentation>Defines a Public Sector Body attestation Provider qualified certificate attributes (TS 119 412-6).</xs:documentation>
                 </xs:annotation>
                 <xs:complexType>
                     <xs:sequence>

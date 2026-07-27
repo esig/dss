@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.attestation.mdoc;
 
 /**
- * Contains a list of header names as defined in "6 Implementation of EAA based on ISO/IEC-mdoc" of ETSI TS 119 472-1.
+ * Contains a list of header names as defined in "6 Implementation of attestation based on ISO/IEC-mdoc" of ETSI TS 119 472-1.
  *
  */
 public final class ETSI194721Headers {
@@ -33,22 +33,22 @@ public final class ETSI194721Headers {
         // empty
     }
 
-    /** An explicit signal identifying the category of the EAA in the context where the EAA has been issued */
+    /** An explicit signal identifying the category of the attestation in the context where the attestation has been issued */
     public static final String CATEGORY = "category";
 
     /** A registration identifier */
     public static final String ISSUING_REGISTRATION_IDENTIFIER = "iss_reg_id";
 
-    /** Contains the pseudonym of the EAA */
+    /** Contains the pseudonym of the attestation */
     public static final String ALSO_KNOWN_AS = "also_known_as";
 
-    /** Indicates that the EAA shall be used only once, and that it shall not be retained for future use */
+    /** Indicates that the attestation shall be used only once, and that it shall not be retained for future use */
     public static final String ONE_TIME = "oneTime";
 
-    /** Indicates  that the validity period of the EAA is so short that it shall not be necessary to check its revocation revocation */
+    /** Indicates  that the validity period of the attestation is so short that it shall not be necessary to check its revocation status */
     public static final String SHORT_LIVED = "shortLived";
 
-    /** Associates one attribute to one entity different than the EAA subject */
+    /** Associates one attribute to one entity different than the attestation subject */
     public static final String SUB_ATTRS = "SubAttr";
 
     /** The subject attribute identifier */

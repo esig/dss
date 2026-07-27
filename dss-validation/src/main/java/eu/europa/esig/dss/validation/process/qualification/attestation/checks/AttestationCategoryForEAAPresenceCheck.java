@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.validation.process.qualification.attestation.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationEAAQualificationProcess;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationAttestationQualificationProcess;
 import eu.europa.esig.dss.diagnostic.AttestationWrapper;
 import eu.europa.esig.dss.enumerations.EAACategory;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -34,34 +34,34 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 import java.util.Arrays;
 
 /**
- * Verifies whether the EAA payload contains an indication that the attestation has been issued
+ * Verifies whether the attestation payload contains an indication that the attestation has been issued
  * as an EU non-qualified electronic attestation of attributes
  *
  */
-public class AttestationCategoryForEAAPresenceCheck extends ChainItem<XmlValidationEAAQualificationProcess> {
+public class AttestationCategoryForEAAPresenceCheck extends ChainItem<XmlValidationAttestationQualificationProcess> {
 
-    /** EAA presentation to be checked */
-    private final AttestationWrapper eaa;
+    /** attestation presentation to be checked */
+    private final AttestationWrapper attestation;
 
     /**
      * Default constructor
      *
      * @param i18nProvider {@link I18nProvider}
-     * @param result {@link XmlValidationEAAQualificationProcess}
-     * @param eaa {@link AttestationWrapper}
+     * @param result {@link XmlValidationAttestationQualificationProcess}
+     * @param attestation {@link AttestationWrapper}
      * @param constraint {@link LevelRule}
      */
-    public AttestationCategoryForEAAPresenceCheck(I18nProvider i18nProvider, XmlValidationEAAQualificationProcess result,
-                                                  AttestationWrapper eaa, LevelRule constraint) {
+    public AttestationCategoryForEAAPresenceCheck(I18nProvider i18nProvider, XmlValidationAttestationQualificationProcess result,
+                                                  AttestationWrapper attestation, LevelRule constraint) {
         super(i18nProvider, result, constraint);
 
-        this.eaa = eaa;
+        this.attestation = attestation;
     }
 
     @Override
     protected boolean process() {
-        return eaa.getCategory() != null &&
-                Arrays.stream(EAACategory.values()).anyMatch(c -> c.getUrn().equals(eaa.getCategory()));
+        return attestation.getCategory() != null &&
+                Arrays.stream(EAACategory.values()).anyMatch(c -> c.getUrn().equals(attestation.getCategory()));
     }
 
     @Override
@@ -71,10 +71,10 @@ public class AttestationCategoryForEAAPresenceCheck extends ChainItem<XmlValidat
 
     @Override
     protected XmlMessage buildErrorMessage() {
-        if (eaa.getCategory() == null) {
+        if (attestation.getCategory() == null) {
             return buildXmlMessage(MessageTag.EAA_CAT_EAA_ANS_1);
         } else {
-            return buildXmlMessage(MessageTag.EAA_CAT_EAA_ANS_2, eaa.getCategory());
+            return buildXmlMessage(MessageTag.EAA_CAT_EAA_ANS_2, attestation.getCategory());
         }
     }
 

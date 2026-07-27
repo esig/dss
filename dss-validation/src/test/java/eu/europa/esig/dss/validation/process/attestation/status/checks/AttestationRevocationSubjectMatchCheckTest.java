@@ -24,8 +24,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.diagnostic.AttestationRevocationTokenWrapper;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlEAARevocationToken;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlEAASubject;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationRevocationToken;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationSubject;
 import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
@@ -44,15 +44,15 @@ class AttestationRevocationSubjectMatchCheckTest extends AbstractTestCheck {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
-        XmlEAARevocationToken xmlEAARevocationToken = new XmlEAARevocationToken();
-        XmlEAASubject xmlEAASubject = new XmlEAASubject();
-        xmlEAASubject.setMatch(true);
-        xmlEAARevocationToken.setSubject(xmlEAASubject);
+        XmlAttestationRevocationToken xmlAttestationRevocationToken = new XmlAttestationRevocationToken();
+        XmlAttestationSubject xmlAttestationSubject = new XmlAttestationSubject();
+        xmlAttestationSubject.setMatch(true);
+        xmlAttestationRevocationToken.setSubject(xmlAttestationSubject);
         XmlSAV result = new XmlSAV();
 
-        AttestationRevocationSubjectMatchCheck eaassmc = new AttestationRevocationSubjectMatchCheck(
-                i18nProvider, result, new AttestationRevocationTokenWrapper(xmlEAARevocationToken), new LevelConstraintWrapper(constraint));
-        eaassmc.execute();
+        AttestationRevocationSubjectMatchCheck assmc = new AttestationRevocationSubjectMatchCheck(
+                i18nProvider, result, new AttestationRevocationTokenWrapper(xmlAttestationRevocationToken), new LevelConstraintWrapper(constraint));
+        assmc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
         assertEquals(1, constraints.size());
@@ -64,15 +64,15 @@ class AttestationRevocationSubjectMatchCheckTest extends AbstractTestCheck {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
-        XmlEAARevocationToken xmlEAARevocationToken = new XmlEAARevocationToken();
-        XmlEAASubject xmlEAASubject = new XmlEAASubject();
-        xmlEAASubject.setMatch(false);
-        xmlEAARevocationToken.setSubject(xmlEAASubject);
+        XmlAttestationRevocationToken xmlAttestationRevocationToken = new XmlAttestationRevocationToken();
+        XmlAttestationSubject xmlAttestationSubject = new XmlAttestationSubject();
+        xmlAttestationSubject.setMatch(false);
+        xmlAttestationRevocationToken.setSubject(xmlAttestationSubject);
         XmlSAV result = new XmlSAV();
 
-        AttestationRevocationSubjectMatchCheck eaassmc = new AttestationRevocationSubjectMatchCheck(
-                i18nProvider, result, new AttestationRevocationTokenWrapper(xmlEAARevocationToken), new LevelConstraintWrapper(constraint));
-        eaassmc.execute();
+        AttestationRevocationSubjectMatchCheck assmc = new AttestationRevocationSubjectMatchCheck(
+                i18nProvider, result, new AttestationRevocationTokenWrapper(xmlAttestationRevocationToken), new LevelConstraintWrapper(constraint));
+        assmc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
         assertEquals(1, constraints.size());
@@ -84,12 +84,12 @@ class AttestationRevocationSubjectMatchCheckTest extends AbstractTestCheck {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
-        XmlEAARevocationToken xmlEAARevocationToken = new XmlEAARevocationToken();
+        XmlAttestationRevocationToken xmlAttestationRevocationToken = new XmlAttestationRevocationToken();
         XmlSAV result = new XmlSAV();
 
-        AttestationRevocationSubjectMatchCheck eaassmc = new AttestationRevocationSubjectMatchCheck(
-                i18nProvider, result, new AttestationRevocationTokenWrapper(xmlEAARevocationToken), new LevelConstraintWrapper(constraint));
-        eaassmc.execute();
+        AttestationRevocationSubjectMatchCheck assmc = new AttestationRevocationSubjectMatchCheck(
+                i18nProvider, result, new AttestationRevocationTokenWrapper(xmlAttestationRevocationToken), new LevelConstraintWrapper(constraint));
+        assmc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
         assertEquals(1, constraints.size());

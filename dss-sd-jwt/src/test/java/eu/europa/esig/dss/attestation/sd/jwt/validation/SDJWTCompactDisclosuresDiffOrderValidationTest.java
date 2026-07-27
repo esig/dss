@@ -24,11 +24,11 @@ class SDJWTCompactDisclosuresDiffOrderValidationTest extends AbstractSDJWTTestVa
     }
 
     @Override
-    protected void checkEAADigestMatchers(DiagnosticData diagnosticData) {
-        super.checkEAADigestMatchers(diagnosticData);
+    protected void checkAttestationDigestMatchers(DiagnosticData diagnosticData) {
+        super.checkAttestationDigestMatchers(diagnosticData);
 
-        AttestationWrapper eaa = diagnosticData.getEAAs().get(0);
-        List<XmlDigestMatcher> digestMatchers = eaa.getDigestMatchers();
+        AttestationWrapper attestation = diagnosticData.getAttestations().get(0);
+        List<XmlDigestMatcher> digestMatchers = attestation.getDigestMatchers();
         assertEquals(2, digestMatchers.size());
 
         boolean givenNameSDFound = false;
@@ -54,10 +54,10 @@ class SDJWTCompactDisclosuresDiffOrderValidationTest extends AbstractSDJWTTestVa
     protected void checkClaims(DiagnosticData diagnosticData) {
         super.checkClaims(diagnosticData);
 
-        AttestationWrapper attestationWrapper = diagnosticData.getEAAById(diagnosticData.getFirstEAAId());
-        AttestationPayloadProxy eaaPayload = attestationWrapper.getPayload();
-        assertEquals("John", eaaPayload.getGivenName().getText());
-        assertEquals("Doe", eaaPayload.getFamilyName().getText());
+        AttestationWrapper attestationWrapper = diagnosticData.getAttestationById(diagnosticData.getFirstAttestationId());
+        AttestationPayloadProxy attestationPayload = attestationWrapper.getPayload();
+        assertEquals("John", attestationPayload.getGivenName().getText());
+        assertEquals("Doe", attestationPayload.getFamilyName().getText());
     }
 
     @Override
@@ -77,7 +77,7 @@ class SDJWTCompactDisclosuresDiffOrderValidationTest extends AbstractSDJWTTestVa
                         assertTrue(xmlDigestMatcher.isDataFound());
                         assertTrue(xmlDigestMatcher.isDataIntact());
                         jwsSDFound = true;
-                    } else if (DigestMatcherType.EAA_KEY_BINDING == xmlDigestMatcher.getType()) {
+                    } else if (DigestMatcherType.KEY_BINDING_SIGNATURE == xmlDigestMatcher.getType()) {
                         assertTrue(xmlDigestMatcher.isDataFound());
                         assertFalse(xmlDigestMatcher.isDataIntact());
                         kbSDFound = true;

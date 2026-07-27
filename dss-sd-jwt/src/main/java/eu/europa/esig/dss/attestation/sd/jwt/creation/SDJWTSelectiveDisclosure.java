@@ -28,7 +28,7 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import java.util.Objects;
 
 /**
- * Implementation of a disclosure for an SD-JWT VC token
+ * Implementation of a disclosure for an SD-JWT token
  *
  */
 public class SDJWTSelectiveDisclosure extends AbstractSelectiveDisclosure {
@@ -39,7 +39,7 @@ public class SDJWTSelectiveDisclosure extends AbstractSelectiveDisclosure {
     private final String disclosure;
 
     /**
-     * Default constructor to instantiate an SD-JWT VC disclosure from a base64url encoded disclosure string.
+     * Default constructor to instantiate an SD-JWT disclosure from a base64url encoded disclosure string.
      * NOTE: the class does not verify the validity of the data structure.
      *
      * @param disclosure {@link String}

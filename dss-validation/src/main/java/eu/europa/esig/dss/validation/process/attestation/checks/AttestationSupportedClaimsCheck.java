@@ -34,31 +34,31 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * This class verifies whether the EAA contains only supported claims
+ * This class verifies whether the attestation contains only supported claims
  *
  */
 public class AttestationSupportedClaimsCheck extends AbstractMultiValuesCheckItem<XmlSAV> {
 
-    /** EAA to check */
-    private final AttestationWrapper eaa;
+    /** attestation to check */
+    private final AttestationWrapper attestation;
 
     /**
      * Default constructor
      *
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlSAV}
-     * @param eaa {@link AttestationWrapper}
+     * @param attestation {@link AttestationWrapper}
      * @param constraint {@link MultiValuesRule}
      */
     public AttestationSupportedClaimsCheck(I18nProvider i18nProvider, XmlSAV result,
-                                           AttestationWrapper eaa, MultiValuesRule constraint) {
+                                           AttestationWrapper attestation, MultiValuesRule constraint) {
         super(i18nProvider, result, constraint);
-        this.eaa = eaa;
+        this.attestation = attestation;
     }
 
     @Override
     protected boolean process() {
-        List<String> claimNames = eaa.getAllEAAPayloadClaimNames();
+        List<String> claimNames = attestation.getAllAttestationPayloadClaimNames();
         if (Utils.isCollectionEmpty(claimNames)) {
             return true;
         }
@@ -67,7 +67,7 @@ public class AttestationSupportedClaimsCheck extends AbstractMultiValuesCheckIte
 
     @Override
     protected String buildAdditionalInfo() {
-        List<String> unsupportedClaims = eaa.getAllEAAPayloadClaimNames().stream()
+        List<String> unsupportedClaims = attestation.getAllAttestationPayloadClaimNames().stream()
                 .filter(c -> !processValueCheck(c))
                 .collect(Collectors.toList());
         if (Utils.isCollectionNotEmpty(unsupportedClaims)) {
@@ -93,7 +93,7 @@ public class AttestationSupportedClaimsCheck extends AbstractMultiValuesCheckIte
 
     @Override
     protected SubIndication getFailedSubIndicationForConclusion() {
-        return SubIndication.EAA_CONSTRAINTS_FAILURE;
+        return SubIndication.ATTESTATION_CONSTRAINTS_FAILURE;
     }
 
 }

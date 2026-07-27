@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.enumerations;
 
 /**
- * Represents an origin type of the EAA revocation data
+ * Represents an origin type of the attestation revocation data
  *
  */
 public enum AttestationRevocationOrigin {

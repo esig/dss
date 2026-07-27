@@ -20,26 +20,23 @@
  */
 package eu.europa.esig.dss.ws.attestation.creation.common;
 
-import eu.europa.esig.dss.attestation.common.creation.SelectiveDisclosure;
 import eu.europa.esig.dss.attestation.common.creation.AttestationPayloadParameters;
 import eu.europa.esig.dss.attestation.common.creation.AttestationService;
 import eu.europa.esig.dss.attestation.common.creation.KeyBindingParameters;
-import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTService;
+import eu.europa.esig.dss.attestation.common.creation.SelectiveDisclosure;
+import eu.europa.esig.dss.attestation.mdoc.creation.MdocDeviceSignedParameters;
 import eu.europa.esig.dss.attestation.mdoc.creation.MdocSelectiveDisclosure;
 import eu.europa.esig.dss.attestation.mdoc.creation.MdocService;
-import eu.europa.esig.dss.enumerations.AttestationFormat;
+import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTService;
+import eu.europa.esig.dss.enumerations.AttestationProfile;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.SerializableSignatureParameters;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
-import eu.europa.esig.dss.ws.converter.DTOConverter;
-import eu.europa.esig.dss.ws.converter.RemoteDocumentConverter;
-import eu.europa.esig.dss.ws.dto.RemoteDocument;
-import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
-import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
 import eu.europa.esig.dss.ws.attestation.creation.common.builder.RemoteAttestationCreationSignatureParametersBuilder;
 import eu.europa.esig.dss.ws.attestation.creation.common.builder.RemoteAttestationPayloadParametersBuilder;
+import eu.europa.esig.dss.ws.attestation.creation.common.builder.RemoteAttestationPresentationParametersBuilder;
 import eu.europa.esig.dss.ws.attestation.creation.common.builder.RemoteKeyBindingParametersBuilder;
 import eu.europa.esig.dss.ws.attestation.creation.common.converter.DisclosureFromDTOConverter;
 import eu.europa.esig.dss.ws.attestation.creation.common.converter.DisclosureToDTOConverter;
@@ -47,6 +44,11 @@ import eu.europa.esig.dss.ws.attestation.creation.dto.parameters.DisclosureDTO;
 import eu.europa.esig.dss.ws.attestation.creation.dto.parameters.RemoteAttestationPayloadParameters;
 import eu.europa.esig.dss.ws.attestation.creation.dto.parameters.RemoteAttestationPresentationParameters;
 import eu.europa.esig.dss.ws.attestation.creation.dto.parameters.RemoteKeyBindingParameters;
+import eu.europa.esig.dss.ws.converter.DTOConverter;
+import eu.europa.esig.dss.ws.converter.RemoteDocumentConverter;
+import eu.europa.esig.dss.ws.dto.RemoteDocument;
+import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
+import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureParameters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +59,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- * Default implementation of the {@code eu.europa.esig.dss.ws.attestation.creation.common.RemoteEAACreationService}
+ * Default implementation of the {@code eu.europa.esig.dss.ws.attestation.creation.common.RemoteAttestationCreationService}
  *
  */
 public class RemoteAttestationCreationServiceImpl implements RemoteAttestationCreationService {
@@ -67,12 +69,12 @@ public class RemoteAttestationCreationServiceImpl implements RemoteAttestationCr
     private static final Logger LOG = LoggerFactory.getLogger(RemoteAttestationCreationServiceImpl.class);
 
     /**
-     * SD-JWT VC service
+     * SD-JWT service
      */
     private SDJWTService sdjwtService;
 
     /**
-     * Mdoc EAA service
+     * Mdoc attestation service
      */
     private MdocService mdocService;
 
@@ -84,7 +86,7 @@ public class RemoteAttestationCreationServiceImpl implements RemoteAttestationCr
     }
 
     /**
-     * Sets the SD-JWT VC EAA service
+     * Sets the SD-JWT attestation service
      *
      * @param sdjwtService {@link SDJWTService}
      */
@@ -105,12 +107,12 @@ public class RemoteAttestationCreationServiceImpl implements RemoteAttestationCr
     @Override
     public ToBeSignedDTO getDataToSign(RemoteAttestationPayloadParameters payloadParameters, RemoteSignatureParameters signatureParameters) throws DSSException {
         Objects.requireNonNull(payloadParameters, "payloadParameters must be defined!");
-        Objects.requireNonNull(payloadParameters.getEaaType(), "eaaType must be defined!");
+        Objects.requireNonNull(payloadParameters.getAttestationProfile(), "attestationProfile must be defined!");
         Objects.requireNonNull(signatureParameters, "signatureParameters must be defined!");
-        LOG.info("GetDataToSign for EAA signature in process...");
+        LOG.info("GetDataToSign for attestation signature in process...");
 
-        SerializableSignatureParameters parameters = new RemoteAttestationCreationSignatureParametersBuilder(payloadParameters.getEaaType(), signatureParameters).build();
-        AttestationService attestationService = getEAAServiceForType(payloadParameters.getEaaType());
+        SerializableSignatureParameters parameters = new RemoteAttestationCreationSignatureParametersBuilder(payloadParameters.getAttestationProfile(), signatureParameters).build();
+        AttestationService attestationService = getAttestationServiceForType(payloadParameters.getAttestationProfile());
 
         ToBeSigned toBeSigned;
         if (payloadParameters.getPreComputedPayload() != null) {
@@ -120,43 +122,43 @@ public class RemoteAttestationCreationServiceImpl implements RemoteAttestationCr
             AttestationPayloadParameters attestationPayloadParameters = new RemoteAttestationPayloadParametersBuilder(payloadParameters).build();
             toBeSigned = attestationService.getDataToBeSigned(attestationPayloadParameters, parameters);
         }
-        LOG.info("GetDataToSign for EAA signature is finished");
+        LOG.info("GetDataToSign for attestation signature is finished");
         return DTOConverter.toToBeSignedDTO(toBeSigned);
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     @Override
-    public RemoteDocument signEAA(RemoteAttestationPayloadParameters payloadParameters, RemoteSignatureParameters signatureParameters,
+    public RemoteDocument signAttestation(RemoteAttestationPayloadParameters payloadParameters, RemoteSignatureParameters signatureParameters,
                                   SignatureValueDTO signatureValueDTO) throws DSSException {
         Objects.requireNonNull(payloadParameters, "payloadParameters must be defined!");
-        Objects.requireNonNull(payloadParameters.getEaaType(), "eaaType must be defined!");
+        Objects.requireNonNull(payloadParameters.getAttestationProfile(), "attestationProfile must be defined!");
         Objects.requireNonNull(signatureParameters, "signatureParameters must be defined!");
         Objects.requireNonNull(signatureValueDTO, "signatureValue must be defined!");
-        LOG.info("SignEAA in process...");
+        LOG.info("SignAttestation in process...");
 
-        SerializableSignatureParameters parameters = new RemoteAttestationCreationSignatureParametersBuilder(payloadParameters.getEaaType(), signatureParameters).build();
-        AttestationService attestationService = getEAAServiceForType(payloadParameters.getEaaType());
+        SerializableSignatureParameters parameters = new RemoteAttestationCreationSignatureParametersBuilder(payloadParameters.getAttestationProfile(), signatureParameters).build();
+        AttestationService attestationService = getAttestationServiceForType(payloadParameters.getAttestationProfile());
 
-        DSSDocument signedEAA;
+        DSSDocument signedAttestation;
         if (payloadParameters.getPreComputedPayload() != null) {
             DSSDocument dssDocument = RemoteDocumentConverter.toDSSDocument(payloadParameters.getPreComputedPayload());
-            signedEAA = attestationService.signEAA(dssDocument, parameters, toSignatureValue(signatureValueDTO));
+            signedAttestation = attestationService.signAttestation(dssDocument, parameters, toSignatureValue(signatureValueDTO));
         } else {
             AttestationPayloadParameters attestationPayloadParameters = new RemoteAttestationPayloadParametersBuilder(payloadParameters).build();
-            signedEAA = attestationService.signEAA(attestationPayloadParameters, parameters, toSignatureValue(signatureValueDTO));
+            signedAttestation = attestationService.signAttestation(attestationPayloadParameters, parameters, toSignatureValue(signatureValueDTO));
         }
-        LOG.info("SignEAA is finished");
-        return RemoteDocumentConverter.toRemoteDocument(signedEAA);
+        LOG.info("SignAttestation is finished");
+        return RemoteDocumentConverter.toRemoteDocument(signedAttestation);
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     @Override
     public List<DisclosureDTO> getDisclosures(RemoteAttestationPayloadParameters payloadParameters) throws DSSException {
         Objects.requireNonNull(payloadParameters, "payloadParameters must be defined!");
-        Objects.requireNonNull(payloadParameters.getEaaType(), "eaaType must be defined!");
+        Objects.requireNonNull(payloadParameters.getAttestationProfile(), "attestationProfile must be defined!");
         LOG.info("GetDisclosures in process...");
 
-        AttestationService attestationService = getEAAServiceForType(payloadParameters.getEaaType());
+        AttestationService attestationService = getAttestationServiceForType(payloadParameters.getAttestationProfile());
         AttestationPayloadParameters attestationPayloadParameters = new RemoteAttestationPayloadParametersBuilder(payloadParameters).build();
 
         List<? extends SelectiveDisclosure> disclosures = attestationService.getDisclosures(attestationPayloadParameters);
@@ -168,21 +170,21 @@ public class RemoteAttestationCreationServiceImpl implements RemoteAttestationCr
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     @Override
-    public ToBeSignedDTO getDataToSignForKeyBindingSignature(RemoteDocument eaa, List<DisclosureDTO> disclosureDTOs,
+    public ToBeSignedDTO getDataToSignForKeyBindingSignature(RemoteDocument attestation, List<DisclosureDTO> disclosureDTOs,
                                                              RemoteKeyBindingParameters keyBindingParametersDTO, RemoteSignatureParameters signatureParameters) throws DSSException {
-        Objects.requireNonNull(eaa, "EAA must be defined!");
+        Objects.requireNonNull(attestation, "Attestation must be defined!");
         Objects.requireNonNull(keyBindingParametersDTO, "keyBindingParameters must be defined!");
-        Objects.requireNonNull(keyBindingParametersDTO.getEaaType(), "eaaType must be defined!");
+        Objects.requireNonNull(keyBindingParametersDTO.getAttestationProfile(), "attestationProfile must be defined!");
         Objects.requireNonNull(signatureParameters, "signatureParameters must be defined!");
         LOG.info("GetDataToSignForKeyBindingSignature in process...");
 
         KeyBindingParameters keyBindingParameters = new RemoteKeyBindingParametersBuilder(keyBindingParametersDTO).build();
-        SerializableSignatureParameters parameters = new RemoteAttestationCreationSignatureParametersBuilder(keyBindingParametersDTO.getEaaType(), signatureParameters).build();
-        AttestationService attestationService = getEAAServiceForType(keyBindingParametersDTO.getEaaType());
+        SerializableSignatureParameters parameters = new RemoteAttestationCreationSignatureParametersBuilder(keyBindingParametersDTO.getAttestationProfile(), signatureParameters).build();
+        AttestationService attestationService = getAttestationServiceForType(keyBindingParametersDTO.getAttestationProfile());
 
-        List<SelectiveDisclosure> disclosures = toEAADisclosures(keyBindingParametersDTO.getEaaType(), disclosureDTOs);
+        List<SelectiveDisclosure> disclosures = toAttestationDisclosures(keyBindingParametersDTO.getAttestationProfile(), disclosureDTOs);
 
-        DSSDocument dssDocument = RemoteDocumentConverter.toDSSDocument(eaa);
+        DSSDocument dssDocument = RemoteDocumentConverter.toDSSDocument(attestation);
 
         ToBeSigned toBeSigned = attestationService.getDataToSignForKeyBindingSignature(dssDocument, disclosures, keyBindingParameters, parameters);
         LOG.info("GetDataToSignForKeyBindingSignature is finished");
@@ -191,22 +193,22 @@ public class RemoteAttestationCreationServiceImpl implements RemoteAttestationCr
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     @Override
-    public RemoteDocument createKeyBindingSignature(RemoteDocument eaa, List<DisclosureDTO> disclosureDTOs, RemoteKeyBindingParameters keyBindingParametersDTO,
+    public RemoteDocument createKeyBindingSignature(RemoteDocument attestation, List<DisclosureDTO> disclosureDTOs, RemoteKeyBindingParameters keyBindingParametersDTO,
                                                     RemoteSignatureParameters signatureParameters, SignatureValueDTO signatureValueDTO) throws DSSException {
-        Objects.requireNonNull(eaa, "EAA must be defined!");
+        Objects.requireNonNull(attestation, "Attestation must be defined!");
         Objects.requireNonNull(keyBindingParametersDTO, "keyBindingParameters must be defined!");
-        Objects.requireNonNull(keyBindingParametersDTO.getEaaType(), "eaaType must be defined!");
+        Objects.requireNonNull(keyBindingParametersDTO.getAttestationProfile(), "attestationProfile must be defined!");
         Objects.requireNonNull(signatureParameters, "signatureParameters must be defined!");
         Objects.requireNonNull(signatureValueDTO, "signatureValue must be defined!");
         LOG.info("CreateKeyBindingSignature in process...");
 
         KeyBindingParameters keyBindingParameters = new RemoteKeyBindingParametersBuilder(keyBindingParametersDTO).build();
-        SerializableSignatureParameters parameters = new RemoteAttestationCreationSignatureParametersBuilder(keyBindingParametersDTO.getEaaType(), signatureParameters).build();
-        AttestationService attestationService = getEAAServiceForType(keyBindingParametersDTO.getEaaType());
+        SerializableSignatureParameters parameters = new RemoteAttestationCreationSignatureParametersBuilder(keyBindingParametersDTO.getAttestationProfile(), signatureParameters).build();
+        AttestationService attestationService = getAttestationServiceForType(keyBindingParametersDTO.getAttestationProfile());
 
-        List<SelectiveDisclosure> disclosures = toEAADisclosures(keyBindingParametersDTO.getEaaType(), disclosureDTOs);
+        List<SelectiveDisclosure> disclosures = toAttestationDisclosures(keyBindingParametersDTO.getAttestationProfile(), disclosureDTOs);
 
-        DSSDocument dssDocument = RemoteDocumentConverter.toDSSDocument(eaa);
+        DSSDocument dssDocument = RemoteDocumentConverter.toDSSDocument(attestation);
 
         DSSDocument keyBindingSignature = attestationService.createKeyBindingSignature(
                 dssDocument, disclosures, keyBindingParameters, parameters, toSignatureValue(signatureValueDTO));
@@ -216,32 +218,32 @@ public class RemoteAttestationCreationServiceImpl implements RemoteAttestationCr
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     @Override
-    public RemoteDocument issuePresentation(RemoteDocument eaa, List<DisclosureDTO> disclosureDTOs,
+    public RemoteDocument issuePresentation(RemoteDocument attestation, List<DisclosureDTO> disclosureDTOs,
                                             RemoteDocument keyBinding, RemoteAttestationPresentationParameters presentationParameters) throws DSSException {
-        Objects.requireNonNull(eaa, "EAA must be defined!");
+        Objects.requireNonNull(attestation, "Attestation must be defined!");
         Objects.requireNonNull(presentationParameters, "presentationParameters must be defined!");
-        Objects.requireNonNull(presentationParameters.getEaaType(), "eaaType must be defined!");
+        Objects.requireNonNull(presentationParameters.getAttestationProfile(), "attestationProfile must be defined!");
         LOG.info("IssuePresentation in process...");
 
-        DSSDocument dssDocument = RemoteDocumentConverter.toDSSDocument(eaa);
+        DSSDocument dssDocument = RemoteDocumentConverter.toDSSDocument(attestation);
         DSSDocument keyBindingDocument = RemoteDocumentConverter.toDSSDocument(keyBinding);
-        List<SelectiveDisclosure> disclosures = toEAADisclosures(presentationParameters.getEaaType(), disclosureDTOs);
-        AttestationService attestationService = getEAAServiceForType(presentationParameters.getEaaType());
+        List<SelectiveDisclosure> disclosures = toAttestationDisclosures(presentationParameters.getAttestationProfile(), disclosureDTOs);
+        AttestationService attestationService = getAttestationServiceForType(presentationParameters.getAttestationProfile());
         DSSDocument attestationPresentation;
-        switch (presentationParameters.getEaaType()) {
+        switch (presentationParameters.getAttestationProfile()) {
             case SD_JWT_VC:
                 attestationPresentation = attestationService.issuePresentation(dssDocument, disclosures, keyBindingDocument);
                 break;
             case ISO_IEC_MDOC:
-                List<MdocSelectiveDisclosure> mdocEAADisclosures = disclosures.stream().map(d -> (MdocSelectiveDisclosure) d).collect(Collectors.toList());
-                MdocEAADeviceSignedParameters deviceSignedParameters = new RemoteEAAPresentationParametersBuilder(
-                        presentationParameters).buildMdocEAADeviceSignedParameters();
+                List<MdocSelectiveDisclosure> mdocAttestationDisclosures = disclosures.stream().map(d -> (MdocSelectiveDisclosure) d).collect(Collectors.toList());
+                MdocDeviceSignedParameters deviceSignedParameters = new RemoteAttestationPresentationParametersBuilder(
+                        presentationParameters).buildMdocDeviceSignedParameters();
                 attestationPresentation = ((MdocService) attestationService).issuePresentation(
-                        dssDocument, mdocEAADisclosures, keyBindingDocument, deviceSignedParameters);
+                        dssDocument, mdocAttestationDisclosures, keyBindingDocument, deviceSignedParameters);
                 break;
             default:
                 throw new UnsupportedOperationException(String.format(
-                        "Unsupported EAA format: '%s'. SD-JWT VC and ISO/IEC mdoc are only supported.", presentationParameters.getEaaType()));
+                        "Unsupported attestation format: '%s'. SD-JWT and ISO/IEC mdoc are only supported.", presentationParameters.getAttestationProfile()));
         }
         LOG.info("IssuePresentation is finished");
         return RemoteDocumentConverter.toRemoteDocument(attestationPresentation);
@@ -257,18 +259,18 @@ public class RemoteAttestationCreationServiceImpl implements RemoteAttestationCr
         return new SignatureValue(signatureValueDTO.getAlgorithm(), signatureValueDTO.getValue());
     }
 
-    private List<SelectiveDisclosure> toEAADisclosures(AttestationFormat attestationFormat, List<DisclosureDTO> disclosureDTOs) {
+    private List<SelectiveDisclosure> toAttestationDisclosures(AttestationProfile attestationProfile, List<DisclosureDTO> disclosureDTOs) {
         if (disclosureDTOs != null && !disclosureDTOs.isEmpty()) {
             return disclosureDTOs.stream().map(
-                    new DisclosureFromDTOConverter(attestationFormat)).collect(Collectors.toList());
+                    new DisclosureFromDTOConverter(attestationProfile)).collect(Collectors.toList());
         }
         return Collections.emptyList();
     }
 
     @SuppressWarnings("rawtypes")
-    private AttestationService getEAAServiceForType(AttestationFormat attestationFormat) {
+    private AttestationService getAttestationServiceForType(AttestationProfile attestationProfile) {
         AttestationService attestationService;
-        switch (attestationFormat) {
+        switch (attestationProfile) {
             case SD_JWT_VC:
                 attestationService = sdjwtService;
                 break;
@@ -277,10 +279,10 @@ public class RemoteAttestationCreationServiceImpl implements RemoteAttestationCr
                 break;
             default:
                 throw new UnsupportedOperationException(String.format(
-                        "Unsupported EAA format: '%s'. SD-JWT VC and ISO/IEC mdoc are only supported.", attestationFormat));
+                        "Unsupported attestation format: '%s'. SD-JWT and ISO/IEC mdoc are only supported.", attestationProfile));
         }
         if (attestationService == null) {
-            throw new NullPointerException(String.format("No service has been provided for the EAA type '%s'", attestationFormat));
+            throw new NullPointerException(String.format("No service has been provided for the attestation type '%s'", attestationProfile));
         }
         return attestationService;
     }

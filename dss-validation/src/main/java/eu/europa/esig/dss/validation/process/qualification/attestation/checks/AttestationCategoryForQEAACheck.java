@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.validation.process.qualification.attestation.checks;
 
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationEAAQualificationProcess;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationAttestationQualificationProcess;
 import eu.europa.esig.dss.diagnostic.AttestationWrapper;
 import eu.europa.esig.dss.enumerations.EAACategory;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -31,33 +31,33 @@ import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
 /**
- * Verifies whether the EAA payload contains an indication that the attestation has been issued
+ * Verifies whether the attestation payload contains an indication that the attestation has been issued
  * as an EU qualified electronic attestation of attributes
  *
  */
-public class AttestationCategoryForQEAACheck extends ChainItem<XmlValidationEAAQualificationProcess> {
+public class AttestationCategoryForQEAACheck extends ChainItem<XmlValidationAttestationQualificationProcess> {
 
-    /** EAA presentation to be checked */
-    private final AttestationWrapper eaa;
+    /** attestation presentation to be checked */
+    private final AttestationWrapper attestation;
 
     /**
      * Default constructor
      *
      * @param i18nProvider {@link I18nProvider}
-     * @param result {@link XmlValidationEAAQualificationProcess}
-     * @param eaa {@link AttestationWrapper}
+     * @param result {@link XmlValidationAttestationQualificationProcess}
+     * @param attestation {@link AttestationWrapper}
      * @param constraint {@link LevelRule}
      */
-    public AttestationCategoryForQEAACheck(I18nProvider i18nProvider, XmlValidationEAAQualificationProcess result,
-                                           AttestationWrapper eaa, LevelRule constraint) {
+    public AttestationCategoryForQEAACheck(I18nProvider i18nProvider, XmlValidationAttestationQualificationProcess result,
+                                           AttestationWrapper attestation, LevelRule constraint) {
         super(i18nProvider, result, constraint);
 
-        this.eaa = eaa;
+        this.attestation = attestation;
     }
 
     @Override
     protected boolean process() {
-        return EAACategory.EU_QEAA.getUrn().equals(eaa.getCategory());
+        return EAACategory.EU_QEAA.getUrn().equals(attestation.getCategory());
     }
 
     @Override

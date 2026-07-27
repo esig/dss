@@ -25,8 +25,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlLoTEAnalysis;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSignature;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlTLAnalysis;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationEAAQualification;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationEAAQualificationProcess;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationAttestationQualification;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationAttestationQualificationProcess;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationPIDQualificationProcess;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.AttestationWrapper;
@@ -47,16 +47,16 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This class is used to verify qualification revocation of a signature used to create the EAA
+ * This class is used to verify qualification revocation of a signature used to create the attestation
  *
  */
-public class AttestationQualificationBlock extends Chain<XmlValidationEAAQualification> {
+public class AttestationQualificationBlock extends Chain<XmlValidationAttestationQualification> {
 
-    /** The EAA to be validated */
-    private final AttestationWrapper eaa;
+    /** The attestation to be validated */
+    private final AttestationWrapper attestation;
 
-    /** The conclusion of EAA validation */
-    private final XmlConclusion eaaConclusion;
+    /** The conclusion of attestation validation */
+    private final XmlConclusion attestationConclusion;
 
     /** Map of signature validation processes */
     private final Map<String, XmlSignature> signatureMap;
@@ -74,19 +74,19 @@ public class AttestationQualificationBlock extends Chain<XmlValidationEAAQualifi
      * Default constructor
      *
      * @param i18nProvider         {@link I18nProvider}
-     * @param eaa      {@link AttestationWrapper} for which qualification is to be determined
-     * @param eaaConclusion {@link XmlConclusion}
+     * @param attestation      {@link AttestationWrapper} for which qualification is to be determined
+     * @param attestationConclusion {@link XmlConclusion}
      * @param signatureMap         a map of signature validations
      * @param tlAnalysis           a list of performed {@link XmlTLAnalysis}
      * @param loteAnalysis         a list of performed {@link XmlLoTEAnalysis}
      * @param currentTime          {@link Date}
      */
-    public AttestationQualificationBlock(final I18nProvider i18nProvider, final AttestationWrapper eaa,
-                                         final XmlConclusion eaaConclusion, final Map<String, XmlSignature> signatureMap,
+    public AttestationQualificationBlock(final I18nProvider i18nProvider, final AttestationWrapper attestation,
+                                         final XmlConclusion attestationConclusion, final Map<String, XmlSignature> signatureMap,
                                          final List<XmlTLAnalysis> tlAnalysis, final List<XmlLoTEAnalysis> loteAnalysis, final Date currentTime) {
-        super(i18nProvider, new XmlValidationEAAQualification());
-        this.eaa = eaa;
-        this.eaaConclusion = eaaConclusion;
+        super(i18nProvider, new XmlValidationAttestationQualification());
+        this.attestation = attestation;
+        this.attestationConclusion = attestationConclusion;
         this.signatureMap = signatureMap;
         this.tlAnalysis = tlAnalysis;
         this.loteAnalysis = loteAnalysis;
@@ -101,68 +101,68 @@ public class AttestationQualificationBlock extends Chain<XmlValidationEAAQualifi
     @Override
     protected void initChain() {
 
-        XmlValidationEAAQualificationProcess eaaQualificationProcess = null;
+        XmlValidationAttestationQualificationProcess attestationQualificationProcess = null;
         XmlValidationPIDQualificationProcess pidQualificationProcess = null;
 
-        if (Utils.collectionSize(eaa.getEAASignatures()) == 1) {
+        if (Utils.collectionSize(attestation.getAttestationSignatures()) == 1) {
 
             CertificateWrapper signingCertificate = getSigningCertificate();
 
-            ChainItem<XmlValidationEAAQualification> item = firstItem = isTrustAnchorListReachedForCertificateChain(signingCertificate);
+            ChainItem<XmlValidationAttestationQualification> item = firstItem = isTrustAnchorListReachedForCertificateChain(signingCertificate);
 
             AttestationQualificationProcessBlock attestationQualificationProcessBlock = new AttestationQualificationProcessBlock(
-                    i18nProvider, eaa, eaaConclusion, signatureMap, tlAnalysis, currentTime);
-            eaaQualificationProcess = attestationQualificationProcessBlock.execute();
-            result.setValidationEAAQualificationProcess(eaaQualificationProcess);
+                    i18nProvider, attestation, attestationConclusion, signatureMap, tlAnalysis, currentTime);
+            attestationQualificationProcess = attestationQualificationProcessBlock.execute();
+            result.setValidationAttestationQualificationProcess(attestationQualificationProcess);
 
             PIDQualificationProcessBlock pidQualificationProcessBlock = new PIDQualificationProcessBlock(
-                    i18nProvider, eaa, eaaConclusion, loteAnalysis, currentTime);
+                    i18nProvider, attestation, attestationConclusion, loteAnalysis, currentTime);
             pidQualificationProcess = pidQualificationProcessBlock.execute();
             result.setValidationPIDQualificationProcess(pidQualificationProcess);
 
-            item = item.setNextItem(eaaQualificationProcessConclusiveCheck(eaaQualificationProcess, pidQualificationProcess));
+            item = item.setNextItem(attestationQualificationProcessConclusiveCheck(attestationQualificationProcess, pidQualificationProcess));
 
         }
 
-        determineFinalQualification(eaaQualificationProcess, pidQualificationProcess);
+        determineFinalQualification(attestationQualificationProcess, pidQualificationProcess);
 
     }
 
-    private ChainItem<XmlValidationEAAQualification> isTrustAnchorListReachedForCertificateChain(CertificateWrapper signingCertificate) {
+    private ChainItem<XmlValidationAttestationQualification> isTrustAnchorListReachedForCertificateChain(CertificateWrapper signingCertificate) {
         return new TrustAnchorListReachedForCertificateChainCheck(i18nProvider, result, signingCertificate, getFailLevelRule());
     }
 
-    private ChainItem<XmlValidationEAAQualification> eaaQualificationProcessConclusiveCheck(XmlConstraintsConclusion... conclusions) {
+    private ChainItem<XmlValidationAttestationQualification> attestationQualificationProcessConclusiveCheck(XmlConstraintsConclusion... conclusions) {
         return new AttestationQualificationProcessConclusiveCheck(i18nProvider, result, Arrays.asList(conclusions), getFailLevelRule());
     }
 
     private CertificateWrapper getSigningCertificate() {
-        SignatureWrapper eaaSignature = eaa.getEAASignatures().get(0);
-        return eaaSignature.getSigningCertificate();
+        SignatureWrapper attestationSignature = attestation.getAttestationSignatures().get(0);
+        return attestationSignature.getSigningCertificate();
     }
 
-    private void determineFinalQualification(XmlValidationEAAQualificationProcess eaaQualificationProcess,
+    private void determineFinalQualification(XmlValidationAttestationQualificationProcess attestationQualificationProcess,
                                              XmlValidationPIDQualificationProcess pidQualificationProcess) {
         AttestationQualification attestationQualification = AttestationQualification.NA;
-        if (eaaQualificationProcess != null) {
-            attestationQualification = eaaQualificationProcess.getEAAQualification();
+        if (attestationQualificationProcess != null) {
+            attestationQualification = attestationQualificationProcess.getAttestationQualification();
         }
         if (AttestationQualification.NA != attestationQualification) {
-            result.getEAAQualification().add(attestationQualification);
+            result.getAttestationQualification().add(attestationQualification);
         }
         AttestationQualification pidQualification = AttestationQualification.NA;
         if (pidQualificationProcess != null) {
-            pidQualification = pidQualificationProcess.getEAAQualification();
+            pidQualification = pidQualificationProcess.getAttestationQualification();
         }
         if ((AttestationQualification.PID == pidQualification || AttestationQualification.INDETERMINATE_PID == pidQualification)
                 && pidQualification != attestationQualification) {
-            result.getEAAQualification().add(pidQualification);
+            result.getAttestationQualification().add(pidQualification);
         } else if ((AttestationQualification.UNKNOWN == pidQualification || AttestationQualification.INDETERMINATE_UNKNOWN == pidQualification)
                 && AttestationQualification.NA == attestationQualification) {
-            result.getEAAQualification().add(pidQualification);
+            result.getAttestationQualification().add(pidQualification);
         }
-        if (Utils.isCollectionEmpty(result.getEAAQualification())) {
-            result.getEAAQualification().add(AttestationQualification.NA);
+        if (Utils.isCollectionEmpty(result.getAttestationQualification())) {
+            result.getAttestationQualification().add(AttestationQualification.NA);
         }
     }
 
@@ -171,8 +171,8 @@ public class AttestationQualificationBlock extends Chain<XmlValidationEAAQualifi
         CertificateWrapper signingCertificate = getSigningCertificate();
         if (signingCertificate != null && (signingCertificate.isTrustedListReached() || signingCertificate.isListOfTrustedEntitiesReached())) {
             if (signingCertificate.isTrustedListReached()) {
-                XmlValidationEAAQualificationProcess eaaQualificationProcess = result.getValidationEAAQualificationProcess();
-                super.collectAllMessages(conclusion, eaaQualificationProcess.getConclusion());
+                XmlValidationAttestationQualificationProcess attestationQualificationProcess = result.getValidationAttestationQualificationProcess();
+                super.collectAllMessages(conclusion, attestationQualificationProcess.getConclusion());
             }
             if (signingCertificate.isListOfTrustedEntitiesReached()) {
                 XmlValidationPIDQualificationProcess pidQualificationProcess = result.getValidationPIDQualificationProcess();

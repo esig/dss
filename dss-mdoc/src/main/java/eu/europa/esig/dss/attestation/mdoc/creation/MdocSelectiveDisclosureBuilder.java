@@ -30,7 +30,7 @@ import eu.europa.esig.dss.attestation.common.creation.SelectiveDisclosureBuilder
 public interface MdocSelectiveDisclosureBuilder extends SelectiveDisclosureBuilder<MdocClaim, MdocSelectiveDisclosure> {
 
     /**
-     * Builds a String for a selectively disclosable EAA claim to be used for Digest computation
+     * Builds a String for a selectively disclosable attestation claim to be used for Digest computation
      *
      * @param claim {@link MdocClaim} to create a disclosure for
      * @return {@link CBORByteString} representing the IssuerSignedItemBytes structure

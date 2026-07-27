@@ -25,10 +25,10 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.diagnostic.AttestationWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlClaim;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlEAA;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlEAAPayload;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestation;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationPayload;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlVerifiableCredentialsTypeClaim;
-import eu.europa.esig.dss.enumerations.AttestationFormat;
+import eu.europa.esig.dss.enumerations.AttestationProfile;
 import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.policy.MultiValuesConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
@@ -47,19 +47,19 @@ class AttestationSupportedClaimsCheckTest extends AbstractTestCheck {
         constraint.getId().add("metadata");
         constraint.setLevel(Level.FAIL);
 
-        XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(AttestationFormat.SD_JWT_VC);
-        XmlEAAPayload xmlEAAPayload = new XmlEAAPayload();
+        XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setProfile(AttestationProfile.SD_JWT_VC);
+        XmlAttestationPayload xmlAttestationPayload = new XmlAttestationPayload();
         XmlVerifiableCredentialsTypeClaim xmlVerifiableCredentialsTypeClaim = new XmlVerifiableCredentialsTypeClaim();
         xmlVerifiableCredentialsTypeClaim.setText("urn:eudi:pid:1");
         xmlVerifiableCredentialsTypeClaim.setName("metadata");
-        xmlEAAPayload.setVerifiableCredentialsType(xmlVerifiableCredentialsTypeClaim);
-        xmlEAA.setEAAPayload(xmlEAAPayload);
+        xmlAttestationPayload.setVerifiableCredentialsType(xmlVerifiableCredentialsTypeClaim);
+        xmlAttestation.setAttestationPayload(xmlAttestationPayload);
 
         XmlSAV result = new XmlSAV();
 
         AttestationSupportedClaimsCheck supportedClaimsCheck = new AttestationSupportedClaimsCheck(
-                i18nProvider, result, new AttestationWrapper(xmlEAA), new MultiValuesConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlAttestation), new MultiValuesConstraintWrapper(constraint));
         supportedClaimsCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -73,19 +73,19 @@ class AttestationSupportedClaimsCheckTest extends AbstractTestCheck {
         constraint.getId().add("metadata");
         constraint.setLevel(Level.FAIL);
 
-        XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(AttestationFormat.SD_JWT_VC);
-        XmlEAAPayload xmlEAAPayload = new XmlEAAPayload();
+        XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setProfile(AttestationProfile.SD_JWT_VC);
+        XmlAttestationPayload xmlAttestationPayload = new XmlAttestationPayload();
         XmlVerifiableCredentialsTypeClaim xmlVerifiableCredentialsTypeClaim = new XmlVerifiableCredentialsTypeClaim();
         xmlVerifiableCredentialsTypeClaim.setText("urn:eudi:pid:1");
         xmlVerifiableCredentialsTypeClaim.setName("metadata-wrong");
-        xmlEAAPayload.setVerifiableCredentialsType(xmlVerifiableCredentialsTypeClaim);
-        xmlEAA.setEAAPayload(xmlEAAPayload);
+        xmlAttestationPayload.setVerifiableCredentialsType(xmlVerifiableCredentialsTypeClaim);
+        xmlAttestation.setAttestationPayload(xmlAttestationPayload);
 
         XmlSAV result = new XmlSAV();
 
         AttestationSupportedClaimsCheck supportedClaimsCheck = new AttestationSupportedClaimsCheck(
-                i18nProvider, result, new AttestationWrapper(xmlEAA), new MultiValuesConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlAttestation), new MultiValuesConstraintWrapper(constraint));
         supportedClaimsCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -99,24 +99,24 @@ class AttestationSupportedClaimsCheckTest extends AbstractTestCheck {
         constraint.getId().add("metadata");
         constraint.setLevel(Level.FAIL);
 
-        XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(AttestationFormat.SD_JWT_VC);
-        XmlEAAPayload xmlEAAPayload = new XmlEAAPayload();
+        XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setProfile(AttestationProfile.SD_JWT_VC);
+        XmlAttestationPayload xmlAttestationPayload = new XmlAttestationPayload();
         XmlVerifiableCredentialsTypeClaim xmlVerifiableCredentialsTypeClaim = new XmlVerifiableCredentialsTypeClaim();
         xmlVerifiableCredentialsTypeClaim.setText("urn:eudi:pid:1");
         xmlVerifiableCredentialsTypeClaim.setName("metadata");
-        xmlEAAPayload.setVerifiableCredentialsType(xmlVerifiableCredentialsTypeClaim);
+        xmlAttestationPayload.setVerifiableCredentialsType(xmlVerifiableCredentialsTypeClaim);
 
         XmlClaim xmlClaim = new XmlClaim();
         xmlClaim.setName("additional");
-        xmlEAAPayload.getOtherClaim().add(xmlClaim);
+        xmlAttestationPayload.getOtherClaim().add(xmlClaim);
 
-        xmlEAA.setEAAPayload(xmlEAAPayload);
+        xmlAttestation.setAttestationPayload(xmlAttestationPayload);
 
         XmlSAV result = new XmlSAV();
 
         AttestationSupportedClaimsCheck supportedClaimsCheck = new AttestationSupportedClaimsCheck(
-                i18nProvider, result, new AttestationWrapper(xmlEAA), new MultiValuesConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlAttestation), new MultiValuesConstraintWrapper(constraint));
         supportedClaimsCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -131,20 +131,20 @@ class AttestationSupportedClaimsCheckTest extends AbstractTestCheck {
         constraint.getId().add("additional");
         constraint.setLevel(Level.FAIL);
 
-        XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(AttestationFormat.SD_JWT_VC);
-        XmlEAAPayload xmlEAAPayload = new XmlEAAPayload();
+        XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setProfile(AttestationProfile.SD_JWT_VC);
+        XmlAttestationPayload xmlAttestationPayload = new XmlAttestationPayload();
         XmlVerifiableCredentialsTypeClaim xmlVerifiableCredentialsTypeClaim = new XmlVerifiableCredentialsTypeClaim();
         xmlVerifiableCredentialsTypeClaim.setText("urn:eudi:pid:1");
         xmlVerifiableCredentialsTypeClaim.setName("metadata");
-        xmlEAAPayload.setVerifiableCredentialsType(xmlVerifiableCredentialsTypeClaim);
+        xmlAttestationPayload.setVerifiableCredentialsType(xmlVerifiableCredentialsTypeClaim);
 
-        xmlEAA.setEAAPayload(xmlEAAPayload);
+        xmlAttestation.setAttestationPayload(xmlAttestationPayload);
 
         XmlSAV result = new XmlSAV();
 
         AttestationSupportedClaimsCheck supportedClaimsCheck = new AttestationSupportedClaimsCheck(
-                i18nProvider, result, new AttestationWrapper(xmlEAA), new MultiValuesConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlAttestation), new MultiValuesConstraintWrapper(constraint));
         supportedClaimsCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

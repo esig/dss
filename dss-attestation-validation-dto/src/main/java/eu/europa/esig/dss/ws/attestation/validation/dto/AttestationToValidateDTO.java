@@ -204,7 +204,7 @@ public class AttestationToValidateDTO {
      * 
      * @return {@link RemoteDocument}
      */
-    public RemoteDocument getEaaPresentation() {
+    public RemoteDocument getAttestationPresentation() {
         return attestationPresentation;
     }
 
@@ -213,7 +213,7 @@ public class AttestationToValidateDTO {
      * 
      * @param attestationPresentation {@link RemoteDocument}
      */
-    public void setEaaPresentation(RemoteDocument attestationPresentation) {
+    public void setAttestationPresentation(RemoteDocument attestationPresentation) {
         this.attestationPresentation = attestationPresentation;
     }
 
@@ -222,7 +222,7 @@ public class AttestationToValidateDTO {
      *
      * @return {@link AttestationValidationParametersDTO}
      */
-    public AttestationValidationParametersDTO getEaaValidationParameters() {
+    public AttestationValidationParametersDTO getAttestationValidationParameters() {
         return attestationValidationParameters;
     }
 
@@ -231,7 +231,7 @@ public class AttestationToValidateDTO {
      *
      * @param attestationValidationParameters {@link AttestationValidationParametersDTO}
      */
-    public void setEaaValidationParameters(AttestationValidationParametersDTO attestationValidationParameters) {
+    public void setAttestationValidationParameters(AttestationValidationParametersDTO attestationValidationParameters) {
         this.attestationValidationParameters = attestationValidationParameters;
     }
 

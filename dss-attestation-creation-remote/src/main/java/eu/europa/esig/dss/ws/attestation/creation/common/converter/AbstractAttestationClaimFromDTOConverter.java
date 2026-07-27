@@ -28,7 +28,7 @@ import java.util.Objects;
 import java.util.function.Function;
 
 /**
- * Abstract implementation of a claim DTO into {@code EAAClaim} converter
+ * Abstract implementation of a claim DTO into {@code AttestationClaim} converter
  *
  * @param <C> {@link AttestationClaim}
  */

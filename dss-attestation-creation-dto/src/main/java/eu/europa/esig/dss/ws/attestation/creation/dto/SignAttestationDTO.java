@@ -29,7 +29,7 @@ import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureParameters;
 import java.util.Objects;
 
 /**
- * DTO representing an input data for a signEAA method for EAA creation.
+ * DTO representing an input data for a signAttestation method for attestation creation.
  * It's only possible to transfer an object by POST and REST.
  * It's impossible to transfer big objects by GET (url size limitation).
  *
@@ -38,7 +38,7 @@ public class SignAttestationDTO extends AbstractSignDocumentDTO {
 
     private static final long serialVersionUID = 7028088598170070790L;
 
-    /** The EAA payload parameters */
+    /** The attestation payload parameters */
     private RemoteAttestationPayloadParameters payloadParameters;
 
     /**
@@ -80,7 +80,7 @@ public class SignAttestationDTO extends AbstractSignDocumentDTO {
 
     @Override
     public String toString() {
-        return "SignEAADTO [" +
+        return "SignAttestationDTO [" +
                 "payloadParameters=" + payloadParameters +
                 "] " + super.toString();
     }

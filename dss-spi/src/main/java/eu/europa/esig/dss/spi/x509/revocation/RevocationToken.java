@@ -58,7 +58,7 @@ public abstract class RevocationToken<R extends Revocation> extends Token {
 	protected RevocationOrigin externalOrigin;
 
 	/**
-	 * Contains the revocation revocation of the token.
+	 * Contains the revocation status of the token.
 	 */
 	protected CertificateStatus status;
 

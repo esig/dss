@@ -10,8 +10,8 @@
     </parent>
 
     <artifactId>dss-attestation-revocation-jwt</artifactId>
-    <name>DSS EAA Revocation based on JWT format</name>
-    <description>This module performs validation of EAA Revocations based on JWT tokens</description>
+    <name>DSS Attestation Revocation based on JWT format</name>
+    <description>This module performs validation of attestation revocations based on JWT tokens</description>
 
     <properties>
         <module-name>jpms_dss_attestation_revocation_jwt</module-name>
@@ -20,7 +20,7 @@
     <dependencies>
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>
-            <artifactId>dss-attestation-revocation-common</artifactId>
+            <artifactId>dss-attestation-revocation</artifactId>
         </dependency>
         <dependency>
             <groupId>eu.europa.ec.joinup.sd-dss</groupId>

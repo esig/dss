@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.attestation.common.validation;
 
-import eu.europa.esig.dss.enumerations.AttestationPresentationType;
+import eu.europa.esig.dss.enumerations.AttestationDocumentFormat;
 import eu.europa.esig.dss.spi.attestation.Attestation;
 import eu.europa.esig.dss.spi.attestation.AttestationPresentation;
 
@@ -32,7 +32,7 @@ import java.util.List;
 public abstract class DefaultAttestationPresentation implements AttestationPresentation {
 
     /** Type of the Attestation Presentation */
-    private AttestationPresentationType attestationPresentationType;
+    private AttestationDocumentFormat attestationDocumentFormat;
 
     /** List of incorporated Electronic Attestations of Attributes */
     private List<Attestation> electronicAttestationsOfAttributes;
@@ -45,21 +45,21 @@ public abstract class DefaultAttestationPresentation implements AttestationPrese
     }
 
     @Override
-    public AttestationPresentationType getEAAPresentationType() {
-        return attestationPresentationType;
+    public AttestationDocumentFormat getDocumentFormat() {
+        return attestationDocumentFormat;
     }
 
     /**
      * Sets the type of the Attestation Presentation document
      *
-     * @param attestationPresentationType {@link AttestationPresentationType}
+     * @param attestationDocumentFormat {@link AttestationDocumentFormat}
      */
-    public void setEAAPresentationType(AttestationPresentationType attestationPresentationType) {
-        this.attestationPresentationType = attestationPresentationType;
+    public void setAttestationPresentationType(AttestationDocumentFormat attestationDocumentFormat) {
+        this.attestationDocumentFormat = attestationDocumentFormat;
     }
 
     @Override
-    public List<Attestation> getElectronicAttestationsOfAttributes() {
+    public List<Attestation> getAttestations() {
         return electronicAttestationsOfAttributes;
     }
 

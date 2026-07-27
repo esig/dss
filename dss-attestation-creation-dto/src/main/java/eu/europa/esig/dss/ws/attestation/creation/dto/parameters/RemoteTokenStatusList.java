@@ -42,10 +42,10 @@ public class RemoteTokenStatusList implements Serializable {
     /** Certificate containing the public key that signed or sealed the top-level certificate in the MSO revocation list structure */
     private RemoteCertificate certificate;
 
-    /** Type of the EAA revocation (ETSI specification only) */
+    /** Type of the attestation revocation (ETSI specification only) */
     private String type;
 
-    /** Purpose of the EAA revocation (ETSI specification only) */
+    /** Purpose of the attestation revocation (ETSI specification only) */
     private String purpose;
 
     /**
@@ -93,18 +93,18 @@ public class RemoteTokenStatusList implements Serializable {
         this.uri = uri;
     }
     /**
-     * Returns the EAA index
+     * Returns the attestation index
      *
-     * @return the EAA index
+     * @return the attestation index
      */
     public Integer getIndex() {
         return index;
     }
 
     /**
-     * Sets the EAA index
+     * Sets the attestation index
      *
-     * @param index the EAA index to set
+     * @param index the attestation index to set
      */
     public void setIndex(Integer index) {
         this.index = index;
@@ -184,7 +184,7 @@ public class RemoteTokenStatusList implements Serializable {
 
     @Override
     public String toString() {
-        return "RemoteEAAStatusList [" +
+        return "RemoteTokenStatusList [" +
                 "index=" + index +
                 ", uri='" + uri + '\'' +
                 ", certificate=" + certificate +

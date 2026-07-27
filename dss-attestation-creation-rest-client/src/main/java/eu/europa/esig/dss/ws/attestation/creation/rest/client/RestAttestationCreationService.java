@@ -39,7 +39,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * This REST interface provides operations for the signing of EAA and issuance of EAA presentations.
+ * This REST interface provides operations for the signing of attestation and issuance of attestation presentations.
  *
  */
 @Path("/")
@@ -60,23 +60,23 @@ public interface RestAttestationCreationService extends Serializable {
     ToBeSignedDTO getDataToSign(final DataToSignAttestationDTO dataToSignAttestationDTO);
 
     /**
-     * Signs the EAA with the provided signatureValue.
+     * Signs the attestation with the provided signatureValue.
      *
      * @param signAttestationDTO {@link SignAttestationDTO} a DTO with the needed
      *                   information (payload and signature parameters, signature value) to
-     *                   generate the signed EAA
-     * @return the signed document (signature signing the EAA)
+     *                   generate the signed attestation
+     * @return the signed document (signature signing the attestation)
      */
     @POST
-    @Path("signEAA")
-    RemoteDocument signEAA(final SignAttestationDTO signAttestationDTO);
+    @Path("signAttestation")
+    RemoteDocument signAttestation(final SignAttestationDTO signAttestationDTO);
 
     /**
      * Gets a list of disclosures for all selectively disclosable claims defined within the parameters
      *
      * @param disclosuresDTO {@link DisclosuresDTO} a DTO with the needed
      *                       information (payload parameters) to
-     *                       generate the EAA disclosures
+     *                       generate the attestation disclosures
      * @return a list of disclosures
      */
     @POST
@@ -87,7 +87,7 @@ public interface RestAttestationCreationService extends Serializable {
      * Created a DataToBeSigned (DTBS) for a key-binding signature creation, format specific.
      *
      * @param dataToSignForKeyBindingSignatureDTO {@link DataToSignForKeyBindingSignatureDTO} a DTO with the needed
-     *                        information (signed EAA, disclosures, key binding and signature parameter) to compute
+     *                        information (signed attestation, disclosures, key binding and signature parameter) to compute
      *                        the data to be signed for key binding signature
      * @return the data to be signed
      */
@@ -99,7 +99,7 @@ public interface RestAttestationCreationService extends Serializable {
      * Creates a key-binding signature, format specific.
      *
      * @param createKeyBindingSignatureDTO {@link CreateKeyBindingSignatureDTO} a DTO with the needed information
-     *                        (signed EAA, disclosures, key binding and signature parameters and signature value)
+     *                        (signed attestation, disclosures, key binding and signature parameters and signature value)
      *                        to create the key binding signature
      * @return the key-binding signature document
      */
@@ -111,7 +111,7 @@ public interface RestAttestationCreationService extends Serializable {
      * Creates an Attestation Presentation, with provided selective disclosures and key binding signature
      *
      * @param issuePresentationDTO {@link IssuePresentationDTO} a DTO with the needed information
-     *                        (signed EAA, disclosures, key binding signature and parameters)
+     *                        (signed attestation, disclosures, key binding signature and parameters)
      *                        to issue the Attestation Presentation
      * @return the Attestation Presentation
      */

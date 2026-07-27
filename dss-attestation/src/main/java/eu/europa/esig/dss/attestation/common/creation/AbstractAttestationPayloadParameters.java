@@ -28,7 +28,7 @@ import java.util.Date;
 import java.util.Objects;
 
 /**
- * Abstract implementation of the EAA Payload parameters
+ * Abstract implementation of the attestation Payload parameters
  *
  */
 public abstract class AbstractAttestationPayloadParameters implements AttestationPayloadParameters {
@@ -36,10 +36,10 @@ public abstract class AbstractAttestationPayloadParameters implements Attestatio
     /** DigestAlgorithm used to compute hashes for selectively disclosable claims  */
     private DigestAlgorithm digestAlgorithm = DigestAlgorithm.SHA256;
 
-    /** Date of the EAA technical validity start */
+    /** Date of the attestation technical validity start */
     private Date notBeforeDate;
 
-    /** Date of the EAA technical validity end */
+    /** Date of the attestation technical validity end */
     private Date expirationDate;
 
     /** Contains the public part of the key pair used for device authentication. */
@@ -50,19 +50,19 @@ public abstract class AbstractAttestationPayloadParameters implements Attestatio
 
     /* ETSI technical claims */
 
-    /** Category of the EAA (e.g. QEAA, Pub-EAA, or other) */
+    /** Category of the attestation (e.g. QEAA, Pub-EAA, or other) */
     private String category;
 
-    /** Whether the EAA is short-lived */
+    /** Whether the attestation is short-lived */
     private boolean shortLived;
 
-    /** Whether the EAA is issued for a one time use */
+    /** Whether the attestation is issued for a one time use */
     private boolean oneTime;
 
     /** The number of decoy digests that will be added */
     private int decoyDigestNumber;
 
-    /** If the hashes in the EAA should be shuffled */
+    /** If the hashes in the attestation should be shuffled */
     private boolean shuffleHashes = true;
 
     /**
@@ -93,7 +93,7 @@ public abstract class AbstractAttestationPayloadParameters implements Attestatio
     }
 
     /**
-     * Sets the EAA notBefore date (technical validity start date)
+     * Sets the attestation notBefore date (technical validity start date)
      *
      * @param notBeforeDate {@link Date}
      */
@@ -107,7 +107,7 @@ public abstract class AbstractAttestationPayloadParameters implements Attestatio
     }
 
     /**
-     * Sets the EAA expiration date (technical validity end date)
+     * Sets the attestation expiration date (technical validity end date)
      *
      * @param expirationDate {@link Date}
      */
@@ -156,9 +156,9 @@ public abstract class AbstractAttestationPayloadParameters implements Attestatio
     }
 
     /**
-     * Sets the status_list, by specifying an index of the EAA and a revocation distribution URL
+     * Sets the status_list, by specifying an index of the attestation and a revocation distribution URL
      *
-     * @param index integer representing an EAA identifier within the status_list
+     * @param index integer representing an attestation identifier within the status_list
      * @param url {@link String} where the status_list can be accessed from
      */
     public void setStatusList(int index, String url) {
@@ -166,9 +166,9 @@ public abstract class AbstractAttestationPayloadParameters implements Attestatio
     }
 
     /**
-     * Sets the status_list, by specifying an index of the EAA and a revocation distribution URL
+     * Sets the status_list, by specifying an index of the attestation and a revocation distribution URL
      *
-     * @param index integer representing an EAA identifier within the status_list
+     * @param index integer representing an attestation identifier within the status_list
      * @param url {@link String} where the status_list can be accessed from
      * @param certificateToken {@link CertificateToken} containing the public key that signed or sealed
      *                         the top-level certificate in the x5chain element in the MSO revocation list structure
@@ -183,7 +183,7 @@ public abstract class AbstractAttestationPayloadParameters implements Attestatio
     }
 
     /**
-     * Sets the EAA category URN.
+     * Sets the attestation category URN.
      * Example: "urn:etsi:esi:attestation:eu:qualified" for QEAA, "urn:etsi:esi:attestation:eu:pub" for Pub-EAA
      *
      * @param category {@link String}
@@ -198,9 +198,9 @@ public abstract class AbstractAttestationPayloadParameters implements Attestatio
     }
 
     /**
-     * Sets whether the EAA is short-lived (no EAA revocation check applies)
+     * Sets whether the attestation is short-lived (no attestation revocation check applies)
      *
-     * @param shortLived whether the EAA is short-lived
+     * @param shortLived whether the attestation is short-lived
      */
     public void setShortLived(final boolean shortLived) {
         this.shortLived = shortLived;
@@ -212,9 +212,9 @@ public abstract class AbstractAttestationPayloadParameters implements Attestatio
     }
 
     /**
-     * Sets whether the EAA is for one time use
+     * Sets whether the attestation is for one time use
      *
-     * @param oneTime whether the EAA is for one time use
+     * @param oneTime whether the attestation is for one time use
      */
     public void setOneTime(final boolean oneTime) {
         this.oneTime = oneTime;
@@ -250,7 +250,7 @@ public abstract class AbstractAttestationPayloadParameters implements Attestatio
 
     @Override
     public String toString() {
-        return "AbstractEAAPayloadParameters [" +
+        return "AbstractAttestationPayloadParameters [" +
                 "digestAlgorithm=" + digestAlgorithm +
                 ", notBeforeDate=" + notBeforeDate +
                 ", expirationDate=" + expirationDate +

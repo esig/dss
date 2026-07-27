@@ -114,7 +114,7 @@ public class MdocConstants {
     // Currently referenced in draft-ietf-oauth-revocation-list-19, but may be included in MobileSecurityObject
 
     /** Specifies a CBOR Object that contains at least one reference to a revocation mechanism */
-    public static final String STATUS = "revocation";
+    public static final String STATUS = "status";
 
     /** Specifies a CBOR Object that contains at least one reference to a revocation mechanism. Long representation. */
     public static final CBORObject STATUS_LONG = CBORObjectFactory.toCBORObject(65535L);

@@ -31,31 +31,31 @@ import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
 /**
- * Verifies whether the EAA revocation token contains an expiration time
+ * Verifies whether the attestation revocation token contains an expiration time
  *
  */
 public class AttestationRevocationExpirationTimeCheck extends ChainItem<XmlSAV> {
 
-    /** EAA revocation token to check */
-    private final AttestationRevocationTokenWrapper eaaStatusToken;
+    /** attestation revocation token to check */
+    private final AttestationRevocationTokenWrapper attestationRevocationToken;
 
     /**
      * Default constructor
      *
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlSAV}
-     * @param eaaStatusToken {@link AttestationRevocationWrapper}
+     * @param attestationRevocationToken {@link AttestationRevocationWrapper}
      * @param constraint {@link LevelRule}
      */
     public AttestationRevocationExpirationTimeCheck(I18nProvider i18nProvider, XmlSAV result,
-                                                    AttestationRevocationTokenWrapper eaaStatusToken, LevelRule constraint) {
+                                                    AttestationRevocationTokenWrapper attestationRevocationToken, LevelRule constraint) {
         super(i18nProvider, result, constraint);
-        this.eaaStatusToken = eaaStatusToken;
+        this.attestationRevocationToken = attestationRevocationToken;
     }
 
     @Override
     protected boolean process() {
-        return eaaStatusToken.getExpirationTime() != null;
+        return attestationRevocationToken.getExpirationTime() != null;
     }
 
     @Override
@@ -75,7 +75,7 @@ public class AttestationRevocationExpirationTimeCheck extends ChainItem<XmlSAV> 
 
     @Override
     protected SubIndication getFailedSubIndicationForConclusion() {
-        return SubIndication.EAA_CONSTRAINTS_FAILURE;
+        return SubIndication.ATTESTATION_CONSTRAINTS_FAILURE;
     }
 
 }

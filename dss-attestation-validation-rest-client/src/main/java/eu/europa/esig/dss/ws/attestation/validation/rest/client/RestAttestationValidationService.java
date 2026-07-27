@@ -32,7 +32,7 @@ import jakarta.ws.rs.core.MediaType;
 import java.io.Serializable;
 
 /**
- * This REST interface provides operations for the validation of EAA presentation.
+ * This REST interface provides operations for the validation of attestation presentation.
  *
  */
 @Path("/")
@@ -46,13 +46,13 @@ public interface RestAttestationValidationService extends Serializable {
      * ETSI Validation report
      *
      * @param dataToValidate
-     *                       a {@code EAAToValidateDTO} which contains the
-     *                       EAA, the optional validation parameters
+     *                       a {@code AttestationToValidateDTO} which contains the
+     *                       attestation, the optional validation parameters
      * @return a {@code ReportsDTO} with  4 reports : the diagnostic data, the
      *         detailed report, the simple report and the ETSI validation report
      */
     @POST
-    @Path("validateEAA")
-    WSReportsDTO validateEAA(AttestationToValidateDTO dataToValidate);
+    @Path("validateAttestation")
+    WSReportsDTO validateAttestation(AttestationToValidateDTO dataToValidate);
 
 }

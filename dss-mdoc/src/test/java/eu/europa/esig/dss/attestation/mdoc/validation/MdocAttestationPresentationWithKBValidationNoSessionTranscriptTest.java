@@ -29,7 +29,7 @@ class MdocAttestationPresentationWithKBValidationNoSessionTranscriptTest extends
 
     @Override
     protected void checkBLevelValid(DiagnosticData diagnosticData) {
-        boolean eaaSigFound = false;
+        boolean attestationSigFound = false;
         boolean kbSigFound = false;
         for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
             List<XmlDigestMatcher> digestMatchers = signatureWrapper.getDigestMatchers();
@@ -50,10 +50,10 @@ class MdocAttestationPresentationWithKBValidationNoSessionTranscriptTest extends
                 assertTrue(signatureWrapper.isBLevelTechnicallyValid());
                 assertTrue(signatureWrapper.isSignatureIntact());
                 assertTrue(signatureWrapper.isSignatureValid());
-                eaaSigFound = true;
+                attestationSigFound = true;
             }
         }
-        assertTrue(eaaSigFound);
+        assertTrue(attestationSigFound);
         assertTrue(kbSigFound);
     }
 

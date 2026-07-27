@@ -27,10 +27,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Contains parameters for individual claims to be included within EAA either as selectively disclosable
+ * Contains parameters for individual claims to be included within attestation either as selectively disclosable
  * or non-selectively disclosable claims
  *
- * @param <C> implementation of {@link AttestationClaim} for the EAA format
+ * @param <C> implementation of {@link AttestationClaim} for the attestation format
  */
 public interface AttestationClaimParameters<C extends AttestationClaim> {
 
@@ -268,7 +268,7 @@ public interface AttestationClaimParameters<C extends AttestationClaim> {
     String getTrustAnchor();
 
     /**
-     * Gets the registration identifier of the legal entity on whose behalf the EAA has been issued.
+     * Gets the registration identifier of the legal entity on whose behalf the attestation has been issued.
      *
      * @return {@link String}
      */

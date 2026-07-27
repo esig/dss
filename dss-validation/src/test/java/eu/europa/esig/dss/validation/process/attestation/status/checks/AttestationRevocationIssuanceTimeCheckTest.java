@@ -24,7 +24,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.diagnostic.AttestationRevocationTokenWrapper;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlEAARevocationToken;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationRevocationToken;
 import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
@@ -44,13 +44,13 @@ class AttestationRevocationIssuanceTimeCheckTest extends AbstractTestCheck {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
-        XmlEAARevocationToken xmlEAARevocationToken = new XmlEAARevocationToken();
-        xmlEAARevocationToken.setIssuedAt(new Date());
+        XmlAttestationRevocationToken xmlAttestationRevocationToken = new XmlAttestationRevocationToken();
+        xmlAttestationRevocationToken.setIssuedAt(new Date());
         XmlSAV result = new XmlSAV();
 
-        AttestationRevocationIssuanceTimeCheck eaasitc = new AttestationRevocationIssuanceTimeCheck(
-                i18nProvider, result, new AttestationRevocationTokenWrapper(xmlEAARevocationToken), new LevelConstraintWrapper(constraint));
-        eaasitc.execute();
+        AttestationRevocationIssuanceTimeCheck asitc = new AttestationRevocationIssuanceTimeCheck(
+                i18nProvider, result, new AttestationRevocationTokenWrapper(xmlAttestationRevocationToken), new LevelConstraintWrapper(constraint));
+        asitc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
         assertEquals(1, constraints.size());
@@ -62,12 +62,12 @@ class AttestationRevocationIssuanceTimeCheckTest extends AbstractTestCheck {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
-        XmlEAARevocationToken xmlEAARevocationToken = new XmlEAARevocationToken();
+        XmlAttestationRevocationToken xmlAttestationRevocationToken = new XmlAttestationRevocationToken();
         XmlSAV result = new XmlSAV();
 
-        AttestationRevocationIssuanceTimeCheck eaasitc = new AttestationRevocationIssuanceTimeCheck(
-                i18nProvider, result, new AttestationRevocationTokenWrapper(xmlEAARevocationToken), new LevelConstraintWrapper(constraint));
-        eaasitc.execute();
+        AttestationRevocationIssuanceTimeCheck asitc = new AttestationRevocationIssuanceTimeCheck(
+                i18nProvider, result, new AttestationRevocationTokenWrapper(xmlAttestationRevocationToken), new LevelConstraintWrapper(constraint));
+        asitc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
         assertEquals(1, constraints.size());

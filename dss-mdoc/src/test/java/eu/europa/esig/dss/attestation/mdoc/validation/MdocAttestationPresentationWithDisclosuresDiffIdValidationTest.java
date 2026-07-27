@@ -34,7 +34,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.COSEStructureType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
-import eu.europa.esig.dss.enumerations.AttestationPresentationType;
+import eu.europa.esig.dss.enumerations.AttestationDocumentFormat;
 import eu.europa.esig.dss.enumerations.EllipticCurve;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -148,7 +148,7 @@ class MdocAttestationPresentationWithDisclosuresDiffIdValidationTest extends Abs
 
         documents.add(document);
         mdocResponse.put("documents", documents);
-        mdocResponse.put("revocation", 0L);
+        mdocResponse.put("status", 0L);
 
         // embed in mdoc
         DSSDocument mdocDocument = new InMemoryDocument(CBORUtils.serializeCborObject(mdocResponse));
@@ -163,8 +163,8 @@ class MdocAttestationPresentationWithDisclosuresDiffIdValidationTest extends Abs
     }
 
     @Override
-    protected void checkEAADigestMatchers(DiagnosticData diagnosticData) {
-        AttestationWrapper attestationWrapper = diagnosticData.getEAAById(diagnosticData.getFirstEAAId());
+    protected void checkAttestationDigestMatchers(DiagnosticData diagnosticData) {
+        AttestationWrapper attestationWrapper = diagnosticData.getAttestationById(diagnosticData.getFirstAttestationId());
         assertNotNull(attestationWrapper);
 
         List<XmlDigestMatcher> digestMatchers = attestationWrapper.getDigestMatchers();
@@ -174,14 +174,14 @@ class MdocAttestationPresentationWithDisclosuresDiffIdValidationTest extends Abs
         int notPresentDisclosuresCounter = 0;
         int orphanDisclosuresCounter = 0;
         for (XmlDigestMatcher xmlDigestMatcher : digestMatchers) {
-            if (DigestMatcherType.EAA_DISCLOSURE == xmlDigestMatcher.getType()) {
+            if (DigestMatcherType.SELECTIVE_DISCLOSURE == xmlDigestMatcher.getType()) {
                 assertTrue(xmlDigestMatcher.isDataFound());
                 if (xmlDigestMatcher.isDataIntact()) {
                     ++foundDisclosuresCounter;
                 } else {
                     ++notPresentDisclosuresCounter;
                 }
-            } else if (DigestMatcherType.EAA_ORPHAN_SELECTIVELY_DISCLOSABLE_CLAIM == xmlDigestMatcher.getType()) {
+            } else if (DigestMatcherType.ORPHAN_SELECTIVELY_DISCLOSABLE_CLAIM == xmlDigestMatcher.getType()) {
                 assertFalse(xmlDigestMatcher.isDataFound());
                 assertFalse(xmlDigestMatcher.isDataIntact());
                 ++orphanDisclosuresCounter;
@@ -196,16 +196,16 @@ class MdocAttestationPresentationWithDisclosuresDiffIdValidationTest extends Abs
     protected void verifySimpleReport(SimpleReport simpleReport) {
         super.verifySimpleReport(simpleReport);
 
-        List<String> eaaIdList = simpleReport.getEAAIdList();
-        assertEquals(1, eaaIdList.size());
+        List<String> attestationIdList = simpleReport.getAttestationIdList();
+        assertEquals(1, attestationIdList.size());
 
-        assertEquals(Indication.FAILED, simpleReport.getIndication(eaaIdList.get(0)));
-        assertEquals(SubIndication.HASH_FAILURE, simpleReport.getSubIndication(eaaIdList.get(0)));
+        assertEquals(Indication.FAILED, simpleReport.getIndication(attestationIdList.get(0)));
+        assertEquals(SubIndication.HASH_FAILURE, simpleReport.getSubIndication(attestationIdList.get(0)));
     }
 
     @Override
-    protected AttestationPresentationType getEAAPresentationType() {
-        return AttestationPresentationType.MDOC_DEVICE_RESPONSE;
+    protected AttestationDocumentFormat getAttestationPresentationType() {
+        return AttestationDocumentFormat.MDOC_DEVICE_RESPONSE;
     }
 
     @Override

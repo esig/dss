@@ -12,7 +12,7 @@
 					<xs:element name="Signature" type="Signature" />
 					<xs:element name="Timestamp" type="Timestamp" />
 					<xs:element name="EvidenceRecord" type="EvidenceRecord" />
-					<xs:element name="EAA" type="EAA" />
+					<xs:element name="Attestation" type="Attestation" />
 					<xs:element name="Certificate" type="Certificate" />
 				</xs:choice>
 			</xs:sequence>
@@ -65,13 +65,13 @@
 		<xs:attribute name="Id" type="xs:string" />
 	</xs:complexType>
 
-	<xs:complexType name="EAA">
+	<xs:complexType name="Attestation">
 		<xs:sequence>
-			<xs:element name="ValidationProcessEAA" type="ValidationProcessEAA"  />
+			<xs:element name="ValidationProcessAttestation" type="ValidationProcessAttestation"  />
 			<xs:element name="Signature" type="Signature" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="KeyBindingSignature" type="Signature" minOccurs="0" />
 
-			<xs:element name="ValidationEAAQualification" type="ValidationEAAQualification" minOccurs="0" />
+			<xs:element name="ValidationAttestationQualification" type="ValidationAttestationQualification" minOccurs="0" />
 
 			<xs:element name="Conclusion" type="Conclusion" />
 		</xs:sequence>
@@ -288,24 +288,24 @@
 		</xs:complexContent>
 	</xs:complexType>
 
-	<xs:complexType name="ValidationEAAQualification">
+	<xs:complexType name="ValidationAttestationQualification">
 		<xs:complexContent>
 			<xs:extension base="ConstraintsConclusion">
 				<xs:sequence>
 					<!-- Processes -->
-					<xs:element name="ValidationEAAQualificationProcess" type="ValidationEAAQualificationProcess" minOccurs="0" />
+					<xs:element name="ValidationAttestationQualificationProcess" type="ValidationAttestationQualificationProcess" minOccurs="0" />
 					<xs:element name="ValidationPIDQualificationProcess" type="ValidationPIDQualificationProcess" minOccurs="0" />
 					<!-- Result -->
-					<xs:element name="EAAQualification" type="EAAQualification" maxOccurs="unbounded" />
+					<xs:element name="AttestationQualification" type="AttestationQualification" maxOccurs="unbounded" />
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
 
-	<xs:complexType name="ValidationEAAQualificationProcess">
+	<xs:complexType name="ValidationAttestationQualificationProcess">
 		<xs:complexContent>
 			<xs:extension base="ConstraintsConclusion">
-				<xs:attribute name="EAAQualification" type="EAAQualification" use="required" />
+				<xs:attribute name="AttestationQualification" type="AttestationQualification" use="required" />
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -316,7 +316,7 @@
 				<xs:sequence>
 					<xs:element name="ValidationCertificateApprovalStatus" type="ValidationCertificateApprovalStatus" minOccurs="0" maxOccurs="unbounded" />
 				</xs:sequence>
-				<xs:attribute name="EAAQualification" type="EAAQualification" use="required" />
+				<xs:attribute name="AttestationQualification" type="AttestationQualification" use="required" />
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -331,7 +331,7 @@
 		</xs:complexContent>
 	</xs:complexType>
 
-	<xs:complexType name="ValidationProcessEAA">
+	<xs:complexType name="ValidationProcessAttestation">
 		<xs:complexContent>
 			<xs:extension base="ConstraintsConclusionWithProofOfExistence" />
 		</xs:complexContent>
@@ -616,7 +616,7 @@
 			<xs:enumeration value="NO_POE" />
 			<xs:enumeration value="CERTIFICATE_CHAIN_GENERAL_FAILURE" />
 			<xs:enumeration value="UNEXPECTED_ERROR" />
-			<xs:enumeration value="EAA_CONSTRAINTS_FAILURE" />
+			<xs:enumeration value="ATTESTATION_CONSTRAINTS_FAILURE" />
 		</xs:restriction>
 	</xs:simpleType>
 	
@@ -681,7 +681,7 @@
 		</xs:restriction>
 	</xs:simpleType>
 
-	<xs:simpleType name="EAAQualification" final="restriction">
+	<xs:simpleType name="AttestationQualification" final="restriction">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="QEAA" />
 			<xs:enumeration value="EAA" />
@@ -708,8 +708,8 @@
 			<xs:enumeration value="TIMESTAMP" />
 			<xs:enumeration value="REVOCATION" />
 			<xs:enumeration value="EVIDENCE_RECORD" />
-			<xs:enumeration value="EAA" />
-			<xs:enumeration value="EAA_REVOCATION" />
+			<xs:enumeration value="ATTESTATION" />
+			<xs:enumeration value="ATTESTATION_REVOCATION" />
 			<!-- For Qualification -->
 			<xs:enumeration value="CERTIFICATE" />
 		</xs:restriction>
@@ -757,7 +757,7 @@
 			<xs:enumeration value="AIA" />
 			<xs:enumeration value="TIMESTAMP" />
 			<xs:enumeration value="EVIDENCE_RECORD" />
-			<xs:enumeration value="EAA" />
+			<xs:enumeration value="ATTESTATION" />
 			<xs:enumeration value="UNKNOWN" />
 		</xs:restriction>
 	</xs:simpleType>

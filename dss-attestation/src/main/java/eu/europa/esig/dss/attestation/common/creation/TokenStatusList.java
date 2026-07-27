@@ -117,7 +117,7 @@ public class TokenStatusList implements Serializable {
 
     @Override
     public String toString() {
-        return "EAAStatusList [" +
+        return "TokenStatusList [" +
                 "index=" + index +
                 ", uri='" + uri + '\'' +
                 ", certificate=" + certificate +

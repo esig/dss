@@ -31,7 +31,7 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 import java.util.Date;
 
 /**
- * Performs cryptographic validation of the EAA revocation token and its certificate chain
+ * Performs cryptographic validation of the attestation revocation token and its certificate chain
  *
  */
 public class AttestationRevocationAlgorithmObsolescenceValidation extends TokenAlgorithmObsolescenceValidation<AttestationRevocationTokenWrapper> {
@@ -46,7 +46,7 @@ public class AttestationRevocationAlgorithmObsolescenceValidation extends TokenA
      */
     public AttestationRevocationAlgorithmObsolescenceValidation(I18nProvider i18nProvider, AttestationRevocationTokenWrapper token,
                                                                 Date validationDate, ValidationPolicy validationPolicy) {
-        super(i18nProvider, token, Context.EAA_REVOCATION, validationDate, validationPolicy);
+        super(i18nProvider, token, Context.ATTESTATION_REVOCATION, validationDate, validationPolicy);
     }
 
     @Override

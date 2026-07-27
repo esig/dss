@@ -25,9 +25,9 @@ class SDJWTCompactDisclosureInvalidValidationTest extends AbstractSDJWTTestValid
     }
 
     @Override
-    protected void checkEAADigestMatchers(DiagnosticData diagnosticData) {
-        AttestationWrapper eaa = diagnosticData.getEAAs().get(0);
-        List<XmlDigestMatcher> digestMatchers = eaa.getDigestMatchers();
+    protected void checkAttestationDigestMatchers(DiagnosticData diagnosticData) {
+        AttestationWrapper attestation = diagnosticData.getAttestations().get(0);
+        List<XmlDigestMatcher> digestMatchers = attestation.getDigestMatchers();
         assertEquals(2, digestMatchers.size());
 
         boolean givenNameSDFound = false;
@@ -53,10 +53,10 @@ class SDJWTCompactDisclosureInvalidValidationTest extends AbstractSDJWTTestValid
     protected void checkClaims(DiagnosticData diagnosticData) {
         super.checkClaims(diagnosticData);
 
-        AttestationWrapper attestationWrapper = diagnosticData.getEAAById(diagnosticData.getFirstEAAId());
-        AttestationPayloadProxy eaaPayload = attestationWrapper.getPayload();
-        assertNull(eaaPayload.getGivenName());
-        assertEquals("Doe", eaaPayload.getFamilyName().getText());
+        AttestationWrapper attestationWrapper = diagnosticData.getAttestationById(diagnosticData.getFirstAttestationId());
+        AttestationPayloadProxy attestationPayload = attestationWrapper.getPayload();
+        assertNull(attestationPayload.getGivenName());
+        assertEquals("Doe", attestationPayload.getFamilyName().getText());
     }
 
     @Override
@@ -76,7 +76,7 @@ class SDJWTCompactDisclosureInvalidValidationTest extends AbstractSDJWTTestValid
                         assertTrue(xmlDigestMatcher.isDataFound());
                         assertTrue(xmlDigestMatcher.isDataIntact());
                         jwsSDFound = true;
-                    } else if (DigestMatcherType.EAA_KEY_BINDING == xmlDigestMatcher.getType()) {
+                    } else if (DigestMatcherType.KEY_BINDING_SIGNATURE == xmlDigestMatcher.getType()) {
                         assertTrue(xmlDigestMatcher.isDataFound());
                         assertFalse(xmlDigestMatcher.isDataIntact());
                         kbSDFound = true;

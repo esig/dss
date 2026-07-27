@@ -40,11 +40,11 @@ import java.util.Date;
 
 /**
  * 5.2.5 Revocation freshness checker This building block checks that a given
- * revocation revocation information is "fresh" at a given validation time. The
- * freshness of the revocation revocation information is the maximum accepted
- * difference between the issuance time of the revocation revocation information and
+ * revocation status information is "fresh" at a given validation time. The
+ * freshness of the revocation status information is the maximum accepted
+ * difference between the issuance time of the revocation status information and
  * the current time. This process is used by other validation blocks when
- * checking the revocation revocation of a certificate.
+ * checking the revocation status of a certificate.
  */
 public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 
@@ -115,7 +115,7 @@ public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 			 * FAILED.
 			 * 
 			 * NOTE: This means that if the given validation time is after the
-			 * nextUpdate time, the revocation revocation information will not be
+			 * nextUpdate time, the revocation status information will not be
 			 * considered fresh.
 			 */
 			DurationRule revocationFreshnessConstraint = policy.getRevocationFreshnessConstraint(context, subContext);

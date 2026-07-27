@@ -55,19 +55,19 @@ public class MdocISONonMdLWithStatusListTest extends AbstractMdocPresentationTes
     }
 
     @Override
-    protected AttestationRevocationSource getEAAStatusSource() {
+    protected AttestationRevocationSource getAttestationRevocationSource() {
         return new PKICWTStatusListSource(getCertEntityRepository(), getCertEntity(GOOD_CA));
     }
 
     @Override
-    protected void checkEAARevocations(DiagnosticData diagnosticData) {
-        super.checkEAARevocations(diagnosticData);
+    protected void checkAttestationRevocations(DiagnosticData diagnosticData) {
+        super.checkAttestationRevocations(diagnosticData);
 
-        AttestationWrapper eaa = diagnosticData.getEAAById(diagnosticData.getFirstEAAId());
-        List<AttestationRevocationWrapper> eaaStatuses = eaa.getAttestationRevocations();
-        assertEquals(1, eaaStatuses.size());
-        assertEquals(AttestationStatus.VALID, eaaStatuses.get(0).getStatus());
-        assertEquals("application/statuslist+cwt", eaaStatuses.get(0).getType());
+        AttestationWrapper attestation = diagnosticData.getAttestationById(diagnosticData.getFirstAttestationId());
+        List<AttestationRevocationWrapper> attestationStatuses = attestation.getAttestationRevocations();
+        assertEquals(1, attestationStatuses.size());
+        assertEquals(AttestationStatus.VALID, attestationStatuses.get(0).getStatus());
+        assertEquals("application/statuslist+cwt", attestationStatuses.get(0).getType());
     }
 
     @Override

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DetailedReport ValidationTime="2026-04-23T09:29:00Z" xmlns="http://dss.esig.europa.eu/validation/detailed-report">
-    <EAA Id="EAA-142BE84DAB5CA7AC88CCAC3DC9E7F4A3C2372EEA97B822978540C31CE18CC20C">
-        <ValidationProcessEAA Title="Validation Process for Electronic Attestations of Attributes">
+    <Attestation Id="EAA-142BE84DAB5CA7AC88CCAC3DC9E7F4A3C2372EEA97B822978540C31CE18CC20C">
+        <ValidationProcessAttestation Title="Validation Process for Electronic Attestations of Attributes">
             <Constraint Id="EAA-142BE84DAB5CA7AC88CCAC3DC9E7F4A3C2372EEA97B822978540C31CE18CC20C-FC">
                 <Name Key="BSV_IFCRC">Is the result of the 'Format Checking' building block conclusive?</Name>
                 <Status>OK</Status>
@@ -25,7 +25,7 @@
             <Conclusion>
                 <Indication>PASSED</Indication>
             </Conclusion>
-        </ValidationProcessEAA>
+        </ValidationProcessAttestation>
         <Signature Id="S-61D369A7F2D4DD3A70C24A844C4C8E693ECF3BAECFBB558A2B4D3FEF8827A09C">
             <ValidationProcessBasicSignature Title="Validation Process for Basic Signatures">
                 <Constraint Id="S-61D369A7F2D4DD3A70C24A844C4C8E693ECF3BAECFBB558A2B4D3FEF8827A09C-FC">
@@ -113,7 +113,7 @@
                 <Warnings Key="BBB_ICS_ISCI_ANS">There is no candidate for the signing certificate!</Warnings>
             </Conclusion>
         </KeyBindingSignature>
-        <ValidationEAAQualification Title="EAA Qualification">
+        <ValidationAttestationQualification Title="Attestation Qualification">
             <Constraint>
                 <Name Key="EAA_CERT_TRUST_ANCHOR_LIST_REACHED">Has a trust anchor list been reached for the certificate chain?</Name>
                 <Status>NOT OK</Status>
@@ -123,7 +123,7 @@
                 <Indication>FAILED</Indication>
                 <Errors Key="EAA_CERT_TRUST_ANCHOR_LIST_REACHED_ANS">Unable to build a certificate chain up to a trust anchor list!</Errors>
             </Conclusion>
-            <ValidationEAAQualificationProcess EAAQualification="N/A" Title="EAA Qualification Process">
+            <ValidationAttestationQualificationProcess AttestationQualification="N/A" Title="Attestation Qualification Process">
                 <Constraint>
                     <Name Key="QUAL_CERT_TRUSTED_LIST_REACHED">Has a trusted list been reached for the certificate chain?</Name>
                     <Status>NOT OK</Status>
@@ -133,8 +133,8 @@
                     <Indication>FAILED</Indication>
                     <Errors Key="QUAL_CERT_TRUSTED_LIST_REACHED_ANS">Unable to build a certificate chain up to a trusted list!</Errors>
                 </Conclusion>
-            </ValidationEAAQualificationProcess>
-            <ValidationPIDQualificationProcess EAAQualification="N/A" Title="PID Qualification Process">
+            </ValidationAttestationQualificationProcess>
+            <ValidationPIDQualificationProcess AttestationQualification="N/A" Title="PID Qualification Process">
                 <Constraint>
                     <Name Key="EAA_CERT_LOTE_REACHED">Has a list of trusted entities been reached for the certificate chain?</Name>
                     <Status>NOT OK</Status>
@@ -145,12 +145,12 @@
                     <Errors Key="EAA_CERT_LOTE_REACHED_ANS">Unable to build a certificate chain up to a list of trusted entities!</Errors>
                 </Conclusion>
             </ValidationPIDQualificationProcess>
-            <EAAQualification>N/A</EAAQualification>
-        </ValidationEAAQualification>
+            <AttestationQualification>N/A</AttestationQualification>
+        </ValidationAttestationQualification>
         <Conclusion>
             <Indication>PASSED</Indication>
         </Conclusion>
-    </EAA>
+    </Attestation>
     <BasicBuildingBlocks Id="S-61D369A7F2D4DD3A70C24A844C4C8E693ECF3BAECFBB558A2B4D3FEF8827A09C" Type="SIGNATURE">
         <FC Title="Format Checking">
             <Constraint>
@@ -850,12 +850,12 @@
             <Constraint>
                 <Name Key="BBB_CV_IRDOF">Has the reference data object been found?</Name>
                 <Status>OK</Status>
-                <AdditionalInfo>Reference : EAA_KEY_BINDING</AdditionalInfo>
+                <AdditionalInfo>Reference : KEY_BINDING_SIGNATURE</AdditionalInfo>
             </Constraint>
             <Constraint>
                 <Name Key="BBB_CV_IRDOI">Is the reference data object intact?</Name>
                 <Status>OK</Status>
-                <AdditionalInfo>Reference : EAA_KEY_BINDING</AdditionalInfo>
+                <AdditionalInfo>Reference : KEY_BINDING_SIGNATURE</AdditionalInfo>
             </Constraint>
             <Constraint>
                 <Name Key="BBB_CV_ISI">Is the signature intact?</Name>
@@ -939,10 +939,10 @@
             <Warnings Key="BBB_ICS_ISCI_ANS">There is no candidate for the signing certificate!</Warnings>
         </Conclusion>
     </BasicBuildingBlocks>
-    <BasicBuildingBlocks Id="ST-A9144C67449944517D4481B366337C02488BA6CBD42F89E1C2C8225E507518EF" Type="EAA_REVOCATION">
+    <BasicBuildingBlocks Id="ST-A9144C67449944517D4481B366337C02488BA6CBD42F89E1C2C8225E507518EF" Type="ATTESTATION_REVOCATION">
         <FC Title="Format Checking">
             <Constraint>
-                <Name Key="EAA_STATUS_TYPE">Is the type of the EAA Status Token within a list of expected value(s)?</Name>
+                <Name Key="EAA_STATUS_TYPE">Is the type of the attestation Status Token within a list of expected value(s)?</Name>
                 <Status>OK</Status>
             </Constraint>
             <Conclusion>
@@ -1146,33 +1146,33 @@
         </CV>
         <SAV Title="Signature Acceptance Validation">
             <Constraint>
-                <Name Key="EAA_STATUS_ISS">Is an issuance time present within the EAA revocation token?</Name>
+                <Name Key="EAA_STATUS_ISS">Is an issuance time present within the attestation revocation token?</Name>
                 <Status>OK</Status>
             </Constraint>
             <Constraint>
-                <Name Key="EAA_STATUS_EXP">Is an expiration time present within the EAA revocation token?</Name>
+                <Name Key="EAA_STATUS_EXP">Is an expiration time present within the attestation revocation token?</Name>
                 <Status>OK</Status>
             </Constraint>
             <Constraint>
-                <Name Key="EAA_STATUS_NOT_EXP">Is the EAA revocation valid at the validation time?</Name>
+                <Name Key="EAA_STATUS_NOT_EXP">Is the attestation revocation valid at the validation time?</Name>
                 <Status>OK</Status>
                 <AdditionalInfo>Validation time : 2026-04-23 09:29, Issuance time : 2026-04-23 09:29, Expiration time 2027-05-10 14:11</AdditionalInfo>
             </Constraint>
             <Constraint>
-                <Name Key="EAA_STATUS_SUB">Is a subject of the EAA revocation token known?</Name>
+                <Name Key="EAA_STATUS_SUB">Is a subject of the attestation revocation token known?</Name>
                 <Status>OK</Status>
             </Constraint>
             <Constraint>
-                <Name Key="EAA_STATUS_SUB_MATCH">Does the subject of the EAA revocation token match the subject of the related EAA?</Name>
+                <Name Key="EAA_STATUS_SUB_MATCH">Does the subject of the attestation revocation token match the subject of the related EAA?</Name>
                 <Status>OK</Status>
             </Constraint>
             <Constraint>
-                <Name Key="EAA_STATUS_ISS_VALID">Is the EAA revocation token's issuer certificate valid at the EAA revocation token's issuance time?</Name>
+                <Name Key="EAA_STATUS_ISS_VALID">Is the attestation revocation token's issuer certificate valid at the attestation revocation token's issuance time?</Name>
                 <Status>OK</Status>
                 <AdditionalInfo>Issuance time : 2026-04-23 09:29, Certificate validity : 2025-05-23 09:28 - 2027-03-23 10:28</AdditionalInfo>
             </Constraint>
             <Constraint Id="ST-A9144C67449944517D4481B366337C02488BA6CBD42F89E1C2C8225E507518EF" BlockType="AOV">
-                <Name Key="ACCM">Are cryptographic constraints met for the EAA?</Name>
+                <Name Key="ACCM">Are cryptographic constraints met for the attestation?</Name>
                 <Status>OK</Status>
                 <AdditionalInfo>Signature algorithm RSA with SHA512 with key size 2048 at validation time : 2026-04-23 09:29</AdditionalInfo>
             </Constraint>
@@ -1182,12 +1182,12 @@
         </SAV>
         <AOV ValidationTime="2026-04-23T09:29:00Z" Title="Algorithm Obsolescence Validation">
             <Constraint>
-                <Name Key="ACCM">Are cryptographic constraints met for the EAA?</Name>
+                <Name Key="ACCM">Are cryptographic constraints met for the attestation?</Name>
                 <Status>OK</Status>
                 <AdditionalInfo>Signature algorithm RSA with SHA512 with key size 2048 at validation time : 2026-04-23 09:29</AdditionalInfo>
             </Constraint>
             <Constraint Id="C-95B95869B1259A15CE92AA869BB50F71D39190092FA4C2DBE265BC6CA2B6A0EE" BlockType="AOV_XCV">
-                <Name Key="ACCM">Are cryptographic constraints met for the EAA revocation's issuer certificate?</Name>
+                <Name Key="ACCM">Are cryptographic constraints met for the attestation revocation's issuer certificate?</Name>
                 <Status>OK</Status>
                 <AdditionalInfo>Signature algorithm RSA with SHA512 with key size 2048 at validation time : 2026-04-23 09:29</AdditionalInfo>
             </Constraint>
@@ -1231,14 +1231,14 @@
             <Indication>PASSED</Indication>
         </Conclusion>
     </BasicBuildingBlocks>
-    <BasicBuildingBlocks Id="EAA-142BE84DAB5CA7AC88CCAC3DC9E7F4A3C2372EEA97B822978540C31CE18CC20C" Type="EAA">
+    <BasicBuildingBlocks Id="EAA-142BE84DAB5CA7AC88CCAC3DC9E7F4A3C2372EEA97B822978540C31CE18CC20C" Type="ATTESTATION">
         <FC Title="Format Checking">
             <Constraint>
-                <Name Key="EAA_SIG_PRESENT">Does the EAA contain an EAA creation signature?</Name>
+                <Name Key="EAA_SIG_PRESENT">Does the attestation contain an attestation creation signature?</Name>
                 <Status>OK</Status>
             </Constraint>
             <Constraint>
-                <Name Key="EAA_DPEAAP">Have disclosures been provided together with the EAA Presentation?</Name>
+                <Name Key="EAA_DPEAAP">Have disclosures been provided together with the attestation Presentation?</Name>
                 <Status>OK</Status>
             </Constraint>
             <Constraint>
@@ -1333,22 +1333,22 @@
             <Constraint>
                 <Name Key="BBB_CV_EAA_SDCBF">Has a corresponding selectively disclosable claim been found?</Name>
                 <Status>OK</Status>
-                <AdditionalInfo>Reference : EAA_DISCLOSURE</AdditionalInfo>
+                <AdditionalInfo>Reference : SELECTIVE_DISCLOSURE</AdditionalInfo>
             </Constraint>
             <Constraint>
                 <Name Key="BBB_CV_EAA_SDCBI">Is the selectively disclosable claim intact?</Name>
                 <Status>OK</Status>
-                <AdditionalInfo>Reference : EAA_DISCLOSURE</AdditionalInfo>
+                <AdditionalInfo>Reference : SELECTIVE_DISCLOSURE</AdditionalInfo>
             </Constraint>
             <Constraint>
                 <Name Key="BBB_CV_EAA_SDCBF">Has a corresponding selectively disclosable claim been found?</Name>
                 <Status>OK</Status>
-                <AdditionalInfo>Reference : EAA_DISCLOSURE</AdditionalInfo>
+                <AdditionalInfo>Reference : SELECTIVE_DISCLOSURE</AdditionalInfo>
             </Constraint>
             <Constraint>
                 <Name Key="BBB_CV_EAA_SDCBI">Is the selectively disclosable claim intact?</Name>
                 <Status>OK</Status>
-                <AdditionalInfo>Reference : EAA_DISCLOSURE</AdditionalInfo>
+                <AdditionalInfo>Reference : SELECTIVE_DISCLOSURE</AdditionalInfo>
             </Constraint>
             <Conclusion>
                 <Indication>PASSED</Indication>
@@ -1356,62 +1356,62 @@
         </CV>
         <SAV Title="Signature Acceptance Validation">
             <Constraint>
-                <Name Key="EAA_ETSI194721">Is the EAA conformant to the ETSI standard TS 119 472-1?</Name>
+                <Name Key="EAA_ETSI194721">Is the attestation conformant to the ETSI standard TS 119 472-1?</Name>
                 <Status>OK</Status>
                 <AdditionalInfo></AdditionalInfo>
             </Constraint>
             <Constraint>
-                <Name Key="EAA_ACCEPTABLE_TYPE">Is the EAA type part of the acceptable value list?</Name>
+                <Name Key="EAA_ACCEPTABLE_TYPE">Is the attestation type part of the acceptable value list?</Name>
                 <Status>OK</Status>
             </Constraint>
             <Constraint>
-                <Name Key="SDJWT_EAA_VCT_INT_PRESENT">Does the SDJWT EAA contain the claim 'vct#integrity'?</Name>
+                <Name Key="SDJWT_EAA_VCT_INT_PRESENT">Does the SDJWT attestation contain the claim 'vct#integrity'?</Name>
                 <Status>OK</Status>
             </Constraint>
             <Constraint>
-                <Name Key="EAA_NBF_PRESENT">Is the EAA claim for the start of the EAA technical validity period present?</Name>
+                <Name Key="EAA_NBF_PRESENT">Is the attestation claim for the start of the attestation technical validity period present?</Name>
                 <Status>OK</Status>
             </Constraint>
             <Constraint>
-                <Name Key="EAA_EXP_PRESENT">Is the EAA claim for the end of the EAA technical validity period present?</Name>
+                <Name Key="EAA_EXP_PRESENT">Is the attestation claim for the end of the attestation technical validity period present?</Name>
                 <Status>OK</Status>
             </Constraint>
             <Constraint>
-                <Name Key="EAA_VT_ITVR">Is the validation time within the technical validity range of the EAA?</Name>
+                <Name Key="EAA_VT_ITVR">Is the validation time within the technical validity range of the attestation?</Name>
                 <Status>OK</Status>
             </Constraint>
             <Constraint>
-                <Name Key="EAA_STATUS_PR">Does the EAA contain a status claim?</Name>
+                <Name Key="EAA_STATUS_PR">Does the attestation contain a status claim?</Name>
                 <Status>OK</Status>
             </Constraint>
             <Constraint>
-                <Name Key="EAA_STATUS_AV">Is status token available for the EAA?</Name>
+                <Name Key="EAA_STATUS_AV">Is status token available for the attestation?</Name>
                 <Status>OK</Status>
             </Constraint>
             <Constraint Id="ST-A9144C67449944517D4481B366337C02488BA6CBD42F89E1C2C8225E507518EF">
-                <Name Key="EAA_STATUS_KNOWN">Is the type EAA revocation known?</Name>
+                <Name Key="EAA_STATUS_KNOWN">Is the type attestation revocation known?</Name>
                 <Status>OK</Status>
             </Constraint>
             <Constraint Id="ST-A9144C67449944517D4481B366337C02488BA6CBD42F89E1C2C8225E507518EF">
-                <Name Key="EAA_STATUS_ACC">Is the EAA revocation token acceptable?</Name>
+                <Name Key="EAA_STATUS_ACC">Is the attestation revocation token acceptable?</Name>
                 <Status>OK</Status>
                 <AdditionalInfo>Id = ST-A9144C67449944517D4481B366337C02488BA6CBD42F89E1C2C8225E507518EF</AdditionalInfo>
             </Constraint>
             <Constraint Id="ST-A9144C67449944517D4481B366337C02488BA6CBD42F89E1C2C8225E507518EF">
-                <Name Key="EAA_STATUS_ACC_FND">Is an acceptable status token found for the EAA?</Name>
+                <Name Key="EAA_STATUS_ACC_FND">Is an acceptable status token found for the attestation?</Name>
                 <Status>OK</Status>
                 <AdditionalInfo>Id = ST-A9144C67449944517D4481B366337C02488BA6CBD42F89E1C2C8225E507518EF</AdditionalInfo>
             </Constraint>
             <Constraint>
-                <Name Key="EAA_STATUS_NOT_REV">Is the EAA not revoked?</Name>
+                <Name Key="EAA_STATUS_NOT_REV">Is the attestation not revoked?</Name>
                 <Status>OK</Status>
             </Constraint>
             <Constraint>
-                <Name Key="EAA_STATUS_NOT_ON_HOLD">Is the EAA not on hold?</Name>
+                <Name Key="EAA_STATUS_NOT_ON_HOLD">Is the attestation not on hold?</Name>
                 <Status>OK</Status>
             </Constraint>
             <Constraint Id="EAA-142BE84DAB5CA7AC88CCAC3DC9E7F4A3C2372EEA97B822978540C31CE18CC20C" BlockType="AOV">
-                <Name Key="ACCM">Are cryptographic constraints met for the EAA?</Name>
+                <Name Key="ACCM">Are cryptographic constraints met for the attestation?</Name>
                 <Status>OK</Status>
                 <AdditionalInfo>Digest algorithm SHA256 at validation time : 2026-04-23 09:29</AdditionalInfo>
             </Constraint>

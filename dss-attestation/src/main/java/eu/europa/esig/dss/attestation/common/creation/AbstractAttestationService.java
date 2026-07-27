@@ -31,18 +31,18 @@ import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import java.util.Objects;
 
 /**
- * Abstract implementation of an EAA creation service.
+ * Abstract implementation of an attestation creation service.
  *
  * @param <SP>
  *         implementation of signature parameters corresponding to the supported signature format
  * @param <B>
- *         implementation of EAA payload parameters to the EAA format
+ *         implementation of attestation payload parameters to the attestation format
  * @param <C>
- *         implementation of EAA Claim for the EAA format
+ *         implementation of attestation Claim for the attestation format
  * @param <D>
- *         implementation of EAA disclosure for the EAA format
+ *         implementation of attestation disclosure for the attestation format
  * @param <E>
- *         implementation of EAA key binding parameters for the EAA format
+ *         implementation of attestation key binding parameters for the attestation format
  */
 public abstract class AbstractAttestationService<SP extends SerializableSignatureParameters, B extends AttestationPayloadParameters, C extends AttestationClaim, D extends SelectiveDisclosure, E extends KeyBindingParameters> implements AttestationService<SP, B, D, E> {
 
@@ -51,7 +51,7 @@ public abstract class AbstractAttestationService<SP extends SerializableSignatur
     /** CertificateVerifier used to provide configuration on the validation of the signing certificate and its chain */
     protected final CertificateVerifier certificateVerifier;
 
-    /** Builds the EAA payload */
+    /** Builds the attestation payload */
     protected AttestationPayloadBuilder<B, D> payloadBuilder;
 
     /**
@@ -77,20 +77,20 @@ public abstract class AbstractAttestationService<SP extends SerializableSignatur
     }
 
     /**
-     * Instantiates a default {@code EAAPayloadBuilder} implementation
+     * Instantiates a default {@code AttestationPayloadBuilder} implementation
      *
      * @return {@link AttestationPayloadBuilder}
      */
     protected abstract AttestationPayloadBuilder<B, D> initDefaultPayloadBuilder();
 
     /**
-     * Sets the builder used to create an EAA Payload based on the input parameters.
+     * Sets the builder used to create an attestation Payload based on the input parameters.
      * Default : provided format specific implementation is used by default
      *
      * @param payloadBuilder {@link AttestationPayloadBuilder}
      */
     public void setPayloadBuilder(AttestationPayloadBuilder<B, D> payloadBuilder) {
-        Objects.requireNonNull(payloadBuilder, "EAAPayloadBuilder cannot be null!");
+        Objects.requireNonNull(payloadBuilder, "AttestationPayloadBuilder cannot be null!");
         this.payloadBuilder = payloadBuilder;
     }
 
@@ -110,14 +110,14 @@ public abstract class AbstractAttestationService<SP extends SerializableSignatur
      * @return {@link String}
      */
     protected FileNameBuilder getFinalDocumentNameBuilder() {
-        return new FileNameBuilder().setSigningOperation(SigningOperation.EAA_PRESENTATION).setMimeType(getEAAPresentationMimeType());
+        return new FileNameBuilder().setSigningOperation(SigningOperation.ATTESTATION).setMimeType(getAttestationPresentationMimeType());
     }
 
     /**
-     * Gets the MimeType of the Attestation Presentation for the given EAA format
+     * Gets the MimeType of the Attestation Presentation for the given attestation format
      *
      * @return {@link MimeType}
      */
-    protected abstract MimeType getEAAPresentationMimeType();
+    protected abstract MimeType getAttestationPresentationMimeType();
 
 }

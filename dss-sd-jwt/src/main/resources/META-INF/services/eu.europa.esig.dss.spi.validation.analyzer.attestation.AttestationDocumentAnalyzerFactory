@@ -1,1 +1,1 @@
-eu.europa.esig.dss.attestation.sd.jwt.validation.SDJWTEAAPresentationAnalyzerFactory
+eu.europa.esig.dss.attestation.sd.jwt.validation.SDJWTDocumentAnalyzerFactory

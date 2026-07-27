@@ -33,17 +33,17 @@ import java.security.PublicKey;
 import java.util.Date;
 
 /**
- * Represents an EAA revocation representation
+ * Represents an attestation revocation representation
  *
  */
 public abstract class AttestationRevocationToken extends Token {
 
     private static final long serialVersionUID = 3803119761156101993L;
 
-    /** Extracted binaries of the EAA Revocation Token */
+    /** Extracted binaries of the attestation Revocation Token */
     protected AttestationRevocationTokenBinary encoded;
 
-    /** Signature used to sign the EAA revocation data */
+    /** Signature used to sign the attestation revocation data */
     protected AdvancedSignature signature;
 
     /** Related {@link Attestation} to this revocation object */
@@ -55,10 +55,10 @@ public abstract class AttestationRevocationToken extends Token {
     /** The external origin (EXTERNAL or CACHED) */
     protected AttestationRevocationOrigin origin;
 
-    /** Contains the revocation revocation of the token. */
+    /** Contains the revocation status of the token. */
     protected AttestationStatus status;
 
-    /** Certificate source built on the extracted information from the EAA revocation */
+    /** Certificate source built on the extracted information from the attestation revocation */
     protected TokenCertificateSource certificateSource;
 
     /**
@@ -69,11 +69,11 @@ public abstract class AttestationRevocationToken extends Token {
     }
 
     /**
-     * Sets a related EAA
+     * Sets a related attestation
      *
      * @param relatedAttestation {@link Attestation}
      */
-    public void setRelatedEAA(Attestation relatedAttestation) {
+    public void setRelatedAttestation(Attestation relatedAttestation) {
         this.relatedAttestation = relatedAttestation;
     }
 
@@ -114,7 +114,7 @@ public abstract class AttestationRevocationToken extends Token {
     }
 
     /**
-     * Gets signature used to sign the EAA revocation token
+     * Gets signature used to sign the attestation revocation token
      *
      * @return {@link AdvancedSignature}
      */
@@ -132,7 +132,7 @@ public abstract class AttestationRevocationToken extends Token {
     }
 
     /**
-     * Gets the certificate source built on the extracted EAA revocation information
+     * Gets the certificate source built on the extracted attestation revocation information
      *
      * @return {@link TokenCertificateSource}
      */
@@ -141,7 +141,7 @@ public abstract class AttestationRevocationToken extends Token {
     }
 
     /**
-     * Sets the certificate source built on the extracted EAA revocation information
+     * Sets the certificate source built on the extracted attestation revocation information
      *
      * @param certificateSource {@link TokenCertificateSource}
      */
@@ -169,7 +169,7 @@ public abstract class AttestationRevocationToken extends Token {
     }
 
     /**
-     * Gets whether the subject defined in the EAA revocation token matches the value defined in the EAA
+     * Gets whether the subject defined in the attestation revocation token matches the value defined in the attestation
      *
      * @return TRUE if the subject matches, FALSE otherwise. NULL if not supported.
      */
@@ -217,20 +217,20 @@ public abstract class AttestationRevocationToken extends Token {
     }
 
     /**
-     * Gets the related EAA
+     * Gets the related attestation
      *
      * @return {@link Attestation}
      */
-    public Attestation getRelatedEAA() {
+    public Attestation getRelatedAttestation() {
         return relatedAttestation;
     }
 
     /**
-     * Gets the {@code String} identifier of the related EAA
+     * Gets the {@code String} identifier of the related attestation
      *
      * @return {@link String}
      */
-    public String getRelatedEAAId() {
+    public String getRelatedAttestationId() {
         if (relatedAttestation != null) {
             return relatedAttestation.getId();
         }

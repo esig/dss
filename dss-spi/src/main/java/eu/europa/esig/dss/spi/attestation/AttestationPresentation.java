@@ -20,9 +20,7 @@
  */
 package eu.europa.esig.dss.spi.attestation;
 
-import eu.europa.esig.dss.enumerations.AttestationPresentationType;
-import eu.europa.esig.dss.enumerations.AttestationFormat;
-import eu.europa.esig.dss.spi.signature.AdvancedSignature;
+import eu.europa.esig.dss.enumerations.AttestationDocumentFormat;
 
 import java.util.List;
 
@@ -33,17 +31,17 @@ import java.util.List;
 public interface AttestationPresentation {
 
     /**
-     * Gets the type of the Electronic Attestation of Attributes presentation
+     * Gets the format of the attestation presentation document
      *
-     * @return {@link AttestationFormat}
+     * @return {@link AttestationDocumentFormat}
      */
-    AttestationPresentationType getEAAPresentationType();
+    AttestationDocumentFormat getDocumentFormat();
 
     /**
-     * Gets a list of signatures used to issue the Electronic Attestation of Attributes
+     * Gets a list of attestations provided with the presentation
      *
-     * @return a list of {@link AdvancedSignature}s
+     * @return a list of {@link Attestation}s
      */
-    List<Attestation> getElectronicAttestationsOfAttributes();
+    List<Attestation> getAttestations();
 
 }

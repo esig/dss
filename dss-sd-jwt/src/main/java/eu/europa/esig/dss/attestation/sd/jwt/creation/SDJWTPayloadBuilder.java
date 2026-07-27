@@ -43,7 +43,7 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 /**
- * Creates a payload for an RFC 9901 SD-JWT VC token based on the provided parameters
+ * Creates a payload for an RFC 9901 SD-JWT token based on the provided parameters
  *
  */
 public class SDJWTPayloadBuilder extends AbstractAttestationPayloadBuilder<SDJWTPayloadParameters, SDJWTSelectiveDisclosure> {
@@ -52,7 +52,7 @@ public class SDJWTPayloadBuilder extends AbstractAttestationPayloadBuilder<SDJWT
     private SDJWTSelectiveDisclosureBuilder disclosureBuilder = new DefaultSDJWTSelectiveDisclosureBuilder();
 
     /** Builds known and custom claims */
-    private SDJWTEAAClaimBuilder claimBuilder = new DefaultSDJWTClaimBuilder();
+    private SDJWTClaimBuilder claimBuilder = new DefaultSDJWTClaimBuilder();
 
     /**
      * Default constructor
@@ -63,7 +63,7 @@ public class SDJWTPayloadBuilder extends AbstractAttestationPayloadBuilder<SDJWT
 
     /**
      * Sets a disclosure builder.
-     * Default : {@code eu.europa.esig.dss.attestation.jwt.creation.DefaultSDJWTDisclosureBuilder}
+     * Default : {@code eu.europa.esig.dss.attestation.sd.jwt.creation.DefaultSDJWTDisclosureBuilder}
      *
      * @param disclosureBuilder {@link SDJWTSelectiveDisclosureBuilder}
      */
@@ -73,22 +73,22 @@ public class SDJWTPayloadBuilder extends AbstractAttestationPayloadBuilder<SDJWT
     }
 
     /**
-     * Gets a configured instance of {@code SDJWTEAAClaimBuilder}
+     * Gets a configured instance of {@code SDJWTClaimBuilder}
      *
-     * @return {@link SDJWTEAAClaimBuilder}
+     * @return {@link SDJWTClaimBuilder}
      */
-    protected SDJWTEAAClaimBuilder getClaimBuilder() {
+    protected SDJWTClaimBuilder getClaimBuilder() {
         claimBuilder.setPublicKeyInfoFactory(getPublicKeyInfoFactory());
         return claimBuilder;
     }
 
     /**
      * Sets a claim builder.
-     * Default : {@code eu.europa.esig.dss.attestation.jwt.creation.DefaultSDJWTEAAClaimBuilder}
+     * Default : {@code eu.europa.esig.dss.attestation.sd.jwt.creation.DefaultSDJWTClaimBuilder}
      *
-     * @param claimBuilder {@link SDJWTEAAClaimBuilder}
+     * @param claimBuilder {@link SDJWTClaimBuilder}
      */
-    public void setClaimBuilder(final SDJWTEAAClaimBuilder claimBuilder) {
+    public void setClaimBuilder(final SDJWTClaimBuilder claimBuilder) {
         Objects.requireNonNull(claimBuilder, "Claim builder cannot be null!");
         this.claimBuilder = claimBuilder;
     }
@@ -105,7 +105,7 @@ public class SDJWTPayloadBuilder extends AbstractAttestationPayloadBuilder<SDJWT
 
         final SecureRandom secureRandom = secureRandom(payloadParameters);
         final SDJWTClaimObject payload = getRootPayloadObject(payloadParameters, secureRandom);
-        map.putAll(getEAAClaimObjectValue(new DisclosureTraversalContext(), payload, digestAlgorithm, secureRandom, payloadParameters.isShuffleHashes()));
+        map.putAll(getAttestationClaimObjectValue(new DisclosureTraversalContext(), payload, digestAlgorithm, secureRandom, payloadParameters.isShuffleHashes()));
 
         return new InMemoryDocument(JsonUtil.toJson(map).getBytes());
     }
@@ -130,25 +130,25 @@ public class SDJWTPayloadBuilder extends AbstractAttestationPayloadBuilder<SDJWT
 
     private Object getClaimValue(final DisclosureTraversalContext dtx, final SDJWTClaim claim, final DigestAlgorithm digestAlgorithm, final SecureRandom secureRandom, final boolean shuffleHashes) {
         if (claim instanceof SDJWTClaimObject) {
-            return getEAAClaimObjectValue(dtx, (SDJWTClaimObject) claim, digestAlgorithm, secureRandom, shuffleHashes);
+            return getAttestationClaimObjectValue(dtx, (SDJWTClaimObject) claim, digestAlgorithm, secureRandom, shuffleHashes);
 
         } else if (claim instanceof SDJWTClaimArray) {
-            return getEAAClaimArrayValue(dtx, (SDJWTClaimArray) claim, digestAlgorithm, secureRandom, shuffleHashes);
+            return getAttestationClaimArrayValue(dtx, (SDJWTClaimArray) claim, digestAlgorithm, secureRandom, shuffleHashes);
 
         } else if (claim.getValue() instanceof Map) {
-            return getClaimValue(dtx, toEAAClaimObject((Map<?, ?>) claim.getValue()), digestAlgorithm, secureRandom, shuffleHashes);
+            return getClaimValue(dtx, toAttestationClaimObject((Map<?, ?>) claim.getValue()), digestAlgorithm, secureRandom, shuffleHashes);
 
         } else if (claim.getValue() instanceof Collection) {
-            return getClaimValue(dtx, toEAAClaimArray((Collection<?>) claim.getValue()), digestAlgorithm, secureRandom, shuffleHashes);
+            return getClaimValue(dtx, toAttestationClaimArray((Collection<?>) claim.getValue()), digestAlgorithm, secureRandom, shuffleHashes);
 
         } else if (claim.getValue() instanceof Object[]) {
-            return getClaimValue(dtx, toEAAClaimArray((Object[]) claim.getValue()), digestAlgorithm, secureRandom, shuffleHashes);
+            return getClaimValue(dtx, toAttestationClaimArray((Object[]) claim.getValue()), digestAlgorithm, secureRandom, shuffleHashes);
         }
 
         return claim.getValue();
     }
 
-    private SDJWTClaimObject toEAAClaimObject(Map<?, ?> map) {
+    private SDJWTClaimObject toAttestationClaimObject(Map<?, ?> map) {
         final SDJWTClaimObject result = SDJWTClaimObject.create();
         for (Map.Entry<?, ?> entry : map.entrySet()) {
             if (!(entry.getKey() instanceof String)) {
@@ -167,7 +167,7 @@ public class SDJWTPayloadBuilder extends AbstractAttestationPayloadBuilder<SDJWT
         return result;
     }
 
-    private SDJWTClaimArray toEAAClaimArray(Object[] array) {
+    private SDJWTClaimArray toAttestationClaimArray(Object[] array) {
         final SDJWTClaimArray result = SDJWTClaimArray.create();
         for (Object item : array) {
             if (item instanceof SDJWTClaim) {
@@ -179,7 +179,7 @@ public class SDJWTPayloadBuilder extends AbstractAttestationPayloadBuilder<SDJWT
         return result;
     }
 
-    private SDJWTClaimArray toEAAClaimArray(Collection<?> collection) {
+    private SDJWTClaimArray toAttestationClaimArray(Collection<?> collection) {
         final SDJWTClaimArray result = SDJWTClaimArray.create();
         for (Object item : collection) {
             if (item instanceof SDJWTClaim) {
@@ -191,7 +191,7 @@ public class SDJWTPayloadBuilder extends AbstractAttestationPayloadBuilder<SDJWT
         return result;
     }
 
-    private Map<String, Object> getEAAClaimObjectValue(final DisclosureTraversalContext dtx, final SDJWTClaimObject objectClaim,
+    private Map<String, Object> getAttestationClaimObjectValue(final DisclosureTraversalContext dtx, final SDJWTClaimObject objectClaim,
                                                        final DigestAlgorithm digestAlgorithm, final SecureRandom secureRandom,
                                                        final boolean shuffleHashes) {
         Map<String, Object> result = new LinkedHashMap<>();
@@ -216,7 +216,7 @@ public class SDJWTPayloadBuilder extends AbstractAttestationPayloadBuilder<SDJWT
         return result;
     }
 
-    private List<Object> getEAAClaimArrayValue(final DisclosureTraversalContext dtx, final SDJWTClaimArray arrayClaim,
+    private List<Object> getAttestationClaimArrayValue(final DisclosureTraversalContext dtx, final SDJWTClaimArray arrayClaim,
                                                final DigestAlgorithm digestAlgorithm, SecureRandom secureRandom,
                                                final boolean shuffleHashes) {
         List<Object> result = new ArrayList<>();
@@ -292,7 +292,7 @@ public class SDJWTPayloadBuilder extends AbstractAttestationPayloadBuilder<SDJWT
     private List<SDJWTSelectiveDisclosure> collectDisclosures(final SDJWTClaimObject root, final DigestAlgorithm digestAlgorithm,
                                                               final SecureRandom secureRandom, final boolean shuffleHashes) {
         DisclosureTraversalContext dtx = new DisclosureTraversalContext();
-        getEAAClaimObjectValue(dtx, root, digestAlgorithm, secureRandom, shuffleHashes);
+        getAttestationClaimObjectValue(dtx, root, digestAlgorithm, secureRandom, shuffleHashes);
         return dtx.getDisclosures();
     }
 

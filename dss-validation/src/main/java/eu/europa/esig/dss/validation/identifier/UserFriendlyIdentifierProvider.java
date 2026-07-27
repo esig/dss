@@ -134,11 +134,11 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
     /** The prefix to be used for an evidence record identifier creation */
     private String evidenceRecordPrefix = "EVIDENCE-RECORD";
 
-    /** The prefix to be used for an EAA identifier creation */
-    private String eaaPrefix = "EAA";
+    /** The prefix to be used for an attestation identifier creation */
+    private String attestationPrefix = "ATTESTATION";
 
-    /** The prefix to be used for an EAA revocation token identifier creation */
-    private String eaaStatusTokenPrefix = "EAA-STATUS";
+    /** The prefix to be used for an attestation revocation token identifier creation */
+    private String attestationRevocationTokenPrefix = "ATTESTATION-REVOCATION";
 
     /** The prefix to be used for a List of Trusted Lists identifier creation */
     private String lotlPrefix = "LOTL";
@@ -298,27 +298,27 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
     }
 
     /**
-     * Sets the prefix to be used for EAA identifiers
+     * Sets the prefix to be used for attestation identifiers
      *
-     * Default = "EAA"
+     * Default = "ATTESTATION"
      *
-     * @param eaaPrefix {@link String}
+     * @param attestationPrefix {@link String}
      */
-    public void setEAAPrefix(String eaaPrefix) {
+    public void setAttestationPrefix(String attestationPrefix) {
         assertNotBlank(pivotPrefix);
-        this.eaaPrefix = eaaPrefix;
+        this.attestationPrefix = attestationPrefix;
     }
 
     /**
-     * Sets the prefix to be used for EAA Status Token identifiers
+     * Sets the prefix to be used for attestation revocation token identifiers
      *
-     * Default = "EAA-STATUS"
+     * Default = "ATTESTATION-REVOCATION"
      *
-     * @param eaaStatusTokenPrefix {@link String}
+     * @param attestationRevocationTokenPrefix {@link String}
      */
-    public void setEAAStatusTokenPrefix(String eaaStatusTokenPrefix) {
-        assertNotBlank(eaaStatusTokenPrefix);
-        this.eaaStatusTokenPrefix = eaaStatusTokenPrefix;
+    public void setAttestationRevocationTokenPrefix(String attestationRevocationTokenPrefix) {
+        assertNotBlank(attestationRevocationTokenPrefix);
+        this.attestationRevocationTokenPrefix = attestationRevocationTokenPrefix;
     }
 
     /**
@@ -363,7 +363,7 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
             return getIdAsStringForEvidenceRecordIdentifier((EvidenceRecord) object);
 
         }  else if (object instanceof Attestation) {
-            return getIdAsStringForEAAIdentifier((Attestation) object);
+            return getIdAsStringForAttestationIdentifier((Attestation) object);
 
         } else if (object instanceof TLInfo) {
             return getIdAsStringForTL((TLInfo) object);
@@ -560,13 +560,13 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
     }
 
     /**
-     * Gets an identifier for the EAA
+     * Gets an identifier for the attestation
      *
      * @param attestation {@link Attestation}
      * @return {@link String} identifier
      */
-    protected String getIdAsStringForEAAIdentifier(Attestation attestation) {
-        StringBuilder stringBuilder = new StringBuilder(eaaPrefix);
+    protected String getIdAsStringForAttestationIdentifier(Attestation attestation) {
+        StringBuilder stringBuilder = new StringBuilder(attestationPrefix);
 
         if (attestation.getPayload().getSubject() != null) {
             stringBuilder.append(STRING_DELIMITER);
@@ -646,7 +646,7 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
         } else if (token instanceof TimestampToken) {
             return timestampPrefix;
         }  else if (token instanceof AttestationRevocationToken) {
-            return eaaStatusTokenPrefix;
+            return attestationRevocationTokenPrefix;
         } else {
             throw new IllegalArgumentException(String.format(
                     "Unsupported token of class '%s' has been reached!", token.getClass()));

@@ -16,8 +16,8 @@ The different webservices are :
 * *Signature validation webservices* (`dss-validation-soap` / `dss-validation-rest`) and their clients: expose methods to allow signature validation, with an optional detached file and an optional validation policy.
 * *Certificate validation webservices* (`dss-certificate-validation-soap` / `dss-certificate-validation-rest`) and their clients: expose methods to allow certificate validation, with an optional provided certificate chain and custom validation time.
 * *Timestamp webservices* (`dss-timestamp-remote-soap` / `dss-timestamp-remote-rest`) and their clients: expose methods to allow remote timestamp creation, by providing digest value to be timestamped and a digest algorithm, used for the digest calculation.
-* *EAA creation webservices* (`dss-attestation-creation-soap` / `dss-attestation-creation-rest`) and their clients: expose methods to allow remote EAA creation, by providing payload or payload configuration and signature parameters, disclosures extraction based on parameters, key binding signature creation and EAA Presentation issuance.
-* *EAA validation webservices* (`dss-attestation-validation-soap` / `dss-attestation-validation-rest`) and their clients: expose methods to allow validation of EAA Presentations.
+* *EAA creation webservices* (`dss-attestation-creation-soap` / `dss-attestation-creation-rest`) and their clients: expose methods to allow remote attestation creation, by providing payload or payload configuration and signature parameters, disclosures extraction based on parameters, key binding signature creation and attestation Presentation issuance.
+* *EAA validation webservices* (`dss-attestation-validation-soap` / `dss-attestation-validation-rest`) and their clients: expose methods to allow validation of attestation Presentations.
 
 The data structure in webservices is similar in both REST and SOAP modules.
 
@@ -410,20 +410,20 @@ Samples:
 * *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/get-timestamp-response/1/curl-request.adoc[Request]
 
 [[RestEAACreationService]]
-==== REST EAA creation service
+==== REST attestation creation service
 
-This service implements a creation of EAAs, as well as issuance of EAA presentations.
+This service implements a creation of attestations, as well as issuance of attestation presentations.
 
 [source,java,indent=0]
-.Rest EAA creation service
+.Rest attestation creation service
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/ws/rest/RestEAACreationServiceSnippet.java[tags=demo]
 ----
 
-===== EAA creation
+===== attestation creation
 
-Creation of an EAA may be done either based on a provided payload, or parameters used to define the payload to be generated.
-The signature of an EAA is done in 3 stateless steps, similarly to a signature creation as explained in <<SignatureCreationInDSS>>.
+Creation of an attestation may be done either based on a provided payload, or parameters used to define the payload to be generated.
+The signature of an attestation is done in 3 stateless steps, similarly to a signature creation as explained in <<SignatureCreationInDSS>>.
 The two methods, namely "get data to sign" and "sign EAA" are exposed to the API within the current module.
 
 ====== Get data to sign
@@ -439,7 +439,7 @@ Samples:
 
 ====== Sign EAA
 
-The method allows generation of a signed EAA. The user sends the payload parameters (pre-computed payload or payload generation parameters), the signature parameters (signature level, signing-certificate, etc.) and the signature value.
+The method allows generation of a signed attestation. The user sends the payload parameters (pre-computed payload or payload generation parameters), the signature parameters (signature level, signing-certificate, etc.) and the signature value.
 
 Samples:
 
@@ -450,7 +450,7 @@ Samples:
 
 ====== Get disclosures
 
-The method allows retrieving of disclosures used to generate hashes for selectively disclosable claims within the signed EAA. The user provided payload parameters (same as the ones used in the steps above).
+The method allows retrieving of disclosures used to generate hashes for selectively disclosable claims within the signed attestation. The user provided payload parameters (same as the ones used in the steps above).
 
 Samples:
 
@@ -461,7 +461,7 @@ Samples:
 
 ====== Get data to sign for key binding signature
 
-The method allows retrieving the data to be signed for a key binding signature generation. The user sends the signed EAA, (optionally) disclosures to be included in the EAA presentation, key binding signature payload parameters (e.g. nonce) and the signature parameters (signature level, signing-certificate, etc.).
+The method allows retrieving the data to be signed for a key binding signature generation. The user sends the signed EAA, (optionally) disclosures to be included in the attestation presentation, key binding signature payload parameters (e.g. nonce) and the signature parameters (signature level, signing-certificate, etc.).
 
 Samples:
 
@@ -472,7 +472,7 @@ Samples:
 
 ====== Create key binding signature
 
-The method allows generation of a key binding signature. The user sends the signed EAA, (optionally) disclosures to be included in the EAA presentation, key binding signature payload parameters (e.g. nonce), the signature parameters (signature level, signing-certificate, etc.) and a signature value.
+The method allows generation of a key binding signature. The user sends the signed EAA, (optionally) disclosures to be included in the attestation presentation, key binding signature payload parameters (e.g. nonce), the signature parameters (signature level, signing-certificate, etc.) and a signature value.
 
 Samples:
 
@@ -483,7 +483,7 @@ Samples:
 
 ====== Issue presentation
 
-The method allows generation of an EAA Presentation. The user sends the signed EAA, (optionally) disclosures to be included, (optionally) key binding signature and the parameters (format of EAA Presentation, etc.).
+The method allows generation of an attestation Presentation. The user sends the signed EAA, (optionally) disclosures to be included, (optionally) key binding signature and the parameters (format of attestation Presentation, etc.).
 
 Samples:
 
@@ -492,20 +492,20 @@ Samples:
 * *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/6/httpie-request.adoc[Request]
 * *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/6/curl-request.adoc[Request]
 
-[[RestEAAValidationService]]
-==== REST EAA validation service
+[[RestAttestationValidationService]]
+==== REST attestation validation service
 
-This service performs a validation of EAA Presentations.
+This service performs a validation of attestation Presentations.
 
 [source,java,indent=0]
-.Rest EAA validation service
+.Rest attestation validation service
 ----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/ws/rest/RestEAAValidationServiceSnippet.java[tags=demo]
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/ws/rest/RestAttestationValidationServiceSnippet.java[tags=demo]
 ----
 
-===== EAA validation
+===== attestation validation
 
-This service allows a validation of an EAA Presentation, or EAAs of a certain format.
+This service allows a validation of an attestation Presentation, or attestations of a certain format.
 
 Samples:
 
@@ -576,24 +576,24 @@ SOAP validation service's client is initialized using `SoapTimestampService` cla
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/ws/soap/SoapTimestampServiceSnippet.java[tags=demo]
 ----
 
-==== SOAP EAA creation service
+==== SOAP attestation creation service
 
-SOAP EAA creation service's client is initialized using `SoapAttestationCreationService` class.
+SOAP attestation creation service's client is initialized using `SoapAttestationCreationService` class.
 
 [source,java,indent=0]
-.Soap EAA creation service
+.Soap attestation creation service
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/ws/soap/SoapEAACreationServiceSnippet.java[tags=demo]
 ----
 
-==== SOAP EAA validation service
+==== SOAP attestation validation service
 
-SOAP EAA validation service's client is initialized using `SoapAttestationValidationService` class.
+SOAP attestation validation service's client is initialized using `SoapAttestationValidationService` class.
 
 [source,java,indent=0]
-.Soap EAA validation service
+.Soap attestation validation service
 ----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/ws/soap/SoapEAAValidationServiceSnippet.java[tags=demo]
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/ws/soap/SoapAttestationValidationServiceSnippet.java[tags=demo]
 ----
 
 The use of the client is similar to <<RestTimestampService>>.

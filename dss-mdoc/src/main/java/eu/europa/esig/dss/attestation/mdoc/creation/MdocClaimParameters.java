@@ -302,7 +302,7 @@ public class MdocClaimParameters extends AbstractAttestationClaimParameters<Mdoc
 
     /**
      * Sets the user's nationality as a two letter country code (alpha-2 code) defined in ISO 3166-1.
-     * This type of nationality providing is used within EAA documents conformant to ISO 118013-5 and ISO 23220-2.
+     * This type of nationality providing is used within attestation documents conformant to ISO 118013-5 and ISO 23220-2.
      *
      * @param nationality {@link String}
      */
@@ -1005,7 +1005,7 @@ public class MdocClaimParameters extends AbstractAttestationClaimParameters<Mdoc
     }
 
     /**
-     * Sets the claim for associating a set of attributes to one entity different than the EAA subject,
+     * Sets the claim for associating a set of attributes to one entity different than the attestation subject,
      * when no pseudonym is used.
      *
      * @param familyName {@link String} the family name of the attribute subject
@@ -1031,7 +1031,7 @@ public class MdocClaimParameters extends AbstractAttestationClaimParameters<Mdoc
     }
 
     /**
-     * Sets the claim for associating a set of attributes to one entity different than the EAA subject,
+     * Sets the claim for associating a set of attributes to one entity different than the attestation subject,
      * when pseudonym is used.
      *
      * @param pseudonym {@link String}  the subject attribute pseudonym
@@ -1056,7 +1056,7 @@ public class MdocClaimParameters extends AbstractAttestationClaimParameters<Mdoc
 
     @Override
     public String toString() {
-        return "MdocEAAClaimParameters [" +
+        return "MdocClaimParameters [" +
                 "birthdateApproximateMask='" + birthdateApproximateMask + '\'' +
                 ", placeOfBirth='" + placeOfBirth + '\'' +
                 ", nationality='" + nationality + '\'' +

@@ -25,9 +25,9 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.diagnostic.AttestationWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlClaim;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlEAA;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlEAAPayload;
-import eu.europa.esig.dss.enumerations.AttestationFormat;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestation;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationPayload;
+import eu.europa.esig.dss.enumerations.AttestationProfile;
 import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
@@ -46,19 +46,19 @@ class AttestationAdministrativeExpirationDatePresentCheckTest extends AbstractTe
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
-        XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(AttestationFormat.SD_JWT_VC);
-        XmlEAAPayload xmlEAAPayload = new XmlEAAPayload();
+        XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setProfile(AttestationProfile.SD_JWT_VC);
+        XmlAttestationPayload xmlAttestationPayload = new XmlAttestationPayload();
 
         XmlClaim expiration = new XmlClaim();
         expiration.setDateTime(new Date());
-        xmlEAAPayload.setAdministrativeExpirationDate(expiration);
-        xmlEAA.setEAAPayload(xmlEAAPayload);
+        xmlAttestationPayload.setAdministrativeExpirationDate(expiration);
+        xmlAttestation.setAttestationPayload(xmlAttestationPayload);
 
         XmlSAV result = new XmlSAV();
 
         AttestationAdministrativeExpirationDatePresentCheck administrativeExpirationDatePresentCheck = new AttestationAdministrativeExpirationDatePresentCheck(
-                i18nProvider, result, new AttestationWrapper(xmlEAA), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlAttestation), new LevelConstraintWrapper(constraint));
         administrativeExpirationDatePresentCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
@@ -71,15 +71,15 @@ class AttestationAdministrativeExpirationDatePresentCheckTest extends AbstractTe
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
-        XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(AttestationFormat.SD_JWT_VC);
-        XmlEAAPayload xmlEAAPayload = new XmlEAAPayload();
-        xmlEAA.setEAAPayload(xmlEAAPayload);
+        XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setProfile(AttestationProfile.SD_JWT_VC);
+        XmlAttestationPayload xmlAttestationPayload = new XmlAttestationPayload();
+        xmlAttestation.setAttestationPayload(xmlAttestationPayload);
 
         XmlSAV result = new XmlSAV();
 
         AttestationAdministrativeExpirationDatePresentCheck administrativeExpirationDatePresentCheck = new AttestationAdministrativeExpirationDatePresentCheck(
-                i18nProvider, result, new AttestationWrapper(xmlEAA), new LevelConstraintWrapper(constraint));
+                i18nProvider, result, new AttestationWrapper(xmlAttestation), new LevelConstraintWrapper(constraint));
         administrativeExpirationDatePresentCheck.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();

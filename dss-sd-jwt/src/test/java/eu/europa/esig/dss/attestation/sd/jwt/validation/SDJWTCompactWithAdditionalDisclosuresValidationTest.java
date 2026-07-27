@@ -143,8 +143,8 @@ class SDJWTCompactWithAdditionalDisclosuresValidationTest extends AbstractSDJWTT
     }
 
     @Override
-    protected void checkEAADigestMatchers(DiagnosticData diagnosticData) {
-        AttestationWrapper attestationWrapper = diagnosticData.getEAAById(diagnosticData.getFirstEAAId());
+    protected void checkAttestationDigestMatchers(DiagnosticData diagnosticData) {
+        AttestationWrapper attestationWrapper = diagnosticData.getAttestationById(diagnosticData.getFirstAttestationId());
         assertNotNull(attestationWrapper);
 
         List<XmlDigestMatcher> digestMatchers = attestationWrapper.getDigestMatchers();
@@ -153,7 +153,7 @@ class SDJWTCompactWithAdditionalDisclosuresValidationTest extends AbstractSDJWTT
         int foundDisclosuresCounter = 0;
         int notPresentDisclosuresCounter = 0;
         for (XmlDigestMatcher xmlDigestMatcher : digestMatchers) {
-            assertEquals(DigestMatcherType.EAA_DISCLOSURE, xmlDigestMatcher.getType());
+            assertEquals(DigestMatcherType.SELECTIVE_DISCLOSURE, xmlDigestMatcher.getType());
             assertTrue(xmlDigestMatcher.isDataFound());
             if (xmlDigestMatcher.isDataIntact()) {
                 ++foundDisclosuresCounter;
@@ -169,11 +169,11 @@ class SDJWTCompactWithAdditionalDisclosuresValidationTest extends AbstractSDJWTT
     protected void verifySimpleReport(SimpleReport simpleReport) {
         super.verifySimpleReport(simpleReport);
 
-        List<String> eaaIdList = simpleReport.getEAAIdList();
-        assertEquals(1, eaaIdList.size());
+        List<String> attestationIdList = simpleReport.getAttestationIdList();
+        assertEquals(1, attestationIdList.size());
 
-        assertEquals(Indication.FAILED, simpleReport.getIndication(eaaIdList.get(0)));
-        assertEquals(SubIndication.HASH_FAILURE, simpleReport.getSubIndication(eaaIdList.get(0)));
+        assertEquals(Indication.FAILED, simpleReport.getIndication(attestationIdList.get(0)));
+        assertEquals(SubIndication.HASH_FAILURE, simpleReport.getSubIndication(attestationIdList.get(0)));
     }
 
     @Override

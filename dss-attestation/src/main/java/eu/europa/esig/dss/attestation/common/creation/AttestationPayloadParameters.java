@@ -26,7 +26,7 @@ import java.security.PublicKey;
 import java.util.Date;
 
 /**
- * Contains configuration of the claims to be incorporated within an EAA Payload
+ * Contains configuration of the claims to be incorporated within an attestation Payload
  *
  */
 public interface AttestationPayloadParameters {
@@ -40,14 +40,14 @@ public interface AttestationPayloadParameters {
     DigestAlgorithm getDigestAlgorithm();
 
     /**
-     * Gets the EAA notBefore date
+     * Gets the attestation notBefore date
      *
      * @return {@link Date}
      */
     Date getNotBeforeDate();
 
     /**
-     * Gets the EAA expiration date
+     * Gets the attestation expiration date
      *
      * @return {@link Date}
      */
@@ -68,23 +68,23 @@ public interface AttestationPayloadParameters {
     TokenStatusList getStatusList();
 
     /**
-     * Gets the EAA category URN
+     * Gets the attestation category URN
      *
      * @return {@link String}
      */
     String getCategory();
 
     /**
-     * Gets whether the EAA is short-lived (no EAA revocation check applies)
+     * Gets whether the attestation is short-lived (no attestation revocation check applies)
      *
-     * @return whether the EAA is short-lived
+     * @return whether the attestation is short-lived
      */
     boolean isShortLived();
 
     /**
-     * Gets whether the EAA is for one time use
+     * Gets whether the attestation is for one time use
      *
-     * @return whether the EAA is for one time use
+     * @return whether the attestation is for one time use
      */
     boolean isOneTime();
 

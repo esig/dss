@@ -25,9 +25,9 @@ import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.attestation.DisclosureValidation;
 import eu.europa.esig.dss.model.attestation.SelectivelyDisclosableClaim;
-import eu.europa.esig.dss.model.attestation.claim.Claim;
-import eu.europa.esig.dss.model.attestation.claim.ClaimArray;
-import eu.europa.esig.dss.model.attestation.claim.ClaimMap;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaim;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimArray;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimMap;
 import eu.europa.esig.dss.spi.attestation.AttestationPayload;
 import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
@@ -41,7 +41,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * Abstract implementation of EAA Payload Verifier
+ * Abstract implementation of attestation Payload Verifier
  *
  */
 public abstract class AttestationPayloadVerifier {
@@ -76,7 +76,7 @@ public abstract class AttestationPayloadVerifier {
     }
 
     /**
-     * Sets the disclosures, requiring for EAA Payload selectively disclosable claims validation
+     * Sets the disclosures, requiring for attestation Payload selectively disclosable claims validation
      *
      * @param disclosures a list of {@link SelectivelyDisclosableClaim}s
      * @return this {@link AttestationPayloadVerifier}
@@ -124,43 +124,43 @@ public abstract class AttestationPayloadVerifier {
      * This method verified the payload claims recursively and
      * re-constructs the original payload using the attached disclosures
      *
-     * @param payloadMap {@link ClaimMap} representing the parse payload map
-     * @return {@link ClaimMap} representing the processed payload
+     * @param payloadMap {@link VerifiedClaimMap} representing the parse payload map
+     * @return {@link VerifiedClaimMap} representing the processed payload
      */
-    protected ClaimMap buildPayloadWithDisclosures(ClaimMap payloadMap) {
-        Claim verifiedPayload = buildClaimWithDisclosures(payloadMap);
-        if (!(verifiedPayload instanceof ClaimMap)) {
+    protected VerifiedClaimMap buildPayloadWithDisclosures(VerifiedClaimMap payloadMap) {
+        VerifiedClaim verifiedPayload = buildClaimWithDisclosures(payloadMap);
+        if (!(verifiedPayload instanceof VerifiedClaimMap)) {
             throw new IllegalStateException("The verified paylaod is expected to be of a ClaimMap type!");
         }
         ensureAllDisclosuresFound();
-        return (ClaimMap) verifiedPayload;
+        return (VerifiedClaimMap) verifiedPayload;
     }
 
     /**
      * This method looks recursively for protected hashes of selectively disclosable values and embeds them if needed.
      * This method also updates the {@code disclosureValidations} list.
      *
-     * @param originalClaim {@link Claim} to process
-     * @return resulting {@link Claim} build on the {@code originalClaim}
+     * @param originalClaim {@link VerifiedClaim} to process
+     * @return resulting {@link VerifiedClaim} build on the {@code originalClaim}
      */
-    protected Claim buildClaimWithDisclosures(Claim originalClaim) {
+    protected VerifiedClaim buildClaimWithDisclosures(VerifiedClaim originalClaim) {
         // re-build to ensure original is not modified
         if (originalClaim.isMapValueType()) {
-            return buildClaimMap((ClaimMap) originalClaim);
+            return buildClaimMap((VerifiedClaimMap) originalClaim);
         } else if (originalClaim.isArrayValueType()) {
-            return buildClaimArray((ClaimArray) originalClaim);
+            return buildClaimArray((VerifiedClaimArray) originalClaim);
         }
         // in other cases, keep the original
         return originalClaim;
     }
 
-    private Claim buildClaimMap(ClaimMap originalClaimMap) {
-        final Map<String, Claim> result = new HashMap<>(); // TODO : LinkedHashMap ?
-        for (Map.Entry<String, Claim> entry : originalClaimMap.getMapValue().entrySet()) {
+    private VerifiedClaim buildClaimMap(VerifiedClaimMap originalClaimMap) {
+        final Map<String, VerifiedClaim> result = new HashMap<>(); // TODO : LinkedHashMap ?
+        for (Map.Entry<String, VerifiedClaim> entry : originalClaimMap.getMapValue().entrySet()) {
             String headerName = entry.getKey();
-            Claim claimValue = entry.getValue();
+            VerifiedClaim claimValue = entry.getValue();
             if (isSignedDisclosuresHeader(headerName)) {
-                Map<String, Claim> processedClaims = buildSelectivelyDisclosableClaimMap(claimValue);
+                Map<String, VerifiedClaim> processedClaims = buildSelectivelyDisclosableClaimMap(claimValue);
                 result.putAll(processedClaims);
 
             } else if (isToSkipHeader(headerName)) {
@@ -200,17 +200,17 @@ public abstract class AttestationPayloadVerifier {
      * Creates a new claim using the provided information
      *
      * @param claimName {@link String} name of the corresponding header key used to incorporate the claim
-     * @param parentClaim {@link Claim} parent of the claim to be created
+     * @param parentClaim {@link VerifiedClaim} parent of the claim to be created
      * @param claimValue value of the claim
      * @param isSelectivelyDisclosable whether the claim was provided as a selective disclosure
-     * @return {@link Claim}
+     * @return {@link VerifiedClaim}
      */
-    protected abstract Claim createClaim(String claimName, Claim parentClaim, Object claimValue, boolean isSelectivelyDisclosable);
+    protected abstract VerifiedClaim createClaim(String claimName, VerifiedClaim parentClaim, Object claimValue, boolean isSelectivelyDisclosable);
 
-    private Claim buildClaimArray(ClaimArray originalClaimArray) {
-        final List<Claim> result = new ArrayList<>();
-        for (Claim claimItem : originalClaimArray.getListValue()) {
-            Claim hashClaim = getClaimHashItem(claimItem);
+    private VerifiedClaim buildClaimArray(VerifiedClaimArray originalClaimArray) {
+        final List<VerifiedClaim> result = new ArrayList<>();
+        for (VerifiedClaim claimItem : originalClaimArray.getListValue()) {
+            VerifiedClaim hashClaim = getClaimHashItem(claimItem);
             if (hashClaim != null) {
                 claimItem = buildSelectivelyDisclosableClaim(hashClaim, disclosures);
             } else {
@@ -226,27 +226,27 @@ public abstract class AttestationPayloadVerifier {
     /**
      * Gets a claim when its value corresponds to a hash of a selectively disclosable item (e.g. "..." in SD-JWT)
      *
-     * @param claim {@link Claim} to check
-     * @return {@link Claim} hash value of the claim, when applicable. NULL otherwise.
+     * @param claim {@link VerifiedClaim} to check
+     * @return {@link VerifiedClaim} hash value of the claim, when applicable. NULL otherwise.
      */
-    protected abstract Claim getClaimHashItem(Claim claim);
+    protected abstract VerifiedClaim getClaimHashItem(VerifiedClaim claim);
 
     /**
      * Builds a list of hash claims from a content of a claim containing protected hashes
      *
-     * @param claim {@link Claim} to process
+     * @param claim {@link VerifiedClaim} to process
      * @return a map representing the extracted disclosures as their corresponding names as keys
      */
-    protected abstract Map<String, Claim> buildSelectivelyDisclosableClaimMap(Claim claim);
+    protected abstract Map<String, VerifiedClaim> buildSelectivelyDisclosableClaimMap(VerifiedClaim claim);
 
     /**
      * Builds a claim based on the provided selectively disclosable value
      *
-     * @param hashClaim {@link Claim} representing the hash value of the item
+     * @param hashClaim {@link VerifiedClaim} representing the hash value of the item
      * @param disclosures a list of {@link SelectivelyDisclosableClaim}s to look for a matching value from
-     * @return {@link Claim} resulting in a processing of disclosable claims
+     * @return {@link VerifiedClaim} resulting in a processing of disclosable claims
      */
-    protected Claim buildSelectivelyDisclosableClaim(Claim hashClaim, List<SelectivelyDisclosableClaim> disclosures) {
+    protected VerifiedClaim buildSelectivelyDisclosableClaim(VerifiedClaim hashClaim, List<SelectivelyDisclosableClaim> disclosures) {
         DisclosureValidation disclosureValidation = validateHashClaim(hashClaim, disclosures);
         return getDisclosedClaim(disclosureValidation);
     }
@@ -255,9 +255,9 @@ public abstract class AttestationPayloadVerifier {
      * Gets the claim validated from the provided disclosure
      *
      * @param disclosureValidation {@link DisclosureValidation}
-     * @return {@link Claim}
+     * @return {@link VerifiedClaim}
      */
-    protected Claim getDisclosedClaim(DisclosureValidation disclosureValidation) {
+    protected VerifiedClaim getDisclosedClaim(DisclosureValidation disclosureValidation) {
         if (disclosureValidation != null) {
             if (disclosureValidation.isFound() && disclosureValidation.isIntact() && disclosureValidation.getDisclosure() != null) {
                 return disclosureValidation.getDisclosure().getClaimValue();
@@ -270,11 +270,11 @@ public abstract class AttestationPayloadVerifier {
      * Performs verification of the hash claim. The method looks for a corresponding provided disclosure and
      * returns the corresponding validation result.
      *
-     * @param hashClaim {@link Claim} to verify
+     * @param hashClaim {@link VerifiedClaim} to verify
      * @param disclosures a list of {@link SelectivelyDisclosableClaim}s to look for a matching value from
      * @return {@link DisclosureValidation}
      */
-    protected DisclosureValidation validateHashClaim(Claim hashClaim, List<SelectivelyDisclosableClaim> disclosures) {
+    protected DisclosureValidation validateHashClaim(VerifiedClaim hashClaim, List<SelectivelyDisclosableClaim> disclosures) {
         if (hashClaim == null) {
             return null;
         }
@@ -287,14 +287,14 @@ public abstract class AttestationPayloadVerifier {
         SelectivelyDisclosableClaim disclosure = getDisclosureForClaimHash(hashBytes, disclosures);
         if (disclosure != null) {
             disclosureValidation = new DisclosureValidation(disclosure);
-            disclosureValidation.setType(DigestMatcherType.EAA_DISCLOSURE);
+            disclosureValidation.setType(DigestMatcherType.SELECTIVE_DISCLOSURE);
             disclosureValidation.setDigest(new Digest(digestAlgorithm, hashBytes));
             disclosureValidation.setFound(true);
             disclosureValidation.setIntact(true);
 
         } else {
             disclosureValidation = new DisclosureValidation();
-            disclosureValidation.setType(DigestMatcherType.EAA_ORPHAN_SELECTIVELY_DISCLOSABLE_CLAIM);
+            disclosureValidation.setType(DigestMatcherType.ORPHAN_SELECTIVELY_DISCLOSABLE_CLAIM);
             disclosureValidation.setDigest(new Digest(digestAlgorithm, hashBytes));
         }
         disclosureValidations.add(disclosureValidation);
@@ -304,10 +304,10 @@ public abstract class AttestationPayloadVerifier {
     /**
      * Gets embedded hash bytes from the claim value
      *
-     * @param hashClaim {@link Claim}
+     * @param hashClaim {@link VerifiedClaim}
      * @return byte array representing the resulted hash value
      */
-    protected abstract byte[] getHashBytes(Claim hashClaim);
+    protected abstract byte[] getHashBytes(VerifiedClaim hashClaim);
 
     private SelectivelyDisclosableClaim getDisclosureForClaimHash(byte[] sdHash, List<SelectivelyDisclosableClaim> disclosures) {
         if (Utils.isCollectionEmpty(disclosures)) {
@@ -324,7 +324,7 @@ public abstract class AttestationPayloadVerifier {
     }
 
     /**
-     * This method ensures that EAA contains hashes for all disclosures attached
+     * This method ensures that attestation contains hashes for all disclosures attached
      */
     protected void ensureAllDisclosuresFound() {
         List<DisclosureValidation> disclosureValidations = getDisclosureValidations();
@@ -342,7 +342,7 @@ public abstract class AttestationPayloadVerifier {
                 continue;
             }
             DisclosureValidation disclosureValidation = new DisclosureValidation(disclosure);
-            disclosureValidation.setType(DigestMatcherType.EAA_DISCLOSURE);
+            disclosureValidation.setType(DigestMatcherType.SELECTIVE_DISCLOSURE);
             disclosureValidation.setDigest(disclosure.getDigest(digestAlgorithm));
             disclosureValidation.setFound(true);
             disclosureValidation.setIntact(false);
@@ -370,7 +370,7 @@ public abstract class AttestationPayloadVerifier {
      */
     protected List<DisclosureValidation> getOrphanDisclosureValidations() {
         return disclosureValidations.stream().filter(
-                r -> DigestMatcherType.EAA_ORPHAN_SELECTIVELY_DISCLOSABLE_CLAIM == r.getType()).collect(Collectors.toList());
+                r -> DigestMatcherType.ORPHAN_SELECTIVELY_DISCLOSABLE_CLAIM == r.getType()).collect(Collectors.toList());
     }
 
     /**

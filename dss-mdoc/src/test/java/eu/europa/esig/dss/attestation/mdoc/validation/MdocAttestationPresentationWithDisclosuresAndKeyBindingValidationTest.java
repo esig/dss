@@ -169,7 +169,7 @@ class MdocAttestationPresentationWithDisclosuresAndKeyBindingValidationTest exte
 
         documents.add(document);
         mdocResponse.put("documents", documents);
-        mdocResponse.put("revocation", 0L);
+        mdocResponse.put("status", 0L);
 
         // embed in mdoc
         DSSDocument mdocDocument = new InMemoryDocument(CBORUtils.serializeCborObject(mdocResponse));
@@ -185,23 +185,23 @@ class MdocAttestationPresentationWithDisclosuresAndKeyBindingValidationTest exte
     protected void checkClaims(DiagnosticData diagnosticData) {
         super.checkClaims(diagnosticData);
 
-        AttestationWrapper eaa = diagnosticData.getEAAs().get(0);
-        assertNotNull(eaa.getIssuedAt());
-        assertNotNull(eaa.getNotBefore());
-        assertNotNull(eaa.getExpiration());
+        AttestationWrapper attestation = diagnosticData.getAttestations().get(0);
+        assertNotNull(attestation.getIssuedAt());
+        assertNotNull(attestation.getNotBefore());
+        assertNotNull(attestation.getExpiration());
 
-        assertNotNull(eaa.getDevicePublicKey());
-        assertEquals("1.0", eaa.getVersion());
-        assertEquals("org.iso.18013.5.1.mDL", eaa.getAttestationDocumentType());
+        assertNotNull(attestation.getDevicePublicKey());
+        assertEquals("1.0", attestation.getVersion());
+        assertEquals("org.iso.18013.5.1.mDL", attestation.getAttestationDocumentType());
 
-        assertEquals("John", eaa.getGivenName());
-        assertEquals("Doe", eaa.getFamilyName());
-        assertEquals(DSSUtils.parseRFCDate("2000-01-01T00:00:00Z"), eaa.getBirthdate());
+        assertEquals("John", attestation.getGivenName());
+        assertEquals("Doe", attestation.getFamilyName());
+        assertEquals(DSSUtils.parseRFCDate("2000-01-01T00:00:00Z"), attestation.getBirthdate());
 
-        List<ClaimWrapper> selectivelyDisclosableClaims = eaa.getSelectivelyDisclosableClaims();
+        List<ClaimWrapper> selectivelyDisclosableClaims = attestation.getSelectivelyDisclosableClaims();
         assertEquals(3, selectivelyDisclosableClaims.size());
 
-        List<ClaimWrapper> payloadClaims = eaa.getAllEAAPayloadClaims();
+        List<ClaimWrapper> payloadClaims = attestation.getAllAttestationPayloadClaims();
         assertNotNull(payloadClaims);
 
         boolean validityInfoClaimFound = false;

@@ -24,13 +24,13 @@ import eu.europa.esig.dss.spi.attestation.AttestationPresentation;
 import eu.europa.esig.dss.spi.validation.analyzer.DocumentAnalyzer;
 
 /**
- * Interface to perform validation of a presentation of Electronic Attestation of Attributes (EAA)
+ * Interface to perform validation of an attestation presentation
  *
  */
 public interface AttestationDocumentAnalyzer extends DocumentAnalyzer {
 
     /**
-     * Gets extracted Electronic Attestation of Attributes (EAA) presentation
+     * Gets extracted attestation presentation
      *
      * @return {@link AttestationPresentation}
      */

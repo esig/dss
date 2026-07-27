@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.attestation.common.creation.claim;
 
 /**
- * Abstract implementation of an EAA Claim
+ * Abstract implementation of an attestation Claim
  */
 public abstract class AbstractAttestationClaim implements AttestationClaim {
 
@@ -66,7 +66,7 @@ public abstract class AbstractAttestationClaim implements AttestationClaim {
 
     @Override
     public String toString() {
-        return "AbstractEAAClaim [" +
+        return "AbstractAttestationClaim [" +
                 "name='" + name + '\'' +
                 ", value=" + value +
                 ']';

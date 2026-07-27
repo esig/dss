@@ -32,7 +32,7 @@ import java.io.Serializable;
  * This SOAP interface provides operations for the validation of attestation presentation.
  *
  */
-@WebService(targetNamespace = "http://eaa.validation.dss.esig.europa.eu/")
+@WebService(targetNamespace = "http://attestation.validation.dss.esig.europa.eu/")
 public interface SoapAttestationValidationService extends Serializable {
 
     /**
@@ -41,12 +41,12 @@ public interface SoapAttestationValidationService extends Serializable {
      * ETSI Validation report
      *
      * @param dataToValidate
-     *                       a {@code EAAToValidateDTO} which contains the
-     *                       EAA, the optional validation parameters
+     *                       a {@code AttestationToValidateDTO} which contains the
+     *                       attestation, the optional validation parameters
      * @return a {@code ReportsDTO} with  4 reports : the diagnostic data, the
      *         detailed report, the simple report and the ETSI validation report
      */
     @WebResult(name = "WSReportsDTO")
-    WSReportsDTO validateEAA(@WebParam(name = "dataToValidateDTO") AttestationToValidateDTO dataToValidate);
+    WSReportsDTO validateAttestation(@WebParam(name = "dataToValidateDTO") AttestationToValidateDTO dataToValidate);
 
 }

@@ -91,7 +91,7 @@ class QWACValidationTest {
 		CertificateReports reports = qwacValidator.validate();
 		SimpleCertificateReport simpleReport = reports.getSimpleReport();
 
-		// Read validation revocation
+		// Read validation status
 		QWACProfile qwacProfile = simpleReport.getQWACProfile();
 
 		// end::demo[]

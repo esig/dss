@@ -90,8 +90,8 @@ class SDJWTCompactOneTimeCreationTest extends AbstractSDJWTTestIssuance {
     protected void checkClaims(final DiagnosticData diagnosticData) {
         super.checkClaims(diagnosticData);
 
-        AttestationWrapper eaa = diagnosticData.getEAAs().get(0);
-        assertTrue(eaa.getOneTimeUse());
+        AttestationWrapper attestation = diagnosticData.getAttestations().get(0);
+        assertTrue(attestation.getOneTimeUse());
     }
 
     @Override

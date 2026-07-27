@@ -48,7 +48,7 @@ class SDJWTServiceTest extends PKIFactoryAccess {
     }
 
     @Test
-    void signEAAWithDSSDocumentTest() {
+    void signAttestationWithDSSDocumentTest() {
         DSSDocument jsonPayload = new InMemoryDocument("{\"hello\":\"world\"}".getBytes(), "payload.json", MimeTypeEnum.JSON);
         DSSDocument nonJsonPayload = new InMemoryDocument("not-json-content".getBytes(), "payload.txt");
         JAdESSignatureParameters params = new JAdESSignatureParameters();
@@ -82,18 +82,18 @@ class SDJWTServiceTest extends PKIFactoryAccess {
 
         SignatureValue signatureValue = getToken().sign(dataToSign, params.getDigestAlgorithm(), getPrivateKeyEntry());
 
-        exception = assertThrows(NullPointerException.class, () -> service.signEAA((DSSDocument) null, params, signatureValue));
+        exception = assertThrows(NullPointerException.class, () -> service.signAttestation((DSSDocument) null, params, signatureValue));
         assertEquals("payload cannot be null!", exception.getMessage());
 
-        exception = assertThrows(DSSException.class, () -> service.signEAA(nonJsonPayload, params, signatureValue));
+        exception = assertThrows(DSSException.class, () -> service.signAttestation(nonJsonPayload, params, signatureValue));
         assertEquals("Payload is not a JSON document!", exception.getMessage());
 
-        DSSDocument signedEAA = service.signEAA(jsonPayload, params, signatureValue);
-        assertNotNull(signedEAA);
+        DSSDocument signedAttestation = service.signAttestation(jsonPayload, params, signatureValue);
+        assertNotNull(signedAttestation);
     }
 
     @Test
-    void signEAAWithPayloadParametersTest() {
+    void signAttestationWithPayloadParametersTest() {
         Exception exception = assertThrows(NullPointerException.class, () -> service.getDataToBeSigned(payloadParameters, null));
         assertEquals("signatureParameters cannot be null!", exception.getMessage());
 
@@ -106,17 +106,17 @@ class SDJWTServiceTest extends PKIFactoryAccess {
 
         SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
 
-        exception = assertThrows(NullPointerException.class, () -> service.signEAA(payloadParameters, null, signatureValue));
+        exception = assertThrows(NullPointerException.class, () -> service.signAttestation(payloadParameters, null, signatureValue));
         assertEquals("signatureParameters cannot be null!", exception.getMessage());
 
-        DSSDocument signedEAA = service.signEAA(payloadParameters, signatureParameters, signatureValue);
-        assertNotNull(signedEAA);
+        DSSDocument signedAttestation = service.signAttestation(payloadParameters, signatureParameters, signatureValue);
+        assertNotNull(signedAttestation);
     }
 
     @Test
     void getDisclosuresTest() {
         Exception exception = assertThrows(NullPointerException.class, () -> service.getDisclosures(null));
-        assertEquals("SDJWTEAAPayloadParameters cannot be null!", exception.getMessage());
+        assertEquals("SDJWTPayloadParameters cannot be null!", exception.getMessage());
 
         SDJWTPayloadParameters params = new SDJWTPayloadParameters();
 
@@ -149,73 +149,73 @@ class SDJWTServiceTest extends PKIFactoryAccess {
 
     @Test
     void keyBindingSignatureTest() {
-        DSSDocument signedEAA = createSignedEAA(payloadParameters, signatureParameters);
+        DSSDocument signedAttestation = createSignedAttestation(payloadParameters, signatureParameters);
 
         SDJWTKeyBindingParameters keyBindingParameters = new SDJWTKeyBindingParameters();
         JAdESSignatureParameters kbSignParams = new JAdESSignatureParameters();
 
-        Exception exception = assertThrows(NullPointerException.class, () -> service.getDataToSignForKeyBindingSignature(signedEAA, null, kbSignParams));
+        Exception exception = assertThrows(NullPointerException.class, () -> service.getDataToSignForKeyBindingSignature(signedAttestation, null, kbSignParams));
         assertEquals("keyBindingParameters must not be null", exception.getMessage());
 
-        exception = assertThrows(NullPointerException.class, () -> service.getDataToSignForKeyBindingSignature(signedEAA, keyBindingParameters, kbSignParams));
+        exception = assertThrows(NullPointerException.class, () -> service.getDataToSignForKeyBindingSignature(signedAttestation, keyBindingParameters, kbSignParams));
         assertEquals("Audience must not be null", exception.getMessage());
         keyBindingParameters.setAudience("https://verifier.example.org");
 
-        exception = assertThrows(NullPointerException.class, () -> service.getDataToSignForKeyBindingSignature(signedEAA, keyBindingParameters, kbSignParams));
+        exception = assertThrows(NullPointerException.class, () -> service.getDataToSignForKeyBindingSignature(signedAttestation, keyBindingParameters, kbSignParams));
         assertEquals("Nonce must not be null", exception.getMessage());
         keyBindingParameters.setNonce("1234567890");
 
         keyBindingParameters.setIssuanceTime(new Date());
 
-        exception = assertThrows(NullPointerException.class, () -> service.getDataToSignForKeyBindingSignature(signedEAA, keyBindingParameters, null));
+        exception = assertThrows(NullPointerException.class, () -> service.getDataToSignForKeyBindingSignature(signedAttestation, keyBindingParameters, null));
         assertEquals("signatureParameters cannot be null!", exception.getMessage());
 
         kbSignParams.setSignatureLevel(SignatureLevel.JAdES_BASELINE_T);
-        exception = assertThrows(DSSException.class, () -> service.getDataToSignForKeyBindingSignature(signedEAA, keyBindingParameters, kbSignParams));
+        exception = assertThrows(DSSException.class, () -> service.getDataToSignForKeyBindingSignature(signedAttestation, keyBindingParameters, kbSignParams));
         assertEquals("Signature level must be JAdES_BASELINE_B", exception.getMessage());
         kbSignParams.setSignatureLevel(SignatureLevel.JAdES_BASELINE_B);
 
         kbSignParams.setSignaturePackaging(SignaturePackaging.DETACHED);
-        exception = assertThrows(DSSException.class, () -> service.getDataToSignForKeyBindingSignature(signedEAA, keyBindingParameters, kbSignParams));
+        exception = assertThrows(DSSException.class, () -> service.getDataToSignForKeyBindingSignature(signedAttestation, keyBindingParameters, kbSignParams));
         assertEquals("Signature packaging must be ENVELOPING", exception.getMessage());
         kbSignParams.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 
         kbSignParams.setJwsSerializationType(JWSSerializationType.JSON_SERIALIZATION);
-        exception = assertThrows(DSSException.class, () -> service.getDataToSignForKeyBindingSignature(signedEAA, keyBindingParameters, kbSignParams));
+        exception = assertThrows(DSSException.class, () -> service.getDataToSignForKeyBindingSignature(signedAttestation, keyBindingParameters, kbSignParams));
         assertEquals("JWS serialization type must be COMPACT_SERIALIZATION", exception.getMessage());
         kbSignParams.setJwsSerializationType(JWSSerializationType.COMPACT_SERIALIZATION);
 
-        exception = assertThrows(IllegalArgumentException.class, () -> service.getDataToSignForKeyBindingSignature(signedEAA, keyBindingParameters, kbSignParams));
+        exception = assertThrows(IllegalArgumentException.class, () -> service.getDataToSignForKeyBindingSignature(signedAttestation, keyBindingParameters, kbSignParams));
         assertEquals("Signing Certificate is not defined! Set signing certificate or use method setGenerateTBSWithoutCertificate(true).", exception.getMessage());
         kbSignParams.setSigningCertificate(getSigningCert());
         kbSignParams.setCertificateChain(getCertificateChain());
 
-        ToBeSigned dataToSign = service.getDataToSignForKeyBindingSignature(signedEAA, keyBindingParameters, kbSignParams);
+        ToBeSigned dataToSign = service.getDataToSignForKeyBindingSignature(signedAttestation, keyBindingParameters, kbSignParams);
         assertNotNull(dataToSign);
 
         SignatureValue signatureValue = getToken().sign(dataToSign, kbSignParams.getDigestAlgorithm(), getPrivateKeyEntry());
 
-        exception = assertThrows(NullPointerException.class, () -> service.createKeyBindingSignature(signedEAA, null, kbSignParams, signatureValue));
+        exception = assertThrows(NullPointerException.class, () -> service.createKeyBindingSignature(signedAttestation, null, kbSignParams, signatureValue));
         assertEquals("keyBindingParameters must not be null", exception.getMessage());
 
-        DSSDocument keyBindingSignature = service.createKeyBindingSignature(signedEAA, keyBindingParameters, kbSignParams, signatureValue);
+        DSSDocument keyBindingSignature = service.createKeyBindingSignature(signedAttestation, keyBindingParameters, kbSignParams, signatureValue);
         assertNotNull(keyBindingSignature);
 
-        DSSDocument keyBindingSignatureWithDisclosures = service.createKeyBindingSignature(signedEAA, Collections.emptyList(), keyBindingParameters, kbSignParams, signatureValue);
+        DSSDocument keyBindingSignatureWithDisclosures = service.createKeyBindingSignature(signedAttestation, Collections.emptyList(), keyBindingParameters, kbSignParams, signatureValue);
         assertNotNull(keyBindingSignatureWithDisclosures);
     }
 
     @Test
     void issuePresentationTest() {
         Exception exception = assertThrows(NullPointerException.class, () -> service.issuePresentation(null, Collections.emptyList(), null));
-        assertEquals("The EAA cannot be null!", exception.getMessage());
+        assertEquals("The attestation cannot be null!", exception.getMessage());
 
         DSSDocument nonJwsDoc = new InMemoryDocument("not-a-jws-document".getBytes());
         exception = assertThrows(DSSException.class, () -> service.issuePresentation(nonJwsDoc, Collections.emptyList(), null));
-        assertEquals("The signed EAA must be a JWS Signature", exception.getMessage());
+        assertEquals("The signed attestation must be a JWS Signature", exception.getMessage());
 
-        DSSDocument signedEAA = createSignedEAA(payloadParameters, signatureParameters);
-        DSSDocument presentation = service.issuePresentation(signedEAA, Collections.emptyList(), null);
+        DSSDocument signedAttestation = createSignedAttestation(payloadParameters, signatureParameters);
+        DSSDocument presentation = service.issuePresentation(signedAttestation, Collections.emptyList(), null);
         assertNotNull(presentation);
         assertNotNull(presentation.getName());
         assertNotNull(presentation.getMimeType());
@@ -230,15 +230,15 @@ class SDJWTServiceTest extends PKIFactoryAccess {
         List<SDJWTSelectiveDisclosure> disclosures = service.getDisclosures(sdParams);
         assertEquals(2, disclosures.size());
 
-        DSSDocument sdSignedEAA = createSignedEAA(sdParams, signatureParameters);
-        DSSDocument presentationWithDisclosures = service.issuePresentation(sdSignedEAA, disclosures, null);
+        DSSDocument sdSignedAttestation = createSignedAttestation(sdParams, signatureParameters);
+        DSSDocument presentationWithDisclosures = service.issuePresentation(sdSignedAttestation, disclosures, null);
         assertNotNull(presentationWithDisclosures);
     }
 
-    private DSSDocument createSignedEAA(SDJWTPayloadParameters params, JAdESSignatureParameters sigParams) {
+    private DSSDocument createSignedAttestation(SDJWTPayloadParameters params, JAdESSignatureParameters sigParams) {
         ToBeSigned dataToSign = service.getDataToBeSigned(params, sigParams);
         SignatureValue signatureValue = getToken().sign(dataToSign, sigParams.getDigestAlgorithm(), getPrivateKeyEntry());
-        return service.signEAA(params, sigParams, signatureValue);
+        return service.signAttestation(params, sigParams, signatureValue);
     }
 
     @Override

@@ -23,7 +23,7 @@ package eu.europa.esig.dss.ws.attestation.validation.dto;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 
 /**
- * DTO for supplementary EAA validation data parameters
+ * DTO for supplementary attestation validation data parameters
  */
 public class AttestationValidationParametersDTO {
 

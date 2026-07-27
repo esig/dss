@@ -47,7 +47,7 @@ public enum AttestationStatus {
     APPLICATION_SPECIFIC(0x03),
 
     /**
-     * The EAA revocation is not known
+     * The attestation revocation is not known
      */
     UNKNOWN();
 
@@ -74,9 +74,9 @@ public enum AttestationStatus {
     }
 
     /**
-     * Checks if the EAA revocation is valid
+     * Checks if the attestation revocation is valid
      *
-     * @return TRUE if the EAA revocation is valid, FALSE otherwise
+     * @return TRUE if the attestation revocation is valid, FALSE otherwise
      */
     public boolean isValid() {
         return VALID == this;
@@ -92,7 +92,7 @@ public enum AttestationStatus {
     }
 
     /**
-     * Gets a corresponding {@code EAAStatusValue} type for the given {@code bitValue}
+     * Gets a corresponding {@code AttestationStatus} type for the given {@code bitValue}
      *
      * @param bitValue the bit representation of the Status Type in a byte hex representation
      * @return {@link AttestationStatus}

@@ -1098,7 +1098,7 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 
 	private ReferenceValidation getKeyBindingSignatureReferenceValidation() {
 		ReferenceValidation referenceValidation = new ReferenceValidation();
-		referenceValidation.setType(DigestMatcherType.EAA_KEY_BINDING);
+		referenceValidation.setType(DigestMatcherType.KEY_BINDING_SIGNATURE);
 
 		byte[] sdHash = getSdHash();
 		if (sdHash != null) {
@@ -1139,12 +1139,12 @@ public class JAdESSignature extends DefaultAdvancedSignature {
 	}
 
 	private DigestAlgorithm getSdAlg() {
-		List<AdvancedSignature> eaaSignatures = getEAA().getSignatures();
-		if (Utils.isCollectionEmpty(eaaSignatures)) {
-			throw new IllegalStateException("EAA signatures cannot be null or empty!");
+		List<AdvancedSignature> attestationSignatures = getAttestation().getSignatures();
+		if (Utils.isCollectionEmpty(attestationSignatures)) {
+			throw new IllegalStateException("Attestation signatures cannot be null or empty!");
 		}
-		JAdESSignature eaaSignature = (JAdESSignature) eaaSignatures.iterator().next();
-		Map<String, Object> payload = eaaSignature.getJws().getDecodedPayload();
+		JAdESSignature attestationSignature = (JAdESSignature) attestationSignatures.iterator().next();
+		Map<String, Object> payload = attestationSignature.getJws().getDecodedPayload();
 		String sdAlgId = DSSJsonUtils.getAsString(payload, "_sd_alg");
 		if (sdAlgId == null) {
 			LOG.warn("No _sd_alg header found within the SD-JWT payload!");

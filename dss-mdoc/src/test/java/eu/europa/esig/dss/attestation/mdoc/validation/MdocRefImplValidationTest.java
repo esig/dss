@@ -54,7 +54,7 @@ class MdocRefImplValidationTest extends AbstractMdocAttestationPresentationTestV
 
     @Override
     protected void checkBLevelValid(DiagnosticData diagnosticData) {
-        boolean eaaSignatureFound = false;
+        boolean attestationSignatureFound = false;
         boolean kbSignatureFound = false;
         for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
             if (signatureWrapper.isKeyBindingSignature()) {
@@ -66,10 +66,10 @@ class MdocRefImplValidationTest extends AbstractMdocAttestationPresentationTestV
                 assertTrue(signatureWrapper.isBLevelTechnicallyValid());
                 assertTrue(signatureWrapper.isSignatureIntact());
                 assertTrue(signatureWrapper.isSignatureValid());
-                eaaSignatureFound = true;
+                attestationSignatureFound = true;
             }
         }
-        assertTrue(eaaSignatureFound);
+        assertTrue(attestationSignatureFound);
         assertTrue(kbSignatureFound);
     }
 
@@ -95,7 +95,7 @@ class MdocRefImplValidationTest extends AbstractMdocAttestationPresentationTestV
 
     @Override
     protected void checkDTBSR(DiagnosticData diagnosticData) {
-        boolean eaaSignatureFound = false;
+        boolean attestationSignatureFound = false;
         boolean kbSignatureFound = false;
         for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
             if (signatureWrapper.isKeyBindingSignature()) {
@@ -103,10 +103,10 @@ class MdocRefImplValidationTest extends AbstractMdocAttestationPresentationTestV
                 kbSignatureFound = true;
             } else {
                 assertNotNull(signatureWrapper.getDataToBeSignedRepresentation());
-                eaaSignatureFound = true;
+                attestationSignatureFound = true;
             }
         }
-        assertTrue(eaaSignatureFound);
+        assertTrue(attestationSignatureFound);
         assertTrue(kbSignatureFound);
     }
 

@@ -8,13 +8,12 @@
     </parent>
 
     <artifactId>dss-attestation-validation-soap-client</artifactId>
-    <name>DSS EAA Validation SOAP client</name>
-    <description>SOAP client for performing of a validation of Electronic Attestation of Attributes (EAA) or EAA
-        Presentations using the WebServices
+    <name>DSS Attestation Validation SOAP client</name>
+    <description>SOAP client for performing of a validation of annotations (EAA, PID, etc.) using the WebServices
     </description>
 
     <properties>
-        <module-name>jpms_dss_ws_eaa_validation_remote_soap_client</module-name>
+        <module-name>jpms_dss_ws_attestation_validation_remote_soap_client</module-name>
     </properties>
 
     <dependencies>

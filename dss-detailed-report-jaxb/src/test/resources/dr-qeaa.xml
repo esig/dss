@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <DetailedReport ValidationTime="2026-02-25T14:44:55Z" xmlns="http://dss.esig.europa.eu/validation/detailed-report">
-    <EAA Id="EAA-D14BA8EF8A7C63629C6BBD55A0CF27C765127EF82984DD766D158E71C4BABE77">
-        <ValidationProcessEAA Title="Validation Process for EAA Presentations">
+    <Attestation Id="EAA-D14BA8EF8A7C63629C6BBD55A0CF27C765127EF82984DD766D158E71C4BABE77">
+        <ValidationProcessAttestation Title="Validation Process for attestation Presentations">
             <Constraint>
-                <Name Key="EAA_SIG_PRESENT">Does the EAA contain an EAA creation signature?</Name>
+                <Name Key="EAA_SIG_PRESENT">Does the attestation contain an attestation creation signature?</Name>
                 <Status>OK</Status>
             </Constraint>
             <Constraint>
@@ -13,7 +13,7 @@
             <Conclusion>
                 <Indication>PASSED</Indication>
             </Conclusion>
-        </ValidationProcessEAA>
+        </ValidationProcessAttestation>
         <Signature Id="S-43CBB46DC3FFC2B858A0D7654D787AD34F95DC167FF365ADC06230891EF49A81">
             <ValidationProcessBasicSignature Title="Validation Process for Basic Signatures">
                 <Constraint Id="S-43CBB46DC3FFC2B858A0D7654D787AD34F95DC167FF365ADC06230891EF49A81-FC">
@@ -207,21 +207,21 @@
                 <Indication>TOTAL_PASSED</Indication>
             </Conclusion>
         </Signature>
-        <ValidationEAAQualification Title="EAA Qualification">
+        <ValidationAttestationQualification Title="Attestation Qualification">
             <Constraint>
-                <Name Key="EAA_CAT_EAA">Is the EAA qualification process conclusive?</Name>
+                <Name Key="EAA_CAT_EAA">Is the attestation qualification process conclusive?</Name>
                 <Status>OK</Status>
             </Constraint>
             <Conclusion>
                 <Indication>PASSED</Indication>
             </Conclusion>
-            <ValidationEAAQualificationProcess Title="EAA Qualification Process" EAAQualification="QEAA">
+            <ValidationAttestationQualificationProcess Title="Attestation Qualification Process" AttestationQualification="QEAA">
                 <Constraint>
-                    <Name Key="EAA_CAT_EAA">Does the EAA include EAA category?</Name>
+                    <Name Key="EAA_CAT_EAA">Does the attestation include attestation category?</Name>
                     <Status>OK</Status>
                 </Constraint>
                 <Constraint>
-                    <Name Key="EAA_CAT_QEAA">Does the EAA contain an indication that the attestation has been issued as a QEAA?</Name>
+                    <Name Key="EAA_CAT_QEAA">Does the attestation contain an indication that the attestation has been issued as a QEAA?</Name>
                     <Status>OK</Status>
                 </Constraint>
                 <Constraint>
@@ -250,15 +250,15 @@
                     <Status>OK</Status>
                 </Constraint>
                 <Constraint>
-                    <Name Key="EAA_SIG_QUAL">Is the EAA created using a qualified electronic signature or seal?</Name>
+                    <Name Key="EAA_SIG_QUAL">Is the attestation created using a qualified electronic signature or seal?</Name>
                     <Status>OK</Status>
                     <AdditionalInfo>Signature Id = S-43CBB46DC3FFC2B858A0D7654D787AD34F95DC167FF365ADC06230891EF49A81</AdditionalInfo>
                 </Constraint>
                 <Conclusion>
                     <Indication>PASSED</Indication>
                 </Conclusion>
-            </ValidationEAAQualificationProcess>
-            <ValidationPIDQualificationProcess Title="PID Qualification Process" EAAQualification="N/A">
+            </ValidationAttestationQualificationProcess>
+            <ValidationPIDQualificationProcess Title="PID Qualification Process" AttestationQualification="N/A">
                 <Constraint>
                     <Name Key="EAA_SIG_QUAL">Is PID validation conclusive?</Name>
                     <Status>NOT OK</Status>
@@ -267,12 +267,12 @@
                     <Indication>FAILED</Indication>
                 </Conclusion>
             </ValidationPIDQualificationProcess>
-            <EAAQualification>QEAA</EAAQualification>
-        </ValidationEAAQualification>
+            <AttestationQualification>QEAA</AttestationQualification>
+        </ValidationAttestationQualification>
         <Conclusion>
             <Indication>PASSED</Indication>
         </Conclusion>
-    </EAA>
+    </Attestation>
     <BasicBuildingBlocks Id="S-43CBB46DC3FFC2B858A0D7654D787AD34F95DC167FF365ADC06230891EF49A81" Type="SIGNATURE">
         <FC Title="Format Checking">
             <Constraint>

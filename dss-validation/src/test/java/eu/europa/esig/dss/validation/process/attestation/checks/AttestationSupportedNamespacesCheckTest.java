@@ -5,9 +5,9 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.diagnostic.AttestationWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlClaim;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlEAA;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlEAAPayload;
-import eu.europa.esig.dss.enumerations.AttestationFormat;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestation;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationPayload;
+import eu.europa.esig.dss.enumerations.AttestationProfile;
 import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.policy.MultiValuesConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.MultiValuesConstraint;
@@ -26,21 +26,21 @@ class AttestationSupportedNamespacesCheckTest extends AbstractTestCheck {
         constraint.getId().add("org.iso.18013.5.1");
         constraint.setLevel(Level.FAIL);
 
-        XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(AttestationFormat.ISO_IEC_MDOC);
-        XmlEAAPayload xmlEAAPayload = new XmlEAAPayload();
+        XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setProfile(AttestationProfile.ISO_IEC_MDOC);
+        XmlAttestationPayload xmlAttestationPayload = new XmlAttestationPayload();
         XmlClaim xmlClaim = new XmlClaim();
         xmlClaim.setText("John");
         xmlClaim.setName("given_name");
         xmlClaim.setNamespace("org.iso.18013.5.1");
-        xmlEAAPayload.setGivenName(xmlClaim);
-        xmlEAA.setEAAPayload(xmlEAAPayload);
+        xmlAttestationPayload.setGivenName(xmlClaim);
+        xmlAttestation.setAttestationPayload(xmlAttestationPayload);
 
         XmlSAV result = new XmlSAV();
 
-        AttestationSupportedNamespacesCheck eaasnc = new AttestationSupportedNamespacesCheck(
-                i18nProvider, result, new AttestationWrapper(xmlEAA), new MultiValuesConstraintWrapper(constraint));
-        eaasnc.execute();
+        AttestationSupportedNamespacesCheck asnc = new AttestationSupportedNamespacesCheck(
+                i18nProvider, result, new AttestationWrapper(xmlAttestation), new MultiValuesConstraintWrapper(constraint));
+        asnc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
         assertEquals(1, constraints.size());
@@ -53,21 +53,21 @@ class AttestationSupportedNamespacesCheckTest extends AbstractTestCheck {
         constraint.getId().add("org.iso.18013.5.1");
         constraint.setLevel(Level.FAIL);
 
-        XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(AttestationFormat.ISO_IEC_MDOC);
-        XmlEAAPayload xmlEAAPayload = new XmlEAAPayload();
+        XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setProfile(AttestationProfile.ISO_IEC_MDOC);
+        XmlAttestationPayload xmlAttestationPayload = new XmlAttestationPayload();
         XmlClaim xmlClaim = new XmlClaim();
         xmlClaim.setText("John");
         xmlClaim.setName("given_name");
         xmlClaim.setNamespace("org.iso.23220.1");
-        xmlEAAPayload.setGivenName(xmlClaim);
-        xmlEAA.setEAAPayload(xmlEAAPayload);
+        xmlAttestationPayload.setGivenName(xmlClaim);
+        xmlAttestation.setAttestationPayload(xmlAttestationPayload);
 
         XmlSAV result = new XmlSAV();
 
-        AttestationSupportedNamespacesCheck eaasnc = new AttestationSupportedNamespacesCheck(
-                i18nProvider, result, new AttestationWrapper(xmlEAA), new MultiValuesConstraintWrapper(constraint));
-        eaasnc.execute();
+        AttestationSupportedNamespacesCheck asnc = new AttestationSupportedNamespacesCheck(
+                i18nProvider, result, new AttestationWrapper(xmlAttestation), new MultiValuesConstraintWrapper(constraint));
+        asnc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
         assertEquals(1, constraints.size());
@@ -80,29 +80,29 @@ class AttestationSupportedNamespacesCheckTest extends AbstractTestCheck {
         constraint.getId().add("org.iso.18013.5.1");
         constraint.setLevel(Level.FAIL);
 
-        XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(AttestationFormat.ISO_IEC_MDOC);
-        XmlEAAPayload xmlEAAPayload = new XmlEAAPayload();
+        XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setProfile(AttestationProfile.ISO_IEC_MDOC);
+        XmlAttestationPayload xmlAttestationPayload = new XmlAttestationPayload();
         XmlClaim xmlClaim = new XmlClaim();
 
         xmlClaim.setText("John");
         xmlClaim.setName("given_name");
         xmlClaim.setNamespace("org.iso.18013.5.1");
-        xmlEAAPayload.setGivenName(xmlClaim);
+        xmlAttestationPayload.setGivenName(xmlClaim);
 
         XmlClaim additionalClaim = new XmlClaim();
         xmlClaim.setText("claim");
         additionalClaim.setName("additional");
         xmlClaim.setNamespace("org.iso.23220.1");
-        xmlEAAPayload.getOtherClaim().add(additionalClaim);
+        xmlAttestationPayload.getOtherClaim().add(additionalClaim);
 
-        xmlEAA.setEAAPayload(xmlEAAPayload);
+        xmlAttestation.setAttestationPayload(xmlAttestationPayload);
 
         XmlSAV result = new XmlSAV();
 
-        AttestationSupportedNamespacesCheck eaasnc = new AttestationSupportedNamespacesCheck(
-                i18nProvider, result, new AttestationWrapper(xmlEAA), new MultiValuesConstraintWrapper(constraint));
-        eaasnc.execute();
+        AttestationSupportedNamespacesCheck asnc = new AttestationSupportedNamespacesCheck(
+                i18nProvider, result, new AttestationWrapper(xmlAttestation), new MultiValuesConstraintWrapper(constraint));
+        asnc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
         assertEquals(1, constraints.size());
@@ -115,17 +115,17 @@ class AttestationSupportedNamespacesCheckTest extends AbstractTestCheck {
         constraint.getId().add("org.iso.18013.5.1");
         constraint.setLevel(Level.FAIL);
 
-        XmlEAA xmlEAA = new XmlEAA();
-        xmlEAA.setEAAType(AttestationFormat.ISO_IEC_MDOC);
+        XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setProfile(AttestationProfile.ISO_IEC_MDOC);
 
-        XmlEAAPayload xmlEAAPayload = new XmlEAAPayload();
-        xmlEAA.setEAAPayload(xmlEAAPayload);
+        XmlAttestationPayload xmlAttestationPayload = new XmlAttestationPayload();
+        xmlAttestation.setAttestationPayload(xmlAttestationPayload);
 
         XmlSAV result = new XmlSAV();
 
-        AttestationSupportedNamespacesCheck eaasnc = new AttestationSupportedNamespacesCheck(
-                i18nProvider, result, new AttestationWrapper(xmlEAA), new MultiValuesConstraintWrapper(constraint));
-        eaasnc.execute();
+        AttestationSupportedNamespacesCheck asnc = new AttestationSupportedNamespacesCheck(
+                i18nProvider, result, new AttestationWrapper(xmlAttestation), new MultiValuesConstraintWrapper(constraint));
+        asnc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
         assertEquals(1, constraints.size());

@@ -33,15 +33,15 @@ import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import java.util.Date;
 
 /**
- * Verified whether the validation time is within EAA technical validity period range
+ * Verified whether the validation time is within attestation technical validity period range
  *
  */
 public class AttestationNotExpiredCheck extends ChainItem<XmlSAV> {
 
-    /** EAA to check */
-    private final AttestationWrapper eaa;
+    /** attestation to check */
+    private final AttestationWrapper attestation;
 
-    /** EAA validation time */
+    /** attestation validation time */
     private final Date validationTime;
 
     /**
@@ -49,14 +49,14 @@ public class AttestationNotExpiredCheck extends ChainItem<XmlSAV> {
      *
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlSAV}
-     * @param eaa {@link AttestationWrapper}
+     * @param attestation {@link AttestationWrapper}
      * @param validationTime {@link Date}
      * @param constraint {@link LevelRule}
      */
     public AttestationNotExpiredCheck(I18nProvider i18nProvider, XmlSAV result,
-                                      AttestationWrapper eaa, Date validationTime, LevelRule constraint) {
+                                      AttestationWrapper attestation, Date validationTime, LevelRule constraint) {
         super(i18nProvider, result, constraint);
-        this.eaa = eaa;
+        this.attestation = attestation;
         this.validationTime = validationTime;
     }
 
@@ -72,7 +72,7 @@ public class AttestationNotExpiredCheck extends ChainItem<XmlSAV> {
          * claim requires that the current date/time MUST be after or equal to
          * the not-before date/time listed in the "nbf" claim.
          */
-        return eaa.getNotBefore() != null && !validationTime.before(eaa.getNotBefore());
+        return attestation.getNotBefore() != null && !validationTime.before(attestation.getNotBefore());
     }
 
     private boolean notAtOrAfter() {
@@ -82,7 +82,7 @@ public class AttestationNotExpiredCheck extends ChainItem<XmlSAV> {
          * processing of the "exp" claim requires that the current date/time
          * MUST be before the expiration date/time listed in the "exp" claim.
          */
-        return eaa.getExpiration() != null && validationTime.before(eaa.getExpiration());
+        return attestation.getExpiration() != null && validationTime.before(attestation.getExpiration());
     }
 
     @Override
@@ -90,8 +90,8 @@ public class AttestationNotExpiredCheck extends ChainItem<XmlSAV> {
         if (!notBefore() || !notAtOrAfter()) {
             return i18nProvider.getMessage(MessageTag.EAA_VT_ITVR_VALIDITY,
                     ValidationProcessUtils.getFormattedDate(validationTime),
-                    ValidationProcessUtils.getFormattedDate(eaa.getNotBefore()),
-                    ValidationProcessUtils.getFormattedDate(eaa.getExpiration()));
+                    ValidationProcessUtils.getFormattedDate(attestation.getNotBefore()),
+                    ValidationProcessUtils.getFormattedDate(attestation.getExpiration()));
         }
         return null;
     }

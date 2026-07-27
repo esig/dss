@@ -45,7 +45,7 @@ import java.util.List;
 import java.util.Scanner;
 
 /**
- * Parses and read SD-JWT VC presentation of Electronic Attestation of Attributes
+ * Parses and read SD-JWT attestation
  *
  */
 public class SDJWTCompactSerializationParser {
@@ -80,9 +80,9 @@ public class SDJWTCompactSerializationParser {
     }
 
     /**
-     * Verifies if the provided file is a compact SD-JWT VC
+     * Verifies if the provided file is a compact SD-JWT
      *
-     * @return TRUE if the document is a compact SD-JWT VC and supported by the parser, FALSE otherwise
+     * @return TRUE if the document is a compact SD-JWT and supported by the parser, FALSE otherwise
      */
     public boolean isSupported() {
         if (!DSSJsonUtils.isAllowedSignatureDocumentType(document)) {
@@ -133,7 +133,7 @@ public class SDJWTCompactSerializationParser {
             throw new DSSException(String.format("Cannot read the document. Reason : %s", e.getMessage()), e);
         }
         if (ending) {
-            LOG.warn("Line break characters found within the SD-JWT VC document!");
+            LOG.warn("Line break characters found within the SD-JWT document!");
         }
         return true;
     }

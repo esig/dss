@@ -26,7 +26,7 @@ import eu.europa.esig.dss.model.Digest;
 import java.util.EnumMap;
 
 /**
- * Abstract implementation of an EAA Disclosure
+ * Abstract implementation of an attestation Disclosure
  *
  */
 public abstract class AbstractSelectiveDisclosure implements SelectiveDisclosure {
@@ -52,7 +52,7 @@ public abstract class AbstractSelectiveDisclosure implements SelectiveDisclosure
     }
 
     /**
-     * Computes digest according to the rules for the given EAA presentation type
+     * Computes digest according to the rules for the given attestation presentation type
      *
      * @param digestAlgorithm {@link DigestAlgorithm} to be used on the hash computation
      * @return {@link Digest}

@@ -20,12 +20,12 @@
  */
 package eu.europa.esig.dss.attestation.mdoc;
 
+import eu.europa.esig.dss.attestation.mdoc.claim.MdocVerifiedClaimDeviceKey;
 import eu.europa.esig.dss.cbades.COSEConstants;
-import eu.europa.esig.dss.attestation.mdoc.claim.MdocClaimDeviceKey;
 import eu.europa.esig.dss.enumerations.EllipticCurve;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.attestation.claim.Claim;
-import eu.europa.esig.dss.model.attestation.claim.ClaimByteString;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaim;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimByteString;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
@@ -50,14 +50,14 @@ import java.util.Objects;
 public abstract class COSEKeyParser {
 
     /** Mdoc claim to be parser */
-    protected final MdocClaimDeviceKey coseKey;
+    protected final MdocVerifiedClaimDeviceKey coseKey;
 
     /**
      * Default constructor
      *
-     * @param coseKey {@link MdocClaimDeviceKey}
+     * @param coseKey {@link MdocVerifiedClaimDeviceKey}
      */
-    protected COSEKeyParser(final MdocClaimDeviceKey coseKey) {
+    protected COSEKeyParser(final MdocVerifiedClaimDeviceKey coseKey) {
         this.coseKey = coseKey;
     }
 
@@ -71,10 +71,10 @@ public abstract class COSEKeyParser {
     /**
      * Gets the elliptic curve from the 'crv' claim
      *
-     * @param crv {@link Claim}
+     * @param crv {@link VerifiedClaim}
      * @return {@link EllipticCurve}
      */
-    protected EllipticCurve getEllipticCurve(Claim crv) {
+    protected EllipticCurve getEllipticCurve(VerifiedClaim crv) {
         if (crv.isNumberValueType()) {
             return EllipticCurve.forCOSEValue(crv.getNumberValue());
         } else if (crv.isStringValueType()) {
@@ -97,11 +97,11 @@ public abstract class COSEKeyParser {
     /**
      * Gets the applicable parser to read the key content
      *
-     * @param coseKey {@link MdocClaimDeviceKey} to be parsed
+     * @param coseKey {@link MdocVerifiedClaimDeviceKey} to be parsed
      * @return {@link COSEKeyParser}
      */
-    public static COSEKeyParser from(MdocClaimDeviceKey coseKey) {
-        Claim kty = coseKey.getKTY();
+    public static COSEKeyParser from(MdocVerifiedClaimDeviceKey coseKey) {
+        VerifiedClaim kty = coseKey.getKTY();
         if (kty == null) {
             throw new IllegalInputException("No 'kty' CBOR_KEY header found!");
         }
@@ -131,13 +131,13 @@ public abstract class COSEKeyParser {
         /**
          * Default constructor
          */
-        public OKRKeyParser(final MdocClaimDeviceKey coseKey) {
+        public OKRKeyParser(final MdocVerifiedClaimDeviceKey coseKey) {
             super(coseKey);
         }
 
         @Override
         public PublicKey parse() {
-            Claim crv = coseKey.get(COSEConstants.COSE_KEY_TYPE_OKP_CRV);
+            VerifiedClaim crv = coseKey.get(COSEConstants.COSE_KEY_TYPE_OKP_CRV);
             if (crv == null) {
                 throw new NullPointerException("No 'crv' claim is found for the OKR public key!");
             }
@@ -146,7 +146,7 @@ public abstract class COSEKeyParser {
                 throw new UnsupportedOperationException("Elliptic curve cannot be identified or not supported!");
             }
 
-            ClaimByteString x = coseKey.getAsByteString(COSEConstants.COSE_KEY_TYPE_OKP_X);
+            VerifiedClaimByteString x = coseKey.getAsByteString(COSEConstants.COSE_KEY_TYPE_OKP_X);
             if (x == null) {
                 throw new NullPointerException("No 'x' claim is found for the EC2 public key!");
             }
@@ -183,13 +183,13 @@ public abstract class COSEKeyParser {
         /**
          * Default constructor
          */
-        public EC2KeyParser(final MdocClaimDeviceKey coseKey) {
+        public EC2KeyParser(final MdocVerifiedClaimDeviceKey coseKey) {
             super(coseKey);
         }
 
         @Override
         public PublicKey parse() {
-            Claim crv = coseKey.get(COSEConstants.COSE_KEY_TYPE_EC2_CRV);
+            VerifiedClaim crv = coseKey.get(COSEConstants.COSE_KEY_TYPE_EC2_CRV);
             if (crv == null) {
                 throw new NullPointerException("No 'crv' claim is found for the EC2 public key!");
             }
@@ -198,13 +198,13 @@ public abstract class COSEKeyParser {
                 throw new UnsupportedOperationException("Elliptic curve cannot be identified or not supported!");
             }
 
-            ClaimByteString x = coseKey.getAsByteString(COSEConstants.COSE_KEY_TYPE_EC2_X);
+            VerifiedClaimByteString x = coseKey.getAsByteString(COSEConstants.COSE_KEY_TYPE_EC2_X);
             if (x == null) {
                 throw new NullPointerException("No 'x' claim is found for the EC2 public key!");
             }
             BigInteger xInt = fromBytes(x.getBinaryValue());
 
-            ClaimByteString y = coseKey.getAsByteString(COSEConstants.COSE_KEY_TYPE_EC2_Y);
+            VerifiedClaimByteString y = coseKey.getAsByteString(COSEConstants.COSE_KEY_TYPE_EC2_Y);
             if (y == null) {
                 throw new NullPointerException("No 'y' claim is found for the EC2 public key!");
             }
@@ -231,17 +231,17 @@ public abstract class COSEKeyParser {
         /**
          * Default constructor
          */
-        public RSAKeyParser(final MdocClaimDeviceKey coseKey) {
+        public RSAKeyParser(final MdocVerifiedClaimDeviceKey coseKey) {
             super(coseKey);
         }
 
         @Override
         public PublicKey parse() {
-            ClaimByteString modulus = coseKey.getAsByteString(COSEConstants.COSE_KEY_TYPE_RSA_N);
+            VerifiedClaimByteString modulus = coseKey.getAsByteString(COSEConstants.COSE_KEY_TYPE_RSA_N);
             if (modulus == null) {
                 throw new NullPointerException("No 'n' (modulus) claim is found for the RSA public key!");
             }
-            ClaimByteString exponent = coseKey.getAsByteString(COSEConstants.COSE_KEY_TYPE_RSA_E);
+            VerifiedClaimByteString exponent = coseKey.getAsByteString(COSEConstants.COSE_KEY_TYPE_RSA_E);
             if (exponent == null) {
                 throw new NullPointerException("No 'e' (exponent) claim is found for the RSA public key!");
             }

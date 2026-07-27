@@ -22,7 +22,7 @@ package eu.europa.esig.dss.attestation.sd.jwt.validation;
 
 import eu.europa.esig.dss.attestation.common.validation.DefaultAttestationDocumentAnalyzer;
 import eu.europa.esig.dss.attestation.sd.jwt.SDJWTSerializationObject;
-import eu.europa.esig.dss.enumerations.AttestationPresentationType;
+import eu.europa.esig.dss.enumerations.AttestationDocumentFormat;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.jades.validation.JWS;
@@ -36,12 +36,12 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- * Performs validation of a JWT based presentation of Electronic Attestation of Attributes. e.g. SD-JWT VC
+ * Performs validation of a JWT based presentation of attestation. e.g. SD-JWT
  *
  */
 public abstract class AbstractSDJWTDocumentAnalyzer extends DefaultAttestationDocumentAnalyzer {
 
-    /** Cached instance of a parsed SD-JWT VC object */
+    /** Cached instance of a parsed SD-JWT object */
     private SDJWTSerializationObject sdJWTSerializationObject;
 
     /**
@@ -71,18 +71,18 @@ public abstract class AbstractSDJWTDocumentAnalyzer extends DefaultAttestationDo
     protected abstract SDJWTSerializationObject buildSDJWTSerializationObject();
 
     @Override
-    protected SDJWTEAAPresentation buildEAAPresentation() {
-        SDJWTEAAPresentation attestationPresentation = new SDJWTEAAPresentation();
-        attestationPresentation.setEAAPresentationType(AttestationPresentationType.SD_JWT);
+    protected SDJWTPresentation buildAttestationPresentation() {
+        SDJWTPresentation attestationPresentation = new SDJWTPresentation();
+        attestationPresentation.setAttestationPresentationType(AttestationDocumentFormat.SD_JWT);
 
         List<AdvancedSignature> signatures = getSignatures(sdJWTSerializationObject);
-        SDJWTAttestation sdJwtEaa = SDJWTAttestation.initBuilder()
+        SDJWTAttestation sdJwtAttestation = SDJWTAttestation.initBuilder()
                 .setSignatures(signatures)
                 .setDisclosures(sdJWTSerializationObject.getDisclosures())
                 .setKeyBindingSignature(getKeyBindingSignature(sdJWTSerializationObject, signatures))
                 .setFilename(document.getName())
                 .build();
-        attestationPresentation.setElectronicAttestationsOfAttributes(Collections.singletonList(sdJwtEaa)); // only one EAA is possible
+        attestationPresentation.setElectronicAttestationsOfAttributes(Collections.singletonList(sdJwtAttestation)); // only one attestation is possible
 
         return attestationPresentation;
     }
@@ -90,7 +90,7 @@ public abstract class AbstractSDJWTDocumentAnalyzer extends DefaultAttestationDo
     /**
      * Gets a list of {@code AdvancedSignature}s from a {@code SDJWTSerializationObject} object
      *
-     * @param sdJwtSerializationObject {@link SDJWTSerializationObject} to extract EAA signatures from
+     * @param sdJwtSerializationObject {@link SDJWTSerializationObject} to extract attestation signatures from
      * @return a list of {@link AdvancedSignature}s
      */
     protected List<AdvancedSignature> getSignatures(SDJWTSerializationObject sdJwtSerializationObject) {

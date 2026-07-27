@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.validation.process.qualification.attestation.checks;
 
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationEAAQualification;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationAttestationQualification;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.i18n.I18nProvider;
@@ -33,23 +33,23 @@ import eu.europa.esig.dss.validation.process.ChainItem;
 import java.util.Collection;
 
 /**
- * Verifies whether at least one of the EAA qualification processes concluded with a positive revocation
+ * Verifies whether at least one of the attestation qualification processes concluded with a positive revocation
  *
  */
-public class AttestationQualificationProcessConclusiveCheck extends ChainItem<XmlValidationEAAQualification> {
+public class AttestationQualificationProcessConclusiveCheck extends ChainItem<XmlValidationAttestationQualification> {
 
-    /** Collection of EAA qualification processes */
+    /** Collection of attestation qualification processes */
     private final Collection<? extends XmlConstraintsConclusion> qualificationProcesses;
 
     /**
      * Default constructor
      *
      * @param i18nProvider {@link I18nProvider}
-     * @param result {@link XmlValidationEAAQualification}
+     * @param result {@link XmlValidationAttestationQualification}
      * @param qualificationProcesses a collection of {@link XmlConstraintsConclusion}
      * @param constraint {@link LevelRule}
      */
-    public AttestationQualificationProcessConclusiveCheck(final I18nProvider i18nProvider, final XmlValidationEAAQualification result,
+    public AttestationQualificationProcessConclusiveCheck(final I18nProvider i18nProvider, final XmlValidationAttestationQualification result,
                                                           final Collection<? extends XmlConstraintsConclusion> qualificationProcesses,
                                                           final LevelRule constraint) {
         super(i18nProvider, result, constraint);

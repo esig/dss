@@ -32,13 +32,13 @@ import eu.europa.esig.dss.model.policy.MultiValuesRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
 /**
- * Checks whether the EAA revocation token is acceptable
+ * Checks whether the attestation revocation token is acceptable
  *
  */
 public class AttestationRevocationAcceptableCheck extends ChainItem<XmlSAV> {
 
-    /** EAA revocation token to check */
-    private final AttestationRevocationWrapper eaaStatusToken;
+    /** attestation revocation token to check */
+    private final AttestationRevocationWrapper attestationRevocationToken;
 
     /** BBB validation result of the token */
     private final XmlConclusion conclusion;
@@ -48,14 +48,14 @@ public class AttestationRevocationAcceptableCheck extends ChainItem<XmlSAV> {
      *
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlSAV}
-     * @param eaaStatusToken {@link AttestationRevocationWrapper}
+     * @param attestationRevocationToken {@link AttestationRevocationWrapper}
      * @param conclusion {@link XmlConclusion}
      * @param constraint {@link MultiValuesRule}
      */
     public AttestationRevocationAcceptableCheck(final I18nProvider i18nProvider, final XmlSAV result,
-                                                final AttestationRevocationWrapper eaaStatusToken, final XmlConclusion conclusion, final LevelRule constraint) {
-        super(i18nProvider, result, constraint, eaaStatusToken.getId());
-        this.eaaStatusToken = eaaStatusToken;
+                                                final AttestationRevocationWrapper attestationRevocationToken, final XmlConclusion conclusion, final LevelRule constraint) {
+        super(i18nProvider, result, constraint, attestationRevocationToken.getId());
+        this.attestationRevocationToken = attestationRevocationToken;
         this.conclusion = conclusion;
     }
 
@@ -76,7 +76,7 @@ public class AttestationRevocationAcceptableCheck extends ChainItem<XmlSAV> {
 
     @Override
     protected String buildAdditionalInfo() {
-        return i18nProvider.getMessage(MessageTag.TOKEN_ID, eaaStatusToken.getId());
+        return i18nProvider.getMessage(MessageTag.TOKEN_ID, attestationRevocationToken.getId());
     }
 
     @Override
@@ -86,7 +86,7 @@ public class AttestationRevocationAcceptableCheck extends ChainItem<XmlSAV> {
 
     @Override
     protected SubIndication getFailedSubIndicationForConclusion() {
-        return SubIndication.EAA_CONSTRAINTS_FAILURE;
+        return SubIndication.ATTESTATION_CONSTRAINTS_FAILURE;
     }
 
 }

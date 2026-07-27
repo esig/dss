@@ -35,7 +35,7 @@ import eu.europa.esig.dss.ws.attestation.creation.rest.client.RestAttestationCre
 import java.util.List;
 
 /**
- * REST implementation of the remote EAA creation service
+ * REST implementation of the remote attestation creation service
  *
  */
 public class RestAttestationCreationServiceImpl implements RestAttestationCreationService {
@@ -46,14 +46,14 @@ public class RestAttestationCreationServiceImpl implements RestAttestationCreati
     private RemoteAttestationCreationService service;
 
     /**
-     * Default construction instantiating object with null RemoteEAACreationService
+     * Default construction instantiating object with null RestAttestationCreationService
      */
     public RestAttestationCreationServiceImpl() {
         // empty
     }
 
     /**
-     * Sets the remote EAA creation service
+     * Sets the remote attestation creation service
      *
      * @param service {@link RemoteAttestationCreationService}
      */
@@ -67,8 +67,8 @@ public class RestAttestationCreationServiceImpl implements RestAttestationCreati
     }
 
     @Override
-    public RemoteDocument signEAA(SignAttestationDTO signAttestationDTO) {
-        return service.signEAA(signAttestationDTO.getPayloadParameters(), signAttestationDTO.getParameters(), signAttestationDTO.getSignatureValue());
+    public RemoteDocument signAttestation(SignAttestationDTO signAttestationDTO) {
+        return service.signAttestation(signAttestationDTO.getPayloadParameters(), signAttestationDTO.getParameters(), signAttestationDTO.getSignatureValue());
     }
 
     @Override
@@ -78,21 +78,21 @@ public class RestAttestationCreationServiceImpl implements RestAttestationCreati
 
     @Override
     public ToBeSignedDTO getDataToSignForKeyBindingSignature(DataToSignForKeyBindingSignatureDTO dataToSignForKeyBindingSignatureDTO) {
-        return service.getDataToSignForKeyBindingSignature(dataToSignForKeyBindingSignatureDTO.getEaa(),
+        return service.getDataToSignForKeyBindingSignature(dataToSignForKeyBindingSignatureDTO.getAttestation(),
                 dataToSignForKeyBindingSignatureDTO.getDisclosures(), dataToSignForKeyBindingSignatureDTO.getKeyBindingParameters(),
                 dataToSignForKeyBindingSignatureDTO.getParameters());
     }
 
     @Override
     public RemoteDocument createKeyBindingSignature(CreateKeyBindingSignatureDTO createKeyBindingSignatureDTO) {
-        return service.createKeyBindingSignature(createKeyBindingSignatureDTO.getEaa(),
+        return service.createKeyBindingSignature(createKeyBindingSignatureDTO.getAttestation(),
                 createKeyBindingSignatureDTO.getDisclosures(), createKeyBindingSignatureDTO.getKeyBindingParameters(),
                 createKeyBindingSignatureDTO.getParameters(), createKeyBindingSignatureDTO.getSignatureValue());
     }
 
     @Override
     public RemoteDocument issuePresentation(IssuePresentationDTO issuePresentationDTO) {
-        return service.issuePresentation(issuePresentationDTO.getEaa(), issuePresentationDTO.getDisclosures(),
+        return service.issuePresentation(issuePresentationDTO.getAttestation(), issuePresentationDTO.getDisclosures(),
                 issuePresentationDTO.getKeyBindingSignature(), issuePresentationDTO.getPresentationParameters());
     }
 

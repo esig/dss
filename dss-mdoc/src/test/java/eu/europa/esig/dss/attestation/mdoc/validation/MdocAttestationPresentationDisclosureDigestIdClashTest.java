@@ -31,9 +31,9 @@ class MdocAttestationPresentationDisclosureDigestIdClashTest extends AbstractMdo
     }
 
     @Override
-    protected void checkEAADigestMatchers(DiagnosticData diagnosticData) {
-        AttestationWrapper eaa = diagnosticData.getEAAs().get(0);
-        List<XmlDigestMatcher> digestMatchers = eaa.getDigestMatchers();
+    protected void checkAttestationDigestMatchers(DiagnosticData diagnosticData) {
+        AttestationWrapper attestation = diagnosticData.getAttestations().get(0);
+        List<XmlDigestMatcher> digestMatchers = attestation.getDigestMatchers();
         assertEquals(12, digestMatchers.size());
 
         boolean orphanRefFound = false;
@@ -49,7 +49,7 @@ class MdocAttestationPresentationDisclosureDigestIdClashTest extends AbstractMdo
         boolean drivingPrivilegesSDFound = false;
         boolean distinguishingSignSDFound = false;
         for (XmlDigestMatcher xmlDigestMatcher : digestMatchers) {
-            if (DigestMatcherType.EAA_ORPHAN_SELECTIVELY_DISCLOSABLE_CLAIM == xmlDigestMatcher.getType()) {
+            if (DigestMatcherType.ORPHAN_SELECTIVELY_DISCLOSABLE_CLAIM == xmlDigestMatcher.getType()) {
                 assertFalse(xmlDigestMatcher.isDataFound());
                 assertFalse(xmlDigestMatcher.isDataIntact());
                 orphanRefFound = true;
@@ -132,10 +132,10 @@ class MdocAttestationPresentationDisclosureDigestIdClashTest extends AbstractMdo
     protected void checkClaims(DiagnosticData diagnosticData) {
         super.checkClaims(diagnosticData);
 
-        AttestationWrapper attestationWrapper = diagnosticData.getEAAById(diagnosticData.getFirstEAAId());
-        AttestationPayloadProxy eaaPayload = attestationWrapper.getPayload();
-        assertNull(eaaPayload.getGivenName());
-        assertNotNull(eaaPayload.getFamilyName());
+        AttestationWrapper attestationWrapper = diagnosticData.getAttestationById(diagnosticData.getFirstAttestationId());
+        AttestationPayloadProxy attestationPayload = attestationWrapper.getPayload();
+        assertNull(attestationPayload.getGivenName());
+        assertNotNull(attestationPayload.getFamilyName());
     }
 
 }

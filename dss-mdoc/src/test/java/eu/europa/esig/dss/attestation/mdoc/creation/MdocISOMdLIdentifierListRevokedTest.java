@@ -35,19 +35,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class MdocISOMdLIdentifierListRevokedTest extends MdocISOMdLIdentifierListTest {
 
     @Override
-    protected AttestationRevocationSource getEAAStatusSource() {
+    protected AttestationRevocationSource getAttestationRevocationSource() {
         PKICWTIdentifierListSource identifierListSource = new PKICWTIdentifierListSource(getCertEntityRepository(), getCertEntity(GOOD_CA));
         identifierListSource.setIdentifiers(Collections.singletonList(new byte[] { 1 }));
         return identifierListSource;
     }
 
     @Override
-    protected void checkEAARevocations(DiagnosticData diagnosticData) {
-        AttestationWrapper eaa = diagnosticData.getEAAById(diagnosticData.getFirstEAAId());
-        List<AttestationRevocationWrapper> eaaStatuses = eaa.getAttestationRevocations();
-        assertEquals(1, eaaStatuses.size());
-        assertEquals(AttestationStatus.INVALID, eaaStatuses.get(0).getStatus());
-        assertEquals("application/identifierlist+cwt", eaaStatuses.get(0).getType());
+    protected void checkAttestationRevocations(DiagnosticData diagnosticData) {
+        AttestationWrapper attestation = diagnosticData.getAttestationById(diagnosticData.getFirstAttestationId());
+        List<AttestationRevocationWrapper> attestationStatuses = attestation.getAttestationRevocations();
+        assertEquals(1, attestationStatuses.size());
+        assertEquals(AttestationStatus.INVALID, attestationStatuses.get(0).getStatus());
+        assertEquals("application/identifierlist+cwt", attestationStatuses.get(0).getType());
     }
 
 }

@@ -38,10 +38,10 @@ public class ClaimDTO implements Serializable {
     /** Integer identifier of the claim digest (mdoc only) */
     private Integer digestId;
 
-    /** The name of the EAA claim */
+    /** The name of the attestation claim */
     private String name;
 
-    /** The value of the EAA claim */
+    /** The value of the attestation claim */
     private ClaimValueDTO value;
 
     /** Identifies whether the claim is selectively disclosable */

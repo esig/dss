@@ -96,11 +96,11 @@ class SDJWTCompactWithKBSignatureTest extends AbstractSDJWTTestIssuance {
     }
 
     @Override
-    protected void checkEAADigestMatchers(DiagnosticData diagnosticData) {
-        super.checkEAADigestMatchers(diagnosticData);
+    protected void checkAttestationDigestMatchers(DiagnosticData diagnosticData) {
+        super.checkAttestationDigestMatchers(diagnosticData);
 
-        AttestationWrapper eaa = diagnosticData.getEAAs().get(0);
-        List<XmlDigestMatcher> digestMatchers = eaa.getDigestMatchers();
+        AttestationWrapper attestation = diagnosticData.getAttestations().get(0);
+        List<XmlDigestMatcher> digestMatchers = attestation.getDigestMatchers();
         assertEquals(2, digestMatchers.size());
 
         boolean givenNameSDFound = false;
@@ -121,15 +121,15 @@ class SDJWTCompactWithKBSignatureTest extends AbstractSDJWTTestIssuance {
     protected void checkClaims(final DiagnosticData diagnosticData) {
         super.checkClaims(diagnosticData);
 
-        AttestationWrapper eaa = diagnosticData.getEAAs().get(0);
-        assertEquals("https://issuer.example.com", eaa.getIssuer());
-        assertEquals("John", eaa.getGivenName());
-        assertEquals("Doe", eaa.getFamilyName());
+        AttestationWrapper attestation = diagnosticData.getAttestations().get(0);
+        assertEquals("https://issuer.example.com", attestation.getIssuer());
+        assertEquals("John", attestation.getGivenName());
+        assertEquals("Doe", attestation.getFamilyName());
 
-        assertEquals(keyBindingParameters.getNonce(), eaa.getKeyBindingSignatureNonce());
-        assertEquals(keyBindingParameters.getAudience(), eaa.getKeyBindingSignatureAudience());
-        assertEquals(keyBindingParameters.getIssuanceTime().getTime(), eaa.getKeyBindingSignatureIssuanceTime().getTime());
-        assertEquals(0, eaa.getOtherKeyBindingPayloadClaims().size());
+        assertEquals(keyBindingParameters.getNonce(), attestation.getKeyBindingSignatureNonce());
+        assertEquals(keyBindingParameters.getAudience(), attestation.getKeyBindingSignatureAudience());
+        assertEquals(keyBindingParameters.getIssuanceTime().getTime(), attestation.getKeyBindingSignatureIssuanceTime().getTime());
+        assertEquals(0, attestation.getOtherKeyBindingPayloadClaims().size());
     }
 
     @Override

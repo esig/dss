@@ -10,8 +10,8 @@
     </parent>
 
     <artifactId>dss-mdoc</artifactId>
-    <name>DSS Electronic Attestation of Attributes mdoc</name>
-    <description>This module performs validation of presentations of EAA based on mdoc specification as per ISO 18013-5</description>
+    <name>DSS ISO/IEC mdoc</name>
+    <description>This module performs validation of presentations of attestation based on mdoc specification as per ISO 18013-5</description>
 
     <properties>
         <module-name>jpms_dss_mdoc</module-name>

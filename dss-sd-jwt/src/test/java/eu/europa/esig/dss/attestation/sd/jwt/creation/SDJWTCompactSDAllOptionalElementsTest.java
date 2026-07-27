@@ -50,7 +50,7 @@ class SDJWTCompactSDAllOptionalElementsTest extends AbstractSDJWTTestIssuance {
     @BeforeEach
     void init() {
         payloadParameters = new SDJWTPayloadParameters();
-        payloadParameters.setIssuer("EAA provider");
+        payloadParameters.setIssuer("Attestation provider");
         payloadParameters.nonSelectivelyDisclosable().setSubject(DSSASN1Utils.getSubjectCommonName(getSigningCert()));
         payloadParameters.setDeviceKey(getSigningCert().getPublicKey());
 
@@ -143,14 +143,14 @@ class SDJWTCompactSDAllOptionalElementsTest extends AbstractSDJWTTestIssuance {
         signatureParameters.setCertificateChain(getCertificateChain());
 
         signatureParameters.setIncludeKeyIdentifier(false);
-        signatureParameters.setX509Url("https://pki.nowina.lu/eaa/pub-eaa.crt");
+        signatureParameters.setX509Url("https://pki.nowina.lu/eaa/pub-attestation.crt");
     }
 
     @Override
     protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
         SignedDocumentValidator documentValidator = super.getValidator(signedDocument);
         CommonX509URLCertificateSource x509URLCertificateSource = new CommonX509URLCertificateSource();
-        x509URLCertificateSource.addCertificate("https://pki.nowina.lu/eaa/pub-eaa.crt", getSigningCert());
+        x509URLCertificateSource.addCertificate("https://pki.nowina.lu/eaa/pub-attestation.crt", getSigningCert());
         documentValidator.setSigningCertificateSource(x509URLCertificateSource);
         return documentValidator;
     }
@@ -176,12 +176,12 @@ class SDJWTCompactSDAllOptionalElementsTest extends AbstractSDJWTTestIssuance {
     }
 
     @Override
-    protected void checkEAADigestMatchers(DiagnosticData diagnosticData) {
-        super.checkEAADigestMatchers(diagnosticData);
+    protected void checkAttestationDigestMatchers(DiagnosticData diagnosticData) {
+        super.checkAttestationDigestMatchers(diagnosticData);
 
-        AttestationWrapper eaa = diagnosticData.getEAAs().get(0);
+        AttestationWrapper attestation = diagnosticData.getAttestations().get(0);
 
-        Map<String, XmlDigestMatcher> digestMatchers = eaa.getDigestMatchers().stream()
+        Map<String, XmlDigestMatcher> digestMatchers = attestation.getDigestMatchers().stream()
                 .filter(dm -> dm.getDisclosableClaim() != null)
                 .collect(Collectors.toMap(
                         dm -> dm.getDisclosableClaim().getName(),

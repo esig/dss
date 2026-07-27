@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.ws.attestation.creation.dto.parameters;
 
-import eu.europa.esig.dss.enumerations.AttestationFormat;
+import eu.europa.esig.dss.enumerations.AttestationProfile;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.ws.dto.DigestDTO;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
@@ -30,15 +30,15 @@ import java.util.Date;
 import java.util.Objects;
 
 /**
- * DTO containing parameters for an EAA payload generation
+ * DTO containing parameters for an attestation payload generation
  *
  */
 public class RemoteAttestationPayloadParameters implements Serializable {
 
     private static final long serialVersionUID = 6192999476014374481L;
 
-    /** (Required) Type of the EAA to be created */
-    private AttestationFormat attestationFormat;
+    /** (Required) Type of the attestation to be created */
+    private AttestationProfile attestationProfile;
 
     /** Pre-computed payload */
     private RemoteDocument preComputedPayload;
@@ -47,9 +47,9 @@ public class RemoteAttestationPayloadParameters implements Serializable {
 
     /** DigestAlgorithm used to compute hashes for selectively disclosable claims  */
     private DigestAlgorithm digestAlgorithm;
-    /** Date of the EAA technical validity start */
+    /** Date of the attestation technical validity start */
     private Date notBeforeDate;
-    /** Date of the EAA technical validity end */
+    /** Date of the attestation technical validity end */
     private Date expirationDate;
     /** Contains the public part of the key pair used for device authentication. */
     private RemotePublicKey deviceKey;
@@ -60,20 +60,20 @@ public class RemoteAttestationPayloadParameters implements Serializable {
 
     /* ETSI technical claims */
 
-    /** Category of the EAA (e.g. QEAA, Pub-EAA, or other) */
+    /** Category of the attestation (e.g. QEAA, Pub-EAA, or other) */
     private String category;
-    /** Whether the EAA is short-lived */
+    /** Whether the attestation is short-lived */
     private Boolean shortLived;
-    /** Whether the EAA is issued for a one time use */
+    /** Whether the attestation is issued for a one time use */
     private Boolean oneTime;
     /** The number of decoy digests that will be added */
     private Integer decoyDigestNumber;
-    /** If the hashes in the EAA should be shuffled */
+    /** If the hashes in the attestation should be shuffled */
     private Boolean shuffleHashes;
 
-    /* SD-JWT VC technical claims */
+    /* SD-JWT technical claims */
 
-    /** EAA issuer subject */
+    /** attestation issuer subject */
     private String issuer;
     /** Type identifier of the embedded Verifiable Credential. */
     private String verifiableCredentialsType;
@@ -108,12 +108,12 @@ public class RemoteAttestationPayloadParameters implements Serializable {
     }
 
     /**
-     * Constructor with EAA type provided
+     * Constructor with attestation type provided
      *
-     * @param attestationFormat {@link AttestationFormat}
+     * @param attestationProfile {@link AttestationProfile}
      */
-    public RemoteAttestationPayloadParameters(AttestationFormat attestationFormat) {
-        this(attestationFormat, null);
+    public RemoteAttestationPayloadParameters(AttestationProfile attestationProfile) {
+        this(attestationProfile, null);
     }
 
     /**
@@ -127,34 +127,34 @@ public class RemoteAttestationPayloadParameters implements Serializable {
     }
 
     /**
-     * Constructor with defined EAA type and a pre-computed payload.
+     * Constructor with defined attestation type and a pre-computed payload.
      * When used, the provided payload is used and all the configuration parameters of the class are ignored.
      *
-     * @param attestationFormat {@link AttestationFormat}
+     * @param attestationProfile {@link AttestationProfile}
      * @param preComputedPayload {@link RemoteDocument}
      */
-    public RemoteAttestationPayloadParameters(AttestationFormat attestationFormat, RemoteDocument preComputedPayload) {
+    public RemoteAttestationPayloadParameters(AttestationProfile attestationProfile, RemoteDocument preComputedPayload) {
         super();
-        this.attestationFormat = attestationFormat;
+        this.attestationProfile = attestationProfile;
         this.preComputedPayload = preComputedPayload;
     }
 
     /**
-     * Gets the EAA Type
+     * Gets the attestation Type
      *
-     * @return {@link AttestationFormat}
+     * @return {@link AttestationProfile}
      */
-    public AttestationFormat getEaaType() {
-        return attestationFormat;
+    public AttestationProfile getAttestationProfile() {
+        return attestationProfile;
     }
 
     /**
-     * Sets the target EAA type
+     * Sets the target attestation type
      *
-     * @param attestationFormat {@link AttestationFormat}
+     * @param attestationProfile {@link AttestationProfile}
      */
-    public void setEaaType(AttestationFormat attestationFormat) {
-        this.attestationFormat = attestationFormat;
+    public void setAttestationProfile(AttestationProfile attestationProfile) {
+        this.attestationProfile = attestationProfile;
     }
 
     /**
@@ -303,7 +303,7 @@ public class RemoteAttestationPayloadParameters implements Serializable {
     }
 
     /**
-     * Gets whether the EAA is short-lived
+     * Gets whether the attestation is short-lived
      *
      * @return {@link Boolean}
      */
@@ -312,7 +312,7 @@ public class RemoteAttestationPayloadParameters implements Serializable {
     }
 
     /**
-     * Sets whether the EAA is short-lived
+     * Sets whether the attestation is short-lived
      *
      * @param shortLived {@link Boolean}
      */
@@ -321,7 +321,7 @@ public class RemoteAttestationPayloadParameters implements Serializable {
     }
 
     /**
-     * Gets whether the EAA is issued for a one time use
+     * Gets whether the attestation is issued for a one time use
      *
      * @return {@link Boolean}
      */
@@ -330,7 +330,7 @@ public class RemoteAttestationPayloadParameters implements Serializable {
     }
 
     /**
-     * Sets whether the EAA is issued for a one time use
+     * Sets whether the attestation is issued for a one time use
      *
      * @param oneTime {@link Boolean}
      */
@@ -556,8 +556,8 @@ public class RemoteAttestationPayloadParameters implements Serializable {
 
     @Override
     public String toString() {
-        return "RemoteEAAPayloadParameters [" +
-                "eaaType=" + attestationFormat +
+        return "RemoteAttestationPayloadParameters [" +
+                "attestationProfile=" + attestationProfile +
                 ", preComputedPayload=" + preComputedPayload +
                 ", digestAlgorithm=" + digestAlgorithm +
                 ", notBeforeDate=" + notBeforeDate +
@@ -589,7 +589,7 @@ public class RemoteAttestationPayloadParameters implements Serializable {
         if (object == null || getClass() != object.getClass()) return false;
 
         RemoteAttestationPayloadParameters that = (RemoteAttestationPayloadParameters) object;
-        return attestationFormat == that.attestationFormat
+        return attestationProfile == that.attestationProfile
                 && Objects.equals(preComputedPayload, that.preComputedPayload)
                 && digestAlgorithm == that.digestAlgorithm
                 && Objects.equals(notBeforeDate, that.notBeforeDate)
@@ -616,7 +616,7 @@ public class RemoteAttestationPayloadParameters implements Serializable {
 
     @Override
     public int hashCode() {
-        int result = Objects.hashCode(attestationFormat);
+        int result = Objects.hashCode(attestationProfile);
         result = 31 * result + Objects.hashCode(preComputedPayload);
         result = 31 * result + Objects.hashCode(digestAlgorithm);
         result = 31 * result + Objects.hashCode(notBeforeDate);

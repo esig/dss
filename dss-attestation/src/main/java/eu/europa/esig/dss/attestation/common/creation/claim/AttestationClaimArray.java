@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * Interface representing an array claim
  *
- * @param <T> The implementation of {@link AttestationClaim} for the EAA format
+ * @param <T> The implementation of {@link AttestationClaim} for the attestation format
  */
 public interface AttestationClaimArray<T extends AttestationClaim> extends AttestationClaim {
 

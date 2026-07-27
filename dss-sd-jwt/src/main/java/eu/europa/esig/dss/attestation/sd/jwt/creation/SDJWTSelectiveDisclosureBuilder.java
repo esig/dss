@@ -27,7 +27,7 @@ package eu.europa.esig.dss.attestation.sd.jwt.creation;
 public interface SDJWTSelectiveDisclosureBuilder {
 
     /**
-     * Builds a String for a selectively disclosable EAA claim to be used for Digest computation
+     * Builds a String for a selectively disclosable attestation claim to be used for Digest computation
      *
      * @param name {@link String} element name of the claim
      * @param value {@link Object} value of the claim

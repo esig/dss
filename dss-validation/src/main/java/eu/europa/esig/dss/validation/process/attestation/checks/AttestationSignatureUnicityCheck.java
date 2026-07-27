@@ -31,32 +31,32 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
 /**
- * Verifies whether the EAA has been created with a single signature
+ * Verifies whether the attestation has been created with a single signature
  *
  */
 public class AttestationSignatureUnicityCheck extends ChainItem<XmlFC> {
 
-    /** EAA to check */
-    private final AttestationWrapper eaa;
+    /** attestation to check */
+    private final AttestationWrapper attestation;
 
     /**
      * Default constructor
      *
      * @param i18nProvider {@link I18nProvider}
      * @param result {@link XmlFC}
-     * @param eaa {@link AttestationWrapper}
+     * @param attestation {@link AttestationWrapper}
      * @param constraint {@link LevelRule}
      */
     public AttestationSignatureUnicityCheck(I18nProvider i18nProvider, XmlFC result,
-                                            AttestationWrapper eaa, LevelRule constraint) {
+                                            AttestationWrapper attestation, LevelRule constraint) {
         super(i18nProvider, result, constraint);
-        this.eaa = eaa;
+        this.attestation = attestation;
     }
 
     @Override
     protected boolean process() {
         // TODO : to be implemented in TS 119 472-1. Verify the check later
-        return Utils.collectionSize(eaa.getEAASignatures()) == 1;
+        return Utils.collectionSize(attestation.getAttestationSignatures()) == 1;
     }
 
     @Override

@@ -140,7 +140,7 @@ class MdocAttestationPresentationWithKeyBindingValidationTest extends AbstractMd
 
         documents.add(document);
         mdocResponse.put("documents", documents);
-        mdocResponse.put("revocation", 0L);
+        mdocResponse.put("status", 0L);
 
         // embed in mdoc
         DSSDocument mdocDocument = new InMemoryDocument(CBORUtils.serializeCborObject(mdocResponse));

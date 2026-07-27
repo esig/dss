@@ -45,7 +45,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class MdocISONonMdLQEAADatesEnforcedTest extends AbstractMdocPresentationTestIssuance {
+class MdocISONonMdLQAttestationDatesEnforcedTest extends AbstractMdocPresentationTestIssuance {
 
     private MdocPayloadParameters payloadParameters;
     private CBAdESSignatureParameters signatureParameters;
@@ -132,11 +132,11 @@ class MdocISONonMdLQEAADatesEnforcedTest extends AbstractMdocPresentationTestIss
     }
 
     @Override
-    protected void checkEAADigestMatchers(DiagnosticData diagnosticData) {
-        super.checkEAADigestMatchers(diagnosticData);
+    protected void checkAttestationDigestMatchers(DiagnosticData diagnosticData) {
+        super.checkAttestationDigestMatchers(diagnosticData);
 
-        AttestationWrapper eaa = diagnosticData.getEAAs().get(0);
-        List<XmlDigestMatcher> digestMatchers = eaa.getDigestMatchers();
+        AttestationWrapper attestation = diagnosticData.getAttestations().get(0);
+        List<XmlDigestMatcher> digestMatchers = attestation.getDigestMatchers();
         assertEquals(10, digestMatchers.size());
 
         boolean familyNameSDFound = false;
@@ -209,27 +209,27 @@ class MdocISONonMdLQEAADatesEnforcedTest extends AbstractMdocPresentationTestIss
     protected void checkClaims(DiagnosticData diagnosticData) {
         super.checkClaims(diagnosticData);
 
-        AttestationWrapper eaa = diagnosticData.getEAAById(diagnosticData.getFirstEAAId());
-        assertEquals("1.0", eaa.getVersion());
-        assertEquals("org.iso.23220.1.mID", eaa.getAttestationDocumentType());
+        AttestationWrapper attestation = diagnosticData.getAttestationById(diagnosticData.getFirstAttestationId());
+        assertEquals("1.0", attestation.getVersion());
+        assertEquals("org.iso.23220.1.mID", attestation.getAttestationDocumentType());
 
-        assertEquals(DSSUtils.formatDateToRFC(signingDate), DSSUtils.formatDateToRFC(eaa.getIssuedAt()));
-        assertEquals(DSSUtils.formatDateToRFC(validFrom), DSSUtils.formatDateToRFC(eaa.getNotBefore()));
-        assertEquals(DSSUtils.formatDateToRFC(validUntil), DSSUtils.formatDateToRFC(eaa.getExpiration()));
-        assertEquals(DSSUtils.formatDateToRFC(nextUpdate), DSSUtils.formatDateToRFC(eaa.getNextUpdate()));
+        assertEquals(DSSUtils.formatDateToRFC(signingDate), DSSUtils.formatDateToRFC(attestation.getIssuedAt()));
+        assertEquals(DSSUtils.formatDateToRFC(validFrom), DSSUtils.formatDateToRFC(attestation.getNotBefore()));
+        assertEquals(DSSUtils.formatDateToRFC(validUntil), DSSUtils.formatDateToRFC(attestation.getExpiration()));
+        assertEquals(DSSUtils.formatDateToRFC(nextUpdate), DSSUtils.formatDateToRFC(attestation.getNextUpdate()));
 
-        assertEquals(1, eaa.getStatusIndex());
-        assertEquals("https://pki.nowina.lu/eaa/status_list", eaa.getStatusUri());
-        assertNull(eaa.getStatusCertificate());
-        assertEquals("urn:etsi:esi:attestation:eu:qualified", eaa.getCategory());
+        assertEquals(1, attestation.getStatusIndex());
+        assertEquals("https://pki.nowina.lu/eaa/status_list", attestation.getStatusUri());
+        assertNull(attestation.getStatusCertificate());
+        assertEquals("urn:etsi:esi:attestation:eu:qualified", attestation.getCategory());
     }
 
     @Override
     protected void checkCertificates(DiagnosticData diagnosticData) {
         super.checkCertificates(diagnosticData);
 
-        AttestationWrapper eaa = diagnosticData.getEAAById(diagnosticData.getFirstEAAId());
-        SignatureWrapper signatureWrapper = eaa.getEAASignatures().get(0);
+        AttestationWrapper attestation = diagnosticData.getAttestationById(diagnosticData.getFirstAttestationId());
+        SignatureWrapper signatureWrapper = attestation.getAttestationSignatures().get(0);
         List<RelatedCertificateWrapper> relatedCertificatesByRefOrigin = signatureWrapper.foundCertificates().getRelatedCertificatesByRefOrigin(CertificateRefOrigin.X509_URL);
         assertEquals(1, relatedCertificatesByRefOrigin.size());
 

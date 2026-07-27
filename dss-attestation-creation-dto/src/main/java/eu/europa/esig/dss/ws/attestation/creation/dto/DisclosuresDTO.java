@@ -26,7 +26,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * DTO representing an input data for a getDisclosures method for EAA creation.
+ * DTO representing an input data for a getDisclosures method for attestation creation.
  * It's only possible to transfer an object by POST and REST.
  * It's impossible to transfer big objects by GET (url size limitation).
  *
@@ -55,7 +55,7 @@ public class DisclosuresDTO implements Serializable {
     }
 
     /**
-     * Gets the EAA payload parameters
+     * Gets the attestation payload parameters
      *
      * @return {@link RemoteAttestationPayloadParameters}
      */
@@ -64,7 +64,7 @@ public class DisclosuresDTO implements Serializable {
     }
 
     /**
-     * Sets the EAA payload parameters
+     * Sets the attestation payload parameters
      *
      * @param payloadParameters {@link RemoteAttestationPayloadParameters}
      */

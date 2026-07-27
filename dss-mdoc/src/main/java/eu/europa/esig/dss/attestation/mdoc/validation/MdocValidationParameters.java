@@ -24,7 +24,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.attestation.AttestationValidationParameters;
 
 /**
- * Contains supplementary data parameters for validation of Mdoc EAA presentation
+ * Contains supplementary data parameters for validation of Mdoc attestation presentation
  *
  */
 public class MdocValidationParameters implements AttestationValidationParameters {

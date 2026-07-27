@@ -22,15 +22,15 @@ class MdocAttestationPresentationNoSDWithDisclosuresTest extends AbstractMdocAtt
     }
 
     @Override
-    protected void checkEAADigestMatchers(DiagnosticData diagnosticData) {
-        AttestationWrapper attestationWrapper = diagnosticData.getEAAById(diagnosticData.getFirstEAAId());
+    protected void checkAttestationDigestMatchers(DiagnosticData diagnosticData) {
+        AttestationWrapper attestationWrapper = diagnosticData.getAttestationById(diagnosticData.getFirstAttestationId());
         assertNotNull(attestationWrapper);
 
         List<XmlDigestMatcher> digestMatchers = attestationWrapper.getDigestMatchers();
         assertEquals(3, digestMatchers.size());
 
         for (XmlDigestMatcher xmlDigestMatcher : digestMatchers) {
-            assertEquals(DigestMatcherType.EAA_DISCLOSURE, xmlDigestMatcher.getType());
+            assertEquals(DigestMatcherType.SELECTIVE_DISCLOSURE, xmlDigestMatcher.getType());
             assertTrue(xmlDigestMatcher.isDataFound());
             assertFalse(xmlDigestMatcher.isDataIntact());
             assertNotNull(xmlDigestMatcher.getDisclosableClaim());

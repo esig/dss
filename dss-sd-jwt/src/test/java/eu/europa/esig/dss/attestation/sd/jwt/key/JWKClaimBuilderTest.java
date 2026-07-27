@@ -181,7 +181,7 @@ class JWKClaimBuilderTest {
         JWKClaimBuilder builder = new JWKClaimBuilder().keyType("RSA").x5u(x5u);
 
         Exception exception = assertThrows(IllegalArgumentException.class, builder::create);
-        assertEquals("If the EAA subject certificate is represented by the x5u parameter, " +
+        assertEquals("If the attestation subject certificate is represented by the x5u parameter, " +
                 "the x5t#S256 parameter shall also be present.", exception.getMessage());
     }
 
@@ -247,8 +247,8 @@ class JWKClaimBuilderTest {
                 .certificateChain(Arrays.asList(goodUserCert, goodCaCert));
 
         Exception exception = assertThrows(IllegalArgumentException.class, builder::create);
-        assertEquals("The 'jwk' claim may only contain either a representation of the EAA subject public key or " +
-                "a representation of the EAA subject certificate as specified in IETF RFC 7800.", exception.getMessage());
+        assertEquals("The 'jwk' claim may only contain either a representation of the attestation subject public key or " +
+                "a representation of the attestation subject certificate as specified in IETF RFC 7800.", exception.getMessage());
     }
 
     @Test
@@ -279,7 +279,7 @@ class JWKClaimBuilderTest {
 
         Exception exception = assertThrows(IllegalArgumentException.class, builder::create);
 
-        assertEquals("If the EAA subject certificate is represented by the x5c parameter, " +
+        assertEquals("If the attestation subject certificate is represented by the x5c parameter, " +
                         "neither the x5u parameter, nor the x5t#S256 parameter shall be present.", exception.getMessage());
     }
 
@@ -292,7 +292,7 @@ class JWKClaimBuilderTest {
 
         Exception exception = assertThrows(IllegalArgumentException.class, builder::create);
 
-        assertEquals("If the EAA subject certificate is represented by the x5c parameter, " +
+        assertEquals("If the attestation subject certificate is represented by the x5c parameter, " +
                         "neither the x5u parameter, nor the x5t#S256 parameter shall be present.", exception.getMessage());
     }
 
@@ -300,7 +300,7 @@ class JWKClaimBuilderTest {
     void keyTypeOnly() {
         JWKClaimBuilder builder = new JWKClaimBuilder().keyType("RSA");
         Exception exception = assertThrows(NullPointerException.class, builder::create);
-        assertEquals("No configuration has been present for the EAA subject public key or certificate representation!", exception.getMessage());
+        assertEquals("No configuration has been present for the attestation subject public key or certificate representation!", exception.getMessage());
     }
 
     @Test
@@ -309,7 +309,7 @@ class JWKClaimBuilderTest {
                 NullPointerException.class,
                 () -> new JWKClaimBuilder().create());
 
-        assertEquals("No configuration has been present for the EAA subject public key or certificate representation!",
+        assertEquals("No configuration has been present for the attestation subject public key or certificate representation!",
                 exception.getMessage());
     }
 

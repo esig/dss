@@ -24,7 +24,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.diagnostic.AttestationRevocationTokenWrapper;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlEAARevocationToken;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationRevocationToken;
 import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.policy.LevelConstraintWrapper;
 import eu.europa.esig.dss.policy.jaxb.LevelConstraint;
@@ -45,20 +45,20 @@ class AttestationRevocationNotExpiredCheckTest extends AbstractTestCheck {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
-        XmlEAARevocationToken xmlEAARevocationToken = new XmlEAARevocationToken();
+        XmlAttestationRevocationToken xmlAttestationRevocationToken = new XmlAttestationRevocationToken();
 
         Calendar calendar = Calendar.getInstance();
         Date currentTime = calendar.getTime();
         calendar.add(Calendar.MONTH, -1);
-        xmlEAARevocationToken.setIssuedAt(calendar.getTime());
+        xmlAttestationRevocationToken.setIssuedAt(calendar.getTime());
         calendar.add(Calendar.MONTH, 3);
-        xmlEAARevocationToken.setExpirationTime(calendar.getTime());
+        xmlAttestationRevocationToken.setExpirationTime(calendar.getTime());
 
         XmlSAV result = new XmlSAV();
 
-        AttestationRevocationNotExpiredCheck eaasnec = new AttestationRevocationNotExpiredCheck(
-                i18nProvider, result, new AttestationRevocationTokenWrapper(xmlEAARevocationToken), currentTime, new LevelConstraintWrapper(constraint));
-        eaasnec.execute();
+        AttestationRevocationNotExpiredCheck asnec = new AttestationRevocationNotExpiredCheck(
+                i18nProvider, result, new AttestationRevocationTokenWrapper(xmlAttestationRevocationToken), currentTime, new LevelConstraintWrapper(constraint));
+        asnec.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
         assertEquals(1, constraints.size());
@@ -70,20 +70,20 @@ class AttestationRevocationNotExpiredCheckTest extends AbstractTestCheck {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
-        XmlEAARevocationToken xmlEAARevocationToken = new XmlEAARevocationToken();
+        XmlAttestationRevocationToken xmlAttestationRevocationToken = new XmlAttestationRevocationToken();
 
         Calendar calendar = Calendar.getInstance();
         Date currentTime = calendar.getTime();
         calendar.add(Calendar.MONTH, -1);
-        xmlEAARevocationToken.setIssuedAt(calendar.getTime());
+        xmlAttestationRevocationToken.setIssuedAt(calendar.getTime());
         calendar.add(Calendar.DATE, 1);
-        xmlEAARevocationToken.setExpirationTime(calendar.getTime());
+        xmlAttestationRevocationToken.setExpirationTime(calendar.getTime());
 
         XmlSAV result = new XmlSAV();
 
-        AttestationRevocationNotExpiredCheck eaasnec = new AttestationRevocationNotExpiredCheck(
-                i18nProvider, result, new AttestationRevocationTokenWrapper(xmlEAARevocationToken), currentTime, new LevelConstraintWrapper(constraint));
-        eaasnec.execute();
+        AttestationRevocationNotExpiredCheck asnec = new AttestationRevocationNotExpiredCheck(
+                i18nProvider, result, new AttestationRevocationTokenWrapper(xmlAttestationRevocationToken), currentTime, new LevelConstraintWrapper(constraint));
+        asnec.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
         assertEquals(1, constraints.size());

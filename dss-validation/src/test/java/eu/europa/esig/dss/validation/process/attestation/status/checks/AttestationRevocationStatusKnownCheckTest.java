@@ -24,8 +24,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.diagnostic.AttestationRevocationWrapper;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlEAARevocationStatus;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlEAARevocationToken;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationRevocationStatus;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationRevocationToken;
 import eu.europa.esig.dss.enumerations.AttestationStatus;
 import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.policy.LevelConstraintWrapper;
@@ -45,14 +45,14 @@ class AttestationRevocationStatusKnownCheckTest extends AbstractTestCheck {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
-        XmlEAARevocationStatus xmlEAARevocationStatus = new XmlEAARevocationStatus();
-        xmlEAARevocationStatus.setEAARevocationToken(new XmlEAARevocationToken());
-        xmlEAARevocationStatus.setStatus(AttestationStatus.VALID);
+        XmlAttestationRevocationStatus xmlAttestationRevocationStatus = new XmlAttestationRevocationStatus();
+        xmlAttestationRevocationStatus.setAttestationRevocationToken(new XmlAttestationRevocationToken());
+        xmlAttestationRevocationStatus.setStatus(AttestationStatus.VALID);
         XmlSAV result = new XmlSAV();
 
-        AttestationRevocationStatusKnownCheck eaaskc = new AttestationRevocationStatusKnownCheck(
-                i18nProvider, result, new AttestationRevocationWrapper(xmlEAARevocationStatus), new LevelConstraintWrapper(constraint));
-        eaaskc.execute();
+        AttestationRevocationStatusKnownCheck askc = new AttestationRevocationStatusKnownCheck(
+                i18nProvider, result, new AttestationRevocationWrapper(xmlAttestationRevocationStatus), new LevelConstraintWrapper(constraint));
+        askc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
         assertEquals(1, constraints.size());
@@ -64,14 +64,14 @@ class AttestationRevocationStatusKnownCheckTest extends AbstractTestCheck {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
-        XmlEAARevocationStatus xmlEAARevocationStatus = new XmlEAARevocationStatus();
-        xmlEAARevocationStatus.setEAARevocationToken(new XmlEAARevocationToken());
-        xmlEAARevocationStatus.setStatus(AttestationStatus.INVALID);
+        XmlAttestationRevocationStatus xmlAttestationRevocationStatus = new XmlAttestationRevocationStatus();
+        xmlAttestationRevocationStatus.setAttestationRevocationToken(new XmlAttestationRevocationToken());
+        xmlAttestationRevocationStatus.setStatus(AttestationStatus.INVALID);
         XmlSAV result = new XmlSAV();
 
-        AttestationRevocationStatusKnownCheck eaaskc = new AttestationRevocationStatusKnownCheck(
-                i18nProvider, result, new AttestationRevocationWrapper(xmlEAARevocationStatus), new LevelConstraintWrapper(constraint));
-        eaaskc.execute();
+        AttestationRevocationStatusKnownCheck askc = new AttestationRevocationStatusKnownCheck(
+                i18nProvider, result, new AttestationRevocationWrapper(xmlAttestationRevocationStatus), new LevelConstraintWrapper(constraint));
+        askc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
         assertEquals(1, constraints.size());
@@ -83,14 +83,14 @@ class AttestationRevocationStatusKnownCheckTest extends AbstractTestCheck {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
-        XmlEAARevocationStatus xmlEAARevocationStatus = new XmlEAARevocationStatus();
-        xmlEAARevocationStatus.setEAARevocationToken(new XmlEAARevocationToken());
-        xmlEAARevocationStatus.setStatus(AttestationStatus.SUSPENDED);
+        XmlAttestationRevocationStatus xmlAttestationRevocationStatus = new XmlAttestationRevocationStatus();
+        xmlAttestationRevocationStatus.setAttestationRevocationToken(new XmlAttestationRevocationToken());
+        xmlAttestationRevocationStatus.setStatus(AttestationStatus.SUSPENDED);
         XmlSAV result = new XmlSAV();
 
-        AttestationRevocationStatusKnownCheck eaaskc = new AttestationRevocationStatusKnownCheck(
-                i18nProvider, result, new AttestationRevocationWrapper(xmlEAARevocationStatus), new LevelConstraintWrapper(constraint));
-        eaaskc.execute();
+        AttestationRevocationStatusKnownCheck askc = new AttestationRevocationStatusKnownCheck(
+                i18nProvider, result, new AttestationRevocationWrapper(xmlAttestationRevocationStatus), new LevelConstraintWrapper(constraint));
+        askc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
         assertEquals(1, constraints.size());
@@ -102,14 +102,14 @@ class AttestationRevocationStatusKnownCheckTest extends AbstractTestCheck {
         LevelConstraint constraint = new LevelConstraint();
         constraint.setLevel(Level.FAIL);
 
-        XmlEAARevocationStatus xmlEAARevocationStatus = new XmlEAARevocationStatus();
-        xmlEAARevocationStatus.setEAARevocationToken(new XmlEAARevocationToken());
-        xmlEAARevocationStatus.setStatus(AttestationStatus.UNKNOWN);
+        XmlAttestationRevocationStatus xmlAttestationRevocationStatus = new XmlAttestationRevocationStatus();
+        xmlAttestationRevocationStatus.setAttestationRevocationToken(new XmlAttestationRevocationToken());
+        xmlAttestationRevocationStatus.setStatus(AttestationStatus.UNKNOWN);
         XmlSAV result = new XmlSAV();
 
-        AttestationRevocationStatusKnownCheck eaaskc = new AttestationRevocationStatusKnownCheck(
-                i18nProvider, result, new AttestationRevocationWrapper(xmlEAARevocationStatus), new LevelConstraintWrapper(constraint));
-        eaaskc.execute();
+        AttestationRevocationStatusKnownCheck askc = new AttestationRevocationStatusKnownCheck(
+                i18nProvider, result, new AttestationRevocationWrapper(xmlAttestationRevocationStatus), new LevelConstraintWrapper(constraint));
+        askc.execute();
 
         List<XmlConstraint> constraints = result.getConstraint();
         assertEquals(1, constraints.size());

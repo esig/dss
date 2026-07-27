@@ -38,13 +38,13 @@ public class CWTIdentifierListValidatorFactory implements IdentifierListValidato
     }
 
     @Override
-    public boolean isSupported(byte[] eaaStatusList) {
-        return new CWTIdentifierListValidator().isSupported(eaaStatusList);
+    public boolean isSupported(byte[] identifierList) {
+        return new CWTIdentifierListValidator().isSupported(identifierList);
     }
 
     @Override
-    public IdentifierListValidator create(byte[] eaaStatusList) {
-        return new CWTIdentifierListValidator(eaaStatusList);
+    public IdentifierListValidator create(byte[] identifierList) {
+        return new CWTIdentifierListValidator(identifierList);
     }
 
 }

@@ -38,14 +38,14 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDrivingPrivilegeClaim;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDrivingPrivilegeCodeClaim;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDrivingPrivilegeCodesClaim;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDrivingPrivilegesClaim;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlEAA;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlEAADocument;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlEAAPayload;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlEAAPresentationInfo;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlEAASignature;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlEAARevocationStatus;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlEAARevocationToken;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlEAASubject;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestation;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationDocument;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationPayload;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationPresentationInfo;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationSignature;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationRevocationStatus;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationRevocationToken;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationSubject;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlFoundCertificates;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlIdentifierListClaim;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlIntegrityClaim;
@@ -65,27 +65,27 @@ import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.ReferenceValidation;
 import eu.europa.esig.dss.model.attestation.DisclosureValidation;
-import eu.europa.esig.dss.model.attestation.claim.Claim;
-import eu.europa.esig.dss.model.attestation.claim.ClaimAddress;
-import eu.europa.esig.dss.model.attestation.claim.ClaimAgeEqualOrOver;
-import eu.europa.esig.dss.model.attestation.claim.ClaimAgeOverNN;
-import eu.europa.esig.dss.model.attestation.claim.ClaimAttestedAttributesSubject;
-import eu.europa.esig.dss.model.attestation.claim.ClaimAttestedAttributesSubjectId;
-import eu.europa.esig.dss.model.attestation.claim.ClaimBiometricTemplateXX;
-import eu.europa.esig.dss.model.attestation.claim.ClaimBirthDate;
-import eu.europa.esig.dss.model.attestation.claim.ClaimCredentialSubject;
-import eu.europa.esig.dss.model.attestation.claim.ClaimDeviceKey;
-import eu.europa.esig.dss.model.attestation.claim.ClaimDrivingPrivilege;
-import eu.europa.esig.dss.model.attestation.claim.ClaimDrivingPrivilegeCode;
-import eu.europa.esig.dss.model.attestation.claim.ClaimDrivingPrivilegeCodes;
-import eu.europa.esig.dss.model.attestation.claim.ClaimDrivingPrivileges;
-import eu.europa.esig.dss.model.attestation.claim.ClaimIdentifierList;
-import eu.europa.esig.dss.model.attestation.claim.ClaimIntegrity;
-import eu.europa.esig.dss.model.attestation.claim.ClaimPlaceOfBirth;
-import eu.europa.esig.dss.model.attestation.claim.ClaimStatus;
-import eu.europa.esig.dss.model.attestation.claim.ClaimStatusList;
-import eu.europa.esig.dss.model.attestation.claim.ClaimString;
-import eu.europa.esig.dss.model.attestation.claim.ClaimValidityInfo;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaim;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimAddress;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimAgeEqualOrOver;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimAgeOverNN;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimAttestedAttributesSubject;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimAttestedAttributesSubjectId;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimBiometricTemplateXX;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimBirthDate;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimCredentialSubject;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimDeviceKey;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimDrivingPrivilege;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimDrivingPrivilegeCode;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimDrivingPrivilegeCodes;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimDrivingPrivileges;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimIdentifierList;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimIntegrity;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimPlaceOfBirth;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimStatus;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimStatusList;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimString;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimValidityInfo;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.TokenComparator;
 import eu.europa.esig.dss.spi.attestation.Attestation;
@@ -114,25 +114,25 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Builds DiagnosticData for a presentation of Electronic Attestation of Attributes validation
+ * Builds DiagnosticData for validation of an attestation presentation document
  *
  */
 public class AttestationDocumentDiagnosticDataBuilder extends SignedDocumentDiagnosticDataBuilder {
 
-    /** The EAA presentation */
+    /** The attestation presentation */
     protected AttestationPresentation attestationPresentation;
 
-    /** Collection of EAA revocation tokens acquired during the validation */
+    /** Collection of attestation revocation tokens acquired during the validation */
     protected Collection<AttestationRevocationToken> attestationRevocationTokens;
 
     /** Builder used to build a signature object */
     private SignedDocumentDiagnosticDataBuilder signatureDiagnosticDataBuilder;
 
-    /** The cached map of EAAs */
-    protected Map<String, XmlEAA> xmlEAAMap = new HashMap<>();
+    /** The cached map of attestations */
+    protected Map<String, XmlAttestation> xmlAttestationMap = new HashMap<>();
 
-    /** The cached map of EAA revocation tokens */
-    protected Map<String, XmlEAARevocationToken> xmlEAARevocationTokenMap = new HashMap<>();
+    /** The cached map of attestation revocation tokens */
+    protected Map<String, XmlAttestationRevocationToken> xmlAttestationRevocationTokenMap = new HashMap<>();
 
     /**
      * Default constructor
@@ -187,14 +187,14 @@ public class AttestationDocumentDiagnosticDataBuilder extends SignedDocumentDiag
     public XmlDiagnosticData build() {
         XmlDiagnosticData xmlDiagnosticData = super.build();
         if (attestationPresentation != null) {
-            xmlDiagnosticData.setEAAPresentationInfo(buildXmlEAAPresentationInfo(attestationPresentation));
-            List<Attestation> attestations = attestationPresentation.getElectronicAttestationsOfAttributes();
-            Collection<XmlEAA> xmlEAAs = buildXmlEAA(attestations);
-            xmlDiagnosticData.getEAAs().addAll(xmlEAAs);
+            xmlDiagnosticData.setAttestationPresentationInfo(buildXmlAttestationPresentationInfo(attestationPresentation));
+            List<Attestation> attestations = attestationPresentation.getAttestations();
+            Collection<XmlAttestation> xmlAttestations = buildXmlAttestation(attestations);
+            xmlDiagnosticData.getAttestations().addAll(xmlAttestations);
 
             if (Utils.isCollectionNotEmpty(attestationRevocationTokens)) {
-                xmlDiagnosticData.getUsedEAARevocationTokens().addAll(buildXmlEAARevocationTokens(attestationRevocationTokens));
-                linkEAAAndStatuses(attestationPresentation.getElectronicAttestationsOfAttributes());
+                xmlDiagnosticData.getUsedAttestationRevocationTokens().addAll(buildXmlAttestationRevocationTokens(attestationRevocationTokens));
+                linkAttestationAndRevocations(attestationPresentation.getAttestations());
             }
         }
         xmlDiagnosticData.setOrphanTokens(buildXmlOrphanTokens());
@@ -202,80 +202,80 @@ public class AttestationDocumentDiagnosticDataBuilder extends SignedDocumentDiag
     }
 
     /**
-     * Builds {@code XmlEAAPresentationInfo} based on the {@code EAAPresentation}
+     * Builds {@code XmlAttestationPresentationInfo} based on the {@code AttestationPresentation}
      *
      * @param attestationPresentation {@link AttestationPresentation}
-     * @return {@link XmlEAAPresentationInfo}
+     * @return {@link XmlAttestationPresentationInfo}
      */
-    protected XmlEAAPresentationInfo buildXmlEAAPresentationInfo(AttestationPresentation attestationPresentation) {
-        final XmlEAAPresentationInfo xmlEAAPresentationInfo = new XmlEAAPresentationInfo();
-        xmlEAAPresentationInfo.setEAAPresentationType(attestationPresentation.getEAAPresentationType());
-        if (Utils.isCollectionNotEmpty(attestationPresentation.getElectronicAttestationsOfAttributes())) {
-            for (Attestation attestation : attestationPresentation.getElectronicAttestationsOfAttributes()) {
-                xmlEAAPresentationInfo.getDocuments().add(buildXmlEAADocument(attestation));
+    protected XmlAttestationPresentationInfo buildXmlAttestationPresentationInfo(AttestationPresentation attestationPresentation) {
+        final XmlAttestationPresentationInfo xmlAttestationPresentationInfo = new XmlAttestationPresentationInfo();
+        xmlAttestationPresentationInfo.setFormat(attestationPresentation.getDocumentFormat());
+        if (Utils.isCollectionNotEmpty(attestationPresentation.getAttestations())) {
+            for (Attestation attestation : attestationPresentation.getAttestations()) {
+                xmlAttestationPresentationInfo.getDocuments().add(buildXmlAttestationDocument(attestation));
             }
         }
-        return xmlEAAPresentationInfo;
+        return xmlAttestationPresentationInfo;
     }
 
     /**
-     * Builds an instance of {@code XmlEAADocument} for a {@code EAA}
+     * Builds an instance of {@code XmlAttestationDocument} for a {@code Attestation}
      *
      * @param attestation {@link Attestation}
-     * @return {@link XmlEAADocument}
+     * @return {@link XmlAttestationDocument}
      */
-    protected XmlEAADocument buildXmlEAADocument(Attestation attestation) {
-        final XmlEAADocument xmlEAADocument = new XmlEAADocument();
-        xmlEAADocument.setEAA(getXmlEAA(attestation));
-        return xmlEAADocument;
+    protected XmlAttestationDocument buildXmlAttestationDocument(Attestation attestation) {
+        final XmlAttestationDocument xmlAttestationDocument = new XmlAttestationDocument();
+        xmlAttestationDocument.setAttestation(getXmlAttestation(attestation));
+        return xmlAttestationDocument;
     }
 
-    private Collection<XmlEAA> buildXmlEAA(Collection<Attestation> attestations) {
-        List<XmlEAA> builtEAAPresentations = new ArrayList<>();
+    private Collection<XmlAttestation> buildXmlAttestation(Collection<Attestation> attestations) {
+        List<XmlAttestation> builtAttestationPresentations = new ArrayList<>();
         for (Attestation attestation : attestations) {
-            XmlEAA xmlEAAPresentation = getXmlEAA(attestation);
-            builtEAAPresentations.add(xmlEAAPresentation);
+            XmlAttestation xmlAttestationPresentation = getXmlAttestation(attestation);
+            builtAttestationPresentations.add(xmlAttestationPresentation);
         }
-        return builtEAAPresentations;
+        return builtAttestationPresentations;
     }
 
-    private XmlEAA getXmlEAA(Attestation attestation) {
-        return xmlEAAMap.computeIfAbsent(attestation.getId(), k -> buildDetachedXmlEAA(attestation));
+    private XmlAttestation getXmlAttestation(Attestation attestation) {
+        return xmlAttestationMap.computeIfAbsent(attestation.getId(), k -> buildDetachedXmlAttestation(attestation));
     }
 
     /**
-     * Builds an {@code XmlEAA} instance
+     * Builds an {@code XmlAttestation} instance
      *
      * @param attestation {@link Attestation}
-     * @return {@link XmlEAA}
+     * @return {@link XmlAttestation}
      */
-    protected XmlEAA buildDetachedXmlEAA(Attestation attestation) {
-        final XmlEAA xmlEAAPresentation = new XmlEAA();
-        xmlEAAPresentation.setId(identifierProvider.getIdAsString(attestation));
-        xmlEAAPresentation.setDocumentName(attestation.getFilename());
-        xmlEAAPresentation.setEAAType(attestation.getEAAType());
+    protected XmlAttestation buildDetachedXmlAttestation(Attestation attestation) {
+        final XmlAttestation xmlAttestationPresentation = new XmlAttestation();
+        xmlAttestationPresentation.setId(identifierProvider.getIdAsString(attestation));
+        xmlAttestationPresentation.setDocumentName(attestation.getFilename());
+        xmlAttestationPresentation.setProfile(attestation.getAttestationProfile());
         for (AdvancedSignature signature : attestation.getSignatures()) {
-            xmlEAAPresentation.getEAASignature().add(getXmlEAASignature(signature));
+            xmlAttestationPresentation.getAttestationSignature().add(getXmlAttestationSignature(signature));
         }
-        xmlEAAPresentation.setDigestMethod(attestation.getSelectiveDisclosuresDigestAlgorithm());
-        xmlEAAPresentation.setDigestMatchers(buildXmlDigestMatchers(attestation.getDisclosureValidations()));
+        xmlAttestationPresentation.setDigestMethod(attestation.getSelectiveDisclosuresDigestAlgorithm());
+        xmlAttestationPresentation.setDigestMatchers(buildXmlDigestMatchers(attestation.getDisclosureValidations()));
         if (attestation.getKeyBindingSignature() != null) {
-            xmlEAAPresentation.setKeyBindingSignature(getXmlKeyBindingSignature(attestation.getKeyBindingSignature()));
+            xmlAttestationPresentation.setKeyBindingSignature(getXmlKeyBindingSignature(attestation.getKeyBindingSignature()));
         }
-        xmlEAAPresentation.setEAAPayload(getXmlEAAPayload(attestation.getPayload()));
-        xmlEAAPresentation.setKeyBindingPayload(getXmlKeyBindingPayload(attestation.getKeyBindingSignaturePayload()));
-        return xmlEAAPresentation;
+        xmlAttestationPresentation.setAttestationPayload(getXmlAttestationPayload(attestation.getPayload()));
+        xmlAttestationPresentation.setKeyBindingPayload(getXmlKeyBindingPayload(attestation.getKeyBindingSignaturePayload()));
+        return xmlAttestationPresentation;
     }
 
-    private XmlEAASignature getXmlEAASignature(AdvancedSignature signature) {
-        XmlEAASignature xmlEAAPresentationSignature = new XmlEAASignature();
+    private XmlAttestationSignature getXmlAttestationSignature(AdvancedSignature signature) {
+        XmlAttestationSignature xmlAttestationPresentationSignature = new XmlAttestationSignature();
         XmlSignature xmlSignature = xmlSignaturesMap.get(signature.getId());
         if (xmlSignature == null) {
             throw new IllegalStateException(String.format(
                     "XmlSignature shall be built at this moment! Not found signature with id '%s'.", signature.getId()));
         }
-        xmlEAAPresentationSignature.setSignature(xmlSignature);
-        return xmlEAAPresentationSignature;
+        xmlAttestationPresentationSignature.setSignature(xmlSignature);
+        return xmlAttestationPresentationSignature;
     }
 
     private XmlKeyBindingSignature getXmlKeyBindingSignature(AdvancedSignature signature) {
@@ -358,121 +358,121 @@ public class AttestationDocumentDiagnosticDataBuilder extends SignedDocumentDiag
         return xmlClaim;
     }
 
-    private XmlEAAPayload getXmlEAAPayload(AttestationPayload attestationPayload) {
+    private XmlAttestationPayload getXmlAttestationPayload(AttestationPayload attestationPayload) {
         final List<XmlClaim> supportedClaims = new ArrayList<>();
-        final XmlEAAPayload xmlEAAPayload = new XmlEAAPayload();
+        final XmlAttestationPayload xmlAttestationPayload = new XmlAttestationPayload();
 
-        xmlEAAPayload.setIdentifier(getXmlClaim(attestationPayload.getIdentifier(), supportedClaims));
-        xmlEAAPayload.setIssuer(getXmlClaim(attestationPayload.getIssuer(), supportedClaims));
-        xmlEAAPayload.setSubject(getXmlClaim(attestationPayload.getSubject(), supportedClaims));
-        xmlEAAPayload.setAudience(getXmlClaim(attestationPayload.getAudience(), supportedClaims));
-        xmlEAAPayload.setExpiration(getXmlClaim(attestationPayload.getExpirationTime(), supportedClaims));
-        xmlEAAPayload.setNotBefore(getXmlClaim(attestationPayload.getNotBeforeTime(), supportedClaims));
-        xmlEAAPayload.setIssuedAt(getXmlClaim(attestationPayload.getIssuedAtTime(), supportedClaims));
-        xmlEAAPayload.setUpdatedAt(getXmlClaim(attestationPayload.getUpdatedAtTime(), supportedClaims));
-        xmlEAAPayload.setCategory(getXmlClaim(attestationPayload.getCategory(), supportedClaims));
-        xmlEAAPayload.setVerifiableCredentialsType(getXmlVerifiableCredentialsType(attestationPayload, supportedClaims));
-        xmlEAAPayload.setStatus(getXmlStatus(attestationPayload.getStatus(), supportedClaims));
-        xmlEAAPayload.setNonce(getXmlClaim(attestationPayload.getNonce(), supportedClaims));
-        xmlEAAPayload.setDeviceKey(getXmlDeviceKeyClaim(attestationPayload.getDeviceKey(), supportedClaims));
+        xmlAttestationPayload.setIdentifier(getXmlClaim(attestationPayload.getIdentifier(), supportedClaims));
+        xmlAttestationPayload.setIssuer(getXmlClaim(attestationPayload.getIssuer(), supportedClaims));
+        xmlAttestationPayload.setSubject(getXmlClaim(attestationPayload.getSubject(), supportedClaims));
+        xmlAttestationPayload.setAudience(getXmlClaim(attestationPayload.getAudience(), supportedClaims));
+        xmlAttestationPayload.setExpiration(getXmlClaim(attestationPayload.getExpirationTime(), supportedClaims));
+        xmlAttestationPayload.setNotBefore(getXmlClaim(attestationPayload.getNotBeforeTime(), supportedClaims));
+        xmlAttestationPayload.setIssuedAt(getXmlClaim(attestationPayload.getIssuedAtTime(), supportedClaims));
+        xmlAttestationPayload.setUpdatedAt(getXmlClaim(attestationPayload.getUpdatedAtTime(), supportedClaims));
+        xmlAttestationPayload.setCategory(getXmlClaim(attestationPayload.getCategory(), supportedClaims));
+        xmlAttestationPayload.setVerifiableCredentialsType(getXmlVerifiableCredentialsType(attestationPayload, supportedClaims));
+        xmlAttestationPayload.setStatus(getXmlStatus(attestationPayload.getStatus(), supportedClaims));
+        xmlAttestationPayload.setNonce(getXmlClaim(attestationPayload.getNonce(), supportedClaims));
+        xmlAttestationPayload.setDeviceKey(getXmlDeviceKeyClaim(attestationPayload.getDeviceKey(), supportedClaims));
 
-        xmlEAAPayload.setVersion(getXmlClaim(attestationPayload.getVersion(), supportedClaims));
-        xmlEAAPayload.setDocType(getXmlClaim(attestationPayload.getDocType(), supportedClaims));
-        xmlEAAPayload.setValidityInfo(getXmlValidityInfoClaim(attestationPayload.getValidityInfo(), supportedClaims));
+        xmlAttestationPayload.setVersion(getXmlClaim(attestationPayload.getVersion(), supportedClaims));
+        xmlAttestationPayload.setDocType(getXmlClaim(attestationPayload.getDocType(), supportedClaims));
+        xmlAttestationPayload.setValidityInfo(getXmlValidityInfoClaim(attestationPayload.getValidityInfo(), supportedClaims));
 
-        xmlEAAPayload.setAdministrativeIssuanceDate(getXmlClaim(attestationPayload.getAdministrativeIssuanceDate(), supportedClaims));
-        xmlEAAPayload.setAdministrativeExpirationDate(getXmlClaim(attestationPayload.getAdministrativeExpirationDate(), supportedClaims));
-        xmlEAAPayload.setOneTimeUse(getXmlClaim(attestationPayload.getOneTimeUse(), supportedClaims));
-        xmlEAAPayload.setShortLived(getXmlClaim(attestationPayload.getShortLived(), supportedClaims));
-        xmlEAAPayload.setEvidence(getXmlClaim(attestationPayload.getEvidence(), supportedClaims));
-        xmlEAAPayload.setAttestedAttributesSubject(getXmlAttestedAttributesSubjectClaim(attestationPayload.getAttestedAttributesSubject(), supportedClaims)); // TODO : enhance with AttestedAttributesSubjectWrapper
+        xmlAttestationPayload.setAdministrativeIssuanceDate(getXmlClaim(attestationPayload.getAdministrativeIssuanceDate(), supportedClaims));
+        xmlAttestationPayload.setAdministrativeExpirationDate(getXmlClaim(attestationPayload.getAdministrativeExpirationDate(), supportedClaims));
+        xmlAttestationPayload.setOneTimeUse(getXmlClaim(attestationPayload.getOneTimeUse(), supportedClaims));
+        xmlAttestationPayload.setShortLived(getXmlClaim(attestationPayload.getShortLived(), supportedClaims));
+        xmlAttestationPayload.setEvidence(getXmlClaim(attestationPayload.getEvidence(), supportedClaims));
+        xmlAttestationPayload.setAttestedAttributesSubject(getXmlAttestedAttributesSubjectClaim(attestationPayload.getAttestedAttributesSubject(), supportedClaims)); // TODO : enhance with AttestedAttributesSubjectWrapper
 
-        xmlEAAPayload.setFullName(getXmlClaim(attestationPayload.getFullName(), supportedClaims));
-        xmlEAAPayload.setGivenName(getXmlClaim(attestationPayload.getGivenName(), supportedClaims));
-        xmlEAAPayload.setFamilyName(getXmlClaim(attestationPayload.getFamilyName(), supportedClaims));
-        xmlEAAPayload.setMiddleName(getXmlClaim(attestationPayload.getMiddleName(), supportedClaims));
-        xmlEAAPayload.setNickname(getXmlClaim(attestationPayload.getNickname(), supportedClaims));
-        xmlEAAPayload.setShortName(getXmlClaim(attestationPayload.getShortName(), supportedClaims));
-        xmlEAAPayload.setProfileUrl(getXmlClaim(attestationPayload.getProfileUrl(), supportedClaims));
-        xmlEAAPayload.setPictureUrl(getXmlClaim(attestationPayload.getPictureUrl(), supportedClaims));
-        xmlEAAPayload.setWebsiteUrl(getXmlClaim(attestationPayload.getWebsiteUrl(), supportedClaims));
-        xmlEAAPayload.setEmail(getXmlClaim(attestationPayload.getEmail(), supportedClaims));
-        xmlEAAPayload.setEmailVerified(getXmlClaim(attestationPayload.getEmailVerified(), supportedClaims));
-        xmlEAAPayload.setGender(getXmlClaim(attestationPayload.getGender(), supportedClaims));
-        xmlEAAPayload.setBirthdate(getXmlBirthdateClaim(attestationPayload.getBirthdate(), supportedClaims));
-        xmlEAAPayload.setTimezone(getXmlClaim(attestationPayload.getTimezone(), supportedClaims));
-        xmlEAAPayload.setLocale(getXmlClaim(attestationPayload.getLocale(), supportedClaims));
-        xmlEAAPayload.setAddress(getXmlAddressClaim(attestationPayload.getAddress(), supportedClaims));
-        xmlEAAPayload.setPhoneNumber(getXmlClaim(attestationPayload.getPhoneNumber(), supportedClaims));
-        xmlEAAPayload.setPhoneNumberVerified(getXmlClaim(attestationPayload.getPhoneNumberVerified(), supportedClaims));
-        xmlEAAPayload.setPlaceOfBirth(getXmlPlaceOfBirthClaim(attestationPayload.getPlaceOfBirth(), supportedClaims));
-        xmlEAAPayload.setNationalities(getXmlClaim(attestationPayload.getNationalities(), supportedClaims));
-        xmlEAAPayload.setBirthFamilyName(getXmlClaim(attestationPayload.getBirthFamilyName(), supportedClaims));
-        xmlEAAPayload.setBirthGivenName(getXmlClaim(attestationPayload.getBirthGivenName(), supportedClaims));
-        xmlEAAPayload.setBirthMiddleName(getXmlClaim(attestationPayload.getBirthMiddleName(), supportedClaims));
-        xmlEAAPayload.setSalutation(getXmlClaim(attestationPayload.getSalutation(), supportedClaims));
-        xmlEAAPayload.setTitle(getXmlClaim(attestationPayload.getTitle(), supportedClaims));
-        xmlEAAPayload.setMobilePhoneNumber(getXmlClaim(attestationPayload.getMobilePhoneNumber(), supportedClaims));
-        xmlEAAPayload.setPseudonym(getXmlClaim(attestationPayload.getPseudonym(), supportedClaims));
-        xmlEAAPayload.getCredentialSubject().addAll(getXmlCredentialSubjectClaimList(attestationPayload.getCredentialSubjects(), supportedClaims));
+        xmlAttestationPayload.setFullName(getXmlClaim(attestationPayload.getFullName(), supportedClaims));
+        xmlAttestationPayload.setGivenName(getXmlClaim(attestationPayload.getGivenName(), supportedClaims));
+        xmlAttestationPayload.setFamilyName(getXmlClaim(attestationPayload.getFamilyName(), supportedClaims));
+        xmlAttestationPayload.setMiddleName(getXmlClaim(attestationPayload.getMiddleName(), supportedClaims));
+        xmlAttestationPayload.setNickname(getXmlClaim(attestationPayload.getNickname(), supportedClaims));
+        xmlAttestationPayload.setShortName(getXmlClaim(attestationPayload.getShortName(), supportedClaims));
+        xmlAttestationPayload.setProfileUrl(getXmlClaim(attestationPayload.getProfileUrl(), supportedClaims));
+        xmlAttestationPayload.setPictureUrl(getXmlClaim(attestationPayload.getPictureUrl(), supportedClaims));
+        xmlAttestationPayload.setWebsiteUrl(getXmlClaim(attestationPayload.getWebsiteUrl(), supportedClaims));
+        xmlAttestationPayload.setEmail(getXmlClaim(attestationPayload.getEmail(), supportedClaims));
+        xmlAttestationPayload.setEmailVerified(getXmlClaim(attestationPayload.getEmailVerified(), supportedClaims));
+        xmlAttestationPayload.setGender(getXmlClaim(attestationPayload.getGender(), supportedClaims));
+        xmlAttestationPayload.setBirthdate(getXmlBirthdateClaim(attestationPayload.getBirthdate(), supportedClaims));
+        xmlAttestationPayload.setTimezone(getXmlClaim(attestationPayload.getTimezone(), supportedClaims));
+        xmlAttestationPayload.setLocale(getXmlClaim(attestationPayload.getLocale(), supportedClaims));
+        xmlAttestationPayload.setAddress(getXmlAddressClaim(attestationPayload.getAddress(), supportedClaims));
+        xmlAttestationPayload.setPhoneNumber(getXmlClaim(attestationPayload.getPhoneNumber(), supportedClaims));
+        xmlAttestationPayload.setPhoneNumberVerified(getXmlClaim(attestationPayload.getPhoneNumberVerified(), supportedClaims));
+        xmlAttestationPayload.setPlaceOfBirth(getXmlPlaceOfBirthClaim(attestationPayload.getPlaceOfBirth(), supportedClaims));
+        xmlAttestationPayload.setNationalities(getXmlClaim(attestationPayload.getNationalities(), supportedClaims));
+        xmlAttestationPayload.setBirthFamilyName(getXmlClaim(attestationPayload.getBirthFamilyName(), supportedClaims));
+        xmlAttestationPayload.setBirthGivenName(getXmlClaim(attestationPayload.getBirthGivenName(), supportedClaims));
+        xmlAttestationPayload.setBirthMiddleName(getXmlClaim(attestationPayload.getBirthMiddleName(), supportedClaims));
+        xmlAttestationPayload.setSalutation(getXmlClaim(attestationPayload.getSalutation(), supportedClaims));
+        xmlAttestationPayload.setTitle(getXmlClaim(attestationPayload.getTitle(), supportedClaims));
+        xmlAttestationPayload.setMobilePhoneNumber(getXmlClaim(attestationPayload.getMobilePhoneNumber(), supportedClaims));
+        xmlAttestationPayload.setPseudonym(getXmlClaim(attestationPayload.getPseudonym(), supportedClaims));
+        xmlAttestationPayload.getCredentialSubject().addAll(getXmlCredentialSubjectClaimList(attestationPayload.getCredentialSubjects(), supportedClaims));
 
-        xmlEAAPayload.setIssuingCountry(getXmlClaim(attestationPayload.getIssuingCountry(), supportedClaims));
-        xmlEAAPayload.setIssuingAuthority(getXmlClaim(attestationPayload.getIssuingAuthority(), supportedClaims));
-        xmlEAAPayload.setDocumentNumber(getXmlClaim(attestationPayload.getDocumentNumber(), supportedClaims));
-        xmlEAAPayload.setPortrait(getXmlClaim(attestationPayload.getPortrait(), supportedClaims));
-        xmlEAAPayload.setDrivingPrivileges(getXmlDrivingPrivilegesClaim(attestationPayload.getDrivingPrivileges(), supportedClaims));
-        xmlEAAPayload.setUNDistinguishingSign(getXmlClaim(attestationPayload.getUNDistinguishingSign(), supportedClaims));
-        xmlEAAPayload.setPersonalAdministrativeNumber(getXmlClaim(attestationPayload.getPersonalAdministrativeNumber(), supportedClaims));
-        xmlEAAPayload.setHeight(getXmlClaim(attestationPayload.getHeight(), supportedClaims));
-        xmlEAAPayload.setWeight(getXmlClaim(attestationPayload.getWeight(), supportedClaims));
-        xmlEAAPayload.setEyeColour(getXmlClaim(attestationPayload.getEyeColour(), supportedClaims));
-        xmlEAAPayload.setHairColour(getXmlClaim(attestationPayload.getHairColour(), supportedClaims));
-        xmlEAAPayload.setResidentPostalAddress(getXmlClaim(attestationPayload.getPostalAddress(), supportedClaims));
-        xmlEAAPayload.setPortraitCaptureDate(getXmlClaim(attestationPayload.getPortraitCaptureDate(), supportedClaims));
-        xmlEAAPayload.setAgeInYears(getXmlClaim(attestationPayload.getAgeInYears(), supportedClaims));
-        xmlEAAPayload.setAgeBirthYear(getXmlClaim(attestationPayload.getAgeBirthYear(), supportedClaims));
-        xmlEAAPayload.setAgeEqualOrOver(getXmlAgeEqualOrOverClaim(attestationPayload.getAgeEqualOrOver(), supportedClaims));
-        xmlEAAPayload.getAgeOverNN().addAll(getXmlAgeOverNNClaims(attestationPayload.getAgeOverNN(), supportedClaims));
-        xmlEAAPayload.setIssuingJurisdiction(getXmlClaim(attestationPayload.getIssuingJurisdiction(), supportedClaims));
-        xmlEAAPayload.setResidentAddressCity(getXmlClaim(attestationPayload.getResidentAddressCity(), supportedClaims));
-        xmlEAAPayload.setResidentAddressState(getXmlClaim(attestationPayload.getResidentAddressState(), supportedClaims));
-        xmlEAAPayload.setResidentAddressPostalCode(getXmlClaim(attestationPayload.getResidentAddressPostalCode(), supportedClaims));
-        xmlEAAPayload.setResidentAddressCountry(getXmlClaim(attestationPayload.getResidentAddressCountry(), supportedClaims));
-        xmlEAAPayload.getBiometricTemplate().addAll(getXmlBiometricTemplateXXClaim(attestationPayload.getBiometricTemplate(), supportedClaims));
-        xmlEAAPayload.setSignatureUsualMark(getXmlClaim(attestationPayload.getSignatureUsualMark(), supportedClaims));
-        xmlEAAPayload.setFingerprint(getXmlClaim(attestationPayload.getFingerprint(), supportedClaims));
-        xmlEAAPayload.setBusinessName(getXmlClaim(attestationPayload.getBusinessName(), supportedClaims));
-        xmlEAAPayload.setOrganizationName(getXmlClaim(attestationPayload.getOrganizationName(), supportedClaims));
-        xmlEAAPayload.setBirthFullName(getXmlClaim(attestationPayload.getBirthFullName(), supportedClaims));
-        xmlEAAPayload.setProfession(getXmlClaim(attestationPayload.getProfession(), supportedClaims));
-        xmlEAAPayload.setRelationshipFather(getXmlClaim(attestationPayload.getRelationshipFather(), supportedClaims));
-        xmlEAAPayload.setRelationshipMother(getXmlClaim(attestationPayload.getRelationshipMother(), supportedClaims));
-        xmlEAAPayload.setRelationshipParent(getXmlClaim(attestationPayload.getRelationshipParent(), supportedClaims));
-        xmlEAAPayload.setRelationshipSon(getXmlClaim(attestationPayload.getRelationshipSon(), supportedClaims));
-        xmlEAAPayload.setRelationshipDaughter(getXmlClaim(attestationPayload.getRelationshipDaughter(), supportedClaims));
-        xmlEAAPayload.setRelationshipBrother(getXmlClaim(attestationPayload.getRelationshipBrother(), supportedClaims));
-        xmlEAAPayload.setRelationshipSister(getXmlClaim(attestationPayload.getRelationshipSister(), supportedClaims));
-        xmlEAAPayload.setRelationshipSibling(getXmlClaim(attestationPayload.getRelationshipSibling(), supportedClaims));
-        xmlEAAPayload.setRelationshipSpouse(getXmlClaim(attestationPayload.getRelationshipSpouse(), supportedClaims));
-        xmlEAAPayload.setRelationshipFatherInLaw(getXmlClaim(attestationPayload.getRelationshipFatherInLaw(), supportedClaims));
-        xmlEAAPayload.setRelationshipMotherInLaw(getXmlClaim(attestationPayload.getRelationshipMotherInLaw(), supportedClaims));
-        xmlEAAPayload.setRelationshipParentInLaw(getXmlClaim(attestationPayload.getRelationshipParentInLaw(), supportedClaims));
-        xmlEAAPayload.setRelationshipSonInLaw(getXmlClaim(attestationPayload.getRelationshipSonInLaw(), supportedClaims));
-        xmlEAAPayload.setRelationshipDaughterInLaw(getXmlClaim(attestationPayload.getRelationshipDaughterInLaw(), supportedClaims));
-        xmlEAAPayload.setRelationshipChildInLaw(getXmlClaim(attestationPayload.getRelationshipChildInLaw(), supportedClaims));
-        xmlEAAPayload.setRelationshipParentalAuthority(getXmlClaim(attestationPayload.getRelationshipParentalAuthority(), supportedClaims));
-        xmlEAAPayload.setRelationshipLegalRepresentative(getXmlClaim(attestationPayload.getRelationshipLegalRepresentative(), supportedClaims));
-        xmlEAAPayload.setRelationshipAgent(getXmlClaim(attestationPayload.getRelationshipAgent(), supportedClaims));
-        xmlEAAPayload.setDocumentType(getXmlClaim(attestationPayload.getDocumentType(), supportedClaims));
+        xmlAttestationPayload.setIssuingCountry(getXmlClaim(attestationPayload.getIssuingCountry(), supportedClaims));
+        xmlAttestationPayload.setIssuingAuthority(getXmlClaim(attestationPayload.getIssuingAuthority(), supportedClaims));
+        xmlAttestationPayload.setDocumentNumber(getXmlClaim(attestationPayload.getDocumentNumber(), supportedClaims));
+        xmlAttestationPayload.setPortrait(getXmlClaim(attestationPayload.getPortrait(), supportedClaims));
+        xmlAttestationPayload.setDrivingPrivileges(getXmlDrivingPrivilegesClaim(attestationPayload.getDrivingPrivileges(), supportedClaims));
+        xmlAttestationPayload.setUNDistinguishingSign(getXmlClaim(attestationPayload.getUNDistinguishingSign(), supportedClaims));
+        xmlAttestationPayload.setPersonalAdministrativeNumber(getXmlClaim(attestationPayload.getPersonalAdministrativeNumber(), supportedClaims));
+        xmlAttestationPayload.setHeight(getXmlClaim(attestationPayload.getHeight(), supportedClaims));
+        xmlAttestationPayload.setWeight(getXmlClaim(attestationPayload.getWeight(), supportedClaims));
+        xmlAttestationPayload.setEyeColour(getXmlClaim(attestationPayload.getEyeColour(), supportedClaims));
+        xmlAttestationPayload.setHairColour(getXmlClaim(attestationPayload.getHairColour(), supportedClaims));
+        xmlAttestationPayload.setResidentPostalAddress(getXmlClaim(attestationPayload.getPostalAddress(), supportedClaims));
+        xmlAttestationPayload.setPortraitCaptureDate(getXmlClaim(attestationPayload.getPortraitCaptureDate(), supportedClaims));
+        xmlAttestationPayload.setAgeInYears(getXmlClaim(attestationPayload.getAgeInYears(), supportedClaims));
+        xmlAttestationPayload.setAgeBirthYear(getXmlClaim(attestationPayload.getAgeBirthYear(), supportedClaims));
+        xmlAttestationPayload.setAgeEqualOrOver(getXmlAgeEqualOrOverClaim(attestationPayload.getAgeEqualOrOver(), supportedClaims));
+        xmlAttestationPayload.getAgeOverNN().addAll(getXmlAgeOverNNClaims(attestationPayload.getAgeOverNN(), supportedClaims));
+        xmlAttestationPayload.setIssuingJurisdiction(getXmlClaim(attestationPayload.getIssuingJurisdiction(), supportedClaims));
+        xmlAttestationPayload.setResidentAddressCity(getXmlClaim(attestationPayload.getResidentAddressCity(), supportedClaims));
+        xmlAttestationPayload.setResidentAddressState(getXmlClaim(attestationPayload.getResidentAddressState(), supportedClaims));
+        xmlAttestationPayload.setResidentAddressPostalCode(getXmlClaim(attestationPayload.getResidentAddressPostalCode(), supportedClaims));
+        xmlAttestationPayload.setResidentAddressCountry(getXmlClaim(attestationPayload.getResidentAddressCountry(), supportedClaims));
+        xmlAttestationPayload.getBiometricTemplate().addAll(getXmlBiometricTemplateXXClaim(attestationPayload.getBiometricTemplate(), supportedClaims));
+        xmlAttestationPayload.setSignatureUsualMark(getXmlClaim(attestationPayload.getSignatureUsualMark(), supportedClaims));
+        xmlAttestationPayload.setFingerprint(getXmlClaim(attestationPayload.getFingerprint(), supportedClaims));
+        xmlAttestationPayload.setBusinessName(getXmlClaim(attestationPayload.getBusinessName(), supportedClaims));
+        xmlAttestationPayload.setOrganizationName(getXmlClaim(attestationPayload.getOrganizationName(), supportedClaims));
+        xmlAttestationPayload.setBirthFullName(getXmlClaim(attestationPayload.getBirthFullName(), supportedClaims));
+        xmlAttestationPayload.setProfession(getXmlClaim(attestationPayload.getProfession(), supportedClaims));
+        xmlAttestationPayload.setRelationshipFather(getXmlClaim(attestationPayload.getRelationshipFather(), supportedClaims));
+        xmlAttestationPayload.setRelationshipMother(getXmlClaim(attestationPayload.getRelationshipMother(), supportedClaims));
+        xmlAttestationPayload.setRelationshipParent(getXmlClaim(attestationPayload.getRelationshipParent(), supportedClaims));
+        xmlAttestationPayload.setRelationshipSon(getXmlClaim(attestationPayload.getRelationshipSon(), supportedClaims));
+        xmlAttestationPayload.setRelationshipDaughter(getXmlClaim(attestationPayload.getRelationshipDaughter(), supportedClaims));
+        xmlAttestationPayload.setRelationshipBrother(getXmlClaim(attestationPayload.getRelationshipBrother(), supportedClaims));
+        xmlAttestationPayload.setRelationshipSister(getXmlClaim(attestationPayload.getRelationshipSister(), supportedClaims));
+        xmlAttestationPayload.setRelationshipSibling(getXmlClaim(attestationPayload.getRelationshipSibling(), supportedClaims));
+        xmlAttestationPayload.setRelationshipSpouse(getXmlClaim(attestationPayload.getRelationshipSpouse(), supportedClaims));
+        xmlAttestationPayload.setRelationshipFatherInLaw(getXmlClaim(attestationPayload.getRelationshipFatherInLaw(), supportedClaims));
+        xmlAttestationPayload.setRelationshipMotherInLaw(getXmlClaim(attestationPayload.getRelationshipMotherInLaw(), supportedClaims));
+        xmlAttestationPayload.setRelationshipParentInLaw(getXmlClaim(attestationPayload.getRelationshipParentInLaw(), supportedClaims));
+        xmlAttestationPayload.setRelationshipSonInLaw(getXmlClaim(attestationPayload.getRelationshipSonInLaw(), supportedClaims));
+        xmlAttestationPayload.setRelationshipDaughterInLaw(getXmlClaim(attestationPayload.getRelationshipDaughterInLaw(), supportedClaims));
+        xmlAttestationPayload.setRelationshipChildInLaw(getXmlClaim(attestationPayload.getRelationshipChildInLaw(), supportedClaims));
+        xmlAttestationPayload.setRelationshipParentalAuthority(getXmlClaim(attestationPayload.getRelationshipParentalAuthority(), supportedClaims));
+        xmlAttestationPayload.setRelationshipLegalRepresentative(getXmlClaim(attestationPayload.getRelationshipLegalRepresentative(), supportedClaims));
+        xmlAttestationPayload.setRelationshipAgent(getXmlClaim(attestationPayload.getRelationshipAgent(), supportedClaims));
+        xmlAttestationPayload.setDocumentType(getXmlClaim(attestationPayload.getDocumentType(), supportedClaims));
 
-        xmlEAAPayload.setIssuingAuthorityRegistrationIdentifier(getXmlClaim(attestationPayload.getIssuingAuthorityRegistrationIdentifier(), supportedClaims));
-        xmlEAAPayload.setTrustAnchor(getXmlClaim(attestationPayload.getTrustAnchor(), supportedClaims));
-        xmlEAAPayload.setResidentAddressStreet(getXmlClaim(attestationPayload.getResidentAddressStreet(), supportedClaims));
-        xmlEAAPayload.setResidentAddressHouseNumber(getXmlClaim(attestationPayload.getResidentAddressHouseNumber(), supportedClaims));
+        xmlAttestationPayload.setIssuingAuthorityRegistrationIdentifier(getXmlClaim(attestationPayload.getIssuingAuthorityRegistrationIdentifier(), supportedClaims));
+        xmlAttestationPayload.setTrustAnchor(getXmlClaim(attestationPayload.getTrustAnchor(), supportedClaims));
+        xmlAttestationPayload.setResidentAddressStreet(getXmlClaim(attestationPayload.getResidentAddressStreet(), supportedClaims));
+        xmlAttestationPayload.setResidentAddressHouseNumber(getXmlClaim(attestationPayload.getResidentAddressHouseNumber(), supportedClaims));
 
-        xmlEAAPayload.getOtherClaim().addAll(getOtherClaims(attestationPayload, supportedClaims));
+        xmlAttestationPayload.getOtherClaim().addAll(getOtherClaims(attestationPayload, supportedClaims));
 
-        return xmlEAAPayload;
+        return xmlAttestationPayload;
     }
 
     private XmlKeyBindingPayload getXmlKeyBindingPayload(KeyBindingSignaturePayload keyBindingPayload) {
@@ -491,19 +491,19 @@ public class AttestationDocumentDiagnosticDataBuilder extends SignedDocumentDiag
         return xmlKeyBindingPayload;
     }
 
-    private XmlClaim getXmlClaim(Claim claim) {
+    private XmlClaim getXmlClaim(VerifiedClaim claim) {
         return getXmlClaim(claim, (List<XmlClaim>) null);
     }
 
-    private XmlClaim getXmlClaim(Claim claim, List<XmlClaim> supportedClaims) {
+    private XmlClaim getXmlClaim(VerifiedClaim claim, List<XmlClaim> supportedClaims) {
         return getXmlClaim(claim, new XmlClaim(), supportedClaims);
     }
 
-    private <T extends XmlClaim> T getXmlClaim(Claim claim, T xmlClaim) {
+    private <T extends XmlClaim> T getXmlClaim(VerifiedClaim claim, T xmlClaim) {
         return getXmlClaim(claim, xmlClaim, null);
     }
 
-    private <T extends XmlClaim> T getXmlClaim(Claim claim, T xmlClaim, List<XmlClaim> supportedClaims) {
+    private <T extends XmlClaim> T getXmlClaim(VerifiedClaim claim, T xmlClaim, List<XmlClaim> supportedClaims) {
         if (claim != null) {
             appendGenericInfo(xmlClaim, claim, supportedClaims);
             if (claim.isStringValueType()) {
@@ -517,11 +517,11 @@ public class AttestationDocumentDiagnosticDataBuilder extends SignedDocumentDiag
             } else if (claim.isBinaryValueType()) {
                 xmlClaim.setBinary(claim.getBinaryValue());
             } else if (claim.isArrayValueType()) {
-                for (Claim claimItem : claim.getListValue()) {
+                for (VerifiedClaim claimItem : claim.getListValue()) {
                     xmlClaim.getItem().add(getXmlClaim(claimItem, new XmlClaim()));
                 }
             } else if (claim.isMapValueType()) {
-                for (Map.Entry<String, Claim> entry : claim.getMapValue().entrySet()) {
+                for (Map.Entry<String, VerifiedClaim> entry : claim.getMapValue().entrySet()) {
                     xmlClaim.getEntry().add(getXmlClaim(entry.getValue(), new XmlClaim()));
                 }
             } else if (claim.isNullValueType()) {
@@ -535,7 +535,7 @@ public class AttestationDocumentDiagnosticDataBuilder extends SignedDocumentDiag
     }
 
     private XmlVerifiableCredentialsTypeClaim getXmlVerifiableCredentialsType(AttestationPayload attestationPayload, List<XmlClaim> supportedClaims) {
-        ClaimString metadata = attestationPayload.getVerifiableCredentialsType();
+        VerifiedClaimString metadata = attestationPayload.getVerifiableCredentialsType();
         if (metadata != null) {
             XmlVerifiableCredentialsTypeClaim xmlVerifiableCredentialsType = getXmlClaim(metadata, new XmlVerifiableCredentialsTypeClaim(), supportedClaims);
             if (attestationPayload.getVerifiableCredentialsTypeIntegrity() != null) {
@@ -546,7 +546,7 @@ public class AttestationDocumentDiagnosticDataBuilder extends SignedDocumentDiag
         return null;
     }
 
-    private XmlStatusClaim getXmlStatus(ClaimStatus claimStatus, List<XmlClaim> supportedClaims) {
+    private XmlStatusClaim getXmlStatus(VerifiedClaimStatus claimStatus, List<XmlClaim> supportedClaims) {
         if (claimStatus == null) {
             return null;
         }
@@ -576,7 +576,7 @@ public class AttestationDocumentDiagnosticDataBuilder extends SignedDocumentDiag
         return xmlStatus;
     }
 
-    private XmlStatusListClaim getXmlStatusList(ClaimStatusList claimStatusList, List<XmlClaim> supportedClaims) {
+    private XmlStatusListClaim getXmlStatusList(VerifiedClaimStatusList claimStatusList, List<XmlClaim> supportedClaims) {
         if (claimStatusList == null) {
             return null;
         }
@@ -597,7 +597,7 @@ public class AttestationDocumentDiagnosticDataBuilder extends SignedDocumentDiag
         return xmlStatusList;
     }
 
-    private XmlIdentifierListClaim getXmlIdentifierList(ClaimIdentifierList claimStatusList, List<XmlClaim> supportedClaims) {
+    private XmlIdentifierListClaim getXmlIdentifierList(VerifiedClaimIdentifierList claimStatusList, List<XmlClaim> supportedClaims) {
         if (claimStatusList == null) {
             return null;
         }
@@ -618,7 +618,7 @@ public class AttestationDocumentDiagnosticDataBuilder extends SignedDocumentDiag
         return xmlIdentifierList;
     }
 
-    private XmlDeviceKeyClaim getXmlDeviceKeyClaim(ClaimDeviceKey deviceKey, List<XmlClaim> supportedClaims) {
+    private XmlDeviceKeyClaim getXmlDeviceKeyClaim(VerifiedClaimDeviceKey deviceKey, List<XmlClaim> supportedClaims) {
         if (deviceKey == null) {
             return null;
         }
@@ -679,7 +679,7 @@ public class AttestationDocumentDiagnosticDataBuilder extends SignedDocumentDiag
         return xmlAuthorizedDataElement;
     }
 
-    private XmlValidityInfoClaim getXmlValidityInfoClaim(ClaimValidityInfo validityInfo, List<XmlClaim> supportedClaims) {
+    private XmlValidityInfoClaim getXmlValidityInfoClaim(VerifiedClaimValidityInfo validityInfo, List<XmlClaim> supportedClaims) {
         if (validityInfo == null) {
             return null;
         }
@@ -703,7 +703,7 @@ public class AttestationDocumentDiagnosticDataBuilder extends SignedDocumentDiag
         return xmlValidityInfoClaim;
     }
 
-    private XmlAddressClaim getXmlAddressClaim(ClaimAddress claimAddress, List<XmlClaim> supportedClaims) {
+    private XmlAddressClaim getXmlAddressClaim(VerifiedClaimAddress claimAddress, List<XmlClaim> supportedClaims) {
         if (claimAddress == null) {
             return null;
         }
@@ -733,12 +733,12 @@ public class AttestationDocumentDiagnosticDataBuilder extends SignedDocumentDiag
         return xmlAddress;
     }
 
-    private XmlBirthdateClaim getXmlBirthdateClaim(Claim claim, List<XmlClaim> supportedClaims) {
+    private XmlBirthdateClaim getXmlBirthdateClaim(VerifiedClaim claim, List<XmlClaim> supportedClaims) {
         if (claim == null) {
             return null;
         }
-        if (claim instanceof ClaimBirthDate) {
-            ClaimBirthDate claimBirthDate = (ClaimBirthDate) claim;
+        if (claim instanceof VerifiedClaimBirthDate) {
+            VerifiedClaimBirthDate claimBirthDate = (VerifiedClaimBirthDate) claim;
             XmlBirthdateClaim xmlBirthdateClaim = new XmlBirthdateClaim();
             appendGenericInfo(xmlBirthdateClaim, claimBirthDate, supportedClaims);
 
@@ -755,12 +755,12 @@ public class AttestationDocumentDiagnosticDataBuilder extends SignedDocumentDiag
         return getXmlClaim(claim, new XmlBirthdateClaim(), supportedClaims);
     }
 
-    private XmlPlaceOfBirthClaim getXmlPlaceOfBirthClaim(Claim claim, List<XmlClaim> supportedClaims) {
+    private XmlPlaceOfBirthClaim getXmlPlaceOfBirthClaim(VerifiedClaim claim, List<XmlClaim> supportedClaims) {
         if (claim == null) {
             return null;
         }
-        if (claim instanceof ClaimPlaceOfBirth) {
-            ClaimPlaceOfBirth claimPlaceOfBirth = (ClaimPlaceOfBirth) claim;
+        if (claim instanceof VerifiedClaimPlaceOfBirth) {
+            VerifiedClaimPlaceOfBirth claimPlaceOfBirth = (VerifiedClaimPlaceOfBirth) claim;
             XmlPlaceOfBirthClaim xmlPlaceOfBirthClaim = new XmlPlaceOfBirthClaim();
             appendGenericInfo(xmlPlaceOfBirthClaim, claimPlaceOfBirth, supportedClaims);
 
@@ -781,7 +781,7 @@ public class AttestationDocumentDiagnosticDataBuilder extends SignedDocumentDiag
         return getXmlClaim(claim, new XmlPlaceOfBirthClaim(), supportedClaims);
     }
 
-    private XmlIntegrityClaim getXmlIntegrityClaim(ClaimIntegrity claimIntegrity, List<XmlClaim> supportedClaims) {
+    private XmlIntegrityClaim getXmlIntegrityClaim(VerifiedClaimIntegrity claimIntegrity, List<XmlClaim> supportedClaims) {
         if (claimIntegrity == null) {
             return null;
         }
@@ -795,14 +795,14 @@ public class AttestationDocumentDiagnosticDataBuilder extends SignedDocumentDiag
         return xmlIntegrityClaim;
     }
 
-    private List<XmlCredentialSubjectClaim> getXmlCredentialSubjectClaimList(List<ClaimCredentialSubject> credentialSubjects, List<XmlClaim> supportedClaims) {
+    private List<XmlCredentialSubjectClaim> getXmlCredentialSubjectClaimList(List<VerifiedClaimCredentialSubject> credentialSubjects, List<XmlClaim> supportedClaims) {
         if (Utils.isCollectionEmpty(credentialSubjects)) {
             return Collections.emptyList();
         }
         return credentialSubjects.stream().map(s -> getXmlCredentialSubjectClaim(s, supportedClaims)).collect(Collectors.toList());
     }
 
-    private XmlCredentialSubjectClaim getXmlCredentialSubjectClaim(ClaimCredentialSubject credentialSubject, List<XmlClaim> supportedClaims) {
+    private XmlCredentialSubjectClaim getXmlCredentialSubjectClaim(VerifiedClaimCredentialSubject credentialSubject, List<XmlClaim> supportedClaims) {
         XmlCredentialSubjectClaim xmlCredentialSubjectClaim = new XmlCredentialSubjectClaim();
         appendGenericInfo(xmlCredentialSubjectClaim, credentialSubject, supportedClaims);
         xmlCredentialSubjectClaim.setFullName(getXmlClaim(credentialSubject.getFullName(), supportedClaims));
@@ -837,16 +837,16 @@ public class AttestationDocumentDiagnosticDataBuilder extends SignedDocumentDiag
         return xmlCredentialSubjectClaim;
     }
 
-    private XmlDrivingPrivilegesClaim getXmlDrivingPrivilegesClaim(ClaimDrivingPrivileges claimDrivingPrivileges, List<XmlClaim> supportedClaims) {
+    private XmlDrivingPrivilegesClaim getXmlDrivingPrivilegesClaim(VerifiedClaimDrivingPrivileges claimDrivingPrivileges, List<XmlClaim> supportedClaims) {
         if (claimDrivingPrivileges == null) {
             return null;
         }
         XmlDrivingPrivilegesClaim xmlDrivingPrivilegesClaim = new XmlDrivingPrivilegesClaim();
         appendGenericInfo(xmlDrivingPrivilegesClaim, claimDrivingPrivileges, supportedClaims);
         if (Utils.isCollectionNotEmpty(claimDrivingPrivileges.getListValue())) {
-            for (Claim claimDrivingPrivilege : claimDrivingPrivileges.getListValue()) {
-                if (claimDrivingPrivilege instanceof ClaimDrivingPrivilege) {
-                    XmlDrivingPrivilegeClaim xmlDrivingPrivilegeClaim = getXmlDrivingPrivilegeClaim((ClaimDrivingPrivilege) claimDrivingPrivilege);
+            for (VerifiedClaim claimDrivingPrivilege : claimDrivingPrivileges.getListValue()) {
+                if (claimDrivingPrivilege instanceof VerifiedClaimDrivingPrivilege) {
+                    XmlDrivingPrivilegeClaim xmlDrivingPrivilegeClaim = getXmlDrivingPrivilegeClaim((VerifiedClaimDrivingPrivilege) claimDrivingPrivilege);
                     if (xmlDrivingPrivilegeClaim != null) {
                         xmlDrivingPrivilegesClaim.getDrivingPrivilege().add(xmlDrivingPrivilegeClaim);
                     }
@@ -858,7 +858,7 @@ public class AttestationDocumentDiagnosticDataBuilder extends SignedDocumentDiag
         return xmlDrivingPrivilegesClaim;
     }
 
-    private XmlDrivingPrivilegeClaim getXmlDrivingPrivilegeClaim(ClaimDrivingPrivilege claimDrivingPrivilege) {
+    private XmlDrivingPrivilegeClaim getXmlDrivingPrivilegeClaim(VerifiedClaimDrivingPrivilege claimDrivingPrivilege) {
         if (claimDrivingPrivilege == null) {
             return null;
         }
@@ -882,16 +882,16 @@ public class AttestationDocumentDiagnosticDataBuilder extends SignedDocumentDiag
         return xmlDrivingPrivilegeClaim;
     }
 
-    private XmlDrivingPrivilegeCodesClaim getXmlDrivingPrivilegeCodesClaim(ClaimDrivingPrivilegeCodes claimDrivingPrivilegeCodes, List<XmlClaim> supportedClaims) {
+    private XmlDrivingPrivilegeCodesClaim getXmlDrivingPrivilegeCodesClaim(VerifiedClaimDrivingPrivilegeCodes claimDrivingPrivilegeCodes, List<XmlClaim> supportedClaims) {
         if (claimDrivingPrivilegeCodes == null) {
             return null;
         }
         XmlDrivingPrivilegeCodesClaim xmlDrivingPrivilegeCodesClaim = new XmlDrivingPrivilegeCodesClaim();
         appendGenericInfo(xmlDrivingPrivilegeCodesClaim, claimDrivingPrivilegeCodes, supportedClaims);
         if (Utils.isCollectionNotEmpty(claimDrivingPrivilegeCodes.getListValue())) {
-            for (Claim claimDrivingPrivilegeCode : claimDrivingPrivilegeCodes.getListValue()) {
-                if (claimDrivingPrivilegeCode instanceof ClaimDrivingPrivilegeCode) {
-                    XmlDrivingPrivilegeCodeClaim xmlDrivingPrivilegeCodeClaim = getXmlDrivingPrivilegeCodeClaim((ClaimDrivingPrivilegeCode) claimDrivingPrivilegeCode);
+            for (VerifiedClaim claimDrivingPrivilegeCode : claimDrivingPrivilegeCodes.getListValue()) {
+                if (claimDrivingPrivilegeCode instanceof VerifiedClaimDrivingPrivilegeCode) {
+                    XmlDrivingPrivilegeCodeClaim xmlDrivingPrivilegeCodeClaim = getXmlDrivingPrivilegeCodeClaim((VerifiedClaimDrivingPrivilegeCode) claimDrivingPrivilegeCode);
                     if (xmlDrivingPrivilegeCodeClaim != null) {
                         xmlDrivingPrivilegeCodesClaim.getCode().add(xmlDrivingPrivilegeCodeClaim);
                     }
@@ -903,7 +903,7 @@ public class AttestationDocumentDiagnosticDataBuilder extends SignedDocumentDiag
         return xmlDrivingPrivilegeCodesClaim;
     }
 
-    private XmlDrivingPrivilegeCodeClaim getXmlDrivingPrivilegeCodeClaim(ClaimDrivingPrivilegeCode claimDrivingPrivilegeCode) {
+    private XmlDrivingPrivilegeCodeClaim getXmlDrivingPrivilegeCodeClaim(VerifiedClaimDrivingPrivilegeCode claimDrivingPrivilegeCode) {
         if (claimDrivingPrivilegeCode == null) {
             return null;
         }
@@ -924,7 +924,7 @@ public class AttestationDocumentDiagnosticDataBuilder extends SignedDocumentDiag
         return xmlDrivingPrivilegeCodeClaim;
     }
 
-    private XmlAgeEqualOrOverClaim getXmlAgeEqualOrOverClaim(ClaimAgeEqualOrOver claimAgeEqualOrOver, List<XmlClaim> supportedClaims) {
+    private XmlAgeEqualOrOverClaim getXmlAgeEqualOrOverClaim(VerifiedClaimAgeEqualOrOver claimAgeEqualOrOver, List<XmlClaim> supportedClaims) {
         if (claimAgeEqualOrOver == null) {
             return null;
         }
@@ -938,12 +938,12 @@ public class AttestationDocumentDiagnosticDataBuilder extends SignedDocumentDiag
         return xmlAgeEqualOrOverClaim;
     }
 
-    private List<XmlAgeOverNNClaim> getXmlAgeOverNNClaims(List<ClaimAgeOverNN> claimsAgeOverNN, List<XmlClaim> supportedClaims) {
+    private List<XmlAgeOverNNClaim> getXmlAgeOverNNClaims(List<VerifiedClaimAgeOverNN> claimsAgeOverNN, List<XmlClaim> supportedClaims) {
         if (Utils.isCollectionEmpty(claimsAgeOverNN)) {
             return Collections.emptyList();
         }
         final List<XmlAgeOverNNClaim> result = new ArrayList<>();
-        for (ClaimAgeOverNN claimAgeOverNN : claimsAgeOverNN) {
+        for (VerifiedClaimAgeOverNN claimAgeOverNN : claimsAgeOverNN) {
             XmlAgeOverNNClaim xmlAgeOverNNClaim = getXmlAgeOverNNClaim(claimAgeOverNN, supportedClaims);
             if (xmlAgeOverNNClaim != null) {
                 result.add(xmlAgeOverNNClaim);
@@ -952,7 +952,7 @@ public class AttestationDocumentDiagnosticDataBuilder extends SignedDocumentDiag
         return result;
     }
 
-    private XmlAgeOverNNClaim getXmlAgeOverNNClaim(ClaimAgeOverNN claimAgeOverNN, List<XmlClaim> supportedClaims) {
+    private XmlAgeOverNNClaim getXmlAgeOverNNClaim(VerifiedClaimAgeOverNN claimAgeOverNN, List<XmlClaim> supportedClaims) {
         if (claimAgeOverNN == null) {
             return null;
         }
@@ -963,12 +963,12 @@ public class AttestationDocumentDiagnosticDataBuilder extends SignedDocumentDiag
         return xmlAgeOverNNClaim;
     }
 
-    private List<XmlBiometricTemplateXXClaim> getXmlBiometricTemplateXXClaim(List<ClaimBiometricTemplateXX> claimsBiometricTemplateXX, List<XmlClaim> supportedClaims) {
+    private List<XmlBiometricTemplateXXClaim> getXmlBiometricTemplateXXClaim(List<VerifiedClaimBiometricTemplateXX> claimsBiometricTemplateXX, List<XmlClaim> supportedClaims) {
         if (Utils.isCollectionEmpty(claimsBiometricTemplateXX)) {
             return Collections.emptyList();
         }
         final List<XmlBiometricTemplateXXClaim> result = new ArrayList<>();
-        for (ClaimBiometricTemplateXX claimBiometricTemplateXX : claimsBiometricTemplateXX) {
+        for (VerifiedClaimBiometricTemplateXX claimBiometricTemplateXX : claimsBiometricTemplateXX) {
             XmlBiometricTemplateXXClaim xmlBiometricTemplateXXClaim = getXmlBiometricTemplateXXClaim(claimBiometricTemplateXX, supportedClaims);
             if (xmlBiometricTemplateXXClaim != null) {
                 result.add(xmlBiometricTemplateXXClaim);
@@ -977,7 +977,7 @@ public class AttestationDocumentDiagnosticDataBuilder extends SignedDocumentDiag
         return result;
     }
 
-    private XmlBiometricTemplateXXClaim getXmlBiometricTemplateXXClaim(ClaimBiometricTemplateXX claimBiometricTemplateXX, List<XmlClaim> supportedClaims) {
+    private XmlBiometricTemplateXXClaim getXmlBiometricTemplateXXClaim(VerifiedClaimBiometricTemplateXX claimBiometricTemplateXX, List<XmlClaim> supportedClaims) {
         if (claimBiometricTemplateXX == null) {
             return null;
         }
@@ -988,7 +988,7 @@ public class AttestationDocumentDiagnosticDataBuilder extends SignedDocumentDiag
         return xmlBiometricTemplateXXClaim;
     }
 
-    private XmlAttestedAttributesSubjectClaim getXmlAttestedAttributesSubjectClaim(ClaimAttestedAttributesSubject attestedAttributesSubject, List<XmlClaim> supportedClaims) {
+    private XmlAttestedAttributesSubjectClaim getXmlAttestedAttributesSubjectClaim(VerifiedClaimAttestedAttributesSubject attestedAttributesSubject, List<XmlClaim> supportedClaims) {
         if (attestedAttributesSubject == null) {
             return null;
         }
@@ -1000,8 +1000,8 @@ public class AttestationDocumentDiagnosticDataBuilder extends SignedDocumentDiag
         if (attestedAttributesSubject.getSubjectId() != null) {
             xmlAttestedAttributesSubject.setSubjectId(getXmlAttestedAttributesSubjectIdClaim(attestedAttributesSubject.getSubjectId(), claimSupportedClaims));
         }
-        if (attestedAttributesSubject.getSubjectPseudonym() != null) {
-            xmlAttestedAttributesSubject.setSubjectPseudonym(getXmlClaim(attestedAttributesSubject.getSubjectPseudonym(), claimSupportedClaims));
+        if (attestedAttributesSubject.getPseudonym() != null) {
+            xmlAttestedAttributesSubject.setSubjectPseudonym(getXmlClaim(attestedAttributesSubject.getPseudonym(), claimSupportedClaims));
         }
         if (attestedAttributesSubject.getAttributes() != null) {
             xmlAttestedAttributesSubject.setAttributes(getXmlClaim(attestedAttributesSubject.getAttributes(), claimSupportedClaims));
@@ -1010,18 +1010,18 @@ public class AttestationDocumentDiagnosticDataBuilder extends SignedDocumentDiag
         return xmlAttestedAttributesSubject;
     }
 
-    private XmlAttestedAttributesSubjectIdClaim getXmlAttestedAttributesSubjectIdClaim(Claim claim, List<XmlClaim> supportedClaims) {
+    private XmlAttestedAttributesSubjectIdClaim getXmlAttestedAttributesSubjectIdClaim(VerifiedClaim claim, List<XmlClaim> supportedClaims) {
         if (claim == null) {
             return null;
         }
 
-        if (claim instanceof ClaimAttestedAttributesSubjectId) {
+        if (claim instanceof VerifiedClaimAttestedAttributesSubjectId) {
             XmlAttestedAttributesSubjectIdClaim xmlAttestedAttributesSubjectIdClaim = new XmlAttestedAttributesSubjectIdClaim();
             appendGenericInfo(xmlAttestedAttributesSubjectIdClaim, claim, supportedClaims);
 
             List<XmlClaim> claimSupportedClaims = new ArrayList<>();
 
-            ClaimAttestedAttributesSubjectId attestedAttributesSubjectId = (ClaimAttestedAttributesSubjectId) claim;
+            VerifiedClaimAttestedAttributesSubjectId attestedAttributesSubjectId = (VerifiedClaimAttestedAttributesSubjectId) claim;
             if (attestedAttributesSubjectId.getFamilyName() != null) {
                 xmlAttestedAttributesSubjectIdClaim.setFamilyName(getXmlClaim(attestedAttributesSubjectId.getFamilyName(), claimSupportedClaims));
             }
@@ -1037,14 +1037,14 @@ public class AttestationDocumentDiagnosticDataBuilder extends SignedDocumentDiag
         return getXmlClaim(claim, new XmlAttestedAttributesSubjectIdClaim(), supportedClaims);
     }
 
-    private List<XmlClaim> getOtherClaims(Claim claim, List<XmlClaim> supportedClaims) {
+    private List<XmlClaim> getOtherClaims(VerifiedClaim claim, List<XmlClaim> supportedClaims) {
         if (claim.isMapValueType() && !claim.isNullOrEmpty()) {
             final List<XmlClaim> otherClaims = new ArrayList<>();
             Collection<String> processedHeaderNames = getHeaderNames(supportedClaims);
-            Map<String, Claim> mapValue = claim.getMapValue();
+            Map<String, VerifiedClaim> mapValue = claim.getMapValue();
             for (String headerName : mapValue.keySet()) {
                 if (!processedHeaderNames.contains(headerName)) {
-                    Claim claimValue = mapValue.get(headerName);
+                    VerifiedClaim claimValue = mapValue.get(headerName);
                     if (claimValue != null) {
                         XmlClaim otherClaim = getXmlClaim(claimValue);
                         otherClaims.add(otherClaim);
@@ -1071,11 +1071,11 @@ public class AttestationDocumentDiagnosticDataBuilder extends SignedDocumentDiag
         }
     }
 
-    private void appendGenericInfo(XmlClaim xmlClaim, Claim claim) {
+    private void appendGenericInfo(XmlClaim xmlClaim, VerifiedClaim claim) {
         appendGenericInfo(xmlClaim, claim, null);
     }
 
-    private void appendGenericInfo(XmlClaim xmlClaim, Claim claim, List<XmlClaim> supportedClaims) {
+    private void appendGenericInfo(XmlClaim xmlClaim, VerifiedClaim claim, List<XmlClaim> supportedClaims) {
         if (claim != null) {
             if (claim.getName() != null) {
                 xmlClaim.setName(claim.getName());
@@ -1097,87 +1097,87 @@ public class AttestationDocumentDiagnosticDataBuilder extends SignedDocumentDiag
         return signatureDiagnosticDataBuilder.buildDetachedXmlSignature(signature);
     }
 
-    private List<XmlEAARevocationToken> buildXmlEAARevocationTokens(Collection<AttestationRevocationToken> statusTokens) {
-        List<XmlEAARevocationToken> xmlEAARevocationTokens = new ArrayList<>();
+    private List<XmlAttestationRevocationToken> buildXmlAttestationRevocationTokens(Collection<AttestationRevocationToken> statusTokens) {
+        List<XmlAttestationRevocationToken> xmlAttestationRevocationTokens = new ArrayList<>();
         if (Utils.isCollectionNotEmpty(statusTokens)) {
             List<AttestationRevocationToken> tokens = new ArrayList<>(statusTokens);
             tokens.sort(new TokenComparator());
-            List<String> uniqueIds = new ArrayList<>(); // possible that EAAs share one EAA Status List
+            List<String> uniqueIds = new ArrayList<>(); // possible that attestations share one attestation Status List
             for (AttestationRevocationToken attestationRevocationToken : tokens) {
                 String id = attestationRevocationToken.getDSSIdAsString();
                 if (uniqueIds.contains(id)) {
                     continue;
                 }
-                XmlEAARevocationToken xmlEAARevocationToken = xmlEAARevocationTokenMap.get(id);
-                if (xmlEAARevocationToken == null) {
-                    xmlEAARevocationToken = buildDetachedXmlEAARevocationToken(attestationRevocationToken);
-                    xmlEAARevocationTokenMap.put(id, xmlEAARevocationToken);
-                    xmlEAARevocationTokens.add(xmlEAARevocationToken);
+                XmlAttestationRevocationToken xmlAttestationRevocationToken = xmlAttestationRevocationTokenMap.get(id);
+                if (xmlAttestationRevocationToken == null) {
+                    xmlAttestationRevocationToken = buildDetachedXmlAttestationRevocationToken(attestationRevocationToken);
+                    xmlAttestationRevocationTokenMap.put(id, xmlAttestationRevocationToken);
+                    xmlAttestationRevocationTokens.add(xmlAttestationRevocationToken);
                 }
                 uniqueIds.add(id);
             }
         }
-        return xmlEAARevocationTokens;
+        return xmlAttestationRevocationTokens;
 
     }
 
     /**
-     * Builds a new {@code XmlEAARevocationToken}
+     * Builds a new {@code XmlAttestationRevocationToken}
      *
      * @param attestationRevocationToken {@link AttestationRevocationToken}
-     * @return {@link XmlEAARevocationToken}
+     * @return {@link XmlAttestationRevocationToken}
      */
-    protected XmlEAARevocationToken buildDetachedXmlEAARevocationToken(AttestationRevocationToken attestationRevocationToken) {
-        final XmlEAARevocationToken xmlEAARevocationToken = new XmlEAARevocationToken();
-        xmlEAARevocationToken.setId(identifierProvider.getIdAsString(attestationRevocationToken));
-        xmlEAARevocationToken.setOrigin(attestationRevocationToken.getOrigin());
-        xmlEAARevocationToken.setType(attestationRevocationToken.getType());
-        xmlEAARevocationToken.setSourceAddress(attestationRevocationToken.getSourceURL());
-        xmlEAARevocationToken.setSubject(getXmlEAASubject(attestationRevocationToken));
-        xmlEAARevocationToken.setIssuedAt(attestationRevocationToken.getCreationDate());
-        xmlEAARevocationToken.setExpirationTime(attestationRevocationToken.getExpirationDate());
+    protected XmlAttestationRevocationToken buildDetachedXmlAttestationRevocationToken(AttestationRevocationToken attestationRevocationToken) {
+        final XmlAttestationRevocationToken xmlAttestationRevocationToken = new XmlAttestationRevocationToken();
+        xmlAttestationRevocationToken.setId(identifierProvider.getIdAsString(attestationRevocationToken));
+        xmlAttestationRevocationToken.setOrigin(attestationRevocationToken.getOrigin());
+        xmlAttestationRevocationToken.setType(attestationRevocationToken.getType());
+        xmlAttestationRevocationToken.setSourceAddress(attestationRevocationToken.getSourceURL());
+        xmlAttestationRevocationToken.setSubject(getXmlAttestationSubject(attestationRevocationToken));
+        xmlAttestationRevocationToken.setIssuedAt(attestationRevocationToken.getCreationDate());
+        xmlAttestationRevocationToken.setExpirationTime(attestationRevocationToken.getExpirationDate());
         if (attestationRevocationToken.getTimeToLive() != null) {
-            xmlEAARevocationToken.setTimeToLive(BigInteger.valueOf(attestationRevocationToken.getTimeToLive().longValue()));
+            xmlAttestationRevocationToken.setTimeToLive(BigInteger.valueOf(attestationRevocationToken.getTimeToLive().longValue()));
         }
 
-        setSignatureInfo(xmlEAARevocationToken, attestationRevocationToken);
-        xmlEAARevocationToken.setFoundCertificates(getXmlFoundCertificates(attestationRevocationToken));
+        setSignatureInfo(xmlAttestationRevocationToken, attestationRevocationToken);
+        xmlAttestationRevocationToken.setFoundCertificates(getXmlFoundCertificates(attestationRevocationToken));
 
         if (tokenExtractionStrategy.isRevocationData()) {
-            xmlEAARevocationToken.setBase64Encoded(attestationRevocationToken.getEncoded());
+            xmlAttestationRevocationToken.setBase64Encoded(attestationRevocationToken.getEncoded());
         } else {
             byte[] revocationDigest = attestationRevocationToken.getDigest(defaultDigestAlgorithm);
-            xmlEAARevocationToken.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(defaultDigestAlgorithm, revocationDigest));
+            xmlAttestationRevocationToken.setDigestAlgoAndValue(getXmlDigestAlgoAndValue(defaultDigestAlgorithm, revocationDigest));
         }
 
-        return xmlEAARevocationToken;
+        return xmlAttestationRevocationToken;
     }
 
-    private XmlEAASubject getXmlEAASubject(AttestationRevocationToken attestationRevocationToken) {
+    private XmlAttestationSubject getXmlAttestationSubject(AttestationRevocationToken attestationRevocationToken) {
         if (attestationRevocationToken.getSubject() == null) {
             return null;
         }
-        XmlEAASubject xmlEAASubject = new XmlEAASubject();
-        xmlEAASubject.setValue(attestationRevocationToken.getSubject());
+        XmlAttestationSubject xmlAttestationSubject = new XmlAttestationSubject();
+        xmlAttestationSubject.setValue(attestationRevocationToken.getSubject());
         if (attestationRevocationToken.getSubjectMatch() != null) {
-            xmlEAASubject.setMatch(attestationRevocationToken.getSubjectMatch());
+            xmlAttestationSubject.setMatch(attestationRevocationToken.getSubjectMatch());
         }
-        return xmlEAASubject;
+        return xmlAttestationSubject;
     }
 
-    private void setSignatureInfo(XmlEAARevocationToken xmlEAARevocationToken, AttestationRevocationToken attestationRevocationToken) {
+    private void setSignatureInfo(XmlAttestationRevocationToken xmlAttestationRevocationToken, AttestationRevocationToken attestationRevocationToken) {
         AdvancedSignature signature = attestationRevocationToken.getSignature();
         if (signature != null) {
             final CandidatesForSigningCertificate candidatesForSigningCertificate = signature.getCandidatesForSigningCertificate();
             final CertificateValidity theCertificateValidity = candidatesForSigningCertificate.getTheCertificateValidity();
             PublicKey signingCertificatePublicKey = null;
             if (theCertificateValidity != null) {
-                xmlEAARevocationToken.setSigningCertificate(getXmlSigningCertificate(attestationRevocationToken.getDSSId(), theCertificateValidity));
-                xmlEAARevocationToken.setCertificateChain(getXmlForCertificateChain(theCertificateValidity, signature.getCertificateSource()));
+                xmlAttestationRevocationToken.setSigningCertificate(getXmlSigningCertificate(attestationRevocationToken.getDSSId(), theCertificateValidity));
+                xmlAttestationRevocationToken.setCertificateChain(getXmlForCertificateChain(theCertificateValidity, signature.getCertificateSource()));
                 signingCertificatePublicKey = theCertificateValidity.getPublicKey();
             }
 
-            xmlEAARevocationToken.setBasicSignature(getXmlBasicSignature(signature, signingCertificatePublicKey));
+            xmlAttestationRevocationToken.setBasicSignature(getXmlBasicSignature(signature, signingCertificatePublicKey));
         }
     }
 
@@ -1236,27 +1236,27 @@ public class AttestationDocumentDiagnosticDataBuilder extends SignedDocumentDiag
         }
     }
 
-    private void linkEAAAndStatuses(Collection<Attestation> attestations) {
+    private void linkAttestationAndRevocations(Collection<Attestation> attestations) {
         if (Utils.isCollectionNotEmpty(attestations)) {
             for (Attestation attestation : attestations) {
-                XmlEAA xmlEAA = xmlEAAMap.get(attestation.getId());
-                Set<AttestationRevocationToken> statusesForEAA = getStatusTokenForEAA(attestation);
-                for (AttestationRevocationToken statusToken : statusesForEAA) {
-                    XmlEAARevocationToken xmlEAARevocationToken = xmlEAARevocationTokenMap.get(statusToken.getDSSIdAsString());
-                    XmlEAARevocationStatus xmlEAARevocationStatus = new XmlEAARevocationStatus();
-                    xmlEAARevocationStatus.setEAARevocationToken(xmlEAARevocationToken);
-                    xmlEAARevocationStatus.setStatus(statusToken.getStatus());
-                    xmlEAA.getEAARevocations().add(xmlEAARevocationStatus);
+                XmlAttestation xmlAttestation = xmlAttestationMap.get(attestation.getId());
+                Set<AttestationRevocationToken> revocationTokens = getRevocationTokensForAttestation(attestation);
+                for (AttestationRevocationToken revocationToken : revocationTokens) {
+                    XmlAttestationRevocationToken xmlAttestationRevocationToken = xmlAttestationRevocationTokenMap.get(revocationToken.getDSSIdAsString());
+                    XmlAttestationRevocationStatus xmlAttestationRevocationStatus = new XmlAttestationRevocationStatus();
+                    xmlAttestationRevocationStatus.setAttestationRevocationToken(xmlAttestationRevocationToken);
+                    xmlAttestationRevocationStatus.setStatus(revocationToken.getStatus());
+                    xmlAttestation.getAttestationRevocations().add(xmlAttestationRevocationStatus);
                 }
             }
         }
     }
 
-    private Set<AttestationRevocationToken> getStatusTokenForEAA(Attestation attestation) {
+    private Set<AttestationRevocationToken> getRevocationTokensForAttestation(Attestation attestation) {
         Set<AttestationRevocationToken> statuses = new HashSet<>();
         if (Utils.isCollectionNotEmpty(attestationRevocationTokens)) {
             for (AttestationRevocationToken attestationRevocationToken : attestationRevocationTokens) {
-                if (Utils.areStringsEqual(attestation.getId(), attestationRevocationToken.getRelatedEAAId())) {
+                if (Utils.areStringsEqual(attestation.getId(), attestationRevocationToken.getRelatedAttestationId())) {
                     statuses.add(attestationRevocationToken);
                 }
             }

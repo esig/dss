@@ -261,7 +261,7 @@ public enum ServiceTypeIdentifier {
 	/**
 	 * A not qualified trust service for the validation of electronic attestation of attributes.
 	 */
-	EAA_VALIDATION("EAAValidation", "http://uri.etsi.org/TrstSvc/Svctype/EAAValidation", false, false),
+	EAA_VALIDATION("AttestationValidation", "http://uri.etsi.org/TrstSvc/Svctype/AttestationValidation", false, false),
 
 	/**
 	 * A not qualified trust service for the validation of electronic timestamps.

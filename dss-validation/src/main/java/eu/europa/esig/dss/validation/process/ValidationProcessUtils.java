@@ -398,9 +398,9 @@ public class ValidationProcessUtils {
 				return MessageTag.ACCM_POS_CERT_CHAIN;
 			case EVIDENCE_RECORD:
 				return MessageTag.ACCM_POS_EV_RECORD;
-			case EAA:
+			case ATTESTATION:
 				return MessageTag.ACCM_POS_EAA;
-			case EAA_REVOCATION:
+			case ATTESTATION_REVOCATION:
 				return MessageTag.ACCM_POS_EAA;
 			default:
 				throw new IllegalArgumentException("Unsupported context " + context);
@@ -423,7 +423,7 @@ public class ValidationProcessUtils {
 				return MessageTag.ACCM_POS_CERT_CHAIN_TST;
 			case REVOCATION:
 				return MessageTag.ACCM_POS_CERT_CHAIN_REVOC;
-			case EAA_REVOCATION:
+			case ATTESTATION_REVOCATION:
 				return MessageTag.ACCM_POS_CERT_CHAIN_EAA_REV;
 			case CERTIFICATE:
 				return MessageTag.ACCM_POS_CERT_CHAIN;
@@ -479,13 +479,13 @@ public class ValidationProcessUtils {
 				return MessageTag.ACCM_POS_ER_TST_SEQ;
 			case EVIDENCE_RECORD_MASTER_SIGNATURE:
 				return MessageTag.ACCM_POS_ER_MST_SIG;
-			case EAA_DISCLOSURE:
+			case SELECTIVE_DISCLOSURE:
 				return MessageTag.ACCM_POS_EAA_SD;
-			case EAA_NESTED_DISCLOSURE:
+			case NESTED_SELECTIVE_DISCLOSURE:
 				return MessageTag.ACCM_POS_EAA_NSD;
-			case EAA_ORPHAN_SELECTIVELY_DISCLOSABLE_CLAIM:
+			case ORPHAN_SELECTIVELY_DISCLOSABLE_CLAIM:
 				return MessageTag.ACCM_POS_EAA_OSDC;
-			case EAA_KEY_BINDING:
+			case KEY_BINDING_SIGNATURE:
 				return MessageTag.ACCM_POS_EAA_KB;
 			default:
 				throw new IllegalArgumentException(String.format(
@@ -531,13 +531,13 @@ public class ValidationProcessUtils {
 					return MessageTag.ACCM_POS_ER_ADO_PL;
 				case EVIDENCE_RECORD_ORPHAN_REFERENCE:
 					return MessageTag.ACCM_POS_ER_OR_PL;
-				case EAA_DISCLOSURE:
+				case SELECTIVE_DISCLOSURE:
 					return MessageTag.ACCM_POS_EAA_SD_PL;
-				case EAA_NESTED_DISCLOSURE:
+				case NESTED_SELECTIVE_DISCLOSURE:
 					return MessageTag.ACCM_POS_EAA_NSD_PL;
-				case EAA_ORPHAN_SELECTIVELY_DISCLOSABLE_CLAIM:
+				case ORPHAN_SELECTIVELY_DISCLOSABLE_CLAIM:
 					return MessageTag.ACCM_POS_EAA_OSDC_PL;
-				case EAA_KEY_BINDING:
+				case KEY_BINDING_SIGNATURE:
 					return MessageTag.ACCM_POS_EAA_KB;
 				default:
 					throw new IllegalArgumentException(String.format(
@@ -642,7 +642,7 @@ public class ValidationProcessUtils {
 					default:
 						throw new IllegalArgumentException("Unsupported subContext " + subContext);
 				}
-			case EAA_REVOCATION:
+			case ATTESTATION_REVOCATION:
 				switch (subContext) {
 					case SIGNING_CERT:
 						return MessageTag.EAA_REV_SIG_CERT;

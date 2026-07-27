@@ -403,14 +403,14 @@ dss-evidence-record-common:: Common code and interfaces for validation of eviden
 dss-evidence-record-xml:: Code for validation of RFC 6283 XML Evidence Records (cf. <<R23>>).
 dss-evidence-record-asn1:: Code for validation of RFC 4998 Evidence Records (ASN.1 format) (cf. <<R24>>).
 
-===== Electronic Attestations of Attributes (EAA) modules
+===== Attestation modules
 
-dss-attestation:: Common code and interfaces for EAA.
-dss-sd-jwt:: Code for creation and validation of EAAs based on JWTs (i.e. SD-JWT VC, etc.).
-dss-mdoc:: Code for creation and validation of EAAs based on mdoc specification as per ISO 18013-5.
-dss-attestation-revocation-common:: Common code and interfaces for EAA revocation.
-dss-attestation-revocation-jwt:: Code for the validation of EAA based on JWT tokens.
-dss-attestation-revocation-cwt:: Code for the validation of EAA based on CWT tokens.
+dss-attestation:: Common code and interfaces for attestation.
+dss-sd-jwt:: Code for creation and validation of attestations based on JWTs (i.e. SD-JWT VC, etc.).
+dss-mdoc:: Code for creation and validation of attestations based on mdoc specification as per ISO 18013-5.
+dss-attestation-revocation:: Common code and interfaces for attestation revocation.
+dss-attestation-revocation-jwt:: Code for the validation of attestation based on JWT tokens.
+dss-attestation-revocation-cwt:: Code for the validation of attestation based on CWT tokens.
 
 ===== WebServices
 
@@ -458,20 +458,20 @@ dss-timestamp-remote-rest:: REST webservice to create a timestamp.
 dss-timestamp-remote-soap:: SOAP webservice to create a timestamp.
 
 '''
-dss-attestation-creation-dto:: Data Transfer Objects used for EAA and/or EAAP creation.
+dss-attestation-creation-dto:: Data Transfer Objects used for attestation and/or EAAP creation.
 dss-attestation-creation-remote:: Common classes between dss-attestation-creation-rest and dss-attestation-creation-soap.
-dss-attestation-creation-rest-client:: Client for the REST EAA and/or EAAP creation webservice.
-dss-attestation-creation-soap-client:: Client for the SOAP EAA and/or EAAP creation webservice.
-dss-attestation-creation-rest:: REST webservice to create EAA and/or EAAP.
-dss-attestation-creation-soap:: SOAP webservice to create EAA and/or EAAP.
+dss-attestation-creation-rest-client:: Client for the REST attestation and/or EAAP creation webservice.
+dss-attestation-creation-soap-client:: Client for the SOAP attestation and/or EAAP creation webservice.
+dss-attestation-creation-rest:: REST webservice to create attestation and/or EAAP.
+dss-attestation-creation-soap:: SOAP webservice to create attestation and/or EAAP.
 
 '''
-dss-attestation-validation-dto:: Data Transfer Objects used for EAA validation (REST and SOAP).
+dss-attestation-validation-dto:: Data Transfer Objects used for attestation validation (REST and SOAP).
 dss-attestation-validation-common:: Common classes between dss-attestation-validation-rest and dss-attestation-validation-soap.
-dss-attestation-validation-rest-client:: Client for the REST EAA validation webservices.
-dss-attestation-validation-soap-client:: Client for the SOAP EAA validation webservices.
-dss-attestation-validation-rest:: REST webservices to validate an EAA.
-dss-attestation-validation-soap:: SOAP webservices to validate an EAA.
+dss-attestation-validation-rest-client:: Client for the REST attestation validation webservices.
+dss-attestation-validation-soap-client:: Client for the SOAP attestation validation webservices.
+dss-attestation-validation-rest:: REST webservices to validate an attestation.
+dss-attestation-validation-soap:: SOAP webservices to validate an attestation.
 
 ===== Other modules
 

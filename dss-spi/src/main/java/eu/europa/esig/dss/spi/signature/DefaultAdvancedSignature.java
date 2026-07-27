@@ -135,7 +135,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	private AdvancedSignature masterSignature;
 
 	/**
-	 * EAA in case of a key binding signature
+	 * attestation in case of a key binding signature
 	 */
 	private Attestation attestation;
 
@@ -414,12 +414,12 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	}
 
 	@Override
-	public Attestation getEAA() {
+	public Attestation getAttestation() {
 		return attestation;
 	}
 
 	@Override
-	public void setEAA(Attestation attestation) {
+	public void setAttestation(Attestation attestation) {
 		this.attestation = attestation;
 	}
 

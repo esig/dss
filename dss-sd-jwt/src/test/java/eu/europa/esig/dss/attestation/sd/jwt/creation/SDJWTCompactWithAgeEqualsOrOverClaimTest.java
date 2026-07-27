@@ -79,13 +79,13 @@ class SDJWTCompactWithAgeEqualsOrOverClaimTest extends AbstractSDJWTTestIssuance
     protected void checkClaims(final DiagnosticData diagnosticData) {
         super.checkClaims(diagnosticData);
 
-        AttestationWrapper eaa = diagnosticData.getEAAs().get(0);
-        assertEquals("https://issuer.example.com", eaa.getIssuer());
+        AttestationWrapper attestation = diagnosticData.getAttestations().get(0);
+        assertEquals("https://issuer.example.com", attestation.getIssuer());
 
-        assertTrue(eaa.isAgeOver(18));
-        assertTrue(eaa.isAgeOver(30));
-        assertFalse(eaa.isAgeOver(40));
-        assertNull(eaa.isAgeOver(65));
+        assertTrue(attestation.isAgeOver(18));
+        assertTrue(attestation.isAgeOver(30));
+        assertFalse(attestation.isAgeOver(40));
+        assertNull(attestation.isAgeOver(65));
     }
 
     @Override

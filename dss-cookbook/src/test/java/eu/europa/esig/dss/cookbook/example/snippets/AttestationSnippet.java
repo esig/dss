@@ -30,7 +30,7 @@ import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTService;
 import eu.europa.esig.dss.attestation.mdoc.creation.MdocPayloadBuilder;
 import eu.europa.esig.dss.attestation.mdoc.creation.MdocService;
 import eu.europa.esig.dss.attestation.mdoc.creation.MdocClaim;
-import eu.europa.esig.dss.attestation.mdoc.validation.MdocDeviceResponseAttestationDocumentValidator;
+import eu.europa.esig.dss.attestation.mdoc.validation.MdocDeviceResponseDocumentValidator;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.validation.reports.Reports;
@@ -74,32 +74,31 @@ public class AttestationSnippet {
 
         // tag::mdoc-custom-secure-random[]
         // Replace the default deterministic SecureRandomProvider with a fully non-deterministic one
-        MdocPayloadBuilder mdocEAAPayloadBuilder = new MdocPayloadBuilder();
-        mdocEAAPayloadBuilder.setSecureRandomProvider(seed -> new SecureRandom());
+        MdocPayloadBuilder mdocAttestationPayloadBuilder = new MdocPayloadBuilder();
+        mdocAttestationPayloadBuilder.setSecureRandomProvider(seed -> new SecureRandom());
 
         MdocService mdocService = new MdocService(new CommonCertificateVerifier());
-        mdocService.setPayloadBuilder(mdocEAAPayloadBuilder);
+        mdocService.setPayloadBuilder(mdocAttestationPayloadBuilder);
         // end::mdoc-custom-secure-random[]
 
+        DefaultAttestationDocumentValidator validator = new MdocDeviceResponseDocumentValidator();
 
-        DefaultAttestationDocumentValidator validator = new MdocDeviceResponseAttestationDocumentValidator();
-
-        // tag::online-eaa-revocation-source[]
+        // tag::online-attestation-revocation-source[]
         // Default (uses NativeHTTPDataLoader)
         OnlineAttestationRevocationSource revocationSource = new OnlineAttestationRevocationSource();
 
         // Attach to the validator
-        validator.setEAARevocationSource(revocationSource);
-        // end::online-eaa-revocation-source[]
+        validator.setAttestationRevocationSource(revocationSource);
+        // end::online-attestation-revocation-source[]
 
-        // tag::external-eaa-revocation-source[]
-        // import eu.europa.esig.dss.attestation.revocation.source.ExternalResourcesEAARevocationSource;
-
-        ExternalResourcesAttestationRevocationSource externalRevocationSource = new ExternalResourcesAttestationRevocationSource("path/to/revocation-list-token.jwt");
+        // tag::external-attestation-revocation-source[]
+        // import eu.europa.esig.dss.attestation.revocation.source.ExternalResourcesAttestationRevocationSource;
+        
+        ExternalResourcesAttestationRevocationSource externalRevocationSource = new ExternalResourcesAttestationRevocationSource("path/to/status-list-token.jwt");
 
         // Attach to the validator
-        validator.setEAARevocationSource(revocationSource);
-        // end::external-eaa-revocation-source[]
+        validator.setAttestationRevocationSource(revocationSource);
+        // end::external-attestation-revocation-source[]
 
         // tag::eaa-validation-policy[]
         // import eu.europa.esig.dss.model.FileDocument;
@@ -111,4 +110,5 @@ public class AttestationSnippet {
         Reports reports = validator.validateDocument();
         // end::eaa-validation-policy[]
     }
+    
 }

@@ -192,7 +192,7 @@ public class MdocPayloadParameters extends AbstractAttestationPayloadParameters 
     }
 
     /**
-     * Gets the date when the EAA was signed
+     * Gets the date when the attestation was signed
      *
      * @return {@link Date}
      */
@@ -201,7 +201,7 @@ public class MdocPayloadParameters extends AbstractAttestationPayloadParameters 
     }
 
     /**
-     * Sets the date when the EAA was signed.
+     * Sets the date when the attestation was signed.
      * For the ISO/IEC 18013-5 mdoc this value corresponds to the ValidityInfo.signed date.
      *
      * @param signed {@link Date}
@@ -211,7 +211,7 @@ public class MdocPayloadParameters extends AbstractAttestationPayloadParameters 
     }
 
     /**
-     * Gets the date from which the EAA is valid
+     * Gets the date from which the attestation is valid
      *
      * @return {@link Date}
      */
@@ -220,7 +220,7 @@ public class MdocPayloadParameters extends AbstractAttestationPayloadParameters 
     }
 
     /**
-     * Sets the EAA notBefore date (technical validity start date).
+     * Sets the attestation notBefore date (technical validity start date).
      * For the ISO/IEC 18013-5 mdoc this value corresponds to the ValidityInfo.validFrom date.
      *
      * @param validFrom {@link Date}
@@ -230,7 +230,7 @@ public class MdocPayloadParameters extends AbstractAttestationPayloadParameters 
     }
 
     /**
-     * Gets the date after which the EAA is no longer valid
+     * Gets the date after which the attestation is no longer valid
      *
      * @return {@link Date}
      */
@@ -239,7 +239,7 @@ public class MdocPayloadParameters extends AbstractAttestationPayloadParameters 
     }
 
     /**
-     * Sets the EAA expiration date (technical validity end date).
+     * Sets the attestation expiration date (technical validity end date).
      * For the ISO/IEC 18013-5 mdoc this value corresponds to the ValidityInfo.validFrom date.
      *
      * @param expirationDate {@link Date}
@@ -258,7 +258,7 @@ public class MdocPayloadParameters extends AbstractAttestationPayloadParameters 
     }
 
     /**
-     * Sets the date when EAA issuer expects the EAA or associated data to be updated.
+     * Sets the date when attestation issuer expects the attestation or associated data to be updated.
      * For the ISO/IEC 18013-5 mdoc this value corresponds to the ValidityInfo.expectedUpdate date.
      *
      * @param expectedUpdate {@link Date}
@@ -286,9 +286,9 @@ public class MdocPayloadParameters extends AbstractAttestationPayloadParameters 
     }
 
     /**
-     * Sets the identifier_list, by specifying an index of the EAA and a revocation distribution URL
+     * Sets the identifier_list, by specifying an index of the attestation and a revocation distribution URL
      *
-     * @param identifier byte array representing an EAA identifier within the identifier_list
+     * @param identifier byte array representing an attestation identifier within the identifier_list
      * @param url {@link String} where the identifier_list can be accessed from
      */
     public void setIdentifierList(byte[] identifier, String url) {
@@ -296,9 +296,9 @@ public class MdocPayloadParameters extends AbstractAttestationPayloadParameters 
     }
 
     /**
-     * Sets the identifier_list, by specifying an index of the EAA and a revocation distribution URL
+     * Sets the identifier_list, by specifying an index of the attestation and a revocation distribution URL
      *
-     * @param identifier byte array representing an EAA identifier within the identifier_list
+     * @param identifier byte array representing an attestation identifier within the identifier_list
      * @param url {@link String} where the identifier_list can be accessed from
      * @param certificateToken {@link CertificateToken} containing the public key that signed or sealed
      *                         the top-level certificate in the x5chain element in the MSO revocation list structure
@@ -321,7 +321,7 @@ public class MdocPayloadParameters extends AbstractAttestationPayloadParameters 
 
     @Override
     public String toString() {
-        return "MdocEAAPayloadParameters [" +
+        return "MdocPayloadParameters [" +
                 "version='" + version + '\'' +
                 ", keyAuthorizationsNamespaces=" + keyAuthorizationsNamespaces +
                 ", keyAuthorizationsDataElements=" + keyAuthorizationsDataElements +

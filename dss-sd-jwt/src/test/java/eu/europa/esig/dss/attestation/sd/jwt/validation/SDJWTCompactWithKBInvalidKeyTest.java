@@ -159,7 +159,7 @@ class SDJWTCompactWithKBInvalidKeyTest extends AbstractSDJWTTestValidation {
 
     @Override
     protected void checkStructureValidation(DiagnosticData diagnosticData) {
-        boolean eaaSignatureFound = false;
+        boolean attestationSignatureFound = false;
         boolean kbSignatureFound = false;
         for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
             if (signatureWrapper.isKeyBindingSignature()) {
@@ -168,16 +168,16 @@ class SDJWTCompactWithKBInvalidKeyTest extends AbstractSDJWTTestValidation {
                 kbSignatureFound = true;
             } else {
                 assertTrue(Utils.isCollectionEmpty(signatureWrapper.getStructuralValidationMessages()));
-                eaaSignatureFound = true;
+                attestationSignatureFound = true;
             }
         }
-        assertTrue(eaaSignatureFound);
+        assertTrue(attestationSignatureFound);
         assertTrue(kbSignatureFound);
     }
 
     @Override
     protected void checkBLevelValid(DiagnosticData diagnosticData) {
-        boolean eaaSignatureFound = false;
+        boolean attestationSignatureFound = false;
         boolean kbSignatureFound = false;
         for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
             if (signatureWrapper.isKeyBindingSignature()) {
@@ -191,7 +191,7 @@ class SDJWTCompactWithKBInvalidKeyTest extends AbstractSDJWTTestValidation {
                         assertTrue(digestMatcher.isDataFound());
                         assertFalse(digestMatcher.isDataIntact());
                         jwsInputFound = true;
-                    } else if (DigestMatcherType.EAA_KEY_BINDING == digestMatcher.getType()) {
+                    } else if (DigestMatcherType.KEY_BINDING_SIGNATURE == digestMatcher.getType()) {
                         assertTrue(digestMatcher.isDataFound());
                         assertTrue(digestMatcher.isDataIntact());
                         kbInputFound = true;
@@ -209,16 +209,16 @@ class SDJWTCompactWithKBInvalidKeyTest extends AbstractSDJWTTestValidation {
                     assertTrue(digestMatcher.isDataFound());
                     assertTrue(digestMatcher.isDataIntact());
                 }
-                eaaSignatureFound = true;
+                attestationSignatureFound = true;
             }
         }
-        assertTrue(eaaSignatureFound);
+        assertTrue(attestationSignatureFound);
         assertTrue(kbSignatureFound);
     }
 
     @Override
     protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
-        boolean eaaSignatureFound = false;
+        boolean attestationSignatureFound = false;
         boolean kbSignatureFound = false;
         for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
             if (signatureWrapper.isKeyBindingSignature()) {
@@ -228,10 +228,10 @@ class SDJWTCompactWithKBInvalidKeyTest extends AbstractSDJWTTestValidation {
             } else {
                 assertNotNull(signatureWrapper.getSigningCertificate());
                 assertTrue(signatureWrapper.isSigningCertificateIdentified());
-                eaaSignatureFound = true;
+                attestationSignatureFound = true;
             }
         }
-        assertTrue(eaaSignatureFound);
+        assertTrue(attestationSignatureFound);
         assertTrue(kbSignatureFound);
     }
 

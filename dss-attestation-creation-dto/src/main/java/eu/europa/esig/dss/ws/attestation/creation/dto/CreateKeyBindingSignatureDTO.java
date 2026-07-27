@@ -38,8 +38,8 @@ public class CreateKeyBindingSignatureDTO extends AbstractSignDocumentDTO {
 
     private static final long serialVersionUID = -6759188412043606519L;
 
-    /** Signed EAA document */
-    private RemoteDocument eaa;
+    /** Signed attestation document */
+    private RemoteDocument attestation;
 
     /** (Optional) List of disclosures */
     private List<DisclosureDTO> disclosures;
@@ -57,37 +57,37 @@ public class CreateKeyBindingSignatureDTO extends AbstractSignDocumentDTO {
     /**
      * Default constructor
      *
-     * @param eaa {@link RemoteDocument} EAA document
+     * @param attestation {@link RemoteDocument} attestation document
      * @param disclosures a list of {@link DisclosureDTO}s
      * @param keyBindingParameters {@link RemoteKeyBindingParameters}
      * @param signatureParameters {@link RemoteSignatureParameters}
      * @param signatureValueDTO {@link SignatureValueDTO}
      */
-    public CreateKeyBindingSignatureDTO(RemoteDocument eaa, List<DisclosureDTO> disclosures,
+    public CreateKeyBindingSignatureDTO(RemoteDocument attestation, List<DisclosureDTO> disclosures,
                                             RemoteKeyBindingParameters keyBindingParameters, RemoteSignatureParameters signatureParameters,
                                             SignatureValueDTO signatureValueDTO) {
         super(signatureParameters, signatureValueDTO);
-        this.eaa = eaa;
+        this.attestation = attestation;
         this.disclosures = disclosures;
         this.keyBindingParameters = keyBindingParameters;
     }
 
     /**
-     * Gets the signed EAA document
+     * Gets the signed attestation document
      *
      * @return {@link RemoteDocument}
      */
-    public RemoteDocument getEaa() {
-        return eaa;
+    public RemoteDocument getAttestation() {
+        return attestation;
     }
 
     /**
-     * Sets a signed EAA document
+     * Sets a signed attestation document
      *
-     * @param eaa {@link RemoteDocument}
+     * @param attestation {@link RemoteDocument}
      */
-    public void setEaa(RemoteDocument eaa) {
-        this.eaa = eaa;
+    public void setAttestation(RemoteDocument attestation) {
+        this.attestation = attestation;
     }
 
     /**

@@ -23,7 +23,7 @@ package eu.europa.esig.dss.spi.attestation;
 import eu.europa.esig.dss.model.identifier.MultipleDigestIdentifier;
 
 /**
- * Contains binaries of the EAA revocation token
+ * Contains binaries of the attestation revocation token
  *
  */
 public class AttestationRevocationTokenBinary extends MultipleDigestIdentifier {
@@ -36,7 +36,7 @@ public class AttestationRevocationTokenBinary extends MultipleDigestIdentifier {
      * @param binaries token binaries
      */
     public AttestationRevocationTokenBinary(byte[] binaries) {
-        super("EAAR", binaries);
+        super("AR-", binaries);
     }
 
 }
