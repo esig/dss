@@ -76,7 +76,7 @@ class CBAdESLevelBEnvelopingNoKidTest extends AbstractCBAdESTestSignature {
         SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
         FoundCertificatesProxy foundCertificates = signature.foundCertificates();
         List<RelatedCertificateWrapper> signCerts = foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
-        assertEquals(2, signCerts.size());
+        assertEquals(1, signCerts.size());
 
         List<CertificateRefWrapper> signCertReferences = signCerts.get(0).getReferences();
         assertEquals(1, signCertReferences.size());

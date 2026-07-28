@@ -75,8 +75,9 @@ public class CBAdESSignatureParameters extends AbstractSignatureParameters<CBAdE
      * Defines whether the thumbprints of the whole X.509 certificate chain should be included, using a 'x5ts' signed header.
      * When certificate chain is not provided, only the signing-certificate will be included to the chain.
      * When disabled, creates a 'x5t' signed header with only signing-certificate's thumbprint provided.
+     * DEFAULT : FALSE (the 'x5t' signed header with a signing-certificate's thumbprint to be included)
      */
-    private boolean includeCertificateChainThumbprints = true;
+    private boolean includeCertificateChainThumbprints = false;
 
     /**
      * Defines a MimeType of the signature to be created, to be provided within a signed header ('typ' attribute)
@@ -241,6 +242,8 @@ public class CBAdESSignatureParameters extends AbstractSignatureParameters<CBAdE
      * When enabled, adds the signing-certificate at the first position, with other certificates following
      * in the provided order.
      * When disabled, creates a 'x5t' signed header with only signing-certificate's thumbprint provided.
+     * <p>
+     * DEFAULT : FALSE (the 'x5t' signed header with a signing-certificate's thumbprint to be included)
      *
      * @param includeCertificateChainThumbprints whether the thumbprints of the certificate chain should be included
      */

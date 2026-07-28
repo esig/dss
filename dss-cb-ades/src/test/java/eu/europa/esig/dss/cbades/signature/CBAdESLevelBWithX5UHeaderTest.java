@@ -113,11 +113,11 @@ class CBAdESLevelBWithX5UHeaderTest extends AbstractCBAdESTestSignature {
         assertEquals(2, keyInfoOriginCounter);
         assertEquals(1, unknownOriginCounter);
 
-        assertEquals(2, signCertCounter);
+        assertEquals(1, signCertCounter);
         assertEquals(1, kidCertCounter);
         assertEquals(3, x5uCertCounter);
 
-        assertEquals(2, signatureWrapper.foundCertificates().getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size());
+        assertEquals(1, signatureWrapper.foundCertificates().getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size());
         assertEquals(1, signatureWrapper.foundCertificates().getRelatedCertificatesByRefOrigin(CertificateRefOrigin.KEY_IDENTIFIER).size());
         assertEquals(3, signatureWrapper.foundCertificates().getRelatedCertificatesByRefOrigin(CertificateRefOrigin.X509_URL).size());
 

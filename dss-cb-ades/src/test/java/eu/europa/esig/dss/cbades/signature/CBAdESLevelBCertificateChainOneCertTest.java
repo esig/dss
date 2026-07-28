@@ -97,23 +97,19 @@ class CBAdESLevelBCertificateChainOneCertTest extends AbstractCBAdESTestSignatur
 
     private void assertRequirementsValid(COSEProtectedHeader protectedHeader) {
         CBORArray x5t = protectedHeader.getAsArray(COSEHeaderParameter.X5T.cbor());
-        assertNull(x5t);
+        assertNotNull(x5t);
 
-        CBORArray x5ts = protectedHeader.getAsArray(COSEHeaderParameter.X5TS.cbor());
-        assertNotNull(x5ts);
-        assertEquals(1, x5ts.getSize());
-
-        CBORArray x5tItem = x5ts.getAsArray(0);
-        assertNotNull(x5tItem);
-
-        Long algId = x5tItem.getAsLongOrString(COSEConstants.COSE_CERT_HASH_ALG);
+        Long algId = x5t.getAsLongOrString(COSEConstants.COSE_CERT_HASH_ALG);
         assertNotNull(algId);
         DigestAlgorithm digestAlgorithm = DigestAlgorithm.forCOSE(algId);
         assertEquals(getSignatureParameters().getSigningCertificateDigestMethod(), digestAlgorithm);
 
-        byte[] hashValue = x5tItem.getAsBinaries(COSEConstants.COSE_CERT_HASH_VALUE);
+        byte[] hashValue = x5t.getAsBinaries(COSEConstants.COSE_CERT_HASH_VALUE);
         assertNotNull(hashValue);
         assertArrayEquals(DSSUtils.digest(digestAlgorithm, getSignatureParameters().getSigningCertificate().getEncoded()), hashValue);
+
+        CBORArray x5ts = protectedHeader.getAsArray(COSEHeaderParameter.X5TS.cbor());
+        assertNull(x5ts);
 
         CBORArray x5chainArray = protectedHeader.getAsArray(COSEHeaderParameter.X5CHAIN.cbor());
         assertNull(x5chainArray);

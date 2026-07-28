@@ -104,11 +104,11 @@ class CBAdESLevelBWithX5UHeaderNoCertChainTest extends AbstractCBAdESTestSignatu
                 }
             }
         }
-        assertEquals(2, signCertCounter);
+        assertEquals(1, signCertCounter);
         assertEquals(3, x5uCertCounter);
         assertEquals(0, keyIdentifier);
 
-        assertEquals(2, signatureWrapper.foundCertificates().getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size());
+        assertEquals(1, signatureWrapper.foundCertificates().getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE).size());
         assertEquals(3, signatureWrapper.foundCertificates().getRelatedCertificatesByRefOrigin(CertificateRefOrigin.X509_URL).size());
 
         assertNotNull(signatureWrapper.getSigningCertificate());

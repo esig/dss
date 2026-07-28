@@ -107,7 +107,7 @@ class CBAdESLevelBTest extends AbstractCBAdESTestSignature {
         SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
         FoundCertificatesProxy foundCertificates = signature.foundCertificates();
         List<RelatedCertificateWrapper> signCerts = foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
-        assertEquals(2, signCerts.size());
+        assertEquals(1, signCerts.size());
 
 
         RelatedCertificateWrapper signingCertificate = null;
