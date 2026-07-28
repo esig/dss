@@ -796,8 +796,8 @@
 				<xsl:when test="name() = 'AttestedAttributes'">Attested attributes</xsl:when>
 
 				<xsl:when test="name() = 'FullName'">Full name</xsl:when>
-				<xsl:when test="name() = 'GivenName'">GivenName</xsl:when>
-				<xsl:when test="name() = 'FamilyName'">FamilyName</xsl:when>
+				<xsl:when test="name() = 'GivenName'">Given Name</xsl:when>
+				<xsl:when test="name() = 'FamilyName'">Family Name</xsl:when>
 				<xsl:when test="name() = 'MiddleName'">Middle name</xsl:when>
 				<xsl:when test="name() = 'Nickname'">Nickname</xsl:when>
 				<xsl:when test="name() = 'ShortName'">Short name</xsl:when>
@@ -824,8 +824,8 @@
 				<xsl:when test="name() = 'PlaceOfBirthRegion'">Region of birth</xsl:when>
 				<xsl:when test="name() = 'PlaceOfBirthCity'">City of birth</xsl:when>
 				<xsl:when test="name() = 'Nationalities'">Nationalities</xsl:when>
-				<xsl:when test="name() = 'BirthFamilyName'">Birth FamilyName</xsl:when>
-				<xsl:when test="name() = 'BirthGivenName'">Birth GivenName</xsl:when>
+				<xsl:when test="name() = 'BirthFamilyName'">Birth Family Name</xsl:when>
+				<xsl:when test="name() = 'BirthGivenName'">Birth Given Name</xsl:when>
 				<xsl:when test="name() = 'BirthMiddleName'">Birth middle name</xsl:when>
 				<xsl:when test="name() = 'Salutation'">Salutation</xsl:when>
 				<xsl:when test="name() = 'Title'">Title</xsl:when>
@@ -882,7 +882,7 @@
 				<xsl:when test="name() = 'RelationshipLegalRepresentative'">Relationship legal representative</xsl:when>
 				<xsl:when test="name() = 'RelationshipAgent'">Relationship agent</xsl:when>
 				<xsl:when test="name() = 'DocumentType'">Document type</xsl:when>
-				<xsl:when test="name() = 'TrustAnchor'">Trust anchor</xsl:when>
+				<xsl:when test="name() = 'TrustAnchorClaim'">Trust anchor</xsl:when>
 
 				<xsl:when test="name() = 'OtherClaim'"><xsl:value-of select="@name"/></xsl:when>
 			</xsl:choose>
@@ -976,7 +976,7 @@
 			|dss:RelationshipBrother|dss:RelationshipSister|dss:RelationshipSibling|dss:RelationshipSpouse|dss:RelationshipFatherInLaw
 			|dss:RelationshipMotherInLaw|dss:RelationshipParentInLaw|dss:RelationshipSonInLaw|dss:RelationshipDaughterInLaw
 			|dss:RelationshipChildInLaw|dss:RelationshipParentalAuthority|dss:RelationshipLegalRepresentative|dss:RelationshipAgent
-			|dss:DocumentType|dss:IssuingAuthorityRegistrationIdentifier|dss:TrustAnchor|dss:ResidentAddressStreet|dss:ResidentAddressHouseNumber">
+			|dss:DocumentType|dss:IssuingAuthorityRegistrationIdentifier|dss:TrustAnchorClaim|dss:ResidentAddressStreet|dss:ResidentAddressHouseNumber">
 		<xsl:call-template name="printClaim"/>
 	</xsl:template>
 

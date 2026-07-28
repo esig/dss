@@ -1142,7 +1142,7 @@ public class SimpleReportBuilder {
 
 		xmlAttestationPayload.setIssuingAuthorityRegistrationIdentifier(getXmlDisclosableClaim(attestationPayloadProxy.getIssuingAuthorityRegistrationIdentifier()));
 
-		xmlAttestationPayload.setTrustAnchor(getXmlDisclosableClaim(attestationPayloadProxy.getTrustAnchor()));
+		xmlAttestationPayload.setTrustAnchorClaim(getXmlDisclosableClaim(attestationPayloadProxy.getTrustAnchor()));
 		xmlAttestationPayload.setResidentAddressStreet(getXmlDisclosableClaim(attestationPayloadProxy.getResidentAddressStreet()));
 		xmlAttestationPayload.setResidentAddressHouseNumber(getXmlDisclosableClaim(attestationPayloadProxy.getResidentAddressHouseNumber()));
 

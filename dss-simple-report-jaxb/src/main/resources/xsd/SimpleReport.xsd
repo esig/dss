@@ -525,7 +525,7 @@
 			<xs:element name="IssuingAuthorityRegistrationIdentifier" type="DisclosableClaim" minOccurs="0" />
 
 			<!-- PID Rulebook headers -->
-			<xs:element name="TrustAnchor" type="DisclosableClaim" minOccurs="0" />
+			<xs:element name="TrustAnchorClaim" type="DisclosableClaim" minOccurs="0" />
 			<xs:element name="ResidentAddressStreet" type="DisclosableClaim" minOccurs="0" />
 			<xs:element name="ResidentAddressHouseNumber" type="DisclosableClaim" minOccurs="0" />
 
