@@ -2800,7 +2800,7 @@ Default: `FAIL`
 The `<Attestation>` block defines rules for validating an attestation (e.g. EAA, PID, etc.). The `<Attestation>` element shall be a child of `ConstraintsParameters`:
 
 [source,xml,indent=0]
-.EAA element definition
+.Attestation element definition
 ----
 <ConstraintsParameters>
     ...
@@ -3981,38 +3981,42 @@ This table defines the correspondence between the enforced validation policy con
                                                                                                        FAILED                |SIGNED_DATA_NOT_FOUND +
                                                                                                                               HASH_FAILURE
                                   |Cryptographic                   |CryptographicConstraint         2+|See CryptographicConstraint
-.16+|EAAConstraints               |AttestationSignatureUnicity             |LevelConstraint                   |FAILED                |FORMAT_FAILURE
-                                  |AttestationSignatureValid               |LevelConstraint                   |Indication from signature |SubIndication from signature
+.16+|AttestationConstraints       |AttestationSignatureUnicity     |LevelConstraint                   |FAILED                |FORMAT_FAILURE
+                                  |AttestationSignatureValid       |LevelConstraint                   |Indication from signature |SubIndication from signature
                                   |DisclosurePresent               |LevelConstraint                   |INDETERMINATE         |SIGNED_DATA_NOT_FOUND
                                   |DisclosureFound                 |LevelConstraint                   |INDETERMINATE         |SIGNED_DATA_NOT_FOUND
                                   |DisclosureIntact                |LevelConstraint                   |FAILED                |HASH_FAILURE
                                   |DisclosureListExhaustive        |LevelConstraint                   |INDETERMINATE         |SIGNED_DATA_NOT_FOUND
                                   |KeyBindingSignaturePresent      |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |KeyBindingSignatureValid        |LevelConstraint                   |Indication from signature |SubIndication from signature
-                                  |ETSI194721Conformance           |LevelConstraint                   |INDETERMINATE         |EAA_CONSTRAINTS_FAILURE
-                                  |EAAType                         |LevelConstraint                   |INDETERMINATE         |EAA_CONSTRAINTS_FAILURE
-                                  |EAATypeIntegrityPresent         |LevelConstraint                   |INDETERMINATE         |EAA_CONSTRAINTS_FAILURE
-                                  |AttestationIdentifierPresent            |LevelConstraint                   |INDETERMINATE         |EAA_CONSTRAINTS_FAILURE
-                                  |EAAIssuanceDatePresent          |LevelConstraint                   |INDETERMINATE         |EAA_CONSTRAINTS_FAILURE
-                                  |EAANotBeforePresent             |LevelConstraint                   |INDETERMINATE         |EAA_CONSTRAINTS_FAILURE
-                                  |EAAExpirationPresent            |LevelConstraint                   |INDETERMINATE         |EAA_CONSTRAINTS_FAILURE
-                                  |EAANotExpired                   |LevelConstraint                   |INDETERMINATE         |OUT_OF_BOUNDS_NO_POE
-.17+|EAAConstraints               |EAAAdministrativeIssuanceDatePresent        |LevelConstraint       |INDETERMINATE         |EAA_CONSTRAINTS_FAILURE
-                                  |EAAAdministrativeExpirationDatePresent      |LevelConstraint       |INDETERMINATE         |EAA_CONSTRAINTS_FAILURE
-                                  |EAAAdministrativePeriodNotExpired           |LevelConstraint       |INDETERMINATE         |OUT_OF_BOUNDS_NO_POE
-                                  |EAACategory                     |LevelConstraint                   |INDETERMINATE         |EAA_CONSTRAINTS_FAILURE
-                                  |AttestationSubject                      |LevelConstraint                   |INDETERMINATE         |EAA_CONSTRAINTS_FAILURE
-                                  |AttestationSubjectPseudonym             |LevelConstraint                   |INDETERMINATE         |EAA_CONSTRAINTS_FAILURE
-                                  |EAAIssuingCountry               |LevelConstraint                   |INDETERMINATE         |EAA_CONSTRAINTS_FAILURE
-                                  |EAAIssuingAuthority             |LevelConstraint                   |INDETERMINATE         |EAA_CONSTRAINTS_FAILURE
-                                  |EAAIssuingAuthorityRegistrationIdentifier   |LevelConstraint       |INDETERMINATE         |EAA_CONSTRAINTS_FAILURE
-                                  |AttestationStatusPresent                |LevelConstraint                   |INDETERMINATE         |EAA_CONSTRAINTS_FAILURE
-                                  |AttestationShortLived                   |LevelConstraint                   |INDETERMINATE         |EAA_CONSTRAINTS_FAILURE
-                                  |EAAOneTimeUse                   |LevelConstraint                   |INDETERMINATE         |EAA_CONSTRAINTS_FAILURE
-                                  |EAAUsePseudonym                 |LevelConstraint                   |INDETERMINATE         |EAA_CONSTRAINTS_FAILURE
-                                  |EAAClaims                       |LevelConstraint                   |INDETERMINATE         |EAA_CONSTRAINTS_FAILURE
-                                  |AttestationSupportedClaims              |LevelConstraint                   |INDETERMINATE         |EAA_CONSTRAINTS_FAILURE
-                                  |AttestationSupportedNamespaces          |LevelConstraint                   |INDETERMINATE         |EAA_CONSTRAINTS_FAILURE
+                                  |ETSI194721Conformance           |LevelConstraint                   |INDETERMINATE         |ATTESTATION_CONSTRAINTS_FAILURE
+                                  |AttestationType                 |LevelConstraint                   |INDETERMINATE         |ATTESTATION_CONSTRAINTS_FAILURE
+                                  |AttestationTypeIntegrityPresent |LevelConstraint                   |INDETERMINATE         |ATTESTATION_CONSTRAINTS_FAILURE
+                                  |IdentifierPresent               |LevelConstraint                   |INDETERMINATE         |ATTESTATION_CONSTRAINTS_FAILURE
+                                  |IssuanceDatePresent             |LevelConstraint                   |INDETERMINATE         |ATTESTATION_CONSTRAINTS_FAILURE
+                                  |otBeforePresent                 |LevelConstraint                   |INDETERMINATE         |ATTESTATION_CONSTRAINTS_FAILURE
+                                  |ExpirationPresent               |LevelConstraint                   |INDETERMINATE         |ATTESTATION_CONSTRAINTS_FAILURE
+                                  |NotExpired                      |LevelConstraint                   |INDETERMINATE         |OUT_OF_BOUNDS_NO_POE
+.16+|AttestationConstraints       |AdministrativeIssuanceDatePresent        |LevelConstraint          |INDETERMINATE         |ATTESTATION_CONSTRAINTS_FAILURE
+                                  |AdministrativeExpirationDatePresent      |LevelConstraint          |INDETERMINATE         |ATTESTATION_CONSTRAINTS_FAILURE
+                                  |AdministrativePeriodNotExpired           |LevelConstraint          |INDETERMINATE         |OUT_OF_BOUNDS_NO_POE
+                                  |Category                        |LevelConstraint                   |INDETERMINATE         |ATTESTATION_CONSTRAINTS_FAILURE
+                                  |Subject                         |LevelConstraint                   |INDETERMINATE         |ATTESTATION_CONSTRAINTS_FAILURE
+                                  |Pseudonym                       |LevelConstraint                   |INDETERMINATE         |ATTESTATION_CONSTRAINTS_FAILURE
+                                  |IssuingCountry                  |LevelConstraint                   |INDETERMINATE         |ATTESTATION_CONSTRAINTS_FAILURE
+                                  |IssuingAuthority                |LevelConstraint                   |INDETERMINATE         |ATTESTATION_CONSTRAINTS_FAILURE
+                                  |IssuingAuthorityRegistrationIdentifier   |LevelConstraint          |INDETERMINATE         |ATTESTATION_CONSTRAINTS_FAILURE
+                                  |OneTimeUse                      |LevelConstraint                   |INDETERMINATE         |ATTESTATION_CONSTRAINTS_FAILURE
+                                  |ShortLived                      |LevelConstraint                   |INDETERMINATE         |ATTESTATION_CONSTRAINTS_FAILURE
+                                  |RevocationPresent               |LevelConstraint                   |INDETERMINATE         |ATTESTATION_CONSTRAINTS_FAILURE
+                                  |RevocationAvailable             |LevelConstraint                   |INDETERMINATE         |ATTESTATION_CONSTRAINTS_FAILURE
+                                  |AcceptableRevocationFound       |LevelConstraint                   |INDETERMINATE         |ATTESTATION_CONSTRAINTS_FAILURE
+                                  |NotRevoked                      |LevelConstraint                   |INDETERMINATE         |ATTESTATION_CONSTRAINTS_FAILURE
+                                  |NotOnHold                       |LevelConstraint                   |INDETERMINATE         |ATTESTATION_CONSTRAINTS_FAILURE
+.5+|AttestationConstraints        |UsePseudonym                    |LevelConstraint                   |INDETERMINATE         |ATTESTATION_CONSTRAINTS_FAILURE
+                                  |Claims                          |LevelConstraint                   |INDETERMINATE         |ATTESTATION_CONSTRAINTS_FAILURE
+                                  |SupportedClaims                 |LevelConstraint                   |INDETERMINATE         |ATTESTATION_CONSTRAINTS_FAILURE
+                                  |SupportedNamespaces             |LevelConstraint                   |INDETERMINATE         |ATTESTATION_CONSTRAINTS_FAILURE
                                   |Cryptographic                   |CryptographicConstraint         2+|See CryptographicConstraint
 .4+|Cryptographic                 |AcceptableEncryptionAlgo        |ListAlgo                          |INDETERMINATE         |CRYPTO_CONSTRAINTS_FAILURE_NO_POE +
                                                                                                                               CRYPTO_CONSTRAINTS_FAILURE

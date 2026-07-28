@@ -9,7 +9,7 @@
 
 Attestations are signed digital documents attesting attributes or information about a subject, organization or device.
 
-DSS provides support for issuing, presenting and validating attestation in two standard formats:
+DSS provides support for issuing, presenting and validating attestations in two standard formats:
 
 * **SD-JWT** (Selective Disclosure for JSON Web Tokens) (<<R35>>) and **SD-JWT VC** (Selective Disclosure JWT Verifiable Credential) (<<R36>>);
 * **ISO/IEC 18013-5 mdoc** (Mobile Document) (<<R38>>).
@@ -317,7 +317,7 @@ The validator can be obtained in two ways:
 ** `SDJWTCompactDocumentValidator`: SD-JWT in compact serialization (`header.payload.signature\~disclosures~kbjwt`).
 ** `SDJWTJsonSerializationDocumentValidator`: SD-JWT in JSON serialization.
 
-* ISO/IEC-mdoc
+* ISO/IEC-mdoc:
 ** `MdocDeviceResponseDocumentValidator`: mdoc DeviceResponse (full presentation with device authentication). It performs the validation of an attestation presentation, applying the logic as defined in TS 119 472-2, section 4.2 EAAP implementation based on ISO/IEC-mdoc (<<R36>>)
 ** `MdocIssuerSignedDocumentValidator`: mdoc IssuerSigned only (without device authentication). It performs the validation of an attestation presentation as defined in TS 119 472-1, section 6 Implementation of attestation based on ISO/IEC-mdoc (<<R34>>)
 

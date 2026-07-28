@@ -16,8 +16,8 @@ The different webservices are :
 * *Signature validation webservices* (`dss-validation-soap` / `dss-validation-rest`) and their clients: expose methods to allow signature validation, with an optional detached file and an optional validation policy.
 * *Certificate validation webservices* (`dss-certificate-validation-soap` / `dss-certificate-validation-rest`) and their clients: expose methods to allow certificate validation, with an optional provided certificate chain and custom validation time.
 * *Timestamp webservices* (`dss-timestamp-remote-soap` / `dss-timestamp-remote-rest`) and their clients: expose methods to allow remote timestamp creation, by providing digest value to be timestamped and a digest algorithm, used for the digest calculation.
-* *EAA creation webservices* (`dss-attestation-creation-soap` / `dss-attestation-creation-rest`) and their clients: expose methods to allow remote attestation creation, by providing payload or payload configuration and signature parameters, disclosures extraction based on parameters, key binding signature creation and attestation Presentation issuance.
-* *EAA validation webservices* (`dss-attestation-validation-soap` / `dss-attestation-validation-rest`) and their clients: expose methods to allow validation of attestation Presentations.
+* *Attestation creation webservices* (`dss-attestation-creation-soap` / `dss-attestation-creation-rest`) and their clients: expose methods to allow remote attestation creation, by providing payload or payload configuration and signature parameters, disclosures extraction based on parameters, key binding signature creation and attestation Presentation issuance.
+* *Attestation validation webservices* (`dss-attestation-validation-soap` / `dss-attestation-validation-rest`) and their clients: expose methods to allow validation of attestation Presentations.
 
 The data structure in webservices is similar in both REST and SOAP modules.
 
@@ -417,14 +417,14 @@ This service implements a creation of attestations, as well as issuance of attes
 [source,java,indent=0]
 .Rest attestation creation service
 ----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/ws/rest/RestEAACreationServiceSnippet.java[tags=demo]
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/ws/rest/RestAttestationCreationServiceSnippet.java[tags=demo]
 ----
 
 ===== attestation creation
 
 Creation of an attestation may be done either based on a provided payload, or parameters used to define the payload to be generated.
 The signature of an attestation is done in 3 stateless steps, similarly to a signature creation as explained in <<SignatureCreationInDSS>>.
-The two methods, namely "get data to sign" and "sign EAA" are exposed to the API within the current module.
+The two methods, namely `getDataToSign` and `signAttestation` are exposed to the API within the current module.
 
 ====== Get data to sign
 
@@ -437,7 +437,7 @@ Samples:
 * *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/1/httpie-request.adoc[Request]
 * *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/1/curl-request.adoc[Request]
 
-====== Sign EAA
+====== Sign Attestation
 
 The method allows generation of a signed attestation. The user sends the payload parameters (pre-computed payload or payload generation parameters), the signature parameters (signature level, signing-certificate, etc.) and the signature value.
 
@@ -461,7 +461,7 @@ Samples:
 
 ====== Get data to sign for key binding signature
 
-The method allows retrieving the data to be signed for a key binding signature generation. The user sends the signed EAA, (optionally) disclosures to be included in the attestation presentation, key binding signature payload parameters (e.g. nonce) and the signature parameters (signature level, signing-certificate, etc.).
+The method allows retrieving the data to be signed for a key binding signature generation. The user sends the signed attestation, (optionally) disclosures to be included in the attestation presentation, key binding signature payload parameters (e.g. nonce) and the signature parameters (signature level, signing-certificate, etc.).
 
 Samples:
 
@@ -472,7 +472,7 @@ Samples:
 
 ====== Create key binding signature
 
-The method allows generation of a key binding signature. The user sends the signed EAA, (optionally) disclosures to be included in the attestation presentation, key binding signature payload parameters (e.g. nonce), the signature parameters (signature level, signing-certificate, etc.) and a signature value.
+The method allows generation of a key binding signature. The user sends the signed attestation, (optionally) disclosures to be included in the attestation presentation, key binding signature payload parameters (e.g. nonce), the signature parameters (signature level, signing-certificate, etc.) and a signature value.
 
 Samples:
 
@@ -483,7 +483,7 @@ Samples:
 
 ====== Issue presentation
 
-The method allows generation of an attestation Presentation. The user sends the signed EAA, (optionally) disclosures to be included, (optionally) key binding signature and the parameters (format of attestation Presentation, etc.).
+The method allows generation of an attestation Presentation. The user sends the signed attestation, (optionally) disclosures to be included, (optionally) key binding signature and the parameters (format of attestation Presentation, etc.).
 
 Samples:
 
@@ -583,7 +583,7 @@ SOAP attestation creation service's client is initialized using `SoapAttestation
 [source,java,indent=0]
 .Soap attestation creation service
 ----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/ws/soap/SoapEAACreationServiceSnippet.java[tags=demo]
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/ws/soap/SoapAttestationCreationServiceSnippet.java[tags=demo]
 ----
 
 ==== SOAP attestation validation service

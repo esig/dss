@@ -458,12 +458,12 @@ dss-timestamp-remote-rest:: REST webservice to create a timestamp.
 dss-timestamp-remote-soap:: SOAP webservice to create a timestamp.
 
 '''
-dss-attestation-creation-dto:: Data Transfer Objects used for attestation and/or EAAP creation.
+dss-attestation-creation-dto:: Data Transfer Objects used for attestation (e.g. EAA, PID, etc.) and/or presentation (e.g. EAAP) creation.
 dss-attestation-creation-remote:: Common classes between dss-attestation-creation-rest and dss-attestation-creation-soap.
-dss-attestation-creation-rest-client:: Client for the REST attestation and/or EAAP creation webservice.
-dss-attestation-creation-soap-client:: Client for the SOAP attestation and/or EAAP creation webservice.
-dss-attestation-creation-rest:: REST webservice to create attestation and/or EAAP.
-dss-attestation-creation-soap:: SOAP webservice to create attestation and/or EAAP.
+dss-attestation-creation-rest-client:: Client for the REST attestation and/or presentation creation webservice.
+dss-attestation-creation-soap-client:: Client for the SOAP attestation and/or presentation creation webservice.
+dss-attestation-creation-rest:: REST webservice to create attestation and/or presentation.
+dss-attestation-creation-soap:: SOAP webservice to create attestation and/or presentation.
 
 '''
 dss-attestation-validation-dto:: Data Transfer Objects used for attestation validation (REST and SOAP).

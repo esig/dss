@@ -100,7 +100,7 @@ public class AttestationSnippet {
         validator.setAttestationRevocationSource(revocationSource);
         // end::external-attestation-revocation-source[]
 
-        // tag::eaa-validation-policy[]
+        // tag::attestation-validation-policy[]
         // import eu.europa.esig.dss.model.FileDocument;
 
         // Custom validation policy
@@ -108,7 +108,7 @@ public class AttestationSnippet {
 
         // Default validation policy
         Reports reports = validator.validateDocument();
-        // end::eaa-validation-policy[]
+        // end::attestation-validation-policy[]
     }
     
 }
