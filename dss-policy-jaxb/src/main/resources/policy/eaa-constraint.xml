@@ -1,5 +1,5 @@
-<ConstraintsParameters Name="Certificate policy TL based" xmlns="http://dss.esig.europa.eu/validation/policy">
-    <Description>Validates electronic attestation of attributes presentations and indicates its qualification status
+<ConstraintsParameters Name="EAA policy, TL and LoTE based" xmlns="http://dss.esig.europa.eu/validation/policy">
+    <Description>Validates electronic attestation of attributes and indicates its qualification status
         at issuance and validation time. All certificates and their related chains are validated against
         the EU Member State Trusted Lists (this includes target certificate and certificates used to validate
         certificate validity status services - CRLs, OCSP).

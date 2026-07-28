@@ -40,13 +40,7 @@ public enum AttestationProfile {
     /**
      * Realization of attestation that implements attestation as a JSON Web Signature as specified in IETF RFC 7515,
      * which further profiles a Selective Disclosure JSON Web Token as specified in
-     * IETF RFC 9901 "Selective Disclosure for JSON Web Tokens".
-     */
-    SD_JWT,
-
-    /**
-     * Data format expressing Verifiable Digital Credentials with JSON payloads with and
-     * without selective disclosure based on the SD-JWT format, as defined in draft-ietf-oauth-sd-jwt-vc-17.
+     * IETF RFC 9901 "Selective Disclosure for JSON Web Tokens" and in IETF draft-ietf-oauth-sd-jwt-vc.
      */
     SD_JWT_VC,
 

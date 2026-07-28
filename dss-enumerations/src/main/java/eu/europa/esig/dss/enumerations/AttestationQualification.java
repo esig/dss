@@ -32,64 +32,64 @@ public enum AttestationQualification {
     /**
      * Qualified electronic attestation of attributes as defined in Regulation EU 2024/1183, Article 45d.
      */
-    QEAA("QEAA", "Qualified Electronic Attestation of Attributes", "urn:cef:dss:eaaQualification:QEAA"),
+    QEAA("QEAA", "Qualified Electronic Attestation of Attributes", "urn:cef:dss:attestation:qualification:QEAA"),
 
     /**
      * Electronic attestation of attributes as defined in Regulation EU 2024/1183, without a qualified revocation.
      */
-    EAA("EAA", "Electronic Attestation of Attributes", "urn:cef:dss:eaaQualification:EAA"),
+    EAA("EAA", "Electronic Attestation of Attributes", "urn:cef:dss:attestation:qualification:EAA"),
 
     /**
      * Electronic attestation of attributes issued by or on behalf of a public sector body responsible
      * for an authentic source as defined in Regulation EU 2024/1183, Article 45f.
      */
-    PUBEAA("PuB-EAA", "Electronic Attestation of Attributes issued by or on behalf of a public sector body", "urn:cef:dss:eaaQualification:PUBEAA"),
+    PUBEAA("PuB-EAA", "Electronic Attestation of Attributes issued by or on behalf of a public sector body", "urn:cef:dss:attestation:qualification:PUBEAA"),
 
     /**
      * Personal Identification Data (PID)
      */
-    PID("PID", "Personal Identification Data", "urn:cef:dss:eaaQualification:PID"),
+    PID("PID", "Personal Identification Data", "urn:cef:dss:attestation:qualification:PID"),
 
     /**
      * Electronic attestation of attributes of unknown or conflicting revocation.
      */
-    UNKNOWN("Unknown", "Electronic Attestation of Attributes of unknown type", "urn:cef:dss:eaaQualification:Unknown"),
+    UNKNOWN("Unknown", "Electronic Attestation of Attributes of unknown type", "urn:cef:dss:attestation:qualification:Unknown"),
 
     /**
      * Indeterminate qualified electronic attestation of attributes as defined in Regulation EU 2024/1183, Article 45d.
      */
-    INDETERMINATE_QEAA("Indeterminate QEAA", "Indeterminate Qualified Electronic Attestation of Attributes", "urn:cef:dss:eaaQualification:indeterminateQEAA"),
+    INDETERMINATE_QEAA("Indeterminate QEAA", "Indeterminate Qualified Electronic Attestation of Attributes", "urn:cef:dss:attestation:qualification:indeterminateQEAA"),
 
     /**
      * Indeterminate electronic attestation of attributes as defined in Regulation EU 2024/1183, without a qualified revocation.
      */
-    INDETERMINATE_EAA("Indeterminate EAA", "Indeterminate Electronic Attestation of Attributes", "urn:cef:dss:eaaQualification:indeterminateEAA"),
+    INDETERMINATE_EAA("Indeterminate EAA", "Indeterminate Electronic Attestation of Attributes", "urn:cef:dss:attestation:qualification:indeterminateEAA"),
 
     /**
      * Indeterminate electronic attestation of attributes issued by or on behalf of a public sector body responsible
      * for an authentic source as defined in Regulation EU 2024/1183, Article 45f.
      */
-    INDETERMINATE_PUBEAA("Indeterminate Pub-EAA", "Indeterminate Electronic Attestation of Attributes issued by or on behalf of a public sector body", "urn:cef:dss:eaaQualification:indeterminatePUBEAA"),
+    INDETERMINATE_PUBEAA("Indeterminate Pub-EAA", "Indeterminate Electronic Attestation of Attributes issued by or on behalf of a public sector body", "urn:cef:dss:attestation:qualification:indeterminatePUBEAA"),
 
     /**
      * Indeterminate Personal Identification Data (PID)
      */
-    INDETERMINATE_PID("Indeterminate PID", "Indeterminate Personal Identification Data", "urn:cef:dss:eaaQualification:indeterminatePID"),
+    INDETERMINATE_PID("Indeterminate PID", "Indeterminate Personal Identification Data", "urn:cef:dss:attestation:qualification:indeterminatePID"),
 
     /**
      * Indeterminate electronic attestation of attributes of unknown or conflicting revocation.
      */
-    INDETERMINATE_UNKNOWN("Indeterminate Unknown", "Indeterminate Electronic Attestation of Attributes of unknown type", "urn:cef:dss:eaaQualification:indeterminateUnknown"),
+    INDETERMINATE_UNKNOWN("Indeterminate Unknown", "Indeterminate Electronic Attestation of Attributes of unknown type", "urn:cef:dss:attestation:qualification:indeterminateUnknown"),
 
     /**
      * Not electronic attestation of attributes
      */
-    NOT_EAA("Not EAA", "Not Electronic Attestation of Attributes", "urn:cef:dss:eaaQualification:NOTEAA"),
+    NOT_EAA("Not EAA", "Not Electronic Attestation of Attributes", "urn:cef:dss:attestation:qualification:NOTEAA"),
 
     /**
      * Not Applicable
      */
-    NA("N/A", "Not applicable", "urn:cef:dss:eaaQualification:NA");
+    NA("N/A", "Not applicable", "urn:cef:dss:attestation:qualification:NA");
 
     /**
      * This class is used to provide a quick mapping of the user-friendly labels to enums
