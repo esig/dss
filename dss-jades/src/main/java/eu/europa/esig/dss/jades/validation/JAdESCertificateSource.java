@@ -99,6 +99,8 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 		extractX5C();
 
 		// unsigned properties
+		extractUnprotectedX5C();
+
 		extractEtsiU();
 	}
 
@@ -190,18 +192,30 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 
 	private void extractX5C() {
 		List<?> x509CertChain = jws.getProtectedHeaderValueAsList(HeaderParameterNames.X509_CERTIFICATE_CHAIN);
+		extractX5C(x509CertChain, CertificateOrigin.KEY_INFO);
+	}
+
+	private void extractX5C(List<?> x509CertChain, CertificateOrigin certificateOrigin) {
 		if (Utils.isCollectionNotEmpty(x509CertChain)) {
 			for (Object item : x509CertChain) {
 				String certificateBase64 = DSSJsonUtils.toString(item);
 				if (Utils.isStringNotEmpty(certificateBase64)) {
 					try {
 						CertificateToken certificate = DSSUtils.loadCertificateFromBase64EncodedString(certificateBase64);
-						addCertificate(certificate, CertificateOrigin.KEY_INFO);
+						addCertificate(certificate, certificateOrigin);
 					} catch (Exception e) {
 						LOG.warn("Unable to decode a certificate from '{}'! Reason : {}", certificateBase64, e.getMessage(), e);
 					}
 				}
 			}
+		}
+	}
+
+	private void extractUnprotectedX5C() {
+		Map<String, Object> unprotected = jws.getUnprotected();
+		if (Utils.isMapNotEmpty(unprotected)) {
+			Object x5c = unprotected.get(HeaderParameterNames.X509_CERTIFICATE_CHAIN);
+			extractX5C(DSSJsonUtils.toList(x5c), CertificateOrigin.UNPROTECTED_HEADER);
 		}
 	}
 
@@ -218,6 +232,8 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 
 			extractCompleteCertificateRefs(attribute);
 			extractAttributeCertificateRefs(attribute);
+
+			extractEtsiUX5C(attribute);
 		}
 	}
 
@@ -304,6 +320,12 @@ public class JAdESCertificateSource extends SignatureCertificateSource {
 
 		} else {
 			LOG.warn("Unsupported encoding header value : '{}'", encoding);
+		}
+	}
+
+	private void extractEtsiUX5C(JAdESAttribute attribute) {
+		if (HeaderParameterNames.X509_CERTIFICATE_CHAIN.equals(attribute.getHeaderName())) {
+			extractX5C(DSSJsonUtils.toList(attribute.getValue()), CertificateOrigin.UNPROTECTED_HEADER);
 		}
 	}
 

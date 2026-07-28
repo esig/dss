@@ -52,6 +52,7 @@ import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampedReference;
 import eu.europa.esig.dss.spi.validation.timestamp.SignatureTimestampIdentifierBuilder;
 import org.bouncycastle.cert.ocsp.BasicOCSPResp;
+import org.jose4j.jwx.HeaderParameterNames;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -147,7 +148,12 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 
 	@Override
 	protected boolean isCertificateValues(JAdESAttribute unsignedAttribute) {
-		return JAdESHeaderParameterNames.X_VALS.equals(unsignedAttribute.getHeaderName());
+		return JAdESHeaderParameterNames.X_VALS.equals(unsignedAttribute.getHeaderName()) || isX5CertificateChain(unsignedAttribute);
+
+	}
+
+	private boolean isX5CertificateChain(JAdESAttribute unsignedAttribute) {
+		return HeaderParameterNames.X509_CERTIFICATE_CHAIN.equals(unsignedAttribute.getHeaderName());
 	}
 
 	@Override
@@ -275,6 +281,19 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 
 	@Override
 	protected List<Identifier> getEncapsulatedCertificateIdentifiers(JAdESAttribute unsignedAttribute) {
+		if (isX5CertificateChain(unsignedAttribute)) {
+			List<Identifier> certificateIdentifiers = new ArrayList<>();
+			List<?> x5c = DSSJsonUtils.toList(unsignedAttribute.getValue(), HeaderParameterNames.X509_CERTIFICATE_CHAIN);
+			for (Object certificate : x5c) {
+				String certB64 = DSSJsonUtils.toString(certificate);
+				CertificateToken certificateToken = parseCertificateToken(certB64);
+				if (certificateToken != null) {
+					certificateIdentifiers.add(certificateToken.getDSSId());
+				}
+			}
+			return certificateIdentifiers;
+		}
+
 		List<?> xVals = null;
 		if (isTimeStampValidationData(unsignedAttribute)) {
 			Map<?, ?> tstVd = DSSJsonUtils.toMap(unsignedAttribute.getValue(), JAdESHeaderParameterNames.TST_VD);
@@ -300,6 +319,7 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 			}
 			return certificateIdentifiers;
 		}
+
 		return Collections.emptyList();
 	}
 
@@ -311,10 +331,7 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 				Map<?, ?> otherCert = DSSJsonUtils.getAsMap(map, JAdESHeaderParameterNames.OTHER_CERT);
 				if (Utils.isMapNotEmpty(x509Cert)) {
 					String base64Cert = DSSJsonUtils.getAsString(x509Cert, JAdESHeaderParameterNames.VAL);
-					if (Utils.isStringNotBlank(base64Cert)) {
-						byte[] binaries = Utils.fromBase64(base64Cert);
-						return DSSUtils.loadCertificate(binaries);
-					}
+					return parseCertificateToken(base64Cert);
 
 				} else if (Utils.isMapNotEmpty(otherCert)) {
 					LOG.warn("The header '{}' is not supported! The entry is skipped.",
@@ -323,6 +340,14 @@ public class JAdESTimestampSource extends SignatureTimestampSource<JAdESSignatur
 			}
 		} catch (Exception e) {
 			LOG.warn("An error occurred during parsing a certificate. Reason : {}", e.getMessage(), e);
+		}
+		return null;
+	}
+
+	private CertificateToken parseCertificateToken(String base64Cert) {
+		if (Utils.isStringNotBlank(base64Cert)) {
+			byte[] binaries = Utils.fromBase64(base64Cert);
+			return DSSUtils.loadCertificate(binaries);
 		}
 		return null;
 	}

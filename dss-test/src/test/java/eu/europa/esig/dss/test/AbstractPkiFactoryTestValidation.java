@@ -1172,6 +1172,10 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 				assertTrue(certIds.contains(certificate.getId()));
 			}
 			for (CertificateWrapper certificate : signatureWrapper.foundCertificates()
+					.getRelatedCertificatesByOrigin(CertificateOrigin.UNPROTECTED_HEADER)) {
+				assertTrue(certIds.contains(certificate.getId()));
+			}
+			for (CertificateWrapper certificate : signatureWrapper.foundCertificates()
 					.getRelatedCertificatesByOrigin(CertificateOrigin.ATTR_AUTHORITIES_CERT_VALUES)) {
 				assertTrue(certIds.contains(certificate.getId()));
 			}
@@ -1192,6 +1196,10 @@ public abstract class AbstractPkiFactoryTestValidation extends PKIFactoryAccess 
 			}
 			for (OrphanCertificateWrapper certificate : signatureWrapper.foundCertificates()
 					.getOrphanCertificatesByOrigin(CertificateOrigin.CERTIFICATE_VALUES)) {
+				assertTrue(orphanCertIds.contains(certificate.getId()));
+			}
+			for (OrphanCertificateWrapper certificate : signatureWrapper.foundCertificates()
+					.getOrphanCertificatesByOrigin(CertificateOrigin.UNPROTECTED_HEADER)) {
 				assertTrue(orphanCertIds.contains(certificate.getId()));
 			}
 			for (OrphanCertificateWrapper certificate : signatureWrapper.foundCertificates()

@@ -306,7 +306,7 @@ public class CBAdESLevelBaselineB {
         if (x5Chain != null) {
             switch (parameters.getX5ChainHeaderPlacement()) {
                 case unprotectedHeader:
-                    addUnsignedHeader(COSEHeaderParameter.X5CHAIN.cbor(), getX5Chain());
+                    addUnsignedHeader(COSEHeaderParameter.X5CHAIN.cbor(), x5Chain);
                     break;
                 case uHeaders:
                     CBORArray uHeaders = new CBORArray();

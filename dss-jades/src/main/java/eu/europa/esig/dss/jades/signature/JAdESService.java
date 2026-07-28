@@ -147,34 +147,10 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 	public ToBeSigned getDataToSign(List<DSSDocument> toSignDocuments, JAdESSignatureParameters parameters) {
 		Objects.requireNonNull(toSignDocuments, "toSignDocuments cannot be null!");
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
-		
-		assertMultiDocumentsAllowed(toSignDocuments, parameters);
-		assertSigningCertificateValid(parameters);
+		assertSignaturePossible(toSignDocuments, parameters);
 
 		JAdESBuilder jadesBuilder = getJAdESBuilder(parameters, toSignDocuments);
 		return jadesBuilder.buildDataToBeSigned();
-	}
-
-	/**
-	 * Only DETACHED signatures are allowed
-	 *
-	 * @param toSignDocuments list of {@link DSSDocument}s
-	 * @param parameters {@link JAdESSignatureParameters}
-	 */
-	private void assertMultiDocumentsAllowed(List<DSSDocument> toSignDocuments, JAdESSignatureParameters parameters) {
-		Objects.requireNonNull(parameters.getSignaturePackaging(), "SignaturePackaging shall be defined!");
-
-		if (Utils.isCollectionEmpty(toSignDocuments)) {
-			throw new IllegalArgumentException("The documents to sign must be provided!");
-		}
-		SignaturePackaging signaturePackaging = parameters.getSignaturePackaging();
-		if (!SignaturePackaging.DETACHED.equals(signaturePackaging) && toSignDocuments.size() > 1) {
-			throw new IllegalArgumentException("Not supported operation (only DETACHED are allowed for multiple document signing)!");
-		}
-		if (SignaturePackaging.DETACHED.equals(signaturePackaging) && SigDMechanism.NO_SIG_D.equals(parameters.getSigDMechanism()) 
-				&& toSignDocuments.size() > 1) {
-			throw new IllegalArgumentException("NO_SIG_D mechanism is not allowed for multiple documents!");
-		}
 	}
 
 	@Override
@@ -190,8 +166,7 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 		Objects.requireNonNull(toSignDocuments, "toSignDocuments cannot be null!");
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 		Objects.requireNonNull(signatureValue, "SignatureValue cannot be null!");
-		assertMultiDocumentsAllowed(toSignDocuments, parameters);
-		assertSigningCertificateValid(parameters);
+		assertSignaturePossible(toSignDocuments, parameters);
 
 		JAdESBuilder jadesBuilder = getJAdESBuilder(parameters, toSignDocuments);
 		DSSDocument signedDocument = jadesBuilder.build(signatureValue);
@@ -434,6 +409,40 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 		}
 	}
 
+	/**
+	 * Verifies whether the signature is possible with the provided configuration, throws an exception otherwise
+	 *
+	 * @param toSignDocuments a list of {@link DSSDocument}s to sign
+	 * @param parameters {@link JAdESSignatureParameters}
+	 */
+	protected void assertSignaturePossible(List<DSSDocument> toSignDocuments, JAdESSignatureParameters parameters) {
+		assertMultiDocumentsAllowed(toSignDocuments, parameters);
+		assertSigningCertificateValid(parameters);
+		assertParametersConfigurationValid(parameters);
+	}
+
+	/**
+	 * Only DETACHED signatures are allowed
+	 *
+	 * @param toSignDocuments list of {@link DSSDocument}s
+	 * @param parameters {@link JAdESSignatureParameters}
+	 */
+	private void assertMultiDocumentsAllowed(List<DSSDocument> toSignDocuments, JAdESSignatureParameters parameters) {
+		Objects.requireNonNull(parameters.getSignaturePackaging(), "SignaturePackaging shall be defined!");
+
+		if (Utils.isCollectionEmpty(toSignDocuments)) {
+			throw new IllegalArgumentException("The documents to sign must be provided!");
+		}
+		SignaturePackaging signaturePackaging = parameters.getSignaturePackaging();
+		if (!SignaturePackaging.DETACHED.equals(signaturePackaging) && toSignDocuments.size() > 1) {
+			throw new IllegalArgumentException("Not supported operation (only DETACHED are allowed for multiple document signing)!");
+		}
+		if (SignaturePackaging.DETACHED.equals(signaturePackaging) && SigDMechanism.NO_SIG_D.equals(parameters.getSigDMechanism())
+				&& toSignDocuments.size() > 1) {
+			throw new IllegalArgumentException("NO_SIG_D mechanism is not allowed for multiple documents!");
+		}
+	}
+
 	@Override
 	protected void assertSigningCertificateValid(AbstractSignatureParameters<?> parameters) {
 		super.assertSigningCertificateValid(parameters);
@@ -494,6 +503,15 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 					throw new UnsupportedOperationException(String.format(
 							"ECDSA with %s is not supported for JWS!", targetSignatureAlgorithm.getDigestAlgorithm()));
 			}
+		}
+	}
+
+	private void assertParametersConfigurationValid(JAdESSignatureParameters parameters) {
+		if (JWSSerializationType.COMPACT_SERIALIZATION == parameters.getJwsSerializationType() && (
+				JAdESSignatureParameters.X5CHeaderPlacement.unprotectedHeader == parameters.getX5CHeaderPlacement() ||
+						JAdESSignatureParameters.X5CHeaderPlacement.etsiU == parameters.getX5CHeaderPlacement())) {
+			throw new IllegalArgumentException(String.format(
+					"'%s' x5c header placement is not supported with JWS Compact Serialization!", parameters.getX5CHeaderPlacement()));
 		}
 	}
 

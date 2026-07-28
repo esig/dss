@@ -38,11 +38,36 @@ public class JAdESSignatureParameters extends AbstractSignatureParameters<JAdEST
 	private static final long serialVersionUID = -5937995983705731252L;
 
 	/**
+	 * Enumeration defining ways to embed the 'x5c' header into a JWS
+	 */
+	public enum X5CHeaderPlacement {
+		/**
+		 * Insert the 'x5c' header within the protected headers map (signed)
+		 */
+		protectedHeader,
+		/**
+		 * Insert the 'x5c' header within the unprotected headers map (unsigned)
+		 */
+		unprotectedHeader,
+		/**
+		 * Insert the 'x5c' header as an item within the 'etsiU' unprotected header array (unsigned)
+		 */
+		etsiU,
+	}
+
+	/**
 	 * Defines if certificate chain binaries must be included into the signed header ('x5c' attribute)
 	 * <p>
 	 * DEFAULT: TRUE (the certificate chain header will be included into the signed header)
 	 */
 	private boolean includeCertificateChain = true;
+
+	/**
+	 * Defines the element within JWS to embed the 'x5c' header parameter into.
+	 * Applies when the {@code includeCertificateChain} parameter is enabled.
+	 * DEFAULT: X5CHeaderPlacement.protectedHeader ('x5c' is to be included within the protected header)
+	 */
+	private X5CHeaderPlacement x5cHeaderPlacement;
 	
 	/**
 	 * Defines if the signature must incorporate its MimeType definition in the signed header ('typ' attribute)
@@ -204,6 +229,26 @@ public class JAdESSignatureParameters extends AbstractSignatureParameters<JAdEST
 	 */
 	public void setIncludeCertificateChain(boolean includeCertificateChain) {
 		this.includeCertificateChain = includeCertificateChain;
+	}
+
+	/**
+	 * Gets the placement of the 'x5c' header parameter
+	 *
+	 * @return {@link X5CHeaderPlacement}
+	 */
+	public X5CHeaderPlacement getX5CHeaderPlacement() {
+		return x5cHeaderPlacement;
+	}
+
+	/**
+	 * Sets the placement of the 'x5c' header parameter within the JWS structure.
+	 * Applies when the {@code includeCertificateChain} parameter is enabled.
+	 * DEFAULT: X5ChainHeaderPlacement.protectedHeader ('x5c' is to be included within the protected header)
+	 *
+	 * @param x5cHeaderPlacement {@link X5CHeaderPlacement}
+	 */
+	public void setX5CHeaderPlacement(X5CHeaderPlacement x5cHeaderPlacement) {
+		this.x5cHeaderPlacement = x5cHeaderPlacement;
 	}
 
 	/**

@@ -83,8 +83,11 @@ public class JAdESLevelBaselineB {
 	/** List of documents to sign */
 	private final List<DSSDocument> documentsToSign;
 	
-	/** JOSE Header map representation */
+	/** JOSE Protected Header map representation */
 	private Map<String, Object> signedProperties = new LinkedHashMap<>();
+
+	/** JOSE Unprotected Header map representation */
+	private Map<String, Object> unsignedProperties = new LinkedHashMap<>();
 
 	/**
 	 * The default constructor
@@ -93,7 +96,8 @@ public class JAdESLevelBaselineB {
 	 * @param parameters {@link JAdESSignatureParameters}
 	 * @param documentsToSign a list of {@link DSSDocument}s to sign
 	 */
-	public JAdESLevelBaselineB(final CertificateVerifier certificateVerifier, final JAdESSignatureParameters parameters, final List<DSSDocument> documentsToSign) {
+	public JAdESLevelBaselineB(final CertificateVerifier certificateVerifier, final JAdESSignatureParameters parameters,
+							   final List<DSSDocument> documentsToSign) {
 		Objects.requireNonNull(certificateVerifier, "certificateVerifier must not be null!");
 		Objects.requireNonNull(certificateVerifier, "signatureParameters must be defined!");
 		if (Utils.isCollectionEmpty(documentsToSign)) {
@@ -139,6 +143,16 @@ public class JAdESLevelBaselineB {
 		incorporateCritical();
 		
 		return signedProperties;
+	}
+
+	/**
+	 * Returns a map representing the unsigned header of a signature
+	 *
+	 * @return a map representing the unsigned header
+	 */
+	public Map<String, Object> getUnsignedProperties() {
+		incorporateUnsignedCertificateChain();
+		return unsignedProperties;
 	}
 
 	/**
@@ -249,10 +263,15 @@ public class JAdESLevelBaselineB {
 	 * Incorporates 5.1.8 The x5c (X.509 Certificate Chain) header parameter
 	 */
 	protected void incorporateCertificateChain() {
-		if (!parameters.isIncludeCertificateChain() || parameters.getSigningCertificate() == null) {
+		if (!parameters.isIncludeCertificateChain() || parameters.getSigningCertificate() == null || !isCertificateChainSigned()) {
 			return;
 		}
 		
+		JSONArray x5c = getX5C();
+		addHeader(HeaderParameterNames.X509_CERTIFICATE_CHAIN, x5c);
+	}
+
+	private JSONArray getX5C() {
 		BaselineBCertificateSelector certificateSelector = new BaselineBCertificateSelector(parameters.getSigningCertificate(), parameters.getCertificateChain())
 				.setTrustAnchorBPPolicy(parameters.bLevel().isTrustAnchorBPPolicy())
 				.setTrustedCertificateSource(certificateVerifier.getTrustedCertSources());
@@ -262,7 +281,44 @@ public class JAdESLevelBaselineB {
 		for (CertificateToken certificateToken : certificates) {
 			base64Certificates.add(Utils.toBase64(certificateToken.getEncoded()));
 		}
-		addHeader(HeaderParameterNames.X509_CERTIFICATE_CHAIN, new JSONArray(base64Certificates));
+		return new JSONArray(base64Certificates);
+	}
+
+	/**
+	 * Incorporates 5.1.8 The x5c (X.509 Certificate Chain) as an unsigned property
+	 */
+	protected void incorporateUnsignedCertificateChain() {
+		if (!parameters.isIncludeCertificateChain() || parameters.getSigningCertificate() == null || isCertificateChainSigned()) {
+			return;
+		}
+
+		JSONArray x5c = getX5C();
+		if (x5c != null) {
+			switch (parameters.getX5CHeaderPlacement()) {
+				case unprotectedHeader:
+					addUnsignedHeader(HeaderParameterNames.X509_CERTIFICATE_CHAIN, x5c);
+					break;
+				case etsiU:
+					List<Object> etsiU = new ArrayList<>();
+					JsonObject x5CertificareChain = new JsonObject();
+					x5CertificareChain.put(HeaderParameterNames.X509_CERTIFICATE_CHAIN, x5c);
+					boolean base64EncodedEtsiU = parameters.isBase64UrlEncodedEtsiUComponents() == null || parameters.isBase64UrlEncodedEtsiUComponents();
+					Object x5cItem = base64EncodedEtsiU ? DSSJsonUtils.toBase64Url(x5CertificareChain) : x5CertificareChain;
+					etsiU.add(x5cItem);
+					addUnsignedHeader(JAdESHeaderParameterNames.ETSI_U, etsiU);
+					break;
+				default:
+					throw new UnsupportedOperationException(String.format(
+							"The 'x5c' placement '%s' is not supported for the unsigned certificate chain!",
+							parameters.getX5CHeaderPlacement()));
+			}
+		}
+	}
+
+	private boolean isCertificateChainSigned() {
+		// Signed is default behavior (when NULL)
+		return parameters.getX5CHeaderPlacement() == null ||
+				JAdESSignatureParameters.X5CHeaderPlacement.protectedHeader == parameters.getX5CHeaderPlacement();
 	}
 	
 	/**
@@ -949,6 +1005,16 @@ public class JAdESLevelBaselineB {
 	 */
 	protected void addHeader(String headerName, Object value) {
 		signedProperties.put(headerName, value);
+	}
+
+	/**
+	 * Adds a new header to the {@code unsignedProperties} map
+	 *
+	 * @param headerName {@link String} name of the header
+	 * @param value {@link Object} to add
+	 */
+	protected void addUnsignedHeader(String headerName, Object value) {
+		unsignedProperties.put(headerName, value);
 	}
 	
 	/**

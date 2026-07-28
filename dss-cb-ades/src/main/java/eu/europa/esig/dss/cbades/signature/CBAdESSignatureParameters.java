@@ -42,7 +42,6 @@ public class CBAdESSignatureParameters extends AbstractSignatureParameters<CBAdE
      * Enumeration defining ways to embed the 'x5chain' header into a COSE signature
      */
     public enum X5ChainHeaderPlacement {
-
         /**
          * Insert the 'x5chain' header within the protected headers map (signed)
          */
@@ -52,7 +51,7 @@ public class CBAdESSignatureParameters extends AbstractSignatureParameters<CBAdE
          */
         unprotectedHeader,
         /**
-         * Insert the 'x5chain' header within the 'uHeaders' unprotected header (unsigned)
+         * Insert the 'x5chain' header as an item within the 'uHeaders' unprotected header array (unsigned)
          */
         uHeaders,
     }
@@ -65,7 +64,7 @@ public class CBAdESSignatureParameters extends AbstractSignatureParameters<CBAdE
     private boolean includeCertificateChain = true;
 
     /**
-     * Defines the element within COSE signature to embed the 'x5chain' header parameter.
+     * Defines the element within COSE signature to embed the 'x5chain' header parameter into.
      * Applies when the {@code includeCertificateChain} parameter is enabled.
      * DEFAULT: X5ChainHeaderPlacement.protectedHeader ('x5chain' is to be included within the protected header)
      */

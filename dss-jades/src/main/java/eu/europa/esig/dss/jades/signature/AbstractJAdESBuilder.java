@@ -87,6 +87,10 @@ public abstract class AbstractJAdESBuilder implements JAdESBuilder {
 		for (Map.Entry<String, Object> signedHeader : signedProperties.entrySet()) {
 			jws.setHeader(signedHeader.getKey(), signedHeader.getValue());
 		}
+		Map<String, Object> unsignedProperties = jadesLevelBaselineB.getUnsignedProperties();
+		if (Utils.isMapNotEmpty(unsignedProperties)) {
+			jws.setUnprotected(unsignedProperties);
+		}
 	}
 
 	/**

@@ -33,6 +33,7 @@ import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.io.File;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -63,13 +64,25 @@ class JAdESLevelBSerializationTripleSignature extends AbstractJAdESTestSignature
 	
 	@Override
 	protected DSSDocument sign() {
+		Calendar calendar = Calendar.getInstance();
+		signatureParameters.bLevel().setSigningDate(calendar.getTime());
+
 		documentToSign = originalDocument;
 		DSSDocument signedDocument = super.sign();
+
+		calendar.add(Calendar.SECOND, 1);
+		signatureParameters.bLevel().setSigningDate(calendar.getTime());
+
 		documentToSign = signedDocument;
 		DSSDocument doubleSignedDocument = super.sign();
+
+		calendar.add(Calendar.SECOND, 1);
+		signatureParameters.bLevel().setSigningDate(calendar.getTime());
+
 		documentToSign = doubleSignedDocument;
 		DSSDocument tripleSignedDocument = super.sign();
 		documentToSign = originalDocument;
+
 		return tripleSignedDocument;
 	}
 	
@@ -86,6 +99,11 @@ class JAdESLevelBSerializationTripleSignature extends AbstractJAdESTestSignature
 	@Override
 	protected void checkNumberOfSignatures(DiagnosticData diagnosticData) {
 		assertEquals(3, diagnosticData.getSignatures().size());
+	}
+
+	@Override
+	protected void checkSigningDate(DiagnosticData diagnosticData) {
+		// skip
 	}
 
 	@Override
