@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.ws.attestation.creation.dto.parameters;
 
-import eu.europa.esig.dss.enumerations.AttestationProfile;
+import eu.europa.esig.dss.enumerations.AttestationForm;
 
 import java.io.Serializable;
 import java.util.List;
@@ -35,7 +35,7 @@ public class RemoteAttestationPresentationParameters implements Serializable {
     private static final long serialVersionUID = 9020368962150645764L;
 
     /** (Required) Type of the attestation to be created */
-    private AttestationProfile attestationProfile;
+    private AttestationForm attestationForm;
 
     /* Mdoc parameters */
 
@@ -52,28 +52,28 @@ public class RemoteAttestationPresentationParameters implements Serializable {
     /**
      * Constructor with attestation type provided
      *
-     * @param attestationProfile {@link AttestationProfile}
+     * @param attestationForm {@link AttestationForm}
      */
-    public RemoteAttestationPresentationParameters(AttestationProfile attestationProfile) {
-        this.attestationProfile = attestationProfile;
+    public RemoteAttestationPresentationParameters(AttestationForm attestationForm) {
+        this.attestationForm = attestationForm;
     }
 
     /**
-     * Gets the attestation profile
+     * Gets the attestation form type
      *
-     * @return {@link AttestationProfile}
+     * @return {@link AttestationForm}
      */
-    public AttestationProfile getAttestationProfile() {
-        return attestationProfile;
+    public AttestationForm getAttestationForm() {
+        return attestationForm;
     }
 
     /**
-     * Sets the target attestation profile
+     * Sets the target attestation form type
      *
-     * @param attestationProfile {@link AttestationProfile}
+     * @param attestationForm {@link AttestationForm}
      */
-    public void setAttestationProfile(AttestationProfile attestationProfile) {
-        this.attestationProfile = attestationProfile;
+    public void setAttestationForm(AttestationForm attestationForm) {
+        this.attestationForm = attestationForm;
     }
 
     /**
@@ -97,7 +97,7 @@ public class RemoteAttestationPresentationParameters implements Serializable {
     @Override
     public String toString() {
         return "RemoteAttestationPresentationParameters [" +
-                "attestationProfile=" + attestationProfile +
+                "attestationProfile=" + attestationForm +
                 ", deviceSignedDataElements=" + deviceSignedDataElements +
                 ']';
     }
@@ -108,13 +108,13 @@ public class RemoteAttestationPresentationParameters implements Serializable {
         if (object == null || getClass() != object.getClass()) return false;
 
         RemoteAttestationPresentationParameters that = (RemoteAttestationPresentationParameters) object;
-        return attestationProfile == that.attestationProfile
+        return attestationForm == that.attestationForm
                 && Objects.equals(deviceSignedDataElements, that.deviceSignedDataElements);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hashCode(attestationProfile);
+        int result = Objects.hashCode(attestationForm);
         result = 31 * result + Objects.hashCode(deviceSignedDataElements);
         return result;
     }

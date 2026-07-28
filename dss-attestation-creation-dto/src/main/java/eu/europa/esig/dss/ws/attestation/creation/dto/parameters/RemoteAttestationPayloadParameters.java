@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.ws.attestation.creation.dto.parameters;
 
-import eu.europa.esig.dss.enumerations.AttestationProfile;
+import eu.europa.esig.dss.enumerations.AttestationForm;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.ws.dto.DigestDTO;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
@@ -38,7 +38,7 @@ public class RemoteAttestationPayloadParameters implements Serializable {
     private static final long serialVersionUID = 6192999476014374481L;
 
     /** (Required) Type of the attestation to be created */
-    private AttestationProfile attestationProfile;
+    private AttestationForm attestationForm;
 
     /** Pre-computed payload */
     private RemoteDocument preComputedPayload;
@@ -110,10 +110,10 @@ public class RemoteAttestationPayloadParameters implements Serializable {
     /**
      * Constructor with attestation type provided
      *
-     * @param attestationProfile {@link AttestationProfile}
+     * @param attestationForm {@link AttestationForm}
      */
-    public RemoteAttestationPayloadParameters(AttestationProfile attestationProfile) {
-        this(attestationProfile, null);
+    public RemoteAttestationPayloadParameters(AttestationForm attestationForm) {
+        this(attestationForm, null);
     }
 
     /**
@@ -130,31 +130,31 @@ public class RemoteAttestationPayloadParameters implements Serializable {
      * Constructor with defined attestation type and a pre-computed payload.
      * When used, the provided payload is used and all the configuration parameters of the class are ignored.
      *
-     * @param attestationProfile {@link AttestationProfile}
+     * @param attestationForm {@link AttestationForm}
      * @param preComputedPayload {@link RemoteDocument}
      */
-    public RemoteAttestationPayloadParameters(AttestationProfile attestationProfile, RemoteDocument preComputedPayload) {
+    public RemoteAttestationPayloadParameters(AttestationForm attestationForm, RemoteDocument preComputedPayload) {
         super();
-        this.attestationProfile = attestationProfile;
+        this.attestationForm = attestationForm;
         this.preComputedPayload = preComputedPayload;
     }
 
     /**
-     * Gets the attestation Type
+     * Gets the attestation type
      *
-     * @return {@link AttestationProfile}
+     * @return {@link AttestationForm}
      */
-    public AttestationProfile getAttestationProfile() {
-        return attestationProfile;
+    public AttestationForm getAttestationForm() {
+        return attestationForm;
     }
 
     /**
      * Sets the target attestation type
      *
-     * @param attestationProfile {@link AttestationProfile}
+     * @param attestationForm {@link AttestationForm}
      */
-    public void setAttestationProfile(AttestationProfile attestationProfile) {
-        this.attestationProfile = attestationProfile;
+    public void setAttestationForm(AttestationForm attestationForm) {
+        this.attestationForm = attestationForm;
     }
 
     /**
@@ -557,7 +557,7 @@ public class RemoteAttestationPayloadParameters implements Serializable {
     @Override
     public String toString() {
         return "RemoteAttestationPayloadParameters [" +
-                "attestationProfile=" + attestationProfile +
+                "attestationProfile=" + attestationForm +
                 ", preComputedPayload=" + preComputedPayload +
                 ", digestAlgorithm=" + digestAlgorithm +
                 ", notBeforeDate=" + notBeforeDate +
@@ -589,7 +589,7 @@ public class RemoteAttestationPayloadParameters implements Serializable {
         if (object == null || getClass() != object.getClass()) return false;
 
         RemoteAttestationPayloadParameters that = (RemoteAttestationPayloadParameters) object;
-        return attestationProfile == that.attestationProfile
+        return attestationForm == that.attestationForm
                 && Objects.equals(preComputedPayload, that.preComputedPayload)
                 && digestAlgorithm == that.digestAlgorithm
                 && Objects.equals(notBeforeDate, that.notBeforeDate)
@@ -616,7 +616,7 @@ public class RemoteAttestationPayloadParameters implements Serializable {
 
     @Override
     public int hashCode() {
-        int result = Objects.hashCode(attestationProfile);
+        int result = Objects.hashCode(attestationForm);
         result = 31 * result + Objects.hashCode(preComputedPayload);
         result = 31 * result + Objects.hashCode(digestAlgorithm);
         result = 31 * result + Objects.hashCode(notBeforeDate);

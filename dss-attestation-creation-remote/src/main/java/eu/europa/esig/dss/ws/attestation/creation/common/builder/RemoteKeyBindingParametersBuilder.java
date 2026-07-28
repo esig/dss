@@ -45,7 +45,7 @@ public class RemoteKeyBindingParametersBuilder {
      */
     public RemoteKeyBindingParametersBuilder(final RemoteKeyBindingParameters remoteKeyBindingParameters) {
         Objects.requireNonNull(remoteKeyBindingParameters, "RemoteKeyBindingParameters must be defined!");
-        Objects.requireNonNull(remoteKeyBindingParameters.getAttestationProfile(), "Attestation type must be definedy!");
+        Objects.requireNonNull(remoteKeyBindingParameters.getAttestationForm(), "Attestation type must be definedy!");
         this.remoteKeyBindingParameters = remoteKeyBindingParameters;
     }
 
@@ -56,16 +56,16 @@ public class RemoteKeyBindingParametersBuilder {
      */
     public KeyBindingParameters build() {
         KeyBindingParameters keyBindingParameters;
-        switch (remoteKeyBindingParameters.getAttestationProfile()) {
-            case SD_JWT_VC:
+        switch (remoteKeyBindingParameters.getAttestationForm()) {
+            case SD_JWT:
                 keyBindingParameters = buildSDJWTVCKeyBindingParameters(remoteKeyBindingParameters);
                 break;
-            case ISO_IEC_MDOC:
+            case MDOC:
                 keyBindingParameters = buildMdocKeyBindingParameters(remoteKeyBindingParameters);
                 break;
             default:
                 throw new UnsupportedOperationException(String.format("Unsupported attestation format: '%s'. " +
-                        "SD-JWT and ISO/IEC mdoc are only supported.", remoteKeyBindingParameters.getAttestationProfile()));
+                        "SD-JWT and ISO/IEC mdoc are only supported.", remoteKeyBindingParameters.getAttestationForm()));
         }
         return keyBindingParameters;
     }

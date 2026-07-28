@@ -66,7 +66,7 @@ public class RemoteAttestationPayloadParametersBuilder {
      */
     public RemoteAttestationPayloadParametersBuilder(final RemoteAttestationPayloadParameters remoteAttestationPayloadParameters) {
         Objects.requireNonNull(remoteAttestationPayloadParameters, "RemoteAttestationPayloadParameters must be defined!");
-        Objects.requireNonNull(remoteAttestationPayloadParameters.getAttestationProfile(), "Attestation type must be definedy!");
+        Objects.requireNonNull(remoteAttestationPayloadParameters.getAttestationForm(), "Attestation type must be definedy!");
         this.remoteAttestationPayloadParameters = remoteAttestationPayloadParameters;
     }
 
@@ -77,16 +77,16 @@ public class RemoteAttestationPayloadParametersBuilder {
      */
     public AttestationPayloadParameters build() {
         AbstractAttestationPayloadParameters attestationPayloadParameters;
-        switch (remoteAttestationPayloadParameters.getAttestationProfile()) {
-            case SD_JWT_VC:
+        switch (remoteAttestationPayloadParameters.getAttestationForm()) {
+            case SD_JWT:
                 attestationPayloadParameters = buildSDJWTParameters(remoteAttestationPayloadParameters);
                 break;
-            case ISO_IEC_MDOC:
+            case MDOC:
                 attestationPayloadParameters = buildMdocParameters(remoteAttestationPayloadParameters);
                 break;
             default:
                 throw new UnsupportedOperationException(String.format("Unsupported attestation format: '%s'. " +
-                        "SD-JWT and ISO/IEC mdoc are only supported.", remoteAttestationPayloadParameters.getAttestationProfile()));
+                        "SD-JWT and ISO/IEC mdoc are only supported.", remoteAttestationPayloadParameters.getAttestationForm()));
         }
         return attestationPayloadParameters;
     }

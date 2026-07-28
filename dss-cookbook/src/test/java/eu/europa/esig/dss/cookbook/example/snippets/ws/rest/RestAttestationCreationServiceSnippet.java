@@ -23,16 +23,11 @@ package eu.europa.esig.dss.cookbook.example.snippets.ws.rest;
 // tag::demo[]
 
 import eu.europa.esig.dss.cookbook.example.CookbookTools;
-import eu.europa.esig.dss.enumerations.AttestationProfile;
+import eu.europa.esig.dss.enumerations.AttestationForm;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import eu.europa.esig.dss.token.SignatureTokenConnection;
-import eu.europa.esig.dss.ws.converter.DTOConverter;
-import eu.europa.esig.dss.ws.converter.RemoteCertificateConverter;
-import eu.europa.esig.dss.ws.dto.RemoteDocument;
-import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
-import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
 import eu.europa.esig.dss.ws.attestation.creation.dto.CreateKeyBindingSignatureDTO;
 import eu.europa.esig.dss.ws.attestation.creation.dto.DataToSignAttestationDTO;
 import eu.europa.esig.dss.ws.attestation.creation.dto.DataToSignForKeyBindingSignatureDTO;
@@ -46,6 +41,11 @@ import eu.europa.esig.dss.ws.attestation.creation.dto.parameters.RemoteAttestati
 import eu.europa.esig.dss.ws.attestation.creation.dto.parameters.RemoteKeyBindingParameters;
 import eu.europa.esig.dss.ws.attestation.creation.rest.RestAttestationCreationServiceImpl;
 import eu.europa.esig.dss.ws.attestation.creation.rest.client.RestAttestationCreationService;
+import eu.europa.esig.dss.ws.converter.DTOConverter;
+import eu.europa.esig.dss.ws.converter.RemoteCertificateConverter;
+import eu.europa.esig.dss.ws.dto.RemoteDocument;
+import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
+import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteBLevelParameters;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureParameters;
 
@@ -77,7 +77,7 @@ public class RestAttestationCreationServiceSnippet extends CookbookTools {
             signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 
             // 1.2 Define payload parameters, claims definition
-            RemoteAttestationPayloadParameters payloadParameters = new RemoteAttestationPayloadParameters(AttestationProfile.SD_JWT_VC);
+            RemoteAttestationPayloadParameters payloadParameters = new RemoteAttestationPayloadParameters(AttestationForm.SD_JWT);
 
             // 1.2.1 Define technical claims
             // NOTE: Ensure the dates are defined for a deterministic behavior
@@ -129,7 +129,7 @@ public class RestAttestationCreationServiceSnippet extends CookbookTools {
 
             // 3.2 Create key binding signature payload parameters
             RemoteKeyBindingParameters keyBindingParameters = new RemoteKeyBindingParameters();
-            keyBindingParameters.setAttestationProfile(AttestationProfile.SD_JWT_VC);
+            keyBindingParameters.setAttestationForm(AttestationForm.SD_JWT);
             keyBindingParameters.setNonce("123456");
             keyBindingParameters.setAudience("audience");
 
@@ -150,7 +150,7 @@ public class RestAttestationCreationServiceSnippet extends CookbookTools {
             // NOTE: requires signed attestation, (optional) disclosures,
             // (optional, format specific) key binding signature and attestation presentation parameters
             IssuePresentationDTO issuePresentationDTO = new IssuePresentationDTO(signedAttestation, disclosures, keyBindingSignature,
-                    new RemoteAttestationPresentationParameters(AttestationProfile.SD_JWT_VC));
+                    new RemoteAttestationPresentationParameters(AttestationForm.SD_JWT));
             RemoteDocument attestationPresentation = restClient.issuePresentation(issuePresentationDTO);
         }
 

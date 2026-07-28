@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.ws.attestation.creation.dto.parameters;
 
-import eu.europa.esig.dss.enumerations.AttestationProfile;
+import eu.europa.esig.dss.enumerations.AttestationForm;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 
@@ -38,7 +38,7 @@ public class RemoteKeyBindingParameters implements Serializable {
     private static final long serialVersionUID = 7115773287145650462L;
 
     /** (Required) Type of the attestation to be created */
-    private AttestationProfile attestationProfile;
+    private AttestationForm attestationForm;
 
     /* SD-JWT parameters */
 
@@ -75,28 +75,28 @@ public class RemoteKeyBindingParameters implements Serializable {
     /**
      * Constructor with attestation type provided
      *
-     * @param attestationProfile {@link AttestationProfile}
+     * @param attestationForm {@link AttestationForm}
      */
-    public RemoteKeyBindingParameters(AttestationProfile attestationProfile) {
-        this.attestationProfile = attestationProfile;
+    public RemoteKeyBindingParameters(AttestationForm attestationForm) {
+        this.attestationForm = attestationForm;
     }
 
     /**
-     * Gets the attestation Type
+     * Gets the attestation type
      *
-     * @return {@link AttestationProfile}
+     * @return {@link AttestationForm}
      */
-    public AttestationProfile getAttestationProfile() {
-        return attestationProfile;
+    public AttestationForm getAttestationForm() {
+        return attestationForm;
     }
 
     /**
      * Sets the target attestation type
      *
-     * @param attestationProfile {@link AttestationProfile}
+     * @param attestationForm {@link AttestationForm}
      */
-    public void setAttestationProfile(AttestationProfile attestationProfile) {
-        this.attestationProfile = attestationProfile;
+    public void setAttestationForm(AttestationForm attestationForm) {
+        this.attestationForm = attestationForm;
     }
 
     /**
@@ -228,7 +228,7 @@ public class RemoteKeyBindingParameters implements Serializable {
     @Override
     public String toString() {
         return "RemoteKeyBindingParameters [" +
-                "attestationProfile=" + attestationProfile +
+                "attestationProfile=" + attestationForm +
                 ", digestAlgorithm=" + digestAlgorithm +
                 ", issuanceTime=" + issuanceTime +
                 ", audience='" + audience + '\'' +
@@ -245,7 +245,7 @@ public class RemoteKeyBindingParameters implements Serializable {
         if (object == null || getClass() != object.getClass()) return false;
 
         RemoteKeyBindingParameters that = (RemoteKeyBindingParameters) object;
-        return attestationProfile == that.attestationProfile
+        return attestationForm == that.attestationForm
                 && digestAlgorithm == that.digestAlgorithm
                 && Objects.equals(issuanceTime, that.issuanceTime)
                 && Objects.equals(audience, that.audience)
@@ -257,7 +257,7 @@ public class RemoteKeyBindingParameters implements Serializable {
 
     @Override
     public int hashCode() {
-        int result = Objects.hashCode(attestationProfile);
+        int result = Objects.hashCode(attestationForm);
         result = 31 * result + Objects.hashCode(digestAlgorithm);
         result = 31 * result + Objects.hashCode(issuanceTime);
         result = 31 * result + Objects.hashCode(audience);

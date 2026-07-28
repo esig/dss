@@ -32,6 +32,7 @@ import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTService;
 import eu.europa.esig.dss.attestation.mdoc.MdocConstants;
 import eu.europa.esig.dss.attestation.mdoc.creation.MdocService;
 import eu.europa.esig.dss.attestation.mdoc.validation.MdocValidationParameters;
+import eu.europa.esig.dss.enumerations.AttestationForm;
 import eu.europa.esig.dss.enumerations.AttestationProfile;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -114,7 +115,7 @@ class RemoteAttestationCreationServiceImplTest extends PKIFactoryAccess {
         signatureParameters.setSigningCertificate(RemoteCertificateConverter.toRemoteCertificate(getSigningCert()));
         signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 
-        RemoteAttestationPayloadParameters payloadParameters = new RemoteAttestationPayloadParameters(AttestationProfile.SD_JWT_VC);
+        RemoteAttestationPayloadParameters payloadParameters = new RemoteAttestationPayloadParameters(AttestationForm.SD_JWT);
 
         payloadParameters.setNotBeforeDate(signingTime);
         Calendar calendar = Calendar.getInstance();
@@ -190,7 +191,7 @@ class RemoteAttestationCreationServiceImplTest extends PKIFactoryAccess {
         keyBindingSignatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
 
         RemoteKeyBindingParameters keyBindingParameters = new RemoteKeyBindingParameters();
-        keyBindingParameters.setAttestationProfile(AttestationProfile.SD_JWT_VC);
+        keyBindingParameters.setAttestationForm(AttestationForm.SD_JWT);
         keyBindingParameters.setNonce("123456");
         keyBindingParameters.setAudience("audience");
 
@@ -203,7 +204,7 @@ class RemoteAttestationCreationServiceImplTest extends PKIFactoryAccess {
         assertNotNull(keyBindingSignature);
 
         RemoteDocument attestationPresentation = attestationService.issuePresentation(signedAttestation, disclosures, keyBindingSignature,
-                new RemoteAttestationPresentationParameters(AttestationProfile.SD_JWT_VC));
+                new RemoteAttestationPresentationParameters(AttestationForm.SD_JWT));
 
         InMemoryDocument iMD = new InMemoryDocument(attestationPresentation.getBytes());
         DiagnosticData diagnosticData = validate(iMD, null);
@@ -272,7 +273,7 @@ class RemoteAttestationCreationServiceImplTest extends PKIFactoryAccess {
 
         signingAlias = ECDSA_521_USER;
 
-        RemoteAttestationPayloadParameters payloadParameters = new RemoteAttestationPayloadParameters(AttestationProfile.ISO_IEC_MDOC);
+        RemoteAttestationPayloadParameters payloadParameters = new RemoteAttestationPayloadParameters(AttestationForm.MDOC);
 
         payloadParameters.setDocType(MdocConstants.ISO18013_5_MDL_DOC_TYPE);
         RemotePublicKey publicKey = new RemotePublicKey();
@@ -336,7 +337,7 @@ class RemoteAttestationCreationServiceImplTest extends PKIFactoryAccess {
         keyBindingSignatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
 
         RemoteKeyBindingParameters keyBindingParameters = new RemoteKeyBindingParameters();
-        keyBindingParameters.setAttestationProfile(AttestationProfile.ISO_IEC_MDOC);
+        keyBindingParameters.setAttestationForm(AttestationForm.MDOC);
         keyBindingParameters.setSessionTranscript(new RemoteDocument(Utils.fromHex("80")));
         keyBindingParameters.setDocType(MdocConstants.ISO18013_5_MDL_DOC_TYPE);
 
@@ -349,7 +350,7 @@ class RemoteAttestationCreationServiceImplTest extends PKIFactoryAccess {
         assertNotNull(keyBindingSignature);
 
         RemoteDocument attestationPresentation = attestationService.issuePresentation(signedAttestation, disclosures, keyBindingSignature,
-                new RemoteAttestationPresentationParameters(AttestationProfile.ISO_IEC_MDOC));
+                new RemoteAttestationPresentationParameters(AttestationForm.MDOC));
 
         InMemoryDocument iMD = new InMemoryDocument(attestationPresentation.getBytes());
         DiagnosticData diagnosticData = validate(iMD, new InMemoryDocument(Utils.fromHex("80")));

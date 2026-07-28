@@ -44,7 +44,7 @@ public class RemoteAttestationPresentationParametersBuilder {
      */
     public RemoteAttestationPresentationParametersBuilder(final RemoteAttestationPresentationParameters remoteAttestationPresentationParameters) {
         Objects.requireNonNull(remoteAttestationPresentationParameters, "RemoteAttestationPresentationParameters must be defined!");
-        Objects.requireNonNull(remoteAttestationPresentationParameters.getAttestationProfile(), "Attestation type must be definedy!");
+        Objects.requireNonNull(remoteAttestationPresentationParameters.getAttestationForm(), "Attestation type must be definedy!");
         this.remoteAttestationPresentationParameters = remoteAttestationPresentationParameters;
     }
 

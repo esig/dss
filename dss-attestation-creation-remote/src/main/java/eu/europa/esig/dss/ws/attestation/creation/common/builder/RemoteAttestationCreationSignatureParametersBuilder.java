@@ -22,7 +22,7 @@ package eu.europa.esig.dss.ws.attestation.creation.common.builder;
 
 import eu.europa.esig.dss.cbades.signature.CBAdESCounterSignatureParameters;
 import eu.europa.esig.dss.cbades.signature.CBAdESSignatureParameters;
-import eu.europa.esig.dss.enumerations.AttestationProfile;
+import eu.europa.esig.dss.enumerations.AttestationForm;
 import eu.europa.esig.dss.enumerations.CommitmentType;
 import eu.europa.esig.dss.enumerations.CommitmentTypeEnum;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
@@ -51,7 +51,7 @@ import java.util.stream.Collectors;
 public class RemoteAttestationCreationSignatureParametersBuilder {
 
     /** Type of the attestation */
-    private final AttestationProfile attestationProfile;
+    private final AttestationForm attestationForm;
 
     /** DTO representing the signature parameters */
     private final RemoteSignatureParameters remoteSignatureParameters;
@@ -59,11 +59,11 @@ public class RemoteAttestationCreationSignatureParametersBuilder {
     /**
      * Default constructor
      *
-     * @param attestationProfile {@link AttestationProfile}
+     * @param attestationForm {@link AttestationForm}
      * @param remoteSignatureParameters {@link RemoteSignatureParameters}
      */
-    public RemoteAttestationCreationSignatureParametersBuilder(final AttestationProfile attestationProfile, final RemoteSignatureParameters remoteSignatureParameters) {
-        this.attestationProfile = attestationProfile;
+    public RemoteAttestationCreationSignatureParametersBuilder(final AttestationForm attestationForm, final RemoteSignatureParameters remoteSignatureParameters) {
+        this.attestationForm = attestationForm;
         this.remoteSignatureParameters = remoteSignatureParameters;
     }
 
@@ -85,13 +85,13 @@ public class RemoteAttestationCreationSignatureParametersBuilder {
      * @return {@link SerializableSignatureParameters}
      */
     protected SerializableSignatureParameters getSignatureParameters(RemoteSignatureParameters remoteParameters) {
-        switch (attestationProfile) {
-            case SD_JWT_VC:
+        switch (attestationForm) {
+            case SD_JWT:
                 return getJAdESSignatureParameters(remoteParameters);
-            case ISO_IEC_MDOC:
+            case MDOC:
                 return getCBAdESSignatureParameters(remoteParameters);
             default:
-                throw new UnsupportedOperationException(String.format("Unsupported attestation type : %s", attestationProfile));
+                throw new UnsupportedOperationException(String.format("Unsupported attestation type : %s", attestationForm));
         }
     }
 
