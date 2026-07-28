@@ -207,7 +207,7 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 			}
 		}
 
-		// 5a. Filter services with consistent revocation
+		// 5a. Filter services with consistent status
 		TrustServiceFilter filterConsistentByStatus = TrustServicesFilterFactory.createConsistentServiceByStatusFilter();
 		filteredServices = filterConsistentByStatus.filter(filteredServices);
 
@@ -237,7 +237,7 @@ public class CertQualificationAtTimeBlock extends Chain<XmlValidationCertificate
 			item = item.setNextItem(isTrustedCertificateMatchTrustService(selectedTrustService));
 		}
 
-		// Keep only CA/QC and granted for further revocation determination
+		// Keep only CA/QC and granted for further status determination
 		if (!caqcServices.contains(selectedTrustService) || !grantedServices.contains(selectedTrustService)) {
 			filteredServices = Collections.emptyList();
 			selectedTrustService = null;

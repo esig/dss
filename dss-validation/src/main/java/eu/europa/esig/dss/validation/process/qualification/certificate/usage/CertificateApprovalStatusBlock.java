@@ -55,7 +55,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Verifies the certificate's approval revocation
+ * Verifies the certificate's approval status
  * 
  */
 public class CertificateApprovalStatusBlock extends Chain<XmlCertificateApprovalStatusProcess> {

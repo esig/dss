@@ -47,7 +47,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This class is used to verify qualification revocation of a signature used to create the attestation
+ * This class is used to verify qualification status of a signature used to create the attestation
  *
  */
 public class AttestationQualificationBlock extends Chain<XmlValidationAttestationQualification> {

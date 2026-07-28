@@ -30,7 +30,7 @@ import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
 
 /**
- * Verifies whether the revocation of the trusted entity service is known
+ * Verifies whether the status of the trusted entity service is known
  *
  */
 public class TrustedEntityServiceStatusKnownCheck extends ChainItem<XmlValidationCertificateApprovalStatus> {

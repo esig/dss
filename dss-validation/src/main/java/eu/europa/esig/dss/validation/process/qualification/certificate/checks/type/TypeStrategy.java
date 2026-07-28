@@ -23,13 +23,13 @@ package eu.europa.esig.dss.validation.process.qualification.certificate.checks.t
 import eu.europa.esig.dss.enumerations.CertificateType;
 
 /**
- * Strategy to extract certificate approval revocation type for a certificate
+ * Strategy to extract certificate approval status type for a certificate
  *
  */
 public interface TypeStrategy {
 
 	/**
-	 * Gets certificate approval revocation type
+	 * Gets certificate approval status type
 	 *
 	 * @return {@link CertificateType}
 	 */

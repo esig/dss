@@ -632,10 +632,10 @@ public interface ValidationPolicy {
 	MultiValuesRule getTrustServiceTypeIdentifierConstraint(Context context);
 
 	/**
-	 * Returns trusted service revocation constraint
+	 * Returns trusted service status constraint
 	 *
 	 * @param context {@link Context}
-	 * @return {@code LevelRule} if trusted service revocation for a given context element is present in
+	 * @return {@code LevelRule} if trusted service status for a given context element is present in
 	 *                                 the constraint file, null otherwise.
 	 */
 	MultiValuesRule getTrustServiceStatusConstraint(Context context);
@@ -814,12 +814,12 @@ public interface ValidationPolicy {
 
 	/**
 	 * Indicates the country or set of countries under the legislation of which the corresponding
-	 * signature creation device has a qualified revocation.
+	 * signature creation device has a qualified status.
 	 *
 	 * @param context {@link Context}
 	 * @param subContext {@link SubContext}
 	 * @return {@code MultiValuesRule} the country or set of countries under the legislation of which the corresponding
-	 *  	 signature creation device has a qualified revocation
+	 *  	 signature creation device has a qualified status
 	 */
 	MultiValuesRule getCertificateQcQSCDLegislationConstraint(Context context, SubContext subContext);
 

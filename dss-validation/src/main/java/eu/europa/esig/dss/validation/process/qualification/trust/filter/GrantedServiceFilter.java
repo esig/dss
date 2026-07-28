@@ -25,7 +25,7 @@ import eu.europa.esig.dss.validation.process.qualification.EIDASUtils;
 import eu.europa.esig.dss.validation.process.qualification.trust.TrustServiceStatus;
 
 /**
- * Filters TrustServices by 'granted' revocation (before and after eIDAS)
+ * Filters TrustServices by 'granted' status (before and after eIDAS)
  *
  */
 public class GrantedServiceFilter extends AbstractTrustServiceFilter {

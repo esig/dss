@@ -89,13 +89,13 @@ $ curl 'http://localhost:8080/services/rest/attestation-creation/signAttestation
       "purpose" : null
     },
     "identifierList" : null,
-    "category" : "urn:etsi:esi:attestation:eu:qualified",
+    "category" : "urn:etsi:esi:eaa:eu:qualified",
     "shortLived" : null,
     "oneTime" : null,
     "decoyDigestNumber" : null,
     "shuffleHashes" : null,
     "issuer" : "EAA provider",
-    "verifiableCredentialsType" : "urn:eudi:attestation:1",
+    "verifiableCredentialsType" : "urn:eudi:eaa:1",
     "verifiableCredentialsTypeIntegrity" : {
       "algorithm" : "SHA256",
       "value" : "LHeAW/pku/C49aIZ77sqyXiQms8+rsxPlfFew6E9mwY="

@@ -68,7 +68,7 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 	/** The validation time */
 	private final Date currentTime;
 
-	/** The certificate approval revocation time */
+	/** The certificate approval status time */
 	private final Date usageTime;
 
 	/** The validation context */
@@ -117,7 +117,7 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 		 *
 		 * a) If, in the X.509 Validation Constraints, a sunset date is associated to that trust anchor,
 		 *    the building block shall check whether validation is before the sunset date. If validation time is
-		 *    at or after the sunset date, the building block shall set the current revocation to
+		 *    at or after the sunset date, the building block shall set the current status to
 		 *    INDETERMINATE/NO_CERTIFICATE_CHAIN_FOUND_NO_POE and shall go to step 2).
 		 * b) Else, the building block may, based on signature policy or local configuration, return with
 		 *    the indication PASSED. Otherwise, the building block shall go to the next step.
@@ -126,7 +126,7 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 		 * If the "Other Certificates" parameter is present, only certificates contained in that set of certificates
 		 * may be used to build the chain. The chain shall satisfy the conditions of a prospective certificate chain:
 		 *
-		 * a) If no new chain can be built, the building block shall return the current revocation, the last chain built
+		 * a) If no new chain can be built, the building block shall return the current status, the last chain built
 		 *    and any additional information saved in step 4-a) or, if no chain has been built, the indication
 		 *    INDETERMINATE with the sub-indication NO_CERTIFICATE_CHAIN_FOUND.
 		 * b) Otherwise, the building block shall add this chain to the set of prospected chains and shall go to step 3).
@@ -134,7 +134,7 @@ public class X509CertificateValidation extends Chain<XmlXCV> {
 		 * 3) If, in the X.509 Validation Constraints, a sunset date is associated to the trust anchor from which
 		 * the current chain has been built, the building block shall check whether validation is before
 		 * the sunset date. If validation time is at or after the sunset date, the building block shall set
-		 * the current revocation to INDETERMINATE/NO_CERTIFICATE_CHAIN_FOUND_NO_POE and shall go to step 2).
+		 * the current status to INDETERMINATE/NO_CERTIFICATE_CHAIN_FOUND_NO_POE and shall go to step 2).
 		 */
 		List<CertificateWrapper> certificateChain = currentCertificate.getCertificateChain();
 

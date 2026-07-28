@@ -27,7 +27,7 @@ import java.util.Map;
 
 /**
  * This interface provides an abstraction for a certificate source containing information about
- * a validation revocation of Trusted Lists and corresponding trust properties
+ * a validation status of Trusted Lists and corresponding trust properties
  *
  */
 public interface TrustPropertiesCertificateSource extends TrustedCertificateSourceWithTime {

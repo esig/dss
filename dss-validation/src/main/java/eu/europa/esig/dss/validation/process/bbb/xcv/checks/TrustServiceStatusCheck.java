@@ -36,7 +36,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Checks if the certificate's usage time in the validity range of a TrustService with the accepted revocation
+ * Checks if the certificate's usage time in the validity range of a TrustService with the accepted status
  */
 public class TrustServiceStatusCheck extends AbstractMultiValuesCheckItem<XmlXCV> {
 
@@ -49,7 +49,7 @@ public class TrustServiceStatusCheck extends AbstractMultiValuesCheckItem<XmlXCV
 	/** The validation times */
 	private final Context context;
 
-	/** Service revocation string */
+	/** Service status string */
 	private String serviceStatusStr;
 
 	/**

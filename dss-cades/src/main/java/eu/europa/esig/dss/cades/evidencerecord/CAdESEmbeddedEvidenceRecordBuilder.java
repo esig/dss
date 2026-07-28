@@ -305,7 +305,7 @@ public class CAdESEmbeddedEvidenceRecordBuilder {
                                     "the digest computed on the detached content!");
                         }
                     case EVIDENCE_RECORD_ORPHAN_REFERENCE:
-                        // acceptable revocation
+                        // acceptable status
                         break;
                     default:
                         throw new IllegalStateException(String.format(

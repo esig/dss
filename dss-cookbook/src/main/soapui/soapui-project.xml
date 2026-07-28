@@ -1711,13 +1711,13 @@
       "purpose" : null
     },
     "identifierList" : null,
-    "category" : "urn:etsi:esi:attestation:eu:qualified",
+    "category" : "urn:etsi:esi:eaa:eu:qualified",
     "shortLived" : null,
     "oneTime" : null,
     "decoyDigestNumber" : null,
     "shuffleHashes" : null,
     "issuer" : "EAA provider",
-    "verifiableCredentialsType" : "urn:eudi:attestation:1",
+    "verifiableCredentialsType" : "urn:eudi:eaa:1",
     "verifiableCredentialsTypeIntegrity" : {
       "algorithm" : "SHA256",
       "value" : "LHeAW/pku/C49aIZ77sqyXiQms8+rsxPlfFew6E9mwY="
@@ -2119,13 +2119,13 @@
       "purpose" : null
     },
     "identifierList" : null,
-    "category" : "urn:etsi:esi:attestation:eu:qualified",
+    "category" : "urn:etsi:esi:eaa:eu:qualified",
     "shortLived" : null,
     "oneTime" : null,
     "decoyDigestNumber" : null,
     "shuffleHashes" : null,
     "issuer" : "EAA provider",
-    "verifiableCredentialsType" : "urn:eudi:attestation:1",
+    "verifiableCredentialsType" : "urn:eudi:eaa:1",
     "verifiableCredentialsTypeIntegrity" : {
       "algorithm" : "SHA256",
       "value" : "LHeAW/pku/C49aIZ77sqyXiQms8+rsxPlfFew6E9mwY="
@@ -2460,13 +2460,13 @@
       "purpose" : null
     },
     "identifierList" : null,
-    "category" : "urn:etsi:esi:attestation:eu:qualified",
+    "category" : "urn:etsi:esi:eaa:eu:qualified",
     "shortLived" : null,
     "oneTime" : null,
     "decoyDigestNumber" : null,
     "shuffleHashes" : null,
     "issuer" : "EAA provider",
-    "verifiableCredentialsType" : "urn:eudi:attestation:1",
+    "verifiableCredentialsType" : "urn:eudi:eaa:1",
     "verifiableCredentialsTypeIntegrity" : {
       "algorithm" : "SHA256",
       "value" : "LHeAW/pku/C49aIZ77sqyXiQms8+rsxPlfFew6E9mwY="
@@ -12015,7 +12015,7 @@
             <!--Optional:-->\r
             <payloadParameters>\r
                <!--Optional:-->\r
-               <category>urn:etsi:esi:attestation:eu:qualified</category>\r
+               <category>urn:etsi:esi:eaa:eu:qualified</category>\r
                <!--Optional:-->\r
                <deviceKey>\r
                   <!--Optional:-->\r
@@ -12126,7 +12126,7 @@
                   <uri>https://pki.nowina.lu/attestation/status_list</uri>\r
                </statusList>\r
                <!--Optional:-->\r
-               <verifiableCredentialsType>urn:eudi:attestation:1</verifiableCredentialsType>\r
+               <verifiableCredentialsType>urn:eudi:eaa:1</verifiableCredentialsType>\r
                <!--Optional:-->\r
                <verifiableCredentialsTypeIntegrity>\r
                   <!--Optional:-->\r
@@ -12224,7 +12224,7 @@
             <!--Optional:-->
             <payloadParameters>
                <!--Optional:-->
-               <category>urn:etsi:esi:attestation:eu:qualified</category>
+               <category>urn:etsi:esi:eaa:eu:qualified</category>
                <!--Optional:-->
                <deviceKey>
                   <!--Optional:-->
@@ -12335,7 +12335,7 @@
                   <uri>https://pki.nowina.lu/attestation/status_list</uri>
                </statusList>
                <!--Optional:-->
-               <verifiableCredentialsType>urn:eudi:attestation:1</verifiableCredentialsType>
+               <verifiableCredentialsType>urn:eudi:eaa:1</verifiableCredentialsType>
                <!--Optional:-->
                <verifiableCredentialsTypeIntegrity>
                   <!--Optional:-->
@@ -12445,7 +12445,7 @@
             <!--Optional:-->
             <payloadParameters>
                <!--Optional:-->
-               <category>urn:etsi:esi:attestation:eu:qualified</category>
+               <category>urn:etsi:esi:eaa:eu:qualified</category>
                <!--Optional:-->
                <deviceKey>
                   <!--Optional:-->
@@ -12556,7 +12556,7 @@
                   <uri>https://pki.nowina.lu/attestation/status_list</uri>
                </statusList>
                <!--Optional:-->
-               <verifiableCredentialsType>urn:eudi:attestation:1</verifiableCredentialsType>
+               <verifiableCredentialsType>urn:eudi:eaa:1</verifiableCredentialsType>
                <!--Optional:-->
                <verifiableCredentialsTypeIntegrity>
                   <!--Optional:-->

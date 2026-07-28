@@ -80,7 +80,7 @@ public enum CertificateApprovalStatusEnum implements CertificateApprovalStatus {
     /** The applicable service type identifier */
     private final LoTEServiceTypeIdentifier sti;
 
-    /** The applicable service revocation */
+    /** The applicable service status */
     private final LoTEServiceStatus status;
 
     /**

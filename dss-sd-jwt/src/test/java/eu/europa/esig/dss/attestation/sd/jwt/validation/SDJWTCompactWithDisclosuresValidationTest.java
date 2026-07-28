@@ -79,7 +79,7 @@ class SDJWTCompactWithDisclosuresValidationTest extends AbstractSDJWTTestValidat
                 "      \"...\": \"7Cf6JkPudry3lcbwHgeZ8khAv1U1OSlerP0VkBJrWZ0\"\n" +
                 "    }\n" +
                 "  ],\n" +
-                "  \"vct\": \"urn:eudi:attestation:1\",\n" +
+                "  \"vct\": \"urn:eudi:eaa:1\",\n" +
                 "  \"vct#integrity\": \"sha256-1odmyxoVQCuQx8SAym8rWHXba41fM/Iv/V1H8VHGN00=\",\n" +
                 "  \"_sd_alg\": \"sha-256\",\n" +
                 "  \"cnf\": {\n" +
@@ -166,7 +166,7 @@ class SDJWTCompactWithDisclosuresValidationTest extends AbstractSDJWTTestValidat
         assertTrue(attestation.getPhoneNumberVerified());
         assertEquals(Arrays.asList("US", "DE"), attestation.getNationalities());
 
-        assertEquals("urn:eudi:attestation:1", attestation.getVerifiableCredentialsTypeUri());
+        assertEquals("urn:eudi:eaa:1", attestation.getVerifiableCredentialsTypeUri());
         assertEquals(DigestAlgorithm.SHA256, attestation.getVerifiableCredentialsTypeIntegrityDigestAlgorithm());
         assertNotNull(attestation.getVerifiableCredentialsTypeIntegrityBytes());
 
@@ -270,7 +270,7 @@ class SDJWTCompactWithDisclosuresValidationTest extends AbstractSDJWTTestValidat
 
             } else if ("vct".equals(disclosableClaim.getName())) {
                 assertFalse(disclosableClaim.isSelectivelyDisclosable());
-                assertEquals("urn:eudi:attestation:1", disclosableClaim.getText());
+                assertEquals("urn:eudi:eaa:1", disclosableClaim.getText());
                 vctClaimFound = true;
 
             } else if ("vct#integrity".equals(disclosableClaim.getName())) {

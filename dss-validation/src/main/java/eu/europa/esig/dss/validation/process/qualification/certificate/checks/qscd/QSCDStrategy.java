@@ -23,12 +23,12 @@ package eu.europa.esig.dss.validation.process.qualification.certificate.checks.q
 import eu.europa.esig.dss.enumerations.QSCDStatus;
 
 /**
- * Used to extract QSCD revocation
+ * Used to extract QSCD status
  */
 public interface QSCDStrategy {
 
 	/**
-	 * Gets QSCD revocation
+	 * Gets QSCD status
 	 *
 	 * @return {@link QSCDStatus}
 	 */

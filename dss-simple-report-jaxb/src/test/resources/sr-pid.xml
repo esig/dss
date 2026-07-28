@@ -14,7 +14,7 @@
     <Attestation Id="EAA-B011F0930552AB7B89D941C51FFDE7A769EA630B8DD5C926512C0870F637FE22">
         <Filename>simple-pid.jwt</Filename>
         <Indication>PASSED</Indication>
-        <AttestationLevel description="Personal Identification Data">PID</AttestationLevel>
+        <AttestationLevel description="Person Identification Data">PID</AttestationLevel>
         <AttestationSignature SignatureFormat="JAdES-BASELINE-B" Id="S-59A46D40714D80AB3B6D087B938BE6358130244BAE1D9ACECBB28959F48D06F4">
             <CertificateChain>
                 <Certificate Id="C-6EB85705071828887CACAEF723BD95952C862F7FC1CFB1026706CAFD80616BD7">

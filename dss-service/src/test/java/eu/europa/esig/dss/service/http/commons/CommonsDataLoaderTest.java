@@ -308,7 +308,7 @@ class CommonsDataLoaderTest {
 		httpClientResponseHandler.setAcceptedHttpStatuses(Collections.singletonList(HttpStatus.SC_CONTINUE));
 		Exception exception = assertThrows(DSSExternalResourceException.class, () -> dataLoader.get(URL_TO_LOAD));
 		assertEquals("Unable to process GET call for url [http://certs.eid.belgium.be/belgiumrs2.crt]. " +
-				"Reason : [Not acceptable HTTP Status (HTTP revocation code : 200 / reason : OK)]", exception.getMessage());
+				"Reason : [Not acceptable HTTP Status (HTTP status code : 200 / reason : OK)]", exception.getMessage());
 	}
 
 }

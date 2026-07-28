@@ -30,7 +30,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * This class determines certificates qualification revocation as per ETSI TS 119 615 at the given time for a QWAC.
+ * This class determines certificates qualification status as per ETSI TS 119 615 at the given time for a QWAC.
  *
  */
 public class CertQualificationAtTimeForQWACBlock extends CertQualificationAtTimeBlock {

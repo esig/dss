@@ -320,7 +320,7 @@ public class ValidationProcessForSignaturesWithArchivalData extends Chain<XmlVal
 
 		/*
 		 * 7) Past signature validation: the long term validation process shall perform the past signature validation
-		 * process with the following inputs: the signature, the revocation indication/sub-indication returned in step 2,
+		 * process with the following inputs: the signature, the status indication/sub-indication returned in step 2,
 		 * the signing certificate, the X.509 validation parameters, certificate validation data, chain constraints,
 		 * cryptographic constraints, the set of POEs and best-signature-time. If it returns PASSED the long term
 		 * validation process shall go to the next step. Otherwise, the long term validation process shall return

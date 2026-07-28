@@ -66,7 +66,7 @@ class MdocISONonMdLPubTest extends AbstractMdocPresentationTestIssuance {
         payloadParameters.selectivelyDisclosable().setDocumentNumber("123456789");
 
         payloadParameters.setStatusList(1, "https://pki.nowina.lu/eaa/status_list");
-        payloadParameters.setCategory("urn:etsi:esi:attestation:eu:pub");
+        payloadParameters.setCategory("urn:etsi:esi:eaa:eu:pub");
 
         signatureParameters = new CBAdESSignatureParameters();
         signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
@@ -160,7 +160,7 @@ class MdocISONonMdLPubTest extends AbstractMdocPresentationTestIssuance {
                 documentNumberSDFound = true;
             } else if ("category".equals(xmlDigestMatcher.getDisclosableClaim().getName())) {
                 assertEquals("org.etsi.01947201.010101", xmlDigestMatcher.getDisclosableClaim().getNamespace());
-                assertEquals("urn:etsi:esi:attestation:eu:pub", xmlDigestMatcher.getDisclosableClaim().getValue());
+                assertEquals("urn:etsi:esi:eaa:eu:pub", xmlDigestMatcher.getDisclosableClaim().getValue());
                 categorySDFound = true;
             }
         }
@@ -187,7 +187,7 @@ class MdocISONonMdLPubTest extends AbstractMdocPresentationTestIssuance {
         assertEquals("https://pki.nowina.lu/eaa/status_list", attestation.getStatusUri());
         assertNull(attestation.getStatusCertificate());
 
-        assertEquals("urn:etsi:esi:attestation:eu:pub", attestation.getCategory());
+        assertEquals("urn:etsi:esi:eaa:eu:pub", attestation.getCategory());
     }
 
     @Override

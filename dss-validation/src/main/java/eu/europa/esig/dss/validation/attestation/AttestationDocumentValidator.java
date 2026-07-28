@@ -39,7 +39,7 @@ public interface AttestationDocumentValidator extends DocumentValidator {
     AttestationPresentation getAttestationPresentation();
 
     /**
-     * Sets the attestation revocation source providing access to the information about the attestation validity revocation
+     * Sets the attestation revocation source providing access to the information about the attestation validity status
      *
      * @param attestationRevocationSource {@link AttestationRevocationSource}
      */

@@ -237,7 +237,7 @@ public class DetailedReportMessageCollector {
 	}
 
 	/**
-	 * Returns a list of TS 119 602 certificate approval revocation validation errors for a certificate with
+	 * Returns a list of TS 119 602 certificate approval status validation errors for a certificate with
 	 * the given id at certificate issuance time and the given {@code certificateApprovalStatus}
 	 * <p>
 	 * NOTE: applicable only for certificate validation
@@ -251,7 +251,7 @@ public class DetailedReportMessageCollector {
 	}
 
 	/**
-	 * Returns a list of TS 119 602 certificate approval revocation validation warnings for a certificate with
+	 * Returns a list of TS 119 602 certificate approval status validation warnings for a certificate with
 	 * the given id at certificate issuance time and the given {@code certificateApprovalStatus}
 	 * <p>
 	 * NOTE: applicable only for certificate validation
@@ -265,7 +265,7 @@ public class DetailedReportMessageCollector {
 	}
 
 	/**
-	 * Returns a list of TS 119 602 certificate approval revocation validation information messages for a certificate with
+	 * Returns a list of TS 119 602 certificate approval status validation information messages for a certificate with
 	 * the given id at certificate issuance time and the given {@code certificateApprovalStatus}
 	 * <p>
 	 * NOTE: applicable only for certificate validation
@@ -279,7 +279,7 @@ public class DetailedReportMessageCollector {
 	}
 
 	/**
-	 * Returns a list of TS 119 602 certificate approval revocation validation errors for a certificate with
+	 * Returns a list of TS 119 602 certificate approval status validation errors for a certificate with
 	 * the given id at validation time and the given {@code certificateApprovalStatus}
 	 * <p>
 	 * NOTE: applicable only for certificate validation
@@ -293,7 +293,7 @@ public class DetailedReportMessageCollector {
 	}
 
 	/**
-	 * Returns a list of TS 119 602 certificate approval revocation validation warnings for a certificate with
+	 * Returns a list of TS 119 602 certificate approval status validation warnings for a certificate with
 	 * the given id at validation time and the given {@code certificateApprovalStatus}
 	 * <p>
 	 * NOTE: applicable only for certificate validation
@@ -307,7 +307,7 @@ public class DetailedReportMessageCollector {
 	}
 
 	/**
-	 * Returns a list of TS 119 602 certificate approval revocation validation information messages for a certificate with
+	 * Returns a list of TS 119 602 certificate approval status validation information messages for a certificate with
 	 * the given id at validation time and the given {@code certificateApprovalStatus}
 	 * <p>
 	 * NOTE: applicable only for certificate validation
@@ -614,7 +614,7 @@ public class DetailedReportMessageCollector {
 			}
 		}
 		if (LOG.isDebugEnabled()) {
-			LOG.debug("The certificate approval revocation validation at time '{}' is not found or not performed!", validationTime);
+			LOG.debug("The certificate approval status validation at time '{}' is not found or not performed!", validationTime);
 		}
 		return Collections.emptyList();
 	}

@@ -41,7 +41,7 @@ class SDJWTCompactNoSDTest extends AbstractSDJWTTestIssuance {
         payloadParameters = new SDJWTPayloadParameters();
         payloadParameters.setIssuer("Attestation provider");
 
-        payloadParameters.setVerifiableCredentialsType("urn:eudi:attestation:1");
+        payloadParameters.setVerifiableCredentialsType("urn:eudi:eaa:1");
         Digest digest = new Digest(DigestAlgorithm.SHA256, DSSUtils.digest(DigestAlgorithm.SHA256, "vct".getBytes()));
         payloadParameters.setVerifiableCredentialsTypeIntegrity(digest);
 
@@ -80,7 +80,7 @@ class SDJWTCompactNoSDTest extends AbstractSDJWTTestIssuance {
         super.checkClaims(diagnosticData);
 
         AttestationWrapper attestation = diagnosticData.getAttestationById(diagnosticData.getFirstAttestationId());
-        assertEquals("urn:eudi:attestation:1", attestation.getVerifiableCredentialsTypeUri());
+        assertEquals("urn:eudi:eaa:1", attestation.getVerifiableCredentialsTypeUri());
         assertEquals(DigestAlgorithm.SHA256, attestation.getVerifiableCredentialsTypeIntegrityDigestAlgorithm());
         assertArrayEquals(DSSUtils.digest(DigestAlgorithm.SHA256, "vct".getBytes()), attestation.getVerifiableCredentialsTypeIntegrityBytes());
         assertEquals(DSSUtils.formatDateToRFC(getSignatureParameters().bLevel().getSigningDate()), DSSUtils.formatDateToRFC(attestation.getNotBefore()));

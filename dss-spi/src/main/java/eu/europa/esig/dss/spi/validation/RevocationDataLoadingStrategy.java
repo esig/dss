@@ -196,7 +196,7 @@ public abstract class RevocationDataLoadingStrategy {
 			if (revocationToken != null) {
 				if (LOG.isDebugEnabled()) {
 					LOG.debug("OCSP response for {} retrieved: {}", certificateToken.getDSSIdAsString(), revocationToken.getAbbreviation());
-					LOG.debug("OCSP Response {} revocation is : {}", revocationToken.getDSSIdAsString(), revocationToken.getStatus());
+					LOG.debug("OCSP Response {} status is : {}", revocationToken.getDSSIdAsString(), revocationToken.getStatus());
 				}
 				return revocationToken;
 			}

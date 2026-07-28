@@ -131,12 +131,12 @@ class RemoteAttestationCreationServiceImplTest extends PKIFactoryAccess {
         publicKey.setPublicKey(getSigningCert().getPublicKey().getEncoded());
         payloadParameters.setDeviceKey(publicKey);
 
-        payloadParameters.setVerifiableCredentialsType("urn:eudi:attestation:1");
+        payloadParameters.setVerifiableCredentialsType("urn:eudi:eaa:1");
         DigestDTO digest = new DigestDTO(DigestAlgorithm.SHA256, DSSUtils.digest(DigestAlgorithm.SHA256, "vct".getBytes()));
         payloadParameters.setVerifiableCredentialsTypeIntegrity(digest);
 
         payloadParameters.setStatusList(new RemoteTokenStatusList(1, "https://pki.nowina.lu/eaa/status_list"));
-        payloadParameters.setCategory("urn:etsi:esi:attestation:eu:qualified");
+        payloadParameters.setCategory("urn:etsi:esi:eaa:eu:qualified");
 
         RemoteAttestationClaimParameters selectivelyDisclosable = new RemoteAttestationClaimParameters();
         selectivelyDisclosable.setGivenName("John");
@@ -212,7 +212,7 @@ class RemoteAttestationCreationServiceImplTest extends PKIFactoryAccess {
         AttestationWrapper attestation = diagnosticData.getAttestationById(diagnosticData.getFirstAttestationId());
         assertEquals(AttestationProfile.SD_JWT_VC, attestation.getAttestationProfile());
 
-        assertEquals("urn:eudi:attestation:1", attestation.getVerifiableCredentialsTypeUri());
+        assertEquals("urn:eudi:eaa:1", attestation.getVerifiableCredentialsTypeUri());
         assertEquals(DigestAlgorithm.SHA256, attestation.getVerifiableCredentialsTypeIntegrityDigestAlgorithm());
         assertArrayEquals(DSSUtils.digest(DigestAlgorithm.SHA256, "vct".getBytes()), attestation.getVerifiableCredentialsTypeIntegrityBytes());
         assertEquals(DSSUtils.formatDateToRFC(signingTime), DSSUtils.formatDateToRFC(attestation.getNotBefore()));
@@ -225,7 +225,7 @@ class RemoteAttestationCreationServiceImplTest extends PKIFactoryAccess {
         assertEquals("John", attestation.getGivenName());
         assertEquals("Doe", attestation.getFamilyName());
 
-        assertEquals("urn:etsi:esi:attestation:eu:qualified", attestation.getCategory());
+        assertEquals("urn:etsi:esi:eaa:eu:qualified", attestation.getCategory());
 
         assertEquals(1, attestation.getStatusIndex());
         assertEquals("https://pki.nowina.lu/eaa/status_list", attestation.getStatusUri());

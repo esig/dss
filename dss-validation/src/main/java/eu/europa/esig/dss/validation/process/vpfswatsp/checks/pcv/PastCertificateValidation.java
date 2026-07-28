@@ -114,7 +114,7 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 		 * 1) The building block shall build a new prospective certificate chain that
 		 * has not yet been evaluated:
 		 * a) If no new chain can be built, the building block shall return the current
-		 *    revocation and the last chain built or, if no chain was built, the indication
+		 *    status and the last chain built or, if no chain was built, the indication
 		 *    INDETERMINATE with the sub-indication NO_CERTIFICATE_CHAIN_FOUND.
 		 * b) Otherwise, the building block shall go to the next ste
 		 */
@@ -141,7 +141,7 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 		 * shall go to the next step.
 		 * 
 		 * b) If the certificate path validation returns a failure indication, the building 
-		 * block shall set the current revocation to
+		 * block shall set the current status to
 		 * INDETERMINATE/CERTIFICATE_CHAIN_GENERAL_FAILURE and shall go to step 1. 
 		 */
 		
@@ -156,7 +156,7 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 		 * which the current chain has been built when the X.509 validation constraint specify
 		 * such a date, and the cryptographic constraints. If it outputs a success indication,
 		 * the building block shall go to the next step. Otherwise, the building block shall
-		 * set the current revocation to the returned indication and sub-indication and shall go
+		 * set the current status to the returned indication and sub-indication and shall go
 		 * back to step 1).
 		 */
 
@@ -193,7 +193,7 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 		/*
 		 * 4) The building block shall apply the X.509 validation constraints to the chain.
 		 * If the chain does not match these constraints, the building block shall set the
-		 * current revocation to INDETERMINATE/CHAIN_CONSTRAINTS_FAILURE and shall go to step 1).
+		 * current status to INDETERMINATE/CHAIN_CONSTRAINTS_FAILURE and shall go to step 1).
 		 */
 		if (controlTime != null) {
 
@@ -202,8 +202,8 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 		}
 
 		/*
-		 * 5) The building block shall return the current revocation. If the
-		 * current revocation is PASSED, the building block shall also return the
+		 * 5) The building block shall return the current status. If the
+		 * current status is PASSED, the building block shall also return the
 		 * certificate chain as well as the calculated validation time returned
 		 * in step 3.
 		 */

@@ -57,7 +57,7 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
 
     private static final Logger LOG = LoggerFactory.getLogger(XAdESBaselineRequirementsChecker.class);
 
-    /** Cached reference validation revocation map */
+    /** Cached reference validation status map */
     private Map<String, ReferenceValidationStatus> statusMap;
 
     /**
@@ -671,7 +671,7 @@ public class XAdESBaselineRequirementsChecker extends BaselineRequirementsChecke
     }
 
     /**
-     * This is a helper class to evaluate {@code ReferenceValidation} revocation efficiently
+     * This is a helper class to evaluate {@code ReferenceValidation} status efficiently
      *
      */
     private static final class ReferenceValidationStatus {

@@ -40,13 +40,13 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Verifies if the certificate has TrustServices with a 'granted' revocation
+ * Verifies if the certificate has TrustServices with a 'granted' status
  *
  * @param <T> {@link XmlConstraintsConclusion}
  */
 public class GrantedStatusCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
-	/** List of {@link TrustServiceWrapper}s with a 'granted revocation' */
+	/** List of {@link TrustServiceWrapper}s with a 'granted status' */
 	private final List<TrustServiceWrapper> trustServicesAtTime;
 
 	/**

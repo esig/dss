@@ -82,7 +82,7 @@ public enum SignatureProfile {
 
     /**
      * Legacy Signature profile built on top of EXTENDED-T with qualifying properties containing references to
-     * certificates and references to certificate revocation data values.
+     * certificates and references to certificate status data values.
      * Example: XAdES-E-C (ETSI TS 319 132-2)
      */
     EXTENDED_C,

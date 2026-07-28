@@ -29,7 +29,7 @@ public enum Indication implements UriBasedEnum {
 
 	/*
 	 * When present in the validation report of a signature, the following URIs
-	 * shall be used to represent the main revocation indication:
+	 * shall be used to represent the main status indication:
 	 */
 
 	/**
@@ -57,7 +57,7 @@ public enum Indication implements UriBasedEnum {
 	/*
 	 * When present in an individual validation constraint report element (see
 	 * clause 4.3.5.4) or a validation report of a signature validation object (see
-	 * clause 4.4.8), the following URIs shall be used to represent the main revocation
+	 * clause 4.4.8), the following URIs shall be used to represent the main status
 	 * indication:
 	 */
 

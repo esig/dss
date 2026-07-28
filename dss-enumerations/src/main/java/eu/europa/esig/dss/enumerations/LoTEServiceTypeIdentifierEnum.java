@@ -20,34 +20,73 @@
  */
 package eu.europa.esig.dss.enumerations;
 
+/**
+ * List of known Service Type Identifiers for a LoTE.
+ * See ETSI TS 119 602 "Lists of trusted entities; Data model".
+ *
+ */
 public enum LoTEServiceTypeIdentifierEnum implements LoTEServiceTypeIdentifier {
 
+    /**
+     * The service is service under which person identity data are issued
+     */
     PID_ISSUANCE("http://uri.etsi.org/19602/SvcType/PID/Issuance", "PID Issuance"),
 
+    /**
+     * The service is a service providing validity status information on person identity data
+     */
     PID_REVOCATION("http://uri.etsi.org/19602/SvcType/PID/Revocation", "PID Revocation"),
 
+    /**
+     * The service is service under which a wallet solution is issued
+     */
     WALLET_ISSUANCE("http://uri.etsi.org/19602/SvcType/WalletSolution/Issuance" , "Wallet Solution Issuance"),
 
+    /**
+     * The service is a service providing validity status information on a wallet solution
+     */
     WALLET_REVOCATION("http://uri.etsi.org/19602/SvcType/WalletSolution/Revocation" , "Wallet Solution Revocation"),
 
+    /**
+     * The service is service under which wallet relying parties access certificates are issued
+     */
     WRPAC_ISSUANCE("http://uri.etsi.org/19602/SvcType/WRPAC/Issuance", "WRPAC Issuance"),
 
+    /**
+     * The service is a service providing validity status information on wallet relying party access certificates
+     */
     WRPAC_REVOCATION("http://uri.etsi.org/19602/SvcType/WRPAC/Revocation", "WRPAC Revocation"),
 
+    /**
+     * The service is service under which wallet relying parties access certificates are issued
+     */
     WRPRC_ISSUANCE("http://uri.etsi.org/19602/SvcType/WRPRC/Issuance", "WRPRC Issuance"),
 
+    /**
+     * The service is a service providing validity status information on wallet relying party access certificates
+     */
     WRPRC_REVOCATION("http://uri.etsi.org/19602/SvcType/WRPRC/Revocation" , "WRPRC Revocation"),
 
+    /**
+     * The service is a service under which electronic attestation of attribute
+     * are issued by a notified body on behalf of an authentic source
+     */
     PUB_EAA_ISSUANCE("http://uri.etsi.org/19602/SvcType/PubEAA/Issuance", "Pub-EAA Issuance"),
 
+    /**
+     * The service is a service providing validity status information on wallet relying party access certificates
+     */
     PUB_EAA_REVOCATION("http://uri.etsi.org/19602/SvcType/PubEAA/Revocation", "Pub-EAA Revocation"),
 
+    /**
+     * The service is service under which certificates for registrars and registers are issued
+     */
     REGISTER("http://uri.etsi.org/19602/SvcType/Register", "Register");
 
     /** Service Type Identifier URI */
     private final String stiUri;
 
-    /** User-friendly label defining the certificate approval revocation type */
+    /** User-friendly label defining the certificate approval status type */
     private final String label;
 
     /**

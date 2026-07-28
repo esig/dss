@@ -40,7 +40,7 @@ import java.util.List;
 public class QTSTCheck<T extends XmlConstraintsConclusion> extends ChainItem<T> {
 
 	/**
-	 * List of TrustServices declaring QTST revocation for the certificate
+	 * List of TrustServices declaring QTST status for the certificate
 	 */
 	private final List<TrustServiceWrapper> trustServicesAtTime;
 

@@ -175,9 +175,9 @@ public abstract class RevocationToken<R extends Revocation> extends Token {
 	}
 
 	/**
-	 * Returns the certificate revocation
+	 * Returns the certificate status
 	 * 
-	 * @return the certificate revocation
+	 * @return the certificate status
 	 */
 	public CertificateStatus getStatus() {
 		return status;

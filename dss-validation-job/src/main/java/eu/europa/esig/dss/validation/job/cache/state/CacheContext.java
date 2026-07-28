@@ -90,7 +90,7 @@ public interface CacheContext {
 	void syncUpdateDate();
 
 	/**
-	 * Returns TRUE if the cache is in a error revocation
+	 * Returns TRUE if the cache is in a error status
 	 * 
 	 * @return TRUE if an exception is stored
 	 */
@@ -118,14 +118,14 @@ public interface CacheContext {
 	CachedExceptionWrapper getException();
 	
 	/**
-	 * Returns TRUE if the cache is in TO_BE_DELETED revocation
+	 * Returns TRUE if the cache is in TO_BE_DELETED status
 	 * 
 	 * @return TRUE if the entry must be deleted
 	 */
 	boolean isToBeDeleted();
 
 	/**
-	 * Returns TRUE if the cache is in DESYNC revocation
+	 * Returns TRUE if the cache is in DESYNC status
 	 * 
 	 * @return TRUE if the entry is desynchronized
 	 */

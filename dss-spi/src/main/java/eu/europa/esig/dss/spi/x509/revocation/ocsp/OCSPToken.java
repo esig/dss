@@ -126,12 +126,12 @@ public class OCSPToken extends RevocationToken<OCSP> {
 		org.bouncycastle.cert.ocsp.CertificateStatus certStatus = bestSingleResp.getCertStatus();
 		if (org.bouncycastle.cert.ocsp.CertificateStatus.GOOD == certStatus) {
 			if (LOG.isInfoEnabled()) {
-				LOG.info("OCSP revocation is good");
+				LOG.info("OCSP status is good");
 			}
 			status = CertificateStatus.GOOD;
 		} else if (certStatus instanceof RevokedStatus) {
 			if (LOG.isInfoEnabled()) {
-				LOG.info("OCSP revocation revoked");
+				LOG.info("OCSP status revoked");
 			}
 			final RevokedStatus revokedStatus = (RevokedStatus) certStatus;
 			status = CertificateStatus.REVOKED;
@@ -143,11 +143,11 @@ public class OCSPToken extends RevocationToken<OCSP> {
 			reason = RevocationReason.fromInt(reasonId);
 		} else if (certStatus instanceof UnknownStatus) {
 			if (LOG.isInfoEnabled()) {
-				LOG.info("OCSP revocation unknown");
+				LOG.info("OCSP status unknown");
 			}
 			status = CertificateStatus.UNKNOWN;
 		} else {
-			LOG.info("OCSP certificate revocation: {}", certStatus);
+			LOG.info("OCSP certificate status: {}", certStatus);
 		}
 	}
 

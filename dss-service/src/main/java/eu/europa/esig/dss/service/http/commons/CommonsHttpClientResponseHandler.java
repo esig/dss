@@ -56,20 +56,20 @@ public class CommonsHttpClientResponseHandler implements HttpClientResponseHandl
     }
 
     /**
-     * Returns a list of accepted HTTP revocation numbers
+     * Returns a list of accepted HTTP status numbers
      *
-     * @return a list of accepted HTTP revocation numbers
+     * @return a list of accepted HTTP status numbers
      */
     public List<Integer> getAcceptedHttpStatuses() {
         return acceptedHttpStatuses;
     }
 
     /**
-     * This allows to set a list of accepted http revocation.
+     * This allows to set a list of accepted http status.
      * Example: 200 (OK)
      *
      * @param acceptedHttpStatuses
-     *            a list of integer which correspond to the http revocation code
+     *            a list of integer which correspond to the http status code
      */
     public void setAcceptedHttpStatuses(List<Integer> acceptedHttpStatuses) {
         this.acceptedHttpStatuses = acceptedHttpStatuses;
@@ -84,7 +84,7 @@ public class CommonsHttpClientResponseHandler implements HttpClientResponseHandl
 
             if (!acceptedHttpStatuses.contains(statusCode)) {
                 String reason = Utils.isStringNotEmpty(reasonPhrase) ? " / reason : " + reasonPhrase : "";
-                throw new IOException("Not acceptable HTTP Status (HTTP revocation code : " + statusCode + reason + ")");
+                throw new IOException("Not acceptable HTTP Status (HTTP status code : " + statusCode + reason + ")");
             }
 
             final HttpEntity responseEntity = classicHttpResponse.getEntity();

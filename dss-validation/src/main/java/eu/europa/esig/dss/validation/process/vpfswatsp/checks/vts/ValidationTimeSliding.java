@@ -307,7 +307,7 @@ public class ValidationTimeSliding extends Chain<XmlVTS> {
 
                 /*
                  * e) The building block shall continue with the next certificate in the chain or,
-                 * if no further certificate exists, the building block shall return the revocation
+                 * if no further certificate exists, the building block shall return the status
                  * indication PASSED and the calculated control time.
                  */
 

@@ -143,9 +143,9 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 		 *
 		 * a. If there is such a revocation data, the building block shall remove from the Certificate
 		 *    Validation Data all revocation data known to contain revocation status information about
-		 *    the signing certificate for which there is no such POE and set sig_cert_revocation_poe-revocation to PASSED.
+		 *    the signing certificate for which there is no such POE and set sig_cert_revocation_poe-status to PASSED.
 		 *
-		 * b. Otherwise the building block shall set sig_cert_revocation_poe-revocation to INDETERMINATE with
+		 * b. Otherwise the building block shall set sig_cert_revocation_poe-status to INDETERMINATE with
 		 *    the sub-indication REVOCATION_OUT_OF_BOUNDS_NO_POE.
 		 */
 
@@ -185,7 +185,7 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 		 * the X.509 validation parameters, certificate validation data, X.509 validation constraints,
 		 * cryptographic constraints and the set of POEs. If it returns PASSED/validation time,
 		 * the building block shall go to the next step. Otherwise, the building block shall return
-		 * the current time revocation and sub indication with an explanation of the failure.
+		 * the current time status and sub indication with an explanation of the failure.
 		 */
 		PastCertificateValidation pcv = new PastCertificateValidation(i18nProvider, token, bbbs, poe, currentTime, policy, context);
 		XmlPCV pcvResult = pcv.execute();
@@ -356,7 +356,7 @@ public class PastSignatureValidation extends Chain<XmlPSV> {
 
 		/*
 		 * 7) The building block shall return the indication and sub-indication contained
-		 * in sig_cert_revocation_poe-revocation.
+		 * in sig_cert_revocation_poe-status.
 		 */
 		item = item.setNextItem(pastRevocationDataValidationConclusive(sigCertRevocationPoeStatus));
 

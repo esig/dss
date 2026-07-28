@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Contains information about service revocation and extensions
+ * Contains information about service status and extensions
  *
  */
 public interface ServiceStatusAndInformationExtensions extends TimeDependent {
@@ -46,7 +46,7 @@ public interface ServiceStatusAndInformationExtensions extends TimeDependent {
     String getType();
 
     /**
-     * Gets revocation
+     * Gets status
      *
      * @return {@link String}
      */

@@ -67,7 +67,7 @@ class SDJWTCompactWithAgeClaimValidationTest extends AbstractSDJWTTestValidation
                 "    }\n" +
                 "  },\n" +
                 "  \"age\": 42," +
-                "  \"vct\": \"urn:eudi:attestation:1\",\n" +
+                "  \"vct\": \"urn:eudi:eaa:1\",\n" +
                 "  \"vct#integrity\": \"sha256-1odmyxoVQCuQx8SAym8rWHXba41fM/Iv/V1H8VHGN00=\",\n" +
                 "}";
         originalDocument = new InMemoryDocument(payload.getBytes());
@@ -117,7 +117,7 @@ class SDJWTCompactWithAgeClaimValidationTest extends AbstractSDJWTTestValidation
         assertEquals(DSSUtils.parseRFCDate("2029-09-01T23:33:20Z"), attestation.getExpiration());
         assertEquals(DSSUtils.parseRFCDate("2023-05-02T04:00:00Z"), attestation.getIssuedAt());
 
-        assertEquals("urn:eudi:attestation:1", attestation.getVerifiableCredentialsTypeUri());
+        assertEquals("urn:eudi:eaa:1", attestation.getVerifiableCredentialsTypeUri());
         assertEquals(DigestAlgorithm.SHA256, attestation.getVerifiableCredentialsTypeIntegrityDigestAlgorithm());
         assertNotNull(attestation.getVerifiableCredentialsTypeIntegrityBytes());
 

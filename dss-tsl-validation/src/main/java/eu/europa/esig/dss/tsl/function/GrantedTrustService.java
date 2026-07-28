@@ -45,7 +45,7 @@ public class GrantedTrustService implements TrustServicePredicate {
         if (trustService != null) {
             TSPServiceInformationType serviceInformation = trustService.getServiceInformation();
             
-            // Current revocation
+            // Current status
             if (TrustServiceStatus.isAcceptableStatusAfterEIDAS(serviceInformation.getServiceStatus())
                     || TrustServiceStatus.isAcceptableStatusBeforeEIDAS(serviceInformation.getServiceStatus())) {
                 return true;

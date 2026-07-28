@@ -46,9 +46,9 @@ public enum AttestationQualification {
     PUBEAA("PuB-EAA", "Electronic Attestation of Attributes issued by or on behalf of a public sector body", "urn:cef:dss:attestation:qualification:PUBEAA"),
 
     /**
-     * Personal Identification Data (PID)
+     * Person Identification Data (PID)
      */
-    PID("PID", "Personal Identification Data", "urn:cef:dss:attestation:qualification:PID"),
+    PID("PID", "Person Identification Data", "urn:cef:dss:attestation:qualification:PID"),
 
     /**
      * Electronic attestation of attributes of unknown or conflicting revocation.
@@ -72,9 +72,9 @@ public enum AttestationQualification {
     INDETERMINATE_PUBEAA("Indeterminate Pub-EAA", "Indeterminate Electronic Attestation of Attributes issued by or on behalf of a public sector body", "urn:cef:dss:attestation:qualification:indeterminatePUBEAA"),
 
     /**
-     * Indeterminate Personal Identification Data (PID)
+     * Indeterminate Person Identification Data (PID)
      */
-    INDETERMINATE_PID("Indeterminate PID", "Indeterminate Personal Identification Data", "urn:cef:dss:attestation:qualification:indeterminatePID"),
+    INDETERMINATE_PID("Indeterminate PID", "Indeterminate Person Identification Data", "urn:cef:dss:attestation:qualification:indeterminatePID"),
 
     /**
      * Indeterminate electronic attestation of attributes of unknown or conflicting revocation.

@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * Contains information about the service revocation and other information for the given time period
+ * Contains information about the service status and other information for the given time period
  * 
  */
 public class TrustedEntityServiceStatusAndInformationExtensions extends BaseTimeDependent implements ServiceStatusAndInformationExtensions {
@@ -87,7 +87,7 @@ public class TrustedEntityServiceStatusAndInformationExtensions extends BaseTime
     }
 
     /**
-     * Gets revocation
+     * Gets status
      *
      * @return {@link String}
      */
@@ -180,7 +180,7 @@ public class TrustedEntityServiceStatusAndInformationExtensions extends BaseTime
         }
 
         /**
-         * Sets a revocation
+         * Sets a status
          *
          * @param status {@link String}
          * @return this {@link ServiceStatusAndInformationExtensionsBuilder}

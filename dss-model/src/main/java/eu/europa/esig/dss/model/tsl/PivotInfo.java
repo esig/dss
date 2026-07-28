@@ -61,7 +61,7 @@ public class PivotInfo extends LOTLInfo {
 	}
 	
 	/**
-	 * Returns a map of certificate tokens with a revocation regarding to the current pivot
+	 * Returns a map of certificate tokens with a status regarding to the current pivot
 	 *
 	 * @return map between {@link CertificateToken} and {@link CertificatePivotStatus}
 	 */

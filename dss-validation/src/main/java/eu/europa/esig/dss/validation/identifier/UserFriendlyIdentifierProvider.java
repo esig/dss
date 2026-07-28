@@ -57,6 +57,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.security.auth.x500.X500Principal;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -94,6 +96,9 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
 
     /** String used when token's signing certificate is not identified */
     private static final String UNKNOWN_SIGNER = "UNKNOWN-SIGNER";
+
+    /** String used when token's subject is not identified */
+    private static final String UNKNOWN_SUBJECT = "UNKNOWN_SUBJECT";
 
     /** String used when token's signing certificate does not have a human-readable name */
     private static final String UNNAMED_SIGNER = "UNNAMED-SIGNER";
@@ -167,7 +172,7 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
 
     /**
      * Sets the prefix to be used for signature identifiers
-     *
+     * <p>
      * Default = "SIGNATURE"
      *
      * @param signaturePrefix {@link String}
@@ -179,7 +184,7 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
 
     /**
      * Sets the prefix to be used for counter-signature identifiers
-     *
+     * <p>
      * Default = "COUNTER-SIGNATURE"
      *
      * @param counterSignaturePrefix {@link String}
@@ -191,7 +196,7 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
 
     /**
      * Sets the prefix to be used for timestamp identifiers
-     *
+     * <p>
      * Default = "TIMESTAMP"
      *
      * @param timestampPrefix {@link String}
@@ -203,7 +208,7 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
 
     /**
      * Sets the prefix to be used for certificate identifiers
-     *
+     * <p>
      * Default = "CERTIFICATE"
      *
      * @param certificatePrefix {@link String}
@@ -215,7 +220,7 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
 
     /**
      * Sets the prefix to be used for CRL identifiers
-     *
+     * <p>
      * Default = "CRL"
      *
      * @param crlPrefix {@link String}
@@ -227,7 +232,7 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
 
     /**
      * Sets the prefix to be used for OCSP identifiers
-     *
+     * <p>
      * Default = "OCSP"
      *
      * @param ocspPrefix {@link String}
@@ -239,7 +244,7 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
 
     /**
      * Sets the prefix to be used for original document identifiers
-     *
+     * <p>
      * Default = "DOCUMENT"
      *
      * @param signedDataPrefix {@link String}
@@ -251,7 +256,7 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
 
     /**
      * Sets the prefix to be used for evidence record identifiers
-     *
+     * <p>
      * Default = "EVIDENCE-RECORD"
      *
      * @param evidenceRecordPrefix {@link String}
@@ -263,7 +268,7 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
 
     /**
      * Sets the prefix to be used for a LOTL identifier
-     *
+     * <p>
      * Default = "LOTL"
      *
      * @param lotlPrefix {@link String}
@@ -275,7 +280,7 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
 
     /**
      * Sets the prefix to be used for TL identifiers
-     *
+     * <p>
      * Default = "TL"
      *
      * @param tlPrefix {@link String}
@@ -287,7 +292,7 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
 
     /**
      * Sets the prefix to be used for pivot identifiers
-     *
+     * <p>
      * Default = "PIVOT"
      *
      * @param pivotPrefix {@link String}
@@ -298,8 +303,32 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
     }
 
     /**
-     * Sets the prefix to be used for attestation identifiers
+     * Sets the prefix to be used for LoTE identifiers
+     * <p>
+     * Default = "LOTE"
      *
+     * @param lotePrefix {@link String}
+     */
+    public void setLotePrefix(String lotePrefix) {
+        assertNotBlank(lotlPrefix);
+        this.lotePrefix = lotePrefix;
+    }
+
+    /**
+     * Sets the prefix to be used for LoLoTE identifiers
+     * <p>
+     * Default = "LOLOTE"
+     *
+     * @param lolotePrefix {@link String}
+     */
+    public void setLolotePrefix(String lolotePrefix) {
+        assertNotBlank(lotlPrefix);
+        this.lolotePrefix = lolotePrefix;
+    }
+
+    /**
+     * Sets the prefix to be used for attestation identifiers
+     * <p>
      * Default = "ATTESTATION"
      *
      * @param attestationPrefix {@link String}
@@ -311,7 +340,7 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
 
     /**
      * Sets the prefix to be used for attestation revocation token identifiers
-     *
+     * <p>
      * Default = "ATTESTATION-REVOCATION"
      *
      * @param attestationRevocationTokenPrefix {@link String}
@@ -323,7 +352,7 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
 
     /**
      * Sets the dataFormat to be used for identifiers creation
-     *
+     * <p>
      * Default = "yyyyMMdd-HHmm"
      *
      * @param dateFormat {@link String} the target date format
@@ -568,20 +597,98 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
     protected String getIdAsStringForAttestationIdentifier(Attestation attestation) {
         StringBuilder stringBuilder = new StringBuilder(attestationPrefix);
 
+        // 1. Doc type
+        if (attestation.getPayload().getDocType() != null) {
+            String docType = prettyPrintDocType(attestation.getPayload().getDocType().getStringValue());
+            if (Utils.isStringNotEmpty(docType)) {
+                stringBuilder.append(STRING_DELIMITER);
+                stringBuilder.append(docType);
+            }
+        } else if (attestation.getPayload().getVerifiableCredentialsType() != null) {
+            String docType = prettyPrintDocType(attestation.getPayload().getVerifiableCredentialsType().getStringValue());
+            if (Utils.isStringNotEmpty(docType)) {
+                stringBuilder.append(STRING_DELIMITER);
+                stringBuilder.append(docType);
+            }
+        }
+
+        // 2. Subject
+        stringBuilder.append(STRING_DELIMITER);
         if (attestation.getPayload().getSubject() != null) {
-            stringBuilder.append(STRING_DELIMITER);
-            stringBuilder.append(attestation.getPayload().getSubject().getStringValue());
+            stringBuilder.append(getUserFriendlyString(attestation.getPayload().getSubject().getStringValue()));
+        } else if (attestation.getPayload().getGivenName() != null || attestation.getPayload().getFamilyName() != null) {
+            String name = null;
+            if (attestation.getPayload().getFamilyName() != null) {
+                name = attestation.getPayload().getFamilyName().getStringValue();
+            }
+            if (attestation.getPayload().getGivenName() != null) {
+                if (Utils.isStringNotEmpty(name)) {
+                    name = name.concat("-");
+                } else {
+                    name = Utils.EMPTY_STRING;
+                }
+                name = name.concat(attestation.getPayload().getGivenName().getStringValue());
+            }
+            stringBuilder.append(getUserFriendlyString(name));
+        } else if (Utils.collectionSize(attestation.getSignatures()) == 1 && attestation.getSignatures().get(0).getSigningCertificateToken() != null) {
+            X500PrincipalHelper subject = attestation.getSignatures().get(0).getSigningCertificateToken().getSubject();
+            stringBuilder.append(getHumanReadableName(subject));
+        } else {
+            stringBuilder.append(UNKNOWN_SUBJECT);
         }
-        if  (attestation.getPayload().getDocType() != null) {
-            stringBuilder.append(STRING_DELIMITER);
-            stringBuilder.append(attestation.getPayload().getDocType().getStringValue());
-        }
+
+        // 3. Issuance time
         if (attestation.getPayload().getIssuedAtTime() != null) {
             stringBuilder.append(STRING_DELIMITER);
             stringBuilder.append(DSSUtils.formatDateWithCustomFormat(attestation.getPayload().getIssuedAtTime().getDateValue(), dateFormat));
+        } else if (attestation.getPayload().getValidityInfo() != null && attestation.getPayload().getValidityInfo().getSigned() != null) {
+            stringBuilder.append(STRING_DELIMITER);
+            stringBuilder.append(DSSUtils.formatDateWithCustomFormat(attestation.getPayload().getValidityInfo().getSigned().getDateValue(), dateFormat));
+        } else if (Utils.collectionSize(attestation.getSignatures()) == 1 && attestation.getSignatures().get(0).getSigningTime() != null) {
+            stringBuilder.append(STRING_DELIMITER);
+            stringBuilder.append(DSSUtils.formatDateWithCustomFormat(attestation.getSignatures().get(0).getSigningTime(), dateFormat));
         }
 
         return generateId(stringBuilder, attestation.getId());
+    }
+
+    private String prettyPrintDocType(String docType) {
+        if (Utils.isStringNotEmpty(docType)) {
+            String[] parts;
+            if (docType.contains(".")) {
+                parts = docType.split("\\.");
+            } else if (docType.contains(":")) {
+                parts = docType.split(":");
+            } else {
+                parts = new String[] { docType };
+            }
+            return prettyPrintDocType(parts);
+        }
+        return null;
+    }
+
+    private String prettyPrintDocType(String[] parts) {
+        if (Utils.isArrayNotEmpty(parts)) {
+            List<String> result = new ArrayList<>();
+            boolean stringFound = false;
+            for (int i = parts.length - 1; i >= 0; i--) {
+                String part = parts[i];
+                if (Utils.areStringsEqualIgnoreCase("urn", part)) {
+                    break;
+                }
+                if (Utils.isStringDigits(part)) {
+                    if (i != parts.length - 1 && stringFound) {
+                        break;
+                    }
+                } else {
+                    stringFound = true;
+                }
+                result.add(part);
+            }
+            Collections.reverse(result);
+            return getUserFriendlyString(Utils.joinStrings(result, "-"));
+        }
+        return null;
     }
 
     private String createIdString(String prefix, X500PrincipalHelper subject, Date creationDate, String dssId) {
@@ -709,6 +816,9 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
     }
 
     private String getUserFriendlyString(String str) {
+        if (Utils.isStringEmpty(str)) {
+            return str;
+        }
         str = DSSUtils.removeControlCharacters(str);
         str = DSSUtils.replaceInvalidXmlCharacters(str, UNSUPPORTED_CHARACTER);
         str = DSSUtils.replaceAllNonAlphanumericCharacters(str, NAME_REPLACEMENT);

@@ -244,7 +244,7 @@ class QEAATLTest extends PKIFactoryAccess {
                 "  },\n" +
                 "  \"given_name\": \"John\",\n" +
                 "  \"shortLived\": null,\n" +
-                "  \"vct\": \"urn:eudi:attestation:1\",\n" +
+                "  \"vct\": \"urn:eudi:eaa:1\",\n" +
                 "  \"vct#integrity\": \"sha256-1odmyxoVQCuQx8SAym8rWHXba41fM/Iv/V1H8VHGN00=\",\n" +
                 "}";
         DSSDocument originalDocument = new InMemoryDocument(payload.getBytes());

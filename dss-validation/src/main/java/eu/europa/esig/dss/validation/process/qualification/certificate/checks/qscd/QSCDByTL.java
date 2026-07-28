@@ -30,15 +30,15 @@ import eu.europa.esig.dss.validation.process.qualification.EIDASUtils;
 import java.util.List;
 
 /**
- * Extracts QCSD revocation from a Trusted Service
+ * Extracts QSCD status from a Trusted Service
  *
  */
 class QSCDByTL implements QSCDStrategy {
 
-	/** Trusted Service to extract QSCD revocation from */
+	/** Trusted Service to extract QSCD status from */
 	private final TrustServiceWrapper trustService;
 
-	/** Qualification revocation of the certificate */
+	/** Qualification status of the certificate */
 	private final CertificateQualifiedStatus qualified;
 
 	/** QSCD strategy to be used */

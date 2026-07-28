@@ -332,7 +332,7 @@ public class ServiceEquivalence extends BaseTimeDependent {
 	public String toString() {
 		return "ServiceEquivalence [" +
 				"legalInfoIdentifier='" + legalInfoIdentifier + '\'' +
-				", revocation=" + status +
+				", status=" + status +
 				", typeAsiEquivalence=" + typeAsiEquivalence +
 				", statusEquivalence=" + statusEquivalence +
 				", certificateContentEquivalences=" + certificateContentEquivalences +

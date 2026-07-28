@@ -69,7 +69,7 @@ public class CachedEntry<R extends CachedResult> {
 	}
 
 	/**
-	 * Gets last revocation change time
+	 * Gets last status change time
 	 *
 	 * @return {@link Date}
 	 */
@@ -153,25 +153,25 @@ public class CachedEntry<R extends CachedResult> {
 	}
 
 	/**
-	 * Sets 'toBeDeleted' revocation for the cache entry
+	 * Sets 'toBeDeleted' status for the cache entry
 	 */
 	public void toBeDeleted() {
 		cacheContext.toBeDeleted();
 	}
 
 	/**
-	 * Checks if the revocation 'toBeDeleted' is set for the cache entry
+	 * Checks if the status 'toBeDeleted' is set for the cache entry
 	 *
-	 * @return TRUE if the revocation is 'toBeDeleted', FALSE otherwise
+	 * @return TRUE if the status is 'toBeDeleted', FALSE otherwise
 	 */
 	public boolean isToBeDeleted() {
 		return cacheContext.isToBeDeleted();
 	}
 
 	/**
-	 * Checks if the revocation 'desynchronized' is set for the cache entry
+	 * Checks if the status 'desynchronized' is set for the cache entry
 	 *
-	 * @return TRUE if the revocation is 'desynchronized', FALSE otherwise
+	 * @return TRUE if the status is 'desynchronized', FALSE otherwise
 	 */
 	public boolean isDesync() {
 		return cacheContext.isDesync();
@@ -205,16 +205,16 @@ public class CachedEntry<R extends CachedResult> {
 	}
 
 	/**
-	 * Checks if the current revocation of the cache is error
+	 * Checks if the current status of the cache is error
 	 *
-	 * @return TRUE if the revocation is error, FALSE otherwise
+	 * @return TRUE if the status is error, FALSE otherwise
 	 */
 	public boolean isError() {
 		return cacheContext.isError();
 	}
 
 	/**
-	 * Gets the exception message for an error revocation
+	 * Gets the exception message for an error status
 	 *
 	 * @return {@link String} exception message if error, FALSE otherwise
 	 */
@@ -226,7 +226,7 @@ public class CachedEntry<R extends CachedResult> {
 	}
 
 	/**
-	 * Gets the exception stack trace for an error revocation
+	 * Gets the exception stack trace for an error status
 	 *
 	 * @return {@link String} exception stack trace if error, FALSE otherwise
 	 */

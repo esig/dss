@@ -39,7 +39,7 @@ public final class TrustServicesFilterFactory {
 	}
 
 	/**
-	 * Creates a TrustService filter by 'granted' revocation
+	 * Creates a TrustService filter by 'granted' status
 	 *
 	 * @return {@link TrustServiceFilter}
 	 */
@@ -135,7 +135,7 @@ public final class TrustServicesFilterFactory {
 	}
 
 	/**
-	 * Creates a TrustService filter by revocation consistency
+	 * Creates a TrustService filter by status consistency
 	 *
 	 * @return {@link TrustServiceFilter}
 	 */

@@ -184,7 +184,7 @@ public abstract class AbstractAttestationPayloadParameters implements Attestatio
 
     /**
      * Sets the attestation category URN.
-     * Example: "urn:etsi:esi:attestation:eu:qualified" for QEAA, "urn:etsi:esi:attestation:eu:pub" for Pub-EAA
+     * Example: "urn:etsi:esi:eaa:eu:qualified" for QEAA, "urn:etsi:esi:eaa:eu:pub" for Pub-EAA
      *
      * @param category {@link String}
      */

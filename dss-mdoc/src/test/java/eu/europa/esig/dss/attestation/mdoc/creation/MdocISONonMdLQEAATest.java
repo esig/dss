@@ -66,7 +66,7 @@ class MdocISONonMdLQEAATest extends AbstractMdocPresentationTestIssuance {
         payloadParameters.selectivelyDisclosable().setDocumentNumber("123456789");
 
         payloadParameters.setStatusList(1, "https://pki.nowina.lu/eaa/status_list");
-        payloadParameters.setCategory("urn:etsi:esi:attestation:eu:qualified");
+        payloadParameters.setCategory("urn:etsi:esi:eaa:eu:qualified");
 
         signatureParameters = new CBAdESSignatureParameters();
         signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
@@ -160,7 +160,7 @@ class MdocISONonMdLQEAATest extends AbstractMdocPresentationTestIssuance {
                 documentNumberSDFound = true;
             } else if ("category".equals(xmlDigestMatcher.getDisclosableClaim().getName())) {
                 assertEquals("org.etsi.01947201.010101", xmlDigestMatcher.getDisclosableClaim().getNamespace());
-                assertEquals("urn:etsi:esi:attestation:eu:qualified", xmlDigestMatcher.getDisclosableClaim().getValue());
+                assertEquals("urn:etsi:esi:eaa:eu:qualified", xmlDigestMatcher.getDisclosableClaim().getValue());
                 categorySDFound = true;
             }
         }

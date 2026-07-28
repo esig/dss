@@ -57,7 +57,7 @@ public enum TimestampQualification {
 	}
 
 	/**
-	 * Returns a short name of the qualification revocation
+	 * Returns a short name of the qualification status
 	 *
 	 * @return {@link String}
 	 */
@@ -66,7 +66,7 @@ public enum TimestampQualification {
 	}
 
 	/**
-	 * Returns a complete name of the qualification revocation
+	 * Returns a complete name of the qualification status
 	 *
 	 * @return {@link String}
 	 */
@@ -75,7 +75,7 @@ public enum TimestampQualification {
 	}
 
 	/**
-	 * Returns a URI of the qualification revocation
+	 * Returns a URI of the qualification status
 	 *
 	 * @return {@link String}
 	 */

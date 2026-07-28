@@ -339,9 +339,9 @@ then that text shall prevail as the authoritative source
 			<xsd:element name="ServiceName" type="lote:InternationalNamesType"/>
 			<!--Specified in TS 119 602 v1.1.1 clause 6.6.3 Service digital identity-->
 			<xsd:element ref="lote:ServiceDigitalIdentity"/>
-			<!--Specified in TS 119 602 v1.1.1 clause 6.6.4 Service current revocation-->
+			<!--Specified in TS 119 602 v1.1.1 clause 6.6.4 Service current status-->
 			<xsd:element ref="lote:ServiceStatus" minOccurs="0"/>
-			<!--Specified in TS 119 602 v1.1.1 clause 6.6.5 Service revocation starting date and time-->
+			<!--Specified in TS 119 602 v1.1.1 clause 6.6.5 Service status starting date and time-->
 			<xsd:element name="StatusStartingTime" type="xsd:dateTime" minOccurs="0"/>
 			<!--Specified in TS 119 602 v1.1.1 clause 6.6.6 Scheme service definition URI-->
 			<xsd:element name="SchemeServiceDefinitionURI" type="lote:NonEmptyMultiLangURIListType" minOccurs="0"/>
@@ -353,7 +353,7 @@ then that text shall prevail as the authoritative source
 			<xsd:element name="ServiceInformationExtensions" type="lote:ExtensionsListType" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	<!-- Service revocation -->
+	<!-- Service status -->
 	<xsd:annotation><xsd:documentation>Specified in TS 119 602 v1.1.1 clause 6.6.4 Service current status</xsd:documentation></xsd:annotation>
 	<xsd:element name="ServiceStatus" type="lote:NonEmptyURIType"/>
 	<!-- Type for Service Supply Points -->
@@ -403,9 +403,9 @@ then that text shall prevail as the authoritative source
 			<xsd:element name="ServiceName" type="lote:InternationalNamesType"/>
 			<!--Specified in TS 119 602 v1.1.1 clause 6.6.3 Service digital identity-->
 			<xsd:element ref="lote:ServiceDigitalIdentity"/>
-			<!--Specified in TS 119 602 v1.1.1 clause 6.6.4 Service previous revocation-->
+			<!--Specified in TS 119 602 v1.1.1 clause 6.6.4 Service previous status-->
 			<xsd:element ref="lote:ServiceStatus"/>
-			<!--Specified in TS 119 602 v1.1.1 clause 6.6.5 Previous revocation starting date and time-->
+			<!--Specified in TS 119 602 v1.1.1 clause 6.6.5 Previous status starting date and time-->
 			<xsd:element name="StatusStartingTime" type="xsd:dateTime"/>
 			<!--Specified in TS 119 602 v1.1.1 clause 6.6.9 Service information extensions-->
 			<xsd:element name="ServiceInformationExtensions" type="lote:ExtensionsListType" minOccurs="0"/>

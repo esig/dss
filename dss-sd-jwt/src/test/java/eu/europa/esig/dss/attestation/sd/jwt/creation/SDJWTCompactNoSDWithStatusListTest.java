@@ -46,7 +46,7 @@ public class SDJWTCompactNoSDWithStatusListTest extends AbstractSDJWTTestIssuanc
         payloadParameters = new SDJWTPayloadParameters();
         payloadParameters.setIssuer("Attestation provider");
 
-        payloadParameters.setVerifiableCredentialsType("urn:eudi:attestation:1");
+        payloadParameters.setVerifiableCredentialsType("urn:eudi:eaa:1");
         Digest digest = new Digest(DigestAlgorithm.SHA256, DSSUtils.digest(DigestAlgorithm.SHA256, "vct".getBytes()));
         payloadParameters.setVerifiableCredentialsTypeIntegrity(digest);
 

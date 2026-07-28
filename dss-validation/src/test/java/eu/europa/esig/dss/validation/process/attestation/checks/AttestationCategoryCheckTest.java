@@ -43,14 +43,14 @@ class AttestationCategoryCheckTest extends AbstractTestCheck {
     @Test
     void validTest() {
         MultiValuesConstraint constraint = new MultiValuesConstraint();
-        constraint.getId().add("urn:etsi:esi:attestation:eu:qualified");
+        constraint.getId().add("urn:etsi:esi:eaa:eu:qualified");
         constraint.setLevel(Level.FAIL);
 
         XmlAttestation xmlAttestation = new XmlAttestation();
         xmlAttestation.setProfile(AttestationProfile.SD_JWT_VC);
         XmlAttestationPayload xmlAttestationPayload = new XmlAttestationPayload();
         XmlClaim xmlClaim = new XmlClaim();
-        xmlClaim.setText("urn:etsi:esi:attestation:eu:qualified");
+        xmlClaim.setText("urn:etsi:esi:eaa:eu:qualified");
         xmlAttestationPayload.setCategory(xmlClaim);
         xmlAttestation.setAttestationPayload(xmlAttestationPayload);
 
@@ -68,14 +68,14 @@ class AttestationCategoryCheckTest extends AbstractTestCheck {
     @Test
     void invalidTest() {
         MultiValuesConstraint constraint = new MultiValuesConstraint();
-        constraint.getId().add("urn:etsi:esi:attestation:eu:qualified");
+        constraint.getId().add("urn:etsi:esi:eaa:eu:qualified");
         constraint.setLevel(Level.FAIL);
 
         XmlAttestation xmlAttestation = new XmlAttestation();
         xmlAttestation.setProfile(AttestationProfile.SD_JWT_VC);
         XmlAttestationPayload xmlAttestationPayload = new XmlAttestationPayload();
         XmlClaim xmlClaim = new XmlClaim();
-        xmlClaim.setText("urn:etsi:esi:attestation:eu:pub");
+        xmlClaim.setText("urn:etsi:esi:eaa:eu:pub");
         xmlAttestationPayload.setCategory(xmlClaim);
         xmlAttestation.setAttestationPayload(xmlAttestationPayload);
 

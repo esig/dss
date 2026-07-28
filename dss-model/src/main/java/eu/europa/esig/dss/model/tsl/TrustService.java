@@ -61,7 +61,7 @@ public class TrustService implements Serializable {
 	}
 
 	/**
-	 * Gets revocation based on time
+	 * Gets status based on time
 	 *
 	 * @return {@link TimeDependentValues}
 	 */
@@ -99,7 +99,7 @@ public class TrustService implements Serializable {
 		}
 
 		/**
-		 * Sets a revocation
+		 * Sets a status
 		 *
 		 * @param status {@link TimeDependentValues}
 		 * @return this {@link TrustServiceBuilder}

@@ -93,7 +93,7 @@ public abstract class DefaultAttestationDocumentAnalyzer extends DefaultDocument
     }
 
     /**
-     * Sets the attestation revocation source providing access to the information about the attestation validity revocation
+     * Sets the attestation revocation source providing access to the information about the attestation validity status
      *
      * @param attestationRevocationSource {@link AttestationRevocationSource}
      */

@@ -205,7 +205,7 @@ public final class AttestationQualificationMatrix {
      * Gets PID qualification based on the given parameters
      *
      * @param indication {@link Indication} representing the final result of validation process for attestation presentation
-     * @param certificateApprovalStatus {@link CertificateApprovalStatus} determined certificate approval revocation
+     * @param certificateApprovalStatus {@link CertificateApprovalStatus} determined certificate approval status
      * @return {@link AttestationQualification}
      */
     public static AttestationQualification getPIDQualification(Indication indication, CertificateApprovalStatus certificateApprovalStatus) {

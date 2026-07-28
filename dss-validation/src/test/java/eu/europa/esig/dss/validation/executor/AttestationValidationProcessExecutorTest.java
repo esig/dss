@@ -2044,7 +2044,7 @@ class AttestationValidationProcessExecutorTest extends AbstractTestValidationExe
 
         MultiValuesConstraint constraint = new MultiValuesConstraint();
         constraint.setLevel(Level.FAIL);
-        constraint.getId().add("urn:etsi:esi:attestation:eu:qualified");
+        constraint.getId().add("urn:etsi:esi:eaa:eu:qualified");
         validationPolicy.getAttestationConstraints().setCategory(constraint);
 
         AttestationProcessExecutor executor = new AttestationProcessExecutor();

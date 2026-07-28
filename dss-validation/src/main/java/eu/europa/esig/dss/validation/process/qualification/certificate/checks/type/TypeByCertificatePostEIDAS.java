@@ -27,7 +27,7 @@ import eu.europa.esig.dss.validation.process.qualification.certificate.QCTypeIde
 import java.util.stream.Stream;
 
 /**
- * Gets certificate approval revocation type after eIDAS
+ * Gets certificate approval status type after eIDAS
  *
  */
 class TypeByCertificatePostEIDAS implements TypeStrategy {

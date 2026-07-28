@@ -27,7 +27,7 @@ import eu.europa.esig.dss.validation.process.qualification.EIDASUtils;
 import java.util.List;
 
 /**
- * Verifies revocation of a trusted service created after eIDAS
+ * Verifies status of a trusted service created after eIDAS
  *
  */
 public class TrustServiceQSCDPostEIDASConsistency implements TrustServiceCondition {

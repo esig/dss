@@ -71,7 +71,7 @@ public class RevocationDateAfterBestSignatureTimeCheck extends ChainItem<XmlVali
 	@Override
 	protected boolean process() {
 		Date revocationDate = certificateRevocation.getRevocationDate();
-		// revocation date can be null in case of unknown revocation
+		// revocation date can be null in case of unknown status
 		return revocationDate != null && revocationDate.after(bestSignatureTime);
 	}
 

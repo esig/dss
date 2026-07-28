@@ -135,7 +135,7 @@ public abstract class PKIFactoryAccess {
     protected static final String SELF_SIGNED_LONG_TSA = "self-signed-long-tsa";
     protected static final String EXPIRED_TSA = "expired-tsa";
 
-    /* Produces timestamp with a fail revocation */
+    /* Produces timestamp with a fail status */
     private static final String FAIL_GOOD_TSA_ONLINE = "fail/good-tsa";
     protected static final String FAIL_GOOD_TSA = "fail/good-tsa";
     /* Produces HTTP error 500 */

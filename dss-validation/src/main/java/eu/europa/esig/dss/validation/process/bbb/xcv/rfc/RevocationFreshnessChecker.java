@@ -107,7 +107,7 @@ public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 			 * freshness from the X.509 validation constraints for the given
 			 * certificate. If the constraints do not contain a value for the
 			 * maximum accepted revocation freshness and the revocation
-			 * information revocation is a CRL or an OCSP response IETF RFC 5280
+			 * information status is a CRL or an OCSP response IETF RFC 5280
 			 * [1], IETF RFC 6960 [i.12] with a value in the nextUpdate field
 			 * the time interval between the fields thisUpdate and nextUpdate
 			 * shall be used as the value of maximum freshness. If nextUpdate is
@@ -133,7 +133,7 @@ public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 				}
 			}
 			/*
-			 * 2) If the issuance time of the revocation information revocation is
+			 * 2) If the issuance time of the revocation information status is
 			 * after the validation time minus the considered maximum freshness,
 			 * the building block shall return the indication PASSED. Otherwise
 			 * the building block shall return the indication FAILED.
@@ -168,7 +168,7 @@ public class RevocationFreshnessChecker extends Chain<XmlRFC> {
 		}
 		/*
 		 * If the constraints do not contain a value for the maximum accepted
-		 * revocation freshness and the revocation information revocation is a CRL
+		 * revocation freshness and the revocation information status is a CRL
 		 * or an OCSP response IETF RFC 5280 [1], IETF RFC 6960 [i.12] with a
 		 * value in the nextUpdate field the time interval between the fields
 		 * thisUpdate and nextUpdate shall be used as the value of maximum

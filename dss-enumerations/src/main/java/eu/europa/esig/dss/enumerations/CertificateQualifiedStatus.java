@@ -21,7 +21,7 @@
 package eu.europa.esig.dss.enumerations;
 
 /**
- * Defines the qualification revocation of a certificate
+ * Defines the qualification status of a certificate
  *
  */
 public enum CertificateQualifiedStatus {
@@ -32,7 +32,7 @@ public enum CertificateQualifiedStatus {
 	/** Not qualified */
 	NOT_QC("Not qualified");
 
-	/** User-friendly definition of a qualification revocation */
+	/** User-friendly definition of a qualification status */
 	private final String label;
 
 	/**

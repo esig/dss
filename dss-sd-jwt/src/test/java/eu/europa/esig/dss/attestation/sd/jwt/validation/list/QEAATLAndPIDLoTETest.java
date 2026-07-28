@@ -283,7 +283,7 @@ class QEAATLAndPIDLoTETest extends PKIFactoryAccess {
         if (commonName.contains("PID")) {
             vct = "urn:eudi:pid:1";
         } else {
-            vct = "urn:eudi:attestation:1";
+            vct = "urn:eudi:eaa:1";
         }
 
         String payload = "{\n" +

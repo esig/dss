@@ -26,7 +26,7 @@ import java.util.Objects;
 import java.util.ServiceLoader;
 
 /**
- * Represents a certificate approval revocation, e.g. in the context of EUDI Wallet
+ * Represents a certificate approval status, e.g. in the context of EUDI Wallet
  * 
  */
 public interface CertificateApprovalStatus {
@@ -39,21 +39,21 @@ public interface CertificateApprovalStatus {
     ListType getListType();
 
     /**
-     * Gets the ServiceTypeIdentifier related to the certificate approval revocation
+     * Gets the ServiceTypeIdentifier related to the certificate approval status
      *
      * @return {@link LoTEServiceTypeIdentifier}
      */
     LoTEServiceTypeIdentifier getServiceTypeIdentifier();
 
     /**
-     * Gets the ServiceStatus corresponding to the certificate approval revocation
+     * Gets the ServiceStatus corresponding to the certificate approval status
      *
      * @return {@link LoTEServiceStatus}
      */
     LoTEServiceStatus getServiceStatus();
 
     /**
-     * Gets user-friendly description of the certificate approval revocation
+     * Gets user-friendly description of the certificate approval status
      *
      * @return {@link String}
      */

@@ -98,7 +98,7 @@ public class TrustServiceStatusAndInformationExtensions extends BaseTimeDependen
 	}
 
 	/**
-	 * Gets revocation
+	 * Gets status
 	 *
 	 * @return {@link String}
 	 */
@@ -230,7 +230,7 @@ public class TrustServiceStatusAndInformationExtensions extends BaseTimeDependen
 		}
 
 		/**
-		 * Sets a revocation
+		 * Sets a status
 		 *
 		 * @param status {@link String}
 		 * @return this {@link TrustServiceStatusAndInformationExtensionsBuilder}
@@ -313,7 +313,7 @@ public class TrustServiceStatusAndInformationExtensions extends BaseTimeDependen
 		return "TrustServiceStatusAndInformationExtensions [" +
 				"names=" + names +
 				", type='" + type + '\'' +
-				", revocation='" + status + '\'' +
+				", status='" + status + '\'' +
 				", conditionsForQualifiers=" + conditionsForQualifiers +
 				", additionalServiceInfoUris=" + additionalServiceInfoUris +
 				", serviceSupplyPoints=" + serviceSupplyPoints +

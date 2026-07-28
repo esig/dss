@@ -182,7 +182,7 @@ public class ValidationProcessForSignaturesWithLongTermValidationData extends Ch
 		 * INDETERMINATE/REVOKED_NO_POE, INDETERMINATE/REVOKED_CA_NO_POE,
 		 * INDETERMINATE/TRY_LATER, INDETERMINATE/OUT_OF_BOUNDS_NO_POE or
 		 * INDETERMINATE/OUT_OF_BOUNDS_NOT_REVOKED, the SVA shall go to the next step. Otherwise, the
-		 * process shall return the revocation and information returned by the validation process for Basic Signatures.
+		 * process shall return the status and information returned by the validation process for Basic Signatures.
 		 */
 		ChainItem<XmlValidationProcessLongTermData> item = firstItem = isAcceptableBasicSignatureValidation();
 
