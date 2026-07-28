@@ -1629,7 +1629,7 @@
   "cryptographicSuite" : null,
   "validationTime" : null,
   "tokenExtractionStrategy" : "NONE"
-}</con:request><con:originalUri>http://localhost/services/rest/validation/services/rest/attestation-validation/validateEAA</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="getDataToSign" path="/services/rest/attestation-creation/getDataToSign" id="5e09fcd8-0af5-406a-9198-22e91367ad3f"><con:settings/><con:parameters/><con:method name="getDataToSignEAA" id="ce56a3da-207b-46af-a706-40f9ef3184ba" method="POST"><con:settings/><con:parameters/><con:representation type="FAULT"><con:mediaType>application/json</con:mediaType><con:status>500 403</con:status><con:params/></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:get="http://localhost/services/rest/signature/one-document/getDataToSign">get:Response</con:element></con:representation><con:request name="Request 1" id="17bb4e83-c920-4537-931d-e308b8e0b45c" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{
+}</con:request><con:originalUri>http://localhost/services/rest/validation/services/rest/attestation-validation/validateEAA</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="getDataToSign" path="/services/rest/attestation-creation/getDataToSign" id="5e09fcd8-0af5-406a-9198-22e91367ad3f"><con:settings/><con:parameters/><con:method name="getDataToSignAttestation" id="ce56a3da-207b-46af-a706-40f9ef3184ba" method="POST"><con:settings/><con:parameters/><con:representation type="FAULT"><con:mediaType>application/json</con:mediaType><con:status>500 403</con:status><con:params/></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:get="http://localhost/services/rest/signature/one-document/getDataToSign">get:Response</con:element></con:representation><con:request name="Request 1" id="17bb4e83-c920-4537-931d-e308b8e0b45c" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{
   "parameters" : {
     "signingCertificate" : {
       "encodedCertificate" : "MIIC6jCCAdKgAwIBAgIGLtYU17tXMA0GCSqGSIb3DQEBCwUAMDAxGzAZBgNVBAMMElJvb3RTZWxmU2lnbmVkRmFrZTERMA8GA1UECgwIRFNTLXRlc3QwHhcNMTcwNjA4MTEyNjAxWhcNNDcwNzA0MDc1NzI0WjAoMRMwEQYDVQQDDApTaWduZXJGYWtlMREwDwYDVQQKDAhEU1MtdGVzdDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMI3kZhtnipn+iiZHZ9ax8FlfE5Ow/cFwBTfAEb3R1ZQUp6/BQnBt7Oo0JWBtc9qkv7JUDdcBJXPV5QWS5AyMPHpqQ75Hitjsq/Fzu8eHtkKpFizcxGa9BZdkQjh4rSrtO1Kjs0Rd5DQtWSgkeVCCN09kN0ZsZ0ENY+Ip8QxSmyztsStkYXdULqpwz4JEXW9vz64eTbde4vQJ6pjHGarJf1gQNEc2XzhmI/prXLysWNqC7lZg7PUZUTrdegABTUzYCRJ1kWBRPm4qo0LN405c94QQd45a5kTgowHzEgLnAQI28x0M3A59TKC+ieNc6VF1PsTLpUw7PNI2VstX5jAuasCAwEAAaMSMBAwDgYDVR0PAQH/BAQDAgEGMA0GCSqGSIb3DQEBCwUAA4IBAQCK6LGA01TR+rmU8p6yhAi4OkDN2b1dbIL8l8iCMYopLCxx8xqq3ubZCOxqh1X2j6pgWzarb0b/MUix00IoUvNbFOxAW7PBZIKDLnm6LsckRxs1U32sC9d1LOHe3WKBNB6GZALT1ewjh7hSbWjftlmcovq+6eVGA5cvf2u/2+TkKkyHV/NR394nXrdsdpvygwypEtXjetzD7UT93Nuw3xcV8VIftIvHf9LjU7h+UjGmKXG9c15eYr3SzUmv6kyOI0Bvw14PWtsWGl0QdOSRvIBBrP4adCnGTgjgjk9LTcO8B8FKrr+8lHGuc0bp4lIUToiUkGILXsiEeEg9WAqm+XqO"
@@ -1675,7 +1675,7 @@
     "signatureIdToCounterSign" : null,
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1781789483906,
+      "signingDate" : 1785228096795,
       "claimedSignerRoles" : null,
       "signedAssertions" : null,
       "policyId" : null,
@@ -1694,19 +1694,18 @@
     }
   },
   "payloadParameters" : {
-    "attestationFormat" : "SD_JWT_VC",
+    "attestationForm" : "SD_JWT",
     "preComputedPayload" : null,
     "digestAlgorithm" : null,
-    "issuanceDate" : null,
-    "notBeforeDate" : 1781789483906,
-    "expirationDate" : 1789738283912,
+    "notBeforeDate" : 1785228096795,
+    "expirationDate" : 1793180496801,
     "deviceKey" : {
       "publicKey" : "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEEv1XiCEdzBg9SOzF90jr8ZCbRSymlNapvTUidkL/6xPzuJBAzGvgYJKmwvLz8KLFsJzSJrUgFe5tfkVeykqg4w==",
       "certificate" : null
     },
     "statusList" : {
       "index" : 1,
-      "uri" : "https://pki.nowina.lu/attestation/status_list",
+      "uri" : "https://pki.nowina.lu/eaa/status_list",
       "certificate" : null,
       "type" : null,
       "purpose" : null
@@ -1718,7 +1717,6 @@
     "decoyDigestNumber" : null,
     "shuffleHashes" : null,
     "issuer" : "EAA provider",
-    "subject" : "good-ecdsa-user",
     "verifiableCredentialsType" : "urn:eudi:attestation:1",
     "verifiableCredentialsTypeIntegrity" : {
       "algorithm" : "SHA256",
@@ -1730,6 +1728,8 @@
     "validUntil" : null,
     "expectedUpdate" : null,
     "nonSelectivelyDisclosable" : {
+      "issuanceDate" : null,
+      "subject" : "good-ecdsa-user",
       "givenName" : null,
       "familyName" : null,
       "birthdate" : null,
@@ -1828,6 +1828,8 @@
       "otherClaims" : null
     },
     "selectivelyDisclosable" : {
+      "issuanceDate" : null,
+      "subject" : null,
       "givenName" : "John",
       "familyName" : "Doe",
       "birthdate" : null,
@@ -2031,7 +2033,7 @@
       } ]
     }
   }
-}</con:request><con:originalUri>http://localhost/services/rest/signature/one-document/getDataToSign</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="signEAA" path="/services/rest/attestation-creation/signEAA" id="91eeebb3-2916-4350-98b9-52af2753b2c5"><con:settings/><con:parameters/><con:method name="Method 1" id="3b5aa0d8-68c9-4ffc-80f5-f327d22479ac" method="POST"><con:settings/><con:parameters/><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:sig="http://localhost/services/rest/attestation-creation/signEAA">sig:Response</con:element></con:representation><con:request name="Request 1" id="e96f5e65-9814-4394-800e-43cdce7eede0" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{
+}</con:request><con:originalUri>http://localhost/services/rest/signature/one-document/getDataToSign</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="signAttestation" path="/services/rest/attestation-creation/signAttestation" id="91eeebb3-2916-4350-98b9-52af2753b2c5"><con:settings/><con:parameters/><con:method name="Method 1" id="3b5aa0d8-68c9-4ffc-80f5-f327d22479ac" method="POST"><con:settings/><con:parameters/><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:sig="http://localhost/services/rest/attestation-creation/signEAA">sig:Response</con:element></con:representation><con:request name="Request 1" id="e96f5e65-9814-4394-800e-43cdce7eede0" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{
   "parameters" : {
     "signingCertificate" : {
       "encodedCertificate" : "MIIC6jCCAdKgAwIBAgIGLtYU17tXMA0GCSqGSIb3DQEBCwUAMDAxGzAZBgNVBAMMElJvb3RTZWxmU2lnbmVkRmFrZTERMA8GA1UECgwIRFNTLXRlc3QwHhcNMTcwNjA4MTEyNjAxWhcNNDcwNzA0MDc1NzI0WjAoMRMwEQYDVQQDDApTaWduZXJGYWtlMREwDwYDVQQKDAhEU1MtdGVzdDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMI3kZhtnipn+iiZHZ9ax8FlfE5Ow/cFwBTfAEb3R1ZQUp6/BQnBt7Oo0JWBtc9qkv7JUDdcBJXPV5QWS5AyMPHpqQ75Hitjsq/Fzu8eHtkKpFizcxGa9BZdkQjh4rSrtO1Kjs0Rd5DQtWSgkeVCCN09kN0ZsZ0ENY+Ip8QxSmyztsStkYXdULqpwz4JEXW9vz64eTbde4vQJ6pjHGarJf1gQNEc2XzhmI/prXLysWNqC7lZg7PUZUTrdegABTUzYCRJ1kWBRPm4qo0LN405c94QQd45a5kTgowHzEgLnAQI28x0M3A59TKC+ieNc6VF1PsTLpUw7PNI2VstX5jAuasCAwEAAaMSMBAwDgYDVR0PAQH/BAQDAgEGMA0GCSqGSIb3DQEBCwUAA4IBAQCK6LGA01TR+rmU8p6yhAi4OkDN2b1dbIL8l8iCMYopLCxx8xqq3ubZCOxqh1X2j6pgWzarb0b/MUix00IoUvNbFOxAW7PBZIKDLnm6LsckRxs1U32sC9d1LOHe3WKBNB6GZALT1ewjh7hSbWjftlmcovq+6eVGA5cvf2u/2+TkKkyHV/NR394nXrdsdpvygwypEtXjetzD7UT93Nuw3xcV8VIftIvHf9LjU7h+UjGmKXG9c15eYr3SzUmv6kyOI0Bvw14PWtsWGl0QdOSRvIBBrP4adCnGTgjgjk9LTcO8B8FKrr+8lHGuc0bp4lIUToiUkGILXsiEeEg9WAqm+XqO"
@@ -2077,7 +2079,7 @@
     "signatureIdToCounterSign" : null,
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1781789483906,
+      "signingDate" : 1785228096795,
       "claimedSignerRoles" : null,
       "signedAssertions" : null,
       "policyId" : null,
@@ -2097,22 +2099,21 @@
   },
   "signatureValue" : {
     "algorithm" : "RSA_SHA256",
-    "value" : "YUKNY7nevLUD999oM8/oUA1kjT8FMBA/7RiEpw9U/qErkGO8LV+fUvfxRIt4lvBIPTUWFQRGiyIdqnfS/KsK68JLbjCGMWi7HqP3PnE0OiiFXE6+aQFksMhKXYjDlt+Mhxv5H6ufGF4WvZunt6m49Ys4i1BoaIa+VCV5aZbUmJj4n0kezOa3WLAeqM5jGL3DAu6uvyirzG72Z7U4aX92QiniqNbeyY2JXX4SJkCuIH5qWHB2dUz6bemvVxyLVKPUcu3aAaJMabwyWWCTT7rVfV+ilvsMIXCW1z/pc5+ErwMdtY39GJAEI6qfjX/9b9uNwE00u13X+MgTubhdlgimlQ=="
+    "value" : "tY9PuC6mm76qHP4bvC2px7hTbDdZLEs1RKFpfbaHzgro9LNFBlDCXfH2Xqj7Wnj7jwUgcM8h3nthyOee5g/YQn7Egy7Grv1uC31s3U8FaRDnnvkbxD0zRtcCW7LeZgj1giemR5o3w+g0AuIPd86I9A02k9j6dS0VIGFbsPZ/vX4b7cgtnjePqUACEkTB4uf64Skxw8BmDro/P1fDR0HECl4KNitLBk6OGUMIvqvhZeiinfiWqAJNritbcBHesg9KA3cFpl0FXz00xvURhg4dxfomGre3/lB6lVIsCpmtBCSsKekqW0FvjWBnScKM83DTsJ8lqLLwbmT93hKAW2Zjng=="
   },
   "payloadParameters" : {
-    "attestationFormat" : "SD_JWT_VC",
+    "attestationForm" : "SD_JWT",
     "preComputedPayload" : null,
     "digestAlgorithm" : null,
-    "issuanceDate" : null,
-    "notBeforeDate" : 1781789483906,
-    "expirationDate" : 1789738283912,
+    "notBeforeDate" : 1785228096795,
+    "expirationDate" : 1793180496801,
     "deviceKey" : {
       "publicKey" : "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEEv1XiCEdzBg9SOzF90jr8ZCbRSymlNapvTUidkL/6xPzuJBAzGvgYJKmwvLz8KLFsJzSJrUgFe5tfkVeykqg4w==",
       "certificate" : null
     },
     "statusList" : {
       "index" : 1,
-      "uri" : "https://pki.nowina.lu/attestation/status_list",
+      "uri" : "https://pki.nowina.lu/eaa/status_list",
       "certificate" : null,
       "type" : null,
       "purpose" : null
@@ -2124,7 +2125,6 @@
     "decoyDigestNumber" : null,
     "shuffleHashes" : null,
     "issuer" : "EAA provider",
-    "subject" : "good-ecdsa-user",
     "verifiableCredentialsType" : "urn:eudi:attestation:1",
     "verifiableCredentialsTypeIntegrity" : {
       "algorithm" : "SHA256",
@@ -2136,6 +2136,8 @@
     "validUntil" : null,
     "expectedUpdate" : null,
     "nonSelectivelyDisclosable" : {
+      "issuanceDate" : null,
+      "subject" : "good-ecdsa-user",
       "givenName" : null,
       "familyName" : null,
       "birthdate" : null,
@@ -2234,6 +2236,8 @@
       "otherClaims" : null
     },
     "selectivelyDisclosable" : {
+      "issuanceDate" : null,
+      "subject" : null,
       "givenName" : "John",
       "familyName" : "Doe",
       "birthdate" : null,
@@ -2439,19 +2443,18 @@
   }
 }</con:request><con:originalUri>http://localhost/services/rest/attestation-creation/signEAA</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="getDisclosures" path="/services/rest/attestation-creation/getDisclosures" id="ec99fa68-f6b0-4f22-88ec-3df2928b6f87"><con:settings/><con:parameters/><con:method name="Method 1" id="3a8de1d9-363a-47d9-b477-9797081dafdd" method="POST"><con:settings/><con:parameters/><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element>Response</con:element></con:representation><con:request name="Request 1" id="8895bfca-910b-4714-bede-4e3ffa4cc2f5" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{
   "payloadParameters" : {
-    "attestationFormat" : "SD_JWT_VC",
+    "attestationForm" : "SD_JWT",
     "preComputedPayload" : null,
     "digestAlgorithm" : null,
-    "issuanceDate" : null,
-    "notBeforeDate" : 1781789483906,
-    "expirationDate" : 1789738283912,
+    "notBeforeDate" : 1785228096795,
+    "expirationDate" : 1793180496801,
     "deviceKey" : {
       "publicKey" : "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEEv1XiCEdzBg9SOzF90jr8ZCbRSymlNapvTUidkL/6xPzuJBAzGvgYJKmwvLz8KLFsJzSJrUgFe5tfkVeykqg4w==",
       "certificate" : null
     },
     "statusList" : {
       "index" : 1,
-      "uri" : "https://pki.nowina.lu/attestation/status_list",
+      "uri" : "https://pki.nowina.lu/eaa/status_list",
       "certificate" : null,
       "type" : null,
       "purpose" : null
@@ -2463,7 +2466,6 @@
     "decoyDigestNumber" : null,
     "shuffleHashes" : null,
     "issuer" : "EAA provider",
-    "subject" : "good-ecdsa-user",
     "verifiableCredentialsType" : "urn:eudi:attestation:1",
     "verifiableCredentialsTypeIntegrity" : {
       "algorithm" : "SHA256",
@@ -2475,6 +2477,8 @@
     "validUntil" : null,
     "expectedUpdate" : null,
     "nonSelectivelyDisclosable" : {
+      "issuanceDate" : null,
+      "subject" : "good-ecdsa-user",
       "givenName" : null,
       "familyName" : null,
       "birthdate" : null,
@@ -2573,6 +2577,8 @@
       "otherClaims" : null
     },
     "selectivelyDisclosable" : {
+      "issuanceDate" : null,
+      "subject" : null,
       "givenName" : "John",
       "familyName" : "Doe",
       "birthdate" : null,
@@ -2822,7 +2828,7 @@
     "signatureIdToCounterSign" : null,
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1781789484739,
+      "signingDate" : 1785228096988,
       "claimedSignerRoles" : null,
       "signedAssertions" : null,
       "policyId" : null,
@@ -2841,49 +2847,49 @@
     }
   },
   "attestation" : {
-    "bytes" : "ZXlKaGJHY2lPaUpTVXpJMU5pSXNJbXRwWkNJNklrMUVOSGRPUzFGNVRVUkJlRWQ2UVZwQ1owNVdRa0ZOVFVWc1NuWmlNMUpVV2xkNGJWVXliRzVpYlZaclVtMUdjbHBVUlZKTlFUaEhRVEZWUlVObmQwbFNSazVVVEZoU2JHTXpVVU5DYVRkWFJrNWxOMVozUFQwaUxDSjROWFFqVXpJMU5pSTZJa0YyVUhKNVowWnFTakJLVkhaSlEyUktNRzFPTVVKMWQwMVhNUzFoZDFwd1dVSkdaRFJXVmxsdVduY2lMQ0o0TldNaU9sc2lUVWxKUXpacVEwTkJaRXRuUVhkSlFrRm5TVWRNZEZsVk1UZDBXRTFCTUVkRFUzRkhVMGxpTTBSUlJVSkRkMVZCVFVSQmVFZDZRVnBDWjA1V1FrRk5UVVZzU25aaU0xSlVXbGQ0YlZVeWJHNWliVlpyVW0xR2NscFVSVkpOUVRoSFFURlZSVU5uZDBsU1JrNVVURmhTYkdNelVYZElhR05PVFZSamQwNXFRVFJOVkVWNVRtcEJlRmRvWTA1T1JHTjNUbnBCTUUxRVl6Rk9la2t3VjJwQmIwMVNUWGRGVVZsRVZsRlJSRVJCY0ZSaFYyUjFXbGhLUjFsWGRHeE5Va1YzUkhkWlJGWlJVVXRFUVdoRlZURk5kR1JIVm5wa1JFTkRRVk5KZDBSUldVcExiMXBKYUhaalRrRlJSVUpDVVVGRVoyZEZVRUZFUTBOQlVXOURaMmRGUWtGTlNUTnJXbWgwYm1sd2JpdHBhVnBJV2psaGVEaEdiR1pGTlU5M0wyTkdkMEpVWmtGRllqTlNNVnBSVlhBMkwwSlJia0owTjA5dk1FcFhRblJqT1hGcmRqZEtWVVJrWTBKS1dGQldOVkZYVXpWQmVVMVFTSEJ4VVRjMVNHbDBhbk54TDBaNmRUaGxTSFJyUzNCR2FYcGplRWRoT1VKYVpHdFJhbWcwY2xOeWRFOHhTMnB6TUZKa05VUlJkRmRUWjJ0bFZrTkRUakE1YTA0d1duTmFNRVZPV1N0SmNEaFJlRk50ZVhwMGMxTjBhMWxZWkZWTWNYQjNlalJLUlZoWE9YWjZOalJsVkdKa1pUUjJVVW8yY0dwSVIyRnlTbVl4WjFGT1JXTXlXSHBvYlVrdmNISllUSGx6VjA1eFF6ZHNXbWMzVUZWYVZWUnlaR1ZuUVVKVVZYcFpRMUpLTVd0WFFsSlFiVFJ4YnpCTVRqUXdOV001TkZGUlpEUTFZVFZyVkdkdmQwaDZSV2RNYmtGUlNUSTRlREJOTTBFMU9WUkxReXRwWlU1ak5sWkdNVkJ6VkV4d1ZYYzNVRTVKTWxaemRGZzFha0YxWVhORFFYZEZRVUZoVFZOTlFrRjNSR2RaUkZaU01GQkJVVWd2UWtGUlJFRm5SVWROUVRCSFExTnhSMU5KWWpORVVVVkNRM2RWUVVFMFNVSkJVVU5MTmt4SFFUQXhWRklyY20xVk9IQTJlV2hCYVRSUGEwUk9NbUl4WkdKSlREaHNPR2xEVFZsdmNFeERlSGc0ZUhGeE0zVmlXa05QZUhGb01WZ3lhalp3WjFkNllYSmlNR0l2VFZWcGVEQXdTVzlWZGs1aVJrOTRRVmMzVUVKYVNVdEVURzV0Tmt4elkydFNlSE14VlRNeWMwTTVaREZNVDBobE0xZExRazVDTmtkYVFVeFVNV1YzYW1nM2FGTmlWMnBtZEd4dFkyOTJjU3MyWlZaSFFUVmpkbVl5ZFM4eUsxUnJTMnQ1U0ZZdlRsSXpPVFJ1V0hKa2MyUndkbmxuZDNsd1JYUllhbVYwZWtRM1ZWUTVNMDUxZHpONFkxWTRWa2xtZEVsMlNHWTVUR3BWTjJnclZXcEhiVXRZUnpsak1UVmxXWEl6VTNwVmJYWTJhM2xQU1RCQ2RuY3hORkJYZEhOWFIyd3dVV1JQVTFKMlNVSkNjbEEwWVdSRGJrZFVaMnBuYW1zNVRGUmpUemhDT0VaTGNuSXJPR3hJUjNWak1HSndOR3hKVlZSdmFWVnJSMGxNV0hOcFJXVkZaemxYUVhGdEsxaHhUeUpkTENKMGVYQWlPaUprWXl0elpDMXFkM1FpTENKcFlYUWlPakUzT0RFM09EazBPRE45LmV5SmZjMlJmWVd4bklqb2ljMmhoTFRJMU5pSXNJbWx6Y3lJNklrVkJRU0J3Y205MmFXUmxjaUlzSW01aVppSTZNVGM0TVRjNE9UUTRNeXdpWlhod0lqb3hOemc1TnpNNE1qZ3pMQ0p6ZFdJaU9pSm5iMjlrTFdWalpITmhMWFZ6WlhJaUxDSmpZWFJsWjI5eWVTSTZJblZ5YmpwbGRITnBPbVZ6YVRwbFlXRTZaWFU2Y1hWaGJHbG1hV1ZrSWl3aWMzUmhkSFZ6SWpwN0luTjBZWFIxYzE5c2FYTjBJanA3SW1sa2VDSTZNU3dpZFhKcElqb2lhSFIwY0hNNkx5OXdhMmt1Ym05M2FXNWhMbXgxTDJWaFlTOXpkR0YwZFhOZmJHbHpkQ0o5ZlN3aVkyNW1JanA3SW1wM2F5STZleUpyZEhraU9pSkZReUlzSW1OeWRpSTZJbEF0TWpVMklpd2llQ0k2SWtWMk1WaHBRMFZrZWtKbk9WTlBla1k1TUdweU9GcERZbEpUZVcxc1RtRndkbFJWYVdSclRGODJlRTBpTENKNUlqb2lPRGRwVVZGTmVISTBSME5UY0hOTWVUaGZRMmw0WWtOak1HbGhNVWxDV0hWaVdEVkdXSE53UzI5UFRTSjlmU3dpZG1OMElqb2lkWEp1T21WMVpHazZaV0ZoT2pFaUxDSjJZM1FqYVc1MFpXZHlhWFI1SWpvaWMyaGhNalUyTFV4SVpVRlhMM0JyZFM5RE5EbGhTVm8zTjNOeGVWaHBVVzF6T0N0eWMzaFFiR1pHWlhjMlJUbHRkMWs5SWl3aWFYTnpkV2x1WjE5aGRYUm9iM0pwZEhraU9pSlVSVk5VSUVGMWRHaHZjbWwwZVNJc0ltbHpjM1ZwYm1kZlkyOTFiblJ5ZVNJNklreFZJaXdpYVhOelgzSmxaMTlwWkNJNklsWkJWRXhWTFRFeU16UTFOaUlzSWw5elpDSTZXeUpVTnkwMVZYaDBNbWhQZG5ab1kwUk5iR0p0YURCWlRXMW1jVU52UXpoWlMySmlZMGN6Y3pNMlRYcG5JaXdpYUd0S2FIcEVTa3RMZVRSeE5rOW9aR1JGUjFsb1dsaDFNMmx2WkdSdVUzWktjQzB3WDFsb2JuVkZSU0lzSWpSTVFtbERNWFJJUTAwM1ZHNXhaamsyUjBabVRHbG1jWE5MYW1aa1kyUnZkVXhxVTFOV09HRkRkRlVpWFgwLllVS05ZN25ldkxVRDk5OW9NOF9vVUExa2pUOEZNQkFfN1JpRXB3OVVfcUVya0dPOExWLWZVdmZ4Ukl0NGx2QklQVFVXRlFSR2l5SWRxbmZTX0tzSzY4SkxiakNHTVdpN0hxUDNQbkUwT2lpRlhFNi1hUUZrc01oS1hZakRsdC1NaHh2NUg2dWZHRjRXdlp1bnQ2bTQ5WXM0aTFCb2FJYS1WQ1Y1YVpiVW1KajRuMGtlek9hM1dMQWVxTTVqR0wzREF1NnV2eWlyekc3Mlo3VTRhWDkyUWluaXFOYmV5WTJKWFg0U0prQ3VJSDVxV0hCMmRVejZiZW12Vnh5TFZLUFVjdTNhQWFKTWFid3lXV0NUVDdyVmZWLWlsdnNNSVhDVzF6X3BjNS1FcndNZHRZMzlHSkFFSTZxZmpYXzliOXVOd0UwMHUxM1gtTWdUdWJoZGxnaW1sUQ==",
+    "bytes" : "ZXlKaGJHY2lPaUpTVXpJMU5pSXNJbXRwWkNJNklrMUVOSGRPUzFGNVRVUkJlRWQ2UVZwQ1owNVdRa0ZOVFVWc1NuWmlNMUpVV2xkNGJWVXliRzVpYlZaclVtMUdjbHBVUlZKTlFUaEhRVEZWUlVObmQwbFNSazVVVEZoU2JHTXpVVU5DYVRkWFJrNWxOMVozUFQwaUxDSjROWFFqVXpJMU5pSTZJa0YyVUhKNVowWnFTakJLVkhaSlEyUktNRzFPTVVKMWQwMVhNUzFoZDFwd1dVSkdaRFJXVmxsdVduY2lMQ0o0TldNaU9sc2lUVWxKUXpacVEwTkJaRXRuUVhkSlFrRm5TVWRNZEZsVk1UZDBXRTFCTUVkRFUzRkhVMGxpTTBSUlJVSkRkMVZCVFVSQmVFZDZRVnBDWjA1V1FrRk5UVVZzU25aaU0xSlVXbGQ0YlZVeWJHNWliVlpyVW0xR2NscFVSVkpOUVRoSFFURlZSVU5uZDBsU1JrNVVURmhTYkdNelVYZElhR05PVFZSamQwNXFRVFJOVkVWNVRtcEJlRmRvWTA1T1JHTjNUbnBCTUUxRVl6Rk9la2t3VjJwQmIwMVNUWGRGVVZsRVZsRlJSRVJCY0ZSaFYyUjFXbGhLUjFsWGRHeE5Va1YzUkhkWlJGWlJVVXRFUVdoRlZURk5kR1JIVm5wa1JFTkRRVk5KZDBSUldVcExiMXBKYUhaalRrRlJSVUpDVVVGRVoyZEZVRUZFUTBOQlVXOURaMmRGUWtGTlNUTnJXbWgwYm1sd2JpdHBhVnBJV2psaGVEaEdiR1pGTlU5M0wyTkdkMEpVWmtGRllqTlNNVnBSVlhBMkwwSlJia0owTjA5dk1FcFhRblJqT1hGcmRqZEtWVVJrWTBKS1dGQldOVkZYVXpWQmVVMVFTSEJ4VVRjMVNHbDBhbk54TDBaNmRUaGxTSFJyUzNCR2FYcGplRWRoT1VKYVpHdFJhbWcwY2xOeWRFOHhTMnB6TUZKa05VUlJkRmRUWjJ0bFZrTkRUakE1YTA0d1duTmFNRVZPV1N0SmNEaFJlRk50ZVhwMGMxTjBhMWxZWkZWTWNYQjNlalJLUlZoWE9YWjZOalJsVkdKa1pUUjJVVW8yY0dwSVIyRnlTbVl4WjFGT1JXTXlXSHBvYlVrdmNISllUSGx6VjA1eFF6ZHNXbWMzVUZWYVZWUnlaR1ZuUVVKVVZYcFpRMUpLTVd0WFFsSlFiVFJ4YnpCTVRqUXdOV001TkZGUlpEUTFZVFZyVkdkdmQwaDZSV2RNYmtGUlNUSTRlREJOTTBFMU9WUkxReXRwWlU1ak5sWkdNVkJ6VkV4d1ZYYzNVRTVKTWxaemRGZzFha0YxWVhORFFYZEZRVUZoVFZOTlFrRjNSR2RaUkZaU01GQkJVVWd2UWtGUlJFRm5SVWROUVRCSFExTnhSMU5KWWpORVVVVkNRM2RWUVVFMFNVSkJVVU5MTmt4SFFUQXhWRklyY20xVk9IQTJlV2hCYVRSUGEwUk9NbUl4WkdKSlREaHNPR2xEVFZsdmNFeERlSGc0ZUhGeE0zVmlXa05QZUhGb01WZ3lhalp3WjFkNllYSmlNR0l2VFZWcGVEQXdTVzlWZGs1aVJrOTRRVmMzVUVKYVNVdEVURzV0Tmt4elkydFNlSE14VlRNeWMwTTVaREZNVDBobE0xZExRazVDTmtkYVFVeFVNV1YzYW1nM2FGTmlWMnBtZEd4dFkyOTJjU3MyWlZaSFFUVmpkbVl5ZFM4eUsxUnJTMnQ1U0ZZdlRsSXpPVFJ1V0hKa2MyUndkbmxuZDNsd1JYUllhbVYwZWtRM1ZWUTVNMDUxZHpONFkxWTRWa2xtZEVsMlNHWTVUR3BWTjJnclZXcEhiVXRZUnpsak1UVmxXWEl6VTNwVmJYWTJhM2xQU1RCQ2RuY3hORkJYZEhOWFIyd3dVV1JQVTFKMlNVSkNjbEEwWVdSRGJrZFVaMnBuYW1zNVRGUmpUemhDT0VaTGNuSXJPR3hJUjNWak1HSndOR3hKVlZSdmFWVnJSMGxNV0hOcFJXVkZaemxYUVhGdEsxaHhUeUpkTENKMGVYQWlPaUprWXl0elpDMXFkM1FpTENKcFlYUWlPakUzT0RVeU1qZ3dPVFo5LmV5SmZjMlJmWVd4bklqb2ljMmhoTFRJMU5pSXNJbWx6Y3lJNklrVkJRU0J3Y205MmFXUmxjaUlzSW01aVppSTZNVGM0TlRJeU9EQTVOaXdpWlhod0lqb3hOemt6TVRnd05EazJMQ0pqWVhSbFoyOXllU0k2SW5WeWJqcGxkSE5wT21WemFUcGhkSFJsYzNSaGRHbHZianBsZFRweGRXRnNhV1pwWldRaUxDSnpkR0YwZFhNaU9uc2ljM1JoZEhWelgyeHBjM1FpT25zaWFXUjRJam94TENKMWNta2lPaUpvZEhSd2N6b3ZMM0JyYVM1dWIzZHBibUV1YkhVdlpXRmhMM04wWVhSMWMxOXNhWE4wSW4xOUxDSmpibVlpT25zaWFuZHJJanA3SW10MGVTSTZJa1ZESWl3aVkzSjJJam9pVUMweU5UWWlMQ0o0SWpvaVJYWXhXR2xEUldSNlFtYzVVMDk2Umprd2FuSTRXa05pVWxONWJXeE9ZWEIyVkZWcFpHdE1Yelo0VFNJc0lua2lPaUk0TjJsUlVVMTRjalJIUTFOd2MweDVPRjlEYVhoaVEyTXdhV0V4U1VKWWRXSllOVVpZYzNCTGIwOU5JbjE5TENKMlkzUWlPaUoxY200NlpYVmthVHBoZEhSbGMzUmhkR2x2YmpveElpd2lkbU4wSTJsdWRHVm5jbWwwZVNJNkluTm9ZVEkxTmkxTVNHVkJWeTl3YTNVdlF6UTVZVWxhTnpkemNYbFlhVkZ0Y3pncmNuTjRVR3htUm1WM05rVTViWGRaUFNJc0luTjFZaUk2SW1kdmIyUXRaV05rYzJFdGRYTmxjaUlzSW1semMzVnBibWRmWVhWMGFHOXlhWFI1SWpvaVZFVlRWQ0JCZFhSb2IzSnBkSGtpTENKcGMzTjFhVzVuWDJOdmRXNTBjbmtpT2lKTVZTSXNJbWx6YzE5eVpXZGZhV1FpT2lKV1FWUk1WUzB4TWpNME5UWWlMQ0pmYzJRaU9sc2lWM05UWVVGQmFrRTBibHBQZFRCc1RrSXdTSE5vU0hKbFVWVkJURkkzVjB4UWVESXdVVEp3TmpsVll5SXNJalJCZFdsU1MxUTVVMEozUjBOdkxYcFZXVGh2VDNVeVRXSkhOQzExT0U5cVYwVjJkRTlaZFdkUFFXOGlMQ0pYT1hJeWRqTnVaMDR0WjBVM01rbEVhRVprTmpObFkyeHNPRzlrY0ZVM1ZsbDVOMXBXYVZGVE5sWTRJbDE5LnRZOVB1QzZtbTc2cUhQNGJ2QzJweDdoVGJEZFpMRXMxUktGcGZiYUh6Z3JvOUxORkJsRENYZkgyWHFqN1duajdqd1VnY004aDNudGh5T2VlNWdfWVFuN0VneTdHcnYxdUMzMXMzVThGYVJEbm52a2J4RDB6UnRjQ1c3TGVaZ2oxZ2llbVI1bzN3LWcwQXVJUGQ4Nkk5QTAyazlqNmRTMFZJR0Zic1BaX3ZYNGI3Y2d0bmplUHFVQUNFa1RCNHVmNjRTa3h3OEJtRHJvX1AxZkRSMEhFQ2w0S05pdExCazZPR1VNSXZxdmhaZWlpbmZpV3FBSk5yaXRiY0JIZXNnOUtBM2NGcGwwRlh6MDB4dlVSaGc0ZHhmb21HcmUzX2xCNmxWSXNDcG10QkNTc0tla3FXMEZ2aldCblNjS004M0RUc0o4bHFMTHdibVQ5M2hLQVcyWmpuZw==",
     "digestAlgorithm" : null,
     "name" : "document-signed-jades-baseline-b.json"
   },
   "disclosures" : [ {
     "namespace" : null,
     "digestId" : null,
-    "value" : "WyIxOW8zSDlOdFBKMUZwTi1QUzIxSjlRIiwiZmFtaWx5X25hbWUiLCJEb2UiXQ"
+    "value" : "WyJYX192ZGNUMlBzTlc3UHVPc25GMEpRIiwiZmFtaWx5X25hbWUiLCJEb2UiXQ"
   }, {
     "namespace" : null,
     "digestId" : null,
-    "value" : "WyJNMDRBQjlKT1dvcW9FcmJYaFlQcm1BIiwiZ2l2ZW5fbmFtZSIsIkpvaG4iXQ"
+    "value" : "WyJpODA2d3BMYjFpMDNFMFhSRzZBQ0dBIiwiZ2l2ZW5fbmFtZSIsIkpvaG4iXQ"
   }, {
     "namespace" : null,
     "digestId" : null,
-    "value" : "WyJkdmU2NUZNeVc5UzNFX3FzVU9xWG5RIiwibmFtZSIsIkJlbGxhIl0"
+    "value" : "WyJIY3piRzRLdFhOMXFkMVhobmNUOE5RIiwibmFtZSIsIkJlbGxhIl0"
   }, {
     "namespace" : null,
     "digestId" : null,
-    "value" : "WyJEYWQ1YVRnNHlOdFZMWU5vRlhZLTFBIiwidHlwZSIsImRvZyJd"
+    "value" : "WyJ5VmZ0RFVWVHpUczgxMGlrd3FON0xRIiwidHlwZSIsImRvZyJd"
   }, {
     "namespace" : null,
     "digestId" : null,
-    "value" : "WyJaNW1LeURlQm1iV0lOUDFobVRzRE13Iix7Il9zZCI6WyJra0I1NGV4NXoxd3c0UFZSSGY1WnJpclI1R2ZrOE5IbjBIRDZHalZhUlBBIiwiZUNiYnBJYUFoRHhiaExVVGpHcXZmaFIweEE1cHF1Y3lqcHhqaS1HQWJvWSJdfV0"
+    "value" : "WyJ2T2szRktDM3dpb01fSTFVa0FhbFdBIix7Il9zZCI6WyJUWF9tZDFoOTZkQm1CQ1MzM1pzODhmX2h4S2RhZ3RVNGVORE9lOC15X0h3IiwiT0UtaUNCVEJYa3J4VHJycGsxNzZSWUFhRzUxcWdVTXlvWGxyNm1ja2FtdyJdfV0"
   }, {
     "namespace" : null,
     "digestId" : null,
-    "value" : "WyJhWS10cVNUV0ZYbmlEWFVoNmloYXJ3IiwibmFtZSIsIlNsaW5reSJd"
+    "value" : "WyItSHVOQ3pTQW4yc293ZDd1Q0pJS0Z3IiwibmFtZSIsIlNsaW5reSJd"
   }, {
     "namespace" : null,
     "digestId" : null,
-    "value" : "WyJEcVBlOEliR2tRSDN6bGxSd2FIcVpnIiwidHlwZSIsImNhdCJd"
+    "value" : "WyI4V0tocnNINDE2WHY3eTJQcFlBZnp3IiwidHlwZSIsImNhdCJd"
   }, {
     "namespace" : null,
     "digestId" : null,
-    "value" : "WyJHWGZpRFJNMF9laVFmbzBmWHgwelRnIix7Il9zZCI6WyJJTXJXNEFwZkd6RU02Y2ZTbnB4NVRjMWFUUmdVR2VDUTZiM2RvUE16czc4IiwiZTcteVMtUGNBREJvWUxFSGRhSzN5UHJqZGtkeE1GMXhySmlVQ0FtenZOZyJdfV0"
+    "value" : "WyJqdUJJek9qa1h6RlY2dW9xeWhTVjdnIix7Il9zZCI6WyJmWXJXcndrQ2ZLUkEwTWx5bkRGb0loMlVVcUpMdmlzbldBeFlDQXZ4d05vIiwiV2NFNE5VRzlZa3h0dFc0ZTdzc0FmOTFmdVRmR3JpWG5wdDVBYWVHNjdwYyJdfV0"
   }, {
     "namespace" : null,
     "digestId" : null,
-    "value" : "WyJTNW9UZDlSUFRqSDN4cldnYkx0QlR3IiwicGV0cyIsW3siLi4uIjoidWpIaml5bHFmRGc2NkIzOFJUb2VkN3BseG1IQTVnRThFd05tb3l4VHpWNCJ9LHsiLi4uIjoiSGVLSTNxVHkxMDY5bHptRTE1WkQwdnVpVUlxZEVfVnA3Q3FZM1cwNTRIWSJ9XV0"
+    "value" : "WyJvaXFhbjRVcUc2MVBVSFNWNFhOLU53IiwicGV0cyIsW3siLi4uIjoiUE1NeFNIWlExRURyWTNxaHNCeVhTNktzRFJIbVdRLVRYcE9SMHpCUUdKZyJ9LHsiLi4uIjoieFdLMjZlaWJsemhFRXhKUTZiNVZmaW5HUmtNRFVlZ3g0MG5mQXZXNDdMcyJ9XV0"
   } ],
   "keyBindingParameters" : {
-    "attestationFormat" : "SD_JWT_VC",
+    "attestationForm" : "SD_JWT",
     "digestAlgorithm" : null,
     "issuanceTime" : null,
     "audience" : "audience",
@@ -2938,7 +2944,7 @@
     "signatureIdToCounterSign" : null,
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1781789484739,
+      "signingDate" : 1785228096988,
       "claimedSignerRoles" : null,
       "signedAssertions" : null,
       "policyId" : null,
@@ -2958,52 +2964,52 @@
   },
   "signatureValue" : {
     "algorithm" : "ECDSA_SHA256",
-    "value" : "MEUCIH6ZCkzt7vFPVenI6LFHQmTyq7UILmgkeWkTJscFAenlAiEA7QzjowYBparPXDPPY8RPRM5VLNDy+9CLSsredGLJsUo="
+    "value" : "MEYCIQDmN8bn6UMJsrXU+TYrywrqbAc41xgdErs0MxOjUnUWXAIhAJM4X44odkBqUSrY5l1RXVrTeXV7HgPA/cwt1nVb6CS5"
   },
   "attestation" : {
-    "bytes" : "ZXlKaGJHY2lPaUpTVXpJMU5pSXNJbXRwWkNJNklrMUVOSGRPUzFGNVRVUkJlRWQ2UVZwQ1owNVdRa0ZOVFVWc1NuWmlNMUpVV2xkNGJWVXliRzVpYlZaclVtMUdjbHBVUlZKTlFUaEhRVEZWUlVObmQwbFNSazVVVEZoU2JHTXpVVU5DYVRkWFJrNWxOMVozUFQwaUxDSjROWFFqVXpJMU5pSTZJa0YyVUhKNVowWnFTakJLVkhaSlEyUktNRzFPTVVKMWQwMVhNUzFoZDFwd1dVSkdaRFJXVmxsdVduY2lMQ0o0TldNaU9sc2lUVWxKUXpacVEwTkJaRXRuUVhkSlFrRm5TVWRNZEZsVk1UZDBXRTFCTUVkRFUzRkhVMGxpTTBSUlJVSkRkMVZCVFVSQmVFZDZRVnBDWjA1V1FrRk5UVVZzU25aaU0xSlVXbGQ0YlZVeWJHNWliVlpyVW0xR2NscFVSVkpOUVRoSFFURlZSVU5uZDBsU1JrNVVURmhTYkdNelVYZElhR05PVFZSamQwNXFRVFJOVkVWNVRtcEJlRmRvWTA1T1JHTjNUbnBCTUUxRVl6Rk9la2t3VjJwQmIwMVNUWGRGVVZsRVZsRlJSRVJCY0ZSaFYyUjFXbGhLUjFsWGRHeE5Va1YzUkhkWlJGWlJVVXRFUVdoRlZURk5kR1JIVm5wa1JFTkRRVk5KZDBSUldVcExiMXBKYUhaalRrRlJSVUpDVVVGRVoyZEZVRUZFUTBOQlVXOURaMmRGUWtGTlNUTnJXbWgwYm1sd2JpdHBhVnBJV2psaGVEaEdiR1pGTlU5M0wyTkdkMEpVWmtGRllqTlNNVnBSVlhBMkwwSlJia0owTjA5dk1FcFhRblJqT1hGcmRqZEtWVVJrWTBKS1dGQldOVkZYVXpWQmVVMVFTSEJ4VVRjMVNHbDBhbk54TDBaNmRUaGxTSFJyUzNCR2FYcGplRWRoT1VKYVpHdFJhbWcwY2xOeWRFOHhTMnB6TUZKa05VUlJkRmRUWjJ0bFZrTkRUakE1YTA0d1duTmFNRVZPV1N0SmNEaFJlRk50ZVhwMGMxTjBhMWxZWkZWTWNYQjNlalJLUlZoWE9YWjZOalJsVkdKa1pUUjJVVW8yY0dwSVIyRnlTbVl4WjFGT1JXTXlXSHBvYlVrdmNISllUSGx6VjA1eFF6ZHNXbWMzVUZWYVZWUnlaR1ZuUVVKVVZYcFpRMUpLTVd0WFFsSlFiVFJ4YnpCTVRqUXdOV001TkZGUlpEUTFZVFZyVkdkdmQwaDZSV2RNYmtGUlNUSTRlREJOTTBFMU9WUkxReXRwWlU1ak5sWkdNVkJ6VkV4d1ZYYzNVRTVKTWxaemRGZzFha0YxWVhORFFYZEZRVUZoVFZOTlFrRjNSR2RaUkZaU01GQkJVVWd2UWtGUlJFRm5SVWROUVRCSFExTnhSMU5KWWpORVVVVkNRM2RWUVVFMFNVSkJVVU5MTmt4SFFUQXhWRklyY20xVk9IQTJlV2hCYVRSUGEwUk9NbUl4WkdKSlREaHNPR2xEVFZsdmNFeERlSGc0ZUhGeE0zVmlXa05QZUhGb01WZ3lhalp3WjFkNllYSmlNR0l2VFZWcGVEQXdTVzlWZGs1aVJrOTRRVmMzVUVKYVNVdEVURzV0Tmt4elkydFNlSE14VlRNeWMwTTVaREZNVDBobE0xZExRazVDTmtkYVFVeFVNV1YzYW1nM2FGTmlWMnBtZEd4dFkyOTJjU3MyWlZaSFFUVmpkbVl5ZFM4eUsxUnJTMnQ1U0ZZdlRsSXpPVFJ1V0hKa2MyUndkbmxuZDNsd1JYUllhbVYwZWtRM1ZWUTVNMDUxZHpONFkxWTRWa2xtZEVsMlNHWTVUR3BWTjJnclZXcEhiVXRZUnpsak1UVmxXWEl6VTNwVmJYWTJhM2xQU1RCQ2RuY3hORkJYZEhOWFIyd3dVV1JQVTFKMlNVSkNjbEEwWVdSRGJrZFVaMnBuYW1zNVRGUmpUemhDT0VaTGNuSXJPR3hJUjNWak1HSndOR3hKVlZSdmFWVnJSMGxNV0hOcFJXVkZaemxYUVhGdEsxaHhUeUpkTENKMGVYQWlPaUprWXl0elpDMXFkM1FpTENKcFlYUWlPakUzT0RFM09EazBPRE45LmV5SmZjMlJmWVd4bklqb2ljMmhoTFRJMU5pSXNJbWx6Y3lJNklrVkJRU0J3Y205MmFXUmxjaUlzSW01aVppSTZNVGM0TVRjNE9UUTRNeXdpWlhod0lqb3hOemc1TnpNNE1qZ3pMQ0p6ZFdJaU9pSm5iMjlrTFdWalpITmhMWFZ6WlhJaUxDSmpZWFJsWjI5eWVTSTZJblZ5YmpwbGRITnBPbVZ6YVRwbFlXRTZaWFU2Y1hWaGJHbG1hV1ZrSWl3aWMzUmhkSFZ6SWpwN0luTjBZWFIxYzE5c2FYTjBJanA3SW1sa2VDSTZNU3dpZFhKcElqb2lhSFIwY0hNNkx5OXdhMmt1Ym05M2FXNWhMbXgxTDJWaFlTOXpkR0YwZFhOZmJHbHpkQ0o5ZlN3aVkyNW1JanA3SW1wM2F5STZleUpyZEhraU9pSkZReUlzSW1OeWRpSTZJbEF0TWpVMklpd2llQ0k2SWtWMk1WaHBRMFZrZWtKbk9WTlBla1k1TUdweU9GcERZbEpUZVcxc1RtRndkbFJWYVdSclRGODJlRTBpTENKNUlqb2lPRGRwVVZGTmVISTBSME5UY0hOTWVUaGZRMmw0WWtOak1HbGhNVWxDV0hWaVdEVkdXSE53UzI5UFRTSjlmU3dpZG1OMElqb2lkWEp1T21WMVpHazZaV0ZoT2pFaUxDSjJZM1FqYVc1MFpXZHlhWFI1SWpvaWMyaGhNalUyTFV4SVpVRlhMM0JyZFM5RE5EbGhTVm8zTjNOeGVWaHBVVzF6T0N0eWMzaFFiR1pHWlhjMlJUbHRkMWs5SWl3aWFYTnpkV2x1WjE5aGRYUm9iM0pwZEhraU9pSlVSVk5VSUVGMWRHaHZjbWwwZVNJc0ltbHpjM1ZwYm1kZlkyOTFiblJ5ZVNJNklreFZJaXdpYVhOelgzSmxaMTlwWkNJNklsWkJWRXhWTFRFeU16UTFOaUlzSWw5elpDSTZXeUpVTnkwMVZYaDBNbWhQZG5ab1kwUk5iR0p0YURCWlRXMW1jVU52UXpoWlMySmlZMGN6Y3pNMlRYcG5JaXdpYUd0S2FIcEVTa3RMZVRSeE5rOW9aR1JGUjFsb1dsaDFNMmx2WkdSdVUzWktjQzB3WDFsb2JuVkZSU0lzSWpSTVFtbERNWFJJUTAwM1ZHNXhaamsyUjBabVRHbG1jWE5MYW1aa1kyUnZkVXhxVTFOV09HRkRkRlVpWFgwLllVS05ZN25ldkxVRDk5OW9NOF9vVUExa2pUOEZNQkFfN1JpRXB3OVVfcUVya0dPOExWLWZVdmZ4Ukl0NGx2QklQVFVXRlFSR2l5SWRxbmZTX0tzSzY4SkxiakNHTVdpN0hxUDNQbkUwT2lpRlhFNi1hUUZrc01oS1hZakRsdC1NaHh2NUg2dWZHRjRXdlp1bnQ2bTQ5WXM0aTFCb2FJYS1WQ1Y1YVpiVW1KajRuMGtlek9hM1dMQWVxTTVqR0wzREF1NnV2eWlyekc3Mlo3VTRhWDkyUWluaXFOYmV5WTJKWFg0U0prQ3VJSDVxV0hCMmRVejZiZW12Vnh5TFZLUFVjdTNhQWFKTWFid3lXV0NUVDdyVmZWLWlsdnNNSVhDVzF6X3BjNS1FcndNZHRZMzlHSkFFSTZxZmpYXzliOXVOd0UwMHUxM1gtTWdUdWJoZGxnaW1sUQ==",
+    "bytes" : "ZXlKaGJHY2lPaUpTVXpJMU5pSXNJbXRwWkNJNklrMUVOSGRPUzFGNVRVUkJlRWQ2UVZwQ1owNVdRa0ZOVFVWc1NuWmlNMUpVV2xkNGJWVXliRzVpYlZaclVtMUdjbHBVUlZKTlFUaEhRVEZWUlVObmQwbFNSazVVVEZoU2JHTXpVVU5DYVRkWFJrNWxOMVozUFQwaUxDSjROWFFqVXpJMU5pSTZJa0YyVUhKNVowWnFTakJLVkhaSlEyUktNRzFPTVVKMWQwMVhNUzFoZDFwd1dVSkdaRFJXVmxsdVduY2lMQ0o0TldNaU9sc2lUVWxKUXpacVEwTkJaRXRuUVhkSlFrRm5TVWRNZEZsVk1UZDBXRTFCTUVkRFUzRkhVMGxpTTBSUlJVSkRkMVZCVFVSQmVFZDZRVnBDWjA1V1FrRk5UVVZzU25aaU0xSlVXbGQ0YlZVeWJHNWliVlpyVW0xR2NscFVSVkpOUVRoSFFURlZSVU5uZDBsU1JrNVVURmhTYkdNelVYZElhR05PVFZSamQwNXFRVFJOVkVWNVRtcEJlRmRvWTA1T1JHTjNUbnBCTUUxRVl6Rk9la2t3VjJwQmIwMVNUWGRGVVZsRVZsRlJSRVJCY0ZSaFYyUjFXbGhLUjFsWGRHeE5Va1YzUkhkWlJGWlJVVXRFUVdoRlZURk5kR1JIVm5wa1JFTkRRVk5KZDBSUldVcExiMXBKYUhaalRrRlJSVUpDVVVGRVoyZEZVRUZFUTBOQlVXOURaMmRGUWtGTlNUTnJXbWgwYm1sd2JpdHBhVnBJV2psaGVEaEdiR1pGTlU5M0wyTkdkMEpVWmtGRllqTlNNVnBSVlhBMkwwSlJia0owTjA5dk1FcFhRblJqT1hGcmRqZEtWVVJrWTBKS1dGQldOVkZYVXpWQmVVMVFTSEJ4VVRjMVNHbDBhbk54TDBaNmRUaGxTSFJyUzNCR2FYcGplRWRoT1VKYVpHdFJhbWcwY2xOeWRFOHhTMnB6TUZKa05VUlJkRmRUWjJ0bFZrTkRUakE1YTA0d1duTmFNRVZPV1N0SmNEaFJlRk50ZVhwMGMxTjBhMWxZWkZWTWNYQjNlalJLUlZoWE9YWjZOalJsVkdKa1pUUjJVVW8yY0dwSVIyRnlTbVl4WjFGT1JXTXlXSHBvYlVrdmNISllUSGx6VjA1eFF6ZHNXbWMzVUZWYVZWUnlaR1ZuUVVKVVZYcFpRMUpLTVd0WFFsSlFiVFJ4YnpCTVRqUXdOV001TkZGUlpEUTFZVFZyVkdkdmQwaDZSV2RNYmtGUlNUSTRlREJOTTBFMU9WUkxReXRwWlU1ak5sWkdNVkJ6VkV4d1ZYYzNVRTVKTWxaemRGZzFha0YxWVhORFFYZEZRVUZoVFZOTlFrRjNSR2RaUkZaU01GQkJVVWd2UWtGUlJFRm5SVWROUVRCSFExTnhSMU5KWWpORVVVVkNRM2RWUVVFMFNVSkJVVU5MTmt4SFFUQXhWRklyY20xVk9IQTJlV2hCYVRSUGEwUk9NbUl4WkdKSlREaHNPR2xEVFZsdmNFeERlSGc0ZUhGeE0zVmlXa05QZUhGb01WZ3lhalp3WjFkNllYSmlNR0l2VFZWcGVEQXdTVzlWZGs1aVJrOTRRVmMzVUVKYVNVdEVURzV0Tmt4elkydFNlSE14VlRNeWMwTTVaREZNVDBobE0xZExRazVDTmtkYVFVeFVNV1YzYW1nM2FGTmlWMnBtZEd4dFkyOTJjU3MyWlZaSFFUVmpkbVl5ZFM4eUsxUnJTMnQ1U0ZZdlRsSXpPVFJ1V0hKa2MyUndkbmxuZDNsd1JYUllhbVYwZWtRM1ZWUTVNMDUxZHpONFkxWTRWa2xtZEVsMlNHWTVUR3BWTjJnclZXcEhiVXRZUnpsak1UVmxXWEl6VTNwVmJYWTJhM2xQU1RCQ2RuY3hORkJYZEhOWFIyd3dVV1JQVTFKMlNVSkNjbEEwWVdSRGJrZFVaMnBuYW1zNVRGUmpUemhDT0VaTGNuSXJPR3hJUjNWak1HSndOR3hKVlZSdmFWVnJSMGxNV0hOcFJXVkZaemxYUVhGdEsxaHhUeUpkTENKMGVYQWlPaUprWXl0elpDMXFkM1FpTENKcFlYUWlPakUzT0RVeU1qZ3dPVFo5LmV5SmZjMlJmWVd4bklqb2ljMmhoTFRJMU5pSXNJbWx6Y3lJNklrVkJRU0J3Y205MmFXUmxjaUlzSW01aVppSTZNVGM0TlRJeU9EQTVOaXdpWlhod0lqb3hOemt6TVRnd05EazJMQ0pqWVhSbFoyOXllU0k2SW5WeWJqcGxkSE5wT21WemFUcGhkSFJsYzNSaGRHbHZianBsZFRweGRXRnNhV1pwWldRaUxDSnpkR0YwZFhNaU9uc2ljM1JoZEhWelgyeHBjM1FpT25zaWFXUjRJam94TENKMWNta2lPaUpvZEhSd2N6b3ZMM0JyYVM1dWIzZHBibUV1YkhVdlpXRmhMM04wWVhSMWMxOXNhWE4wSW4xOUxDSmpibVlpT25zaWFuZHJJanA3SW10MGVTSTZJa1ZESWl3aVkzSjJJam9pVUMweU5UWWlMQ0o0SWpvaVJYWXhXR2xEUldSNlFtYzVVMDk2Umprd2FuSTRXa05pVWxONWJXeE9ZWEIyVkZWcFpHdE1Yelo0VFNJc0lua2lPaUk0TjJsUlVVMTRjalJIUTFOd2MweDVPRjlEYVhoaVEyTXdhV0V4U1VKWWRXSllOVVpZYzNCTGIwOU5JbjE5TENKMlkzUWlPaUoxY200NlpYVmthVHBoZEhSbGMzUmhkR2x2YmpveElpd2lkbU4wSTJsdWRHVm5jbWwwZVNJNkluTm9ZVEkxTmkxTVNHVkJWeTl3YTNVdlF6UTVZVWxhTnpkemNYbFlhVkZ0Y3pncmNuTjRVR3htUm1WM05rVTViWGRaUFNJc0luTjFZaUk2SW1kdmIyUXRaV05rYzJFdGRYTmxjaUlzSW1semMzVnBibWRmWVhWMGFHOXlhWFI1SWpvaVZFVlRWQ0JCZFhSb2IzSnBkSGtpTENKcGMzTjFhVzVuWDJOdmRXNTBjbmtpT2lKTVZTSXNJbWx6YzE5eVpXZGZhV1FpT2lKV1FWUk1WUzB4TWpNME5UWWlMQ0pmYzJRaU9sc2lWM05UWVVGQmFrRTBibHBQZFRCc1RrSXdTSE5vU0hKbFVWVkJURkkzVjB4UWVESXdVVEp3TmpsVll5SXNJalJCZFdsU1MxUTVVMEozUjBOdkxYcFZXVGh2VDNVeVRXSkhOQzExT0U5cVYwVjJkRTlaZFdkUFFXOGlMQ0pYT1hJeWRqTnVaMDR0WjBVM01rbEVhRVprTmpObFkyeHNPRzlrY0ZVM1ZsbDVOMXBXYVZGVE5sWTRJbDE5LnRZOVB1QzZtbTc2cUhQNGJ2QzJweDdoVGJEZFpMRXMxUktGcGZiYUh6Z3JvOUxORkJsRENYZkgyWHFqN1duajdqd1VnY004aDNudGh5T2VlNWdfWVFuN0VneTdHcnYxdUMzMXMzVThGYVJEbm52a2J4RDB6UnRjQ1c3TGVaZ2oxZ2llbVI1bzN3LWcwQXVJUGQ4Nkk5QTAyazlqNmRTMFZJR0Zic1BaX3ZYNGI3Y2d0bmplUHFVQUNFa1RCNHVmNjRTa3h3OEJtRHJvX1AxZkRSMEhFQ2w0S05pdExCazZPR1VNSXZxdmhaZWlpbmZpV3FBSk5yaXRiY0JIZXNnOUtBM2NGcGwwRlh6MDB4dlVSaGc0ZHhmb21HcmUzX2xCNmxWSXNDcG10QkNTc0tla3FXMEZ2aldCblNjS004M0RUc0o4bHFMTHdibVQ5M2hLQVcyWmpuZw==",
     "digestAlgorithm" : null,
     "name" : "document-signed-jades-baseline-b.json"
   },
   "disclosures" : [ {
     "namespace" : null,
     "digestId" : null,
-    "value" : "WyIxOW8zSDlOdFBKMUZwTi1QUzIxSjlRIiwiZmFtaWx5X25hbWUiLCJEb2UiXQ"
+    "value" : "WyJYX192ZGNUMlBzTlc3UHVPc25GMEpRIiwiZmFtaWx5X25hbWUiLCJEb2UiXQ"
   }, {
     "namespace" : null,
     "digestId" : null,
-    "value" : "WyJNMDRBQjlKT1dvcW9FcmJYaFlQcm1BIiwiZ2l2ZW5fbmFtZSIsIkpvaG4iXQ"
+    "value" : "WyJpODA2d3BMYjFpMDNFMFhSRzZBQ0dBIiwiZ2l2ZW5fbmFtZSIsIkpvaG4iXQ"
   }, {
     "namespace" : null,
     "digestId" : null,
-    "value" : "WyJkdmU2NUZNeVc5UzNFX3FzVU9xWG5RIiwibmFtZSIsIkJlbGxhIl0"
+    "value" : "WyJIY3piRzRLdFhOMXFkMVhobmNUOE5RIiwibmFtZSIsIkJlbGxhIl0"
   }, {
     "namespace" : null,
     "digestId" : null,
-    "value" : "WyJEYWQ1YVRnNHlOdFZMWU5vRlhZLTFBIiwidHlwZSIsImRvZyJd"
+    "value" : "WyJ5VmZ0RFVWVHpUczgxMGlrd3FON0xRIiwidHlwZSIsImRvZyJd"
   }, {
     "namespace" : null,
     "digestId" : null,
-    "value" : "WyJaNW1LeURlQm1iV0lOUDFobVRzRE13Iix7Il9zZCI6WyJra0I1NGV4NXoxd3c0UFZSSGY1WnJpclI1R2ZrOE5IbjBIRDZHalZhUlBBIiwiZUNiYnBJYUFoRHhiaExVVGpHcXZmaFIweEE1cHF1Y3lqcHhqaS1HQWJvWSJdfV0"
+    "value" : "WyJ2T2szRktDM3dpb01fSTFVa0FhbFdBIix7Il9zZCI6WyJUWF9tZDFoOTZkQm1CQ1MzM1pzODhmX2h4S2RhZ3RVNGVORE9lOC15X0h3IiwiT0UtaUNCVEJYa3J4VHJycGsxNzZSWUFhRzUxcWdVTXlvWGxyNm1ja2FtdyJdfV0"
   }, {
     "namespace" : null,
     "digestId" : null,
-    "value" : "WyJhWS10cVNUV0ZYbmlEWFVoNmloYXJ3IiwibmFtZSIsIlNsaW5reSJd"
+    "value" : "WyItSHVOQ3pTQW4yc293ZDd1Q0pJS0Z3IiwibmFtZSIsIlNsaW5reSJd"
   }, {
     "namespace" : null,
     "digestId" : null,
-    "value" : "WyJEcVBlOEliR2tRSDN6bGxSd2FIcVpnIiwidHlwZSIsImNhdCJd"
+    "value" : "WyI4V0tocnNINDE2WHY3eTJQcFlBZnp3IiwidHlwZSIsImNhdCJd"
   }, {
     "namespace" : null,
     "digestId" : null,
-    "value" : "WyJHWGZpRFJNMF9laVFmbzBmWHgwelRnIix7Il9zZCI6WyJJTXJXNEFwZkd6RU02Y2ZTbnB4NVRjMWFUUmdVR2VDUTZiM2RvUE16czc4IiwiZTcteVMtUGNBREJvWUxFSGRhSzN5UHJqZGtkeE1GMXhySmlVQ0FtenZOZyJdfV0"
+    "value" : "WyJqdUJJek9qa1h6RlY2dW9xeWhTVjdnIix7Il9zZCI6WyJmWXJXcndrQ2ZLUkEwTWx5bkRGb0loMlVVcUpMdmlzbldBeFlDQXZ4d05vIiwiV2NFNE5VRzlZa3h0dFc0ZTdzc0FmOTFmdVRmR3JpWG5wdDVBYWVHNjdwYyJdfV0"
   }, {
     "namespace" : null,
     "digestId" : null,
-    "value" : "WyJTNW9UZDlSUFRqSDN4cldnYkx0QlR3IiwicGV0cyIsW3siLi4uIjoidWpIaml5bHFmRGc2NkIzOFJUb2VkN3BseG1IQTVnRThFd05tb3l4VHpWNCJ9LHsiLi4uIjoiSGVLSTNxVHkxMDY5bHptRTE1WkQwdnVpVUlxZEVfVnA3Q3FZM1cwNTRIWSJ9XV0"
+    "value" : "WyJvaXFhbjRVcUc2MVBVSFNWNFhOLU53IiwicGV0cyIsW3siLi4uIjoiUE1NeFNIWlExRURyWTNxaHNCeVhTNktzRFJIbVdRLVRYcE9SMHpCUUdKZyJ9LHsiLi4uIjoieFdLMjZlaWJsemhFRXhKUTZiNVZmaW5HUmtNRFVlZ3g0MG5mQXZXNDdMcyJ9XV0"
   } ],
   "keyBindingParameters" : {
-    "attestationFormat" : "SD_JWT_VC",
+    "attestationForm" : "SD_JWT",
     "digestAlgorithm" : null,
     "issuanceTime" : null,
     "audience" : "audience",
@@ -3014,54 +3020,54 @@
   }
 }</con:request><con:originalUri>http://localhost/services/rest/attestation-creation/createKeyBindingSignature</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="issuePresentation" path="/services/rest/attestation-creation/issuePresentation" id="19472cbc-b95f-43ca-bb87-390297484c87"><con:settings/><con:parameters/><con:method name="Method 1" id="ab35d0d8-2498-4430-ab3f-278080575153" method="POST"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:iss="http://localhost/services/rest/attestation-creation/issuePresentation">iss:Response</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:request name="Request 1" id="70350072-e4cd-47fc-8163-5f6fe4136570" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080/</con:endpoint><con:request>{
   "attestation" : {
-    "bytes" : "ZXlKaGJHY2lPaUpTVXpJMU5pSXNJbXRwWkNJNklrMUVOSGRPUzFGNVRVUkJlRWQ2UVZwQ1owNVdRa0ZOVFVWc1NuWmlNMUpVV2xkNGJWVXliRzVpYlZaclVtMUdjbHBVUlZKTlFUaEhRVEZWUlVObmQwbFNSazVVVEZoU2JHTXpVVU5DYVRkWFJrNWxOMVozUFQwaUxDSjROWFFqVXpJMU5pSTZJa0YyVUhKNVowWnFTakJLVkhaSlEyUktNRzFPTVVKMWQwMVhNUzFoZDFwd1dVSkdaRFJXVmxsdVduY2lMQ0o0TldNaU9sc2lUVWxKUXpacVEwTkJaRXRuUVhkSlFrRm5TVWRNZEZsVk1UZDBXRTFCTUVkRFUzRkhVMGxpTTBSUlJVSkRkMVZCVFVSQmVFZDZRVnBDWjA1V1FrRk5UVVZzU25aaU0xSlVXbGQ0YlZVeWJHNWliVlpyVW0xR2NscFVSVkpOUVRoSFFURlZSVU5uZDBsU1JrNVVURmhTYkdNelVYZElhR05PVFZSamQwNXFRVFJOVkVWNVRtcEJlRmRvWTA1T1JHTjNUbnBCTUUxRVl6Rk9la2t3VjJwQmIwMVNUWGRGVVZsRVZsRlJSRVJCY0ZSaFYyUjFXbGhLUjFsWGRHeE5Va1YzUkhkWlJGWlJVVXRFUVdoRlZURk5kR1JIVm5wa1JFTkRRVk5KZDBSUldVcExiMXBKYUhaalRrRlJSVUpDVVVGRVoyZEZVRUZFUTBOQlVXOURaMmRGUWtGTlNUTnJXbWgwYm1sd2JpdHBhVnBJV2psaGVEaEdiR1pGTlU5M0wyTkdkMEpVWmtGRllqTlNNVnBSVlhBMkwwSlJia0owTjA5dk1FcFhRblJqT1hGcmRqZEtWVVJrWTBKS1dGQldOVkZYVXpWQmVVMVFTSEJ4VVRjMVNHbDBhbk54TDBaNmRUaGxTSFJyUzNCR2FYcGplRWRoT1VKYVpHdFJhbWcwY2xOeWRFOHhTMnB6TUZKa05VUlJkRmRUWjJ0bFZrTkRUakE1YTA0d1duTmFNRVZPV1N0SmNEaFJlRk50ZVhwMGMxTjBhMWxZWkZWTWNYQjNlalJLUlZoWE9YWjZOalJsVkdKa1pUUjJVVW8yY0dwSVIyRnlTbVl4WjFGT1JXTXlXSHBvYlVrdmNISllUSGx6VjA1eFF6ZHNXbWMzVUZWYVZWUnlaR1ZuUVVKVVZYcFpRMUpLTVd0WFFsSlFiVFJ4YnpCTVRqUXdOV001TkZGUlpEUTFZVFZyVkdkdmQwaDZSV2RNYmtGUlNUSTRlREJOTTBFMU9WUkxReXRwWlU1ak5sWkdNVkJ6VkV4d1ZYYzNVRTVKTWxaemRGZzFha0YxWVhORFFYZEZRVUZoVFZOTlFrRjNSR2RaUkZaU01GQkJVVWd2UWtGUlJFRm5SVWROUVRCSFExTnhSMU5KWWpORVVVVkNRM2RWUVVFMFNVSkJVVU5MTmt4SFFUQXhWRklyY20xVk9IQTJlV2hCYVRSUGEwUk9NbUl4WkdKSlREaHNPR2xEVFZsdmNFeERlSGc0ZUhGeE0zVmlXa05QZUhGb01WZ3lhalp3WjFkNllYSmlNR0l2VFZWcGVEQXdTVzlWZGs1aVJrOTRRVmMzVUVKYVNVdEVURzV0Tmt4elkydFNlSE14VlRNeWMwTTVaREZNVDBobE0xZExRazVDTmtkYVFVeFVNV1YzYW1nM2FGTmlWMnBtZEd4dFkyOTJjU3MyWlZaSFFUVmpkbVl5ZFM4eUsxUnJTMnQ1U0ZZdlRsSXpPVFJ1V0hKa2MyUndkbmxuZDNsd1JYUllhbVYwZWtRM1ZWUTVNMDUxZHpONFkxWTRWa2xtZEVsMlNHWTVUR3BWTjJnclZXcEhiVXRZUnpsak1UVmxXWEl6VTNwVmJYWTJhM2xQU1RCQ2RuY3hORkJYZEhOWFIyd3dVV1JQVTFKMlNVSkNjbEEwWVdSRGJrZFVaMnBuYW1zNVRGUmpUemhDT0VaTGNuSXJPR3hJUjNWak1HSndOR3hKVlZSdmFWVnJSMGxNV0hOcFJXVkZaemxYUVhGdEsxaHhUeUpkTENKMGVYQWlPaUprWXl0elpDMXFkM1FpTENKcFlYUWlPakUzT0RFM09EazBPRE45LmV5SmZjMlJmWVd4bklqb2ljMmhoTFRJMU5pSXNJbWx6Y3lJNklrVkJRU0J3Y205MmFXUmxjaUlzSW01aVppSTZNVGM0TVRjNE9UUTRNeXdpWlhod0lqb3hOemc1TnpNNE1qZ3pMQ0p6ZFdJaU9pSm5iMjlrTFdWalpITmhMWFZ6WlhJaUxDSmpZWFJsWjI5eWVTSTZJblZ5YmpwbGRITnBPbVZ6YVRwbFlXRTZaWFU2Y1hWaGJHbG1hV1ZrSWl3aWMzUmhkSFZ6SWpwN0luTjBZWFIxYzE5c2FYTjBJanA3SW1sa2VDSTZNU3dpZFhKcElqb2lhSFIwY0hNNkx5OXdhMmt1Ym05M2FXNWhMbXgxTDJWaFlTOXpkR0YwZFhOZmJHbHpkQ0o5ZlN3aVkyNW1JanA3SW1wM2F5STZleUpyZEhraU9pSkZReUlzSW1OeWRpSTZJbEF0TWpVMklpd2llQ0k2SWtWMk1WaHBRMFZrZWtKbk9WTlBla1k1TUdweU9GcERZbEpUZVcxc1RtRndkbFJWYVdSclRGODJlRTBpTENKNUlqb2lPRGRwVVZGTmVISTBSME5UY0hOTWVUaGZRMmw0WWtOak1HbGhNVWxDV0hWaVdEVkdXSE53UzI5UFRTSjlmU3dpZG1OMElqb2lkWEp1T21WMVpHazZaV0ZoT2pFaUxDSjJZM1FqYVc1MFpXZHlhWFI1SWpvaWMyaGhNalUyTFV4SVpVRlhMM0JyZFM5RE5EbGhTVm8zTjNOeGVWaHBVVzF6T0N0eWMzaFFiR1pHWlhjMlJUbHRkMWs5SWl3aWFYTnpkV2x1WjE5aGRYUm9iM0pwZEhraU9pSlVSVk5VSUVGMWRHaHZjbWwwZVNJc0ltbHpjM1ZwYm1kZlkyOTFiblJ5ZVNJNklreFZJaXdpYVhOelgzSmxaMTlwWkNJNklsWkJWRXhWTFRFeU16UTFOaUlzSWw5elpDSTZXeUpVTnkwMVZYaDBNbWhQZG5ab1kwUk5iR0p0YURCWlRXMW1jVU52UXpoWlMySmlZMGN6Y3pNMlRYcG5JaXdpYUd0S2FIcEVTa3RMZVRSeE5rOW9aR1JGUjFsb1dsaDFNMmx2WkdSdVUzWktjQzB3WDFsb2JuVkZSU0lzSWpSTVFtbERNWFJJUTAwM1ZHNXhaamsyUjBabVRHbG1jWE5MYW1aa1kyUnZkVXhxVTFOV09HRkRkRlVpWFgwLllVS05ZN25ldkxVRDk5OW9NOF9vVUExa2pUOEZNQkFfN1JpRXB3OVVfcUVya0dPOExWLWZVdmZ4Ukl0NGx2QklQVFVXRlFSR2l5SWRxbmZTX0tzSzY4SkxiakNHTVdpN0hxUDNQbkUwT2lpRlhFNi1hUUZrc01oS1hZakRsdC1NaHh2NUg2dWZHRjRXdlp1bnQ2bTQ5WXM0aTFCb2FJYS1WQ1Y1YVpiVW1KajRuMGtlek9hM1dMQWVxTTVqR0wzREF1NnV2eWlyekc3Mlo3VTRhWDkyUWluaXFOYmV5WTJKWFg0U0prQ3VJSDVxV0hCMmRVejZiZW12Vnh5TFZLUFVjdTNhQWFKTWFid3lXV0NUVDdyVmZWLWlsdnNNSVhDVzF6X3BjNS1FcndNZHRZMzlHSkFFSTZxZmpYXzliOXVOd0UwMHUxM1gtTWdUdWJoZGxnaW1sUQ==",
+    "bytes" : "ZXlKaGJHY2lPaUpTVXpJMU5pSXNJbXRwWkNJNklrMUVOSGRPUzFGNVRVUkJlRWQ2UVZwQ1owNVdRa0ZOVFVWc1NuWmlNMUpVV2xkNGJWVXliRzVpYlZaclVtMUdjbHBVUlZKTlFUaEhRVEZWUlVObmQwbFNSazVVVEZoU2JHTXpVVU5DYVRkWFJrNWxOMVozUFQwaUxDSjROWFFqVXpJMU5pSTZJa0YyVUhKNVowWnFTakJLVkhaSlEyUktNRzFPTVVKMWQwMVhNUzFoZDFwd1dVSkdaRFJXVmxsdVduY2lMQ0o0TldNaU9sc2lUVWxKUXpacVEwTkJaRXRuUVhkSlFrRm5TVWRNZEZsVk1UZDBXRTFCTUVkRFUzRkhVMGxpTTBSUlJVSkRkMVZCVFVSQmVFZDZRVnBDWjA1V1FrRk5UVVZzU25aaU0xSlVXbGQ0YlZVeWJHNWliVlpyVW0xR2NscFVSVkpOUVRoSFFURlZSVU5uZDBsU1JrNVVURmhTYkdNelVYZElhR05PVFZSamQwNXFRVFJOVkVWNVRtcEJlRmRvWTA1T1JHTjNUbnBCTUUxRVl6Rk9la2t3VjJwQmIwMVNUWGRGVVZsRVZsRlJSRVJCY0ZSaFYyUjFXbGhLUjFsWGRHeE5Va1YzUkhkWlJGWlJVVXRFUVdoRlZURk5kR1JIVm5wa1JFTkRRVk5KZDBSUldVcExiMXBKYUhaalRrRlJSVUpDVVVGRVoyZEZVRUZFUTBOQlVXOURaMmRGUWtGTlNUTnJXbWgwYm1sd2JpdHBhVnBJV2psaGVEaEdiR1pGTlU5M0wyTkdkMEpVWmtGRllqTlNNVnBSVlhBMkwwSlJia0owTjA5dk1FcFhRblJqT1hGcmRqZEtWVVJrWTBKS1dGQldOVkZYVXpWQmVVMVFTSEJ4VVRjMVNHbDBhbk54TDBaNmRUaGxTSFJyUzNCR2FYcGplRWRoT1VKYVpHdFJhbWcwY2xOeWRFOHhTMnB6TUZKa05VUlJkRmRUWjJ0bFZrTkRUakE1YTA0d1duTmFNRVZPV1N0SmNEaFJlRk50ZVhwMGMxTjBhMWxZWkZWTWNYQjNlalJLUlZoWE9YWjZOalJsVkdKa1pUUjJVVW8yY0dwSVIyRnlTbVl4WjFGT1JXTXlXSHBvYlVrdmNISllUSGx6VjA1eFF6ZHNXbWMzVUZWYVZWUnlaR1ZuUVVKVVZYcFpRMUpLTVd0WFFsSlFiVFJ4YnpCTVRqUXdOV001TkZGUlpEUTFZVFZyVkdkdmQwaDZSV2RNYmtGUlNUSTRlREJOTTBFMU9WUkxReXRwWlU1ak5sWkdNVkJ6VkV4d1ZYYzNVRTVKTWxaemRGZzFha0YxWVhORFFYZEZRVUZoVFZOTlFrRjNSR2RaUkZaU01GQkJVVWd2UWtGUlJFRm5SVWROUVRCSFExTnhSMU5KWWpORVVVVkNRM2RWUVVFMFNVSkJVVU5MTmt4SFFUQXhWRklyY20xVk9IQTJlV2hCYVRSUGEwUk9NbUl4WkdKSlREaHNPR2xEVFZsdmNFeERlSGc0ZUhGeE0zVmlXa05QZUhGb01WZ3lhalp3WjFkNllYSmlNR0l2VFZWcGVEQXdTVzlWZGs1aVJrOTRRVmMzVUVKYVNVdEVURzV0Tmt4elkydFNlSE14VlRNeWMwTTVaREZNVDBobE0xZExRazVDTmtkYVFVeFVNV1YzYW1nM2FGTmlWMnBtZEd4dFkyOTJjU3MyWlZaSFFUVmpkbVl5ZFM4eUsxUnJTMnQ1U0ZZdlRsSXpPVFJ1V0hKa2MyUndkbmxuZDNsd1JYUllhbVYwZWtRM1ZWUTVNMDUxZHpONFkxWTRWa2xtZEVsMlNHWTVUR3BWTjJnclZXcEhiVXRZUnpsak1UVmxXWEl6VTNwVmJYWTJhM2xQU1RCQ2RuY3hORkJYZEhOWFIyd3dVV1JQVTFKMlNVSkNjbEEwWVdSRGJrZFVaMnBuYW1zNVRGUmpUemhDT0VaTGNuSXJPR3hJUjNWak1HSndOR3hKVlZSdmFWVnJSMGxNV0hOcFJXVkZaemxYUVhGdEsxaHhUeUpkTENKMGVYQWlPaUprWXl0elpDMXFkM1FpTENKcFlYUWlPakUzT0RVeU1qZ3dPVFo5LmV5SmZjMlJmWVd4bklqb2ljMmhoTFRJMU5pSXNJbWx6Y3lJNklrVkJRU0J3Y205MmFXUmxjaUlzSW01aVppSTZNVGM0TlRJeU9EQTVOaXdpWlhod0lqb3hOemt6TVRnd05EazJMQ0pqWVhSbFoyOXllU0k2SW5WeWJqcGxkSE5wT21WemFUcGhkSFJsYzNSaGRHbHZianBsZFRweGRXRnNhV1pwWldRaUxDSnpkR0YwZFhNaU9uc2ljM1JoZEhWelgyeHBjM1FpT25zaWFXUjRJam94TENKMWNta2lPaUpvZEhSd2N6b3ZMM0JyYVM1dWIzZHBibUV1YkhVdlpXRmhMM04wWVhSMWMxOXNhWE4wSW4xOUxDSmpibVlpT25zaWFuZHJJanA3SW10MGVTSTZJa1ZESWl3aVkzSjJJam9pVUMweU5UWWlMQ0o0SWpvaVJYWXhXR2xEUldSNlFtYzVVMDk2Umprd2FuSTRXa05pVWxONWJXeE9ZWEIyVkZWcFpHdE1Yelo0VFNJc0lua2lPaUk0TjJsUlVVMTRjalJIUTFOd2MweDVPRjlEYVhoaVEyTXdhV0V4U1VKWWRXSllOVVpZYzNCTGIwOU5JbjE5TENKMlkzUWlPaUoxY200NlpYVmthVHBoZEhSbGMzUmhkR2x2YmpveElpd2lkbU4wSTJsdWRHVm5jbWwwZVNJNkluTm9ZVEkxTmkxTVNHVkJWeTl3YTNVdlF6UTVZVWxhTnpkemNYbFlhVkZ0Y3pncmNuTjRVR3htUm1WM05rVTViWGRaUFNJc0luTjFZaUk2SW1kdmIyUXRaV05rYzJFdGRYTmxjaUlzSW1semMzVnBibWRmWVhWMGFHOXlhWFI1SWpvaVZFVlRWQ0JCZFhSb2IzSnBkSGtpTENKcGMzTjFhVzVuWDJOdmRXNTBjbmtpT2lKTVZTSXNJbWx6YzE5eVpXZGZhV1FpT2lKV1FWUk1WUzB4TWpNME5UWWlMQ0pmYzJRaU9sc2lWM05UWVVGQmFrRTBibHBQZFRCc1RrSXdTSE5vU0hKbFVWVkJURkkzVjB4UWVESXdVVEp3TmpsVll5SXNJalJCZFdsU1MxUTVVMEozUjBOdkxYcFZXVGh2VDNVeVRXSkhOQzExT0U5cVYwVjJkRTlaZFdkUFFXOGlMQ0pYT1hJeWRqTnVaMDR0WjBVM01rbEVhRVprTmpObFkyeHNPRzlrY0ZVM1ZsbDVOMXBXYVZGVE5sWTRJbDE5LnRZOVB1QzZtbTc2cUhQNGJ2QzJweDdoVGJEZFpMRXMxUktGcGZiYUh6Z3JvOUxORkJsRENYZkgyWHFqN1duajdqd1VnY004aDNudGh5T2VlNWdfWVFuN0VneTdHcnYxdUMzMXMzVThGYVJEbm52a2J4RDB6UnRjQ1c3TGVaZ2oxZ2llbVI1bzN3LWcwQXVJUGQ4Nkk5QTAyazlqNmRTMFZJR0Zic1BaX3ZYNGI3Y2d0bmplUHFVQUNFa1RCNHVmNjRTa3h3OEJtRHJvX1AxZkRSMEhFQ2w0S05pdExCazZPR1VNSXZxdmhaZWlpbmZpV3FBSk5yaXRiY0JIZXNnOUtBM2NGcGwwRlh6MDB4dlVSaGc0ZHhmb21HcmUzX2xCNmxWSXNDcG10QkNTc0tla3FXMEZ2aldCblNjS004M0RUc0o4bHFMTHdibVQ5M2hLQVcyWmpuZw==",
     "digestAlgorithm" : null,
     "name" : "document-signed-jades-baseline-b.json"
   },
   "disclosures" : [ {
     "namespace" : null,
     "digestId" : null,
-    "value" : "WyIxOW8zSDlOdFBKMUZwTi1QUzIxSjlRIiwiZmFtaWx5X25hbWUiLCJEb2UiXQ"
+    "value" : "WyJYX192ZGNUMlBzTlc3UHVPc25GMEpRIiwiZmFtaWx5X25hbWUiLCJEb2UiXQ"
   }, {
     "namespace" : null,
     "digestId" : null,
-    "value" : "WyJNMDRBQjlKT1dvcW9FcmJYaFlQcm1BIiwiZ2l2ZW5fbmFtZSIsIkpvaG4iXQ"
+    "value" : "WyJpODA2d3BMYjFpMDNFMFhSRzZBQ0dBIiwiZ2l2ZW5fbmFtZSIsIkpvaG4iXQ"
   }, {
     "namespace" : null,
     "digestId" : null,
-    "value" : "WyJkdmU2NUZNeVc5UzNFX3FzVU9xWG5RIiwibmFtZSIsIkJlbGxhIl0"
+    "value" : "WyJIY3piRzRLdFhOMXFkMVhobmNUOE5RIiwibmFtZSIsIkJlbGxhIl0"
   }, {
     "namespace" : null,
     "digestId" : null,
-    "value" : "WyJEYWQ1YVRnNHlOdFZMWU5vRlhZLTFBIiwidHlwZSIsImRvZyJd"
+    "value" : "WyJ5VmZ0RFVWVHpUczgxMGlrd3FON0xRIiwidHlwZSIsImRvZyJd"
   }, {
     "namespace" : null,
     "digestId" : null,
-    "value" : "WyJaNW1LeURlQm1iV0lOUDFobVRzRE13Iix7Il9zZCI6WyJra0I1NGV4NXoxd3c0UFZSSGY1WnJpclI1R2ZrOE5IbjBIRDZHalZhUlBBIiwiZUNiYnBJYUFoRHhiaExVVGpHcXZmaFIweEE1cHF1Y3lqcHhqaS1HQWJvWSJdfV0"
+    "value" : "WyJ2T2szRktDM3dpb01fSTFVa0FhbFdBIix7Il9zZCI6WyJUWF9tZDFoOTZkQm1CQ1MzM1pzODhmX2h4S2RhZ3RVNGVORE9lOC15X0h3IiwiT0UtaUNCVEJYa3J4VHJycGsxNzZSWUFhRzUxcWdVTXlvWGxyNm1ja2FtdyJdfV0"
   }, {
     "namespace" : null,
     "digestId" : null,
-    "value" : "WyJhWS10cVNUV0ZYbmlEWFVoNmloYXJ3IiwibmFtZSIsIlNsaW5reSJd"
+    "value" : "WyItSHVOQ3pTQW4yc293ZDd1Q0pJS0Z3IiwibmFtZSIsIlNsaW5reSJd"
   }, {
     "namespace" : null,
     "digestId" : null,
-    "value" : "WyJEcVBlOEliR2tRSDN6bGxSd2FIcVpnIiwidHlwZSIsImNhdCJd"
+    "value" : "WyI4V0tocnNINDE2WHY3eTJQcFlBZnp3IiwidHlwZSIsImNhdCJd"
   }, {
     "namespace" : null,
     "digestId" : null,
-    "value" : "WyJHWGZpRFJNMF9laVFmbzBmWHgwelRnIix7Il9zZCI6WyJJTXJXNEFwZkd6RU02Y2ZTbnB4NVRjMWFUUmdVR2VDUTZiM2RvUE16czc4IiwiZTcteVMtUGNBREJvWUxFSGRhSzN5UHJqZGtkeE1GMXhySmlVQ0FtenZOZyJdfV0"
+    "value" : "WyJqdUJJek9qa1h6RlY2dW9xeWhTVjdnIix7Il9zZCI6WyJmWXJXcndrQ2ZLUkEwTWx5bkRGb0loMlVVcUpMdmlzbldBeFlDQXZ4d05vIiwiV2NFNE5VRzlZa3h0dFc0ZTdzc0FmOTFmdVRmR3JpWG5wdDVBYWVHNjdwYyJdfV0"
   }, {
     "namespace" : null,
     "digestId" : null,
-    "value" : "WyJTNW9UZDlSUFRqSDN4cldnYkx0QlR3IiwicGV0cyIsW3siLi4uIjoidWpIaml5bHFmRGc2NkIzOFJUb2VkN3BseG1IQTVnRThFd05tb3l4VHpWNCJ9LHsiLi4uIjoiSGVLSTNxVHkxMDY5bHptRTE1WkQwdnVpVUlxZEVfVnA3Q3FZM1cwNTRIWSJ9XV0"
+    "value" : "WyJvaXFhbjRVcUc2MVBVSFNWNFhOLU53IiwicGV0cyIsW3siLi4uIjoiUE1NeFNIWlExRURyWTNxaHNCeVhTNktzRFJIbVdRLVRYcE9SMHpCUUdKZyJ9LHsiLi4uIjoieFdLMjZlaWJsemhFRXhKUTZiNVZmaW5HUmtNRFVlZ3g0MG5mQXZXNDdMcyJ9XV0"
   } ],
   "keyBindingSignature" : {
-    "bytes" : "ZXlKaGJHY2lPaUpGVXpJMU5pSXNJbU4wZVNJNkltcHpiMjRpTENKcmFXUWlPaUpOUmxsM1ZXRlNVRTFGTUhoRlJFRlBRbWRPVmtKQlRVMUNNbVIyWWpKUmRGa3lSWGhIVkVGWVFtZE9Wa0pCYjAxRlJUVjJaREpzZFZsVFFsUmlNbmd4WkVkc2RtSnVUWGhGVkVGUVFtZE9Wa0pCYzAxRFJrSk1VMU14VlZKV1RsVk5VWE4zUTFGWlJGWlJVVWRGZDBwTlZsRkpRa1JuUFQwaUxDSjROWFFqYnlJNmV5SmthV2RCYkdjaU9pSlROVEV5SWl3aVpHbG5WbUZzSWpvaWMxcDNlRzl5VldKdGNWbGFkMnR2T1V4TFEyUjBOSE14ZDNVM1VHRTNSakZRWmpWYVVrWm1hMWhNT0hSV1QwRTJZbXB3VDNkV2NWaHpaRVpGTldZMVpuZE9SRU5TUkZZNGFVSlJRbkpOZGpjNVVuTm9jMEVpZlN3aWVEVmpJanBiSWsxSlNVUnJWRU5EUVdadFowRjNTVUpCWjBsQ1JHcEJUa0puYTNGb2EybEhPWGN3UWtGUmMwWkJSRUpPVFZKQmQwUm5XVVJXVVZGRVJFRmtibUl5T1d0TVYwNW9UVkpyZDBaM1dVUldVVkZMUkVKQ1QySXpaSEJpYlVWblZUSTVjMlJZVW5CaU1qVjZUVkpGZDBSM1dVUldVVkZNUkVGb1VWTXdhM1JXUlZaVVZrUkZURTFCYTBkQk1WVkZRbWhOUTFSR1ZYZEpRbU5PVFdwUmQwNXFSVFJOUkdkNVRVUkpNbGRvWjFCTmFrRXhUbXBCTWsxVVozZFBSRWwzVFdwYVlVMUdWWGhIUkVGWFFtZE9Wa0pCVFUxRU1tUjJZakpSZEZwWFRtdGpNa1YwWkZoT2JHTnFSVnBOUW1OSFFURlZSVU5uZDFGVWJUa3pZVmMxYUVsR1RuWmlTRll3WVZjNWRXTjZSVkpOUVRoSFFURlZSVU4zZDBsVlJYUktURlpTUmxVeFVYaERla0ZLUW1kT1ZrSkJXVlJCYTNoV1RVWnJkMFYzV1VoTGIxcEplbW93UTBGUldVbExiMXBKZW1vd1JFRlJZMFJSWjBGRlJYWXhXR2xEUldSNlFtYzVVMDk2Umprd2FuSTRXa05pVWxONWJXeE9ZWEIyVkZWcFpHdE1Melo0VUhwMVNrSkJla2QyWjFsS1MyMTNka3g2T0V0TVJuTktlbE5LY2xWblJtVTFkR1pyVm1WNWEzRm5ORFpQUW5aRVEwSjFWRUZQUW1kT1ZraFJPRUpCWmpoRlFrRk5RMEpyUVhkbldXTkhRME56UjBGUlZVWkNkMFZDUWtoemQyVlVRVFZDWjJkeVFtZEZSa0pSWTNkQldWbDBZVWhTTUdORWIzWk1NbEo2WTNrMWRXSXpaSEJpYlVWMVlraFZkbU5IZEhCTVYxcG9XVE5TZG1OdWEzWmlNazU2WTBNNWJtSXlPV3RNVjA1b1RVUjNSME5EYzBkQlVWVkdRbnBCUTJocVFtOWtTRkozVDJrNGRscElUbnBNYlRWMlpESnNkVmxUTlhOa1V6bDNZVEpyZEZwdFJtcGtSemw1WlZNNWFtTnVVWFphTWpsMldrTXhhbGxUTldwamJsRjNTRkZaUkZaU01FOUNRbGxGUmtaUVRUWlVPV1ZuUTNoRWVtb3dXQzlTVTJoRllUaFhURkpOWVUxQk1FZERVM0ZIVTBsaU0wUlJSVUpEZDFWQlFUUkpRbWRSUWxSMWRrUlNaM05GVjBsak5rMDNjRE5MT1VWVk9XdENlRkY0Y3pCbFlWcGFaVFZ3YmpaU00xaHFUbGdyWVVwdFNpdHJkWFJKYVRSbGEyNU5aVVJHUzBNNGRtOHZPSFZSVjBzd1JVaHpWRE5rTDBSdFpsTkNZMmcxUjFkUlZFdFZUMHhuYWxKQldtbG9SRzB4WlhsSlJrdGxUR3RWZHk5T2RsQlJTRWRoWVRJd016UndSbFZTU0hwMlkwbzVWVXMxVEdaTVYxY3dkMnB1VkRBMlVqY3hZeTlOZGpCRlNGSkJRa1V4TlRkU2Qwa3JOVTlPTjFCWGNsVmpWa2xITUZWV04yUnROVWRGVDB4eFowbzFOMlZzWnpCeVNrcFlNazF2Y0VreGFFRTRZVlZxUTNKUmR6aDJWak5XZEcxd1FuVm5ZVWRPVEZOWVRHbDNWbTVXWWxJM1QxVlVlVXgyZEhwVksyVnBjRmQwYzBjdk9XVTVVRVpDUm5jM1pYaEVkWFp6ZUhCbVVsRkNZMmRMWTFRelpGRjZNa0oyU0c5SU1tOURVRk14VkhsUmFXNWtXa0pTV0d4UldWUlBVVFF4ZVdFdlZXMU9VbTFrV0Uwek9YVmtaMmxwVEdOa1dEYzJkemRsTTJWUGNTdGlRV3RHWmk5Uk1WVkVjWGt4ZVhGTU0yWkxkWFpCUkdoR2RFdFBkekZCV25jdlRFSmlTVU51U1Rsa1N6WldXa05FVFRkalRVWkVSMWxzTkdKRE1IUlRLM0pJUXpCWlpVbFBVbFI1VmtOa2NtUTJha1ZFZUVoVWJXZG1jeXRLZGtsMGVYcEJObXBGY2pFdll5OWFjWEZ6ZEVkSmNtdFFPRWsyZVZoa1ptMHphemMwVTFjd1pqZFphbVZFYTJZck5UVjFWMlJqUFNKZExDSjBlWEFpT2lKcllpdHFkM1FpTENKcFlYUWlPakUzT0RFM09EazBPRFI5LmV5SnBZWFFpT2pFM09ERTNPRGswT0RRc0ltRjFaQ0k2SW1GMVpHbGxibU5sSWl3aWJtOXVZMlVpT2lJeE1qTTBOVFlpTENKelpGOW9ZWE5vSWpvaWFYTlJUREZmU2pGME0weEdOV2RtUmxOdlh6UlRUVWhsWm1Vd1MzSTFTVmg1VURSbGJIazJTM2s1VVNKOS5mcGtLVE8zdThVOVY2Y2pvc1VkQ1pQS3J0UWd1YUNSNWFSTW14d1VCNmVYdERPT2pCZ0dscXM5Y004OWp4RTlFemxVczBQTDcwSXRLeXQ1MFlzbXhTZw==",
+    "bytes" : "ZXlKaGJHY2lPaUpGVXpJMU5pSXNJbU4wZVNJNkltcHpiMjRpTENKcmFXUWlPaUpOUmxsM1ZXRlNVRTFGTUhoRlJFRlBRbWRPVmtKQlRVMUNNbVIyWWpKUmRGa3lSWGhIVkVGWVFtZE9Wa0pCYjAxRlJUVjJaREpzZFZsVFFsUmlNbmd4WkVkc2RtSnVUWGhGVkVGUVFtZE9Wa0pCYzAxRFJrSk1VMU14VlZKV1RsVk5VWE4zUTFGWlJGWlJVVWRGZDBwTlZsRkpRa1JuUFQwaUxDSjROWFFqYnlJNmV5SmthV2RCYkdjaU9pSlROVEV5SWl3aVpHbG5WbUZzSWpvaWMxcDNlRzl5VldKdGNWbGFkMnR2T1V4TFEyUjBOSE14ZDNVM1VHRTNSakZRWmpWYVVrWm1hMWhNT0hSV1QwRTJZbXB3VDNkV2NWaHpaRVpGTldZMVpuZE9SRU5TUkZZNGFVSlJRbkpOZGpjNVVuTm9jMEVpZlN3aWVEVmpJanBiSWsxSlNVUnJWRU5EUVdadFowRjNTVUpCWjBsQ1JHcEJUa0puYTNGb2EybEhPWGN3UWtGUmMwWkJSRUpPVFZKQmQwUm5XVVJXVVZGRVJFRmtibUl5T1d0TVYwNW9UVkpyZDBaM1dVUldVVkZMUkVKQ1QySXpaSEJpYlVWblZUSTVjMlJZVW5CaU1qVjZUVkpGZDBSM1dVUldVVkZNUkVGb1VWTXdhM1JXUlZaVVZrUkZURTFCYTBkQk1WVkZRbWhOUTFSR1ZYZEpRbU5PVFdwUmQwNXFSVFJOUkdkNVRVUkpNbGRvWjFCTmFrRXhUbXBCTWsxVVozZFBSRWwzVFdwYVlVMUdWWGhIUkVGWFFtZE9Wa0pCVFUxRU1tUjJZakpSZEZwWFRtdGpNa1YwWkZoT2JHTnFSVnBOUW1OSFFURlZSVU5uZDFGVWJUa3pZVmMxYUVsR1RuWmlTRll3WVZjNWRXTjZSVkpOUVRoSFFURlZSVU4zZDBsVlJYUktURlpTUmxVeFVYaERla0ZLUW1kT1ZrSkJXVlJCYTNoV1RVWnJkMFYzV1VoTGIxcEplbW93UTBGUldVbExiMXBKZW1vd1JFRlJZMFJSWjBGRlJYWXhXR2xEUldSNlFtYzVVMDk2Umprd2FuSTRXa05pVWxONWJXeE9ZWEIyVkZWcFpHdE1Melo0VUhwMVNrSkJla2QyWjFsS1MyMTNka3g2T0V0TVJuTktlbE5LY2xWblJtVTFkR1pyVm1WNWEzRm5ORFpQUW5aRVEwSjFWRUZQUW1kT1ZraFJPRUpCWmpoRlFrRk5RMEpyUVhkbldXTkhRME56UjBGUlZVWkNkMFZDUWtoemQyVlVRVFZDWjJkeVFtZEZSa0pSWTNkQldWbDBZVWhTTUdORWIzWk1NbEo2WTNrMWRXSXpaSEJpYlVWMVlraFZkbU5IZEhCTVYxcG9XVE5TZG1OdWEzWmlNazU2WTBNNWJtSXlPV3RNVjA1b1RVUjNSME5EYzBkQlVWVkdRbnBCUTJocVFtOWtTRkozVDJrNGRscElUbnBNYlRWMlpESnNkVmxUTlhOa1V6bDNZVEpyZEZwdFJtcGtSemw1WlZNNWFtTnVVWFphTWpsMldrTXhhbGxUTldwamJsRjNTRkZaUkZaU01FOUNRbGxGUmtaUVRUWlVPV1ZuUTNoRWVtb3dXQzlTVTJoRllUaFhURkpOWVUxQk1FZERVM0ZIVTBsaU0wUlJSVUpEZDFWQlFUUkpRbWRSUWxSMWRrUlNaM05GVjBsak5rMDNjRE5MT1VWVk9XdENlRkY0Y3pCbFlWcGFaVFZ3YmpaU00xaHFUbGdyWVVwdFNpdHJkWFJKYVRSbGEyNU5aVVJHUzBNNGRtOHZPSFZSVjBzd1JVaHpWRE5rTDBSdFpsTkNZMmcxUjFkUlZFdFZUMHhuYWxKQldtbG9SRzB4WlhsSlJrdGxUR3RWZHk5T2RsQlJTRWRoWVRJd016UndSbFZTU0hwMlkwbzVWVXMxVEdaTVYxY3dkMnB1VkRBMlVqY3hZeTlOZGpCRlNGSkJRa1V4TlRkU2Qwa3JOVTlPTjFCWGNsVmpWa2xITUZWV04yUnROVWRGVDB4eFowbzFOMlZzWnpCeVNrcFlNazF2Y0VreGFFRTRZVlZxUTNKUmR6aDJWak5XZEcxd1FuVm5ZVWRPVEZOWVRHbDNWbTVXWWxJM1QxVlVlVXgyZEhwVksyVnBjRmQwYzBjdk9XVTVVRVpDUm5jM1pYaEVkWFp6ZUhCbVVsRkNZMmRMWTFRelpGRjZNa0oyU0c5SU1tOURVRk14VkhsUmFXNWtXa0pTV0d4UldWUlBVVFF4ZVdFdlZXMU9VbTFrV0Uwek9YVmtaMmxwVEdOa1dEYzJkemRsTTJWUGNTdGlRV3RHWmk5Uk1WVkVjWGt4ZVhGTU0yWkxkWFpCUkdoR2RFdFBkekZCV25jdlRFSmlTVU51U1Rsa1N6WldXa05FVFRkalRVWkVSMWxzTkdKRE1IUlRLM0pJUXpCWlpVbFBVbFI1VmtOa2NtUTJha1ZFZUVoVWJXZG1jeXRLZGtsMGVYcEJObXBGY2pFdll5OWFjWEZ6ZEVkSmNtdFFPRWsyZVZoa1ptMHphemMwVTFjd1pqZFphbVZFYTJZck5UVjFWMlJqUFNKZExDSjBlWEFpT2lKcllpdHFkM1FpTENKcFlYUWlPakUzT0RVeU1qZ3dPVFo5LmV5SnBZWFFpT2pFM09EVXlNamd3T1RZc0ltRjFaQ0k2SW1GMVpHbGxibU5sSWl3aWJtOXVZMlVpT2lJeE1qTTBOVFlpTENKelpGOW9ZWE5vSWpvaVNFVm5VRlZ6TWtSbU0wVTVRVWg0ZUZGSE5XNURiMnRxY2xOZlEwRmhNRTB6TkRSbGRXWnJjVTkwT0NKOS41amZHNS1sRENiSzExUGsySzhzSzZtd0hPTmNZSFJLN05ETVRvMUoxRmx5VE9GLU9LSFpBYWxFcTJPWmRVVjFhMDNsMWV4NER3UDNNTGRaMVctZ2t1UQ==",
     "digestAlgorithm" : null,
     "name" : "document-signed-jades-baseline-b.json"
   },
   "presentationParameters" : {
-    "attestationFormat" : "SD_JWT_VC",
+    "attestationForm" : "SD_JWT",
     "deviceSignedDataElements" : null
   }
 }</con:request><con:originalUri>http://localhost/services/rest/attestation-creation/issuePresentation</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource></con:interface><con:interface xsi:type="con:WsdlInterface" id="194e5a3c-e7a8-4be9-b063-3063c1f5e1ec" wsaVersion="NONE" name="SoapDocumentSignatureServiceImplServiceSoapBinding" type="wsdl" bindingName="{http://soap.signature.ws.dss.esig.europa.eu/}SoapDocumentSignatureServiceImplServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/services/soap/signature/one-document?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/services/soap/signature/one-document?wsdl"><con:part><con:url>http://localhost:8080/services/soap/signature/one-document?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="SoapDocumentSignatureServiceImplService" targetNamespace="http://soap.signature.ws.dss.esig.europa.eu/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://soap.signature.ws.dss.esig.europa.eu/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns2="http://schemas.xmlsoap.org/soap/http" xmlns:ns1="http://signature.dss.esig.europa.eu/">
@@ -10957,16 +10963,16 @@
          </dataToValidateDTO>\r
       </attestation:validateEAA>\r
    </soapenv:Body>\r
-</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://soap.validation.attestation.ws.dss.esig.europa.eu/SoapEAAValidationService/validateEAA"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:WsdlInterface" id="dadf88e5-e292-492e-bc3b-48592cb8b1f5" wsaVersion="NONE" name="SoapEAACreationServiceImplServiceSoapBinding" type="wsdl" bindingName="{http://soap.creation.attestation.ws.dss.esig.europa.eu/}SoapEAACreationServiceImplServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/services/soap/attestation-creation?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/services/soap/attestation-creation?wsdl"><con:part><con:url>http://localhost:8080/services/soap/attestation-creation?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="SoapEAACreationServiceImplService" targetNamespace="http://soap.creation.attestation.ws.dss.esig.europa.eu/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://soap.creation.attestation.ws.dss.esig.europa.eu/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns2="http://schemas.xmlsoap.org/soap/http" xmlns:ns1="http://attestation.creation.dss.esig.europa.eu/">
-  <wsdl:import location="http://localhost:8080/services/soap/attestation-creation?wsdl=SoapEAACreationService.wsdl" namespace="http://attestation.creation.dss.esig.europa.eu/"></wsdl:import>
-  <wsdl:binding name="SoapEAACreationServiceImplServiceSoapBinding" type="ns1:SoapEAACreationService">
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://soap.validation.attestation.ws.dss.esig.europa.eu/SoapEAAValidationService/validateEAA"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:interface xsi:type="con:WsdlInterface" id="dadf88e5-e292-492e-bc3b-48592cb8b1f5" wsaVersion="NONE" name="SoapAttestationCreationServiceImplServiceSoapBinding" type="wsdl" bindingName="{http://soap.creation.attestation.ws.dss.esig.europa.eu/}SoapAttestationCreationServiceImplServiceSoapBinding" soapVersion="1_1" anonymous="optional" definition="http://localhost:8080/services/soap/attestation-creation?wsdl" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart="http://localhost:8080/services/soap/attestation-creation?wsdl"><con:part><con:url>http://localhost:8080/services/soap/attestation-creation?wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="SoapAttestationCreationServiceImplService" targetNamespace="http://soap.creation.attestation.ws.dss.esig.europa.eu/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://soap.creation.attestation.ws.dss.esig.europa.eu/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns2="http://schemas.xmlsoap.org/soap/http" xmlns:ns1="http://attestation.creation.dss.esig.europa.eu/">
+  <wsdl:import location="http://localhost:8080/services/soap/attestation-creation?wsdl=SoapAttestationCreationService.wsdl" namespace="http://attestation.creation.dss.esig.europa.eu/"></wsdl:import>
+  <wsdl:binding name="SoapAttestationCreationServiceImplServiceSoapBinding" type="ns1:SoapAttestationCreationService">
     <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
-    <wsdl:operation name="signEAA">
+    <wsdl:operation name="issuePresentation">
       <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="signEAA">
+      <wsdl:input name="issuePresentation">
         <soap:body use="literal"/>
       </wsdl:input>
-      <wsdl:output name="signEAAResponse">
+      <wsdl:output name="issuePresentationResponse">
         <soap:body use="literal"/>
       </wsdl:output>
     </wsdl:operation>
@@ -10979,30 +10985,12 @@
         <soap:body use="literal"/>
       </wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="issuePresentation">
+    <wsdl:operation name="signAttestation">
       <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="issuePresentation">
+      <wsdl:input name="signAttestation">
         <soap:body use="literal"/>
       </wsdl:input>
-      <wsdl:output name="issuePresentationResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="getDataToSign">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="getDataToSign">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="getDataToSignResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="getDisclosures">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="getDisclosures">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="getDisclosuresResponse">
+      <wsdl:output name="signAttestationResponse">
         <soap:body use="literal"/>
       </wsdl:output>
     </wsdl:operation>
@@ -11015,13 +11003,31 @@
         <soap:body use="literal"/>
       </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="getDisclosures">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getDisclosures">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getDisclosuresResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getDataToSign">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getDataToSign">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getDataToSignResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
   </wsdl:binding>
-  <wsdl:service name="SoapEAACreationServiceImplService">
-    <wsdl:port binding="tns:SoapEAACreationServiceImplServiceSoapBinding" name="SoapEAACreationServiceImplPort">
+  <wsdl:service name="SoapAttestationCreationServiceImplService">
+    <wsdl:port binding="tns:SoapAttestationCreationServiceImplServiceSoapBinding" name="SoapAttestationCreationServiceImplPort">
       <soap:address location="http://localhost:8080/services/soap/attestation-creation"/>
     </wsdl:port>
   </wsdl:service>
-</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part><con:part><con:url>http://localhost:8080/services/soap/attestation-creation?wsdl=SoapEAACreationService.wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="SoapEAACreationService" targetNamespace="http://attestation.creation.dss.esig.europa.eu/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns1="http://attestation.creation.dss.esig.europa.eu/">
+</wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part><con:part><con:url>http://localhost:8080/services/soap/attestation-creation?wsdl=SoapAttestationCreationService.wsdl</con:url><con:content><![CDATA[<wsdl:definitions name="SoapAttestationCreationService" targetNamespace="http://attestation.creation.dss.esig.europa.eu/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns1="http://attestation.creation.dss.esig.europa.eu/">
   <wsdl:types>
     <xs:schema elementFormDefault="unqualified" targetNamespace="http://attestation.creation.dss.esig.europa.eu/" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://attestation.creation.dss.esig.europa.eu/">
       <xs:element name="createKeyBindingSignature" type="tns:createKeyBindingSignature"/>
@@ -11034,200 +11040,39 @@
       <xs:element name="getDisclosuresResponse" type="tns:getDisclosuresResponse"/>
       <xs:element name="issuePresentation" type="tns:issuePresentation"/>
       <xs:element name="issuePresentationResponse" type="tns:issuePresentationResponse"/>
-      <xs:element name="signEAA" type="tns:signEAA"/>
-      <xs:element name="signEAAResponse" type="tns:signEAAResponse"/>
-      <xs:complexType name="signEAA">
+      <xs:element name="signAttestation" type="tns:signAttestation"/>
+      <xs:element name="signAttestationResponse" type="tns:signAttestationResponse"/>
+      <xs:complexType name="issuePresentation">
         <xs:sequence>
-          <xs:element minOccurs="0" name="signAttestationDTO" type="tns:signAttestationDTO"/>
+          <xs:element minOccurs="0" name="issuePresentationDTO" type="tns:issuePresentationDTO"/>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="signAttestationDTO">
-        <xs:complexContent>
-          <xs:extension base="tns:abstractSignDocumentDTO">
-            <xs:sequence>
-              <xs:element minOccurs="0" name="payloadParameters" type="tns:remoteAttestationPayloadParameters"/>
-            </xs:sequence>
-          </xs:extension>
-        </xs:complexContent>
-      </xs:complexType>
-      <xs:complexType abstract="true" name="abstractSignDocumentDTO">
+      <xs:complexType name="issuePresentationDTO">
         <xs:sequence>
-          <xs:element minOccurs="0" name="parameters" type="tns:remoteSignatureParameters"/>
-          <xs:element minOccurs="0" name="signatureValue" type="tns:signatureValueDTO"/>
+          <xs:element minOccurs="0" name="attestation" type="tns:remoteDocument"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="disclosures" nillable="true" type="tns:disclosureDTO"/>
+          <xs:element minOccurs="0" name="keyBindingSignature" type="tns:remoteDocument"/>
+          <xs:element minOccurs="0" name="presentationParameters" type="tns:remoteAttestationPresentationParameters"/>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="remoteAttestationPayloadParameters">
+      <xs:complexType name="remoteDocument">
         <xs:sequence>
-          <xs:element minOccurs="0" name="category" type="xs:string"/>
-          <xs:element minOccurs="0" name="decoyDigestNumber" type="xs:int"/>
-          <xs:element minOccurs="0" name="deviceKey" type="tns:remotePublicKey"/>
+          <xs:element minOccurs="0" name="bytes" type="xs:base64Binary"/>
           <xs:element minOccurs="0" name="digestAlgorithm" type="tns:digestAlgorithm"/>
-          <xs:element minOccurs="0" name="docType" type="xs:string"/>
-          <xs:element minOccurs="0" name="attestationFormat" type="tns:attestationFormat"/>
-          <xs:element minOccurs="0" name="expectedUpdate" type="xs:dateTime"/>
-          <xs:element minOccurs="0" name="expirationDate" type="xs:dateTime"/>
-          <xs:element minOccurs="0" name="identifierList" type="tns:remoteEAAIdentifierList"/>
-          <xs:element minOccurs="0" name="issuanceDate" type="xs:dateTime"/>
-          <xs:element minOccurs="0" name="issuer" type="xs:string"/>
-          <xs:element minOccurs="0" name="nonSelectivelyDisclosable" type="tns:remoteEAAClaimParameters"/>
-          <xs:element minOccurs="0" name="notBeforeDate" type="xs:dateTime"/>
-          <xs:element minOccurs="0" name="oneTime" type="xs:boolean"/>
-          <xs:element minOccurs="0" name="preComputedPayload" type="tns:remoteDocument"/>
-          <xs:element minOccurs="0" name="selectivelyDisclosable" type="tns:remoteEAAClaimParameters"/>
-          <xs:element minOccurs="0" name="shortLived" type="xs:boolean"/>
-          <xs:element minOccurs="0" name="shuffleHashes" type="xs:boolean"/>
-          <xs:element minOccurs="0" name="signed" type="xs:dateTime"/>
-          <xs:element minOccurs="0" name="statusList" type="tns:remoteEAAStatusList"/>
-          <xs:element minOccurs="0" name="subject" type="xs:string"/>
-          <xs:element minOccurs="0" name="validFrom" type="xs:dateTime"/>
-          <xs:element minOccurs="0" name="validUntil" type="xs:dateTime"/>
-          <xs:element minOccurs="0" name="verifiableCredentialsType" type="xs:string"/>
-          <xs:element minOccurs="0" name="verifiableCredentialsTypeIntegrity" type="tns:digestDTO"/>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="remotePublicKey">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="certificate" type="tns:remoteCertificate"/>
-          <xs:element minOccurs="0" name="publicKey" type="xs:base64Binary"/>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="remoteCertificate">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="encodedCertificate" type="xs:base64Binary"/>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="remoteEAAIdentifierList">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="certificate" type="tns:remoteCertificate"/>
-          <xs:element minOccurs="0" name="identifier" type="xs:base64Binary"/>
-          <xs:element minOccurs="0" name="uri" type="xs:string"/>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="remoteEAAClaimParameters">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="addressCity" type="xs:string"/>
-          <xs:element minOccurs="0" name="addressCountry" type="xs:string"/>
-          <xs:element minOccurs="0" name="addressHouseNumber" type="xs:string"/>
-          <xs:element minOccurs="0" name="addressPostalCode" type="xs:string"/>
-          <xs:element minOccurs="0" name="addressState" type="xs:string"/>
-          <xs:element minOccurs="0" name="addressStreet" type="xs:string"/>
-          <xs:element minOccurs="0" name="administrativeExpirationDate" type="xs:dateTime"/>
-          <xs:element minOccurs="0" name="administrativeIssuanceDate" type="xs:dateTime"/>
-          <xs:element minOccurs="0" name="ageBirthYear" type="xs:int"/>
-          <xs:element minOccurs="0" name="ageInYears" type="xs:int"/>
-          <xs:element maxOccurs="unbounded" minOccurs="0" name="ageOverNN" nillable="true" type="tns:ageOverNNDTO"/>
-          <xs:element maxOccurs="unbounded" minOccurs="0" name="attestedAttributes" nillable="true" type="xs:string"/>
-          <xs:element minOccurs="0" name="attestedAttributesSubjectDocumentNumber" type="xs:string"/>
-          <xs:element minOccurs="0" name="attestedAttributesSubjectFamilyName" type="xs:string"/>
-          <xs:element minOccurs="0" name="attestedAttributesSubjectGivenName" type="xs:string"/>
-          <xs:element minOccurs="0" name="attestedAttributesSubjectIdentifier" type="xs:string"/>
-          <xs:element minOccurs="0" name="attestedAttributesSubjectPseudonym" type="xs:string"/>
-          <xs:element maxOccurs="unbounded" minOccurs="0" name="biometricTemplate" nillable="true" type="tns:biometricTemplateNNDTO"/>
-          <xs:element minOccurs="0" name="biometricTemplateFace" type="xs:base64Binary"/>
-          <xs:element minOccurs="0" name="birthFamilyName" type="xs:string"/>
-          <xs:element minOccurs="0" name="birthFullName" type="xs:string"/>
-          <xs:element minOccurs="0" name="birthGivenName" type="xs:string"/>
-          <xs:element minOccurs="0" name="birthMiddleName" type="xs:string"/>
-          <xs:element minOccurs="0" name="birthdate" type="xs:dateTime"/>
-          <xs:element minOccurs="0" name="birthdateApproximateMask" type="xs:string"/>
-          <xs:element minOccurs="0" name="businessName" type="xs:string"/>
-          <xs:element minOccurs="0" name="dateOfExpiry" type="xs:dateTime"/>
-          <xs:element minOccurs="0" name="dateOfIssuance" type="xs:dateTime"/>
-          <xs:element minOccurs="0" name="distinguishingSign" type="xs:string"/>
-          <xs:element minOccurs="0" name="documentNumber" type="xs:string"/>
-          <xs:element minOccurs="0" name="documentType" type="xs:string"/>
-          <xs:element maxOccurs="unbounded" minOccurs="0" name="drivingPrivileges" nillable="true" type="tns:drivingPrivilegeDTO"/>
-          <xs:element minOccurs="0" name="email" type="xs:string"/>
-          <xs:element minOccurs="0" name="emailVerified" type="xs:boolean"/>
-          <xs:element minOccurs="0" name="eyeColour" type="xs:string"/>
-          <xs:element minOccurs="0" name="familyName" type="xs:string"/>
-          <xs:element minOccurs="0" name="fingerprint" type="xs:base64Binary"/>
-          <xs:element minOccurs="0" name="gender" type="xs:string"/>
-          <xs:element minOccurs="0" name="givenName" type="xs:string"/>
-          <xs:element minOccurs="0" name="hairColour" type="xs:string"/>
-          <xs:element minOccurs="0" name="height" type="xs:int"/>
-          <xs:element minOccurs="0" name="issuingAuthority" type="xs:string"/>
-          <xs:element minOccurs="0" name="issuingAuthorityRegistrationIdentifier" type="xs:string"/>
-          <xs:element minOccurs="0" name="issuingCountry" type="xs:string"/>
-          <xs:element minOccurs="0" name="issuingJurisdiction" type="xs:string"/>
-          <xs:element minOccurs="0" name="locale" type="xs:string"/>
-          <xs:element minOccurs="0" name="middleName" type="xs:string"/>
-          <xs:element minOccurs="0" name="mobilePhoneNumber" type="xs:string"/>
           <xs:element minOccurs="0" name="name" type="xs:string"/>
-          <xs:element maxOccurs="unbounded" minOccurs="0" name="nationalities" nillable="true" type="xs:string"/>
-          <xs:element minOccurs="0" name="nationality" type="xs:string"/>
-          <xs:element minOccurs="0" name="nickname" type="xs:string"/>
-          <xs:element minOccurs="0" name="organizationName" type="xs:string"/>
-          <xs:element maxOccurs="unbounded" minOccurs="0" name="otherClaims" nillable="true" type="tns:claimDTO"/>
-          <xs:element minOccurs="0" name="personalAdministrativeNumber" type="xs:string"/>
-          <xs:element minOccurs="0" name="phoneNumber" type="xs:string"/>
-          <xs:element minOccurs="0" name="phoneNumberVerified" type="xs:boolean"/>
-          <xs:element minOccurs="0" name="picture" type="xs:string"/>
-          <xs:element minOccurs="0" name="placeOfBirth" type="xs:string"/>
-          <xs:element minOccurs="0" name="placeOfBirthCountry" type="xs:string"/>
-          <xs:element minOccurs="0" name="placeOfBirthLocality" type="xs:string"/>
-          <xs:element minOccurs="0" name="placeOfBirthRegion" type="xs:string"/>
-          <xs:element minOccurs="0" name="portrait" type="xs:base64Binary"/>
-          <xs:element minOccurs="0" name="portraitCaptureDate" type="xs:dateTime"/>
-          <xs:element minOccurs="0" name="postalAddress" type="xs:string"/>
-          <xs:element minOccurs="0" name="preferredNickname" type="xs:string"/>
-          <xs:element minOccurs="0" name="profession" type="xs:string"/>
-          <xs:element minOccurs="0" name="profile" type="xs:string"/>
-          <xs:element minOccurs="0" name="pseudonym" type="xs:string"/>
-          <xs:element minOccurs="0" name="relationshipAgent" type="xs:string"/>
-          <xs:element minOccurs="0" name="relationshipBrother" type="xs:string"/>
-          <xs:element minOccurs="0" name="relationshipChildInLaw" type="xs:string"/>
-          <xs:element minOccurs="0" name="relationshipDaughter" type="xs:string"/>
-          <xs:element minOccurs="0" name="relationshipDaughterInLaw" type="xs:string"/>
-          <xs:element minOccurs="0" name="relationshipFather" type="xs:string"/>
-          <xs:element minOccurs="0" name="relationshipFatherInLaw" type="xs:string"/>
-          <xs:element minOccurs="0" name="relationshipLegalRepresentative" type="xs:string"/>
-          <xs:element minOccurs="0" name="relationshipMother" type="xs:string"/>
-          <xs:element minOccurs="0" name="relationshipMotherInLaw" type="xs:string"/>
-          <xs:element minOccurs="0" name="relationshipParent" type="xs:string"/>
-          <xs:element minOccurs="0" name="relationshipParentInLaw" type="xs:string"/>
-          <xs:element minOccurs="0" name="relationshipParentalAuthority" type="xs:string"/>
-          <xs:element minOccurs="0" name="relationshipSibling" type="xs:string"/>
-          <xs:element minOccurs="0" name="relationshipSister" type="xs:string"/>
-          <xs:element minOccurs="0" name="relationshipSon" type="xs:string"/>
-          <xs:element minOccurs="0" name="relationshipSonInLaw" type="xs:string"/>
-          <xs:element minOccurs="0" name="relationshipSpouse" type="xs:string"/>
-          <xs:element minOccurs="0" name="salutation" type="xs:string"/>
-          <xs:element minOccurs="0" name="sex" type="xs:int"/>
-          <xs:element minOccurs="0" name="signatureUsualMark" type="xs:base64Binary"/>
-          <xs:element minOccurs="0" name="title" type="xs:string"/>
-          <xs:element minOccurs="0" name="trustAnchor" type="xs:string"/>
-          <xs:element minOccurs="0" name="updatedAt" type="xs:dateTime"/>
-          <xs:element minOccurs="0" name="website" type="xs:string"/>
-          <xs:element minOccurs="0" name="weight" type="xs:int"/>
-          <xs:element minOccurs="0" name="zoneinfo" type="xs:string"/>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="ageOverNNDTO">
+      <xs:complexType name="disclosureDTO">
         <xs:sequence>
-          <xs:element minOccurs="0" name="age" type="xs:int"/>
-          <xs:element minOccurs="0" name="over" type="xs:boolean"/>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="biometricTemplateNNDTO">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="data" type="xs:base64Binary"/>
-          <xs:element minOccurs="0" name="type" type="xs:string"/>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="drivingPrivilegeDTO">
-        <xs:sequence>
-          <xs:element maxOccurs="unbounded" minOccurs="0" name="codes" nillable="true" type="tns:drivingPrivilegeCodeDTO"/>
-          <xs:element minOccurs="0" name="expiryDate" type="xs:dateTime"/>
-          <xs:element minOccurs="0" name="issueDate" type="xs:dateTime"/>
-          <xs:element minOccurs="0" name="vehicleCategoryCode" type="xs:string"/>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="drivingPrivilegeCodeDTO">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="code" type="xs:string"/>
-          <xs:element minOccurs="0" name="sign" type="xs:string"/>
+          <xs:element minOccurs="0" name="digestId" type="xs:int"/>
+          <xs:element minOccurs="0" name="namespace" type="xs:string"/>
           <xs:element minOccurs="0" name="value" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="remoteAttestationPresentationParameters">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="attestationForm" type="tns:attestationForm"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="deviceSignedDataElements" nillable="true" type="tns:claimDTO"/>
         </xs:sequence>
       </xs:complexType>
       <xs:complexType name="claimDTO">
@@ -11254,26 +11099,43 @@
       <xs:complexType abstract="true" name="number">
         <xs:sequence/>
       </xs:complexType>
-      <xs:complexType name="remoteDocument">
+      <xs:complexType name="issuePresentationResponse">
         <xs:sequence>
-          <xs:element minOccurs="0" name="bytes" type="xs:base64Binary"/>
+          <xs:element minOccurs="0" name="response" type="tns:remoteDocument"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="createKeyBindingSignature">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="createKeyBindingSignatureDTO" type="tns:createKeyBindingSignatureDTO"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="createKeyBindingSignatureDTO">
+        <xs:complexContent>
+          <xs:extension base="tns:abstractSignDocumentDTO">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="attestation" type="tns:remoteDocument"/>
+              <xs:element maxOccurs="unbounded" minOccurs="0" name="disclosures" nillable="true" type="tns:disclosureDTO"/>
+              <xs:element minOccurs="0" name="keyBindingParameters" type="tns:remoteKeyBindingParameters"/>
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:complexType abstract="true" name="abstractSignDocumentDTO">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="parameters" type="tns:remoteSignatureParameters"/>
+          <xs:element minOccurs="0" name="signatureValue" type="tns:signatureValueDTO"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="remoteKeyBindingParameters">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="attestationForm" type="tns:attestationForm"/>
+          <xs:element minOccurs="0" name="audience" type="xs:string"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="deviceSignedDataElements" nillable="true" type="tns:claimDTO"/>
           <xs:element minOccurs="0" name="digestAlgorithm" type="tns:digestAlgorithm"/>
-          <xs:element minOccurs="0" name="name" type="xs:string"/>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="remoteEAAStatusList">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="certificate" type="tns:remoteCertificate"/>
-          <xs:element minOccurs="0" name="index" type="xs:int"/>
-          <xs:element minOccurs="0" name="purpose" type="xs:string"/>
-          <xs:element minOccurs="0" name="type" type="xs:string"/>
-          <xs:element minOccurs="0" name="uri" type="xs:string"/>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="digestDTO">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="algorithm" type="tns:digestAlgorithm"/>
-          <xs:element minOccurs="0" name="value" type="xs:base64Binary"/>
+          <xs:element minOccurs="0" name="docType" type="xs:string"/>
+          <xs:element minOccurs="0" name="issuanceTime" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="nonce" type="xs:string"/>
+          <xs:element minOccurs="0" name="sessionTranscript" type="tns:remoteDocument"/>
         </xs:sequence>
       </xs:complexType>
       <xs:complexType name="remoteSignatureParameters">
@@ -11335,6 +11197,11 @@
           <xs:element minOccurs="0" name="signerLocationStreet" type="xs:string"/>
           <xs:element minOccurs="0" name="signingDate" type="xs:dateTime"/>
           <xs:element name="trustAnchorBPPolicy" type="xs:boolean"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="remoteCertificate">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="encodedCertificate" type="xs:base64Binary"/>
         </xs:sequence>
       </xs:complexType>
       <xs:complexType name="timestampDTO">
@@ -11403,85 +11270,226 @@
           <xs:element minOccurs="0" name="value" type="xs:base64Binary"/>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="signEAAResponse">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="response" type="tns:remoteDocument"/>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="createKeyBindingSignature">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="createKeyBindingSignatureDTO" type="tns:createKeyBindingSignatureDTO"/>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="createKeyBindingSignatureDTO">
-        <xs:complexContent>
-          <xs:extension base="tns:abstractSignDocumentDTO">
-            <xs:sequence>
-              <xs:element maxOccurs="unbounded" minOccurs="0" name="disclosures" nillable="true" type="tns:disclosureDTO"/>
-              <xs:element minOccurs="0" name="attestation" type="tns:remoteDocument"/>
-              <xs:element minOccurs="0" name="keyBindingParameters" type="tns:remoteKeyBindingParameters"/>
-            </xs:sequence>
-          </xs:extension>
-        </xs:complexContent>
-      </xs:complexType>
-      <xs:complexType name="disclosureDTO">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="digestId" type="xs:int"/>
-          <xs:element minOccurs="0" name="namespace" type="xs:string"/>
-          <xs:element minOccurs="0" name="value" type="xs:string"/>
-        </xs:sequence>
-      </xs:complexType>
-      <xs:complexType name="remoteKeyBindingParameters">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="audience" type="xs:string"/>
-          <xs:element maxOccurs="unbounded" minOccurs="0" name="deviceSignedDataElements" nillable="true" type="tns:claimDTO"/>
-          <xs:element minOccurs="0" name="digestAlgorithm" type="tns:digestAlgorithm"/>
-          <xs:element minOccurs="0" name="docType" type="xs:string"/>
-          <xs:element minOccurs="0" name="attestationFormat" type="tns:attestationFormat"/>
-          <xs:element minOccurs="0" name="issuanceTime" type="xs:dateTime"/>
-          <xs:element minOccurs="0" name="nonce" type="xs:string"/>
-          <xs:element minOccurs="0" name="sessionTranscript" type="tns:remoteDocument"/>
-        </xs:sequence>
-      </xs:complexType>
       <xs:complexType name="createKeyBindingSignatureResponse">
         <xs:sequence>
           <xs:element minOccurs="0" name="response" type="tns:remoteDocument"/>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="issuePresentation">
+      <xs:complexType name="signAttestation">
         <xs:sequence>
-          <xs:element minOccurs="0" name="issuePresentationDTO" type="tns:issuePresentationDTO"/>
+          <xs:element minOccurs="0" name="signAttestationDTO" type="tns:signAttestationDTO"/>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="issuePresentationDTO">
+      <xs:complexType name="signAttestationDTO">
+        <xs:complexContent>
+          <xs:extension base="tns:abstractSignDocumentDTO">
+            <xs:sequence>
+              <xs:element minOccurs="0" name="payloadParameters" type="tns:remoteAttestationPayloadParameters"/>
+            </xs:sequence>
+          </xs:extension>
+        </xs:complexContent>
+      </xs:complexType>
+      <xs:complexType name="remoteAttestationPayloadParameters">
         <xs:sequence>
-          <xs:element maxOccurs="unbounded" minOccurs="0" name="disclosures" nillable="true" type="tns:disclosureDTO"/>
-          <xs:element minOccurs="0" name="attestation" type="tns:remoteDocument"/>
-          <xs:element minOccurs="0" name="keyBindingSignature" type="tns:remoteDocument"/>
-          <xs:element minOccurs="0" name="presentationParameters" type="tns:remoteAttestationPresentationParameters"/>
+          <xs:element minOccurs="0" name="attestationForm" type="tns:attestationForm"/>
+          <xs:element minOccurs="0" name="category" type="xs:string"/>
+          <xs:element minOccurs="0" name="decoyDigestNumber" type="xs:int"/>
+          <xs:element minOccurs="0" name="deviceKey" type="tns:remotePublicKey"/>
+          <xs:element minOccurs="0" name="digestAlgorithm" type="tns:digestAlgorithm"/>
+          <xs:element minOccurs="0" name="docType" type="xs:string"/>
+          <xs:element minOccurs="0" name="expectedUpdate" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="expirationDate" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="identifierList" type="tns:remoteIdentifierList"/>
+          <xs:element minOccurs="0" name="issuer" type="xs:string"/>
+          <xs:element minOccurs="0" name="nonSelectivelyDisclosable" type="tns:remoteAttestationClaimParameters"/>
+          <xs:element minOccurs="0" name="notBeforeDate" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="oneTime" type="xs:boolean"/>
+          <xs:element minOccurs="0" name="preComputedPayload" type="tns:remoteDocument"/>
+          <xs:element minOccurs="0" name="selectivelyDisclosable" type="tns:remoteAttestationClaimParameters"/>
+          <xs:element minOccurs="0" name="shortLived" type="xs:boolean"/>
+          <xs:element minOccurs="0" name="shuffleHashes" type="xs:boolean"/>
+          <xs:element minOccurs="0" name="signed" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="statusList" type="tns:remoteTokenStatusList"/>
+          <xs:element minOccurs="0" name="validFrom" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="validUntil" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="verifiableCredentialsType" type="xs:string"/>
+          <xs:element minOccurs="0" name="verifiableCredentialsTypeIntegrity" type="tns:digestDTO"/>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="remoteAttestationPresentationParameters">
+      <xs:complexType name="remotePublicKey">
         <xs:sequence>
-          <xs:element maxOccurs="unbounded" minOccurs="0" name="deviceSignedDataElements" nillable="true" type="tns:claimDTO"/>
-          <xs:element minOccurs="0" name="attestationFormat" type="tns:attestationFormat"/>
+          <xs:element minOccurs="0" name="certificate" type="tns:remoteCertificate"/>
+          <xs:element minOccurs="0" name="publicKey" type="xs:base64Binary"/>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="issuePresentationResponse">
+      <xs:complexType name="remoteIdentifierList">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="certificate" type="tns:remoteCertificate"/>
+          <xs:element minOccurs="0" name="identifier" type="xs:base64Binary"/>
+          <xs:element minOccurs="0" name="uri" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="remoteAttestationClaimParameters">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="addressCity" type="xs:string"/>
+          <xs:element minOccurs="0" name="addressCountry" type="xs:string"/>
+          <xs:element minOccurs="0" name="addressHouseNumber" type="xs:string"/>
+          <xs:element minOccurs="0" name="addressPostalCode" type="xs:string"/>
+          <xs:element minOccurs="0" name="addressState" type="xs:string"/>
+          <xs:element minOccurs="0" name="addressStreet" type="xs:string"/>
+          <xs:element minOccurs="0" name="administrativeExpirationDate" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="administrativeIssuanceDate" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="ageBirthYear" type="xs:int"/>
+          <xs:element minOccurs="0" name="ageInYears" type="xs:int"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="ageOverNN" nillable="true" type="tns:ageOverNNDTO"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="attestedAttributes" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="attestedAttributesSubjectDocumentNumber" type="xs:string"/>
+          <xs:element minOccurs="0" name="attestedAttributesSubjectFamilyName" type="xs:string"/>
+          <xs:element minOccurs="0" name="attestedAttributesSubjectGivenName" type="xs:string"/>
+          <xs:element minOccurs="0" name="attestedAttributesSubjectIdentifier" type="xs:string"/>
+          <xs:element minOccurs="0" name="attestedAttributesSubjectPseudonym" type="xs:string"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="biometricTemplate" nillable="true" type="tns:biometricTemplateNNDTO"/>
+          <xs:element minOccurs="0" name="biometricTemplateFace" type="xs:base64Binary"/>
+          <xs:element minOccurs="0" name="birthFamilyName" type="xs:string"/>
+          <xs:element minOccurs="0" name="birthFullName" type="xs:string"/>
+          <xs:element minOccurs="0" name="birthGivenName" type="xs:string"/>
+          <xs:element minOccurs="0" name="birthMiddleName" type="xs:string"/>
+          <xs:element minOccurs="0" name="birthdate" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="birthdateApproximateMask" type="xs:string"/>
+          <xs:element minOccurs="0" name="businessName" type="xs:string"/>
+          <xs:element minOccurs="0" name="dateOfExpiry" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="dateOfIssuance" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="distinguishingSign" type="xs:string"/>
+          <xs:element minOccurs="0" name="documentNumber" type="xs:string"/>
+          <xs:element minOccurs="0" name="documentType" type="xs:string"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="drivingPrivileges" nillable="true" type="tns:drivingPrivilegeDTO"/>
+          <xs:element minOccurs="0" name="email" type="xs:string"/>
+          <xs:element minOccurs="0" name="emailVerified" type="xs:boolean"/>
+          <xs:element minOccurs="0" name="eyeColour" type="xs:string"/>
+          <xs:element minOccurs="0" name="familyName" type="xs:string"/>
+          <xs:element minOccurs="0" name="fingerprint" type="xs:base64Binary"/>
+          <xs:element minOccurs="0" name="gender" type="xs:string"/>
+          <xs:element minOccurs="0" name="givenName" type="xs:string"/>
+          <xs:element minOccurs="0" name="hairColour" type="xs:string"/>
+          <xs:element minOccurs="0" name="height" type="xs:int"/>
+          <xs:element minOccurs="0" name="issuanceDate" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="issuingAuthority" type="xs:string"/>
+          <xs:element minOccurs="0" name="issuingAuthorityRegistrationIdentifier" type="xs:string"/>
+          <xs:element minOccurs="0" name="issuingCountry" type="xs:string"/>
+          <xs:element minOccurs="0" name="issuingJurisdiction" type="xs:string"/>
+          <xs:element minOccurs="0" name="locale" type="xs:string"/>
+          <xs:element minOccurs="0" name="middleName" type="xs:string"/>
+          <xs:element minOccurs="0" name="mobilePhoneNumber" type="xs:string"/>
+          <xs:element minOccurs="0" name="name" type="xs:string"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="nationalities" nillable="true" type="xs:string"/>
+          <xs:element minOccurs="0" name="nationality" type="xs:string"/>
+          <xs:element minOccurs="0" name="nickname" type="xs:string"/>
+          <xs:element minOccurs="0" name="organizationName" type="xs:string"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="otherClaims" nillable="true" type="tns:claimDTO"/>
+          <xs:element minOccurs="0" name="personalAdministrativeNumber" type="xs:string"/>
+          <xs:element minOccurs="0" name="phoneNumber" type="xs:string"/>
+          <xs:element minOccurs="0" name="phoneNumberVerified" type="xs:boolean"/>
+          <xs:element minOccurs="0" name="picture" type="xs:string"/>
+          <xs:element minOccurs="0" name="placeOfBirth" type="xs:string"/>
+          <xs:element minOccurs="0" name="placeOfBirthCountry" type="xs:string"/>
+          <xs:element minOccurs="0" name="placeOfBirthLocality" type="xs:string"/>
+          <xs:element minOccurs="0" name="placeOfBirthRegion" type="xs:string"/>
+          <xs:element minOccurs="0" name="portrait" type="xs:base64Binary"/>
+          <xs:element minOccurs="0" name="portraitCaptureDate" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="postalAddress" type="xs:string"/>
+          <xs:element minOccurs="0" name="preferredNickname" type="xs:string"/>
+          <xs:element minOccurs="0" name="profession" type="xs:string"/>
+          <xs:element minOccurs="0" name="profile" type="xs:string"/>
+          <xs:element minOccurs="0" name="pseudonym" type="xs:string"/>
+          <xs:element minOccurs="0" name="relationshipAgent" type="xs:string"/>
+          <xs:element minOccurs="0" name="relationshipBrother" type="xs:string"/>
+          <xs:element minOccurs="0" name="relationshipChildInLaw" type="xs:string"/>
+          <xs:element minOccurs="0" name="relationshipDaughter" type="xs:string"/>
+          <xs:element minOccurs="0" name="relationshipDaughterInLaw" type="xs:string"/>
+          <xs:element minOccurs="0" name="relationshipFather" type="xs:string"/>
+          <xs:element minOccurs="0" name="relationshipFatherInLaw" type="xs:string"/>
+          <xs:element minOccurs="0" name="relationshipLegalRepresentative" type="xs:string"/>
+          <xs:element minOccurs="0" name="relationshipMother" type="xs:string"/>
+          <xs:element minOccurs="0" name="relationshipMotherInLaw" type="xs:string"/>
+          <xs:element minOccurs="0" name="relationshipParent" type="xs:string"/>
+          <xs:element minOccurs="0" name="relationshipParentInLaw" type="xs:string"/>
+          <xs:element minOccurs="0" name="relationshipParentalAuthority" type="xs:string"/>
+          <xs:element minOccurs="0" name="relationshipSibling" type="xs:string"/>
+          <xs:element minOccurs="0" name="relationshipSister" type="xs:string"/>
+          <xs:element minOccurs="0" name="relationshipSon" type="xs:string"/>
+          <xs:element minOccurs="0" name="relationshipSonInLaw" type="xs:string"/>
+          <xs:element minOccurs="0" name="relationshipSpouse" type="xs:string"/>
+          <xs:element minOccurs="0" name="salutation" type="xs:string"/>
+          <xs:element minOccurs="0" name="sex" type="xs:int"/>
+          <xs:element minOccurs="0" name="signatureUsualMark" type="xs:base64Binary"/>
+          <xs:element minOccurs="0" name="subject" type="xs:string"/>
+          <xs:element minOccurs="0" name="title" type="xs:string"/>
+          <xs:element minOccurs="0" name="trustAnchor" type="xs:string"/>
+          <xs:element minOccurs="0" name="updatedAt" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="website" type="xs:string"/>
+          <xs:element minOccurs="0" name="weight" type="xs:int"/>
+          <xs:element minOccurs="0" name="zoneinfo" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="ageOverNNDTO">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="age" type="xs:int"/>
+          <xs:element minOccurs="0" name="over" type="xs:boolean"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="biometricTemplateNNDTO">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="data" type="xs:base64Binary"/>
+          <xs:element minOccurs="0" name="type" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="drivingPrivilegeDTO">
+        <xs:sequence>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="codes" nillable="true" type="tns:drivingPrivilegeCodeDTO"/>
+          <xs:element minOccurs="0" name="expiryDate" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="issueDate" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="vehicleCategoryCode" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="drivingPrivilegeCodeDTO">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="code" type="xs:string"/>
+          <xs:element minOccurs="0" name="sign" type="xs:string"/>
+          <xs:element minOccurs="0" name="value" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="remoteTokenStatusList">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="certificate" type="tns:remoteCertificate"/>
+          <xs:element minOccurs="0" name="index" type="xs:int"/>
+          <xs:element minOccurs="0" name="purpose" type="xs:string"/>
+          <xs:element minOccurs="0" name="type" type="xs:string"/>
+          <xs:element minOccurs="0" name="uri" type="xs:string"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="digestDTO">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="algorithm" type="tns:digestAlgorithm"/>
+          <xs:element minOccurs="0" name="value" type="xs:base64Binary"/>
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="signAttestationResponse">
         <xs:sequence>
           <xs:element minOccurs="0" name="response" type="tns:remoteDocument"/>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="getDataToSign">
+      <xs:complexType name="getDataToSignForKeyBindingSignature">
         <xs:sequence>
-          <xs:element minOccurs="0" name="dataToSignAttestationDTO" type="tns:dataToSignAttestationDTO"/>
+          <xs:element minOccurs="0" name="dataToSignForKeyBindingSignatureDTO" type="tns:dataToSignForKeyBindingSignatureDTO"/>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="dataToSignAttestationDTO">
+      <xs:complexType name="dataToSignForKeyBindingSignatureDTO">
         <xs:complexContent>
           <xs:extension base="tns:abstractDataToSignDTO">
             <xs:sequence>
-              <xs:element minOccurs="0" name="payloadParameters" type="tns:remoteAttestationPayloadParameters"/>
+              <xs:element minOccurs="0" name="attestation" type="tns:remoteDocument"/>
+              <xs:element maxOccurs="unbounded" minOccurs="0" name="disclosures" nillable="true" type="tns:disclosureDTO"/>
+              <xs:element minOccurs="0" name="keyBindingParameters" type="tns:remoteKeyBindingParameters"/>
             </xs:sequence>
           </xs:extension>
         </xs:complexContent>
@@ -11491,7 +11499,7 @@
           <xs:element minOccurs="0" name="parameters" type="tns:remoteSignatureParameters"/>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="getDataToSignResponse">
+      <xs:complexType name="getDataToSignForKeyBindingSignatureResponse">
         <xs:sequence>
           <xs:element minOccurs="0" name="response" type="tns:toBeSignedDTO"/>
         </xs:sequence>
@@ -11516,23 +11524,21 @@
           <xs:element maxOccurs="unbounded" minOccurs="0" name="response" type="tns:disclosureDTO"/>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="getDataToSignForKeyBindingSignature">
+      <xs:complexType name="getDataToSign">
         <xs:sequence>
-          <xs:element minOccurs="0" name="dataToSignForKeyBindingSignatureDTO" type="tns:dataToSignForKeyBindingSignatureDTO"/>
+          <xs:element minOccurs="0" name="dataToSignAttestationDTO" type="tns:dataToSignAttestationDTO"/>
         </xs:sequence>
       </xs:complexType>
-      <xs:complexType name="dataToSignForKeyBindingSignatureDTO">
+      <xs:complexType name="dataToSignAttestationDTO">
         <xs:complexContent>
           <xs:extension base="tns:abstractDataToSignDTO">
             <xs:sequence>
-              <xs:element maxOccurs="unbounded" minOccurs="0" name="disclosures" nillable="true" type="tns:disclosureDTO"/>
-              <xs:element minOccurs="0" name="attestation" type="tns:remoteDocument"/>
-              <xs:element minOccurs="0" name="keyBindingParameters" type="tns:remoteKeyBindingParameters"/>
+              <xs:element minOccurs="0" name="payloadParameters" type="tns:remoteAttestationPayloadParameters"/>
             </xs:sequence>
           </xs:extension>
         </xs:complexContent>
       </xs:complexType>
-      <xs:complexType name="getDataToSignForKeyBindingSignatureResponse">
+      <xs:complexType name="getDataToSignResponse">
         <xs:sequence>
           <xs:element minOccurs="0" name="response" type="tns:toBeSignedDTO"/>
         </xs:sequence>
@@ -11557,12 +11563,10 @@
           <xs:enumeration value="WHIRLPOOL"/>
         </xs:restriction>
       </xs:simpleType>
-      <xs:simpleType name="attestationFormat">
+      <xs:simpleType name="attestationForm">
         <xs:restriction base="xs:string">
-          <xs:enumeration value="SD_JWT_VC"/>
-          <xs:enumeration value="ISO_IEC_MDOC"/>
-          <xs:enumeration value="W3C_VC"/>
-          <xs:enumeration value="X509_AC"/>
+          <xs:enumeration value="SD_JWT"/>
+          <xs:enumeration value="MDOC"/>
         </xs:restriction>
       </xs:simpleType>
       <xs:simpleType name="timestampContainerForm">
@@ -11841,66 +11845,66 @@
       </xs:simpleType>
     </xs:schema>
   </wsdl:types>
-  <wsdl:message name="signEAA">
-    <wsdl:part element="ns1:signEAA" name="parameters"></wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="createKeyBindingSignature">
-    <wsdl:part element="ns1:createKeyBindingSignature" name="parameters"></wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="getDataToSignResponse">
-    <wsdl:part element="ns1:getDataToSignResponse" name="parameters"></wsdl:part>
+  <wsdl:message name="getDataToSignForKeyBindingSignatureResponse">
+    <wsdl:part element="ns1:getDataToSignForKeyBindingSignatureResponse" name="parameters"></wsdl:part>
   </wsdl:message>
   <wsdl:message name="issuePresentation">
     <wsdl:part element="ns1:issuePresentation" name="parameters"></wsdl:part>
   </wsdl:message>
-  <wsdl:message name="getDataToSignForKeyBindingSignatureResponse">
-    <wsdl:part element="ns1:getDataToSignForKeyBindingSignatureResponse" name="parameters"></wsdl:part>
+  <wsdl:message name="getDataToSignResponse">
+    <wsdl:part element="ns1:getDataToSignResponse" name="parameters"></wsdl:part>
   </wsdl:message>
-  <wsdl:message name="signEAAResponse">
-    <wsdl:part element="ns1:signEAAResponse" name="parameters"></wsdl:part>
+  <wsdl:message name="createKeyBindingSignature">
+    <wsdl:part element="ns1:createKeyBindingSignature" name="parameters"></wsdl:part>
   </wsdl:message>
-  <wsdl:message name="getDataToSign">
-    <wsdl:part element="ns1:getDataToSign" name="parameters"></wsdl:part>
+  <wsdl:message name="signAttestationResponse">
+    <wsdl:part element="ns1:signAttestationResponse" name="parameters"></wsdl:part>
   </wsdl:message>
-  <wsdl:message name="getDisclosures">
-    <wsdl:part element="ns1:getDisclosures" name="parameters"></wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="getDataToSignForKeyBindingSignature">
-    <wsdl:part element="ns1:getDataToSignForKeyBindingSignature" name="parameters"></wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="getDisclosuresResponse">
-    <wsdl:part element="ns1:getDisclosuresResponse" name="parameters"></wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="createKeyBindingSignatureResponse">
-    <wsdl:part element="ns1:createKeyBindingSignatureResponse" name="parameters"></wsdl:part>
+  <wsdl:message name="signAttestation">
+    <wsdl:part element="ns1:signAttestation" name="parameters"></wsdl:part>
   </wsdl:message>
   <wsdl:message name="issuePresentationResponse">
     <wsdl:part element="ns1:issuePresentationResponse" name="parameters"></wsdl:part>
   </wsdl:message>
-  <wsdl:portType name="SoapEAACreationService">
-    <wsdl:operation name="signEAA">
-      <wsdl:input message="ns1:signEAA" name="signEAA"></wsdl:input>
-      <wsdl:output message="ns1:signEAAResponse" name="signEAAResponse"></wsdl:output>
+  <wsdl:message name="createKeyBindingSignatureResponse">
+    <wsdl:part element="ns1:createKeyBindingSignatureResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getDisclosuresResponse">
+    <wsdl:part element="ns1:getDisclosuresResponse" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getDataToSignForKeyBindingSignature">
+    <wsdl:part element="ns1:getDataToSignForKeyBindingSignature" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getDisclosures">
+    <wsdl:part element="ns1:getDisclosures" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getDataToSign">
+    <wsdl:part element="ns1:getDataToSign" name="parameters"></wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="SoapAttestationCreationService">
+    <wsdl:operation name="issuePresentation">
+      <wsdl:input message="ns1:issuePresentation" name="issuePresentation"></wsdl:input>
+      <wsdl:output message="ns1:issuePresentationResponse" name="issuePresentationResponse"></wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="createKeyBindingSignature">
       <wsdl:input message="ns1:createKeyBindingSignature" name="createKeyBindingSignature"></wsdl:input>
       <wsdl:output message="ns1:createKeyBindingSignatureResponse" name="createKeyBindingSignatureResponse"></wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="issuePresentation">
-      <wsdl:input message="ns1:issuePresentation" name="issuePresentation"></wsdl:input>
-      <wsdl:output message="ns1:issuePresentationResponse" name="issuePresentationResponse"></wsdl:output>
+    <wsdl:operation name="signAttestation">
+      <wsdl:input message="ns1:signAttestation" name="signAttestation"></wsdl:input>
+      <wsdl:output message="ns1:signAttestationResponse" name="signAttestationResponse"></wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="getDataToSign">
-      <wsdl:input message="ns1:getDataToSign" name="getDataToSign"></wsdl:input>
-      <wsdl:output message="ns1:getDataToSignResponse" name="getDataToSignResponse"></wsdl:output>
+    <wsdl:operation name="getDataToSignForKeyBindingSignature">
+      <wsdl:input message="ns1:getDataToSignForKeyBindingSignature" name="getDataToSignForKeyBindingSignature"></wsdl:input>
+      <wsdl:output message="ns1:getDataToSignForKeyBindingSignatureResponse" name="getDataToSignForKeyBindingSignatureResponse"></wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="getDisclosures">
       <wsdl:input message="ns1:getDisclosures" name="getDisclosures"></wsdl:input>
       <wsdl:output message="ns1:getDisclosuresResponse" name="getDisclosuresResponse"></wsdl:output>
     </wsdl:operation>
-    <wsdl:operation name="getDataToSignForKeyBindingSignature">
-      <wsdl:input message="ns1:getDataToSignForKeyBindingSignature" name="getDataToSignForKeyBindingSignature"></wsdl:input>
-      <wsdl:output message="ns1:getDataToSignForKeyBindingSignatureResponse" name="getDataToSignForKeyBindingSignatureResponse"></wsdl:output>
+    <wsdl:operation name="getDataToSign">
+      <wsdl:input message="ns1:getDataToSign" name="getDataToSign"></wsdl:input>
+      <wsdl:output message="ns1:getDataToSignResponse" name="getDataToSignResponse"></wsdl:output>
     </wsdl:operation>
   </wsdl:portType>
 </wsdl:definitions>]]></con:content><con:type>http://schemas.xmlsoap.org/wsdl/</con:type></con:part></con:definitionCache><con:endpoints><con:endpoint>http://localhost:8080/services/soap/attestation-creation</con:endpoint></con:endpoints><con:operation id="439f13ee-e766-40bb-a7cf-dafb26401ad8" isOneWay="false" action="" name="createKeyBindingSignature" bindingOperationName="createKeyBindingSignature" type="Request-Response" outputName="createKeyBindingSignatureResponse" inputName="createKeyBindingSignature" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="7615e3c2-50fd-4cfd-958b-b5df2611f102" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/services/soap/attestation-creation</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:attestation="http://attestation.creation.dss.esig.europa.eu/">\r
@@ -11975,17 +11979,15 @@
                <!--Optional:-->
                <name>document-signed-jades-baseline-b.json</name>
             </attestation>
-
             <!--Optional:-->\r
             <keyBindingParameters>
                <!--Optional:-->
                <audience>audience</audience>
                <!--Optional:-->
-               <attestationFormat>SD_JWT_VC</attestationFormat>
+               <attestationForm>SD_JWT</attestationForm>
                <!--Optional:-->
                <nonce>123456</nonce>
             </keyBindingParameters>
-
          </createKeyBindingSignatureDTO>\r
       </attestation:createKeyBindingSignature>\r
    </soapenv:Body>\r
@@ -12020,13 +12022,15 @@
                   <publicKey>MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEEv1XiCEdzBg9SOzF90jr8ZCbRSymlNapvTUidkL/6xPzuJBAzGvgYJKmwvLz8KLFsJzSJrUgFe5tfkVeykqg4w==</publicKey>\r
                </deviceKey>\r
                <!--Optional:-->\r
-               <attestationFormat>SD_JWT_VC</attestationFormat>\r
+               <attestationForm>SD_JWT</attestationForm>\r
                <!--Optional:-->\r
                <expirationDate>2026-09-18T13:31:23.912Z</expirationDate>\r
                <!--Optional:-->\r
                <issuer>EAA provider</issuer>\r
                <!--Optional:-->\r
                <nonSelectivelyDisclosable>\r
+	             <!--Optional:-->
+	             <subject>good-ecdsa-user</subject>
                   <!--Optional:-->\r
                   <issuingAuthority>TEST Authority</issuingAuthority>\r
                   <!--Optional:-->\r
@@ -12122,8 +12126,6 @@
                   <uri>https://pki.nowina.lu/attestation/status_list</uri>\r
                </statusList>\r
                <!--Optional:-->\r
-               <subject>good-ecdsa-user</subject>\r
-               <!--Optional:-->\r
                <verifiableCredentialsType>urn:eudi:attestation:1</verifiableCredentialsType>\r
                <!--Optional:-->\r
                <verifiableCredentialsTypeIntegrity>\r
@@ -12206,7 +12208,7 @@
                <!--Optional:-->\r
                <audience>audience</audience>\r
                <!--Optional:-->\r
-               <attestationFormat>SD_JWT_VC</attestationFormat>\r
+               <attestationForm>SD_JWT</attestationForm>\r
                <!--Optional:-->\r
                <nonce>123456</nonce>\r
             </keyBindingParameters>\r
@@ -12219,7 +12221,7 @@
       <attestation:getDisclosures>\r
          <!--Optional:-->\r
          <disclosuresDTO>\r
-            <!--Optional:-->\r
+            <!--Optional:-->
             <payloadParameters>
                <!--Optional:-->
                <category>urn:etsi:esi:attestation:eu:qualified</category>
@@ -12229,13 +12231,15 @@
                   <publicKey>MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEEv1XiCEdzBg9SOzF90jr8ZCbRSymlNapvTUidkL/6xPzuJBAzGvgYJKmwvLz8KLFsJzSJrUgFe5tfkVeykqg4w==</publicKey>
                </deviceKey>
                <!--Optional:-->
-               <attestationFormat>SD_JWT_VC</attestationFormat>
+               <attestationForm>SD_JWT</attestationForm>
                <!--Optional:-->
                <expirationDate>2026-09-18T13:31:23.912Z</expirationDate>
                <!--Optional:-->
                <issuer>EAA provider</issuer>
                <!--Optional:-->
                <nonSelectivelyDisclosable>
+	             <!--Optional:-->
+	             <subject>good-ecdsa-user</subject>
                   <!--Optional:-->
                   <issuingAuthority>TEST Authority</issuingAuthority>
                   <!--Optional:-->
@@ -12330,8 +12334,6 @@
                   <!--Optional:-->
                   <uri>https://pki.nowina.lu/attestation/status_list</uri>
                </statusList>
-               <!--Optional:-->
-               <subject>good-ecdsa-user</subject>
                <!--Optional:-->
                <verifiableCredentialsType>urn:eudi:attestation:1</verifiableCredentialsType>
                <!--Optional:-->
@@ -12407,15 +12409,15 @@
             <!--Optional:-->\r
             <presentationParameters>\r
                <!--Optional:-->\r
-               <attestationFormat>SD_JWT_VC</attestationFormat>\r
+               <attestationForm>SD_JWT</attestationForm>\r
             </presentationParameters>\r
          </issuePresentationDTO>\r
       </attestation:issuePresentation>\r
    </soapenv:Body>\r
-</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://soap.creation.attestation.ws.dss.esig.europa.eu/SoapEAACreationService/issuePresentation"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="5a00edce-c601-4f64-928d-a0c29fbedd3b" isOneWay="false" action="" name="signEAA" bindingOperationName="signEAA" type="Request-Response" outputName="signEAAResponse" inputName="signEAA" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="2124ba75-bcf2-4af8-91a0-9650a80a1660" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/services/soap/attestation-creation</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:attestation="http://attestation.creation.dss.esig.europa.eu/">\r
+</soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://soap.creation.attestation.ws.dss.esig.europa.eu/SoapEAACreationService/issuePresentation"/><con:wsrmConfig version="1.2"/></con:call></con:operation><con:operation id="5a00edce-c601-4f64-928d-a0c29fbedd3b" isOneWay="false" action="" name="signAttestation" bindingOperationName="signAttestation" type="Request-Response" outputName="signAttestationResponse" inputName="signAttestation" receivesAttachments="false" sendsAttachments="false" anonymous="optional"><con:settings/><con:call id="2124ba75-bcf2-4af8-91a0-9650a80a1660" name="Request 1"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:encoding>UTF-8</con:encoding><con:endpoint>http://localhost:8080/services/soap/attestation-creation</con:endpoint><con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:attestation="http://attestation.creation.dss.esig.europa.eu/">\r
    <soapenv:Header/>\r
    <soapenv:Body>\r
-      <attestation:signEAA>\r
+      <attestation:signAttestation>\r
          <!--Optional:-->\r
          <signAttestationDTO>\r
             <!--Optional:-->
@@ -12433,13 +12435,13 @@
                   <encodedCertificate>MIIC6jCCAdKgAwIBAgIGLtYU17tXMA0GCSqGSIb3DQEBCwUAMDAxGzAZBgNVBAMMElJvb3RTZWxmU2lnbmVkRmFrZTERMA8GA1UECgwIRFNTLXRlc3QwHhcNMTcwNjA4MTEyNjAxWhcNNDcwNzA0MDc1NzI0WjAoMRMwEQYDVQQDDApTaWduZXJGYWtlMREwDwYDVQQKDAhEU1MtdGVzdDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMI3kZhtnipn+iiZHZ9ax8FlfE5Ow/cFwBTfAEb3R1ZQUp6/BQnBt7Oo0JWBtc9qkv7JUDdcBJXPV5QWS5AyMPHpqQ75Hitjsq/Fzu8eHtkKpFizcxGa9BZdkQjh4rSrtO1Kjs0Rd5DQtWSgkeVCCN09kN0ZsZ0ENY+Ip8QxSmyztsStkYXdULqpwz4JEXW9vz64eTbde4vQJ6pjHGarJf1gQNEc2XzhmI/prXLysWNqC7lZg7PUZUTrdegABTUzYCRJ1kWBRPm4qo0LN405c94QQd45a5kTgowHzEgLnAQI28x0M3A59TKC+ieNc6VF1PsTLpUw7PNI2VstX5jAuasCAwEAAaMSMBAwDgYDVR0PAQH/BAQDAgEGMA0GCSqGSIb3DQEBCwUAA4IBAQCK6LGA01TR+rmU8p6yhAi4OkDN2b1dbIL8l8iCMYopLCxx8xqq3ubZCOxqh1X2j6pgWzarb0b/MUix00IoUvNbFOxAW7PBZIKDLnm6LsckRxs1U32sC9d1LOHe3WKBNB6GZALT1ewjh7hSbWjftlmcovq+6eVGA5cvf2u/2+TkKkyHV/NR394nXrdsdpvygwypEtXjetzD7UT93Nuw3xcV8VIftIvHf9LjU7h+UjGmKXG9c15eYr3SzUmv6kyOI0Bvw14PWtsWGl0QdOSRvIBBrP4adCnGTgjgjk9LTcO8B8FKrr+8lHGuc0bp4lIUToiUkGILXsiEeEg9WAqm+XqO</encodedCertificate>
                </signingCertificate>
             </parameters>
-            <!--Optional:-->\r
-            <signatureValue>\r
-               <!--Optional:-->\r
-               <algorithm>RSA_SHA256</algorithm>\r
-               <!--Optional:-->\r
-               <value>YUKNY7nevLUD999oM8/oUA1kjT8FMBA/7RiEpw9U/qErkGO8LV+fUvfxRIt4lvBIPTUWFQRGiyIdqnfS/KsK68JLbjCGMWi7HqP3PnE0OiiFXE6+aQFksMhKXYjDlt+Mhxv5H6ufGF4WvZunt6m49Ys4i1BoaIa+VCV5aZbUmJj4n0kezOa3WLAeqM5jGL3DAu6uvyirzG72Z7U4aX92QiniqNbeyY2JXX4SJkCuIH5qWHB2dUz6bemvVxyLVKPUcu3aAaJMabwyWWCTT7rVfV+ilvsMIXCW1z/pc5+ErwMdtY39GJAEI6qfjX/9b9uNwE00u13X+MgTubhdlgimlQ==</value>\r
-            </signatureValue>\r
+            <!--Optional:-->
+            <signatureValue>
+               <!--Optional:-->
+               <algorithm>RSA_SHA256</algorithm>
+               <!--Optional:-->
+               <value>YUKNY7nevLUD999oM8/oUA1kjT8FMBA/7RiEpw9U/qErkGO8LV+fUvfxRIt4lvBIPTUWFQRGiyIdqnfS/KsK68JLbjCGMWi7HqP3PnE0OiiFXE6+aQFksMhKXYjDlt+Mhxv5H6ufGF4WvZunt6m49Ys4i1BoaIa+VCV5aZbUmJj4n0kezOa3WLAeqM5jGL3DAu6uvyirzG72Z7U4aX92QiniqNbeyY2JXX4SJkCuIH5qWHB2dUz6bemvVxyLVKPUcu3aAaJMabwyWWCTT7rVfV+ilvsMIXCW1z/pc5+ErwMdtY39GJAEI6qfjX/9b9uNwE00u13X+MgTubhdlgimlQ==</value>
+            </signatureValue>
             <!--Optional:-->
             <payloadParameters>
                <!--Optional:-->
@@ -12450,13 +12452,15 @@
                   <publicKey>MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEEv1XiCEdzBg9SOzF90jr8ZCbRSymlNapvTUidkL/6xPzuJBAzGvgYJKmwvLz8KLFsJzSJrUgFe5tfkVeykqg4w==</publicKey>
                </deviceKey>
                <!--Optional:-->
-               <attestationFormat>SD_JWT_VC</attestationFormat>
+               <attestationForm>SD_JWT</attestationForm>
                <!--Optional:-->
                <expirationDate>2026-09-18T13:31:23.912Z</expirationDate>
                <!--Optional:-->
                <issuer>EAA provider</issuer>
                <!--Optional:-->
                <nonSelectivelyDisclosable>
+	             <!--Optional:-->
+	             <subject>good-ecdsa-user</subject>
                   <!--Optional:-->
                   <issuingAuthority>TEST Authority</issuingAuthority>
                   <!--Optional:-->
@@ -12552,8 +12556,6 @@
                   <uri>https://pki.nowina.lu/attestation/status_list</uri>
                </statusList>
                <!--Optional:-->
-               <subject>good-ecdsa-user</subject>
-               <!--Optional:-->
                <verifiableCredentialsType>urn:eudi:attestation:1</verifiableCredentialsType>
                <!--Optional:-->
                <verifiableCredentialsTypeIntegrity>
@@ -12564,6 +12566,6 @@
                </verifiableCredentialsTypeIntegrity>
             </payloadParameters>
          </signAttestationDTO>\r
-      </attestation:signEAA>\r
+      </attestation:signAttestation>\r
    </soapenv:Body>\r
 </soapenv:Envelope>]]></con:request><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:wsaConfig mustUnderstand="NONE" version="200508" action="http://soap.creation.attestation.ws.dss.esig.europa.eu/SoapEAACreationService/signEAA"/><con:wsrmConfig version="1.2"/></con:call></con:operation></con:interface><con:properties/><con:wssContainer/><con:oAuth2ProfileContainer/><con:oAuth1ProfileContainer/><con:sensitiveInformation/></con:soapui-project>
