@@ -24,6 +24,7 @@ import eu.europa.esig.dss.cms.CMS;
 import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.pades.validation.ByteRange;
 import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
+import eu.europa.esig.dss.pades.validation.PdfSignatureField;
 import eu.europa.esig.dss.pdf.PdfSignatureDictionaryComparator;
 import eu.europa.esig.dss.pdf.SigFieldPermissions;
 import org.junit.jupiter.api.BeforeEach;
@@ -239,7 +240,8 @@ class PdfSignatureDictionaryComparatorTest {
 		}
 
 		@Override
-		public boolean checkConsistency(PdfSignatureDictionary signatureDictionary) {
+		public boolean checkConsistency(List<PdfSignatureField> finalSignatureFields, PdfSignatureDictionary revisionSignatureDictionary,
+										 List<PdfSignatureField> revisionSignatureFields) {
 			return false;
 		}
 

@@ -145,6 +145,24 @@ public class DefaultPdfObjectModificationsFinder implements PdfObjectModificatio
         return getPdfObjectModificationsFilter().filter(objectModifications);
     }
 
+    /**
+     * Returns found and categorized object differences between two provided {@code PdfObject} objects,
+     * both extracted under the given {@code name} (e.g. a dictionary key name)
+     *
+     * @param name {@link String} name under which both objects were extracted (used to label found differences)
+     * @param originalRevisionObject {@link PdfObject} representing an object extracted from original (e.g. signed) PDF revision
+     * @param finalRevisionObject {@link PdfObject} representing an object extracted the final PDF document revision
+     * @return {@link PdfObjectModifications} found between two given PDF objects
+     */
+    public PdfObjectModifications find(String name, PdfObject originalRevisionObject, PdfObject finalRevisionObject) {
+        final Set<ObjectModification> objectModifications = new LinkedHashSet<>();
+        final PdfObjectTree objectTree = new PdfObjectTree();
+        objectTree.addKey(name);
+        compareObjectsRecursively(objectModifications, new HashSet<>(), objectTree, name,
+                originalRevisionObject, finalRevisionObject);
+        return getPdfObjectModificationsFilter().filter(objectModifications);
+    }
+
     private void compareDictsRecursively(Set<ObjectModification> modifications, Set<PdfObjectTreeReference> processedObjects,
                                          PdfObjectTree objectTree, PdfDict signedDict, PdfDict finalDict) {
         final String[] signedRevObjNames = signedDict.list();

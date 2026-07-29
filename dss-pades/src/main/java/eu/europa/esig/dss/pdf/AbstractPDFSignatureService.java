@@ -579,8 +579,8 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 					final DSSDocument revisionContent = PAdESUtils.getRevisionContent(document, byteRange);
 					try (PdfDocumentReader revisionReader = loadPdfDocumentReader(revisionContent, pwd)) {
 
-						// Method is used to detect modification within the signature dictionary itself (spoofing attack)
-						verifyPdfSignatureDictionary(signatureDictionary, fieldNames, revisionReader);
+						// Method is used to detect modification within the signature dictionary itself or signature fields associated to it (spoofing attack)
+						verifyPdfSignatureFields(signatureDictionary, fields, revisionReader);
 
 						// create a DSS revision if updated
 						lastDSSDictionary = getPreviousDssDictAndUpdateIfNeeded(revisions, compositeDssDictionary,
@@ -700,25 +700,22 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 						(oldValue, newValue) -> oldValue, LinkedHashMap::new));
 	}
 
-	private void verifyPdfSignatureDictionary(PdfSignatureDictionary signatureDictionary, List<String> fieldNames,
-											  PdfDocumentReader revisionReader) throws IOException {
-		PdfSignatureDictionary signatureDictionaryToCompare = getSignatureDictionaryForFieldNames(fieldNames, revisionReader);
-		if (!signatureDictionary.checkConsistency(signatureDictionaryToCompare)) {
+	private void verifyPdfSignatureFields(PdfSignatureDictionary finalSignatureDictionary, List<PdfSignatureField> finalSignatureFields,
+										  PdfDocumentReader revisionReader) throws IOException {
+		List<String> fieldNames = toStringFullyQualifiedNames(finalSignatureFields);
+
+		Map<PdfSignatureDictionary, List<PdfSignatureField>> pdfSignatureDictionaryListMap = revisionReader.extractSigDictionaries();
+		Map.Entry<PdfSignatureDictionary, List<PdfSignatureField>> revisionEntry = pdfSignatureDictionaryListMap.entrySet().stream()
+				.filter(entry -> fieldNames.equals(toStringFullyQualifiedNames(entry.getValue())))
+				.findFirst()
+				.orElse(null);
+
+		PdfSignatureDictionary revisionSignatureDictionary = revisionEntry != null ? revisionEntry.getKey() : null;
+		List<PdfSignatureField> revisionSignatureFields = revisionEntry != null ? revisionEntry.getValue() : null;
+
+		if (!finalSignatureDictionary.checkConsistency(finalSignatureFields, revisionSignatureDictionary, revisionSignatureFields)) {
 			LOG.warn("The signature dictionary for signature {} is not consistent!", fieldNames);
 		}
-	}
-
-	private PdfSignatureDictionary getSignatureDictionaryForFieldNames(List<String> fieldNames,
-																	   PdfDocumentReader revisionReader) throws IOException{
-		Map<PdfSignatureDictionary, List<PdfSignatureField>> pdfSignatureDictionaryListMap = revisionReader.extractSigDictionaries();
-		for (Map.Entry<PdfSignatureDictionary, List<PdfSignatureField>> entry : pdfSignatureDictionaryListMap.entrySet()) {
-			PdfSignatureDictionary signatureDictionary = entry.getKey();
-			List<PdfSignatureField> signatureFields = entry.getValue();
-			if (fieldNames.equals(toStringFullyQualifiedNames(signatureFields))) {
-				return signatureDictionary;
-			}
-		}
-		return null;
 	}
 
     private List<String> toStringFullyQualifiedNames(List<PdfSignatureField> signatureFields) {

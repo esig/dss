@@ -154,6 +154,8 @@ public final class PAdESConstants {
 	public static final String PIECE_INFO_NAME = "PieceInfo";
 	/** 'Reason' */
 	public static final String REASON_NAME = "Reason";
+	/** 'Rect' (Annotation rectangle) */
+	public static final String RECT_NAME = "Rect";
 	/** 'Reference' */
 	public static final String REFERENCE_NAME = "Reference";
 	/** 'Root' */

@@ -25,6 +25,7 @@ import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.pdf.SigFieldPermissions;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Contains PDF signature dictionary information
@@ -124,19 +125,27 @@ public interface PdfSignatureDictionary {
 	SigFieldPermissions getFieldMDP();
 
 	/**
-	 * Verifies the equality of the current PdfSignatureDictionary with provided {@code signatureDictionary}.
-	 * NOTE: this method is similar to {@code equals(PdfSignatureDictionary)} method,
-	 * but also modifies the state of the object accessible from {@code isConsistent()} method.
-	 * If none signature dictionary found in the signed revision, NULL may be provided.
+	 * Verifies the consistency of the current PdfSignatureDictionary and its {@code finalSignatureFields}
+	 * against the {@code revisionSignatureDictionary} and {@code revisionSignatureFields} found within
+	 * the signed document revision.
+	 * NOTE: this method also modifies the state of the object accessible from {@code isConsistent()} method.
+	 * If none signature dictionary found in the signed revision, NULL may be provided for
+	 * {@code revisionSignatureDictionary} and {@code revisionSignatureFields}.
 	 *
-	 * @return TRUE if the {@code PdfSignatureDictionary} is equal to the provided {@code signatureDictionary}, FALSE otherwise
-	 * @param signatureDictionary {@link PdfSignatureDictionary} to compare with
+	 * @param finalSignatureFields {@link List} of {@link PdfSignatureField}s associated with the current
+	 *                                          signature dictionary within the final document revision
+	 * @param revisionSignatureDictionary {@link PdfSignatureDictionary} to compare with, as found within
+	 *                                                                  the signed document revision
+	 * @param revisionSignatureFields {@link List} of {@link PdfSignatureField}s associated with the
+	 *                                             {@code revisionSignatureDictionary}
+	 * @return TRUE if the {@code PdfSignatureDictionary} and its signature fields are consistent, FALSE otherwise
 	 */
-	boolean checkConsistency(PdfSignatureDictionary signatureDictionary);
+	boolean checkConsistency(List<PdfSignatureField> finalSignatureFields, PdfSignatureDictionary revisionSignatureDictionary,
+							  List<PdfSignatureField> revisionSignatureFields);
 
 	/**
 	 * Checks if the signature dictionary is consistent.
-	 * NOTE: method {@code checkConsistency(PdfSignatureDictionary)} shall be executed before!
+	 * NOTE: method {@code checkConsistency(List, PdfSignatureDictionary, List)} shall be executed before!
 	 *
 	 * @return TRUE if the {@code PdfSignatureDictionary} is consistent, FALSE otherwise
 	 */
