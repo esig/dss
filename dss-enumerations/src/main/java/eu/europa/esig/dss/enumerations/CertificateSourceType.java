@@ -52,8 +52,8 @@ public enum CertificateSourceType {
 	/** Certificate source extracted from an Evidence record */
 	EVIDENCE_RECORD,
 
-	/** Certificate source extracted from an EAA token's claims */
-	EAA,
+	/** Certificate source extracted from an attestation token's claims */
+	ATTESTATION,
 
 	/** The unknown origin of a certificate source */
 	UNKNOWN;

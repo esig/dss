@@ -42,7 +42,7 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.model.x509.revocation.crl.CRL;
 import eu.europa.esig.dss.model.x509.revocation.ocsp.OCSP;
 import eu.europa.esig.dss.spi.SignatureCertificateSource;
-import eu.europa.esig.dss.spi.eaa.EAA;
+import eu.europa.esig.dss.spi.attestation.Attestation;
 import eu.europa.esig.dss.spi.signature.identifier.SignatureIdentifier;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
@@ -261,18 +261,18 @@ public interface AdvancedSignature extends IdentifierBasedObject, Serializable {
 	void setMasterSignature(final AdvancedSignature masterSignature);
 
 	/**
-	 * Gets the EAA of an EAA issuing or key binding signature
+	 * Gets the attestation of an attestation issuing or key binding signature
 	 *
-	 * @return {@link EAA}
+	 * @return {@link Attestation}
 	 */
-	EAA getEAA();
+	Attestation getAttestation();
 
 	/**
-	 * Sets EAA presentation of the EAA issuing or key binging signature
+	 * Sets attestation presentation of the attestation issuing or key binging signature
 	 *
-	 * @param eaa {@link EAA}
+	 * @param attestation {@link Attestation}
 	 */
-	void setEAA(EAA eaa);
+	void setAttestation(Attestation attestation);
 	
 	/**
 	 * Checks if the current signature is a counter signature (i.e. has a Master signature)
@@ -283,7 +283,7 @@ public interface AdvancedSignature extends IdentifierBasedObject, Serializable {
 
 	/**
 	 * Checks if the current signature is a key binding signature.
-	 * NOTE: Used for EAA tokens.
+	 * NOTE: Used for attestation tokens.
 	 *
 	 * @return TRUE if it is a key binding signature, FALSE otherwise
 	 */
@@ -291,7 +291,7 @@ public interface AdvancedSignature extends IdentifierBasedObject, Serializable {
 
 	/**
 	 * Sets whether the current signature is a key binding signature.
-	 * NOTE: Used for EAA tokens.
+	 * NOTE: Used for attestation tokens.
 	 *
 	 * @param keyBindingSignature whether the current signature is a key binding signature
 	 */

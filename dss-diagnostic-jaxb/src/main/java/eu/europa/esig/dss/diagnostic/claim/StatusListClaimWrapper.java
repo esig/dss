@@ -52,7 +52,7 @@ public class StatusListClaimWrapper extends ClaimWrapper {
     }
 
     /**
-     * Gets the status's unique index identifier
+     * Gets the token's unique index identifier
      *
      * @return {@link ClaimWrapper}
      */
@@ -65,7 +65,7 @@ public class StatusListClaimWrapper extends ClaimWrapper {
     }
 
     /**
-     * Gets the status's uri
+     * Gets the status list uri
      *
      * @return {@link ClaimWrapper}
      */

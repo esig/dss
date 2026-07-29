@@ -13,11 +13,11 @@
 			<xs:element name="ContainerInfo" type="ContainerInfo" minOccurs="0" />
 			<xs:element name="PDFAInfo" type="PDFAInfo" minOccurs="0" />
 			<xs:element name="ConnectionInfo" type="ConnectionInfo" minOccurs="0" />
-			<xs:element name="EAAPresentationInfo" type="EAAPresentationInfo" minOccurs="0" />
-			<xs:element name="EAAs" minOccurs="0">
+			<xs:element name="AttestationPresentationInfo" type="AttestationPresentationInfo" minOccurs="0" />
+			<xs:element name="Attestations" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="EAA" type="EAA" minOccurs="0" maxOccurs="unbounded" />
+						<xs:element name="Attestation" type="Attestation" minOccurs="0" maxOccurs="unbounded" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
@@ -35,10 +35,10 @@
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
-			<xs:element name="UsedEAARevocationTokens" minOccurs="0">
+			<xs:element name="UsedAttestationRevocationTokens" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="EAARevocationToken" type="EAARevocationToken" minOccurs="0" maxOccurs="unbounded" />
+						<xs:element name="AttestationRevocationToken" type="AttestationRevocationToken" minOccurs="0" maxOccurs="unbounded" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
@@ -175,14 +175,14 @@
 		<xs:attribute name="url" type="xs:string" use="required" />
 	</xs:complexType>
 
-	<xs:complexType name="EAAPresentationInfo">
+	<xs:complexType name="AttestationPresentationInfo">
 		<xs:sequence>
-			<xs:element name="EAAPresentationType" type="EAAPresentationType" />
+			<xs:element name="Format" type="AttestationDocumentFormat" />
 			<xs:element name="Version" type="xs:string" minOccurs="0" /> <!-- mdoc -->
 			<xs:element name="Documents" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
-						<xs:element name="EAADocument" type="EAADocument" minOccurs="0" maxOccurs="unbounded" />
+						<xs:element name="AttestationDocument" type="AttestationDocument" minOccurs="0" maxOccurs="unbounded" />
 					</xs:sequence>
 				</xs:complexType>
 			</xs:element>
@@ -191,12 +191,12 @@
 		</xs:sequence>
 	</xs:complexType>
 
-	<xs:complexType name="EAADocument">
+	<xs:complexType name="AttestationDocument">
 		<xs:sequence>
 			<xs:element name="DocumentType" type="xs:string" minOccurs="0" />
 			<xs:element name="Errors" type="Errors" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
-		<xs:attribute name="EAA" type="xs:IDREF" use="required" />
+		<xs:attribute name="Attestation" type="xs:IDREF" use="required" />
 	</xs:complexType>
 
 	<xs:complexType name="Errors">
@@ -1041,7 +1041,7 @@
 			<xs:enumeration value="DIGEST" />
 			<xs:enumeration value="ARCHIVED" />
 			<xs:enumeration value="COUNTER_SIGNATURE" />
-			<xs:enumeration value="EAA_SIGNATURE" />
+			<xs:enumeration value="ATTESTATION_SIGNATURE" />
 			<xs:enumeration value="KEY_BINDING_SIGNATURE" />
 			<xs:enumeration value="SIGNATURE" />
 		</xs:restriction>
@@ -1193,7 +1193,7 @@
 					<xs:element name="DataFound" type="xs:boolean" />
 					<xs:element name="DataIntact" type="xs:boolean" />
 					<xs:element name="DataObjectReferences" type="ObjectReferences" minOccurs="0" />
-					<xs:element name="DisclosableClaim" type="DisclosableClaim" minOccurs="0" /> <!-- EAA specific -->
+					<xs:element name="DisclosableClaim" type="DisclosableClaim" minOccurs="0" /> <!-- Attestation specific -->
 				</xs:sequence>
 				<xs:attribute name="type" type="DigestMatcherType" use="required" />
 				<xs:attribute name="id" type="xs:string" use="optional"/>
@@ -1258,11 +1258,11 @@
 			<xs:enumeration value="EVIDENCE_RECORD_ARCHIVE_TIME_STAMP_SEQUENCE" />
 			<xs:enumeration value="EVIDENCE_RECORD_MASTER_SIGNATURE" />
 
-			<!-- EAA -->
-			<xs:enumeration value="EAA_DISCLOSURE" />
-			<xs:enumeration value="EAA_NESTED_DISCLOSURE" />
-			<xs:enumeration value="EAA_ORPHAN_SELECTIVELY_DISCLOSABLE_CLAIM" />
-			<xs:enumeration value="EAA_KEY_BINDING" />
+			<!-- Attestation -->
+			<xs:enumeration value="SELECTIVE_DISCLOSURE" />
+			<xs:enumeration value="NESTED_SELECTIVE_DISCLOSURE" />
+			<xs:enumeration value="ORPHAN_SELECTIVELY_DISCLOSABLE_CLAIM" />
+			<xs:enumeration value="KEY_BINDING_SIGNATURE" />
 		</xs:restriction>
 	</xs:simpleType>
 	
@@ -1336,7 +1336,7 @@
 			<xs:enumeration value="AIA" />
 			<xs:enumeration value="TIMESTAMP" />
 			<xs:enumeration value="EVIDENCE_RECORD" />
-			<xs:enumeration value="EAA" />
+			<xs:enumeration value="ATTESTATION" />
 			<xs:enumeration value="UNKNOWN" />
 		</xs:restriction>
 	</xs:simpleType>
@@ -1354,7 +1354,7 @@
 			<xs:enumeration value="BASIC_OCSP_RESP" />
 			<xs:enumeration value="EVIDENCE_RECORD" />
 			<xs:enumeration value="UNPROTECTED_HEADER" />
-			<xs:enumeration value="EAA" />
+			<xs:enumeration value="ATTESTATION" />
 		</xs:restriction>
 	</xs:simpleType>
 	
@@ -1737,22 +1737,22 @@
 		</xs:complexContent>
 	</xs:complexType>
 
-	<xs:complexType name="EAA">
+	<xs:complexType name="Attestation">
 		<xs:complexContent>
 			<xs:extension base="AbstractToken">
 				<xs:sequence>
 					<xs:element name="DocumentName" type="xs:string" minOccurs="0" />
 					<xs:element name="DocumentType" type="xs:string" minOccurs="0" />
-					<xs:element name="EAAType" type="EAAType" />
+					<xs:element name="Profile" type="AttestationProfile" />
 					<xs:element name="StructuralValidation"	type="StructuralValidation" minOccurs="0" />
 					<xs:element name="DigestMethod" type="xs:string" minOccurs="0" />
 					<xs:element name="DigestMatchers" type="DigestMatchers" minOccurs="0" />
-					<xs:element name="EAASignature" maxOccurs="unbounded">
+					<xs:element name="AttestationSignature" maxOccurs="unbounded">
 						<xs:complexType>
 							<xs:attribute name="Signature" type="xs:IDREF" use="required" />
 						</xs:complexType>
 					</xs:element>
-                    <xs:element name="EAAPayload" type="EAAPayload" minOccurs="0" />
+                    <xs:element name="AttestationPayload" type="AttestationPayload" minOccurs="0" />
 
                     <xs:element name="KeyBindingSignature" minOccurs="0">
 						<xs:complexType>
@@ -1761,10 +1761,10 @@
 					</xs:element>
                     <xs:element name="KeyBindingPayload" type="KeyBindingPayload" minOccurs="0" />
 
-					<xs:element name="EAARevocations" minOccurs="0">
+					<xs:element name="AttestationRevocations" minOccurs="0">
 						<xs:complexType>
 							<xs:sequence>
-								<xs:element name="EAARevocationStatus" type="EAARevocationStatus" minOccurs="0" maxOccurs="unbounded" />
+								<xs:element name="AttestationRevocationStatus" type="AttestationRevocationStatus" minOccurs="0" maxOccurs="unbounded" />
 							</xs:sequence>
 						</xs:complexType>
 					</xs:element>
@@ -1783,7 +1783,7 @@
         </xs:sequence>
     </xs:complexType>
 
-	<xs:complexType name="EAAPayload">
+	<xs:complexType name="AttestationPayload">
 		<xs:sequence>
 			<!-- technical claims -->
 			<xs:element name="Identifier" type="Claim" minOccurs="0" />
@@ -2201,14 +2201,14 @@
 		<xs:attribute name="disclosure" type="xs:boolean" />
 	</xs:complexType>
 
-	<xs:complexType name="EAARevocationToken">
+	<xs:complexType name="AttestationRevocationToken">
 		<xs:complexContent>
 			<xs:extension base="AbstractToken">
 				<xs:sequence>
-					<xs:element name="Origin" type="EAARevocationOrigin" />
+					<xs:element name="Origin" type="AttestationRevocationOrigin" />
 					<xs:element name="Type" type="xs:string" minOccurs="0" />
 					<xs:element name="SourceAddress" type="xs:string" minOccurs="0" />
-					<xs:element name="Subject" type="EAASubject" minOccurs="0" />
+					<xs:element name="Subject" type="AttestationSubject" minOccurs="0" />
 					<xs:element name="IssuedAt" type="xs:dateTime" minOccurs="0" />
 					<xs:element name="ExpirationTime" type="xs:dateTime" minOccurs="0" />
 					<xs:element name="TimeToLive" type="xs:integer" minOccurs="0" />
@@ -2228,7 +2228,7 @@
 		</xs:complexContent>
 	</xs:complexType>
 
-	<xs:complexType name="EAASubject">
+	<xs:complexType name="AttestationSubject">
 		<xs:simpleContent>
 			<xs:extension base="xs:string">
 				<xs:attribute name="match" type="xs:boolean" use="optional" />
@@ -2236,21 +2236,21 @@
 		</xs:simpleContent>
 	</xs:complexType>
 
-	<xs:simpleType name="EAARevocationOrigin" final="restriction">
+	<xs:simpleType name="AttestationRevocationOrigin" final="restriction">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="EXTERNAL" />
 			<xs:enumeration value="CACHED" />
 		</xs:restriction>
 	</xs:simpleType>
 
-	<xs:complexType name="EAARevocationStatus">
+	<xs:complexType name="AttestationRevocationStatus">
 		<xs:sequence>
-			<xs:element name="Status" type="EAAStatus" />
+			<xs:element name="Status" type="AttestationStatus" />
 		</xs:sequence>
-		<xs:attribute name="EAARevocationToken" type="xs:IDREF" use="required" />
+		<xs:attribute name="AttestationRevocationToken" type="xs:IDREF" use="required" />
 	</xs:complexType>
 
-	<xs:simpleType name="EAAStatus" final="restriction">
+	<xs:simpleType name="AttestationStatus" final="restriction">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="VALID" />
 			<xs:enumeration value="INVALID" />
@@ -2288,8 +2288,11 @@
 		</xs:restriction>
 	</xs:simpleType>
 
-	<xs:simpleType name="EAAType" final="restriction">
+	<xs:simpleType name="AttestationProfile" final="restriction">
 		<xs:restriction base="xs:string">
+			<xs:enumeration value="JWT" />
+			<xs:enumeration value="CWT" />
+			<xs:enumeration value="SD_JWT" />
 			<xs:enumeration value="SD_JWT_VC" />
 			<xs:enumeration value="ISO_IEC_MDOC" />
 			<xs:enumeration value="W3C_VC" />
@@ -2297,12 +2300,13 @@
 		</xs:restriction>
 	</xs:simpleType>
 
-	<xs:simpleType name="EAAPresentationType" final="restriction">
+	<xs:simpleType name="AttestationDocumentFormat" final="restriction">
 		<xs:restriction base="xs:string">
+			<xs:enumeration value="JWT" />
+			<xs:enumeration value="CWT" />
 			<xs:enumeration value="SD_JWT" />
 			<xs:enumeration value="MDOC_DEVICE_RESPONSE" />
 			<xs:enumeration value="MDOC_ISSUER_SIGNED" />
-			<xs:enumeration value="JWS" />
 			<xs:enumeration value="X509_AC" />
 		</xs:restriction>
 	</xs:simpleType>

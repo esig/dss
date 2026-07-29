@@ -30,7 +30,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraintsConclusion;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCryptographicAlgorithm;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCryptographicValidation;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlEAA;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlAttestation;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlEvidenceRecord;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlProofOfExistence;
@@ -42,7 +42,7 @@ import eu.europa.esig.dss.diagnostic.AbstractTokenProxy;
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.diagnostic.EAAWrapper;
+import eu.europa.esig.dss.diagnostic.AttestationWrapper;
 import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;
 import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
 import eu.europa.esig.dss.diagnostic.FoundRevocationsProxy;
@@ -64,10 +64,10 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureDigestReference;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignerRole;
+import eu.europa.esig.dss.enumerations.AttestationQualification;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.EAAQualification;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.MessageType;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
@@ -453,10 +453,10 @@ public class ETSIValidationReportBuilder {
 			validationObjectListType.getValidationObject().add(timestampValidationObject);
 		}
 
-		for (EAAWrapper EAA : diagnosticData.getEAAs()) {
-			ValidationObjectType eaaValidationObject = getEAAValidationObject(EAA);
-            eaaValidationObject.setPOE(getPOE(EAA.getId(), poeExtraction));
-			validationObjectListType.getValidationObject().add(eaaValidationObject);
+		for (AttestationWrapper attestation : diagnosticData.getAttestations()) {
+			ValidationObjectType attestationValidationObject = getAttestationValidationObject(attestation);
+            attestationValidationObject.setPOE(getPOE(attestation.getId(), poeExtraction));
+			validationObjectListType.getValidationObject().add(attestationValidationObject);
 		}
 
 		for (CertificateWrapper certificate : diagnosticData.getUsedCertificates()) {
@@ -619,25 +619,25 @@ public class ETSIValidationReportBuilder {
 		return poeProvisioning;
 	}
 
-	private ValidationObjectType getEAAValidationObject(EAAWrapper eaa) {
-		ValidationObjectType validationObject = validationObjectMap.get(eaa.getId());
+	private ValidationObjectType getAttestationValidationObject(AttestationWrapper attestation) {
+		ValidationObjectType validationObject = validationObjectMap.get(attestation.getId());
 		if (validationObject == null) {
 			validationObject = objectFactory.createValidationObjectType();
-			validationObjectMap.put(eaa.getId(), validationObject);
+			validationObjectMap.put(attestation.getId(), validationObject);
 
-			validationObject.setId(eaa.getId());
-			validationObject.setObjectType(ObjectType.OTHER); // TODO : no EAA specific type is available
+			validationObject.setId(attestation.getId());
+			validationObject.setObjectType(ObjectType.OTHER); // TODO : no attestation specific type is available
 			ValidationObjectRepresentationType representation = objectFactory.createValidationObjectRepresentationType();
-			representation.getDirectOrBase64OrDigestAlgAndValue().add(getURI(eaa)); // TODO : fill representation (base64/digest) ?
+			representation.getDirectOrBase64OrDigestAlgAndValue().add(getURI(attestation)); // TODO : fill representation (base64/digest) ?
 			validationObject.setValidationObjectRepresentation(representation);
-			validationObject.setValidationReport(getValidationReport(eaa));
+			validationObject.setValidationReport(getValidationReport(attestation));
 		}
 		return validationObject;
 	}
 
-	private String getURI(EAAWrapper eaa) {
-		if (Utils.isStringNotEmpty(eaa.getFilename())) {
-			return eaa.getFilename();
+	private String getURI(AttestationWrapper attestation) {
+		if (Utils.isStringNotEmpty(attestation.getFilename())) {
+			return attestation.getFilename();
 		}
 		return "?";
 	}
@@ -693,20 +693,20 @@ public class ETSIValidationReportBuilder {
 		validationReportData.setCryptoInformation(cryptoInformationType);
 	}
 
-	private SignatureValidationReportType getValidationReport(EAAWrapper EAA) {
-		XmlEAA xmlEAA = detailedReport.getXmlEAAById(EAA.getId());
+	private SignatureValidationReportType getValidationReport(AttestationWrapper attestation) {
+		XmlAttestation xmlAttestation = detailedReport.getXmlAttestationById(attestation.getId());
 		// return null if validation was not performed
-		if (xmlEAA == null) {
+		if (xmlAttestation == null) {
 			return null;
 		}
 		SignatureValidationReportType signatureValidationReport = objectFactory.createSignatureValidationReportType();
-		signatureValidationReport.setSignatureValidationStatus(getValidationStatus(EAA));
+		signatureValidationReport.setSignatureValidationStatus(getValidationStatus(attestation));
 
-		List<EAAQualification> eaaQualifications = detailedReport.getEAAQualifications(EAA.getId());
-		if (Utils.isCollectionNotEmpty(eaaQualifications)) {
+		List<AttestationQualification> attestationQualifications = detailedReport.getAttestationQualifications(attestation.getId());
+		if (Utils.isCollectionNotEmpty(attestationQualifications)) {
 			SignatureQualityType signatureQualityType = objectFactory.createSignatureQualityType();
-			for (EAAQualification eaaQualification : eaaQualifications) {
-				signatureQualityType.getSignatureQualityInformation().add(eaaQualification.getUri());
+			for (AttestationQualification attestationQualification : attestationQualifications) {
+				signatureQualityType.getSignatureQualityInformation().add(attestationQualification.getUri());
 			}
 			signatureValidationReport.setSignatureQuality(signatureQualityType);
 		}
@@ -714,11 +714,11 @@ public class ETSIValidationReportBuilder {
 		return signatureValidationReport;
 	}
 
-	private ValidationStatusType getValidationStatus(EAAWrapper EAA) {
+	private ValidationStatusType getValidationStatus(AttestationWrapper attestation) {
 		ValidationStatusType validationStatus = objectFactory.createValidationStatusType();
-		fillIndicationSubIndication(validationStatus, EAA.getId());
-		fillMessages(validationStatus, EAA.getId());
-		addValidationReportData(validationStatus, EAA);
+		fillIndicationSubIndication(validationStatus, attestation.getId());
+		fillMessages(validationStatus, attestation.getId());
+		addValidationReportData(validationStatus, attestation);
 		return validationStatus;
 	}
 
@@ -991,8 +991,8 @@ public class ETSIValidationReportBuilder {
 			cryptoInformationType.setValidationObjectId(getVOReference(getTimestampValidationObject((TimestampWrapper) token)));
 		} else if (token instanceof RevocationWrapper) {
 			cryptoInformationType.setValidationObjectId(getVOReference(getRevocationValidationObject((RevocationWrapper) token)));
-		} else if (token instanceof EAAWrapper) {
-			cryptoInformationType.setValidationObjectId(getVOReference(getEAAValidationObject((EAAWrapper) token)));
+		} else if (token instanceof AttestationWrapper) {
+			cryptoInformationType.setValidationObjectId(getVOReference(getAttestationValidationObject((AttestationWrapper) token)));
 		} else {
 			throw new IllegalArgumentException(String.format("Unsupported class %s", token.getClass()));
 		}

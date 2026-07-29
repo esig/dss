@@ -22,7 +22,7 @@ package eu.europa.esig.dss.validation.process.vpfswatsp;
 
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.diagnostic.EAAWrapper;
+import eu.europa.esig.dss.diagnostic.AttestationWrapper;
 import eu.europa.esig.dss.diagnostic.EvidenceRecordWrapper;
 import eu.europa.esig.dss.diagnostic.OrphanTokenWrapper;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
@@ -91,8 +91,8 @@ public class POEExtraction {
 		for (EvidenceRecordWrapper evidenceRecord : diagnosticData.getEvidenceRecords()) {
 			addPOE(evidenceRecord.getId(), controlTimePoe);
 		}
-		for (EAAWrapper eaa : diagnosticData.getEAAs()) {
-			addPOE(eaa.getId(), controlTimePoe);
+		for (AttestationWrapper attestation : diagnosticData.getAttestations()) {
+			addPOE(attestation.getId(), controlTimePoe);
 		}
 		for (CertificateWrapper certificate : diagnosticData.getUsedCertificates()) {
 			addPOE(certificate.getId(), controlTimePoe);

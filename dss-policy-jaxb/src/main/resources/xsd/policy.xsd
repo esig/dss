@@ -61,14 +61,14 @@
 					<xsd:documentation>Constraints on the evidence records</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="EAA" type="EAAConstraints" minOccurs="0">
+			<xsd:element name="Attestation" type="AttestationConstraints" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Constraints on the EAA presentations</xsd:documentation>
+					<xsd:documentation>Constraints on the attestation presentations</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="EAARevocation" type="EAARevocationConstraints" minOccurs="0">
+			<xsd:element name="AttestationRevocation" type="AttestationRevocationConstraints" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Constraints related to the EAA revocation token</xsd:documentation>
+					<xsd:documentation>Constraints related to the attestation revocation token</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="Cryptographic" type="CryptographicConstraint" minOccurs="0">
@@ -601,31 +601,31 @@
 		</xsd:complexContent>
 	</xsd:complexType>
 
-	<xsd:complexType name="EAAConstraints">
+	<xsd:complexType name="AttestationConstraints">
 		<xsd:annotation>
-			<xsd:documentation>Group of constraints for the Electronic Attestation Of Attributes validation process</xsd:documentation>
+			<xsd:documentation>Group of constraints for the Electronic attestation Of Attributes validation process</xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexContent>
 			<xsd:extension base="LevelConstraint">
 				<xsd:sequence>
-					<xsd:element name="EAASignatureUnicity" type="LevelConstraint" minOccurs="0">
+					<xsd:element name="AttestationSignatureUnicity" type="LevelConstraint" minOccurs="0">
 						<xsd:annotation>
-							<xsd:documentation>Checks if the EAA has been created with a single signature (not considering key binding signature)</xsd:documentation>
+							<xsd:documentation>Checks if the attestation has been created with a single signature (not considering key binding signature)</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
-					<xsd:element name="EAASignatureValid" type="LevelConstraint" minOccurs="0">
+					<xsd:element name="AttestationSignatureValid" type="LevelConstraint" minOccurs="0">
 						<xsd:annotation>
-							<xsd:documentation>Checks if the signature used to sign the EAA Payload is valid (i.e. results to a TOTAL-PASSED validation status)</xsd:documentation>
+							<xsd:documentation>Checks if the signature used to sign the attestation Payload is valid (i.e. results to a TOTAL-PASSED validation status)</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
 					<xsd:element name="DisclosurePresent" type="LevelConstraint" minOccurs="0">
 						<xsd:annotation>
-							<xsd:documentation>Checks whether the EAA contains attached disclosures</xsd:documentation>
+							<xsd:documentation>Checks whether the attestation contains attached disclosures</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
 					<xsd:element name="DisclosureFound" type="LevelConstraint" minOccurs="0">
 						<xsd:annotation>
-							<xsd:documentation>Checks whether the EAA contains a selectively disclosable claim hash for the provided disclosure</xsd:documentation>
+							<xsd:documentation>Checks whether the attestation contains a selectively disclosable claim hash for the provided disclosure</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
 					<xsd:element name="DisclosureIntact" type="LevelConstraint" minOccurs="0">
@@ -635,12 +635,12 @@
 					</xsd:element>
 					<xsd:element name="DisclosureListExhaustive" type="LevelConstraint" minOccurs="0">
 						<xsd:annotation>
-							<xsd:documentation>Checks whether for all selectively disclosable claim hashes defined within an EAA a matching disclosure attached to the EAA Presentation was found</xsd:documentation>
+							<xsd:documentation>Checks whether for all selectively disclosable claim hashes defined within an attestation a matching disclosure attached to the attestation Presentation was found</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
 					<xsd:element name="KeyBindingSignaturePresent" type="LevelConstraint" minOccurs="0">
 						<xsd:annotation>
-							<xsd:documentation>Checks whether the key binding signature is present within the EAA token</xsd:documentation>
+							<xsd:documentation>Checks whether the key binding signature is present within the attestation token</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
 					<xsd:element name="KeyBindingSignatureValid" type="LevelConstraint" minOccurs="0">
@@ -650,142 +650,142 @@
 					</xsd:element>
 					<xsd:element name="ETSI194721Conformance" type="LevelConstraint" minOccurs="0">
 						<xsd:annotation>
-							<xsd:documentation>Checks whether the EAA token is conformant to the standard ETSI TS 119 472-1</xsd:documentation>
+							<xsd:documentation>Checks whether the attestation token is conformant to the standard ETSI TS 119 472-1</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
-                    <xsd:element name="EAAType" type="MultiValuesConstraint" minOccurs="0">
+                    <xsd:element name="AttestationType" type="MultiValuesConstraint" minOccurs="0">
                         <xsd:annotation>
-                            <xsd:documentation>Checks if the EAA type is part of the acceptable value list. '*' can be used and means any value.</xsd:documentation>
+                            <xsd:documentation>Checks if the attestation profile is part of the acceptable value list. '*' can be used and means any value.</xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
-                    <xsd:element name="EAATypeIntegrityPresent" type="LevelConstraint" minOccurs="0">
+                    <xsd:element name="AttestationTypeIntegrityPresent" type="LevelConstraint" minOccurs="0">
                         <xsd:annotation>
-                            <xsd:documentation>Checks whether the claim "vct#integrity" is present within the EAA token. This check is only executed for SD-JWT VC EAA.</xsd:documentation>
+                            <xsd:documentation>Checks whether the claim "vct#integrity" is present within the attestation token. This check is only executed for SD-JWT attestation.</xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
-                    <xsd:element name="EAAIdentifierPresent" type="LevelConstraint" minOccurs="0">
+                    <xsd:element name="IdentifierPresent" type="LevelConstraint" minOccurs="0">
                         <xsd:annotation>
-                            <xsd:documentation>Checks whether the EAA Identifier is present within the EAA token</xsd:documentation>
+                            <xsd:documentation>Checks whether the attestation Identifier is present within the attestation token</xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
-                    <xsd:element name="EAAIssuanceDatePresent" type="LevelConstraint" minOccurs="0">
+                    <xsd:element name="IssuanceDatePresent" type="LevelConstraint" minOccurs="0">
                         <xsd:annotation>
-                            <xsd:documentation>Checks whether the EAA issuance is present within the EAA token. This check is only executed for ISO/IEC-mdoc EAA.</xsd:documentation>
+                            <xsd:documentation>Checks whether the attestation issuance is present within the attestation token. This check is only executed for ISO/IEC-mdoc attestation.</xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
-                    <xsd:element name="EAANotBeforePresent" type="LevelConstraint" minOccurs="0">
+                    <xsd:element name="NotBeforePresent" type="LevelConstraint" minOccurs="0">
                         <xsd:annotation>
-                            <xsd:documentation>Checks whether the "not before" is present within the EAA token</xsd:documentation>
+                            <xsd:documentation>Checks whether the "not before" is present within the attestation token</xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
-                    <xsd:element name="EAAExpirationPresent" type="LevelConstraint" minOccurs="0">
+                    <xsd:element name="ExpirationPresent" type="LevelConstraint" minOccurs="0">
                         <xsd:annotation>
-                            <xsd:documentation>Checks whether the expiration is present within the EAA token</xsd:documentation>
+                            <xsd:documentation>Checks whether the expiration is present within the attestation token</xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
-					<xsd:element name="EAANotExpired" type="LevelConstraint" minOccurs="0">
+					<xsd:element name="NotExpired" type="LevelConstraint" minOccurs="0">
 						<xsd:annotation>
-							<xsd:documentation>Checks whether the validation time is within the EAA technical validity range ('nbf' and 'exp' headers)</xsd:documentation>
+							<xsd:documentation>Checks whether the validation time is within the attestation technical validity range ('nbf' and 'exp' headers)</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
-                    <xsd:element name="EAAAdministrativeIssuanceDatePresent" type="LevelConstraint" minOccurs="0">
+                    <xsd:element name="AdministrativeIssuanceDatePresent" type="LevelConstraint" minOccurs="0">
                         <xsd:annotation>
-                            <xsd:documentation>Checks whether the administrative issuance date is present within the EAA token</xsd:documentation>
+                            <xsd:documentation>Checks whether the administrative issuance date is present within the attestation token</xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
-                    <xsd:element name="EAAAdministrativeExpirationDatePresent" type="LevelConstraint" minOccurs="0">
+                    <xsd:element name="AdministrativeExpirationDatePresent" type="LevelConstraint" minOccurs="0">
                         <xsd:annotation>
-                            <xsd:documentation>Checks whether the administrative expiration date is present within the EAA token</xsd:documentation>
+                            <xsd:documentation>Checks whether the administrative expiration date is present within the attestation token</xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
-					<xsd:element name="EAAAdministrativePeriodNotExpired" type="LevelConstraint" minOccurs="0">
+					<xsd:element name="AdministrativePeriodNotExpired" type="LevelConstraint" minOccurs="0">
 						<xsd:annotation>
-							<xsd:documentation>Checks whether the validation time is within the EAA administrative validity range ('adm_nbf' and 'adm_exp' headers)</xsd:documentation>
+							<xsd:documentation>Checks whether the validation time is within the attestation administrative validity range ('adm_nbf' and 'adm_exp' headers)</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
-					<xsd:element name="EAACategory" type="MultiValuesConstraint" minOccurs="0">
+					<xsd:element name="Category" type="MultiValuesConstraint" minOccurs="0">
 						<xsd:annotation>
-							<xsd:documentation>Checks whether the EAA category claim corresponds to one of the defined values</xsd:documentation>
+							<xsd:documentation>Checks whether the attestation category claim corresponds to one of the defined values</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
-					<xsd:element name="EAASubject" type="MultiValuesConstraint" minOccurs="0">
+					<xsd:element name="Subject" type="MultiValuesConstraint" minOccurs="0">
 						<xsd:annotation>
-							<xsd:documentation>Checks whether the EAA subject claim corresponds to one of the defined values</xsd:documentation>
+							<xsd:documentation>Checks whether the attestation subject claim corresponds to one of the defined values</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
-					<xsd:element name="EAASubjectPseudonym" type="MultiValuesConstraint" minOccurs="0">
+					<xsd:element name="Pseudonym" type="MultiValuesConstraint" minOccurs="0">
 						<xsd:annotation>
-							<xsd:documentation>Checks whether the EAA subject pseudonym claim corresponds to one of the defined values</xsd:documentation>
+							<xsd:documentation>Checks whether the attestation subject pseudonym claim corresponds to one of the defined values</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
-					<xsd:element name="EAAIssuingCountry" type="MultiValuesConstraint" minOccurs="0">
+					<xsd:element name="IssuingCountry" type="MultiValuesConstraint" minOccurs="0">
 						<xsd:annotation>
-							<xsd:documentation>Checks whether the EAA issuing country claim corresponds to one of the defined values</xsd:documentation>
+							<xsd:documentation>Checks whether the attestation issuing country claim corresponds to one of the defined values</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
-					<xsd:element name="EAAIssuingAuthority" type="MultiValuesConstraint" minOccurs="0">
+					<xsd:element name="IssuingAuthority" type="MultiValuesConstraint" minOccurs="0">
 						<xsd:annotation>
-							<xsd:documentation>Checks whether the EAA issuing authority claim corresponds to one of the defined values</xsd:documentation>
+							<xsd:documentation>Checks whether the attestation issuing authority claim corresponds to one of the defined values</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
-					<xsd:element name="EAAIssuingAuthorityRegistrationIdentifier" type="MultiValuesConstraint" minOccurs="0">
+					<xsd:element name="IssuingAuthorityRegistrationIdentifier" type="MultiValuesConstraint" minOccurs="0">
 						<xsd:annotation>
-							<xsd:documentation>Checks whether the registration identifier of the EAA issuer claim corresponds to one of the defined values</xsd:documentation>
+							<xsd:documentation>Checks whether the registration identifier of the attestation issuer claim corresponds to one of the defined values</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
-					<xsd:element name="EAAOneTimeUse" type="LevelConstraint" minOccurs="0">
+					<xsd:element name="OneTimeUse" type="LevelConstraint" minOccurs="0">
 						<xsd:annotation>
-							<xsd:documentation>Checks whether the EAA contains a one-time use claim</xsd:documentation>
+							<xsd:documentation>Checks whether the attestation contains a one-time use claim</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
-					<xsd:element name="EAAShortLived" type="LevelConstraint" minOccurs="0">
+					<xsd:element name="ShortLived" type="LevelConstraint" minOccurs="0">
 						<xsd:annotation>
-							<xsd:documentation>Checks whether the EAA contains a short-lived claim</xsd:documentation>
+							<xsd:documentation>Checks whether the attestation contains a short-lived claim</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
-					<xsd:element name="EAARevocationPresent" type="LevelConstraint" minOccurs="0">
+					<xsd:element name="RevocationPresent" type="LevelConstraint" minOccurs="0">
 						<xsd:annotation>
-							<xsd:documentation>Checks whether the EAA contains a revocation claim</xsd:documentation>
+							<xsd:documentation>Checks whether the attestation contains a revocation claim</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
-					<xsd:element name="EAARevocationAvailable" type="LevelConstraint" minOccurs="0">
+					<xsd:element name="RevocationAvailable" type="LevelConstraint" minOccurs="0">
 						<xsd:annotation>
-							<xsd:documentation>Checks if an EAA revocation token is found for the EAA</xsd:documentation>
+							<xsd:documentation>Checks if an attestation revocation token is found for the attestation</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
-					<xsd:element name="AcceptableEAARevocationFound" type="LevelConstraint" minOccurs="0">
+					<xsd:element name="AcceptableRevocationFound" type="LevelConstraint" minOccurs="0">
 						<xsd:annotation>
-							<xsd:documentation>Checks if an acceptable EAA revocation token has been found for the EAA</xsd:documentation>
+							<xsd:documentation>Checks if an acceptable attestation revocation token has been found for the attestation</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
 					<xsd:element name="NotRevoked" type="LevelConstraint" minOccurs="0">
 						<xsd:annotation>
-							<xsd:documentation>Checks if the EAA is not revoked, annulled, taken back, recalled or cancelled.</xsd:documentation>
+							<xsd:documentation>Checks if the attestation is not revoked, annulled, taken back, recalled or cancelled.</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
 					<xsd:element name="NotOnHold" type="LevelConstraint" minOccurs="0">
 						<xsd:annotation>
-							<xsd:documentation>Checks if the EAA is not temporarily invalid, hanging, debarred from privilege.</xsd:documentation>
+							<xsd:documentation>Checks if the attestation is not temporarily invalid, hanging, debarred from privilege.</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
-					<xsd:element name="EAAUsePseudonym" type="LevelConstraint" minOccurs="0">
+					<xsd:element name="UsePseudonym" type="LevelConstraint" minOccurs="0">
 						<xsd:annotation>
-							<xsd:documentation>Checks whether the EAA uses a pseudonym claim</xsd:documentation>
+							<xsd:documentation>Checks whether the attestation uses a pseudonym claim</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
-					<xsd:element name="EAAClaims" type="MultiValuesConstraint" minOccurs="0">
+					<xsd:element name="Claims" type="MultiValuesConstraint" minOccurs="0">
 						<xsd:annotation>
-							<xsd:documentation>Checks whether the EAA token contains all specified claims (whether as part of the original payload or through selective disclosures). Only the root level of the EAA is checked, not the nested claims.</xsd:documentation>
+							<xsd:documentation>Checks whether the attestation token contains all specified claims (whether as part of the original payload or through selective disclosures). Only the root level of the attestation is checked, not the nested claims.</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
-                    <xsd:element name="EAASupportedClaims" type="MultiValuesConstraint" minOccurs="0">
+                    <xsd:element name="SupportedClaims" type="MultiValuesConstraint" minOccurs="0">
                         <xsd:annotation>
-                            <xsd:documentation>Checks whether the EAA token contains only claims that are supported. Only the root level of the EAA is checked, not the nested claims.</xsd:documentation>
+                            <xsd:documentation>Checks whether the attestation token contains only claims that are supported. Only the root level of the attestation is checked, not the nested claims.</xsd:documentation>
                         </xsd:annotation>
                     </xsd:element>
-					<xsd:element name="EAASupportedNamespaces" type="MultiValuesConstraint" minOccurs="0">
+					<xsd:element name="SupportedNamespaces" type="MultiValuesConstraint" minOccurs="0">
 						<xsd:annotation>
-							<xsd:documentation>Checks whether the EAA token contains only claims within namespaces which are supported. Mdoc only.</xsd:documentation>
+							<xsd:documentation>Checks whether the attestation token contains only claims within namespaces which are supported. Mdoc only.</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
 					<xsd:element name="Cryptographic" type="CryptographicConstraint" minOccurs="0">
@@ -798,7 +798,7 @@
 		</xsd:complexContent>
 	</xsd:complexType>
 
-	<xsd:complexType name="EAARevocationConstraints">
+	<xsd:complexType name="AttestationRevocationConstraints">
 		<xsd:annotation>
 			<xsd:documentation>Group of constraints on the revocation data</xsd:documentation>
 		</xsd:annotation>
@@ -817,7 +817,7 @@
 					</xsd:element>
 					<xsd:element name="IssuanceTime" type="LevelConstraint" minOccurs="0">
 						<xsd:annotation>
-							<xsd:documentation>Checks whether 'issuedAt' field is defined within the EAA revocation token</xsd:documentation>
+							<xsd:documentation>Checks whether 'issuedAt' field is defined within the attestation revocation token</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
 					<xsd:element name="ExpirationTime" type="LevelConstraint" minOccurs="0">
@@ -827,22 +827,22 @@
 					</xsd:element>
 					<xsd:element name="NotExpired" type="LevelConstraint" minOccurs="0">
 						<xsd:annotation>
-							<xsd:documentation>Checks whether the validation time is within the validity range of the EAA revocation token</xsd:documentation>
+							<xsd:documentation>Checks whether the validation time is within the validity range of the attestation revocation token</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
 					<xsd:element name="Subject" type="MultiValuesConstraint" minOccurs="0">
 						<xsd:annotation>
-							<xsd:documentation>Checks whether the subject is defined within the EAA revocation token</xsd:documentation>
+							<xsd:documentation>Checks whether the subject is defined within the attestation revocation token</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
 					<xsd:element name="SubjectMatch" type="LevelConstraint" minOccurs="0">
 						<xsd:annotation>
-							<xsd:documentation>Checks whether the subject defined within the EAA revocation token matches</xsd:documentation>
+							<xsd:documentation>Checks whether the subject defined within the attestation revocation token matches</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
 					<xsd:element name="IssuerValidAtIssuanceTime" type="LevelConstraint" minOccurs="0">
 						<xsd:annotation>
-							<xsd:documentation>Checks whether the EAA revocation token issuer's certificate was valid at the EAA revocation token issuance time</xsd:documentation>
+							<xsd:documentation>Checks whether the attestation revocation token issuer's certificate was valid at the attestation revocation token issuance time</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
 					<xsd:element name="BasicSignatureConstraints" type="BasicSignatureConstraints" minOccurs="0">

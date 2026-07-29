@@ -1,0 +1,2007 @@
+[source,json,options="nowrap"]
+----
+{
+  "validationReportDataHandler" : "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/Pgo8VmFsaWRhdGlvblJlcG9ydCB4bWxucz0iaHR0cDovL3VyaS5ldHNpLm9yZy8xOTEwMi92MS40LjEjIiB4bWxuczpuczI9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvMDkveG1sZHNpZyMiIHhtbG5zOm5zMz0iaHR0cDovL3VyaS5ldHNpLm9yZy8wMTkwMy92MS4zLjIjIiB4bWxuczpuczQ9Imh0dHA6Ly91cmkuZXRzaS5vcmcvMDIyMzEvdjIjIj4KICAgIDxTaWduYXR1cmVWYWxpZGF0aW9uUmVwb3J0PgogICAgICAgIDxTaWduYXR1cmVJZGVudGlmaWVyIGlkPSJTLTc1RDIwNzFGNkNGNzY1QjRCMEU4NzVEMzlGRTA2M0NGRkVBOTdDRTI5QzBCODA1MDdCRjAxOEVBNkE5QzU4N0UiPgogICAgICAgICAgICA8RGlnZXN0QWxnQW5kVmFsdWU+CiAgICAgICAgICAgICAgICA8bnMyOkRpZ2VzdE1ldGhvZCBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvMDQveG1sZW5jI3NoYTI1NiIvPgogICAgICAgICAgICAgICAgPG5zMjpEaWdlc3RWYWx1ZT5MeGR1c1c2ald5UXkzVXZObXpscEJtK25GOTJzUDc3dnRSUmFnVGNTalpRPTwvbnMyOkRpZ2VzdFZhbHVlPgogICAgICAgICAgICA8L0RpZ2VzdEFsZ0FuZFZhbHVlPgogICAgICAgICAgICA8bnMyOlNpZ25hdHVyZVZhbHVlPm51d2p3MjVabTA3OXFBb3VzL3cwS0E4ZHhNdUZWUXp1NkxzbG9DT0w4UG9zdHRaL252SFg5aEp0SkhXdndWVkh4MGlpNitYZHlpUVlReWQzRTRMQ3BRPT08L25zMjpTaWduYXR1cmVWYWx1ZT4KICAgICAgICAgICAgPEhhc2hPbmx5PmZhbHNlPC9IYXNoT25seT4KICAgICAgICAgICAgPERvY0hhc2hPbmx5PmZhbHNlPC9Eb2NIYXNoT25seT4KICAgICAgICA8L1NpZ25hdHVyZUlkZW50aWZpZXI+CiAgICAgICAgPFZhbGlkYXRpb25Db25zdHJhaW50c0V2YWx1YXRpb25SZXBvcnQ+CiAgICAgICAgICAgIDxWYWxpZGF0aW9uQ29uc3RyYWludD4KICAgICAgICAgICAgICAgIDxWYWxpZGF0aW9uQ29uc3RyYWludElkZW50aWZpZXI+dXJuOmNlZjpkc3M6YmJiOmZvcm1hdENoZWNraW5nPC9WYWxpZGF0aW9uQ29uc3RyYWludElkZW50aWZpZXI+CiAgICAgICAgICAgICAgICA8Q29uc3RyYWludFN0YXR1cz4KICAgICAgICAgICAgICAgICAgICA8U3RhdHVzPnVybjpldHNpOjAxOTEwMjpjb25zdHJhaW50U3RhdHVzOmFwcGxpZWQ8L1N0YXR1cz4KICAgICAgICAgICAgICAgIDwvQ29uc3RyYWludFN0YXR1cz4KICAgICAgICAgICAgICAgIDxWYWxpZGF0aW9uU3RhdHVzPgogICAgICAgICAgICAgICAgICAgIDxNYWluSW5kaWNhdGlvbj51cm46ZXRzaTowMTkxMDI6bWFpbmluZGljYXRpb246cGFzc2VkPC9NYWluSW5kaWNhdGlvbj4KICAgICAgICAgICAgICAgIDwvVmFsaWRhdGlvblN0YXR1cz4KICAgICAgICAgICAgPC9WYWxpZGF0aW9uQ29uc3RyYWludD4KICAgICAgICAgICAgPFZhbGlkYXRpb25Db25zdHJhaW50PgogICAgICAgICAgICAgICAgPFZhbGlkYXRpb25Db25zdHJhaW50SWRlbnRpZmllcj51cm46Y2VmOmRzczpiYmI6aWRlbnRpZmljYXRpb25PZlRoZVNpZ25pbmdDZXJ0aWZpY2F0ZTwvVmFsaWRhdGlvbkNvbnN0cmFpbnRJZGVudGlmaWVyPgogICAgICAgICAgICAgICAgPENvbnN0cmFpbnRTdGF0dXM+CiAgICAgICAgICAgICAgICAgICAgPFN0YXR1cz51cm46ZXRzaTowMTkxMDI6Y29uc3RyYWludFN0YXR1czphcHBsaWVkPC9TdGF0dXM+CiAgICAgICAgICAgICAgICA8L0NvbnN0cmFpbnRTdGF0dXM+CiAgICAgICAgICAgICAgICA8VmFsaWRhdGlvblN0YXR1cz4KICAgICAgICAgICAgICAgICAgICA8TWFpbkluZGljYXRpb24+dXJuOmV0c2k6MDE5MTAyOm1haW5pbmRpY2F0aW9uOnBhc3NlZDwvTWFpbkluZGljYXRpb24+CiAgICAgICAgICAgICAgICA8L1ZhbGlkYXRpb25TdGF0dXM+CiAgICAgICAgICAgIDwvVmFsaWRhdGlvbkNvbnN0cmFpbnQ+CiAgICAgICAgICAgIDxWYWxpZGF0aW9uQ29uc3RyYWludD4KICAgICAgICAgICAgICAgIDxWYWxpZGF0aW9uQ29uc3RyYWludElkZW50aWZpZXI+dXJuOmNlZjpkc3M6YmJiOnZhbGlkYXRpb25Db250ZXh0SW5pdGlhbGl6YXRpb248L1ZhbGlkYXRpb25Db25zdHJhaW50SWRlbnRpZmllcj4KICAgICAgICAgICAgICAgIDxDb25zdHJhaW50U3RhdHVzPgogICAgICAgICAgICAgICAgICAgIDxTdGF0dXM+dXJuOmV0c2k6MDE5MTAyOmNvbnN0cmFpbnRTdGF0dXM6YXBwbGllZDwvU3RhdHVzPgogICAgICAgICAgICAgICAgPC9Db25zdHJhaW50U3RhdHVzPgogICAgICAgICAgICAgICAgPFZhbGlkYXRpb25TdGF0dXM+CiAgICAgICAgICAgICAgICAgICAgPE1haW5JbmRpY2F0aW9uPnVybjpldHNpOjAxOTEwMjptYWluaW5kaWNhdGlvbjpwYXNzZWQ8L01haW5JbmRpY2F0aW9uPgogICAgICAgICAgICAgICAgPC9WYWxpZGF0aW9uU3RhdHVzPgogICAgICAgICAgICA8L1ZhbGlkYXRpb25Db25zdHJhaW50PgogICAgICAgICAgICA8VmFsaWRhdGlvbkNvbnN0cmFpbnQ+CiAgICAgICAgICAgICAgICA8VmFsaWRhdGlvbkNvbnN0cmFpbnRJZGVudGlmaWVyPnVybjpjZWY6ZHNzOmJiYjpjcnlwdG9ncmFwaGljVmVyaWZpY2F0aW9uPC9WYWxpZGF0aW9uQ29uc3RyYWludElkZW50aWZpZXI+CiAgICAgICAgICAgICAgICA8Q29uc3RyYWludFN0YXR1cz4KICAgICAgICAgICAgICAgICAgICA8U3RhdHVzPnVybjpldHNpOjAxOTEwMjpjb25zdHJhaW50U3RhdHVzOmFwcGxpZWQ8L1N0YXR1cz4KICAgICAgICAgICAgICAgIDwvQ29uc3RyYWludFN0YXR1cz4KICAgICAgICAgICAgICAgIDxWYWxpZGF0aW9uU3RhdHVzPgogICAgICAgICAgICAgICAgICAgIDxNYWluSW5kaWNhdGlvbj51cm46ZXRzaTowMTkxMDI6bWFpbmluZGljYXRpb246cGFzc2VkPC9NYWluSW5kaWNhdGlvbj4KICAgICAgICAgICAgICAgIDwvVmFsaWRhdGlvblN0YXR1cz4KICAgICAgICAgICAgPC9WYWxpZGF0aW9uQ29uc3RyYWludD4KICAgICAgICAgICAgPFZhbGlkYXRpb25Db25zdHJhaW50PgogICAgICAgICAgICAgICAgPFZhbGlkYXRpb25Db25zdHJhaW50SWRlbnRpZmllcj51cm46Y2VmOmRzczpiYmI6c2lnbmF0dXJlQWNjZXB0YW5jZVZhbGlkYXRpb248L1ZhbGlkYXRpb25Db25zdHJhaW50SWRlbnRpZmllcj4KICAgICAgICAgICAgICAgIDxDb25zdHJhaW50U3RhdHVzPgogICAgICAgICAgICAgICAgICAgIDxTdGF0dXM+dXJuOmV0c2k6MDE5MTAyOmNvbnN0cmFpbnRTdGF0dXM6YXBwbGllZDwvU3RhdHVzPgogICAgICAgICAgICAgICAgPC9Db25zdHJhaW50U3RhdHVzPgogICAgICAgICAgICAgICAgPFZhbGlkYXRpb25TdGF0dXM+CiAgICAgICAgICAgICAgICAgICAgPE1haW5JbmRpY2F0aW9uPnVybjpldHNpOjAxOTEwMjptYWluaW5kaWNhdGlvbjpwYXNzZWQ8L01haW5JbmRpY2F0aW9uPgogICAgICAgICAgICAgICAgPC9WYWxpZGF0aW9uU3RhdHVzPgogICAgICAgICAgICA8L1ZhbGlkYXRpb25Db25zdHJhaW50PgogICAgICAgICAgICA8VmFsaWRhdGlvbkNvbnN0cmFpbnQ+CiAgICAgICAgICAgICAgICA8VmFsaWRhdGlvbkNvbnN0cmFpbnRJZGVudGlmaWVyPnVybjpjZWY6ZHNzOmJiYjp4NTA5Q2VydGlmaWNhdGVWYWxpZGF0aW9uPC9WYWxpZGF0aW9uQ29uc3RyYWludElkZW50aWZpZXI+CiAgICAgICAgICAgICAgICA8Q29uc3RyYWludFN0YXR1cz4KICAgICAgICAgICAgICAgICAgICA8U3RhdHVzPnVybjpldHNpOjAxOTEwMjpjb25zdHJhaW50U3RhdHVzOmFwcGxpZWQ8L1N0YXR1cz4KICAgICAgICAgICAgICAgIDwvQ29uc3RyYWludFN0YXR1cz4KICAgICAgICAgICAgICAgIDxWYWxpZGF0aW9uU3RhdHVzPgogICAgICAgICAgICAgICAgICAgIDxNYWluSW5kaWNhdGlvbj51cm46ZXRzaTowMTkxMDI6bWFpbmluZGljYXRpb246aW5kZXRlcm1pbmF0ZTwvTWFpbkluZGljYXRpb24+CiAgICAgICAgICAgICAgICAgICAgPFN1YkluZGljYXRpb24+dXJuOmV0c2k6MDE5MTAyOnN1YmluZGljYXRpb246Tk9fQ0VSVElGSUNBVEVfQ0hBSU5fRk9VTkQ8L1N1YkluZGljYXRpb24+CiAgICAgICAgICAgICAgICAgICAgPEFzc29jaWF0ZWRWYWxpZGF0aW9uUmVwb3J0RGF0YT4KICAgICAgICAgICAgICAgICAgICAgICAgPEFkZGl0aW9uYWxWYWxpZGF0aW9uUmVwb3J0RGF0YT4KICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxSZXBvcnREYXRhPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxUeXBlPnVybjpjZWY6ZHNzOm1lc3NhZ2U6ZXJyb3I8L1R5cGU+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPFZhbHVlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zOnhzPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYSIgeHNpOnR5cGU9InhzOnN0cmluZyI+VGhlIGNlcnRpZmljYXRlIGNoYWluIGZvciBzaWduYXR1cmUgaXMgbm90IHRydXN0ZWQsIGl0IGRvZXMgbm90IGNvbnRhaW4gYSB0cnVzdCBhbmNob3IuPC9WYWx1ZT4KICAgICAgICAgICAgICAgICAgICAgICAgICAgIDwvUmVwb3J0RGF0YT4KICAgICAgICAgICAgICAgICAgICAgICAgPC9BZGRpdGlvbmFsVmFsaWRhdGlvblJlcG9ydERhdGE+CiAgICAgICAgICAgICAgICAgICAgPC9Bc3NvY2lhdGVkVmFsaWRhdGlvblJlcG9ydERhdGE+CiAgICAgICAgICAgICAgICA8L1ZhbGlkYXRpb25TdGF0dXM+CiAgICAgICAgICAgIDwvVmFsaWRhdGlvbkNvbnN0cmFpbnQ+CiAgICAgICAgICAgIDxWYWxpZGF0aW9uQ29uc3RyYWludD4KICAgICAgICAgICAgICAgIDxWYWxpZGF0aW9uQ29uc3RyYWludElkZW50aWZpZXI+dXJuOmNlZjpkc3M6YmJiOnBhc3RTaWduYXR1cmVWYWxpZGF0aW9uPC9WYWxpZGF0aW9uQ29uc3RyYWludElkZW50aWZpZXI+CiAgICAgICAgICAgICAgICA8Q29uc3RyYWludFN0YXR1cz4KICAgICAgICAgICAgICAgICAgICA8U3RhdHVzPnVybjpldHNpOjAxOTEwMjpjb25zdHJhaW50U3RhdHVzOmRpc2FibGVkPC9TdGF0dXM+CiAgICAgICAgICAgICAgICA8L0NvbnN0cmFpbnRTdGF0dXM+CiAgICAgICAgICAgIDwvVmFsaWRhdGlvbkNvbnN0cmFpbnQ+CiAgICAgICAgICAgIDxWYWxpZGF0aW9uQ29uc3RyYWludD4KICAgICAgICAgICAgICAgIDxWYWxpZGF0aW9uQ29uc3RyYWludElkZW50aWZpZXI+dXJuOmNlZjpkc3M6YmJiOnBhc3RDZXJ0aWZpY2F0ZVZhbGlkYXRpb248L1ZhbGlkYXRpb25Db25zdHJhaW50SWRlbnRpZmllcj4KICAgICAgICAgICAgICAgIDxDb25zdHJhaW50U3RhdHVzPgogICAgICAgICAgICAgICAgICAgIDxTdGF0dXM+dXJuOmV0c2k6MDE5MTAyOmNvbnN0cmFpbnRTdGF0dXM6ZGlzYWJsZWQ8L1N0YXR1cz4KICAgICAgICAgICAgICAgIDwvQ29uc3RyYWludFN0YXR1cz4KICAgICAgICAgICAgPC9WYWxpZGF0aW9uQ29uc3RyYWludD4KICAgICAgICAgICAgPFZhbGlkYXRpb25Db25zdHJhaW50PgogICAgICAgICAgICAgICAgPFZhbGlkYXRpb25Db25zdHJhaW50SWRlbnRpZmllcj51cm46Y2VmOmRzczpiYmI6dmFsaWRhdGlvblRpbWVTbGlkaW5nPC9WYWxpZGF0aW9uQ29uc3RyYWludElkZW50aWZpZXI+CiAgICAgICAgICAgICAgICA8Q29uc3RyYWludFN0YXR1cz4KICAgICAgICAgICAgICAgICAgICA8U3RhdHVzPnVybjpldHNpOjAxOTEwMjpjb25zdHJhaW50U3RhdHVzOmRpc2FibGVkPC9TdGF0dXM+CiAgICAgICAgICAgICAgICA8L0NvbnN0cmFpbnRTdGF0dXM+CiAgICAgICAgICAgIDwvVmFsaWRhdGlvbkNvbnN0cmFpbnQ+CiAgICAgICAgPC9WYWxpZGF0aW9uQ29uc3RyYWludHNFdmFsdWF0aW9uUmVwb3J0PgogICAgICAgIDxWYWxpZGF0aW9uVGltZUluZm8+CiAgICAgICAgICAgIDxWYWxpZGF0aW9uVGltZT4yMDI2LTA3LTI4VDA4OjQxOjM2WjwvVmFsaWRhdGlvblRpbWU+CiAgICAgICAgICAgIDxCZXN0U2lnbmF0dXJlVGltZT4KICAgICAgICAgICAgICAgIDxQT0VUaW1lPjIwMjYtMDctMjhUMDg6NDE6MzZaPC9QT0VUaW1lPgogICAgICAgICAgICAgICAgPFR5cGVPZlByb29mPnVybjpldHNpOjAxOTEwMjpwb2V0eXBlOnZhbGlkYXRpb248L1R5cGVPZlByb29mPgogICAgICAgICAgICA8L0Jlc3RTaWduYXR1cmVUaW1lPgogICAgICAgIDwvVmFsaWRhdGlvblRpbWVJbmZvPgogICAgICAgIDxTaWduZXJzRG9jdW1lbnQ+CiAgICAgICAgICAgIDxEaWdlc3RBbGdBbmRWYWx1ZT4KICAgICAgICAgICAgICAgIDxuczI6RGlnZXN0TWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8wNC94bWxlbmMjc2hhMjU2Ii8+CiAgICAgICAgICAgICAgICA8bnMyOkRpZ2VzdFZhbHVlPmtOTEk1aEdZZThxMDgxcXRLckdtWHB5aEJmcTFjK1g0WWd4SXp1UmpZYTQ9PC9uczI6RGlnZXN0VmFsdWU+CiAgICAgICAgICAgIDwvRGlnZXN0QWxnQW5kVmFsdWU+CiAgICAgICAgICAgIDxTaWduZXJzRG9jdW1lbnRSZXByZXNlbnRhdGlvbiBWT1JlZmVyZW5jZT0iRC0xN0YyODI1RkJCNUVCNUU3NDg5QzZFODM0NEY0MkMzMjBBOEU3MjRCN0VDNzkyQ0U4MTg0MjEwRUMyRDJBQUJCIi8+CiAgICAgICAgPC9TaWduZXJzRG9jdW1lbnQ+CiAgICAgICAgPFNpZ25hdHVyZUF0dHJpYnV0ZXM+CiAgICAgICAgICAgIDxTaWduaW5nVGltZSBTaWduZWQ9InRydWUiPgogICAgICAgICAgICAgICAgPFRpbWU+MjAyNi0wNi0wNVQxMzowMzo1OVo8L1RpbWU+CiAgICAgICAgICAgIDwvU2lnbmluZ1RpbWU+CiAgICAgICAgICAgIDxTaWduaW5nQ2VydGlmaWNhdGUgU2lnbmVkPSJ0cnVlIj4KICAgICAgICAgICAgICAgIDxBdHRyaWJ1dGVPYmplY3QgVk9SZWZlcmVuY2U9IkMtQzRCRjA3NDIyQUVDOERGRjZEOTNGNzE5MjNFMEM2RUUyOUIzNDBGRjg3RTZBRjBBNTM3MDQ5QjdDQjMwQTA4OCIvPgogICAgICAgICAgICA8L1NpZ25pbmdDZXJ0aWZpY2F0ZT4KICAgICAgICAgICAgPERhdGFPYmplY3RGb3JtYXQgU2lnbmVkPSJ0cnVlIj4KICAgICAgICAgICAgICAgIDxNaW1lVHlwZT5hcHBsaWNhdGlvbi9qc29uPC9NaW1lVHlwZT4KICAgICAgICAgICAgPC9EYXRhT2JqZWN0Rm9ybWF0PgogICAgICAgIDwvU2lnbmF0dXJlQXR0cmlidXRlcz4KICAgICAgICA8U2lnbmVySW5mb3JtYXRpb24+CiAgICAgICAgICAgIDxTaWduZXJDZXJ0aWZpY2F0ZSBWT1JlZmVyZW5jZT0iQy1DNEJGMDc0MjJBRUM4REZGNkQ5M0Y3MTkyM0UwQzZFRTI5QjM0MEZGODdFNkFGMEE1MzcwNDlCN0NCMzBBMDg4Ii8+CiAgICAgICAgICAgIDxTaWduZXI+QWxla3NhbmRyIEJlbGlha292PC9TaWduZXI+CiAgICAgICAgPC9TaWduZXJJbmZvcm1hdGlvbj4KICAgICAgICA8U2lnbmF0dXJlUXVhbGl0eT4KICAgICAgICAgICAgPFNpZ25hdHVyZVF1YWxpdHlJbmZvcm1hdGlvbj51cm46Y2VmOmRzczpzaWduYXR1cmVRdWFsaWZpY2F0aW9uOm5vdEFwcGxpY2FibGU8L1NpZ25hdHVyZVF1YWxpdHlJbmZvcm1hdGlvbj4KICAgICAgICA8L1NpZ25hdHVyZVF1YWxpdHk+CiAgICAgICAgPFNpZ25hdHVyZVZhbGlkYXRpb25Qcm9jZXNzPgogICAgICAgICAgICA8U2lnbmF0dXJlVmFsaWRhdGlvblByb2Nlc3NJRD51cm46ZXRzaTowMTkxMDI6dmFsaWRhdGlvbnByb2Nlc3M6QmFzaWM8L1NpZ25hdHVyZVZhbGlkYXRpb25Qcm9jZXNzSUQ+CiAgICAgICAgPC9TaWduYXR1cmVWYWxpZGF0aW9uUHJvY2Vzcz4KICAgICAgICA8U2lnbmF0dXJlVmFsaWRhdGlvblN0YXR1cz4KICAgICAgICAgICAgPE1haW5JbmRpY2F0aW9uPnVybjpldHNpOjAxOTEwMjptYWluaW5kaWNhdGlvbjppbmRldGVybWluYXRlPC9NYWluSW5kaWNhdGlvbj4KICAgICAgICAgICAgPFN1YkluZGljYXRpb24+dXJuOmV0c2k6MDE5MTAyOnN1YmluZGljYXRpb246Tk9fQ0VSVElGSUNBVEVfQ0hBSU5fRk9VTkQ8L1N1YkluZGljYXRpb24+CiAgICAgICAgICAgIDxBc3NvY2lhdGVkVmFsaWRhdGlvblJlcG9ydERhdGE+CiAgICAgICAgICAgICAgICA8Q2VydGlmaWNhdGVDaGFpbj4KICAgICAgICAgICAgICAgICAgICA8U2lnbmluZ0NlcnRpZmljYXRlIFZPUmVmZXJlbmNlPSJDLUM0QkYwNzQyMkFFQzhERkY2RDkzRjcxOTIzRTBDNkVFMjlCMzQwRkY4N0U2QUYwQTUzNzA0OUI3Q0IzMEEwODgiLz4KICAgICAgICAgICAgICAgICAgICA8SW50ZXJtZWRpYXRlQ2VydGlmaWNhdGUgVk9SZWZlcmVuY2U9IkMtMTBFNTgzRjEwMEU1MjNEOEU3OEIzQTRFN0RBNjdBMUVFN0U2MjM5MTVEQTBDRTk4MDAwRjFBNjYxQzkzNzM0RiIvPgogICAgICAgICAgICAgICAgPC9DZXJ0aWZpY2F0ZUNoYWluPgogICAgICAgICAgICAgICAgPENyeXB0b0luZm9ybWF0aW9uPgogICAgICAgICAgICAgICAgICAgIDxWYWxpZGF0aW9uT2JqZWN0SWQgVk9SZWZlcmVuY2U9IlMtNzVEMjA3MUY2Q0Y3NjVCNEIwRTg3NUQzOUZFMDYzQ0ZGRUE5N0NFMjlDMEI4MDUwN0JGMDE4RUE2QTlDNTg3RSIvPgogICAgICAgICAgICAgICAgICAgIDxBbGdvcml0aG0+aHR0cDovL3d3dy53My5vcmcvMjAwMS8wNC94bWxkc2lnLW1vcmUjZWNkc2Etc2hhMjU2PC9BbGdvcml0aG0+CiAgICAgICAgICAgICAgICAgICAgPFNlY3VyZUFsZ29yaXRobT50cnVlPC9TZWN1cmVBbGdvcml0aG0+CiAgICAgICAgICAgICAgICA8L0NyeXB0b0luZm9ybWF0aW9uPgogICAgICAgICAgICAgICAgPEFkZGl0aW9uYWxWYWxpZGF0aW9uUmVwb3J0RGF0YT4KICAgICAgICAgICAgICAgICAgICA8UmVwb3J0RGF0YT4KICAgICAgICAgICAgICAgICAgICAgICAgPFR5cGU+dXJuOmNlZjpkc3M6bWVzc2FnZTplcnJvcjwvVHlwZT4KICAgICAgICAgICAgICAgICAgICAgICAgPFZhbHVlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zOnhzPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYSIgeHNpOnR5cGU9InhzOnN0cmluZyI+VGhlIGNlcnRpZmljYXRlIGNoYWluIGZvciBzaWduYXR1cmUgaXMgbm90IHRydXN0ZWQsIGl0IGRvZXMgbm90IGNvbnRhaW4gYSB0cnVzdCBhbmNob3IuPC9WYWx1ZT4KICAgICAgICAgICAgICAgICAgICA8L1JlcG9ydERhdGE+CiAgICAgICAgICAgICAgICA8L0FkZGl0aW9uYWxWYWxpZGF0aW9uUmVwb3J0RGF0YT4KICAgICAgICAgICAgPC9Bc3NvY2lhdGVkVmFsaWRhdGlvblJlcG9ydERhdGE+CiAgICAgICAgPC9TaWduYXR1cmVWYWxpZGF0aW9uU3RhdHVzPgogICAgPC9TaWduYXR1cmVWYWxpZGF0aW9uUmVwb3J0PgogICAgPFNpZ25hdHVyZVZhbGlkYXRpb25PYmplY3RzPgogICAgICAgIDxWYWxpZGF0aW9uT2JqZWN0IGlkPSJBLUE4OUM0QTM2QTc0NDUwOTBBMTg0NDU0NENDOUFDQTAwRDdEQzk3RjRCMDQwOTMzNUUwMDYzNUI4QkQzQzcyOEEiPgogICAgICAgICAgICA8T2JqZWN0VHlwZT51cm46ZXRzaTowMTkxMDI6dmFsaWRhdGlvbk9iamVjdDpvdGhlcjwvT2JqZWN0VHlwZT4KICAgICAgICAgICAgPFZhbGlkYXRpb25PYmplY3RSZXByZXNlbnRhdGlvbj4KICAgICAgICAgICAgICAgIDxVUkk+c2Rqd3QuanNvbjwvVVJJPgogICAgICAgICAgICA8L1ZhbGlkYXRpb25PYmplY3RSZXByZXNlbnRhdGlvbj4KICAgICAgICAgICAgPFBPRT4KICAgICAgICAgICAgICAgIDxQT0VUaW1lPjIwMjYtMDctMjhUMDg6NDE6MzZaPC9QT0VUaW1lPgogICAgICAgICAgICAgICAgPFR5cGVPZlByb29mPnVybjpldHNpOjAxOTEwMjpwb2V0eXBlOnZhbGlkYXRpb248L1R5cGVPZlByb29mPgogICAgICAgICAgICA8L1BPRT4KICAgICAgICAgICAgPFZhbGlkYXRpb25SZXBvcnQ+CiAgICAgICAgICAgICAgICA8U2lnbmF0dXJlUXVhbGl0eT4KICAgICAgICAgICAgICAgICAgICA8U2lnbmF0dXJlUXVhbGl0eUluZm9ybWF0aW9uPnVybjpjZWY6ZHNzOmF0dGVzdGF0aW9uOnF1YWxpZmljYXRpb246TkE8L1NpZ25hdHVyZVF1YWxpdHlJbmZvcm1hdGlvbj4KICAgICAgICAgICAgICAgIDwvU2lnbmF0dXJlUXVhbGl0eT4KICAgICAgICAgICAgICAgIDxTaWduYXR1cmVWYWxpZGF0aW9uU3RhdHVzPgogICAgICAgICAgICAgICAgICAgIDxNYWluSW5kaWNhdGlvbj51cm46ZXRzaTowMTkxMDI6bWFpbmluZGljYXRpb246aW5kZXRlcm1pbmF0ZTwvTWFpbkluZGljYXRpb24+CiAgICAgICAgICAgICAgICAgICAgPFN1YkluZGljYXRpb24+dXJuOmV0c2k6MDE5MTAyOnN1YmluZGljYXRpb246Tk9fQ0VSVElGSUNBVEVfQ0hBSU5fRk9VTkQ8L1N1YkluZGljYXRpb24+CiAgICAgICAgICAgICAgICAgICAgPEFzc29jaWF0ZWRWYWxpZGF0aW9uUmVwb3J0RGF0YT4KICAgICAgICAgICAgICAgICAgICAgICAgPEFkZGl0aW9uYWxWYWxpZGF0aW9uUmVwb3J0RGF0YT4KICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxSZXBvcnREYXRhPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxUeXBlPnVybjpjZWY6ZHNzOm1lc3NhZ2U6ZXJyb3I8L1R5cGU+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPFZhbHVlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zOnhzPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYSIgeHNpOnR5cGU9InhzOnN0cmluZyI+VGhlIHJlc3VsdCBvZiBiYXNpYyBzaWduYXR1cmUgdmFsaWRhdGlvbiBwcm9jZXNzIGlzIG5vdCBjb25jbHVzaXZlITwvVmFsdWU+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICA8L1JlcG9ydERhdGE+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICA8UmVwb3J0RGF0YT4KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA8VHlwZT51cm46Y2VmOmRzczptZXNzYWdlOndhcm5pbmc8L1R5cGU+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPFZhbHVlIHhtbG5zOnhzaT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEtaW5zdGFuY2UiIHhtbG5zOnhzPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYSIgeHNpOnR5cGU9InhzOnN0cmluZyI+Tm8gZGlzY2xvc3VyZXMgaGF2ZSBiZWVuIHByb3ZpZGVkIHdpdGggdGhlIGF0dGVzdGF0aW9uIHByZXNlbnRhdGlvbiE8L1ZhbHVlPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgPC9SZXBvcnREYXRhPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgPFJlcG9ydERhdGE+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPFR5cGU+dXJuOmNlZjpkc3M6bWVzc2FnZTp3YXJuaW5nPC9UeXBlPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxWYWx1ZSB4bWxuczp4c2k9Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvWE1MU2NoZW1hLWluc3RhbmNlIiB4bWxuczp4cz0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEiIHhzaTp0eXBlPSJ4czpzdHJpbmciPk5vIGtleSBiaW5kaW5nIHNpZ25hdHVyZSBoYXMgYmVlbiBmb3VuZCE8L1ZhbHVlPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgPC9SZXBvcnREYXRhPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgPFJlcG9ydERhdGE+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPFR5cGU+dXJuOmNlZjpkc3M6bWVzc2FnZTp3YXJuaW5nPC9UeXBlPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxWYWx1ZSB4bWxuczp4c2k9Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvWE1MU2NoZW1hLWluc3RhbmNlIiB4bWxuczp4cz0iaHR0cDovL3d3dy53My5vcmcvMjAwMS9YTUxTY2hlbWEiIHhzaTp0eXBlPSJ4czpzdHJpbmciPlRoZSBhdHRlc3RhdGlvbiBkb2VzIG5vdCBjb250YWluIGEgcmV2b2NhdGlvbiAoc3RhdHVzKSBjbGFpbSE8L1ZhbHVlPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgPC9SZXBvcnREYXRhPgogICAgICAgICAgICAgICAgICAgICAgICA8L0FkZGl0aW9uYWxWYWxpZGF0aW9uUmVwb3J0RGF0YT4KICAgICAgICAgICAgICAgICAgICA8L0Fzc29jaWF0ZWRWYWxpZGF0aW9uUmVwb3J0RGF0YT4KICAgICAgICAgICAgICAgIDwvU2lnbmF0dXJlVmFsaWRhdGlvblN0YXR1cz4KICAgICAgICAgICAgPC9WYWxpZGF0aW9uUmVwb3J0PgogICAgICAgIDwvVmFsaWRhdGlvbk9iamVjdD4KICAgICAgICA8VmFsaWRhdGlvbk9iamVjdCBpZD0iQy0xMEU1ODNGMTAwRTUyM0Q4RTc4QjNBNEU3REE2N0ExRUU3RTYyMzkxNURBMENFOTgwMDBGMUE2NjFDOTM3MzRGIj4KICAgICAgICAgICAgPE9iamVjdFR5cGU+dXJuOmV0c2k6MDE5MTAyOnZhbGlkYXRpb25PYmplY3Q6Y2VydGlmaWNhdGU8L09iamVjdFR5cGU+CiAgICAgICAgICAgIDxWYWxpZGF0aW9uT2JqZWN0UmVwcmVzZW50YXRpb24+CiAgICAgICAgICAgICAgICA8RGlnZXN0QWxnQW5kVmFsdWU+CiAgICAgICAgICAgICAgICAgICAgPG5zMjpEaWdlc3RNZXRob2QgQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGVuYyNzaGEyNTYiLz4KICAgICAgICAgICAgICAgICAgICA8bnMyOkRpZ2VzdFZhbHVlPkVPV0Q4UURsSTlqbml6cE9mYVo2SHVmbUk1RmRvTTZZQUE4YVpoeVRjMDg9PC9uczI6RGlnZXN0VmFsdWU+CiAgICAgICAgICAgICAgICA8L0RpZ2VzdEFsZ0FuZFZhbHVlPgogICAgICAgICAgICA8L1ZhbGlkYXRpb25PYmplY3RSZXByZXNlbnRhdGlvbj4KICAgICAgICAgICAgPFBPRT4KICAgICAgICAgICAgICAgIDxQT0VUaW1lPjIwMjYtMDctMjhUMDg6NDE6MzZaPC9QT0VUaW1lPgogICAgICAgICAgICAgICAgPFR5cGVPZlByb29mPnVybjpldHNpOjAxOTEwMjpwb2V0eXBlOnZhbGlkYXRpb248L1R5cGVPZlByb29mPgogICAgICAgICAgICA8L1BPRT4KICAgICAgICA8L1ZhbGlkYXRpb25PYmplY3Q+CiAgICAgICAgPFZhbGlkYXRpb25PYmplY3QgaWQ9IkMtQzRCRjA3NDIyQUVDOERGRjZEOTNGNzE5MjNFMEM2RUUyOUIzNDBGRjg3RTZBRjBBNTM3MDQ5QjdDQjMwQTA4OCI+CiAgICAgICAgICAgIDxPYmplY3RUeXBlPnVybjpldHNpOjAxOTEwMjp2YWxpZGF0aW9uT2JqZWN0OmNlcnRpZmljYXRlPC9PYmplY3RUeXBlPgogICAgICAgICAgICA8VmFsaWRhdGlvbk9iamVjdFJlcHJlc2VudGF0aW9uPgogICAgICAgICAgICAgICAgPERpZ2VzdEFsZ0FuZFZhbHVlPgogICAgICAgICAgICAgICAgICAgIDxuczI6RGlnZXN0TWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8wNC94bWxlbmMjc2hhMjU2Ii8+CiAgICAgICAgICAgICAgICAgICAgPG5zMjpEaWdlc3RWYWx1ZT54TDhIUWlyc2pmOXRrL2NaSStERzdpbXpRUCtINXE4S1UzQkp0OHN3b0lnPTwvbnMyOkRpZ2VzdFZhbHVlPgogICAgICAgICAgICAgICAgPC9EaWdlc3RBbGdBbmRWYWx1ZT4KICAgICAgICAgICAgPC9WYWxpZGF0aW9uT2JqZWN0UmVwcmVzZW50YXRpb24+CiAgICAgICAgICAgIDxQT0U+CiAgICAgICAgICAgICAgICA8UE9FVGltZT4yMDI2LTA3LTI4VDA4OjQxOjM2WjwvUE9FVGltZT4KICAgICAgICAgICAgICAgIDxUeXBlT2ZQcm9vZj51cm46ZXRzaTowMTkxMDI6cG9ldHlwZTp2YWxpZGF0aW9uPC9UeXBlT2ZQcm9vZj4KICAgICAgICAgICAgPC9QT0U+CiAgICAgICAgPC9WYWxpZGF0aW9uT2JqZWN0PgogICAgICAgIDxWYWxpZGF0aW9uT2JqZWN0IGlkPSJELTE3RjI4MjVGQkI1RUI1RTc0ODlDNkU4MzQ0RjQyQzMyMEE4RTcyNEI3RUM3OTJDRTgxODQyMTBFQzJEMkFBQkIiPgogICAgICAgICAgICA8T2JqZWN0VHlwZT51cm46ZXRzaTowMTkxMDI6dmFsaWRhdGlvbk9iamVjdDpzaWduZWREYXRhPC9PYmplY3RUeXBlPgogICAgICAgICAgICA8VmFsaWRhdGlvbk9iamVjdFJlcHJlc2VudGF0aW9uPgogICAgICAgICAgICAgICAgPERpZ2VzdEFsZ0FuZFZhbHVlPgogICAgICAgICAgICAgICAgICAgIDxuczI6RGlnZXN0TWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8wNC94bWxlbmMjc2hhMjU2Ii8+CiAgICAgICAgICAgICAgICAgICAgPG5zMjpEaWdlc3RWYWx1ZT5rTkxJNWhHWWU4cTA4MXF0S3JHbVhweWhCZnExYytYNFlneEl6dVJqWWE0PTwvbnMyOkRpZ2VzdFZhbHVlPgogICAgICAgICAgICAgICAgPC9EaWdlc3RBbGdBbmRWYWx1ZT4KICAgICAgICAgICAgPC9WYWxpZGF0aW9uT2JqZWN0UmVwcmVzZW50YXRpb24+CiAgICAgICAgICAgIDxQT0U+CiAgICAgICAgICAgICAgICA8UE9FVGltZT4yMDI2LTA3LTI4VDA4OjQxOjM2WjwvUE9FVGltZT4KICAgICAgICAgICAgICAgIDxUeXBlT2ZQcm9vZj51cm46ZXRzaTowMTkxMDI6cG9ldHlwZTp2YWxpZGF0aW9uPC9UeXBlT2ZQcm9vZj4KICAgICAgICAgICAgPC9QT0U+CiAgICAgICAgPC9WYWxpZGF0aW9uT2JqZWN0PgogICAgPC9TaWduYXR1cmVWYWxpZGF0aW9uT2JqZWN0cz4KPC9WYWxpZGF0aW9uUmVwb3J0Pgo=",
+  "DiagnosticData" : {
+    "DocumentName" : "sdjwt.json",
+    "ValidationDate" : "2026-07-28T08:41:36Z",
+    "ContainerInfo" : null,
+    "PDFAInfo" : null,
+    "ConnectionInfo" : null,
+    "AttestationPresentationInfo" : {
+      "Format" : "SD_JWT",
+      "Version" : null,
+      "AttestationDocument" : [ {
+        "DocumentType" : null,
+        "Errors" : null,
+        "Attestation" : "A-A89C4A36A7445090A1844544CC9ACA00D7DC97F4B0409335E00635B8BD3C728A"
+      } ],
+      "Errors" : null,
+      "Status" : null
+    },
+    "Attestation" : [ {
+      "Id" : "A-A89C4A36A7445090A1844544CC9ACA00D7DC97F4B0409335E00635B8BD3C728A",
+      "DocumentName" : "sdjwt.json",
+      "DocumentType" : null,
+      "Profile" : "SD_JWT_VC",
+      "StructuralValidation" : null,
+      "DigestMethod" : "SHA256",
+      "DigestMatcher" : [ ],
+      "AttestationSignature" : [ {
+        "Signature" : "S-75D2071F6CF765B4B0E875D39FE063CFFEA97CE29C0B80507BF018EA6A9C587E"
+      } ],
+      "AttestationPayload" : {
+        "Identifier" : null,
+        "Issuer" : {
+          "Text" : "EAA provider",
+          "Number" : null,
+          "Boolean" : null,
+          "Binary" : null,
+          "DateTime" : null,
+          "Item" : null,
+          "Entry" : null,
+          "name" : "iss",
+          "namespace" : null,
+          "disclosure" : null
+        },
+        "Subject" : null,
+        "Audience" : null,
+        "IssuedAt" : null,
+        "NotBefore" : {
+          "Text" : null,
+          "Number" : null,
+          "Boolean" : null,
+          "Binary" : null,
+          "DateTime" : "2026-06-05T13:03:59Z",
+          "Item" : null,
+          "Entry" : null,
+          "name" : "nbf",
+          "namespace" : null,
+          "disclosure" : null
+        },
+        "Expiration" : {
+          "Text" : null,
+          "Number" : null,
+          "Boolean" : null,
+          "Binary" : null,
+          "DateTime" : "2027-06-03T05:33:33Z",
+          "Item" : null,
+          "Entry" : null,
+          "name" : "exp",
+          "namespace" : null,
+          "disclosure" : null
+        },
+        "UpdatedAt" : null,
+        "Category" : null,
+        "VerifiableCredentialsType" : {
+          "Integrity" : {
+            "DigestMethod" : "SHA256",
+            "DigestValue" : "LHeAW/pku/C49aIZ77sqyXiQms8+rsxPlfFew6E9mwY=",
+            "Text" : "sha256-LHeAW/pku/C49aIZ77sqyXiQms8+rsxPlfFew6E9mwY=",
+            "Number" : null,
+            "Boolean" : null,
+            "Binary" : null,
+            "DateTime" : null,
+            "Item" : null,
+            "Entry" : null,
+            "name" : "vct#integrity",
+            "namespace" : null,
+            "disclosure" : null
+          },
+          "Text" : "urn:eudi:eaa:1",
+          "Number" : null,
+          "Boolean" : null,
+          "Binary" : null,
+          "DateTime" : null,
+          "Item" : null,
+          "Entry" : null,
+          "name" : "vct",
+          "namespace" : null,
+          "disclosure" : null
+        },
+        "Status" : null,
+        "Nonce" : null,
+        "DeviceKey" : null,
+        "Version" : null,
+        "DocType" : null,
+        "ValidityInfo" : null,
+        "AdministrativeIssuanceDate" : null,
+        "AdministrativeExpirationDate" : null,
+        "OneTimeUse" : null,
+        "ShortLived" : null,
+        "Evidence" : null,
+        "AttestedAttributesSubject" : null,
+        "FullName" : null,
+        "GivenName" : {
+          "Text" : "John",
+          "Number" : null,
+          "Boolean" : null,
+          "Binary" : null,
+          "DateTime" : null,
+          "Item" : null,
+          "Entry" : null,
+          "name" : "given_name",
+          "namespace" : null,
+          "disclosure" : null
+        },
+        "FamilyName" : {
+          "Text" : "Doe",
+          "Number" : null,
+          "Boolean" : null,
+          "Binary" : null,
+          "DateTime" : null,
+          "Item" : null,
+          "Entry" : null,
+          "name" : "family_name",
+          "namespace" : null,
+          "disclosure" : null
+        },
+        "MiddleName" : null,
+        "Nickname" : null,
+        "ShortName" : null,
+        "ProfileUrl" : null,
+        "PictureUrl" : null,
+        "WebsiteUrl" : null,
+        "Email" : null,
+        "EmailVerified" : null,
+        "Gender" : null,
+        "Birthdate" : null,
+        "Timezone" : null,
+        "Locale" : null,
+        "Address" : null,
+        "PhoneNumber" : null,
+        "PhoneNumberVerified" : null,
+        "PlaceOfBirth" : null,
+        "Nationalities" : null,
+        "BirthFamilyName" : null,
+        "BirthGivenName" : null,
+        "BirthMiddleName" : null,
+        "Salutation" : null,
+        "Title" : null,
+        "MobilePhoneNumber" : null,
+        "Pseudonym" : null,
+        "CredentialSubject" : [ ],
+        "IssuingCountry" : null,
+        "IssuingAuthority" : {
+          "Text" : "TEST Authority",
+          "Number" : null,
+          "Boolean" : null,
+          "Binary" : null,
+          "DateTime" : null,
+          "Item" : null,
+          "Entry" : null,
+          "name" : "issuing_authority",
+          "namespace" : null,
+          "disclosure" : null
+        },
+        "DocumentNumber" : null,
+        "Portrait" : null,
+        "DrivingPrivileges" : null,
+        "UNDistinguishingSign" : null,
+        "PersonalAdministrativeNumber" : null,
+        "Height" : null,
+        "Weight" : null,
+        "EyeColour" : null,
+        "HairColour" : null,
+        "ResidentPostalAddress" : null,
+        "PortraitCaptureDate" : null,
+        "AgeInYears" : null,
+        "AgeBirthYear" : null,
+        "AgeEqualOrOver" : null,
+        "AgeOverNN" : [ ],
+        "IssuingJurisdiction" : null,
+        "ResidentAddressCity" : null,
+        "ResidentAddressState" : null,
+        "ResidentAddressPostalCode" : null,
+        "ResidentAddressCountry" : null,
+        "BiometricTemplate" : [ ],
+        "SignatureUsualMark" : null,
+        "Fingerprint" : null,
+        "BusinessName" : null,
+        "OrganizationName" : null,
+        "BirthFullName" : null,
+        "Profession" : null,
+        "RelationshipFather" : null,
+        "RelationshipMother" : null,
+        "RelationshipParent" : null,
+        "RelationshipSon" : null,
+        "RelationshipDaughter" : null,
+        "RelationshipBrother" : null,
+        "RelationshipSister" : null,
+        "RelationshipSibling" : null,
+        "RelationshipSpouse" : null,
+        "RelationshipFatherInLaw" : null,
+        "RelationshipMotherInLaw" : null,
+        "RelationshipParentInLaw" : null,
+        "RelationshipSonInLaw" : null,
+        "RelationshipDaughterInLaw" : null,
+        "RelationshipChildInLaw" : null,
+        "RelationshipParentalAuthority" : null,
+        "RelationshipLegalRepresentative" : null,
+        "RelationshipAgent" : null,
+        "DocumentType" : null,
+        "IssuingAuthorityRegistrationIdentifier" : null,
+        "TrustAnchor" : null,
+        "ResidentAddressStreet" : null,
+        "ResidentAddressHouseNumber" : null,
+        "OtherClaim" : [ ]
+      },
+      "KeyBindingSignature" : null,
+      "KeyBindingPayload" : null,
+      "AttestationRevocationStatus" : [ ],
+      "Duplicated" : null
+    } ],
+    "Signature" : [ {
+      "Id" : "S-75D2071F6CF765B4B0E875D39FE063CFFEA97CE29C0B80507BF018EA6A9C587E",
+      "DAIdentifier" : null,
+      "SignatureFilename" : "sdjwt.json",
+      "ErrorMessage" : null,
+      "ClaimedSigningTime" : "2026-06-05T13:03:59Z",
+      "ExpirationTime" : null,
+      "SignatureFormat" : "JAdES-BASELINE-B",
+      "JWSSerializationType" : "COMPACT_SERIALIZATION",
+      "SignatureType" : "application/dc+sd-jwt",
+      "COSESignatureType" : null,
+      "StructuralValidation" : {
+        "Message" : [ ],
+        "valid" : true
+      },
+      "DigestMatcher" : [ {
+        "DataFound" : true,
+        "DataIntact" : true,
+        "ObjectReference" : null,
+        "DisclosableClaim" : null,
+        "DigestMethod" : "SHA256",
+        "DigestValue" : "LxdusW6jWyQy3UvNmzlpBm+nF92sP77vtRRagTcSjZQ=",
+        "match" : null,
+        "type" : "JWS_SIGNING_INPUT",
+        "id" : null,
+        "uri" : null,
+        "documentName" : null,
+        "duplicated" : null
+      } ],
+      "BasicSignature" : {
+        "EncryptionAlgoUsedToSignThisToken" : "ECDSA",
+        "KeyLengthUsedToSignThisToken" : "256",
+        "DigestAlgoUsedToSignThisToken" : "SHA256",
+        "SignatureIntact" : true,
+        "SignatureValid" : true
+      },
+      "SigningCertificate" : {
+        "PublicKey" : null,
+        "Certificate" : "C-C4BF07422AEC8DFF6D93F71923E0C6EE29B340FF87E6AF0A537049B7CB30A088"
+      },
+      "ChainItem" : [ {
+        "Certificate" : "C-C4BF07422AEC8DFF6D93F71923E0C6EE29B340FF87E6AF0A537049B7CB30A088"
+      }, {
+        "Certificate" : "C-10E583F100E523D8E78B3A4E7DA67A1EE7E623915DA0CE98000F1A661C93734F"
+      } ],
+      "ContentType" : null,
+      "MimeType" : "application/json",
+      "ContentIdentifier" : null,
+      "ContentHints" : null,
+      "SignatureProductionPlace" : null,
+      "CommitmentTypeIndication" : [ ],
+      "SignerRole" : [ ],
+      "Policy" : null,
+      "SignaturePolicyStore" : null,
+      "SignerInfo" : null,
+      "PDFRevision" : null,
+      "VRIDictionaryCreationTime" : null,
+      "SignerDocumentRepresentations" : null,
+      "FoundCertificates" : {
+        "RelatedCertificate" : [ {
+          "Origin" : [ "KEY_INFO" ],
+          "CertificateRef" : [ {
+            "Origin" : "SIGNING_CERTIFICATE",
+            "IssuerSerial" : null,
+            "DigestAlgoAndValue" : {
+              "DigestMethod" : "SHA256",
+              "DigestValue" : "xL8HQirsjf9tk/cZI+DG7imzQP+H5q8KU3BJt8swoIg=",
+              "match" : true
+            },
+            "SerialInfo" : null,
+            "KID" : null,
+            "X509Url" : null
+          }, {
+            "Origin" : "KEY_IDENTIFIER",
+            "IssuerSerial" : {
+              "value" : "MIG4MIGfpIGcMIGZMQswCQYDVQQGEwJJVDEYMBYGA1UECgwPSW5mb0NlcnQgUy5wLkEuMR8wHQYDVQQLDBZUcnVzdCBTZXJ2aWNlIFByb3ZpZGVyMRowGAYDVQRhDBFWQVRJVC0wNzk0NTIxMTAwNjEzMDEGA1UEAwwqSW5mb0NlcnQgQ2VydGlmaWNhdGlvbiBTZXJ2aWNlcyBFQyBDQSA0IENMAhRYj4Ur7SvYW4StEEGH85ICx2t3Ag==",
+              "match" : true
+            },
+            "DigestAlgoAndValue" : null,
+            "SerialInfo" : {
+              "IssuerName" : "CN=InfoCert Certification Services EC CA 4 CL, OID.2.5.4.97=VATIT-07945211006, OU=Trust Service Provider, O=InfoCert S.p.A., C=IT",
+              "SerialNumber" : 505591795277313150972154678117957643138987947778,
+              "Ski" : null,
+              "Current" : null
+            },
+            "KID" : null,
+            "X509Url" : null
+          } ],
+          "Certificate" : "C-C4BF07422AEC8DFF6D93F71923E0C6EE29B340FF87E6AF0A537049B7CB30A088"
+        } ],
+        "OrphanCertificate" : [ ]
+      },
+      "FoundRevocations" : {
+        "RelatedRevocation" : [ ],
+        "OrphanRevocation" : [ ]
+      },
+      "FoundTimestamp" : [ ],
+      "FoundEvidenceRecord" : [ ],
+      "SignatureScope" : [ {
+        "Scope" : "ATTESTATION_SIGNATURE",
+        "Name" : "A-A89C4A36A7445090A1844544CC9ACA00D7DC97F4B0409335E00635B8BD3C728A",
+        "Description" : "Attestation with Id : A-A89C4A36A7445090A1844544CC9ACA00D7DC97F4B0409335E00635B8BD3C728A",
+        "Transformation" : null,
+        "SignerData" : "D-17F2825FBB5EB5E7489C6E8344F42C320A8E724B7EC792CE8184210EC2D2AABB"
+      } ],
+      "SignatureDigestReference" : {
+        "CanonicalizationMethod" : null,
+        "DigestMethod" : "SHA256",
+        "DigestValue" : "gTVXocJGhNZyyEsOyloDrEbx/ULWjKPNgSIdpEXoAOM="
+      },
+      "DataToBeSignedRepresentation" : {
+        "DigestMethod" : "SHA256",
+        "DigestValue" : "LxdusW6jWyQy3UvNmzlpBm+nF92sP77vtRRagTcSjZQ=",
+        "match" : null
+      },
+      "SignatureValue" : "nuwjw25Zm079qAous/w0KA8dxMuFVQzu6LsloCOL8PosttZ/nvHX9hJtJHWvwVVHx0ii6+XdyiQYQyd3E4LCpQ==",
+      "Duplicated" : null,
+      "CounterSignature" : null,
+      "KeyBindingSignature" : null,
+      "Parent" : null
+    } ],
+    "EvidenceRecord" : [ ],
+    "AttestationRevocationToken" : [ ],
+    "Certificate" : [ {
+      "Id" : "C-10E583F100E523D8E78B3A4E7DA67A1EE7E623915DA0CE98000F1A661C93734F",
+      "SubjectDistinguishedName" : [ {
+        "value" : "cn=infocert certification services ec ca 4 cl,2.5.4.97=#0c1156415449542d3037393435323131303036,ou=trust service provider,o=infocert s.p.a.,c=it",
+        "Format" : "CANONICAL"
+      }, {
+        "value" : "CN=InfoCert Certification Services EC CA 4 CL,2.5.4.97=#0c1156415449542d3037393435323131303036,OU=Trust Service Provider,O=InfoCert S.p.A.,C=IT",
+        "Format" : "RFC2253"
+      } ],
+      "IssuerDistinguishedName" : [ {
+        "value" : "cn=infocert certification services ec ca 4 cl,2.5.4.97=#0c1156415449542d3037393435323131303036,ou=trust service provider,o=infocert s.p.a.,c=it",
+        "Format" : "CANONICAL"
+      }, {
+        "value" : "CN=InfoCert Certification Services EC CA 4 CL,2.5.4.97=#0c1156415449542d3037393435323131303036,OU=Trust Service Provider,O=InfoCert S.p.A.,C=IT",
+        "Format" : "RFC2253"
+      } ],
+      "SerialNumber" : 526092613923694261960894147233630906329352917582,
+      "SubjectSerialNumber" : null,
+      "CommonName" : "InfoCert Certification Services EC CA 4 CL",
+      "Locality" : null,
+      "State" : null,
+      "CountryName" : "IT",
+      "OrganizationIdentifier" : "VATIT-07945211006",
+      "OrganizationName" : "InfoCert S.p.A.",
+      "OrganizationalUnit" : "Trust Service Provider",
+      "Title" : null,
+      "GivenName" : null,
+      "Surname" : null,
+      "Pseudonym" : null,
+      "Email" : null,
+      "Source" : [ "AIA" ],
+      "NotAfter" : "2036-03-13T17:34:12Z",
+      "NotBefore" : "2024-03-13T17:34:12Z",
+      "PublicKeySize" : 384,
+      "PublicKeyEncryptionAlgo" : "ECDSA",
+      "EntityKey" : "EK-1FD958175D56721B53C39E6070183D03543B6D12CBCF9EE156E8D433365F76D1",
+      "IssuerEntityKey" : {
+        "value" : "EK-1FD958175D56721B53C39E6070183D03543B6D12CBCF9EE156E8D433365F76D1",
+        "key" : true,
+        "subjectName" : true
+      },
+      "BasicSignature" : {
+        "EncryptionAlgoUsedToSignThisToken" : "ECDSA",
+        "KeyLengthUsedToSignThisToken" : "384",
+        "DigestAlgoUsedToSignThisToken" : "SHA384",
+        "SignatureIntact" : true,
+        "SignatureValid" : true
+      },
+      "SigningCertificate" : null,
+      "ChainItem" : [ ],
+      "Trusted" : {
+        "value" : false,
+        "startDate" : null,
+        "sunsetDate" : null
+      },
+      "SelfSigned" : true,
+      "certificateExtensions" : [ {
+        "SubjectKeyIdentifier" : {
+          "ski" : "D11OsCiHIr2UB/Nf+4/PNzdW+XQ=",
+          "octets" : null,
+          "OID" : "2.5.29.14",
+          "description" : null,
+          "critical" : false
+        }
+      }, {
+        "BasicConstraints" : {
+          "octets" : null,
+          "OID" : "2.5.29.19",
+          "description" : null,
+          "critical" : true,
+          "CA" : true,
+          "pathLenConstraint" : 2147483647
+        }
+      }, {
+        "KeyUsages" : {
+          "keyUsageBit" : [ "keyCertSign", "crlSign" ],
+          "octets" : null,
+          "OID" : "2.5.29.15",
+          "description" : null,
+          "critical" : true
+        }
+      }, {
+        "CertificatePolicies" : {
+          "certificatePolicy" : [ {
+            "value" : "2.5.29.32.0",
+            "Description" : null,
+            "cpsUrl" : "http://www.firma.infocert.it/documentazione/manuali.php"
+          } ],
+          "octets" : null,
+          "OID" : "2.5.29.32",
+          "description" : null,
+          "critical" : false
+        }
+      }, {
+        "CRLDistributionPoints" : {
+          "crlUrl" : [ "http://crlcl.ca4.infocert.it/csec/ARL.crl" ],
+          "octets" : null,
+          "OID" : "2.5.29.31",
+          "description" : null,
+          "critical" : false
+        }
+      } ],
+      "TrustServiceProvider" : null,
+      "TrustedEntity" : null,
+      "CertificateRevocation" : null,
+      "Base64Encoded" : null,
+      "DigestAlgoAndValue" : {
+        "DigestMethod" : "SHA256",
+        "DigestValue" : "EOWD8QDlI9jnizpOfaZ6HufmI5FdoM6YAA8aZhyTc08=",
+        "match" : null
+      },
+      "Duplicated" : null
+    }, {
+      "Id" : "C-C4BF07422AEC8DFF6D93F71923E0C6EE29B340FF87E6AF0A537049B7CB30A088",
+      "SubjectDistinguishedName" : [ {
+        "value" : "2.5.4.46=#130e3230323639393938353032393137,2.5.4.4=#0c0842656c69616b6f76,2.5.4.42=#0c09416c656b73616e6472,1.2.840.113549.1.9.1=#161c616c656b73616e64722e62656c69616b6f76406e6f77696e612e6c75,2.5.4.5=#130737373737373737,ou=esignature,o=nowina solutions,l=kehlen,c=lu,cn=aleksandr beliakov",
+        "Format" : "CANONICAL"
+      }, {
+        "value" : "2.5.4.46=#130e3230323639393938353032393137,2.5.4.4=#0c0842656c69616b6f76,2.5.4.42=#0c09416c656b73616e6472,1.2.840.113549.1.9.1=#161c616c656b73616e64722e62656c69616b6f76406e6f77696e612e6c75,2.5.4.5=#130737373737373737,OU=eSignature,O=Nowina Solutions,L=Kehlen,C=LU,CN=Aleksandr Beliakov",
+        "Format" : "RFC2253"
+      } ],
+      "IssuerDistinguishedName" : [ {
+        "value" : "cn=infocert certification services ec ca 4 cl,2.5.4.97=#0c1156415449542d3037393435323131303036,ou=trust service provider,o=infocert s.p.a.,c=it",
+        "Format" : "CANONICAL"
+      }, {
+        "value" : "CN=InfoCert Certification Services EC CA 4 CL,2.5.4.97=#0c1156415449542d3037393435323131303036,OU=Trust Service Provider,O=InfoCert S.p.A.,C=IT",
+        "Format" : "RFC2253"
+      } ],
+      "SerialNumber" : 505591795277313150972154678117957643138987947778,
+      "SubjectSerialNumber" : "7777777",
+      "CommonName" : "Aleksandr Beliakov",
+      "Locality" : "Kehlen",
+      "State" : null,
+      "CountryName" : "LU",
+      "OrganizationIdentifier" : null,
+      "OrganizationName" : "Nowina Solutions",
+      "OrganizationalUnit" : "eSignature",
+      "Title" : null,
+      "GivenName" : "Aleksandr",
+      "Surname" : "Beliakov",
+      "Pseudonym" : null,
+      "Email" : "aleksandr.beliakov@nowina.lu",
+      "Source" : [ "SIGNATURE" ],
+      "NotAfter" : "2027-06-03T05:33:33Z",
+      "NotBefore" : "2026-06-03T07:33:34Z",
+      "PublicKeySize" : 256,
+      "PublicKeyEncryptionAlgo" : "ECDSA",
+      "EntityKey" : "EK-492C1650734EB1D933EEFB271B95D5CFE4CFDADB796F9ABE05461B5D42538275",
+      "IssuerEntityKey" : {
+        "value" : "EK-1FD958175D56721B53C39E6070183D03543B6D12CBCF9EE156E8D433365F76D1",
+        "key" : true,
+        "subjectName" : true
+      },
+      "BasicSignature" : {
+        "EncryptionAlgoUsedToSignThisToken" : "ECDSA",
+        "KeyLengthUsedToSignThisToken" : "384",
+        "DigestAlgoUsedToSignThisToken" : "SHA384",
+        "SignatureIntact" : true,
+        "SignatureValid" : true
+      },
+      "SigningCertificate" : {
+        "PublicKey" : null,
+        "Certificate" : "C-10E583F100E523D8E78B3A4E7DA67A1EE7E623915DA0CE98000F1A661C93734F"
+      },
+      "ChainItem" : [ {
+        "Certificate" : "C-10E583F100E523D8E78B3A4E7DA67A1EE7E623915DA0CE98000F1A661C93734F"
+      } ],
+      "Trusted" : {
+        "value" : false,
+        "startDate" : null,
+        "sunsetDate" : null
+      },
+      "SelfSigned" : false,
+      "certificateExtensions" : [ {
+        "AuthorityKeyIdentifier" : {
+          "keyIdentifier" : "D11OsCiHIr2UB/Nf+4/PNzdW+XQ=",
+          "authorityCertIssuerSerial" : null,
+          "octets" : null,
+          "OID" : "2.5.29.35",
+          "description" : null,
+          "critical" : false
+        }
+      }, {
+        "SubjectKeyIdentifier" : {
+          "ski" : "OcN4a2O/XheIizbLgzvx3vSStL0=",
+          "octets" : null,
+          "OID" : "2.5.29.14",
+          "description" : null,
+          "critical" : false
+        }
+      }, {
+        "KeyUsages" : {
+          "keyUsageBit" : [ "digitalSignature", "keyEncipherment", "dataEncipherment" ],
+          "octets" : null,
+          "OID" : "2.5.29.15",
+          "description" : null,
+          "critical" : true
+        }
+      }, {
+        "CertificatePolicies" : {
+          "certificatePolicy" : [ {
+            "value" : "1.3.76.36.1.1.8",
+            "Description" : null,
+            "cpsUrl" : "http://www.firma.infocert.it/documentazione/manuali.php"
+          } ],
+          "octets" : null,
+          "OID" : "2.5.29.32",
+          "description" : null,
+          "critical" : false
+        }
+      }, {
+        "SubjectAlternativeNames" : {
+          "subjectAlternativeName" : [ {
+            "value" : "aleksandr.beliakov@nowina.lu",
+            "type" : "rfc822Name"
+          } ],
+          "octets" : null,
+          "OID" : "2.5.29.17",
+          "description" : null,
+          "critical" : false
+        }
+      }, {
+        "ExtendedKeyUsages" : {
+          "extendedKeyUsageOid" : [ {
+            "value" : "1.3.6.1.5.5.7.3.2",
+            "Description" : "clientAuth"
+          }, {
+            "value" : "1.3.6.1.5.5.7.3.4",
+            "Description" : "emailProtection"
+          } ],
+          "octets" : null,
+          "OID" : "2.5.29.37",
+          "description" : null,
+          "critical" : false
+        }
+      }, {
+        "AuthorityInformationAccess" : {
+          "caIssuersUrl" : [ "http://crlcl.ca4.infocert.it/csec/CA.crt" ],
+          "ocspUrl" : [ "http://ocspcl.csec.ca4.infocert.it" ],
+          "octets" : null,
+          "OID" : "1.3.6.1.5.5.7.1.1",
+          "description" : null,
+          "critical" : false
+        }
+      }, {
+        "CRLDistributionPoints" : {
+          "crlUrl" : [ "http://crlcl.ca4.infocert.it/csec/CRL01.crl" ],
+          "octets" : null,
+          "OID" : "2.5.29.31",
+          "description" : null,
+          "critical" : false
+        }
+      } ],
+      "TrustServiceProvider" : [ ],
+      "TrustedEntity" : [ ],
+      "CertificateRevocation" : null,
+      "Base64Encoded" : null,
+      "DigestAlgoAndValue" : {
+        "DigestMethod" : "SHA256",
+        "DigestValue" : "xL8HQirsjf9tk/cZI+DG7imzQP+H5q8KU3BJt8swoIg=",
+        "match" : null
+      },
+      "Duplicated" : null
+    } ],
+    "Revocation" : [ ],
+    "Timestamp" : [ ],
+    "OrphanTokens" : null,
+    "SignerData" : [ {
+      "Id" : "D-17F2825FBB5EB5E7489C6E8344F42C320A8E724B7EC792CE8184210EC2D2AABB",
+      "ReferencedName" : "A-A89C4A36A7445090A1844544CC9ACA00D7DC97F4B0409335E00635B8BD3C728A",
+      "DigestAlgoAndValue" : {
+        "DigestMethod" : "SHA256",
+        "DigestValue" : "kNLI5hGYe8q081qtKrGmXpyhBfq1c+X4YgxIzuRjYa4=",
+        "match" : null
+      },
+      "Duplicated" : null,
+      "Parent" : null
+    } ],
+    "TrustedList" : [ ],
+    "ListOfTrustedEntities" : [ ]
+  },
+  "SimpleReport" : {
+    "ValidationPolicy" : {
+      "PolicyName" : "EAA policy, TL and LoTE based",
+      "PolicyDescription" : "Validates electronic attestation of attributes and indicates its qualification status\n        at issuance and validation time. All certificates and their related chains are validated against\n        the EU Member State Trusted Lists (this includes target certificate and certificates used to validate\n        certificate validity status services - CRLs, OCSP).\n    "
+    },
+    "DocumentName" : "sdjwt.json",
+    "ValidSignaturesCount" : 0,
+    "SignaturesCount" : 1,
+    "ContainerType" : null,
+    "PDFAInfo" : null,
+    "signatureOrTimestampOrEvidenceRecord" : [ {
+      "Attestation" : {
+        "AttestationLevel" : [ {
+          "value" : "N/A",
+          "description" : "Not applicable"
+        } ],
+        "AttestationSignature" : [ {
+          "SigningTime" : "2026-06-05T13:03:59Z",
+          "BestSignatureTime" : "2026-07-28T08:41:36Z",
+          "SignedBy" : "Aleksandr Beliakov",
+          "SignatureLevel" : {
+            "value" : "N/A",
+            "description" : "Not applicable"
+          },
+          "SignatureScope" : [ {
+            "value" : "Attestation with Id : A-A89C4A36A7445090A1844544CC9ACA00D7DC97F4B0409335E00635B8BD3C728A",
+            "Id" : "D-17F2825FBB5EB5E7489C6E8344F42C320A8E724B7EC792CE8184210EC2D2AABB",
+            "name" : "A-A89C4A36A7445090A1844544CC9ACA00D7DC97F4B0409335E00635B8BD3C728A",
+            "scope" : "ATTESTATION_SIGNATURE"
+          } ],
+          "Timestamps" : null,
+          "EvidenceRecords" : null,
+          "Filename" : null,
+          "CertificateChain" : {
+            "Certificate" : [ {
+              "QualifiedName" : "Aleksandr Beliakov",
+              "TrustAnchors" : null,
+              "Id" : "C-C4BF07422AEC8DFF6D93F71923E0C6EE29B340FF87E6AF0A537049B7CB30A088",
+              "trusted" : null,
+              "sunsetDate" : null
+            }, {
+              "QualifiedName" : "InfoCert Certification Services EC CA 4 CL",
+              "TrustAnchors" : null,
+              "Id" : "C-10E583F100E523D8E78B3A4E7DA67A1EE7E623915DA0CE98000F1A661C93734F",
+              "trusted" : null,
+              "sunsetDate" : null
+            } ]
+          },
+          "Indication" : "INDETERMINATE",
+          "SubIndication" : "NO_CERTIFICATE_CHAIN_FOUND",
+          "AdESValidationDetails" : {
+            "Error" : [ {
+              "value" : "The certificate chain for signature is not trusted, it does not contain a trust anchor.",
+              "Key" : "BBB_XCV_CCCBB_SIG_ANS"
+            } ],
+            "Warning" : [ ],
+            "Info" : [ ]
+          },
+          "QualificationDetails" : {
+            "Error" : [ {
+              "value" : "Unable to build a certificate chain up to a trusted list!",
+              "Key" : "QUAL_CERT_TRUSTED_LIST_REACHED_ANS"
+            } ],
+            "Warning" : [ {
+              "value" : "The signature/seal is an INDETERMINATE AdES digital signature!",
+              "Key" : "QUAL_IS_ADES_IND"
+            } ],
+            "Info" : [ ]
+          },
+          "ExtensionPeriodMin" : null,
+          "ExtensionPeriodMax" : null,
+          "Id" : "S-75D2071F6CF765B4B0E875D39FE063CFFEA97CE29C0B80507BF018EA6A9C587E",
+          "CounterSignature" : null,
+          "ParentId" : null,
+          "SignatureFormat" : "JAdES-BASELINE-B"
+        } ],
+        "KeyBindingSignature" : null,
+        "AttestationPayload" : {
+          "Identifier" : null,
+          "Issuer" : {
+            "value" : "EAA provider",
+            "name" : "iss",
+            "disclosure" : null
+          },
+          "Subject" : null,
+          "Audience" : null,
+          "IssuedAt" : null,
+          "NotBefore" : {
+            "value" : "2026-06-05T13:03:59Z",
+            "name" : "nbf",
+            "disclosure" : null
+          },
+          "Expiration" : {
+            "value" : "2027-06-03T05:33:33Z",
+            "name" : "exp",
+            "disclosure" : null
+          },
+          "UpdatedAt" : null,
+          "NextUpdate" : null,
+          "Category" : null,
+          "VerifiableCredentialsType" : {
+            "value" : "urn:eudi:eaa:1",
+            "name" : "vct",
+            "disclosure" : null
+          },
+          "StatusIndex" : null,
+          "StatusUri" : null,
+          "StatusType" : null,
+          "StatusPurpose" : null,
+          "Nonce" : null,
+          "DeviceKey" : null,
+          "Version" : null,
+          "DocType" : null,
+          "AdministrativeIssuanceDate" : null,
+          "AdministrativeExpirationDate" : null,
+          "OneTimeUse" : null,
+          "ShortLived" : null,
+          "Evidence" : null,
+          "AttestedAttributesSubjectId" : null,
+          "AttestedAttributesSubjectFamilyName" : null,
+          "AttestedAttributesSubjectGivenName" : null,
+          "AttestedAttributesSubjectDocumentNumber" : null,
+          "AttestedAttributesSubjectPseudonym" : null,
+          "AttestedAttributes" : null,
+          "FullName" : null,
+          "GivenName" : {
+            "value" : "John",
+            "name" : "given_name",
+            "disclosure" : null
+          },
+          "FamilyName" : {
+            "value" : "Doe",
+            "name" : "family_name",
+            "disclosure" : null
+          },
+          "MiddleName" : null,
+          "Nickname" : null,
+          "ShortName" : null,
+          "ProfileUrl" : null,
+          "PictureUrl" : null,
+          "WebsiteUrl" : null,
+          "Email" : null,
+          "EmailVerified" : null,
+          "Gender" : null,
+          "Birthdate" : null,
+          "BirthdateApproximateMask" : null,
+          "Timezone" : null,
+          "Locale" : null,
+          "AddressPostalAddress" : null,
+          "AddressCity" : null,
+          "AddressStateOrProvince" : null,
+          "AddressPostalCode" : null,
+          "AddressCountryName" : null,
+          "AddressStreetAddress" : null,
+          "PhoneNumber" : null,
+          "PhoneNumberVerified" : null,
+          "PlaceOfBirth" : null,
+          "PlaceOfBirthCountry" : null,
+          "PlaceOfBirthRegion" : null,
+          "PlaceOfBirthCity" : null,
+          "Nationalities" : null,
+          "BirthFamilyName" : null,
+          "BirthGivenName" : null,
+          "BirthMiddleName" : null,
+          "Salutation" : null,
+          "Title" : null,
+          "MobilePhoneNumber" : null,
+          "Pseudonym" : null,
+          "IssuingCountry" : null,
+          "IssuingAuthority" : {
+            "value" : "TEST Authority",
+            "name" : "issuing_authority",
+            "disclosure" : null
+          },
+          "DocumentNumber" : null,
+          "Portrait" : null,
+          "DrivingPrivileges" : null,
+          "UNDistinguishingSign" : null,
+          "PersonalAdministrativeNumber" : null,
+          "Height" : null,
+          "Weight" : null,
+          "EyeColour" : null,
+          "HairColour" : null,
+          "ResidentPostalAddress" : null,
+          "PortraitCaptureDate" : null,
+          "AgeInYears" : null,
+          "AgeBirthYear" : null,
+          "AgeOverNN" : [ ],
+          "IssuingJurisdiction" : null,
+          "ResidentAddressCity" : null,
+          "ResidentAddressState" : null,
+          "ResidentAddressPostalCode" : null,
+          "ResidentAddressCountry" : null,
+          "BiometricTemplate" : [ ],
+          "SignatureUsualMark" : null,
+          "Fingerprint" : null,
+          "BusinessName" : null,
+          "OrganizationName" : null,
+          "BirthFullName" : null,
+          "Profession" : null,
+          "RelationshipFather" : null,
+          "RelationshipMother" : null,
+          "RelationshipParent" : null,
+          "RelationshipSon" : null,
+          "RelationshipDaughter" : null,
+          "RelationshipBrother" : null,
+          "RelationshipSister" : null,
+          "RelationshipSibling" : null,
+          "RelationshipSpouse" : null,
+          "RelationshipFatherInLaw" : null,
+          "RelationshipMotherInLaw" : null,
+          "RelationshipParentInLaw" : null,
+          "RelationshipSonInLaw" : null,
+          "RelationshipDaughterInLaw" : null,
+          "RelationshipChildInLaw" : null,
+          "RelationshipParentalAuthority" : null,
+          "RelationshipLegalRepresentative" : null,
+          "RelationshipAgent" : null,
+          "DocumentType" : null,
+          "IssuingAuthorityRegistrationIdentifier" : null,
+          "TrustAnchorClaim" : null,
+          "ResidentAddressStreet" : null,
+          "ResidentAddressHouseNumber" : null,
+          "OtherClaim" : null
+        },
+        "Filename" : "sdjwt.json",
+        "CertificateChain" : null,
+        "Indication" : "INDETERMINATE",
+        "SubIndication" : "NO_CERTIFICATE_CHAIN_FOUND",
+        "AdESValidationDetails" : {
+          "Error" : [ {
+            "value" : "The result of basic signature validation process is not conclusive!",
+            "Key" : "ADEST_IBSVPSC_ANS"
+          } ],
+          "Warning" : [ {
+            "value" : "No disclosures have been provided with the attestation presentation!",
+            "Key" : "EAA_DPEAAP_ANS"
+          }, {
+            "value" : "No key binding signature has been found!",
+            "Key" : "EAA_KBSP_ANS"
+          }, {
+            "value" : "The attestation does not contain a revocation (status) claim!",
+            "Key" : "EAA_REV_PR_ANS"
+          } ],
+          "Info" : [ ]
+        },
+        "QualificationDetails" : {
+          "Error" : [ {
+            "value" : "Unable to build a certificate chain up to a trust anchor list!",
+            "Key" : "EAA_CERT_TRUST_ANCHOR_LIST_REACHED_ANS"
+          } ],
+          "Warning" : [ ],
+          "Info" : [ ]
+        },
+        "ExtensionPeriodMin" : null,
+        "ExtensionPeriodMax" : null,
+        "Id" : "A-A89C4A36A7445090A1844544CC9ACA00D7DC97F4B0409335E00635B8BD3C728A"
+      }
+    } ],
+    "Semantic" : null,
+    "ValidationTime" : "2026-07-28T08:41:36Z"
+  },
+  "DetailedReport" : {
+    "signatureOrTimestampOrEvidenceRecord" : [ {
+      "Attestation" : {
+        "ValidationProcessAttestation" : {
+          "Constraint" : [ {
+            "Name" : {
+              "value" : "Is the result of the 'Format Checking' building block conclusive?",
+              "Key" : "BSV_IFCRC"
+            },
+            "Status" : "OK",
+            "Error" : null,
+            "Warning" : null,
+            "Info" : null,
+            "AdditionalInfo" : null,
+            "Id" : "A-A89C4A36A7445090A1844544CC9ACA00D7DC97F4B0409335E00635B8BD3C728A-FC",
+            "BlockType" : null
+          }, {
+            "Name" : {
+              "value" : "Is the result of basic signature validation process conclusive?",
+              "Key" : "ADEST_IBSVPSC"
+            },
+            "Status" : "NOT OK",
+            "Error" : {
+              "value" : "The result of basic signature validation process is not conclusive!",
+              "Key" : "ADEST_IBSVPSC_ANS"
+            },
+            "Warning" : null,
+            "Info" : null,
+            "AdditionalInfo" : null,
+            "Id" : null,
+            "BlockType" : null
+          } ],
+          "Conclusion" : {
+            "Indication" : "INDETERMINATE",
+            "SubIndication" : "NO_CERTIFICATE_CHAIN_FOUND",
+            "Errors" : [ {
+              "value" : "The result of basic signature validation process is not conclusive!",
+              "Key" : "ADEST_IBSVPSC_ANS"
+            } ],
+            "Warnings" : [ {
+              "value" : "No disclosures have been provided with the attestation presentation!",
+              "Key" : "EAA_DPEAAP_ANS"
+            }, {
+              "value" : "No key binding signature has been found!",
+              "Key" : "EAA_KBSP_ANS"
+            }, {
+              "value" : "The attestation does not contain a revocation (status) claim!",
+              "Key" : "EAA_REV_PR_ANS"
+            } ],
+            "Infos" : [ ]
+          },
+          "Title" : "Validation Process for Attestations",
+          "ProofOfExistence" : null
+        },
+        "Signature" : [ {
+          "ValidationProcessBasicSignature" : {
+            "Constraint" : [ {
+              "Name" : {
+                "value" : "Is the result of the 'Format Checking' building block conclusive?",
+                "Key" : "BSV_IFCRC"
+              },
+              "Status" : "OK",
+              "Error" : null,
+              "Warning" : null,
+              "Info" : null,
+              "AdditionalInfo" : null,
+              "Id" : "S-75D2071F6CF765B4B0E875D39FE063CFFEA97CE29C0B80507BF018EA6A9C587E-FC",
+              "BlockType" : null
+            }, {
+              "Name" : {
+                "value" : "Is the result of the 'Identification of Signing Certificate' building block conclusive?",
+                "Key" : "BSV_IISCRC"
+              },
+              "Status" : "OK",
+              "Error" : null,
+              "Warning" : null,
+              "Info" : null,
+              "AdditionalInfo" : null,
+              "Id" : "S-75D2071F6CF765B4B0E875D39FE063CFFEA97CE29C0B80507BF018EA6A9C587E-ISC",
+              "BlockType" : null
+            }, {
+              "Name" : {
+                "value" : "Is the result of the 'Validation Context Initialization' building block conclusive?",
+                "Key" : "BSV_IVCIRC"
+              },
+              "Status" : "OK",
+              "Error" : null,
+              "Warning" : null,
+              "Info" : null,
+              "AdditionalInfo" : null,
+              "Id" : "S-75D2071F6CF765B4B0E875D39FE063CFFEA97CE29C0B80507BF018EA6A9C587E-VCI",
+              "BlockType" : null
+            }, {
+              "Name" : {
+                "value" : "Is the result of the 'X.509 Certificate Validation' building block conclusive?",
+                "Key" : "BSV_IXCVRC"
+              },
+              "Status" : "WARNING",
+              "Error" : null,
+              "Warning" : {
+                "value" : "The result of the 'X.509 Certificate Validation' building block is not conclusive!",
+                "Key" : "BSV_IXCVRC_ANS"
+              },
+              "Info" : null,
+              "AdditionalInfo" : null,
+              "Id" : "S-75D2071F6CF765B4B0E875D39FE063CFFEA97CE29C0B80507BF018EA6A9C587E-XCV",
+              "BlockType" : null
+            }, {
+              "Name" : {
+                "value" : "Is the signing certificate not revoked at validation time?",
+                "Key" : "BSV_ISCRAVTC"
+              },
+              "Status" : "OK",
+              "Error" : null,
+              "Warning" : null,
+              "Info" : null,
+              "AdditionalInfo" : null,
+              "Id" : "S-75D2071F6CF765B4B0E875D39FE063CFFEA97CE29C0B80507BF018EA6A9C587E-XCV",
+              "BlockType" : null
+            }, {
+              "Name" : {
+                "value" : "Is the validation time in the validity range of the signing certificate?",
+                "Key" : "BSV_IVTAVRSC"
+              },
+              "Status" : "OK",
+              "Error" : null,
+              "Warning" : null,
+              "Info" : null,
+              "AdditionalInfo" : null,
+              "Id" : "S-75D2071F6CF765B4B0E875D39FE063CFFEA97CE29C0B80507BF018EA6A9C587E-XCV",
+              "BlockType" : null
+            }, {
+              "Name" : {
+                "value" : "Is the result of the 'Cryptographic Verification' building block conclusive?",
+                "Key" : "BSV_ICVRC"
+              },
+              "Status" : "OK",
+              "Error" : null,
+              "Warning" : null,
+              "Info" : null,
+              "AdditionalInfo" : null,
+              "Id" : "S-75D2071F6CF765B4B0E875D39FE063CFFEA97CE29C0B80507BF018EA6A9C587E-CV",
+              "BlockType" : null
+            }, {
+              "Name" : {
+                "value" : "Is the result of the Basic Validation Process conclusive?",
+                "Key" : "ADEST_ROBVPIIC"
+              },
+              "Status" : "NOT OK",
+              "Error" : {
+                "value" : "The result of the Basic validation process is not conclusive!",
+                "Key" : "ADEST_ROBVPIIC_ANS"
+              },
+              "Warning" : null,
+              "Info" : null,
+              "AdditionalInfo" : "Basic Signature Validation process failed with INDETERMINATE/NO_CERTIFICATE_CHAIN_FOUND indication",
+              "Id" : "S-75D2071F6CF765B4B0E875D39FE063CFFEA97CE29C0B80507BF018EA6A9C587E",
+              "BlockType" : null
+            } ],
+            "Conclusion" : {
+              "Indication" : "INDETERMINATE",
+              "SubIndication" : "NO_CERTIFICATE_CHAIN_FOUND",
+              "Errors" : [ {
+                "value" : "The certificate chain for signature is not trusted, it does not contain a trust anchor.",
+                "Key" : "BBB_XCV_CCCBB_SIG_ANS"
+              } ],
+              "Warnings" : [ ],
+              "Infos" : [ ]
+            },
+            "Title" : "Validation Process for Basic Signatures",
+            "ProofOfExistence" : {
+              "Time" : "2026-07-28T08:41:36Z",
+              "TimestampId" : null
+            }
+          },
+          "Timestamp" : [ ],
+          "EvidenceRecord" : [ ],
+          "ValidationProcessLongTermData" : null,
+          "ValidationProcessArchivalData" : null,
+          "ValidationSignatureQualification" : {
+            "ValidationCertificateQualification" : [ ],
+            "QWACProcess" : null,
+            "Constraint" : [ {
+              "Name" : {
+                "value" : "Is the signature/seal an acceptable AdES digital signature (ETSI EN 319 102-1)?",
+                "Key" : "QUAL_IS_ADES"
+              },
+              "Status" : "WARNING",
+              "Error" : null,
+              "Warning" : {
+                "value" : "The signature/seal is an INDETERMINATE AdES digital signature!",
+                "Key" : "QUAL_IS_ADES_IND"
+              },
+              "Info" : null,
+              "AdditionalInfo" : null,
+              "Id" : null,
+              "BlockType" : null
+            }, {
+              "Name" : {
+                "value" : "Has a trusted list been reached for the certificate chain?",
+                "Key" : "QUAL_CERT_TRUSTED_LIST_REACHED"
+              },
+              "Status" : "NOT OK",
+              "Error" : {
+                "value" : "Unable to build a certificate chain up to a trusted list!",
+                "Key" : "QUAL_CERT_TRUSTED_LIST_REACHED_ANS"
+              },
+              "Warning" : null,
+              "Info" : null,
+              "AdditionalInfo" : null,
+              "Id" : null,
+              "BlockType" : null
+            } ],
+            "Conclusion" : {
+              "Indication" : "FAILED",
+              "SubIndication" : null,
+              "Errors" : [ {
+                "value" : "Unable to build a certificate chain up to a trusted list!",
+                "Key" : "QUAL_CERT_TRUSTED_LIST_REACHED_ANS"
+              } ],
+              "Warnings" : [ {
+                "value" : "The signature/seal is an INDETERMINATE AdES digital signature!",
+                "Key" : "QUAL_IS_ADES_IND"
+              } ],
+              "Infos" : [ ]
+            },
+            "Title" : "Signature Qualification",
+            "SignatureQualification" : "N/A"
+          },
+          "Conclusion" : {
+            "Indication" : "INDETERMINATE",
+            "SubIndication" : "NO_CERTIFICATE_CHAIN_FOUND",
+            "Errors" : [ {
+              "value" : "The certificate chain for signature is not trusted, it does not contain a trust anchor.",
+              "Key" : "BBB_XCV_CCCBB_SIG_ANS"
+            } ],
+            "Warnings" : [ ],
+            "Infos" : [ ]
+          },
+          "Id" : "S-75D2071F6CF765B4B0E875D39FE063CFFEA97CE29C0B80507BF018EA6A9C587E",
+          "CounterSignature" : null
+        } ],
+        "KeyBindingSignature" : null,
+        "ValidationAttestationQualification" : {
+          "ValidationAttestationQualificationProcess" : {
+            "Constraint" : [ {
+              "Name" : {
+                "value" : "Has a trusted list been reached for the certificate chain?",
+                "Key" : "QUAL_CERT_TRUSTED_LIST_REACHED"
+              },
+              "Status" : "NOT OK",
+              "Error" : {
+                "value" : "Unable to build a certificate chain up to a trusted list!",
+                "Key" : "QUAL_CERT_TRUSTED_LIST_REACHED_ANS"
+              },
+              "Warning" : null,
+              "Info" : null,
+              "AdditionalInfo" : null,
+              "Id" : null,
+              "BlockType" : null
+            } ],
+            "Conclusion" : {
+              "Indication" : "FAILED",
+              "SubIndication" : null,
+              "Errors" : [ {
+                "value" : "Unable to build a certificate chain up to a trusted list!",
+                "Key" : "QUAL_CERT_TRUSTED_LIST_REACHED_ANS"
+              } ],
+              "Warnings" : null,
+              "Infos" : null
+            },
+            "Title" : "Attestation Qualification Process",
+            "AttestationQualification" : "N/A"
+          },
+          "ValidationPIDQualificationProcess" : {
+            "ValidationCertificateApprovalStatus" : [ ],
+            "Constraint" : [ {
+              "Name" : {
+                "value" : "Has a list of trusted entities been reached for the certificate chain?",
+                "Key" : "EAA_CERT_LOTE_REACHED"
+              },
+              "Status" : "NOT OK",
+              "Error" : {
+                "value" : "Unable to build a certificate chain up to a list of trusted entities!",
+                "Key" : "EAA_CERT_LOTE_REACHED_ANS"
+              },
+              "Warning" : null,
+              "Info" : null,
+              "AdditionalInfo" : null,
+              "Id" : null,
+              "BlockType" : null
+            } ],
+            "Conclusion" : {
+              "Indication" : "FAILED",
+              "SubIndication" : null,
+              "Errors" : [ {
+                "value" : "Unable to build a certificate chain up to a list of trusted entities!",
+                "Key" : "EAA_CERT_LOTE_REACHED_ANS"
+              } ],
+              "Warnings" : null,
+              "Infos" : null
+            },
+            "Title" : "PID Qualification Process",
+            "AttestationQualification" : "N/A"
+          },
+          "AttestationQualification" : [ "N/A" ],
+          "Constraint" : [ {
+            "Name" : {
+              "value" : "Has a trust anchor list been reached for the certificate chain?",
+              "Key" : "EAA_CERT_TRUST_ANCHOR_LIST_REACHED"
+            },
+            "Status" : "NOT OK",
+            "Error" : {
+              "value" : "Unable to build a certificate chain up to a trust anchor list!",
+              "Key" : "EAA_CERT_TRUST_ANCHOR_LIST_REACHED_ANS"
+            },
+            "Warning" : null,
+            "Info" : null,
+            "AdditionalInfo" : null,
+            "Id" : null,
+            "BlockType" : null
+          } ],
+          "Conclusion" : {
+            "Indication" : "FAILED",
+            "SubIndication" : null,
+            "Errors" : [ {
+              "value" : "Unable to build a certificate chain up to a trust anchor list!",
+              "Key" : "EAA_CERT_TRUST_ANCHOR_LIST_REACHED_ANS"
+            } ],
+            "Warnings" : [ ],
+            "Infos" : [ ]
+          },
+          "Title" : "Attestation Qualification"
+        },
+        "Conclusion" : {
+          "Indication" : "INDETERMINATE",
+          "SubIndication" : "NO_CERTIFICATE_CHAIN_FOUND",
+          "Errors" : [ {
+            "value" : "The result of basic signature validation process is not conclusive!",
+            "Key" : "ADEST_IBSVPSC_ANS"
+          } ],
+          "Warnings" : [ {
+            "value" : "No disclosures have been provided with the attestation presentation!",
+            "Key" : "EAA_DPEAAP_ANS"
+          }, {
+            "value" : "No key binding signature has been found!",
+            "Key" : "EAA_KBSP_ANS"
+          }, {
+            "value" : "The attestation does not contain a revocation (status) claim!",
+            "Key" : "EAA_REV_PR_ANS"
+          } ],
+          "Infos" : [ ]
+        },
+        "Id" : "A-A89C4A36A7445090A1844544CC9ACA00D7DC97F4B0409335E00635B8BD3C728A"
+      }
+    } ],
+    "BasicBuildingBlocks" : [ {
+      "FC" : {
+        "Constraint" : [ {
+          "Name" : {
+            "value" : "Does the signature format correspond to an expected format?",
+            "Key" : "BBB_FC_IEFF"
+          },
+          "Status" : "OK",
+          "Error" : null,
+          "Warning" : null,
+          "Info" : null,
+          "AdditionalInfo" : null,
+          "Id" : null,
+          "BlockType" : null
+        }, {
+          "Name" : {
+            "value" : "Is the signature identification not ambiguous?",
+            "Key" : "BBB_FC_ISD"
+          },
+          "Status" : "OK",
+          "Error" : null,
+          "Warning" : null,
+          "Info" : null,
+          "AdditionalInfo" : null,
+          "Id" : null,
+          "BlockType" : null
+        }, {
+          "Name" : {
+            "value" : "Is the signed references identification not ambiguous?",
+            "Key" : "BBB_FC_ISRIA"
+          },
+          "Status" : "OK",
+          "Error" : null,
+          "Warning" : null,
+          "Info" : null,
+          "AdditionalInfo" : null,
+          "Id" : null,
+          "BlockType" : null
+        }, {
+          "Name" : {
+            "value" : "Is the used elliptic curve key size corresponds to the defined signature algorithm?",
+            "Key" : "BBB_FC_IECKSCDA"
+          },
+          "Status" : "OK",
+          "Error" : null,
+          "Warning" : null,
+          "Info" : null,
+          "AdditionalInfo" : "Signature Algorithm : ECDSA with SHA256, key size : 256",
+          "Id" : null,
+          "BlockType" : null
+        } ],
+        "Conclusion" : {
+          "Indication" : "PASSED",
+          "SubIndication" : null,
+          "Errors" : [ ],
+          "Warnings" : [ ],
+          "Infos" : [ ]
+        },
+        "Title" : "Format Checking"
+      },
+      "ISC" : {
+        "CertificateChain" : {
+          "ChainItem" : [ {
+            "Source" : "SIGNATURE",
+            "Id" : "C-C4BF07422AEC8DFF6D93F71923E0C6EE29B340FF87E6AF0A537049B7CB30A088"
+          }, {
+            "Source" : "AIA",
+            "Id" : "C-10E583F100E523D8E78B3A4E7DA67A1EE7E623915DA0CE98000F1A661C93734F"
+          } ]
+        },
+        "Constraint" : [ {
+          "Name" : {
+            "value" : "Is there an identified candidate for the signing certificate?",
+            "Key" : "BBB_ICS_ISCI"
+          },
+          "Status" : "OK",
+          "Error" : null,
+          "Warning" : null,
+          "Info" : null,
+          "AdditionalInfo" : null,
+          "Id" : null,
+          "BlockType" : null
+        }, {
+          "Name" : {
+            "value" : "Is the signed attribute: 'cert-digest' of the certificate present?",
+            "Key" : "BBB_ICS_ISACDP"
+          },
+          "Status" : "OK",
+          "Error" : null,
+          "Warning" : null,
+          "Info" : null,
+          "AdditionalInfo" : null,
+          "Id" : null,
+          "BlockType" : null
+        }, {
+          "Name" : {
+            "value" : "Does the certificate digest value match a digest value found in the certificate reference(s)?",
+            "Key" : "BBB_ICS_ICDVV"
+          },
+          "Status" : "OK",
+          "Error" : null,
+          "Warning" : null,
+          "Info" : null,
+          "AdditionalInfo" : null,
+          "Id" : null,
+          "BlockType" : null
+        } ],
+        "Conclusion" : {
+          "Indication" : "PASSED",
+          "SubIndication" : null,
+          "Errors" : [ ],
+          "Warnings" : [ ],
+          "Infos" : [ ]
+        },
+        "Title" : "Identification of the Signing Certificate"
+      },
+      "VCI" : {
+        "Constraint" : [ {
+          "Name" : {
+            "value" : "Is the signature policy known?",
+            "Key" : "BBB_VCI_ISPK"
+          },
+          "Status" : "OK",
+          "Error" : null,
+          "Warning" : null,
+          "Info" : null,
+          "AdditionalInfo" : null,
+          "Id" : null,
+          "BlockType" : null
+        } ],
+        "Conclusion" : {
+          "Indication" : "PASSED",
+          "SubIndication" : null,
+          "Errors" : [ ],
+          "Warnings" : [ ],
+          "Infos" : [ ]
+        },
+        "Title" : "Validation Context Initialization"
+      },
+      "XCV" : {
+        "SubXCV" : [ ],
+        "Constraint" : [ {
+          "Name" : {
+            "value" : "Can the certificate chain be built till a trust anchor?",
+            "Key" : "BBB_XCV_CCCBB"
+          },
+          "Status" : "NOT OK",
+          "Error" : {
+            "value" : "The certificate chain for signature is not trusted, it does not contain a trust anchor.",
+            "Key" : "BBB_XCV_CCCBB_SIG_ANS"
+          },
+          "Warning" : null,
+          "Info" : null,
+          "AdditionalInfo" : null,
+          "Id" : null,
+          "BlockType" : null
+        } ],
+        "Conclusion" : {
+          "Indication" : "INDETERMINATE",
+          "SubIndication" : "NO_CERTIFICATE_CHAIN_FOUND",
+          "Errors" : [ {
+            "value" : "The certificate chain for signature is not trusted, it does not contain a trust anchor.",
+            "Key" : "BBB_XCV_CCCBB_SIG_ANS"
+          } ],
+          "Warnings" : [ ],
+          "Infos" : [ ]
+        },
+        "Title" : "X509 Certificate Validation"
+      },
+      "CV" : {
+        "Constraint" : [ {
+          "Name" : {
+            "value" : "Has the reference data object been found?",
+            "Key" : "BBB_CV_IRDOF"
+          },
+          "Status" : "OK",
+          "Error" : null,
+          "Warning" : null,
+          "Info" : null,
+          "AdditionalInfo" : "Reference : JWS_SIGNING_INPUT",
+          "Id" : null,
+          "BlockType" : null
+        }, {
+          "Name" : {
+            "value" : "Is the reference data object intact?",
+            "Key" : "BBB_CV_IRDOI"
+          },
+          "Status" : "OK",
+          "Error" : null,
+          "Warning" : null,
+          "Info" : null,
+          "AdditionalInfo" : "Reference : JWS_SIGNING_INPUT",
+          "Id" : null,
+          "BlockType" : null
+        }, {
+          "Name" : {
+            "value" : "Is the signature intact?",
+            "Key" : "BBB_CV_ISI"
+          },
+          "Status" : "OK",
+          "Error" : null,
+          "Warning" : null,
+          "Info" : null,
+          "AdditionalInfo" : null,
+          "Id" : null,
+          "BlockType" : null
+        } ],
+        "Conclusion" : {
+          "Indication" : "PASSED",
+          "SubIndication" : null,
+          "Errors" : [ ],
+          "Warnings" : [ ],
+          "Infos" : [ ]
+        },
+        "Title" : "Cryptographic Verification"
+      },
+      "SAV" : {
+        "Constraint" : [ {
+          "Name" : {
+            "value" : "Is the structure of the signature valid?",
+            "Key" : "BBB_SAV_ISSV"
+          },
+          "Status" : "OK",
+          "Error" : null,
+          "Warning" : null,
+          "Info" : null,
+          "AdditionalInfo" : null,
+          "Id" : null,
+          "BlockType" : null
+        }, {
+          "Name" : {
+            "value" : "Is the signed attribute: 'signing-certificate' present?",
+            "Key" : "BBB_ICS_ISASCP"
+          },
+          "Status" : "OK",
+          "Error" : null,
+          "Warning" : null,
+          "Info" : null,
+          "AdditionalInfo" : null,
+          "Id" : null,
+          "BlockType" : null
+        }, {
+          "Name" : {
+            "value" : "Is the signed attribute: 'signing-certificate' present only once?",
+            "Key" : "BBB_ICS_ISASCPU"
+          },
+          "Status" : "OK",
+          "Error" : null,
+          "Warning" : null,
+          "Info" : null,
+          "AdditionalInfo" : null,
+          "Id" : null,
+          "BlockType" : null
+        }, {
+          "Name" : {
+            "value" : "Does the 'Signing Certificate' attribute contain references only to the certificate chain?",
+            "Key" : "BBB_SAV_DSCACRCC"
+          },
+          "Status" : "OK",
+          "Error" : null,
+          "Warning" : null,
+          "Info" : null,
+          "AdditionalInfo" : null,
+          "Id" : null,
+          "BlockType" : null
+        }, {
+          "Name" : {
+            "value" : "Does the value of signed attribute 'kid' (key identifier) match the signing certificate?",
+            "Key" : "BBB_ICS_DKIDVM"
+          },
+          "Status" : "OK",
+          "Error" : null,
+          "Warning" : null,
+          "Info" : null,
+          "AdditionalInfo" : null,
+          "Id" : null,
+          "BlockType" : null
+        }, {
+          "Name" : {
+            "value" : "Is the signed qualifying property: 'signing-time' present?",
+            "Key" : "BBB_SAV_ISQPSTP"
+          },
+          "Status" : "OK",
+          "Error" : null,
+          "Warning" : null,
+          "Info" : null,
+          "AdditionalInfo" : null,
+          "Id" : null,
+          "BlockType" : null
+        }, {
+          "Name" : {
+            "value" : "Is the signed qualifying property: 'signing-time' within the signing-certificate's validity range?",
+            "Key" : "BBB_SAV_ISQPSTWSCVR"
+          },
+          "Status" : "OK",
+          "Error" : null,
+          "Warning" : null,
+          "Info" : null,
+          "AdditionalInfo" : null,
+          "Id" : null,
+          "BlockType" : null
+        }, {
+          "Name" : {
+            "value" : "Does the signed qualifying property 'signature-type' contain an expected value?",
+            "Key" : "BBB_SAV_ISQPSTYPP"
+          },
+          "Status" : "OK",
+          "Error" : null,
+          "Warning" : null,
+          "Info" : null,
+          "AdditionalInfo" : null,
+          "Id" : null,
+          "BlockType" : null
+        }, {
+          "Name" : {
+            "value" : "Are cryptographic constraints met for the signature creation?",
+            "Key" : "ACCM"
+          },
+          "Status" : "OK",
+          "Error" : null,
+          "Warning" : null,
+          "Info" : null,
+          "AdditionalInfo" : "Signature algorithm ECDSA with SHA256 with key size 256 at validation time : 2026-07-28 08:41",
+          "Id" : "S-75D2071F6CF765B4B0E875D39FE063CFFEA97CE29C0B80507BF018EA6A9C587E",
+          "BlockType" : "AOV"
+        } ],
+        "Conclusion" : {
+          "Indication" : "PASSED",
+          "SubIndication" : null,
+          "Errors" : [ ],
+          "Warnings" : [ ],
+          "Infos" : [ ]
+        },
+        "Title" : "Signature Acceptance Validation"
+      },
+      "AOV" : {
+        "SignatureCryptographicValidation" : {
+          "Algorithm" : {
+            "Name" : "ECDSA with SHA256",
+            "Uri" : "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256",
+            "KeyLength" : "256"
+          },
+          "NotAfter" : null,
+          "ConcernedMaterialDescription" : null,
+          "Conclusion" : {
+            "Indication" : "PASSED",
+            "SubIndication" : null,
+            "Errors" : [ ],
+            "Warnings" : [ ],
+            "Infos" : [ ]
+          },
+          "TokenId" : "S-75D2071F6CF765B4B0E875D39FE063CFFEA97CE29C0B80507BF018EA6A9C587E"
+        },
+        "SignedAttributesValidation" : {
+          "Algorithm" : {
+            "Name" : "SHA256",
+            "Uri" : "http://www.w3.org/2001/04/xmlenc#sha256",
+            "KeyLength" : null
+          },
+          "NotAfter" : null,
+          "ConcernedMaterialDescription" : null,
+          "Conclusion" : {
+            "Indication" : "PASSED",
+            "SubIndication" : null,
+            "Errors" : [ ],
+            "Warnings" : [ ],
+            "Infos" : [ ]
+          },
+          "TokenId" : "S-75D2071F6CF765B4B0E875D39FE063CFFEA97CE29C0B80507BF018EA6A9C587E"
+        },
+        "DigestMatchersValidation" : {
+          "Algorithm" : {
+            "Name" : "SHA256",
+            "Uri" : "http://www.w3.org/2001/04/xmlenc#sha256",
+            "KeyLength" : null
+          },
+          "NotAfter" : null,
+          "ConcernedMaterialDescription" : "signature creation",
+          "Conclusion" : {
+            "Indication" : "PASSED",
+            "SubIndication" : null,
+            "Errors" : [ ],
+            "Warnings" : [ ],
+            "Infos" : [ ]
+          },
+          "TokenId" : "S-75D2071F6CF765B4B0E875D39FE063CFFEA97CE29C0B80507BF018EA6A9C587E"
+        },
+        "CertificateChainCryptographicValidation" : {
+          "CertificateCryptographicValidation" : [ {
+            "Algorithm" : {
+              "Name" : "ECDSA with SHA384",
+              "Uri" : "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha384",
+              "KeyLength" : "384"
+            },
+            "NotAfter" : null,
+            "ConcernedMaterialDescription" : null,
+            "Conclusion" : {
+              "Indication" : "PASSED",
+              "SubIndication" : null,
+              "Errors" : [ ],
+              "Warnings" : [ ],
+              "Infos" : [ ]
+            },
+            "TokenId" : "C-C4BF07422AEC8DFF6D93F71923E0C6EE29B340FF87E6AF0A537049B7CB30A088"
+          }, {
+            "Algorithm" : {
+              "Name" : "ECDSA with SHA384",
+              "Uri" : "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha384",
+              "KeyLength" : "384"
+            },
+            "NotAfter" : null,
+            "ConcernedMaterialDescription" : null,
+            "Conclusion" : {
+              "Indication" : "PASSED",
+              "SubIndication" : null,
+              "Errors" : [ ],
+              "Warnings" : [ ],
+              "Infos" : [ ]
+            },
+            "TokenId" : "C-10E583F100E523D8E78B3A4E7DA67A1EE7E623915DA0CE98000F1A661C93734F"
+          } ]
+        },
+        "Constraint" : [ {
+          "Name" : {
+            "value" : "Are cryptographic constraints met for the signature creation?",
+            "Key" : "ACCM"
+          },
+          "Status" : "OK",
+          "Error" : null,
+          "Warning" : null,
+          "Info" : null,
+          "AdditionalInfo" : "Signature algorithm ECDSA with SHA256 with key size 256 at validation time : 2026-07-28 08:41",
+          "Id" : null,
+          "BlockType" : null
+        }, {
+          "Name" : {
+            "value" : "Are cryptographic constraints met for the signing certificate reference?",
+            "Key" : "ACCM"
+          },
+          "Status" : "OK",
+          "Error" : null,
+          "Warning" : null,
+          "Info" : null,
+          "AdditionalInfo" : "Digest algorithm SHA256 at validation time : 2026-07-28 08:41 for signing certificate reference with Id : C-C4BF07422AEC8DFF6D93F71923E0C6EE29B340FF87E6AF0A537049B7CB30A088",
+          "Id" : "C-C4BF07422AEC8DFF6D93F71923E0C6EE29B340FF87E6AF0A537049B7CB30A088",
+          "BlockType" : "AOV_XCV"
+        }, {
+          "Name" : {
+            "value" : "Are cryptographic constraints met for the jws signing input?",
+            "Key" : "ACCM"
+          },
+          "Status" : "OK",
+          "Error" : null,
+          "Warning" : null,
+          "Info" : null,
+          "AdditionalInfo" : "Digest algorithm SHA256 at validation time : 2026-07-28 08:41 for jws signing input",
+          "Id" : null,
+          "BlockType" : null
+        }, {
+          "Name" : {
+            "value" : "Are cryptographic constraints met for the signing certificate?",
+            "Key" : "ACCM"
+          },
+          "Status" : "OK",
+          "Error" : null,
+          "Warning" : null,
+          "Info" : null,
+          "AdditionalInfo" : "Signature algorithm ECDSA with SHA384 with key size 384 at validation time : 2026-07-28 08:41",
+          "Id" : "C-C4BF07422AEC8DFF6D93F71923E0C6EE29B340FF87E6AF0A537049B7CB30A088",
+          "BlockType" : "AOV_XCV"
+        }, {
+          "Name" : {
+            "value" : "Are cryptographic constraints met for the CA certificate?",
+            "Key" : "ACCM"
+          },
+          "Status" : "OK",
+          "Error" : null,
+          "Warning" : null,
+          "Info" : null,
+          "AdditionalInfo" : "Signature algorithm ECDSA with SHA384 with key size 384 at validation time : 2026-07-28 08:41",
+          "Id" : "C-10E583F100E523D8E78B3A4E7DA67A1EE7E623915DA0CE98000F1A661C93734F",
+          "BlockType" : "AOV_XCV"
+        } ],
+        "Conclusion" : {
+          "Indication" : "PASSED",
+          "SubIndication" : null,
+          "Errors" : [ ],
+          "Warnings" : [ ],
+          "Infos" : [ ]
+        },
+        "Title" : "Algorithm Obsolescence Validation",
+        "ValidationTime" : "2026-07-28T08:41:36Z"
+      },
+      "PSV" : null,
+      "PSV_CRS" : null,
+      "PCV" : null,
+      "VTS" : null,
+      "CertificateChain" : {
+        "ChainItem" : [ {
+          "Source" : "SIGNATURE",
+          "Id" : "C-C4BF07422AEC8DFF6D93F71923E0C6EE29B340FF87E6AF0A537049B7CB30A088"
+        }, {
+          "Source" : "AIA",
+          "Id" : "C-10E583F100E523D8E78B3A4E7DA67A1EE7E623915DA0CE98000F1A661C93734F"
+        } ]
+      },
+      "Conclusion" : {
+        "Indication" : "INDETERMINATE",
+        "SubIndication" : "NO_CERTIFICATE_CHAIN_FOUND",
+        "Errors" : [ {
+          "value" : "The certificate chain for signature is not trusted, it does not contain a trust anchor.",
+          "Key" : "BBB_XCV_CCCBB_SIG_ANS"
+        } ],
+        "Warnings" : [ ],
+        "Infos" : [ ]
+      },
+      "Id" : "S-75D2071F6CF765B4B0E875D39FE063CFFEA97CE29C0B80507BF018EA6A9C587E",
+      "Type" : "SIGNATURE"
+    }, {
+      "FC" : {
+        "Constraint" : [ {
+          "Name" : {
+            "value" : "Does the attestation contain an attestation creation signature?",
+            "Key" : "EAA_SIG_PRESENT"
+          },
+          "Status" : "OK",
+          "Error" : null,
+          "Warning" : null,
+          "Info" : null,
+          "AdditionalInfo" : null,
+          "Id" : null,
+          "BlockType" : null
+        }, {
+          "Name" : {
+            "value" : "Have disclosures been provided with the attestation presentation?",
+            "Key" : "EAA_DPEAAP"
+          },
+          "Status" : "WARNING",
+          "Error" : null,
+          "Warning" : {
+            "value" : "No disclosures have been provided with the attestation presentation!",
+            "Key" : "EAA_DPEAAP_ANS"
+          },
+          "Info" : null,
+          "AdditionalInfo" : null,
+          "Id" : null,
+          "BlockType" : null
+        }, {
+          "Name" : {
+            "value" : "Is a key binding signature present?",
+            "Key" : "EAA_KBSP"
+          },
+          "Status" : "WARNING",
+          "Error" : null,
+          "Warning" : {
+            "value" : "No key binding signature has been found!",
+            "Key" : "EAA_KBSP_ANS"
+          },
+          "Info" : null,
+          "AdditionalInfo" : null,
+          "Id" : null,
+          "BlockType" : null
+        } ],
+        "Conclusion" : {
+          "Indication" : "PASSED",
+          "SubIndication" : null,
+          "Errors" : null,
+          "Warnings" : [ {
+            "value" : "No disclosures have been provided with the attestation presentation!",
+            "Key" : "EAA_DPEAAP_ANS"
+          }, {
+            "value" : "No key binding signature has been found!",
+            "Key" : "EAA_KBSP_ANS"
+          } ],
+          "Infos" : [ ]
+        },
+        "Title" : "Format Checking"
+      },
+      "ISC" : null,
+      "VCI" : null,
+      "XCV" : null,
+      "CV" : {
+        "Constraint" : [ ],
+        "Conclusion" : {
+          "Indication" : "PASSED",
+          "SubIndication" : null,
+          "Errors" : null,
+          "Warnings" : [ ],
+          "Infos" : [ ]
+        },
+        "Title" : "Cryptographic Verification"
+      },
+      "SAV" : {
+        "Constraint" : [ {
+          "Name" : {
+            "value" : "Is the attestation conformant to the ETSI standard TS 119 472-1?",
+            "Key" : "EAA_ETSI194721"
+          },
+          "Status" : "OK",
+          "Error" : null,
+          "Warning" : null,
+          "Info" : null,
+          "AdditionalInfo" : null,
+          "Id" : null,
+          "BlockType" : null
+        }, {
+          "Name" : {
+            "value" : "Is the attestation type part of the acceptable value list?",
+            "Key" : "EAA_ACCEPTABLE_TYPE"
+          },
+          "Status" : "OK",
+          "Error" : null,
+          "Warning" : null,
+          "Info" : null,
+          "AdditionalInfo" : null,
+          "Id" : null,
+          "BlockType" : null
+        }, {
+          "Name" : {
+            "value" : "Does the SDJWT attestation contain the claim 'vct#integrity'?",
+            "Key" : "SDJWT_EAA_VCT_INT_PRESENT"
+          },
+          "Status" : "OK",
+          "Error" : null,
+          "Warning" : null,
+          "Info" : null,
+          "AdditionalInfo" : null,
+          "Id" : null,
+          "BlockType" : null
+        }, {
+          "Name" : {
+            "value" : "Is the attestation claim for the start of the attestation technical validity period present?",
+            "Key" : "EAA_NBF_PRESENT"
+          },
+          "Status" : "OK",
+          "Error" : null,
+          "Warning" : null,
+          "Info" : null,
+          "AdditionalInfo" : null,
+          "Id" : null,
+          "BlockType" : null
+        }, {
+          "Name" : {
+            "value" : "Is the attestation claim for the end of the attestation technical validity period present?",
+            "Key" : "EAA_EXP_PRESENT"
+          },
+          "Status" : "OK",
+          "Error" : null,
+          "Warning" : null,
+          "Info" : null,
+          "AdditionalInfo" : null,
+          "Id" : null,
+          "BlockType" : null
+        }, {
+          "Name" : {
+            "value" : "Is the validation time within the technical validity range of the attestation?",
+            "Key" : "EAA_VT_ITVR"
+          },
+          "Status" : "OK",
+          "Error" : null,
+          "Warning" : null,
+          "Info" : null,
+          "AdditionalInfo" : null,
+          "Id" : null,
+          "BlockType" : null
+        }, {
+          "Name" : {
+            "value" : "Does the attestation contain a revocation (status) claim?",
+            "Key" : "EAA_REV_PR"
+          },
+          "Status" : "WARNING",
+          "Error" : null,
+          "Warning" : {
+            "value" : "The attestation does not contain a revocation (status) claim!",
+            "Key" : "EAA_REV_PR_ANS"
+          },
+          "Info" : null,
+          "AdditionalInfo" : null,
+          "Id" : null,
+          "BlockType" : null
+        }, {
+          "Name" : {
+            "value" : "Are cryptographic constraints met for the attestation?",
+            "Key" : "ACCM"
+          },
+          "Status" : "OK",
+          "Error" : null,
+          "Warning" : null,
+          "Info" : null,
+          "AdditionalInfo" : null,
+          "Id" : "A-A89C4A36A7445090A1844544CC9ACA00D7DC97F4B0409335E00635B8BD3C728A",
+          "BlockType" : "AOV"
+        } ],
+        "Conclusion" : {
+          "Indication" : "PASSED",
+          "SubIndication" : null,
+          "Errors" : null,
+          "Warnings" : [ {
+            "value" : "The attestation does not contain a revocation (status) claim!",
+            "Key" : "EAA_REV_PR_ANS"
+          } ],
+          "Infos" : [ ]
+        },
+        "Title" : "Signature Acceptance Validation"
+      },
+      "AOV" : {
+        "SignatureCryptographicValidation" : null,
+        "SignedAttributesValidation" : null,
+        "DigestMatchersValidation" : null,
+        "CertificateChainCryptographicValidation" : null,
+        "Constraint" : [ ],
+        "Conclusion" : {
+          "Indication" : "PASSED",
+          "SubIndication" : null,
+          "Errors" : [ ],
+          "Warnings" : [ ],
+          "Infos" : [ ]
+        },
+        "Title" : "Algorithm Obsolescence Validation",
+        "ValidationTime" : "2026-07-28T08:41:36Z"
+      },
+      "PSV" : null,
+      "PSV_CRS" : null,
+      "PCV" : null,
+      "VTS" : null,
+      "CertificateChain" : null,
+      "Conclusion" : {
+        "Indication" : "PASSED",
+        "SubIndication" : null,
+        "Errors" : [ ],
+        "Warnings" : [ {
+          "value" : "No disclosures have been provided with the attestation presentation!",
+          "Key" : "EAA_DPEAAP_ANS"
+        }, {
+          "value" : "No key binding signature has been found!",
+          "Key" : "EAA_KBSP_ANS"
+        }, {
+          "value" : "The attestation does not contain a revocation (status) claim!",
+          "Key" : "EAA_REV_PR_ANS"
+        } ],
+        "Infos" : [ ]
+      },
+      "Id" : "A-A89C4A36A7445090A1844544CC9ACA00D7DC97F4B0409335E00635B8BD3C728A",
+      "Type" : "ATTESTATION"
+    } ],
+    "TLAnalysis" : [ ],
+    "LoTEAnalysis" : [ ],
+    "Semantic" : null,
+    "ValidationTime" : "2026-07-28T08:41:36Z"
+  }
+}
+----

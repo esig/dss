@@ -1,0 +1,394 @@
+/**
+ * DSS - Digital Signature Services
+ * Copyright (C) 2015 European Commission, provided under the CEF programme
+ * <p>
+ * This file is part of the "DSS - Digital Signature Services" project.
+ * <p>
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * <p>
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+package eu.europa.esig.dss.validation.process.bbb.sav;
+
+import eu.europa.esig.dss.detailedreport.jaxb.XmlAOV;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
+import eu.europa.esig.dss.diagnostic.AttestationRevocationWrapper;
+import eu.europa.esig.dss.diagnostic.AttestationWrapper;
+import eu.europa.esig.dss.enumerations.AttestationProfile;
+import eu.europa.esig.dss.enumerations.Context;
+import eu.europa.esig.dss.i18n.I18nProvider;
+import eu.europa.esig.dss.i18n.MessageTag;
+import eu.europa.esig.dss.model.policy.LevelRule;
+import eu.europa.esig.dss.model.policy.MultiValuesRule;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
+import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.attestation.checks.AcceptableAttestationRevocationFoundCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationAdministrativeExpirationDatePresentCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationAdministrativeIssuanceDatePresentCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationAdministrativePeriodNotExpiredCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationCategoryCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationClaimsCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationExpirationPresentCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationIdentifierPresentCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationIssuanceDatePresentCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationIssuingAuthorityCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationIssuingAuthorityRegistrationIdentifierCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationIssuingCountryCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationNotBeforePresentCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationNotExpiredCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationNotOnHoldCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationNotRevokedCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationOneTimeUseCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationPseudonymCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationPseudonymUsageCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationRevocationAcceptableCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationRevocationAvailableCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationRevocationPresentCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationRevocationStatusKnownCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationShortLivedCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationSubjectCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationSupportedClaimsCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationSupportedNamespacesCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationTypeCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationTypeIntegrityPresentCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.ETSI194721ConformanceCheck;
+
+import java.util.Date;
+import java.util.Map;
+
+/**
+ * Performs verification of attestation against the validationPolicy defined acceptance criteria
+ *
+ */
+public class AttestationAcceptanceValidation extends AbstractAcceptanceValidation<AttestationWrapper> {
+
+    /** A map of BasicBuildingBlocks */
+    private final Map<String, XmlBasicBuildingBlocks> bbbs;
+
+    /** Last acceptable attestation token revocation */
+    private AttestationRevocationWrapper lastAcceptableStatus;
+
+    /**
+     * Default constructor
+     *
+     * @param i18nProvider {@link I18nProvider}
+     * @param currentTime {@link Date} validation time
+     * @param attestationWrapper {@link AttestationWrapper}
+     * @param bbbs a map of {@link XmlBasicBuildingBlocks}s
+     * @param aov {@link XmlAOV}
+     * @param validationPolicy {@link ValidationPolicy}
+     */
+    public AttestationAcceptanceValidation(I18nProvider i18nProvider, Date currentTime,
+                                           AttestationWrapper attestationWrapper, Map<String, XmlBasicBuildingBlocks> bbbs, XmlAOV aov,
+                                           ValidationPolicy validationPolicy) {
+        super(i18nProvider, attestationWrapper, currentTime, Context.ATTESTATION, aov, validationPolicy);
+        this.bbbs = bbbs;
+    }
+
+    @Override
+    protected MessageTag getTitle() {
+        return MessageTag.SIGNATURE_ACCEPTANCE_VALIDATION;
+    }
+
+    @Override
+    protected void initChain() {
+        ChainItem<XmlSAV> item = firstItem = etsi194721Conformance();
+
+        item = item.setNextItem(attestationType());
+        if (AttestationProfile.SD_JWT_VC == token.getAttestationProfile()) {
+            item = item.setNextItem(typeIntegrityPresent());
+        }
+
+        if (AttestationProfile.ISO_IEC_MDOC == token.getAttestationProfile()) {
+            item = item.setNextItem(issuanceDatePresent());
+        }
+
+        item = item.setNextItem(attestationIdentifierPresent());
+
+        item = item.setNextItem(notBeforePresent());
+
+        item = item.setNextItem(expirationPresent());
+
+        if (token.getNotBefore() != null && token.getExpiration() != null) {
+            item = item.setNextItem(notExpired());
+        }
+
+        item = item.setNextItem(administrativeIssuanceDatePresent());
+
+        item = item.setNextItem(administrativeExpirationDatePresent());
+
+        if (token.getAdministrativeIssuanceDate() != null && token.getAdministrativeExpirationDate() != null) {
+            item = item.setNextItem(administrativePeriodNotExpired());
+        }
+
+        item = item.setNextItem(category());
+
+        item = item.setNextItem(subject());
+
+        item = item.setNextItem(subjectPseudonym());
+
+        item = item.setNextItem(issuingCountry());
+
+        item = item.setNextItem(issuingAuthority());
+
+        item = item.setNextItem(issuingAuthorityRegistrationIdentifier());
+
+        if (Utils.isTrue(token.getOneTimeUse())) {
+            item = item.setNextItem(oneTimeUse());
+        }
+
+        if (Utils.isTrue(token.getShortLived())) {
+
+            item = item.setNextItem(shortLived());
+
+        } else {
+
+            // TODO : make revocation check configurable ?
+
+            AttestationRevocationPresentCheck revocationPresentCheck = statusPresent();
+
+            item = item.setNextItem(revocationPresentCheck);
+
+            if (revocationPresentCheck.process()) {
+
+                item = item.setNextItem(statusAvailable());
+
+                // TODO : improve with attestation Status selector ?
+                lastAcceptableStatus = null;
+                for (AttestationRevocationWrapper revocationWrapper : token.getAttestationRevocations()) {
+
+                    XmlBasicBuildingBlocks attestationRevocationBBB = bbbs.get(revocationWrapper.getId());
+                    if (attestationRevocationBBB == null) {
+                        throw new IllegalStateException(String.format("No BasicBuildingBlock found for token with Id '%s'", revocationWrapper.getId()));
+                    }
+
+                    item = item.setNextItem(statusKnown(revocationWrapper));
+
+                    item = item.setNextItem(statusAcceptable(revocationWrapper, attestationRevocationBBB.getConclusion()));
+
+                    if (isValidConclusion(attestationRevocationBBB.getConclusion())
+                            && (lastAcceptableStatus == null || lastAcceptableStatus.getIssuedAt().before(revocationWrapper.getIssuedAt()))) {
+                        lastAcceptableStatus = revocationWrapper;
+                    }
+
+                }
+
+                item = item.setNextItem(acceptableStatusFound(lastAcceptableStatus));
+
+                if (lastAcceptableStatus != null) {
+
+                    item = item.setNextItem(notRevoked(lastAcceptableStatus));
+
+                    item = item.setNextItem(notOnHold(lastAcceptableStatus));
+
+                }
+
+            }
+
+        }
+
+        if (token.getPseudonym() != null) {
+            item = item.setNextItem(usePseudonym());
+        }
+
+        item = item.setNextItem(claims());
+
+        item = item.setNextItem(supportedClaims());
+
+        if (AttestationProfile.ISO_IEC_MDOC == token.getAttestationProfile()) {
+
+            item = item.setNextItem(supportedNamespaces());
+
+        }
+
+        // cryptographic check
+        item = cryptographic(item);
+
+    }
+
+    private ChainItem<XmlSAV> etsi194721Conformance() {
+        LevelRule constraint = validationPolicy.getAttestationETSI194721ConformanceConstraint();
+        return new ETSI194721ConformanceCheck(i18nProvider, result, token, currentTime, constraint);
+    }
+
+    private ChainItem<XmlSAV> attestationType() {
+        MultiValuesRule constraint = validationPolicy.getAttestationTypeConstraint();
+        return new AttestationTypeCheck(i18nProvider, result, token, constraint);
+    }
+
+    private ChainItem<XmlSAV> typeIntegrityPresent() {
+        LevelRule constraint = validationPolicy.getAttestationTypeIntegrityPresentConstraint();
+        return new AttestationTypeIntegrityPresentCheck(i18nProvider, result, token, constraint);
+    }
+
+    private ChainItem<XmlSAV> notBeforePresent() {
+        LevelRule constraint = validationPolicy.getAttestationNotBeforePresentConstraint();
+        return new AttestationNotBeforePresentCheck(i18nProvider, result, token, constraint);
+    }
+
+    private ChainItem<XmlSAV> expirationPresent() {
+        LevelRule constraint = validationPolicy.getAttestationExpirationPresentConstraint();
+        return new AttestationExpirationPresentCheck(i18nProvider, result, token, constraint);
+    }
+
+    private ChainItem<XmlSAV> notExpired() {
+        LevelRule constraint = validationPolicy.getNotExpiredConstraint();
+        return new AttestationNotExpiredCheck(i18nProvider, result, token, currentTime, constraint);
+    }
+
+    private ChainItem<XmlSAV> administrativeIssuanceDatePresent() {
+        LevelRule constraint = validationPolicy.getAdministrativeIssuanceDatePresentConstraint();
+        return new AttestationAdministrativeIssuanceDatePresentCheck(i18nProvider, result, token, constraint);
+    }
+
+    private ChainItem<XmlSAV> administrativeExpirationDatePresent() {
+        LevelRule constraint = validationPolicy.getAdministrativeExpirationDatePresentConstraint();
+        return new AttestationAdministrativeExpirationDatePresentCheck(i18nProvider, result, token, constraint);
+    }
+
+    private ChainItem<XmlSAV> administrativePeriodNotExpired() {
+        LevelRule constraint = validationPolicy.getAdministrativePeriodNotExpiredConstraint();
+        return new AttestationAdministrativePeriodNotExpiredCheck(i18nProvider, result, token, currentTime, constraint);
+    }
+
+    private ChainItem<XmlSAV> attestationIdentifierPresent() {
+        LevelRule constraint = validationPolicy.getAttestationIdentifierPresentConstraint();
+        return new AttestationIdentifierPresentCheck(i18nProvider, result, token, constraint);
+    }
+
+    private ChainItem<XmlSAV> issuanceDatePresent() {
+        LevelRule constraint = validationPolicy.getAttestationIssuanceDatePresentConstraint();
+        return new AttestationIssuanceDatePresentCheck(i18nProvider, result, token, constraint);
+    }
+
+    private ChainItem<XmlSAV> category() {
+        MultiValuesRule constraint = validationPolicy.getCategoryConstraint();
+        return new AttestationCategoryCheck(i18nProvider, result, token, constraint);
+    }
+
+    private ChainItem<XmlSAV> subject() {
+        MultiValuesRule constraint = validationPolicy.getSubjectConstraint();
+        return new AttestationSubjectCheck(i18nProvider, result, token, constraint);
+    }
+
+    private ChainItem<XmlSAV> subjectPseudonym() {
+        MultiValuesRule constraint = validationPolicy.getAttestationPseudonymConstraint();
+        return new AttestationPseudonymCheck(i18nProvider, result, token, constraint);
+    }
+
+    private ChainItem<XmlSAV> issuingCountry() {
+        MultiValuesRule constraint = validationPolicy.getIssuingCountryConstraint();
+        return new AttestationIssuingCountryCheck(i18nProvider, result, token, constraint);
+    }
+
+    private ChainItem<XmlSAV> issuingAuthority() {
+        MultiValuesRule constraint = validationPolicy.getIssuingAuthorityConstraint();
+        return new AttestationIssuingAuthorityCheck(i18nProvider, result, token, constraint);
+    }
+
+    private ChainItem<XmlSAV> issuingAuthorityRegistrationIdentifier() {
+        MultiValuesRule constraint = validationPolicy.getIssuingAuthorityRegistrationIdentifierConstraint();
+        return new AttestationIssuingAuthorityRegistrationIdentifierCheck(i18nProvider, result, token, constraint);
+    }
+
+    private AttestationRevocationPresentCheck statusPresent() {
+        LevelRule constraint = validationPolicy.getRevocationPresentConstraint();
+        return new AttestationRevocationPresentCheck(i18nProvider, result, token, constraint);
+    }
+
+    private ChainItem<XmlSAV> statusAvailable() {
+        LevelRule constraint = validationPolicy.getRevocationAvailableConstraint();
+        return new AttestationRevocationAvailableCheck(i18nProvider, result, token, constraint);
+    }
+
+    private ChainItem<XmlSAV> statusKnown(AttestationRevocationWrapper attestationRevocationWrapper) {
+        LevelRule constraint = validationPolicy.getAttestationRevocationUnknownStatusConstraint();
+        return new AttestationRevocationStatusKnownCheck(i18nProvider, result, attestationRevocationWrapper, constraint);
+    }
+
+    private ChainItem<XmlSAV> statusAcceptable(AttestationRevocationWrapper attestationRevocationWrapper, XmlConclusion xmlConclusion) {
+        return new AttestationRevocationAcceptableCheck(i18nProvider, result, attestationRevocationWrapper, xmlConclusion, getWarnLevelRule());
+    }
+
+    private ChainItem<XmlSAV> acceptableStatusFound(AttestationRevocationWrapper acceptableAttestationRevocationWrapper) {
+        LevelRule constraint = validationPolicy.getRevocationAvailableConstraint();
+        return new AcceptableAttestationRevocationFoundCheck(i18nProvider, result, acceptableAttestationRevocationWrapper, constraint);
+    }
+
+    private ChainItem<XmlSAV> notRevoked(AttestationRevocationWrapper attestationRevocationWrapper) {
+        LevelRule constraint = validationPolicy.getAttestationRevocationNotRevokedConstraint();
+        return new AttestationNotRevokedCheck(i18nProvider, result, attestationRevocationWrapper, constraint);
+    }
+
+    private ChainItem<XmlSAV> notOnHold(AttestationRevocationWrapper attestationRevocationWrapper) {
+        LevelRule constraint = validationPolicy.getAttestationRevocationNotOnHoldConstraint();
+        return new AttestationNotOnHoldCheck(i18nProvider, result, attestationRevocationWrapper, constraint);
+    }
+
+    private ChainItem<XmlSAV> shortLived() {
+        LevelRule constraint = validationPolicy.getShortLivedConstraint();
+        return new AttestationShortLivedCheck(i18nProvider, result, token, constraint);
+    }
+
+    private ChainItem<XmlSAV> oneTimeUse() {
+        LevelRule constraint = validationPolicy.getOneTimeUseConstraint();
+        return new AttestationOneTimeUseCheck(i18nProvider, result, token, constraint);
+    }
+
+    private ChainItem<XmlSAV> usePseudonym() {
+        LevelRule constraint = validationPolicy.getUsePseudonymConstraint();
+        return new AttestationPseudonymUsageCheck(i18nProvider, result, token, constraint);
+    }
+
+    private ChainItem<XmlSAV> claims() {
+        MultiValuesRule constraint = validationPolicy.getClaimsConstraint();
+        return new AttestationClaimsCheck(i18nProvider, result, token, constraint);
+    }
+
+    private ChainItem<XmlSAV> supportedClaims() {
+        MultiValuesRule constraint = validationPolicy.getSupportedClaimsConstraint();
+        return new AttestationSupportedClaimsCheck(i18nProvider, result, token, constraint);
+    }
+
+    private ChainItem<XmlSAV> supportedNamespaces() {
+        MultiValuesRule constraint = validationPolicy.getSupportedNamespacesConstraint();
+        return new AttestationSupportedNamespacesCheck(i18nProvider, result, token, constraint);
+    }
+
+    @Override
+    protected void collectMessages(XmlConclusion conclusion, XmlConstraint constraint) {
+        if (!MessageTag.EAA_REV_ACC.getId().equals(constraint.getName().getKey())) {
+            super.collectMessages(conclusion, constraint);
+        }
+    }
+
+    @Override
+    protected void collectAdditionalMessages(XmlConclusion conclusion) {
+        super.collectAdditionalMessages(conclusion);
+
+        if (lastAcceptableStatus != null) {
+            XmlBasicBuildingBlocks tokenBBB = bbbs.get(lastAcceptableStatus.getId());
+            collectAllMessages(conclusion, tokenBBB.getConclusion());
+        } else {
+            for (AttestationRevocationWrapper AttestationRevocationWrapper : token.getAttestationRevocations()) {
+                XmlBasicBuildingBlocks tokenBBB = bbbs.get(AttestationRevocationWrapper.getId());
+                collectAllMessages(conclusion, tokenBBB.getConclusion());
+            }
+        }
+    }
+
+}

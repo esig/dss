@@ -37,7 +37,7 @@ import eu.europa.esig.dss.model.scope.SignatureScope;
 import eu.europa.esig.dss.spi.validation.scope.AbstractSignatureScopeFinder;
 import eu.europa.esig.dss.spi.validation.scope.CounterSignatureScope;
 import eu.europa.esig.dss.spi.validation.scope.DigestSignatureScope;
-import eu.europa.esig.dss.spi.validation.scope.EAASignatureScope;
+import eu.europa.esig.dss.spi.validation.scope.AttestationSignatureScope;
 import eu.europa.esig.dss.spi.validation.scope.FullSignatureScope;
 import eu.europa.esig.dss.spi.validation.scope.KeyBindingSignatureScope;
 import eu.europa.esig.dss.spi.validation.scope.SignatureScopeFinder;
@@ -85,10 +85,10 @@ public class JAdESSignatureScopeFinder extends AbstractSignatureScopeFinder impl
 						return Collections.singletonList(new CounterSignatureScope(jadesSignature.getMasterSignature(), originalDocuments.get(0)));
 					} else if (jadesSignature.isKeyBindingSignature()) {
 						// only one document shall be present
-						return Collections.singletonList(new KeyBindingSignatureScope(jadesSignature.getEAA(), originalDocuments.get(0)));
-					} else if (jadesSignature.getEAA() != null) {
+						return Collections.singletonList(new KeyBindingSignatureScope(jadesSignature.getAttestation(), originalDocuments.get(0)));
+					} else if (jadesSignature.getAttestation() != null) {
 						// only one document shall be present
-						return Collections.singletonList(new EAASignatureScope(jadesSignature.getEAA(), originalDocuments.get(0)));
+						return Collections.singletonList(new AttestationSignatureScope(jadesSignature.getAttestation(), originalDocuments.get(0)));
 					} else {
 						return Collections.singletonList(getSignatureScopeFromOriginalDocument(originalDocuments.get(0), referenceValidation));
 					}

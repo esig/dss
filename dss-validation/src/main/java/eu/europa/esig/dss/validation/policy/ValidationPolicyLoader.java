@@ -518,12 +518,12 @@ public class ValidationPolicyLoader {
                     addCryptographicSuite(cryptographicSuites, cryptographicSuiteCatalogue.getEvidenceRecordCryptographicSuite(), context, subContext);
                     break;
 
-                case EAA:
-                    addCryptographicSuite(cryptographicSuites, cryptographicSuiteCatalogue.getEAACryptographicSuite(), context, subContext);
+                case ATTESTATION:
+                    addCryptographicSuite(cryptographicSuites, cryptographicSuiteCatalogue.getAttestationCryptographicSuite(), context, subContext);
                     break;
 
-                case EAA_REVOCATION:
-                    addCryptographicSuite(cryptographicSuites, cryptographicSuiteCatalogue.getEAARevocationCryptographicSuite(), context, subContext);
+                case ATTESTATION_REVOCATION:
+                    addCryptographicSuite(cryptographicSuites, cryptographicSuiteCatalogue.getAttestationRevocationCryptographicSuite(), context, subContext);
                     break;
 
                 default:

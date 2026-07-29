@@ -33,8 +33,8 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlVCI;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.diagnostic.EAARevocationTokenWrapper;
-import eu.europa.esig.dss.diagnostic.EAAWrapper;
+import eu.europa.esig.dss.diagnostic.AttestationRevocationTokenWrapper;
+import eu.europa.esig.dss.diagnostic.AttestationWrapper;
 import eu.europa.esig.dss.diagnostic.OrphanCertificateTokenWrapper;
 import eu.europa.esig.dss.diagnostic.RevocationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -47,20 +47,20 @@ import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.bbb.aov.AlgorithmObsolescenceValidation;
 import eu.europa.esig.dss.validation.process.bbb.aov.CertificateAndChainAlgorithmObsolescenceValidation;
-import eu.europa.esig.dss.validation.process.bbb.aov.EAAAlgorithmObsolescenceValidation;
-import eu.europa.esig.dss.validation.process.bbb.aov.EAARevocationAlgorithmObsolescenceValidation;
+import eu.europa.esig.dss.validation.process.bbb.aov.AttestationAlgorithmObsolescenceValidation;
+import eu.europa.esig.dss.validation.process.bbb.aov.AttestationRevocationAlgorithmObsolescenceValidation;
 import eu.europa.esig.dss.validation.process.bbb.aov.RevocationDataAlgorithmObsolescenceValidation;
 import eu.europa.esig.dss.validation.process.bbb.aov.SignatureAlgorithmObsolescenceValidation;
 import eu.europa.esig.dss.validation.process.bbb.aov.TimestampAlgorithmObsolescenceValidation;
 import eu.europa.esig.dss.validation.process.bbb.cv.CryptographicVerification;
-import eu.europa.esig.dss.validation.process.bbb.fc.EAAFormatChecking;
-import eu.europa.esig.dss.validation.process.bbb.fc.EAARevocationFormatChecking;
+import eu.europa.esig.dss.validation.process.bbb.fc.AttestationFormatChecking;
+import eu.europa.esig.dss.validation.process.bbb.fc.AttestationRevocationFormatChecking;
 import eu.europa.esig.dss.validation.process.bbb.fc.SignatureFormatChecking;
 import eu.europa.esig.dss.validation.process.bbb.fc.TimestampFormatChecking;
 import eu.europa.esig.dss.validation.process.bbb.isc.IdentificationOfTheSigningCertificate;
 import eu.europa.esig.dss.validation.process.bbb.sav.AbstractAcceptanceValidation;
-import eu.europa.esig.dss.validation.process.bbb.sav.EAAAcceptanceValidation;
-import eu.europa.esig.dss.validation.process.bbb.sav.EAARevocationTokenAcceptanceValidation;
+import eu.europa.esig.dss.validation.process.bbb.sav.AttestationAcceptanceValidation;
+import eu.europa.esig.dss.validation.process.bbb.sav.AttestationRevocationTokenAcceptanceValidation;
 import eu.europa.esig.dss.validation.process.bbb.sav.RevocationAcceptanceValidation;
 import eu.europa.esig.dss.validation.process.bbb.sav.SignatureAcceptanceValidation;
 import eu.europa.esig.dss.validation.process.bbb.sav.TimestampAcceptanceValidation;
@@ -228,18 +228,18 @@ public class BasicBuildingBlocks {
 			if (Utils.isCollectionNotEmpty(xmlFC.getConstraint())) {
 				return xmlFC;
 			}
-		} else if (Context.EAA.equals(context)) {
-			EAAFormatChecking fc = new EAAFormatChecking(i18nProvider, diagnosticData, (EAAWrapper) token, context, policy);
+		} else if (Context.ATTESTATION.equals(context)) {
+			AttestationFormatChecking fc = new AttestationFormatChecking(i18nProvider, diagnosticData, (AttestationWrapper) token, context, policy);
 			return fc.execute();
-		} else if (Context.EAA_REVOCATION.equals(context)) {
-			EAARevocationFormatChecking fc = new EAARevocationFormatChecking(i18nProvider, diagnosticData, (EAARevocationTokenWrapper) token, context, policy);
+		} else if (Context.ATTESTATION_REVOCATION.equals(context)) {
+			AttestationRevocationFormatChecking fc = new AttestationRevocationFormatChecking(i18nProvider, diagnosticData, (AttestationRevocationTokenWrapper) token, context, policy);
 			return fc.execute();
 		}
 		return null;
 	}
 
 	private XmlISC executeIdentificationOfTheSigningCertificate() {
-		if (!Context.CERTIFICATE.equals(context) && !Context.EAA.equals(context)) {
+		if (!Context.CERTIFICATE.equals(context) && !Context.ATTESTATION.equals(context)) {
 			IdentificationOfTheSigningCertificate isc = new IdentificationOfTheSigningCertificate(i18nProvider, token, context, policy);
 			return isc.execute();
 		} else {
@@ -269,12 +269,12 @@ public class BasicBuildingBlocks {
 		} else if (Context.CERTIFICATE.equals(context)) {
 			aov = new CertificateAndChainAlgorithmObsolescenceValidation(
 					i18nProvider, (CertificateWrapper) token, context, currentTime, policy);
-		} else if (Context.EAA.equals(context)) {
-			aov = new EAAAlgorithmObsolescenceValidation(
-					i18nProvider, (EAAWrapper) token, currentTime, policy);
-		} else if (Context.EAA_REVOCATION.equals(context)) {
-			aov = new EAARevocationAlgorithmObsolescenceValidation(
-					i18nProvider, (EAARevocationTokenWrapper) token, currentTime, policy);
+		} else if (Context.ATTESTATION.equals(context)) {
+			aov = new AttestationAlgorithmObsolescenceValidation(
+					i18nProvider, (AttestationWrapper) token, currentTime, policy);
+		} else if (Context.ATTESTATION_REVOCATION.equals(context)) {
+			aov = new AttestationRevocationAlgorithmObsolescenceValidation(
+					i18nProvider, (AttestationRevocationTokenWrapper) token, currentTime, policy);
 		}
 		return aov != null ? aov.execute() : null;
 	}
@@ -308,9 +308,9 @@ public class BasicBuildingBlocks {
 					return new X509CertificateValidation(i18nProvider, signingCertificate, currentTime,
 							((RevocationWrapper) token).getProductionDate(), context, aov, policy);
 
-				} else if (Context.EAA_REVOCATION.equals(context)) {
+				} else if (Context.ATTESTATION_REVOCATION.equals(context)) {
 					return new X509CertificateValidation(i18nProvider, signingCertificate, currentTime,
-							((EAARevocationTokenWrapper) token).getIssuedAt(), context, aov, policy);
+							((AttestationRevocationTokenWrapper) token).getIssuedAt(), context, aov, policy);
 				}
 			}
 		}
@@ -380,10 +380,10 @@ public class BasicBuildingBlocks {
 			aav = new TimestampAcceptanceValidation(i18nProvider, currentTime, (TimestampWrapper) token, aov, policy);
 		} else if (Context.REVOCATION.equals(context)) {
 			aav = new RevocationAcceptanceValidation(i18nProvider, currentTime, (RevocationWrapper) token, aov, policy);
-		} else if (Context.EAA.equals(context)) {
-			aav = new EAAAcceptanceValidation(i18nProvider, currentTime, (EAAWrapper) token, bbbs, aov, policy);
-		} else if (Context.EAA_REVOCATION.equals(context)) {
-			aav = new EAARevocationTokenAcceptanceValidation(i18nProvider, currentTime, (EAARevocationTokenWrapper) token, aov, policy);
+		} else if (Context.ATTESTATION.equals(context)) {
+			aav = new AttestationAcceptanceValidation(i18nProvider, currentTime, (AttestationWrapper) token, bbbs, aov, policy);
+		} else if (Context.ATTESTATION_REVOCATION.equals(context)) {
+			aav = new AttestationRevocationTokenAcceptanceValidation(i18nProvider, currentTime, (AttestationRevocationTokenWrapper) token, aov, policy);
 		}
 		return aav != null ? aav.execute() : null;
 	}

@@ -238,21 +238,21 @@ public abstract class CryptographicSuiteCatalogue {
     }
 
     /**
-     * Gets the {@code CryptographicSuite} for validation of an EAA
+     * Gets the {@code CryptographicSuite} for validation of an attestation
      *
      * @return {@link CryptographicSuite}
      */
-    public CryptographicSuite getEAACryptographicSuite() {
+    public CryptographicSuite getAttestationCryptographicSuite() {
         // no separate handling
         return getCryptographicSuite();
     }
 
     /**
-     * Gets the {@code CryptographicSuite} for validation of an EAA revocation
+     * Gets the {@code CryptographicSuite} for validation of an attestation revocation
      *
      * @return {@link CryptographicSuite}
      */
-    public CryptographicSuite getEAARevocationCryptographicSuite() {
+    public CryptographicSuite getAttestationRevocationCryptographicSuite() {
         // no separate handling
         return getCryptographicSuite();
     }

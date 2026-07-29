@@ -24,6 +24,9 @@ import eu.europa.esig.dss.enumerations.loader.LoTELoader;
 
 import java.util.ServiceLoader;
 
+/**
+ * Represents a Service Type Identifier within a LoTE
+ */
 public interface LoTEServiceTypeIdentifier extends UriBasedEnum {
 
     /**

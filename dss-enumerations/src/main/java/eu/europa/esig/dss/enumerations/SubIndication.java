@@ -201,10 +201,10 @@ public enum SubIndication implements UriBasedEnum {
 	SIGNED_DATA_NOT_FOUND("urn:etsi:019102:subindication:SIGNED_DATA_NOT_FOUND"),
 
     /**
-     * The EAA validation process results into INDETERMINATE because there was some failure in the validation
+     * The attestation validation process results into INDETERMINATE because there was some failure in the validation
      * constraints.
      */
-    EAA_CONSTRAINTS_FAILURE("urn:cef:dss:subindication:EAA_CONSTRAINTS_FAILURE");
+    ATTESTATION_CONSTRAINTS_FAILURE("urn:cef:dss:subindication:ATTESTATION_CONSTRAINTS_FAILURE");
 
 	/** VR URI of the SubIndication */
 	private final String uri;

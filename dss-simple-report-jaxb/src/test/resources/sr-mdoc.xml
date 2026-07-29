@@ -11,7 +11,7 @@
     <DocumentName>mdocResponseIso180135.mdoc</DocumentName>
     <ValidSignaturesCount>0</ValidSignaturesCount>
     <SignaturesCount>1</SignaturesCount>
-    <EAA Id="EAA-DD7AAA383EF13F5B9926FE8F33BC2114A5EAEE6734AB269EC07D7D1AD47F6834">
+    <Attestation Id="EAA-DD7AAA383EF13F5B9926FE8F33BC2114A5EAEE6734AB269EC07D7D1AD47F6834">
         <Filename>mdocResponseIso180135.mdoc</Filename>
         <Indication>FAILED</Indication>
         <SubIndication>FORMAT_FAILURE</SubIndication>
@@ -20,10 +20,10 @@
         </AdESValidationDetails>
         <QualificationDetails>
             <Error Key="QUAL_CERT_TRUSTED_LIST_REACHED_ANS">Unable to build a certificate chain up to a trusted list!</Error>
-            <Info Key="EAA_CAT_EAA_ANS_1">The EAA does not include EAA category!</Info>
+            <Info Key="EAA_CAT_EAA_ANS_1">The attestation does not include attestation category!</Info>
         </QualificationDetails>
-        <EAALevel description="Not applicable">N/A</EAALevel>
-        <EAASignature SignatureFormat="CBOR-NOT-ETSI" Id="S-12A58C0EF2E8F1790948BF1CEF806AADAF70ED551B999995285C4226AE341D0D">
+        <AttestationLevel description="Not applicable">N/A</AttestationLevel>
+        <AttestationSignature SignatureFormat="CBOR-NOT-ETSI" Id="S-12A58C0EF2E8F1790948BF1CEF806AADAF70ED551B999995285C4226AE341D0D">
             <CertificateChain>
                 <Certificate Id="C-B79798EBBC0CAFB406683B60A75AD78DF735BC3535E31151DB0E2DFC4BB98D3B">
                     <QualifiedName>utopia ds</QualifiedName>
@@ -44,8 +44,8 @@
             <SignedBy>utopia ds</SignedBy>
             <SignatureLevel description="Not applicable">N/A</SignatureLevel>
             <SignatureScope Id="D-63251A75D87F550212BE922E7E325B3951E80E444CBFFB3BF30001D9AE4A6F66" scope="FULL">Full document</SignatureScope>
-        </EAASignature>
-        <EAAPayload>
+        </AttestationSignature>
+        <AttestationPayload>
             <IssuedAt name="validityInfo/signed">2020-10-01T13:30:02Z</IssuedAt>
             <NotBefore name="validityInfo/validFrom">2020-10-01T13:30:02Z</NotBefore>
             <Expiration name="validityInfo/validUntil">2021-10-01T13:30:02Z</Expiration>
@@ -61,6 +61,6 @@
             <AgeOverNN name="document_number" disclosure="true" parameter="18">true</AgeOverNN>
             <AgeOverNN name="document_number" disclosure="true" parameter="65">false</AgeOverNN>
             <BiometricTemplate name="document_number" disclosure="true" parameter="face">Face picture</BiometricTemplate>
-        </EAAPayload>
-    </EAA>
+        </AttestationPayload>
+    </Attestation>
 </SimpleReport>

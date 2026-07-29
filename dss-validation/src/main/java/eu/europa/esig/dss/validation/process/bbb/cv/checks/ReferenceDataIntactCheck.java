@@ -73,9 +73,9 @@ public class ReferenceDataIntactCheck<T extends XmlConstraintsConclusion> extend
 				return MessageTag.BBB_CV_ER_ATSRI;
 			case EVIDENCE_RECORD_ARCHIVE_TIME_STAMP_SEQUENCE:
 				return MessageTag.BBB_CV_ER_ATSSRI;
-			case EAA_DISCLOSURE:
+			case SELECTIVE_DISCLOSURE:
 				return MessageTag.BBB_CV_EAA_SDCBI;
-			case EAA_NESTED_DISCLOSURE:
+			case NESTED_SELECTIVE_DISCLOSURE:
 				return MessageTag.BBB_CV_EAA_NSDCBI;
 			default:
 				return MessageTag.BBB_CV_IRDOI;
@@ -95,9 +95,9 @@ public class ReferenceDataIntactCheck<T extends XmlConstraintsConclusion> extend
 				return MessageTag.BBB_CV_ER_ATSRI_ANS;
 			case EVIDENCE_RECORD_ARCHIVE_TIME_STAMP_SEQUENCE:
 				return MessageTag.BBB_CV_ER_ATSSRI_ANS;
-			case EAA_DISCLOSURE:
+			case SELECTIVE_DISCLOSURE:
 				return MessageTag.BBB_CV_EAA_SDCBI_ANS;
-			case EAA_NESTED_DISCLOSURE:
+			case NESTED_SELECTIVE_DISCLOSURE:
 				return MessageTag.BBB_CV_EAA_NSDCBI_ANS;
 			default:
 				return MessageTag.BBB_CV_IRDOI_ANS;
@@ -140,7 +140,7 @@ public class ReferenceDataIntactCheck<T extends XmlConstraintsConclusion> extend
 			return digestMatcher.getUri();
 		} else if (digestMatcher.getDisclosableClaim() != null && digestMatcher.getDisclosableClaim().getName() != null) {
 			String claimName = digestMatcher.getDisclosableClaim().getName();
-			if (DigestMatcherType.EAA_NESTED_DISCLOSURE == digestMatcher.getType() && digestMatcher.getDisclosableClaim().getValue() != null) {
+			if (DigestMatcherType.NESTED_SELECTIVE_DISCLOSURE == digestMatcher.getType() && digestMatcher.getDisclosableClaim().getValue() != null) {
 				claimName += String.format(" '%s'", digestMatcher.getDisclosableClaim().getValue());
 			}
 			return claimName;

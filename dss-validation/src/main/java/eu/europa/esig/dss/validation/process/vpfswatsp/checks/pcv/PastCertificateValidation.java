@@ -141,7 +141,7 @@ public class PastCertificateValidation extends Chain<XmlPCV> {
 		 * shall go to the next step.
 		 * 
 		 * b) If the certificate path validation returns a failure indication, the building 
-		 * block shall set the current status to 
+		 * block shall set the current status to
 		 * INDETERMINATE/CERTIFICATE_CHAIN_GENERAL_FAILURE and shall go to step 1. 
 		 */
 		

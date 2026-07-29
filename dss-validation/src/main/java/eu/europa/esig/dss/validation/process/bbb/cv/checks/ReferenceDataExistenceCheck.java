@@ -72,9 +72,9 @@ public class ReferenceDataExistenceCheck<T extends XmlConstraintsConclusion> ext
 				return MessageTag.BBB_CV_ER_ATSRF;
 			case EVIDENCE_RECORD_ARCHIVE_TIME_STAMP_SEQUENCE:
 				return MessageTag.BBB_CV_ER_ATSSRF;
-			case EAA_DISCLOSURE:
+			case SELECTIVE_DISCLOSURE:
 				return MessageTag.BBB_CV_EAA_SDCBF;
-			case EAA_NESTED_DISCLOSURE:
+			case NESTED_SELECTIVE_DISCLOSURE:
 				return MessageTag.BBB_CV_EAA_NSDCBF;
 			default:
 				return MessageTag.BBB_CV_IRDOF;
@@ -94,9 +94,9 @@ public class ReferenceDataExistenceCheck<T extends XmlConstraintsConclusion> ext
 				return MessageTag.BBB_CV_ER_ATSRF_ANS;
 			case EVIDENCE_RECORD_ARCHIVE_TIME_STAMP_SEQUENCE:
 				return MessageTag.BBB_CV_ER_ATSSRF_ANS;
-			case EAA_DISCLOSURE:
+			case SELECTIVE_DISCLOSURE:
 				return MessageTag.BBB_CV_EAA_SDCBF_ANS;
-			case EAA_NESTED_DISCLOSURE:
+			case NESTED_SELECTIVE_DISCLOSURE:
 				return MessageTag.BBB_CV_EAA_NSDCBF_ANS;
 			default:
 				return MessageTag.BBB_CV_IRDOF_ANS;
@@ -139,7 +139,7 @@ public class ReferenceDataExistenceCheck<T extends XmlConstraintsConclusion> ext
 			return digestMatcher.getUri();
 		} else if (digestMatcher.getDisclosableClaim() != null && digestMatcher.getDisclosableClaim().getName() != null) {
 			String claimName = digestMatcher.getDisclosableClaim().getName();
-			if (DigestMatcherType.EAA_NESTED_DISCLOSURE == digestMatcher.getType() && digestMatcher.getDisclosableClaim().getValue() != null) {
+			if (DigestMatcherType.NESTED_SELECTIVE_DISCLOSURE == digestMatcher.getType() && digestMatcher.getDisclosableClaim().getValue() != null) {
 				claimName += String.format(" '%s'", digestMatcher.getDisclosableClaim().getValue());
 			}
 			return claimName;

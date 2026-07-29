@@ -2,12 +2,12 @@
 <DiagnosticData xmlns="http://dss.esig.europa.eu/validation/diagnostic">
     <DocumentName>sample-jwt.jwt</DocumentName>
     <ValidationDate>2026-04-23T08:33:10Z</ValidationDate>
-    <EAAs>
-        <EAA Id="EAA-62DAA5104BA633281939DF2271396FDC1345BB55B9C786E76DEDF9FCB0E464E3">
-            <EAAType>SD_JWT_VC</EAAType>
+    <Attestations>
+        <Attestation Id="EAA-62DAA5104BA633281939DF2271396FDC1345BB55B9C786E76DEDF9FCB0E464E3">
+            <Profile>SD_JWT_VC</Profile>
             <DigestMatchers/>
-            <EAASignature Signature="S-B2CFE51EC9DE416F729051941F47145C3F2FB5571CAEFE3E661BD810D03CDC5F"/>
-            <EAAPayload>
+            <AttestationSignature Signature="S-B2CFE51EC9DE416F729051941F47145C3F2FB5571CAEFE3E661BD810D03CDC5F"/>
+            <AttestationPayload>
                 <Issuer name="iss">
                     <Text>https://issuer.example.com</Text>
                 </Issuer>
@@ -36,14 +36,14 @@
                             <Number>1</Number>
                         </Index>
                         <Uri name="uri">
-                            <Text>http://nowina.lu/eaa/status</Text>
+                            <Text>http://nowina.lu/attestation/status</Text>
                         </Uri>
                     </StatusList>
                     <Index name="index">
                         <Number>1</Number>
                     </Index>
                     <Uri name="uri">
-                        <Text>http://nowina.lu/eaa/status</Text>
+                        <Text>http://nowina.lu/attestation/status</Text>
                     </Uri>
                     <Type name="type">
                         <Text>TokenStatusList</Text>
@@ -100,15 +100,15 @@
                         <Text>US</Text>
                     </Item>
                 </Nationalities>
-            </EAAPayload>
+            </AttestationPayload>
             <KeyBindingSignature Signature="S-9C630F3A99773E09B7227D07CD0675A8EFB7EB1350408231DE83696A5F33D38E"/>
-            <EAARevocations>
-                <EAARevocationStatus EAARevocationToken="ST-A9144C67449944517D4481B366337C02488BA6CBD42F89E1C2C8225E507518EF">
+            <AttestationRevocations>
+                <AttestationRevocationStatus AttestationRevocationToken="ST-A9144C67449944517D4481B366337C02488BA6CBD42F89E1C2C8225E507518EF">
                     <Status>VALID</Status>
-                </EAARevocationStatus>
-            </EAARevocations>
-        </EAA>
-    </EAAs>
+                </AttestationRevocationStatus>
+            </AttestationRevocations>
+        </Attestation>
+    </Attestations>
     <Signatures>
         <Signature Id="S-B2CFE51EC9DE416F729051941F47145C3F2FB5571CAEFE3E661BD810D03CDC5F">
             <SignatureFilename>sample-jwt.jwt</SignatureFilename>
@@ -202,7 +202,7 @@
                     <DataFound>true</DataFound>
                     <DataIntact>true</DataIntact>
                 </DigestMatcher>
-                <DigestMatcher type="EAA_KEY_BINDING">
+                <DigestMatcher type="KEY_BINDING_SIGNATURE">
                     <DigestMethod>SHA256</DigestMethod>
                     <DigestValue>Xo6MxTlhrhT9pWj6X2x7Mv24tte+eVgtEmkH4FXfzok=</DigestValue>
                     <DataFound>true</DataFound>
@@ -265,12 +265,12 @@
         </Signature>
     </Signatures>
     <EvidenceRecords/>
-    <UsedEAARevocationTokens>
-        <EAARevocationToken Id="ST-A9144C67449944517D4481B366337C02488BA6CBD42F89E1C2C8225E507518EF">
+    <UsedAttestationRevocationTokens>
+        <AttestationRevocationToken Id="ST-A9144C67449944517D4481B366337C02488BA6CBD42F89E1C2C8225E507518EF">
             <Origin>EXTERNAL</Origin>
             <Type>statuslist+cwt</Type>
-            <SourceAddress>https://dss.nowina.lu/pki-factory/eaa/status_list</SourceAddress>
-            <Subject match="true">https://dss.nowina.lu/pki-factory/eaa/status_list</Subject>
+            <SourceAddress>https://dss.nowina.lu/pki-factory/attestation/status_list</SourceAddress>
+            <Subject match="true">https://dss.nowina.lu/pki-factory/attestation/status_list</Subject>
             <IssuedAt>2026-04-23T09:29:00Z</IssuedAt>
             <ExpirationTime>2027-05-10T14:11:28Z</ExpirationTime>
             <BasicSignature>
@@ -309,8 +309,8 @@
                 <DigestMethod>SHA256</DigestMethod>
                 <DigestValue>qRRMZ0SZRFF9RIGzZjN8AkiLpsvUL4nhwsgiXlB1GO8=</DigestValue>
             </DigestAlgoAndValue>
-        </EAARevocationToken>
-    </UsedEAARevocationTokens>
+        </AttestationRevocationToken>
+    </UsedAttestationRevocationTokens>
     <UsedCertificates>
         <Certificate Id="C-A527118875D9015C0D199251B9449E0E12CC4BF5F53D6ABF002D6C19900AEB2C">
             <SubjectDistinguishedName Format="CANONICAL">c=lu,ou=pki-test,o=nowina solutions,cn=good-user</SubjectDistinguishedName>

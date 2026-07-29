@@ -248,10 +248,10 @@ public class ValidationPolicyWithCryptographicSuite implements ValidationPolicy 
     }
 
     @Override
-    public CryptographicSuite getEAACryptographicConstraint() {
-        CryptographicSuite cryptographicSuite = getCryptographicSuite(Context.EAA, null);
+    public CryptographicSuite getAttestationCryptographicConstraint() {
+        CryptographicSuite cryptographicSuite = getCryptographicSuite(Context.ATTESTATION, null);
         if (cryptographicSuite == null) {
-            cryptographicSuite = validationPolicy.getEAACryptographicConstraint();
+            cryptographicSuite = validationPolicy.getAttestationCryptographicConstraint();
         }
         return cryptographicSuite;
     }
@@ -1034,223 +1034,223 @@ public class ValidationPolicyWithCryptographicSuite implements ValidationPolicy 
     }
 
     @Override
-    public LevelRule getEAASignatureUnicityConstraint() {
-        return validationPolicy.getEAASignatureUnicityConstraint();
+    public LevelRule getAttestationSignatureUnicityConstraint() {
+        return validationPolicy.getAttestationSignatureUnicityConstraint();
     }
 
     @Override
-    public LevelRule getEAASignatureValidConstraint() {
-        return validationPolicy.getEAASignatureValidConstraint();
+    public LevelRule getAttestationSignatureValidConstraint() {
+        return validationPolicy.getAttestationSignatureValidConstraint();
     }
 
     @Override
-    public LevelRule getEAADisclosurePresentConstraint() {
-        return validationPolicy.getEAADisclosurePresentConstraint();
+    public LevelRule getAttestationDisclosurePresentConstraint() {
+        return validationPolicy.getAttestationDisclosurePresentConstraint();
     }
 
     @Override
-    public LevelRule getEAADisclosureFoundConstraint() {
-        return validationPolicy.getEAADisclosureFoundConstraint();
+    public LevelRule getAttestationDisclosureFoundConstraint() {
+        return validationPolicy.getAttestationDisclosureFoundConstraint();
     }
 
     @Override
-    public LevelRule getEAADisclosureIntactConstraint() {
-        return validationPolicy.getEAADisclosureIntactConstraint();
+    public LevelRule getAttestationDisclosureIntactConstraint() {
+        return validationPolicy.getAttestationDisclosureIntactConstraint();
     }
 
     @Override
-    public LevelRule getEAADisclosureListExhaustiveConstraint() {
-        return validationPolicy.getEAADisclosureListExhaustiveConstraint();
+    public LevelRule getAttestationDisclosureListExhaustiveConstraint() {
+        return validationPolicy.getAttestationDisclosureListExhaustiveConstraint();
     }
 
     @Override
-    public LevelRule getEAAKeyBindingSignaturePresentConstraint() {
-        return validationPolicy.getEAAKeyBindingSignaturePresentConstraint();
+    public LevelRule getAttestationKeyBindingSignaturePresentConstraint() {
+        return validationPolicy.getAttestationKeyBindingSignaturePresentConstraint();
     }
 
     @Override
-    public LevelRule getEAAKeyBindingSignatureValidConstraint() {
-        return validationPolicy.getEAAKeyBindingSignatureValidConstraint();
+    public LevelRule getAttestationKeyBindingSignatureValidConstraint() {
+        return validationPolicy.getAttestationKeyBindingSignatureValidConstraint();
     }
 
     @Override
-    public LevelRule getEAATypeIntegrityPresentConstraint() {
-        return validationPolicy.getEAATypeIntegrityPresentConstraint();
+    public LevelRule getAttestationTypeIntegrityPresentConstraint() {
+        return validationPolicy.getAttestationTypeIntegrityPresentConstraint();
     }
 
     @Override
-    public LevelRule getEAAIdentifierPresentConstraint() {
-        return validationPolicy.getEAAIdentifierPresentConstraint();
+    public LevelRule getAttestationIdentifierPresentConstraint() {
+        return validationPolicy.getAttestationIdentifierPresentConstraint();
     }
 
     @Override
-    public LevelRule getEAAIssuanceDatePresentConstraint() {
-        return validationPolicy.getEAAIssuanceDatePresentConstraint();
+    public LevelRule getAttestationIssuanceDatePresentConstraint() {
+        return validationPolicy.getAttestationIssuanceDatePresentConstraint();
     }
 
     @Override
-    public MultiValuesRule getEAACategoryConstraint() {
-        return validationPolicy.getEAACategoryConstraint();
+    public MultiValuesRule getCategoryConstraint() {
+        return validationPolicy.getCategoryConstraint();
     }
 
     @Override
-    public MultiValuesRule getEAASubjectConstraint() {
-        return validationPolicy.getEAASubjectConstraint();
+    public MultiValuesRule getSubjectConstraint() {
+        return validationPolicy.getSubjectConstraint();
     }
 
     @Override
-    public MultiValuesRule getEAASubjectPseudonymConstraint() {
-        return validationPolicy.getEAASubjectPseudonymConstraint();
+    public MultiValuesRule getAttestationPseudonymConstraint() {
+        return validationPolicy.getAttestationPseudonymConstraint();
     }
 
     @Override
-    public MultiValuesRule getEAAIssuingCountryConstraint() {
-        return validationPolicy.getEAAIssuingCountryConstraint();
+    public MultiValuesRule getIssuingCountryConstraint() {
+        return validationPolicy.getIssuingCountryConstraint();
     }
 
     @Override
-    public MultiValuesRule getEAAIssuingAuthorityConstraint() {
-        return validationPolicy.getEAAIssuingAuthorityConstraint();
+    public MultiValuesRule getIssuingAuthorityConstraint() {
+        return validationPolicy.getIssuingAuthorityConstraint();
     }
 
     @Override
-    public MultiValuesRule getEAAIssuingAuthorityRegistrationIdentifierConstraint() {
-        return validationPolicy.getEAAIssuingAuthorityRegistrationIdentifierConstraint();
+    public MultiValuesRule getIssuingAuthorityRegistrationIdentifierConstraint() {
+        return validationPolicy.getIssuingAuthorityRegistrationIdentifierConstraint();
     }
 
     @Override
-    public LevelRule getEAARevocationPresentConstraint() {
-        return validationPolicy.getEAARevocationPresentConstraint();
+    public LevelRule getRevocationPresentConstraint() {
+        return validationPolicy.getRevocationPresentConstraint();
     }
 
     @Override
-    public LevelRule getEAAShortLivedConstraint() {
-        return validationPolicy.getEAAShortLivedConstraint();
+    public LevelRule getShortLivedConstraint() {
+        return validationPolicy.getShortLivedConstraint();
     }
 
     @Override
-    public LevelRule getEAAOneTimeUseConstraint() {
-        return validationPolicy.getEAAOneTimeUseConstraint();
+    public LevelRule getOneTimeUseConstraint() {
+        return validationPolicy.getOneTimeUseConstraint();
     }
 
     @Override
-    public LevelRule getEAAUsePseudonymConstraint() {
-        return validationPolicy.getEAAUsePseudonymConstraint();
+    public LevelRule getUsePseudonymConstraint() {
+        return validationPolicy.getUsePseudonymConstraint();
     }
 
     @Override
-    public MultiValuesRule getEAAClaimsConstraint() {
-        return validationPolicy.getEAAClaimsConstraint();
+    public MultiValuesRule getClaimsConstraint() {
+        return validationPolicy.getClaimsConstraint();
     }
 
     @Override
-    public MultiValuesRule getEAASupportedClaimsConstraint() {
-        return validationPolicy.getEAASupportedClaimsConstraint();
+    public MultiValuesRule getSupportedClaimsConstraint() {
+        return validationPolicy.getSupportedClaimsConstraint();
     }
 
     @Override
-    public MultiValuesRule getEAASupportedNamespacesConstraint() {
-        return validationPolicy.getEAASupportedNamespacesConstraint();
+    public MultiValuesRule getSupportedNamespacesConstraint() {
+        return validationPolicy.getSupportedNamespacesConstraint();
     }
 
     @Override
-    public LevelRule getEAARevocationAvailableConstraint() {
-        return validationPolicy.getEAARevocationAvailableConstraint();
+    public LevelRule getRevocationAvailableConstraint() {
+        return validationPolicy.getRevocationAvailableConstraint();
     }
 
     @Override
-    public LevelRule getAcceptableEAARevocationFoundConstraint() {
-        return validationPolicy.getAcceptableEAARevocationFoundConstraint();
+    public LevelRule getAttestationAcceptableRevocationFoundConstraint() {
+        return validationPolicy.getAttestationAcceptableRevocationFoundConstraint();
     }
 
     @Override
-    public LevelRule getEAARevocationNotRevokedConstraint() {
-        return validationPolicy.getEAARevocationNotRevokedConstraint();
+    public LevelRule getAttestationRevocationNotRevokedConstraint() {
+        return validationPolicy.getAttestationRevocationNotRevokedConstraint();
     }
 
     @Override
-    public LevelRule getEAARevocationNotOnHoldConstraint() {
-        return validationPolicy.getEAARevocationNotOnHoldConstraint();
+    public LevelRule getAttestationRevocationNotOnHoldConstraint() {
+        return validationPolicy.getAttestationRevocationNotOnHoldConstraint();
     }
 
     @Override
-    public MultiValuesRule getEAATypeConstraint() {
-        return validationPolicy.getEAATypeConstraint();
+    public MultiValuesRule getAttestationTypeConstraint() {
+        return validationPolicy.getAttestationTypeConstraint();
     }
 
     @Override
-    public LevelRule getEAANotBeforePresentConstraint() {
-        return validationPolicy.getEAANotBeforePresentConstraint();
+    public LevelRule getAttestationNotBeforePresentConstraint() {
+        return validationPolicy.getAttestationNotBeforePresentConstraint();
     }
 
     @Override
-    public LevelRule getEAAExpirationPresentConstraint() {
-        return validationPolicy.getEAAExpirationPresentConstraint();
+    public LevelRule getAttestationExpirationPresentConstraint() {
+        return validationPolicy.getAttestationExpirationPresentConstraint();
     }
 
     @Override
-    public LevelRule getEAANotExpiredConstraint() {
-        return validationPolicy.getEAANotExpiredConstraint();
+    public LevelRule getNotExpiredConstraint() {
+        return validationPolicy.getNotExpiredConstraint();
     }
 
     @Override
-    public LevelRule getEAAAdministrativeIssuanceDatePresentConstraint() {
-        return validationPolicy.getEAAAdministrativeIssuanceDatePresentConstraint();
+    public LevelRule getAdministrativeIssuanceDatePresentConstraint() {
+        return validationPolicy.getAdministrativeIssuanceDatePresentConstraint();
     }
 
     @Override
-    public LevelRule getEAAAdministrativeExpirationDatePresentConstraint() {
-        return validationPolicy.getEAAAdministrativeExpirationDatePresentConstraint();
+    public LevelRule getAdministrativeExpirationDatePresentConstraint() {
+        return validationPolicy.getAdministrativeExpirationDatePresentConstraint();
     }
 
     @Override
-    public LevelRule getEAAAdministrativePeriodNotExpiredConstraint() {
-        return validationPolicy.getEAAAdministrativePeriodNotExpiredConstraint();
+    public LevelRule getAdministrativePeriodNotExpiredConstraint() {
+        return validationPolicy.getAdministrativePeriodNotExpiredConstraint();
     }
 
     @Override
-    public LevelRule getEAAETSI194721ConformanceConstraint() {
-        return validationPolicy.getEAAETSI194721ConformanceConstraint();
+    public LevelRule getAttestationETSI194721ConformanceConstraint() {
+        return validationPolicy.getAttestationETSI194721ConformanceConstraint();
     }
 
     @Override
-    public MultiValuesRule getEAARevocationTokenTypeConstraint() {
-        return validationPolicy.getEAARevocationTokenTypeConstraint();
+    public MultiValuesRule getAttestationRevocationTokenTypeConstraint() {
+        return validationPolicy.getAttestationRevocationTokenTypeConstraint();
     }
 
     @Override
-    public LevelRule getEAARevocationUnknownStatusConstraint() {
-        return validationPolicy.getEAARevocationUnknownStatusConstraint();
+    public LevelRule getAttestationRevocationUnknownStatusConstraint() {
+        return validationPolicy.getAttestationRevocationUnknownStatusConstraint();
     }
 
     @Override
-    public LevelRule getEAARevocationIssuanceTimeConstraint() {
-        return validationPolicy.getEAARevocationIssuanceTimeConstraint();
+    public LevelRule getAttestationRevocationIssuanceTimeConstraint() {
+        return validationPolicy.getAttestationRevocationIssuanceTimeConstraint();
     }
 
     @Override
-    public LevelRule getEAARevocationExpirationTimeConstraint() {
-        return validationPolicy.getEAARevocationExpirationTimeConstraint();
+    public LevelRule getAttestationRevocationExpirationTimeConstraint() {
+        return validationPolicy.getAttestationRevocationExpirationTimeConstraint();
     }
 
     @Override
-    public LevelRule getEAARevocationNotExpiredConstraint() {
-        return validationPolicy.getEAARevocationNotExpiredConstraint();
+    public LevelRule getAttestationRevocationNotExpiredConstraint() {
+        return validationPolicy.getAttestationRevocationNotExpiredConstraint();
     }
 
     @Override
-    public MultiValuesRule getAttestationRevocationsubjectConstraint() {
-        return validationPolicy.getAttestationRevocationsubjectConstraint();
+    public MultiValuesRule getAttestationRevocationSubjectConstraint() {
+        return validationPolicy.getAttestationRevocationSubjectConstraint();
     }
 
     @Override
-    public LevelRule getAttestationRevocationsubjectMatchConstraint() {
-        return validationPolicy.getAttestationRevocationsubjectMatchConstraint();
+    public LevelRule getAttestationRevocationSubjectMatchConstraint() {
+        return validationPolicy.getAttestationRevocationSubjectMatchConstraint();
     }
 
     @Override
-    public LevelRule getEAARevocationIssuerValidAtIssuanceTimeConstraint() {
-        return validationPolicy.getEAARevocationIssuerValidAtIssuanceTimeConstraint();
+    public LevelRule getAttestationRevocationIssuerValidAtIssuanceTimeConstraint() {
+        return validationPolicy.getAttestationRevocationIssuerValidAtIssuanceTimeConstraint();
     }
 
     @Override

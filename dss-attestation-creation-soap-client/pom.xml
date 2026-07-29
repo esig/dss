@@ -1,0 +1,28 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+        <artifactId>sd-dss</artifactId>
+        <version>6.6-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>dss-attestation-creation-soap-client</artifactId>
+    <name>DSS Attestation Creation SOAP client</name>
+    <description>SOAP client for performing of a signature of annotation (EAA, PID, etc.) and issuance of annotation presentations using the WebServices</description>
+
+    <properties>
+        <module-name>jpms_dss_ws_attestation_creation_remote_soap_client</module-name>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <artifactId>dss-attestation-creation-dto</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.xml.ws</groupId>
+            <artifactId>jakarta.xml.ws-api</artifactId>
+        </dependency>
+    </dependencies>
+</project>

@@ -1,0 +1,467 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<pki xmlns="http://pki-factory.nowina.lu/pki-factory" name="qeaa-and-pid-providers">
+
+    <!-- National RootCA certificate-->
+    <certificate>
+        <serialNumber>100000</serialNumber>
+        <subject>Test-RootCA</subject>
+        <organization>Test ZZ Trusted Entity 1</organization>
+        <country>ZZ</country>
+        <issuer serialNumber="100000">Test-RootCA</issuer>
+        <notBefore year="-10"/>
+        <notAfter year="10"/>
+        <keyAlgo encryption="RSA" length="4096"/>
+        <digestAlgo>SHA256</digestAlgo>
+        <keyUsages>
+            <keyUsage>crlSign</keyUsage>
+            <keyUsage>keyCertSign</keyUsage>
+        </keyUsages>
+        <ca/>
+    </certificate>
+
+    <!-- CA/QC -->
+    <certificate>
+        <serialNumber>100100</serialNumber>
+        <subject>Test-CAQC</subject>
+        <organization>Test ZZ Trusted Entity 1</organization>
+        <country>ZZ</country>
+        <issuer serialNumber="100000">Test-RootCA</issuer>
+        <ocspResponder serialNumber="100110">Test-CAQC</ocspResponder>
+        <notBefore year="-3"/>
+        <notAfter year="3"/>
+        <keyAlgo encryption="RSA" length="4096"/>
+        <digestAlgo>SHA256</digestAlgo>
+        <keyUsages>
+            <keyUsage>crlSign</keyUsage>
+            <keyUsage>keyCertSign</keyUsage>
+        </keyUsages>
+        <ca/>
+        <crl>Test-RootCA</crl>
+        <caIssuers>Test-RootCA</caIssuers>
+        <trustAnchor/>
+    </certificate>
+
+    <!-- CA/QC and QEAA OCSP Responder -->
+    <certificate>
+        <serialNumber>100110</serialNumber>
+        <subject>Test-CAQC-ocsp-responder</subject>
+        <organization>Test ZZ Trusted Entity 1</organization>
+        <country>ZZ</country>
+        <issuer serialNumber="100100">Test-RootCA</issuer>
+        <notBefore month="-6"/>
+        <notAfter month="6"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
+        <keyUsages>
+            <keyUsage>digitalSignature</keyUsage>
+        </keyUsages>
+        <extendedKeyUsages>
+            <extendedKeyUsage>1.3.6.1.5.5.7.3.9</extendedKeyUsage> <!-- ocsp-signing -->
+        </extendedKeyUsages>
+        <ocspNoCheck/>
+    </certificate>
+
+    <!-- QEAA + PID certificate-->
+    <certificate>
+        <serialNumber>100101</serialNumber>
+        <subject>Test-QEAA-PID</subject>
+        <organization>Test ZZ Trusted Entity 1</organization>
+        <country>ZZ</country>
+        <issuer serialNumber="100100">Test-RootCA</issuer>
+        <notBefore year="-3"/>
+        <notAfter year="3"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
+        <keyUsages>
+            <keyUsage>digitalSignature</keyUsage>
+            <keyUsage>nonRepudiation</keyUsage>
+        </keyUsages>
+        <qcStatementIds>
+            <qcStatement>0.4.0.1862.1.1</qcStatement>
+            <qcStatement>0.4.0.1862.1.4</qcStatement>
+        </qcStatementIds>
+        <qcTypes>
+            <qcType>0.4.0.194126.1.1</qcType>
+        </qcTypes>
+        <crl>Test-CAQC</crl>
+        <ocsp>Test-CAQC</ocsp>
+        <caIssuers>Test-CAQC</caIssuers>
+        <trustAnchor/>
+    </certificate>
+
+    <!-- QEAA certificate-->
+    <certificate>
+        <serialNumber>100102</serialNumber>
+        <subject>Test-QEAA</subject>
+        <organization>Test ZZ Trusted Entity 1</organization>
+        <country>ZZ</country>
+        <issuer serialNumber="100100">Test-RootCA</issuer>
+        <notBefore year="-3"/>
+        <notAfter year="3"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
+        <keyUsages>
+            <keyUsage>digitalSignature</keyUsage>
+            <keyUsage>nonRepudiation</keyUsage>
+        </keyUsages>
+        <qcStatementIds>
+            <qcStatement>0.4.0.1862.1.1</qcStatement>
+            <qcStatement>0.4.0.1862.1.4</qcStatement>
+        </qcStatementIds>
+        <qcTypes>
+            <qcType>0.4.0.194126.1.1</qcType>
+        </qcTypes>
+        <crl>Test-CAQC</crl>
+        <ocsp>Test-CAQC</ocsp>
+        <caIssuers>Test-CAQC</caIssuers>
+        <trustAnchor/>
+    </certificate>
+
+    <!-- attestation + PID certificate-->
+    <certificate>
+        <serialNumber>100103</serialNumber>
+        <subject>Test-EAA-PID</subject>
+        <organization>Test ZZ Trusted Entity 1</organization>
+        <country>ZZ</country>
+        <issuer serialNumber="100100">Test-RootCA</issuer>
+        <notBefore year="-3"/>
+        <notAfter year="3"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
+        <keyUsages>
+            <keyUsage>digitalSignature</keyUsage>
+            <keyUsage>nonRepudiation</keyUsage>
+        </keyUsages>
+        <qcTypes>
+            <qcType>0.4.0.194126.1.1</qcType>
+        </qcTypes>
+        <crl>Test-CAQC</crl>
+        <ocsp>Test-CAQC</ocsp>
+        <caIssuers>Test-CAQC</caIssuers>
+        <trustAnchor/>
+    </certificate>
+
+    <!-- QC PID certificate-->
+    <certificate>
+        <serialNumber>100104</serialNumber>
+        <subject>Test-QC-PID</subject>
+        <organization>Test ZZ Trusted Entity 1</organization>
+        <country>ZZ</country>
+        <issuer serialNumber="100100">Test-RootCA</issuer>
+        <notBefore year="-3"/>
+        <notAfter year="3"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
+        <keyUsages>
+            <keyUsage>digitalSignature</keyUsage>
+            <keyUsage>nonRepudiation</keyUsage>
+        </keyUsages>
+        <qcStatementIds>
+            <qcStatement>0.4.0.1862.1.1</qcStatement>
+            <qcStatement>0.4.0.1862.1.4</qcStatement>
+        </qcStatementIds>
+        <qcTypes>
+            <qcType>0.4.0.194126.1.1</qcType>
+        </qcTypes>
+        <crl>Test-CAQC</crl>
+        <ocsp>Test-CAQC</ocsp>
+        <caIssuers>Test-CAQC</caIssuers>
+        <trustAnchor/>
+    </certificate>
+
+    <!-- QC Certificate -->
+    <certificate>
+        <serialNumber>100105</serialNumber>
+        <subject>Test-QC-CERT</subject>
+        <organization>Test ZZ Trusted Entity 1</organization>
+        <country>ZZ</country>
+        <issuer serialNumber="100100">Test-RootCA</issuer>
+        <notBefore year="-3"/>
+        <notAfter year="3"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
+        <keyUsages>
+            <keyUsage>digitalSignature</keyUsage>
+            <keyUsage>nonRepudiation</keyUsage>
+        </keyUsages>
+        <qcStatementIds>
+            <qcStatement>0.4.0.1862.1.1</qcStatement>
+            <qcStatement>0.4.0.1862.1.4</qcStatement>
+        </qcStatementIds>
+        <qcTypes>
+            <qcType>0.4.0.194126.1.1</qcType>
+        </qcTypes>
+        <crl>Test-CAQC</crl>
+        <ocsp>Test-CAQC</ocsp>
+        <caIssuers>Test-CAQC</caIssuers>
+        <trustAnchor/>
+    </certificate>
+
+    <!-- PubEAA certificate-->
+    <certificate>
+        <serialNumber>100106</serialNumber>
+        <subject>Test-QC-PubEAA</subject>
+        <organization>Test ZZ Trusted Entity 1</organization>
+        <country>ZZ</country>
+        <issuer serialNumber="100100">Test-RootCA</issuer>
+        <notBefore year="-3"/>
+        <notAfter year="3"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
+        <keyUsages>
+            <keyUsage>digitalSignature</keyUsage>
+            <keyUsage>nonRepudiation</keyUsage>
+        </keyUsages>
+        <qcStatementIds>
+            <qcStatement>0.4.0.1862.1.1</qcStatement>
+            <qcStatement>0.4.0.1862.1.4</qcStatement>
+        </qcStatementIds>
+        <qcTypes>
+            <qcType>0.4.0.1862.1.6.1</qcType>
+        </qcTypes>
+        <qcPSB>
+            <countryName>EU</countryName>
+            <authSourceIdentification>NTP-12345</authSourceIdentification>
+            <legislationIdentification>eIDAS</legislationIdentification>
+        </qcPSB>
+        <crl>Test-CAQC</crl>
+        <ocsp>Test-CAQC</ocsp>
+        <caIssuers>Test-CAQC</caIssuers>
+        <trustAnchor/>
+    </certificate>
+
+    <!-- PubEAA + PID certificate-->
+    <certificate>
+        <serialNumber>100107</serialNumber>
+        <subject>Test-QC-PubEAA-PID</subject>
+        <organization>Test ZZ Trusted Entity 1</organization>
+        <country>ZZ</country>
+        <issuer serialNumber="100100">Test-RootCA</issuer>
+        <notBefore year="-3"/>
+        <notAfter year="3"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
+        <keyUsages>
+            <keyUsage>digitalSignature</keyUsage>
+            <keyUsage>nonRepudiation</keyUsage>
+        </keyUsages>
+        <qcStatementIds>
+            <qcStatement>0.4.0.1862.1.1</qcStatement>
+            <qcStatement>0.4.0.1862.1.4</qcStatement>
+        </qcStatementIds>
+        <qcTypes>
+            <qcType>0.4.0.1862.1.6.1</qcType>
+        </qcTypes>
+        <qcPSB>
+            <countryName>EU</countryName>
+            <authSourceIdentification>NTP-12345</authSourceIdentification>
+            <legislationIdentification>eIDAS</legislationIdentification>
+        </qcPSB>
+        <crl>Test-CAQC</crl>
+        <ocsp>Test-CAQC</ocsp>
+        <caIssuers>Test-CAQC</caIssuers>
+        <trustAnchor/>
+    </certificate>
+
+    <!-- Non-QC Certificate -->
+    <certificate>
+        <serialNumber>100108</serialNumber>
+        <subject>Test-Non-Qualified-CERT</subject>
+        <organization>Test ZZ Trusted Entity 1</organization>
+        <country>ZZ</country>
+        <issuer serialNumber="100100">Test-RootCA</issuer>
+        <notBefore year="-3"/>
+        <notAfter year="3"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
+        <keyUsages>
+            <keyUsage>digitalSignature</keyUsage>
+            <keyUsage>nonRepudiation</keyUsage>
+        </keyUsages>
+        <qcTypes>
+            <qcType>0.4.0.194126.1.1</qcType>
+        </qcTypes>
+        <crl>Test-CAQC</crl>
+        <ocsp>Test-CAQC</ocsp>
+        <caIssuers>Test-CAQC</caIssuers>
+    </certificate>
+
+    <!-- CA PKC -->
+    <certificate>
+        <serialNumber>100200</serialNumber>
+        <subject>Test-CA-PKC</subject>
+        <organization>Test ZZ Trusted Entity 1</organization>
+        <country>ZZ</country>
+        <issuer serialNumber="100000">Test-RootCA</issuer>
+        <ocspResponder serialNumber="100110">Test-CAQC</ocspResponder>
+        <notBefore year="-3"/>
+        <notAfter year="3"/>
+        <keyAlgo encryption="RSA" length="4096"/>
+        <digestAlgo>SHA256</digestAlgo>
+        <keyUsages>
+            <keyUsage>crlSign</keyUsage>
+            <keyUsage>keyCertSign</keyUsage>
+        </keyUsages>
+        <ca/>
+        <crl>Test-RootCA</crl>
+        <caIssuers>Test-RootCA</caIssuers>
+        <trustAnchor/>
+    </certificate>
+
+    <!-- CA OCSP Responder -->
+    <certificate>
+        <serialNumber>100210</serialNumber>
+        <subject>Test-PKC-ocsp-responder</subject>
+        <organization>Test ZZ Trusted Entity 1</organization>
+        <country>ZZ</country>
+        <issuer serialNumber="100200">Test-RootCA</issuer>
+        <notBefore month="-6"/>
+        <notAfter month="6"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
+        <keyUsages>
+            <keyUsage>digitalSignature</keyUsage>
+        </keyUsages>
+        <extendedKeyUsages>
+            <extendedKeyUsage>1.3.6.1.5.5.7.3.9</extendedKeyUsage> <!-- ocsp-signing -->
+        </extendedKeyUsages>
+        <ocspNoCheck/>
+    </certificate>
+
+    <!-- attestation + PID certificate-->
+    <certificate>
+        <serialNumber>100201</serialNumber>
+        <subject>Test-PKC-EAA-PID</subject>
+        <organization>Test ZZ Trusted Entity 1</organization>
+        <country>ZZ</country>
+        <issuer serialNumber="100200">Test-RootCA</issuer>
+        <notBefore year="-3"/>
+        <notAfter year="3"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
+        <keyUsages>
+            <keyUsage>digitalSignature</keyUsage>
+            <keyUsage>nonRepudiation</keyUsage>
+        </keyUsages>
+        <crl>Test-CA-PKC</crl>
+        <ocsp>Test-CA-PKC</ocsp>
+        <caIssuers>Test-CA-PKC</caIssuers>
+        <trustAnchor/>
+    </certificate>
+
+    <!-- PKC EAA-->
+    <certificate>
+        <serialNumber>100202</serialNumber>
+        <subject>Test-PKC-EAA</subject>
+        <organization>Test ZZ Trusted Entity 1</organization>
+        <country>ZZ</country>
+        <issuer serialNumber="100200">Test-RootCA</issuer>
+        <notBefore year="-3"/>
+        <notAfter year="3"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
+        <keyUsages>
+            <keyUsage>digitalSignature</keyUsage>
+            <keyUsage>nonRepudiation</keyUsage>
+        </keyUsages>
+        <crl>Test-CA-PKC</crl>
+        <ocsp>Test-CA-PKC</ocsp>
+        <caIssuers>Test-CA-PKC</caIssuers>
+        <trustAnchor/>
+    </certificate>
+
+    <!-- PKC PID-->
+    <certificate>
+        <serialNumber>100203</serialNumber>
+        <subject>Test-PKC-PID</subject>
+        <organization>Test ZZ Trusted Entity 1</organization>
+        <country>ZZ</country>
+        <issuer serialNumber="100200">Test-RootCA</issuer>
+        <notBefore year="-3"/>
+        <notAfter year="3"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
+        <keyUsages>
+            <keyUsage>digitalSignature</keyUsage>
+            <keyUsage>nonRepudiation</keyUsage>
+        </keyUsages>
+        <crl>Test-CA-PKC</crl>
+        <ocsp>Test-CA-PKC</ocsp>
+        <caIssuers>Test-CA-PKC</caIssuers>
+        <trustAnchor/>
+    </certificate>
+
+    <!-- PKC CERT-->
+    <certificate>
+        <serialNumber>100204</serialNumber>
+        <subject>Test-PKC-CERT</subject>
+        <organization>Test ZZ Trusted Entity 1</organization>
+        <country>ZZ</country>
+        <issuer serialNumber="100200">Test-RootCA</issuer>
+        <notBefore year="-3"/>
+        <notAfter year="3"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
+        <keyUsages>
+            <keyUsage>digitalSignature</keyUsage>
+            <keyUsage>nonRepudiation</keyUsage>
+        </keyUsages>
+        <crl>Test-CA-PKC</crl>
+        <ocsp>Test-CA-PKC</ocsp>
+        <caIssuers>Test-CA-PKC</caIssuers>
+        <trustAnchor/>
+    </certificate>
+
+    <!-- PKC Pub-EAA -->
+    <certificate>
+        <serialNumber>100205</serialNumber>
+        <subject>Test-PKC-PubEAA</subject>
+        <organization>Test ZZ Trusted Entity 1</organization>
+        <country>ZZ</country>
+        <issuer serialNumber="100200">Test-RootCA</issuer>
+        <notBefore year="-3"/>
+        <notAfter year="3"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
+        <keyUsages>
+            <keyUsage>digitalSignature</keyUsage>
+            <keyUsage>nonRepudiation</keyUsage>
+        </keyUsages>
+        <qcPSB>
+            <countryName>EU</countryName>
+            <authSourceIdentification>NTP-12345</authSourceIdentification>
+            <legislationIdentification>eIDAS</legislationIdentification>
+        </qcPSB>
+        <crl>Test-CA-PKC</crl>
+        <ocsp>Test-CA-PKC</ocsp>
+        <caIssuers>Test-CA-PKC</caIssuers>
+        <trustAnchor/>
+    </certificate>
+
+    <!-- PKC Pub-EAA + PID -->
+    <certificate>
+        <serialNumber>100206</serialNumber>
+        <subject>Test-PKC-PubEAA-PID</subject>
+        <organization>Test ZZ Trusted Entity 1</organization>
+        <country>ZZ</country>
+        <issuer serialNumber="100200">Test-RootCA</issuer>
+        <notBefore year="-3"/>
+        <notAfter year="3"/>
+        <keyAlgo encryption="RSA" length="2048"/>
+        <digestAlgo>SHA256</digestAlgo>
+        <keyUsages>
+            <keyUsage>digitalSignature</keyUsage>
+            <keyUsage>nonRepudiation</keyUsage>
+        </keyUsages>
+        <qcPSB>
+            <countryName>EU</countryName>
+            <authSourceIdentification>NTP-12345</authSourceIdentification>
+            <legislationIdentification>eIDAS</legislationIdentification>
+        </qcPSB>
+        <crl>Test-CA-PKC</crl>
+        <ocsp>Test-CA-PKC</ocsp>
+        <caIssuers>Test-CA-PKC</caIssuers>
+        <trustAnchor/>
+    </certificate>
+
+</pki>

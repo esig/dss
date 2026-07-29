@@ -30,7 +30,7 @@ import eu.europa.esig.dss.validation.process.qualification.EIDASUtils;
 import java.util.List;
 
 /**
- * Extracts QCSD status from a Trusted Service
+ * Extracts QSCD status from a Trusted Service
  *
  */
 class QSCDByTL implements QSCDStrategy {

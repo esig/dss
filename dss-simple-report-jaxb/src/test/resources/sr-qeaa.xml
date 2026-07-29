@@ -11,11 +11,11 @@
     <DocumentName>simple-sd-jwt.jwt</DocumentName>
     <ValidSignaturesCount>1</ValidSignaturesCount>
     <SignaturesCount>1</SignaturesCount>
-    <EAA Id="EAA-76E2213B89C691030DDA6D366ED62DA76D62FC5DA891BA93C6D60897A44D260F">
+    <Attestation Id="EAA-76E2213B89C691030DDA6D366ED62DA76D62FC5DA891BA93C6D60897A44D260F">
         <Filename>simple-sd-jwt.jwt</Filename>
         <Indication>PASSED</Indication>
-        <EAALevel description="Qualified Electronic Attestation of Attributes">QEAA</EAALevel>
-        <EAASignature SignatureFormat="JAdES-BASELINE-B" Id="S-9021C6A1186A0999165C1AFFA109EB76C2B9240609CFF104B73A4999FB1B0650">
+        <AttestationLevel description="Qualified Electronic Attestation of Attributes">QEAA</AttestationLevel>
+        <AttestationSignature SignatureFormat="JAdES-BASELINE-B" Id="S-9021C6A1186A0999165C1AFFA109EB76C2B9240609CFF104B73A4999FB1B0650">
             <CertificateChain>
                 <Certificate Id="C-3ED3C3B0ABBDF15247DB7AF2152E436E8E4F96D40CBD6A9CAC77CF79A7CA0A98">
                     <QualifiedName>Test-QEAA-CERT</QualifiedName>
@@ -54,8 +54,8 @@
             <SignedBy>Test-QEAA-CERT</SignedBy>
             <SignatureLevel description="Qualified Electronic Signature">QESig</SignatureLevel>
             <SignatureScope Id="D-C227DD915CBE4553F6E2318F2B62E34E02896BA74DC8D3733F8CBEAA7ADB9A19" scope="FULL">Full document</SignatureScope>
-        </EAASignature>
-        <EAAPayload>
+        </AttestationSignature>
+        <AttestationPayload>
             <Issuer name="iss">https://issuer.example.com</Issuer>
             <Subject name="sub">user_42</Subject>
             <IssuedAt name="iat">2023-05-02T04:00:00Z</IssuedAt>
@@ -77,6 +77,6 @@
             <IssuingAuthority name="issuing_authority">Public body</IssuingAuthority>
             <OtherClaim name="nationalities">US</OtherClaim>
             <OtherClaim name="cnf">{"jwk": {"kty": "EC", "crv": "P-256", "x": "TCAER19Zvu3OHF4j4W4vfSVoHIP1ILilDls7vCeGemc", "y": "ZxjiWWbZMQGHVWKVQ4hbSIirsVfuecCE6t4jT9F2HZQ"}}</OtherClaim>
-        </EAAPayload>
-    </EAA>
+        </AttestationPayload>
+    </Attestation>
 </SimpleReport>

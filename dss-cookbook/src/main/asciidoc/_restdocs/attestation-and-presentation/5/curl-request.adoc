@@ -1,0 +1,127 @@
+[source,bash]
+----
+$ curl 'http://localhost:8080/services/rest/attestation-creation/createKeyBindingSignature' -i -X POST \
+    -H 'Accept: application/json, application/javascript, text/javascript, text/json' \
+    -H 'Content-Type: application/json' \
+    -d '{
+  "parameters" : {
+    "signingCertificate" : {
+      "encodedCertificate" : "MIIDkTCCAfmgAwIBAgIBDjANBgkqhkiG9w0BAQsFADBNMRAwDgYDVQQDDAdnb29kLWNhMRkwFwYDVQQKDBBOb3dpbmEgU29sdXRpb25zMREwDwYDVQQLDAhQS0ktVEVTVDELMAkGA1UEBhMCTFUwIBcNMjQwNjE4MDgyMDI2WhgPMjA1NjA2MTgwODIwMjZaMFUxGDAWBgNVBAMMD2dvb2QtZWNkc2EtdXNlcjEZMBcGA1UECgwQTm93aW5hIFNvbHV0aW9uczERMA8GA1UECwwIUEtJLVRFU1QxCzAJBgNVBAYTAkxVMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEEv1XiCEdzBg9SOzF90jr8ZCbRSymlNapvTUidkL/6xPzuJBAzGvgYJKmwvLz8KLFsJzSJrUgFe5tfkVeykqg46OBvDCBuTAOBgNVHQ8BAf8EBAMCBkAwgYcGCCsGAQUFBwEBBHsweTA5BggrBgEFBQcwAYYtaHR0cDovL2Rzcy5ub3dpbmEubHUvcGtpLWZhY3Rvcnkvb2NzcC9nb29kLWNhMDwGCCsGAQUFBzAChjBodHRwOi8vZHNzLm5vd2luYS5sdS9wa2ktZmFjdG9yeS9jcnQvZ29vZC1jYS5jcnQwHQYDVR0OBBYEFFPM6T9egCxDzj0X/RShEa8WLRMaMA0GCSqGSIb3DQEBCwUAA4IBgQBTuvDRgsEWIc6M7p3K9EU9kBxQxs0eaZZe5pn6R3XjNX+aJmJ+kutIi4eknMeDFKC8vo/8uQWK0EHsT3d/DmfSBch5GWQTKUOLgjRAZihDm1eyIFKeLkUw/NvPQHGaa2034pFURHzvcJ9UK5LfLWW0wjnT06R71c/Mv0EHRABE157RwI+5ON7PWrUcVIG0UV7dm5GEOLqgJ57elg0rJJX2MopI1hA8aUjCrQw8vV3VtmpBugaGNLSXLiwVnVbR7OUTyLvtzU+eipWtsG/9e9PFBFw7exDuvsxpfRQBcgKcT3dQz2BvHoH2oCPS1TyQindZBRXlQYTOQ41ya/UmNRmdXM39udgiiLcdX76w7e3eOq+bAkFf/Q1UDqy1yqL3fKuvADhFtKOw1AZw/LBbICnI9dK6VZCDM7cMFDGYl4bC0tS+rHC0YeIORTyVCdrd6jEDxHTmgfs+JvItyzA6jEr1/c/ZqqstGIrkP8I6yXdfm3k74SW0f7YjeDkf+55uWdc="
+    },
+    "certificateChain" : [ ],
+    "detachedContents" : null,
+    "asicContainerType" : null,
+    "signatureLevel" : null,
+    "signaturePackaging" : null,
+    "embedXML" : false,
+    "manifestSignature" : false,
+    "jwsSerializationType" : null,
+    "sigDMechanism" : null,
+    "base64UrlEncodedPayload" : null,
+    "base64UrlEncodedEtsiUComponents" : null,
+    "signatureType" : null,
+    "keyIdentifier" : null,
+    "x509Url" : null,
+    "coseStructureType" : null,
+    "tagged" : null,
+    "externallySuppliedData" : null,
+    "digestAlgorithm" : "SHA256",
+    "encryptionAlgorithm" : null,
+    "referenceDigestAlgorithm" : null,
+    "contentTimestamps" : null,
+    "contentTimestampParameters" : {
+      "digestAlgorithm" : "SHA512",
+      "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#",
+      "timestampContainerForm" : null
+    },
+    "signatureTimestampParameters" : {
+      "digestAlgorithm" : "SHA512",
+      "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#",
+      "timestampContainerForm" : null
+    },
+    "archiveTimestampParameters" : {
+      "digestAlgorithm" : "SHA512",
+      "canonicalizationMethod" : "http://www.w3.org/2001/10/xml-exc-c14n#",
+      "timestampContainerForm" : null
+    },
+    "generateTBSWithoutCertificate" : false,
+    "imageParameters" : null,
+    "signatureIdToCounterSign" : null,
+    "blevelParams" : {
+      "trustAnchorBPPolicy" : true,
+      "signingDate" : 1785228096988,
+      "claimedSignerRoles" : null,
+      "signedAssertions" : null,
+      "policyId" : null,
+      "policyQualifier" : null,
+      "policyDescription" : null,
+      "policyDigestAlgorithm" : null,
+      "policyDigestValue" : null,
+      "policySpuri" : null,
+      "commitmentTypeIndications" : null,
+      "signerLocationPostalAddress" : [ ],
+      "signerLocationPostalCode" : null,
+      "signerLocationLocality" : null,
+      "signerLocationStateOrProvince" : null,
+      "signerLocationCountry" : null,
+      "signerLocationStreet" : null
+    }
+  },
+  "signatureValue" : {
+    "algorithm" : "ECDSA_SHA256",
+    "value" : "MEYCIQDmN8bn6UMJsrXU+TYrywrqbAc41xgdErs0MxOjUnUWXAIhAJM4X44odkBqUSrY5l1RXVrTeXV7HgPA/cwt1nVb6CS5"
+  },
+  "attestation" : {
+    "bytes" : "ZXlKaGJHY2lPaUpTVXpJMU5pSXNJbXRwWkNJNklrMUVOSGRPUzFGNVRVUkJlRWQ2UVZwQ1owNVdRa0ZOVFVWc1NuWmlNMUpVV2xkNGJWVXliRzVpYlZaclVtMUdjbHBVUlZKTlFUaEhRVEZWUlVObmQwbFNSazVVVEZoU2JHTXpVVU5DYVRkWFJrNWxOMVozUFQwaUxDSjROWFFqVXpJMU5pSTZJa0YyVUhKNVowWnFTakJLVkhaSlEyUktNRzFPTVVKMWQwMVhNUzFoZDFwd1dVSkdaRFJXVmxsdVduY2lMQ0o0TldNaU9sc2lUVWxKUXpacVEwTkJaRXRuUVhkSlFrRm5TVWRNZEZsVk1UZDBXRTFCTUVkRFUzRkhVMGxpTTBSUlJVSkRkMVZCVFVSQmVFZDZRVnBDWjA1V1FrRk5UVVZzU25aaU0xSlVXbGQ0YlZVeWJHNWliVlpyVW0xR2NscFVSVkpOUVRoSFFURlZSVU5uZDBsU1JrNVVURmhTYkdNelVYZElhR05PVFZSamQwNXFRVFJOVkVWNVRtcEJlRmRvWTA1T1JHTjNUbnBCTUUxRVl6Rk9la2t3VjJwQmIwMVNUWGRGVVZsRVZsRlJSRVJCY0ZSaFYyUjFXbGhLUjFsWGRHeE5Va1YzUkhkWlJGWlJVVXRFUVdoRlZURk5kR1JIVm5wa1JFTkRRVk5KZDBSUldVcExiMXBKYUhaalRrRlJSVUpDVVVGRVoyZEZVRUZFUTBOQlVXOURaMmRGUWtGTlNUTnJXbWgwYm1sd2JpdHBhVnBJV2psaGVEaEdiR1pGTlU5M0wyTkdkMEpVWmtGRllqTlNNVnBSVlhBMkwwSlJia0owTjA5dk1FcFhRblJqT1hGcmRqZEtWVVJrWTBKS1dGQldOVkZYVXpWQmVVMVFTSEJ4VVRjMVNHbDBhbk54TDBaNmRUaGxTSFJyUzNCR2FYcGplRWRoT1VKYVpHdFJhbWcwY2xOeWRFOHhTMnB6TUZKa05VUlJkRmRUWjJ0bFZrTkRUakE1YTA0d1duTmFNRVZPV1N0SmNEaFJlRk50ZVhwMGMxTjBhMWxZWkZWTWNYQjNlalJLUlZoWE9YWjZOalJsVkdKa1pUUjJVVW8yY0dwSVIyRnlTbVl4WjFGT1JXTXlXSHBvYlVrdmNISllUSGx6VjA1eFF6ZHNXbWMzVUZWYVZWUnlaR1ZuUVVKVVZYcFpRMUpLTVd0WFFsSlFiVFJ4YnpCTVRqUXdOV001TkZGUlpEUTFZVFZyVkdkdmQwaDZSV2RNYmtGUlNUSTRlREJOTTBFMU9WUkxReXRwWlU1ak5sWkdNVkJ6VkV4d1ZYYzNVRTVKTWxaemRGZzFha0YxWVhORFFYZEZRVUZoVFZOTlFrRjNSR2RaUkZaU01GQkJVVWd2UWtGUlJFRm5SVWROUVRCSFExTnhSMU5KWWpORVVVVkNRM2RWUVVFMFNVSkJVVU5MTmt4SFFUQXhWRklyY20xVk9IQTJlV2hCYVRSUGEwUk9NbUl4WkdKSlREaHNPR2xEVFZsdmNFeERlSGc0ZUhGeE0zVmlXa05QZUhGb01WZ3lhalp3WjFkNllYSmlNR0l2VFZWcGVEQXdTVzlWZGs1aVJrOTRRVmMzVUVKYVNVdEVURzV0Tmt4elkydFNlSE14VlRNeWMwTTVaREZNVDBobE0xZExRazVDTmtkYVFVeFVNV1YzYW1nM2FGTmlWMnBtZEd4dFkyOTJjU3MyWlZaSFFUVmpkbVl5ZFM4eUsxUnJTMnQ1U0ZZdlRsSXpPVFJ1V0hKa2MyUndkbmxuZDNsd1JYUllhbVYwZWtRM1ZWUTVNMDUxZHpONFkxWTRWa2xtZEVsMlNHWTVUR3BWTjJnclZXcEhiVXRZUnpsak1UVmxXWEl6VTNwVmJYWTJhM2xQU1RCQ2RuY3hORkJYZEhOWFIyd3dVV1JQVTFKMlNVSkNjbEEwWVdSRGJrZFVaMnBuYW1zNVRGUmpUemhDT0VaTGNuSXJPR3hJUjNWak1HSndOR3hKVlZSdmFWVnJSMGxNV0hOcFJXVkZaemxYUVhGdEsxaHhUeUpkTENKMGVYQWlPaUprWXl0elpDMXFkM1FpTENKcFlYUWlPakUzT0RVeU1qZ3dPVFo5LmV5SmZjMlJmWVd4bklqb2ljMmhoTFRJMU5pSXNJbWx6Y3lJNklrVkJRU0J3Y205MmFXUmxjaUlzSW01aVppSTZNVGM0TlRJeU9EQTVOaXdpWlhod0lqb3hOemt6TVRnd05EazJMQ0pqWVhSbFoyOXllU0k2SW5WeWJqcGxkSE5wT21WemFUcGhkSFJsYzNSaGRHbHZianBsZFRweGRXRnNhV1pwWldRaUxDSnpkR0YwZFhNaU9uc2ljM1JoZEhWelgyeHBjM1FpT25zaWFXUjRJam94TENKMWNta2lPaUpvZEhSd2N6b3ZMM0JyYVM1dWIzZHBibUV1YkhVdlpXRmhMM04wWVhSMWMxOXNhWE4wSW4xOUxDSmpibVlpT25zaWFuZHJJanA3SW10MGVTSTZJa1ZESWl3aVkzSjJJam9pVUMweU5UWWlMQ0o0SWpvaVJYWXhXR2xEUldSNlFtYzVVMDk2Umprd2FuSTRXa05pVWxONWJXeE9ZWEIyVkZWcFpHdE1Yelo0VFNJc0lua2lPaUk0TjJsUlVVMTRjalJIUTFOd2MweDVPRjlEYVhoaVEyTXdhV0V4U1VKWWRXSllOVVpZYzNCTGIwOU5JbjE5TENKMlkzUWlPaUoxY200NlpYVmthVHBoZEhSbGMzUmhkR2x2YmpveElpd2lkbU4wSTJsdWRHVm5jbWwwZVNJNkluTm9ZVEkxTmkxTVNHVkJWeTl3YTNVdlF6UTVZVWxhTnpkemNYbFlhVkZ0Y3pncmNuTjRVR3htUm1WM05rVTViWGRaUFNJc0luTjFZaUk2SW1kdmIyUXRaV05rYzJFdGRYTmxjaUlzSW1semMzVnBibWRmWVhWMGFHOXlhWFI1SWpvaVZFVlRWQ0JCZFhSb2IzSnBkSGtpTENKcGMzTjFhVzVuWDJOdmRXNTBjbmtpT2lKTVZTSXNJbWx6YzE5eVpXZGZhV1FpT2lKV1FWUk1WUzB4TWpNME5UWWlMQ0pmYzJRaU9sc2lWM05UWVVGQmFrRTBibHBQZFRCc1RrSXdTSE5vU0hKbFVWVkJURkkzVjB4UWVESXdVVEp3TmpsVll5SXNJalJCZFdsU1MxUTVVMEozUjBOdkxYcFZXVGh2VDNVeVRXSkhOQzExT0U5cVYwVjJkRTlaZFdkUFFXOGlMQ0pYT1hJeWRqTnVaMDR0WjBVM01rbEVhRVprTmpObFkyeHNPRzlrY0ZVM1ZsbDVOMXBXYVZGVE5sWTRJbDE5LnRZOVB1QzZtbTc2cUhQNGJ2QzJweDdoVGJEZFpMRXMxUktGcGZiYUh6Z3JvOUxORkJsRENYZkgyWHFqN1duajdqd1VnY004aDNudGh5T2VlNWdfWVFuN0VneTdHcnYxdUMzMXMzVThGYVJEbm52a2J4RDB6UnRjQ1c3TGVaZ2oxZ2llbVI1bzN3LWcwQXVJUGQ4Nkk5QTAyazlqNmRTMFZJR0Zic1BaX3ZYNGI3Y2d0bmplUHFVQUNFa1RCNHVmNjRTa3h3OEJtRHJvX1AxZkRSMEhFQ2w0S05pdExCazZPR1VNSXZxdmhaZWlpbmZpV3FBSk5yaXRiY0JIZXNnOUtBM2NGcGwwRlh6MDB4dlVSaGc0ZHhmb21HcmUzX2xCNmxWSXNDcG10QkNTc0tla3FXMEZ2aldCblNjS004M0RUc0o4bHFMTHdibVQ5M2hLQVcyWmpuZw==",
+    "digestAlgorithm" : null,
+    "name" : "document-signed-jades-baseline-b.json"
+  },
+  "disclosures" : [ {
+    "namespace" : null,
+    "digestId" : null,
+    "value" : "WyJYX192ZGNUMlBzTlc3UHVPc25GMEpRIiwiZmFtaWx5X25hbWUiLCJEb2UiXQ"
+  }, {
+    "namespace" : null,
+    "digestId" : null,
+    "value" : "WyJpODA2d3BMYjFpMDNFMFhSRzZBQ0dBIiwiZ2l2ZW5fbmFtZSIsIkpvaG4iXQ"
+  }, {
+    "namespace" : null,
+    "digestId" : null,
+    "value" : "WyJIY3piRzRLdFhOMXFkMVhobmNUOE5RIiwibmFtZSIsIkJlbGxhIl0"
+  }, {
+    "namespace" : null,
+    "digestId" : null,
+    "value" : "WyJ5VmZ0RFVWVHpUczgxMGlrd3FON0xRIiwidHlwZSIsImRvZyJd"
+  }, {
+    "namespace" : null,
+    "digestId" : null,
+    "value" : "WyJ2T2szRktDM3dpb01fSTFVa0FhbFdBIix7Il9zZCI6WyJUWF9tZDFoOTZkQm1CQ1MzM1pzODhmX2h4S2RhZ3RVNGVORE9lOC15X0h3IiwiT0UtaUNCVEJYa3J4VHJycGsxNzZSWUFhRzUxcWdVTXlvWGxyNm1ja2FtdyJdfV0"
+  }, {
+    "namespace" : null,
+    "digestId" : null,
+    "value" : "WyItSHVOQ3pTQW4yc293ZDd1Q0pJS0Z3IiwibmFtZSIsIlNsaW5reSJd"
+  }, {
+    "namespace" : null,
+    "digestId" : null,
+    "value" : "WyI4V0tocnNINDE2WHY3eTJQcFlBZnp3IiwidHlwZSIsImNhdCJd"
+  }, {
+    "namespace" : null,
+    "digestId" : null,
+    "value" : "WyJqdUJJek9qa1h6RlY2dW9xeWhTVjdnIix7Il9zZCI6WyJmWXJXcndrQ2ZLUkEwTWx5bkRGb0loMlVVcUpMdmlzbldBeFlDQXZ4d05vIiwiV2NFNE5VRzlZa3h0dFc0ZTdzc0FmOTFmdVRmR3JpWG5wdDVBYWVHNjdwYyJdfV0"
+  }, {
+    "namespace" : null,
+    "digestId" : null,
+    "value" : "WyJvaXFhbjRVcUc2MVBVSFNWNFhOLU53IiwicGV0cyIsW3siLi4uIjoiUE1NeFNIWlExRURyWTNxaHNCeVhTNktzRFJIbVdRLVRYcE9SMHpCUUdKZyJ9LHsiLi4uIjoieFdLMjZlaWJsemhFRXhKUTZiNVZmaW5HUmtNRFVlZ3g0MG5mQXZXNDdMcyJ9XV0"
+  } ],
+  "keyBindingParameters" : {
+    "attestationForm" : "SD_JWT",
+    "digestAlgorithm" : null,
+    "issuanceTime" : null,
+    "audience" : "audience",
+    "nonce" : "123456",
+    "sessionTranscript" : null,
+    "docType" : null,
+    "deviceSignedDataElements" : null
+  }
+}'
+----

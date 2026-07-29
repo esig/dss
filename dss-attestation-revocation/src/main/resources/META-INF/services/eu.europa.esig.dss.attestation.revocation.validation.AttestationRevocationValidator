@@ -1,0 +1,3 @@
+eu.europa.esig.dss.attestation.revocation.validation.statuslist.IETFTokenStatusListValidator
+eu.europa.esig.dss.attestation.revocation.validation.statuslist.ETSI194721V121TokenStatusListValidator
+eu.europa.esig.dss.attestation.revocation.validation.identifierlist.ISO180135IdentifierListValidator

@@ -21,7 +21,7 @@
 				<xs:element name="Signature" type="Signature" />
 				<xs:element name="Timestamp" type="Timestamp" />
 				<xs:element name="EvidenceRecord" type="EvidenceRecord" />
-				<xs:element name="EAA" type="EAA" />
+				<xs:element name="Attestation" type="Attestation" />
 			</xs:choice>
 			
 			<xs:element name="Semantic" type="Semantic" minOccurs="0" maxOccurs="unbounded" />
@@ -124,7 +124,7 @@
 			<xs:enumeration value="DIGEST" />
 			<xs:enumeration value="ARCHIVED" />
 			<xs:enumeration value="COUNTER_SIGNATURE" />
-			<xs:enumeration value="EAA_SIGNATURE" />
+			<xs:enumeration value="ATTESTATION_SIGNATURE" />
 			<xs:enumeration value="KEY_BINDING_SIGNATURE" />
 			<xs:enumeration value="SIGNATURE" />
 		</xs:restriction>
@@ -170,14 +170,14 @@
 		</xs:complexContent>
 	</xs:complexType>
 
-	<xs:complexType name="EAA">
+	<xs:complexType name="Attestation">
 		<xs:complexContent>
 			<xs:extension base="Token">
 				<xs:sequence>
-					<xs:element name="EAALevel" type="EAALevel" minOccurs="0" maxOccurs="unbounded" />
-					<xs:element name="EAASignature" type="Signature" minOccurs="0" maxOccurs="unbounded" />
+					<xs:element name="AttestationLevel" type="AttestationLevel" minOccurs="0" maxOccurs="unbounded" />
+					<xs:element name="AttestationSignature" type="Signature" minOccurs="0" maxOccurs="unbounded" />
 					<xs:element name="KeyBindingSignature" type="Signature" minOccurs="0" />
-					<xs:element name="EAAPayload" type="EAAPayload" minOccurs="0" />
+					<xs:element name="AttestationPayload" type="AttestationPayload" minOccurs="0" />
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
@@ -221,7 +221,7 @@
 			<xs:enumeration value="NO_POE" />
 			<xs:enumeration value="CERTIFICATE_CHAIN_GENERAL_FAILURE" />
 			<xs:enumeration value="UNEXPECTED_ERROR" />
-			<xs:enumeration value="EAA_CONSTRAINTS_FAILURE" />
+			<xs:enumeration value="ATTESTATION_CONSTRAINTS_FAILURE" />
 		</xs:restriction>
 	</xs:simpleType>
 	
@@ -370,15 +370,15 @@
 		</xs:restriction>
 	</xs:simpleType>
 
-	<xs:complexType name="EAALevel">
+	<xs:complexType name="AttestationLevel">
 		<xs:simpleContent>
-			<xs:extension base="EAAQualification">
+			<xs:extension base="AttestationQualification">
 				<xs:attribute name="description" type="xs:string" />
 			</xs:extension>
 		</xs:simpleContent>
 	</xs:complexType>
 
-	<xs:simpleType name="EAAQualification" final="restriction">
+	<xs:simpleType name="AttestationQualification" final="restriction">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="QEAA" />
 			<xs:enumeration value="EAA" />
@@ -397,7 +397,7 @@
 		</xs:restriction>
 	</xs:simpleType>
 
-	<xs:complexType name="EAAPayload">
+	<xs:complexType name="AttestationPayload">
 		<xs:sequence>
 			<!-- technical claims -->
 			<xs:element name="Identifier" type="DisclosableClaim" minOccurs="0" />
@@ -525,7 +525,7 @@
 			<xs:element name="IssuingAuthorityRegistrationIdentifier" type="DisclosableClaim" minOccurs="0" />
 
 			<!-- PID Rulebook headers -->
-			<xs:element name="TrustAnchor" type="DisclosableClaim" minOccurs="0" />
+			<xs:element name="TrustAnchorClaim" type="DisclosableClaim" minOccurs="0" />
 			<xs:element name="ResidentAddressStreet" type="DisclosableClaim" minOccurs="0" />
 			<xs:element name="ResidentAddressHouseNumber" type="DisclosableClaim" minOccurs="0" />
 

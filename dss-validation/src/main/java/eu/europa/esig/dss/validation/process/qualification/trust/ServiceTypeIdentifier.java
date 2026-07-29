@@ -21,8 +21,8 @@
 package eu.europa.esig.dss.validation.process.qualification.trust;
 
 /**
- * Service type identifier (ETSI TS 119 612 V2.1.1)
- * 
+ * Service type identifier (ETSI TS 119 612 V2.1.1).
+ * <p>
  * It specifies the identifier of the service type.
  * 
  */
@@ -272,7 +272,7 @@ public enum ServiceTypeIdentifier {
 	 * A not qualified trust service for the validation of data transmitted through electronic registered delivery services
 	 * and the validation of related evidences.
 	 */
-	EDS_VALIDATION("TSTValidatiEDSValidationon", "http://uri.etsi.org/TrstSvc/Svctype/EDSValidation", false, false),
+	EDS_VALIDATION("EDSValidation", "http://uri.etsi.org/TrstSvc/Svctype/EDSValidation", false, false),
 
 	/**
 	 * The issuance of not qualified electronic attestation of attributes as defined in Article 3(46) of

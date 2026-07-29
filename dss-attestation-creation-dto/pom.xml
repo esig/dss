@@ -1,0 +1,24 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+        <artifactId>sd-dss</artifactId>
+        <version>6.6-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>dss-attestation-creation-dto</artifactId>
+    <name>DSS Attestation Creation DTO</name>
+    <description>Contains DTO classes for performing of a creation of annotations (EAA, PID, etc.) and issuance of annotation presentations using the WebServices</description>
+
+    <properties>
+        <module-name>jpms_dss_ws_attestation_creation_dto</module-name>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <artifactId>dss-signature-dto</artifactId>
+        </dependency>
+    </dependencies>
+</project>

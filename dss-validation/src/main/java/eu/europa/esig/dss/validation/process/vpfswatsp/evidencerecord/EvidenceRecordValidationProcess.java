@@ -223,7 +223,7 @@ public class EvidenceRecordValidationProcess extends Chain<XmlValidationProcessE
                      * ETSI TS 119 102-2 (4.3.12.7 Crypto Information Element):
                      *
                      * This element shall be present when the main status indication is INDETERMINATE and
-                     * the subindication is CRYPTO_CONSTRAINTS_FAILURE. In all other cases, this element may be present.
+                     * the sub indication is CRYPTO_CONSTRAINTS_FAILURE. In all other cases, this element may be present.
                      */
                     XmlConclusion timestampConclusion = timestampValidation.getConclusion();
                     if (Indication.INDETERMINATE == timestampConclusion.getIndication() &&

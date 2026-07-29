@@ -23,9 +23,9 @@ package eu.europa.esig.dss.diagnostic;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlContainerInfo;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlEAAPresentationInfo;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlEAA;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlEAARevocationToken;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationPresentationInfo;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestation;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationRevocationToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlEncapsulationType;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlEvidenceRecord;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlListOfTrustedEntities;
@@ -43,7 +43,7 @@ import eu.europa.esig.dss.enumerations.ASiCContainerType;
 import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.enumerations.CertificateStatus;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.EAAPresentationType;
+import eu.europa.esig.dss.enumerations.AttestationDocumentFormat;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.RevocationReason;
 import eu.europa.esig.dss.enumerations.RevocationType;
@@ -81,8 +81,8 @@ public class DiagnosticData {
 	/** List of found evidence records */
 	private List<EvidenceRecordWrapper> foundEvidenceRecords;
 
-	/** List of found EAA presentations */
-	private List<EAAWrapper> foundEAAs;
+	/** List of found attestation presentations */
+	private List<AttestationWrapper> foundAttestations;
 
 	/**
 	 * Default constructor
@@ -614,7 +614,7 @@ public class DiagnosticData {
 	 * This method returns the revocation status for the given certificate.
 	 *
 	 * @param dssCertificateId DSS certificate identifier to be checked
-	 * @return certificate status
+	 * @return certificate revocation
 	 */
 	public CertificateStatus getCertificateRevocationStatus(final String dssCertificateId) {
 		CertificateWrapper certificate = getUsedCertificateByIdNullSafe(dssCertificateId);
@@ -1012,56 +1012,56 @@ public class DiagnosticData {
 	}
 
 	/**
-	 * This method retrieves a list of EAA wrappers
+	 * This method retrieves a list of attestation wrappers
 	 *
-	 * @return a list of EAA wrappers
+	 * @return a list of attestation wrappers
 	 */
-	public List<EAAWrapper> getEAAs() {
-		if (foundEAAs == null) {
-			foundEAAs = new ArrayList<>();
-			List<XmlEAA> xmlEAAs = wrapped.getEAAs();
-			if (xmlEAAs != null) {
-				for (XmlEAA xmlEAA : xmlEAAs) {
-					foundEAAs.add(new EAAWrapper(xmlEAA));
+	public List<AttestationWrapper> getAttestations() {
+		if (foundAttestations == null) {
+			foundAttestations = new ArrayList<>();
+			List<XmlAttestation> xmlAttestations = wrapped.getAttestations();
+			if (xmlAttestations != null) {
+				for (XmlAttestation xmlAttestation : xmlAttestations) {
+					foundAttestations.add(new AttestationWrapper(xmlAttestation));
 				}
 			}
 		}
-		return foundEAAs;
+		return foundAttestations;
 	}
 
 	/**
-	 * Returns the EAAWrapper corresponding to the given id.
+	 * Returns the AttestationWrapper corresponding to the given id.
 	 *
 	 * @param id
-	 *            EAA presentation id
-	 * @return evidence record wrapper or null
+	 *            attestation presentation id
+	 * @return attestation wrapper or null
 	 */
-	public EAAWrapper getEAAById(String id) {
-		List<EAAWrapper> eaas = getEAAs();
-		for (EAAWrapper eaa : eaas) {
-			if (id.equals(eaa.getId())) {
-				return eaa;
+	public AttestationWrapper getAttestationById(String id) {
+		List<AttestationWrapper> attestations = getAttestations();
+		for (AttestationWrapper attestation : attestations) {
+			if (id.equals(attestation.getId())) {
+				return attestation;
 			}
 		}
 		return null;
 	}
 
 	/**
-	 * This method returns the first EAA id.
+	 * This method returns the first attestation id.
 	 *
-	 * @return the first EAA id
+	 * @return the first attestation id
 	 */
-	public String getFirstEAAId() {
-		EAAWrapper firstEAA = getFirstEAANullSafe();
-		return firstEAA.getId();
+	public String getFirstAttestationId() {
+		AttestationWrapper firstAttestation = getFirstAttestationNullSafe();
+		return firstAttestation.getId();
 	}
 
-	private EAAWrapper getFirstEAANullSafe() {
-		List<EAAWrapper> eaas = getEAAs();
-		if (eaas != null && !eaas.isEmpty()) {
-			return eaas.get(0);
+	private AttestationWrapper getFirstAttestationNullSafe() {
+		List<AttestationWrapper> attestations = getAttestations();
+		if (attestations != null && !attestations.isEmpty()) {
+			return attestations.get(0);
 		}
-		return new EAAWrapper(new XmlEAA());
+		return new AttestationWrapper(new XmlAttestation());
 	}
 
 	/**
@@ -1131,7 +1131,7 @@ public class DiagnosticData {
 	}
 
 	/**
-	 * This method returns key binding signatures (not EAA signatures)
+	 * This method returns key binding signatures (not attestation signatures)
 	 *
 	 * @return a set of SignatureWrapper
 	 */
@@ -1177,29 +1177,29 @@ public class DiagnosticData {
 	}
 
 	/**
-	 * This method returns all electronic attestation of attributes (EAAs)
+	 * This method returns all electronic attestation of attributes (Attestations)
 	 *
-	 * @return a set of EAAs
+	 * @return a set of attestations
 	 */
-	public Set<EAAWrapper> getAllEAA() {
-		Set<EAAWrapper> eaas = new HashSet<>();
-		for (XmlEAA xmlEAA : wrapped.getEAAs()) {
-			eaas.add(new EAAWrapper(xmlEAA));
+	public Set<AttestationWrapper> getAllAttestations() {
+		Set<AttestationWrapper> attestations = new HashSet<>();
+		for (XmlAttestation xmlAttestation : wrapped.getAttestations()) {
+			attestations.add(new AttestationWrapper(xmlAttestation));
 		}
-		return eaas;
+		return attestations;
 	}
 
 	/**
-	 * This method returns all EAA revocation tokens
+	 * This method returns all attestation revocation tokens
 	 *
 	 * @return a set of revocation data
 	 */
-	public Set<EAARevocationTokenWrapper> getAllEAARevocationTokens() {
-		Set<EAARevocationTokenWrapper> eaaStatusTokens = new HashSet<>();
-		for (XmlEAARevocationToken xmlEAARevocationToken : wrapped.getUsedEAARevocationTokens()) {
-			eaaStatusTokens.add(new EAARevocationTokenWrapper(xmlEAARevocationToken));
+	public Set<AttestationRevocationTokenWrapper> getAllAttestationRevocationTokens() {
+		Set<AttestationRevocationTokenWrapper> attestationRevocationTokens = new HashSet<>();
+		for (XmlAttestationRevocationToken xmlAttestationRevocationToken : wrapped.getUsedAttestationRevocationTokens()) {
+			attestationRevocationTokens.add(new AttestationRevocationTokenWrapper(xmlAttestationRevocationToken));
 		}
-		return eaaStatusTokens;
+		return attestationRevocationTokens;
 	}
 
 	/**
@@ -1485,23 +1485,23 @@ public class DiagnosticData {
 	}
 
 	/**
-	 * Returns information about EAA Presentation document
+	 * Returns information about Attestation Presentation document
 	 *
-	 * @return {@link XmlEAAPresentationInfo}
+	 * @return {@link XmlAttestationPresentationInfo}
 	 */
-	public XmlEAAPresentationInfo getEAAPresentationInfo() {
-		return wrapped.getEAAPresentationInfo();
+	public XmlAttestationPresentationInfo getAttestationPresentationInfo() {
+		return wrapped.getAttestationPresentationInfo();
 	}
 
 	/**
-	 * Gets type of the EAA Presentation document
+	 * Gets type of the Attestation Presentation document
 	 *
-	 * @return {@link EAAPresentationType}
+	 * @return {@link AttestationDocumentFormat}
 	 */
-	public EAAPresentationType getEAAPresentationType() {
-		XmlEAAPresentationInfo eaaPresentationInfo = getEAAPresentationInfo();
-		if (eaaPresentationInfo != null) {
-			return eaaPresentationInfo.getEAAPresentationType();
+	public AttestationDocumentFormat getAttestationPresentationFormat() {
+		XmlAttestationPresentationInfo attestationPresentationInfo = getAttestationPresentationInfo();
+		if (attestationPresentationInfo != null) {
+			return attestationPresentationInfo.getFormat();
 		}
 		return null;
 	}

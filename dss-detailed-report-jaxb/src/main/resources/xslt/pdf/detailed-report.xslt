@@ -77,10 +77,10 @@
 					<xsl:apply-templates select="dss:Signature"/>
 					<xsl:apply-templates select="dss:Timestamp"/>
 					<xsl:apply-templates select="dss:EvidenceRecord"/>
-					<xsl:apply-templates select="dss:EAA"/>
-					<xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='EAA']"/>
+					<xsl:apply-templates select="dss:Attestation"/>
+					<xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='ATTESTATION']"/>
 				    <xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='SIGNATURE']"/>
-					<xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='EAA_STATUS']"/>
+					<xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='ATTESTATION_REVOCATION']"/>
 				    <xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='COUNTER_SIGNATURE']"/>
 					<xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='KEY_BINDING_SIGNATURE']"/>
 				    <xsl:apply-templates select="dss:BasicBuildingBlocks[@Type='TIMESTAMP']"/>
@@ -216,7 +216,7 @@
 
     </xsl:template>
     
-    <xsl:template match="dss:Signature|dss:Timestamp|dss:EvidenceRecord|dss:Certificate|dss:EAA">
+    <xsl:template match="dss:Signature|dss:Timestamp|dss:EvidenceRecord|dss:Certificate|dss:Attestation">
 	    
 		<fo:table table-layout="fixed">
 			<xsl:attribute name="margin-top">4px</xsl:attribute>
@@ -286,7 +286,7 @@
     
 	<xsl:template match="dss:ValidationProcessBasicSignature|dss:ValidationProcessBasicTimestamp|dss:ValidationProcessLongTermData
 			|dss:ValidationProcessArchivalData|dss:ValidationProcessArchivalDataTimestamp|dss:ValidationProcessEvidenceRecord
-			|dss:CertificateQualificationProcess|dss:ValidationQWACProcess|dss:CertificateApprovalStatusProcess|dss:ValidationProcessEAA">
+			|dss:CertificateQualificationProcess|dss:ValidationQWACProcess|dss:CertificateApprovalStatusProcess|dss:ValidationProcessAttestation">
 
 		<xsl:variable name="poeStringValue">
 			<xsl:choose>
@@ -371,7 +371,7 @@
     </xsl:template>
 
     <xsl:template match="dss:ValidationSignatureQualification|dss:ValidationTimestampQualification|dss:ValidationTimestampQualificationAtTime
-			|dss:ValidationEAAQualification|dss:ValidationEAAQualificationProcess|dss:ValidationPIDQualificationProcess">
+			|dss:ValidationAttestationQualification|dss:ValidationAttestationQualificationProcess|dss:ValidationPIDQualificationProcess">
 
     	<fo:table table-layout="fixed">
 			<xsl:attribute name="keep-with-next">always</xsl:attribute>
@@ -419,11 +419,11 @@
 					    		<xsl:when test="@TimestampQualification">
 					       			<xsl:value-of select="@TimestampQualification"/>
 					       		</xsl:when>
-								<xsl:when test="@EAAQualification">
-									<xsl:value-of select="@EAAQualification"/>
+								<xsl:when test="@AttestationQualification">
+									<xsl:value-of select="@AttestationQualification"/>
 								</xsl:when>
-								<xsl:when test="dss:EAAQualification">
-									<xsl:for-each select="dss:EAAQualification">
+								<xsl:when test="dss:AttestationQualification">
+									<xsl:for-each select="dss:AttestationQualification">
 										<xsl:text>&#xa;</xsl:text><xsl:value-of select="."/>
 									</xsl:for-each>
 								</xsl:when>
@@ -911,7 +911,7 @@
 	<xsl:template match="dss:DigestMatchersValidation" />
 	<xsl:template match="dss:CertificateChainCryptographicValidation" />
 	<xsl:template match="dss:ControlTime" />
-	<xsl:template match="dss:EAAQualification" />
+	<xsl:template match="dss:AttestationQualification" />
 
 	<xsl:template name="formatdate">
 		<xsl:param name="DateTimeStr" />

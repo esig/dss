@@ -36,7 +36,7 @@ include::_chapters/standalone-timestamping.adoc[]
 
 include::_chapters/signature-augmentation.adoc[]
 
-include::_chapters/eaa.adoc[]
+include::_chapters/attestation.adoc[]
 
 include::_chapters/trusted-lists.adoc[]
 
