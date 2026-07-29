@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.pdf;
 
+import eu.europa.esig.dss.pades.validation.PdfObjectKey;
+
 /**
  * Represents a PDF internal object
  *
@@ -39,5 +41,12 @@ public interface PdfObject {
      * @return {@link PdfObject}
      */
     PdfObject getParent();
+
+    /**
+     * Gets key to the object if applicable
+     *
+     * @return {@link PdfObjectKey}
+     */
+    PdfObjectKey getKey();
 
 }

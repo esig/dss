@@ -61,7 +61,7 @@ class DSS3577Test extends AbstractPAdESTestValidation {
 
         assertFalse(Utils.isCollectionEmpty(signature.getPdfExtensionChanges()));
         assertFalse(Utils.isCollectionEmpty(signature.getPdfSignatureOrFormFillChanges()));
-        assertTrue(Utils.isCollectionEmpty(signature.getPdfAnnotationChanges()));
+        assertFalse(Utils.isCollectionEmpty(signature.getPdfAnnotationChanges()));
         assertTrue(Utils.isCollectionEmpty(signature.getPdfUndefinedChanges()));
 
         XmlPDFLockDictionary sigFieldLock = signature.getSigFieldLock();

@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.pdf.pdfbox;
 
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.pades.validation.PdfObjectKey;
 import eu.europa.esig.dss.pdf.PdfArray;
 import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfObject;
@@ -35,6 +36,7 @@ import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSNull;
 import org.apache.pdfbox.cos.COSNumber;
 import org.apache.pdfbox.cos.COSObject;
+import org.apache.pdfbox.cos.COSObjectKey;
 import org.apache.pdfbox.cos.COSStream;
 import org.apache.pdfbox.cos.COSString;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -105,6 +107,15 @@ class PdfBoxArray implements PdfArray {
 	@Override
 	public PdfObject getParent() {
 		return parent;
+	}
+
+	@Override
+	public PdfObjectKey getKey() {
+		COSObjectKey key = wrapped.getKey();
+		if (key != null) {
+			return new PdfBoxObjectKey(key);
+		}
+		return null;
 	}
 
 	@Override
