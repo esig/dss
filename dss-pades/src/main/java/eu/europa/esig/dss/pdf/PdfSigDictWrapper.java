@@ -33,13 +33,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -93,27 +89,6 @@ public class PdfSigDictWrapper implements PdfSignatureDictionary {
 
 	/** Identifies whether the signature dictionary is consistent between revisions */
 	private boolean consistent;
-
-	/**
-	 * Keys of a signature field's dictionary to be checked during a field-level consistency comparison.
-	 * We check only /Rect and /AP because they are the main keys responsible for
-	 * visually altering the field. Although it would be possible to check the other keys, we prefer to adopt a conservative approach given implementation behavior can differ between PdfBox and OpenPDF.
-	 */
-	private static final Set<String> SIGNATURE_FIELD_CHECKED_KEYS = new HashSet<>(Arrays.asList(
-			PAdESConstants.RECT_NAME, PAdESConstants.APPEARANCE_DICTIONARY_NAME));
-
-	/**
-	 * Keys of a signature dictionary to be skipped during a signature-dictionary-level consistency comparison.
-	 * /Reference is handled separately (see {@link #REFERENCE_ENTRY_IGNORED_KEYS}), since its entries' /Data key
-	 * points at the document Catalog.
-	 */
-	private static final Set<String> SIGNATURE_DICT_IGNORED_KEYS = Collections.singleton(PAdESConstants.REFERENCE_NAME);
-
-	/**
-	 * Keys of a /Reference entry to be skipped during a reference-entry-level consistency comparison.
-	 * /Data points directly at the document Catalog.
-	 */
-	private static final Set<String> REFERENCE_ENTRY_IGNORED_KEYS = Collections.singleton(PAdESConstants.DATA_NAME);
 
 	/**
 	 * Default constructor
@@ -330,16 +305,7 @@ public class PdfSigDictWrapper implements PdfSignatureDictionary {
 			DefaultPdfObjectModificationsFinder modificationsFinder = new DefaultPdfObjectModificationsFinder();
 
 			if (checkSigDictConsistency(modificationsFinder, revisionSigDictWrapper.dictionary, this.dictionary)) {
-				boolean allFieldsConsistent = true;
-				for (PdfSignatureField finalSignatureField : finalSignatureFields) {
-					PdfSignatureField revisionSignatureField = getSignatureFieldByName(
-							revisionSignatureFields, finalSignatureField.getFullyQualifiedName());
-					if (!checkFieldConsistency(modificationsFinder, finalSignatureField, revisionSignatureField)) {
-						allFieldsConsistent = false;
-						break;
-					}
-				}
-				consistent = allFieldsConsistent;
+				consistent = checkSigFieldsConsistency(modificationsFinder, finalSignatureFields, revisionSignatureFields);
 
 			} else {
 				LOG.warn("The signature dictionary from final PDF revision is not equal to the signed revision version!");
@@ -361,82 +327,46 @@ public class PdfSigDictWrapper implements PdfSignatureDictionary {
 		return null;
 	}
 
-	private boolean checkFieldConsistency(DefaultPdfObjectModificationsFinder modificationsFinder,
-										  PdfSignatureField finalSignatureField, PdfSignatureField revisionSignatureField) {
-		if (revisionSignatureField == null) {
-			LOG.warn("No matching signature field '{}' found in the signed revision!", finalSignatureField.getFullyQualifiedName());
-			return false;
-		}
-
-		PdfDict revisionDict = revisionSignatureField.getDictionary();
-		PdfDict finalDict = finalSignatureField.getDictionary();
-
-		boolean fieldConsistent = true;
-		for (String key : SIGNATURE_FIELD_CHECKED_KEYS) {
-			PdfObjectModifications pdfObjectModifications = modificationsFinder.find(
-					key, revisionDict.getObject(key), finalDict.getObject(key));
-			if (Utils.isCollectionNotEmpty(pdfObjectModifications.getUndefinedChanges())) {
-				fieldConsistent = false;
-				break;
-			}
-		}
-
-		if (!fieldConsistent) {
-			LOG.warn("The signature field '{}' from final PDF revision is not equal to the signed revision version!",
-					finalSignatureField.getFullyQualifiedName());
-		}
-		return fieldConsistent;
-	}
-
-	private boolean checkSigDictConsistency(DefaultPdfObjectModificationsFinder modificationsFinder,
-											PdfDict revisionSigDict, PdfDict finalSigDict) {
-		if (!areKeysConsistent(modificationsFinder, revisionSigDict, finalSigDict, SIGNATURE_DICT_IGNORED_KEYS)) {
-			return false;
-		}
-
-		PdfArray revisionReferences = revisionSigDict.getAsArray(PAdESConstants.REFERENCE_NAME);
-		PdfArray finalReferences = finalSigDict.getAsArray(PAdESConstants.REFERENCE_NAME);
-		int revisionSize = revisionReferences != null ? revisionReferences.size() : 0;
-		int finalSize = finalReferences != null ? finalReferences.size() : 0;
-		if (revisionSize != finalSize) {
-			LOG.warn("The number of /Reference entries does not match between the final and signed revisions!");
-			return false;
-		}
-
-		for (int i = 0; i < revisionSize; i++) {
-			PdfDict revisionReference = revisionReferences.getAsDict(i);
-			PdfDict finalReference = finalReferences.getAsDict(i);
-			if (!areKeysConsistent(modificationsFinder, revisionReference, finalReference, REFERENCE_ENTRY_IGNORED_KEYS)) {
+	private boolean checkSigFieldsConsistency(DefaultPdfObjectModificationsFinder modificationsFinder,
+											  List<PdfSignatureField> finalSignatureFields, List<PdfSignatureField> revisionSignatureFields) {
+		for (PdfSignatureField finalSignatureField : finalSignatureFields) {
+			PdfSignatureField revisionSignatureField = getSignatureFieldByName(
+					revisionSignatureFields, finalSignatureField.getFullyQualifiedName());
+			if (revisionSignatureField == null) {
+				LOG.warn("No matching signature field '{}' found in the signed revision!", finalSignatureField.getFullyQualifiedName());
 				return false;
+			}
+
+			PdfDict revisionDict = revisionSignatureField.getDictionary();
+			PdfDict finalDict = finalSignatureField.getDictionary();
+
+			// /Rect (position) and /AP (appearance stream) are the main keys responsible for
+			// visually altering the field. Although it would be possible to check the other keys, we
+			// prefer to adopt a narrower, more targeted check given implementation behavior can differ
+			// between PdfBox and OpenPDF.
+			for (String key : Arrays.asList(PAdESConstants.RECT_NAME, PAdESConstants.APPEARANCE_DICTIONARY_NAME)) {
+				PdfObjectModifications pdfObjectModifications = modificationsFinder.find(
+						key, revisionDict.getObject(key), finalDict.getObject(key));
+				if (Utils.isCollectionNotEmpty(pdfObjectModifications.getUndefinedChanges())) {
+					LOG.warn("The signature field '{}' from final PDF revision is not equal to the signed revision version!",
+							finalSignatureField.getFullyQualifiedName());
+					return false;
+				}
 			}
 		}
 		return true;
 	}
 
-	private boolean areKeysConsistent(DefaultPdfObjectModificationsFinder modificationsFinder, PdfDict revisionDict,
-									  PdfDict finalDict, Set<String> ignoredKeys) {
-		
-		if (revisionDict == null && finalDict == null)
-			return true;
-		if (revisionDict == null || finalDict == null)
+	private boolean checkSigDictConsistency(DefaultPdfObjectModificationsFinder modificationsFinder,
+											PdfDict revisionSigDict, PdfDict finalSigDict) {
+		PdfObjectModifications pdfObjectModifications = modificationsFinder.find(revisionSigDict, finalSigDict);
+		List<ObjectModification> undefinedChanges = pdfObjectModifications.getUndefinedChanges();
+		if (Utils.isCollectionNotEmpty(undefinedChanges)) {
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("Undefined modifications are : {}", undefinedChanges.stream()
+						.map(ObjectModification::getObjectTree).collect(Collectors.toList()));
+			}
 			return false;
-
-		Set<String> keys = new LinkedHashSet<>();
-		keys.addAll(Arrays.asList(revisionDict.list()));
-		keys.addAll(Arrays.asList(finalDict.list()));
-		for (String key : keys) {
-			if (ignoredKeys.contains(key)) {
-				continue;
-			}
-			PdfObjectModifications pdfObjectModifications = modificationsFinder.find(
-					key, revisionDict.getObject(key), finalDict.getObject(key));
-			List<ObjectModification> undefinedChanges = pdfObjectModifications.getUndefinedChanges();
-			if (Utils.isCollectionNotEmpty(undefinedChanges)) {
-				if (LOG.isDebugEnabled()) {
-					LOG.debug("Undefined modifications for key '{}' are : {}", key, undefinedChanges.stream().map(ObjectModification::getObjectTree).collect(Collectors.toList()));
-				}
-				return false;
-			}
 		}
 		return true;
 	}
