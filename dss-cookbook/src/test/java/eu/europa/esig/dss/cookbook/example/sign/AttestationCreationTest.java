@@ -24,7 +24,7 @@ import eu.europa.esig.dss.attestation.common.creation.TokenStatusList;
 import eu.europa.esig.dss.attestation.mdoc.MdocConstants;
 import eu.europa.esig.dss.attestation.mdoc.creation.MdocKeyBindingParameters;
 import eu.europa.esig.dss.attestation.mdoc.creation.MdocPayloadParameters;
-import eu.europa.esig.dss.attestation.mdoc.creation.MdocSelectiveDisclosure;
+import eu.europa.esig.dss.attestation.mdoc.creation.MdocIssuerSignedItem;
 import eu.europa.esig.dss.attestation.mdoc.creation.MdocService;
 import eu.europa.esig.dss.attestation.mdoc.creation.SessionTranscriptBuilder;
 import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTClaim;
@@ -127,7 +127,7 @@ class AttestationCreationTest extends CookbookTools {
             SDJWTService service = new SDJWTService(commonCertificateVerifier);
 
             // Sign the attestation payload
-            ToBeSigned dataToSign = service.getDataToBeSigned(payloadParameters, signatureParameters);
+            ToBeSigned dataToSign = service.getDataToSign(payloadParameters, signatureParameters);
             SignatureValue signatureValue = signingToken.sign(dataToSign, signatureParameters.getDigestAlgorithm(), privateKey);
             DSSDocument signedAttestation = service.signAttestation(payloadParameters, signatureParameters, signatureValue);
             // end::sdjwt-signed-attestation[]
@@ -136,7 +136,7 @@ class AttestationCreationTest extends CookbookTools {
             // import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTSelectiveDisclosure;
 
             // Retrieve disclosures for the selectively disclosable claims
-            List<SDJWTSelectiveDisclosure> disclosures = service.getDisclosures(payloadParameters);
+            List<SDJWTSelectiveDisclosure> disclosures = service.generateDisclosures(payloadParameters);
             // end::sdjwt-get-disclosures[]
 
             // tag::sdjwt-key-binding[]
@@ -246,7 +246,7 @@ class AttestationCreationTest extends CookbookTools {
             MdocService service = new MdocService(commonCertificateVerifier);
 
             // Sign the MSO (MobileSecurityObject) payload
-            ToBeSigned dataToSign = service.getDataToBeSigned(payloadParameters, signatureParameters);
+            ToBeSigned dataToSign = service.getDataToSign(payloadParameters, signatureParameters);
             SignatureValue signatureValue = signingToken.sign(dataToSign, signatureParameters.getDigestAlgorithm(), privateKey);
             DSSDocument signedAttestation = service.signAttestation(payloadParameters, signatureParameters, signatureValue);
             // end::mdoc-signed-attestation[]
@@ -255,7 +255,7 @@ class AttestationCreationTest extends CookbookTools {
             // import eu.europa.esig.dss.attestation.mdoc.creation.MdocDisclosure;
 
             // Retrieve disclosures (one IssuerSignedItem per selectively disclosable element)
-            List<MdocSelectiveDisclosure> disclosures = service.getDisclosures(payloadParameters);
+            List<MdocIssuerSignedItem> disclosures = service.generateDisclosures(payloadParameters);
             // end::mdoc-get-disclosures[]
 
             // tag::mdoc-key-binding[]
@@ -288,7 +288,7 @@ class AttestationCreationTest extends CookbookTools {
 
             // tag::mdoc-issuance[]
             // Issue an IssuerSigned document (CBOR, no device authentication)
-            DSSDocument issuerSigned = service.createIssuerSigned(signedAttestation, disclosures);
+            DSSDocument issuerSigned = service.issueAttestation(signedAttestation, disclosures);
 
             // Issue a full DeviceResponse (CBOR, with device authentication)
             DSSDocument deviceResponse = service.issuePresentation(signedAttestation, disclosures, deviceAuthSignature);

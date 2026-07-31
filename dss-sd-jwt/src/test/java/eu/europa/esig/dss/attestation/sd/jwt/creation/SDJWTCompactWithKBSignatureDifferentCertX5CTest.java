@@ -24,7 +24,7 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.test.pki.CertEntitySignatureTokenConnection;
 import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 
-class SDJWTCompactWithKBSignatureDifferentCertX5CTest extends AbstractSDJWTTestIssuance {
+class SDJWTCompactWithKBSignatureDifferentCertX5CTest extends AbstractSDJWTWithKBTestCreation {
 
     private SDJWTPayloadParameters payloadParameters;
     private JAdESSignatureParameters signatureParameters;
@@ -63,25 +63,8 @@ class SDJWTCompactWithKBSignatureDifferentCertX5CTest extends AbstractSDJWTTestI
     }
 
     @Override
-    protected DSSDocument createKeyBindingSignature() {
-        if (includeKeyBindingSignature()) {
-            JAdESSignatureParameters params = getKeyBindingSignatureParameters();
-
-            DSSDocument signedAttestation = signAttestation();
-            List<SDJWTSelectiveDisclosure> disclosures = getDisclosures();
-            SDJWTKeyBindingParameters kbParams = getKeyBindingParameters();
-
-            ToBeSigned dataToSign = getService().getDataToSignForKeyBindingSignature(signedAttestation, disclosures, kbParams, params);
-
-            SignatureValue signatureValue;
-            try (CertEntitySignatureTokenConnection kbToken = new CertEntitySignatureTokenConnection(getCertEntity(ECDSA_521_USER))) {
-                DSSPrivateKeyEntry kbPrivateKeyEntry = kbToken.getKeys().iterator().next();
-                signatureValue = kbToken.sign(dataToSign, params.getSignatureAlgorithm(), kbPrivateKeyEntry);
-            }
-
-            return getService().createKeyBindingSignature(signedAttestation, disclosures, kbParams, params, signatureValue);
-        }
-        return null;
+    protected String getDeviceSigningAlias() {
+        return ECDSA_521_USER;
     }
 
     @Override

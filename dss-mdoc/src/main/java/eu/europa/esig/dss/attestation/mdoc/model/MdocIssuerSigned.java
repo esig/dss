@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.model;
 
+import eu.europa.esig.dss.attestation.mdoc.creation.MdocIssuerSignedItem;
 import eu.europa.esig.dss.cbades.COSESignStructure;
 
 import java.util.List;

@@ -38,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class SDJWTCompactSDArraysAndObjectsRecursiveTest extends AbstractSDJWTTestIssuance {
+class SDJWTCompactSDArraysAndObjectsRecursiveTest extends AbstractSDJWTTestCreation {
 
     private SDJWTPayloadParameters payloadParameters;
     private JAdESSignatureParameters signatureParameters;
@@ -103,16 +103,6 @@ class SDJWTCompactSDArraysAndObjectsRecursiveTest extends AbstractSDJWTTestIssua
     @Override
     protected JAdESSignatureParameters getSignatureParameters() {
         return signatureParameters;
-    }
-
-    @Override
-    protected JAdESSignatureParameters getKeyBindingSignatureParameters() {
-        return null;
-    }
-
-    @Override
-    protected SDJWTKeyBindingParameters getKeyBindingParameters() {
-        return null;
     }
 
     @Override
@@ -225,7 +215,7 @@ class SDJWTCompactSDArraysAndObjectsRecursiveTest extends AbstractSDJWTTestIssua
     }
 
     @Override
-    protected boolean orphanSelectivelyDisclosableClaimsPresent() {
+    protected boolean orphanSelectiveDisclosuresPresent() {
         return true;
     }
 

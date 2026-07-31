@@ -69,7 +69,7 @@ public class SDJWTJsonSerializationDocumentAnalyzer extends AbstractSDJWTDocumen
     }
 
     @Override
-    protected SDJWTSerializationObject buildSDJWTSerializationObject() {
+    public SDJWTSerializationObject buildSDJWTSerializationObject() {
         SDJWTJsonSerializationParser parser = new SDJWTJsonSerializationParser(document);
         return parser.parse();
     }

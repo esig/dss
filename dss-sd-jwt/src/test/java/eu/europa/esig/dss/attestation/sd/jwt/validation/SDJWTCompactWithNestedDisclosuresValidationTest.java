@@ -128,7 +128,7 @@ class SDJWTCompactWithNestedDisclosuresValidationTest extends AbstractSDJWTTestV
         assertEquals(DSSUtils.parseRFCDate("2023-05-02T04:00:00Z"), attestation.getIssuedAt());
         assertEquals(Arrays.asList("DE", "FR", "UK"), attestation.getNationalities());
 
-        List<ClaimWrapper> selectivelyDisclosableClaims = attestation.getSelectivelyDisclosableClaims();
+        List<ClaimWrapper> selectivelyDisclosableClaims = attestation.getSelectiveDisclosures();
         assertEquals(4, selectivelyDisclosableClaims.size());
         assertEquals("nationalities", selectivelyDisclosableClaims.get(0).getName());
         assertTrue(selectivelyDisclosableClaims.get(0).isSelectivelyDisclosable());

@@ -178,7 +178,7 @@ This service relies on the following implementations :
 * `MdocPayloadParameters` as the implementation of `AttestationPayloadParameters`, with the following class to define custom claim structures:
 ** `MdocClaim` for arbitrary selectively disclosable elements defined by a namespace, an element identifier and a value
 * `MdocKeyBindingParameters` as the implementation of `KeyBindingParameters`.
-* `MdocSelectiveDisclosure` as the implementation of `SelectiveDisclosure`.
+* `MdocIssuerSignedItem` as the implementation of `SelectiveDisclosure`.
 
 ===== Payload creation
 `MdocPayloadParameters` allows defining claims for the attestation. It contains helper methods for known claim types (given name, family name, issuing country, etc.). All claims are selectively disclosable and are automatically assigned to the matching ISO/IEC namespace based on the configured `docType`. Technical claims (`validFrom`, `validUntil`, `docType`, `version`, `deviceKey`) are always part of the MSO and are not selectively disclosable.

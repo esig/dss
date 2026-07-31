@@ -21,9 +21,9 @@
 package eu.europa.esig.dss.ws.attestation.creation.common.converter;
 
 import eu.europa.esig.dss.cbades.cbor.CBORUtils;
-import eu.europa.esig.dss.attestation.common.creation.SelectiveDisclosure;
+import eu.europa.esig.dss.model.attestation.SelectiveDisclosure;
 import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTSelectiveDisclosure;
-import eu.europa.esig.dss.attestation.mdoc.creation.MdocSelectiveDisclosure;
+import eu.europa.esig.dss.attestation.mdoc.creation.MdocIssuerSignedItem;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.ws.attestation.creation.dto.parameters.DisclosureDTO;
 
@@ -47,8 +47,8 @@ public class DisclosureToDTOConverter implements Function<SelectiveDisclosure, D
         if (disclosureDTO instanceof SDJWTSelectiveDisclosure) {
             SDJWTSelectiveDisclosure sdjwtSelectiveDisclosure = (SDJWTSelectiveDisclosure) disclosureDTO;
             return new DisclosureDTO(sdjwtSelectiveDisclosure.getDisclosure());
-        } else if (disclosureDTO instanceof MdocSelectiveDisclosure) {
-            MdocSelectiveDisclosure mdocAttestationDisclosure = (MdocSelectiveDisclosure) disclosureDTO;
+        } else if (disclosureDTO instanceof MdocIssuerSignedItem) {
+            MdocIssuerSignedItem mdocAttestationDisclosure = (MdocIssuerSignedItem) disclosureDTO;
             String disclosureValueB64 = Utils.toBase64(CBORUtils.serializeCborObject(mdocAttestationDisclosure.getIssuerSignedItemBytes()));
             return new DisclosureDTO(mdocAttestationDisclosure.getNamespace(), mdocAttestationDisclosure.getDigestId(), disclosureValueB64);
         } else {

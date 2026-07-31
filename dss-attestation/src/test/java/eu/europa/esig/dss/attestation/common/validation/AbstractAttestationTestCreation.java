@@ -20,15 +20,10 @@
  */
 package eu.europa.esig.dss.attestation.common.validation;
 
-import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.diagnostic.AttestationWrapper;
-import eu.europa.esig.dss.diagnostic.SignatureWrapper;
-import eu.europa.esig.dss.attestation.common.creation.SelectiveDisclosure;
 import eu.europa.esig.dss.attestation.common.creation.AttestationPayloadParameters;
 import eu.europa.esig.dss.attestation.common.creation.AttestationService;
-import eu.europa.esig.dss.attestation.common.creation.KeyBindingParameters;
-import eu.europa.esig.dss.attestation.common.creation.claim.AttestationClaim;
-import eu.europa.esig.dss.enumerations.DigestMatcherType;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.MimeType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.SerializableSignatureParameters;
@@ -52,20 +47,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public abstract class AbstractAttestationPresentationTestIssuance<SP extends SerializableSignatureParameters, B extends AttestationPayloadParameters,
-        C extends AttestationClaim, D extends SelectiveDisclosure, E extends KeyBindingParameters> extends AbstractAttestationPresentationTestValidation {
+public abstract class AbstractAttestationTestCreation<SP extends SerializableSignatureParameters, B extends AttestationPayloadParameters> extends AbstractAttestationPresentationTestValidation {
 
-    private static final Logger LOG = LoggerFactory.getLogger(AbstractAttestationPresentationTestIssuance.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractAttestationTestCreation.class);
 
     protected abstract B getPayloadParameters();
 
     protected abstract SP getSignatureParameters();
 
-    protected abstract E getKeyBindingParameters();
-
-    protected abstract SP getKeyBindingSignatureParameters();
-
-    protected abstract AttestationService<SP, B, D, E> getService();
+    protected abstract AttestationService<SP, B> getService();
 
     protected abstract MimeType getExpectedMime();
 
@@ -100,9 +90,9 @@ public abstract class AbstractAttestationPresentationTestIssuance<SP extends Ser
         if (signedAttestation == null) {
             B payloadParameters = getPayloadParameters();
             SP params = getSignatureParameters();
-            AttestationService<SP, B, D, E> service = getService();
+            AttestationService<SP, B> service = getService();
 
-            ToBeSigned dataToSign = service.getDataToBeSigned(payloadParameters, params);
+            ToBeSigned dataToSign = service.getDataToSign(payloadParameters, params);
             SignatureValue signatureValue = getToken().sign(dataToSign, params.getSignatureAlgorithm(), getPrivateKeyEntry());
             // TODO : add signature verification ?
             signedAttestation = service.signAttestation(payloadParameters, params, signatureValue);
@@ -110,43 +100,9 @@ public abstract class AbstractAttestationPresentationTestIssuance<SP extends Ser
         return signedAttestation;
     }
 
-    protected List<D> getDisclosures() {
-        B payloadParameters = getPayloadParameters();
-        AttestationService<SP, B, D, E> service = getService();
-        return service.getDisclosures(payloadParameters);
-    }
-
-    protected DSSDocument createKeyBindingSignature() {
-        if (includeKeyBindingSignature()) {
-            SP params = getKeyBindingSignatureParameters();
-            AttestationService<SP, B, D, E> service = getService();
-
-            DSSDocument signedAttestation = signAttestation();
-            List<D> disclosures = getDisclosures();
-            E keyBindingParameters = getKeyBindingParameters();
-
-            ToBeSigned dataToSign = service.getDataToSignForKeyBindingSignature(signedAttestation, disclosures, keyBindingParameters, params);
-            SignatureValue signatureValue = getToken().sign(dataToSign, params.getSignatureAlgorithm(), getPrivateKeyEntry());
-            // TODO : add signature verification ?
-            return service.createKeyBindingSignature(signedAttestation, disclosures, keyBindingParameters, params, signatureValue);
-        }
-        return null;
-    }
-
-    protected boolean includeKeyBindingSignature() {
-        return getKeyBindingSignatureParameters() != null;
-    }
-
     @Override
     protected DSSDocument getSignedDocument() {
-        DSSDocument signedAttestation = signAttestation();
-        List<D> disclosures = getDisclosures();
-        DSSDocument keyBindingSignature = createKeyBindingSignature();
-        return issuePresentation(signedAttestation, disclosures, keyBindingSignature);
-    }
-
-    protected DSSDocument issuePresentation(DSSDocument signedAttestation,  List<D> disclosures, DSSDocument keyBindingSignature) {
-        return getService().issuePresentation(signedAttestation, disclosures, keyBindingSignature);
+        return signAttestation();
     }
 
     protected void checkMimeType(DSSDocument signedDocument) {
@@ -161,7 +117,7 @@ public abstract class AbstractAttestationPresentationTestIssuance<SP extends Ser
     protected void checkAdvancedSignatures(List<AdvancedSignature> signatures) {
         super.checkAdvancedSignatures(signatures);
 
-        int expectedSignaturesCount = includeKeyBindingSignature() ? 2 : 1;
+        int expectedSignaturesCount = keyBindingPresent() ? 2 : 1;
         assertEquals(expectedSignaturesCount, signatures.size());
     }
 
@@ -171,7 +127,7 @@ public abstract class AbstractAttestationPresentationTestIssuance<SP extends Ser
 
         List<SignatureWrapper> signatures = diagnosticData.getSignatures();
 
-        int expectedSignaturesCount = includeKeyBindingSignature() ? 2 : 1;
+        int expectedSignaturesCount = keyBindingPresent() ? 2 : 1;
         assertEquals(expectedSignaturesCount, signatures.size());
 
         int attestationSignatureCount = 0;
@@ -185,17 +141,6 @@ public abstract class AbstractAttestationPresentationTestIssuance<SP extends Ser
         }
         assertEquals(1, attestationSignatureCount);
         assertEquals(expectedSignaturesCount - 1, keyBindingSignatureCount);
-    }
-
-    @Override
-    protected void checkAttestationDigestMatchers(DiagnosticData diagnosticData) {
-        super.checkAttestationDigestMatchers(diagnosticData);
-
-        AttestationWrapper attestation = diagnosticData.getAttestationById(diagnosticData.getFirstAttestationId());
-
-        List<D> disclosures = getDisclosures();
-        assertEquals(disclosures.size(), attestation.getDigestMatchers().stream().filter(d-> DigestMatcherType.SELECTIVE_DISCLOSURE == d.getType()).count());
-        assertEquals(getNumberOfOrphanSDClaims(), attestation.getDigestMatchers().stream().filter(d-> DigestMatcherType.ORPHAN_SELECTIVELY_DISCLOSABLE_CLAIM == d.getType()).count());
     }
 
     protected int getNumberOfOrphanSDClaims() {
@@ -225,7 +170,7 @@ public abstract class AbstractAttestationPresentationTestIssuance<SP extends Ser
     }
 
     @Override
-    protected boolean orphanSelectivelyDisclosableClaimsPresent() {
+    protected boolean orphanSelectiveDisclosuresPresent() {
         return getPayloadParameters().getDecoyDigestNumber() > 0;
     }
 

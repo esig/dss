@@ -48,7 +48,7 @@ class MdocRefImplValidationTest extends AbstractMdocAttestationPresentationTestV
     }
 
     @Override
-    protected boolean orphanSelectivelyDisclosableClaimsPresent() {
+    protected boolean orphanSelectiveDisclosuresPresent() {
         return true;
     }
 

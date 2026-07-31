@@ -20,20 +20,20 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.validation;
 
+import eu.europa.esig.dss.attestation.mdoc.IssuerSignedParser;
+import eu.europa.esig.dss.attestation.mdoc.MdocUtils;
+import eu.europa.esig.dss.attestation.mdoc.creation.MdocIssuerSignedItem;
+import eu.europa.esig.dss.attestation.mdoc.model.MdocIssuerSigned;
 import eu.europa.esig.dss.cbades.COSESignStructure;
 import eu.europa.esig.dss.cbades.validation.CBAdESSignature;
-import eu.europa.esig.dss.attestation.mdoc.IssuerSignedParser;
-import eu.europa.esig.dss.attestation.mdoc.model.MdocIssuerSigned;
-import eu.europa.esig.dss.attestation.mdoc.model.MdocIssuerSignedItem;
 import eu.europa.esig.dss.enumerations.AttestationDocumentFormat;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.attestation.SelectivelyDisclosableClaim;
+import eu.europa.esig.dss.model.attestation.SelectiveDisclosure;
 import eu.europa.esig.dss.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -110,18 +110,14 @@ public class MdocIssuerSignedDocumentAnalyzer extends AbstractMdocDocumentAnalyz
     /**
      * Returns a list of disclosures extracted for every namespace from a Document structure
      *
-     * @return a list of {@link SelectivelyDisclosableClaim}s
+     * @return a list of {@link SelectiveDisclosure}s
      */
-    protected List<SelectivelyDisclosableClaim> getSignedItems() {
-        Map<String, List<MdocIssuerSignedItem>> namespaces = issuerSigned.getNamespaces();
-        if (Utils.isMapEmpty(namespaces)) {
-            return Collections.emptyList();
+    protected List<SelectiveDisclosure> getSignedItems() {
+        List<MdocIssuerSignedItem> selectiveDisclosures = MdocUtils.getSelectiveDisclosures(issuerSigned.getNamespaces());
+        if (Utils.isCollectionNotEmpty(selectiveDisclosures)) {
+            return new ArrayList<>(selectiveDisclosures);
         }
-        final List<SelectivelyDisclosableClaim> result = new ArrayList<>();
-        for (List<MdocIssuerSignedItem> signedItems : namespaces.values()) {
-            result.addAll(signedItems);
-        }
-        return result;
+        return Collections.emptyList();
     }
 
 }

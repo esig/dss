@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.attestation.common.creation;
 
-import eu.europa.esig.dss.attestation.common.creation.claim.AttestationClaim;
 import eu.europa.esig.dss.enumerations.MimeType;
 import eu.europa.esig.dss.enumerations.SigningOperation;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -35,16 +34,11 @@ import java.util.Objects;
  *
  * @param <SP>
  *         implementation of signature parameters corresponding to the supported signature format
- * @param <B>
+ * @param <P>
  *         implementation of attestation payload parameters to the attestation format
- * @param <C>
- *         implementation of attestation Claim for the attestation format
- * @param <D>
- *         implementation of attestation disclosure for the attestation format
- * @param <E>
- *         implementation of attestation key binding parameters for the attestation format
  */
-public abstract class AbstractAttestationService<SP extends SerializableSignatureParameters, B extends AttestationPayloadParameters, C extends AttestationClaim, D extends SelectiveDisclosure, E extends KeyBindingParameters> implements AttestationService<SP, B, D, E> {
+public abstract class AbstractAttestationService<SP extends SerializableSignatureParameters, P extends AttestationPayloadParameters,
+        B extends AttestationPayloadBuilder<P>> implements AttestationService<SP, P> {
 
     private static final long serialVersionUID = -8272997238108493534L;
 
@@ -52,7 +46,7 @@ public abstract class AbstractAttestationService<SP extends SerializableSignatur
     protected final CertificateVerifier certificateVerifier;
 
     /** Builds the attestation payload */
-    protected AttestationPayloadBuilder<B, D> payloadBuilder;
+    protected B payloadBuilder;
 
     /**
      * Default constructor
@@ -69,7 +63,7 @@ public abstract class AbstractAttestationService<SP extends SerializableSignatur
      *
      * @return {@link AttestationPayloadBuilder}
      */
-    protected AttestationPayloadBuilder<B, D> getPayloadBuilder() {
+    protected B getPayloadBuilder() {
         if (payloadBuilder == null) {
             payloadBuilder = initDefaultPayloadBuilder();
         }
@@ -81,7 +75,7 @@ public abstract class AbstractAttestationService<SP extends SerializableSignatur
      *
      * @return {@link AttestationPayloadBuilder}
      */
-    protected abstract AttestationPayloadBuilder<B, D> initDefaultPayloadBuilder();
+    protected abstract B initDefaultPayloadBuilder();
 
     /**
      * Sets the builder used to create an attestation Payload based on the input parameters.
@@ -89,7 +83,7 @@ public abstract class AbstractAttestationService<SP extends SerializableSignatur
      *
      * @param payloadBuilder {@link AttestationPayloadBuilder}
      */
-    public void setPayloadBuilder(AttestationPayloadBuilder<B, D> payloadBuilder) {
+    public void setPayloadBuilder(B payloadBuilder) {
         Objects.requireNonNull(payloadBuilder, "AttestationPayloadBuilder cannot be null!");
         this.payloadBuilder = payloadBuilder;
     }
@@ -110,14 +104,14 @@ public abstract class AbstractAttestationService<SP extends SerializableSignatur
      * @return {@link String}
      */
     protected FileNameBuilder getFinalDocumentNameBuilder() {
-        return new FileNameBuilder().setSigningOperation(SigningOperation.ATTESTATION).setMimeType(getAttestationPresentationMimeType());
+        return new FileNameBuilder().setSigningOperation(SigningOperation.ATTESTATION).setMimeType(getAttestationMimeType());
     }
 
     /**
-     * Gets the MimeType of the Attestation Presentation for the given attestation format
+     * Gets the MimeType for the given attestation format
      *
      * @return {@link MimeType}
      */
-    protected abstract MimeType getAttestationPresentationMimeType();
+    protected abstract MimeType getAttestationMimeType();
 
 }

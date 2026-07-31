@@ -20,13 +20,15 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.creation;
 
+import eu.europa.esig.dss.attestation.common.creation.AbstractAttestationSDService;
+import eu.europa.esig.dss.attestation.common.creation.AttestationPresentationService;
+import eu.europa.esig.dss.attestation.mdoc.IssuerSignedParser;
+import eu.europa.esig.dss.attestation.mdoc.MdocConstants;
+import eu.europa.esig.dss.attestation.mdoc.MdocUtils;
+import eu.europa.esig.dss.attestation.mdoc.model.MdocIssuerSigned;
 import eu.europa.esig.dss.cbades.cbor.CBORUtils;
 import eu.europa.esig.dss.cbades.signature.CBAdESService;
 import eu.europa.esig.dss.cbades.signature.CBAdESSignatureParameters;
-import eu.europa.esig.dss.attestation.common.creation.AbstractAttestationService;
-import eu.europa.esig.dss.attestation.common.creation.SelectiveDisclosure;
-import eu.europa.esig.dss.attestation.common.creation.AttestationPayloadBuilder;
-import eu.europa.esig.dss.attestation.mdoc.MdocConstants;
 import eu.europa.esig.dss.enumerations.COSEStructureType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
@@ -37,24 +39,87 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
+import eu.europa.esig.dss.model.attestation.SelectiveDisclosure;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * This service is used to handle creation and issuance workflow for ISO/IEC 18013-5 mdoc attestations and presentations
+ * Service providing the complete lifecycle for ISO/IEC 18013-5 mdoc
+ * attestations and presentations.
+ * <p>
+ * This class combines both issuer-side and holder-side operations for the
+ * ISO/IEC 18013-5 mdoc format:
+ * <ul>
+ *   <li><b>Attestation Issuers</b> (e.g. EAA, PID providers), to create and sign
+ *       mdoc attestations and issue them with selectively disclosable issuer-signed items.</li>
+ *   <li><b>Wallets (holders)</b>, to parse issued mdocs, create holder
+ *       key-binding signatures when required, and generate mdoc presentations.</li>
+ * </ul>
+ * Applications acting exclusively as issuers or
+ * wallets typically invoke only the subset of methods relevant to their role.
+ * <p>
+ * <b>Attestation issuer workflow:</b>
+ * <ol>
+ *   <li>Create an {@link MdocPayloadParameters} instance describing the
+ *       attestation claims.</li>
+ *   <li>Generate the format-specific Data To Be Signed (DTBS) using
+ *       {@link #getDataToSign(MdocPayloadParameters, CBAdESSignatureParameters)}
+ *       (or {@link #getDataToSign(DSSDocument, CBAdESSignatureParameters)}
+ *       if the payload has already been created).</li>
+ *   <li>Compute the signature based on DTBS using an external signing component,
+ *       such as an HSM, remote signing service, or cryptographic token.</li>
+ *   <li>Create the signed mdoc using {@link #signAttestation(MdocPayloadParameters,
+ *       CBAdESSignatureParameters, SignatureValue)}.</li>
+ *   <li>Issue the final attestation by calling one of:
+ *       <ul>
+ *         <li>{@link #issueAttestation(DSSDocument)} to issue only the signed
+ *             attestation;</li>
+ *         <li>{@link #issueAttestation(DSSDocument, MdocPayloadParameters)}
+ *             to automatically generate and attach all issuer-signed items;</li>
+ *         <li>{@link #issueAttestation(DSSDocument, List)} to attach a custom
+ *             set of issuer-signed items.</li>
+ *       </ul>
+ *   </li>
+ * </ol>
+ * <p>
+ * <b>Wallet workflow:</b>
+ * <ol>
+ *   <li>Parse the received mdoc using {@link #parseAttestation(DSSDocument)}}.</li>
+ *   <li>Select the issuer-signed items to disclose.</li>
+ *   <li>Create the DTBS for the holder key-binding signature using
+ *       {@link #getDataToSignForKeyBindingSignature(DSSDocument, List,
+ *       MdocKeyBindingParameters, CBAdESSignatureParameters)} (or the overload without disclosures).</li>
+ *   <li>Compute the signature based on DTBS using a device's or holder's key.</li>
+ *   <li>Create the key-binding signature document using
+ *       {@link #createKeyBindingSignature(DSSDocument, List,
+ *       MdocKeyBindingParameters, CBAdESSignatureParameters,
+ *       SignatureValue)} (or the overload without disclosures).</li>
+ *   <li>Create the final presentation by calling one of:
+ *       <ul>
+ *         <li>{@link #issuePresentation(DSSDocument, DSSDocument)} to include
+ *             only a key-binding signature;</li>
+ *         <li>{@link #issuePresentation(DSSDocument, List, DSSDocument)} to
+ *             include both selected issuer-signed items and a key-binding
+ *             signature.</li>
+ *       </ul>
+ *   </li>
+ * </ol>
  *
  */
-public class MdocService extends AbstractAttestationService<CBAdESSignatureParameters, MdocPayloadParameters, MdocClaim, MdocSelectiveDisclosure, MdocKeyBindingParameters> {
+public class MdocService extends AbstractAttestationSDService<CBAdESSignatureParameters, MdocPayloadParameters, MdocIssuerSignedItem>
+        implements AttestationPresentationService<CBAdESSignatureParameters, MdocIssuerSignedItem, MdocKeyBindingParameters> {
 
     private static final long serialVersionUID = 6514504397480840459L;
 
@@ -71,14 +136,14 @@ public class MdocService extends AbstractAttestationService<CBAdESSignatureParam
     }
 
     @Override
-    public ToBeSigned getDataToBeSigned(DSSDocument payload, CBAdESSignatureParameters signatureParameters) {
+    public ToBeSigned getDataToSign(DSSDocument payload, CBAdESSignatureParameters signatureParameters) {
         validatePayload(payload);
         ensureSignatureParameters(signatureParameters);
         return dataToBeSigned(payload, signatureParameters);
     }
 
     @Override
-    public ToBeSigned getDataToBeSigned(MdocPayloadParameters payloadParameters, CBAdESSignatureParameters signatureParameters) {
+    public ToBeSigned getDataToSign(MdocPayloadParameters payloadParameters, CBAdESSignatureParameters signatureParameters) {
         Objects.requireNonNull(payloadParameters, "MdocPayloadParameters cannot be null!");
         ensureSignatureParameters(signatureParameters);
         ensurePayloadParameters(payloadParameters, signatureParameters);
@@ -264,13 +329,65 @@ public class MdocService extends AbstractAttestationService<CBAdESSignatureParam
     }
 
     @Override
+    public List<MdocIssuerSignedItem> generateDisclosures(final MdocPayloadParameters payloadParameters) {
+        Objects.requireNonNull(payloadParameters, "MdocPayloadParameters cannot be null!");
+        Objects.requireNonNull(payloadParameters.getSigned(), "Signed date cannot be null!");
+        Objects.requireNonNull(payloadParameters.getValidFrom(), "ValidFrom date cannot be null!");
+        Objects.requireNonNull(payloadParameters.getValidUntil(), "ValidUntil date cannot be null!");
+        Objects.requireNonNull(payloadParameters.getDocType(), "DocType cannot be null!");
+        return getPayloadBuilder().buildDisclosures(payloadParameters);
+    }
+
+    @Override
+    public DSSDocument issueAttestation(DSSDocument signedAttestation) {
+        return issueAttestation(signedAttestation, Collections.emptyList());
+    }
+
+    @Override
+    public DSSDocument issueAttestation(DSSDocument signedAttestation, MdocPayloadParameters payloadParameters) {
+        return issueAttestation(signedAttestation, generateDisclosures(payloadParameters));
+    }
+
+    @Override
+    public DSSDocument issueAttestation(DSSDocument signedAttestation, List<MdocIssuerSignedItem> disclosures) {
+        return createIssuerSigned(signedAttestation, disclosures);
+    }
+
+    /**
+     * Creates IssuerSigned structure, incorporating the signed attestation and provided selectively disclosable claims.
+     * For an Attestation Presentation (DeviceResponse structure for the mdoc), please use one of the {@code #issuePresentation} methods.
+     *
+     * @param attestation {@link DSSDocument} containing the signed attestation
+     * @param disclosures a list of {@link MdocIssuerSignedItem}s to be incorporated within the namespaces
+     * @return {@link DSSDocument}
+     */
+    protected DSSDocument createIssuerSigned(DSSDocument attestation, List<MdocIssuerSignedItem> disclosures) {
+        DSSDocument issuerSigned = getMdocPresentationBuilder().buildIssuerSignedDocument(attestation, disclosures);
+        issuerSigned.setName(getFinalDocumentName(attestation));
+        issuerSigned.setMimeType(getAttestationMimeType());
+        return issuerSigned;
+    }
+
+    @Override
+    public MdocIssuerSignedDocument parseAttestation(DSSDocument attestation) {
+        IssuerSignedParser issuerSignedParser = new IssuerSignedParser(attestation);
+        if (issuerSignedParser.isSupported()) {
+            MdocIssuerSigned issuerSigned = issuerSignedParser.parse();
+            DSSDocument attestationSignature = new InMemoryDocument(issuerSigned.getIssuerAuth().serialize());
+            List<MdocIssuerSignedItem> selectiveDisclosures = MdocUtils.getSelectiveDisclosures(issuerSigned.getNamespaces());
+            return new MdocIssuerSignedDocument(attestation, attestationSignature, selectiveDisclosures);
+        }
+        throw new IllegalInputException("An instance of IssuerSigned is expected!");
+    }
+
+    @Override
     public ToBeSigned getDataToSignForKeyBindingSignature(final DSSDocument attestation, final MdocKeyBindingParameters keyBindingParameters,
                                                           final CBAdESSignatureParameters signatureParameters) {
         return getDataToSignForKeyBindingSignature(attestation, null, keyBindingParameters, signatureParameters);
     }
 
     @Override
-    public ToBeSigned getDataToSignForKeyBindingSignature(final DSSDocument attestation, final List<MdocSelectiveDisclosure> disclosures, final MdocKeyBindingParameters keyBindingParameters,
+    public ToBeSigned getDataToSignForKeyBindingSignature(final DSSDocument attestation, final List<MdocIssuerSignedItem> disclosures, final MdocKeyBindingParameters keyBindingParameters,
                                                           final CBAdESSignatureParameters signatureParameters) {
         ensureKeyBindingSignatureParameters(signatureParameters);
         DSSDocument deviceAuthentication = getMdocPresentationBuilder().buildDeviceAuthentication(keyBindingParameters);
@@ -284,7 +401,7 @@ public class MdocService extends AbstractAttestationService<CBAdESSignatureParam
     }
 
     @Override
-    public DSSDocument createKeyBindingSignature(final DSSDocument attestation, final List<MdocSelectiveDisclosure> disclosures, final MdocKeyBindingParameters keyBindingParameters,
+    public DSSDocument createKeyBindingSignature(final DSSDocument attestation, final List<MdocIssuerSignedItem> disclosures, final MdocKeyBindingParameters keyBindingParameters,
                                                  final CBAdESSignatureParameters signatureParameters, final SignatureValue signatureValue) {
         ensureKeyBindingSignatureParameters(signatureParameters);
         DSSDocument deviceAuthentication = getMdocPresentationBuilder().buildDeviceAuthentication(keyBindingParameters);
@@ -348,32 +465,7 @@ public class MdocService extends AbstractAttestationService<CBAdESSignatureParam
     }
 
     @Override
-    public List<MdocSelectiveDisclosure> getDisclosures(final MdocPayloadParameters payloadParameters) {
-        Objects.requireNonNull(payloadParameters, "MdocPayloadParameters cannot be null!");
-        Objects.requireNonNull(payloadParameters.getSigned(), "Signed date cannot be null!");
-        Objects.requireNonNull(payloadParameters.getValidFrom(), "ValidFrom date cannot be null!");
-        Objects.requireNonNull(payloadParameters.getValidUntil(), "ValidUntil date cannot be null!");
-        Objects.requireNonNull(payloadParameters.getDocType(), "DocType cannot be null!");
-        return getPayloadBuilder().buildDisclosures(payloadParameters);
-    }
-
-    /**
-     * Creates IssuerSigned structure, incorporating the signed attestation and provided selectively disclosable claims.
-     * For an Attestation Presentation (DeviceResponse structure for the mdoc), please use one of the {@code #issuePresentation} methods.
-     *
-     * @param attestation {@link DSSDocument} containing the signed attestation
-     * @param disclosures a list of {@link MdocSelectiveDisclosure}s to be incorporated within the namespaces
-     * @return {@link DSSDocument}
-     */
-    public DSSDocument createIssuerSigned(DSSDocument attestation, List<MdocSelectiveDisclosure> disclosures) {
-        DSSDocument issuerSigned = getMdocPresentationBuilder().buildIssuerSignedDocument(attestation, disclosures);
-        issuerSigned.setName(getFinalDocumentName(attestation));
-        issuerSigned.setMimeType(getAttestationPresentationMimeType());
-        return issuerSigned;
-    }
-
-    @Override
-    public DSSDocument issuePresentation(DSSDocument attestation, List<MdocSelectiveDisclosure> disclosures) {
+    public DSSDocument issuePresentation(DSSDocument attestation, List<MdocIssuerSignedItem> disclosures) {
         throw new UnsupportedOperationException("#issuePresentation(DSSDocument attestation, List<MdocDisclosure> disclosures) method is not supported for the MdocService. " +
                 "Please provide a key binding signature or use the method #issuerSigned(DSSDocument attestation, List<MdocDisclosure> disclosures) instead.");
     }
@@ -384,7 +476,7 @@ public class MdocService extends AbstractAttestationService<CBAdESSignatureParam
     }
 
     @Override
-    public DSSDocument issuePresentation(DSSDocument attestation, List<MdocSelectiveDisclosure> disclosures, DSSDocument keyBinding) {
+    public DSSDocument issuePresentation(DSSDocument attestation, List<MdocIssuerSignedItem> disclosures, DSSDocument keyBinding) {
         return issuePresentation(attestation, disclosures, keyBinding, new MdocKeyBindingParameters());
     }
 
@@ -402,7 +494,7 @@ public class MdocService extends AbstractAttestationService<CBAdESSignatureParam
      *             {@link MdocDeviceSignedParameters} contains a list of device signed data elements
      * @return {@link DSSDocument} Attestation Presentation
      */
-    public DSSDocument issuePresentation(DSSDocument attestation, List<MdocSelectiveDisclosure> disclosures, DSSDocument keyBinding, MdocDeviceSignedParameters deviceSignedParameters) {
+    public DSSDocument issuePresentation(DSSDocument attestation, List<MdocIssuerSignedItem> disclosures, DSSDocument keyBinding, MdocDeviceSignedParameters deviceSignedParameters) {
         Objects.requireNonNull(deviceSignedParameters, "deviceSignedParameters must not be null!");
         if (!CBORUtils.isCbor(attestation)) {
             throw new DSSException("The attestation should be a cbor document!");
@@ -414,7 +506,7 @@ public class MdocService extends AbstractAttestationService<CBAdESSignatureParam
         DSSDocument deviceResponseDocument = getMdocPresentationBuilder()
                 .buildDeviceResponseDocument(attestation, disclosures, keyBinding, deviceSignedParameters);
         deviceResponseDocument.setName(getFinalDocumentName(attestation));
-        deviceResponseDocument.setMimeType(getAttestationPresentationMimeType());
+        deviceResponseDocument.setMimeType(getAttestationMimeType());
         return deviceResponseDocument;
     }
 
@@ -432,12 +524,12 @@ public class MdocService extends AbstractAttestationService<CBAdESSignatureParam
     }
 
     @Override
-    protected AttestationPayloadBuilder<MdocPayloadParameters, MdocSelectiveDisclosure> initDefaultPayloadBuilder() {
+    protected MdocPayloadBuilder initDefaultPayloadBuilder() {
         return new MdocPayloadBuilder();
     }
 
     @Override
-    protected MimeType getAttestationPresentationMimeType() {
+    protected MimeType getAttestationMimeType() {
         return MimeTypeEnum.CBOR;
     }
 }

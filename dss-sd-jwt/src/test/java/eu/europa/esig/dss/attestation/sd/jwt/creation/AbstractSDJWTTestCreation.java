@@ -20,21 +20,21 @@
  */
 package eu.europa.esig.dss.attestation.sd.jwt.creation;
 
+import eu.europa.esig.dss.attestation.common.creation.TokenStatusList;
+import eu.europa.esig.dss.attestation.common.validation.AbstractAttestationSDTestCreation;
+import eu.europa.esig.dss.attestation.sd.jwt.SDJWTConstants;
+import eu.europa.esig.dss.diagnostic.AttestationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.diagnostic.AttestationWrapper;
 import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
 import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.claim.ClaimWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
-import eu.europa.esig.dss.attestation.common.creation.TokenStatusList;
-import eu.europa.esig.dss.attestation.common.validation.AbstractAttestationPresentationTestIssuance;
-import eu.europa.esig.dss.attestation.sd.jwt.SDJWTConstants;
+import eu.europa.esig.dss.enumerations.AttestationDocumentFormat;
 import eu.europa.esig.dss.enumerations.AttestationProfile;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
-import eu.europa.esig.dss.enumerations.AttestationDocumentFormat;
 import eu.europa.esig.dss.enumerations.MimeType;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
@@ -46,7 +46,6 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.validationreport.jaxb.SignerInformationType;
-
 import org.jose4j.jwx.HeaderParameterNames;
 import org.jose4j.jwx.Headers;
 
@@ -64,8 +63,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public abstract class AbstractSDJWTTestIssuance extends AbstractAttestationPresentationTestIssuance<
-        JAdESSignatureParameters, SDJWTPayloadParameters, SDJWTClaim, SDJWTSelectiveDisclosure, SDJWTKeyBindingParameters> {
+public abstract class AbstractSDJWTTestCreation extends AbstractAttestationSDTestCreation<
+        JAdESSignatureParameters, SDJWTPayloadParameters, SDJWTSelectiveDisclosure> {
 
     @Override
     protected SDJWTService getService() {
@@ -85,6 +84,11 @@ public abstract class AbstractSDJWTTestIssuance extends AbstractAttestationPrese
     @Override
     protected AttestationDocumentFormat getAttestationPresentationType() {
         return AttestationDocumentFormat.SD_JWT;
+    }
+
+    @Override
+    protected boolean keyBindingPresent() {
+        return false;
     }
 
     @Override
@@ -349,7 +353,7 @@ public abstract class AbstractSDJWTTestIssuance extends AbstractAttestationPrese
         assertEither(sd.getAttestedAttributesSubjectIdentifier(), nonSd.getAttestedAttributesSubjectIdentifier(), attestation.getAttestedAttributesSubjectId());
         assertEither(sd.getAttestedAttributesSubjectPseudonym(), nonSd.getAttestedAttributesSubjectPseudonym(), attestation.getAttestedAttributesSubjectPseudonym());
 
-        List<ClaimWrapper> selectivelyDisclosableClaims = attestation.getSelectivelyDisclosableClaims();
+        List<ClaimWrapper> selectivelyDisclosableClaims = attestation.getSelectiveDisclosures();
         if (parametersContainSelectivelyDisclosablClaims()) {
             assertFalse(selectivelyDisclosableClaims.isEmpty());
         } else {
@@ -493,7 +497,7 @@ public abstract class AbstractSDJWTTestIssuance extends AbstractAttestationPrese
         super.checkSigningCertificateValue(diagnosticData);
 
         for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
-            JAdESSignatureParameters signatureParameters = signatureWrapper.isKeyBindingSignature() ? getKeyBindingSignatureParameters() : getSignatureParameters();
+            JAdESSignatureParameters signatureParameters = getSignatureParameters();
             FoundCertificatesProxy foundCertificates = signatureWrapper.foundCertificates();
             List<RelatedCertificateWrapper> signingCertificates = foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
 

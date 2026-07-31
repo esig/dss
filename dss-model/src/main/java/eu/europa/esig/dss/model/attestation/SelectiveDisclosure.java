@@ -18,10 +18,11 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.attestation.common.creation;
+package eu.europa.esig.dss.model.attestation;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaim;
 
 import java.io.Serializable;
 
@@ -38,5 +39,26 @@ public interface SelectiveDisclosure extends Serializable {
      * @return {@link Digest}
      */
     Digest getDigest(DigestAlgorithm digestAlgorithm);
+
+    /**
+     * Gets the name of the disclosure claim
+     *
+     * @return {@link String}
+     */
+    String getName();
+
+    /**
+     * Gets the value of the disclosure claim value
+     *
+     * @return {@link VerifiedClaim}
+     */
+    Object getValue();
+
+    /**
+     * Gets salt of the disclosure
+     *
+     * @return byte array representing disclosure's salt
+     */
+    byte[] getSalt();
 
 }

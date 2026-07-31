@@ -40,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-class MdocISOMdLAllOptionalElementsTest extends AbstractMdocPresentationTestIssuance {
+class MdocISOMdLAllOptionalElementsTest extends AbstractMdocIssuerSignedTestCreation {
 
     private MdocPayloadParameters payloadParameters;
     private CBAdESSignatureParameters signatureParameters;
@@ -143,11 +143,6 @@ class MdocISOMdLAllOptionalElementsTest extends AbstractMdocPresentationTestIssu
 
     @Override
     protected CBAdESSignatureParameters getKeyBindingSignatureParameters() {
-        return null;
-    }
-
-    @Override
-    protected MdocKeyBindingParameters getKeyBindingParameters() {
         return null;
     }
 

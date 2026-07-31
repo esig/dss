@@ -39,7 +39,7 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-class SDJWTCompactStatusAndAttestedAttributesCreationTest extends AbstractSDJWTTestIssuance {
+class SDJWTCompactStatusAndAttestedAttributesCreationTest extends AbstractSDJWTTestCreation {
 
     private SDJWTPayloadParameters payloadParameters;
     private JAdESSignatureParameters signatureParameters;
@@ -91,16 +91,6 @@ class SDJWTCompactStatusAndAttestedAttributesCreationTest extends AbstractSDJWTT
     @Override
     protected JAdESSignatureParameters getSignatureParameters() {
         return signatureParameters;
-    }
-
-    @Override
-    protected JAdESSignatureParameters getKeyBindingSignatureParameters() {
-        return null;
-    }
-
-    @Override
-    protected SDJWTKeyBindingParameters getKeyBindingParameters() {
-        return null;
     }
 
     @Override

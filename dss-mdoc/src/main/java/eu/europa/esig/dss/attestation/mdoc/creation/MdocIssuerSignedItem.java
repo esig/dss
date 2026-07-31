@@ -20,10 +20,12 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.creation;
 
+import eu.europa.esig.dss.attestation.common.creation.AbstractSelectiveDisclosure;
+import eu.europa.esig.dss.attestation.mdoc.MdocHeaderParameter;
 import eu.europa.esig.dss.cbades.cbor.CBORByteString;
+import eu.europa.esig.dss.cbades.cbor.CBORMap;
 import eu.europa.esig.dss.cbades.cbor.CBORObject;
 import eu.europa.esig.dss.cbades.cbor.CBORUtils;
-import eu.europa.esig.dss.attestation.common.creation.AbstractSelectiveDisclosure;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -35,18 +37,31 @@ import java.util.Objects;
  * Implementation of a disclosure for an ISO/IEC 18013-5 token
  *
  */
-public class MdocSelectiveDisclosure extends AbstractSelectiveDisclosure {
+public class MdocIssuerSignedItem extends AbstractSelectiveDisclosure {
 
     private static final long serialVersionUID = 4647204332079766021L;
 
     /** Namespace of the disclosure */
     private final String namespace;
 
-    /** DigestId of the disclosure */
-    private final int digestId;
-
     /** Represents serialized  */
     private final CBORByteString issuerSignedItemBytes;
+
+    /** DigestId of the disclosure */
+    private Long digestId;
+
+    /**
+     * Constructor to instantiate the mdoc disclosure from a serialized IssuerSignedItemBytes object with defined namespace
+     *
+     * @param namespace {@link String} namespace of the element claim
+     * @param issuerSignedItemBytes serialized IssuerSignedItemBytes object
+     */
+    public MdocIssuerSignedItem(final String namespace, final CBORByteString issuerSignedItemBytes) {
+        Objects.requireNonNull(namespace, "Namespace cannot be null!");
+        Objects.requireNonNull(issuerSignedItemBytes, "IssuerSignedItemBytes cannot be null!");
+        this.namespace = namespace;
+        this.issuerSignedItemBytes = issuerSignedItemBytes;
+    }
 
     /**
      * Constructor to instantiate a void
@@ -54,10 +69,10 @@ public class MdocSelectiveDisclosure extends AbstractSelectiveDisclosure {
      * @param digestId unique integer identifying the element within the attestation namespace
      * @param issuerSignedItemBytes serialized IssuerSignedItemBytes object
      */
-    protected MdocSelectiveDisclosure(final int digestId, final CBORByteString issuerSignedItemBytes) {
+    protected MdocIssuerSignedItem(final int digestId, final CBORByteString issuerSignedItemBytes) {
         Objects.requireNonNull(issuerSignedItemBytes, "IssuerSignedItemBytes cannot be null!");
         this.namespace = null;
-        this.digestId = digestId;
+        this.digestId = (long) digestId;
         this.issuerSignedItemBytes = issuerSignedItemBytes;
     }
 
@@ -68,11 +83,11 @@ public class MdocSelectiveDisclosure extends AbstractSelectiveDisclosure {
      * @param digestId unique integer identifying the element within the attestation namespace
      * @param issuerSignedItemBytes serialized IssuerSignedItemBytes object
      */
-    public MdocSelectiveDisclosure(final String namespace, final int digestId, final byte[] issuerSignedItemBytes) {
+    public MdocIssuerSignedItem(final String namespace, final int digestId, final byte[] issuerSignedItemBytes) {
         Objects.requireNonNull(namespace, "Namespace cannot be null!");
         Objects.requireNonNull(issuerSignedItemBytes, "IssuerSignedItemBytes cannot be null!");
         this.namespace = namespace;
-        this.digestId = digestId;
+        this.digestId = (long) digestId;
         this.issuerSignedItemBytes = parse(issuerSignedItemBytes);
     }
 
@@ -96,11 +111,11 @@ public class MdocSelectiveDisclosure extends AbstractSelectiveDisclosure {
      * @param digestId unique integer identifying the element within the attestation namespace
      * @param issuerSignedItemBytes {@link CBORByteString}
      */
-    public MdocSelectiveDisclosure(final String namespace, final int digestId, final CBORByteString issuerSignedItemBytes) {
+    public MdocIssuerSignedItem(final String namespace, final int digestId, final CBORByteString issuerSignedItemBytes) {
         Objects.requireNonNull(namespace, "Namespace cannot be null!");
         Objects.requireNonNull(issuerSignedItemBytes, "IssuerSignedItemBytes cannot be null!");
         this.namespace = namespace;
-        this.digestId = digestId;
+        this.digestId = (long) digestId;
         this.issuerSignedItemBytes = issuerSignedItemBytes;
     }
 
@@ -116,9 +131,12 @@ public class MdocSelectiveDisclosure extends AbstractSelectiveDisclosure {
     /**
      * Gets the disclosure digestId
      *
-     * @return integer
+     * @return {@link Long}
      */
-    public int getDigestId() {
+    public Long getDigestId() {
+        if (digestId == null) {
+            parse();
+        }
         return digestId;
     }
 
@@ -139,20 +157,79 @@ public class MdocSelectiveDisclosure extends AbstractSelectiveDisclosure {
     }
 
     @Override
+    protected void parse() {
+        parseSignedItem(issuerSignedItemBytes);
+    }
+
+    private void parseSignedItem(CBORByteString issuerSignedItemBytes) {
+        CBORMap issuerSignedItemMap = new CBORMap(issuerSignedItemBytes);
+        this.digestId = getDigestId(issuerSignedItemMap);
+        this.salt = getRandom(issuerSignedItemMap);
+        this.name = getElementIdentifier(issuerSignedItemMap);
+        this.value = getElementValue(issuerSignedItemMap);
+    }
+
+    private Long getDigestId(CBORMap issuerSignedItemMap) {
+        CBORObject digestIDHeader = issuerSignedItemMap.getHeader(MdocHeaderParameter.DIGEST_ID.cbor());
+        if (digestIDHeader == null) {
+            throw new IllegalInputException(String.format(
+                    "'%s' header parameter shall be present within IssuerSignedItem!", MdocHeaderParameter.DIGEST_ID));
+        }
+        if (!digestIDHeader.isUnsignedInteger()) {
+            throw new IllegalInputException(String.format(
+                    "'%s' header parameter shall be of unsigned integer type!", MdocHeaderParameter.DIGEST_ID));
+        }
+        return digestIDHeader.getValueAsLong();
+    }
+
+    private byte[] getRandom(CBORMap issuerSignedItemMap) {
+        CBORObject randomHeader = issuerSignedItemMap.getHeader(MdocHeaderParameter.RANDOM.cbor());
+        if (randomHeader == null) {
+            throw new IllegalInputException(String.format(
+                    "'%s' header parameter shall be present within IssuerSignedItem!", MdocHeaderParameter.RANDOM));
+        }
+        if (!randomHeader.isByteString()) {
+            throw new IllegalInputException(String.format(
+                    "'%s' header parameter shall be of byte string type!", MdocHeaderParameter.RANDOM));
+        }
+        return randomHeader.getValueAsBytes();
+    }
+
+    private String getElementIdentifier(CBORMap issuerSignedItemMap) {
+        CBORObject elementIdentifierHeader = issuerSignedItemMap.getHeader(MdocHeaderParameter.ELEMENT_IDENTIFIER.cbor());
+        if (elementIdentifierHeader == null) {
+            throw new IllegalInputException(String.format(
+                    "'%s' header parameter shall be present within IssuerSignedItem!", MdocHeaderParameter.ELEMENT_IDENTIFIER));
+        }
+        if (!elementIdentifierHeader.isUnicodeString()) {
+            throw new IllegalInputException(String.format(
+                    "'%s' header parameter shall be of unicode string type!", MdocHeaderParameter.ELEMENT_IDENTIFIER));
+        }
+        return elementIdentifierHeader.getValueAsString();
+    }
+
+    private CBORObject getElementValue(CBORMap issuerSignedItemMap) {
+        CBORObject elementValue = issuerSignedItemMap.getHeader(MdocHeaderParameter.ELEMENT_VALUE.cbor());
+        if (elementValue == null) {
+            throw new IllegalInputException(String.format(
+                    "'%s' header parameter shall be present within IssuerSignedItem!", MdocHeaderParameter.ELEMENT_VALUE));
+        }
+        return elementValue;
+    }
+
+    @Override
     public boolean equals(Object object) {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
 
-        MdocSelectiveDisclosure that = (MdocSelectiveDisclosure) object;
-        return digestId == that.digestId
-                && namespace.equals(that.namespace)
+        MdocIssuerSignedItem that = (MdocIssuerSignedItem) object;
+        return namespace.equals(that.namespace)
                 && Objects.equals(issuerSignedItemBytes, that.issuerSignedItemBytes);
     }
 
     @Override
     public int hashCode() {
         int result = namespace.hashCode();
-        result = 31 * result + digestId;
         result = 31 * result + Objects.hashCode(issuerSignedItemBytes);
         return result;
     }

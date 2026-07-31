@@ -1786,29 +1786,29 @@ public class AttestationWrapper extends AbstractTokenProxy {
      *
      * @return a list of {@link ClaimWrapper}s
      */
-    public List<ClaimWrapper> getSelectivelyDisclosableClaims() {
+    public List<ClaimWrapper> getSelectiveDisclosures() {
         final List<ClaimWrapper> result = new ArrayList<>();
         List<ClaimWrapper> attestationPayloadClaims = getAllAttestationPayloadClaims();
         if (attestation != null && !attestationPayloadClaims.isEmpty()) {
             for (ClaimWrapper claim : attestationPayloadClaims) {
-                result.addAll(getSelectivelyDisclosableClaimsRecursively(claim));
+                result.addAll(getSelectiveDisclosuresRecursively(claim));
             }
         }
         return result;
     }
 
-    private List<ClaimWrapper> getSelectivelyDisclosableClaimsRecursively(ClaimWrapper claimWrapper) {
+    private List<ClaimWrapper> getSelectiveDisclosuresRecursively(ClaimWrapper claimWrapper) {
         List<ClaimWrapper> result = new ArrayList<>();
         if (claimWrapper.isSelectivelyDisclosable()) {
             result.add(claimWrapper);
         }
         if (claimWrapper.isList()) {
             for (ClaimWrapper listItem : claimWrapper.getList()) {
-                result.addAll(getSelectivelyDisclosableClaimsRecursively(listItem));
+                result.addAll(getSelectiveDisclosuresRecursively(listItem));
             }
         } else if (claimWrapper.isMap()) {
             for (ClaimWrapper entryItem : claimWrapper.getMap().values()) {
-                result.addAll(getSelectivelyDisclosableClaimsRecursively(entryItem));
+                result.addAll(getSelectiveDisclosuresRecursively(entryItem));
             }
         }
         return result;

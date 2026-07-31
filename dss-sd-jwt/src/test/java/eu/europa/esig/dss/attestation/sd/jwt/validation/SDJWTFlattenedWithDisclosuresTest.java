@@ -127,7 +127,7 @@ class SDJWTFlattenedWithDisclosuresTest extends AbstractSDJWTTestValidation {
         assertNull(attestation.getPhoneNumberVerified());
         assertFalse(Utils.isCollectionNotEmpty(attestation.getNationalities()));
 
-        List<ClaimWrapper> selectivelyDisclosableClaims = attestation.getSelectivelyDisclosableClaims();
+        List<ClaimWrapper> selectivelyDisclosableClaims = attestation.getSelectiveDisclosures();
         assertEquals(4, selectivelyDisclosableClaims.size());
     }
 

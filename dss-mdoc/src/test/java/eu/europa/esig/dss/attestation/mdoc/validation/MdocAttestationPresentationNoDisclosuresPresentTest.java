@@ -47,7 +47,7 @@ class MdocAttestationPresentationNoDisclosuresPresentTest extends AbstractMdocAt
     }
 
     @Override
-    protected boolean orphanSelectivelyDisclosableClaimsPresent() {
+    protected boolean orphanSelectiveDisclosuresPresent() {
         return true;
     }
 

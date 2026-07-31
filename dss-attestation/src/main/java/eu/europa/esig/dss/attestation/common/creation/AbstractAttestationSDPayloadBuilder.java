@@ -23,6 +23,7 @@ package eu.europa.esig.dss.attestation.common.creation;
 import eu.europa.esig.dss.attestation.common.key.DefaultPublicKeyInfoFactory;
 import eu.europa.esig.dss.attestation.common.key.PublicKeyInfoFactory;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.model.attestation.SelectiveDisclosure;
 import eu.europa.esig.dss.spi.random.DSSSecureRandomProvider;
 import eu.europa.esig.dss.spi.random.SecureRandomProvider;
 
@@ -35,7 +36,7 @@ import java.util.Objects;
  * @param <P> implementation of {@link AttestationPayloadParameters} for the attestation format
  * @param <D> implementation of {@link SelectiveDisclosure} for the attestation format
  */
-public abstract class AbstractAttestationPayloadBuilder<P extends AttestationPayloadParameters, D extends SelectiveDisclosure> implements AttestationPayloadBuilder<P, D> {
+public abstract class AbstractAttestationSDPayloadBuilder<P extends AttestationPayloadParameters, D extends SelectiveDisclosure> implements AttestationSDPayloadBuilder<P, D> {
 
     /**
      * Provides a SecureRandom for salt computation
@@ -51,7 +52,7 @@ public abstract class AbstractAttestationPayloadBuilder<P extends AttestationPay
     /**
      * Default constructor
      */
-    protected AbstractAttestationPayloadBuilder() {
+    protected AbstractAttestationSDPayloadBuilder() {
         // empty
     }
 

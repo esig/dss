@@ -54,7 +54,7 @@ class SDJWTCompactNoSDWithDisclosuresValidationTest extends AbstractSDJWTTestVal
     }
 
     @Override
-    protected boolean orphanSelectivelyDisclosableClaimsPresent() {
+    protected boolean orphanSelectiveDisclosuresPresent() {
         return true;
     }
 

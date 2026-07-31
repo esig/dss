@@ -1,18 +1,13 @@
 package eu.europa.esig.dss.attestation.sd.jwt.creation;
 
-import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.AttestationWrapper;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
-import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.SignatureValue;
-import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.model.x509.CertificateToken;
-import eu.europa.esig.dss.test.pki.CertEntitySignatureTokenConnection;
-import eu.europa.esig.dss.token.DSSPrivateKeyEntry;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.Date;
@@ -22,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class SDJWTJsonSerializationWithKBSignatureDifferentCertTest extends AbstractSDJWTTestIssuance {
+class SDJWTJsonSerializationWithKBSignatureDifferentCertTest extends AbstractSDJWTWithKBTestCreation {
 
     private SDJWTPayloadParameters payloadParameters;
     private JAdESSignatureParameters signatureParameters;
@@ -61,25 +56,8 @@ class SDJWTJsonSerializationWithKBSignatureDifferentCertTest extends AbstractSDJ
     }
 
     @Override
-    protected DSSDocument createKeyBindingSignature() {
-        if (includeKeyBindingSignature()) {
-            JAdESSignatureParameters params = getKeyBindingSignatureParameters();
-
-            DSSDocument signedAttestation = signAttestation();
-            List<SDJWTSelectiveDisclosure> disclosures = getDisclosures();
-            SDJWTKeyBindingParameters kbParams = getKeyBindingParameters();
-
-            ToBeSigned dataToSign = getService().getDataToSignForKeyBindingSignature(signedAttestation, disclosures, kbParams, params);
-
-            SignatureValue signatureValue;
-            try (CertEntitySignatureTokenConnection kbToken = new CertEntitySignatureTokenConnection(getCertEntity(ECDSA_521_USER))) {
-                DSSPrivateKeyEntry kbPrivateKeyEntry = kbToken.getKeys().iterator().next();
-                signatureValue = kbToken.sign(dataToSign, params.getSignatureAlgorithm(), kbPrivateKeyEntry);
-            }
-
-            return getService().createKeyBindingSignature(signedAttestation, disclosures, kbParams, params, signatureValue);
-        }
-        return null;
+    protected String getDeviceSigningAlias() {
+        return ECDSA_521_USER;
     }
 
     @Override

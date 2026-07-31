@@ -26,7 +26,7 @@ import eu.europa.esig.dss.attestation.common.validation.AttestationPayloadVerifi
 import eu.europa.esig.dss.attestation.mdoc.model.MdocDeviceNameSpaces;
 import eu.europa.esig.dss.attestation.mdoc.model.MdocDocument;
 import eu.europa.esig.dss.enumerations.AttestationProfile;
-import eu.europa.esig.dss.model.attestation.SelectivelyDisclosableClaim;
+import eu.europa.esig.dss.model.attestation.SelectiveDisclosure;
 import eu.europa.esig.dss.spi.attestation.KeyBindingSignaturePayload;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.utils.Utils;
@@ -126,7 +126,7 @@ public class MdocAttestation extends DefaultAttestation {
         }
 
         @Override
-        public MdocAttestationBuilder setDisclosures(List<SelectivelyDisclosableClaim> disclosures) {
+        public MdocAttestationBuilder setDisclosures(List<SelectiveDisclosure> disclosures) {
             return (MdocAttestationBuilder) super.setDisclosures(disclosures);
         }
 

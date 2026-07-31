@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.attestation.sd.jwt.creation;
 
-import eu.europa.esig.dss.attestation.common.creation.AbstractAttestationPayloadBuilder;
+import eu.europa.esig.dss.attestation.common.creation.AbstractAttestationSDPayloadBuilder;
 import eu.europa.esig.dss.attestation.sd.jwt.SDJWTConstants;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
@@ -46,7 +46,7 @@ import java.util.function.Supplier;
  * Creates a payload for an RFC 9901 SD-JWT token based on the provided parameters
  *
  */
-public class SDJWTPayloadBuilder extends AbstractAttestationPayloadBuilder<SDJWTPayloadParameters, SDJWTSelectiveDisclosure> {
+public class SDJWTPayloadBuilder extends AbstractAttestationSDPayloadBuilder<SDJWTPayloadParameters, SDJWTSelectiveDisclosure> {
 
     /** Builds disclosures */
     private SDJWTSelectiveDisclosureBuilder disclosureBuilder = new DefaultSDJWTSelectiveDisclosureBuilder();

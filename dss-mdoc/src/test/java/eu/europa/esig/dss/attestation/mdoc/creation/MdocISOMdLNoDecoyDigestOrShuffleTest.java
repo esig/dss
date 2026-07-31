@@ -40,7 +40,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-class MdocISOMdLNoDecoyDigestOrShuffleTest extends AbstractMdocPresentationTestIssuance {
+class MdocISOMdLNoDecoyDigestOrShuffleTest extends AbstractMdocIssuerSignedTestCreation {
 
     private MdocPayloadParameters payloadParameters;
     private CBAdESSignatureParameters signatureParameters;
@@ -86,9 +86,9 @@ class MdocISOMdLNoDecoyDigestOrShuffleTest extends AbstractMdocPresentationTestI
     }
 
     @Override
-    protected List<MdocSelectiveDisclosure> getDisclosures() {
-        List<MdocSelectiveDisclosure> originalDisclosures = super.getDisclosures();
-        List<MdocSelectiveDisclosure> repeatedDisclosures = super.getDisclosures();
+    protected List<MdocIssuerSignedItem> getDisclosures() {
+        List<MdocIssuerSignedItem> originalDisclosures = super.getDisclosures();
+        List<MdocIssuerSignedItem> repeatedDisclosures = super.getDisclosures();
 
         assertEquals(11, originalDisclosures.size());
         assertEquals(originalDisclosures, repeatedDisclosures);
@@ -96,7 +96,7 @@ class MdocISOMdLNoDecoyDigestOrShuffleTest extends AbstractMdocPresentationTestI
         assertEquals(getSaltMap(originalDisclosures), getSaltMap(repeatedDisclosures));
 
         payloadParameters.setExpirationDate(new Date());
-        List<MdocSelectiveDisclosure> updatedDisclosures = super.getDisclosures();
+        List<MdocIssuerSignedItem> updatedDisclosures = super.getDisclosures();
 
         assertNotEquals(originalDisclosures, updatedDisclosures);
         assertNotEquals(new HashSet<>(originalDisclosures), new HashSet<>(updatedDisclosures));
@@ -107,18 +107,18 @@ class MdocISOMdLNoDecoyDigestOrShuffleTest extends AbstractMdocPresentationTestI
         return originalDisclosures;
     }
 
-    private Map<String, Long> getDigestMap(List<MdocSelectiveDisclosure> disclosures) {
+    private Map<String, Long> getDigestMap(List<MdocIssuerSignedItem> disclosures) {
         Map<String, Long> digestMap = new HashMap<>();
-        for (MdocSelectiveDisclosure disclosure : disclosures) {
+        for (MdocIssuerSignedItem disclosure : disclosures) {
             CBORMap element = (CBORMap) CBORUtils.parseCbor(disclosure.getIssuerSignedItemBytes().getValueAsBytes());
             digestMap.put(element.getAsString("elementIdentifier"), element.getAsLong("digestID"));
         }
         return digestMap;
     }
 
-    private Map<String, String> getSaltMap(List<MdocSelectiveDisclosure> disclosures) {
+    private Map<String, String> getSaltMap(List<MdocIssuerSignedItem> disclosures) {
         Map<String, String> saltMap = new HashMap<>();
-        for (MdocSelectiveDisclosure disclosure : disclosures) {
+        for (MdocIssuerSignedItem disclosure : disclosures) {
             CBORMap element = (CBORMap) CBORUtils.parseCbor(disclosure.getIssuerSignedItemBytes().getValueAsBytes());
             saltMap.put(element.getAsString("elementIdentifier"), Utils.toBase64(element.getAsBinaries("random")));
         }
@@ -137,11 +137,6 @@ class MdocISOMdLNoDecoyDigestOrShuffleTest extends AbstractMdocPresentationTestI
 
     @Override
     protected CBAdESSignatureParameters getKeyBindingSignatureParameters() {
-        return null;
-    }
-
-    @Override
-    protected MdocKeyBindingParameters getKeyBindingParameters() {
         return null;
     }
 

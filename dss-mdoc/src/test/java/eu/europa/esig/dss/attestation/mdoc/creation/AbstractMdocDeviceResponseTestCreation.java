@@ -1,25 +1,11 @@
-/**
- * DSS - Digital Signature Services
- * Copyright (C) 2015 European Commission, provided under the CEF programme
- * <p>
- * This file is part of the "DSS - Digital Signature Services" project.
- * <p>
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- * <p>
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- * <p>
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- */
 package eu.europa.esig.dss.attestation.mdoc.creation;
 
+import eu.europa.esig.dss.attestation.common.creation.AttestationPresentationService;
+import eu.europa.esig.dss.attestation.common.creation.TokenStatusList;
+import eu.europa.esig.dss.attestation.common.validation.AbstractAttestationPresentationTestCreation;
+import eu.europa.esig.dss.attestation.mdoc.model.MdocDrivingPrivilege;
+import eu.europa.esig.dss.attestation.mdoc.validation.MdocDeviceResponseDocumentValidator;
+import eu.europa.esig.dss.attestation.mdoc.validation.MdocValidationParameters;
 import eu.europa.esig.dss.cbades.COSEHeaderParameter;
 import eu.europa.esig.dss.cbades.COSEProtectedHeader;
 import eu.europa.esig.dss.cbades.COSESign;
@@ -33,10 +19,10 @@ import eu.europa.esig.dss.cbades.signature.CBAdESSignatureParameters;
 import eu.europa.esig.dss.cbades.validation.CBAdESSignature;
 import eu.europa.esig.dss.cbades.validation.CBAdESUHeaders;
 import eu.europa.esig.dss.cbades.validation.CBORSignature;
+import eu.europa.esig.dss.diagnostic.AttestationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.diagnostic.AttestationWrapper;
 import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
 import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -44,18 +30,13 @@ import eu.europa.esig.dss.diagnostic.claim.DrivingPrivilegeClaimWrapper;
 import eu.europa.esig.dss.diagnostic.claim.DrivingPrivilegeCodeClaimWrapper;
 import eu.europa.esig.dss.diagnostic.claim.DrivingPrivilegesClaimWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
-import eu.europa.esig.dss.attestation.common.creation.TokenStatusList;
-import eu.europa.esig.dss.attestation.common.validation.AbstractAttestationPresentationTestIssuance;
-import eu.europa.esig.dss.attestation.mdoc.model.MdocDrivingPrivilege;
-import eu.europa.esig.dss.attestation.mdoc.validation.MdocDeviceResponseDocumentValidator;
-import eu.europa.esig.dss.attestation.mdoc.validation.MdocValidationParameters;
+import eu.europa.esig.dss.enumerations.AttestationDocumentFormat;
 import eu.europa.esig.dss.enumerations.AttestationProfile;
 import eu.europa.esig.dss.enumerations.COSESignatureType;
 import eu.europa.esig.dss.enumerations.COSEStructureType;
 import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
-import eu.europa.esig.dss.enumerations.AttestationDocumentFormat;
 import eu.europa.esig.dss.enumerations.EllipticCurve;
 import eu.europa.esig.dss.enumerations.MimeType;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
@@ -78,8 +59,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public abstract class AbstractMdocPresentationTestIssuance extends AbstractAttestationPresentationTestIssuance
-        <CBAdESSignatureParameters, MdocPayloadParameters, MdocClaim, MdocSelectiveDisclosure, MdocKeyBindingParameters> {
+public abstract class AbstractMdocDeviceResponseTestCreation extends AbstractAttestationPresentationTestCreation
+        <CBAdESSignatureParameters, MdocPayloadParameters, MdocIssuerSignedItem, MdocKeyBindingParameters> {
 
     @Override
     protected MdocService getService() {
@@ -87,12 +68,8 @@ public abstract class AbstractMdocPresentationTestIssuance extends AbstractAttes
     }
 
     @Override
-    protected DSSDocument issuePresentation(DSSDocument signedAttestation, List<MdocSelectiveDisclosure> disclosures, DSSDocument keyBindingSignature) {
-        if (includeKeyBindingSignature()) {
-            return getService().issuePresentation(signedAttestation, disclosures, keyBindingSignature, getKeyBindingParameters());
-        } else {
-            return getService().createIssuerSigned(signedAttestation, disclosures);
-        }
+    protected AttestationPresentationService<CBAdESSignatureParameters, MdocIssuerSignedItem, MdocKeyBindingParameters> getPresentationService() {
+        return new MdocService(getOfflineCertificateVerifier());
     }
 
     @Override
@@ -107,22 +84,21 @@ public abstract class AbstractMdocPresentationTestIssuance extends AbstractAttes
 
     @Override
     protected AttestationDocumentFormat getAttestationPresentationType() {
-        if (keyBindingPresent()) {
-            return AttestationDocumentFormat.MDOC_DEVICE_RESPONSE;
-        } else {
-            return AttestationDocumentFormat.MDOC_ISSUER_SIGNED;
-        }
+        return AttestationDocumentFormat.MDOC_DEVICE_RESPONSE;
+    }
+
+    @Override
+    protected boolean keyBindingPresent() {
+        return true;
     }
 
     @Override
     protected SignedDocumentValidator getValidator(DSSDocument signedDocument) {
         SignedDocumentValidator validator = super.getValidator(signedDocument);
-        if (keyBindingPresent()) {
-            MdocDeviceResponseDocumentValidator mdocValidator = assertInstanceOf(MdocDeviceResponseDocumentValidator.class, validator);
-            MdocValidationParameters mdocValidationParameters = new MdocValidationParameters();
-            mdocValidationParameters.setSessionTranscript(buildSessionTranscript());
-            mdocValidator.setAttestationValidationParameters(mdocValidationParameters);
-        }
+        MdocDeviceResponseDocumentValidator mdocValidator = assertInstanceOf(MdocDeviceResponseDocumentValidator.class, validator);
+        MdocValidationParameters mdocValidationParameters = new MdocValidationParameters();
+        mdocValidationParameters.setSessionTranscript(buildSessionTranscript());
+        mdocValidator.setAttestationValidationParameters(mdocValidationParameters);
         return validator;
     }
 

@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.validation;
 
+import eu.europa.esig.dss.attestation.mdoc.creation.MdocIssuerSignedItem;
 import eu.europa.esig.dss.cbades.cbor.CBORByteString;
 import eu.europa.esig.dss.cbades.cbor.CBORMap;
 import eu.europa.esig.dss.cbades.cbor.CBORObject;
@@ -28,7 +29,7 @@ import eu.europa.esig.dss.attestation.common.validation.AttestationPayloadVerifi
 import eu.europa.esig.dss.attestation.mdoc.MdocConstants;
 import eu.europa.esig.dss.attestation.mdoc.MdocUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.model.attestation.SelectivelyDisclosableClaim;
+import eu.europa.esig.dss.model.attestation.SelectiveDisclosure;
 import eu.europa.esig.dss.model.attestation.DisclosureValidation;
 import eu.europa.esig.dss.model.attestation.claim.VerifiedClaim;
 import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimMap;
@@ -149,7 +150,7 @@ public class MdocPayloadVerifier extends AttestationPayloadVerifier {
     }
 
     @Override
-    protected Map<String, VerifiedClaim> buildSelectivelyDisclosableClaimMap(VerifiedClaim valueDigestsClaim) {
+    protected Map<String, VerifiedClaim> buildSelectiveDisclosureMap(VerifiedClaim valueDigestsClaim) {
         if (!valueDigestsClaim.isMapValueType()) {
             LOG.warn("valueDigests header shall be of a CBOR Map type!");
             return Collections.emptyMap();
@@ -175,8 +176,8 @@ public class MdocPayloadVerifier extends AttestationPayloadVerifier {
                 VerifiedClaim digest = digestIDsEntry.getValue();
 
                 long digestIdLong = Long.parseLong(digestId);
-                List<SelectivelyDisclosableClaim> disclosureCandidates = getDisclosureByNamespaceAndId(namespace, digestIdLong);
-                VerifiedClaim claim = buildSelectivelyDisclosableClaim(digest, disclosureCandidates, namespace, digestIdLong);
+                List<SelectiveDisclosure> disclosureCandidates = getDisclosureByNamespaceAndId(namespace, digestIdLong);
+                VerifiedClaim claim = buildSelectiveDisclosure(digest, disclosureCandidates, namespace, digestIdLong);
                 if (claim != null) {
                     if (claim.getName() != null) {
                         result.put(claim.getName(), claim);
@@ -190,19 +191,21 @@ public class MdocPayloadVerifier extends AttestationPayloadVerifier {
         return result;
     }
 
-    private List<SelectivelyDisclosableClaim> getDisclosureByNamespaceAndId(String namespace, Long digestId) {
-        return disclosures.stream()
-                .filter(d -> namespace.equals((d).getNamespace()) && digestId.equals((d).getDigestId()))
+    private List<SelectiveDisclosure> getDisclosureByNamespaceAndId(String namespace, Long digestId) {
+        return disclosures.stream().map(this::toMdocIssuerSignedItem)
+                .filter(d -> namespace.equals(d.getNamespace()) && digestId.equals(d.getDigestId()))
                 .collect(Collectors.toList());
     }
 
     @Override
-    protected void cleanOrphanReferences(List<DisclosureValidation> disclosureValidations, List<SelectivelyDisclosableClaim> notFoundDisclosures) {
+    protected void cleanOrphanReferences(List<DisclosureValidation> disclosureValidations, List<SelectiveDisclosure> notFoundDisclosures) {
         List<DisclosureValidation> orphanDisclosureValidations = getOrphanDisclosureValidations();
-        for (SelectivelyDisclosableClaim disclosure : notFoundDisclosures) {
-            if (disclosure.getNamespace() != null && disclosure.getDigestId() != null) {
+        for (SelectiveDisclosure disclosure : notFoundDisclosures) {
+            MdocIssuerSignedItem mdocIssuerSignedItem = toMdocIssuerSignedItem(disclosure);
+            if (mdocIssuerSignedItem.getNamespace() != null && mdocIssuerSignedItem.getDigestId() != null) {
                 List<DisclosureValidation> matchingValidations = orphanDisclosureValidations.stream().filter(
-                                v -> disclosure.getNamespace().equals(v.getNamespace()) && disclosure.getDigestId().equals(v.getDigestId()))
+                                v -> mdocIssuerSignedItem.getNamespace().equals(v.getNamespace())
+                                        && mdocIssuerSignedItem.getDigestId().equals(v.getDigestId()))
                         .collect(Collectors.toList());
                 if (Utils.collectionSize(matchingValidations) == 1) {
                     disclosureValidations.remove(matchingValidations.iterator().next());
@@ -215,12 +218,12 @@ public class MdocPayloadVerifier extends AttestationPayloadVerifier {
      * Validates the disclosure and returns the extracted value
      *
      * @param hashClaim {@link VerifiedClaim}
-     * @param disclosures a list of {@link SelectivelyDisclosableClaim}s
+     * @param disclosures a list of {@link SelectiveDisclosure}s
      * @param namespace {@link String}
      * @param digestId {@link Long}
      * @return {@link VerifiedClaim}
      */
-    protected VerifiedClaim buildSelectivelyDisclosableClaim(VerifiedClaim hashClaim, List<SelectivelyDisclosableClaim> disclosures, String namespace, Long digestId) {
+    protected VerifiedClaim buildSelectiveDisclosure(VerifiedClaim hashClaim, List<SelectiveDisclosure> disclosures, String namespace, Long digestId) {
         DisclosureValidation disclosureValidation = validateHashClaim(hashClaim, disclosures, namespace, digestId);
         return getDisclosedClaim(disclosureValidation);
     }
@@ -229,12 +232,12 @@ public class MdocPayloadVerifier extends AttestationPayloadVerifier {
      * Validates the {@code hashClaim} against a list of {@code disclosures} and returns the resulted {@code DisclosureValidation}
      *
      * @param hashClaim {@link VerifiedClaim}
-     * @param disclosures a list of {@link SelectivelyDisclosableClaim}s
+     * @param disclosures a list of {@link SelectiveDisclosure}s
      * @param namespace {@link String}
      * @param digestId {@link Long}
      * @return {@link DisclosureValidation}
      */
-    protected DisclosureValidation validateHashClaim(VerifiedClaim hashClaim, List<SelectivelyDisclosableClaim> disclosures, String namespace, Long digestId) {
+    protected DisclosureValidation validateHashClaim(VerifiedClaim hashClaim, List<SelectiveDisclosure> disclosures, String namespace, Long digestId) {
         DisclosureValidation disclosureValidation = super.validateHashClaim(hashClaim, disclosures);
         disclosureValidation.setId(hashClaim.getName());
         disclosureValidation.setNamespace(namespace);
@@ -256,6 +259,27 @@ public class MdocPayloadVerifier extends AttestationPayloadVerifier {
     protected VerifiedClaim getClaimHashItem(VerifiedClaim claim) {
         // not applicable for mdoc
         return null;
+    }
+
+    @Override
+    protected DisclosureValidation getDisclosureValidation(SelectiveDisclosure disclosure) {
+        MdocIssuerSignedItem mdocIssuerSignedItem = toMdocIssuerSignedItem(disclosure);
+        VerifiedClaim claim = MdocUtils.createClaim(mdocIssuerSignedItem.getName(), null,
+                mdocIssuerSignedItem.getValue(), true, mdocIssuerSignedItem.getNamespace());
+        return new DisclosureValidation(disclosure, claim);
+    }
+
+    /**
+     * Casts {@code SelectiveDisclosure} to {@code MdocIssuerSignedItem}
+     *
+     * @param disclosure {@link SelectiveDisclosure}
+     * @return {@link MdocIssuerSignedItem}
+     */
+    protected MdocIssuerSignedItem toMdocIssuerSignedItem(SelectiveDisclosure disclosure) {
+        if (disclosure instanceof MdocIssuerSignedItem) {
+            return  (MdocIssuerSignedItem) disclosure;
+        }
+        throw new IllegalStateException("An instance of MdocIssuerSignedItem is expected!");
     }
 
     @Override

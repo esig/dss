@@ -62,7 +62,7 @@ public class SDJWTCompactDocumentAnalyzer extends AbstractSDJWTDocumentAnalyzer 
     }
 
     @Override
-    protected SDJWTSerializationObject buildSDJWTSerializationObject() {
+    public SDJWTSerializationObject buildSDJWTSerializationObject() {
         SDJWTCompactSerializationParser parser = new SDJWTCompactSerializationParser(document);
         return parser.parse();
     }

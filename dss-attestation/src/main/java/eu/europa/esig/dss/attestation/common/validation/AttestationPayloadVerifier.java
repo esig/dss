@@ -24,7 +24,7 @@ import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.attestation.DisclosureValidation;
-import eu.europa.esig.dss.model.attestation.SelectivelyDisclosableClaim;
+import eu.europa.esig.dss.model.attestation.SelectiveDisclosure;
 import eu.europa.esig.dss.model.attestation.claim.VerifiedClaim;
 import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimArray;
 import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimMap;
@@ -51,7 +51,7 @@ public abstract class AttestationPayloadVerifier {
     /**
      * List of disclosures attached to the Attestation Presentation
      */
-    protected List<SelectivelyDisclosableClaim> disclosures;
+    protected List<SelectiveDisclosure> disclosures;
 
     /**
      * Extracted Digest Algorithm value to be used on hash of disclosures computation
@@ -78,10 +78,10 @@ public abstract class AttestationPayloadVerifier {
     /**
      * Sets the disclosures, requiring for attestation Payload selectively disclosable claims validation
      *
-     * @param disclosures a list of {@link SelectivelyDisclosableClaim}s
+     * @param disclosures a list of {@link SelectiveDisclosure}s
      * @return this {@link AttestationPayloadVerifier}
      */
-    public AttestationPayloadVerifier setDisclosures(List<SelectivelyDisclosableClaim> disclosures) {
+    public AttestationPayloadVerifier setDisclosures(List<SelectiveDisclosure> disclosures) {
         this.disclosures = disclosures;
         return this;
     }
@@ -160,7 +160,7 @@ public abstract class AttestationPayloadVerifier {
             String headerName = entry.getKey();
             VerifiedClaim claimValue = entry.getValue();
             if (isSignedDisclosuresHeader(headerName)) {
-                Map<String, VerifiedClaim> processedClaims = buildSelectivelyDisclosableClaimMap(claimValue);
+                Map<String, VerifiedClaim> processedClaims = buildSelectiveDisclosureMap(claimValue);
                 result.putAll(processedClaims);
 
             } else if (isToSkipHeader(headerName)) {
@@ -212,7 +212,7 @@ public abstract class AttestationPayloadVerifier {
         for (VerifiedClaim claimItem : originalClaimArray.getListValue()) {
             VerifiedClaim hashClaim = getClaimHashItem(claimItem);
             if (hashClaim != null) {
-                claimItem = buildSelectivelyDisclosableClaim(hashClaim, disclosures);
+                claimItem = buildSelectiveDisclosure(hashClaim, disclosures);
             } else {
                 claimItem = buildClaimWithDisclosures(claimItem);
             }
@@ -237,16 +237,16 @@ public abstract class AttestationPayloadVerifier {
      * @param claim {@link VerifiedClaim} to process
      * @return a map representing the extracted disclosures as their corresponding names as keys
      */
-    protected abstract Map<String, VerifiedClaim> buildSelectivelyDisclosableClaimMap(VerifiedClaim claim);
+    protected abstract Map<String, VerifiedClaim> buildSelectiveDisclosureMap(VerifiedClaim claim);
 
     /**
      * Builds a claim based on the provided selectively disclosable value
      *
      * @param hashClaim {@link VerifiedClaim} representing the hash value of the item
-     * @param disclosures a list of {@link SelectivelyDisclosableClaim}s to look for a matching value from
+     * @param disclosures a list of {@link SelectiveDisclosure}s to look for a matching value from
      * @return {@link VerifiedClaim} resulting in a processing of disclosable claims
      */
-    protected VerifiedClaim buildSelectivelyDisclosableClaim(VerifiedClaim hashClaim, List<SelectivelyDisclosableClaim> disclosures) {
+    protected VerifiedClaim buildSelectiveDisclosure(VerifiedClaim hashClaim, List<SelectiveDisclosure> disclosures) {
         DisclosureValidation disclosureValidation = validateHashClaim(hashClaim, disclosures);
         return getDisclosedClaim(disclosureValidation);
     }
@@ -260,7 +260,7 @@ public abstract class AttestationPayloadVerifier {
     protected VerifiedClaim getDisclosedClaim(DisclosureValidation disclosureValidation) {
         if (disclosureValidation != null) {
             if (disclosureValidation.isFound() && disclosureValidation.isIntact() && disclosureValidation.getDisclosure() != null) {
-                return disclosureValidation.getDisclosure().getClaimValue();
+                return disclosureValidation.getVerifiedClaim();
             }
         }
         return null;
@@ -271,10 +271,10 @@ public abstract class AttestationPayloadVerifier {
      * returns the corresponding validation result.
      *
      * @param hashClaim {@link VerifiedClaim} to verify
-     * @param disclosures a list of {@link SelectivelyDisclosableClaim}s to look for a matching value from
+     * @param disclosures a list of {@link SelectiveDisclosure}s to look for a matching value from
      * @return {@link DisclosureValidation}
      */
-    protected DisclosureValidation validateHashClaim(VerifiedClaim hashClaim, List<SelectivelyDisclosableClaim> disclosures) {
+    protected DisclosureValidation validateHashClaim(VerifiedClaim hashClaim, List<SelectiveDisclosure> disclosures) {
         if (hashClaim == null) {
             return null;
         }
@@ -284,9 +284,9 @@ public abstract class AttestationPayloadVerifier {
         }
 
         DisclosureValidation disclosureValidation;
-        SelectivelyDisclosableClaim disclosure = getDisclosureForClaimHash(hashBytes, disclosures);
+        SelectiveDisclosure disclosure = getDisclosureForClaimHash(hashBytes, disclosures);
         if (disclosure != null) {
-            disclosureValidation = new DisclosureValidation(disclosure);
+            disclosureValidation = getDisclosureValidation(disclosure);
             disclosureValidation.setType(DigestMatcherType.SELECTIVE_DISCLOSURE);
             disclosureValidation.setDigest(new Digest(digestAlgorithm, hashBytes));
             disclosureValidation.setFound(true);
@@ -309,12 +309,12 @@ public abstract class AttestationPayloadVerifier {
      */
     protected abstract byte[] getHashBytes(VerifiedClaim hashClaim);
 
-    private SelectivelyDisclosableClaim getDisclosureForClaimHash(byte[] sdHash, List<SelectivelyDisclosableClaim> disclosures) {
+    private SelectiveDisclosure getDisclosureForClaimHash(byte[] sdHash, List<SelectiveDisclosure> disclosures) {
         if (Utils.isCollectionEmpty(disclosures)) {
             LOG.debug("No disclosures has been provided. Unable to validate a selectively disclosable claim.");
             return null;
         }
-        for (SelectivelyDisclosableClaim disclosure : disclosures) {
+        for (SelectiveDisclosure disclosure : disclosures) {
             Digest disclosureDigest = disclosure.getDigest(digestAlgorithm);
             if (disclosureDigest != null && !disclosureDigest.isEmpty() && Arrays.equals(sdHash, disclosureDigest.getValue())) {
                 return disclosure;
@@ -331,17 +331,17 @@ public abstract class AttestationPayloadVerifier {
         if (disclosureValidations == null) {
             throw new IllegalStateException("Disclosure validations have not yet been build! The method #verify shall be called first!");
         }
-        List<SelectivelyDisclosableClaim> notFoundDisclosures = disclosures.stream()
+        List<SelectiveDisclosure> notFoundDisclosures = disclosures.stream()
                 .filter(d -> disclosureValidations.stream().noneMatch(
                         v -> d.equals(v.getDisclosure()))).collect(Collectors.toList());
 
         cleanOrphanReferences(disclosureValidations, notFoundDisclosures);
 
-        for (SelectivelyDisclosableClaim disclosure : notFoundDisclosures) {
+        for (SelectiveDisclosure disclosure : notFoundDisclosures) {
             if (disclosure == null) {
                 continue;
             }
-            DisclosureValidation disclosureValidation = new DisclosureValidation(disclosure);
+            DisclosureValidation disclosureValidation = getDisclosureValidation(disclosure);
             disclosureValidation.setType(DigestMatcherType.SELECTIVE_DISCLOSURE);
             disclosureValidation.setDigest(disclosure.getDigest(digestAlgorithm));
             disclosureValidation.setFound(true);
@@ -351,12 +351,20 @@ public abstract class AttestationPayloadVerifier {
     }
 
     /**
+     * Gets a DisclosureValidation object for the given {@code SelectiveDisclosure}
+     *
+     * @param disclosure {@link SelectiveDisclosure}
+     * @return {@link DisclosureValidation}
+     */
+    protected abstract DisclosureValidation getDisclosureValidation(SelectiveDisclosure disclosure);
+
+    /**
      * This method removes orphan references for other disclosures that were provided but not matching
      *
      * @param disclosureValidations a list of {@link DisclosureValidation}s
-     * @param notFoundDisclosures a list od {@link SelectivelyDisclosableClaim}s
+     * @param notFoundDisclosures a list od {@link SelectiveDisclosure}s
      */
-    protected void cleanOrphanReferences(List<DisclosureValidation> disclosureValidations, List<SelectivelyDisclosableClaim> notFoundDisclosures) {
+    protected void cleanOrphanReferences(List<DisclosureValidation> disclosureValidations, List<SelectiveDisclosure> notFoundDisclosures) {
         List<DisclosureValidation> orphanRefs = getOrphanDisclosureValidations();
         if (Utils.collectionSize(orphanRefs) == 1 && Utils.collectionSize(notFoundDisclosures) == 1) {
             disclosureValidations.remove(orphanRefs.iterator().next());

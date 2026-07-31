@@ -20,10 +20,11 @@
  */
 package eu.europa.esig.dss.attestation.sd.jwt.creation;
 
-import eu.europa.esig.dss.attestation.common.creation.AbstractAttestationService;
-import eu.europa.esig.dss.attestation.common.creation.AttestationPayloadBuilder;
-import eu.europa.esig.dss.attestation.common.creation.AttestationService;
+import eu.europa.esig.dss.attestation.common.creation.AbstractAttestationSDService;
+import eu.europa.esig.dss.attestation.common.creation.AttestationPresentationService;
 import eu.europa.esig.dss.attestation.sd.jwt.SDJWTConstants;
+import eu.europa.esig.dss.attestation.sd.jwt.SDJWTSerializationObject;
+import eu.europa.esig.dss.attestation.sd.jwt.validation.SDJWTDocumentAnalyzerFactory;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.enumerations.MimeType;
@@ -44,24 +45,90 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.validation.CertificateVerifier;
 import eu.europa.esig.dss.utils.Utils;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- * Implementation of {@link AttestationService} to create SD-JWT attestation
+ * Service providing the complete lifecycle for SD-JWT attestations and
+ * presentations.
+ * <p>
+ * This class combines both issuer-side and holder-side operations for the
+ * SD-JWT format.
+ * <ul>
+ *   <li><b>Attestation issuers</b>, to create, sign, and issue SD-JWT
+ *       credentials with selective disclosures.</li>
+ *   <li><b>Wallets (holders)</b>, to parse issued credentials, select
+ *       disclosures, optionally create a holder key-binding JWT, and generate
+ *       SD-JWT presentations for verifiers.</li>
+ * </ul>
+ * Applications acting exclusively as issuers or wallets
+ * typically invoke only the subset of methods relevant to their role.
+ * <p>
+ * <b>Attestation issuer workflow</b>
+ * <ol>
+ *   <li>Create an {@link SDJWTPayloadParameters} instance describing the
+ *       credential claims.</li>
+ *   <li>Generate the format-specific Data To Be Signed (DTBS) by calling
+ *       {@link #getDataToSign(SDJWTPayloadParameters, JAdESSignatureParameters)}
+ *       or {@link #getDataToSign(DSSDocument, JAdESSignatureParameters)}
+ *       when using an existing payload.</li>
+ *   <li>Compute the signature based on DTBS using an external signing component,
+ *       such as an HSM, remote signing service, or cryptographic token.</li>
+ *   <li>Create the signed SD-JWT by calling
+ *       {@link #signAttestation(SDJWTPayloadParameters,
+ *       JAdESSignatureParameters, SignatureValue)} or its overload accepting a
+ *       precomputed payload.</li>
+ *   <li>Issue the final credential by calling one of:
+ *       <ul>
+ *         <li>{@link #issueAttestation(DSSDocument)} to issue only the signed
+ *             SD-JWT;</li>
+ *         <li>{@link #issueAttestation(DSSDocument, SDJWTPayloadParameters)}
+ *             to automatically generate and attach all disclosures;</li>
+ *         <li>{@link #issueAttestation(DSSDocument, List)} to attach a custom
+ *             set of disclosures.</li>
+ *       </ul>
+ *   </li>
+ * </ol>
+ * <p>
+ * <b>Wallet workflow</b>
+ * <ol>
+ *   <li>Parse the received credential using
+ *       {@link #parseAttestation(DSSDocument)}}.</li>
+ *   <li>Select the disclosures to include in the presentation.</li>
+ *   <li>Create the DTBS for the holder key-binding JWT using
+ *       {@link #getDataToSignForKeyBindingSignature(DSSDocument, List, SDJWTKeyBindingParameters,
+ *       JAdESSignatureParameters)} (or the overload without disclosures).</li>
+ *   <li>Compute the signature based on DTBS using a device's or holder's key.</li>
+ *   <li>Create the key-binding JWT using {@link #createKeyBindingSignature(DSSDocument,
+ *       List, SDJWTKeyBindingParameters, JAdESSignatureParameters, SignatureValue)}
+ *       (or the overload without disclosures).</li>
+ *   <li>Create the final presentation by calling one of:
+ *       <ul>
+ *         <li>{@link #issuePresentation(DSSDocument, List)} to include only
+ *             the selected disclosures;</li>
+ *         <li>{@link #issuePresentation(DSSDocument, DSSDocument)} to include
+ *             only the key-binding JWT;</li>
+ *         <li>{@link #issuePresentation(DSSDocument, List, DSSDocument)} to
+ *             include both selected disclosures and the key-binding JWT.</li>
+ *       </ul>
+ *   </li>
+ * </ol>
  *
+ * <p>
  */
-public class SDJWTService extends AbstractAttestationService<JAdESSignatureParameters, SDJWTPayloadParameters, SDJWTClaim, SDJWTSelectiveDisclosure, SDJWTKeyBindingParameters> {
+public class SDJWTService extends AbstractAttestationSDService<JAdESSignatureParameters, SDJWTPayloadParameters, SDJWTSelectiveDisclosure>
+        implements AttestationPresentationService<JAdESSignatureParameters, SDJWTSelectiveDisclosure, SDJWTKeyBindingParameters> {
 
     private static final long serialVersionUID = 6514504397480840459L;
 
@@ -78,17 +145,17 @@ public class SDJWTService extends AbstractAttestationService<JAdESSignatureParam
     }
 
     @Override
-    public ToBeSigned getDataToBeSigned(final DSSDocument payload, final JAdESSignatureParameters signatureParameters) {
+    public ToBeSigned getDataToSign(final DSSDocument payload, final JAdESSignatureParameters signatureParameters) {
         validatePayload(payload);
         ensureSignatureParameters(signatureParameters);
         return getJAdESService().getDataToSign(payload, signatureParameters);
     }
 
     @Override
-    public ToBeSigned getDataToBeSigned(final SDJWTPayloadParameters payloadParameters, final JAdESSignatureParameters signatureParameters) {
+    public ToBeSigned getDataToSign(final SDJWTPayloadParameters payloadParameters, final JAdESSignatureParameters signatureParameters) {
         ensureSignatureParameters(signatureParameters);
         ensurePayloadParameters(payloadParameters, signatureParameters);
-        return getDataToBeSigned(getPayloadBuilder().buildPayload(payloadParameters), signatureParameters);
+        return getDataToSign(getPayloadBuilder().buildPayload(payloadParameters), signatureParameters);
     }
 
     @Override
@@ -191,34 +258,88 @@ public class SDJWTService extends AbstractAttestationService<JAdESSignatureParam
     }
 
     @Override
-    public ToBeSigned getDataToSignForKeyBindingSignature(final DSSDocument attestation, final SDJWTKeyBindingParameters keyBindingParameters,
-                                                          final JAdESSignatureParameters signatureParameters) {
-        return getDataToSignForKeyBindingSignature(attestation, null, keyBindingParameters, signatureParameters);
+    public List<SDJWTSelectiveDisclosure> generateDisclosures(final SDJWTPayloadParameters payloadParameters) {
+        Objects.requireNonNull(payloadParameters, "SDJWTPayloadParameters cannot be null!");
+        Objects.requireNonNull(payloadParameters.getNotBeforeDate(), "NotBefore date cannot be null!");
+        Objects.requireNonNull(payloadParameters.getExpirationDate(), "Expiration date a cannot be null!");
+        return getPayloadBuilder().buildDisclosures(payloadParameters);
     }
 
     @Override
-    public ToBeSigned getDataToSignForKeyBindingSignature(final DSSDocument attestation, final List<SDJWTSelectiveDisclosure> disclosures,
+    public DSSDocument issueAttestation(DSSDocument signedAttestation) {
+        return issueAttestation(signedAttestation, Collections.emptyList());
+    }
+
+    @Override
+    public DSSDocument issueAttestation(DSSDocument signedAttestation, SDJWTPayloadParameters payloadParameters) {
+        return issueAttestation(signedAttestation, generateDisclosures(payloadParameters));
+    }
+
+    @Override
+    public DSSDocument issueAttestation(DSSDocument signedAttestation, List<SDJWTSelectiveDisclosure> disclosures) {
+        // NOTE: in SD-JWT an attestation with SD is equivalent to SD-JWT presentation with SD, but no KB
+        return issuePresentation(signedAttestation, disclosures);
+    }
+
+    @Override
+    public SDJWTAttestationDocument parseAttestation(DSSDocument attestation) {
+        SDJWTDocumentAnalyzerFactory factory = new SDJWTDocumentAnalyzerFactory();
+        if (factory.isSupported(attestation)) {
+            SDJWTSerializationObject sdjwtSerializationObject = factory.create(attestation).buildSDJWTSerializationObject();
+            return new SDJWTAttestationDocument(attestation, getAttestationSignature(sdjwtSerializationObject), sdjwtSerializationObject.getDisclosures());
+        } else {
+            throw new IllegalInputException("The provided document is not SD-JWT attestation!");
+        }
+    }
+
+    protected DSSDocument getAttestationSignature(SDJWTSerializationObject sdjwtSerializationObject) {
+        JWSJsonSerializationObject signature = sdjwtSerializationObject.getSignature();
+        if (signature == null) {
+            throw new IllegalInputException("The provided attestation document does not contain a signature!");
+        }
+        for (JWS jws : signature.getSignatures()) {
+            Map<String, Object> unprotected = jws.getUnprotected();
+            if (Utils.isMapNotEmpty(unprotected)) {
+                unprotected = new LinkedHashMap<>(unprotected);
+                unprotected.remove(SDJWTConstants.DISCLOSURES);
+                unprotected.remove(SDJWTConstants.KB_JWT);
+                jws.setUnprotected(unprotected);
+            }
+        }
+        JWSJsonSerializationGenerator jwsGenerator = new JWSJsonSerializationGenerator(
+                signature, sdjwtSerializationObject.getJWSSerializationType());
+        return jwsGenerator.generate();
+    }
+
+    @Override
+    public ToBeSigned getDataToSignForKeyBindingSignature(final DSSDocument signedAttestation, final SDJWTKeyBindingParameters keyBindingParameters,
+                                                          final JAdESSignatureParameters signatureParameters) {
+        return getDataToSignForKeyBindingSignature(signedAttestation, null, keyBindingParameters, signatureParameters);
+    }
+
+    @Override
+    public ToBeSigned getDataToSignForKeyBindingSignature(final DSSDocument signedAttestation, final List<SDJWTSelectiveDisclosure> disclosures,
                                                           final SDJWTKeyBindingParameters keyBindingParameters, final JAdESSignatureParameters signatureParameters) {
         ensureKeyBindingParameters(keyBindingParameters, signatureParameters);
         ensureKeyBindingSignatureParameters(signatureParameters);
 
-        DSSDocument keyBindingPayload = getKeyBindingPayloadBuilder().buildPayload(attestation, disclosures, keyBindingParameters);
+        DSSDocument keyBindingPayload = getKeyBindingPayloadBuilder().buildPayload(signedAttestation, disclosures, keyBindingParameters);
         return getJAdESService().getDataToSign(keyBindingPayload, signatureParameters);
     }
 
     @Override
-    public DSSDocument createKeyBindingSignature(final DSSDocument attestation, final SDJWTKeyBindingParameters keyBindingParameters, final JAdESSignatureParameters signatureParameters,
+    public DSSDocument createKeyBindingSignature(final DSSDocument signedAttestation, final SDJWTKeyBindingParameters keyBindingParameters, final JAdESSignatureParameters signatureParameters,
                                                  final SignatureValue signatureValue) {
-        return createKeyBindingSignature(attestation, null, keyBindingParameters, signatureParameters, signatureValue);
+        return createKeyBindingSignature(signedAttestation, null, keyBindingParameters, signatureParameters, signatureValue);
     }
 
     @Override
-    public DSSDocument createKeyBindingSignature(final DSSDocument attestation, final List<SDJWTSelectiveDisclosure> disclosures, final SDJWTKeyBindingParameters keyBindingParameters,
+    public DSSDocument createKeyBindingSignature(final DSSDocument signedAttestation, final List<SDJWTSelectiveDisclosure> disclosures, final SDJWTKeyBindingParameters keyBindingParameters,
                                                  final JAdESSignatureParameters signatureParameters, final SignatureValue signatureValue) {
         ensureKeyBindingParameters(keyBindingParameters, signatureParameters);
         ensureKeyBindingSignatureParameters(signatureParameters);
 
-        DSSDocument keyBindingPayload = getKeyBindingPayloadBuilder().buildPayload(attestation, disclosures, keyBindingParameters);
+        DSSDocument keyBindingPayload = getKeyBindingPayloadBuilder().buildPayload(signedAttestation, disclosures, keyBindingParameters);
         return getJAdESService().signDocument(keyBindingPayload, signatureParameters, signatureValue);
     }
 
@@ -285,34 +406,26 @@ public class SDJWTService extends AbstractAttestationService<JAdESSignatureParam
     }
 
     @Override
-    public List<SDJWTSelectiveDisclosure> getDisclosures(final SDJWTPayloadParameters payloadParameters) {
-        Objects.requireNonNull(payloadParameters, "SDJWTPayloadParameters cannot be null!");
-        Objects.requireNonNull(payloadParameters.getNotBeforeDate(), "NotBefore date cannot be null!");
-        Objects.requireNonNull(payloadParameters.getExpirationDate(), "Expiration date a cannot be null!");
-        return getPayloadBuilder().buildDisclosures(payloadParameters);
-    }
-
-    @Override
-    protected AttestationPayloadBuilder<SDJWTPayloadParameters, SDJWTSelectiveDisclosure> initDefaultPayloadBuilder() {
+    protected SDJWTPayloadBuilder initDefaultPayloadBuilder() {
         return new SDJWTPayloadBuilder();
     }
 
     @Override
-    public DSSDocument issuePresentation(final DSSDocument attestation, final List<SDJWTSelectiveDisclosure> disclosures, final DSSDocument keyBinding) {
-        Objects.requireNonNull(attestation, "The attestation cannot be null!");
-        JWSCompactSerializationParser compactParser = new JWSCompactSerializationParser(attestation);
+    public DSSDocument issuePresentation(final DSSDocument signedAttestation, final List<SDJWTSelectiveDisclosure> disclosures, final DSSDocument keyBinding) {
+        Objects.requireNonNull(signedAttestation, "The attestation cannot be null!");
+        JWSCompactSerializationParser compactParser = new JWSCompactSerializationParser(signedAttestation);
         if (compactParser.isSupported()) {
-            DSSDocument attestationPresentation = issueJWSCompactPresentation(attestation, disclosures, keyBinding);
-            attestationPresentation.setName(getFinalDocumentName(attestation));
-            attestationPresentation.setMimeType(getAttestationPresentationMimeType());
+            DSSDocument attestationPresentation = issueJWSCompactPresentation(signedAttestation, disclosures, keyBinding);
+            attestationPresentation.setName(getFinalDocumentName(signedAttestation));
+            attestationPresentation.setMimeType(getAttestationMimeType());
             return attestationPresentation;
         }
 
-        JWSJsonSerializationParser jwsJsonSerializationParser = new JWSJsonSerializationParser(attestation);
+        JWSJsonSerializationParser jwsJsonSerializationParser = new JWSJsonSerializationParser(signedAttestation);
         if (jwsJsonSerializationParser.isSupported()) {
             DSSDocument attestationPresentation = issueJWSJsonSerializationPresentation(jwsJsonSerializationParser.parse(), disclosures, keyBinding);
-            attestationPresentation.setName(getFinalDocumentName(attestation));
-            attestationPresentation.setMimeType(getAttestationPresentationMimeType());
+            attestationPresentation.setName(getFinalDocumentName(signedAttestation));
+            attestationPresentation.setMimeType(getAttestationMimeType());
             return attestationPresentation;
         }
 
@@ -320,13 +433,13 @@ public class SDJWTService extends AbstractAttestationService<JAdESSignatureParam
     }
 
     @Override
-    public DSSDocument issuePresentation(final DSSDocument attestation, final List<SDJWTSelectiveDisclosure> disclosures) {
-        return issuePresentation(attestation, disclosures, null);
+    public DSSDocument issuePresentation(final DSSDocument signedAttestation, final List<SDJWTSelectiveDisclosure> disclosures) {
+        return issuePresentation(signedAttestation, disclosures, null);
     }
 
     @Override
-    public DSSDocument issuePresentation(final DSSDocument attestation, final DSSDocument keyBinding) {
-        return issuePresentation(attestation, Collections.emptyList(), keyBinding);
+    public DSSDocument issuePresentation(final DSSDocument signedAttestation, final DSSDocument keyBinding) {
+        return issuePresentation(signedAttestation, Collections.emptyList(), keyBinding);
     }
 
     private DSSDocument issueJWSCompactPresentation(final DSSDocument attestation, final List<SDJWTSelectiveDisclosure> disclosures, final DSSDocument keyBinding) {
@@ -379,7 +492,7 @@ public class SDJWTService extends AbstractAttestationService<JAdESSignatureParam
     }
 
     @Override
-    protected MimeType getAttestationPresentationMimeType() {
+    protected MimeType getAttestationMimeType() {
         return MimeTypeEnum.JSON; // TODO : improve
     }
 

@@ -22,7 +22,7 @@ package eu.europa.esig.dss.attestation.common.validation.identifier;
 
 import eu.europa.esig.dss.attestation.common.validation.DefaultAttestation;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.attestation.SelectivelyDisclosableClaim;
+import eu.europa.esig.dss.model.attestation.SelectiveDisclosure;
 import eu.europa.esig.dss.spi.attestation.Attestation;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.utils.Utils;
@@ -64,7 +64,7 @@ public class AttestationIdentifierBuilder {
                 baos.write(signature.getId().getBytes());
             }
             if (Utils.isCollectionNotEmpty(attestation.getDisclosures())) {
-                for (SelectivelyDisclosableClaim disclosure : attestation.getDisclosures()) {
+                for (SelectiveDisclosure disclosure : attestation.getDisclosures()) {
                     baos.write(disclosure.getSalt());
                     if (disclosure.getName() != null) {
                         baos.write(disclosure.getName().getBytes());

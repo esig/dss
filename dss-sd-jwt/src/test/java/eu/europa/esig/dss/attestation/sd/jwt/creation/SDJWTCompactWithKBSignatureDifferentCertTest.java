@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class SDJWTCompactWithKBSignatureDifferentCertTest extends AbstractSDJWTTestIssuance {
+class SDJWTCompactWithKBSignatureDifferentCertTest extends AbstractSDJWTWithKBTestCreation {
 
     private SDJWTPayloadParameters payloadParameters;
     private JAdESSignatureParameters signatureParameters;
@@ -62,25 +62,8 @@ class SDJWTCompactWithKBSignatureDifferentCertTest extends AbstractSDJWTTestIssu
     }
 
     @Override
-    protected DSSDocument createKeyBindingSignature() {
-        if (includeKeyBindingSignature()) {
-            JAdESSignatureParameters params = getKeyBindingSignatureParameters();
-
-            DSSDocument signedAttestation = signAttestation();
-            List<SDJWTSelectiveDisclosure> disclosures = getDisclosures();
-            SDJWTKeyBindingParameters kbParams = getKeyBindingParameters();
-
-            ToBeSigned dataToSign = getService().getDataToSignForKeyBindingSignature(signedAttestation, disclosures, kbParams, params);
-
-            SignatureValue signatureValue;
-            try (CertEntitySignatureTokenConnection kbToken = new CertEntitySignatureTokenConnection(getCertEntity(ECDSA_521_USER))) {
-                DSSPrivateKeyEntry kbPrivateKeyEntry = kbToken.getKeys().iterator().next();
-                signatureValue = kbToken.sign(dataToSign, params.getSignatureAlgorithm(), kbPrivateKeyEntry);
-            }
-
-            return getService().createKeyBindingSignature(signedAttestation, disclosures, kbParams, params, signatureValue);
-        }
-        return null;
+    protected String getDeviceSigningAlias() {
+        return ECDSA_521_USER;
     }
 
     @Override

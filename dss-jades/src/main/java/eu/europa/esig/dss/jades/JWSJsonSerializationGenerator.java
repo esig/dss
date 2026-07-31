@@ -66,25 +66,41 @@ public class JWSJsonSerializationGenerator {
 	 * @return {@link DSSDocument} JWS signature
 	 */
 	public DSSDocument generate() {
-		JsonObject jsonSerialization;
+		String jsonSerialization;
 		switch (output) {
-		case JSON_SERIALIZATION:
-			jsonSerialization = buildJWSJsonSerialization();
-			break;
-		case FLATTENED_JSON_SERIALIZATION:
-			jsonSerialization = buildFlattenedJwsJsonSerialization();
-			break;
-		default:
-			throw new UnsupportedOperationException(String.format("The JWSJsonSerializationGenerator does not support the given JWS Serialization Type '%s'", output));
+            case COMPACT_SERIALIZATION:
+				jsonSerialization = buildJWSCompactSerialization();
+				break;
+			case JSON_SERIALIZATION:
+				jsonSerialization = buildJWSJsonSerialization();
+				break;
+			case FLATTENED_JSON_SERIALIZATION:
+				jsonSerialization = buildFlattenedJwsJsonSerialization();
+				break;
+			default:
+				throw new UnsupportedOperationException(String.format("The JWSJsonSerializationGenerator " +
+						"does not support the given JWS Serialization Type '%s'", output));
 		}
 
-		byte[] binaries = jsonSerialization.toJSONString().getBytes(StandardCharsets.UTF_8);
-		return new InMemoryDocument(binaries);
+		return new InMemoryDocument(jsonSerialization.getBytes(StandardCharsets.UTF_8));
 	}
 
-	private JsonObject buildJWSJsonSerialization() {
-		if (JWSSerializationType.FLATTENED_JSON_SERIALIZATION.equals(jwsJsonSerializationObject.getJWSSerializationType())) {
-			LOG.warn("A flattened signature will be transformed to a Complete JWS JSON Serialization Format!");
+	private String buildJWSCompactSerialization() {
+		if (!JWSSerializationType.COMPACT_SERIALIZATION.equals(jwsJsonSerializationObject.getJWSSerializationType())) {
+			LOG.info("A '{}' signature will be transformed to a JWS Compact Serialization Format.", jwsJsonSerializationObject.getJWSSerializationType());
+		}
+
+		List<JWS> signatures = jwsJsonSerializationObject.getSignatures();
+		if (Utils.collectionSize(signatures) != 1) {
+			throw new DSSException("JSON Compact Serialization can only contain 1 signature (current : " + Utils.collectionSize(signatures) + ")");
+		}
+		JWS jws = signatures.iterator().next();
+		return DSSJsonUtils.concatenate(jws.getEncodedHeader(), jws.getSignedPayload(), jws.getEncodedSignature());
+	}
+
+	private String buildJWSJsonSerialization() {
+		if (!JWSSerializationType.JSON_SERIALIZATION.equals(jwsJsonSerializationObject.getJWSSerializationType())) {
+			LOG.info("A '{}' signature will be transformed to a JWS JSON Serialization Format.", jwsJsonSerializationObject.getJWSSerializationType());
 		}
 
 		Map<String, Object> jsonSerializationMap = new LinkedHashMap<>();
@@ -101,10 +117,14 @@ public class JWSJsonSerializationGenerator {
 		}
 		jsonSerializationMap.put(JWSConstants.SIGNATURES, new JSONArray(signatureList));
 
-		return new JsonObject(jsonSerializationMap);
+		return new JsonObject(jsonSerializationMap).toJSONString();
 	}
 
-	private JsonObject buildFlattenedJwsJsonSerialization() {
+	private String buildFlattenedJwsJsonSerialization() {
+		if (!JWSSerializationType.FLATTENED_JSON_SERIALIZATION.equals(jwsJsonSerializationObject.getJWSSerializationType())) {
+			LOG.info("A '{}' signature will be transformed to a JWS JSON Flattened Serialization Format.!", jwsJsonSerializationObject.getJWSSerializationType());
+		}
+
 		Map<String, Object> flattenedJwsMap = new LinkedHashMap<>();
 		String payload = jwsJsonSerializationObject.getPayload();
 		if (Utils.isStringNotBlank(payload)) {
@@ -120,7 +140,7 @@ public class JWSJsonSerializationGenerator {
 		Map<String, Object> signatureJsonMap = getSignatureJsonMap(jws);
 		flattenedJwsMap.putAll(signatureJsonMap);
 
-		return new JsonObject(flattenedJwsMap);
+		return new JsonObject(flattenedJwsMap).toJSONString();
 	}
 
 	private Map<String, Object> getSignatureJsonMap(JWS signature) {

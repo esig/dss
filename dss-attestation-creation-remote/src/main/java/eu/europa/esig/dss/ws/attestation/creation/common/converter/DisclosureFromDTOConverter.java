@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.ws.attestation.creation.common.converter;
 
-import eu.europa.esig.dss.attestation.common.creation.SelectiveDisclosure;
-import eu.europa.esig.dss.attestation.mdoc.creation.MdocSelectiveDisclosure;
+import eu.europa.esig.dss.model.attestation.SelectiveDisclosure;
+import eu.europa.esig.dss.attestation.mdoc.creation.MdocIssuerSignedItem;
 import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTSelectiveDisclosure;
 import eu.europa.esig.dss.enumerations.AttestationForm;
 import eu.europa.esig.dss.utils.Utils;
@@ -54,7 +54,7 @@ public class DisclosureFromDTOConverter implements Function<DisclosureDTO, Selec
             case SD_JWT:
                 return new SDJWTSelectiveDisclosure(disclosureDTO.getValue());
             case MDOC:
-                return new MdocSelectiveDisclosure(disclosureDTO.getNamespace(), disclosureDTO.getDigestId(), Utils.fromBase64(disclosureDTO.getValue()));
+                return new MdocIssuerSignedItem(disclosureDTO.getNamespace(), disclosureDTO.getDigestId(), Utils.fromBase64(disclosureDTO.getValue()));
             default:
                 throw new UnsupportedOperationException(String.format("The attestation Type '%s' is not supported!", attestationForm));
         }

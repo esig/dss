@@ -68,14 +68,14 @@ public class DefaultSDJWTClaimBuilder implements SDJWTClaimBuilder {
         final SDJWTClaimParameters nonSd = payloadParameters.nonSelectivelyDisclosable();
         final SDJWTClaimParameters sd = payloadParameters.selectivelyDisclosable();
 
-        final List<SDJWTClaim> nonSelectivelyDisclosableClaims = buildClaims(nonSd, false);
+        final List<SDJWTClaim> nonSelectiveDisclosures = buildClaims(nonSd, false);
         final List<SDJWTClaim> selectivelyDisclosableClaims = buildClaims(sd, true);
 
-        ensureNoDuplicateClaimNames(nonSelectivelyDisclosableClaims, selectivelyDisclosableClaims);
+        ensureNoDuplicateClaimNames(nonSelectiveDisclosures, selectivelyDisclosableClaims);
 
         final List<SDJWTClaim> claims = new ArrayList<>();
         claims.addAll(buildTechnicalClaims(payloadParameters));
-        claims.addAll(nonSelectivelyDisclosableClaims);
+        claims.addAll(nonSelectiveDisclosures);
         claims.addAll(selectivelyDisclosableClaims);
 
         return claims;
@@ -181,21 +181,21 @@ public class DefaultSDJWTClaimBuilder implements SDJWTClaimBuilder {
     /**
      * Verifies whether the configuration does not contain duplicated claim names
      *
-     * @param nonSelectivelyDisclosableClaims a list of non-selectively disclosable {@link SDJWTClaim}s
+     * @param nonSelectiveDisclosures a list of non-selectively disclosable {@link SDJWTClaim}s
      * @param selectivelyDisclosableClaims a list of selectively disclosable {@link SDJWTClaim}s
      */
-    protected void ensureNoDuplicateClaimNames(final List<SDJWTClaim> nonSelectivelyDisclosableClaims,
+    protected void ensureNoDuplicateClaimNames(final List<SDJWTClaim> nonSelectiveDisclosures,
                                                final List<SDJWTClaim> selectivelyDisclosableClaims) {
-        final Set<String> nonSelectivelyDisclosableClaimNames = new HashSet<>();
-        for (SDJWTClaim claim : nonSelectivelyDisclosableClaims) {
+        final Set<String> nonSelectiveDisclosureNames = new HashSet<>();
+        for (SDJWTClaim claim : nonSelectiveDisclosures) {
             if (claim.getName() != null) {
-                nonSelectivelyDisclosableClaimNames.add(claim.getName());
+                nonSelectiveDisclosureNames.add(claim.getName());
             }
         }
 
         for (SDJWTClaim claim : selectivelyDisclosableClaims) {
             final String claimName = claim.getName();
-            if (claimName != null && nonSelectivelyDisclosableClaimNames.contains(claimName)) {
+            if (claimName != null && nonSelectiveDisclosureNames.contains(claimName)) {
                 throw new IllegalArgumentException(String.format("The claim '%s' cannot be both selectively disclosable and non-selectively disclosable", claimName));
             }
         }

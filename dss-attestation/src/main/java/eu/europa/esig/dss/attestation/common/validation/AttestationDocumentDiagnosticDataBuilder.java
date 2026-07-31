@@ -342,7 +342,7 @@ public class AttestationDocumentDiagnosticDataBuilder extends SignedDocumentDiag
      * @return {@link XmlDisclosableClaim}
      */
     protected XmlDisclosableClaim getXmlDisclosableClaim(DisclosureValidation disclosureValidation) {
-        if (disclosureValidation == null || (disclosureValidation.getClaimName() == null && disclosureValidation.getValue() == null
+        if (disclosureValidation == null || (disclosureValidation.getName() == null && disclosureValidation.getValue() == null
                 && disclosureValidation.getNamespace() == null && disclosureValidation.getDigestId() == null)) {
             return null;
         }
@@ -350,10 +350,10 @@ public class AttestationDocumentDiagnosticDataBuilder extends SignedDocumentDiag
         if (disclosureValidation.getDigestId() != null) {
             xmlClaim.setId(BigInteger.valueOf(disclosureValidation.getDigestId()));
         }
-        xmlClaim.setName(disclosureValidation.getClaimName());
+        xmlClaim.setName(disclosureValidation.getName());
         xmlClaim.setNamespace(disclosureValidation.getNamespace());
-        if (disclosureValidation.getValue() != null) {
-            xmlClaim.setValue(disclosureValidation.getValue().getValueAsString());
+        if (disclosureValidation.getVerifiedClaim() != null) {
+            xmlClaim.setValue(disclosureValidation.getVerifiedClaim().getValueAsString());
         }
         return xmlClaim;
     }

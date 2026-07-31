@@ -23,9 +23,9 @@ package eu.europa.esig.dss.ws.attestation.creation.common;
 import eu.europa.esig.dss.attestation.common.creation.AttestationPayloadParameters;
 import eu.europa.esig.dss.attestation.common.creation.AttestationService;
 import eu.europa.esig.dss.attestation.common.creation.KeyBindingParameters;
-import eu.europa.esig.dss.attestation.common.creation.SelectiveDisclosure;
+import eu.europa.esig.dss.model.attestation.SelectiveDisclosure;
 import eu.europa.esig.dss.attestation.mdoc.creation.MdocDeviceSignedParameters;
-import eu.europa.esig.dss.attestation.mdoc.creation.MdocSelectiveDisclosure;
+import eu.europa.esig.dss.attestation.mdoc.creation.MdocIssuerSignedItem;
 import eu.europa.esig.dss.attestation.mdoc.creation.MdocService;
 import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTService;
 import eu.europa.esig.dss.enumerations.AttestationForm;
@@ -117,10 +117,10 @@ public class RemoteAttestationCreationServiceImpl implements RemoteAttestationCr
         ToBeSigned toBeSigned;
         if (payloadParameters.getPreComputedPayload() != null) {
             DSSDocument dssDocument = RemoteDocumentConverter.toDSSDocument(payloadParameters.getPreComputedPayload());
-            toBeSigned = attestationService.getDataToBeSigned(dssDocument, parameters);
+            toBeSigned = attestationService.getDataToSign(dssDocument, parameters);
         } else {
             AttestationPayloadParameters attestationPayloadParameters = new RemoteAttestationPayloadParametersBuilder(payloadParameters).build();
-            toBeSigned = attestationService.getDataToBeSigned(attestationPayloadParameters, parameters);
+            toBeSigned = attestationService.getDataToSign(attestationPayloadParameters, parameters);
         }
         LOG.info("GetDataToSign for attestation signature is finished");
         return DTOConverter.toToBeSignedDTO(toBeSigned);
@@ -235,7 +235,7 @@ public class RemoteAttestationCreationServiceImpl implements RemoteAttestationCr
                 attestationPresentation = attestationService.issuePresentation(dssDocument, disclosures, keyBindingDocument);
                 break;
             case MDOC:
-                List<MdocSelectiveDisclosure> mdocAttestationDisclosures = disclosures.stream().map(d -> (MdocSelectiveDisclosure) d).collect(Collectors.toList());
+                List<MdocIssuerSignedItem> mdocAttestationDisclosures = disclosures.stream().map(d -> (MdocIssuerSignedItem) d).collect(Collectors.toList());
                 MdocDeviceSignedParameters deviceSignedParameters = new RemoteAttestationPresentationParametersBuilder(
                         presentationParameters).buildMdocDeviceSignedParameters();
                 attestationPresentation = ((MdocService) attestationService).issuePresentation(

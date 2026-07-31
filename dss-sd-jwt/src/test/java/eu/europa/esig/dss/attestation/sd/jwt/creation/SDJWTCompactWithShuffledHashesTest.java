@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class SDJWTCompactWithShuffledHashesTest extends AbstractSDJWTTestIssuance {
+class SDJWTCompactWithShuffledHashesTest extends AbstractSDJWTTestCreation {
 
     private SDJWTPayloadParameters payloadParameters;
     private JAdESSignatureParameters signatureParameters;
@@ -80,16 +80,6 @@ class SDJWTCompactWithShuffledHashesTest extends AbstractSDJWTTestIssuance {
     }
 
     @Override
-    protected JAdESSignatureParameters getKeyBindingSignatureParameters() {
-        return null;
-    }
-
-    @Override
-    protected SDJWTKeyBindingParameters getKeyBindingParameters() {
-        return null;
-    }
-
-    @Override
     protected void checkClaims(final DiagnosticData diagnosticData) {
         super.checkClaims(diagnosticData);
 
@@ -102,7 +92,7 @@ class SDJWTCompactWithShuffledHashesTest extends AbstractSDJWTTestIssuance {
         assertEquals("Doe", attestation.getFamilyName());
         assertEquals("john.doe@example.com", attestation.getEmail());
 
-        List<ClaimWrapper> sdClaims = attestation.getSelectivelyDisclosableClaims();
+        List<ClaimWrapper> sdClaims = attestation.getSelectiveDisclosures();
         assertNotNull(sdClaims);
         assertEquals(3, sdClaims.size());
         assertTrue(sdClaims.stream().allMatch(ClaimWrapper::isSelectivelyDisclosable));

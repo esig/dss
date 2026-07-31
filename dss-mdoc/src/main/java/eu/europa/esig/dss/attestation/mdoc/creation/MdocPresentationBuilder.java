@@ -58,10 +58,10 @@ public class MdocPresentationBuilder {
      * Builds a DSSDocument representing the IssuerSigned structure as defined in "8.3.2.1.2.2 Device retrieval mdoc response"
      *
      * @param attestation {@link DSSDocument} containing the signed attestation
-     * @param disclosures a list of {@link MdocSelectiveDisclosure}s to be included
+     * @param disclosures a list of {@link MdocIssuerSignedItem}s to be included
      * @return {@link DSSDocument}
      */
-    public DSSDocument buildIssuerSignedDocument(DSSDocument attestation, List<MdocSelectiveDisclosure> disclosures) {
+    public DSSDocument buildIssuerSignedDocument(DSSDocument attestation, List<MdocIssuerSignedItem> disclosures) {
         CBORMap issuerSigned = buildIssuerSigned(attestation, disclosures);
         return new InMemoryDocument(CBORUtils.serializeCborObject(issuerSigned));
     }
@@ -77,10 +77,10 @@ public class MdocPresentationBuilder {
      * }
      *
      * @param attestation {@link DSSDocument} containing the attestation signature (IssuerAuth)
-     * @param disclosures a list of {@link MdocSelectiveDisclosure}s to be included
+     * @param disclosures a list of {@link MdocIssuerSignedItem}s to be included
      * @return {@link CBORMap}
      */
-    protected CBORMap buildIssuerSigned(DSSDocument attestation, List<MdocSelectiveDisclosure> disclosures) {
+    protected CBORMap buildIssuerSigned(DSSDocument attestation, List<MdocIssuerSignedItem> disclosures) {
         Objects.requireNonNull(attestation, "Attestation cannot be null!");
         if (!CBORUtils.isCbor(attestation)) {
             throw new IllegalInputException("Attestation document shall represent a CBOR encoded object!");
@@ -111,14 +111,14 @@ public class MdocPresentationBuilder {
      *   }
      * }
      *
-     * @param disclosures a list of {@link MdocSelectiveDisclosure}s to be included
+     * @param disclosures a list of {@link MdocIssuerSignedItem}s to be included
      * @return {@link CBORMap}
      */
-    protected CBORMap buildIssuerNameSpaces(List<MdocSelectiveDisclosure> disclosures) {
+    protected CBORMap buildIssuerNameSpaces(List<MdocIssuerSignedItem> disclosures) {
         final CBORMap issuerNameSpaces = new CBORMap();
         Map<String, List<CBORByteString>> issuerSignedBytesByNamespace = disclosures.stream().collect(
-                Collectors.groupingBy(MdocSelectiveDisclosure::getNamespace, LinkedHashMap::new,
-                        Collectors.mapping(MdocSelectiveDisclosure::getIssuerSignedItemBytes, Collectors.toList())));
+                Collectors.groupingBy(MdocIssuerSignedItem::getNamespace, LinkedHashMap::new,
+                        Collectors.mapping(MdocIssuerSignedItem::getIssuerSignedItemBytes, Collectors.toList())));
         issuerSignedBytesByNamespace.forEach((k, v) -> issuerNameSpaces.put(k, new CBORArray(v)));
         return issuerNameSpaces;
     }
@@ -127,11 +127,11 @@ public class MdocPresentationBuilder {
      * Builds a DeviceResponse structure
      *
      * @param attestation {@link DSSDocument}
-     * @param disclosures a list of {@link MdocSelectiveDisclosure}s
+     * @param disclosures a list of {@link MdocIssuerSignedItem}s
      * @param keyBinding {@link DSSDocument}
      * @param deviceSignedParameters {@link MdocDeviceSignedParameters}
      */
-    public DSSDocument buildDeviceResponseDocument(DSSDocument attestation, List<MdocSelectiveDisclosure> disclosures,
+    public DSSDocument buildDeviceResponseDocument(DSSDocument attestation, List<MdocIssuerSignedItem> disclosures,
                                                    DSSDocument keyBinding, MdocDeviceSignedParameters deviceSignedParameters) {
         try {
             CBORMap issuerSigned = buildIssuerSigned(attestation, disclosures);

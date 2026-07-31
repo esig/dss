@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.attestation.sd.jwt;
 
-import eu.europa.esig.dss.attestation.sd.jwt.validation.SDJWTSelectivelyDisclosableClaim;
+import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTSelectiveDisclosure;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JWSCompactSerializationParser;
@@ -29,7 +29,6 @@ import eu.europa.esig.dss.jades.JWSJsonSerializationParser;
 import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.attestation.SelectivelyDisclosableClaim;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
@@ -89,6 +88,7 @@ public class SDJWTJsonSerializationParser {
         }
 
         final SDJWTSerializationObject sdjwtSerializationObject = new SDJWTSerializationObject();
+        sdjwtSerializationObject.setJWSSerializationType(jwsJsonSerializationObject.getJWSSerializationType());
         sdjwtSerializationObject.setSignature(jwsJsonSerializationObject);
 
         JWS signature = signatures.get(0);
@@ -102,7 +102,7 @@ public class SDJWTJsonSerializationParser {
         return sdjwtSerializationObject;
     }
 
-    private List<SelectivelyDisclosableClaim> getDisclosures(JWS signature) {
+    private List<SDJWTSelectiveDisclosure> getDisclosures(JWS signature) {
         Map<String, Object> unprotectedHeader = signature.getUnprotected();
         if (Utils.isMapEmpty(unprotectedHeader)) {
             return null;
@@ -113,7 +113,7 @@ public class SDJWTJsonSerializationParser {
             return Collections.emptyList();
         }
 
-        final List<SelectivelyDisclosableClaim> result = new ArrayList<>();
+        final List<SDJWTSelectiveDisclosure> result = new ArrayList<>();
         for (Object disclosureObject : disclosures) {
             if (!(disclosureObject instanceof String)) {
                 LOG.warn("The disclosure object shall be of String type! Skip the array item.");
@@ -121,7 +121,7 @@ public class SDJWTJsonSerializationParser {
             }
             String disclosureB64Url = (String) disclosureObject;
             try {
-                final SDJWTSelectivelyDisclosableClaim disclosure = new SDJWTSelectivelyDisclosableClaim(disclosureB64Url);
+                final SDJWTSelectiveDisclosure disclosure = new SDJWTSelectiveDisclosure(disclosureB64Url);
                 result.add(disclosure);
 
             } catch (Exception e) {

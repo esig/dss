@@ -1,15 +1,15 @@
 package eu.europa.esig.dss.attestation.sd.jwt.validation;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
-import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.AttestationWrapper;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.validationreport.jaxb.SignersDocumentType;
 
-class SDJWTCompactKBWithoutNonce extends AbstractSDJWTTestValidation {
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
+class SDJWTCompactKBWithoutNonceTest extends AbstractSDJWTTestValidation {
 
     @Override
     protected DSSDocument getSignedDocument() {

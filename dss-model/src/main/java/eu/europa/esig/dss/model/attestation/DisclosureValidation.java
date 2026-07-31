@@ -35,7 +35,10 @@ public class DisclosureValidation extends ReferenceValidation {
     private static final long serialVersionUID = -191049727174569696L;
 
     /** Disclosure object, when applicable */
-    private SelectivelyDisclosableClaim disclosure;
+    private SelectiveDisclosure disclosure;
+
+    /** Disclosure transformed to a VerifiedClaim object */
+    private VerifiedClaim verifiedClaim;
 
     /** Namespace of the selective disclosure (mdoc) */
     private String namespace;
@@ -53,19 +56,21 @@ public class DisclosureValidation extends ReferenceValidation {
     /**
      * Constructor with a provided disclosure
      *
-     * @param disclosure {@link SelectivelyDisclosableClaim}
+     * @param disclosure {@link SelectiveDisclosure}
      */
-    public DisclosureValidation(SelectivelyDisclosableClaim disclosure) {
+    public DisclosureValidation(SelectiveDisclosure disclosure, VerifiedClaim verifiedClaim) {
         Objects.requireNonNull(disclosure, "Disclosure cannot be null!");
+        Objects.requireNonNull(verifiedClaim, "VerifiedClaim cannot be null!");
         this.disclosure = disclosure;
+        this.verifiedClaim = verifiedClaim;
     }
 
     /**
      * Gets disclosure when applicable
      *
-     * @return {@link SelectivelyDisclosableClaim}
+     * @return {@link SelectiveDisclosure}
      */
-    public SelectivelyDisclosableClaim getDisclosure() {
+    public SelectiveDisclosure getDisclosure() {
         return disclosure;
     }
 
@@ -74,17 +79,26 @@ public class DisclosureValidation extends ReferenceValidation {
      *
      * @return {@link String}
      */
-    public String getClaimName() {
+    public String getName() {
         return disclosure != null ? disclosure.getName() : null;
     }
 
     /**
      * Gets the original provided disclosure claim value
      *
+     * @return {@link Object}
+     */
+    public Object getValue() {
+        return disclosure != null ? disclosure.getValue() : null;
+    }
+
+    /**
+     * Gets the verified claim
+     *
      * @return {@link VerifiedClaim}
      */
-    public VerifiedClaim getValue() {
-        return disclosure != null ? disclosure.getClaimValue() : null;
+    public VerifiedClaim getVerifiedClaim() {
+        return verifiedClaim;
     }
 
     /**
@@ -93,10 +107,7 @@ public class DisclosureValidation extends ReferenceValidation {
      * @return {@link String}
      */
     public String getNamespace() {
-        if (namespace != null) {
-            return namespace;
-        }
-        return disclosure != null ? disclosure.getNamespace() : null;
+        return namespace;
     }
 
     /**
@@ -114,10 +125,7 @@ public class DisclosureValidation extends ReferenceValidation {
      * @return {@link Long}
      */
     public Long getDigestId() {
-        if (digestId != null) {
-            return digestId;
-        }
-        return disclosure != null ? disclosure.getDigestId() : null;
+        return digestId;
     }
 
     /**
@@ -127,25 +135,6 @@ public class DisclosureValidation extends ReferenceValidation {
      */
     public void setDigestId(Long digestId) {
         this.digestId = digestId;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        if (this == object) return true;
-        if (object == null || getClass() != object.getClass()) return false;
-
-        DisclosureValidation that = (DisclosureValidation) object;
-        return Objects.equals(disclosure, that.disclosure)
-                && Objects.equals(namespace, that.namespace)
-                && Objects.equals(digestId, that.digestId);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = Objects.hashCode(disclosure);
-        result = 31 * result + Objects.hashCode(namespace);
-        result = 31 * result + Objects.hashCode(digestId);
-        return result;
     }
 
 }

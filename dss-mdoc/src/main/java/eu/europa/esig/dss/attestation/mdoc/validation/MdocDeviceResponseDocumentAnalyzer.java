@@ -37,7 +37,7 @@ import eu.europa.esig.dss.attestation.mdoc.model.MdocIssuerSigned;
 import eu.europa.esig.dss.enumerations.AttestationDocumentFormat;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.attestation.SelectivelyDisclosableClaim;
+import eu.europa.esig.dss.model.attestation.SelectiveDisclosure;
 import eu.europa.esig.dss.spi.attestation.Attestation;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import org.slf4j.Logger;
@@ -121,9 +121,9 @@ public class MdocDeviceResponseDocumentAnalyzer extends AbstractMdocDocumentAnal
      * Returns a list of disclosures extracted for every namespace from a Document structure
      *
      * @param issuerSigned {@link MdocIssuerSigned}
-     * @return a list of {@link SelectivelyDisclosableClaim}s
+     * @return a list of {@link SelectiveDisclosure}s
      */
-    protected List<SelectivelyDisclosableClaim> getSignedItems(MdocIssuerSigned issuerSigned) {
+    protected List<SelectiveDisclosure> getSignedItems(MdocIssuerSigned issuerSigned) {
         return new MdocIssuerSignedDocumentAnalyzer(document, issuerSigned).getSignedItems();
     }
 

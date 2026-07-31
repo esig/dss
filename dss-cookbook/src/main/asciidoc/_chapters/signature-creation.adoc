@@ -57,7 +57,7 @@ The DSS framework is compatible with the baseline profiles. However, it is not p
 ==== Signature classes/levels
 The ETSI standard EN 319 102-1 (cf. <<R09>>) defines four conformance classes to address the need to protect the validity of the signature in time. Henceforth, to denote the class of the signature the word "level" will be used. Follows the list of profiles implementing the four classes defined in the standard:
 
-* AdES-BASELINE-*B*: Profile implementing the signature class _Basic Signature_ +
+* AdES-BASELINE-*P*: Profile implementing the signature class _Basic Signature_ +
 The lowest and simplest version containing at least a signature value, a reference to or a copy of the signing certificate as a signed attribute, and optionally other signed or unsigned attributes.
 * AdES-BASELINE-*T*: Profile implementing the signature class _Signature with time_ +
 A timestamp regarding the time of signing is added to protect against repudiation.
