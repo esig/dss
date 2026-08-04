@@ -135,16 +135,6 @@ class MdocISOMdLDecoyDigestTest extends AbstractMdocIssuerSignedTestCreation {
     }
 
     @Override
-    protected CBAdESSignatureParameters getKeyBindingSignatureParameters() {
-        return null;
-    }
-
-    @Override
-    protected boolean keyBindingPresent() {
-        return false;
-    }
-
-    @Override
     protected String getSigningAlias() {
         return ECDSA_USER;
     }

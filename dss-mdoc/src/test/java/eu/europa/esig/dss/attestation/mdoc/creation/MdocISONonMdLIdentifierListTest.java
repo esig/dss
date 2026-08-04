@@ -78,11 +78,6 @@ class MdocISONonMdLIdentifierListTest extends AbstractMdocIssuerSignedTestCreati
     }
 
     @Override
-    protected CBAdESSignatureParameters getKeyBindingSignatureParameters() {
-        return null;
-    }
-
-    @Override
     protected void checkAttestationDigestMatchers(DiagnosticData diagnosticData) {
         super.checkAttestationDigestMatchers(diagnosticData);
 
@@ -159,11 +154,6 @@ class MdocISONonMdLIdentifierListTest extends AbstractMdocIssuerSignedTestCreati
         assertNull(attestation.getStatusIndex());
         assertNull(attestation.getStatusUri());
         assertNull(attestation.getStatusCertificate());
-    }
-
-    @Override
-    protected boolean keyBindingPresent() {
-        return false;
     }
 
     @Override

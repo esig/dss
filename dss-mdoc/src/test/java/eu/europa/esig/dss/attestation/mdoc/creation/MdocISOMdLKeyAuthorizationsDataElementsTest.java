@@ -90,11 +90,6 @@ class MdocISOMdLKeyAuthorizationsDataElementsTest extends AbstractMdocIssuerSign
     }
 
     @Override
-    protected CBAdESSignatureParameters getKeyBindingSignatureParameters() {
-        return null;
-    }
-
-    @Override
     protected void checkAttestationDigestMatchers(DiagnosticData diagnosticData) {
         super.checkAttestationDigestMatchers(diagnosticData);
 
@@ -185,11 +180,6 @@ class MdocISOMdLKeyAuthorizationsDataElementsTest extends AbstractMdocIssuerSign
         Map<String, List<String>> dataElementsMap = new HashMap<>();
         dataElementsMap.put("org.iso.18013.5.1", Arrays.asList("family_name", "given_name", "birth_date", "portrait", "driving_privileges"));
         assertEquals(dataElementsMap, attestation.getDeviceKeyAuthorizedDataElements());
-    }
-
-    @Override
-    protected boolean keyBindingPresent() {
-        return false;
     }
 
     @Override

@@ -65,7 +65,7 @@ public class AttestationTypeCheck extends AbstractMultiValuesCheckItem<XmlSAV> {
                 }
                 return processValueCheck(docType);
             default:
-                throw new UnsupportedOperationException(String.format("The attestation Type '%s' is not supported!", attestation.getAttestationProfile()));
+                throw new UnsupportedOperationException(String.format("The attestation type '%s' is not supported!", attestation.getAttestationProfile()));
         }
     }
 

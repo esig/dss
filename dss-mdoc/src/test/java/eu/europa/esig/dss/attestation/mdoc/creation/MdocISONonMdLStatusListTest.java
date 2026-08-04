@@ -77,11 +77,6 @@ class MdocISONonMdLStatusListTest extends AbstractMdocIssuerSignedTestCreation {
     }
 
     @Override
-    protected CBAdESSignatureParameters getKeyBindingSignatureParameters() {
-        return null;
-    }
-
-    @Override
     protected void checkAttestationDigestMatchers(DiagnosticData diagnosticData) {
         super.checkAttestationDigestMatchers(diagnosticData);
 
@@ -154,11 +149,6 @@ class MdocISONonMdLStatusListTest extends AbstractMdocIssuerSignedTestCreation {
         assertEquals(1, attestation.getStatusIndex());
         assertEquals("https://pki.nowina.lu/eaa/status_list", attestation.getStatusUri());
         assertNull(attestation.getStatusCertificate());
-    }
-
-    @Override
-    protected boolean keyBindingPresent() {
-        return false;
     }
 
     @Override

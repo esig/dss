@@ -90,11 +90,6 @@ class SDJWTCompactOneTimeCreationTest extends AbstractSDJWTTestCreation {
     }
 
     @Override
-    protected boolean keyBindingPresent() {
-        return false;
-    }
-
-    @Override
     protected String getSigningAlias() {
         return signer;
     }

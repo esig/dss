@@ -11,11 +11,13 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
+import eu.europa.esig.dss.utils.Utils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -142,28 +144,11 @@ class MdocServiceTest extends PKIFactoryAccess {
     }
 
     @Test
-    void getDisclosuresTest() {
+    void generateDisclosuresTest() {
         Exception exception = assertThrows(NullPointerException.class, () -> service.generateDisclosures(null));
         assertEquals("MdocPayloadParameters cannot be null!", exception.getMessage());
 
         MdocPayloadParameters params = new MdocPayloadParameters();
-
-        exception = assertThrows(NullPointerException.class, () -> service.generateDisclosures(params));
-        assertEquals("Signed date cannot be null!", exception.getMessage());
-        params.setSigned(new Date());
-
-        exception = assertThrows(NullPointerException.class, () -> service.generateDisclosures(params));
-        assertEquals("ValidFrom date cannot be null!", exception.getMessage());
-        params.setValidFrom(new Date());
-
-        exception = assertThrows(NullPointerException.class, () -> service.generateDisclosures(params));
-        assertEquals("ValidUntil date cannot be null!", exception.getMessage());
-        params.setValidUntil(new Date(System.currentTimeMillis() + 365L * 24 * 60 * 60 * 1000));
-
-        exception = assertThrows(NullPointerException.class, () -> service.generateDisclosures(params));
-        assertEquals("DocType cannot be null!", exception.getMessage());
-        params.setDocType(MdocConstants.ISO23220_1_MID_DOC_TYPE);
-
         List<MdocIssuerSignedItem> disclosures = service.generateDisclosures(params);
         assertNotNull(disclosures);
         assertTrue(disclosures.isEmpty());
@@ -177,6 +162,50 @@ class MdocServiceTest extends PKIFactoryAccess {
             assertNotNull(disclosure.getNamespace());
             assertNotNull(disclosure.getIssuerSignedItemBytes());
         }
+    }
+
+    @Test
+    void issueAttestationTest() {
+        Exception exception = assertThrows(NullPointerException.class, () -> service.issueAttestation(null));
+        assertEquals("The attestation cannot be null!", exception.getMessage());
+
+        exception = assertThrows(IllegalInputException.class, () -> service.issueAttestation(new InMemoryDocument("Hello World".getBytes())));
+        assertEquals("Attestation document shall represent a CBOR encoded object!", exception.getMessage());
+
+        ToBeSigned dataToSign = service.getDataToSign(payloadParameters, signatureParameters);
+        SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
+        DSSDocument signedAttestation = service.signAttestation(payloadParameters, signatureParameters, signatureValue);
+
+        exception = assertThrows(NullPointerException.class, () -> service.issueAttestation(signedAttestation, (MdocPayloadParameters) null));
+        assertEquals("MdocPayloadParameters cannot be null!", exception.getMessage());
+
+        DSSDocument attestation = service.issueAttestation(signedAttestation, payloadParameters);
+        assertNotNull(attestation);
+
+        attestation = service.issueAttestation(signedAttestation, (List<MdocIssuerSignedItem>) null);
+        assertNotNull(attestation);
+
+        List<MdocIssuerSignedItem> disclosures = service.generateDisclosures(payloadParameters);
+        assertTrue(Utils.isCollectionNotEmpty(disclosures));
+
+        attestation = service.issueAttestation(signedAttestation, disclosures);
+        assertNotNull(attestation);
+    }
+
+    @Test
+    void parseAttestationTest() {
+        Exception exception = assertThrows(NullPointerException.class, () -> service.parseAttestation(null));
+        assertEquals("The attestation cannot be null!", exception.getMessage());
+
+        DSSDocument attestation = new FileDocument("src/test/resources/validation/mdocIssuerSigned.cbor");
+        MdocIssuerSignedDocument parsedAttestation = service.parseAttestation(attestation);
+        assertNotNull(parsedAttestation);
+        assertNotNull(parsedAttestation.getSignedAttestation());
+        assertTrue(Utils.isCollectionNotEmpty(parsedAttestation.getSelectiveDisclosures()));
+
+        exception = assertThrows(IllegalInputException.class, () ->
+                service.parseAttestation(new FileDocument("src/test/resources/validation/mdoc-valid.cbor")));
+        assertEquals("An instance of IssuerSigned is expected!", exception.getMessage());
     }
 
     @Test

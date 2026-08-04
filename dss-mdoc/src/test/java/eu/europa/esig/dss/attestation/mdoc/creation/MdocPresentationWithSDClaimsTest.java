@@ -64,11 +64,6 @@ class MdocPresentationWithSDClaimsTest extends AbstractMdocIssuerSignedTestCreat
     }
 
     @Override
-    protected CBAdESSignatureParameters getKeyBindingSignatureParameters() {
-        return null;
-    }
-
-    @Override
     protected void checkAttestationDigestMatchers(DiagnosticData diagnosticData) {
         super.checkAttestationDigestMatchers(diagnosticData);
 

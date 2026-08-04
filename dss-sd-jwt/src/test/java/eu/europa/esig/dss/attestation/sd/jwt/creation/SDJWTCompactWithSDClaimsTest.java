@@ -112,11 +112,6 @@ class SDJWTCompactWithSDClaimsTest extends AbstractSDJWTTestCreation {
     }
 
     @Override
-    protected boolean keyBindingPresent() {
-        return false;
-    }
-
-    @Override
     protected String getSigningAlias() {
         return GOOD_USER;
     }

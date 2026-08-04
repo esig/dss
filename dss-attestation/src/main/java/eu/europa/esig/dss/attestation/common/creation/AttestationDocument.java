@@ -35,21 +35,11 @@ public abstract class AttestationDocument<D extends SelectiveDisclosure> extends
      * @param selectiveDisclosures a list of {@link SelectiveDisclosure}s, if any
      */
     protected AttestationDocument(final DSSDocument attestationDocument, final DSSDocument signedAttestation,
-                               final List<D> selectiveDisclosures) {
+                                  final List<D> selectiveDisclosures) {
         Objects.requireNonNull(attestationDocument, "SD Attestation cannot be null!");
         this.attestationDocument = attestationDocument;
         this.signedAttestation = signedAttestation;
         this.selectiveDisclosures = selectiveDisclosures;
-    }
-
-    /**
-     * Gets the SD attestation document (formatted token containing both
-     * the signed attestation and a list of selective disclosures)
-     *
-     * @return {@link DSSDocument}
-     */
-    public DSSDocument getSDAttestation() {
-        return attestationDocument;
     }
 
     /**

@@ -54,9 +54,13 @@ public class DisclosureFromDTOConverter implements Function<DisclosureDTO, Selec
             case SD_JWT:
                 return new SDJWTSelectiveDisclosure(disclosureDTO.getValue());
             case MDOC:
-                return new MdocIssuerSignedItem(disclosureDTO.getNamespace(), disclosureDTO.getDigestId(), Utils.fromBase64(disclosureDTO.getValue()));
+                if (disclosureDTO.getDigestId() == null) {
+                    return new MdocIssuerSignedItem(disclosureDTO.getNamespace(), Utils.fromBase64(disclosureDTO.getValue()));
+                } else {
+                    return new MdocIssuerSignedItem(disclosureDTO.getNamespace(), disclosureDTO.getDigestId().intValue(), Utils.fromBase64(disclosureDTO.getValue()));
+                }
             default:
-                throw new UnsupportedOperationException(String.format("The attestation Type '%s' is not supported!", attestationForm));
+                throw new UnsupportedOperationException(String.format("The attestation form '%s' is not supported!", attestationForm));
         }
     }
 

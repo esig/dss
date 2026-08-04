@@ -8,10 +8,13 @@ import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
+import eu.europa.esig.dss.utils.Utils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -114,19 +117,11 @@ class SDJWTServiceTest extends PKIFactoryAccess {
     }
 
     @Test
-    void getDisclosuresTest() {
+    void generateDisclosuresTest() {
         Exception exception = assertThrows(NullPointerException.class, () -> service.generateDisclosures(null));
         assertEquals("SDJWTPayloadParameters cannot be null!", exception.getMessage());
 
         SDJWTPayloadParameters params = new SDJWTPayloadParameters();
-
-        exception = assertThrows(NullPointerException.class, () -> service.generateDisclosures(params));
-        assertEquals("NotBefore date cannot be null!", exception.getMessage());
-        params.setNotBeforeDate(new Date());
-
-        exception = assertThrows(NullPointerException.class, () -> service.generateDisclosures(params));
-        assertEquals("Expiration date a cannot be null!", exception.getMessage());
-        params.setExpirationDate(new Date(System.currentTimeMillis() + 365L * 24 * 60 * 60 * 1000));
 
         List<SDJWTSelectiveDisclosure> disclosures = service.generateDisclosures(params);
         assertNotNull(disclosures);
@@ -145,6 +140,55 @@ class SDJWTServiceTest extends PKIFactoryAccess {
         for (SDJWTSelectiveDisclosure disclosure : disclosures) {
             assertNotNull(disclosure.getDisclosure());
         }
+    }
+
+    @Test
+    void issueAttestationTest() {
+        Exception exception = assertThrows(NullPointerException.class, () -> service.issueAttestation(null));
+        assertEquals("The attestation cannot be null!", exception.getMessage());
+
+        exception = assertThrows(IllegalInputException.class, () -> service.issueAttestation(new InMemoryDocument(new byte[] { 0, 1, 2, 3 })));
+        assertEquals("The signed attestation must be a JWS Signature", exception.getMessage());
+
+        payloadParameters.selectivelyDisclosable().setNickname("X-Man");
+
+        ToBeSigned dataToSign = service.getDataToSign(payloadParameters, signatureParameters);
+        SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
+        DSSDocument signedAttestation = service.signAttestation(payloadParameters, signatureParameters, signatureValue);
+
+        exception = assertThrows(NullPointerException.class, () -> service.issueAttestation(signedAttestation, (SDJWTPayloadParameters) null));
+        assertEquals("SDJWTPayloadParameters cannot be null!", exception.getMessage());
+
+        DSSDocument attestation = service.issueAttestation(signedAttestation, payloadParameters);
+        assertNotNull(attestation);
+
+        attestation = service.issueAttestation(signedAttestation, (List<SDJWTSelectiveDisclosure>) null);
+        assertNotNull(attestation);
+
+        List<SDJWTSelectiveDisclosure> disclosures = service.generateDisclosures(payloadParameters);
+        assertTrue(Utils.isCollectionNotEmpty(disclosures));
+
+        attestation = service.issueAttestation(signedAttestation, disclosures);
+        assertNotNull(attestation);
+    }
+
+    @Test
+    void parseAttestationTest() {
+        Exception exception = assertThrows(NullPointerException.class, () -> service.parseAttestation(null));
+        assertEquals("The attestation cannot be null!", exception.getMessage());
+
+        DSSDocument attestation = new FileDocument("src/test/resources/validation/sd-jwt-compact-valid.json");
+        SDJWTAttestationDocument parsedAttestation = service.parseAttestation(attestation);
+        assertNotNull(parsedAttestation);
+        assertNotNull(parsedAttestation.getSignedAttestation());
+        assertTrue(Utils.isCollectionNotEmpty(parsedAttestation.getSelectiveDisclosures()));
+
+        // TODO : allow SD-JWT+KB ?
+        attestation = new FileDocument("src/test/resources/validation/sdjwt-json-valid-presentation.json");
+        parsedAttestation = service.parseAttestation(attestation);
+        assertNotNull(parsedAttestation);
+        assertNotNull(parsedAttestation.getSignedAttestation());
+        assertTrue(Utils.isCollectionNotEmpty(parsedAttestation.getSelectiveDisclosures()));
     }
 
     @Test
@@ -211,7 +255,7 @@ class SDJWTServiceTest extends PKIFactoryAccess {
         assertEquals("The attestation cannot be null!", exception.getMessage());
 
         DSSDocument nonJwsDoc = new InMemoryDocument("not-a-jws-document".getBytes());
-        exception = assertThrows(DSSException.class, () -> service.issuePresentation(nonJwsDoc, Collections.emptyList(), null));
+        exception = assertThrows(IllegalInputException.class, () -> service.issuePresentation(nonJwsDoc, Collections.emptyList(), null));
         assertEquals("The signed attestation must be a JWS Signature", exception.getMessage());
 
         DSSDocument signedAttestation = createSignedAttestation(payloadParameters, signatureParameters);

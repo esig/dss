@@ -260,8 +260,6 @@ public class SDJWTService extends AbstractAttestationSDService<JAdESSignaturePar
     @Override
     public List<SDJWTSelectiveDisclosure> generateDisclosures(final SDJWTPayloadParameters payloadParameters) {
         Objects.requireNonNull(payloadParameters, "SDJWTPayloadParameters cannot be null!");
-        Objects.requireNonNull(payloadParameters.getNotBeforeDate(), "NotBefore date cannot be null!");
-        Objects.requireNonNull(payloadParameters.getExpirationDate(), "Expiration date a cannot be null!");
         return getPayloadBuilder().buildDisclosures(payloadParameters);
     }
 
@@ -283,6 +281,8 @@ public class SDJWTService extends AbstractAttestationSDService<JAdESSignaturePar
 
     @Override
     public SDJWTAttestationDocument parseAttestation(DSSDocument attestation) {
+        Objects.requireNonNull(attestation, "The attestation cannot be null!");
+
         SDJWTDocumentAnalyzerFactory factory = new SDJWTDocumentAnalyzerFactory();
         if (factory.isSupported(attestation)) {
             SDJWTSerializationObject sdjwtSerializationObject = factory.create(attestation).buildSDJWTSerializationObject();
@@ -429,7 +429,7 @@ public class SDJWTService extends AbstractAttestationSDService<JAdESSignaturePar
             return attestationPresentation;
         }
 
-        throw new DSSException("The signed attestation must be a JWS Signature");
+        throw new IllegalInputException("The signed attestation must be a JWS Signature");
     }
 
     @Override

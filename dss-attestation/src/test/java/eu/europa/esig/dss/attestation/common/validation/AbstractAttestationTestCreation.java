@@ -63,22 +63,22 @@ public abstract class AbstractAttestationTestCreation<SP extends SerializableSig
 
     @Test
     public void signAndVerify() {
-        final DSSDocument attestationPresentation = getSignedDocument();
+        final DSSDocument attestation = getSignedDocument();
 
-        assertNotNull(attestationPresentation.getName());
-        assertNotNull(attestationPresentation.getMimeType());
+        assertNotNull(attestation.getName());
+        assertNotNull(attestation.getMimeType());
 
-        // attestationPresentation.save("target/" + attestationPresentation.getName());
+        // attestation.save("target/" + attestationPresentation.getName());
 
-        byte[] byteArray = DSSUtils.toByteArray(attestationPresentation);
+        byte[] byteArray = DSSUtils.toByteArray(attestation);
         onDocumentSigned(byteArray);
         if (LOG.isDebugEnabled()) {
             LOG.debug(new String(byteArray));
         }
 
-        checkMimeType(attestationPresentation);
+        checkMimeType(attestation);
 
-        verify(attestationPresentation);
+        verify(attestation);
     }
 
     @Override

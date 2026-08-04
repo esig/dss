@@ -39,7 +39,7 @@ public class CreateKeyBindingSignatureDTO extends AbstractSignDocumentDTO {
     private static final long serialVersionUID = -6759188412043606519L;
 
     /** Signed attestation document */
-    private RemoteDocument attestation;
+    private RemoteDocument signedAttestation;
 
     /** (Optional) List of disclosures */
     private List<DisclosureDTO> disclosures;
@@ -57,17 +57,17 @@ public class CreateKeyBindingSignatureDTO extends AbstractSignDocumentDTO {
     /**
      * Default constructor
      *
-     * @param attestation {@link RemoteDocument} attestation document
+     * @param signedAttestation {@link RemoteDocument} attestation document
      * @param disclosures a list of {@link DisclosureDTO}s
      * @param keyBindingParameters {@link RemoteKeyBindingParameters}
      * @param signatureParameters {@link RemoteSignatureParameters}
      * @param signatureValueDTO {@link SignatureValueDTO}
      */
-    public CreateKeyBindingSignatureDTO(RemoteDocument attestation, List<DisclosureDTO> disclosures,
-                                            RemoteKeyBindingParameters keyBindingParameters, RemoteSignatureParameters signatureParameters,
-                                            SignatureValueDTO signatureValueDTO) {
+    public CreateKeyBindingSignatureDTO(RemoteDocument signedAttestation, List<DisclosureDTO> disclosures,
+                                        RemoteKeyBindingParameters keyBindingParameters, RemoteSignatureParameters signatureParameters,
+                                        SignatureValueDTO signatureValueDTO) {
         super(signatureParameters, signatureValueDTO);
-        this.attestation = attestation;
+        this.signedAttestation = signedAttestation;
         this.disclosures = disclosures;
         this.keyBindingParameters = keyBindingParameters;
     }
@@ -77,17 +77,17 @@ public class CreateKeyBindingSignatureDTO extends AbstractSignDocumentDTO {
      *
      * @return {@link RemoteDocument}
      */
-    public RemoteDocument getAttestation() {
-        return attestation;
+    public RemoteDocument getSignedAttestation() {
+        return signedAttestation;
     }
 
     /**
      * Sets a signed attestation document
      *
-     * @param attestation {@link RemoteDocument}
+     * @param signedAttestation {@link RemoteDocument}
      */
-    public void setAttestation(RemoteDocument attestation) {
-        this.attestation = attestation;
+    public void setSignedAttestation(RemoteDocument signedAttestation) {
+        this.signedAttestation = signedAttestation;
     }
 
     /**

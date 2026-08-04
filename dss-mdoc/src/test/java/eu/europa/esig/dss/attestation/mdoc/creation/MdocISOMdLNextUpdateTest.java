@@ -87,11 +87,6 @@ class MdocISOMdLNextUpdateTest extends AbstractMdocIssuerSignedTestCreation {
     }
 
     @Override
-    protected CBAdESSignatureParameters getKeyBindingSignatureParameters() {
-        return null;
-    }
-
-    @Override
     protected void checkAttestationDigestMatchers(DiagnosticData diagnosticData) {
         super.checkAttestationDigestMatchers(diagnosticData);
 
@@ -179,11 +174,6 @@ class MdocISOMdLNextUpdateTest extends AbstractMdocIssuerSignedTestCreation {
         assertEquals("1.0", attestation.getVersion());
         assertEquals("org.iso.18013.5.1.mDL", attestation.getAttestationDocumentType());
         assertNotNull(attestation.getNextUpdate());
-    }
-
-    @Override
-    protected boolean keyBindingPresent() {
-        return false;
     }
 
     @Override

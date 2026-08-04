@@ -89,12 +89,6 @@ class SDJWTCompactIatAndSubSelectivelyDisclosableTest extends AbstractSDJWTTestC
         assertEquals(expiration.toInstant().getEpochSecond(), attestation.getExpiration().toInstant().getEpochSecond());
         assertEquals(issuanceDate.toInstant().getEpochSecond(), attestation.getIssuedAt().toInstant().getEpochSecond());
     }
-
-    @Override
-    protected boolean keyBindingPresent() {
-        return false;
-    }
-
     @Override
     protected String getSigningAlias() {
         return GOOD_USER;

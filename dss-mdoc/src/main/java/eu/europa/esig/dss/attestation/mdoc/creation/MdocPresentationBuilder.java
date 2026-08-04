@@ -87,7 +87,7 @@ public class MdocPresentationBuilder {
         }
 
         try {
-            // TODO : do verification in another separate MdocService method ?
+            // TODO : do verification in a separate method ?
             CBORObject issuerAuth = CBORUtils.parseCbor(attestation);
 
             final CBORMap issuerSigned = new CBORMap();

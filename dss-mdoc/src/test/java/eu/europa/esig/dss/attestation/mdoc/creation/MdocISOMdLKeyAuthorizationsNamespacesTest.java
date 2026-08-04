@@ -85,11 +85,6 @@ class MdocISOMdLKeyAuthorizationsNamespacesTest extends AbstractMdocIssuerSigned
     }
 
     @Override
-    protected CBAdESSignatureParameters getKeyBindingSignatureParameters() {
-        return null;
-    }
-
-    @Override
     protected void checkAttestationDigestMatchers(DiagnosticData diagnosticData) {
         super.checkAttestationDigestMatchers(diagnosticData);
 
@@ -176,11 +171,6 @@ class MdocISOMdLKeyAuthorizationsNamespacesTest extends AbstractMdocIssuerSigned
         assertEquals("1.0", attestation.getVersion());
         assertEquals("org.iso.18013.5.1.mDL", attestation.getAttestationDocumentType());
         assertEquals(Collections.singletonList("org.iso.18013.5.1"), attestation.getDeviceKeyAuthorizedNamespaces());
-    }
-
-    @Override
-    protected boolean keyBindingPresent() {
-        return false;
     }
 
     @Override

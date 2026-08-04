@@ -331,10 +331,6 @@ public class MdocService extends AbstractAttestationSDService<CBAdESSignaturePar
     @Override
     public List<MdocIssuerSignedItem> generateDisclosures(final MdocPayloadParameters payloadParameters) {
         Objects.requireNonNull(payloadParameters, "MdocPayloadParameters cannot be null!");
-        Objects.requireNonNull(payloadParameters.getSigned(), "Signed date cannot be null!");
-        Objects.requireNonNull(payloadParameters.getValidFrom(), "ValidFrom date cannot be null!");
-        Objects.requireNonNull(payloadParameters.getValidUntil(), "ValidUntil date cannot be null!");
-        Objects.requireNonNull(payloadParameters.getDocType(), "DocType cannot be null!");
         return getPayloadBuilder().buildDisclosures(payloadParameters);
     }
 
@@ -362,6 +358,8 @@ public class MdocService extends AbstractAttestationSDService<CBAdESSignaturePar
      * @return {@link DSSDocument}
      */
     protected DSSDocument createIssuerSigned(DSSDocument attestation, List<MdocIssuerSignedItem> disclosures) {
+        Objects.requireNonNull(attestation, "The attestation cannot be null!");
+
         DSSDocument issuerSigned = getMdocPresentationBuilder().buildIssuerSignedDocument(attestation, disclosures);
         issuerSigned.setName(getFinalDocumentName(attestation));
         issuerSigned.setMimeType(getAttestationMimeType());
@@ -370,6 +368,8 @@ public class MdocService extends AbstractAttestationSDService<CBAdESSignaturePar
 
     @Override
     public MdocIssuerSignedDocument parseAttestation(DSSDocument attestation) {
+        Objects.requireNonNull(attestation, "The attestation cannot be null!");
+
         IssuerSignedParser issuerSignedParser = new IssuerSignedParser(attestation);
         if (issuerSignedParser.isSupported()) {
             MdocIssuerSigned issuerSigned = issuerSignedParser.parse();

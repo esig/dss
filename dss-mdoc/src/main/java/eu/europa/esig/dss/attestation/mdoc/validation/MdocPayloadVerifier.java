@@ -266,7 +266,10 @@ public class MdocPayloadVerifier extends AttestationPayloadVerifier {
         MdocIssuerSignedItem mdocIssuerSignedItem = toMdocIssuerSignedItem(disclosure);
         VerifiedClaim claim = MdocUtils.createClaim(mdocIssuerSignedItem.getName(), null,
                 mdocIssuerSignedItem.getValue(), true, mdocIssuerSignedItem.getNamespace());
-        return new DisclosureValidation(disclosure, claim);
+        DisclosureValidation disclosureValidation = new DisclosureValidation(disclosure, claim);
+        disclosureValidation.setNamespace(mdocIssuerSignedItem.getNamespace());
+        disclosureValidation.setDigestId(mdocIssuerSignedItem.getDigestId());
+        return disclosureValidation;
     }
 
     /**

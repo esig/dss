@@ -81,17 +81,7 @@ public class MdocISONonMdLWithStatusListTest extends AbstractMdocIssuerSignedTes
     }
 
     @Override
-    protected CBAdESSignatureParameters getKeyBindingSignatureParameters() {
-        return null;
-    }
-
-    @Override
     protected boolean disclosuresPresent() {
-        return false;
-    }
-
-    @Override
-    protected boolean keyBindingPresent() {
         return false;
     }
 

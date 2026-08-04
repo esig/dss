@@ -450,7 +450,7 @@ public abstract class AbstractMdocIssuerSignedTestCreation extends AbstractAttes
             FoundCertificatesProxy foundCertificates = signatureWrapper.foundCertificates();
             List<RelatedCertificateWrapper> signingCertificates = foundCertificates.getRelatedCertificatesByRefOrigin(CertificateRefOrigin.SIGNING_CERTIFICATE);
 
-            CBAdESSignatureParameters signatureParameters = signatureWrapper.isKeyBindingSignature() ? getKeyBindingSignatureParameters() : getSignatureParameters();
+            CBAdESSignatureParameters signatureParameters = getSignatureParameters();
             if (signatureParameters.isIncludeCertificateChainThumbprints()) {
                 BaselineBCertificateSelector certificateSelector = new BaselineBCertificateSelector(
                         signatureParameters.getSigningCertificate(), signatureParameters.getCertificateChain())

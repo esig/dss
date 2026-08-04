@@ -135,11 +135,6 @@ class MdocISONonMdLAllOptionalElementsTest extends AbstractMdocIssuerSignedTestC
     }
 
     @Override
-    protected CBAdESSignatureParameters getKeyBindingSignatureParameters() {
-        return null;
-    }
-
-    @Override
     protected void checkAttestationDigestMatchers(DiagnosticData diagnosticData) {
         super.checkAttestationDigestMatchers(diagnosticData);
 
@@ -575,11 +570,6 @@ class MdocISONonMdLAllOptionalElementsTest extends AbstractMdocIssuerSignedTestC
         AttestationWrapper attestation = diagnosticData.getAttestationById(diagnosticData.getFirstAttestationId());
         assertEquals("1.0", attestation.getVersion());
         assertEquals("org.iso.23220.1.mID", attestation.getAttestationDocumentType());
-    }
-
-    @Override
-    protected boolean keyBindingPresent() {
-        return false;
     }
 
     @Override

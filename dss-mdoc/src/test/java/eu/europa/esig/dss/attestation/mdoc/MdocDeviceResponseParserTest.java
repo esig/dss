@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.attestation.mdoc;
 
+import eu.europa.esig.dss.attestation.mdoc.creation.MdocIssuerSignedItem;
 import eu.europa.esig.dss.cbades.COSESignStructure;
 import eu.europa.esig.dss.enumerations.COSESignatureType;
 import eu.europa.esig.dss.cbades.cbor.CBORObject;
@@ -31,7 +32,6 @@ import eu.europa.esig.dss.attestation.mdoc.model.MdocDeviceResponse;
 import eu.europa.esig.dss.attestation.mdoc.model.MdocDeviceSigned;
 import eu.europa.esig.dss.attestation.mdoc.model.MdocDocument;
 import eu.europa.esig.dss.attestation.mdoc.model.MdocIssuerSigned;
-import eu.europa.esig.dss.attestation.mdoc.model.MdocSelectiveDisclosure;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -69,10 +69,10 @@ class MdocDeviceResponseParserTest {
         MdocIssuerSigned issuerSigned = document.getIssuerSigned();
         assertNotNull(issuerSigned);
 
-        Map<String, List<MdocSelectiveDisclosure>> namespaces = issuerSigned.getNamespaces();
+        Map<String, List<MdocIssuerSignedItem>> namespaces = issuerSigned.getNamespaces();
         assertEquals(1, namespaces.size());
 
-        Map.Entry<String, List<MdocSelectiveDisclosure>> namespacesEntry = namespaces.entrySet().iterator().next();
+        Map.Entry<String, List<MdocIssuerSignedItem>> namespacesEntry = namespaces.entrySet().iterator().next();
         assertEquals("org.iso.18013.5.1", namespacesEntry.getKey());
         assertEquals(6, namespacesEntry.getValue().size());
 

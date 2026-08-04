@@ -32,15 +32,21 @@ import eu.europa.esig.dss.ws.attestation.creation.dto.CreateKeyBindingSignatureD
 import eu.europa.esig.dss.ws.attestation.creation.dto.DataToSignAttestationDTO;
 import eu.europa.esig.dss.ws.attestation.creation.dto.DataToSignForKeyBindingSignatureDTO;
 import eu.europa.esig.dss.ws.attestation.creation.dto.DisclosuresDTO;
+import eu.europa.esig.dss.ws.attestation.creation.dto.IssueAttestationDTO;
 import eu.europa.esig.dss.ws.attestation.creation.dto.IssuePresentationDTO;
+import eu.europa.esig.dss.ws.attestation.creation.dto.ParseAttestationDTO;
 import eu.europa.esig.dss.ws.attestation.creation.dto.SignAttestationDTO;
 import eu.europa.esig.dss.ws.attestation.creation.dto.parameters.DisclosureDTO;
 import eu.europa.esig.dss.ws.attestation.creation.dto.parameters.RemoteAttestationClaimParameters;
+import eu.europa.esig.dss.ws.attestation.creation.dto.parameters.RemoteAttestationDocument;
+import eu.europa.esig.dss.ws.attestation.creation.dto.parameters.RemoteAttestationParsingParameters;
 import eu.europa.esig.dss.ws.attestation.creation.dto.parameters.RemoteAttestationPayloadParameters;
 import eu.europa.esig.dss.ws.attestation.creation.dto.parameters.RemoteAttestationPresentationParameters;
 import eu.europa.esig.dss.ws.attestation.creation.dto.parameters.RemoteKeyBindingParameters;
-import eu.europa.esig.dss.ws.attestation.creation.soap.SoapAttestationCreationServiceImpl;
-import eu.europa.esig.dss.ws.attestation.creation.soap.client.SoapAttestationCreationService;
+import eu.europa.esig.dss.ws.attestation.creation.soap.SoapAttestationPresentationServiceImpl;
+import eu.europa.esig.dss.ws.attestation.creation.soap.SoapAttestationSDCreationServiceImpl;
+import eu.europa.esig.dss.ws.attestation.creation.soap.client.SoapAttestationPresentationService;
+import eu.europa.esig.dss.ws.attestation.creation.soap.client.SoapAttestationSDCreationService;
 import eu.europa.esig.dss.ws.converter.DTOConverter;
 import eu.europa.esig.dss.ws.converter.RemoteCertificateConverter;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
@@ -63,11 +69,12 @@ public class SoapAttestationCreationServiceSnippet extends CookbookTools {
             DSSPrivateKeyEntry privateKey = signingToken.getKeys().get(0);
 
             // Instantiate the SOAP client
-            SoapAttestationCreationService soapClient = new SoapAttestationCreationServiceImpl();
-            
-            // 1 attestation issuance
+            SoapAttestationSDCreationService issuerSoapClient = new SoapAttestationSDCreationServiceImpl();
+            SoapAttestationPresentationService walletSoapClient = new SoapAttestationPresentationServiceImpl();
 
-            // 1.1 Define signature parameters
+            // ISSUER_1 attestation issuance
+
+            // ISSUER_1.1 Define signature parameters
             Date signingTime = new Date();
             RemoteSignatureParameters signatureParameters = new RemoteSignatureParameters();
             RemoteBLevelParameters bLevelParameters = new RemoteBLevelParameters();
@@ -76,10 +83,10 @@ public class SoapAttestationCreationServiceSnippet extends CookbookTools {
             signatureParameters.setSigningCertificate(RemoteCertificateConverter.toRemoteCertificate(getSigningCert()));
             signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 
-            // 1.2 Define payload parameters, claims definition
+            // ISSUER_1.2 Define payload parameters, claims definition
             RemoteAttestationPayloadParameters payloadParameters = new RemoteAttestationPayloadParameters(AttestationForm.SD_JWT);
 
-            // 1.2.1 Define technical claims
+            // ISSUER_1.2.1 Define technical claims
             // NOTE: Ensure the dates are defined for a deterministic behavior
             payloadParameters.setNotBeforeDate(signingTime);
             Calendar calendar = Calendar.getInstance();
@@ -89,7 +96,7 @@ public class SoapAttestationCreationServiceSnippet extends CookbookTools {
 
             payloadParameters.setIssuer("Attestation provider");
 
-            // 1.2.2 Define optional claims, as selectively disclosable
+            // ISSUER_1.2.2 Define optional claims, as selectively disclosable
             RemoteAttestationClaimParameters selectivelyDisclosable = new RemoteAttestationClaimParameters();
             selectivelyDisclosable.setGivenName("John");
             selectivelyDisclosable.setFamilyName("Doe");
@@ -103,55 +110,79 @@ public class SoapAttestationCreationServiceSnippet extends CookbookTools {
             nonSelectivelyDisclosable.setIssuingAuthorityRegistrationIdentifier("VATLU-123456");
             payloadParameters.setNonSelectivelyDisclosable(nonSelectivelyDisclosable);
 
-            // 1.3 Create DTBS (Data To Be Signed)
+            // ISSUER_1.3 Create DTBS (Data To Be Signed)
             DataToSignAttestationDTO dataToSignAttestationDTO = new DataToSignAttestationDTO(payloadParameters, signatureParameters);
-            ToBeSignedDTO dataToSign = soapClient.getDataToSign(dataToSignAttestationDTO);
+            ToBeSignedDTO dataToSign = issuerSoapClient.getDataToSign(dataToSignAttestationDTO);
 
-            // 1.4 Create Signature Value
+            // ISSUER_1.4 Create Signature Value
             SignatureValue signatureValue = signingToken.sign(DTOConverter.toToBeSigned(dataToSign), DigestAlgorithm.SHA256, privateKey);
 
-            // 1.5 Sign attestation (ensure the same parameters are used as in #getDataToSign method)
+            // ISSUER_1.5 Sign attestation (ensure the same parameters are used as in #getDataToSign method)
             SignAttestationDTO signAttestationDTO = new SignAttestationDTO(payloadParameters, signatureParameters,
                     new SignatureValueDTO(signatureValue.getAlgorithm(), signatureValue.getValue()));
-            RemoteDocument signedAttestation = soapClient.signAttestation(signAttestationDTO);
+            RemoteDocument signedAttestation = issuerSoapClient.signAttestation(signAttestationDTO);
 
-            // 2 Extract selective disclosures
+            // ISSUER_2 Issue attestation
+            // Two possibilities exist (see a and b)
+
+            // ISSUER_2.a Issue attestation using payload parameters
+
+            IssueAttestationDTO issueAttestationDTO = new IssueAttestationDTO(signedAttestation, payloadParameters);
+            RemoteDocument attestation = issuerSoapClient.issueAttestation(issueAttestationDTO);
+
+            // ISSUER_2.b Issue attestation using disclosure list
+
+            // ISSUER_2.b.1 Extract selective disclosures
             // NOTE: all, some or none of them may be provided within an Attestation Presentation
             DisclosuresDTO disclosuresDTO = new DisclosuresDTO(payloadParameters);
-            List<DisclosureDTO> disclosures = soapClient.getDisclosures(disclosuresDTO);
+            List<DisclosureDTO> disclosures = issuerSoapClient.generateDisclosures(disclosuresDTO);
 
-            // 3 Key Binding signature computation
-            
-            // 3.1 Create signature parameters
+            // ISSUER_2.b.2 Generate the attestation with the attached disclosures
+
+            issueAttestationDTO = new IssueAttestationDTO(signedAttestation, AttestationForm.SD_JWT, disclosures);
+            attestation = issuerSoapClient.issueAttestation(issueAttestationDTO);
+
+            // WALLET_1 Parse obtained attestation
+
+            ParseAttestationDTO parseAttestationDTO = new ParseAttestationDTO(attestation,
+                    new RemoteAttestationParsingParameters(AttestationForm.SD_JWT));
+            RemoteAttestationDocument attestationDocument = walletSoapClient.parseAttestation(parseAttestationDTO);
+
+            signedAttestation = attestationDocument.getSignedAttestation();
+            disclosures = attestationDocument.getDisclosures();
+
+            // WALLET_2 Key Binding signature computation
+
+            // WALLET_2.1 Create signature parameters
             RemoteSignatureParameters keyBindingSignatureParameters = new RemoteSignatureParameters();
             keyBindingSignatureParameters.setSigningCertificate(RemoteCertificateConverter.toRemoteCertificate(privateKey.getCertificate()));
             keyBindingSignatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
 
-            // 3.2 Create key binding signature payload parameters
+            // WALLET_2.2 Create key binding signature payload parameters
             RemoteKeyBindingParameters keyBindingParameters = new RemoteKeyBindingParameters();
             keyBindingParameters.setAttestationForm(AttestationForm.SD_JWT);
             keyBindingParameters.setNonce("123456");
             keyBindingParameters.setAudience("audience");
 
-            // 3.3 Get DTBS (Data To Be Signed) for key binding signature
+            // WALLET_2.3 Get DTBS (Data To Be Signed) for key binding signature
             DataToSignForKeyBindingSignatureDTO dataToSignForKeyBindingSignatureDTO =
                     new DataToSignForKeyBindingSignatureDTO(signedAttestation, disclosures, keyBindingParameters, keyBindingSignatureParameters);
-            dataToSign = soapClient.getDataToSignForKeyBindingSignature(dataToSignForKeyBindingSignatureDTO);
-            
-            // 3.4 Create signature value
+            dataToSign = walletSoapClient.getDataToSignForKeyBindingSignature(dataToSignForKeyBindingSignatureDTO);
+
+            // WALLET_2.4 Create signature value
             signatureValue = signingToken.sign(DTOConverter.toToBeSigned(dataToSign), DigestAlgorithm.SHA256, privateKey);
 
-            // 3.5 Create key binding signature
+            // WALLET_2.5 Create key binding signature
             CreateKeyBindingSignatureDTO createKeyBindingSignatureDTO = new CreateKeyBindingSignatureDTO(signedAttestation, disclosures, keyBindingParameters,
                     keyBindingSignatureParameters, new SignatureValueDTO(signatureValue.getAlgorithm(), signatureValue.getValue()));
-            RemoteDocument keyBindingSignature = soapClient.createKeyBindingSignature(createKeyBindingSignatureDTO);
+            RemoteDocument keyBindingSignature = walletSoapClient.createKeyBindingSignature(createKeyBindingSignatureDTO);
 
-            // 4 Issue attestation presentation
+            // WALLET_3 Issue attestation presentation
             // NOTE: requires signed attestation, (optional) disclosures,
             // (optional, format specific) key binding signature and attestation presentation parameters
             IssuePresentationDTO issuePresentationDTO = new IssuePresentationDTO(signedAttestation, disclosures, keyBindingSignature,
                     new RemoteAttestationPresentationParameters(AttestationForm.SD_JWT));
-            RemoteDocument attestationPresentation = soapClient.issuePresentation(issuePresentationDTO);
+            RemoteDocument attestationPresentation = walletSoapClient.issuePresentation(issuePresentationDTO);
         }
 
     }
