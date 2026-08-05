@@ -89,13 +89,23 @@ public abstract class AbstractAttestationService<SP extends SerializableSignatur
     }
 
     /**
-     * Gets the final document name when original document is present
+     * Gets the final attestation document name when original document is present
      *
      * @param originalFile {@link DSSDocument} original document
      * @return {@link String}
      */
-    protected String getFinalDocumentName(DSSDocument originalFile) {
-        return getFinalDocumentNameBuilder().setOriginalFilename(originalFile.getName()).build();
+    protected String getFinalAttestationDocumentName(DSSDocument originalFile) {
+        return getFinalDocumentNameBuilder(SigningOperation.ATTESTATION).setOriginalFilename(originalFile.getName()).build();
+    }
+
+    /**
+     * Gets the final attestation presentation document name when original document is present
+     *
+     * @param originalFile {@link DSSDocument} original document
+     * @return {@link String}
+     */
+    protected String getFinalAttestationPresentationDocumentName(DSSDocument originalFile) {
+        return getFinalDocumentNameBuilder(SigningOperation.ATTESTATION_PRESENTATION).setOriginalFilename(originalFile.getName()).build();
     }
 
     /**
@@ -103,8 +113,8 @@ public abstract class AbstractAttestationService<SP extends SerializableSignatur
      *
      * @return {@link String}
      */
-    protected FileNameBuilder getFinalDocumentNameBuilder() {
-        return new FileNameBuilder().setSigningOperation(SigningOperation.ATTESTATION).setMimeType(getAttestationMimeType());
+    protected FileNameBuilder getFinalDocumentNameBuilder(SigningOperation signingOperation) {
+        return new FileNameBuilder().setSigningOperation(signingOperation).setMimeType(getAttestationMimeType());
     }
 
     /**

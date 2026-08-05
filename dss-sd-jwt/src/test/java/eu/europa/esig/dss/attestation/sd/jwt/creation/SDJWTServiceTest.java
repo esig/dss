@@ -93,6 +93,7 @@ class SDJWTServiceTest extends PKIFactoryAccess {
 
         DSSDocument signedAttestation = service.signAttestation(jsonPayload, params, signatureValue);
         assertNotNull(signedAttestation);
+        assertNotNull(signedAttestation.getName());
     }
 
     @Test
@@ -114,6 +115,7 @@ class SDJWTServiceTest extends PKIFactoryAccess {
 
         DSSDocument signedAttestation = service.signAttestation(payloadParameters, signatureParameters, signatureValue);
         assertNotNull(signedAttestation);
+        assertNotNull(signedAttestation.getName());
     }
 
     @Test
@@ -161,15 +163,18 @@ class SDJWTServiceTest extends PKIFactoryAccess {
 
         DSSDocument attestation = service.issueAttestation(signedAttestation, payloadParameters);
         assertNotNull(attestation);
+        assertNotNull(attestation.getName());
 
         attestation = service.issueAttestation(signedAttestation, (List<SDJWTSelectiveDisclosure>) null);
         assertNotNull(attestation);
+        assertNotNull(attestation.getName());
 
         List<SDJWTSelectiveDisclosure> disclosures = service.generateDisclosures(payloadParameters);
         assertTrue(Utils.isCollectionNotEmpty(disclosures));
 
         attestation = service.issueAttestation(signedAttestation, disclosures);
         assertNotNull(attestation);
+        assertNotNull(attestation.getName());
     }
 
     @Test
@@ -187,7 +192,9 @@ class SDJWTServiceTest extends PKIFactoryAccess {
         attestation = new FileDocument("src/test/resources/validation/sdjwt-json-valid-presentation.json");
         parsedAttestation = service.parseAttestation(attestation);
         assertNotNull(parsedAttestation);
+        assertNotNull(parsedAttestation.getName());
         assertNotNull(parsedAttestation.getSignedAttestation());
+        assertNotNull(parsedAttestation.getSignedAttestation().getName());
         assertTrue(Utils.isCollectionNotEmpty(parsedAttestation.getSelectiveDisclosures()));
     }
 
@@ -244,9 +251,11 @@ class SDJWTServiceTest extends PKIFactoryAccess {
 
         DSSDocument keyBindingSignature = service.createKeyBindingSignature(signedAttestation, keyBindingParameters, kbSignParams, signatureValue);
         assertNotNull(keyBindingSignature);
+        assertNotNull(keyBindingSignature.getName());
 
         DSSDocument keyBindingSignatureWithDisclosures = service.createKeyBindingSignature(signedAttestation, Collections.emptyList(), keyBindingParameters, kbSignParams, signatureValue);
         assertNotNull(keyBindingSignatureWithDisclosures);
+        assertNotNull(keyBindingSignatureWithDisclosures.getName());
     }
 
     @Test
@@ -277,6 +286,7 @@ class SDJWTServiceTest extends PKIFactoryAccess {
         DSSDocument sdSignedAttestation = createSignedAttestation(sdParams, signatureParameters);
         DSSDocument presentationWithDisclosures = service.issuePresentation(sdSignedAttestation, disclosures, null);
         assertNotNull(presentationWithDisclosures);
+        assertNotNull(presentationWithDisclosures.getName());
     }
 
     private DSSDocument createSignedAttestation(SDJWTPayloadParameters params, JAdESSignatureParameters sigParams) {

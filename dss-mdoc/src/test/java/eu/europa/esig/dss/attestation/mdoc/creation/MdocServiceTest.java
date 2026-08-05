@@ -90,7 +90,7 @@ class MdocServiceTest extends PKIFactoryAccess {
 
         params.setX5ChainHeaderPlacement(null);
         exception = assertThrows(IllegalArgumentException.class, () -> service.getDataToSign(cborPayload, params));
-        assertEquals("MSO shall be signed by ECDSA or EDDSA algortihm! Obtained value : 'RSASSA_PSS'", exception.getMessage());
+        assertEquals("MSO shall be signed by ECDSA or EDDSA algorithm! Obtained value : 'RSASSA_PSS'", exception.getMessage());
 
         params.setSigningCertificate(getSigningCert());
         params.setCertificateChain(getCertificateChain());
@@ -114,6 +114,7 @@ class MdocServiceTest extends PKIFactoryAccess {
 
         DSSDocument signedAttestation = service.signAttestation(cborPayload, params, signatureValue);
         assertNotNull(signedAttestation);
+        assertNotNull(signedAttestation.getName());
     }
 
     @Test
@@ -126,7 +127,7 @@ class MdocServiceTest extends PKIFactoryAccess {
 
         CBAdESSignatureParameters params = new CBAdESSignatureParameters();
         exception = assertThrows(IllegalArgumentException.class, () -> service.getDataToSign(payloadParameters, params));
-        assertEquals("MSO shall be signed by ECDSA or EDDSA algortihm! Obtained value : 'RSASSA_PSS'", exception.getMessage());
+        assertEquals("MSO shall be signed by ECDSA or EDDSA algorithm! Obtained value : 'RSASSA_PSS'", exception.getMessage());
 
         ToBeSigned dataToSign = service.getDataToSign(payloadParameters, signatureParameters);
         assertNotNull(dataToSign);
@@ -141,6 +142,7 @@ class MdocServiceTest extends PKIFactoryAccess {
 
         DSSDocument signedAttestation = service.signAttestation(payloadParameters, signatureParameters, signatureValue);
         assertNotNull(signedAttestation);
+        assertNotNull(signedAttestation.getName());
     }
 
     @Test
@@ -181,15 +183,18 @@ class MdocServiceTest extends PKIFactoryAccess {
 
         DSSDocument attestation = service.issueAttestation(signedAttestation, payloadParameters);
         assertNotNull(attestation);
+        assertNotNull(attestation.getName());
 
         attestation = service.issueAttestation(signedAttestation, (List<MdocIssuerSignedItem>) null);
         assertNotNull(attestation);
+        assertNotNull(attestation.getName());
 
         List<MdocIssuerSignedItem> disclosures = service.generateDisclosures(payloadParameters);
         assertTrue(Utils.isCollectionNotEmpty(disclosures));
 
         attestation = service.issueAttestation(signedAttestation, disclosures);
         assertNotNull(attestation);
+        assertNotNull(attestation.getName());
     }
 
     @Test
@@ -200,7 +205,9 @@ class MdocServiceTest extends PKIFactoryAccess {
         DSSDocument attestation = new FileDocument("src/test/resources/validation/mdocIssuerSigned.cbor");
         MdocIssuerSignedDocument parsedAttestation = service.parseAttestation(attestation);
         assertNotNull(parsedAttestation);
+        assertNotNull(parsedAttestation.getName());
         assertNotNull(parsedAttestation.getSignedAttestation());
+        assertNotNull(parsedAttestation.getSignedAttestation().getName());
         assertTrue(Utils.isCollectionNotEmpty(parsedAttestation.getSelectiveDisclosures()));
 
         exception = assertThrows(IllegalInputException.class, () ->
@@ -234,7 +241,7 @@ class MdocServiceTest extends PKIFactoryAccess {
         kbSignParams.setSigDMechanism(SigDMechanism.NO_SIG_D);
 
         exception = assertThrows(IllegalArgumentException.class, () -> service.getDataToSignForKeyBindingSignature(signedAttestation, keyBindingParameters, kbSignParams));
-        assertEquals("DeviceAuthentication shall be signed by ECDSA or EDDSA algortihm! Obtained value : 'RSASSA_PSS'", exception.getMessage());
+        assertEquals("DeviceAuthentication shall be signed by ECDSA or EDDSA algorithm! Obtained value : 'RSASSA_PSS'", exception.getMessage());
 
         kbSignParams.setSigningCertificate(getSigningCert());
         kbSignParams.setDigestAlgorithm(DigestAlgorithm.SHA256);
@@ -267,6 +274,7 @@ class MdocServiceTest extends PKIFactoryAccess {
 
         DSSDocument keyBindingSignature = service.createKeyBindingSignature(signedAttestation, keyBindingParameters, kbSignParams, signatureValue);
         assertNotNull(keyBindingSignature);
+        assertNotNull(keyBindingSignature.getName());
 
         List<MdocIssuerSignedItem> disclosures = service.generateDisclosures(prepareDisclosuresPayloadParameters());
         DSSDocument keyBindingSignatureWithDisclosures = service.createKeyBindingSignature(signedAttestation, disclosures, keyBindingParameters, kbSignParams, signatureValue);
@@ -306,6 +314,7 @@ class MdocServiceTest extends PKIFactoryAccess {
         SignatureValue kbSignatureValue = getToken().sign(kbDataToSign, kbSignParams.getDigestAlgorithm(), getPrivateKeyEntry());
         DSSDocument keyBinding = service.createKeyBindingSignature(signedAttestation, kbParams, kbSignParams, kbSignatureValue);
         assertNotNull(keyBinding);
+        assertNotNull(keyBinding.getName());
 
         DSSDocument presentation = service.issuePresentation(signedAttestation, Collections.emptyList(), keyBinding);
         assertNotNull(presentation);

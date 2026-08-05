@@ -51,10 +51,10 @@ public class MdocIssuerSignedItem extends AbstractSelectiveDisclosure {
     private Long digestId;
 
     /**
-     * Constructor to instantiate the mdoc disclosure from a serialized IssuerSignedItemBytes object with defined namespace
+     * Constructor to instantiate the mdoc disclosure from an IssuerSignedItemBytes object with defined namespace
      *
      * @param namespace {@link String} namespace of the element claim
-     * @param issuerSignedItemBytes serialized IssuerSignedItemBytes object
+     * @param issuerSignedItemBytes {@link CBORByteString} IssuerSignedItemBytes object
      */
     public MdocIssuerSignedItem(final String namespace, final CBORByteString issuerSignedItemBytes) {
         Objects.requireNonNull(namespace, "Namespace cannot be null!");
@@ -64,10 +64,23 @@ public class MdocIssuerSignedItem extends AbstractSelectiveDisclosure {
     }
 
     /**
+     * Constructor to instantiate the mdoc disclosure from a serialized IssuerSignedItemBytes object with defined namespace
+     *
+     * @param namespace {@link String} namespace of the element claim
+     * @param issuerSignedItemBytes serialized IssuerSignedItemBytes bytes
+     */
+    public MdocIssuerSignedItem(final String namespace, final byte[] issuerSignedItemBytes) {
+        Objects.requireNonNull(namespace, "Namespace cannot be null!");
+        Objects.requireNonNull(issuerSignedItemBytes, "IssuerSignedItemBytes cannot be null!");
+        this.namespace = namespace;
+        this.issuerSignedItemBytes = parse(issuerSignedItemBytes);
+    }
+
+    /**
      * Constructor to instantiate a void
      *
      * @param digestId unique integer identifying the element within the attestation namespace
-     * @param issuerSignedItemBytes serialized IssuerSignedItemBytes object
+     * @param issuerSignedItemBytes {@link CBORByteString} IssuerSignedItemBytes object
      */
     protected MdocIssuerSignedItem(final int digestId, final CBORByteString issuerSignedItemBytes) {
         Objects.requireNonNull(issuerSignedItemBytes, "IssuerSignedItemBytes cannot be null!");
@@ -81,7 +94,7 @@ public class MdocIssuerSignedItem extends AbstractSelectiveDisclosure {
      *
      * @param namespace {@link String} namespace of the element claim
      * @param digestId unique integer identifying the element within the attestation namespace
-     * @param issuerSignedItemBytes serialized IssuerSignedItemBytes object
+     * @param issuerSignedItemBytes serialized IssuerSignedItemBytes bytes
      */
     public MdocIssuerSignedItem(final String namespace, final int digestId, final byte[] issuerSignedItemBytes) {
         Objects.requireNonNull(namespace, "Namespace cannot be null!");
@@ -109,7 +122,7 @@ public class MdocIssuerSignedItem extends AbstractSelectiveDisclosure {
      *
      * @param namespace {@link String} namespace of the element claim
      * @param digestId unique integer identifying the element within the attestation namespace
-     * @param issuerSignedItemBytes {@link CBORByteString}
+     * @param issuerSignedItemBytes {@link CBORByteString} IssuerSignedItemBytes object
      */
     public MdocIssuerSignedItem(final String namespace, final int digestId, final CBORByteString issuerSignedItemBytes) {
         Objects.requireNonNull(namespace, "Namespace cannot be null!");

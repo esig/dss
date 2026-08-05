@@ -388,7 +388,7 @@ public abstract class AttestationPayloadVerifier {
      */
     public DigestAlgorithm getDigestAlgorithm() {
         if (digestAlgorithm == null) {
-            throw new IllegalStateException("Please call method #verify before accessing the DigestAlgortihm value!");
+            throw new IllegalStateException("Please call method #verify before accessing the Digestalgorithm value!");
         }
         return digestAlgorithm;
     }

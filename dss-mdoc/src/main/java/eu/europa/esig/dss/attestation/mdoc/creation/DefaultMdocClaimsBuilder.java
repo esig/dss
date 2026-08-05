@@ -138,7 +138,7 @@ public abstract class DefaultMdocClaimsBuilder implements MdocClaimsBuilder {
         addClaim(result, getIssuingAuthorityRegistrationIdentifier(selectivelyDisclosable));
         addClaim(result, getAttestedAttributesSubject(selectivelyDisclosable));
 
-        result.addAll(selectivelyDisclosable.getOtherClaims());
+        result.addAll(getOtherClaims(selectivelyDisclosable));
 
         return result;
     }
@@ -879,6 +879,22 @@ public abstract class DefaultMdocClaimsBuilder implements MdocClaimsBuilder {
      */
     protected MdocClaim getAttestedAttributesSubject(MdocClaimParameters selectivelyDisclosable) {
         return ETSI194721MdocClaimsBuilder.getInstance().getAttestedAttributesSubject(selectivelyDisclosable);
+    }
+
+    /**
+     * Gets other claims.
+     * NOTE: This method creates copies of the original claim values.
+     *
+     * @param selectivelyDisclosable {@link MdocClaimParameters}
+     * @return a list of {@link MdocClaim}s
+     */
+    protected List<MdocClaim> getOtherClaims(MdocClaimParameters selectivelyDisclosable) {
+        if (Utils.isCollectionNotEmpty(selectivelyDisclosable.getOtherClaims())) {
+            final List<MdocClaim> otherClaims = new ArrayList<>();
+            selectivelyDisclosable.getOtherClaims().forEach(c -> otherClaims.add(c.copy()));
+            return otherClaims;
+        }
+        return Collections.emptyList();
     }
 
     /**

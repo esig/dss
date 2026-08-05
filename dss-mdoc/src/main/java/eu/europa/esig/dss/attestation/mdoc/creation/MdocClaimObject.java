@@ -182,4 +182,9 @@ public class MdocClaimObject extends MdocClaim implements AttestationClaimObject
         return cborMap;
     }
 
+    @Override
+    protected MdocClaim initCopy() {
+        return new MdocClaimObject(getNamespace(), getName(), getChildren());
+    }
+
 }

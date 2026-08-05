@@ -276,7 +276,9 @@ public class SDJWTService extends AbstractAttestationSDService<JAdESSignaturePar
     @Override
     public DSSDocument issueAttestation(DSSDocument signedAttestation, List<SDJWTSelectiveDisclosure> disclosures) {
         // NOTE: in SD-JWT an attestation with SD is equivalent to SD-JWT presentation with SD, but no KB
-        return issuePresentation(signedAttestation, disclosures);
+        DSSDocument attestationDocument = issuePresentation(signedAttestation, disclosures);
+        attestationDocument.setName(getFinalAttestationDocumentName(signedAttestation));
+        return attestationDocument;
     }
 
     @Override
@@ -286,12 +288,25 @@ public class SDJWTService extends AbstractAttestationSDService<JAdESSignaturePar
         SDJWTDocumentAnalyzerFactory factory = new SDJWTDocumentAnalyzerFactory();
         if (factory.isSupported(attestation)) {
             SDJWTSerializationObject sdjwtSerializationObject = factory.create(attestation).buildSDJWTSerializationObject();
-            return new SDJWTAttestationDocument(attestation, getAttestationSignature(sdjwtSerializationObject), sdjwtSerializationObject.getDisclosures());
+            DSSDocument attestationSignature = getAttestationSignature(sdjwtSerializationObject);
+            attestationSignature.setName(attestation.getName());
+
+            SDJWTAttestationDocument attestationDocument = new SDJWTAttestationDocument(
+                    attestation, attestationSignature, sdjwtSerializationObject.getDisclosures());
+            attestationDocument.setName(attestation.getName());
+            return attestationDocument;
+
         } else {
             throw new IllegalInputException("The provided document is not SD-JWT attestation!");
         }
     }
 
+    /**
+     * Serializes {@code sdjwtSerializationObject} into a DSSDocument
+     *
+     * @param sdjwtSerializationObject {@link SDJWTSerializationObject}
+     * @return {@link DSSDocument}
+     */
     protected DSSDocument getAttestationSignature(SDJWTSerializationObject sdjwtSerializationObject) {
         JWSJsonSerializationObject signature = sdjwtSerializationObject.getSignature();
         if (signature == null) {
@@ -306,7 +321,7 @@ public class SDJWTService extends AbstractAttestationSDService<JAdESSignaturePar
                 jws.setUnprotected(unprotected);
             }
         }
-        JWSJsonSerializationGenerator jwsGenerator = new JWSJsonSerializationGenerator(
+        final JWSJsonSerializationGenerator jwsGenerator = new JWSJsonSerializationGenerator(
                 signature, sdjwtSerializationObject.getJWSSerializationType());
         return jwsGenerator.generate();
     }
@@ -416,7 +431,7 @@ public class SDJWTService extends AbstractAttestationSDService<JAdESSignaturePar
         JWSCompactSerializationParser compactParser = new JWSCompactSerializationParser(signedAttestation);
         if (compactParser.isSupported()) {
             DSSDocument attestationPresentation = issueJWSCompactPresentation(signedAttestation, disclosures, keyBinding);
-            attestationPresentation.setName(getFinalDocumentName(signedAttestation));
+            attestationPresentation.setName(getFinalAttestationPresentationDocumentName(signedAttestation));
             attestationPresentation.setMimeType(getAttestationMimeType());
             return attestationPresentation;
         }
@@ -424,7 +439,7 @@ public class SDJWTService extends AbstractAttestationSDService<JAdESSignaturePar
         JWSJsonSerializationParser jwsJsonSerializationParser = new JWSJsonSerializationParser(signedAttestation);
         if (jwsJsonSerializationParser.isSupported()) {
             DSSDocument attestationPresentation = issueJWSJsonSerializationPresentation(jwsJsonSerializationParser.parse(), disclosures, keyBinding);
-            attestationPresentation.setName(getFinalDocumentName(signedAttestation));
+            attestationPresentation.setName(getFinalAttestationPresentationDocumentName(signedAttestation));
             attestationPresentation.setMimeType(getAttestationMimeType());
             return attestationPresentation;
         }

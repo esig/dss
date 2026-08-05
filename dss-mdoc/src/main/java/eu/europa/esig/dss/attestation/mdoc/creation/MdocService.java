@@ -242,7 +242,7 @@ public class MdocService extends AbstractAttestationSDService<CBAdESSignaturePar
 
         if (EncryptionAlgorithm.ECDSA != signatureParameters.getEncryptionAlgorithm() &&
                 EncryptionAlgorithm.EDDSA != signatureParameters.getEncryptionAlgorithm()) {
-            throw new IllegalArgumentException(String.format("MSO shall be signed by ECDSA or EDDSA algortihm! " +
+            throw new IllegalArgumentException(String.format("MSO shall be signed by ECDSA or EDDSA algorithm! " +
                     "Obtained value : '%s'", signatureParameters.getEncryptionAlgorithm()));
         }
 
@@ -361,7 +361,7 @@ public class MdocService extends AbstractAttestationSDService<CBAdESSignaturePar
         Objects.requireNonNull(attestation, "The attestation cannot be null!");
 
         DSSDocument issuerSigned = getMdocPresentationBuilder().buildIssuerSignedDocument(attestation, disclosures);
-        issuerSigned.setName(getFinalDocumentName(attestation));
+        issuerSigned.setName(getFinalAttestationDocumentName(attestation));
         issuerSigned.setMimeType(getAttestationMimeType());
         return issuerSigned;
     }
@@ -373,9 +373,12 @@ public class MdocService extends AbstractAttestationSDService<CBAdESSignaturePar
         IssuerSignedParser issuerSignedParser = new IssuerSignedParser(attestation);
         if (issuerSignedParser.isSupported()) {
             MdocIssuerSigned issuerSigned = issuerSignedParser.parse();
-            DSSDocument attestationSignature = new InMemoryDocument(issuerSigned.getIssuerAuth().serialize());
+            DSSDocument attestationSignature = new InMemoryDocument(issuerSigned.getIssuerAuth().serialize(), attestation.getName());
             List<MdocIssuerSignedItem> selectiveDisclosures = MdocUtils.getSelectiveDisclosures(issuerSigned.getNamespaces());
-            return new MdocIssuerSignedDocument(attestation, attestationSignature, selectiveDisclosures);
+            MdocIssuerSignedDocument issuerSignedDocument = new MdocIssuerSignedDocument(
+                    attestation, attestationSignature, selectiveDisclosures);
+            issuerSignedDocument.setName(attestation.getName());
+            return issuerSignedDocument;
         }
         throw new IllegalInputException("An instance of IssuerSigned is expected!");
     }
@@ -459,7 +462,7 @@ public class MdocService extends AbstractAttestationSDService<CBAdESSignaturePar
 
         if (EncryptionAlgorithm.ECDSA != signatureParameters.getEncryptionAlgorithm() &&
                 EncryptionAlgorithm.EDDSA != signatureParameters.getEncryptionAlgorithm()) {
-            throw new IllegalArgumentException(String.format("DeviceAuthentication shall be signed by ECDSA or EDDSA algortihm! " +
+            throw new IllegalArgumentException(String.format("DeviceAuthentication shall be signed by ECDSA or EDDSA algorithm! " +
                     "Obtained value : '%s'", signatureParameters.getEncryptionAlgorithm()));
         }
     }
@@ -505,7 +508,7 @@ public class MdocService extends AbstractAttestationSDService<CBAdESSignaturePar
 
         DSSDocument deviceResponseDocument = getMdocPresentationBuilder()
                 .buildDeviceResponseDocument(attestation, disclosures, keyBinding, deviceSignedParameters);
-        deviceResponseDocument.setName(getFinalDocumentName(attestation));
+        deviceResponseDocument.setName(getFinalAttestationPresentationDocumentName(attestation));
         deviceResponseDocument.setMimeType(getAttestationMimeType());
         return deviceResponseDocument;
     }

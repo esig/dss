@@ -64,6 +64,9 @@ public class FileNameBuilder {
     /** Represents a document with added evidence-record suffix string */
     private static final String EVIDENCE_RECORD_SUFFIX = "-preserved";
 
+    /** Represents an issued attestation document */
+    private static final String ATTESTATION_SUFFIX = "-attestation";
+
     /** Represents an issued attestation presentation document */
     private static final String ATTESTATION_PRESENTATION_SUFFIX = "-presentation";
 
@@ -203,6 +206,9 @@ public class FileNameBuilder {
                     finalName.append(EVIDENCE_RECORD_SUFFIX);
                     break;
                 case ATTESTATION:
+                    finalName.append(ATTESTATION_SUFFIX);
+                    break;
+                case ATTESTATION_PRESENTATION:
                     finalName.append(ATTESTATION_PRESENTATION_SUFFIX);
                     break;
                 default:
@@ -230,7 +236,7 @@ public class FileNameBuilder {
     }
 
     private boolean isAttestation() {
-        return SigningOperation.ATTESTATION == signingOperation;
+        return SigningOperation.ATTESTATION == signingOperation || SigningOperation.ATTESTATION_PRESENTATION == signingOperation;
     }
 
     private String getFileExtensionString(SignatureLevel level, SignaturePackaging packaging, MimeType mimeType) {

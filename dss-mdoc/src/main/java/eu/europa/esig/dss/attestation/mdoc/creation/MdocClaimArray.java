@@ -172,4 +172,9 @@ public class MdocClaimArray extends MdocClaim implements AttestationClaimArray<M
         return cborArray;
     }
 
+    @Override
+    protected MdocClaim initCopy() {
+        return new MdocClaimArray(getNamespace(), getName(), getElements());
+    }
+
 }
