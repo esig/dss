@@ -123,7 +123,7 @@ class AttestationValidationTest extends CookbookTools {
             // import eu.europa.esig.dss.detailedreport.DetailedReport;
             // import eu.europa.esig.dss.diagnostic.DiagnosticData;
             // tag::attestation-qualification[]
-            // import eu.europa.esig.dss.attestation.common.validation.DefaultAttestationPresentationValidator;
+            // import eu.europa.esig.dss.attestation.common.validation.DefaultAttestationDocumentValidator;
             // import eu.europa.esig.dss.simplereport.SimpleReport;
             // import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
             // import eu.europa.esig.dss.validation.reports.Reports;

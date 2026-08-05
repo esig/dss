@@ -193,6 +193,7 @@ For the DSS demo: https://www.gnu.org/licenses/old-licenses/lgpl-2.1.en.html[GNU
 |[[R41]]	R41	|ESI - CB AdES (CBOR-AdES) digital signatures									|https://www.etsi.org/deliver/etsi_ts/119100_119199/11915201/01.01.01_60/ts_11915201v010101p.pdf[ETSI TS 119 152 part 1]                                    	|1.1.1 (2026-03)
 |[[R42]]	R42	|Internet RFC 9052: CBOR Object Signing and Encryption (COSE): Structures and Process						|https://www.ietf.org/rfc/rfc9052.txt[RFC 9052]                                                                                  	|
 |[[R43]]	R43	|Internet RFC 9338: CBOR Object Signing and Encryption (COSE): Countersignatures						    |https://www.ietf.org/rfc/rfc9338.txt[RFC 9338]                                                                                 	|
+|[[R44]]	R44	|Internet Draft: Token Status List (TSL)					            	    |https://www.ietf.org/archive/id/draft-ietf-oauth-status-list-21.txt[draft-ietf-oauth-status-list]                                                              |21
 
 |=======================
 

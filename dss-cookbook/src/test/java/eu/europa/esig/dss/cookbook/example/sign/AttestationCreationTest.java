@@ -22,11 +22,13 @@ package eu.europa.esig.dss.cookbook.example.sign;
 
 import eu.europa.esig.dss.attestation.common.creation.TokenStatusList;
 import eu.europa.esig.dss.attestation.mdoc.MdocConstants;
+import eu.europa.esig.dss.attestation.mdoc.creation.MdocIssuerSignedDocument;
+import eu.europa.esig.dss.attestation.mdoc.creation.MdocIssuerSignedItem;
 import eu.europa.esig.dss.attestation.mdoc.creation.MdocKeyBindingParameters;
 import eu.europa.esig.dss.attestation.mdoc.creation.MdocPayloadParameters;
-import eu.europa.esig.dss.attestation.mdoc.creation.MdocIssuerSignedItem;
 import eu.europa.esig.dss.attestation.mdoc.creation.MdocService;
 import eu.europa.esig.dss.attestation.mdoc.creation.SessionTranscriptBuilder;
+import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTAttestationDocument;
 import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTClaim;
 import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTClaimArray;
 import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTClaimObject;
@@ -110,6 +112,7 @@ class AttestationCreationTest extends CookbookTools {
 
             // tag::sdjwt-signed-attestation[]
             // import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTService;
+            // import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTSelectiveDisclosure;
             // import eu.europa.esig.dss.jades.JAdESSignatureParameters;
             // import eu.europa.esig.dss.model.DSSDocument;
             // import eu.europa.esig.dss.model.SignatureValue;
@@ -139,6 +142,24 @@ class AttestationCreationTest extends CookbookTools {
             List<SDJWTSelectiveDisclosure> disclosures = service.generateDisclosures(payloadParameters);
             // end::sdjwt-get-disclosures[]
 
+            // tag::sdjwt-issue-attestation[]
+            // import eu.europa.esig.dss.model.DSSDocument;
+
+            DSSDocument attestation = service.issueAttestation(signedAttestation, disclosures);
+            // end::sdjwt-issue-attestation[]
+
+            // tag::sdjwt-parse-attestation[]
+            // import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTAttestationDocument;
+            // import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTSelectiveDisclosure;
+            // import eu.europa.esig.dss.model.DSSDocument;
+
+            SDJWTAttestationDocument attestationDocument = service.parseAttestation(attestation);
+
+            // extract the relevant information
+            DSSDocument extractedSignedAttestation = attestationDocument.getSignedAttestation();
+            List<SDJWTSelectiveDisclosure> selectiveDisclosures = attestationDocument.getSelectiveDisclosures();
+            // end::sdjwt-parse-attestation[]
+
             // tag::sdjwt-key-binding[]
             // import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTKeyBindingParameters;
             // import eu.europa.esig.dss.jades.JAdESSignatureParameters;
@@ -163,20 +184,20 @@ class AttestationCreationTest extends CookbookTools {
             kbSignatureParameters.setIncludeCertificateChain(false);
 
             // Sign the key binding JWT
-            ToBeSigned kbDataToSign = service.getDataToSignForKeyBindingSignature(signedAttestation, disclosures, keyBindingParameters, kbSignatureParameters);
+            ToBeSigned kbDataToSign = service.getDataToSignForKeyBindingSignature(extractedSignedAttestation, selectiveDisclosures, keyBindingParameters, kbSignatureParameters);
             SignatureValue kbSignatureValue = signingToken.sign(kbDataToSign, kbSignatureParameters.getDigestAlgorithm(), devicePrivateKey);
-            DSSDocument keyBindingJWT = service.createKeyBindingSignature(signedAttestation, disclosures, keyBindingParameters, kbSignatureParameters, kbSignatureValue);
+            DSSDocument keyBindingJWT = service.createKeyBindingSignature(extractedSignedAttestation, selectiveDisclosures, keyBindingParameters, kbSignatureParameters, kbSignatureValue);
             // end::sdjwt-key-binding[]
 
             // tag::sdjwt-issuance[]
             // Issue a presentation with disclosures only
-            DSSDocument presentationWithDisclosures = service.issuePresentation(signedAttestation, disclosures);
+            DSSDocument presentationWithDisclosures = service.issuePresentation(extractedSignedAttestation, selectiveDisclosures);
 
             // Issue a presentation with a key binding signature only
-            DSSDocument presentationWithKB = service.issuePresentation(signedAttestation, keyBindingJWT);
+            DSSDocument presentationWithKB = service.issuePresentation(extractedSignedAttestation, keyBindingJWT);
 
             // Issue a presentation with both disclosures and a key binding signature
-            DSSDocument presentationWithKBAndDisclosures = service.issuePresentation(signedAttestation, disclosures, keyBindingJWT);
+            DSSDocument presentationWithKBAndDisclosures = service.issuePresentation(extractedSignedAttestation, selectiveDisclosures, keyBindingJWT);
             // end::sdjwt-issuance[]
         }
     }
@@ -228,6 +249,7 @@ class AttestationCreationTest extends CookbookTools {
 
             // tag::mdoc-signed-attestation[]
             // import eu.europa.esig.dss.cbades.signature.CBAdESSignatureParameters;
+            // import eu.europa.esig.dss.attestation.mdoc.creation.MdocIssuerSignedItem;
             // import eu.europa.esig.dss.attestation.mdoc.creation.MdocService;
             // import eu.europa.esig.dss.enumerations.DigestAlgorithm;
             // import eu.europa.esig.dss.model.DSSDocument;
@@ -257,6 +279,24 @@ class AttestationCreationTest extends CookbookTools {
             // Retrieve disclosures (one IssuerSignedItem per selectively disclosable element)
             List<MdocIssuerSignedItem> disclosures = service.generateDisclosures(payloadParameters);
             // end::mdoc-get-disclosures[]
+
+            // tag::mdoc-issue-attestation[]
+            // import eu.europa.esig.dss.model.DSSDocument;
+
+            DSSDocument attestation = service.issueAttestation(signedAttestation, disclosures);
+            // end::mdoc-issue-attestation[]
+
+            // tag::mdoc-parse-attestation[]
+            // import eu.europa.esig.dss.attestation.mdoc.creation.MdocIssuerSignedDocument;
+            // import eu.europa.esig.dss.attestation.mdoc.creation.MdocIssuerSignedItem;
+            // import eu.europa.esig.dss.model.DSSDocument;
+
+            MdocIssuerSignedDocument mdocIssuerSigned = service.parseAttestation(attestation);
+
+            // extract the relevant information
+            DSSDocument extractedSignedAttestation = mdocIssuerSigned.getSignedAttestation();
+            List<MdocIssuerSignedItem> selectiveDisclosures = mdocIssuerSigned.getSelectiveDisclosures();
+            // end::mdoc-parse-attestation[]
 
             // tag::mdoc-key-binding[]
             // import eu.europa.esig.dss.attestation.mdoc.creation.MdocKeyBindingParameters;

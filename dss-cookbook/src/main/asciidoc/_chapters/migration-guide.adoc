@@ -71,7 +71,6 @@ a|Attestation creation          a|
 import eu.europa.esig.dss.eaa.jwt.creation.SDJWTEAADisclosure;
 import eu.europa.esig.dss.eaa.jwt.creation.SDJWTEAAPayloadParameters;
 import eu.europa.esig.dss.eaa.jwt.creation.SDJWTEAAService;
-import eu.europa.esig.dss.eaa.jwt.creation.SDJWTKeyBindingParameters;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
@@ -87,19 +86,10 @@ DSSDocument signedEAA = service.signEAA(payloadParameters, signatureParameters, 
 
 List<SDJWTEAADisclosure> disclosures = service.getDisclosures(payloadParameters);
 
-SDJWTKeyBindingParameters keyBindingParameters = new SDJWTKeyBindingParameters();
-
-ToBeSigned kbDataToSign = service.getDataToSignForKeyBindingSignature(signedEAA, disclosures, keyBindingParameters, kbSignatureParameters);
-SignatureValue kbSignatureValue = signingToken.sign(kbDataToSign, kbSignatureParameters.getDigestAlgorithm(), devicePrivateKey);
-DSSDocument keyBindingJWT = service.createKeyBindingSignature(signedEAA, disclosures, keyBindingParameters, kbSignatureParameters, kbSignatureValue);
-
-DSSDocument presentationDocument = service.issuePresentation(signedEAA, disclosures, keyBindingJWT);
-
 ----
 a|
 [source,java]
 ----
-import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTKeyBindingParameters;
 import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTPayloadParameters;
 import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTSelectiveDisclosure;
 import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTService;
@@ -116,7 +106,36 @@ ToBeSigned dataToSign = service.getDataToBeSigned(payloadParameters, signaturePa
 SignatureValue signatureValue = signingToken.sign(dataToSign, signatureParameters.getDigestAlgorithm(), privateKey);
 DSSDocument signedAttestation = service.signAttestation(payloadParameters, signatureParameters, signatureValue);
 
-List<SDJWTSelectiveDisclosure> disclosures = service.getDisclosures(payloadParameters);
+List<SDJWTSelectiveDisclosure> disclosures = service.generateDisclosures(payloadParameters);
+DSSDocument attestation = service.issueAttestation(signedAttestation, disclosures);
+----
+
+a|Attestation presentation          a|
+[source,java]
+----
+import eu.europa.esig.dss.eaa.jwt.creation.SDJWTKeyBindingParameters;
+
+SDJWTEAAService service = new SDJWTEAAService(commonCertificateVerifier);
+
+SDJWTKeyBindingParameters keyBindingParameters = new SDJWTKeyBindingParameters();
+
+ToBeSigned kbDataToSign = service.getDataToSignForKeyBindingSignature(signedEAA, disclosures, keyBindingParameters, kbSignatureParameters);
+SignatureValue kbSignatureValue = signingToken.sign(kbDataToSign, kbSignatureParameters.getDigestAlgorithm(), devicePrivateKey);
+DSSDocument keyBindingJWT = service.createKeyBindingSignature(signedEAA, disclosures, keyBindingParameters, kbSignatureParameters, kbSignatureValue);
+
+DSSDocument presentationDocument = service.issuePresentation(signedEAA, disclosures, keyBindingJWT);
+
+----
+a|
+[source,java]
+----
+import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTService;
+
+SDJWTService service = new SDJWTService(commonCertificateVerifier);
+
+AttestationDocument attestationDocument = service.parseAttestation(attestation);
+DSSDocument signedAttestation = attestationDocument.getSignedAttestation();
+List<SDJWTSelectiveDisclosure> disclosures = attestationDocument.getSelectiveDisclosures();
 
 SDJWTKeyBindingParameters keyBindingParameters = new SDJWTKeyBindingParameters();
 
@@ -147,7 +166,7 @@ List<EAAWrapper> eaas = diagnosticData.getEAAs();
 a|
 [source,java]
 ----
-import eu.europa.esig.dss.attestation.common.validation.DefaultAttestationPresentationValidator;
+import eu.europa.esig.dss.attestation.common.validation.DefaultAttestationDocumentValidator;
 import eu.europa.esig.dss.diagnostic.AttestationWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.simplereport.SimpleReport;

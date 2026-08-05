@@ -7,31 +7,256 @@
 
 == Attestations
 
-Attestations are signed digital documents attesting attributes or information about a subject, organization or device.
+An attestation is a digitally signed document that contains claims about a subject (for example, a person, organization or device).
 
-DSS provides support for issuing, presenting and validating attestations in two standard formats:
+Examples include:
+
+* a person identity data (PID);
+* a driving licence;
+* a diploma;
+* a professional qualification;
+* an authorization or role;
+* and others.
+
+An attestation may allow the holder to reveal only the claims required for a particular interaction.
+
+Notable examples of those attestation formats utilization in the context of eIDAS (cf. <<R12>>) are Electronic Attestations of Attributes (EAA) and Person Identification Data (PID).
+
+Electronic Attestations of Attributes are digital identity credentials defined within the European Digital Identity (EUDI) framework. They allow the selective disclosure of identity attributes (claims) to a verifier, without exposing the full content of the credential.
+
+From the perspective of the DSS, both are handled identically - the only difference is the set of claims contained in the attestation.
+
+=== Workflow and implementation
+
+DSS supports the complete lifecycle of attestations:
+
+1. The issuer creates the attestation payload.
+2. The issuer signs the attestation.
+3. The issuer transfers the attestation to the wallet with (optional) selectively disclosable claims.
+4. The wallet selects information to be presented to a relying party.
+5. The wallet creates a key binding signature.
+6. The wallet issues an attestation presentation to a relying party (Verifier).
+7. The verifier validates authenticity of the attestation presentation.
+
+.The attestation lifecycle
+----
+        +-------------------+
+        |     Issuer        |
+        +-------------------+
+                │
+                │ 1. Create attestation payload
+                ▼
+         Attestation Payload
+                │
+                │ 2. Sign attestation payload
+                ▼
+         Signed Attestation
+                │
+                │ 3. (Optional) Attach
+                │    selective disclosures
+                ▼
+         Issued Attestation
+                │
+                │ Transfer to holder
+                ▼
+        +-------------------+
+        |     Wallet        |
+        +-------------------+
+                │
+                │ 4. (Optional) Select claims
+                │    to be disclosed
+                ▼
+         Selective Disclosures
+                │
+                │ 5. (Optional) Key binding
+                ▼
+         Key Binding signature
+                │
+                │ 6. Issue presentation
+                ▼
+         Attestation
+         Presentation
+                │
+                │ Presented to relying party
+                ▼
+        +-------------------+
+        |     Verifier      |
+        +-------------------+
+                │
+                │ 7. Validate
+                ▼
+         Validation report
+----
+
+Three parties typically participate in the lifecycle.
+
+Issuer:: Creates and signs attestations.
+Wallet:: Stores the issued attestation and creates attestation presentations.
+Verifier:: Receives and validates attestation presentations.
+
+The same workflow applies to both supported attestation formats:
 
 * **SD-JWT** (Selective Disclosure for JSON Web Tokens) (<<R35>>) and **SD-JWT VC** (Selective Disclosure JWT Verifiable Credential) (<<R36>>);
 * **ISO/IEC 18013-5 mdoc** (Mobile Document) (<<R38>>).
 
-Notable examples of attestation utilization in the context of eIDAS (cf. <<R12>>) are Electronic Attestations of Attributes (EAA) and Person Identification Data (PID).
-
-Electronic Attestations of Attributes are digital identity credentials defined within the European Digital Identity (EUDI) framework. They allow the selective disclosure of identity attributes (claims) to a verifier, without exposing the full content of the credential.
-
 === Creation
 
-The exact classes to use depends on the format of the attestation, but for each format there's an implementation of the following interface :
+The attestation API separates the lifecycle into three logical workflows.
 
-- `AttestationService` is the service that manages the workflow to create the attestation. It is used to compute the data to be signed, create the signed attestation, create the key binding signature and issue an attestation presentation.
+[cols="1,1,4"]
+.Attestation creation services
+|===
+|Interface |Actor |Purpose
 
-This service relies on the following interfaces :
+|`AttestationService`                |Issuer   |Creates the payload, prepares the Data To Be Signed (DTBS), and embeds the issuer signature.
+|`AttestationSDService`              |Issuer   |Extends attestation creation with support for selective disclosures.
+|`AttestationPresentationService`    |Wallet   |Creates holder presentations from issued attestations.
+|===
 
-- `AttestationPayloadParameters` to configure the claims. It's possible to define technical claims (i.e. issuance date, expiration date, etc.) or claims that can be selectively or non selectively disclosable. Helper methods are present for known claims, but it is also possible to define your own claim structures, using the specific implementation of `AttestationClaim`, `AttestationClaimArray` and `AttestationClaimObject`.
-- `KeyBindingParameters` for the parameters required for the keybinding signature.
-- `SelectiveDisclosure` for the representation of the disclosure of the attestation.
+Concrete implementations, such as `SDJWTService` and `MdocService`, implement all three interfaces, allowing a single service instance to be used throughout the complete lifecycle.
+
+==== AttestationService
+
+`AttestationService` provides utilities for an attestation payload creation, based on the parameters, as well as signing of the attestation.
+
+The signed attestation is the credential that represents an issuer's signature authenticating the attestation's payload.
+
+At this stage it contains the issuer signature but has not yet been packaged with the disclosures that will be delivered to the holder. See <<AttestationSDService>> for packaging an attestation with selectively disclosable claims.
+
+The service is typically used by an attestation issuer.
+
+The following methods are provided within the service:
+
+* `#getDataToSign(DSSDocument, SerializableSignatureParameters)` - creates the format-specific data to be signed (DTBS) from an existing attestation payload.
+* `#getDataToSign(AttestationPayloadParameters, SerializableSignatureParameters)` - creates the format-specific data to be signed (DTBS) using the payload parameters configuration. The method generates the attestation payload from the supplied parameters before computing the data to be signed.
+* `#signAttestation(DSSDocument, SerializableSignatureParameters, SignatureValue)` - produces a signed attestation by embedding the provided signature value into an existing payload.
+* `#signAttestation(AttestationPayloadParameters, SerializableSignatureParameters, SignatureValue)` - generates an attestation payload from the supplied parameters and embeds the provided signature value into the resulting attestation.
+
+WARNING: All input parameters shall be equivalent on both `getDataToSign` and `signAttestation` method calls. This especially concerns `SerializableSignatureParameters` and `AttestationPayloadParameters`, including the same `Date` definition for mandatory parameters (such as signing time, etc.). Failure to provide the same configuration may result to an invalid signature.
+
+`AttestationPayloadParameters` interface is used to configure the claims. It's possible to define technical claims (i.e. issuance date, expiration date, etc.) or claims that can be selectively or non selectively disclosable. Helper methods are present for known claims, but it is also possible to define your own claim structures, using the specific implementation of `AttestationClaim`, `AttestationClaimArray` and `AttestationClaimObject`. The exact implementations of the class depend on the selected attestation format.
+
+NOTE: It is up to the implementers to ensure validity of the attestation payload to a certain attestation profile.
+
+[[AttestationSDService]]
+==== AttestationSDService
+
+`AttestationSDService` represents an extension of the `AttestationService` providing additional functionality on managing selectively disclosable claims, as well as attestation issuance.
+
+A selectively disclosable credential allows the holder to reveal only the claims required for a particular transaction, as the opposite to a traditional credential revealing all contained information.
+
+The service is also intended to be used by an attestation issuer.
+
+The following methods are provided within the service:
+
+* `#generateDisclosures(AttestationPayloadParameters)` - generates disclosures for every claim marked as selectively disclosable in the supplied payload parameters.
+* `#issueAttestation(DSSDocument)` - creates an attestation to be transferred to a device containing only the signed attestation without
+any selective disclosures.
+* `#issueAttestation(DSSDocument, AttestationPayloadParameters)` - creates an attestation to be transferred to a device and automatically attaches all disclosures generated from the supplied payload parameters.
+* `#issueAttestation(DSSDocument, List<SelectiveDisclosure>)` - creates an an attestation to be transferred to a device containing the supplied disclosures.
+
+The selective disclosures are represented by the `SelectiveDisclosure` interface.
+
+Below is a typical workflow of an attestation issuer using the `AttestationSDService` service.
+
+[source]
+.AttestationSDService workflow
+----
+ToBeSigned = getDataToSign(AttestationPayloadParameters, SerializableSignatureParameters)
+        │
+        ▼
+SignatureValue = (external signing of ToBeSigned)
+        │
+        ▼
+DSSDocument signedAttestation = signAttestation(AttestationPayloadParameters, SerializableSignatureParameters, SignatureValue)
+        │
+        ▼
+List<SelectiveDisclosure> = generateDisclosures(AttestationPayloadParameters)
+        │
+        ▼
+DSSDocument attestation = issueAttestation(DSSDocument signedAttestation, List<SelectiveDisclosure>)
+----
+
+==== AttestationPresentationService
+
+`AttestationPresentationService` provides methods for processing an obtained attestation, device key binding signature creation as well as creation of attestation presentation.
+
+An attestation presentation is a document created based on the existing attestation, a holder (e.g. a wallet) creates in order to provide a selected set of information to a relying party about the subject. An attestation presentation usually contains a list of disclosed claims as well as a key binding signature, a holder creates to confirm a valid possession of the attestation.
+
+Below is an example of a created attestation presentation based on the issued attestation.
+
+[cols="1,1"]
+.Attestation Presentation creation
+|===
+|Issued attestation |Attestation presentation
+
+|Attestation signature (payload)
+
++
+
+Disclosures (Given name, Family name, Nationality, Date of Birth)
+
+|Attestation signature (payload)
+
++
+
+Disclosures (Given name, Family name)
+
++
+
+Key binding signature
+|===
+
+The service is intended to be used by a device holder or a wallet.
+
+The following methods are provided within the service:
+
+* `#parseAttestation(DSSDocument)` - parses an issued attestation into its logical components.
+* `#getDataToSignForKeyBindingSignature(DSSDocument, KeyBindingParameters, SerializableSignatureParameters)` - creates the format-specific data to be signed by a device key for a key-binding signature.
+* `#getDataToSignForKeyBindingSignature(DSSDocument, List<SelectiveDisclosure>, KeyBindingParameters, SerializableSignatureParameters)` - creates the format-specific data to be signed by a device key for a key-binding signature covering the supplied disclosures.
+* `#createKeyBindingSignature(DSSDocument, KeyBindingParameters, SerializableSignatureParameters, SignatureValue)` - produces a key-binding signature document from the supplied signature value. The signature value must sign the DTBS previously obtained through `#getDataToSignForKeyBindingSignature` method.
+* `#createKeyBindingSignature(DSSDocument, List<SelectiveDisclosure>, KeyBindingParameters, SerializableSignatureParameters, SignatureValue)` - produces a key-binding signature document from the supplied signature value and disclosures. The signature value must sign the DTBS previously obtained through `#getDataToSignForKeyBindingSignature` method.
+* `#issuePresentation(DSSDocument, List<SelectiveDisclosure>)` - creates an attestation presentation containing the signed attestation and
+the supplied disclosures.
+* `#issuePresentation(DSSDocument, DSSDocument)` - creates an attestation presentation containing the signed attestation and a holder key-binding signature.
+* `#issuePresentation(DSSDocument, List<SelectiveDisclosure>, DSSDocument)` - creates an attestation presentation containing the signed attestation, the selected disclosures, and a holder key-binding signature.
+
+`KeyBindingParameters` contain configuration for the key binding signature creation, such as key binding signature claims.
+
+Please note that the service allows parsing of the original attestation, thus allowing to process and select selectively disclosable claims to be supplied with the attestation presentation.
+
+Below is a typical workflow of a wallet using the `AttestationPresentationService` service.
+
+[source]
+.AttestationSDService workflow
+----
+DSSDocument attestation = (obtain attestation)
+        │
+        ▼
+AttestationDocument = parseAttestation(DSSDocument attestation)
+        │
+        ▼
+DSSDocument signedAttestation = AttestationDocument#getSignedAttestation
+        │
+        ▼
+List<SelectiveDisclosure> = (select selectively disclosable claims to be presented from AttestationDocument)
+        │
+        ▼
+ToBeSigned = getDataToSignForKeyBindingSignature(DSSDocument signedAttestation, List<SelectiveDisclosure>, KeyBindingParameters, SerializableSignatureParameters)
+        │
+        ▼
+SignatureValue = (external signing of ToBeSigned)
+        │
+        ▼
+DSSDocument keyBindingSignature = createKeyBindingSignature(DSSDocument signedAttestation, List<SelectiveDisclosure>, KeyBindingParameters, SerializableSignatureParameters, SignatureValue)
+        │
+        ▼
+DSSDocument attestationPresentation = issuePresentation(DSSDocument signedAttestation, List<SelectiveDisclosure>, DSSDocument keyBindingSignature)
+----
 
 ==== SD-JWT
-The implementation of `AttestationService` to use for SD-JWT attestation creation is `SDJWTService`.
+
+`SDJWTService` is the main entry point for working with SD-JWT attestations.
 
 This service relies on the following implementations :
 
@@ -104,15 +329,6 @@ To override the `SecureRandom` used for automatic salt generation — for instan
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/AttestationSnippet.java[tags=sdjwt-custom-secure-random]
 ----
 
-===== Disclosures
-The list of disclosures for the selectively disclosable claims can be retrieved from the payload parameters with `SDJWTService`.
-
-[source,java,indent=0]
-.SD-JWT disclosures
-----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/AttestationCreationTest.java[tags=sdjwt-get-disclosures]
-----
-
 ===== Signed attestation creation
 
 The implementation of signature parameters to use for this format is `JAdESSignatureParameters` with the following requirements :
@@ -130,6 +346,36 @@ WARNING: The payload and signature parameters that are provided to get the data 
 .SD-JWT creation of signed attestation
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/AttestationCreationTest.java[tags=sdjwt-signed-attestation]
+----
+
+===== Attestation issuance with selective disclosures
+
+The list of disclosures for the selectively disclosable claims can be retrieved from the payload parameters with `SDJWTService`.
+
+[source,java,indent=0]
+.SD-JWT disclosures generation
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/AttestationCreationTest.java[tags=sdjwt-get-disclosures]
+----
+
+With the selectively disclosable claims obtained, an attestation can be issued to be transferred to a wallet.
+
+[source,java,indent=0]
+.SD-JWT issue attestation with selective disclosures
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/AttestationCreationTest.java[tags=sdjwt-issue-attestation]
+----
+
+===== Parsing an obtained attestation (wallet)
+
+DSS requires a parsing of an attestation to is logical components for further processing and issuance of the presentation token.
+
+The `#parseAttestation` method allows extraction of the signed attestation and attached selectively disclosable claims. A holder may select the disclosures from the list to be provided to a relying party as part of an attestation presentation.
+
+[source,java,indent=0]
+.SD-JWT parse attestation
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/AttestationCreationTest.java[tags=sdjwt-parse-attestation]
 ----
 
 ===== Key Binding
@@ -171,7 +417,8 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/AttestationCre
 ----
 
 ==== ISO/IEC 18013-5 mdoc
-The implementation of `AttestationService` to use for ISO/IEC 18013-5 mdoc attestation creation is `MdocService`.
+
+`MdocService` is the main entry point for working with ISO/IEC 18013-5 mdoc attestations.
 
 This service relies on the following implementations :
 
@@ -234,15 +481,6 @@ To override the `SecureRandom` used for automatic salt generation — for instan
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/AttestationSnippet.java[tags=mdoc-custom-secure-random]
 ----
 
-===== Disclosures
-The list of disclosures (one `IssuerSignedItem` entry per selectively disclosable element) can be retrieved from the payload parameters with `MdocService`.
-
-[source,java,indent=0]
-.mdoc disclosures
-----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/AttestationCreationTest.java[tags=mdoc-get-disclosures]
-----
-
 ===== Signed attestation creation
 
 The implementation of signature parameters to use for this format is `CBAdESSignatureParameters` with the following requirements :
@@ -263,6 +501,34 @@ WARNING: The payload and signature parameters that are provided to get the data 
 .mdoc creation of signed attestation
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/AttestationCreationTest.java[tags=mdoc-signed-attestation]
+----
+
+===== Attestation issuance with selective disclosures
+
+The list of disclosures (one `IssuerSignedItem` entry per selectively disclosable element) can be retrieved from the payload parameters with `MdocService`.
+
+[source,java,indent=0]
+.mdoc disclosures
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/AttestationCreationTest.java[tags=mdoc-get-disclosures]
+----
+
+With selective disclosures obtained, an instance of mdoc `IssuerSigned` structure can be produced:
+
+[source,java,indent=0]
+.Mdoc IssuerSigned generation
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/AttestationCreationTest.java[tags=mdoc-issue-attestation]
+----
+
+===== Parsing an obtained attestation (wallet)
+
+A wallet is expected to obtain an instance of `IssuerSigned` mdoc structure, as defined in ISO/IEC 18013-5 (cf. <<R38>>), chapter "8.3.2.1.2.2 Device retrieval mdoc response".
+
+[source,java,indent=0]
+.Mdoc parse attestation
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/AttestationCreationTest.java[tags=mdoc-parse-attestation]
 ----
 
 ===== Key Binding
@@ -304,22 +570,30 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/AttestationCre
 [[AttestationValidation]]
 === Validation
 
-==== attestation presentation validation
+==== Attestation document validation
 
-The attestation presentation validation follows the same pattern as regular signature validation. The entry point is `DefaultAttestationDocumentValidator`, which extends `SignedDocumentValidator`.
+The attestation validation follows the same pattern as regular signature validation. The entry point is `DefaultAttestationDocumentValidator`, which extends `SignedDocumentValidator`.
 
 The validator can be obtained in two ways:
 
-1. **Automatic format detection** via `DefaultAttestationPresentationValidator.fromDocument(dssDocument)` – the appropriate implementation is resolved using a `ServiceLoader` (requires the specific format module on the classpath).
+1. **Automatic format detection** via `DefaultAttestationDocumentValidator.fromDocument(dssDocument)` – the appropriate implementation is resolved using a `ServiceLoader` (requires the specific format module on the classpath).
 
 2. **Direct instantiation** of a format-specific validator:
-* SD-JWT: It performs the validation of an attestation presentation, applying the logic as defined in TS 119 472-2, section 4.1 EAAP implementation based on SD-JWT VC (<<R36>>)
+* SD-JWT:
 ** `SDJWTCompactDocumentValidator`: SD-JWT in compact serialization (`header.payload.signature\~disclosures~kbjwt`).
 ** `SDJWTJsonSerializationDocumentValidator`: SD-JWT in JSON serialization.
 
 * ISO/IEC-mdoc:
 ** `MdocDeviceResponseDocumentValidator`: mdoc DeviceResponse (full presentation with device authentication). It performs the validation of an attestation presentation, applying the logic as defined in TS 119 472-2, section 4.2 EAAP implementation based on ISO/IEC-mdoc (<<R36>>)
 ** `MdocIssuerSignedDocumentValidator`: mdoc IssuerSigned only (without device authentication). It performs the validation of an attestation presentation as defined in TS 119 472-1, section 6 Implementation of attestation based on ISO/IEC-mdoc (<<R34>>)
+
+The validator:
+
+* verifies the issuer signature;
+* extracts and validates selectively disclosed claims (when present);
+* verifies the holder key-binding signature (when present);
+* validates revocation status;
+* validates qualification level (e.g. (Q)EAA, PuB-EAA, PID, etc.).
 
 ===== Auto-detection
 
@@ -332,7 +606,7 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/Attestatio
 ===== SD-JWT
 
 [source,java,indent=0]
-.SD-JWT presentation validation (explicit compact validator)
+.SD-JWT validation (explicit compact validator)
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/AttestationValidationTest.java[tags=attestation-validation-sdjwt-compact]
 ----
@@ -369,7 +643,7 @@ DSS supports revocation checking for attestation presentations. Revocation infor
 
 Two base revocation mechanisms are defined:
 
-* **Token Status List** – as per IETF `draft-ietf-oauth-status-list` (JWT or CWT encoded).
+* **Token Status List** – as per IETF `draft-ietf-oauth-status-list` (cf. <<R44>>) (JWT or CWT encoded).
 ** JWT Status List: implemented in `dss-attestation-revocation-jwt`.
 ** CWT Status List: implemented in `dss-attestation-revocation-cwt`.
 * **Identifier List** – as per ISO/IEC 18013-5 (CWT encoded).
@@ -402,6 +676,8 @@ include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/Attestatio
 ==== Inspection of Validation Reports
 
 After calling `validateDocument()`, the three standard DSS reports are available: `DiagnosticData`, `SimpleReport`, and `DetailedReport`. The `DiagnosticData` exposes attestation specific information through `AttestationWrapper` objects.
+
+For obtaining information about an attestation qualification, please see <<AttestationQualification>>.
 
 ===== Claims
 

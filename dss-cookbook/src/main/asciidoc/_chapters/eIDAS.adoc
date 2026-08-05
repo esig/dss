@@ -175,6 +175,7 @@ The following example verifies the qualification level of a timestamp:
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/TimestampValidationTest.java[tags=demo]
 ----
 
+[[AttestationQualification]]
 === Verifying the qualified status of attestations
 
 DSS is able to determine a qualification level of an attestation if corresponding information about TrustServiceProviders is provided to a certificate verifier (loaded automatically to a trusted certificate source with <<tlValidationJob>>).

@@ -108,7 +108,7 @@ public interface AttestationPresentationService<SP extends SerializableSignature
     DSSDocument createKeyBindingSignature(DSSDocument signedAttestation, E keyBindingParameters, SP signatureParameters, SignatureValue signatureValue);
 
     /**
-     * Produces a key-binding signature document from the supplied signature value.
+     * Produces a key-binding signature document from the supplied signature value and disclosures.
      * <p>
      * The signature value must sign the DTBS previously
      * obtained through {@link #getDataToSignForKeyBindingSignature(DSSDocument, List, KeyBindingParameters, SerializableSignatureParameters)}.
