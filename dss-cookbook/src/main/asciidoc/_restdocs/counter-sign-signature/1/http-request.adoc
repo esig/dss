@@ -4,7 +4,7 @@ POST /services/rest/signature/one-document/getDataToBeCounterSigned HTTP/1.1
 Accept: application/json, application/javascript, text/javascript, text/json
 Content-Type: application/json
 Host: localhost:8080
-Content-Length: 10027
+Content-Length: 10201
 
 {
   "parameters" : {
@@ -22,6 +22,12 @@ Content-Length: 10027
     "sigDMechanism" : null,
     "base64UrlEncodedPayload" : null,
     "base64UrlEncodedEtsiUComponents" : null,
+    "signatureType" : null,
+    "keyIdentifier" : null,
+    "x509Url" : null,
+    "coseStructureType" : null,
+    "tagged" : null,
+    "externallySuppliedData" : null,
     "digestAlgorithm" : "SHA256",
     "encryptionAlgorithm" : null,
     "referenceDigestAlgorithm" : null,
@@ -46,7 +52,7 @@ Content-Length: 10027
     "signatureIdToCounterSign" : "id-afde782436468dd74eeb181f7ce110e1",
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1766042848069,
+      "signingDate" : 1785846525087,
       "claimedSignerRoles" : null,
       "signedAssertions" : null,
       "policyId" : null,

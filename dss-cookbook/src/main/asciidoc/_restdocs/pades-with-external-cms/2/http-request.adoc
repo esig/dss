@@ -4,7 +4,7 @@ POST /services/rest/signature/external-cms/getDataToSign HTTP/1.1
 Accept: application/json, application/javascript, text/javascript, text/json
 Content-Type: application/json
 Host: localhost:8080
-Content-Length: 3128
+Content-Length: 3302
 
 {
   "parameters" : {
@@ -22,6 +22,12 @@ Content-Length: 3128
     "sigDMechanism" : null,
     "base64UrlEncodedPayload" : null,
     "base64UrlEncodedEtsiUComponents" : null,
+    "signatureType" : null,
+    "keyIdentifier" : null,
+    "x509Url" : null,
+    "coseStructureType" : null,
+    "tagged" : null,
+    "externallySuppliedData" : null,
     "digestAlgorithm" : "SHA256",
     "encryptionAlgorithm" : null,
     "referenceDigestAlgorithm" : null,
@@ -66,7 +72,7 @@ Content-Length: 3128
   },
   "messageDigest" : {
     "algorithm" : "SHA256",
-    "value" : "j/386xOS78tt7afXNY4G3uTlvFDvHldPMREJtF++y2o="
+    "value" : "XWNKqDJ/rfQMAbbnkro+MDlWBBKgaLdNmPqSx1dUZ34="
   }
 }
 ----

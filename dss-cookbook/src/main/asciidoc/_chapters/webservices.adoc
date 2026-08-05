@@ -409,88 +409,132 @@ Samples:
 * *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/get-timestamp-response/1/httpie-request.adoc[Request]
 * *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/get-timestamp-response/1/curl-request.adoc[Request]
 
-[[RestEAACreationService]]
+[[RestAttestationCreationService]]
 ==== REST attestation creation service
 
-This service implements a creation of attestations, as well as issuance of attestation presentations.
-
-[source,java,indent=0]
-.Rest attestation creation service
-----
-include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/ws/rest/RestAttestationCreationServiceSnippet.java[tags=demo]
-----
-
-===== attestation creation
+This service includes functionalities for payload generation and attestation signing.
 
 Creation of an attestation may be done either based on a provided payload, or parameters used to define the payload to be generated.
 The signature of an attestation is done in 3 stateless steps, similarly to a signature creation as explained in <<SignatureCreationInDSS>>.
 The two methods, namely `getDataToSign` and `signAttestation` are exposed to the API within the current module.
 
-====== Get data to sign
+NOTE: The service is meant to be used by an attestation issuer (e.g. EAA issuer, PID issuer, etc.).
+
+[source,java,indent=0]
+.Rest attestation creation service
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/ws/rest/RestAttestationCreationServiceSnippet.java[tags=attestation-creation]
+----
+
+===== Get data to sign
 
 The method allows retrieving the data to be signed. The user sends the payload parameters (pre-computed payload or payload generation parameters) and the signature parameters (signature level, signing-certificate, etc.).
 
 Samples:
 
-* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/1/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/1/response-body.adoc[Response]
-* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/1/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/1/http-response.adoc[Response]
-* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/1/httpie-request.adoc[Request]
-* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/1/curl-request.adoc[Request]
+* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-creation/1/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-creation/1/response-body.adoc[Response]
+* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-creation/1/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-creation/1/http-response.adoc[Response]
+* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-creation/1/httpie-request.adoc[Request]
+* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-creation/1/curl-request.adoc[Request]
 
-====== Sign Attestation
+===== Sign Attestation
 
 The method allows generation of a signed attestation. The user sends the payload parameters (pre-computed payload or payload generation parameters), the signature parameters (signature level, signing-certificate, etc.) and the signature value.
 
 Samples:
 
-* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/2/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/2/response-body.adoc[Response]
-* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/2/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/2/http-response.adoc[Response]
-* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/2/httpie-request.adoc[Request]
-* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/2/curl-request.adoc[Request]
+* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-creation/2/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-creation/2/response-body.adoc[Response]
+* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-creation/2/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-creation/2/http-response.adoc[Response]
+* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-creation/2/httpie-request.adoc[Request]
+* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-creation/2/curl-request.adoc[Request]
 
-====== Get disclosures
+[[RestAttestationSDCreationService]]
+==== REST attestation creation with selective disclosures service
+
+This service provides an extension of <<RestAttestationCreationService>> for attestation formats supporting selectively disclosable claims (e.g. SD-JWT <<R36>> and ISO/IEC mdoc <<R38>>).
+
+In addition to the functionalities listed in <<RestAttestationCreationService>>, the service provides methods for disclosure list generation and the attestation issuance.
+
+NOTE: The issued attestation (with or without disclosures) represents a token to be transferred to a wallet instance.
+
+[source,java,indent=0]
+.Rest attestation with selectively disclosable claims creation service
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/snippets/ws/rest/RestAttestationCreationServiceSnippet.java[tags=attestation-sd-creation]
+----
+
+===== Generate disclosures
 
 The method allows retrieving of disclosures used to generate hashes for selectively disclosable claims within the signed attestation. The user provided payload parameters (same as the ones used in the steps above).
 
 Samples:
 
-* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/3/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/3/response-body.adoc[Response]
-* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/3/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/3/http-response.adoc[Response]
-* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/3/httpie-request.adoc[Request]
-* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/3/curl-request.adoc[Request]
+* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-creation/3/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-creation/3/response-body.adoc[Response]
+* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-creation/3/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-creation/3/http-response.adoc[Response]
+* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-creation/3/httpie-request.adoc[Request]
+* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-creation/3/curl-request.adoc[Request]
 
-====== Get data to sign for key binding signature
+===== Issue attestation
+
+The method is used to create an attestation token to be transferred to a wallet instance. The attestation may or may not contain selective disclosures.
+
+Samples:
+
+* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-creation/4/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-creation/4/response-body.adoc[Response]
+* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-creation/4/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-creation/4/http-response.adoc[Response]
+* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-creation/4/httpie-request.adoc[Request]
+* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-creation/4/curl-request.adoc[Request]
+
+[[RestAttestationPresentationService]]
+==== REST attestation presentation service
+
+This service implements a wallet workflow, providing functionalities for parsing of an obtained attestation, key binding signature creation as well as an attestation presentation creation for transferring to a relying party.
+
+===== Parse attestation
+
+The method allows to parse an obtained attestation for further processing. The resulted object contains a signed attestation document part, as well as a list of selectively disclosable claims. The list of selective disclosures (if any) may be modified, depending on what information is to be presented to a relying party.
+
+NOTE: DSS requires signed attestation and disclosures (if any) separately provided for further methods of the service.
+
+Samples:
+
+* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-presentation/1/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-presentation/1/response-body.adoc[Response]
+* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-presentation/1/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-presentation/1/http-response.adoc[Response]
+* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-presentation/1/httpie-request.adoc[Request]
+* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-presentation/1/curl-request.adoc[Request]
+
+===== Get data to sign for key binding signature
 
 The method allows retrieving the data to be signed for a key binding signature generation. The user sends the signed attestation, (optionally) disclosures to be included in the attestation presentation, key binding signature payload parameters (e.g. nonce) and the signature parameters (signature level, signing-certificate, etc.).
 
 Samples:
 
-* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/4/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/4/response-body.adoc[Response]
-* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/4/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/4/http-response.adoc[Response]
-* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/4/httpie-request.adoc[Request]
-* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/4/curl-request.adoc[Request]
+* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-presentation/2/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-presentation/2/response-body.adoc[Response]
+* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-presentation/2/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-presentation/2/http-response.adoc[Response]
+* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-presentation/2/httpie-request.adoc[Request]
+* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-presentation/2/curl-request.adoc[Request]
 
-====== Create key binding signature
+===== Create key binding signature
 
 The method allows generation of a key binding signature. The user sends the signed attestation, (optionally) disclosures to be included in the attestation presentation, key binding signature payload parameters (e.g. nonce), the signature parameters (signature level, signing-certificate, etc.) and a signature value.
 
 Samples:
 
-* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/5/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/5/response-body.adoc[Response]
-* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/5/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/5/http-response.adoc[Response]
-* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/5/httpie-request.adoc[Request]
-* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/5/curl-request.adoc[Request]
+* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-presentation/3/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-presentation/3/response-body.adoc[Response]
+* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-presentation/3/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-presentation/3/http-response.adoc[Response]
+* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-presentation/3/httpie-request.adoc[Request]
+* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-presentation/3/curl-request.adoc[Request]
 
-====== Issue presentation
+===== Issue presentation
 
-The method allows generation of an attestation Presentation. The user sends the signed attestation, (optionally) disclosures to be included, (optionally) key binding signature and the parameters (format of attestation Presentation, etc.).
+The method allows generation of an attestation presentation. The user sends the signed attestation, (optionally) disclosures to be included, (optionally) key binding signature and the parameters (format of attestation Presentation, etc.).
 
 Samples:
 
-* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/6/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/6/response-body.adoc[Response]
-* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/6/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/6/http-response.adoc[Response]
-* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/6/httpie-request.adoc[Request]
-* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-and-attestation-presentation/6/curl-request.adoc[Request]
+* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-presentation/4/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-presentation/4/response-body.adoc[Response]
+* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-presentation/4/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-presentation/4/http-response.adoc[Response]
+* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-presentation/4/httpie-request.adoc[Request]
+* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/attestation-presentation/4/curl-request.adoc[Request]
 
 [[RestAttestationValidationService]]
 ==== REST attestation validation service

@@ -1,7 +1,7 @@
 [source,http,options="nowrap"]
 ----
 HTTP/1.1 200 OK
-Date: Thu, 18 Dec 2025 07:27:31 GMT
+Date: Tue, 04 Aug 2026 12:28:55 GMT
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 0
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
@@ -14,17 +14,20 @@ Content-Type: application/json
 Transfer-Encoding: chunked
 Keep-Alive: timeout=20
 Connection: keep-alive
-Content-Length: 11153
+Content-Length: 11527
 
 {
   "diagnosticData" : {
     "DocumentName" : null,
-    "ValidationDate" : "2025-12-18T07:27:31Z",
+    "ValidationDate" : "2026-08-04T12:28:55Z",
     "ContainerInfo" : null,
     "PDFAInfo" : null,
     "ConnectionInfo" : null,
+    "AttestationPresentationInfo" : null,
+    "Attestation" : null,
     "Signature" : null,
     "EvidenceRecord" : null,
+    "AttestationRevocationToken" : null,
     "Certificate" : [ {
       "Id" : "C-02F3EBCA0163274253BC809D27498DD41BB0316D7E6B066960115DE155589D9C",
       "SubjectDistinguishedName" : [ {
@@ -87,6 +90,7 @@ Content-Length: 11153
         }
       } ],
       "TrustServiceProvider" : [ ],
+      "TrustedEntity" : null,
       "CertificateRevocation" : [ ],
       "Base64Encoded" : null,
       "DigestAlgoAndValue" : {
@@ -100,7 +104,8 @@ Content-Length: 11153
     "Timestamp" : null,
     "OrphanTokens" : null,
     "SignerData" : null,
-    "TrustedList" : [ ]
+    "TrustedList" : [ ],
+    "ListOfTrustedEntities" : [ ]
   },
   "simpleCertificateReport" : {
     "ValidationPolicy" : {
@@ -136,6 +141,8 @@ Content-Length: 11153
       "qualificationDetailsAtValidation" : null,
       "qwacProfile" : null,
       "qwacDetails" : null,
+      "certificateApprovalStatusAtIssuanceTime" : null,
+      "certificateApprovalStatusAtValidationTime" : null,
       "enactedMRA" : null,
       "revocation" : {
         "thisUpdate" : null,
@@ -160,7 +167,7 @@ Content-Length: 11153
       "Id" : "C-02F3EBCA0163274253BC809D27498DD41BB0316D7E6B066960115DE155589D9C"
     },
     "ConnectionDetails" : null,
-    "ValidationTime" : "2025-12-18T07:27:31Z"
+    "ValidationTime" : "2026-08-04T12:28:55Z"
   },
   "detailedReport" : {
     "signatureOrTimestampOrEvidenceRecord" : [ {
@@ -184,7 +191,7 @@ Content-Length: 11153
             "BlockType" : null
           }, {
             "Name" : {
-              "value" : "Has been an acceptable trusted list found?",
+              "value" : "Has an acceptable trusted list been found?",
               "Key" : "QUAL_VALID_TRUSTED_LIST_PRESENT"
             },
             "Status" : "NOT OK",
@@ -214,6 +221,7 @@ Content-Length: 11153
           "Title" : "Certificate Qualification",
           "Id" : "C-02F3EBCA0163274253BC809D27498DD41BB0316D7E6B066960115DE155589D9C"
         },
+        "CertificateApprovalStatusProcess" : null,
         "QWACProcess" : null,
         "Id" : "C-02F3EBCA0163274253BC809D27498DD41BB0316D7E6B066960115DE155589D9C"
       }
@@ -292,7 +300,7 @@ Content-Length: 11153
           },
           "Warning" : null,
           "Info" : null,
-          "AdditionalInfo" : "The key size is unknown for certificate! Validation time : 2025-12-18 07:27",
+          "AdditionalInfo" : "The key size is unknown for certificate! Validation time : 2026-08-04 12:28",
           "Id" : "C-02F3EBCA0163274253BC809D27498DD41BB0316D7E6B066960115DE155589D9C",
           "BlockType" : "AOV_XCV"
         } ],
@@ -307,7 +315,7 @@ Content-Length: 11153
           "Infos" : null
         },
         "Title" : "Algorithm Obsolescence Validation",
-        "ValidationTime" : "2025-12-18T07:27:31Z"
+        "ValidationTime" : "2026-08-04T12:28:55Z"
       },
       "PSV" : null,
       "PSV_CRS" : null,
@@ -328,8 +336,9 @@ Content-Length: 11153
       "Type" : "CERTIFICATE"
     } ],
     "TLAnalysis" : [ ],
+    "LoTEAnalysis" : [ ],
     "Semantic" : null,
-    "ValidationTime" : "2025-12-18T07:27:31Z"
+    "ValidationTime" : "2026-08-04T12:28:55Z"
   }
 }
 ----

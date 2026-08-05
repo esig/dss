@@ -21,6 +21,12 @@ $ curl 'http://localhost:8080/services/rest/signature/one-document/signDocument'
     "sigDMechanism" : null,
     "base64UrlEncodedPayload" : null,
     "base64UrlEncodedEtsiUComponents" : null,
+    "signatureType" : null,
+    "keyIdentifier" : null,
+    "x509Url" : null,
+    "coseStructureType" : null,
+    "tagged" : null,
+    "externallySuppliedData" : null,
     "digestAlgorithm" : "SHA256",
     "encryptionAlgorithm" : null,
     "referenceDigestAlgorithm" : null,
@@ -45,7 +51,7 @@ $ curl 'http://localhost:8080/services/rest/signature/one-document/signDocument'
     "signatureIdToCounterSign" : null,
     "blevelParams" : {
       "trustAnchorBPPolicy" : true,
-      "signingDate" : 1766042849968,
+      "signingDate" : 1785846528470,
       "claimedSignerRoles" : null,
       "signedAssertions" : null,
       "policyId" : null,
@@ -65,7 +71,7 @@ $ curl 'http://localhost:8080/services/rest/signature/one-document/signDocument'
   },
   "signatureValue" : {
     "algorithm" : "RSA_SHA256",
-    "value" : "dHQNVgg/ds4gpAFf8tM6R2arj0MqgRvjqO2Dwk6BpXC2zC6wMVznBiYLlQLzs2StPpHztY5nxqdR550/7bsrD+aaSqz16LoS10cztljnyNf8F2SfWryJxGMV8V6MGI3nxIL06Rmk65U9ro6URnfW59mYrGp/v7SA5/RrtczjziO1BtcAAa8JZsIU0ZvLFDqtDIDBJ8x7gKEq2IFJx8B5lYXI4KnWAYhqRVV91wU8PJO9+SdN1NnTg1Gt3gQaSdeCHIboBo91yO0SN+mpfiAqUhaVDx9Vjmap6xxjUNpeI52Uc1/icOKPhKL1zzTlQBeHOWZz9IGxWWhreKmOaorqcgtLiPlBOBTyFPUBkNlnvhIReQBX6j7bM/S/hWz9co9vxNSQuZvXG5pc0ImoqXgJ9NLRytreS9sBXWlD6MfmEm6HuHpybuL9z09w5Vht2HjeQvpXYMnCqiM3C0nJEeGWoDJ3xpf2Cn91DhMEE1At0bvU93y8HY9AE8rOOq0NnBYp"
+    "value" : "edcwFu1o0fktwuvAGDR1X38LIk3pOGHnPAqr0GJS1hoL5Hna6AAVgxoUin07A45p3GnFzXGm9vHyayeNIDy+4pvrlHZaZ4KdG+ibz96PDZXFkeS/TDWgTq8QuQosZgdmf3CKpGkJD0F5rJ81iSShg9yt/V7mZlYq+vr1RezEpVUDtgCTvE5urRWRGZ5UMvsLFmZbLGewpZxJnm2vDw42icaQIq+oJnSbdkiBQ0r9SmuD8FOX7g8tXRuM1HVIGpowCnQyLKGHWY3F/5jMFQ2pde9Nrx8SxDvU3rpuvCofkXRJbRNF1BcdMpVda+QtYMkGBB9vxDVaCxiYbGM2Y6n/z4rhSrkd70r+W+OL4K0E9p0Lt6x/duTiVIUy2DPqt7BDGDBWhWkzI69B6ra6rhWs0wc6YwaxadnpJwm9p4xVbh+fbmBKwpIhte5VAnDr2tf6nepA9mZnV1ubwpCguMVQiJaXTYEyl7blOPy0ULgdDSdCgodPiX3lGsollpbpEZzn"
   },
   "toSignDocument" : {
     "bytes" : "kcDHOZjwZhVfuDhuhCeCERRmYpTH4Jj4RmfVVi31Q9g=",

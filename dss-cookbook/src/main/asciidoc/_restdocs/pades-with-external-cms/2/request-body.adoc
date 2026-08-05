@@ -16,6 +16,12 @@
     "sigDMechanism" : null,
     "base64UrlEncodedPayload" : null,
     "base64UrlEncodedEtsiUComponents" : null,
+    "signatureType" : null,
+    "keyIdentifier" : null,
+    "x509Url" : null,
+    "coseStructureType" : null,
+    "tagged" : null,
+    "externallySuppliedData" : null,
     "digestAlgorithm" : "SHA256",
     "encryptionAlgorithm" : null,
     "referenceDigestAlgorithm" : null,
@@ -60,7 +66,7 @@
   },
   "messageDigest" : {
     "algorithm" : "SHA256",
-    "value" : "j/386xOS78tt7afXNY4G3uTlvFDvHldPMREJtF++y2o="
+    "value" : "XWNKqDJ/rfQMAbbnkro+MDlWBBKgaLdNmPqSx1dUZ34="
   }
 }
 ----

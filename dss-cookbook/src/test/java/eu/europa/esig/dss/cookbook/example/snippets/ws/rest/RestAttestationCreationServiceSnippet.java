@@ -43,8 +43,10 @@ import eu.europa.esig.dss.ws.attestation.creation.dto.parameters.RemoteAttestati
 import eu.europa.esig.dss.ws.attestation.creation.dto.parameters.RemoteAttestationPayloadParameters;
 import eu.europa.esig.dss.ws.attestation.creation.dto.parameters.RemoteAttestationPresentationParameters;
 import eu.europa.esig.dss.ws.attestation.creation.dto.parameters.RemoteKeyBindingParameters;
+import eu.europa.esig.dss.ws.attestation.creation.rest.RestAttestationCreationServiceImpl;
 import eu.europa.esig.dss.ws.attestation.creation.rest.RestAttestationPresentationServiceImpl;
 import eu.europa.esig.dss.ws.attestation.creation.rest.RestAttestationSDCreationServiceImpl;
+import eu.europa.esig.dss.ws.attestation.creation.rest.client.RestAttestationCreationService;
 import eu.europa.esig.dss.ws.attestation.creation.rest.client.RestAttestationPresentationService;
 import eu.europa.esig.dss.ws.attestation.creation.rest.client.RestAttestationSDCreationService;
 import eu.europa.esig.dss.ws.converter.DTOConverter;
@@ -68,11 +70,29 @@ public class RestAttestationCreationServiceSnippet extends CookbookTools {
 
             DSSPrivateKeyEntry privateKey = signingToken.getKeys().get(0);
 
-            // Instantiate the REST client
-            RestAttestationSDCreationService issuerRestClient = new RestAttestationSDCreationServiceImpl();
-            RestAttestationPresentationService walletRestClient = new RestAttestationPresentationServiceImpl();
+            // tag::attestation-creation[]
+
+            // import eu.europa.esig.dss.enumerations.AttestationForm;
+            // import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+            // import eu.europa.esig.dss.model.SignatureValue;
+            // import eu.europa.esig.dss.ws.attestation.creation.dto.DataToSignAttestationDTO;
+            // import eu.europa.esig.dss.ws.attestation.creation.dto.SignAttestationDTO;
+            // import eu.europa.esig.dss.ws.attestation.creation.dto.parameters.RemoteAttestationClaimParameters;
+            // import eu.europa.esig.dss.ws.attestation.creation.dto.parameters.RemoteAttestationPayloadParameters;
+            // import eu.europa.esig.dss.ws.attestation.creation.rest.RestAttestationCreationServiceImpl;
+            // import eu.europa.esig.dss.ws.attestation.creation.rest.client.RestAttestationCreationService;
+            // import eu.europa.esig.dss.ws.converter.DTOConverter;
+            // import eu.europa.esig.dss.ws.converter.RemoteCertificateConverter;
+            // import eu.europa.esig.dss.ws.dto.RemoteDocument;
+            // import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
+            // import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
+            // import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteBLevelParameters;
+            // import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureParameters;
 
             // ISSUER_1 attestation issuance
+
+            // Instantiate the REST client
+            RestAttestationCreationService issuerRestClient = new RestAttestationCreationServiceImpl();
 
             // ISSUER_1.1 Define signature parameters
             Date signingTime = new Date();
@@ -122,27 +142,45 @@ public class RestAttestationCreationServiceSnippet extends CookbookTools {
                     new SignatureValueDTO(signatureValue.getAlgorithm(), signatureValue.getValue()));
             RemoteDocument signedAttestation = issuerRestClient.signAttestation(signAttestationDTO);
 
+            // end::attestation-creation[]
+
+            // tag::attestation-sd-creation[]
+            
+            // import eu.europa.esig.dss.enumerations.AttestationForm;
+            // import eu.europa.esig.dss.ws.attestation.creation.dto.DisclosuresDTO;
+            // import eu.europa.esig.dss.ws.attestation.creation.dto.IssueAttestationDTO;
+            // import eu.europa.esig.dss.ws.attestation.creation.dto.parameters.DisclosureDTO;
+            // import eu.europa.esig.dss.ws.attestation.creation.dto.parameters.RemoteAttestationDocument;
+            // import eu.europa.esig.dss.ws.attestation.creation.rest.RestAttestationSDCreationServiceImpl;
+            // import eu.europa.esig.dss.ws.attestation.creation.rest.client.RestAttestationSDCreationService;
+            // import eu.europa.esig.dss.ws.dto.RemoteDocument;
+
             // ISSUER_2 Issue attestation
+
+            RestAttestationSDCreationService issuerSDRestClient = new RestAttestationSDCreationServiceImpl();
+            
             // Two possibilities exist (see a and b)
 
             // ISSUER_2.a Issue attestation using payload parameters
-
             IssueAttestationDTO issueAttestationDTO = new IssueAttestationDTO(signedAttestation, payloadParameters);
-            RemoteDocument attestation = issuerRestClient.issueAttestation(issueAttestationDTO);
+            RemoteDocument attestation = issuerSDRestClient.issueAttestation(issueAttestationDTO);
 
             // ISSUER_2.b Issue attestation using disclosure list
 
             // ISSUER_2.b.1 Extract selective disclosures
             // NOTE: all, some or none of them may be provided within an Attestation Presentation
             DisclosuresDTO disclosuresDTO = new DisclosuresDTO(payloadParameters);
-            List<DisclosureDTO> disclosures = issuerRestClient.generateDisclosures(disclosuresDTO);
+            List<DisclosureDTO> disclosures = issuerSDRestClient.generateDisclosures(disclosuresDTO);
 
             // ISSUER_2.b.2 Generate the attestation with the attached disclosures
-
             issueAttestationDTO = new IssueAttestationDTO(signedAttestation, AttestationForm.SD_JWT, disclosures);
-            attestation = issuerRestClient.issueAttestation(issueAttestationDTO);
+            attestation = issuerSDRestClient.issueAttestation(issueAttestationDTO);
+
+            // end::attestation-sd-creation[]
 
             // WALLET_1 Parse obtained attestation
+
+            RestAttestationPresentationService walletRestClient = new RestAttestationPresentationServiceImpl();
 
             ParseAttestationDTO parseAttestationDTO = new ParseAttestationDTO(attestation,
                     new RemoteAttestationParsingParameters(AttestationForm.SD_JWT));
