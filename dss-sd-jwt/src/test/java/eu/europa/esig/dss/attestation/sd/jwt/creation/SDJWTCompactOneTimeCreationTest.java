@@ -30,7 +30,7 @@ import org.junit.jupiter.api.BeforeEach;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class SDJWTCompactOneTimeCreationTest extends AbstractSDJWTTestIssuance {
+class SDJWTCompactOneTimeCreationTest extends AbstractSDJWTTestCreation {
 
     private SDJWTPayloadParameters parameters;
     private JAdESSignatureParameters signatureParameters;
@@ -77,16 +77,6 @@ class SDJWTCompactOneTimeCreationTest extends AbstractSDJWTTestIssuance {
     }
 
     @Override
-    protected JAdESSignatureParameters getKeyBindingSignatureParameters() {
-        return null;
-    }
-
-    @Override
-    protected SDJWTKeyBindingParameters getKeyBindingParameters() {
-        return null;
-    }
-
-    @Override
     protected void checkClaims(final DiagnosticData diagnosticData) {
         super.checkClaims(diagnosticData);
 
@@ -96,11 +86,6 @@ class SDJWTCompactOneTimeCreationTest extends AbstractSDJWTTestIssuance {
 
     @Override
     protected boolean disclosuresPresent() {
-        return false;
-    }
-
-    @Override
-    protected boolean keyBindingPresent() {
         return false;
     }
 

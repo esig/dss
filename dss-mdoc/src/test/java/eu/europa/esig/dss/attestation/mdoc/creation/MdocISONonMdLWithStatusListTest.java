@@ -35,7 +35,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class MdocISONonMdLWithStatusListTest extends AbstractMdocPresentationTestIssuance {
+public class MdocISONonMdLWithStatusListTest extends AbstractMdocIssuerSignedTestCreation {
 
     private MdocPayloadParameters payloadParameters;
     private CBAdESSignatureParameters signatureParameters;
@@ -81,22 +81,7 @@ public class MdocISONonMdLWithStatusListTest extends AbstractMdocPresentationTes
     }
 
     @Override
-    protected CBAdESSignatureParameters getKeyBindingSignatureParameters() {
-        return null;
-    }
-
-    @Override
-    protected MdocKeyBindingParameters getKeyBindingParameters() {
-        return null;
-    }
-
-    @Override
     protected boolean disclosuresPresent() {
-        return false;
-    }
-
-    @Override
-    protected boolean keyBindingPresent() {
         return false;
     }
 

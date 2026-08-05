@@ -20,8 +20,9 @@
  */
 package eu.europa.esig.dss.attestation.sd.jwt;
 
+import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTSelectiveDisclosure;
+import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
-import eu.europa.esig.dss.model.attestation.SelectivelyDisclosableClaim;
 
 import java.io.Serializable;
 import java.util.List;
@@ -38,10 +39,13 @@ public class SDJWTSerializationObject implements Serializable {
     private JWSJsonSerializationObject signature;
 
     /** List of disclosures attached to the presentation */
-    private List<SelectivelyDisclosableClaim> disclosures;
+    private List<SDJWTSelectiveDisclosure> disclosures;
 
     /** Key binding signature attached to the presentation */
     private JWSJsonSerializationObject keyBindingSignature;
+
+    /** Defines the JWSSerializationType of the SD-JWT token */
+    private JWSSerializationType jwsSerializationType;
 
     /**
      * Default constructor instantiating object with null values
@@ -71,18 +75,18 @@ public class SDJWTSerializationObject implements Serializable {
     /**
      * Gets a list of disclosures supplied with the presentation of attestation
      *
-     * @return a list of {@link SelectivelyDisclosableClaim}s
+     * @return a list of {@link SDJWTSelectiveDisclosure}s
      */
-    public List<SelectivelyDisclosableClaim> getDisclosures() {
+    public List<SDJWTSelectiveDisclosure> getDisclosures() {
         return disclosures;
     }
 
     /**
      * Sets a list of disclosures supplied with the presentation of attestation
      *
-     * @param disclosures a list of {@link SelectivelyDisclosableClaim}s
+     * @param disclosures a list of {@link SDJWTSelectiveDisclosure}s
      */
-    public void setDisclosures(List<SelectivelyDisclosableClaim> disclosures) {
+    public void setDisclosures(List<SDJWTSelectiveDisclosure> disclosures) {
         this.disclosures = disclosures;
     }
 
@@ -102,6 +106,24 @@ public class SDJWTSerializationObject implements Serializable {
      */
     public void setKeyBindingSignature(JWSJsonSerializationObject keyBindingSignature) {
         this.keyBindingSignature = keyBindingSignature;
+    }
+
+    /**
+     * Gets the used {@code JWSSerializationType} for the token
+     *
+     * @return {@link JWSSerializationType}
+     */
+    public JWSSerializationType getJWSSerializationType() {
+        return jwsSerializationType;
+    }
+
+    /**
+     * Sets the {@code JWSSerializationType}
+     *
+     * @param jwsSerializationType {@link JWSSerializationType}
+     */
+    public void setJWSSerializationType(JWSSerializationType jwsSerializationType) {
+        this.jwsSerializationType = jwsSerializationType;
     }
 
 }

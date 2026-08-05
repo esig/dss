@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.attestation.mdoc;
 
+import eu.europa.esig.dss.attestation.mdoc.creation.MdocIssuerSignedItem;
 import eu.europa.esig.dss.cbades.COSESignStructure;
 import eu.europa.esig.dss.enumerations.COSESignatureType;
 import eu.europa.esig.dss.cbades.cbor.CBORObject;
@@ -31,7 +32,6 @@ import eu.europa.esig.dss.attestation.mdoc.model.MdocDeviceResponse;
 import eu.europa.esig.dss.attestation.mdoc.model.MdocDeviceSigned;
 import eu.europa.esig.dss.attestation.mdoc.model.MdocDocument;
 import eu.europa.esig.dss.attestation.mdoc.model.MdocIssuerSigned;
-import eu.europa.esig.dss.attestation.mdoc.model.MdocIssuerSignedItem;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;

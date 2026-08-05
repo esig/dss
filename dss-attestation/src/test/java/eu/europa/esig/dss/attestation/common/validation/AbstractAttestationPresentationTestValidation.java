@@ -102,7 +102,7 @@ public abstract class AbstractAttestationPresentationTestValidation extends Abst
                 assertNotNull(attestation.getDSSId());
 
                 assertEquals(expectedSignaturesCount(), attestation.getSignatures().size());
-                assertEquals(disclosuresPresent() || orphanSelectivelyDisclosableClaimsPresent(), Utils.isCollectionNotEmpty(attestation.getDisclosureValidations()));
+                assertEquals(disclosuresPresent() || orphanSelectiveDisclosuresPresent(), Utils.isCollectionNotEmpty(attestation.getDisclosureValidations()));
                 assertEquals(keyBindingPresent(), attestation.getKeyBindingSignature() != null);
                 assertEquals(getAttestationType(), attestation.getAttestationProfile());
             }
@@ -140,7 +140,7 @@ public abstract class AbstractAttestationPresentationTestValidation extends Abst
         for (AttestationWrapper attestationWrappper : attestations) {
             assertNotNull(attestationWrappper.getId());
             assertEquals(expectedSignaturesCount(), attestationWrappper.getAttestationSignatures().size());
-            assertEquals(disclosuresPresent() || orphanSelectivelyDisclosableClaimsPresent(), Utils.isCollectionNotEmpty(attestationWrappper.getDigestMatchers()));
+            assertEquals(disclosuresPresent() || orphanSelectiveDisclosuresPresent(), Utils.isCollectionNotEmpty(attestationWrappper.getDigestMatchers()));
             assertEquals(keyBindingPresent(), attestationWrappper.getKeyBindingSignature() != null);
             assertEquals(getAttestationType(), attestationWrappper.getAttestationProfile());
             assertEquals(getAttestationPresentationType(), diagnosticData.getAttestationPresentationFormat());
@@ -164,7 +164,7 @@ public abstract class AbstractAttestationPresentationTestValidation extends Abst
     protected void checkAttestationDigestMatchers(DiagnosticData diagnosticData) {
         for (AttestationWrapper attestation : diagnosticData.getAttestations()) {
             for (XmlDigestMatcher digestMatcher : attestation.getDigestMatchers()) {
-                if (orphanSelectivelyDisclosableClaimsPresent() && DigestMatcherType.ORPHAN_SELECTIVELY_DISCLOSABLE_CLAIM == digestMatcher.getType()) {
+                if (orphanSelectiveDisclosuresPresent() && DigestMatcherType.ORPHAN_SELECTIVELY_DISCLOSABLE_CLAIM == digestMatcher.getType()) {
                     assertFalse(digestMatcher.isDataFound());
                     assertFalse(digestMatcher.isDataIntact());
                 } else {
@@ -221,7 +221,7 @@ public abstract class AbstractAttestationPresentationTestValidation extends Abst
                 }
             }
             assertEquals(disclosuresPresent(), isDisclosureFound(attestationPayloadClaims));
-            assertEquals(disclosuresPresent(), Utils.isCollectionNotEmpty(attestation.getSelectivelyDisclosableClaims()));
+            assertEquals(disclosuresPresent(), Utils.isCollectionNotEmpty(attestation.getSelectiveDisclosures()));
         }
     }
 
@@ -355,7 +355,7 @@ public abstract class AbstractAttestationPresentationTestValidation extends Abst
         return true;
     }
 
-    protected boolean orphanSelectivelyDisclosableClaimsPresent() {
+    protected boolean orphanSelectiveDisclosuresPresent() {
         return false;
     }
 

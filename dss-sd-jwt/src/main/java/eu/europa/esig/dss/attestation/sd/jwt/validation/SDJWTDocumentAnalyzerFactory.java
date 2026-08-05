@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.attestation.sd.jwt.validation;
 
-import eu.europa.esig.dss.attestation.common.validation.DefaultAttestationDocumentAnalyzer;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.validation.analyzer.attestation.AttestationDocumentAnalyzerFactory;
 
@@ -54,7 +53,7 @@ public class SDJWTDocumentAnalyzerFactory implements AttestationDocumentAnalyzer
     }
 
     @Override
-    public DefaultAttestationDocumentAnalyzer create(DSSDocument document) {
+    public AbstractSDJWTDocumentAnalyzer create(DSSDocument document) {
         SDJWTCompactDocumentAnalyzer compactAnalyzer = new SDJWTCompactDocumentAnalyzer();
         if (compactAnalyzer.isSupported(document)) {
             return new SDJWTCompactDocumentAnalyzer(document);

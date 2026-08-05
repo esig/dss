@@ -37,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class MdocISONonMdLStatusListTest extends AbstractMdocPresentationTestIssuance {
+class MdocISONonMdLStatusListTest extends AbstractMdocIssuerSignedTestCreation {
 
     private MdocPayloadParameters payloadParameters;
     private CBAdESSignatureParameters signatureParameters;
@@ -74,16 +74,6 @@ class MdocISONonMdLStatusListTest extends AbstractMdocPresentationTestIssuance {
     @Override
     protected CBAdESSignatureParameters getSignatureParameters() {
         return signatureParameters;
-    }
-
-    @Override
-    protected CBAdESSignatureParameters getKeyBindingSignatureParameters() {
-        return null;
-    }
-
-    @Override
-    protected MdocKeyBindingParameters getKeyBindingParameters() {
-        return null;
     }
 
     @Override
@@ -159,11 +149,6 @@ class MdocISONonMdLStatusListTest extends AbstractMdocPresentationTestIssuance {
         assertEquals(1, attestation.getStatusIndex());
         assertEquals("https://pki.nowina.lu/eaa/status_list", attestation.getStatusUri());
         assertNull(attestation.getStatusCertificate());
-    }
-
-    @Override
-    protected boolean keyBindingPresent() {
-        return false;
     }
 
     @Override

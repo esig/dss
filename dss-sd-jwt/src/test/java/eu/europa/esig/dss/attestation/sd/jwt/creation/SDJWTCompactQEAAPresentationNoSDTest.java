@@ -35,7 +35,7 @@ import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class SDJWTCompactQAttestationPresentationNoSDTest extends AbstractSDJWTTestIssuance {
+class SDJWTCompactQAttestationPresentationNoSDTest extends AbstractSDJWTTestCreation {
 
     private SDJWTPayloadParameters payloadParameters;
     private JAdESSignatureParameters signatureParameters;
@@ -86,16 +86,6 @@ class SDJWTCompactQAttestationPresentationNoSDTest extends AbstractSDJWTTestIssu
     @Override
     protected JAdESSignatureParameters getSignatureParameters() {
         return signatureParameters;
-    }
-
-    @Override
-    protected JAdESSignatureParameters getKeyBindingSignatureParameters() {
-        return null;
-    }
-
-    @Override
-    protected SDJWTKeyBindingParameters getKeyBindingParameters() {
-        return null;
     }
 
     @Override

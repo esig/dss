@@ -170,7 +170,7 @@ class SDJWTCompactWithDisclosuresValidationTest extends AbstractSDJWTTestValidat
         assertEquals(DigestAlgorithm.SHA256, attestation.getVerifiableCredentialsTypeIntegrityDigestAlgorithm());
         assertNotNull(attestation.getVerifiableCredentialsTypeIntegrityBytes());
 
-        List<ClaimWrapper> selectivelyDisclosableClaims = attestation.getSelectivelyDisclosableClaims();
+        List<ClaimWrapper> selectivelyDisclosableClaims = attestation.getSelectiveDisclosures();
         assertEquals(10, selectivelyDisclosableClaims.size());
 
         List<ClaimWrapper> payloadClaims = attestation.getAllAttestationPayloadClaims();

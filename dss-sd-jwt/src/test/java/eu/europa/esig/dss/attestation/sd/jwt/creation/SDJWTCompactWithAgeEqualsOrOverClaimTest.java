@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class SDJWTCompactWithAgeEqualsOrOverClaimTest extends AbstractSDJWTTestIssuance {
+class SDJWTCompactWithAgeEqualsOrOverClaimTest extends AbstractSDJWTTestCreation {
 
     private SDJWTPayloadParameters payloadParameters;
     private JAdESSignatureParameters signatureParameters;
@@ -66,16 +66,6 @@ class SDJWTCompactWithAgeEqualsOrOverClaimTest extends AbstractSDJWTTestIssuance
     }
 
     @Override
-    protected JAdESSignatureParameters getKeyBindingSignatureParameters() {
-        return null;
-    }
-
-    @Override
-    protected SDJWTKeyBindingParameters getKeyBindingParameters() {
-        return null;
-    }
-
-    @Override
     protected void checkClaims(final DiagnosticData diagnosticData) {
         super.checkClaims(diagnosticData);
 
@@ -86,11 +76,6 @@ class SDJWTCompactWithAgeEqualsOrOverClaimTest extends AbstractSDJWTTestIssuance
         assertTrue(attestation.isAgeOver(30));
         assertFalse(attestation.isAgeOver(40));
         assertNull(attestation.isAgeOver(65));
-    }
-
-    @Override
-    protected boolean keyBindingPresent() {
-        return false;
     }
 
     @Override

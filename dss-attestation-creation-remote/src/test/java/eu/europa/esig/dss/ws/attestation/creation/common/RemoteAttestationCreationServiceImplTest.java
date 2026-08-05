@@ -45,6 +45,8 @@ import eu.europa.esig.dss.test.PKIFactoryAccess;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.attestation.AttestationDocumentValidator;
 import eu.europa.esig.dss.validation.reports.Reports;
+import eu.europa.esig.dss.ws.attestation.creation.dto.parameters.RemoteAttestationDocument;
+import eu.europa.esig.dss.ws.attestation.creation.dto.parameters.RemoteAttestationParsingParameters;
 import eu.europa.esig.dss.ws.converter.DTOConverter;
 import eu.europa.esig.dss.ws.converter.RemoteCertificateConverter;
 import eu.europa.esig.dss.ws.dto.DigestDTO;
@@ -84,6 +86,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class RemoteAttestationCreationServiceImplTest extends PKIFactoryAccess {
 
     private RemoteAttestationCreationServiceImpl attestationService;
+    private RemoteAttestationSDCreationServiceImpl attestationSDService;
+    private RemoteAttestationPresentationServiceImpl attestationPresentationService;
 
     private String signingAlias;
 
@@ -92,6 +96,14 @@ class RemoteAttestationCreationServiceImplTest extends PKIFactoryAccess {
         attestationService = new RemoteAttestationCreationServiceImpl();
         attestationService.setSdjwtService(getSDJWTService());
         attestationService.setMdocService(getMdocService());
+
+        attestationSDService = new RemoteAttestationSDCreationServiceImpl();
+        attestationSDService.setSdjwtService(getSDJWTService());
+        attestationSDService.setMdocService(getMdocService());
+
+        attestationPresentationService = new RemoteAttestationPresentationServiceImpl();
+        attestationPresentationService.setSdjwtService(getSDJWTService());
+        attestationPresentationService.setMdocService(getMdocService());
     }
 
     private MdocService getMdocService() {
@@ -182,7 +194,12 @@ class RemoteAttestationCreationServiceImplTest extends PKIFactoryAccess {
                 new SignatureValueDTO(signatureValue.getAlgorithm(), signatureValue.getValue()));
         assertNotNull(signedAttestation);
 
-        List<DisclosureDTO> disclosures = attestationService.getDisclosures(payloadParameters);
+        List<DisclosureDTO> disclosures = attestationSDService.generateDisclosures(payloadParameters);
+
+        RemoteDocument issuedAttestation = attestationSDService.issueAttestation(signedAttestation, payloadParameters, disclosures);
+
+        RemoteAttestationDocument parsedAttestation = attestationPresentationService.parseAttestation(
+                issuedAttestation, new RemoteAttestationParsingParameters(AttestationForm.SD_JWT));
 
         signingAlias = ECDSA_521_USER;
 
@@ -195,15 +212,18 @@ class RemoteAttestationCreationServiceImplTest extends PKIFactoryAccess {
         keyBindingParameters.setNonce("123456");
         keyBindingParameters.setAudience("audience");
 
-        dataToSign = attestationService.getDataToSignForKeyBindingSignature(signedAttestation, disclosures, keyBindingParameters, keyBindingSignatureParameters);
+        dataToSign = attestationPresentationService.getDataToSignForKeyBindingSignature(
+                parsedAttestation.getSignedAttestation(), parsedAttestation.getDisclosures(), keyBindingParameters, keyBindingSignatureParameters);
         assertNotNull(dataToSign);
         signatureValue = getToken().sign(DTOConverter.toToBeSigned(dataToSign), DigestAlgorithm.SHA512, getPrivateKeyEntry());
 
-        RemoteDocument keyBindingSignature = attestationService.createKeyBindingSignature(signedAttestation, disclosures, keyBindingParameters,
+        RemoteDocument keyBindingSignature = attestationPresentationService.createKeyBindingSignature(
+                parsedAttestation.getSignedAttestation(), parsedAttestation.getDisclosures(), keyBindingParameters,
                 keyBindingSignatureParameters, new SignatureValueDTO(signatureValue.getAlgorithm(), signatureValue.getValue()));
         assertNotNull(keyBindingSignature);
 
-        RemoteDocument attestationPresentation = attestationService.issuePresentation(signedAttestation, disclosures, keyBindingSignature,
+        RemoteDocument attestationPresentation = attestationPresentationService.issuePresentation(
+                parsedAttestation.getSignedAttestation(), parsedAttestation.getDisclosures(), keyBindingSignature,
                 new RemoteAttestationPresentationParameters(AttestationForm.SD_JWT));
 
         InMemoryDocument iMD = new InMemoryDocument(attestationPresentation.getBytes());
@@ -328,7 +348,12 @@ class RemoteAttestationCreationServiceImplTest extends PKIFactoryAccess {
                 new SignatureValueDTO(signatureValue.getAlgorithm(), signatureValue.getValue()));
         assertNotNull(signedAttestation);
 
-        List<DisclosureDTO> disclosures = attestationService.getDisclosures(payloadParameters);
+        List<DisclosureDTO> disclosures = attestationSDService.generateDisclosures(payloadParameters);
+
+        RemoteDocument issuedAttestation = attestationSDService.issueAttestation(signedAttestation, payloadParameters, disclosures);
+
+        RemoteAttestationDocument parsedAttestation = attestationPresentationService.parseAttestation(
+                issuedAttestation, new RemoteAttestationParsingParameters(AttestationForm.MDOC));
 
         signingAlias = ECDSA_521_USER;
 
@@ -341,15 +366,18 @@ class RemoteAttestationCreationServiceImplTest extends PKIFactoryAccess {
         keyBindingParameters.setSessionTranscript(new RemoteDocument(Utils.fromHex("80")));
         keyBindingParameters.setDocType(MdocConstants.ISO18013_5_MDL_DOC_TYPE);
 
-        dataToSign = attestationService.getDataToSignForKeyBindingSignature(signedAttestation, disclosures, keyBindingParameters, keyBindingSignatureParameters);
+        dataToSign = attestationPresentationService.getDataToSignForKeyBindingSignature(
+                parsedAttestation.getSignedAttestation(), parsedAttestation.getDisclosures(), keyBindingParameters, keyBindingSignatureParameters);
         assertNotNull(dataToSign);
         signatureValue = getToken().sign(DTOConverter.toToBeSigned(dataToSign), DigestAlgorithm.SHA512, getPrivateKeyEntry());
 
-        RemoteDocument keyBindingSignature = attestationService.createKeyBindingSignature(signedAttestation, disclosures, keyBindingParameters,
+        RemoteDocument keyBindingSignature = attestationPresentationService.createKeyBindingSignature(
+                parsedAttestation.getSignedAttestation(), parsedAttestation.getDisclosures(), keyBindingParameters,
                 keyBindingSignatureParameters, new SignatureValueDTO(signatureValue.getAlgorithm(), signatureValue.getValue()));
         assertNotNull(keyBindingSignature);
 
-        RemoteDocument attestationPresentation = attestationService.issuePresentation(signedAttestation, disclosures, keyBindingSignature,
+        RemoteDocument attestationPresentation = attestationPresentationService.issuePresentation(
+                parsedAttestation.getSignedAttestation(), parsedAttestation.getDisclosures(), keyBindingSignature,
                 new RemoteAttestationPresentationParameters(AttestationForm.MDOC));
 
         InMemoryDocument iMD = new InMemoryDocument(attestationPresentation.getBytes());

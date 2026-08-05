@@ -38,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class SDJWTCompactSDArraysNonRecursiveTest extends AbstractSDJWTTestIssuance {
+class SDJWTCompactSDArraysNonRecursiveTest extends AbstractSDJWTTestCreation {
 
     private SDJWTPayloadParameters payloadParameters;
     private JAdESSignatureParameters signatureParameters;
@@ -76,16 +76,6 @@ class SDJWTCompactSDArraysNonRecursiveTest extends AbstractSDJWTTestIssuance {
     }
 
     @Override
-    protected JAdESSignatureParameters getKeyBindingSignatureParameters() {
-        return null;
-    }
-
-    @Override
-    protected SDJWTKeyBindingParameters getKeyBindingParameters() {
-        return null;
-    }
-
-    @Override
     protected void checkAttestationDigestMatchers(DiagnosticData diagnosticData) {
         super.checkAttestationDigestMatchers(diagnosticData);
 
@@ -112,11 +102,6 @@ class SDJWTCompactSDArraysNonRecursiveTest extends AbstractSDJWTTestIssuance {
         assertFalse(petsSDFound);
         assertTrue(dogSDFound);
         assertTrue(catSDFound);
-    }
-
-    @Override
-    protected boolean keyBindingPresent() {
-        return false;
     }
 
     @Override

@@ -8,6 +8,6 @@ Content-Length: 91
 
 {
   "algorithm" : "SHA256",
-  "value" : "VWmjUdWkupnnxvMja0IjdAD2WDlKeKXqfy7Yu01CouQ="
+  "value" : "y4yY7kqoIL6vn3Q0n/srhpOUc+EzQOjzEPuzoc4pXy8="
 }
 ----

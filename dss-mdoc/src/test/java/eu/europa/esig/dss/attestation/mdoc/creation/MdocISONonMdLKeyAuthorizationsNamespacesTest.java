@@ -37,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class MdocISONonMdLKeyAuthorizationsNamespacesTest extends AbstractMdocPresentationTestIssuance {
+class MdocISONonMdLKeyAuthorizationsNamespacesTest extends AbstractMdocIssuerSignedTestCreation {
 
     private MdocPayloadParameters payloadParameters;
     private CBAdESSignatureParameters signatureParameters;
@@ -73,16 +73,6 @@ class MdocISONonMdLKeyAuthorizationsNamespacesTest extends AbstractMdocPresentat
     @Override
     protected CBAdESSignatureParameters getSignatureParameters() {
         return signatureParameters;
-    }
-
-    @Override
-    protected CBAdESSignatureParameters getKeyBindingSignatureParameters() {
-        return null;
-    }
-
-    @Override
-    protected MdocKeyBindingParameters getKeyBindingParameters() {
-        return null;
     }
 
     @Override
@@ -155,11 +145,6 @@ class MdocISONonMdLKeyAuthorizationsNamespacesTest extends AbstractMdocPresentat
         assertEquals("1.0", attestation.getVersion());
         assertEquals("org.iso.23220.1.mID", attestation.getAttestationDocumentType());
         assertEquals(Arrays.asList("org.iso.23220.1", "org.etsi.01947201.010101"), attestation.getDeviceKeyAuthorizedNamespaces());
-    }
-
-    @Override
-    protected boolean keyBindingPresent() {
-        return false;
     }
 
     @Override

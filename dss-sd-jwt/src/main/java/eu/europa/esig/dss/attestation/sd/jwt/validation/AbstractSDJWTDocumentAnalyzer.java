@@ -27,9 +27,11 @@ import eu.europa.esig.dss.jades.JWSJsonSerializationObject;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.attestation.SelectiveDisclosure;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.utils.Utils;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -68,7 +70,7 @@ public abstract class AbstractSDJWTDocumentAnalyzer extends DefaultAttestationDo
      *
      * @return {@link SDJWTSerializationObject}
      */
-    protected abstract SDJWTSerializationObject buildSDJWTSerializationObject();
+    public abstract SDJWTSerializationObject buildSDJWTSerializationObject();
 
     @Override
     protected SDJWTPresentation buildAttestationPresentation() {
@@ -78,13 +80,20 @@ public abstract class AbstractSDJWTDocumentAnalyzer extends DefaultAttestationDo
         List<AdvancedSignature> signatures = getSignatures(sdJWTSerializationObject);
         SDJWTAttestation sdJwtAttestation = SDJWTAttestation.initBuilder()
                 .setSignatures(signatures)
-                .setDisclosures(sdJWTSerializationObject.getDisclosures())
+                .setDisclosures(getDisclosures(sdJWTSerializationObject))
                 .setKeyBindingSignature(getKeyBindingSignature(sdJWTSerializationObject, signatures))
                 .setFilename(document.getName())
                 .build();
         attestationPresentation.setElectronicAttestationsOfAttributes(Collections.singletonList(sdJwtAttestation)); // only one attestation is possible
 
         return attestationPresentation;
+    }
+
+    private List<SelectiveDisclosure> getDisclosures(SDJWTSerializationObject sdJWTSerializationObject) {
+        if (Utils.isCollectionEmpty(sdJWTSerializationObject.getDisclosures())) {
+            return Collections.emptyList();
+        }
+        return new ArrayList<>(sdJWTSerializationObject.getDisclosures());
     }
 
     /**

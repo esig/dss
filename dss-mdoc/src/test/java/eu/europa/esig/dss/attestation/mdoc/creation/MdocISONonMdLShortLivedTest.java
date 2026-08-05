@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class MdocISONonMdLShortLivedTest extends AbstractMdocPresentationTestIssuance {
+class MdocISONonMdLShortLivedTest extends AbstractMdocIssuerSignedTestCreation {
 
     private MdocPayloadParameters payloadParameters;
     private CBAdESSignatureParameters signatureParameters;
@@ -71,16 +71,6 @@ class MdocISONonMdLShortLivedTest extends AbstractMdocPresentationTestIssuance {
     @Override
     protected CBAdESSignatureParameters getSignatureParameters() {
         return signatureParameters;
-    }
-
-    @Override
-    protected CBAdESSignatureParameters getKeyBindingSignatureParameters() {
-        return null;
-    }
-
-    @Override
-    protected MdocKeyBindingParameters getKeyBindingParameters() {
-        return null;
     }
 
     @Override
@@ -158,11 +148,6 @@ class MdocISONonMdLShortLivedTest extends AbstractMdocPresentationTestIssuance {
         AttestationWrapper attestation = diagnosticData.getAttestationById(diagnosticData.getFirstAttestationId());
         assertEquals("1.0", attestation.getVersion());
         assertEquals("org.iso.23220.1.mID", attestation.getAttestationDocumentType());
-    }
-
-    @Override
-    protected boolean keyBindingPresent() {
-        return false;
     }
 
     @Override

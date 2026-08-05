@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class SDJWTFlattenedJsonSerializationWithKBSignatureTest extends AbstractSDJWTTestIssuance {
+class SDJWTFlattenedJsonSerializationWithKBSignatureTest extends AbstractSDJWTWithKBTestCreation {
 
     private SDJWTPayloadParameters payloadParameters;
     private JAdESSignatureParameters signatureParameters;

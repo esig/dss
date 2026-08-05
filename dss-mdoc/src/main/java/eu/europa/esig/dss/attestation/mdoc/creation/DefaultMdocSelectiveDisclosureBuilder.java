@@ -44,7 +44,7 @@ public class DefaultMdocSelectiveDisclosureBuilder implements MdocSelectiveDiscl
     }
 
     @Override
-    public MdocSelectiveDisclosure build(MdocClaim claim) {
+    public MdocIssuerSignedItem build(MdocClaim claim) {
         Objects.requireNonNull(claim, "MdocClaim cannot be null!");
 
         final CBORMap issuerSignedItem = new CBORMap();
@@ -54,9 +54,9 @@ public class DefaultMdocSelectiveDisclosureBuilder implements MdocSelectiveDiscl
         issuerSignedItem.put(MdocHeaderParameter.ELEMENT_VALUE.toString(), claim.getValueAsCbor());
 
         if (claim.isVoid()) {
-            return new MdocSelectiveDisclosure(claim.getDigestId(), CBORUtils.toCborBtsrWrappedTagged(issuerSignedItem));
+            return new MdocIssuerSignedItem(claim.getDigestId(), CBORUtils.toCborBtsrWrappedTagged(issuerSignedItem));
         } else {
-            return new MdocSelectiveDisclosure(claim.getNamespace(), claim.getDigestId(), CBORUtils.toCborBtsrWrappedTagged(issuerSignedItem));
+            return new MdocIssuerSignedItem(claim.getNamespace(), claim.getDigestId(), CBORUtils.toCborBtsrWrappedTagged(issuerSignedItem));
         }
     }
 

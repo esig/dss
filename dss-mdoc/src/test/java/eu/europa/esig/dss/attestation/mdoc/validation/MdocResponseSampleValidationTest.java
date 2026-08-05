@@ -75,7 +75,7 @@ class MdocResponseSampleValidationTest extends AbstractMdocAttestationPresentati
         assertNotNull(attestation.getDrivingPrivileges());
         assertEquals(2, attestation.getDrivingPrivileges().getDrivingPrivileges().size());
 
-        List<ClaimWrapper> selectivelyDisclosableClaims = attestation.getSelectivelyDisclosableClaims();
+        List<ClaimWrapper> selectivelyDisclosableClaims = attestation.getSelectiveDisclosures();
         assertEquals(6, selectivelyDisclosableClaims.size());
 
         List<ClaimWrapper> payloadClaims = attestation.getAllAttestationPayloadClaims();
@@ -228,7 +228,7 @@ class MdocResponseSampleValidationTest extends AbstractMdocAttestationPresentati
     }
 
     @Override
-    protected boolean orphanSelectivelyDisclosableClaimsPresent() {
+    protected boolean orphanSelectiveDisclosuresPresent() {
         return true;
     }
 

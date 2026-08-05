@@ -37,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class SDJWTCompactSDObjectsRecursiveTest extends AbstractSDJWTTestIssuance {
+class SDJWTCompactSDObjectsRecursiveTest extends AbstractSDJWTTestCreation {
 
     private SDJWTPayloadParameters payloadParameters;
     private JAdESSignatureParameters signatureParameters;
@@ -86,16 +86,6 @@ class SDJWTCompactSDObjectsRecursiveTest extends AbstractSDJWTTestIssuance {
     @Override
     protected JAdESSignatureParameters getSignatureParameters() {
         return signatureParameters;
-    }
-
-    @Override
-    protected JAdESSignatureParameters getKeyBindingSignatureParameters() {
-        return null;
-    }
-
-    @Override
-    protected SDJWTKeyBindingParameters getKeyBindingParameters() {
-        return null;
     }
 
     @Override
@@ -162,11 +152,6 @@ class SDJWTCompactSDObjectsRecursiveTest extends AbstractSDJWTTestIssuance {
         assertEquals(2, nationalitiesFRSDFound);
         assertEquals(1, nationalitiesLUSDFound);
         assertEquals(1, nationalitiesDESDFound);
-    }
-
-    @Override
-    protected boolean keyBindingPresent() {
-        return false;
     }
 
     @Override

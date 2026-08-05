@@ -19,6 +19,12 @@ $ curl 'http://localhost:8080/services/rest/signature/external-cms/signMessageDi
     "sigDMechanism" : null,
     "base64UrlEncodedPayload" : null,
     "base64UrlEncodedEtsiUComponents" : null,
+    "signatureType" : null,
+    "keyIdentifier" : null,
+    "x509Url" : null,
+    "coseStructureType" : null,
+    "tagged" : null,
+    "externallySuppliedData" : null,
     "digestAlgorithm" : "SHA256",
     "encryptionAlgorithm" : null,
     "referenceDigestAlgorithm" : null,
@@ -63,11 +69,11 @@ $ curl 'http://localhost:8080/services/rest/signature/external-cms/signMessageDi
   },
   "signatureValue" : {
     "algorithm" : "RSA_SHA256",
-    "value" : "QuWhscK6JeUS1uHHIl7v4xR9JM9id2s57prj+6mugNmge36kCfJaOSywSgzS4JDfrTscV6G3wUFItsBjM9O3jHfJmaDygZomysgP76bxOqOrnIWFYKD/b8yzLuGkSD7WwzV8vf5cH49bzG88kI4HvhrGFv7216TK8uPevKJ4Hxk3g6SBff3kW8ISumCw3JgewaEf5wKXw+RxlIslCpmQAWHSGmiPGlYyuK+Y+1P10LiDdcy5rpgquM5NJD4A0tbuK4u+nky0y3V1DHJEky53iQB9Kacw9v5QGwY8Rz2zIf1RPQH04YtxXP5EFT7HvBmh97PezrW4eUyO3lJzKSpPag=="
+    "value" : "Vnew/+Edw47fbtuXTiv09tIY6Jxx5jFI8QczOmG8pgVVO+5rwBppEaXdSGbnSOglfVkcGaGZDv6+Y8ZifWNj9TaRBTg22Pnv2ftbOFDeSTyDv7oNNyaq6RLHmfyvl2FI06W6HfsWECiqZDRxkIFb/VabcSa8U9g4Rlu+6TZSfBq3Z0ItC33qVkfYoJ24sUSEDFpdvDg3GnxPZ9XuznzBeJWEPWCnhJWOv5n+jNn6h3m787OC0M1p7r+ZXjorvjseoGeV6QOIgL2JltOZPT+evu5UrtAYZymmlY939qEpl5JcXHc7JYKBoHc8Ao/B+5cSq/XbaIgPraG8oDR2d10JMA=="
   },
   "messageDigest" : {
     "algorithm" : "SHA256",
-    "value" : "j/386xOS78tt7afXNY4G3uTlvFDvHldPMREJtF++y2o="
+    "value" : "XWNKqDJ/rfQMAbbnkro+MDlWBBKgaLdNmPqSx1dUZ34="
   }
 }'
 ----

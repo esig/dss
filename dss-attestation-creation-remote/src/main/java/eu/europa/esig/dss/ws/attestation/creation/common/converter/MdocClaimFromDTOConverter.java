@@ -48,6 +48,10 @@ public class MdocClaimFromDTOConverter extends AbstractAttestationClaimFromDTOCo
         Objects.requireNonNull(claimDTO, "ClaimDTO cannot be null!");
         verifyClaimValueDTO(claimDTO.getValue());
 
+        if (claimDTO.getDigestId() == null) {
+            return MdocClaim.create(claimDTO.getNamespace(), claimDTO.getName(),
+                    getValue(claimDTO.getValue()), claimDTO.getSalt());
+        }
         return MdocClaim.create(claimDTO.getNamespace(), claimDTO.getDigestId(), claimDTO.getName(),
                 getValue(claimDTO.getValue()), claimDTO.getSalt());
     }

@@ -22,9 +22,12 @@ package eu.europa.esig.dss.attestation.sd.jwt.creation;
 
 import eu.europa.esig.dss.attestation.common.creation.AbstractSelectiveDisclosure;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
+import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -37,6 +40,13 @@ public class SDJWTSelectiveDisclosure extends AbstractSelectiveDisclosure {
 
     /** Base64Url encoded string */
     private final String disclosure;
+
+    /**
+     * Flag whether the disclosure has already been parsed
+     * <p>
+     * NOTE: This is required as SD-JWT disclosures may have no name
+     */
+    private boolean parsed = false;
 
     /**
      * Default constructor to instantiate an SD-JWT disclosure from a base64url encoded disclosure string.
@@ -68,6 +78,63 @@ public class SDJWTSelectiveDisclosure extends AbstractSelectiveDisclosure {
          */
         byte[] digestValue = DSSUtils.digest(digestAlgorithm, disclosure.getBytes());
         return new Digest(digestAlgorithm, digestValue);
+    }
+
+    @Override
+    protected void parse() {
+        if (!parsed) {
+            parseDisclosure(disclosure);
+            parsed = true;
+        }
+    }
+
+    private void parseDisclosure(final String disclosureB64Url) {
+        List<?> disclosureArray = getDisclosureArray(disclosureB64Url);
+        Object saltObject = disclosureArray.get(0);
+        if (!(saltObject instanceof String)) {
+            throw new IllegalInputException("Invalid disclosure format! The first element of the array (salt) shall be of String type!");
+        }
+        String saltString = (String) saltObject;
+        this.salt = saltString.getBytes();
+
+        if (disclosureArray.size() == 2) {
+            // array or recursive disclosure
+            this.value = disclosureArray.get(1);
+
+        } else {
+            Object claimNameObject = disclosureArray.get(1);
+            if (!(claimNameObject instanceof String)) {
+                throw new IllegalInputException("Invalid disclosure format! The second element of the array (claim name) shall be of String type!");
+            }
+            this.name = (String) claimNameObject;
+            this.value = disclosureArray.get(2);
+        }
+    }
+
+    private List<?> getDisclosureArray(final String disclosureB64Url) {
+        Object disclosureObject = DSSJsonUtils.parseBase64UrlEncoded(disclosureB64Url);
+
+        if (!(disclosureObject instanceof List<?>)) {
+            throw new IllegalInputException("Invalid disclosure format! An object of a JSON Array type is expected.");
+        }
+        List<?> disclosureList = (List<?>) disclosureObject;
+        if (disclosureList.size() != 2 && disclosureList.size() != 3) {
+            throw new IllegalInputException("Invalid disclosure format! An array of 2 or 3 elements is expected.");
+        }
+        return disclosureList;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SDJWTSelectiveDisclosure that = (SDJWTSelectiveDisclosure) o;
+        return disclosure.equals(that.disclosure);
+    }
+
+    @Override
+    public int hashCode() {
+        return disclosure.hashCode();
     }
 
 }

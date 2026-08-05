@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.attestation.sd.jwt;
 
-import eu.europa.esig.dss.attestation.sd.jwt.validation.SDJWTSelectivelyDisclosableClaim;
+import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTSelectiveDisclosure;
 import eu.europa.esig.dss.enumerations.JWSSerializationType;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JWSCompactSerializationParser;
@@ -29,7 +29,6 @@ import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
-import eu.europa.esig.dss.model.attestation.SelectivelyDisclosableClaim;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import org.slf4j.Logger;
@@ -156,6 +155,7 @@ public class SDJWTCompactSerializationParser {
             }
 
             final SDJWTSerializationObject sdJwt = new SDJWTSerializationObject();
+            sdJwt.setJWSSerializationType(JWSSerializationType.COMPACT_SERIALIZATION);
 
             JWSJsonSerializationObject signature = getSignature(parts);
             sdJwt.setSignature(signature);
@@ -167,7 +167,7 @@ public class SDJWTCompactSerializationParser {
             }
             sdJwt.setKeyBindingSignature(keyBinding);
 
-            List<SelectivelyDisclosableClaim> disclosures = getDisclosures(parts, keyBinding != null);
+            List<SDJWTSelectiveDisclosure> disclosures = getDisclosures(parts, keyBinding != null);
             sdJwt.setDisclosures(disclosures);
 
             return sdJwt;
@@ -195,19 +195,19 @@ public class SDJWTCompactSerializationParser {
         return getJWSJsonSerializationObject(jwsDocument);
     }
 
-    private List<SelectivelyDisclosableClaim> getDisclosures(String[] parts, boolean keyBindingPresent) {
+    private List<SDJWTSelectiveDisclosure> getDisclosures(String[] parts, boolean keyBindingPresent) {
         int disclosuresAmount = parts.length - 1 - (keyBindingPresent ? 1 :0);
         if (disclosuresAmount == 0) {
             return Collections.emptyList();
         }
 
-        final List<SelectivelyDisclosableClaim> disclosures = new ArrayList<>();
+        final List<SDJWTSelectiveDisclosure> disclosures = new ArrayList<>();
 
         // NOTE: skip the JWS signature
         for (int i = 1; i < disclosuresAmount + 1; i++) {
             String disclosureB64Url = parts[i];
             try {
-                final SDJWTSelectivelyDisclosableClaim disclosure = new SDJWTSelectivelyDisclosableClaim(disclosureB64Url);
+                final SDJWTSelectiveDisclosure disclosure = new SDJWTSelectiveDisclosure(disclosureB64Url);
                 disclosures.add(disclosure);
 
             } catch (Exception e) {

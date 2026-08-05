@@ -24,7 +24,7 @@ import eu.europa.esig.dss.cbades.cbor.CBORArray;
 import eu.europa.esig.dss.cbades.cbor.CBORByteString;
 import eu.europa.esig.dss.cbades.cbor.CBORMap;
 import eu.europa.esig.dss.cbades.cbor.CBORUtils;
-import eu.europa.esig.dss.attestation.common.creation.AbstractAttestationPayloadBuilder;
+import eu.europa.esig.dss.attestation.common.creation.AbstractAttestationSDPayloadBuilder;
 import eu.europa.esig.dss.attestation.common.creation.TokenStatusList;
 import eu.europa.esig.dss.attestation.common.key.PublicKeyInfo;
 import eu.europa.esig.dss.attestation.mdoc.MdocConstants;
@@ -50,7 +50,7 @@ import java.util.stream.Collectors;
  * This class provides access to a configuration to build a payload for an ISO/IEC 18013-5 mdoc attestation.
  *
  */
-public class MdocPayloadBuilder extends AbstractAttestationPayloadBuilder<MdocPayloadParameters, MdocSelectiveDisclosure> {
+public class MdocPayloadBuilder extends AbstractAttestationSDPayloadBuilder<MdocPayloadParameters, MdocIssuerSignedItem> {
 
     private static final Logger LOG = LoggerFactory.getLogger(MdocPayloadBuilder.class);
 
@@ -224,7 +224,7 @@ public class MdocPayloadBuilder extends AbstractAttestationPayloadBuilder<MdocPa
         }
 
         final CBORMap digestIDs = new CBORMap();
-        List<MdocSelectiveDisclosure> disclosures = buildDisclosures(claims, payloadParameters, secureRandom, true);
+        List<MdocIssuerSignedItem> disclosures = buildDisclosures(claims, payloadParameters, secureRandom, true);
         disclosures.forEach(d -> {
             Digest digest = d.getDigest(payloadParameters.getDigestAlgorithm());
             digestIDs.put(d.getDigestId(), digest.getValue());
@@ -441,11 +441,11 @@ public class MdocPayloadBuilder extends AbstractAttestationPayloadBuilder<MdocPa
     }
 
     @Override
-    public List<MdocSelectiveDisclosure> buildDisclosures(MdocPayloadParameters payloadParameters) {
+    public List<MdocIssuerSignedItem> buildDisclosures(MdocPayloadParameters payloadParameters) {
         Objects.requireNonNull(payloadParameters, "Payload parameters cannot be null!");
         Objects.requireNonNull(payloadParameters.getDigestAlgorithm(), "Digest algorithm cannot be null!");
 
-        final List<MdocSelectiveDisclosure> result = new ArrayList<>();
+        final List<MdocIssuerSignedItem> result = new ArrayList<>();
         SecureRandom secureRandom = secureRandom(payloadParameters);
         getRootPayloadClaims(payloadParameters).values().forEach(c -> result.addAll(buildDisclosures(c, payloadParameters, secureRandom, false)));
         return result;
@@ -458,16 +458,16 @@ public class MdocPayloadBuilder extends AbstractAttestationPayloadBuilder<MdocPa
      * @param payloadParameters {@link MdocPayloadParameters}
      * @param secureRandom {@link SecureRandom} to be used for salt generation, where applicable
      * @param includeVoid whether the void claims are to be included in the final result
-     * @return a list of {@link MdocSelectiveDisclosure}s
+     * @return a list of {@link MdocIssuerSignedItem}s
      */
-    protected List<MdocSelectiveDisclosure> buildDisclosures(List<MdocClaim> claims, MdocPayloadParameters payloadParameters,
-                                                             SecureRandom secureRandom, boolean includeVoid) {
+    protected List<MdocIssuerSignedItem> buildDisclosures(List<MdocClaim> claims, MdocPayloadParameters payloadParameters,
+                                                          SecureRandom secureRandom, boolean includeVoid) {
         if (Utils.isCollectionEmpty(claims)) {
             throw new IllegalStateException("The list of claims is empty!");
         }
         claims = randomize(claims, payloadParameters, secureRandom);
 
-        final List<MdocSelectiveDisclosure> result = new ArrayList<>();
+        final List<MdocIssuerSignedItem> result = new ArrayList<>();
 
         for (int i = 0; i < claims.size(); i++) {
             MdocClaim claim = claims.get(i);

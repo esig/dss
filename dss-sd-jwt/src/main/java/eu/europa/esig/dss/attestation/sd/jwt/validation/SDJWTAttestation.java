@@ -26,7 +26,7 @@ import eu.europa.esig.dss.attestation.sd.jwt.SDJWTConstants;
 import eu.europa.esig.dss.enumerations.AttestationProfile;
 import eu.europa.esig.dss.jades.validation.JAdESSignature;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.attestation.SelectivelyDisclosableClaim;
+import eu.europa.esig.dss.model.attestation.SelectiveDisclosure;
 import eu.europa.esig.dss.spi.attestation.KeyBindingSignaturePayload;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.utils.Utils;
@@ -112,7 +112,7 @@ public class SDJWTAttestation extends DefaultAttestation {
         }
 
         @Override
-        public SDJWTAttestationBuilder setDisclosures(List<SelectivelyDisclosableClaim> disclosures) {
+        public SDJWTAttestationBuilder setDisclosures(List<SelectiveDisclosure> disclosures) {
             return (SDJWTAttestationBuilder) super.setDisclosures(disclosures);
         }
 

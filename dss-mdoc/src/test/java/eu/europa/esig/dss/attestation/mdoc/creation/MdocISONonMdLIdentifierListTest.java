@@ -38,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class MdocISONonMdLIdentifierListTest extends AbstractMdocPresentationTestIssuance {
+class MdocISONonMdLIdentifierListTest extends AbstractMdocIssuerSignedTestCreation {
 
     private MdocPayloadParameters payloadParameters;
     private CBAdESSignatureParameters signatureParameters;
@@ -75,16 +75,6 @@ class MdocISONonMdLIdentifierListTest extends AbstractMdocPresentationTestIssuan
     @Override
     protected CBAdESSignatureParameters getSignatureParameters() {
         return signatureParameters;
-    }
-
-    @Override
-    protected CBAdESSignatureParameters getKeyBindingSignatureParameters() {
-        return null;
-    }
-
-    @Override
-    protected MdocKeyBindingParameters getKeyBindingParameters() {
-        return null;
     }
 
     @Override
@@ -164,11 +154,6 @@ class MdocISONonMdLIdentifierListTest extends AbstractMdocPresentationTestIssuan
         assertNull(attestation.getStatusIndex());
         assertNull(attestation.getStatusUri());
         assertNull(attestation.getStatusCertificate());
-    }
-
-    @Override
-    protected boolean keyBindingPresent() {
-        return false;
     }
 
     @Override

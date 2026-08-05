@@ -41,7 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class MdocISOMdLKeyAuthorizationsDataElementsTest extends AbstractMdocPresentationTestIssuance {
+class MdocISOMdLKeyAuthorizationsDataElementsTest extends AbstractMdocIssuerSignedTestCreation {
 
     private MdocPayloadParameters payloadParameters;
     private CBAdESSignatureParameters signatureParameters;
@@ -87,16 +87,6 @@ class MdocISOMdLKeyAuthorizationsDataElementsTest extends AbstractMdocPresentati
     @Override
     protected CBAdESSignatureParameters getSignatureParameters() {
         return signatureParameters;
-    }
-
-    @Override
-    protected CBAdESSignatureParameters getKeyBindingSignatureParameters() {
-        return null;
-    }
-
-    @Override
-    protected MdocKeyBindingParameters getKeyBindingParameters() {
-        return null;
     }
 
     @Override
@@ -190,11 +180,6 @@ class MdocISOMdLKeyAuthorizationsDataElementsTest extends AbstractMdocPresentati
         Map<String, List<String>> dataElementsMap = new HashMap<>();
         dataElementsMap.put("org.iso.18013.5.1", Arrays.asList("family_name", "given_name", "birth_date", "portrait", "driving_privileges"));
         assertEquals(dataElementsMap, attestation.getDeviceKeyAuthorizedDataElements());
-    }
-
-    @Override
-    protected boolean keyBindingPresent() {
-        return false;
     }
 
     @Override

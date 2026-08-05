@@ -1,11 +1,11 @@
 package eu.europa.esig.dss.attestation.mdoc.creation;
 
-import eu.europa.esig.dss.cbades.signature.CBAdESSignatureParameters;
-import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.diagnostic.AttestationWrapper;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.attestation.mdoc.MdocConstants;
 import eu.europa.esig.dss.attestation.mdoc.model.MdocDrivingPrivilege;
+import eu.europa.esig.dss.cbades.signature.CBAdESSignatureParameters;
+import eu.europa.esig.dss.diagnostic.AttestationWrapper;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class MdocISOMdLWithKBTest extends AbstractMdocPresentationTestIssuance {
+class MdocISOMdLWithKBTest extends AbstractMdocDeviceResponseTestCreation {
 
     private MdocPayloadParameters payloadParameters;
     private CBAdESSignatureParameters signatureParameters;

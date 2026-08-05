@@ -22,15 +22,12 @@ package eu.europa.esig.dss.attestation.common.creation;
 
 import eu.europa.esig.dss.model.DSSDocument;
 
-import java.util.List;
-
 /**
  * Builds the attestation payload according to the provided configuration
  *
  * @param <P> implementation of {@link AttestationPayloadParameters} for the attestation format
- * @param <D> implementation of {@link SelectiveDisclosure} for the attestation format
  */
-public interface AttestationPayloadBuilder<P extends AttestationPayloadParameters, D extends SelectiveDisclosure> {
+public interface AttestationPayloadBuilder<P extends AttestationPayloadParameters> {
 
     /**
      * Builds the attestation payload to be signed
@@ -39,13 +36,5 @@ public interface AttestationPayloadBuilder<P extends AttestationPayloadParameter
      * @return {@link DSSDocument}
      */
     DSSDocument buildPayload(P payloadParameters);
-
-    /**
-     * Builds a list of selectively disclosable attestation claims to be used for Digest computation, format specific
-     *
-     * @param payloadParameters {@link AttestationPayloadParameters}
-     * @return {@link SelectiveDisclosure} representing the disclosure structure
-     */
-    List<D> buildDisclosures(P payloadParameters);
 
 }

@@ -32,7 +32,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 
-class SDJWTCompactNonSDAllOptionalElementsTest extends AbstractSDJWTTestIssuance {
+class SDJWTCompactNonSDAllOptionalElementsTest extends AbstractSDJWTTestCreation {
 
     private SDJWTPayloadParameters payloadParameters;
     private JAdESSignatureParameters signatureParameters;
@@ -156,22 +156,7 @@ class SDJWTCompactNonSDAllOptionalElementsTest extends AbstractSDJWTTestIssuance
     }
 
     @Override
-    protected JAdESSignatureParameters getKeyBindingSignatureParameters() {
-        return null;
-    }
-
-    @Override
-    protected SDJWTKeyBindingParameters getKeyBindingParameters() {
-        return null;
-    }
-
-    @Override
     protected boolean disclosuresPresent() {
-        return false;
-    }
-
-    @Override
-    protected boolean keyBindingPresent() {
         return false;
     }
 

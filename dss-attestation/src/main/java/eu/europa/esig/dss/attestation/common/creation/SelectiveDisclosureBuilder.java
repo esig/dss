@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.attestation.common.creation;
 
 import eu.europa.esig.dss.attestation.common.creation.claim.AttestationClaim;
+import eu.europa.esig.dss.model.attestation.SelectiveDisclosure;
 
 /**
  * Builds selective disclosure objects for the given attestation format

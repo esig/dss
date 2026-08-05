@@ -393,6 +393,31 @@ public class MdocClaim extends AbstractAttestationClaim {
         return CBORObjectFactory.toCBORObject(getValue());
     }
 
+    /**
+     * Creates a copy of the MdocClaim
+     *
+     * @return {@link MdocClaim} a copy
+     */
+    public MdocClaim copy() {
+        MdocClaim copy = initCopy();
+        if (getDigestId() != null) {
+            copy.digestId = getDigestId();
+        }
+        if (getSalt() != null) {
+            copy.salt = getSalt();
+        }
+        return copy;
+    }
+
+    /**
+     * Instantiates a copy MdocClaim
+     *
+     * @return {@link MdocClaim}
+     */
+    protected MdocClaim initCopy() {
+        return new MdocClaim(getNamespace(), getName(), getValue());
+    }
+
     @Override
     public String toString() {
         return "MdocClaim [" +

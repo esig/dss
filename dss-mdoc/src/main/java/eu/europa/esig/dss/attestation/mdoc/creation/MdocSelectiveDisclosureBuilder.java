@@ -27,7 +27,7 @@ import eu.europa.esig.dss.attestation.common.creation.SelectiveDisclosureBuilder
  * Builds an IssuerSignedItemBytes structure representing a disclosure object to be used for a hash computation
  *
  */
-public interface MdocSelectiveDisclosureBuilder extends SelectiveDisclosureBuilder<MdocClaim, MdocSelectiveDisclosure> {
+public interface MdocSelectiveDisclosureBuilder extends SelectiveDisclosureBuilder<MdocClaim, MdocIssuerSignedItem> {
 
     /**
      * Builds a String for a selectively disclosable attestation claim to be used for Digest computation
@@ -35,6 +35,6 @@ public interface MdocSelectiveDisclosureBuilder extends SelectiveDisclosureBuild
      * @param claim {@link MdocClaim} to create a disclosure for
      * @return {@link CBORByteString} representing the IssuerSignedItemBytes structure
      */
-    MdocSelectiveDisclosure build(MdocClaim claim);
+    MdocIssuerSignedItem build(MdocClaim claim);
 
 }

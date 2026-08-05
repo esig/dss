@@ -42,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class SDJWTCompactSDAllOptionalElementsTest extends AbstractSDJWTTestIssuance {
+class SDJWTCompactSDAllOptionalElementsTest extends AbstractSDJWTTestCreation {
 
     private SDJWTPayloadParameters payloadParameters;
     private JAdESSignatureParameters signatureParameters;
@@ -166,16 +166,6 @@ class SDJWTCompactSDAllOptionalElementsTest extends AbstractSDJWTTestIssuance {
     }
 
     @Override
-    protected JAdESSignatureParameters getKeyBindingSignatureParameters() {
-        return null;
-    }
-
-    @Override
-    protected SDJWTKeyBindingParameters getKeyBindingParameters() {
-        return null;
-    }
-
-    @Override
     protected void checkAttestationDigestMatchers(DiagnosticData diagnosticData) {
         super.checkAttestationDigestMatchers(diagnosticData);
 
@@ -257,11 +247,6 @@ class SDJWTCompactSDAllOptionalElementsTest extends AbstractSDJWTTestIssuance {
         assertNotNull(matcher, "Missing digest matcher for claim: " + claimName);
         assertNotNull(matcher.getDisclosableClaim(), "Claim name containing an error: " + claimName);
         assertEquals(expectedValue, matcher.getDisclosableClaim().getValue(), "Claim name containing an error: " + claimName);
-    }
-
-    @Override
-    protected boolean keyBindingPresent() {
-        return false;
     }
 
     @Override

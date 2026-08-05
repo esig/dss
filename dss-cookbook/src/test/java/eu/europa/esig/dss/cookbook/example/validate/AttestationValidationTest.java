@@ -35,7 +35,7 @@ import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTService;
 import eu.europa.esig.dss.attestation.sd.jwt.creation.SDJWTKeyBindingParameters;
 import eu.europa.esig.dss.attestation.sd.jwt.validation.SDJWTCompactDocumentValidator;
 import eu.europa.esig.dss.attestation.mdoc.MdocConstants;
-import eu.europa.esig.dss.attestation.mdoc.creation.MdocSelectiveDisclosure;
+import eu.europa.esig.dss.attestation.mdoc.creation.MdocIssuerSignedItem;
 import eu.europa.esig.dss.attestation.mdoc.creation.MdocPayloadParameters;
 import eu.europa.esig.dss.attestation.mdoc.creation.MdocService;
 import eu.europa.esig.dss.attestation.mdoc.creation.MdocKeyBindingParameters;
@@ -90,11 +90,11 @@ class AttestationValidationTest extends CookbookTools {
             CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
             SDJWTService service = new SDJWTService(commonCertificateVerifier);
 
-            ToBeSigned dataToSign = service.getDataToBeSigned(payloadParameters, signatureParameters);
+            ToBeSigned dataToSign = service.getDataToSign(payloadParameters, signatureParameters);
             SignatureValue signatureValue = signingToken.sign(dataToSign, signatureParameters.getDigestAlgorithm(), privateKey);
             DSSDocument signedAttestation = service.signAttestation(payloadParameters, signatureParameters, signatureValue);
 
-            List<SDJWTSelectiveDisclosure> disclosures = service.getDisclosures(payloadParameters);
+            List<SDJWTSelectiveDisclosure> disclosures = service.generateDisclosures(payloadParameters);
 
             SDJWTKeyBindingParameters keyBindingParameters = new SDJWTKeyBindingParameters();
             keyBindingParameters.setIssuanceTime(new Date());
@@ -185,7 +185,7 @@ class AttestationValidationTest extends CookbookTools {
             ClaimWrapper givenNameClaim = attestation.getClaimByHeaderName("given_name");
 
             // Only selectively disclosable claims (those disclosed in the presentation)
-            List<ClaimWrapper> sdClaims = attestation.getSelectivelyDisclosableClaims();
+            List<ClaimWrapper> sdClaims = attestation.getSelectiveDisclosures();
 
             // Key binding information
             String kbNonce = attestation.getKeyBindingSignatureNonce();
@@ -233,11 +233,11 @@ class AttestationValidationTest extends CookbookTools {
             CommonCertificateVerifier commonCertificateVerifier = new CommonCertificateVerifier();
             MdocService service = new MdocService(commonCertificateVerifier);
 
-            ToBeSigned dataToSign = service.getDataToBeSigned(payloadParameters, signatureParameters);
+            ToBeSigned dataToSign = service.getDataToSign(payloadParameters, signatureParameters);
             SignatureValue signatureValue = signingToken.sign(dataToSign, signatureParameters.getDigestAlgorithm(), privateKey);
             DSSDocument signedAttestation = service.signAttestation(payloadParameters, signatureParameters, signatureValue);
 
-            List<MdocSelectiveDisclosure> disclosures = service.getDisclosures(payloadParameters);
+            List<MdocIssuerSignedItem> disclosures = service.generateDisclosures(payloadParameters);
 
             DSSDocument sessionTranscript = SessionTranscriptBuilder
                     .nfcHandover(new byte[]{0x01, 0x02}, new byte[]{0x03, 0x04})
@@ -282,7 +282,7 @@ class AttestationValidationTest extends CookbookTools {
             // import eu.europa.esig.dss.attestation.mdoc.validation.MdocIssuerSignedAttestationPresentationValidator;
 
             // Issue an IssuerSigned-only presentation (no device authentication)
-            DSSDocument issuerSignedDocument = service.createIssuerSigned(signedAttestation, disclosures);
+            DSSDocument issuerSignedDocument = service.issueAttestation(signedAttestation, disclosures);
 
             MdocIssuerSignedDocumentValidator issuerSignedValidator =
                     new MdocIssuerSignedDocumentValidator(issuerSignedDocument);

@@ -11,11 +11,13 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
+import eu.europa.esig.dss.utils.Utils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -58,48 +60,48 @@ class MdocServiceTest extends PKIFactoryAccess {
         CBAdESSignatureParameters params = new CBAdESSignatureParameters();
         params.setDigestAlgorithm(DigestAlgorithm.SHA256);
 
-        Exception exception = assertThrows(NullPointerException.class, () -> service.getDataToBeSigned((DSSDocument) null, params));
+        Exception exception = assertThrows(NullPointerException.class, () -> service.getDataToSign((DSSDocument) null, params));
         assertEquals("payload cannot be null!", exception.getMessage());
 
-        exception = assertThrows(IllegalInputException.class, () -> service.getDataToBeSigned(nonCborPayload, params));
+        exception = assertThrows(IllegalInputException.class, () -> service.getDataToSign(nonCborPayload, params));
         assertEquals("Payload is not a CBOR document!", exception.getMessage());
 
-        exception = assertThrows(NullPointerException.class, () -> service.getDataToBeSigned(cborPayload, null));
+        exception = assertThrows(NullPointerException.class, () -> service.getDataToSign(cborPayload, null));
         assertEquals("signatureParameters cannot be null!", exception.getMessage());
 
         params.setSignatureLevel(SignatureLevel.CB_AdES_BASELINE_T);
-        exception = assertThrows(IllegalArgumentException.class, () -> service.getDataToBeSigned(cborPayload, params));
+        exception = assertThrows(IllegalArgumentException.class, () -> service.getDataToSign(cborPayload, params));
         assertEquals("Signature level must be CB-AdES-BASELINE-B!", exception.getMessage());
         params.setSignatureLevel(SignatureLevel.CB_AdES_BASELINE_B);
 
         params.setSignaturePackaging(SignaturePackaging.DETACHED);
-        exception = assertThrows(IllegalArgumentException.class, () -> service.getDataToBeSigned(cborPayload, params));
+        exception = assertThrows(IllegalArgumentException.class, () -> service.getDataToSign(cborPayload, params));
         assertEquals("Signature packaging must be ENVELOPING", exception.getMessage());
         params.setSignaturePackaging(SignaturePackaging.ENVELOPING);
 
         params.setIncludeCertificateChain(false);
-        exception = assertThrows(IllegalArgumentException.class, () -> service.getDataToBeSigned(cborPayload, params));
+        exception = assertThrows(IllegalArgumentException.class, () -> service.getDataToSign(cborPayload, params));
         assertEquals("Certificate chain must be included within the mdoc attestation signature!", exception.getMessage());
         params.setIncludeCertificateChain(true);
 
         params.setX5ChainHeaderPlacement(CBAdESSignatureParameters.X5ChainHeaderPlacement.protectedHeader);
-        exception = assertThrows(IllegalArgumentException.class, () -> service.getDataToBeSigned(cborPayload, params));
+        exception = assertThrows(IllegalArgumentException.class, () -> service.getDataToSign(cborPayload, params));
         assertEquals("'x5chain' shall be placed within the unsigned header map! Obtained value : 'protectedHeader'", exception.getMessage());
 
         params.setX5ChainHeaderPlacement(null);
-        exception = assertThrows(IllegalArgumentException.class, () -> service.getDataToBeSigned(cborPayload, params));
-        assertEquals("MSO shall be signed by ECDSA or EDDSA algortihm! Obtained value : 'RSASSA_PSS'", exception.getMessage());
+        exception = assertThrows(IllegalArgumentException.class, () -> service.getDataToSign(cborPayload, params));
+        assertEquals("MSO shall be signed by ECDSA or EDDSA algorithm! Obtained value : 'RSASSA_PSS'", exception.getMessage());
 
         params.setSigningCertificate(getSigningCert());
         params.setCertificateChain(getCertificateChain());
 
         params.setTagged(true);
-        exception = assertThrows(IllegalArgumentException.class, () -> service.getDataToBeSigned(cborPayload, params));
+        exception = assertThrows(IllegalArgumentException.class, () -> service.getDataToSign(cborPayload, params));
         assertEquals("COSE_Sign1 structure shall be untagged!", exception.getMessage());
 
         params.setTagged(false);
 
-        ToBeSigned dataToSign = service.getDataToBeSigned(cborPayload, params);
+        ToBeSigned dataToSign = service.getDataToSign(cborPayload, params);
         assertNotNull(dataToSign);
 
         SignatureValue signatureValue = getToken().sign(dataToSign, params.getDigestAlgorithm(), getPrivateKeyEntry());
@@ -112,21 +114,22 @@ class MdocServiceTest extends PKIFactoryAccess {
 
         DSSDocument signedAttestation = service.signAttestation(cborPayload, params, signatureValue);
         assertNotNull(signedAttestation);
+        assertNotNull(signedAttestation.getName());
     }
 
     @Test
     void signAttestationWithPayloadParametersTest() {
-        Exception exception = assertThrows(NullPointerException.class, () -> service.getDataToBeSigned((MdocPayloadParameters) null, signatureParameters));
+        Exception exception = assertThrows(NullPointerException.class, () -> service.getDataToSign((MdocPayloadParameters) null, signatureParameters));
         assertEquals("MdocPayloadParameters cannot be null!", exception.getMessage());
 
-        exception = assertThrows(NullPointerException.class, () -> service.getDataToBeSigned(payloadParameters, null));
+        exception = assertThrows(NullPointerException.class, () -> service.getDataToSign(payloadParameters, null));
         assertEquals("signatureParameters cannot be null!", exception.getMessage());
 
         CBAdESSignatureParameters params = new CBAdESSignatureParameters();
-        exception = assertThrows(IllegalArgumentException.class, () -> service.getDataToBeSigned(payloadParameters, params));
-        assertEquals("MSO shall be signed by ECDSA or EDDSA algortihm! Obtained value : 'RSASSA_PSS'", exception.getMessage());
+        exception = assertThrows(IllegalArgumentException.class, () -> service.getDataToSign(payloadParameters, params));
+        assertEquals("MSO shall be signed by ECDSA or EDDSA algorithm! Obtained value : 'RSASSA_PSS'", exception.getMessage());
 
-        ToBeSigned dataToSign = service.getDataToBeSigned(payloadParameters, signatureParameters);
+        ToBeSigned dataToSign = service.getDataToSign(payloadParameters, signatureParameters);
         assertNotNull(dataToSign);
 
         SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
@@ -139,44 +142,77 @@ class MdocServiceTest extends PKIFactoryAccess {
 
         DSSDocument signedAttestation = service.signAttestation(payloadParameters, signatureParameters, signatureValue);
         assertNotNull(signedAttestation);
+        assertNotNull(signedAttestation.getName());
     }
 
     @Test
-    void getDisclosuresTest() {
-        Exception exception = assertThrows(NullPointerException.class, () -> service.getDisclosures(null));
+    void generateDisclosuresTest() {
+        Exception exception = assertThrows(NullPointerException.class, () -> service.generateDisclosures(null));
         assertEquals("MdocPayloadParameters cannot be null!", exception.getMessage());
 
         MdocPayloadParameters params = new MdocPayloadParameters();
-
-        exception = assertThrows(NullPointerException.class, () -> service.getDisclosures(params));
-        assertEquals("Signed date cannot be null!", exception.getMessage());
-        params.setSigned(new Date());
-
-        exception = assertThrows(NullPointerException.class, () -> service.getDisclosures(params));
-        assertEquals("ValidFrom date cannot be null!", exception.getMessage());
-        params.setValidFrom(new Date());
-
-        exception = assertThrows(NullPointerException.class, () -> service.getDisclosures(params));
-        assertEquals("ValidUntil date cannot be null!", exception.getMessage());
-        params.setValidUntil(new Date(System.currentTimeMillis() + 365L * 24 * 60 * 60 * 1000));
-
-        exception = assertThrows(NullPointerException.class, () -> service.getDisclosures(params));
-        assertEquals("DocType cannot be null!", exception.getMessage());
-        params.setDocType(MdocConstants.ISO23220_1_MID_DOC_TYPE);
-
-        List<MdocSelectiveDisclosure> disclosures = service.getDisclosures(params);
+        List<MdocIssuerSignedItem> disclosures = service.generateDisclosures(params);
         assertNotNull(disclosures);
         assertTrue(disclosures.isEmpty());
 
         params.selectivelyDisclosable().setGivenName("John");
         params.selectivelyDisclosable().setFamilyName("Doe");
-        disclosures = service.getDisclosures(params);
+        disclosures = service.generateDisclosures(params);
         assertNotNull(disclosures);
         assertEquals(2, disclosures.size());
-        for (MdocSelectiveDisclosure disclosure : disclosures) {
+        for (MdocIssuerSignedItem disclosure : disclosures) {
             assertNotNull(disclosure.getNamespace());
             assertNotNull(disclosure.getIssuerSignedItemBytes());
         }
+    }
+
+    @Test
+    void issueAttestationTest() {
+        Exception exception = assertThrows(NullPointerException.class, () -> service.issueAttestation(null));
+        assertEquals("The attestation cannot be null!", exception.getMessage());
+
+        exception = assertThrows(IllegalInputException.class, () -> service.issueAttestation(new InMemoryDocument("Hello World".getBytes())));
+        assertEquals("Attestation document shall represent a CBOR encoded object!", exception.getMessage());
+
+        ToBeSigned dataToSign = service.getDataToSign(payloadParameters, signatureParameters);
+        SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
+        DSSDocument signedAttestation = service.signAttestation(payloadParameters, signatureParameters, signatureValue);
+
+        exception = assertThrows(NullPointerException.class, () -> service.issueAttestation(signedAttestation, (MdocPayloadParameters) null));
+        assertEquals("MdocPayloadParameters cannot be null!", exception.getMessage());
+
+        DSSDocument attestation = service.issueAttestation(signedAttestation, payloadParameters);
+        assertNotNull(attestation);
+        assertNotNull(attestation.getName());
+
+        attestation = service.issueAttestation(signedAttestation, (List<MdocIssuerSignedItem>) null);
+        assertNotNull(attestation);
+        assertNotNull(attestation.getName());
+
+        List<MdocIssuerSignedItem> disclosures = service.generateDisclosures(payloadParameters);
+        assertTrue(Utils.isCollectionNotEmpty(disclosures));
+
+        attestation = service.issueAttestation(signedAttestation, disclosures);
+        assertNotNull(attestation);
+        assertNotNull(attestation.getName());
+    }
+
+    @Test
+    void parseAttestationTest() {
+        Exception exception = assertThrows(NullPointerException.class, () -> service.parseAttestation(null));
+        assertEquals("The attestation cannot be null!", exception.getMessage());
+
+        DSSDocument attestation = new FileDocument("src/test/resources/validation/mdocIssuerSigned.cbor");
+        MdocIssuerSignedDocument parsedAttestation = service.parseAttestation(attestation);
+        assertNotNull(parsedAttestation);
+        assertNotNull(parsedAttestation.getName());
+        assertNotNull(parsedAttestation.getSignedAttestation());
+        assertNotNull(parsedAttestation.getSignedAttestation().getName());
+        assertTrue(Utils.isCollectionNotEmpty(parsedAttestation.getSelectiveDisclosures()));
+
+        exception = assertThrows(IllegalInputException.class, () ->
+                service.parseAttestation(new FileDocument("src/test/resources/validation/mdoc-valid.cbor")));
+        assertEquals("An instance of IssuerSigned is expected!", exception.getMessage());
     }
 
     @Test
@@ -205,7 +241,7 @@ class MdocServiceTest extends PKIFactoryAccess {
         kbSignParams.setSigDMechanism(SigDMechanism.NO_SIG_D);
 
         exception = assertThrows(IllegalArgumentException.class, () -> service.getDataToSignForKeyBindingSignature(signedAttestation, keyBindingParameters, kbSignParams));
-        assertEquals("DeviceAuthentication shall be signed by ECDSA or EDDSA algortihm! Obtained value : 'RSASSA_PSS'", exception.getMessage());
+        assertEquals("DeviceAuthentication shall be signed by ECDSA or EDDSA algorithm! Obtained value : 'RSASSA_PSS'", exception.getMessage());
 
         kbSignParams.setSigningCertificate(getSigningCert());
         kbSignParams.setDigestAlgorithm(DigestAlgorithm.SHA256);
@@ -238,8 +274,9 @@ class MdocServiceTest extends PKIFactoryAccess {
 
         DSSDocument keyBindingSignature = service.createKeyBindingSignature(signedAttestation, keyBindingParameters, kbSignParams, signatureValue);
         assertNotNull(keyBindingSignature);
+        assertNotNull(keyBindingSignature.getName());
 
-        List<MdocSelectiveDisclosure> disclosures = service.getDisclosures(prepareDisclosuresPayloadParameters());
+        List<MdocIssuerSignedItem> disclosures = service.generateDisclosures(prepareDisclosuresPayloadParameters());
         DSSDocument keyBindingSignatureWithDisclosures = service.createKeyBindingSignature(signedAttestation, disclosures, keyBindingParameters, kbSignParams, signatureValue);
         assertNotNull(keyBindingSignatureWithDisclosures);
     }
@@ -259,7 +296,7 @@ class MdocServiceTest extends PKIFactoryAccess {
         exception = assertThrows(DSSException.class, () -> service.issuePresentation(signedAttestation, Collections.emptyList(), nonCborDoc));
         assertEquals("The keyBinding should be a cbor document!", exception.getMessage());
 
-        List<MdocSelectiveDisclosure> disclosures = service.getDisclosures(prepareDisclosuresPayloadParameters());
+        List<MdocIssuerSignedItem> disclosures = service.generateDisclosures(prepareDisclosuresPayloadParameters());
         DSSDocument issuerSigned = service.createIssuerSigned(signedAttestation, disclosures);
         assertNotNull(issuerSigned);
         assertNotNull(issuerSigned.getName());
@@ -277,6 +314,7 @@ class MdocServiceTest extends PKIFactoryAccess {
         SignatureValue kbSignatureValue = getToken().sign(kbDataToSign, kbSignParams.getDigestAlgorithm(), getPrivateKeyEntry());
         DSSDocument keyBinding = service.createKeyBindingSignature(signedAttestation, kbParams, kbSignParams, kbSignatureValue);
         assertNotNull(keyBinding);
+        assertNotNull(keyBinding.getName());
 
         DSSDocument presentation = service.issuePresentation(signedAttestation, Collections.emptyList(), keyBinding);
         assertNotNull(presentation);
@@ -296,7 +334,7 @@ class MdocServiceTest extends PKIFactoryAccess {
     }
 
     private DSSDocument createSignedAttestation(MdocPayloadParameters params, CBAdESSignatureParameters sigParams) {
-        ToBeSigned dataToSign = service.getDataToBeSigned(params, sigParams);
+        ToBeSigned dataToSign = service.getDataToSign(params, sigParams);
         SignatureValue signatureValue = getToken().sign(dataToSign, sigParams.getDigestAlgorithm(), getPrivateKeyEntry());
         return service.signAttestation(params, sigParams, signatureValue);
     }

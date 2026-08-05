@@ -22,6 +22,7 @@ package eu.europa.esig.dss.attestation.mdoc;
 
 import eu.europa.esig.dss.attestation.mdoc.claim.MdocVerifiedClaimArray;
 import eu.europa.esig.dss.attestation.mdoc.claim.MdocVerifiedClaimMap;
+import eu.europa.esig.dss.attestation.mdoc.creation.MdocIssuerSignedItem;
 import eu.europa.esig.dss.cbades.cbor.CBORObject;
 import eu.europa.esig.dss.model.attestation.claim.VerifiedClaim;
 import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimArray;
@@ -32,7 +33,10 @@ import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimMap;
 import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimNull;
 import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimNumber;
 import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimString;
+import eu.europa.esig.dss.utils.Utils;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -184,6 +188,23 @@ public final class MdocUtils {
         } else {
             throw new IllegalArgumentException(String.format("The claim value of type '%s' is not supported!", value.getClass().getSimpleName()));
         }
+    }
+
+    /**
+     * Returns a list of disclosures extracted for every namespace from a Document structure
+     *
+     * @param namespaces a map of {@link String} namespaces and {@link MdocIssuerSignedItem}s
+     * @return a list of {@link MdocIssuerSignedItem}s
+     */
+    public static List<MdocIssuerSignedItem> getSelectiveDisclosures(Map<String, List<MdocIssuerSignedItem>> namespaces) {
+        if (Utils.isMapEmpty(namespaces)) {
+            return Collections.emptyList();
+        }
+        final List<MdocIssuerSignedItem> result = new ArrayList<>();
+        for (List<MdocIssuerSignedItem> signedItems : namespaces.values()) {
+            result.addAll(signedItems);
+        }
+        return result;
     }
 
 }

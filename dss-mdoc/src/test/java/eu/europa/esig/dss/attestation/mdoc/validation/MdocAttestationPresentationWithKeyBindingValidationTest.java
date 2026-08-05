@@ -158,7 +158,7 @@ class MdocAttestationPresentationWithKeyBindingValidationTest extends AbstractMd
     }
 
     @Override
-    protected boolean orphanSelectivelyDisclosableClaimsPresent() {
+    protected boolean orphanSelectiveDisclosuresPresent() {
         return true;
     }
 

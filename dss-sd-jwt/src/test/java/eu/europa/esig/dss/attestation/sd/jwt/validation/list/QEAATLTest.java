@@ -108,7 +108,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 class QEAATLTest extends PKIFactoryAccess {
 
-    private static final String PKI_NAME = "attestation";
+    private static final String PKI_NAME = "eaa";
 
     private static final String TL_LOCATION_URL = "https://test.test/tl";
 
@@ -400,7 +400,7 @@ class QEAATLTest extends PKIFactoryAccess {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             TrustedListFacade.newFacade().marshall(trustedList, baos);
 
-            DSSDocument tlToSign = new InMemoryDocument(baos.toByteArray(), "LoTSP.xml");
+            DSSDocument tlToSign = new InMemoryDocument(baos.toByteArray(), "TL.xml");
 
             XAdESService service = new XAdESService(getOfflineCertificateVerifier());
 

@@ -20,19 +20,12 @@
  */
 package eu.europa.esig.dss.ws.attestation.creation.rest;
 
+import eu.europa.esig.dss.ws.attestation.creation.common.RemoteAttestationCreationService;
+import eu.europa.esig.dss.ws.attestation.creation.dto.DataToSignAttestationDTO;
+import eu.europa.esig.dss.ws.attestation.creation.dto.SignAttestationDTO;
+import eu.europa.esig.dss.ws.attestation.creation.rest.client.RestAttestationCreationService;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
-import eu.europa.esig.dss.ws.attestation.creation.common.RemoteAttestationCreationService;
-import eu.europa.esig.dss.ws.attestation.creation.dto.CreateKeyBindingSignatureDTO;
-import eu.europa.esig.dss.ws.attestation.creation.dto.DataToSignAttestationDTO;
-import eu.europa.esig.dss.ws.attestation.creation.dto.DataToSignForKeyBindingSignatureDTO;
-import eu.europa.esig.dss.ws.attestation.creation.dto.DisclosuresDTO;
-import eu.europa.esig.dss.ws.attestation.creation.dto.IssuePresentationDTO;
-import eu.europa.esig.dss.ws.attestation.creation.dto.SignAttestationDTO;
-import eu.europa.esig.dss.ws.attestation.creation.dto.parameters.DisclosureDTO;
-import eu.europa.esig.dss.ws.attestation.creation.rest.client.RestAttestationCreationService;
-
-import java.util.List;
 
 /**
  * REST implementation of the remote attestation creation service
@@ -46,10 +39,19 @@ public class RestAttestationCreationServiceImpl implements RestAttestationCreati
     private RemoteAttestationCreationService service;
 
     /**
-     * Default construction instantiating object with null RestAttestationCreationService
+     * Default constructor
      */
     public RestAttestationCreationServiceImpl() {
         // empty
+    }
+
+    /**
+     * Gets the remote attestation creation service
+     *
+     * @return {@link RemoteAttestationCreationService}
+     */
+    protected RemoteAttestationCreationService getService() {
+        return service;
     }
 
     /**
@@ -63,37 +65,12 @@ public class RestAttestationCreationServiceImpl implements RestAttestationCreati
 
     @Override
     public ToBeSignedDTO getDataToSign(DataToSignAttestationDTO dataToSignAttestationDTO) {
-        return service.getDataToSign(dataToSignAttestationDTO.getPayloadParameters(), dataToSignAttestationDTO.getParameters());
+        return getService().getDataToSign(dataToSignAttestationDTO.getPayloadParameters(), dataToSignAttestationDTO.getParameters());
     }
 
     @Override
     public RemoteDocument signAttestation(SignAttestationDTO signAttestationDTO) {
-        return service.signAttestation(signAttestationDTO.getPayloadParameters(), signAttestationDTO.getParameters(), signAttestationDTO.getSignatureValue());
-    }
-
-    @Override
-    public List<DisclosureDTO> getDisclosures(DisclosuresDTO disclosuresDTO) {
-        return service.getDisclosures(disclosuresDTO.getPayloadParameters());
-    }
-
-    @Override
-    public ToBeSignedDTO getDataToSignForKeyBindingSignature(DataToSignForKeyBindingSignatureDTO dataToSignForKeyBindingSignatureDTO) {
-        return service.getDataToSignForKeyBindingSignature(dataToSignForKeyBindingSignatureDTO.getAttestation(),
-                dataToSignForKeyBindingSignatureDTO.getDisclosures(), dataToSignForKeyBindingSignatureDTO.getKeyBindingParameters(),
-                dataToSignForKeyBindingSignatureDTO.getParameters());
-    }
-
-    @Override
-    public RemoteDocument createKeyBindingSignature(CreateKeyBindingSignatureDTO createKeyBindingSignatureDTO) {
-        return service.createKeyBindingSignature(createKeyBindingSignatureDTO.getAttestation(),
-                createKeyBindingSignatureDTO.getDisclosures(), createKeyBindingSignatureDTO.getKeyBindingParameters(),
-                createKeyBindingSignatureDTO.getParameters(), createKeyBindingSignatureDTO.getSignatureValue());
-    }
-
-    @Override
-    public RemoteDocument issuePresentation(IssuePresentationDTO issuePresentationDTO) {
-        return service.issuePresentation(issuePresentationDTO.getAttestation(), issuePresentationDTO.getDisclosures(),
-                issuePresentationDTO.getKeyBindingSignature(), issuePresentationDTO.getPresentationParameters());
+        return getService().signAttestation(signAttestationDTO.getPayloadParameters(), signAttestationDTO.getParameters(), signAttestationDTO.getSignatureValue());
     }
 
 }

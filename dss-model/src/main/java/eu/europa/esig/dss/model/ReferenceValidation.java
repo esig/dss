@@ -21,8 +21,6 @@
 package eu.europa.esig.dss.model;
 
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -39,8 +37,6 @@ import java.util.List;
 public class ReferenceValidation implements Serializable {
 
 	private static final long serialVersionUID = 1303869856995695436L;
-
-	private static final Logger LOG = LoggerFactory.getLogger(ReferenceValidation.class);
 
 	/** The type of the Reference */
 	private DigestMatcherType type;

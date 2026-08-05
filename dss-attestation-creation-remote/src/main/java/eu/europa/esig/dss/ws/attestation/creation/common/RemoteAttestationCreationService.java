@@ -20,21 +20,16 @@
  */
 package eu.europa.esig.dss.ws.attestation.creation.common;
 
-import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.ws.attestation.creation.dto.parameters.RemoteAttestationPayloadParameters;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
 import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
-import eu.europa.esig.dss.ws.attestation.creation.dto.parameters.DisclosureDTO;
-import eu.europa.esig.dss.ws.attestation.creation.dto.parameters.RemoteAttestationPayloadParameters;
-import eu.europa.esig.dss.ws.attestation.creation.dto.parameters.RemoteAttestationPresentationParameters;
-import eu.europa.esig.dss.ws.attestation.creation.dto.parameters.RemoteKeyBindingParameters;
 import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureParameters;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
- * Remote service to perform creation of an attestation (e.g. EAA, PID, etc.) and/or issuance of an attestation presentation
+ * Remote service to sign an attestation (e.g. EAA, PID, etc.)
  *
  */
 public interface RemoteAttestationCreationService extends Serializable {
@@ -47,11 +42,9 @@ public interface RemoteAttestationCreationService extends Serializable {
      * @param signatureParameters
      *            set of the driving signing parameters
      * @return the data to be signed
-     * @throws DSSException
-     *             if an error occurred
      */
     ToBeSignedDTO getDataToSign(final RemoteAttestationPayloadParameters payloadParameters,
-                                final RemoteSignatureParameters signatureParameters) throws DSSException;
+                                final RemoteSignatureParameters signatureParameters);
 
     /**
      * Signs the payload with the provided signatureValue.
@@ -63,78 +56,8 @@ public interface RemoteAttestationCreationService extends Serializable {
      * @param signatureValue
      *            the signature value to incorporate
      * @return the signed document (signature signing the {@code payload})
-     * @throws DSSException
-     *             if an error occurred
      */
     RemoteDocument signAttestation(final RemoteAttestationPayloadParameters payloadParameters, final RemoteSignatureParameters signatureParameters,
-                           final SignatureValueDTO signatureValue) throws DSSException;
-
-    /**
-     * Gets a list of disclosures for all selectively disclosable claims defined within the parameters
-     *
-     * @param payloadParameters
-     *            the payload parameters
-     * @return a list of disclosures
-     * @throws DSSException
-     *             if an error occurred
-     */
-    List<DisclosureDTO> getDisclosures(final RemoteAttestationPayloadParameters payloadParameters) throws DSSException;
-
-    /**
-     * Created a DataToBeSigned (DTBS) for a key-binding signature creation, format specific.
-     *
-     * @param attestation
-     *            document representing a signed attestation
-     * @param disclosures
-     *            (optional) a list of disclosures to be provided with the attestation presentation
-     * @param keyBindingParameters
-     *            key binding signature configuration
-     * @param signatureParameters
-     *            set of the driving signing parameters
-     * @return the data to be signed
-     * @throws DSSException
-     *             if an error occurred
-     */
-    ToBeSignedDTO getDataToSignForKeyBindingSignature(final RemoteDocument attestation, final List<DisclosureDTO> disclosures,
-                                                      final RemoteKeyBindingParameters keyBindingParameters, final RemoteSignatureParameters signatureParameters) throws DSSException;
-
-    /**
-     * Creates a key-binding signature, format specific.
-     *
-     * @param attestation
-     *            document representing a signed attestation
-     * @param disclosures
-     *            (optional) a list of disclosures to be provided with the attestation presentation
-     * @param keyBindingParameters
-     *            key binding signature configuration
-     * @param signatureParameters
-     *            set of the driving signing parameters
-     * @param signatureValue
-     *            the signature value to incorporate
-     * @return the key-binding signature document
-     * @throws DSSException
-     *             if an error occurred
-     */
-    RemoteDocument createKeyBindingSignature(final RemoteDocument attestation, final List<DisclosureDTO> disclosures,
-                                             final RemoteKeyBindingParameters keyBindingParameters, final RemoteSignatureParameters signatureParameters,
-                                             final SignatureValueDTO signatureValue) throws DSSException;
-
-    /**
-     * Creates an Attestation Presentation, with provided selective disclosures and key binding signature
-     *
-     * @param attestation
-     *            document representing a signed attestation
-     * @param disclosures
-     *            (optional) a list of disclosures to be provided with the attestation presentation
-     * @param keyBinding
-     *            (optional) document representing a key binding signature
-     * @param presentationParameters
-     *            configuration of the Attestation Presentation
-     * @return the Attestation Presentation
-     * @throws DSSException
-     *             if an error occurred
-     */
-    RemoteDocument issuePresentation(final RemoteDocument attestation, final List<DisclosureDTO> disclosures,
-                                     final RemoteDocument keyBinding, final RemoteAttestationPresentationParameters presentationParameters) throws DSSException;
+                           final SignatureValueDTO signatureValue);
 
 }

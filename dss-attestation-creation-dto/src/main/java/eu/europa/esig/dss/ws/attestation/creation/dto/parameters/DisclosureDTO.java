@@ -35,7 +35,7 @@ public class DisclosureDTO implements Serializable {
     private String namespace;
 
     /** (Mdoc) digestId within the namespace of the disclosure */
-    private Integer digestId;
+    private Long digestId;
 
     /** Value of the disclosure */
     private String value;
@@ -60,10 +60,10 @@ public class DisclosureDTO implements Serializable {
      * Constructor with a value, namespace and digestId (mdoc)
      *
      * @param namespace {@link String}
-     * @param digestId {@link Integer}
+     * @param digestId {@link Long}
      * @param value {@link String}
      */
-    public DisclosureDTO(String namespace, Integer digestId, String value) {
+    public DisclosureDTO(String namespace, Long digestId, String value) {
         this.namespace = namespace;
         this.digestId = digestId;
         this.value = value;
@@ -90,18 +90,18 @@ public class DisclosureDTO implements Serializable {
     /**
      * Gets the digestId of the selectively disclosable data item (mdoc)
      *
-     * @return {@link Integer}
+     * @return {@link Long}
      */
-    public Integer getDigestId() {
+    public Long getDigestId() {
         return digestId;
     }
 
     /**
      * Sets the digestId of the selectively disclosable data item (mdoc)
      *
-     * @param digestId {@link Integer}
+     * @param digestId {@link Long}
      */
-    public void setDigestId(Integer digestId) {
+    public void setDigestId(Long digestId) {
         this.digestId = digestId;
     }
 

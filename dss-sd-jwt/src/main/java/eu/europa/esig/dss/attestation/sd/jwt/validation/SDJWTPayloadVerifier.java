@@ -26,7 +26,8 @@ import eu.europa.esig.dss.attestation.sd.jwt.SDJWTUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.model.attestation.SelectivelyDisclosableClaim;
+import eu.europa.esig.dss.model.attestation.DisclosureValidation;
+import eu.europa.esig.dss.model.attestation.SelectiveDisclosure;
 import eu.europa.esig.dss.model.attestation.claim.VerifiedClaim;
 import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimMap;
 import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimString;
@@ -119,7 +120,7 @@ public class SDJWTPayloadVerifier extends AttestationPayloadVerifier {
     }
 
     @Override
-    protected Map<String, VerifiedClaim> buildSelectivelyDisclosableClaimMap(VerifiedClaim _sdClaim) {
+    protected Map<String, VerifiedClaim> buildSelectiveDisclosureMap(VerifiedClaim _sdClaim) {
         if (!_sdClaim.isArrayValueType()) {
             LOG.warn("_sd header shall be of type of JSON array!");
             return Collections.emptyMap();
@@ -129,7 +130,7 @@ public class SDJWTPayloadVerifier extends AttestationPayloadVerifier {
 
         List<VerifiedClaim> sdClaims = _sdClaim.getListValue();
         for (VerifiedClaim sdClaim : sdClaims) {
-            VerifiedClaim claim = buildSelectivelyDisclosableClaim(sdClaim, disclosures);
+            VerifiedClaim claim = buildSelectiveDisclosure(sdClaim, disclosures);
             if (claim != null) {
                 if (claim.getName() != null) {
                     result.put(claim.getName(), claim);
@@ -143,8 +144,8 @@ public class SDJWTPayloadVerifier extends AttestationPayloadVerifier {
     }
 
     @Override
-    protected VerifiedClaim buildSelectivelyDisclosableClaim(VerifiedClaim hashClaim, List<SelectivelyDisclosableClaim> disclosures) {
-        VerifiedClaim claim = super.buildSelectivelyDisclosableClaim(hashClaim, disclosures);
+    protected VerifiedClaim buildSelectiveDisclosure(VerifiedClaim hashClaim, List<SelectiveDisclosure> disclosures) {
+        VerifiedClaim claim = super.buildSelectiveDisclosure(hashClaim, disclosures);
         if (claim != null) {
             return buildClaimWithDisclosures(claim); // process recursively
         }
@@ -170,6 +171,12 @@ public class SDJWTPayloadVerifier extends AttestationPayloadVerifier {
             }
         }
         return null;
+    }
+
+    @Override
+    protected DisclosureValidation getDisclosureValidation(SelectiveDisclosure disclosure) {
+        VerifiedClaim claim = SDJWTUtils.createClaim(disclosure.getName(), null, disclosure.getValue(), true);
+        return new DisclosureValidation(disclosure, claim);
     }
 
     @Override

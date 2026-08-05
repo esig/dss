@@ -37,7 +37,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-class SDJWTCompactWithDecoyDigestTest extends AbstractSDJWTTestIssuance {
+class SDJWTCompactWithDecoyDigestTest extends AbstractSDJWTTestCreation {
 
     private SDJWTPayloadParameters payloadParameters;
     private JAdESSignatureParameters signatureParameters;
@@ -78,16 +78,6 @@ class SDJWTCompactWithDecoyDigestTest extends AbstractSDJWTTestIssuance {
     }
 
     @Override
-    protected JAdESSignatureParameters getKeyBindingSignatureParameters() {
-        return null;
-    }
-
-    @Override
-    protected SDJWTKeyBindingParameters getKeyBindingParameters() {
-        return null;
-    }
-
-    @Override
     protected void checkClaims(final DiagnosticData diagnosticData) {
         super.checkClaims(diagnosticData);
 
@@ -116,11 +106,6 @@ class SDJWTCompactWithDecoyDigestTest extends AbstractSDJWTTestIssuance {
 
         // The auto generated one should be the same length as the length of the hash of the claim
         assertEquals(digestMatchers.get(0).getDigestValue().length, digestMatchers.get(1).getDigestValue().length);
-    }
-
-    @Override
-    protected boolean keyBindingPresent() {
-        return false;
     }
 
     @Override

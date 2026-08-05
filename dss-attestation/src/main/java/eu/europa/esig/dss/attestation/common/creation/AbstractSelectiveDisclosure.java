@@ -22,6 +22,7 @@ package eu.europa.esig.dss.attestation.common.creation;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.Digest;
+import eu.europa.esig.dss.model.attestation.SelectiveDisclosure;
 
 import java.util.EnumMap;
 
@@ -35,6 +36,15 @@ public abstract class AbstractSelectiveDisclosure implements SelectiveDisclosure
 
     /** Cached map containing computed digest values */
     private final EnumMap<DigestAlgorithm, Digest> digestMap = new EnumMap<>(DigestAlgorithm.class);
+
+    /** name of the selective disclosure */
+    protected String name;
+
+    /** Value of the selective disclosure */
+    protected Object value;
+
+    /** Salt of the selective disclosure */
+    protected byte[] salt;
 
     /**
      * Default constructor
@@ -58,5 +68,34 @@ public abstract class AbstractSelectiveDisclosure implements SelectiveDisclosure
      * @return {@link Digest}
      */
     protected abstract Digest computeDigest(DigestAlgorithm digestAlgorithm);
+
+    /**
+     * Parses the selective disclosure to extract name, value and salt
+     */
+    protected abstract void parse();
+
+    @Override
+    public String getName() {
+        if (name == null) {
+            parse();
+        }
+        return name;
+    }
+
+    @Override
+    public Object getValue() {
+        if (value == null) {
+            parse();
+        }
+        return value;
+    }
+
+    @Override
+    public byte[] getSalt() {
+        if (salt == null) {
+            parse();
+        }
+        return salt;
+    }
 
 }

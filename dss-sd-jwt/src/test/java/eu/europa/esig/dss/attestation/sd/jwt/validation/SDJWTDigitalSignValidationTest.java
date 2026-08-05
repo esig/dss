@@ -74,7 +74,7 @@ class SDJWTDigitalSignValidationTest extends AbstractSDJWTTestValidation {
     }
 
     @Override
-    protected boolean orphanSelectivelyDisclosableClaimsPresent() {
+    protected boolean orphanSelectiveDisclosuresPresent() {
         return true;
     }
 

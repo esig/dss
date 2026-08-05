@@ -22,7 +22,7 @@ package eu.europa.esig.dss.attestation.common.validation;
 
 import eu.europa.esig.dss.attestation.common.validation.identifier.AttestationIdentifierBuilder;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.model.attestation.SelectivelyDisclosableClaim;
+import eu.europa.esig.dss.model.attestation.SelectiveDisclosure;
 import eu.europa.esig.dss.model.attestation.DisclosureValidation;
 import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimDeviceKey;
 import eu.europa.esig.dss.model.identifier.Identifier;
@@ -48,7 +48,7 @@ public abstract class DefaultAttestation implements Attestation {
     private List<AdvancedSignature> signatures;
 
     /** List of disclosures attached to the Attestation Presentation */
-    private List<SelectivelyDisclosableClaim> disclosures;
+    private List<SelectiveDisclosure> disclosures;
 
     /** Key binding signature (optional) */
     private AdvancedSignature keyBindingSignature;
@@ -82,9 +82,9 @@ public abstract class DefaultAttestation implements Attestation {
     /**
      * Gets a list of disclosures
      *
-     * @return a list of {@link SelectivelyDisclosableClaim}s
+     * @return a list of {@link SelectiveDisclosure}s
      */
-    public List<SelectivelyDisclosableClaim> getDisclosures() {
+    public List<SelectiveDisclosure> getDisclosures() {
         return disclosures;
     }
 
@@ -177,7 +177,7 @@ public abstract class DefaultAttestation implements Attestation {
         private List<AdvancedSignature> signatures;
 
         /** List of disclosures attached to the Attestation Presentation */
-        private List<SelectivelyDisclosableClaim> disclosures;
+        private List<SelectiveDisclosure> disclosures;
 
         /** Key binding signature (optional) */
         private AdvancedSignature keyBindingSignature;
@@ -206,10 +206,10 @@ public abstract class DefaultAttestation implements Attestation {
         /**
          * Sets a list of disclosures provided with the SD-JWT token
          *
-         * @param disclosures a list of {@link SelectivelyDisclosableClaim}s
+         * @param disclosures a list of {@link SelectiveDisclosure}s
          * @return this builder
          */
-        public DefaultAttestationBuilder setDisclosures(List<SelectivelyDisclosableClaim> disclosures) {
+        public DefaultAttestationBuilder setDisclosures(List<SelectiveDisclosure> disclosures) {
             this.disclosures = disclosures;
             return this;
         }
