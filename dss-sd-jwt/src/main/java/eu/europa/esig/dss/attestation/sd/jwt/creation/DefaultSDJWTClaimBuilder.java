@@ -329,28 +329,17 @@ public class DefaultSDJWTClaimBuilder implements SDJWTClaimBuilder {
      * @return the claim or null
      */
     protected SDJWTClaim buildDeviceKeyClaim(SDJWTPayloadParameters payloadParameters) {
-        if (payloadParameters.getDeviceKey() == null && payloadParameters.getDeviceKeyType() == null &&
-                Utils.isCollectionEmpty(payloadParameters.getDeviceX509CertificateChain()) &&
-                payloadParameters.getDeviceX509CertificateThumbprint() == null &&
-                payloadParameters.getDeviceX509CertificateUrl() == null) {
+        if (payloadParameters.getDeviceKey() == null) {
             return null;
         }
 
-        PublicKeyInfo devicePublicKeyInfo = null;
-        if (payloadParameters.getDeviceKey() != null) {
-            Objects.requireNonNull(publicKeyInfoFactory,
-                    "PublicKeyInfoFactory shall be defined for device public key incorporation!");
-            devicePublicKeyInfo = publicKeyInfoFactory.create(payloadParameters.getDeviceKey());
-        }
+        Objects.requireNonNull(publicKeyInfoFactory,
+                "PublicKeyInfoFactory shall be defined for device public key incorporation!");
+        PublicKeyInfo devicePublicKeyInfo = publicKeyInfoFactory.create(payloadParameters.getDeviceKey());
 
         SDJWTClaimObject claim = new SDJWTClaimObject(SDJWTConstants.CNF, false);
-        SDJWTClaim jwk = new JWKClaimBuilder()
-                .publicKeyInfo(devicePublicKeyInfo)
-                .keyType(payloadParameters.getDeviceKeyType())
-                .certificateChain(payloadParameters.getDeviceX509CertificateChain())
-                .certificateThumbprint(payloadParameters.getDeviceX509CertificateThumbprint())
-                .x5u(payloadParameters.getDeviceX509CertificateUrl())
-                .create();
+        SDJWTClaim jwk = new JWKClaimBuilder().publicKeyInfo(devicePublicKeyInfo).create();
+        // NOTE: certififcates definition is not supported, see DSS-3959
         claim.addChild(jwk);
 
         return claim;

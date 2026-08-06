@@ -32,7 +32,6 @@ class SDJWTJsonSerializationWithKBSignatureDifferentCertTest extends AbstractSDJ
         payloadParameters.selectivelyDisclosable().setGivenName("John");
         payloadParameters.selectivelyDisclosable().setFamilyName("Doe");
         payloadParameters.setDeviceKey(getCertEntity(ECDSA_521_USER).getCertificateToken().getPublicKey());
-        payloadParameters.setDeviceKeyType("RSA");
 
         signatureParameters = new JAdESSignatureParameters();
         signatureParameters.setSigningCertificate(getSigningCert());

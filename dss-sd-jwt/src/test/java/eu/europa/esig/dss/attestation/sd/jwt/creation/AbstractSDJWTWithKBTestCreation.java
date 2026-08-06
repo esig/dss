@@ -157,30 +157,6 @@ public abstract class AbstractSDJWTWithKBTestCreation extends AbstractAttestatio
                 assertNull(attestation.getDevicePublicKey());
             }
 
-            if (Utils.isCollectionNotEmpty(getPayloadParameters().getDeviceX509CertificateChain())) {
-                assertNotNull(attestation.getDeviceCertificateChain());
-                assertEquals(getPayloadParameters().getDeviceX509CertificateChain().size(), attestation.getDeviceCertificateChain().size());
-            } else {
-                assertFalse(Utils.isCollectionNotEmpty(attestation.getDeviceCertificateChain()));
-            }
-
-            if (getPayloadParameters().getDeviceX509CertificateThumbprint() != null) {
-                assertEquals(1, Utils.collectionSize(attestation.getDeviceCertificateChainDigests()));
-                assertEquals(getPayloadParameters().getDeviceX509CertificateThumbprint().getAlgorithm(),
-                        attestation.getDeviceCertificateChainDigests().get(0).getDigestMethod());
-                assertArrayEquals(getPayloadParameters().getDeviceX509CertificateThumbprint().getValue(),
-                        attestation.getDeviceCertificateChainDigests().get(0).getDigestValue());
-            } else {
-                assertEquals(0, Utils.collectionSize(attestation.getDeviceCertificateChainDigests()));
-            }
-
-            if (getPayloadParameters().getDeviceX509CertificateUrl() != null) {
-                assertEquals(1, Utils.collectionSize(attestation.getDeviceCertificateUrls()));
-                assertEquals(getPayloadParameters().getDeviceX509CertificateUrl(), attestation.getDeviceCertificateUrls().get(0));
-            } else {
-                assertEquals(0, Utils.collectionSize(attestation.getDeviceCertificateUrls()));
-            }
-
             // TODO : not yet supported
             assertEquals(0, Utils.collectionSize(attestation.getDeviceCertificateKIDs()));
 

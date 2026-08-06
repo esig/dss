@@ -29,6 +29,7 @@ import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.utils.Utils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -36,6 +37,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -178,11 +180,12 @@ class JWKClaimBuilderTest {
     void includeX5U() {
         String x5u = "https://example.com/certificate.pem";
 
-        JWKClaimBuilder builder = new JWKClaimBuilder().keyType("RSA").x5u(x5u);
+        SDJWTClaimObject object = assertInstanceOf(
+                SDJWTClaimObject.class,
+                new JWKClaimBuilder().keyType("RSA").x5u(x5u).create());
 
-        Exception exception = assertThrows(IllegalArgumentException.class, builder::create);
-        assertEquals("If the attestation subject certificate is represented by the x5u parameter, " +
-                "the x5t#S256 parameter shall also be present.", exception.getMessage());
+        assertEquals("RSA", getClaim(object, "kty").getValue());
+        assertEquals(x5u, getClaim(object, "x5u").getValue());
     }
 
     @Test
@@ -205,17 +208,17 @@ class JWKClaimBuilderTest {
 
     @Test
     void missingKeyTypeWhenNoPublicKeyInfo() {
-        NullPointerException exception =
-                assertThrows(
-                        NullPointerException.class,
-                        () -> new JWKClaimBuilder()
-                                .certificateThumbprint(
-                                        new Digest(
-                                                DigestAlgorithm.SHA256,
-                                                goodUserCert.getDigest(DigestAlgorithm.SHA256)))
-                                .create());
+        Digest digest = new Digest(
+                DigestAlgorithm.SHA256,
+                goodUserCert.getDigest(DigestAlgorithm.SHA256));
 
-        assertEquals("Key type shall be provided if no PublicKeyInfo is defined!", exception.getMessage());
+        SDJWTClaimObject object = assertInstanceOf(
+                SDJWTClaimObject.class,
+                new JWKClaimBuilder()
+                        .certificateThumbprint(digest)
+                        .create());
+
+        assertEquals(DSSJsonUtils.toBase64Url(digest.getValue()), getClaim(object, "x5t#S256").getValue());
     }
 
     @Test
@@ -240,15 +243,27 @@ class JWKClaimBuilderTest {
 
     @Test
     void keyAndCertificateChain() {
-        JWKClaimBuilder builder = new JWKClaimBuilder().publicKeyInfo(
-                        PublicKeyInfo.rsaKey(
-                                new byte[] { 1 },
-                                new byte[] { 1 }))
-                .certificateChain(Arrays.asList(goodUserCert, goodCaCert));
+        PublicKeyInfo.RSAKey keyInfo = PublicKeyInfo.rsaKey(
+                new byte[]{1},
+                new byte[]{1});
 
-        Exception exception = assertThrows(IllegalArgumentException.class, builder::create);
-        assertEquals("The 'jwk' claim may only contain either a representation of the attestation subject public key or " +
-                "a representation of the attestation subject certificate as specified in IETF RFC 7800.", exception.getMessage());
+        SDJWTClaimObject object = assertInstanceOf(
+                SDJWTClaimObject.class,
+                new JWKClaimBuilder().publicKeyInfo(keyInfo)
+                        .certificateChain(Arrays.asList(goodUserCert, goodCaCert))
+                        .create());
+
+        assertEquals("RSA", getClaim(object, "kty").getValue());
+        assertEquals(DSSJsonUtils.toBase64Url(keyInfo.getModulus()), getClaim(object, "n").getValue());
+        assertEquals(DSSJsonUtils.toBase64Url(keyInfo.getExponent()), getClaim(object, "e").getValue());
+
+        SDJWTClaim x5c = getClaim(object, "x5c");
+        assertNotNull(x5c);
+        assertNotNull(x5c.getValue());
+        List<?> certList = assertInstanceOf(List.class, x5c.getValue());
+        assertEquals(2, certList.size());
+        assertArrayEquals(goodUserCert.getEncoded(), Utils.fromBase64((String) ((SDJWTClaim) certList.get(0)).getValue()));
+        assertArrayEquals(goodCaCert.getEncoded(), Utils.fromBase64((String) ((SDJWTClaim) certList.get(1)).getValue()));
     }
 
     @Test
@@ -272,28 +287,44 @@ class JWKClaimBuilderTest {
                 DigestAlgorithm.SHA256,
                 goodUserCert.getDigest(DigestAlgorithm.SHA256));
 
-        JWKClaimBuilder builder = new JWKClaimBuilder()
-                .keyType("RSA")
-                .certificateChain(Collections.singletonList(goodUserCert))
-                .certificateThumbprint(digest);
+        SDJWTClaimObject object = assertInstanceOf(
+                SDJWTClaimObject.class,
+                new JWKClaimBuilder()
+                        .keyType("RSA")
+                        .certificateChain(Collections.singletonList(goodUserCert))
+                        .certificateThumbprint(digest)
+                        .create());
 
-        Exception exception = assertThrows(IllegalArgumentException.class, builder::create);
-
-        assertEquals("If the attestation subject certificate is represented by the x5c parameter, " +
-                        "neither the x5u parameter, nor the x5t#S256 parameter shall be present.", exception.getMessage());
+        SDJWTClaim x5c = getClaim(object, "x5c");
+        assertNotNull(x5c);
+        assertNotNull(x5c.getValue());
+        List<?> certList = assertInstanceOf(List.class, x5c.getValue());
+        assertEquals(1, certList.size());
+        assertEquals(DSSJsonUtils.toBase64Url(digest.getValue()), getClaim(object, "x5t#S256").getValue());
     }
 
     @Test
     void certificateChainAndX5U() {
-        JWKClaimBuilder builder = new JWKClaimBuilder()
-                .keyType("RSA")
-                .certificateChain(Collections.singletonList(goodUserCert))
-                .x5u("https://example.com/cert.pem");
+        String x5u = "https://example.com/cert.pem";
 
-        Exception exception = assertThrows(IllegalArgumentException.class, builder::create);
+        SDJWTClaimObject object = assertInstanceOf(
+                SDJWTClaimObject.class,
+                new JWKClaimBuilder()
+                        .keyType("RSA")
+                        .certificateChain(Collections.singletonList(goodUserCert))
+                        .x5u(x5u)
+                        .create());
 
-        assertEquals("If the attestation subject certificate is represented by the x5c parameter, " +
-                        "neither the x5u parameter, nor the x5t#S256 parameter shall be present.", exception.getMessage());
+
+        assertEquals("RSA", getClaim(object, "kty").getValue());
+
+        SDJWTClaim x5c = getClaim(object, "x5c");
+        assertNotNull(x5c);
+        assertNotNull(x5c.getValue());
+        List<?> certList = assertInstanceOf(List.class, x5c.getValue());
+        assertEquals(1, certList.size());
+
+        assertEquals(x5u, getClaim(object, "x5u").getValue());
     }
 
     @Test

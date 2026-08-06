@@ -68,7 +68,7 @@ public abstract class AbstractAttestationTestCreation<SP extends SerializableSig
         assertNotNull(attestation.getName());
         assertNotNull(attestation.getMimeType());
 
-        // attestation.save("target/" + attestationPresentation.getName());
+        // attestation.save("target/" + attestation.getName());
 
         byte[] byteArray = DSSUtils.toByteArray(attestation);
         onDocumentSigned(byteArray);

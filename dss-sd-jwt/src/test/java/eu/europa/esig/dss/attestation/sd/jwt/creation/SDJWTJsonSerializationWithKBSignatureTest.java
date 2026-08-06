@@ -51,7 +51,6 @@ class SDJWTJsonSerializationWithKBSignatureTest extends AbstractSDJWTWithKBTestC
         payloadParameters.selectivelyDisclosable().setGivenName("John");
         payloadParameters.selectivelyDisclosable().setFamilyName("Doe");
         payloadParameters.setDeviceKey(getSigningCert().getPublicKey());
-        payloadParameters.setDeviceKeyType("RSA");
 
         signatureParameters = new JAdESSignatureParameters();
         signatureParameters.setSigningCertificate(getSigningCert());

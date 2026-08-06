@@ -20,7 +20,9 @@
  */
 package eu.europa.esig.dss.attestation.common.validation;
 
+import eu.europa.esig.dss.enumerations.CertificateOrigin;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
+import eu.europa.esig.dss.enumerations.CertificateSourceType;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimDeviceKey;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -80,7 +82,7 @@ public class DeviceKeyClaimCertificateSource extends TokenCertificateSource impl
                 LOG.warn("More than one certificate found in a 'x5c' certificate chain within a JWK confirmation claim!" );
             }
             for (CertificateToken certificateToken : certificates) {
-                addCertificate(certificateToken); // TODO : add origin ?
+                addCertificate(certificateToken, CertificateOrigin.ATTESTATION);
             }
         }
     }
@@ -116,6 +118,11 @@ public class DeviceKeyClaimCertificateSource extends TokenCertificateSource impl
                 addCertificateRef(certRef, CertificateRefOrigin.X509_URL);
             }
         }
+    }
+
+    @Override
+    public CertificateSourceType getCertificateSourceType() {
+        return CertificateSourceType.ATTESTATION;
     }
 
 }

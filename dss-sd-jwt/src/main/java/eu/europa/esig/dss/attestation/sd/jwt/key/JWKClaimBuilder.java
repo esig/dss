@@ -32,10 +32,11 @@ import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.utils.Utils;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
- * Builds a JWK claim, as specified in RFC 7517 "JSON Web Key (JWK)"
+ * Builds a JWK claim, as specified in RFC 7517 "JSON Web Key (JWK)".
+ * NOTE: The builder does not verify validity of the provided configuration.
+ * See {@code <a href="https://ec.europa.eu/digital-building-blocks/tracker/browse/DSS-3959">DSS-3959</a>}
  *
  */
 public class JWKClaimBuilder {
@@ -161,11 +162,6 @@ public class JWKClaimBuilder {
         final SDJWTClaimObject jwk = SDJWTClaim.createObject(SDJWTConstants.JWK);
 
         if (publicKeyInfo != null) {
-            if (Utils.isCollectionNotEmpty(certificateChain) || certificateThumbprint != null || x5u != null) {
-                throw new IllegalArgumentException(
-                        "The 'jwk' claim may only contain either a representation of the attestation subject public key or " +
-                                "a representation of the attestation subject certificate as specified in IETF RFC 7800.");
-            }
             jwk.addChild(SDJWTClaim.create(SDJWTConstants.KTY, publicKeyInfo.getKeyType()));
 
             if (publicKeyInfo instanceof PublicKeyInfo.ECKey) {
@@ -178,42 +174,30 @@ public class JWKClaimBuilder {
                 throw new UnsupportedOperationException(String.format(
                         "Unsupported key info type: '%s'", publicKeyInfo.getClass().getSimpleName()));
             }
-
-        } else if (Utils.isCollectionNotEmpty(certificateChain)) {
-            if (certificateThumbprint != null || x5u != null) {
-                throw new IllegalArgumentException(
-                        "If the attestation subject certificate is represented by the x5c parameter, neither the x5u parameter, " +
-                                "nor the x5t#S256 parameter shall be present.");
-            }
-
+        }
+        if (Utils.isCollectionNotEmpty(certificateChain)) {
             SDJWTClaimArray x5c = SDJWTClaim.createArray(SDJWTConstants.X5C);
             certificateChain.forEach(c -> x5c.addElement(SDJWTClaim.create(DSSJsonUtils.toBase64Url(c.getEncoded()))));
             jwk.addChild(x5c);
-
-        } else if (certificateThumbprint != null) {
+        }
+        if (certificateThumbprint != null) {
             if (DigestAlgorithm.SHA256 != certificateThumbprint.getAlgorithm()) {
                 throw new UnsupportedOperationException(String.format(
                         "Only SHA256 is supported for a device key representation within 'jwk' claim! " +
                                 "Found algorithm : %s", certificateThumbprint.getAlgorithm()));
             }
-
             jwk.addChild(SDJWTClaim.create(SDJWTConstants.X5TS526, DSSJsonUtils.toBase64Url(certificateThumbprint.getValue())));
+        }
+        if (x5u != null) {
+            jwk.addChild(SDJWTClaim.create(SDJWTConstants.X5U, x5u));
+        }
 
-            if (x5u != null) {
-                jwk.addChild(SDJWTClaim.create(SDJWTConstants.X5U, x5u));
-            }
-
-        } else if (x5u != null) {
-            throw new IllegalArgumentException("If the attestation subject certificate is represented by the x5u parameter, " +
-                    "the x5t#S256 parameter shall also be present.");
-
-        } else {
+        if (Utils.isCollectionEmpty(jwk.getChildren())) {
             throw new NullPointerException("No configuration has been present for the attestation subject public key or " +
                     "certificate representation!");
         }
 
-        if (publicKeyInfo == null) {
-            Objects.requireNonNull(keyType, "Key type shall be provided if no PublicKeyInfo is defined!");
+        if (publicKeyInfo == null && keyType != null) {
             jwk.addChild(SDJWTClaim.create(SDJWTConstants.KTY, keyType));
         }
 
