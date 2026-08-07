@@ -26,11 +26,14 @@ import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.pades.PAdESUtils;
 import eu.europa.esig.dss.pades.validation.ByteRange;
+import eu.europa.esig.dss.pades.validation.PdfSignatureField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * This class creates a {@code PdfSigDictWrapper} instance
@@ -43,13 +46,29 @@ public class PdfSigDictWrapperFactory {
     /** PDF dictionary representing the signature field */
     private final PdfDict sigFieldDictionary;
 
+    /** List of signature fields */
+    private final List<PdfSignatureField> signatureFields;
+
+    /**
+     * Default constructor
+     *
+     * @param sigFieldDictionary {@link PdfDict} representing the signature field dictionary
+     * @deprecated since DSS 6.6. Please use {@code new PdfSigDictWrapperFactory(PdfDict, List<PdfSignatureField>)} instead.
+     */
+    @Deprecated
+    public PdfSigDictWrapperFactory(final PdfDict sigFieldDictionary) {
+        this(sigFieldDictionary, null);
+    }
+
     /**
      * Default constructor
      *
      * @param sigFieldDictionary {@link PdfDict} representing the signature field dictionary
      */
-    public PdfSigDictWrapperFactory(final PdfDict sigFieldDictionary) {
+    public PdfSigDictWrapperFactory(final PdfDict sigFieldDictionary, final List<PdfSignatureField> signatureFields) {
+        Objects.requireNonNull(sigFieldDictionary, "sigFieldDictionary cannot be null!");
         this.sigFieldDictionary = sigFieldDictionary;
+        this.signatureFields = signatureFields;
     }
 
     /**
@@ -60,6 +79,7 @@ public class PdfSigDictWrapperFactory {
     public PdfSigDictWrapper create() {
         final PdfSigDictWrapper pdfSigDictWrapper = new PdfSigDictWrapper();
         pdfSigDictWrapper.setDictionary(sigFieldDictionary);
+        pdfSigDictWrapper.setSignatureFields(signatureFields);
         pdfSigDictWrapper.setCMS(buildCMS());
         pdfSigDictWrapper.setSignerName(getSignerName());
         pdfSigDictWrapper.setSigningDate(getSigningDate());

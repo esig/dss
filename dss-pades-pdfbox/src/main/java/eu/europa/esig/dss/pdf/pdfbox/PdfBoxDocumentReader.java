@@ -41,6 +41,7 @@ import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfDocumentReader;
 import eu.europa.esig.dss.pdf.PdfDssDict;
 import eu.europa.esig.dss.pdf.PdfMemoryUsageSetting;
+import eu.europa.esig.dss.pdf.PdfSigDictWrapper;
 import eu.europa.esig.dss.pdf.PdfSigDictWrapperFactory;
 import eu.europa.esig.dss.pdf.SingleDssDict;
 import eu.europa.esig.dss.pdf.visible.ImageRotationUtils;
@@ -76,6 +77,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * The PDFBox implementation of {@code PdfDocumentReader}
@@ -91,8 +93,8 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 	/** The PDF document */
 	private DSSDocument dssDocument;
 
-	/** The map of signature dictionaries and corresponding signature fields */
-	private Map<PdfSignatureDictionary, List<PdfSignatureField>> signatureDictionaryMap;
+	/** The list of signature dictionaries */
+	private List<PdfSignatureDictionary> signatureDictionaries;
 
 	/**
 	 * Default constructor of the PDFBox implementation of the Reader.
@@ -177,14 +179,15 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 	}
 
 	@Override
-	public Map<PdfSignatureDictionary, List<PdfSignatureField>> extractSigDictionaries() {
-		if (signatureDictionaryMap == null) {
-			signatureDictionaryMap = new LinkedHashMap<>();
-			Map<Long, PdfSignatureDictionary> pdfObjectDictMap = new LinkedHashMap<>();
+	public List<PdfSignatureDictionary> extractSigDictionaries() {
+		if (signatureDictionaries == null) {
+			signatureDictionaries = new ArrayList<>();
 
+			final Map<Long, List<PdfSignatureField>> pdfSigFieldMap = new LinkedHashMap<>();
+			final Map<Long, COSObject> pdfDictMap = new LinkedHashMap<>();
 			final List<PDSignatureField> pdSignatureFields = pdDocument.getSignatureFields();
 			if (Utils.isCollectionNotEmpty(pdSignatureFields)) {
-				LOG.debug("{} signature(s) found", pdSignatureFields.size());
+				LOG.debug("{} signature field(s) found", pdSignatureFields.size());
 
 				for (PDSignatureField signatureField : pdSignatureFields) {
 					final PdfBoxDict sigFieldDict = new PdfBoxDict(signatureField.getCOSObject(), pdDocument);
@@ -198,33 +201,33 @@ public class PdfBoxDocumentReader implements PdfDocumentReader {
 					}
 
 					long sigDictNumber = sigDictObject.getKey().getNumber();
-					PdfSignatureDictionary signature = pdfObjectDictMap.get(sigDictNumber);
-					if (signature == null) {
-						try {
-							PdfDict dictionary = new PdfBoxDict((COSDictionary) sigDictObject.getObject(), pdDocument);
-							signature = new PdfSigDictWrapperFactory(dictionary).create();
-						} catch (Exception e) {
-							LOG.warn("Unable to create a PdfSignatureDictionary for field with name '{}'",
-									fullyQualifiedName, e);
-							continue;
-						}
+					pdfDictMap.put(sigDictNumber, sigDictObject);
 
-						List<PdfSignatureField> fields = new ArrayList<>();
-						fields.add(pdfSignatureField);
-						signatureDictionaryMap.put(signature, fields);
-						pdfObjectDictMap.put(sigDictNumber, signature);
+					List<PdfSignatureField> pdfSignatureFields = pdfSigFieldMap.computeIfAbsent(sigDictNumber, k -> new ArrayList<>());
+					pdfSignatureFields.add(pdfSignatureField);
+				}
+			}
 
-					} else {
-						List<PdfSignatureField> fieldList = signatureDictionaryMap.get(signature);
-						fieldList.add(pdfSignatureField);
-						LOG.warn("More than one field refers to the same signature dictionary: {}!", fieldList);
+			for (Map.Entry<Long, COSObject> signatureDictionaryEntry : pdfDictMap.entrySet()) {
+				Long sigDictNumber = signatureDictionaryEntry.getKey();
+				COSObject sigDictObject = signatureDictionaryEntry.getValue();
+				List<PdfSignatureField> pdfSignatureFields = pdfSigFieldMap.get(sigDictNumber);
 
-					}
+				if (Utils.collectionSize(pdfSignatureFields) > 1) {
+					LOG.warn("More than one field refers to the same signature dictionary: {}!", pdfSignatureFields);
+				}
+				try {
+					PdfDict dictionary = new PdfBoxDict((COSDictionary) sigDictObject.getObject(), pdDocument);
+					PdfSigDictWrapper pdfSigDictWrapper = new PdfSigDictWrapperFactory(dictionary, pdfSignatureFields).create();
+					signatureDictionaries.add(pdfSigDictWrapper);
 
+				} catch (Exception e) {
+					LOG.warn("Unable to create a PdfSignatureDictionary for field(s) {}",
+							pdfSignatureFields.stream().map(PdfSignatureField::getFullyQualifiedName).collect(Collectors.toList()), e);
 				}
 			}
 		}
-		return signatureDictionaryMap;
+		return signatureDictionaries;
 	}
 
 	@Override

@@ -144,6 +144,8 @@ public final class PAdESConstants {
 	public static final String NAMES_NAME = "Names";
 	/** 'OutputIntents' */
 	public static final String OUTPUT_INTENTS_NAME = "OutputIntents";
+	/** 'P' (Page) */
+	public static final String PAGE_NAME = "P";
 	/** 'Parent' */
 	public static final String PARENT_NAME = "Parent";
 	/** 'P' (Permissions) */

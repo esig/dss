@@ -52,21 +52,19 @@ import eu.europa.esig.dss.pdf.visible.SignatureDrawer;
 import eu.europa.esig.dss.pdf.visible.SignatureDrawerFactory;
 import eu.europa.esig.dss.pdf.visible.SignatureFieldBoxBuilder;
 import eu.europa.esig.dss.pdf.visible.VisualSignatureFieldAppearance;
+import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.signature.resources.DSSResourcesHandler;
 import eu.europa.esig.dss.spi.signature.resources.DSSResourcesHandlerBuilder;
-import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -544,13 +542,12 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 			PdfDssDict lastDSSDictionary = dssDictionary; // defined the last created DSS dictionary
 			compositeDssDictionary.populateFromDssDictionary(lastDSSDictionary);
 
-			Map<PdfSignatureDictionary, List<PdfSignatureField>> sigDictionaries = reader.extractSigDictionaries();
+			List<PdfSignatureDictionary> sigDictionaries = reader.extractSigDictionaries();
 			sigDictionaries = sortSignatureDictionaries(sigDictionaries); // sort from the latest revision to the first
 
-			for (Map.Entry<PdfSignatureDictionary, List<PdfSignatureField>> sigDictEntry : sigDictionaries.entrySet()) {
-				PdfSignatureDictionary signatureDictionary = sigDictEntry.getKey();
-				List<PdfSignatureField> fields = sigDictEntry.getValue();
-				List<String> fieldNames = toStringFullyQualifiedNames(fields);
+			for (PdfSignatureDictionary signatureDictionary : sigDictionaries) {
+				List<PdfSignatureField> fields = signatureDictionary.getSignatureFields();
+				List<String> fieldNames = getFieldNames(fields);
 
 				try {
 					LOG.info("Signature fields: {}", fieldNames);
@@ -685,40 +682,33 @@ public abstract class AbstractPDFSignatureService implements PDFSignatureService
 			throws IOException, InvalidPasswordException;
 
 	/**
-	 * Sorts the given map starting from the latest revision to the first
+	 * Sorts the signature dictionaries list starting from the latest revision to the first
 	 * 
-	 * @param pdfSignatureDictionary a map between {@link PdfSignatureDictionary}
-	 *                               and list of field names to sort
+	 * @param pdfSignatureDictionary a list of {@link PdfSignatureDictionary}s
 	 * @return a sorted map
 	 */
-	private Map<PdfSignatureDictionary, List<PdfSignatureField>> sortSignatureDictionaries(
-			Map<PdfSignatureDictionary, List<PdfSignatureField>> pdfSignatureDictionary) {
-		return pdfSignatureDictionary.entrySet().stream()
-				.sorted(Map.Entry.<PdfSignatureDictionary, List<PdfSignatureField>>comparingByKey(
-						new PdfSignatureDictionaryComparator()).reversed())
-				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
-						(oldValue, newValue) -> oldValue, LinkedHashMap::new));
+	private List<PdfSignatureDictionary> sortSignatureDictionaries(List<PdfSignatureDictionary> pdfSignatureDictionary) {
+		return pdfSignatureDictionary.stream()
+				.sorted(new PdfSignatureDictionaryComparator().reversed())
+				.collect(Collectors.toList());
 	}
 
 	private void verifyPdfSignatureFields(PdfSignatureDictionary finalSignatureDictionary, List<PdfSignatureField> finalSignatureFields,
 										  PdfDocumentReader revisionReader) throws IOException {
-		List<String> fieldNames = toStringFullyQualifiedNames(finalSignatureFields);
+		List<String> fieldNames = getFieldNames(finalSignatureFields);
 
-		Map<PdfSignatureDictionary, List<PdfSignatureField>> pdfSignatureDictionaryListMap = revisionReader.extractSigDictionaries();
-		Map.Entry<PdfSignatureDictionary, List<PdfSignatureField>> revisionEntry = pdfSignatureDictionaryListMap.entrySet().stream()
-				.filter(entry -> fieldNames.equals(toStringFullyQualifiedNames(entry.getValue())))
+		List<PdfSignatureDictionary> pdfSignatureDictionaries = revisionReader.extractSigDictionaries();
+		PdfSignatureDictionary revisionEntry = pdfSignatureDictionaries.stream()
+				.filter(d -> fieldNames.equals(getFieldNames(d.getSignatureFields())))
 				.findFirst()
 				.orElse(null);
 
-		PdfSignatureDictionary revisionSignatureDictionary = revisionEntry != null ? revisionEntry.getKey() : null;
-		List<PdfSignatureField> revisionSignatureFields = revisionEntry != null ? revisionEntry.getValue() : null;
-
-		if (!finalSignatureDictionary.checkConsistency(finalSignatureFields, revisionSignatureDictionary, revisionSignatureFields)) {
+		if (!finalSignatureDictionary.checkConsistency(revisionEntry)) {
 			LOG.warn("The signature dictionary for signature {} is not consistent!", fieldNames);
 		}
 	}
 
-    private List<String> toStringFullyQualifiedNames(List<PdfSignatureField> signatureFields) {
+    private List<String> getFieldNames(List<PdfSignatureField> signatureFields) {
         return signatureFields.stream().map(PdfSignatureField::getFullyQualifiedName).collect(Collectors.toList());
     }
 
