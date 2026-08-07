@@ -76,16 +76,24 @@ public final class PAdESConstants {
 
 	/** 'AcroForm' */
 	public static final String ACRO_FORM_NAME = "AcroForm";
+	/** 'A' */
+	public static final String ACTION_WIDGET_NAME = "A";
 	/** 'Action' */
 	public static final String ACTION_NAME = "Action";
+	/** 'AA' */
+	public static final String ADDITIONAL_ACTIONS_NAME = "AA";
 	/** 'F' (Annotation flag) */
 	public static final String ANNOT_FLAG = "F";
 	/** 'Action' */
 	public static final String ANNOTS_NAME = "Annots";
+	/** 'MK' (Appearance characteristics) */
+	public static final String APPEARANCE_CHARACTERISTICS_NAME = "MK";
 	/** 'AP' (Appearance dictionary) */
 	public static final String APPEARANCE_DICTIONARY_NAME = "AP";
 	/** 'AS' */
 	public static final String AS_NAME = "AS";
+	/** 'AF' (Associated files) */
+	public static final String ASSOCIATED_FILES_NAME = "AF";
 	/** 'ByteRange' */
 	public static final String BYTE_RANGE_NAME = "ByteRange";
 	/** 'Catalog' */
@@ -118,6 +126,10 @@ public final class PAdESConstants {
 	public static final String FIELDS_NAME = "Fields";
 	/** 'T' (Field name) */
 	public static final String FIELD_NAME_NAME = "T";
+	/** 'TU' (Field alternative name) */
+	public static final String FIELD_ALTERNATIVE_NAME_NAME = "TU";
+	/** 'TM' (Field mapping name) */
+	public static final String FIELD_MAPPING_NAME_NAME = "TM";
 	/** 'Filter' */
 	public static final String FILTER_NAME = "Filter";
 	/** 'Font' */
@@ -142,6 +154,8 @@ public final class PAdESConstants {
 	public static final String NAME_NAME = "Name";
 	/** 'Names' */
 	public static final String NAMES_NAME = "Names";
+	/** 'OC' (Optional content) */
+	public static final String OPTIONAL_CONTENT_NAME = "OC";
 	/** 'OutputIntents' */
 	public static final String OUTPUT_INTENTS_NAME = "OutputIntents";
 	/** 'P' (Page) */
