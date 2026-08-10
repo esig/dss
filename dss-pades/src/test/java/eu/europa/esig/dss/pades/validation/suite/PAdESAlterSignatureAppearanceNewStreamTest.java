@@ -20,12 +20,16 @@
  */
 package eu.europa.esig.dss.pades.validation.suite;
 
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.PDFRevisionWrapper;
+import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.utils.Utils;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class PAdESAlterSignatureAppearanceNewStreamTest extends AbstractPAdESTestValidation {
 
@@ -36,15 +40,26 @@ class PAdESAlterSignatureAppearanceNewStreamTest extends AbstractPAdESTestValida
     }
 
     @Override
-    protected void checkPdfSignatureDictionary(PDFRevisionWrapper pdfRevision) {
-        if (pdfRevision.getSignatureFieldNames().contains("Signature2")) {
+    protected void checkPdfRevision(DiagnosticData diagnosticData) {
+        for (SignatureWrapper signatureWrapper : diagnosticData.getSignatures()) {
+            PDFRevisionWrapper pdfRevision = signatureWrapper.getPDFRevision();
             assertNotNull(pdfRevision);
-            assertNotNull(pdfRevision.getSignatureDictionaryType());
-            assertNotNull(pdfRevision.getSubFilter());
-            assertFalse(pdfRevision.isPdfSignatureDictionaryConsistent());
-            checkByteRange(pdfRevision);
-        } else {
-            super.checkPdfSignatureDictionary(pdfRevision);
+            assertTrue(Utils.isCollectionNotEmpty(pdfRevision.getSignatureFieldNames()));
+
+            if (pdfRevision.getSignatureFieldNames().contains("Signature2")) {
+                assertNotNull(pdfRevision);
+                assertNotNull(pdfRevision.getSignatureDictionaryType());
+                assertNotNull(pdfRevision.getSubFilter());
+                assertFalse(pdfRevision.isPdfSignatureDictionaryConsistent());
+                checkByteRange(pdfRevision);
+
+                assertFalse(Utils.isCollectionEmpty(signatureWrapper.getPdfUndefinedChanges()));
+
+            } else {
+                checkPdfSignatureDictionary(pdfRevision);
+                assertFalse(signatureWrapper.arePdfModificationsDetected());
+                assertTrue(Utils.isCollectionEmpty(signatureWrapper.getPdfUndefinedChanges()));
+            }
         }
     }
 

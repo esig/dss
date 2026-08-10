@@ -52,12 +52,14 @@ class PAdESAlterSignatureAppearanceModifyStreamTest extends AbstractPAdESTestVal
                 assertNotNull(pdfRevision.getSubFilter());
                 assertFalse(pdfRevision.isPdfSignatureDictionaryConsistent());
                 checkByteRange(pdfRevision);
+
+                assertFalse(Utils.isCollectionEmpty(signatureWrapper.getPdfUndefinedChanges()));
+
             } else {
                 checkPdfSignatureDictionary(pdfRevision);
                 assertFalse(signatureWrapper.arePdfModificationsDetected());
+                assertTrue(Utils.isCollectionEmpty(signatureWrapper.getPdfUndefinedChanges()));
             }
-
-            assertTrue(Utils.isCollectionEmpty(signatureWrapper.getPdfUndefinedChanges()));
         }
     }
 
