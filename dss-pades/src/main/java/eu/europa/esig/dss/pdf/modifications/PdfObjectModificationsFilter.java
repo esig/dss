@@ -26,6 +26,7 @@ import eu.europa.esig.dss.pdf.PAdESConstants;
 import eu.europa.esig.dss.pdf.PdfArray;
 import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfObject;
+import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,6 +61,9 @@ public class PdfObjectModificationsFilter {
      */
     public PdfObjectModifications filter(final Collection<ObjectModification> objectModifications) {
         final PdfObjectModifications pdfObjectModifications = new PdfObjectModifications();
+        if (Utils.isCollectionEmpty(objectModifications)) {
+            return pdfObjectModifications;
+        }
 
         for (ObjectModification objectModification : objectModifications) {
             if (skipChange(objectModification)) {

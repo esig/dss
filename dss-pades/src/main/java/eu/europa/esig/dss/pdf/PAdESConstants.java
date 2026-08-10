@@ -200,6 +200,8 @@ public final class PAdESConstants {
 	public static final String SUB_FILTER_NAME = "SubFilter";
 	/** 'Subtype' */
 	public static final String SUBTYPE_NAME = "Subtype";
+	/** 'SV' (Seed value) */
+	public static final String SV_NAME = "SV";
 	/** 'Type' */
 	public static final String TYPE_NAME = "Type";
 	/** 'TransformMethod' */

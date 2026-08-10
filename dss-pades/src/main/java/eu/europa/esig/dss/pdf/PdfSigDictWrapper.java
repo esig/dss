@@ -23,43 +23,17 @@ package eu.europa.esig.dss.pdf;
 import eu.europa.esig.dss.cms.CMS;
 import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.pades.validation.ByteRange;
-import eu.europa.esig.dss.pades.validation.PdfObjectKey;
 import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
 import eu.europa.esig.dss.pades.validation.PdfSignatureField;
-import eu.europa.esig.dss.pdf.modifications.DefaultPdfObjectModificationsFinder;
-import eu.europa.esig.dss.pdf.modifications.ObjectModification;
 import eu.europa.esig.dss.pdf.modifications.PdfObjectModifications;
+import eu.europa.esig.dss.pdf.modifications.PdfSignatureDictionaryModificationsFinder;
 import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-
-import static eu.europa.esig.dss.pdf.PAdESConstants.ACTION_WIDGET_NAME;
-import static eu.europa.esig.dss.pdf.PAdESConstants.ADDITIONAL_ACTIONS_NAME;
-import static eu.europa.esig.dss.pdf.PAdESConstants.ANNOT_FLAG;
-import static eu.europa.esig.dss.pdf.PAdESConstants.APPEARANCE_CHARACTERISTICS_NAME;
-import static eu.europa.esig.dss.pdf.PAdESConstants.APPEARANCE_DICTIONARY_NAME;
-import static eu.europa.esig.dss.pdf.PAdESConstants.ASSOCIATED_FILES_NAME;
-import static eu.europa.esig.dss.pdf.PAdESConstants.AS_NAME;
-import static eu.europa.esig.dss.pdf.PAdESConstants.CONTENTS_NAME;
-import static eu.europa.esig.dss.pdf.PAdESConstants.FIELD_ALTERNATIVE_NAME_NAME;
-import static eu.europa.esig.dss.pdf.PAdESConstants.FIELD_MAPPING_NAME_NAME;
-import static eu.europa.esig.dss.pdf.PAdESConstants.FIELD_NAME_NAME;
-import static eu.europa.esig.dss.pdf.PAdESConstants.FT_NAME;
-import static eu.europa.esig.dss.pdf.PAdESConstants.OPTIONAL_CONTENT_NAME;
-import static eu.europa.esig.dss.pdf.PAdESConstants.PAGE_NAME;
-import static eu.europa.esig.dss.pdf.PAdESConstants.PARENT_NAME;
-import static eu.europa.esig.dss.pdf.PAdESConstants.RECT_NAME;
-import static eu.europa.esig.dss.pdf.PAdESConstants.SUBTYPE_NAME;
-import static eu.europa.esig.dss.pdf.PAdESConstants.TYPE_ANNOT;
-import static eu.europa.esig.dss.pdf.PAdESConstants.VALUE_NAME;
 
 /**
  * The default implementation of {@code PdfSignatureDictionary}
@@ -67,13 +41,6 @@ import static eu.europa.esig.dss.pdf.PAdESConstants.VALUE_NAME;
 public class PdfSigDictWrapper implements PdfSignatureDictionary {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PdfSigDictWrapper.class);
-
-	private static final List<String> CRITICAL_SIGNATURE_FIELD_ENTRIES = Arrays.asList(
-			TYPE_ANNOT, SUBTYPE_NAME, RECT_NAME, CONTENTS_NAME, PAGE_NAME, ANNOT_FLAG, APPEARANCE_DICTIONARY_NAME,
-			AS_NAME, OPTIONAL_CONTENT_NAME, ASSOCIATED_FILES_NAME, APPEARANCE_CHARACTERISTICS_NAME, ACTION_WIDGET_NAME,
-			ADDITIONAL_ACTIONS_NAME, FT_NAME, FIELD_NAME_NAME, FIELD_ALTERNATIVE_NAME_NAME, FIELD_MAPPING_NAME_NAME,
-			VALUE_NAME, PARENT_NAME
-	);
 
 	/** The original PDF dictionary */
 	private PdfDict dictionary;
@@ -349,107 +316,21 @@ public class PdfSigDictWrapper implements PdfSignatureDictionary {
 
 		} else if (signatureDictionary instanceof PdfSigDictWrapper) {
 			PdfSigDictWrapper revisionSigDictWrapper = (PdfSigDictWrapper) signatureDictionary;
-			DefaultPdfObjectModificationsFinder modificationsFinder = new DefaultPdfObjectModificationsFinder();
-
-			consistent = checkSigFieldsConsistency(modificationsFinder, signatureFields, revisionSigDictWrapper.getSignatureFields());
+			PdfSignatureDictionaryModificationsFinder modificationsFinder = new PdfSignatureDictionaryModificationsFinder();
+			PdfObjectModifications objectModifications = modificationsFinder.compareSignatureDictionaries(revisionSigDictWrapper, this);
+			// NOTE: we evaluate only "undefined" changes, as other modifications may be permitted
+			consistent = Utils.isCollectionEmpty(objectModifications.getUndefinedChanges());
+			if (LOG.isWarnEnabled() && !consistent) {
+				objectModifications.getUndefinedChanges().forEach(m -> {
+					LOG.warn("Signature field's object modification detected! Tree : {}", m.getObjectTree());
+				});
+			}
 
 		} else {
 			LOG.warn("Provided PdfSignatureDictionary shall be instance of PdfSigDictWrapper!");
 		}
 
 		return consistent;
-	}
-
-	private boolean checkSigFieldsConsistency(DefaultPdfObjectModificationsFinder modificationsFinder,
-											  List<PdfSignatureField> finalSignatureFields, List<PdfSignatureField> revisionSignatureFields) {
-		for (int i = 0; i < finalSignatureFields.size(); i++) {
-			PdfSignatureField finalSignatureField = finalSignatureFields.get(i);
-			PdfSignatureField revisionSignatureField = revisionSignatureFields.stream()
-					.filter(signatureField -> Objects.equals(finalSignatureField.getFullyQualifiedName(), signatureField.getFullyQualifiedName()))
-					.findFirst()
-					.orElse(null);
-			if (revisionSignatureField == null) {
-				LOG.warn("No matching signature field '{}' found in the signed revision!", finalSignatureField.getFullyQualifiedName());
-				return false;
-			}
-
-			PdfDict revisionDict = revisionSignatureField.getDictionary();
-			PdfDict finalDict = finalSignatureField.getDictionary();
-
-			Set<String> sigFieldDictNames = getFieldsToCompare(revisionDict);
-			if (!sigFieldDictNames.equals(getFieldsToCompare(finalDict))) {
-				LOG.warn("The signature field '{}' does not contain the same set of objects!",
-						finalSignatureField.getFullyQualifiedName());
-				return false;
-			}
-
-			for (String key : sigFieldDictNames) {
-				if (VALUE_NAME.equals(key)) {
-					// NOTE: /V dictionary shall be checked only once (same for given signature fields)
-					if (i == 0 && !checkDictionary(modificationsFinder, key, revisionDict, finalDict)) {
-						LOG.warn("The signature dictionary '{}' from final PDF revision is not equal to the signed revision version!",
-								finalSignatureField.getFullyQualifiedName());
-						return false;
-					}
-
-				} else if (Arrays.asList(PARENT_NAME, PAGE_NAME).contains(key)) {
-					// NOTE : only indirect references are compared for the following objects
-					PdfObjectKey revisionObject = revisionDict.getObjectKey(key);
-					PdfObjectKey finalObject = finalDict.getObjectKey(key);
-					if (revisionObject == null || finalObject == null) {
-						LOG.warn("The signature field's '{}' object is not consistent to the signed revision version " +
-										"in the signature field with name '{}'!", key, finalSignatureField.getFullyQualifiedName());
-						return false;
-					} else if (revisionObject.getNumber() != finalObject.getNumber()) {
-						LOG.warn("The signature field's '{}' object is not equal to the signed revision version " +
-								"in the signature field with name '{}'!", key, finalSignatureField.getFullyQualifiedName());
-						return false;
-					}
-
-				} else {
-					if (!checkDictionary(modificationsFinder, key, revisionDict, finalDict)) {
-						LOG.warn("The object '{}' within the signature field '{}' from final PDF revision is not equal to the signed revision version!",
-								key, finalSignatureField.getFullyQualifiedName());
-						return false;
-					}
-				}
-			}
-		}
-		return true;
-	}
-
-	private Set<String> getFieldsToCompare(PdfDict dict) {
-		/*
-		 * 12.5.2 Annotation dictionaries
-		 * A PDF reader shall render the appearance dictionary without regard to any other keys and values in
-		 * the annotation dictionary and shall ignore the values of the C, IC, Border, BS, BE, BM, CA, ca, H, DA, Q,
-		 * DS, LE, LL, LLE, and Sy keys.
-		 *
-		 * NOTE: DSS skips also some other irrelevant fields
-		 */
-		Set<String> fieldNames = new HashSet<>(Arrays.asList(dict.list()));
-		fieldNames.retainAll(CRITICAL_SIGNATURE_FIELD_ENTRIES);
-		return fieldNames;
-	}
-
-	private boolean checkDictionary(DefaultPdfObjectModificationsFinder modificationsFinder, String key,
-									PdfDict revisionDict, PdfDict finalDict) {
-		PdfObjectModifications pdfObjectModifications = modificationsFinder.find(
-				key, revisionDict.getObject(key), finalDict.getObject(key));
-		// TODO : report all changes ?
-		List<ObjectModification> undefinedChanges = pdfObjectModifications.getUndefinedChanges();
-		removeReferenceData(undefinedChanges);
-		return Utils.isCollectionEmpty(undefinedChanges);
-	}
-
-	private void removeReferenceData(List<ObjectModification> modifications) {
-		// /Reference /Data dictionary contains references to PDF objects covered by the signature.
-		// The changes inside do not impact signature validity directly.
-		if (Utils.isCollectionNotEmpty(modifications)) {
-			modifications.removeIf(objectModification ->
-					objectModification.getObjectTree().getKeyChain().contains(PAdESConstants.REFERENCE_NAME) &&
-					objectModification.getObjectTree().getKeyChain().contains(PAdESConstants.DATA_NAME));
-		}
 	}
 
 	@Override
