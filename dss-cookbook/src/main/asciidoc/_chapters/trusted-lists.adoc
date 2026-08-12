@@ -436,7 +436,7 @@ A Pilot for the International Compatibility of Trust Services based on the Mutua
 To enable Trust Service Equivalence Mapping in DSS, the corresponding instance of `LOTLSource` supporting the MRA-equivalence scheme has to be configured and provided within `TLValidationJob`:
 
 [source,java,indent=0]
-.Sign a Trusted List with the TrustedListSignatureParametersBuilder
+.LOTLSource configuration with enabled MRA mapping support
 ----
 include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/validate/mra/ThirdCountryLOTLTest.java[tags=demo]
 ----
