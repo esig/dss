@@ -122,7 +122,8 @@ class JsonLoLoTEAndLoTERefreshTest {
         assertNull(parsingCacheInfo.getExceptionMessage());
         assertNull(parsingCacheInfo.getExceptionStackTrace());
         assertTrue(parsingCacheInfo.isResultExist());
-        assertFalse(Utils.isCollectionNotEmpty(parsingCacheInfo.getStructureValidationMessages()));
+        assertTrue(Utils.isCollectionNotEmpty(parsingCacheInfo.getStructureValidationMessages()));
+        assertTrue(parsingCacheInfo.getStructureValidationMessages().stream().anyMatch(m -> m.contains("required properties are missing: iat")));
 
         validationCacheInfo = loteInfo.getValidationCacheInfo();
         assertNotNull(validationCacheInfo);

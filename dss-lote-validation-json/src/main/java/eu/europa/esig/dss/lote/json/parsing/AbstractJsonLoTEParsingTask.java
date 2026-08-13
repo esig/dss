@@ -46,7 +46,7 @@ import java.util.Objects;
 public abstract class AbstractJsonLoTEParsingTask implements ParsingTask {
 
     /** Document ot parse */
-    private final DSSDocument document;
+    protected final DSSDocument document;
 
     /**
      * The default constructor
@@ -175,10 +175,10 @@ public abstract class AbstractJsonLoTEParsingTask implements ParsingTask {
      * Verifies the structure conformity of the List of Trusted Entities
      *
      * @param result {@link LoTEParsingResult}
-     * @param payload {@link String}
+     * @param loteDocument {@link DSSDocument}
      */
-    protected void verifyStructure(AbstractLoTEParsingResult result, String payload) {
-        List<String> errors = new JsonLoTEStructureVerifier().validate(payload);
+    protected void verifyStructure(AbstractLoTEParsingResult result, DSSDocument loteDocument) {
+        List<String> errors = new JsonLoTEStructureVerifier().validate(loteDocument);
         if (Utils.isCollectionNotEmpty(errors)) {
             result.setStructureValidationMessages(errors);
         }

@@ -69,7 +69,7 @@ public class JsonLoTEParsingTask extends AbstractJsonLoTEParsingTask {
 
         parseSchemeInformation(result, DSSJsonUtils.getAsMap(jsonLoTEPayload, JsonLoTEHeaderParameterNames.LIST_AND_SCHEME_INFORMATION));
         parseTrustedEntitiesList(result, DSSJsonUtils.getAsList(jsonLoTEPayload, JsonLoTEHeaderParameterNames.TRUSTED_ENTITIES_LIST));
-        verifyStructure(result, unverifiedPayload);
+        verifyStructure(result, document);
 
         return result;
     }
