@@ -2,7 +2,6 @@ package eu.europa.esig.dss.pdf.modifications;
 
 import eu.europa.esig.dss.pades.validation.PdfObjectKey;
 import eu.europa.esig.dss.pades.validation.PdfSignatureField;
-import eu.europa.esig.dss.pdf.PAdESConstants;
 import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfSigDictWrapper;
 import eu.europa.esig.dss.utils.Utils;
@@ -10,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -119,45 +117,23 @@ public class PdfSignatureDictionaryModificationsFinder extends DefaultPdfObjectM
                         });
             }
 
-            for (String key : finalFieldDictNames) {
+            for (String name : finalFieldDictNames) {
                 PdfObjectTree dictObjectTree = sigFieldObjectTree.copy();
-                dictObjectTree.addKey(key);
+                dictObjectTree.addKey(name);
 
-                PdfObjectKey revisionObject = revisionDict.getObjectKey(key);
-                PdfObjectKey finalObject = finalDict.getObjectKey(key);
-
-                if (VALUE_NAME.equals(key)) {
+                PdfObjectKey key = finalDict.getObjectKey(name);
+                if (VALUE_NAME.equals(name)) {
                     // NOTE: /V dictionary shall be checked only once (same for given signature fields)
                     if (i == 0) {
-                        compareObjectsRecursively(objectModifications, new HashSet<>(), dictObjectTree, key,
-                                finalObject, revisionDict.getObject(key), finalDict.getObject(key));
+                        compareObjectsRecursively(objectModifications, new HashSet<>(), dictObjectTree, name,
+                                key, revisionDict.getObject(name), finalDict.getObject(name));
                     }
 
-                } else if (Arrays.asList(PARENT_NAME, PAGE_NAME).contains(key)) {
-                    // NOTE : only indirect references are compared for the following objects
-                    if (revisionObject == null) {
-                        LOG.warn("The signature field's '{}' object '{}' is not present in the signed revision!",
-                                key, finalSignatureField.getFullyQualifiedName());
-                        objectModifications.add(ObjectModification.delete(dictObjectTree, finalDict.getObject(key)));
-                    } else if (finalObject == null) {
-                        LOG.warn("The signature field's '{}' object '{}' is not present in the final revision!",
-                                key, revisionSignatureField.getFullyQualifiedName());
-                                objectModifications.add(ObjectModification.create(dictObjectTree, revisionDict.getObject(key)));
-                    } else if (revisionObject.getNumber() != finalObject.getNumber()) {
-                        LOG.warn("The signature field's '{}' object is not equal to the signed revision version " +
-                                "in the signature field with name '{}'!", key, finalSignatureField.getFullyQualifiedName());
-                        objectModifications.add(ObjectModification.modify(dictObjectTree, revisionDict.getObject(key), finalDict.getObject(key)));
-                    }
-
-                } else {
-                    compareObjectsRecursively(objectModifications, new HashSet<>(), dictObjectTree, key, null,
-                            revisionDict.getObject(key), finalDict.getObject(key));
+                } else if (!isToSkip(name, revisionDict, finalDict, dictObjectTree)) {
+                    compareObjectsRecursively(objectModifications, new HashSet<>(), dictObjectTree, name, key,
+                            revisionDict.getObject(name), finalDict.getObject(name));
                 }
             }
-        }
-
-        if (Utils.isCollectionNotEmpty(objectModifications)) {
-            removeReferenceData(objectModifications);
         }
         return new PdfObjectModificationsFilter().filter(objectModifications);
     }
@@ -174,16 +150,6 @@ public class PdfSignatureDictionaryModificationsFinder extends DefaultPdfObjectM
         Set<String> fieldNames = new HashSet<>(Arrays.asList(dict.list()));
         fieldNames.retainAll(CRITICAL_SIGNATURE_FIELD_ENTRIES);
         return fieldNames;
-    }
-
-    private void removeReferenceData(Collection<ObjectModification> modifications) {
-        // /Reference /Data dictionary contains references to PDF objects covered by the signature.
-        // The changes inside do not impact signature validity directly.
-        if (Utils.isCollectionNotEmpty(modifications)) {
-            modifications.removeIf(objectModification ->
-                    objectModification.getObjectTree().getKeyChain().contains(PAdESConstants.REFERENCE_NAME) &&
-                            objectModification.getObjectTree().getKeyChain().contains(PAdESConstants.DATA_NAME));
-        }
     }
 
     private List<String> getFieldNames(List<PdfSignatureField> signatureFields) {

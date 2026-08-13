@@ -210,7 +210,7 @@ public class DefaultPdfObjectModificationsFinder implements PdfObjectModificatio
      * @param objectTree {@link PdfObjectTree} to the current object
      * @return TRUE if the comparison is to be skipped, FALSE otherwise
      */
-    private boolean isToSkip(String objectName, PdfDict signedDict, PdfDict finalDict, PdfObjectTree objectTree) {
+    protected boolean isToSkip(String objectName, PdfDict signedDict, PdfDict finalDict, PdfObjectTree objectTree) {
         PdfObjectKey signedObjectKey = signedDict.getObjectKey(objectName);
         PdfObjectKey finalObjectKey = finalDict.getObjectKey(objectName);
         /*
