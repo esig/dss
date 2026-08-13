@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.pdf;
 
+import eu.europa.esig.dss.pades.validation.PdfObjectKey;
+
 /**
  * Represents a wrapper for a simple value (Integer, String, etc.), extracted from a PDF
  *
@@ -60,6 +62,11 @@ public class PdfSimpleObject implements PdfObject {
     @Override
     public PdfObject getParent() {
         return parent;
+    }
+
+    @Override
+    public PdfObjectKey getKey() {
+        return null;
     }
 
 }

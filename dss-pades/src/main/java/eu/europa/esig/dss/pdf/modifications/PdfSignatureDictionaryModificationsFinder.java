@@ -123,17 +123,18 @@ public class PdfSignatureDictionaryModificationsFinder extends DefaultPdfObjectM
                 PdfObjectTree dictObjectTree = sigFieldObjectTree.copy();
                 dictObjectTree.addKey(key);
 
+                PdfObjectKey revisionObject = revisionDict.getObjectKey(key);
+                PdfObjectKey finalObject = finalDict.getObjectKey(key);
+
                 if (VALUE_NAME.equals(key)) {
                     // NOTE: /V dictionary shall be checked only once (same for given signature fields)
                     if (i == 0) {
                         compareObjectsRecursively(objectModifications, new HashSet<>(), dictObjectTree, key,
-                                revisionDict.getObject(key), finalDict.getObject(key));
+                                finalObject, revisionDict.getObject(key), finalDict.getObject(key));
                     }
 
                 } else if (Arrays.asList(PARENT_NAME, PAGE_NAME).contains(key)) {
                     // NOTE : only indirect references are compared for the following objects
-                    PdfObjectKey revisionObject = revisionDict.getObjectKey(key);
-                    PdfObjectKey finalObject = finalDict.getObjectKey(key);
                     if (revisionObject == null) {
                         LOG.warn("The signature field's '{}' object '{}' is not present in the signed revision!",
                                 key, finalSignatureField.getFullyQualifiedName());
@@ -149,7 +150,7 @@ public class PdfSignatureDictionaryModificationsFinder extends DefaultPdfObjectM
                     }
 
                 } else {
-                    compareObjectsRecursively(objectModifications, new HashSet<>(), dictObjectTree, key,
+                    compareObjectsRecursively(objectModifications, new HashSet<>(), dictObjectTree, key, null,
                             revisionDict.getObject(key), finalDict.getObject(key));
                 }
             }

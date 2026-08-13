@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.pdf.openpdf;
 
+import com.lowagie.text.pdf.PRIndirectReference;
 import com.lowagie.text.pdf.PRStream;
 import com.lowagie.text.pdf.PdfArray;
 import com.lowagie.text.pdf.PdfBoolean;
@@ -32,6 +33,7 @@ import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfStream;
 import com.lowagie.text.pdf.PdfString;
 import eu.europa.esig.dss.model.DSSException;
+import eu.europa.esig.dss.pades.validation.PdfObjectKey;
 import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfObject;
 import eu.europa.esig.dss.pdf.PdfSimpleObject;
@@ -91,6 +93,15 @@ class ITextPdfArray implements eu.europa.esig.dss.pdf.PdfArray {
 	@Override
 	public PdfObject getParent() {
 		return parent;
+	}
+
+	@Override
+	public PdfObjectKey getKey() {
+		PRIndirectReference indirectReference = wrapped.getIndRef();
+		if (indirectReference != null) {
+			return new ITextObjectKey(indirectReference);
+		}
+		return null;
 	}
 
 	@Override

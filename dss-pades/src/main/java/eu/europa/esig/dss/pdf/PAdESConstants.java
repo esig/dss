@@ -158,7 +158,7 @@ public final class PAdESConstants {
 	public static final String OPTIONAL_CONTENT_NAME = "OC";
 	/** 'OutputIntents' */
 	public static final String OUTPUT_INTENTS_NAME = "OutputIntents";
-	/** 'P' (Page) */
+	/** 'P' (Page), e.g. in /Type Annot dictionary */
 	public static final String PAGE_NAME = "P";
 	/** 'Parent' */
 	public static final String PARENT_NAME = "Parent";
