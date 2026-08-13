@@ -1,0 +1,303 @@
+{
+  "LoTE": {
+    "ListAndSchemeInformation": {
+      "LoTESequenceNumber": 1,
+      "LoTEType": "http://uri.etsi.org/LoTE/ListOfTrustedEntities/LoTEType/PIDProviderList",
+      "SchemeOperatorName": [
+        {
+          "lang": "en",
+          "value": "European Commission"
+        },
+        {
+          "lang": "bg",
+          "value": "Европейска комисия"
+        },
+        {
+          "lang": "es",
+          "value": "Comisión Europea"
+        },
+        {
+          "lang": "cs",
+          "value": "Evropská komise"
+        },
+        {
+          "lang": "da",
+          "value": "Europa-Kommissionen"
+        },
+        {
+          "lang": "de",
+          "value": "Europäische Kommission"
+        },
+        {
+          "lang": "et",
+          "value": "Euroopa Komisjon"
+        },
+        {
+          "lang": "el",
+          "value": "Ευρωπαϊκή Επιτροπή"
+        },
+        {
+          "lang": "fr",
+          "value": "Commission européenne"
+        },
+        {
+          "lang": "it",
+          "value": "Commissione europea"
+        },
+        {
+          "lang": "lv",
+          "value": "Eiropas Komisija"
+        },
+        {
+          "lang": "lt",
+          "value": "Europos Komisija"
+        },
+        {
+          "lang": "hu",
+          "value": "Európai Bizottság"
+        },
+        {
+          "lang": "mt",
+          "value": "Il-Kummissjoni Ewropea"
+        },
+        {
+          "lang": "nl",
+          "value": "Europese Commissie"
+        },
+        {
+          "lang": "pl",
+          "value": "Komisja Europejska"
+        },
+        {
+          "lang": "pt",
+          "value": "Comissão Europeia"
+        },
+        {
+          "lang": "ro",
+          "value": "Comisia Europeană"
+        },
+        {
+          "lang": "sk",
+          "value": "Európska komisia"
+        },
+        {
+          "lang": "sl",
+          "value": "Evropska komisija"
+        },
+        {
+          "lang": "fi",
+          "value": "Euroopan komissio"
+        },
+        {
+          "lang": "sv",
+          "value": "Europeiska kommissionen"
+        },
+        {
+          "lang": "hr",
+          "value": "Europska komisija"
+        }
+      ],
+      "SchemeOperatorAddress": {
+        "SchemeOperatorPostalAddress": [
+          {
+            "lang": "fr",
+            "StreetAddress": "Rue de la Loi 200",
+            "Locality": "Bruxelles",
+            "PostalCode": "1049",
+            "Country": "BE"
+          },
+          {
+            "lang": "nl",
+            "StreetAddress": "Wetstraat 200",
+            "Locality": "Brussel",
+            "PostalCode": "1049",
+            "Country": "BE"
+          },
+          {
+            "lang": "en",
+            "StreetAddress": "Rue de la Loi/Wetstraat 200",
+            "Locality": "Brussels",
+            "PostalCode": "1049",
+            "Country": "BE"
+          }
+        ],
+        "SchemeOperatorElectronicAddress": [
+          {
+            "lang": "en",
+            "uriValue": "mailto:EC-TL-Service@ec.europa.eu"
+          },
+          {
+            "lang": "en",
+            "uriValue": "https://digital-strategy.ec.europa.eu/en/policies/eu-trusted-lists"
+          }
+        ]
+      },
+      "SchemeName": [
+        {
+          "lang": "en",
+          "value": "The present list is a list of provider of person identification data issued in accordance with CIR 2024/2980"
+        }
+      ],
+      "SchemeInformationURI": [
+        {
+          "lang": "en",
+          "uriValue": "http://ec.europa.eu/tools/eudi/pidproviderlote/Schemeinformation"
+        }
+      ],
+      "StatusDeterminationApproach": "http://uri.etsi.org/LoTE/ListOfTrustedEntities/StatusDetn/PIDProviderList",
+      "SchemeTypeCommunityRules": [
+        {
+          "lang": "en",
+          "uriValue": "http://uri.etsi.org/LoTE/ListOfTrustedEntities/schemerules/PIDProviderList"
+        }
+      ],
+      "SchemeTerritory": "EU",
+      "PolicyOrLegalNotice": [
+        {
+          "LoTEPolicy": {
+            "lang": "en",
+            "uriValue": "http://ec.europa.eu/tools/eudi/pidproviderlote/legalNotice#EN"
+          }
+        }
+      ],
+      "HistoricalInformationPeriod": 65535,
+      "ListIssueDateTime": "2025-07-16T12:00:00Z",
+      "NextUpdate": "2026-01-15T12:00:00Z"
+    },
+    "TrustedEntitiesList": [
+      {
+        "TrustedEntityInformation": {
+          "TEName": [
+            {
+              "lang": "en",
+              "value": "Example PID provider"
+            }
+          ],
+          "TETradeName": [
+            {
+              "lang": "en",
+              "value": "VATFR-3141592"
+            }
+          ],
+          "TEAddress": {
+            "TEPostalAddress": [
+              {
+                "lang": "en",
+                "StreetAddress": "Central street",
+                "Locality": "Metropolis",
+                "PostalCode": "1234",
+                "Country": "FR"
+              }
+            ],
+            "TEElectronicAddress": [
+              {
+                "lang": "en",
+                "uriValue": "https://example.org"
+              },
+              {
+                "lang": "en",
+                "uriValue": "mailto:contact@example.org"
+              },
+              {
+                "lang": "en",
+                "uriValue": "tel:+32123456789"
+              }
+            ]
+          },
+          "TEInformationURI": [
+            {
+              "lang": "en",
+              "uriValue": "https://example.org/info"
+            }
+          ],
+          "TEInformationExtensions": [
+            {
+              "OtherAssociatedBodiesExtensions": [
+                {
+                  "AssociatedBody": {
+                    "AssociatedBodyName": [
+                      {
+                        "lang": "fr",
+                        "value": "Ministère de la Transition Numérique"
+                      },
+                      {
+                        "lang": "en",
+                        "value": "Ministry of Digital Transformation"
+                      }
+                    ],
+                    "AssociatedBodyTradeName": [
+                      {
+                        "lang": "fr",
+                        "value": "MinTN"
+                      },
+                      {
+                        "lang": "en",
+                        "value": "MinDT"
+                      }
+                    ],
+                    "AssociatedBodyAddress": {
+                      "AssociatedBodyPostalAddress": {
+                        "lang": "fr",
+                        "StreetAddress": "10 avenue de la République",
+                        "Locality": "Paris",
+                        "StateOrProvince": "Île-de-France",
+                        "PostalCode": "75011",
+                        "Country": "FR"
+                      },
+                      "AssociatedBodyElectronicAddress": [
+                        {
+                          "lang": "fr",
+                          "uriValue": "mailto:contact@mintn.gouv.fr"
+                        },
+                        {
+                          "lang": "en",
+                          "uriValue": "mailto:info@mindt.gov.fr"
+                        }
+                      ]
+                    },
+                    "AssociatedBodyInformationURI": [
+                      {
+                        "lang": "fr",
+                        "uriValue": "https://www.mintn.gouv.fr/informations"
+                      },
+                      {
+                        "lang": "en",
+                        "uriValue": "https://www.mindt.gov.fr/info"
+                      }
+                    ],
+                    "AssociatedBodyTypeIdentifier": "http://public.europa.eu/entity/associated-body-type/public-authority",
+                    "AssociatedBodyInformationExtensions": [
+                      {
+                        "key": "domain",
+                        "value": "E-Government Services"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "TrustedEntityServices": [
+          {
+            "ServiceInformation": {
+              "ServiceName": [
+                {
+                  "lang": "en",
+                  "value": "Signing Service"
+                }
+              ],
+              "ServiceDigitalIdentity": {
+                "X509Certificates": [
+                  {
+                    "val": "MIIE1DCCAzygAwIBAgIBCjANBgkqhkiG9w0BAQsFADBNMRAwDgYDVQQDDAdnb29kLWNhMRkwFwYDVQQKDBBOb3dpbmEgU29sdXRpb25zMREwDwYDVQQLDAhQS0ktVEVTVDELMAkGA1UEBhMCTFUwHhcNMjQwNDA2MTQxNzM4WhcNMjYwMjA2MTQxNzM4WjBPMRIwEAYDVQQDDAlnb29kLXVzZXIxGTAXBgNVBAoMEE5vd2luYSBTb2x1dGlvbnMxETAPBgNVBAsMCFBLSS1URVNUMQswCQYDVQQGEwJMVTCCAaIwDQYJKoZIhvcNAQEBBQADggGPADCCAYoCggGBALVp7SEWHPn4xXtY8NDkW5Qgt2IzAvfOshkjx03JN2DZOoVVJz7z6lkxxxic9TQaumuvSRQrDiLBr0+9WnLMRVMSD28UdXw2Sn9JXcsYluPpPIxF7foL44K6fYSYD0qqFDt0Lkj4THkwo6uKgCxFiSSYMTrJQLsqPs9qoIP/VeoMfDhD1n9/vz3SqoxIMl30+RYxJUogAIENO8p0JvgeK0d98npLR7L+s0ww7lVaV/UdoSWhmVFb0icqtvhXGxaPIi+xlZtRyv/X6CBEYOkFpGuqVJqaRq8yh0ITNK4/1wNDxfEGDnUalapZ1VRdzk8ThjWFnOlLls0uChafpCw+uQFNAyWVh1yMUbBgtj1c8zm7tKQy2nz03dNNbV5dZ8e1ilU4Wysxo+GtFIh966p0XvuWY7fDcX78NcMn9qRAiFmHHV7ja+eCl6zNBihflO7SA0WZLeT0iFleeAbAERLf0dhbtQVIhYGLTBoFAVNrV8HIDggRapvQ6SWIOtzPFChoowIDAQABo4G8MIG5MA4GA1UdDwEB/wQEAwIGQDCBhwYIKwYBBQUHAQEEezB5MDkGCCsGAQUFBzABhi1odHRwOi8vZHNzLm5vd2luYS5sdS9wa2ktZmFjdG9yeS9vY3NwL2dvb2QtY2EwPAYIKwYBBQUHMAKGMGh0dHA6Ly9kc3Mubm93aW5hLmx1L3BraS1mYWN0b3J5L2NydC9nb29kLWNhLmNydDAdBgNVHQ4EFgQUSrHjGJiWtGstjr/Qd1thWHkFxh0wDQYJKoZIhvcNAQELBQADggGBAAlB7Y/WkNITpEY0hw34PFhQIutRoTn0BkH2lJzjuHXodpdrZ4o3YC2VHqc/qdPKBlnP+SNPZ3bRnGalfpyd/1+koVRuwiXzH1lCvoaomA4Gjrxfm9ud5NlS9e0PTlunqBvgtHIKNauzWbimEFzGoUpPRVBYjaIVl0cTrNqZBjWgbqnEOD3ucNjxtyqSTMbhpjLEIbn/xH4lLm2iz9Uj8hUIQ0XQFSAFjt2khvAH5PJDK2L17rL5DAPjj9UXKi4oE3SzS7sh3mS3BjmN3WtyvM0cgkpmbbCFcUuFYaITc6OOOpZ99eYck8PrZV6eoMImapuroNEeGxrm3Ff2StXnW0RjhtAgZmrlJQqpA6bF7lNl59Wd6fJ2aS8pKMewBgIiAneb6zdc0VIXW4VcX5bxidrPa6/6Hke+GkzD005jdMojF8IiZ2hjF/bvnNXHKRei56hv5yf0sNQitG7BzBxu7NMiQ+GC3UIEovQl6VIkAGV0Tk8IpTx1YbCtPEvETd1gXQ=="
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

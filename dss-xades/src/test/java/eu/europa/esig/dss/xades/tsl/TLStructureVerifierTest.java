@@ -18,12 +18,11 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.tsl.parsing;
+package eu.europa.esig.dss.xades.tsl;
 
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.utils.Utils;
-import eu.europa.esig.dss.xades.tsl.TLStructureVerifier;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -38,7 +37,7 @@ class TLStructureVerifierTest {
 
     @Test
     void tlv4Test() {
-        DSSDocument tlDocument = new FileDocument("src/test/resources/de-tl.xml");
+        DSSDocument tlDocument = new FileDocument("src/test/resources/tl/de-tl.xml");
 
         TLStructureVerifier tlStructureVerifier = new TLStructureVerifier();
         List<String> result = tlStructureVerifier.validate(tlDocument, 4);
@@ -86,7 +85,7 @@ class TLStructureVerifierTest {
 
     @Test
     void tlv5Test() {
-        DSSDocument tlDocument = new FileDocument("src/test/resources/fr.xml");
+        DSSDocument tlDocument = new FileDocument("src/test/resources/tl/fr.xml");
 
         TLStructureVerifier tlStructureVerifier = new TLStructureVerifier();
         List<String> result = tlStructureVerifier.setAcceptedTLVersions(DEFAULT_ACCEPTED_TL_VERSION).validate(tlDocument, 5);
@@ -130,7 +129,7 @@ class TLStructureVerifierTest {
 
     @Test
     void tlv6Test() {
-        DSSDocument tlDocument = new FileDocument("src/test/resources/fi-v6.xml");
+        DSSDocument tlDocument = new FileDocument("src/test/resources/tl/fi-v6.xml");
 
         TLStructureVerifier tlStructureVerifier = new TLStructureVerifier();
         List<String> result = tlStructureVerifier.setAcceptedTLVersions(DEFAULT_ACCEPTED_TL_VERSION).validate(tlDocument, 6);
@@ -160,6 +159,23 @@ class TLStructureVerifierTest {
         tlStructureVerifier = new TLStructureVerifier();
         result = tlStructureVerifier.setAcceptedTLVersions(DEFAULT_ACCEPTED_TL_VERSION).validate(tlDocument, null);
         assertTrue(result.stream().anyMatch(r -> r.contains("No TLVersion has been found!")), result.toString());
+    }
+
+    @Test
+    void nonXmlTest() {
+        DSSDocument document = new FileDocument("src/test/resources/sample.txt");
+
+        TLStructureVerifier verifier = new TLStructureVerifier();
+
+        verifier.setSigningMode(true);
+        List<String> errors = verifier.validate(document, 6);
+        assertFalse(Utils.isCollectionEmpty(errors));
+        assertTrue(errors.stream().anyMatch(r -> r.contains("The document is not a valid XML document!")), errors.toString());
+
+        verifier.setSigningMode(false);
+        errors = verifier.validate(document, 6);
+        assertFalse(Utils.isCollectionEmpty(errors));
+        assertTrue(errors.stream().anyMatch(r -> r.contains("The document is not a valid XML document!")), errors.toString());
     }
 
 }

@@ -23,6 +23,7 @@ package eu.europa.esig.dss.lote.json.parsing;
 import eu.europa.esig.dss.enumerations.ListType;
 import eu.europa.esig.dss.jades.DSSJsonUtils;
 import eu.europa.esig.dss.jades.JWSCompactSerializationParser;
+import eu.europa.esig.dss.jades.lote.JsonLoTEStructureVerifier;
 import eu.europa.esig.dss.jades.validation.JWS;
 import eu.europa.esig.dss.lote.parsing.AbstractLoTEParsingResult;
 import eu.europa.esig.dss.lote.parsing.LoTEParsingResult;
@@ -31,9 +32,6 @@ import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.job.parsing.ParsingTask;
-import eu.europa.esig.json.JSONParser;
-import eu.europa.esig.json.JsonObjectWrapper;
-import eu.europa.esig.lote.json.LOTEJsonUtils;
 
 import java.util.Collections;
 import java.util.Date;
@@ -180,8 +178,7 @@ public abstract class AbstractJsonLoTEParsingTask implements ParsingTask {
      * @param payload {@link String}
      */
     protected void verifyStructure(AbstractLoTEParsingResult result, String payload) {
-        JsonObjectWrapper jsonObject = new JSONParser().parse(payload);
-        List<String> errors = LOTEJsonUtils.getInstance().validateAgainstSchema(jsonObject);
+        List<String> errors = new JsonLoTEStructureVerifier().validate(payload);
         if (Utils.isCollectionNotEmpty(errors)) {
             result.setStructureValidationMessages(errors);
         }

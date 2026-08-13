@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?><ListOfTrustedEntities xmlns="http://uri.etsi.org/019602/v1#" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:tie="http://uri.etsi.org/019602/v1/TrustedEntityExtensions" LOTETag="http://uri.etsi.org/019602/tag#">
+    <ListAndSchemeInformation>
+        <LoTEVersionIdentifier>1</LoTEVersionIdentifier>
+        <LoTESequenceNumber>42</LoTESequenceNumber>
+        <LoTEType>http://example.org/LoTE/type</LoTEType>
+        <SchemeOperatorName>
+            <Name xml:lang="fr">Agence Nationale de la Confiance Numérique</Name>
+            <Name xml:lang="en">National Agency for Digital Trust</Name>
+        </SchemeOperatorName>
+        <SchemeOperatorAddress>
+            <PostalAddresses>
+                <PostalAddress xml:lang="fr">
+                    <StreetAddress>12 Boulevard Sécurité</StreetAddress>
+                    <Locality>Paris</Locality>
+                    <StateOrProvince>Île-de-France</StateOrProvince>
+                    <PostalCode>75015</PostalCode>
+                    <CountryName>FR</CountryName>
+                </PostalAddress>
+                <PostalAddress xml:lang="en">
+                    <StreetAddress>12 Security Boulevard</StreetAddress>
+                    <Locality>Paris</Locality>
+                    <StateOrProvince>Ile-de-France</StateOrProvince>
+                    <PostalCode>75015</PostalCode>
+                    <CountryName>FR</CountryName>
+                </PostalAddress>
+            </PostalAddresses>
+            <ElectronicAddress>
+                <URI xml:lang="fr">mailto:contact@trust.gov.fr</URI>
+                <URI xml:lang="en">mailto:contact@trust.gov.fr</URI>
+            </ElectronicAddress>
+        </SchemeOperatorAddress>
+        <SchemeName>
+            <Name xml:lang="fr">Liste de confiance française</Name>
+            <Name xml:lang="en">French Trusted List</Name>
+        </SchemeName>
+        <SchemeInformationURI>
+            <URI xml:lang="fr">https://trust.gov.fr/info</URI>
+            <URI xml:lang="en">https://trust.gov.fr/en/info</URI>
+        </SchemeInformationURI>
+        <StatusDeterminationApproach>http://example.org/status/automated</StatusDeterminationApproach>
+        <SchemeTypeCommunityRules>
+            <URI xml:lang="en">https://rules.eutrust.org</URI>
+        </SchemeTypeCommunityRules>
+        <SchemeTerritory>FR</SchemeTerritory>
+        <PolicyOrLegalNotice>
+            <LoTEPolicy xml:lang="fr">https://trust.gov.fr/politique</LoTEPolicy>
+        </PolicyOrLegalNotice>
+        <HistoricalInformationPeriod>24</HistoricalInformationPeriod>
+        <PointersToOtherLoTE>
+            <OtherLoTEPointer>
+                <ServiceDigitalIdentities>
+                    <ServiceDigitalIdentity>
+                        <DigitalId>
+                            <ds:KeyValue>
+                                <ds:RSAKeyValue>
+                                    <ds:Modulus>c2FtcGxlY2VydGlmaWNhdGU=</ds:Modulus>
+                                    <ds:Exponent>AQAB</ds:Exponent>
+                                </ds:RSAKeyValue>
+                            </ds:KeyValue>
+                        </DigitalId>
+                    </ServiceDigitalIdentity>
+                </ServiceDigitalIdentities>
+                <LoTELocation>https://other-lote.example.org/lotefile.xml</LoTELocation>
+                <AdditionalInformation>
+                    <TextualInformation xml:lang="en">Additional information description</TextualInformation>
+                </AdditionalInformation>
+            </OtherLoTEPointer>
+        </PointersToOtherLoTE>
+        <ListIssueDateTime>2025-07-16T12:00:00Z</ListIssueDateTime>
+        <NextUpdate>
+            <dateTime>2025-08-16T12:00:00Z</dateTime>
+        </NextUpdate>
+        <DistributionPoints>
+            <URI>https://trust.gov.fr/distribution.xml</URI>
+        </DistributionPoints>
+        <SchemeExtensions>
+            <Extension Critical="false">
+                <re:Remark xmlns:re="http://uri.etsi.org/019602/v1/remark">Extension personnalisée</re:Remark>
+            </Extension>
+        </SchemeExtensions>
+    </ListAndSchemeInformation>
+    <TrustedEntitiesList>
+        <TrustedEntity>
+            <TrustedEntityInformation>
+                <TEName>
+                    <Name xml:lang="fr">Prestataire Confiance SA</Name>
+                    <Name xml:lang="en">Trust Provider Inc.</Name>
+                </TEName>
+                <TETradeName>
+                    <Name xml:lang="fr">PSC France</Name>
+                </TETradeName>
+                <TEAddress>
+                    <PostalAddresses>
+                        <PostalAddress xml:lang="fr">
+                            <StreetAddress>1 Rue de la Confiance</StreetAddress>
+                            <Locality>Paris</Locality>
+                            <StateOrProvince>Auvergne-Rhône-Alpes</StateOrProvince>
+                            <PostalCode>75001</PostalCode>
+                            <CountryName>FR</CountryName>
+                        </PostalAddress>
+                    </PostalAddresses>
+                    <ElectronicAddress>
+                        <URI xml:lang="fr">mailto:support@psc.fr</URI>
+                        <URI xml:lang="en">mailto:contact@example.org</URI>
+                    </ElectronicAddress>
+                </TEAddress>
+                <TEInformationURI>
+                    <URI xml:lang="en">https://example.org/info</URI>
+                </TEInformationURI>
+                <TEInformationExtensions>
+                    <Extension Critical="false">
+                        <tie:OtherAssociatedBodies>
+                            <tie:AssociatedBody>
+                                <tie:AssociatedBodyName>
+                                    <Name xml:lang="fr">Ministère de la Transition Numérique</Name>
+                                    <Name xml:lang="en">Ministry of Digital Transformation</Name>
+                                </tie:AssociatedBodyName>
+                                <tie:AssociatedBodyTradeName>
+                                    <Name xml:lang="fr">MinTN</Name>
+                                    <Name xml:lang="en">MinDT</Name>
+                                </tie:AssociatedBodyTradeName>
+                                <tie:AssociatedBodyAddress>
+                                    <PostalAddresses>
+                                        <PostalAddress xml:lang="fr">
+                                            <StreetAddress>10 avenue de la République</StreetAddress>
+                                            <Locality>Paris</Locality>
+                                            <StateOrProvince>Île-de-France</StateOrProvince>
+                                            <PostalCode>75011</PostalCode>
+                                            <CountryName>FR</CountryName>
+                                        </PostalAddress>
+                                    </PostalAddresses>
+                                    <ElectronicAddress>
+                                        <URI xml:lang="fr">mailto:contact@mintn.gouv.fr</URI>
+                                        <URI xml:lang="en">mailto:info@mindt.gov.fr</URI>
+                                    </ElectronicAddress>
+                                </tie:AssociatedBodyAddress>
+                                <tie:AssociatedBodyInformationURI>
+                                    <URI xml:lang="fr">https://www.mintn.gouv.fr/informations</URI>
+                                    <URI xml:lang="en">https://www.mindt.gov.fr/info</URI>
+                                </tie:AssociatedBodyInformationURI>
+                                <tie:AssociatedBodyInformationExtensions>
+                                    <Extension Critical="false">
+                                        <ne:DomainExt xmlns:ne="http://uri.etsi.org/some/extension">
+                                            E-Government Services
+                                        </ne:DomainExt>
+                                    </Extension>
+                                </tie:AssociatedBodyInformationExtensions>
+                            </tie:AssociatedBody>
+                        </tie:OtherAssociatedBodies>
+                    </Extension>
+                </TEInformationExtensions>
+            </TrustedEntityInformation>
+            <TrustedEntityServices>
+                <TrustedEntityService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/QES</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">Signature Qualifiée</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+                                <X509Certificate>c2FtcGxlY2VydGlmaWNhdGU=</X509Certificate>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/TrstSvc/Status/underSupervision</ServiceStatus>
+                        <StatusStartingTime>2019-06-01T00:00:00Z</StatusStartingTime>
+                        <SchemeServiceDefinitionURI>
+                            <URI xml:lang="rn">https://psc.fr/docs/signature.pdf</URI>
+                        </SchemeServiceDefinitionURI>
+                        <ServiceSupplyPoints>
+                            <ServiceSupplyPoint>https://psc.fr/api/sign</ServiceSupplyPoint>
+                        </ServiceSupplyPoints>
+                        <ServiceInformationExtensions>
+                            <Extension Critical="false">
+                                Service audité par ANSSI
+                            </Extension>
+                        </ServiceInformationExtensions>
+                    </ServiceInformation>
+                    <ServiceHistory>
+                        <ServiceHistoryInstance>
+                            <ServiceTypeIdentifier>http://uri.etsi.org/TrstSvc/Svctype/QES</ServiceTypeIdentifier>
+                            <ServiceName>
+                                <Name xml:lang="en">Signature Qualifiée</Name>
+                            </ServiceName>
+                            <ServiceDigitalIdentity>
+                                <DigitalId>
+                                    <X509Certificate>c2FtcGxlY2VydGlmaWNhdGU=</X509Certificate>
+                                </DigitalId>
+                            </ServiceDigitalIdentity>
+                            <ServiceStatus>http://uri.etsi.org/TrstSvc/Status/recognised</ServiceStatus>
+                            <StatusStartingTime>2017-01-01T00:00:00Z</StatusStartingTime>
+                            <ServiceInformationExtensions>
+                                <Extension Critical="false">
+                                    <Name xml:lang="en">Audit 2022-Q4</Name>
+                                </Extension>
+                            </ServiceInformationExtensions>
+                        </ServiceHistoryInstance>
+                    </ServiceHistory>
+                </TrustedEntityService>
+            </TrustedEntityServices>
+        </TrustedEntity>
+    </TrustedEntitiesList>
+<ds:Signature Id="id-26a8bf9c055709f972a6009727f66a8b"><ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/><ds:Reference Id="r-id-26a8bf9c055709f972a6009727f66a8b-1" URI=""><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2002/06/xmldsig-filter2"><dsig-filter2:XPath xmlns:dsig-filter2="http://www.w3.org/2002/06/xmldsig-filter2" Filter="subtract">/descendant::ds:Signature</dsig-filter2:XPath></ds:Transform><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>WaTncosK6gxfZ4FN1wpWl2RFbbWwX30PnDEcIgsoZE0=</ds:DigestValue></ds:Reference><ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI="#xades-id-26a8bf9c055709f972a6009727f66a8b"><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>ab2q3fdO83EdsnuZ65SGAA+7y/OZZqGKDSo0mSk1PQE=</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue Id="value-id-26a8bf9c055709f972a6009727f66a8b">jT+yo5SxTCbmHfVUKj87NsW4ScmkPXwepv5yfFESkzTc3wKaPdpOreK4YAmjSwzfIFW07VU2Z1TDoqU1xfPVV0GSfZix7VhJU3ZOU8RAHVKSNkQPH3W375aa/sw9CNwrT4a+J7I0WQAL8YgkI3K18mEWT3M5/xC0EDQMOFQNNfdXxWR8euuLR6zlXTL5ginbhtXPpa4gR633/N3+9vKb0zmhF8nCsmXPGDwoI8gzzBXfJQBhMECCo/SLfRlCwRb+/p8SA0yE6tf2+ydAzUlDkJRHGuRV5WgeT/72UEeZ+ufH9a1deKcsvHPD6c1/C6AwhaZnmR4Twv2eF963/Q6FL68mt+rFZXEbYw/iS0sogfrAiqIOJ45cknN2u/amSY7G0emdQ+A7apJLlrDgOFkRRQR1JrtoGZxQJYQSFDIx83FzQ7Hfmc5Z5zFPfYSvaRly/eWlk2zFFq2VvqHvEPq+Z6DZWTgt62ROp7Tf2lFwFRymzmaPdepNRIRDfI8/2PE3</ds:SignatureValue><ds:KeyInfo><ds:X509Data><ds:X509Certificate>MIIE1DCCAzygAwIBAgIBCjANBgkqhkiG9w0BAQsFADBNMRAwDgYDVQQDDAdnb29kLWNhMRkwFwYDVQQKDBBOb3dpbmEgU29sdXRpb25zMREwDwYDVQQLDAhQS0ktVEVTVDELMAkGA1UEBhMCTFUwHhcNMjQwNDA2MTQxNzM4WhcNMjYwMjA2MTQxNzM4WjBPMRIwEAYDVQQDDAlnb29kLXVzZXIxGTAXBgNVBAoMEE5vd2luYSBTb2x1dGlvbnMxETAPBgNVBAsMCFBLSS1URVNUMQswCQYDVQQGEwJMVTCCAaIwDQYJKoZIhvcNAQEBBQADggGPADCCAYoCggGBALVp7SEWHPn4xXtY8NDkW5Qgt2IzAvfOshkjx03JN2DZOoVVJz7z6lkxxxic9TQaumuvSRQrDiLBr0+9WnLMRVMSD28UdXw2Sn9JXcsYluPpPIxF7foL44K6fYSYD0qqFDt0Lkj4THkwo6uKgCxFiSSYMTrJQLsqPs9qoIP/VeoMfDhD1n9/vz3SqoxIMl30+RYxJUogAIENO8p0JvgeK0d98npLR7L+s0ww7lVaV/UdoSWhmVFb0icqtvhXGxaPIi+xlZtRyv/X6CBEYOkFpGuqVJqaRq8yh0ITNK4/1wNDxfEGDnUalapZ1VRdzk8ThjWFnOlLls0uChafpCw+uQFNAyWVh1yMUbBgtj1c8zm7tKQy2nz03dNNbV5dZ8e1ilU4Wysxo+GtFIh966p0XvuWY7fDcX78NcMn9qRAiFmHHV7ja+eCl6zNBihflO7SA0WZLeT0iFleeAbAERLf0dhbtQVIhYGLTBoFAVNrV8HIDggRapvQ6SWIOtzPFChoowIDAQABo4G8MIG5MA4GA1UdDwEB/wQEAwIGQDCBhwYIKwYBBQUHAQEEezB5MDkGCCsGAQUFBzABhi1odHRwOi8vZHNzLm5vd2luYS5sdS9wa2ktZmFjdG9yeS9vY3NwL2dvb2QtY2EwPAYIKwYBBQUHMAKGMGh0dHA6Ly9kc3Mubm93aW5hLmx1L3BraS1mYWN0b3J5L2NydC9nb29kLWNhLmNydDAdBgNVHQ4EFgQUSrHjGJiWtGstjr/Qd1thWHkFxh0wDQYJKoZIhvcNAQELBQADggGBAAlB7Y/WkNITpEY0hw34PFhQIutRoTn0BkH2lJzjuHXodpdrZ4o3YC2VHqc/qdPKBlnP+SNPZ3bRnGalfpyd/1+koVRuwiXzH1lCvoaomA4Gjrxfm9ud5NlS9e0PTlunqBvgtHIKNauzWbimEFzGoUpPRVBYjaIVl0cTrNqZBjWgbqnEOD3ucNjxtyqSTMbhpjLEIbn/xH4lLm2iz9Uj8hUIQ0XQFSAFjt2khvAH5PJDK2L17rL5DAPjj9UXKi4oE3SzS7sh3mS3BjmN3WtyvM0cgkpmbbCFcUuFYaITc6OOOpZ99eYck8PrZV6eoMImapuroNEeGxrm3Ff2StXnW0RjhtAgZmrlJQqpA6bF7lNl59Wd6fJ2aS8pKMewBgIiAneb6zdc0VIXW4VcX5bxidrPa6/6Hke+GkzD005jdMojF8IiZ2hjF/bvnNXHKRei56hv5yf0sNQitG7BzBxu7NMiQ+GC3UIEovQl6VIkAGV0Tk8IpTx1YbCtPEvETd1gXQ==</ds:X509Certificate><ds:X509Certificate>MIIE6jCCA1KgAwIBAgIBBDANBgkqhkiG9w0BAQ0FADBNMRAwDgYDVQQDDAdyb290LWNhMRkwFwYDVQQKDBBOb3dpbmEgU29sdXRpb25zMREwDwYDVQQLDAhQS0ktVEVTVDELMAkGA1UEBhMCTFUwHhcNMjQwNDA2MTQxNzM4WhcNMjYwMjA2MTQxNzM4WjBNMRAwDgYDVQQDDAdnb29kLWNhMRkwFwYDVQQKDBBOb3dpbmEgU29sdXRpb25zMREwDwYDVQQLDAhQS0ktVEVTVDELMAkGA1UEBhMCTFUwggGiMA0GCSqGSIb3DQEBAQUAA4IBjwAwggGKAoIBgQCNNRCz5WXwjRG1qkV1h6dRcbXogjUh47WyH54vmc52swm94XsZgkL9rFztmdxOPIJowZSmJNe0CaD5qIx//fsopy1lVP9xZlRnKZDEATnrSwbe8kdmAiLdaCITbrnMbDwp0oeLCo+Yv87CsTYAuY9UUtXV1cqiPxv5FIDs/doCFmenL6o4V30QH+Aq7ZV+aN1Gi0Vj1iS3+7Naj4gXeqTqkyN7j5EMtJ4oEXeX3ITI9bqWRL50SDqG2AR9j3HjrBSJIPvwhk/vB7FEcRMcwm+qFDJjYBdSBZrCug2bp/4sBS6ETTRNsWcVUDbfVgMLGG98Uh99SzenYTt4bQzcHODLs/TCqlou65Gmc4a9G97ofEeXFz5whvtVkMzqTDst4RWD+2o9qLTN9Mla+/BIotBZ6P0HXQBbGctjMjFzuDdqneK9q/Co2zz9xt27uPmMoZWy+gfbRgKvIDIPfNaJraL6X/xjOT7CTWXKCb8Sy8nZ2pnJ8JM0h5KzbwTo8ZIhhK8CAwEAAaOB1DCB0TAOBgNVHQ8BAf8EBAMCAQYwQQYDVR0fBDowODA2oDSgMoYwaHR0cDovL2Rzcy5ub3dpbmEubHUvcGtpLWZhY3RvcnkvY3JsL3Jvb3QtY2EuY3JsMEwGCCsGAQUFBwEBBEAwPjA8BggrBgEFBQcwAoYwaHR0cDovL2Rzcy5ub3dpbmEubHUvcGtpLWZhY3RvcnkvY3J0L3Jvb3QtY2EuY3J0MB0GA1UdDgQWBBR0ytYg1E1qgagLC2FWqWOrPV16LTAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBDQUAA4IBgQBeSueqpZkubqorpfACH5uEDsEnRzRWVtFZ46sGC4RRP2oEfnTTfVUDMD9+lOxCu4ph/Q+CznnygVvH2XSVSO6DQO2qqwDIqK5MJzoaEiFpToO+qP6dZQIQravUXPLzRWVDTSKSB+7gSLkPvGkFDoTB2UdlnV5BjRctZy5zQ9BUQxySTGnJkSCnAt8E2RSIsFRl9Jcu2phDOiVLgcNU7LA0wkQ0H68j9/mK/8iHAVxO9q6PMq09iqAhpjorIucTVoTy/TGj4JimbchuhRhzugD20tcYns8pBALFtjI2Ll5feEoRrUNzbJ1nTis4c/BtpEaXWgLsvi9Iqm9t8VJd9WL7xCsYlBDwPlGp0iSKVvtcEHlf+RbTuWOQTD7qVu5zEXRXES45+KotvVlWqeiOLIGA0ePb7mo5ck4T0lCs3HYzC+MTt/YO9syx9ZcffJG8hHXy//8qrPXOY4NAxM+qHPJToJvhT3gzQJI9gj1acJ2R84g3QvNOpnqX0EIp2M0fmHU=</ds:X509Certificate></ds:X509Data></ds:KeyInfo><ds:Object><xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" Target="#id-26a8bf9c055709f972a6009727f66a8b"><xades:SignedProperties Id="xades-id-26a8bf9c055709f972a6009727f66a8b"><xades:SignedSignatureProperties><xades:SigningTime>2025-11-05T12:54:57Z</xades:SigningTime><xades:SigningCertificateV2><xades:Cert><xades:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512"/><ds:DigestValue>nJszXgPLocqJnGaPdZC2ma1nAxqSF0GVfaMcWk1s8y54M9owqijHl5LQ2BYoH7iOcGwkFL7yxu1hE+DRki6uFA==</ds:DigestValue></xades:CertDigest><xades:IssuerSerialV2>MFYwUaRPME0xEDAOBgNVBAMMB2dvb2QtY2ExGTAXBgNVBAoMEE5vd2luYSBTb2x1dGlvbnMxETAPBgNVBAsMCFBLSS1URVNUMQswCQYDVQQGEwJMVQIBCg==</xades:IssuerSerialV2></xades:Cert></xades:SigningCertificateV2></xades:SignedSignatureProperties><xades:SignedDataObjectProperties><xades:DataObjectFormat ObjectReference="#r-id-26a8bf9c055709f972a6009727f66a8b-1"><xades:MimeType>text/xml</xades:MimeType></xades:DataObjectFormat></xades:SignedDataObjectProperties></xades:SignedProperties></xades:QualifyingProperties></ds:Object></ds:Signature></ListOfTrustedEntities>

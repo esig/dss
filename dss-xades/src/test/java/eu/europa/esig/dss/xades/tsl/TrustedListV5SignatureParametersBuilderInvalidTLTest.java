@@ -49,7 +49,7 @@ class TrustedListV5SignatureParametersBuilderInvalidTLTest extends AbstractXAdES
 
     @BeforeEach
     void init() {
-        documentToSign = new FileDocument(new File("src/test/resources/fi-v5-invalid-no-sig.xml"));
+        documentToSign = new FileDocument(new File("src/test/resources/tl/fi-v5-invalid-no-sig.xml"));
         service = new XAdESService(getOfflineCertificateVerifier());
     }
 

@@ -67,7 +67,16 @@ public class JWSCompactSerializationParser {
 	 * @param binaries {@link DSSDocument} to parse
 	 */
 	public JWSCompactSerializationParser(byte[] binaries) {
-		this.document = new InMemoryDocument(binaries);
+		this(new InMemoryDocument(binaries));
+	}
+
+	/**
+	 * The constructor to parse a JSON string
+	 *
+	 * @param jsonString {@link String} to parse
+	 */
+	public JWSCompactSerializationParser(String jsonString) {
+		this(jsonString.getBytes());
 	}
 
 	/**

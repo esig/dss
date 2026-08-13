@@ -57,7 +57,7 @@ public class JWSSerializationDocumentValidator extends AbstractJWSDocumentValida
      * Empty constructor
      */
     public JWSSerializationDocumentValidator() {
-        super(new JWSSerializationAnalyzerValidator());
+        super(new JWSSerializationAnalyzer());
     }
 
     /**
@@ -66,12 +66,12 @@ public class JWSSerializationDocumentValidator extends AbstractJWSDocumentValida
      * @param document {@link DSSDocument} to validate
      */
     public JWSSerializationDocumentValidator(DSSDocument document) {
-        super(new JWSSerializationAnalyzerValidator(document));
+        super(new JWSSerializationAnalyzer(document));
     }
 
     @Override
-    public JWSSerializationAnalyzerValidator getDocumentAnalyzer() {
-        return (JWSSerializationAnalyzerValidator) super.getDocumentAnalyzer();
+    public JWSSerializationAnalyzer getDocumentAnalyzer() {
+        return (JWSSerializationAnalyzer) super.getDocumentAnalyzer();
     }
 
 }

@@ -55,14 +55,14 @@ import java.util.List;
  * }
  */
 //@formatter:off
-public class JWSSerializationAnalyzerValidator extends AbstractJWSDocumentAnalyzer {
+public class JWSSerializationAnalyzer extends AbstractJWSDocumentAnalyzer {
 
-	private static final Logger LOG = LoggerFactory.getLogger(JWSSerializationAnalyzerValidator.class);
+	private static final Logger LOG = LoggerFactory.getLogger(JWSSerializationAnalyzer.class);
 
 	/**
 	 * Empty constructor
 	 */
-	public JWSSerializationAnalyzerValidator() {
+	public JWSSerializationAnalyzer() {
 		// empty
 	}
 
@@ -71,7 +71,7 @@ public class JWSSerializationAnalyzerValidator extends AbstractJWSDocumentAnalyz
 	 *
 	 * @param document {@link DSSDocument} to validate
 	 */
-	public JWSSerializationAnalyzerValidator(DSSDocument document) {
+	public JWSSerializationAnalyzer(DSSDocument document) {
 		super(document);
 	}
 

@@ -65,10 +65,10 @@ public class XAdESStructureValidatorFactory {
      */
     protected void assertXAdESStructureValidatorLoaded() {
         try {
-            Class.forName("eu.europa.esig.dss.xades.validation.XAdESStructureValidator");
+            Class.forName("eu.europa.esig.xades.XAdES319132Utils");
         } catch (ClassNotFoundException | NoClassDefFoundError e) {
             throw new ExceptionInInitializerError(
-                    "No implementation found for XSD Utils in classpath, please include 'dss-validation' module for structure validation.");
+                    "No implementation found for XSD Utils in classpath, please include 'specs-xades' module for structure validation.");
         }
     }
 

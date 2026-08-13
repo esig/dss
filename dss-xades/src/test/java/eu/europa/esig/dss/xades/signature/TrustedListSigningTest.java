@@ -69,7 +69,7 @@ class TrustedListSigningTest extends AbstractXAdESTestSignature {
 
 	@BeforeEach
 	void init() throws Exception {
-		documentToSign = new FileDocument(new File("src/test/resources/eu-lotl-no-sig.xml"));
+		documentToSign = new FileDocument(new File("src/test/resources/tl/eu-lotl-no-sig.xml"));
 		service = new XAdESService(getOfflineCertificateVerifier());
 
 		signatureParameters = new XAdESSignatureParameters();

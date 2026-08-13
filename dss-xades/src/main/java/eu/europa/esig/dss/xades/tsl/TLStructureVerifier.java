@@ -30,8 +30,6 @@ import eu.europa.esig.dss.xml.common.definition.DSSElement;
 import eu.europa.esig.dss.xml.common.definition.xmldsig.XMLDSigElement;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.xml.utils.xpath.XPathUtils;
-import eu.europa.esig.trustedlist.TrustedListUtils;
-import eu.europa.esig.trustedlist211.TrustedList211Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -54,6 +52,7 @@ public class TLStructureVerifier {
 
     private static final Logger LOG = LoggerFactory.getLogger(TLStructureVerifier.class);
 
+    /** Root level of an XML Trusted List */
     private static final String TRUSTED_LIST_PARENT_ELEMENT = "TrustServiceStatusList";
 
     /** List of acceptable TL versions */
@@ -109,7 +108,13 @@ public class TLStructureVerifier {
      */
     public List<String> validate(final DSSDocument dssDocument, final Integer tlVersion) {
         Objects.requireNonNull(dssDocument, "Document to be validated cannot be null!");
-        return validate(DomUtils.buildDOM(dssDocument), tlVersion);
+        Document document;
+        try {
+            document = DomUtils.buildDOM(dssDocument);
+        } catch (Exception e) {
+            return Collections.singletonList("The document is not a valid XML document!");
+        }
+        return validate(document, tlVersion);
     }
 
     /**
@@ -152,8 +157,10 @@ public class TLStructureVerifier {
      * @return a list of {@link String}s
      */
     protected List<String> validateTrustedListV5(Document document) {
+        assertTrustedListV5UtilsLoaded();
+
         final List<String> errors = new ArrayList<>();
-        List<String> xsdValidationErrors = validateAgainstXSD(document, TrustedList211Utils.getInstance());
+        List<String> xsdValidationErrors = validateAgainstXSD(document, TrustedListV5UtilsProvider.getUtils());
         if (Utils.isCollectionNotEmpty(xsdValidationErrors)) {
             errors.addAll(xsdValidationErrors);
         }
@@ -163,14 +170,29 @@ public class TLStructureVerifier {
     }
 
     /**
+     * Verifies whether the {@code TrustedList211Utils} is available and 'specs-trusted-list-v211' module is successfully loaded
+     */
+    protected void assertTrustedListV5UtilsLoaded() {
+        try {
+            Class.forName("eu.europa.esig.trustedlist211.TrustedList211Utils");
+        } catch (ClassNotFoundException | NoClassDefFoundError e) {
+            throw new ExceptionInInitializerError(
+                    "No implementation found for TLv5 XSD Utils in classpath, " +
+                            "please include 'specs-trusted-list-v211' module for structure validation.");
+        }
+    }
+
+    /**
      * This method validates the Trusted List XML document against the TL V6 definition
      *
      * @param document {@link Document} containing a Trusted List to be validated
      * @return a list of {@link String}s
      */
     protected List<String> validateTrustedListV6(Document document) {
+        assertTrustedListV6UtilsLoaded();
+
         final List<String> errors = new ArrayList<>();
-        List<String> xsdValidationErrors = validateAgainstXSD(document, TrustedListUtils.getInstance());
+        List<String> xsdValidationErrors = validateAgainstXSD(document, TrustedListV6UtilsProvider.getUtils());
         if (Utils.isCollectionNotEmpty(xsdValidationErrors)) {
             errors.addAll(xsdValidationErrors);
         }
@@ -183,6 +205,19 @@ public class TLStructureVerifier {
             errors.addAll(v2ConformityErrors);
         }
         return errors;
+    }
+
+    /**
+     * Verifies whether the TrustedListUtils is available and 'specs-trusted-list' module is successfully loaded
+     */
+    protected void assertTrustedListV6UtilsLoaded() {
+        try {
+            Class.forName("eu.europa.esig.trustedlist.TrustedListUtils");
+        } catch (ClassNotFoundException | NoClassDefFoundError e) {
+            throw new ExceptionInInitializerError(
+                    "No implementation found for TLv6 XSD Utils in classpath, " +
+                            "please include 'specs-trusted-list' module for structure validation.");
+        }
     }
 
     private List<String> validateAgainstXSD(Document document, XSDAbstractUtils xsdUtils) {

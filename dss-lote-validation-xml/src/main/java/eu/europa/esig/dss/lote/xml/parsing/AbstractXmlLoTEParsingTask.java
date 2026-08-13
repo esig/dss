@@ -26,17 +26,14 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.job.parsing.ParsingTask;
-import eu.europa.esig.dss.xml.utils.DomUtils;
+import eu.europa.esig.dss.xades.lote.XmlLoTEStructureVerifier;
 import eu.europa.esig.lote.jaxb.ListOfTrustedEntitiesType;
 import eu.europa.esig.lote.jaxb.LoTEListAndSchemeInformationType;
 import eu.europa.esig.lote.jaxb.NextUpdateType;
 import eu.europa.esig.lote.jaxb.NonEmptyURIListType;
 import eu.europa.esig.lote.xml.LOTEFacade;
-import eu.europa.esig.lote.xml.LOTEUtils;
-import org.w3c.dom.Document;
 
 import javax.xml.datatype.XMLGregorianCalendar;
-import javax.xml.transform.dom.DOMSource;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.Collections;
@@ -171,8 +168,7 @@ public abstract class AbstractXmlLoTEParsingTask implements ParsingTask {
      * @param result {@link AbstractLoTEParsingResult}
      */
     protected void verifyStructure(AbstractLoTEParsingResult result) {
-        Document domDocument = DomUtils.buildDOM(document);
-        List<String> structureValidationMessagesResult = LOTEUtils.getInstance().validateAgainstXSD(new DOMSource(domDocument));
+        List<String> structureValidationMessagesResult = new XmlLoTEStructureVerifier().validate(document);
         if (Utils.isCollectionNotEmpty(structureValidationMessagesResult)) {
             result.setStructureValidationMessages(structureValidationMessagesResult);
         }

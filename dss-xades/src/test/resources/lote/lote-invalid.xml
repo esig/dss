@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListOfTrustedEntities xmlns="http://uri.etsi.org/019602/v1#" LOTETag="http://uri.etsi.org/019602/tag#"
+                       xmlns:tie="http://uri.etsi.org/019602/v1/TrustedEntityExtensions">
+    <TrustedEntitiesList>
+        <TrustedEntity>
+            <TrustedEntityInformation>
+                <TEName>
+                    <Name xml:lang="fr">Prestataire Confiance SA</Name>
+                    <Name xml:lang="en">Trust Provider Inc.</Name>
+                </TEName>
+                <TEAddress>
+                    <PostalAddresses>
+                        <PostalAddress xml:lang="fr">
+                            <StreetAddress>1 Rue de la Confiance</StreetAddress>
+                            <Locality>Paris</Locality>
+                            <PostalCode>75001</PostalCode>
+                            <CountryName>FR</CountryName>
+                        </PostalAddress>
+                    </PostalAddresses>
+                    <ElectronicAddress>
+                        <URI xml:lang="en">https://example.org</URI>
+                        <URI xml:lang="en">mailto:contact@example.org</URI>
+                    </ElectronicAddress>
+                </TEAddress>
+                <TEInformationURI>
+                    <URI xml:lang="en">https://example.org/info</URI>
+                </TEInformationURI>
+                <TEInformationExtensions>
+                    <Extension Critical="false">
+                        <tie:OtherAssociatedBodies>
+                            <tie:AssociatedBody>
+                                <tie:AssociatedBodyName>
+                                    <Name xml:lang="fr">Ministère de la Transition Numérique</Name>
+                                    <Name xml:lang="en">Ministry of Digital Transformation</Name>
+                                </tie:AssociatedBodyName>
+                                <tie:AssociatedBodyTradeName>
+                                    <Name xml:lang="fr">MinTN</Name>
+                                    <Name xml:lang="en">MinDT</Name>
+                                </tie:AssociatedBodyTradeName>
+                                <tie:AssociatedBodyAddress>
+                                    <PostalAddresses>
+                                        <PostalAddress xml:lang="fr">
+                                            <StreetAddress>10 avenue de la République</StreetAddress>
+                                            <Locality>Paris</Locality>
+                                            <StateOrProvince>Île-de-France</StateOrProvince>
+                                            <PostalCode>75011</PostalCode>
+                                            <CountryName>FR</CountryName>
+                                        </PostalAddress>
+                                    </PostalAddresses>
+                                    <ElectronicAddress>
+                                        <URI xml:lang="fr">mailto:contact@mintn.gouv.fr</URI>
+                                        <URI xml:lang="en">mailto:info@mindt.gov.fr</URI>
+                                    </ElectronicAddress>
+                                </tie:AssociatedBodyAddress>
+                                <tie:AssociatedBodyInformationURI>
+                                    <URI xml:lang="fr">https://www.mintn.gouv.fr/informations</URI>
+                                    <URI xml:lang="en">https://www.mindt.gov.fr/info</URI>
+                                </tie:AssociatedBodyInformationURI>
+                                <tie:AssociatedBodyInformationExtensions>
+                                    <Extension Critical="false">
+                                        <ne:DomainExt xmlns:ne="http://uri.etsi.org/some/extension">
+                                            E-Government Services
+                                        </ne:DomainExt>
+                                    </Extension>
+                                </tie:AssociatedBodyInformationExtensions>
+                            </tie:AssociatedBody>
+                        </tie:OtherAssociatedBodies>
+                    </Extension>
+                </TEInformationExtensions>
+            </TrustedEntityInformation>
+            <TrustedEntityServices>
+                <TrustedEntityService>
+                    <ServiceInformation>
+                        <ServiceName>
+                            <Name xml:lang="fr">Horodatage</Name>
+                            <Name xml:lang="en">Timestamping</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+                                <X509Certificate>c2FtcGxlY2VydGlmaWNhdGU= </X509Certificate>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <StatusStartingTime>2019-06-01T00:00:00Z</StatusStartingTime>
+                    </ServiceInformation>
+                </TrustedEntityService>
+            </TrustedEntityServices>
+        </TrustedEntity>
+    </TrustedEntitiesList>
+</ListOfTrustedEntities>

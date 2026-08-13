@@ -57,7 +57,7 @@ class TrustedListV5SignatureParametersBuilderTest extends AbstractXAdESTestSigna
 
 	@BeforeEach
 	void init() {
-		documentToSign = new FileDocument(new File("src/test/resources/eu-lotl-no-sig.xml"));
+		documentToSign = new FileDocument(new File("src/test/resources/tl/eu-lotl-no-sig.xml"));
 		service = new XAdESService(getOfflineCertificateVerifier());
 	}
 

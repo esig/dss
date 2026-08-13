@@ -28,6 +28,7 @@ import eu.europa.esig.dss.cbades.cbor.CBORArray;
 import eu.europa.esig.dss.cbades.cbor.CBORByteString;
 import eu.europa.esig.dss.cbades.cbor.CBORMap;
 import eu.europa.esig.dss.cbades.cbor.CBORObject;
+import eu.europa.esig.dss.cbades.cbor.CBORUtils;
 import eu.europa.esig.dss.enumerations.COSESignatureType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -71,8 +72,7 @@ public class COSEParser extends AbstractCOSEParser {
         if (!isSupported(document)) {
             throw new IllegalInputException("Document is not of a COSE signature type!");
         }
-        final CBORObject cborObject = parseCbor(document);
-        return new COSEParser(cborObject);
+        return fromCBORObject(parseCbor(document));
     }
 
     /**
@@ -84,6 +84,17 @@ public class COSEParser extends AbstractCOSEParser {
     public static COSEParser fromCBORObject(CBORObject cborObject) {
         Objects.requireNonNull(cborObject, "CBORObject cannot be null!");
         return new COSEParser(cborObject);
+    }
+
+    /**
+     * Instantiates a COSEParser from a byte array
+     *
+     * @param cborBinaries bytes to parse
+     * @return {@link COSEParser}
+     */
+    public static COSEParser fromBinaries(byte[] cborBinaries) {
+        Objects.requireNonNull(cborBinaries, "CBOR Binaries cannot be null!");
+        return fromCBORObject(CBORUtils.parseCbor(cborBinaries));
     }
 
     /**

@@ -147,3 +147,38 @@ An `eIDAS` XML node linked to the status of the <<TrustedLists>> and List of Tru
 * *LoTEWellSigned*: If the signature of the LoTE is not valid, the LoTE should be discarded. A non-valid LoTE signature might indicate that the content of that LoTE is "fake" and should not be trusted.
 * *LoTEVersion*: If the version of the LoTE does not correspond to the version indicated in the validation policy, the validation process fails.
 * *LoTEStructure*: If the structure of the LoTE does not correspond to the definition and XSD of the LoTE of the corresponding version, the validation of the check fails.
+
+[[LoTESigning]]
+=== Signing a List of Trusted Entities
+
+The standard ETSI TS 119 602 (cf. <<R33>>) specifies signature format for XML and JSON Lists of Trusted Entities for various list profiles.
+
+To simplify the configuration for creation of conformant List of Trusted Entities signatures, DSS provides two classes:
+
+* `JsonListOfTrustedEntitiesSignatureParametersBuilder` - builds signature parameters for signing of a JSON List of Trusted Entities. This class creates a compact `JAdES-BASELINE-B` signature as specified in ETSI TS 119 182-1 <<R05>>.
+* `XmlListOfTrustedEntitiesSignatureParametersBuilder` - builds signature parameters for signing of an XML List of Trusted Entities. This class creates an enveloped `XAdES-BASELINE-B` signature as specified in ETSI EN 319 132-1 (cf. <<R01>>), ensuring the use of required transforms and the canonicalization method.
+
+Example below demonstrates a signature creation with the `JsonListOfTrustedEntitiesSignatureParametersBuilder` class for a JSON List of Trusted Entities:
+
+[source,java,indent=0]
+.Sign a JSON List of Trusted Entities
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignJsonLoTETest.java[tags=demo]
+----
+
+NOTE: Unless `#assertConfigurationIsValid` method is called, the builders allow signature of other document formats which implement ETSI TS 119 602.
+
+[[VicalSigning]]
+=== Signing a VICAL
+
+Verified issuer certificate authority list (VICAL) provides a list of entities which may compile, operate and provide such a trust anchor in the form of a service to mDL participants. The VICAL format is defined in ISO/IEC 18013-5, Annex C "Verified issuer certificate authority list (VICAL) provider" <<R38>>.
+
+To sign a VICAL according to the specification requirements, the following class can be used:
+
+* `CborVICALSignatureParametersBuilder` - builds signature parameters for signing of an ISO/IEC 18013-5 VICAL. This class creates a COSE_Sign1 `CB-AdES-BASELINE-B` signature as specified in ETSI TS 119 152-1 <<R41>>.
+
+[source,java,indent=0]
+.Sign an ISO/IEC 18013-5 VICAL
+----
+include::{sourcetestdir}/eu/europa/esig/dss/cookbook/example/sign/SignVICALTest.java[tags=demo]
+----

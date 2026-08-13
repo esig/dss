@@ -44,7 +44,7 @@ public class JWSDocumentAnalyzerFactory implements DocumentAnalyzerFactory {
 			return true;
 		}
 
-		JWSSerializationAnalyzerValidator serializationValidator = new JWSSerializationAnalyzerValidator();
+		JWSSerializationAnalyzer serializationValidator = new JWSSerializationAnalyzer();
 		if (serializationValidator.isSupported(document)) {
 			return true;
 		}
@@ -60,9 +60,9 @@ public class JWSDocumentAnalyzerFactory implements DocumentAnalyzerFactory {
 			return new JWSCompactDocumentAnalyzer(document);
 		}
 
-		JWSSerializationAnalyzerValidator serializationValidator = new JWSSerializationAnalyzerValidator();
+		JWSSerializationAnalyzer serializationValidator = new JWSSerializationAnalyzer();
 		if (serializationValidator.isSupported(document)) {
-			return new JWSSerializationAnalyzerValidator(document);
+			return new JWSSerializationAnalyzer(document);
 		}
 
 		throw new IllegalInputException("Not a valid JWS file.");

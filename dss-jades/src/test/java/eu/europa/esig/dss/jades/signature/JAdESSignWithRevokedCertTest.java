@@ -26,7 +26,7 @@ import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
 import eu.europa.esig.dss.jades.JAdESSignatureParameters;
 import eu.europa.esig.dss.jades.JAdESTimestampParameters;
-import eu.europa.esig.dss.jades.validation.JWSSerializationAnalyzerValidator;
+import eu.europa.esig.dss.jades.validation.JWSSerializationAnalyzer;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
@@ -80,7 +80,7 @@ class JAdESSignWithRevokedCertTest extends AbstractJAdESTestSignature {
         DSSDocument doubleSigned = sign();
         assertNotNull(doubleSigned);
 
-        DocumentAnalyzer analyzer = new JWSSerializationAnalyzerValidator(doubleSigned);
+        DocumentAnalyzer analyzer = new JWSSerializationAnalyzer(doubleSigned);
         assertEquals(2, analyzer.getSignatures().size());
     }
 
@@ -97,7 +97,7 @@ class JAdESSignWithRevokedCertTest extends AbstractJAdESTestSignature {
         DSSDocument doubleSigned = sign();
         assertNotNull(doubleSigned);
 
-        DocumentAnalyzer analyzer = new JWSSerializationAnalyzerValidator(doubleSigned);
+        DocumentAnalyzer analyzer = new JWSSerializationAnalyzer(doubleSigned);
         assertEquals(2, analyzer.getSignatures().size());
     }
 
@@ -113,7 +113,7 @@ class JAdESSignWithRevokedCertTest extends AbstractJAdESTestSignature {
         DSSDocument doubleSigned = sign();
         assertNotNull(doubleSigned);
 
-        DocumentAnalyzer analyzer = new JWSSerializationAnalyzerValidator(doubleSigned);
+        DocumentAnalyzer analyzer = new JWSSerializationAnalyzer(doubleSigned);
         assertEquals(2, analyzer.getSignatures().size());
     }
 

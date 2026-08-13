@@ -1,24 +1,4 @@
-/**
- * DSS - Digital Signature Services
- * Copyright (C) 2015 European Commission, provided under the CEF programme
- * <p>
- * This file is part of the "DSS - Digital Signature Services" project.
- * <p>
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- * <p>
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- * <p>
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- */
-package eu.europa.esig.dss.xades.tsl;
+package eu.europa.esig.dss.xades.lote;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -41,16 +21,13 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * This class contains common methods for signature parameters creation for an XML Trusted List signature
+ * Helper class to build signature parameters for signing a TS 119 602 XML List of Trusted Entities.
+ * To create a pre-configured parameters, please call the {@link #build()} method.
+ * Please note that the {@link #build()} method does not verify the validity of the submitted file's structure.
+ * To verify conformance of a LoTE to the specification, please call {@link #assertConfigurationIsValid()} method.
  *
  */
-public abstract class AbstractTrustedListSignatureParametersBuilder extends AbstractSignatureParametersBuilder<XAdESSignatureParameters> {
-
-    /**
-     * The EXCLUSIVE canonicalization shall be used
-     * See TS 119 612 "B.1 The Signature element"
-     */
-    private static final String DEFAULT_CANONICALIZATION = CanonicalizationMethod.EXCLUSIVE;
+public class XmlListOfTrustedEntitiesSignatureParametersBuilder extends AbstractSignatureParametersBuilder<XAdESSignatureParameters> {
 
     /**
      * The default prefix for an enveloped signature reference id
@@ -58,9 +35,9 @@ public abstract class AbstractTrustedListSignatureParametersBuilder extends Abst
     private static final String DEFAULT_REFERENCE_PREFIX = "ref-enveloped-signature";
 
     /**
-     * The XML Trusted List document
+     * The XML List of Trusted Entities document
      */
-    private final DSSDocument tlXmlDocument;
+    private final DSSDocument loteXmlDocument;
 
     /**
      * The Enveloped reference Id to use
@@ -73,15 +50,14 @@ public abstract class AbstractTrustedListSignatureParametersBuilder extends Abst
     private DigestAlgorithm referenceDigestAlgorithm = DigestAlgorithm.SHA512;
 
     /**
-     * The constructor to build Signature Parameters for a Trusted List signing with respect to ETSI TS 119 612
+     * Default constructor
      *
-     * @param signingCertificate {@link CertificateToken} to be used for a signature creation
-     * @param tlXmlDocument {@link DSSDocument} Trusted List XML document to be signed
+     * @param signingCertificate {@link CertificateToken} representing a certificate associated with the signing key
+     * @param loteXmlDocument {@link DSSDocument} representing a document to be signed
      */
-    protected AbstractTrustedListSignatureParametersBuilder(CertificateToken signingCertificate, DSSDocument tlXmlDocument) {
+    public XmlListOfTrustedEntitiesSignatureParametersBuilder(CertificateToken signingCertificate, DSSDocument loteXmlDocument) {
         super(signingCertificate);
-        Objects.requireNonNull(tlXmlDocument, "XML Trusted List document cannot be null!");
-        this.tlXmlDocument = tlXmlDocument;
+        this.loteXmlDocument = loteXmlDocument;
     }
 
     /**
@@ -92,7 +68,7 @@ public abstract class AbstractTrustedListSignatureParametersBuilder extends Abst
      * @param referenceId {@link String} reference Id
      * @return this builder
      */
-    public AbstractTrustedListSignatureParametersBuilder setReferenceId(String referenceId) {
+    public XmlListOfTrustedEntitiesSignatureParametersBuilder setReferenceId(String referenceId) {
         this.referenceId = referenceId;
         return this;
     }
@@ -103,7 +79,7 @@ public abstract class AbstractTrustedListSignatureParametersBuilder extends Abst
      * @param digestAlgorithm {@link DigestAlgorithm} to be used
      * @return this builder
      */
-    public AbstractTrustedListSignatureParametersBuilder setReferenceDigestAlgorithm(DigestAlgorithm digestAlgorithm) {
+    public XmlListOfTrustedEntitiesSignatureParametersBuilder setReferenceDigestAlgorithm(DigestAlgorithm digestAlgorithm) {
         this.referenceDigestAlgorithm = digestAlgorithm;
         return this;
     }
@@ -115,24 +91,20 @@ public abstract class AbstractTrustedListSignatureParametersBuilder extends Abst
 
     @Override
     public XAdESSignatureParameters build() {
+        assertDocumentProvided();
+
         final XAdESSignatureParameters signatureParameters = super.build();
 
         signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
         signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
-        signatureParameters.setEn319132(isEn319132());
+        signatureParameters.setEn319132(true);
+        signatureParameters.setSignedInfoCanonicalizationMethod(CanonicalizationMethod.EXCLUSIVE);
 
         final List<DSSReference> references = getReferences();
         signatureParameters.setReferences(references);
 
         return signatureParameters;
     }
-
-    /**
-     * Gets whether the created XAdES signature shall be conformant to ETSI EN 319 132 standard
-     *
-     * @return TRUE if the created signature shall be conformant to ETSI EN 319 132 standard (new XAdES), FALSE otherwise
-     */
-    protected abstract boolean isEn319132();
 
     /**
      * Returns a list of ds:References to be incorporated within the signature
@@ -159,7 +131,7 @@ public abstract class AbstractTrustedListSignatureParametersBuilder extends Abst
             dssReference.setId(DEFAULT_REFERENCE_PREFIX);
         }
         dssReference.setUri("");
-        dssReference.setContents(tlXmlDocument);
+        dssReference.setContents(loteXmlDocument);
         dssReference.setDigestMethodAlgorithm(referenceDigestAlgorithm);
 
         final List<DSSTransform> transforms = new ArrayList<>();
@@ -167,7 +139,7 @@ public abstract class AbstractTrustedListSignatureParametersBuilder extends Abst
         EnvelopedSignatureTransform signatureTransform = new EnvelopedSignatureTransform();
         transforms.add(signatureTransform);
 
-        CanonicalizationTransform dssTransform = new CanonicalizationTransform(DEFAULT_CANONICALIZATION);
+        CanonicalizationTransform dssTransform = new CanonicalizationTransform(CanonicalizationMethod.EXCLUSIVE);
         transforms.add(dssTransform);
 
         dssReference.setTransforms(transforms);
@@ -176,32 +148,36 @@ public abstract class AbstractTrustedListSignatureParametersBuilder extends Abst
 
     /**
      * This method helps to determine whether the chosen signature parameters builders is applicable to the given document.
-     * Thus, it verifies whether the provided document representing the XML Trusted List is conformant to the definition 
+     * Thus, it verifies whether the provided document representing the XML List of Trusted Entities is conformant to the definition
      * and the target version.
-     * NOTE: this method requires 'specs-trusted-list' module.
+     * NOTE: this method requires 'specs-lote-xml module.
      *
-     * @throws IllegalInputException if the provided XML Trusted List has invalid structure
+     * @throws IllegalInputException if the provided XML List of Trusted Entities has invalid structure
      * @throws DSSException is other error occurred during the processing
      */
     public void assertConfigurationIsValid() throws IllegalInputException {
+        assertDocumentProvided();
+
         List<String> errors;
         try {
-            errors = XAdESTrustedListUtils.validateUnsignedTrustedList(tlXmlDocument, getTargetTLVersion());
+            errors = XAdESListOfTrustedEntitiesUtils.validateUnsignedLOTE(loteXmlDocument);
         } catch (Exception e) {
-            throw new DSSException(String.format("An error occurred on XML Trusted List validation : %s",
+            throw new DSSException(String.format("An error occurred on XML List of Trusted Entities validation : %s",
                     e.getMessage()), e);
         }
         if (Utils.isCollectionNotEmpty(errors)) {
             throw new IllegalInputException(String.format(
-                    "XML Trusted List failed the validation : %s", Utils.joinStrings(errors, "; ")));
+                    "XML List of Trusted Entities failed the validation : %s", Utils.joinStrings(errors, "; ")));
         }
     }
 
     /**
-     * This method returns the target XML Trusted List version to be signed
+     * Verifies whether the XML LoTE document is provided.
      *
-     * @return {@link Integer}
+     * @throws NullPointerException if the XML LoTE document is not provided or null
      */
-    protected abstract Integer getTargetTLVersion();
+    protected void assertDocumentProvided() throws NullPointerException {
+        Objects.requireNonNull(loteXmlDocument, "List of Trusted Entities document is not provided or null!");
+    }
 
 }

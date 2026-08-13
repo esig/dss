@@ -1,24 +1,4 @@
-/**
- * DSS - Digital Signature Services
- * Copyright (C) 2015 European Commission, provided under the CEF programme
- * <p>
- * This file is part of the "DSS - Digital Signature Services" project.
- * <p>
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- * <p>
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- * <p>
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- */
-package eu.europa.esig.dss.xades.tsl;
+package eu.europa.esig.dss.xades.lote;
 
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -46,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-class TrustedListV6SignatureParametersBuilderTest extends AbstractXAdESTestSignature {
+class XmlListOfTrustedEntitiesSignatureParametersBuilderTest extends AbstractXAdESTestSignature {
 
     private static final String REFERENCE_ID = "dss-tl-id-1";
     private static final DigestAlgorithm REFERENCE_DIGEST_ALGORITHM = DigestAlgorithm.SHA512;
@@ -57,20 +37,20 @@ class TrustedListV6SignatureParametersBuilderTest extends AbstractXAdESTestSigna
 
     @BeforeEach
     void init() {
-        documentToSign = new FileDocument(new File("src/test/resources/tl/eu-lotl-v6-no-sig.xml"));
+        documentToSign = new FileDocument(new File("src/test/resources/lote/lote-valid.xml"));
         service = new XAdESService(getOfflineCertificateVerifier());
     }
 
     @Override
     protected DSSDocument sign() {
-        TrustedListV6SignatureParametersBuilder signatureParametersBuilder = getSignatureParametersBuilder();
+        XmlListOfTrustedEntitiesSignatureParametersBuilder signatureParametersBuilder = getSignatureParametersBuilder();
         signatureParametersBuilder.assertConfigurationIsValid();
         signatureParameters = signatureParametersBuilder.build();
         return super.sign();
     }
 
-    protected TrustedListV6SignatureParametersBuilder getSignatureParametersBuilder() {
-        return new TrustedListV6SignatureParametersBuilder(getSigningCert(), documentToSign)
+    protected XmlListOfTrustedEntitiesSignatureParametersBuilder getSignatureParametersBuilder() {
+        return new XmlListOfTrustedEntitiesSignatureParametersBuilder(getSigningCert(), documentToSign)
                 .setReferenceId(REFERENCE_ID)
                 .setReferenceDigestAlgorithm(REFERENCE_DIGEST_ALGORITHM);
     }
@@ -101,6 +81,9 @@ class TrustedListV6SignatureParametersBuilderTest extends AbstractXAdESTestSigna
 
             String idAttr = ((Element) refList.item(0)).getAttribute("Id");
             assertEquals(REFERENCE_ID, idAttr);
+
+            String uriAttr = ((Element) refList.item(0)).getAttribute("Uri");
+            assertEquals("", uriAttr);
 
             NodeList digestMethodList = ((Element) refList.item(0)).getElementsByTagNameNS("http://www.w3.org/2000/09/xmldsig#", "DigestMethod");
             assertEquals(1, digestMethodList.getLength());
