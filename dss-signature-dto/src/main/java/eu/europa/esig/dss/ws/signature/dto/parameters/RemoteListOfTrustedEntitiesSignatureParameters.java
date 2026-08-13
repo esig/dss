@@ -1,23 +1,3 @@
-/**
- * DSS - Digital Signature Services
- * Copyright (C) 2015 European Commission, provided under the CEF programme
- * <p>
- * This file is part of the "DSS - Digital Signature Services" project.
- * <p>
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- * <p>
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- * <p>
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- */
 package eu.europa.esig.dss.ws.signature.dto.parameters;
 
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -27,14 +7,14 @@ import eu.europa.esig.dss.ws.dto.RemoteCertificate;
 import java.io.Serializable;
 
 /**
- * DTO used to define customizable parameters for a Trusted List signing
+ * DTO used to define customizable parameters for a List of Trusted Entities signing
  * <p>
- * NOTE : other basic parameters are pre-configured for a Trusted List signing
+ * NOTE : other basic parameters are pre-configured for a List of Trusted Entities signing
  *
  */
-public class RemoteTrustedListSignatureParameters implements Serializable {
+public class RemoteListOfTrustedEntitiesSignatureParameters implements Serializable {
 
-    private static final long serialVersionUID = 5459292709179313722L;
+    private static final long serialVersionUID = -1595278455740096717L;
 
     /**
      * The signing certificate
@@ -67,14 +47,9 @@ public class RemoteTrustedListSignatureParameters implements Serializable {
     private DigestAlgorithm referenceDigestAlgorithm;
 
     /**
-     * The TLVersion to be signed
-     */
-    private String tlVersion;
-
-    /**
      * Default constructor instantiating object with null values
      */
-    public RemoteTrustedListSignatureParameters() {
+    public RemoteListOfTrustedEntitiesSignatureParameters() {
         // empty
     }
 
@@ -160,8 +135,8 @@ public class RemoteTrustedListSignatureParameters implements Serializable {
     }
 
     /**
-     * Sets a custom if for an enveloped-reference creation
-     *
+     * Sets a custom if for an enveloped-reference creation (XML LoTE only).
+     * <p>
      * NOTE: if not set, a default value will be used
      *
      * @param referenceId {@link String}
@@ -171,7 +146,7 @@ public class RemoteTrustedListSignatureParameters implements Serializable {
     }
 
     /**
-     * Gets a {@code DigestAlgorithm} to be used on an enveloped-signature reference creation
+     * Gets a {@code DigestAlgorithm} to be used on an enveloped-signature reference creation (XML LoTE only).
      *
      * @return {@link DigestAlgorithm}
      */
@@ -186,26 +161,6 @@ public class RemoteTrustedListSignatureParameters implements Serializable {
      */
     public void setReferenceDigestAlgorithm(DigestAlgorithm referenceDigestAlgorithm) {
         this.referenceDigestAlgorithm = referenceDigestAlgorithm;
-    }
-
-    /**
-     * Gets the XML Trusted List Version identifier to be signed
-     *
-     * @return {@link String}
-     */
-    public String getTlVersion() {
-        return tlVersion;
-    }
-
-    /**
-     * Sets the XML Trusted List Version identifier to be signed.
-     * This ensures the created signature corresponds to the requirements of the XML Trusted List version.
-     * NOTE: The value shall be an integer.
-     *
-     * @param tlVersion {@link String} the target XML Trusted List version integer
-     */
-    public void setTlVersion(String tlVersion) {
-        this.tlVersion = tlVersion;
     }
 
 }

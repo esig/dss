@@ -21,7 +21,6 @@
 package eu.europa.esig.dss.ws.signature.common;
 
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.utils.Utils;
@@ -76,7 +75,7 @@ public class RemoteTrustedListSignatureServiceImpl extends AbstractRemoteSignatu
 
     @Override
     public ToBeSignedDTO getDataToSign(final RemoteDocument trustedList,
-                                       final RemoteTrustedListSignatureParameters parameters) throws DSSException {
+                                       final RemoteTrustedListSignatureParameters parameters) {
         Objects.requireNonNull(xadesService, "XAdESService must be defined!");
         Objects.requireNonNull(trustedList, "Trusted List must be defined!");
         Objects.requireNonNull(parameters, "Parameters must be defined!");
@@ -94,7 +93,7 @@ public class RemoteTrustedListSignatureServiceImpl extends AbstractRemoteSignatu
     @Override
     public RemoteDocument signDocument(final RemoteDocument trustedList,
                                        final RemoteTrustedListSignatureParameters parameters,
-                                       final SignatureValueDTO signatureValue) throws DSSException {
+                                       final SignatureValueDTO signatureValue) {
         Objects.requireNonNull(xadesService, "XAdESService must be defined!");
         Objects.requireNonNull(trustedList, "Trusted List must be defined!");
         Objects.requireNonNull(parameters, "Parameters must be defined!");

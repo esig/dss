@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.ws.signature.common;
 
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.ws.dto.RemoteDocument;
 import eu.europa.esig.dss.ws.dto.SignatureValueDTO;
 import eu.europa.esig.dss.ws.dto.ToBeSignedDTO;
@@ -44,11 +43,8 @@ public interface RemoteTrustedListSignatureService extends Serializable {
      *            {@link RemoteTrustedListSignatureParameters} set of the signing parameters
      *                                                         for Trusted List signature creation
      * @return the data to be signed
-     * @throws DSSException
-     *             if an error occurred
      */
-    ToBeSignedDTO getDataToSign(final RemoteDocument trustedList, final RemoteTrustedListSignatureParameters parameters)
-            throws DSSException;
+    ToBeSignedDTO getDataToSign(final RemoteDocument trustedList, final RemoteTrustedListSignatureParameters parameters);
 
     /**
      * Signs the XML Trusted List with the provided {@code signatureValue} according to a set of customizable parameters.
@@ -61,10 +57,8 @@ public interface RemoteTrustedListSignatureService extends Serializable {
      * @param signatureValue
      *            {@link SignatureValueDTO} the signature value to incorporate
      * @return the signed XML Trusted List with an enveloped signature
-     * @throws DSSException
-     *             if an error occurred
      */
     RemoteDocument signDocument(final RemoteDocument trustedList, final RemoteTrustedListSignatureParameters parameters,
-                                final SignatureValueDTO signatureValue) throws DSSException;
+                                final SignatureValueDTO signatureValue);
 
 }

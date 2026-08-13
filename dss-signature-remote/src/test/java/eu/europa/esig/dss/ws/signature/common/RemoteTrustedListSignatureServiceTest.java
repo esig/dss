@@ -131,6 +131,7 @@ class RemoteTrustedListSignatureServiceTest extends AbstractRemoteSignatureServi
             }
         }
         assertTrue(lotlRefFound);
+        assertEquals(DSSUtils.formatDateToRFC(signingTime), DSSUtils.formatDateToRFC(signature.getClaimedSigningTime()));
     }
 
     @Test
@@ -176,6 +177,7 @@ class RemoteTrustedListSignatureServiceTest extends AbstractRemoteSignatureServi
             }
         }
         assertTrue(lotlRefFound);
+        assertEquals(DSSUtils.formatDateToRFC(signingTime), DSSUtils.formatDateToRFC(signature.getClaimedSigningTime()));
     }
 
     @Test

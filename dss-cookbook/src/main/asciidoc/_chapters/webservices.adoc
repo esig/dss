@@ -195,6 +195,47 @@ Samples:
 * *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/tl-signature/2/httpie-request.adoc[Request]
 * *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/tl-signature/2/curl-request.adoc[Request]
 
+[[RestLoTESigning]]
+===== List of Trusted Entities signing
+
+Similar to a <<RestTLSigning>> it is possible to use simplified API for signing a List of Trusted Entities, that is configured to create a signature in the format conformant to the applicable specification.
+
+The service provides a functionality for signing:
+
+* ETSI TS 119 602 <<R33>> JSON List of Trusted Entities (JSON LoTE), or other JSON lists which are based in the TS 119 602 specification;
+* ETSI TS 119 602 <<R33>> XML List of Trusted Entities (XML LoTE), or other XML lists which are based in the TS 119 602 specification;
+* ISO/IEC 18013-5 <<R38>> Verified issuer certificate authority list (VICAL).
+
+The service automatically selects the applicable implementation based on the submitted document's type.
+
+The service uses `RemoteListOfTrustedEntitiesParameters` for configuration of the LoTE signature.
+
+====== Get data to sign
+
+The method allows retrieving the data to be signed. The user sends the List of Trusted Entities to be signed and the parameters (signing certificate, signing date, etc.).
+
+WARNING: The parameters in getDataToSign and signDocument MUST be the same (especially the signing date).
+
+Samples:
+
+* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/lote-signature/1/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/lote-signature/1/response-body.adoc[Response]
+* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/lote-signature/1/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/lote-signature/1/http-response.adoc[Response]
+* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/lote-signature/1/httpie-request.adoc[Request]
+* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/lote-signature/1/curl-request.adoc[Request]
+
+====== Sign document
+
+The method allows generation of the signed List of Trusted Entities with the received signature value.
+
+WARNING: The parameters in getDataToSign and signDocument MUST be the same (especially the signing date).
+
+Samples:
+
+* *JSON*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/lote-signature/2/request-body.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/lote-signature/2/response-body.adoc[Response]
+* *HTTP*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/lote-signature/2/http-request.adoc[Request] | https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/lote-signature/2/http-response.adoc[Response]
+* *HTTPie*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/lote-signature/2/httpie-request.adoc[Request]
+* *Curl*: https://github.com/esig/dss/blob/master/dss-cookbook/src/main/asciidoc/_restdocs/lote-signature/2/curl-request.adoc[Request]
+
 [[RestPAdESWithExternalCMS]]
 ===== PAdES with external CMS signing
 

@@ -1,0 +1,149 @@
+{
+   "LoTE" : {
+      "ListAndSchemeInformation": {
+         "LoTEVersionIdentifier": 1,
+         "LoTESequenceNumber": 42,
+         "SchemeOperatorName": [
+            { "lang":  "en",
+               "value": "Example Scheme Operator"
+            }
+         ],
+         "ListIssueDateTime": "2025-07-16T12:00:00Z",
+         "NextUpdate": "2025-08-16T12:00:00Z"
+      },
+      "TrustedEntitiesList": [
+         {
+            "TrustedEntityInformation": {
+               "TEName": [
+                  {"lang": "en",
+                     "value": "Example Trusted Entity"
+                  }
+               ],
+               "TETradeName": [
+                  {
+                     "lang":  "en",
+                     "value" :  "trade name"
+                  }
+               ],
+               "TEAddress": {
+                  "TEPostalAddress": [
+                     {
+                        "lang" : "en",
+                        "StreetAddress": "123 Example Street",
+                        "Country": "FR"
+                     }
+                  ],
+                  "TEElectronicAddress": [
+                     {
+                        "lang": "en",
+                        "uriValue" : "https://example.org"
+                     },
+                     {
+                        "lang": "en",
+                        "uriValue" : "mailto:contact@example.org"
+                     }
+                  ]
+               },
+               "TEInformationURI": [
+                  {"lang": "en",
+                     "uriValue" :  "https://example.org/info"
+                  }
+               ],
+               "TEInformationExtensions": [
+                  {
+                     "OtherAssociatedBodiesExtensions": [
+                        {
+                           "AssociatedBody": {
+                              "AssociatedBodyName": [
+                                 {
+                                    "lang": "fr",
+                                    "value": "Ministère de la Transition Numérique"
+                                 },
+                                 {
+                                    "lang": "en",
+                                    "value": "Ministry of Digital Transformation"
+                                 }
+                              ],
+                              "AssociatedBodyTradeName": [
+                                 {
+                                    "lang": "fr",
+                                    "value": "MinTN"
+                                 },
+                                 {
+                                    "lang": "en",
+                                    "value": "MinDT"
+                                 }
+                              ],
+                              "AssociatedBodyAddress": {
+                                 "AssociatedBodyPostalAddress": {
+                                    "lang": "fr",
+                                    "StreetAddress": "10 avenue de la République",
+                                    "Locality": "Paris",
+                                    "StateOrProvince": "Île-de-France",
+                                    "PostalCode": "75011",
+                                    "Country": "FR"
+                                 },
+                                 "AssociatedBodyElectronicAddress": [
+                                    {
+                                       "lang": "fr",
+                                       "uriValue": "mailto:contact@mintn.gouv.fr"
+                                    },
+                                    {
+                                       "lang": "en",
+                                       "uriValue": "mailto:info@mindt.gov.fr"
+                                    }
+                                 ]
+                              },
+                              "AssociatedBodyInformationURI": [
+                                 {
+                                    "lang": "fr",
+                                    "uriValue": "https://www.mintn.gouv.fr/informations"
+                                 },
+                                 {
+                                    "lang": "en",
+                                    "uriValue": "https://www.mindt.gov.fr/info"
+                                 }
+                              ],
+                              "AssociatedBodyTypeIdentifier": "http://public.europa.eu/entity/associated-body-type/public-authority",
+                              "AssociatedBodyInformationExtensions": [
+                                 {
+                                    "key": "domain",
+                                    "value": "E-Government Services"
+                                 }
+                              ]
+                           }
+                        }
+                     ]
+                  }
+               ]
+
+            },
+            "TrustedEntityServices": [
+               {
+                  "ServiceInformation": {
+
+                     "ServiceName":
+                     [
+                        {
+                           "lang": "en",
+                           "value": "Signing Service"
+                        }
+                     ]
+
+                  ,
+                     "ServiceDigitalIdentity": {
+                        "X509Certificates": [
+                           {
+                              "val": "c2FtcGxlY2VydGlmaWNhdGU=",
+                              "encoding": "https://example.org/encoding",
+                              "specRef": "Ref"
+                           }
+                        ]
+                     }
+                  }
+               }
+            ]
+         }
+      ]
+   }
+}
