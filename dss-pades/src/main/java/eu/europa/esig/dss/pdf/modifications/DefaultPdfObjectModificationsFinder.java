@@ -185,7 +185,17 @@ public class DefaultPdfObjectModificationsFinder implements PdfObjectModificatio
         compareDictStreams(modifications, objectTree, signedDict, finalDict);
     }
 
-    private void compareObjectsRecursively(Set<ObjectModification> modifications, Set<PdfObjectTreeReference> processedObjects,
+    /**
+     * Performs comparison of the {@code signedObject} and {@code finalObject} recursively processing nested entries
+     *
+     * @param modifications a set of found {@link ObjectModification}s
+     * @param processedObjects a set of {@link PdfObjectTreeReference} representing already processed objects
+     * @param objectTree {@link PdfObjectTree} current tree
+     * @param name {@link String} key of the objects to be verified
+     * @param signedObject {@link PdfObject} representing an object from the signed revision
+     * @param finalObject {@link PdfObject} representing an object from the final revision
+     */
+    protected void compareObjectsRecursively(Set<ObjectModification> modifications, Set<PdfObjectTreeReference> processedObjects,
                                            PdfObjectTree objectTree, String name, PdfObject signedObject, PdfObject finalObject) {
         if (maximumObjectVerificationDeepness < objectTree.getChainDeepness()) {
             String errorMessage = "Maximum objects verification deepness has been reached : {}. Chain of objects is skipped.";

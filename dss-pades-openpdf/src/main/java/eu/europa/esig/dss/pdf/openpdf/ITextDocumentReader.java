@@ -72,6 +72,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * The IText (OpenPdf) implementation of {@code PdfDocumentReader}
@@ -87,8 +88,8 @@ public class ITextDocumentReader implements PdfDocumentReader {
 	/** The original PDF document */
 	private DSSDocument dssDocument;
 
-	/** The map of signature dictionaries and corresponding signature fields */
-	private Map<PdfSignatureDictionary, List<PdfSignatureField>> signatureDictionaryMap;
+	/** The list of signature dictionaries */
+	private List<PdfSignatureDictionary> signatureDictionaries;
 
 	/**
 	 * Default constructor of the OpenPDF implementation of the Reader
@@ -207,10 +208,12 @@ public class ITextDocumentReader implements PdfDocumentReader {
 	}
 
 	@Override
-	public Map<PdfSignatureDictionary, List<PdfSignatureField>> extractSigDictionaries() {
-		if (signatureDictionaryMap == null) {
-			signatureDictionaryMap = new LinkedHashMap<>();
-			Map<Integer, PdfSigDictWrapper> pdfObjectDictMap = new LinkedHashMap<>();
+	public List<PdfSignatureDictionary> extractSigDictionaries() {
+		if (signatureDictionaries == null) {
+			signatureDictionaries = new ArrayList<>();
+
+			final Map<Integer, List<PdfSignatureField>> pdfSigFieldMap = new LinkedHashMap<>();
+			final Map<Integer, PdfDictionary> pdfDictMap = new LinkedHashMap<>();
 			
 			AcroFields acroFields = pdfReader.getAcroFields();
 			Map<String, Item> allFields = acroFields.getAllFields();
@@ -218,7 +221,7 @@ public class ITextDocumentReader implements PdfDocumentReader {
 			LOG.debug("{} signature field(s) found", names.size());
 			
 			for (String name : names) {
-				PdfDictionary pdfField = allFields.get(name).getMerged(0);
+				PdfDictionary pdfField = allFields.get(name).getValue(0);
 				final ITextPdfDict fieldDict = new ITextPdfDict(pdfField);
 				final PdfSignatureField pdfSignatureField = new PdfSignatureField(fieldDict, name);
 
@@ -227,30 +230,34 @@ public class ITextDocumentReader implements PdfDocumentReader {
 				if (indirectObject != null) {
 					refNumber = indirectObject.getNumber();
 				}
-				PdfSigDictWrapper signature = pdfObjectDictMap.get(refNumber);
-				if (signature == null) {
-					try {
-						PdfDict dictionary = new ITextPdfDict(pdfField.getAsDict(PdfName.V));
-						signature = new PdfSigDictWrapperFactory(dictionary).create();
-					} catch (Exception e) {
-						LOG.warn("Unable to create a PdfSignatureDictionary for field with name '{}'", name, e);
-						continue;
-					}
 
-					List<PdfSignatureField> fieldList = new ArrayList<>();
-					fieldList.add(pdfSignatureField);
-					signatureDictionaryMap.put(signature, fieldList);
-					pdfObjectDictMap.put(refNumber, signature);
+				PdfDictionary sigDictionary = pdfField.getAsDict(PdfName.V);
+				pdfDictMap.put(refNumber, sigDictionary);
 
-				} else {
-					List<PdfSignatureField> fieldList = signatureDictionaryMap.get(signature);
-					fieldList.add(pdfSignatureField);
-					LOG.warn("More than one field refers to the same signature dictionary: {}!", fieldList);
+				List<PdfSignatureField> pdfSignatureFields = pdfSigFieldMap.computeIfAbsent(refNumber, k -> new ArrayList<>());
+				pdfSignatureFields.add(pdfSignatureField);
+			}
 
+			for (Map.Entry<Integer, PdfDictionary> signatureDictionaryEntry : pdfDictMap.entrySet()) {
+				Integer sigDictNumber = signatureDictionaryEntry.getKey();
+				PdfDictionary sigDictionary = signatureDictionaryEntry.getValue();
+				List<PdfSignatureField> pdfSignatureFields = pdfSigFieldMap.get(sigDictNumber);
+
+				if (Utils.collectionSize(pdfSignatureFields) > 1) {
+					LOG.warn("More than one field refers to the same signature dictionary: {}!", pdfSignatureFields);
+				}
+				try {
+					PdfDict dictionary = new ITextPdfDict(sigDictionary);
+					PdfSigDictWrapper pdfSigDictWrapper = new PdfSigDictWrapperFactory(dictionary, pdfSignatureFields).create();
+					signatureDictionaries.add(pdfSigDictWrapper);
+
+				} catch (Exception e) {
+					LOG.warn("Unable to create a PdfSignatureDictionary for field(s) {}",
+							pdfSignatureFields.stream().map(PdfSignatureField::getFullyQualifiedName).collect(Collectors.toList()), e);
 				}
 			}
 		}
-		return signatureDictionaryMap;
+		return signatureDictionaries;
 	}
 
 	@Override
@@ -261,7 +268,7 @@ public class ITextDocumentReader implements PdfDocumentReader {
 	@Override
 	public boolean isSignatureCoversWholeDocument(PdfSignatureDictionary signatureDictionary) {
 		AcroFields acroFields = pdfReader.getAcroFields();
-		List<PdfSignatureField> fields = signatureDictionaryMap.get(signatureDictionary);
+		List<PdfSignatureField> fields = signatureDictionary.getSignatureFields();
 		if (Utils.isCollectionNotEmpty(fields)) {
 			return acroFields.signatureCoversWholeDocument(fields.get(0).getFullyQualifiedName());
 		}

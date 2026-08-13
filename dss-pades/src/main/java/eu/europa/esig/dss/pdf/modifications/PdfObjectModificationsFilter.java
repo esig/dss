@@ -26,10 +26,10 @@ import eu.europa.esig.dss.pdf.PAdESConstants;
 import eu.europa.esig.dss.pdf.PdfArray;
 import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.PdfObject;
+import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -60,6 +60,9 @@ public class PdfObjectModificationsFilter {
      */
     public PdfObjectModifications filter(final Collection<ObjectModification> objectModifications) {
         final PdfObjectModifications pdfObjectModifications = new PdfObjectModifications();
+        if (Utils.isCollectionEmpty(objectModifications)) {
+            return pdfObjectModifications;
+        }
 
         for (ObjectModification objectModification : objectModifications) {
             if (skipChange(objectModification)) {
@@ -215,7 +218,8 @@ public class PdfObjectModificationsFilter {
             return true;
         } else if (isAnnotsArrayCreationForSignature(objectModification)) {
             return true;
-        } else if (isNewSignatureCreation(objectModification) || isWidgetModification(objectModification)) {
+        } else if (isNewSignatureCreation(objectModification) ||
+                (isWidgetModification(objectModification) && !isSigOrTstModification(objectModification))) {
             // new signature creation or form fill
             if (isFieldFilled(objectModification)) {
                 return true;
@@ -408,6 +412,45 @@ public class PdfObjectModificationsFilter {
         return checkRecursivelyForAnnotOfType(objectModification.getOriginalObject(), objectModification.getFinalObject(), PAdESConstants.SUBTYPE_WIDGET, new HashSet<>());
     }
 
+    private boolean isSigOrTstModification(ObjectModification objectModification) {
+        return checkRecursivelyForExistingSigOrTstFieldType(objectModification.getOriginalObject(), objectModification.getFinalObject(), new HashSet<>());
+    }
+
+    private boolean checkRecursivelyForExistingSigOrTstFieldType(PdfObject originalObject, PdfObject finalObject, Set<PdfObjectKey> processedObjects) {
+        String originalType = originalObject instanceof PdfDict ? ((PdfDict) originalObject).getNameValue(PAdESConstants.TYPE_NAME) : null;
+        String originalFieldType = originalObject instanceof PdfDict ? ((PdfDict) originalObject).getNameValue(PAdESConstants.FT_NAME) : null;
+
+        // evaluation goes from bottom to top. Stop at the first non-sig /Annot entry
+        if (originalFieldType != null) {
+            if (PAdESConstants.SIGNATURE_TYPE.equals(originalFieldType) || PAdESConstants.TIMESTAMP_TYPE.equals(originalFieldType)) {
+                return ((PdfDict) originalObject).getAsDict(PAdESConstants.VALUE_NAME) != null;
+            }
+            return false;
+        }
+        if (PAdESConstants.TYPE_ANNOT.equals(originalType)) {
+            return false;
+        }
+
+        PdfObjectKey finalParentKey = finalObject instanceof PdfDict ? ((PdfDict) finalObject).getObjectKey(PAdESConstants.PARENT_NAME) : null;
+        if (processedObjects.contains(finalParentKey)) {
+            return false;
+        }
+
+        PdfObject originalParent = originalObject instanceof PdfDict ? ((PdfDict) originalObject).getObject(PAdESConstants.PARENT_NAME) : null;
+        PdfObject finalParent = finalObject instanceof PdfDict ? ((PdfDict) finalObject).getObject(PAdESConstants.PARENT_NAME) : null;
+        if (finalParent != null) {
+            processedObjects.add(finalParentKey);
+            return checkRecursivelyForExistingSigOrTstFieldType(originalParent, finalParent, processedObjects);
+        }
+
+        originalParent = originalObject != null ? originalObject.getParent() : null;
+        finalParent = finalObject != null ? finalObject.getParent() : null;
+        if (originalParent == null && finalParent == null) {
+            return false;
+        }
+        return checkRecursivelyForExistingSigOrTstFieldType(originalParent, finalParent, processedObjects);
+    }
+
     private boolean checkRecursivelyForAnnotOfType(PdfObject originalObject, PdfObject finalObject, String targetType, Set<PdfObjectKey> processedObjects) {
         String originalType = originalObject instanceof PdfDict ? ((PdfDict) originalObject).getNameValue(PAdESConstants.TYPE_NAME) : null;
         String finalType = finalObject instanceof PdfDict ? ((PdfDict) finalObject).getNameValue(PAdESConstants.TYPE_NAME) : null;
@@ -444,24 +487,6 @@ public class PdfObjectModificationsFilter {
             return false;
         }
         return checkRecursivelyForAnnotOfType(originalParent, finalParent, targetType, processedObjects);
-    }
-
-    private boolean isStreamFill(ObjectModification objectModification) {
-        try {
-            Object originalObject = objectModification.getOriginalObject();
-            Object finalObject = objectModification.getFinalObject();
-            if (originalObject instanceof PdfDict && finalObject instanceof PdfDict) {
-                PdfDict finalDict = (PdfDict) finalObject;
-                byte[] finalBytes = finalDict.getStreamBytes();
-                if (finalBytes != null && finalBytes.length != 0) {
-                    return true;
-                }
-            }
-        } catch (IOException e) {
-            LOG.warn("Unable to evaluate stream modification from path '{}'. Reason : {}",
-                    objectModification.getObjectTree(), e.getMessage(), e);
-        }
-        return false;
     }
 
     private boolean isVersionChange(ObjectModification objectModification) {
@@ -588,6 +613,10 @@ public class PdfObjectModificationsFilter {
      * @return TRUE if the modification corresponds to an annotation change process, FALSE otherwise
      */
     protected boolean isAnnotationChange(ObjectModification objectModification) {
+        if (isSigOrTstModification(objectModification)) {
+            return false;
+        }
+
         if (isAnnotsArrayCreation(objectModification)) {
             return true;
         } else if (isEmptyAnnotFill(objectModification)) {

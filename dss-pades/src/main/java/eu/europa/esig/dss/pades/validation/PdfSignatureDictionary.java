@@ -22,15 +22,31 @@ package eu.europa.esig.dss.pades.validation;
 
 import eu.europa.esig.dss.cms.CMS;
 import eu.europa.esig.dss.enumerations.CertificationPermission;
+import eu.europa.esig.dss.pdf.PdfDict;
 import eu.europa.esig.dss.pdf.SigFieldPermissions;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Contains PDF signature dictionary information
  * 
  */
 public interface PdfSignatureDictionary {
+
+	/**
+	 * Gets the dictionary
+	 *
+	 * @return {@link PdfDict}
+	 */
+	PdfDict getDictionary();
+
+	/**
+	 * Gets a list of the signature fields which refer the current signature dictionary
+	 *
+	 * @return a list of {@link PdfSignatureField}s
+	 */
+	List<PdfSignatureField> getSignatureFields();
 
 	/**
 	 * Gets the signed/timestamped ByteRange
@@ -124,19 +140,19 @@ public interface PdfSignatureDictionary {
 	SigFieldPermissions getFieldMDP();
 
 	/**
-	 * Verifies the equality of the current PdfSignatureDictionary with provided {@code signatureDictionary}.
-	 * NOTE: this method is similar to {@code equals(PdfSignatureDictionary)} method,
-	 * but also modifies the state of the object accessible from {@code isConsistent()} method.
-	 * If none signature dictionary found in the signed revision, NULL may be provided.
+	 * Verifies the consistency of the current PdfSignatureDictionary and its signature fields
+	 * against the {@code signatureDictionary} found within the signed document revision.
+	 * NOTE: this method also modifies the state of the object accessible from {@code isConsistent()} method.
+	 * If none signature dictionary found in the signed revision, NULL may be provided for {@code signatureDictionary}.
 	 *
-	 * @return TRUE if the {@code PdfSignatureDictionary} is equal to the provided {@code signatureDictionary}, FALSE otherwise
 	 * @param signatureDictionary {@link PdfSignatureDictionary} to compare with
+	 * @return TRUE if the {@code PdfSignatureDictionary} is equal to the provided {@code signatureDictionary}, FALSE otherwise
 	 */
 	boolean checkConsistency(PdfSignatureDictionary signatureDictionary);
 
 	/**
 	 * Checks if the signature dictionary is consistent.
-	 * NOTE: method {@code checkConsistency(PdfSignatureDictionary)} shall be executed before!
+	 * NOTE: method {@code checkConsistency(List, PdfSignatureDictionary, List)} shall be executed before!
 	 *
 	 * @return TRUE if the {@code PdfSignatureDictionary} is consistent, FALSE otherwise
 	 */

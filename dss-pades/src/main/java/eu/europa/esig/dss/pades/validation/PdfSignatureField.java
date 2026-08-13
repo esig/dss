@@ -50,6 +50,12 @@ public class PdfSignatureField implements Serializable {
     private final SigFieldPermissions lockDictionary;
 
     /**
+     * The signature field's dictionary.
+     * Transient because {@code PdfDict} implementations are not {@code Serializable}
+    */
+    private final transient PdfDict dictionary;
+
+    /**
      * Default constructor
      *
      * @param sigFieldDict {@link PdfDict}
@@ -72,6 +78,7 @@ public class PdfSignatureField implements Serializable {
         this.partialFieldName = extractPartialFieldName(sigFieldDict);
         this.fullyQualifiedName = fullyQualifiedName;
         this.lockDictionary = extractLockDictionary(sigFieldDict);
+        this.dictionary = sigFieldDict;
     }
 
     private static String extractPartialFieldName(PdfDict sigFieldDict) {
@@ -126,6 +133,15 @@ public class PdfSignatureField implements Serializable {
      */
     public SigFieldPermissions getLockDictionary() {
         return lockDictionary;
+    }
+
+    /**
+     * Returns the signature field's dictionary
+     *
+     * @return {@link PdfDict}
+     */
+    public PdfDict getDictionary() {
+        return dictionary;
     }
 
     @Override

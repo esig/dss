@@ -68,7 +68,7 @@ public abstract class DSS1823 extends PKIFactoryAccess {
 		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream(FILE));
 
 		try (PdfDocumentReader pdDocument = loadPDFDocument(dssDocument)) {
-			Collection<PdfSignatureDictionary> signatureDictionaries = pdDocument.extractSigDictionaries().keySet();
+			Collection<PdfSignatureDictionary> signatureDictionaries = pdDocument.extractSigDictionaries();
 
 			for (PdfSignatureDictionary pdSignature : signatureDictionaries) {
 
@@ -118,7 +118,7 @@ public abstract class DSS1823 extends PKIFactoryAccess {
 		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream(FILE));
 
 		try (PdfDocumentReader pdDocument = loadPDFDocument(dssDocument)) {
-			Collection<PdfSignatureDictionary> signatureDictionaries = pdDocument.extractSigDictionaries().keySet();
+			Collection<PdfSignatureDictionary> signatureDictionaries = pdDocument.extractSigDictionaries();
 
 			for (PdfSignatureDictionary pdSignature : signatureDictionaries) {
 
@@ -166,7 +166,7 @@ public abstract class DSS1823 extends PKIFactoryAccess {
 		DSSDocument dssDocument = new InMemoryDocument(getClass().getResourceAsStream(FILE));
 
 		try (PdfDocumentReader pdDocument = loadPDFDocument(dssDocument)) {
-			Collection<PdfSignatureDictionary> signatureDictionaries = pdDocument.extractSigDictionaries().keySet();
+			Collection<PdfSignatureDictionary> signatureDictionaries = pdDocument.extractSigDictionaries();
 
 			for (PdfSignatureDictionary pdSignature : signatureDictionaries) {
 

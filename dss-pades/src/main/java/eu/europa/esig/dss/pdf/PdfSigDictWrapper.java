@@ -24,16 +24,16 @@ import eu.europa.esig.dss.cms.CMS;
 import eu.europa.esig.dss.enumerations.CertificationPermission;
 import eu.europa.esig.dss.pades.validation.ByteRange;
 import eu.europa.esig.dss.pades.validation.PdfSignatureDictionary;
-import eu.europa.esig.dss.pdf.modifications.DefaultPdfObjectModificationsFinder;
-import eu.europa.esig.dss.pdf.modifications.ObjectModification;
+import eu.europa.esig.dss.pades.validation.PdfSignatureField;
 import eu.europa.esig.dss.pdf.modifications.PdfObjectModifications;
+import eu.europa.esig.dss.pdf.modifications.PdfSignatureDictionaryModificationsFinder;
 import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * The default implementation of {@code PdfSignatureDictionary}
@@ -44,6 +44,9 @@ public class PdfSigDictWrapper implements PdfSignatureDictionary {
 
 	/** The original PDF dictionary */
 	private PdfDict dictionary;
+
+	/** List of signature fields */
+	private List<PdfSignatureField> signatureFields;
 
 	/** Name of the signer */
 	private String signerName;
@@ -94,6 +97,11 @@ public class PdfSigDictWrapper implements PdfSignatureDictionary {
 		// empty
 	}
 
+	@Override
+	public PdfDict getDictionary() {
+		return dictionary;
+	}
+
 	/**
 	 * Sets the signature field dictionary
 	 *
@@ -101,6 +109,20 @@ public class PdfSigDictWrapper implements PdfSignatureDictionary {
 	 */
 	protected void setDictionary(PdfDict dictionary) {
 		this.dictionary = dictionary;
+	}
+
+	@Override
+	public List<PdfSignatureField> getSignatureFields() {
+		return Collections.unmodifiableList(signatureFields);
+	}
+
+	/**
+	 * Sets a list of signature fields
+	 *
+	 * @param signatureFields a list of {@link PdfSignatureField}s
+	 */
+	public void setSignatureFields(List<PdfSignatureField> signatureFields) {
+		this.signatureFields = signatureFields;
 	}
 
 	@Override
@@ -287,41 +309,28 @@ public class PdfSigDictWrapper implements PdfSignatureDictionary {
 
 	@Override
 	public boolean checkConsistency(PdfSignatureDictionary signatureDictionary) {
+		consistent = false;
+
 		if (signatureDictionary == null) {
 			LOG.warn("PdfSignatureDictionary from signed revision is null!");
-			consistent = false;
 
 		} else if (signatureDictionary instanceof PdfSigDictWrapper) {
-			PdfSigDictWrapper dictionaryToCompare = (PdfSigDictWrapper) signatureDictionary;
-			DefaultPdfObjectModificationsFinder modificationsFinder = new DefaultPdfObjectModificationsFinder();
-			PdfObjectModifications pdfObjectModifications = modificationsFinder.find(dictionaryToCompare.dictionary, dictionary);
-			List<ObjectModification> undefinedChanges = pdfObjectModifications.getUndefinedChanges();
-			removeReferenceData(undefinedChanges);
-			consistent = Utils.isCollectionEmpty(undefinedChanges);
-			if (!consistent) {
-				LOG.warn("The signature dictionary from final PDF revision is not equal to the signed revision version!");
-				if (LOG.isDebugEnabled()) {
-					LOG.debug("Undefined modifications are : {}", undefinedChanges.stream()
-							.map(ObjectModification::getObjectTree).collect(Collectors.toList()));
-				}
+			PdfSigDictWrapper revisionSigDictWrapper = (PdfSigDictWrapper) signatureDictionary;
+			PdfSignatureDictionaryModificationsFinder modificationsFinder = new PdfSignatureDictionaryModificationsFinder();
+			PdfObjectModifications objectModifications = modificationsFinder.compareSignatureDictionaries(revisionSigDictWrapper, this);
+			// NOTE: we evaluate only "undefined" changes, as other modifications may be permitted
+			consistent = Utils.isCollectionEmpty(objectModifications.getUndefinedChanges());
+			if (LOG.isWarnEnabled() && !consistent) {
+				objectModifications.getUndefinedChanges().forEach(m -> {
+					LOG.warn("Signature field's object modification detected! Tree : {}", m.getObjectTree());
+				});
 			}
 
 		} else {
 			LOG.warn("Provided PdfSignatureDictionary shall be instance of PdfSigDictWrapper!");
-			consistent = false;
 		}
 
 		return consistent;
-	}
-
-	private void removeReferenceData(List<ObjectModification> modifications) {
-		// /Reference /Data dictionary contains references to PDF objects covered by the signature.
-		// The changes inside do not impact signature validity directly.
-		if (Utils.isCollectionNotEmpty(modifications)) {
-			modifications.removeIf(objectModification ->
-					objectModification.getObjectTree().getKeyChain().contains(PAdESConstants.REFERENCE_NAME) &&
-					objectModification.getObjectTree().getKeyChain().contains(PAdESConstants.DATA_NAME));
-		}
 	}
 
 	@Override
