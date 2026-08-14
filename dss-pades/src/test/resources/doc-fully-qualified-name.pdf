@@ -1,0 +1,138 @@
+%PDF-1.4
+%цдья
+1 0 obj
+<<
+/Type /Catalog
+/Version /1.4
+/Pages 2 0 R
+/AcroForm 3 0 R
+>>
+endobj
+2 0 obj
+<<
+/Type /Pages
+/Kids [4 0 R]
+/Count 1
+>>
+endobj
+3 0 obj
+<<
+/Fields [5 0 R 6 0 R]
+>>
+endobj
+4 0 obj
+<<
+/Type /Page
+/MediaBox [0.0 0.0 612.0 792.0]
+/Annots [7 0 R 8 0 R]
+/Parent 2 0 R
+>>
+endobj
+5 0 obj
+<<
+/T (level1)
+/Kids [9 0 R]
+>>
+endobj
+6 0 obj
+<<
+/T (altLevel1)
+/Kids [10 0 R]
+>>
+endobj
+7 0 obj
+<<
+/FT /Sig
+/Type /Annot
+/Subtype /Widget
+/F 132
+/T (field1)
+/Rect [50.0 700.0 250.0 720.0]
+/P 4 0 R
+/AP <<
+/N 11 0 R
+>>
+/Parent 9 0 R
+>>
+endobj
+8 0 obj
+<<
+/FT /Sig
+/Type /Annot
+/Subtype /Widget
+/F 132
+/T (field1)
+/Rect [50.0 600.0 250.0 620.0]
+/P 4 0 R
+/AP <<
+/N 12 0 R
+>>
+/Parent 10 0 R
+>>
+endobj
+9 0 obj
+<<
+/T (level2)
+/Kids [7 0 R]
+/Parent 5 0 R
+>>
+endobj
+10 0 obj
+<<
+/T (altLevel2)
+/Kids [8 0 R]
+/Parent 6 0 R
+>>
+endobj
+11 0 obj
+<<
+/Length 0
+/Type /XObject
+/Subtype /Form
+/Resources <<
+>>
+/FormType 1
+/BBox [0.0 0.0 200.0 20.0]
+>>
+stream
+
+endstream
+endobj
+12 0 obj
+<<
+/Length 0
+/Type /XObject
+/Subtype /Form
+/Resources <<
+>>
+/FormType 1
+/BBox [0.0 0.0 200.0 20.0]
+>>
+stream
+
+endstream
+endobj
+xref
+0 13
+0000000000 65535 f
+0000000015 00000 n
+0000000094 00000 n
+0000000151 00000 n
+0000000194 00000 n
+0000000295 00000 n
+0000000342 00000 n
+0000000393 00000 n
+0000000546 00000 n
+0000000700 00000 n
+0000000761 00000 n
+0000000826 00000 n
+0000000964 00000 n
+trailer
+<<
+/Root 1 0 R
+/ID [<BCC1544CD14626E9DBEB6CF9617B603783655A45507134DCB1296C213402065F> <BCC1544CD14626E9DBEB6CF9617B603783655A45507134DCB1296C213402065F>]
+/Size 13
+>>
+startxref
+1102
+%%EOF
