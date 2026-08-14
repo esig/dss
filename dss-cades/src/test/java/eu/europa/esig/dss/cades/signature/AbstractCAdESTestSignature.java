@@ -61,7 +61,6 @@ import org.bouncycastle.asn1.cms.SignedData;
 import org.bouncycastle.asn1.cms.SignerInfo;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.cert.X509CertificateHolder;
-import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.tsp.TimeStampToken;
@@ -180,16 +179,11 @@ public abstract class AbstractCAdESTestSignature extends AbstractPkiFactoryTestD
 	}
 
 	protected void checkSignaturePackaging(byte[] byteArray) {
-		try {
-			CMSSignedData cmsSignedData = new CMSSignedData(byteArray);
-			assertEquals(SignaturePackaging.DETACHED.equals(getSignatureParameters().getSignaturePackaging()),
-					cmsSignedData.isDetachedSignature());
-			assertEquals(SignaturePackaging.DETACHED.equals(getSignatureParameters().getSignaturePackaging()),
-					cmsSignedData.getSignedContent() == null);
-
-		} catch (CMSException e) {
-			fail(e);
-		}
+		CMSSignedData cmsSignedData = DSSUtils.toCMSSignedData(byteArray);
+		assertEquals(SignaturePackaging.DETACHED.equals(getSignatureParameters().getSignaturePackaging()),
+				cmsSignedData.isDetachedSignature());
+		assertEquals(SignaturePackaging.DETACHED.equals(getSignatureParameters().getSignaturePackaging()),
+				cmsSignedData.getSignedContent() == null);
 	}
 	
 	@Override
@@ -221,7 +215,7 @@ public abstract class AbstractCAdESTestSignature extends AbstractPkiFactoryTestD
 		}
 
 		try {
-			CMSSignedData cmsSignedData = new CMSSignedData(byteArray);
+			CMSSignedData cmsSignedData = DSSUtils.toCMSSignedData(byteArray);
 			for (SignerInformation signerInformation : cmsSignedData.getSignerInfos().getSigners()) {
 				AttributeTable unsignedAttributes = signerInformation.getUnsignedAttributes();
 				assertNotNull(unsignedAttributes);

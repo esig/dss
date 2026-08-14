@@ -30,6 +30,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.xml.utils.DOMDocument;
 import eu.europa.esig.dss.xml.utils.DomUtils;
@@ -194,10 +195,11 @@ class DSSDocumentTest {
 		// tag::cmsDocument[]
 		// import eu.europa.esig.dss.cms.CMSSignedDocument;
 		// import eu.europa.esig.dss.model.DSSDocument;
+		// import eu.europa.esig.dss.spi.DSSUtils;
 		// import org.bouncycastle.cms.CMSSignedData;
 
 		// Instantiate a CMSSignedDocument from a CMSSignedData
-		CMSSignedData cmsSignedData = new CMSSignedData(cmsBytes);
+		CMSSignedData cmsSignedData = DSSUtils.toCMSSignedData(cmsBytes);
 		DSSDocument cmsDocument = new CMSSignedDocument(cmsSignedData);
 
 		// end::cmsDocument[]

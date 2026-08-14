@@ -234,7 +234,7 @@ class KeyEntityTSPSourceTest {
         assertNotNull(timestampBinary.getBytes());
         assertFalse(Arrays.equals(new byte[] {}, timestampBinary.getBytes()));
 
-        CMSSignedData cmsSignedData = new CMSSignedData(timestampBinary.getBytes());
+        CMSSignedData cmsSignedData = DSSUtils.toCMSSignedData(timestampBinary.getBytes());
         TimeStampToken timeStampToken = new TimeStampToken(cmsSignedData);
         assertArrayEquals(digest, timeStampToken.getTimeStampInfo().getMessageImprintDigest());
         return timeStampToken;

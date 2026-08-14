@@ -729,11 +729,7 @@ public final class DSSUtils {
 	 * @return {@link CMSSignedData}
 	 */
 	public static CMSSignedData toCMSSignedData(final byte[] encoded) {
-		try {
-			return new CMSSignedData(encoded);
-		} catch (CMSException e) {
-			throw new DSSException("Not a valid CMS", e);
-		}
+		return toCMSSignedData(new ByteArrayInputStream(encoded));
 	}
 
 	/**

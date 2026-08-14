@@ -70,6 +70,7 @@ import org.bouncycastle.util.Store;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -109,10 +110,10 @@ public class CMSObjectUtils implements ICMSUtils {
 
     @Override
     public CMS parseToCMS(byte[] binaries) {
-        try {
-            CMSSignedData cmsSignedData = new CMSSignedData(binaries);
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(binaries)) {
+            CMSSignedData cmsSignedData = new CMSSignedData(bais);
             return new CMSSignedDataObject(cmsSignedData);
-        } catch (CMSException e) {
+        } catch (IOException | CMSException e) {
             throw new IllegalInputException(String.format("Not a valid CAdES file. Reason : %s", e.getMessage()), e);
         }
     }

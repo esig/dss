@@ -225,7 +225,7 @@ public class TimestampToken extends Token {
 	 * @throws CMSException if CMS data building exception occurs
 	 */
 	public TimestampToken(final byte[] binaries, final TimestampType type, final List<TimestampedReference> timestampedReferences) throws TSPException, IOException, CMSException {
-		this(new CMSSignedData(binaries), type, timestampedReferences);
+		this(DSSUtils.toCMSSignedData(binaries), type, timestampedReferences);
 	}
 
 	/**
@@ -241,7 +241,7 @@ public class TimestampToken extends Token {
 	 */
 	public TimestampToken(final byte[] binaries, final TimestampType type, final List<TimestampedReference> timestampedReferences,
 						  final TimestampIdentifierBuilder identifierBuilder) throws TSPException, IOException, CMSException {
-		this(new CMSSignedData(binaries), type, timestampedReferences, identifierBuilder);
+		this(DSSUtils.toCMSSignedData(binaries), type, timestampedReferences, identifierBuilder);
 	}
 
 	/**

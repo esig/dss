@@ -298,7 +298,7 @@ class DSSASN1UtilsTest {
 			assertNotNull(derSequence);
 			asn1IS.close();
 
-			TimeStampToken rebuiltTST = new TimeStampToken(new CMSSignedData(derEncoded));
+			TimeStampToken rebuiltTST = new TimeStampToken(DSSUtils.toCMSSignedData(derEncoded));
 			assertNotNull(rebuiltTST);
 		}
 	}

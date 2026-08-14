@@ -41,7 +41,6 @@ import eu.europa.esig.dss.spi.x509.CertificateValidity;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
 import org.bouncycastle.cms.CMSException;
-import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.tsp.TSPException;
 import org.bouncycastle.tsp.TimeStampToken;
 import org.junit.jupiter.api.Test;
@@ -161,7 +160,7 @@ class TimestampTokenTest {
 			assertTrue(token.isMessageImprintDataIntact());
 
 			byte[] encoded = token.getEncoded();
-			TimeStampToken tst = new TimeStampToken(new CMSSignedData(encoded));
+			TimeStampToken tst = new TimeStampToken(DSSUtils.toCMSSignedData(encoded));
 			assertNotNull(tst);
 		}
 	}
