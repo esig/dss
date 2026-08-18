@@ -32,6 +32,7 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSPKUtils;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.spi.validation.SignatureValidationContext;
 import eu.europa.esig.dss.spi.x509.CandidatesForSigningCertificate;
@@ -71,8 +72,8 @@ class TimestampTokenTest {
 
 	@Test
 	void incorrectTimestamp() {
-		Exception exception = assertThrows(CMSException.class, () -> new TimestampToken(new byte[] { 1, 2, 3 }, TimestampType.ARCHIVE_TIMESTAMP));
-		assertEquals("IOException reading content.", exception.getMessage());
+		Exception exception = assertThrows(IllegalInputException.class, () -> new TimestampToken(new byte[] { 1, 2, 3 }, TimestampType.ARCHIVE_TIMESTAMP));
+		assertEquals("Not a valid CMS file. Reason : IOException reading content.", exception.getMessage());
 	}
 
 	@Test

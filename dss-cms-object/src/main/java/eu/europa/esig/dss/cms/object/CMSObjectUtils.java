@@ -29,7 +29,6 @@ import eu.europa.esig.dss.model.DigestDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.spi.DSSASN1Utils;
 import eu.europa.esig.dss.spi.DSSUtils;
-import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.signature.resources.DSSResourcesHandlerBuilder;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1EncodableVector;
@@ -98,24 +97,22 @@ public class CMSObjectUtils implements ICMSUtils {
         if (document instanceof CMSSignedDocument) {
             return new CMSSignedDataObject(((CMSSignedDocument) document).getCMSSignedData());
         }
-        try (InputStream is = document.openStream()) {
-            CMSSignedData cmsSignedData = new CMSSignedData(is);
-            return new CMSSignedDataObject(cmsSignedData);
-        } catch (IOException e) {
-            throw new DSSException(String.format("Unable to read a document. Reason : %s", e.getMessage()), e);
-        } catch (CMSException e) {
-            throw new IllegalInputException(String.format("Not a valid CAdES file. Reason : %s", e.getMessage()), e);
-        }
+        return parseToCMS(document.openStream());
     }
 
     @Override
     public CMS parseToCMS(byte[] binaries) {
-        try (ByteArrayInputStream bais = new ByteArrayInputStream(binaries)) {
-            CMSSignedData cmsSignedData = new CMSSignedData(bais);
-            return new CMSSignedDataObject(cmsSignedData);
-        } catch (IOException | CMSException e) {
-            throw new IllegalInputException(String.format("Not a valid CAdES file. Reason : %s", e.getMessage()), e);
-        }
+        return parseToCMS(new ByteArrayInputStream(binaries));
+    }
+
+    /**
+     * Parses the given {@code InputStream} to a {@code CMS} object
+     *
+     * @param inputStream {@link InputStream} to parse
+     * @return {@link CMS}
+     */
+    public CMS parseToCMS(InputStream inputStream) {
+        return new CMSSignedDataObject(DSSUtils.toCMSSignedData(inputStream));
     }
 
     @Override

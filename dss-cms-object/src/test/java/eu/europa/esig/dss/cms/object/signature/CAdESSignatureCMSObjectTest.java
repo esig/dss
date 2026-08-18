@@ -24,7 +24,7 @@ import eu.europa.esig.dss.cades.signature.CAdESSignatureTest;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.cms.object.CMSSignedDataObject;
 import eu.europa.esig.dss.spi.DSSUtils;
-import org.bouncycastle.cms.CMSException;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -33,7 +33,7 @@ class CAdESSignatureCMSObjectTest extends CAdESSignatureTest {
 
     @Test
     void initEmptyByteArray() {
-        assertThrows(CMSException.class, () -> new CAdESSignature(new CMSSignedDataObject(DSSUtils.toCMSSignedData(new byte[] {})), null));
+        assertThrows(IllegalInputException.class, () -> new CAdESSignature(new CMSSignedDataObject(DSSUtils.toCMSSignedData(new byte[] {})), null));
     }
 
 }

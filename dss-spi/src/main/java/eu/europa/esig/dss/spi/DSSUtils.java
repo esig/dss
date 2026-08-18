@@ -34,6 +34,7 @@ import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.UserNotice;
 import eu.europa.esig.dss.model.identifier.TokenIdentifier;
 import eu.europa.esig.dss.model.x509.CertificateToken;
+import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.spi.security.DSSCertificateTokenSecurityFactory;
 import eu.europa.esig.dss.spi.security.DSSP7CCertificatesSecurityFactory;
 import eu.europa.esig.dss.utils.Utils;
@@ -707,8 +708,10 @@ public final class DSSUtils {
 	public static CMSSignedData toCMSSignedData(final InputStream inputStream) {
 		try (InputStream is = inputStream) {
 			return new CMSSignedData(is);
-		} catch (IOException | CMSException e) {
-			throw new DSSException("Not a valid CAdES file", e);
+		} catch (IOException e) {
+			throw new DSSException(String.format("Unable to read a document. Reason : %s", e.getMessage()), e);
+		} catch (CMSException e) {
+			throw new IllegalInputException(String.format("Not a valid CMS file. Reason : %s", e.getMessage()), e);
 		}
 	}
 	

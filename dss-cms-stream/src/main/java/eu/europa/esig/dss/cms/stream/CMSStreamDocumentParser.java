@@ -80,7 +80,7 @@ public class CMSStreamDocumentParser {
         } catch (IOException e) {
             throw new DSSException(String.format("Unable to read a document. Reason : %s", e.getMessage()), e);
         } catch (CMSException e) {
-            throw new IllegalInputException(String.format("Not a valid CAdES file. Reason : %s", e.getMessage()), e);
+            throw new IllegalInputException(String.format("Not a valid CMS file. Reason : %s", e.getMessage()), e);
         }
     }
     /**

@@ -120,7 +120,7 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 				DSSUtils.digest(digestAlgorithm, messageImprint));
 		try {
 			return new TimestampToken(timeStampResponse.getBytes(), TimestampType.CONTENT_TIMESTAMP);
-		} catch (TSPException | IOException | CMSException e) {
+		} catch (Exception e) {
 			throw new DSSException("Cannot create a content TimestampToken", e);
 		}
 	}

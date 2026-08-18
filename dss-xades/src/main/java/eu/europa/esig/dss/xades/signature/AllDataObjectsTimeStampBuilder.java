@@ -153,7 +153,7 @@ public class AllDataObjectsTimeStampBuilder {
 			TimestampToken token = new TimestampToken(timeStampResponse.getBytes(), TimestampType.ALL_DATA_OBJECTS_TIMESTAMP);
 			token.setCanonicalizationMethod(canonicalizationMethod);
 			return token;
-		} catch (TSPException | IOException | CMSException e) {
+		} catch (Exception e) {
 			throw new DSSException("Cannot build an AllDataObjectsTimestamp", e);
 		}
 	}

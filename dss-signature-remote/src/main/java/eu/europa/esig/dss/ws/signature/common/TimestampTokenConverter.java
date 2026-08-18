@@ -21,17 +21,14 @@
 package eu.europa.esig.dss.ws.signature.common;
 
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampInclude;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.ws.dto.TimestampDTO;
 import eu.europa.esig.dss.ws.dto.TimestampIncludeDTO;
-import org.bouncycastle.cms.CMSException;
-import org.bouncycastle.tsp.TSPException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -88,7 +85,7 @@ public class TimestampTokenConverter {
 				timestampToken.setTimestampIncludes(toTimestampIncludes(timestampDTO.getIncludes()));
 			}
 			return timestampToken;
-		} catch (TSPException | IOException | CMSException e) {
+		} catch (Exception e) {
 			throw new DSSException(String.format("Cannot convert a TimestampDTO to TimestampToken class, reason : '%s'", e.getMessage()), e);
 		}
 	}

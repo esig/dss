@@ -22,9 +22,9 @@ package eu.europa.esig.dss.ws.signature.common;
 
 import eu.europa.esig.dss.enumerations.TimestampType;
 import eu.europa.esig.dss.model.DSSException;
-import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampInclude;
 import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.ws.dto.TimestampDTO;
 import eu.europa.esig.dss.ws.dto.TimestampIncludeDTO;
 import org.junit.jupiter.api.Test;
@@ -121,7 +121,7 @@ class TimestampTokenConverterTest {
 	void wrongBinaryTest() {
 		TimestampDTO wrongBinary = new TimestampDTO(new byte[] { 1, 2, 3 }, TimestampType.CONTENT_TIMESTAMP);
 		Exception e = assertThrows(DSSException.class, () -> TimestampTokenConverter.toTimestampToken(wrongBinary));
-		assertTrue(e.getMessage().contains("Cannot convert a TimestampDTO to TimestampToken class"));
+		assertTrue(e.getMessage().contains("Cannot convert a TimestampDTO to TimestampToken class"), e.getMessage());
 	}
 
 	@Test

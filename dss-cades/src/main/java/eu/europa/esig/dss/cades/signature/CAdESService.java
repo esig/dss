@@ -113,7 +113,7 @@ public class CAdESService extends
 		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(digestAlgorithm, toSignDocument.getDigestValue(digestAlgorithm));
 		try {
 			return new TimestampToken(timeStampResponse.getBytes(), TimestampType.CONTENT_TIMESTAMP);
-		} catch (TSPException | IOException | CMSException e) {
+		} catch (Exception e) {
 			throw new DSSException("Cannot create a content TimestampToken", e);
 		}
 	}

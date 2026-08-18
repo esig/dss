@@ -128,7 +128,7 @@ public class PAdESService extends AbstractSignatureService<PAdESSignatureParamet
 		TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(parameters.getDigestAlgorithm(), messageDigest.getValue());
 		try {
 			return new TimestampToken(timeStampResponse.getBytes(), TimestampType.CONTENT_TIMESTAMP);
-		} catch (TSPException | IOException | CMSException e) {
+		} catch (Exception e) {
 			throw new DSSException("Cannot obtain the content timestamp", e);
 		}
 	}

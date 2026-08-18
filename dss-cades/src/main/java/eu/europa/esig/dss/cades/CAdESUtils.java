@@ -693,7 +693,7 @@ public final class CAdESUtils {
 			if (signedData != null) {
 				return new TimeStampToken(signedData);
 			}
-		} catch (IOException | CMSException | TSPException e) {
+		} catch (Exception e) {
 			LOG.warn("The given TimeStampToken cannot be created! Reason: [{}]", e.getMessage(), e);
 		}
 		return null;

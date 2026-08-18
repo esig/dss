@@ -148,12 +148,12 @@ class CAdESTestDocumentExtenderTest extends AbstractTestDocumentExtender {
 
     @Override
     protected String parseErrorMessage() {
-        return "Not a valid CAdES file";
+        return "Not a valid CMS file";
     }
 
     @Override
     protected String noSignatureErrorMessage() {
-        return "Not a valid CAdES file.";
+        return "Not a valid CMS file.";
     }
 
 }

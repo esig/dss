@@ -304,7 +304,7 @@ class CAdESEvidenceRecordDigestBuilderTest {
     void notCmsTest() {
         DSSDocument document = new InMemoryDocument("test 123".getBytes());
         Exception exception = assertThrows(IllegalInputException.class, () -> new CAdESEvidenceRecordDigestBuilder(document).build());
-        assertTrue(exception.getMessage().contains("Not a valid CAdES file."));
+        assertTrue(exception.getMessage().contains("Not a valid CMS file."));
     }
 
 }
