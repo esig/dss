@@ -2,7 +2,7 @@
 <dssc:SecuritySuitabilityPolicy xmlns:dssc="urn:ietf:params:xml:ns:dssc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:etsi19322="http://uri.etsi.org/19322/v1.1.1#" id="idvalue0" lang="en" version="1">
   <dssc:PolicyName>
     <dssc:Name>ETSI ESI Cryptographic Suites</dssc:Name>
-    <dssc:ObjectIdentifier>1.5.1</dssc:ObjectIdentifier>
+    <dssc:ObjectIdentifier>2.1.1</dssc:ObjectIdentifier>
     <dssc:URI/>
   </dssc:PolicyName>
   <dssc:Publisher>
@@ -10,7 +10,7 @@
     <dssc:Address>06921 Sophia Antipolis CEDEX</dssc:Address>
     <dssc:URI/>
   </dssc:Publisher>
-  <dssc:PolicyIssueDate>2024-10-13T00:00:00.000+00:00</dssc:PolicyIssueDate>
+  <dssc:PolicyIssueDate>2026-02-01T00:00:00.000+00:00</dssc:PolicyIssueDate>
   <dssc:Usage>Signature-related assessment of suitability of cryptographic mechanisms and suites</dssc:Usage>
 
 
@@ -30,7 +30,7 @@
       </etsi19322:MoreDetails>
     </dssc:Evaluation>
   </dssc:Algorithm>
-  
+
   <dssc:Algorithm>
     <dssc:AlgorithmIdentifier>
       <dssc:Name>SHA1</dssc:Name>
@@ -128,7 +128,7 @@
 
   <dssc:Algorithm>
     <dssc:AlgorithmIdentifier>
-      <dssc:Name>SHA3-384</dssc:Name> 
+      <dssc:Name>SHA3-384</dssc:Name>
       <dssc:ObjectIdentifier>2.16.840.1.101.3.4.2.9</dssc:ObjectIdentifier>
 	  <dssc:URI>http://www.w3.org/2007/05/xmldsig-more#sha3-384</dssc:URI>
     </dssc:AlgorithmIdentifier>
@@ -373,7 +373,7 @@
         <dssc:Min>1900</dssc:Min>
       </dssc:Parameter>
       <dssc:Validity>
-        <dssc:End>2029-01-01+00:00</dssc:End>
+        <dssc:End>2027-01-01+00:00</dssc:End>
       </dssc:Validity>
       <etsi19322:MoreDetails>
       	<etsi19322:Recommendation>L</etsi19322:Recommendation>
@@ -440,7 +440,7 @@
         <dssc:Min>1900</dssc:Min>
       </dssc:Parameter>
       <dssc:Validity>
-        <dssc:End>2029-01-01+00:00</dssc:End>
+        <dssc:End>2027-01-01+00:00</dssc:End>
       </dssc:Validity>
       <etsi19322:MoreDetails>
       	<etsi19322:Recommendation>L</etsi19322:Recommendation>
@@ -451,11 +451,9 @@
       <dssc:Parameter name="moduluslength">
         <dssc:Min>3000</dssc:Min>
       </dssc:Parameter>
-      <dssc:Validity>
-        <dssc:End>2029-01-01+00:00</dssc:End>
-      </dssc:Validity>
+      <dssc:Validity/>
       <etsi19322:MoreDetails>
-      	<etsi19322:Recommendation>L</etsi19322:Recommendation>
+      	<etsi19322:Recommendation>R</etsi19322:Recommendation>
       </etsi19322:MoreDetails>
     </dssc:Evaluation>
   </dssc:Algorithm>
@@ -507,7 +505,7 @@
         <dssc:Min>1900</dssc:Min>
       </dssc:Parameter>
       <dssc:Validity>
-        <dssc:End>2029-01-01+00:00</dssc:End>
+        <dssc:End>2027-01-01+00:00</dssc:End>
       </dssc:Validity>
       <etsi19322:MoreDetails>
         <etsi19322:Recommendation>L</etsi19322:Recommendation>
@@ -518,11 +516,9 @@
       <dssc:Parameter name="moduluslength">
         <dssc:Min>3000</dssc:Min>
       </dssc:Parameter>
-      <dssc:Validity>
-        <dssc:End>2029-01-01+00:00</dssc:End>
-      </dssc:Validity>
+      <dssc:Validity/>
       <etsi19322:MoreDetails>
-        <etsi19322:Recommendation>L</etsi19322:Recommendation>
+        <etsi19322:Recommendation>R</etsi19322:Recommendation>
       </etsi19322:MoreDetails>
     </dssc:Evaluation>
   </dssc:Algorithm>
@@ -574,7 +570,7 @@
         <dssc:Min>1900</dssc:Min>
       </dssc:Parameter>
       <dssc:Validity>
-        <dssc:End>2029-01-01+00:00</dssc:End>
+        <dssc:End>2027-01-01+00:00</dssc:End>
       </dssc:Validity>
       <etsi19322:MoreDetails>
         <etsi19322:Recommendation>L</etsi19322:Recommendation>
@@ -585,11 +581,9 @@
       <dssc:Parameter name="moduluslength">
         <dssc:Min>3000</dssc:Min>
       </dssc:Parameter>
-      <dssc:Validity>
-        <dssc:End>2029-01-01+00:00</dssc:End>
-      </dssc:Validity>
+      <dssc:Validity/>
       <etsi19322:MoreDetails>
-        <etsi19322:Recommendation>L</etsi19322:Recommendation>
+        <etsi19322:Recommendation>R</etsi19322:Recommendation>
       </etsi19322:MoreDetails>
     </dssc:Evaluation>
   </dssc:Algorithm>
@@ -641,7 +635,7 @@
         <dssc:Min>1900</dssc:Min>
       </dssc:Parameter>
       <dssc:Validity>
-        <dssc:End>2029-01-01+00:00</dssc:End>
+        <dssc:End>2027-01-01+00:00</dssc:End>
       </dssc:Validity>
       <etsi19322:MoreDetails>
         <etsi19322:Recommendation>L</etsi19322:Recommendation>
@@ -652,11 +646,9 @@
       <dssc:Parameter name="moduluslength">
         <dssc:Min>3000</dssc:Min>
       </dssc:Parameter>
-      <dssc:Validity>
-        <dssc:End>2029-01-01+00:00</dssc:End>
-      </dssc:Validity>
+      <dssc:Validity/>
       <etsi19322:MoreDetails>
-        <etsi19322:Recommendation>L</etsi19322:Recommendation>
+        <etsi19322:Recommendation>R</etsi19322:Recommendation>
       </etsi19322:MoreDetails>
     </dssc:Evaluation>
   </dssc:Algorithm>
@@ -708,7 +700,7 @@
         <dssc:Min>1900</dssc:Min>
       </dssc:Parameter>
       <dssc:Validity>
-        <dssc:End>2029-01-01+00:00</dssc:End>
+        <dssc:End>2027-01-01+00:00</dssc:End>
       </dssc:Validity>
       <etsi19322:MoreDetails>
         <etsi19322:Recommendation>L</etsi19322:Recommendation>
@@ -719,11 +711,9 @@
       <dssc:Parameter name="moduluslength">
         <dssc:Min>3000</dssc:Min>
       </dssc:Parameter>
-      <dssc:Validity>
-        <dssc:End>2029-01-01+00:00</dssc:End>
-      </dssc:Validity>
+      <dssc:Validity/>
       <etsi19322:MoreDetails>
-        <etsi19322:Recommendation>L</etsi19322:Recommendation>
+        <etsi19322:Recommendation>R</etsi19322:Recommendation>
       </etsi19322:MoreDetails>
     </dssc:Evaluation>
   </dssc:Algorithm>
@@ -775,7 +765,7 @@
         <dssc:Min>1900</dssc:Min>
       </dssc:Parameter>
       <dssc:Validity>
-        <dssc:End>2029-01-01+00:00</dssc:End>
+        <dssc:End>2027-01-01+00:00</dssc:End>
       </dssc:Validity>
       <etsi19322:MoreDetails>
         <etsi19322:Recommendation>L</etsi19322:Recommendation>
@@ -786,11 +776,9 @@
       <dssc:Parameter name="moduluslength">
         <dssc:Min>3000</dssc:Min>
       </dssc:Parameter>
-      <dssc:Validity>
-        <dssc:End>2029-01-01+00:00</dssc:End>
-      </dssc:Validity>
+      <dssc:Validity/>
       <etsi19322:MoreDetails>
-        <etsi19322:Recommendation>L</etsi19322:Recommendation>
+        <etsi19322:Recommendation>R</etsi19322:Recommendation>
       </etsi19322:MoreDetails>
     </dssc:Evaluation>
   </dssc:Algorithm>
@@ -909,7 +897,7 @@
         <dssc:Min>1900</dssc:Min>
       </dssc:Parameter>
       <dssc:Validity>
-        <dssc:End>2029-01-01+00:00</dssc:End>
+        <dssc:End>2027-01-01+00:00</dssc:End>
       </dssc:Validity>
       <etsi19322:MoreDetails>
         <etsi19322:Recommendation>L</etsi19322:Recommendation>
@@ -958,7 +946,7 @@
         <dssc:Min>200</dssc:Min>
       </dssc:Parameter>
       <dssc:Validity>
-        <dssc:End>2029-01-01+00:00</dssc:End>
+        <dssc:End>2027-01-01+00:00</dssc:End>
       </dssc:Validity>
       <etsi19322:MoreDetails>
       	<etsi19322:Recommendation>L</etsi19322:Recommendation>

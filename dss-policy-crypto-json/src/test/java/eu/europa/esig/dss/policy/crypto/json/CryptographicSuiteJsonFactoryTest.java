@@ -50,6 +50,23 @@ class CryptographicSuiteJsonFactoryTest {
     }
 
     @Test
+    void v211serviceLoaderTest() {
+        FileDocument cryptoSuite = new FileDocument("src/test/resources/19312MachineReadable-v2.1.1.json");
+
+        ServiceLoader<CryptographicSuiteFactory> loader = ServiceLoader.load(CryptographicSuiteFactory.class);
+        Iterator<CryptographicSuiteFactory> factoryOptions = loader.iterator();
+
+        CryptographicSuiteCatalogue cryptographicSuiteCatalogue = null;
+        while (factoryOptions.hasNext()) {
+            CryptographicSuiteFactory factory = factoryOptions.next();
+            if (factory.isSupported(cryptoSuite)) {
+                cryptographicSuiteCatalogue = factory.loadCryptographicSuite(cryptoSuite);
+            }
+        }
+        assertNotNull(cryptographicSuiteCatalogue);
+    }
+
+    @Test
     void serviceLoaderDefaultTest() {
         ServiceLoader<CryptographicSuiteFactory> loader = ServiceLoader.load(CryptographicSuiteFactory.class);
         Iterator<CryptographicSuiteFactory> factoryOptions = loader.iterator();

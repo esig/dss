@@ -45,6 +45,19 @@ class CryptographicSuiteXmlFacadeTest {
     }
 
     @Test
+    void V211test() throws Exception {
+        SecuritySuitabilityPolicyType securitySuitabilityPolicy = CryptographicSuiteXmlFacade.newFacade()
+                .unmarshall(new File("src/test/resources/19312MachineReadable-v2.1.1.xml"));
+        assertNotNull(securitySuitabilityPolicy);
+
+        String marshall = CryptographicSuiteXmlFacade.newFacade().marshall(securitySuitabilityPolicy);
+        assertNotNull(marshall);
+
+        SecuritySuitabilityPolicyType scp = CryptographicSuiteXmlFacade.newFacade().unmarshall(marshall);
+        assertNotNull(scp);
+    }
+
+    @Test
     void testFailure() throws Exception {
         // TODO : the original XML schema fails XSD validation
         File constraintsFile = new File("src/test/resources/19312MachineReadable.xml");

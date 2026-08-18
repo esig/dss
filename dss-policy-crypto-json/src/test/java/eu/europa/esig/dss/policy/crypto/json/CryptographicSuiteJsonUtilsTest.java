@@ -41,6 +41,15 @@ class CryptographicSuiteJsonUtilsTest {
     }
 
     @Test
+    void validv211Test() {
+        JsonObjectWrapper jsonObject = new JSONParser().parse(
+                CryptographicSuiteJsonUtilsTest.class.getResourceAsStream("/19312MachineReadable-v2.1.1.json"));
+
+        List<String> errors = CryptographicSuiteJsonUtils.getInstance().validateAgainstSchema(jsonObject);
+        assertTrue(errors.isEmpty(), errors.toString());
+    }
+
+    @Test
     void invalidTest() {
         // TODO : the original JSON schema fails validation
         JsonObjectWrapper jsonObject = new JSONParser().parse(

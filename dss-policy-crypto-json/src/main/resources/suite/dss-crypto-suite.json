@@ -2,13 +2,13 @@
    "SecuritySuitabilityPolicy":{
       "PolicyName":{
          "Name":"ETSI ESI Cryptographic Suites",
-         "ObjectIdentifier":"1.5.1"
+         "ObjectIdentifier":"2.1.1"
       },
       "Publisher":{
          "Name":"European Telecommunications Standards Institute",
          "Address":"06921 Sophia Antipolis CEDEX"
       },
-      "PolicyIssueDate":"2024-10-13T00:00:00.000+00:00",
+      "PolicyIssueDate":"2026-02-01T00:00:00.000+00:00",
       "Usage":"Signature-related assessment of suitability of cryptographic mechanisms and suites",
       "Algorithm":[
          {
@@ -353,7 +353,7 @@
                },
                {
                   "Validity":{
-                     "End":"2029-01-01"
+                     "End":"2027-01-01"
                   },
                   "Recommendation":"L",
                   "Parameter":[
@@ -422,7 +422,7 @@
                },
                {
                   "Validity":{
-                     "End":"2029-01-01"
+                     "End":"2027-01-01"
                   },
                   "Recommendation":"L",
                   "Parameter":[
@@ -434,9 +434,8 @@
                },
                {
                   "Validity":{
-                     "End":"2029-01-01"
                   },
-                  "Recommendation":"L",
+                  "Recommendation":"R",
                   "Parameter":[
                      {
                         "Min":3000,
@@ -491,7 +490,7 @@
                },
                {
                   "Validity":{
-                     "End":"2029-01-01"
+                     "End":"2027-01-01"
                   },
                   "Recommendation":"L",
                   "Parameter":[
@@ -503,9 +502,8 @@
                },
                {
                   "Validity":{
-                     "End":"2029-01-01"
                   },
-                  "Recommendation":"L",
+                  "Recommendation":"R",
                   "Parameter":[
                      {
                         "Min":3000,
@@ -560,7 +558,7 @@
                },
                {
                   "Validity":{
-                     "End":"2029-01-01"
+                     "End":"2027-01-01"
                   },
                   "Recommendation":"L",
                   "Parameter":[
@@ -572,9 +570,8 @@
                },
                {
                   "Validity":{
-                     "End":"2029-01-01"
                   },
-                  "Recommendation":"L",
+                  "Recommendation":"R",
                   "Parameter":[
                      {
                         "Min":3000,
@@ -628,7 +625,7 @@
                },
                {
                   "Validity":{
-                     "End":"2029-01-01"
+                     "End":"2027-01-01"
                   },
                   "Recommendation":"L",
                   "Parameter":[
@@ -640,9 +637,8 @@
                },
                {
                   "Validity":{
-                     "End":"2029-01-01"
                   },
-                  "Recommendation":"L",
+                  "Recommendation":"R",
                   "Parameter":[
                      {
                         "Min":3000,
@@ -696,7 +692,7 @@
                },
                {
                   "Validity":{
-                     "End":"2029-01-01"
+                     "End":"2027-01-01"
                   },
                   "Recommendation":"L",
                   "Parameter":[
@@ -708,9 +704,8 @@
                },
                {
                   "Validity":{
-                     "End":"2029-01-01"
                   },
-                  "Recommendation":"L",
+                  "Recommendation":"R",
                   "Parameter":[
                      {
                         "Min":3000,
@@ -764,7 +759,7 @@
                },
                {
                   "Validity":{
-                     "End":"2029-01-01"
+                     "End":"2027-01-01"
                   },
                   "Recommendation":"L",
                   "Parameter":[
@@ -776,9 +771,8 @@
                },
                {
                   "Validity":{
-                     "End":"2029-01-01"
                   },
-                  "Recommendation":"L",
+                  "Recommendation":"R",
                   "Parameter":[
                      {
                         "Min":3000,
@@ -902,7 +896,7 @@
                },
                {
                   "Validity":{
-                     "End":"2029-01-01"
+                     "End":"2027-01-01"
                   },
                   "Recommendation":"L",
                   "Parameter":[
@@ -949,7 +943,7 @@
                },
                {
                   "Validity":{
-                     "End":"2029-01-01"
+                     "End":"2027-01-01"
                   },
                   "Recommendation":"L",
                   "Parameter":[
