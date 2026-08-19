@@ -113,24 +113,26 @@ public class LoTEExpirationAndSignatureCheckStrategy implements SynchronizationS
 		return isSyncSupported(documentList, acceptExpiredListOfLists, acceptInvalidListOfLists);
 	}
 
-	private boolean isSyncSupported(LoTEInfo tlInfo, boolean syncExpired, boolean syncInvalid) {
+	private boolean isSyncSupported(LoTEInfo loteInfo, boolean syncExpired, boolean syncInvalid) {
 
 		if (!syncExpired) {
-			LoTEParsingInfoRecord parsingCacheInfo = tlInfo.getParsingCacheInfo();
-			if (parsingCacheInfo != null && parsingCacheInfo.isResultExist()) {
-				Date currentDate = new Date();
-				Date nextUpdateDate = parsingCacheInfo.getNextUpdateDate();
-				if (nextUpdateDate == null || currentDate.after(nextUpdateDate)) {
-					return false;
-				}
+			LoTEParsingInfoRecord parsingCacheInfo = loteInfo.getParsingCacheInfo();
+			if (parsingCacheInfo == null || !parsingCacheInfo.isResultExist()) {
+				return false;
+			}
+			Date currentDate = new Date();
+			Date nextUpdateDate = parsingCacheInfo.getNextUpdateDate();
+			if (nextUpdateDate == null || currentDate.after(nextUpdateDate)) {
+				return false;
 			}
 		}
 
 		if (!syncInvalid) {
-			ValidationInfoRecord validationCacheInfo = tlInfo.getValidationCacheInfo();
-			if (validationCacheInfo != null && validationCacheInfo.isResultExist()) {
-				return validationCacheInfo.isValid();
+			ValidationInfoRecord validationCacheInfo = loteInfo.getValidationCacheInfo();
+			if (validationCacheInfo == null || !validationCacheInfo.isResultExist()) {
+				return false;
 			}
+			return validationCacheInfo.isValid();
 		}
 
 		return true;

@@ -25,6 +25,7 @@ import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.job.cache.CacheCleaner;
+import eu.europa.esig.dss.validation.job.sync.AcceptAllStrategy;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -566,7 +567,9 @@ class XmlLoTEValidationJobTest {
     void noSignatureTest() {
         updateLoTELocation("src/test/resources/lote-pubeaa-no-sig.xml");
 
-        loteValidationJob = getValidationJob();
+        TrustedEntitiesCertificateSource trustedEntitiesCertificateSource = new TrustedEntitiesCertificateSource();
+        loteValidationJob = getValidationJob(trustedEntitiesCertificateSource);
+        loteValidationJob.setSynchronizationStrategy(new AcceptAllStrategy<>());
         loteValidationJob.offlineRefresh();
 
         LoTEValidationJobSummary summary = loteValidationJob.getSummary();
@@ -592,13 +595,57 @@ class XmlLoTEValidationJobTest {
 
         assertNull(pidLoTE.getValidationCacheInfo().getIndication());
         assertNull(pidLoTE.getValidationCacheInfo().getSubIndication());
+
+        assertEquals(1, Utils.collectionSize(trustedEntitiesCertificateSource.getCertificates()));
+    }
+
+    @Test
+    void noSignatureSkipInvalidStrategyTest() {
+        updateLoTELocation("src/test/resources/lote-pubeaa-no-sig.xml");
+
+        LoTEExpirationAndSignatureCheckStrategy synchronizationStrategy = new LoTEExpirationAndSignatureCheckStrategy();
+        synchronizationStrategy.setAcceptExpiredList(true);
+        synchronizationStrategy.setAcceptInvalidList(false);
+
+        TrustedEntitiesCertificateSource trustedEntitiesCertificateSource = new TrustedEntitiesCertificateSource();
+        loteValidationJob = getValidationJob(trustedEntitiesCertificateSource);
+        loteValidationJob.setSynchronizationStrategy(synchronizationStrategy);
+        loteValidationJob.offlineRefresh();
+
+        LoTEValidationJobSummary summary = loteValidationJob.getSummary();
+
+        assertEquals(0, summary.getNumberOfProcessedLoLoTEs());
+        assertEquals(1, summary.getNumberOfProcessedLoTEs());
+
+        List<LoTEInfo> loteInfos = summary.getOtherLoTEInfos();
+        assertEquals(1, loteInfos.size());
+
+        LoTEInfo pidLoTE = loteInfos.get(0);
+
+        assertTrue(pidLoTE.getDownloadCacheInfo().isResultExist());
+        assertNull(pidLoTE.getDownloadCacheInfo().getExceptionMessage());
+        assertNull(pidLoTE.getDownloadCacheInfo().getExceptionStackTrace());
+        assertTrue(pidLoTE.getParsingCacheInfo().isResultExist());
+        assertNull(pidLoTE.getParsingCacheInfo().getExceptionMessage());
+        assertNull(pidLoTE.getParsingCacheInfo().getExceptionStackTrace());
+        assertFalse(pidLoTE.getValidationCacheInfo().isResultExist());
+        assertNotNull(pidLoTE.getValidationCacheInfo().getExceptionMessage());
+        assertEquals("Number of signatures must be equal to 1 (currently : 0)", pidLoTE.getValidationCacheInfo().getExceptionMessage());
+        assertNotNull(pidLoTE.getValidationCacheInfo().getExceptionStackTrace());
+
+        assertNull(pidLoTE.getValidationCacheInfo().getIndication());
+        assertNull(pidLoTE.getValidationCacheInfo().getSubIndication());
+
+        assertEquals(0, Utils.collectionSize(trustedEntitiesCertificateSource.getCertificates()));
     }
 
     @Test
     void twoSignaturesTest() {
         updateLoTELocation("src/test/resources/lote-pubeaa-two-sigs.xml");
 
-        loteValidationJob = getValidationJob();
+        TrustedEntitiesCertificateSource trustedEntitiesCertificateSource = new TrustedEntitiesCertificateSource();
+        loteValidationJob = getValidationJob(trustedEntitiesCertificateSource);
+        loteValidationJob.setSynchronizationStrategy(new AcceptAllStrategy<>());
         loteValidationJob.offlineRefresh();
 
         LoTEValidationJobSummary summary = loteValidationJob.getSummary();
@@ -624,6 +671,48 @@ class XmlLoTEValidationJobTest {
 
         assertNull(pidLoTE.getValidationCacheInfo().getIndication());
         assertNull(pidLoTE.getValidationCacheInfo().getSubIndication());
+
+        assertEquals(1, Utils.collectionSize(trustedEntitiesCertificateSource.getCertificates()));
+    }
+
+    @Test
+    void twoSignaturesSkipInvalidStrategyTest() {
+        updateLoTELocation("src/test/resources/lote-pubeaa-two-sigs.xml");
+
+        LoTEExpirationAndSignatureCheckStrategy synchronizationStrategy = new LoTEExpirationAndSignatureCheckStrategy();
+        synchronizationStrategy.setAcceptExpiredList(true);
+        synchronizationStrategy.setAcceptInvalidList(false);
+
+        TrustedEntitiesCertificateSource trustedEntitiesCertificateSource = new TrustedEntitiesCertificateSource();
+        loteValidationJob = getValidationJob(trustedEntitiesCertificateSource);
+        loteValidationJob.setSynchronizationStrategy(synchronizationStrategy);
+        loteValidationJob.offlineRefresh();
+
+        LoTEValidationJobSummary summary = loteValidationJob.getSummary();
+
+        assertEquals(0, summary.getNumberOfProcessedLoLoTEs());
+        assertEquals(1, summary.getNumberOfProcessedLoTEs());
+
+        List<LoTEInfo> loteInfos = summary.getOtherLoTEInfos();
+        assertEquals(1, loteInfos.size());
+
+        LoTEInfo pidLoTE = loteInfos.get(0);
+
+        assertTrue(pidLoTE.getDownloadCacheInfo().isResultExist());
+        assertNull(pidLoTE.getDownloadCacheInfo().getExceptionMessage());
+        assertNull(pidLoTE.getDownloadCacheInfo().getExceptionStackTrace());
+        assertTrue(pidLoTE.getParsingCacheInfo().isResultExist());
+        assertNull(pidLoTE.getParsingCacheInfo().getExceptionMessage());
+        assertNull(pidLoTE.getParsingCacheInfo().getExceptionStackTrace());
+        assertFalse(pidLoTE.getValidationCacheInfo().isResultExist());
+        assertNotNull(pidLoTE.getValidationCacheInfo().getExceptionMessage());
+        assertEquals("Number of signatures must be equal to 1 (currently : 2)", pidLoTE.getValidationCacheInfo().getExceptionMessage());
+        assertNotNull(pidLoTE.getValidationCacheInfo().getExceptionStackTrace());
+
+        assertNull(pidLoTE.getValidationCacheInfo().getIndication());
+        assertNull(pidLoTE.getValidationCacheInfo().getSubIndication());
+
+        assertEquals(0, Utils.collectionSize(trustedEntitiesCertificateSource.getCertificates()));
     }
 
     @Test
@@ -702,11 +791,16 @@ class XmlLoTEValidationJobTest {
         }
     }
 
+
     private LoTEValidationJob getValidationJob() {
+        return getValidationJob(new TrustedEntitiesCertificateSource());
+    }
+
+    private LoTEValidationJob getValidationJob(TrustedEntitiesCertificateSource trustedEntitiesCertificateSource) {
         loteValidationJob = new LoTEValidationJob();
         loteValidationJob.setOfflineDataLoader(offlineFileLoader);
         loteValidationJob.setLoTESources(getPUBEAAProviderListSource());
-        loteValidationJob.setTrustedEntitiesCertificateSource(new TrustedEntitiesCertificateSource());
+        loteValidationJob.setTrustedEntitiesCertificateSource(trustedEntitiesCertificateSource);
         loteValidationJob.setCacheCleaner(cacheCleaner);
         return loteValidationJob;
     }

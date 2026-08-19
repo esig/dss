@@ -20,6 +20,7 @@ import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.job.cache.CacheCleaner;
 import eu.europa.esig.dss.validation.job.cache.state.CacheStateEnum;
+import eu.europa.esig.dss.validation.job.sync.AcceptAllStrategy;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -503,6 +504,138 @@ class XmlLoLoTEValidationJobTest {
         assertNull(loloteInfo.getValidationCacheInfo().getExceptionStackTrace());
 
         assertEquals(1, Utils.collectionSize(trustedEntitiesCertificateSource.getCertificates()));
+    }
+
+    @Test
+    void loloteNoSigAcceptAllTest() {
+        updateLoLoTELocation("src/test/resources/lolote-no-sig.xml");
+
+        TrustedEntitiesCertificateSource trustedEntitiesCertificateSource = new TrustedEntitiesCertificateSource();
+        loteValidationJob = getValidationJob(trustedEntitiesCertificateSource);
+        loteValidationJob.setSynchronizationStrategy(new AcceptAllStrategy<>());
+        loteValidationJob.offlineRefresh();
+
+        LoTEValidationJobSummary summary = loteValidationJob.getSummary();
+
+        List<LoLoTEInfo> loloteInfos = summary.getLoLoTEInfos();
+        LoLoTEInfo loloteInfo = loloteInfos.get(0);
+
+        assertEquals(1, loloteInfo.getChildrenInfos().size());
+
+        assertTrue(loloteInfo.getDownloadCacheInfo().isResultExist());
+        assertNull(loloteInfo.getDownloadCacheInfo().getExceptionMessage());
+        assertNull(loloteInfo.getDownloadCacheInfo().getExceptionStackTrace());
+        assertTrue(loloteInfo.getParsingCacheInfo().isResultExist());
+        assertNull(loloteInfo.getParsingCacheInfo().getExceptionMessage());
+        assertNull(loloteInfo.getParsingCacheInfo().getExceptionStackTrace());
+        assertFalse(loloteInfo.getValidationCacheInfo().isResultExist());
+        assertNotNull(loloteInfo.getValidationCacheInfo().getExceptionMessage());
+        assertEquals("Number of signatures must be equal to 1 (currently : 0)",
+                loloteInfo.getValidationCacheInfo().getExceptionMessage());
+        assertNotNull(loloteInfo.getValidationCacheInfo().getExceptionStackTrace());
+
+        assertEquals(1, Utils.collectionSize(trustedEntitiesCertificateSource.getCertificates()));
+    }
+
+    @Test
+    void loloteNoSigSkipInvalidStrategyTest() {
+        updateLoLoTELocation("src/test/resources/lolote-no-sig.xml");
+
+        LoTEExpirationAndSignatureCheckStrategy synchronizationStrategy = new LoTEExpirationAndSignatureCheckStrategy();
+        synchronizationStrategy.setAcceptExpiredListOfLists(true);
+        synchronizationStrategy.setAcceptInvalidListOfLists(false);
+
+        TrustedEntitiesCertificateSource trustedEntitiesCertificateSource = new TrustedEntitiesCertificateSource();
+        loteValidationJob = getValidationJob(trustedEntitiesCertificateSource);
+        loteValidationJob.setSynchronizationStrategy(synchronizationStrategy);
+        loteValidationJob.offlineRefresh();
+
+        LoTEValidationJobSummary summary = loteValidationJob.getSummary();
+
+        List<LoLoTEInfo> loloteInfos = summary.getLoLoTEInfos();
+        LoLoTEInfo loloteInfo = loloteInfos.get(0);
+
+        assertEquals(1, loloteInfo.getChildrenInfos().size());
+
+        assertTrue(loloteInfo.getDownloadCacheInfo().isResultExist());
+        assertNull(loloteInfo.getDownloadCacheInfo().getExceptionMessage());
+        assertNull(loloteInfo.getDownloadCacheInfo().getExceptionStackTrace());
+        assertTrue(loloteInfo.getParsingCacheInfo().isResultExist());
+        assertNull(loloteInfo.getParsingCacheInfo().getExceptionMessage());
+        assertNull(loloteInfo.getParsingCacheInfo().getExceptionStackTrace());
+        assertFalse(loloteInfo.getValidationCacheInfo().isResultExist());
+        assertNotNull(loloteInfo.getValidationCacheInfo().getExceptionMessage());
+        assertEquals("Number of signatures must be equal to 1 (currently : 0)",
+                loloteInfo.getValidationCacheInfo().getExceptionMessage());
+        assertNotNull(loloteInfo.getValidationCacheInfo().getExceptionStackTrace());
+
+        assertEquals(0, Utils.collectionSize(trustedEntitiesCertificateSource.getCertificates()));
+    }
+
+    @Test
+    void loloteTwoSigAcceptAllTest() {
+        updateLoLoTELocation("src/test/resources/lolote-two-sigs.xml");
+
+        TrustedEntitiesCertificateSource trustedEntitiesCertificateSource = new TrustedEntitiesCertificateSource();
+        loteValidationJob = getValidationJob(trustedEntitiesCertificateSource);
+        loteValidationJob.setSynchronizationStrategy(new AcceptAllStrategy<>());
+        loteValidationJob.offlineRefresh();
+
+        LoTEValidationJobSummary summary = loteValidationJob.getSummary();
+
+        List<LoLoTEInfo> loloteInfos = summary.getLoLoTEInfos();
+        LoLoTEInfo loloteInfo = loloteInfos.get(0);
+
+        assertEquals(1, loloteInfo.getChildrenInfos().size());
+
+        assertTrue(loloteInfo.getDownloadCacheInfo().isResultExist());
+        assertNull(loloteInfo.getDownloadCacheInfo().getExceptionMessage());
+        assertNull(loloteInfo.getDownloadCacheInfo().getExceptionStackTrace());
+        assertTrue(loloteInfo.getParsingCacheInfo().isResultExist());
+        assertNull(loloteInfo.getParsingCacheInfo().getExceptionMessage());
+        assertNull(loloteInfo.getParsingCacheInfo().getExceptionStackTrace());
+        assertFalse(loloteInfo.getValidationCacheInfo().isResultExist());
+        assertNotNull(loloteInfo.getValidationCacheInfo().getExceptionMessage());
+        assertEquals("Number of signatures must be equal to 1 (currently : 2)",
+                loloteInfo.getValidationCacheInfo().getExceptionMessage());
+        assertNotNull(loloteInfo.getValidationCacheInfo().getExceptionStackTrace());
+
+        assertEquals(1, Utils.collectionSize(trustedEntitiesCertificateSource.getCertificates()));
+    }
+
+    @Test
+    void loloteTwoSigSkipInvalidStrategyTest() {
+        updateLoLoTELocation("src/test/resources/lolote-two-sigs.xml");
+
+        LoTEExpirationAndSignatureCheckStrategy synchronizationStrategy = new LoTEExpirationAndSignatureCheckStrategy();
+        synchronizationStrategy.setAcceptExpiredListOfLists(true);
+        synchronizationStrategy.setAcceptInvalidListOfLists(false);
+
+        TrustedEntitiesCertificateSource trustedEntitiesCertificateSource = new TrustedEntitiesCertificateSource();
+        loteValidationJob = getValidationJob(trustedEntitiesCertificateSource);
+        loteValidationJob.setSynchronizationStrategy(synchronizationStrategy);
+        loteValidationJob.offlineRefresh();
+
+        LoTEValidationJobSummary summary = loteValidationJob.getSummary();
+
+        List<LoLoTEInfo> loloteInfos = summary.getLoLoTEInfos();
+        LoLoTEInfo loloteInfo = loloteInfos.get(0);
+
+        assertEquals(1, loloteInfo.getChildrenInfos().size());
+
+        assertTrue(loloteInfo.getDownloadCacheInfo().isResultExist());
+        assertNull(loloteInfo.getDownloadCacheInfo().getExceptionMessage());
+        assertNull(loloteInfo.getDownloadCacheInfo().getExceptionStackTrace());
+        assertTrue(loloteInfo.getParsingCacheInfo().isResultExist());
+        assertNull(loloteInfo.getParsingCacheInfo().getExceptionMessage());
+        assertNull(loloteInfo.getParsingCacheInfo().getExceptionStackTrace());
+        assertFalse(loloteInfo.getValidationCacheInfo().isResultExist());
+        assertNotNull(loloteInfo.getValidationCacheInfo().getExceptionMessage());
+        assertEquals("Number of signatures must be equal to 1 (currently : 2)",
+                loloteInfo.getValidationCacheInfo().getExceptionMessage());
+        assertNotNull(loloteInfo.getValidationCacheInfo().getExceptionStackTrace());
+
+        assertEquals(0, Utils.collectionSize(trustedEntitiesCertificateSource.getCertificates()));
     }
 
     @Test

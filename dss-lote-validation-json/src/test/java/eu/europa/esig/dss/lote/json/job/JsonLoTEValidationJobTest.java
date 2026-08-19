@@ -540,10 +540,11 @@ class JsonLoTEValidationJobTest {
     }
 
     @Test
-    void jsonSerializationTest() {
-        updateLoTELocation("src/test/resources/pid-providers-json-serialization.json");
+    void pidProvidersNoSigTest() {
+        updateLoTELocation("src/test/resources/pid-providers-no-sig.json");
 
-        loteValidationJob = getValidationJob();
+        TrustedEntitiesCertificateSource trustedEntitiesCertificateSource = new TrustedEntitiesCertificateSource();
+        loteValidationJob = getValidationJob(trustedEntitiesCertificateSource);
         loteValidationJob.offlineRefresh();
 
         LoTEValidationJobSummary summary = loteValidationJob.getSummary();
@@ -559,6 +560,8 @@ class JsonLoTEValidationJobTest {
         assertFalse(pidLoTE.getDownloadCacheInfo().isResultExist());
         assertTrue(pidLoTE.getDownloadCacheInfo().isError());
         assertNotNull(pidLoTE.getDownloadCacheInfo().getExceptionMessage());
+        assertEquals("The document obtained from URL 'http://dss.nowina.lu/pid-providers.json' is " +
+                "not a valid JWS Compact Serialization signature!", pidLoTE.getDownloadCacheInfo().getExceptionMessage());
         assertNotNull(pidLoTE.getDownloadCacheInfo().getExceptionStackTrace());
         assertFalse(pidLoTE.getParsingCacheInfo().isResultExist());
         assertFalse(pidLoTE.getParsingCacheInfo().isError());
@@ -567,6 +570,43 @@ class JsonLoTEValidationJobTest {
         assertFalse(pidLoTE.getValidationCacheInfo().isResultExist());
         assertNull(pidLoTE.getValidationCacheInfo().getExceptionMessage());
         assertNull(pidLoTE.getValidationCacheInfo().getExceptionStackTrace());
+
+        assertEquals(0, Utils.collectionSize(trustedEntitiesCertificateSource.getCertificates()));
+    }
+
+    @Test
+    void jsonSerializationTest() {
+        updateLoTELocation("src/test/resources/pid-providers-json-serialization.json");
+
+        TrustedEntitiesCertificateSource trustedEntitiesCertificateSource = new TrustedEntitiesCertificateSource();
+        loteValidationJob = getValidationJob(trustedEntitiesCertificateSource);
+        loteValidationJob.offlineRefresh();
+
+        LoTEValidationJobSummary summary = loteValidationJob.getSummary();
+
+        assertEquals(0, summary.getNumberOfProcessedLoLoTEs());
+        assertEquals(1, summary.getNumberOfProcessedLoTEs());
+
+        List<LoTEInfo> loteInfos = summary.getOtherLoTEInfos();
+        assertEquals(1, loteInfos.size());
+
+        LoTEInfo pidLoTE = loteInfos.get(0);
+
+        assertFalse(pidLoTE.getDownloadCacheInfo().isResultExist());
+        assertTrue(pidLoTE.getDownloadCacheInfo().isError());
+        assertNotNull(pidLoTE.getDownloadCacheInfo().getExceptionMessage());
+        assertEquals("The document obtained from URL 'http://dss.nowina.lu/pid-providers.json' is " +
+                "not a valid JWS Compact Serialization signature!", pidLoTE.getDownloadCacheInfo().getExceptionMessage());
+        assertNotNull(pidLoTE.getDownloadCacheInfo().getExceptionStackTrace());
+        assertFalse(pidLoTE.getParsingCacheInfo().isResultExist());
+        assertFalse(pidLoTE.getParsingCacheInfo().isError());
+        assertNull(pidLoTE.getParsingCacheInfo().getExceptionMessage());
+        assertNull(pidLoTE.getParsingCacheInfo().getExceptionStackTrace());
+        assertFalse(pidLoTE.getValidationCacheInfo().isResultExist());
+        assertNull(pidLoTE.getValidationCacheInfo().getExceptionMessage());
+        assertNull(pidLoTE.getValidationCacheInfo().getExceptionStackTrace());
+
+        assertEquals(0, Utils.collectionSize(trustedEntitiesCertificateSource.getCertificates()));
     }
 
     @Test

@@ -1042,10 +1042,25 @@ class TLValidationJobTest {
 	}
 	
 	@Test
-	void tlTwoSignaturesTest() {
+	void tlTwoSignaturesAcceptAllStrategyTest() {
 		updateTLUrl("src/test/resources/lotlCache/CZ_two-sigs.xml");
-		
-		TLValidationJobSummary summary = getTLValidationJob().getSummary();
+
+		TrustedListsCertificateSource trustedListsCertificateSource = new TrustedListsCertificateSource();
+
+		FileCacheDataLoader fileCacheDataLoader = new FileCacheDataLoader();
+		fileCacheDataLoader.setCacheExpirationTime(0);
+		fileCacheDataLoader.setDataLoader(new MockDataLoader(urlMap));
+		fileCacheDataLoader.setFileCacheDirectory(cacheDirectory);
+
+		TLValidationJob tlValidationJob = new TLValidationJob();
+		tlValidationJob.setOnlineDataLoader(fileCacheDataLoader);
+		tlValidationJob.setCacheCleaner(cacheCleaner);
+		tlValidationJob.setTrustedListSources(czSource);
+		tlValidationJob.setTrustedListCertificateSource(trustedListsCertificateSource);
+		tlValidationJob.setSynchronizationStrategy(new AcceptAllStrategy<>());
+		tlValidationJob.onlineRefresh();
+
+		TLValidationJobSummary summary = tlValidationJob.getSummary();
 		
 		assertEquals(0, summary.getNumberOfProcessedLOTLs());
 		assertEquals(1, summary.getNumberOfProcessedTLs());
@@ -1071,20 +1086,37 @@ class TLValidationJobTest {
 		
 		assertNull(czTL.getValidationCacheInfo().getIndication());
 		assertNull(czTL.getValidationCacheInfo().getSubIndication());
+
+		assertTrue(Utils.isCollectionNotEmpty(trustedListsCertificateSource.getCertificates()));
 	}
 	
 	@Test
-	void tlNoSignaturesTest() {
+	void tlNoSignatureAcceptAllStrategyTest() {
 		updateTLUrl("src/test/resources/lotlCache/CZ_no-sig.xml");
-		
-		TLValidationJobSummary summary = getTLValidationJob().getSummary();
-		
+
+		TrustedListsCertificateSource trustedListsCertificateSource = new TrustedListsCertificateSource();
+
+		FileCacheDataLoader fileCacheDataLoader = new FileCacheDataLoader();
+		fileCacheDataLoader.setCacheExpirationTime(0);
+		fileCacheDataLoader.setDataLoader(new MockDataLoader(urlMap));
+		fileCacheDataLoader.setFileCacheDirectory(cacheDirectory);
+
+		TLValidationJob tlValidationJob = new TLValidationJob();
+		tlValidationJob.setOnlineDataLoader(fileCacheDataLoader);
+		tlValidationJob.setCacheCleaner(cacheCleaner);
+		tlValidationJob.setTrustedListSources(czSource);
+		tlValidationJob.setTrustedListCertificateSource(trustedListsCertificateSource);
+		tlValidationJob.setSynchronizationStrategy(new AcceptAllStrategy<>());
+		tlValidationJob.onlineRefresh();
+
+		TLValidationJobSummary summary = tlValidationJob.getSummary();
+
 		assertEquals(0, summary.getNumberOfProcessedLOTLs());
 		assertEquals(1, summary.getNumberOfProcessedTLs());
-		
+
 		List<TLInfo> tlInfos = summary.getOtherTLInfos();
 		assertEquals(1, tlInfos.size());
-		
+
 		TLInfo czTL = tlInfos.get(0);
 
 		assertTrue(czTL.getDownloadCacheInfo().isResultExist());
@@ -1097,9 +1129,111 @@ class TLValidationJobTest {
 		assertNotNull(czTL.getValidationCacheInfo().getExceptionMessage());
 		assertEquals("Number of signatures must be equal to 1 (currently : 0)", czTL.getValidationCacheInfo().getExceptionMessage());
 		assertNotNull(czTL.getValidationCacheInfo().getExceptionStackTrace());
-		
+
 		assertNull(czTL.getValidationCacheInfo().getIndication());
 		assertNull(czTL.getValidationCacheInfo().getSubIndication());
+
+		assertTrue(Utils.isCollectionNotEmpty(trustedListsCertificateSource.getCertificates()));
+	}
+
+	@Test
+	void tlNoSignatureSkipInvalidStrategyTest() {
+		updateTLUrl("src/test/resources/lotlCache/CZ_no-sig.xml");
+
+		TrustedListsCertificateSource trustedListsCertificateSource = new TrustedListsCertificateSource();
+
+		FileCacheDataLoader fileCacheDataLoader = new FileCacheDataLoader();
+		fileCacheDataLoader.setCacheExpirationTime(0);
+		fileCacheDataLoader.setDataLoader(new MockDataLoader(urlMap));
+		fileCacheDataLoader.setFileCacheDirectory(cacheDirectory);
+
+		ExpirationAndSignatureCheckStrategy synchronizationStrategy = new ExpirationAndSignatureCheckStrategy();
+		synchronizationStrategy.setAcceptExpiredTrustedList(true);
+		synchronizationStrategy.setAcceptInvalidTrustedList(false);
+
+		TLValidationJob tlValidationJob = new TLValidationJob();
+		tlValidationJob.setOnlineDataLoader(fileCacheDataLoader);
+		tlValidationJob.setCacheCleaner(cacheCleaner);
+		tlValidationJob.setTrustedListSources(czSource);
+		tlValidationJob.setTrustedListCertificateSource(trustedListsCertificateSource);
+		tlValidationJob.setSynchronizationStrategy(synchronizationStrategy);
+		tlValidationJob.onlineRefresh();
+
+		TLValidationJobSummary summary = tlValidationJob.getSummary();
+
+		assertEquals(0, summary.getNumberOfProcessedLOTLs());
+		assertEquals(1, summary.getNumberOfProcessedTLs());
+
+		List<TLInfo> tlInfos = summary.getOtherTLInfos();
+		assertEquals(1, tlInfos.size());
+
+		TLInfo czTL = tlInfos.get(0);
+
+		assertTrue(czTL.getDownloadCacheInfo().isResultExist());
+		assertNull(czTL.getDownloadCacheInfo().getExceptionMessage());
+		assertNull(czTL.getDownloadCacheInfo().getExceptionStackTrace());
+		assertTrue(czTL.getParsingCacheInfo().isResultExist());
+		assertNull(czTL.getParsingCacheInfo().getExceptionMessage());
+		assertNull(czTL.getParsingCacheInfo().getExceptionStackTrace());
+		assertFalse(czTL.getValidationCacheInfo().isResultExist());
+		assertNotNull(czTL.getValidationCacheInfo().getExceptionMessage());
+		assertEquals("Number of signatures must be equal to 1 (currently : 0)", czTL.getValidationCacheInfo().getExceptionMessage());
+		assertNotNull(czTL.getValidationCacheInfo().getExceptionStackTrace());
+
+		assertNull(czTL.getValidationCacheInfo().getIndication());
+		assertNull(czTL.getValidationCacheInfo().getSubIndication());
+
+		assertFalse(Utils.isCollectionNotEmpty(trustedListsCertificateSource.getCertificates()));
+	}
+
+	@Test
+	void tlTwoSignaturesSkipInvalidStrategyTest() {
+		updateTLUrl("src/test/resources/lotlCache/CZ_two-sigs.xml");
+
+		TrustedListsCertificateSource trustedListsCertificateSource = new TrustedListsCertificateSource();
+
+		FileCacheDataLoader fileCacheDataLoader = new FileCacheDataLoader();
+		fileCacheDataLoader.setCacheExpirationTime(0);
+		fileCacheDataLoader.setDataLoader(new MockDataLoader(urlMap));
+		fileCacheDataLoader.setFileCacheDirectory(cacheDirectory);
+
+		ExpirationAndSignatureCheckStrategy synchronizationStrategy = new ExpirationAndSignatureCheckStrategy();
+		synchronizationStrategy.setAcceptExpiredTrustedList(true);
+		synchronizationStrategy.setAcceptInvalidTrustedList(false);
+
+		TLValidationJob tlValidationJob = new TLValidationJob();
+		tlValidationJob.setOnlineDataLoader(fileCacheDataLoader);
+		tlValidationJob.setCacheCleaner(cacheCleaner);
+		tlValidationJob.setTrustedListSources(czSource);
+		tlValidationJob.setTrustedListCertificateSource(trustedListsCertificateSource);
+		tlValidationJob.setSynchronizationStrategy(synchronizationStrategy);
+		tlValidationJob.onlineRefresh();
+
+		TLValidationJobSummary summary = tlValidationJob.getSummary();
+
+		assertEquals(0, summary.getNumberOfProcessedLOTLs());
+		assertEquals(1, summary.getNumberOfProcessedTLs());
+
+		List<TLInfo> tlInfos = summary.getOtherTLInfos();
+		assertEquals(1, tlInfos.size());
+
+		TLInfo czTL = tlInfos.get(0);
+
+		assertTrue(czTL.getDownloadCacheInfo().isResultExist());
+		assertNull(czTL.getDownloadCacheInfo().getExceptionMessage());
+		assertNull(czTL.getDownloadCacheInfo().getExceptionStackTrace());
+		assertTrue(czTL.getParsingCacheInfo().isResultExist());
+		assertNull(czTL.getParsingCacheInfo().getExceptionMessage());
+		assertNull(czTL.getParsingCacheInfo().getExceptionStackTrace());
+		assertFalse(czTL.getValidationCacheInfo().isResultExist());
+		assertNotNull(czTL.getValidationCacheInfo().getExceptionMessage());
+		assertEquals("Number of signatures must be equal to 1 (currently : 2)", czTL.getValidationCacheInfo().getExceptionMessage());
+		assertNotNull(czTL.getValidationCacheInfo().getExceptionStackTrace());
+
+		assertNull(czTL.getValidationCacheInfo().getIndication());
+		assertNull(czTL.getValidationCacheInfo().getSubIndication());
+
+		assertFalse(Utils.isCollectionNotEmpty(trustedListsCertificateSource.getCertificates()));
 	}
 	
 	@Test
@@ -1656,8 +1790,23 @@ class TLValidationJobTest {
 	@Test
 	void pivotNoSigTest() {
 		updatePivotUrl("src/test/resources/lotlCache/tl_pivot_247_mp_no-sig.xml");
+
+		TrustedListsCertificateSource trustedListsCertificateSource = new TrustedListsCertificateSource();
+
+		FileCacheDataLoader fileCacheDataLoader = new FileCacheDataLoader();
+		fileCacheDataLoader.setCacheExpirationTime(0);
+		fileCacheDataLoader.setDataLoader(new MockDataLoader(urlMap));
+		fileCacheDataLoader.setFileCacheDirectory(cacheDirectory);
+
+		TLValidationJob tlValidationJob = new TLValidationJob();
+		tlValidationJob.setOnlineDataLoader(fileCacheDataLoader);
+		tlValidationJob.setCacheCleaner(cacheCleaner);
+		tlValidationJob.setListOfTrustedListSources(lotlSource);
+		tlValidationJob.setTrustedListCertificateSource(trustedListsCertificateSource);
+		tlValidationJob.setSynchronizationStrategy(new AcceptAllStrategy<>());
+		tlValidationJob.onlineRefresh();
 		
-		TLValidationJobSummary summary = getLOTLValidationJob().getSummary();
+		TLValidationJobSummary summary = tlValidationJob.getSummary();
 		List<LOTLInfo> tlInfos = summary.getLOTLInfos();
 		LOTLInfo lotlInfo = tlInfos.get(0);
 		
@@ -1672,7 +1821,132 @@ class TLValidationJobTest {
 		assertNull(pivotInfo.getParsingCacheInfo().getExceptionStackTrace());
 		assertFalse(pivotInfo.getValidationCacheInfo().isResultExist());
 		assertNotNull(pivotInfo.getValidationCacheInfo().getExceptionMessage());
+		assertEquals("Number of signatures must be equal to 1 (currently : 0)", lotlInfo.getValidationCacheInfo().getExceptionMessage());
 		assertNotNull(pivotInfo.getValidationCacheInfo().getExceptionStackTrace());
+
+		assertTrue(Utils.isCollectionNotEmpty(trustedListsCertificateSource.getCertificates()));
+	}
+
+	@Test
+	void pivotNoSigSkipInvalidStrategyTest() {
+		updatePivotUrl("src/test/resources/lotlCache/tl_pivot_247_mp_no-sig.xml");
+
+		TrustedListsCertificateSource trustedListsCertificateSource = new TrustedListsCertificateSource();
+
+		FileCacheDataLoader fileCacheDataLoader = new FileCacheDataLoader();
+		fileCacheDataLoader.setCacheExpirationTime(0);
+		fileCacheDataLoader.setDataLoader(new MockDataLoader(urlMap));
+		fileCacheDataLoader.setFileCacheDirectory(cacheDirectory);
+
+		ExpirationAndSignatureCheckStrategy synchronizationStrategy = new ExpirationAndSignatureCheckStrategy();
+		synchronizationStrategy.setAcceptExpiredListOfTrustedLists(true);
+		synchronizationStrategy.setAcceptInvalidListOfTrustedLists(false);
+
+		TLValidationJob tlValidationJob = new TLValidationJob();
+		tlValidationJob.setOnlineDataLoader(fileCacheDataLoader);
+		tlValidationJob.setCacheCleaner(cacheCleaner);
+		tlValidationJob.setListOfTrustedListSources(lotlSource);
+		tlValidationJob.setTrustedListCertificateSource(trustedListsCertificateSource);
+		tlValidationJob.setSynchronizationStrategy(synchronizationStrategy);
+		tlValidationJob.onlineRefresh();
+
+		TLValidationJobSummary summary = tlValidationJob.getSummary();
+		List<LOTLInfo> tlInfos = summary.getLOTLInfos();
+		LOTLInfo lotlInfo = tlInfos.get(0);
+
+		assertEquals(4, lotlInfo.getPivotInfos().size());
+
+		PivotInfo pivotInfo = lotlInfo.getPivotInfos().get(3);
+		assertTrue(pivotInfo.getDownloadCacheInfo().isResultExist());
+		assertNull(pivotInfo.getDownloadCacheInfo().getExceptionMessage());
+		assertNull(pivotInfo.getDownloadCacheInfo().getExceptionStackTrace());
+		assertTrue(pivotInfo.getParsingCacheInfo().isResultExist());
+		assertNull(pivotInfo.getParsingCacheInfo().getExceptionMessage());
+		assertNull(pivotInfo.getParsingCacheInfo().getExceptionStackTrace());
+		assertFalse(pivotInfo.getValidationCacheInfo().isResultExist());
+		assertNotNull(pivotInfo.getValidationCacheInfo().getExceptionMessage());
+		assertEquals("Number of signatures must be equal to 1 (currently : 0)", lotlInfo.getValidationCacheInfo().getExceptionMessage());
+		assertNotNull(pivotInfo.getValidationCacheInfo().getExceptionStackTrace());
+
+		assertFalse(Utils.isCollectionNotEmpty(trustedListsCertificateSource.getCertificates()));
+	}
+
+	@Test
+	void lotlTwoSigsAcceptAllStrategyTest() {
+		updatePivotUrl("src/test/resources/lotlCache/eu-lotl-two-sigs.xml");
+
+		TrustedListsCertificateSource trustedListsCertificateSource = new TrustedListsCertificateSource();
+
+		FileCacheDataLoader fileCacheDataLoader = new FileCacheDataLoader();
+		fileCacheDataLoader.setCacheExpirationTime(0);
+		fileCacheDataLoader.setDataLoader(new MockDataLoader(urlMap));
+		fileCacheDataLoader.setFileCacheDirectory(cacheDirectory);
+
+		TLValidationJob tlValidationJob = new TLValidationJob();
+		tlValidationJob.setOnlineDataLoader(fileCacheDataLoader);
+		tlValidationJob.setCacheCleaner(cacheCleaner);
+		tlValidationJob.setListOfTrustedListSources(lotlSource);
+		tlValidationJob.setTrustedListCertificateSource(trustedListsCertificateSource);
+		tlValidationJob.setSynchronizationStrategy(new AcceptAllStrategy<>());
+		tlValidationJob.onlineRefresh();
+
+		TLValidationJobSummary summary = tlValidationJob.getSummary();
+		List<LOTLInfo> tlInfos = summary.getLOTLInfos();
+		LOTLInfo lotlInfo = tlInfos.get(0);
+
+		assertTrue(lotlInfo.getDownloadCacheInfo().isResultExist());
+		assertNull(lotlInfo.getDownloadCacheInfo().getExceptionMessage());
+		assertNull(lotlInfo.getDownloadCacheInfo().getExceptionStackTrace());
+		assertTrue(lotlInfo.getParsingCacheInfo().isResultExist());
+		assertNull(lotlInfo.getParsingCacheInfo().getExceptionMessage());
+		assertNull(lotlInfo.getParsingCacheInfo().getExceptionStackTrace());
+		assertFalse(lotlInfo.getValidationCacheInfo().isResultExist());
+		assertNotNull(lotlInfo.getValidationCacheInfo().getExceptionMessage());
+		assertEquals("Number of signatures must be equal to 1 (currently : 2)", lotlInfo.getValidationCacheInfo().getExceptionMessage());
+		assertNotNull(lotlInfo.getValidationCacheInfo().getExceptionStackTrace());
+
+		assertTrue(Utils.isCollectionNotEmpty(trustedListsCertificateSource.getCertificates()));
+	}
+
+	@Test
+	void lotlTwoSigsSkipInvalidStrategyTest() {
+		updatePivotUrl("src/test/resources/lotlCache/eu-lotl-two-sigs.xml");
+
+		TrustedListsCertificateSource trustedListsCertificateSource = new TrustedListsCertificateSource();
+
+		FileCacheDataLoader fileCacheDataLoader = new FileCacheDataLoader();
+		fileCacheDataLoader.setCacheExpirationTime(0);
+		fileCacheDataLoader.setDataLoader(new MockDataLoader(urlMap));
+		fileCacheDataLoader.setFileCacheDirectory(cacheDirectory);
+
+		ExpirationAndSignatureCheckStrategy synchronizationStrategy = new ExpirationAndSignatureCheckStrategy();
+		synchronizationStrategy.setAcceptExpiredListOfTrustedLists(true);
+		synchronizationStrategy.setAcceptInvalidListOfTrustedLists(false);
+
+		TLValidationJob tlValidationJob = new TLValidationJob();
+		tlValidationJob.setOnlineDataLoader(fileCacheDataLoader);
+		tlValidationJob.setCacheCleaner(cacheCleaner);
+		tlValidationJob.setListOfTrustedListSources(lotlSource);
+		tlValidationJob.setTrustedListCertificateSource(trustedListsCertificateSource);
+		tlValidationJob.setSynchronizationStrategy(synchronizationStrategy);
+		tlValidationJob.onlineRefresh();
+
+		TLValidationJobSummary summary = tlValidationJob.getSummary();
+		List<LOTLInfo> tlInfos = summary.getLOTLInfos();
+		LOTLInfo lotlInfo = tlInfos.get(0);
+
+		assertTrue(lotlInfo.getDownloadCacheInfo().isResultExist());
+		assertNull(lotlInfo.getDownloadCacheInfo().getExceptionMessage());
+		assertNull(lotlInfo.getDownloadCacheInfo().getExceptionStackTrace());
+		assertTrue(lotlInfo.getParsingCacheInfo().isResultExist());
+		assertNull(lotlInfo.getParsingCacheInfo().getExceptionMessage());
+		assertNull(lotlInfo.getParsingCacheInfo().getExceptionStackTrace());
+		assertFalse(lotlInfo.getValidationCacheInfo().isResultExist());
+		assertNotNull(lotlInfo.getValidationCacheInfo().getExceptionMessage());
+		assertEquals("Number of signatures must be equal to 1 (currently : 2)", lotlInfo.getValidationCacheInfo().getExceptionMessage());
+		assertNotNull(lotlInfo.getValidationCacheInfo().getExceptionStackTrace());
+
+		assertFalse(Utils.isCollectionNotEmpty(trustedListsCertificateSource.getCertificates()));
 	}
 	
 	@Test

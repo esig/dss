@@ -506,6 +506,70 @@ class JsonLoLoTEValidationJobTest {
     }
 
     @Test
+    void loloteNoSigTest() {
+        updateLoLoTELocation("src/test/resources/eu-lolote-no-sig.json");
+
+        TrustedEntitiesCertificateSource trustedEntitiesCertificateSource = new TrustedEntitiesCertificateSource();
+        loteValidationJob = getValidationJob(trustedEntitiesCertificateSource);
+        loteValidationJob.offlineRefresh();
+
+        LoTEValidationJobSummary summary = loteValidationJob.getSummary();
+
+        List<LoLoTEInfo> loloteInfos = summary.getLoLoTEInfos();
+        LoLoTEInfo loloteInfo = loloteInfos.get(0);
+
+        assertEquals(0, loloteInfo.getChildrenInfos().size());
+
+        assertFalse(loloteInfo.getDownloadCacheInfo().isResultExist());
+        assertTrue(loloteInfo.getDownloadCacheInfo().isError());
+        assertNotNull(loloteInfo.getDownloadCacheInfo().getExceptionMessage());
+        assertEquals("The document obtained from URL 'http://dss.nowina.lu/lolote.json' is " +
+                "not a valid JWS Compact Serialization signature!", loloteInfo.getDownloadCacheInfo().getExceptionMessage());
+        assertNotNull(loloteInfo.getDownloadCacheInfo().getExceptionStackTrace());
+        assertFalse(loloteInfo.getParsingCacheInfo().isResultExist());
+        assertFalse(loloteInfo.getParsingCacheInfo().isError());
+        assertNull(loloteInfo.getParsingCacheInfo().getExceptionMessage());
+        assertNull(loloteInfo.getParsingCacheInfo().getExceptionStackTrace());
+        assertFalse(loloteInfo.getValidationCacheInfo().isResultExist());
+        assertNull(loloteInfo.getValidationCacheInfo().getExceptionMessage());
+        assertNull(loloteInfo.getValidationCacheInfo().getExceptionStackTrace());
+
+        assertEquals(0, Utils.collectionSize(trustedEntitiesCertificateSource.getCertificates()));
+    }
+
+    @Test
+    void loloteJsonSerializationTest() {
+        updateLoLoTELocation("src/test/resources/eu-lolote-json-serialization.json");
+
+        TrustedEntitiesCertificateSource trustedEntitiesCertificateSource = new TrustedEntitiesCertificateSource();
+        loteValidationJob = getValidationJob(trustedEntitiesCertificateSource);
+        loteValidationJob.offlineRefresh();
+
+        LoTEValidationJobSummary summary = loteValidationJob.getSummary();
+
+        List<LoLoTEInfo> loloteInfos = summary.getLoLoTEInfos();
+        LoLoTEInfo loloteInfo = loloteInfos.get(0);
+
+        assertEquals(0, loloteInfo.getChildrenInfos().size());
+
+        assertFalse(loloteInfo.getDownloadCacheInfo().isResultExist());
+        assertTrue(loloteInfo.getDownloadCacheInfo().isError());
+        assertNotNull(loloteInfo.getDownloadCacheInfo().getExceptionMessage());
+        assertEquals("The document obtained from URL 'http://dss.nowina.lu/lolote.json' is " +
+                "not a valid JWS Compact Serialization signature!", loloteInfo.getDownloadCacheInfo().getExceptionMessage());
+        assertNotNull(loloteInfo.getDownloadCacheInfo().getExceptionStackTrace());
+        assertFalse(loloteInfo.getParsingCacheInfo().isResultExist());
+        assertFalse(loloteInfo.getParsingCacheInfo().isError());
+        assertNull(loloteInfo.getParsingCacheInfo().getExceptionMessage());
+        assertNull(loloteInfo.getParsingCacheInfo().getExceptionStackTrace());
+        assertFalse(loloteInfo.getValidationCacheInfo().isResultExist());
+        assertNull(loloteInfo.getValidationCacheInfo().getExceptionMessage());
+        assertNull(loloteInfo.getValidationCacheInfo().getExceptionStackTrace());
+
+        assertEquals(0, Utils.collectionSize(trustedEntitiesCertificateSource.getCertificates()));
+    }
+
+    @Test
     void loloteUpdateTest() {
         updateLoLoTELocation("src/test/resources/eu-lolote-not-compliant.json");
 

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?><ListOfTrustedEntities xmlns="http://uri.etsi.org/019602/v1#" xmlns:ns2="http://www.w3.org/2000/09/xmldsig#" xmlns:ns3="http://uri.etsi.org/019602/v1/TrustedEntityExtensions" xmlns:ns4="http://uri.etsi.org/019602/v1/ServiceInformationExtensions" LOTETag="http://uri.etsi.org/019602/tag#">
+    <ListAndSchemeInformation>
+        <LoTEVersionIdentifier>1</LoTEVersionIdentifier>
+        <LoTESequenceNumber>1</LoTESequenceNumber>
+        <LoTEType>http://uri.etsi.org/19602/LoTEType/EUlistofthelists</LoTEType>
+        <SchemeOperatorName>
+            <Name xml:lang="fr">Commission Européenne</Name>
+            <Name xml:lang="en">European Commission</Name>
+        </SchemeOperatorName>
+        <SchemeOperatorAddress>
+            <PostalAddresses>
+                <PostalAddress xml:lang="fr">
+                    <StreetAddress>12 Boulevard Sécurité</StreetAddress>
+                    <Locality>Paris</Locality>
+                    <StateOrProvince>Île-de-France</StateOrProvince>
+                    <PostalCode>75015</PostalCode>
+                    <CountryName>ZZ</CountryName>
+                </PostalAddress>
+                <PostalAddress xml:lang="en">
+                    <StreetAddress>12 Security Boulevard</StreetAddress>
+                    <Locality>Paris</Locality>
+                    <StateOrProvince>Ile-de-France</StateOrProvince>
+                    <PostalCode>75015</PostalCode>
+                    <CountryName>ZZ</CountryName>
+                </PostalAddress>
+            </PostalAddresses>
+            <ElectronicAddress>
+                <URI xml:lang="en">mailto:mailto@schemeoperator.com</URI>
+            </ElectronicAddress>
+        </SchemeOperatorAddress>
+        <SchemeName>
+            <Name xml:lang="fr">Liste de confiance zz</Name>
+            <Name xml:lang="en">ZZ Trusted List</Name>
+        </SchemeName>
+        <SchemeInformationURI>
+            <URI xml:lang="en">https://example.org/scheme-info</URI>
+        </SchemeInformationURI>
+        <StatusDeterminationApproach>http://uri.etsi.org/19602/ListOfLists/StatusDetn/EU</StatusDeterminationApproach>
+        <SchemeTypeCommunityRules>
+            <URI xml:lang="en">http://uri.etsi.org/19602/ListOfLists/schemerules/EU</URI>
+        </SchemeTypeCommunityRules>
+        <SchemeTerritory>EU</SchemeTerritory>
+        <PolicyOrLegalNotice>
+            <LoTEPolicy xml:lang="en">http://trust.tech.ec.europa.eu/lists/eudiw/legal-notice#EN</LoTEPolicy>
+        </PolicyOrLegalNotice>
+        <HistoricalInformationPeriod>65535</HistoricalInformationPeriod>
+        <PointersToOtherLoTE>
+            <OtherLoTEPointer>
+                <ServiceDigitalIdentities>
+                    <ServiceDigitalIdentity>
+                        <DigitalId>
+                            <X509Certificate>MIIFijCCA3KgAwIBAgIBFDANBgkqhkiG9w0BAQsFADBWMRYwFAYDVQQDDA1Mb0xvVEUtU2lnbmVyMRwwGgYDVQQKDBNFVSBEaWdpdGFsIE1pbmlzdHJ5MREwDwYDVQQLDAhQS0ktVEVTVDELMAkGA1UEBhMCRVUwHhcNMTYwNzEzMDc0MTQwWhcNMzYwNzEzMDc0MTQwWjBWMRYwFAYDVQQDDA1Mb0xvVEUtU2lnbmVyMRwwGgYDVQQKDBNFVSBEaWdpdGFsIE1pbmlzdHJ5MREwDwYDVQQLDAhQS0ktVEVTVDELMAkGA1UEBhMCRVUwggIiMA0GCSqGSIb3DQEBAQUAA4ICDwAwggIKAoICAQC7dTaHu2rVdI+qokIDn1+E3gSldLkubsPlSbGU9pSWh7jyPMSf9j96e+tOZ7TMqxR6aSG4fKIefX9ijHE2XKHaYf5Vi4N+p+/O9N826fj04RMK+u7lA231+qZBQRCSYB6Gvbs6D5ZpmqFBaXZnqHv9a3A5RiVT3FddWmAjycvtAx9O3egCJEf8GX7zaFUtaDKJ4zC9/gGuXQyMDx/atH//qXDioKWn8Tb2YGYVfN579sHeR6tGacEzyD/DCWoC0P0T2u0V4aKAhXrATXsAceWHhwL0ilU+EJ8rXj94aEswmU02sP7kjXYkTIoi9Pfx2GgqrIcnieuir3f0ue01CMTZuCqlCKG/lVEnwo/JU23C/anuPzXpg3/jgpWJbkCzhEoAVFl00ILXLiHOCemXzxA4mtUAspZOsA80LNtPziQj3X6EmHt9xD6ZJDrxQmGlXA/DFBcqK0Qsfa90AjqXs7VOpyEsRMgC7kXSizSxsCCuIeVo747rG83mkhCL5a0WPShSRKXlIM9so6boBb8SrGTeleDYU1jflVfntBpuQqxQNEtKNMIbiWckmSXxUhR6dxIFH7t7OK2zzmFHkc5KzTjCm+uzUUjZrnO6PIzRJFYDXpUDCyYpuCyroJehYutFzzh0Ojmi2DI+02qXmCxD7QPsXGcgjw3rANhpvNQmLRehOwIDAQABo2MwYTAOBgNVHQ8BAf8EBAMCBsAwHwYDVR0jBBgwFoAUPfdlSDBY3iw2m02Yd1O7ddc3z00wHQYDVR0OBBYEFD33ZUgwWN4sNptNmHdTu3XXN89NMA8GA1UdEwEB/wQFMAMBAf8wDQYJKoZIhvcNAQELBQADggIBAEPXravd2KuFwAqW9Qv7JNjMLgpRvs1G+K1OFHQd3ahfxNmO0/G6f3e14YvMtRMIhGyxBbqIZR5X3HXynbagNhk+PQSs+CsAKnvq8kNcHPQavkLkPP6uu2Nsf6CoUsc+jTlCTAgWgkVMXo9ELUA7GbU5D0QfsQZrv5uluyOnDAAi5SCVOHJzLDRXvO6NDQLmS9LOvOqpCWHULXhZpaDrflzuEnUFi51V5ualOxQiVJei90vD8vq+g3D+yX4KT7w3x042uZQmASZxnFXD9Q+ubdAMAmsN2hKn45sXk5dxeE1BOopjZ7pwxK54fWQ/t9qdPVbAQi9IK+dtE9w3D0WfCiYmJQp5+st0WjqjprwKNjEn1+5cOpoet7EcAmSk/0kBbAx5Qu3uOFl95s1O7qLMEKgS9QUnJeqSJyZqzeSbS3XYhxB1uMwIASr2qBtB+RyPGEYqPDz2hjbp5hUl2iXPxdrDhagcl5lAhzf5WFtyEyLHiUNvSvHpFQEngik8g9SUvIVoc12ju4eE18ee/1r8Ttrlacn2kJezkUv2PdMVlVuqCch1436iMZNkZbsdM32skvUar2OXAuSGtVdI2IH5iq2Y+8JjdjcBp5vLoQgRwf2/yMLSvVG4M1ejXwJwrfv3DfL1YXqzDzwhrIfkI88cgDw+dnI3g3EsoPoaQizXk6P8</X509Certificate>
+                        </DigitalId>
+                    </ServiceDigitalIdentity>
+                </ServiceDigitalIdentities>
+                <LoTELocation>https://test.test/lolote</LoTELocation>
+                <AdditionalInformation>
+                    <OtherInformation>
+                        <LoTEType>http://uri.etsi.org/19602/LoTEType/EUlistofthelists</LoTEType>
+                    </OtherInformation>
+                    <OtherInformation>
+                        <SchemeTerritory>EU</SchemeTerritory>
+                    </OtherInformation>
+                    <OtherInformation>
+                        <SchemeOperatorName>
+                            <Name xml:lang="fr">Commission Européenne</Name>
+                            <Name xml:lang="en">European Commission</Name>
+                        </SchemeOperatorName>
+                    </OtherInformation>
+                    <OtherInformation>
+                        <SchemeTypeCommunityRules>
+                            <URI xml:lang="en">http://uri.etsi.org/19602/ListOfLists/schemerules/EU</URI>
+                        </SchemeTypeCommunityRules>
+                    </OtherInformation>
+                </AdditionalInformation>
+            </OtherLoTEPointer>
+            <OtherLoTEPointer>
+                <ServiceDigitalIdentities>
+                    <ServiceDigitalIdentity>
+                        <DigitalId>
+                            <X509Certificate>MIIFhjCCA26gAwIBAgIBCjANBgkqhkiG9w0BAQsFADBUMRQwEgYDVQQDDAtMb1RFLVNpZ25lcjEcMBoGA1UECgwTRVUgRGlnaXRhbCBNaW5pc3RyeTERMA8GA1UECwwIUEtJLVRFU1QxCzAJBgNVBAYTAkVVMB4XDTE2MDEzMDEwMDgxM1oXDTM2MDEzMDEwMDgxM1owVDEUMBIGA1UEAwwLTG9URS1TaWduZXIxHDAaBgNVBAoME0VVIERpZ2l0YWwgTWluaXN0cnkxETAPBgNVBAsMCFBLSS1URVNUMQswCQYDVQQGEwJFVTCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBAK5nEvkkCPKRg+ip1xX1B5HKjRYEtfflmCSUGAoSL3566u6dysdt3QWxwOkBhfMIVrGI6YxkHAiTp1mkk4WVMNdqUApeICOrpOEAC3kHWYStTrvHjuW+xyARUyzQMZ0GiQvPe5z+THL4jf94gfpGP146z6Mny9pJNJvAiGBLs1hBlW3PK6KLd0FSDp9pg/vcPtTDxh6F6d3tW2YeyJ9ZiBLx/PqYtCY5Ozzz9Md09dSiJq+xqxuFZi93QQKO0k10KrMnv0M3s7fL1Ijy9TV3tMtwhQd9lWeIRZOG+8tHSuP+bqDmnV9MDxRpZkGG9ilL4y6qa8f+64gn0MQ9r+vHlSPM5BLdHLn/JTjRrhLVIwcLahPVfGyTCi115EbVIoXZwJbsPppqnluKy0JtoUOOmonvh7GaAbAf7ouXibGDcMsorwt9lY6m6OU10v3OxZFFc6aBaIc9FNb4NgEg0meluOM7KU4Ta59bstEQCFxZR0XQzKUtEAHyC+Wyrzr0QmmwsGmXKSxQlPHNxmPFCCOc7X6+Ls37GAB0aEXddvULtLWNYqiIgwE5KgC0XnsG0do4QISrSIhoXfD8RL4LymcJCYPUHdSiiDxJGvMOGIDiOx+RUGqYLDY/mJWMH/KsgnR/M7Wm5QvtEqaFyRZOejDOFgDy8Xa+U7J8TDUDl/Jn7Tx/AgMBAAGjYzBhMA4GA1UdDwEB/wQEAwIGwDAfBgNVHSMEGDAWgBTEksriFHLiBJcVM+bFYRY4S5T+iDAdBgNVHQ4EFgQUxJLK4hRy4gSXFTPmxWEWOEuU/ogwDwYDVR0TAQH/BAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAgEAe/hSDMZIQKrENm0OeqOPDWtql5migl3XOqg3Ap9ArGxWgGIc1k3LjU62bB+M2Z1SLmQExVgX42ThMnDnH4BgsypxQEkc4ofZKJCmb+i0JBJi2hfMO96XC2S/ZJBKZuGhgxgZEkgQUtIROc8v2uS13MCVYPFmirxcS1HMF7JMC2XSEVPSh2oy7sCqtQWwkQwBfUvq/Ud1U4U50h5WpBG/bGhZ0qgRRDUzEzop2se+xqlpNql0Nf6o7TQ1zXt8oeutTGx/GZnUujuQEewEcbyQFKNh5iN/763J9PArl8uUk8kTJwRr1oxosD7w+SR8F/nuaO7XI0tB36dZm6G9+ZFaOr9vjqxYBH1D9KX6amZcAcc6LmP6jP1h0u4mVArx9vkHkwY4sffcxU8+AyoH7z3dZnbtryEyQM/0G/F1afSpZSLbEs3xaQweq1vqxjiYR5J+6mBrE9aYpZdu5qI7eFVf8UakkPPseam+quW79MzLNcpIu9eFKn0ROLzWAK6Pj/ySVo8HD76ASAX12VWtrIt8kPky8q5FYZ7VvwSerFiRUAYP11EU6hj+G3spPAxvjOY7vKDJtVrhUwH5NqRM2AABZWi5csDN05r/3bgICk1J478dZluQT7d4ExljkHlhLlI3ulVbpTyylXMJk7coENWyFL6dn+vNYdfoj3ue4mxImdM=</X509Certificate>
+                        </DigitalId>
+                    </ServiceDigitalIdentity>
+                </ServiceDigitalIdentities>
+                <LoTELocation>https://test.test/lote</LoTELocation>
+                <AdditionalInformation>
+                    <OtherInformation>
+                        <LoTEType>http://uri.etsi.org/19602/LoTEType/EUPubEAAProvidersList</LoTEType>
+                    </OtherInformation>
+                    <OtherInformation>
+                        <SchemeTerritory>EU</SchemeTerritory>
+                    </OtherInformation>
+                    <OtherInformation>
+                        <SchemeOperatorName>
+                            <Name xml:lang="fr">Agence Nationale de la Confiance Numérique</Name>
+                            <Name xml:lang="en">National Agency for Digital Trust</Name>
+                        </SchemeOperatorName>
+                    </OtherInformation>
+                    <OtherInformation>
+                        <SchemeTypeCommunityRules>
+                            <URI xml:lang="en">http://uri.etsi.org/19602/PubEAAProvidersList/schemerules/EU</URI>
+                        </SchemeTypeCommunityRules>
+                    </OtherInformation>
+                </AdditionalInformation>
+            </OtherLoTEPointer>
+        </PointersToOtherLoTE>
+        <ListIssueDateTime>2026-07-13T09:41:41.023+02:00</ListIssueDateTime>
+        <NextUpdate>
+            <dateTime>2027-01-13T09:41:41.029+01:00</dateTime>
+        </NextUpdate>
+    </ListAndSchemeInformation>
+</ListOfTrustedEntities>

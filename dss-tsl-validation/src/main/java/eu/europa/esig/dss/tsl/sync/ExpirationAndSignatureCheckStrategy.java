@@ -126,20 +126,22 @@ public class ExpirationAndSignatureCheckStrategy implements SynchronizationStrat
 
 		if (!syncExpired) {
 			TLParsingInfoRecord parsingCacheInfo = tlInfo.getParsingCacheInfo();
-			if (parsingCacheInfo != null && parsingCacheInfo.isResultExist()) {
-				Date currentDate = new Date();
-				Date nextUpdateDate = parsingCacheInfo.getNextUpdateDate();
-				if (nextUpdateDate == null || currentDate.after(nextUpdateDate)) {
-					return false;
-				}
+			if (parsingCacheInfo == null || !parsingCacheInfo.isResultExist()) {
+				return false;
+			}
+			Date currentDate = new Date();
+			Date nextUpdateDate = parsingCacheInfo.getNextUpdateDate();
+			if (nextUpdateDate == null || currentDate.after(nextUpdateDate)) {
+				return false;
 			}
 		}
 
 		if (!syncInvalid) {
 			ValidationInfoRecord validationCacheInfo = tlInfo.getValidationCacheInfo();
-			if (validationCacheInfo != null && validationCacheInfo.isResultExist()) {
-				return validationCacheInfo.isValid();
+			if (validationCacheInfo == null || !validationCacheInfo.isResultExist()) {
+				return false;
 			}
+			return validationCacheInfo.isValid();
 		}
 
 		return true;
