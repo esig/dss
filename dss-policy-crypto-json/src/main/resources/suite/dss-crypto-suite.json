@@ -434,8 +434,9 @@
                },
                {
                   "Validity":{
+                     "End":"2035-01-01"
                   },
-                  "Recommendation":"R",
+                  "Recommendation":"L",
                   "Parameter":[
                      {
                         "Min":3000,
@@ -502,8 +503,9 @@
                },
                {
                   "Validity":{
+                     "End":"2035-01-01"
                   },
-                  "Recommendation":"R",
+                  "Recommendation":"L",
                   "Parameter":[
                      {
                         "Min":3000,
@@ -570,8 +572,9 @@
                },
                {
                   "Validity":{
+                     "End":"2035-01-01"
                   },
-                  "Recommendation":"R",
+                  "Recommendation":"L",
                   "Parameter":[
                      {
                         "Min":3000,
@@ -637,8 +640,9 @@
                },
                {
                   "Validity":{
+                     "End":"2035-01-01"
                   },
-                  "Recommendation":"R",
+                  "Recommendation":"L",
                   "Parameter":[
                      {
                         "Min":3000,
@@ -704,8 +708,9 @@
                },
                {
                   "Validity":{
+                     "End":"2035-01-01"
                   },
-                  "Recommendation":"R",
+                  "Recommendation":"L",
                   "Parameter":[
                      {
                         "Min":3000,
@@ -771,8 +776,9 @@
                },
                {
                   "Validity":{
+                     "End":"2035-01-01"
                   },
-                  "Recommendation":"R",
+                  "Recommendation":"L",
                   "Parameter":[
                      {
                         "Min":3000,

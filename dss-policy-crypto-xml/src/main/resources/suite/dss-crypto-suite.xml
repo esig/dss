@@ -451,9 +451,11 @@
       <dssc:Parameter name="moduluslength">
         <dssc:Min>3000</dssc:Min>
       </dssc:Parameter>
-      <dssc:Validity/>
+      <dssc:Validity>
+        <dssc:End>2035-01-01+00:00</dssc:End>
+      </dssc:Validity>
       <etsi19322:MoreDetails>
-      	<etsi19322:Recommendation>R</etsi19322:Recommendation>
+      	<etsi19322:Recommendation>L</etsi19322:Recommendation>
       </etsi19322:MoreDetails>
     </dssc:Evaluation>
   </dssc:Algorithm>
@@ -516,9 +518,11 @@
       <dssc:Parameter name="moduluslength">
         <dssc:Min>3000</dssc:Min>
       </dssc:Parameter>
-      <dssc:Validity/>
+      <dssc:Validity>
+        <dssc:End>2035-01-01+00:00</dssc:End>
+      </dssc:Validity>
       <etsi19322:MoreDetails>
-        <etsi19322:Recommendation>R</etsi19322:Recommendation>
+        <etsi19322:Recommendation>L</etsi19322:Recommendation>
       </etsi19322:MoreDetails>
     </dssc:Evaluation>
   </dssc:Algorithm>
@@ -581,9 +585,11 @@
       <dssc:Parameter name="moduluslength">
         <dssc:Min>3000</dssc:Min>
       </dssc:Parameter>
-      <dssc:Validity/>
+      <dssc:Validity>
+        <dssc:End>2035-01-01+00:00</dssc:End>
+      </dssc:Validity>
       <etsi19322:MoreDetails>
-        <etsi19322:Recommendation>R</etsi19322:Recommendation>
+        <etsi19322:Recommendation>L</etsi19322:Recommendation>
       </etsi19322:MoreDetails>
     </dssc:Evaluation>
   </dssc:Algorithm>
@@ -646,9 +652,11 @@
       <dssc:Parameter name="moduluslength">
         <dssc:Min>3000</dssc:Min>
       </dssc:Parameter>
-      <dssc:Validity/>
+      <dssc:Validity>
+        <dssc:End>2035-01-01+00:00</dssc:End>
+      </dssc:Validity>
       <etsi19322:MoreDetails>
-        <etsi19322:Recommendation>R</etsi19322:Recommendation>
+        <etsi19322:Recommendation>L</etsi19322:Recommendation>
       </etsi19322:MoreDetails>
     </dssc:Evaluation>
   </dssc:Algorithm>
@@ -711,9 +719,11 @@
       <dssc:Parameter name="moduluslength">
         <dssc:Min>3000</dssc:Min>
       </dssc:Parameter>
-      <dssc:Validity/>
+      <dssc:Validity>
+        <dssc:End>2035-01-01+00:00</dssc:End>
+      </dssc:Validity>
       <etsi19322:MoreDetails>
-        <etsi19322:Recommendation>R</etsi19322:Recommendation>
+        <etsi19322:Recommendation>L</etsi19322:Recommendation>
       </etsi19322:MoreDetails>
     </dssc:Evaluation>
   </dssc:Algorithm>
@@ -776,9 +786,11 @@
       <dssc:Parameter name="moduluslength">
         <dssc:Min>3000</dssc:Min>
       </dssc:Parameter>
-      <dssc:Validity/>
+      <dssc:Validity>
+        <dssc:End>2035-01-01+00:00</dssc:End>
+      </dssc:Validity>
       <etsi19322:MoreDetails>
-        <etsi19322:Recommendation>R</etsi19322:Recommendation>
+        <etsi19322:Recommendation>L</etsi19322:Recommendation>
       </etsi19322:MoreDetails>
     </dssc:Evaluation>
   </dssc:Algorithm>

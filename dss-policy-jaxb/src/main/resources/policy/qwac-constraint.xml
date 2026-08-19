@@ -275,7 +275,7 @@
             <Algo Date="2019-10-01" Size="1024">RSA</Algo> <!-- ETSI TS 119 312 v2.1.1 -->
             <Algo Date="2019-10-01" Size="1536">RSA</Algo> <!-- ETSI TS 119 312 v2.1.1 -->
             <Algo Date="2027-01-01" Size="1900">RSA</Algo> <!-- ETSI TS 119 312 v2.1.1 -->
-            <Algo Size="3000">RSA</Algo> <!-- ETSI TS 119 312 v2.1.1 --> <!-- R -->
+            <Algo Date="2035-01-01" Size="3000">RSA</Algo> <!-- ETSI TS 119 312 v2.1.1 -->
             <Algo Date="2010-08-01" Size="786">RSASSA-PSS</Algo> <!-- ETSI TS 119 312 v2.1.1 -->
             <Algo Date="2019-10-01" Size="1024">RSASSA-PSS</Algo> <!-- ETSI TS 119 312 v2.1.1 -->
             <Algo Date="2019-10-01" Size="1536">RSASSA-PSS</Algo> <!-- ETSI TS 119 312 v2.1.1 -->
