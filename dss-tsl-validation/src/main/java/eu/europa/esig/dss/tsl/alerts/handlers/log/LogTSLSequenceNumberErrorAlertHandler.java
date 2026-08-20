@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
  */
 public class LogTSLSequenceNumberErrorAlertHandler implements AlertHandler<TLInfo> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(LogTLSignatureErrorAlertHandler.class);
+    private static final Logger LOG = LoggerFactory.getLogger(LogTSLSequenceNumberErrorAlertHandler.class);
 
     /**
      * Default constructor
@@ -28,7 +28,7 @@ public class LogTSLSequenceNumberErrorAlertHandler implements AlertHandler<TLInf
 
         String url = info.getUrl();
         Integer newSequenceNumber = info.getParsingCacheInfo().getSequenceNumber();
-        LOG.warn("Error in TSLSequenceNumber in Trusted List '{}'. New value was not incremented : '{}'", url, newSequenceNumber);
+        LOG.warn("Error in TSLSequenceNumber in Trusted List '{}'. New value is not increment update : '{}'", url, newSequenceNumber);
     }
 
 }

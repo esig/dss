@@ -28,7 +28,7 @@ public class LogLoTESequenceNumberErrorAlertHandler implements AlertHandler<LoTE
 
         String url = info.getUrl();
         Integer newSequenceNumber = info.getParsingCacheInfo().getSequenceNumber();
-        LOG.warn("Error in LoTESequenceNumber in List of Trusted Entities '{}'. New value was not incremented : '{}'", url, newSequenceNumber);
+        LOG.warn("Error in LoTESequenceNumber in List of Trusted Entities '{}'. New value is not increment update : '{}'", url, newSequenceNumber);
     }
 
 }
