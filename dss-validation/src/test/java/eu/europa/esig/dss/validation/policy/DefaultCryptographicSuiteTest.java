@@ -144,50 +144,50 @@ public class DefaultCryptographicSuiteTest {
                 new EvaluationDTO("2010-08-01", Collections.singletonList(new ParameterDTO(786, MODULES_LENGTH))),
                 new EvaluationDTO("2019-10-01", Collections.singletonList(new ParameterDTO(1024, MODULES_LENGTH))),
                 new EvaluationDTO("2019-10-01", Collections.singletonList(new ParameterDTO(1536, MODULES_LENGTH))),
-                new EvaluationDTO("2029-01-01", Collections.singletonList(new ParameterDTO(1900, MODULES_LENGTH))),
+                new EvaluationDTO("2027-01-01", Collections.singletonList(new ParameterDTO(1900, MODULES_LENGTH))),
                 new EvaluationDTO("2029-01-01", Collections.singletonList(new ParameterDTO(3000, MODULES_LENGTH)))
         ));
         expectedMap.put(SignatureAlgorithm.RSA_SHA256, createEvaluations(
                 new EvaluationDTO("2010-08-01", Collections.singletonList(new ParameterDTO(786, MODULES_LENGTH))),
                 new EvaluationDTO("2019-10-01", Collections.singletonList(new ParameterDTO(1024, MODULES_LENGTH))),
                 new EvaluationDTO("2019-10-01", Collections.singletonList(new ParameterDTO(1536, MODULES_LENGTH))),
-                new EvaluationDTO("2029-01-01", Collections.singletonList(new ParameterDTO(1900, MODULES_LENGTH))),
-                new EvaluationDTO("2029-01-01", Collections.singletonList(new ParameterDTO(3000, MODULES_LENGTH)))
+                new EvaluationDTO("2027-01-01", Collections.singletonList(new ParameterDTO(1900, MODULES_LENGTH))),
+                new EvaluationDTO("2035-01-01", Collections.singletonList(new ParameterDTO(3000, MODULES_LENGTH)))
         ));
         expectedMap.put(SignatureAlgorithm.RSA_SHA384, createEvaluations(
                 new EvaluationDTO("2010-08-01", Collections.singletonList(new ParameterDTO(786, MODULES_LENGTH))),
                 new EvaluationDTO("2019-10-01", Collections.singletonList(new ParameterDTO(1024, MODULES_LENGTH))),
                 new EvaluationDTO("2019-10-01", Collections.singletonList(new ParameterDTO(1536, MODULES_LENGTH))),
-                new EvaluationDTO("2029-01-01", Collections.singletonList(new ParameterDTO(1900, MODULES_LENGTH))),
-                new EvaluationDTO("2029-01-01", Collections.singletonList(new ParameterDTO(3000, MODULES_LENGTH)))
+                new EvaluationDTO("2027-01-01", Collections.singletonList(new ParameterDTO(1900, MODULES_LENGTH))),
+                new EvaluationDTO("2035-01-01", Collections.singletonList(new ParameterDTO(3000, MODULES_LENGTH)))
         ));
         expectedMap.put(SignatureAlgorithm.RSA_SHA512, createEvaluations(
                 new EvaluationDTO("2010-08-01", Collections.singletonList(new ParameterDTO(786, MODULES_LENGTH))),
                 new EvaluationDTO("2019-10-01", Collections.singletonList(new ParameterDTO(1024, MODULES_LENGTH))),
                 new EvaluationDTO("2019-10-01", Collections.singletonList(new ParameterDTO(1536, MODULES_LENGTH))),
-                new EvaluationDTO("2029-01-01", Collections.singletonList(new ParameterDTO(1900, MODULES_LENGTH))),
-                new EvaluationDTO("2029-01-01", Collections.singletonList(new ParameterDTO(3000, MODULES_LENGTH)))
+                new EvaluationDTO("2027-01-01", Collections.singletonList(new ParameterDTO(1900, MODULES_LENGTH))),
+                new EvaluationDTO("2035-01-01", Collections.singletonList(new ParameterDTO(3000, MODULES_LENGTH)))
         ));
         expectedMap.put(SignatureAlgorithm.RSA_SHA3_256, createEvaluations(
                 new EvaluationDTO("2010-08-01", Collections.singletonList(new ParameterDTO(786, MODULES_LENGTH))),
                 new EvaluationDTO("2019-10-01", Collections.singletonList(new ParameterDTO(1024, MODULES_LENGTH))),
                 new EvaluationDTO("2019-10-01", Collections.singletonList(new ParameterDTO(1536, MODULES_LENGTH))),
-                new EvaluationDTO("2029-01-01", Collections.singletonList(new ParameterDTO(1900, MODULES_LENGTH))),
-                new EvaluationDTO("2029-01-01", Collections.singletonList(new ParameterDTO(3000, MODULES_LENGTH)))
+                new EvaluationDTO("2027-01-01", Collections.singletonList(new ParameterDTO(1900, MODULES_LENGTH))),
+                new EvaluationDTO("2035-01-01", Collections.singletonList(new ParameterDTO(3000, MODULES_LENGTH)))
         ));
         expectedMap.put(SignatureAlgorithm.RSA_SHA3_384, createEvaluations(
                 new EvaluationDTO("2010-08-01", Collections.singletonList(new ParameterDTO(786, MODULES_LENGTH))),
                 new EvaluationDTO("2019-10-01", Collections.singletonList(new ParameterDTO(1024, MODULES_LENGTH))),
                 new EvaluationDTO("2019-10-01", Collections.singletonList(new ParameterDTO(1536, MODULES_LENGTH))),
-                new EvaluationDTO("2029-01-01", Collections.singletonList(new ParameterDTO(1900, MODULES_LENGTH))),
-                new EvaluationDTO("2029-01-01", Collections.singletonList(new ParameterDTO(3000, MODULES_LENGTH)))
+                new EvaluationDTO("2027-01-01", Collections.singletonList(new ParameterDTO(1900, MODULES_LENGTH))),
+                new EvaluationDTO("2035-01-01", Collections.singletonList(new ParameterDTO(3000, MODULES_LENGTH)))
         ));
         expectedMap.put(SignatureAlgorithm.RSA_SHA3_512, createEvaluations(
                 new EvaluationDTO("2010-08-01", Collections.singletonList(new ParameterDTO(786, MODULES_LENGTH))),
                 new EvaluationDTO("2019-10-01", Collections.singletonList(new ParameterDTO(1024, MODULES_LENGTH))),
                 new EvaluationDTO("2019-10-01", Collections.singletonList(new ParameterDTO(1536, MODULES_LENGTH))),
-                new EvaluationDTO("2029-01-01", Collections.singletonList(new ParameterDTO(1900, MODULES_LENGTH))),
-                new EvaluationDTO("2029-01-01", Collections.singletonList(new ParameterDTO(3000, MODULES_LENGTH)))
+                new EvaluationDTO("2027-01-01", Collections.singletonList(new ParameterDTO(1900, MODULES_LENGTH))),
+                new EvaluationDTO("2035-01-01", Collections.singletonList(new ParameterDTO(3000, MODULES_LENGTH)))
         ));
         expectedMap.put(SignatureAlgorithm.RSA_RIPEMD160, createEvaluations(
                 new EvaluationDTO("2010-08-01", Collections.singletonList(new ParameterDTO(786, MODULES_LENGTH))),
@@ -208,49 +208,49 @@ public class DefaultCryptographicSuiteTest {
                 new EvaluationDTO("2010-08-01", Collections.singletonList(new ParameterDTO(786, MODULES_LENGTH))),
                 new EvaluationDTO("2019-10-01", Collections.singletonList(new ParameterDTO(1024, MODULES_LENGTH))),
                 new EvaluationDTO("2019-10-01", Collections.singletonList(new ParameterDTO(1536, MODULES_LENGTH))),
-                new EvaluationDTO("2029-01-01", Collections.singletonList(new ParameterDTO(1900, MODULES_LENGTH))),
+                new EvaluationDTO("2027-01-01", Collections.singletonList(new ParameterDTO(1900, MODULES_LENGTH))),
                 new EvaluationDTO("2029-01-01", Collections.singletonList(new ParameterDTO(3000, MODULES_LENGTH)))
         ));
         expectedMap.put(SignatureAlgorithm.RSA_SSA_PSS_SHA256_MGF1, createEvaluations(
                 new EvaluationDTO("2010-08-01", Collections.singletonList(new ParameterDTO(786, MODULES_LENGTH))),
                 new EvaluationDTO("2019-10-01", Collections.singletonList(new ParameterDTO(1024, MODULES_LENGTH))),
                 new EvaluationDTO("2019-10-01", Collections.singletonList(new ParameterDTO(1536, MODULES_LENGTH))),
-                new EvaluationDTO("2029-01-01", Collections.singletonList(new ParameterDTO(1900, MODULES_LENGTH))),
+                new EvaluationDTO("2027-01-01", Collections.singletonList(new ParameterDTO(1900, MODULES_LENGTH))),
                 new EvaluationDTO(null, Collections.singletonList(new ParameterDTO(3000, MODULES_LENGTH)))
         ));
         expectedMap.put(SignatureAlgorithm.RSA_SSA_PSS_SHA384_MGF1, createEvaluations(
                 new EvaluationDTO("2010-08-01", Collections.singletonList(new ParameterDTO(786, MODULES_LENGTH))),
                 new EvaluationDTO("2019-10-01", Collections.singletonList(new ParameterDTO(1024, MODULES_LENGTH))),
                 new EvaluationDTO("2019-10-01", Collections.singletonList(new ParameterDTO(1536, MODULES_LENGTH))),
-                new EvaluationDTO("2029-01-01", Collections.singletonList(new ParameterDTO(1900, MODULES_LENGTH))),
+                new EvaluationDTO("2027-01-01", Collections.singletonList(new ParameterDTO(1900, MODULES_LENGTH))),
                 new EvaluationDTO(null, Collections.singletonList(new ParameterDTO(3000, MODULES_LENGTH)))
         ));
         expectedMap.put(SignatureAlgorithm.RSA_SSA_PSS_SHA512_MGF1, createEvaluations(
                 new EvaluationDTO("2010-08-01", Collections.singletonList(new ParameterDTO(786, MODULES_LENGTH))),
                 new EvaluationDTO("2019-10-01", Collections.singletonList(new ParameterDTO(1024, MODULES_LENGTH))),
                 new EvaluationDTO("2019-10-01", Collections.singletonList(new ParameterDTO(1536, MODULES_LENGTH))),
-                new EvaluationDTO("2029-01-01", Collections.singletonList(new ParameterDTO(1900, MODULES_LENGTH))),
+                new EvaluationDTO("2027-01-01", Collections.singletonList(new ParameterDTO(1900, MODULES_LENGTH))),
                 new EvaluationDTO(null, Collections.singletonList(new ParameterDTO(3000, MODULES_LENGTH)))
         ));
         expectedMap.put(SignatureAlgorithm.RSA_SSA_PSS_SHA3_256_MGF1, createEvaluations(
                 new EvaluationDTO("2010-08-01", Collections.singletonList(new ParameterDTO(786, MODULES_LENGTH))),
                 new EvaluationDTO("2019-10-01", Collections.singletonList(new ParameterDTO(1024, MODULES_LENGTH))),
                 new EvaluationDTO("2019-10-01", Collections.singletonList(new ParameterDTO(1536, MODULES_LENGTH))),
-                new EvaluationDTO("2029-01-01", Collections.singletonList(new ParameterDTO(1900, MODULES_LENGTH))),
+                new EvaluationDTO("2027-01-01", Collections.singletonList(new ParameterDTO(1900, MODULES_LENGTH))),
                 new EvaluationDTO(null, Collections.singletonList(new ParameterDTO(3000, MODULES_LENGTH)))
         ));
         expectedMap.put(SignatureAlgorithm.RSA_SSA_PSS_SHA3_384_MGF1, createEvaluations(
                 new EvaluationDTO("2010-08-01", Collections.singletonList(new ParameterDTO(786, MODULES_LENGTH))),
                 new EvaluationDTO("2019-10-01", Collections.singletonList(new ParameterDTO(1024, MODULES_LENGTH))),
                 new EvaluationDTO("2019-10-01", Collections.singletonList(new ParameterDTO(1536, MODULES_LENGTH))),
-                new EvaluationDTO("2029-01-01", Collections.singletonList(new ParameterDTO(1900, MODULES_LENGTH))),
+                new EvaluationDTO("2027-01-01", Collections.singletonList(new ParameterDTO(1900, MODULES_LENGTH))),
                 new EvaluationDTO(null, Collections.singletonList(new ParameterDTO(3000, MODULES_LENGTH)))
         ));
         expectedMap.put(SignatureAlgorithm.RSA_SSA_PSS_SHA3_512_MGF1, createEvaluations(
                 new EvaluationDTO("2010-08-01", Collections.singletonList(new ParameterDTO(786, MODULES_LENGTH))),
                 new EvaluationDTO("2019-10-01", Collections.singletonList(new ParameterDTO(1024, MODULES_LENGTH))),
                 new EvaluationDTO("2019-10-01", Collections.singletonList(new ParameterDTO(1536, MODULES_LENGTH))),
-                new EvaluationDTO("2029-01-01", Collections.singletonList(new ParameterDTO(1900, MODULES_LENGTH))),
+                new EvaluationDTO("2027-01-01", Collections.singletonList(new ParameterDTO(1900, MODULES_LENGTH))),
                 new EvaluationDTO(null, Collections.singletonList(new ParameterDTO(3000, MODULES_LENGTH)))
         ));
 
@@ -261,37 +261,37 @@ public class DefaultCryptographicSuiteTest {
         ));
         expectedMap.put(SignatureAlgorithm.DSA_SHA224, createEvaluations(
                 new EvaluationDTO("2015-12-01", Collections.singletonList(new ParameterDTO(1024, PLENGTH))),
-                new EvaluationDTO("2029-01-01", Collections.singletonList(new ParameterDTO(1900, PLENGTH))),
+                new EvaluationDTO("2027-01-01", Collections.singletonList(new ParameterDTO(1900, PLENGTH))),
                 new EvaluationDTO("2029-01-01", Collections.singletonList(new ParameterDTO(3000, PLENGTH)))
         ));
         expectedMap.put(SignatureAlgorithm.DSA_SHA256, createEvaluations(
                 new EvaluationDTO("2015-12-01", Collections.singletonList(new ParameterDTO(1024, PLENGTH))),
-                new EvaluationDTO("2029-01-01", Collections.singletonList(new ParameterDTO(1900, PLENGTH))),
+                new EvaluationDTO("2027-01-01", Collections.singletonList(new ParameterDTO(1900, PLENGTH))),
                 new EvaluationDTO(null, Collections.singletonList(new ParameterDTO(3000, PLENGTH)))
         ));
         expectedMap.put(SignatureAlgorithm.DSA_SHA384, createEvaluations(
                 new EvaluationDTO("2015-12-01", Collections.singletonList(new ParameterDTO(1024, PLENGTH))),
-                new EvaluationDTO("2029-01-01", Collections.singletonList(new ParameterDTO(1900, PLENGTH))),
+                new EvaluationDTO("2027-01-01", Collections.singletonList(new ParameterDTO(1900, PLENGTH))),
                 new EvaluationDTO(null, Collections.singletonList(new ParameterDTO(3000, PLENGTH)))
         ));
         expectedMap.put(SignatureAlgorithm.DSA_SHA512, createEvaluations(
                 new EvaluationDTO("2015-12-01", Collections.singletonList(new ParameterDTO(1024, PLENGTH))),
-                new EvaluationDTO("2029-01-01", Collections.singletonList(new ParameterDTO(1900, PLENGTH))),
+                new EvaluationDTO("2027-01-01", Collections.singletonList(new ParameterDTO(1900, PLENGTH))),
                 new EvaluationDTO(null, Collections.singletonList(new ParameterDTO(3000, PLENGTH)))
         ));
         expectedMap.put(SignatureAlgorithm.DSA_SHA3_256, createEvaluations(
                 new EvaluationDTO("2015-12-01", Collections.singletonList(new ParameterDTO(1024, PLENGTH))),
-                new EvaluationDTO("2029-01-01", Collections.singletonList(new ParameterDTO(1900, PLENGTH))),
+                new EvaluationDTO("2027-01-01", Collections.singletonList(new ParameterDTO(1900, PLENGTH))),
                 new EvaluationDTO(null, Collections.singletonList(new ParameterDTO(3000, PLENGTH)))
         ));
         expectedMap.put(SignatureAlgorithm.DSA_SHA3_384, createEvaluations(
                 new EvaluationDTO("2015-12-01", Collections.singletonList(new ParameterDTO(1024, PLENGTH))),
-                new EvaluationDTO("2029-01-01", Collections.singletonList(new ParameterDTO(1900, PLENGTH))),
+                new EvaluationDTO("2027-01-01", Collections.singletonList(new ParameterDTO(1900, PLENGTH))),
                 new EvaluationDTO(null, Collections.singletonList(new ParameterDTO(3000, PLENGTH)))
         ));
         expectedMap.put(SignatureAlgorithm.DSA_SHA3_512, createEvaluations(
                 new EvaluationDTO("2015-12-01", Collections.singletonList(new ParameterDTO(1024, PLENGTH))),
-                new EvaluationDTO("2029-01-01", Collections.singletonList(new ParameterDTO(1900, PLENGTH))),
+                new EvaluationDTO("2027-01-01", Collections.singletonList(new ParameterDTO(1900, PLENGTH))),
                 new EvaluationDTO(null, Collections.singletonList(new ParameterDTO(3000, PLENGTH)))
         ));
 
@@ -415,7 +415,7 @@ public class DefaultCryptographicSuiteTest {
         calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
         calendar.clear();
 
-        calendar.set(2024, Calendar.OCTOBER, 13);
+        calendar.set(2026, Calendar.FEBRUARY, 1);
 
         assertEquals(calendar.getTime(), cryptographicSuite.getCryptographicSuiteUpdateDate());
     }
