@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.validation.job.dto;
 
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.job.DownloadInfoRecord;
 
 import java.util.ArrayList;
@@ -38,6 +39,9 @@ public class DownloadCacheDTO extends AbstractCacheDTO implements DownloadInfoRe
 
 	/** The downloaded document */
 	private DSSDocument document;
+
+	/** The document digest */
+	private Digest digest;
 
 	/** Error messages occurred during sha2 processing */
 	private List<String> sha2ErrorMessages;
@@ -88,6 +92,24 @@ public class DownloadCacheDTO extends AbstractCacheDTO implements DownloadInfoRe
 	 */
 	public void setDocument(DSSDocument document) {
 		this.document = document;
+	}
+
+	/**
+	 * Gets document digest
+	 *
+	 * @return {@link Digest}
+	 */
+	public Digest getDigest() {
+		return digest;
+	}
+
+	/**
+	 * Sets document digest
+	 *
+	 * @param digest {@link Digest}
+	 */
+	public void setDigest(Digest digest) {
+		this.digest = digest;
 	}
 
 	/**

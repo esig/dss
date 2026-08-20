@@ -18,7 +18,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.lote.alerts.log;
+package eu.europa.esig.dss.lote.alerts.handler.log;
 
 import eu.europa.esig.dss.alert.handler.AlertHandler;
 import eu.europa.esig.dss.model.lote.LoTEInfo;
@@ -26,23 +26,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Warns on LoTE validation error
+ * Warns on LoTE parsing error
  *
  */
-public class LogLoTESignatureErrorAlertHandler implements AlertHandler<LoTEInfo> {
+public class LogLoTEParsingErrorAlertHandler implements AlertHandler<LoTEInfo> {
 
-	private static final Logger LOG = LoggerFactory.getLogger(LogLoTESignatureErrorAlertHandler.class);
+	private static final Logger LOG = LoggerFactory.getLogger(LogLoTEParsingErrorAlertHandler.class);
 
 	/**
 	 * Default constructor
 	 */
-	public LogLoTESignatureErrorAlertHandler() {
+	public LogLoTEParsingErrorAlertHandler() {
 		// empty
 	}
 
 	@Override
 	public void process(LoTEInfo currentInfo) {
-		LOG.warn("There is a problem in the LoTE signature : {}", currentInfo.getUrl());
+		LOG.warn("There was an error while parsing a LoTE : {}", currentInfo.getUrl());
 	}
-
+	
 }

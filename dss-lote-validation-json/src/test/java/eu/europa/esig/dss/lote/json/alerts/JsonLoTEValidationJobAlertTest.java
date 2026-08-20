@@ -4,10 +4,10 @@ import eu.europa.esig.dss.alert.Alert;
 import eu.europa.esig.dss.alert.handler.AlertHandler;
 import eu.europa.esig.dss.alert.handler.CompositeAlertHandler;
 import eu.europa.esig.dss.lote.alerts.LoTEAlert;
-import eu.europa.esig.dss.lote.alerts.detections.LoTEParsingErrorDetection;
-import eu.europa.esig.dss.lote.alerts.detections.LoTESignatureErrorDetection;
-import eu.europa.esig.dss.lote.alerts.log.LogLoTEParsingErrorAlertHandler;
-import eu.europa.esig.dss.lote.alerts.log.LogLoTESignatureErrorAlertHandler;
+import eu.europa.esig.dss.lote.alerts.detection.LoTEParsingErrorDetection;
+import eu.europa.esig.dss.lote.alerts.detection.LoTESignatureErrorDetection;
+import eu.europa.esig.dss.lote.alerts.handler.log.LogLoTEParsingErrorAlertHandler;
+import eu.europa.esig.dss.lote.alerts.handler.log.LogLoTESignatureErrorAlertHandler;
 import eu.europa.esig.dss.lote.job.LoTEValidationJob;
 import eu.europa.esig.dss.lote.json.MockDataLoader;
 import eu.europa.esig.dss.lote.source.LoTESource;
@@ -180,17 +180,6 @@ class JsonLoTEValidationJobAlertTest {
         onlineFileLoader.setDataLoader(new MockDataLoader(onlineMap));
         onlineFileLoader.setFileCacheDirectory(cacheDirectory);
         return onlineFileLoader;
-    }
-
-    private static class CallbackAlertHandler<T> implements AlertHandler<T> {
-
-        private boolean called = false;
-
-        @Override
-        public void process(T currentInfo) {
-            called = true;
-        }
-
     }
 
 }

@@ -39,10 +39,12 @@ import eu.europa.esig.dss.tsl.alerts.detections.LOTLLocationChangeDetection;
 import eu.europa.esig.dss.tsl.alerts.detections.OJUrlChangeDetection;
 import eu.europa.esig.dss.tsl.alerts.detections.TLExpirationDetection;
 import eu.europa.esig.dss.tsl.alerts.detections.TLSignatureErrorDetection;
+import eu.europa.esig.dss.tsl.alerts.detections.TSLSequenceNumberErrorDetection;
 import eu.europa.esig.dss.tsl.alerts.handlers.log.LogLOTLLocationChangeAlertHandler;
 import eu.europa.esig.dss.tsl.alerts.handlers.log.LogOJUrlChangeAlertHandler;
 import eu.europa.esig.dss.tsl.alerts.handlers.log.LogTLExpirationAlertHandler;
 import eu.europa.esig.dss.tsl.alerts.handlers.log.LogTLSignatureErrorAlertHandler;
+import eu.europa.esig.dss.tsl.alerts.handlers.log.LogTSLSequenceNumberErrorAlertHandler;
 import eu.europa.esig.dss.tsl.function.OfficialJournalSchemeInformationURI;
 import eu.europa.esig.dss.tsl.job.TLValidationJob;
 import eu.europa.esig.dss.tsl.sha2.Sha2FileCacheDataLoader;
@@ -133,7 +135,7 @@ class EuropeanLOTLSnippets {
 		job.setListOfTrustedListSources(europeanLOTL);
 
 		job.setLOTLAlerts(Arrays.asList(ojUrlAlert(europeanLOTL), lotlLocationAlert(europeanLOTL)));
-		job.setTLAlerts(Arrays.asList(tlSigningAlert(), tlExpirationDetection()));
+		job.setTLAlerts(Arrays.asList(tlSigningAlert(), tlExpirationAlert(), tslSequenceNumberAlert()));
 
 		return job;
 	}
@@ -219,10 +221,16 @@ class EuropeanLOTLSnippets {
 		return new TLAlert(signingDetection, handler);
 	}
 
-	public TLAlert tlExpirationDetection() {
+	public TLAlert tlExpirationAlert() {
 		TLExpirationDetection expirationDetection = new TLExpirationDetection();
 		LogTLExpirationAlertHandler handler = new LogTLExpirationAlertHandler();
 		return new TLAlert(expirationDetection, handler);
+	}
+
+	public TLAlert tslSequenceNumberAlert() {
+		TSLSequenceNumberErrorDetection tslSequenceNumberDetection = new TSLSequenceNumberErrorDetection();
+		LogTSLSequenceNumberErrorAlertHandler handler = new LogTSLSequenceNumberErrorAlertHandler();
+		return new TLAlert(tslSequenceNumberDetection, handler);
 	}
 
 	public LOTLAlert ojUrlAlert(LOTLSource source) {

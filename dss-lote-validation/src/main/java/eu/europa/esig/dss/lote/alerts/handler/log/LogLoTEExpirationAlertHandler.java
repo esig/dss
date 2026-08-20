@@ -18,36 +18,35 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.lote.alerts.detections;
+package eu.europa.esig.dss.lote.alerts.handler.log;
 
-import eu.europa.esig.dss.alert.detector.AlertDetector;
+import eu.europa.esig.dss.alert.handler.AlertHandler;
 import eu.europa.esig.dss.model.lote.LoTEInfo;
-import eu.europa.esig.dss.model.lote.record.LoTEParsingInfoRecord;
-
-import java.util.Date;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Detects an expiration of a List of Trusted Entities
+ * Warns on the LoTE expiration
  *
  */
-public class LoTEExpirationDetection implements AlertDetector<LoTEInfo> {
+public class LogLoTEExpirationAlertHandler implements AlertHandler<LoTEInfo> {
+
+	private static final Logger LOG = LoggerFactory.getLogger(LogLoTEExpirationAlertHandler.class);
 
 	/**
 	 * Default constructor
 	 */
-	public LoTEExpirationDetection() {
+	public LogLoTEExpirationAlertHandler() {
 		// empty
 	}
 
 	@Override
-	public boolean detect(LoTEInfo info) {
-		LoTEParsingInfoRecord parsingCacheInfo = info.getParsingCacheInfo();
-		if (parsingCacheInfo != null) {
-			Date nextUpdateDate = parsingCacheInfo.getNextUpdateDate();
-			Date currentDate = new Date();
-			return (nextUpdateDate != null && nextUpdateDate.before(currentDate));
+	public void process(LoTEInfo currentInfo) {
+		if (currentInfo.getParsingCacheInfo() != null) {
+			LOG.warn("The '{}' LoTE has expired. Last update : {}", currentInfo.getUrl(), currentInfo.getParsingCacheInfo().getNextUpdateDate());
+		} else {
+			LOG.warn("No parsing result found for a LoTE with URL '{}'", currentInfo.getUrl());
 		}
-		return false;
 	}
 	
 }

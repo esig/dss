@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.model.job;
 
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.Digest;
 
 import java.util.Date;
 
@@ -35,6 +36,13 @@ public interface DownloadInfoRecord extends InfoRecord {
      * @return {@link DSSDocument}
      */
     DSSDocument getDocument();
+
+    /**
+     * Gets document digest
+     *
+     * @return {@link Digest}
+     */
+    Digest getDigest();
 
     /**
      * The last time when a download attempt has been proceeded.

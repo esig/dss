@@ -288,16 +288,5 @@ class TLValidationJobAlertTest {
 		onlineFileLoader.setFileCacheDirectory(cacheDirectory);
 		return onlineFileLoader;
 	}
-	
-	private static class CallbackAlertHandler<T> implements AlertHandler<T> {
-		
-		private boolean called = false;
-
-		@Override
-		public void process(T currentInfo) {
-			called = true;
-		}
-		
-	}
 
 }

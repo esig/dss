@@ -18,30 +18,36 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-package eu.europa.esig.dss.lote.alerts.detections;
+package eu.europa.esig.dss.lote.alerts.detection;
 
 import eu.europa.esig.dss.alert.detector.AlertDetector;
-import eu.europa.esig.dss.model.job.ParsingInfoRecord;
 import eu.europa.esig.dss.model.lote.LoTEInfo;
-import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.model.lote.record.LoTEParsingInfoRecord;
+
+import java.util.Date;
 
 /**
- * Detects an error on LoTE parsing or structure validation
+ * Detects an expiration of a List of Trusted Entities
  *
  */
-public class LoTEParsingErrorDetection implements AlertDetector<LoTEInfo> {
+public class LoTEExpirationDetection implements AlertDetector<LoTEInfo> {
 
 	/**
 	 * Default constructor
 	 */
-	public LoTEParsingErrorDetection() {
+	public LoTEExpirationDetection() {
 		// empty
 	}
 
 	@Override
 	public boolean detect(LoTEInfo info) {
-		ParsingInfoRecord parsingCacheInfo = info.getParsingCacheInfo();
-		return parsingCacheInfo != null && (parsingCacheInfo.isError() || Utils.isCollectionNotEmpty(parsingCacheInfo.getStructureValidationMessages()));
+		LoTEParsingInfoRecord parsingCacheInfo = info.getParsingCacheInfo();
+		if (parsingCacheInfo != null) {
+			Date nextUpdateDate = parsingCacheInfo.getNextUpdateDate();
+			Date currentDate = new Date();
+			return (nextUpdateDate != null && nextUpdateDate.before(currentDate));
+		}
+		return false;
 	}
-
+	
 }

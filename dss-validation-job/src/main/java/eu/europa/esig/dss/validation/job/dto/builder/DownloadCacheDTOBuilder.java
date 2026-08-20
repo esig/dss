@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.validation.job.dto.builder;
 
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.validation.job.cache.state.CachedEntry;
 import eu.europa.esig.dss.validation.job.download.DownloadResult;
 import eu.europa.esig.dss.validation.job.dto.DownloadCacheDTO;
@@ -46,6 +47,7 @@ public class DownloadCacheDTOBuilder extends AbstractCacheDTOBuilder<DownloadRes
 		DownloadCacheDTO downloadCacheDTO = new DownloadCacheDTO(super.build());
 		if (isResultExist()) {
 			downloadCacheDTO.setDocument(getDocument());
+			downloadCacheDTO.setDigest(getDigest());
 			downloadCacheDTO.setSha2ErrorMessages(getSha2ErrorMessages());
 		}
 		return downloadCacheDTO;
@@ -53,6 +55,10 @@ public class DownloadCacheDTOBuilder extends AbstractCacheDTOBuilder<DownloadRes
 
 	private DSSDocument getDocument() {
 		return getResult().getDSSDocument();
+	}
+
+	private Digest getDigest() {
+		return getResult().getDigest();
 	}
 
 	private List<String> getSha2ErrorMessages() {

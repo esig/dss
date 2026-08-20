@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><ListOfTrustedEntities xmlns="http://uri.etsi.org/019602/v1#" xmlns:ns2="http://www.w3.org/2000/09/xmldsig#" xmlns:ns3="http://uri.etsi.org/019602/v1/TrustedEntityExtensions" xmlns:ns4="http://uri.etsi.org/019602/v1/ServiceInformationExtensions" LOTETag="http://uri.etsi.org/019602/tag#">
+    <ListAndSchemeInformation>
+        <LoTEVersionIdentifier>1</LoTEVersionIdentifier>
+        <LoTESequenceNumber>2</LoTESequenceNumber>
+        <LoTEType>http://uri.etsi.org/19602/LoTEType/EUPubEAAProvidersList</LoTEType>
+        <SchemeOperatorName>
+            <Name xml:lang="fr">Agence Nationale de la Confiance Numérique</Name>
+            <Name xml:lang="en">National Agency for Digital Trust</Name>
+        </SchemeOperatorName>
+        <SchemeOperatorAddress>
+            <PostalAddresses>
+                <PostalAddress xml:lang="fr">
+                    <StreetAddress>12 Boulevard Sécurité</StreetAddress>
+                    <Locality>Paris</Locality>
+                    <StateOrProvince>Île-de-France</StateOrProvince>
+                    <PostalCode>75015</PostalCode>
+                    <CountryName>ZZ</CountryName>
+                </PostalAddress>
+                <PostalAddress xml:lang="en">
+                    <StreetAddress>12 Security Boulevard</StreetAddress>
+                    <Locality>Paris</Locality>
+                    <StateOrProvince>Ile-de-France</StateOrProvince>
+                    <PostalCode>75015</PostalCode>
+                    <CountryName>ZZ</CountryName>
+                </PostalAddress>
+            </PostalAddresses>
+            <ElectronicAddress>
+                <URI xml:lang="en">mailto@schemeoperator.com</URI>
+            </ElectronicAddress>
+        </SchemeOperatorAddress>
+        <SchemeName>
+            <Name xml:lang="fr">Liste de confiance zz</Name>
+            <Name xml:lang="en">ZZ Trusted List</Name>
+        </SchemeName>
+        <SchemeInformationURI>
+            <URI xml:lang="en">https://example.org/scheme-info</URI>
+        </SchemeInformationURI>
+        <StatusDeterminationApproach>http://uri.etsi.org/19602/PubEAAProvidersList/StatusDetn/EU</StatusDeterminationApproach>
+        <SchemeTypeCommunityRules>
+            <URI xml:lang="en">http://uri.etsi.org/19602/PubEAAProvidersList/schemerules/EU</URI>
+        </SchemeTypeCommunityRules>
+        <SchemeTerritory>EU</SchemeTerritory>
+        <PolicyOrLegalNotice>
+            <LoTEPolicy xml:lang="en">http://trust.tech.ec.europa.eu/lists/eudiw/legal-notice#EN</LoTEPolicy>
+        </PolicyOrLegalNotice>
+        <HistoricalInformationPeriod>65535</HistoricalInformationPeriod>
+        <ListIssueDateTime>2026-01-30T11:09:37.814+01:00</ListIssueDateTime>
+        <NextUpdate>
+            <dateTime>2026-07-30T11:09:37.818+02:00</dateTime>
+        </NextUpdate>
+    </ListAndSchemeInformation>
+    <TrustedEntitiesList>
+        <TrustedEntity>
+            <TrustedEntityInformation>
+                <TEName>
+                    <Name xml:lang="en">Agence Nationale des Titres Sécurisés</Name>
+                </TEName>
+                <TETradeName>
+                    <Name xml:lang="en">VATZZ-12345</Name>
+                </TETradeName>
+                <TEAddress>
+                    <PostalAddresses>
+                        <PostalAddress xml:lang="en">
+                            <StreetAddress>test</StreetAddress>
+                            <Locality>test</Locality>
+                            <StateOrProvince>test</StateOrProvince>
+                            <PostalCode>3465</PostalCode>
+                            <CountryName>ZZ</CountryName>
+                        </PostalAddress>
+                    </PostalAddresses>
+                    <ElectronicAddress>
+                        <URI xml:lang="en">mailto:test@test.fr</URI>
+                        <URI xml:lang="en">tel:+337848346754</URI>
+                    </ElectronicAddress>
+                </TEAddress>
+                <TEInformationURI>
+                    <URI xml:lang="en">http://test.fr</URI>
+                    <URI xml:lang="en">http://uri.etsi.org/19602/ListOfTrustedEntities/PIDProvider/ZZ</URI>
+                </TEInformationURI>
+            </TrustedEntityInformation>
+            <TrustedEntityServices>
+                <TrustedEntityService>
+                    <ServiceInformation>
+                        <ServiceTypeIdentifier>http://uri.etsi.org/19602/SvcType/PubEAA/Issuance</ServiceTypeIdentifier>
+                        <ServiceName>
+                            <Name xml:lang="en">Test Pub-EAA Trusted Entity 1</Name>
+                        </ServiceName>
+                        <ServiceDigitalIdentity>
+                            <DigitalId>
+<X509Certificate>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</X509Certificate>
+                            </DigitalId>
+                        </ServiceDigitalIdentity>
+                        <ServiceStatus>http://uri.etsi.org/19602/PubEAAProvidersList/SvcStatus/notified</ServiceStatus>
+                        <StatusStartingTime>2023-01-30T11:08:13.000+01:00</StatusStartingTime>
+                    </ServiceInformation>
+                </TrustedEntityService>
+            </TrustedEntityServices>
+        </TrustedEntity>
+    </TrustedEntitiesList>
+<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="id-4d27e1e794c9ed5b088b627f9f3f0d56"><ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/><ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/><ds:Reference Id="ref-enveloped-signature" URI=""><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>Ioxi7T2QiPEQvZVjigU6nsscwfSrwfxviqFnRII5Hb0=</ds:DigestValue></ds:Reference><ds:Reference Type="http://uri.etsi.org/01903#SignedProperties" URI="#xades-id-4d27e1e794c9ed5b088b627f9f3f0d56"><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>ol3RrgU4iW2Z1uceJGQNgUk6qHLJVXb1G16WF2DOZ20=</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue Id="value-id-4d27e1e794c9ed5b088b627f9f3f0d56">ecKbvYr+tA8GUxnTLBmMlumHfGTGf4RNPioQM7fVgQNCorIvWK1YKsYe5ZMQbYydlsJglcSxNXu7IWej28lceutangux6NIJxf1e1fo6OuDKIMyVRBhBL/l2H7CRkz3XCdwT2VXeZq+tZBhTxeeIiPwS3vneCWu2Hz4DENYzq5xApV5xxaYV6bZNakch6PxI7rP0pIBspl4VIXpcSc5P3SsbiMnlAV9uBydfKtCDnJiIxlrzv5/ZmiXkT95TdZLgOt7Xt9OQ/LREfUpMcSSnPcagp4wnEwAgRsIaDHnKyn9X+QbK1/fZ75vY24jr7TvUJo5hQby4zVM07TqVa0U2Hyo75gjp4wkfq6MKn0gWWl82SivZ7e1QBVCKU5X5BQil3NQmCCFm8SYpDybE/UHkEbLdjubJ5uVuS2+j9cc68jP0gRaRDEir7VZZ+CPFBpfjkiekcxuRIJqgjKWK6RvZyO4xANZ8qY73qmtTfdvhhz1+Ru15GA0ZcufWwIeOIvW2</ds:SignatureValue><ds:KeyInfo><ds:X509Data><ds:X509Certificate>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</ds:X509Certificate></ds:X509Data></ds:KeyInfo><ds:Object><xades:QualifyingProperties xmlns:xades="http://uri.etsi.org/01903/v1.3.2#" Target="#id-4d27e1e794c9ed5b088b627f9f3f0d56"><xades:SignedProperties Id="xades-id-4d27e1e794c9ed5b088b627f9f3f0d56"><xades:SignedSignatureProperties><xades:SigningTime>2026-08-20T10:05:04Z</xades:SigningTime><xades:SigningCertificateV2><xades:Cert><xades:CertDigest><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha512"/><ds:DigestValue>XRyekxxrwv1f6K0yhcf9PuaVzOj634k0T+AkXxUJyb2fiTIohc1brIhAXJ4FxUHEIMGxQur/+ZdBFIIqOZVAfA==</ds:DigestValue></xades:CertDigest><xades:IssuerSerialV2>MIGMMIGEpIGBMH8xIzAhBgNVBAMMGlRlc3QtUXVhbGlmaWVkLUNBMS1mcm9tLVpaMTgwNgYDVQQKDC9UZXN0IFF1YWxpZmllZCBUcnVzdCBTZXJ2aWNlIFByb3ZpZGVyIDEgZnJvbSBaWjERMA8GA1UECwwIUEtJLVRFU1QxCzAJBgNVBAYTAlpaAgMBhxE=</xades:IssuerSerialV2></xades:Cert></xades:SigningCertificateV2></xades:SignedSignatureProperties><xades:SignedDataObjectProperties><xades:DataObjectFormat ObjectReference="#ref-enveloped-signature"><xades:MimeType>text/xml</xades:MimeType></xades:DataObjectFormat></xades:SignedDataObjectProperties></xades:SignedProperties></xades:QualifyingProperties></ds:Object></ds:Signature></ListOfTrustedEntities>
