@@ -5,9 +5,9 @@
                 
 	<xsl:output method="html" encoding="utf-8" indent="yes" omit-xml-declaration="yes" />
 
-	<xsl:param name="rootUrlInTlBrowser">https://eidas.ec.europa.eu/efda/tl-browser/#/screen</xsl:param>
-	<xsl:param name="euTLSubDirectoryInTlBrowser">/tl</xsl:param>
-	<xsl:param name="tcTLSubDirectoryInTlBrowser">/tc-tl</xsl:param>
+    <xsl:param name="rootUrlInTlBrowser">https://eidas.ec.europa.eu/efda/trust-services/browse</xsl:param>
+    <xsl:param name="euTLSubDirectoryInTlBrowser">/eidas/tls/tl</xsl:param>
+    <xsl:param name="tcTLSubDirectoryInTlBrowser">/tc-tls/tl</xsl:param>
 	<xsl:param name="trustmarkSubDirectoryInTlBrowser">/trustmark</xsl:param>
 	<xsl:param name="euGenericTSLType">http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric</xsl:param>
 	
