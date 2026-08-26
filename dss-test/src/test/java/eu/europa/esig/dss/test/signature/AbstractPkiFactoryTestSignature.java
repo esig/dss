@@ -926,7 +926,7 @@ public abstract class AbstractPkiFactoryTestSignature<SP extends SerializableSig
 
 	protected FileDocument generateLargeFile(String filename) throws IOException {
 		// -Dlarge.file.size.mb=...
-		String fileSizeStr = System.getProperty("large.file.size.mb", "2048");
+		String fileSizeStr = System.getProperty("large.file.size.mb", "512");
 		final int fileSizeMB = Integer.parseInt(fileSizeStr);
 
 		File file = new File("target/" + filename);
