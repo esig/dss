@@ -36,6 +36,8 @@ import java.util.Objects;
  *         implementation of signature parameters corresponding to the supported signature format
  * @param <P>
  *         implementation of attestation payload parameters to the attestation format
+ * @param <B>
+ *         implementation of attestation payload builder
  */
 public abstract class AbstractAttestationService<SP extends SerializableSignatureParameters, P extends AttestationPayloadParameters,
         B extends AttestationPayloadBuilder<P>> implements AttestationService<SP, P> {
@@ -111,6 +113,7 @@ public abstract class AbstractAttestationService<SP extends SerializableSignatur
     /**
      * Gets the final document name when original document is present
      *
+     * @param signingOperation {@link SigningOperation}
      * @return {@link String}
      */
     protected FileNameBuilder getFinalDocumentNameBuilder(SigningOperation signingOperation) {

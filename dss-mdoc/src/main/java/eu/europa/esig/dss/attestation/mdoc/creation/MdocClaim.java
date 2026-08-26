@@ -271,6 +271,7 @@ public class MdocClaim extends AbstractAttestationClaim {
     /**
      * Constructor with the value
      *
+     * @param name {@link String} key of the claim
      * @param value {@link Object} the value of the claim
      */
     protected MdocClaim(String name, Object value) {

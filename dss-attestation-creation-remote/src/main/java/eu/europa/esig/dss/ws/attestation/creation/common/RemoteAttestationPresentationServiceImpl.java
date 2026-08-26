@@ -152,6 +152,12 @@ public class RemoteAttestationPresentationServiceImpl extends AbstractRemoteAtte
         return RemoteDocumentConverter.toRemoteDocument(attestationPresentation);
     }
 
+    /**
+     * Gets the attestation presentation service for the given attestation form
+     *
+     * @param attestationForm {@link AttestationForm}
+     * @return {@link AttestationPresentationService}
+     */
     @SuppressWarnings({"rawtypes"})
     protected AttestationPresentationService getAttestationPresentationServiceForType(AttestationForm attestationForm) {
         AttestationService service = super.getAttestationServiceForType(attestationForm);

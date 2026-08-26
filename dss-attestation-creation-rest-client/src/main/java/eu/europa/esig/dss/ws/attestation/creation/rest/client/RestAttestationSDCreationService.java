@@ -41,6 +41,7 @@ public interface RestAttestationSDCreationService extends RestAttestationCreatio
      *
      * @param issueAttestationDTO
      *             {@link IssueAttestationDTO}
+     * @return {@link RemoteDocument} attestation document
      */
     @POST
     @Path("issueAttestation")

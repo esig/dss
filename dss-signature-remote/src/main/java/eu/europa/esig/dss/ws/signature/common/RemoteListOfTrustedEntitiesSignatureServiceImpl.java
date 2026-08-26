@@ -50,6 +50,13 @@ public class RemoteListOfTrustedEntitiesSignatureServiceImpl extends AbstractRem
     private CBAdESService cbadesService;
 
     /**
+     * Default constructor
+     */
+    public RemoteListOfTrustedEntitiesSignatureServiceImpl() {
+        // empty
+    }
+
+    /**
      * Sets the XAdES signature service
      *
      * @param xadesService {@link XAdESService}
@@ -157,8 +164,9 @@ public class RemoteListOfTrustedEntitiesSignatureServiceImpl extends AbstractRem
     /**
      * Creates parameters for a signature creation (not container)
      *
-     * @param signatureForm {@link SignatureForm}
+     * @param document {@link DSSDocument}
      * @param remoteParameters {@link RemoteSignatureParameters}
+     * @param signatureForm {@link SignatureForm}
      * @return {@link SerializableSignatureParameters}
      */
     @SuppressWarnings("rawtypes")

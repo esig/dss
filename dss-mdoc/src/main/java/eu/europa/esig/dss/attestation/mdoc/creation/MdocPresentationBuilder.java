@@ -130,6 +130,7 @@ public class MdocPresentationBuilder {
      * @param disclosures a list of {@link MdocIssuerSignedItem}s
      * @param keyBinding {@link DSSDocument}
      * @param deviceSignedParameters {@link MdocDeviceSignedParameters}
+     * @return {@link DSSDocument} DeviceResponse structure
      */
     public DSSDocument buildDeviceResponseDocument(DSSDocument attestation, List<MdocIssuerSignedItem> disclosures,
                                                    DSSDocument keyBinding, MdocDeviceSignedParameters deviceSignedParameters) {

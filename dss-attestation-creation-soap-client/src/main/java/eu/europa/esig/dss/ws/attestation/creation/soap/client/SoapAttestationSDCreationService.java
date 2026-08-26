@@ -36,6 +36,7 @@ public interface SoapAttestationSDCreationService extends SoapAttestationCreatio
      *
      * @param issueAttestationDTO
      *             {@link IssueAttestationDTO}
+     * @return {@link RemoteDocument} attestation document
      */
     @WebResult(name = "response")
     RemoteDocument issueAttestation(@WebParam(name = "issueAttestationDTO") final IssueAttestationDTO issueAttestationDTO);

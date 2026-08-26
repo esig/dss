@@ -57,6 +57,7 @@ public class DisclosureValidation extends ReferenceValidation {
      * Constructor with a provided disclosure
      *
      * @param disclosure {@link SelectiveDisclosure}
+     * @param verifiedClaim {@link VerifiedClaim}
      */
     public DisclosureValidation(SelectiveDisclosure disclosure, VerifiedClaim verifiedClaim) {
         Objects.requireNonNull(disclosure, "Disclosure cannot be null!");

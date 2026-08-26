@@ -12,6 +12,8 @@ import java.util.Objects;
  * Represents an attestation with selective disclosures document.
  * The class allows extraction of SD Attestation parts, such as a signed attestation or selective disclosures only.
  *
+ * @param <D>
+ *         implementation of selective disclosure for the given attestation format
  */
 public abstract class AttestationDocument<D extends SelectiveDisclosure> extends CommonDocument  {
 

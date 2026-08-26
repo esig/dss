@@ -20,6 +20,8 @@ public class RemoteAttestationParsingParameters {
 
     /**
      * Constructor with attestation form defined
+     *
+     * @param attestationForm {@link AttestationForm}
      */
     public RemoteAttestationParsingParameters(AttestationForm attestationForm) {
         this.attestationForm = attestationForm;

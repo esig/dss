@@ -26,23 +26,23 @@ package eu.europa.esig.dss.enumerations;
  */
 public enum QWACProfile {
 
-    /*
+    /**
      * Qualified certificate for website authentication based on Approach #1 in clause 1 of the ETSI TS 119 411-5
      */
     QWAC_1("1-QWAC"),
 
-    /*
+    /**
      * Qualified certificate for website authentication based on Approach #2 in clause 1 of the ETSI TS 119 411-5
      */
     QWAC_2("2-QWAC"),
 
-    /*
+    /**
      * A TLS certificate supported by a qualified certificate for website authentication based on Approach #2
      * in clause 1 of the ETSI TS 119 411-5, through TLS Certificate Binding
      */
     TLS_BY_QWAC_2("TLS certificate supported by 2-QWAC"),
 
-    /*
+    /**
      * Not a Qualified certificate for website authentication based on clause 1 of the ETSI TS 119 411-5
      */
     NOT_QWAC("Not QWAC");

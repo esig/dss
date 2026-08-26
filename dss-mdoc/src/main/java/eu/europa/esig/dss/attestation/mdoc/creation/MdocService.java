@@ -513,6 +513,11 @@ public class MdocService extends AbstractAttestationSDService<CBAdESSignaturePar
         return deviceResponseDocument;
     }
 
+    /**
+     * Gets the mdoc presentation builder
+     *
+     * @return {@link MdocPresentationBuilder}
+     */
     protected MdocPresentationBuilder getMdocPresentationBuilder() {
         return new MdocPresentationBuilder();
     }

@@ -125,7 +125,6 @@ import java.util.stream.Collectors;
  *   </li>
  * </ol>
  *
- * <p>
  */
 public class SDJWTService extends AbstractAttestationSDService<JAdESSignatureParameters, SDJWTPayloadParameters, SDJWTSelectiveDisclosure>
         implements AttestationPresentationService<JAdESSignatureParameters, SDJWTSelectiveDisclosure, SDJWTKeyBindingParameters> {

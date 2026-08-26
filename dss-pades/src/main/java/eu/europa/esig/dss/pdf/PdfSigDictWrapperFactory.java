@@ -64,6 +64,7 @@ public class PdfSigDictWrapperFactory {
      * Default constructor
      *
      * @param sigFieldDictionary {@link PdfDict} representing the signature field dictionary
+     * @param signatureFields a list of {@link PdfSignatureField}s
      */
     public PdfSigDictWrapperFactory(final PdfDict sigFieldDictionary, final List<PdfSignatureField> signatureFields) {
         Objects.requireNonNull(sigFieldDictionary, "sigFieldDictionary cannot be null!");

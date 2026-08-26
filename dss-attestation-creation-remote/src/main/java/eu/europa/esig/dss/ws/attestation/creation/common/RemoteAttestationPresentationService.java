@@ -12,6 +12,11 @@ import eu.europa.esig.dss.ws.signature.dto.parameters.RemoteSignatureParameters;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * Remote service to issue an attestation.
+ * The service is intended to be used by a wallet device instance.
+ *
+ */
 public interface RemoteAttestationPresentationService extends Serializable {
     
     /**

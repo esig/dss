@@ -47,6 +47,7 @@ public class IssueAttestationDTO {
      * Constructor to issue attestation with attached {@code disclosures}
      *
      * @param signedAttestation {@link RemoteDocument}
+     * @param attestationForm {@link AttestationForm}
      * @param disclosures a list of {@link DisclosureDTO}s
      */
     public IssueAttestationDTO(RemoteDocument signedAttestation, AttestationForm attestationForm, List<DisclosureDTO> disclosures) {
@@ -58,6 +59,7 @@ public class IssueAttestationDTO {
      * NOTE: Parameters are used to define the attestation form, when the method is used.
      *
      * @param signedAttestation {@link RemoteDocument}
+     * @param payloadParameters {@link RemoteAttestationPayloadParameters}
      * @param disclosures a list of {@link DisclosureDTO}s
      */
     public IssueAttestationDTO(RemoteDocument signedAttestation, RemoteAttestationPayloadParameters payloadParameters,

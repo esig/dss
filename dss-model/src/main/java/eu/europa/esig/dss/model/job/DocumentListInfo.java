@@ -25,6 +25,7 @@ import java.util.List;
 /**
  * Contains a validation result for a document list
  *
+ * @param <C> {@link DocumentInfo}
  */
 public interface DocumentListInfo<C extends DocumentInfo> extends DocumentInfo {
 

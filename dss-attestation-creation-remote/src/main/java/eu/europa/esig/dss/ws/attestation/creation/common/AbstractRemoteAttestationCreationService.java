@@ -48,6 +48,12 @@ public abstract class AbstractRemoteAttestationCreationService {
         this.mdocService = mdocService;
     }
 
+    /**
+     * Gets the applicable attestation service for the given attestation form
+     *
+     * @param attestationForm {@link AttestationForm}
+     * @return {@link AttestationService}
+     */
     @SuppressWarnings("rawtypes")
     protected AttestationService getAttestationServiceForType(AttestationForm attestationForm) {
         AttestationService attestationService;
