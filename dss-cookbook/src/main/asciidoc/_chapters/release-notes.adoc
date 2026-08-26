@@ -11,6 +11,29 @@
 |===
 |Version           |Release date             |Features
 
+|v6.5              |August 2026             a|Main new features / improvements :
+
+                                            * Attestation modules refactoring (`dss-sd-jwt`, `dss-mdoc`);
+                                            * Cryptographic algorithms deprecation dates update per ETSI TS 119 312 v2.1.1 <<R20>>;
+                                            * Support of `x5c` as unsigned header parameter (JAdES, CB-AdES);
+                                            * RFC 9864 COSE algorithms validation support;
+                                            * New `TLAlert` to detect and report invalid updates in `TSLSequenceNumber`;
+                                            * Demos : added properties to enable certain alerts in web application;
+                                            * Demos : added property to enforce RFC 8017 conformance on RSA signature validation (BC);
+                                            * Demos : added property to configure maximum nesting level in ASN.1 structures (BC);
+                                            * Demos : added LoTE validation job summary webpage;
+                                            * Dependencies update (BouncyCastle, HttpClient5, PdfBox, etc.).
+
+Bug fixes :
+
+                                            * Fixes related to attestations handling (creation and validation);
+                                            * Fixes related to LoTE processing;
+                                            * `ExpirationAndSignatureCheckStrategy` mistakenly synchronizes Trusted Lists with zero or more signatures;
+                                            * PAdES : `/AP` of existing signature field can be created without invalidating the signature;
+                                            * JAdES : Performance issue in `JWSCompactSerializationParser#isSupported` method;
+                                            * Missing commits for QWAC and crypto suites processing;
+                                            * Outdated links to the eIDAS Dashboard in Simple Reports.
+
 |v6.5.RC1          |July 2026              a|Main new features / improvements :
 
                                             * Creation and validation of CB-AdES signatures (ETSI TS 119 152-1 <<R41>>);
@@ -603,14 +626,14 @@ _pass:[*] October 2015: Implementing Acts Art. 27 & 37 (eSig formats)_
 
 To upgrade version of DSS, locate to the `pom.xml` file of your project, search for the properties and then change the dss version in the corresponding field(s).
 
-The example below shows how to switch to DSS version `6.5.RC1` using <<BomModule>>:
+The example below shows how to switch to DSS version `6.5` using <<BomModule>>:
 
 [source,xml]
 .pom.xml
 ----
 <properties>
     ...
-    <dss.version>6.5.RC1</dss.version>
+    <dss.version>6.5</dss.version>
     ...
 </properties>
 

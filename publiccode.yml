@@ -11,10 +11,11 @@ description:
     documentation: |-
       https://ec.europa.eu/digital-building-blocks/DSS/webapp-demo/doc/dss-documentation.html
     features:
-      - Electronic signatures (XAdES, CAdES, PAdES, JAdES and ASiC)
+      - Electronic signatures (XAdES, CAdES, PAdES, JAdES, CB-AdES and ASiC)
       - Timestamps
       - Revocation data (CRL and OCSP)
       - Evidence Records (XMLERS and ERS)
+      - Attestations (EAA, PID, etc.)
       - REST and SOAP webServices
     genericName: DSS (Digital Signature Services)
     longDescription: >
@@ -42,15 +43,15 @@ localisation:
 maintenance:
   contacts:
     - name: David Naramski
-    - name: Pierrick Vandenbroucke
     - name: Aleksandr Beliakov
+    - name: Axel Abinet
   type: internal
 name: DSS
 platforms:
   - windows
   - linux
   - mac
-releaseDate: '2026-03-06'
+releaseDate: '2026-08-27'
 softwareType: library
 url: 'https://code.europa.eu/dit/dss.git'
-softwareVersion: '6.4'
+softwareVersion: '6.5'
