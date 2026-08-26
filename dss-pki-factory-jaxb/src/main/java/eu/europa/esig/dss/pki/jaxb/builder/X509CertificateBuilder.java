@@ -108,7 +108,11 @@ public class X509CertificateBuilder {
     /** Key pair of the certificate issuer */
     private KeyPair issuerKeyPair;
 
-    /** Key used to sign the certificate */
+    /**
+     * Key used to sign the certificate
+     *
+     * @deprecated since DSS 6.4. Please use {@code issuerKeyPair} instead.
+     */
     @Deprecated
     private PrivateKey issuerKey;
 

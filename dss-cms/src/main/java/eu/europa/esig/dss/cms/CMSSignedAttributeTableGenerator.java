@@ -42,6 +42,7 @@ import java.util.Map;
  * The class is used on both CMS for CAdES and CMS for PAdES generations.
  *
  */
+@SuppressWarnings({"rawtypes", "unchecked"})
 public class CMSSignedAttributeTableGenerator implements CMSAttributeTableGenerator {
 
     /** The hashtable containing signing attributes  */
