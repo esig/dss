@@ -20,23 +20,27 @@
  */
 package eu.europa.esig.dss.crl.stream.impl;
 
-import org.bouncycastle.asn1.ASN1InputStream;
-
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
- * This class is used to access to static methods of ASN1InputStream
+ * This class is used to replicate static methods of ASN1InputStream
+ *
  */
 final class DERUtil {
 
+	/**
+	 * Utils class
+	 */
 	private DERUtil() {
+		// Empty
 	}
 
 	/**
-	 * Reads the next tag if {@code InputStream}
+	 * Reads the next tag if {@code InputStream}.
+	 * The method does not close the InputStream.
 	 *
 	 * @param is {@link InputStream} to read
 	 * @return integer
@@ -47,16 +51,49 @@ final class DERUtil {
 	}
 
 	/**
-	 * Reads length of {@code InputStream}
+	 * Reads length of {@code InputStream}.
+	 * The method does not close the InputStream.
+	 * Adaptation from org.bouncycastle.asn1.ASN1InputStream.readLength(InputStream is)
 	 *
 	 * @param is {@link InputStream} to read
 	 * @return length
-	 * @throws IOException if an exception occurs
+	 * @throws IOException if an exception occurs on InputStream reading
+	 * @throws EOFException if EOF is reached
 	 */
 	public static int readLength(InputStream is) throws IOException {
-		try (ASN1InputStreamDSS dssIS = new ASN1InputStreamDSS(is, Integer.MAX_VALUE)) {
-			return dssIS.readLength();
+		// NOTE: ASN.1 fields are usually tiny, therefore one-byte-in-time reading is acceptable
+		int length = is.read();
+		if (0 == (length >>> 7)) {
+			// definite-length short form
+			return length;
 		}
+		if (0x80 == length) {
+			// indefinite-length
+			return -1;
+		}
+		if (length < 0) {
+			throw new EOFException("EOF found when length expected");
+		}
+		if (0xFF == length) {
+			throw new IOException("invalid long form definite-length 0xFF");
+		}
+
+		int octetsCount = length & 0x7F, octetsPos = 0;
+
+		length = 0;
+		do {
+			int octet = is.read();
+			if (octet < 0) {
+				throw new EOFException("EOF found reading length");
+			}
+			if ((length >>> 23) != 0) {
+				throw new IOException("long form definite-length more than 31 bits");
+			}
+			length = (length << 8) + octet;
+		}
+		while (++octetsPos < octetsCount);
+
+		return length;
 	}
 
 	/**
@@ -87,9 +124,9 @@ final class DERUtil {
 
 	/**
 	 * Reads the tag number
-	 *
+	 * <p>
 	 * Copied from
-	 * https://github.com/bcgit/bc-java/blob/r1rv63/core/src/main/java/org/bouncycastle/asn1/ASN1InputStream.java
+	 * {@code <a href="https://github.com/bcgit/bc-java/blob/r1rv63/core/src/main/java/org/bouncycastle/asn1/ASN1InputStream.java">ASN1InputStream.java</a>}
 	 *
 	 * @param is {@link InputStream}
 	 * @param tag the tag number to read
@@ -129,24 +166,6 @@ final class DERUtil {
 		}
 
 		return tagNo;
-	}
-
-	private static class ASN1InputStreamDSS extends ASN1InputStream {
-		
-		public ASN1InputStreamDSS(InputStream input, int limit) {
-			super(input, limit);
-		}
-		
-		@Override
-		protected int readLength() throws IOException {
-			return super.readLength();
-		}
-
-		@Override
-		public void close() throws IOException {
-			// not our job
-		}
-
 	}
 
 }
