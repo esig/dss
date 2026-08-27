@@ -46,7 +46,7 @@ class MultiThreadJsonLoTEValidationJobTest {
         Map<String, DSSDocument> urlMap = new HashMap<>();
         urlMap.put(PID_LOTE_URL, new FileDocument("src/test/resources/pid-providers.json"));
 
-        File cacheDirectory = new File("target/cache");
+        File cacheDirectory = new File("target/cache-slow");
 
         offlineFileLoader = new FileCacheDataLoader();
         offlineFileLoader.setCacheExpirationTime(Long.MAX_VALUE);

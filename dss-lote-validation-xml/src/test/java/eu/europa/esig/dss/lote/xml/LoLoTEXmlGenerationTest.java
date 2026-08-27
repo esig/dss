@@ -87,6 +87,7 @@ import eu.europa.esig.lote.xml.LOTEFacade;
 import eu.europa.esig.lote.xml.definition.LOTENamespace;
 import jakarta.xml.bind.JAXBElement;
 import org.bouncycastle.asn1.x500.style.BCStyle;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -97,7 +98,10 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.math.BigInteger;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -601,6 +605,12 @@ class LoLoTEXmlGenerationTest extends PKIFactoryAccess {
     @Override
     protected String getSigningAlias() {
         return signer;
+    }
+
+    @AfterEach
+    void clean() throws IOException {
+        cacheDirectory.mkdirs();
+        Files.walk(cacheDirectory.toPath()).map(Path::toFile).forEach(File::delete);
     }
 
 }

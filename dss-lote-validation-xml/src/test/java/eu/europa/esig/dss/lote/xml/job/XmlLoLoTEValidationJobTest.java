@@ -22,7 +22,6 @@ import eu.europa.esig.dss.validation.job.cache.CacheCleaner;
 import eu.europa.esig.dss.validation.job.cache.state.CacheStateEnum;
 import eu.europa.esig.dss.validation.job.sync.AcceptAllStrategy;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -50,19 +49,18 @@ class XmlLoLoTEValidationJobTest {
 
     private static final String LOLOTE_TYPE = "http://uri.etsi.org/19602/LoTEType/EUlistofthelists";
 
-    private static LoTEValidationJob loteValidationJob;
     private static CacheCleaner cacheCleaner;
     private static FileCacheDataLoader offlineFileLoader;
     private static FileCacheDataLoader onlineFileLoader;
 
     private static Map<String, DSSDocument> urlMap;
 
-    private static CertificateToken loloteSigner;
+    private static CertificateToken loloteSigner = DSSUtils.loadCertificate(new File("src/test/resources/lolote-cert.cer"));
 
     private static File cacheDirectory;
 
-    @BeforeAll
-    static void initBeforeAll() {
+    @BeforeEach
+    void init() {
         urlMap = new HashMap<>();
 
         cacheDirectory = new File("target/cache");
@@ -81,11 +79,6 @@ class XmlLoLoTEValidationJobTest {
         cacheCleaner.setDSSFileLoader(offlineFileLoader);
         cacheCleaner.setCleanFileSystem(true);
 
-        loloteSigner = DSSUtils.loadCertificate(new File("src/test/resources/lolote-cert.cer"));
-    }
-
-    @BeforeEach
-    void init() {
         populateMap();
     }
 
@@ -96,7 +89,7 @@ class XmlLoLoTEValidationJobTest {
 
     @Test
     void loloteTest() {
-        loteValidationJob = getValidationJob();
+        LoTEValidationJob loteValidationJob = getValidationJob();
         loteValidationJob.offlineRefresh();
 
         LoTEValidationJobSummary summary = loteValidationJob.getSummary();
@@ -182,7 +175,7 @@ class XmlLoLoTEValidationJobTest {
     @Test
     void loloteGetSummaryFromCertificateSourceTest() {
         TrustedEntitiesCertificateSource trustedEntitiesCertificateSource = new TrustedEntitiesCertificateSource();
-        loteValidationJob = getValidationJob(trustedEntitiesCertificateSource);
+        LoTEValidationJob loteValidationJob = getValidationJob(trustedEntitiesCertificateSource);
         loteValidationJob.offlineRefresh();
 
         LoTEValidationJobSummary summary = trustedEntitiesCertificateSource.getSummary();
@@ -293,7 +286,7 @@ class XmlLoLoTEValidationJobTest {
         synchronizationStrategy.setAcceptExpiredList(true);
 
         TrustedEntitiesCertificateSource trustedEntitiesCertificateSource = new TrustedEntitiesCertificateSource();
-        loteValidationJob = getValidationJob(trustedEntitiesCertificateSource);
+        LoTEValidationJob loteValidationJob = getValidationJob(trustedEntitiesCertificateSource);
         loteValidationJob.setSynchronizationStrategy(synchronizationStrategy);
         loteValidationJob.offlineRefresh();
 
@@ -356,7 +349,7 @@ class XmlLoLoTEValidationJobTest {
         synchronizationStrategy.setAcceptExpiredList(true);
 
         TrustedEntitiesCertificateSource trustedEntitiesCertificateSource = new TrustedEntitiesCertificateSource();
-        loteValidationJob = getValidationJob(trustedEntitiesCertificateSource);
+        LoTEValidationJob loteValidationJob = getValidationJob(trustedEntitiesCertificateSource);
         loteValidationJob.setSynchronizationStrategy(synchronizationStrategy);
         loteValidationJob.offlineRefresh();
 
@@ -419,7 +412,7 @@ class XmlLoLoTEValidationJobTest {
         synchronizationStrategy.setAcceptExpiredList(true);
 
         TrustedEntitiesCertificateSource trustedEntitiesCertificateSource = new TrustedEntitiesCertificateSource();
-        loteValidationJob = getValidationJob(trustedEntitiesCertificateSource);
+        LoTEValidationJob loteValidationJob = getValidationJob(trustedEntitiesCertificateSource);
         loteValidationJob.setSynchronizationStrategy(synchronizationStrategy);
         loteValidationJob.offlineRefresh();
 
@@ -450,7 +443,7 @@ class XmlLoLoTEValidationJobTest {
         updateLoLoTELocation("src/test/resources/lolote-not-parsable.xml");
 
         TrustedEntitiesCertificateSource trustedEntitiesCertificateSource = new TrustedEntitiesCertificateSource();
-        loteValidationJob = getValidationJob(trustedEntitiesCertificateSource);
+        LoTEValidationJob loteValidationJob = getValidationJob(trustedEntitiesCertificateSource);
         loteValidationJob.offlineRefresh();
 
         LoTEValidationJobSummary summary = loteValidationJob.getSummary();
@@ -480,7 +473,7 @@ class XmlLoLoTEValidationJobTest {
         updateLoLoTELocation("src/test/resources/lolote-not-compliant.xml");
 
         TrustedEntitiesCertificateSource trustedEntitiesCertificateSource = new TrustedEntitiesCertificateSource();
-        loteValidationJob = getValidationJob(trustedEntitiesCertificateSource);
+        LoTEValidationJob loteValidationJob = getValidationJob(trustedEntitiesCertificateSource);
         loteValidationJob.offlineRefresh();
 
         LoTEValidationJobSummary summary = loteValidationJob.getSummary();
@@ -511,7 +504,7 @@ class XmlLoLoTEValidationJobTest {
         updateLoLoTELocation("src/test/resources/lolote-no-sig.xml");
 
         TrustedEntitiesCertificateSource trustedEntitiesCertificateSource = new TrustedEntitiesCertificateSource();
-        loteValidationJob = getValidationJob(trustedEntitiesCertificateSource);
+        LoTEValidationJob loteValidationJob = getValidationJob(trustedEntitiesCertificateSource);
         loteValidationJob.setSynchronizationStrategy(new AcceptAllStrategy<>());
         loteValidationJob.offlineRefresh();
 
@@ -546,7 +539,7 @@ class XmlLoLoTEValidationJobTest {
         synchronizationStrategy.setAcceptInvalidListOfLists(false);
 
         TrustedEntitiesCertificateSource trustedEntitiesCertificateSource = new TrustedEntitiesCertificateSource();
-        loteValidationJob = getValidationJob(trustedEntitiesCertificateSource);
+        LoTEValidationJob loteValidationJob = getValidationJob(trustedEntitiesCertificateSource);
         loteValidationJob.setSynchronizationStrategy(synchronizationStrategy);
         loteValidationJob.offlineRefresh();
 
@@ -577,7 +570,7 @@ class XmlLoLoTEValidationJobTest {
         updateLoLoTELocation("src/test/resources/lolote-two-sigs.xml");
 
         TrustedEntitiesCertificateSource trustedEntitiesCertificateSource = new TrustedEntitiesCertificateSource();
-        loteValidationJob = getValidationJob(trustedEntitiesCertificateSource);
+        LoTEValidationJob loteValidationJob = getValidationJob(trustedEntitiesCertificateSource);
         loteValidationJob.setSynchronizationStrategy(new AcceptAllStrategy<>());
         loteValidationJob.offlineRefresh();
 
@@ -612,7 +605,7 @@ class XmlLoLoTEValidationJobTest {
         synchronizationStrategy.setAcceptInvalidListOfLists(false);
 
         TrustedEntitiesCertificateSource trustedEntitiesCertificateSource = new TrustedEntitiesCertificateSource();
-        loteValidationJob = getValidationJob(trustedEntitiesCertificateSource);
+        LoTEValidationJob loteValidationJob = getValidationJob(trustedEntitiesCertificateSource);
         loteValidationJob.setSynchronizationStrategy(synchronizationStrategy);
         loteValidationJob.offlineRefresh();
 
@@ -643,7 +636,7 @@ class XmlLoLoTEValidationJobTest {
         updateLoLoTELocation("src/test/resources/lolote-not-compliant.xml");
 
         TrustedEntitiesCertificateSource trustedEntitiesCertificateSource = new TrustedEntitiesCertificateSource();
-        loteValidationJob = getValidationJob(trustedEntitiesCertificateSource);
+        LoTEValidationJob loteValidationJob = getValidationJob(trustedEntitiesCertificateSource);
         loteValidationJob.offlineRefresh();
 
         LoTEValidationJobSummary summary = loteValidationJob.getSummary();
@@ -709,7 +702,7 @@ class XmlLoLoTEValidationJobTest {
     }
 
     private LoTEValidationJob getValidationJob(TrustedEntitiesCertificateSource trustedEntitiesCertificateSource) {
-        loteValidationJob = new LoTEValidationJob();
+        LoTEValidationJob loteValidationJob = new LoTEValidationJob();
         loteValidationJob.setOfflineDataLoader(offlineFileLoader);
         loteValidationJob.setOnlineDataLoader(onlineFileLoader);
         loteValidationJob.setLoLoTESources(getLoLoTESource());
@@ -732,7 +725,6 @@ class XmlLoLoTEValidationJobTest {
 
     @AfterEach
     void clean() throws IOException {
-        File cacheDirectory = new File("target/cache");
         cacheDirectory.mkdirs();
         Files.walk(cacheDirectory.toPath()).map(Path::toFile).forEach(File::delete);
     }

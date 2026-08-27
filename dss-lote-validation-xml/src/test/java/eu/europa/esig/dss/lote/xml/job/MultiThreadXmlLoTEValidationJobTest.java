@@ -11,6 +11,7 @@ import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.x509.CommonTrustedCertificateSource;
 import eu.europa.esig.dss.validation.job.cache.CacheCleaner;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +38,8 @@ class MultiThreadXmlLoTEValidationJobTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(MultiThreadXmlLoTEValidationJobTest.class);
 
+    private static File cacheDirectory;
+
     private static LoTEValidationJob loteValidationJob;
     private static CacheCleaner cacheCleaner;
     private static FileCacheDataLoader offlineFileLoader;
@@ -48,7 +54,7 @@ class MultiThreadXmlLoTEValidationJobTest {
         Map<String, DSSDocument> urlMap = new HashMap<>();
         urlMap.put(PID_LOTE_URL, new FileDocument("src/test/resources/lote-pubeaa.xml"));
 
-        File cacheDirectory = new File("target/cache");
+        cacheDirectory = new File("target/cache-slow");
 
         offlineFileLoader = new FileCacheDataLoader();
         offlineFileLoader.setCacheExpirationTime(Long.MAX_VALUE);
@@ -134,6 +140,12 @@ class MultiThreadXmlLoTEValidationJobTest {
             loteValidationJob.onlineRefresh();
             return true;
         }
+    }
+
+    @AfterEach
+    void clean() throws IOException {
+        cacheDirectory.mkdirs();
+        Files.walk(cacheDirectory.toPath()).map(Path::toFile).forEach(File::delete);
     }
 
 }

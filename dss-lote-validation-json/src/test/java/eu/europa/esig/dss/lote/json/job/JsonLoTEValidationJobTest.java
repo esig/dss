@@ -694,7 +694,6 @@ class JsonLoTEValidationJobTest {
 
     @AfterEach
     void clean() throws IOException {
-        File cacheDirectory = new File("target/cache");
         cacheDirectory.mkdirs();
         Files.walk(cacheDirectory.toPath()).map(Path::toFile).forEach(File::delete);
     }
