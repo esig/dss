@@ -57,7 +57,6 @@ import org.bouncycastle.asn1.tsp.ArchiveTimeStamp;
 import org.bouncycastle.asn1.tsp.ArchiveTimeStampChain;
 import org.bouncycastle.asn1.tsp.ArchiveTimeStampSequence;
 import org.bouncycastle.asn1.x509.IssuerSerial;
-import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.tsp.TSPException;

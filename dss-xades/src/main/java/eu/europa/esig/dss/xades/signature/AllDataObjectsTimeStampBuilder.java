@@ -42,8 +42,6 @@ import eu.europa.esig.dss.xades.reference.ReferenceProcessor;
 import eu.europa.esig.dss.xades.reference.ReferenceVerifier;
 import eu.europa.esig.dss.xml.utils.DomUtils;
 import eu.europa.esig.dss.xml.utils.XMLCanonicalizer;
-import org.bouncycastle.cms.CMSException;
-import org.bouncycastle.tsp.TSPException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
