@@ -59,7 +59,7 @@ class SignaturePoolTest extends AbstractTestSignaturePool {
 				"ers", "es3", "json", "p7", "p7b", "p7m", "p7s", "pdf", "pkcs7", "sce", "scs", "xml", "xsig" }, true);
 		Collection<Arguments> dataToRun = new ArrayList<>();
 		for (File file : listFiles) {
-			if(!(file.getName().toLowerCase().contains("attestation-pool"))) {
+			if(!(file.getPath().toLowerCase().contains("attestation-pool"))) {
 				dataToRun.add(Arguments.of(file));
 			}
 		}
