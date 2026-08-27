@@ -47,7 +47,7 @@ Bug fixes :
                                             * REST and SOAP webservices for attestation creation and validation;
                                             * XAdES : Add alternative XPath query executor for XML processing;
                                             * PAdES : Review DPI behavior for visual PDF signatures;
-                                            * PAdES : Resolve limitations in DSSSecureRansomProvider;
+                                            * PAdES : Resolve limitations in `DSSSecureRandomProvider`;
                                             * JAdES : Accept arbitrary `kid` protected header values;
                                             * JAdES : Add support of `x5c` as unsigned header parameter;
                                             * Support of ETSI TS 119 412-6 QcStatements;
