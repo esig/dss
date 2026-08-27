@@ -838,7 +838,7 @@ public final class DSSASN1Utils {
 	 */
 	public static IssuerSerial getIssuerSerial(byte[] binaries) {
 		try (ASN1InputStream is = new ASN1InputStream(binaries)) {
-			ASN1Sequence seq = (ASN1Sequence) is.readObject();
+			ASN1Primitive seq = is.readObject();
 			return IssuerSerial.getInstance(seq);
 		} catch (Exception e) {
 			LOG.warn("Unable to decode IssuerSerialV2 textContent '{}' : {}", Utils.toBase64(binaries), e.getMessage(), e);
