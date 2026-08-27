@@ -141,9 +141,9 @@ public class DSSSecureRandomProvider implements SecureRandomProvider {
 
 		@Override
 		public byte[] generateSeed(int numBytes) {
-			byte[] seed = new byte[numBytes];
-			nextBytes(seed);
-			return seed;
+			byte[] generatedSeed = new byte[numBytes];
+			nextBytes(generatedSeed);
+			return generatedSeed;
 		}
 
 	}

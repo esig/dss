@@ -475,7 +475,7 @@ public class MdocService extends AbstractAttestationSDService<CBAdESSignaturePar
 
     @Override
     public DSSDocument issuePresentation(DSSDocument attestation, DSSDocument keyBinding) {
-        return issuePresentation(attestation, null, keyBinding);
+        return issuePresentation(attestation, Collections.emptyList(), keyBinding);
     }
 
     @Override

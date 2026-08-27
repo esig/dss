@@ -433,6 +433,9 @@ public class CertificateNameConstraintsCheck extends ChainItem<XmlSubXCV> {
     }
 
     private boolean isWithinDomain(String value, String domain) {
+        if (value == null || domain == null) {
+            return false;
+        }
         if (domain.startsWith(".")) {
             return value.toLowerCase().endsWith(domain.toLowerCase());
         }

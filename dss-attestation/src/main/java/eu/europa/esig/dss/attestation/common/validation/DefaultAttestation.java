@@ -169,7 +169,7 @@ public abstract class DefaultAttestation implements Attestation {
      * This class is used to build a DefaultAttestation
      *
      */
-    protected static abstract class DefaultAttestationBuilder {
+    protected abstract static class DefaultAttestationBuilder {
 
         private static final Logger LOG = LoggerFactory.getLogger(DefaultAttestationBuilder.class);
 
@@ -188,7 +188,7 @@ public abstract class DefaultAttestation implements Attestation {
         /**
          * Default constructor
          */
-        public DefaultAttestationBuilder() {
+        protected DefaultAttestationBuilder() {
             // empty
         }
 

@@ -426,12 +426,7 @@ public class CBAdESTimestampSource extends SignatureTimestampSource<CBAdESSignat
             try {
                 byte[] val = CBAdESUtils.extractDerEncodedPkiObject((CBORMap) pkiOb);
                 if (Utils.isArrayNotEmpty(val)) {
-                    try {
-                        return CRLUtils.buildCRLBinary(val);
-                    } catch (Exception e) {
-                        LOG.warn("Unable to decode a CRL from binaries! Reason : {}", e.getMessage(), e);
-                        return null;
-                    }
+                    return getCrlBinary(val);
                 }
 
             } catch (Exception e) {
@@ -441,6 +436,15 @@ public class CBAdESTimestampSource extends SignatureTimestampSource<CBAdESSignat
             LOG.warn("The header 'pkiOb' shall be represented by a CBOR Map! The entry is skipped.");
         }
         return null;
+    }
+
+    private static CRLBinary getCrlBinary(byte[] val) {
+        try {
+            return CRLUtils.buildCRLBinary(val);
+        } catch (Exception e) {
+            LOG.warn("Unable to decode a CRL from binaries! Reason : {}", e.getMessage(), e);
+            return null;
+        }
     }
 
     @Override
@@ -480,21 +484,25 @@ public class CBAdESTimestampSource extends SignatureTimestampSource<CBAdESSignat
             try {
                 byte[] val = CBAdESUtils.extractDerEncodedPkiObject((CBORMap) pkiOb);
                 if (Utils.isArrayNotEmpty(val)) {
-                    try {
-                        return OCSPResponseBinary.build(DSSRevocationUtils.loadOCSPFromBinaries(val));
-                    } catch (Exception e) {
-                        LOG.warn("Unable to decode a CRL from binaries! Reason : {}", e.getMessage(), e);
-                        return null;
-                    }
+                    return getOcspResponseBinary(val);
                 }
 
             } catch (Exception e) {
-                LOG.warn("An error occurred during parsing a CRL. Reason : {}", e.getMessage(), e);
+                LOG.warn("An error occurred during parsing an OCSP response. Reason : {}", e.getMessage(), e);
             }
         } else {
             LOG.warn("The header 'pkiOb' shall be represented by a CBOR Map! The entry is skipped.");
         }
         return null;
+    }
+
+    private static OCSPResponseBinary getOcspResponseBinary(byte[] val) {
+        try {
+            return OCSPResponseBinary.build(DSSRevocationUtils.loadOCSPFromBinaries(val));
+        } catch (Exception e) {
+            LOG.warn("Unable to decode an OCSP response from binaries! Reason : {}", e.getMessage(), e);
+            return null;
+        }
     }
 
     @Override

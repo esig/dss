@@ -37,7 +37,7 @@ public abstract class AbstractParsingCacheDTOBuilder extends AbstractCacheDTOBui
 	 *
 	 * @param cachedEntry parsing cache entry
 	 */
-	public AbstractParsingCacheDTOBuilder(final CachedEntry<ParsingResult> cachedEntry) {
+	protected AbstractParsingCacheDTOBuilder(final CachedEntry<ParsingResult> cachedEntry) {
 		super(cachedEntry);
 	}
 	

@@ -82,6 +82,7 @@ public class LoTESource extends DocumentSource {
 	 *
 	 * @return {@link String}
 	 */
+	@Override
 	public String getUrl() {
 		return url;
 	}
@@ -91,6 +92,7 @@ public class LoTESource extends DocumentSource {
 	 *
 	 * @param url {@link String}
 	 */
+	@Override
 	public void setUrl(String url) {
 		Objects.requireNonNull(url, "URL cannot be null.");
 		this.url = url;
@@ -101,6 +103,7 @@ public class LoTESource extends DocumentSource {
 	 *
 	 * @return {@link CertificateSource}
 	 */
+	@Override
 	public CertificateSource getCertificateSource() {
 		return certificateSource;
 	}
@@ -110,6 +113,7 @@ public class LoTESource extends DocumentSource {
 	 *
 	 * @param certificateSource {@link CertificateSource}
 	 */
+	@Override
 	public void setCertificateSource(CertificateSource certificateSource) {
 		Objects.requireNonNull(certificateSource);
 		this.certificateSource = certificateSource;
@@ -178,6 +182,7 @@ public class LoTESource extends DocumentSource {
 	 *
 	 * @return {@link CacheKey}
 	 */
+	@Override
 	public CacheKey getCacheKey() {
 		if (cacheKey == null) {
 			cacheKey = new CacheKey(url);

@@ -20,7 +20,7 @@ public abstract class AttestationDocument<D extends SelectiveDisclosure> extends
     private static final long serialVersionUID = 2468430085298606741L;
 
     /** Attestation with selective disclosures document */
-    private final DSSDocument attestationDocument;
+    private final DSSDocument document;
 
     /** Signed attestation document (SDs omitted) */
     private final DSSDocument signedAttestation;
@@ -32,14 +32,14 @@ public abstract class AttestationDocument<D extends SelectiveDisclosure> extends
      * Default constructor, instantiating the object from a complete SD Attestation,
      * signed attestation and selective disclosures parts.
      *
-     * @param attestationDocument {@link DSSDocument} attestation with selective disclosures
+     * @param document {@link DSSDocument} attestation document with selective disclosures
      * @param signedAttestation {@link DSSDocument} signed attestation (SDs omitted)
      * @param selectiveDisclosures a list of {@link SelectiveDisclosure}s, if any
      */
-    protected AttestationDocument(final DSSDocument attestationDocument, final DSSDocument signedAttestation,
+    protected AttestationDocument(final DSSDocument document, final DSSDocument signedAttestation,
                                   final List<D> selectiveDisclosures) {
-        Objects.requireNonNull(attestationDocument, "SD Attestation cannot be null!");
-        this.attestationDocument = attestationDocument;
+        Objects.requireNonNull(document, "SD Attestation cannot be null!");
+        this.document = document;
         this.signedAttestation = signedAttestation;
         this.selectiveDisclosures = selectiveDisclosures;
     }
@@ -64,7 +64,7 @@ public abstract class AttestationDocument<D extends SelectiveDisclosure> extends
 
     @Override
     public InputStream openStream() {
-        return attestationDocument.openStream();
+        return document.openStream();
     }
 
 }

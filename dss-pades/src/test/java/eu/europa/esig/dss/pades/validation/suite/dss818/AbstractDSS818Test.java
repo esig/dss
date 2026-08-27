@@ -68,7 +68,7 @@ public abstract class AbstractDSS818Test extends AbstractPAdESTestValidation {
 			SignedData signedData = SignedData.getInstance(ASN1TaggedObject.getInstance(asn1Seq.getObjectAt(1)).getBaseObject());
 	
 			ASN1Set signerInfosAsn1 = signedData.getSignerInfos();
-			LOG.debug("SIGNER INFO ASN1 : {}", signerInfosAsn1.toString());
+			LOG.debug("SIGNER INFO ASN1 : {}", signerInfosAsn1);
 			SignerInfo signedInfo = SignerInfo.getInstance(ASN1Sequence.getInstance(signerInfosAsn1.getObjectAt(0)));
 	
 			ASN1Set authenticatedAttributeSet = signedInfo.getAuthenticatedAttributes();

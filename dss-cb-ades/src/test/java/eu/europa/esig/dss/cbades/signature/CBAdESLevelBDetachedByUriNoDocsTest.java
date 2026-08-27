@@ -101,6 +101,7 @@ class CBAdESLevelBDetachedByUriNoDocsTest extends AbstractCBAdESTestSignature {
         assertTrue(Utils.isCollectionEmpty(diagnosticData.getOriginalSignerDocuments()));
     }
 
+    @Override
     protected void checkDTBSR(DiagnosticData diagnosticData) {
         SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
 
@@ -113,6 +114,7 @@ class CBAdESLevelBDetachedByUriNoDocsTest extends AbstractCBAdESTestSignature {
         assertNull(signersDocument);
     }
 
+    @Override
     protected void validateETSISignatureIdentifier(SignatureIdentifierType signatureIdentifier) {
         assertNotNull(signatureIdentifier);
         assertNotNull(signatureIdentifier.getId());

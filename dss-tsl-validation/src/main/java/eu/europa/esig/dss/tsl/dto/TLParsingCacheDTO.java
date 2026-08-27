@@ -76,9 +76,6 @@ public class TLParsingCacheDTO extends AbstractParsingCacheDTO implements TLPars
     /** Signing certificate announcement URL */
     private String signingCertificateAnnouncementUrl;
 
-    /** A list of error messages occurred during a structure validation */
-    protected List<String> structureValidationMessages;
-
     /**
      * Default constructor
      */

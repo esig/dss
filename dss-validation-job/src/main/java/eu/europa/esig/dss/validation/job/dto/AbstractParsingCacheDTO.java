@@ -46,7 +46,7 @@ public abstract class AbstractParsingCacheDTO extends AbstractCacheDTO implement
 	 *
 	 * @param cacheDTO {@link AbstractCacheDTO}
 	 */
-	public AbstractParsingCacheDTO(AbstractCacheDTO cacheDTO) {
+	protected AbstractParsingCacheDTO(AbstractCacheDTO cacheDTO) {
 		super(cacheDTO);
 	}
 

@@ -147,8 +147,8 @@ public abstract class DefaultAttestationDocumentAnalyzer extends DefaultDocument
         AttestationValidationContext validationContext = (AttestationValidationContext) super.prepareValidationContext(signatures, detachedTimestamps, detachedEvidenceRecords, certificateVerifier);
         validationContext.setAttestationRevocationSource(attestationRevocationSource);
 
-        AttestationPresentation attestationPresentation = getAttestationPresentation();
-        prepareAttestationPresentationValidationContext(validationContext, attestationPresentation);
+        AttestationPresentation presentation = getAttestationPresentation();
+        prepareAttestationPresentationValidationContext(validationContext, presentation);
         return validationContext;
     }
 

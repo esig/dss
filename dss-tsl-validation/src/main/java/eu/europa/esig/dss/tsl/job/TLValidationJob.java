@@ -132,6 +132,7 @@ public class TLValidationJob extends ValidationJob<TLInfo, LOTLInfo, TLCacheAcce
 	 * Returns validation job summary for all processed LOTL / TLs
 	 * @return {@link TLValidationJobSummary}
 	 */
+	@Override
 	public synchronized TLValidationJobSummary getSummary() {
 		return (TLValidationJobSummary) super.getSummary();
 	}
@@ -170,17 +171,16 @@ public class TLValidationJob extends ValidationJob<TLInfo, LOTLInfo, TLCacheAcce
 		LOTLSource[] lotlSources = getDocumentListSources();
 		if (Utils.isArrayNotEmpty(lotlSources)) {
 			List<LOTLSource> lotlList = Arrays.asList(lotlSources);
-			TLSourceBuilder tlSourceBuilder = new TLSourceBuilder(lotlList, extractParsingCache(lotlList));
+			TLSourceBuilder tlSourceBuilder = new TLSourceBuilder(lotlList, extractTLParsingCache(lotlList));
 			return tlSourceBuilder.build();
 		}
 		return Collections.emptyList();
 	}
 
-	private Map<CacheKey, TLParsingCacheDTO> extractParsingCache(List<LOTLSource> lotlSources) {
+	private Map<CacheKey, TLParsingCacheDTO> extractTLParsingCache(List<LOTLSource> lotlSources) {
 		final TLReadOnlyCacheAccess readOnlyCacheAccess = getCacheAccessFactory().getReadOnlyCacheAccess();
 		return lotlSources.stream().collect(Collectors.toMap(DocumentSource::getCacheKey, s -> readOnlyCacheAccess.getParsingInfoRecord(s.getCacheKey())));
 	}
-
 
 	@Override
 	protected void synchronizeCertificateSources() {

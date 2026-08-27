@@ -67,8 +67,10 @@ public class XmlLoLoTEParsingTask extends AbstractXmlLoTEParsingTask {
     }
 
     private void parseSchemeInformation(LoLoTEParsingResult result, LoTEListAndSchemeInformationType schemeInformation) {
-        commonParseSchemeInformation(result, schemeInformation);
-        extractOtherLoTEPointers(result, schemeInformation);
+        if (schemeInformation != null) {
+            commonParseSchemeInformation(result, schemeInformation);
+            extractOtherLoTEPointers(result, schemeInformation);
+        }
     }
 
     private void extractOtherLoTEPointers(LoLoTEParsingResult result, LoTEListAndSchemeInformationType schemeInformation) {

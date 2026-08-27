@@ -97,6 +97,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Utility class that contains some ASN1 related method.
@@ -196,6 +197,8 @@ public final class DSSASN1Utils {
 	 * @return array of bytes representing the encoded asn1Encodable
 	 */
 	private static byte[] getEncoded(ASN1Encodable asn1Encodable, String encoding) {
+		Objects.requireNonNull(asn1Encodable, "ASN1Encodable cannot be null");
+		Objects.requireNonNull(encoding, "Encoding cannot be null");
 		try {
 			return asn1Encodable.toASN1Primitive().getEncoded(encoding);
 		} catch (IOException e) {

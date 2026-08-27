@@ -21,11 +21,11 @@
 package eu.europa.esig.dss.cades.validation.timestamp;
 
 import eu.europa.esig.dss.cades.CAdESUtils;
+import eu.europa.esig.dss.cades.evidencerecord.CAdESEmbeddedEvidenceRecordHelper;
 import eu.europa.esig.dss.cades.validation.CAdESAttribute;
 import eu.europa.esig.dss.cades.validation.CAdESSignature;
 import eu.europa.esig.dss.cades.validation.CAdESSignedAttributes;
 import eu.europa.esig.dss.cades.validation.CAdESUnsignedAttributes;
-import eu.europa.esig.dss.cades.evidencerecord.CAdESEmbeddedEvidenceRecordHelper;
 import eu.europa.esig.dss.crl.CRLBinary;
 import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.enumerations.ArchiveTimestampType;
@@ -533,10 +533,12 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 	private List<TimestampedReference> getReferencesFromMatchingTimestamp(CAdESAttribute unsignedAttribute,
 			final List<TimestampToken> previousTimestamps) {
 		ASN1Encodable asn1Object = unsignedAttribute.getASN1Object();
-		byte[] derEncoded = DSSASN1Utils.getDEREncoded(asn1Object);
-		for (TimestampToken timestampToken : previousTimestamps) {
-			if (Arrays.equals(derEncoded, timestampToken.getEncoded())) {
-				return getReferencesFromTimestamp(timestampToken, certificateSource, crlSource, ocspSource);
+		if (asn1Object != null) {
+			byte[] derEncoded = DSSASN1Utils.getDEREncoded(asn1Object);
+			for (TimestampToken timestampToken : previousTimestamps) {
+				if (Arrays.equals(derEncoded, timestampToken.getEncoded())) {
+					return getReferencesFromTimestamp(timestampToken, certificateSource, crlSource, ocspSource);
+				}
 			}
 		}
 		return Collections.emptyList();
@@ -578,12 +580,14 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 	protected List<CertificateRef> getCertificateRefs(CAdESAttribute unsignedAttribute) {
 		List<CertificateRef> certRefs = new ArrayList<>();
 		ASN1Sequence seq = (ASN1Sequence) unsignedAttribute.getASN1Object();
-		for (int ii = 0; ii < seq.size(); ii++) {
-			try {
-				OtherCertID otherCertId = OtherCertID.getInstance(seq.getObjectAt(ii));
-				certRefs.add(DSSASN1Utils.getCertificateRef(otherCertId));
-			} catch (Exception e) {
-				LOG.warn("Unable to parse encapsulated OtherCertID : {}", e.getMessage());
+		if (seq != null) {
+			for (int ii = 0; ii < seq.size(); ii++) {
+				try {
+					OtherCertID otherCertId = OtherCertID.getInstance(seq.getObjectAt(ii));
+					certRefs.add(DSSASN1Utils.getCertificateRef(otherCertId));
+				} catch (Exception e) {
+					LOG.warn("Unable to parse encapsulated OtherCertID : {}", e.getMessage());
+				}
 			}
 		}
 		return certRefs;
@@ -593,12 +597,14 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 	protected List<CRLRef> getCRLRefs(CAdESAttribute unsignedAttribute) {
 		List<CRLRef> refs = new ArrayList<>();
 		ASN1Sequence seq = (ASN1Sequence) unsignedAttribute.getASN1Object();
-		for (int ii = 0; ii < seq.size(); ii++) {
-			final CrlOcspRef otherRefId = CrlOcspRef.getInstance(seq.getObjectAt(ii));
-			final CrlListID otherCrlIds = otherRefId.getCrlids();
-			if (otherCrlIds != null) {
-				for (final CrlValidatedID id : otherCrlIds.getCrls()) {
-					refs.add(new CRLRef(id));
+		if (seq != null) {
+			for (int ii = 0; ii < seq.size(); ii++) {
+				final CrlOcspRef otherRefId = CrlOcspRef.getInstance(seq.getObjectAt(ii));
+				final CrlListID otherCrlIds = otherRefId.getCrlids();
+				if (otherCrlIds != null) {
+					for (final CrlValidatedID id : otherCrlIds.getCrls()) {
+						refs.add(new CRLRef(id));
+					}
 				}
 			}
 		}
@@ -609,12 +615,14 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 	protected List<OCSPRef> getOCSPRefs(CAdESAttribute unsignedAttribute) {
 		List<OCSPRef> refs = new ArrayList<>();
 		ASN1Sequence seq = (ASN1Sequence) unsignedAttribute.getASN1Object();
-		for (int i = 0; i < seq.size(); i++) {
-			final CrlOcspRef otherCertId = CrlOcspRef.getInstance(seq.getObjectAt(i));
-			final OcspListID ocspListID = otherCertId.getOcspids();
-			if (ocspListID != null) {
-				for (final OcspResponsesID ocspResponsesID : ocspListID.getOcspResponses()) {
-					refs.add(new OCSPRef(ocspResponsesID));
+		if (seq != null) {
+			for (int i = 0; i < seq.size(); i++) {
+				final CrlOcspRef otherCertId = CrlOcspRef.getInstance(seq.getObjectAt(i));
+				final OcspListID ocspListID = otherCertId.getOcspids();
+				if (ocspListID != null) {
+					for (final OcspResponsesID ocspResponsesID : ocspListID.getOcspResponses()) {
+						refs.add(new OCSPRef(ocspResponsesID));
+					}
 				}
 			}
 		}
@@ -625,17 +633,19 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 	protected List<Identifier> getEncapsulatedCertificateIdentifiers(CAdESAttribute unsignedAttribute) {
 		List<Identifier> certificateIdentifiers = new ArrayList<>();
 		ASN1Sequence seq = (ASN1Sequence) unsignedAttribute.getASN1Object();
-		for (int ii = 0; ii < seq.size(); ii++) {
-			try {
-				final Certificate cs = Certificate.getInstance(seq.getObjectAt(ii));
-				CertificateToken certificateToken = DSSUtils.loadCertificate(cs.getEncoded());
-				certificateIdentifiers.add(certificateToken.getDSSId());
-			} catch (Exception e) {
-				String errorMessage = "Unable to parse an encapsulated certificate : {}";
-				if (LOG.isDebugEnabled()) {
-					LOG.warn(errorMessage, e.getMessage(), e);
-				} else {
-					LOG.warn(errorMessage, e.getMessage());
+		if (seq != null) {
+			for (int ii = 0; ii < seq.size(); ii++) {
+				try {
+					final Certificate cs = Certificate.getInstance(seq.getObjectAt(ii));
+					CertificateToken certificateToken = DSSUtils.loadCertificate(cs.getEncoded());
+					certificateIdentifiers.add(certificateToken.getDSSId());
+				} catch (Exception e) {
+					String errorMessage = "Unable to parse an encapsulated certificate : {}";
+					if (LOG.isDebugEnabled()) {
+						LOG.warn(errorMessage, e.getMessage(), e);
+					} else {
+						LOG.warn(errorMessage, e.getMessage());
+					}
 				}
 			}
 		}
@@ -645,9 +655,11 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 	@Override
 	protected List<CRLBinary> getEncapsulatedCRLIdentifiers(CAdESAttribute unsignedAttribute) {
 		ASN1Encodable asn1Object = unsignedAttribute.getASN1Object();
-		RevocationValues revocationValues = DSSASN1Utils.getRevocationValues(asn1Object);
-		if (revocationValues != null) {
-			return buildCRLIdentifiers(revocationValues.getCrlVals());
+		if (asn1Object != null) {
+			RevocationValues revocationValues = DSSASN1Utils.getRevocationValues(asn1Object);
+			if (revocationValues != null) {
+				return buildCRLIdentifiers(revocationValues.getCrlVals());
+			}
 		}
 		return Collections.emptyList();
 	}
@@ -680,9 +692,11 @@ public class CAdESTimestampSource extends SignatureTimestampSource<CAdESSignatur
 	@Override
 	protected List<OCSPResponseBinary> getEncapsulatedOCSPIdentifiers(CAdESAttribute unsignedAttribute) {
 		ASN1Encodable asn1Object = unsignedAttribute.getASN1Object();
-		RevocationValues revocationValues = DSSASN1Utils.getRevocationValues(asn1Object);
-		if (revocationValues != null) {
-			return buildOCSPIdentifiers(DSSASN1Utils.toBasicOCSPResps(revocationValues.getOcspVals()));
+		if (asn1Object != null) {
+			RevocationValues revocationValues = DSSASN1Utils.getRevocationValues(asn1Object);
+			if (revocationValues != null) {
+				return buildOCSPIdentifiers(DSSASN1Utils.toBasicOCSPResps(revocationValues.getOcspVals()));
+			}
 		}
 		return Collections.emptyList();
 	}

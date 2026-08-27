@@ -173,7 +173,7 @@ public class XmlTrustedEntityBuilder {
                     trustService.getAfter(certToken.getNotBefore());
             if (Utils.isCollectionNotEmpty(serviceStatusAfterOfEqualsCertIssuance)) {
                 for (ServiceStatusAndInformationExtensions serviceInfoStatus : serviceStatusAfterOfEqualsCertIssuance) {
-                    result.add(getXmlTrustedEntityService(serviceInfoStatus, certToken, trustAnchor));
+                    result.add(getXmlTrustedEntityService(serviceInfoStatus, trustAnchor));
                 }
             }
         }
@@ -181,7 +181,7 @@ public class XmlTrustedEntityBuilder {
     }
 
     private XmlTrustedEntityService getXmlTrustedEntityService(ServiceStatusAndInformationExtensions serviceInfoStatus,
-                                               CertificateToken certToken, CertificateToken trustAnchor) {
+                                                               CertificateToken trustAnchor) {
         XmlTrustedEntityService trustService = new XmlTrustedEntityService();
 
         trustService.setServiceDigitalIdentifier(xmlCertsMap.get(trustAnchor.getDSSIdAsString()));

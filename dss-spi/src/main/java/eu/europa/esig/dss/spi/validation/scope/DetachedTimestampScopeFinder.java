@@ -27,6 +27,7 @@ import eu.europa.esig.dss.spi.x509.tsp.TimestampToken;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * This class finds a timestamp scope for a detached timestamp
@@ -68,6 +69,7 @@ public class DetachedTimestampScopeFinder extends AbstractSignatureScopeFinder i
      * @return a list of {@link SignatureScope}s
      */
     protected List<SignatureScope> getTimestampSignatureScopeForDocument(DSSDocument document) {
+        Objects.requireNonNull(document, "document cannot be null");
         String documentName = document.getName();
         if (document instanceof DigestDocument) {
             return Collections.singletonList(new DigestSignatureScope(documentName, document));

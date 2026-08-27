@@ -22,6 +22,8 @@ package eu.europa.esig.dss.cades;
 
 import java.io.Serializable;
 import java.util.Comparator;
+import java.util.Date;
+import java.util.Objects;
 
 /**
  * The class is used to compare production time of {@code org.bouncycastle.asn1.tsp.EvidenceRecord}s
@@ -50,7 +52,11 @@ public class EvidenceRecordProductionComparator implements Comparator<org.bouncy
     }
 
     private int compareByGenerationTime(org.bouncycastle.asn1.tsp.EvidenceRecord evidenceRecordOne, org.bouncycastle.asn1.tsp.EvidenceRecord evidenceRecordTwo) {
-        return CAdESUtils.getEvidenceRecordGenerationTime(evidenceRecordOne).compareTo(CAdESUtils.getEvidenceRecordGenerationTime(evidenceRecordTwo));
+        Date evidenceRecordOneGenerationTime = CAdESUtils.getEvidenceRecordGenerationTime(evidenceRecordOne);
+        Date evidenceRecordTwoGenerationTime = CAdESUtils.getEvidenceRecordGenerationTime(evidenceRecordTwo);
+        Objects.requireNonNull(evidenceRecordOneGenerationTime, "No generation time found for the evidence record!");
+        Objects.requireNonNull(evidenceRecordTwoGenerationTime, "No generation time found for the evidence record!");
+        return evidenceRecordOneGenerationTime.compareTo(evidenceRecordTwoGenerationTime);
     }
 
 }

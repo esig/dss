@@ -40,7 +40,7 @@ import org.junit.jupiter.api.Test;
 /**
  * How to sign with CB-AdES-BASELINE-B enveloping signature.
  */
-public class SignXmlCbadesBTest extends CookbookTools {
+class SignXmlCbadesBTest extends CookbookTools {
 
     @Test
     void signCBAdESBaselineB() {

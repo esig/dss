@@ -26,6 +26,8 @@ import org.bouncycastle.tsp.TimeStampToken;
 
 import java.io.Serializable;
 import java.util.Comparator;
+import java.util.Date;
+import java.util.Objects;
 
 /**
  * The class used to compare production time of {@code TimeStampToken}s
@@ -68,7 +70,11 @@ public class TimeStampTokenProductionComparator implements Comparator<TimeStampT
 	}
 	
 	private int compareByGenerationTime(TimeStampToken tst1, TimeStampToken tst2) {
-		return DSSASN1Utils.getTimeStampTokenGenerationTime(tst1).compareTo(DSSASN1Utils.getTimeStampTokenGenerationTime(tst2));
+		Date timeStampTokenOneGenerationTime = DSSASN1Utils.getTimeStampTokenGenerationTime(tst1);
+		Date timeStampTokenTwoGenerationTime = DSSASN1Utils.getTimeStampTokenGenerationTime(tst2);
+		Objects.requireNonNull(timeStampTokenOneGenerationTime, "No generation time found for the timestamp token!");
+		Objects.requireNonNull(timeStampTokenTwoGenerationTime, "No generation time found for the timestamp token!");
+		return timeStampTokenOneGenerationTime.compareTo(timeStampTokenTwoGenerationTime);
 	}
 
 	private int compareByHashTableSize(TimeStampToken tst1, TimeStampToken tst2) {

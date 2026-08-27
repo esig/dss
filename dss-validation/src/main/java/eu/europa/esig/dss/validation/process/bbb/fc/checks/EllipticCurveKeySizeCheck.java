@@ -95,6 +95,9 @@ public class EllipticCurveKeySizeCheck extends ChainItem<XmlFC> {
     }
 
     private boolean keySizeCorrespondsDigestAlgorithm() {
+        if (signature.getDigestAlgorithm() == null || signature.getKeyLengthUsedToSignThisToken() == null) {
+            return false;
+        }
         List<String> allowedKeySizes = getAllowedKeySizes(signature.getDigestAlgorithm());
         return allowedKeySizes != null && allowedKeySizes.contains(signature.getKeyLengthUsedToSignThisToken());
     }

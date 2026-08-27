@@ -114,6 +114,7 @@ public class LoTEValidationJob extends ValidationJob<LoTEInfo, LoLoTEInfo, LoTEC
      *
      * @return {@link LoTEValidationJobSummary}
      */
+    @Override
     public synchronized LoTEValidationJobSummary getSummary() {
         return (LoTEValidationJobSummary) super.getSummary();
     }
@@ -148,13 +149,13 @@ public class LoTEValidationJob extends ValidationJob<LoTEInfo, LoLoTEInfo, LoTEC
         LoLoTESource[] loloteSources = getDocumentListSources();
         if (Utils.isArrayNotEmpty(loloteSources)) {
             List<LoLoTESource> loloteList = Arrays.asList(loloteSources);
-            LoTESourceBuilder tlSourceBuilder = new LoTESourceBuilder(loloteList, extractParsingCache(loloteList));
+            LoTESourceBuilder tlSourceBuilder = new LoTESourceBuilder(loloteList, extractLoTEParsingCache(loloteList));
             return tlSourceBuilder.build();
         }
         return Collections.emptyList();
     }
 
-    private Map<CacheKey, LoTEParsingCacheDTO> extractParsingCache(List<LoLoTESource> loteSources) {
+    private Map<CacheKey, LoTEParsingCacheDTO> extractLoTEParsingCache(List<LoLoTESource> loteSources) {
         final LoTEReadOnlyCacheAccess readOnlyCacheAccess = getCacheAccessFactory().getReadOnlyCacheAccess();
         return loteSources.stream().collect(Collectors.toMap(DocumentSource::getCacheKey, s -> readOnlyCacheAccess.getParsingInfoRecord(s.getCacheKey())));
     }

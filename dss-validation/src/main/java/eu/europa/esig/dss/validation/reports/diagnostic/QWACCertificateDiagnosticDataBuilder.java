@@ -156,9 +156,9 @@ public class QWACCertificateDiagnosticDataBuilder extends SignedDocumentDiagnost
         for (XmlDigestMatcher digestMatcher : xmlSignature.getDigestMatchers()) {
             if (DigestMatcherType.SIG_D_ENTRY == digestMatcher.getType()
                     && digestMatcher.isDataFound() && digestMatcher.isDataIntact()) {
-                CertificateToken tlsCertificate = getMatchingTLSCertificate(digestMatcher);
-                if (tlsCertificate != null) {
-                    digestMatcher.setDataObjectReferences(Collections.singletonList(identifierProvider.getIdAsString(tlsCertificate)));
+                CertificateToken matchingTLSCertificate = getMatchingTLSCertificate(digestMatcher);
+                if (matchingTLSCertificate != null) {
+                    digestMatcher.setDataObjectReferences(Collections.singletonList(identifierProvider.getIdAsString(matchingTLSCertificate)));
                 }
             }
         }

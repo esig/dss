@@ -45,7 +45,7 @@ class CBAdESLevelBSerializationTripleSignatureTest extends AbstractCBAdESTestSig
     private DSSDocument documentToSign;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         service = new CBAdESService(getCompleteCertificateVerifier());
         originalDocument = new InMemoryDocument("Hello World!".getBytes(), "doc.txt");
         signatureParameters = new CBAdESSignatureParameters();

@@ -69,7 +69,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CBAdESLevelBCounterSignatureCoseSign1Test extends AbstractCBAdESCounterSignatureTest {
+class CBAdESLevelBCounterSignatureCoseSign1Test extends AbstractCBAdESCounterSignatureTest {
 
     private CBAdESService service;
     private DSSDocument documentToSign;

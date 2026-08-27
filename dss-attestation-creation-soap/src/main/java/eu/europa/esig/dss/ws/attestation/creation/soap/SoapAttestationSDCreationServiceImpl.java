@@ -29,15 +29,6 @@ public class SoapAttestationSDCreationServiceImpl extends SoapAttestationCreatio
         return (RemoteAttestationSDCreationService) super.getService();
     }
 
-    /**
-     * Sets the remote attestation creation service
-     *
-     * @param service {@link RemoteAttestationSDCreationService}
-     */
-    public void setService(RemoteAttestationSDCreationService service) {
-        super.setService(service);
-    }
-
     @Override
     public List<DisclosureDTO> generateDisclosures(DisclosuresDTO disclosuresDTO) {
         return getService().generateDisclosures(disclosuresDTO.getPayloadParameters());

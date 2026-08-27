@@ -50,7 +50,7 @@ public class MdocVerifiedClaimDrivingPrivileges extends MdocVerifiedClaimArray i
 
     @Override
     public List<VerifiedClaimDrivingPrivilege> getDrivingPrivileges() {
-        return getListValue().stream().filter(c -> c instanceof MdocVerifiedClaimDrivingPrivilege)
+        return getListValue().stream().filter(MdocVerifiedClaimDrivingPrivilege.class::isInstance)
                 .map(c -> (MdocVerifiedClaimDrivingPrivilege) c).collect(Collectors.toList());
     }
 

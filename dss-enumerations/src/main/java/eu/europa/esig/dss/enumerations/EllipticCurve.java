@@ -185,9 +185,9 @@ public enum EllipticCurve {
                     // field the finite field that this elliptic curve is over.
                     new ECFieldFp(new BigInteger("115792089237316195423570985008687907853269984665640564039457584007908834671663")),
                     // a the first coefficient of this elliptic curve.
-                    new BigInteger("0"),
+                    BigInteger.valueOf(0),
                     // b the second coefficient of this elliptic curve.
-                    new BigInteger("7")
+                    BigInteger.valueOf(7)
             ),
             //g the generator which is also known as the base point.
             new ECPoint(
@@ -298,7 +298,7 @@ public enum EllipticCurve {
     private static final Map<EllipticCurve, ECParameterSpec> ELLIPTIC_CURVE_PARAMETERS = registerParameters();
 
     private static Map<EllipticCurve, ECParameterSpec> registerParameters() {
-        Map<EllipticCurve, ECParameterSpec> parameters = new HashMap<>();
+        Map<EllipticCurve, ECParameterSpec> parameters = new EnumMap<>(EllipticCurve.class);
         parameters.put(P_256, P256);
         parameters.put(P_384, P384);
         parameters.put(P_521, P521);

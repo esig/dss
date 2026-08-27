@@ -33,7 +33,6 @@ import eu.europa.esig.dss.validation.job.cache.CacheKey;
 import eu.europa.esig.dss.validation.job.summary.ValidationJobSummaryBuilder;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -150,20 +149,6 @@ public class LoTEValidationJobSummaryBuilder implements ValidationJobSummaryBuil
             }
         }
         return null;
-    }
-
-    private List<LoTEInfo> buildOtherListInfos(LoLoTEInfo loloteInfo) {
-        if (loloteInfo.getParsingCacheInfo() == null || Utils.isCollectionEmpty(loloteInfo.getParsingCacheInfo().getOtherListPointers())) {
-            return Collections.emptyList();
-        }
-        List<LoTEInfo> children = new ArrayList<>();
-        for (OtherListPointer otherListPointer : loloteInfo.getParsingCacheInfo().getOtherListPointers()) {
-            LoTESource childLoTESource = new LoTESource();
-            childLoTESource.setUrl(otherListPointer.getLocationUrl());
-            children.add(buildLoTEInfo(childLoTESource, loloteInfo, otherListPointer));
-        }
-        loloteInfo.setChildrenInfos(children);
-        return children;
     }
 
 }

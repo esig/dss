@@ -46,7 +46,7 @@ public abstract class VerifiedClaimArray extends AbstractVerifiedClaim {
      *                               (can be TRUE only when the value of claim is provided in a form of disclosure)
      * @param parent {@link VerifiedClaim} representing the parent claim, when applicable
      */
-    public VerifiedClaimArray(final String name, final List<?> value, final boolean selectivelyDisclosable, final VerifiedClaim parent) {
+    protected VerifiedClaimArray(final String name, final List<?> value, final boolean selectivelyDisclosable, final VerifiedClaim parent) {
         this(name, null, value, selectivelyDisclosable, parent);
     }
 
@@ -60,7 +60,7 @@ public abstract class VerifiedClaimArray extends AbstractVerifiedClaim {
      *                               (can be TRUE only when the value of claim is provided in a form of disclosure)
      * @param parent {@link VerifiedClaim} representing the parent claim, when applicable
      */
-    public VerifiedClaimArray(final String name, final String namespace, final List<?> value,
+    protected VerifiedClaimArray(final String name, final String namespace, final List<?> value,
                               final boolean selectivelyDisclosable, final VerifiedClaim parent) {
         super(name, namespace, selectivelyDisclosable, parent);
         this.value = value;

@@ -55,7 +55,7 @@ import java.util.Set;
  */
 public class IssuerSignedParser {
 
-    private static final Logger LOG = LoggerFactory.getLogger(MdocDeviceResponseParser.class);
+    private static final Logger LOG = LoggerFactory.getLogger(IssuerSignedParser.class);
 
     /** The document to be parsed */
     private DSSDocument document;

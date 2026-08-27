@@ -78,6 +78,7 @@ class XAdESTemperedKeyInfoValidationTest extends AbstractXAdESTestValidation {
         assertTrue(signature.getStructuralValidationMessages().stream().anyMatch(m -> m.contains("ds:X509Certificate"))); // not valid base64
     }
 
+    @Override
     protected void validateSignerInformation(SignerInformationType signerInformation) {
         assertNull(signerInformation);
     }

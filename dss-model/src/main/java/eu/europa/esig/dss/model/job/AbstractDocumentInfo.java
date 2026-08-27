@@ -61,7 +61,7 @@ public abstract class AbstractDocumentInfo<P extends DocumentInfo> implements Do
      * @param validationCacheInfo {@link ValidationInfoRecord} a validation cache result
      * @param url {@link String} address used to extract the entry
      */
-    public AbstractDocumentInfo(final DownloadInfoRecord downloadCacheInfo, final ParsingInfoRecord parsingCacheInfo,
+    protected AbstractDocumentInfo(final DownloadInfoRecord downloadCacheInfo, final ParsingInfoRecord parsingCacheInfo,
                                 final ValidationInfoRecord validationCacheInfo, final String url) {
         this(downloadCacheInfo, parsingCacheInfo, validationCacheInfo, url, null);
     }
@@ -75,7 +75,7 @@ public abstract class AbstractDocumentInfo<P extends DocumentInfo> implements Do
      * @param url {@link String} address used to extract the entry
      * @param parent {@link DocumentInfo} referencing the current Trusted List
      */
-    public AbstractDocumentInfo(final DownloadInfoRecord downloadCacheInfo, final ParsingInfoRecord parsingCacheInfo,
+    protected AbstractDocumentInfo(final DownloadInfoRecord downloadCacheInfo, final ParsingInfoRecord parsingCacheInfo,
                                 final ValidationInfoRecord validationCacheInfo, final String url, final P parent) {
         Objects.requireNonNull(url, "URL String shall be provided!");
 

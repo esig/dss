@@ -53,8 +53,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class XMLEvidenceRecordRenewalDigestBuilderTest {
 
-    private final static DSSNamespace XAdES_NAMESPACE = new DSSNamespace("http://uri.etsi.org/01903/v1.3.2#", "xades132");
-    private final static DSSNamespace XAdESEN_NAMESPACE = new DSSNamespace("http://uri.etsi.org/19132/v1.1.1#", "xadesen");
+    private static final DSSNamespace XAdES_NAMESPACE = new DSSNamespace("http://uri.etsi.org/01903/v1.3.2#", "xades132");
+    private static final DSSNamespace XAdESEN_NAMESPACE = new DSSNamespace("http://uri.etsi.org/19132/v1.1.1#", "xadesen");
 
     static {
         XPathUtils.registerNamespace(XMLDSigNamespace.NS);

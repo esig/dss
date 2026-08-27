@@ -882,6 +882,9 @@ public class SignatureWrapper extends AbstractSignatureWrapper {
 
 	private boolean coversOwnRevocationData(TimestampWrapper timestampWrapper) {
 		CertificateWrapper signingCertificate = timestampWrapper.getSigningCertificate();
+		if (signingCertificate == null) {
+			return false; // invalid timestamp
+		}
 		if (signingCertificate.isSelfSigned() || signingCertificate.isTrusted()) {
 			return true; // no revocation data required
 		}

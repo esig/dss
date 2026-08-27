@@ -49,7 +49,6 @@ import eu.europa.esig.dss.validation.qwac.QWACValidator;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import java.security.cert.Certificate;
 import java.util.Collections;
@@ -60,6 +59,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public abstract class AbstractQWACValidationTest extends JAdESLevelB2QWACTest {
@@ -187,10 +187,10 @@ public abstract class AbstractQWACValidationTest extends JAdESLevelB2QWACTest {
         TrustService trustService = new TrustService(Collections.singletonList(sdiCertificate), timeDependentValues);
         trustServiceProvider.setServices(Collections.singletonList(trustService));
 
-        Identifier tlIdentifier = Mockito.mock(Identifier.class);
+        Identifier tlIdentifier = mock(Identifier.class);
         when(tlIdentifier.asXmlId()).thenReturn("TL-ID");
 
-        TLParsingInfoRecord parsingInfoRecord = Mockito.mock(TLParsingInfoRecord.class);
+        TLParsingInfoRecord parsingInfoRecord = mock(TLParsingInfoRecord.class);
         when(parsingInfoRecord.getTerritory()).thenReturn("ZZ");
         when(parsingInfoRecord.getTSLType()).thenReturn(TSLType.fromUri("http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric"));
         when(parsingInfoRecord.getSequenceNumber()).thenReturn(1);

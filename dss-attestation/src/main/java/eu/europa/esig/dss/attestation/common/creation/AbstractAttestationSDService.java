@@ -20,9 +20,6 @@ public abstract class AbstractAttestationSDService<SP extends SerializableSignat
 
     private static final long serialVersionUID = -1605530972695706489L;
 
-    /** Builds the attestation payload */
-    protected AttestationSDPayloadBuilder<P, D> payloadBuilder;
-
     /**
      * Default constructor
      *

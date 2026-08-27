@@ -55,7 +55,7 @@ import eu.europa.esig.dss.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
@@ -167,7 +167,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	/**
 	 * Cached map of computed SignatureDigestReference's as defined in ETSI TS 119 102-2 ch. "4.1.1.5 Signature Reference"
 	 */
-	private Map<DigestAlgorithm, SignatureDigestReference> signatureDigestReferences = new HashMap<>();
+	private Map<DigestAlgorithm, SignatureDigestReference> signatureDigestReferences = new EnumMap<>(DigestAlgorithm.class);
 
 	/**
 	 * Performs a conformance check for the signature to a given profile
@@ -592,7 +592,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 	@Override
 	public SignatureDigestReference getSignatureDigestReference(DigestAlgorithm digestAlgorithm) {
 		if (signatureDigestReferences == null) {
-			signatureDigestReferences = new HashMap<>();
+			signatureDigestReferences = new EnumMap<>(DigestAlgorithm.class);
 		}
 		return signatureDigestReferences.computeIfAbsent(digestAlgorithm, v -> buildSignatureDigestReference(digestAlgorithm));
 	}

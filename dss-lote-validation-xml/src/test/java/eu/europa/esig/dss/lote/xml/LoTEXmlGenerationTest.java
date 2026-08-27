@@ -118,7 +118,7 @@ class LoTEXmlGenerationTest extends PKIFactoryAccess {
     private String signer = LOTE_SIGNER_CERTIFICATE;
 
     @BeforeEach
-    public void init() {
+    void init() {
         urlMap = new HashMap<>();
 
         cacheDirectory = new File("target/cache");

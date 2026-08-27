@@ -544,7 +544,7 @@ public class ITextDocumentReader implements PdfDocumentReader {
 		float numVersion = 1 + Character.getNumericValue(pdfVersionLastChar) / 10f; // transform to "1 + 0.x = 1.x"
 		if (numVersion == 1) {
 			// OpenPdf returns 0 for PDF 2.0
-			++numVersion; // TODO : improve
+			numVersion += 1; // TODO : improve
 		}
 		return numVersion;
 	}

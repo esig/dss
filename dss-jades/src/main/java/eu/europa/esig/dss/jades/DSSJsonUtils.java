@@ -789,9 +789,11 @@ public class DSSJsonUtils {
 	private static Map<String, Object> getClearEtsiURepresentation(Map<String, Object> unprotected) {
 		List<Object> clearComponents = new ArrayList<>();
 		List<Object> stringComponents = (List<Object>) unprotected.get(JAdESHeaderParameterNames.ETSI_U);
-		for (Object component : stringComponents) {
-			Map<String, Object> json = parseEtsiUComponent(component);
-			clearComponents.add(json);
+		if (Utils.isCollectionNotEmpty(stringComponents)) {
+			for (Object component : stringComponents) {
+				Map<String, Object> json = parseEtsiUComponent(component);
+				clearComponents.add(json);
+			}
 		}
 		Map<String, Object> clearEtsiU = new HashMap<>();
 		clearEtsiU.put(JAdESHeaderParameterNames.ETSI_U, clearComponents);
@@ -969,8 +971,10 @@ public class DSSJsonUtils {
 	 * @return {@link Boolean} value when found, null otherwise
 	 */
 	public static Boolean getAsBoolean(Map<?, ?> map, String key) {
+		Objects.requireNonNull(map, "Map cannot be null!");
 		return toBoolean(map.get(key), key);
 	}
+
 	/**
 	 * Method safely converts {@code Object} to {@code Boolean} if possible.
 	 * The method also provides a user-friendly message explaining the origin of the unexpected variable.
@@ -1013,6 +1017,7 @@ public class DSSJsonUtils {
 	 * @return {@link String} value when found, empty string otherwise
 	 */
 	public static String getAsString(Map<?, ?> map, String key) {
+		Objects.requireNonNull(map, "Map cannot be null!");
 		return toString(map.get(key), key);
 	}
 
@@ -1068,6 +1073,7 @@ public class DSSJsonUtils {
 	 * @return {@link Number} value when found, empty string otherwise
 	 */
 	public static Number getAsNumber(Map<?, ?> map, String key) {
+		Objects.requireNonNull(map, "Map cannot be null!");
 		return toNumber(map.get(key), key);
 	}
 
@@ -1123,6 +1129,7 @@ public class DSSJsonUtils {
 	 * @return {@link Map} value when found, empty map otherwise
 	 */
 	public static Map<?, ?> getAsMap(Map<?, ?> map, String key) {
+		Objects.requireNonNull(map, "Map cannot be null!");
 		return toMap(map.get(key), key);
 	}
 
@@ -1178,6 +1185,7 @@ public class DSSJsonUtils {
 	 * @return {@link List} value when found, empty list otherwise
 	 */
 	public static List<?> getAsList(Map<?, ?> map, String key) {
+		Objects.requireNonNull(map, "Map cannot be null!");
 		return toList(map.get(key), key);
 	}
 
@@ -1273,6 +1281,7 @@ public class DSSJsonUtils {
 	 * @return {@link Date} value when found, empty list otherwise
 	 */
 	public static Date getAsNumericDate(Map<?, ?> map, String key) {
+		Objects.requireNonNull(map, "Map cannot be null!");
 		return toNumericDate(map.get(key), key);
 	}
 

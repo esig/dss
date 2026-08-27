@@ -100,7 +100,7 @@ class CBAdESLevelBWithECDSAInvalidSignersTest extends AbstractCBAdESTestSignatur
 
         service = new CBAdESService(getOfflineCertificateVerifier());
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> super.signAndVerify());
+        Exception exception = assertThrows(IllegalArgumentException.class, super::signAndVerify);
         assertEquals(String.format("For ECDSA with %s a key with P-%s curve shall be used for a COSE! See RFC 9053.",
                 digestAlgo.getName(), getKeySizeForDigestAlgo(digestAlgo)), exception.getMessage());
     }

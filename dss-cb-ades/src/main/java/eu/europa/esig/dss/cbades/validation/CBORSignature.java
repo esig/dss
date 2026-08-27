@@ -549,12 +549,11 @@ public class CBORSignature {
     public boolean verifySignature() {
         try {
             // Create Signature object
-            SignatureAlgorithm signatureAlgorithm = getAlgorithm();
-            Signature signatureInstance = Signature.getInstance(signatureAlgorithm.getJCEId(), DSSSecurityProvider.getSecurityProviderName());
+            SignatureAlgorithm algorithm = getAlgorithm();
+            Signature signatureInstance = Signature.getInstance(algorithm.getJCEId(), DSSSecurityProvider.getSecurityProviderName());
 
             // Initialize Signature object with the public key
-            Key key = getKey();
-            PublicKey publicKey = (PublicKey) key;
+            PublicKey publicKey = (PublicKey) getKey();
             signatureInstance.initVerify(publicKey);
 
             // Supply the signature input bytes
@@ -567,7 +566,7 @@ public class CBORSignature {
 
             // Verify the signature
             byte[] signatureBytes = signature.getValueAsBytes();
-            signatureBytes = ensureDerEncodedSignature(signatureBytes, signatureAlgorithm);
+            signatureBytes = ensureDerEncodedSignature(signatureBytes, algorithm);
             return signatureInstance.verify(signatureBytes);
 
         } catch (Exception e) {

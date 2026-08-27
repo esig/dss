@@ -63,7 +63,7 @@ public abstract class AbstractCBAdESRequirementsCheck extends AbstractCBAdESTest
     private CBAdESSignatureParameters signatureParameters;
 
     @BeforeEach
-    public void init() throws Exception {
+    void init() throws Exception {
         service = new CBAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsa());
 

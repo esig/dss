@@ -38,7 +38,7 @@ public class HTTPHeaderSignatureScope extends SignatureScope {
 	 * @param document {@link DSSDocument} representing the computed JWS Payload
 	 */
 	public HTTPHeaderSignatureScope(DSSDocument document) {
-		super(document.getName() != null ? document.getName() : "HttpHeaders payload", document);
+		super(document != null && document.getName() != null ? document.getName() : "HttpHeaders payload", document);
 	}
 
 	@Override

@@ -145,8 +145,8 @@ public class CMSForCAdESBuilderHelper {
      * @return {@link AttributeTable}
      */
     protected AttributeTable initSignedAttributesTable() {
-        final CAdESLevelBaselineB cadesProfile = getCAdESProfile();
-        return cadesProfile.getSignedAttributes(signatureParameters);
+        final CAdESLevelBaselineB profile = getCAdESProfile();
+        return profile.getSignedAttributes(signatureParameters);
     }
 
     /**
@@ -156,8 +156,8 @@ public class CMSForCAdESBuilderHelper {
      */
     protected AttributeTable initUnsignedAttributesTable() {
         if (includeUnsignedAttributes) {
-            final CAdESLevelBaselineB cadesProfile = getCAdESProfile();
-            return cadesProfile.getUnsignedAttributes();
+            final CAdESLevelBaselineB profile = getCAdESProfile();
+            return profile.getUnsignedAttributes();
         }
         return null;
     }

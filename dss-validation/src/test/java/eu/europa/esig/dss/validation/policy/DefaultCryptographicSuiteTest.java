@@ -57,7 +57,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class DefaultCryptographicSuiteTest {
+class DefaultCryptographicSuiteTest {
 
     private static final String DATE_FORMAT = "yyyy-MM-dd";
 
@@ -516,7 +516,7 @@ public class DefaultCryptographicSuiteTest {
                 for (CryptographicSuiteEvaluation cse : value) {
                     Set<CryptographicSuiteEvaluation> valueTwo = mapTwo.get(key);
                     assertTrue(valueTwo.stream().anyMatch(cseTwo -> checkEvaluationEquals(cse, cseTwo)),
-                            String.format("Algo : %s\nFirst set :  %s\nSecond set : %s", key, value, valueTwo));
+                            String.format("Algo : %s%nFirst set :  %s%nSecond set : %s", key, value, valueTwo));
                 }
             }
         }

@@ -202,11 +202,11 @@ public class SessionTranscriptBuilder {
      * @return this {@link SessionTranscriptBuilder}
      */
     public SessionTranscriptBuilder webApiServerRetrievalMethod(Integer version, String issuerUrl, String serverRetrievalToken) {
-        CBORArray webApi = new CBORArray();
-        webApi.add(version);
-        webApi.add(issuerUrl);
-        webApi.add(serverRetrievalToken);
-        this.webApi = webApi;
+        CBORArray webApiCbor = new CBORArray();
+        webApiCbor.add(version);
+        webApiCbor.add(issuerUrl);
+        webApiCbor.add(serverRetrievalToken);
+        this.webApi = webApiCbor;
         return this;
     }
 
@@ -219,11 +219,11 @@ public class SessionTranscriptBuilder {
      * @return this {@link SessionTranscriptBuilder}
      */
     public SessionTranscriptBuilder oidcServerRetrievalMethod(Integer version, String issuerUrl, String serverRetrievalToken) {
-        CBORArray oidc = new CBORArray();
-        oidc.add(version);
-        oidc.add(issuerUrl);
-        oidc.add(serverRetrievalToken);
-        this.oidc = oidc;
+        CBORArray oidcCbor = new CBORArray();
+        oidcCbor.add(version);
+        oidcCbor.add(issuerUrl);
+        oidcCbor.add(serverRetrievalToken);
+        this.oidc = oidcCbor;
         return this;
     }
 
@@ -314,8 +314,8 @@ public class SessionTranscriptBuilder {
         CBORMap deviceEngagement = buildDeviceEngagement();
         sessionTranscript.add(CBORUtils.toCborBtsrWrappedTagged(deviceEngagement)); // DeviceEngagementBytes
 
-        CBORMap eReaderKey = buildEReaderKey();
-        sessionTranscript.add(CBORUtils.toCborBtsrWrappedTagged(eReaderKey)); // EReaderKeyBytes
+        CBORMap eReaderKeyCbor = buildEReaderKey();
+        sessionTranscript.add(CBORUtils.toCborBtsrWrappedTagged(eReaderKeyCbor)); // EReaderKeyBytes
 
         CBORObject handover = buildHandover();
         sessionTranscript.add(handover);

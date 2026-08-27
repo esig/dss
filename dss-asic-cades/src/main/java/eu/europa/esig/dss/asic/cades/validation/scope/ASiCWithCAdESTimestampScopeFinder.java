@@ -146,7 +146,7 @@ public class ASiCWithCAdESTimestampScopeFinder extends DetachedTimestampScopeFin
      * @return TRUE of the document is an ASiC-S data container, FALSE otherwise
      */
     private boolean isASiCSContainer(DSSDocument document) {
-        return document.getName() != null && !document.getName().contains("/") && ASiCUtils.isZip(document);
+        return document != null && document.getName() != null && !document.getName().contains("/") && ASiCUtils.isZip(document);
     }
 
 }

@@ -116,6 +116,7 @@ public class CMSSignerInfoGeneratorBuilder {
      * @return {@link SignerInfoGenerator}
      */
     public SignerInfoGenerator build(ContentSigner contentSigner) {
+        // TODO : deprecate ?
         return build(null, contentSigner);
     }
 
@@ -139,7 +140,7 @@ public class CMSSignerInfoGeneratorBuilder {
      * @return {@link DigestCalculatorProvider}
      */
     protected DigestCalculatorProvider getDigestCalculatorProvider(DSSDocument toSignDocument) {
-        if (digestAlgorithm != null) {
+        if (toSignDocument != null && digestAlgorithm != null) {
             return new CustomMessageDigestCalculatorProvider(digestAlgorithm, toSignDocument.getDigestValue(digestAlgorithm));
         } else if (toSignDocument instanceof DigestDocument) {
             return new PrecomputedDigestCalculatorProvider(toSignDocument);

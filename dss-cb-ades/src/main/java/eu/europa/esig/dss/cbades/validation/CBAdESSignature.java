@@ -1179,9 +1179,9 @@ public class CBAdESSignature extends DefaultAdvancedSignature {
             }
         }
 
-        List<CBAdESUHeadersComponent> uHeaders = getUHeaders().getAttributes();
-        if (Utils.isCollectionNotEmpty(uHeaders)) {
-            for (CBAdESUHeadersComponent uHeader : uHeaders) {
+        List<CBAdESUHeadersComponent> uHeadersAttributes = getUHeaders().getAttributes();
+        if (Utils.isCollectionNotEmpty(uHeadersAttributes)) {
+            for (CBAdESUHeadersComponent uHeader : uHeadersAttributes) {
                 counterSignatures.addAll(CBAdESUtils.buildCounterSignatures(this, uHeader));
             }
         }

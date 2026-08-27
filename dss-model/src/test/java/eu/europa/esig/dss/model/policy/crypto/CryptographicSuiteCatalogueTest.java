@@ -39,7 +39,7 @@ import java.util.TimeZone;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class CryptographicSuiteCatalogueTest {
+class CryptographicSuiteCatalogueTest {
 
     private static final String DATE_FORMAT = "yyyy-MM-dd";
 

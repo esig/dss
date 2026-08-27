@@ -75,9 +75,6 @@ public class LoTEParsingCacheDTO extends AbstractParsingCacheDTO implements LoTE
 	/** Signing certificate announcement URL */
 	private String signingCertificateAnnouncementUrl;
 
-	/** A list of error messages occurred during a structure validation */
-	protected List<String> structureValidationMessages;
-
 	/**
 	 * Default constructor
 	 */
@@ -286,26 +283,12 @@ public class LoTEParsingCacheDTO extends AbstractParsingCacheDTO implements LoTE
 		int certNumber = 0;
 		if (Utils.isCollectionNotEmpty(trustedEntities)) {
 			for (TrustedEntity tsp : trustedEntities) {
-				for (Object trustService : tsp.getServices()) {
-					certNumber += ((TrustedEntityService) trustService).getCertificates().size();
+				for (TrustedEntityService trustService : tsp.getServices()) {
+					certNumber += trustService.getCertificates().size();
 				}
 			}
 		}
 		return certNumber;
-	}
-
-	@Override
-	public List<String> getStructureValidationMessages() {
-		return structureValidationMessages;
-	}
-
-	/**
-	 * Sets the structure validation error messages
-	 *
-	 * @param structureValidationMessages a list of {@link String} error messages when occurred on the structure validation
-	 */
-	public void setStructureValidationMessages(List<String> structureValidationMessages) {
-		this.structureValidationMessages = structureValidationMessages;
 	}
 
 }

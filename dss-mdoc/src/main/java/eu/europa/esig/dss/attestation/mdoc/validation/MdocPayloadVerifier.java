@@ -239,6 +239,9 @@ public class MdocPayloadVerifier extends AttestationPayloadVerifier {
      */
     protected DisclosureValidation validateHashClaim(VerifiedClaim hashClaim, List<SelectiveDisclosure> disclosures, String namespace, Long digestId) {
         DisclosureValidation disclosureValidation = super.validateHashClaim(hashClaim, disclosures);
+        if (disclosureValidation == null) {
+            return null;
+        }
         disclosureValidation.setId(hashClaim.getName());
         disclosureValidation.setNamespace(namespace);
         disclosureValidation.setDigestId(digestId);

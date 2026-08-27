@@ -49,7 +49,6 @@ import eu.europa.esig.dss.spi.validation.CommonCertificateVerifier;
 import eu.europa.esig.dss.spi.x509.revocation.ocsp.ExternalResourcesOCSPSource;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import java.io.File;
 import java.security.cert.Certificate;
@@ -61,6 +60,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class QWACValidatorTest {
@@ -113,15 +113,15 @@ class QWACValidatorTest {
         TrustService trustService = new TrustService(Collections.singletonList(haricaCA), timeDependentValues);
         trustServiceProvider.setServices(Collections.singletonList(trustService));
 
-        Identifier tlIdentifier = Mockito.mock(Identifier.class);
+        Identifier tlIdentifier = mock(Identifier.class);
         when(tlIdentifier.asXmlId()).thenReturn("TL-ID");
 
-        TLInfo tlInfo = Mockito.mock(TLInfo.class);
+        TLInfo tlInfo = mock(TLInfo.class);
         when(tlInfo.getUrl()).thenReturn("https://www.eett.gr/tsl/EL-TSL.xml");
         when(tlInfo.getDSSId()).thenReturn(tlIdentifier);
         when(tlInfo.getDSSIdAsString()).thenReturn("TL-ID");
 
-        TLParsingInfoRecord parsingInfoRecord = Mockito.mock(TLParsingInfoRecord.class);
+        TLParsingInfoRecord parsingInfoRecord = mock(TLParsingInfoRecord.class);
         when(parsingInfoRecord.getTerritory()).thenReturn("EL");
         when(parsingInfoRecord.getTSLType()).thenReturn(TSLType.fromUri("http://uri.etsi.org/TrstSvc/TrustedList/TSLType/EUgeneric"));
         when(parsingInfoRecord.getSequenceNumber()).thenReturn(1);

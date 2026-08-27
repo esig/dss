@@ -56,9 +56,6 @@ public abstract class AbstractLoTEParsingResult extends AbstractParsingResult {
 	/** List of found trust service providers */
 	private List<TrustedEntity> trustedEntities;
 
-	/** A list of error messages occurred during a structure validation */
-	protected List<String> structureValidationMessages;
-
 	/**
 	 * Default constructor instantiating object with null values
 	 */
@@ -208,24 +205,6 @@ public abstract class AbstractLoTEParsingResult extends AbstractParsingResult {
 	 */
 	public void setTrustedEntities(List<TrustedEntity> trustedEntities) {
 		this.trustedEntities = trustedEntities;
-	}
-
-	/**
-	 * Gets a list of error messages when occurred during the structure validation
-	 *
-	 * @return a list of {@link String} structure validation messages, empty list if the structure validation succeeded
-	 */
-	public List<String> getStructureValidationMessages() {
-		return structureValidationMessages;
-	}
-
-	/**
-	 * Sets the structure validation error messages
-	 *
-	 * @param structureValidationMessages a list of {@link String} error messages when occurred on the structure validation
-	 */
-	public void setStructureValidationMessages(List<String> structureValidationMessages) {
-		this.structureValidationMessages = structureValidationMessages;
 	}
 
 }

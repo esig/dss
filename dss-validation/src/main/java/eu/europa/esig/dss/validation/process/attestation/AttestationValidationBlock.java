@@ -36,6 +36,7 @@ import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.model.policy.ValidationPolicy;
+import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.process.qualification.attestation.AttestationQualificationBlock;
 import eu.europa.esig.dss.validation.process.qualification.signature.SignatureQualificationBlock;
 import eu.europa.esig.dss.validation.process.vpfbs.BasicSignatureValidationProcess;
@@ -104,9 +105,14 @@ public class AttestationValidationBlock {
      * @return a list of {@link XmlAttestation}s
      */
     public List<XmlAttestation> execute() {
+        List<AttestationWrapper> attestations = diagnosticData.getAttestations();
+        if (Utils.isCollectionEmpty(attestations)) {
+            return Collections.emptyList();
+        }
+
         final List<XmlAttestation> result = new ArrayList<>();
 
-        for (AttestationWrapper attestation : diagnosticData.getAttestations()) {
+        for (AttestationWrapper attestation : attestations) {
             final XmlAttestation attestationAnalysis = new XmlAttestation();
             attestationAnalysis.setId(attestation.getId());
 

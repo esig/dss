@@ -27,6 +27,7 @@ import eu.europa.esig.dss.model.DSSMessageDigest;
 import eu.europa.esig.dss.model.Digest;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Abstract class containing common supporting methods for evidence record digest calculation
@@ -58,6 +59,7 @@ public abstract class AbstractEvidenceRecordRenewalDigestBuilderHelper {
      */
     protected ArchiveTimeStampChainObject getArchiveTimeStampChainObject(ArchiveTimeStampObject archiveTimeStampObject) {
         List<? extends ArchiveTimeStampChainObject> archiveTimeStampSequence = evidenceRecord.getArchiveTimeStampSequence();
+        Objects.requireNonNull(archiveTimeStampSequence, "archiveTimeStampSequence cannot be null!");
         for (ArchiveTimeStampChainObject archiveTimeStampChain : archiveTimeStampSequence) {
             for (ArchiveTimeStampObject archiveTimeStamp : archiveTimeStampChain.getArchiveTimeStamps()) {
                 if (archiveTimeStampObject.equals(archiveTimeStamp)) {

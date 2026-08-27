@@ -292,12 +292,7 @@ public abstract class CryptographicSuiteCatalogue {
      * @return {@link CryptographicSuite}
      */
     protected CryptographicSuite getCryptographicSuite(CryptographicSuiteMetadata metadata, List<CryptographicSuiteAlgorithm> algorithmList) {
-        CryptographicSuite cryptographicSuite = cryptographicSuiteMap.get(algorithmList);
-        if (cryptographicSuite == null) {
-            cryptographicSuite = new CryptographicSuite19322(metadata, algorithmList);
-            cryptographicSuiteMap.put(algorithmList, cryptographicSuite);
-        }
-        return cryptographicSuite;
+        return cryptographicSuiteMap.computeIfAbsent(algorithmList, v -> new CryptographicSuite19322(metadata, algorithmList));
     }
 
 }

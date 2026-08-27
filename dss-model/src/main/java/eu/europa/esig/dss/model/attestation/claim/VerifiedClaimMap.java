@@ -57,7 +57,7 @@ public abstract class VerifiedClaimMap extends AbstractVerifiedClaim {
      *                               (can be TRUE only when the value of claim is provided in a form of disclosure)
      * @param parent {@link VerifiedClaim} representing the parent claim, when applicable
      */
-    public VerifiedClaimMap(final String name, final Map<?,?> value, final boolean selectivelyDisclosable, final VerifiedClaim parent) {
+    protected VerifiedClaimMap(final String name, final Map<?,?> value, final boolean selectivelyDisclosable, final VerifiedClaim parent) {
         super(name, selectivelyDisclosable, parent);
         this.value = value;
     }
@@ -72,7 +72,7 @@ public abstract class VerifiedClaimMap extends AbstractVerifiedClaim {
      *                               (can be TRUE only when the value of claim is provided in a form of disclosure)
      * @param parent {@link VerifiedClaim} representing the parent claim, when applicable
      */
-    public VerifiedClaimMap(final String name, final String namespace, final Map<?,?> value,
+    protected VerifiedClaimMap(final String name, final String namespace, final Map<?,?> value,
                             final boolean selectivelyDisclosable, final VerifiedClaim parent) {
         super(name, namespace, selectivelyDisclosable, parent);
         this.value = value;

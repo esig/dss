@@ -823,7 +823,7 @@ class CryptographicSuiteJsonCatalogueTest {
         CryptographicSuiteJsonCatalogue cryptographicSuite = new CryptographicSuiteJsonCatalogue(new JsonObjectWrapper(new JsonObject(root)));
         List<CryptographicSuiteAlgorithm> result = cryptographicSuite.buildAlgorithmList();
 
-        assertEquals(result.size(), 1);
+        assertEquals(1, result.size());
         CryptographicSuiteAlgorithm rsa = result.get(0);
         assertEquals("SHA256withRSA", rsa.getAlgorithmIdentifierName());
         assertEquals(Collections.singletonList("1.2.840.113549.1.1.11"), rsa.getAlgorithmIdentifierOIDs());
@@ -862,7 +862,7 @@ class CryptographicSuiteJsonCatalogueTest {
         CryptographicSuiteJsonCatalogue cryptographicSuite = new CryptographicSuiteJsonCatalogue(new JsonObjectWrapper(new JsonObject(root)));
         List<CryptographicSuiteAlgorithm> result = cryptographicSuite.buildAlgorithmList();
 
-        assertEquals(result.size(), 1);
+        assertEquals(1, result.size());
         CryptographicSuiteAlgorithm sha256 = result.get(0);
         assertEquals("SHA256", sha256.getAlgorithmIdentifierName());
         assertEquals(Collections.singletonList("2.16.840.1.101.3.4.2.1"), sha256.getAlgorithmIdentifierOIDs());

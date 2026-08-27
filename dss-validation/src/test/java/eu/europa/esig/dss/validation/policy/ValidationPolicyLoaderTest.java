@@ -616,7 +616,7 @@ class ValidationPolicyLoaderTest {
                 for (CryptographicSuiteEvaluation cse : value) {
                     Set<CryptographicSuiteEvaluation> valueTwo = mapTwo.get(key);
                     assertTrue(valueTwo.stream().anyMatch(cseTwo -> checkEvaluationEquals(cse, cseTwo)),
-                            String.format("Algo : %s\nFirst set :  %s\nSecond set : %s", key, value, valueTwo));
+                            String.format("Algo : %s%nFirst set :  %s%nSecond set : %s", key, value, valueTwo));
                 }
             }
         }

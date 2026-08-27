@@ -22,6 +22,8 @@ package eu.europa.esig.dss.xml.common.definition;
 
 /**
  * Builds an XPath expression
+ *
+ * @deprecated since DSS 6.4. To be removed in favor of new XPath computation.
  */
 @Deprecated
 public class XPathExpressionBuilder {

@@ -1295,6 +1295,9 @@ public final class DSSUtils {
 	 */
 	public static SignatureValue convertECSignatureValue(SignatureAlgorithm expectedAlgorithm,
 														 SignatureValue signatureValue)   {
+		Objects.requireNonNull(expectedAlgorithm, "SignatureAlgorithm cannot be null");
+		Objects.requireNonNull(signatureValue, "SignatureValue cannot be null");
+
 		SignatureValue newSignatureValue = new SignatureValue();
 		newSignatureValue.setAlgorithm(expectedAlgorithm);
 

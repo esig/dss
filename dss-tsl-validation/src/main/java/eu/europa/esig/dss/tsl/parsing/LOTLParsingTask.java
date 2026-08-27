@@ -76,9 +76,11 @@ public class LOTLParsingTask extends AbstractParsingTask {
 	}
 
 	private void parseSchemeInformation(LOTLParsingResult result, TSLSchemeInformationType schemeInformation) {
-		commonParseSchemeInformation(result, schemeInformation);
-		extractOtherTSLPointers(result, schemeInformation);
-		extractSchemeInformationURI(result, schemeInformation);
+		if (schemeInformation != null) {
+			commonParseSchemeInformation(result, schemeInformation);
+			extractOtherTSLPointers(result, schemeInformation);
+			extractSchemeInformationURI(result, schemeInformation);
+		}
 	}
 
 	private void extractOtherTSLPointers(LOTLParsingResult result, TSLSchemeInformationType schemeInformation) {

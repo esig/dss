@@ -65,9 +65,6 @@ public class CBAdESUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(CBAdESUtils.class);
 
-    /** Format date-time as specified in RFC 3339 5.6 */
-    private static final String DATE_TIME_FORMAT_RFC3339 = "yyyy-MM-dd'T'HH:mm:ss'Z'";
-
     /**
      * Utils class
      */

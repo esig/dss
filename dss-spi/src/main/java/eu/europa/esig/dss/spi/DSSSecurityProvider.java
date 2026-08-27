@@ -148,7 +148,7 @@ public final class DSSSecurityProvider {
 	 */
 	public static void setAlternativeSecurityProviders(String... alternativeSecurityProviderNames) throws SecurityException {
 		assertProviderNamesNotNull(alternativeSecurityProviderNames);
-		if (alternativeSecurityProviderNames == null || alternativeSecurityProviderNames.length == 0) {
+		if (alternativeSecurityProviderNames.length == 0) {
 			return;
 		}
 		final Provider[] providerArray = new Provider[alternativeSecurityProviderNames.length];

@@ -786,9 +786,9 @@ public class UserFriendlyIdentifierProvider implements TokenIdentifierProvider {
 
     private String getLoTEPrefix(LoTEInfo listInfo) {
         if (listInfo instanceof LoLoTEInfo) {
-            return lotlPrefix;
+            return lolotePrefix;
         } else {
-            return tlPrefix;
+            return lotePrefix;
         }
     }
 

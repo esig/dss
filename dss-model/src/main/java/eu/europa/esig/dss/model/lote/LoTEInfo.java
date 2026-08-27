@@ -90,6 +90,7 @@ public class LoTEInfo extends AbstractDocumentInfo<LoLoTEInfo> {
      *
      * @return {@link LoTEParsingInfoRecord}
      */
+    @Override
     public LoTEParsingInfoRecord getParsingCacheInfo() {
         return (LoTEParsingInfoRecord) super.getParsingCacheInfo();
     }
@@ -108,6 +109,7 @@ public class LoTEInfo extends AbstractDocumentInfo<LoLoTEInfo> {
      *
      * @return {@link String} id
      */
+    @Override
     public Identifier getDSSId() {
         if (identifier == null) {
             identifier = buildIdentifier();
@@ -120,6 +122,7 @@ public class LoTEInfo extends AbstractDocumentInfo<LoLoTEInfo> {
      *
      * @return {@link Identifier}
      */
+    @Override
     protected Identifier buildIdentifier() {
         return new LoTEIdentifier(this);
     }

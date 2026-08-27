@@ -71,7 +71,7 @@ public abstract class AttestationPayloadVerifier {
     /**
      * Default constructor
      */
-    public AttestationPayloadVerifier() {
+    protected AttestationPayloadVerifier() {
         // empty
     }
 
@@ -128,12 +128,12 @@ public abstract class AttestationPayloadVerifier {
      * @return {@link VerifiedClaimMap} representing the processed payload
      */
     protected VerifiedClaimMap buildPayloadWithDisclosures(VerifiedClaimMap payloadMap) {
-        VerifiedClaim verifiedPayload = buildClaimWithDisclosures(payloadMap);
-        if (!(verifiedPayload instanceof VerifiedClaimMap)) {
+        VerifiedClaim payload = buildClaimWithDisclosures(payloadMap);
+        if (!(payload instanceof VerifiedClaimMap)) {
             throw new IllegalStateException("The verified paylaod is expected to be of a ClaimMap type!");
         }
         ensureAllDisclosuresFound();
-        return (VerifiedClaimMap) verifiedPayload;
+        return (VerifiedClaimMap) payload;
     }
 
     /**

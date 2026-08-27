@@ -115,12 +115,12 @@ public class CBAdESCounterSignatureBuilder extends CBAdESBuilder {
 
     private void assertSignatureNotTimestampedRecursively(AdvancedSignature signature) {
         if (signature != null && signature.getMasterSignature() != null) {
-            AdvancedSignature masterSignature = signature.getMasterSignature();
-            if (masterSignature.getTimestampSource().isTimestamped(signature.getId(), TimestampedObjectType.SIGNATURE)) {
+            AdvancedSignature currentMasterSignature = signature.getMasterSignature();
+            if (currentMasterSignature.getTimestampSource().isTimestamped(signature.getId(), TimestampedObjectType.SIGNATURE)) {
                 throw new IllegalInputException(String.format("Unable to counter sign a signature with Id '%s'. "
                         + "The signature is timestamped by a master signature!", signature.getId()));
             }
-            assertSignatureNotTimestampedRecursively(masterSignature);
+            assertSignatureNotTimestampedRecursively(currentMasterSignature);
         }
     }
 
@@ -196,7 +196,7 @@ public class CBAdESCounterSignatureBuilder extends CBAdESBuilder {
     }
 
     private CBAdESSignature updateMasterSignatureRecursively(CBAdESSignature signature) {
-        CBAdESSignature masterSignature = (CBAdESSignature) signature.getMasterSignature();
+        CBAdESSignature currentMasterSignature = (CBAdESSignature) signature.getMasterSignature();
         if (signature.getMasterSignature() == null) {
             return signature;
         }
@@ -210,10 +210,10 @@ public class CBAdESCounterSignatureBuilder extends CBAdESBuilder {
             CBAdESUHeadersComponent updatedCSigAttribute = CBAdESUHeadersComponent.build(masterCSigComponent.getHeaderId(),
                     coseSignStructure.toCBORObject(), masterCSigComponent.getIdentifier());
 
-            replaceCSigComponent(masterSignature, updatedCSigAttribute);
+            replaceCSigComponent(currentMasterSignature, updatedCSigAttribute);
         }
 
-        return updateMasterSignatureRecursively(masterSignature);
+        return updateMasterSignatureRecursively(currentMasterSignature);
     }
 
     private void replaceCSigComponent(CBAdESSignature masterSignature, CBAdESUHeadersComponent cSigAttribute) {

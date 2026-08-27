@@ -335,8 +335,6 @@ public class CBAdESTimestampMessageDigestBuilder implements TimestampMessageDige
                 LOG.trace("--->Get 'rfsTst' timestamp data : {}", timestampToken == null ? "--> CREATION" : "--> VALIDATION");
             }
 
-            CBORSignature cose = signature.getCoseSignature();
-
             /*
              * 1) Initialize an empty CBOR array.
              */

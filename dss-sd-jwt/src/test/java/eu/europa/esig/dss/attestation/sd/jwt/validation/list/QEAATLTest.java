@@ -132,7 +132,7 @@ class QEAATLTest extends PKIFactoryAccess {
     private String signer;
 
     @BeforeEach
-    public void init() {
+    void init() {
         urlMap = new HashMap<>();
 
         cacheDirectory = new File("target/cache");

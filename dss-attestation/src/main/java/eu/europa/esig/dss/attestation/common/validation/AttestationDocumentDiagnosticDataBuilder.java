@@ -110,6 +110,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -799,10 +800,15 @@ public class AttestationDocumentDiagnosticDataBuilder extends SignedDocumentDiag
         if (Utils.isCollectionEmpty(credentialSubjects)) {
             return Collections.emptyList();
         }
-        return credentialSubjects.stream().map(s -> getXmlCredentialSubjectClaim(s, supportedClaims)).collect(Collectors.toList());
+        return credentialSubjects.stream().map(s -> getXmlCredentialSubjectClaim(s, supportedClaims))
+                .filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     private XmlCredentialSubjectClaim getXmlCredentialSubjectClaim(VerifiedClaimCredentialSubject credentialSubject, List<XmlClaim> supportedClaims) {
+        if (credentialSubject == null) {
+            return null;
+        }
+
         XmlCredentialSubjectClaim xmlCredentialSubjectClaim = new XmlCredentialSubjectClaim();
         appendGenericInfo(xmlCredentialSubjectClaim, credentialSubject, supportedClaims);
         xmlCredentialSubjectClaim.setFullName(getXmlClaim(credentialSubject.getFullName(), supportedClaims));
@@ -1042,13 +1048,12 @@ public class AttestationDocumentDiagnosticDataBuilder extends SignedDocumentDiag
             final List<XmlClaim> otherClaims = new ArrayList<>();
             Collection<String> processedHeaderNames = getHeaderNames(supportedClaims);
             Map<String, VerifiedClaim> mapValue = claim.getMapValue();
-            for (String headerName : mapValue.keySet()) {
-                if (!processedHeaderNames.contains(headerName)) {
-                    VerifiedClaim claimValue = mapValue.get(headerName);
-                    if (claimValue != null) {
-                        XmlClaim otherClaim = getXmlClaim(claimValue);
-                        otherClaims.add(otherClaim);
-                    }
+            for (Map.Entry<String, VerifiedClaim> mapEntry : mapValue.entrySet()) {
+                String headerName = mapEntry.getKey();
+                VerifiedClaim claimValue = mapEntry.getValue();
+                if (!processedHeaderNames.contains(headerName) && claimValue != null) {
+                    XmlClaim otherClaim = getXmlClaim(claimValue);
+                    otherClaims.add(otherClaim);
                 }
             }
             return otherClaims;

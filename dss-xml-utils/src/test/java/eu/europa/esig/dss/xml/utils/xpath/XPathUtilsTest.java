@@ -95,7 +95,7 @@ class XPathUtilsTest {
     }
 
     @Test
-    public void positionTest() {
+    void positionTest() {
         XPathQuery query = XPathQueryBuilder.all().element(getElement("a")).build();
         assertEquals(1, XPathUtils.getNodeList(DOC, query).getLength());
         query = XPathQueryBuilder.all().element(getElement("b")).build();
@@ -166,7 +166,7 @@ class XPathUtilsTest {
     }
 
     @Test
-    public void elementPathTest() {
+    void elementPathTest() {
         XPathQuery query = XPathQueryBuilder.all().elements(getElement("a"), getElement("b")).build();
         assertEquals(1, XPathUtils.getNodeList(DOC, query).getLength());
         query = XPathQueryBuilder.all().elements(getElement("a"), getElement("c")).build();
@@ -184,7 +184,7 @@ class XPathUtilsTest {
     }
 
     @Test
-    public void attributeTest() {
+    void attributeTest() {
         XPathQuery query = XPathQueryBuilder.all().attribute(getAttribute("pos")).build();
         assertEquals(1, XPathUtils.getNodeList(DOC, query).getLength());
         query = XPathQueryBuilder.all().attribute(getAttribute("Id")).build();
@@ -196,7 +196,7 @@ class XPathUtilsTest {
     }
 
     @Test
-    public void attributeValueTest() {
+    void attributeValueTest() {
         XPathQuery query = XPathQueryBuilder.all().attribute(getAttribute("pos"), "nested").build();
         assertEquals(1, XPathUtils.getNodeList(DOC, query).getLength());
         query = XPathQueryBuilder.all().attribute(getAttribute("pos"), "notnested").build();
@@ -204,7 +204,7 @@ class XPathUtilsTest {
     }
 
     @Test
-    public void idAttributeTest() {
+    void idAttributeTest() {
         XPathQuery query = XPathQueryBuilder.all().idValue("world").build();
         assertEquals(1, XPathUtils.getNodeList(DOC, query).getLength());
         query = XPathQueryBuilder.all().idValue("void").build();
@@ -212,7 +212,7 @@ class XPathUtilsTest {
     }
 
     @Test
-    public void notChildOfTest() {
+    void notChildOfTest() {
         XPathQuery query = XPathQueryBuilder.all().element(getElement("d")).notChildOf(getElement("b")).build();
         assertEquals(2, XPathUtils.getNodeList(DOC, query).getLength());
         query = XPathQueryBuilder.all().element(getElement("d")).notChildOf(getElement("c")).build();
@@ -222,7 +222,7 @@ class XPathUtilsTest {
     }
 
     @Test
-    public void getValueTest() {
+    void getValueTest() {
         Node bElement = DOC.getDocumentElement().getFirstChild();
 
         XPathQuery query = XPathQueryBuilder.fromCurrentPosition().element(getElement("d")).build();
@@ -241,7 +241,7 @@ class XPathUtilsTest {
     }
 
     @Test
-    public void getNodeTest() {
+    void getNodeTest() {
         Node bElement = DOC.getDocumentElement().getFirstChild();
 
         XPathQuery query = XPathQueryBuilder.fromCurrentPosition().element(getElement("d")).build();
@@ -260,7 +260,7 @@ class XPathUtilsTest {
     }
 
     @Test
-    public void getElementTest() {
+    void getElementTest() {
         Node bElement = DOC.getDocumentElement().getFirstChild();
 
         XPathQuery query = XPathQueryBuilder.fromCurrentPosition().element(getElement("d")).build();
@@ -279,7 +279,7 @@ class XPathUtilsTest {
     }
 
     @Test
-    public void getNodesAmountTest() {
+    void getNodesAmountTest() {
         Node bElement = DOC.getDocumentElement().getFirstChild();
 
         XPathQuery query = XPathQueryBuilder.fromCurrentPosition().element(getElement("d")).build();
@@ -297,7 +297,7 @@ class XPathUtilsTest {
     }
 
     @Test
-    public void getChildrenNamesTest() {
+    void getChildrenNamesTest() {
         Node bElement = DOC.getDocumentElement().getFirstChild();
 
         XPathQuery query = XPathQueryBuilder.fromCurrentPosition().element(getElement("d")).build();

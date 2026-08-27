@@ -105,7 +105,7 @@ class LoLoTEJsonGenerationTest extends PKIFactoryAccess {
     private String signer;
 
     @BeforeEach
-    public void init() {
+    void init() {
         urlMap = new HashMap<>();
 
         cacheDirectory = new File("target/cache");
@@ -481,12 +481,6 @@ class LoLoTEJsonGenerationTest extends PKIFactoryAccess {
         }
 
         return serviceDigitalIdentity;
-    }
-
-    private JsonObject getLoTEQualifier(String headerName, Object value) {
-        JsonObject loteQualifier = new JsonObject();
-        loteQualifier.put(headerName, value);
-        return loteQualifier;
     }
 
     private JsonObject getMultiLangString(String lang, String value) {

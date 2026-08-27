@@ -58,7 +58,7 @@ public class MdocDeviceNameSpaces {
             return Collections.emptyMap();
         }
 
-        final Map<String, CBORMap> namespaces = new HashMap<>();
+        final Map<String, CBORMap> namespacesMap = new HashMap<>();
         for (CBORObject mapKey : deviceNameSpaces.getKeys()) {
             if (!mapKey.isUnicodeString()) {
                 throw new IllegalInputException("NameSpace shall be of unicode string type!");
@@ -68,9 +68,9 @@ public class MdocDeviceNameSpaces {
             if (!deviceSignedItems.isMap()) {
                 throw new IllegalInputException("DeviceSignedItems shall be of Map type!");
             }
-            namespaces.put(namespace, (CBORMap) deviceSignedItems);
+            namespacesMap.put(namespace, (CBORMap) deviceSignedItems);
         }
-        return namespaces;
+        return namespacesMap;
     }
 
     /**

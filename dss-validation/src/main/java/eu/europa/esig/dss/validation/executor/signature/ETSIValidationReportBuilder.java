@@ -153,6 +153,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -249,6 +250,8 @@ public class ETSIValidationReportBuilder {
 	private ValidationConstraintsEvaluationReportType getValidationConstraintsEvaluationReport(AbstractTokenProxy token) {
 		ValidationConstraintsEvaluationReportType validationConstraintsEvaluationReport = objectFactory.createValidationConstraintsEvaluationReportType();
 		XmlBasicBuildingBlocks bbbResults = detailedReport.getBasicBuildingBlockById(token.getId());
+		Objects.requireNonNull(bbbResults, String.format("No BasicBuildingBlocks found for token with id '%s'", token.getId()));
+
 		addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockDefinition.FORMAT_CHECKING, bbbResults.getFC());
 		addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockDefinition.IDENTIFICATION_OF_THE_SIGNING_CERTIFICATE, bbbResults.getISC());
 		addBBB(validationConstraintsEvaluationReport, BasicBuildingBlockDefinition.VALIDATION_CONTEXT_INITIALIZATION, bbbResults.getVCI());
@@ -533,6 +536,7 @@ public class ETSIValidationReportBuilder {
 	private POEType getPOE(String tokenId, POEExtraction poeExtraction) {
 		POEType poeType = objectFactory.createPOEType();
 		POE lowestPOE = poeExtraction.getLowestPOE(tokenId);
+		Objects.requireNonNull(lowestPOE, String.format("No POE is found for the token with Id '%s'", tokenId));
 		poeType.setPOETime(lowestPOE.getTime());
 		if (lowestPOE instanceof TimestampPOE) {
 			String timestampId = lowestPOE.getPOEProviderId();

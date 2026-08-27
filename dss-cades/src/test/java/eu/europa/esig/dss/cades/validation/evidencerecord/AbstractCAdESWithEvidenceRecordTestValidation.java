@@ -236,6 +236,7 @@ public abstract class AbstractCAdESWithEvidenceRecordTestValidation extends Abst
         assertNotNull(evidenceRecord.getIncorporationType());
     }
 
+    @Override
     protected void checkEvidenceRecordTimestampedReferences(DiagnosticData diagnosticData) {
         List<SignatureWrapper> signatures = diagnosticData.getSignatures();
 

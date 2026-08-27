@@ -98,6 +98,9 @@ public class RemoteSignatureTokenConnectionImpl implements RemoteSignatureTokenC
 	@Override
 	public SignatureValueDTO signDigest(DigestDTO digest, String alias) throws DSSException {
 		DSSPrivateKeyEntry key = token.getKey(alias);
+		if (key == null) {
+			throw new IllegalArgumentException(String.format("No key found for the alias: %s", alias));
+		}
 		EncryptionAlgorithm encryptionAlgorithm = key.getEncryptionAlgorithm();
 		SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.getAlgorithm(encryptionAlgorithm, digest.getAlgorithm());
 		if (signatureAlgorithm == null) {
