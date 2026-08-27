@@ -204,7 +204,7 @@ public abstract class AbstractBasicValidationProcess<T extends XmlConstraintsCon
 
                             item = item.setNextItem(timestampBasicValidation(timestampWrapper, timestampValidation));
 
-                            if (isValid(timestampValidation)) {
+                            if (revocationTime != null && isValid(timestampValidation)) {
 
                                 item = item.setNextItem(timestampNotAfterRevocationTime(timestampWrapper, revocationTime));
 
