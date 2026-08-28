@@ -29,6 +29,7 @@ import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
 /**
  * The abstract cryptographic check
@@ -79,7 +80,7 @@ public abstract class AbstractCryptographicCheck extends ChainItem<XmlCC> {
 	 * @return {@link String} name
 	 */
 	protected String getName(SignatureAlgorithm signatureAlgorithm) {
-		return signatureAlgorithm != null ? signatureAlgorithm.getName() : "?";
+		return signatureAlgorithm != null ? ValidationProcessUtils.getSignatureAlgorithmName(signatureAlgorithm, i18nProvider) : "?";
 	}
 
 }

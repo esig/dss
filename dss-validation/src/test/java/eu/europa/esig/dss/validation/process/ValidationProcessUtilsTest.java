@@ -25,6 +25,9 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
+import eu.europa.esig.dss.i18n.I18nProvider;
+
 class ValidationProcessUtilsTest {
 
     @Test
@@ -47,5 +50,14 @@ class ValidationProcessUtilsTest {
         assertEquals("test.gov", ValidationProcessUtils.getDomainName("test.gov?name=robert"));
         assertEquals("test.gov", ValidationProcessUtils.getDomainName("test.gov/read?name=robert"));
     }
-    
+
+    @Test
+    void getSignatureAlgorithmNameTest() {
+        I18nProvider i18nProvider = new I18nProvider();
+
+        for (SignatureAlgorithm signatureAlgorithm : SignatureAlgorithm.values()) {
+            assertEquals(signatureAlgorithm.getName(), ValidationProcessUtils.getSignatureAlgorithmName(signatureAlgorithm, i18nProvider));
+        }
+    }
+
 }

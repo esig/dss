@@ -31,6 +31,7 @@ import eu.europa.esig.dss.i18n.I18nProvider;
 import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.model.policy.LevelRule;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -142,8 +143,9 @@ public class EllipticCurveKeySizeCheck extends ChainItem<XmlFC> {
     @Override
     protected String buildAdditionalInfo() {
         if (isEncryptionAlgorithmKnown() && isDigestAlgorithmKnown() && isKeySizeKnown()) {
+            String signatureAlgorithmName = ValidationProcessUtils.getSignatureAlgorithmName(signature.getSignatureAlgorithm(), i18nProvider);
             return i18nProvider.getMessage(MessageTag.SIGNATURE_ALGORITHM_WITH_KEY_SIZE,
-                    signature.getSignatureAlgorithm().getName(), signature.getKeyLengthUsedToSignThisToken());
+                    signatureAlgorithmName, signature.getKeyLengthUsedToSignThisToken());
         }
         return null;
     }

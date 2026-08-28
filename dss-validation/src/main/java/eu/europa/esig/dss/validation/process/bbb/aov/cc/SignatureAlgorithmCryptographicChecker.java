@@ -28,6 +28,7 @@ import eu.europa.esig.dss.i18n.MessageTag;
 import eu.europa.esig.dss.model.policy.CryptographicSuite;
 import eu.europa.esig.dss.validation.policy.CryptographicSuiteUtils;
 import eu.europa.esig.dss.validation.process.ChainItem;
+import eu.europa.esig.dss.validation.process.ValidationProcessUtils;
 import eu.europa.esig.dss.validation.process.bbb.aov.cc.checks.PublicKeySizeAcceptableCheck;
 import eu.europa.esig.dss.validation.process.bbb.aov.cc.checks.PublicKeySizeKnownCheck;
 import eu.europa.esig.dss.validation.process.bbb.aov.cc.checks.SignatureAlgorithmAtValidationTimeCheck;
@@ -121,7 +122,7 @@ public class SignatureAlgorithmCryptographicChecker extends AbstractAlgorithmCry
 			cryptographicAlgorithm = new XmlCryptographicAlgorithm();
 			if (signatureAlgorithm != null) {
 				// if SignatureAlgorithm is defined
-				cryptographicAlgorithm.setName(signatureAlgorithm.getName());
+				cryptographicAlgorithm.setName(ValidationProcessUtils.getSignatureAlgorithmName(signatureAlgorithm, i18nProvider));
 				cryptographicAlgorithm.setUri(getSignatureAlgorithmUri(signatureAlgorithm));
 				cryptographicAlgorithm.setKeyLength(keyLengthUsedToSignThisToken);
 

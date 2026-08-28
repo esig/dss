@@ -40,6 +40,7 @@ import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.Level;
 import eu.europa.esig.dss.enumerations.QWACProfile;
+import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.enumerations.SubContext;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.enumerations.TimestampType;
@@ -944,5 +945,17 @@ public class ValidationProcessUtils {
 		}
 		return () -> level;
 	}
+
+    public static String getSignatureAlgorithmName(SignatureAlgorithm signatureAlgorithm, I18nProvider i18nProvider) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(signatureAlgorithm.getEncryptionAlgorithm().getName());
+        if (signatureAlgorithm.getDigestAlgorithm() != null) {
+            stringBuilder.append(" ");
+            stringBuilder.append(i18nProvider.getMessage(MessageTag.SIGNATURE_ALGORITHM_NAME_SEPARATOR));
+            stringBuilder.append(" ");
+            stringBuilder.append(signatureAlgorithm.getDigestAlgorithm().getName());
+        }
+        return stringBuilder.toString();
+    }
 
 }
