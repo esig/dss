@@ -1269,7 +1269,7 @@ public enum MessageTag {
 	TLS_BY_QWAC2_PROFILE,
 
     /* Signature algorithm */
-    SIGNATURE_ALGORITHM_NAME_SEPARATOR,
+    SIGNATURE_ALGORITHM_NAME,
 
 	/* Semantics */
 	SEMANTICS_TOTAL_PASSED,

@@ -955,15 +955,14 @@ public class ValidationProcessUtils {
      * @return {@link String}
      */
     public static String getSignatureAlgorithmName(SignatureAlgorithm signatureAlgorithm, I18nProvider i18nProvider) {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(signatureAlgorithm.getEncryptionAlgorithm().getName());
-        if (signatureAlgorithm.getDigestAlgorithm() != null) {
-            stringBuilder.append(" ");
-            stringBuilder.append(i18nProvider.getMessage(MessageTag.SIGNATURE_ALGORITHM_NAME_SEPARATOR));
-            stringBuilder.append(" ");
-            stringBuilder.append(signatureAlgorithm.getDigestAlgorithm().getName());
+        if (SignatureAlgorithm.ED448.equals(signatureAlgorithm)
+                || SignatureAlgorithm.ED25519.equals(signatureAlgorithm)) {
+            return signatureAlgorithm.toString();
+        } else if (signatureAlgorithm.getDigestAlgorithm() == null) {
+            return signatureAlgorithm.getEncryptionAlgorithm().getName();
         }
-        return stringBuilder.toString();
+
+        return i18nProvider.getMessage(MessageTag.SIGNATURE_ALGORITHM_NAME, signatureAlgorithm.getEncryptionAlgorithm().getName(), signatureAlgorithm.getDigestAlgorithm().getName());
     }
 
 }

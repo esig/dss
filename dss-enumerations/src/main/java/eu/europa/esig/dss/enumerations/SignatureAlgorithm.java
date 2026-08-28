@@ -1067,6 +1067,10 @@ public enum SignatureAlgorithm implements OidAndUriBasedEnum {
      * @return {@link String} name
      */
     public String getName() {
+        if (this == ED25519 || this == ED448) {
+            return toString();
+        }
+
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(encryptionAlgo.getName());
         if (digestAlgo != null) {
