@@ -946,6 +946,14 @@ public class ValidationProcessUtils {
 		return () -> level;
 	}
 
+    /**
+     * Returns user-friendly name for the signature algorithm.
+     * The name is composed of the encryption algorithm and the digest algorithm, with a separator retrieved using the provided {@link I18nProvider}.
+     *
+     * @param signatureAlgorithm {@link SignatureAlgorithm}
+     * @param i18nProvider {@link I18nProvider}
+     * @return {@link String}
+     */
     public static String getSignatureAlgorithmName(SignatureAlgorithm signatureAlgorithm, I18nProvider i18nProvider) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(signatureAlgorithm.getEncryptionAlgorithm().getName());
