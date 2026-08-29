@@ -207,7 +207,7 @@
 		<module>dss-attestation-validation-rest</module>
 		<module>dss-attestation-validation-soap</module>
 		<module>dss-cookbook</module>
-
+		<module>dss-azure-key-vault</module>
 		<module>dss-jacoco-coverage</module>
 		<module>dss-bom</module>
 	</modules>
