@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.cbades;
 
-import co.nstant.in.cbor.model.Tag;
+import eu.europa.ec.digit.cddl4j.cbor.CBOR;
 import eu.europa.esig.dss.cbades.cbor.CBORArray;
 import eu.europa.esig.dss.cbades.cbor.CBORByteString;
 import eu.europa.esig.dss.cbades.cbor.CBORMap;
@@ -460,10 +460,10 @@ class COSEParserTest {
         coseSign1Untagged.setTagged(false);
         assertTrue(COSEParser.isSupported(new InMemoryDocument(coseSign1Untagged.serialize())));
 
-        assertFalse(COSEParser.isSupported(new InMemoryDocument(CBORUtils.serializeCborObject(new CBORTag(new Tag(COSESignatureType.COSE_SIGN.getTag()))))));
-        assertFalse(COSEParser.isSupported(new InMemoryDocument(CBORUtils.serializeCborObject(new CBORTag(new Tag(COSESignatureType.COSE_SIGN1.getTag()))))));
-        assertFalse(COSEParser.isSupported(new InMemoryDocument(CBORUtils.serializeCborObject(new CBORTag(new Tag(COSESignatureType.COSE_COUNTER_SIGNATURE.getTag()))))));
-        assertFalse(COSEParser.isSupported(new InMemoryDocument(CBORUtils.serializeCborObject(new CBORTag(new Tag(1))))));
+        assertFalse(COSEParser.isSupported(new InMemoryDocument(CBORUtils.serializeCborObject(new CBORTag(CBOR.tag(COSESignatureType.COSE_SIGN.getTag(), CBOR.nullValue()))))));
+        assertFalse(COSEParser.isSupported(new InMemoryDocument(CBORUtils.serializeCborObject(new CBORTag(CBOR.tag(COSESignatureType.COSE_SIGN1.getTag(), CBOR.nullValue()))))));
+        assertFalse(COSEParser.isSupported(new InMemoryDocument(CBORUtils.serializeCborObject(new CBORTag(CBOR.tag(COSESignatureType.COSE_COUNTER_SIGNATURE.getTag(), CBOR.nullValue()))))));
+        assertFalse(COSEParser.isSupported(new InMemoryDocument(CBORUtils.serializeCborObject(new CBORTag(CBOR.tag(1, CBOR.nullValue()))))));
         assertFalse(COSEParser.isSupported(new InMemoryDocument(CBORUtils.serializeCborObject(new CBORArray()))));
 
         CBORArray cborArray = new CBORArray();

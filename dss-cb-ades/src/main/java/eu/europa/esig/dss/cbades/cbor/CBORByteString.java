@@ -20,19 +20,21 @@
  */
 package eu.europa.esig.dss.cbades.cbor;
 
-import co.nstant.in.cbor.model.ByteString;
+import eu.europa.ec.digit.cddl4j.cbor.CBOR;
+import eu.europa.ec.digit.cddl4j.cbor.CBORType;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.spi.DSSUtils;
 
 /**
  * A wrapper for a CBOR ByteString object implementation
  */
-public class CBORByteString extends AbstractCBORObject<ByteString> {
+public class CBORByteString extends AbstractCBORObject {
 
     /**
      * Constructor to create an empty CBOR ByteString object
      */
     public CBORByteString() {
-        this(new ByteString(DSSUtils.EMPTY_BYTE_ARRAY));
+        this(DSSUtils.EMPTY_BYTE_ARRAY);
     }
 
     /**
@@ -41,21 +43,21 @@ public class CBORByteString extends AbstractCBORObject<ByteString> {
      * @param byteArray a byte array
      */
     public CBORByteString(final byte[] byteArray) {
-        this(new ByteString(byteArray));
+        this(CBOR.bytes(byteArray));
     }
 
     /**
      * Constructor to create a CBOR ByteString object from a {@code ByteString} implementation
      *
-     * @param byteString {@link ByteString}
+     * @param byteString {@link CBORValue}
      */
-    public CBORByteString(final ByteString byteString) {
-        super(byteString);
+    public CBORByteString(final CBORValue byteString) {
+        super(requireTypeOf(byteString, CBORType.BYTE_STRING));;
     }
 
     @Override
     public byte[] getValueAsBytes() {
-        return toDataItem().getBytes();
+        return getCBORValue().asByteString();
     }
 
 }

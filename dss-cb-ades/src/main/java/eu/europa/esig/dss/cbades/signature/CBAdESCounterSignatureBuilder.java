@@ -197,7 +197,7 @@ public class CBAdESCounterSignatureBuilder extends CBAdESBuilder {
 
     private CBAdESSignature updateMasterSignatureRecursively(CBAdESSignature signature) {
         CBAdESSignature currentMasterSignature = (CBAdESSignature) signature.getMasterSignature();
-        if (signature.getMasterSignature() == null) {
+        if (currentMasterSignature == null) {
             return signature;
         }
 

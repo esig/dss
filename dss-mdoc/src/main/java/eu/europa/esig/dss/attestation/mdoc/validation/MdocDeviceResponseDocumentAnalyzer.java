@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.validation;
 
-import co.nstant.in.cbor.CborException;
+import eu.europa.ec.digit.cddl4j.cbor.CBORDecodeException;
 import eu.europa.esig.dss.cbades.cbor.CBORArray;
 import eu.europa.esig.dss.cbades.cbor.CBORByteString;
 import eu.europa.esig.dss.cbades.cbor.CBORObject;
@@ -203,7 +203,7 @@ public class MdocDeviceResponseDocumentAnalyzer extends AbstractMdocDocumentAnal
                 LOG.warn("Session transcript is expected in a form of a CBOR array or binaries. Obtained type : {}", cborObject.getClass().getSimpleName());
             }
 
-        } catch (CborException e) {
+        } catch (CBORDecodeException e) {
             LOG.warn("Unable to parse session transcript as CBOR object : {}", e.getMessage(), e);
         }
         deviceAuthentication.add(sessionTranscriptCbor);

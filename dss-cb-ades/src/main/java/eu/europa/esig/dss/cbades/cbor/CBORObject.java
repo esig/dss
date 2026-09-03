@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.cbades.cbor;
 
-import co.nstant.in.cbor.model.DataItem;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 
 import java.util.List;
 import java.util.Map;
@@ -46,18 +46,25 @@ public interface CBORObject {
     CBORTag getTag();
 
     /**
-     * Sets the tag value for the current CBOR Object
+     * Sets the tag tag for the current CBOR Object
      *
-     * @param value long value of the tag
+     * @param tag long tag of the tag
      */
-    void setTag(long value);
+    void setTag(long tag);
 
     /**
-     * Returns a wrapped implementation of the COSE object
+     * Returns a wrapped implementation of the CBOR value
      *
-     * @return {@link DataItem}
+     * @return {@link CBORValue}
      */
-    DataItem toDataItem();
+    CBORValue toCBORValue();
+
+    /**
+     * Gets the current value or tagged value, if tagged
+     *
+     * @return {@link CBORValue}
+     */
+    CBORValue getCBORValue();
 
     /**
      * Returns whether the current CBOR object is of UnsignedInteger type

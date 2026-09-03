@@ -20,13 +20,9 @@
  */
 package eu.europa.esig.dss.cbades.cbor;
 
-import co.nstant.in.cbor.model.AbstractFloat;
-import co.nstant.in.cbor.model.DataItem;
-import co.nstant.in.cbor.model.DoublePrecisionFloat;
-import co.nstant.in.cbor.model.MajorType;
-import co.nstant.in.cbor.model.SimpleValue;
-import co.nstant.in.cbor.model.SimpleValueType;
-import co.nstant.in.cbor.model.Tag;
+import eu.europa.ec.digit.cddl4j.cbor.CBOR;
+import eu.europa.ec.digit.cddl4j.cbor.CBORType;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 
 import java.util.List;
 import java.util.Map;
@@ -35,119 +31,115 @@ import java.util.Objects;
 /**
  * An abstract implementation of a CBOR object wrapper
  *
- * @param <D> the implementation of {@link DataItem}
  */
-public abstract class AbstractCBORObject<D extends DataItem> implements CBORObject {
+public abstract class AbstractCBORObject implements CBORObject {
 
     /** A CBOR object implementation */
-    private final D dataItem;
+    protected CBORValue value;
 
     /**
-     * Creates a new CBOR object from the given {@code dataItem}
+     * Creates a new CBOR object from the given {@code value}
      *
-     * @param dataItem {@link DataItem}
+     * @param value {@link CBORValue}
      */
-    protected AbstractCBORObject(final D dataItem) {
-        this.dataItem = dataItem;
+    protected AbstractCBORObject(final CBORValue value) {
+        this.value = value;
     }
 
     @Override
     public boolean isTagged() {
-        return dataItem.hasTag();
+        return value.isTag();
     }
 
     @Override
     public CBORTag getTag() {
-        return new CBORTag(dataItem.getTag());
+        if (value.isTag()) {
+            return new CBORTag(value);
+        }
+        return null;
     }
 
     @Override
-    public void setTag(long value) {
-        dataItem.setTag(new Tag(value));
+    public void setTag(long tag) {
+        this.value = CBOR.tag(tag, getCBORValue());
     }
 
     @Override
-    public D toDataItem() {
-        return dataItem;
+    public CBORValue toCBORValue() {
+        return value;
+    }
+
+    /**
+     * Checks if the value is integer
+     *
+     * @return TRUE if the value if a CBOR integer, FALSE otherwise
+     */
+    protected boolean isInteger() {
+        CBORValue cborValue = getCBORValue();
+        return cborValue.isInteger();
     }
 
     @Override
     public boolean isUnsignedInteger() {
-        return MajorType.UNSIGNED_INTEGER == dataItem.getMajorType();
+        CBORValue cborValue = getCBORValue();
+        return cborValue.isInteger() && cborValue.asInteger().signum() >= 0;
     }
 
     @Override
     public boolean isNegativeInteger() {
-        return MajorType.NEGATIVE_INTEGER == dataItem.getMajorType();
+        CBORValue cborValue = getCBORValue();
+        return cborValue.isInteger() && cborValue.asInteger().signum() < 0;
     }
 
     @Override
     public boolean isFloatingPointNumber() {
-        return isDoublePrecisionFloat() || isFloatPrecisionFloat();
-    }
-
-    /**
-     * Returns whether the current CBOR object is of Special type categorized by an additional type
-     * as a double precision point float number (additional information 27).
-     *
-     * @return TRUE if the current CBOR object is of Special double precision float number type, FALSE otherwise
-     */
-    protected boolean isDoublePrecisionFloat() {
-        return MajorType.SPECIAL == dataItem.getMajorType() && dataItem instanceof DoublePrecisionFloat;
-    }
-
-    /**
-     * Returns whether the current CBOR object is of Special type categorized by an additional type
-     * as a floating precision number (additional information 25 or 26).
-     *
-     * @return TRUE if the current CBOR object is of Special floating precision number type, FALSE otherwise
-     */
-    protected boolean isFloatPrecisionFloat() {
-        return MajorType.SPECIAL == dataItem.getMajorType() && dataItem instanceof AbstractFloat;
+        CBORValue cborValue = getCBORValue();
+        return cborValue.isFloatingPoint();
     }
 
     @Override
     public boolean isByteString() {
-        return MajorType.BYTE_STRING == dataItem.getMajorType();
+        CBORValue cborValue = getCBORValue();
+        return cborValue.isByteString();
     }
 
     @Override
     public boolean isUnicodeString() {
-        return MajorType.UNICODE_STRING == dataItem.getMajorType();
+        CBORValue cborValue = getCBORValue();
+        return cborValue.isTextString();
     }
 
     @Override
     public boolean isBoolean() {
-        if (isSimpleValue()) {
-            SimpleValue simpleValue = (SimpleValue) dataItem;
-            return SimpleValueType.TRUE == simpleValue.getSimpleValueType() || SimpleValueType.FALSE == simpleValue.getSimpleValueType();
-        }
-        return false;
+        CBORValue cborValue = getCBORValue();
+        return cborValue.isBoolean();
     }
 
     @Override
     public boolean isNull() {
-        if (isSimpleValue()) {
-            SimpleValue simpleValue = (SimpleValue) dataItem;
-            return SimpleValueType.NULL == simpleValue.getSimpleValueType();
-        }
-        return false;
-    }
-
-    private boolean isSimpleValue() {
-        return MajorType.SPECIAL == dataItem.getMajorType() && dataItem instanceof SimpleValue;
+        CBORValue cborValue = getCBORValue();
+        return cborValue.isNull();
     }
 
     @Override
     public boolean isMap() {
-        return MajorType.MAP == dataItem.getMajorType();
+        CBORValue cborValue = getCBORValue();
+        return cborValue.isMap();
     }
 
     @Override
     public boolean isArray() {
-        return MajorType.ARRAY == dataItem.getMajorType();
+        CBORValue cborValue = getCBORValue();
+        return cborValue.isArray();
     }
 
+    @Override
+    public CBORValue getCBORValue() {
+        if (isTagged()) {
+            return value.getTaggedValue();
+        }
+        return value;
+    }
 
     @Override
     public Long getValueAsLong() {
@@ -184,23 +176,44 @@ public abstract class AbstractCBORObject<D extends DataItem> implements CBORObje
         return null;
     }
 
+    /**
+     * Checks whether the CBOR value is of {@code type}
+     *
+     * @param value {@link CBORValue} to verify
+     * @param type {@link CBORType}
+     * @return provided {@link CBORValue}, if the check passes
+     */
+    protected static CBORValue requireTypeOf(CBORValue value, CBORType type) {
+        CBORValue embeddedValue = value;
+        if (value.isTag()) {
+            if (CBORType.TAG == type) {
+                return value;
+            }
+            embeddedValue = value.getTaggedValue();
+        }
+        if (type != embeddedValue.getType()) {
+            throw new IllegalArgumentException(String.format("CBOR %s is expected!", type));
+        }
+        return value;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        AbstractCBORObject<?> that = (AbstractCBORObject<?>) o;
-        return Objects.equals(dataItem, that.dataItem);
+        AbstractCBORObject that = (AbstractCBORObject) o;
+        return Objects.equals(value, that.value);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(dataItem);
+        return Objects.hashCode(value);
     }
 
     @Override
     public String toString() {
-        return dataItem.toString();
+        return value.toString();
     }
 
 }

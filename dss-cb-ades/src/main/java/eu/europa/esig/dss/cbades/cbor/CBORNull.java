@@ -20,28 +20,29 @@
  */
 package eu.europa.esig.dss.cbades.cbor;
 
-import co.nstant.in.cbor.model.SimpleValue;
-import co.nstant.in.cbor.model.SimpleValueType;
+import eu.europa.ec.digit.cddl4j.cbor.CBOR;
+import eu.europa.ec.digit.cddl4j.cbor.CBORType;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 
 /**
  * Identifies a nullable CBOR value
  */
-public class CBORNull extends AbstractCBORObject<SimpleValue> {
+public class CBORNull extends AbstractCBORObject {
 
     /**
      * Creates a new CBOR nullable object
      */
     public CBORNull() {
-        super(new SimpleValue(SimpleValueType.NULL));
+        super(CBOR.nullValue());
     }
 
     /**
-     * Creates a new CBOR nullable object from the given {@code simpleValue}
+     * Creates a new CBOR nullable object from the given {@code cborValue}
      *
-     * @param simpleValue {@link SimpleValue}
+     * @param cborValue {@link CBORValue}
      */
-    public CBORNull(SimpleValue simpleValue) {
-        super(simpleValue);
+    public CBORNull(CBORValue cborValue) {
+        super(requireTypeOf(cborValue, CBORType.NULL));
     }
 
 }

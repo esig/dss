@@ -61,7 +61,6 @@ import eu.europa.esig.dss.enumerations.EllipticCurve;
 import eu.europa.esig.dss.enumerations.MimeType;
 import eu.europa.esig.dss.enumerations.MimeTypeEnum;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.x509.BaselineBCertificateSelector;
 import eu.europa.esig.dss.utils.Utils;
@@ -243,10 +242,10 @@ public abstract class AbstractMdocDeviceResponseTestCreation extends AbstractAtt
             } else {
                 assertFalse(Utils.isMapNotEmpty(attestation.getDeviceKeyAuthorizedDataElements()));
             }
-            assertEquals(DSSUtils.formatDateToRFC(getPayloadParameters().getSigned()), DSSUtils.formatDateToRFC(attestation.getIssuedAt()));
-            assertEquals(DSSUtils.formatDateToRFC(getPayloadParameters().getValidFrom()), DSSUtils.formatDateToRFC(attestation.getNotBefore()));
-            assertEquals(DSSUtils.formatDateToRFC(getPayloadParameters().getValidUntil()), DSSUtils.formatDateToRFC(attestation.getExpiration()));
-            assertEquals(DSSUtils.formatDateToRFC(getPayloadParameters().getExpectedUpdate()), DSSUtils.formatDateToRFC(attestation.getNextUpdate()));
+            assertEquals(CBORUtils.formatToTDate(getPayloadParameters().getSigned()), CBORUtils.formatToTDate(attestation.getIssuedAt()));
+            assertEquals(CBORUtils.formatToTDate(getPayloadParameters().getValidFrom()), CBORUtils.formatToTDate(attestation.getNotBefore()));
+            assertEquals(CBORUtils.formatToTDate(getPayloadParameters().getValidUntil()), CBORUtils.formatToTDate(attestation.getExpiration()));
+            assertEquals(CBORUtils.formatToTDate(getPayloadParameters().getExpectedUpdate()), CBORUtils.formatToTDate(attestation.getNextUpdate()));
 
             assertStatusListEqual(getPayloadParameters().getStatusList(), attestation);
             assertIdentifierListEqual(getPayloadParameters().getIdentifierList(), attestation);
@@ -259,7 +258,7 @@ public abstract class AbstractMdocDeviceResponseTestCreation extends AbstractAtt
             assertEquals(getPayloadParameters().selectivelyDisclosable().getFamilyName(), attestation.getFamilyName());
             assertEquals(getPayloadParameters().selectivelyDisclosable().getEmail(), attestation.getEmail());
             assertEquals(getPayloadParameters().selectivelyDisclosable().getSex(), attestation.getGender());
-            assertEquals(DSSUtils.formatDateToRFC(getPayloadParameters().selectivelyDisclosable().getBirthdate()), DSSUtils.formatDateToRFC(attestation.getBirthdate()));
+            assertEquals(CBORUtils.formatToTDate(getPayloadParameters().selectivelyDisclosable().getBirthdate()), CBORUtils.formatToTDate(attestation.getBirthdate()));
             assertEquals(getPayloadParameters().selectivelyDisclosable().getPhoneNumber(), attestation.getPhoneNumber());
             assertEquals(getPayloadParameters().selectivelyDisclosable().getPlaceOfBirth(), attestation.getPlaceOfBirth());
             assertEquals(getPayloadParameters().selectivelyDisclosable().getPlaceOfBirthCountry(), attestation.getPlaceOfBirthCountry());
@@ -334,8 +333,8 @@ public abstract class AbstractMdocDeviceResponseTestCreation extends AbstractAtt
             assertEquals(getPayloadParameters().selectivelyDisclosable().getRelationshipParentalAuthority(), attestation.getRelationshipParentalAuthority());
             assertEquals(getPayloadParameters().selectivelyDisclosable().getRelationshipLegalRepresentative(), attestation.getRelationshipLegalRepresentative());
             assertEquals(getPayloadParameters().selectivelyDisclosable().getRelationshipAgent(), attestation.getRelationshipAgent());
-            assertEquals(DSSUtils.formatDateToRFC(getPayloadParameters().selectivelyDisclosable().getAdministrativeIssuanceDate()), DSSUtils.formatDateToRFC(attestation.getAdministrativeIssuanceDate()));
-            assertEquals(DSSUtils.formatDateToRFC(getPayloadParameters().selectivelyDisclosable().getAdministrativeExpirationDate()), DSSUtils.formatDateToRFC(attestation.getAdministrativeExpirationDate()));
+            assertEquals(CBORUtils.formatToTDate(getPayloadParameters().selectivelyDisclosable().getAdministrativeIssuanceDate()), CBORUtils.formatToTDate(attestation.getAdministrativeIssuanceDate()));
+            assertEquals(CBORUtils.formatToTDate(getPayloadParameters().selectivelyDisclosable().getAdministrativeExpirationDate()), CBORUtils.formatToTDate(attestation.getAdministrativeExpirationDate()));
             assertEquals(getPayloadParameters().selectivelyDisclosable().getAddressStreet(), attestation.getResidentAddressStreet());
             assertEquals(getPayloadParameters().selectivelyDisclosable().getAddressHouseNumber(), attestation.getResidentAddressHouseNumber());
             assertEquals(getPayloadParameters().selectivelyDisclosable().getTrustAnchor(), attestation.getTrustAnchor());

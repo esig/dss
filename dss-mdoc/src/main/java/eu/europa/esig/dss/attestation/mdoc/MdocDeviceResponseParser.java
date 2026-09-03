@@ -20,18 +20,9 @@
  */
 package eu.europa.esig.dss.attestation.mdoc;
 
-import co.nstant.in.cbor.CborException;
-import co.nstant.in.cbor.decoder.MapDecoder;
-import co.nstant.in.cbor.decoder.UnicodeStringDecoder;
-import co.nstant.in.cbor.model.MajorType;
-import co.nstant.in.cbor.model.UnicodeString;
-import eu.europa.esig.dss.cbades.COSEParser;
-import eu.europa.esig.dss.cbades.cbor.CBORArray;
-import eu.europa.esig.dss.cbades.cbor.CBORByteString;
-import eu.europa.esig.dss.cbades.cbor.CBORMap;
-import eu.europa.esig.dss.cbades.cbor.CBORObject;
-import eu.europa.esig.dss.cbades.cbor.CBORSimpleObject;
-import eu.europa.esig.dss.cbades.cbor.CBORUtils;
+import eu.europa.ec.digit.cddl4j.cbor.CBORDecodeException;
+import eu.europa.ec.digit.cddl4j.cbor.CBORInspector;
+import eu.europa.ec.digit.cddl4j.cbor.CBORMajorType;
 import eu.europa.esig.dss.attestation.mdoc.model.MdocDeviceAuth;
 import eu.europa.esig.dss.attestation.mdoc.model.MdocDeviceNameSpaces;
 import eu.europa.esig.dss.attestation.mdoc.model.MdocDeviceResponse;
@@ -40,8 +31,14 @@ import eu.europa.esig.dss.attestation.mdoc.model.MdocDocument;
 import eu.europa.esig.dss.attestation.mdoc.model.MdocDocumentError;
 import eu.europa.esig.dss.attestation.mdoc.model.MdocErrorItems;
 import eu.europa.esig.dss.attestation.mdoc.model.MdocIssuerSigned;
+import eu.europa.esig.dss.cbades.COSEParser;
+import eu.europa.esig.dss.cbades.cbor.CBORArray;
+import eu.europa.esig.dss.cbades.cbor.CBORByteString;
+import eu.europa.esig.dss.cbades.cbor.CBORMap;
+import eu.europa.esig.dss.cbades.cbor.CBORObject;
+import eu.europa.esig.dss.cbades.cbor.CBORSimpleObject;
+import eu.europa.esig.dss.cbades.cbor.CBORUtils;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
@@ -85,9 +82,8 @@ public class MdocDeviceResponseParser {
      */
     public boolean isSupported() {
         try (InputStream is = document.openStream()) {
-            int symbol = is.read();
-            return isMdoc(symbol, is);
-        } catch (IOException | CborException e) {
+            return isMdoc(is);
+        } catch (IOException | CBORDecodeException e) {
             if (LOG.isTraceEnabled()) {
                 LOG.trace("Error on mdoc decoding : {}. Not a valid mdoc file.", e.getMessage());
             }
@@ -95,25 +91,31 @@ public class MdocDeviceResponseParser {
         return false;
     }
 
-    private boolean isMdoc(int symbol, InputStream is) throws IOException, CborException {
-        if (MajorType.MAP == MajorType.ofByte(symbol)) {
-            DSSMapDecoder mapDecoder = new DSSMapDecoder(is);
-            long mapLength = mapDecoder.getLength(symbol);
-            if (mapLength == -1 || (mapLength >= 2 && mapLength <= 4)) { // -1 for not defined length, from 2 to 4 for allowed structures
-                int mapFirstSymbol = is.read();
-                if (MajorType.UNICODE_STRING == MajorType.ofByte(mapFirstSymbol)) {
-                    UnicodeStringDecoder stringDecoder = new UnicodeStringDecoder(null, is);
-                    UnicodeString unicodeString = stringDecoder.decode(mapFirstSymbol);
-                    String headerName = unicodeString.toString();
-                    return MdocHeaderParameter.VERSION.toString().equals(headerName) ||
-                            MdocHeaderParameter.DOCUMENTS.toString().equals(headerName) ||
-                            MdocHeaderParameter.DOCUMENT_ERRORS.toString().equals(headerName) ||
-                            MdocHeaderParameter.STATUS.toString().equals(headerName);
-                }
-            }
+    private boolean isMdoc(InputStream is) throws IOException, CBORDecodeException {
+        CBORInspector inspector = new CBORInspector(is);
+        int initialByte = inspector.read();
+        if (CBORMajorType.fromInitialByte(initialByte) != CBORMajorType.MAP) {
+            return false;
         }
-        return false;
+
+        long mapLength = inspector.readLength(initialByte);
+        // -1 for not defined length, from 2 to 4 for allowed structures
+        if (mapLength != -1 && (mapLength < 2 || mapLength > 4)) {
+            return false;
+        }
+
+        int mapFirstByte = inspector.read();
+        if (CBORMajorType.fromInitialByte(mapFirstByte) != CBORMajorType.TEXT_STRING) {
+            return false;
+        }
+
+        String headerName = inspector.readTextString(mapFirstByte);
+        return MdocHeaderParameter.VERSION.toString().equals(headerName)
+                || MdocHeaderParameter.DOCUMENTS.toString().equals(headerName)
+                || MdocHeaderParameter.DOCUMENT_ERRORS.toString().equals(headerName)
+                || MdocHeaderParameter.STATUS.toString().equals(headerName);
     }
+
 
     /**
      * Parses the provided document and returns an mdoc object, if supported
@@ -437,7 +439,7 @@ public class MdocDeviceResponseParser {
     }
 
     /**
-     * Parses CBOR {@code DSSDocument}
+     * Parses CBOR {@code DSSDocument} securely
      *
      * @param document {@link DSSDocument}
      * @return {@link CBORObject}
@@ -445,30 +447,9 @@ public class MdocDeviceResponseParser {
     private CBORObject parseCbor(DSSDocument document) {
         try {
             return CBORUtils.parseCbor(document);
-        } catch (CborException e) {
-            throw new DSSException(String.format("A parsing error of CBOR content occurred : %s", e.getMessage()), e);
+        } catch (CBORDecodeException e) {
+            throw new IllegalInputException(String.format("A parsing error of CBOR content occurred : %s", e.getMessage()), e);
         }
-    }
-
-    /**
-     * Extended implementation of {@code MapDecoder}
-     */
-    protected static class DSSMapDecoder extends MapDecoder {
-
-        /**
-         * Default constructor
-         *
-         * @param inputStream {@link InputStream}
-         */
-        public DSSMapDecoder(InputStream inputStream) {
-            super(null, inputStream);
-        }
-
-        @Override
-        protected long getLength(int initialByte) throws CborException {
-            return super.getLength(initialByte);
-        }
-
     }
 
 }

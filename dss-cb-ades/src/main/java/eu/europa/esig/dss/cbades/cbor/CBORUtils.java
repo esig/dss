@@ -20,11 +20,9 @@
  */
 package eu.europa.esig.dss.cbades.cbor;
 
-import co.nstant.in.cbor.CborDecoder;
-import co.nstant.in.cbor.CborEncoder;
-import co.nstant.in.cbor.CborException;
-import co.nstant.in.cbor.model.DataItem;
-import co.nstant.in.cbor.model.Tag;
+import eu.europa.ec.digit.cddl4j.cbor.CBORDecodeException;
+import eu.europa.ec.digit.cddl4j.cbor.CBORDecoder;
+import eu.europa.ec.digit.cddl4j.cbor.CBOREncoder;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -36,11 +34,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -122,60 +122,36 @@ public final class CBORUtils {
     }
 
     /**
-     * This method creates a Tag object from the given Long value
-     *
-     * @param longValue {@link Long} value to convert
-     * @return {@link Tag}
-     */
-    public static Tag toTag(Long longValue) {
-        if (longValue == null) {
-            return null;
-        }
-        return new Tag(longValue);
-    }
-
-    /**
      * This method parses a {@code DSSDocument} and returns a {@code CBORObject},
      * representing the CBOR object structure
      *
      * @param document {@link DSSDocument} to parse
      * @return {@link CBORObject}
-     * @throws CborException if an error occurs on document parsing
+     * @throws CBORDecodeException if an error occurs on document parsing
      */
-    public static CBORObject parseCbor(DSSDocument document) throws CborException {
+    public static CBORObject parseCbor(DSSDocument document) throws CBORDecodeException {
         try (InputStream is = document.openStream()) {
-            CborDecoder cborDecoder = new CborDecoder(is);
-            List<DataItem> dataItems = cborDecoder.decode();
-            return toCBORObject(dataItems);
+            return CBORObjectFactory.toCBORObject(CBORDecoder.decode(is));
         } catch (IOException e) {
             throw new DSSException(String.format("Unable to read document with name '%s' : %s", document.getName(), e.getMessage()), e);
         }
     }
 
     /**
-     * This method parses a byte array and returns a list of {@code DataItem}s,
+     * This method parses a byte array and returns a {@code CBORObject},
      * representing the CBOR object structure
      *
      * @param bytes byte array to parse
-     * @return a list of {@link DataItem}s
+     * @return {@link CBORObject}
      */
     public static CBORObject parseCbor(byte[] bytes) {
         try {
-            List<DataItem> dataItems = CborDecoder.decode(bytes);
-            return toCBORObject(dataItems);
-        } catch (CborException e) {
+            return CBORObjectFactory.toCBORObject(CBORDecoder.decode(bytes));
+        } catch (CBORDecodeException e) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Error on parsing binaries: {}", Utils.toBase64(bytes));
             }
             throw new DSSException(String.format("Unable to parse binaries : %s. More detail in debug mode.", e.getMessage()), e);
-        }
-    }
-
-    private static CBORObject toCBORObject(List<DataItem> dataItems) {
-        if (Utils.collectionSize(dataItems) == 1) {
-            return CBORObjectFactory.toCBORObject(dataItems.iterator().next());
-        } else {
-            return new CBORArray(dataItems);
         }
     }
 
@@ -206,13 +182,7 @@ public final class CBORUtils {
      * @return TRUE if the InputStream is CBOR, FALSE otherwise
      */
     public static boolean isCbor(InputStream inputStream) {
-        try (InputStream is = inputStream) {
-            return new CborDecoder(is).decode() != null;
-        } catch (CborException e) {
-            return false;
-        } catch (IOException e) {
-            throw new DSSException(String.format("Unable to read InputStream : %s", e.getMessage()), e);
-        }
+        return CBORDecoder.isCbor(inputStream);
     }
 
     /**
@@ -222,11 +192,9 @@ public final class CBORUtils {
      * @return serialized byte array
      */
     public static byte[] serializeCborObject(CBORObject cborObject) {
-        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-            CborEncoder cborEncoder = new CborEncoder(baos).nonCanonical(); // TODO: order of elements is to be ensured on our side ?
-            cborEncoder.encode(cborObject.toDataItem());
-            return baos.toByteArray();
-        } catch (CborException | IOException e) {
+        try {
+            return CBOREncoder.encode(cborObject.toCBORValue());
+        } catch (Exception e) {
             throw new DSSException(String.format("Unable to serialize CBOR object : %s", e.getMessage()), e);
         }
     }
@@ -408,6 +376,75 @@ public final class CBORUtils {
             return null;
         }
         return DSSUtils.getDateFromMilliseconds(timeValueInMilliseconds);
+    }
+    /**
+     * Creates a formatted string from the supplied date.
+     * The date/time is encoded according to RFC 3339 with second precision.
+     * Fractional seconds are omitted to preserve the existing DSS date
+     * serialization behavior.
+     *
+     * @param date {@link Date} to encode
+     * @return the RFC 3339 date/time string
+     */
+    public static String formatToTDate(final Date date) {
+        if (date == null) {
+            return "N/A";
+        }
+
+        Instant instant = date.toInstant().truncatedTo(ChronoUnit.SECONDS);
+        return DateTimeFormatter.ISO_INSTANT.format(instant);
+    }
+
+    /**
+     * Checks whether a date string value is a valid RFC 3339 date/time.
+     * NOTE: This method is different from {@link DSSUtils#isRFCDate(String)},
+     * as it also handles strings with fractional seconds, as opposed to the
+     * former method.
+     *
+     * @param dateString {@link String} the date to check
+     * @return {@code true} if the string is a valid RFC 3339 date/time,
+     *     {@code false} otherwise
+     */
+    public static boolean isTDate(final String dateString) {
+        if (dateString == null) {
+            return false;
+        }
+
+        try {
+            Instant.parse(dateString);
+            return true;
+        } catch (DateTimeParseException e) {
+            return false;
+        }
+    }
+
+
+    /**
+     * Parses a date string value to a {@link Date}.
+     * NOTE: This method is different from {@link DSSUtils#parseRFCDate(String)},
+     * as it also handles strings with milliseconds, as opposite to the former method.
+     *
+     * @param dateString {@link String} the date to parse
+     * @return {@link Date}
+     */
+    public static Date parseTDate(final String dateString) {
+        if (dateString == null) {
+            return null;
+        }
+
+        try {
+            Instant instant = Instant.parse(dateString);
+            return Date.from(instant);
+        } catch (DateTimeParseException e) {
+            String errorMessage = "Invalid RFC 3339 date/time : {}";
+            if (LOG.isDebugEnabled()) {
+                LOG.warn(errorMessage, e.getMessage(), e);
+            } else {
+                LOG.warn(errorMessage, e.getMessage());
+            }
+            return null;
+        }
+
     }
 
 }

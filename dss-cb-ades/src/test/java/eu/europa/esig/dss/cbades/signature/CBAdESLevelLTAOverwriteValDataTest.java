@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.cbades.signature;
 
-import co.nstant.in.cbor.model.DataItem;
 import eu.europa.esig.dss.alert.SilentOnStatusAlert;
 import eu.europa.esig.dss.cbades.COSEHeaderParameter;
 import eu.europa.esig.dss.cbades.cbor.CBORArray;
@@ -124,9 +123,9 @@ class CBAdESLevelLTAOverwriteValDataTest extends AbstractCBAdESTestValidation {
         CBORArray coseSign1 = (CBORArray) cborObject;
         assertEquals(4, coseSign1.getSize());
 
-        ListIterator<DataItem> it = getUHeadersIterator(coseSign1);
-        DataItem uHeaderDataItem = it.previous();
-        CBORObject uHeaderComponent = CBORObjectFactory.toCBORObject(uHeaderDataItem);
+        CBORArray uHeadersArray = getUHeadersArray(coseSign1);
+        CBORObject uHeaderItem = uHeadersArray.getItem(uHeadersArray.getSize() - 1);
+        CBORObject uHeaderComponent = CBORObjectFactory.toCBORObject(uHeaderItem);
         assertTrue(uHeaderComponent.isByteString());
         CBORByteString cborByteString = (CBORByteString) uHeaderComponent;
         assertTrue(Utils.isArrayNotEmpty(cborByteString.getValueAsBytes()));
@@ -137,7 +136,7 @@ class CBAdESLevelLTAOverwriteValDataTest extends AbstractCBAdESTestValidation {
 
         CBORMap uHeaderItemMap = (CBORMap) parsedUHeaderItem;
         assertTrue(uHeaderItemMap.containsKey(COSEHeaderParameter.ARC_TST.cbor()));
-        it.remove();
+        uHeadersArray.remove(uHeaderItem);
 
         byte[] sigWithRemovedLastArcTst = CBORUtils.serializeCborObject(cborObject);
         cborObject = CBORUtils.parseCbor(sigWithRemovedLastArcTst);
@@ -146,9 +145,9 @@ class CBAdESLevelLTAOverwriteValDataTest extends AbstractCBAdESTestValidation {
 
         coseSign1 = (CBORArray) cborObject;
 
-        it = getUHeadersIterator(coseSign1);
-        uHeaderDataItem = it.previous();
-        uHeaderComponent = CBORObjectFactory.toCBORObject(uHeaderDataItem);
+        uHeadersArray = getUHeadersArray(coseSign1);
+        uHeaderItem = uHeadersArray.getItem(uHeadersArray.getSize() - 1);
+        uHeaderComponent = CBORObjectFactory.toCBORObject(uHeaderItem);
         assertTrue(uHeaderComponent.isByteString());
         cborByteString = (CBORByteString) uHeaderComponent;
         assertTrue(Utils.isArrayNotEmpty(cborByteString.getValueAsBytes()));
@@ -167,7 +166,7 @@ class CBAdESLevelLTAOverwriteValDataTest extends AbstractCBAdESTestValidation {
         return new InMemoryDocument(sigWithRemovedLastArcTst);
     }
 
-    private ListIterator<DataItem> getUHeadersIterator(CBORArray coseSign1) {
+    private CBORArray getUHeadersArray(CBORArray coseSign1) {
         CBORObject unprotectedHeader = coseSign1.getItem(1);
         assertTrue(unprotectedHeader.isMap());
 
@@ -181,8 +180,7 @@ class CBAdESLevelLTAOverwriteValDataTest extends AbstractCBAdESTestValidation {
 
         CBORArray uHeadersArray = (CBORArray) uHeaders;
         assertFalse(uHeadersArray.isEmpty());
-
-        return uHeadersArray.toDataItem().getDataItems().listIterator(uHeadersArray.getSize());
+        return uHeadersArray;
     }
 
     private void checkSignedDocument(DSSDocument document) {
@@ -196,14 +194,15 @@ class CBAdESLevelLTAOverwriteValDataTest extends AbstractCBAdESTestValidation {
         CBORArray coseSign1 = (CBORArray) cborObject;
         assertEquals(4, coseSign1.getSize());
 
-        ListIterator<DataItem> it = getUHeadersIterator(coseSign1);
+        CBORArray uHeaders = getUHeadersArray(coseSign1);
 
         int arcTstCounter = 0;
         int valDataCounter = 0;
 
+        ListIterator<CBORObject> it = uHeaders.getValueAsList().listIterator(uHeaders.getSize());
         while (it.hasPrevious()) {
-            DataItem uHeaderDataItem = it.previous();
-            CBORObject uHeaderItem = CBORObjectFactory.toCBORObject(uHeaderDataItem);
+            CBORObject previous = it.previous();
+            CBORObject uHeaderItem = CBORObjectFactory.toCBORObject(previous);
             assertTrue(uHeaderItem.isByteString());
             CBORByteString cborByteString = (CBORByteString) uHeaderItem;
             assertTrue(Utils.isArrayNotEmpty(cborByteString.getValueAsBytes()));

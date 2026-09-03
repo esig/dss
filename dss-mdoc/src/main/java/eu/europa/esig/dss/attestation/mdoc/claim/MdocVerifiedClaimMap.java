@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.attestation.mdoc.claim;
 
 import eu.europa.esig.dss.attestation.mdoc.MdocUtils;
+import eu.europa.esig.dss.cbades.cbor.CBORUtils;
 import eu.europa.esig.dss.model.attestation.claim.VerifiedClaim;
 import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimArray;
 import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimByteString;
@@ -158,7 +159,7 @@ public class MdocVerifiedClaimMap extends VerifiedClaimMap {
             return null;
         }
         if (claim.isStringValueType()) {
-            Date date = DSSUtils.parseRFCDate(claim.getStringValue());
+            Date date = CBORUtils.parseTDate(claim.getStringValue());
             if (date != null) {
                 return new VerifiedClaimDate(claim.getName(), date, claim.isSelectivelyDisclosable());
             }
@@ -193,8 +194,8 @@ public class MdocVerifiedClaimMap extends VerifiedClaimMap {
         if (claim.isStringValueType()) {
             String dateTimeString = claim.getStringValue();
             Date date;
-            if (DSSUtils.isRFCDate(dateTimeString)) {
-                date = DSSUtils.parseRFCDate(dateTimeString);
+            if (CBORUtils.isTDate(dateTimeString)) {
+                date = CBORUtils.parseTDate(dateTimeString);
             } else if (DSSUtils.isISO8601Date(dateTimeString)) {
                 date = DSSUtils.parseISO8601Date(dateTimeString);
             } else {

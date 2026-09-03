@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.validation;
 
-import co.nstant.in.cbor.model.UnicodeString;
+import eu.europa.ec.digit.cddl4j.cbor.CBOR;
 import eu.europa.esig.dss.cbades.cbor.CBORArray;
 import eu.europa.esig.dss.cbades.cbor.CBORByteString;
 import eu.europa.esig.dss.cbades.cbor.CBORMap;
@@ -52,7 +52,7 @@ class MdocDeviceResponseDocumentValidatorTest extends AbstractTestDocumentValida
 
     private static DSSDocument buildMinimalDeviceResponse() {
         CBORMap issuerSigned = new CBORMap();
-        issuerSigned.put("version", new CBORSimpleObject(new UnicodeString("1.0")));
+        issuerSigned.put("version", new CBORSimpleObject(CBOR.text("1.0")));
         issuerSigned.put("status", 0);
         return new InMemoryDocument(CBORUtils.serializeCborObject(issuerSigned));
     }
@@ -107,7 +107,7 @@ class MdocDeviceResponseDocumentValidatorTest extends AbstractTestDocumentValida
         assertTrue(validator.isSupported(mdoc));
 
         CBORMap allKeys = new CBORMap();
-        allKeys.put("version", new CBORSimpleObject(new UnicodeString("1.0")));
+        allKeys.put("version", new CBORSimpleObject(CBOR.text("1.0")));
         allKeys.put("documents", new CBORArray(Collections.singletonList(buildDocument())));
         allKeys.put("documentErrors", new CBORArray(Collections.singletonList(buildDocumentError())));
         allKeys.put("status", 0);

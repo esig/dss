@@ -153,7 +153,7 @@ class MdocIssuerSignedAttestationValidationTest extends AbstractMdocAttestationP
 
         assertEquals("John", attestation.getGivenName());
         assertEquals("Doe", attestation.getFamilyName());
-        assertEquals(DSSUtils.parseRFCDate("2000-01-01T00:00:00Z"), attestation.getBirthdate());
+        assertEquals(CBORUtils.parseTDate("2000-01-01T00:00:00Z"), attestation.getBirthdate());
 
         List<ClaimWrapper> selectivelyDisclosableClaims = attestation.getSelectiveDisclosures();
         assertEquals(3, selectivelyDisclosableClaims.size());

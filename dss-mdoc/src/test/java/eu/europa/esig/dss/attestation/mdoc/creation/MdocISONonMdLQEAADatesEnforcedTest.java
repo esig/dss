@@ -20,14 +20,15 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.creation;
 
+import eu.europa.esig.dss.attestation.mdoc.MdocConstants;
+import eu.europa.esig.dss.cbades.cbor.CBORUtils;
 import eu.europa.esig.dss.cbades.signature.CBAdESSignatureParameters;
+import eu.europa.esig.dss.diagnostic.AttestationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.diagnostic.AttestationWrapper;
 import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
-import eu.europa.esig.dss.attestation.mdoc.MdocConstants;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -203,10 +204,10 @@ class MdocISONonMdLQEAADatesEnforcedTest extends AbstractMdocIssuerSignedTestCre
         assertEquals("1.0", attestation.getVersion());
         assertEquals("org.iso.23220.1.mID", attestation.getAttestationDocumentType());
 
-        assertEquals(DSSUtils.formatDateToRFC(signingDate), DSSUtils.formatDateToRFC(attestation.getIssuedAt()));
-        assertEquals(DSSUtils.formatDateToRFC(validFrom), DSSUtils.formatDateToRFC(attestation.getNotBefore()));
-        assertEquals(DSSUtils.formatDateToRFC(validUntil), DSSUtils.formatDateToRFC(attestation.getExpiration()));
-        assertEquals(DSSUtils.formatDateToRFC(nextUpdate), DSSUtils.formatDateToRFC(attestation.getNextUpdate()));
+        assertEquals(CBORUtils.formatToTDate(signingDate), CBORUtils.formatToTDate(attestation.getIssuedAt()));
+        assertEquals(CBORUtils.formatToTDate(validFrom), CBORUtils.formatToTDate(attestation.getNotBefore()));
+        assertEquals(CBORUtils.formatToTDate(validUntil), CBORUtils.formatToTDate(attestation.getExpiration()));
+        assertEquals(CBORUtils.formatToTDate(nextUpdate), CBORUtils.formatToTDate(attestation.getNextUpdate()));
 
         assertEquals(1, attestation.getStatusIndex());
         assertEquals("https://pki.nowina.lu/eaa/status_list", attestation.getStatusUri());

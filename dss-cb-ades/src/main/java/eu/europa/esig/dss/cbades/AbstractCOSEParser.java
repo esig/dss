@@ -20,14 +20,12 @@
  */
 package eu.europa.esig.dss.cbades;
 
-import co.nstant.in.cbor.CborException;
-import co.nstant.in.cbor.decoder.ArrayDecoder;
+import eu.europa.ec.digit.cddl4j.cbor.CBORDecodeException;
 import eu.europa.esig.dss.cbades.cbor.CBORObject;
 import eu.europa.esig.dss.cbades.cbor.CBORUtils;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 
-import java.io.InputStream;
 import java.util.Objects;
 
 /**
@@ -58,30 +56,9 @@ public abstract class AbstractCOSEParser {
     protected static CBORObject parseCbor(DSSDocument document) {
         try {
             return CBORUtils.parseCbor(document);
-        } catch (CborException e) {
+        } catch (CBORDecodeException e) {
             throw new DSSException(String.format("A parsing error of CBOR content occurred : %s", e.getMessage()), e);
         }
-    }
-
-    /**
-     * Extended implementation of {@code ArrayDecoder}
-     */
-    protected static class DSSArrayDecoder extends ArrayDecoder {
-
-        /**
-         * Default constructor
-         *
-         * @param inputStream {@link InputStream}
-         */
-        public DSSArrayDecoder(InputStream inputStream) {
-            super(null, inputStream);
-        }
-
-        @Override
-        protected long getLength(int initialByte) throws CborException {
-            return super.getLength(initialByte);
-        }
-
     }
 
 }

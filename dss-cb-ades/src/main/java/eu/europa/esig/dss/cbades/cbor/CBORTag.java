@@ -20,21 +20,22 @@
  */
 package eu.europa.esig.dss.cbades.cbor;
 
-import co.nstant.in.cbor.model.Tag;
+import eu.europa.ec.digit.cddl4j.cbor.CBORType;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 
 /**
  * Represents a wrapper for a CBOR Object's Tag
  *
  */
-public class CBORTag extends AbstractCBORObject<Tag> {
+public class CBORTag extends AbstractCBORObject{
 
     /**
      * Creates a new CBOR Tag object from the given {@code tag}
      *
-     * @param tag {@link Tag}
+     * @param tag {@link CBORValue}
      */
-    public CBORTag(final Tag tag) {
-        super(tag);
+    public CBORTag(final CBORValue tag) {
+        super(requireTypeOf(tag, CBORType.TAG));
     }
 
     /**
@@ -43,7 +44,7 @@ public class CBORTag extends AbstractCBORObject<Tag> {
      * @return long value
      */
     public long getValue() {
-        return toDataItem().getValue();
+        return toCBORValue().getTag().longValue();
     }
 
 }

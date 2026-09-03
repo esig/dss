@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.cbades.signature;
 
-import co.nstant.in.cbor.CborException;
+import eu.europa.ec.digit.cddl4j.cbor.CBORDecodeException;
 import eu.europa.esig.dss.cbades.CBAdESUtils;
 import eu.europa.esig.dss.cbades.COSEHeaderParameter;
 import eu.europa.esig.dss.cbades.COSEProtectedHeader;
@@ -429,7 +429,7 @@ public class CBAdESLevelBaselineB {
                             CBORObject cborObject = CBORUtils.parseCbor(content);
                             commQuals.add(cborObject);
 
-                        } catch (CborException e) {
+                        } catch (CBORDecodeException e) {
                             throw new IllegalArgumentException(String.format(
                                     "Unable to parse CBOR Commitment Type Qualifier : %s", e.getMessage()), e);
                         }

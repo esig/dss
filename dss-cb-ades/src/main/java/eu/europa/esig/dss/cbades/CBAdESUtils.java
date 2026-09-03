@@ -322,7 +322,7 @@ public class CBAdESUtils {
     private static Date getCRLIdIssueTime(CBORMap crlId) {
         String crlIdIssueTime = crlId.getAsString(COSEHeaderParameter.CRL_ID_ISSUE_TIME.cbor());
         if (crlIdIssueTime != null) {
-            return DSSUtils.parseRFCDate(crlIdIssueTime);
+            return CBORUtils.parseTDate(crlIdIssueTime);
         }
         return null;
     }
@@ -408,7 +408,7 @@ public class CBAdESUtils {
     private static Date getProducedAt(CBORMap ocspId) {
         String ocspIdProducedAt = ocspId.getAsString(COSEHeaderParameter.OCSP_ID_PRODUCED_AT.cbor());
         if (ocspIdProducedAt != null) {
-            return DSSUtils.parseRFCDate(ocspIdProducedAt);
+            return CBORUtils.parseTDate(ocspIdProducedAt);
         } else {
             LOG.warn("Field 'producedAt' shall be present within a 'OCSPId' CBOR Map!");
         }

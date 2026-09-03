@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.cbades.validation;
 
-import co.nstant.in.cbor.model.UnicodeString;
+import eu.europa.ec.digit.cddl4j.cbor.CBOR;
 import eu.europa.esig.dss.cbades.COSECounterSignStructure;
 import eu.europa.esig.dss.cbades.COSECounterSignature;
 import eu.europa.esig.dss.cbades.COSECounterSignature0;
@@ -599,7 +599,7 @@ public class CBORSignature {
          *
          * NOTE: For counter signatures a context string as defined in RFC 9338 is used
          */
-        array.add(new UnicodeString(context.getContext()));
+        array.add(CBOR.text(context.getContext()));
 
         /*
          * 2. The protected attributes from the body structure, encoded in a

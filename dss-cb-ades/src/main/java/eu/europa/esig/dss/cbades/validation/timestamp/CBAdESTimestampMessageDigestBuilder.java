@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.cbades.validation.timestamp;
 
-import co.nstant.in.cbor.model.UnicodeString;
+import eu.europa.ec.digit.cddl4j.cbor.CBOR;
 import eu.europa.esig.dss.cbades.CBAdESUtils;
 import eu.europa.esig.dss.cbades.COSEHeaderParameter;
 import eu.europa.esig.dss.cbades.COSEProtectedHeader;
@@ -422,7 +422,7 @@ public class CBAdESTimestampMessageDigestBuilder implements TimestampMessageDige
              *    a counter signature, as specified in clause 3.3 of IETF RFC 9338 [6].
              */
             COSESignatureType context = cose.getContext();
-            array.add(new UnicodeString(cose.getContext().getContext()));
+            array.add(CBOR.text(cose.getContext().getContext()));
 
             /*
              * 3) Add the protected header from the body layer, encapsulated in a CBOR byte string.

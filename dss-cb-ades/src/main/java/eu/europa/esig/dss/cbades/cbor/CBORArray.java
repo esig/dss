@@ -20,16 +20,15 @@
  */
 package eu.europa.esig.dss.cbades.cbor;
 
-import co.nstant.in.cbor.model.Array;
-import co.nstant.in.cbor.model.DataItem;
-import eu.europa.esig.dss.utils.Utils;
+import eu.europa.ec.digit.cddl4j.cbor.CBOR;
+import eu.europa.ec.digit.cddl4j.cbor.CBORType;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -37,7 +36,7 @@ import java.util.stream.Collectors;
  * A wrapper of a CBOR array object
  *
  */
-public class CBORArray extends AbstractCBORObject<Array> {
+public class CBORArray extends AbstractCBORObject {
 
     private static final Logger LOG = LoggerFactory.getLogger(CBORArray.class);
 
@@ -45,7 +44,7 @@ public class CBORArray extends AbstractCBORObject<Array> {
      * Constructor to create an empty array
      */
     public CBORArray() {
-        this(new Array());
+        super(CBOR.array().value());
     }
 
     /**
@@ -54,16 +53,16 @@ public class CBORArray extends AbstractCBORObject<Array> {
      * @param arraySize initial size of the array
      */
     public CBORArray(int arraySize) {
-        this(new Array(arraySize));
+        super(CBOR.array(arraySize).value());
     }
 
     /**
-     * Constructor to create a CBORArray from an Array implementation
+     * Constructor to create a CBORArray from an CBORValue array implementation
      *
-     * @param array {@link co.nstant.in.cbor.model.Array}
+     * @param array {@link CBORValue}
      */
-    public CBORArray(final Array array) {
-        super(array);
+    public CBORArray(final CBORValue array) {
+        super(requireTypeOf(array, CBORType.ARRAY));
     }
 
     /**
@@ -72,13 +71,13 @@ public class CBORArray extends AbstractCBORObject<Array> {
      * @param collection {@link Collection}
      */
     public CBORArray(final Collection<?> collection) {
-        this(toArray(collection));
+        super(toArray(collection));
     }
 
-    private static Array toArray(final Collection<?> list) {
-        Array array = new Array(list.size());
-        list.forEach(l -> array.add(CBORObjectFactory.toDataItem(l)));
-        return array;
+    private static CBORValue toArray(final Collection<?> list) {
+        CBORValue.CBORArrayEditor array = CBOR.array(list.size());
+        list.forEach(l -> array.add(CBORObjectFactory.toCBORValue(l)));
+        return array.value();
     }
 
     /**
@@ -88,25 +87,25 @@ public class CBORArray extends AbstractCBORObject<Array> {
      * @param <T> generic type
      */
     public <T> CBORArray(final T[] array) {
-        this(toArray(array));
+        super(toArray(array));
     }
 
-    private static <T> Array toArray(final T[] inputArray) {
-        Array array = new Array(inputArray.length);
+    private static <T> CBORValue toArray(final T[] inputArray) {
+        CBORValue.CBORArrayEditor array = CBOR.array(inputArray.length);
         for (Object object : inputArray) {
-            array.add(CBORObjectFactory.toDataItem(object));
+            array.add(CBORObjectFactory.toCBORValue(object));
         }
-        return array;
+        return array.value();
     }
 
     /**
      * This method adds a new object to the array in the latest position, by extending the array.
-     * The method transforms the given Object to a supported DataItem type.
+     * The method transforms the given Object to a supported CBORValue type.
      *
      * @param object {@link Object} to add
      */
     public void add(Object object) {
-        toDataItem().add(CBORObjectFactory.toDataItem(object));
+        getCBORValue().editArray().add(CBORObjectFactory.toCBORValue(object));
     }
 
     /**
@@ -116,17 +115,7 @@ public class CBORArray extends AbstractCBORObject<Array> {
      * @param object to be placed
      */
     public void set(int index, Object object) {
-        Array array = toDataItem();
-        ListIterator<DataItem> it = array.getDataItems().listIterator();
-        int i = 0;
-        while (it.hasNext()) {
-            it.next();
-            if (index == i) {
-                it.set(CBORObjectFactory.toDataItem(object));
-                break;
-            }
-            ++i;
-        }
+        getCBORValue().editArray().set(index, CBORObjectFactory.toCBORValue(object));
     }
 
     /**
@@ -135,12 +124,12 @@ public class CBORArray extends AbstractCBORObject<Array> {
      * @return TRUE if the array is empty, FALSE otherwise
      */
     public boolean isEmpty() {
-        return Utils.isCollectionEmpty(toDataItem().getDataItems());
+        return getSize() == 0;
     }
 
     @Override
     public List<CBORObject> getValueAsList() {
-        return toDataItem().getDataItems().stream().map(CBORObjectFactory::toCBORObject).collect(Collectors.toList());
+        return getCBORValue().getElements().stream().map(CBORObjectFactory::toCBORObject).collect(Collectors.toList());
     }
 
     /**
@@ -262,7 +251,7 @@ public class CBORArray extends AbstractCBORObject<Array> {
      * @return {@link CBORArray}
      */
     public CBORObject getItem(int index) {
-        return CBORObjectFactory.toCBORObject(toDataItem().getDataItems().get(index));
+        return CBORObjectFactory.toCBORObject(getCBORValue().get(index));
     }
 
     /**
@@ -323,17 +312,7 @@ public class CBORArray extends AbstractCBORObject<Array> {
      */
     public void remove(CBORObject cborObject) {
         Objects.requireNonNull(cborObject, "CBORObject cannot be null!");
-
-        DataItem toBeRemoved = cborObject.toDataItem();
-        Array array = toDataItem();
-        ListIterator<DataItem> it = array.getDataItems().listIterator();
-        while (it.hasNext()) {
-            DataItem dataItem = it.next();
-            if (toBeRemoved == dataItem) {
-                it.remove();
-                break;
-            }
-        }
+        getCBORValue().editArray().remove(CBORObjectFactory.toCBORValue(cborObject));
     }
 
     /**
@@ -342,7 +321,7 @@ public class CBORArray extends AbstractCBORObject<Array> {
      * @return size of the array
      */
     public int getSize() {
-        return toDataItem().getDataItems().size();
+        return getCBORValue().size();
     }
 
 }

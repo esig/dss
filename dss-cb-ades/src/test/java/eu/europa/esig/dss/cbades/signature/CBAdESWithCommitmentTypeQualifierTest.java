@@ -77,7 +77,7 @@ class CBAdESWithCommitmentTypeQualifierTest extends AbstractCBAdESTestSignature 
         CommitmentQualifier asn1CommitmentQualifier = new CommitmentQualifier();
         CBORArray cborArray = new CBORArray();
         cborArray.add("1.2.4.5.6");
-        cborArray.add(DSSUtils.formatDateToRFC(currentTime));
+        cborArray.add(CBORUtils.formatToTDate(currentTime));
         asn1CommitmentQualifier.setContent(new InMemoryDocument(CBORUtils.serializeCborObject(cborArray)));
 
         CommitmentQualifier stringCommitmentQualifier = new CommitmentQualifier();

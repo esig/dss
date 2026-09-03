@@ -20,10 +20,11 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.validation;
 
+import eu.europa.esig.dss.cbades.cbor.CBORUtils;
+import eu.europa.esig.dss.diagnostic.AttestationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.diagnostic.AttestationWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.claim.ClaimWrapper;
 import eu.europa.esig.dss.diagnostic.claim.DeviceKeyClaimWrapper;
@@ -34,7 +35,6 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationPresentationInfo;
 import eu.europa.esig.dss.enumerations.AttestationDocumentFormat;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 
 import java.util.List;
@@ -59,15 +59,15 @@ class MdocResponseSampleValidationTest extends AbstractMdocAttestationPresentati
         super.checkClaims(diagnosticData);
 
         AttestationWrapper attestation = diagnosticData.getAttestations().get(0);
-        assertEquals(DSSUtils.parseRFCDate("2024-10-20T00:00:00Z"), attestation.getAdministrativeExpirationDate());
-        assertEquals(DSSUtils.parseRFCDate("2019-10-20T00:00:00Z"), attestation.getAdministrativeIssuanceDate());
+        assertEquals(CBORUtils.parseTDate("2024-10-20T00:00:00Z"), attestation.getAdministrativeExpirationDate());
+        assertEquals(CBORUtils.parseTDate("2019-10-20T00:00:00Z"), attestation.getAdministrativeIssuanceDate());
         assertNotNull(attestation.getDevicePublicKey());
 
         assertEquals("1.0", attestation.getVersion());
         assertEquals("org.iso.18013.5.1.mDL", attestation.getAttestationDocumentType());
-        assertEquals(DSSUtils.parseRFCDate("2020-10-01T13:30:02Z"), attestation.getIssuedAt());
-        assertEquals(DSSUtils.parseRFCDate("2020-10-01T13:30:02Z"), attestation.getNotBefore());
-        assertEquals(DSSUtils.parseRFCDate("2021-10-01T13:30:02Z"), attestation.getExpiration());
+        assertEquals(CBORUtils.parseTDate("2020-10-01T13:30:02Z"), attestation.getIssuedAt());
+        assertEquals(CBORUtils.parseTDate("2020-10-01T13:30:02Z"), attestation.getNotBefore());
+        assertEquals(CBORUtils.parseTDate("2021-10-01T13:30:02Z"), attestation.getExpiration());
         assertNull(attestation.getNextUpdate());
         assertEquals("Doe", attestation.getFamilyName());
         assertEquals("123456789", attestation.getDocumentNumber());

@@ -174,7 +174,7 @@ public class COSESign implements COSESignStructure {
             coseSignatureArray.add(coseSignature.getSignature());
             coseSignaturesArray.add(coseSignatureArray);
         }
-        coseSign.add(coseSignaturesArray.toDataItem());
+        coseSign.add(coseSignaturesArray.toCBORValue());
         return CBORUtils.serializeCborObject(coseSign);
     }
 

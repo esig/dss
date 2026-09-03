@@ -20,10 +20,9 @@
  */
 package eu.europa.esig.dss.attestation.mdoc;
 
-import co.nstant.in.cbor.CborException;
-import co.nstant.in.cbor.decoder.UnicodeStringDecoder;
-import co.nstant.in.cbor.model.MajorType;
-import co.nstant.in.cbor.model.UnicodeString;
+import eu.europa.ec.digit.cddl4j.cbor.CBORDecodeException;
+import eu.europa.ec.digit.cddl4j.cbor.CBORInspector;
+import eu.europa.ec.digit.cddl4j.cbor.CBORMajorType;
 import eu.europa.esig.dss.attestation.mdoc.creation.MdocIssuerSignedItem;
 import eu.europa.esig.dss.attestation.mdoc.model.MdocIssuerSigned;
 import eu.europa.esig.dss.cbades.COSEParser;
@@ -33,7 +32,6 @@ import eu.europa.esig.dss.cbades.cbor.CBORMap;
 import eu.europa.esig.dss.cbades.cbor.CBORObject;
 import eu.europa.esig.dss.cbades.cbor.CBORUtils;
 import eu.europa.esig.dss.model.DSSDocument;
-import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
@@ -90,9 +88,8 @@ public class IssuerSignedParser {
      */
     public boolean isSupported() {
         try (InputStream is = document.openStream()) {
-            int symbol = is.read();
-            return isIssuerSigned(symbol, is);
-        } catch (IOException | CborException e) {
+            return isIssuerSigned(is);
+        } catch (IOException | CBORDecodeException e) {
             if (LOG.isTraceEnabled()) {
                 LOG.trace("Error on mdoc decoding : {}. Not a valid mdoc file.", e.getMessage());
             }
@@ -100,23 +97,29 @@ public class IssuerSignedParser {
         return false;
     }
 
-    private boolean isIssuerSigned(int symbol, InputStream is) throws IOException, CborException {
-        if (MajorType.MAP == MajorType.ofByte(symbol)) {
-            MdocDeviceResponseParser.DSSMapDecoder mapDecoder = new MdocDeviceResponseParser.DSSMapDecoder(is);
-            long mapLength = mapDecoder.getLength(symbol);
-            if (mapLength == -1 || (mapLength >= 1 && mapLength <= 2)) { // -1 for not defined length, from 1 to 2 for allowed structures
-                int mapFirstSymbol = is.read();
-                if (MajorType.UNICODE_STRING == MajorType.ofByte(mapFirstSymbol)) {
-                    UnicodeStringDecoder stringDecoder = new UnicodeStringDecoder(null, is);
-                    UnicodeString unicodeString = stringDecoder.decode(mapFirstSymbol);
-                    String headerName = unicodeString.toString();
-                    return MdocHeaderParameter.NAMESPACES.toString().equals(headerName) ||
-                            MdocHeaderParameter.ISSUER_AUTH.toString().equals(headerName);
-                }
-            }
+    private boolean isIssuerSigned(InputStream is) throws IOException, CBORDecodeException {
+        CBORInspector inspector = new CBORInspector(is);
+        int initialByte = inspector.read();
+        if (CBORMajorType.fromInitialByte(initialByte) != CBORMajorType.MAP) {
+            return false;
         }
-        return false;
+
+        long mapLength = inspector.readLength(initialByte);
+        // -1 for not defined length, from 1 to 2 for allowed structures
+        if (mapLength != -1 && (mapLength < 1 || mapLength > 2)) {
+            return false;
+        }
+
+        int mapFirstByte = inspector.read();
+        if (CBORMajorType.fromInitialByte(mapFirstByte) != CBORMajorType.TEXT_STRING) {
+            return false;
+        }
+
+        String headerName = inspector.readTextString(mapFirstByte);
+        return MdocHeaderParameter.NAMESPACES.toString().equals(headerName)
+                || MdocHeaderParameter.ISSUER_AUTH.toString().equals(headerName);
     }
+
 
     /**
      * Parses the provided document and returns an mdoc IssuerSigned object, if supported
@@ -222,8 +225,8 @@ public class IssuerSignedParser {
     private CBORObject parseCbor(DSSDocument document) {
         try {
             return CBORUtils.parseCbor(document);
-        } catch (CborException e) {
-            throw new DSSException(String.format("A parsing error of CBOR content occurred : %s", e.getMessage()), e);
+        } catch (CBORDecodeException e) {
+            throw new IllegalInputException(String.format("A parsing error of CBOR content occurred : %s", e.getMessage()), e);
         }
     }
 

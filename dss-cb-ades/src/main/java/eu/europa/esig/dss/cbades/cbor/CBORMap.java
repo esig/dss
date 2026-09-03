@@ -20,16 +20,14 @@
  */
 package eu.europa.esig.dss.cbades.cbor;
 
-import co.nstant.in.cbor.CborDecoder;
-import co.nstant.in.cbor.CborException;
-import co.nstant.in.cbor.model.DataItem;
-import co.nstant.in.cbor.model.MajorType;
+import eu.europa.ec.digit.cddl4j.cbor.CBOR;
+import eu.europa.ec.digit.cddl4j.cbor.CBORType;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
 import eu.europa.esig.dss.utils.Utils;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -37,7 +35,7 @@ import java.util.Set;
  * Internal wrapper of a CBOR Map object
  *
  */
-public class CBORMap extends AbstractCBORObject<co.nstant.in.cbor.model.Map> {
+public class CBORMap extends AbstractCBORObject {
 
     /** Serialized map */
     private CBORByteString serializedMap;
@@ -46,16 +44,16 @@ public class CBORMap extends AbstractCBORObject<co.nstant.in.cbor.model.Map> {
      * Constructor to create an empty map
      */
     public CBORMap() {
-        this(new co.nstant.in.cbor.model.Map());
+        super(CBOR.map().value());
     }
 
     /**
-     * Constructor to create a CBORMap from a Map implementation
+     * Constructor to create a CBORMap from a CBORValue map implementation
      *
-     * @param map {@link co.nstant.in.cbor.model.Map}
+     * @param map {@link CBORValue}
      */
-    public CBORMap(final co.nstant.in.cbor.model.Map map) {
-        super(map);
+    public CBORMap(final CBORValue map) {
+        super(requireTypeOf(map, CBORType.MAP));
     }
 
     /**
@@ -68,21 +66,14 @@ public class CBORMap extends AbstractCBORObject<co.nstant.in.cbor.model.Map> {
         this.serializedMap = serializedMap;
     }
 
-    private static co.nstant.in.cbor.model.Map parseByteStringHeader(CBORByteString cborByteString) {
+    private static CBORValue parseByteStringHeader(CBORByteString cborByteString) {
+        byte[] valueAsBytes = cborByteString.getValueAsBytes();
+        if (Utils.isArrayEmpty(valueAsBytes)) {
+            return CBOR.map().value();
+        }
         try {
-            List<DataItem> dataItems = CborDecoder.decode(cborByteString.getValueAsBytes());
-            if (Utils.collectionSize(dataItems) == 0) {
-                return new co.nstant.in.cbor.model.Map();
-            } else if (Utils.collectionSize(dataItems) > 1) {
-                throw new IllegalInputException("CBOR byte string root shall consist of one data object!");
-            }
-            DataItem dataItem = dataItems.iterator().next();
-            if (MajorType.MAP != dataItem.getMajorType()) {
-                throw new IllegalInputException("CBOR byte string's content shall be of Map type!");
-            }
-            return (co.nstant.in.cbor.model.Map) dataItem;
-
-        } catch (CborException e) {
+            return CBOR.decodeFromBytes(valueAsBytes);
+        } catch (Exception e) {
             throw new IllegalInputException(String.format("Unable to parse byte string a Map: %s", e.getMessage()), e);
         }
     }
@@ -106,7 +97,7 @@ public class CBORMap extends AbstractCBORObject<co.nstant.in.cbor.model.Map> {
      * @return TRUE if the map contains the header for the given key, FALSE otherwise
      */
     public boolean containsKey(CBORObject key) {
-        return toDataItem().getKeys().contains(CBORObjectFactory.toDataItem(key));
+        return toCBORValue().getKeys().contains(CBORObjectFactory.toCBORValue(key));
     }
 
     /**
@@ -116,9 +107,9 @@ public class CBORMap extends AbstractCBORObject<co.nstant.in.cbor.model.Map> {
      * @return {@link CBORObject}
      */
     public CBORObject getHeader(Object key) {
-        DataItem value = toDataItem().get(CBORObjectFactory.toDataItem(key));
-        if (value != null) {
-            return CBORObjectFactory.toCBORObject(value);
+        CBORValue cborValue = getCBORValue().get(CBORObjectFactory.toCBORValue(key));
+        if (cborValue != null) {
+            return CBORObjectFactory.toCBORObject(cborValue);
         }
         return null;
     }
@@ -127,8 +118,8 @@ public class CBORMap extends AbstractCBORObject<co.nstant.in.cbor.model.Map> {
     public Map<CBORObject, CBORObject> getValueAsMap() {
         final Map<CBORObject, CBORObject> result = new HashMap<>();
         for (CBORObject key : getKeys()) {
-            CBORObject value = getHeader(key);
-            result.put(key, value);
+            CBORObject cborValue = getHeader(key);
+            result.put(key, cborValue);
         }
         return result;
     }
@@ -140,8 +131,8 @@ public class CBORMap extends AbstractCBORObject<co.nstant.in.cbor.model.Map> {
      */
     public Set<CBORObject> getKeys() {
         final Set<CBORObject> keys = new HashSet<>();
-        for (DataItem keyDataItem : toDataItem().getKeys()) {
-            CBORObject keyObject = CBORObjectFactory.toCBORObject(keyDataItem);
+        for (CBORValue key : getCBORValue().getKeys()) {
+            CBORObject keyObject = CBORObjectFactory.toCBORObject(key);
             keys.add(keyObject);
         }
         return keys;
@@ -257,10 +248,20 @@ public class CBORMap extends AbstractCBORObject<co.nstant.in.cbor.model.Map> {
      * Transforms the {@code value} to the required type (if supported)
      *
      * @param key {@link Object} value of the key
-     * @param value {@link Object} representing the header value
+     * @param cborValue {@link Object} representing the header value
      */
-    public void put(Object key, Object value) {
-        toDataItem().put(CBORObjectFactory.toDataItem(key), CBORObjectFactory.toDataItem(value));
+    public void put(Object key, Object cborValue) {
+        getCBORValue().editMap().put(CBORObjectFactory.toCBORValue(key), CBORObjectFactory.toCBORValue(cborValue));
+        clearSerializedBytes();
+    }
+
+    /**
+     * Removes entry with {@code key}
+     *
+     * @param key {@link Object} value of the key
+     */
+    public void remove(Object key) {
+        getCBORValue().editMap().remove(CBORObjectFactory.toCBORValue(key));
         clearSerializedBytes();
     }
 
@@ -271,12 +272,11 @@ public class CBORMap extends AbstractCBORObject<co.nstant.in.cbor.model.Map> {
     /**
      * Adds all entries from the {@code map}
      *
-     * @param map {@link Map} to add values from
+     * @param inputMap {@link Map} to add values from
      */
-    public void putAll(Map<?, ?> map) {
-        if (Utils.isMapNotEmpty(map)) {
-            map.forEach(this::put);
-        }
+    public void putAll(Map<?, ?> inputMap) {
+        inputMap.forEach(this::put);
+        clearSerializedBytes();
     }
 
     /**
@@ -285,7 +285,7 @@ public class CBORMap extends AbstractCBORObject<co.nstant.in.cbor.model.Map> {
      * @return TRUE if the map is empty, FALSE otherwise
      */
     public boolean isEmpty() {
-        return Utils.isCollectionEmpty(toDataItem().getKeys());
+        return getSize() == 0;
     }
 
     /**
@@ -294,7 +294,7 @@ public class CBORMap extends AbstractCBORObject<co.nstant.in.cbor.model.Map> {
      * @return size of the map
      */
     public int getSize() {
-        return toDataItem().getKeys().size();
+        return getCBORValue().size();
     }
 
 }

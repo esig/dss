@@ -20,10 +20,9 @@
  */
 package eu.europa.esig.dss.cbades;
 
-import co.nstant.in.cbor.CborException;
-import co.nstant.in.cbor.decoder.TagDecoder;
-import co.nstant.in.cbor.model.MajorType;
-import co.nstant.in.cbor.model.Tag;
+import eu.europa.ec.digit.cddl4j.cbor.CBORDecodeException;
+import eu.europa.ec.digit.cddl4j.cbor.CBORInspector;
+import eu.europa.ec.digit.cddl4j.cbor.CBORMajorType;
 import eu.europa.esig.dss.cbades.cbor.CBORArray;
 import eu.europa.esig.dss.cbades.cbor.CBORByteString;
 import eu.europa.esig.dss.cbades.cbor.CBORMap;
@@ -140,46 +139,45 @@ public class COSEParser extends AbstractCOSEParser {
     }
 
     /**
-     * This method verifies whether the beginning of the InputStream is a COSE structure
+     * This method verifies whether the beginning of the InputStream is a COSE structure.
      *
      * @param inputStream {@link InputStream} to check
-     * @return TRUE if the beginning of the InoutStream represents a COSE valid structure, FALSE otherwise
-     * @throws IOException if an error occurs on InputStream reading
+     * @return TRUE if the beginning of the InputStream represents a valid COSE structure, FALSE otherwise
      */
-    private static boolean isCoseStart(InputStream inputStream) throws IOException {
-        try (InputStream is = inputStream) {
-            int symbol = is.read();
-            if (isCoseTag(symbol, is)) {
-                symbol = is.read();
-                return isCoseArray(symbol, is);
-            } else if (isCoseArray(symbol, is)) {
-                return true;
+    private static boolean isCoseStart(InputStream inputStream) {
+        try {
+            CBORInspector inspector = new CBORInspector(inputStream);
+            int initialByte = inspector.read();
+            if (isCoseTag(inspector, initialByte)) {
+                initialByte = inspector.read();
+                return isCoseArray(inspector, initialByte);
             }
-        } catch (CborException e) {
+            return isCoseArray(inspector, initialByte);
+
+        } catch (Exception exception) {
             if (LOG.isTraceEnabled()) {
-                LOG.trace("Error on CBOR decoding : {}. Not a valid CBOR file.", e.getMessage());
+                LOG.trace("Error on CBOR decoding: {}. Not a valid CBOR file.", exception.getMessage());
             }
+            return false;
         }
-        return false;
     }
 
-    private static boolean isCoseTag(int symbol, InputStream inputStream) throws CborException {
-        if (MajorType.TAG == MajorType.ofByte(symbol)) {
-            TagDecoder tagDecoder = new TagDecoder(null, inputStream);
-            Tag tag = tagDecoder.decode(symbol);
-            return COSEConstants.COSE_SIGN_TAG == tag.getValue() || COSEConstants.COSE_SIGN1_TAG == tag.getValue();
+    private static boolean isCoseTag(CBORInspector inspector, int initialByte) throws CBORDecodeException {
+        if (CBORMajorType.fromInitialByte(initialByte) != CBORMajorType.TAG) {
+            return false;
         }
-        return false;
+        long tag = inspector.readTag(initialByte);
+        return COSEConstants.COSE_SIGN_TAG == tag || COSEConstants.COSE_SIGN1_TAG == tag;
     }
 
-    private static boolean isCoseArray(int symbol, InputStream inputStream) throws CborException, IOException {
-        if (MajorType.ARRAY == MajorType.ofByte(symbol)) {
-            DSSArrayDecoder arrayDecoder = new DSSArrayDecoder(inputStream);
-            long length = arrayDecoder.getLength(symbol);
-            if (length == -1 || length == 4) { // -1 for not defined length, 4 for COSESign or COSESign1 structure
-                int arrayFirstSymbol = inputStream.read();
-                return MajorType.BYTE_STRING == MajorType.ofByte(arrayFirstSymbol);
-            }
+    private static boolean isCoseArray(CBORInspector inspector, int initialByte) throws CBORDecodeException {
+        if (CBORMajorType.fromInitialByte(initialByte) != CBORMajorType.ARRAY) {
+            return false;
+        }
+        long length = inspector.readLength(initialByte);
+        if (length == -1 || length == 4) {
+            int arrayFirstByte = inspector.read();
+            return CBORMajorType.fromInitialByte(arrayFirstByte) == CBORMajorType.BYTE_STRING;
         }
         return false;
     }
@@ -194,7 +192,7 @@ public class COSEParser extends AbstractCOSEParser {
             throw new IllegalInputException("A COSE signature shall be represented by a CBOR Array type!");
         }
         CBORArray cborArray = (CBORArray) cborObject;
-        if (cborArray.isTagged()) {
+        if (cborObject.isTagged()) {
             if (COSESignatureType.COSE_SIGN.getTag() == cborArray.getTag().getValue()) {
                 return parseCOSESign(cborArray);
             } else if (COSESignatureType.COSE_SIGN1.getTag() == cborArray.getTag().getValue()) {
@@ -216,23 +214,23 @@ public class COSEParser extends AbstractCOSEParser {
     }
 
     private COSESign parseCOSESign(CBORArray cborArray) {
-        List<CBORObject> dataItems = cborArray.getValueAsList();
-        if (Utils.collectionSize(dataItems) != 4) {
+        List<CBORObject> arrayEntries = cborArray.getValueAsList();
+        if (Utils.collectionSize(arrayEntries) != 4) {
             throw new IllegalInputException("COSE_Sign array must have 4 entries!");
         }
-        CBORObject protectedHeaderItem = dataItems.get(0);
+        CBORObject protectedHeaderItem = arrayEntries.get(0);
         if (!protectedHeaderItem.isByteString()) {
             throw new IllegalInputException("COSE_Sign.protected header must be a bstr!");
         }
-        CBORObject unprotectedHeaderItem = dataItems.get(1);
+        CBORObject unprotectedHeaderItem = arrayEntries.get(1);
         if (!unprotectedHeaderItem.isMap()) {
             throw new IllegalInputException("COSE_Sign.unprotected header must be a header map!");
         }
-        CBORObject payloadItem = dataItems.get(2);
+        CBORObject payloadItem = arrayEntries.get(2);
         if (payloadItem != null && !payloadItem.isByteString() && !payloadItem.isNull()) {
             throw new IllegalInputException("COSE_Sign.payload must be a bstr or nil!");
         }
-        CBORObject signaturesArray = dataItems.get(3);
+        CBORObject signaturesArray = arrayEntries.get(3);
         if (!signaturesArray.isArray()) {
             throw new IllegalInputException("COSE_Sign1.signature must be an array!");
         }

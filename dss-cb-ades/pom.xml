@@ -28,7 +28,7 @@
         </dependency>
 
         <dependency>
-            <groupId>co.nstant.in</groupId>
+            <groupId>eu.europa.ec.digit.cddl4j</groupId>
             <artifactId>cbor</artifactId>
         </dependency>
 
