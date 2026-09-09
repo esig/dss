@@ -20,20 +20,19 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.validation;
 
-import eu.europa.esig.dss.cbades.cbor.CBORArray;
-import eu.europa.esig.dss.cbades.cbor.CBORByteString;
-import eu.europa.esig.dss.cbades.cbor.CBORMap;
-import eu.europa.esig.dss.cbades.cbor.CBORObject;
-import eu.europa.esig.dss.cbades.cbor.CBORUtils;
-import eu.europa.esig.dss.cbades.signature.CBAdESService;
-import eu.europa.esig.dss.cbades.signature.CBAdESSignatureParameters;
-import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.diagnostic.AttestationWrapper;
-import eu.europa.esig.dss.diagnostic.claim.ClaimWrapper;
+import eu.europa.ec.digit.cddl4j.cbor.CBOR;
+import eu.europa.ec.digit.cddl4j.cbor.CBORTags;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.attestation.common.key.DefaultPublicKeyInfoFactory;
 import eu.europa.esig.dss.attestation.common.key.PublicKeyInfo;
 import eu.europa.esig.dss.attestation.mdoc.creation.SessionTranscriptBuilder;
 import eu.europa.esig.dss.attestation.mdoc.key.COSEKeyBuilder;
+import eu.europa.esig.dss.cbades.cbor.CBORUtils;
+import eu.europa.esig.dss.cbades.signature.CBAdESService;
+import eu.europa.esig.dss.cbades.signature.CBAdESSignatureParameters;
+import eu.europa.esig.dss.diagnostic.AttestationWrapper;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.claim.ClaimWrapper;
 import eu.europa.esig.dss.enumerations.COSEStructureType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EllipticCurve;
@@ -69,45 +68,50 @@ class MdocAttestationPresentationWithDisclosuresAndKeyBindingValidationTest exte
 
     @Override
     protected DSSDocument getSignedDocument() {
-        CBORMap issuerNameSpaces = new CBORMap();
+        CBORValue.CBORMapEditor issuerNameSpaces = CBOR.map();
 
-        CBORArray issuerSignedItems = new CBORArray();
-        issuerSignedItems.add(getIssuerSignedItemBytes(1L, "family_name", "Doe"));
-        issuerSignedItems.add(getIssuerSignedItemBytes(2L, "given_name", "John"));
-        issuerSignedItems.add(getIssuerSignedItemBytes(3L, "birth_date",
-                DSSUtils.formatDateWithCustomFormat(DSSUtils.getUtcDate(2000, Calendar.JANUARY, 1), DSSUtils.ISO8601_DATE_FORMAT)));
+        CBORValue issuerSignedItems = CBOR.array()
+                .add(getIssuerSignedItemBytes(1L, "family_name", "Doe"))
+                .add(getIssuerSignedItemBytes(2L, "given_name", "John"))
+                .add(getIssuerSignedItemBytes(3L, "birth_date",
+                DSSUtils.formatDateWithCustomFormat(DSSUtils.getUtcDate(2000, Calendar.JANUARY, 1), DSSUtils.ISO8601_DATE_FORMAT)))
+                .value();
         issuerNameSpaces.put("org.iso.18013.5.1", issuerSignedItems);
 
-        CBORMap mobileSecurityObject = new CBORMap();
-        mobileSecurityObject.put("version", "1.0");
-        mobileSecurityObject.put("digestAlgorithm", DigestAlgorithm.SHA256.getMSOId());
-        CBORMap valueDigests = new CBORMap();
+        CBORValue.CBORMapEditor mobileSecurityObjectEditor = CBOR.map();
+        mobileSecurityObjectEditor.put("version", "1.0");
+        mobileSecurityObjectEditor.put("digestAlgorithm", DigestAlgorithm.SHA256.getMSOId());
+        CBORValue.CBORMapEditor valueDigests = CBOR.map();
 
-        CBORMap digestIDs = new CBORMap();
-        List<CBORObject> issuerSignedItemsAsList = issuerSignedItems.getValueAsList();
-        for (int i = 0; i < issuerSignedItems.getSize(); i++) {
-            CBORByteString cborBtsr = (CBORByteString) issuerSignedItemsAsList.get(i);
-            digestIDs.put((long) i + 1, DSSUtils.digest(DigestAlgorithm.SHA256, CBORUtils.serializeCborObject(cborBtsr)));
+        CBORValue.CBORMapEditor digestIDs = CBOR.map();
+        List<CBORValue> issuerSignedItemsAsList = issuerSignedItems.getElements();
+        for (int i = 0; i < issuerSignedItemsAsList.size(); i++) {
+            CBORValue issuerSignedItemsEntry = issuerSignedItemsAsList.get(i);
+            assertTrue(issuerSignedItemsEntry.isTag());
+            assertEquals(CBORTags.ENCODED_CBOR, issuerSignedItemsEntry.getTag().longValue());
+            assertTrue(issuerSignedItemsEntry.getTaggedValue().isByteString());
+
+            digestIDs.put((long) i + 1, DSSUtils.digest(DigestAlgorithm.SHA256, CBORUtils.serializeCbor(issuerSignedItemsEntry)));
         }
-        valueDigests.put("org.iso.18013.5.1", digestIDs);
+        valueDigests.put("org.iso.18013.5.1", digestIDs.value());
 
-        mobileSecurityObject.put("valueDigests", valueDigests);
-        mobileSecurityObject.put("deviceKeyInfo", getDeviceKeyInfo());
-        mobileSecurityObject.put("docType", "org.iso.18013.5.1.mDL");
+        mobileSecurityObjectEditor.put("valueDigests", valueDigests.value());
+        mobileSecurityObjectEditor.put("deviceKeyInfo", getDeviceKeyInfo());
+        mobileSecurityObjectEditor.put("docType", "org.iso.18013.5.1.mDL");
 
         Calendar calendar = Calendar.getInstance();
 
-        CBORMap validityInfo = new CBORMap();
+        CBORValue.CBORMapEditor validityInfo = CBOR.map();
         long signed = calendar.getTime().getTime();
         validityInfo.put("signed", signed);
         validityInfo.put("validFrom", signed);
         calendar.add(Calendar.HOUR, 1);
         validityInfo.put("validUntil", calendar.getTime().getTime());
 
-        mobileSecurityObject.put("validityInfo", validityInfo);
+        mobileSecurityObjectEditor.put("validityInfo", validityInfo.value());
 
-        CBORByteString mobileSecurityObjectBytes = CBORUtils.toCborBtsrWrappedTagged(mobileSecurityObject);
-        originalDocument = new InMemoryDocument(CBORUtils.serializeCborObject(mobileSecurityObjectBytes));
+        CBORValue mobileSecurityObjectBytes = CBORTags.encodedCbor(mobileSecurityObjectEditor.value().encodeToBytes());
+        originalDocument = new InMemoryDocument(CBORUtils.serializeCbor(mobileSecurityObjectBytes));
 
         signer = GOOD_USER;
 
@@ -124,21 +128,22 @@ class MdocAttestationPresentationWithDisclosuresAndKeyBindingValidationTest exte
         SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
         DSSDocument signedDocument = service.signDocument(originalDocument, signatureParameters, signatureValue);
 
-        CBORMap mdocResponse = new CBORMap();
+        CBORValue.CBORMapEditor mdocResponse = CBOR.map();
         mdocResponse.put("version", "1.0");
 
-        CBORArray documents = new CBORArray();
-        CBORMap document = new CBORMap();
+        CBORValue.CBORArrayEditor documents = CBOR.array();
+        CBORValue.CBORMapEditor document = CBOR.map();
         String docType = "org.iso.18013.5.1.mDL";
         document.put("docType", docType);
 
-        CBORMap issuerSigned = new CBORMap();
-        issuerSigned.put("nameSpaces", issuerNameSpaces);
-        issuerSigned.put("issuerAuth", toCbor(signedDocument));
+        CBORValue issuerSigned = CBOR.map()
+                .put("nameSpaces", issuerNameSpaces.value())
+                .put("issuerAuth", toCbor(signedDocument))
+                .value();
         document.put("issuerSigned", issuerSigned);
 
-        CBORMap deviceSigned = new CBORMap();
-        CBORByteString deviceSignedNameSpaces = CBORUtils.toCborBtsrWrappedTagged(new CBORMap());
+        CBORValue.CBORMapEditor deviceSigned = CBOR.map();
+        CBORValue deviceSignedNameSpaces = CBORTags.encodedCbor(CBOR.map().value().encodeToBytes());
         deviceSigned.put("nameSpaces", deviceSignedNameSpaces); // empty
 
         signer = ECDSA_521_USER;
@@ -154,7 +159,7 @@ class MdocAttestationPresentationWithDisclosuresAndKeyBindingValidationTest exte
         signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA512);
         signatureParameters.setIncludeKeyIdentifier(false);
 
-        CBORObject sessionTranscript = buildSessionTranscript();
+        CBORValue sessionTranscript = buildSessionTranscript();
         DSSDocument deviceAuthenticationBytes = buildDeviceAuthenticationBytes(sessionTranscript, docType, deviceSignedNameSpaces);
 
         service = new CBAdESService(getOfflineCertificateVerifier());
@@ -162,23 +167,24 @@ class MdocAttestationPresentationWithDisclosuresAndKeyBindingValidationTest exte
         signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
         DSSDocument keyBindingSignature = service.signDocument(deviceAuthenticationBytes, signatureParameters, signatureValue);
 
-        CBORMap deviceAuth = new CBORMap();
-        deviceAuth.put("deviceSignature", toCbor(keyBindingSignature));
+        CBORValue deviceAuth = CBOR.map()
+                .put("deviceSignature", toCbor(keyBindingSignature))
+                .value();
         deviceSigned.put("deviceAuth", deviceAuth);
-        document.put("deviceSigned", deviceSigned);
+        document.put("deviceSigned", deviceSigned.value());
 
-        documents.add(document);
-        mdocResponse.put("documents", documents);
+        documents.add(document.value());
+        mdocResponse.put("documents", documents.value());
         mdocResponse.put("status", 0L);
 
         // embed in mdoc
-        DSSDocument mdocDocument = new InMemoryDocument(CBORUtils.serializeCborObject(mdocResponse));
+        DSSDocument mdocDocument = new InMemoryDocument(mdocResponse.value().encodeToBytes());
         return mdocDocument;
     }
 
     @Override
     protected DSSDocument getSessionTranscript() {
-        return new InMemoryDocument(CBORUtils.serializeCborObject(buildSessionTranscript()));
+        return new InMemoryDocument(CBORUtils.serializeCbor(buildSessionTranscript()));
     }
 
     @Override
@@ -270,26 +276,27 @@ class MdocAttestationPresentationWithDisclosuresAndKeyBindingValidationTest exte
         return signer;
     }
 
-    private CBORMap getDeviceKeyInfo() {
+    private CBORValue getDeviceKeyInfo() {
         signer = ECDSA_521_USER;
-        CBORMap deviceKeyInfo = new CBORMap();
         PublicKeyInfo publicKeyInfo = new DefaultPublicKeyInfoFactory().create(getSigningCert().getPublicKey());
-        CBORMap coseKey = new COSEKeyBuilder(publicKeyInfo).create();
-        deviceKeyInfo.put("deviceKey", coseKey);
-        return deviceKeyInfo;
+        CBORValue coseKey = new COSEKeyBuilder(publicKeyInfo).create();
+        return CBOR.map()
+                .put("deviceKey", coseKey)
+                .value();
     }
 
-    private DSSDocument buildDeviceAuthenticationBytes(CBORObject sessionTranscript, String docType, CBORObject deviceNameSpaceBytes) {
-        CBORArray deviceAuthentication = new CBORArray();
-        deviceAuthentication.add("DeviceAuthentication");
-        deviceAuthentication.add(sessionTranscript);
-        deviceAuthentication.add(docType);
-        deviceAuthentication.add(deviceNameSpaceBytes);
-        CBORByteString deviceAuthenticationBytes = CBORUtils.toCborBtsrWrappedTagged(deviceAuthentication);
-        return new InMemoryDocument(CBORUtils.serializeCborObject(deviceAuthenticationBytes));
+    private DSSDocument buildDeviceAuthenticationBytes(CBORValue sessionTranscript, String docType, CBORValue deviceNameSpaceBytes) {
+        CBORValue deviceAuthentication = CBOR.array()
+                .add("DeviceAuthentication")
+                .add(sessionTranscript)
+                .add(docType)
+                .add(deviceNameSpaceBytes)
+                .value();
+        CBORValue deviceAuthenticationBytes = CBORTags.encodedCbor(deviceAuthentication.encodeToBytes());
+        return new InMemoryDocument(CBORUtils.serializeCbor(deviceAuthenticationBytes));
     }
 
-    private CBORObject buildSessionTranscript() {
+    private CBORValue buildSessionTranscript() {
         signer = ECDSA_521_USER;
 
         return SessionTranscriptBuilder.nfcHandover(
@@ -301,7 +308,7 @@ class MdocAttestationPresentationWithDisclosuresAndKeyBindingValidationTest exte
                 .buildCbor();
     }
 
-    private CBORObject toCbor(DSSDocument document) {
+    private CBORValue toCbor(DSSDocument document) {
         try {
             return CBORUtils.parseCbor(document);
         } catch (Exception e) {
@@ -310,15 +317,16 @@ class MdocAttestationPresentationWithDisclosuresAndKeyBindingValidationTest exte
         }
     }
 
-    private CBORObject getIssuerSignedItemBytes(Long id, String elementIdentifier, Object elementValue) {
-        CBORMap issuerSignedItem = new CBORMap();
-        issuerSignedItem.put("digestID", id);
+    private CBORValue getIssuerSignedItemBytes(Long id, String elementIdentifier, Object elementValue) {
         byte[] randomBytes = new byte[16];
         secureRandom.nextBytes(randomBytes);
-        issuerSignedItem.put("random", randomBytes);
-        issuerSignedItem.put("elementIdentifier", elementIdentifier);
-        issuerSignedItem.put("elementValue", elementValue);
-        return CBORUtils.toCborBtsrWrappedTagged(issuerSignedItem);
+        CBORValue issuerSignedItem = CBOR.map()
+                .put("digestID", id)
+                .put("random", randomBytes)
+                .put("elementIdentifier", elementIdentifier)
+                .put("elementValue", elementValue)
+                .value();
+        return CBORTags.encodedCbor(issuerSignedItem.encodeToBytes());
     }
 
 }

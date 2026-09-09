@@ -20,12 +20,12 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.validation;
 
-import java.util.Map;
-
 import eu.europa.esig.dss.attestation.mdoc.claim.MdocVerifiedClaimMap;
 import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimDate;
 import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimString;
 import eu.europa.esig.dss.spi.attestation.KeyBindingSignaturePayload;
+
+import java.util.Map;
 
 /**
  * Implementation of {@link KeyBindingSignaturePayload} for ISO/IEC 18013-5 mdoc

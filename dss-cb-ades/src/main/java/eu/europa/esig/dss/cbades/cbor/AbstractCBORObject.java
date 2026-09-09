@@ -31,7 +31,9 @@ import java.util.Objects;
 /**
  * An abstract implementation of a CBOR object wrapper
  *
+ * @deprecated since DSS 6.6. Switch to {@link eu.europa.ec.digit.cddl4j.cbor.CBORValue} instead.
  */
+@Deprecated
 public abstract class AbstractCBORObject implements CBORObject {
 
     /** A CBOR object implementation */

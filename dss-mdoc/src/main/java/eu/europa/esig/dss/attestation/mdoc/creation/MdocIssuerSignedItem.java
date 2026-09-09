@@ -20,11 +20,10 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.creation;
 
+import eu.europa.ec.digit.cddl4j.cbor.CBORTags;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.attestation.common.creation.AbstractSelectiveDisclosure;
 import eu.europa.esig.dss.attestation.mdoc.MdocHeaderParameter;
-import eu.europa.esig.dss.cbades.cbor.CBORByteString;
-import eu.europa.esig.dss.cbades.cbor.CBORMap;
-import eu.europa.esig.dss.cbades.cbor.CBORObject;
 import eu.europa.esig.dss.cbades.cbor.CBORUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.Digest;
@@ -45,7 +44,7 @@ public class MdocIssuerSignedItem extends AbstractSelectiveDisclosure {
     private final String namespace;
 
     /** Represents serialized  */
-    private final CBORByteString issuerSignedItemBytes;
+    private final CBORValue issuerSignedItemBytes;
 
     /** DigestId of the disclosure */
     private Long digestId;
@@ -54,9 +53,9 @@ public class MdocIssuerSignedItem extends AbstractSelectiveDisclosure {
      * Constructor to instantiate the mdoc disclosure from an IssuerSignedItemBytes object with defined namespace
      *
      * @param namespace {@link String} namespace of the element claim
-     * @param issuerSignedItemBytes {@link CBORByteString} IssuerSignedItemBytes object
+     * @param issuerSignedItemBytes {@link CBORValue} IssuerSignedItemBytes object
      */
-    public MdocIssuerSignedItem(final String namespace, final CBORByteString issuerSignedItemBytes) {
+    public MdocIssuerSignedItem(final String namespace, final CBORValue issuerSignedItemBytes) {
         Objects.requireNonNull(namespace, "Namespace cannot be null!");
         Objects.requireNonNull(issuerSignedItemBytes, "IssuerSignedItemBytes cannot be null!");
         this.namespace = namespace;
@@ -80,9 +79,9 @@ public class MdocIssuerSignedItem extends AbstractSelectiveDisclosure {
      * Constructor to instantiate a void
      *
      * @param digestId unique integer identifying the element within the attestation namespace
-     * @param issuerSignedItemBytes {@link CBORByteString} IssuerSignedItemBytes object
+     * @param issuerSignedItemBytes {@link CBORValue} IssuerSignedItemBytes object
      */
-    protected MdocIssuerSignedItem(final int digestId, final CBORByteString issuerSignedItemBytes) {
+    protected MdocIssuerSignedItem(final int digestId, final CBORValue issuerSignedItemBytes) {
         Objects.requireNonNull(issuerSignedItemBytes, "IssuerSignedItemBytes cannot be null!");
         this.namespace = null;
         this.digestId = (long) digestId;
@@ -104,17 +103,18 @@ public class MdocIssuerSignedItem extends AbstractSelectiveDisclosure {
         this.issuerSignedItemBytes = parse(issuerSignedItemBytes);
     }
 
-    private static CBORByteString parse(byte[] issuerSignedItemBytes) {
-        CBORObject cborObject;
+    private static CBORValue parse(byte[] issuerSignedItemBytes) {
+        CBORValue cborValue;
         try {
-            cborObject = CBORUtils.parseCbor(issuerSignedItemBytes);
+            cborValue = CBORUtils.parseCbor(issuerSignedItemBytes);
         } catch (Exception e) {
             throw new IllegalInputException(String.format("The issuerSignedItemBytes shall be CBOR encoded : %s", e.getMessage()), e);
         }
-        if (!cborObject.isByteString()) {
-            throw new IllegalInputException("The issuerSignedItemBytes shall be CBOR Byte String encoded!");
+        if (!cborValue.isTag() || CBORTags.ENCODED_CBOR != cborValue.getTag().longValue() || !cborValue.getTaggedValue().isByteString()) {
+            throw new IllegalInputException(String.format(
+                    "IssuerSignedItemBytes shall be of a tagged CBOR Byte String type with tag value #6.24! Found type : %s", cborValue.getType()));
         }
-        return (CBORByteString) cborObject;
+        return cborValue;
     }
 
     /**
@@ -122,9 +122,9 @@ public class MdocIssuerSignedItem extends AbstractSelectiveDisclosure {
      *
      * @param namespace {@link String} namespace of the element claim
      * @param digestId unique integer identifying the element within the attestation namespace
-     * @param issuerSignedItemBytes {@link CBORByteString} IssuerSignedItemBytes object
+     * @param issuerSignedItemBytes {@link CBORValue} IssuerSignedItemBytes object
      */
-    public MdocIssuerSignedItem(final String namespace, final int digestId, final CBORByteString issuerSignedItemBytes) {
+    public MdocIssuerSignedItem(final String namespace, final int digestId, final CBORValue issuerSignedItemBytes) {
         Objects.requireNonNull(namespace, "Namespace cannot be null!");
         Objects.requireNonNull(issuerSignedItemBytes, "IssuerSignedItemBytes cannot be null!");
         this.namespace = namespace;
@@ -156,15 +156,15 @@ public class MdocIssuerSignedItem extends AbstractSelectiveDisclosure {
     /**
      * Gets the IssuerSignedItemBytes
      *
-     * @return {@link CBORByteString} IssuerSignedItemBytes
+     * @return {@link CBORValue} IssuerSignedItemBytes
      */
-    public CBORByteString getIssuerSignedItemBytes() {
+    public CBORValue getIssuerSignedItemBytes() {
         return issuerSignedItemBytes;
     }
 
     @Override
     protected Digest computeDigest(DigestAlgorithm digestAlgorithm) {
-        byte[] serialized = CBORUtils.serializeCborObject(issuerSignedItemBytes);
+        byte[] serialized = CBORUtils.serializeCbor(issuerSignedItemBytes);
         byte[] digestValue = DSSUtils.digest(digestAlgorithm, serialized);
         return new Digest(digestAlgorithm, digestValue);
     }
@@ -174,16 +174,29 @@ public class MdocIssuerSignedItem extends AbstractSelectiveDisclosure {
         parseSignedItem(issuerSignedItemBytes);
     }
 
-    private void parseSignedItem(CBORByteString issuerSignedItemBytes) {
-        CBORMap issuerSignedItemMap = new CBORMap(issuerSignedItemBytes);
-        this.digestId = getDigestId(issuerSignedItemMap);
-        this.salt = getRandom(issuerSignedItemMap);
-        this.name = getElementIdentifier(issuerSignedItemMap);
-        this.value = getElementValue(issuerSignedItemMap);
+    private void parseSignedItem(CBORValue issuerSignedItemBytes) {
+        if (!issuerSignedItemBytes.isTag() || CBORTags.ENCODED_CBOR != issuerSignedItemBytes.getTag().longValue()) {
+            throw new IllegalInputException(String.format(
+                    "IssuerSignedItemBytes shall be of a tagged CBOR Byte String type with tag value #6.24! Found type : %s", issuerSignedItemBytes.getType()));
+        }
+        issuerSignedItemBytes = issuerSignedItemBytes.getTaggedValue();
+        if (!issuerSignedItemBytes.isByteString()) {
+            throw new IllegalInputException(String.format(
+                    "IssuerSignedItemBytes shall wrap a CBOR Byte String type! Found type : %s", issuerSignedItemBytes.getType()));
+        }
+        CBORValue issuerSignedItem = CBORUtils.parseCbor(issuerSignedItemBytes.asBytes());
+        if (!issuerSignedItem.isMap()) {
+            throw new IllegalInputException(String.format(
+                    "IssuerSignedItem shall by of a CBOR Map type! Found type : %s", issuerSignedItem.getType()));
+        }
+        this.digestId = getDigestId(issuerSignedItem);
+        this.salt = getRandom(issuerSignedItem);
+        this.name = getElementIdentifier(issuerSignedItem);
+        this.value = getElementValue(issuerSignedItem);
     }
 
-    private Long getDigestId(CBORMap issuerSignedItemMap) {
-        CBORObject digestIDHeader = issuerSignedItemMap.getHeader(MdocHeaderParameter.DIGEST_ID.cbor());
+    private Long getDigestId(CBORValue issuerSignedItemMap) {
+        CBORValue digestIDHeader = issuerSignedItemMap.get(MdocHeaderParameter.DIGEST_ID.cbor());
         if (digestIDHeader == null) {
             throw new IllegalInputException(String.format(
                     "'%s' header parameter shall be present within IssuerSignedItem!", MdocHeaderParameter.DIGEST_ID));
@@ -192,11 +205,11 @@ public class MdocIssuerSignedItem extends AbstractSelectiveDisclosure {
             throw new IllegalInputException(String.format(
                     "'%s' header parameter shall be of unsigned integer type!", MdocHeaderParameter.DIGEST_ID));
         }
-        return digestIDHeader.getValueAsLong();
+        return digestIDHeader.asInteger().longValue();
     }
 
-    private byte[] getRandom(CBORMap issuerSignedItemMap) {
-        CBORObject randomHeader = issuerSignedItemMap.getHeader(MdocHeaderParameter.RANDOM.cbor());
+    private byte[] getRandom(CBORValue issuerSignedItemMap) {
+        CBORValue randomHeader = issuerSignedItemMap.get(MdocHeaderParameter.RANDOM.cbor());
         if (randomHeader == null) {
             throw new IllegalInputException(String.format(
                     "'%s' header parameter shall be present within IssuerSignedItem!", MdocHeaderParameter.RANDOM));
@@ -205,24 +218,24 @@ public class MdocIssuerSignedItem extends AbstractSelectiveDisclosure {
             throw new IllegalInputException(String.format(
                     "'%s' header parameter shall be of byte string type!", MdocHeaderParameter.RANDOM));
         }
-        return randomHeader.getValueAsBytes();
+        return randomHeader.asBytes();
     }
 
-    private String getElementIdentifier(CBORMap issuerSignedItemMap) {
-        CBORObject elementIdentifierHeader = issuerSignedItemMap.getHeader(MdocHeaderParameter.ELEMENT_IDENTIFIER.cbor());
+    private String getElementIdentifier(CBORValue issuerSignedItemMap) {
+        CBORValue elementIdentifierHeader = issuerSignedItemMap.get(MdocHeaderParameter.ELEMENT_IDENTIFIER.cbor());
         if (elementIdentifierHeader == null) {
             throw new IllegalInputException(String.format(
                     "'%s' header parameter shall be present within IssuerSignedItem!", MdocHeaderParameter.ELEMENT_IDENTIFIER));
         }
-        if (!elementIdentifierHeader.isUnicodeString()) {
+        if (!elementIdentifierHeader.isTextString()) {
             throw new IllegalInputException(String.format(
                     "'%s' header parameter shall be of unicode string type!", MdocHeaderParameter.ELEMENT_IDENTIFIER));
         }
-        return elementIdentifierHeader.getValueAsString();
+        return elementIdentifierHeader.asString();
     }
 
-    private CBORObject getElementValue(CBORMap issuerSignedItemMap) {
-        CBORObject elementValue = issuerSignedItemMap.getHeader(MdocHeaderParameter.ELEMENT_VALUE.cbor());
+    private CBORValue getElementValue(CBORValue issuerSignedItemMap) {
+        CBORValue elementValue = issuerSignedItemMap.get(MdocHeaderParameter.ELEMENT_VALUE.cbor());
         if (elementValue == null) {
             throw new IllegalInputException(String.format(
                     "'%s' header parameter shall be present within IssuerSignedItem!", MdocHeaderParameter.ELEMENT_VALUE));

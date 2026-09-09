@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.cbades.signature;
 
-import eu.europa.esig.dss.cbades.cbor.CBORArray;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.cbor.CBORUtils;
 import eu.europa.esig.dss.cbades.validation.CBAdESSignature;
 import eu.europa.esig.dss.signature.SignatureExtension;
@@ -45,8 +45,8 @@ public abstract class CBAdESExtensionBuilder implements SignatureExtension<CBAdE
      * @param signature {@link CBAdESSignature} to check
      */
     protected void assertUHeadersComponentsConsistent(CBAdESSignature signature) {
-        CBORArray uHeaders = signature.getCoseSignature().getUHeaders();
-        if (uHeaders != null && !uHeaders.isEmpty()) {
+        CBORValue uHeaders = signature.getCoseSignature().getUHeaders();
+        if (uHeaders != null && uHeaders.size() != 0) {
             if (!CBORUtils.areAllCborBtsrComponents(uHeaders)) {
                 throw new IllegalInputException("Extension is not possible! " +
                         "The members of 'uHeaders' component shall be represented by CBOR byte strings.");

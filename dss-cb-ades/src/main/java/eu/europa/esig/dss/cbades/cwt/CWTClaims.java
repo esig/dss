@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.cbades.cwt;
 
-import eu.europa.esig.dss.cbades.cbor.CBORObject;
-import eu.europa.esig.dss.cbades.cbor.CBORObjectFactory;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
+import eu.europa.esig.dss.cbades.cbor.CBORValueFactory;
 
 /**
  * Contains a list of claims registered within RFC 8392: CBOR Web Token (CWT)
@@ -96,7 +96,7 @@ public enum CWTClaims {
     CTI(7L);
 
     /** Long encoded key */
-    private final CBORObject cborKey;
+    private final CBORValue cborKey;
 
     /**
      * Default constructor
@@ -104,15 +104,15 @@ public enum CWTClaims {
      * @param longKey long key value
      */
     CWTClaims(final Long longKey) {
-        this.cborKey = CBORObjectFactory.toCBORObject(longKey);
+        this.cborKey = CBORValueFactory.toCBORValue(longKey);
     }
 
     /**
      * Gets a representation of the key in a form of a CBOR object
      *
-     * @return {@link CBORObject}
+     * @return {@link CBORValue}
      */
-    public CBORObject cbor() {
+    public CBORValue cbor() {
         return cborKey;
     }
 

@@ -20,16 +20,15 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.validation;
 
-import eu.europa.esig.dss.cbades.cbor.CBORArray;
-import eu.europa.esig.dss.cbades.cbor.CBORByteString;
-import eu.europa.esig.dss.cbades.cbor.CBORMap;
-import eu.europa.esig.dss.cbades.cbor.CBORObject;
+import eu.europa.ec.digit.cddl4j.cbor.CBOR;
+import eu.europa.ec.digit.cddl4j.cbor.CBORTags;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.cbor.CBORUtils;
 import eu.europa.esig.dss.cbades.signature.CBAdESService;
 import eu.europa.esig.dss.cbades.signature.CBAdESSignatureParameters;
+import eu.europa.esig.dss.enumerations.AttestationDocumentFormat;
 import eu.europa.esig.dss.enumerations.COSEStructureType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.enumerations.AttestationDocumentFormat;
 import eu.europa.esig.dss.enumerations.EllipticCurve;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -54,28 +53,30 @@ class MdocAttestationPresentationSimpleValidationTest extends AbstractMdocAttest
 
     @Override
     protected DSSDocument getSignedDocument() {
-        CBORMap mobileSecurityObject = new CBORMap();
-        mobileSecurityObject.put("version", "1.0");
-        mobileSecurityObject.put("digestAlgorithm", DigestAlgorithm.SHA256.getMSOId());
-        CBORMap valueDigests = new CBORMap();
-        valueDigests.put("org.iso.18013.5.1", getDigestIDs(1L, DSSUtils.digest(DigestAlgorithm.SHA256, "Hello World".getBytes())));
-        mobileSecurityObject.put("valueDigests", valueDigests);
-        mobileSecurityObject.put("deviceKeyInfo", getDeviceKeyInfo());
-        mobileSecurityObject.put("docType", "org.iso.18013.5.1.mDL");
+        CBORValue valueDigests = CBOR.map()
+                .put("org.iso.18013.5.1", getDigestIDs(1L, DSSUtils.digest(DigestAlgorithm.SHA256, "Hello World".getBytes())))
+                .value();
 
         Calendar calendar = Calendar.getInstance();
 
-        CBORMap validityInfo = new CBORMap();
+        CBORValue.CBORMapEditor validityInfo = CBOR.map();
         long signed = calendar.getTime().getTime();
         validityInfo.put("signed", signed);
         validityInfo.put("validFrom", signed);
         calendar.add(Calendar.HOUR, 1);
         validityInfo.put("validUntil", calendar.getTime().getTime());
 
-        mobileSecurityObject.put("validityInfo", validityInfo);
+        CBORValue mobileSecurityObject = CBOR.map()
+                .put("version", "1.0")
+                .put("digestAlgorithm", DigestAlgorithm.SHA256.getMSOId())
+                .put("valueDigests", valueDigests)
+                .put("deviceKeyInfo", getDeviceKeyInfo())
+                .put("docType", "org.iso.18013.5.1.mDL")
+                .put("validityInfo", validityInfo.value())
+                .value();
 
-        CBORByteString mobileSecurityObjectBytes = CBORUtils.toCborBtsrWrappedTagged(mobileSecurityObject);
-        originalDocument = new InMemoryDocument(CBORUtils.serializeCborObject(mobileSecurityObjectBytes));
+        CBORValue mobileSecurityObjectBytes = CBORTags.encodedCbor(mobileSecurityObject.encodeToBytes());
+        originalDocument = new InMemoryDocument(CBORUtils.serializeCbor(mobileSecurityObjectBytes));
 
         signer = GOOD_USER;
 
@@ -92,31 +93,35 @@ class MdocAttestationPresentationSimpleValidationTest extends AbstractMdocAttest
         SignatureValue signatureValue = getToken().sign(dataToSign, signatureParameters.getDigestAlgorithm(), getPrivateKeyEntry());
         DSSDocument signedDocument = service.signDocument(originalDocument, signatureParameters, signatureValue);
 
-        CBORMap mdocResponse = new CBORMap();
+        CBORValue.CBORMapEditor mdocResponse = CBOR.map();
         mdocResponse.put("version", "1.0");
 
-        CBORArray documents = new CBORArray();
-        CBORMap document = new CBORMap();
+        CBORValue.CBORMapEditor document = CBOR.map();
         document.put("docType", "org.iso.18013.5.1.mDL");
 
-        CBORMap issuerSigned = new CBORMap();
-        issuerSigned.put("issuerAuth", toCbor(signedDocument));
+        CBORValue issuerSigned = CBOR.map()
+                .put("issuerAuth", toCbor(signedDocument))
+                .value();
         document.put("issuerSigned", issuerSigned);
 
-        CBORMap deviceSigned = new CBORMap();
-        deviceSigned.put("nameSpaces", CBORUtils.toCborBtsrWrappedTagged(new CBORMap())); // empty
+        CBORValue deviceAuth = CBOR.map()
+                .put("deviceMac", CBOR.array().value())
+                .value();
 
-        CBORMap deviceAuth = new CBORMap();
-        deviceAuth.put("deviceMac", new CBORArray());
-        deviceSigned.put("deviceAuth", deviceAuth);
+        CBORValue deviceSigned = CBOR.map()
+                .put("nameSpaces", CBORTags.encodedCbor(CBOR.map().value().encodeToBytes())) // empty
+                .put("deviceAuth", deviceAuth)
+                .value();
         document.put("deviceSigned", deviceSigned);
 
-        documents.add(document);
+        CBORValue documents = CBOR.array()
+                .add(document.value())
+                .value();
         mdocResponse.put("documents", documents);
         mdocResponse.put("status", 0L);
 
         // embed in mdoc
-        DSSDocument mdocDocument = new InMemoryDocument(CBORUtils.serializeCborObject(mdocResponse));
+        DSSDocument mdocDocument = new InMemoryDocument(CBORUtils.serializeCbor(mdocResponse.value()));
         return mdocDocument;
     }
 
@@ -152,21 +157,22 @@ class MdocAttestationPresentationSimpleValidationTest extends AbstractMdocAttest
         return signer;
     }
 
-    private CBORMap getDeviceKeyInfo() {
+    private CBORValue getDeviceKeyInfo() {
         signer = ECDSA_USER;
 
-        CBORMap deviceKeyInfo = new CBORMap();
-        CBORMap coseKey = new CBORMap();
-        coseKey.put(1L, 2L); // 'kty' ECDSA
-        coseKey.put(-1L, EllipticCurve.P_256.getCOSEValue().longValue()); // 'crv'
-        coseKey.put(-2L, toBytes(((ECPublicKey) getSigningCert().getPublicKey()).getW().getAffineX(), 32)); // 'x'
-        coseKey.put(-3L, toBytes(((ECPublicKey) getSigningCert().getPublicKey()).getW().getAffineY(), 32)); // 'y'
+        CBORValue coseKey = CBOR.map()
+                .put(1L, 2L) // 'kty' ECDSA
+                .put(-1L, EllipticCurve.P_256.getCOSEValue().longValue()) // 'crv'
+                .put(-2L, toBytes(((ECPublicKey) getSigningCert().getPublicKey()).getW().getAffineX(), 32)) // 'x'
+                .put(-3L, toBytes(((ECPublicKey) getSigningCert().getPublicKey()).getW().getAffineY(), 32)) // 'y'
+                .value();
 
-        deviceKeyInfo.put("deviceKey", coseKey);
-        return deviceKeyInfo;
+        return CBOR.map()
+                .put("deviceKey", coseKey)
+                .value();
     }
 
-    private CBORObject toCbor(DSSDocument document) {
+    private CBORValue toCbor(DSSDocument document) {
         try {
             return CBORUtils.parseCbor(document);
         } catch (Exception e) {
@@ -175,10 +181,10 @@ class MdocAttestationPresentationSimpleValidationTest extends AbstractMdocAttest
         }
     }
 
-    private CBORObject getDigestIDs(Long id, byte[] digest) {
-        CBORMap digestId = new CBORMap();
-        digestId.put(id, new CBORByteString(digest));
-        return digestId;
+    private CBORValue getDigestIDs(Long id, byte[] digest) {
+        return CBOR.map()
+                .put(id, CBOR.bytes(digest))
+                .value();
     }
 
     private byte[] toBytes(BigInteger bigInteger, int size) {

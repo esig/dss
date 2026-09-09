@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.creation;
 
-import eu.europa.esig.dss.cbades.cbor.CBORByteString;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 
 /**
  * Builds the DeviceNameSpacesBytes to use for key binding signature
@@ -32,8 +32,8 @@ public interface MdocDeviceNameSpacesBuilder {
      * Builds the DeviceNameSpacesBytes based on the provided parameters
      *
      * @param mdocDeviceSignedParameters {@link MdocDeviceSignedParameters}
-     * @return {@link CBORByteString}
+     * @return {@link CBORValue}
      */
-    CBORByteString buildDeviceNameSpacesBytes(MdocDeviceSignedParameters mdocDeviceSignedParameters);
+    CBORValue buildDeviceNameSpacesBytes(MdocDeviceSignedParameters mdocDeviceSignedParameters);
 
 }

@@ -20,7 +20,8 @@
  */
 package eu.europa.esig.dss.cbades.validation;
 
-import eu.europa.esig.dss.cbades.cbor.CBORMap;
+import eu.europa.ec.digit.cddl4j.cbor.CBOR;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.cbor.CBORObject;
 import eu.europa.esig.dss.cbades.cbor.CBORUtils;
 
@@ -33,17 +34,17 @@ public class CBAdESUHeadersComponent extends CBAdESAttribute {
     private static final long serialVersionUID = 468968604999660231L;
 
     /** The component in its original representation */
-    private final CBORObject component;
+    private final CBORValue component;
 
     /**
      * Default constructor
      *
-     * @param component  {@link CBORObject} original representation of the component
-     * @param headerId   {@link CBORObject} header id
-     * @param value      {@link CBORObject} value
+     * @param component  {@link CBORValue} original representation of the component
+     * @param headerId   {@link CBORValue} header id
+     * @param value      {@link CBORValue} value
      * @param identifier {@link CBAdESAttributeIdentifier}
      */
-    CBAdESUHeadersComponent(CBORObject component, CBORObject headerId, CBORObject value, CBAdESAttributeIdentifier identifier) {
+    CBAdESUHeadersComponent(CBORValue component, CBORValue headerId, CBORValue value, CBAdESAttributeIdentifier identifier) {
         super(headerId, value);
         this.component = component;
         this.identifier = identifier;
@@ -55,13 +56,29 @@ public class CBAdESUHeadersComponent extends CBAdESAttribute {
      * @param component represents the component of the 'uHeaders' array
      * @param order defines the position number of the component in the 'uHeaders' array
      * @return {@link CBAdESUHeadersComponent}
+     * @deprecated since DSS 6.6. Use {@link #build(CBORValue, int)}
      */
+    @Deprecated
     public static CBAdESUHeadersComponent build(CBORObject component, int order) {
-        CBORMap cborMap = CBORUtils.parseUHeadersEntry(component);
-        if (cborMap != null && !cborMap.isEmpty()) {
+        if (component != null) {
+            return build(component.toCBORValue(), order);
+        }
+        return null;
+    }
+
+    /**
+     * Builds {@code CBAdESUHeadersComponent} from the 'uHeaders' array entry
+     *
+     * @param component {@link CBORValue} represents the component of the 'uHeaders' array
+     * @param order defines the position number of the component in the 'uHeaders' array
+     * @return {@link CBAdESUHeadersComponent}
+     */
+    public static CBAdESUHeadersComponent build(CBORValue component, int order) {
+        CBORValue cborMap = CBORUtils.parseUHeadersEntry(component);
+        if (cborMap != null && cborMap.size() != 0) {
             // one entry is expected
-            CBORObject key = cborMap.getKeys().iterator().next();
-            CBORObject value = cborMap.getHeader(key);
+            CBORValue key = cborMap.getKeys().iterator().next();
+            CBORValue value = cborMap.get(key);
             CBAdESAttributeIdentifier identifier = CBAdESAttributeIdentifier.build(key, value, order);
             return new CBAdESUHeadersComponent(component, key, value, identifier);
         }
@@ -75,31 +92,45 @@ public class CBAdESUHeadersComponent extends CBAdESAttribute {
      * @param value {@link CBORObject} represents the value of the component
      * @param identifier {@link CBAdESAttributeIdentifier}
      * @return {@link CBAdESUHeadersComponent}
+     * @deprecated since DSS 6.6. Use {@link #build(CBORValue, CBORValue, CBAdESAttributeIdentifier)}
      */
+    @Deprecated
     public static CBAdESUHeadersComponent build(CBORObject headerKey, CBORObject value, CBAdESAttributeIdentifier identifier) {
-        CBORObject component = createUHeadersComponent(headerKey, value);
+        return build(headerKey.toCBORValue(), value.toCBORValue(), identifier);
+    }
+
+    /**
+     * Builds the {@code EtsiUComponent} from the given parameters
+     *
+     * @param headerKey {@link CBORValue} name of the 'uHeaders' array component
+     * @param value {@link CBORValue} represents the value of the component
+     * @param identifier {@link CBAdESAttributeIdentifier}
+     * @return {@link CBAdESUHeadersComponent}
+     */
+    public static CBAdESUHeadersComponent build(CBORValue headerKey, CBORValue value, CBAdESAttributeIdentifier identifier) {
+        CBORValue component = createUHeadersComponent(headerKey, value);
         return new CBAdESUHeadersComponent(component, headerKey, value, identifier);
     }
 
     /**
      * Returns an 'uHeaders' component in the defined representation
      *
-     * @param key              {@link CBORObject} header name
-     * @param value            {@link CBORObject} object
-     * @return {@link CBORObject} 'uHeaders' component
+     * @param key              {@link CBORValue} header name
+     * @param value            {@link CBORValue} object
+     * @return {@link CBORValue} 'uHeaders' component
      */
-    private static CBORObject createUHeadersComponent(CBORObject key, CBORObject value) {
-        CBORMap cborMap = new CBORMap();
-        cborMap.put(key, value);
-        return cborMap.getByteString();
+    private static CBORValue createUHeadersComponent(CBORValue key, CBORValue value) {
+        return CBOR.bytes(CBOR.map()
+                .put(key, value)
+                .value().encodeToBytes());
     }
 
     /**
      * Gets the current component in {@code CBORObject} representation
      *
-     * @return {@link CBORObject}
+     * @return {@link CBORValue}
      */
-    public CBORObject getComponent() {
+    public CBORValue getComponent() {
         return component;
     }
 

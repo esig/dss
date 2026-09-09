@@ -20,11 +20,9 @@
  */
 package eu.europa.esig.dss.cbades.validation.timestamp;
 
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.CBAdESUtils;
 import eu.europa.esig.dss.cbades.COSEHeaderParameter;
-import eu.europa.esig.dss.cbades.cbor.CBORArray;
-import eu.europa.esig.dss.cbades.cbor.CBORMap;
-import eu.europa.esig.dss.cbades.cbor.CBORObject;
 import eu.europa.esig.dss.cbades.validation.CBAdESAttribute;
 import eu.europa.esig.dss.cbades.validation.CBAdESSignature;
 import eu.europa.esig.dss.cbades.validation.CBAdESSignedProperties;
@@ -238,18 +236,18 @@ public class CBAdESTimestampSource extends SignatureTimestampSource<CBAdESSignat
 
     @Override
     protected List<TimestampToken> makeTimestampTokens(CBAdESAttribute signatureAttribute, TimestampType timestampType, List<TimestampedReference> references) {
-        CBORObject tstContainer = signatureAttribute.getValue();
+        CBORValue tstContainer = signatureAttribute.getValue();
         return extractTimestampTokens(signatureAttribute, tstContainer, timestampType, references);
     }
 
-    private List<TimestampToken> extractTimestampTokens(CBAdESAttribute signatureAttribute, CBORObject tstContainer,
+    private List<TimestampToken> extractTimestampTokens(CBAdESAttribute signatureAttribute, CBORValue tstContainer,
                                                         TimestampType timestampType, List<TimestampedReference> references) {
         final List<TimestampToken> result = new LinkedList<>();
         if (tstContainer != null && tstContainer.isMap()) {
-            CBORArray tstTokens = ((CBORMap) tstContainer).getAsArray(COSEHeaderParameter.TST_CONTAINER_TST_TOKENS.cbor());
-            if (tstTokens != null && !tstTokens.isEmpty()) {
-                for (int i = 0; i < tstTokens.getSize(); i++) {
-                    CBORMap tstToken = tstTokens.getAsMap(i);
+            CBORValue tstTokens = tstContainer.getAsArrayOrNull(COSEHeaderParameter.TST_CONTAINER_TST_TOKENS.cbor());
+            if (tstTokens != null && tstTokens.size() != 0) {
+                for (int i = 0; i < tstTokens.size(); i++) {
+                    CBORValue tstToken = tstTokens.getAsMapOrNull(i);
                     if (tstToken == null) {
                         LOG.warn("Item of array 'tstTokens' has unsupported type! Shall be a CBOR map");
                     }
@@ -267,10 +265,10 @@ public class CBAdESTimestampSource extends SignatureTimestampSource<CBAdESSignat
         return result;
     }
 
-    private TimestampToken toTimestampToken(CBORMap tstToken, CBAdESAttribute signatureAttribute, Integer orderWithinAttribute,
+    private TimestampToken toTimestampToken(CBORValue tstToken, CBAdESAttribute signatureAttribute, Integer orderWithinAttribute,
                                             TimestampType timestampType, List<TimestampedReference> references) {
         if (tstToken != null) {
-            String encoding = tstToken.getAsString(COSEHeaderParameter.TST_TOKEN_ENCODING.cbor());
+            String encoding = tstToken.getAsStringOrNull(COSEHeaderParameter.TST_TOKEN_ENCODING.cbor());
             if (Utils.isStringNotEmpty(encoding)) {
                 /*
                  * The tstToken's encoding member shall be an URI value and shall identify the encoding used for
@@ -281,7 +279,7 @@ public class CBAdESTimestampSource extends SignatureTimestampSource<CBAdESSignat
                 return null;
             }
 
-            byte[] tstTokenVal = tstToken.getAsBinaries(COSEHeaderParameter.TST_TOKEN_VAL.cbor());
+            byte[] tstTokenVal = tstToken.getAsBytesOrNull(COSEHeaderParameter.TST_TOKEN_VAL.cbor());
             if (tstTokenVal != null) {
                 try {
                     final SignatureTimestampIdentifierBuilder identifierBuilder = new SignatureTimestampIdentifierBuilder(tstTokenVal)
@@ -315,13 +313,12 @@ public class CBAdESTimestampSource extends SignatureTimestampSource<CBAdESSignat
     @Override
     protected List<Identifier> getEncapsulatedCertificateIdentifiers(CBAdESAttribute unsignedAttribute) {
         if (isAnyValidationData(unsignedAttribute)) {
-            CBORObject valData = unsignedAttribute.getValue();
+            CBORValue valData = unsignedAttribute.getValue();
             if (valData.isMap()) {
-                CBORMap valDataMap = (CBORMap) valData;
-                CBORArray xVals = valDataMap.getAsArray(COSEHeaderParameter.VAL_DATA_X_VALS.cbor());
-                if (xVals != null && !xVals.isEmpty()) {
+                CBORValue xVals = valData.getAsArrayOrNull(COSEHeaderParameter.VAL_DATA_X_VALS.cbor());
+                if (xVals != null && xVals.size() != 0) {
                     List<Identifier> certificateIdentifiers = new ArrayList<>();
-                    for (CBORObject encapsulatedCert : xVals.getValueAsList()) {
+                    for (CBORValue encapsulatedCert : xVals.getElements()) {
                         CertificateToken certificateToken = toCertificateToken(encapsulatedCert);
                         if (certificateToken != null) {
                             certificateIdentifiers.add(certificateToken.getDSSId());
@@ -335,18 +332,18 @@ public class CBAdESTimestampSource extends SignatureTimestampSource<CBAdESSignat
             }
 
         } else if (isX5Chain(unsignedAttribute)) {
-            CBORObject x5chainObject = unsignedAttribute.getValue();
+            CBORValue x5chainObject = unsignedAttribute.getValue();
             if (x5chainObject.isByteString()) {
-                CertificateToken certificate = loadCertificate(x5chainObject.getValueAsBytes());
+                CertificateToken certificate = loadCertificate(x5chainObject.asBytes());
                 if (certificate != null) {
                     return Collections.singletonList(certificate.getDSSId());
                 }
 
             } else if (x5chainObject.isArray()) {
                 List<Identifier> certificateIdentifiers = new ArrayList<>();
-                for (CBORObject cborObject : x5chainObject.getValueAsList()) {
-                    if (cborObject.isByteString()) {
-                        CertificateToken certificate = loadCertificate(cborObject.getValueAsBytes());
+                for (CBORValue cborValue : x5chainObject.getElements()) {
+                    if (cborValue.isByteString()) {
+                        CertificateToken certificate = loadCertificate(cborValue.asBytes());
                         if (certificate != null) {
                             certificateIdentifiers.add(certificate.getDSSId());
                         }
@@ -360,23 +357,21 @@ public class CBAdESTimestampSource extends SignatureTimestampSource<CBAdESSignat
         return Collections.emptyList();
     }
 
-    private CertificateToken toCertificateToken(CBORObject encapsulatedCert) {
-        if (encapsulatedCert.isMap()) {
-            CBORMap x509OrOther = (CBORMap) encapsulatedCert;
-
-            CBORMap pkiOb = x509OrOther.getAsMap(COSEHeaderParameter.X509_OR_OTHER_X509_CERT.cbor());
+    private CertificateToken toCertificateToken(CBORValue x509OrOther) {
+        if (x509OrOther.isMap()) {
+            CBORValue pkiOb = x509OrOther.getAsMapOrNull(COSEHeaderParameter.X509_OR_OTHER_X509_CERT.cbor());
             byte[] val = CBAdESUtils.extractDerEncodedPkiObject(pkiOb);
             if (Utils.isArrayNotEmpty(val)) {
                 return loadCertificate(val);
             }
 
-            CBORMap otherCert = x509OrOther.getAsMap(COSEHeaderParameter.X509_OR_OTHER_OTHER_CERT.cbor());
+            CBORValue otherCert = x509OrOther.getAsMapOrNull(COSEHeaderParameter.X509_OR_OTHER_OTHER_CERT.cbor());
             if (otherCert != null) {
                 LOG.warn("The header 'otherCert' is not supported! The entry is skipped.");
             }
 
         } else {
-            LOG.warn("The value of 'x509OrOther' shall be represented by a CBOR Map! Entry is skilled.");
+            LOG.warn("The value of 'x509OrOther' shall be represented by a CBOR Map! Entry is skipped.");
         }
         return null;
     }
@@ -392,15 +387,14 @@ public class CBAdESTimestampSource extends SignatureTimestampSource<CBAdESSignat
 
     @Override
     protected List<CRLBinary> getEncapsulatedCRLIdentifiers(CBAdESAttribute unsignedAttribute) {
-        CBORObject valData = unsignedAttribute.getValue();
+        CBORValue valData = unsignedAttribute.getValue();
         if (valData.isMap()) {
-            CBORMap valDataMap = (CBORMap) valData;
-            CBORMap rVals = valDataMap.getAsMap(COSEHeaderParameter.VAL_DATA_R_VALS.cbor());
-            if (rVals != null && !rVals.isEmpty()) {
-                CBORArray crlVals = rVals.getAsArray(COSEHeaderParameter.R_VALS_CRL_VALS.cbor());
-                if (crlVals != null && !crlVals.isEmpty()) {
+            CBORValue rVals = valData.getAsMapOrNull(COSEHeaderParameter.VAL_DATA_R_VALS.cbor());
+            if (rVals != null && rVals.size() != 0) {
+                CBORValue crlVals = rVals.getAsArrayOrNull(COSEHeaderParameter.R_VALS_CRL_VALS.cbor());
+                if (crlVals != null && crlVals.size() != 0) {
                     List<CRLBinary> crlIdentifiers = new ArrayList<>();
-                    for (CBORObject pkiOb : crlVals.getValueAsList()) {
+                    for (CBORValue pkiOb : crlVals.getElements()) {
                         if (pkiOb.isMap()) {
                             CRLBinary crlBinary = toCRLBinary(pkiOb);
                             if (crlBinary != null) {
@@ -416,15 +410,15 @@ public class CBAdESTimestampSource extends SignatureTimestampSource<CBAdESSignat
             }
 
         } else {
-            LOG.warn("The value of header 'valData' shall be represented by a CBOR Map! Entry is skilled.");
+            LOG.warn("The value of header 'valData' shall be represented by a CBOR Map! Entry is skipped.");
         }
         return Collections.emptyList();
     }
 
-    private CRLBinary toCRLBinary(CBORObject pkiOb) {
+    private CRLBinary toCRLBinary(CBORValue pkiOb) {
         if (pkiOb.isMap()) {
             try {
-                byte[] val = CBAdESUtils.extractDerEncodedPkiObject((CBORMap) pkiOb);
+                byte[] val = CBAdESUtils.extractDerEncodedPkiObject(pkiOb);
                 if (Utils.isArrayNotEmpty(val)) {
                     return getCrlBinary(val);
                 }
@@ -449,16 +443,15 @@ public class CBAdESTimestampSource extends SignatureTimestampSource<CBAdESSignat
 
     @Override
     protected List<OCSPResponseBinary> getEncapsulatedOCSPIdentifiers(CBAdESAttribute unsignedAttribute) {
-        CBORObject valData = unsignedAttribute.getValue();
+        CBORValue valData = unsignedAttribute.getValue();
         if (valData.isMap()) {
-            CBORMap valDataMap = (CBORMap) valData;
-            CBORMap rVals = valDataMap.getAsMap(COSEHeaderParameter.VAL_DATA_R_VALS.cbor());
-            if (rVals != null && !rVals.isEmpty()) {
+            CBORValue rVals = valData.getAsMapOrNull(COSEHeaderParameter.VAL_DATA_R_VALS.cbor());
+            if (rVals != null && rVals.size() != 0) {
                 List<OCSPResponseBinary> ocspIdentifiers = new ArrayList<>();
 
-                CBORArray ocspVals = rVals.getAsArray(COSEHeaderParameter.R_VALS_OCSP_VALS.cbor());
-                if (ocspVals != null && !ocspVals.isEmpty()) {
-                    for (CBORObject pkiOb : ocspVals.getValueAsList()) {
+                CBORValue ocspVals = rVals.getAsArrayOrNull(COSEHeaderParameter.R_VALS_OCSP_VALS.cbor());
+                if (ocspVals != null && ocspVals.size() != 0) {
+                    for (CBORValue pkiOb : ocspVals.getElements()) {
                         if (pkiOb.isMap()) {
                             OCSPResponseBinary ocspResponseBinary = toOCSPResponseBinary(pkiOb);
                             if (ocspResponseBinary != null) {
@@ -473,16 +466,16 @@ public class CBAdESTimestampSource extends SignatureTimestampSource<CBAdESSignat
             }
 
         } else {
-            LOG.warn("The value of header 'valData' shall be represented by a CBOR Map! Entry is skilled.");
+            LOG.warn("The value of header 'valData' shall be represented by a CBOR Map! Entry is skipped.");
         }
 
         return Collections.emptyList();
     }
 
-    private OCSPResponseBinary toOCSPResponseBinary(CBORObject pkiOb) {
+    private OCSPResponseBinary toOCSPResponseBinary(CBORValue pkiOb) {
         if (pkiOb.isMap()) {
             try {
-                byte[] val = CBAdESUtils.extractDerEncodedPkiObject((CBORMap) pkiOb);
+                byte[] val = CBAdESUtils.extractDerEncodedPkiObject(pkiOb);
                 if (Utils.isArrayNotEmpty(val)) {
                     return getOcspResponseBinary(val);
                 }
@@ -507,97 +500,79 @@ public class CBAdESTimestampSource extends SignatureTimestampSource<CBAdESSignat
 
     @Override
     protected List<CertificateRef> getCertificateRefs(CBAdESAttribute unsignedAttribute) {
-        CBORObject refs = unsignedAttribute.getValue();
+        CBORValue refs = unsignedAttribute.getValue();
         if (refs.isMap()) {
-            if (refs.isMap()) {
-                CBORMap refsMap = (CBORMap) refs;
-                CBORArray xRefs = refsMap.getAsArray(COSEHeaderParameter.REFS_X_REFS.cbor());
-                if (xRefs != null && !xRefs.isEmpty()) {
-                    List<CertificateRef> certificateRefs = new ArrayList<>();
-                    for (CBORObject item : xRefs.getValueAsList()) {
-                        if (item.isMap()) {
-                            CBORMap certId = (CBORMap) item;
-                            CertificateRef certificateRef = CBAdESUtils.fromCertId(certId);
-                            if (certificateRef != null) {
-                                certificateRefs.add(certificateRef);
-                            }
-                        } else {
-                            LOG.warn("The value of 'CertId' shall be represented by a CBOR Map! Entry is skilled.");
+            CBORValue xRefs = refs.getAsArrayOrNull(COSEHeaderParameter.REFS_X_REFS.cbor());
+            if (xRefs != null && xRefs.size() != 0) {
+                List<CertificateRef> certificateRefs = new ArrayList<>();
+                for (CBORValue certId : xRefs.getElements()) {
+                    if (certId.isMap()) {
+                        CertificateRef certificateRef = CBAdESUtils.fromCertId(certId);
+                        if (certificateRef != null) {
+                            certificateRefs.add(certificateRef);
                         }
+                    } else {
+                        LOG.warn("The value of 'CertId' shall be represented by a CBOR Map! Entry is skipped.");
                     }
-                    return certificateRefs;
                 }
-
-            } else {
-                LOG.warn("The value of header 'refs' shall be represented by a CBOR Map! Entry is skilled.");
+                return certificateRefs;
             }
         }
+        LOG.warn("The value of header 'refs' shall be represented by a CBOR Map! Entry is skipped.");
         return Collections.emptyList();
     }
 
     @Override
     protected List<CRLRef> getCRLRefs(CBAdESAttribute unsignedAttribute) {
-        CBORObject refs = unsignedAttribute.getValue();
+        CBORValue refs = unsignedAttribute.getValue();
         if (refs.isMap()) {
-            if (refs.isMap()) {
-                CBORMap refsMap = (CBORMap) refs;
-                CBORMap rRefs = refsMap.getAsMap(COSEHeaderParameter.REFS_R_REFS.cbor());
-                if (rRefs != null && !rRefs.isEmpty()) {
-                    CBORArray crlRefs = rRefs.getAsArray(COSEHeaderParameter.R_REFS_CRL_REF.cbor());
-                    if (crlRefs != null) {
-                        List<CRLRef> result = new ArrayList<>();
-                        for (CBORObject item : crlRefs.getValueAsList()) {
-                            if (item.isMap()) {
-                                CBORMap crlRefMap = (CBORMap) item;
-                                CRLRef crlRef = CBAdESUtils.createCRLRef(crlRefMap);
-                                if (crlRef != null) {
-                                    result.add(crlRef);
-                                }
-                            } else {
-                                LOG.warn("The value of 'CRLRef' shall be represented by a CBOR Map! Entry is skilled.");
+            CBORValue rRefs = refs.getAsMapOrNull(COSEHeaderParameter.REFS_R_REFS.cbor());
+            if (rRefs != null && rRefs.size() != 0) {
+                CBORValue crlRefs = rRefs.getAsArrayOrNull(COSEHeaderParameter.R_REFS_CRL_REF.cbor());
+                if (crlRefs != null) {
+                    List<CRLRef> result = new ArrayList<>();
+                    for (CBORValue crlRefMap : crlRefs.getElements()) {
+                        if (crlRefMap.isMap()) {
+                            CRLRef crlRef = CBAdESUtils.createCRLRef(crlRefMap);
+                            if (crlRef != null) {
+                                result.add(crlRef);
                             }
+                        } else {
+                            LOG.warn("The value of 'CRLRef' shall be represented by a CBOR Map! Entry is skipped.");
                         }
-                        return result;
                     }
+                    return result;
                 }
-
-            } else {
-                LOG.warn("The value of header 'refs' shall be represented by a CBOR Map! Entry is skilled.");
             }
         }
+        LOG.warn("The value of header 'refs' shall be represented by a CBOR Map! Entry is skipped.");
         return Collections.emptyList();
     }
 
     @Override
     protected List<OCSPRef> getOCSPRefs(CBAdESAttribute unsignedAttribute) {
-        CBORObject refs = unsignedAttribute.getValue();
+        CBORValue refs = unsignedAttribute.getValue();
         if (refs.isMap()) {
-            if (refs.isMap()) {
-                CBORMap refsMap = (CBORMap) refs;
-                CBORMap rRefs = refsMap.getAsMap(COSEHeaderParameter.REFS_R_REFS.cbor());
-                if (rRefs != null && !rRefs.isEmpty()) {
-                    CBORArray ocspRefs = rRefs.getAsArray(COSEHeaderParameter.R_REFS_OCSP_REF.cbor());
-                    if (ocspRefs != null) {
-                        List<OCSPRef> result = new ArrayList<>();
-                        for (CBORObject item : ocspRefs.getValueAsList()) {
-                            if (item.isMap()) {
-                                CBORMap ocspRefMap = (CBORMap) item;
-                                OCSPRef ocspRef = CBAdESUtils.createOCSPRef(ocspRefMap);
-                                if (ocspRef != null) {
-                                    result.add(ocspRef);
-                                }
-                            } else {
-                                LOG.warn("The value of 'OCSPRef' shall be represented by a CBOR Map! Entry is skilled.");
+            CBORValue rRefs = refs.getAsMapOrNull(COSEHeaderParameter.REFS_R_REFS.cbor());
+            if (rRefs != null && rRefs.size() != 0) {
+                CBORValue ocspRefs = rRefs.getAsArrayOrNull(COSEHeaderParameter.R_REFS_OCSP_REF.cbor());
+                if (ocspRefs != null) {
+                    List<OCSPRef> result = new ArrayList<>();
+                    for (CBORValue ocspRefMap : ocspRefs.getElements()) {
+                        if (ocspRefMap.isMap()) {
+                            OCSPRef ocspRef = CBAdESUtils.createOCSPRef(ocspRefMap);
+                            if (ocspRef != null) {
+                                result.add(ocspRef);
                             }
+                        } else {
+                            LOG.warn("The value of 'OCSPRef' shall be represented by a CBOR Map! Entry is skipped.");
                         }
-                        return result;
                     }
+                    return result;
                 }
-
-            } else {
-                LOG.warn("The value of header 'refs' shall be represented by a CBOR Map! Entry is skilled.");
             }
         }
+        LOG.warn("The value of header 'refs' shall be represented by a CBOR Map! Entry is skipped.");
         return Collections.emptyList();
     }
 

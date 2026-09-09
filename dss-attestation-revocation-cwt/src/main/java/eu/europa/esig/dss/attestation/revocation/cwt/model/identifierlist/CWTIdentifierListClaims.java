@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.attestation.revocation.cwt.model.identifierlist;
 
-import eu.europa.esig.dss.cbades.cbor.CBORObject;
-import eu.europa.esig.dss.cbades.cbor.CBORObjectFactory;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
+import eu.europa.esig.dss.cbades.cbor.CBORValueFactory;
 
 /**
  * Contains claims for processing the CWT-encoded Identifier List.
@@ -56,7 +56,7 @@ public enum CWTIdentifierListClaims {
     IDENTIFIER_LIST_IDENTIFIERS("identifiers");
 
     /** Long encoded key */
-    private final CBORObject cborKey;
+    private final CBORValue cborKey;
 
     /**
      * Constructor with a Long key
@@ -64,7 +64,7 @@ public enum CWTIdentifierListClaims {
      * @param longKey long key value
      */
     CWTIdentifierListClaims(final Long longKey) {
-        this.cborKey = CBORObjectFactory.toCBORObject(longKey);
+        this.cborKey = CBORValueFactory.toCBORValue(longKey);
     }
 
     /**
@@ -73,15 +73,15 @@ public enum CWTIdentifierListClaims {
      * @param stringKey {@link String} key value
      */
     CWTIdentifierListClaims(final String stringKey) {
-        this.cborKey = CBORObjectFactory.toCBORObject(stringKey);
+        this.cborKey = CBORValueFactory.toCBORValue(stringKey);
     }
 
     /**
      * Gets a representation of the key in a form of a CBOR object
      *
-     * @return {@link CBORObject}
+     * @return {@link CBORValue}
      */
-    public CBORObject cbor() {
+    public CBORValue cbor() {
         return cborKey;
     }
 

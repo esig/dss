@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.cbades;
 
+import eu.europa.ec.digit.cddl4j.cbor.CBOR;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.cbor.CBORByteString;
 import eu.europa.esig.dss.cbades.cbor.CBORUtils;
 import eu.europa.esig.dss.enumerations.COSESignatureType;
@@ -37,7 +39,7 @@ public class COSECounterSignature0 implements COSECounterSignStructure  {
     private boolean tagged;
 
     /** The computed signature value of the signer */
-    private CBORByteString signature;
+    private CBORValue signature;
 
     /** The master signature structure */
     private COSEStructure masterSignature;
@@ -80,9 +82,9 @@ public class COSECounterSignature0 implements COSECounterSignStructure  {
     /**
      * Sets a signature value of the signer
      *
-     * @return {@link CBORByteString}
+     * @return {@link CBORValue}
      */
-    public CBORByteString getSignature() {
+    public CBORValue getSignature() {
         return signature;
     }
 
@@ -90,8 +92,19 @@ public class COSECounterSignature0 implements COSECounterSignStructure  {
      * Sets the signature value of the signer
      *
      * @param signature {@link CBORByteString}
+     * @deprecated since DSS 6.6. Use {@link #setSignature(CBORValue)}.
      */
+    @Deprecated
     public void setSignature(CBORByteString signature) {
+        this.signature = CBOR.bytes(signature.getValueAsBytes());
+    }
+
+    /**
+     * Sets the signature value of the signer
+     *
+     * @param signature {@link CBORValue}
+     */
+    public void setSignature(CBORValue signature) {
         this.signature = signature;
     }
 
@@ -111,12 +124,18 @@ public class COSECounterSignature0 implements COSECounterSignStructure  {
 
     @Override
     public byte[] serialize() {
-        CBORByteString bstrSignature = toCBORObject();
-        return CBORUtils.serializeCborObject(bstrSignature);
+        CBORValue cborArray = toCBORValue();
+        return CBORUtils.serializeCbor(cborArray);
     }
 
     @Override
+    @Deprecated
     public CBORByteString toCBORObject() {
+        return new CBORByteString(getSignature().asBytes());
+    }
+
+    @Override
+    public CBORValue toCBORValue() {
         return getSignature();
     }
 

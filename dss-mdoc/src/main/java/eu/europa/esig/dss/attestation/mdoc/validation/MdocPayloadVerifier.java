@@ -20,17 +20,18 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.validation;
 
-import eu.europa.esig.dss.attestation.mdoc.creation.MdocIssuerSignedItem;
-import eu.europa.esig.dss.cbades.cbor.CBORByteString;
-import eu.europa.esig.dss.cbades.cbor.CBORMap;
-import eu.europa.esig.dss.cbades.cbor.CBORObject;
-import eu.europa.esig.dss.cbades.cbor.CBORUtils;
+import eu.europa.ec.digit.cddl4j.cbor.CBOR;
+import eu.europa.ec.digit.cddl4j.cbor.CBORTags;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.attestation.common.validation.AttestationPayloadVerifier;
 import eu.europa.esig.dss.attestation.mdoc.MdocConstants;
 import eu.europa.esig.dss.attestation.mdoc.MdocUtils;
+import eu.europa.esig.dss.attestation.mdoc.creation.MdocIssuerSignedItem;
+import eu.europa.esig.dss.cbades.cbor.CBORObject;
+import eu.europa.esig.dss.cbades.cbor.CBORUtils;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
-import eu.europa.esig.dss.model.attestation.SelectiveDisclosure;
 import eu.europa.esig.dss.model.attestation.DisclosureValidation;
+import eu.europa.esig.dss.model.attestation.SelectiveDisclosure;
 import eu.europa.esig.dss.model.attestation.claim.VerifiedClaim;
 import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimMap;
 import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimString;
@@ -61,7 +62,7 @@ public class MdocPayloadVerifier extends AttestationPayloadVerifier {
     /**
      * Payload to be verified
      */
-    private final CBORObject cborPayload;
+    private final CBORValue cborPayload;
 
     /**
      * Document type
@@ -71,9 +72,21 @@ public class MdocPayloadVerifier extends AttestationPayloadVerifier {
     /**
      * Default constructor
      *
-     * @param cborPayload {@link String} JSON payload to be verified
+     * @param cborPayload {@link CBORObject} JSON payload to be verified
+     * @deprecated since DSS 6.6. Use {@link MdocPayloadVerifier(CBORValue)}
      */
+    @Deprecated
     public MdocPayloadVerifier(final CBORObject cborPayload) {
+        Objects.requireNonNull(cborPayload, "Payload cannot be null!");
+        this.cborPayload = cborPayload.toCBORValue();
+    }
+
+    /**
+     * Default constructor
+     *
+     * @param cborPayload {@link CBORValue} JSON payload to be verified
+     */
+    public MdocPayloadVerifier(final CBORValue cborPayload) {
         Objects.requireNonNull(cborPayload, "Payload cannot be null!");
         this.cborPayload = cborPayload;
     }
@@ -108,21 +121,24 @@ public class MdocPayloadVerifier extends AttestationPayloadVerifier {
      * @return {@link VerifiedClaimMap}
      */
     protected VerifiedClaimMap parseCborPayload() {
-        CBORMap mso = getMobileSecurityObject();
+        CBORValue mso = getMobileSecurityObject();
         return (VerifiedClaimMap) MdocUtils.createClaim(mso);
     }
 
-    private CBORMap getMobileSecurityObject() {
+    private CBORValue getMobileSecurityObject() {
         if (!cborPayload.isByteString()) {
             throw new IllegalInputException("COSE payload shall be encoded as a CBOR byte string!");
         }
         try {
-            CBORByteString payloadByteString = (CBORByteString) cborPayload;
-            CBORObject msoObject = CBORUtils.parseCbor(payloadByteString.getValueAsBytes());
-            if (!msoObject.isByteString()) {
-                throw new IllegalInputException("MobileSecurityObjectBytes shall be encoded as a CBOR byte string!");
+            CBORValue msoObject = CBORUtils.parseCbor(cborPayload.asBytes());
+            if (!msoObject.isTag() || msoObject.getTag().longValue() != CBORTags.ENCODED_CBOR) {
+                throw new IllegalInputException("MobileSecurityObjectBytes shall be encoded as a tagged CBOR byte string with tag 6.24!");
             }
-            return new CBORMap((CBORByteString) msoObject);
+            msoObject = msoObject.getTaggedValue();
+            if (!msoObject.isByteString()) {
+                throw new IllegalInputException("MobileSecurityObjectBytes shall be encoded as a tagged CBOR byte string!");
+            }
+            return CBOR.decodeFromBytes(msoObject.asBytes());
 
         } catch (Exception e) {
             throw new IllegalInputException(String.format(

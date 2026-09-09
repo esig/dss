@@ -20,11 +20,11 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.creation;
 
-import eu.europa.esig.dss.cbades.cbor.CBORMap;
-import eu.europa.esig.dss.cbades.cbor.CBORUtils;
-import eu.europa.esig.dss.cbades.signature.CBAdESSignatureParameters;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.attestation.mdoc.MdocConstants;
 import eu.europa.esig.dss.attestation.mdoc.model.MdocDrivingPrivilege;
+import eu.europa.esig.dss.cbades.cbor.CBORUtils;
+import eu.europa.esig.dss.cbades.signature.CBAdESSignatureParameters;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
@@ -109,8 +109,8 @@ class MdocISOMdLDecoyDigestTest extends AbstractMdocIssuerSignedTestCreation {
     private Map<String, Long> getDigestMap(List<MdocIssuerSignedItem> disclosures) {
         Map<String, Long> digestMap = new HashMap<>();
         for (MdocIssuerSignedItem disclosure : disclosures) {
-            CBORMap element = (CBORMap) CBORUtils.parseCbor(disclosure.getIssuerSignedItemBytes().getValueAsBytes());
-            digestMap.put(element.getAsString("elementIdentifier"), element.getAsLong("digestID"));
+            CBORValue element = CBORUtils.parseCbor(disclosure.getIssuerSignedItemBytes().getTaggedValue().asBytes());
+            digestMap.put(element.getAsStringOrNull("elementIdentifier"), element.getAsIntegerOrNull("digestID").longValue());
         }
         return digestMap;
     }
@@ -118,8 +118,8 @@ class MdocISOMdLDecoyDigestTest extends AbstractMdocIssuerSignedTestCreation {
     private Map<String, String> getSaltMap(List<MdocIssuerSignedItem> disclosures) {
         Map<String, String> saltMap = new HashMap<>();
         for (MdocIssuerSignedItem disclosure : disclosures) {
-            CBORMap element = (CBORMap) CBORUtils.parseCbor(disclosure.getIssuerSignedItemBytes().getValueAsBytes());
-            saltMap.put(element.getAsString("elementIdentifier"), Utils.toBase64(element.getAsBinaries("random")));
+            CBORValue element = CBORUtils.parseCbor(disclosure.getIssuerSignedItemBytes().getTaggedValue().asBytes());
+            saltMap.put(element.getAsStringOrNull("elementIdentifier"), Utils.toBase64(element.getAsBytesOrNull("random")));
         }
         return saltMap;
     }

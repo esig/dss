@@ -27,7 +27,10 @@ import eu.europa.esig.dss.spi.DSSUtils;
 
 /**
  * A wrapper for a CBOR ByteString object implementation
+ *
+ * @deprecated since DSS 6.6. Switch to {@link eu.europa.ec.digit.cddl4j.cbor.CBORValue} instead.
  */
+@Deprecated
 public class CBORByteString extends AbstractCBORObject {
 
     /**
@@ -52,12 +55,12 @@ public class CBORByteString extends AbstractCBORObject {
      * @param byteString {@link CBORValue}
      */
     public CBORByteString(final CBORValue byteString) {
-        super(requireTypeOf(byteString, CBORType.BYTE_STRING));;
+        super(requireTypeOf(byteString, CBORType.BYTE_STRING));
     }
 
     @Override
     public byte[] getValueAsBytes() {
-        return getCBORValue().asByteString();
+        return getCBORValue().asBytes();
     }
 
 }

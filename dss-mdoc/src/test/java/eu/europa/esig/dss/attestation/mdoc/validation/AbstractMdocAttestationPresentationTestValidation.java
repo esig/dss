@@ -20,17 +20,17 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.validation;
 
+import eu.europa.esig.dss.attestation.common.validation.AbstractAttestationPresentationTestValidation;
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationDocument;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationPresentationInfo;
-import eu.europa.esig.dss.attestation.common.validation.AbstractAttestationPresentationTestValidation;
+import eu.europa.esig.dss.enumerations.AttestationDocumentFormat;
 import eu.europa.esig.dss.enumerations.AttestationProfile;
 import eu.europa.esig.dss.enumerations.COSESignatureType;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
-import eu.europa.esig.dss.enumerations.AttestationDocumentFormat;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;

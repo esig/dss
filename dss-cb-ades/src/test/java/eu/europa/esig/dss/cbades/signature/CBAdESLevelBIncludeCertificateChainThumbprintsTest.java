@@ -20,13 +20,12 @@
  */
 package eu.europa.esig.dss.cbades.signature;
 
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.COSEConstants;
 import eu.europa.esig.dss.cbades.COSEHeaderParameter;
 import eu.europa.esig.dss.cbades.COSEProtectedHeader;
 import eu.europa.esig.dss.cbades.COSESign;
 import eu.europa.esig.dss.cbades.COSESignStructure;
-import eu.europa.esig.dss.cbades.cbor.CBORArray;
-import eu.europa.esig.dss.cbades.cbor.CBORObject;
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
@@ -45,6 +44,7 @@ import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import org.junit.jupiter.api.BeforeEach;
 
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 
@@ -96,35 +96,32 @@ class CBAdESLevelBIncludeCertificateChainThumbprintsTest extends AbstractCBAdEST
     }
 
     private void assertRequirementsValid(COSEProtectedHeader protectedHeader) {
-        CBORArray x5t = protectedHeader.getAsArray(COSEHeaderParameter.X5T.cbor());
+        CBORValue x5t = protectedHeader.getValue().getAsArrayOrNull(COSEHeaderParameter.X5T.cbor());
         assertNull(x5t);
 
-        CBORArray x5ts = protectedHeader.getAsArray(COSEHeaderParameter.X5TS.cbor());
+        CBORValue x5ts = protectedHeader.getValue().getAsArrayOrNull(COSEHeaderParameter.X5TS.cbor());
         assertNotNull(x5ts);
-        assertEquals(2, x5ts.getSize());
+        assertEquals(2, x5ts.size());
 
-        for (CBORObject cborObject : x5ts.getValueAsList()) {
-            assertTrue(cborObject.isArray());
-            assertInstanceOf(CBORArray.class, cborObject);
+        for (CBORValue x5tItem : x5ts.getElements()) {
+            assertTrue(x5tItem.isArray());
 
-            CBORArray x5tItem = (CBORArray) cborObject;
-
-            Long algId = x5tItem.getAsLongOrString(COSEConstants.COSE_CERT_HASH_ALG);
+            BigInteger algId = x5tItem.getAsIntegerOrNull(COSEConstants.COSE_CERT_HASH_ALG);
             assertNotNull(algId);
-            DigestAlgorithm digestAlgorithm = DigestAlgorithm.forCOSE(algId);
+            DigestAlgorithm digestAlgorithm = DigestAlgorithm.forCOSE(algId.longValue());
             assertEquals(getSignatureParameters().getSigningCertificateDigestMethod(), digestAlgorithm);
 
-            byte[] hashValue = x5tItem.getAsBinaries(COSEConstants.COSE_CERT_HASH_VALUE);
+            byte[] hashValue = x5tItem.getAsBytesOrNull(COSEConstants.COSE_CERT_HASH_VALUE);
             assertNotNull(hashValue);
         }
 
-        CBORArray x5chain = protectedHeader.getAsArray(COSEHeaderParameter.X5CHAIN.cbor());
+        CBORValue x5chain = protectedHeader.getValue().getAsArrayOrNull(COSEHeaderParameter.X5CHAIN.cbor());
         assertNotNull(x5chain);
-        assertEquals(2, x5chain.getSize());
+        assertEquals(2, x5chain.size());
 
-        for (CBORObject cborObject : x5chain.getValueAsList()) {
-            assertTrue(cborObject.isByteString());
-            assertNotNull(cborObject.getValueAsBytes());
+        for (CBORValue cborValue : x5chain.getElements()) {
+            assertTrue(cborValue.isByteString());
+            assertNotNull(cborValue.asBytes());
         }
     }
 

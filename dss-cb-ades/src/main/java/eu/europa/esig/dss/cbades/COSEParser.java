@@ -23,9 +23,8 @@ package eu.europa.esig.dss.cbades;
 import eu.europa.ec.digit.cddl4j.cbor.CBORDecodeException;
 import eu.europa.ec.digit.cddl4j.cbor.CBORInspector;
 import eu.europa.ec.digit.cddl4j.cbor.CBORMajorType;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.cbor.CBORArray;
-import eu.europa.esig.dss.cbades.cbor.CBORByteString;
-import eu.europa.esig.dss.cbades.cbor.CBORMap;
 import eu.europa.esig.dss.cbades.cbor.CBORObject;
 import eu.europa.esig.dss.cbades.cbor.CBORUtils;
 import eu.europa.esig.dss.enumerations.COSESignatureType;
@@ -55,9 +54,20 @@ public class COSEParser extends AbstractCOSEParser {
      * The constructor to parse a CBORObject
      *
      * @param cborObject {@link CBORObject} to parse
+     * @deprecated since DSS 6.6. Use {@link }
      */
+    @Deprecated
     protected COSEParser(CBORObject cborObject) {
         super(cborObject);
+    }
+
+    /**
+     * The constructor to parse a CBORObject
+     *
+     * @param cborValue {@link CBORValue} to parse
+     */
+    protected COSEParser(CBORValue cborValue) {
+        super(cborValue);
     }
 
     /**
@@ -71,7 +81,7 @@ public class COSEParser extends AbstractCOSEParser {
         if (!isSupported(document)) {
             throw new IllegalInputException("Document is not of a COSE signature type!");
         }
-        return fromCBORObject(parseCbor(document));
+        return fromCBORValue(parseCbor(document));
     }
 
     /**
@@ -79,10 +89,23 @@ public class COSEParser extends AbstractCOSEParser {
      *
      * @param cborObject {@link CBORObject} to parse
      * @return {@link COSEParser}
+     * @deprecated since DSS 6.6. Use {@link #fromCBORValue(CBORValue)} instead.
      */
+    @Deprecated
     public static COSEParser fromCBORObject(CBORObject cborObject) {
         Objects.requireNonNull(cborObject, "CBORObject cannot be null!");
         return new COSEParser(cborObject);
+    }
+
+    /**
+     * Instantiates a COSEParser from a {@code CBORValue}
+     *
+     * @param cborValue {@link CBORValue} to parse
+     * @return {@link COSEParser}
+     */
+    public static COSEParser fromCBORValue(CBORValue cborValue) {
+        Objects.requireNonNull(cborValue, "CBORValue cannot be null!");
+        return new COSEParser(cborValue);
     }
 
     /**
@@ -93,7 +116,7 @@ public class COSEParser extends AbstractCOSEParser {
      */
     public static COSEParser fromBinaries(byte[] cborBinaries) {
         Objects.requireNonNull(cborBinaries, "CBOR Binaries cannot be null!");
-        return fromCBORObject(CBORUtils.parseCbor(cborBinaries));
+        return fromCBORValue(CBORUtils.parseCbor(cborBinaries));
     }
 
     /**
@@ -188,60 +211,64 @@ public class COSEParser extends AbstractCOSEParser {
      * @return {@link COSESignStructure}
      */
     public COSESignStructure parse() {
-        if (!cborObject.isArray()) {
+        CBORValue coseSignStructure = cborValue;
+        if (cborValue.isTag()) {
+            coseSignStructure = cborValue.getTaggedValue();
+        }
+
+        if (!coseSignStructure.isArray()) {
             throw new IllegalInputException("A COSE signature shall be represented by a CBOR Array type!");
         }
-        CBORArray cborArray = (CBORArray) cborObject;
-        if (cborObject.isTagged()) {
-            if (COSESignatureType.COSE_SIGN.getTag() == cborArray.getTag().getValue()) {
-                return parseCOSESign(cborArray);
-            } else if (COSESignatureType.COSE_SIGN1.getTag() == cborArray.getTag().getValue()) {
-                return parseCOSESign1(cborArray);
+        if (cborValue.isTag()) {
+            if (COSESignatureType.COSE_SIGN.getTag() == cborValue.getTag().longValue()) {
+                return parseCOSESign(coseSignStructure, true);
+            } else if (COSESignatureType.COSE_SIGN1.getTag() == cborValue.getTag().longValue()) {
+                return parseCOSESign1(coseSignStructure, true);
             }
             throw new UnsupportedOperationException(String.format(
-                    "The tag '%s' is not supported for COSE signature structure!", cborArray.getTag().getValue()));
+                    "The tag '%s' is not supported for COSE signature structure!", cborValue.getTag().longValue()));
 
         } else {
             // untagged
-            assertValidCOSEStructure(cborArray);
-            if (isCOSESign(cborArray)) {
-                return parseCOSESign(cborArray);
+            assertValidCOSEStructure(coseSignStructure);
+            if (isCOSESign(coseSignStructure)) {
+                return parseCOSESign(coseSignStructure, false);
             } else {
                 // COSE_Sign1
-                return parseCOSESign1(cborArray);
+                return parseCOSESign1(coseSignStructure, false);
             }
         }
     }
 
-    private COSESign parseCOSESign(CBORArray cborArray) {
-        List<CBORObject> arrayEntries = cborArray.getValueAsList();
+    private COSESign parseCOSESign(CBORValue cborArray, boolean tagged) {
+        List<CBORValue> arrayEntries = cborArray.getElements();
         if (Utils.collectionSize(arrayEntries) != 4) {
             throw new IllegalInputException("COSE_Sign array must have 4 entries!");
         }
-        CBORObject protectedHeaderItem = arrayEntries.get(0);
+        CBORValue protectedHeaderItem = arrayEntries.get(0);
         if (!protectedHeaderItem.isByteString()) {
             throw new IllegalInputException("COSE_Sign.protected header must be a bstr!");
         }
-        CBORObject unprotectedHeaderItem = arrayEntries.get(1);
+        CBORValue unprotectedHeaderItem = arrayEntries.get(1);
         if (!unprotectedHeaderItem.isMap()) {
             throw new IllegalInputException("COSE_Sign.unprotected header must be a header map!");
         }
-        CBORObject payloadItem = arrayEntries.get(2);
+        CBORValue payloadItem = arrayEntries.get(2);
         if (payloadItem != null && !payloadItem.isByteString() && !payloadItem.isNull()) {
             throw new IllegalInputException("COSE_Sign.payload must be a bstr or nil!");
         }
-        CBORObject signaturesArray = arrayEntries.get(3);
+        CBORValue signaturesArray = arrayEntries.get(3);
         if (!signaturesArray.isArray()) {
             throw new IllegalInputException("COSE_Sign1.signature must be an array!");
         }
 
         final COSESign coseSign = new COSESign();
-        coseSign.setTagged(cborArray.isTagged());
-        coseSign.setProtectedHeader(new COSEProtectedHeader((CBORByteString) protectedHeaderItem));
-        coseSign.setUnprotectedHeader(new COSEUnprotectedHeader((CBORMap) unprotectedHeaderItem));
+        coseSign.setTagged(tagged);
+        coseSign.setProtectedHeader(new COSEProtectedHeader(protectedHeaderItem));
+        coseSign.setUnprotectedHeader(new COSEUnprotectedHeader(unprotectedHeaderItem));
         coseSign.setPayload(payloadItem);
 
-        List<COSESignature> coseSignatures = parseSignatures((CBORArray) signaturesArray);
+        List<COSESignature> coseSignatures = parseSignatures(signaturesArray);
         coseSignatures.forEach(s -> s.setParent(coseSign));
         coseSign.setSignatures(coseSignatures);
 
@@ -253,99 +280,110 @@ public class COSEParser extends AbstractCOSEParser {
      *
      * @param signaturesArray {@link CBORArray} to parse
      * @return a list of {@link COSESignature}s
+     * @deprecated since DSS 6.6. Use {@link #parseSignatures(CBORValue)}.
      */
+    @Deprecated
     protected List<COSESignature> parseSignatures(CBORArray signaturesArray) {
-        if (signaturesArray.isEmpty()) {
+        return parseSignatures(signaturesArray.toCBORValue());
+    }
+
+    /**
+     * Parses a CBOR array containing COSESignature's
+     *
+     * @param signaturesArray {@link CBORValue} to parse
+     * @return a list of {@link COSESignature}s
+     */
+    protected List<COSESignature> parseSignatures(CBORValue signaturesArray) {
+        if (signaturesArray.size() == 0) {
             throw new IllegalInputException("COSE_Sign.signatures array is empty!");
         }
         final List<COSESignature> signatures = new ArrayList<>();
-        for (CBORObject cborObject : signaturesArray.getValueAsList()) {
-            signatures.add(parseSignature(cborObject));
+        for (CBORValue cborValue : signaturesArray.getElements()) {
+            signatures.add(parseSignature(cborValue));
         }
         return signatures;
     }
 
-    private COSESignature parseSignature(CBORObject coseSignatureItem) {
+    private COSESignature parseSignature(CBORValue coseSignatureItem) {
         if (!coseSignatureItem.isArray()) {
             throw new IllegalInputException("COSE_Sign.signatures COSE_Signature entry must be an array!");
         }
-        CBORArray cborArray = (CBORArray) coseSignatureItem;
-        List<CBORObject> arrayItems = cborArray.getValueAsList();
+        List<CBORValue> arrayItems = coseSignatureItem.getElements();
         if (Utils.collectionSize(arrayItems) != 3) {
             throw new IllegalInputException("COSE_Sign.signatures COSE_Signature array must have 3 entries!");
         }
-        CBORObject protectedHeaderItem = arrayItems.get(0);
+        CBORValue protectedHeaderItem = arrayItems.get(0);
         if (!protectedHeaderItem.isByteString()) {
             throw new IllegalInputException("COSE_Signature.protected header must be a bstr!");
         }
-        CBORObject unprotectedHeaderItem = arrayItems.get(1);
+        CBORValue unprotectedHeaderItem = arrayItems.get(1);
         if (!unprotectedHeaderItem.isMap()) {
             throw new IllegalInputException("COSE_Signature.unprotected header must be a header map!");
         }
-        CBORObject signatureItem = arrayItems.get(2);
+        CBORValue signatureItem = arrayItems.get(2);
         if (!signatureItem.isByteString()) {
             throw new IllegalInputException("COSE_Signature.signature must be a bstr!");
         }
         final COSESignature coseSignature = new COSESignature();
-        coseSignature.setProtectedHeader(new COSEProtectedHeader((CBORByteString) protectedHeaderItem));
-        coseSignature.setUnprotectedHeader(new COSEUnprotectedHeader((CBORMap) unprotectedHeaderItem));
-        coseSignature.setSignature((CBORByteString) signatureItem);
+        coseSignature.setProtectedHeader(new COSEProtectedHeader(protectedHeaderItem));
+        coseSignature.setUnprotectedHeader(new COSEUnprotectedHeader(unprotectedHeaderItem));
+        coseSignature.setSignature(signatureItem);
         return coseSignature;
     }
 
-    private COSESign1 parseCOSESign1(CBORArray cborArray) {
-        List<CBORObject> arrayItems = cborArray.getValueAsList();
+    private COSESign1 parseCOSESign1(CBORValue cborArray, boolean tagged) {
+        List<CBORValue> arrayItems = cborArray.getElements();
         if (Utils.collectionSize(arrayItems) != 4) {
             throw new IllegalInputException("COSE_Sign1 array must have 4 entries!");
         }
-        CBORObject protectedHeaderItem = arrayItems.get(0);
+        CBORValue protectedHeaderItem = arrayItems.get(0);
         if (!protectedHeaderItem.isByteString()) {
             throw new IllegalInputException("COSE_Sign1.protected header must be a bstr!");
         }
-        CBORObject unprotectedHeaderItem = arrayItems.get(1);
+        CBORValue unprotectedHeaderItem = arrayItems.get(1);
         if (!unprotectedHeaderItem.isMap()) {
             throw new IllegalInputException("COSE_Sign1.unprotected header must be a header map!");
         }
-        CBORObject payloadItem = arrayItems.get(2);
+        CBORValue payloadItem = arrayItems.get(2);
         if (!payloadItem.isByteString() && !payloadItem.isNull()) {
             throw new IllegalInputException("COSE_Sign1.payload must be a bstr or nil!");
         }
-        CBORObject signatureItem = arrayItems.get(3);
+        CBORValue signatureItem = arrayItems.get(3);
         if (!signatureItem.isByteString()) {
             throw new IllegalInputException("COSE_Sign1.signature must be a bstr!");
         }
 
         final COSESign1 coseSign1 = new COSESign1();
-        coseSign1.setTagged(cborArray.isTagged());
-        coseSign1.setProtectedHeader(new COSEProtectedHeader((CBORByteString) protectedHeaderItem));
-        coseSign1.setUnprotectedHeader(new COSEUnprotectedHeader((CBORMap) unprotectedHeaderItem));
+        coseSign1.setTagged(tagged);
+        coseSign1.setProtectedHeader(new COSEProtectedHeader(protectedHeaderItem));
+        coseSign1.setUnprotectedHeader(new COSEUnprotectedHeader(unprotectedHeaderItem));
         coseSign1.setPayload(payloadItem);
-        coseSign1.setSignature((CBORByteString) signatureItem);
+        coseSign1.setSignature(signatureItem);
         return coseSign1;
     }
 
-    private void assertValidCOSEStructure(CBORArray cborArray) {
-        List<CBORObject> arrayItems = cborArray.getValueAsList();
+    private void assertValidCOSEStructure(CBORValue cborArray) {
+        List<CBORValue> arrayItems = cborArray.getElements();
         if (Utils.collectionSize(arrayItems) != 4) {
             throw new IllegalInputException("COSE structure array must have 4 entries!");
         }
-        CBORObject protectedHeaderItem = arrayItems.get(0);
+        CBORValue protectedHeaderItem = arrayItems.get(0);
         if (!protectedHeaderItem.isByteString()) {
             throw new IllegalInputException("COSE structure protected header must be a bstr!");
         }
-        CBORObject unprotectedHeaderItem = arrayItems.get(1);
+        CBORValue unprotectedHeaderItem = arrayItems.get(1);
         if (!unprotectedHeaderItem.isMap()) {
             throw new IllegalInputException("COSE structure unprotected header must be a header map!");
         }
-        CBORObject payloadItem = arrayItems.get(2);
+        CBORValue payloadItem = arrayItems.get(2);
         if (!payloadItem.isByteString() && !payloadItem.isNull()) {
             throw new IllegalInputException("COSE structure payload must be a bstr or nil!");
         }
     }
 
-    private boolean isCOSESign(CBORArray cborArray) {
-        List<CBORObject> arrayItems = cborArray.getValueAsList();
-        CBORObject signaturesItem = arrayItems.get(3);
+    private boolean isCOSESign(CBORValue cborArray) {
+        List<CBORValue> arrayItems = cborArray.getElements();
+        CBORValue signaturesItem = arrayItems.get(3);
         if (signaturesItem.isArray()) {
             // COSE_Sign
             return true;

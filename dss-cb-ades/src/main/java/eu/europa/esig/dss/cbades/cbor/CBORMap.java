@@ -34,7 +34,9 @@ import java.util.Set;
 /**
  * Internal wrapper of a CBOR Map object
  *
+ * @deprecated since DSS 6.6. Switch to {@link eu.europa.ec.digit.cddl4j.cbor.CBORValue} instead.
  */
+@Deprecated
 public class CBORMap extends AbstractCBORObject {
 
     /** Serialized map */
@@ -97,7 +99,7 @@ public class CBORMap extends AbstractCBORObject {
      * @return TRUE if the map contains the header for the given key, FALSE otherwise
      */
     public boolean containsKey(CBORObject key) {
-        return toCBORValue().getKeys().contains(CBORObjectFactory.toCBORValue(key));
+        return toCBORValue().getKeys().contains(CBORValueFactory.toCBORValue(key));
     }
 
     /**
@@ -107,7 +109,7 @@ public class CBORMap extends AbstractCBORObject {
      * @return {@link CBORObject}
      */
     public CBORObject getHeader(Object key) {
-        CBORValue cborValue = getCBORValue().get(CBORObjectFactory.toCBORValue(key));
+        CBORValue cborValue = getCBORValue().get(CBORValueFactory.toCBORValue(key));
         if (cborValue != null) {
             return CBORObjectFactory.toCBORObject(cborValue);
         }
@@ -251,7 +253,7 @@ public class CBORMap extends AbstractCBORObject {
      * @param cborValue {@link Object} representing the header value
      */
     public void put(Object key, Object cborValue) {
-        getCBORValue().editMap().put(CBORObjectFactory.toCBORValue(key), CBORObjectFactory.toCBORValue(cborValue));
+        getCBORValue().editMap().put(CBORValueFactory.toCBORValue(key), CBORValueFactory.toCBORValue(cborValue));
         clearSerializedBytes();
     }
 
@@ -261,7 +263,7 @@ public class CBORMap extends AbstractCBORObject {
      * @param key {@link Object} value of the key
      */
     public void remove(Object key) {
-        getCBORValue().editMap().remove(CBORObjectFactory.toCBORValue(key));
+        getCBORValue().editMap().remove(CBORValueFactory.toCBORValue(key));
         clearSerializedBytes();
     }
 

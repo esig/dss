@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.cbades.validation;
 
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.cbor.CBORObject;
 import eu.europa.esig.dss.spi.validation.SignatureAttribute;
 
@@ -34,10 +35,10 @@ public class CBAdESAttribute implements SignatureAttribute {
     private static final long serialVersionUID = 4718268120160172246L;
 
     /** Id of the header */
-    protected CBORObject headerId;
+    protected CBORValue headerId;
 
     /** The header's value */
-    protected CBORObject value;
+    protected CBORValue value;
 
     /** Identifies the instance */
     protected CBAdESAttributeIdentifier identifier;
@@ -47,8 +48,20 @@ public class CBAdESAttribute implements SignatureAttribute {
      *
      * @param headerId {@link CBORObject} header id
      * @param value {@link CBORObject} value
+     * @deprecated since DSS 6.6. Use {@link CBAdESAttribute(CBORValue, CBORValue)}.
      */
+    @Deprecated
     public CBAdESAttribute(CBORObject headerId, CBORObject value) {
+        this(headerId.toCBORValue(), value.toCBORValue());
+    }
+
+    /**
+     * Default constructor
+     *
+     * @param headerId {@link CBORValue} header id
+     * @param value {@link CBORValue} value
+     */
+    public CBAdESAttribute(CBORValue headerId, CBORValue value) {
         this.headerId = headerId;
         this.value = value;
     }
@@ -56,9 +69,9 @@ public class CBAdESAttribute implements SignatureAttribute {
     /**
      * Gets the header's id
      *
-     * @return {@link CBORObject}
+     * @return {@link CBORValue}
      */
-    public CBORObject getHeaderId() {
+    public CBORValue getHeaderId() {
         return headerId;
     }
 
@@ -67,7 +80,7 @@ public class CBAdESAttribute implements SignatureAttribute {
      *
      * @return value
      */
-    public CBORObject getValue() {
+    public CBORValue getValue() {
         return value;
     }
 

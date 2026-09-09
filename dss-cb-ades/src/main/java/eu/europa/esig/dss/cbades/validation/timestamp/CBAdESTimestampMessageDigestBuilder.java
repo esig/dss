@@ -21,19 +21,17 @@
 package eu.europa.esig.dss.cbades.validation.timestamp;
 
 import eu.europa.ec.digit.cddl4j.cbor.CBOR;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.CBAdESUtils;
 import eu.europa.esig.dss.cbades.COSEHeaderParameter;
 import eu.europa.esig.dss.cbades.COSEProtectedHeader;
-import eu.europa.esig.dss.enumerations.COSESignatureType;
-import eu.europa.esig.dss.cbades.cbor.CBORArray;
-import eu.europa.esig.dss.cbades.cbor.CBORByteString;
-import eu.europa.esig.dss.cbades.cbor.CBORObject;
 import eu.europa.esig.dss.cbades.cbor.CBORUtils;
 import eu.europa.esig.dss.cbades.validation.CBAdESAttribute;
 import eu.europa.esig.dss.cbades.validation.CBAdESSignature;
 import eu.europa.esig.dss.cbades.validation.CBAdESUHeaders;
 import eu.europa.esig.dss.cbades.validation.CBAdESUHeadersComponent;
 import eu.europa.esig.dss.cbades.validation.CBORSignature;
+import eu.europa.esig.dss.enumerations.COSESignatureType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SigDMechanism;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -181,15 +179,15 @@ public class CBAdESTimestampMessageDigestBuilder implements TimestampMessageDige
     }
 
     private void writePayloadByteString(DSSMessageDigestCalculator digestCalculator) {
-        digestCalculator.update(CBORUtils.serializeCborObject(getPayload()));
+        digestCalculator.update(CBORUtils.serializeCbor(getPayload()));
     }
 
-    private CBORByteString getPayload() {
-        CBORObject payload = signature.getCoseSignature().getPayload();
+    private CBORValue getPayload() {
+        CBORValue payload = signature.getCoseSignature().getPayload();
         if (payload == null || !payload.isByteString()) {
             throw new DSSException("Unable to extract COSE payload or payload has an invalid type!");
         }
-        return (CBORByteString) payload;
+        return payload;
     }
 
     private void writeSigDReferencedOctets(DSSMessageDigestCalculator digestCalculator, SigDMechanism sigDMechanism) throws IOException {
@@ -208,13 +206,13 @@ public class CBAdESTimestampMessageDigestBuilder implements TimestampMessageDige
         }
     }
 
-    private CBORByteString getSigDReferencedOctets( SigDMechanism sigDMechanism) {
+    private CBORValue getSigDReferencedOctets( SigDMechanism sigDMechanism) {
         switch (sigDMechanism) {
             case OBJECT_ID_BY_URI:
             case OBJECT_ID_BY_URI_HASH:
                 List<DSSDocument> documentList = signature.getSignedDocumentsForObjectIdByUriMechanism();
                 byte[] documentOctets = CBAdESUtils.concatenateDSSDocuments(documentList);
-                return new CBORByteString(documentOctets);
+                return CBOR.bytes(documentOctets);
             default:
                 throw new DSSException(String.format("Unsupported SigDMechanism '%s' has been found!", sigDMechanism));
         }
@@ -268,7 +266,7 @@ public class CBAdESTimestampMessageDigestBuilder implements TimestampMessageDige
             /*
              * 1) Initialize an empty CBOR array.
              */
-            final CBORArray array = new CBORArray();
+            final CBORValue.CBORArrayEditor array = CBOR.array();
 
             /*
              * 2) Add the CBOR byte string in the signature component.
@@ -309,7 +307,7 @@ public class CBAdESTimestampMessageDigestBuilder implements TimestampMessageDige
             /*
              * 5) Encode the generated CBOR array in a CBOR byte string.
              */
-            byte[] serializedCborObject = CBORUtils.serializeCborObject(array);
+            byte[] serializedCborObject = CBORUtils.serializeCbor(array.value());
             if (LOG.isTraceEnabled()) {
                 LOG.trace("The 'sigRTst' timestamp message-imprint : {}", Utils.toBase64(serializedCborObject));
             }
@@ -338,7 +336,7 @@ public class CBAdESTimestampMessageDigestBuilder implements TimestampMessageDige
             /*
              * 1) Initialize an empty CBOR array.
              */
-            final CBORArray array = new CBORArray();
+            final CBORValue.CBORArrayEditor array = CBOR.array();
 
             /*
              * 2) If the CB-AdES signature is built on the COSE_Sign structure, take those elements
@@ -375,7 +373,7 @@ public class CBAdESTimestampMessageDigestBuilder implements TimestampMessageDige
              * 4) Encode the generated CBOR array in a CBOR byte string.
              */
 
-            byte[] serializedCborObject = CBORUtils.serializeCborObject(array);
+            byte[] serializedCborObject = CBORUtils.serializeCbor(array.value());
             if (LOG.isTraceEnabled()) {
                 LOG.trace("The 'refTst' timestamp message-imprint : {}", Utils.toBase64(serializedCborObject));
             }
@@ -410,7 +408,7 @@ public class CBAdESTimestampMessageDigestBuilder implements TimestampMessageDige
              *
              * 1) Initialize an empty CBOR array.
              */
-            final CBORArray array = new CBORArray();
+            final CBORValue.CBORArrayEditor array = CBOR.array();
 
             /*
              * 2) Add a context text string, whose value shall be either:
@@ -430,7 +428,7 @@ public class CBAdESTimestampMessageDigestBuilder implements TimestampMessageDige
              */
             COSEProtectedHeader bodyProtectedHeader = cose.getBodyProtectedHeader();
             if (bodyProtectedHeader != null && !bodyProtectedHeader.isEmpty()) {
-                array.add(bodyProtectedHeader.getByteString());
+                array.add(bodyProtectedHeader.asByteString());
             } else {
                 array.add(CBORUtils.EMPTY_BYTE_STRING);
             }
@@ -444,7 +442,7 @@ public class CBAdESTimestampMessageDigestBuilder implements TimestampMessageDige
             if (COSESignatureType.COSE_SIGN == context) {
                 COSEProtectedHeader signerProtectedHeader = cose.getSignerProtectedHeader();
                 if (signerProtectedHeader != null && !signerProtectedHeader.isEmpty()) {
-                    array.add(signerProtectedHeader.getByteString());
+                    array.add(signerProtectedHeader.asByteString());
                 } else {
                     array.add(CBORUtils.EMPTY_BYTE_STRING);
                 }
@@ -454,7 +452,7 @@ public class CBAdESTimestampMessageDigestBuilder implements TimestampMessageDige
              * 5) Add the externally supplied data from the application, encapsulated in a CBOR byte string.
              * If no data is externally supplied to the application, add a zero-length CBOR byte string.
              */
-            CBORByteString externallySuppliedData = cose.getExternallySuppliedData();
+            CBORValue externallySuppliedData = cose.getExternallySuppliedData();
             if (externallySuppliedData != null) {
                 array.add(externallySuppliedData);
             } else {
@@ -486,7 +484,7 @@ public class CBAdESTimestampMessageDigestBuilder implements TimestampMessageDige
              * 8) If the CB-AdES signature is built on a version 2 counter signature defined in
              * IETF RFC 9338 [6], add other_fields CBOR array, as defined in clause 3.3 of IETF RFC 9338 [6].
              */
-            CBORObject otherFields = cose.getOtherFields();
+            CBORValue otherFields = cose.getOtherFields();
             if (context.isCounterSignatureV2() && otherFields != null) {
                 array.add(otherFields);
             }
@@ -524,7 +522,7 @@ public class CBAdESTimestampMessageDigestBuilder implements TimestampMessageDige
             /*
              * 12) Encode the generated CBOR array in a CBOR byte string.
              */
-            byte[] serializedCborObject = CBORUtils.serializeCborObject(array);
+            byte[] serializedCborObject = CBORUtils.serializeCbor(array.value());
             if (LOG.isTraceEnabled()) {
                 LOG.trace("The 'arcTst' timestamp message-imprint : {}", Utils.toBase64(serializedCborObject));
             }
@@ -543,14 +541,14 @@ public class CBAdESTimestampMessageDigestBuilder implements TimestampMessageDige
         return DSSMessageDigest.createEmptyDigest();
     }
 
-    private List<CBAdESUHeadersComponent> getUHeadersToBeCovered(CBAdESUHeaders uHeaders, CBORObject... allowedTypes) {
+    private List<CBAdESUHeadersComponent> getUHeadersToBeCovered(CBAdESUHeaders uHeaders, CBORValue... allowedTypes) {
         if (uHeaders != null && uHeaders.isExist()) {
             return uHeaders.getAttributes().stream().filter(h -> isAllowedTypeEntry(h, allowedTypes)).collect(Collectors.toList());
         }
         return Collections.emptyList();
     }
 
-    private boolean isAllowedTypeEntry(CBAdESUHeadersComponent uHeaderComponent, CBORObject... allowedTypes) {
+    private boolean isAllowedTypeEntry(CBAdESUHeadersComponent uHeaderComponent, CBORValue... allowedTypes) {
         return Arrays.asList(allowedTypes).contains(uHeaderComponent.getHeaderId());
     }
     

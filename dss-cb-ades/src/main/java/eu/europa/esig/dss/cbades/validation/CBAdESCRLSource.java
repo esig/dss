@@ -20,11 +20,9 @@
  */
 package eu.europa.esig.dss.cbades.validation;
 
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.CBAdESUtils;
 import eu.europa.esig.dss.cbades.COSEHeaderParameter;
-import eu.europa.esig.dss.cbades.cbor.CBORArray;
-import eu.europa.esig.dss.cbades.cbor.CBORMap;
-import eu.europa.esig.dss.cbades.cbor.CBORObject;
 import eu.europa.esig.dss.crl.CRLUtils;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
@@ -69,25 +67,24 @@ public class CBAdESCRLSource extends OfflineCRLSource {
 
     private void extractValidationData(CBAdESAttribute attribute) {
         if (COSEHeaderParameter.VAL_DATA.cbor().equals(attribute.getHeaderId())) {
-            CBORObject valData = attribute.getValue();
+            CBORValue valData = attribute.getValue();
             if (valData.isMap()) {
-                CBORMap valDataMap = (CBORMap) valData;
-                CBORMap rVals = valDataMap.getAsMap(COSEHeaderParameter.VAL_DATA_R_VALS.cbor());
-                if (rVals != null && !rVals.isEmpty()) {
+                CBORValue rVals = valData.getAsMapOrNull(COSEHeaderParameter.VAL_DATA_R_VALS.cbor());
+                if (rVals != null && rVals.size() != 0) {
                     extractRevocationValues(rVals, RevocationOrigin.ANY_VALIDATION_DATA);
                 }
             } else {
-                LOG.warn("The value of header 'valData' shall be represented by a CBOR Map! Entry is skilled.");
+                LOG.warn("The value of header 'valData' shall be represented by a CBOR Map! Entry is skipped.");
             }
         }
     }
 
-    private void extractRevocationValues(CBORMap rVals, RevocationOrigin origin) {
-        CBORArray crlVals = rVals.getAsArray(COSEHeaderParameter.R_VALS_CRL_VALS.cbor());
-        if (crlVals != null && !crlVals.isEmpty()) {
-            for (CBORObject pkiOb : crlVals.getValueAsList()) {
+    private void extractRevocationValues(CBORValue rVals, RevocationOrigin origin) {
+        CBORValue crlVals = rVals.getAsArrayOrNull(COSEHeaderParameter.R_VALS_CRL_VALS.cbor());
+        if (crlVals != null && crlVals.size() != 0) {
+            for (CBORValue pkiOb : crlVals.getElements()) {
                 if (pkiOb.isMap()) {
-                    extractCRL((CBORMap) pkiOb, origin);
+                    extractCRL(pkiOb, origin);
                 } else {
                     LOG.warn("The header 'pkiOb' shall be represented by a CBOR Map! The entry is skipped.");
                 }
@@ -95,7 +92,7 @@ public class CBAdESCRLSource extends OfflineCRLSource {
         }
     }
 
-    private void extractCRL(CBORMap pkiOb, RevocationOrigin origin) {
+    private void extractCRL(CBORValue pkiOb, RevocationOrigin origin) {
         byte[] val = CBAdESUtils.extractDerEncodedPkiObject(pkiOb);
         if (Utils.isArrayNotEmpty(val)) {
             try {
@@ -108,26 +105,24 @@ public class CBAdESCRLSource extends OfflineCRLSource {
 
     private void extractCompleteRevocationRefs(CBAdESAttribute attribute) {
         if (COSEHeaderParameter.REFS.cbor().equals(attribute.getHeaderId())) {
-            CBORObject refs = attribute.getValue();
+            CBORValue refs = attribute.getValue();
             if (refs.isMap()) {
-                CBORMap refsMap = (CBORMap) refs;
-                CBORMap rRefs = refsMap.getAsMap(COSEHeaderParameter.REFS_R_REFS.cbor());
-                if (rRefs != null && !rRefs.isEmpty()) {
+                CBORValue rRefs = refs.getAsMapOrNull(COSEHeaderParameter.REFS_R_REFS.cbor());
+                if (rRefs != null && rRefs.size() != 0) {
                     extractRevocationRefs(rRefs, RevocationRefOrigin.COMPLETE_REVOCATION_REFS);
                 }
             } else {
-                LOG.warn("The value of header 'refs' shall be represented by a CBOR Map! Entry is skilled.");
+                LOG.warn("The value of header 'refs' shall be represented by a CBOR Map! Entry is skipped.");
             }
         }
     }
 
-    private void extractRevocationRefs(CBORMap rRefs, RevocationRefOrigin origin) {
-        CBORArray crlRefs = rRefs.getAsArray(COSEHeaderParameter.R_REFS_CRL_REF.cbor());
+    private void extractRevocationRefs(CBORValue rRefs, RevocationRefOrigin origin) {
+        CBORValue crlRefs = rRefs.getAsArrayOrNull(COSEHeaderParameter.R_REFS_CRL_REF.cbor());
         if (crlRefs != null) {
-            for (CBORObject crlRefObject : crlRefs.getValueAsList()) {
+            for (CBORValue crlRefObject : crlRefs.getElements()) {
                 if (crlRefObject.isMap()) {
-                    CBORMap crlRefMap = (CBORMap) crlRefObject;
-                    CRLRef crlRef = CBAdESUtils.createCRLRef(crlRefMap);
+                    CRLRef crlRef = CBAdESUtils.createCRLRef(crlRefObject);
                     if (crlRef != null) {
                         addRevocationReference(crlRef, origin);
                     }

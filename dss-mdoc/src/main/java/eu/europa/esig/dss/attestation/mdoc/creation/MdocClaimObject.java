@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.creation;
 
-import eu.europa.esig.dss.cbades.cbor.CBORMap;
-import eu.europa.esig.dss.cbades.cbor.CBORObject;
+import eu.europa.ec.digit.cddl4j.cbor.CBOR;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.attestation.common.creation.claim.AttestationClaimObject;
 
 import java.util.ArrayList;
@@ -194,12 +194,12 @@ public class MdocClaimObject extends MdocClaim implements AttestationClaimObject
     }
 
     @Override
-    public CBORObject getValueAsCbor() {
-        final CBORMap cborMap = new CBORMap();
+    public CBORValue getValueAsCbor() {
+        final CBORValue.CBORMapEditor cborMap = CBOR.map();
         for (MdocClaim child : getChildren()) {
             cborMap.put(child.getName(), child.getValueAsCbor());
         }
-        return cborMap;
+        return cborMap.value();
     }
 
     @Override

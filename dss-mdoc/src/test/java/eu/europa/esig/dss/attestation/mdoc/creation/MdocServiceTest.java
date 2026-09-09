@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.creation;
 
-import eu.europa.esig.dss.cbades.cbor.CBORMap;
+import eu.europa.ec.digit.cddl4j.cbor.CBOR;
+import eu.europa.esig.dss.attestation.mdoc.MdocConstants;
 import eu.europa.esig.dss.cbades.cbor.CBORUtils;
 import eu.europa.esig.dss.cbades.signature.CBAdESSignatureParameters;
-import eu.europa.esig.dss.attestation.mdoc.MdocConstants;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.EllipticCurve;
 import eu.europa.esig.dss.enumerations.SigDMechanism;
@@ -75,7 +75,7 @@ class MdocServiceTest extends PKIFactoryAccess {
 
     @Test
     void signAttestationWithDSSDocumentTest() {
-        DSSDocument cborPayload = new InMemoryDocument(CBORUtils.serializeCborObject(new CBORMap()), "payload.cbor");
+        DSSDocument cborPayload = new InMemoryDocument(CBORUtils.serializeCbor(CBOR.map().value()), "payload.cbor");
         DSSDocument nonCborPayload = new InMemoryDocument("not-cbor-content".getBytes(), "payload.txt");
         CBAdESSignatureParameters params = new CBAdESSignatureParameters();
         params.setDigestAlgorithm(DigestAlgorithm.SHA256);
@@ -183,6 +183,7 @@ class MdocServiceTest extends PKIFactoryAccess {
         for (MdocIssuerSignedItem disclosure : disclosures) {
             assertNotNull(disclosure.getNamespace());
             assertNotNull(disclosure.getIssuerSignedItemBytes());
+            assertNotNull(disclosure.getIssuerSignedItemBytes().getTaggedValue());
         }
     }
 

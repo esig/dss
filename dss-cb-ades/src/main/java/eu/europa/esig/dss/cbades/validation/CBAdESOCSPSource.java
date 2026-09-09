@@ -20,11 +20,9 @@
  */
 package eu.europa.esig.dss.cbades.validation;
 
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.CBAdESUtils;
 import eu.europa.esig.dss.cbades.COSEHeaderParameter;
-import eu.europa.esig.dss.cbades.cbor.CBORArray;
-import eu.europa.esig.dss.cbades.cbor.CBORMap;
-import eu.europa.esig.dss.cbades.cbor.CBORObject;
 import eu.europa.esig.dss.enumerations.RevocationOrigin;
 import eu.europa.esig.dss.enumerations.RevocationRefOrigin;
 import eu.europa.esig.dss.spi.DSSRevocationUtils;
@@ -71,25 +69,24 @@ public class CBAdESOCSPSource extends OfflineOCSPSource {
 
     private void extractValidationData(CBAdESAttribute attribute) {
         if (COSEHeaderParameter.VAL_DATA.cbor().equals(attribute.getHeaderId())) {
-            CBORObject valData = attribute.getValue();
+            CBORValue valData = attribute.getValue();
             if (valData.isMap()) {
-                CBORMap valDataMap = (CBORMap) valData;
-                CBORMap rVals = valDataMap.getAsMap(COSEHeaderParameter.VAL_DATA_R_VALS.cbor());
-                if (rVals != null && !rVals.isEmpty()) {
+                CBORValue rVals = valData.getAsMapOrNull(COSEHeaderParameter.VAL_DATA_R_VALS.cbor());
+                if (rVals != null && rVals.size() != 0) {
                     extractRevocationValues(rVals, RevocationOrigin.ANY_VALIDATION_DATA);
                 }
             } else {
-                LOG.warn("The value of header 'valData' shall be represented by a CBOR Map! Entry is skilled.");
+                LOG.warn("The value of header 'valData' shall be represented by a CBOR Map! Entry is skipped.");
             }
         }
     }
 
-    private void extractRevocationValues(CBORMap rVals, RevocationOrigin origin) {
-        CBORArray ocspVals = rVals.getAsArray(COSEHeaderParameter.R_VALS_OCSP_VALS.cbor());
-        if (ocspVals != null && !ocspVals.isEmpty()) {
-            for (CBORObject pkiOb : ocspVals.getValueAsList()) {
+    private void extractRevocationValues(CBORValue rVals, RevocationOrigin origin) {
+        CBORValue ocspVals = rVals.getAsArrayOrNull(COSEHeaderParameter.R_VALS_OCSP_VALS.cbor());
+        if (ocspVals != null && ocspVals.size() != 0) {
+            for (CBORValue pkiOb : ocspVals.getElements()) {
                 if (pkiOb.isMap()) {
-                    extractOCSP((CBORMap) pkiOb, origin);
+                    extractOCSP(pkiOb, origin);
                 } else {
                     LOG.warn("The header 'pkiOb' shall be represented by a CBOR Map! The entry is skipped.");
                 }
@@ -97,7 +94,7 @@ public class CBAdESOCSPSource extends OfflineOCSPSource {
         }
     }
 
-    private void extractOCSP(CBORMap pkiOb, RevocationOrigin origin) {
+    private void extractOCSP(CBORValue pkiOb, RevocationOrigin origin) {
         byte[] val = CBAdESUtils.extractDerEncodedPkiObject(pkiOb);
         if (Utils.isArrayNotEmpty(val)) {
             try {
@@ -111,26 +108,24 @@ public class CBAdESOCSPSource extends OfflineOCSPSource {
 
     private void extractCompleteRevocationRefs(CBAdESAttribute attribute) {
         if (COSEHeaderParameter.REFS.cbor().equals(attribute.getHeaderId())) {
-            CBORObject refs = attribute.getValue();
+            CBORValue refs = attribute.getValue();
             if (refs.isMap()) {
-                CBORMap refsMap = (CBORMap) refs;
-                CBORMap rRefs = refsMap.getAsMap(COSEHeaderParameter.REFS_R_REFS.cbor());
-                if (rRefs != null && !rRefs.isEmpty()) {
+                CBORValue rRefs = refs.getAsMapOrNull(COSEHeaderParameter.REFS_R_REFS.cbor());
+                if (rRefs != null && rRefs.size() != 0) {
                     extractRevocationRefs(rRefs, RevocationRefOrigin.COMPLETE_REVOCATION_REFS);
                 }
             } else {
-                LOG.warn("The value of header 'refs' shall be represented by a CBOR Map! Entry is skilled.");
+                LOG.warn("The value of header 'refs' shall be represented by a CBOR Map! Entry is skipped.");
             }
         }
     }
 
-    private void extractRevocationRefs(CBORMap rRefs, RevocationRefOrigin origin) {
-        CBORArray ocspRefs = rRefs.getAsArray(COSEHeaderParameter.R_REFS_OCSP_REF.cbor());
+    private void extractRevocationRefs(CBORValue rRefs, RevocationRefOrigin origin) {
+        CBORValue ocspRefs = rRefs.getAsArrayOrNull(COSEHeaderParameter.R_REFS_OCSP_REF.cbor());
         if (ocspRefs != null) {
-            for (CBORObject ocspRefObject : ocspRefs.getValueAsList()) {
+            for (CBORValue ocspRefObject : ocspRefs.getElements()) {
                 if (ocspRefObject.isMap()) {
-                    CBORMap ocspRefMap = (CBORMap) ocspRefObject;
-                    OCSPRef ocspRef = CBAdESUtils.createOCSPRef(ocspRefMap);
+                    OCSPRef ocspRef = CBAdESUtils.createOCSPRef(ocspRefObject);
                     if (ocspRef != null) {
                         addRevocationReference(ocspRef, origin);
                     }

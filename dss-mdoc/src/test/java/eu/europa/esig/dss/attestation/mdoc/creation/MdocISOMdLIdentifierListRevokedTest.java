@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.creation;
 
-import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.attestation.mdoc.pki.PKICWTIdentifierListSource;
 import eu.europa.esig.dss.diagnostic.AttestationRevocationWrapper;
 import eu.europa.esig.dss.diagnostic.AttestationWrapper;
-import eu.europa.esig.dss.attestation.mdoc.pki.PKICWTIdentifierListSource;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.enumerations.AttestationStatus;
 import eu.europa.esig.dss.spi.attestation.revocation.AttestationRevocationSource;
 

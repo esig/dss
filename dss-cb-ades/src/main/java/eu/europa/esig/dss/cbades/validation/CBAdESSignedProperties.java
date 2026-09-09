@@ -20,15 +20,14 @@
  */
 package eu.europa.esig.dss.cbades.validation;
 
+import eu.europa.ec.digit.cddl4j.cbor.CBORMapEntry;
 import eu.europa.esig.dss.cbades.COSEProtectedHeader;
-import eu.europa.esig.dss.cbades.cbor.CBORObject;
 import eu.europa.esig.dss.spi.validation.SignatureProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Represents a list of CB-AdES signed properties (protected header)
@@ -79,23 +78,23 @@ public class CBAdESSignedProperties implements SignatureProperties<CBAdESAttribu
         final List<CBAdESAttribute> attributes = new ArrayList<>();
 
         if (bodyProtectedHeader != null) {
-            for (Map.Entry<CBORObject, CBORObject> entry : bodyProtectedHeader.getValueAsMap().entrySet()) {
-                attributes.add(new CBAdESAttribute(entry.getKey(), entry.getValue()));
+            for (CBORMapEntry entry : bodyProtectedHeader.getValue().getEntries()) {
+                attributes.add(new CBAdESAttribute(entry.key(), entry.value()));
             }
         }
         if (signerProtectedHeader != null) {
-            for (Map.Entry<CBORObject, CBORObject> entry : signerProtectedHeader.getValueAsMap().entrySet()) {
-                if (bodyProtectedHeader != null && bodyProtectedHeader.containsKey(entry.getKey())) {
-                    if (bodyProtectedHeader.getHeader(entry.getKey()).equals(entry.getValue())) {
+            for (CBORMapEntry entry : signerProtectedHeader.getValue().getEntries()) {
+                if (bodyProtectedHeader != null && bodyProtectedHeader.getValue().containsKey(entry.key())) {
+                    if (bodyProtectedHeader.getHeader(entry.key()).equals(entry.value())) {
                         LOG.warn("The header with key '{}' is present in both body and signer protected header!",
-                                entry.getKey());
+                                entry.key());
                     } else {
                         LOG.warn("Conflict between headers with key '{}' from body and signer protected header! " +
-                                "Ignore entry.", entry.getKey());
+                                "Ignore entry.", entry.key());
                         continue;
                     }
                 }
-                attributes.add(new CBAdESAttribute(entry.getKey(), entry.getValue()));
+                attributes.add(new CBAdESAttribute(entry.key(), entry.value()));
             }
         }
 

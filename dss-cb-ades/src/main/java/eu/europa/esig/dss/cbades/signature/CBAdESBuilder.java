@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.cbades.signature;
 
+import eu.europa.ec.digit.cddl4j.cbor.CBOR;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.COSEProtectedHeader;
 import eu.europa.esig.dss.cbades.COSESign;
 import eu.europa.esig.dss.cbades.COSESign1;
@@ -27,9 +29,6 @@ import eu.europa.esig.dss.cbades.COSESignStructure;
 import eu.europa.esig.dss.cbades.COSESignature;
 import eu.europa.esig.dss.cbades.COSEStructure;
 import eu.europa.esig.dss.cbades.COSEUnprotectedHeader;
-import eu.europa.esig.dss.cbades.cbor.CBORByteString;
-import eu.europa.esig.dss.cbades.cbor.CBORNull;
-import eu.europa.esig.dss.cbades.cbor.CBORObject;
 import eu.europa.esig.dss.cbades.validation.CBORSignature;
 import eu.europa.esig.dss.enumerations.COSEStructureType;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -105,8 +104,8 @@ public class CBAdESBuilder {
     private static List<DSSDocument> extractDocumentToBeSigned(CBAdESSignatureParameters parameters, COSESign coseSign) {
         if (coseSign.getPayload().isByteString()) {
             // enveloping signature
-            CBORByteString payload = (CBORByteString) coseSign.getPayload();
-            return Collections.singletonList(new InMemoryDocument(payload.getValueAsBytes()));
+            CBORValue payload = coseSign.getPayload();
+            return Collections.singletonList(new InMemoryDocument(payload.asBytes()));
 
         } else if (Utils.isCollectionNotEmpty(parameters.getDetachedContents())) {
             // detached signature
@@ -240,14 +239,14 @@ public class CBAdESBuilder {
      * Generates a signature header from the given {@code SignatureValue}
      * 
      * @param signatureValue {@link SignatureValue}
-     * @return {@link CBORByteString}
+     * @return {@link CBORValue}
      */
-    protected CBORByteString getSignature(SignatureValue signatureValue) {
+    protected CBORValue getSignature(SignatureValue signatureValue) {
         if (signatureValue == null) {
             return null;
         }
         byte[] signatureValueBytes = DSSASN1Utils.ensurePlainSignatureValue(parameters.getEncryptionAlgorithm(), signatureValue.getValue());
-        return new CBORByteString(signatureValueBytes);
+        return CBOR.bytes(signatureValueBytes);
     }
 
     /**
@@ -255,12 +254,12 @@ public class CBAdESBuilder {
      *
      * @param dataToSign identifies whether the payload is requested for a data to sign or final signature computation.
      *                   For detached signatures no payload is returned on the final build.
-     * @return {@link CBORByteString}
+     * @return {@link CBORValue}
      */
-    protected CBORObject getPayload(boolean dataToSign) {
+    protected CBORValue getPayload(boolean dataToSign) {
         if (!dataToSign && SignaturePackaging.DETACHED == parameters.getSignaturePackaging()) {
             // no payload for a final signature build
-            return new CBORNull();
+            return CBOR.nullValue();
         }
         byte[] payload = cbadesLevelBaselineB.getPayloadBytes();
         if (payload != null && Utils.isArrayNotEmpty(payload)) {
@@ -268,9 +267,9 @@ public class CBAdESBuilder {
                 LOG.trace("The payload of created signature -> {}", new String(payload));
                 LOG.trace("The base64 payload of created signature -> {}", Utils.toBase64(payload));
             }
-            return new CBORByteString(payload);
+            return CBOR.bytes(payload);
         }
-        return new CBORNull();
+        return CBOR.nullValue();
     }
 
     /**

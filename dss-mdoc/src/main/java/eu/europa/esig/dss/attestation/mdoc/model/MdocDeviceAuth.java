@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.model;
 
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.COSESignStructure;
 import eu.europa.esig.dss.cbades.cbor.CBORArray;
 
@@ -33,7 +34,7 @@ public class MdocDeviceAuth {
     private COSESignStructure deviceSignature;
 
     /** Contains a MAC authentication signature */
-    private CBORArray deviceMac;
+    private CBORValue deviceMac;
 
     /**
      * Default constructor
@@ -63,9 +64,9 @@ public class MdocDeviceAuth {
     /**
      * Gets a device MAC structure
      *
-     * @return {@link CBORArray}
+     * @return {@link CBORValue}
      */
-    public CBORArray getDeviceMac() {
+    public CBORValue getDeviceMac() {
         return deviceMac;
     }
 
@@ -73,8 +74,22 @@ public class MdocDeviceAuth {
      * Sets a device MAC structure
      *
      * @param deviceMac {@link CBORArray}
+     * @deprecated since DSS 6.6. Use {@link #setDeviceMac(CBORValue)}.
      */
+    @Deprecated
     public void setDeviceMac(CBORArray deviceMac) {
+        if (deviceMac != null) {
+            setDeviceMac(deviceMac.toCBORValue());
+        }
+        this.deviceMac = null;
+    }
+
+    /**
+     * Sets a device MAC structure
+     *
+     * @param deviceMac {@link CBORValue}
+     */
+    public void setDeviceMac(CBORValue deviceMac) {
         this.deviceMac = deviceMac;
     }
 

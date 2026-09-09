@@ -20,18 +20,18 @@
  */
 package eu.europa.esig.dss.attestation.mdoc;
 
+import eu.europa.ec.digit.cddl4j.cbor.CBOR;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.attestation.mdoc.creation.MdocIssuerSignedItem;
-import eu.europa.esig.dss.cbades.COSESignStructure;
-import eu.europa.esig.dss.enumerations.COSESignatureType;
-import eu.europa.esig.dss.cbades.cbor.CBORObject;
-import eu.europa.esig.dss.cbades.cbor.CBORObjectFactory;
-import eu.europa.esig.dss.cbades.validation.CBORSignature;
 import eu.europa.esig.dss.attestation.mdoc.model.MdocDeviceAuth;
 import eu.europa.esig.dss.attestation.mdoc.model.MdocDeviceNameSpaces;
 import eu.europa.esig.dss.attestation.mdoc.model.MdocDeviceResponse;
 import eu.europa.esig.dss.attestation.mdoc.model.MdocDeviceSigned;
 import eu.europa.esig.dss.attestation.mdoc.model.MdocDocument;
 import eu.europa.esig.dss.attestation.mdoc.model.MdocIssuerSigned;
+import eu.europa.esig.dss.cbades.COSESignStructure;
+import eu.europa.esig.dss.cbades.validation.CBORSignature;
+import eu.europa.esig.dss.enumerations.COSESignatureType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -102,10 +102,10 @@ class MdocDeviceResponseParserTest {
 
         CBORSignature cose = cborSignatures.get(0);
 
-        CBORObject x5chain = cose.getUnprotectedHeaderValue(CBORObjectFactory.toCBORObject(33L));
+        CBORValue x5chain = cose.getUnprotectedHeaderValue(CBOR.integer(33L));
         assertTrue(x5chain.isByteString());
 
-        CertificateToken certificateToken = DSSUtils.loadCertificate(x5chain.getValueAsBytes());
+        CertificateToken certificateToken = DSSUtils.loadCertificate(x5chain.asBytes());
         assertNotNull(certificateToken);
 
         cose.setKey(certificateToken.getPublicKey());

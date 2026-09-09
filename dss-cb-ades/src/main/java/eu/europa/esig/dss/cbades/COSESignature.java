@@ -20,7 +20,8 @@
  */
 package eu.europa.esig.dss.cbades;
 
-import eu.europa.esig.dss.cbades.cbor.CBORArray;
+import eu.europa.ec.digit.cddl4j.cbor.CBOR;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.cbor.CBORByteString;
 import eu.europa.esig.dss.cbades.cbor.CBORUtils;
 import eu.europa.esig.dss.enumerations.COSESignatureType;
@@ -38,7 +39,7 @@ public class COSESignature implements COSEStructure {
     private COSEUnprotectedHeader unprotectedHeader;
 
     /** The computed signature value of the signer */
-    private CBORByteString signature;
+    private CBORValue signature;
 
     /** Parent container of the signature, when applicable */
     private COSEStructure parent;
@@ -97,9 +98,9 @@ public class COSESignature implements COSEStructure {
     /**
      * Sets a signature value of the signer
      *
-     * @return {@link CBORByteString}
+     * @return {@link CBORValue}
      */
-    public CBORByteString getSignature() {
+    public CBORValue getSignature() {
         return signature;
     }
 
@@ -107,8 +108,19 @@ public class COSESignature implements COSEStructure {
      * Sets the signature value of the signer
      *
      * @param signature {@link CBORByteString}
+     * @deprecated since DSS 6.6. Use {@link #setSignature(CBORValue)}.
      */
+    @Deprecated
     public void setSignature(CBORByteString signature) {
+        this.signature = CBOR.bytes(signature.getValueAsBytes());
+    }
+
+    /**
+     * Sets the signature value of the signer
+     *
+     * @param signature {@link CBORValue}
+     */
+    public void setSignature(CBORValue signature) {
         this.signature = signature;
     }
 
@@ -132,11 +144,12 @@ public class COSESignature implements COSEStructure {
 
     @Override
     public byte[] serialize() {
-        CBORArray coseSignatureArray = new CBORArray(3);
-        coseSignatureArray.add(protectedHeader.getByteString());
-        coseSignatureArray.add(unprotectedHeader);
-        coseSignatureArray.add(signature);
-        return CBORUtils.serializeCborObject(coseSignatureArray);
+        CBORValue cborValue = CBOR.array(3)
+                .add(protectedHeader.asByteString())
+                .add(unprotectedHeader.getValue())
+                .add(signature)
+                .value();
+        return CBORUtils.serializeCbor(cborValue);
     }
 
     @Override

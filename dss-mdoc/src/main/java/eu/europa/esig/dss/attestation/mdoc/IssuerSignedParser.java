@@ -23,13 +23,13 @@ package eu.europa.esig.dss.attestation.mdoc;
 import eu.europa.ec.digit.cddl4j.cbor.CBORDecodeException;
 import eu.europa.ec.digit.cddl4j.cbor.CBORInspector;
 import eu.europa.ec.digit.cddl4j.cbor.CBORMajorType;
+import eu.europa.ec.digit.cddl4j.cbor.CBORTags;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.attestation.mdoc.creation.MdocIssuerSignedItem;
 import eu.europa.esig.dss.attestation.mdoc.model.MdocIssuerSigned;
 import eu.europa.esig.dss.cbades.COSEParser;
 import eu.europa.esig.dss.cbades.COSESignStructure;
-import eu.europa.esig.dss.cbades.cbor.CBORByteString;
 import eu.europa.esig.dss.cbades.cbor.CBORMap;
-import eu.europa.esig.dss.cbades.cbor.CBORObject;
 import eu.europa.esig.dss.cbades.cbor.CBORUtils;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
@@ -45,7 +45,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * Parses the mdoc IssuerSigned as per ISO 18013-5 "8.3.2.1.2.2 Device retrieval mdoc response"
@@ -59,7 +58,7 @@ public class IssuerSignedParser {
     private DSSDocument document;
 
     /** CBORMap to be parsed */
-    private CBORMap cborIssuerSerial;
+    private CBORValue cborIssuerSerial;
 
     /**
      * Creates a parser from a {@code DSSDocument} containing an mdoc IssuerSigned object structure
@@ -75,8 +74,20 @@ public class IssuerSignedParser {
      * Creates a parser from a {@code CBORMap} representing an mdoc IssuerSigned object structure
      *
      * @param cborIssuerSerial {@link CBORMap} to read
+     * @deprecated since DSS 6.6. Use {@link IssuerSignedParser(CBORValue)} instead.
      */
+    @Deprecated
     public IssuerSignedParser(CBORMap cborIssuerSerial) {
+        Objects.requireNonNull(cborIssuerSerial, "CBOR IssuerSerial object cannot be null!");
+        this.cborIssuerSerial = cborIssuerSerial.toCBORValue();
+    }
+
+    /**
+     * Creates a parser from a {@code CBORMap} representing an mdoc IssuerSigned object structure
+     *
+     * @param cborIssuerSerial {@link CBORValue} to read
+     */
+    public IssuerSignedParser(CBORValue cborIssuerSerial) {
         Objects.requireNonNull(cborIssuerSerial, "CBOR IssuerSerial object cannot be null!");
         this.cborIssuerSerial = cborIssuerSerial;
     }
@@ -128,17 +139,17 @@ public class IssuerSignedParser {
      */
     public MdocIssuerSigned parse() {
         if (cborIssuerSerial == null) {
-            CBORObject cborObject = parseCbor(document);
-            if (!cborObject.isMap()) {
+            CBORValue cborValue = parseCbor(document);
+            if (cborValue == null || !cborValue.isMap()) {
                 throw new IllegalInputException("An mdoc shall be represented by a CBOR Map type!");
             }
-            cborIssuerSerial = (CBORMap) cborObject;
+            cborIssuerSerial = cborValue;
         }
         return getIssuerSigned(cborIssuerSerial);
     }
 
-    private MdocIssuerSigned getIssuerSigned(CBORMap issuerSignedMap) {
-        if (issuerSignedMap.isEmpty()) {
+    private MdocIssuerSigned getIssuerSigned(CBORValue issuerSignedMap) {
+        if (issuerSignedMap.size() == 0) {
             throw new IllegalInputException(
                     String.format("'%s' header is represented by an empty map!", MdocHeaderParameter.ISSUER_SIGNED));
         }
@@ -149,8 +160,8 @@ public class IssuerSignedParser {
         return issuerSigned;
     }
 
-    private Map<String, List<MdocIssuerSignedItem>> getIssuerNamespaces(CBORMap issuerSigned) {
-        CBORObject namespacesHeader = issuerSigned.getHeader(MdocHeaderParameter.NAMESPACES.cbor());
+    private Map<String, List<MdocIssuerSignedItem>> getIssuerNamespaces(CBORValue issuerSigned) {
+        CBORValue namespacesHeader = issuerSigned.get(MdocHeaderParameter.NAMESPACES.cbor());
         if (namespacesHeader == null) {
             // optional
             return Collections.emptyMap();
@@ -159,41 +170,46 @@ public class IssuerSignedParser {
             LOG.warn("'{}' header within IssuerSigned object shall be of Map type!", MdocHeaderParameter.NAMESPACES);
             return Collections.emptyMap();
         }
-        CBORMap namespacesMap = (CBORMap) namespacesHeader;
-        if (namespacesMap.isEmpty()) {
+        if (namespacesHeader.size() == 0) {
             LOG.warn("'{}' map is empty!", MdocHeaderParameter.NAMESPACES);
             return Collections.emptyMap();
         }
 
         final Map<String, List<MdocIssuerSignedItem>> nameSpaces = new HashMap<>();
-        Set<CBORObject> namespaces = namespacesMap.getKeys();
-        for (CBORObject namespace : namespaces) {
-            if (!namespace.isUnicodeString()) {
-                LOG.warn("NameSpace object shall be of an unsigned string type! Found  : '{}'", namespace.getClass().getSimpleName());
+        List<CBORValue> namespaces = namespacesHeader.getKeys();
+        for (CBORValue namespace : namespaces) {
+            if (!namespace.isTextString()) {
+                LOG.warn("NameSpace object shall be of an unsigned string type! Found  : '{}'", namespace.getType());
                 continue;
             }
-            String namespaceString = namespace.getValueAsString();
+            String namespaceString = namespace.asString();
             final List<MdocIssuerSignedItem> signedItems = new ArrayList<>();
-            CBORObject issuerSignedItemBytesArray = namespacesMap.getHeader(namespace);
+            CBORValue issuerSignedItemBytesArray = namespacesHeader.get(namespace);
             if (issuerSignedItemBytesArray != null && issuerSignedItemBytesArray.isArray()) {
-                List<CBORObject> issuerSignedItemBytesList = issuerSignedItemBytesArray.getValueAsList();
+                List<CBORValue> issuerSignedItemBytesList = issuerSignedItemBytesArray.getElements();
                 if (Utils.isCollectionEmpty(issuerSignedItemBytesList)) {
                     LOG.warn("Array of IssuerSignedItemBytes items cannot be empty!");
                     continue;
                 }
-                for (CBORObject issuerSignedItemBytes : issuerSignedItemBytesList) {
-                    if (issuerSignedItemBytes != null && issuerSignedItemBytes.isByteString()) {
-                        MdocIssuerSignedItem signedItem = new MdocIssuerSignedItem(namespaceString, (CBORByteString) issuerSignedItemBytes);
-                        signedItems.add(signedItem);
-                    } else {
-                        LOG.warn("IssuerSignedItemBytes shall be of CBOR byte string type! Found : '{}'",
-                                issuerSignedItemBytes != null ? issuerSignedItemBytes.getClass().getSimpleName() : null);
+                for (CBORValue issuerSignedItemBytes : issuerSignedItemBytesList) {
+                    if (issuerSignedItemBytes == null || !issuerSignedItemBytes.isTag() || CBORTags.ENCODED_CBOR != issuerSignedItemBytes.getTag().longValue()) {
+                        LOG.warn("IssuerSignedItemBytes shall be of a tagged CBOR byte string type with a tag #6.24! Found : '{}'",
+                                issuerSignedItemBytes != null ? issuerSignedItemBytes.getType() : null);
+                        continue;
                     }
+                    CBORValue issuerSignedItemBytesValue = issuerSignedItemBytes.getTaggedValue();
+                    if (issuerSignedItemBytesValue == null || !issuerSignedItemBytesValue.isByteString()) {
+                        LOG.warn("IssuerSignedItemBytes shall be of CBOR byte string type! Found : '{}'",
+                                issuerSignedItemBytesValue != null ? issuerSignedItemBytesValue.getType() : null);
+                        continue;
+                    }
+                    MdocIssuerSignedItem signedItem = new MdocIssuerSignedItem(namespaceString, issuerSignedItemBytes);
+                    signedItems.add(signedItem);
                 }
 
             } else {
                 LOG.warn("Value of the IssuerNameSpaces map shall be of CBOR Array type! Found : '{}'",
-                        issuerSignedItemBytesArray != null ? issuerSignedItemBytesArray.getClass().getSimpleName() : null);
+                        issuerSignedItemBytesArray != null ? issuerSignedItemBytesArray.getType() : null);
             }
 
             nameSpaces.put(namespaceString, signedItems);
@@ -201,14 +217,14 @@ public class IssuerSignedParser {
         return nameSpaces;
     }
 
-    private COSESignStructure getIssuerAuth(CBORMap issuerSigned) {
-        CBORObject issuerAuthHeader = issuerSigned.getHeader(MdocHeaderParameter.ISSUER_AUTH.cbor());
+    private COSESignStructure getIssuerAuth(CBORValue issuerSigned) {
+        CBORValue issuerAuthHeader = issuerSigned.get(MdocHeaderParameter.ISSUER_AUTH.cbor());
         if (issuerAuthHeader == null) {
             throw new IllegalInputException(
                     String.format("No mandatory '%s' header found within the mdoc!", MdocHeaderParameter.ISSUER_AUTH));
         }
         try {
-            COSEParser coseParser = COSEParser.fromCBORObject(issuerAuthHeader);
+            COSEParser coseParser = COSEParser.fromCBORValue(issuerAuthHeader);
             return coseParser.parse();
         } catch (Exception e) {
             throw new IllegalInputException(String.format(
@@ -220,9 +236,9 @@ public class IssuerSignedParser {
      * Parses CBOR {@code DSSDocument}
      *
      * @param document {@link DSSDocument}
-     * @return {@link CBORObject}
+     * @return {@link CBORValue}
      */
-    private CBORObject parseCbor(DSSDocument document) {
+    private CBORValue parseCbor(DSSDocument document) {
         try {
             return CBORUtils.parseCbor(document);
         } catch (CBORDecodeException e) {

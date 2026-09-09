@@ -23,8 +23,8 @@ package eu.europa.esig.dss.attestation.mdoc.claim;
 import eu.europa.esig.dss.attestation.mdoc.ISO180135Headers;
 import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimArray;
 import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimDate;
-import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimDrivingPrivilegeCodes;
 import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimDrivingPrivilege;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimDrivingPrivilegeCodes;
 import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimMap;
 import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimString;
 

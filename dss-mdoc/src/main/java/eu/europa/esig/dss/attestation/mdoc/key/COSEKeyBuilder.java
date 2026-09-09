@@ -20,9 +20,10 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.key;
 
-import eu.europa.esig.dss.cbades.COSEConstants;
-import eu.europa.esig.dss.cbades.cbor.CBORMap;
+import eu.europa.ec.digit.cddl4j.cbor.CBOR;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.attestation.common.key.PublicKeyInfo;
+import eu.europa.esig.dss.cbades.COSEConstants;
 
 import java.util.Objects;
 
@@ -33,7 +34,7 @@ import java.util.Objects;
  * Encryption (COSE): Structures and Process", Section 7 "Key Objects".
  * <p>
  * This builder operates on a provider-independent {@link PublicKeyInfo}
- * representation and converts it into a COSE {@link CBORMap}.
+ * representation and converts it into a COSE {@link CBORValue}.
  * Supported key types are:
  * - EC2 keys (ECDSA);
  * - OKP keys (EdDSA and XDH);
@@ -64,9 +65,9 @@ public class COSEKeyBuilder {
      * - OKP key;
      * - RSA key.
      *
-     * @return {@link CBORMap} the COSE_Key representation
+     * @return {@link CBORValue} the COSE_Key representation
      */
-    public CBORMap create() {
+    public CBORValue create() {
         if (publicKeyInfo instanceof PublicKeyInfo.ECKey) {
             return createEC((PublicKeyInfo.ECKey) publicKeyInfo);
         } else if (publicKeyInfo instanceof PublicKeyInfo.OKPKey) {
@@ -78,29 +79,29 @@ public class COSEKeyBuilder {
                 "Unsupported key info type: '%s'", publicKeyInfo.getClass().getSimpleName()));
     }
 
-    private CBORMap createEC(PublicKeyInfo.ECKey publicKeyInfo) {
-        final CBORMap map = new CBORMap();
-        map.put(COSEConstants.COSE_KEY_KTY, COSEConstants.COSE_KEY_TYPE_EC2_VALUE);
-        map.put(COSEConstants.COSE_KEY_TYPE_EC2_CRV, publicKeyInfo.getCurve().getCOSEValue());
-        map.put(COSEConstants.COSE_KEY_TYPE_EC2_X, publicKeyInfo.getX());
-        map.put(COSEConstants.COSE_KEY_TYPE_EC2_Y, publicKeyInfo.getY());
-        return map;
+    private CBORValue createEC(PublicKeyInfo.ECKey publicKeyInfo) {
+        return CBOR.map()
+                .put(COSEConstants.COSE_KEY_KTY, COSEConstants.COSE_KEY_TYPE_EC2_VALUE)
+                .put(COSEConstants.COSE_KEY_TYPE_EC2_CRV, publicKeyInfo.getCurve().getCOSEValue())
+                .put(COSEConstants.COSE_KEY_TYPE_EC2_X, publicKeyInfo.getX())
+                .put(COSEConstants.COSE_KEY_TYPE_EC2_Y, publicKeyInfo.getY())
+                .value();
     }
 
-    private CBORMap createOKP(PublicKeyInfo.OKPKey publicKeyInfo) {
-        final CBORMap map = new CBORMap();
-        map.put(COSEConstants.COSE_KEY_KTY, COSEConstants.COSE_KEY_TYPE_OKP_VALUE);
-        map.put(COSEConstants.COSE_KEY_TYPE_OKP_CRV, publicKeyInfo.getCurve().getCOSEValue());
-        map.put(COSEConstants.COSE_KEY_TYPE_OKP_X, publicKeyInfo.getX());
-        return map;
+    private CBORValue createOKP(PublicKeyInfo.OKPKey publicKeyInfo) {
+        return CBOR.map()
+                .put(COSEConstants.COSE_KEY_KTY, COSEConstants.COSE_KEY_TYPE_OKP_VALUE)
+                .put(COSEConstants.COSE_KEY_TYPE_OKP_CRV, publicKeyInfo.getCurve().getCOSEValue())
+                .put(COSEConstants.COSE_KEY_TYPE_OKP_X, publicKeyInfo.getX())
+                .value();
     }
 
-    private CBORMap createRSA(PublicKeyInfo.RSAKey publicKeyInfo) {
-        final CBORMap map = new CBORMap();
-        map.put(COSEConstants.COSE_KEY_KTY, COSEConstants.COSE_KEY_TYPE_RSA_VALUE);
-        map.put(COSEConstants.COSE_KEY_TYPE_RSA_N, publicKeyInfo.getModulus());
-        map.put(COSEConstants.COSE_KEY_TYPE_RSA_E, publicKeyInfo.getExponent());
-        return map;
+    private CBORValue createRSA(PublicKeyInfo.RSAKey publicKeyInfo) {
+        return CBOR.map()
+                .put(COSEConstants.COSE_KEY_KTY, COSEConstants.COSE_KEY_TYPE_RSA_VALUE)
+                .put(COSEConstants.COSE_KEY_TYPE_RSA_N, publicKeyInfo.getModulus())
+                .put(COSEConstants.COSE_KEY_TYPE_RSA_E, publicKeyInfo.getExponent())
+                .value();
     }
 
 }

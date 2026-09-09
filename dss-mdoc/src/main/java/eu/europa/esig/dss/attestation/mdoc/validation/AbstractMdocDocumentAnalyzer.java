@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.validation;
 
+import eu.europa.esig.dss.attestation.common.validation.DefaultAttestationDocumentAnalyzer;
 import eu.europa.esig.dss.cbades.COSESignStructure;
 import eu.europa.esig.dss.cbades.validation.CBAdESSignature;
 import eu.europa.esig.dss.cbades.validation.CBORSignature;
-import eu.europa.esig.dss.attestation.common.validation.DefaultAttestationDocumentAnalyzer;
 import eu.europa.esig.dss.enumerations.COSESignatureType;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.attestation.AttestationValidationParameters;

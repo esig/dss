@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.cbades.validation;
 
-import eu.europa.esig.dss.cbades.cbor.CBORObject;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.cbor.CBORUtils;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -60,14 +60,14 @@ public class COSEX509URLCertificateSource extends CommonX509URLCertificateSource
         if (CBORUtils.isCbor(content)) {
             try {
                 // COSE_X509 = bstr / [ 2*certs: bstr ]
-                CBORObject cborObject = CBORUtils.parseCbor(content);
-                if (cborObject.isByteString()) {
-                    return Collections.singletonList(DSSUtils.loadCertificate(cborObject.getValueAsBytes()));
-                } else if (cborObject.isArray()) {
+                CBORValue cborValue = CBORUtils.parseCbor(content);
+                if (cborValue.isByteString()) {
+                    return Collections.singletonList(DSSUtils.loadCertificate(cborValue.asBytes()));
+                } else if (cborValue.isArray()) {
                     final List<CertificateToken> result = new ArrayList<>();
-                    for (CBORObject cborItem : cborObject.getValueAsList()) {
+                    for (CBORValue cborItem : cborValue.getElements()) {
                         if (cborItem.isByteString()) {
-                            result.add(DSSUtils.loadCertificate(cborItem.getValueAsBytes()));
+                            result.add(DSSUtils.loadCertificate(cborItem.asBytes()));
                         } else {
                             throw new DSSException("Item of a CBOR Array shall be a CBOR Byte String!");
                         }

@@ -25,9 +25,9 @@ import eu.europa.esig.dss.attestation.mdoc.EUDIPIDHeaders;
 import eu.europa.esig.dss.attestation.mdoc.ISO180135Headers;
 import eu.europa.esig.dss.attestation.mdoc.ISO232202Headers;
 import eu.europa.esig.dss.attestation.mdoc.MdocConstants;
-import eu.europa.esig.dss.attestation.mdoc.claim.MdocVerifiedClaimBiometricTemplateXX;
 import eu.europa.esig.dss.attestation.mdoc.claim.MdocVerifiedClaimAgeOverNN;
 import eu.europa.esig.dss.attestation.mdoc.claim.MdocVerifiedClaimAttestedAttributesSubject;
+import eu.europa.esig.dss.attestation.mdoc.claim.MdocVerifiedClaimBiometricTemplateXX;
 import eu.europa.esig.dss.attestation.mdoc.claim.MdocVerifiedClaimBirthDate;
 import eu.europa.esig.dss.attestation.mdoc.claim.MdocVerifiedClaimDeviceKeyInfo;
 import eu.europa.esig.dss.attestation.mdoc.claim.MdocVerifiedClaimDrivingPrivileges;
@@ -37,8 +37,8 @@ import eu.europa.esig.dss.attestation.mdoc.claim.MdocVerifiedClaimStatus;
 import eu.europa.esig.dss.attestation.mdoc.claim.MdocVerifiedClaimValidityInfo;
 import eu.europa.esig.dss.model.attestation.claim.VerifiedClaim;
 import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimAddress;
-import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimAgeOverNN;
 import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimAgeEqualOrOver;
+import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimAgeOverNN;
 import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimArray;
 import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimAttestedAttributesSubject;
 import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimBiometricTemplateXX;
@@ -164,7 +164,7 @@ public class MdocAttestationPayload extends MdocVerifiedClaimMap implements Atte
             // Can be defined with a Long key
             Object statusClaimObject = value.get(MdocConstants.STATUS_LONG);
             if (statusClaimObject != null) {
-                VerifiedClaim claim = createClaim(MdocConstants.STATUS_LONG.getValueAsString(), statusClaimObject);
+                VerifiedClaim claim = createClaim(MdocConstants.STATUS_LONG.asString(), statusClaimObject);
                 if (claim != null && claim.isMapValueType()) {
                     statusClaim = (VerifiedClaimMap) claim;
                 }

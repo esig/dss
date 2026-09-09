@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.creation;
 
-import eu.europa.esig.dss.cbades.cbor.CBORObject;
-import eu.europa.esig.dss.cbades.cbor.CBORObjectFactory;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.attestation.common.creation.claim.AbstractAttestationClaim;
+import eu.europa.esig.dss.cbades.cbor.CBORValueFactory;
 
 import java.util.Arrays;
 
@@ -388,10 +388,10 @@ public class MdocClaim extends AbstractAttestationClaim {
     /**
      * Gets a CBOR representation of the claim value
      *
-     * @return {@link CBORObject}
+     * @return {@link eu.europa.ec.digit.cddl4j.cbor.CBORValue}
      */
-    public CBORObject getValueAsCbor() {
-        return CBORObjectFactory.toCBORObject(getValue());
+    public CBORValue getValueAsCbor() {
+        return CBORValueFactory.toCBORValue(getValue());
     }
 
     /**

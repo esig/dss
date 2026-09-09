@@ -20,15 +20,16 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.creation;
 
-import java.util.Objects;
-
-import eu.europa.esig.dss.cbades.cbor.CBORArray;
-import eu.europa.esig.dss.cbades.cbor.CBORByteString;
-import eu.europa.esig.dss.cbades.cbor.CBORUtils;
+import eu.europa.ec.digit.cddl4j.cbor.CBOR;
+import eu.europa.ec.digit.cddl4j.cbor.CBORTags;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.attestation.mdoc.MdocConstants;
+import eu.europa.esig.dss.cbades.cbor.CBORUtils;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
+
+import java.util.Objects;
 
 /**
  * Default implementation of {@link MdocDeviceAuthenticationBuilder}
@@ -46,18 +47,21 @@ public class DefaultMdocDeviceAuthenticationBuilder implements MdocDeviceAuthent
     public DSSDocument build(final MdocKeyBindingParameters keyBindingParameters) {
         ensureKeyBindingParameters(keyBindingParameters);
 
-        CBORArray deviceAuthentication = new CBORArray();
+
         try {
-            deviceAuthentication.add(MdocConstants.DEVICE_AUTHENTICATION);
-            deviceAuthentication.add(CBORUtils.parseCbor(keyBindingParameters.getSessionTranscript()));
-            deviceAuthentication.add(keyBindingParameters.getDocType());
-            deviceAuthentication.add(getDeviceNameSpacesBuilder().buildDeviceNameSpacesBytes(keyBindingParameters));
+            CBORValue deviceAuthentication = CBOR.array()
+                    .add(MdocConstants.DEVICE_AUTHENTICATION)
+                    .add(CBORUtils.parseCbor(keyBindingParameters.getSessionTranscript()))
+                    .add(keyBindingParameters.getDocType())
+                    .add(getDeviceNameSpacesBuilder().buildDeviceNameSpacesBytes(keyBindingParameters))
+                    .value();
+
+            CBORValue deviceAuthenticationBytes = CBORTags.encodedCbor(deviceAuthentication.encodeToBytes());
+            return new InMemoryDocument(CBORUtils.serializeCbor(deviceAuthenticationBytes));
+
         } catch (Exception e) {
             throw new DSSException(String.format("Unable to build DeviceAuthentication. Reason : %s", e.getMessage()), e);
         }
-
-        CBORByteString deviceAuthenticationBytes = CBORUtils.toCborBtsrWrappedTagged(deviceAuthentication);
-        return new InMemoryDocument(CBORUtils.serializeCborObject(deviceAuthenticationBytes));
     }
 
     /**

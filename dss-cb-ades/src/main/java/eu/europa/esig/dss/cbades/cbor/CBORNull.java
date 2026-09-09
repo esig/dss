@@ -26,7 +26,10 @@ import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 
 /**
  * Identifies a nullable CBOR value
+ *
+ * @deprecated since DSS 6.6. Switch to {@link eu.europa.ec.digit.cddl4j.cbor.CBORValue} instead.
  */
+@Deprecated
 public class CBORNull extends AbstractCBORObject {
 
     /**

@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.attestation.mdoc;
 
-import eu.europa.esig.dss.cbades.cbor.CBORObject;
-import eu.europa.esig.dss.cbades.cbor.CBORObjectFactory;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
+import eu.europa.esig.dss.cbades.cbor.CBORValueFactory;
 
 /**
  * Contains a list of mdoc header parameters supported by the implementation
@@ -92,22 +92,22 @@ public enum MdocHeaderParameter {
     private final String stringKey;
 
     /** CBOR key */
-    private final CBORObject cborKey;
+    private final CBORValue cborKey;
 
     /**
      * Utils class
      */
     MdocHeaderParameter(final String stringKey) {
         this.stringKey = stringKey;
-        this.cborKey = CBORObjectFactory.toCBORObject(stringKey);
+        this.cborKey = CBORValueFactory.toCBORValue(stringKey);
     }
 
     /**
      * Gets representation of the header parameter in a form of CBOR object
      *
-     * @return {@link CBORObject}
+     * @return {@link CBORValue}
      */
-    public CBORObject cbor() {
+    public CBORValue cbor() {
         return cborKey;
     }
 

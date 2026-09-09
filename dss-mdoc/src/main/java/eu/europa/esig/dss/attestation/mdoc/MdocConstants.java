@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.attestation.mdoc;
 
-import eu.europa.esig.dss.cbades.cbor.CBORObject;
-import eu.europa.esig.dss.cbades.cbor.CBORObjectFactory;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
+import eu.europa.esig.dss.cbades.cbor.CBORValueFactory;
 
 /**
  * Contains a list of common constants used for reading and processing an mdoc content
@@ -117,7 +117,7 @@ public class MdocConstants {
     public static final String STATUS = "status";
 
     /** Specifies a CBOR Object that contains at least one reference to a revocation mechanism. Long representation. */
-    public static final CBORObject STATUS_LONG = CBORObjectFactory.toCBORObject(65535L);
+    public static final CBORValue STATUS_LONG = CBORValueFactory.toCBORValue(65535L);
 
     /** Specifies a CBOR Object that contains a reference to a Status List Token */
     public static final String STATUS_LIST = "status_list";

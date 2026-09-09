@@ -20,10 +20,7 @@
  */
 package eu.europa.esig.dss.cbades.requirements;
 
-import eu.europa.esig.dss.cbades.cbor.CBORArray;
-import eu.europa.esig.dss.cbades.cbor.CBORByteString;
-import eu.europa.esig.dss.cbades.cbor.CBORMap;
-import eu.europa.esig.dss.cbades.cbor.CBORObject;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.cbor.CBORUtils;
 import eu.europa.esig.dss.utils.Utils;
 
@@ -39,10 +36,10 @@ public abstract class AbstractCBAdESCoseSignRequirementsCheck extends AbstractCB
         super.onDocumentSigned(byteArray);
 
         try {
-            CBORByteString protectedHeader = getBodyProtectedHeader(byteArray);
+            CBORValue protectedHeader = getBodyProtectedHeader(byteArray);
             checkBodyProtectedHeader(protectedHeader);
 
-            CBORMap unprotectedHeader = getBodyUnprotectedHeader(byteArray);
+            CBORValue unprotectedHeader = getBodyUnprotectedHeader(byteArray);
             checkBodyUnprotectedHeader(unprotectedHeader);
 
         } catch (Exception e) {
@@ -51,95 +48,89 @@ public abstract class AbstractCBAdESCoseSignRequirementsCheck extends AbstractCB
     }
 
     @Override
-    protected CBORByteString getPayload(byte[] byteArray) throws Exception {
-        CBORArray cose = getCose(byteArray);
-        CBORObject payloadObject = cose.getValueAsList().get(2);
+    protected CBORValue getPayload(byte[] byteArray) throws Exception {
+        CBORValue cose = getCose(byteArray);
+        CBORValue payloadObject = cose.getElements().get(2);
         assertTrue(payloadObject.isByteString());
-
-        return (CBORByteString) payloadObject;
+        return payloadObject;
     }
 
-    protected CBORByteString getBodyProtectedHeader(byte[] byteArray) {
-        CBORArray cose = getCose(byteArray);
-        CBORObject protectedHeader = cose.getValueAsList().get(0);
+    protected CBORValue getBodyProtectedHeader(byte[] byteArray) {
+        CBORValue cose = getCose(byteArray);
+        CBORValue protectedHeader = cose.getElements().get(0);
         assertTrue(protectedHeader.isByteString());
-
-        return (CBORByteString) protectedHeader;
+        return protectedHeader;
     }
 
     @Override
-    protected CBORByteString getProtectedHeader(byte[] byteArray) throws Exception {
-        CBORArray cose = getCose(byteArray);
-        CBORArray coseSignature = getCoseSignature(cose);
-        CBORObject protectedHeader = coseSignature.getValueAsList().get(0);
+    protected CBORValue getProtectedHeader(byte[] byteArray) throws Exception {
+        CBORValue cose = getCose(byteArray);
+        CBORValue coseSignature = getCoseSignature(cose);
+        CBORValue protectedHeader = coseSignature.getElements().get(0);
         assertTrue(protectedHeader.isByteString());
-
-        return (CBORByteString) protectedHeader;
+        return protectedHeader;
     }
 
     @Override
-    protected CBORByteString getSignatureValue(byte[] byteArray) throws Exception {
-        CBORArray cose = getCose(byteArray);
-        CBORArray coseSignature = getCoseSignature(cose);
-        CBORObject signature = coseSignature.getValueAsList().get(2);
+    protected CBORValue getSignatureValue(byte[] byteArray) throws Exception {
+        CBORValue cose = getCose(byteArray);
+        CBORValue coseSignature = getCoseSignature(cose);
+        CBORValue signature = coseSignature.getElements().get(2);
         assertTrue(signature.isByteString());
-
-        return (CBORByteString) signature;
-    }
-
-    protected CBORMap getBodyUnprotectedHeader(byte[] byteArray) throws Exception {
-        CBORArray cose = getCose(byteArray);
-        CBORObject unprotectedHeader = cose.getValueAsList().get(1);
-        assertTrue(unprotectedHeader.isMap());
-
-        return (CBORMap) unprotectedHeader;
-    }
-
-    @Override
-    protected CBORMap getUnprotectedHeader(byte[] byteArray) throws Exception {
-        CBORArray cose = getCose(byteArray);
-        CBORArray coseSignature = getCoseSignature(cose);
-        CBORObject unprotectedHeader = coseSignature.getValueAsList().get(1);
-        assertTrue(unprotectedHeader.isMap());
-
-        return (CBORMap) unprotectedHeader;
-    }
-
-    private CBORArray getCose(byte[] byteArray) {
-        CBORObject cborObject = CBORUtils.parseCbor(byteArray);
-        assertTrue(cborObject.isArray());
-        CBORArray cborArray = (CBORArray) cborObject;
-        assertEquals(4, cborArray.getSize());
-        return cborArray;
-    }
-
-    private CBORArray getCoseSignature(CBORArray cose) {
-        CBORObject signatures = cose.getValueAsList().get(3);
-        assertTrue(signatures.isArray());
-
-        CBORArray signaturesArray = (CBORArray) signatures;
-        assertEquals(1, signaturesArray.getSize());
-
-        CBORArray signature = signaturesArray.getAsArray(0);
-        assertNotNull(signature);
-        assertEquals(3, signature.getSize());
         return signature;
     }
 
-    protected void checkBodyProtectedHeader(CBORByteString bodyProtectedHeader) {
-        assertNotNull(bodyProtectedHeader);
-        assertTrue(Utils.isArrayNotEmpty(bodyProtectedHeader.getValueAsBytes()));
-
-        CBORObject protectedHeaderObject = CBORUtils.parseCbor(bodyProtectedHeader.getValueAsBytes());
-        assertTrue(protectedHeaderObject.isMap());
-
-        CBORMap protectedHeaderMap = (CBORMap) protectedHeaderObject;
-        assertTrue(protectedHeaderMap.isEmpty());
+    protected CBORValue getBodyUnprotectedHeader(byte[] byteArray) throws Exception {
+        CBORValue cose = getCose(byteArray);
+        CBORValue unprotectedHeader = cose.getElements().get(1);
+        assertTrue(unprotectedHeader.isMap());
+        return unprotectedHeader;
     }
 
-    protected void checkBodyUnprotectedHeader(CBORMap bodyUnprotectedHeader) {
+    @Override
+    protected CBORValue getUnprotectedHeader(byte[] byteArray) throws Exception {
+        CBORValue cose = getCose(byteArray);
+        CBORValue coseSignature = getCoseSignature(cose);
+        CBORValue unprotectedHeader = coseSignature.getElements().get(1);
+        assertTrue(unprotectedHeader.isMap());
+
+        return unprotectedHeader;
+    }
+
+    private CBORValue getCose(byte[] byteArray) {
+        CBORValue cborValue = CBORUtils.parseCbor(byteArray);
+        assertTrue(cborValue.isTag());
+        cborValue = cborValue.getTaggedValue();
+        assertNotNull(cborValue);
+        assertTrue(cborValue.isArray());
+        assertEquals(4, cborValue.size());
+        return cborValue;
+    }
+
+    private CBORValue getCoseSignature(CBORValue cose) {
+        CBORValue signatures = cose.getElements().get(3);
+        assertTrue(signatures.isArray());
+        assertEquals(1, signatures.size());
+
+        CBORValue signature = signatures.getAsArrayOrNull(0);
+        assertNotNull(signature);
+        assertEquals(3, signature.size());
+        return signature;
+    }
+
+    protected void checkBodyProtectedHeader(CBORValue bodyProtectedHeader) {
+        assertNotNull(bodyProtectedHeader);
+        assertTrue(Utils.isArrayNotEmpty(bodyProtectedHeader.asBytes()));
+
+        CBORValue protectedHeaderObject = CBORUtils.parseCbor(bodyProtectedHeader.asBytes());
+        assertTrue(protectedHeaderObject.isMap());
+
+        assertEquals(0, protectedHeaderObject.size());
+    }
+
+    protected void checkBodyUnprotectedHeader(CBORValue bodyUnprotectedHeader) {
         assertNotNull(bodyUnprotectedHeader);
-        assertTrue(bodyUnprotectedHeader.isEmpty());
+        assertEquals(0, bodyUnprotectedHeader.size());
     }
 
 }

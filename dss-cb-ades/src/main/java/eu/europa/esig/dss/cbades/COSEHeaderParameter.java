@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.cbades;
 
-import eu.europa.esig.dss.cbades.cbor.CBORObject;
-import eu.europa.esig.dss.cbades.cbor.CBORObjectFactory;
+import eu.europa.ec.digit.cddl4j.cbor.CBOR;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 
 /**
  * Contains a list of COSE and CB-AdES header parameter definitions
@@ -345,7 +345,7 @@ public enum COSEHeaderParameter {
     RESPONDER_ID_CHOICE_RESPONDER_ID_BY_KEY(2L);
     
     /** Long encoded key */
-    private final CBORObject cborKey;
+    private final CBORValue cborKey;
 
     /**
      * Default constructor
@@ -353,15 +353,15 @@ public enum COSEHeaderParameter {
      * @param longKey long key value
      */
     COSEHeaderParameter(final Long longKey) {
-        this.cborKey = CBORObjectFactory.toCBORObject(longKey);
+        this.cborKey = CBOR.integer(longKey);
     }
 
     /**
      * Gets a representation of the key in a form of a CBOR object
      *
-     * @return {@link CBORObject}
+     * @return {@link CBORValue}
      */
-    public CBORObject cbor() {
+    public CBORValue cbor() {
         return cborKey;
     }
 

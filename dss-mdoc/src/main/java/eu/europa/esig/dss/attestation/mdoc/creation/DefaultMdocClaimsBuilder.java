@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.creation;
 
-import eu.europa.esig.dss.cbades.cbor.CBORArray;
-import eu.europa.esig.dss.cbades.cbor.CBORMap;
-import eu.europa.esig.dss.cbades.cbor.CBORUtils;
+import eu.europa.ec.digit.cddl4j.cbor.CBOR;
+import eu.europa.ec.digit.cddl4j.cbor.CBORTags;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.attestation.mdoc.ETSI194721Headers;
 import eu.europa.esig.dss.attestation.mdoc.EUDIPIDHeaders;
 import eu.europa.esig.dss.attestation.mdoc.ISO180135Headers;
@@ -1009,7 +1009,7 @@ public abstract class DefaultMdocClaimsBuilder implements MdocClaimsBuilder {
                 if (selectivelyDisclosable.getBirthdateApproximateMask() != null) {
                     return super.getBirthdate(selectivelyDisclosable);
                 }
-                return create(ISO180135Headers.BIRTH_DATE, CBORUtils.toFullDate(selectivelyDisclosable.getBirthdate()));
+                return create(ISO180135Headers.BIRTH_DATE, CBORTags.fullDate(selectivelyDisclosable.getBirthdate()));
             }
             return null;
         }
@@ -1065,20 +1065,20 @@ public abstract class DefaultMdocClaimsBuilder implements MdocClaimsBuilder {
         @Override
         protected MdocClaim getDrivingPrivileges(MdocClaimParameters selectivelyDisclosable) {
             if (Utils.isCollectionNotEmpty(selectivelyDisclosable.getDrivingPrivileges())) {
-                final CBORArray drivingPrivileges = new CBORArray();
+                final CBORValue.CBORArrayEditor drivingPrivileges = CBOR.array();
                 for (MdocDrivingPrivilege mdocDrivingPrivilege : selectivelyDisclosable.getDrivingPrivileges()) {
-                    CBORMap drivingPrivilege = new CBORMap();
+                    CBORValue.CBORMapEditor drivingPrivilege = CBOR.map();
                     drivingPrivilege.put(ISO180135Headers.DRIVING_PRIVILEGES_VEHICLE_CATEGORY_CODE, mdocDrivingPrivilege.getVehicleCategoryCode());
                     if (mdocDrivingPrivilege.getIssueDate() != null) {
-                        drivingPrivilege.put(ISO180135Headers.DRIVING_PRIVILEGES_ISSUE_DATE, CBORUtils.toFullDate(mdocDrivingPrivilege.getIssueDate()));
+                        drivingPrivilege.put(ISO180135Headers.DRIVING_PRIVILEGES_ISSUE_DATE, CBORTags.fullDate(mdocDrivingPrivilege.getIssueDate()));
                     }
                     if (mdocDrivingPrivilege.getExpiryDate() != null) {
-                        drivingPrivilege.put(ISO180135Headers.DRIVING_PRIVILEGES_EXPIRY_DATE, CBORUtils.toFullDate(mdocDrivingPrivilege.getExpiryDate()));
+                        drivingPrivilege.put(ISO180135Headers.DRIVING_PRIVILEGES_EXPIRY_DATE, CBORTags.fullDate(mdocDrivingPrivilege.getExpiryDate()));
                     }
                     if (Utils.isCollectionNotEmpty(mdocDrivingPrivilege.getCodes())) {
-                        CBORArray codes = new CBORArray();
+                        CBORValue.CBORArrayEditor codes = CBOR.array();
                         for (MdocDrivingPrivilege.Code mdocCode : mdocDrivingPrivilege.getCodes()) {
-                            CBORMap code = new CBORMap();
+                            CBORValue.CBORMapEditor code = CBOR.map();
                             code.put(ISO180135Headers.DRIVING_PRIVILEGES_CODE_CODE, mdocCode.getCode());
                             if (mdocCode.getSign() != null) {
                                 code.put(ISO180135Headers.DRIVING_PRIVILEGES_CODE_SIGN, mdocCode.getSign());
@@ -1086,12 +1086,13 @@ public abstract class DefaultMdocClaimsBuilder implements MdocClaimsBuilder {
                             if (mdocCode.getValue() != null) {
                                 code.put(ISO180135Headers.DRIVING_PRIVILEGES_CODE_VALUE, mdocCode.getValue());
                             }
-                            codes.add(code);
+                            codes.add(code.value());
                         }
+                        drivingPrivilege.put(ISO180135Headers.DRIVING_PRIVILEGES_CODES, codes.value());
                     }
-                    drivingPrivileges.add(drivingPrivilege);
+                    drivingPrivileges.add(drivingPrivilege.value());
                 }
-                return create(ISO180135Headers.DRIVING_PRIVILEGES, drivingPrivileges);
+                return create(ISO180135Headers.DRIVING_PRIVILEGES, drivingPrivileges.value());
             }
             return null;
         }
@@ -1349,12 +1350,12 @@ public abstract class DefaultMdocClaimsBuilder implements MdocClaimsBuilder {
         @Override
         protected MdocClaim getBirthdate(MdocClaimParameters selectivelyDisclosable) {
             if (selectivelyDisclosable.getBirthdate() != null) {
-                final CBORMap birthdate = new CBORMap();
-                birthdate.put(ISO232202Headers.BIRTH_DATE, CBORUtils.toFullDate(selectivelyDisclosable.getBirthdate()));
+                final CBORValue.CBORMapEditor birthdate = CBOR.map();
+                birthdate.put(ISO232202Headers.BIRTH_DATE, CBORTags.fullDate(selectivelyDisclosable.getBirthdate()));
                 if (selectivelyDisclosable.getBirthdateApproximateMask() != null) {
                     birthdate.put(ISO232202Headers.APPROXIMATE_MASK, selectivelyDisclosable.getBirthdateApproximateMask());
                 }
-                return create(ISO232202Headers.BIRTH_DATE, birthdate);
+                return create(ISO232202Headers.BIRTH_DATE, birthdate.value());
             }
             return null;
         }
@@ -1734,7 +1735,7 @@ public abstract class DefaultMdocClaimsBuilder implements MdocClaimsBuilder {
         @Override
         protected MdocClaim getAdministrativeIssuanceDate(MdocClaimParameters selectivelyDisclosable) {
             if (selectivelyDisclosable.getAdministrativeIssuanceDate() != null) {
-                return create(ISO232202Headers.ISSUE_DATE, CBORUtils.toFullDate(selectivelyDisclosable.getAdministrativeIssuanceDate()));
+                return create(ISO232202Headers.ISSUE_DATE, CBORTags.fullDate(selectivelyDisclosable.getAdministrativeIssuanceDate()));
             }
             return null;
         }
@@ -1742,7 +1743,7 @@ public abstract class DefaultMdocClaimsBuilder implements MdocClaimsBuilder {
         @Override
         protected MdocClaim getAdministrativeExpirationDate(MdocClaimParameters selectivelyDisclosable) {
             if (selectivelyDisclosable.getAdministrativeExpirationDate() != null) {
-                return create(ISO232202Headers.EXPIRY_DATE, CBORUtils.toFullDate(selectivelyDisclosable.getAdministrativeExpirationDate()));
+                return create(ISO232202Headers.EXPIRY_DATE, CBORTags.fullDate(selectivelyDisclosable.getAdministrativeExpirationDate()));
             }
             return null;
         }
@@ -1819,7 +1820,7 @@ public abstract class DefaultMdocClaimsBuilder implements MdocClaimsBuilder {
                 if (selectivelyDisclosable.getBirthdateApproximateMask() != null) {
                     return super.getBirthdate(selectivelyDisclosable);
                 }
-                return create(EUDIPIDHeaders.BIRTH_DATE, CBORUtils.toFullDate(selectivelyDisclosable.getBirthdate()));
+                return create(EUDIPIDHeaders.BIRTH_DATE, CBORTags.fullDate(selectivelyDisclosable.getBirthdate()));
             }
             return null;
         }
@@ -1829,7 +1830,7 @@ public abstract class DefaultMdocClaimsBuilder implements MdocClaimsBuilder {
             if (selectivelyDisclosable.getPlaceOfBirthCountry() != null ||
                     selectivelyDisclosable.getPlaceOfBirthRegion() != null ||
                     selectivelyDisclosable.getPlaceOfBirthLocality() != null) {
-                final CBORMap placeOfBirth = new CBORMap();
+                final CBORValue.CBORMapEditor placeOfBirth = CBOR.map();
                 if (selectivelyDisclosable.getPlaceOfBirthCountry() != null) {
                     placeOfBirth.put(EUDIPIDHeaders.PLACE_OF_BIRTH_COUNTRY, selectivelyDisclosable.getPlaceOfBirthCountry());
                 }
@@ -1839,7 +1840,7 @@ public abstract class DefaultMdocClaimsBuilder implements MdocClaimsBuilder {
                 if (selectivelyDisclosable.getPlaceOfBirthLocality() != null) {
                     placeOfBirth.put(EUDIPIDHeaders.PLACE_OF_BIRTH_LOCALITY, selectivelyDisclosable.getPlaceOfBirthLocality());
                 }
-                return create(EUDIPIDHeaders.PLACE_OF_BIRTH, placeOfBirth);
+                return create(EUDIPIDHeaders.PLACE_OF_BIRTH, placeOfBirth.value());
             }
             return super.getPlaceOfBirth(selectivelyDisclosable);
         }
@@ -2084,17 +2085,21 @@ public abstract class DefaultMdocClaimsBuilder implements MdocClaimsBuilder {
             if (selectivelyDisclosable.getAttestedAttributesSubjectFamilyName() != null &&
                     selectivelyDisclosable.getAttestedAttributesSubjectGivenName() != null &&
                     selectivelyDisclosable.getAttestedAttributesSubjectDocumentNumber() != null) {
-                final CBORMap subAttr = new CBORMap();
-                CBORMap subId = new CBORMap();
-                subId.put(ETSI194721Headers.SUB_ATTRS_ID_FAMILY_NAME, selectivelyDisclosable.getAttestedAttributesSubjectFamilyName());
-                subId.put(ETSI194721Headers.SUB_ATTRS_ID_GIVEN_NAME, selectivelyDisclosable.getAttestedAttributesSubjectGivenName());
-                subId.put(ETSI194721Headers.SUB_ATTRS_ID_DOCUMENT_NUMBER, selectivelyDisclosable.getAttestedAttributesSubjectDocumentNumber());
-                subAttr.put(ETSI194721Headers.SUB_ATTRS_ID, subId);
+                CBORValue subId = CBOR.map()
+                        .put(ETSI194721Headers.SUB_ATTRS_ID_FAMILY_NAME, selectivelyDisclosable.getAttestedAttributesSubjectFamilyName())
+                        .put(ETSI194721Headers.SUB_ATTRS_ID_GIVEN_NAME, selectivelyDisclosable.getAttestedAttributesSubjectGivenName())
+                        .put(ETSI194721Headers.SUB_ATTRS_ID_DOCUMENT_NUMBER, selectivelyDisclosable.getAttestedAttributesSubjectDocumentNumber())
+                        .value();
+
+                final CBORValue subAttr = CBOR.map()
+                        .put(ETSI194721Headers.SUB_ATTRS_ID, subId)
+                        .value();
                 return create(ETSI194721Headers.SUB_ATTRS, subAttr);
 
             } else if (selectivelyDisclosable.getAttestedAttributesSubjectPseudonym() != null) {
-                final CBORMap subAttr = new CBORMap();
-                subAttr.put(ETSI194721Headers.SUB_ATTRS_AKA, selectivelyDisclosable.getAttestedAttributesSubjectPseudonym());
+                final CBORValue subAttr = CBOR.map()
+                        .put(ETSI194721Headers.SUB_ATTRS_AKA, selectivelyDisclosable.getAttestedAttributesSubjectPseudonym())
+                        .value();
                 return create(ETSI194721Headers.SUB_ATTRS, subAttr);
             }
             return null;

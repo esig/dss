@@ -20,16 +20,15 @@
  */
 package eu.europa.esig.dss.attestation.revocation.cwt.validation.identifierlist;
 
+import eu.europa.ec.digit.cddl4j.cbor.CBOR;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
+import eu.europa.esig.dss.attestation.revocation.cwt.model.identifierlist.CWTIdentifierListPayload;
+import eu.europa.esig.dss.attestation.revocation.model.identifierlist.IdentifierListPayload;
+import eu.europa.esig.dss.attestation.revocation.model.identifierlist.IdentifierListToken;
+import eu.europa.esig.dss.attestation.revocation.validation.identifierlist.IdentifierListValidator;
 import eu.europa.esig.dss.cbades.COSEParser;
-import eu.europa.esig.dss.cbades.cbor.CBORByteString;
-import eu.europa.esig.dss.cbades.cbor.CBORMap;
-import eu.europa.esig.dss.cbades.cbor.CBORObject;
 import eu.europa.esig.dss.cbades.validation.CBAdESSignature;
 import eu.europa.esig.dss.cbades.validation.COSEDocumentAnalyzer;
-import eu.europa.esig.dss.attestation.revocation.cwt.model.identifierlist.CWTIdentifierListPayload;
-import eu.europa.esig.dss.attestation.revocation.model.identifierlist.IdentifierListToken;
-import eu.europa.esig.dss.attestation.revocation.model.identifierlist.IdentifierListPayload;
-import eu.europa.esig.dss.attestation.revocation.validation.identifierlist.IdentifierListValidator;
 import eu.europa.esig.dss.enumerations.AttestationStatus;
 import eu.europa.esig.dss.enumerations.COSESignatureType;
 import eu.europa.esig.dss.model.DSSException;
@@ -113,14 +112,13 @@ public class CWTIdentifierListValidator implements IdentifierListValidator {
     protected IdentifierListPayload getPayload(AdvancedSignature signature) {
         try {
             CBAdESSignature cbadesSignature = toCBAdESSignature(signature);
-            CBORObject cborPayload = cbadesSignature.getCoseSignature().getPayload();
+            CBORValue cborPayload = cbadesSignature.getCoseSignature().getPayload();
 
             if (!cborPayload.isByteString()) {
                 throw new IllegalInputException("COSE payload shall be encoded as a CBOR byte string!");
             }
             try {
-                CBORByteString payloadByteString = (CBORByteString) cborPayload;
-                CBORMap cborMap = new CBORMap(payloadByteString);
+                CBORValue cborMap = CBOR.decodeFromBytes(cborPayload.asBytes());
                 return new CWTIdentifierListPayload(cborMap);
 
             } catch (Exception e) {

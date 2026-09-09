@@ -20,15 +20,14 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.creation;
 
-import eu.europa.esig.dss.cbades.cbor.CBORArray;
-import eu.europa.esig.dss.cbades.cbor.CBORByteString;
-import eu.europa.esig.dss.cbades.cbor.CBORMap;
-import eu.europa.esig.dss.cbades.cbor.CBORObject;
-import eu.europa.esig.dss.cbades.cbor.CBORObjectFactory;
-import eu.europa.esig.dss.cbades.cbor.CBORUtils;
+import eu.europa.ec.digit.cddl4j.cbor.CBOR;
+import eu.europa.ec.digit.cddl4j.cbor.CBORTags;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.attestation.mdoc.IssuerSignedParser;
 import eu.europa.esig.dss.attestation.mdoc.MdocConstants;
 import eu.europa.esig.dss.attestation.mdoc.MdocHeaderParameter;
+import eu.europa.esig.dss.cbades.cbor.CBORMap;
+import eu.europa.esig.dss.cbades.cbor.CBORUtils;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -62,8 +61,8 @@ public class MdocPresentationBuilder {
      * @return {@link DSSDocument}
      */
     public DSSDocument buildIssuerSignedDocument(DSSDocument attestation, List<MdocIssuerSignedItem> disclosures) {
-        CBORMap issuerSigned = buildIssuerSigned(attestation, disclosures);
-        return new InMemoryDocument(CBORUtils.serializeCborObject(issuerSigned));
+        CBORValue issuerSigned = buildIssuerSigned(attestation, disclosures);
+        return new InMemoryDocument(issuerSigned.encodeToBytes());
     }
 
     /**
@@ -78,9 +77,9 @@ public class MdocPresentationBuilder {
      *
      * @param attestation {@link DSSDocument} containing the attestation signature (IssuerAuth)
      * @param disclosures a list of {@link MdocIssuerSignedItem}s to be included
-     * @return {@link CBORMap}
+     * @return {@link eu.europa.ec.digit.cddl4j.cbor.CBORValue}
      */
-    protected CBORMap buildIssuerSigned(DSSDocument attestation, List<MdocIssuerSignedItem> disclosures) {
+    protected CBORValue buildIssuerSigned(DSSDocument attestation, List<MdocIssuerSignedItem> disclosures) {
         Objects.requireNonNull(attestation, "Attestation cannot be null!");
         if (!CBORUtils.isCbor(attestation)) {
             throw new IllegalInputException("Attestation document shall represent a CBOR encoded object!");
@@ -88,14 +87,14 @@ public class MdocPresentationBuilder {
 
         try {
             // TODO : do verification in a separate method ?
-            CBORObject issuerAuth = CBORUtils.parseCbor(attestation);
+            CBORValue issuerAuth = CBORUtils.parseCbor(attestation);
 
-            final CBORMap issuerSigned = new CBORMap();
+            final CBORValue.CBORMapEditor issuerSigned = CBOR.map();
             if (Utils.isCollectionNotEmpty(disclosures)) {
                 issuerSigned.put(MdocConstants.NAMESPACES, buildIssuerNameSpaces(disclosures));
             }
             issuerSigned.put(MdocHeaderParameter.ISSUER_AUTH.toString(), issuerAuth);
-            return issuerSigned;
+            return issuerSigned.value();
 
         } catch (Exception e) {
             throw new DSSException(String.format("Unable to build IssuerSigned. Reason : %s", e.getMessage()), e);
@@ -112,15 +111,15 @@ public class MdocPresentationBuilder {
      * }
      *
      * @param disclosures a list of {@link MdocIssuerSignedItem}s to be included
-     * @return {@link CBORMap}
+     * @return {@link CBORValue}
      */
-    protected CBORMap buildIssuerNameSpaces(List<MdocIssuerSignedItem> disclosures) {
-        final CBORMap issuerNameSpaces = new CBORMap();
-        Map<String, List<CBORByteString>> issuerSignedBytesByNamespace = disclosures.stream().collect(
+    protected CBORValue buildIssuerNameSpaces(List<MdocIssuerSignedItem> disclosures) {
+        final CBORValue.CBORMapEditor issuerNameSpaces = CBOR.map();
+        Map<String, List<CBORValue>> issuerSignedBytesByNamespace = disclosures.stream().collect(
                 Collectors.groupingBy(MdocIssuerSignedItem::getNamespace, LinkedHashMap::new,
                         Collectors.mapping(MdocIssuerSignedItem::getIssuerSignedItemBytes, Collectors.toList())));
-        issuerSignedBytesByNamespace.forEach((k, v) -> issuerNameSpaces.put(k, new CBORArray(v)));
-        return issuerNameSpaces;
+        issuerSignedBytesByNamespace.forEach((k, v) -> issuerNameSpaces.put(k, CBOR.array(v).value()));
+        return issuerNameSpaces.value();
     }
 
     /**
@@ -135,31 +134,35 @@ public class MdocPresentationBuilder {
     public DSSDocument buildDeviceResponseDocument(DSSDocument attestation, List<MdocIssuerSignedItem> disclosures,
                                                    DSSDocument keyBinding, MdocDeviceSignedParameters deviceSignedParameters) {
         try {
-            CBORMap issuerSigned = buildIssuerSigned(attestation, disclosures);
-            CBORObject deviceSignature = CBORUtils.parseCbor(keyBinding);
+            CBORValue issuerSigned = buildIssuerSigned(attestation, disclosures);
+            CBORValue deviceSignature = CBORUtils.parseCbor(keyBinding);
 
-            CBORMap deviceAuth = new CBORMap();
-            deviceAuth.put(MdocHeaderParameter.DEVICE_SIGNATURE.toString(), deviceSignature);
+            CBORValue deviceAuth = CBOR.map()
+                    .put(MdocHeaderParameter.DEVICE_SIGNATURE.toString(), deviceSignature)
+                    .value();
 
-            CBORMap deviceSigned = new CBORMap();
+            CBORValue deviceSigned = CBOR.map()
+                    .put(MdocHeaderParameter.NAMESPACES.toString(), getDeviceNameSpacesBuilder().buildDeviceNameSpacesBytes(deviceSignedParameters))
+                    .put(MdocHeaderParameter.DEVICE_AUTH.toString(), deviceAuth)
+                    .value();
 
-            deviceSigned.put(MdocHeaderParameter.NAMESPACES.toString(), getDeviceNameSpacesBuilder().buildDeviceNameSpacesBytes(deviceSignedParameters));
-            deviceSigned.put(MdocHeaderParameter.DEVICE_AUTH.toString(), deviceAuth);
+            CBORValue document = CBOR.map()
+                    .put(MdocHeaderParameter.DOC_TYPE.toString(), extractDocTypeFromIssuerSigned(issuerSigned))
+                    .put(MdocHeaderParameter.ISSUER_SIGNED.toString(), issuerSigned)
+                    .put(MdocHeaderParameter.DEVICE_SIGNED.toString(), deviceSigned)
+                    .value();
 
-            CBORMap document = new CBORMap();
-            document.put(MdocHeaderParameter.DOC_TYPE.toString(), extractDocTypeFromIssuerSigned(issuerSigned));
-            document.put(MdocHeaderParameter.ISSUER_SIGNED.toString(), issuerSigned);
-            document.put(MdocHeaderParameter.DEVICE_SIGNED.toString(), deviceSigned);
+            CBORValue documents = CBOR.array()
+                    .add(document)
+                    .value();
 
-            CBORArray documents =  new CBORArray();
-            documents.add(document);
+            CBORValue deviceResponse = CBOR.map()
+                    .put(MdocHeaderParameter.VERSION.toString(), CBOR.text("1.0"))
+                    .put(MdocHeaderParameter.DOCUMENTS.toString(), documents)
+                    .put(MdocHeaderParameter.STATUS.toString(), CBOR.integer(0))
+                    .value();
 
-            CBORMap deviceResponse = new CBORMap();
-            deviceResponse.put(MdocHeaderParameter.VERSION.toString(), CBORObjectFactory.toCBORObject("1.0"));
-            deviceResponse.put(MdocHeaderParameter.DOCUMENTS.toString(), documents);
-            deviceResponse.put(MdocHeaderParameter.STATUS.toString(), CBORObjectFactory.toCBORObject(0));
-
-            return new InMemoryDocument(CBORUtils.serializeCborObject(deviceResponse));
+            return new InMemoryDocument(CBORUtils.serializeCbor(deviceResponse));
 
         } catch (Exception e) {
             throw new DSSException(String.format("Unable to issue presentation. Reason : %s", e.getMessage()), e);
@@ -199,13 +202,35 @@ public class MdocPresentationBuilder {
      *
      * @param issuerSigned the issuerSigned
      * @return {@link String} the value of the docType
+     * @deprecated since DSS 6.6. Use {@link #extractDocTypeFromIssuerSigned(CBORValue)}.
      */
+    @Deprecated
     protected String extractDocTypeFromIssuerSigned(final CBORMap issuerSigned) {
+        return extractDocTypeFromIssuerSigned(issuerSigned.toCBORValue());
+    }
+
+    /**
+     * Extract the value of the docType from the issuerSigned to use it in the DeviceResponse
+     *
+     * @param issuerSigned the issuerSigned
+     * @return {@link String} the value of the docType
+     */
+    protected String extractDocTypeFromIssuerSigned(final CBORValue issuerSigned) {
         IssuerSignedParser parser = new IssuerSignedParser(issuerSigned);
-        CBORByteString encodedPayload = (CBORByteString) parser.parse().getIssuerAuth().getPayload();
-        CBORByteString decodedPayload = (CBORByteString) CBORUtils.parseCbor(encodedPayload.getValueAsBytes());
-        CBORMap mso = new CBORMap(decodedPayload);
-        return mso.getAsString(MdocConstants.DOC_TYPE);
+        CBORValue encodedPayload = parser.parse().getIssuerAuth().getPayload();
+        CBORValue mobileSecurityObjectBytes = CBORUtils.parseCbor(encodedPayload.asBytes());
+        if (!mobileSecurityObjectBytes.isTag() || CBORTags.ENCODED_CBOR != mobileSecurityObjectBytes.getTag().longValue()) {
+            throw new IllegalInputException("IssuerAuth payload shall be of MobileSecurityObjectBytes type!");
+        }
+        CBORValue decodedPayload = mobileSecurityObjectBytes.getTaggedValue();
+        if (!decodedPayload.isByteString()) {
+            throw new IllegalInputException("MobileSecurityObjectBytes tagged value shall be of CBOR Byte String type!");
+        }
+        CBORValue mobileSecurityObject = CBORUtils.parseCbor(decodedPayload.asBytes());
+        if (!mobileSecurityObject.isMap()) {
+            throw new IllegalInputException("MobileSecurityObject shall be of CBOR Map type!");
+        }
+        return mobileSecurityObject.getAsStringOrNull(MdocConstants.DOC_TYPE);
     }
 
 }

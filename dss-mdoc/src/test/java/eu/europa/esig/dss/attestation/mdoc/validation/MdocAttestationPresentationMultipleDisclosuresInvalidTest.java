@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.validation;
 
-import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.AttestationPayloadProxy;
 import eu.europa.esig.dss.diagnostic.AttestationWrapper;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;

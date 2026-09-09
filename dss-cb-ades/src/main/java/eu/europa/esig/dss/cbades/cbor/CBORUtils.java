@@ -20,9 +20,11 @@
  */
 package eu.europa.esig.dss.cbades.cbor;
 
+import eu.europa.ec.digit.cddl4j.cbor.CBOR;
 import eu.europa.ec.digit.cddl4j.cbor.CBORDecodeException;
 import eu.europa.ec.digit.cddl4j.cbor.CBORDecoder;
-import eu.europa.ec.digit.cddl4j.cbor.CBOREncoder;
+import eu.europa.ec.digit.cddl4j.cbor.CBORTags;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.DSSException;
@@ -74,26 +76,31 @@ public final class CBORUtils {
     private static final Logger LOG = LoggerFactory.getLogger(CBORUtils.class);
 
     /** An empty btsr value */
-    public static final CBORByteString EMPTY_BYTE_STRING;
+    public static final CBORValue EMPTY_BYTE_STRING;
 
     /** The binary content encoding (RFC 2045) */
     public static final String CONTENT_ENCODING_BINARY = "binary";
 
-    /** Tag for the CBOR "full-date" object */
+    /**
+     * Tag for the CBOR "full-date" object
+     *
+     * @deprecated since DSS 6.6. Please use {@link CBORTags#FULL_DATE} instead.
+     */
+    @Deprecated
     public static final long CBOR_FULL_DATE_TAG = 1004;
 
     /**
      * Contains protected header names that are supported and can be present in the critical ('crit') attribute
      */
-    private static final Set<CBORObject> supportedCriticalHeaders;
+    private static final Set<CBORValue> supportedCriticalHeaders;
 
     /**
      * Contains protected header names that are required to be present in the critical ('crit') attribute, when used
      */
-    private static final Set<CBORObject> requiredCriticalHeaders;
+    private static final Set<CBORValue> requiredCriticalHeaders;
 
     static {
-        EMPTY_BYTE_STRING = new CBORByteString();
+        EMPTY_BYTE_STRING = CBOR.bytes(new byte[0]);
 
         supportedCriticalHeaders = Stream.of(
                 /* RFC 9052 */
@@ -122,31 +129,31 @@ public final class CBORUtils {
     }
 
     /**
-     * This method parses a {@code DSSDocument} and returns a {@code CBORObject},
+     * This method parses a {@code DSSDocument} and returns a {@code CBORValue},
      * representing the CBOR object structure
      *
      * @param document {@link DSSDocument} to parse
-     * @return {@link CBORObject}
+     * @return {@link CBORValue}
      * @throws CBORDecodeException if an error occurs on document parsing
      */
-    public static CBORObject parseCbor(DSSDocument document) throws CBORDecodeException {
+    public static CBORValue parseCbor(DSSDocument document) throws CBORDecodeException {
         try (InputStream is = document.openStream()) {
-            return CBORObjectFactory.toCBORObject(CBORDecoder.decode(is));
+            return CBORDecoder.decode(is);
         } catch (IOException e) {
             throw new DSSException(String.format("Unable to read document with name '%s' : %s", document.getName(), e.getMessage()), e);
         }
     }
 
     /**
-     * This method parses a byte array and returns a {@code CBORObject},
+     * This method parses a byte array and returns a {@code CBORValue},
      * representing the CBOR object structure
      *
      * @param bytes byte array to parse
-     * @return {@link CBORObject}
+     * @return {@link CBORValue}
      */
-    public static CBORObject parseCbor(byte[] bytes) {
+    public static CBORValue parseCbor(byte[] bytes) {
         try {
-            return CBORObjectFactory.toCBORObject(CBORDecoder.decode(bytes));
+            return CBORDecoder.decode(bytes);
         } catch (CBORDecodeException e) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Error on parsing binaries: {}", Utils.toBase64(bytes));
@@ -190,10 +197,25 @@ public final class CBORUtils {
      *
      * @param cborObject {@link CBORObject} to be serialized
      * @return serialized byte array
+     * @deprecated since DSS 6.6. Use {@link #serializeCbor(CBORValue)} instead.
      */
+    @Deprecated
     public static byte[] serializeCborObject(CBORObject cborObject) {
+        if (cborObject != null) {
+            return serializeCbor(cborObject.toCBORValue());
+        }
+        return null;
+    }
+
+    /**
+     * Serialized a given CBOR value to a byte array
+     *
+     * @param cborValue {@link CBORValue} to be serialized
+     * @return serialized byte array
+     */
+    public static byte[] serializeCbor(CBORValue cborValue) {
         try {
-            return CBOREncoder.encode(cborObject.toCBORValue());
+            return cborValue.encodeToBytes();
         } catch (Exception e) {
             throw new DSSException(String.format("Unable to serialize CBOR object : %s", e.getMessage()), e);
         }
@@ -204,9 +226,11 @@ public final class CBORUtils {
      *
      * @param cborObject {@link CBORObject} to serialized and incorporate into CBOR Byte String type
      * @return {@link CBORByteString}
+     * @deprecated since DSS 6.6. Use {@link CBOR#bytes(byte[])} from {@link #serializeCbor(CBORValue)}.
      */
+    @Deprecated
     public static CBORByteString toCborBtsrWrapped(CBORObject cborObject) {
-        return new CBORByteString(serializeCborObject(cborObject));
+        return new CBORByteString(serializeCbor(cborObject.toCBORValue()));
     }
 
     /**
@@ -214,18 +238,18 @@ public final class CBORUtils {
      *
      * @param cborObject {@link CBORObject} to serialized and incorporate into CBOR Byte String type
      * @return {@link CBORByteString}
+     * @deprecated since DSS 6.6. Use {@link CBORTags#encodedCbor(byte[])} from {@link #serializeCbor(CBORValue)}.
      */
+    @Deprecated
     public static CBORByteString toCborBtsrWrappedTagged(CBORObject cborObject) {
-        CBORByteString cborBtsrWrapped = toCborBtsrWrapped(cborObject);
-        cborBtsrWrapped.setTag(24L);
-        return cborBtsrWrapped;
+        return new CBORByteString(CBORTags.encodedCbor(serializeCbor(cborObject.toCBORValue())));
     }
 
     /**
      * Gets {@code DigestAlgorithm} safely for a given {@code digestAlgoId}
      *
      * @param digestAlgoId {@link Long} IANA COSE Digest Algorithm identifier
-     * @return {@link DigestAlgorithm} if supported, NULL otherwise
+     * @return {@link DigestAlgorithm} if supported, null otherwise
      */
     public static DigestAlgorithm getDigestAlgorithmForCoseId(Long digestAlgoId) {
         if (digestAlgoId == null) {
@@ -257,7 +281,7 @@ public final class CBORUtils {
      *
      * @return a set of supported protected critical header identifiers
      */
-    public static Set<CBORObject> getSupportedProtectedCriticalHeaders() {
+    public static Set<CBORValue> getSupportedProtectedCriticalHeaders() {
         return supportedCriticalHeaders;
     }
 
@@ -266,8 +290,23 @@ public final class CBORUtils {
      *
      * @param headerId {@link CBORObject} header key to check
      * @return TRUE if the header is required within 'crit' header when used, FALSE otherwise
+     * @deprecated since DSS 6.6. Please use {@link #isRequiredCriticalHeader(CBORValue)} instead.
      */
+    @Deprecated
     public static boolean isRequiredCriticalHeader(CBORObject headerId) {
+        if (headerId == null) {
+            return false;
+        }
+        return isRequiredCriticalHeader(headerId.toCBORValue());
+    }
+
+    /**
+     * Checks if the given {@code headerId} is required to be incorporated within 'crit' header, when used
+     *
+     * @param headerId {@link CBORValue} header key to check
+     * @return TRUE if the header is required within 'crit' header when used, FALSE otherwise
+     */
+    public static boolean isRequiredCriticalHeader(CBORValue headerId) {
         return requiredCriticalHeaders.contains(headerId);
     }
 
@@ -276,7 +315,9 @@ public final class CBORUtils {
      *
      * @param uHeader {@link CBORObject} to check
      * @return TRUE if the object is an instance of CBOR btsr type, FALSE otherwise
+     * @deprecated since DSS 6.6. Use {@link CBORValue#isByteString()}
      */
+    @Deprecated
     public static boolean isCborByteStringWrappedFormat(CBORObject uHeader) {
         return uHeader.isByteString();
     }
@@ -286,11 +327,26 @@ public final class CBORUtils {
      *
      * @param uHeaders {@link CBORArray} to check
      * @return TRUE if all the components are CBOR byte string encoded, FALSE otherwise
+     * @deprecated since DSS 6.6. Use {@link #areAllCborBtsrComponents(CBORValue)} instead.
      */
+    @Deprecated
     public static boolean areAllCborBtsrComponents(CBORArray uHeaders) {
-        if (uHeaders != null && !uHeaders.isEmpty()) {
-            for (CBORObject component : uHeaders.getValueAsList()) {
-                if (!isCborByteStringWrappedFormat(component)) {
+        if (uHeaders != null) {
+            return areAllCborBtsrComponents(uHeaders.toCBORValue());
+        }
+        return true;
+    }
+
+    /**
+     * Checks if the all components are CBOR byte string encoded
+     *
+     * @param uHeaders {@link CBORValue} to check
+     * @return TRUE if all the components are CBOR byte string encoded, FALSE otherwise
+     */
+    public static boolean areAllCborBtsrComponents(CBORValue uHeaders) {
+        if (uHeaders != null && uHeaders.isArray() && uHeaders.size() != 0) {
+            for (CBORValue component : uHeaders.getElements()) {
+                if (!component.isByteString()) {
                     return false;
                 }
             }
@@ -304,11 +360,27 @@ public final class CBORUtils {
      *
      * @param uHeadersEntry {@link CBORObject} to parse
      * @return {@link CBORMap} if parsing is successful, NULL otherwise
+     * @deprecated since DSS 6.6. Use {@link #parseUHeadersEntry(CBORValue)}.
      */
+    @Deprecated
     public static CBORMap parseUHeadersEntry(CBORObject uHeadersEntry) {
+        if (uHeadersEntry != null) {
+            return new CBORMap(parseUHeadersEntry(uHeadersEntry.toCBORValue()));
+        }
+        return null;
+    }
+
+    /**
+     * This method parses a {@code CBORObject} representing a component of 'uHeaders' unsigned header parameter,
+     * returning a value of the entry in the unified form {@code CBORMap}
+     *
+     * @param uHeadersEntry {@link CBORValue} to parse
+     * @return {@link CBORValue} representing a CBOR map if parsing is successful, NULL otherwise
+     */
+    public static CBORValue parseUHeadersEntry(CBORValue uHeadersEntry) {
         if (uHeadersEntry.isByteString()) {
             LOG.trace("CBOR Byte String encoded 'uHeader' component found. Parse to CBORMap.");
-            byte[] componentSerialized = ((CBORByteString) uHeadersEntry).getValueAsBytes();
+            byte[] componentSerialized = uHeadersEntry.asBytes();
             try {
                 uHeadersEntry = CBORUtils.parseCbor(componentSerialized);
             } catch (Exception e) {
@@ -329,29 +401,27 @@ public final class CBORUtils {
             LOG.warn("Encoded component of 'uHeaders' unsigned header parameter shall be of CBORMap type! Entry is skipped.");
             return null;
         }
-
-        CBORMap uHeadersEntryMap = (CBORMap) uHeadersEntry;
-        if (uHeadersEntryMap.getSize() != 1) {
+        if (uHeadersEntry.size() != 1) {
             LOG.warn("Only one entry is allowed within an 'uHeaders' component! Entry is skipped.");
             return null;
         }
-        return uHeadersEntryMap;
+        return uHeadersEntry;
     }
 
     /**
      * Generates a CBOR 'full-date' object for the {@code Date}
      *
      * @param date {@link Date}
-     * @return {@link CBORObject}
+     * @return {@link CBORValue}
+     * @deprecated since DSS 6.6. Please use {@link CBORTags#fullDate(Date)} instead.
      */
-    public static CBORObject toFullDate(Date date) {
+    @Deprecated
+    public static CBORValue toFullDate(Date date) {
         if (date == null) {
             return null;
         }
         String dateString = DSSUtils.formatDateToISO8601(date);
-        CBORObject cborObject = CBORObjectFactory.toCBORObject(dateString);
-        cborObject.setTag(CBOR_FULL_DATE_TAG);
-        return cborObject;
+        return CBOR.tag(CBOR_FULL_DATE_TAG, CBOR.text(dateString));
     }
 
     /**
@@ -359,24 +429,38 @@ public final class CBORUtils {
      *
      * @param cborObject {@link CBORObject}
      * @return {@link Date}
+     * @deprecated since DSS 6.6. Please use {@link #fromNumericDate(CBORValue)} instead.
      */
+    @Deprecated
     public static Date fromNumericDate(CBORObject cborObject) {
         if (cborObject == null) {
             return null;
         }
+        return fromNumericDate(cborObject.toCBORValue());
+    }
+
+    /**
+     * Obtains a CBOR object represented by a NumericDate and returns the resulted {@code Date}
+     *
+     * @param cborValue {@link CBORValue}
+     * @return {@link Date}
+     */
+    public static Date fromNumericDate(CBORValue cborValue) {
+        if (cborValue == null) {
+            return null;
+        }
         long timeValueInMilliseconds;
-        if (cborObject.isUnsignedInteger() || cborObject.isNegativeInteger()) {
-            CBORSimpleObject iat = (CBORSimpleObject) cborObject;
-            timeValueInMilliseconds = DSSUtils.getTimeValueInMilliseconds(iat.getValueAsLong());
-        } else if (cborObject.isFloatingPointNumber()) {
-            CBORSimpleObject iat = (CBORSimpleObject) cborObject;
-            timeValueInMilliseconds = DSSUtils.getTimeValueInMilliseconds(iat.getValueAsDouble());
+        if (cborValue.isInteger()) {
+            timeValueInMilliseconds = DSSUtils.getTimeValueInMilliseconds(cborValue.asInteger().longValue());
+        } else if (cborValue.isFloatingPoint()) {
+            timeValueInMilliseconds = DSSUtils.getTimeValueInMilliseconds(cborValue.asDouble());
         } else {
-            LOG.warn("NumericDate is expected. Obtained value : {}", cborObject);
+            LOG.warn("NumericDate is expected. Obtained value : {}", cborValue);
             return null;
         }
         return DSSUtils.getDateFromMilliseconds(timeValueInMilliseconds);
     }
+
     /**
      * Creates a formatted string from the supplied date.
      * The date/time is encoded according to RFC 3339 with second precision.
@@ -417,7 +501,6 @@ public final class CBORUtils {
             return false;
         }
     }
-
 
     /**
      * Parses a date string value to a {@link Date}.

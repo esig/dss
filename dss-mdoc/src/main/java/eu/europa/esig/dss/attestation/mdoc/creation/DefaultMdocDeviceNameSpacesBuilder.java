@@ -20,16 +20,15 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.creation;
 
+import eu.europa.ec.digit.cddl4j.cbor.CBOR;
+import eu.europa.ec.digit.cddl4j.cbor.CBORTags;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
+import eu.europa.esig.dss.cbades.cbor.CBORValueFactory;
+
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import eu.europa.esig.dss.cbades.cbor.CBORByteString;
-import eu.europa.esig.dss.cbades.cbor.CBORMap;
-import eu.europa.esig.dss.cbades.cbor.CBORObject;
-import eu.europa.esig.dss.cbades.cbor.CBORObjectFactory;
-import eu.europa.esig.dss.cbades.cbor.CBORUtils;
 
 /**
  * Default implementation of {@link MdocDeviceNameSpacesBuilder}
@@ -44,23 +43,23 @@ public class DefaultMdocDeviceNameSpacesBuilder implements MdocDeviceNameSpacesB
     }
 
     @Override
-    public CBORByteString buildDeviceNameSpacesBytes(final MdocDeviceSignedParameters mdocDeviceSignedParameters) {
+    public CBORValue buildDeviceNameSpacesBytes(final MdocDeviceSignedParameters mdocDeviceSignedParameters) {
         Map<String, List<MdocClaim>> groupedClaims = mdocDeviceSignedParameters.getDeviceSignedDataElements()
                 .stream()
                 .collect(Collectors.groupingBy(MdocClaim::getNamespace, LinkedHashMap::new, Collectors.toList()));
 
-        CBORMap deviceNameSpaces = new CBORMap();
+        CBORValue.CBORMapEditor deviceNameSpaces = CBOR.map();
 
         for (Map.Entry<String, List<MdocClaim>> entry : groupedClaims.entrySet()) {
-            CBORMap map = new CBORMap();
+            CBORValue.CBORMapEditor map = CBOR.map();
             for (MdocClaim claim : entry.getValue()) {
-                CBORObject object = CBORObjectFactory.toCBORObject(claim.getValue());
+                CBORValue object = CBORValueFactory.toCBORValue(claim.getValue());
                 map.put(claim.getName(), object);
             }
 
             deviceNameSpaces.put(entry.getKey(), map);
         }
 
-        return CBORUtils.toCborBtsrWrappedTagged(deviceNameSpaces);
+        return CBORTags.encodedCbor(deviceNameSpaces.value().encodeToBytes());
     }
 }

@@ -20,13 +20,13 @@
  */
 package eu.europa.esig.dss.cbades;
 
-import eu.europa.esig.dss.cbades.cbor.CBORMap;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 
 /**
  * Represents a COSE unprotected header structure
  *
  */
-public class COSEUnprotectedHeader extends CBORMap {
+public class COSEUnprotectedHeader extends COSEHeader {
 
     /**
      * Creates an empty unprotected header
@@ -36,12 +36,12 @@ public class COSEUnprotectedHeader extends CBORMap {
     }
 
     /**
-     * Creates an unprotected header from a defined {@code CBORMap}
+     * Creates an unprotected header from a defined {@code CBORValue}
      *
-     * @param headerMap {@link CBORMap}
+     * @param headerMap {@link CBORValue}
      */
-    public COSEUnprotectedHeader(final CBORMap headerMap) {
-        super(headerMap.toCBORValue());
+    public COSEUnprotectedHeader(final CBORValue headerMap) {
+        super(headerMap);
     }
 
 }

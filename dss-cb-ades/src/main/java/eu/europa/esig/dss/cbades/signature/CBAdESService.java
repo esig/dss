@@ -20,11 +20,12 @@
  */
 package eu.europa.esig.dss.cbades.signature;
 
+import eu.europa.ec.digit.cddl4j.cbor.CBOR;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.CBAdESUtils;
 import eu.europa.esig.dss.cbades.COSEParser;
 import eu.europa.esig.dss.cbades.COSESign;
 import eu.europa.esig.dss.cbades.COSESignStructure;
-import eu.europa.esig.dss.cbades.cbor.CBORByteString;
 import eu.europa.esig.dss.cbades.cbor.CBORUtils;
 import eu.europa.esig.dss.enumerations.COSESignatureType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -183,8 +184,8 @@ public class CBAdESService extends AbstractSignatureService<CBAdESSignatureParam
          *   if the COSE Payload is detached (the payload field is absent).
          */
         if (SignaturePackaging.DETACHED != parameters.getSignaturePackaging() || SigDMechanism.NO_SIG_D == parameters.getSigDMechanism()) {
-            CBORByteString cborByteString = new CBORByteString(messageImprint);
-            messageImprint = CBORUtils.serializeCborObject(cborByteString);
+            CBORValue cborByteString = CBOR.bytes(messageImprint);
+            messageImprint = CBORUtils.serializeCbor(cborByteString);
         }
 
         DigestAlgorithm digestAlgorithm = parameters.getContentTimestampParameters().getDigestAlgorithm();

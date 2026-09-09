@@ -20,14 +20,16 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.model;
 
+import eu.europa.ec.digit.cddl4j.cbor.CBORTags;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.cbor.CBORByteString;
-import eu.europa.esig.dss.cbades.cbor.CBORMap;
-import eu.europa.esig.dss.cbades.cbor.CBORObject;
+import eu.europa.esig.dss.cbades.cbor.CBORUtils;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Represents a structure of the DeviceNameSpacesBytes element.
@@ -36,39 +38,60 @@ import java.util.Map;
 public class MdocDeviceNameSpaces {
 
     /** Original bytes */
-    private final CBORByteString deviceNameSpaceBytes;
+    private final CBORValue deviceNameSpaceBytes;
 
     /** Parsed map of namespaces and corresponding issuer signed items */
-    private final Map<String, CBORMap> namespaces;
+    private final Map<String, CBORValue> namespaces;
 
     /**
      * Default constructor
      *
      * @param deviceNameSpaceBytes {@link CBORByteString} representing DeviceNameSpacesBytes
+     * @deprecated since DSS 6.6. Use {@link MdocDeviceNameSpaces(CBORValue)}.
      */
+    @Deprecated
     public MdocDeviceNameSpaces(final CBORByteString deviceNameSpaceBytes) {
+        this(deviceNameSpaceBytes.getCBORValue());
+    }
+
+    /**
+     * Default constructor
+     *
+     * @param deviceNameSpaceBytes {@link CBORValue} representing DeviceNameSpacesBytes
+     */
+    public MdocDeviceNameSpaces(final CBORValue deviceNameSpaceBytes) {
+        Objects.requireNonNull(deviceNameSpaceBytes, "deviceNameSpaceBytes cannot be null!");
         this.deviceNameSpaceBytes = deviceNameSpaceBytes;
         this.namespaces = parseNameSpaces(deviceNameSpaceBytes);
     }
 
-    private Map<String, CBORMap> parseNameSpaces(CBORByteString deviceNameSpaceBytes) {
-        CBORMap deviceNameSpaces = new CBORMap(deviceNameSpaceBytes);
-        if (deviceNameSpaces.isEmpty()) {
+    private Map<String, CBORValue> parseNameSpaces(CBORValue deviceNameSpaceBytes) {
+        if (!deviceNameSpaceBytes.isTag() || CBORTags.ENCODED_CBOR != deviceNameSpaceBytes.getTag().longValue()) {
+            throw new IllegalInputException(String.format(
+                    "DeviceNameSpacesBytes shall be of a tagged CBOR Byte String type with tag value #6.24! Found type : %s", deviceNameSpaceBytes.getType()));
+        }
+        deviceNameSpaceBytes = deviceNameSpaceBytes.getTaggedValue();
+        if (!deviceNameSpaceBytes.isByteString()) {
+            throw new IllegalInputException(String.format(
+                    "DeviceNameSpacesBytes shall wrap a CBOR Byte String type! Found type : %s", deviceNameSpaceBytes.getType()));
+        }
+        CBORValue deviceNameSpaces = CBORUtils.parseCbor(deviceNameSpaceBytes.asBytes());
+        if (deviceNameSpaces.size() == 0) {
             // can be empty
             return Collections.emptyMap();
         }
 
-        final Map<String, CBORMap> namespacesMap = new HashMap<>();
-        for (CBORObject mapKey : deviceNameSpaces.getKeys()) {
-            if (!mapKey.isUnicodeString()) {
+        final Map<String, CBORValue> namespacesMap = new HashMap<>();
+        for (CBORValue mapKey : deviceNameSpaces.getKeys()) {
+            if (!mapKey.isTextString()) {
                 throw new IllegalInputException("NameSpace shall be of unicode string type!");
             }
-            String namespace = mapKey.getValueAsString();
-            CBORObject deviceSignedItems = deviceNameSpaces.getHeader(mapKey);
-            if (!deviceSignedItems.isMap()) {
+            String namespace = mapKey.asString();
+            CBORValue deviceSignedItems = deviceNameSpaces.get(mapKey);
+            if (deviceSignedItems == null || !deviceSignedItems.isMap()) {
                 throw new IllegalInputException("DeviceSignedItems shall be of Map type!");
             }
-            namespacesMap.put(namespace, (CBORMap) deviceSignedItems);
+            namespacesMap.put(namespace,  deviceSignedItems);
         }
         return namespacesMap;
     }
@@ -76,9 +99,9 @@ public class MdocDeviceNameSpaces {
     /**
      * Gets the original extracted DeviceNameSpacesBytes
      *
-     * @return {@link CBORByteString}
+     * @return {@link CBORValue}
      */
-    public CBORByteString getDeviceNameSpaceBytes() {
+    public CBORValue getDeviceNameSpaceBytes() {
         return deviceNameSpaceBytes;
     }
 
@@ -87,7 +110,7 @@ public class MdocDeviceNameSpaces {
      *
      * @return a map of namespaces
      */
-    public Map<String, CBORMap> getNamespaces() {
+    public Map<String, CBORValue> getNamespaces() {
         return namespaces;
     }
 

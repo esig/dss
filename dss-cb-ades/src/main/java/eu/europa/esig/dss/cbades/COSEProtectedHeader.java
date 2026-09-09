@@ -20,14 +20,15 @@
  */
 package eu.europa.esig.dss.cbades;
 
-import eu.europa.esig.dss.cbades.cbor.CBORByteString;
-import eu.europa.esig.dss.cbades.cbor.CBORMap;
+import eu.europa.ec.digit.cddl4j.cbor.CBOR;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
+import eu.europa.esig.dss.cbades.cbor.CBORUtils;
 
 /**
  * Represents a COSE protected header structure
  *
  */
-public class COSEProtectedHeader extends CBORMap {
+public class COSEProtectedHeader extends COSEHeader {
 
     /**
      * Constructor to create an empty protected header
@@ -39,10 +40,28 @@ public class COSEProtectedHeader extends CBORMap {
     /**
      * Creates a COSEProtectedHeader from a serialized map
      *
-     * @param cborByteString {@link CBORByteString} containing an empty or serialized map
+     * @param cborByteString byte array containing an empty or serialized map
      */
-    public COSEProtectedHeader(final CBORByteString cborByteString) {
+    public COSEProtectedHeader(final byte[] cborByteString) {
         super(cborByteString);
+    }
+
+    /**
+     * Creates a COSEProtectedHeader from a serialized map
+     *
+     * @param cborByteString byte array containing an empty or serialized map
+     */
+    public COSEProtectedHeader(final CBORValue cborByteString) {
+        this(cborByteString.asBytes());
+    }
+
+    /**
+     * Gets the protected header as a CBOR byte string
+     *
+     * @return {@link CBORValue}
+     */
+    public CBORValue asByteString() {
+        return CBOR.bytes(CBORUtils.serializeCbor(getValue()));
     }
 
 }

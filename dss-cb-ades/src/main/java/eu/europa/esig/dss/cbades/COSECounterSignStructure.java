@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.cbades;
 
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.cbor.CBORObject;
 
 /**
@@ -46,7 +47,16 @@ public interface COSECounterSignStructure extends COSEStructure {
      * Serialized the current COSE counter signature structure to a CBOR Object
      *
      * @return {@link CBORObject}
+     * @deprecated since DSS 6.6. Use {@link #toCBORValue()}.
      */
+    @Deprecated
     CBORObject toCBORObject();
+
+    /**
+     * Serialized the current COSE counter signature structure to a CBOR Value
+     *
+     * @return {@link eu.europa.ec.digit.cddl4j.cbor.CBORValue}
+     */
+    CBORValue toCBORValue();
 
 }

@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.cbades;
 
+import eu.europa.ec.digit.cddl4j.cbor.CBOR;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.cbor.CBORArray;
 import eu.europa.esig.dss.cbades.cbor.CBORUtils;
 import eu.europa.esig.dss.enumerations.COSESignatureType;
@@ -114,23 +116,30 @@ public class COSECounterSignatureArray implements COSECounterSignStructure {
 
     @Override
     public byte[] serialize() {
-        CBORArray cborArray = toCBORObject();
-        return CBORUtils.serializeCborObject(cborArray);
+        CBORValue cborArray = toCBORValue();
+        return CBORUtils.serializeCbor(cborArray);
     }
 
     @Override
+    @Deprecated
     public CBORArray toCBORObject() {
+        return new CBORArray(toCBORValue());
+    }
+
+    @Override
+    public CBORValue toCBORValue() {
         if (Utils.isCollectionEmpty(coseCounterSignatureList)) {
             throw new IllegalStateException("Collection of COSECounterSignature's cannot be null or empty " +
                     "in COSECounterSignature CBOR Array!");
         }
-        final CBORArray coseCounterSignatureArray = new CBORArray(coseCounterSignatureList.size());
+        final CBORValue.CBORArrayEditor arrayEditor = CBOR.array(coseCounterSignatureList.size());
+        for (COSECounterSignature counterSignature : coseCounterSignatureList) {
+            arrayEditor.add(counterSignature.toCBORValue());
+        }
+        CBORValue coseCounterSignatureArray = arrayEditor.value();
         if (tagged) {
             Objects.requireNonNull(getContext(), "Context shall be defined for a tagged CBOR object!");
-            coseCounterSignatureArray.setTag(getContext().getTag());
-        }
-        for (COSECounterSignature counterSignature : coseCounterSignatureList) {
-            coseCounterSignatureArray.add(counterSignature.toCBORObject());
+            coseCounterSignatureArray = CBOR.tag(getContext().getTag(), coseCounterSignatureArray);
         }
         return coseCounterSignatureArray;
     }

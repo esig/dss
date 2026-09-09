@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.cbades.signature;
 
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.COSESignStructure;
-import eu.europa.esig.dss.cbades.cbor.CBORObject;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
@@ -77,7 +77,7 @@ class CBAdESLevelBDetachedNoSigDNoProvidedFileTest extends AbstractCBAdESTestSig
     protected void checkCOSESignStructure(COSESignStructure coseSignStructure) {
         super.checkCOSESignStructure(coseSignStructure);
 
-        CBORObject payload = coseSignStructure.getPayload();
+        CBORValue payload = coseSignStructure.getPayload();
         assertNotNull(payload);
         assertTrue(payload.isNull());
     }

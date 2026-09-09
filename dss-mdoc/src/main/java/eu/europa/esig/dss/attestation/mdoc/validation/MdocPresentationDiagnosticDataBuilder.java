@@ -20,16 +20,16 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.validation;
 
-import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestation;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationDocument;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationPresentationInfo;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlError;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlErrors;
 import eu.europa.esig.dss.attestation.common.validation.AttestationDocumentDiagnosticDataBuilder;
 import eu.europa.esig.dss.attestation.mdoc.model.MdocDeviceResponse;
 import eu.europa.esig.dss.attestation.mdoc.model.MdocDocument;
 import eu.europa.esig.dss.attestation.mdoc.model.MdocDocumentError;
 import eu.europa.esig.dss.attestation.mdoc.model.MdocErrorItems;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestation;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationDocument;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationPresentationInfo;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlError;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlErrors;
 import eu.europa.esig.dss.spi.attestation.Attestation;
 import eu.europa.esig.dss.spi.attestation.AttestationPresentation;
 import eu.europa.esig.dss.utils.Utils;

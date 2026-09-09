@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.cbades;
 
-import eu.europa.esig.dss.cbades.cbor.CBORArray;
-import eu.europa.esig.dss.cbades.cbor.CBORNull;
+import eu.europa.ec.digit.cddl4j.cbor.CBOR;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.cbor.CBORObject;
 import eu.europa.esig.dss.cbades.cbor.CBORUtils;
 import eu.europa.esig.dss.enumerations.COSESignatureType;
@@ -36,7 +36,7 @@ public class COSESign1 extends COSESignature implements COSESignStructure {
     private boolean tagged;
 
     /** The signed content */
-    private CBORObject payload;
+    private CBORValue payload;
 
     /**
      * Instantiates an empty COSE_Sign1 structure object
@@ -60,33 +60,45 @@ public class COSESign1 extends COSESignature implements COSESignStructure {
     }
 
     @Override
-    public CBORObject getPayload() {
+    public CBORValue getPayload() {
         if (payload == null) {
-            payload = new CBORNull();
+            payload = CBOR.nullValue();
         }
         return payload;
     }
 
     /**
-     * Sets the content to be signed
+     * Sets a content to be signed.
      *
      * @param payload {@link CBORObject}
+     * @deprecated since DSS 6.6. Use {@link #setPayload(CBORValue)}.
      */
+    @Deprecated
     public void setPayload(CBORObject payload) {
+        this.payload = payload.toCBORValue();
+    }
+
+    /**
+     * Sets a content to be signed.
+     *
+     * @param payload {@link CBORValue}
+     */
+    public void setPayload(CBORValue payload) {
         this.payload = payload;
     }
 
     @Override
     public byte[] serialize() {
-        final CBORArray coseSign1 = new CBORArray(4);
+        CBORValue coseSign1 = CBOR.array(4)
+                .add(getProtectedHeader().asByteString())
+                .add(getUnprotectedHeader().getValue())
+                .add(getPayload())
+                .add(getSignature())
+                .value();
         if (tagged) {
-            coseSign1.setTag(getContext().getTag());
+            coseSign1 = CBOR.tag(getContext().getTag(), coseSign1);
         }
-        coseSign1.add(getProtectedHeader().getByteString());
-        coseSign1.add(getUnprotectedHeader());
-        coseSign1.add(getPayload());
-        coseSign1.add(getSignature());
-        return CBORUtils.serializeCborObject(coseSign1);
+        return CBORUtils.serializeCbor(coseSign1);
     }
 
     @Override

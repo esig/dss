@@ -20,11 +20,11 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.creation;
 
+import eu.europa.esig.dss.attestation.mdoc.MdocConstants;
 import eu.europa.esig.dss.cbades.signature.CBAdESSignatureParameters;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
-import eu.europa.esig.dss.attestation.mdoc.MdocConstants;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.validationreport.jaxb.SignersDocumentType;

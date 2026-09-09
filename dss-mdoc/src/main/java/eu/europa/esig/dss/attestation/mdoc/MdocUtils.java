@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.attestation.mdoc;
 
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.attestation.mdoc.claim.MdocVerifiedClaimArray;
 import eu.europa.esig.dss.attestation.mdoc.claim.MdocVerifiedClaimMap;
 import eu.europa.esig.dss.attestation.mdoc.creation.MdocIssuerSignedItem;
@@ -144,25 +145,31 @@ public final class MdocUtils {
             return new VerifiedClaimNull(claimName, namespace, selectivelyDisclosable, parent);
 
         } else if (value instanceof CBORObject) {
-            CBORObject cborObject = (CBORObject) value;
-            if (cborObject.isArray()) {
-                return new MdocVerifiedClaimArray(claimName, namespace, cborObject.getValueAsList(), selectivelyDisclosable, parent);
-            } else if (cborObject.isBoolean()) {
-                return new VerifiedClaimBoolean(claimName, namespace, cborObject.getValueAsBoolean(), selectivelyDisclosable, parent);
-            } else if (cborObject.isByteString()) {
-                return new VerifiedClaimByteString(claimName, namespace, cborObject.getValueAsBytes(), selectivelyDisclosable, parent);
-            } else if (cborObject.isFloatingPointNumber()) {
-                return new VerifiedClaimNumber(claimName, namespace, cborObject.getValueAsDouble(), selectivelyDisclosable, parent);
-            } else if (cborObject.isNegativeInteger() || cborObject.isUnsignedInteger()) {
-                return new VerifiedClaimNumber(claimName, namespace, cborObject.getValueAsLong(), selectivelyDisclosable, parent);
-            } else if (cborObject.isMap()) {
-                return new MdocVerifiedClaimMap(claimName, namespace, cborObject.getValueAsMap(), selectivelyDisclosable, parent);
-            } else if (cborObject.isNull()) {
+            // TODO : remove after DSS 6.6
+            return createClaim(claimName, parent, ((CBORObject) value).toCBORValue(), selectivelyDisclosable, namespace);
+
+        } else if (value instanceof CBORValue) {
+            CBORValue cborValue = (CBORValue) value;
+            if (cborValue.isArray()) {
+                return new MdocVerifiedClaimArray(claimName, namespace, cborValue.getElements(), selectivelyDisclosable, parent);
+            } else if (cborValue.isBoolean()) {
+                return new VerifiedClaimBoolean(claimName, namespace, cborValue.asBoolean(), selectivelyDisclosable, parent);
+            } else if (cborValue.isByteString()) {
+                return new VerifiedClaimByteString(claimName, namespace, cborValue.asBytes(), selectivelyDisclosable, parent);
+            } else if (cborValue.isFloatingPoint()) {
+                return new VerifiedClaimNumber(claimName, namespace, cborValue.asDouble(), selectivelyDisclosable, parent);
+            } else if (cborValue.isNegativeInteger() || cborValue.isUnsignedInteger()) {
+                return new VerifiedClaimNumber(claimName, namespace, cborValue.asInteger(), selectivelyDisclosable, parent);
+            } else if (cborValue.isMap()) {
+                return new MdocVerifiedClaimMap(claimName, namespace, cborValue.getEntries(), selectivelyDisclosable, parent);
+            } else if (cborValue.isNull()) {
                 return new VerifiedClaimNull(claimName, namespace, selectivelyDisclosable, parent);
-            } else if (cborObject.isUnicodeString()) {
-                return new VerifiedClaimString(claimName, namespace, cborObject.getValueAsString(), selectivelyDisclosable, parent);
+            } else if (cborValue.isTextString()) {
+                return new VerifiedClaimString(claimName, namespace, cborValue.asString(), selectivelyDisclosable, parent);
+            } else if (cborValue.isTag()) {
+                return createClaim(claimName, parent, cborValue.getTaggedValue(), selectivelyDisclosable, namespace);
             }
-            throw new IllegalArgumentException(String.format("The claim value of type '%s' is not supported!", value.getClass().getSimpleName()));
+            throw new IllegalArgumentException(String.format("The CBORValue of type '%s' is not supported!", cborValue.getType()));
 
         } else if (value instanceof String) {
             return new VerifiedClaimString(claimName, namespace, (String) value, selectivelyDisclosable, parent);

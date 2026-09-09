@@ -20,12 +20,11 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.creation;
 
-import eu.europa.esig.dss.cbades.signature.CBAdESSignatureParameters;
-import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.diagnostic.AttestationWrapper;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import eu.europa.esig.dss.attestation.mdoc.MdocConstants;
-
+import eu.europa.esig.dss.cbades.signature.CBAdESSignatureParameters;
+import eu.europa.esig.dss.diagnostic.AttestationWrapper;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.util.List;

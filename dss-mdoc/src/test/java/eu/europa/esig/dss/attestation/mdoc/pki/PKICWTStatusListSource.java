@@ -20,13 +20,14 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.pki;
 
-import eu.europa.esig.dss.cbades.cbor.CBORMap;
+import eu.europa.ec.digit.cddl4j.cbor.CBOR;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
+import eu.europa.esig.dss.attestation.common.pki.PKIAttestationStatusListSource;
+import eu.europa.esig.dss.attestation.revocation.cwt.model.statuslist.CWTStatusListClaims;
 import eu.europa.esig.dss.cbades.cbor.CBORUtils;
 import eu.europa.esig.dss.cbades.cwt.CWTClaims;
 import eu.europa.esig.dss.cbades.signature.CBAdESService;
 import eu.europa.esig.dss.cbades.signature.CBAdESSignatureParameters;
-import eu.europa.esig.dss.attestation.common.pki.PKIAttestationStatusListSource;
-import eu.europa.esig.dss.attestation.revocation.cwt.model.statuslist.CWTStatusListClaims;
 import eu.europa.esig.dss.enumerations.COSEStructureType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -47,7 +48,7 @@ import java.util.Collections;
 public class PKICWTStatusListSource extends PKIAttestationStatusListSource<CBAdESSignatureParameters> {
 
     /**
-     * Creates a PKIJWTStatusListSource instance with revocation list signer {@code CertEntity}
+     * Creates a PKICWTStatusListSource instance with revocation list signer {@code CertEntity}
      *
      * @param certEntityRepository {@link CertEntityRepository}
      * @param statusListIssuer     {@link CertEntity} to issue revocation list
@@ -92,7 +93,7 @@ public class PKICWTStatusListSource extends PKIAttestationStatusListSource<CBAdE
      */
     @Override
     protected DSSDocument generatePayload(VerifiedClaimStatus claimStatus) {
-        CBORMap statusListPayload = new CBORMap();
+        CBORValue.CBORMapEditor statusListPayload = CBOR.map();
 
         statusListPayload.put(CWTClaims.IAT.cbor(), DSSUtils.getTimeValueInSeconds(getIssuanceTime().getTime()));
         statusListPayload.put(CWTClaims.EXP.cbor(), DSSUtils.getTimeValueInSeconds(getExpirationTime().getTime()));
@@ -100,16 +101,16 @@ public class PKICWTStatusListSource extends PKIAttestationStatusListSource<CBAdE
             statusListPayload.put(CWTStatusListClaims.TIME_TO_LIVE, getTimeToLive());
         }
 
-        CBORMap statusList = new CBORMap();
+        CBORValue.CBORMapEditor statusList = CBOR.map();
         statusList.put(CWTStatusListClaims.STATUS_LIST_BITS.cbor(), 1);
         statusList.put(CWTStatusListClaims.STATUS_LIST_LST.cbor(), compressZlib(getStatusList()));
-        statusListPayload.put(CWTStatusListClaims.STATUS_LIST.cbor(), statusList);
+        statusListPayload.put(CWTStatusListClaims.STATUS_LIST.cbor(), statusList.value());
 
         if (claimStatus != null && claimStatus.getStatusList() != null && claimStatus.getStatusList().getUri() != null) {
             statusListPayload.put(CWTClaims.SUB.cbor(), claimStatus.getStatusList().getUri().getStringValue());
         }
 
-        return new InMemoryDocument(CBORUtils.serializeCborObject(statusListPayload));
+        return new InMemoryDocument(CBORUtils.serializeCbor(statusListPayload.value()));
     }
 
 }

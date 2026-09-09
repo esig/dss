@@ -25,8 +25,8 @@ import eu.europa.esig.dss.cbades.COSECounterSignatureArray;
 import eu.europa.esig.dss.cbades.COSEHeaderParameter;
 import eu.europa.esig.dss.cbades.COSESign;
 import eu.europa.esig.dss.cbades.COSESignature;
-import eu.europa.esig.dss.enumerations.COSESignatureType;
 import eu.europa.esig.dss.cbades.COSEStructure;
+import eu.europa.esig.dss.enumerations.COSESignatureType;
 import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.signature.identifier.AbstractSignatureIdentifierBuilder;
 

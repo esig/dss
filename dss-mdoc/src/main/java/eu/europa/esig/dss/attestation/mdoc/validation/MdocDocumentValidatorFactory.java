@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.validation;
 
-import eu.europa.esig.dss.attestation.common.validation.DefaultAttestationDocumentValidator;
 import eu.europa.esig.dss.attestation.common.validation.AttestationDocumentValidatorFactory;
+import eu.europa.esig.dss.attestation.common.validation.DefaultAttestationDocumentValidator;
 import eu.europa.esig.dss.model.DSSDocument;
 
 /**

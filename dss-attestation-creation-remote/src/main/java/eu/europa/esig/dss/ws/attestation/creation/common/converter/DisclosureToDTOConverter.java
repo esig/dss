@@ -49,7 +49,7 @@ public class DisclosureToDTOConverter implements Function<SelectiveDisclosure, D
             return new DisclosureDTO(sdjwtSelectiveDisclosure.getDisclosure());
         } else if (disclosureDTO instanceof MdocIssuerSignedItem) {
             MdocIssuerSignedItem mdocAttestationDisclosure = (MdocIssuerSignedItem) disclosureDTO;
-            String disclosureValueB64 = Utils.toBase64(CBORUtils.serializeCborObject(mdocAttestationDisclosure.getIssuerSignedItemBytes()));
+            String disclosureValueB64 = Utils.toBase64(CBORUtils.serializeCbor(mdocAttestationDisclosure.getIssuerSignedItemBytes()));
             return new DisclosureDTO(mdocAttestationDisclosure.getNamespace(), mdocAttestationDisclosure.getDigestId(), disclosureValueB64);
         } else {
             throw new UnsupportedOperationException(String.format(

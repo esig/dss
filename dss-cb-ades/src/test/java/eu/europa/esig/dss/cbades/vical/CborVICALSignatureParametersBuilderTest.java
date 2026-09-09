@@ -20,13 +20,12 @@
  */
 package eu.europa.esig.dss.cbades.vical;
 
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.COSEParser;
 import eu.europa.esig.dss.cbades.COSEProtectedHeader;
 import eu.europa.esig.dss.cbades.COSESign1;
 import eu.europa.esig.dss.cbades.COSESignStructure;
 import eu.europa.esig.dss.cbades.COSEUnprotectedHeader;
-import eu.europa.esig.dss.cbades.cbor.CBORByteString;
-import eu.europa.esig.dss.cbades.cbor.CBORObject;
 import eu.europa.esig.dss.cbades.signature.AbstractCBAdESTestSignature;
 import eu.europa.esig.dss.cbades.signature.CBAdESService;
 import eu.europa.esig.dss.cbades.signature.CBAdESSignatureParameters;
@@ -46,6 +45,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 class CborVICALSignatureParametersBuilderTest extends AbstractCBAdESTestSignature {
@@ -101,18 +101,19 @@ class CborVICALSignatureParametersBuilderTest extends AbstractCBAdESTestSignatur
 
             COSEProtectedHeader protectedHeader = coseSign1.getProtectedHeader();
             assertNotNull(protectedHeader);
-            assertEquals(-36L, protectedHeader.getAsLong(1L)); // alg = ES512
+            assertEquals(-36L, protectedHeader.getValue().getAsIntegerOrNull(1L).longValue()); // alg = ES512
 
-            CBORObject payload = coseSign1.getPayload();
+            CBORValue payload = coseSign1.getPayload();
             assertNotNull(payload);
 
-            CBORByteString signature = coseSign1.getSignature();
+            CBORValue signature = coseSign1.getSignature();
             assertNotNull(signature);
+            assertTrue(signature.isByteString());
 
             COSEUnprotectedHeader unprotectedHeader = coseSign1.getUnprotectedHeader();
             assertNotNull(unprotectedHeader);
 
-            assertArrayEquals(getSigningCert().getEncoded(), unprotectedHeader.getAsBinaries(33L)); // x5chain
+            assertArrayEquals(getSigningCert().getEncoded(), unprotectedHeader.getValue().getAsBytesOrNull(33L)); // x5chain
 
         } catch (Exception e) {
             fail(e);

@@ -20,17 +20,15 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.creation;
 
-import eu.europa.esig.dss.cbades.cbor.CBORArray;
-import eu.europa.esig.dss.cbades.cbor.CBORByteString;
-import eu.europa.esig.dss.cbades.cbor.CBORMap;
-import eu.europa.esig.dss.cbades.cbor.CBORNull;
-import eu.europa.esig.dss.cbades.cbor.CBORObject;
-import eu.europa.esig.dss.cbades.cbor.CBORObjectFactory;
-import eu.europa.esig.dss.cbades.cbor.CBORUtils;
+import eu.europa.ec.digit.cddl4j.cbor.CBOR;
+import eu.europa.ec.digit.cddl4j.cbor.CBORTags;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.attestation.common.key.DefaultPublicKeyInfoFactory;
 import eu.europa.esig.dss.attestation.common.key.PublicKeyInfo;
 import eu.europa.esig.dss.attestation.common.key.PublicKeyInfoFactory;
 import eu.europa.esig.dss.attestation.mdoc.key.COSEKeyBuilder;
+import eu.europa.esig.dss.cbades.cbor.CBORUtils;
+import eu.europa.esig.dss.cbades.cbor.CBORValueFactory;
 import eu.europa.esig.dss.enumerations.EllipticCurve;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -74,22 +72,22 @@ public class SessionTranscriptBuilder {
     /**
      * Defines the WebAPI server retrieval method
      */
-    private CBORObject webApi;
+    private CBORValue webApi;
 
     /**
      * Defines the OIDC server retrieval method
      */
-    private CBORObject oidc;
+    private CBORValue oidc;
 
     /**
      * The use of ProtocolInfo is RFU
      */
-    private CBORObject protocolInfo;
+    private CBORValue protocolInfo;
 
     /**
      * Map of other optional properties for the DeviceEngagement object
      */
-    private Map<Integer, CBORObject> deviceEngagementOtherMap = new HashMap<>();
+    private Map<Integer, CBORValue> deviceEngagementOtherMap = new HashMap<>();
 
     /**
      * The mdoc reader key
@@ -202,11 +200,11 @@ public class SessionTranscriptBuilder {
      * @return this {@link SessionTranscriptBuilder}
      */
     public SessionTranscriptBuilder webApiServerRetrievalMethod(Integer version, String issuerUrl, String serverRetrievalToken) {
-        CBORArray webApiCbor = new CBORArray();
-        webApiCbor.add(version);
-        webApiCbor.add(issuerUrl);
-        webApiCbor.add(serverRetrievalToken);
-        this.webApi = webApiCbor;
+        this.webApi = CBOR.array()
+                .add(version)
+                .add(issuerUrl)
+                .add(serverRetrievalToken)
+                .value();
         return this;
     }
 
@@ -219,11 +217,11 @@ public class SessionTranscriptBuilder {
      * @return this {@link SessionTranscriptBuilder}
      */
     public SessionTranscriptBuilder oidcServerRetrievalMethod(Integer version, String issuerUrl, String serverRetrievalToken) {
-        CBORArray oidcCbor = new CBORArray();
-        oidcCbor.add(version);
-        oidcCbor.add(issuerUrl);
-        oidcCbor.add(serverRetrievalToken);
-        this.oidc = oidcCbor;
+        this.oidc = CBOR.array()
+                .add(version)
+                .add(issuerUrl)
+                .add(serverRetrievalToken)
+                .value();
         return this;
     }
 
@@ -237,7 +235,7 @@ public class SessionTranscriptBuilder {
      * @return this {@link SessionTranscriptBuilder}
      */
     public SessionTranscriptBuilder protocolInfo(Object protocolInfo) {
-        this.protocolInfo = CBORObjectFactory.toCBORObject(protocolInfo);
+        this.protocolInfo = CBORValueFactory.toCBORValue(protocolInfo);
         return this;
     }
 
@@ -255,7 +253,7 @@ public class SessionTranscriptBuilder {
         if (label > -1 && label < 5) {
             throw new IllegalArgumentException(String.format("The DeviceEngagement label value '%s' is reserved!", label));
         }
-        this.deviceEngagementOtherMap.put(label, CBORObjectFactory.toCBORObject(value));
+        this.deviceEngagementOtherMap.put(label, CBORValueFactory.toCBORValue(value));
         return this;
     }
 
@@ -288,8 +286,8 @@ public class SessionTranscriptBuilder {
      * @return {@link DSSDocument}
      */
     public DSSDocument build() {
-        final CBORObject sessionTranscript = buildCbor();
-        return new InMemoryDocument(CBORUtils.serializeCborObject(sessionTranscript));
+        final CBORValue sessionTranscript = buildCbor();
+        return new InMemoryDocument(CBORUtils.serializeCbor(sessionTranscript));
     }
 
     /**
@@ -306,21 +304,14 @@ public class SessionTranscriptBuilder {
      *     ]
      * }
      *
-     * @return {@link CBORObject}
+     * @return {@link CBORValue}
      */
-    public CBORObject buildCbor() {
-        final CBORArray sessionTranscript = new CBORArray();
-
-        CBORMap deviceEngagement = buildDeviceEngagement();
-        sessionTranscript.add(CBORUtils.toCborBtsrWrappedTagged(deviceEngagement)); // DeviceEngagementBytes
-
-        CBORMap eReaderKeyCbor = buildEReaderKey();
-        sessionTranscript.add(CBORUtils.toCborBtsrWrappedTagged(eReaderKeyCbor)); // EReaderKeyBytes
-
-        CBORObject handover = buildHandover();
-        sessionTranscript.add(handover);
-
-        return sessionTranscript;
+    public CBORValue buildCbor() {
+        return CBOR.array()
+                .add(CBORTags.encodedCbor(buildDeviceEngagement().encodeToBytes())) // DeviceEngagementBytes
+                .add(CBORTags.encodedCbor(buildEReaderKey().encodeToBytes())) // EReaderKeyBytes
+                .add(buildHandover()) // Handover
+                .value();
     }
 
     /**
@@ -338,46 +329,46 @@ public class SessionTranscriptBuilder {
      *     }
      * }
      *
-     * @return {@link CBORMap}
+     * @return {@link CBORValue}
      */
-    protected CBORMap buildDeviceEngagement() {
+    protected CBORValue buildDeviceEngagement() {
         Objects.requireNonNull(deviceEngagementVersion, "DeviceEngagement version cannot be null!");
         Objects.requireNonNull(eDeviceCipherSuiteIdentifier, "DeviceEngagement Security Cipher suite identifier is not provided! Please use #security method.");
         Objects.requireNonNull(eDeviceKey, "DeviceEngagement Security EDeviceKeyBytes is not provided! Please use #security method.");
 
-        CBORMap deviceEngagement = new CBORMap();
+        CBORValue.CBORMapEditor deviceEngagement = CBOR.map();
         deviceEngagement.put(0L, deviceEngagementVersion);
 
-        CBORArray security = new CBORArray();
+        CBORValue.CBORArrayEditor security = CBOR.array();
         security.add(eDeviceCipherSuiteIdentifier.getCOSEValue());
 
-        CBORMap eDeviceKeyCbor = buildCOSEKey(eDeviceKey);
-        CBORByteString eDeviceKeyBytes = CBORUtils.toCborBtsrWrappedTagged(eDeviceKeyCbor);
+        CBORValue eDeviceKeyCbor = buildCOSEKey(eDeviceKey);
+        CBORValue eDeviceKeyBytes = CBORTags.encodedCbor(eDeviceKeyCbor.encodeToBytes());
         security.add(eDeviceKeyBytes);
 
-        deviceEngagement.put(1L, security);
+        deviceEngagement.put(1L, security.value());
 
         // 2: DeviceRetrievalMethods is not defined by default (see QRHandoverSessionTranscriptBuilder)
 
         if (webApi != null || oidc != null) {
-            CBORMap serverRetrievalMethods = new CBORMap();
+            CBORValue.CBORMapEditor serverRetrievalMethods = CBOR.map();
             if (webApi != null) {
                 serverRetrievalMethods.put("webApi", webApi);
             }
             if (oidc != null) {
                 serverRetrievalMethods.put("oidc", oidc);
             }
-            deviceEngagement.put(3L, serverRetrievalMethods);
+            deviceEngagement.put(3L, serverRetrievalMethods.value());
         }
         if (protocolInfo != null) {
             deviceEngagement.put(4L, protocolInfo);
         }
         if (Utils.isMapNotEmpty(deviceEngagementOtherMap)) {
-            for (Map.Entry<Integer, CBORObject> entry : deviceEngagementOtherMap.entrySet()) {
+            for (Map.Entry<Integer, CBORValue> entry : deviceEngagementOtherMap.entrySet()) {
                 deviceEngagement.put(entry.getKey(), entry.getValue());
             }
         }
-        return deviceEngagement;
+        return deviceEngagement.value();
     }
 
     /**
@@ -386,9 +377,9 @@ public class SessionTranscriptBuilder {
      * {@code
      *     EReaderKey = COSE_Key                           ; Containing EReaderKey.Pub
      * }
-     * @return {@link CBORMap}
+     * @return {@link CBORValue}
      */
-    protected CBORMap buildEReaderKey() {
+    protected CBORValue buildEReaderKey() {
         Objects.requireNonNull(this.eReaderKey, "eReaderKey is not provided! Please use #eReaderKey method.");
         return buildCOSEKey(this.eReaderKey);
     }
@@ -397,9 +388,9 @@ public class SessionTranscriptBuilder {
      * Builds a COSE_Key representation of a device's {@code PublicKey}
      *
      * @param publicKey {@link PublicKey}
-     * @return {@link CBORMap}
+     * @return {@link CBORValue}
      */
-    protected CBORMap buildCOSEKey(PublicKey publicKey) {
+    protected CBORValue buildCOSEKey(PublicKey publicKey) {
         PublicKeyInfo publicKeyInfo = publicKeyInfoFactory.create(publicKey);
         return new COSEKeyBuilder(publicKeyInfo).create();
     }
@@ -417,13 +408,13 @@ public class SessionTranscriptBuilder {
      *     ]
      * }
      *
-     * @return {@link CBORObject}
+     * @return {@link CBORValue}
      */
-    protected CBORObject buildHandover() {
-        CBORArray handover = new CBORArray();
-        handover.add(handoverSelectMessage);
-        handover.add(handoverRequestMessage);
-        return handover;
+    protected CBORValue buildHandover() {
+        return CBOR.array()
+                .add(handoverSelectMessage)
+                .add(handoverRequestMessage)
+                .value();
     }
 
     /**
@@ -435,7 +426,7 @@ public class SessionTranscriptBuilder {
          * An array that shall contain one or more DeviceRetrievalMethod arrays
          * when performing device engagement using the QR code
          */
-        private List<CBORObject> deviceRetrievalMethods = new ArrayList<>();
+        private List<CBORValue> deviceRetrievalMethods = new ArrayList<>();
 
         /**
          * Default constructor
@@ -500,12 +491,12 @@ public class SessionTranscriptBuilder {
          */
         public QRHandoverSessionTranscriptBuilder addWiFiRetrievalOptions(
                 String passPhrase, Integer channelInfoOperatingClass, Integer channelInfoChannelNumber, byte[] bandInfoSupportedBands) {
-            CBORArray deviceRetrievalMethod = new CBORArray();
+            CBORValue.CBORArrayEditor deviceRetrievalMethod = CBOR.array();
 
             deviceRetrievalMethod.add(3L); // type : Wi-Fi Aware
             deviceRetrievalMethod.add(1L); // version
 
-            CBORMap wifiOptions = new CBORMap();
+            CBORValue.CBORMapEditor wifiOptions = CBOR.map();
             if (passPhrase != null) {
                 wifiOptions.put(0L, passPhrase);
             }
@@ -518,9 +509,9 @@ public class SessionTranscriptBuilder {
             if (bandInfoSupportedBands != null) {
                 wifiOptions.put(3L, bandInfoSupportedBands);
             }
-            deviceRetrievalMethod.add(wifiOptions); // retrievalOptions
+            deviceRetrievalMethod.add(wifiOptions.value()); // retrievalOptions
 
-            deviceRetrievalMethods.add(deviceRetrievalMethod);
+            deviceRetrievalMethods.add(deviceRetrievalMethod.value());
 
             return this;
         }
@@ -548,12 +539,12 @@ public class SessionTranscriptBuilder {
          */
         public QRHandoverSessionTranscriptBuilder addBleRetrievalOptions(boolean peripheralServerMode, boolean centralClientMode,
                 byte[] peripheralServerModeUUID, byte[] clientCentralModeUUID, byte[] bleDeviceAddress) {
-            CBORArray deviceRetrievalMethod = new CBORArray();
+            CBORValue.CBORArrayEditor deviceRetrievalMethod = CBOR.array();
 
             deviceRetrievalMethod.add(2L); // type : BLE
             deviceRetrievalMethod.add(1L); // version
 
-            CBORMap bleOptions = new CBORMap();
+            CBORValue.CBORMapEditor bleOptions = CBOR.map();
             bleOptions.put(0L, peripheralServerMode);
             bleOptions.put(1L, centralClientMode);
             if (peripheralServerModeUUID != null) {
@@ -565,9 +556,9 @@ public class SessionTranscriptBuilder {
             if (bleDeviceAddress != null) {
                 bleOptions.put(20L, bleDeviceAddress);
             }
-            deviceRetrievalMethod.add(bleOptions); // retrievalOptions
+            deviceRetrievalMethod.add(bleOptions.value()); // retrievalOptions
 
-            deviceRetrievalMethods.add(deviceRetrievalMethod);
+            deviceRetrievalMethods.add(deviceRetrievalMethod.value());
 
             return this;
         }
@@ -590,44 +581,45 @@ public class SessionTranscriptBuilder {
             Objects.requireNonNull(commandDataFieldLength, "Maximum length of command data field cannot be null!");
             Objects.requireNonNull(responseDataFieldLength, "Maximum length of response data field cannot be null!");
 
-            CBORArray deviceRetrievalMethod = new CBORArray();
+            CBORValue.CBORArrayEditor deviceRetrievalMethod = CBOR.array();
 
             deviceRetrievalMethod.add(1L); // type : NFC
             deviceRetrievalMethod.add(1L); // version
 
-            CBORMap nfcOptions = new CBORMap();
-            nfcOptions.put(0L, commandDataFieldLength);
-            nfcOptions.put(1L, responseDataFieldLength);
+            CBORValue nfcOptions = CBOR.map()
+                    .put(0L, commandDataFieldLength)
+                    .put(1L, responseDataFieldLength)
+                    .value();
             deviceRetrievalMethod.add(nfcOptions); // retrievalOptions
 
-            deviceRetrievalMethods.add(deviceRetrievalMethod);
+            deviceRetrievalMethods.add(deviceRetrievalMethod.value());
 
             return this;
         }
 
         @Override
-        protected CBORMap buildDeviceEngagement() {
+        protected CBORValue buildDeviceEngagement() {
             if (Utils.isCollectionEmpty(deviceRetrievalMethods)) {
                 throw new NullPointerException("No DeviceRetrievalMethods have been provided! Please add WiFi, BLE or NFC retrieval options!");
             }
 
-            CBORMap deviceEngagement = super.buildDeviceEngagement();
+            CBORValue deviceEngagement = super.buildDeviceEngagement();
 
-            CBORArray deviceRetrievalMethodsCbor = new CBORArray();
-            for (CBORObject method : deviceRetrievalMethods) {
+            CBORValue.CBORArrayEditor deviceRetrievalMethodsCbor = CBOR.array();
+            for (CBORValue method : deviceRetrievalMethods) {
                 deviceRetrievalMethodsCbor.add(method);
             }
-            deviceEngagement.put(2L, deviceRetrievalMethodsCbor);
+            deviceEngagement.editMap().put(2L, deviceRetrievalMethodsCbor.value());
 
             return deviceEngagement;
         }
 
         @Override
-        protected CBORObject buildHandover() {
+        protected CBORValue buildHandover() {
             /*
              * QRHandover= null
              */
-            return new CBORNull();
+            return CBOR.nullValue();
         }
 
     }

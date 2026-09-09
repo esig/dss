@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.cbades.validation;
 
 import eu.europa.ec.digit.cddl4j.cbor.CBOR;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.COSECounterSignStructure;
 import eu.europa.esig.dss.cbades.COSECounterSignature;
 import eu.europa.esig.dss.cbades.COSECounterSignature0;
@@ -31,14 +32,12 @@ import eu.europa.esig.dss.cbades.COSESign;
 import eu.europa.esig.dss.cbades.COSESign1;
 import eu.europa.esig.dss.cbades.COSESignStructure;
 import eu.europa.esig.dss.cbades.COSESignature;
-import eu.europa.esig.dss.enumerations.COSESignatureType;
 import eu.europa.esig.dss.cbades.COSEStructure;
 import eu.europa.esig.dss.cbades.COSEUnprotectedHeader;
-import eu.europa.esig.dss.cbades.cbor.CBORArray;
 import eu.europa.esig.dss.cbades.cbor.CBORByteString;
-import eu.europa.esig.dss.cbades.cbor.CBORMap;
 import eu.europa.esig.dss.cbades.cbor.CBORObject;
 import eu.europa.esig.dss.cbades.cbor.CBORUtils;
+import eu.europa.esig.dss.enumerations.COSESignatureType;
 import eu.europa.esig.dss.enumerations.EncryptionAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureAlgorithm;
 import eu.europa.esig.dss.model.DSSException;
@@ -87,16 +86,16 @@ public class CBORSignature {
     private COSEUnprotectedHeader signerUnprotectedHeader;
 
     /** Externally supplied data used as a part of a signed data */
-    private CBORByteString externallySuppliedData;
+    private CBORValue externallySuppliedData;
 
     /** The payload to be signed */
-    private CBORObject payload;
+    private CBORValue payload;
 
     /** The payload to be signed */
-    private CBORObject otherFields;
+    private CBORValue otherFields;
 
     /** The signer's signature value */
-    private CBORByteString signature;
+    private CBORValue signature;
 
     /** Original COSE signature container structure */
     private COSEStructure coseSignStructure;
@@ -258,7 +257,7 @@ public class CBORSignature {
                      *
                      * NOTE: applied only for counter signature(0)V2
                      */
-                    cborSignature.otherFields = new CBORArray(Collections.singletonList(coseSign1.getSignature()));
+                    cborSignature.otherFields = CBOR.array(Collections.singletonList(coseSign1.getSignature())).value();
                 }
                 break;
 
@@ -380,9 +379,9 @@ public class CBORSignature {
     /**
      * Gets current CBOR representation of signature binaries
      *
-     * @return {@link CBORByteString}
+     * @return {@link CBORValue}
      */
-    public CBORByteString getSignature() {
+    public CBORValue getSignature() {
         return signature;
     }
 
@@ -393,15 +392,15 @@ public class CBORSignature {
      */
     public byte[] getSignatureValue() {
         Objects.requireNonNull(signature, "Signature bytes shall be set.");
-        return signature.getValueAsBytes();
+        return signature.asBytes();
     }
 
     /**
      * Gets externally supplied data
      *
-     * @return {@link CBORByteString}
+     * @return {@link CBORValue}
      */
-    public CBORByteString getExternallySuppliedData() {
+    public CBORValue getExternallySuppliedData() {
         return externallySuppliedData;
     }
 
@@ -409,8 +408,19 @@ public class CBORSignature {
      * This method sets externally supplied data binaries, when applicable
      *
      * @param externallySuppliedData {@link CBORByteString} representing an externally supplied data
+     * @deprecated since DSS 6.6. Use {@link #setExternalAttributes(CBORValue)}.
      */
+    @Deprecated
     public void setExternalAttributes(CBORByteString externallySuppliedData) {
+        setExternalAttributes(externallySuppliedData.toCBORValue());
+    }
+
+    /**
+     * This method sets externally supplied data binaries, when applicable
+     *
+     * @param externallySuppliedData {@link CBORValue} representing an externally supplied data
+     */
+    public void setExternalAttributes(CBORValue externallySuppliedData) {
         this.externallySuppliedData = externallySuppliedData;
     }
 
@@ -420,15 +430,15 @@ public class CBORSignature {
      * @param externallySuppliedData byte array representing an externally supplied data
      */
     public void setExternalAttributesBytes(byte[] externallySuppliedData) {
-        setExternalAttributes(new CBORByteString(externallySuppliedData));
+        setExternalAttributes(CBOR.bytes(externallySuppliedData));
     }
 
     /**
      * Gets the payload
      *
-     * @return {@link CBORObject}
+     * @return {@link CBORValue}
      */
-    public CBORObject getPayload() {
+    public CBORValue getPayload() {
         return payload;
     }
 
@@ -436,8 +446,19 @@ public class CBORSignature {
      * Sets the payload
      *
      * @param payload {@link CBORObject}
+     * @deprecated since DSS 6.6. Use {@link #setPayload(CBORValue)}.
      */
+    @Deprecated
     public void setPayload(CBORObject payload) {
+        setPayload(payload.toCBORValue());
+    }
+
+    /**
+     * Sets the payload
+     *
+     * @param payload {@link CBORValue}
+     */
+    public void setPayload(CBORValue payload) {
         this.payload = payload;
     }
 
@@ -448,7 +469,7 @@ public class CBORSignature {
      */
     public byte[] getPayloadBytes() {
         if (payload != null && payload.isByteString()) {
-            return payload.getValueAsBytes();
+            return payload.asBytes();
         }
         return null;
     }
@@ -459,16 +480,16 @@ public class CBORSignature {
      * @param payload binaries of a payload
      */
     public void setPayloadBytes(byte[] payload) {
-        this.payload = new CBORByteString(payload);
+        this.payload = CBOR.bytes(payload);
     }
 
     /**
      * Gets other_fields, when present (master signature's payload).
      * NOTE: Applicable for CounterSignatureV2
      *
-     * @return {@link CBORObject}
+     * @return {@link CBORValue}
      */
-    public CBORObject getOtherFields() {
+    public CBORValue getOtherFields() {
         return otherFields;
     }
 
@@ -480,11 +501,10 @@ public class CBORSignature {
     public byte[] getOtherFieldsBytes() {
         if (otherFields != null) {
             if (otherFields.isArray()) {
-                CBORArray cborArray = (CBORArray) otherFields;
-                if (!cborArray.isEmpty()) {
-                    CBORObject masterSignatureValue = cborArray.getItem(0);
+                if (otherFields.size() != 0) {
+                    CBORValue masterSignatureValue = otherFields.get(0);
                     if (masterSignatureValue.isByteString()) {
-                        return ((CBORByteString) masterSignatureValue).getValueAsBytes();
+                        return masterSignatureValue.asBytes();
                     } else {
                         LOG.warn("Content of the other_fields entry shall be of CBOR Byte String type!");
                     }
@@ -565,7 +585,7 @@ public class CBORSignature {
             signatureInstance.update(signatureInputBytes);
 
             // Verify the signature
-            byte[] signatureBytes = signature.getValueAsBytes();
+            byte[] signatureBytes = signature.asBytes();
             signatureBytes = ensureDerEncodedSignature(signatureBytes, algorithm);
             return signatureInstance.verify(signatureBytes);
 
@@ -590,7 +610,7 @@ public class CBORSignature {
          *     payload : bstr
          * ]
          */
-        final CBORArray array = new CBORArray();
+        final CBORValue.CBORArrayEditor array = CBOR.array();
 
         /*
          * 1. A text string identifying the context of the signature. The context string is:
@@ -607,7 +627,7 @@ public class CBORSignature {
          * byte string is used.
          */
         if (bodyProtectedHeader != null && !bodyProtectedHeader.isEmpty()) {
-            array.add(bodyProtectedHeader.getByteString());
+            array.add(bodyProtectedHeader.asByteString());
         } else {
             array.add(CBORUtils.EMPTY_BYTE_STRING);
         }
@@ -621,7 +641,7 @@ public class CBORSignature {
          * NOTE: The field is also omitted for CounterSignature0 and Countersignature0V2 attributes
          */
         if (signerProtectedHeader != null && !signerProtectedHeader.isEmpty()) {
-            array.add(signerProtectedHeader.getByteString());
+            array.add(signerProtectedHeader.asByteString());
         } else if (COSESignatureType.COSE_SIGN1 != context
                 && COSESignatureType.COSE_COUNTER_SIGNATURE0 != context
                 && COSESignatureType.COSE_COUNTER_SIGNATURE0_V2 != context) {
@@ -668,7 +688,7 @@ public class CBORSignature {
             array.add(otherFields);
         }
 
-        return CBORUtils.serializeCborObject(array);
+        return CBORUtils.serializeCbor(array.value());
     }
 
     private byte[] ensureDerEncodedSignature(byte[] signature, SignatureAlgorithm signatureAlgorithm) {
@@ -716,13 +736,13 @@ public class CBORSignature {
      * The method checks the key presence in both body and signer layers and returns the found value,
      * provided there is no conflicting information.
      *
-     * @param headerKey {@link CBORObject} identifier of the header
+     * @param headerKey {@link CBORValue} identifier of the header
      * @return {@link Long} value if header is identified, NULL otherwise
      */
-    public Long getProtectedHeaderValueAsLong(CBORObject headerKey) {
-        CBORObject protectedHeaderValue = getProtectedHeaderValue(headerKey);
-        if (protectedHeaderValue != null && (protectedHeaderValue.isNegativeInteger() || protectedHeaderValue.isUnsignedInteger())) {
-            return protectedHeaderValue.getValueAsLong();
+    public Long getProtectedHeaderValueAsLong(CBORValue headerKey) {
+        CBORValue protectedHeaderValue = getProtectedHeaderValue(headerKey);
+        if (protectedHeaderValue != null && protectedHeaderValue.isInteger()) {
+            return protectedHeaderValue.asInteger().longValue();
         }
         return null;
     }
@@ -732,13 +752,13 @@ public class CBORSignature {
      * The method checks the key presence in both body and signer layers and returns the found value,
      * provided there is no conflicting information.
      *
-     * @param headerKey {@link CBORObject} identifier of the header
-     * @return {@link Long} value if header is identified, NULL otherwise
+     * @param headerKey {@link CBORValue} identifier of the header
+     * @return {@link String} value if header is identified, NULL otherwise
      */
-    public String getProtectedHeaderValueAsString(CBORObject headerKey) {
-        CBORObject protectedHeaderValue = getProtectedHeaderValue(headerKey);
-        if (protectedHeaderValue != null && (protectedHeaderValue.isUnicodeString())) {
-            return protectedHeaderValue.getValueAsString();
+    public String getProtectedHeaderValueAsString(CBORValue headerKey) {
+        CBORValue protectedHeaderValue = getProtectedHeaderValue(headerKey);
+        if (protectedHeaderValue != null && (protectedHeaderValue.isTextString())) {
+            return protectedHeaderValue.asString();
         }
         return null;
     }
@@ -748,45 +768,45 @@ public class CBORSignature {
      * The method checks the key presence in both body and signer layers and returns the found value,
      * provided there is no conflicting information.
      *
-     * @param headerKey {@link CBORObject} identifier of the header
+     * @param headerKey {@link CBORValue} identifier of the header
      * @return byte array value if header is identified, NULL otherwise
      */
-    public byte[] getProtectedHeaderValueAsBinaries(CBORObject headerKey) {
-        CBORObject protectedHeaderValue = getProtectedHeaderValue(headerKey);
+    public byte[] getProtectedHeaderValueAsBinaries(CBORValue headerKey) {
+        CBORValue protectedHeaderValue = getProtectedHeaderValue(headerKey);
         if (protectedHeaderValue != null && (protectedHeaderValue.isByteString())) {
-            return protectedHeaderValue.getValueAsBytes();
+            return protectedHeaderValue.asBytes();
         }
         return null;
     }
 
     /**
-     * This method returns a CBORArray value extracted from protected header of the signature
+     * This method returns a CBOR array value extracted from protected header of the signature
      * The method checks the key presence in both body and signer layers and returns the found value,
      * provided there is no conflicting information.
      *
-     * @param headerKey {@link CBORObject} identifier of the header
-     * @return {@link CBORArray} value if header is identified, NULL otherwise
+     * @param headerKey {@link CBORValue} identifier of the header
+     * @return {@link CBORValue} value if header is identified, NULL otherwise
      */
-    public CBORArray getProtectedHeaderValueAsArray(CBORObject headerKey) {
-        CBORObject protectedHeaderValue = getProtectedHeaderValue(headerKey);
+    public CBORValue getProtectedHeaderValueAsArray(CBORValue headerKey) {
+        CBORValue protectedHeaderValue = getProtectedHeaderValue(headerKey);
         if (protectedHeaderValue != null && (protectedHeaderValue.isArray())) {
-            return ((CBORArray) protectedHeaderValue);
+            return protectedHeaderValue;
         }
         return null;
     }
 
     /**
-     * This method returns a CBORMap value extracted from protected header of the signature.
+     * This method returns a CBOR map value extracted from protected header of the signature.
      * The method checks the key presence in both body and signer layers and returns the found value,
      * provided there is no conflicting information.
      *
-     * @param headerKey {@link CBORObject} identifier of the header
-     * @return {@link CBORMap} value if header is identified, NULL otherwise
+     * @param headerKey {@link CBORValue} identifier of the header
+     * @return {@link CBORValue} value if header is identified, NULL otherwise
      */
-    public CBORMap getProtectedHeaderValueAsMap(CBORObject headerKey) {
-        CBORObject protectedHeaderValue = getProtectedHeaderValue(headerKey);
-        if (protectedHeaderValue != null && (protectedHeaderValue.isMap())) {
-            return ((CBORMap) protectedHeaderValue);
+    public CBORValue getProtectedHeaderValueAsMap(CBORValue headerKey) {
+        CBORValue protectedHeaderValue = getProtectedHeaderValue(headerKey);
+        if (protectedHeaderValue != null && protectedHeaderValue.isMap()) {
+            return protectedHeaderValue;
         }
         return null;
     }
@@ -796,16 +816,16 @@ public class CBORSignature {
      * The method checks the key presence in both body and signer layers and returns the found value,
      * provided there is no conflicting information.
      *
-     * @param headerKey {@link CBORObject} identifier of the header
-     * @return {@link CBORObject}
+     * @param headerKey {@link CBORValue} identifier of the header
+     * @return {@link CBORValue}
      */
-    public CBORObject getProtectedHeaderValue(CBORObject headerKey) {
-        CBORObject signerProtectedHeaderValue = getSignerProtectedHeaderValue(headerKey);
+    public CBORValue getProtectedHeaderValue(CBORValue headerKey) {
+        CBORValue signerProtectedHeaderValue = getSignerProtectedHeaderValue(headerKey);
         // NOTE: for counter signatures only the main protected header is used
         if (context.isCounterSignature() && signerProtectedHeader != null) {
             return signerProtectedHeaderValue;
         }
-        CBORObject bodyProtectedHeaderValue = getBodyProtectedHeaderValue(headerKey);
+        CBORValue bodyProtectedHeaderValue = getBodyProtectedHeaderValue(headerKey);
         if (bodyProtectedHeaderValue != null && signerProtectedHeaderValue != null) {
             LOG.info("Same protected header '{}' is present in body and signer structure.", headerKey);
             if (!bodyProtectedHeaderValue.equals(signerProtectedHeaderValue)) {
@@ -816,11 +836,11 @@ public class CBORSignature {
         return signerProtectedHeaderValue != null ? signerProtectedHeaderValue : bodyProtectedHeaderValue;
     }
 
-    private CBORObject getBodyProtectedHeaderValue(CBORObject headerKey) {
+    private CBORValue getBodyProtectedHeaderValue(CBORValue headerKey) {
         return bodyProtectedHeader != null ? bodyProtectedHeader.getHeader(headerKey) : null;
     }
 
-    private CBORObject getSignerProtectedHeaderValue(CBORObject headerKey) {
+    private CBORValue getSignerProtectedHeaderValue(CBORValue headerKey) {
         return signerProtectedHeader != null ? signerProtectedHeader.getHeader(headerKey) : null;
     }
 
@@ -849,9 +869,9 @@ public class CBORSignature {
     /**
      * Returns an unprotected header 'uHeaders' value, if present
      *
-     * @return {@link CBORArray}
+     * @return {@link CBORValue}
      */
-    public CBORArray getUHeaders() {
+    public CBORValue getUHeaders() {
         return getUnprotectedHeaderValueAsArray(COSEHeaderParameter.U_HEADERS.cbor());
     }
 
@@ -860,13 +880,13 @@ public class CBORSignature {
      * The method checks the key presence in both body and signer layers and returns the found value,
      * provided there is no conflicting information.
      *
-     * @param headerKey {@link CBORObject} identifier of the header
+     * @param headerKey {@link CBORValue} identifier of the header
      * @return {@link Long} value if header is identified, NULL otherwise
      */
-    public String getUnprotectedHeaderValueAsString(CBORObject headerKey) {
-        CBORObject unprotectedHeaderValue = getUnprotectedHeaderValue(headerKey);
-        if (unprotectedHeaderValue != null && (unprotectedHeaderValue.isUnicodeString())) {
-            return unprotectedHeaderValue.getValueAsString();
+    public String getUnprotectedHeaderValueAsString(CBORValue headerKey) {
+        CBORValue unprotectedHeaderValue = getUnprotectedHeaderValue(headerKey);
+        if (unprotectedHeaderValue != null && unprotectedHeaderValue.isTextString()) {
+            return unprotectedHeaderValue.asString();
         }
         return null;
     }
@@ -876,27 +896,27 @@ public class CBORSignature {
      * The method checks the key presence in both body and signer layers and returns the found value,
      * provided there is no conflicting information.
      *
-     * @param headerKey {@link CBORObject} identifier of the header
+     * @param headerKey {@link CBORValue} identifier of the header
      * @return byte array value if header is identified, NULL otherwise
      */
-    public byte[] getUnprotectedHeaderValueAsBinaries(CBORObject headerKey) {
-        CBORObject unprotectedHeaderValue = getUnprotectedHeaderValue(headerKey);
+    public byte[] getUnprotectedHeaderValueAsBinaries(CBORValue headerKey) {
+        CBORValue unprotectedHeaderValue = getUnprotectedHeaderValue(headerKey);
         if (unprotectedHeaderValue != null && (unprotectedHeaderValue.isByteString())) {
-            return unprotectedHeaderValue.getValueAsBytes();
+            return unprotectedHeaderValue.asBytes();
         }
         return null;
     }
 
     /**
-     * This method returns a CBORArray value extracted from unprotected header of the signature
+     * This method returns a CBOR array value extracted from unprotected header of the signature
      *
-     * @param headerKey {@link CBORObject} identifier of the header
-     * @return {@link CBORArray} value if header is identified, NULL otherwise
+     * @param headerKey {@link CBORValue} identifier of the header
+     * @return {@link CBORValue} value if header is identified, NULL otherwise
      */
-    public CBORArray getUnprotectedHeaderValueAsArray(CBORObject headerKey) {
-        CBORObject unprotectedHeaderValue = getUnprotectedHeaderValue(headerKey);
+    public CBORValue getUnprotectedHeaderValueAsArray(CBORValue headerKey) {
+        CBORValue unprotectedHeaderValue = getUnprotectedHeaderValue(headerKey);
         if (unprotectedHeaderValue != null && (unprotectedHeaderValue.isArray())) {
-            return ((CBORArray) unprotectedHeaderValue);
+            return unprotectedHeaderValue;
         }
         return null;
     }
@@ -904,16 +924,16 @@ public class CBORSignature {
     /**
      * This method returns a value extracted from unprotected header of the signature
      *
-     * @param headerKey {@link CBORObject} identifier of the header
-     * @return {@link CBORObject}
+     * @param headerKey {@link CBORValue} identifier of the header
+     * @return {@link CBORValue}
      */
-    public CBORObject getUnprotectedHeaderValue(CBORObject headerKey) {
-        CBORObject signerUnprotectedHeaderValue = getSignerUnprotectedHeaderValue(headerKey);
+    public CBORValue getUnprotectedHeaderValue(CBORValue headerKey) {
+        CBORValue signerUnprotectedHeaderValue = getSignerUnprotectedHeaderValue(headerKey);
         // NOTE: for counter signatures only the main unprotected header is used
         if (context.isCounterSignature() && signerUnprotectedHeader != null) {
             return signerUnprotectedHeaderValue;
         }
-        CBORObject bodyUnprotectedHeaderValue = getBodyUnprotectedHeaderValue(headerKey);
+        CBORValue bodyUnprotectedHeaderValue = getBodyUnprotectedHeaderValue(headerKey);
         if (bodyUnprotectedHeaderValue != null && signerUnprotectedHeaderValue != null) {
             LOG.info("Same unprotected header '{}' is present in body and signer structure.", headerKey);
             if (!bodyUnprotectedHeaderValue.equals(signerUnprotectedHeaderValue)) {
@@ -924,11 +944,11 @@ public class CBORSignature {
         return signerUnprotectedHeaderValue != null ? signerUnprotectedHeaderValue : bodyUnprotectedHeaderValue;
     }
 
-    private CBORObject getBodyUnprotectedHeaderValue(CBORObject headerKey) {
+    private CBORValue getBodyUnprotectedHeaderValue(CBORValue headerKey) {
         return bodyUnprotectedHeader != null ? bodyUnprotectedHeader.getHeader(headerKey) : null;
     }
 
-    private CBORObject getSignerUnprotectedHeaderValue(CBORObject headerKey) {
+    private CBORValue getSignerUnprotectedHeaderValue(CBORValue headerKey) {
         return signerUnprotectedHeader != null ? signerUnprotectedHeader.getHeader(headerKey) : null;
     }
 

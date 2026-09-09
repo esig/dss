@@ -20,11 +20,8 @@
  */
 package eu.europa.esig.dss.cbades.signature;
 
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.COSEHeaderParameter;
-import eu.europa.esig.dss.cbades.cbor.CBORArray;
-import eu.europa.esig.dss.cbades.cbor.CBORByteString;
-import eu.europa.esig.dss.cbades.cbor.CBORMap;
-import eu.europa.esig.dss.cbades.cbor.CBORObject;
 import eu.europa.esig.dss.cbades.cbor.CBORUtils;
 import eu.europa.esig.dss.cbades.validation.AbstractCBAdESTestValidation;
 import eu.europa.esig.dss.detailedreport.DetailedReport;
@@ -50,7 +47,6 @@ import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -102,70 +98,67 @@ class CBAdESTripleLTATest extends AbstractCBAdESTestValidation {
         assertTrue(CBORUtils.isCbor(document));
 
         byte[] binaries = DSSUtils.toByteArray(document);
-        CBORObject cborObject = CBORUtils.parseCbor(binaries);
-        assertNotNull(cborObject);
-        assertTrue(cborObject.isArray());
+        CBORValue coseSign1 = CBORUtils.parseCbor(binaries);
+        assertNotNull(coseSign1);
+        assertTrue(coseSign1.isTag());
 
-        CBORArray coseSign1 = (CBORArray) cborObject;
-        assertEquals(4, coseSign1.getSize());
+        coseSign1 = coseSign1.getTaggedValue();
+        assertNotNull(coseSign1);
+        assertTrue(coseSign1.isArray());
 
-        CBORObject protectedHeader = coseSign1.getItem(0);
+        assertEquals(4, coseSign1.size());
+
+        CBORValue protectedHeader = coseSign1.get(0);
         assertTrue(protectedHeader.isByteString());
 
-        CBORObject parsedProtectedHeader = CBORUtils.parseCbor(protectedHeader.getValueAsBytes());
+        CBORValue parsedProtectedHeader = CBORUtils.parseCbor(protectedHeader.asBytes());
         assertNotNull(parsedProtectedHeader);
         assertTrue(parsedProtectedHeader.isMap());
-        assertFalse(((CBORMap) parsedProtectedHeader).isEmpty());
+        assertTrue(parsedProtectedHeader.size() > 0);
 
-        CBORObject unprotectedHeader = coseSign1.getItem(1);
+        CBORValue unprotectedHeader = coseSign1.get(1);
         assertTrue(unprotectedHeader.isMap());
 
-        CBORMap unprotectedHeaderMap = (CBORMap) unprotectedHeader;
-        assertFalse(unprotectedHeaderMap.isEmpty());
-        assertEquals(1, unprotectedHeaderMap.getSize());
+        assertEquals(1, unprotectedHeader.size());
 
-        CBORObject uHeaders = unprotectedHeaderMap.getHeader(COSEHeaderParameter.U_HEADERS.cbor());
+        CBORValue uHeaders = unprotectedHeader.get(COSEHeaderParameter.U_HEADERS.cbor());
         assertNotNull(uHeaders);
         assertTrue(uHeaders.isArray());
 
-        CBORArray uHeadersArray = (CBORArray) uHeaders;
-        assertFalse(uHeadersArray.isEmpty());
+        assertTrue(uHeaders.size() > 0);
 
         int sigTstCounter = 0;
         int valDataCounter = 0;
         int arcTstCounter = 0;
 
-        for (CBORObject uHeadersComponent : uHeadersArray.getValueAsList()) {
+        for (CBORValue uHeadersComponent : uHeaders.getElements()) {
             assertTrue(uHeadersComponent.isByteString()); // cbor btsr encoded
-            CBORByteString uHeaderBtsr = (CBORByteString) uHeadersComponent;
 
-            CBORObject uHeaderObject = CBORUtils.parseCbor(uHeaderBtsr.getValueAsBytes());
+            CBORValue uHeaderObject = CBORUtils.parseCbor(uHeadersComponent.asBytes());
             assertNotNull(uHeaderObject);
             assertTrue(uHeaderObject.isMap());
 
-            CBORMap uHeaderObjectMap =  (CBORMap) uHeaderObject;
-            assertFalse(uHeaderObjectMap.isEmpty());
-            assertEquals(1, uHeaderObjectMap.getSize());
+            assertEquals(1, uHeaderObject.size());
 
-            CBORObject sigTst  = uHeaderObjectMap.getHeader(COSEHeaderParameter.SIG_TST.cbor());
+            CBORValue sigTst = uHeaderObject.get(COSEHeaderParameter.SIG_TST.cbor());
             if (sigTst != null) {
                 ++sigTstCounter;
 
-                CBORMap tstContainer = (CBORMap) sigTst;
-                CBORArray tstTokens = tstContainer.getAsArray(COSEHeaderParameter.TST_CONTAINER_TST_TOKENS.cbor());
-                assertEquals(1, tstTokens.getSize());
+                CBORValue tstTokens = sigTst.getAsArrayOrNull(COSEHeaderParameter.TST_CONTAINER_TST_TOKENS.cbor());
+                assertNotNull(tstTokens);
+                assertEquals(1, tstTokens.size());
             }
-            CBORObject valData  = uHeaderObjectMap.getHeader(COSEHeaderParameter.VAL_DATA.cbor());
+            CBORValue valData = uHeaderObject.get(COSEHeaderParameter.VAL_DATA.cbor());
             if (valData != null) {
                 ++valDataCounter;
             }
-            CBORObject arcTst  = uHeaderObjectMap.getHeader(COSEHeaderParameter.ARC_TST.cbor());
+            CBORValue arcTst = uHeaderObject.get(COSEHeaderParameter.ARC_TST.cbor());
             if (arcTst != null) {
                 ++arcTstCounter;
 
-                CBORMap tstContainer = (CBORMap) arcTst;
-                CBORArray tstTokens = tstContainer.getAsArray(COSEHeaderParameter.TST_CONTAINER_TST_TOKENS.cbor());
-                assertEquals(1, tstTokens.getSize());
+                CBORValue tstTokens = arcTst.getAsArrayOrNull(COSEHeaderParameter.TST_CONTAINER_TST_TOKENS.cbor());
+                assertNotNull(tstTokens);
+                assertEquals(1, tstTokens.size());
             }
         }
 
@@ -173,10 +166,10 @@ class CBAdESTripleLTATest extends AbstractCBAdESTestValidation {
         assertEquals(3, valDataCounter);
         assertEquals(3, arcTstCounter);
 
-        CBORObject payload = coseSign1.getItem(2);
+        CBORValue payload = coseSign1.get(2);
         assertTrue(payload.isByteString());
 
-        CBORObject signature = coseSign1.getItem(3);
+        CBORValue signature = coseSign1.get(3);
         assertTrue(signature.isByteString());
     }
 

@@ -20,8 +20,9 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.creation;
 
-import eu.europa.esig.dss.cbades.cbor.CBORMap;
-import eu.europa.esig.dss.cbades.cbor.CBORUtils;
+import eu.europa.ec.digit.cddl4j.cbor.CBOR;
+import eu.europa.ec.digit.cddl4j.cbor.CBORTags;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.attestation.mdoc.MdocHeaderParameter;
 
 import java.util.Objects;
@@ -47,16 +48,17 @@ public class DefaultMdocSelectiveDisclosureBuilder implements MdocSelectiveDiscl
     public MdocIssuerSignedItem build(MdocClaim claim) {
         Objects.requireNonNull(claim, "MdocClaim cannot be null!");
 
-        final CBORMap issuerSignedItem = new CBORMap();
-        issuerSignedItem.put(MdocHeaderParameter.DIGEST_ID.toString(), claim.getDigestId());
-        issuerSignedItem.put(MdocHeaderParameter.RANDOM.toString(), claim.getSalt());
-        issuerSignedItem.put(MdocHeaderParameter.ELEMENT_IDENTIFIER.toString(), claim.getName());
-        issuerSignedItem.put(MdocHeaderParameter.ELEMENT_VALUE.toString(), claim.getValueAsCbor());
+        final CBORValue issuerSignedItem = CBOR.map()
+                .put(MdocHeaderParameter.DIGEST_ID.toString(), claim.getDigestId())
+                .put(MdocHeaderParameter.RANDOM.toString(), claim.getSalt())
+                .put(MdocHeaderParameter.ELEMENT_IDENTIFIER.toString(), claim.getName())
+                .put(MdocHeaderParameter.ELEMENT_VALUE.toString(), claim.getValueAsCbor())
+                .value();
 
         if (claim.isVoid()) {
-            return new MdocIssuerSignedItem(claim.getDigestId(), CBORUtils.toCborBtsrWrappedTagged(issuerSignedItem));
+            return new MdocIssuerSignedItem(claim.getDigestId(), CBORTags.encodedCbor(issuerSignedItem.encodeToBytes()));
         } else {
-            return new MdocIssuerSignedItem(claim.getNamespace(), claim.getDigestId(), CBORUtils.toCborBtsrWrappedTagged(issuerSignedItem));
+            return new MdocIssuerSignedItem(claim.getNamespace(), claim.getDigestId(), CBORTags.encodedCbor(issuerSignedItem.encodeToBytes()));
         }
     }
 

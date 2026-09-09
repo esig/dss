@@ -21,11 +21,7 @@
 package eu.europa.esig.dss.cbades;
 
 import eu.europa.ec.digit.cddl4j.cbor.CBOR;
-import eu.europa.esig.dss.cbades.cbor.CBORArray;
-import eu.europa.esig.dss.cbades.cbor.CBORByteString;
-import eu.europa.esig.dss.cbades.cbor.CBORMap;
-import eu.europa.esig.dss.cbades.cbor.CBORObject;
-import eu.europa.esig.dss.cbades.cbor.CBORTag;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.cbor.CBORUtils;
 import eu.europa.esig.dss.cbades.validation.CBORSignature;
 import eu.europa.esig.dss.enumerations.COSESignatureType;
@@ -214,10 +210,10 @@ class COSEParserTest {
         COSEUnprotectedHeader unprotectedHeader = coseSign.getUnprotectedHeader();
         assertFalse(unprotectedHeader.isEmpty());
 
-        CBORObject countersign = unprotectedHeader.getHeader(COSEHeaderParameter.COUNTER_SIGNATURE.cbor());
+        CBORValue countersign = unprotectedHeader.getHeader(COSEHeaderParameter.COUNTER_SIGNATURE.cbor());
         assertNotNull(countersign);
 
-        COSECounterSignStructure coseCounterSign = COSECounterSignatureParser.fromCBORObject(countersign)
+        COSECounterSignStructure coseCounterSign = COSECounterSignatureParser.fromCBORValue(countersign)
                 .setContext(COSESignatureType.COSE_COUNTER_SIGNATURE)
                 .setMasterSignature(coseSign).parse();
         assertNotNull(coseCounterSign);
@@ -267,10 +263,10 @@ class COSEParserTest {
         COSEUnprotectedHeader unprotectedHeader = coseSign1.getUnprotectedHeader();
         assertFalse(unprotectedHeader.isEmpty());
 
-        CBORObject countersignatureV2 = unprotectedHeader.getHeader(COSEHeaderParameter.COUNTER_SIGNATURE_V2.cbor());
+        CBORValue countersignatureV2 = unprotectedHeader.getHeader(COSEHeaderParameter.COUNTER_SIGNATURE_V2.cbor());
         assertNotNull(countersignatureV2);
 
-        COSECounterSignStructure coseCounterSign = COSECounterSignatureParser.fromCBORObject(countersignatureV2)
+        COSECounterSignStructure coseCounterSign = COSECounterSignatureParser.fromCBORValue(countersignatureV2)
                 .setContext(COSESignatureType.COSE_COUNTER_SIGNATURE_V2)
                 .setMasterSignature(coseSign1).parse();
         assertNotNull(coseCounterSign);
@@ -460,42 +456,44 @@ class COSEParserTest {
         coseSign1Untagged.setTagged(false);
         assertTrue(COSEParser.isSupported(new InMemoryDocument(coseSign1Untagged.serialize())));
 
-        assertFalse(COSEParser.isSupported(new InMemoryDocument(CBORUtils.serializeCborObject(new CBORTag(CBOR.tag(COSESignatureType.COSE_SIGN.getTag(), CBOR.nullValue()))))));
-        assertFalse(COSEParser.isSupported(new InMemoryDocument(CBORUtils.serializeCborObject(new CBORTag(CBOR.tag(COSESignatureType.COSE_SIGN1.getTag(), CBOR.nullValue()))))));
-        assertFalse(COSEParser.isSupported(new InMemoryDocument(CBORUtils.serializeCborObject(new CBORTag(CBOR.tag(COSESignatureType.COSE_COUNTER_SIGNATURE.getTag(), CBOR.nullValue()))))));
-        assertFalse(COSEParser.isSupported(new InMemoryDocument(CBORUtils.serializeCborObject(new CBORTag(CBOR.tag(1, CBOR.nullValue()))))));
-        assertFalse(COSEParser.isSupported(new InMemoryDocument(CBORUtils.serializeCborObject(new CBORArray()))));
+        assertFalse(COSEParser.isSupported(new InMemoryDocument(CBORUtils.serializeCbor(CBOR.tag(COSESignatureType.COSE_SIGN.getTag(), CBOR.nullValue())))));
+        assertFalse(COSEParser.isSupported(new InMemoryDocument(CBORUtils.serializeCbor(CBOR.tag(COSESignatureType.COSE_SIGN1.getTag(), CBOR.nullValue())))));
+        assertFalse(COSEParser.isSupported(new InMemoryDocument(CBORUtils.serializeCbor(CBOR.tag(COSESignatureType.COSE_COUNTER_SIGNATURE.getTag(), CBOR.nullValue())))));
+        assertFalse(COSEParser.isSupported(new InMemoryDocument(CBORUtils.serializeCbor(CBOR.tag(1, CBOR.nullValue())))));
+        assertFalse(COSEParser.isSupported(new InMemoryDocument(CBORUtils.serializeCbor(CBOR.array().value()))));
 
-        CBORArray cborArray = new CBORArray();
-        cborArray.setTag(COSESignatureType.COSE_SIGN.getTag());
-        assertFalse(COSEParser.isSupported(new InMemoryDocument(CBORUtils.serializeCborObject(cborArray))));
+        CBORValue.CBORArrayEditor cborArrayEditor = CBOR.array();
+        CBORValue cborValue = CBOR.tag(COSESignatureType.COSE_SIGN.getTag(), cborArrayEditor.value());
+        assertFalse(COSEParser.isSupported(new InMemoryDocument(CBORUtils.serializeCbor(cborValue))));
 
-        cborArray.setTag(COSESignatureType.COSE_SIGN.getTag());
-        assertFalse(COSEParser.isSupported(new InMemoryDocument(CBORUtils.serializeCborObject(cborArray))));
+        cborValue = CBOR.tag(COSESignatureType.COSE_SIGN.getTag(), cborValue);
+        assertFalse(COSEParser.isSupported(new InMemoryDocument(CBORUtils.serializeCbor(cborValue))));
 
-        cborArray.add(new CBORByteString());
-        assertFalse(COSEParser.isSupported(new InMemoryDocument(CBORUtils.serializeCborObject(cborArray))));
+        cborArrayEditor.add(CBOR.bytes(new byte[] {}));
+        assertFalse(COSEParser.isSupported(new InMemoryDocument(CBORUtils.serializeCbor(cborValue))));
 
-        cborArray.add(new CBORMap());
-        cborArray.add(new CBORByteString());
-        cborArray.add(new CBORByteString());
-        assertTrue(COSEParser.isSupported(new InMemoryDocument(CBORUtils.serializeCborObject(cborArray))));
+        cborArrayEditor.add(CBOR.map().value());
+        cborArrayEditor.add(CBOR.bytes(new byte[] {}));
+        cborArrayEditor.add(CBOR.bytes(new byte[] {}));
+        cborValue = cborArrayEditor.value();
+        assertTrue(COSEParser.isSupported(new InMemoryDocument(CBORUtils.serializeCbor(cborValue))));
 
-        cborArray.setTag(COSESignatureType.COSE_SIGN1.getTag());
-        assertTrue(COSEParser.isSupported(new InMemoryDocument(CBORUtils.serializeCborObject(cborArray))));
+        cborValue = CBOR.tag(COSESignatureType.COSE_SIGN1.getTag(), cborArrayEditor.value());
+        assertTrue(COSEParser.isSupported(new InMemoryDocument(CBORUtils.serializeCbor(cborValue))));
 
-        cborArray.setTag(1);
-        assertFalse(COSEParser.isSupported(new InMemoryDocument(CBORUtils.serializeCborObject(cborArray))));
+        cborValue = CBOR.tag(1, cborArrayEditor.value());
+        assertFalse(COSEParser.isSupported(new InMemoryDocument(CBORUtils.serializeCbor(cborValue))));
 
-        cborArray = new CBORArray();
-        cborArray.add(new CBORByteString());
-        cborArray.add(new CBORMap());
-        cborArray.add(new CBORByteString());
-        cborArray.add(new CBORByteString());
-        assertTrue(COSEParser.isSupported(new InMemoryDocument(CBORUtils.serializeCborObject(cborArray))));
+        cborValue = CBOR.array()
+                .add(CBOR.bytes(new byte[] {}))
+                .add(CBOR.map().value())
+                .add(CBOR.bytes(new byte[] {}))
+                .add(CBOR.bytes(new byte[] {}))
+                .value();
+        assertTrue(COSEParser.isSupported(new InMemoryDocument(CBORUtils.serializeCbor(cborValue))));
 
-        cborArray.add(new CBORByteString());
-        assertFalse(COSEParser.isSupported(new InMemoryDocument(CBORUtils.serializeCborObject(cborArray))));
+        cborValue.editArray().add(CBOR.bytes(new byte[] {}));
+        assertFalse(COSEParser.isSupported(new InMemoryDocument(CBORUtils.serializeCbor(cborValue))));
 
         assertFalse(COSEParser.isSupported(new InMemoryDocument("".getBytes())));
         assertFalse(COSEParser.isSupported(new InMemoryDocument("Hello World!".getBytes())));

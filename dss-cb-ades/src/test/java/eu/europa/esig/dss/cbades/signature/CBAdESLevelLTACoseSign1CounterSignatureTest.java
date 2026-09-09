@@ -20,11 +20,8 @@
  */
 package eu.europa.esig.dss.cbades.signature;
 
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.COSEHeaderParameter;
-import eu.europa.esig.dss.cbades.cbor.CBORArray;
-import eu.europa.esig.dss.cbades.cbor.CBORByteString;
-import eu.europa.esig.dss.cbades.cbor.CBORMap;
-import eu.europa.esig.dss.cbades.cbor.CBORObject;
 import eu.europa.esig.dss.cbades.cbor.CBORUtils;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -43,7 +40,6 @@ import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -79,78 +75,80 @@ class CBAdESLevelLTACoseSign1CounterSignatureTest extends AbstractCBAdESCounterS
     protected void onDocumentSigned(byte[] byteArray) {
         super.onDocumentSigned(byteArray);
 
-        CBORObject cborObject = CBORUtils.parseCbor(byteArray);
-        assertNotNull(cborObject);
-        assertTrue(cborObject.isArray());
+        CBORValue coseSign1 = CBORUtils.parseCbor(byteArray);
+        assertNotNull(coseSign1);
+        assertTrue(coseSign1.isTag());
 
-        CBORArray coseSign1 = (CBORArray) cborObject;
-        assertEquals(4, coseSign1.getSize());
+        coseSign1 = coseSign1.getTaggedValue();
+        assertNotNull(coseSign1);
+        assertTrue(coseSign1.isArray());
 
-        CBORObject protectedHeader = coseSign1.getItem(0);
+        assertEquals(4, coseSign1.size());
+
+        CBORValue protectedHeader = coseSign1.get(0);
         assertTrue(protectedHeader.isByteString());
 
-        CBORObject parsedProtectedHeader = CBORUtils.parseCbor(protectedHeader.getValueAsBytes());
+        CBORValue parsedProtectedHeader = CBORUtils.parseCbor(protectedHeader.asBytes());
         assertNotNull(parsedProtectedHeader);
         assertTrue(parsedProtectedHeader.isMap());
-        assertFalse(((CBORMap) parsedProtectedHeader).isEmpty());
+        assertTrue(parsedProtectedHeader.size() > 0);
 
-        CBORObject unprotectedHeader = coseSign1.getItem(1);
+        CBORValue unprotectedHeader = coseSign1.get(1);
         assertTrue(unprotectedHeader.isMap());
 
-        CBORMap unprotectedHeaderMap = (CBORMap) unprotectedHeader;
-        assertFalse(unprotectedHeaderMap.isEmpty());
-        assertEquals(1, unprotectedHeaderMap.getSize());
+        assertEquals(1, unprotectedHeader.size());
 
-        CBORObject uHeaders = unprotectedHeaderMap.getHeader(COSEHeaderParameter.U_HEADERS.cbor());
+        CBORValue uHeaders = unprotectedHeader.get(COSEHeaderParameter.U_HEADERS.cbor());
         assertNotNull(uHeaders);
         assertTrue(uHeaders.isArray());
 
-        CBORArray uHeadersArray = (CBORArray) uHeaders;
-        assertFalse(uHeadersArray.isEmpty());
+        assertTrue(uHeaders.size() > 0);
 
         int sigTstCounter = 0;
         int valDataCounter = 0;
         int arcTstCounter = 0;
         int counterSigCounter = 0;
 
-        for (CBORObject uHeadersComponent : uHeadersArray.getValueAsList()) {
+        for (CBORValue uHeadersComponent : uHeaders.getElements()) {
             assertTrue(uHeadersComponent.isByteString()); // cbor btsr encoded
-            CBORByteString uHeaderBtsr = (CBORByteString) uHeadersComponent;
 
-            CBORObject uHeaderObject = CBORUtils.parseCbor(uHeaderBtsr.getValueAsBytes());
+            CBORValue uHeaderObject = CBORUtils.parseCbor(uHeadersComponent.asBytes());
             assertNotNull(uHeaderObject);
             assertTrue(uHeaderObject.isMap());
 
-            CBORMap uHeaderObjectMap =  (CBORMap) uHeaderObject;
-            assertFalse(uHeaderObjectMap.isEmpty());
-            assertEquals(1, uHeaderObjectMap.getSize());
+            assertEquals(1, uHeaderObject.size());
 
-            CBORObject sigTst  = uHeaderObjectMap.getHeader(COSEHeaderParameter.SIG_TST.cbor());
+            CBORValue sigTst = uHeaderObject.get(COSEHeaderParameter.SIG_TST.cbor());
             if (sigTst != null) {
                 ++sigTstCounter;
 
-                CBORMap tstContainer = (CBORMap) sigTst;
-                CBORArray tstTokens = tstContainer.getAsArray(COSEHeaderParameter.TST_CONTAINER_TST_TOKENS.cbor());
-                assertEquals(1, tstTokens.getSize());
+                CBORValue tstTokens = sigTst.getAsArrayOrNull(COSEHeaderParameter.TST_CONTAINER_TST_TOKENS.cbor());
+                assertNotNull(tstTokens);
+                assertEquals(1, tstTokens.size());
             }
-            CBORObject valData  = uHeaderObjectMap.getHeader(COSEHeaderParameter.VAL_DATA.cbor());
+            CBORValue valData = uHeaderObject.get(COSEHeaderParameter.VAL_DATA.cbor());
             if (valData != null) {
                 ++valDataCounter;
             }
-            CBORObject arcTst  = uHeaderObjectMap.getHeader(COSEHeaderParameter.ARC_TST.cbor());
+            CBORValue arcTst = uHeaderObject.get(COSEHeaderParameter.ARC_TST.cbor());
             if (arcTst != null) {
                 ++arcTstCounter;
 
-                CBORMap tstContainer = (CBORMap) arcTst;
-                CBORArray tstTokens = tstContainer.getAsArray(COSEHeaderParameter.TST_CONTAINER_TST_TOKENS.cbor());
-                assertEquals(1, tstTokens.getSize());
+                CBORValue tstTokens = arcTst.getAsArrayOrNull(COSEHeaderParameter.TST_CONTAINER_TST_TOKENS.cbor());
+                assertNotNull(tstTokens);
+                assertEquals(1, tstTokens.size());
             }
-            CBORObject counterSig  = uHeaderObjectMap.getHeader(COSEHeaderParameter.COUNTER_SIGNATURE_V2.cbor());
+            CBORValue counterSig = uHeaderObject.get(COSEHeaderParameter.COUNTER_SIGNATURE_V2.cbor());
             if (counterSig != null) {
                 ++counterSigCounter;
 
-                CBORArray counterSigArray = (CBORArray) counterSig;
-                assertEquals(3, counterSigArray.getSize());
+                assertTrue(counterSig.isTag());
+
+                CBORValue counterSignatureV2Value = counterSig.getTaggedValue();
+                assertNotNull(counterSignatureV2Value);
+                assertTrue(counterSignatureV2Value.isArray());
+
+                assertEquals(3, counterSignatureV2Value.size());
             }
         }
 

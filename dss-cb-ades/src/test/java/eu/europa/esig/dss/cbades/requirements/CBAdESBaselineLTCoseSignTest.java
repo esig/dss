@@ -20,9 +20,8 @@
  */
 package eu.europa.esig.dss.cbades.requirements;
 
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.COSEHeaderParameter;
-import eu.europa.esig.dss.cbades.cbor.CBORMap;
-import eu.europa.esig.dss.cbades.cbor.CBORObject;
 import eu.europa.esig.dss.cbades.signature.CBAdESSignatureParameters;
 import eu.europa.esig.dss.enumerations.COSEStructureType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -40,8 +39,8 @@ class CBAdESBaselineLTCoseSignTest extends AbstractCBAdESCoseSignRequirementsChe
     }
 
     @Override
-    protected void checkArchiveTimestamp(CBORMap unprotectedHeaderMap) {
-        CBORObject arcTst = getUHeadersElement(unprotectedHeaderMap, COSEHeaderParameter.ARC_TST.cbor());
+    protected void checkArchiveTimestamp(CBORValue unprotectedHeaderMap) {
+        CBORValue arcTst = getUHeadersElement(unprotectedHeaderMap, COSEHeaderParameter.ARC_TST.cbor());
         assertNull(arcTst);
     }
 

@@ -26,13 +26,15 @@ import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 /**
  * A wrapper for a one-dimensional CBOR object
  *
+ * @deprecated since DSS 6.6. Switch to {@link eu.europa.ec.digit.cddl4j.cbor.CBORValue} instead.
  */
+@Deprecated
 public class CBORSimpleObject extends AbstractCBORObject {
 
     /**
      * Creates a new CBOR object from the given {@code value}
      *
-     * @param value {@link eu.europa.ec.digit.cddl4j.cbor.CBORValue}
+     * @param value {@link CBORValue}
      */
     public CBORSimpleObject(CBORValue value) {
         super(value);

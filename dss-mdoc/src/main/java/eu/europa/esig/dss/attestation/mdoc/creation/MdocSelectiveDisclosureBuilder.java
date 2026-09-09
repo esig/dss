@@ -20,7 +20,6 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.creation;
 
-import eu.europa.esig.dss.cbades.cbor.CBORByteString;
 import eu.europa.esig.dss.attestation.common.creation.SelectiveDisclosureBuilder;
 
 /**
@@ -33,7 +32,7 @@ public interface MdocSelectiveDisclosureBuilder extends SelectiveDisclosureBuild
      * Builds a String for a selectively disclosable attestation claim to be used for Digest computation
      *
      * @param claim {@link MdocClaim} to create a disclosure for
-     * @return {@link CBORByteString} representing the IssuerSignedItemBytes structure
+     * @return {@link MdocIssuerSignedItem} representing the IssuerSignedItemBytes structure
      */
     MdocIssuerSignedItem build(MdocClaim claim);
 

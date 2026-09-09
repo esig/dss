@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.cbades.signature;
 
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.CBAdESUtils;
 import eu.europa.esig.dss.cbades.COSEHeaderParameter;
 import eu.europa.esig.dss.cbades.COSESignStructure;
-import eu.europa.esig.dss.cbades.cbor.CBORMap;
 import eu.europa.esig.dss.cbades.validation.CBAdESSignature;
 import eu.europa.esig.dss.cbades.validation.CBAdESUHeaders;
 import eu.europa.esig.dss.cbades.validation.COSEDocumentAnalyzer;
@@ -162,7 +162,7 @@ public class CBAdESLevelBaselineT extends CBAdESExtensionBuilder implements CBAd
                     .getSignatureTimestampData(timestampDigestAlgorithm);
             TimestampBinary timeStampResponse = tspSource.getTimeStampResponse(timestampDigestAlgorithm, messageDigest.getValue());
 
-            CBORMap tstContainer = CBAdESUtils.getTstContainer(Collections.singletonList(timeStampResponse));
+            CBORValue tstContainer = CBAdESUtils.getTstContainer(Collections.singletonList(timeStampResponse));
 
             CBAdESUHeaders uHeaders = cbadesSignature.getUHeaders();
             uHeaders.addComponent(COSEHeaderParameter.SIG_TST.cbor(), tstContainer);

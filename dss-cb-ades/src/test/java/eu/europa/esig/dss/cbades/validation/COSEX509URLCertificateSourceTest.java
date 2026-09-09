@@ -20,9 +20,8 @@
  */
 package eu.europa.esig.dss.cbades.validation;
 
-import eu.europa.esig.dss.cbades.cbor.CBORArray;
-import eu.europa.esig.dss.cbades.cbor.CBORByteString;
-import eu.europa.esig.dss.cbades.cbor.CBORMap;
+import eu.europa.ec.digit.cddl4j.cbor.CBOR;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.cbor.CBORUtils;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.spi.DSSUtils;
@@ -66,25 +65,27 @@ class COSEX509URLCertificateSourceTest {
         x509URLCertificateSource = new COSEX509URLCertificateSource(dataLoader);
         assertEquals(Collections.singletonList(token), x509URLCertificateSource.getCertificatesByUrl(URL));
 
-        CBORByteString cborByteString = new CBORByteString(token.getEncoded());
-        map.put(URL, CBORUtils.serializeCborObject(cborByteString));
+        CBORValue cborByteString = CBOR.bytes(token.getEncoded());
+        map.put(URL, CBORUtils.serializeCbor(cborByteString));
         dataLoader = new MemoryDataLoader(map);
 
         x509URLCertificateSource = new COSEX509URLCertificateSource(dataLoader);
         assertEquals(Collections.singletonList(token), x509URLCertificateSource.getCertificatesByUrl(URL));
 
-        CBORArray cborArray = new CBORArray();
-        cborArray.add(new CBORByteString(token.getEncoded()));
-        cborArray.add(new CBORByteString(token2.getEncoded()));
-        map.put(URL, CBORUtils.serializeCborObject(cborArray));
+        CBORValue cborValue = CBOR.array()
+                .add(CBOR.bytes(token.getEncoded()))
+                .add(CBOR.bytes(token2.getEncoded()))
+                .value();
+        map.put(URL, CBORUtils.serializeCbor(cborValue));
         dataLoader = new MemoryDataLoader(map);
 
         x509URLCertificateSource = new COSEX509URLCertificateSource(dataLoader);
         assertEquals(Arrays.asList(token, token2), x509URLCertificateSource.getCertificatesByUrl(URL));
 
-        CBORMap cborMap = new CBORMap();
-        cborMap.put(URL, new CBORByteString(token.getEncoded()));
-        map.put(URL, CBORUtils.serializeCborObject(cborMap));
+        cborValue = CBOR.map()
+                .put(URL, CBOR.bytes(token.getEncoded()))
+                .value();
+        map.put(URL, CBORUtils.serializeCbor(cborValue));
         dataLoader = new MemoryDataLoader(map);
 
         x509URLCertificateSource = new COSEX509URLCertificateSource(dataLoader);

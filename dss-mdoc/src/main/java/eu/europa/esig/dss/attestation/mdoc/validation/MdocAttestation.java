@@ -20,11 +20,11 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.validation;
 
-import eu.europa.esig.dss.cbades.validation.CBAdESSignature;
-import eu.europa.esig.dss.attestation.common.validation.DefaultAttestation;
 import eu.europa.esig.dss.attestation.common.validation.AttestationPayloadVerifier;
+import eu.europa.esig.dss.attestation.common.validation.DefaultAttestation;
 import eu.europa.esig.dss.attestation.mdoc.model.MdocDeviceNameSpaces;
 import eu.europa.esig.dss.attestation.mdoc.model.MdocDocument;
+import eu.europa.esig.dss.cbades.validation.CBAdESSignature;
 import eu.europa.esig.dss.enumerations.AttestationProfile;
 import eu.europa.esig.dss.model.attestation.SelectiveDisclosure;
 import eu.europa.esig.dss.spi.attestation.KeyBindingSignaturePayload;

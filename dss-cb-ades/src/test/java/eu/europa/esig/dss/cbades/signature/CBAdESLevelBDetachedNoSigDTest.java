@@ -20,12 +20,11 @@
  */
 package eu.europa.esig.dss.cbades.signature;
 
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.COSEHeaderParameter;
 import eu.europa.esig.dss.cbades.COSEProtectedHeader;
 import eu.europa.esig.dss.cbades.COSESign;
 import eu.europa.esig.dss.cbades.COSESignStructure;
-import eu.europa.esig.dss.cbades.cbor.CBORMap;
-import eu.europa.esig.dss.cbades.cbor.CBORObject;
 import eu.europa.esig.dss.enumerations.SigDMechanism;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -79,7 +78,7 @@ class CBAdESLevelBDetachedNoSigDTest extends AbstractCBAdESTestSignature {
     protected void checkCOSESignStructure(COSESignStructure coseSignStructure) {
         super.checkCOSESignStructure(coseSignStructure);
 
-        CBORObject payload = coseSignStructure.getPayload();
+        CBORValue payload = coseSignStructure.getPayload();
         assertNotNull(payload);
         assertTrue(payload.isNull());
 
@@ -91,10 +90,10 @@ class CBAdESLevelBDetachedNoSigDTest extends AbstractCBAdESTestSignature {
     }
 
     private void assertRequirementsValid(COSEProtectedHeader protectedHeader) {
-        String cty = protectedHeader.getAsString(COSEHeaderParameter.CONTENT_TYPE.cbor());
+        String cty = protectedHeader.getValue().getAsStringOrNull(COSEHeaderParameter.CONTENT_TYPE.cbor());
         assertNull(cty);
 
-        CBORMap sigD = protectedHeader.getAsMap(COSEHeaderParameter.SIG_D.cbor());
+        CBORValue sigD = protectedHeader.getValue().getAsMapOrNull(COSEHeaderParameter.SIG_D.cbor());
         assertNull(sigD);
     }
 

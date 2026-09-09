@@ -20,16 +20,16 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.creation;
 
-import eu.europa.esig.dss.cbades.signature.CBAdESSignatureParameters;
-import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.diagnostic.AttestationPayloadProxy;
-import eu.europa.esig.dss.diagnostic.AttestationWrapper;
-import eu.europa.esig.dss.diagnostic.claim.ClaimWrapper;
-import eu.europa.esig.dss.diagnostic.claim.DrivingPrivilegeClaimWrapper;
-import eu.europa.esig.dss.diagnostic.claim.DrivingPrivilegesClaimWrapper;
 import eu.europa.esig.dss.attestation.mdoc.ISO180135Headers;
 import eu.europa.esig.dss.attestation.mdoc.MdocConstants;
 import eu.europa.esig.dss.attestation.mdoc.model.MdocDrivingPrivilege;
+import eu.europa.esig.dss.cbades.signature.CBAdESSignatureParameters;
+import eu.europa.esig.dss.diagnostic.AttestationPayloadProxy;
+import eu.europa.esig.dss.diagnostic.AttestationWrapper;
+import eu.europa.esig.dss.diagnostic.DiagnosticData;
+import eu.europa.esig.dss.diagnostic.claim.ClaimWrapper;
+import eu.europa.esig.dss.diagnostic.claim.DrivingPrivilegeClaimWrapper;
+import eu.europa.esig.dss.diagnostic.claim.DrivingPrivilegesClaimWrapper;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.spi.DSSUtils;
 import org.junit.jupiter.api.BeforeEach;

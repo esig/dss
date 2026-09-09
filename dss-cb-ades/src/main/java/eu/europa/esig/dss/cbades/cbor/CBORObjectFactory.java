@@ -20,16 +20,14 @@
  */
 package eu.europa.esig.dss.cbades.cbor;
 
-import eu.europa.ec.digit.cddl4j.cbor.CBOR;
-import eu.europa.ec.digit.cddl4j.cbor.CBORTags;
 import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
-
-import java.util.Date;
 
 /**
  * Factory to create a {@code eu.europa.esig.dss.cbades.cbor.CBORObject} from a value
  *
+ * @deprecated since DSS 6.6. Please use {@link CBORValueFactory} instead.
  */
+@Deprecated
 public class CBORObjectFactory {
 
     /**
@@ -44,7 +42,9 @@ public class CBORObjectFactory {
      *
      * @param object object to covert
      * @return {@link CBORObject}
+     * @deprecated since DSS 6.6. Please use {@link CBORValueFactory#toCBORValue(Object)}.
      */
+    @Deprecated
     public static CBORObject toCBORObject(Object object) {
         if (object == null) {
             return null;
@@ -52,7 +52,7 @@ public class CBORObjectFactory {
         if (object instanceof CBORObject) {
             return (CBORObject) object;
         }
-        CBORValue cborValue = toCBORValue(object);
+        CBORValue cborValue = CBORValueFactory.toCBORValue(object);
         switch (cborValue.getType()) {
             case MAP:
                 return new CBORMap(cborValue);
@@ -70,21 +70,6 @@ public class CBORObjectFactory {
             default:
                 return new CBORSimpleObject(cborValue);
         }
-    }
-
-    /**
-     * This method coverts the given object to a CBORValue instance, corresponding to the object's format
-     *
-     * @param object to be converted
-     * @return {@link CBORValue}
-     */
-    public static CBORValue toCBORValue(Object object) {
-        if (object instanceof CBORObject) {
-            return CBOR.value(((CBORObject) object).toCBORValue());
-        } else if (object instanceof Date) {
-            return CBORTags.tdate(((Date) object).toInstant());
-        }
-        return CBOR.value(object);
     }
 
 }

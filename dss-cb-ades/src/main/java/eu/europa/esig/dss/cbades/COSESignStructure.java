@@ -20,7 +20,7 @@
  */
 package eu.europa.esig.dss.cbades;
 
-import eu.europa.esig.dss.cbades.cbor.CBORObject;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 
 /**
  * Represents a common interface for COSE signature structure objects defined in RFC 9052 "4. Signing Objects"
@@ -38,8 +38,8 @@ public interface COSESignStructure extends COSEStructure {
      * Gets the content to be signed.
      * Instantiates a nil value, when absent.
      *
-     * @return {@link CBORObject}
+     * @return {@link CBORValue}
      */
-    CBORObject getPayload();
+    CBORValue getPayload();
 
 }

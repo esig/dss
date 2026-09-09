@@ -20,9 +20,9 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.key;
 
-import eu.europa.esig.dss.cbades.COSEConstants;
-import eu.europa.esig.dss.cbades.cbor.CBORMap;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.attestation.common.key.PublicKeyInfo;
+import eu.europa.esig.dss.cbades.COSEConstants;
 import eu.europa.esig.dss.enumerations.EllipticCurve;
 import org.junit.jupiter.api.Test;
 
@@ -39,12 +39,12 @@ class COSEKeyBuilderTest {
 
         PublicKeyInfo.ECKey keyInfo = PublicKeyInfo.ecKey(EllipticCurve.P_256, x, y);
 
-        CBORMap cose = new COSEKeyBuilder(keyInfo).create();
-        assertEquals(4, cose.getSize());
-        assertEquals(COSEConstants.COSE_KEY_TYPE_EC2_VALUE, cose.getAsLong(COSEConstants.COSE_KEY_KTY));
-        assertEquals(EllipticCurve.P_256.getCOSEValue(), cose.getAsLong(COSEConstants.COSE_KEY_TYPE_EC2_CRV));
-        assertArrayEquals(x, cose.getAsBinaries(COSEConstants.COSE_KEY_TYPE_EC2_X));
-        assertArrayEquals(y, cose.getAsBinaries(COSEConstants.COSE_KEY_TYPE_EC2_Y));
+        CBORValue cose = new COSEKeyBuilder(keyInfo).create();
+        assertEquals(4, cose.size());
+        assertEquals(COSEConstants.COSE_KEY_TYPE_EC2_VALUE, cose.getAsIntegerOrNull(COSEConstants.COSE_KEY_KTY).longValue());
+        assertEquals(EllipticCurve.P_256.getCOSEValue(), cose.getAsIntegerOrNull(COSEConstants.COSE_KEY_TYPE_EC2_CRV).longValue());
+        assertArrayEquals(x, cose.getAsBytesOrNull(COSEConstants.COSE_KEY_TYPE_EC2_X));
+        assertArrayEquals(y, cose.getAsBytesOrNull(COSEConstants.COSE_KEY_TYPE_EC2_Y));
     }
 
     @Test
@@ -53,11 +53,11 @@ class COSEKeyBuilderTest {
 
         PublicKeyInfo.OKPKey keyInfo = PublicKeyInfo.okpKey(EllipticCurve.ED25519, x);
 
-        CBORMap cose = new COSEKeyBuilder(keyInfo).create();
-        assertEquals(3, cose.getSize());
-        assertEquals(COSEConstants.COSE_KEY_TYPE_OKP_VALUE, cose.getAsLong(COSEConstants.COSE_KEY_KTY));
-        assertEquals(EllipticCurve.ED25519.getCOSEValue(), cose.getAsLong(COSEConstants.COSE_KEY_TYPE_OKP_CRV));
-        assertArrayEquals(x, cose.getAsBinaries(COSEConstants.COSE_KEY_TYPE_OKP_X));
+        CBORValue cose = new COSEKeyBuilder(keyInfo).create();
+        assertEquals(3, cose.size());
+        assertEquals(COSEConstants.COSE_KEY_TYPE_OKP_VALUE, cose.getAsIntegerOrNull(COSEConstants.COSE_KEY_KTY).longValue());
+        assertEquals(EllipticCurve.ED25519.getCOSEValue(), cose.getAsIntegerOrNull(COSEConstants.COSE_KEY_TYPE_OKP_CRV).longValue());
+        assertArrayEquals(x, cose.getAsBytesOrNull(COSEConstants.COSE_KEY_TYPE_OKP_X));
     }
 
     @Test
@@ -67,11 +67,11 @@ class COSEKeyBuilderTest {
 
         PublicKeyInfo.RSAKey keyInfo = PublicKeyInfo.rsaKey(modulus, exponent);
 
-        CBORMap cose = new COSEKeyBuilder(keyInfo).create();
-        assertEquals(3, cose.getSize());
-        assertEquals(COSEConstants.COSE_KEY_TYPE_RSA_VALUE, cose.getAsLong(COSEConstants.COSE_KEY_KTY));
-        assertArrayEquals(modulus, cose.getAsBinaries(COSEConstants.COSE_KEY_TYPE_RSA_N));
-        assertArrayEquals(exponent, cose.getAsBinaries(COSEConstants.COSE_KEY_TYPE_RSA_E));
+        CBORValue cose = new COSEKeyBuilder(keyInfo).create();
+        assertEquals(3, cose.size());
+        assertEquals(COSEConstants.COSE_KEY_TYPE_RSA_VALUE, cose.getAsIntegerOrNull(COSEConstants.COSE_KEY_KTY).longValue());
+        assertArrayEquals(modulus, cose.getAsBytesOrNull(COSEConstants.COSE_KEY_TYPE_RSA_N));
+        assertArrayEquals(exponent, cose.getAsBytesOrNull(COSEConstants.COSE_KEY_TYPE_RSA_E));
     }
 
     @Test
@@ -83,6 +83,9 @@ class COSEKeyBuilderTest {
     @Test
     void createThrowsForUnsupportedKeyType() {
         PublicKeyInfo unsupported = new PublicKeyInfo() {
+
+            private static final long serialVersionUID = -4489558535104445473L;
+
             @Override
             public String getKeyType() {
                 return "";

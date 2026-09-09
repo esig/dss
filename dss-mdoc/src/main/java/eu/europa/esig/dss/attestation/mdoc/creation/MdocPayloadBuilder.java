@@ -20,15 +20,15 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.creation;
 
-import eu.europa.esig.dss.cbades.cbor.CBORArray;
-import eu.europa.esig.dss.cbades.cbor.CBORByteString;
-import eu.europa.esig.dss.cbades.cbor.CBORMap;
-import eu.europa.esig.dss.cbades.cbor.CBORUtils;
+import eu.europa.ec.digit.cddl4j.cbor.CBOR;
+import eu.europa.ec.digit.cddl4j.cbor.CBORTags;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.attestation.common.creation.AbstractAttestationSDPayloadBuilder;
 import eu.europa.esig.dss.attestation.common.creation.TokenStatusList;
 import eu.europa.esig.dss.attestation.common.key.PublicKeyInfo;
 import eu.europa.esig.dss.attestation.mdoc.MdocConstants;
 import eu.europa.esig.dss.attestation.mdoc.key.COSEKeyBuilder;
+import eu.europa.esig.dss.cbades.cbor.CBORUtils;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -110,9 +110,9 @@ public class MdocPayloadBuilder extends AbstractAttestationSDPayloadBuilder<Mdoc
     @Override
     public DSSDocument buildPayload(MdocPayloadParameters payloadParameters) {
         Objects.requireNonNull(payloadParameters, "MdocPayloadParameters cannot be null!");
-        CBORMap mso = buildMobileSecurityObject(payloadParameters);
-        CBORByteString msoBytes = CBORUtils.toCborBtsrWrappedTagged(mso);
-        return new InMemoryDocument(CBORUtils.serializeCborObject(msoBytes));
+        CBORValue mso = buildMobileSecurityObject(payloadParameters);
+        CBORValue msoBytes = CBORTags.encodedCbor(mso.encodeToBytes());
+        return new InMemoryDocument(CBORUtils.serializeCbor(msoBytes));
     }
 
     /**
@@ -129,25 +129,25 @@ public class MdocPayloadBuilder extends AbstractAttestationSDPayloadBuilder<Mdoc
      * }
      *
      * @param payloadParameters {@link MdocPayloadParameters}
-     * @return {@link CBORMap}
+     * @return {@link CBORValue}
      */
-    protected CBORMap buildMobileSecurityObject(MdocPayloadParameters payloadParameters) {
+    protected CBORValue buildMobileSecurityObject(MdocPayloadParameters payloadParameters) {
         Objects.requireNonNull(payloadParameters.getVersion(), "Version cannot be null!");
         Objects.requireNonNull(payloadParameters.getDigestAlgorithm(), "DigestAlgorithm cannot be null!");
         Objects.requireNonNull(payloadParameters.getDocType(), "DocType cannot be null!");
 
-        final CBORMap mso = new CBORMap();
-        mso.put(MdocConstants.VERSION, payloadParameters.getVersion());
-        mso.put(MdocConstants.DIGEST_ALGORITHM, payloadParameters.getDigestAlgorithm().getMSOId());
-        mso.put(MdocConstants.VALUE_DIGEST, buildValueDigests(payloadParameters));
-        mso.put(MdocConstants.DEVICE_KEY_INFO, buildDeviceKeyInfo(payloadParameters));
-        mso.put(MdocConstants.DOC_TYPE, payloadParameters.getDocType());
-        mso.put(MdocConstants.VALIDITY_INFO, buildValidityInfo(payloadParameters));
-        CBORMap status = buildStatus(payloadParameters.getIdentifierList(), payloadParameters.getStatusList());
+        CBORValue.CBORMapEditor mso = CBOR.map()
+                .put(MdocConstants.VERSION, payloadParameters.getVersion())
+                .put(MdocConstants.DIGEST_ALGORITHM, payloadParameters.getDigestAlgorithm().getMSOId())
+                .put(MdocConstants.VALUE_DIGEST, buildValueDigests(payloadParameters))
+                .put(MdocConstants.DEVICE_KEY_INFO, buildDeviceKeyInfo(payloadParameters))
+                .put(MdocConstants.DOC_TYPE, payloadParameters.getDocType())
+                .put(MdocConstants.VALIDITY_INFO, buildValidityInfo(payloadParameters));
+        CBORValue status = buildStatus(payloadParameters.getIdentifierList(), payloadParameters.getStatusList());
         if (status != null) {
             mso.put(MdocConstants.STATUS, status);
         }
-        return mso;
+        return mso.value();
     }
 
     /**
@@ -159,17 +159,17 @@ public class MdocPayloadBuilder extends AbstractAttestationSDPayloadBuilder<Mdoc
      * }
      *
      * @param payloadParameters {@link MdocPayloadParameters}
-     * @return {@link CBORMap}
+     * @return {@link CBORValue}
      */
-    protected CBORMap buildValueDigests(MdocPayloadParameters payloadParameters) {
-        final CBORMap valueDigests = new CBORMap();
+    protected CBORValue buildValueDigests(MdocPayloadParameters payloadParameters) {
+        final CBORValue.CBORMapEditor valueDigests = CBOR.map();
         SecureRandom secureRandom = secureRandom(payloadParameters);
         for (Map.Entry<String, List<MdocClaim>> claimsEntry : getRootPayloadClaims(payloadParameters).entrySet()) {
             String namespace = claimsEntry.getKey();
             List<MdocClaim> claims = claimsEntry.getValue();
             valueDigests.put(namespace, buildDigestIDs(claims, payloadParameters, secureRandom));
         }
-        return valueDigests;
+        return valueDigests.value();
     }
 
     /**
@@ -216,20 +216,20 @@ public class MdocPayloadBuilder extends AbstractAttestationSDPayloadBuilder<Mdoc
      * @param claims a list of {@link MdocClaim}s
      * @param payloadParameters {@link MdocPayloadParameters}
      * @param secureRandom {@link SecureRandom}
-     * @return {@link CBORMap}
+     * @return {@link CBORValue}
      */
-    protected CBORMap buildDigestIDs(List<MdocClaim> claims, MdocPayloadParameters payloadParameters, SecureRandom secureRandom) {
+    protected CBORValue buildDigestIDs(List<MdocClaim> claims, MdocPayloadParameters payloadParameters, SecureRandom secureRandom) {
         if (Utils.isCollectionEmpty(claims)) {
             throw new IllegalStateException("The list of claims is empty!");
         }
 
-        final CBORMap digestIDs = new CBORMap();
+        final CBORValue.CBORMapEditor digestIDs = CBOR.map();
         List<MdocIssuerSignedItem> disclosures = buildDisclosures(claims, payloadParameters, secureRandom, true);
         disclosures.forEach(d -> {
             Digest digest = d.getDigest(payloadParameters.getDigestAlgorithm());
             digestIDs.put(d.getDigestId(), digest.getValue());
         });
-        return digestIDs;
+        return digestIDs.value();
     }
 
     /**
@@ -244,30 +244,30 @@ public class MdocPayloadBuilder extends AbstractAttestationSDPayloadBuilder<Mdoc
      * }
      *
      * @param payloadParameters {@link MdocPayloadParameters}
-     * @return {@link CBORMap}
+     * @return {@link CBORValue}
      */
-    protected CBORMap buildDeviceKeyInfo(MdocPayloadParameters payloadParameters) {
+    protected CBORValue buildDeviceKeyInfo(MdocPayloadParameters payloadParameters) {
         Objects.requireNonNull(payloadParameters.getDeviceKey(), "DeviceKey shall be provided for an mdoc payload building!");
-        final CBORMap deviceKeyInfo = new CBORMap();
+        final CBORValue.CBORMapEditor deviceKeyInfo = CBOR.map();
         deviceKeyInfo.put(MdocConstants.DEVICE_KEY, buildCOSEKey(payloadParameters.getDeviceKey()));
-        CBORMap keyAuthorizations = buildKeyAuthorizations(payloadParameters.getKeyAuthorizationsNamespaces(), payloadParameters.getKeyAuthorizationsDataElements());
-        if (keyAuthorizations != null && !keyAuthorizations.isEmpty()) {
+        CBORValue keyAuthorizations = buildKeyAuthorizations(payloadParameters.getKeyAuthorizationsNamespaces(), payloadParameters.getKeyAuthorizationsDataElements());
+        if (keyAuthorizations != null && keyAuthorizations.size() != 0) {
             deviceKeyInfo.put(MdocConstants.KEY_AUTHORIZATIONS, keyAuthorizations);
         }
-        CBORMap keyInfo = buildKeyInfo(payloadParameters.getKeyInfoMap());
-        if (keyInfo != null && !keyInfo.isEmpty()) {
+        CBORValue keyInfo = buildKeyInfo(payloadParameters.getKeyInfoMap());
+        if (keyInfo != null && keyInfo.size() != 0) {
             deviceKeyInfo.put(MdocConstants.KEY_INFO, keyInfo);
         }
-        return deviceKeyInfo;
+        return deviceKeyInfo.value();
     }
 
     /**
      * Builds a COSE_Key representation of a device's {@code PublicKey}
      *
      * @param publicKey {@link PublicKey}
-     * @return {@link CBORMap}
+     * @return {@link CBORValue}
      */
-    protected CBORMap buildCOSEKey(PublicKey publicKey) {
+    protected CBORValue buildCOSEKey(PublicKey publicKey) {
         PublicKeyInfo publicKeyInfo = getPublicKeyInfoFactory().create(publicKey);
         return new COSEKeyBuilder(publicKeyInfo).create();
     }
@@ -286,22 +286,22 @@ public class MdocPayloadBuilder extends AbstractAttestationSDPayloadBuilder<Mdoc
      *
      * @param keyAuthorizationsNamespaces a list of {@link String}s
      * @param keyAuthorizationsDataElements a map of {@link String} namespaces and corresponding {@link String} data elements
-     * @return {@link CBORMap}
+     * @return {@link CBORValue}
      */
-    protected CBORMap buildKeyAuthorizations(List<String> keyAuthorizationsNamespaces, Map<String, List<String>> keyAuthorizationsDataElements) {
+    protected CBORValue buildKeyAuthorizations(List<String> keyAuthorizationsNamespaces, Map<String, List<String>> keyAuthorizationsDataElements) {
         if (Utils.isCollectionEmpty(keyAuthorizationsNamespaces) && Utils.isMapEmpty(keyAuthorizationsDataElements)) {
             return null;
         }
-        final CBORMap keyAuthorizations = new CBORMap();
+        final CBORValue.CBORMapEditor keyAuthorizations = CBOR.map();
         if (Utils.isCollectionNotEmpty(keyAuthorizationsNamespaces)) {
-            keyAuthorizations.put(MdocConstants.NAMESPACES, new CBORArray(keyAuthorizationsNamespaces));
+            keyAuthorizations.put(MdocConstants.NAMESPACES, CBOR.array(keyAuthorizationsNamespaces).value());
         }
         if (Utils.isMapNotEmpty(keyAuthorizationsDataElements)) {
-            CBORMap authorizedDataElements = new CBORMap();
-            keyAuthorizationsDataElements.forEach((k, v) -> authorizedDataElements.put(k, new CBORArray(v)));
-            keyAuthorizations.put(MdocConstants.DATA_ELEMENTS, authorizedDataElements);
+            CBORValue.CBORMapEditor authorizedDataElements = CBOR.map();
+            keyAuthorizationsDataElements.forEach((k, v) -> authorizedDataElements.put(k, CBOR.array(v).value()));
+            keyAuthorizations.put(MdocConstants.DATA_ELEMENTS, authorizedDataElements.value());
         }
-        return keyAuthorizations;
+        return keyAuthorizations.value();
     }
 
     /**
@@ -312,15 +312,15 @@ public class MdocPayloadBuilder extends AbstractAttestationSDPayloadBuilder<Mdoc
      * }
      *
      * @param keyInfoMap the keyInfo map
-     * @return {@link CBORMap}
+     * @return {@link CBORValue}
      */
-    protected CBORMap buildKeyInfo(Map<Integer, Object> keyInfoMap) {
+    protected CBORValue buildKeyInfo(Map<Integer, Object> keyInfoMap) {
         if (Utils.isMapEmpty(keyInfoMap)) {
             return null;
         }
-        final CBORMap keyInfo = new CBORMap();
+        final CBORValue.CBORMapEditor keyInfo = CBOR.map();
         keyInfoMap.forEach(keyInfo::put);
-        return keyInfo;
+        return keyInfo.value();
     }
 
     /**
@@ -335,21 +335,21 @@ public class MdocPayloadBuilder extends AbstractAttestationSDPayloadBuilder<Mdoc
      * }
      *
      * @param payloadParameters {@link MdocPayloadParameters}
-     * @return {@link CBORMap}
+     * @return {@link CBORValue}
      */
-    protected CBORMap buildValidityInfo(MdocPayloadParameters payloadParameters) {
+    protected CBORValue buildValidityInfo(MdocPayloadParameters payloadParameters) {
         Objects.requireNonNull(payloadParameters.getSigned(), "signed date cannot be null!");
         Objects.requireNonNull(payloadParameters.getValidFrom(), "validFrom date cannot be null!");
         Objects.requireNonNull(payloadParameters.getValidUntil(), "validUntil date cannot be null!");
 
-        final CBORMap validityInfo = new CBORMap();
-        validityInfo.put(MdocConstants.SIGNED, payloadParameters.getSigned());
-        validityInfo.put(MdocConstants.VALID_FROM, payloadParameters.getValidFrom());
-        validityInfo.put(MdocConstants.VALID_UNTIL, payloadParameters.getValidUntil());
+        final CBORValue.CBORMapEditor validityInfo = CBOR.map();
+        validityInfo.put(MdocConstants.SIGNED, CBORTags.tdate(payloadParameters.getSigned()));
+        validityInfo.put(MdocConstants.VALID_FROM, CBORTags.tdate(payloadParameters.getValidFrom()));
+        validityInfo.put(MdocConstants.VALID_UNTIL, CBORTags.tdate(payloadParameters.getValidUntil()));
         if (payloadParameters.getExpectedUpdate() != null) {
-            validityInfo.put(MdocConstants.EXPECTED_UPDATE, payloadParameters.getExpectedUpdate());
+            validityInfo.put(MdocConstants.EXPECTED_UPDATE, CBORTags.tdate(payloadParameters.getExpectedUpdate()));
         }
-        return validityInfo;
+        return validityInfo.value();
     }
 
     /**
@@ -366,22 +366,22 @@ public class MdocPayloadBuilder extends AbstractAttestationSDPayloadBuilder<Mdoc
      *
      * @param identifierList {@link MdocIdentifierList}
      * @param statusList {@link TokenStatusList}
-     * @return {@link CBORMap}
+     * @return {@link CBORValue}
      */
-    protected CBORMap buildStatus(MdocIdentifierList identifierList, TokenStatusList statusList) {
+    protected CBORValue buildStatus(MdocIdentifierList identifierList, TokenStatusList statusList) {
         if (identifierList == null && statusList == null) {
             return null;
         }
-        final CBORMap status = new CBORMap();
-        CBORMap identifierListInfo = buildIdentifierListInfo(identifierList);
+        final CBORValue.CBORMapEditor status = CBOR.map();
+        CBORValue identifierListInfo = buildIdentifierListInfo(identifierList);
         if (identifierListInfo != null) {
             status.put(MdocConstants.IDENTIFIER_LIST, identifierListInfo);
         }
-        CBORMap statusListInfo = buildStatusListInfo(statusList);
+        CBORValue statusListInfo = buildStatusListInfo(statusList);
         if (statusListInfo != null) {
             status.put(MdocConstants.STATUS_LIST, statusListInfo);
         }
-        return status;
+        return status.value();
     }
 
     /**
@@ -399,19 +399,19 @@ public class MdocPayloadBuilder extends AbstractAttestationSDPayloadBuilder<Mdoc
      * }
      *
      * @param identifierList {@link MdocIdentifierList}
-     * @return {@link CBORMap}
+     * @return {@link CBORValue}
      */
-    protected CBORMap buildIdentifierListInfo(MdocIdentifierList identifierList) {
+    protected CBORValue buildIdentifierListInfo(MdocIdentifierList identifierList) {
         if (identifierList == null) {
             return null;
         }
-        final CBORMap identifierListInfo = new CBORMap();
+        final CBORValue.CBORMapEditor identifierListInfo = CBOR.map();
         identifierListInfo.put(MdocConstants.IDENTIFIER_ID, identifierList.getIdentifier());
         identifierListInfo.put(MdocConstants.IDENTIFIER_URI, identifierList.getUri());
         if (identifierList.getCertificate() != null) {
             identifierListInfo.put(MdocConstants.IDENTIFIER_CERTIFICATE, identifierList.getCertificate().getEncoded());
         }
-        return identifierListInfo;
+        return identifierListInfo.value();
     }
 
     /**
@@ -425,19 +425,19 @@ public class MdocPayloadBuilder extends AbstractAttestationSDPayloadBuilder<Mdoc
      * }
      *
      * @param statusList {@link TokenStatusList}
-     * @return {@link CBORMap}
+     * @return {@link CBORValue}
      */
-    protected CBORMap buildStatusListInfo(TokenStatusList statusList) {
+    protected CBORValue buildStatusListInfo(TokenStatusList statusList) {
         if (statusList == null) {
             return null;
         }
-        final CBORMap statusListInfo = new CBORMap();
+        final CBORValue.CBORMapEditor statusListInfo = CBOR.map();
         statusListInfo.put(MdocConstants.STATUS_IDX, statusList.getIndex());
         statusListInfo.put(MdocConstants.STATUS_URI, statusList.getUri());
         if (statusList.getCertificate() != null) {
             statusListInfo.put(MdocConstants.STATUS_CERTIFICATE, statusList.getCertificate().getEncoded());
         }
-        return statusListInfo;
+        return statusListInfo.value();
     }
 
     @Override

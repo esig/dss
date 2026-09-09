@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.cbades;
 
 import eu.europa.ec.digit.cddl4j.cbor.CBORDecodeException;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.cbor.CBORObject;
 import eu.europa.esig.dss.cbades.cbor.CBORUtils;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -35,25 +36,37 @@ import java.util.Objects;
 public abstract class AbstractCOSEParser {
 
     /** The object to be parsed */
-    protected final CBORObject cborObject;
+    protected final CBORValue cborValue;
 
     /**
      * The constructor to parse a CBORObject
      *
      * @param cborObject {@link CBORObject} to parse
+     * @deprecated since DSS 6.6. Use {@link AbstractCOSEParser(CBORValue)}.
      */
+    @Deprecated
     protected AbstractCOSEParser(CBORObject cborObject) {
         Objects.requireNonNull(cborObject, "CBORObject cannot be null!");
-        this.cborObject = cborObject;
+        this.cborValue = cborObject.toCBORValue();
+    }
+
+    /**
+     * The constructor to parse a CBORValue
+     *
+     * @param cborValue {@link CBORValue} to parse
+     */
+    protected AbstractCOSEParser(CBORValue cborValue) {
+        Objects.requireNonNull(cborValue, "CBORValue cannot be null!");
+        this.cborValue = cborValue;
     }
 
     /**
      * Parses CBOR {@code DSSDocument}
      *
      * @param document {@link DSSDocument}
-     * @return {@link CBORObject}
+     * @return {@link CBORValue}
      */
-    protected static CBORObject parseCbor(DSSDocument document) {
+    protected static CBORValue parseCbor(DSSDocument document) {
         try {
             return CBORUtils.parseCbor(document);
         } catch (CBORDecodeException e) {

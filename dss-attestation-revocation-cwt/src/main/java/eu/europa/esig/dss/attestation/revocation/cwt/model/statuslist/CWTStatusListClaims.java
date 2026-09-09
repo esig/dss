@@ -20,8 +20,8 @@
  */
 package eu.europa.esig.dss.attestation.revocation.cwt.model.statuslist;
 
-import eu.europa.esig.dss.cbades.cbor.CBORObject;
-import eu.europa.esig.dss.cbades.cbor.CBORObjectFactory;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
+import eu.europa.esig.dss.cbades.cbor.CBORValueFactory;
 
 /**
  * Contains claims for processing the CWT-encoded Token Status List.
@@ -60,7 +60,7 @@ public enum CWTStatusListClaims {
     STATUS_LIST_LST("lst");
 
     /** Long encoded key */
-    private final CBORObject cborKey;
+    private final CBORValue cborKey;
 
     /**
      * Constructor with a Long key
@@ -68,7 +68,7 @@ public enum CWTStatusListClaims {
      * @param longKey long key value
      */
     CWTStatusListClaims(final Long longKey) {
-        this.cborKey = CBORObjectFactory.toCBORObject(longKey);
+        this.cborKey = CBORValueFactory.toCBORValue(longKey);
     }
 
     /**
@@ -77,15 +77,15 @@ public enum CWTStatusListClaims {
      * @param stringKey {@link String} key value
      */
     CWTStatusListClaims(final String stringKey) {
-        this.cborKey = CBORObjectFactory.toCBORObject(stringKey);
+        this.cborKey = CBORValueFactory.toCBORValue(stringKey);
     }
 
     /**
      * Gets a representation of the key in a form of a CBOR object
      *
-     * @return {@link CBORObject}
+     * @return {@link CBORValue}
      */
-    public CBORObject cbor() {
+    public CBORValue cbor() {
         return cborKey;
     }
 

@@ -23,9 +23,7 @@ package eu.europa.esig.dss.cbades;
 import eu.europa.ec.digit.cddl4j.cbor.CBORDecodeException;
 import eu.europa.ec.digit.cddl4j.cbor.CBORInspector;
 import eu.europa.ec.digit.cddl4j.cbor.CBORMajorType;
-import eu.europa.esig.dss.cbades.cbor.CBORArray;
-import eu.europa.esig.dss.cbades.cbor.CBORByteString;
-import eu.europa.esig.dss.cbades.cbor.CBORMap;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.cbor.CBORObject;
 import eu.europa.esig.dss.enumerations.COSESignatureType;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -59,9 +57,20 @@ public class COSECounterSignatureParser extends AbstractCOSEParser {
      * The constructor to parse a CBORObject
      *
      * @param cborObject {@link CBORObject} to parse
+     * @deprecated since DSS 6.6. Use {@link COSECounterSignatureParser(CBORValue)}.
      */
+    @Deprecated
     protected COSECounterSignatureParser(CBORObject cborObject) {
-        super(cborObject);
+        this(cborObject.toCBORValue());
+    }
+
+    /**
+     * The constructor to parse a CBORObject
+     *
+     * @param cborValue {@link CBORValue} to parse
+     */
+    protected COSECounterSignatureParser(CBORValue cborValue) {
+        super(cborValue);
     }
 
     /**
@@ -75,8 +84,8 @@ public class COSECounterSignatureParser extends AbstractCOSEParser {
         if (!isSupported(document)) {
             throw new IllegalInputException("Document is not of a COSE signature type!");
         }
-        final CBORObject cborObject = parseCbor(document);
-        return new COSECounterSignatureParser(cborObject);
+        final CBORValue cborValue = parseCbor(document);
+        return new COSECounterSignatureParser(cborValue);
     }
 
     /**
@@ -84,10 +93,23 @@ public class COSECounterSignatureParser extends AbstractCOSEParser {
      *
      * @param cborObject {@link CBORObject} to parse
      * @return {@link COSECounterSignatureParser}
+     * @deprecated since DSS 6.6. Use {@link #fromCBORValue(CBORValue)}.
      */
+    @Deprecated
     public static COSECounterSignatureParser fromCBORObject(CBORObject cborObject) {
         Objects.requireNonNull(cborObject, "CBORObject cannot be null!");
-        return new COSECounterSignatureParser(cborObject);
+        return new COSECounterSignatureParser(cborObject.toCBORValue());
+    }
+
+    /**
+     * Instantiates a COSECounterSignatureParser from a {@code CBORObject}
+     *
+     * @param cborValue {@link CBORValue} to parse
+     * @return {@link COSECounterSignatureParser}
+     */
+    public static COSECounterSignatureParser fromCBORValue(CBORValue cborValue) {
+        Objects.requireNonNull(cborValue, "CBORValue cannot be null!");
+        return new COSECounterSignatureParser(cborValue);
     }
 
     /**
@@ -199,46 +221,63 @@ public class COSECounterSignatureParser extends AbstractCOSEParser {
      * @return {@link COSECounterSignStructure}
      */
     public COSECounterSignStructure parse() {
-        if (cborObject.isArray()) {
-            CBORArray cborArray = (CBORArray) cborObject;
-            if (cborArray.isTagged()) {
+        if (cborValue.isTag()) {
+            CBORValue taggedValue = cborValue.getTaggedValue();
+            if (taggedValue.isArray()) {
                 // COSE_Countersignature
-                if (COSESignatureType.COSE_COUNTER_SIGNATURE.getTag() == cborArray.getTag().getValue()) {
-                    return parseCOSECounterSignature(cborArray);
+                if (COSESignatureType.COSE_COUNTER_SIGNATURE.getTag() == cborValue.getTag().longValue()) {
+                    return parseCOSECounterSignature(cborValue);
                 } else {
                     throw new UnsupportedOperationException(String.format(
-                            "The tag '%s' is not supported for COSE counter signature structure!", cborArray.getTag().getValue()));
+                            "The tag '%s' is not supported for COSE counter signature structure!", cborValue.getTag().longValue()));
+                }
+            } else if (taggedValue.isByteString()) {
+                // COSE_Countersignature0
+                if (COSESignatureType.COSE_COUNTER_SIGNATURE0.getTag() == cborValue.getTag().longValue()) {
+                    return parseCOSECounterSignature0(cborValue);
+                } else {
+                    throw new UnsupportedOperationException(String.format(
+                            "The tag '%s' is not supported for COSE counter signature 0 structure!", cborValue.getTag().longValue()));
                 }
             }
-            if (entriesCBORArrays(cborArray)) {
+        }
+
+        if (cborValue.isArray()) {
+            if (entriesCBORArrays(cborValue)) {
                 // [+ COSE_Countersignature]
-                return parseCOSECounterSignatureArray(cborArray);
+                return parseCOSECounterSignatureArray(cborValue);
             } else {
                 // COSE_Countersignature
-                return parseCOSECounterSignature(cborObject);
+                return parseCOSECounterSignature(cborValue);
             }
 
-        } else if (cborObject.isByteString()) {
+        } else if (cborValue.isByteString()) {
             // COSE_Countersignature0
-            CBORByteString cborByteString = (CBORByteString) cborObject;
-            return parseCOSECounterSignature0(cborByteString);
+            return parseCOSECounterSignature0(cborValue);
 
         } else {
             throw new IllegalInputException("A COSE counter signature shall be represented by a CBOR Array or ByteString type!");
         }
     }
 
-    private boolean entriesCBORArrays(CBORArray cborArray) {
-        return cborArray.getValueAsList().stream().allMatch(CBORObject::isArray);
+    private boolean entriesCBORArrays(CBORValue cborArray) {
+        return cborArray.getElements().stream().allMatch(this::isCBORArrayOrTaggedArray);
     }
 
-    private COSECounterSignatureArray parseCOSECounterSignatureArray(CBORArray cborArray) {
+    private boolean isCBORArrayOrTaggedArray(CBORValue cborValue) {
+        return cborValue.isArray() || (cborValue.isTag() && cborValue.getTaggedValue().isArray());
+    }
+
+    private COSECounterSignatureArray parseCOSECounterSignatureArray(CBORValue cborArray) {
         final COSECounterSignatureArray coseCounterSignatureArray = new COSECounterSignatureArray();
-        coseCounterSignatureArray.setTagged(cborArray.isTagged());
+        if (cborArray.isTag()) {
+            coseCounterSignatureArray.setTagged(true);
+            cborArray = cborArray.getTaggedValue();
+        }
         coseCounterSignatureArray.setContext(context);
         coseCounterSignatureArray.setMasterSignature(masterSignature);
         List<COSECounterSignature> signatures = new ArrayList<>();
-        for (CBORObject arrayEntry : cborArray.getValueAsList()) {
+        for (CBORValue arrayEntry : cborArray.getElements()) {
             COSECounterSignature coseCounterSignature = parseCOSECounterSignature(arrayEntry);
             signatures.add(coseCounterSignature);
         }
@@ -246,24 +285,29 @@ public class COSECounterSignatureParser extends AbstractCOSEParser {
         return coseCounterSignatureArray;
     }
 
-    private COSECounterSignature parseCOSECounterSignature(CBORObject cborObject) {
-        if (!cborObject.isArray()) {
+    private COSECounterSignature parseCOSECounterSignature(CBORValue cborArray) {
+        boolean isTagged = cborArray.isTag();
+        if (isTagged) {
+            cborArray = cborArray.getTaggedValue();
+        }
+
+        if (!cborArray.isArray()) {
             throw new IllegalInputException("COSE_Countersignature must be of CBORArray type!");
         }
-        CBORArray cborArray = (CBORArray) cborObject;
-        final List<CBORObject> arrayEntries = cborArray.getValueAsList();
+
+        final List<CBORValue> arrayEntries = cborArray.getElements();
         if (Utils.collectionSize(arrayEntries) != 3) {
             throw new IllegalInputException("COSE_Countersignature array must have 3 entries!");
         }
-        CBORObject protectedHeaderItem = arrayEntries.get(0);
+        CBORValue protectedHeaderItem = arrayEntries.get(0);
         if (!protectedHeaderItem.isByteString()) {
             throw new IllegalInputException("COSE_Countersignature.protected header must be a bstr!");
         }
-        CBORObject unprotectedHeaderItem = arrayEntries.get(1);
+        CBORValue unprotectedHeaderItem = arrayEntries.get(1);
         if (!unprotectedHeaderItem.isMap()) {
             throw new IllegalInputException("COSE_Countersignature.unprotected header must be a header map!");
         }
-        CBORObject signatureItem = arrayEntries.get(2);
+        CBORValue signatureItem = arrayEntries.get(2);
         if (!signatureItem.isByteString()) {
             throw new IllegalInputException("COSE_Signature.signature must be a bstr!");
         }
@@ -271,18 +315,21 @@ public class COSECounterSignatureParser extends AbstractCOSEParser {
         final COSECounterSignature coseCounterSignature = new COSECounterSignature();
         coseCounterSignature.setContext(context);
         coseCounterSignature.setMasterSignature(masterSignature);
-        coseCounterSignature.setTagged(cborArray.isTagged());
-        coseCounterSignature.setProtectedHeader(new COSEProtectedHeader((CBORByteString) protectedHeaderItem));
-        coseCounterSignature.setUnprotectedHeader(new COSEUnprotectedHeader((CBORMap) unprotectedHeaderItem));
-        coseCounterSignature.setSignature((CBORByteString) signatureItem);
+        coseCounterSignature.setTagged(isTagged);
+        coseCounterSignature.setProtectedHeader(new COSEProtectedHeader(protectedHeaderItem));
+        coseCounterSignature.setUnprotectedHeader(new COSEUnprotectedHeader(unprotectedHeaderItem));
+        coseCounterSignature.setSignature(signatureItem);
         return coseCounterSignature;
     }
 
-    private COSECounterSignature0 parseCOSECounterSignature0(CBORByteString cborByteString) {
+    private COSECounterSignature0 parseCOSECounterSignature0(CBORValue cborByteString) {
         final COSECounterSignature0 coseCounterSignature0 = new COSECounterSignature0();
         coseCounterSignature0.setContext(context);
         coseCounterSignature0.setMasterSignature(masterSignature);
-        coseCounterSignature0.setTagged(cborByteString.isTagged());
+        if (cborByteString.isTag()) {
+            coseCounterSignature0.setTagged(true);
+            cborByteString = cborByteString.getTaggedValue();
+        }
         coseCounterSignature0.setSignature(cborByteString);
         return coseCounterSignature0;
     }

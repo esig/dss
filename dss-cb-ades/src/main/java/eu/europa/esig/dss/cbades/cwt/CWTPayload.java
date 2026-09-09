@@ -20,11 +20,13 @@
  */
 package eu.europa.esig.dss.cbades.cwt;
 
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.cbor.CBORMap;
 import eu.europa.esig.dss.cbades.cbor.CBORUtils;
 import eu.europa.esig.dss.spi.WebTokenPayload;
 
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * Represents a payload of the RFC 8392 "CBOR Web Token (CWT)"
@@ -33,50 +35,65 @@ import java.util.Date;
 public class CWTPayload implements WebTokenPayload {
 
     /** Map representing a CWT payload */
-    protected final CBORMap payload;
+    protected final CBORValue payload;
 
     /**
      * Default constructor
      *
      * @param payload {@link CBORMap}
+     * @deprecated since DSS 6.6. Please use {@link CWTPayload(CBORValue)} instead.
      */
+    @Deprecated
     public CWTPayload(final CBORMap payload) {
+        this(payload.toCBORValue());
+    }
+
+    /**
+     * Default constructor
+     *
+     * @param payload {@link CBORValue}
+     */
+    public CWTPayload(final CBORValue payload) {
+        Objects.requireNonNull(payload, "Payload cannot be null");
+        if (!payload.isMap()) {
+            throw new IllegalArgumentException("Payload shall be an instance of CBOR map!");
+        }
         this.payload = payload;
     }
 
     @Override
     public String getIssuer() {
-        return payload.getAsString(CWTClaims.ISS.cbor());
+        return payload.getAsStringOrNull(CWTClaims.ISS.cbor());
     }
 
     @Override
     public String getSubject() {
-        return payload.getAsString(CWTClaims.SUB.cbor());
+        return payload.getAsStringOrNull(CWTClaims.SUB.cbor());
     }
 
     @Override
     public String getAudience() {
-        return payload.getAsString(CWTClaims.AUD.cbor());
+        return payload.getAsStringOrNull(CWTClaims.AUD.cbor());
     }
 
     @Override
     public Date getExpirationTime() {
-        return CBORUtils.fromNumericDate(payload.getHeader(CWTClaims.EXP.cbor()));
+        return CBORUtils.fromNumericDate(payload.get(CWTClaims.EXP.cbor()));
     }
 
     @Override
     public Date getNotBefore() {
-        return CBORUtils.fromNumericDate(payload.getHeader(CWTClaims.NBF.cbor()));
+        return CBORUtils.fromNumericDate(payload.get(CWTClaims.NBF.cbor()));
     }
 
     @Override
     public Date getIssuedAt() {
-        return CBORUtils.fromNumericDate(payload.getHeader(CWTClaims.IAT.cbor()));
+        return CBORUtils.fromNumericDate(payload.get(CWTClaims.IAT.cbor()));
     }
 
     @Override
     public String getTokenId() {
-        return payload.getAsString(CWTClaims.CTI.cbor());
+        return payload.getAsStringOrNull(CWTClaims.CTI.cbor());
     }
 
 }

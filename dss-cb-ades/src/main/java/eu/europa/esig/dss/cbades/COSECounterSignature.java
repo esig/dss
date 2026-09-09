@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.cbades;
 
+import eu.europa.ec.digit.cddl4j.cbor.CBOR;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.cbor.CBORArray;
 import eu.europa.esig.dss.cbades.cbor.CBORUtils;
 import eu.europa.esig.dss.enumerations.COSESignatureType;
@@ -92,20 +94,27 @@ public class COSECounterSignature extends COSESignature implements COSECounterSi
 
     @Override
     public byte[] serialize() {
-        CBORArray cborArray = toCBORObject();
-        return CBORUtils.serializeCborObject(cborArray);
+        CBORValue cborArray = toCBORValue();
+        return CBORUtils.serializeCbor(cborArray);
     }
 
     @Override
+    @Deprecated
     public CBORArray toCBORObject() {
-        final CBORArray coseCounterSignature = new CBORArray(3);
+        return new CBORArray(toCBORValue());
+    }
+
+    @Override
+    public CBORValue toCBORValue() {
+        CBORValue coseCounterSignature = CBOR.array(3)
+                .add(getProtectedHeader().asByteString())
+                .add(getUnprotectedHeader().getValue())
+                .add(getSignature())
+                .value();
         if (tagged) {
             Objects.requireNonNull(getContext(), "Context shall be defined for a tagged CBOR object!");
-            coseCounterSignature.setTag(getContext().getTag());
+            coseCounterSignature = CBOR.tag(getContext().getTag(), coseCounterSignature);
         }
-        coseCounterSignature.add(getProtectedHeader().getByteString());
-        coseCounterSignature.add(getUnprotectedHeader());
-        coseCounterSignature.add(getSignature());
         return coseCounterSignature;
     }
 

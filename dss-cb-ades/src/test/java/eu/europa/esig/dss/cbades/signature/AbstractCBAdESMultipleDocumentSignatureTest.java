@@ -20,17 +20,14 @@
  */
 package eu.europa.esig.dss.cbades.signature;
 
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.COSEHeaderParameter;
 import eu.europa.esig.dss.cbades.COSEParser;
 import eu.europa.esig.dss.cbades.COSEProtectedHeader;
 import eu.europa.esig.dss.cbades.COSESign;
 import eu.europa.esig.dss.cbades.COSESign1;
 import eu.europa.esig.dss.cbades.COSESignStructure;
-import eu.europa.esig.dss.enumerations.COSESignatureType;
 import eu.europa.esig.dss.cbades.COSEUnprotectedHeader;
-import eu.europa.esig.dss.cbades.cbor.CBORArray;
-import eu.europa.esig.dss.cbades.cbor.CBORObject;
-import eu.europa.esig.dss.cbades.cbor.CBORSimpleObject;
 import eu.europa.esig.dss.cbades.cbor.CBORUtils;
 import eu.europa.esig.dss.cbades.validation.CBAdESCertificateSource;
 import eu.europa.esig.dss.cbades.validation.CBAdESSignature;
@@ -44,6 +41,7 @@ import eu.europa.esig.dss.diagnostic.FoundCertificatesProxy;
 import eu.europa.esig.dss.diagnostic.RelatedCertificateWrapper;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
+import eu.europa.esig.dss.enumerations.COSESignatureType;
 import eu.europa.esig.dss.enumerations.COSEStructureType;
 import eu.europa.esig.dss.enumerations.CertificateRefOrigin;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
@@ -66,8 +64,8 @@ import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
 import eu.europa.esig.validationreport.jaxb.SignatureValidationReportType;
 import eu.europa.esig.validationreport.jaxb.ValidationReportType;
 
+import java.math.BigInteger;
 import java.util.List;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -184,24 +182,22 @@ public abstract class AbstractCBAdESMultipleDocumentSignatureTest extends
                 fail(String.format("Unsupported context '%s'!", cose.getContext()));
             }
 
-            Set<CBORObject> keySet = protectedHeader.getKeys();
+            List<CBORValue> keySet = protectedHeader.getValue().getKeys();
             assertTrue(Utils.isCollectionNotEmpty(keySet));
-            for (CBORObject signedPropertyKey : keySet) {
+            for (CBORValue signedPropertyKey : keySet) {
                 assertTrue(CBORUtils.getSupportedProtectedCriticalHeaders().contains(signedPropertyKey));
             }
 
-            CBORObject crit = protectedHeader.getHeader(COSEHeaderParameter.CRIT.cbor());
+            CBORValue crit = protectedHeader.getHeader(COSEHeaderParameter.CRIT.cbor());
             if (crit != null) {
                 assertTrue(crit.isArray());
-                assertInstanceOf(CBORArray.class, crit);
+                assertInstanceOf(CBORValue.class, crit);
 
-                CBORArray critArray = (CBORArray) crit;
-                assertFalse(critArray.isEmpty());
-                for (CBORObject critItem : critArray.getValueAsList()) {
+                assertTrue(crit.size() > 0);
+                for (CBORValue critItem : crit.getElements()) {
                     assertTrue(critItem.isUnsignedInteger() || critItem.isNegativeInteger());
-                    assertInstanceOf(CBORSimpleObject.class, critItem);
 
-                    Long labelId = critItem.getValueAsLong();
+                    BigInteger labelId = critItem.asInteger();
                     assertNotNull(labelId);
 
                     assertTrue(CBORUtils.getSupportedProtectedCriticalHeaders().contains(critItem));

@@ -20,12 +20,13 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.creation;
 
-import eu.europa.esig.dss.cbades.cbor.CBORArray;
-import eu.europa.esig.dss.cbades.cbor.CBORObject;
+import eu.europa.ec.digit.cddl4j.cbor.CBOR;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.attestation.common.creation.claim.AttestationClaimArray;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Represents a CBOR array to be incorporated as an ISO/IEC mdoc claim
@@ -184,12 +185,9 @@ public class MdocClaimArray extends MdocClaim implements AttestationClaimArray<M
     }
 
     @Override
-    public CBORObject getValueAsCbor() {
-        final CBORArray cborArray = new CBORArray();
-        for (MdocClaim element : getElements()) {
-            cborArray.add(element.getValueAsCbor());
-        }
-        return cborArray;
+    public CBORValue getValueAsCbor() {
+        return CBOR.array(getElements().stream().map(MdocClaim::getValueAsCbor).collect(Collectors.toList()))
+                .value();
     }
 
     @Override

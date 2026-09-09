@@ -20,11 +20,9 @@
  */
 package eu.europa.esig.dss.cbades.signature;
 
+import eu.europa.ec.digit.cddl4j.cbor.CBOR;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.COSEHeaderParameter;
-import eu.europa.esig.dss.cbades.cbor.CBORArray;
-import eu.europa.esig.dss.cbades.cbor.CBORByteString;
-import eu.europa.esig.dss.cbades.cbor.CBORMap;
-import eu.europa.esig.dss.cbades.cbor.CBORObject;
 import eu.europa.esig.dss.cbades.validation.CBAdESSignature;
 import eu.europa.esig.dss.cbades.validation.CBAdESUHeaders;
 import eu.europa.esig.dss.model.x509.CertificateToken;
@@ -41,6 +39,7 @@ import eu.europa.esig.dss.utils.Utils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static eu.europa.esig.dss.enumerations.SignatureLevel.CB_AdES_BASELINE_LT;
 
@@ -119,7 +118,7 @@ public class CBAdESLevelBaselineLT extends CBAdESLevelBaselineT {
     
     private void incorporateValidationData(CBAdESUHeaders uHeaders, final ValidationData validationDataForInclusion) {
         if (!validationDataForInclusion.isEmpty()) {
-            CBORObject valData = getValData(validationDataForInclusion);
+            CBORValue valData = getValData(validationDataForInclusion);
             uHeaders.addComponent(COSEHeaderParameter.VAL_DATA.cbor(), valData);
         }
     }
@@ -128,50 +127,46 @@ public class CBAdESLevelBaselineLT extends CBAdESLevelBaselineT {
      * Gets a generated 'valData' uHeaders component containing the {@code validationDataForInclusion}
      *
      * @param validationDataForInclusion {@link ValidationData} to be incorporated
-     * @return {@link CBORObject} 'valData' CBOR object
+     * @return {@link eu.europa.ec.digit.cddl4j.cbor.CBORValue} 'valData' CBOR object
      */
-    protected CBORObject getValData(final ValidationData validationDataForInclusion) {
+    protected CBORValue getValData(final ValidationData validationDataForInclusion) {
         Set<CertificateToken> certificateTokens = validationDataForInclusion.getCertificateTokens();
         Set<CRLToken> crlTokens = validationDataForInclusion.getCrlTokens();
         Set<OCSPToken> ocspTokens = validationDataForInclusion.getOcspTokens();
 
-        CBORMap valData = new CBORMap();
+        CBORValue.CBORMapEditor valData = CBOR.map();
         if (Utils.isCollectionNotEmpty(certificateTokens)) {
-            CBORObject xVals = getXVals(certificateTokens);
+            CBORValue xVals = getXVals(certificateTokens);
             valData.put(COSEHeaderParameter.VAL_DATA_X_VALS.cbor(), xVals);
         }
         if (Utils.isCollectionNotEmpty(crlTokens) || Utils.isCollectionNotEmpty(ocspTokens)) {
-            CBORObject rVals = getRVals(crlTokens, ocspTokens);
+            CBORValue rVals = getRVals(crlTokens, ocspTokens);
             valData.put(COSEHeaderParameter.VAL_DATA_R_VALS.cbor(), rVals);
         }
-        return valData;
+        return valData.value();
     }
 
     /**
      * Builds and returns 'xVals' CBOR array
      *
      * @param certificateValuesToAdd a set of {@link CertificateToken}s to add
-     * @return {@link CBORObject} 'xVals' CBOR array
+     * @return {@link CBORValue} 'xVals' CBOR array
      */
-    private CBORObject getXVals(Set<CertificateToken> certificateValuesToAdd) {
-        CBORArray xVals = new CBORArray();
-        for (CertificateToken certificateToken : certificateValuesToAdd) {
-            xVals.add(getX509CertObject(certificateToken));
-        }
-        return xVals;
+    private CBORValue getXVals(Set<CertificateToken> certificateValuesToAdd) {
+        return CBOR.array(certificateValuesToAdd.stream().map(this::getX509CertObject).collect(Collectors.toList()))
+                .value();
     }
 
-    private CBORObject getX509CertObject(CertificateToken certificateToken) {
-        CBORMap x509OrOther = new CBORMap();
-        x509OrOther.put(COSEHeaderParameter.X509_OR_OTHER_X509_CERT.cbor(), getPkiOb(certificateToken));
-
-        return x509OrOther;
+    private CBORValue getX509CertObject(CertificateToken certificateToken) {
+        return CBOR.map()
+                .put(COSEHeaderParameter.X509_OR_OTHER_X509_CERT.cbor(), getPkiOb(certificateToken))
+                .value();
     }
 
-    private CBORObject getPkiOb(Token token) {
-        CBORMap pkiOb = new CBORMap();
-        pkiOb.put(COSEHeaderParameter.PKI_OB_VAL.cbor(), new CBORByteString(token.getEncoded()));
-        return pkiOb;
+    private CBORValue getPkiOb(Token token) {
+        return CBOR.map()
+                .put(COSEHeaderParameter.PKI_OB_VAL.cbor(), CBOR.bytes(token.getEncoded()))
+                .value();
     }
 
     /**
@@ -179,33 +174,27 @@ public class CBAdESLevelBaselineLT extends CBAdESLevelBaselineT {
      *
      * @param crlsToAdd  a set of {@link CRLToken}s to add
      * @param ocspsToAdd a set of {@link OCSPToken}s to add
-     * @return {@link CBORObject} 'rVals' CBOR Map
+     * @return {@link CBORValue} 'rVals' CBOR Map
      */
-    protected CBORObject getRVals(Set<CRLToken> crlsToAdd, Set<OCSPToken> ocspsToAdd) {
-        CBORMap rVals = new CBORMap();
+    protected CBORValue getRVals(Set<CRLToken> crlsToAdd, Set<OCSPToken> ocspsToAdd) {
+        CBORValue.CBORMapEditor rVals = CBOR.map();
         if (Utils.isCollectionNotEmpty(crlsToAdd)) {
             rVals.put(COSEHeaderParameter.R_VALS_CRL_VALS.cbor(), getCrlVals(crlsToAdd));
         }
         if (Utils.isCollectionNotEmpty(ocspsToAdd)) {
             rVals.put(COSEHeaderParameter.R_VALS_OCSP_VALS.cbor(), getOcspVals(ocspsToAdd));
         }
-        return rVals;
+        return rVals.value();
     }
 
-    private CBORObject getCrlVals(Set<CRLToken> crlsToAdd) {
-        CBORArray cborArray = new CBORArray();
-        for (CRLToken crlToken : crlsToAdd) {
-            cborArray.add(getPkiOb(crlToken));
-        }
-        return cborArray;
+    private CBORValue getCrlVals(Set<CRLToken> crlsToAdd) {
+        return CBOR.array(crlsToAdd.stream().map(this::getPkiOb).collect(Collectors.toList()))
+                .value();
     }
 
-    private CBORObject getOcspVals(Set<OCSPToken> ocspsToAdd) {
-        CBORArray cborArray = new CBORArray();
-        for (OCSPToken ocspToken : ocspsToAdd) {
-            cborArray.add(getPkiOb(ocspToken));
-        }
-        return cborArray;
+    private CBORValue getOcspVals(Set<OCSPToken> ocspsToAdd) {
+        return CBOR.array(ocspsToAdd.stream().map(this::getPkiOb).collect(Collectors.toList()))
+                .value();
     }
 
     private List<AdvancedSignature> getExtendToLTLevelSignatures(List<AdvancedSignature> signatures, CBAdESSignatureParameters parameters) {

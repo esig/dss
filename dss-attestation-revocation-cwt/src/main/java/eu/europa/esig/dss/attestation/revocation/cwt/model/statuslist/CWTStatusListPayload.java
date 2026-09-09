@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.attestation.revocation.cwt.model.statuslist;
 
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.cbor.CBORMap;
 import eu.europa.esig.dss.cbades.cwt.CWTPayload;
 import eu.europa.esig.dss.attestation.revocation.model.statuslist.StatusListPayload;
@@ -34,49 +35,60 @@ public class CWTStatusListPayload extends CWTPayload implements StatusListPayloa
      * Default constructor
      *
      * @param payload {@link CBORMap}
+     * @deprecated since DSS 6.6. Please use {@link CWTStatusListPayload(CBORValue)}.
      */
+    @Deprecated
     public CWTStatusListPayload(final CBORMap payload) {
+        super(payload);
+    }
+
+    /**
+     * Default constructor
+     *
+     * @param payload {@link CBORValue}
+     */
+    public CWTStatusListPayload(final CBORValue payload) {
         super(payload);
     }
 
     @Override
     public Number getTimeToLive() {
-        return payload.getAsLong(CWTStatusListClaims.TIME_TO_LIVE.cbor());
+        return payload.getAsIntegerOrNull(CWTStatusListClaims.TIME_TO_LIVE.cbor());
     }
 
     /**
      * Gets the value of the 'status_list' (revocation list) claim that specifies the Status List
      * conforming to the structure defined in Section 4.3.
      *
-     * @return {@link CBORMap}
+     * @return {@link CBORValue}
      */
-    public CBORMap getStatusList() {
-        return payload.getAsMap(CWTStatusListClaims.STATUS_LIST.cbor());
+    public CBORValue getStatusList() {
+        return payload.getAsMapOrNull(CWTStatusListClaims.STATUS_LIST.cbor());
     }
 
     @Override
     public Number getStatusListBits() {
-        CBORMap statusList = getStatusList();
+        CBORValue statusList = getStatusList();
         if (statusList != null) {
-            return statusList.getAsLong(CWTStatusListClaims.STATUS_LIST_BITS.cbor());
+            return statusList.getAsIntegerOrNull(CWTStatusListClaims.STATUS_LIST_BITS.cbor());
         }
         return null;
     }
 
     @Override
     public byte[] getStatusListEncoded() {
-        CBORMap statusList = getStatusList();
+        CBORValue statusList = getStatusList();
         if (statusList != null) {
-            return statusList.getAsBinaries(CWTStatusListClaims.STATUS_LIST_LST.cbor());
+            return statusList.getAsBytesOrNull(CWTStatusListClaims.STATUS_LIST_LST.cbor());
         }
         return null;
     }
 
     @Override
     public String getAggregationUri() {
-        CBORMap statusList = getStatusList();
+        CBORValue statusList = getStatusList();
         if (statusList != null) {
-            return statusList.getAsString(CWTStatusListClaims.STATUS_LIST_AGGREGATION_URI.cbor());
+            return statusList.getAsStringOrNull(CWTStatusListClaims.STATUS_LIST_AGGREGATION_URI.cbor());
         }
         return null;
     }

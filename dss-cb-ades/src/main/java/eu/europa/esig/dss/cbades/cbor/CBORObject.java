@@ -28,7 +28,9 @@ import java.util.Map;
 /**
  * This interface represents a wrapper for CBOR objects
  *
+ * @deprecated since DSS 6.6. Switch to {@link eu.europa.ec.digit.cddl4j.cbor.CBORValue} instead.
  */
+@Deprecated
 public interface CBORObject {
 
     /**

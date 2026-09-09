@@ -21,12 +21,9 @@
 package eu.europa.esig.dss.attestation.mdoc.validation;
 
 import eu.europa.ec.digit.cddl4j.cbor.CBOR;
-import eu.europa.esig.dss.cbades.cbor.CBORArray;
-import eu.europa.esig.dss.cbades.cbor.CBORByteString;
-import eu.europa.esig.dss.cbades.cbor.CBORMap;
-import eu.europa.esig.dss.cbades.cbor.CBORSimpleObject;
-import eu.europa.esig.dss.cbades.cbor.CBORUtils;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.attestation.common.validation.DefaultAttestationDocumentValidator;
+import eu.europa.esig.dss.cbades.cbor.CBORUtils;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -51,52 +48,51 @@ class MdocDeviceResponseDocumentValidatorTest extends AbstractTestDocumentValida
     private static final DSSDocument MINIMAL_DEVICE_RESPONSE = buildMinimalDeviceResponse();
 
     private static DSSDocument buildMinimalDeviceResponse() {
-        CBORMap issuerSigned = new CBORMap();
-        issuerSigned.put("version", new CBORSimpleObject(CBOR.text("1.0")));
-        issuerSigned.put("status", 0);
-        return new InMemoryDocument(CBORUtils.serializeCborObject(issuerSigned));
+        CBORValue issuerSigned = CBOR.map()
+                .put("version", CBOR.text("1.0"))
+                .put("status", 0)
+                .value();
+        return new InMemoryDocument(CBORUtils.serializeCbor(issuerSigned));
     }
 
-    private static CBORMap buildDocument() {
-        CBORMap document = new CBORMap();
-        document.put("docType", "org.iso.18013.5.1.mDL");
-        document.put("issuerSigned", buildIssuerSigned());
-        document.put("deviceSigned", buildDeviceSigned());
-        return document;
+    private static CBORValue buildDocument() {
+        return CBOR.map()
+                .put("docType", "org.iso.18013.5.1.mDL")
+                .put("issuerSigned", buildIssuerSigned())
+                .put("deviceSigned", buildDeviceSigned())
+                .value();
     }
 
-    private static CBORMap buildIssuerSigned() {
-        CBORMap issuerSigned = new CBORMap();
-        issuerSigned.put("issuerAuth", buildCoseSign1());
-        return issuerSigned;
+    private static CBORValue buildIssuerSigned() {
+        return CBOR.map()
+                .put("issuerAuth", buildCoseSign1())
+                .value();
     }
 
-    private static CBORMap buildDeviceSigned() {
-        CBORMap deviceSigned = new CBORMap();
-        deviceSigned.put("nameSpaces", new CBORMap().getByteString());
-        deviceSigned.put("deviceAuth", buildCoseSign1());
-        return deviceSigned;
+    private static CBORValue buildDeviceSigned() {
+        return CBOR.map()
+                .put("nameSpaces", CBOR.map().value().encodeToBytes())
+                .put("deviceAuth", buildCoseSign1())
+                .value();
     }
 
-    private static CBORArray buildCoseSign1() {
-        CBORArray coseSign1 = new CBORArray(4);
-        coseSign1.add(new CBORByteString());
-        coseSign1.add(new CBORMap());
-        coseSign1.add(createEmptyMSO());
-        coseSign1.add(new CBORByteString());
-        return coseSign1;
+    private static CBORValue buildCoseSign1() {
+        return CBOR.array(4)
+                .add(CBOR.bytes(new byte[0]))
+                .add(CBOR.map().value())
+                .add(createEmptyMSO())
+                .add(CBOR.bytes(new byte[0]))
+                .value();
     }
 
-    private static CBORByteString createEmptyMSO() {
-        CBORMap msoMap = new CBORMap();
-        CBORByteString msoBytes = msoMap.getByteString();
-        return new CBORByteString(CBORUtils.serializeCborObject(msoBytes));
+    private static CBORValue createEmptyMSO() {
+        return CBOR.bytes(CBORUtils.serializeCbor(CBOR.map().value()));
     }
 
-    private static CBORMap buildDocumentError() {
-        CBORMap document = new CBORMap();
-        document.put("org.iso.23220.1.mID", 1);
-        return document;
+    private static CBORValue buildDocumentError() {
+        return CBOR.map()
+                .put("org.iso.23220.1.mID", 1)
+                .value();
     }
 
     @Test
@@ -106,24 +102,26 @@ class MdocDeviceResponseDocumentValidatorTest extends AbstractTestDocumentValida
         DSSDocument mdoc = MINIMAL_DEVICE_RESPONSE;
         assertTrue(validator.isSupported(mdoc));
 
-        CBORMap allKeys = new CBORMap();
-        allKeys.put("version", new CBORSimpleObject(CBOR.text("1.0")));
-        allKeys.put("documents", new CBORArray(Collections.singletonList(buildDocument())));
-        allKeys.put("documentErrors", new CBORArray(Collections.singletonList(buildDocumentError())));
-        allKeys.put("status", 0);
-        mdoc = new InMemoryDocument(CBORUtils.serializeCborObject(allKeys));
+        CBORValue allKeys = CBOR.map()
+                .put("version", CBOR.text("1.0"))
+                .put("documents", CBOR.array().add(buildDocument()).value())
+                .put("documentErrors", CBOR.array().add(buildDocumentError()).value())
+                .put("status", 0)
+                .value();
+        mdoc = new InMemoryDocument(CBORUtils.serializeCbor(allKeys));
         assertTrue(validator.isSupported(mdoc));
 
         mdoc = new FileDocument("src/test/resources/validation/mdocRefImpl.mdoc");
         assertTrue(validator.isSupported(mdoc));
 
-        CBORMap wrongKeyMap = new CBORMap();
-        wrongKeyMap.put("test", 1);
-        DSSDocument wrong = new InMemoryDocument(CBORUtils.serializeCborObject(wrongKeyMap));
+        CBORValue wrongKeyMap = CBOR.map()
+                .put("test", 1)
+                .value();
+        DSSDocument wrong = new InMemoryDocument(CBORUtils.serializeCbor(wrongKeyMap));
         assertFalse(validator.isSupported(wrong));
         wrong = new FileDocument("src/test/resources/validation/mdocIssuerSigned.cbor");
         assertFalse(validator.isSupported(wrong));
-        wrong = new InMemoryDocument(CBORUtils.serializeCborObject(new CBORArray()));
+        wrong = new InMemoryDocument(CBORUtils.serializeCbor(CBOR.array().value()));
         assertFalse(validator.isSupported(wrong));
         wrong = new InMemoryDocument("hello".getBytes());
         assertFalse(validator.isSupported(wrong));
@@ -154,7 +152,7 @@ class MdocDeviceResponseDocumentValidatorTest extends AbstractTestDocumentValida
 
     @Override
     protected DSSDocument getMalformedDocument() {
-        return new InMemoryDocument(CBORUtils.serializeCborObject(new CBORArray()));
+        return new InMemoryDocument(CBORUtils.serializeCbor(CBOR.array().value()));
     }
 
     @Override

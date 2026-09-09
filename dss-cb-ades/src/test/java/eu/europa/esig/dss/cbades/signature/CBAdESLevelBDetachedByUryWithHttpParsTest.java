@@ -20,12 +20,11 @@
  */
 package eu.europa.esig.dss.cbades.signature;
 
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.COSEHeaderParameter;
 import eu.europa.esig.dss.cbades.COSEProtectedHeader;
 import eu.europa.esig.dss.cbades.COSESign1;
 import eu.europa.esig.dss.cbades.COSESignStructure;
-import eu.europa.esig.dss.cbades.cbor.CBORArray;
-import eu.europa.esig.dss.cbades.cbor.CBORMap;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
@@ -40,11 +39,11 @@ import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.signature.MultipleDocumentsSignatureService;
 import org.junit.jupiter.api.BeforeEach;
 
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -94,28 +93,28 @@ class CBAdESLevelBDetachedByUryWithHttpParsTest extends AbstractCBAdESMultipleDo
     }
 
     private void assertRequirementsValid(COSEProtectedHeader protectedHeader) {
-        String cty = protectedHeader.getAsString(COSEHeaderParameter.CONTENT_TYPE.cbor());
+        String cty = protectedHeader.getValue().getAsStringOrNull(COSEHeaderParameter.CONTENT_TYPE.cbor());
         assertNull(cty);
 
-        CBORMap sigD = protectedHeader.getAsMap(COSEHeaderParameter.SIG_D.cbor());
+        CBORValue sigD = protectedHeader.getValue().getAsMapOrNull(COSEHeaderParameter.SIG_D.cbor());
         assertNotNull(sigD);
 
-        String mId = sigD.getAsString(COSEHeaderParameter.SIG_D_MID.cbor());
+        String mId = sigD.getAsStringOrNull(COSEHeaderParameter.SIG_D_MID.cbor());
         assertNotNull(mId);
         assertEquals(SigDMechanism.OBJECT_ID_BY_URI.getCBAdESUri(), mId);
 
-        Long hashM = sigD.getAsLong(COSEHeaderParameter.SIG_D_HASH_M.cbor());
+        BigInteger hashM = sigD.getAsIntegerOrNull(COSEHeaderParameter.SIG_D_HASH_M.cbor());
         assertNull(hashM);
 
-        CBORArray pars = sigD.getAsArray(COSEHeaderParameter.SIG_D_PARS.cbor());
+        CBORValue pars = sigD.getAsArrayOrNull(COSEHeaderParameter.SIG_D_PARS.cbor());
         assertNotNull(pars);
-        assertFalse(pars.isEmpty());
-        assertEquals(2, pars.getSize());
-        assertEquals(2, pars.toListOfStrings().size());
+        assertEquals(2, pars.size());
 
         boolean firstDocFound = false;
         boolean secondDocFound = false;
-        for (String name : pars.toListOfStrings()) {
+        for (CBORValue nameValue : pars.getElements()) {
+            assertTrue(nameValue.isTextString());
+            String name = nameValue.asString();
             if (DOC_ONE_NAME.equals(name)) {
                 firstDocFound = true;
             } else if (DOC_TWO_NAME.equals(name)) {
@@ -125,15 +124,15 @@ class CBAdESLevelBDetachedByUryWithHttpParsTest extends AbstractCBAdESMultipleDo
         assertTrue(firstDocFound);
         assertTrue(secondDocFound);
 
-        CBORArray hashV = sigD.getAsArray(COSEHeaderParameter.SIG_D_HASH_V.cbor());
+        CBORValue hashV = sigD.getAsArrayOrNull(COSEHeaderParameter.SIG_D_HASH_V.cbor());
         assertNull(hashV);
 
-        CBORArray ctys = sigD.getAsArray(COSEHeaderParameter.SIG_D_CTYS.cbor());
+        CBORValue ctys = sigD.getAsArrayOrNull(COSEHeaderParameter.SIG_D_CTYS.cbor());
         assertNotNull(ctys);
-        assertFalse(ctys.isEmpty());
-        assertEquals(2, ctys.getSize());
-        assertEquals(2, ctys.toListOfStrings().size());
-        for (String ctyStr : ctys.toListOfStrings()) {
+        assertEquals(2, ctys.size());
+        for (CBORValue ctyValue : ctys.getElements()) {
+            assertTrue(ctyValue.isTextString());
+            String ctyStr = ctyValue.asString();
             assertEquals(MimeTypeEnum.HTML, MimeType.fromMimeTypeString(ctyStr));
         }
     }

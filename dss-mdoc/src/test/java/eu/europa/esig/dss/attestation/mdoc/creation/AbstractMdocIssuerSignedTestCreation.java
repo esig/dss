@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.creation;
 
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.attestation.common.creation.TokenStatusList;
 import eu.europa.esig.dss.attestation.common.validation.AbstractAttestationSDTestCreation;
 import eu.europa.esig.dss.attestation.mdoc.model.MdocDrivingPrivilege;
@@ -28,9 +29,6 @@ import eu.europa.esig.dss.cbades.COSEProtectedHeader;
 import eu.europa.esig.dss.cbades.COSESign;
 import eu.europa.esig.dss.cbades.COSESign1;
 import eu.europa.esig.dss.cbades.COSEUnprotectedHeader;
-import eu.europa.esig.dss.cbades.cbor.CBORArray;
-import eu.europa.esig.dss.cbades.cbor.CBORObject;
-import eu.europa.esig.dss.cbades.cbor.CBORSimpleObject;
 import eu.europa.esig.dss.cbades.cbor.CBORUtils;
 import eu.europa.esig.dss.cbades.signature.CBAdESSignatureParameters;
 import eu.europa.esig.dss.cbades.validation.CBAdESSignature;
@@ -60,9 +58,9 @@ import eu.europa.esig.dss.spi.signature.AdvancedSignature;
 import eu.europa.esig.dss.spi.x509.BaselineBCertificateSelector;
 import eu.europa.esig.dss.utils.Utils;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -101,7 +99,6 @@ public abstract class AbstractMdocIssuerSignedTestCreation extends AbstractAttes
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected void checkAdvancedSignatures(List<AdvancedSignature> signatures) {
         super.checkAdvancedSignatures(signatures);
 
@@ -142,24 +139,21 @@ public abstract class AbstractMdocIssuerSignedTestCreation extends AbstractAttes
             }
             assertNull(signerUnprotectedHeader);
 
-            Set<CBORObject> keySet = bodyProtectedHeader.getKeys();
+            List<CBORValue> keySet = bodyProtectedHeader.getValue().getKeys();
             assertTrue(Utils.isCollectionNotEmpty(keySet));
-            for (CBORObject signedPropertyKey : keySet) {
+            for (CBORValue signedPropertyKey : keySet) {
                 assertTrue(CBORUtils.getSupportedProtectedCriticalHeaders().contains(signedPropertyKey));
             }
 
-            CBORObject crit = bodyProtectedHeader.getHeader(COSEHeaderParameter.CRIT.cbor());
+            CBORValue crit = bodyProtectedHeader.getHeader(COSEHeaderParameter.CRIT.cbor());
             if (crit != null) {
                 assertTrue(crit.isArray());
-                assertInstanceOf(CBORArray.class, crit);
 
-                CBORArray critArray = (CBORArray) crit;
-                assertFalse(critArray.isEmpty());
-                for (CBORObject critItem : critArray.getValueAsList()) {
+                assertTrue(crit.size() > 0);
+                for (CBORValue critItem : crit.getElements()) {
                     assertTrue(critItem.isUnsignedInteger() || critItem.isNegativeInteger());
-                    assertInstanceOf(CBORSimpleObject.class, critItem);
 
-                    Long labelId = critItem.getValueAsLong();
+                    BigInteger labelId = critItem.asInteger();
                     assertNotNull(labelId);
 
                     assertTrue(CBORUtils.getSupportedProtectedCriticalHeaders().contains(critItem));

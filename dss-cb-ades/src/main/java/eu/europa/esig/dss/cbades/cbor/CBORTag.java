@@ -26,8 +26,10 @@ import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 /**
  * Represents a wrapper for a CBOR Object's Tag
  *
+ * @deprecated since DSS 6.6. Switch to {@link eu.europa.ec.digit.cddl4j.cbor.CBORValue} instead.
  */
-public class CBORTag extends AbstractCBORObject{
+@Deprecated
+public class CBORTag extends AbstractCBORObject {
 
     /**
      * Creates a new CBOR Tag object from the given {@code tag}

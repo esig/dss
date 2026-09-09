@@ -20,18 +20,18 @@
  */
 package eu.europa.esig.dss.cbades.signature;
 
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.CBAdESUtils;
 import eu.europa.esig.dss.cbades.COSECounterSignStructure;
 import eu.europa.esig.dss.cbades.COSECounterSignature;
 import eu.europa.esig.dss.cbades.COSEHeaderParameter;
-import eu.europa.esig.dss.enumerations.COSESignatureType;
 import eu.europa.esig.dss.cbades.COSEStructure;
-import eu.europa.esig.dss.cbades.cbor.CBORObject;
 import eu.europa.esig.dss.cbades.validation.CBAdESSignature;
 import eu.europa.esig.dss.cbades.validation.CBAdESUHeaders;
 import eu.europa.esig.dss.cbades.validation.CBAdESUHeadersComponent;
 import eu.europa.esig.dss.cbades.validation.CBORSignature;
 import eu.europa.esig.dss.cbades.validation.COSEDocumentAnalyzer;
+import eu.europa.esig.dss.enumerations.COSESignatureType;
 import eu.europa.esig.dss.enumerations.SigningOperation;
 import eu.europa.esig.dss.enumerations.TimestampedObjectType;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -155,7 +155,7 @@ public class CBAdESCounterSignatureBuilder extends CBAdESBuilder {
     }
 
     @Override
-    protected CBORObject getPayload(boolean dataToSign) {
+    protected CBORValue getPayload(boolean dataToSign) {
         throw new UnsupportedOperationException("The method #getPayload(boolean dataToSign) is not supported " +
                 "for CBAdESCounterSignatureBuilder class!");
     }
@@ -180,7 +180,7 @@ public class CBAdESCounterSignatureBuilder extends CBAdESBuilder {
             coseCounterSignature = (COSECounterSignature) counterSignature.getCoseSignature().getSignerSignature();
         }
 
-        uHeaders.addComponent(COSEHeaderParameter.COUNTER_SIGNATURE_V2.cbor(), coseCounterSignature.toCBORObject());
+        uHeaders.addComponent(COSEHeaderParameter.COUNTER_SIGNATURE_V2.cbor(), coseCounterSignature.toCBORValue());
 
         CBAdESSignature upperSignature = updateMasterSignatureRecursively(masterSignature);
         COSEStructure coseSignStructure = upperSignature.getCoseSignature().getCoseSignStructure();
@@ -190,7 +190,7 @@ public class CBAdESCounterSignatureBuilder extends CBAdESBuilder {
 
     private CBAdESSignature getCounterSignatureToExtend(COSECounterSignature coseCounterSignature) {
         CBAdESSignature counterSignature = CBAdESUtils.buildCounterSignatures(masterSignature, COSEHeaderParameter.COUNTER_SIGNATURE_V2.cbor(),
-                coseCounterSignature.toCBORObject(), false).iterator().next();
+                coseCounterSignature.toCBORValue(), false).iterator().next();
         counterSignature.initBaselineRequirementsChecker(certificateVerifier);
         return counterSignature;
     }
@@ -208,7 +208,7 @@ public class CBAdESCounterSignatureBuilder extends CBAdESBuilder {
                     coseSignature.getCoseSignStructure() : coseSignature.getSignerSignature());
 
             CBAdESUHeadersComponent updatedCSigAttribute = CBAdESUHeadersComponent.build(masterCSigComponent.getHeaderId(),
-                    coseSignStructure.toCBORObject(), masterCSigComponent.getIdentifier());
+                    coseSignStructure.toCBORValue(), masterCSigComponent.getIdentifier());
 
             replaceCSigComponent(currentMasterSignature, updatedCSigAttribute);
         }

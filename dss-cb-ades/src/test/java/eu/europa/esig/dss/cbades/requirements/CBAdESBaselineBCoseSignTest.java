@@ -20,14 +20,14 @@
  */
 package eu.europa.esig.dss.cbades.requirements;
 
-import eu.europa.esig.dss.cbades.cbor.CBORMap;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.signature.CBAdESSignatureParameters;
 import eu.europa.esig.dss.enumerations.COSEStructureType;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CBAdESBaselineBCoseSignTest extends AbstractCBAdESCoseSignRequirementsCheck {
 
@@ -41,9 +41,9 @@ class CBAdESBaselineBCoseSignTest extends AbstractCBAdESCoseSignRequirementsChec
     }
 
     @Override
-    protected void checkUnprotectedHeader(CBORMap unprotectedHeaderMap) {
+    protected void checkUnprotectedHeader(CBORValue unprotectedHeaderMap) {
         assertNotNull(unprotectedHeaderMap);
-        assertTrue(unprotectedHeaderMap.isEmpty());
+        assertEquals(0, unprotectedHeaderMap.size());
     }
 
 }

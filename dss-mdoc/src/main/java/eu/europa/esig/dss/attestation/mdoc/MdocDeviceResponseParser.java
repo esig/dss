@@ -23,6 +23,8 @@ package eu.europa.esig.dss.attestation.mdoc;
 import eu.europa.ec.digit.cddl4j.cbor.CBORDecodeException;
 import eu.europa.ec.digit.cddl4j.cbor.CBORInspector;
 import eu.europa.ec.digit.cddl4j.cbor.CBORMajorType;
+import eu.europa.ec.digit.cddl4j.cbor.CBORMapEntry;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.attestation.mdoc.model.MdocDeviceAuth;
 import eu.europa.esig.dss.attestation.mdoc.model.MdocDeviceNameSpaces;
 import eu.europa.esig.dss.attestation.mdoc.model.MdocDeviceResponse;
@@ -32,15 +34,9 @@ import eu.europa.esig.dss.attestation.mdoc.model.MdocDocumentError;
 import eu.europa.esig.dss.attestation.mdoc.model.MdocErrorItems;
 import eu.europa.esig.dss.attestation.mdoc.model.MdocIssuerSigned;
 import eu.europa.esig.dss.cbades.COSEParser;
-import eu.europa.esig.dss.cbades.cbor.CBORArray;
-import eu.europa.esig.dss.cbades.cbor.CBORByteString;
-import eu.europa.esig.dss.cbades.cbor.CBORMap;
-import eu.europa.esig.dss.cbades.cbor.CBORObject;
-import eu.europa.esig.dss.cbades.cbor.CBORSimpleObject;
 import eu.europa.esig.dss.cbades.cbor.CBORUtils;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.exception.IllegalInputException;
-import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +47,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -123,36 +118,34 @@ public class MdocDeviceResponseParser {
      * @return {@link MdocDeviceResponse}
      */
     public MdocDeviceResponse parse() {
-        CBORObject cborObject = parseCbor(document);
-        if (!cborObject.isMap()) {
+        CBORValue cborValue = parseCbor(document);
+        if (cborValue == null || !cborValue.isMap()) {
             throw new IllegalInputException("An mdoc shall be represented by a CBOR Map type!");
         }
-        CBORMap cborMdoc = (CBORMap) cborObject;
 
         final MdocDeviceResponse mdocDeviceResponse = new MdocDeviceResponse();
-        mdocDeviceResponse.setVersion(getVersion(cborMdoc));
-        mdocDeviceResponse.setDocuments(getDocuments(cborMdoc));
-        mdocDeviceResponse.setDocumentErrors(getDocumentErrors(cborMdoc));
-        mdocDeviceResponse.setStatus(getStatus(cborMdoc));
+        mdocDeviceResponse.setVersion(getVersion(cborValue));
+        mdocDeviceResponse.setDocuments(getDocuments(cborValue));
+        mdocDeviceResponse.setDocumentErrors(getDocumentErrors(cborValue));
+        mdocDeviceResponse.setStatus(getStatus(cborValue));
         return mdocDeviceResponse;
     }
 
-    private String getVersion(CBORMap cborMdoc) {
-        CBORObject versionHeader = cborMdoc.getHeader(MdocHeaderParameter.VERSION.cbor());
+    private String getVersion(CBORValue cborMdoc) {
+        CBORValue versionHeader = cborMdoc.get(MdocHeaderParameter.VERSION.cbor());
         if (versionHeader == null) {
             throw new IllegalInputException(
                     String.format("No mandatory '%s' header found within the mdoc!", MdocHeaderParameter.VERSION));
         }
-        if (!versionHeader.isUnicodeString()) {
+        if (!versionHeader.isTextString()) {
             throw new IllegalInputException(
                     String.format("'%s' header shall be of Unicode String type!", MdocHeaderParameter.VERSION));
         }
-        CBORSimpleObject versionString = (CBORSimpleObject) versionHeader;
-        return versionString.getValueAsString();
+        return versionHeader.asString();
     }
 
-    private List<MdocDocument> getDocuments(CBORMap cborMdoc) {
-        CBORObject documentsHeader = cborMdoc.getHeader(MdocHeaderParameter.DOCUMENTS.cbor());
+    private List<MdocDocument> getDocuments(CBORValue cborMdoc) {
+        CBORValue documentsHeader = cborMdoc.get(MdocHeaderParameter.DOCUMENTS.cbor());
         if (documentsHeader == null) {
             // optional
             return Collections.emptyList();
@@ -161,33 +154,30 @@ public class MdocDeviceResponseParser {
             LOG.warn("'{}' header within mdoc structure shall be represented by an Array type!", MdocHeaderParameter.DOCUMENTS);
             return Collections.emptyList();
         }
-        CBORArray documentsArray = (CBORArray) documentsHeader;
-        if (documentsArray.isEmpty()) {
+        if (documentsHeader.size() == 0) {
             LOG.warn("'{}' array is empty!", MdocHeaderParameter.DOCUMENTS);
             return Collections.emptyList();
         }
-        return documentsArray.getValueAsList().stream()
+        return documentsHeader.getElements().stream()
                 .map(this::parseDocument).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
-    private MdocDocument parseDocument(CBORObject documentObject) {
-        if (documentObject == null) {
+    private MdocDocument parseDocument(CBORValue docValue) {
+        if (docValue == null) {
             LOG.warn("Document cannot be null!");
             return null;
         }
-        if (!documentObject.isMap()) {
+        if (!docValue.isMap()) {
             LOG.warn("Document object shall be represented by a Map type!");
             return null;
         }
 
         try {
-            CBORMap documentMap = (CBORMap) documentObject;
-
             final MdocDocument mdocDocument = new MdocDocument();
-            mdocDocument.setDocType(getDocType(documentMap));
-            mdocDocument.setIssuerSigned(getIssuerSigned(documentMap));
-            mdocDocument.setDeviceSigned(getDeviceSigned(documentMap));
-            mdocDocument.setErrors(getErrors(documentMap));
+            mdocDocument.setDocType(getDocType(docValue));
+            mdocDocument.setIssuerSigned(getIssuerSigned(docValue));
+            mdocDocument.setDeviceSigned(getDeviceSigned(docValue));
+            mdocDocument.setErrors(getErrors(docValue));
             return mdocDocument;
 
         } catch (Exception e) {
@@ -201,22 +191,21 @@ public class MdocDeviceResponseParser {
         }
     }
 
-    private String getDocType(CBORMap documentMap) {
-        CBORObject docTypeHeader = documentMap.getHeader(MdocHeaderParameter.DOC_TYPE.cbor());
+    private String getDocType(CBORValue documentMap) {
+        CBORValue docTypeHeader = documentMap.get(MdocHeaderParameter.DOC_TYPE.cbor());
         if (docTypeHeader == null) {
             throw new IllegalInputException(
                     String.format("No mandatory '%s' header found within the mdoc!", MdocHeaderParameter.DOC_TYPE));
         }
-        if (!docTypeHeader.isUnicodeString()) {
+        if (!docTypeHeader.isTextString()) {
             throw new IllegalInputException(
                     String.format("'%s' header shall be of Unicode String type!", MdocHeaderParameter.DOC_TYPE));
         }
-        CBORSimpleObject docTypeString = (CBORSimpleObject) docTypeHeader;
-        return docTypeString.getValueAsString();
+        return docTypeHeader.asString();
     }
 
-    private MdocIssuerSigned getIssuerSigned(CBORMap documentMap) {
-        CBORObject issuerSignedHeader = documentMap.getHeader(MdocHeaderParameter.ISSUER_SIGNED.cbor());
+    private MdocIssuerSigned getIssuerSigned(CBORValue documentMap) {
+        CBORValue issuerSignedHeader = documentMap.get(MdocHeaderParameter.ISSUER_SIGNED.cbor());
         if (issuerSignedHeader == null) {
             throw new IllegalInputException(
                     String.format("No mandatory '%s' header found within the mdoc!", MdocHeaderParameter.ISSUER_SIGNED));
@@ -225,12 +214,11 @@ public class MdocDeviceResponseParser {
             throw new IllegalInputException(
                     String.format("'%s' header shall be of Map type!", MdocHeaderParameter.ISSUER_SIGNED));
         }
-        CBORMap issuerSignedMap = (CBORMap) issuerSignedHeader;
-        return new IssuerSignedParser(issuerSignedMap).parse();
+        return new IssuerSignedParser(issuerSignedHeader).parse();
     }
 
-    private MdocDeviceSigned getDeviceSigned(CBORMap documentMap) {
-        CBORObject deviceSignedHeader = documentMap.getHeader(MdocHeaderParameter.DEVICE_SIGNED.cbor());
+    private MdocDeviceSigned getDeviceSigned(CBORValue documentMap) {
+        CBORValue deviceSignedHeader = documentMap.get(MdocHeaderParameter.DEVICE_SIGNED.cbor());
         if (deviceSignedHeader == null) {
             throw new IllegalInputException(
                     String.format("No mandatory '%s' header found within the mdoc!", MdocHeaderParameter.DEVICE_SIGNED));
@@ -239,34 +227,24 @@ public class MdocDeviceResponseParser {
             throw new IllegalInputException(
                     String.format("'%s' header shall be of Map type!", MdocHeaderParameter.DEVICE_SIGNED));
         }
-        CBORMap deviceSignedMap = (CBORMap) deviceSignedHeader;
-        if (deviceSignedMap.isEmpty()) {
+        if (deviceSignedHeader.size() == 0) {
             throw new IllegalInputException(
                     String.format("'%s' header is represented by an empty map!", MdocHeaderParameter.DEVICE_SIGNED));
         }
 
         final MdocDeviceSigned deviceSigned = new MdocDeviceSigned();
-        deviceSigned.setDeviceNameSpaces(getDeviceNameSpaces(deviceSignedMap));
-        deviceSigned.setDeviceAuth(getDeviceAuth(deviceSignedMap));
+        deviceSigned.setDeviceNameSpaces(getDeviceNameSpaces(deviceSignedHeader));
+        deviceSigned.setDeviceAuth(getDeviceAuth(deviceSignedHeader));
         return deviceSigned;
     }
 
-    private MdocDeviceNameSpaces getDeviceNameSpaces(CBORMap deviceSignedMap) {
-        CBORObject namespacesHeader = deviceSignedMap.getHeader(MdocHeaderParameter.NAMESPACES.cbor());
-        if (namespacesHeader == null) {
-            throw new IllegalInputException(String.format(
-                    "No mandatory '%s' header found within the mdoc DeviceSigned object!", MdocHeaderParameter.NAMESPACES));
-        }
-        if (!namespacesHeader.isByteString()) {
-            throw new IllegalInputException(String.format(
-                    "'%s' header within DeviceSigned object shall be of CBOR byte string type!", MdocHeaderParameter.NAMESPACES));
-        }
-        CBORByteString namespacesByteString = (CBORByteString) namespacesHeader;
-        return new MdocDeviceNameSpaces(namespacesByteString);
+    private MdocDeviceNameSpaces getDeviceNameSpaces(CBORValue deviceSignedMap) {
+        CBORValue namespacesHeader = deviceSignedMap.get(MdocHeaderParameter.NAMESPACES.cbor());
+        return new MdocDeviceNameSpaces(namespacesHeader);
     }
 
-    private MdocDeviceAuth getDeviceAuth(CBORMap deviceSignedMap) {
-        CBORObject deviceAuthHeader = deviceSignedMap.getHeader(MdocHeaderParameter.DEVICE_AUTH.cbor());
+    private MdocDeviceAuth getDeviceAuth(CBORValue deviceSignedMap) {
+        CBORValue deviceAuthHeader = deviceSignedMap.get(MdocHeaderParameter.DEVICE_AUTH.cbor());
         if (deviceAuthHeader == null) {
             throw new IllegalInputException(
                     String.format("No mandatory '%s' header found within the mdoc!", MdocHeaderParameter.DEVICE_AUTH));
@@ -275,18 +253,17 @@ public class MdocDeviceResponseParser {
             throw new IllegalInputException(
                     String.format("'%s' header shall be of Map type!", MdocHeaderParameter.DEVICE_AUTH));
         }
-        CBORMap deviceAuthMap = (CBORMap) deviceAuthHeader;
-        if (deviceAuthMap.isEmpty()) {
+        if (deviceAuthHeader.size() == 0) {
             throw new IllegalInputException(
                     String.format("'%s' header is represented by an empty map!", MdocHeaderParameter.DEVICE_AUTH));
         }
 
         final MdocDeviceAuth mdocDeviceAuth = new MdocDeviceAuth();
-        CBORObject deviceSignature = deviceAuthMap.getHeader(MdocHeaderParameter.DEVICE_SIGNATURE.cbor());
+        CBORValue deviceSignature = deviceAuthHeader.get(MdocHeaderParameter.DEVICE_SIGNATURE.cbor());
         if (deviceSignature != null) {
-            mdocDeviceAuth.setDeviceSignature(COSEParser.fromCBORObject(deviceSignature).parse());
+            mdocDeviceAuth.setDeviceSignature(COSEParser.fromCBORValue(deviceSignature).parse());
         } else {
-            CBORObject deviceMac = deviceAuthMap.getHeader(MdocHeaderParameter.DEVICE_MAC.cbor());
+            CBORValue deviceMac = deviceAuthHeader.get(MdocHeaderParameter.DEVICE_MAC.cbor());
             if (deviceMac == null) {
                 throw new IllegalInputException(
                         String.format("Either '%s' or '%s' header shall be present within mdoc DeviceAuth object!",
@@ -296,13 +273,13 @@ public class MdocDeviceResponseParser {
                 throw new IllegalInputException(
                         String.format("'%s' header shall be of Array type!", MdocHeaderParameter.DEVICE_MAC));
             }
-            mdocDeviceAuth.setDeviceMac((CBORArray) deviceMac);
+            mdocDeviceAuth.setDeviceMac(deviceMac);
         }
         return mdocDeviceAuth;
     }
 
-    private Map<String, MdocErrorItems> getErrors(CBORMap documentMap) {
-        CBORObject errorsHeader = documentMap.getHeader(MdocHeaderParameter.ERRORS.cbor());
+    private Map<String, MdocErrorItems> getErrors(CBORValue documentMap) {
+        CBORValue errorsHeader = documentMap.get(MdocHeaderParameter.ERRORS.cbor());
         if (errorsHeader == null) {
             // optional
             return Collections.emptyMap();
@@ -311,22 +288,21 @@ public class MdocDeviceResponseParser {
             LOG.warn("'{}' header shall be of Map type!", MdocHeaderParameter.ERRORS);
             return Collections.emptyMap();
         }
-        CBORMap errorsMap = (CBORMap) errorsHeader;
-        if (errorsMap.isEmpty()) {
+        if (errorsHeader.size() == 0) {
             LOG.warn("'{}' map is empty!", MdocHeaderParameter.ERRORS);
             return Collections.emptyMap();
         }
 
         final Map<String, MdocErrorItems> errors = new HashMap<>();
-        Set<CBORObject> errorNamespaces = errorsMap.getKeys();
-        for (CBORObject namespace : errorNamespaces) {
-            if (!namespace.isUnicodeString()) {
-                LOG.warn("NameSpace object shall be of an unsigned string type! Found  : '{}'", namespace.getClass().getSimpleName());
+        List<CBORValue> errorNamespaces = errorsHeader.getKeys();
+        for (CBORValue namespace : errorNamespaces) {
+            if (!namespace.isTextString()) {
+                LOG.warn("NameSpace object shall be of an unsigned string type! Found  : '{}'", namespace.getType());
                 continue;
             }
             try {
-                String namespaceString = namespace.getValueAsString();
-                errors.put(namespaceString, getErrorItems(errorsMap, namespace));
+                String namespaceString = namespace.asString();
+                errors.put(namespaceString, getErrorItems(errorsHeader, namespace));
             } catch (Exception e) {
                 LOG.warn("An error occurred on Errors processing : {}", e.getMessage(), e);
             }
@@ -334,30 +310,29 @@ public class MdocDeviceResponseParser {
         return errors;
     }
 
-    private MdocErrorItems getErrorItems(CBORMap errorsMap, CBORObject namespace) {
-        CBORObject errorItemsObject = errorsMap.getHeader(namespace);
-        if (errorItemsObject == null) {
+    private MdocErrorItems getErrorItems(CBORValue errorsMap, CBORValue namespace) {
+        CBORValue errorItemsMap = errorsMap.get(namespace);
+        if (errorItemsMap == null) {
             throw new IllegalStateException(
-                    String.format("No ErrorItems found for the namespace '%s'!", namespace.getValueAsString()));
+                    String.format("No ErrorItems found for the namespace '%s'!", namespace.asString()));
         }
-        if (!errorItemsObject.isMap()) {
+        if (!errorItemsMap.isMap()) {
             throw new IllegalInputException("ErrorItems shall be of Map type!");
         }
-        CBORMap errorItemsMap = (CBORMap) errorItemsObject;
-        if (errorItemsMap.isEmpty()) {
+        if (errorItemsMap.size() == 0) {
             throw new IllegalInputException("ErrorItems object is represented by an empty map!");
         }
 
         final MdocErrorItems errorItems = new MdocErrorItems();
         Map<String, Long> result = new HashMap<>();
-        for (CBORObject dataElementIdentifier : errorItemsMap.getKeys()) {
-            if (!dataElementIdentifier.isUnicodeString()) {
+        for (CBORValue dataElementIdentifier : errorItemsMap.getKeys()) {
+            if (!dataElementIdentifier.isTextString()) {
                 LOG.warn("DataElementIdentifier object shall be of an unsigned string type! Found  : '{}'",
-                        dataElementIdentifier.getClass().getSimpleName());
+                        dataElementIdentifier.getType());
                 continue;
             }
-            String dataElementIdentifierString = dataElementIdentifier.getValueAsString();
-            CBORObject errorCodeObject = errorItemsMap.getHeader(dataElementIdentifier);
+            String dataElementIdentifierString = dataElementIdentifier.asString();
+            CBORValue errorCodeObject = errorItemsMap.get(dataElementIdentifier);
             if (errorCodeObject == null) {
                 throw new IllegalStateException(
                         String.format("No ErrorCode found for the DataElementIdentifier '%s'!", dataElementIdentifierString));
@@ -365,15 +340,15 @@ public class MdocDeviceResponseParser {
             if (!errorCodeObject.isNegativeInteger() || !errorCodeObject.isUnsignedInteger()) {
                 throw new IllegalInputException("ErrorCode shall be of an Integer type!");
             }
-            Long errorCodeLong = errorCodeObject.getValueAsLong();
+            Long errorCodeLong = errorCodeObject.asInteger().longValue();
             result.put(dataElementIdentifierString, errorCodeLong);
         }
         errorItems.setErrorsMap(result);
         return errorItems;
     }
 
-    private List<MdocDocumentError> getDocumentErrors(CBORMap cborMdoc) {
-        CBORObject documentErrorsHeader = cborMdoc.getHeader(MdocHeaderParameter.DOCUMENT_ERRORS.cbor());
+    private List<MdocDocumentError> getDocumentErrors(CBORValue cborMdoc) {
+        CBORValue documentErrorsHeader = cborMdoc.get(MdocHeaderParameter.DOCUMENT_ERRORS.cbor());
         if (documentErrorsHeader == null) {
             // optional
             return Collections.emptyList();
@@ -382,51 +357,49 @@ public class MdocDeviceResponseParser {
             LOG.warn("'{}' header within mdoc structure shall be represented by an Array type!", MdocHeaderParameter.DOCUMENT_ERRORS);
             return Collections.emptyList();
         }
-        CBORArray documentErrorsArray = (CBORArray) documentErrorsHeader;
-        if (documentErrorsArray.isEmpty()) {
+        if (documentErrorsHeader.size() == 0) {
             LOG.warn("'{}' array is empty!", MdocHeaderParameter.DOCUMENT_ERRORS);
             return Collections.emptyList();
         }
 
-        return documentErrorsArray.getValueAsList().stream()
+        return documentErrorsHeader.getElements().stream()
                 .map(this::getDocumentError).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
-    private MdocDocumentError getDocumentError(CBORObject documentErrorObject) {
-        if (documentErrorObject == null) {
+    private MdocDocumentError getDocumentError(CBORValue documentErrorMap) {
+        if (documentErrorMap == null) {
             LOG.warn("DocumentError cannot be null!");
             return null;
         }
-        if (!documentErrorObject.isMap()) {
+        if (!documentErrorMap.isMap()) {
             LOG.warn("DocumentError object shall be represented by a Map type!");
             return null;
         }
-        Map<CBORObject, CBORObject> documentErrorMap = documentErrorObject.getValueAsMap();
-        if (Utils.mapSize(documentErrorMap) != 1) {
+        if (documentErrorMap.size() != 1) {
             LOG.warn("DocumentError object shall be a Map of a single entry!");
             return null;
         }
 
-        Map.Entry<CBORObject, CBORObject> mapEntry = documentErrorMap.entrySet().iterator().next();
-        CBORObject docTypeObject = mapEntry.getKey();
-        if (!docTypeObject.isUnicodeString()) {
+        CBORMapEntry mapEntry = documentErrorMap.getEntries().iterator().next();
+        CBORValue docTypeObject = mapEntry.key();
+        if (!docTypeObject.isTextString()) {
             LOG.warn("DocType within a DocumentError shall be represented by a unicode string type!");
             return null;
         }
-        CBORObject errorCodeObject = mapEntry.getValue();
+        CBORValue errorCodeObject = mapEntry.value();
         if (!errorCodeObject.isUnsignedInteger() && !errorCodeObject.isNegativeInteger()) {
             LOG.warn("ErrorCode within a DocumentError shall be represented by an integer type!");
             return null;
         }
 
         final MdocDocumentError documentError = new MdocDocumentError();
-        documentError.setDocType(docTypeObject.getValueAsString());
-        documentError.setErrorCode(errorCodeObject.getValueAsLong());
+        documentError.setDocType(docTypeObject.asString());
+        documentError.setErrorCode(errorCodeObject.asInteger().longValue());
         return documentError;
     }
 
-    private Long getStatus(CBORMap cborMdoc) {
-        CBORObject statusHeader = cborMdoc.getHeader(MdocHeaderParameter.STATUS.cbor());
+    private Long getStatus(CBORValue cborMdoc) {
+        CBORValue statusHeader = cborMdoc.get(MdocHeaderParameter.STATUS.cbor());
         if (statusHeader == null) {
             throw new IllegalInputException(
                     String.format("No mandatory '%s' header found within the mdoc!", MdocHeaderParameter.STATUS));
@@ -435,16 +408,16 @@ public class MdocDeviceResponseParser {
             throw new IllegalInputException(
                     String.format("'%s' header shall be of an unsigned integer type!", MdocHeaderParameter.STATUS));
         }
-        return statusHeader.getValueAsLong();
+        return statusHeader.asInteger().longValue();
     }
 
     /**
      * Parses CBOR {@code DSSDocument} securely
      *
      * @param document {@link DSSDocument}
-     * @return {@link CBORObject}
+     * @return {@link CBORValue}
      */
-    private CBORObject parseCbor(DSSDocument document) {
+    private CBORValue parseCbor(DSSDocument document) {
         try {
             return CBORUtils.parseCbor(document);
         } catch (CBORDecodeException e) {

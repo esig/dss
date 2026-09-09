@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.cbades.validation;
 
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.cbor.CBORObject;
 import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.spi.validation.identifier.SignatureAttributeIdentifier;
@@ -48,29 +49,56 @@ public class CBAdESAttributeIdentifier extends SignatureAttributeIdentifier {
     /**
      * Builds a CB-AdES Attribute identifier
      *
-     * @param headerId {@link Long} id of the 'uHeaders' component
+     * @param headerId {@link CBORObject} id of the 'uHeaders' component
      * @param value {@link CBORObject} represent the value of the 'uHeaders' component
      * @return {@link CBAdESAttributeIdentifier}
+     * @deprecated since DSS 6.6. Use {@link #build(CBORValue, CBORValue)}.
      */
+    @Deprecated
     public static CBAdESAttributeIdentifier build(CBORObject headerId, CBORObject value) {
+        return build(headerId.toCBORValue(), value.toCBORValue());
+    }
+
+    /**
+     * Builds a CB-AdES Attribute identifier
+     *
+     * @param headerId {@link CBORValue} id of the 'uHeaders' component
+     * @param value {@link CBORValue} represent the value of the 'uHeaders' component
+     * @return {@link CBAdESAttributeIdentifier}
+     */
+    public static CBAdESAttributeIdentifier build(CBORValue headerId, CBORValue value) {
         return build(headerId, value, null);
     }
 
     /**
      * Builds the identifier for an 'uHeaders' component
      *
-     * @param headerId {@link Long} id of the 'uHeaders' component
+     * @param headerId {@link CBORObject} id of the 'uHeaders' component
      * @param value {@link CBORObject} represent the value of the 'uHeaders' component
      * @param order the order of the component within the 'uHeaders' array
      * @return {@link CBAdESAttributeIdentifier}
+     * @deprecated since DSS 6.6. Use {@link #build(CBORValue, CBORValue, Integer)}.
      */
+    @Deprecated
     public static CBAdESAttributeIdentifier build(CBORObject headerId, CBORObject value, Integer order) {
+        return build(headerId.toCBORValue(), value.toCBORValue(), order);
+    }
+
+    /**
+     * Builds the identifier for an 'uHeaders' component
+     *
+     * @param headerId {@link CBORValue} id of the 'uHeaders' component
+     * @param value {@link CBORValue} represent the value of the 'uHeaders' component
+     * @param order the order of the component within the 'uHeaders' array
+     * @return {@link CBAdESAttributeIdentifier}
+     */
+    public static CBAdESAttributeIdentifier build(CBORValue headerId, CBORValue value, Integer order) {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); DataOutputStream dos = new DataOutputStream(baos)) {
             if (headerId != null) {
-                if (headerId.isNegativeInteger() || headerId.isUnsignedInteger()) {
-                    dos.writeLong(headerId.getValueAsLong());
-                } else if (headerId.isUnicodeString()) {
-                    dos.writeChars(headerId.getValueAsString());
+                if (headerId.isInteger()) {
+                    dos.writeLong(headerId.asInteger().longValue());
+                } else if (headerId.isTextString()) {
+                    dos.writeChars(headerId.asString());
                 } else {
                     throw new UnsupportedOperationException(String.format(
                             "Unsupported attribute header key of type '%s'", headerId.getClass().getSimpleName()));

@@ -35,7 +35,9 @@ import java.util.stream.Collectors;
 /**
  * A wrapper of a CBOR array object
  *
+ * @deprecated since DSS 6.6. Switch to {@link eu.europa.ec.digit.cddl4j.cbor.CBORValue} instead.
  */
+@Deprecated
 public class CBORArray extends AbstractCBORObject {
 
     private static final Logger LOG = LoggerFactory.getLogger(CBORArray.class);
@@ -76,7 +78,7 @@ public class CBORArray extends AbstractCBORObject {
 
     private static CBORValue toArray(final Collection<?> list) {
         CBORValue.CBORArrayEditor array = CBOR.array(list.size());
-        list.forEach(l -> array.add(CBORObjectFactory.toCBORValue(l)));
+        list.forEach(l -> array.add(CBORValueFactory.toCBORValue(l)));
         return array.value();
     }
 
@@ -93,7 +95,7 @@ public class CBORArray extends AbstractCBORObject {
     private static <T> CBORValue toArray(final T[] inputArray) {
         CBORValue.CBORArrayEditor array = CBOR.array(inputArray.length);
         for (Object object : inputArray) {
-            array.add(CBORObjectFactory.toCBORValue(object));
+            array.add(CBORValueFactory.toCBORValue(object));
         }
         return array.value();
     }
@@ -105,7 +107,7 @@ public class CBORArray extends AbstractCBORObject {
      * @param object {@link Object} to add
      */
     public void add(Object object) {
-        getCBORValue().editArray().add(CBORObjectFactory.toCBORValue(object));
+        getCBORValue().editArray().add(CBORValueFactory.toCBORValue(object));
     }
 
     /**
@@ -115,7 +117,7 @@ public class CBORArray extends AbstractCBORObject {
      * @param object to be placed
      */
     public void set(int index, Object object) {
-        getCBORValue().editArray().set(index, CBORObjectFactory.toCBORValue(object));
+        getCBORValue().editArray().set(index, CBORValueFactory.toCBORValue(object));
     }
 
     /**
@@ -312,7 +314,7 @@ public class CBORArray extends AbstractCBORObject {
      */
     public void remove(CBORObject cborObject) {
         Objects.requireNonNull(cborObject, "CBORObject cannot be null!");
-        getCBORValue().editArray().remove(CBORObjectFactory.toCBORValue(cborObject));
+        getCBORValue().editArray().remove(CBORValueFactory.toCBORValue(cborObject));
     }
 
     /**

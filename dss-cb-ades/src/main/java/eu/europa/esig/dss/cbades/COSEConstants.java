@@ -65,19 +65,19 @@ public final class COSEConstants {
     /* COSE_Key */
 
     /** COSE_Key 'kty'. Array position '1' */
-    public static final int COSE_KEY_KTY = 1;
+    public static final long COSE_KEY_KTY = 1;
 
     /** COSE_Key 'kid'. Array position '2' */
-    public static final int COSE_KEY_KID = 2;
+    public static final long COSE_KEY_KID = 2;
 
     /** COSE_Key 'alg'. Array position '3' */
-    public static final int COSE_KEY_ALG = 3;
+    public static final long COSE_KEY_ALG = 3;
 
     /** COSE_Key 'key_ops'. Array position '4' */
-    public static final int COSE_KEY_KEY_OPS = 4;
+    public static final long COSE_KEY_KEY_OPS = 4;
 
     /** COSE_Key 'Base IV'. Array position '5' */
-    public static final int COSE_KEY_BASE_IV = 5;
+    public static final long COSE_KEY_BASE_IV = 5;
 
     /* COSE_Key "Table 21: Key Type Values" */
 

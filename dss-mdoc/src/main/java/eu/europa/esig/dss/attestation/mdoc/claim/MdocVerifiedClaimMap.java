@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.claim;
 
+import eu.europa.ec.digit.cddl4j.cbor.CBORMapEntry;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.attestation.mdoc.MdocUtils;
 import eu.europa.esig.dss.cbades.cbor.CBORUtils;
 import eu.europa.esig.dss.model.attestation.claim.VerifiedClaim;
@@ -34,6 +36,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -68,6 +72,29 @@ public class MdocVerifiedClaimMap extends VerifiedClaimMap {
     public MdocVerifiedClaimMap(final String name, final String namespace, final Map<?, ?> value,
                                 final boolean selectivelyDisclosable, final VerifiedClaim parent) {
         super(name, namespace, value, selectivelyDisclosable, parent);
+    }
+
+    /**
+     * Constructor accepting a list of {@code CBORMapEntry}s as a value.
+     *
+     * @param name {@link String} claim header name
+     * @param namespace {@link String} representing the original namespace (NOTE: used in mdoc)
+     * @param value a list of {@link CBORMapEntry}s representing the map value of the claim
+     * @param selectivelyDisclosable whether the claim is selectively disclosable
+     *                               (can be TRUE only when the value of claim is provided in a form of disclosure)
+     * @param parent {@link VerifiedClaim} representing the parent claim, when applicable
+     */
+    public MdocVerifiedClaimMap(final String name, final String namespace, final List<CBORMapEntry> value,
+                                final boolean selectivelyDisclosable, final VerifiedClaim parent) {
+        super(name, namespace, toMap(value), selectivelyDisclosable, parent);
+    }
+
+    static Map<CBORValue, CBORValue> toMap(final List<CBORMapEntry> entries) {
+        Map<CBORValue, CBORValue> result = new LinkedHashMap<>();
+        entries.forEach(e -> {
+            result.put(e.key(), e.value());
+        });
+        return result;
     }
 
     /**

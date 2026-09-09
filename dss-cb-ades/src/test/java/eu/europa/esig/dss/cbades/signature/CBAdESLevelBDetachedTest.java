@@ -20,12 +20,11 @@
  */
 package eu.europa.esig.dss.cbades.signature;
 
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.COSEHeaderParameter;
 import eu.europa.esig.dss.cbades.COSEProtectedHeader;
 import eu.europa.esig.dss.cbades.COSESign;
 import eu.europa.esig.dss.cbades.COSESignStructure;
-import eu.europa.esig.dss.cbades.cbor.CBORArray;
-import eu.europa.esig.dss.cbades.cbor.CBORMap;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignerDataWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestAlgoAndValue;
@@ -38,13 +37,13 @@ import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.signature.DocumentSignatureService;
 import org.junit.jupiter.api.BeforeEach;
 
+import java.math.BigInteger;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -92,38 +91,35 @@ class CBAdESLevelBDetachedTest extends AbstractCBAdESTestSignature {
     }
 
     private void assertRequirementsValid(COSEProtectedHeader protectedHeader) {
-        String cty = protectedHeader.getAsString(COSEHeaderParameter.CONTENT_TYPE.cbor());
+        String cty = protectedHeader.getValue().getAsStringOrNull(COSEHeaderParameter.CONTENT_TYPE.cbor());
         assertNull(cty);
 
-        CBORMap sigD = protectedHeader.getAsMap(COSEHeaderParameter.SIG_D.cbor());
+        CBORValue sigD = protectedHeader.getValue().getAsMapOrNull(COSEHeaderParameter.SIG_D.cbor());
         assertNotNull(sigD);
 
-        String mId = sigD.getAsString(COSEHeaderParameter.SIG_D_MID.cbor());
+        String mId = sigD.getAsStringOrNull(COSEHeaderParameter.SIG_D_MID.cbor());
         assertNotNull(mId);
         assertEquals(SigDMechanism.OBJECT_ID_BY_URI_HASH.getCBAdESUri(), mId);
 
-        Long hashM = sigD.getAsLong(COSEHeaderParameter.SIG_D_HASH_M.cbor());
+        BigInteger hashM = sigD.getAsIntegerOrNull(COSEHeaderParameter.SIG_D_HASH_M.cbor());
         assertNotNull(hashM);
-        DigestAlgorithm digestAlgorithm = DigestAlgorithm.forCOSE(hashM);
+        DigestAlgorithm digestAlgorithm = DigestAlgorithm.forCOSE(hashM.longValue());
         assertNotNull(digestAlgorithm);
 
-        CBORArray pars = sigD.getAsArray(COSEHeaderParameter.SIG_D_PARS.cbor());
+        CBORValue pars = sigD.getAsArrayOrNull(COSEHeaderParameter.SIG_D_PARS.cbor());
         assertNotNull(pars);
-        assertFalse(pars.isEmpty());
-        assertEquals(1, pars.getSize());
-        assertEquals(documentToSign.getName(), pars.getAsString(0));
+        assertEquals(1, pars.size());
+        assertEquals(documentToSign.getName(), pars.getAsStringOrNull(0));
 
-        CBORArray hashV = sigD.getAsArray(COSEHeaderParameter.SIG_D_HASH_V.cbor());
+        CBORValue hashV = sigD.getAsArrayOrNull(COSEHeaderParameter.SIG_D_HASH_V.cbor());
         assertNotNull(hashV);
-        assertFalse(hashV.isEmpty());
-        assertEquals(1, hashV.getSize());
-        assertArrayEquals(documentToSign.getDigestValue(digestAlgorithm), hashV.getAsBinaries(0));
+        assertEquals(1, hashV.size());
+        assertArrayEquals(documentToSign.getDigestValue(digestAlgorithm), hashV.getAsBytesOrNull(0));
 
-        CBORArray ctys = sigD.getAsArray(COSEHeaderParameter.SIG_D_CTYS.cbor());
+        CBORValue ctys = sigD.getAsArrayOrNull(COSEHeaderParameter.SIG_D_CTYS.cbor());
         assertNotNull(ctys);
-        assertFalse(ctys.isEmpty());
-        assertEquals(1, ctys.getSize());
-        assertEquals(documentToSign.getMimeType().getMimeTypeString(), ctys.getAsString(0));
+        assertEquals(1, ctys.size());
+        assertEquals(documentToSign.getMimeType().getMimeTypeString(), ctys.getAsStringOrNull(0));
     }
 
     @Override

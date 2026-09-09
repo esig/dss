@@ -20,12 +20,10 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.validation;
 
+import eu.europa.ec.digit.cddl4j.cbor.CBOR;
 import eu.europa.ec.digit.cddl4j.cbor.CBORDecodeException;
-import eu.europa.esig.dss.cbades.cbor.CBORArray;
-import eu.europa.esig.dss.cbades.cbor.CBORByteString;
-import eu.europa.esig.dss.cbades.cbor.CBORObject;
-import eu.europa.esig.dss.cbades.cbor.CBORUtils;
-import eu.europa.esig.dss.cbades.validation.CBAdESSignature;
+import eu.europa.ec.digit.cddl4j.cbor.CBORTags;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.attestation.mdoc.MdocConstants;
 import eu.europa.esig.dss.attestation.mdoc.MdocDeviceResponseParser;
 import eu.europa.esig.dss.attestation.mdoc.model.MdocDeviceAuth;
@@ -34,6 +32,8 @@ import eu.europa.esig.dss.attestation.mdoc.model.MdocDeviceResponse;
 import eu.europa.esig.dss.attestation.mdoc.model.MdocDeviceSigned;
 import eu.europa.esig.dss.attestation.mdoc.model.MdocDocument;
 import eu.europa.esig.dss.attestation.mdoc.model.MdocIssuerSigned;
+import eu.europa.esig.dss.cbades.cbor.CBORUtils;
+import eu.europa.esig.dss.cbades.validation.CBAdESSignature;
 import eu.europa.esig.dss.enumerations.AttestationDocumentFormat;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
@@ -184,34 +184,36 @@ public class MdocDeviceResponseDocumentAnalyzer extends AbstractMdocDocumentAnal
          *     DeviceNameSpacesBytes       ; Same as in mdoc response
          * ]
          */
-        final CBORArray deviceAuthentication = new CBORArray();
-        deviceAuthentication.add(MdocConstants.DEVICE_AUTHENTICATION);
+        final CBORValue deviceAuthentication = CBOR.array()
+                .add(MdocConstants.DEVICE_AUTHENTICATION)
+                .add(getSessionTranscriptCbor(sessionTranscript))
+                .add(docType)
+                .add(deviceNameSpaces.getDeviceNameSpaceBytes())
+                .value();
 
-        CBORArray sessionTranscriptCbor = new CBORArray();
+        CBORValue deviceAuthenticationBytes = CBORTags.encodedCbor(deviceAuthentication.encodeToBytes());
+        return new InMemoryDocument(CBORUtils.serializeCbor(deviceAuthenticationBytes));
+    }
+
+    private CBORValue getSessionTranscriptCbor(DSSDocument sessionTranscript) {
+        CBORValue sessionTranscriptCbor = CBOR.array().value();
         try {
-            CBORObject cborObject = CBORUtils.parseCbor(sessionTranscript);
-            if (cborObject.isArray()) {
-                sessionTranscriptCbor = (CBORArray) cborObject;
-            } else if (cborObject.isByteString()) {
-                cborObject = CBORUtils.parseCbor(cborObject.getValueAsBytes());
-                if (cborObject.isArray()) {
-                    sessionTranscriptCbor = (CBORArray) cborObject;
-                } else {
-                    LOG.warn("Session transcript binaries do not represent a CBOR array. Obtained type : {}", cborObject.getClass().getSimpleName());
-                }
-            } else {
-                LOG.warn("Session transcript is expected in a form of a CBOR array or binaries. Obtained type : {}", cborObject.getClass().getSimpleName());
+            sessionTranscriptCbor = CBORUtils.parseCbor(sessionTranscript);
+
+            if (sessionTranscriptCbor.isTag() && CBORTags.ENCODED_CBOR == sessionTranscriptCbor.getTag().longValue()) {
+                sessionTranscriptCbor = sessionTranscriptCbor.getTaggedValue();
+            }
+            if (sessionTranscriptCbor.isByteString()) {
+                sessionTranscriptCbor = CBORUtils.parseCbor(sessionTranscriptCbor.asBytes());
+            }
+            if (!sessionTranscriptCbor.isArray()) {
+                LOG.warn("Session transcript binaries do not represent a CBOR array. Obtained type : {}", sessionTranscriptCbor.getType());
             }
 
         } catch (CBORDecodeException e) {
             LOG.warn("Unable to parse session transcript as CBOR object : {}", e.getMessage(), e);
         }
-        deviceAuthentication.add(sessionTranscriptCbor);
-        deviceAuthentication.add(docType);
-        deviceAuthentication.add(deviceNameSpaces.getDeviceNameSpaceBytes());
-
-        CBORByteString deviceAuthenticationBytes = CBORUtils.toCborBtsrWrappedTagged(deviceAuthentication);
-        return new InMemoryDocument(CBORUtils.serializeCborObject(deviceAuthenticationBytes));
+        return sessionTranscriptCbor;
     }
 
 }

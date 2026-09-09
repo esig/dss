@@ -20,13 +20,8 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.creation;
 
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.COSEConstants;
-import eu.europa.esig.dss.cbades.cbor.CBORArray;
-import eu.europa.esig.dss.cbades.cbor.CBORByteString;
-import eu.europa.esig.dss.cbades.cbor.CBORMap;
-import eu.europa.esig.dss.cbades.cbor.CBORNull;
-import eu.europa.esig.dss.cbades.cbor.CBORObject;
-import eu.europa.esig.dss.cbades.cbor.CBORSimpleObject;
 import eu.europa.esig.dss.cbades.cbor.CBORUtils;
 import eu.europa.esig.dss.enumerations.EllipticCurve;
 import eu.europa.esig.dss.model.DSSDocument;
@@ -42,10 +37,11 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SessionTranscriptBuilderTest {
 
@@ -63,8 +59,8 @@ class SessionTranscriptBuilderTest {
                         .eReaderKey(readerKey);
 
         DSSDocument document = builder.build();
-        CBORObject cborObject = builder.buildCbor();
-        assertArrayEquals(DSSUtils.toByteArray(document), CBORUtils.serializeCborObject(cborObject));
+        CBORValue cborValue = builder.buildCbor();
+        assertArrayEquals(DSSUtils.toByteArray(document), CBORUtils.serializeCbor(cborValue));
 
         SessionTranscriptBuilder builder2 =
                 SessionTranscriptBuilder.nfcHandover(select, request)
@@ -72,10 +68,10 @@ class SessionTranscriptBuilderTest {
                         .eReaderKey(readerKey);
 
         DSSDocument document2 = builder2.build();
-        CBORObject cborObject2 = builder2.buildCbor();
-        assertArrayEquals(DSSUtils.toByteArray(document), CBORUtils.serializeCborObject(cborObject));
+        CBORValue cborValue2 = builder2.buildCbor();
+        assertArrayEquals(DSSUtils.toByteArray(document), CBORUtils.serializeCbor(cborValue));
         assertArrayEquals(DSSUtils.toByteArray(document), DSSUtils.toByteArray(document2));
-        assertArrayEquals(CBORUtils.serializeCborObject(cborObject), CBORUtils.serializeCborObject(cborObject2));
+        assertArrayEquals(CBORUtils.serializeCbor(cborValue2), CBORUtils.serializeCbor(cborValue2));
     }
 
     @Test
@@ -91,30 +87,35 @@ class SessionTranscriptBuilderTest {
                         .security(EllipticCurve.P_256, deviceKey)
                         .eReaderKey(readerKey);
 
-        CBORArray result = (CBORArray) builder.buildCbor();
-        List<CBORObject> resultList = result.getValueAsList();
+        CBORValue result = builder.buildCbor();
+        List<CBORValue> resultList = result.getElements();
         assertEquals(3, resultList.size());
 
-        CBORByteString deviceEngagementBytes = assertInstanceOf(CBORByteString.class, resultList.get(0));
-        assertEquals(24L, deviceEngagementBytes.getTag().getValue());
+        CBORValue deviceEngagementBytes = resultList.get(0);
+        assertTrue(deviceEngagementBytes.isTag());
+        assertEquals(24L, deviceEngagementBytes.getTag().longValue());
+        assertTrue(deviceEngagementBytes.getTaggedValue().isByteString());
 
-        CBORByteString readerKeyBytes = assertInstanceOf(CBORByteString.class, resultList.get(1));
-        assertEquals(24L, readerKeyBytes.getTag().getValue());
+        CBORValue readerKeyBytes = resultList.get(1);
+        assertTrue(readerKeyBytes.isTag());
+        assertEquals(24L, readerKeyBytes.getTag().longValue());
+        assertTrue(readerKeyBytes.getTaggedValue().isByteString());
 
-        CBORMap readerKeyCbor = (CBORMap) CBORUtils.parseCbor(readerKeyBytes.getValueAsBytes());
+        CBORValue readerKeyCbor = CBORUtils.parseCbor(readerKeyBytes.getTaggedValue().asBytes());
 
         assertEquals(COSEConstants.COSE_KEY_TYPE_EC2_VALUE,
-                readerKeyCbor.getAsLong(COSEConstants.COSE_KEY_KTY));
+                readerKeyCbor.get(COSEConstants.COSE_KEY_KTY).asInteger().longValue());
 
         assertEquals(EllipticCurve.P_256.getCOSEValue(),
-                readerKeyCbor.getAsLong(COSEConstants.COSE_KEY_TYPE_EC2_CRV));
+                readerKeyCbor.get(COSEConstants.COSE_KEY_TYPE_EC2_CRV).asInteger().longValue());
 
-        CBORObject handover = resultList.get(2);
-        CBORArray handoverArray = assertInstanceOf(CBORArray.class, handover);
+        CBORValue handover = resultList.get(2);
+        assertNotNull(handover);
+        assertTrue(handover.isArray());
 
-        assertNotNull(handoverArray);
-        assertArrayEquals(select, handoverArray.getAsBinaries(0));
-        assertArrayEquals(request, handoverArray.getAsBinaries(1));
+        assertEquals(2, handover.size());
+        assertArrayEquals(select, handover.get(0).asBytes());
+        assertArrayEquals(request, handover.get(1).asBytes());
     }
 
     @Test
@@ -129,13 +130,18 @@ class SessionTranscriptBuilderTest {
                         .security(EllipticCurve.P_256, deviceKey)
                         .eReaderKey(readerKey);
 
-        CBORArray result = (CBORArray) builder.buildCbor();
+        CBORValue result = builder.buildCbor();
 
-        CBORArray handover = result.getAsArray(2);
+        assertTrue(result.isArray());
+        assertEquals(3, result.size());
+
+        CBORValue handover = result.get(2);
 
         assertNotNull(handover);
-        assertNotNull(handover.getAsBinaries(0));
-        assertNull(handover.getAsBinaries(1));
+        assertTrue(handover.isArray());
+        assertEquals(2, handover.size());
+        assertArrayEquals(select, handover.get(0).asBytes());
+        assertTrue(handover.get(1).isNull());
     }
 
     @Test
@@ -171,47 +177,68 @@ class SessionTranscriptBuilderTest {
                         .eReaderKey(readerKey)
                         .webApiServerRetrievalMethod(1, "https://issuer", "token");
 
-        CBORArray result = (CBORArray) builder.buildCbor();
-        List<CBORObject> resultList = result.getValueAsList();
-        assertEquals(3, resultList.size());
+        CBORValue result = builder.buildCbor();
+        assertTrue(result.isArray());
+        assertEquals(3, result.size());
 
-        CBORByteString deviceEngagementBytes = assertInstanceOf(CBORByteString.class, resultList.get(0));
-        assertNotNull(deviceEngagementBytes.getTag());
-        assertEquals(24L, deviceEngagementBytes.getTag().getValue());
+        CBORValue deviceEngagementBytes = result.get(0);
+        assertTrue(deviceEngagementBytes.isTag());
+        assertEquals(24L, deviceEngagementBytes.getTag().longValue());
+        assertTrue(deviceEngagementBytes.getTaggedValue().isByteString());
 
-        CBORObject deviceEngagement = CBORUtils.parseCbor(deviceEngagementBytes.getValueAsBytes());
-        CBORMap deviceEngagementMap = assertInstanceOf(CBORMap.class, deviceEngagement);
+        CBORValue deviceEngagement =
+                CBORUtils.parseCbor(deviceEngagementBytes.getTaggedValue().asBytes());
 
-        assertEquals("1.0", deviceEngagementMap.getAsString(0L));
+        assertTrue(deviceEngagement.isMap());
 
-        CBORArray security = deviceEngagementMap.getAsArray(1L);
+        assertEquals("1.0", deviceEngagement.get(0L).asString());
+
+        CBORValue security = deviceEngagement.get(1L);
         assertNotNull(security);
-        List<CBORObject> securityList = security.getValueAsList();
+        assertTrue(security.isArray());
+        assertEquals(2, security.size());
 
-        CBORSimpleObject cipherSuiteIdentifier = assertInstanceOf(CBORSimpleObject.class, securityList.get(0));
-        assertEquals(EllipticCurve.P_256.getCOSEValue(), cipherSuiteIdentifier.getValueAsLong());
+        assertEquals(
+                EllipticCurve.P_256.getCOSEValue(),
+                security.get(0).asInteger().longValue());
 
-        CBORByteString coseKeyBytes = assertInstanceOf(CBORByteString.class, securityList.get(1));
-        CBORObject coseKeyObject = CBORUtils.parseCbor(coseKeyBytes.getValueAsBytes());
+        CBORValue coseKeyBytes = security.get(1);
+        assertTrue(coseKeyBytes.isTag());
 
-        CBORMap coseKey = assertInstanceOf(CBORMap.class, coseKeyObject);
-        assertEquals(4, coseKey.getSize());
-        assertEquals(COSEConstants.COSE_KEY_TYPE_EC2_VALUE, coseKey.getAsLong(COSEConstants.COSE_KEY_KTY));
-        assertEquals(EllipticCurve.P_256.getCOSEValue(), coseKey.getAsLong(COSEConstants.COSE_KEY_TYPE_EC2_CRV));
-        assertEquals(((ECPublicKey) deviceKey).getW().getAffineX(), new BigInteger(1, coseKey.getAsBinaries(COSEConstants.COSE_KEY_TYPE_EC2_X)));
-        assertEquals(((ECPublicKey) deviceKey).getW().getAffineY(), new BigInteger(1, coseKey.getAsBinaries(COSEConstants.COSE_KEY_TYPE_EC2_Y)));
+        CBORValue coseKeyBytesValue = coseKeyBytes.getTaggedValue();
+        assertNotNull(coseKeyBytesValue);
+        assertTrue(coseKeyBytesValue.isByteString());
 
-        CBORArray deviceRetrievalMethods = deviceEngagementMap.getAsArray(2L);
-        assertNull(deviceRetrievalMethods);
+        CBORValue coseKey = CBORUtils.parseCbor(coseKeyBytesValue.asBytes());
+        assertTrue(coseKey.isMap());
+        assertEquals(4, coseKey.size());
 
-        CBORMap serverRetrievalMethods = deviceEngagementMap.getAsMap(3L);
+        assertEquals(COSEConstants.COSE_KEY_TYPE_EC2_VALUE,
+                coseKey.get(COSEConstants.COSE_KEY_KTY).asInteger().longValue());
+
+        assertEquals(EllipticCurve.P_256.getCOSEValue(),
+                coseKey.get(COSEConstants.COSE_KEY_TYPE_EC2_CRV).asInteger().longValue());
+
+        assertEquals(((ECPublicKey) deviceKey).getW().getAffineX(),
+                new BigInteger(1, coseKey.get(COSEConstants.COSE_KEY_TYPE_EC2_X).asBytes()));
+
+        assertEquals(((ECPublicKey) deviceKey).getW().getAffineY(),
+                new BigInteger(1, coseKey.get(COSEConstants.COSE_KEY_TYPE_EC2_Y).asBytes()));
+
+        assertNull(deviceEngagement.get(2L));
+
+        CBORValue serverRetrievalMethods = deviceEngagement.get(3L);
         assertNotNull(serverRetrievalMethods);
+        assertTrue(serverRetrievalMethods.isMap());
 
-        CBORArray webApi = serverRetrievalMethods.getAsArray("webApi");
+        CBORValue webApi = serverRetrievalMethods.get("webApi");
         assertNotNull(webApi);
-        assertEquals(1, webApi.getAsLong(0));
-        assertEquals("https://issuer", webApi.getAsString(1));
-        assertEquals("token", webApi.getAsString(2));
+        assertTrue(webApi.isArray());
+        assertEquals(3, webApi.size());
+
+        assertEquals(1, webApi.get(0).asInteger().longValue());
+        assertEquals("https://issuer", webApi.get(1).asString());
+        assertEquals("token", webApi.get(2).asString());
 
         assertNotNull(result);
     }
@@ -227,47 +254,68 @@ class SessionTranscriptBuilderTest {
                         .eReaderKey(readerKey)
                         .oidcServerRetrievalMethod(1, "https://issuer", "token");
 
-        CBORArray result = (CBORArray) builder.buildCbor();
-        List<CBORObject> resultList = result.getValueAsList();
-        assertEquals(3, resultList.size());
+        CBORValue result = builder.buildCbor();
+        assertTrue(result.isArray());
+        assertEquals(3, result.size());
 
-        CBORByteString deviceEngagementBytes = assertInstanceOf(CBORByteString.class, resultList.get(0));
-        assertNotNull(deviceEngagementBytes.getTag());
-        assertEquals(24L, deviceEngagementBytes.getTag().getValue());
+        CBORValue deviceEngagementBytes = result.get(0);
+        assertTrue(deviceEngagementBytes.isTag());
+        assertEquals(24L, deviceEngagementBytes.getTag().longValue());
+        assertTrue(deviceEngagementBytes.getTaggedValue().isByteString());
 
-        CBORObject deviceEngagement = CBORUtils.parseCbor(deviceEngagementBytes.getValueAsBytes());
-        CBORMap deviceEngagementMap = assertInstanceOf(CBORMap.class, deviceEngagement);
+        CBORValue deviceEngagement =
+                CBORUtils.parseCbor(deviceEngagementBytes.getTaggedValue().asBytes());
 
-        assertEquals("1.0", deviceEngagementMap.getAsString(0L));
+        assertTrue(deviceEngagement.isMap());
 
-        CBORArray security = deviceEngagementMap.getAsArray(1L);
+        assertEquals("1.0", deviceEngagement.get(0L).asString());
+
+        CBORValue security = deviceEngagement.get(1L);
         assertNotNull(security);
-        List<CBORObject> securityList = security.getValueAsList();
+        assertTrue(security.isArray());
+        assertEquals(2, security.size());
 
-        CBORSimpleObject cipherSuiteIdentifier = assertInstanceOf(CBORSimpleObject.class, securityList.get(0));
-        assertEquals(EllipticCurve.P_256.getCOSEValue(), cipherSuiteIdentifier.getValueAsLong());
+        assertEquals(
+                EllipticCurve.P_256.getCOSEValue(),
+                security.get(0).asInteger().longValue());
 
-        CBORByteString coseKeyBytes = assertInstanceOf(CBORByteString.class, securityList.get(1));
-        CBORObject coseKeyObject = CBORUtils.parseCbor(coseKeyBytes.getValueAsBytes());
+        CBORValue coseKeyBytes = security.get(1);
+        assertTrue(coseKeyBytes.isTag());
 
-        CBORMap coseKey = assertInstanceOf(CBORMap.class, coseKeyObject);
-        assertEquals(4, coseKey.getSize());
-        assertEquals(COSEConstants.COSE_KEY_TYPE_EC2_VALUE, coseKey.getAsLong(COSEConstants.COSE_KEY_KTY));
-        assertEquals(EllipticCurve.P_256.getCOSEValue(), coseKey.getAsLong(COSEConstants.COSE_KEY_TYPE_EC2_CRV));
-        assertEquals(((ECPublicKey) deviceKey).getW().getAffineX(), new BigInteger(1, coseKey.getAsBinaries(COSEConstants.COSE_KEY_TYPE_EC2_X)));
-        assertEquals(((ECPublicKey) deviceKey).getW().getAffineY(), new BigInteger(1, coseKey.getAsBinaries(COSEConstants.COSE_KEY_TYPE_EC2_Y)));
+        CBORValue coseKeyBytesValue = coseKeyBytes.getTaggedValue();
+        assertNotNull(coseKeyBytesValue);
+        assertTrue(coseKeyBytesValue.isByteString());
 
-        CBORArray deviceRetrievalMethods = deviceEngagementMap.getAsArray(2L);
-        assertNull(deviceRetrievalMethods);
+        CBORValue coseKey = CBORUtils.parseCbor(coseKeyBytesValue.asBytes());
+        assertTrue(coseKey.isMap());
+        assertEquals(4, coseKey.size());
 
-        CBORMap serverRetrievalMethods = deviceEngagementMap.getAsMap(3L);
+        assertEquals(COSEConstants.COSE_KEY_TYPE_EC2_VALUE,
+                coseKey.get(COSEConstants.COSE_KEY_KTY).asInteger().longValue());
+
+        assertEquals(EllipticCurve.P_256.getCOSEValue(),
+                coseKey.get(COSEConstants.COSE_KEY_TYPE_EC2_CRV).asInteger().longValue());
+
+        assertEquals(((ECPublicKey) deviceKey).getW().getAffineX(),
+                new BigInteger(1, coseKey.get(COSEConstants.COSE_KEY_TYPE_EC2_X).asBytes()));
+
+        assertEquals(((ECPublicKey) deviceKey).getW().getAffineY(),
+                new BigInteger(1, coseKey.get(COSEConstants.COSE_KEY_TYPE_EC2_Y).asBytes()));
+
+        assertNull(deviceEngagement.get(2L));
+
+        CBORValue serverRetrievalMethods = deviceEngagement.get(3L);
         assertNotNull(serverRetrievalMethods);
+        assertTrue(serverRetrievalMethods.isMap());
 
-        CBORArray webApi = serverRetrievalMethods.getAsArray("oidc");
-        assertNotNull(webApi);
-        assertEquals(1, webApi.getAsLong(0));
-        assertEquals("https://issuer", webApi.getAsString(1));
-        assertEquals("token", webApi.getAsString(2));
+        CBORValue oidc = serverRetrievalMethods.get("oidc");
+        assertNotNull(oidc);
+        assertTrue(oidc.isArray());
+        assertEquals(3, oidc.size());
+
+        assertEquals(1, oidc.get(0).asInteger().longValue());
+        assertEquals("https://issuer", oidc.get(1).asString());
+        assertEquals("token", oidc.get(2).asString());
 
         assertNotNull(result);
     }
@@ -276,11 +324,12 @@ class SessionTranscriptBuilderTest {
     void reservedDeviceEngagementLabels() throws Exception {
         PublicKey deviceKey = generateKey();
 
-        SessionTranscriptBuilder builder =
-                SessionTranscriptBuilder.nfcStaticHandover(new byte[]{0x01})
+        SessionTranscriptBuilder builder = SessionTranscriptBuilder.nfcStaticHandover(new byte[]{0x01})
                         .security(EllipticCurve.P_256, deviceKey);
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> builder.otherDeviceEngagementInfo(1, "reserved"));
+        Exception exception = assertThrows(IllegalArgumentException.class,
+                () -> builder.otherDeviceEngagementInfo(1, "reserved"));
+
         assertEquals("The DeviceEngagement label value '1' is reserved!", exception.getMessage());
     }
 
@@ -295,36 +344,47 @@ class SessionTranscriptBuilderTest {
                         .eReaderKey(readerKey)
                         .addNfcRetrievalOptions(10, 20);
 
-        CBORArray result = (CBORArray) builder.buildCbor();
-        assertEquals(3, result.getSize());
+        CBORValue result = builder.buildCbor();
+        assertTrue(result.isArray());
+        assertEquals(3, result.size());
 
-        List<CBORObject> resultList = result.getValueAsList();
-        assertInstanceOf(CBORByteString.class, resultList.get(0));
-        assertInstanceOf(CBORByteString.class, resultList.get(1));
+        CBORValue deviceEngagementBytes = result.get(0);
+        assertTrue(deviceEngagementBytes.isTag());
+        assertEquals(24L, deviceEngagementBytes.getTag().longValue());
+        assertTrue(deviceEngagementBytes.getTaggedValue().isByteString());
+
+        assertTrue(result.get(1).isTag());
+        assertEquals(24L, result.get(1).getTag().longValue());
+        assertTrue(result.get(1).getTaggedValue().isByteString());
+
         // QR handover must be null
-        assertInstanceOf(CBORNull.class, resultList.get(2));
+        assertTrue(result.get(2).isNull());
 
-        CBORByteString deviceEngagementBytes = assertInstanceOf(CBORByteString.class, resultList.get(0));
-        CBORObject deviceEngagementObject = CBORUtils.parseCbor(deviceEngagementBytes.getValueAsBytes());
-        CBORMap deviceEngagement = assertInstanceOf(CBORMap.class, deviceEngagementObject);
+        CBORValue deviceEngagementObject =
+                CBORUtils.parseCbor(deviceEngagementBytes.getTaggedValue().asBytes());
 
-        CBORArray methods = deviceEngagement.getAsArray(2L);
+        assertTrue(deviceEngagementObject.isMap());
+
+        CBORValue methods = deviceEngagementObject.get(2L);
         assertNotNull(methods);
-        assertEquals(1, methods.getSize());
+        assertTrue(methods.isArray());
+        assertEquals(1, methods.size());
 
-        CBORArray method = methods.getAsArray(0);
+        CBORValue method = methods.get(0);
+        assertTrue(method.isArray());
 
         // Method structure: [type, version, options]
-        assertEquals(3, method.getSize());
+        assertEquals(3, method.size());
 
-        assertEquals(1L, method.getAsLong(0));
+        assertEquals(1L, method.get(0).asInteger().longValue());
+        assertEquals(1L, method.get(1).asInteger().longValue());
 
-        assertEquals(1L, method.getAsLong(1));
+        CBORValue options = method.get(2);
+        assertTrue(options.isMap());
+        assertEquals(2, options.size());
 
-        CBORMap options = method.getAsMap(2);
-        assertEquals(2, options.getSize());
-        assertEquals(10L, options.getAsLong(0));
-        assertEquals(20L, options.getAsLong(1));
+        assertEquals(10L, options.get(0L).asInteger().longValue());
+        assertEquals(20L, options.get(1L).asInteger().longValue());
     }
 
     @Test
@@ -343,54 +403,66 @@ class SessionTranscriptBuilderTest {
                         .addWiFiRetrievalOptions("pass", 1, 6, wifiBands)
                         .addBleRetrievalOptions(true, false, bleUuid, bleUuid, bleUuid);
 
-        CBORArray result = (CBORArray) builder.buildCbor();
-        assertEquals(3, result.getSize());
+        CBORValue result = builder.buildCbor();
+        assertTrue(result.isArray());
+        assertEquals(3, result.size());
 
-        List<CBORObject> resultList = result.getValueAsList();
+        CBORValue deviceEngagementBytes = result.get(0);
+        assertTrue(deviceEngagementBytes.isTag());
+        assertEquals(24L, deviceEngagementBytes.getTag().longValue());
+        assertTrue(deviceEngagementBytes.getTaggedValue().isByteString());
 
-        CBORByteString deviceEngagementBytes = assertInstanceOf(CBORByteString.class, resultList.get(0));
-        CBORObject deviceEngagementObject = CBORUtils.parseCbor(deviceEngagementBytes.getValueAsBytes());
-        CBORMap deviceEngagement = assertInstanceOf(CBORMap.class, deviceEngagementObject);
+        CBORValue deviceEngagementObject =
+                CBORUtils.parseCbor(deviceEngagementBytes.getTaggedValue().asBytes());
 
-        CBORArray methods = deviceEngagement.getAsArray(2L);
+        assertTrue(deviceEngagementObject.isMap());
 
+        CBORValue methods = deviceEngagementObject.get(2L);
         assertNotNull(methods);
-        assertEquals(3, methods.getSize());
+        assertTrue(methods.isArray());
+        assertEquals(3, methods.size());
 
         // ---- NFC ----
-        CBORArray nfc = methods.getAsArray(0);
-        assertEquals(1L, nfc.getAsLong(0));
-        assertEquals(1L, nfc.getAsLong(1));
+        CBORValue nfc = methods.get(0);
+        assertTrue(nfc.isArray());
+        assertEquals(1L, nfc.get(0).asInteger().longValue());
+        assertEquals(1L, nfc.get(1).asInteger().longValue());
 
-        CBORMap nfcOptions = nfc.getAsMap(2);
-        assertEquals(10L, nfcOptions.getAsLong(0));
-        assertEquals(20L, nfcOptions.getAsLong(1));
+        CBORValue nfcOptions = nfc.get(2);
+        assertTrue(nfcOptions.isMap());
+        assertEquals(10L, nfcOptions.get(0L).asInteger().longValue());
+        assertEquals(20L, nfcOptions.get(1L).asInteger().longValue());
 
         // ---- WiFi ----
-        CBORArray wifi = methods.getAsArray(1);
-        assertEquals(3L, wifi.getAsLong(0)); // WiFi type
-        assertEquals(1L, wifi.getAsLong(1));
+        CBORValue wifi = methods.get(1);
+        assertTrue(wifi.isArray());
+        assertEquals(3L, wifi.get(0).asInteger().longValue());
+        assertEquals(1L, wifi.get(1).asInteger().longValue());
 
-        CBORMap wifiOptions = wifi.getAsMap(2);
-        assertEquals("pass", wifiOptions.getAsString(0));
-        assertEquals(1L, wifiOptions.getAsLong(1));
-        assertEquals(6L, wifiOptions.getAsLong(2));
-        assertArrayEquals(wifiBands, wifiOptions.getAsBinaries(3));
+        CBORValue wifiOptions = wifi.get(2);
+        assertTrue(wifiOptions.isMap());
+
+        assertEquals("pass", wifiOptions.get(0L).asString());
+        assertEquals(1L, wifiOptions.get(1L).asInteger().longValue());
+        assertEquals(6L, wifiOptions.get(2L).asInteger().longValue());
+        assertArrayEquals(wifiBands, wifiOptions.get(3L).asBytes());
 
         // ---- BLE ----
-        CBORArray ble = methods.getAsArray(2);
-        assertEquals(2L, ble.getAsLong(0)); // BLE type
-        assertEquals(1L, ble.getAsLong(1));
+        CBORValue ble = methods.get(2);
+        assertTrue(ble.isArray());
+        assertEquals(2L, ble.get(0).asInteger().longValue());
+        assertEquals(1L, ble.get(1).asInteger().longValue());
 
-        CBORMap bleOptions = ble.getAsMap(2);
+        CBORValue bleOptions = ble.get(2);
+        assertTrue(bleOptions.isMap());
 
         // Only optional fields should be present
-        assertEquals(5, bleOptions.getSize());
-        assertEquals(true, bleOptions.getAsBoolean(0));
-        assertEquals(false, bleOptions.getAsBoolean(1));
-        assertArrayEquals(bleUuid, bleOptions.getAsBinaries(10));
-        assertArrayEquals(bleUuid, bleOptions.getAsBinaries(11));
-        assertArrayEquals(bleUuid, bleOptions.getAsBinaries(20));
+        assertEquals(5, bleOptions.size());
+        assertTrue(bleOptions.get(0L).asBoolean());
+        assertFalse(bleOptions.get(1L).asBoolean());
+        assertArrayEquals(bleUuid, bleOptions.get(10L).asBytes());
+        assertArrayEquals(bleUuid, bleOptions.get(11L).asBytes());
+        assertArrayEquals(bleUuid, bleOptions.get(20L).asBytes());
     }
 
     @Test
@@ -418,33 +490,32 @@ class SessionTranscriptBuilderTest {
                         .eReaderKey(readerKey)
                         .protocolInfo("custom");
 
+        CBORValue result = builder.buildCbor();
+        assertTrue(result.isArray());
+        assertEquals(3, result.size());
 
-        CBORArray result = (CBORArray) builder.buildCbor();
-        List<CBORObject> resultList = result.getValueAsList();
-        assertEquals(3, resultList.size());
+        CBORValue deviceEngagementBytes = result.get(0);
+        assertTrue(deviceEngagementBytes.isTag());
+        assertEquals(24L, deviceEngagementBytes.getTag().longValue());
+        assertTrue(deviceEngagementBytes.getTaggedValue().isByteString());
 
-        CBORByteString deviceEngagementBytes = assertInstanceOf(CBORByteString.class, resultList.get(0));
-        assertNotNull(deviceEngagementBytes.getTag());
-        assertEquals(24L, deviceEngagementBytes.getTag().getValue());
+        CBORValue deviceEngagement =
+                CBORUtils.parseCbor(deviceEngagementBytes.getTaggedValue().asBytes());
 
-        CBORObject deviceEngagement = CBORUtils.parseCbor(deviceEngagementBytes.getValueAsBytes());
-        CBORMap deviceEngagementMap = assertInstanceOf(CBORMap.class, deviceEngagement);
+        assertTrue(deviceEngagement.isMap());
 
-        assertEquals("1.0", deviceEngagementMap.getAsString(0L));
+        assertEquals("1.0", deviceEngagement.get(0L).asString());
 
-        CBORArray security = deviceEngagementMap.getAsArray(1L);
+        CBORValue security = deviceEngagement.get(1L);
         assertNotNull(security);
+        assertTrue(security.isArray());
 
-        CBORArray deviceRetrievalMethods = deviceEngagementMap.getAsArray(2L);
-        assertNull(deviceRetrievalMethods);
+        assertNull(deviceEngagement.get(2L));
+        assertNull(deviceEngagement.get(3L));
 
-        CBORMap serverRetrievalMethods = deviceEngagementMap.getAsMap(3L);
-        assertNull(serverRetrievalMethods);
-
-        CBORObject protocolInfo = deviceEngagementMap.getHeader(4L);
+        CBORValue protocolInfo = deviceEngagement.get(4L);
         assertNotNull(protocolInfo);
-        CBORSimpleObject protocolInfoSimple = assertInstanceOf(CBORSimpleObject.class, protocolInfo);
-        assertEquals("custom", protocolInfoSimple.getValueAsString());
+        assertEquals("custom", protocolInfo.asString());
     }
 
     @Test
@@ -458,18 +529,22 @@ class SessionTranscriptBuilderTest {
                         .eReaderKey(readerKey)
                         .otherDeviceEngagementInfo(10, "customValue");
 
-        CBORArray result = (CBORArray) builder.buildCbor();
-        List<CBORObject> resultList = result.getValueAsList();
+        CBORValue result = builder.buildCbor();
+        assertTrue(result.isArray());
 
-        CBORByteString deviceEngagementBytes = (CBORByteString) resultList.get(0);
-        CBORMap deviceEngagement =
-                (CBORMap) CBORUtils.parseCbor(deviceEngagementBytes.getValueAsBytes());
+        CBORValue deviceEngagementBytes = result.get(0);
+        assertTrue(deviceEngagementBytes.isTag());
+        assertEquals(24L, deviceEngagementBytes.getTag().longValue());
+        assertTrue(deviceEngagementBytes.getTaggedValue().isByteString());
 
-        CBORObject custom = deviceEngagement.getHeader(10L);
+        CBORValue deviceEngagement =
+                CBORUtils.parseCbor(deviceEngagementBytes.getTaggedValue().asBytes());
+
+        assertTrue(deviceEngagement.isMap());
+
+        CBORValue custom = deviceEngagement.get(10L);
         assertNotNull(custom);
-
-        CBORSimpleObject simple = assertInstanceOf(CBORSimpleObject.class, custom);
-        assertEquals("customValue", simple.getValueAsString());
+        assertEquals("customValue", custom.asString());
     }
 
     @Test
@@ -483,24 +558,30 @@ class SessionTranscriptBuilderTest {
                         .security(EllipticCurve.P_256, deviceKey)
                         .eReaderKey(readerKey);
 
-        CBORObject result = builder.buildCbor();
-        List<CBORObject> resultList = result.getValueAsList();
+        CBORValue result = builder.buildCbor();
+        assertTrue(result.isArray());
+
+        List<CBORValue> resultList = result.getElements();
         assertEquals(3, resultList.size());
 
-        CBORByteString deviceEngagementBytes = assertInstanceOf(CBORByteString.class, resultList.get(0));
-        assertNotNull(deviceEngagementBytes.getTag());
-        assertEquals(24L, deviceEngagementBytes.getTag().getValue());
+        CBORValue deviceEngagementBytes = resultList.get(0);
+        assertTrue(deviceEngagementBytes.isTag());
+        assertEquals(24L, deviceEngagementBytes.getTag().longValue());
+        assertTrue(deviceEngagementBytes.getTaggedValue().isByteString());
 
-        CBORObject deviceEngagement = CBORUtils.parseCbor(deviceEngagementBytes.getValueAsBytes());
-        CBORMap deviceEngagementMap = assertInstanceOf(CBORMap.class, deviceEngagement);
+        CBORValue deviceEngagement =
+                CBORUtils.parseCbor(deviceEngagementBytes.getTaggedValue().asBytes());
 
-        assertEquals("2.0", deviceEngagementMap.getAsString(0L));
+        assertTrue(deviceEngagement.isMap());
+        assertEquals("2.0", deviceEngagement.get(0L).asString());
     }
 
     @Test
     void nfcStaticHandoverSelectMessageWithCorrectErrorMessage() {
-        Exception exception = assertThrows(NullPointerException.class,
+        Exception exception = assertThrows(
+                NullPointerException.class,
                 () -> SessionTranscriptBuilder.nfcStaticHandover(null));
+
         assertEquals("Handover Select Message cannot be null!", exception.getMessage());
     }
 
@@ -510,5 +591,5 @@ class SessionTranscriptBuilderTest {
         KeyPair kp = kpg.generateKeyPair();
         return kp.getPublic();
     }
-    
+
 }

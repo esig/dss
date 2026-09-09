@@ -20,10 +20,10 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.validation;
 
-import eu.europa.esig.dss.cbades.validation.CBAdESDiagnosticDataBuilder;
 import eu.europa.esig.dss.attestation.common.validation.AttestationDocumentDiagnosticDataBuilder;
 import eu.europa.esig.dss.attestation.common.validation.DefaultAttestationDocumentAnalyzer;
 import eu.europa.esig.dss.attestation.common.validation.DefaultAttestationDocumentValidator;
+import eu.europa.esig.dss.cbades.validation.CBAdESDiagnosticDataBuilder;
 import eu.europa.esig.dss.validation.reports.diagnostic.SignedDocumentDiagnosticDataBuilder;
 
 /**

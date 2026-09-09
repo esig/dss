@@ -20,10 +20,9 @@
  */
 package eu.europa.esig.dss.cbades.signature;
 
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.CBAdESUtils;
 import eu.europa.esig.dss.cbades.COSEHeaderParameter;
-import eu.europa.esig.dss.cbades.cbor.CBORMap;
-import eu.europa.esig.dss.cbades.cbor.CBORObject;
 import eu.europa.esig.dss.cbades.validation.CBAdESSignature;
 import eu.europa.esig.dss.cbades.validation.CBAdESUHeaders;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -90,13 +89,13 @@ public class CBAdESLevelBaselineLTA extends CBAdESLevelBaselineLT {
                 final ValidationData validationDataForInclusion =
                         validationDataContainer.getAllValidationDataForSignatureForInclusion(signature);
                 if (!validationDataForInclusion.isEmpty()) {
-                    CBORObject valData = getValData(validationDataForInclusion);
+                    CBORValue valData = getValData(validationDataForInclusion);
                     uHeaders.addComponent(COSEHeaderParameter.VAL_DATA.cbor(), valData);
                 }
             }
 
             TimestampBinary timestampBinary = getArchiveTimestamp(cbadesSignature, params);
-            CBORMap tstContainer = CBAdESUtils.getTstContainer(Collections.singletonList(timestampBinary));
+            CBORValue tstContainer = CBAdESUtils.getTstContainer(Collections.singletonList(timestampBinary));
             uHeaders.addComponent(COSEHeaderParameter.ARC_TST.cbor(), tstContainer);
         }
     }

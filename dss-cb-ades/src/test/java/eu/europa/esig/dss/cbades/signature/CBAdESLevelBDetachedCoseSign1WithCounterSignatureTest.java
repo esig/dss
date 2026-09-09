@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.cbades.signature;
 
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.COSECounterSignStructure;
 import eu.europa.esig.dss.cbades.COSECounterSignature;
 import eu.europa.esig.dss.cbades.COSECounterSignatureParser;
@@ -28,17 +29,12 @@ import eu.europa.esig.dss.cbades.COSEParser;
 import eu.europa.esig.dss.cbades.COSEProtectedHeader;
 import eu.europa.esig.dss.cbades.COSESign1;
 import eu.europa.esig.dss.cbades.COSESignStructure;
-import eu.europa.esig.dss.enumerations.COSESignatureType;
 import eu.europa.esig.dss.cbades.COSEUnprotectedHeader;
-import eu.europa.esig.dss.cbades.cbor.CBORArray;
-import eu.europa.esig.dss.cbades.cbor.CBORByteString;
-import eu.europa.esig.dss.cbades.cbor.CBORMap;
-import eu.europa.esig.dss.cbades.cbor.CBORNull;
-import eu.europa.esig.dss.cbades.cbor.CBORObject;
 import eu.europa.esig.dss.cbades.cbor.CBORUtils;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignatureScope;
+import eu.europa.esig.dss.enumerations.COSESignatureType;
 import eu.europa.esig.dss.enumerations.COSEStructureType;
 import eu.europa.esig.dss.enumerations.SigDMechanism;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
@@ -134,34 +130,36 @@ class CBAdESLevelBDetachedCoseSign1WithCounterSignatureTest extends AbstractCBAd
         COSESign1 coseSign1 = assertInstanceOf(COSESign1.class, coseSignStructure);
 
         assertNotNull(coseSign1.getPayload());
-        assertInstanceOf(CBORNull.class, coseSign1.getPayload());
+        assertTrue(coseSign1.getPayload().isNull());
 
         COSEUnprotectedHeader unprotectedHeader = coseSign1.getUnprotectedHeader();
         assertNotNull(unprotectedHeader);
         assertFalse(unprotectedHeader.isEmpty());
         assertEquals(1, unprotectedHeader.getSize());
 
-        CBORArray uHeaders = unprotectedHeader.getAsArray(COSEHeaderParameter.U_HEADERS.cbor());
+        CBORValue uHeaders = unprotectedHeader.getValue().getAsArrayOrNull(COSEHeaderParameter.U_HEADERS.cbor());
         assertNotNull(uHeaders);
-        assertEquals(1, uHeaders.getSize());
+        assertEquals(1, uHeaders.size());
 
-        List<CBORObject> items = uHeaders.getValueAsList();
+        List<CBORValue> items = uHeaders.getElements();
         assertEquals(1, items.size());
 
-        CBORObject countersignatureObject = items.get(0);
+        CBORValue countersignatureObject = items.get(0);
         assertTrue(countersignatureObject.isByteString());
-        CBORByteString countersignatureBtsr = assertInstanceOf(CBORByteString.class, countersignatureObject);
 
-        CBORObject countersignatureComponent = CBORUtils.parseCbor(countersignatureBtsr.getValueAsBytes());
+        CBORValue countersignatureComponent = CBORUtils.parseCbor(countersignatureObject.asBytes());
         assertTrue(countersignatureComponent.isMap());
-        CBORMap cborMap = assertInstanceOf(CBORMap.class, countersignatureComponent);
-        assertEquals(1, cborMap.getSize());
+        assertEquals(1, countersignatureComponent.size());
 
-        CBORObject counterSignatureV2Object = cborMap.getHeader(COSEHeaderParameter.COUNTER_SIGNATURE_V2.cbor());
+        CBORValue counterSignatureV2Object = countersignatureComponent.get(COSEHeaderParameter.COUNTER_SIGNATURE_V2.cbor());
         assertNotNull(counterSignatureV2Object);
-        assertTrue(counterSignatureV2Object.isArray());
+        assertTrue(counterSignatureV2Object.isTag());
 
-        COSECounterSignStructure coseCounterSignStructure = COSECounterSignatureParser.fromCBORObject(counterSignatureV2Object)
+        CBORValue counterSignatureV2Value = counterSignatureV2Object.getTaggedValue();
+        assertNotNull(counterSignatureV2Value);
+        assertTrue(counterSignatureV2Value.isArray());
+
+        COSECounterSignStructure coseCounterSignStructure = COSECounterSignatureParser.fromCBORValue(counterSignatureV2Value)
                 .setContext(COSESignatureType.COSE_COUNTER_SIGNATURE_V2)
                 .setMasterSignature(coseSign1)
                 .parse();
@@ -176,7 +174,7 @@ class CBAdESLevelBDetachedCoseSign1WithCounterSignatureTest extends AbstractCBAd
 
         COSEProtectedHeader protectedHeader = coseCounterSignature.getProtectedHeader();
 
-        CBORObject cty = protectedHeader.getHeader(COSEHeaderParameter.CONTENT_TYPE.cbor());
+        CBORValue cty = protectedHeader.getHeader(COSEHeaderParameter.CONTENT_TYPE.cbor());
         assertNull(cty);
     }
 

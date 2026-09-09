@@ -20,12 +20,10 @@
  */
 package eu.europa.esig.dss.cbades.signature;
 
+import eu.europa.ec.digit.cddl4j.cbor.CBOR;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.COSEHeaderParameter;
 import eu.europa.esig.dss.cbades.COSEProtectedHeader;
-import eu.europa.esig.dss.cbades.cbor.CBORArray;
-import eu.europa.esig.dss.cbades.cbor.CBORByteString;
-import eu.europa.esig.dss.cbades.cbor.CBORMap;
-import eu.europa.esig.dss.cbades.cbor.CBORObject;
 import eu.europa.esig.dss.cbades.cbor.CBORUtils;
 import eu.europa.esig.dss.cbades.validation.CBAdESSignature;
 import eu.europa.esig.dss.cbades.validation.COSEDocumentAnalyzer;
@@ -75,10 +73,11 @@ class CBAdESWithCommitmentTypeQualifierTest extends AbstractCBAdESTestSignature 
         commonCommitmentType.setOid(CommitmentTypeEnum.ProofOfApproval.getOid());
 
         CommitmentQualifier asn1CommitmentQualifier = new CommitmentQualifier();
-        CBORArray cborArray = new CBORArray();
-        cborArray.add("1.2.4.5.6");
-        cborArray.add(CBORUtils.formatToTDate(currentTime));
-        asn1CommitmentQualifier.setContent(new InMemoryDocument(CBORUtils.serializeCborObject(cborArray)));
+        CBORValue cborValue = CBOR.array()
+                .add("1.2.4.5.6")
+                .add(CBORUtils.formatToTDate(currentTime))
+                .value();
+        asn1CommitmentQualifier.setContent(new InMemoryDocument(CBORUtils.serializeCbor(cborValue)));
 
         CommitmentQualifier stringCommitmentQualifier = new CommitmentQualifier();
         stringCommitmentQualifier.setContent(new InMemoryDocument(CommitmentTypeEnum.ProofOfApproval.getUri().getBytes()));
@@ -98,42 +97,37 @@ class CBAdESWithCommitmentTypeQualifierTest extends AbstractCBAdESTestSignature 
 
         CBAdESSignature signature = (CBAdESSignature) signatures.get(0);
         COSEProtectedHeader protectedHeader = signature.getCoseSignature().getSignerProtectedHeader();
-        CBORObject commitmentType = protectedHeader.getHeader(COSEHeaderParameter.SR_CMS.cbor());
+        CBORValue commitmentType = protectedHeader.getHeader(COSEHeaderParameter.SR_CMS.cbor());
         assertNotNull(commitmentType);
         assertTrue(commitmentType.isArray());
 
-        CBORArray commTypes = (CBORArray) commitmentType;
-        assertEquals(1, commTypes.getSize());
+        assertEquals(1, commitmentType.size());
 
-        CBORObject commType = commTypes.getItem(0);
+        CBORValue commType = commitmentType.get(0);
         assertTrue(commType.isMap());
 
-        CBORMap commitmentTypeMap = (CBORMap) commType;
-
-        CBORObject identifier = commitmentTypeMap.getHeader(COSEHeaderParameter.SR_CM_COMM_ID.cbor());
+        CBORValue identifier = commType.get(COSEHeaderParameter.SR_CM_COMM_ID.cbor());
         assertNotNull(identifier);
         assertTrue(identifier.isMap());
-        assertEquals("urn:oid:" + CommitmentTypeEnum.ProofOfApproval.getOid(), ((CBORMap) identifier).getAsString(COSEHeaderParameter.OID_ID.cbor()));
+        assertEquals("urn:oid:" + CommitmentTypeEnum.ProofOfApproval.getOid(), ((CBORValue) identifier).getAsStringOrNull(COSEHeaderParameter.OID_ID.cbor()));
 
-        CBORObject qualifiers = commitmentTypeMap.getHeader(COSEHeaderParameter.SR_CM_COMM_QUALS.cbor());
+        CBORValue qualifiers = commType.get(COSEHeaderParameter.SR_CM_COMM_QUALS.cbor());
         assertNotNull(qualifiers);
         assertTrue(qualifiers.isArray());
 
-        CBORArray qualifiersList = (CBORArray) qualifiers;
-        assertEquals(2, qualifiersList.getSize());
+        assertEquals(2, qualifiers.size());
 
         boolean asn1QualifierFound = false;
         boolean stringQualifierFound = false;
-        for (CBORObject qualifier : qualifiersList.getValueAsList()) {
+        for (CBORValue qualifier : qualifiers.getElements()) {
             if (qualifier.isArray()) {
-                CBORArray qualifierArray = (CBORArray) qualifier;
-                assertEquals(2, qualifierArray.getSize());
-                assertEquals("1.2.4.5.6", qualifierArray.getAsString(0));
-                assertEquals(DSSUtils.formatDateToRFC(currentTime), qualifierArray.getAsString(1));
+                assertEquals(2, qualifier.size());
+                assertEquals("1.2.4.5.6", qualifier.getAsStringOrNull(0));
+                assertEquals(DSSUtils.formatDateToRFC(currentTime), qualifier.getAsStringOrNull(1));
                 asn1QualifierFound = true;
 
             } else if (qualifier.isByteString()) {
-                assertEquals(CommitmentTypeEnum.ProofOfApproval.getUri(), new String(((CBORByteString) qualifier).getValueAsBytes()));
+                assertEquals(CommitmentTypeEnum.ProofOfApproval.getUri(), new String(qualifier.asBytes()));
                 stringQualifierFound = true;
             }
         }

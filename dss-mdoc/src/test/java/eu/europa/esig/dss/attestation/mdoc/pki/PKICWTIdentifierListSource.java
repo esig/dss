@@ -20,14 +20,15 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.pki;
 
-import eu.europa.esig.dss.cbades.cbor.CBORMap;
+import eu.europa.ec.digit.cddl4j.cbor.CBOR;
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
+import eu.europa.esig.dss.attestation.common.pki.AbstractPKIAttestationRevocationListSource;
+import eu.europa.esig.dss.attestation.revocation.cwt.model.identifierlist.CWTIdentifierListClaims;
+import eu.europa.esig.dss.attestation.revocation.source.ExternalResourcesAttestationRevocationSource;
 import eu.europa.esig.dss.cbades.cbor.CBORUtils;
 import eu.europa.esig.dss.cbades.cwt.CWTClaims;
 import eu.europa.esig.dss.cbades.signature.CBAdESService;
 import eu.europa.esig.dss.cbades.signature.CBAdESSignatureParameters;
-import eu.europa.esig.dss.attestation.common.pki.AbstractPKIAttestationRevocationListSource;
-import eu.europa.esig.dss.attestation.revocation.cwt.model.identifierlist.CWTIdentifierListClaims;
-import eu.europa.esig.dss.attestation.revocation.source.ExternalResourcesAttestationRevocationSource;
 import eu.europa.esig.dss.enumerations.COSEStructureType;
 import eu.europa.esig.dss.enumerations.SignatureLevel;
 import eu.europa.esig.dss.enumerations.SignaturePackaging;
@@ -57,7 +58,7 @@ public class PKICWTIdentifierListSource extends AbstractPKIAttestationRevocation
     protected List<byte[]> identifiers;
 
     /**
-     * Creates a PKIJWTStatusListSource instance with revocation list signer {@code CertEntity}
+     * Creates a PKICWTIdentifierListSource instance with revocation list signer {@code CertEntity}
      *
      * @param certEntityRepository {@link CertEntityRepository}
      * @param statusListIssuer     {@link CertEntity} to issue revocation list
@@ -120,7 +121,7 @@ public class PKICWTIdentifierListSource extends AbstractPKIAttestationRevocation
      */
     @Override
     protected DSSDocument generatePayload(VerifiedClaimStatus claimStatus) {
-        CBORMap payload = new CBORMap();
+        CBORValue.CBORMapEditor payload = CBOR.map();
 
         payload.put(CWTClaims.IAT.cbor(), DSSUtils.getTimeValueInSeconds(getIssuanceTime().getTime()));
         payload.put(CWTClaims.EXP.cbor(), DSSUtils.getTimeValueInSeconds(getExpirationTime().getTime()));
@@ -128,15 +129,15 @@ public class PKICWTIdentifierListSource extends AbstractPKIAttestationRevocation
             payload.put(CWTIdentifierListClaims.TIME_TO_LIVE, getTimeToLive());
         }
 
-        CBORMap identifierList = new CBORMap();
+        CBORValue.CBORMapEditor identifierList = CBOR.map();
         identifierList.put(CWTIdentifierListClaims.IDENTIFIER_LIST_IDENTIFIERS.cbor(), createIdentifiersMap(getIdentifiers()));
-        payload.put(CWTIdentifierListClaims.IDENTIFIER_LIST.cbor(), identifierList);
+        payload.put(CWTIdentifierListClaims.IDENTIFIER_LIST.cbor(), identifierList.value());
 
         if (claimStatus != null && claimStatus.getIdentifierList() != null && claimStatus.getIdentifierList().getUri() != null) {
             payload.put(CWTClaims.SUB.cbor(), claimStatus.getIdentifierList().getUri().getStringValue());
         }
 
-        return new InMemoryDocument(CBORUtils.serializeCborObject(payload));
+        return new InMemoryDocument(CBORUtils.serializeCbor(payload.value()));
     }
 
     /**
@@ -147,14 +148,14 @@ public class PKICWTIdentifierListSource extends AbstractPKIAttestationRevocation
      * }
      *
      * @param identifiers list of identifiers
-     * @return {@link CBORMap}
+     * @return {@link CBORValue}
      */
-    protected CBORMap createIdentifiersMap(List<byte[]> identifiers) {
-        final CBORMap identifiersMap = new CBORMap();
+    protected CBORValue createIdentifiersMap(List<byte[]> identifiers) {
+        final CBORValue.CBORMapEditor identifiersMap = CBOR.map();
         if (Utils.isCollectionNotEmpty(identifiers)) {
-            identifiers.forEach(i -> identifiersMap.put(i, new CBORMap()));
+            identifiers.forEach(i -> identifiersMap.put(i, CBOR.map().value()));
         }
-        return identifiersMap;
+        return identifiersMap.value();
     }
 
 }

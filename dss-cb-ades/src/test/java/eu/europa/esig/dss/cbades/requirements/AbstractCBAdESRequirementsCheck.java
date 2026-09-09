@@ -20,14 +20,10 @@
  */
 package eu.europa.esig.dss.cbades.requirements;
 
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.cbades.COSEHeaderParameter;
-import eu.europa.esig.dss.cbades.cbor.CBORArray;
-import eu.europa.esig.dss.cbades.cbor.CBORByteString;
-import eu.europa.esig.dss.cbades.cbor.CBORMap;
-import eu.europa.esig.dss.cbades.cbor.CBORObject;
-import eu.europa.esig.dss.cbades.cbor.CBORObjectFactory;
-import eu.europa.esig.dss.cbades.cbor.CBORSimpleObject;
 import eu.europa.esig.dss.cbades.cbor.CBORUtils;
+import eu.europa.esig.dss.cbades.cbor.CBORValueFactory;
 import eu.europa.esig.dss.cbades.signature.AbstractCBAdESTestSignature;
 import eu.europa.esig.dss.cbades.signature.CBAdESService;
 import eu.europa.esig.dss.cbades.signature.CBAdESSignatureParameters;
@@ -44,13 +40,13 @@ import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.utils.Utils;
 import org.junit.jupiter.api.BeforeEach;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -63,7 +59,7 @@ public abstract class AbstractCBAdESRequirementsCheck extends AbstractCBAdESTest
     private CBAdESSignatureParameters signatureParameters;
 
     @BeforeEach
-    void init() throws Exception {
+    void init() {
         service = new CBAdESService(getCompleteCertificateVerifier());
         service.setTspSource(getGoodTsa());
 
@@ -81,16 +77,16 @@ public abstract class AbstractCBAdESRequirementsCheck extends AbstractCBAdESTest
         super.onDocumentSigned(byteArray);
 
         try {
-            CBORByteString payload = getPayload(byteArray);
+            CBORValue payload = getPayload(byteArray);
             checkPayload(payload);
 
-            CBORByteString protectedHeader = getProtectedHeader(byteArray);
+            CBORValue protectedHeader = getProtectedHeader(byteArray);
             checkProtectedHeader(protectedHeader);
 
-            CBORByteString signatureValue = getSignatureValue(byteArray);
+            CBORValue signatureValue = getSignatureValue(byteArray);
             checkSignatureValue(signatureValue);
 
-            CBORMap unprotectedHeader = getUnprotectedHeader(byteArray);
+            CBORValue unprotectedHeader = getUnprotectedHeader(byteArray);
             checkUnprotectedHeader(unprotectedHeader);
 
         } catch (Exception e) {
@@ -98,28 +94,27 @@ public abstract class AbstractCBAdESRequirementsCheck extends AbstractCBAdESTest
         }
     }
 
-    protected abstract CBORByteString getPayload(byte[] byteArray) throws Exception;
+    protected abstract CBORValue getPayload(byte[] byteArray) throws Exception;
 
-    protected abstract CBORByteString getProtectedHeader(byte[] byteArray) throws Exception;
+    protected abstract CBORValue getProtectedHeader(byte[] byteArray) throws Exception;
 
-    protected abstract CBORByteString getSignatureValue(byte[] byteArray) throws Exception;
+    protected abstract CBORValue getSignatureValue(byte[] byteArray) throws Exception;
 
-    protected abstract CBORMap getUnprotectedHeader(byte[] byteArray) throws Exception;
+    protected abstract CBORValue getUnprotectedHeader(byte[] byteArray) throws Exception;
 
-    protected void checkPayload(CBORByteString payload) {
+    protected void checkPayload(CBORValue payload) {
         assertNotNull(payload);
-        assertTrue(Utils.isArrayNotEmpty(payload.getValueAsBytes()));
+        assertTrue(Utils.isArrayNotEmpty(payload.asBytes()));
     }
 
-    protected void checkProtectedHeader(CBORByteString protectedHeader) {
+    protected void checkProtectedHeader(CBORValue protectedHeader) {
         assertNotNull(protectedHeader);
-        assertTrue(Utils.isArrayNotEmpty(protectedHeader.getValueAsBytes()));
+        assertTrue(Utils.isArrayNotEmpty(protectedHeader.asBytes()));
 
-        CBORObject protectedHeaderObject = CBORUtils.parseCbor(protectedHeader.getValueAsBytes());
-        assertTrue(protectedHeaderObject.isMap());
+        CBORValue protectedHeaderMap = CBORUtils.parseCbor(protectedHeader.asBytes());
+        assertTrue(protectedHeaderMap.isMap());
 
-        CBORMap protectedHeaderMap = (CBORMap) protectedHeaderObject;
-        assertFalse(protectedHeaderMap.isEmpty());
+        assertTrue(protectedHeaderMap.size() > 0);
 
         checkSigningCertificate(protectedHeaderMap);
         checkCertificateChain(protectedHeaderMap);
@@ -128,69 +123,67 @@ public abstract class AbstractCBAdESRequirementsCheck extends AbstractCBAdESTest
         checkCrit(protectedHeaderMap);
     }
 
-    protected void checkSigningCertificate(CBORMap protectedHeaderMap) {
-        CBORArray x5t = protectedHeaderMap.getAsArray(CBORObjectFactory.toCBORObject(34L));
-        CBORArray x5ts = protectedHeaderMap.getAsArray(CBORObjectFactory.toCBORObject(261L));
+    protected void checkSigningCertificate(CBORValue protectedHeaderMap) {
+        CBORValue x5t = protectedHeaderMap.getAsArrayOrNull(CBORValueFactory.toCBORValue(34L));
+        CBORValue x5ts = protectedHeaderMap.getAsArrayOrNull(CBORValueFactory.toCBORValue(261L));
         assertTrue(x5t != null ^ x5ts != null);
 
         if (x5t != null) {
-            Long hashAlg = x5t.getAsLong(0);
+            BigInteger hashAlg = x5t.getAsIntegerOrNull(0);
             assertNotNull(hashAlg);
-            assertNotNull(DigestAlgorithm.forCOSE(hashAlg));
+            assertNotNull(DigestAlgorithm.forCOSE(hashAlg.longValue()));
 
-            byte[] hashVal = x5t.getAsBinaries(1);
+            byte[] hashVal = x5t.getAsBytesOrNull(1);
             assertNotNull(hashVal);
             assertTrue(Utils.isArrayNotEmpty(hashVal));
         }
 
         if (x5ts != null) {
-            assertFalse(x5ts.isEmpty());
+            assertTrue(x5ts.size() > 0);
 
-            for (CBORObject cborObject : x5ts.getValueAsList()) {
-                assertTrue(cborObject.isArray());
-                CBORArray x5tItem = (CBORArray) cborObject;
+            for (CBORValue x5tItem : x5ts.getElements()) {
+                assertTrue(x5tItem.isArray());
 
-                Long hashAlg = x5tItem.getAsLong(0);
+                BigInteger hashAlg = x5tItem.getAsIntegerOrNull(0);
                 assertNotNull(hashAlg);
-                assertNotNull(DigestAlgorithm.forCOSE(hashAlg));
+                assertNotNull(DigestAlgorithm.forCOSE(hashAlg.longValue()));
 
-                byte[] hashVal = x5tItem.getAsBinaries(1);
+                byte[] hashVal = x5tItem.getAsBytesOrNull(1);
                 assertNotNull(hashVal);
                 assertTrue(Utils.isArrayNotEmpty(hashVal));
             }
         }
     }
 
-    private void checkCertificateChain(CBORMap protectedHeaderMap) {
-        CBORArray x5chain = protectedHeaderMap.getAsArray(CBORObjectFactory.toCBORObject(33L));
+    private void checkCertificateChain(CBORValue protectedHeaderMap) {
+        CBORValue x5chain = protectedHeaderMap.getAsArrayOrNull(CBORValueFactory.toCBORValue(33L));
         assertNotNull(x5chain);
-        assertFalse(x5chain.isEmpty());
-        for (CBORObject certObject : x5chain.getValueAsList()) {
-            assertNotNull(certObject);
-            assertTrue(certObject.isByteString());
+        assertTrue(x5chain.size() > 0);
+        for (CBORValue cert : x5chain.getElements()) {
+            assertNotNull(cert);
+            assertTrue(cert.isByteString());
 
-            CBORByteString cert = (CBORByteString) certObject;
-            assertTrue(Utils.isArrayNotEmpty(cert.getValueAsBytes()));
-            CertificateToken certificateToken = DSSUtils.loadCertificate(cert.getValueAsBytes());
+            assertTrue(Utils.isArrayNotEmpty(cert.asBytes()));
+            CertificateToken certificateToken = DSSUtils.loadCertificate(cert.asBytes());
             assertNotNull(certificateToken);
         }
     }
 
-    protected void checkSigningTime(CBORMap protectedHeaderMap) {
-        CBORMap cwtClaim = protectedHeaderMap.getAsMap(CBORObjectFactory.toCBORObject(15L));
+    protected void checkSigningTime(CBORValue protectedHeaderMap) {
+        CBORValue cwtClaim = protectedHeaderMap.getAsMapOrNull(CBORValueFactory.toCBORValue(15L));
         assertNotNull(cwtClaim);
 
-        Long iat = cwtClaim.getAsLong(CBORObjectFactory.toCBORObject(6L));
+        BigInteger iat = cwtClaim.getAsIntegerOrNull(CBORValueFactory.toCBORValue(6L));
         assertNotNull(iat);
 
-        Date date = new Date(iat * 1000L);
+        Date date = new Date(iat.longValue() * 1000L);
         assertNotNull(date);
-        assertEquals(signatureParameters.bLevel().getSigningDate().getTime() / 1000L, iat);
+        assertEquals(signatureParameters.bLevel().getSigningDate().getTime() / 1000L, iat.longValue());
     }
 
-    protected void checkContentType(CBORMap protectedHeaderMap) {
-        String contentType = protectedHeaderMap.getAsString(CBORObjectFactory.toCBORObject(3L));
-        CBORMap sigD = protectedHeaderMap.getAsMap(CBORObjectFactory.toCBORObject(267L));
+    protected void checkContentType(CBORValue protectedHeaderMap) {
+        String contentType = protectedHeaderMap.getAsStringOrNull(CBORValueFactory.toCBORValue(3L));
+        CBORValue sigD = protectedHeaderMap.getAsMapOrNull(CBORValueFactory.toCBORValue(267L));
         assertTrue(contentType != null ^ sigD != null);
 
         if (contentType != null) {
@@ -198,68 +191,68 @@ public abstract class AbstractCBAdESRequirementsCheck extends AbstractCBAdESTest
             assertNotNull(MimeType.fromMimeTypeString(contentType));
         }
         if (sigD != null) {
-            String mId = sigD.getAsString(CBORObjectFactory.toCBORObject(1));
+            String mId = sigD.getAsStringOrNull(CBORValueFactory.toCBORValue(1));
             assertNotNull(mId);
             SigDMechanism sigDMechanism = SigDMechanism.forCBAdESUri(mId);
             assertNotNull(sigDMechanism);
 
-            CBORArray pars = sigD.getAsArray(CBORObjectFactory.toCBORObject(2));
+            CBORValue pars = sigD.getAsArrayOrNull(CBORValueFactory.toCBORValue(2));
             assertNotNull(pars);
-            assertFalse(pars.isEmpty());
-            for (CBORObject par : pars.getValueAsList()) {
-                assertTrue(par.isUnicodeString());
-                assertTrue(Utils.isStringNotEmpty(((CBORSimpleObject) par).getValueAsString()));
+            assertTrue(pars.size() > 0);
+            for (CBORValue par : pars.getElements()) {
+                assertTrue(par.isTextString());
+                assertTrue(Utils.isStringNotEmpty(par.asString()));
             }
 
             if (SigDMechanism.OBJECT_ID_BY_URI == sigDMechanism) {
-                Long hashM = sigD.getAsLong(CBORObjectFactory.toCBORObject(3));
+                BigInteger hashM = sigD.getAsIntegerOrNull(CBORValueFactory.toCBORValue(3));
                 assertNull(hashM);
 
-                CBORArray hashV = sigD.getAsArray(CBORObjectFactory.toCBORObject(4));
+                CBORValue hashV = sigD.getAsArrayOrNull(CBORValueFactory.toCBORValue(4));
                 assertNull(hashV);
 
             } else if (SigDMechanism.OBJECT_ID_BY_URI_HASH == sigDMechanism) {
-                Long hashM = sigD.getAsLong(CBORObjectFactory.toCBORObject(3));
+                BigInteger hashM = sigD.getAsIntegerOrNull(CBORValueFactory.toCBORValue(3));
                 assertNotNull(hashM);
-                assertNotNull(DigestAlgorithm.forCOSE(hashM));
+                assertNotNull(DigestAlgorithm.forCOSE(hashM.longValue()));
 
-                CBORArray hashV = sigD.getAsArray(CBORObjectFactory.toCBORObject(4));
+                CBORValue hashV = sigD.getAsArrayOrNull(CBORValueFactory.toCBORValue(4));
                 assertNotNull(hashV);
-                assertFalse(hashV.isEmpty());
-                for (CBORObject par : hashV.getValueAsList()) {
+                assertTrue(hashV.size() > 0);
+                for (CBORValue par : hashV.getElements()) {
                     assertTrue(par.isByteString());
-                    assertTrue(Utils.isArrayNotEmpty(((CBORByteString) par).getValueAsBytes()));
+                    assertTrue(Utils.isArrayNotEmpty(par.asBytes()));
                 }
 
             }
 
-            CBORArray ctys = sigD.getAsArray(CBORObjectFactory.toCBORObject(5));
+            CBORValue ctys = sigD.getAsArrayOrNull(CBORValueFactory.toCBORValue(5));
             assertNotNull(ctys);
-            assertFalse(ctys.isEmpty());
-            for (CBORObject cty : ctys.getValueAsList()) {
-                assertTrue(cty.isUnicodeString());
-                assertTrue(Utils.isStringNotEmpty(((CBORSimpleObject) cty).getValueAsString()));
+            assertTrue(ctys.size() > 0);
+            for (CBORValue cty : ctys.getElements()) {
+                assertTrue(cty.isTextString());
+                assertTrue(Utils.isStringNotEmpty(cty.asString()));
             }
 
         }
     }
 
-    private void checkCrit(CBORMap protectedHeaderMap) {
-        List<CBORObject> includedHeaders = Collections.singletonList(CBORObjectFactory.toCBORObject(267L)); // sigD
+    private void checkCrit(CBORValue protectedHeaderMap) {
+        List<CBORValue> includedHeaders = Collections.singletonList(CBORValueFactory.toCBORValue(267L)); // sigD
 
-        List<CBORObject> presentHeaders = new ArrayList<>();
-        for (CBORObject protectedHeaderKey : protectedHeaderMap.getKeys()) {
+        List<CBORValue> presentHeaders = new ArrayList<>();
+        for (CBORValue protectedHeaderKey : protectedHeaderMap.getKeys()) {
             if (includedHeaders.contains(protectedHeaderKey)) {
                 presentHeaders.add(protectedHeaderKey);
             }
         }
 
-        CBORArray crit = protectedHeaderMap.getAsArray(CBORObjectFactory.toCBORObject(2L));
+        CBORValue crit = protectedHeaderMap.getAsArrayOrNull(CBORValueFactory.toCBORValue(2L));
         if (Utils.isCollectionNotEmpty(presentHeaders)) {
             assertNotNull(crit);
-            assertFalse(crit.isEmpty());
+            assertTrue(crit.size() > 0);
 
-            for (CBORObject critEntry : crit.getValueAsList()) {
+            for (CBORValue critEntry : crit.getElements()) {
                 assertNotNull(critEntry);
                 assertTrue(critEntry.isUnsignedInteger() || critEntry.isNegativeInteger());
                 assertTrue(includedHeaders.contains(critEntry));
@@ -267,12 +260,12 @@ public abstract class AbstractCBAdESRequirementsCheck extends AbstractCBAdESTest
         }
     }
 
-    protected void checkSignatureValue(CBORByteString signatureValue) {
+    protected void checkSignatureValue(CBORValue signatureValue) {
         assertNotNull(signatureValue);
-        assertTrue(Utils.isArrayNotEmpty(signatureValue.getValueAsBytes()));
+        assertTrue(Utils.isArrayNotEmpty(signatureValue.asBytes()));
     }
 
-    protected void checkUnprotectedHeader(CBORMap unprotectedHeaderMap) throws Exception {
+    protected void checkUnprotectedHeader(CBORValue unprotectedHeaderMap) {
         assertNotNull(unprotectedHeaderMap);
 
         checkSignatureTimestamp(unprotectedHeaderMap);
@@ -283,29 +276,28 @@ public abstract class AbstractCBAdESRequirementsCheck extends AbstractCBAdESTest
         checkArchiveTimestamp(unprotectedHeaderMap);
     }
 
-    protected void checkSignatureTimestamp(CBORMap unprotectedHeader) {
-        CBORObject sigTst = getUHeadersElement(unprotectedHeader, COSEHeaderParameter.SIG_TST.cbor());
+    protected void checkSignatureTimestamp(CBORValue unprotectedHeader) {
+        CBORValue sigTst = getUHeadersElement(unprotectedHeader, COSEHeaderParameter.SIG_TST.cbor());
         checkTstContainer(sigTst);
     }
 
-    protected CBORObject getUHeadersElement(CBORMap bodyUnprotectedHeader, CBORObject headerId) {
-        CBORObject uHeaders = bodyUnprotectedHeader.getHeader(COSEHeaderParameter.U_HEADERS.cbor());
+    protected CBORValue getUHeadersElement(CBORValue bodyUnprotectedHeader, CBORValue headerId) {
+        CBORValue uHeaders = bodyUnprotectedHeader.get(COSEHeaderParameter.U_HEADERS.cbor());
         assertNotNull(uHeaders);
         assertTrue(uHeaders.isArray());
-        CBORArray uHeadersArray = (CBORArray) uHeaders;
-        for (CBORObject uHeadersItem : uHeadersArray.getValueAsList()) {
-            CBORMap map = null;
+        for (CBORValue uHeadersItem : uHeaders.getElements()) {
+            CBORValue map = null;
             if (uHeadersItem.isByteString()) {
-                byte[] decoded = uHeadersItem.getValueAsBytes();
-                CBORObject parsed = CBORUtils.parseCbor(decoded);
+                byte[] decoded = uHeadersItem.asBytes();
+                CBORValue parsed = CBORUtils.parseCbor(decoded);
                 assertTrue(parsed.isMap());
-                map = (CBORMap) parsed;
+                map = parsed;
             } else if (uHeadersItem.isMap()) {
-                map = (CBORMap) uHeadersItem;
+                map = uHeadersItem;
             } else {
                 fail(String.format("The type of component '%s' of 'uHeaders' property is not supported!", uHeadersItem.getClass().getName()));
             }
-            CBORObject value = map.getHeader(headerId);
+            CBORValue value = map.get(headerId);
             if (value != null) {
                 return value;
             }
@@ -314,98 +306,86 @@ public abstract class AbstractCBAdESRequirementsCheck extends AbstractCBAdESTest
         return null;
     }
 
-    protected void checkValidationData(CBORMap unprotectedHeaderMap) {
-        CBORObject valData = getUHeadersElement(unprotectedHeaderMap, COSEHeaderParameter.VAL_DATA.cbor());
+    protected void checkValidationData(CBORValue unprotectedHeaderMap) {
+        CBORValue valData = getUHeadersElement(unprotectedHeaderMap, COSEHeaderParameter.VAL_DATA.cbor());
         assertNotNull(valData);
         assertTrue(valData.isMap());
 
-        CBORMap valDataMap = (CBORMap) valData;
-
-        CBORObject xVals = valDataMap.getHeader(COSEHeaderParameter.VAL_DATA_X_VALS.cbor());
+        CBORValue xVals = valData.get(COSEHeaderParameter.VAL_DATA_X_VALS.cbor());
         assertNotNull(xVals);
         assertTrue(xVals.isArray());
 
-        CBORArray xValsArray = (CBORArray) xVals;
-        assertFalse(xValsArray.isEmpty());
+        assertTrue(xVals.size() > 0);
 
-        for (CBORObject xValsItem : xValsArray.getValueAsList()) {
-            assertTrue(xValsItem.isMap());
-            CBORMap x509OrOther = (CBORMap) xValsItem;
-            CBORObject x509Cert = x509OrOther.getHeader(COSEHeaderParameter.X509_OR_OTHER_X509_CERT.cbor());
+        for (CBORValue x509OrOther : xVals.getElements()) {
+            assertTrue(x509OrOther.isMap());
+            CBORValue x509Cert = x509OrOther.get(COSEHeaderParameter.X509_OR_OTHER_X509_CERT.cbor());
             checkPkiOb(x509Cert);
         }
 
-        CBORObject rVals = valDataMap.getHeader(COSEHeaderParameter.VAL_DATA_R_VALS.cbor());
+        CBORValue rVals = valData.get(COSEHeaderParameter.VAL_DATA_R_VALS.cbor());
         assertNotNull(rVals);
         assertTrue(rVals.isMap());
 
-        CBORMap rValsMap = (CBORMap) rVals;
-
-        CBORObject crlVals = rValsMap.getHeader(COSEHeaderParameter.R_VALS_CRL_VALS.cbor());
+        CBORValue crlVals = rVals.get(COSEHeaderParameter.R_VALS_CRL_VALS.cbor());
         assertNotNull(crlVals);
         assertTrue(crlVals.isArray());
 
-        CBORArray crlValsArray = (CBORArray) crlVals;
-        assertFalse(crlValsArray.isEmpty());
-        for (CBORObject crlValsItem : crlValsArray.getValueAsList()) {
+        assertTrue(crlVals.size() > 0);
+        for (CBORValue crlValsItem : crlVals.getElements()) {
             checkPkiOb(crlValsItem);
         }
-        CBORObject ocspVals = rValsMap.getHeader(COSEHeaderParameter.R_VALS_OCSP_VALS.cbor());
+        CBORValue ocspVals = rVals.get(COSEHeaderParameter.R_VALS_OCSP_VALS.cbor());
         assertNotNull(ocspVals);
         assertTrue(ocspVals.isArray());
 
-        CBORArray ocspValsArray = (CBORArray) ocspVals;
-        assertFalse(ocspValsArray.isEmpty());
-        for (CBORObject ocspValsItem : ocspValsArray.getValueAsList()) {
+        assertTrue(ocspVals.size() > 0);
+        for (CBORValue ocspValsItem : ocspVals.getElements()) {
             checkPkiOb(ocspValsItem);
         }
     }
 
-    protected void checkPkiOb(CBORObject pkiOb) {
+    protected void checkPkiOb(CBORValue pkiOb) {
         assertNotNull(pkiOb);
         assertTrue(pkiOb.isMap());
-        CBORMap pkiObMap = (CBORMap) pkiOb;
-        byte[] binaries = pkiObMap.getAsBinaries(COSEHeaderParameter.PKI_OB_VAL.cbor());
+        byte[] binaries = pkiOb.getAsBytesOrNull(COSEHeaderParameter.PKI_OB_VAL.cbor());
         assertNotNull(binaries);
     }
 
-    protected void checkReferences(CBORMap unprotectedHeaderMap) {
-        CBORObject refs = getUHeadersElement(unprotectedHeaderMap, COSEHeaderParameter.REFS.cbor());
+    protected void checkReferences(CBORValue unprotectedHeaderMap) {
+        CBORValue refs = getUHeadersElement(unprotectedHeaderMap, COSEHeaderParameter.REFS.cbor());
         assertNull(refs);
     }
 
-    protected void checkSigAndRefTimestamps(CBORMap unprotectedHeaderMap) {
-        CBORObject sigRTst = getUHeadersElement(unprotectedHeaderMap, COSEHeaderParameter.SIG_R_TST.cbor());
+    protected void checkSigAndRefTimestamps(CBORValue unprotectedHeaderMap) {
+        CBORValue sigRTst = getUHeadersElement(unprotectedHeaderMap, COSEHeaderParameter.SIG_R_TST.cbor());
         assertNull(sigRTst);
     }
 
-    protected void checkRefTimestamps(CBORMap unprotectedHeaderMap) {
-        CBORObject rfsTst = getUHeadersElement(unprotectedHeaderMap, COSEHeaderParameter.RFS_TST.cbor());
+    protected void checkRefTimestamps(CBORValue unprotectedHeaderMap) {
+        CBORValue rfsTst = getUHeadersElement(unprotectedHeaderMap, COSEHeaderParameter.RFS_TST.cbor());
         assertNull(rfsTst);
     }
 
-    protected void checkArchiveTimestamp(CBORMap unprotectedHeaderMap) {
-        CBORObject arcTst = getUHeadersElement(unprotectedHeaderMap, COSEHeaderParameter.ARC_TST.cbor());
+    protected void checkArchiveTimestamp(CBORValue unprotectedHeaderMap) {
+        CBORValue arcTst = getUHeadersElement(unprotectedHeaderMap, COSEHeaderParameter.ARC_TST.cbor());
         checkTstContainer(arcTst);
     }
 
-    protected void checkTstContainer(CBORObject tstContainer) {
+    protected void checkTstContainer(CBORValue tstContainer) {
         assertNotNull(tstContainer);
         assertTrue(tstContainer.isMap());
-        CBORMap tstContainerMap = (CBORMap) tstContainer;
-        CBORObject tstTokens = tstContainerMap.getHeader(COSEHeaderParameter.TST_CONTAINER_TST_TOKENS.cbor());
+        CBORValue tstTokens = tstContainer.get(COSEHeaderParameter.TST_CONTAINER_TST_TOKENS.cbor());
         assertNotNull(tstTokens);
         assertTrue(tstTokens.isArray());
 
-        CBORArray tstTokensArray = (CBORArray) tstTokens;
-        assertEquals(1, tstTokensArray.getSize());
-        checkTstToken(tstTokensArray.getItem(0));
+        assertEquals(1, tstTokens.size());
+        checkTstToken(tstTokens.get(0));
     }
 
-    protected void checkTstToken(CBORObject tstToken) {
+    protected void checkTstToken(CBORValue tstToken) {
         assertTrue(tstToken.isMap());
-        CBORMap tstTokenMap = (CBORMap) tstToken;
-        assertNotNull(tstTokenMap.getAsBinaries(COSEHeaderParameter.TST_TOKEN_VAL.cbor()));
+        assertNotNull(tstToken.getAsBytesOrNull(COSEHeaderParameter.TST_TOKEN_VAL.cbor()));
     }
 
     @Override
