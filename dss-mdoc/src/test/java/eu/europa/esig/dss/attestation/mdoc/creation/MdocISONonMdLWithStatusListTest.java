@@ -45,6 +45,8 @@ public class MdocISONonMdLWithStatusListTest extends AbstractMdocIssuerSignedTes
         payloadParameters = new MdocPayloadParameters();
         payloadParameters.setDocType(MdocConstants.ISO23220_1_MID_DOC_TYPE);
         payloadParameters.setDeviceKey(getSigningCert());
+        payloadParameters.selectivelyDisclosable().setGivenName("John");
+        payloadParameters.selectivelyDisclosable().setFamilyName("Doe");
 
         payloadParameters.setStatusList(0, "https://dss.nowina.lu/pki-factory/eaa/status_list");
 

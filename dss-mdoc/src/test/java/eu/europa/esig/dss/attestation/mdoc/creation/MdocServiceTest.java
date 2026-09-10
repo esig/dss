@@ -46,6 +46,7 @@ import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -149,6 +150,9 @@ class MdocServiceTest extends PKIFactoryAccess {
         exception = assertThrows(IllegalArgumentException.class, () -> service.getDataToSign(payloadParameters, params));
         assertEquals("MSO shall be signed by ECDSA or EDDSA algorithm! Obtained value : 'RSASSA_PSS'", exception.getMessage());
 
+        exception = assertThrows(IllegalArgumentException.class, () -> service.getDataToSign(new MdocPayloadParameters(), signatureParameters));
+        assertEquals("No selectively disclosable claims were defined! Please provide at least one for a compliant mdoc creation.", exception.getMessage());
+
         ToBeSigned dataToSign = service.getDataToSign(payloadParameters, signatureParameters);
         assertNotNull(dataToSign);
 
@@ -159,6 +163,9 @@ class MdocServiceTest extends PKIFactoryAccess {
 
         exception = assertThrows(NullPointerException.class, () -> service.signAttestation(payloadParameters, null, signatureValue));
         assertEquals("signatureParameters cannot be null!", exception.getMessage());
+
+        exception = assertThrows(IllegalArgumentException.class, () ->  service.signAttestation(new MdocPayloadParameters(), signatureParameters, signatureValue));
+        assertEquals("No selectively disclosable claims were defined! Please provide at least one for a compliant mdoc creation.", exception.getMessage());
 
         DSSDocument signedAttestation = service.signAttestation(payloadParameters, signatureParameters, signatureValue);
         assertNotNull(signedAttestation);
@@ -171,14 +178,16 @@ class MdocServiceTest extends PKIFactoryAccess {
         assertEquals("MdocPayloadParameters cannot be null!", exception.getMessage());
 
         MdocPayloadParameters params = new MdocPayloadParameters();
-        List<MdocIssuerSignedItem> disclosures = service.generateDisclosures(params);
-        assertNotNull(disclosures);
-        assertTrue(disclosures.isEmpty());
+
+        exception = assertThrows(IllegalArgumentException.class, () -> service.generateDisclosures(params));
+        assertEquals("No selectively disclosable claims were defined! Please provide at least one for a compliant mdoc creation.", exception.getMessage());
 
         params.selectivelyDisclosable().setGivenName("John");
         params.selectivelyDisclosable().setFamilyName("Doe");
-        disclosures = service.generateDisclosures(params);
+
+        List<MdocIssuerSignedItem> disclosures = service.generateDisclosures(params);
         assertNotNull(disclosures);
+        assertFalse(disclosures.isEmpty());
         assertEquals(2, disclosures.size());
         for (MdocIssuerSignedItem disclosure : disclosures) {
             assertNotNull(disclosure.getNamespace());
