@@ -34,8 +34,6 @@ import org.junit.jupiter.api.BeforeEach;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MdocISONonMdLWithStatusListTest extends AbstractMdocIssuerSignedTestCreation {
 
@@ -47,6 +45,8 @@ public class MdocISONonMdLWithStatusListTest extends AbstractMdocIssuerSignedTes
         payloadParameters = new MdocPayloadParameters();
         payloadParameters.setDocType(MdocConstants.ISO23220_1_MID_DOC_TYPE);
         payloadParameters.setDeviceKey(getSigningCert());
+        payloadParameters.selectivelyDisclosable().setGivenName("John");
+        payloadParameters.selectivelyDisclosable().setFamilyName("Doe");
 
         payloadParameters.setStatusList(0, "https://dss.nowina.lu/pki-factory/eaa/status_list");
 
@@ -80,19 +80,6 @@ public class MdocISONonMdLWithStatusListTest extends AbstractMdocIssuerSignedTes
     @Override
     protected CBAdESSignatureParameters getSignatureParameters() {
         return signatureParameters;
-    }
-
-    @Override
-    protected boolean disclosuresPresent() {
-        return false;
-    }
-
-    @Override
-    protected void checkAttestationStructure(DiagnosticData diagnosticData) {
-        AttestationWrapper attestation = diagnosticData.getAttestationById(diagnosticData.getFirstAttestationId());
-        assertFalse(attestation.isStructuralValidationValid());
-        assertEquals(1, attestation.getStructuralValidationMessages().size());
-        assertTrue(attestation.getStructuralValidationMessages().get(0).contains("Expected at least 1 key(s) matching NameSpace but found 0"));
     }
 
     @Override

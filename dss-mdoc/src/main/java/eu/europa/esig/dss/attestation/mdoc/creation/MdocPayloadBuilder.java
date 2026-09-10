@@ -181,6 +181,10 @@ public class MdocPayloadBuilder extends AbstractAttestationSDPayloadBuilder<Mdoc
     protected Map<String, List<MdocClaim>> getRootPayloadClaims(MdocPayloadParameters payloadParameters) {
         MdocClaimsBuilder mdocClaimsBuilder = getMdocClaimProviderFactory().create(payloadParameters);
         List<MdocClaim> claims = mdocClaimsBuilder.buildClaims(payloadParameters);
+        if (Utils.isCollectionEmpty(claims)) {
+            throw new IllegalArgumentException("No selectively disclosable claims were defined! " +
+                    "Please provide at least one for a compliant mdoc creation.");
+        }
         return claims.stream().collect(Collectors.groupingBy(
                 MdocClaim::getNamespace, LinkedHashMap::new, Collectors.toList()));
     }
