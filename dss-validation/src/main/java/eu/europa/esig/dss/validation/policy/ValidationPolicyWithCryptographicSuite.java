@@ -1209,6 +1209,11 @@ public class ValidationPolicyWithCryptographicSuite implements ValidationPolicy 
     }
 
     @Override
+    public LevelRule getAttestationStructuralValidationConstraint() {
+        return validationPolicy.getAttestationStructuralValidationConstraint();
+    }
+
+    @Override
     public LevelRule getAttestationETSI194721ConformanceConstraint() {
         return validationPolicy.getAttestationETSI194721ConformanceConstraint();
     }

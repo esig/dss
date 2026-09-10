@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.validation;
 
+import eu.europa.esig.dss.diagnostic.AttestationWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateRefWrapper;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
@@ -30,6 +31,7 @@ import eu.europa.esig.validationreport.jaxb.SignatureIdentifierType;
 import eu.europa.esig.validationreport.jaxb.SignerInformationType;
 import eu.europa.esig.validationreport.jaxb.SignersDocumentType;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -123,6 +125,14 @@ class MdocRefImplValidationTest extends AbstractMdocAttestationPresentationTestV
     @Override
     protected void validateETSISignersDocument(SignersDocumentType signersDocument) {
         // skip
+    }
+
+    @Override
+    protected void checkAttestationStructure(DiagnosticData diagnosticData) {
+        AttestationWrapper attestation = diagnosticData.getAttestationById(diagnosticData.getFirstAttestationId());
+        assertFalse(attestation.isStructuralValidationValid());
+        assertEquals(1, attestation.getStructuralValidationMessages().size());
+        assertTrue(attestation.getStructuralValidationMessages().get(0).contains("Expected bstr (byte string) but got tstr (text string)"));
     }
 
 }

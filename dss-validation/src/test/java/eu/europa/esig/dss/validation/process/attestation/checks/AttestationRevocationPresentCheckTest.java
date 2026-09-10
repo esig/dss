@@ -40,7 +40,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class RevocationPresentCheckTest extends AbstractTestCheck {
+class AttestationRevocationPresentCheckTest extends AbstractTestCheck {
 
     @Test
     void validTest() {

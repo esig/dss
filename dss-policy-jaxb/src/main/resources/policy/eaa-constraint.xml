@@ -346,6 +346,7 @@
         <DisclosureIntact Level="FAIL" />
         <KeyBindingSignaturePresent Level="WARN" />
         <KeyBindingSignatureValid Level="FAIL" />
+        <StructuralValidation Level="WARN" />
         <ETSI194721Conformance Level="WARN" />
         <AttestationType Level="WARN">
             <Id>*</Id>

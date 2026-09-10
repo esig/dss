@@ -22,8 +22,10 @@ package eu.europa.esig.dss.attestation.mdoc.validation;
 
 import eu.europa.esig.dss.attestation.common.validation.AttestationPayloadVerifier;
 import eu.europa.esig.dss.attestation.common.validation.DefaultAttestation;
+import eu.europa.esig.dss.attestation.mdoc.MdocUtils;
 import eu.europa.esig.dss.attestation.mdoc.model.MdocDeviceNameSpaces;
 import eu.europa.esig.dss.attestation.mdoc.model.MdocDocument;
+import eu.europa.esig.dss.attestation.mdoc.model.MdocIssuerSigned;
 import eu.europa.esig.dss.cbades.validation.CBAdESSignature;
 import eu.europa.esig.dss.enumerations.AttestationProfile;
 import eu.europa.esig.dss.model.attestation.SelectiveDisclosure;
@@ -39,8 +41,17 @@ import java.util.List;
  */
 public class MdocAttestation extends DefaultAttestation {
 
-    /** Document mdoc object enveloping the attestation */
+    /**
+     * Document mdoc object enveloping the attestation
+     * NOTE: Used when an Attestation Presentation is provided as an input
+     */
     private MdocDocument document;
+
+    /**
+     * Issuer signed representing the attestation
+     * NOTE: Used when attestation is directly provided as an input
+     */
+    private MdocIssuerSigned issuerSigned;
 
     /**
      * Default constructor
@@ -76,6 +87,27 @@ public class MdocAttestation extends DefaultAttestation {
         this.document = document;
     }
 
+    /**
+     * Gets the Issuer Signed
+     *
+     * @return {@link MdocIssuerSigned}
+     */
+    public MdocIssuerSigned getIssuerSigned() {
+        if (issuerSigned != null) {
+            return issuerSigned;
+        }
+        return document.getIssuerSigned();
+    }
+
+    /**
+     * Sets the Issuer Signed
+     *
+     * @param issuerSigned {@link MdocIssuerSigned}
+     */
+    public void setIssuerSigned(MdocIssuerSigned issuerSigned) {
+        this.issuerSigned = issuerSigned;
+    }
+
     @Override
     public AttestationProfile getAttestationProfile() {
         return AttestationProfile.ISO_IEC_MDOC;
@@ -104,14 +136,28 @@ public class MdocAttestation extends DefaultAttestation {
         return new MdocKeyBindingSignaturePayload(deviceNameSpaces.getNamespaces());
     }
 
+    @Override
+    protected List<String> validateStructure() {
+        return MdocUtils.validateAgainstMdocAttestationSchema(this);
+    }
+
     /**
      * This class is used to build a {@code eu.europa.esig.dss.attestation.mdoc.validation.Mdoc} object
      *
      */
     public static class MdocAttestationBuilder extends DefaultAttestationBuilder {
 
-        /** Document mdoc object enveloping the attestation */
+        /**
+         * Document mdoc object enveloping the attestation
+         * NOTE: Used when an Attestation Presentation is provided as an input
+         */
         private MdocDocument document;
+
+        /**
+         * Issuer signed representing the attestation
+         * NOTE: Used when attestation is directly provided as an input
+         */
+        private MdocIssuerSigned issuerSigned;
 
         /**
          * Default constructor
@@ -141,13 +187,24 @@ public class MdocAttestation extends DefaultAttestation {
         }
 
         /**
-         * Sets the mdoc docType
+         * Sets the mdoc Document
          *
-         * @param document {@link String}
+         * @param document {@link MdocDocument}
          * @return {@link MdocAttestationBuilder}
          */
         public MdocAttestationBuilder setDocument(MdocDocument document) {
             this.document = document;
+            return this;
+        }
+
+        /**
+         * Sets the mdoc IssuerSigned
+         *
+         * @param issuerSigned {@link MdocIssuerSigned}
+         * @return {@link MdocAttestationBuilder}
+         */
+        public MdocAttestationBuilder setIssuerSigned(MdocIssuerSigned issuerSigned) {
+            this.issuerSigned = issuerSigned;
             return this;
         }
 
@@ -160,6 +217,7 @@ public class MdocAttestation extends DefaultAttestation {
         public MdocAttestation build() {
             MdocAttestation mdocAttestation = (MdocAttestation) super.build();
             mdocAttestation.setDocument(document);
+            mdocAttestation.setIssuerSigned(issuerSigned);
             return mdocAttestation;
         }
 

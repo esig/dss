@@ -76,4 +76,12 @@ class MdocAttestationPresentationNoSDWithDisclosuresTest extends AbstractMdocAtt
         return true;
     }
 
+    @Override
+    protected void checkAttestationStructure(DiagnosticData diagnosticData) {
+        AttestationWrapper attestation = diagnosticData.getAttestationById(diagnosticData.getFirstAttestationId());
+        assertFalse(attestation.isStructuralValidationValid());
+        assertEquals(1, attestation.getStructuralValidationMessages().size());
+        assertTrue(attestation.getStructuralValidationMessages().get(0).contains("Expected at least 1 key(s) matching NameSpace but found 0"));
+    }
+
 }

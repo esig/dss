@@ -1,0 +1,99 @@
+DeviceResponse = {
+    "version" : tstr,                   ; Version of the DeviceResponse structure
+    ? "documents" : [+Document],        ; Returned documents
+    ? "documentErrors": [+DocumentError]; For unreturned documents, optional error codes
+    "status" : uint                     ; Status code
+}
+Document = {
+    "docType" : DocType,                ; Document type returned
+    "issuerSigned" : IssuerSigned,      ; Returned data elements signed by the issuer
+    "deviceSigned" : DeviceSigned,      ; Returned data elements signed by the mdoc
+    ? "errors" : Errors
+}
+DocumentError = {
+    DocType => ErrorCode                ; Error codes for unreturned documents
+}
+IssuerSigned = {
+    ? "nameSpaces" : IssuerNameSpaces,  ; Returned data elements
+    "issuerAuth" : IssuerAuth           ; Contains the mobile security object (MSO)
+                                        ; for issuer data authentication
+}
+IssuerNameSpaces = {                    ; Returned data elements for each namespace
+    + NameSpace => [ + IssuerSignedItemBytes ]
+}
+IssuerSignedItemBytes = #6.24(bstr .cbor IssuerSignedItem)
+IssuerSignedItem = {
+    "digestID" : uint,                  ; Digest ID for issuer data authentication
+    "random" : bstr,                    ; Random value for issuer data authentication
+    "elementIdentifier" : DataElementIdentifier,    ; Data element identifier
+    "elementValue" : DataElementValue   ; Data element value
+}
+DeviceSigned = {
+    "nameSpaces" : DeviceNameSpacesBytes,   ; Returned data elements
+    "deviceAuth" : DeviceAuth               ; Contains the device authentication
+                                            ; for mdoc authentication
+}
+DeviceNameSpacesBytes = #6.24(bstr .cbor DeviceNameSpaces)
+DeviceNameSpaces = {
+    * NameSpace => DeviceSignedItems    ; Returned data elements for each namespace
+}
+DeviceSignedItems = {
+    + DataElementIdentifier => DataElementValue   ; Returned data element identifier and value
+}
+DeviceAuth = {          ; Either signature or MAC for mdoc authentication
+    "deviceSignature" : DeviceSignature //     ; "//" means or
+    "deviceMac" : DeviceMac
+}
+Errors = {
+    + NameSpace => ErrorItems               ; Error codes for each namespace
+}
+ErrorItems = {
+    + DataElementIdentifier => ErrorCode    ; Error code per data element
+}
+ErrorCode = int                             ; Error code
+
+IssuerAuth = COSE_Sign1
+DeviceMac = COSE_Mac0
+DeviceSignature = COSE_Sign1
+
+DocType = tstr
+NameSpace = tstr
+DataElementIdentifier = tstr    ; Data element identifier
+DataElementValue = any          ; Data element value
+
+COSE_Sign1 = [
+   Headers,
+   payload : bstr / nil,
+   signature : bstr
+]
+
+COSE_Mac0 = [
+  Headers,
+  payload : bstr / nil,
+  tag : bstr,
+]
+
+Headers = (
+   protected : empty_or_serialized_map,
+   unprotected : header_map
+)
+
+header_map = {
+   Generic_Headers,
+   * label => values
+}
+
+empty_or_serialized_map = bstr .cbor header_map / bstr .size 0
+
+Generic_Headers = (
+   ? 1 => int / tstr,  ; algorithm identifier
+   ? 2 => [+label],    ; criticality
+   ? 3 => tstr / int,  ; content type
+   ? 4 => bstr,        ; key identifier
+   ? 5 => bstr,        ; IV
+   ? 6 => bstr,        ; Partial IV
+   ? 7 => COSE_Signature / [+COSE_Signature] ; Counter signature
+)
+
+label = int / tstr
+values = any

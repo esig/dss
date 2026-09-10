@@ -17,6 +17,7 @@
             <DocumentName>document-signed-cb-ades-baseline-b-presentation.cbor</DocumentName>
             <DocumentType>org.iso.18013.5.1.mDL</DocumentType>
             <Profile>ISO_IEC_MDOC</Profile>
+            <StructuralValidation valid="true"/>
             <DigestMethod>SHA256</DigestMethod>
             <DigestMatchers>
                 <DigestMatcher type="SELECTIVE_DISCLOSURE">

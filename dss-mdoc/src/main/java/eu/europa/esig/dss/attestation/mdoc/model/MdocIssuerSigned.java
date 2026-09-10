@@ -20,6 +20,7 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.model;
 
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.attestation.mdoc.creation.MdocIssuerSignedItem;
 import eu.europa.esig.dss.cbades.COSESignStructure;
 
@@ -39,6 +40,11 @@ public class MdocIssuerSigned {
 
     /** Contains the issuer authentication signature */
     private COSESignStructure issuerAuth;
+
+    /**
+     * CBOR representation of the IssuerSigned
+     */
+    private CBORValue cborValue;
 
     /**
      * Default constructor
@@ -81,6 +87,24 @@ public class MdocIssuerSigned {
      */
     public void setIssuerAuth(COSESignStructure issuerAuth) {
         this.issuerAuth = issuerAuth;
+    }
+
+    /**
+     * Gets the CBOR Value of the Document
+     *
+     * @return {@link CBORValue}
+     */
+    public CBORValue getCborValue() {
+        return cborValue;
+    }
+
+    /**
+     * Sets the CBOR Value of the Document
+     *
+     * @param cborValue {@link CBORValue}
+     */
+    public void setCborValue(CBORValue cborValue) {
+        this.cborValue = cborValue;
     }
 
 }

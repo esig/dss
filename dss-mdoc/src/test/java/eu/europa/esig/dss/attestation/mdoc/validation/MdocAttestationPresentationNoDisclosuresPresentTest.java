@@ -34,6 +34,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MdocAttestationPresentationNoDisclosuresPresentTest extends AbstractMdocAttestationPresentationTestValidation {
 
@@ -69,6 +70,14 @@ class MdocAttestationPresentationNoDisclosuresPresentTest extends AbstractMdocAt
     @Override
     protected boolean orphanSelectiveDisclosuresPresent() {
         return true;
+    }
+
+    @Override
+    protected void checkAttestationStructure(DiagnosticData diagnosticData) {
+        AttestationWrapper attestation = diagnosticData.getAttestationById(diagnosticData.getFirstAttestationId());
+        assertFalse(attestation.isStructuralValidationValid());
+        assertEquals(1, attestation.getStructuralValidationMessages().size());
+        assertTrue(attestation.getStructuralValidationMessages().get(0).contains("Expected at least 1 key(s) matching NameSpace but found 0"));
     }
 
 }

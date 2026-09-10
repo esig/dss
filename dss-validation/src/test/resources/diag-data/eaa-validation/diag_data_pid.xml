@@ -6,6 +6,7 @@
         <Attestation Id="EAA-B011F0930552AB7B89D941C51FFDE7A769EA630B8DD5C926512C0870F637FE22">
             <DocumentName>simple-pid.jwt</DocumentName>
             <Profile>SD_JWT_VC</Profile>
+            <StructuralValidation valid="true"/>
             <DigestMatchers>
                 <DigestMatcher type="SELECTIVE_DISCLOSURE">
                     <DigestMethod>SHA256</DigestMethod>

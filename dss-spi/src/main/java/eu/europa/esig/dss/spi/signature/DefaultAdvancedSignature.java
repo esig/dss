@@ -480,7 +480,7 @@ public abstract class DefaultAdvancedSignature implements AdvancedSignature {
 
 	@Override
 	public List<String> getStructureValidationResult() {
-		if (Utils.isCollectionEmpty(structureValidationMessages)) {
+		if (structureValidationMessages == null) {
 			structureValidationMessages = validateStructure();
 		}
 		return structureValidationMessages;

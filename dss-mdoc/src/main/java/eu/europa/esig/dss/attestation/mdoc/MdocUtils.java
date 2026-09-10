@@ -24,6 +24,8 @@ import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
 import eu.europa.esig.dss.attestation.mdoc.claim.MdocVerifiedClaimArray;
 import eu.europa.esig.dss.attestation.mdoc.claim.MdocVerifiedClaimMap;
 import eu.europa.esig.dss.attestation.mdoc.creation.MdocIssuerSignedItem;
+import eu.europa.esig.dss.attestation.mdoc.model.MdocIssuerSigned;
+import eu.europa.esig.dss.attestation.mdoc.validation.MdocAttestation;
 import eu.europa.esig.dss.cbades.cbor.CBORObject;
 import eu.europa.esig.dss.model.attestation.claim.VerifiedClaim;
 import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimArray;
@@ -35,6 +37,8 @@ import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimNull;
 import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimNumber;
 import eu.europa.esig.dss.model.attestation.claim.VerifiedClaimString;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.mdoc.MdocDeviceResponseUtils;
+import eu.europa.esig.mdoc.MdocMobileSecurityObjectUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -212,6 +216,29 @@ public final class MdocUtils {
             result.addAll(signedItems);
         }
         return result;
+    }
+
+    /**
+     * Validates {@code MdocAttestation} against an mdoc schema (ISO/IEC 18013-5)
+     *
+     * @param attestation {@link MdocAttestation} to validate
+     * @return a list of {@link String}s containing validation errors, empty list if
+     *         no error occurred
+     */
+    public static List<String> validateAgainstMdocAttestationSchema(MdocAttestation attestation) {
+        List<String> errors = new ArrayList<>();
+        if (attestation.getDocument() != null) {
+            errors.addAll(MdocDeviceResponseUtils.getInstance().validateAgainstSchema(
+                    attestation.getDocument().getCborValue(), MdocDeviceResponseUtils.DOCUMENT));
+        } else {
+            errors.addAll(MdocDeviceResponseUtils.getInstance().validateAgainstSchema(
+                    attestation.getIssuerSigned().getCborValue(), MdocDeviceResponseUtils.ISSUER_SIGNED));
+        }
+        MdocIssuerSigned issuerSigned = attestation.getIssuerSigned();
+        CBORValue signaturePayload = issuerSigned.getIssuerAuth().getPayload();
+        errors.addAll(MdocMobileSecurityObjectUtils.getInstance().validateAgainstSchema(
+                signaturePayload.asBytes(), MdocMobileSecurityObjectUtils.MOBILE_SECURITY_OBJECT_BYTES));
+        return errors;
     }
 
 }

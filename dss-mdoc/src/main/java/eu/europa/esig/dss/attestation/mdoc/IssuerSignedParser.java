@@ -157,6 +157,7 @@ public class IssuerSignedParser {
         final MdocIssuerSigned issuerSigned = new MdocIssuerSigned();
         issuerSigned.setNamespaces(getIssuerNamespaces(issuerSignedMap));
         issuerSigned.setIssuerAuth(getIssuerAuth(issuerSignedMap));
+        issuerSigned.setCborValue(issuerSignedMap);
         return issuerSigned;
     }
 

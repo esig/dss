@@ -60,6 +60,7 @@ import eu.europa.esig.dss.validation.process.attestation.checks.AttestationRevoc
 import eu.europa.esig.dss.validation.process.attestation.checks.AttestationRevocationPresentCheck;
 import eu.europa.esig.dss.validation.process.attestation.checks.AttestationRevocationStatusKnownCheck;
 import eu.europa.esig.dss.validation.process.attestation.checks.AttestationShortLivedCheck;
+import eu.europa.esig.dss.validation.process.attestation.checks.AttestationStructuralValidationCheck;
 import eu.europa.esig.dss.validation.process.attestation.checks.AttestationSubjectCheck;
 import eu.europa.esig.dss.validation.process.attestation.checks.AttestationSupportedClaimsCheck;
 import eu.europa.esig.dss.validation.process.attestation.checks.AttestationSupportedNamespacesCheck;
@@ -106,7 +107,9 @@ public class AttestationAcceptanceValidation extends AbstractAcceptanceValidatio
 
     @Override
     protected void initChain() {
-        ChainItem<XmlSAV> item = firstItem = etsi194721Conformance();
+        ChainItem<XmlSAV> item = firstItem = structure();
+
+        item = item.setNextItem(etsi194721Conformance());
 
         item = item.setNextItem(attestationType());
         if (AttestationProfile.SD_JWT_VC == token.getAttestationProfile()) {
@@ -218,6 +221,11 @@ public class AttestationAcceptanceValidation extends AbstractAcceptanceValidatio
         // cryptographic check
         item = cryptographic(item);
 
+    }
+
+    private ChainItem<XmlSAV> structure() {
+        LevelRule constraint = validationPolicy.getAttestationStructuralValidationConstraint();
+        return new AttestationStructuralValidationCheck(i18nProvider, result, token, constraint);
     }
 
     private ChainItem<XmlSAV> etsi194721Conformance() {

@@ -5,6 +5,7 @@
     <Attestations>
         <Attestation Id="EAA-62DAA5104BA633281939DF2271396FDC1345BB55B9C786E76DEDF9FCB0E464E3">
             <Profile>SD_JWT_VC</Profile>
+            <StructuralValidation valid="true"/>
             <DigestMatchers/>
             <AttestationSignature Signature="S-B2CFE51EC9DE416F729051941F47145C3F2FB5571CAEFE3E661BD810D03CDC5F"/>
             <AttestationPayload>

@@ -31,6 +31,8 @@ import org.junit.jupiter.api.BeforeEach;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MdocISONonMdLNoSDTest extends AbstractMdocIssuerSignedTestCreation {
 
@@ -71,6 +73,14 @@ class MdocISONonMdLNoSDTest extends AbstractMdocIssuerSignedTestCreation {
     @Override
     protected boolean disclosuresPresent() {
         return false;
+    }
+
+    @Override
+    protected void checkAttestationStructure(DiagnosticData diagnosticData) {
+        AttestationWrapper attestation = diagnosticData.getAttestationById(diagnosticData.getFirstAttestationId());
+        assertFalse(attestation.isStructuralValidationValid());
+        assertEquals(1, attestation.getStructuralValidationMessages().size());
+        assertTrue(attestation.getStructuralValidationMessages().get(0).contains("Expected at least 1 key(s) matching NameSpace but found 0"));
     }
 
     @Override

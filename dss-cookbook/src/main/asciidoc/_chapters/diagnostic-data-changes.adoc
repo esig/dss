@@ -10,6 +10,30 @@
 This chapter covers the changes occurred between different versions of DSS within Diagnostic Data XSD.
 
 [cols="2,5,5"]
+.Diagnostic Data changes from version 6.5 to 6.6
+|===
+|Title                                |v6.5                           |v6.6
+|Structural Validation of Attestations  a|[source,xml]
+----
+<Attestation Id="A-B011F0930552AB7B89D941C51FFDE7A769EA630B8DD5C926512C0870F637FE22">
+    ...
+    <Profile>SD_JWT_VC</Profile>
+    ...
+</Attestation>
+----
+                                                                      a|[source,xml]
+----
+<Attestation Id="A-B011F0930552AB7B89D941C51FFDE7A769EA630B8DD5C926512C0870F637FE22">
+    ...
+    <Profile>SD_JWT_VC</Profile>
+    <StructuralValidation valid="true"/>
+    ...
+</Attestation>
+----
+
+|===
+
+[cols="2,5,5"]
 .Diagnostic Data changes from version 6.2 to 6.3
 |===
 |Title                                |v6.2                           |v6.3

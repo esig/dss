@@ -1,0 +1,122 @@
+; INTERNAL, Security structures
+; ------------------------------------------------------------------------------
+SessionTranscript = [
+ DeviceEngagementBytes / null,
+ EReaderKeyBytes / EncryptionParametersBytes / null,
+ Handover
+]
+DeviceEngagementBytes = #6.24(bstr .cbor DeviceEngagement)
+Handover = QRHandover / NFCHandover / Ext
+QRHandover= null
+NFCHandover = [
+ bstr ; Binary value of the Handover Select Message
+ bstr / null ; Binary value of the Handover Request Message,
+ ; shall be null if NFC Static Handover was used
+]
+SessionTranscriptBytes = #6.24(bstr .cbor SessionTranscript)
+; INTERNAL, Device Engagement
+; ------------------------------------------------------------------------------
+DeviceEngagement =
+{
+ 0: Version,
+ 1: Security,
+ ? 2: DeviceRetrievalMethods,
+ ? 5: OriginInfos,
+ ? 6: Capabilities,
+ * uint => RFU,
+ * nint => Ext
+}
+Security = [
+ int, ; Cipher suite identifier
+ EDeviceKeyBytes
+]
+DeviceRetrievalMethods = [
+ + DeviceRetrievalMethod
+]
+DeviceRetrievalMethod = [
+ uint, ; Type
+ uint, ; Version
+ RetrievalOptions
+]
+OriginInfos = [
+ * OriginInfo
+]
+OriginInfo = RFU
+Capabilities = {
+ ? 2: HandoverSessionEstablishmentSupport,
+ ? 3: ReaderAuthAllSupport
+ * int => RFU
+}
+HandoverSessionEstablishmentSupport = bool
+ReaderAuthAllSupport = bool
+RetrievalOptions = WifiOptions / BleOptions / NfcOptions / RFU
+; INTERNAL, Device Engagement RetrievalOptions
+; ------------------------------------------------------------------------------
+WifiOptions = {
+ ? 0: tstr, ; Pass-phrase Info Pass-phrase
+ ? 1: uint, ; Channel Info Operating Class
+ ? 2: uint, ; Channel Info Channel Number
+ ? 3: bstr ; Band Info Supported Bands
+ * uint => RFU,
+}
+BleOptions = {
+ 0 : bool, ; Indicates support for mdoc peripheral server mode
+ 1 : bool, ; Indicates support for mdoc central client mode
+ ? 10 : bstr, ; UUID for mdoc peripheral server mode
+ ? 11 : bstr ; UUID for mdoc client central mode
+ ? 20 : bstr ; mdoc BLE Device Address for mdoc peripheral server mode
+ * uint => RFU,
+}
+NfcOptions = {
+ 0 : uint, ; Maximum length of command data field
+ 1 : uint ; Maximum length of response data field
+ * uint => RFU,
+}
+; INTERNAL, Reader Engagement
+; ------------------------------------------------------------------------------
+ReaderEngagement =
+{
+ 0: tstr, ; Version
+ * uint => RFU,
+ * nint => Ext
+}
+; INTERNAL, mdoc BLE Service Data
+; ------------------------------------------------------------------------------
+MdocBleServiceData = {
+ ? 0 : MdocBlePsm,
+ * int => RFU
+}
+MdocBlePsm = int
+; INTERNAL, EDeviceKey and EReaderKey
+; ------------------------------------------------------------------------------
+EDeviceKey = COSE_Key ; Containing EDeviceKey.Pub
+EReaderKey = COSE_Key ; Containing EReaderKey.Pub
+EDeviceKeyBytes = #6.24(bstr .cbor EDeviceKey)
+EReaderKeyBytes = #6.24(bstr .cbor EReaderKey)
+
+EncryptionParametersBytes = #6.24(bstr .cbor EncryptionParameters)
+EncryptionParameters = {
+ "recipientPublicKey": COSE_Key,
+ ? "nonce": bstr,
+ ? "recipientCertificate": [+Certificate],
+ * tstr => RFU
+}
+Certificate = bstr
+
+
+; INTERNAL, Data Elements
+; ------------------------------------------------------------------------------
+DocType = tstr
+NameSpace = tstr
+DataElementIdentifier = tstr
+DataElementValue = any
+RFU = any
+Ext = any
+Version = tstr
+
+COSE_Key = {
+ 1 => int, ; kty: key type
+ -1 => int, ; crv: EC identifier - Taken from the "COSE Elliptic Curves" registry
+ -2 => bstr, ; x: value of x-coordinate
+ ? -3 => bstr / bool ; y: value or sign bit of y-coordinate; only applicable for EC2 key types
+}

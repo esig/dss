@@ -41,6 +41,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationRevocationStatus;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSigningCertificate;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlStructuralValidation;
 import eu.europa.esig.dss.enumerations.AttestationProfile;
 import eu.europa.esig.dss.enumerations.AttestationQualification;
 import eu.europa.esig.dss.enumerations.DigestAlgorithm;
@@ -285,6 +286,28 @@ public class AttestationWrapper extends AbstractTokenProxy {
     public List<ClaimWrapper> getOtherKeyBindingPayloadClaims() {
         if (attestation.getKeyBindingPayload() != null && attestation.getKeyBindingPayload().getOtherClaim() != null) {
             return attestation.getKeyBindingPayload().getOtherClaim().stream().map(ClaimWrapper::new).collect(Collectors.toList());
+        }
+        return Collections.emptyList();
+    }
+
+    /**
+     * Gets if a structural validation of the attestation is valid
+     *
+     * @return TRUE if the structure of the attestation is valid, FALSE otherwise
+     */
+    public boolean isStructuralValidationValid() {
+        return attestation.getStructuralValidation() != null && attestation.getStructuralValidation().isValid();
+    }
+
+    /**
+     * Returns structural validation error messages, when applicable
+     *
+     * @return a list of {@link String} error messages
+     */
+    public List<String> getStructuralValidationMessages() {
+        XmlStructuralValidation structuralValidation = attestation.getStructuralValidation();
+        if (structuralValidation != null) {
+            return structuralValidation.getMessages();
         }
         return Collections.emptyList();
     }

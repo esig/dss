@@ -1909,6 +1909,15 @@ public interface ValidationPolicy {
 	 */
 	LevelRule getAdministrativePeriodNotExpiredConstraint();
 
+	/**
+	 * Indicates if the structural validation of the attestation should be checked.
+	 * If attestation StructuralValidation element is absent within the constraint file then null is returned.
+	 *
+	 * @return {@code LevelRule} if attestation StructuralValidation element is present in the constraint file,
+	 *         null otherwise.
+	 */
+	LevelRule getAttestationStructuralValidationConstraint();
+
     /**
      * Returns ETSI194721Conformance constraint if present in the policy, null otherwise
      *

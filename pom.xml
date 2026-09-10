@@ -96,6 +96,7 @@
 		<module>dss-alert</module>
 		<module>dss-xml-common</module>
 		<module>dss-json-common</module>
+		<module>dss-cbor-common</module>
 		<module>dss-jaxb-common</module>
 		<module>dss-jaxb-parsers</module>
 		<module>specs-xmldsig</module>
@@ -110,6 +111,7 @@
 		<module>specs-jws</module>
 		<module>specs-jades</module>
 		<module>specs-lote-json</module>
+		<module>specs-mdoc</module>
 		<module>dss-policy-jaxb</module>
 		<module>dss-policy-crypto-xml</module>
 		<module>dss-policy-crypto-json</module>
@@ -521,6 +523,11 @@
 			</dependency>
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>specs-mdoc</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-spi</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -537,6 +544,11 @@
 			<dependency>
 				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
 				<artifactId>dss-json-common</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>eu.europa.ec.joinup.sd-dss</groupId>
+				<artifactId>dss-cbor-common</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

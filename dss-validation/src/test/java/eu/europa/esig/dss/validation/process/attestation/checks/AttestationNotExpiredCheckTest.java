@@ -39,7 +39,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class NotExpiredCheckTest extends AbstractTestCheck {
+class AttestationNotExpiredCheckTest extends AbstractTestCheck {
 
     @Test
     void validTest() {

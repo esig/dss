@@ -50,6 +50,7 @@ import eu.europa.esig.validationreport.jaxb.SignerInformationType;
 
 import java.security.SecureRandom;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -102,11 +103,11 @@ class MdocAttestationPresentationWithDisclosuresAndKeyBindingValidationTest exte
         Calendar calendar = Calendar.getInstance();
 
         CBORValue.CBORMapEditor validityInfo = CBOR.map();
-        long signed = calendar.getTime().getTime();
-        validityInfo.put("signed", signed);
-        validityInfo.put("validFrom", signed);
+        Date signed = calendar.getTime();
+        validityInfo.put("signed", CBORTags.tdate(signed));
+        validityInfo.put("validFrom", CBORTags.tdate(signed));
         calendar.add(Calendar.HOUR, 1);
-        validityInfo.put("validUntil", calendar.getTime().getTime());
+        validityInfo.put("validUntil", CBORTags.tdate(calendar.getTime()));
 
         mobileSecurityObjectEditor.put("validityInfo", validityInfo.value());
 

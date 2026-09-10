@@ -1,0 +1,95 @@
+MobileSecurityObjectBytes = #6.24(bstr .cbor MobileSecurityObject)
+MobileSecurityObject = {
+ "version" : tstr,
+ "digestAlgorithm" : tstr,
+ "valueDigests" : ValueDigests,
+ "deviceKeyInfo" : DeviceKeyInfo,
+ "docType" : tstr,
+ "validityInfo" : ValidityInfo
+ ? "status": Status
+ * tstr => RFU
+}
+DeviceKeyInfo = {
+ "deviceKey" : DeviceKey
+ ? "keyAuthorizations" : KeyAuthorizations,
+ ? "keyInfo" : KeyInfo
+ * tstr => RFU
+}
+DeviceKey = COSE_Key
+KeyAuthorizations = {
+ ? "nameSpaces" : AuthorizedNameSpaces
+ ? "dataElements" : AuthorizedDataElements
+ * tstr => RFU
+}
+AuthorizedNameSpaces = [+ NameSpace]
+AuthorizedDataElements = {+ NameSpace => DataElementsArray}
+DataElementsArray = [+ DataElementIdentifier]
+KeyInfo = {
+ * uint => RFU,
+ * nint => Ext
+}
+ValueDigests = {
+ + NameSpace => DigestIDs
+}
+DigestIDs = {
+ + DigestID => Digest
+}
+ValidityInfo = {
+ "signed" : tdate,
+ "validFrom" : tdate,
+ "validUntil" : tdate,
+ ? "expectedUpdate" : tdate
+ * tstr => RFU
+}
+Status = {
+ ? "identifier_list" : IdentifierListInfo,
+ ? "status_list" : StatusListInfo,
+ * tstr => RFU
+}
+DigestID = uint
+Digest = bstr
+
+RFU = any
+Ext = any
+
+; INTERNAL, IdentifierList
+; ------------------------------------------------------------------------------
+IdentifierListInfo = {
+ "id" : Identifier,
+ "uri": URI,
+ ? "certificate": Certificate
+ * tstr => RFU
+}
+IdentifierList = {
+ "identifiers" : { * Identifier => IdentifierInfo },
+ ? "aggregation_uri" : Aggregation_uri
+ * tstr => RFU
+}
+IdentifierInfo = {}
+Identifier = bstr
+Aggregation_uri = tstr
+URI = tstr
+Certificate = bstr
+
+StatusListInfo = {
+ "idx" : uint,
+ "uri": URI,
+ ? "certificate": Certificate
+}
+
+COSE_Key = {
+ 1 => int, ; kty: key type
+ -1 => int, ; crv: EC identifier - Taken from the "COSE Elliptic Curves" registry
+ -2 => bstr, ; x: value of x-coordinate
+ ? -3 => bstr / bool ; y: value or sign bit of y-coordinate; only applicable for EC2 key types
+}
+
+; INTERNAL, Data Elements
+; ------------------------------------------------------------------------------
+DocType = tstr
+NameSpace = tstr
+DataElementIdentifier = tstr
+DataElementValue = any
+RFU = any
+Ext = any
+Version = tstr

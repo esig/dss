@@ -174,6 +174,7 @@ public class MdocDeviceResponseParser {
 
         try {
             final MdocDocument mdocDocument = new MdocDocument();
+            mdocDocument.setCborValue(docValue);
             mdocDocument.setDocType(getDocType(docValue));
             mdocDocument.setIssuerSigned(getIssuerSigned(docValue));
             mdocDocument.setDeviceSigned(getDeviceSigned(docValue));

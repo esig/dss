@@ -5,6 +5,7 @@
     <Attestations>
         <Attestation Id="EAA-142BE84DAB5CA7AC88CCAC3DC9E7F4A3C2372EEA97B822978540C31CE18CC20C">
             <Profile>SD_JWT_VC</Profile>
+            <StructuralValidation valid="true"/>
             <DigestMatchers>
                 <DigestMatcher type="SELECTIVE_DISCLOSURE">
                     <DigestMethod>SHA256</DigestMethod>

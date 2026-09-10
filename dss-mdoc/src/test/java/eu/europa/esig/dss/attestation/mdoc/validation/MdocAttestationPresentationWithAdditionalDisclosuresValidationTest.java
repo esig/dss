@@ -137,8 +137,15 @@ class MdocAttestationPresentationWithAdditionalDisclosuresValidationTest extends
                 .value();
         document.put("issuerSigned", issuerSigned);
 
+        CBORValue deviceMac = CBOR.array()
+                .add(CBOR.bytes(new byte[0]))
+                .add(CBOR.map().value())
+                .add(CBOR.nullValue())
+                .add(CBOR.bytes(new byte[0]))
+                .value();
+
         CBORValue deviceAuth = CBOR.map()
-                .put("deviceMac", CBOR.array().value())
+                .put("deviceMac", deviceMac)
                 .value();
 
         CBORValue deviceSigned = CBOR.map()

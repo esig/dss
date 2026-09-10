@@ -26,6 +26,7 @@ import eu.europa.esig.dss.cbades.cbor.CBORUtils;
 import eu.europa.esig.dss.enumerations.EllipticCurve;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.spi.DSSUtils;
+import eu.europa.esig.mdoc.MdocSessionTranscriptUtils;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
@@ -72,6 +73,8 @@ class SessionTranscriptBuilderTest {
         assertArrayEquals(DSSUtils.toByteArray(document), CBORUtils.serializeCbor(cborValue));
         assertArrayEquals(DSSUtils.toByteArray(document), DSSUtils.toByteArray(document2));
         assertArrayEquals(CBORUtils.serializeCbor(cborValue2), CBORUtils.serializeCbor(cborValue2));
+
+        assertStructureValid(cborValue2);
     }
 
     @Test
@@ -116,6 +119,8 @@ class SessionTranscriptBuilderTest {
         assertEquals(2, handover.size());
         assertArrayEquals(select, handover.get(0).asBytes());
         assertArrayEquals(request, handover.get(1).asBytes());
+
+        assertStructureValid(result);
     }
 
     @Test
@@ -142,6 +147,8 @@ class SessionTranscriptBuilderTest {
         assertEquals(2, handover.size());
         assertArrayEquals(select, handover.get(0).asBytes());
         assertTrue(handover.get(1).isNull());
+
+        assertStructureValid(result);
     }
 
     @Test
@@ -178,6 +185,7 @@ class SessionTranscriptBuilderTest {
                         .webApiServerRetrievalMethod(1, "https://issuer", "token");
 
         CBORValue result = builder.buildCbor();
+        assertNotNull(result);
         assertTrue(result.isArray());
         assertEquals(3, result.size());
 
@@ -240,7 +248,7 @@ class SessionTranscriptBuilderTest {
         assertEquals("https://issuer", webApi.get(1).asString());
         assertEquals("token", webApi.get(2).asString());
 
-        assertNotNull(result);
+        assertStructureValid(result);
     }
 
     @Test
@@ -255,6 +263,7 @@ class SessionTranscriptBuilderTest {
                         .oidcServerRetrievalMethod(1, "https://issuer", "token");
 
         CBORValue result = builder.buildCbor();
+        assertNotNull(result);
         assertTrue(result.isArray());
         assertEquals(3, result.size());
 
@@ -317,7 +326,7 @@ class SessionTranscriptBuilderTest {
         assertEquals("https://issuer", oidc.get(1).asString());
         assertEquals("token", oidc.get(2).asString());
 
-        assertNotNull(result);
+        assertStructureValid(result);
     }
 
     @Test
@@ -385,6 +394,8 @@ class SessionTranscriptBuilderTest {
 
         assertEquals(10L, options.get(0L).asInteger().longValue());
         assertEquals(20L, options.get(1L).asInteger().longValue());
+
+        assertStructureValid(result);
     }
 
     @Test
@@ -463,6 +474,8 @@ class SessionTranscriptBuilderTest {
         assertArrayEquals(bleUuid, bleOptions.get(10L).asBytes());
         assertArrayEquals(bleUuid, bleOptions.get(11L).asBytes());
         assertArrayEquals(bleUuid, bleOptions.get(20L).asBytes());
+
+        assertStructureValid(result);
     }
 
     @Test
@@ -516,6 +529,8 @@ class SessionTranscriptBuilderTest {
         CBORValue protocolInfo = deviceEngagement.get(4L);
         assertNotNull(protocolInfo);
         assertEquals("custom", protocolInfo.asString());
+
+        assertStructureValid(result);
     }
 
     @Test
@@ -545,6 +560,8 @@ class SessionTranscriptBuilderTest {
         CBORValue custom = deviceEngagement.get(10L);
         assertNotNull(custom);
         assertEquals("customValue", custom.asString());
+
+        assertStructureValid(result);
     }
 
     @Test
@@ -574,6 +591,8 @@ class SessionTranscriptBuilderTest {
 
         assertTrue(deviceEngagement.isMap());
         assertEquals("2.0", deviceEngagement.get(0L).asString());
+
+        assertStructureValid(result);
     }
 
     @Test
@@ -590,6 +609,12 @@ class SessionTranscriptBuilderTest {
         kpg.initialize(256);
         KeyPair kp = kpg.generateKeyPair();
         return kp.getPublic();
+    }
+
+    private static void assertStructureValid(CBORValue cborValue) {
+        MdocSessionTranscriptUtils utils = MdocSessionTranscriptUtils.getInstance();
+        List<String> errors = utils.validateAgainstSchema(cborValue);
+        assertTrue(errors.isEmpty(), errors.toString());
     }
 
 }

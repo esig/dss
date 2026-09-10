@@ -54,6 +54,7 @@ import eu.europa.esig.dss.diagnostic.jaxb.XmlKeyBindingPayload;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlKeyBindingSignature;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlOrphanCertificate;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlRelatedCertificate;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlStructuralValidation;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlVerifiableCredentialsTypeClaim;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlPlaceOfBirthClaim;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlSignature;
@@ -232,12 +233,12 @@ public class AttestationDocumentDiagnosticDataBuilder extends SignedDocumentDiag
     }
 
     private Collection<XmlAttestation> buildXmlAttestation(Collection<Attestation> attestations) {
-        List<XmlAttestation> builtAttestationPresentations = new ArrayList<>();
+        List<XmlAttestation> builtAttestation = new ArrayList<>();
         for (Attestation attestation : attestations) {
             XmlAttestation xmlAttestationPresentation = getXmlAttestation(attestation);
-            builtAttestationPresentations.add(xmlAttestationPresentation);
+            builtAttestation.add(xmlAttestationPresentation);
         }
-        return builtAttestationPresentations;
+        return builtAttestation;
     }
 
     private XmlAttestation getXmlAttestation(Attestation attestation) {
@@ -251,32 +252,43 @@ public class AttestationDocumentDiagnosticDataBuilder extends SignedDocumentDiag
      * @return {@link XmlAttestation}
      */
     protected XmlAttestation buildDetachedXmlAttestation(Attestation attestation) {
-        final XmlAttestation xmlAttestationPresentation = new XmlAttestation();
-        xmlAttestationPresentation.setId(identifierProvider.getIdAsString(attestation));
-        xmlAttestationPresentation.setDocumentName(attestation.getFilename());
-        xmlAttestationPresentation.setProfile(attestation.getAttestationProfile());
+        final XmlAttestation xmlAttestation = new XmlAttestation();
+        xmlAttestation.setId(identifierProvider.getIdAsString(attestation));
+        xmlAttestation.setDocumentName(attestation.getFilename());
+        xmlAttestation.setProfile(attestation.getAttestationProfile());
         for (AdvancedSignature signature : attestation.getSignatures()) {
-            xmlAttestationPresentation.getAttestationSignature().add(getXmlAttestationSignature(signature));
+            xmlAttestation.getAttestationSignature().add(getXmlAttestationSignature(signature));
         }
-        xmlAttestationPresentation.setDigestMethod(attestation.getSelectiveDisclosuresDigestAlgorithm());
-        xmlAttestationPresentation.setDigestMatchers(buildXmlDigestMatchers(attestation.getDisclosureValidations()));
+        xmlAttestation.setStructuralValidation(getXmlStructuralValidation(attestation));
+        xmlAttestation.setDigestMethod(attestation.getSelectiveDisclosuresDigestAlgorithm());
+        xmlAttestation.setDigestMatchers(buildXmlDigestMatchers(attestation.getDisclosureValidations()));
         if (attestation.getKeyBindingSignature() != null) {
-            xmlAttestationPresentation.setKeyBindingSignature(getXmlKeyBindingSignature(attestation.getKeyBindingSignature()));
+            xmlAttestation.setKeyBindingSignature(getXmlKeyBindingSignature(attestation.getKeyBindingSignature()));
         }
-        xmlAttestationPresentation.setAttestationPayload(getXmlAttestationPayload(attestation.getPayload()));
-        xmlAttestationPresentation.setKeyBindingPayload(getXmlKeyBindingPayload(attestation.getKeyBindingSignaturePayload()));
-        return xmlAttestationPresentation;
+        xmlAttestation.setAttestationPayload(getXmlAttestationPayload(attestation.getPayload()));
+        xmlAttestation.setKeyBindingPayload(getXmlKeyBindingPayload(attestation.getKeyBindingSignaturePayload()));
+        return xmlAttestation;
+    }
+
+    /**
+     * Gets structural validation result of attestation
+     *
+     * @param attestation {@link Attestation}
+     * @return {@link XmlStructuralValidation}
+     */
+    private XmlStructuralValidation getXmlStructuralValidation(Attestation attestation) {
+        return getXmlStructuralValidation(attestation.getStructureValidationResult());
     }
 
     private XmlAttestationSignature getXmlAttestationSignature(AdvancedSignature signature) {
-        XmlAttestationSignature xmlAttestationPresentationSignature = new XmlAttestationSignature();
+        XmlAttestationSignature xmlAttestationSignature = new XmlAttestationSignature();
         XmlSignature xmlSignature = xmlSignaturesMap.get(signature.getId());
         if (xmlSignature == null) {
             throw new IllegalStateException(String.format(
                     "XmlSignature shall be built at this moment! Not found signature with id '%s'.", signature.getId()));
         }
-        xmlAttestationPresentationSignature.setSignature(xmlSignature);
-        return xmlAttestationPresentationSignature;
+        xmlAttestationSignature.setSignature(xmlSignature);
+        return xmlAttestationSignature;
     }
 
     private XmlKeyBindingSignature getXmlKeyBindingSignature(AdvancedSignature signature) {

@@ -2923,6 +2923,20 @@ Default: `FAIL`
 </Attestation>
 ----
 
+* `StructuralValidation` - this constraint checks whether the structure of the attestation token is conformant to the applicable schema document.
+
+Default: `WARN`
+
+[source,xml,indent=0]
+.Example of StructuralValidation usage (with WARN validation level)
+----
+<Attestation>
+    ...
+    <StructuralValidation Level="WARN" />
+    ...
+</Attestation>
+----
+
 * `ETSI194721Conformance` - this constraint checks whether the attestation token is conformant to ETSI TS 119 472-1 (cf. <<R34>>).
 
 Default: `WARN`
@@ -3990,6 +4004,7 @@ This table defines the correspondence between the enforced validation policy con
                                   |DisclosureListExhaustive        |LevelConstraint                   |INDETERMINATE         |SIGNED_DATA_NOT_FOUND
                                   |KeyBindingSignaturePresent      |LevelConstraint                   |FAILED                |FORMAT_FAILURE
                                   |KeyBindingSignatureValid        |LevelConstraint                   |Indication from signature |SubIndication from signature
+                                  |StructuralValidation            |LevelConstraint                   |INDETERMINATE         |ATTESTATION_CONSTRAINTS_FAILURE
                                   |ETSI194721Conformance           |LevelConstraint                   |INDETERMINATE         |ATTESTATION_CONSTRAINTS_FAILURE
                                   |AttestationType                 |LevelConstraint                   |INDETERMINATE         |ATTESTATION_CONSTRAINTS_FAILURE
                                   |AttestationTypeIntegrityPresent |LevelConstraint                   |INDETERMINATE         |ATTESTATION_CONSTRAINTS_FAILURE
@@ -3997,8 +4012,8 @@ This table defines the correspondence between the enforced validation policy con
                                   |IssuanceDatePresent             |LevelConstraint                   |INDETERMINATE         |ATTESTATION_CONSTRAINTS_FAILURE
                                   |otBeforePresent                 |LevelConstraint                   |INDETERMINATE         |ATTESTATION_CONSTRAINTS_FAILURE
                                   |ExpirationPresent               |LevelConstraint                   |INDETERMINATE         |ATTESTATION_CONSTRAINTS_FAILURE
-                                  |NotExpired                      |LevelConstraint                   |INDETERMINATE         |OUT_OF_BOUNDS_NO_POE
-.16+|AttestationConstraints       |AdministrativeIssuanceDatePresent        |LevelConstraint          |INDETERMINATE         |ATTESTATION_CONSTRAINTS_FAILURE
+.16+|AttestationConstraints       |NotExpired                      |LevelConstraint                   |INDETERMINATE         |OUT_OF_BOUNDS_NO_POE
+                                  |AdministrativeIssuanceDatePresent        |LevelConstraint          |INDETERMINATE         |ATTESTATION_CONSTRAINTS_FAILURE
                                   |AdministrativeExpirationDatePresent      |LevelConstraint          |INDETERMINATE         |ATTESTATION_CONSTRAINTS_FAILURE
                                   |AdministrativePeriodNotExpired           |LevelConstraint          |INDETERMINATE         |OUT_OF_BOUNDS_NO_POE
                                   |Category                        |LevelConstraint                   |INDETERMINATE         |ATTESTATION_CONSTRAINTS_FAILURE
@@ -4013,8 +4028,8 @@ This table defines the correspondence between the enforced validation policy con
                                   |RevocationAvailable             |LevelConstraint                   |INDETERMINATE         |ATTESTATION_CONSTRAINTS_FAILURE
                                   |AcceptableRevocationFound       |LevelConstraint                   |INDETERMINATE         |ATTESTATION_CONSTRAINTS_FAILURE
                                   |NotRevoked                      |LevelConstraint                   |INDETERMINATE         |ATTESTATION_CONSTRAINTS_FAILURE
-                                  |NotOnHold                       |LevelConstraint                   |INDETERMINATE         |ATTESTATION_CONSTRAINTS_FAILURE
-.5+|AttestationConstraints        |UsePseudonym                    |LevelConstraint                   |INDETERMINATE         |ATTESTATION_CONSTRAINTS_FAILURE
+.6+|AttestationConstraints        |NotOnHold                       |LevelConstraint                   |INDETERMINATE         |ATTESTATION_CONSTRAINTS_FAILURE
+                                  |UsePseudonym                    |LevelConstraint                   |INDETERMINATE         |ATTESTATION_CONSTRAINTS_FAILURE
                                   |Claims                          |LevelConstraint                   |INDETERMINATE         |ATTESTATION_CONSTRAINTS_FAILURE
                                   |SupportedClaims                 |LevelConstraint                   |INDETERMINATE         |ATTESTATION_CONSTRAINTS_FAILURE
                                   |SupportedNamespaces             |LevelConstraint                   |INDETERMINATE         |ATTESTATION_CONSTRAINTS_FAILURE

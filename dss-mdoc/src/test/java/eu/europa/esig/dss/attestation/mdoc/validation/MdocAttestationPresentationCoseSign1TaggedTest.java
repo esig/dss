@@ -20,14 +20,14 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.validation;
 
+import eu.europa.esig.dss.diagnostic.AttestationWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
-import eu.europa.esig.dss.diagnostic.SignatureWrapper;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
-import eu.europa.esig.dss.utils.Utils;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MdocAttestationPresentationCoseSign1TaggedTest extends AbstractMdocAttestationPresentationTestValidation {
 
@@ -42,10 +42,11 @@ class MdocAttestationPresentationCoseSign1TaggedTest extends AbstractMdocAttesta
     }
 
     @Override
-    protected void checkStructureValidation(DiagnosticData diagnosticData) {
-        SignatureWrapper signature = diagnosticData.getSignatureById(diagnosticData.getFirstSignatureId());
-        assertFalse(Utils.isCollectionEmpty(signature.getStructuralValidationMessages()));
-        assertEquals("Signature is a tagged COSE_Sign1! Shall be untagged COSE_Sign1.", signature.getStructuralValidationMessages().get(0));
+    protected void checkAttestationStructure(DiagnosticData diagnosticData) {
+        AttestationWrapper attestation = diagnosticData.getAttestationById(diagnosticData.getFirstAttestationId());
+        assertFalse(attestation.isStructuralValidationValid());
+        assertEquals(1, attestation.getStructuralValidationMessages().size());
+        assertTrue(attestation.getStructuralValidationMessages().get(0).contains("Expected array but got tagged"));
     }
 
 }

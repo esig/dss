@@ -88,6 +88,7 @@ public class MdocIssuerSignedDocumentAnalyzer extends AbstractMdocDocumentAnalyz
         MdocAttestationPresentation mdocAttestationPresentation = new MdocAttestationPresentation();
         mdocAttestationPresentation.setAttestationPresentationType(AttestationDocumentFormat.MDOC_ISSUER_SIGNED);
         MdocAttestation mdocAttestation = MdocAttestation.initBuilder()
+                .setIssuerSigned(issuerSigned)
                 .setSignatures(Collections.singletonList(getSignature()))
                 .setDisclosures(getSignedItems())
                 .setFilename(document.getName())

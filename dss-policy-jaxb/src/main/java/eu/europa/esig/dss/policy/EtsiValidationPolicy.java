@@ -2177,6 +2177,15 @@ public class EtsiValidationPolicy implements ValidationPolicy {
 	}
 
 	@Override
+	public LevelRule getAttestationStructuralValidationConstraint() {
+		AttestationConstraints attestationConstraints = getAttestationConstraints();
+		if (attestationConstraints != null) {
+			return toLevelRule(attestationConstraints.getStructuralValidation());
+		}
+		return null;
+	}
+
+	@Override
     public LevelRule getAttestationETSI194721ConformanceConstraint() {
         AttestationConstraints attestationConstraints = getAttestationConstraints();
         if (attestationConstraints != null) {

@@ -342,6 +342,11 @@ specs-jws:: JSON Schemas based on the RFC 7515 specifications (<<R22>>).
 specs-jades:: ETSI TS 119 182-1 JSON Schemas for JAdES (<<R05>>).
 specs-lote-json:: ETSI TS 119 602 JSON schema for List of Trusted Entities (<<R33>>).
 
+===== CBOR validation modules
+
+dss-cbor-common:: Utils for working with CBOR-based content.
+specs-mdoc:: CDDL Schemas based on the ISO/IEC 18013-5 specifications (<<R38>>).
+
 ===== Utils modules
 
 dss-utils:: API with utility methods for String, Collection, I/O,...

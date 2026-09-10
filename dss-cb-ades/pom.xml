@@ -28,8 +28,8 @@
         </dependency>
 
         <dependency>
-            <groupId>eu.europa.ec.digit.cddl4j</groupId>
-            <artifactId>cbor</artifactId>
+            <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+            <artifactId>dss-cbor-common</artifactId>
         </dependency>
 
         <dependency>

@@ -20,6 +20,8 @@
  */
 package eu.europa.esig.dss.attestation.mdoc.model;
 
+import eu.europa.ec.digit.cddl4j.cbor.CBORValue;
+
 import java.io.Serializable;
 import java.util.Map;
 
@@ -50,6 +52,11 @@ public class MdocDocument implements Serializable {
      * Returned errors map
      */
     private Map<String, MdocErrorItems> errors;
+
+    /**
+     * CBOR representation of the Document
+     */
+    private CBORValue cborValue;
 
     /**
      * Default constructor
@@ -128,6 +135,24 @@ public class MdocDocument implements Serializable {
      */
     public void setErrors(Map<String, MdocErrorItems> errors) {
         this.errors = errors;
+    }
+
+    /**
+     * Gets the CBOR Value of the Document
+     *
+     * @return {@link CBORValue}
+     */
+    public CBORValue getCborValue() {
+        return cborValue;
+    }
+
+    /**
+     * Sets the CBOR Value of the Document
+     *
+     * @param cborValue {@link CBORValue}
+     */
+    public void setCborValue(CBORValue cborValue) {
+        this.cborValue = cborValue;
     }
 
 }

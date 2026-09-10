@@ -22,22 +22,23 @@ package eu.europa.esig.dss.validation.executor;
 
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlAOV;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlAttestation;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlBasicBuildingBlocks;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConstraint;
-import eu.europa.esig.dss.detailedreport.jaxb.XmlAttestation;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlStatus;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessAttestation;
+import eu.europa.esig.dss.diagnostic.AttestationWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.DiagnosticDataFacade;
-import eu.europa.esig.dss.diagnostic.AttestationWrapper;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationPayload;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationRevocationToken;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlClaim;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDiagnosticData;
 import eu.europa.esig.dss.diagnostic.jaxb.XmlDigestMatcher;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationPayload;
-import eu.europa.esig.dss.diagnostic.jaxb.XmlAttestationRevocationToken;
+import eu.europa.esig.dss.diagnostic.jaxb.XmlStructuralValidation;
 import eu.europa.esig.dss.enumerations.AttestationStatus;
 import eu.europa.esig.dss.enumerations.DigestMatcherType;
 import eu.europa.esig.dss.enumerations.Indication;
@@ -61,6 +62,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -956,6 +958,160 @@ class AttestationValidationProcessExecutorTest extends AbstractTestValidationExe
         XmlSAV xmlSAV = attestationBBB.getSAV();
         assertNotNull(xmlSAV);
         assertEquals(Indication.PASSED, xmlSAV.getConclusion().getIndication());
+
+        checkReports(reports);
+    }
+
+    @Test
+    void structureValidationFailTest() throws Exception {
+        XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+                new File("src/test/resources/diag-data/eaa-validation/diag_data_eaa.xml"));
+        assertNotNull(xmlDiagnosticData);
+
+        XmlStructuralValidation xmlStructuralValidation = new XmlStructuralValidation();
+        xmlStructuralValidation.setValid(false);
+        xmlStructuralValidation.getMessages().add("structure error");
+        xmlDiagnosticData.getAttestations().get(0).setStructuralValidation(xmlStructuralValidation);
+
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
+
+        LevelConstraint levelConstraint = new LevelConstraint();
+        levelConstraint.setLevel(Level.FAIL);
+        validationPolicy.getAttestationConstraints().setStructuralValidation(levelConstraint);
+
+        AttestationProcessExecutor executor = new AttestationProcessExecutor();
+        executor.setDiagnosticData(xmlDiagnosticData);
+        executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+        executor.setValidationPolicy(validationPolicy);
+
+        Reports reports = executor.execute();
+
+        SimpleReport simpleReport = reports.getSimpleReport();
+        assertNotNull(simpleReport);
+
+        assertEquals(Indication.INDETERMINATE, simpleReport.getIndication(simpleReport.getFirstAttestationId()));
+        assertEquals(SubIndication.ATTESTATION_CONSTRAINTS_FAILURE, simpleReport.getSubIndication(simpleReport.getFirstAttestationId()));
+        assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationErrors(simpleReport.getFirstAttestationId()), i18nProvider.getMessage(MessageTag.EAA_ISAV_ANS)));
+        assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationWarnings(simpleReport.getFirstAttestationId())));
+        assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationInfo(simpleReport.getFirstAttestationId())));
+
+        DetailedReport detailedReport = reports.getDetailedReport();
+        assertEquals(Indication.INDETERMINATE, detailedReport.getFinalIndication(simpleReport.getFirstAttestationId()));
+        assertEquals(SubIndication.ATTESTATION_CONSTRAINTS_FAILURE, detailedReport.getFinalSubIndication(simpleReport.getFirstAttestationId()));
+
+        XmlAttestation xmlAttestation = detailedReport.getXmlAttestationById(detailedReport.getFirstAttestationId());
+        assertNotNull(xmlAttestation);
+
+        XmlValidationProcessAttestation validationProcessAttestation = xmlAttestation.getValidationProcessAttestation();
+        assertNotNull(validationProcessAttestation);
+        assertEquals(Indication.INDETERMINATE, validationProcessAttestation.getConclusion().getIndication());
+        assertEquals(SubIndication.ATTESTATION_CONSTRAINTS_FAILURE, validationProcessAttestation.getConclusion().getSubIndication());
+
+        XmlBasicBuildingBlocks attestationBBB = detailedReport.getBasicBuildingBlockById(xmlAttestation.getId());
+        assertNotNull(attestationBBB);
+
+        XmlFC xmlFC = attestationBBB.getFC();
+        assertNotNull(xmlFC);
+        assertEquals(Indication.PASSED, xmlFC.getConclusion().getIndication());
+
+        XmlCV xmlCV = attestationBBB.getCV();
+        assertNotNull(xmlCV);
+        assertEquals(Indication.PASSED, xmlCV.getConclusion().getIndication());
+
+        XmlAOV xmlAOV = attestationBBB.getAOV();
+        assertNotNull(xmlAOV);
+        assertEquals(Indication.PASSED, xmlAOV.getConclusion().getIndication());
+
+        XmlSAV xmlSAV = attestationBBB.getSAV();
+        assertNotNull(xmlSAV);
+        assertEquals(Indication.INDETERMINATE, xmlSAV.getConclusion().getIndication());
+        assertEquals(SubIndication.ATTESTATION_CONSTRAINTS_FAILURE, xmlSAV.getConclusion().getSubIndication());
+
+        boolean structureValidationCheckFound = false;
+        for (XmlConstraint xmlConstraint : xmlSAV.getConstraint()) {
+            if (MessageTag.EAA_ISAV.getId().equals(xmlConstraint.getName().getKey())) {
+                assertEquals(XmlStatus.NOT_OK, xmlConstraint.getStatus());
+                assertEquals(MessageTag.EAA_ISAV_ANS.getId(), xmlConstraint.getError().getKey());
+                assertEquals(i18nProvider.getMessage(MessageTag.STRUCTURAL_VALIDATION_FAILURE, Collections.singletonList("structure error")), xmlConstraint.getAdditionalInfo());
+                structureValidationCheckFound = true;
+            }
+        }
+        assertTrue(structureValidationCheckFound);
+
+        checkReports(reports);
+    }
+
+    @Test
+    void structureValidationWarnTest() throws Exception {
+        XmlDiagnosticData xmlDiagnosticData = DiagnosticDataFacade.newFacade().unmarshall(
+                new File("src/test/resources/diag-data/eaa-validation/diag_data_eaa.xml"));
+        assertNotNull(xmlDiagnosticData);
+
+        XmlStructuralValidation xmlStructuralValidation = new XmlStructuralValidation();
+        xmlStructuralValidation.setValid(false);
+        xmlStructuralValidation.getMessages().add("structure error");
+        xmlDiagnosticData.getAttestations().get(0).setStructuralValidation(xmlStructuralValidation);
+
+        EtsiValidationPolicy validationPolicy = loadDefaultPolicy();
+
+        LevelConstraint levelConstraint = new LevelConstraint();
+        levelConstraint.setLevel(Level.WARN);
+        validationPolicy.getAttestationConstraints().setStructuralValidation(levelConstraint);
+
+        AttestationProcessExecutor executor = new AttestationProcessExecutor();
+        executor.setDiagnosticData(xmlDiagnosticData);
+        executor.setCurrentTime(xmlDiagnosticData.getValidationDate());
+        executor.setValidationPolicy(validationPolicy);
+
+        Reports reports = executor.execute();
+
+        SimpleReport simpleReport = reports.getSimpleReport();
+        assertNotNull(simpleReport);
+
+        assertEquals(Indication.PASSED, simpleReport.getIndication(simpleReport.getFirstAttestationId()));
+        assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationErrors(simpleReport.getFirstAttestationId())));
+        assertTrue(checkMessageValuePresence(simpleReport.getAdESValidationWarnings(simpleReport.getFirstAttestationId()), i18nProvider.getMessage(MessageTag.EAA_ISAV_ANS)));
+        assertTrue(Utils.isCollectionEmpty(simpleReport.getAdESValidationInfo(simpleReport.getFirstAttestationId())));
+
+        DetailedReport detailedReport = reports.getDetailedReport();
+        assertEquals(Indication.PASSED, detailedReport.getFinalIndication(simpleReport.getFirstAttestationId()));
+
+        XmlAttestation xmlAttestation = detailedReport.getXmlAttestationById(detailedReport.getFirstAttestationId());
+        assertNotNull(xmlAttestation);
+
+        XmlValidationProcessAttestation validationProcessAttestation = xmlAttestation.getValidationProcessAttestation();
+        assertNotNull(validationProcessAttestation);
+        assertEquals(Indication.PASSED, validationProcessAttestation.getConclusion().getIndication());
+
+        XmlBasicBuildingBlocks attestationBBB = detailedReport.getBasicBuildingBlockById(xmlAttestation.getId());
+        assertNotNull(attestationBBB);
+
+        XmlFC xmlFC = attestationBBB.getFC();
+        assertNotNull(xmlFC);
+        assertEquals(Indication.PASSED, xmlFC.getConclusion().getIndication());
+
+        XmlCV xmlCV = attestationBBB.getCV();
+        assertNotNull(xmlCV);
+        assertEquals(Indication.PASSED, xmlCV.getConclusion().getIndication());
+
+        XmlAOV xmlAOV = attestationBBB.getAOV();
+        assertNotNull(xmlAOV);
+        assertEquals(Indication.PASSED, xmlAOV.getConclusion().getIndication());
+
+        XmlSAV xmlSAV = attestationBBB.getSAV();
+        assertNotNull(xmlSAV);
+        assertEquals(Indication.PASSED, xmlSAV.getConclusion().getIndication());
+
+        boolean structureValidationCheckFound = false;
+        for (XmlConstraint xmlConstraint : xmlSAV.getConstraint()) {
+            if (MessageTag.EAA_ISAV.getId().equals(xmlConstraint.getName().getKey())) {
+                assertEquals(XmlStatus.WARNING, xmlConstraint.getStatus());
+                assertEquals(MessageTag.EAA_ISAV_ANS.getId(), xmlConstraint.getWarning().getKey());
+                assertEquals(i18nProvider.getMessage(MessageTag.STRUCTURAL_VALIDATION_FAILURE, Collections.singletonList("structure error")), xmlConstraint.getAdditionalInfo());
+                structureValidationCheckFound = true;
+            }
+        }
+        assertTrue(structureValidationCheckFound);
 
         checkReports(reports);
     }

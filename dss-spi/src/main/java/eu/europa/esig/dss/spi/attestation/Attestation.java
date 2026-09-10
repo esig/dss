@@ -99,6 +99,14 @@ public interface Attestation extends IdentifierBasedObject {
     DigestAlgorithm getSelectiveDisclosuresDigestAlgorithm();
 
     /**
+     * Returns a message if the structure validation fails
+     *
+     * @return a list of {@link String} error messages if validation fails,
+     *         an empty list if structural validation succeeds
+     */
+    List<String> getStructureValidationResult();
+
+    /**
      * This method returns the DSS unique id. It allows to unambiguously identify each token.
      *
      * @return {@link String} unique Id

@@ -146,10 +146,19 @@ public abstract class AbstractAttestationPresentationTestValidation extends Abst
             assertEquals(getAttestationPresentationType(), diagnosticData.getAttestationPresentationFormat());
         }
 
+        checkAttestationStructure(diagnosticData);
         checkAttestationDigestMatchers(diagnosticData);
         checkClaims(diagnosticData);
         checkDeviceKeyClaim(diagnosticData);
         checkAttestationRevocations(diagnosticData);
+    }
+
+    protected void checkAttestationStructure(DiagnosticData diagnosticData) {
+        List<AttestationWrapper> attestations = diagnosticData.getAttestations();
+        for (AttestationWrapper attestationWrappper : attestations) {
+            assertTrue(attestationWrappper.isStructuralValidationValid(), attestationWrappper.getStructuralValidationMessages().toString());
+            assertTrue(Utils.isCollectionEmpty(attestationWrappper.getStructuralValidationMessages()), attestationWrappper.getStructuralValidationMessages().toString());
+        }
     }
 
     protected void checkAttestationRevocations(DiagnosticData diagnosticData) {

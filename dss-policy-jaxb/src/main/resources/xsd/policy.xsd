@@ -172,7 +172,7 @@
 		<xsd:sequence>
 			<xsd:element name="StructuralValidation" type="LevelConstraint" minOccurs="0">
 				<xsd:annotation>
-					<xsd:documentation>Checks the structural content (mainly XAdES against its XML Schema)</xsd:documentation>
+					<xsd:documentation>Checks the structural content</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="AcceptablePolicies" type="MultiValuesConstraint" minOccurs="0">
@@ -646,6 +646,11 @@
 					<xsd:element name="KeyBindingSignatureValid" type="LevelConstraint" minOccurs="0">
 						<xsd:annotation>
 							<xsd:documentation>Checks whether the key binding signature is valid (i.e. results to a TOTAL-PASSED validation status)</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
+					<xsd:element name="StructuralValidation" type="LevelConstraint" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>Checks the attestation structure conformance to the applicable standard</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
 					<xsd:element name="ETSI194721Conformance" type="LevelConstraint" minOccurs="0">

@@ -1,0 +1,41 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>eu.europa.ec.joinup.sd-dss</groupId>
+        <artifactId>sd-dss</artifactId>
+        <version>6.6-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>dss-cbor-common</artifactId>
+    <name>DSS cbor Common</name>
+    <description>Contains common classes and utils for dealing with CBOR modules</description>
+
+    <properties>
+        <module-name>jpms_dss_cbor_common</module-name>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>eu.europa.ec.digit.cddl4j</groupId>
+            <artifactId>validator</artifactId>
+            <version>0.1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-launcher</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+</project>

@@ -36,6 +36,7 @@ import eu.europa.esig.dss.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -61,6 +62,9 @@ public abstract class DefaultAttestation implements Attestation {
 
     /** Cached instance of an attestation Payload Verifier */
     private AttestationPayloadVerifier attestationPayloadVerifier;
+
+    /** A list of error messages occurred during a structure validation */
+    protected List<String> structureValidationMessages;
 
     /**
      * Default constructor
@@ -150,6 +154,24 @@ public abstract class DefaultAttestation implements Attestation {
             }
         }
         return null;
+    }
+
+    @Override
+    public List<String> getStructureValidationResult() {
+        if (structureValidationMessages == null) {
+            structureValidationMessages = validateStructure();
+        }
+        return structureValidationMessages;
+    }
+
+    /**
+     * This method processes the structure validation of the attestation.
+     *
+     * @return list of {@link String} errors
+     */
+    protected List<String> validateStructure() {
+        // not implemented by default
+        return Collections.emptyList();
     }
 
     @Override

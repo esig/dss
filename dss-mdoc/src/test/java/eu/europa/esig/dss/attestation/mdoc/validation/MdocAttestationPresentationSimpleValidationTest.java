@@ -42,6 +42,7 @@ import eu.europa.esig.dss.validation.SignedDocumentValidator;
 import java.math.BigInteger;
 import java.security.interfaces.ECPublicKey;
 import java.util.Calendar;
+import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -60,11 +61,11 @@ class MdocAttestationPresentationSimpleValidationTest extends AbstractMdocAttest
         Calendar calendar = Calendar.getInstance();
 
         CBORValue.CBORMapEditor validityInfo = CBOR.map();
-        long signed = calendar.getTime().getTime();
-        validityInfo.put("signed", signed);
-        validityInfo.put("validFrom", signed);
+        Date signed = calendar.getTime();
+        validityInfo.put("signed", CBORTags.tdate(signed));
+        validityInfo.put("validFrom", CBORTags.tdate(signed));
         calendar.add(Calendar.HOUR, 1);
-        validityInfo.put("validUntil", calendar.getTime().getTime());
+        validityInfo.put("validUntil", CBORTags.tdate(calendar.getTime()));
 
         CBORValue mobileSecurityObject = CBOR.map()
                 .put("version", "1.0")
@@ -104,8 +105,15 @@ class MdocAttestationPresentationSimpleValidationTest extends AbstractMdocAttest
                 .value();
         document.put("issuerSigned", issuerSigned);
 
+        CBORValue deviceMac = CBOR.array()
+                .add(CBOR.bytes(new byte[0]))
+                .add(CBOR.map().value())
+                .add(CBOR.nullValue())
+                .add(CBOR.bytes(new byte[0]))
+                .value();
+
         CBORValue deviceAuth = CBOR.map()
-                .put("deviceMac", CBOR.array().value())
+                .put("deviceMac", deviceMac)
                 .value();
 
         CBORValue deviceSigned = CBOR.map()
