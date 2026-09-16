@@ -14,7 +14,7 @@ public class MdocDeviceResponseUtils extends CBORSchemaAbstractUtils {
     /** Represents the DeviceResponse element name */
     public static final String DEVICE_RESPONSE = "DeviceResponse";
 
-    /** Represents the Document" element name */
+    /** Represents the Document element name */
     public static final String DOCUMENT = "Document";
 
     /** Represents the IssuerSigned element name */

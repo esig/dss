@@ -49,9 +49,6 @@ Status = {
 DigestID = uint
 Digest = bstr
 
-RFU = any
-Ext = any
-
 ; INTERNAL, IdentifierList
 ; ------------------------------------------------------------------------------
 IdentifierListInfo = {
