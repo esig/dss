@@ -36,12 +36,12 @@ class LibreOfficeExtensionWithXAdESBToTTest extends AbstractASiCWithXAdESTestExt
 
 	@Override
 	protected SignatureLevel getOriginalSignatureLevel() {
-		return SignatureLevel.XAdES_BASELINE_B;
+		return SignatureLevel.XAdES_EPES;
 	}
 
 	@Override
 	protected SignatureLevel getFinalSignatureLevel() {
-		return SignatureLevel.XAdES_BASELINE_T;
+		return SignatureLevel.XAdES_T;
 	}
 
 	@Override

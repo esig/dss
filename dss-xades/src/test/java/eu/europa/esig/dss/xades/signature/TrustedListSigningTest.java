@@ -77,7 +77,7 @@ class TrustedListSigningTest extends AbstractXAdESTestSignature {
 		signatureParameters.setSigningCertificate(getSigningCert());
 		signatureParameters.setCertificateChain(getCertificateChain());
 		signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
-		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+		signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BES);
 		signatureParameters.setEn319132(false);
 
 		final List<DSSReference> references = new ArrayList<>();

@@ -43,7 +43,7 @@ class ASiCEWithXAdESModifiedCertValuesTest extends AbstractASiCWithXAdESTestVali
 	protected void checkSigningCertificateValue(DiagnosticData diagnosticData) {
 		super.checkSigningCertificateValue(diagnosticData);
 		
-		assertEquals(SignatureLevel.XAdES_BASELINE_T, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+		assertEquals(SignatureLevel.XAdES_T, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
 	}
 
 	@Override

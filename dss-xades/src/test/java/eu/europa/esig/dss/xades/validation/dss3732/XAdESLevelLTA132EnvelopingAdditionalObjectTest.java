@@ -43,7 +43,7 @@ class XAdESLevelLTA132EnvelopingAdditionalObjectTest extends AbstractXAdESTestVa
 
     @Override
     protected void checkSignatureLevel(DiagnosticData diagnosticData) {
-        assertEquals(SignatureLevel.XAdES_BASELINE_LTA, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
+        assertEquals(SignatureLevel.XAdES_BASELINE_LT, diagnosticData.getSignatureFormat(diagnosticData.getFirstSignatureId()));
         assertFalse(diagnosticData.isALevelTechnicallyValid(diagnosticData.getFirstSignatureId()));
     }
 

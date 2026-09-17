@@ -118,7 +118,11 @@ public abstract class AbstractTrustedListSignatureParametersBuilder extends Abst
         final XAdESSignatureParameters signatureParameters = super.build();
 
         signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPED);
-        signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+        if (isEn319132()) {
+            signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
+        } else {
+            signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BES);
+        }
         signatureParameters.setEn319132(isEn319132());
 
         final List<DSSReference> references = getReferences();
