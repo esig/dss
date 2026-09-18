@@ -85,12 +85,7 @@ public class CBAdESService extends AbstractSignatureService<CBAdESSignatureParam
     @Override
     public ToBeSigned getDataToSign(DSSDocument toSignDocument, CBAdESSignatureParameters parameters) {
         Objects.requireNonNull(toSignDocument, "toSignDocument cannot be null!");
-        Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
-
-        assertSignatureParameters(parameters);
-
-        CBAdESBuilder cbadesBuilder = getCBAdESBuilder(parameters, Collections.singletonList(toSignDocument));
-        return cbadesBuilder.buildDataToBeSigned();
+        return getDataToSign(Collections.singletonList(toSignDocument), parameters);
     }
 
     @Override
@@ -98,7 +93,7 @@ public class CBAdESService extends AbstractSignatureService<CBAdESSignatureParam
         Objects.requireNonNull(toSignDocuments, "toSignDocuments cannot be null!");
         Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 
-        assertMultiDocumentsAllowed(toSignDocuments, parameters);
+        assertSignaturePossible(toSignDocuments, parameters);
 
         CBAdESBuilder cbadesBuilder = getCBAdESBuilder(parameters, toSignDocuments);
         return cbadesBuilder.buildDataToBeSigned();
@@ -115,8 +110,8 @@ public class CBAdESService extends AbstractSignatureService<CBAdESSignatureParam
         Objects.requireNonNull(toSignDocuments, "toSignDocuments cannot be null!");
         Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
         Objects.requireNonNull(signatureValue, "SignatureValue cannot be null!");
-        assertMultiDocumentsAllowed(toSignDocuments, parameters);
-        assertSignatureParameters(parameters);
+
+        assertSignaturePossible(toSignDocuments, parameters);
 
         CBAdESBuilder cbadesBuilder = getCBAdESBuilder(parameters, toSignDocuments);
         DSSDocument signedDocument = cbadesBuilder.build(signatureValue);
@@ -323,12 +318,24 @@ public class CBAdESService extends AbstractSignatureService<CBAdESSignatureParam
     }
 
     /**
+     * Verifies whether the signature is possible with the provided configuration, throws an exception otherwise
+     *
+     * @param toSignDocuments a list of {@link DSSDocument}s to sign
+     * @param parameters {@link CBAdESSignatureParameters}
+     */
+    protected void assertSignaturePossible(List<DSSDocument> toSignDocuments, CBAdESSignatureParameters parameters) {
+        assertMultiDocumentsAllowed(toSignDocuments, parameters);
+        assertSignatureParameters(parameters);
+    }
+
+    /**
      * This method verifies validity of the signature parameters and provides the necessary configuration, where applicable
      *
      * @param signatureParameters {@link CBAdESSignatureParameters}
      */
     protected void assertSignatureParameters(final CBAdESSignatureParameters signatureParameters) {
         assertSigningCertificateValid(signatureParameters);
+        assertSignatureLevel(signatureParameters);
         if (signatureParameters.isTagged() == null) {
             signatureParameters.setTagged(true);
             LOG.debug("No tagged parameters provided. Use default value 'true' instead.'");
@@ -367,6 +374,20 @@ public class CBAdESService extends AbstractSignatureService<CBAdESSignatureParam
                     throw new UnsupportedOperationException(String.format(
                             "ECDSA with %s is not supported for COSE!", signatureAlgorithm.getDigestAlgorithm()));
             }
+        }
+    }
+
+    private void assertSignatureLevel(CBAdESSignatureParameters parameters) {
+        Objects.requireNonNull(parameters.getSignatureLevel(), "SignatureLevel must be defined!");
+        switch (parameters.getSignatureLevel()) {
+            case CB_AdES_BASELINE_B:
+            case CB_AdES_BASELINE_T:
+            case CB_AdES_BASELINE_LT:
+            case CB_AdES_BASELINE_LTA:
+                return;
+            default:
+                throw new UnsupportedOperationException(
+                        String.format("Unsupported signature format '%s'.", parameters.getSignatureLevel()));
         }
     }
 

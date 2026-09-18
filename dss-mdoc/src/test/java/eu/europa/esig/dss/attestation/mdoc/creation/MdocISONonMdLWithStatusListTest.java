@@ -83,11 +83,6 @@ public class MdocISONonMdLWithStatusListTest extends AbstractMdocIssuerSignedTes
     }
 
     @Override
-    protected boolean disclosuresPresent() {
-        return false;
-    }
-
-    @Override
     protected String getSigningAlias() {
         return ECDSA_USER;
     }

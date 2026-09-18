@@ -504,6 +504,25 @@ public class JAdESService extends AbstractSignatureService<JAdESSignatureParamet
 	}
 
 	private void assertParametersConfigurationValid(JAdESSignatureParameters parameters) {
+		assertSignatureLevel(parameters);
+		assertX5CHeaderPlacementValidity(parameters);
+	}
+
+	private void assertSignatureLevel(JAdESSignatureParameters parameters) {
+		Objects.requireNonNull(parameters.getSignatureLevel(), "SignatureLevel must be defined!");
+		switch (parameters.getSignatureLevel()) {
+			case JAdES_BASELINE_B:
+			case JAdES_BASELINE_T:
+			case JAdES_BASELINE_LT:
+			case JAdES_BASELINE_LTA:
+				return;
+			default:
+				throw new UnsupportedOperationException(
+						String.format("Unsupported signature format '%s'.", parameters.getSignatureLevel()));
+		}
+	}
+
+	private void assertX5CHeaderPlacementValidity(JAdESSignatureParameters parameters) {
 		if (JWSSerializationType.COMPACT_SERIALIZATION == parameters.getJwsSerializationType() && (
 				JAdESSignatureParameters.X5CHeaderPlacement.unprotectedHeader == parameters.getX5CHeaderPlacement() ||
 						JAdESSignatureParameters.X5CHeaderPlacement.etsiU == parameters.getX5CHeaderPlacement())) {

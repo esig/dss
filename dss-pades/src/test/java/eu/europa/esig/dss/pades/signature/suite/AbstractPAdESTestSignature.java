@@ -99,7 +99,8 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 		PdfSignatureRevision pdfSignatureRevision = padesSig.getPdfRevision();
 
 		SignatureLevel currentLevel = padesSig.getDataFoundUpToLevel();
-		if (SignatureLevel.PAdES_BASELINE_LT.equals(currentLevel) || SignatureLevel.PAdES_BASELINE_LTA.equals(currentLevel)) {
+		if (SignatureLevel.PAdES_BASELINE_LT.equals(currentLevel) || SignatureLevel.PAdES_BASELINE_LTA.equals(currentLevel)
+				|| SignatureLevel.PKCS7_LT.equals(currentLevel) || SignatureLevel.PKCS7_LTA.equals(currentLevel)) {
 			assertNotNull(pdfSignatureRevision.getDssDictionary());
 		}
 
@@ -255,12 +256,14 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 	protected boolean isBaselineT() {
 		SignatureLevel signatureLevel = getSignatureParameters().getSignatureLevel();
 		return SignatureLevel.PAdES_BASELINE_LTA.equals(signatureLevel) || SignatureLevel.PAdES_BASELINE_LT.equals(signatureLevel)
-				|| SignatureLevel.PAdES_BASELINE_T.equals(signatureLevel);
+				|| SignatureLevel.PAdES_BASELINE_T.equals(signatureLevel) || SignatureLevel.PKCS7_LTA.equals(signatureLevel)
+				|| SignatureLevel.PKCS7_LT.equals(signatureLevel)|| SignatureLevel.PKCS7_T.equals(signatureLevel);
 	}
 
 	@Override
 	protected boolean isBaselineLTA() {
-		return SignatureLevel.PAdES_BASELINE_LTA.equals(getSignatureParameters().getSignatureLevel());
+		SignatureLevel signatureLevel = getSignatureParameters().getSignatureLevel();
+		return SignatureLevel.PAdES_BASELINE_LTA.equals(signatureLevel) || SignatureLevel.PKCS7_LTA.equals(signatureLevel);
 	}
 	
 	@Override
@@ -271,7 +274,8 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 		assertEquals(1, signatureScopes.size());
 		XmlSignatureScope xmlSignatureScope = signatureScopes.get(0);
 		SignatureLevel signatureLevel = getSignatureParameters().getSignatureLevel();
-		if (SignatureLevel.PAdES_BASELINE_B == signatureLevel || SignatureLevel.PAdES_BASELINE_T == signatureLevel) {
+		if (SignatureLevel.PAdES_BASELINE_B == signatureLevel || SignatureLevel.PKCS7_B == signatureLevel
+				|| SignatureLevel.PAdES_BASELINE_T == signatureLevel || SignatureLevel.PKCS7_T == signatureLevel) {
 			assertEquals(SignatureScopeType.FULL, xmlSignatureScope.getScope());
 		} else {
 			assertEquals(SignatureScopeType.PARTIAL, xmlSignatureScope.getScope());
@@ -323,7 +327,8 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 	@Override
 	protected void validateETSIDSSType(SADSSType dss) {
 		SignatureLevel signatureLevel = getSignatureParameters().getSignatureLevel();
-		if (SignatureLevel.PAdES_BASELINE_LT.equals(signatureLevel) || SignatureLevel.PAdES_BASELINE_LTA.equals(signatureLevel)) {
+		if (SignatureLevel.PAdES_BASELINE_LT.equals(signatureLevel) || SignatureLevel.PAdES_BASELINE_LTA.equals(signatureLevel)
+				|| SignatureLevel.PKCS7_LT.equals(signatureLevel) || SignatureLevel.PKCS7_LTA.equals(signatureLevel)) {
 			assertNotNull(dss);
 		} else {
 			assertNull(dss);
@@ -333,7 +338,8 @@ public abstract class AbstractPAdESTestSignature extends AbstractPkiFactoryTestD
 	@Override
 	protected void validateETSIVRIType(SAVRIType vri) {
 		SignatureLevel signatureLevel = getSignatureParameters().getSignatureLevel();
-		if (SignatureLevel.PAdES_BASELINE_LT.equals(signatureLevel) || SignatureLevel.PAdES_BASELINE_LTA.equals(signatureLevel)) {
+		if (SignatureLevel.PAdES_BASELINE_LT.equals(signatureLevel) || SignatureLevel.PAdES_BASELINE_LTA.equals(signatureLevel)
+				|| SignatureLevel.PKCS7_LT.equals(signatureLevel) || SignatureLevel.PKCS7_LTA.equals(signatureLevel)) {
 			assertNotNull(vri);
 		} else {
 			assertNull(vri);

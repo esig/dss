@@ -84,16 +84,16 @@ class CBAdESServiceTest extends PKIFactoryAccess {
         exception = assertThrows(NullPointerException.class, () -> signAndValidate(documentToSign, null));
         assertEquals("SignatureParameters cannot be null!", exception.getMessage());
 
+        exception = assertThrows(NullPointerException.class, () -> signAndValidate(documentToSign, signatureParameters));
+        assertEquals("SignaturePackaging shall be defined!", exception.getMessage());
+        signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
+
         exception = assertThrows(IllegalArgumentException.class, () -> signAndValidate(documentToSign, signatureParameters));
         assertEquals("Signing Certificate is not defined! Set signing certificate or use method setGenerateTBSWithoutCertificate(true).", exception.getMessage());
         signatureParameters.setGenerateTBSWithoutCertificate(true);
 
         exception = assertThrows(NullPointerException.class, () -> signAndValidate(documentToSign, signatureParameters));
-        assertEquals("SignaturePackaging shall be defined!", exception.getMessage());
-        signatureParameters.setSignaturePackaging(SignaturePackaging.ENVELOPING);
-
-        exception = assertThrows(NullPointerException.class, () -> signAndValidate(documentToSign, signatureParameters));
-        assertEquals("SignatureLevel shall be defined!", exception.getMessage());
+        assertEquals("SignatureLevel must be defined!", exception.getMessage());
         signatureParameters.setSignatureLevel(SignatureLevel.CB_AdES_BASELINE_B);
 
         signatureParameters.setGenerateTBSWithoutCertificate(false);
@@ -181,8 +181,12 @@ class CBAdESServiceTest extends PKIFactoryAccess {
         assertEquals("Signing Certificate is not defined! Set signing certificate or use method setGenerateTBSWithoutCertificate(true).", exception.getMessage());
 
         signatureParameters.setSigningCertificate(getSigningCert());
+        exception = assertThrows(IllegalArgumentException.class, () -> signAndValidate(documentToSign, signatureParameters));
+        assertEquals("For ECDSA with SHA512 a key with P-521 curve shall be used for a COSE! See RFC 9053.", exception.getMessage());
+
+        signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
         exception = assertThrows(NullPointerException.class, () -> signAndValidate(documents, signatureParameters));
-        assertEquals("SignatureLevel shall be defined!", exception.getMessage());
+        assertEquals("SignatureLevel must be defined!", exception.getMessage());
 
         signatureParameters.setSignatureLevel(SignatureLevel.CB_AdES_BASELINE_B);
         exception = assertThrows(IllegalArgumentException.class, () -> signAndValidate(documents, signatureParameters));
@@ -200,10 +204,6 @@ class CBAdESServiceTest extends PKIFactoryAccess {
         assertEquals("The documents to be signed shall have different names! The name 'doc' appears multiple times.", exception.getMessage());
 
         documentToSign2.setName("anotherDoc");
-        exception = assertThrows(IllegalArgumentException.class, () -> signAndValidate(docsWithName, signatureParameters));
-        assertEquals("For ECDSA with SHA512 a key with P-521 curve shall be used for a COSE! See RFC 9053.", exception.getMessage());
-
-        signatureParameters.setDigestAlgorithm(DigestAlgorithm.SHA256);
         DSSDocument signedDocument = signAndValidate(docsWithName, signatureParameters);
         assertNotNull(signedDocument);
     }

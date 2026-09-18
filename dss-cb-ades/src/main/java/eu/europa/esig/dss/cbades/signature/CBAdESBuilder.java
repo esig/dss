@@ -280,7 +280,7 @@ public class CBAdESBuilder {
      */
     protected void assertConfigurationValidity(CBAdESSignatureParameters signatureParameters) {
         Objects.requireNonNull(signatureParameters.getSignaturePackaging(), "SignaturePackaging shall be defined!");
-        Objects.requireNonNull(signatureParameters.getSignatureLevel(), "SignatureLevel shall be defined!");
+        Objects.requireNonNull(signatureParameters.getSignatureLevel(), "SignatureLevel must be defined!");
         Objects.requireNonNull(signatureParameters.getCoseStructureType(), "COSEStructureType shall be defined!");
         SignaturePackaging packaging = signatureParameters.getSignaturePackaging();
         if (packaging != SignaturePackaging.ENVELOPING && packaging != SignaturePackaging.DETACHED) {

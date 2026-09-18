@@ -119,10 +119,8 @@ public class CAdESService extends
 	public ToBeSigned getDataToSign(final DSSDocument toSignDocument, final CAdESSignatureParameters parameters) {
 		Objects.requireNonNull(toSignDocument, "toSignDocument cannot be null!");
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
-		
-		assertSigningCertificateValid(parameters);
-		final SignaturePackaging packaging = parameters.getSignaturePackaging();
-		assertSignaturePackaging(packaging);
+
+		assertSignaturePossible(parameters);
 
 		final CMS originalCms = getOriginalCMS(toSignDocument, parameters);
 		final DSSDocument contentToSign = getContentToSign(toSignDocument, parameters, originalCms);
@@ -140,14 +138,13 @@ public class CAdESService extends
 		Objects.requireNonNull(parameters, "SignatureParameters cannot be null!");
 		Objects.requireNonNull(signatureValue, "SignatureValue cannot be null!");
 
-		assertSigningCertificateValid(parameters);
-		final SignaturePackaging packaging = parameters.getSignaturePackaging();
-		assertSignaturePackaging(packaging);
+		assertSignaturePossible(parameters);
+
 		final SignatureAlgorithm signatureAlgorithm = parameters.getSignatureAlgorithm();
 		signatureValue = ensureSignatureValue(signatureAlgorithm, signatureValue);
 
 		final CMS originalCms = getOriginalCMS(toSignDocument, parameters);
-		if (originalCms == null && SignaturePackaging.DETACHED.equals(packaging)) {
+		if (originalCms == null && SignaturePackaging.DETACHED.equals(parameters.getSignaturePackaging())) {
 			parameters.getContext().setDetachedContents(Collections.singletonList(toSignDocument));
 		}
 		final DSSDocument contentToSign = getContentToSign(toSignDocument, parameters, originalCms);
@@ -160,7 +157,7 @@ public class CAdESService extends
 		CMS cms = cmsBuilderHelper.createCMS();
 
 		final SignatureLevel signatureLevel = parameters.getSignatureLevel();
-		if (!SignatureLevel.CAdES_BASELINE_B.equals(signatureLevel)) {
+		if (!SignatureLevel.CAdES_BASELINE_B.equals(signatureLevel) && !SignatureLevel.CAdES_BES.equals(signatureLevel) ) {
 			// Only the last signature will be extended
 			final SignerInformation newSignerInformation = getNewSignerInformation(originalCms, cms);
 			final CAdESSignatureExtension extension = getExtensionProfile(parameters);
@@ -374,7 +371,7 @@ public class CAdESService extends
 		Objects.requireNonNull(signatureDocument, "signatureDocument cannot be null!");
 		Objects.requireNonNull(parameters, "parameters cannot be null!");
 		Objects.requireNonNull(parameters.getSignatureIdToCounterSign(), "The signature to be counter-signed must be specified");
-		assertSigningCertificateValid(parameters);
+
 		assertCounterSignaturePossible(parameters);
 
 		final CAdESCounterSignatureBuilder counterSignatureBuilder = getCAdESCounterSignatureBuilder();
@@ -408,7 +405,7 @@ public class CAdESService extends
 		Objects.requireNonNull(parameters, "parameters cannot be null!");
 		Objects.requireNonNull(parameters.getSignatureIdToCounterSign(), "The signature to be counter-signed must be specified");
 		Objects.requireNonNull(signatureValue, "signatureValue cannot be null!");
-		assertSigningCertificateValid(parameters);
+
 		assertCounterSignaturePossible(parameters);
 		signatureValue = ensureSignatureValue(parameters.getSignatureAlgorithm(), signatureValue);
 
@@ -446,10 +443,37 @@ public class CAdESService extends
 		return signatureWithEvidenceRecord;
 	}
 
+	/**
+	 * Asserts whether signature creation is possible.
+	 * If a validation condition fails, a corresponding exception is thrown.
+	 *
+	 * @param parameters {@link CAdESSignatureParameters}
+	 */
+	protected void assertSignaturePossible(CAdESSignatureParameters parameters) {
+		assertSigningCertificateValid(parameters);
+		assertSignaturePackaging(parameters.getSignaturePackaging());
+		assertSignatureLevel(parameters);
+	}
+
 	private void assertCounterSignaturePossible(CAdESCounterSignatureParameters parameters) {
+		assertSigningCertificateValid(parameters);
 		if (!SignatureLevel.CAdES_BASELINE_B.equals(parameters.getSignatureLevel())) {
 			throw new UnsupportedOperationException(String.format("A counter signature with a level '%s' is not supported! "
 					+ "Please, use CAdES-BASELINE-B", parameters.getSignatureLevel()));
+		}
+	}
+
+	private void assertSignatureLevel(CAdESSignatureParameters parameters) {
+		Objects.requireNonNull(parameters.getSignatureLevel(), "SignatureLevel must be defined!");
+		switch (parameters.getSignatureLevel()) {
+			case CAdES_BASELINE_B:
+			case CAdES_BASELINE_T:
+			case CAdES_BASELINE_LT:
+			case CAdES_BASELINE_LTA:
+				return;
+			default:
+				throw new UnsupportedOperationException(
+						String.format("Unsupported signature format '%s'.", parameters.getSignatureLevel()));
 		}
 	}
 

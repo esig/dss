@@ -105,7 +105,7 @@ class CAdESServiceTest extends PKIFactoryAccess {
         
         signatureParameters.setSignatureLevel(SignatureLevel.XAdES_BASELINE_B);
         exception = assertThrows(UnsupportedOperationException.class, () -> signAndValidate(documentToSign, signatureParameters));
-        assertEquals("Unsupported signature format 'XAdES-BASELINE-B' for extension.", exception.getMessage());
+        assertEquals("Unsupported signature format 'XAdES-BASELINE-B'.", exception.getMessage());
         
         signatureParameters.setSignatureLevel(SignatureLevel.CAdES_BASELINE_B);
         signAndValidate(documentToSign, signatureParameters);
