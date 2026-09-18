@@ -60,7 +60,8 @@ public class TSLSequenceNumberErrorDetection implements AlertDetector<TLInfo> {
         locationMap.put(url, info);
         countryCodeMap.put(territory, info);
 
-        if (previousInfo == null || isUpToDate(previousInfo, info)) {
+        if (previousInfo == null || info.getDownloadCacheInfo() == null ||
+                info.getDownloadCacheInfo().isError() || isUpToDate(previousInfo, info)) {
             // first entry or no changes -> continue
             return false;
         }

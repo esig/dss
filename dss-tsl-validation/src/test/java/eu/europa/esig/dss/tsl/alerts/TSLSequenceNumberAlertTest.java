@@ -232,6 +232,32 @@ class TSLSequenceNumberAlertTest {
         assertFalse(callback.called); // no URL or CC match
     }
 
+    @Test
+    void testDownloadErrorOnUpdate() {
+        updateDocument(SK_URL, SK);
+
+        TLValidationJob job = getTLValidationJob();
+
+        List<Alert<TLInfo>> alerts = new ArrayList<>();
+        TSLSequenceNumberErrorDetection tslSequenceNumberDetection = new TSLSequenceNumberErrorDetection();
+
+        CallbackAlertHandler<TLInfo> callback = new CallbackAlertHandler<>();
+        AlertHandler<TLInfo> handler = new CompositeAlertHandler<>(Arrays.asList(callback, new LogTSLSequenceNumberErrorAlertHandler()));
+
+        TLAlert alert = new TLAlert(tslSequenceNumberDetection, handler);
+        alerts.add(alert);
+        job.setTLAlerts(alerts);
+
+        job.onlineRefresh();
+
+        assertFalse(callback.called); // original
+
+        updateDocument(SK_URL, null);
+        job.onlineRefresh();
+
+        assertFalse(callback.called); // no document
+    }
+
     private TLValidationJob getTLValidationJob() {
         TLValidationJob job = new TLValidationJob();
         job.setTrustedListCertificateSource(new TrustedListsCertificateSource());
