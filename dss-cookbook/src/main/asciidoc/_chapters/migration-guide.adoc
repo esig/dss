@@ -34,6 +34,17 @@ PdfSignatureField pdfSignatureField = ...
 String partialName = pdfSignatureField.getPartialFieldName();
 ----
 
+a|TLv5 validation          |
+Build-in
+a|
+May require custom validation policy to accept legacy XAdES-BES/-EPES signatures
+----
+import eu.europa.esig.dss.validation.policy.ValidationPolicyLoader;
+
+tlValidationJob.setValidationPolicy(
+        ValidationPolicyLoader.fromValidationPolicy("path/to/policy").create());
+----
+
 |===
 
 [cols="2,5,5"]
