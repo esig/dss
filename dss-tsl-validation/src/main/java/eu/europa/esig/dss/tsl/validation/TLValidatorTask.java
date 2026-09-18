@@ -65,18 +65,37 @@ public class TLValidatorTask implements ValidationTask {
 	/** The certificate source to use */
 	private final CertificateSource certificateSource;
 
+	/** Validation policy constraints */
+	private ValidationPolicy validationPolicy;
+
 	/**
 	 * Constructor used to instantiate a validator for a trusted list
 	 *
 	 * @param trustedList       the DSSDocument with a trusted list
 	 * @param certificateSource a certificate source with the allowed certificates
 	 *                          to sign this TL
+	 * @deprecated since DSS 6.6. To be removed
 	 */
+	@Deprecated
 	public TLValidatorTask(DSSDocument trustedList, CertificateSource certificateSource) {
+		this(trustedList, certificateSource, null);
+	}
+
+	/**
+	 * Constructor used to instantiate a validator for a trusted list
+	 *
+	 * @param trustedList       the DSSDocument with a trusted list
+	 * @param certificateSource a certificate source with the allowed certificates
+	 *                          to sign this TL
+	 * @param validationPolicy  validation policy constraints for TL validation
+	 */
+	public TLValidatorTask(DSSDocument trustedList, CertificateSource certificateSource,
+						   ValidationPolicy validationPolicy) {
 		Objects.requireNonNull(trustedList, "The document is null");
 		Objects.requireNonNull(certificateSource, "The certificate source is null");
 		this.trustedList = trustedList;
 		this.certificateSource = certificateSource;
+		this.validationPolicy = validationPolicy;
 	}
 
 	@Override
@@ -130,12 +149,16 @@ public class TLValidatorTask implements ValidationTask {
 	}
 
 	private ValidationPolicy getTrustedListValidationPolicy() {
-		try {
-			return ValidationPolicyLoader.fromValidationPolicy(
-					TLValidatorTask.class.getResourceAsStream(TRUSTED_LIST_VALIDATION_POLICY_LOCATION)).create();
-		} catch (Exception e) {
-			throw new DSSException("Unable to load the validation policy for trusted list", e);
+		// TODO : after DSS 6.6, remove default instantiation
+		if (validationPolicy == null) {
+			try {
+				validationPolicy = ValidationPolicyLoader.fromValidationPolicy(
+						TLValidatorTask.class.getResourceAsStream(TRUSTED_LIST_VALIDATION_POLICY_LOCATION)).create();
+			} catch (Exception e) {
+				throw new DSSException("Unable to load the validation policy for trusted list", e);
+			}
 		}
+		return validationPolicy;
 	}
 
 }

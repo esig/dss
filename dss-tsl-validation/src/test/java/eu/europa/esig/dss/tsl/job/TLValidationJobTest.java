@@ -25,6 +25,7 @@ import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.job.ValidationInfoRecord;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.model.timedependent.TimeDependentValues;
 import eu.europa.esig.dss.model.tsl.CertificatePivotStatus;
 import eu.europa.esig.dss.model.tsl.CertificateTrustTime;
@@ -52,10 +53,12 @@ import eu.europa.esig.dss.tsl.function.TrustServiceProviderPredicate;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.source.TLSource;
 import eu.europa.esig.dss.tsl.sync.ExpirationAndSignatureCheckStrategy;
+import eu.europa.esig.dss.tsl.validation.TLValidatorTask;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.job.cache.CacheCleaner;
 import eu.europa.esig.dss.validation.job.cache.state.CacheStateEnum;
 import eu.europa.esig.dss.validation.job.sync.AcceptAllStrategy;
+import eu.europa.esig.dss.validation.policy.ValidationPolicyLoader;
 import eu.europa.esig.trustedlist.jaxb.tsl.TSPServiceType;
 import eu.europa.esig.trustedlist.jaxb.tsl.TSPType;
 import org.junit.jupiter.api.AfterEach;
@@ -89,6 +92,8 @@ import static org.junit.jupiter.api.Assertions.assertTimeout;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TLValidationJobTest {
+
+	private static final String TRUSTED_LIST_V5_VALIDATION_POLICY_LOCATION = "/policy/tsl-v5-constraint.xml";
 
 	private static TLValidationJob tlValidationJob;
 	private static CacheCleaner cacheCleaner;
@@ -325,6 +330,7 @@ class TLValidationJobTest {
 		tlValidationJob.setCacheCleaner(cacheCleaner);
 		tlValidationJob.setTrustedListSources(czSource);
 		tlValidationJob.setTrustedListCertificateSource(trustedListsCertificateSource);
+		tlValidationJob.setValidationPolicy(validationPolicy());
 		tlValidationJob.offlineRefresh();
 
 		TLValidationJobSummary summary = trustedListsCertificateSource.getSummary();
@@ -424,6 +430,7 @@ class TLValidationJobTest {
 		tlValidationJob.setCacheCleaner(cacheCleaner);
 		tlValidationJob.setTrustedListSources(czSource);
 		tlValidationJob.setTrustedListCertificateSource(trustedListsCertificateSource);
+		tlValidationJob.setValidationPolicy(validationPolicy());
 		tlValidationJob.offlineRefresh();
 
 		assertEquals(143, trustedListsCertificateSource.getCertificates().size());
@@ -481,6 +488,7 @@ class TLValidationJobTest {
 		tlValidationJob.setCacheCleaner(cacheCleaner);
 		tlValidationJob.setTrustedListSources(czSource);
 		tlValidationJob.setTrustedListCertificateSource(trustedListsCertificateSource);
+		tlValidationJob.setValidationPolicy(validationPolicy());
 		tlValidationJob.offlineRefresh();
 
 		assertEquals(143, trustedListsCertificateSource.getCertificates().size());
@@ -540,6 +548,7 @@ class TLValidationJobTest {
 		tlValidationJob.setCacheCleaner(cacheCleaner);
 		tlValidationJob.setTrustedListSources(czSource);
 		tlValidationJob.setTrustedListCertificateSource(trustedListsCertificateSource);
+		tlValidationJob.setValidationPolicy(validationPolicy());
 		tlValidationJob.offlineRefresh();
 
 		assertEquals(143, trustedListsCertificateSource.getCertificates().size());
@@ -595,6 +604,7 @@ class TLValidationJobTest {
 		tlValidationJob.setOnlineDataLoader(onlineFileLoader);
 		tlValidationJob.setCacheCleaner(cacheCleaner);
 		tlValidationJob.setTrustedListSources(czSource);
+		tlValidationJob.setValidationPolicy(validationPolicy());
 		// trustedCertificateSource is not provied -> no synchronization
 		tlValidationJob.offlineRefresh();
 
@@ -624,6 +634,7 @@ class TLValidationJobTest {
 		tlValidationJob.setOnlineDataLoader(onlineFileLoader);
 		tlValidationJob.setCacheCleaner(cacheCleaner);
 		tlValidationJob.setTrustedListSources(czSource);
+		tlValidationJob.setValidationPolicy(validationPolicy());
 		tlValidationJob.offlineRefresh();
 		
 		TLValidationJobSummary summary = tlValidationJob.getSummary();
@@ -651,6 +662,7 @@ class TLValidationJobTest {
 		tlValidationJob.setOnlineDataLoader(onlineFileLoader);
 		tlValidationJob.setCacheCleaner(cacheCleaner);
 		tlValidationJob.setTrustedListSources(new TLSource());
+		tlValidationJob.setValidationPolicy(validationPolicy());
 		Exception exception = assertThrows(NullPointerException.class, () -> tlValidationJob.offlineRefresh());
 		assertEquals("URL cannot be null.", exception.getMessage());
 	}
@@ -753,6 +765,7 @@ class TLValidationJobTest {
 		tlValidationJob.setCacheCleaner(cacheCleaner);
 		tlValidationJob.setListOfTrustedListSources(lotlSource);
 		tlValidationJob.setTrustedListCertificateSource(trustedListsCertificateSource);
+		tlValidationJob.setValidationPolicy(validationPolicy());
 		tlValidationJob.offlineRefresh();
 
 		TLValidationJobSummary summary = trustedListsCertificateSource.getSummary();
@@ -846,6 +859,7 @@ class TLValidationJobTest {
 		tlValidationJob.setOnlineDataLoader(onlineFileLoader);
 		tlValidationJob.setCacheCleaner(cacheCleaner);
 		tlValidationJob.setListOfTrustedListSources(new LOTLSource());
+		tlValidationJob.setValidationPolicy(validationPolicy());
 		Exception exception = assertThrows(NullPointerException.class, () -> tlValidationJob.offlineRefresh());
 		assertEquals("URL cannot be null.", exception.getMessage());
 	}
@@ -905,6 +919,7 @@ class TLValidationJobTest {
 		tlValidationJob.setTrustedListSources(czSource);
 		tlValidationJob.setTrustedListCertificateSource(trustedListsCertificateSource);
 		tlValidationJob.setSynchronizationStrategy(synchronizationStrategy);
+		tlValidationJob.setValidationPolicy(validationPolicy());
 		tlValidationJob.onlineRefresh();
 
 		TLValidationJobSummary summary = tlValidationJob.getSummary();
@@ -1058,6 +1073,7 @@ class TLValidationJobTest {
 		tlValidationJob.setTrustedListSources(czSource);
 		tlValidationJob.setTrustedListCertificateSource(trustedListsCertificateSource);
 		tlValidationJob.setSynchronizationStrategy(new AcceptAllStrategy<>());
+		tlValidationJob.setValidationPolicy(validationPolicy());
 		tlValidationJob.onlineRefresh();
 
 		TLValidationJobSummary summary = tlValidationJob.getSummary();
@@ -1107,6 +1123,7 @@ class TLValidationJobTest {
 		tlValidationJob.setTrustedListSources(czSource);
 		tlValidationJob.setTrustedListCertificateSource(trustedListsCertificateSource);
 		tlValidationJob.setSynchronizationStrategy(new AcceptAllStrategy<>());
+		tlValidationJob.setValidationPolicy(validationPolicy());
 		tlValidationJob.onlineRefresh();
 
 		TLValidationJobSummary summary = tlValidationJob.getSummary();
@@ -1157,6 +1174,7 @@ class TLValidationJobTest {
 		tlValidationJob.setTrustedListSources(czSource);
 		tlValidationJob.setTrustedListCertificateSource(trustedListsCertificateSource);
 		tlValidationJob.setSynchronizationStrategy(synchronizationStrategy);
+		tlValidationJob.setValidationPolicy(validationPolicy());
 		tlValidationJob.onlineRefresh();
 
 		TLValidationJobSummary summary = tlValidationJob.getSummary();
@@ -1207,6 +1225,7 @@ class TLValidationJobTest {
 		tlValidationJob.setTrustedListSources(czSource);
 		tlValidationJob.setTrustedListCertificateSource(trustedListsCertificateSource);
 		tlValidationJob.setSynchronizationStrategy(synchronizationStrategy);
+		tlValidationJob.setValidationPolicy(validationPolicy());
 		tlValidationJob.onlineRefresh();
 
 		TLValidationJobSummary summary = tlValidationJob.getSummary();
@@ -1278,6 +1297,7 @@ class TLValidationJobTest {
 		tlValidationJob.setListOfTrustedListSources(lotlSource);
 		tlValidationJob.setTrustedListCertificateSource(trustedListsCertificateSource);
 		tlValidationJob.setSynchronizationStrategy(synchronizationStrategy);
+		tlValidationJob.setValidationPolicy(validationPolicy());
 		tlValidationJob.onlineRefresh();
 
 		TLValidationJobSummary summary = tlValidationJob.getSummary();
@@ -1345,6 +1365,7 @@ class TLValidationJobTest {
 		tlValidationJob.setListOfTrustedListSources(lotlSource);
 		tlValidationJob.setTrustedListCertificateSource(trustedListsCertificateSource);
 		tlValidationJob.setSynchronizationStrategy(new AcceptAllStrategy<>());
+		tlValidationJob.setValidationPolicy(validationPolicy());
 		tlValidationJob.onlineRefresh();
 
 		TLValidationJobSummary summary = tlValidationJob.getSummary();
@@ -1418,6 +1439,7 @@ class TLValidationJobTest {
 		tlValidationJob.setListOfTrustedListSources(lotlSource);
 		tlValidationJob.setTrustedListCertificateSource(trustedListsCertificateSource);
 		tlValidationJob.setSynchronizationStrategy(synchronizationStrategy);
+		tlValidationJob.setValidationPolicy(validationPolicy());
 		tlValidationJob.onlineRefresh();
 
 		TLValidationJobSummary summary = tlValidationJob.getSummary();
@@ -1492,6 +1514,7 @@ class TLValidationJobTest {
 		tlValidationJob.setListOfTrustedListSources(lotlSource);
 		tlValidationJob.setTrustedListCertificateSource(trustedListsCertificateSource);
 		tlValidationJob.setSynchronizationStrategy(synchronizationStrategy);
+		tlValidationJob.setValidationPolicy(validationPolicy());
 		tlValidationJob.onlineRefresh();
 
 		TLValidationJobSummary summary = tlValidationJob.getSummary();
@@ -1804,6 +1827,7 @@ class TLValidationJobTest {
 		tlValidationJob.setListOfTrustedListSources(lotlSource);
 		tlValidationJob.setTrustedListCertificateSource(trustedListsCertificateSource);
 		tlValidationJob.setSynchronizationStrategy(new AcceptAllStrategy<>());
+		tlValidationJob.setValidationPolicy(validationPolicy());
 		tlValidationJob.onlineRefresh();
 		
 		TLValidationJobSummary summary = tlValidationJob.getSummary();
@@ -1848,6 +1872,7 @@ class TLValidationJobTest {
 		tlValidationJob.setListOfTrustedListSources(lotlSource);
 		tlValidationJob.setTrustedListCertificateSource(trustedListsCertificateSource);
 		tlValidationJob.setSynchronizationStrategy(synchronizationStrategy);
+		tlValidationJob.setValidationPolicy(validationPolicy());
 		tlValidationJob.onlineRefresh();
 
 		TLValidationJobSummary summary = tlValidationJob.getSummary();
@@ -1888,6 +1913,7 @@ class TLValidationJobTest {
 		tlValidationJob.setListOfTrustedListSources(lotlSource);
 		tlValidationJob.setTrustedListCertificateSource(trustedListsCertificateSource);
 		tlValidationJob.setSynchronizationStrategy(new AcceptAllStrategy<>());
+		tlValidationJob.setValidationPolicy(validationPolicy());
 		tlValidationJob.onlineRefresh();
 
 		TLValidationJobSummary summary = tlValidationJob.getSummary();
@@ -1929,6 +1955,7 @@ class TLValidationJobTest {
 		tlValidationJob.setListOfTrustedListSources(lotlSource);
 		tlValidationJob.setTrustedListCertificateSource(trustedListsCertificateSource);
 		tlValidationJob.setSynchronizationStrategy(synchronizationStrategy);
+		tlValidationJob.setValidationPolicy(validationPolicy());
 		tlValidationJob.onlineRefresh();
 
 		TLValidationJobSummary summary = tlValidationJob.getSummary();
@@ -2197,6 +2224,7 @@ class TLValidationJobTest {
 		tlValidationJob.setCacheCleaner(cacheCleaner);
 		tlValidationJob.setListOfTrustedListSources(lotlSource);
 		tlValidationJob.setTrustedListCertificateSource(new TrustedListsCertificateSource());
+		tlValidationJob.setValidationPolicy(validationPolicy());
 		tlValidationJob.onlineRefresh();
 
 		TLValidationJobSummary summary = tlValidationJob.getSummary();
@@ -2431,6 +2459,7 @@ class TLValidationJobTest {
 		tlValidationJob.setCacheCleaner(cacheCleaner);
 		tlValidationJob.setListOfTrustedListSources(lotlSource);
 		tlValidationJob.setTrustedListCertificateSource(new TrustedListsCertificateSource());
+		tlValidationJob.setValidationPolicy(validationPolicy());
 		tlValidationJob.onlineRefresh();
 
 		TLValidationJobSummary summary = tlValidationJob.getSummary();
@@ -2566,6 +2595,7 @@ class TLValidationJobTest {
 		tlValidationJob.setCacheCleaner(cacheCleaner);
 		tlValidationJob.setListOfTrustedListSources(lotlSource);
 		tlValidationJob.setTrustedListCertificateSource(new TrustedListsCertificateSource());
+		tlValidationJob.setValidationPolicy(validationPolicy());
 		tlValidationJob.offlineRefresh();
 
 		TLValidationJobSummary summary = tlValidationJob.getSummary();
@@ -2615,6 +2645,7 @@ class TLValidationJobTest {
 		tlValidationJob = new TLValidationJob();
 		tlValidationJob.setOfflineDataLoader(offlineFileLoader);
 		tlValidationJob.setListOfTrustedListSources(peruvianLotlSource);
+		tlValidationJob.setValidationPolicy(validationPolicy());
 		tlValidationJob.offlineRefresh();
 		
 		TLValidationJobSummary summary = tlValidationJob.getSummary();
@@ -2653,6 +2684,7 @@ class TLValidationJobTest {
 		tlValidationJob = new TLValidationJob();
 		tlValidationJob.setOfflineDataLoader(offlineFileLoader);
 		tlValidationJob.setListOfTrustedListSources(lotlSource, peruvianLotlSource);
+		tlValidationJob.setValidationPolicy(validationPolicy());
 		tlValidationJob.offlineRefresh();
 		
 		TLValidationJobSummary summary = tlValidationJob.getSummary();
@@ -2695,6 +2727,7 @@ class TLValidationJobTest {
 		tlValidationJob.setCacheCleaner(cacheCleaner);
 		tlValidationJob.setTrustedListSources(tlSource);
 		tlValidationJob.setTrustedListCertificateSource(new TrustedListsCertificateSource());
+		tlValidationJob.setValidationPolicy(validationPolicy());
 		tlValidationJob.offlineRefresh();
 
 		TLValidationJobSummary summary = tlValidationJob.getSummary();
@@ -2708,6 +2741,292 @@ class TLValidationJobTest {
 		ValidationInfoRecord validationCacheInfo = tlInfos.get(0).getValidationCacheInfo();
 		assertEquals(Indication.TOTAL_PASSED, validationCacheInfo.getIndication());
 	}
+
+	@Test
+	void tlV5DiffPolicy() {
+		updateTLUrl("src/test/resources/lotlCache/CZ.xml");
+
+		TrustedListsCertificateSource trustedListsCertificateSource = new TrustedListsCertificateSource();
+
+		TLValidationJob tlValidationJob = new TLValidationJob();
+		tlValidationJob.setOfflineDataLoader(offlineFileLoader);
+		tlValidationJob.setTrustedListSources(czSource);
+		tlValidationJob.setTrustedListCertificateSource(trustedListsCertificateSource);
+		tlValidationJob.offlineRefresh();
+
+		// default policy (should invalidate)
+		TLValidationJobSummary summary = tlValidationJob.getSummary();
+
+		assertEquals(0, summary.getNumberOfProcessedLOTLs());
+		assertEquals(1, summary.getNumberOfProcessedTLs());
+
+		List<TLInfo> tlInfos = summary.getOtherTLInfos();
+		assertEquals(1, tlInfos.size());
+
+		TLInfo czTL = tlInfos.get(0);
+
+		assertTrue(czTL.getDownloadCacheInfo().isSynchronized());
+		assertTrue(czTL.getParsingCacheInfo().isSynchronized());
+		assertTrue(czTL.getValidationCacheInfo().isSynchronized());
+
+		assertNull(czTL.getDownloadCacheInfo().getExceptionMessage());
+		assertNull(czTL.getDownloadCacheInfo().getExceptionStackTrace());
+		assertNull(czTL.getParsingCacheInfo().getExceptionMessage());
+		assertNull(czTL.getParsingCacheInfo().getExceptionStackTrace());
+		assertNull(czTL.getValidationCacheInfo().getExceptionMessage());
+		assertNull(czTL.getValidationCacheInfo().getExceptionStackTrace());
+
+		assertFalse(czTL.getValidationCacheInfo().isValid());
+		assertEquals(Indication.TOTAL_FAILED, czTL.getValidationCacheInfo().getIndication());
+		assertEquals(SubIndication.FORMAT_FAILURE, czTL.getValidationCacheInfo().getSubIndication());
+
+		tlValidationJob = new TLValidationJob();
+		tlValidationJob.setOfflineDataLoader(offlineFileLoader);
+		tlValidationJob.setTrustedListSources(czSource);
+		tlValidationJob.setTrustedListCertificateSource(trustedListsCertificateSource);
+		tlValidationJob.setValidationPolicy(validationPolicy());
+		tlValidationJob.offlineRefresh();
+
+		summary = tlValidationJob.getSummary();
+
+		assertEquals(0, summary.getNumberOfProcessedLOTLs());
+		assertEquals(1, summary.getNumberOfProcessedTLs());
+
+		tlInfos = summary.getOtherTLInfos();
+		assertEquals(1, tlInfos.size());
+
+		czTL = tlInfos.get(0);
+
+		assertTrue(czTL.getDownloadCacheInfo().isSynchronized());
+		assertTrue(czTL.getParsingCacheInfo().isSynchronized());
+		assertTrue(czTL.getValidationCacheInfo().isSynchronized());
+
+		assertNull(czTL.getDownloadCacheInfo().getExceptionMessage());
+		assertNull(czTL.getDownloadCacheInfo().getExceptionStackTrace());
+		assertNull(czTL.getParsingCacheInfo().getExceptionMessage());
+		assertNull(czTL.getParsingCacheInfo().getExceptionStackTrace());
+		assertNull(czTL.getValidationCacheInfo().getExceptionMessage());
+		assertNull(czTL.getValidationCacheInfo().getExceptionStackTrace());
+
+		assertTrue(czTL.getValidationCacheInfo().isValid());
+		assertEquals(Indication.TOTAL_PASSED, czTL.getValidationCacheInfo().getIndication());
+		assertNull(czTL.getValidationCacheInfo().getSubIndication());
+	}
+
+	@Test
+	void lotlV5DiffPolicyTest() {
+		TrustedListsCertificateSource trustedListsCertificateSource = new TrustedListsCertificateSource();
+
+		TLValidationJob tlValidationJob = new TLValidationJob();
+		tlValidationJob.setOfflineDataLoader(offlineFileLoader);
+		tlValidationJob.setCacheCleaner(cacheCleaner);
+		tlValidationJob.setListOfTrustedListSources(lotlSource);
+		tlValidationJob.setTrustedListCertificateSource(trustedListsCertificateSource);
+		tlValidationJob.offlineRefresh();
+
+		TLValidationJobSummary summary = tlValidationJob.getSummary();
+
+		assertEquals(1, summary.getNumberOfProcessedLOTLs());
+		assertEquals(31, summary.getNumberOfProcessedTLs());
+
+		List<TLInfo> otherTLInfos = summary.getOtherTLInfos();
+		assertEquals(0, otherTLInfos.size());
+
+		List<LOTLInfo> lotlInfos = summary.getLOTLInfos();
+		assertEquals(1, lotlInfos.size());
+
+		LOTLInfo lotlInfo = lotlInfos.get(0);
+
+		assertTrue(lotlInfo.getDownloadCacheInfo().isSynchronized());
+		assertTrue(lotlInfo.getParsingCacheInfo().isSynchronized());
+		assertTrue(lotlInfo.getValidationCacheInfo().isSynchronized());
+
+		assertNull(lotlInfo.getDownloadCacheInfo().getExceptionMessage());
+		assertNull(lotlInfo.getDownloadCacheInfo().getExceptionStackTrace());
+		assertNull(lotlInfo.getParsingCacheInfo().getExceptionMessage());
+		assertNull(lotlInfo.getParsingCacheInfo().getExceptionStackTrace());
+		assertNull(lotlInfo.getValidationCacheInfo().getExceptionMessage());
+		assertNull(lotlInfo.getValidationCacheInfo().getExceptionStackTrace());
+
+		assertFalse(lotlInfo.getValidationCacheInfo().isValid());
+		assertEquals(Indication.TOTAL_FAILED, lotlInfo.getValidationCacheInfo().getIndication());
+		assertEquals(SubIndication.FORMAT_FAILURE, lotlInfo.getValidationCacheInfo().getSubIndication());
+
+		List<TLInfo> tlInfos = lotlInfo.getTLInfos();
+		assertEquals(31, tlInfos.size());
+
+		for (TLInfo tlInfo : tlInfos) {
+			if (tlInfo.getDownloadCacheInfo().isResultExist()) {
+				assertTrue(tlInfo.getDownloadCacheInfo().isSynchronized());
+				assertTrue(tlInfo.getParsingCacheInfo().isSynchronized());
+				assertTrue(tlInfo.getValidationCacheInfo().isSynchronized());
+
+				assertNull(tlInfo.getDownloadCacheInfo().getExceptionMessage());
+				assertNull(tlInfo.getDownloadCacheInfo().getExceptionStackTrace());
+				assertNull(tlInfo.getParsingCacheInfo().getExceptionMessage());
+				assertNull(tlInfo.getParsingCacheInfo().getExceptionStackTrace());
+				assertNull(tlInfo.getValidationCacheInfo().getExceptionMessage());
+				assertNull(tlInfo.getValidationCacheInfo().getExceptionStackTrace());
+
+				assertFalse(tlInfo.getValidationCacheInfo().isValid());
+				assertEquals(Indication.TOTAL_FAILED, tlInfo.getValidationCacheInfo().getIndication());
+				assertEquals(SubIndication.FORMAT_FAILURE, tlInfo.getValidationCacheInfo().getSubIndication());
+			}
+		}
+
+		tlValidationJob = new TLValidationJob();
+		tlValidationJob.setOfflineDataLoader(offlineFileLoader);
+		tlValidationJob.setCacheCleaner(cacheCleaner);
+		tlValidationJob.setListOfTrustedListSources(lotlSource);
+		tlValidationJob.setTrustedListCertificateSource(trustedListsCertificateSource);
+		tlValidationJob.setValidationPolicy(validationPolicy());
+		tlValidationJob.offlineRefresh();
+
+		summary = tlValidationJob.getSummary();
+
+		assertEquals(1, summary.getNumberOfProcessedLOTLs());
+		assertEquals(31, summary.getNumberOfProcessedTLs());
+
+		otherTLInfos = summary.getOtherTLInfos();
+		assertEquals(0, otherTLInfos.size());
+
+		lotlInfos = summary.getLOTLInfos();
+		assertEquals(1, lotlInfos.size());
+
+		lotlInfo = lotlInfos.get(0);
+
+		assertTrue(lotlInfo.getDownloadCacheInfo().isSynchronized());
+		assertTrue(lotlInfo.getParsingCacheInfo().isSynchronized());
+		assertTrue(lotlInfo.getValidationCacheInfo().isSynchronized());
+
+		assertNull(lotlInfo.getDownloadCacheInfo().getExceptionMessage());
+		assertNull(lotlInfo.getDownloadCacheInfo().getExceptionStackTrace());
+		assertNull(lotlInfo.getParsingCacheInfo().getExceptionMessage());
+		assertNull(lotlInfo.getParsingCacheInfo().getExceptionStackTrace());
+		assertNull(lotlInfo.getValidationCacheInfo().getExceptionMessage());
+		assertNull(lotlInfo.getValidationCacheInfo().getExceptionStackTrace());
+
+		assertTrue(lotlInfo.getValidationCacheInfo().isValid());
+		assertEquals(Indication.TOTAL_PASSED, lotlInfo.getValidationCacheInfo().getIndication());
+
+		tlInfos = lotlInfo.getTLInfos();
+		assertEquals(31, tlInfos.size());
+
+		for (TLInfo tlInfo : tlInfos) {
+			if (tlInfo.getDownloadCacheInfo().isResultExist()) {
+				assertTrue(tlInfo.getDownloadCacheInfo().isSynchronized());
+				assertTrue(tlInfo.getParsingCacheInfo().isSynchronized());
+				assertTrue(tlInfo.getValidationCacheInfo().isSynchronized());
+
+				assertNull(tlInfo.getDownloadCacheInfo().getExceptionMessage());
+				assertNull(tlInfo.getDownloadCacheInfo().getExceptionStackTrace());
+				assertNull(tlInfo.getParsingCacheInfo().getExceptionMessage());
+				assertNull(tlInfo.getParsingCacheInfo().getExceptionStackTrace());
+				assertNull(tlInfo.getValidationCacheInfo().getExceptionMessage());
+				assertNull(tlInfo.getValidationCacheInfo().getExceptionStackTrace());
+
+				assertNotEquals(Indication.TOTAL_FAILED, tlInfo.getValidationCacheInfo().getIndication());
+			}
+		}
+	}
+
+	@Test
+	void pivotLotlV5DiffPolicyTest() {
+		updatePivotUrl("src/test/resources/lotlCache/tl_pivot_247_mp.xml");
+
+		TrustedListsCertificateSource trustedListsCertificateSource = new TrustedListsCertificateSource();
+
+		TLValidationJob tlValidationJob = new TLValidationJob();
+		tlValidationJob.setOfflineDataLoader(offlineFileLoader);
+		tlValidationJob.setCacheCleaner(cacheCleaner);
+		tlValidationJob.setListOfTrustedListSources(lotlSource);
+		tlValidationJob.setTrustedListCertificateSource(trustedListsCertificateSource);
+		tlValidationJob.offlineRefresh();
+
+		TLValidationJobSummary summary = tlValidationJob.getSummary();
+
+		List<LOTLInfo> tlInfos = summary.getLOTLInfos();
+		LOTLInfo lotlInfo = tlInfos.get(0);
+
+		assertTrue(lotlInfo.getDownloadCacheInfo().isSynchronized());
+		assertTrue(lotlInfo.getParsingCacheInfo().isSynchronized());
+		assertTrue(lotlInfo.getValidationCacheInfo().isSynchronized());
+
+		assertNull(lotlInfo.getDownloadCacheInfo().getExceptionMessage());
+		assertNull(lotlInfo.getDownloadCacheInfo().getExceptionStackTrace());
+		assertNull(lotlInfo.getParsingCacheInfo().getExceptionMessage());
+		assertNull(lotlInfo.getParsingCacheInfo().getExceptionStackTrace());
+		assertNull(lotlInfo.getValidationCacheInfo().getExceptionMessage());
+		assertNull(lotlInfo.getValidationCacheInfo().getExceptionStackTrace());
+
+		assertEquals(Indication.TOTAL_FAILED, lotlInfo.getValidationCacheInfo().getIndication());
+		assertEquals(SubIndication.FORMAT_FAILURE, lotlInfo.getValidationCacheInfo().getSubIndication());
+
+		assertEquals(4, lotlInfo.getPivotInfos().size());
+		assertEquals(31, lotlInfo.getTLInfos().size());
+
+		for (PivotInfo pivotInfo : lotlInfo.getPivotInfos()) {
+			assertTrue(pivotInfo.getDownloadCacheInfo().isResultExist());
+			assertTrue(pivotInfo.getParsingCacheInfo().isResultExist());
+			assertTrue(pivotInfo.getValidationCacheInfo().isResultExist());
+
+			assertNull(pivotInfo.getDownloadCacheInfo().getExceptionMessage());
+			assertNull(pivotInfo.getDownloadCacheInfo().getExceptionStackTrace());
+			assertNull(pivotInfo.getParsingCacheInfo().getExceptionMessage());
+			assertNull(pivotInfo.getParsingCacheInfo().getExceptionStackTrace());
+			assertNull(pivotInfo.getValidationCacheInfo().getExceptionMessage());
+			assertNull(pivotInfo.getValidationCacheInfo().getExceptionStackTrace());
+
+			assertEquals(Indication.TOTAL_FAILED, pivotInfo.getValidationCacheInfo().getIndication());
+			assertEquals(SubIndication.FORMAT_FAILURE, pivotInfo.getValidationCacheInfo().getSubIndication());
+		}
+
+		tlValidationJob = new TLValidationJob();
+		tlValidationJob.setOfflineDataLoader(offlineFileLoader);
+		tlValidationJob.setCacheCleaner(cacheCleaner);
+		tlValidationJob.setListOfTrustedListSources(lotlSource);
+		tlValidationJob.setTrustedListCertificateSource(trustedListsCertificateSource);
+		tlValidationJob.setValidationPolicy(validationPolicy());
+		tlValidationJob.offlineRefresh();
+
+		summary = tlValidationJob.getSummary();
+
+		tlInfos = summary.getLOTLInfos();
+		lotlInfo = tlInfos.get(0);
+
+		assertTrue(lotlInfo.getDownloadCacheInfo().isSynchronized());
+		assertTrue(lotlInfo.getParsingCacheInfo().isSynchronized());
+		assertTrue(lotlInfo.getValidationCacheInfo().isSynchronized());
+
+		assertNull(lotlInfo.getDownloadCacheInfo().getExceptionMessage());
+		assertNull(lotlInfo.getDownloadCacheInfo().getExceptionStackTrace());
+		assertNull(lotlInfo.getParsingCacheInfo().getExceptionMessage());
+		assertNull(lotlInfo.getParsingCacheInfo().getExceptionStackTrace());
+		assertNull(lotlInfo.getValidationCacheInfo().getExceptionMessage());
+		assertNull(lotlInfo.getValidationCacheInfo().getExceptionStackTrace());
+
+		assertTrue(lotlInfo.getValidationCacheInfo().isValid());
+		assertEquals(Indication.TOTAL_PASSED, lotlInfo.getValidationCacheInfo().getIndication());
+
+		assertEquals(4, lotlInfo.getPivotInfos().size());
+		assertEquals(31, lotlInfo.getTLInfos().size());
+
+		for (PivotInfo pivotInfo : lotlInfo.getPivotInfos()) {
+			assertTrue(pivotInfo.getDownloadCacheInfo().isResultExist());
+			assertTrue(pivotInfo.getParsingCacheInfo().isResultExist());
+			assertTrue(pivotInfo.getValidationCacheInfo().isResultExist());
+
+			assertNull(pivotInfo.getDownloadCacheInfo().getExceptionMessage());
+			assertNull(pivotInfo.getDownloadCacheInfo().getExceptionStackTrace());
+			assertNull(pivotInfo.getParsingCacheInfo().getExceptionMessage());
+			assertNull(pivotInfo.getParsingCacheInfo().getExceptionStackTrace());
+			assertNull(pivotInfo.getValidationCacheInfo().getExceptionMessage());
+			assertNull(pivotInfo.getValidationCacheInfo().getExceptionStackTrace());
+
+			assertEquals(Indication.TOTAL_PASSED, pivotInfo.getValidationCacheInfo().getIndication());
+			assertNull(pivotInfo.getValidationCacheInfo().getSubIndication());
+		}
+	}
 	
 	private TLValidationJob getTLValidationJob() {
 		tlValidationJob = new TLValidationJob();
@@ -2716,6 +3035,7 @@ class TLValidationJobTest {
 		tlValidationJob.setCacheCleaner(cacheCleaner);
 		tlValidationJob.setTrustedListSources(czSource);
 		tlValidationJob.setTrustedListCertificateSource(new TrustedListsCertificateSource());
+		tlValidationJob.setValidationPolicy(validationPolicy());
 		tlValidationJob.offlineRefresh();
 		return tlValidationJob;
 	}
@@ -2727,6 +3047,7 @@ class TLValidationJobTest {
 		tlValidationJob.setCacheCleaner(cacheCleaner);
 		tlValidationJob.setListOfTrustedListSources(lotlSource);
 		tlValidationJob.setTrustedListCertificateSource(new TrustedListsCertificateSource());
+		tlValidationJob.setValidationPolicy(validationPolicy());
 		tlValidationJob.offlineRefresh();
 		return tlValidationJob;
 	}
@@ -2756,6 +3077,11 @@ class TLValidationJobTest {
 		urlMap.put("https://ec.europa.eu/information_society/policy/esignature/trusted-list/tl-pivot-247-mp.xml", 
 				new FileDocument(url));
 		updateLOTLUrl(url);
+	}
+
+	private ValidationPolicy validationPolicy() {
+		return ValidationPolicyLoader.fromValidationPolicy(
+				TLValidatorTask.class.getResourceAsStream(TRUSTED_LIST_V5_VALIDATION_POLICY_LOCATION)).create();
 	}
 	
 	@AfterEach

@@ -30,6 +30,7 @@ import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.enumerations.SubIndication;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.model.x509.CertificateToken;
 import eu.europa.esig.dss.service.http.commons.FileCacheDataLoader;
 import eu.europa.esig.dss.simplecertificatereport.SimpleCertificateReport;
@@ -43,6 +44,7 @@ import eu.europa.esig.dss.tsl.job.TLValidationJob;
 import eu.europa.esig.dss.tsl.source.TLSource;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.CertificateValidator;
+import eu.europa.esig.dss.validation.policy.ValidationPolicyLoader;
 import eu.europa.esig.dss.validation.reports.CertificateReports;
 import org.junit.jupiter.api.Test;
 
@@ -60,6 +62,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SKCertificateTest {
+
+    private static final String TRUSTED_LIST_V5_VALIDATION_POLICY_LOCATION = "/policy/tsl-v5-constraint.xml";
 
     private static final DSSDocument TL_DOC = new FileDocument(new File("src/test/resources/sk-tl-sn-95.xml"));
     private static final DSSDocument TL_DOC_ALTERED_TSP = new FileDocument(new File("src/test/resources/sk-tl-altered-tsp.xml"));
@@ -82,6 +86,7 @@ class SKCertificateTest {
         certificateSource.addCertificate(TL_ISSUER);
 
         TLValidationJob tlValidationJob = new TLValidationJob();
+        tlValidationJob.setValidationPolicy(validationPolicy());
 
         TLSource tlSource = new TLSource();
         tlSource.setUrl(SK_TL_URL);
@@ -169,6 +174,7 @@ class SKCertificateTest {
         certificateSource.addCertificate(TL_ISSUER);
 
         TLValidationJob tlValidationJob = new TLValidationJob();
+        tlValidationJob.setValidationPolicy(validationPolicy());
 
         TLSource tlSource = new TLSource();
         tlSource.setUrl(SK_TL_URL);
@@ -256,6 +262,7 @@ class SKCertificateTest {
         certificateSource.addCertificate(TL_ISSUER);
 
         TLValidationJob tlValidationJob = new TLValidationJob();
+        tlValidationJob.setValidationPolicy(validationPolicy());
 
         TLSource tlSource = new TLSource();
         tlSource.setUrl(SK_TL_URL);
@@ -342,6 +349,7 @@ class SKCertificateTest {
         certificateSource.addCertificate(TL_ISSUER);
 
         TLValidationJob tlValidationJob = new TLValidationJob();
+        tlValidationJob.setValidationPolicy(validationPolicy());
 
         TLSource tlSource = new TLSource();
         tlSource.setUrl(SK_TL_URL);
@@ -409,6 +417,7 @@ class SKCertificateTest {
         certificateSource.addCertificate(TL_ISSUER);
 
         TLValidationJob tlValidationJob = new TLValidationJob();
+        tlValidationJob.setValidationPolicy(validationPolicy());
 
         TLSource tlSource = new TLSource();
         tlSource.setUrl(SK_TL_URL);
@@ -488,6 +497,11 @@ class SKCertificateTest {
         assertNotNull(skTrustedList.getStructuralValidation());
         assertFalse(skTrustedList.getStructuralValidation().isValid());
         assertTrue(skTrustedList.getStructuralValidation().getMessages().stream().anyMatch(m -> m.contains("ServiceTypeIdentifier")));
+    }
+
+    private ValidationPolicy validationPolicy() {
+        return ValidationPolicyLoader.fromValidationPolicy(
+                TLValidatorTask.class.getResourceAsStream(TRUSTED_LIST_V5_VALIDATION_POLICY_LOCATION)).create();
     }
 
 }

@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.validation.job.runnable;
 
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.validation.job.cache.access.CacheAccessByKey;
@@ -50,10 +51,28 @@ public abstract class AbstractRunnableAnalysis extends AbstractAnalysis implemen
 	 * @param cacheAccess {@link CacheAccessByKey}
 	 * @param dssFileLoader {@link DSSFileLoader}
 	 * @param latch {@link CountDownLatch}
+	 * @deprecated since DSS 6.6. Please use
+	 *             {@link AbstractRunnableAnalysis(DocumentSource, CacheAccessByKey, DSSFileLoader, CountDownLatch, ValidationPolicy)}.
 	 */
+	@Deprecated
 	protected AbstractRunnableAnalysis(final DocumentSource source, final CacheAccessByKey cacheAccess,
                                        final DSSFileLoader dssFileLoader, CountDownLatch latch) {
-		super(source, cacheAccess, dssFileLoader);
+		this(source, cacheAccess, dssFileLoader, latch, null);
+	}
+
+	/**
+	 * Default constructor
+	 *
+	 * @param source {@link DocumentSource} representing a document
+	 * @param cacheAccess {@link CacheAccessByKey}
+	 * @param dssFileLoader {@link DSSFileLoader}
+	 * @param latch {@link CountDownLatch}
+	 * @param validationPolicy {@link ValidationPolicy}
+	 */
+	protected AbstractRunnableAnalysis(final DocumentSource source, final CacheAccessByKey cacheAccess,
+									   final DSSFileLoader dssFileLoader, final CountDownLatch latch,
+									   ValidationPolicy validationPolicy) {
+		super(source, cacheAccess, dssFileLoader, validationPolicy);
 		this.latch = latch;
 	}
 

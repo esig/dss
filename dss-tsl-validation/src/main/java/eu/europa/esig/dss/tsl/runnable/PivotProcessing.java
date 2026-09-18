@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.tsl.runnable;
 
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.model.tsl.OtherTSLPointer;
 import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
@@ -59,11 +60,29 @@ public class PivotProcessing extends AbstractAnalysis implements Callable<PivotP
 	 * @param lotlCacheAccess {@link AbstractCacheAccessByKey} cache access of the corresponding LOTL
 	 * @param preceedingPivotCacheAccessByKeyList a list of {@link AbstractCacheAccessByKey} to access other pivots
 	 * @param dssFileLoader {@link DSSFileLoader}
+	 * @deprecated since DSS 6.6. Please use
+	 *             {@link PivotProcessing(LOTLSource, TLCacheAccessByKey, TLCacheAccessByKey, List<TLCacheAccessByKey>, DSSFileLoader, ValidationPolicy)}
 	 */
+	@Deprecated
 	public PivotProcessing(final LOTLSource pivotSource, final TLCacheAccessByKey pivotCacheAccess,
 	                       final TLCacheAccessByKey lotlCacheAccess, List<TLCacheAccessByKey> preceedingPivotCacheAccessByKeyList,
 	                       final DSSFileLoader dssFileLoader) {
-		super(pivotSource, pivotCacheAccess, dssFileLoader);
+		this(pivotSource, pivotCacheAccess, lotlCacheAccess, preceedingPivotCacheAccessByKeyList, dssFileLoader, null);
+	}
+
+	/**
+	 * Default constructor
+	 *
+	 * @param pivotSource {@link LOTLSource} pivot source
+	 * @param pivotCacheAccess {@link AbstractCacheAccessByKey} cache access of the current Pivot to process
+	 * @param lotlCacheAccess {@link AbstractCacheAccessByKey} cache access of the corresponding LOTL
+	 * @param preceedingPivotCacheAccessByKeyList a list of {@link AbstractCacheAccessByKey} to access other pivots
+	 * @param dssFileLoader {@link DSSFileLoader}
+	 */
+	public PivotProcessing(final LOTLSource pivotSource, final TLCacheAccessByKey pivotCacheAccess,
+						   final TLCacheAccessByKey lotlCacheAccess, final List<TLCacheAccessByKey> preceedingPivotCacheAccessByKeyList,
+						   final DSSFileLoader dssFileLoader, ValidationPolicy validationPolicy) {
+		super(pivotSource, pivotCacheAccess, dssFileLoader, validationPolicy);
 		this.lotlCacheAccess = lotlCacheAccess;
 		this.preceedingPivotCacheAccessByKeyList = preceedingPivotCacheAccessByKeyList;
 	}
@@ -96,7 +115,7 @@ public class PivotProcessing extends AbstractAnalysis implements Callable<PivotP
 
 	@Override
 	protected ValidationTask getValidationTask(DSSDocument document, CertificateSource certificateSource) {
-		return new TLValidatorTask(document, certificateSource);
+		return new TLValidatorTask(document, certificateSource, getValidationPolicy());
 	}
 
 	@Override

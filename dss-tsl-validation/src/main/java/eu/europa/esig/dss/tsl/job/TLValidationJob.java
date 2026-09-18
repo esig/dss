@@ -21,7 +21,9 @@
 package eu.europa.esig.dss.tsl.job;
 
 import eu.europa.esig.dss.alert.Alert;
+import eu.europa.esig.dss.model.DSSException;
 import eu.europa.esig.dss.model.job.ParsingInfoRecord;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.model.tsl.LOTLInfo;
 import eu.europa.esig.dss.model.tsl.TLInfo;
 import eu.europa.esig.dss.model.tsl.TLValidationJobSummary;
@@ -37,10 +39,12 @@ import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.source.TLSource;
 import eu.europa.esig.dss.tsl.summary.TLValidationJobSummaryBuilder;
 import eu.europa.esig.dss.tsl.sync.TrustedListCertificateSourceSynchronizer;
+import eu.europa.esig.dss.tsl.validation.TLValidatorTask;
 import eu.europa.esig.dss.utils.Utils;
 import eu.europa.esig.dss.validation.job.ValidationJob;
 import eu.europa.esig.dss.validation.job.cache.CacheKey;
 import eu.europa.esig.dss.validation.job.source.DocumentSource;
+import eu.europa.esig.dss.validation.policy.ValidationPolicyLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,6 +62,11 @@ import java.util.stream.Collectors;
 public class TLValidationJob extends ValidationJob<TLInfo, LOTLInfo, TLCacheAccessFactory> {
 
 	private static final Logger LOG = LoggerFactory.getLogger(TLValidationJob.class);
+
+	/**
+	 * The path for a LOTL/TL validation policy
+	 */
+	private static final String TRUSTED_LIST_VALIDATION_POLICY_LOCATION = "/policy/tsl-constraint.xml";
 
 	/**
 	 * The certificate source to be synchronized
@@ -128,6 +137,16 @@ public class TLValidationJob extends ValidationJob<TLInfo, LOTLInfo, TLCacheAcce
 		setDocumentAlerts(tlAlerts);
 	}
 
+	@Override
+	protected ValidationPolicy loadDefaultValidationPolicy() {
+		try {
+			return ValidationPolicyLoader.fromValidationPolicy(
+					TLValidatorTask.class.getResourceAsStream(TRUSTED_LIST_VALIDATION_POLICY_LOCATION)).create();
+		} catch (Exception e) {
+			throw new DSSException("Unable to load the validation policy for trusted list", e);
+		}
+	}
+
 	/**
 	 * Returns validation job summary for all processed LOTL / TLs
 	 * @return {@link TLValidationJobSummary}
@@ -149,7 +168,7 @@ public class TLValidationJob extends ValidationJob<TLInfo, LOTLInfo, TLCacheAcce
 		}
 		TLSource tlSource = (TLSource) documentSource;
 		final TLCacheAccessByKey cacheAccess = getCacheAccessFactory().getCacheAccess(tlSource.getCacheKey());
-		return new TLAnalysis(tlSource, cacheAccess, dssFileLoader, latch);
+		return new TLAnalysis(tlSource, cacheAccess, dssFileLoader, latch, getValidationPolicy());
 	}
 
 	@Override
@@ -160,9 +179,9 @@ public class TLValidationJob extends ValidationJob<TLInfo, LOTLInfo, TLCacheAcce
 		LOTLSource lotlSource = (LOTLSource) documentSource;
 		final TLCacheAccessByKey cacheAccess = getCacheAccessFactory().getCacheAccess(documentSource.getCacheKey());
 		if (lotlSource.isPivotSupport()) {
-			return new LOTLWithPivotsAnalysis(lotlSource, cacheAccess, dssFileLoader, getCacheAccessFactory(), latch);
+			return new LOTLWithPivotsAnalysis(lotlSource, cacheAccess, dssFileLoader, getCacheAccessFactory(), latch, getValidationPolicy());
 		} else {
-			return new LOTLAnalysis(lotlSource, cacheAccess, dssFileLoader, latch);
+			return new LOTLAnalysis(lotlSource, cacheAccess, dssFileLoader, latch, getValidationPolicy());
 		}
 	}
 

@@ -22,6 +22,7 @@ package eu.europa.esig.dss.lote.runnable;
 
 import eu.europa.esig.dss.lote.source.LoTESource;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.validation.job.download.DownloadTask;
 import eu.europa.esig.dss.validation.job.parsing.ParsingTask;
@@ -66,7 +67,20 @@ public interface ILoTEAnalysisExecutor<S extends LoTESource> {
      * @param document {@link DSSDocument} to be processed
      * @param signingCertificateSource {@link CertificateSource} containing signing certificate candidates
      * @return {@link ValidationTask}
+     * @deprecated since DSS 6.6. Please use
+     *             {@link #getValidationTask(DSSDocument, CertificateSource, ValidationPolicy)} instead.
      */
+    @Deprecated
     ValidationTask getValidationTask(DSSDocument document, CertificateSource signingCertificateSource);
+
+    /**
+     * Gets the validation task
+     *
+     * @param document {@link DSSDocument} to be processed
+     * @param signingCertificateSource {@link CertificateSource} containing signing certificate candidates
+     * @return {@link ValidationTask}
+     */
+    ValidationTask getValidationTask(DSSDocument document, CertificateSource signingCertificateSource,
+                                     ValidationPolicy validationPolicy);
 
 }

@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.validation.job.runnable;
 
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.validation.job.cache.access.CacheAccessByKey;
@@ -49,6 +50,9 @@ public abstract class AbstractAnalysis {
 
 	/** The file loader */
 	private final DSSFileLoader dssFileLoader;
+
+	/** Validation policy constraints */
+	private final ValidationPolicy validationPolicy;
 	
 	/**
 	 * Default constructor
@@ -56,11 +60,28 @@ public abstract class AbstractAnalysis {
 	 * @param source {@link DocumentSource} representing a document
 	 * @param cacheAccess {@link CacheAccessByKey}
 	 * @param dssFileLoader {@link DSSFileLoader}
+	 * @deprecated since DSS 6.6. Please use
+	 *             {@link AbstractAnalysis(DocumentSource, CacheAccessByKey,DSSFileLoader, ValidationPolicy)} instead.
 	 */
-	protected AbstractAnalysis(final DocumentSource source, final CacheAccessByKey cacheAccess, final DSSFileLoader dssFileLoader) {
+	@Deprecated
+	protected AbstractAnalysis(final DocumentSource source, final CacheAccessByKey cacheAccess,
+							   final DSSFileLoader dssFileLoader) {
+		this(source, cacheAccess, dssFileLoader, null);
+	}
+
+	/**
+	 * Default constructor
+	 *
+	 * @param source {@link DocumentSource} representing a document
+	 * @param cacheAccess {@link CacheAccessByKey}
+	 * @param dssFileLoader {@link DSSFileLoader}
+	 */
+	protected AbstractAnalysis(final DocumentSource source, final CacheAccessByKey cacheAccess,
+							   final DSSFileLoader dssFileLoader, final ValidationPolicy validationPolicy) {
 		this.source = source;
 		this.cacheAccess = cacheAccess;
 		this.dssFileLoader = dssFileLoader;
+		this.validationPolicy = validationPolicy;
 	}
 
 	/**
@@ -79,6 +100,15 @@ public abstract class AbstractAnalysis {
 	 */
 	protected final ReadOnlyCacheAccessByKey getCacheAccessByKey() {
 		return cacheAccess;
+	}
+
+	/**
+	 * Returns the defined {@code ValidationPolicy}
+	 *
+	 * @return {@link ValidationPolicy}
+	 */
+	protected ValidationPolicy getValidationPolicy() {
+		return validationPolicy;
 	}
 
 	/**

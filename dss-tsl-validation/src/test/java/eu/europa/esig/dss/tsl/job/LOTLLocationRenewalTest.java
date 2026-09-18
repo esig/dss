@@ -24,6 +24,7 @@ import eu.europa.esig.dss.alert.detector.AlertDetector;
 import eu.europa.esig.dss.enumerations.Indication;
 import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.model.tsl.LOTLInfo;
 import eu.europa.esig.dss.model.tsl.PivotInfo;
 import eu.europa.esig.dss.model.tsl.TLValidationJobSummary;
@@ -38,7 +39,9 @@ import eu.europa.esig.dss.tsl.alerts.handlers.log.LogLOTLLocationChangeAlertHand
 import eu.europa.esig.dss.tsl.alerts.handlers.log.LogOJUrlChangeAlertHandler;
 import eu.europa.esig.dss.tsl.function.OfficialJournalSchemeInformationURI;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
+import eu.europa.esig.dss.tsl.validation.TLValidatorTask;
 import eu.europa.esig.dss.validation.job.cache.CacheCleaner;
+import eu.europa.esig.dss.validation.policy.ValidationPolicyLoader;
 import eu.europa.esig.trustedlist.TrustedListFacade;
 import eu.europa.esig.trustedlist.jaxb.tsl.TrustStatusListType;
 import org.junit.jupiter.api.BeforeAll;
@@ -62,6 +65,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 class LOTLLocationRenewalTest {
+
+    private static final String TRUSTED_LIST_V5_VALIDATION_POLICY_LOCATION = "/policy/tsl-v5-constraint.xml";
 
     private static final String KS_TYPE = "PKCS12";
     private static final char[] KS_PASSWORD = "password".toCharArray();
@@ -227,6 +232,7 @@ class LOTLLocationRenewalTest {
         tlValidationJob.setLOTLAlerts(Arrays.asList(ojUrlAlert(ojUrlDetection), lotlLocationAlert(lotlLocationDetection)));
         tlValidationJob.setListOfTrustedListSources(lotlSource);
         tlValidationJob.setTrustedListCertificateSource(trustedListsCertificateSource);
+        tlValidationJob.setValidationPolicy(validationPolicy());
         tlValidationJob.offlineRefresh();
 
         TLValidationJobSummary summary = tlValidationJob.getSummary();
@@ -284,6 +290,11 @@ class LOTLLocationRenewalTest {
             return detected;
         }
 
+    }
+
+    private ValidationPolicy validationPolicy() {
+        return ValidationPolicyLoader.fromValidationPolicy(
+                TLValidatorTask.class.getResourceAsStream(TRUSTED_LIST_V5_VALIDATION_POLICY_LOCATION)).create();
     }
 
 }

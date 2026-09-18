@@ -21,6 +21,7 @@
 package eu.europa.esig.dss.tsl.runnable;
 
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.spi.client.http.DSSFileLoader;
 import eu.europa.esig.dss.tsl.parsing.TLParsingTask;
 import eu.europa.esig.dss.tsl.source.TLSource;
@@ -42,10 +43,27 @@ public class TLAnalysis extends AbstractRunnableTLAnalysis {
 	 * @param cacheAccess {@link CacheAccessByKey}
 	 * @param dssFileLoader {@link DSSFileLoader}
 	 * @param latch {@link CountDownLatch}
+	 * @deprecated since DSS 6.6. Please use
+	 *             {@link TLAnalysis(TLSource, CacheAccessByKey, DSSFileLoader, CountDownLatch, ValidationPolicy)}
 	 */
+	@Deprecated
 	public TLAnalysis(TLSource source, CacheAccessByKey cacheAccess, DSSFileLoader dssFileLoader,
                       CountDownLatch latch) {
-		super(source, cacheAccess, dssFileLoader, latch);
+		this(source, cacheAccess, dssFileLoader, latch, null);
+	}
+
+	/**
+	 * Default constructor
+	 *
+	 * @param source {@link TLSource}
+	 * @param cacheAccess {@link CacheAccessByKey}
+	 * @param dssFileLoader {@link DSSFileLoader}
+	 * @param latch {@link CountDownLatch}
+	 * @param validationPolicy {@link ValidationPolicy}
+	 */
+	public TLAnalysis(final TLSource source, final CacheAccessByKey cacheAccess, final DSSFileLoader dssFileLoader,
+					  final CountDownLatch latch, ValidationPolicy validationPolicy) {
+		super(source, cacheAccess, dssFileLoader, latch, validationPolicy);
 	}
 
 	@Override

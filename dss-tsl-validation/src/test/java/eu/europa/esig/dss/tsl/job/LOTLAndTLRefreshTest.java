@@ -25,6 +25,7 @@ import eu.europa.esig.dss.model.DSSDocument;
 import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.job.DownloadInfoRecord;
 import eu.europa.esig.dss.model.job.ValidationInfoRecord;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.model.tsl.LOTLInfo;
 import eu.europa.esig.dss.model.tsl.PivotInfo;
 import eu.europa.esig.dss.model.tsl.TLInfo;
@@ -37,7 +38,9 @@ import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.spi.x509.CommonCertificateSource;
 import eu.europa.esig.dss.tsl.source.LOTLSource;
 import eu.europa.esig.dss.tsl.source.TLSource;
+import eu.europa.esig.dss.tsl.validation.TLValidatorTask;
 import eu.europa.esig.dss.utils.Utils;
+import eu.europa.esig.dss.validation.policy.ValidationPolicyLoader;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -54,6 +57,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class LOTLAndTLRefreshTest {
 
+	private static final String TRUSTED_LIST_V5_VALIDATION_POLICY_LOCATION = "/policy/tsl-v5-constraint.xml";
+
 	@TempDir
 	File cacheDirectory;
 
@@ -67,6 +72,7 @@ class LOTLAndTLRefreshTest {
 		job.setTrustedListSources(peruvianTrustedList());
 		job.setOfflineDataLoader(offlineFileLoader);
 		job.setTrustedListCertificateSource(new TrustedListsCertificateSource());
+		job.setValidationPolicy(validationPolicy());
 
 		job.setDebug(true);
 
@@ -172,6 +178,11 @@ class LOTLAndTLRefreshTest {
 				"MIIELDCCAhSgAwIBAgIBAjANBgkqhkiG9w0BAQsFADBRMSEwHwYDVQQDExhJTkRFQ09QSSBBQUMgUkFJWiBTSEEyNTYxDDAKBgNVBAsTA0NGRTERMA8GA1UEChMISU5ERUNPUEkxCzAJBgNVBAYTAlBFMB4XDTE3MDQyMDIxNTMzNloXDTIwMDQyMDIxNTMzNlowTjEeMBwGA1UEAxMVVFNMIFN1c2NyaXB0b3IgU0hBMjU2MQwwCgYDVQQLEwNDRkUxETAPBgNVBAoTCElOREVDT1BJMQswCQYDVQQGEwJQRTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAL0tVx8VXgQFih1IPtnvBl9UO9EnctN3zuWwEultjc5ig/rC01oAuWf8Kp271BLEMsnFJD9w+tdPrW2bxu7V7AgDsq0httwwqEmBA950/cOyaaJkQ5b04eqvIWlU7D3NrGbudeI1DHI3h3Q/h4xo1xWdag/UmqfBBs6xSO7P7E2bdn7M2D+8ZqY4JV9YchphHdT9RSGNHgVSCUjN1bg67Cs593Rc6haCgSWeDaeWnaEXlzyqgaSINbTf6+reDItHqKa78gZU6JqlPRAPs1rdnQGPLVJTdfKduF9ZbzcmctqtENeG5yFR4wcBf/1ngxlIRXnNHQE/RRYX5iB0ZL9fosMCAwCrhaMSMBAwDgYDVR0PAQH/BAQDAgCAMA0GCSqGSIb3DQEBCwUAA4ICAQCMcAgkvdBGkN2qECnwyq/p7gZbKKJ5eKnsmSnQ2xYJ7UfTnFwSG5PlLeD2erVLCLlM8wzp1Iea43PDhSP8aH0QOPsxgtiPlUT0l1khG9RYSpw1EatLHlRPACCvZRNvQ9nSSBwG3qG7jzTUGU6WvSifvfN/d5lwzA/skulvOk6nmYvaOq1FOToJIy01WaGcX0yV8C/d1qmDzm77asrtRoSQA6depQ63OPbuGSVDqpHjiAZmr8HiSH3vBpcm66kjPKAnESmE0M5s6zjHpLa1RvYBYTY5luKAQdim1wIMDmI+vf+u7gQkZzqG0+TJos2o7j3AOuyn9gOuhV7NQZPUV/EKoLRolRqZg31q/XhptoEX61RXV8ggyEHKQG12xRa2RBOwEqLWX76H6AwBG/DqZWiWkSrftFfwPnxsmvxwMzNLw3EV1DXfHxruoy12MPKlbmMtVGkh0G3Mf8b3iUOPShenAQFg2FzUrZg0oXUZIJfg6JtgoHy3l8QffCpYfP088cEdvdWWkAN4L34BfojRCjqcDsMyx+9GMv4ODlDPijIwrpGtHkbmk0Rrti8rhzdeAFVOBcvWRYkW3esHvXhf5D3zokjYUiUnQyVBLS3t5zwOir14t82qC/KK6b53p01Fp3Jc3Mrt1Gzrr7wx/IDeQDBfHuj47pWwUuwEuJR64Lo+4w=="));
 		tl.setCertificateSource(certificateSource);
 		return tl;
+	}
+
+	private ValidationPolicy validationPolicy() {
+		return ValidationPolicyLoader.fromValidationPolicy(
+				TLValidatorTask.class.getResourceAsStream(TRUSTED_LIST_V5_VALIDATION_POLICY_LOCATION)).create();
 	}
 
 }

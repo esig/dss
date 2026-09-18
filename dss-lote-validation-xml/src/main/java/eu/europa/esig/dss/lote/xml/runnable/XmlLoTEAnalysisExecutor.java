@@ -26,6 +26,7 @@ import eu.europa.esig.dss.lote.xml.download.XmlLoTEDownloadTask;
 import eu.europa.esig.dss.lote.xml.parsing.XmlLoTEParsingTask;
 import eu.europa.esig.dss.lote.xml.validation.XmlLoTEValidationTask;
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.policy.ValidationPolicy;
 import eu.europa.esig.dss.spi.x509.CertificateSource;
 import eu.europa.esig.dss.validation.job.download.DownloadTask;
 import eu.europa.esig.dss.validation.job.parsing.ParsingTask;
@@ -65,7 +66,12 @@ public class XmlLoTEAnalysisExecutor implements LoTEAnalysisExecutor {
 
     @Override
     public ValidationTask getValidationTask(DSSDocument document, CertificateSource signingCertificateSource) {
-        return new XmlLoTEValidationTask(document, signingCertificateSource);
+        return getValidationTask(document, signingCertificateSource, null);
+    }
+
+    @Override
+    public ValidationTask getValidationTask(DSSDocument document, CertificateSource signingCertificateSource, ValidationPolicy validationPolicy) {
+        return new XmlLoTEValidationTask(document, signingCertificateSource, validationPolicy);
     }
 
 }
