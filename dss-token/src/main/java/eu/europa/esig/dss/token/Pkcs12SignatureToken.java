@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyStore.PasswordProtection;
+import java.security.Provider;
 
 /**
  * Class holding all PKCS#12 file access logic.
@@ -34,7 +35,8 @@ public class Pkcs12SignatureToken extends KeyStoreSignatureTokenConnection {
 	private static final String KS_TYPE = "PKCS12";
 
 	/**
-	 * Creates a SignatureTokenConnection with the provided InputStream to PKCS#12 KeyStore file and password.
+	 * Creates a SignatureTokenConnection with the provided InputStream to PKCS#12 KeyStore file and password
+	 * using a default provider.
 	 *
 	 * @param ksStream
 	 *            the inputstream
@@ -46,7 +48,24 @@ public class Pkcs12SignatureToken extends KeyStoreSignatureTokenConnection {
 	}
 
 	/**
-	 * Creates a SignatureTokenConnection with the provided binaries to PKCS#12 KeyStore and password.
+	 * Creates a SignatureTokenConnection with the provided InputStream to PKCS#12 KeyStore file and password
+	 * using the custom {@code Provider}.
+	 * When used, the {@code provider} will be added in java.security.Security.
+	 *
+	 * @param ksStream
+	 *            the inputstream
+	 * @param password
+	 *            the keystore password
+	 * @param provider
+	 *            the security provider
+	 */
+	public Pkcs12SignatureToken(InputStream ksStream, PasswordProtection password, Provider provider) {
+		super(ksStream, KS_TYPE, password, provider);
+	}
+
+	/**
+	 * Creates a SignatureTokenConnection with the provided binaries to PKCS#12 KeyStore and password
+	 * using a default provider.
 	 *
 	 * @param ksBytes
 	 *            the binaries
@@ -58,7 +77,24 @@ public class Pkcs12SignatureToken extends KeyStoreSignatureTokenConnection {
 	}
 
 	/**
-	 * Creates a SignatureTokenConnection with the provided File to PKCS#12 KeyStore and password.
+	 * Creates a SignatureTokenConnection with the provided binaries to PKCS#12 KeyStore and password
+	 * using the custom {@code Provider}.
+	 * When used, the {@code provider} will be added in java.security.Security.
+	 *
+	 * @param ksBytes
+	 *            the binaries
+	 * @param password
+	 *            the keystore password
+	 * @param provider
+	 *            the security provider
+	 */
+	public Pkcs12SignatureToken(byte[] ksBytes, PasswordProtection password, Provider provider) {
+		super(ksBytes, KS_TYPE, password, provider);
+	}
+
+	/**
+	 * Creates a SignatureTokenConnection with the provided File to PKCS#12 KeyStore and password
+	 * using a default provider.
 	 *
 	 * @param ksFile
 	 *            the keystore file
@@ -72,7 +108,26 @@ public class Pkcs12SignatureToken extends KeyStoreSignatureTokenConnection {
 	}
 
 	/**
-	 * Creates a SignatureTokenConnection with the provided filepath to PKCS#12 KeyStore file and password.
+	 * Creates a SignatureTokenConnection with the provided File to PKCS#12 KeyStore and password
+	 * using the custom {@code Provider}.
+	 * When used, the {@code provider} will be added in java.security.Security.
+	 *
+	 * @param ksFile
+	 *            the keystore file
+	 * @param password
+	 *            the keystore password
+	 * @param provider
+	 *            the security provider
+	 * @throws IOException
+	 *             if an error occurred while reading the file
+	 */
+	public Pkcs12SignatureToken(File ksFile, PasswordProtection password, Provider provider) throws IOException {
+		super(ksFile, KS_TYPE, password, provider);
+	}
+
+	/**
+	 * Creates a SignatureTokenConnection with the provided filepath to PKCS#12 KeyStore file and password
+	 * using a default provider.
 	 *
 	 * @param filepath
 	 *            the filepath of the keystore
@@ -83,6 +138,24 @@ public class Pkcs12SignatureToken extends KeyStoreSignatureTokenConnection {
 	 */
 	public Pkcs12SignatureToken(String filepath, PasswordProtection password) throws IOException {
 		super(filepath, KS_TYPE, password);
+	}
+
+	/**
+	 * Creates a SignatureTokenConnection with the provided filepath to PKCS#12 KeyStore file and password
+	 * using the custom {@code Provider}.
+	 * When used, the {@code provider} will be added in java.security.Security.
+	 *
+	 * @param filepath
+	 *            the filepath of the keystore
+	 * @param password
+	 *            the keystore password
+	 * @param provider
+	 *            the security provider
+	 * @throws IOException
+	 *             if an error occurred while reading the file
+	 */
+	public Pkcs12SignatureToken(String filepath, PasswordProtection password, Provider provider) throws IOException {
+		super(filepath, KS_TYPE, password, provider);
 	}
 
 }

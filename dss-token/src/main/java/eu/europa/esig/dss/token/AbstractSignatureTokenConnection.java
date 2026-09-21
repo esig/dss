@@ -33,6 +33,8 @@ import org.slf4j.LoggerFactory;
 
 import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
+import java.security.Provider;
+import java.security.Security;
 import java.security.Signature;
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.MGF1ParameterSpec;
@@ -46,11 +48,28 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 
 	private static final Logger LOG = LoggerFactory.getLogger(AbstractSignatureTokenConnection.class);
 
+	/** Provider used to load a Signature instance */
+	protected Provider provider;
+
 	/**
-	 * Default constructor
+	 * Default constructor.
+	 * Uses the default security provider.
 	 */
 	protected AbstractSignatureTokenConnection() {
 		// empty
+	}
+
+	/**
+	 * Constructor with a custom security {@code Provider}.
+	 * Adds the provider in java.security.Security.
+	 *
+	 * @param provider {@link Provider}
+	 */
+	protected AbstractSignatureTokenConnection(Provider provider) {
+		if (provider != null) {
+			Security.addProvider(provider);
+		}
+		this.provider = provider;
 	}
 
 	@Override
@@ -197,7 +216,11 @@ public abstract class AbstractSignatureTokenConnection implements SignatureToken
 	 * @throws NoSuchAlgorithmException if the algorithm is not found
 	 */
 	protected Signature getSignatureInstance(final String javaSignatureAlgorithm) throws NoSuchAlgorithmException {
-		return Signature.getInstance(javaSignatureAlgorithm);
+		if (provider != null) {
+			return Signature.getInstance(javaSignatureAlgorithm, provider);
+		} else {
+			return Signature.getInstance(javaSignatureAlgorithm);
+		}
 	}
 
 	/**

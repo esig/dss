@@ -29,9 +29,9 @@ import java.security.KeyStore.PasswordProtection;
 
 /**
  * Class provides an API for MacOS Keychain access.
- *
+ * <p>
  * For more details please refer to the used documentation:
- * https://github.com/openjdk/jdk17u/blob/master/src/java.base/macosx/classes/apple/security/KeychainStore.java
+ * {@link <a href="https://github.com/openjdk/jdk17u/blob/master/src/java.base/macosx/classes/apple/security/KeychainStore.java">KeychainStore.java</a>}
  *
  */
 public class AppleSignatureToken extends AbstractKeyStoreTokenConnection {

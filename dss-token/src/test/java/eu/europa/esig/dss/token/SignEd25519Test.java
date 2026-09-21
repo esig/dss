@@ -26,6 +26,7 @@ import eu.europa.esig.dss.model.Digest;
 import eu.europa.esig.dss.model.SignatureValue;
 import eu.europa.esig.dss.model.ToBeSigned;
 import eu.europa.esig.dss.spi.DSSUtils;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -35,6 +36,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore.PasswordProtection;
+import java.security.Provider;
+import java.security.Security;
 import java.security.Signature;
 import java.util.Base64;
 import java.util.List;
@@ -131,6 +134,55 @@ class SignEd25519Test {
             exception = assertThrows(UnsupportedOperationException.class, () -> signatureToken.signDigest(digest, SignatureAlgorithm.ED25519, entry));
             assertEquals("The SignatureAlgorithm for digest signing is not found for the given configuration " +
                     "[EncryptionAlgorithm: EDDSA]", exception.getMessage());
+        }
+    }
+
+    @Test
+    void testBCProvider() throws IOException {
+        try (Pkcs12SignatureToken signatureToken = new Pkcs12SignatureToken("src/test/resources/Ed25519-good-user.p12",
+                new PasswordProtection("ks-password".toCharArray()), new BouncyCastleProvider())) {
+
+            List<DSSPrivateKeyEntry> keys = signatureToken.getKeys();
+            KSPrivateKeyEntry entry = (KSPrivateKeyEntry) keys.get(0);
+
+            ToBeSigned toBeSigned = new ToBeSigned("Hello world".getBytes(StandardCharsets.UTF_8));
+
+            SignatureValue signValue = signatureToken.sign(toBeSigned, DigestAlgorithm.SHA512, entry);
+            assertNotNull(signValue.getAlgorithm());
+            LOG.info("Sig value : {}", Base64.getEncoder().encodeToString(signValue.getValue()));
+            try {
+                Signature sig = Signature.getInstance(signValue.getAlgorithm().getJCEId());
+                sig.initVerify(entry.getCertificate().getPublicKey());
+                sig.update(toBeSigned.getBytes());
+                assertTrue(sig.verify(signValue.getValue()));
+            } catch (GeneralSecurityException e) {
+                Assertions.fail(e.getMessage());
+            }
+        }
+    }
+
+    @Test
+    void testSUNProvider() throws IOException {
+        Provider provider = Security.getProvider("Sun");
+        try (Pkcs12SignatureToken signatureToken = new Pkcs12SignatureToken("src/test/resources/Ed25519-good-user.p12",
+                new PasswordProtection("ks-password".toCharArray()), provider)) {
+
+            List<DSSPrivateKeyEntry> keys = signatureToken.getKeys();
+            KSPrivateKeyEntry entry = (KSPrivateKeyEntry) keys.get(0);
+
+            ToBeSigned toBeSigned = new ToBeSigned("Hello world".getBytes(StandardCharsets.UTF_8));
+
+            SignatureValue signValue = signatureToken.sign(toBeSigned, DigestAlgorithm.SHA512, entry);
+            assertNotNull(signValue.getAlgorithm());
+            LOG.info("Sig value : {}", Base64.getEncoder().encodeToString(signValue.getValue()));
+            try {
+                Signature sig = Signature.getInstance(signValue.getAlgorithm().getJCEId());
+                sig.initVerify(entry.getCertificate().getPublicKey());
+                sig.update(toBeSigned.getBytes());
+                assertTrue(sig.verify(signValue.getValue()));
+            } catch (GeneralSecurityException e) {
+                Assertions.fail(e.getMessage());
+            }
         }
     }
 
