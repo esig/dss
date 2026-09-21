@@ -55,7 +55,7 @@ class LoTEAnalysisNoDocumentTest {
 
         LoTEAnalysis process = new LoTEAnalysis(loteSource, new LoTECacheAccessByKey(
                 new CacheKey("LU"), new DownloadCache(), new ParsingCache(), new ValidationCache()),
-                new FileCacheDataLoader(new MemoryDataLoader(new HashMap<>())), latch);
+                new FileCacheDataLoader(new MemoryDataLoader(new HashMap<>())), latch, null);
         assertNotNull(process);
 
         executorService.submit(process);

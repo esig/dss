@@ -65,6 +65,7 @@ public class XmlLoTEAnalysisExecutor implements LoTEAnalysisExecutor {
     }
 
     @Override
+    @Deprecated
     public ValidationTask getValidationTask(DSSDocument document, CertificateSource signingCertificateSource) {
         return getValidationTask(document, signingCertificateSource, null);
     }

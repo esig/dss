@@ -209,6 +209,7 @@ public abstract class AbstractCAdESTestSignature extends AbstractPkiFactoryTestD
 		assertEquals(1, signatureInformationStore.size());
 	}
 
+	@SuppressWarnings("unchecked")
 	protected void checkArchiveTimeStampV3(byte[] byteArray) {
 		if (!isBaselineLTA()) {
 			return; // skip
