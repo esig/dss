@@ -22,7 +22,8 @@ package eu.europa.esig.dss.validation.executor.certificate;
 
 import eu.europa.esig.dss.detailedreport.DetailedReport;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlConclusion;
-import eu.europa.esig.dss.diagnostic.CertificateRevocationWrapper;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlRevocationInformation;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.diagnostic.CertificateWrapper;
 import eu.europa.esig.dss.diagnostic.DiagnosticData;
 import eu.europa.esig.dss.diagnostic.SignatureWrapper;
@@ -164,11 +165,11 @@ public class SimpleReportForCertificateBuilder {
 		item.setPdsUrls(null);
 
 		XmlRevocation revocation = new XmlRevocation();
-		CertificateRevocationWrapper revocationData = diagnosticData.getLatestRevocationDataForCertificate(certificate);
-		if (revocationData != null) {
-			revocation.setThisUpdate(revocationData.getThisUpdate());
-			revocation.setRevocationDate(revocationData.getRevocationDate());
-			revocation.setRevocationReason(revocationData.getReason());
+		XmlRevocationInformation revocationInfo = getCertificateRevocationInfo(certificate.getId());
+		if (revocationInfo != null) {
+			revocation.setThisUpdate(revocationInfo.getThisUpdate());
+			revocation.setRevocationDate(revocationInfo.getRevocationDate());
+			revocation.setRevocationReason(revocationInfo.getReason());
 		}
 		item.setRevocation(revocation);
 
@@ -243,6 +244,14 @@ public class SimpleReportForCertificateBuilder {
 		}
 
 		return item;
+	}
+
+	private XmlRevocationInformation getCertificateRevocationInfo(String certificateId) {
+		XmlSubXCV xmlSubXCV = detailedReport.getCertificateXCV(certificateId);
+		if (xmlSubXCV != null) {
+			return xmlSubXCV.getRevocationInfo();
+		}
+		return null;
 	}
 
 	private String getEnOrFirst(List<XmlLangAndValue> langAndValues) {

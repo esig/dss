@@ -32,6 +32,7 @@ import eu.europa.esig.dss.detailedreport.jaxb.XmlFC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlISC;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlMessage;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlSAV;
+import eu.europa.esig.dss.detailedreport.jaxb.XmlSubXCV;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlVCI;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlValidationProcessBasicTimestamp;
 import eu.europa.esig.dss.detailedreport.jaxb.XmlXCV;
@@ -193,7 +194,8 @@ public abstract class AbstractBasicValidationProcess<T extends XmlConstraintsCon
                 if (Indication.INDETERMINATE.equals(xmlXCV.getConclusion().getIndication()) &&
                         SubIndication.REVOKED_NO_POE.equals(xmlXCV.getConclusion().getSubIndication()) &&
                         Utils.isCollectionNotEmpty(contentTimestamps)) {
-                    Date revocationTime = getRevocationTimeForSigningCertificate();
+
+                    Date revocationTime = getRevocationTimeForSigningCertificate(xmlXCV);
 
                     item = item.setNextItem(contentTimestampsPresent(contentTimestamps));
 
@@ -523,10 +525,16 @@ public abstract class AbstractBasicValidationProcess<T extends XmlConstraintsCon
         return null;
     }
 
-    private Date getRevocationTimeForSigningCertificate() {
+    private Date getRevocationTimeForSigningCertificate(XmlXCV xmlXCV) {
         CertificateWrapper signingCertificate = token.getSigningCertificate();
-        if (signingCertificate != null && Utils.isCollectionNotEmpty(signingCertificate.getCertificateRevocationData())) {
-            return diagnosticData.getLatestRevocationDataForCertificate(signingCertificate).getRevocationDate();
+        if (signingCertificate != null) {
+            for (XmlSubXCV subXCV : xmlXCV.getSubXCV()) {
+                if (signingCertificate.getId().equals(subXCV.getId())) {
+                    return subXCV.getRevocationInfo() != null ? subXCV.getRevocationInfo().getRevocationDate() : null;
+                }
+            }
+            throw new IllegalStateException(String.format(
+                    "No XmlSubXCV found for signing certificate with id '%s'", signingCertificate.getId()));
         }
         return null;
     }

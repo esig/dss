@@ -1042,6 +1042,32 @@ class CertificateProcessExecutorTest extends AbstractTestValidationExecutor {
 		assertEquals(CertificateQualification.QCERT_FOR_ESIG_QSCD, simpleReport.getQualificationAtValidationTime());
 	}
 
+	@Test
+	void dss3972CertTest() throws Exception {
+		XmlDiagnosticData diagnosticData = DiagnosticDataFacade.newFacade()
+				.unmarshall(new File("src/test/resources/diag-data/cert-validation/dss-3972-cert.xml"));
+		assertNotNull(diagnosticData);
+
+		String certificateId = "C-D16F166CF4C02C1165CB1C7E1EBBCCD2E1EB6BDD9F2D7BCD2BEDC344B3025057";
+
+		DefaultCertificateProcessExecutor executor = new DefaultCertificateProcessExecutor();
+		executor.setCertificateId(certificateId);
+		executor.setDiagnosticData(diagnosticData);
+		executor.setValidationPolicy(loadDefaultPolicy());
+		executor.setCurrentTime(diagnosticData.getValidationDate());
+
+		CertificateReports reports = executor.execute();
+		checkReports(reports);
+
+		SimpleCertificateReport simpleReport = reports.getSimpleReport();
+		assertEquals(Indication.INDETERMINATE, simpleReport.getCertificateIndication(certificateId));
+		assertEquals(SubIndication.REVOKED_NO_POE, simpleReport.getCertificateSubIndication(certificateId));
+
+		assertNotNull(simpleReport.getCertificateRevocationThisUpdate(certificateId));
+		assertNotNull(simpleReport.getCertificateRevocationReason(certificateId));
+		assertNotNull(simpleReport.getCertificateRevocationDate(certificateId));
+	}
+
 	private void checkReports(CertificateReports reports) {
 		assertNotNull(reports);
 		assertNotNull(reports.getDiagnosticData());

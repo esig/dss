@@ -398,6 +398,7 @@ public class SubX509CertificateValidation extends Chain<XmlSubXCV> {
 		XmlRevocationInformation revocationInfo = new XmlRevocationInformation();
 		revocationInfo.setCertificateId(currentCertificate.getId());
 		revocationInfo.setRevocationId(certificateRevocation.getId());
+		revocationInfo.setThisUpdate(certificateRevocation.getThisUpdate());
 		revocationInfo.setRevocationDate(certificateRevocation.getRevocationDate());
 		revocationInfo.setReason(certificateRevocation.getReason());
 		result.setRevocationInfo(revocationInfo);

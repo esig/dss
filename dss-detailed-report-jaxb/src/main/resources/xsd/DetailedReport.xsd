@@ -766,6 +766,7 @@
 		<xs:sequence>
 			<xs:element name="CertificateId" type="xs:string" />
 			<xs:element name="RevocationId" type="xs:string" />
+			<xs:element name="ThisUpdate" type="xs:dateTime" />
 			<xs:element name="Reason" type="RevocationReason" minOccurs="0" />
 			<xs:element name="RevocationDate" type="xs:dateTime" />		
 		</xs:sequence>

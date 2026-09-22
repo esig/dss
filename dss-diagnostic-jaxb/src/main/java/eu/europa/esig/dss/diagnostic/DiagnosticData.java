@@ -544,11 +544,16 @@ public class DiagnosticData {
 
 	/**
 	 * This method indicates if the certificate signature is valid and the revocation status is valid.
+	 * NOTE: The method is to be phased out as the certificate/revocation is not yet performed, and
+	 * it may return unreliable results. Please use information about certificate validity from
+	 * Simple or Detailed reports.
 	 *
 	 * @param dssCertificateId
 	 *            DSS certificate identifier to be checked
 	 * @return certificate validity
+	 * @deprecated since DSS 6.6. To be removed.
 	 */
+	@Deprecated
 	public boolean isValidCertificate(final String dssCertificateId) {
 		CertificateWrapper certificate = getUsedCertificateByIdNullSafe(dssCertificateId);
 		
@@ -597,11 +602,16 @@ public class DiagnosticData {
 
 	/**
 	 * This method returns the revocation source for the given certificate.
+	 * NOTE: The method is to be phased out as the certificate/revocation is not yet performed, and
+	 * it may return unreliable results. Please use information about certificate validity from
+	 * Simple or Detailed reports.
 	 *
 	 * @param dssCertificateId
 	 *            DSS certificate identifier to be checked
 	 * @return revocation source
+	 * @deprecated since DSS 6.6. To be removed.
 	 */
+	@Deprecated
 	public RevocationType getCertificateRevocationSource(final String dssCertificateId) {
 		CertificateWrapper certificate = getUsedCertificateByIdNullSafe(dssCertificateId);
 		if (certificate.isRevocationDataAvailable()) {
@@ -612,10 +622,15 @@ public class DiagnosticData {
 
 	/**
 	 * This method returns the revocation status for the given certificate.
+	 * NOTE: The method is to be phased out as the certificate/revocation is not yet performed, and
+	 * it may return unreliable results. Please use information about certificate validity from
+	 * Simple or Detailed reports.
 	 *
 	 * @param dssCertificateId DSS certificate identifier to be checked
 	 * @return certificate revocation
+	 * @deprecated since DSS 6.6. To be removed.
 	 */
+	@Deprecated
 	public CertificateStatus getCertificateRevocationStatus(final String dssCertificateId) {
 		CertificateWrapper certificate = getUsedCertificateByIdNullSafe(dssCertificateId);
 		if (certificate.isRevocationDataAvailable()) {
@@ -626,11 +641,16 @@ public class DiagnosticData {
 
 	/**
 	 * This method returns the revocation reason for the given certificate.
+	 * NOTE: The method is to be phased out as the certificate/revocation is not yet performed, and
+	 * it may return unreliable results. Please use information about certificate validity from
+	 * Simple or Detailed reports.
 	 *
 	 * @param dssCertificateId
 	 *            DSS certificate identifier to be checked
 	 * @return revocation reason
+	 * @deprecated since DSS 6.6. To be removed.
 	 */
+	@Deprecated
 	public RevocationReason getCertificateRevocationReason(String dssCertificateId) {
 		CertificateWrapper certificate = getUsedCertificateByIdNullSafe(dssCertificateId);
 		if (certificate.isRevocationDataAvailable()) {
@@ -1160,10 +1180,16 @@ public class DiagnosticData {
 	}
 	
 	/**
-	 * Returns the last actual revocation for the given {@code certificate}
+	 * Returns the last actual revocation for the given {@code certificate}.
+	 * NOTE: The method is to be phased out as the certificate/revocation is not yet performed, and
+	 * it may return unreliable results. Please use information about certificate validity from
+	 * Simple or Detailed reports.
+	 *
 	 * @param certificate {@link CertificateWrapper} to find the latest revocation for
 	 * @return {@link CertificateRevocationWrapper} revocation
+	 * @deprecated since DSS 6.6. To be removed.
 	 */
+	@Deprecated
 	public CertificateRevocationWrapper getLatestRevocationDataForCertificate(CertificateWrapper certificate) {
 		CertificateRevocationWrapper latest = null;
 		List<CertificateRevocationWrapper> certificateRevocationData = certificate.getCertificateRevocationData();

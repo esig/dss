@@ -1136,12 +1136,28 @@ public class DetailedReport {
 	}
 
 	/**
-	 * Gets XCV building block conclusion for a certificate with id
+	 * Gets XCV building block conclusion for a certificate with id.
+	 * Method handles only certificate validation reports.
 	 *
 	 * @param certificateId {@link String}
 	 * @return {@link XmlConclusion}
 	 */
 	public XmlConclusion getCertificateXCVConclusion(String certificateId) {
+		XmlSubXCV xmlSubXCV = getCertificateXCV(certificateId);
+		if (xmlSubXCV != null) {
+			return xmlSubXCV.getConclusion();
+		}
+		return null;
+	}
+
+	/**
+	 * Gets XCV building block for a certificate with id.
+	 * Method handles only certificate validation reports.
+	 *
+	 * @param certificateId {@link String}
+	 * @return {@link XmlSubXCV}
+	 */
+	public XmlSubXCV getCertificateXCV(String certificateId) {
 		List<XmlCertificate> certificates = getCertificates();
 		if (certificates == null || certificates.isEmpty()) {
 			throw new UnsupportedOperationException("Only supported in report for certificate");
@@ -1152,7 +1168,7 @@ public class DetailedReport {
 		List<XmlBasicBuildingBlocks> basicBuildingBlocks = jaxbDetailedReport.getBasicBuildingBlocks();
 		for (XmlBasicBuildingBlocks xmlBasicBuildingBlocks : basicBuildingBlocks) {
 			if (!signatureIds.contains(xmlBasicBuildingBlocks.getId())) {
-				continue; // skip for signature
+				continue; // skip if not signature
 			}
 
 			XmlXCV xcv = xmlBasicBuildingBlocks.getXCV();
@@ -1160,7 +1176,7 @@ public class DetailedReport {
 				List<XmlSubXCV> subXCV = xcv.getSubXCV();
 				for (XmlSubXCV xmlSubXCV : subXCV) {
 					if (certificateId.equals(xmlSubXCV.getId())) {
-						return xmlSubXCV.getConclusion();
+						return xmlSubXCV;
 					}
 				}
 			}
@@ -1177,7 +1193,7 @@ public class DetailedReport {
 				List<XmlSubXCV> subXCV = xcv.getSubXCV();
 				for (XmlSubXCV xmlSubXCV : subXCV) {
 					if (certificateId.equals(xmlSubXCV.getId())) {
-						return xmlSubXCV.getConclusion();
+						return xmlSubXCV;
 					}
 				}
 			}
