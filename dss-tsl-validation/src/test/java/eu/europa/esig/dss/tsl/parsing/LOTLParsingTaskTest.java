@@ -49,6 +49,7 @@ class LOTLParsingTaskTest {
 	private static DSSDocument LOTL_NO_SIG;
 	private static DSSDocument LOTL_NOT_PARSEABLE;
 	private static DSSDocument LOTL_PIVOT;
+	private static DSSDocument LOTL_PIVOT_ALT_OJ_URI;
 
 	private static DSSDocument LOTL_MRA;
 
@@ -62,6 +63,7 @@ class LOTLParsingTaskTest {
 		LOTL_NO_SIG = new FileDocument("src/test/resources/eu-lotl-no-sig.xml");
 		LOTL_NOT_PARSEABLE = new FileDocument("src/test/resources/eu-lotl-not-parseable.xml");
 		LOTL_PIVOT = new FileDocument("src/test/resources/eu-lotl-pivot.xml");
+		LOTL_PIVOT_ALT_OJ_URI = new FileDocument("src/test/resources/eu-lotl-new-oj-alt-domain.xml");
 
 		LOTL_MRA = new FileDocument("src/test/resources/mra-lotl.xml");
 
@@ -333,6 +335,31 @@ class LOTLParsingTaskTest {
 		checkOtherPointers(result.getLotlPointers());
 		assertEquals(31, result.getTlPointers().size());
 		checkOtherPointers(result.getTlPointers());
+		assertEquals("EU", result.getTerritory());
+	}
+
+	@Test
+	void parseLOTLPivotWithAltDomainOjUri() {
+		LOTLSource lotlSource = new LOTLSource();
+		lotlSource.setPivotSupport(true);
+		lotlSource.setSigningCertificatesAnnouncementPredicate(new OfficialJournalSchemeInformationURI(
+				"https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=uriserv:OJ.C_.2019.276.01.0001.01.ENG"));
+
+		LOTLParsingTask task = new LOTLParsingTask(LOTL_PIVOT_ALT_OJ_URI, lotlSource);
+		LOTLParsingResult result = task.get();
+		assertNotNull(result);
+		assertNotNull(result.getIssueDate());
+		assertNotNull(result.getNextUpdateDate());
+		assertEquals(6, result.getVersion());
+		assertEquals(394, result.getSequenceNumber());
+
+		assertNotNull(result.getPivotURLs());
+		assertEquals(5, result.getPivotURLs().size());
+		assertEquals("https://europe.eu/eli/C/2026/1944/oj",
+				result.getSigningCertificateAnnouncementURL());
+
+		assertEquals(1, result.getLotlPointers().size());
+		assertEquals(31, result.getTlPointers().size());
 		assertEquals("EU", result.getTerritory());
 	}
 

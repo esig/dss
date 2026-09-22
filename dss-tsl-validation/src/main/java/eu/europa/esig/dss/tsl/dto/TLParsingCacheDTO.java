@@ -92,6 +92,11 @@ public class TLParsingCacheDTO extends AbstractParsingCacheDTO implements TLPars
         super(cacheDTO);
     }
 
+    /**
+     * Gets the TSLType
+     *
+     * @return {@link TSLType}
+     */
     public TSLType getTSLType() {
         return tslType;
     }
@@ -105,6 +110,11 @@ public class TLParsingCacheDTO extends AbstractParsingCacheDTO implements TLPars
         this.tslType = tslType;
     }
 
+    /**
+     * Gets the sequence number
+     *
+     * @return {@link Integer}
+     */
     public Integer getSequenceNumber() {
         return sequenceNumber;
     }
@@ -118,6 +128,11 @@ public class TLParsingCacheDTO extends AbstractParsingCacheDTO implements TLPars
         this.sequenceNumber = sequenceNumber;
     }
 
+    /**
+     * Gets the version
+     *
+     * @return {@link Integer}
+     */
     public Integer getVersion() {
         return version;
     }
@@ -131,6 +146,11 @@ public class TLParsingCacheDTO extends AbstractParsingCacheDTO implements TLPars
         this.version = version;
     }
 
+    /**
+     * Gets the territory
+     *
+     * @return {@link String}
+     */
     public String getTerritory() {
         return territory;
     }
@@ -144,6 +164,11 @@ public class TLParsingCacheDTO extends AbstractParsingCacheDTO implements TLPars
         this.territory = territory;
     }
 
+    /**
+     * Gets the issue date
+     *
+     * @return {@link Date}
+     */
     public Date getIssueDate() {
         return issueDate;
     }
@@ -157,6 +182,11 @@ public class TLParsingCacheDTO extends AbstractParsingCacheDTO implements TLPars
         this.issueDate = issueDate;
     }
 
+    /**
+     * Gets the next update date
+     *
+     * @return {@link Date}
+     */
     public Date getNextUpdateDate() {
         return nextUpdateDate;
     }
@@ -170,6 +200,11 @@ public class TLParsingCacheDTO extends AbstractParsingCacheDTO implements TLPars
         this.nextUpdateDate = nextUpdateDate;
     }
 
+    /**
+     * Gets a list of distribution point urls
+     *
+     * @return a list of {@link String}s
+     */
     public List<String> getDistributionPoints() {
         return distributionPoints;
     }
@@ -183,6 +218,11 @@ public class TLParsingCacheDTO extends AbstractParsingCacheDTO implements TLPars
         this.distributionPoints = distributionPoints;
     }
 
+    /**
+     * Gets trust service providers
+     *
+     * @return a list of {@link TrustServiceProvider}s
+     */
     public List<TrustServiceProvider> getTrustServiceProviders() {
         return trustServiceProviders;
     }
@@ -196,6 +236,11 @@ public class TLParsingCacheDTO extends AbstractParsingCacheDTO implements TLPars
         this.trustServiceProviders = trustServiceProviders;
     }
 
+    /**
+     * Gets LOTL other pointers
+     *
+     * @return a list of {@link OtherTSLPointer}s
+     */
     public List<OtherTSLPointer> getLotlOtherPointers() {
         return lotlOtherPointers;
     }
@@ -209,6 +254,11 @@ public class TLParsingCacheDTO extends AbstractParsingCacheDTO implements TLPars
         this.lotlOtherPointers = lotlOtherPointers;
     }
 
+    /**
+     * Gets TL other pointers
+     *
+     * @return a list of {@link OtherTSLPointer}s
+     */
     public List<OtherTSLPointer> getTlOtherPointers() {
         return tlOtherPointers;
     }
@@ -222,6 +272,11 @@ public class TLParsingCacheDTO extends AbstractParsingCacheDTO implements TLPars
         this.tlOtherPointers = tlOtherPointers;
     }
 
+    /**
+     * Gets pivot URLs
+     *
+     * @return a list of {@link String}s
+     */
     public List<String> getPivotUrls() {
         return pivotUrls;
     }
@@ -235,6 +290,11 @@ public class TLParsingCacheDTO extends AbstractParsingCacheDTO implements TLPars
         this.pivotUrls = pivotUrls;
     }
 
+    /**
+     * Gets the signing certificate announcement URL
+     *
+     * @return {@link String}
+     */
     public String getSigningCertificateAnnouncementUrl() {
         return signingCertificateAnnouncementUrl;
     }
@@ -248,6 +308,11 @@ public class TLParsingCacheDTO extends AbstractParsingCacheDTO implements TLPars
         this.signingCertificateAnnouncementUrl = signingCertificateAnnouncementUrl;
     }
 
+    /**
+     * Gets the number of trust service providers
+     *
+     * @return integer representing a number of trust service providers
+     */
     public int getTSPNumber() {
         if (Utils.isCollectionNotEmpty(trustServiceProviders)) {
             return trustServiceProviders.size();
@@ -255,6 +320,11 @@ public class TLParsingCacheDTO extends AbstractParsingCacheDTO implements TLPars
         return 0;
     }
 
+    /**
+     * Gets the number of trust services
+     *
+     * @return integer representing a number of trust services
+     */
     public int getTSNumber() {
         int tsNumber = 0;
         if (Utils.isCollectionNotEmpty(trustServiceProviders)) {
@@ -265,6 +335,11 @@ public class TLParsingCacheDTO extends AbstractParsingCacheDTO implements TLPars
         return tsNumber;
     }
 
+    /**
+     * Gets a number of SDI certificates
+     *
+     * @return integer representing a number of SDI certificates
+     */
     public int getCertNumber() {
         int certNumber = 0;
         if (Utils.isCollectionNotEmpty(trustServiceProviders)) {

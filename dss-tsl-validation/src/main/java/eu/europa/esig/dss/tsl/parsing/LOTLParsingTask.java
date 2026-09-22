@@ -38,6 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -104,8 +105,8 @@ public class LOTLParsingTask extends AbstractParsingTask {
 	private void extractSigningCertificatesAnnouncementURL(LOTLParsingResult result, NonEmptyMultiLangURIListType schemeInformationURI) {
 		LOTLSigningCertificatesAnnouncementSchemeInformationURI signingCertificatesAnnouncementPredicate = lotlSource.getSigningCertificatesAnnouncementPredicate();
 		if (signingCertificatesAnnouncementPredicate != null) {
-			final List<String> uris = schemeInformationURI.getURI().stream().filter(signingCertificatesAnnouncementPredicate)
-					.map(NonEmptyMultiLangURIType::getValue).collect(Collectors.toList());
+			final List<String> uris = getSigningCertificatesAnnouncementUris(
+					schemeInformationURI, signingCertificatesAnnouncementPredicate.getUri());
 			if (Utils.isCollectionNotEmpty(uris)) {
 				String newUri = uris.get(0);
 				if (!newUri.equals(signingCertificatesAnnouncementPredicate.getUri())) {
@@ -114,6 +115,22 @@ public class LOTLParsingTask extends AbstractParsingTask {
 				result.setSigningCertificateAnnouncementURL(newUri);
 			}
 		}
+	}
+
+	private List<String> getSigningCertificatesAnnouncementUris(NonEmptyMultiLangURIListType schemeInformationURI, String currentOjUri) {
+		if (schemeInformationURI != null && Utils.isCollectionNotEmpty(schemeInformationURI.getURI())) {
+			final List<String> uris = new ArrayList<>();
+			for (NonEmptyMultiLangURIType nonEmptyMultiLangURIType : schemeInformationURI.getURI()) {
+				if (!new PivotSchemeInformationURI().test(nonEmptyMultiLangURIType)) {
+					uris.add(nonEmptyMultiLangURIType.getValue());
+				}
+				if (currentOjUri.equals(nonEmptyMultiLangURIType.getValue())) {
+					break;
+				}
+			}
+			return uris;
+		}
+		return Collections.emptyList();
 	}
 
 	private void extractPivotURLs(LOTLParsingResult result, NonEmptyMultiLangURIListType schemeInformationURI) {
