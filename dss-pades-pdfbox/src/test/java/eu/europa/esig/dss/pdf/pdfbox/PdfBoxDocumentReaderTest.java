@@ -21,20 +21,28 @@
 package eu.europa.esig.dss.pdf.pdfbox;
 
 import eu.europa.esig.dss.model.DSSDocument;
+import eu.europa.esig.dss.model.FileDocument;
 import eu.europa.esig.dss.model.InMemoryDocument;
 import eu.europa.esig.dss.pades.PAdESSignatureParameters;
+import eu.europa.esig.dss.pades.PAdESUtils;
+import eu.europa.esig.dss.pades.validation.PdfByteRangeDocument;
 import eu.europa.esig.dss.pdf.PdfDocumentReader;
 import eu.europa.esig.dss.pdf.PdfDssDict;
+import eu.europa.esig.dss.pdf.PdfMemoryUsageSetting;
+import eu.europa.esig.dss.spi.DSSUtils;
 import eu.europa.esig.dss.test.PKIFactoryAccess;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.encryption.AccessPermission;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -225,6 +233,25 @@ class PdfBoxDocumentReaderTest extends PKIFactoryAccess {
 
 		documentReader.setVersion(2.0f);
 		assertEquals(2.0f, documentReader.getVersion());
+	}
+
+	@Test
+	void fileRevisionTest() throws IOException {
+		File file = new File("target/pdfbox-document-reader-revisions.pdf");
+		new InMemoryDocument(getClass().getResourceAsStream("/validation/PAdES-LT.pdf")).save(file.getPath());
+
+		List<PdfByteRangeDocument> revisions = PAdESUtils.extractRevisions(new FileDocument(file));
+		assertEquals(8, revisions.size());
+		for (PdfByteRangeDocument revision : revisions) {
+			try (PdfBoxDocumentReader fileReader = new PdfBoxDocumentReader(revision, null, PdfMemoryUsageSetting.fileOnly());
+				 PdfBoxDocumentReader memoryReader = new PdfBoxDocumentReader(new InMemoryDocument(DSSUtils.toByteArray(revision)))) {
+				assertEquals(memoryReader.getNumberOfPages(), fileReader.getNumberOfPages());
+				assertEquals(memoryReader.extractSigDictionaries().size(), fileReader.extractSigDictionaries().size());
+				assertArrayEquals(DSSUtils.toByteArray(memoryReader.getPDDocument().getPage(0).getContents()),
+						DSSUtils.toByteArray(fileReader.getPDDocument().getPage(0).getContents()));
+			}
+		}
+		assertTrue(file.delete());
 	}
 
 	@Override
